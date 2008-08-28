@@ -1,0 +1,13 @@
+{ # -*- ifm -*-
+  # import fit template
+  #   {$D} returns the ifeffit group name
+  #   {$D->get("parameter")} returns the value of that parameter
+}
+##| reading fit file "{$filename}" as group {$D}
+read_data(file="{$filename}", group=t___emp)
+set({$D}.k       = t___emp.k,
+    {$D}.chi     = t___emp.chi,
+    {$D}_fit.k   = t___emp.k,
+    {$D}_fit.chi = t___emp.fit,
+    {$D}_res.k   = t___emp.k,
+    {$D}_res.chi = {$D}.chi - {$D}_fit.chi )

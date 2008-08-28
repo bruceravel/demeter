@@ -1,0 +1,193 @@
+#!/usr/bin/perl -I/home/bruce/codes/demeter/lib
+
+=for Copyright
+ .
+ Copyright (c) 2008 Bruce Ravel (bravel AT bnl DOT gov).
+ All rights reserved.
+ .
+ This file is free software; you can redistribute it and/or
+ modify it under the same terms as Perl itself. See The Perl
+ Artistic License.
+ .
+ This program is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+
+=cut
+
+use warnings;
+use strict;
+use Ifeffit::Demeter;
+use Getopt::Long;
+
+use subs qw(BOLD RED RESET YELLOW GREEN);
+my ($color, $nocolor, $latex, $html, $noframe, $version, $help) = (1,0,0,0,0,0,0);
+GetOptions (
+	    "color"   => \$color,
+	    "nocolor" => \$nocolor,
+	    "latex"   => \$latex,
+	    "html"    => \$html,
+	    "noframe" => \$noframe,
+	    "v"       => \$version,
+	    "version" => \$version,
+	    "h"       => \$help,
+	    "help"    => \$help,
+	   );
+
+&version, exit if $version;
+&help,    exit if $help;
+
+my $ANSIColor_exists = (eval "require Term::ANSIColor");
+if ($ANSIColor_exists) {
+  import Term::ANSIColor qw(:constants);
+} else {
+  $nocolor = 1;
+};
+
+my $feff = Ifeffit::Demeter::Feff -> thaw($ARGV[0]||"feff.yaml");
+my $style = ($nocolor) ? q{}
+          : ($latex)   ? "latex"
+          : ($html)    ? "css"
+          : ($color)   ? {comment => BOLD.RED,
+			  close   => RESET,
+			  1       => BOLD.YELLOW,
+			  2       => BOLD.GREEN,
+			  0       => q{},
+			 }
+          :             q{};
+print header($latex, $html) if not $noframe;
+print body($feff->intrp($style), $latex, $html);
+print footer($latex, $html) if not $noframe;
+
+## The end!
+
+sub header {
+  my ($latex, $html) = @_;
+  return &latex_header if $latex;
+  return &html_header  if $html;
+  return q{};
+};
+sub body {
+  my ($text, $latex, $html) = @_;
+  return &latex_body($text) if $latex;
+  return &html_body($text)  if $html;
+  return $text;
+};
+sub footer {
+  my ($latex, $html) = @_;
+  return &latex_footer if $latex;
+  return &html_footer  if $html;
+  return q{};
+};
+
+sub version {
+  print "intrp for Demeter $Ifeffit::Demeter::VERSION, copyright (c) 2008, Bruce Ravel, bravel AT bnl DOT gov\n";
+};
+sub help {
+  &version;
+  print <<'EOH'
+
+usage : intrp [options] myfeffcalc.yaml
+
+    option           effect
+ ------------------------------------------------------------------
+   --color         write color output to the screen (default)
+   --nocolor       write colorless output to the screen
+   --latex         write latex file output
+   --html          write html file output
+   --noframe       write latex or html without header and footer
+   -v, --version   display version number and exit
+   -h, --help      show this help and exit
+
+EOH
+    ;
+};
+
+## latex output ==========================================================
+
+sub latex_header {
+  return <<'EOH'
+\documentclass{article}
+\usepackage{alltt}
+\pdfoutput=1\relax
+\usepackage[pdftex]{color}
+\usepackage[pdftex,colorlinks,breaklinks,backref,bookmarks=true]{hyperref}
+\usepackage{graphicx}
+\pdfcompresslevel=9
+\definecolor{commentcolor}{rgb}{0.70,0.00,0.00}
+\definecolor{majorcolor}{rgb}{0.00,0.70,0.00}
+\definecolor{minorcolor}{rgb}{0.50,0.30,0.00}
+
+\setlength{\hoffset}{0truecm} \setlength{\voffset}{0truecm}
+\setlength{\topmargin}{0truecm} \setlength{\marginparsep}{0.25truecm}
+\setlength{\marginparwidth}{2.5truecm}
+\setlength{\textheight}{22truecm} \setlength{\textwidth}{17.5truecm}
+\setlength{\topmargin}{-1truecm}
+\setlength{\oddsidemargin}{-1truecm}
+\setlength{\evensidemargin}{-1truecm}
+\setlength{\headsep}{0.5truecm}
+%\setlength{\parindent}{21pt}
+
+\begin{document}
+\begin{alltt}
+EOH
+    ;
+};
+
+sub latex_body {
+  my ($text) = @_;
+  return $text;
+};
+
+sub latex_footer {
+  return<<'EOH'
+\end{alltt}
+\end{document}
+EOH
+    ;
+};
+
+
+## html output ==========================================================
+
+sub html_header {
+  return <<'EOH'
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<title>Feff calculation interpretation</title>
+<style type="text/css">
+ <!--
+.comment {
+    font: 1em monospace;
+    color: #990000;
+}
+.major {
+    font: 1em monospace;
+    color: #009900;
+}
+.minor {
+    font: 1em monospace;
+    color: #775500;
+}
+.normal {
+    font: 1em monospace;
+    color: #777777;
+}
+--></style>
+</head>
+<body>
+<h1>Feff calculation interpretation</h1>
+EOH
+    ;
+};
+
+sub html_body {
+  my ($text) = @_;
+  $text =~ s{ (?!class)}{&nbsp;}g; # this is a bit fragile, but that
+  return $text;                    # should be the only non-nbsp in
+};                                 # the body of the html file
+
+sub html_footer {
+  return "</body></html>\n";
+};

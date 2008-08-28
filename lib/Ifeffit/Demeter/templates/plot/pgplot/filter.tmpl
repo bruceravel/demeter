@@ -1,0 +1,49 @@
+{ # -*- ifm -*-
+  # template for plotting the function of a fluorescence filter
+  #   {$C} returns the config object
+  #
+  #  filter_abs	       Z number of absorber
+  #  filter_edge       edge of absorber
+  #  filter_filter     filter element
+  #  filter_emin       lower bound of plot
+  #  filter_emax       upper bound of plot
+  #
+  $filterz    = Chemistry::Elements::get_Z($C->get("filter_filter"));
+  $filtersymbol = Chemistry::Elements::get_symbol($C->get("filter_filter"));
+  $filtername = Chemistry::Elements::get_name($C->get("filter_filter"));
+  $abssymbol  = Chemistry::Elements::get_symbol($C->get("filter_abs"));
+  $absname    = Chemistry::Elements::get_name($C->get("filter_abs"));
+  $absenergy  = Xray::Absorption->get_energy($C->get("filter_abs"),$C->get("filter_edge"));
+
+  $z          = $C->get("filter_abs");
+
+  $line1      = ($z < 57) ? "Ka1" : "Lb2";
+  $line2      = ($z < 57) ? "Ka2" : "La1";
+  $line3      = ($z < 57) ? q{}   : "La2";
+
+  $e1         = Xray::Absorption -> get_energy($z, $line1);
+  $e2         = Xray::Absorption -> get_energy($z, $line2);
+  $e3         = Xray::Absorption -> get_energy($z, $line3);
+
+  $h1         = sprintf("%.5f", Xray::Absorption -> get_intensity($z, $line1));
+  $h2         = sprintf("%.5f", Xray::Absorption -> get_intensity($z, $line2));
+  $h3         = sprintf("%.5f", Xray::Absorption -> get_intensity($z, $line3));
+
+  $line1key   = ($z < 57) ? "K \\ga1" : "L \\gb2";
+  $line2key   = ($z < 57) ? "K \\ga2" : "L \\ga1";
+  $line3key   = ($z < 57) ? q{}       : "L \\ga2";
+
+  q{}
+}
+newplot(f1f2.energy, f1f2.f2, key='{$filtersymbol} filter', title='{$filtername} as a filter for {$absname}', xlabel='Energy (eV)', ylabel='filter and lines (arb. units)')
+set line.1 = {$h1}*300*gauss(f1f2.energy, {$e1}, 30)
+set line.2 = {$h2}*300*gauss(f1f2.energy, {$e2}, 30)
+plot(f1f2.energy, line.1, key='{$abssymbol} {$line1key}')
+plot(f1f2.energy, line.2, key='{$abssymbol} {$line2key}')
+{if ($line3) {
+  $OUT .= "set line.3 = " . $h3 . "*300*gauss(f1f2.energy, " . $e3 . ", 30)\n";
+  $OUT .= "plot(f1f2.energy, line.3, key='" . $abssymbol . " " . $line3key . "')";
+}}
+set top = ceil(f1f2.f2)*1.2
+plot_arrow(x1={$absenergy}, y1=0, x2={$absenergy}, y2=top, no_head=1)
+plot_text(x={$absenergy}+10, y=1, text='  {$abssymbol} {$C->get("filter_edge")} edge')

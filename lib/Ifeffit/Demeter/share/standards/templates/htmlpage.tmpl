@@ -1,0 +1,235 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<title>XAS Standard Reference Material: {$S->get($this, 'tag')}</title>
+<style type="text/css">
+ <!--
+a:link, a:visited \{
+  text-decoration: none;
+  color: blue;
+\}
+A:hover \{
+  text-decoration: underline;
+\}
+td, th \{
+  padding: 4px;
+\}
+.copyrighttext \{
+  font: 0.8em sans-serif;
+\}
+.copyrightblock \{
+  text-align: right;
+  background: #fff;
+  color: #000;
+  width: 50%;
+  float: right;
+  padding: 12px;
+  margin: 10px;
+  border-width: 0px;
+\}
+.navbar \{
+  background: #fff;
+  color: #000;
+  width: 15%;
+  float: left;
+  padding: 8px;
+  margin: 4px 20px 4px 4px;
+  border-width: 1px;
+  border-style: solid solid solid solid;
+  border-color: #ccc;
+\}
+.edgeblock \{
+  background: #fff;
+  color: #000;
+  width: 15%;
+  float: right;
+  padding: 0px;
+  margin: 0px 0px 0px 0px;
+  border-width: 0px;
+  border-style: solid solid solid solid;
+  border-color: #ccc;
+\}
+.tabblock \{
+  background: #fff;
+  color: #000;
+  float: left;
+  padding: 8px;
+  margin: 4px 4px 4px 4px;
+  border-width: 1px;
+  border-style: solid solid solid solid;
+  border-color: #ccc;
+\}
+.infoblock
+ \{
+  background: #fff;
+  color: #000;
+  width: 80%;
+  float: top;
+  padding: 8px;
+  margin-left: 17%;
+  border-width: 0px;
+\}
+
+--></style>
+</head>
+
+<body>
+<div class="edgeblock">
+  {# <strong>{ucfirst($S->get($this, 'element'))} Absorption Edge Energies</strong><br> }
+  <table border=1 align=center>
+    <tr align=center> <th> Edge </th> <th> Energy </th> </tr>
+    {foreach my $ed (qw (K L1 L2 L3 M1 M2 M3 M4 M5)) {
+      $OUT .= "<tr align=center><td> $ed </td><td>" . Xray::Absorption->get_energy($S->get($this, 'element'), $ed) . "</td></tr>\n";
+     }
+    }
+  </table>
+</div>
+
+{#<div class="navbar">
+ #<p>
+ #  <strong>Materials</strong>
+ #</p>
+ #{foreach $m ($S->material_list) {
+ #  next if ($m eq 'config');
+ #  if ($S->get($m,'element') ne $m) {
+ #    if ($this eq $m) {
+ #      $OUT .= '&nbsp;&bull; ' . ucfirst($m) . ' <br>';
+ #    } else {
+ #      $OUT .= "&nbsp;&bull; <a href=\"$m.html\">" . ucfirst($m) . "</a><br>";
+ #    };
+ #  } else {
+ #    if ($this eq $m) {
+ #      $OUT .= ucfirst($m) . '<br>';
+ #    } else {
+ #      $OUT .= "<a href=\"$m.html\">" . ucfirst($m) . "</a><br>";
+ #    };
+ #  };
+ # }
+ #}
+}
+</div>
+<div class="navbar">
+<p>
+  <strong>Materials</strong>
+</p>
+{foreach $z (1 .. 92) {
+  my $elem = Chemistry::Elements::get_symbol($z);
+  my $name = Chemistry::Elements::get_name($z);
+  next if (not $S->element_exists($elem));
+  $OUT .= "<br>$z: $elem &ndash; $name<br>";
+  foreach $m ($S->material_list) {
+    next if ($S->get($m, 'element') ne lc($elem));
+    if (($this eq $m) and (lc($elem) eq $m)) {
+      $OUT .= '&nbsp;&bull; ' . ucfirst($m) . ' metal<br>';
+    } elsif ($this eq $m) {
+      $OUT .= '&nbsp;&bull; ' . ucfirst($m) . ' <br>';
+    } elsif (lc($elem) eq $m) {
+      $OUT .= "&nbsp;&bull;  <a href=\"$m.html\">" . ucfirst($m) . ' metal</a><br>';
+    } else {
+      $OUT .= "&nbsp;&bull; <a href=\"$m.html\">" . ucfirst($m) . "</a><br>";
+    };
+  };
+ }
+}
+</div>
+
+<h1 align=center>XAS Standard Reference Material</h1>
+
+<p>&nbsp;</p>
+<h2>{$S->get($this, 'tag')}</h2>
+
+<div class="infoblock">
+<dl>
+  <dt><strong>Comment:</strong></dt>
+  <dd>{$S->get($this, 'comment')}</dd>
+  <dt><strong>Absorber:</strong></dt>
+  <dd>{ucfirst($S->get($this, 'element'))} (Z={Chemistry::Elements::get_Z($S->get($this, 'element'))}) {Chemistry::Elements::get_name($S->get($this, 'element'))}</dd>
+  <dt><strong>Crystal:</strong></dt>
+  <dd>{$S->get($this, 'crystal')}</dd>
+  <dt><strong>File:</strong></dt>
+  <dd><a href="{($S->get($this, 'from_web')) ? $S->get($this, 'file') : "data/".$file}">{$file}</a></dd>
+</dl>
+</div>
+
+<table border=0 width=855px>
+  <tr>
+    <td>
+      <a href="{$this}_mu.png">
+	<img width=100% border=0 alt="XANES of {$S->get($this, 'tag')}" src={$this}_mu.png title="XANES of {$S->get($this, 'tag')}" />
+      </a>
+    </td>
+  </tr>
+  <tr>
+    <td>
+      <a href="{$this}_der.png">
+	<img width=100% border=0 alt="Derivative of {$S->get($this, 'tag')}" src={$this}_der.png title="Derivative of {$S->get($this, 'tag')}" />
+      </a>
+    </td>
+  </tr>
+  <tr>
+    <td>
+      <a href="{$S->get($this, 'element')}_filter.png">
+	<img width=100% border=0 alt="Filter for {$S->get($this, 'element')}" src="{$S->get($this, 'element')}_filter.png" title="Filter for {$S->get($this, 'element')}" />
+      </a>
+    </td>
+  </tr>
+</table>
+
+
+<br>
+<h3 align=center> {ucfirst($S->get($this, 'element'))} Fluorescence Line Energies </h3>
+<table align=center>
+<tr valign=top><td>
+<table border=1 align=center>
+  <tr align=center> <th> Line </th> <th> Transition </th> <th> Energy </th> <th> Probability </th> </tr>
+     {foreach my $li (qw (Kalpha1 Kalpha2 Kalpha3 Kbeta1 Kbeta2 Kbeta3 Kbeta4 Kbeta5)) {
+       $OUT .= "<tr align=center><td> $li </td><td>" . 
+       Xray::Absorption->get_IUPAC($li) . 
+       "</td><td>" .
+       Xray::Absorption->get_energy($S->get($this, 'element'), $li) . 
+       "</td><td>" .
+       sprintf("%.5f", Xray::Absorption->get_intensity($S->get($this, 'element'), $li)) . 
+       "</td></tr>\n";
+      }
+     }
+</table>
+</td><td>
+<table border=1 align=center>
+  <tr align=center> <th> Line </th> <th> Transition </th> <th> Energy </th> <th> Probability </th> </tr>
+     {foreach my $li (qw (Lalpha1 Lalpha2 Lbeta1 Lbeta2 Lbeta3 Lbeta4 Lbeta5 Lbeta6 Lgamma1 Lgamma2 Lgamma3 Lgamma6 Ll Lnu)) {
+       $OUT .= "<tr align=center><td> $li </td><td>" . 
+       Xray::Absorption->get_IUPAC($li) . 
+       "</td><td>" .
+       Xray::Absorption->get_energy($S->get($this, 'element'), $li) . 
+       "</td><td>" .
+       sprintf("%.5f", Xray::Absorption->get_intensity($S->get($this, 'element'), $li)) . 
+       "</td></tr>\n";
+      }
+     }
+</table>
+</td><td>
+<table border=1 align=center>
+  <tr align=center> <th> Line </th> <th> Transition </th> <th> Energy </th> <th> Probability </th> </tr>
+     {foreach my $li (qw (Malpha Mbeta Mgamma Mzeta)) {
+       $OUT .= "<tr align=center><td> $li </td><td>" . 
+       Xray::Absorption->get_IUPAC($li) . 
+       "</td><td>" .
+       Xray::Absorption->get_energy($S->get($this, 'element'), $li) . 
+       "</td><td>" .
+       sprintf("%.5f", Xray::Absorption->get_intensity($S->get($this, 'element'), $li)) . 
+       "</td></tr>\n";
+      }
+     }
+</table>
+</td></tr>
+</table>
+
+<div class="copyrightblock">
+  <span class="copyrighttext">
+  This page generated {Ifeffit::Demeter::Tools->now} using <a href="http://cars9.uchicago.edu/iffwiki/Demeter">Demeter</a> {Ifeffit::Demeter->version}
+  <br>
+  Demeter copyright &copy; 2008 <a href="http://xafs.org/BruceRavel">Bruce Ravel</a> (bravel AT bnl DOT gov)
+  </span>
+</div>
+
+</body></html>

@@ -1,0 +1,16 @@
+{ # -*- ifm -*-
+  # template for new plot in energy
+  #   {$D} returns the ifeffit group name
+  #   {$D->get("parameter")} returns the value of that parameter
+  #   {$P->get("parameter")} returns the value of a Plot parameter
+}
+{
+  $emin = $D->get("bkg_e0") + $P->get("emin");
+  $emax = $D->get("bkg_e0") + $P->get("emax");
+  q{}
+}
+newplot("{$D}.energy+{$D->get("bkg_eshift")}", "{$D->get("plot_multiplier")}*{$D}.{$P->get("e_part")}+{$D->get("y_offset")}",
+        xlabel="{$P->get("xlabel")}", ylabel="{$P->get("ylabel")}",
+        grid, gridcolor="{$P->get("gridcolor")}", xmin={$emin}, xmax={$emax},
+        style={$P->get("datastyle")}, color="{$P->get("color")}", key="{$P->get("key")}", 
+        title="{$P->get("title")}", fg="{$P->get("fg")}", bg="{$P->get("bg")}")

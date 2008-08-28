@@ -1,0 +1,33 @@
+{ # -*- ifm -*-
+  # template for new plot in R
+  #   {$D} returns the ifeffit group name
+  #   {$D->get("parameter")} returns the value of that parameter
+  #   {$P->get("parameter")} returns the value of a Plot parameter
+  #
+  #  color fg bg grid gridcolor
+}
+{
+  $ylabel = $P->gnuplot_rylabel;
+  $file = $P->tempfile;
+  $D->points({file    => $file,
+              space   => 'R', 
+	      suffix  => ($P->get('r_pl') eq 'm') ? 'chir_mag'
+	               : ($P->get('r_pl') eq 'r') ? 'chir_re'
+	               : ($P->get('r_pl') eq 'i') ? 'chir_im'
+	               : ($P->get('r_pl') eq 'p') ? 'chir_pha'
+		       :                            'chir_mag',
+	      scale   => $D->get("plot_multiplier"),
+	      yoffset => $D->get("y_offset")
+	     });
+  q{}
+}
+## gnuplot script
+unset label
+
+set title "\{/*1.5 {$P->get("title")}\}"
+set xlabel "\{/*1.2 Radial distance&\{aa\}(\{\305\})\}"
+set ylabel "\{/*1.2 {$ylabel}\}"
+set xrange [ {$P->get("rmin")} : {$P->get("rmax")} ]
+
+# ifeffit group = {$D}
+plot '{$file}' using 1:2 with {$C->default("gnuplot", "datastyle")} ls {$P->get('increment')+1} title "{$P->get("key")}"

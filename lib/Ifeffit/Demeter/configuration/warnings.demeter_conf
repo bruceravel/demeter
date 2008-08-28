@@ -1,0 +1,159 @@
+## -*- config -*-
+###########################################################################
+##                          Demeter is copyright (c) 2007 Bruce Ravel
+##                                                     bravel@bnl.gov
+##                                        http://xafs.org/BruceRavel/
+##
+##                   Ifeffit is copyright (c) 1992-2007 Matt Newville
+##                                         newville@cars.uchicago.edu
+##                       http://cars9.uchicago.edu/~newville/ifeffit/
+##
+##	  The latest version of Demeter can always be found at
+##          http://cars9.uchicago.edu/~ravel/software/exafs/
+##
+## -------------------------------------------------------------------
+##     All rights reserved. This program is free software; you can
+##     redistribute it and/or modify it provided that the above notice
+##     of copyright, these terms of use, and the disclaimer of
+##     warranty below appear in the source code and documentation, and
+##     that none of the names of Argonne National Laboratory, The
+##     University of Chicago, University of Washington, or the authors
+##     appear in advertising or endorsement of works derived from this
+##     software without specific prior written permission from all
+##     parties.
+##
+##     THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+##     EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
+##     OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+##     NONINFRINGEMENT.  IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
+##     HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
+##     WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+##     FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
+##     OTHER DEALINGS IN THIS SOFTWARE.
+## -------------------------------------------------------------------
+###########################################################################
+
+
+## This file contains the bkg configuration group for Demeter
+
+
+######################################################################
+section=warnings
+section_description
+  Demeter can do some sanity checks on the evaluations of the math
+  expressions defining the path parameters for each path and other
+  parameters of the fit.  Some warnings will be issued before the fit
+  starts, others will be flagged upon completion of the fit.  The
+  parameters in this section define how these various sanity checks
+  work.
+
+variable=reff_margin
+type=real
+default=1.1
+description
+  Artemis will flag a warning if the Reff of a path is much larger
+  than the Rmax of the data set. The default value states that Reff
+  can be 10% larger than Rmax before a warning is issued. Setting
+  this to a number smaller than 1 is probably a bad idea. Setting it
+  to a number much larger than 1 has the effect of turning off this
+  sanity check. A number equal to or smaller than 0 will be reset to
+  1. 
+
+variable=s02_max
+type=real
+default=0
+description
+  This is the maximum sane value for S02.  If S02 for a path evaluates
+  to larger than this number, a warning will be issued.  If it is
+  zero, then no check will be made on the maximum size of this
+  parameter.
+
+variable=s02_neg
+type=boolean
+onvalue=1
+default=true
+description
+  If this variable is true and S02 evaluates to a negative number, a
+  warning will be issued.
+
+variable=e0_max
+type=real
+default=10
+units=eV
+description
+  This is the maximum sane value for the absolute value of e0.  If the
+  absolute value of e0 for a path evaluates to larger than this
+  number, a warning will be issued.  If it is zero, then no check
+  will be made on the maximum size of this parameter.
+
+variable=dr_max
+type=real
+default=0.5
+units=Angstroms
+description
+  This is the maximum sane value for the absolute value of delta_R.
+  If the absolute value of delta_R for a path evaluates to larger than
+  this number, a warning will be issued.  If it is zero, then no
+  check will be made on the maximum size of this parameter.
+
+
+variable=ss2_max
+type=real
+default=0.05
+units=Angstrom^2
+description
+  This is the maximum sane value for sigma^2.  If sigma^2 for a path
+  evaluates to larger than this number, a warning will be issued.  If
+  it is zero, then no check will be made on the maximum size of this
+  parameter.
+
+variable=ss2_neg
+type=boolean
+onvalue=1
+default=true
+description
+  If this variable is true and sigma^2 evaluates to a negative number,
+  a warning will be issued.
+
+variable=3rd_max
+type=real
+default=0
+units=Angstrom^3
+description
+  This is the maximum sane value for the absolute value of the third
+  cumulant.  If the absolute value of the third cumulant for a path
+  evaluates to larger than this number, a warning will be issued.  If
+  it is zero, then no check will be made on the maximum size of this
+  parameter.
+
+variable=4th_max
+type=real
+default=0
+units=Angstrom^4
+description
+  This is the maximum sane value for the absolute value of the fourth
+  cumulant.  If the absolute value of the fourth cumulant for a path
+  evaluates to larger than this number, a warning will be issued.  If
+  it is zero, then no check will be made on the maximum size of this
+  parameter.
+
+variable=ei_max
+type=real
+default=0
+units=eV
+description
+  This is the maximum sane value for the absolute value of the
+  imaginary energy correction (Ei).  If the absolute value of the
+  imaginary energy correction for a path evaluates to larger than this
+  number, a warning will be issued.  If it is zero, then no check
+  will be made on the maximum size of this parameter.
+
+variable=dphase_max
+type=real
+default=0
+description
+  This is the maximum sane value for the absolute value of the dphase
+  parameter.  If the absolute value of dphase for a path evaluates to
+  larger than this number, a warning will be issued.  If it is zero,
+  then no check will be made on the maximum size of this parameter.
+

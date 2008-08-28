@@ -1,0 +1,118 @@
+## -*- config -*-
+###########################################################################
+##                          Demeter is copyright (c) 2007 Bruce Ravel
+##                                                     bravel@bnl.gov
+##                                        http://xafs.org/BruceRavel/
+##
+##                   Ifeffit is copyright (c) 1992-2007 Matt Newville
+##                                         newville@cars.uchicago.edu
+##                       http://cars9.uchicago.edu/~newville/ifeffit/
+##
+##	  The latest version of Demeter can always be found at
+##          http://cars9.uchicago.edu/~ravel/software/exafs/
+##
+## -------------------------------------------------------------------
+##     All rights reserved. This program is free software; you can
+##     redistribute it and/or modify it provided that the above notice
+##     of copyright, these terms of use, and the disclaimer of
+##     warranty below appear in the source code and documentation, and
+##     that none of the names of Argonne National Laboratory, The
+##     University of Chicago, University of Washington, or the authors
+##     appear in advertising or endorsement of works derived from this
+##     software without specific prior written permission from all
+##     parties.
+##
+##     THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+##     EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
+##     OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+##     NONINFRINGEMENT.  IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
+##     HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
+##     WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+##     FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
+##     OTHER DEALINGS IN THIS SOFTWARE.
+## -------------------------------------------------------------------
+###########################################################################
+
+
+## This file contains the fit configuration group for Demeter
+
+
+######################################################################
+section=fit
+section_description
+  These parameters determine how fitting is done by Demeter.
+
+variable=k1
+type=boolean
+onvalue=1
+offvalue=0
+default=true
+description
+  When this is true, k-weighting of 1 will be used in the fit.
+
+variable=k2
+type=boolean
+onvalue=1
+offvalue=0
+default=false
+description
+  When this is true, k-weighting of 2 will be used in the fit.
+
+variable=k3
+type=boolean
+onvalue=1
+offvalue=0
+default=true
+description
+  When this is true, k-weighting of 3 will be used in the fit.
+
+variable=karb
+type=boolean
+onvalue=1
+offvalue=0
+default=false
+description
+  When this is true, the arbitrary value of k-weighting will be used
+  in the fit.
+
+variable=karb_value
+type=real
+default=0
+description
+  The default value for arbitrary k-weighting to use in the fit.
+
+variable=space
+type=list
+default=r
+options=k r q
+description
+  The space in which the fit will be evaluated.
+
+variable=cormin
+type=real
+default=0.25
+description
+  The is the default value for the smallest correlation reported at
+  the end of a fit.  Only correlations whose absolute values exceed
+  this value will be reported.  If you set this to 0 or a negative
+  number, all correlations will be reported.  If you set it to a
+  number equal to or larger than 1, then correlations will not be
+  reported.
+
+##fit_epsilon	  => 0,	   # float
+##fit_pcpath	  => 'None',
+##fit_include	  => 1,	   # boolean
+##fit_plot_after_fit => 0,	   # boolean
+##fit_do_bkg	  => 0,	   # boolean
+##fit_titles	  => q{},  # multiline
+
+variable=bkg_corr
+type=boolean
+onvalue=1
+offvalue=0
+default=false
+description
+  When this is true, log files will report correlations between
+  background corefinement parameters.  When false only correlations
+  between guess parameters and other guess parameters or between guess
+  parameters and background parameters will be reported.

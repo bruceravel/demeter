@@ -1,0 +1,12 @@
+{ # -*- ifm -*-
+  # clone data by copying ifeffit arrays
+  #   {$D} returns the ifeffit group name
+  #   {$D->get("parameter")} returns the value of that parameter
+  #   {$DS} is the "standard", which here is the newly clones group
+  $xsuff = ($D->get('is_chi')) ? 'k'   : 'energy';
+  $ysuff = ($D->get('is_chi')) ? 'chi' : 'xmu';
+  q{};
+}
+##| cloning {$D} as group {$S}
+set({$DS}.{$xsuff} = {$D}.{$xsuff},
+    {$DS}.{$ysuff} = {$D}.{$ysuff})

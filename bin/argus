@@ -1,0 +1,284 @@
+#!/usr/bin/perl -I../lib/
+
+=for Copyright
+ .
+ Copyright (c) 2008 Bruce Ravel (bravel AT bnl DOT gov).
+ All rights reserved.
+ .
+ This file is free software; you can redistribute it and/or
+ modify it under the same terms as Perl itself. See The Perl
+ Artistic License.
+ .
+ This program is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+
+=cut
+
+use warnings;
+use strict;
+use Ifeffit::Demeter;
+use File::Spec;
+use Term::ReadLine;
+my $term = new Term::ReadLine 'datawatcher';
+$term->ornaments(0);
+
+use Getopt::Long;
+use vars qw(%params @data);
+%params = (
+	   folder      => q{./},
+	   base        => q{},
+	   energy      => '$1',
+	   numerator   => '$2',
+	   denominator => '$3',
+	   ln	       => 0,
+	   rebin       => 0,
+	   prompt      => 0,
+	   start       => '000',
+
+	   pause       => 20,
+	   pausedef    => 20,
+	   headersize  => 2000,
+	   headerdef   => 2000,
+	   flush       => 30,
+	   flushdef    => 30,
+
+	   use_gnuplot => 0,
+	   count       => 0,
+	   prjnumber   => 1,
+	  );
+#my ($folder, $energy, $numer, $denom, $ln, $rebin, $prompt, $start) = (q{./}, '$1', '$2', '$3', 0, 0, 0, '000');
+#my ($pause, $headersize, $flush, $use_gnuplot) = (5, 2000, 30, 0);
+my $result = GetOptions (
+			 "folder=s"      => \$params{folder},
+			 "f=s"           => \$params{folder},
+
+			 "energy=s"      => \$params{energy},
+			 "e=s"           => \$params{energy},
+			 "numerator=s"   => \$params{numerator},
+			 "n=s"           => \$params{numerator},
+			 "denominator=s" => \$params{denominator},
+			 "d=s"           => \$params{denominator},
+			 "ln"            => \$params{ln},
+			 "l"             => \$params{ln},
+			 "rebin"         => \$params{rebin},
+			 "r"             => \$params{rebin},
+			 "start=s"       => \$params{start},
+			 "s=s"           => \$params{start},
+
+			 "interactive"   => \$params{prompt},
+			 "i"             => \$params{prompt},
+
+			 "g"             => \$params{use_gnuplot},
+
+			 "pause=i"       => \$params{pause},
+			 "headersize=i"  => \$params{headersize},
+			 "flush=i"       => \$params{flush},
+			);
+
+($params{pause}      = $params{pausedef})  if ($params{pause}      < 0);
+($params{headersize} = $params{headerdef}) if ($params{headersize} < 0);
+($params{flush}      = $params{flushdef})  if ($params{flush}      < 0);
+
+&prompt if ($params{prompt} or not $params{base});
+
+$params{base}  ||= $ARGV[0];
+$params{count}   = 0;
+$params{prjname} = $params{base};
+
+my %prior = ();
+my %size  = ();
+my %seen  = ();
+@data  = ();
+Ifeffit::Demeter->plot_with('gnuplot') if $params{use_gnuplot};
+
+local $| = 1;
+print &welcome, &report;
+
+$SIG{INT} = \&finish;
+print "\nReading: ";
+
+opendir $params{location}, $params{folder} or die "could not open folder $params{folder} for reading";
+my @list = sort readdir $params{location};
+foreach my $f (@list) {
+  next unless ($f =~ m{\A$params{base}});
+  next if ($f =~ m{prj\z});	# old project file
+  $prior{$f} = -s File::Spec->catfile($params{folder}, $f);
+};
+
+while (1) {
+  rewinddir $params{location};
+  my @list = sort readdir $params{location};
+
+  my $newplot = 0;
+  foreach my $f (@list) {
+    next unless ($f =~ m{\A$params{base}});
+    my $this = File::Spec->catfile($params{folder}, $f);
+    my $extension = (split(/\./, $f))[-1];
+    $size{$f} = -s $this;
+
+    next if $seen{$f};		       # already processed
+    next if ($params{start} and ($extension lt $params{start}));
+    next if ($f =~ m{prj\z});	       # old project file
+    next if ($size{$f} < $params{headersize}); # too small
+    ($prior{$f} = $size{$f}), next if    not exists $prior{$f};	 # this file just appeared
+    ($prior{$f} = $size{$f}), next if ($size{$f} != $prior{$f}); # wait until this file stops changing size
+
+    ++$params{count};
+    &flush if ($params{count} > $params{flush});
+
+    local $| = 1;
+    print " $f";
+    my $new = Ifeffit::Demeter::Data->new();
+    $new -> set({file	     => $this,
+		 label       => $f,
+		 energy	     => $params{energy},
+		 numerator   => $params{numerator},
+		 denominator => $params{denominator},
+		 ln	     => $params{ln},
+		});
+    if ($params{rebin}) {
+      push @data, $new->rebin;
+    } else {
+      push @data, $new;
+    };
+    ++$seen{$f};
+    ++$newplot;
+    $data[0]->align($new) if $#data;
+    $prior{$f} = $size{$f};
+  };
+  if ($newplot) {
+    $data[0]->po->start_plot;
+    map {$_ -> plot('E')} @data;
+  };
+  sleep $params{pause};
+};
+
+
+sub prompt {
+  my $save_folder = $params{folder};
+  while (1) {
+    prompt_with_default("Which directory should we monitor?", \$params{folder});
+    last if (-d $params{folder});
+    $params{folder} = $save_folder;
+  };
+  prompt_no_default  ("What file basename shall we monitor?",       \$params{base});
+  prompt_with_default("Ignore extensions below?",                   \$params{start});
+  prompt_with_default("What is the energy column?",                 \$params{energy});
+  prompt_with_default("Which columns make up the numerator?",       \$params{numerator});
+  prompt_with_default("Which column is the denominator?",           \$params{denominator});
+  prompt_with_choice ("Is this transmission or fluorescence data?", \$params{ln},     qw(t f));
+  $params{ln} = ($params{ln} =~ m{\At}i) ? 1 : 0 ;
+  prompt_with_choice("Rebin the data?",                             \$params{rebin},  qw(n y));
+  $params{rebin} = ($params{rebin} =~ m{\Ay}i) ? 1 : 0 ;
+  print `clear`;
+};
+
+sub prompt_no_default {
+  my ($text, $rparam) = @_;
+  my $prompt = $text . " > ";
+  while ( defined ($_ = $term->readline($prompt)) ) {
+    next if ($_ =~ m{\A\s*\z});
+    $$rparam = $_;
+    last;
+  };
+};
+sub prompt_with_default {
+  my ($text, $rparam) = @_;
+  my $prompt = $text . " [default is $$rparam] > ";
+  while ( defined ($_ = $term->readline($prompt)) ) {
+    last if ($_ =~ m{\A\s*\z});
+    $$rparam = $_;
+    last;
+  };
+};
+sub prompt_with_choice {
+  my ($text, $rparam, @opts) = @_;
+  $opts[0] = uc($opts[0]);
+  my $choices = join('|', @opts);
+  my $prompt = $text . " [ $choices (default=$opts[0]) ]> ";
+  while ( defined ($_ = $term->readline($prompt)) ) {
+    ($$rparam = $opts[0]), last if ($_ =~ m{\A\s*\z});
+    next if ($_ !~ m{\A$choices\z}i);
+    $$rparam = $_;
+    last;
+  };
+};
+
+
+sub welcome {
+  my $text = <<EOH
+
+Argus: Demeter's data watcher:
+
+  This program will watch the disk for the arrival of each new data
+  file in a sequence.  Each file will be aligned to the first and
+  plotted after the scan finishes.
+
+  To end the program, hit control-C.  The data will then be merged and
+  all of the data will be written to an Athena project file.
+
+  Note that the user interface to this program is fragile -- it is
+  best not to interact with the terminal in which this program is
+  running until you are ready to end the program.
+
+EOH
+  ;
+  return $text;
+};
+
+sub report {
+  my $text = q{};
+  my $pattern = "\t%-15s:  %s %s\n";
+  my $signal = ($params{ln})
+             ? "ln( $params{numerator} / $params{denominator} )"
+	     :   "($params{numerator}) / $params{denominator}";
+  $text .= sprintf($pattern, "Monitoring",    File::Spec->catfile($params{folder}, $params{base}.'.*'), q{});
+  $text .= sprintf($pattern, "Starting with", $params{start},                                           q{});
+  $text .= sprintf($pattern, "Energy column", $params{energy},                                          q{});
+  $text .= sprintf($pattern, "mu(E)",         $params{signal},                                          q{});
+  $text .= sprintf($pattern, "Rebinning",    ($params{rebin}) ? 'yes' : 'no',                           q{});
+  $text .= sprintf($pattern, "Pause",         $params{pause},                                           "seconds");
+  $text .= sprintf($pattern, "Header size",   $params{headersize},                                      "bytes");
+  return $text;
+};
+
+
+sub flush {
+  ## reset count
+  $params{count} = 1;
+  ## merge and write what we've got
+  &merge_and_write;
+  ++$params{prjnumber};
+  $params{prjname} = join("_", $params{base}, $params{prjnumber});
+  ## delete all @data except for the first
+  $#data = 0;
+  ## reset ifeffit memory
+  $data[0] -> Reset;
+  ## reimport first
+  $data[0]->set({update_data=>1});
+};
+
+sub merge_and_write {
+  print $/ x 2;
+  local $| = 1;
+  my $athena = File::Spec->catfile($params{folder}, $params{prjname}.'.prj');
+  $data[0] -> po -> start_plot;
+  print "merging ... ";
+  my $merge = $data[0] -> merge('e', @data[1 .. $#data]);
+  push @data, $merge;
+  print "writing \"$athena\" ... ";
+  $data[0] -> write_athena($athena, @data);
+  ##$data[0] -> po -> end_plot;
+  print " all done!\n\n";
+};
+
+sub finish {
+  closedir $params{location};
+  &merge_and_write;
+  exit if (ref($data[0]) !~ m{Demeter});
+  open(STDERR, '>/dev/null') if $params{use_gnuplot};
+  exit;
+};
+
+

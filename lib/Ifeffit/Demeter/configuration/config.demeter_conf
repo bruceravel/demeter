@@ -1,0 +1,95 @@
+## -*- config -*-
+###########################################################################
+##                    Demeter is copyright (c) 2007, 2008 Bruce Ravel
+##                                                     bravel@bnl.gov
+##                                        http://xafs.org/BruceRavel/
+##
+##                   Ifeffit is copyright (c) 1992-2007 Matt Newville
+##                                         newville@cars.uchicago.edu
+##                       http://cars9.uchicago.edu/~newville/ifeffit/
+##
+##	  The latest version of Demeter can always be found at
+##          http://cars9.uchicago.edu/~ravel/software/exafs/
+##
+## -------------------------------------------------------------------
+##     All rights reserved. This program is free software; you can
+##     redistribute it and/or modify it provided that the above notice
+##     of copyright, these terms of use, and the disclaimer of
+##     warranty below appear in the source code and documentation, and
+##     that none of the names of Argonne National Laboratory, The
+##     University of Chicago, University of Washington, or the authors
+##     appear in advertising or endorsement of works derived from this
+##     software without specific prior written permission from all
+##     parties.
+##
+##     THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+##     EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
+##     OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+##     NONINFRINGEMENT.  IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
+##     HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
+##     WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+##     FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
+##     OTHER DEALINGS IN THIS SOFTWARE.
+## -------------------------------------------------------------------
+###########################################################################
+
+
+## This file is the master configuration file for Demeter.  It is used
+## to populate the Ifeffit::Demeter::Config object and to generate the
+## files demeterrc and demeter.ini.  It can also be used to populate
+## the preferences dialog in a GUI.  
+##
+## These are actually fairly structured files.  Beginning-of-line
+## whitespace (2 spaces, no more, no less) is important in the
+## parameter descriptions, as are the empty lines and the lines that
+## begin with a dot.  The empty lines denote separations between
+## entries.  The dots are used to build lists in the descriptions.
+## The parser for this file is fairly stupid, so if you make mistakes
+## in the use of whitespace, bad things will happen.  An emacs major
+## mode is provided, the main purpose of which is to color text as an
+## indication of correct formatting.  Also, order matters.  It is very
+## important that "variable=" comes first, then "type=", then
+## "default=", then the rest.
+
+## variable types         suggested widget
+##   string                Entry
+##   regex                 Entry
+##   real                  Entry  -- validates to accept only numbers
+##   positive integer      Entry with incrementers, restricted to be >= 0
+##   list                  Menubutton or some other multiple selection widget
+##   boolean               Checkbutton
+##   keypress              Entry  -- rigged to display one character at a time
+##   color                 Button -- launches color browser
+##   font                  Button -- does nothing at this time
+
+include bkg.demeter_conf           ## background removal parameters 
+
+include clamp.demeter_conf         ## background clamp parameters
+
+include fft.demeter_conf           ## forward Fourier transform parameters
+
+include bft.demeter_conf           ## backward Fourier transform parameters
+
+include xanes.demeter_conf         ## XANES parameters
+
+include fit.demeter_conf           ## fit parameters
+
+include interpolation.demeter_conf ## interpolation parameters
+
+include process.demeter_conf       ## data processing (rebin, convolve, )
+
+include happiness.demeter_conf     ## happiness (semantic fitting evaluation) parameters
+
+include warnings.demeter_conf      ## warnings (evaluation of pathparams after a fit)
+
+include operations.demeter_conf    ## operations parameters
+
+include atoms.demeter_conf         ## atoms i/o parameters
+
+include plot.demeter_conf          ## plotting parameters
+
+include gnuplot.demeter_conf       ## gnuplot-specific parameters
+
+include ornaments.demeter_conf     ## plotting ornaments parameters (indicators markers)
+
+include pathfinder.demeter_conf    ## Feff pathfinder parameters

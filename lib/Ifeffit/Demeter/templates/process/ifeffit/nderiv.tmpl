@@ -1,0 +1,9 @@
+{ # -*- ifm -*-
+  # normalized derivatives template
+  #   {$D} returns the ifeffit group name
+  #   {$D->get("parameter")} returns the value of that parameter
+}
+
+##| Set first and second derivative of normalized data
+set({$D}.nder = deriv({$D}.norm)/deriv({$D}.energy),
+    {$D}.nsec = deriv({$D}.nder)/deriv({$D}.energy) )

@@ -1,0 +1,15 @@
+{ # -*- ifm -*-
+  # atoms keywords
+  #   {$A->get("parameter")} returns an Atoms attribute
+  #   {$A->out("parameter")} returns a formatted Atoms real-valued attribute
+  #   {$C->get("parameter")} returns a Cell attribute
+  #   {$C->out("parameter")} returns a formatted Cell real-valued attribute
+}
+{foreach $t (@{ $A->get("titles") }) { $OUT .= "title = $t\n";}}<<->>
+space = {$A->get("space")}
+a     = {$C->out("a")}    b    = {$C->out("b")}    c     = {$C->out("c")}
+alpha = {$C->out("alpha")}    beta = {$C->out("beta")}    gamma = {$C->out("gamma")}
+rmax  = {$A->out("rmax")}    core  = {$A->get("rmax")}
+shift = 0 0 0  # fix me!
+atoms
+# el.     x           y           z        tag

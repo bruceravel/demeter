@@ -1,0 +1,43 @@
+#!/bin/sh
+
+cd Ifeffit
+pod2html --css=pod.css Demeter.pm > intermediate.html
+sed 's/<!-- INDEX BEGIN -->/<div class=index>/' intermediate.html | \
+  sed 's/<!-- INDEX END -->/<\/div>/' > Demeter.html
+rm -f pod2htmd.tmp pod2htmi.tmp intermediate.html
+
+cd Demeter
+PM='Config Data Dispose Feff Fit GDS Path Plot Project ScatteringPath Tools'
+for pm in $PM; do
+    pod2html --css=../pod.css $pm.pm > intermediate.html
+    sed 's/<!-- INDEX BEGIN -->/<div class=index>/' intermediate.html | \
+  sed 's/<!-- INDEX END -->/<\/div>/' > $pm.html
+done
+rm -f pod2htmd.tmp pod2htmi.tmp intermediate.html
+
+cd Fit
+PM='Sanity'
+for pm in $PM; do
+    pod2html --css=../../pod.css $pm.pm > intermediate.html
+    sed 's/<!-- INDEX BEGIN -->/<div class=index>/' intermediate.html | \
+  sed 's/<!-- INDEX END -->/<\/div>/' > $pm.html
+done
+rm -f pod2htmd.tmp pod2htmi.tmp intermediate.html
+
+cd ../Data
+PM='E0 Mu Process'
+for pm in $PM; do
+    pod2html --css=../../pod.css $pm.pm > intermediate.html
+    sed 's/<!-- INDEX BEGIN -->/<div class=index>/' intermediate.html | \
+  sed 's/<!-- INDEX END -->/<\/div>/' > $pm.html
+done
+rm -f pod2htmd.tmp pod2htmi.tmp intermediate.html
+
+cd ../Feff
+PM='Sanity'
+for pm in $PM; do
+    pod2html --css=../../pod.css $pm.pm > intermediate.html
+    sed 's/<!-- INDEX BEGIN -->/<div class=index>/' intermediate.html | \
+  sed 's/<!-- INDEX END -->/<\/div>/' > $pm.html
+done
+rm -f pod2htmd.tmp pod2htmi.tmp intermediate.html

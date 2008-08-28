@@ -1,0 +1,92 @@
+## -*- config -*-
+###########################################################################
+##                          Demeter is copyright (c) 2007 Bruce Ravel
+##                                                     bravel@bnl.gov
+##                                        http://xafs.org/BruceRavel/
+##
+##                   Ifeffit is copyright (c) 1992-2007 Matt Newville
+##                                         newville@cars.uchicago.edu
+##                       http://cars9.uchicago.edu/~newville/ifeffit/
+##
+##	  The latest version of Demeter can always be found at
+##          http://cars9.uchicago.edu/~ravel/software/exafs/
+##
+## -------------------------------------------------------------------
+##     All rights reserved. This program is free software; you can
+##     redistribute it and/or modify it provided that the above notice
+##     of copyright, these terms of use, and the disclaimer of
+##     warranty below appear in the source code and documentation, and
+##     that none of the names of Argonne National Laboratory, The
+##     University of Chicago, University of Washington, or the authors
+##     appear in advertising or endorsement of works derived from this
+##     software without specific prior written permission from all
+##     parties.
+##
+##     THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+##     EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
+##     OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+##     NONINFRINGEMENT.  IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
+##     HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
+##     WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+##     FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
+##     OTHER DEALINGS IN THIS SOFTWARE.
+## -------------------------------------------------------------------
+###########################################################################
+
+
+## This file contains the rebin configuration group for Demeter
+
+
+######################################################################
+section=rebin
+section_description
+  These parameters determine how rebinning is performed by Demeter.
+
+variable=emin
+type=real
+default=-30
+units=eV (relative to e0)
+description
+  The energy relative to E0 of the boundary between the pre-edge and
+  edge regions.
+
+variable=emax
+type=real
+default=50
+units=eV (relative to e0)
+description
+  The energy relative to E0 of the boundary between the edge and
+  EXAFS regions.
+
+variable=pre
+type=real
+default=10
+units=eV
+description
+  The energy step in the pre-edge region.
+
+variable=xanes
+type=real
+default=0.5
+units=eV
+description
+  The energy step in the XANES region.
+
+variable=exafs
+type=real
+default=0.05
+units=inverse Angstrom
+description
+  The step in wavenumber in the EXAFS region.
+
+######################################################################
+section=rebin
+section_description
+  These parameters determine how convolution is performed by Demeter.
+
+variable=type
+type=list
+options=gaussian lorentzian
+default=gaussian
+description
+  This is the default convolution type in Demeter.

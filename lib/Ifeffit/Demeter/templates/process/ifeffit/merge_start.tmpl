@@ -1,0 +1,11 @@
+{ # -*- ifm -*-
+  # intialize arrays for merging
+  #   {$D}  returns the ifeffit group name
+  #   {$DS} returns the data standard group name, which must be set
+  #         before using this template
+  #   {$D->get("parameter")} returns the value of that parameter
+  #   {$P->get("parameter")} returns the value of a Plot parameter
+}
+##| setting up arrays for merge
+set(m___erge.sum    = zeros( npts( m___erge.{$C->get("merge_space")} )),
+    m___erge.stddev = zeros( npts( m___erge.{$C->get("merge_space")} )) )

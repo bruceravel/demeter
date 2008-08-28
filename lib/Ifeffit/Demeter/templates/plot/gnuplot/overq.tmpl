@@ -1,0 +1,26 @@
+{ # -*- ifm -*-
+  # template for overplotting in q
+  #   {$D} returns the ifeffit group name
+  #   {$D->get("parameter")} returns the value of that parameter
+  #   {$P->get("parameter")} returns the value of a Plot parameter
+}
+{
+  $file = $P->tempfile;
+  $D->points({file    => $file,
+              space   => 'q', 
+	      suffix  => ($P->get('q_pl') eq 'm') ? 'chiq_mag'
+	               : ($P->get('q_pl') eq 'r') ? 'chiq_re'
+	               : ($P->get('q_pl') eq 'i') ? 'chiq_im'
+	               : ($P->get('q_pl') eq 'p') ? 'chiq_pha'
+		       :                            'chiq_mag',
+  	      part    => $C->get("plot_part"),
+	      scale   => $D->get("plot_multiplier"),
+	      yoffset => $D->get("y_offset"),
+	     });
+  $thiskey = $C->get("plot_part") || $P->get("key");
+  if (ref($thiskey) =~ m{Path}) { $thiskey = $thiskey->label };
+  q{}
+}
+# ifeffit group = {$D}
+replot '{$file}' using 1:2 with {$C->default("gnuplot", "datastyle")} ls {$P->get('increment')+1} title "{$thiskey}"
+

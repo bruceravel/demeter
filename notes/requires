@@ -1,0 +1,24 @@
+
+currently using
+===============
+
+  Chemistry::Elements
+  Class::Std           0.0.8
+  Class::Std::Utils    0.0.2
+  List::Util
+  List::MoreUtils      0.19
+  Module::Build        0.2801
+  Readonly             1.03
+  Regexp::Common       2.120
+  Regexp::Optimizer    0.15
+  Text::Template       1.44
+  Text::Wrap           2001.09293
+  version              0.63
+  YAML		       0.62
+  
+
+considering
+===========
+
+  File::HomeDir
+  File::Which

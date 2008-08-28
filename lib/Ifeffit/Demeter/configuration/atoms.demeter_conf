@@ -1,0 +1,94 @@
+## -*- config -*-
+###########################################################################
+##                          Demeter is copyright (c) 2007 Bruce Ravel
+##                                                     bravel@bnl.gov
+##                                        http://xafs.org/BruceRavel/
+##
+##                   Ifeffit is copyright (c) 1992-2007 Matt Newville
+##                                         newville@cars.uchicago.edu
+##                       http://cars9.uchicago.edu/~newville/ifeffit/
+##
+##	  The latest version of Demeter can always be found at
+##          http://cars9.uchicago.edu/~ravel/software/exafs/
+##
+## -------------------------------------------------------------------
+##     All rights reserved. This program is free software; you can
+##     redistribute it and/or modify it provided that the above notice
+##     of copyright, these terms of use, and the disclaimer of
+##     warranty below appear in the source code and documentation, and
+##     that none of the names of Argonne National Laboratory, The
+##     University of Chicago, University of Washington, or the authors
+##     appear in advertising or endorsement of works derived from this
+##     software without specific prior written permission from all
+##     parties.
+##
+##     THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+##     EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
+##     OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+##     NONINFRINGEMENT.  IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
+##     HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
+##     WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+##     FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
+##     OTHER DEALINGS IN THIS SOFTWARE.
+## -------------------------------------------------------------------
+###########################################################################
+
+
+## This file contains the atoms configuration group for Demeter
+
+
+######################################################################
+section=atoms
+section_description
+  The parameters control how Atoms works, that is, how crystal data is
+  converted into lists of atomic coordinates.
+
+variable=overfull_margin
+type=real
+default=0.1
+description
+  The size of the margin around the edges of a unit cell which is
+  included into the "overfull" unit cell.
+
+variable=ipot_style
+type=list
+options=sites tags elements
+default=elements
+description
+  This determines the manner in which the unique potentials indeces.
+  The elements option gives each element species its own index.  The
+  sites option gives each crystallographic site its own index.  The
+  tags option gives each unique site tag its own index.  Remember that
+  Feff only allows 7 unique potantials (other than the absorber) when
+  you choose an ipots style.
+
+variable=precision
+type=string
+default=9.5f
+description
+  This sets the default field width and precision for real numbers
+  written out via the Atoms templating system.  It's value is a
+  conversion of the sort used by perl's sprintf function, which is the
+  same as C's sprintf function.  The default is a field 9 digits wide
+  with 5 digits of precision after the decimal point.
+
+variable=smallsphere
+type=real
+default=2.2
+description
+  In Feff8, you can set the radius of the sphere used to compute
+  self-consistent potentials separately from the radius of the
+  cluster used in the full multiple scattering calculation of the 
+  XANES.  In Atoms, the radius of the sphere for the potentials
+  defaults to the near neighbor distance multiplied by this number.
+
+variable=gcd
+type=boolean
+onvalue=1
+default=true
+description
+  When true, this tells Atoms to reduce the stoichiometry in the
+  potentials list by the greatest common divisor of the
+  stoichiometry as determined from the fully decorated unit cell.
+  When false, the stoichiometry counts in the potentials list will
+  be the numbers or each ipot in the unit cell.

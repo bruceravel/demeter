@@ -1,0 +1,35 @@
+{ # -*- ifm -*-
+  # compute potentials with feff6 using a simple, streamlined feff.inp file
+  #   {$T->get("parameter")} returns the value of that theory parameter
+}
+<< >>* 
+ * On-the-fly feff.inp file generated from a Demeter template
+ * with CONTROL values set to run just potph
+ *
+
+{ $lines = q{};
+  map {$lines .= " TITLE $_\n"} (@ {$T->get('titles')});
+  $lines;
+}
+
+ HOLE      {$T->get('edge')}  {$T->get('s02')}
+
+ CONTROL   1      0     0     0
+ PRINT     1      0     0     0
+
+ RMAX      {$T->get('rmax')}
+
+{foreach $l (@ {$T->get('othercards')}) {
+  $OUT .= $l . "\n";}}
+
+ POTENTIALS
+{ map {$OUT .= sprintf("    %d  %2d  %s\n", @$_)} (@ {$T->get('potentials')});
+}
+
+ ATOMS
+{ map {$OUT .= sprintf("    %9.5f   %9.5f   %9.5f   %d\n", @$_)} 
+      (@ {$T->get('sites')});
+}
+
+END
+

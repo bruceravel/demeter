@@ -1,0 +1,95 @@
+-*- outline -*-
+
+* new notes:
+** check for circular parameter definitions
+
+
+* tagging releases
+  ~> svn copy http://cars9.uchicago.edu/svn/demeter/ \
+              http://cars9.uchicago.edu/svn/demeter/tags/releaseX.Y.Z \
+     -m "playing with the tagging system"
+
+
+* Need to do tests on attributes of all objects to avoid obvious-to-spot mistakes
+
+* How am I going to deal with not needed methods from the base class?
+  For example, a Plot object does not need any of the plot* or write_*
+  methods
+
+* documentation and examples
+
+
+
+* Fit object
+** per data set R-factors, computed correctly for mkw fits
+
+
+
+* Path object
+** auto-indexing method, auto labeling method
+   currently works properly only for a fit.  need to deal correctly
+   with indexing for a quick plot or a show
+
+** should auto-label work for paths like artemis' descriptor
+
+
+
+* Plot object
+**  methods for indicators, stacking (indicator_color)
+
+
+* Atoms object
+
+** Demeter-ized wrapper around Xray::Atoms
+
+
+
+* Feff object
+  This is a big one with lots of new code needing to be written
+
+** runner for first two feff modules
+
+** just-in-time path creator
+
+** path finder
+*** beta/eta calculation broken
+*** amplitude estimation
+
+** OpenBabel interface
+
+
+
+
+* Data object
+
+** need a way to transfer ifeffit arrays into a Data object
+   i.e. write a script that makes mu(E) from columns then stores that
+   in a Data object
+
+** Processing chores
+
+*** DONE: calibrate, align, deglitch, truncate, rebin, smooth, convolute, merge
+
+*** dispersive
+
+*** rebin arbitrary arrays (rebin as imported)
+
+*** other, better smoothing algorithms
+
+*** adding noise is broken for chi(k) data
+
+*** self-absorption
+
+
+** Analysis chores
+
+*** LCF
+
+*** peakfit
+
+*** PCA
+
+*** Log ratio/phase difference
+
+*** difference spectra + integration
+    $data_standard -> diff($data_unknown, {space, integrate, xmin, xmax})

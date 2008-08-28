@@ -1,0 +1,34 @@
+{ # -*- ifm -*-
+  # template for new plot in q
+  #   {$D} returns the ifeffit group name
+  #   {$D->get("parameter")} returns the value of that parameter
+  #   {$P->get("parameter")} returns the value of a Plot parameter
+  #
+  #  color fg bg grid gridcolor
+}
+{
+  $datastyle = ($P->get("datastyle") eq 'solid') ? 'lines' : 'points';
+  $ylabel = $P->gnuplot_qylabel;
+  $file = $P->tempfile;
+  $D->points({file    => $file,
+              space   => 'q', 
+	      suffix  => ($P->get('q_pl') eq 'm') ? 'chiq_mag'
+	               : ($P->get('q_pl') eq 'r') ? 'chiq_re'
+	               : ($P->get('q_pl') eq 'i') ? 'chiq_im'
+	               : ($P->get('q_pl') eq 'p') ? 'chiq_pha'
+		       :                            'chiq_mag',
+	      scale   => $D->get("plot_multiplier"),
+	      yoffset => $D->get("y_offset")
+	     });
+  q{}
+}
+## gnuplot script
+unset label
+
+set title "\{/*1.5 {$P->get("title")}\}"
+set xlabel "\{/*1.2 Wavenumber&\{aa\}(\{\305\}^\{-1\})\}"
+set ylabel "\{/*1.2 {$ylabel}\}"
+set xrange [ {$P->get("qmin")} : {$P->get("qmax")} ]
+
+# ifeffit group = {$D}
+plot '{$file}' using 1:2 with {$datastyle} ls {$P->get('increment')+1} title "{$P->get("key")}"

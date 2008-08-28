@@ -1,0 +1,8 @@
+{ # -*- ifm -*-
+  # template for new plot in energy
+  #   {$D} returns the ifeffit group name
+  #   {$D->get("parameter")} returns the value of that parameter
+  #   {$P->get("parameter")} returns the value of a Plot parameter
+}
+plot("{$D}.energy+{$D->get("bkg_eshift")}", "{$D->get("plot_multiplier")}*{$D}.{$P->get("e_part")}+{$D->get("y_offset")}",
+     style={$P->get("datastyle")}, color="{$P->get("color")}", key="{$P->get("key")}")

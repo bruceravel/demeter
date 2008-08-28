@@ -1,0 +1,230 @@
+#!/usr/bin/perl -I../lib/
+
+=for Explanation
+  This is a fairly simple example of using Demeter to process and plot
+  the 60K iron foil data.  This demonstration shows how to obtain the
+  basic plotting features of Athena using Demeter.  There is some
+  simple keyboard interactivity.  Along with the plot, the code used
+  to generate the plot is written to the screen.
+  .
+  Use the -l command line switch to choose ANSII colors approporiate
+  for a screen with a bright background.
+
+=cut
+
+=for Copyright
+ .
+ Copyright (c) 2006-2008 Bruce Ravel (bravel AT bnl DOT gov).
+ All rights reserved.
+ .
+ This file is free software; you can redistribute it and/or
+ modify it under the same terms as Perl itself. See The Perl
+ Artistic License.
+ .
+ This program is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+
+=cut
+
+use warnings;
+use strict;
+use Term::ReadLine;
+
+use subs qw(BOLD RED RESET YELLOW GREEN BLUE UNDERLINE);
+my $ANSIColor_exists = (eval "require Term::ANSIColor");
+if ($ANSIColor_exists) {
+  import Term::ANSIColor qw(:constants);
+} else {
+  foreach my $s (qw(BOLD RED RESET YELLOW GREEN BLUE UNDERLINE)) {
+    eval "sub $s {q{}}";
+  };
+};
+
+use Ifeffit::Demeter;
+Ifeffit::Demeter->set_mode({ifeffit=>1, buffer=>0, screen=>0});
+#Ifeffit::Demeter->set_mode({template_process=>"iff_columns"});
+
+use Getopt::Long;
+my ($light_background, $dark_background, $use_pgplot, $use_gnuplot) = (0, 1, 1, 0);
+my $result = GetOptions (
+			 "d" => \$dark_background,
+			 "l" => \$light_background,
+			 "p" => \$use_pgplot,
+			 "g" => \$use_gnuplot,
+			);
+($light_background = 1) if (not $dark_background);
+my $INDIC = ($light_background) ? BLUE : YELLOW;
+($use_pgplot = 1) if (not $use_gnuplot);
+Ifeffit::Demeter->plot_with('gnuplot') if $use_gnuplot;
+
+
+my $term = new Term::ReadLine 'Demeter test harness';
+my $plot = Ifeffit::Demeter->get_mode('plot');
+
+my $dobject = Ifeffit::Demeter::Data -> new({group => 'data0'});
+$dobject -> set({file	   => "data/fe.060.xmu",
+		 fft_kmax  => 3,
+		 fft_kmin  => 14,
+		 label	   => 'My iron data',
+		 bkg_spl2  => 18,
+		 bkg_nor2  => 1800,
+		});
+
+query();
+my $prompt = "Choose a way to plot the data [1-7 or q to quit] ";
+while ( defined ($_ = $term->readline($prompt)) ) {
+  exit if ($_ =~ m{\Aq});
+  next if ($_ !~ m{\A([1-8])});
+  plot($_,$dobject);
+  $plot->start_plot; # reset the plot for the next go around
+  query();
+};
+
+sub query {
+print $/, $/,
+  BOLD, RED, "This example shows several basic plots of these iron foil data\n\n", RESET,
+
+  BOLD, $INDIC, "1.", RESET, " mu + background + pre-edge + post-edge\n",
+  BOLD, $INDIC, "2.", RESET, " normalized mu + normalized background\n",
+  BOLD, $INDIC, "3.", RESET, " flattened mu + flattened background\n",
+  BOLD, $INDIC, "4.", RESET, " derivative of mu\n",
+  BOLD, $INDIC, "5.", RESET, " three k-wights, stacked\n",
+  BOLD, $INDIC, "6.", RESET, " |chi(R)| + window\n",
+  BOLD, $INDIC, "7.", RESET, " envelope, real, imaginary in R\n",
+  BOLD, $INDIC, "8.", RESET, " kq plot: chi(k)*k^2 + Re[chi(q)] + window\n\n",
+
+  BOLD, $INDIC, "q.", RESET, " quit\n\n";
+}
+
+sub plot {
+  my ($n, $data) = @_;
+  print "\n" x 2, GREEN, "## ", "=" x 70, "\n", "## ", RESET;
+  eval "plot$n(\$data)";
+  spew($n);
+  print "\n", UNDERLINE, "Return to continue >", RESET, " ";
+  my $how = <STDIN>;
+};
+
+sub state {
+  print GREEN, $_[0], BOLD, RED;
+};
+
+sub spew {
+  my ($n) = @_;
+  open F, $0 or die "could not open $0 for reading\n";
+  my $flag = 0;
+  print RESET, $/;
+  while (<F>) {
+    last if (m{sub\s+plot} and $flag);
+    $flag = 1 if (m{sub\s+plot$n});
+    print $_ if $flag and ($_ !~ m{\A\s*state});
+  };
+  close F;
+};
+
+
+sub plot1 {
+  my ($data) = @_;
+  state("plotting mu + background + pre-edge + post-edge\n");
+  $data->po->set({e_mu      => 1,    e_bkg     => 1,
+		  e_norm    => 0,    e_der     => 0,
+		  e_pre     => 1,    e_post    => 1,
+		  e_markers => 1,
+		  emin      => -200, emax      => 2000,
+		 });
+  $data->plot('E');
+};
+
+sub plot2 {
+  my ($data) = @_;
+  state("normalized mu + normalized background\n");
+  $data->po->set({e_mu      => 1,    e_bkg     => 1,
+		  e_norm    => 1,    e_der     => 0,
+		  e_pre     => 0,    e_post    => 0,
+		  e_markers => 1,
+		  emin      => -200, emax      => 2000,
+		 });
+  $data->set({bkg_flatten=>0});
+  $data->plot('E');
+};
+
+sub plot3 {
+  my ($data) = @_;
+  state("flattened mu + flattened background\n");
+  $data->po->set({e_mu      => 1,    e_bkg     => 1,
+		  e_norm    => 1,    e_der     => 0,
+		  e_pre     => 0,    e_post    => 0,
+		  e_markers => 1,
+		  emin      => -200, emax      => 2000,
+		 });
+  $data->set({bkg_flatten=>1});
+  $data->plot('E');
+};
+
+sub plot4 {
+  my ($data) = @_;
+  state("derivative of mu\n");
+  $data->po->set({e_mu      => 1,    e_bkg     => 0,
+		  e_norm    => 0,    e_der     => 1,
+		  e_pre     => 0,    e_post    => 0,
+		  e_markers => 1,
+		  emin      => -20,  emax      => 120,
+		 });
+  $data->set({label=>'derivative'})->plot('E');
+  $data->po->set({e_norm => 1});
+  $data->set({label=>'norm. deriv.'})->plot('E');
+};
+
+sub plot5 {
+  my ($data) = @_;
+  state("scale three k-weights to plot together\n");
+  $data->po->legend({dy=>0.05, x=>0.73});
+
+  $data->po->set({kweight => 1, kmax => 17, });
+  $data->set({plot_multiplier => 5,   'y_offset'=>14, label=>'kw=1, scaled by 5'});
+  $data->plot('k');
+
+  $data->po->set({kweight => 2, });
+  $data->set({plot_multiplier => 1,   'y_offset'=>7,  label=>'kw=2, unscaled'});
+  $data->plot('k');
+
+  $data->po->set({kweight => 3, });
+  $data->set({plot_multiplier => 0.2, 'y_offset'=>0,  label=>'kw=3, scaled by 0.2'});
+  $data->plot('k');
+
+  $data->set({label=>'My iron data', plot_multiplier=>1}); # reset the label
+};
+
+sub plot6 {
+  my ($data) = @_;
+  state("|chi(R)| + window\n");
+  $data -> po -> set({kweight => 2, r_pl => 'm', });
+  $data -> plot('r') -> plot_window('r');
+};
+
+sub plot7 {
+  my ($data) = @_;
+  state("envelope, real, imaginary in R\n");
+  $data->po->legend({dy=>0.05, x=>0.73});
+
+  $data->po->set({kweight => 2, r_pl => 'e', });
+  $data->plot('r');
+
+  $data->set({label=>'Real part'});
+  $data->po->set({r_pl => 'r', });
+  $data->plot('r');
+
+  $data->set({label=>'Imaginary part'});
+  $data->po->set({r_pl => 'i', });
+  $data->plot('r');
+
+  $data->set({label=>'My iron data'}); # reset the label
+};
+
+sub plot8 {
+  my ($data) = @_;
+  state("kq plot: chi(k)*k^2 + Re[chi(q)] + window\n");
+  $data -> po -> set({kweight => 2, 'q_pl' => 'r', qmax => 17, });
+  $data -> plot('kq') -> plot_window('k');
+};

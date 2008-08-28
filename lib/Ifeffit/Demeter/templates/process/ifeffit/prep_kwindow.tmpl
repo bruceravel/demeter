@@ -1,0 +1,6 @@
+{ # -*- ifm -*-
+  # window preparation template in k space
+  #   {$D} returns the ifeffit group name
+}
+set {$D}.chik = {$D}.k^{$P->get("kweight")}*{$D}.chi
+set win___dow = ceil({$D}.chik)*{$P->get('window_multiplier')}*{$D->get("plot_multiplier")}

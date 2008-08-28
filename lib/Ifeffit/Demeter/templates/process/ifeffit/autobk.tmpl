@@ -1,0 +1,13 @@
+{ # -*- ifm -*-
+  # spline template
+  #   {$D} returns the ifeffit group name
+  #   {$D->get(""parameter")} returns the value of that parameter
+}
+
+spline("{$D}.energy+{$D->get("bkg_eshift")}", {$D}.xmu, e0={$D->get("bkg_e0")}, rbkg={$D->get("bkg_rbkg")},
+       {($D->get('bkg_stan') !~ /None/) && sprintf("k_std=%s.k, chi_std=%s.chi, ", $D->get("bkg_stan"), $D->get("bkg_stan"))}
+       {($D->get('bkg_fixstep') != 0) && sprintf("edge_step=%.7g, do_pre=F, ", $D->get("bkg_step"))}
+       kmin={$D->get("bkg_spl1")}, kmax={$D->get("bkg_spl2")}, kweight={$D->get("bkg_kw")}, dk={$D->get("bkg_dk")},
+       kwindow={$D->get("bkg_kwindow")}, pre1={$D->get("bkg_pre1")}, pre2={$D->get("bkg_pre2")},
+       norm_order={$D->get("bkg_nnorm")}, norm1={$D->get("bkg_nor1")}, norm2={$D->get("bkg_nor2")}, 
+       clamp1={$D->get("bkg_clamp1")}, clamp2={$D->get("bkg_clamp2")}, nclamp=5, interp=quad)

@@ -1,0 +1,25 @@
+{ # -*- ifm -*-
+  # post-spline template
+  #   {$D} returns the ifeffit group name
+  #   {$D->get("parameter")} returns the value of that parameter
+  # this is a relatively complicated template as it requires some perl-level
+  # flow control
+  # see the Text::Template document for an explanation of $OUT
+}
+
+set({$D}.preline  = {$D->get("bkg_int")} + {$D->get("bkg_slope")}*({$D}.energy + {$D->get("bkg_eshift")}),
+    {$D}.nbkg     = ({$D}.bkg - {$D}.preline) / {$D->get("bkg_step")} + {$D->get("y_offset")},
+{if ($D->get('is_xanes')) {
+      $OUT .= sprintf("    %s.prex     = (%s.xmu-%s.preline),\n",    $D, $D, $D);
+      $OUT .= sprintf("    %s.norm     = (%s.xmu-%s.preline)/%g,\n", $D, $D, $D, $D->get('bkg_step'));
+      $OUT .= sprintf("    %s.postline = %g+%g*(%s.energy+%f)+%g*(%s.energy+%f)**2)\n",
+                                                                    $D, $D->get(qw(bkg_nc0 bkg_nc1)),
+                                                                    $D, $D->get(qw(bkg_eshift bkg_nc2)),
+                                                                    $D, $D->get(qw(bkg_eshift)));
+ } elsif ($D->get('is_xmudat')) {
+      $OUT .= sprintf("    %s.prex     = %s.xmu,\n", $D, $D);
+      $OUT .= sprintf("    %s.norm     = %s.xmu )\n", $D, $D);
+ } else {
+      $OUT .= sprintf("    %s.prex     = %s.pre )\n", $D, $D);
+ }
+}

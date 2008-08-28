@@ -1,0 +1,399 @@
+## -*- config -*-
+###########################################################################
+##                          Demeter is copyright (c) 2007, 2008 Bruce Ravel
+##                                                     bravel@bnl.gov
+##                                        http://xafs.org/BruceRavel/
+##
+##                   Ifeffit is copyright (c) 1992-2007 Matt Newville
+##                                         newville@cars.uchicago.edu
+##                       http://cars9.uchicago.edu/~newville/ifeffit/
+##
+##	  The latest version of Demeter can always be found at
+##          http://cars9.uchicago.edu/~ravel/software/exafs/
+##
+## -------------------------------------------------------------------
+##     All rights reserved. This program is free software; you can
+##     redistribute it and/or modify it provided that the above notice
+##     of copyright, these terms of use, and the disclaimer of
+##     warranty below appear in the source code and documentation, and
+##     that none of the names of Argonne National Laboratory, The
+##     University of Chicago, University of Washington, or the authors
+##     appear in advertising or endorsement of works derived from this
+##     software without specific prior written permission from all
+##     parties.
+##
+##     THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+##     EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
+##     OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+##     NONINFRINGEMENT.  IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
+##     HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
+##     WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+##     FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
+##     OTHER DEALINGS IN THIS SOFTWARE.
+## -------------------------------------------------------------------
+###########################################################################
+
+
+## This file contains the bkg configuration group for Demeter
+
+
+######################################################################
+section=plot
+section_description
+  These variables determine the features of plots made by Demeter.
+  Colors can be named colors from X11's rgb.txt file, any other named
+  colors that your system recognizes, or hexadecimal triplets
+  (i.e. "#0000FF" for blue and so on).
+
+variable=charsize
+type=real
+default=1.2
+description
+  This sets the size of the font used in the plots.  Very large and
+  very small values will result in strange plots.  Anything smaller
+  than 0.75 will result in nearly illegible text.  Any thing smaller
+  than 0 will result in axes and axis labels not being drawn.  Text
+  larger than 2 may be useful, but since fine control over the spacing
+  between tics is not provided by Athena, such large text tends to
+  result in tic labels that run together.
+
+variable=charfont
+type=positive integer
+default=1
+minint=0
+maxint=4
+description
+  This is an integer that indicates the type of font to use in the
+  plots.  The font choices are
+  . 1   sans serif
+  . 2   roman
+  . 3   italic
+  . 4   script
+
+variable=key_x
+type=real
+default=0.8
+units=fraction of the plot width
+description
+  This variable is for customizing the location of the legend in an
+  ifeffit plot.  This parameter specifies the location of the legend
+  on the x-axis.
+
+variable=key_y
+type=real
+default=0.9
+units=fraction of the plot height
+description
+  This variable is for customizing the location of the legend in an
+  ifeffit plot.  This parameter specifies the top of the legend on the
+  y-axis.
+
+variable=key_dy
+type=real
+default=0.075
+units=fraction of the plot height
+description
+  This variable is for customizing the location of the legend in an
+  ifeffit plot.  This parameter specifies the offset in y between
+  entries in the legend.
+
+variable=bg
+type=color
+default=white
+description
+  The background color of the plot.
+
+variable=fg
+type=color
+default=black
+description
+  The color used to draw the text and the axes of the plot.
+
+variable=showgrid
+type=boolean
+onvalue=1
+offvalue=0
+default=true
+description
+  This tells whether a grid will be drawn on the plot.
+
+variable=gridcolor
+type=color
+default=grey82
+description
+  The color of the grid drawn on each plot.  If you do not want a
+  grid to be drawn, unset the showgrid parameter or set gridcolor to
+  the bg color.
+
+variable=c0
+type=color
+default=blue
+description
+  The color of the first line drawn in a plot.
+
+variable=c1
+type=color
+default=red
+description
+  The color of the second line drawn in a plot.
+
+variable=c2
+type=color
+default=green4
+description
+  The color of the third line drawn in a plot.
+
+variable=c3
+type=color
+default=darkviolet
+description
+  The color of the fourth line drawn in a plot.
+
+variable=c4
+type=color
+default=darkorange
+description
+  The color of the fifth line drawn in a plot.
+
+variable=c5
+type=color
+default=brown
+description
+  The color of the sixth line drawn in a plot.
+
+variable=c6
+type=color
+default=deeppink
+description
+  The color of the seventh line drawn in a plot.
+
+variable=c7
+type=color
+default=gold
+description
+  The color of the eighth line drawn in a plot.
+
+variable=c8
+type=color
+default=cyan3
+description
+  The color of the ninth line drawn in a plot.
+
+variable=c9
+type=color
+default=yellowgreen
+description
+  The color of the tenth line drawn in a plot.
+
+variable=datastyle
+type=list
+default=solid
+options=solid dashed dotted dot-dash points linespoints
+description
+  The line style used to plot data after a fit.
+
+variable=fitstyle
+type=list
+default=solid
+options=solid dashed dotted dot-dash points linespoints
+description
+  The line style used to plot the fit after a fit.
+
+variable=partstyle
+type=list
+default=solid
+options=solid dashed dotted dot-dash points linespoints
+description
+  The line style used to plot parts of a fit (i.e. the window, the
+  residual, or the background).
+
+variable=pathstyle
+type=list
+default=solid
+options=solid dashed dotted dot-dash points linespoints
+description
+  The line style used to plot paths used in a fit.
+
+variable=emin
+type=real
+default=-200
+units=eV
+description
+  The startup value for the minimum value of an energy plot.  This
+  number is relative to the E0 of the current group or of the first
+  group in a marked data set plot.  This value will be overridden by
+  the plot options saved in a project file.
+
+variable=emax
+type=real
+default=800
+units=eV
+description
+  The startup value for the maximum value of an energy plot.  This
+  number is relative to the E0 of the current group or of the first
+  group in a marked data set plot.  This value will be overridden by
+  the plot options saved in a project file.
+
+variable=kmin
+type=real
+default=0
+units=inverse Angstroms
+description
+  The startup value for the minimum value of a k plot.  This value
+  will be overridden by the plot options saved in a project file.
+
+variable=kmax
+type=real
+default=15
+units=inverse Angstroms
+description
+  The startup value for the maximum value of a k plot.  This value
+  will be overridden by the plot options saved in a project file.
+
+variable=rmin
+type=real
+default=0
+units=Angstroms
+description
+  The startup value for the minimum value of an R plot.  This value
+  will be overridden by the plot options saved in a project file.
+
+variable=rmax
+type=real
+default=6
+units=Angstroms
+description
+  The startup value for the maximum value of an R plot.  This value
+  will be overridden by the plot options saved in a project file.
+
+variable=qmin
+type=real
+default=0
+units=inverse Angstroms
+description
+  The startup value for the minimum value of a back-transformed k plot.
+  This value will be overridden by the plot options saved in a
+  project file.
+
+variable=qmax
+type=real
+default=15
+units=inverse Angstroms
+description
+  The startup value for the maximum value of a back-transformed k plot.
+  This value will be overridden by the plot options saved in a
+  project file.
+
+variable=e_mu
+type=boolean
+onvalue=1
+default=true
+description
+  This sets the plotting mode at startup for single data set plots in
+  energy.  If true, the data is plotted by default.  This value will
+  be overridden by the plot options saved in a project file.
+
+variable=e_bkg
+type=boolean
+onvalue=1
+default=false
+description
+  This sets the plotting mode at startup for single data set plots in
+  energy.  If true, the background spline is plotted by default.  This
+  value will be overridden by the plot options saved in a project
+  file.
+
+variable=e_pre
+type=boolean
+onvalue=1
+default=false
+description
+  This sets the plotting mode at startup for single data set plots in
+  energy.  If true, the pre-edge line is plotted by default.  This
+  value will be overridden by the plot options saved in a project
+  file.
+
+variable=e_post
+type=boolean
+onvalue=1
+default=false
+description
+  This sets the plotting mode at startup for single data set plots in
+  energy.  If true, the normalization line is plotted by default.
+  This value will be overridden by the plot options saved in a
+  project file.
+
+variable=e_norm
+type=boolean
+onvalue=1
+default=false
+description
+  This sets the plotting mode at startup for single data set plots in
+  energy.  If true, the normalized data and background are plotted by
+  default.  This value will be overridden by the plot options saved
+  in a project file.
+
+variable=e_der
+type=boolean
+onvalue=1
+default=false
+description
+  This sets the plotting mode at startup for single data set plots in
+  energy.  If true, the derivative of the data is plotted by default.
+  This value will be overridden by the plot options saved in a
+  project file.
+
+variable=e_sec
+type=boolean
+onvalue=1
+default=false
+description
+  This sets the plotting mode at startup for single data set plots in
+  energy.  If true, the second derivative of the data is plotted by
+  default. This value will be overridden by the plot options saved in
+  a project file.
+
+variable=e_markers
+type=boolean
+onvalue=1
+default=true
+description
+  This sets the plotting mode at startup for single data set plots in
+  energy.  If false, markers will be suppressed in a plot.
+
+variable=e_smooth
+type=positive integer
+default=0
+description
+  This sets the plotting mode at startup for marked data set plots in
+  energy.  If non-zero, the first and second derivatives will be
+  smoothed that many times before being plotted.
+
+variable=r_pl
+type=list
+options=m e r i p
+default=m
+description
+  This sets the plotting mode at startup for marked data set plots in
+  R.  This value will be overridden by the plot options saved in a
+  project file.  The choices are:
+  . m  magnitude of chi(R)
+  . m  envelope (magnitude & -1*magnitude)
+  . r  real part
+  . i  imaginary part
+  . p  phase
+
+variable=q_pl
+type=list
+options=m e r i p
+default=r
+description
+  This sets the plotting mode at startup for marked data set plots in
+  q.  This value will be overridden by the plot options saved in a
+  project file.  The choices are:
+  . m  magnitude of chi(R)
+  . m  envelope (magnitude & -1*magnitude)
+  . r  real part
+  . i  imaginary part
+  . p  phase
+

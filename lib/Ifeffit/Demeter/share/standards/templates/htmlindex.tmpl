@@ -1,0 +1,50 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<title>XAS Standard Reference Materials:</title>
+<style type="text/css">
+ <!--
+a:link, a:visited \{
+  text-decoration: none;
+  color: blue;
+\}
+A:hover \{
+  text-decoration: underline;
+\}
+.copyrighttext \{
+  font: 0.8em sans-serif;
+\}
+.copyrightblock \{
+  text-align: right;
+  background: #fff;
+  color: #000;
+  width: 50%;
+  float: right;
+  padding: 12px;
+  margin: 10px;
+  border-width: 0px;
+\}
+
+--></style>
+</head>
+
+<body>
+<h1 align=center>XAS Standard Reference Materials</h1>
+
+<table border=1 width=100%>
+{foreach $m ($S->material_list) {
+  next if ($m eq 'config');
+  $OUT .= "<tr> <td><strong><a href=\"$m.html\">" . ucfirst($m) . "</a></strong> </td><td>" . $S->get($m, 'comment')  . "</td></tr>\n";
+ }
+}
+</table>
+
+<div class="copyrightblock">
+  <span class="copyrighttext">
+  This page generated {Ifeffit::Demeter::Tools->now} using <a href="http://cars9.uchicago.edu/iffwiki/Demeter">Demeter</a> {Ifeffit::Demeter->version}
+  <br>
+  Demeter copyright &copy; 2008 <a href="http://xafs.org/BruceRavel">Bruce Ravel</a> (bravel AT bnl DOT gov)
+  </span>
+</div>
+
+</body></html>

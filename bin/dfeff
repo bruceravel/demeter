@@ -1,0 +1,146 @@
+#!/usr/bin/perl -I/home/bruce/codes/demeter/lib
+
+=for Copyright
+ .
+ Copyright (c) 2008 Bruce Ravel (bravel AT bnl DOT gov).
+ All rights reserved.
+ .
+ This file is free software; you can redistribute it and/or
+ modify it under the same terms as Perl itself. See The Perl
+ Artistic License.
+ .
+ This program is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+
+=cut
+
+use warnings;
+use strict;
+use File::Basename;
+use File::Copy;
+use File::Path;
+use File::Spec;
+use Ifeffit::Demeter qw(Feff);
+use Getopt::Long;
+use Readonly;
+Readonly my $USAGE => "usage: dfeff [options] <myfeff.inp>\n";
+
+my ($workspace, $quiet, $version, $help, $save, $rmax) = (q{./},0,0,0,0,0);
+my ($all, $do_pots, $do_pf, $do_ff2chi, $keep) = (0, 0, 0, 0, 0);
+GetOptions (
+	    "w=s" => \$workspace, "workspace=s" => \$workspace,
+	    "q"   => \$quiet,     "quiet"       => \$quiet,
+	    "v"   => \$version,   "version"     => \$version,
+	    "h"   => \$help,      "help"        => \$help,
+
+	    "rmax=s"   => \$rmax,
+	    all        => \$all,
+	    potentials => \$do_pots,
+	    pathfinder => \$do_pf,
+	    ff2chi     => \$do_ff2chi,
+	    keep       => \$keep,
+	    save       => \$save,
+	   );
+
+&version, exit if $version;
+&help,    exit if $help;
+
+$| = 1;		    # get Feff to write immediately to the screen
+
+## figure out which parts of feff to run
+($all = 1) if not ($do_pots or $do_pf or $do_ff2chi);
+(($do_pots, $do_pf, $do_ff2chi) = (1,1,1)) if $all;
+($keep = 4) if $keep;
+
+
+my $inp = $ARGV[0] || q{feff.inp};
+die $USAGE if not $inp;
+die "rdfit: input file \"$inp\" does not exist\n" if not -e $inp;
+my $base = basename($inp);
+
+
+&version;
+if (not -d $workspace) {
+  banner("Creating workspace \"$workspace\"");
+  mkpath($workspace);
+};
+
+
+my $feff = Ifeffit::Demeter::Feff -> new();
+$feff->set({workspace => "$workspace",
+	    screen    => !$quiet,
+	    save      =>  $save,
+	    ccrit     =>  $keep});
+
+## read the input file
+banner("Reading \"$inp\"");
+$feff -> rdinp($inp);
+my $target = ($base eq 'feff.inp') ? 'original_feff.inp' : $base;
+copy($inp, File::Spec->catfile($workspace, $target));
+$feff -> set({rmax=>$rmax}) if ($rmax > 0);
+
+mkpath($workspace) if not -d $workspace;
+
+## potentials
+if ($do_pots) {
+  banner("Computing atomic potentials");
+  $feff -> potentials;
+};
+
+## pathfinder
+if ($do_pf) {
+  banner("Finding paths");
+  $feff -> pathfinder if $do_pf;
+  my $yaml = $base;
+  $yaml =~ s{inp$}{yaml};
+  ($yaml .= '.yaml') if ($yaml !~ m{\.yaml$});
+  $yaml = File::Spec->catfile($workspace, $yaml);
+  $feff->freeze($yaml);
+};
+
+## genfmt
+if ($do_ff2chi) {
+  banner("Writing feffNNNN.dat files");
+  $feff->pathsdat();
+  $feff->genfmt();
+};
+
+
+sub version {
+  print "=== dfeff, Demeter's implementation of Feff6\n";
+  print "=== Demeter $Ifeffit::Demeter::VERSION, copyright (c) 2007-2008, Bruce Ravel, bravel AT bnl DOT gov\n";
+  print "=== Feff6 is copyright (c) 1992-2008, The FEFF Project\n";
+};
+sub help {
+  &version;
+  print <<'EOH'
+
+usage : dfeff [options] <myfeff.inp>
+
+    option           effect
+ -----------------------------------------------------------------
+   -w, --workspace  (= folder) folder in which to run feff
+   --rmax           (= number) set the maximum path length
+   --all            run all parts of Feff sequentially
+   --potentials     calculate the pahse.bin file
+   --pathfinder     run Demeter's pathfinder
+   --ff2chi         write feffNNNN.dat file for every path
+   --keep           use Feff's keep criteria when running genfmt
+   --save           save temporary files
+   -q, --quiet      suppress screen messages
+   -v, --version    display version number and exit
+   -h, --help       show this help and exit
+
+EOH
+    ;
+};
+
+sub banner {
+  return if $quiet;
+  print $/;
+  print q{=} x 60, $/;
+  print q{=} x 3, q{ }, $_[0];
+  print q{ } x (52-length($_[0])), q{ }, q{=} x 3, $/;
+  print q{=} x 60, $/;
+};

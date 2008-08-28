@@ -1,0 +1,57 @@
+#!/usr/bin/perl -I/home/bruce/codes/demeter/lib
+
+=for Explanation
+  This is a simple example of using Demeter to convolute data by a
+  Gaussian or a Lorentzian.  The convolve method does not take a
+  negatve value -- that is, it does not deconvolve a spectrum.
+
+=cut
+
+=for Copyright
+ .
+ Copyright (c) 2006-2007 Bruce Ravel (bravel AT anl DOT gov).
+ All rights reserved.
+ .
+ This file is free software; you can redistribute it and/or
+ modify it under the same terms as Perl itself. See The Perl
+ Artistic License.
+ .
+ This program is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+
+=cut
+
+
+use warnings;
+use strict;
+use Smart::Comments;
+
+use Ifeffit::Demeter;
+my $plot = Ifeffit::Demeter->get_mode("plot");
+$plot->set_mode({screen=>0, repscreen=>0});
+$plot->set({emin=>-50, emax=>100, e_norm=>0, e_markers=>1, e_bkg=>0});
+my $where = $ENV{DEMETER_TEST_DIR} || "..";
+
+
+## set up two data objects
+my %common_attributes = ();
+### Reading and plotting 60K Fe foil data
+my $d0 = Ifeffit::Demeter::Data -> new();
+$d0 -> set(\%common_attributes);
+$d0 -> set({file => "$where/data/fe.060.xmu", label => 'Fe 60K',});
+$d0 -> plot('e');
+
+### Gaussian convolution and replotting data
+my $d1 = $d0 -> clone;
+$d1 -> set({label => "2 eV, gaussian"});
+$d1 -> convolve({width=>2, type=>'gaussian'});
+$d1 -> plot('e');
+
+### Lorentzian convolution and replotting data
+my $d2 = $d0 -> clone;
+$d2 -> set({label => "2 eV, lorentzian"});
+$d2 -> convolve({width=>2, type=>'lorentzian'});
+$d2 -> plot('e');
+
+1;

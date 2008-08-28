@@ -1,0 +1,33 @@
+{ # -*- ifm -*-
+  # template for new plot in energy
+  #   {$D} returns the ifeffit group name
+  #   {$D->get("parameter")} returns the value of that parameter
+  #   {$P->get("parameter")} returns the value of a Plot parameter
+  #
+  #  color fg bg grid gridcolor
+}
+{
+  $emin = $D->get("bkg_e0") + $P->get("emin");
+  $emax = $D->get("bkg_e0") + $P->get("emax");
+  $datastyle = ($P->get("datastyle") eq 'solid') ? 'lines' : 'points';
+  ($ylabel = $P->get("ylabel")) =~ s[\\gm][{/Symbol m}];
+  $file = $P->tempfile;
+  $D->points({file    => $file,
+              space   => 'E', 
+	      suffix  => $P->get("e_part"), 
+	      shift   => $D->get("bkg_eshift"),
+	      scale   => $D->get("plot_multiplier"),
+	      yoffset => $D->get("y_offset")
+	     });
+  q{}
+}
+## gnuplot script
+unset label
+
+set title "\{/*1.5 {$P->get("title")}\}"
+set xlabel "\{/*1.2 Energy&\{aa\}(eV)\}"
+set ylabel "\{/*1.2 {$ylabel}\}"
+set xrange [ {$emin} : {$emax} ]
+
+# ifeffit group = {$D}
+plot '{$file}' using 1:2 with {$datastyle} ls {$P->get('increment')+1} title "{$P->get("key")}"

@@ -1,0 +1,44 @@
+#!/bin/sh
+######################################################################
+## This simple shell script is a replacement for the `./Build install'
+## stage of the standard perl module installation sequence.  If you
+## are installing as a private user, you do not have write access to
+## the system level directories where perl wants to install modules.
+## It is possible to override these locations from the command line,
+## but that requires a large number of awkward command line
+## arguments.  In this script, I have attempted to make good guesses
+## for where things should be installed.  These guesses are:
+##
+##   modules:   install to the location in the PERL5LIB or PERLLIB
+##              environment variable
+##   scripts:   $HOME/bin -- a reasonable guess for where a normal user
+##              might keep personal programs and scripts
+##   man pages: into this directory -- this is roughly equivalent to
+##              not installing the man pages.  most normal users do
+##              not keep personal man pages
+##   architecture dependent files:
+##              the auto/ directory under PERL5LIB or PERLLIB
+##
+##  If this doesn't work for you, just edit this file as appropriate.
+######################################################################
+
+
+if [ $PERL5LIB ]
+then
+  PLIB=$PERL5LIB
+elif [ $PERLLIB ]
+then
+  PLIB=$PERLLIB
+else
+  echo "Neither PERL5LIB nor PERLLIB are set.  Private installation halting."
+  exit
+fi
+
+
+./Build --install_path lib=$PLIB \
+        --install_path arch=$PLIB \
+        --install_path bin=$HOME/bin \
+        --install_path script=$HOME/bin \
+        --install_path bindoc=`pwd`/man/ \
+        --install_path libdoc=`pwd`/man/ \
+        install

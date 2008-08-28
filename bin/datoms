@@ -1,0 +1,46 @@
+#!/usr/bin/perl -I/home/bruce/codes/demeter/lib
+
+=for Copyright
+ .
+ Copyright (c) 2008 Bruce Ravel (bravel AT bnl DOT gov).
+ All rights reserved.
+ .
+ This file is free software; you can redistribute it and/or
+ modify it under the same terms as Perl itself. See The Perl
+ Artistic License.
+ .
+ This program is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+
+=cut
+
+use warnings;
+use strict;
+use Ifeffit::Demeter qw(Atoms);
+use Getopt::Long;
+use Regexp::Common;
+use Readonly;
+Readonly my $NUMBER => $RE{num}{real};
+
+my ($feff6, $feff8, $abs, $sg, $rmax) = (0, 0, 0, 0, 0);
+my $result = GetOptions (
+			 "rmax=s" => \$rmax,
+			 "6"	  => \$feff6,
+			 "8"	  => \$feff8,
+			 "a"	  => \$abs,
+			 "s"	  => \$sg,
+			);
+
+my $atoms = Ifeffit::Demeter::Atoms->new();
+#$atoms->config->set_default("atoms", "precision", "7.3f");
+#$atoms->set({ipot_style=>'tags'});
+
+my $which = ($feff6) ? "feff6"
+          : ($feff8) ? "feff8"
+          : ($abs)   ? "absorption"
+          : ($sg)    ? "spacegroup"
+          :            "feff6" ;  # atoms ?
+$atoms -> read_inp($ARGV[0]||"atoms.inp");
+$atoms -> set({rmax=>$rmax}) if ($rmax and $rmax =~ m{$NUMBER});
+print $atoms -> Write($which);

@@ -1,0 +1,18 @@
+{ # -*- ifm -*-
+  # atoms keywords
+  #   {$A->sg("attribute")} returns a space group attribute
+  #   {$C->get("parameter")} returns a Cell attribute
+}
+Spacegroup {uc($C->get("space_group"))}
+  Number     : {$A->sg("number")}
+  Schoenflies: {$A->sg("schoenflies")}
+  Full symbol: {$A->sg("full")}
+  New symbol : {$A->sg("new_symbol")}
+  Thirtyfive : {$A->sg("thirtyfive")}
+  Nicknames  : {$A->sg("shorthand")}
+  Common shift vector:
+{$A->sg("shiftvec")}
+  Bravais translations:
+{$A->sg("bravais")}
+  {$A->sg("npos")} positions:
+{$A->sg("positions")}

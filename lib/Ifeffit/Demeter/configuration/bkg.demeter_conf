@@ -1,0 +1,299 @@
+## -*- config -*-
+###########################################################################
+##                          Demeter is copyright (c) 2007 Bruce Ravel
+##                                                     bravel@bnl.gov
+##                                        http://xafs.org/BruceRavel/
+##
+##                   Ifeffit is copyright (c) 1992-2007 Matt Newville
+##                                         newville@cars.uchicago.edu
+##                       http://cars9.uchicago.edu/~newville/ifeffit/
+##
+##	  The latest version of Demeter can always be found at
+##          http://cars9.uchicago.edu/~ravel/software/exafs/
+##
+## -------------------------------------------------------------------
+##     All rights reserved. This program is free software; you can
+##     redistribute it and/or modify it provided that the above notice
+##     of copyright, these terms of use, and the disclaimer of
+##     warranty below appear in the source code and documentation, and
+##     that none of the names of Argonne National Laboratory, The
+##     University of Chicago, University of Washington, or the authors
+##     appear in advertising or endorsement of works derived from this
+##     software without specific prior written permission from all
+##     parties.
+##
+##     THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+##     EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
+##     OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+##     NONINFRINGEMENT.  IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
+##     HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
+##     WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+##     FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
+##     OTHER DEALINGS IN THIS SOFTWARE.
+## -------------------------------------------------------------------
+###########################################################################
+
+
+## This file contains the bkg configuration group for Demeter
+
+
+######################################################################
+section=bkg
+section_description
+  These parameters determine how background removal and normalization
+  is done by Demeter.
+
+variable=e0
+type=list
+options=derivative zero fraction atomic
+default=derivative  
+description
+  This determines how the default value of E0 is determined.  The
+  derivative method is the Ifeffit default and is related to finding
+  the first maximum of the first derivative of mu(E).  The zero method
+  finds the zero-crossing of the second derivative which is closest to
+  the E0 value found by Ifeffit.  The half method will find by
+  interpolation the energy value at a fraction the step height (see
+  the e0_fraction parameter).  The atomic method asigns the tabulated
+  value to E0.  This works by first determining E0 using the
+  derivative method to determine the atomic species of the absorber.
+  Then the E0 value is reset to the tabulated value.
+
+
+variable=e0_fraction
+type=real
+default=0.5
+description
+  This variable is used when the e0 preference is set to "fraction".
+  In that case the edge energy is found by default as the point that
+  is some fraction of the edge step.  By default this is 0.5, i.e. the
+  edge energy is set to the position of the half edge step.  Setting
+  this to a different value puts the edge position at a different spot
+  on the edge.  If you set this 0 or a negative number, 0.5 will be
+  used.  If you set this to a number larger than 1, 1 will be used.
+
+variable=kw
+type=positive integer
+default=2
+maxint=3
+description
+  The default value for the k-weighting used to fit the background
+  spline.
+
+variable=rbkg
+type=real
+default=1.0
+units=Angstroms
+description
+  The default value for the Rbkg parameter.  This is the parameter
+  that defines the cutoff between the Fourier components associated
+  with the data from those associated with the background function.
+  The Fourier components below this value are optimized to determine
+  the spline.  In the absence of a background removal standard, these
+  components are simply minimized.  With a background removal
+  standard, these components are optimized to be like those of the
+  standard.  A good rule of thumb for this parameter is that it should
+  be about 1/2 the distance to the first shell peak.  Since peak
+  position varies from data set to data set, 1.0 is reasonable,
+  general-purpose default.
+
+variable=dk
+type=real
+default=0
+description
+  The width of the Fourier window sill used for the Forward transform
+  during background removal.
+
+variable=pre1
+type=real
+default=-150
+units=eV (relative to e0 or to the beginning of the data)
+description
+  The beginning value for regressing the pre-edge line used in
+  normalization in units of eV.  This is normally a negative number
+  and is relative to e0, i.e. something like -150 rather than
+  something like 8829.  Pre2 should be closer to the edge energy than
+  pre1.  A zero value means to use the *second* point in the imported
+  data.  A positive number is interpreted as being that many volts
+  above the first data point.  If you use a positive number, you run a
+  risk of placing this parameter past the edge, leading to a reduction
+  in the edge-step and an error in the determination of S02 and/or
+  coordination number in the data.  A number between -1 and 1 will be
+  interpreted as keV.
+
+variable=pre2
+type=real
+default=-30
+units=eV (relative to e0 or to the beginning of the data)
+description
+  The ending value for regressing the pre-edge line used in
+  normalization in units of eV.  This should be a negative number and
+  is relative to e0, i.e. something like -30 rather than something
+  like 8949.  Pre2 should be closer to the edge energy than pre1.  A
+  positive number is interpreted as being that many volts above the
+  first data point.  If you use a positive number, you run a risk
+  of placing this parameter past the edge.  The pre-edge line should
+  start at least a few tens of eV below e0, or else the pre-edge line
+  will be influenced by the onset of the edge, leading to a reduction
+  in the edge-step and an error in the determination of S02 and/or
+  coordination number in the data.  A number between -1 and 1 will be
+  interpreted as keV.
+
+variable=nor1
+type=real
+default=150
+units=eV (relative to e0)
+description
+  The beginning value for regressing the post-edge line used to
+  determine the edge step, in units of eV.  This should be a positive
+  number and is relative to e0, i.e. something like 100 rather than
+  something like 9079.  Nor1 should be closer to zero than nor2.  A
+  number between -5 and 5 will be interpreted as keV.  Note that all
+  the data between nor1 and nor2 is used in the post-edge line
+  regression.  If this range is wide compared to an oscillation in the
+  data, then the regression will be insensitive to the placement of
+  nor1 relative to the oscillations in the data.
+
+variable=nor2
+type=real
+default=-100
+units=eV (relative to e0 or to the end of the data)
+description
+  The ending value for regressing the post-edge line used to determine
+  the edge step in units of eV.  When positive, this is relative to
+  e0, i.e. something like 400 rather than something like 9379.  A
+  value of 0 means to use the last data point.  A negative value will
+  be subtracted from the end of the data set and that value will be
+  used as the ending value of the regression.  A number between -5 and
+  5 will be interpreted as keV.  If nor2 ends up being smaller than
+  nor1, they will be swapped.  Note that all the data between nor1 and
+  nor2 is used in the post-edge line regression.  If this range is
+  wide compared to an oscillation in the data, then the regression
+  will be insensitive to the placement of nor1 relative to the
+  oscillations in the data.
+
+variable=spl1
+type=real
+default=0.0
+units=inverse Angstroms
+description
+  The beginning value in k-space for the region over which the
+  background spline is fit in units of inverse Angstroms.  0.0 or 0.5
+  are good choices.  However if the white line is strong, it is useful
+  to set this to something to its right.  Note that this will be the
+  first non-zero value in the chi(k) data.
+
+variable=spl2
+type=real
+default=0
+units=inverse Angstroms
+description
+  The ending value in k-space for the region over which the background
+  spline is fit in units of inverse Angstroms.  A value of 0 means to
+  use the last data point.  A negative value will be subtracted from
+  the end of the data set and used as the ending value of the
+  regression.  If you give a negative number and the value ends up
+  being below spl1, the end of the data set will be used instead.
+
+##bkg_spl1e	  =>  0,	       # number
+##bkg_spl2e	  =>  0,	       # number
+
+
+variable=kwindow
+type=list
+default=hanning
+options=hanning kaiser-bessel welch parzen sine
+description
+  The default window type to use for the Fourier transform during the
+  background removal.
+
+
+##bkg_slope	  => 0,		       # number
+##bkg_int		  => 0,		       # number
+##bkg_step		  => 0,		       # number
+##bkg_fitted_step	  => 0,		       # number
+##bkg_fixstep	  => 0,		       # boolean
+##bkg_nc0		  => 0,		       # number
+##bkg_nc1		  => 0,		       # number
+##bkg_nc2		  => 0,		       # number
+
+variable=flatten
+type=boolean
+onvalue=1
+default=true
+description
+  This variable determines whether Demeter flattens a groups'
+  normalized mu(E) spectra defore displaying normalized mu(E) plots.
+  Flattening means to adjust the slope of the data after E0 such that
+  the data oscillates about 1.  This is acomplished by fitting a
+  quadratic polynomial to the pre-edge subtracted spectra before
+  normalization.  Then norm(E) = [pre(E) + (step-poly(E))*theta(E)] /
+  step, where
+  . step     the value of the edge_step
+  . pre(E)   pre-edge subtracted data
+  . poly(E)  the fitted polynomial
+  . theta(E) a step function centered at E0
+  .
+  Setting this variable true means that flattened data will be
+  displayed, setting it to false means to display the normalized data
+  as it comes out of ifeffit's spline() function.
+
+variable=fnorm
+type=boolean
+onvalue=1
+offvalue=0
+default=true
+description
+  This parameter tells Demeter to use a functional normalization.
+
+variable=nnorm
+type=list
+default=3
+options=1 2 3
+description
+  This sets the default normalization order.  3 means to use a cubic
+  polynomial for the post-edge regression.  2 means to use a line.
+  1 means to use the average of the signal between nor1 and nor2.
+
+##bkg_stan		  => 'None',
+##bkg_stan_lab	  => '0: None',
+
+variable=nclamp
+type=positive integer
+default=5
+description
+  The number of data points used by the background removal algorithm
+  to evaluate the clamping restraint.  A clamp is a numerical device
+  used either at the beginning or the end of the data range over which
+  the background spline is fit to coerce the spline not to deviate
+  from the data.  Occassionally, the spline found by the Autobk
+  algorithm will diverge from the data at one end of the range or the
+  other.  A clamp is essentially a penalty applied to the fitting
+  metric when this happens.  Only the first (last) nclamp data points
+  are used to evaluate this penalty when a beginning (end) of data set
+  clamp is applied.
+
+variable=clamp1
+type=positive integer
+default=0
+description
+  The default strength for the low-energy spline clamp used in the
+  background removal.  A spline clamp is a penalty applied to the
+  fitting metric used in the background optimization.  This restraint
+  penalizes the spline when it deviates from the data.  The strength
+  of the clamp determines the size of the penalty.
+
+variable=clamp2
+type=positive integer
+default=24
+description
+  The default strength for the high-energy spline clamp used in the
+  background removal.  A spline clamp is a penalty applied to the
+  fitting metric used in the background optimization.  This restraint
+  penalizes the spline when it deviates from the data.  The strength
+  of the clamp determines the size of the penalty.
+
+##bkg_tie_e0	  => 0,		       # boolean
+##bkg_former_e0	  => 0,		       # number
+##bkg_cl		  => 0,		       # boolean
+##bkg_z		  => 'H',	       # element

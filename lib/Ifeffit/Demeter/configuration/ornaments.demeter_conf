@@ -1,0 +1,127 @@
+## -*- config -*-
+###########################################################################
+##                          Demeter is copyright (c) 2007 Bruce Ravel
+##                                                     bravel@bnl.gov
+##                                        http://xafs.org/BruceRavel/
+##
+##                   Ifeffit is copyright (c) 1992-2007 Matt Newville
+##                                         newville@cars.uchicago.edu
+##                       http://cars9.uchicago.edu/~newville/ifeffit/
+##
+##	  The latest version of Demeter can always be found at
+##          http://cars9.uchicago.edu/~ravel/software/exafs/
+##
+## -------------------------------------------------------------------
+##     All rights reserved. This program is free software; you can
+##     redistribute it and/or modify it provided that the above notice
+##     of copyright, these terms of use, and the disclaimer of
+##     warranty below appear in the source code and documentation, and
+##     that none of the names of Argonne National Laboratory, The
+##     University of Chicago, University of Washington, or the authors
+##     appear in advertising or endorsement of works derived from this
+##     software without specific prior written permission from all
+##     parties.
+##
+##     THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+##     EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
+##     OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+##     NONINFRINGEMENT.  IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
+##     HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
+##     WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+##     FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
+##     OTHER DEALINGS IN THIS SOFTWARE.
+## -------------------------------------------------------------------
+###########################################################################
+
+
+## This file contains the bkg configuration group for Demeter
+
+## also: poinntfinder, stacking, data set stacking
+
+######################################################################
+section=indicator
+section_description
+  These variables determine the features of indicator lines drawn on
+  plots made by Demeter. Colors can be named colors from X11's rgb.txt
+  file, any other named colors that your system recognizes, or
+  hexadecimal triplets (i.e. "#0000FF" for blue and so on).
+
+variable=n
+type=positive integer
+default=8
+description
+  This determines the number of possible indicators that can be set.
+  Changing this parameter will not take effect until the next time you
+  start Athena.
+
+variable=color
+type=color
+default=violetred
+description
+  This is the color of the plot indicators, which are are used to
+  indicate user-defined points in any plotting space whenever new
+  plots are made.
+
+variable=line
+type=list
+options=solid dashed dotted dot-dash 
+default=solid
+description
+  This is the line style used for the plot indicators, which are are
+  used to indicate user-defined points in any plotting space whenever
+  new plots are made.
+
+######################################################################
+section=marker
+section_description
+  These variables determine the features of markers drawn on
+  plots made by Demeter. Colors can be named colors from X11's rgb.txt
+  file, any other named colors that your system recognizes, or
+  hexadecimal triplets (i.e. "#0000FF" for blue and so on).
+
+variable=show
+type=boolean
+onvalue=1
+default=true
+description
+  When true, this variable tells Athena to display markers in energy
+  plots.  Markers indicate the locations of such things as E0, the
+  normalization range, and the pre-edge range.
+
+variable=type
+type=positive integer
+default=9
+maxint=12
+description
+  This is an integer that indicates the shape to use for the markers
+  which indicate special positions in energy.  The shapes are as
+  follows:
+  . 1   dot
+  . 2   plus
+  . 3   asterisk
+  . 4   circle
+  . 5   X
+  . 6   square,
+  . 7   triangle
+  . 8   circle w/cross
+  . 9   circle w/dot
+  . 10  fancy square
+  . 11  diamond,
+  . 12  5-point star
+
+variable=size
+type=positive integer
+default=2
+maxint=5
+description
+  This determines the size of the markers used to indicate special
+  positions in energy.  The sizes range from 1 (smallest) to 5
+  (largest). 
+
+variable=color
+type=color
+default=orange2
+description
+  This determines the color of the markers used to indicate special
+  positions in energy.
+

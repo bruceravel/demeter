@@ -1,0 +1,44 @@
+#!/usr/bin/perl -I/home/bruce/codes/demeter/lib
+use warnings;
+use strict;
+use Ifeffit::Demeter qw(Fit);
+use Ifeffit::Demeter::UI::Screen::Probe;
+use Getopt::Long;
+use Term::Twiddle;
+use Readonly;
+Readonly my $USAGE => "usage: rdfit myfit.dpj\n";
+
+my $use_gnuplot = 0;
+my $result = GetOptions (
+			 "g"        => \$use_gnuplot,
+			);
+Ifeffit::Demeter->plot_with('gnuplot') if $use_gnuplot;
+
+
+my $proj = $ARGV[0] || q{};
+die $USAGE if not $proj;
+die "rdfit: project file does not exist\n" if not -e $proj;
+
+my $spinner = new Term::Twiddle;
+$spinner->rate(0.05);
+$spinner->thingy( [
+		   '   -+-   ',
+		   '   [ ]   ',
+		   '  [   ]  ',
+		   ' [     ] ',
+		   '[       ]',
+		   ' [     ] ',
+		   '  [   ]  ',
+		   '   [ ]  ',
+		   '   -+-   ',
+		  ] );
+print "Reading $proj: ";
+$spinner->start;
+my $fit = Ifeffit::Demeter::Fit->thaw($proj);
+$spinner->stop;
+
+$fit -> po -> set({kweight=>2});
+interview($fit);
+
+## clean up
+$fit -> rm;

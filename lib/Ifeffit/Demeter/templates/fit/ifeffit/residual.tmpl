@@ -1,0 +1,7 @@
+{ # -*- ifm -*-
+  # residual arrays template
+  #   {$D} returns the ifeffit group name
+  #   {$D->get("parameter")} returns the value of that parameter
+}
+##| residual arrays for {$D}
+set {$D}_res.chi = {$D}.chi - {$D}_fit.chi

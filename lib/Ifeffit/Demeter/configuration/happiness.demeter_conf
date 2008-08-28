@@ -1,0 +1,133 @@
+## -*- config -*-
+###########################################################################
+##                     Demeter is copyright (c) 2006-2008 Bruce Ravel
+##                                                     bravel@bnl.gov
+##                                        http://xafs.org/BruceRavel/
+##
+##                   Ifeffit is copyright (c) 1992-2008 Matt Newville
+##                                         newville@cars.uchicago.edu
+##                       http://cars9.uchicago.edu/~newville/ifeffit/
+##
+##	  The latest version of Demeter can always be found at
+##          http://cars9.uchicago.edu/~ravel/software/exafs/
+##
+## -------------------------------------------------------------------
+##     All rights reserved. This program is free software; you can
+##     redistribute it and/or modify it provided that the above notice
+##     of copyright, these terms of use, and the disclaimer of
+##     warranty below appear in the source code and documentation, and
+##     that none of the names of Argonne National Laboratory, The
+##     University of Chicago, University of Washington, or the authors
+##     appear in advertising or endorsement of works derived from this
+##     software without specific prior written permission from all
+##     parties.
+##
+##     THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+##     EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
+##     OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+##     NONINFRINGEMENT.  IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
+##     HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
+##     WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+##     FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
+##     OTHER DEALINGS IN THIS SOFTWARE.
+## -------------------------------------------------------------------
+###########################################################################
+
+
+## This file contains the happiness configuration group for Demeter
+
+
+######################################################################
+section=happiness
+section_description
+  These parameters control the evaluation of the happiness, a semantic
+  fit parameter.
+
+variable=rfactor_low
+type=real
+default=0.02
+description
+  This is the R-factor value below which the fit happiness is not
+  penalized.  penalty = (R_factor - low)*scale.  The default values
+  result in a penalty saturation of 40.
+
+variable=rfactor_high
+type=real
+default=0.06
+description
+  This is the R-factor value at which the happiness penalty saturates.
+  penalty = (R_factor - low)*scale.  The default values result in a
+  penalty saturation of 40.
+
+variable=rfactor_scale
+type=real
+default=1000
+description
+  This is the scaling factor for evaluating the R-factor penalty to
+  the happiness.  penalty = (R_factor - low)*scale.  The default
+  values result in a penalty saturation of 40.
+
+variable=pathparams_scale
+type=real
+default=2
+description
+  This is the scaling factor for the penalty associated with the path
+  parameter sanity check.  The net penalty for these sanity checks is
+  the number of path parameters in the fitting model which fail their
+  sanity checks multiplied by this number.
+
+variable=restraints_scale
+type=real
+default=2
+description
+  This the scaling factor for the penalty associated with restraints
+  that evaluate to something non-zero.  The penalty for each restraint
+  is scaled by its fractional contribution to chi-square.  
+  penalty = (restraint/chi_square)*scale.
+
+variable=nidp_cutoff
+type=real
+default=0.66667
+description
+  A penalty is assessed for using more variables than this fraction
+  of the number of independent points.  The default values assess a
+  penalty of 40 for using all of the independent points.  No penalty
+  is assessed for using less than 2/3 of the independent points.
+
+variable=nidp_scale
+type=real
+default=40
+description
+  This is the scaling factor for the penalty assessed for using too
+  many variables compared to the information content.  The default
+  values assess a penalty of 40 for using all of the independent
+  points.  No penalty is assessed for using less than 2/3 of the
+  independent points.
+
+variable=good_color
+type=color
+default=#C5E49A
+description
+  This is the color associated with a completely happy fit.  The
+  default value is a greenish sort of color
+
+variable=average_color
+type=color
+default=#FFEE90
+description
+  This is the color associated with a fit of intermediate happiness.
+  The default value is a yellowish sort of color
+
+variable=bad_color
+type=color
+default=#FD7E6F
+description
+  This is the color associated with a completely unhappy fit.  The
+  default value is a redish sort of color
+
+variable=minimum
+type=real
+default=60
+description
+  This is the happiness value associated with a completely unhappy fit
+  when evaluating the color associated with the fit.

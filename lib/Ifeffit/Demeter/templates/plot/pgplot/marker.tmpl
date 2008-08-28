@@ -1,0 +1,6 @@
+{ # -*- ifm -*-
+  # template for inserting a marker
+  #   {$x} and {$y} are supplied by the caller and are the points at which to draw a marker
+  #   {$P->get("parameter")} returns the value of a Plot parameter
+}
+plot_marker({$x}, {$y}, marker={$P->get("markertype")}, color={$P->get("markercolor")})

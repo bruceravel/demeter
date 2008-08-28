@@ -1,0 +1,14 @@
+#!/bin/sh
+
+cp ../install_prereqs ../bin/install_prereqs.pl
+pod2projdocs -l ../lib \
+             -l ../bin \
+             -l ../../libperlxray/Absorption/lib \
+             -l ../../libperlxray/Absorption/server \
+             -l ../../libperlxray/Formula/lib \
+             -l ../../libperlxray/Scattering/lib \
+             -l ../../libperlxray/SpaceGroup/lib \
+             -o html \
+             -t Demeter \
+             -d "Perl tools for X-ray Absorption Spectroscopy" 1
+rm ../bin/install_prereqs.pl

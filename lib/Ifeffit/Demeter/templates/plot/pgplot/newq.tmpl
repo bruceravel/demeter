@@ -1,0 +1,18 @@
+{ # -*- ifm -*-
+  # template for new plot of chi(q)
+  #   {$D} returns the ifeffit group name
+  #   {$D->get("parameter")} returns the value of that parameter
+  #   {$P->get("parameter")} returns the value of a Plot parameter
+}
+{
+ ## this code fragment chooses the correct array
+ my %suffixes = ('m'=>"chiq_mag", e=>"chiq_mag", r=>"chiq_re", i=>"chiq_im", p=>"chiq_pha");
+ my $part     = lc($P->get("q_pl"));
+ $suffix      = $suffixes{$part};
+ q{}
+}
+newplot({$D}.q, "{$D->get("plot_multiplier")}*{$D}.{$suffix}+{$D->get("y_offset")}",
+        xlabel="{$P->get("xlabel")}", ylabel="{$P->get("ylabel")}",
+	grid, gridcolor="{$P->get("gridcolor")}", xmin={$P->get("qmin")}, xmax={$P->get("qmax")},
+	style={$P->get("datastyle")}, color="{$P->get("color")}", key="{$P->get("key")}", 
+	title="{$P->get("title")}", fg="{$P->get("fg")}", bg="{$P->get("bg")}")

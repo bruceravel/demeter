@@ -1,0 +1,27 @@
+{ # -*- ifm -*-
+  # data alignment template
+  #   {$D} returns the ifeffit group name
+  #   {$D->get("parameter")} returns the value of that parameter
+  #   {$DS} returns the ifeffit group name for the data standard
+  #   {$DS->get("parameter")} returns the value of that parameter for the
+  #         data standard
+  #   {$P->get("interp")} gives the type of interpolation to do
+  #
+  # need to allow for fitting smoothed data to standard
+}
+{
+  $emin = $DS->get("bkg_e0") -  50;
+  $emax = $DS->get("bkg_e0") + 100;
+  q()
+}
+##| auto-aligning {$D} to {$DS}
+guess(aa___esh   = 0,
+      aa___scale = 1)
+def {$D}.xmui    = {$P->get("interp")}({$D}.energy+aa___esh, {$D}.xmu, {$DS}.energy+{$DS->get("bkg_eshift")})
+def aa___.res    = deriv({$DS}.xmu) - aa___scale*deriv({$D}.xmui)
+minimize(aa___.res, x={$DS}.energy, xmin={$emin}, xmax={$emax})
+set(aa___.res    = aa___.res,
+    {$D}.xmui    = {$D}.xmui)
+unguess
+erase aa___scale aa___.res {$D}.xmui
+<<nl>>

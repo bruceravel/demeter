@@ -1,0 +1,87 @@
+#!/usr/bin/perl -I/home/bruce/codes/demeter/lib
+
+=for Copyright
+ .
+ Copyright (c) 2008 Bruce Ravel (bravel AT bnl DOT gov).
+ All rights reserved.
+ .
+ This file is free software; you can redistribute it and/or
+ modify it under the same terms as Perl itself. See The Perl
+ Artistic License.
+ .
+ This program is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+
+=cut
+
+use warnings;
+use strict;
+use Cwd;
+use Getopt::Long;
+use Term::ReadLine;
+my $term    = new Term::ReadLine 'demeter';
+my $prompt = "Press <Enter> to finish ";
+
+use Ifeffit::Demeter::Data::Prj;
+
+my ($plot, $inc, $params, $gnuplot, $xanes) = (q{}, 0.2, q{}, 0, 0);
+my $result = GetOptions (
+			 "plot=s"   => \$plot,
+			 "p=s"	    => \$plot,
+			 "stack=s"  => \$inc,
+			 "params=s" => \$params,
+			 "g"        => \$gnuplot,
+			 "xanes"    => \$xanes,
+			);
+Ifeffit::Demeter->plot_with('gnuplot') if $gnuplot;
+
+my ($file, @groups) = @ARGV;
+usage() if not $file;
+
+my $prj = Ifeffit::Demeter::Data::Prj->new();
+$prj -> set({file=>$file});
+
+print '===> ', Cwd::abs_path($file), $/ x 2,
+  $prj -> list(split(/,/,$params)), $/;
+
+my $stack = 0;
+if ($plot =~ m{[endkrq]}) {
+  my @data = (@groups) ? $prj->records(@groups) : $prj -> slurp;
+  $data[0] -> po -> set({e_markers => 0});
+  $data[0] -> po -> set({e_norm    => 0})   if ($plot eq 'e');
+  $data[0] -> po -> set({e_norm    => 1})   if ($plot eq 'n');
+  $data[0] -> po -> set({e_der     => 1})   if ($plot eq 'd');
+  $data[0] -> po -> set({kweight   => 2})   if ($plot =~ m{[krq]});
+  $data[0] -> po -> set({r_pl      => 'r'}) if ($plot eq 'rr');
+  $data[0] -> po -> set({emin => -50, emax =>120}) if $xanes;
+  my $p = $plot;
+  ($p = 'e') if ($plot =~ m{[nd]});
+  ($p = 'r') if ($plot eq 'rr');
+  foreach my $d (@data) {
+    $d -> set({'y_offset' => $stack});
+    $d -> plot($p);
+    ($stack -= $inc) if ($plot =~ m{[nkrq]});
+  };
+
+  $_ = $term->readline($prompt);
+  $data[0]->po->cleantemp;
+};
+
+sub usage {
+  print "
+ usage : lsprj <projectfile> [options] (group numbers)
+
+ List the groups from an Athena project file.
+
+   --plot=X, -p=X       plot all data (X = e|n|d|k|r|q)
+   --stack=val          specify stacking offset for plots
+   --params=param_list  comma separated list of parameters
+   --xanes              restrict energy plots to [-50:120]
+
+ Optionally, you can list groups numbers to plot a subset of the
+ contents of the project file.
+
+";
+  exit;
+};

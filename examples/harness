@@ -1,0 +1,194 @@
+#!/usr/bin/perl -I../lib/
+
+=begin Explanation
+  This is a test harness for running and examining various short
+  scripts demonstrating the Athena-like features of Demeter.
+  .
+  Use the -l command line switch to choose ANSII colors approporiate
+  for a screen with a bright background.
+
+
+=cut
+
+=begin Copyright
+ Copyright (c) 2006-2008 Bruce Ravel (bravel AT bnl DOT gov). All rights reserved.
+ .
+ This example is free software; you can redistribute it and/or
+ modify it under the same terms as Perl itself. See L<perlartistic>.
+ .
+ This program is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+
+=cut
+
+use warnings;
+use strict;
+use Cwd;
+use File::Spec;
+use IO::Prompt;
+use subs qw(BOLD RED RESET YELLOW GREEN BLUE UNDERLINE REVERSE);
+my $ANSIColor_exists = (eval "require Term::ANSIColor");
+if ($ANSIColor_exists) {
+  import Term::ANSIColor qw(:constants);
+} else {
+  foreach my $s (qw(BOLD RED RESET YELLOW GREEN BLUE UNDERLINE REVERSE)) {
+    eval "sub $s {q{}}";
+  };
+};
+
+use Ifeffit::Demeter;
+Ifeffit::Demeter->set_mode({ifeffit=>1, buffer=>0, screen=>0});
+#Ifeffit::Demeter->set_mode({template_process=>"iff_columns"});
+$| = 1;
+
+use Getopt::Long;
+my ($light_background, $dark_background, $use_pgplot, $use_gnuplot) = (0, 1, 1, 0);
+my $result = GetOptions (
+			 "d" => \$dark_background,
+			 "l" => \$light_background,
+			 "p" => \$use_pgplot,
+			 "g" => \$use_gnuplot,
+			);
+($light_background = 1) if (not $dark_background);
+my $INDIC = ($light_background) ? BLUE : YELLOW;
+($use_pgplot = 1) if (not $use_gnuplot);
+Ifeffit::Demeter->plot_with('gnuplot') if $use_gnuplot;
+
+my $plot = Ifeffit::Demeter -> get_mode('plot');
+my @tests = (q{},
+	     'align',
+	     'compare',
+	     'convolve',
+	     'deglitch',
+	     'merge',
+	     'noise',
+	     'rebin',
+	     'serialize',
+	     'smooth',
+	     'truncate',
+	     'athena',
+	     'config',
+	    );
+$ENV{DEMETER_TEST_DIR} = cwd;
+my $clear = `clear`;
+my $toggle_message = "turn " . REVERSE . "on" . RESET ." screen dump of Ifeffit script\n";
+
+&query;
+while ( my $prompt = prompt "Choose a test by number, d# for description, h for help, or q to quit > ") {
+ DISPATCH: {
+    exit                          if ($prompt =~ m{\Aq});
+    &help,          last DISPATCH if ($prompt =~ m{\Ah});
+    &version,       last DISPATCH if ($prompt =~ m{\Av});
+    &toggle_screen, last DISPATCH if ($prompt =~ m{\At});
+    show($1),       last DISPATCH if ($prompt =~ m{\As(\d+)});
+    describe($1),   last DISPATCH if ($prompt =~ m{\Ad(\d+)});
+    dotest($1),     last DISPATCH if ($prompt =~ m{\Ar?(\d+)});
+  };
+  &query;
+  $plot->start_plot; # reset the plot for the next go around
+};
+
+sub query {
+  print $clear;
+  print $/, BOLD, RED, "These are tests of the basic data processing features of Demeter\n\n", RESET;
+  foreach my $i (1 .. $#tests) {
+    my $eol = ($i%3) ? "\t\t\t" : "\n";
+    printf "%s%s %2d. %s%s%s", BOLD, $INDIC, $i, RESET, $tests[$i], $eol;
+  };
+  print "\n\n", BOLD, $INDIC, "  t. ", RESET, $toggle_message,
+                BOLD, $INDIC, "  h. ", RESET, "help\t\t\t",
+                BOLD, $INDIC, "  v. ", RESET, "version\n",
+                BOLD, $INDIC, "  q. ", RESET, "quit\n\n";
+  return 0;
+};
+
+
+sub version {
+  print "\n\n" . Ifeffit::Demeter->identify . "\n";
+  return finish();
+};
+
+sub help {
+  print $clear;
+  print <<EOH
+
+    This is a harness for various data processing tests that come with
+    Demeter.  Each of these tests demonstrates an Athena-like feature
+    of the Demeter system.
+
+    To run a test, enter its number.
+
+    To see a longer description of the test, enter its number preceded
+    by the letter d.  For instance entering d1 will print the
+    description of the first test.
+
+    To run the test code through a pager, enter its number preceded by
+    the letter s.  For instance entering s1 will page through the
+    description of the first test.
+
+    The letter t will toggle the parameter that causes the ifeffit
+    commands generated to be echoed to the screen.
+
+EOH
+  ;
+  return finish();
+};
+
+sub toggle_screen {
+  my ($i, $which) = (Ifeffit::Demeter->get_mode("screen")) ? (0, 'on') : (1, 'off');
+  $toggle_message = "turn " . REVERSE . $which . RESET ." screen dump of Ifeffit script\n";
+  Ifeffit::Demeter->set_mode({screen=>$i});
+};
+
+sub dotest {
+  my ($n) = @_;
+  print "\n";
+  my $file = file($n);
+  unless (my $return = do $file) {
+    warn "could not parse $file: $@" if $@;
+    warn "could not do $file: $!"    unless defined $return;
+    warn "could not run $file"       unless $return;
+  };
+  finish();
+  return 0;
+};
+
+sub show {
+  my ($n) = @_;
+  my $file = file($n);
+  system($ENV{PAGER}||'more', $file);
+  return 0;
+};
+
+sub describe {
+  my ($n) = @_;
+  print $clear;
+  my $file = file($n);
+  print "\n ===> ", GREEN, "$file", RESET, " <===\n\n";
+  open F, $file or die "could not open $file";
+  my $flag = 0;
+  while (<F>) {
+    $flag = 1, next if (m{=for Explanation});
+    if ($flag) {
+      last if (m{=cut});
+      print $_;
+    };
+  };
+  close F;
+  finish();
+  return 0;
+};
+
+
+sub file {
+  my ($n) = @_;
+  return File::Spec->catfile(cwd, "tests", $tests[$n].".pl");
+};
+
+sub finish {
+  print "\n", UNDERLINE, "Return to continue >", RESET, " ";
+  my $how = <STDIN>;
+  print $/;
+  return 0;
+};

@@ -1,0 +1,60 @@
+
+This directory contain the template for processing data.  Each template file
+ends in ".tmpl" and has a name suggestive of its function.  All textual output
+of Demeter is generated using templates.
+
+These templates are for use with Text::Template.
+
+Several variables are always available for use in templates.  These are:
+
+  $S    The object filling in the template
+  $D    The Data object associated with $S
+  $DS   The Data object set as the data standard
+  $P    The current Plot object
+  $T    The current Feff object
+  $F    The current Fit object
+
+You can use the get method to obtain attributes of objects, for instance:
+
+  $D->get("parameter") returns the value of that Data parameter
+
+Some templates take additional parameters which must be supplied by the
+calling code.  Those are indicated in the descriptions of the templates.
+
+Essentially no error checking is done at the level of the individual
+template.  It is up to you, the writer of Demeter-based code, to verify that
+object attributes make sense.
+
+
+   align             align data $D to the data standard $DS
+   autobk            find the background function of mu(E) data
+   bft               do a backward Fourier transform
+   columns           convert column data to mu(E) data using the values of the
+                     energy_, xmu_, and i0_ Data attributes.  Those must be
+                     set sensibly by the calling code.
+   data_report       generate text suitable for a output file header
+                     containing attribute values
+   deriv             compute the derivative and second derivative of mu(E) data
+   erase_group       remove a data group from Ifeffit, takes the $dead
+                     argument containing the group name to be erased
+   fft               do a foreward Fourier transform
+   flatten_fit       compute flattened data from mu(E)
+   flatten_set       compute flattened data from fxed step mu(E) or norm(E)
+   interpolate       interpolate data onto a grid for merging
+   merge             add data to a merged spectrum
+   merge_end         finish up a merge.  takes the $ndata argument containing
+                     the number of data sets or the sum of importances
+   merge_start       prepare arrays for a merge
+   nderiv            compute the derivative and second derivative of norm(E) data
+   normalize         compute norm(E) from mu(E)
+   post_autobk       do various array handling chores after autobk
+   read              read generic column data
+   read_chi          read a chi(k) file
+   read_xmu          read a mu(E) file
+   rebin             rebin column data
+   save_chik         write out chi(k) data
+   save_chiq         write out chi(q) data
+   save_chir         write out chi(R) data
+   save_norm         write out norm(E) data
+   save_xmu          write out mu(E) data
+   subarray          compute a common subarray for merging spectra

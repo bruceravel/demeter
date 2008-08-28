@@ -1,0 +1,31 @@
+{ # -*- ifm -*-
+  # template for new plot in k
+  #   {$D} returns the ifeffit group name
+  #   {$D->get("parameter")} returns the value of that parameter
+  #   {$P->get("parameter")} returns the value of a Plot parameter
+  #
+  #  color fg bg grid gridcolor
+}
+{
+  $datastyle = ($P->get("datastyle") eq 'solid') ? 'lines' : 'points';
+  $ylabel = $P->gnuplot_kylabel;
+  $file = $P->tempfile;
+  $D->points({file    => $file,
+              space   => 'k', 
+	      suffix  => 'chi',
+	      scale   => $D->get("plot_multiplier"),
+	      yoffset => $D->get("y_offset"),
+	      weight  => $P->get("kweight"),
+	     });
+  q{}
+}
+## gnuplot script
+unset label
+
+set title "\{/*1.5 {$P->get("title")}\}"
+set xlabel "\{/*1.2 Wavenumber&\{aa\}(\{\305\}^\{-1\})\}"
+set ylabel "\{/*1.2 {$ylabel}\}"
+set xrange [ {$P->get("kmin")} : {$P->get("kmax")} ]
+
+# ifeffit group = {$D}
+plot '{$file}' using 1:2 with {$datastyle} ls {$P->get('increment')+1} title "{$P->get("key")}"

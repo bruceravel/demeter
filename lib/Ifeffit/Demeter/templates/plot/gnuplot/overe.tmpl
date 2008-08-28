@@ -1,0 +1,20 @@
+{ # -*- ifm -*-
+  # template for overplotting in energy
+  #   {$D} returns the ifeffit group name
+  #   {$D->get("parameter")} returns the value of that parameter
+  #   {$P->get("parameter")} returns the value of a Plot parameter
+}
+{
+  $file = $P->tempfile;
+  $D->points({file    => $file,
+              space   => 'E', 
+	      suffix  => $P->get("e_part"), 
+	      shift   => $D->get("bkg_eshift"),
+	      scale   => $D->get("plot_multiplier"),
+	      yoffset => $D->get("y_offset")
+	     });
+  q{}
+}
+# ifeffit group = {$D}
+replot '{$file}' using 1:2 with {$C->default("gnuplot", "datastyle")} ls {$P->get('increment')+1} title "{$P->get("key")}"
+

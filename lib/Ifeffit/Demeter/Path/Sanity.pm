@@ -1,0 +1,223 @@
+package Ifeffit::Demeter::Path::Sanity;
+
+=for Copyright
+ .
+ Copyright (c) 2006-2008 Bruce Ravel (bravel AT bnl DOT gov).
+ All rights reserved.
+ .
+ This file is free software; you can redistribute it and/or
+ modify it under the same terms as Perl itself. See The Perl
+ Artistic License.
+ .
+ This program is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+
+=cut
+
+use strict;
+use warnings;
+use Carp;
+use Class::Std;
+use Class::Std::Utils;
+use Fatal qw(open close);
+use List::MoreUtils qw(any);
+use Regexp::Optimizer;
+use Regexp::Common;
+use Readonly;
+Readonly my $EPSILON => 0.00001;
+Readonly my $NUMBER  => $RE{num}{real};
+
+{
+
+  my %pp_trans = ('3rd'=>"third", '4th'=>"fourth", dphase=>"dphase",
+		  dr=>"delr", e0=>"e0", ei=>"ei", s02=>"s02", ss2=>"sigma2");
+  sub is_resonable {
+    my ($self, $param) = @_;
+    $param = lc($param);
+    ($param = "s02") if ($param eq "so2");
+    my ($value, $explanation) = (1, q{});
+  SWITCH: {
+      ($param eq "e0") and do {
+	($value, $explanation) = test_e0($self);
+	last SWITCH;
+      };
+      ($param eq "s02") and do {
+	($value, $explanation) = test_s02($self);
+	last SWITCH;
+      };
+      ($param =~ m{^s(?:ig|s)}) and do {
+	($value, $explanation) = test_sigma2($self);
+	last SWITCH;
+      };
+      ($param eq "delr") and do {
+	($value, $explanation) = test_delr($self);
+	last SWITCH;
+      };
+      (($param eq "3rd") or ($param eq "third")) and do {
+	($value, $explanation) = test_third($self);
+	last SWITCH;
+      };
+      (($param eq "4th") or ($param eq "fourth")) and do {
+	($value, $explanation) = test_fourth($self);
+	last SWITCH;
+      };
+      ($param eq "dphase") and do {
+	($value, $explanation) = (1, q{});
+	last SWITCH;
+      };
+      ($param =~ m{array}) and do {
+	($value, $explanation) = (1, q{});
+	last SWITCH;
+      };
+    };
+
+    return ($value, $explanation);
+  };
+
+  sub test_e0 {
+    my ($self) = @_;
+    my $config = Ifeffit::Demeter->get_mode("params");
+    my $e0_max = $config->default("warnings", "e0_max");
+    my $this = abs($self->value("e0"));
+    return (1, q{}) if ($e0_max == 0);
+    return (1, q{}) if ($this < $e0_max);
+    my $id = $self->identity;
+    return (0, sprintf("The absolute value of e0 for \"$id\" is greater than %s.", $e0_max));
+  };
+
+  sub test_s02 {
+    my ($self) = @_;
+    my $config = Ifeffit::Demeter->get_mode("params");
+    my $this = $self->value("s02");
+    my $id = $self->identity;
+    return (0, "S02 for \"$id\" is negative.")
+      if ($config->default("warnings", "s02_neg") and ($this < -1*$EPSILON));
+    return (1, q{}) if ($config->default("warnings", "s02_max") == 0);
+    ## return(0, "Too big") if too big
+    ## return(0, "Too small") if too small
+    return (1, q{});
+  };
+
+  sub test_sigma2 {
+    my ($self) = @_;
+    my $config = Ifeffit::Demeter->get_mode("params");
+    my $this = $self->value("sigma2");
+    my $id = $self->identity;
+    return (0, "sigma2 for \"$id\" is negative.")
+      if ($config->default("warnings", "ss2_neg") and ($this < -1*$EPSILON));
+    return (1, q{}) if ($config->default("warnings", "ss2_max") == 0);
+    return (0, "sigma2 for \"$id\" is suspiciously large.")
+      if ($this > $config->default("warnings", "ss2_max"));
+    return (1, q{});
+  };
+
+  sub test_delr {
+    my ($self) = @_;
+    my $config = Ifeffit::Demeter->get_mode("params");
+    my $this = abs($self->value("delr"));
+    my $id = $self->identity;
+    return (0, "delr for \"$id\" is suspiciously large.") 
+      if ($this > $config->default("warnings", "dr_max"));
+    return (1, q{});
+  };
+
+  sub test_third {
+    my ($self) = @_;
+    my $this = $self->value("third");
+    my $id = $self->identity;
+    return (1, q{});
+  };
+
+  sub test_fourth {
+    my ($self) = @_;
+    my $this = $self->value("fourth");
+    my $id = $self->identity;
+    return (1, q{});
+  };
+
+
+
+
+
+};
+
+1;
+
+
+=head1 NAME
+
+Ifeffit::Demeter::Path::Sanity - Sanity checks for path parameter values
+
+=head1 VERSION
+
+This documentation refers to Ifeffit::Demeter version 0.1.
+
+=head1 SYNOPSIS
+
+  my ($isok, $reason) = $pathobject -> is_reasonable("e0");
+  print $reason if (not $is_ok);
+
+     ==> The absolute value of e0 for "path label" is greater than 10 ev
+
+=head1 DESCRIPTION
+
+This module provides a series of rules for determining the
+appropriateness of fitted path parameter values.  These rules are all
+configurable, but tend to be checks on the magnitude and/or parity of
+the evaluated parameter.  See the warnings configuration group.
+
+The user should never need to call the methods explicitly since they
+are called automatically whenever a fit or a sum is performed.
+However they are documented here so that the scope of such checks made
+is clearly understood.
+
+These rules are among the criteria used to evaluate the fit happiness.
+See <Ifeffit::Demeter::Fit::Happiness>.
+
+=head1 METHODS
+
+Test are made on the reasonableness of the C<e0>, C<s02>, C<delr>,
+C<sigma2>, C<ei>, C<third>, and C<fourth> path parameters, as defined
+by the warnings configuration group.
+
+The only method intended for external use is C<is_reasonable>, as
+shown in the L</SYNOPIS>.  It returns a two-element list, the first
+element being a flag indicating whether the path parameter passed its
+tests and the second being an explanation of the problem, if one is
+found.
+
+=head1 CONFIGURATION AND ENVIRONMENT
+
+See L<Ifeffit::Demeter::Config> for a description of the configuration
+system.  See the warnings configuration group.
+
+=head1 DEPENDENCIES
+
+Demeter's dependencies are in the F<Bundle/DemeterBundle.pm> file.
+
+=head1 BUGS AND LIMITATIONS
+
+Please report problems to Bruce Ravel (bravel AT bnl DOT gov)
+
+Patches are welcome.
+
+=head1 AUTHOR
+
+Bruce Ravel (bravel AT bnl DOT gov)
+
+L<http://cars9.uchicago.edu/~ravel/software/>
+
+
+=head1 LICENCE AND COPYRIGHT
+
+Copyright (c) 2006-2008 Bruce Ravel (bravel AT bnl DOT gov). All rights reserved.
+
+This module is free software; you can redistribute it and/or
+modify it under the same terms as Perl itself. See L<perlartistic>.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+
+=cut

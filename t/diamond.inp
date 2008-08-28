@@ -1,0 +1,12 @@
+title   Cubic Spinel, MgAl2O4
+Space  f d 3 m
+a=8.0800   !from Wyckoff
+rmax=7    core=mg
+atom
+! At.type  x        y       z      
+   Mg     0.125    0.125   0.125   
+   Al     0.5      0.5     0.5
+   O      0.262    0.262   0.262
+! u=0.387 in wyckoff, wyckoff referenced to (-1/8,-1/8,-1/8)
+! from center, .262=.387-.125
+-------------------------------------------------

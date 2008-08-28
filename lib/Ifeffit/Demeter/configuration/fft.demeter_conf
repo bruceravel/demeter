@@ -1,0 +1,100 @@
+## -*- config -*-
+###########################################################################
+##                          Demeter is copyright (c) 2007 Bruce Ravel
+##                                                     bravel@bnl.gov
+##                                        http://xafs.org/BruceRavel/
+##
+##                   Ifeffit is copyright (c) 1992-2007 Matt Newville
+##                                         newville@cars.uchicago.edu
+##                       http://cars9.uchicago.edu/~newville/ifeffit/
+##
+##	  The latest version of Demeter can always be found at
+##          http://cars9.uchicago.edu/~ravel/software/exafs/
+##
+## -------------------------------------------------------------------
+##     All rights reserved. This program is free software; you can
+##     redistribute it and/or modify it provided that the above notice
+##     of copyright, these terms of use, and the disclaimer of
+##     warranty below appear in the source code and documentation, and
+##     that none of the names of Argonne National Laboratory, The
+##     University of Chicago, University of Washington, or the authors
+##     appear in advertising or endorsement of works derived from this
+##     software without specific prior written permission from all
+##     parties.
+##
+##     THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+##     EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
+##     OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+##     NONINFRINGEMENT.  IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
+##     HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
+##     WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+##     FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
+##     OTHER DEALINGS IN THIS SOFTWARE.
+## -------------------------------------------------------------------
+###########################################################################
+
+
+## This file contains the fft configuration group for Demeter
+
+
+######################################################################
+section=fft
+section_description
+  These parameters determine how forward Fourier transforms
+  are done by Demeter.
+
+##fft_edge		  => 'K',	       # K L1 L2 L3
+
+variable=dk
+type=real
+default=1
+units=inverse Angstroms
+description
+  The default width of the window sill used in the forward Fourier
+  transform.  0 is used if this is set to less than 0.
+
+variable=kwindow
+type=list
+default=hanning
+options=hanning kaiser-bessel welch parzen sine
+description
+  The default window type to use for the forward Fourier transform.
+
+variable=kmin
+type=real
+default=3
+units=inverse Angstroms
+description
+  The default value for the lower range of the forward Fourier
+  transform.
+
+variable=kmax
+type=real
+default=-2
+units=inverse Angstroms
+description
+  The default value for the upper range of the forward Fourier
+  transform.  0 means to use the value predicted by Ifeffit's guess of
+  the point at which the level of noise exceeds the signal in the
+  data.  A negative value means that kmax will be that many inverse
+  Angstroms before the last data point.
+
+variable=pc
+type=boolean
+onvalue=yes
+offvalue=no
+default=false
+description
+  True means to apply central atom phase corrections by default to the
+  forward Fourier transform.
+
+variable=rmax_out
+type=real
+default=10
+units=Angstroms
+description
+  This is the default value for the maximum value in R-space arrays
+  written by Ifeffit.  Thus this sets the upper limit in R of the data
+  that can be displayed.  If you wish to view the spectrum beyond this
+  value, you must increase it.  The largest sensible value is 31.
+  Making this smaller than, say, 8 would probably be very foolish.

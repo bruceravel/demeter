@@ -1,0 +1,9 @@
+{ # -*- ifm -*-
+  # import xmu template
+  #   {$D} returns the ifeffit group name
+  #   {$D->get("parameter")} returns the value of that parameter
+}
+##| Reading mu data "{$D->get('file')}" as group {$D}
+read_data(file  = "{$D->get('file')}",
+          group = {$D},
+	  type  = xmu)

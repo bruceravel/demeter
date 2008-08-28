@@ -1,0 +1,4 @@
+
+This directory contains all the data for the Demeter configuration
+system.  The main configuration file is "config.demeter_conf".  All of
+the remaining files are *included* in the config.demeter_conf file.

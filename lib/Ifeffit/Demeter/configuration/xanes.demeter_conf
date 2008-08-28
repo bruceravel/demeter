@@ -1,0 +1,80 @@
+## -*- config -*-
+###########################################################################
+##                          Demeter is copyright (c) 2007 Bruce Ravel
+##                                                     bravel@bnl.gov
+##                                        http://xafs.org/BruceRavel/
+##
+##                   Ifeffit is copyright (c) 1992-2007 Matt Newville
+##                                         newville@cars.uchicago.edu
+##                       http://cars9.uchicago.edu/~newville/ifeffit/
+##
+##	  The latest version of Demeter can always be found at
+##          http://cars9.uchicago.edu/~ravel/software/exafs/
+##
+## -------------------------------------------------------------------
+##     All rights reserved. This program is free software; you can
+##     redistribute it and/or modify it provided that the above notice
+##     of copyright, these terms of use, and the disclaimer of
+##     warranty below appear in the source code and documentation, and
+##     that none of the names of Argonne National Laboratory, The
+##     University of Chicago, University of Washington, or the authors
+##     appear in advertising or endorsement of works derived from this
+##     software without specific prior written permission from all
+##     parties.
+##
+##     THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+##     EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
+##     OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+##     NONINFRINGEMENT.  IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
+##     HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
+##     WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+##     FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
+##     OTHER DEALINGS IN THIS SOFTWARE.
+## -------------------------------------------------------------------
+###########################################################################
+
+
+## This file contains the xanes configuration group for Demeter
+
+
+######################################################################
+section=xanes
+section_description
+  These variables set parameters related to Demeter's special treatment
+  of XANES data.
+
+variable=nor1
+type=real
+default=15
+units=eV (relative to e0)
+description
+  This is the default value for the lower bound of the normalization
+  range.  This should be positive, but not so large that it is outside
+  the range of the data.  A negative value means to set nor2 to that
+  many volts before the final data point.
+
+variable=nor2
+type=real
+default=0
+units=eV (relative to e0)
+description
+  This is the default value for the ipper bound of the normalization
+  range.  This should be positive.  If the value is 0 or such that it
+  is beyond the range of data, then nor2 will be set to the last data
+  point.  A negative value means to set nor2 to that many volts before
+  the final data point.
+
+variable=cutoff
+type=real
+default=250
+units=eV
+description
+  As Athena begins to import a data file, a check is performed to try
+  to guess if a mu(E) data file is actually a XANES measurement as
+  opposed to an EXAFS measurement.  This distinction is fairly
+  arbitrary.  If the difference between the initial quass of e0 and
+  last energy point is smaller than this value, then we presume that
+  these are XANES data.  One impact of this identification is to reset
+  the normalization range boundaries.  Set this value to 0 to skip the
+  test.
+

@@ -1,0 +1,8 @@
+{ # -*- ifm -*-
+  # template for overplot of chi(k)
+  #   {$D} returns the ifeffit group name
+  #   {$D->get("parameter")} returns the value of that parameter
+  #   {$P->get("parameter")} returns the value of a Plot parameter
+}
+plot({$D}.k, "{$D->get("plot_multiplier")}*{$D}.k^{$P->get("kweight")}*{$D}.chi+{$D->get("y_offset")}",
+     style={$P->get("datastyle")}, color="{$P->get("color")}", key="{$P->get("key")}")

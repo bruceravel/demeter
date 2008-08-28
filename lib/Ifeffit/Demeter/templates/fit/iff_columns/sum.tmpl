@@ -1,0 +1,8 @@
+{ # -*- ifm -*-
+  # ff2chi command template
+  #   {$D} returns the ifeffit group name
+  #   {$D->get("parameter")} returns the value of that parameter
+  #   {$F->get("parameter")} returns the value for the current Fit
+}
+ff2chi({$F->get("indeces")},
+       group = {$D}_fit)

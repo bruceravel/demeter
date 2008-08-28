@@ -1,0 +1,15 @@
+{ # -*- ifm -*-
+  # normalize the merged spectrum
+  #   {$D}  returns the ifeffit group name
+  # $ndata is a passed parameter and is the normalization constant for
+  # the merge (number of data sets or sum of importances)
+}
+{
+  $suff = ($C->get("merge_space") eq 'energy') ? 'xmu' : 'chi';
+  q{};
+}
+##| setting up arrays for merge
+set({$D}.{$C->get("merge_space")} = m___erge.{$C->get("merge_space")},
+    {$D}.{$suff} = m___erge.sum / {$C->get("ndata")} )
+erase m___erge_n1 m___erge_n2
+erase @group m___erge

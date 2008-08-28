@@ -1,0 +1,199 @@
+## -*- config -*-
+###########################################################################
+##                    Demeter is copyright (c) 2007, 2008 Bruce Ravel
+##                                                     bravel@bnl.gov
+##                                        http://xafs.org/BruceRavel/
+##
+##                   Ifeffit is copyright (c) 1992-2007 Matt Newville
+##                                         newville@cars.uchicago.edu
+##                       http://cars9.uchicago.edu/~newville/ifeffit/
+##
+##	  The latest version of Demeter can always be found at
+##          http://cars9.uchicago.edu/~ravel/software/exafs/
+##
+## -------------------------------------------------------------------
+##     All rights reserved. This program is free software; you can
+##     redistribute it and/or modify it provided that the above notice
+##     of copyright, these terms of use, and the disclaimer of
+##     warranty below appear in the source code and documentation, and
+##     that none of the names of Argonne National Laboratory, The
+##     University of Chicago, University of Washington, or the authors
+##     appear in advertising or endorsement of works derived from this
+##     software without specific prior written permission from all
+##     parties.
+##
+##     THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+##     EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
+##     OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+##     NONINFRINGEMENT.  IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
+##     HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
+##     WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+##     FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
+##     OTHER DEALINGS IN THIS SOFTWARE.
+## -------------------------------------------------------------------
+###########################################################################
+
+
+## This file contains gnuplot configuration group for Demeter
+
+
+######################################################################
+section=gnuplot
+section_description
+  These variables determine how plotting configuration is modified by
+  the gnuplot plotting backend. Colors can be gnuplot named colors (in
+  a gnuplot session type "show palette colornames" to see gnuplot's
+  named colors, or hexadecimal triplets (i.e. "#0000FF" for blue and
+  so on).
+
+
+variable=persist
+type=boolean
+default=false
+onvalue=1
+offvalue=0
+description
+  When true, the gnuplot window will persist after the application
+  exits.
+
+variable=terminal
+type=string
+default=wxt
+description
+  This is the terminal type to use when plotting with gnuplot.
+
+variable=font
+type=font
+default=Arial
+description
+  This is the font family to use in gnuplot plots.
+
+variable=fontsize
+type=positive integer
+default=11
+minint=8
+maxint=100
+description
+  This is the font size to use by default in gnuplot plots.
+
+variable=bg
+type=color
+default=white
+description
+  The background color of the plot.
+
+variable=fg
+type=color
+default=black
+description
+  The color used to draw the text and the axes of the plot.
+
+variable=gridcolor
+type=color
+default=#cccccc
+description
+  The color of the grid drawn on each plot.  If you do not want a
+  grid to be drawn, unset the showgrid parameter or set gridcolor to
+  the bg color.
+
+variable=c0
+type=color
+default=blue
+description
+  The color of the first line drawn in a plot.
+
+variable=c1
+type=color
+default=red
+description
+  The color of the second line drawn in a plot.
+
+variable=c2
+type=color
+default=dark-green
+description
+  The color of the third line drawn in a plot.
+
+variable=c3
+type=color
+default=dark-violet
+description
+  The color of the fourth line drawn in a plot.
+
+variable=c4
+type=color
+default=dark-orange
+description
+  The color of the fifth line drawn in a plot.
+
+variable=c5
+type=color
+default=brown
+description
+  The color of the sixth line drawn in a plot.
+
+variable=c6
+type=color
+default=dark-pink
+description
+  The color of the seventh line drawn in a plot.
+
+variable=c7
+type=color
+default=gold
+description
+  The color of the eighth line drawn in a plot.
+
+variable=c8
+type=color
+default=dark-cyan
+description
+  The color of the ninth line drawn in a plot.
+
+variable=c9
+type=color
+default=spring-green
+description
+  The color of the tenth line drawn in a plot.
+
+variable=markercolor
+type=color
+default=#008b8b
+description
+  The color of a marker.
+
+variable=datastyle
+type=list
+default=lines
+options=lines points linespoints
+description
+  The line style used to plot data after a fit.  Demeter does not
+  provide complete control over gnuplot lines styles via its
+  configuration system.
+
+variable=fitstyle
+type=list
+default=lines
+options=lines points linespoints
+description
+  The line style used to plot the fit after a fit.  Demeter does not
+  provide complete control over gnuplot lines styles via its
+  configuration system.
+
+variable=partstyle
+type=list
+default=lines
+options=slines points linespoints
+description
+  The line style used to plot parts of a fit (i.e. the window, the
+  residual, or the background).  Demeter does not provide complete
+  control over gnuplot lines styles via its configuration system.
+
+variable=pathstyle
+type=list
+default=lines
+options=lines points linespoints
+description
+  The line style used to plot paths used in a fit.  Demeter does not
+  provide complete control over gnuplot lines styles via its
+  configuration system.

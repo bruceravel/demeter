@@ -1,0 +1,7 @@
+{ # -*- ifm -*-
+  # template for finding the initial e0 value
+  #   {$D} returns the ifeffit group name
+  #   {$D->get(""parameter")} returns the value of that parameter
+}
+##| initial value of e0
+pre_edge({$D}.energy, {$D}.xmu)

@@ -1,0 +1,24 @@
+{ # -*- ifm -*-
+  # feffit command template
+  #   {$D} returns the ifeffit group name
+  #   {$D->get("parameter")} returns the value of that parameter
+  #   {$F->get("parameter")} returns the value for the current Fit
+}
+{
+  $kw = 1;
+  $kw = 1 if $D->get('fit_k1');
+  $kw = 2 if $D->get('fit_k2');
+  $kw = 3 if $D->get('fit_k3');
+  q{}
+}
+
+format = ascii
+rspout = yes    qspout = yes    kspout = yes
+all    = yes
+
+data   = {$D->get("file")}
+bkg    = {$D->truefalse("fit_do_bkg")}
+kmin   = {$D->get("fft_kmin")}        kmax = {$D->get("fft_kmax")}
+dk     = {$D->get("fft_dk")}        kw   = {$kw}
+rmin   = {$D->get("bft_rmin")}      rmax = {$D->get("bft_rmax")}
+cormin = {$D->get("fit_cormin")}

@@ -1,0 +1,5 @@
+{ # -*- ifm -*-
+  # window preparation template in k space
+  #   {$D} returns the ifeffit group name
+}
+set win___dow = ceil({$D}.chir_mag)*{$P->get('window_multiplier')}*{$D->get("plot_multiplier")}

@@ -1,0 +1,38 @@
+{ # -*- ifm -*-
+  # data parameter report
+  #   {$D} returns the ifeffit group name
+  #   {$D->get("parameter")} returns the value of that parameter
+}
+{
+  ## write out limited precision for some parameters
+  $spl1e = sprintf("%.3f", $D->get("bkg_spl1e"));
+  $spl2e = sprintf("%.3f", $D->get("bkg_spl2e"));
+  $spl1  = sprintf("%.3f", $D->get("bkg_spl1"));
+  $spl2  = sprintf("%.3f", $D->get("bkg_spl2"));
+  $nc0   = sprintf("%.6f", $D->get("bkg_nc0"));
+  $nc1   = sprintf("%.6g", $D->get("bkg_nc1"));
+  $nc2   = sprintf("%.6g", $D->get("bkg_nc2"));
+  $int   = sprintf("%.6f", $D->get("bkg_int"));
+  $slope = sprintf("%.6g", $D->get("bkg_slope"));
+  q{}
+}
+.  Element={$D->get("bkg_z")}   Edge={$D->get("fft_edge")}
+Background parameters
+.  E0={$D->get("bkg_e0")}  Eshift={$D->get("bkg_eshift")}  Rbkg={$D->get("bkg_rbkg")}
+.  Standard=None
+.  k-weight={$D->get("bkg_kw")}  Edge step={$D->get("bkg_step")}
+.  Fixed step={$D->yesno("bkg_fixstep")}    Flatten={$D->yesno("bkg_flatten")}
+.  Pre-edge range: [ {$D->get("bkg_pre1")} : {$D->get("bkg_pre2")} ]
+.  Pre-edge line: {$int} + {$slope} * energy
+.  Normalization range: [ {$D->get("bkg_nor1")} : {$D->get("bkg_nor2")} ]
+.  Post-edge polynomial: {$nc0} + {$nc1} * en + {$nc2} * en^2
+.  Spline range (energy): [ {$spl1e} : {$spl2e} ]   Clamps: {$D->clamp($D->get("bkg_clamp1"))}/{$D->clamp($D->get("bkg_clamp2"))}
+.  Spline range (k): [ {$spl1} : {$spl2} ]
+Foreward FT parameters
+.  Kweight={$P->get("kweight")}   Window={$D->get("fft_kwindow")}   Phase correction={$D->get("fft_pc")}
+.  k-range: [ {$D->get("fft_kmin")} : {$D->get("fft_kmax")} ]   dk={$D->get("fft_dk")}
+Backward FT parameters
+.  R-range: [ {$D->get("bft_rmin")} : {$D->get("bft_rmax")} ]
+.  dR={$D->get("bft_dr")}   Window={$D->get("bft_rwindow")}
+Plotting parameters
+.  Multiplier={$D->get("plot_multiplier")}   Y-offset={$D->get("y_offset")}

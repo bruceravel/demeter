@@ -1,0 +1,16 @@
+{ # -*- ifm -*-
+  # convolute a data set
+  #   {$D}  returns the ifeffit group name
+  #   {$D->get("parameter")} returns the value of that parameter
+  #   {$C->get("parameter")} returns the generic parameter
+}
+{
+  $x = ($C->get("conv_which") eq 'xmu') ? 'energy' : 'k';
+  $type = 'gconvolve';
+  ($type = 'lconvolve') if (lc($C->get("conv_type")) =~ m{\Al});
+  q{}
+}
+##|
+##| convolution {$D}
+set {$D}.{$C->get("conv_which")} = {$type}({$D}.{$x}, {$D}.{$C->get("conv_which")}, {$C->get("conv_width")})
+##|

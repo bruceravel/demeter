@@ -1,0 +1,80 @@
+## -*- config -*-
+###########################################################################
+##                          Demeter is copyright (c) 2007 Bruce Ravel
+##                                                     bravel@bnl.gov
+##                                        http://xafs.org/BruceRavel/
+##
+##                   Ifeffit is copyright (c) 1992-2007 Matt Newville
+##                                         newville@cars.uchicago.edu
+##                       http://cars9.uchicago.edu/~newville/ifeffit/
+##
+##	  The latest version of Demeter can always be found at
+##          http://cars9.uchicago.edu/~ravel/software/exafs/
+##
+## -------------------------------------------------------------------
+##     All rights reserved. This program is free software; you can
+##     redistribute it and/or modify it provided that the above notice
+##     of copyright, these terms of use, and the disclaimer of
+##     warranty below appear in the source code and documentation, and
+##     that none of the names of Argonne National Laboratory, The
+##     University of Chicago, University of Washington, or the authors
+##     appear in advertising or endorsement of works derived from this
+##     software without specific prior written permission from all
+##     parties.
+##
+##     THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+##     EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
+##     OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+##     NONINFRINGEMENT.  IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
+##     HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
+##     WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+##     FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
+##     OTHER DEALINGS IN THIS SOFTWARE.
+## -------------------------------------------------------------------
+###########################################################################
+
+
+## This file contains the clamp configuration group for Demeter
+
+######################################################################
+section=clamp
+section_description
+  These variables set the numeric values that correspond to the
+  descriptive values of the spline clamps used in background removal.
+
+variable=none
+type=positive integer
+default=0
+description
+  The numeric value for the none spline clamp.
+
+variable=slight
+type=positive integer
+default=3
+description
+  The numeric value for the slight spline clamp.
+
+variable=weak
+type=positive integer
+default=6
+description
+  The numeric value for the weak spline clamp.
+
+variable=medium
+type=positive integer
+default=12
+description
+  The numeric value for the medium spline clamp.
+
+variable=strong
+type=positive integer
+default=24
+description
+  The numeric value for the strong spline clamp.
+
+variable=rigid
+type=positive integer
+default=96
+description
+  The numeric value for the rigid spline clamp.
+

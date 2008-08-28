@@ -1,0 +1,28 @@
+{ # -*- ifm -*-
+  # flatten template
+  #   {$D} returns the ifeffit group name
+  #   {$D->get("parameter")} returns the value of that parameter
+  # see the Text::Template document for an explanation of $OUT
+}
+##|
+##| make the flattened, normalized spectrum
+##|   flat_cN are the difference in slope and curvature between
+##|   the pre- and post-edge polynomials
+##|
+set {$D}.postline = {$D->get("bkg_nc0")}+{$D->get("bkg_nc1")}*({$D}.energy+{$D->get("bkg_eshift")})+{$D->get("bkg_nc2")}*({$D}.energy+{$D->get("bkg_eshift")})**2
+##|
+##|  compute a step function
+set c___enter     = {$D->get("bkg_e0")} - {$D->get('bkg_eshift')}
+set n___step      = nofx({$D}.energy, c___enter) - 1
+set n___points    = npts({$D}.energy) - n___step
+set t___oss.zeros = zeros(n___step)
+set t___oss.ones  = ones(n___points)
+set {$D}.theta = join(t___oss.zeros, t___oss.ones)
+##|
+set flat_c0 = {$D->get('bkg_nc0')} - {$D->get('bkg_int')}
+set flat_c1 = {$D->get('bkg_nc1')} - {$D->get('bkg_slope')}
+set flat_c2 = {($D->get('bkg_nnorm')==2) ? 0 : $D->get('bkg_nc2')}
+set {$D}.line = (flat_c0 + flat_c1*({$D}.energy+{$D->get('bkg_eshift')}) + flat_c2*({$D}.energy+{$D->get('bkg_eshift')})**2)
+set {$D}.flat = (({$D->get('bkg_fitted_step')} - {$D}.line)*{$D}.theta + {$D}.prex) / {$D->get('bkg_step')}
+set {$D}.fbkg = ({$D}.bkg-{$D}.preline+({$D->get('bkg_fitted_step')}-{$D}.line)*{$D}.theta)/{$D->get('bkg_step')}
+{#      if not $self->get('is_xanes');}

@@ -1,0 +1,53 @@
+
+use File::Spec;
+
+$CPAN::Config = {
+  'auto_commit' => q[0],
+  'build_cache' => q[10],
+  'build_dir' => File::Spec->catfile($ENV{__INSTALLING_BRPERL}, "CPAN", "build"),
+  'cache_metadata' => q[1],
+  'commandnumber_in_prompt' => q[1],
+  'cpan_home' => File::Spec->catfile($ENV{__INSTALLING_BRPERL}, "CPAN"),
+  'dontload_hash' => {  },
+  'ftp' => q[/usr/bin/ftp],
+  'ftp_passive' => q[1],
+  'ftp_proxy' => q[],
+  ##'ftp_proxy' => q[192.168.1.130:3128], # BNL
+  'getcwd' => q[cwd],
+  'gpg' => q[/usr/bin/gpg],
+  'gzip' => q[/bin/gzip],
+  'histfile' => File::Spec->catfile($ENV{__INSTALLING_BRPERL}, "CPAN", "histfile"),
+  'histsize' => q[100],
+  'http_proxy' => q[],
+  ##'http_proxy' => q[192.168.1.130:3128], # BNL
+  'inactivity_timeout' => q[0],
+  'index_expire' => q[1],
+  'inhibit_startup_message' => q[0],
+  'keep_source_where' => File::Spec->catfile($ENV{__INSTALLING_BRPERL}, "CPAN", "source"),
+  'lynx' => q[],
+  'make' => q[/usr/bin/make],
+  'make_arg' => q[],
+  'make_install_arg' => q[],
+  'make_install_make_command' => q[/usr/bin/make],
+  'makepl_arg' => q[INSTALLDIRS=site],
+  'mbuild_arg' => q[],
+  'mbuild_install_arg' => q[],
+  'mbuild_install_build_command' => q[./Build],
+  'mbuildpl_arg' => q[],
+  'ncftp' => q[],
+  'ncftpget' => q[],
+  'no_proxy' => q[],
+  'pager' => q[/usr/bin/less],
+  'prerequisites_policy' => q[ask],
+  'scan_cache' => q[atstart],
+  'shell' => q[/bin/bash],
+  'tar' => q[/bin/tar],
+  'term_is_latin' => q[1],
+  'term_ornaments' => q[1],
+  'unzip' => q[/usr/bin/unzip],
+  'urllist' => [q[http://www.perl.com/CPAN/]],
+  'use_sqlite' => q[0],
+  'wget' => q[/usr/bin/wget],
+};
+1;
+__END__

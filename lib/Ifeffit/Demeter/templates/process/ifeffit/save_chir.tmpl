@@ -1,0 +1,20 @@
+ # -*- ifm -*-{
+  # save chi(R) template
+  #   {$S} returns the ifeffit group name
+  #   {$D} returns the data group name
+  #   {$D->get("parameter")} returns the value of that parameter
+  # the filename and titles were passed to the template method.
+  # $titles should contain a string that Ifeffit will be able to
+  # interpret as a set of title lines already set in Ifeffit.  one
+  # common way of doing this is with a glob structure, like
+  # $dem_data_*
+  # example:
+  #   $string = $self->template("process", "save_chir",
+  #                             {filename=>$filename, titles=>"\$dem_data_*"});
+}
+##|
+##| saving "{$S->label}" as chi(R)
+write_data(file="{$filename}", ${$titles}, ${$D}_title_*,
+           label="r chir_re chir_im chir_mag chir_pha win",
+           {$S}.r, {$S}.chir_re, {$S}.chir_im,
+           {$S}.chir_mag, {$S}.chir_pha, {$S}.rwin)

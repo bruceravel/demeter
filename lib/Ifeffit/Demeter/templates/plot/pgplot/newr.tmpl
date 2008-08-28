@@ -1,0 +1,18 @@
+{ # -*- ifm -*-
+  # template for new plot of chi(R)
+  #   {$D} returns the ifeffit group name
+  #   {$D->get("parameter")} returns the value of that parameter
+  #   {$P->get("parameter")} returns the value of a Plot parameter
+}
+{
+ ## this code fragment chooses the correct array
+ my %suffixes = ('m'=>"chir_mag", e=>"chir_mag", r=>"chir_re", i=>"chir_im", p=>"chir_pha");
+ my $part     = lc($P->get("r_pl"));
+ $suffix      = $suffixes{$part};
+ q{}
+}
+newplot({$D}.r, "{$D->get("plot_multiplier")}*{$D}.{$suffix}+{$D->get("y_offset")}",
+        xlabel="{$P->get("xlabel")}", ylabel="{$P->get("ylabel")}",
+	grid, gridcolor="{$P->get("gridcolor")}", xmin={$P->get("rmin")}, xmax={$P->get("rmax")},
+	style={$P->get("datastyle")}, color="{$P->get("color")}", key="{$P->get("key")}", 
+	title="{$P->get("title")}", fg="{$P->get("fg")}", bg="{$P->get("bg")}")
