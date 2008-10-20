@@ -32,6 +32,12 @@ sub find_path {
   my ($self, @params) = @_;
   ## coerce arguments into a hash
   my %params = @params;
+
+  ($params{tag}      = $params{tags})      if (exists($params{tags})      and not exists($params{tag}));
+  ($params{tagmatch} = $params{tagsmatch}) if (exists($params{tagsmatch}) and not exists($params{tagmatch}));
+  ($params{ipot}     = $params{ipots})     if (exists($params{ipots})     and not exists($params{ipot}));
+  ($params{element}  = $params{elements})  if (exists($params{elements})  and not exists($params{element}));
+
   $params{gt}       ||= 0;
   $params{lt}       ||= 0;
   $params{tagmatch} ||= 0;
@@ -43,6 +49,9 @@ sub find_path {
   ## scalar valued tests need to be made into an array ref
   if ($params{tag} and (ref($params{tag}) ne 'ARRAY')) {
     $params{tag} = [ $params{tag} ];
+  };
+  if ($params{tagmatch} and (ref($params{tagmatch}) ne 'ARRAY')) {
+    $params{tagmatch} = [ $params{tagmatch} ];
   };
   if ($params{ipot} and (ref($params{ipot}) ne 'ARRAY')) {
     $params{ipot} = [ $params{ipot} ];
@@ -66,7 +75,10 @@ sub find_path {
     $is_the_one &&= ($p->fuzzy < $params{gt})    if $params{gt};
     $is_the_one &&= ($p->fuzzy > $params{lt})    if $params{lt};
 
-  DEGEN: foreach my $d ($p->all_strings) {
+    next if not $is_the_one;
+
+  DEGEN: foreach my $d (@{ $p->degeneracies }) {
+      my $ok_so_far = $is_the_one;
       my %hash = $p->details($d);
       # print join(" ", @{ $hash{tags}     }), $/;
       # print join(" ", @{ $hash{ipots}    }), $/;
@@ -75,22 +87,26 @@ sub find_path {
       ## only consider these tests if this path has the same number of
       ## legs as the path we are looking for
       my @this = @{ $hash{tags} };
-      my @test = ($params{tag})  ? @{ $params{tag} }
-	       : ($params{ipot}) ? @{ $params{ipot} }
-	       : ($params{element}) ? @{ $params{element} }
-	       :                     () ;
+      my @test = ($params{tag})      ? @{ $params{tag} }
+	       : ($params{tagmatch}) ? @{ $params{tagmatch} }
+	       : ($params{ipot})     ? @{ $params{ipot} }
+	       : ($params{element})  ? @{ $params{element} }
+	       :                       () ;
       next PATHS if ($#this != $#test);
 
-      $is_the_one &&= all {$_} ( pairwise {$a eq $b} @{ $hash{tags} }, @{ $params{tag} } )
+      $ok_so_far &&= all {$_} ( pairwise {$a eq $b}     @{ $hash{tags} },     @{ $params{tag} } )
 	if $params{tag};
 
-      $is_the_one &&= all {$_} ( pairwise {$a == $b} @{ $hash{ipots} }, @{ $params{ipot} } )
+      $ok_so_far &&= all {$_} ( pairwise {($a =~ m{$b}i) ? 1 : 0} @{ $hash{tags} },     @{ $params{tagmatch} } )
+	if $params{tagmatch};
+
+      $ok_so_far &&= all {$_} ( pairwise {$a == $b}     @{ $hash{ipots} },    @{ $params{ipot} } )
 	if $params{ipot};
 
-      $is_the_one &&= all {$_} ( pairwise {$a eq $b} @{ $hash{elements} }, @{ $params{element} } )
+      $ok_so_far &&= all {$_} ( pairwise {$a eq $b}     @{ $hash{elements} }, @{ $params{element} } )
 	if $params{element};
 
-      return $p if $is_the_one;
+      return $p if $ok_so_far;
     };
   };
 };
