@@ -1,16 +1,16 @@
 { # -*- ifm -*-
   # add noise to mu(E) data
-  #   {$D}  returns the ifeffit group name
-  #   {$D->get("parameter")} returns the value of that parameter
-  #   {$C->get("parameter")} returns the generic parameter
+  #   {$D->group}  returns the ifeffit group name
+  #   {$D->parameter} returns the value of that parameter
+  #   {$C->parameter} returns the generic parameter
 }
 {
   $seed = sprintf("%.5f", rand(1000));
   q{}
 }
 ##|
-##| adding noise {$C->get("noise")} to {$D}
-set c___onv_nn = npts({$D}.{$C->get("noise_which")})
-random(output={$D}.random, npts=c___onv_nn, dist=normal, sigma={$C->get("noise_level")}, seed={$seed})
-set {$D}.{$C->get("noise_which")} = {$D}.{$C->get("noise_which")} + {$D}.random
+##| adding noise {$C->get("noise")} to {$D->group}
+set c___onv_nn = npts({$D->group}.{$C->get("noise_which")})
+random(output={$D->group}.random, npts=c___onv_nn, dist=normal, sigma={$C->get("noise_level")}, seed={$seed})
+set {$D->group}.{$C->get("noise_which")} = {$D->group}.{$C->get("noise_which")} + {$D->group}.random
 ##|

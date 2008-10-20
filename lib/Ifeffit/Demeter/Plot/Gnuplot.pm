@@ -15,10 +15,10 @@ package Ifeffit::Demeter::Plot::Gnuplot;
 
 =cut
 
-use strict;
-use warnings;
+use Moose;
+extends 'Ifeffit::Demeter::Plot';
+
 #use diagnostics;
-use Class::Std;
 use Carp;
 use Fatal qw(open close);
 use Regexp::List;
@@ -26,117 +26,121 @@ use Regexp::Optimizer;
 use Regexp::Common;
 use Readonly;
 Readonly my $NUMBER => $RE{num}{real};
+use String::Random qw(random_string);
 
-{
-  use base 'Ifeffit::Demeter::Plot';
+after 'start_plot' => sub {
+  my ($self) = @_;
+  $self->cleantemp;
+  my $command = $self->template("plot", "start");
+  $self->dispose($command, "plotting");
+  $self->lastplot(q{});
+};
 
-  sub gnuplot_start {
-    my ($self) = @_;
-    my $command = $self->template("plot", "start");
-    $self->dispose($command, "plotting");
-    $self->set({lastplot=>q{}});
+override 'end_plot' => sub {
+  my ($self) = @_;
+  $self->mode->external_plot_object->gnuplot_cmd("quit");
+  return $self;
+};
+
+override 'tempfile' => sub {
+  my ($self) = @_;
+  my $this = File::Spec->catfile($self->stash_folder, 'gp_'.random_string('cccccccc'));
+  $self->add_tempfile($this);
+  return $this;
+};
+
+override 'legend' => sub {
+  my ($self, @arguments) = @_;
+  my %args = @arguments;
+  foreach my $which (qw(dy y x)) {
+    my $kk = "key_".$which;
+    $args{$which} ||= $args{$kk};
+    $args{$which} ||= $self -> po -> $kk;
   };
 
-  sub end_plot {
-    my ($self) = @_;
-    $self->dispose("quit", "plotting");
-    return $self;
+  foreach my $key (keys %args) {
+    next if ($key !~ m{\A(?:dy|x|y)\z});
+    my $kk = "key_".$key;
+    carp("$key must be a positive number."), ($args{$key}=$self->po->$kk) if ($args{$key} !~ m{$NUMBER});
+    carp("$key must be a positive number."), ($args{$key}=$self->po->$kk) if ($args{$key} < 0);
+    $self->$kk($args{$key});
   };
+  ## this is wrong!!!
+  #$self->mode->external_plot_object->gnuplot_cmd("set key inside left top");
+  return $self;
+};
 
-  sub tempfile {
-    my ($self) = @_;
-    my $this = File::Spec->catfile($self->stash_folder, 'gp_'.Ifeffit::Demeter::Tools->random_string(8));
-    $self->Push({tempfiles => $this});
-    return $this;
-  };
-  sub legend {
-    my ($self, $arguments) = @_;
-    foreach my $which (qw(dy y x)) {
-      $arguments->{$which} ||= $arguments->{"key_".$which};
-      $arguments->{$which} ||= $self -> po ->get("key_".$which);
-    };
+sub file {
+  my ($self, $type, $file) = @_;
+  my $old = $self->get('lastplot');
+  ## need to parse $old to replace replot commands with
+  ## continuations so that the plot ends up in a single image
+  my $command = $self->template("plot", "file", { device => $type,
+						  file   => $file });
+  $self -> dispose($command, "plotting");
+  #$self -> dispose($old, "plotting");
+  #$command = $self->template("plot", "restore");
+  #$self -> dispose($command, "plotting");
+  $self -> set(lastplot=>$old);
+  return $self;
+};
 
-    foreach my $key (keys %$arguments) {
-      next if ($key !~ m{\A(?:dy|x|y)\z});
-      carp("$key must be a positive number."), ($arguments->{$key}=$self->po->("key_".$key)) if ($arguments->{$key} !~ m{$NUMBER});
-      carp("$key must be a positive number."), ($arguments->{$key}=$self->po->("key_".$key)) if ($arguments->{$key} < 0);
-      $self->set({ "key_".$key=>$arguments->{$key} });
-    };
-    ## this is wrong!!!
-    #$self->get_mode('external_plot_object')->gnuplot_cmd("set key inside left top");
-    return $self;
-  };
+override 'font' => sub {
+  my ($self, @arguments) = @_;
+  my %args = @arguments;
+  $args{font} ||= $args{charfont};
+  $args{size} ||= $args{charsize};
+  $args{font} ||= $self->co->default('gnuplot','font');
+  $args{size} ||= $self->co->default('gnuplot','fontsize');
+  ## need to verify that font exists...
+  $self->co->set_default('gnuplot', 'font',     $args{font});
+  $self->co->set_default('gnuplot', 'fontsize', $args{size});
+  $self->dispose($self->template("plot", "start"), "plotting");
+  return $self;
+};
 
-  sub file {
-    my ($self, $type, $file) = @_;
-    my $old = $self->get('lastplot');
-    ## need to parse $old to replace replot commands with
-    ## continuations so that the plot ends up in a single image
-    my $command = $self->template("plot", "file", { device => $type,
-						    file   => $file });
-    $self -> dispose($command, "plotting");
-    #$self -> dispose($old, "plotting");
-    #$command = $self->template("plot", "restore");
-    #$self -> dispose($command, "plotting");
-    $self -> set({lastplot=>$old});
-    return $self;
-  };
+sub replot {
+  my ($self) = @_;
+  carp("Ifeffit::Demeter::Plot::Gnuplot: Cannot replot, there is no previous plot."), return $self if ($self->get('lastplot') =~ m{\A\s*\z});
+  $self -> dispose($self->get('lastplot'), "plotting");
+  return $self;
+};
 
-  sub font {
-    my ($self, $arguments) = @_;
-    $arguments->{font} ||= $arguments->{charfont};
-    $arguments->{size} ||= $arguments->{charsize};
-    $arguments->{font} ||= $self->config->default('gnuplot','font');
-    $arguments->{size} ||= $self->config->default('gnuplot','fontsize');
-    ## need to verify that font exists...
-    $self->config->set_default('gnuplot', 'font',     $arguments->{font});
-    $self->config->set_default('gnuplot', 'fontsize', $arguments->{size});
-    $self->dispose($self->template("plot", "start"), "plotting");
-    return $self;
-  };
-
-  sub replot {
-    my ($self) = @_;
-    carp("Ifeffit::Demeter::Plot::Gnuplot: Cannot replot, there is no previous plot."), return $self if ($self->get('lastplot') =~ m{\A\s*\z});
-    $self -> dispose($self->get('lastplot'), "plotting");
-    return $self;
-  };
-
-  sub gnuplot_kylabel {
-    my ($self) = @_;
-    my $w = $self->get('kweight');
-    if ($w == 1) {
-      return 'k {\267} {/Symbol c}(k)&{aa}({\101})';
-    } elsif ($w == 0) {
-      return '{/Symbol c}(k)';
-    } else {
-      return sprintf('k^%s {\267} {/Symbol c}(k)&{aa}({\305}^{-%s})', $w, $w);
-    };
-  };
-
-  sub gnuplot_rylabel {
-    my ($self) = @_;
-    my $w = $self->get('kweight');
-    my $part = $self->get('r_pl');
-    my ($open, $close) = ($part eq 'm') ? ('{/*1.25 |}',    '{/*1.25 |}')
-                       : ($part eq 'r') ? ('{/*1.25 Re[}',  '{/*1.25 ]}')
-                       : ($part eq 'i') ? ('{/*1.25 Im[}',  '{/*1.25 ]}')
-                       : ($part eq 'p') ? ('{/*1.25 Pha[}', '{/*1.25 ]}')
-		       :                  ('{/*1.25 Env[}', '{/*1.25 ]}');
-    return sprintf('%s{/Symbol c}(R)%s&{aa}({\305}^{-%s})', $open, $close, $w+1);
-  };
-  sub gnuplot_qylabel {
-    my ($self) = @_;
-    my $w = $self->get('kweight');
-    my $part = $self->get('q_pl');
-    my ($open, $close) = ($part eq 'm') ? ('{/*1.25 |}',    '{/*1.25 |}')
-                       : ($part eq 'r') ? ('{/*1.25 Re[}',  '{/*1.25 ]}')
-                       : ($part eq 'i') ? ('{/*1.25 Im[}',  '{/*1.25 ]}')
-                       : ($part eq 'p') ? ('{/*1.25 Pha[}', '{/*1.25 ]}')
-		       :                  ('{/*1.25 Env[}', '{/*1.25 ]}');
-    return sprintf('%s{/Symbol c}(q)%s&{aa}({\305}^{-%s})', $open, $close, $w);
+sub gnuplot_kylabel {
+  my ($self) = @_;
+  my $w = $self->kweight;
+  if ($w == 1) {
+    return 'k {\267} {/Symbol c}(k)&{aa}({\101})';
+  } elsif ($w == 0) {
+    return '{/Symbol c}(k)';
+  } else {
+    return sprintf('k^%s {\267} {/Symbol c}(k)&{aa}({\305}^{-%s})', $w, $w);
   };
 };
+
+sub gnuplot_rylabel {
+  my ($self) = @_;
+  my $w = $self->kweight;
+  my $part = $self->r_pl;
+  my ($open, $close) = ($part eq 'm') ? ('{/*1.25 |}',    '{/*1.25 |}')
+                     : ($part eq 'r') ? ('{/*1.25 Re[}',  '{/*1.25 ]}')
+                     : ($part eq 'i') ? ('{/*1.25 Im[}',  '{/*1.25 ]}')
+                     : ($part eq 'p') ? ('{/*1.25 Pha[}', '{/*1.25 ]}')
+		     :                  ('{/*1.25 Env[}', '{/*1.25 ]}');
+  return sprintf('%s{/Symbol c}(R)%s&{aa}({\305}^{-%s})', $open, $close, $w+1);
+};
+sub gnuplot_qylabel {
+  my ($self) = @_;
+  my $w = $self->kweight;
+    my $part = $self->q_pl;
+  my ($open, $close) = ($part eq 'm') ? ('{/*1.25 |}',    '{/*1.25 |}')
+                     : ($part eq 'r') ? ('{/*1.25 Re[}',  '{/*1.25 ]}')
+                     : ($part eq 'i') ? ('{/*1.25 Im[}',  '{/*1.25 ]}')
+                     : ($part eq 'p') ? ('{/*1.25 Pha[}', '{/*1.25 ]}')
+		     :                  ('{/*1.25 Env[}', '{/*1.25 ]}');
+  return sprintf('%s{/Symbol c}(q)%s&{aa}({\305}^{-%s})', $open, $close, $w);
+};
+
 1;
 
 =head1 NAME
@@ -145,11 +149,16 @@ Ifeffit::Demeter::Plot::Gnuplot - Using Gnuplot with Demeter
 
 =head1 VERSION
 
-This documentation refers to Ifeffit::Demeter version 0.1.
+This documentation refers to Ifeffit::Demeter version 0.2.
 
 =head1 SYNOPSIS
 
+  use Ifeffit::Demeter (:gnuplot);
+
+or
+
   use Ifeffit::Demeter;
+   ... and later ...
   Ifeffit::Demeter -> plot_with("gnuplot");
 
 =head1 DESCRIPTION
@@ -214,7 +223,7 @@ L<http://cars9.uchicago.edu/~ravel/software/>
 Copyright (c) 2006-2008 Bruce Ravel (bravel AT bnl DOT gov). All rights reserved.
 
 This module is free software; you can redistribute it and/or
-modify it under the same terms as Perl itself. See L<perlartistic>.
+modify it under the same terms as Perl itself. See L<perlgpl>.
 
 This program is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of

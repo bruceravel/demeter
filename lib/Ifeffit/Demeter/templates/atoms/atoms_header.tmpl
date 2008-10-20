@@ -1,15 +1,17 @@
 { # -*- ifm -*-
   # atoms keywords
-  #   {$A->get("parameter")} returns an Atoms attribute
+  #   {$A->parameter} returns an Atoms attribute
   #   {$A->out("parameter")} returns a formatted Atoms real-valued attribute
-  #   {$C->get("parameter")} returns a Cell attribute
+  #   {$C->parameter} returns a Cell attribute
   #   {$C->out("parameter")} returns a formatted Cell real-valued attribute
+  $prefix ||= q{};
+  q{}
 }
-{foreach $t (@{ $A->get("titles") }) { $OUT .= "title = $t\n";}}<<->>
-space = {$A->get("space")}
-a     = {$C->out("a")}    b    = {$C->out("b")}    c     = {$C->out("c")}
-alpha = {$C->out("alpha")}    beta = {$C->out("beta")}    gamma = {$C->out("gamma")}
-rmax  = {$A->out("rmax")}    core  = {$A->get("rmax")}
-shift = 0 0 0  # fix me!
-atoms
-# el.     x           y           z        tag
+<<>>{foreach $t (@{ $A->titles }) { $OUT .= "${prefix}title = $t\n";}}<<->>
+{$prefix}space = {$A->space}
+{$prefix}a     = {$A->out("a")}    b    = {$A->out("b")}    c     = {$A->out("c")}
+{$prefix}alpha = {$A->out("alpha")}    beta = {$A->out("beta")}    gamma = {$A->out("gamma")}
+{$prefix}rmax  = {$A->out("rmax")}    core  = {$A->rmax}
+{$prefix}shift =   {join("  ", @{ $A->shift })}
+{$prefix}atoms
+{$prefix}# el.     x           y           z        tag

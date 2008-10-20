@@ -1,13 +1,13 @@
 { # -*- ifm -*-
   # truncate a data group
-  #   {$D}  returns the ifeffit group name
-  #   {$D->get("parameter")} returns the value of that parameter
+  #   {$D->group}  returns the ifeffit group name
+  #   {$D->parameter} returns the value of that parameter
   #   {$C->get("parameter")} returns the generic parameter
 }
 ##|
-##| truncate {$D} {$C->get("trun_ba")} {$C->get("trun_value")} in {$C->get("trun_x")}
-set(trun___n    = nofx({$D}.{$C->get("trun_x")}, {$C->get("trun_value")}),
-    trun___end  = npts({$D}.{$C->get("trun_x")}),
-    {$D}.energy = slice({$D}.{$C->get("trun_x")}, trun___n, trun___end),
-    {$D}.xmu    = slice({$D}.{$C->get("trun_y")}, trun___n, trun___end) )
+##| truncate {$D->group} {$C->get("trun_ba")} {$C->get("trun_value")} in {$C->get("trun_x")}
+set(trun___n    = nofx({$D->group}.{$C->get("trun_x")}, {$C->get("trun_value")}),
+    trun___end  = npts({$D->group}.{$C->get("trun_x")}),
+    {$D->group}.energy = slice({$D->group}.{$C->get("trun_x")}, trun___n, trun___end),
+    {$D->group}.xmu    = slice({$D->group}.{$C->get("trun_y")}, trun___n, trun___end) )
 ##|

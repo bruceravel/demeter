@@ -15,14 +15,18 @@ package Ifeffit::Demeter::Feff;
 
 =cut
 
-use strict;
-use warnings;
-use Class::Std;
-use Carp;
-use Cwd;
+use Moose;
+extends 'Ifeffit::Demeter';
+use MooseX::AttributeHelpers;
+use Ifeffit::Demeter::StrTypes qw( AtomsEdge FeffCard );
+use Ifeffit::Demeter::NumTypes qw( Natural NonNeg PosInt );
+with 'Ifeffit::Demeter::Feff::Paths';
+with 'Ifeffit::Demeter::Feff::Sanity';
 
 use Compress::Zlib;
+use Cwd;
 use Fatal qw(open close);
+use File::Path;
 use File::Spec;
 #use File::Temp qw(tempdir);
 use List::Util qw(sum);
@@ -33,97 +37,138 @@ use Tree::Simple;
 use Heap::Fibonacci;
 use Ifeffit;
 use Readonly;
-Readonly my $NLEGMAX => 4;
-Readonly my $CTOKEN  => '+';
-Readonly my $ETASUPPRESS => 1;
-use aliased 'Ifeffit::Demeter::ScatteringPath';
-use aliased 'Ifeffit::Demeter::Tools';
+Readonly my $NLEGMAX      => 4;
+Readonly my $CTOKEN       => '+';
+Readonly my $ETASUPPRESS  => 1;
+Readonly my $FUZZ_DEF     => 0.01;
+Readonly my $BETAFUZZ_DEF => 3;
+Readonly my $SEPARATOR    => '[ \t]*[ \t=,][ \t]*';
+#use aliased 'Ifeffit::Demeter::ScatteringPath';
+#use aliased 'Ifeffit::Demeter::Tools';
 
 
-{
-  use base qw( Ifeffit::Demeter
-               Ifeffit::Demeter::Feff::Sanity
-               Ifeffit::Demeter::Project
-             );
 
-  my @leglength = ();
-  my $shortest = 100000000;
+my @leglength = ();
+my $shortest = 100000000;
 
-  my $opt  = Regexp::List->new;
-  my %feff_defaults = (
-		       group       => q{},
-		       sites	   => [],
-		       potentials  => [],
-		       titles	   => [],
-		       absorber    => [],
-		       abs_index   => 0,
-		       edge	   => q{}, # 1-4 or K-L3
-		       s02	   => 0,   # positive float
-		       rmax	   => 0,   # positive float
-		       nlegs	   => 4,   # integer < 7
-		       rmultiplier => q{}, # positive float
-		       pcrit       => 0,   # positive float
-		       ccrit       => 0,   # positive float
-		       othercards  => [],
+my $opt  = Regexp::List->new;
 
-		       workspace   => q{}, # valid directory
-		       'misc.dat'  => q{},
-		       yamlfrom    => q{},
 
-		       fuzz         => 0,
-		       betafuzz     => 0,
-		       eta_suppress => 0,
+has 'file'        => (is => 'rw', isa => 'Str',  default => q{},
+		      trigger => sub{my ($self, $new) = @_; $self->rdinp if $new} );
+has 'sites' => (
+		metaclass => 'Collection::Array',
+		is        => 'rw',
+		isa       => 'ArrayRef',
+		default   => sub { [] },
+		provides  => {
+			      'push'  => 'push_sites',
+			      'pop'   => 'pop_sites',
+			      'clear' => 'clear_sites',
+			     }
+	       );
+has 'potentials' => (
+		     metaclass => 'Collection::Array',
+		     is        => 'rw',
+		     isa       => 'ArrayRef',
+		     default   => sub { [] },
+		     provides  => {
+				   'push'  => 'push_potentials',
+				   'pop'   => 'pop_potentials',
+				   'clear' => 'clear_potentials',
+				  }
+		    );
+has 'titles' => (
+		 metaclass => 'Collection::Array',
+		 is        => 'rw',
+		 isa       => 'ArrayRef',
+		 default   => sub { [] },
+		 provides  => {
+			       'push'  => 'push_titles',
+			       'pop'   => 'pop_titles',
+			       'clear' => 'clear_titles',
+			      }
+		);
+has 'absorber' => (
+		   metaclass => 'Collection::Array',
+		   is        => 'rw',
+		   isa       => 'ArrayRef',
+		   default   => sub { [] },
+		   provides  => {
+				 'push'  => 'push_absorber',
+				 'pop'   => 'pop_absorber',
+				 'clear' => 'clear_absorber',
+				}
+		  );
+has 'abs_index'    => (is=>'rw', isa =>  Natural,   default => 0);
+has 'edge'         => (is=>'rw', isa =>  AtomsEdge, default => 'K'); # 1-4 or K-L3
+has 's02'          => (is=>'rw', isa =>  NonNeg,    default => 1);   # positive float
+has 'rmax'         => (is=>'rw', isa =>  NonNeg,    default => 0);   # positive float
+has 'nlegs'        => (is=>'rw', isa =>  PosInt,    default => 4);   # integer < 7
+has 'rmultiplier'  => (is=>'rw', isa =>  NonNeg,    default => 1);   # positive float
+has 'pcrit'        => (is=>'rw', isa =>  NonNeg,    default => 0);   # positive float
+has 'ccrit'        => (is=>'rw', isa =>  NonNeg,    default => 0);   # positive float
+has 'othercards' => (
+		     metaclass => 'Collection::Array',
+		     is        => 'rw',
+		     isa       => 'ArrayRef',
+		     default   => sub { [] },
+		     provides  => {
+				   'push'  => 'push_othercards',
+				   'pop'   => 'pop_othercards',
+				   'clear' => 'clear_othercards',
+				  }
+		    );
+has 'workspace'    => (is=>'rw', isa => 'Str', default => q{}); # valid directory
+has 'miscdat'      => (is=>'rw', isa => 'Str', default => q{});
+has 'yaml'         => (is=>'rw', isa => 'Str', default => q{},
+		       trigger => sub{my ($self, $new) = @_; $self->deserialize if $new} );
+
+has 'fuzz'         => (is=>'rw', isa =>  NonNeg,    default => 0);
+has 'betafuzz'     => (is=>'rw', isa =>  NonNeg,    default => 0);
+has 'eta_suppress' => (is=>'rw', isa => 'Bool',     default => 0);
 
 		       ## result of pathfinder
-		       pathlist    => [],  # list of ScatteringPath objects
-		       npaths      => 0,
+has 'pathlist' => (		# list of ScatteringPath objects
+		   metaclass => 'Collection::Array',
+		   is        => 'rw',
+		   isa       => 'ArrayRef',
+		   default   => sub { [] },
+		   provides  => {
+				 'push'  => 'push_pathlist',
+				 'pop'   => 'pop_pathlist',
+				 'clear' => 'clear_pathlist',
+				}
+		  );
+has 'npaths'       => (is=>'rw', isa =>  Natural,   default => 0);
 
 		       ## reporting and processing
-		       screen      => 1,   # boolean
-		       buffer      => q{}, # ARRAY or SCALAR reference
-		       save        => 0,   # boolean
-		      );
+has 'screen'       => (is=>'rw', isa => 'Bool',         default => 1);   # boolean
+has 'buffer'       => (is=>'rw', isa => 'Bool',         default => 0);   # boolean
+has 'iobuffer' => (
+		   metaclass => 'Collection::Array',
+		   is        => 'rw',
+		   isa       => 'ArrayRef[Str]',
+		   default   => sub { [] },
+		   provides  => {
+				 'push'  => 'push_iobuffer',
+				 'pop'   => 'pop_iobuffer',
+				 'clear' => 'clear_iobuffer',
+				}
+		  );
+has 'save'         => (is=>'rw', isa => 'Bool',         default => 1);   # boolean
 
-  sub BUILD {
-    my ($self, $ident, $arguments) = @_;
-    $self -> SUPER::set(\%feff_defaults);
-    my $group = Ifeffit::Demeter::Tools -> random_string(4);
-    $self -> set_group($group);
-    $self -> set({group=>$group});
 
-    ## path specific attributes
-    $self -> set($arguments);
 
-    return;
-  };
-  # sub DEMOLISH {
-  #   my ($self) = @_;
-  #   return;
-  # };
+sub central {
+  my ($self) = @_;
+  return @{ $self->absorber };
+};
 
-  sub parameter_list {
-    my ($self) = @_;
-    return (sort keys %feff_defaults);
-  };
-  my $feff_regexp = $opt->list2re(keys %feff_defaults);
-  sub _regexp {
-    #my ($self) = @_;
-    return $feff_regexp;
-  };
-
-  sub central {
-    my ($self) = @_;
-    return @{ $self->get('absorber') };
-  };
-  sub pathlist {
-    my ($self) = @_;
-    return @{ $self->get('pathlist') };
-  };
-
-  sub nsites {
-    my ($self) = @_;
-    return $#{ $self->get('sites') };
-  };
+sub nsites {
+  my ($self) = @_;
+  return $#{ $self->sites };
+};
 
 =for Explanation
   site_tag
@@ -133,253 +178,256 @@ use aliased 'Ifeffit::Demeter::Tools';
     potential has a tag (3rd column), that will be used.  The fall
     back is the element symbol for the potential (2nd column via
     Chemistry::Elements::get_symbol)
+    .
+    The argument to site_tag is for a list starting at 0.
 
 =cut
 
-  sub site_tag {
-    my ($self, $a) = @_;
-    my @sites  = @{ $self->get("sites") };
-    my @ipots  = @{ $self->get("potentials") };
-    my $i = $sites[$a]->[3];
-    my $tag = $sites[$a]->[4] || $ipots[$i]->[2] || get_symbol($ipots[$i]->[1]);
-    return $tag;
+sub site_tag {
+  my ($self, $a) = @_;
+  my @sites  = @{ $self->sites };
+  my @ipots  = @{ $self->potentials };
+  my $i = $sites[$a]->[3];
+  my $tag = $sites[$a]->[4] || $ipots[$i]->[2] || get_symbol($ipots[$i]->[1]);
+  return $tag;
+};
+
+sub rdinp {
+  my ($self) = @_;
+  my $file = $self->file;
+  my $mode = q{};
+  open (my $INP, $file);
+  while (<$INP>) {
+    chomp;
+    last if (/^\s*end/i);
+    next if (/^\s*$/);	# blank line
+    next if (/^\s*\*/);	# commented line
+    my @line = split(/$SEPARATOR/, $_);
+    shift @line if ($line[0] =~ m{^\s*$});
+    if (is_FeffCard($line[0])) {
+      #print "elsewhere: $1 $_\n";
+      $mode = q{};
+      my $thiscard = lc($line[0]);
+    CARDS: {			# rectify the card names
+	$thiscard = 'atoms',	    last CARDS if ($thiscard =~ m{\Aato});
+	$thiscard = 'potentials',   last CARDS if ($thiscard =~ m{\Apot});
+	$thiscard = 'titles',	    last CARDS if ($thiscard =~ m{\Atit});
+	$thiscard = 'hole',	    last CARDS if ($thiscard =~ m{\Ahol});
+	$thiscard = 'edge',	    last CARDS if ($thiscard =~ m{\Aedg});
+	$thiscard = 's02',	    last CARDS if ($thiscard =~ m{\As02});
+	$thiscard = 'rmax',	    last CARDS if ($thiscard =~ m{\Ar(?:ma|pa)});
+	$thiscard = 'rmultiplier',  last CARDS if ($thiscard =~ m{\Armu});
+	$thiscard = 'nlegs',	    last CARDS if ($thiscard =~ m{\Anle});
+	$thiscard = 'criteria',     last CARDS if ($thiscard =~ m{\Acri});
+	                            last CARDS if ($thiscard =~ m{\A(?:con|pri)}); ## CONTROL and PRINT are under demeter's control
+	$self -> push_othercards($_);  ## pass through all other cards
+      };
+
+      ##print $thiscard, $/;
+      ## dispatch the card values
+      $mode = $thiscard                                if ($thiscard =~ m{(?:atoms|potentials)});
+      $self->$thiscard($line[1])                       if ($thiscard =~ m{(?:edge|nlegs|r(?:max|multiplier)|s02)});
+      $self->set(edge  => $line[1], s02   => $line[2]) if ($thiscard eq 'hole');
+      $self->set(pcrit => $line[1], ccrit => $line[2]) if ($thiscard eq 'criteria');
+      $self->_title($_)                                if ($thiscard eq 'titles');
+
+    } elsif ($mode eq 'atoms') {
+      #print "atoms: $_\n";
+      my @coords = $self->_site($_);
+      if ($coords[4] == 0) {
+	$self->set(absorber  => [@coords[1..3]],
+		   abs_index => $coords[0]);
+      };
+    } elsif ($mode eq 'potentials') {
+      #print "potentials: $_\n";
+      $self->_ipot($_);
+    }
   };
+  close $INP;
 
-  ##  return a list of valid path parameter names
-  #sub parameter_list {
-  #  my ($self) = @_;
-  #  return (sort keys %path_defaults);
-  #};
+  my %problems = (used_not_defined     => 0,
+		  defined_not_used     => 0,
+		  no_absorber          => 0,
+		  multiple_absorbers   => 0,
+		  used_ipot_gt_7       => 0,
+		  defined_ipot_gt_7    => 0,
+		  rmax_outside_cluster => 0,
 
-  sub rdinp {
-    my ($self, $file) = @_;
-    my $feffcards = $self->regexp('feffcards');
-    my $separator = $self->regexp('separator');
-    my $mode = q{};
-    open (my $INP, $file);
-    while (<$INP>) {
-      chomp;
-      last if (/^\s*end/i);
-      next if (/^\s*$/);	# blank line
-      next if (/^\s*\*/);	# commented line
-      my @line = split(/$separator/, $_);
-      shift @line if ($line[0] =~ m{^\s*$});
-      if (lc($line[0]) =~ m{($feffcards)}) { #}}
-	#print "elsewhere: $1 $_\n";
-	$mode = q{};
-	my $thiscard = lc($1);
-      CARDS: {			# rectify the card names
-	  $thiscard = 'atoms',	      last CARDS if ($thiscard =~ m{\Aato});
-	  $thiscard = 'potentials',   last CARDS if ($thiscard =~ m{\Apot});
-	  $thiscard = 'titles',	      last CARDS if ($thiscard =~ m{\Atit});
-	  $thiscard = 'hole',	      last CARDS if ($thiscard =~ m{\Ahol});
-	  $thiscard = 'edge',	      last CARDS if ($thiscard =~ m{\Aedg});
-	  $thiscard = 's02',	      last CARDS if ($thiscard =~ m{\As02});
-	  $thiscard = 'rmax',	      last CARDS if ($thiscard =~ m{\Ar(?:ma|pa)});
-	  $thiscard = 'rmultiplier',  last CARDS if ($thiscard =~ m{\Armu});
-	  $thiscard = 'nlegs',	      last CARDS if ($thiscard =~ m{\Anle});
-	  $thiscard = 'criteria',     last CARDS if ($thiscard =~ m{\Acri});
-	                              last CARDS if ($thiscard =~ m{\A(?:con|pri)}); ## CONTROL and PRINT are under demeter's control
-	  $self -> Push({othercards => $_});  ## pass through all other cards
-	};
-
-	#print $thiscard, $/;
-	## dispatch the card values
-	$mode = $thiscard                                  if ($thiscard =~ m{(?:atoms|potentials)});
-	$self->set({$thiscard=>$line[1]})                  if ($thiscard =~ m{(?:edge|nlegs|r(?:max|multiplier)|s02)});
-	$self->set({edge  => $line[1], s02   => $line[2]}) if ($thiscard eq 'hole');
-	$self->set({pcrit => $line[1], ccrit => $line[2]}) if ($thiscard eq 'criteria');
-	$self->_title($_)                                  if ($thiscard eq 'titles');
-
-      } elsif ($mode eq 'atoms') {
-	#print "atoms: $_\n";
-	my @coords = $self->_site($_);
-	if ($coords[4] == 0) {
-	  $self->set({absorber  => [@coords[1..3]],
-		      abs_index => $coords[0]});
-	};
-      } elsif ($mode eq 'potentials') {
-	#print "potentials: $_\n";
-	$self->_ipot($_);
-      }
-    };
-    close $INP;
-
-    my %problems = (used_not_defined     => 0,
-		    defined_not_used     => 0,
-		    no_absorber          => 0,
-		    multiple_absorbers   => 0,
-		    used_ipot_gt_7       => 0,
-		    defined_ipot_gt_7    => 0,
-		    rmax_outside_cluster => 0,
-
-		    errors               => [],
-		    warnings             => [],
-		);
-    ## sanity checks on input data
-    $self->S_check_ipots(\%problems);
-    $self->S_check_rmax(\%problems);
-    #use Data::Dumper;
-    #print Data::Dumper->Dump([\%problems],[qw(*problems)]);
-    ##warnings:
-    if (any {$problems{$_}} qw(rmax_outside_cluster)) {
-      carp("The following warnings were issued while reading $file:\n  "
-	  . join("\n  ", @{$problems{warnings}})
-	  . $/);
-    };
-    ## errors:
-    my $stop = 0;
-    foreach my $k (keys %problems) {
-      next if (any {$k eq $_} (qw(rmax_outside_cluster warnings errors)));
-      $stop += $problems{$k};
-    };
-    croak("The following errors were found in $file:\n  "
-	  . join("\n  ", @{$problems{errors}})
-	  . $/) if $stop;
-    return $self;
+		  errors               => [],
+		  warnings             => [],
+		 );
+  ## sanity checks on input data
+  $self->S_check_ipots(\%problems);
+  $self->S_check_rmax(\%problems);
+  #use Data::Dumper;
+  #print Data::Dumper->Dump([\%problems],[qw(*problems)]);
+  ##warnings:
+  if (any {$problems{$_}} qw(rmax_outside_cluster)) {
+    carp("The following warnings were issued while reading $file:\n  "
+	 . join("\n  ", @{$problems{warnings}})
+	 . $/);
   };
+  ## errors:
+  my $stop = 0;
+  foreach my $k (keys %problems) {
+    next if (any {$k eq $_} (qw(rmax_outside_cluster warnings errors)));
+    $stop += $problems{$k};
+  };
+  croak("The following errors were found in $file:\n  "
+	. join("\n  ", @{$problems{errors}})
+	. $/) if $stop;
+  return $self;
+};
 
-  sub _site {
-    my ($self, $line) = @_;
-    my $separator = $self->regexp('separator');
-    my @entries = split(/$separator/, $line);
-    shift @entries if ($entries[0] =~ m{^\s*$}); # $
-    my $index = $self->Push({sites=>[@entries[0..4]]});
-    my @return_array = ($index, @entries[0..3]);
-    push(@return_array, $entries[4]) if (exists($entries[4]) and ($entries[4] !~ m{\A\s*\z}));
-    return @return_array;
-  };
-  sub _ipot {
-    my ($self, $line) = @_;
-    my $separator = $self->regexp('separator');
-    my @entries = (q{}, q{}, q{});
-    @entries = split(/$separator/, $line);
-    shift @entries if ($entries[0] =~ m{^\s*$}); # $
-    $self->Push({potentials=>[@entries[0..2]]});
-    return @entries[0..2];
-  };
-  sub _title {
-    my ($self, $line) = @_;
-    $line =~ s{\A\s*\w+\s+}{};	# trim "space TITLE space" from beginning of line
-    $line =~ s{\s+\z}{};	# trim space from end of line
-    $self->Push({titles=>$line});
-    return $self;
-  };
+sub _site {
+  my ($self, $line) = @_;
+  my @entries = split(/$SEPARATOR/, $line);
+  shift @entries if ($entries[0] =~ m{^\s*$}); # $
+  my $index = $self->push_sites([@entries[0..4]]) - 1;
+  my @return_array = ($index, @entries[0..3]);
+  push(@return_array, $entries[4]) if (exists($entries[4]) and ($entries[4] !~ m{\A\s*\z}));
+  return @return_array;
+};
+sub _ipot {
+  my ($self, $line) = @_;
+  my @entries = (q{}, q{}, q{});
+  @entries = split(/$SEPARATOR/, $line);
+  shift @entries if ($entries[0] =~ m{^\s*$}); # $
+  $self->push_potentials([@entries[0..2]]);
+  return @entries[0..2];
+};
+sub _title {
+  my ($self, $line) = @_;
+  $line =~ s{\A\s+TITLE\s+}{};
+  $self->push_titles($line);
+  return $line;
+};
 
-  sub check_workspace {
-    my ($self) = @_;
-    return 0 if ($self->get("workspace") and (-d $self->get("workspace")));
-    croak <<EOH
+sub make_workspace {
+  my ($self) = @_;
+  mkpath($self->workspace) if (! -d $self->workspace);
+  return $self;
+};
+
+sub clean_workspace {
+  my ($self) = @_;
+  rmtree($self->workspace) if (-d $self->workspace);
+  return $self;
+};
+
+sub check_workspace {
+  my ($self) = @_;
+  return 0 if ($self->workspace and (-d $self->workspace));
+  croak <<EOH
 
 Feff is sort of an old-fashioned program.  It reads from a fixed input
 file and writes fixed output files.  All this needs to happen in a
 specified directory.
 
 You must explicitly establish a workspace for this Feff calculation:
-  \$feff->set({workspace=>"/path/to/workspace/"})
+  \$feff->make_workspace("/path/to/workspace/")
 
 EOH
-      ;
+  ;
+};
+
+sub potph {
+  my ($self) = @_;
+  ##verify_feff_processing_hash($self);
+  $self->check_workspace;
+
+  ## write a feff.inp for the first module
+  $self->make_feffinp("potentials");
+
+  ## run feff to generate phase.bin
+  $self->run_feff;
+
+  ## slurp misc.dat into this object
+  {
+    local( $/ );
+    my $miscdat = File::Spec->catfile($self->get("workspace"), "misc.dat");
+    open( my $fh, $miscdat );
+    $self->miscdat(<$fh>);
+    unlink $miscdat if not $self->save;
   };
 
-  sub potentials {
-    my ($self) = @_;
-    ##verify_feff_processing_hash($self);
-    $self->check_workspace;
+  ## clean up from this feff run
+  unlink File::Spec->catfile($self->get("workspace"), "feff.run");
+  unlink File::Spec->catfile($self->get("workspace"), "feff.inp")
+    if not $self->save;
 
-    ## write a feff.inp for the first module
-    $self->make_feffinp("potentials");
+  return $self;
+};
+sub genfmt {
+  my ($self, @list_of_path_indeces) = @_;
+  @list_of_path_indeces = (1 .. $self->npaths) if not @list_of_path_indeces;
+  ##verify_feff_processing_hash($self);
+  $self->check_workspace;
+  ## verify that phase.bin has been written to workspace
+  my $phbin = File::Spec->catfile($self->workspace, 'phase.bin');
+  $self->potentials if not -e $phbin;
 
-    ## run feff to generate phase.bin
-    $self->run_feff;
+  ## generate a paths.dat file from the list of ScatteringPath objects
+  $self->pathsdat(@list_of_path_indeces);
 
-    ## slurp misc.dat into this object
-    {
-      local( $/ );
-      my $miscdat = File::Spec->catfile($self->get("workspace"), "misc.dat");
-      open( my $fh, $miscdat );
-      $self->set({'misc.dat' => <$fh>});
-      unlink $miscdat if not $self->get('save');
-    };
+  ## write a feff.inp for the first module
+  $self->make_feffinp("genfmt");
 
-    ## clean up from this feff run
-    unlink File::Spec->catfile($self->get("workspace"), "feff.run");
-    unlink File::Spec->catfile($self->get("workspace"), "feff.inp")
-      if not $self->get('save');
+  ## run feff to generate feffNNNN.dat files
+  $self->run_feff;
 
-    return $self;
+  ## clean up from this feff run
+  unlink File::Spec->catfile($self->workspace, "feff.run");
+  unlink File::Spec->catfile($self->workspace, "nstar.dat");
+  if (not $self->save) {
+    unlink File::Spec->catfile($self->workspace, "feff.inp");
+    unlink File::Spec->catfile($self->workspace, "files.dat");
   };
-  sub genfmt {
-    my ($self, @list_of_path_indeces) = @_;
-    @list_of_path_indeces = (1 .. $self->get("npaths")) if not @list_of_path_indeces;
-    ##verify_feff_processing_hash($self);
-    $self->check_workspace;
-    ## verify that phase.bin has been written to workspace
-    my $phbin = File::Spec->catfile($self->get('workspace'), 'phase.bin');
-    $self->potentials if not -e $phbin;
+  return $self;
+};
+sub _pathsdat_head {
+  my ($self, $prefix) = @_;
+  $prefix ||= q{};
+  my $header = q{};
+  foreach my $t (@ {$self->titles} ) { $header .= "$prefix " . $t . "\n" };
+  $header .= $prefix . " This paths.dat file was written by Demeter " . $self->version . "\n";
+  $header .= sprintf("%s Distance fuzz = %.4f Angstroms\n", $prefix, $self->fuzz);
+  $header .= sprintf("%s Angle fuzz = %.4f degrees\n",      $prefix, $self->betafuzz);
+  $header .= sprintf("%s Suppressing eta: %s\n",            $prefix, $self->yesno("eta_suppress"));
+  $header .= $prefix . " " . "-" x 79 . "\n";
+  return $header;
+};
+sub pathsdat {
+  my ($self, @paths) = @_;
+  @paths = (1 .. $self->npaths) if not @paths;
+  my @list_of_paths = @{ $self->pathlist };
+  my $workspace = $self->workspace;
+  $self->check_workspace;
 
-    ## generate a paths.dat file from the list of ScatteringPath objects
-    $self->pathsdat(@list_of_path_indeces);
+  my $pd = File::Spec->catfile($workspace, "paths.dat");
+  open my $PD, ">".$pd;
+  print $PD $self->_pathsdat_head;
 
-    ## write a feff.inp for the first module
-    $self->make_feffinp("genfmt");
-
-    ## run feff to generate feffNNNN.dat files
-    $self->run_feff;
-
-    ## clean up from this feff run
-    unlink File::Spec->catfile($self->get("workspace"), "feff.run");
-    unlink File::Spec->catfile($self->get("workspace"), "nstar.dat");
-    if (not $self->get('save')) {
-      unlink File::Spec->catfile($self->get("workspace"), "feff.inp");
-      unlink File::Spec->catfile($self->get("workspace"), "files.dat");
-    };
-    return $self;
+  foreach my $i (@paths) {
+    my $p = $list_of_paths[$i-1];
+    printf $PD $p->pathsdat(index=>$i);
   };
-  sub _pathsdat_head {
-    my ($self, $prefix) = @_;
-    $prefix ||= q{};
-    my $header = q{};
-    foreach my $t (@ {$self->get("titles")} ) { $header .= "$prefix " . $t . "\n" };
-    $header .= $prefix . " This paths.dat file was written by Demeter " . $self->version . "\n";
-    $header .= sprintf("%s Distance fuzz = %.4f Angstroms\n", $prefix, $self->get("fuzz"));
-    $header .= sprintf("%s Angle fuzz = %.4f degrees\n",      $prefix, $self->get("betafuzz"));
-    $header .= sprintf("%s Suppressing eta: %s\n",            $prefix, $self->yesno("eta_suppress"));
-    $header .= $prefix . " " . "-" x 79 . "\n";
-    return $header;
-  };
-  sub pathsdat {
-    my ($self, @paths) = @_;
-    @paths = (1 .. $self->get("npaths")) if not @paths;
-    my @list_of_paths = $self->pathlist;
-    my $workspace = $self->get("workspace");
-    $self->check_workspace;
 
-    my $pd = File::Spec->catfile($workspace, "paths.dat");
-    open my $PD, ">".$pd;
-    print $PD $self->_pathsdat_head;
+  close $PD;
+  return $self;
+};
+sub make_one_path {
+  my ($self, $sp) = @_;
+  my $workspace = $self->workspace;
+  $self->check_workspace;
 
-    my @sites = @{ $self->get("sites") };
-    foreach my $i (@paths) {
-      my $p = $list_of_paths[$i-1];
-      printf $PD $p->pathsdat({index=>$i});
-    };
-
-    close $PD;
-    return $self;
-  };
-  sub make_one_path {
-    my ($self, $sp) = @_;
-    my $workspace = $self->get("workspace");
-    $self->check_workspace;
-
-    my $pd = File::Spec->catfile($workspace, "paths.dat");
-    open my $PD, ">".$pd;
-    print $PD $self->_pathsdat_head;
-    print $PD $sp  -> pathsdat({index=>$self->config->default('pathfinder', 'one_off_index')});
-    close $PD;
-    return $self;
-  };
+  my $pd = File::Spec->catfile($workspace, "paths.dat");
+  open my $PD, ">".$pd;
+  print $PD $self->_pathsdat_head;
+  print $PD $sp  -> pathsdat(index=>$self->co->default('pathfinder', 'one_off_index'));
+  close $PD;
+  return $self;
+};
 
 #   sub verify_feff_processing_hash {
 #     my ($self) = @_;
@@ -392,25 +440,26 @@ EOH
 #   };
 
 
-  ##----------------------------------------------------------------------------
-  ## pathfinder
+##----------------------------------------------------------------------------
+## pathfinder
 
-  sub pathfinder {
-    my ($self) = @_;
-    my $config = $self->config;
-    $self -> set({eta_suppress=>$config->default("pathfinder", "eta_suppress")});
-    $self -> report("=== Preloading distances\n");
-    $self -> _preload_distances;
-    $self -> report("=== Cluster contains " . $self->nsites . " atoms\n");
-    my $tree          = $self->_populate_tree;
-    my $heap          = $self->_traverse_tree($tree);
-    #exit;
-    undef $tree;
-    my @list_of_paths = $self->_collapse_heap($heap);
-    undef $heap;
-    $self->set({pathlist=>\@list_of_paths, npaths=>$#list_of_paths+1});
-    return $self;
-  };
+sub pathfinder {
+  my ($self) = @_;
+  my $config = $self->co;
+  $self -> eta_suppress($config->default("pathfinder", "eta_suppress"));
+  $self -> report("=== Preloading distances\n");
+  $self -> _preload_distances;
+  $self -> report("=== Cluster contains " . $self->nsites . " atoms\n");
+  my $tree          = $self->_populate_tree;
+  my $heap          = $self->_traverse_tree($tree);
+  #exit;
+  undef $tree;
+  my @list_of_paths = $self->_collapse_heap($heap);
+  undef $heap;
+  ##$_->details foreach (@list_of_paths);
+  $self->set(pathlist=>\@list_of_paths, npaths=>$#list_of_paths+1);
+  return $self;
+};
 
 =for Explanation
   .
@@ -442,158 +491,162 @@ EOH
     path
 
 =cut
-  sub _populate_tree {
-    my ($self) = @_;
-    my @central = $self->central;
-    my ($cindex, $rmax)  = $self->get(qw{abs_index rmax});
-    my $rmax2 = 2*$rmax;
-    ##print join(" ", $rmax, $cindex, @central), $/;
-    my @sites = @{ $self->get('sites') };
-    #my @faraway = (); # use this to prune off atoms farther than Rmax away
-    my $natoms = 0;
+sub _populate_tree {
+  my ($self) = @_;
+  my @central = $self->central;
+  my ($cindex, $rmax)  = $self->get(qw{abs_index rmax});
+  my $rmax2 = 2*$rmax;
+  ##print join(" ", $rmax, $cindex, @central), $/;
+  my @sites = @{ $self->sites };
+  #my @faraway = (); # use this to prune off atoms farther than Rmax away
+  my $natoms = 0;
 
-    my $outercount = 0;
-    my $innercount = 0;
-    my $freq     = $self->config->default("pathfinder", "tree_freq");
-    my $pattern  = "(%12d nodes)";
+  my $outercount = 0;
+  my $innercount = 0;
+  my $freq     = $self->co->default("pathfinder", "tree_freq");
+  my $pattern  = "(%12d nodes)";
 
-    $self->report("=== Populating Tree (. = $freq nodes added to the tree;  + = " . $freq*20 . " nodes considered)\n    ");
-    # create a tree to visit.  the root represents the absorber
-    my $tree = Tree::Simple->new(Tree::Simple->ROOT);
+  $self->report("=== Populating Tree (. = $freq nodes added to the tree;  + = " . $freq*20 . " nodes considered)\n    ");
+  # create a tree to visit.  the root represents the absorber
+  my $tree = Tree::Simple->new(Tree::Simple->ROOT);
 
-    ##
-    ## Single Scattering Paths
+  ##
+  ## Single Scattering Paths
+  my $ind = -1;
+  foreach my $s (@sites) {
+    ++$ind;
+    ++$outercount;
+    $self->click('+') if not ($outercount % ($freq*20));
+    next if ($ind == $cindex); # exclude absorber from this generation of the tree
+    next if ($leglength[$cindex][$ind] > $rmax);
+    ++$natoms;
+    ++$innercount;
+    $self->click('.') if not ($innercount % $freq);
+    $tree->addChild(Tree::Simple->new($ind));
+  };
+  if ($self->get('nlegs') == 2) {
+    $self->report(sprintf("\n    (contains %d nodes from the %d atoms within %.3g Ang.)\n",
+			  $tree->size, $natoms, $rmax)); # (false {$_} @faraway)
+    return $tree;
+  };
+
+  ##
+  ## Double Scattering Paths
+  my @kids = $tree->getAllChildren;
+  foreach my $k (@kids) {
+    ## these represent the double scattering paths
+    my $thiskid = $k->getNodeValue;
     my $ind = -1;
     foreach my $s (@sites) {
       ++$ind;
       ++$outercount;
       $self->click('+') if not ($outercount % ($freq*20));
-      next if ($ind == $cindex); # exclude absorber from this generation of the tree
-      next if ($leglength[$cindex][$ind] > $rmax);
-      ++$natoms;
+      next if ($leglength[$cindex][$ind] > $rmax); # prune distant atoms
+      next if ($thiskid == $ind); # avoid same atom twice
+      next if (($self->get('nlegs') == 3) and ($ind  == $cindex)); # exclude absorber from this generation
+      next if (_length($cindex, $thiskid, $ind, $cindex) > $rmax2);	     # prune long paths from the tree
       ++$innercount;
       $self->click('.') if not ($innercount % $freq);
-      $tree->addChild(Tree::Simple->new($ind));
+      $k->addChild(Tree::Simple->new($ind));
     };
-    if ($self->get('nlegs') == 2) {
-      $self->report(sprintf("\n    (contains %d nodes from the %d atoms within %.3g Ang.)\n",
-			    $tree->size, $natoms, $rmax)); # (false {$_} @faraway)
-      return $tree;
-    };
-
-    ##
-    ## Double Scattering Paths
-    my @kids = $tree->getAllChildren;
-    foreach my $k (@kids) {
-      ## these represent the double scattering paths
-      my $thiskid = $k->getNodeValue;
-      my $ind = -1;
-      foreach my $s (@sites) {
-	++$ind;
-	++$outercount;
-	$self->click('+') if not ($outercount % ($freq*20));
-	next if ($leglength[$cindex][$ind] > $rmax); # prune distant atoms
-	next if ($thiskid == $ind); # avoid same atom twice
-	next if (($self->get('nlegs') == 3) and ($ind  == $cindex)); # exclude absorber from this generation
-	next if ($self->_length($cindex, $thiskid, $ind, $cindex) > $rmax2);	     # prune long paths from the tree
-	++$innercount;
-	$self->click('.') if not ($innercount % $freq);
-	$k->addChild(Tree::Simple->new($ind));
-      };
-    };
-    if ($self->get('nlegs') == 3) {
-      $self->report(sprintf("\n    (contains %d nodes from the %d atoms within %.3g Ang.)\n",
-			    $tree->size, $natoms, $rmax));
-      return $tree;
-    };
-
-
-    ##
-    ## Triple Scattering Paths
-    @kids = $tree->getAllChildren;
-    foreach my $k (@kids) {
-      my $thiskid = $k->getNodeValue;
-      my @grandkids = $k->getAllChildren;
-      foreach my $g (@grandkids) {
-	## these represent the triple scattering paths
-	my $thisgk = $g->getNodeValue;
-	my $indgk = -1;
-	foreach my $s (@sites) {
-	  ++$indgk;
-	  ++$outercount;
-	  $self->click('+') if not ($outercount % ($freq*20));
-	  next if ($leglength[$cindex][$indgk] > $rmax); # prune distant atoms
-	  next if ($thisgk == $indgk);  # avoid same atom twice
-	  ##next if (($self->get('nlegs') == 4) and ($indgk  == $cindex)); # exclude absorber from this generation
-	  next if ($indgk  == $cindex); # exclude absorber from this generation
-	  next if ($self->_length($cindex, $thiskid, $thisgk, $indgk, $cindex) > $rmax2);        # prune long paths from the tree
-	  ++$innercount;
-	  $self->click('.') if not ($innercount % $freq);
-	  $g -> addChild(Tree::Simple->new($indgk));
-	};
-      };
-    };
+  };
+  if ($self->get('nlegs') == 3) {
     $self->report(sprintf("\n    (contains %d nodes from the %d atoms within %.3g Ang.)\n",
 			  $tree->size, $natoms, $rmax));
     return $tree;
-  }
+  };
 
-  sub _preload_distances {
-    my ($self) = @_;
-    my @sites = @{ $self->get('sites') };
-    foreach my $i (0 .. $#sites) {
-      $leglength[$i][$i] = 0;
-      foreach my $j ($i+1 .. $#sites) {
-	$leglength[$i][$j] = distance(@{ $sites[$i] }[0..2], @{ $sites[$j] }[0..2]);
-	$leglength[$j][$i] = $leglength[$i][$j];
-	($shortest = $leglength[$i][$j]) if ($leglength[$i][$j] < $shortest);
+
+  ##
+  ## Triple Scattering Paths
+  @kids = $tree->getAllChildren;
+  foreach my $k (@kids) {
+    my $thiskid = $k->getNodeValue;
+    my @grandkids = $k->getAllChildren;
+    foreach my $g (@grandkids) {
+      ## these represent the triple scattering paths
+      my $thisgk = $g->getNodeValue;
+      my $indgk = -1;
+      foreach my $s (@sites) {
+	++$indgk;
+	++$outercount;
+	$self->click('+') if not ($outercount % ($freq*20));
+	next if ($leglength[$cindex][$indgk] > $rmax); # prune distant atoms
+	next if ($thisgk == $indgk);  # avoid same atom twice
+	##next if (($self->get('nlegs') == 4) and ($indgk  == $cindex)); # exclude absorber from this generation
+	next if ($indgk  == $cindex); # exclude absorber from this generation
+	next if (_length($cindex, $thiskid, $thisgk, $indgk, $cindex) > $rmax2);        # prune long paths from the tree
+	++$innercount;
+	$self->click('.') if not ($innercount % $freq);
+	$g -> addChild(Tree::Simple->new($indgk));
       };
     };
   };
+  #$self->report(sprintf("\n    (contains %d nodes from the %d atoms within %.3g Ang.)\n",
+  #			$tree->size, $natoms, $rmax));
+  $self->report(sprintf("\n    (contains %d nodes from the %d atoms within %.3g Ang.)\n",
+			$innercount+1, $natoms, $rmax));
+  return $tree;
+};
 
-  ## this has been optimized for speed, not readability!
-  sub _length {
-    shift;
-    my $first = shift;
-    #my ($self, $first, @indeces) = @_;
-    my $hl = 0;
-    foreach (@_) {
-      $hl += $leglength[$first][$_];
-      $first = $_;
+sub _preload_distances {
+  my ($self) = @_;
+  my @sites = @{ $self->sites };
+  foreach my $i (0 .. $#sites) {
+    $leglength[$i][$i] = 0;
+    foreach my $j ($i+1 .. $#sites) {
+      $leglength[$i][$j] = $self->distance(@{ $sites[$i] }[0..2], @{ $sites[$j] }[0..2]);
+      $leglength[$j][$i] = $leglength[$i][$j];
+      ($shortest = $leglength[$i][$j]) if ($leglength[$i][$j] < $shortest);
     };
-    return $hl;
   };
+};
 
-  sub _traverse_tree {
-    my ($self, $tree) = @_;
-    my $freq = $self->config->default("pathfinder", "heap_freq");
-    $self->report("=== Traversing Tree and populating Heap (each dot represents $freq nodes examined)\n    ");;
-    my $heap = Heap::Fibonacci->new;
-    my ($heap_count, $visit_calls) = (0, 0);
-    ## the traversal creates ScatteringPath objects and throws them onto the heap
-    ## the syntax for the traverse method is a bit tricky...
-    $tree->traverse(sub{my($tree) = @_; _visit($tree, $self, $heap, \$heap_count, \$visit_calls, $freq)});
-    ## now we can destroy the tree
-    $self->report("\n    (contains $heap_count elements)\n");
-    return $heap;
+## this has been optimized for speed, not readability!
+## in the 7 ang. copper example, not doing the first shift reduces the total time by almost 2%)
+sub _length {
+  #my ($self, $first, @indeces) = @_;
+  #shift;
+  my $first = shift;
+  my $hl = 0;
+  foreach (@_) {
+    $hl += $leglength[$first][$_];
+    $first = $_;
   };
-  sub _visit {
-    my ($tree, $feff, $heap, $rhc, $rvc, $freq) = @_;
-    $$rvc += 1;
-    $feff->click('.') if not ($$rvc % $freq);
-    my $middle = _parentage($tree, q{});
-    my $ai = $feff->get("abs_index");
-    return 0 if ($middle =~ m{\.$ai\z}); # the traversal will leave visitations ending in the
-                                         # central atom on the tree
-    my $string =  $CTOKEN . $middle . ".$CTOKEN";
-    my $sp     = ScatteringPath->new({feff=>$feff, string=>$string});
-    $sp   -> evaluate;
-    ## prune branches that involve non-0 eta angles (if desired)
-    return 0 if ($feff->get("eta_suppress") and $sp->get("etanonzero"));
-    $heap -> add($sp);
-    $$rhc += 1;
-    return 1;
-  }
+  return $hl;
+};
+
+
+sub _traverse_tree {
+  my ($self, $tree) = @_;
+  my $freq = $self->co->default("pathfinder", "heap_freq");
+  $self->report("=== Traversing Tree and populating Heap (each dot represents $freq nodes examined)\n    ");;
+  my $heap = Heap::Fibonacci->new;
+  my ($heap_count, $visit_calls) = (0, 0);
+  ## the traversal creates ScatteringPath objects and throws them onto the heap
+  ## the syntax for the traverse method is a bit tricky...
+  $tree->traverse(sub{my($tree) = @_; _visit($tree, $self, $heap, \$heap_count, \$visit_calls, $freq)});
+  ## now we can destroy the tree
+  $self->report("\n    (contains $heap_count elements)\n");
+  return $heap;
+};
+sub _visit {
+  my ($tree, $feff, $heap, $rhc, $rvc, $freq) = @_;
+  $$rvc += 1;
+  $feff->click('.') if not ($$rvc % $freq);
+  my $middle = _parentage($tree, q{});
+  my $ai = $feff->abs_index;
+  return 0 if ($middle =~ m{\.$ai\z}); # the traversal will leave visitations ending in the
+  # central atom on the tree
+  my $string =  $CTOKEN . $middle . ".$CTOKEN";
+  my $sp     = Ifeffit::Demeter::ScatteringPath->new(feff=>$feff, string=>$string);
+  $sp   -> evaluate;
+  ## prune branches that involve non-0 eta angles (if desired)
+  return 0 if ($feff->eta_suppress and $sp->etanonzero);
+  $heap -> add($sp);
+  $$rhc += 1;
+  return 1;
+}
 
 =for Explanation
     _parentage
@@ -602,267 +655,277 @@ EOH
       in the path concatinated with dots.
 
 =cut
-  sub _parentage {
-    my ($tree, $this) = @_;
-    if (lc($tree->getParent) eq 'root') {
-      return q{};
-    } else {
-      return _parentage($tree->getParent, $tree->getNodeValue())
-	   . "."
-	   . $tree->getNodeValue();
-    };
+sub _parentage {
+  my ($tree, $this) = @_;
+  if (lc($tree->getParent) eq 'root') {
+    return q{};
+  } else {
+    return _parentage($tree->getParent, $tree->getNodeValue())
+      . "."
+	. $tree->getNodeValue();
   };
+};
 
-  sub _collapse_heap {
-    my ($self, $heap) = @_;
 
-    my $bigcount = 0;
-    my $freq     = $self->config->default("pathfinder", "degen_freq");;
-    my $pattern  = "(%12d examined)";
-    $self->report("=== Collapsing Heap to a degenerate list (each dot represents $freq heap elements compared)\n    ");
+sub prep_fuzz {
+  my ($self)    = @_;
+  my ($fz, $bf) = ($self->co->default("pathfinder", "fuzz"),
+		   $self->co->default("pathfinder", "betafuzz"));
+  my $FUZZ      = defined($fz) ? $fz : $FUZZ_DEF;
+  my $BETAFUZZ  = defined($bf) ? $bf : $BETAFUZZ_DEF;
+  $self -> set(fuzz=>$FUZZ, betafuzz=>$BETAFUZZ);
+  return $self;
+};
 
-    my @list_of_paths = ();
-    while (my $elem = $heap->extract_top) {
-      # print $elem->string, $/;
-      my $new_path = 1;
+sub _collapse_heap {
+  my ($self, $heap) = @_;
+  $self->prep_fuzz;
+
+  my $bigcount = 0;
+  my $freq     = $self->co->default("pathfinder", "degen_freq");;
+  my $pattern  = "(%12d examined)";
+  $self->report("=== Collapsing Heap to a degenerate list (each dot represents $freq heap elements compared)\n    ");
+
+  my @list_of_paths = ();
+  while (my $elem = $heap->extract_top) {
+    # print $elem->string, $/;
+    my $new_path = 1;
+    ++$bigcount;
+    $self->click('.') if not ($bigcount % $freq);
+
+  LOP: foreach my $p (reverse @list_of_paths) {
+      my $is_different = $elem->compare($p);
+      last LOP if ($is_different eq 'lengths different');
       ++$bigcount;
       $self->click('.') if not ($bigcount % $freq);
-
-    LOP: foreach my $p (reverse @list_of_paths) {
-	my $is_different = $elem->compare($p);
-	last LOP if ($is_different eq 'lengths different');
-	++$bigcount;
-	$self->click('.') if not ($bigcount % $freq);
-	if (not $is_different) {
-	  my @degen = @{ $p->get('degeneracies') };
-	  push @degen, $elem->string;
-	  $p->set({n=>$#degen+1, degeneracies=>\@degen});
-	  my $fuzzy = $p->get("fuzzy") + $elem->halflength;
-	  $p->set({fuzzy=>$fuzzy});
-	  $new_path = 0;
-	  last LOP;
-	};
-      };
-      if ($new_path) {
-	$elem->set({fuzzy=>$elem->halflength, degeneracies=>[$elem->string]});
-	push(@list_of_paths, $elem);
+      if (not $is_different) {
+	my @degen = @{ $p->degeneracies };
+	push @degen, $elem->string;
+	$p->set(n=>$#degen+1, degeneracies=>\@degen);
+	my $fuzzy = $p->fuzzy + $elem->halflength;
+	$p->fuzzy($fuzzy);
+	$new_path = 0;
+	last LOP;
       };
     };
-
-    foreach my $sp (@list_of_paths) {
-      my ($fuzzy, $n) = $sp->get(qw(fuzzy n));
-      $sp->set({fuzzy=>$fuzzy/$n});
+    if ($new_path) {
+      $elem->set(fuzzy=>$elem->halflength, degeneracies=>[$elem->string]);
+      push(@list_of_paths, $elem);
     };
-    my $path_count = $#list_of_paths+1;
-    $self->report("\n    (found $path_count unique paths)\n");
-    return @list_of_paths;
   };
 
-
-
-
-  sub intrp {
-    my ($self, $style) = @_;
-
-    my %markup  = (comment => q{}, 2 => q{}, 1=> q{}, 0=>q{}, close=>q{});
-    if (defined($style) and (ref($style) eq 'HASH')) {
-      foreach my $k (keys %$style) {
-	$markup{$k} = $style->{$k};
-      };
-    };
-    %markup = (comment => '<span class="comment">', close => '</span><br>', 1 => '<span class="minor">',
-	       2       => '<span class="major">',   0     => '<span class="normal">')
-      if (defined($style) and ($style eq 'css'));
-    %markup = (comment => '{\color{commentcolor}\texttt{', close   => '}}', 0 => '{\texttt{',
-	       2       => '{\color{majorcolor}\texttt{',   1       => '{\color{minorcolor}\texttt{')
-      if (defined($style) and ($style eq 'latex'));
-
-    my $text = q{};
-    my @list_of_paths = $self-> pathlist;
-    my @lines = split(/\n/, $self->_pathsdat_head('#'));
-    $text .= $markup{comment} . shift(@lines) . $markup{close} . "\n";
-    $text .= $markup{comment} . shift(@lines) . $markup{close} . "\n";
-    $text .= sprintf "%s# The central atom is denoted by this token: %s%s\n",      $markup{comment}, $self->config->default("pathfinder", "token") || '<+>', $markup{close};
-    $text .= sprintf "%s# Cluster size = %.5f Angstroms, containing %s atoms%s\n", $markup{comment}, $self->get('rmax'), $self->nsites,                      $markup{close};
-    $text .= sprintf "%s# %d paths were found%s\n",                                $markup{comment}, $#list_of_paths+1,                                      $markup{close};
-    $text .= sprintf "%s# Forward scattering cutoff %.2f%s\n",                     $markup{comment}, $self->config->default("pathfinder", "fs_angle"),       $markup{close};
-    foreach (@lines) { $text .= $markup{comment} . $_ . $markup{close} . "\n" };
-    $text .=  $markup{comment} . "#     degen   Reff       scattering path                       I legs   type" .  $markup{close} . "\n";
-    my $i = 0;
-    foreach my $sp (@list_of_paths) {
-      $text .= sprintf " %s%4.4d  %2d   %6.3f  ----  %-29s       %2d  %d %s%s\n",
-	$markup{$sp->get('weight')},
-	  ++$i, $sp->get(qw(n halflength)), $sp->intrplist, $sp->get(qw(weight nleg type)),
-	    $markup{close};
-    };
-    return $text;
+  foreach my $sp (@list_of_paths) {
+    my ($fuzzy, $n) = $sp->get(qw(fuzzy n));
+    $sp->fuzzy($fuzzy/$n);
   };
+  my $path_count = $#list_of_paths+1;
+  $self->report("\n    (found $path_count unique paths)\n");
+  return @list_of_paths;
+};
 
 
 
-  ##-------------------------------------------------------------------------
-  ## running Feff
 
-  sub make_feffinp {
-    my ($self, $which) = @_;
-    $self->set_mode({theory=>$self});
-    my $string = $self->template("feff", $which);
-    $self->set_mode({theory=>q{}});
-    my $feffinp = File::Spec->catfile($self->get("workspace"), "feff.inp");
-    open my $FEFFINP, ">$feffinp";
-    print $FEFFINP $string;
-    close $FEFFINP;
-    return $self;
+sub intrp {
+  my ($self, $style) = @_;
+
+  my %markup  = (comment => q{}, 2 => q{}, 1=> q{}, 0=>q{}, close=>q{});
+  if (defined($style) and (ref($style) eq 'HASH')) {
+    foreach my $k (keys %$style) {
+      $markup{$k} = $style->{$k};
+    };
   };
+  %markup = (comment => '<span class="comment">', close => '</span><br>', 1 => '<span class="minor">',
+	     2       => '<span class="major">',   0     => '<span class="normal">')
+    if (defined($style) and ($style eq 'css'));
+  %markup = (comment => '{\color{commentcolor}\texttt{', close   => '}}', 0 => '{\texttt{',
+	     2       => '{\color{majorcolor}\texttt{',   1       => '{\color{minorcolor}\texttt{')
+    if (defined($style) and ($style eq 'latex'));
+
+  my $text = q{};
+  my @list_of_paths = @{ $self-> pathlist };
+  my @lines = split(/\n/, $self->_pathsdat_head('#'));
+  $text .= $markup{comment} . shift(@lines) . $markup{close} . "\n";
+  $text .= $markup{comment} . shift(@lines) . $markup{close} . "\n";
+  $text .= sprintf "%s# The central atom is denoted by this token: %s%s\n",      $markup{comment}, $self->co->default("pathfinder", "token") || '<+>', $markup{close};
+  $text .= sprintf "%s# Cluster size = %.5f Angstroms, containing %s atoms%s\n", $markup{comment}, $self->rmax, $self->nsites,                         $markup{close};
+  $text .= sprintf "%s# %d paths were found%s\n",                                $markup{comment}, $#list_of_paths+1,                                  $markup{close};
+  $text .= sprintf "%s# Forward scattering cutoff %.2f%s\n",                     $markup{comment}, $self->co->default("pathfinder", "fs_angle"),       $markup{close};
+  foreach (@lines) { $text .= $markup{comment} . $_ . $markup{close} . "\n" };
+  $text .=  $markup{comment} . "#     degen   Reff       scattering path                       I legs   type" .  $markup{close} . "\n";
+  my $i = 0;
+  foreach my $sp (@list_of_paths) {
+    $text .= sprintf " %s%4.4d  %2d   %6.3f  ----  %-29s       %2d  %d %s%s\n",
+      $markup{$sp->weight},
+	++$i, $sp->get(qw(n halflength)), $sp->intrplist, $sp->get(qw(weight nleg Type)),
+	  $markup{close};
+  };
+  return $text;
+};
+
+
+
+##-------------------------------------------------------------------------
+## running Feff
+
+sub make_feffinp {
+  my ($self, $which) = @_;
+  $self->set_mode(theory=>$self);
+  my $string = $self->template("feff", $which);
+  $self->set_mode(theory=>q{});
+  my $feffinp = File::Spec->catfile($self->workspace, "feff.inp");
+  open my $FEFFINP, ">$feffinp";
+  print $FEFFINP $string;
+  close $FEFFINP;
+  return $self;
+};
+
 #   sub full_feffinp : STRINGIFY {
 #     my ($self) = @_;
-#     $self->set_mode({theory=>$self});
+#     $self->set_mode(theory=>$self);
 #     my $string = $self->template("feff", "full");
-#     $self->set_mode({theory=>q{}});
+#     $self->set_mode(theory=>q{});
 #     return $string;
 #   };
-  sub run_feff {
-    my ($self) = @_;
-    my $cwd = cwd();
-    chdir $self->get("workspace");
-    unless (Tools->is_windows) { # avoid problems if feff->feff_executable isn't
-      my $which = `which feff6`;
-      chomp $which;
-      if (not -x $which) {
-	croak("Could not find the feff6 executable");
-      };
-    };
-    local $| = 1;		# unbuffer output of fork
-    my $pid = open(my $WRITEME, "feff6 |");
-    while (<$WRITEME>) {
-      $self->report($_);
-    };
-    close $WRITEME;
-    chdir $cwd;
-    return $self;
-  };
-
-  sub data {
-    my ($self) = @_;
-    q{};
-  };
-
-  sub click {
-    my ($self, $char) = @_;
-    my ($screen, $buffer) = $self->get(qw(screen buffer));
-    print $char if $screen;
-  }
-  sub report {
-    my ($self, $string) = @_;
-    local $| = 1;
-    my ($screen, $buffer) = $self->get(qw(screen buffer));
-    ## dispose of feff's output
-    print $string if $screen;
-    push @$buffer, $string if (ref $buffer eq 'ARRAY');
-    $$buffer    .= $string if (ref $buffer eq 'SCALAR');
-    return $self;
-  };
-
-
-
-  ##-------------------------------------------------------------------------
-  ## serializing/deserializing
-
-  sub serialize {
-    my ($self, $filename, $nozip) = @_;
-    croak("No filename specified for serializing Feff object") unless $filename;
-
-    my %cards = ();
-    foreach my $key (qw(group abs_index edge s02 rmax nlegs npaths rmultiplier pcrit ccrit
-			workspace screen buffer save fuzz betafuzz eta_suppress),
-		     'misc.dat') {
-      $cards{$key} = $self->get($key);
-    };
-    $cards{zzz_arrays} = "titles othercards potentials absorber sites";
-
-    if ($nozip) {
-      open my $Y, ">".$filename;
-      ## dump attributes of the Feff object
-      print $Y YAML::Dump(\%cards);
-      foreach my $key (split(" ", $cards{zzz_arrays})) {
-	print $Y YAML::Dump($self->get($key));
-      };
-      ## dump attributes of each ScatteringPath object
-      my %pathinfo = ();
-      foreach my $sp (@ {$self->get("pathlist")}) {
-	foreach my $key ($sp->savelist) {
-	  $pathinfo{$key} = $sp->get($key);
-	};
-	print $Y YAML::Dump(\%pathinfo);
-      };
-      close $Y;
-
-    } else {
-      my $gzout = gzopen($filename, 'wb9');
-      ## dump attributes of the Feff object
-      $gzout->gzwrite(YAML::Dump(\%cards));
-      foreach my $key (split(" ", $cards{zzz_arrays})) {
-	$gzout->gzwrite(YAML::Dump($self->get($key)));
-      };
-      ## dump attributes of each ScatteringPath object
-      my %pathinfo = ();
-      foreach my $sp (@ {$self->get("pathlist")}) {
-	foreach my $key ($sp->savelist) {
-	  $pathinfo{$key} = $sp->get($key);
-	};
-	$gzout->gzwrite(YAML::Dump(\%pathinfo));
-      };
-      $gzout->gzclose;
-
+sub run_feff {
+  my ($self) = @_;
+  my $cwd = cwd();
+  chdir $self->workspace;
+  unless ($self->is_windows) { # avoid problems if feff->feff_executable isn't
+    my $which = `which feff6`;
+    chomp $which;
+    if (not -x $which) {
+      croak("Could not find the feff6 executable");
     };
   };
-
-  sub deserialize {
-    my ($class, $file, $group) = @_;
-    croak("No file specified for deserializing a Feff object") unless $file;
-    croak("File \"$file\" (serialized Feff object) does not exist") unless -e $file;
-    my $feff = $class->new();
-    $feff -> set_group($group) if $group;
-
-    ## this is a bit awkward -- what if the serialization is very large?
-    my ($yaml, $buffer);
-    my $gz = gzopen($file, 'rb');
-    $yaml .= $buffer while $gz->gzreadline($buffer) > 0 ;
-    my @refs = YAML::Load($yaml);
-    $gz->gzclose;
-
-    ## snarf attributes of Feff object
-    my $rhash = shift @refs;
-    foreach my $key (qw(group abs_index edge s02 rmax nlegs npaths rmultiplier pcrit ccrit
-			workspace screen buffer save fuzz betafuzz eta_suppress),
-		     'misc.dat') {
-      $feff -> set({$key => $rhash->{$key}});
-    };
-    $feff -> set({titles     => shift(@refs),
-		  othercards => shift(@refs),
-		  potentials => shift(@refs),
-		  absorber   => shift(@refs),
-		  sites	     => shift(@refs)});
-    $feff -> set({yamlfrom => $file});
-    ## snarf attributes of each ScatteringPath object
-    foreach my $path (@refs) {
-      my $sp = Ifeffit::Demeter::ScatteringPath->new({feff=>$feff});
-      foreach my $key ($sp->savelist) {
-	$sp -> set({$key => $path->{$key}});
-      };
-      $feff -> Push({pathlist=>$sp});
-    };
-
-    return $feff;
+  local $| = 1;		# unbuffer output of fork
+  my $pid = open(my $WRITEME, "feff6 |");
+  while (<$WRITEME>) {
+    $self->report($_);
   };
-  {
-    no warnings 'once';
-    # alternate names
-    *freeze = \ &serialize;
-    *thaw   = \ &deserialize;
-  };
-
+  close $WRITEME;
+  chdir $cwd;
+  return $self;
 };
+
+
+sub click {
+  my ($self, $char) = @_;
+  print $char if $self->screen;
+}
+sub report {
+  my ($self, $string) = @_;
+  local $| = 1;
+  ## dispose of feff's output
+  print $string if $self->screen;
+  if ($self->buffer) {
+    my @list = split("\n", $string);
+    $self->push_iobuffer(@list);
+  };
+  return $self;
+};
+
+
+
+##-------------------------------------------------------------------------
+## serializing/deserializing
+
+sub serialize {
+  my ($self, $filename, $nozip) = @_;
+  croak("No filename specified for serializing Feff object") unless $filename;
+
+  my %cards = ();
+  foreach my $key (qw(abs_index edge s02 rmax nlegs npaths rmultiplier pcrit ccrit
+		      workspace screen buffer save fuzz betafuzz eta_suppress miscdat)) {
+    $cards{$key} = $self->$key;
+  };
+  $cards{zzz_arrays} = "titles othercards potentials absorber sites";
+
+  if ($nozip) {
+    open my $Y, ">".$filename;
+    ## dump attributes of the Feff object
+    print $Y YAML::Dump(\%cards);
+    foreach my $key (split(" ", $cards{zzz_arrays})) {
+      print $Y YAML::Dump($self->get($key));
+    };
+    ## dump attributes of each ScatteringPath object
+    my %pathinfo = ();
+    foreach my $sp ( @{$self->pathlist}) {
+      foreach my $key ($sp->savelist) {
+	$pathinfo{$key} = $sp->$key;
+      };
+      print $Y YAML::Dump(\%pathinfo);
+    };
+    close $Y;
+
+  } else {
+    my $gzout = gzopen($filename, 'wb9');
+    ## dump attributes of the Feff object
+    $gzout->gzwrite(YAML::Dump(\%cards));
+    foreach my $key (split(" ", $cards{zzz_arrays})) {
+      $gzout->gzwrite(YAML::Dump($self->get($key)));
+    };
+    ## dump attributes of each ScatteringPath object
+    my %pathinfo = ();
+    foreach my $sp ( @{$self->pathlist}) {
+      foreach my $key ($sp->savelist) {
+	$pathinfo{$key} = $sp->$key;
+      };
+      $gzout->gzwrite(YAML::Dump(\%pathinfo));
+    };
+    $gzout->gzclose;
+
+  };
+};
+
+sub deserialize {
+  my ($self, $file, $group) = @_;
+  $file ||= $self->yaml;
+  croak("No file specified for deserializing a Feff object") unless $file;
+  croak("File \"$file\" (serialized Feff object) does not exist") unless -e $file;
+  $self -> group($group) if $group;
+
+  ## this is a bit awkward -- what if the serialization is very large?
+  my ($yaml, $buffer);
+  my $gz = gzopen($file, 'rb');
+  $yaml .= $buffer while $gz->gzreadline($buffer) > 0 ;
+  my @refs = YAML::Load($yaml);
+  $gz->gzclose;
+
+  ## snarf attributes of Feff object
+  my $rhash = shift @refs;
+  foreach my $key (qw(abs_index edge s02 rmax nlegs npaths rmultiplier pcrit ccrit
+		      workspace screen buffer save fuzz betafuzz eta_suppress miscdat)) {
+    $self -> $key($rhash->{$key});
+  };
+  $self -> set(titles     => shift(@refs),
+	       othercards => shift(@refs),
+	       potentials => shift(@refs),
+	       absorber   => shift(@refs),
+	       sites	  => shift(@refs));
+  #$self -> prep_fuzz;
+  ## snarf attributes of each ScatteringPath object
+  my @paths;
+  foreach my $path (@refs) {
+    my $sp = Ifeffit::Demeter::ScatteringPath->new(feff=>$self);
+    foreach my $key ($sp->savelist) {
+      $sp -> $key($path->{$key});
+    };
+    push @paths, $sp;
+  };
+  $self->pathlist(\@paths);
+
+  return $self;
+};
+{
+  no warnings 'once';
+  # alternate names
+  *freeze = \ &serialize;
+  *thaw   = \ &deserialize;
+};
+
+
+__PACKAGE__->meta->make_immutable;
 1;
 
 
@@ -873,13 +936,13 @@ Ifeffit::Demeter::Feff - Make and manipulate Feff calculations
 
 =head1 VERSION
 
-This documentation refers to Ifeffit::Demeter version 0.1.
+This documentation refers to Ifeffit::Demeter version 0.2.
 
 
 =head1 SYNOPSIS
 
   my $feff = Ifeffit::Demeter::Feff -> new();
-  $feff->set({workspace=>"temp", screen=>1, buffer=>q{}});
+  $feff->set(workspace=>"temp", screen=>1, buffer=>q{});
   $feff->rdinp("feff.inp")
     -> potentials
       -> pathfinder
@@ -965,7 +1028,7 @@ A valid directory in which to run Feff.  Demeter will cd into this
 directory before writing out a F<feff.inp> file, computing the
 potentials, running the pathfinder, or running genfmt.
 
-=item C<misc.dat>
+=item C<miscdat>
 
 The contents of the F<misc.dat> file, slurped up after the
 F<phase.bin> file file is generated.
@@ -995,7 +1058,7 @@ Feff running step is finished.
 
 =head2 Accessor methods
 
-This uses the C<set>, C<Push>, and C<get> methods of the parent class,
+This uses the C<set> and C<get> methods of the parent class,
 L<Ifeffit::Demeter>.
 
 =head2 Feff replacement methods
@@ -1059,7 +1122,9 @@ will be removed from Demeter's implementation.
 
 Demeter cannot compute the so-called importance factor which is used
 to limit the size of the heap and to convey approximate information
-about path size to the user.
+about path size to the user.  This is actually a pretty serious
+problem as it means that one of Feff's most important ways of trimming
+the size of the pathfinder heap is unavailable to Demeter.
 
 =back
 
@@ -1093,9 +1158,9 @@ Write out a feff.inp file suitable for computing the potentials,
 running genfmt, or running all of Feff.
 
   $feff -> make_feffinp("potentials");
-  # or
+    # or
   $feff -> make_feffinp("genfmt");
-  # or
+    # or
   $feff -> make_feffinp("full");
 
 =item C<potentials>
@@ -1268,10 +1333,6 @@ Returns the number of sites in the atoms list.
 
 =back
 
-=head1 COERCIONS
-
-There are no coercions for the Feff object;
-
 =head1 SERIALIZATION AND DESERIALIZATION
 
 The Feff object uses L<YAML> for its serialization format.  All of the
@@ -1283,7 +1344,7 @@ ScatteringPath objects are serialized in the order they appear in the
 C<pathlist> attribute.  C<freeze> is an alias for C<serialize>.
 
   $feff -> serialize($yaml_filename);
-  # or
+    # or
   $feff -> freeze($yaml_filename);
 
 There is a second, optional argument to C<serialize>.  If true, the
@@ -1295,7 +1356,7 @@ list of ScatteringPath objects.  C<thaw> is an alias for
 C<deserialize>.
 
   $feff -> deserialize($yaml_filename);
-  # or
+    # or
   $feff -> thaw($yaml_filename);
 
 =head1 CONFIGURATION AND ENVIRONMENT
@@ -1310,6 +1371,11 @@ F<Bundle/DemeterBundle.pm> file.
 =head1 BUGS AND LIMITATIONS
 
 =over 4
+
+=item *
+
+Need methods for identifying particular paths, for example "the single
+scattering path with the phosphorous atom as the scatterer".
 
 =item *
 
@@ -1364,7 +1430,7 @@ L<http://cars9.uchicago.edu/~ravel/software/>
 Copyright (c) 2006-2008 Bruce Ravel (bravel AT bnl DOT gov). All rights reserved.
 
 This module is free software; you can redistribute it and/or
-modify it under the same terms as Perl itself. See L<perlartistic>.
+modify it under the same terms as Perl itself. See L<perlgpl>.
 
 This program is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of

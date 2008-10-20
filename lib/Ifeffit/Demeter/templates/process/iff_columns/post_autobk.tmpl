@@ -1,25 +1,25 @@
 { # -*- ifm -*-
   # post-spline template
-  #   {$D} returns the ifeffit group name
-  #   {$D->get("parameter")} returns the value of that parameter
+  #   {$D->group} returns the ifeffit group name
+  #   {$D->parameter} returns the value of that parameter
   # this is a relatively complicated template as it requires some perl-level
   # flow control
   # see the Text::Template document for an explanation of $OUT
 }
 
-set {$D}.preline  = {$D->get("bkg_int")} + {$D->get("bkg_slope")}*({$D}.energy + {$D->get("bkg_eshift")})
-set {$D}.nbkg     = ({$D}.bkg - {$D}.preline) / {$D->get("bkg_step")} + {$D->get("y_offset")}
-{if ($D->get('is_xanes')) {
-      $OUT .= sprintf("set %s.prex     = (%s.xmu-%s.preline)\n",    $D, $D, $D);
-      $OUT .= sprintf("set %s.norm     = (%s.xmu-%s.preline)/%g\n", $D, $D, $D, $D->get('bkg_step'));
+set {$D->group}.preline  = {$D->bkg_int} + {$D->bkg_slope}*({$D->group}.energy + {$D->bkg_eshift})
+set {$D->group}.nbkg     = ({$D->group}.bkg - {$D->group}.preline) / {$D->bkg_step} + {$D->y_offset}
+{if ($D->datatype eq 'xanes') {
+      $OUT .= sprintf("set %s.prex     = (%s.xmu-%s.preline)\n",    $D->group, $D->group, $D->group);
+      $OUT .= sprintf("set %s.norm     = (%s.xmu-%s.preline)/%g\n", $D->group, $D->group, $D->group, $D->bkg_step);
       $OUT .= sprintf("set %s.postline = %g+%g*(%s.energy+%f)+%g*(%s.energy+%f)**2\n",
-                                                                    $D, $D->get(qw(bkg_nc0 bkg_nc1)),
-                                                                    $D, $D->get(qw(bkg_eshift bkg_nc2)),
-                                                                    $D, $D->get(qw(bkg_eshift)));
- } elsif ($D->get('is_xmudat')) {
-      $OUT .= sprintf("set %s.prex     = %s.xmu\n", $D, $D);
-      $OUT .= sprintf("set %s.norm     = %s.xmu\n", $D, $D);
+                                                                    $D->group, $D->bkg_nc0, $D-> bkg_nc1,
+                                                                    $D->group, $D->bkg_eshift, $D->bkg_nc2,
+                                                                    $D->group, $D->bkg_eshift);
+ } elsif ($D->datatype eq 'xmudat') {
+      $OUT .= sprintf("set %s.prex     = %s.xmu\n", $D->group, $D->group);
+      $OUT .= sprintf("set %s.norm     = %s.xmu\n", $D->group, $D->group);
  } else {
-      $OUT .= sprintf("set %s.prex     = %s.pre\n", $D, $D);
+      $OUT .= sprintf("set %s.prex     = %s.pre\n", $D->group, $D->group);
  }
 }

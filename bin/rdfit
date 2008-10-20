@@ -1,8 +1,7 @@
 #!/usr/bin/perl -I/home/bruce/codes/demeter/lib
 use warnings;
 use strict;
-use Ifeffit::Demeter qw(Fit);
-use Ifeffit::Demeter::UI::Screen::Probe;
+use Ifeffit::Demeter;
 use Getopt::Long;
 use Term::Twiddle;
 use Readonly;
@@ -34,11 +33,11 @@ $spinner->thingy( [
 		  ] );
 print "Reading $proj: ";
 $spinner->start;
-my $fit = Ifeffit::Demeter::Fit->thaw($proj);
+my $fit = Ifeffit::Demeter::Fit->new(project=>$proj);
 $spinner->stop;
 
 $fit -> po -> set({kweight=>2});
-interview($fit);
+$fit -> interview;
 
 ## clean up
 $fit -> rm;

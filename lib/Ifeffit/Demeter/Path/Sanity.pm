@@ -15,11 +15,9 @@ package Ifeffit::Demeter::Path::Sanity;
 
 =cut
 
-use strict;
-use warnings;
+use Moose::Role;
+
 use Carp;
-use Class::Std;
-use Class::Std::Utils;
 use Fatal qw(open close);
 use List::MoreUtils qw(any);
 use Regexp::Optimizer;
@@ -28,119 +26,113 @@ use Readonly;
 Readonly my $EPSILON => 0.00001;
 Readonly my $NUMBER  => $RE{num}{real};
 
-{
 
-  my %pp_trans = ('3rd'=>"third", '4th'=>"fourth", dphase=>"dphase",
-		  dr=>"delr", e0=>"e0", ei=>"ei", s02=>"s02", ss2=>"sigma2");
-  sub is_resonable {
-    my ($self, $param) = @_;
-    $param = lc($param);
-    ($param = "s02") if ($param eq "so2");
-    my ($value, $explanation) = (1, q{});
-  SWITCH: {
-      ($param eq "e0") and do {
-	($value, $explanation) = test_e0($self);
-	last SWITCH;
-      };
-      ($param eq "s02") and do {
-	($value, $explanation) = test_s02($self);
-	last SWITCH;
-      };
-      ($param =~ m{^s(?:ig|s)}) and do {
-	($value, $explanation) = test_sigma2($self);
-	last SWITCH;
-      };
-      ($param eq "delr") and do {
-	($value, $explanation) = test_delr($self);
-	last SWITCH;
-      };
-      (($param eq "3rd") or ($param eq "third")) and do {
-	($value, $explanation) = test_third($self);
-	last SWITCH;
-      };
-      (($param eq "4th") or ($param eq "fourth")) and do {
-	($value, $explanation) = test_fourth($self);
-	last SWITCH;
-      };
-      ($param eq "dphase") and do {
-	($value, $explanation) = (1, q{});
-	last SWITCH;
-      };
-      ($param =~ m{array}) and do {
-	($value, $explanation) = (1, q{});
-	last SWITCH;
-      };
+my %pp_trans = ('3rd'=>"third", '4th'=>"fourth", dphase=>"dphase",
+		dr=>"delr", e0=>"e0", ei=>"ei", s02=>"s02", ss2=>"sigma2");
+sub is_resonable {
+  my ($self, $param) = @_;
+  $param = lc($param);
+  ($param = "s02") if ($param eq "so2");
+  my ($value, $explanation) = (1, q{});
+ SWITCH: {
+    ($param eq "e0") and do {
+      ($value, $explanation) = $self->test_e0;
+      last SWITCH;
     };
-
-    return ($value, $explanation);
+    ($param eq "s02") and do {
+      ($value, $explanation) = $self->test_s02;
+      last SWITCH;
+    };
+    ($param =~ m{^s(?:ig|s)}) and do {
+      ($value, $explanation) = $self->test_sigma2;
+      last SWITCH;
+    };
+    ($param eq "delr") and do {
+      ($value, $explanation) = $self->test_delr;
+      last SWITCH;
+    };
+    (($param eq "3rd") or ($param eq "third")) and do {
+      ($value, $explanation) = $self->test_third;
+      last SWITCH;
+    };
+    (($param eq "4th") or ($param eq "fourth")) and do {
+      ($value, $explanation) = $self->test_fourth;
+      last SWITCH;
+    };
+    ($param eq "dphase") and do {
+      ($value, $explanation) = (1, q{});
+      last SWITCH;
+    };
+    ($param =~ m{array}) and do {
+      ($value, $explanation) = (1, q{});
+      last SWITCH;
+    };
   };
 
-  sub test_e0 {
-    my ($self) = @_;
-    my $config = Ifeffit::Demeter->get_mode("params");
-    my $e0_max = $config->default("warnings", "e0_max");
-    my $this = abs($self->value("e0"));
-    return (1, q{}) if ($e0_max == 0);
-    return (1, q{}) if ($this < $e0_max);
-    my $id = $self->identity;
-    return (0, sprintf("The absolute value of e0 for \"$id\" is greater than %s.", $e0_max));
-  };
-
-  sub test_s02 {
-    my ($self) = @_;
-    my $config = Ifeffit::Demeter->get_mode("params");
-    my $this = $self->value("s02");
-    my $id = $self->identity;
-    return (0, "S02 for \"$id\" is negative.")
-      if ($config->default("warnings", "s02_neg") and ($this < -1*$EPSILON));
-    return (1, q{}) if ($config->default("warnings", "s02_max") == 0);
-    ## return(0, "Too big") if too big
-    ## return(0, "Too small") if too small
-    return (1, q{});
-  };
-
-  sub test_sigma2 {
-    my ($self) = @_;
-    my $config = Ifeffit::Demeter->get_mode("params");
-    my $this = $self->value("sigma2");
-    my $id = $self->identity;
-    return (0, "sigma2 for \"$id\" is negative.")
-      if ($config->default("warnings", "ss2_neg") and ($this < -1*$EPSILON));
-    return (1, q{}) if ($config->default("warnings", "ss2_max") == 0);
-    return (0, "sigma2 for \"$id\" is suspiciously large.")
-      if ($this > $config->default("warnings", "ss2_max"));
-    return (1, q{});
-  };
-
-  sub test_delr {
-    my ($self) = @_;
-    my $config = Ifeffit::Demeter->get_mode("params");
-    my $this = abs($self->value("delr"));
-    my $id = $self->identity;
-    return (0, "delr for \"$id\" is suspiciously large.") 
-      if ($this > $config->default("warnings", "dr_max"));
-    return (1, q{});
-  };
-
-  sub test_third {
-    my ($self) = @_;
-    my $this = $self->value("third");
-    my $id = $self->identity;
-    return (1, q{});
-  };
-
-  sub test_fourth {
-    my ($self) = @_;
-    my $this = $self->value("fourth");
-    my $id = $self->identity;
-    return (1, q{});
-  };
-
-
-
-
-
+  return ($value, $explanation);
 };
+
+sub test_e0 {
+  my ($self) = @_;
+  my $config = $self->co;
+  my $e0_max = $config->default("warnings", "e0_max");
+  my $this = abs($self->e0_value);
+  return (1, q{}) if ($e0_max == 0);
+  return (1, q{}) if ($this < $e0_max);
+  my $id = $self->identity;
+  return (0, sprintf("The absolute value of e0 for \"$id\" is greater than %s.", $e0_max));
+};
+
+sub test_s02 {
+  my ($self) = @_;
+  my $config = $self->co;
+  my $this = $self->s02_value;
+  my $id = $self->identity;
+  return (0, "S02 for \"$id\" is negative.")
+    if ($config->default("warnings", "s02_neg") and ($this < -1*$EPSILON));
+  return (1, q{}) if ($config->default("warnings", "s02_max") == 0);
+  ## return(0, "Too big") if too big
+  ## return(0, "Too small") if too small
+  return (1, q{});
+};
+
+sub test_sigma2 {
+  my ($self) = @_;
+  my $config = $self->co;
+  my $this = $self->sigma2_value;
+  my $id = $self->identity;
+  return (0, "sigma2 for \"$id\" is negative.")
+    if ($config->default("warnings", "ss2_neg") and ($this < -1*$EPSILON));
+  return (1, q{}) if ($config->default("warnings", "ss2_max") == 0);
+  return (0, "sigma2 for \"$id\" is suspiciously large.")
+    if ($this > $config->default("warnings", "ss2_max"));
+  return (1, q{});
+};
+
+sub test_delr {
+  my ($self) = @_;
+  my $config = $self->co;
+  my $this = abs($self->delr_value);
+  my $id = $self->identity;
+  return (0, "delr for \"$id\" is suspiciously large.") 
+    if ($this > $config->default("warnings", "dr_max"));
+  return (1, q{});
+};
+
+sub test_third {
+  my ($self) = @_;
+  my $this = $self->third_value;
+  my $id = $self->identity;
+  return (1, q{});
+};
+
+sub test_fourth {
+  my ($self) = @_;
+  my $this = $self->fourth_value;
+  my $id = $self->identity;
+  return (1, q{});
+};
+
 
 1;
 
@@ -151,7 +143,7 @@ Ifeffit::Demeter::Path::Sanity - Sanity checks for path parameter values
 
 =head1 VERSION
 
-This documentation refers to Ifeffit::Demeter version 0.1.
+This documentation refers to Ifeffit::Demeter version 0.2.
 
 =head1 SYNOPSIS
 
@@ -214,7 +206,7 @@ L<http://cars9.uchicago.edu/~ravel/software/>
 Copyright (c) 2006-2008 Bruce Ravel (bravel AT bnl DOT gov). All rights reserved.
 
 This module is free software; you can redistribute it and/or
-modify it under the same terms as Perl itself. See L<perlartistic>.
+modify it under the same terms as Perl itself. See L<perlgpl>.
 
 This program is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of

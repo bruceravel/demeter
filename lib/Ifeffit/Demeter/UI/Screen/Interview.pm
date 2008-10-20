@@ -1,4 +1,4 @@
-package Ifeffit::Demeter::UI::Screen::Probe;
+package Ifeffit::Demeter::UI::Screen::Interview;
 
 =for Copyright
  .
@@ -15,16 +15,11 @@ package Ifeffit::Demeter::UI::Screen::Probe;
 
 =cut
 
-use warnings;
-use strict;
+use Moose::Role;
+
 use Ifeffit;
-use Ifeffit::Demeter;
 use Term::ANSIColor qw(:constants);
 use Term::ReadLine;
-
-use vars qw($VERSION @ISA @EXPORT);
-@ISA = qw(Exporter AutoLoader);
-@EXPORT = qw(interview);
 
 my $clear   = `clear`;
 my $term    = new Term::ReadLine 'demeter';
@@ -33,56 +28,57 @@ my $message = q{};
 
 sub interview {
   my ($fit, $noplot) = @_;
-  my $plot = Ifeffit::Demeter->get_mode("plot");
 
-  #$fit->po->start_plot; # reset the plot for the next go around
-  $fit->po->set({plot_fit=>1});
-  #Ifeffit::Demeter->set_mode({screen  => 1,});
+  $fit->po->r_pl('rmr');
+  $fit->po->plot_fit(1);
+  #$fit->mode->screen(1);
 
   my @params = (q{}, qw(kweight space rpart qpart paths bkg res));
   #plot($fit, 1) unless $noplot;
-  plot($fit, 1, 'rmr') unless $noplot;
-  &query;
+  USI_plot($fit, 1, $fit->po->r_pl) unless $noplot;
+  &USI_query;
   my $prompt = "Choose data by number, select an operation by letter, or q=quit > ";
   while ( defined ($_ = $term->readline($prompt)) ) {
   DISPATCH: {
-      $fit->po->cleantemp,    return        if ($_ =~ m{\Aq});
-      &help,                  last DISPATCH if ($_ =~ m{\Ah});
-      &version,               last DISPATCH if ($_ =~ m{\Av});
-      &Log,                   last DISPATCH if ($_ =~ m{\Al});
-      plot($fit, $1),         last DISPATCH if ($_ =~ m{\Ap?(\d+)});
-      data_report($fit, $1),  last DISPATCH if ($_ =~ m{\Ad(\d+)});
-      gds($fit),              last DISPATCH if ($_ =~ m{\Ag});
-      #save($1),               last DISPATCH if ($_ =~ m{\As(\d+)});
-      stats($fit),            last DISPATCH if ($_ =~ m{\As});
-      set($fit, $params[$1]), last DISPATCH if ($_ =~ m{\Ac([1-7])});
+      $fit->po->cleantemp,         return        if ($_ =~ m{\Aq});
+      $fit->USI_help,              last DISPATCH if ($_ =~ m{\Ah});
+      $fit->USI_version,           last DISPATCH if ($_ =~ m{\Av});
+      $fit->USI_Log,               last DISPATCH if ($_ =~ m{\Al});
+      $fit->USI_plot($1),          last DISPATCH if ($_ =~ m{\Ap?(\d+)});
+      $fit->USI_data_report($1),   last DISPATCH if ($_ =~ m{\Ad(\d+)});
+      $fit->USI_gds,               last DISPATCH if ($_ =~ m{\Ag});
+      #$fit->USI_save($1),          last DISPATCH if ($_ =~ m{\As(\d+)});
+      $fit->USI_stats,             last DISPATCH if ($_ =~ m{\As});
+      $fit->USI_set($params[$1]),  last DISPATCH if ($_ =~ m{\Ac([1-7])});
     };
-    &query($fit);
+    USI_query($fit);
   };
 };
 
-sub help {
+sub USI_help {
+  my ($fit) = @_;
   $message = "No help yet";
   return 0;
 };
-sub version {
+sub USI_version {
+  my ($fit) = @_;
   $message = Ifeffit::Demeter->identify . "\n";
   return 0;
 };
-sub data_report {
+sub USI_data_report {
   my ($fit, $n) = @_;
   my @data = @{ $fit->data };
-  $message  = BOLD . YELLOW . $data[$n-1]->label . RESET . "\n";
+  $message  = BOLD . YELLOW . $data[$n-1]->name . RESET . "\n";
   $message .= $data[$n-1]->fit_parameter_report;
   return 0;
 };
-sub stats {
+sub USI_stats {
   my ($fit) = @_;
   $message = $fit->statistics_report;
   return 0;
 };
 
-sub Log {
+sub USI_Log {
   my ($fit) = @_;
   my $logout = File::Spec->catfile($fit->stash_folder, "probe_log");
   $fit->logfile($logout);
@@ -91,36 +87,37 @@ sub Log {
   unlink $logout;
 }
 
-sub query {
+sub USI_query {
   my ($fit) = @_;
   my @data  = @{ $fit->data };
-  my $plot = Ifeffit::Demeter->get_mode("plot");
+  my $plot = $fit->po;
   print $clear;
 
   print BOLD, GREEN, "c#", RESET, ") change plotting parameter:\n";
-  print BOLD, GREEN, " 1", RESET, ") k-weight        = ", $plot->get("kweight"),    "\t\t\t";
+  print BOLD, GREEN, " 1", RESET, ") k-weight        = ", $plot->kweight,    "\t\t\t";
   print BOLD, GREEN, " g", RESET ") show guess, def, set parameters\n";
 
-  print BOLD, GREEN, " 2", RESET, ") plot space      = ", $space,                   "\t\t\t";
+  print BOLD, GREEN, " 2", RESET, ") plot space      = ", $space,            "\t\t\t";
   print BOLD, GREEN, " s", RESET, ") show fit statistics\n";
 
-  print BOLD, GREEN, " 3", RESET, ") R part          = ", $plot->get("r_pl"),       "\t\t\t";
+  print BOLD, GREEN, " 3", RESET, ") R part          = ", $plot->r_pl,       "\t\t";
+  print "\t" if ($plot->r_pl ne 'rmr');
   print BOLD, GREEN, "d#", RESET, ") show fit parameters\n";
 
-  print BOLD, GREEN, " 4", RESET, ") q part          = ", $plot->get("q_pl"),       "\t\t\t";
+  print BOLD, GREEN, " 4", RESET, ") q part          = ", $plot->q_pl,       "\t\t\t";
   print BOLD, GREEN, " l", RESET, ") show log file\n";
 
-  print BOLD, GREEN, " 5", RESET, ") plot paths      = ", $plot->get("plot_paths"), "\t\t\t";
+  print BOLD, GREEN, " 5", RESET, ") plot paths      = ", $plot->plot_paths, "\t\t\t";
   print BOLD, GREEN, " v", RESET, ") show version\n";
 
-  print BOLD, GREEN, " 6", RESET, ") plot background = ", $plot->get("plot_res"),   "\n";
+  print BOLD, GREEN, " 6", RESET, ") plot background = ", $plot->plot_bkg,   "\n";
 
-  print BOLD, GREEN, " 7", RESET, ") plot residual   = ", $plot->get("plot_res"),   "\n";
+  print BOLD, GREEN, " 7", RESET, ") plot residual   = ", $plot->plot_res,   "\n";
 
   print "\n", BOLD, RED, "Data included in the fit", RESET, "\n";
   my $i = 1;
   foreach my $d (@data) {
-    printf "%s%s %3d. %s%s : %s\n", BOLD, YELLOW, $i, RESET, $d, $d->get("label");
+    printf "%s%s %3d. %s%s : %s\n", BOLD, YELLOW, $i, RESET, $d->group, $d->name;
     ++$i;
   };
   print "\n", BOLD, RED, "Messages:", RESET, "\n" if $message;
@@ -131,26 +128,27 @@ sub query {
   return 0;
 };
 
-sub plot {
+sub USI_plot {
   my ($fit, $i, $this) = @_;
   $this ||= $space;
+  $this = 'rmr' if (($this eq 'r') and ($fit->po->r_pl eq 'rmr'));
   $fit->po->start_plot; # reset the plot for the next go around
   my @data  = @{ $fit->data };
   my @paths = @{ $fit->paths };
   --$i;
   return if ($i > $#data);
   $data[$i] -> plot($this);
-  if ($fit->po->get("plot_paths")) {
+  if ($fit->po->plot_paths) {
     foreach my $p (@paths) {
       next unless ($data[$i] eq $p->data);
-      #next unless ($p->get("label") eq "Na");
+      #next unless ($p->name eq "Na");
       $p -> plot($this);
     };
   };
 };
 
 
- sub save {
+sub USI_save {
 ##   my ($i) = @_;
 ##   plot($i); # this assures that the data are up to date for saving
 ##   --$i;
@@ -168,33 +166,33 @@ sub plot {
 };
 
 
-sub show_gds {
+sub USI_show_gds {
   my ($fit) = @_;
   my @gds = @{ $fit->gds };
   print $clear;
   print BOLD, RED, "Guess, def, set parameters:", RESET, "\n\n";
   my ($eol, $count) = ("\t", 0);
   foreach my $g (@gds) {
-    next if ($g->type eq 'skip');
+    next if ($g->gds eq 'skip');
     ++$count;
     $eol = ($count%2) ? "\t\t" : "\n";
     printf(" %2d. %s%s:%s %-15s%s = %.4f%s", $count, BOLD.GREEN,
-	   substr($g->type, 0, 1), YELLOW, $g->name, RESET,
+	   substr($g->gds, 0, 1), YELLOW, $g->name, RESET,
 	   $g->bestfit, $eol);
   };
   print "\n" if ($eol ne "\n");
 };
 
-sub gds {
+sub USI_gds {
   my ($fit) = @_;
   my @gds = @{ $fit->gds };
   my $prompt = "Choose a parameter for a full report or r to return >";
-  show_gds($fit);
+  $fit->USI_show_gds;
   while ( defined ($_ = $term->readline($prompt)) ) {
     return if ($_ =~ m{\Ar}i);
     if ($_ =~ m{\A\d}i) {
       if (exists $gds[$_-1]) {
-	show_gds($fit);
+	$fit->USI_show_gds;
 	my $report = $gds[$_-1]->full_report;
 	my $this   = $gds[$_-1]->name;
 	my $that   = BOLD . YELLOW . $this . RESET;
@@ -206,7 +204,7 @@ sub gds {
 };
 
 
-sub set {
+sub USI_set {
   my ($fit, $which) = @_;
   my @data  = @{ $fit->data };
   my $prompt;
@@ -215,8 +213,8 @@ sub set {
       $prompt = "Choose a k-weight [123] >";
       while ( defined ($_ = $term->readline($prompt)) ) {
 	next if ($_ !~ m{[123]});
-	$fit->po->set({kweight=>$_});
-	map { $_ -> set({update_fft=>1}) } @data;
+	$fit->po->kweight($_);
+	map { $_ -> update_fft(1) } @data;
 	return;
       };
     };
@@ -234,7 +232,7 @@ sub set {
       $prompt = "Choose a part to plot in R [rmip] >";
       while ( defined ($_ = $term->readline($prompt)) ) {
 	next if ($_ !~ m{[rmip]});
-	$fit->po->set({r_pl=>$_});
+	$fit->po->r_pl($_);
 	return;
       };
     };
@@ -243,7 +241,7 @@ sub set {
       $prompt = "Choose a part to plot in q [rmip] >";
       while ( defined ($_ = $term->readline($prompt)) ) {
 	next if ($_ !~ m{[rmip]});
-	$fit->po->set({'q_pl'=>$_});
+	$fit->po->q_pl($_);
 	return;
       };
     };
@@ -252,7 +250,7 @@ sub set {
       $prompt = "Plot paths [yn] >";
       while ( defined ($_ = $term->readline($prompt)) ) {
 	next if ($_ !~ m{[yn]});
-	$fit->po->set({'plot_paths'=>($_ eq 'y')});
+	$fit->po->plot_paths($_ eq 'y');
 	return;
       };
     };
@@ -261,7 +259,7 @@ sub set {
       $prompt = "Plot background [yn] >";
       while ( defined ($_ = $term->readline($prompt)) ) {
 	next if ($_ !~ m{[yn]});
-	$fit->po->set({'plot_bkg'=>($_ eq 'y')});
+	$fit->po->plot_bkg($_ eq 'y');
 	return;
       };
     };
@@ -270,7 +268,7 @@ sub set {
       $prompt = "Plot residual [yn] >";
       while ( defined ($_ = $term->readline($prompt)) ) {
 	next if ($_ !~ m{[yn]});
-	$fit->po->set({'plot_res'=>($_ eq 'y')});
+	$fit->po->plot_res($_ eq 'y');
 	return;
       };
     };
@@ -282,29 +280,29 @@ sub set {
 
 =head1 NAME
 
-Ifeffit::Demeter::UI::Screen::Probe - Simple screen interface to Demeter fit results
+Ifeffit::Demeter::UI::Screen::Interview - Simple screen interface to Demeter fit results
 
 =head1 VERSION
 
-This documentation refers to Ifeffit::Demeter version 0.1.
+This documentation refers to Ifeffit::Demeter version 0.2.
 
 =head1 SYNOPSIS
 
   use Ifeffit::Demeter;
-  use Ifeffit::Demeter::UI::Screen::Probe qw(interview);
-  my $fit = Ifeffit::Demeter::Fit->thaw('project.dpj');
-  interview($fit);
+  my $fit = Ifeffit::Demeter::Fit->new(project=>'project.dpj');
+  $fit->interview;
 
 =head1 DESCRIPTION
 
 This provides a simple, screen-based machanism for interacting with a
-Demeter fit result imported from a project file.  The screen interview
+Demeter fit result imported from a project file.  This interview is
+implemented as a method of the Fit object.  The screen interview
 allows you to plot data from the fit, examine the fitting parameters
 and statistics, and change some of the plotting parameters.  It is
 bare-bones, but still useful.  It is a handy thing to add to the end
 of a Demeter fitting script as a simple plotting back-end to the fit.
 
-=head1 EXPORTED FUNCTIONS
+=head1 METHOD
 
 =over 4
 
@@ -419,7 +417,7 @@ L<http://cars9.uchicago.edu/~ravel/software/>
 Copyright (c) 2006-2008 Bruce Ravel (bravel AT bnl DOT gov). All rights reserved.
 
 This module is free software; you can redistribute it and/or
-modify it under the same terms as Perl itself. See L<perlartistic>.
+modify it under the same terms as Perl itself. See L<perlgpl>.
 
 This program is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of

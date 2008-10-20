@@ -1,8 +1,8 @@
 { # -*- ifm -*-
   # save chi(q) template
-  #   {$S} returns the ifeffit group name
-  #   {$D} returns the data group name
-  #   {$D->get("parameter")} returns the value of that parameter
+  #   {$S->group} returns the ifeffit group name
+  #   {$D->group} returns the data group name
+  #   {$D->parameter} returns the value of that parameter
   # the filename, titles, and kweight were passed to the template
   # method $titles should contain a string that Ifeffit will be able
   # to interpret as a set of title lines already set in Ifeffit.  one
@@ -14,10 +14,10 @@
   #                              titles   => "\$dem_data_*"});
 }
 ##|
-##| saving "{$S->label}" as back-transformed chi(k)
-set {$S}.chik = {$S}.k^{$P->get("kweight")}*{$S}.chi
-write_data(file="{$filename}", ${$titles}, ${$D}_title_*,
+##| saving "{$S->name}" as back-transformed chi(k)
+set {$S->group}.chik = {$S->group}.k^{$P->kweight}*{$S->group}.chi
+write_data(file="{$filename}", ${$titles}, ${$D->group}_title_*,
            label="q chiq_re chiq_im chiq_mag chiq_pha win chik",
-           {$S}.q, {$S}.chiq_re, {$S}.chiq_im,
-           {$S}.chiq_mag, {$S}.chiq_pha, {$S}.win, {$S}.chik)
-erase {$S}.chik
+           {$S->group}.q, {$S->group}.chiq_re, {$S->group}.chiq_im,
+           {$S->group}.chiq_mag, {$S->group}.chiq_pha, {$S->group}.win, {$S->group}.chik)
+erase {$S->group}.chik

@@ -1,8 +1,8 @@
- # -*- ifm -*-{
+{ # -*- ifm -*-
   # save chi(R) template
-  #   {$S} returns the ifeffit group name
-  #   {$D} returns the data group name
-  #   {$D->get("parameter")} returns the value of that parameter
+  #   {$S->group} returns the ifeffit group name
+  #   {$D->group} returns the data group name
+  #   {$D->parameter} returns the value of that parameter
   # the filename and titles were passed to the template method.
   # $titles should contain a string that Ifeffit will be able to
   # interpret as a set of title lines already set in Ifeffit.  one
@@ -13,8 +13,8 @@
   #                             {filename=>$filename, titles=>"\$dem_data_*"});
 }
 ##|
-##| saving "{$S->label}" as chi(R)
-write_data(file="{$filename}", ${$titles}, ${$D}_title_*,
+##| saving "{$S->name}" as chi(R)
+write_data(file="{$filename}", ${$titles}, ${$D->group}_title_*,
            label="r chir_re chir_im chir_mag chir_pha win",
-           {$S}.r, {$S}.chir_re, {$S}.chir_im,
-           {$S}.chir_mag, {$S}.chir_pha, {$S}.rwin)
+           {$S->group}.r, {$S->group}.chir_re, {$S->group}.chir_im,
+           {$S->group}.chir_mag, {$S->group}.chir_pha, {$S->group}.rwin)

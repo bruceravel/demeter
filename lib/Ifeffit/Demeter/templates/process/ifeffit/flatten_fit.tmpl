@@ -1,7 +1,7 @@
 { # -*- ifm -*-
   # flatten template
-  #   {$D} returns the ifeffit group name
-  #   {$D->get("parameter")} returns the value of that parameter
+  #   {$D->group} returns the ifeffit group name
+  #   {$D->parameter} returns the value of that parameter
   # this requires some perl-level flow control to determine whether to
   # set or guess flat_c2
   # see the Text::Template document for an explanation of $OUT
@@ -11,31 +11,31 @@
 ##|   flat_cN are the difference in slope and curvature between
 ##|   the pre- and post-edge polynomials
 ##|
-set {$D}.postline = {$D->get("bkg_nc0")}+{$D->get("bkg_nc1")}*({$D}.energy+{$D->get("bkg_eshift")})+{$D->get("bkg_nc2")}*({$D}.energy+{$D->get("bkg_eshift")})**2
+set {$D->group}.postline = {$D->bkg_nc0}+{$D->bkg_nc1}*({$D->group}.energy+{$D->bkg_eshift})+{$D->bkg_nc2}*({$D->group}.energy+{$D->bkg_eshift})**2
 ##|
 ##|  compute a step function
-set(c___enter     = {$D->get("bkg_e0")} - {$D->get('bkg_eshift')},
-    n___step      = nofx({$D}.energy, c___enter) - 1,
-    n___points    = npts({$D}.energy) - n___step,
+set(c___enter     = {$D->bkg_e0} - {$D->bkg_eshift},
+    n___step      = nofx({$D->group}.energy, c___enter) - 1,
+    n___points    = npts({$D->group}.energy) - n___step,
     t___oss.zeros = zeros(n___step),
     t___oss.ones  = ones(n___points),
-    {$D}.theta = join(t___oss.zeros, t___oss.ones))
+    {$D->group}.theta = join(t___oss.zeros, t___oss.ones))
 ##|
 ##| these data require regressing the flat_c? values
 guess(flat_c0=0, flat_c1=0)
-set(l___imit1 = {$D->get('bkg_e0')} + {$D->get('bkg_nor1')} - {$D->get('bkg_eshift')},
-    l___imit2 = {$D->get('bkg_e0')} + {$D->get('bkg_nor2')} - {$D->get('bkg_eshift')})
-{if (($D->get('bkg_nor2')-$D->get('bkg_nor1')) < 300) {
+set(l___imit1 = {$D->bkg_e0} + {$D->bkg_nor1} - {$D->bkg_eshift},
+    l___imit2 = {$D->bkg_e0} + {$D->bkg_nor2} - {$D->bkg_eshift})
+{if (($D->bkg_nor2-$D->bkg_nor1) < 300) {
     $OUT .= "set flat_c2 = 0\n";
- } elsif ($D->get("bkg_nnorm") == 2) {
+ } elsif ($D->bkg_nnorm) == 2) {
     $OUT .= "set flat_c2 = 0\n";
  } else {
     $OUT .= "guess flat_c2 = 0\n";
  };}
-def {$D}.line = (flat_c0 + flat_c1*({$D}.energy+{$D->get('bkg_eshift')}) + flat_c2*({$D}.energy+{$D->get('bkg_eshift')})**2)
-def {$D}.resid = {$D}.prex - {$D}.line
-minimize({$D}.resid, x={$D}.energy, xmin=l___imit1, xmax=l___imit2)
+def {$D->group}.line = (flat_c0 + flat_c1*({$D->group}.energy+{$D->bkg_eshift}) + flat_c2*({$D->group}.energy+{$D->bkg_eshift})**2)
+def {$D->group}.resid = {$D->group}.prex - {$D->group}.line
+minimize({$D->group}.resid, x={$D->group}.energy, xmin=l___imit1, xmax=l___imit2)
 unguess
-set({$D}.flat = (({$D->get('bkg_fitted_step')} - {$D}.line)*{$D}.theta + {$D}.prex) / {$D->get('bkg_step')},
-    {$D}.fbkg = ({$D}.bkg-{$D}.preline+({$D->get('bkg_fitted_step')}-{$D}.line)*{$D}.theta)/{$D->get('bkg_step')} )
-{#      if not $self->get('is_xanes');}
+set({$D->group}.flat = (({$D->bkg_fitted_step} - {$D->group}.line)*{$D->group}.theta + {$D->group}.prex) / {$D->bkg_step},
+    {$D->group}.fbkg = ({$D->group}.bkg-{$D->group}.preline+({$D->bkg_fitted_step}-{$D->group}.line)*{$D->group}.theta)/{$D->bkg_step} )
+{#      if $self->datatype ne 'xanes';}

@@ -1,0 +1,15 @@
+{ # -*- ifm -*-
+  # atoms keywords
+  #   {$A->parameter} returns an Atoms attribute
+  #   {$A->out("parameter")} returns a formatted Atoms real-valued attribute
+  #   {$C->get("parameter")} returns a Cell attribute
+  #   {$C->out("parameter")} returns a formatted Cell real-valued attribute
+  $prefix ||= '## ';
+  q{}
+}
+<<>>{$prefix}--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--
+{$prefix} total mu*x=1:  {$A->xsec} microns,  unit edge step:  {$A->deltamu} microns
+{$prefix} specific gravity:  {$A->density}
+{$prefix}--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--
+{$prefix} normalization correction:    {$A->mcmaster} ang^2
+{$prefix}--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--

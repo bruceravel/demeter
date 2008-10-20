@@ -14,7 +14,7 @@
  Copyright (c) 2006-2008 Bruce Ravel (bravel AT bnl DOT gov). All rights reserved.
  .
  This example is free software; you can redistribute it and/or
- modify it under the same terms as Perl itself. See L<perlartistic>.
+ modify it under the same terms as Perl itself. See L<perlgpl>.
  .
  This program is distributed in the hope that it will be useful,
  but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -38,8 +38,9 @@ if ($ANSIColor_exists) {
 };
 
 use Ifeffit::Demeter;
-Ifeffit::Demeter->set_mode({ifeffit=>1, buffer=>0, screen=>0});
-#Ifeffit::Demeter->set_mode({template_process=>"iff_columns"});
+my $demeter = Ifeffit::Demeter->new;
+$demeter->set_mode(ifeffit=>1, buffer=>0, screen=>0);
+#$demeter->set_mode(template_process=>"iff_columns");
 $| = 1;
 
 use Getopt::Long;
@@ -53,9 +54,9 @@ my $result = GetOptions (
 ($light_background = 1) if (not $dark_background);
 my $INDIC = ($light_background) ? BLUE : YELLOW;
 ($use_pgplot = 1) if (not $use_gnuplot);
-Ifeffit::Demeter->plot_with('gnuplot') if $use_gnuplot;
+$demeter->plot_with('gnuplot') if $use_gnuplot;
 
-my $plot = Ifeffit::Demeter -> get_mode('plot');
+my $plot = $demeter->po;
 my @tests = (q{},
 	     'align',
 	     'compare',
@@ -105,7 +106,7 @@ sub query {
 
 
 sub version {
-  print "\n\n" . Ifeffit::Demeter->identify . "\n";
+  print "\n\n" . $demeter->identify . "\n";
   return finish();
 };
 
@@ -136,9 +137,9 @@ EOH
 };
 
 sub toggle_screen {
-  my ($i, $which) = (Ifeffit::Demeter->get_mode("screen")) ? (0, 'on') : (1, 'off');
+  my ($i, $which) = ($demeter->get_mode("screen")) ? (0, 'on') : (1, 'off');
   $toggle_message = "turn " . REVERSE . $which . RESET ." screen dump of Ifeffit script\n";
-  Ifeffit::Demeter->set_mode({screen=>$i});
+  $demeter->set_mode({screen=>$i});
 };
 
 sub dotest {

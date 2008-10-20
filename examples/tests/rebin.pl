@@ -9,7 +9,7 @@
 
 =for Copyright
  .
- Copyright (c) 2006-2007 Bruce Ravel (bravel AT anl DOT gov).
+ Copyright (c) 2006-2008 Bruce Ravel (bravel AT bnl DOT gov).
  All rights reserved.
  .
  This file is free software; you can redistribute it and/or
@@ -27,32 +27,36 @@ use strict;
 use Smart::Comments;
 
 use Ifeffit::Demeter;
-my $plot = Ifeffit::Demeter->get_mode("plot");
-$plot->set_mode({screen=>0, repscreen=>0});
-$plot->set({emin=>-200, emax=>800, e_norm=>1, e_markers=>1, kweight=>2});
-my $where = $ENV{DEMETER_TEST_DIR} || "..";
 
-my $d0 = Ifeffit::Demeter::Data -> new({group => 'data0'});
-$d0 -> set({file	=> "$where/data/uhup.101",
-	    label	=> 'HUP',
-	    fft_kmax	=> 3, fft_kmin	=> 14,
-	    ## how to interpret the file as data
-	    energy	=> '$1', # column 1 is energy
-	    numerator	=> '$2', # column 2 is I0
-	    denominator	=> '$3', # column 3 is It
-	    ln		=> 1,	 # these are transmission data
-	   });
-#$d0 -> set({file	=> "$where/data/uhup.101"});
+
+my $where = $ENV{DEMETER_TEST_DIR} || "..";
+my @attributes = (file	      => "$where/data/uhup.101",
+		  name	      => 'HUP',
+		  fft_kmax    => 3, fft_kmin	=> 14,
+		  ## how to interpret the file as data
+		  energy      => '$1',    # column 1 is energy
+		  numerator   => '$2', # column 2 is I0
+		  denominator => '$3', # column 3 is It
+		  ln	      => 1,	      # these are transmission data
+		  bkg_kw      => 3,
+		 );
+
+my $d0 = Ifeffit::Demeter::Data -> new(@attributes);
+my $plot = $d0->po;
+$plot->set_mode(screen=>0, repscreen=>0);
+$plot->set(emin=>-200, emax=>800, e_norm=>1, e_markers=>1, kweight=>2);
+
 
 ### reading data and plotting
 $d0->plot('k');
 
 ### rebinning data and plotting
-my $rebinned = $d0->rebin({group=>"data0rb"});
+my $rebinned = $d0->rebin;
 $rebinned->plot('k');
 
 $d0->screen_echo(1);
-$d0->dispose("show $d0.energy $rebinned.energy");
+print "--> original data is ", $d0->group, "\n--> rebinned data is ", $rebinned->group, $/;
+$d0->dispose("show " . $d0->group . ".energy " . $rebinned->group . ".energy");
 $d0->screen_echo(0);
 
 ### all done!

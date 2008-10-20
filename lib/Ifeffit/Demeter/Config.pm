@@ -15,11 +15,12 @@ package Ifeffit::Demeter::Config;
 
 =cut
 
-use strict;
-use warnings;
+use MooseX::Singleton;
+extends 'Ifeffit::Demeter';
+use Moose::Util::TypeConstraints;
+
 use Carp;
 #use diagnostics;
-use Class::Std;
 use Config::IniFiles;
 use Fatal qw(open close);
 use File::Basename;
@@ -28,84 +29,78 @@ use Regexp::Optimizer;
 use Regexp::Common;
 use Readonly;
 Readonly my $NUMBER => $RE{num}{real};
-use YAML;
 use Text::Wrap;
-use aliased 'Ifeffit::Demeter::Tools';
 #use Data::Dumper;
 
-{
-  use base qw( Ifeffit::Demeter
-               Ifeffit::Demeter::Dispose
-               Ifeffit::Demeter::Project
-             );
+has 'config_file' => (is => 'ro', isa => 'Str',
+		      default => File::Spec->catfile(dirname($INC{"Ifeffit/Demeter.pm"}),
+						     "Demeter",
+						     "configuration",
+						     "config.demeter_conf"));
 
-  my @reserved = qw((chi_reduced chi_square core_width correl_min
-		    cursor_x cursor_y dk dr data_set data_total
-		    dk1 dk2 dk1_spl dk2_spl dr1 dr2 e0 edge_step
-		    epsilon_k epsilon_r etok kmax kmin kmax_spl
-		    kmax_suggest kmin_spl kweight kweight_spl kwindow
-		    n_idp n_varys ncolumn_label nknots norm1 norm2
-		    norm_c0 norm_c1 norm_c2 path_index pi pre1 pre2
-		    pre_offset pre_slope qmax_out qsp r_factor rbkg
-		    rmax rmax_out rmin rsp rweight rwin rwindow toler));
+has 'is_configured' => (is => 'rw', isa => 'Bool', default => 0);
 
-  my %ini;
-  tie %ini, 'Config::IniFiles', ();
+my $where = (($^O eq 'MSWin32') or ($^O eq 'cygwin')) ? "USERPROFILE" : "HOME";
+#my $where = (Ifeffit::Demeter->mode->is_windows) ? "USERPROFILE" : "HOME";
+has 'ini_file' => (is => 'ro', isa => 'Str',
+		   default => File::Spec->catfile($ENV{$where}, ".horae", "demeter.ini"));
 
-  my $one_has_been_created = 0;
-  my $one_has_been_configured = 0;
 
-  sub BUILD {
-    my ($self) = @_;
-    if ($one_has_been_created) { # v. crude singleton object
-      carp("You cannot have more than one Config object");
-      $self->DESTROY;
-      return;
-    };
-    $one_has_been_created = 1;
+my %ini;
+tie %ini, 'Config::IniFiles', ();
+my %params_of;
+
+#my $one_has_been_created = 0;
+
+sub BUILD {
+  my ($self) = @_;
+  $self -> read_config;
+  $self -> read_ini;
+  $self -> mode -> config($self);
+};
+
+sub set {
+  my ($self, @list) = @_;
+  my %hash = @list;
+  foreach my $key (keys %hash) {
+    my $k = lc $key;
+    $params_of{$k} = $hash{$k};
   };
+  return $self;
+};
+sub Push {
+  my ($self, @list) = @_;
+  my %hash = @list;
+  my $retval = 0;
+  foreach my $key (keys %hash) {
+    my $k = lc $key;
+    push @{ $params_of{$k} }, $hash{$k};
+    $retval = $#{ $params_of{$k} };
+  };
+  return $retval;
+};
+sub get {
+  my $self = shift;
+  croak(ref($self) . ': usage: get($key) or get(@keys)') if @_ < 1;
+  my @values = ();
+  foreach my $key (@_) {
+    my $k = lc $key;
+    push @values, $params_of{lc $key} || 0;
+  };
+  return wantarray ? @values : $values[0];
+};
 
-  sub get{
-    my ($self, @params) = @_;
-    my @values = $self -> SUPER::get(@params);
-    @values = map { $_ ||= q{} } (@values); # always return something defined!
-    return wantarray ? @values : $values[0];
-  };
-  sub _regexp {
-    my ($self) = @_;
-    return q{};
-  };
+sub groups {
+  my ($self) = @_;
+  my @list = @{ $self->get('___groups') };
+  return sort @list;
+};
 
-  sub is_configured {
-    my ($self) = @_;
-    return $one_has_been_configured;
-  };
-
-  sub groups {
-    my ($self) = @_;
-    my @list = @{ $self->get('___groups') };
-    return sort @list;
-    #my %hash = $self->get_params_of;
-    #my @keys = keys(%hash);
-    #my %seen = ();
-    #foreach my $k (@keys) {
-    #  my ($g, $p) = split(/:/, $k);
-    #  ++$seen{$g};
-    #};
-    #return (sort keys %seen);
-  };
-
-  sub parameters {
-    my ($self, $group) = @_;
-    my %hash = $self->get_params_of;
-    my @keys = keys(%hash);
-    my @seen = ();
-    foreach my $k (@keys) {
-      my ($g, $p) = split(/:/, $k);
-      push @seen, $p if ($p and ($g eq $group));
-    };
-    return sort @seen;
-  };
+sub parameters {
+  my ($self, $group) = @_;
+  my $hashref = $ini{$group};
+  return sort keys %$hashref;
+};
 
 =for LiteratureReference (read_config)
   Before land was and sea -- before air and sky
@@ -119,247 +114,253 @@ use aliased 'Ifeffit::Demeter::Tools';
 
 =cut
 
-  sub read_config {
-    my ($self) = @_;
-    my $file = File::Spec->catfile(dirname($INC{"Ifeffit/Demeter.pm"}),
-				   "Demeter",
-				   "configuration",
-				   "config.demeter_conf");
-    $self->_read_config_file($file);
-    $one_has_been_configured = 1;
-    return $self;
-  };
-  sub _read_config_file {
-    my ($self, $file) = @_;
-
-    ## need to distinguish between a relative filename and a fully
-    ## resolved file.
-
-    carp("The Demeter configuration file ($file) does not exist"), return 0
-      if (not -e $file);
-    carp("The Demeter configuration file ($file) cannot be opened"), return 0
-      if (not -r $file);
-
-    my $base = (split(/\./, basename($file)))[0];
-    $self -> Push({___groups => $base});
-
-    ## the first time this is called, the regexp method has not yet
-    ## been defined -- grrr..!
-    my $opt  = Regexp::List->new;
-    my $key_regex = $opt->list2re(qw(type default minint maxint options
-				     units onvalue offvalue));
-    ##my $key_regex = Ifeffit::Demeter -> regexp("config");
-
-    my (%hash, $description, $group, $param, $value);
-    my $line;
-    open (my $CONFIG, $file);
-  CONF: while (my $line = <$CONFIG>) {
-      next CONF if ($line =~ m{^\s*\#});
-      next CONF if ($line =~ m{^\s*$});
-
-      chomp $line;
-      $line =~ s{\s+$}{};
-      if ($line =~ m{^\s*include\s*(.+)}) {
-	## handle include files by recursion
-	(my $includefile = $1) =~ s{\s+(?:\#.*)?$}{};
-	$includefile = File::Spec->catfile(dirname($file), $includefile);
-	$self->_read_config_file($includefile);
-      } elsif ($line =~ m{^\s*section\s*=\s*(\w+)}) {
-	$group = $1;
-	$group =~ s{\s+$}{};
-	$description = q{};
-
-      } elsif ($line =~ m{^\s*section_description}) {
-      SECDESC: while (my $next = <$CONFIG>) {
-	  $next =~ s{\n}{ };
-	  $next =~ s{^\s+}{};
-	  last SECDESC if ($next =~ m{^\s*$});
-	  $description .= $next;
-	};
-	$description =~ s{\s+$}{};
-	$self -> set({$group=>$description});
-
-      } elsif ($line =~ m{^\s*description}) {
-      DESC: while (my $next = <$CONFIG>) {
- 	  $next =~ s{\n}{ };
- 	  $next =~ s{^\s+}{};
- 	  last DESC if ($next =~ m{^\s*$});
-	  if ($next =~ m{^\.}) {
-	    $next =~ s{\.\s+}{\%list};
-	    $next =~ s{\s}{\%space}g;
-	    $next .= '%endlist';
-	  };
- 	  $description .= $next;
- 	};
-	$description =~ s{\s+$}{};
- 	$hash{description} = $description;
-	$self->set_this_param($group, $param, %hash);
- 	next CONF;
-
-      } elsif ($line =~ m{^\s*variable\s*=\s*(\w+)}) {
-	$param = $1;
-	$param =~ s{\s+$}{};
-	undef %hash;
-	$ini{$group}{$param} = q{};
-	$description = q{};
-
-      } elsif ($line =~ m{^\s*($key_regex)\s*=\s*(.+)}) {
-	$value = $2;
-	$value =~ s{\s+$}{};
-	$hash{$1} = $value;
-	($hash{demeter} = $value) if ($1 eq "default");
-      };
-    };
-    $self->set_this_param($group, $param, %hash) if %hash;
-    close $CONFIG;
-    return $self;
-  };
-
-  sub set_this_param {
-    my ($self, $group, $param, %hash) = @_;
-    use Data::Dumper;
-    my $key = join(":", $group, $param);
-    $hash{default}     ||= 0;	# sanitize several attributes
-    $hash{description} ||= q{};
-    if ($hash{type} eq 'positive integer') {
-      $hash{maxint} ||= 1e13;
-      $hash{minint} ||= 0;
-    } elsif ($hash{type} eq 'boolean') {
-      $hash{onvalue}  ||= 1;
-      $hash{offvalue} ||= 0;
-    };
-    $self -> set({$key=>\%hash});
-    $ini{$group}{$param} = $hash{default};
-    return $self;
-  };
-
-  ## override a default value, for instance when reading an ini file
-  sub set_default {
-    my ($self, $group, $param, $value) = @_;
-    return q{} if not $param;
-    my $key = join(":", $group, $param);
-    my $rhash = $self->get($key);
-    $rhash->{default} = $value;
-    if ($rhash->{type} eq 'boolean') {
-      $rhash->{default} = ($self->is_true($value)) ? "true" : "false";
-    } elsif ($rhash->{type} eq 'positive integer') {
-      ($rhash->{default} = $rhash->{maxint}) if ($value > $rhash->{maxint});
-      ($rhash->{default} = $rhash->{minint}) if ($value < $rhash->{minint});
-    };
-    $self -> set({$key=>$rhash});
-    return $self;
-  };
-  sub new_params {
-    my ($self, $rhash) = @_;
-    $self->set($rhash);
-    return 1;
-  };
-
-  sub default {
-    my ($self, $group, $param) = @_;
-    return q{} if not $param;
-    my $key = join(":", $group, $param);
-    my $rhash = $self->get($key);
-    carp("$key is not a valid configuration parameter"), return 0 if not $rhash;
-    if ($rhash->{type} eq 'boolean') {
-      return $rhash->{onvalue}  || 1 if ($rhash->{default} eq 'true');
-      return $rhash->{offvalue} || 0;
-    };
-    if ($rhash->{type} eq 'positive integer') {
-      return $rhash->{maxint} if ($rhash->{default} > $rhash->{maxint});
-      return $rhash->{minint} if ($rhash->{default} < $rhash->{minint});
-    };
-    return $rhash->{default};
-  };
-  {
-    no warnings 'once';
-    # alternate names
-    *def = \ &default;
-  }
-
-  sub description {
-    my ($self, $group, $param) = @_;
-    my $key = ($param) ? join(":", $group, $param) : $group;
-    return $self->get($key) if (not $param);
-    my $rhash = $self->get($key);
-    carp("$key is not a valid configuration parameter"), return 0 if not $rhash;
-    return $rhash->{description};
-  };
-  sub attribute {
-    my ($self, $which, $group, $param) = @_;
-    return q{} if not $param;
-    my $key = join(":", $group, $param);
-    my $rhash = $self->get($key);
-    carp("$key is not a valid configuration parameter"), return 0 if not $rhash;
-    return $rhash->{$which} || q{};
-  };
-  sub type     {my $self=shift; $self->attribute("type",     @_)};
-  sub units    {my $self=shift; $self->attribute("units",    @_)};
-  sub demeter  {my $self=shift; $self->attribute("demeter",  @_)};
-  sub options  {my $self=shift; $self->attribute("options",  @_)};
-  sub onvalue  {my $self=shift; $self->attribute("onvalue",  @_)};
-  sub offvalue {my $self=shift; $self->attribute("offvalue", @_)};
-  sub minint   {my $self=shift; $self->attribute("minint",   @_)};
-  sub maxint   {my $self=shift; $self->attribute("maxint",   @_)};
-
-  sub describe_param {
-    my ($self, $group, $param, $width) = @_;
-    my $config = Ifeffit::Demeter->get_mode("params");
-    my $text = q{};
-    local $Text::Wrap::columns = $width || $config->default("operations", "config_text_width");
-    local $Text::Wrap::huge = "overflow";
-    if ($param) {
-      my $key = join(":", $group, $param);
-      my $rhash = $self->get($key);
-      return q{} if not $rhash;
-      $text .= "$group -> $param\n";
-      my $desc = wrap("    \"", "     ", $rhash->{description}) . "\"\n";
-      $desc =~ s{\%list}{\n        }g;
-      $desc =~ s{\%space}{ }g;
-      $desc =~ s{\%endlist}{}g;
-      $text .= $desc;
-      foreach my $k qw(type default demeter options units minint maxint onvalue offvalue) {
-	$text .= sprintf("  %-8s : %s\n", $k, $rhash->{$k}) if defined $rhash->{$k};
-      };
-    } else {
-      my $description = $self->get($group);
-      return q{} if not $description;
-      $text .= "$group:\n";
-      $text .= wrap("    \"", "     ", $description) . "\"\n";
-    };
-    return $text;
-  };
-
-  sub write_ini {
-    my ($self, $file) = @_;
-    my $where = (Tools->is_windows) ? "USERPROFILE" : "HOME";
-    $file ||= File::Spec->catfile($ENV{$where}, ".horae", "demeter.ini");
-    my $ini_ref = tied %ini;
-    $ini_ref -> WriteConfig($file);
-    return $self;
-  };
-
-  sub read_ini {
-    my ($self) = @_;
-    my $where = (Tools->is_windows) ? "USERPROFILE" : "HOME";
-    my $inifile = File::Spec->catfile($ENV{$where}, ".horae", "demeter.ini");
-    if (not -e $inifile) {
-      $self->write_ini($inifile);
-      return $self;
-    };
-    my %personal_ini;
-    my $ini_ref = tied %ini;
-    tie %personal_ini, 'Config::IniFiles', (-file=>$inifile, -import=>$ini_ref );
-    foreach my $g (keys %personal_ini) {
-      my $hash = $personal_ini{$g};
-      foreach my $p (keys %$hash) {
-	$self->set_default($g, $p, $personal_ini{$g}{$p});
-      };
-    };
-    return $self;
-  };
-
+sub read_config {
+  my ($self) = @_;
+  $self->_read_config_file($self->config_file);
+  $self->is_configured(1);
+  return $self;
 };
+sub _read_config_file {
+  my ($self, $file) = @_;
+
+  ## need to distinguish between a relative filename and a fully
+  ## resolved file.
+
+  carp("The Demeter configuration file ($file) does not exist"), return 0
+    if (not -e $file);
+  carp("The Demeter configuration file ($file) cannot be opened"), return 0
+    if (not -r $file);
+
+  my $base = (split(/\./, basename($file)))[0];
+  $self -> Push(___groups => $base);
+
+  ## the first time this is called, the regexp method has not yet
+  ## been defined -- grrr..!
+  my $opt  = Regexp::List->new;
+  my $key_regex = $opt->list2re(qw(type default minint maxint options
+				   units onvalue offvalue));
+  ##my $key_regex = Ifeffit::Demeter -> regexp("config");
+
+  my (%hash, $description, $group, $param, $value);
+  my $line;
+  open (my $CONFIG, $file);
+ CONF: while (my $line = <$CONFIG>) {
+    next CONF if ($line =~ m{^\s*\#});
+    next CONF if ($line =~ m{^\s*$});
+
+    chomp $line;
+    $line =~ s{\s+$}{};
+    if ($line =~ m{^\s*include\s*(.+)}) {
+      ## handle include files by recursion
+      (my $includefile = $1) =~ s{\s+(?:\#.*)?$}{};
+      $includefile = File::Spec->catfile(dirname($file), $includefile);
+      $self->_read_config_file($includefile);
+    } elsif ($line =~ m{^\s*section\s*=\s*(\w+)}) {
+      $group = $1;
+      $group =~ s{\s+$}{};
+      $description = q{};
+
+    } elsif ($line =~ m{^\s*section_description}) {
+    SECDESC: while (my $next = <$CONFIG>) {
+	$next =~ s{\n}{ };
+	$next =~ s{^\s+}{};
+	last SECDESC if ($next =~ m{^\s*$});
+	$description .= $next;
+      };
+      $description =~ s{\s+$}{};
+      $self -> set($group=>$description);
+
+    } elsif ($line =~ m{^\s*description}) {
+    DESC: while (my $next = <$CONFIG>) {
+	$next =~ s{\n}{ };
+	$next =~ s{^\s+}{};
+	last DESC if ($next =~ m{^\s*$});
+	if ($next =~ m{^\.}) {
+	  $next =~ s{\.\s+}{\%list};
+	  $next =~ s{\s}{\%space}g;
+	  $next .= '%endlist';
+	};
+	$description .= $next;
+      };
+      $description =~ s{\s+$}{};
+      $hash{description} = $description;
+      $self->set_this_param($group, $param, %hash);
+      next CONF;
+
+    } elsif ($line =~ m{^\s*variable\s*=\s*(\w+)}) {
+      $param = $1;
+      $param =~ s{\s+$}{};
+      undef %hash;
+      $ini{$group}{$param} = q{};
+      $description = q{};
+
+    } elsif ($line =~ m{^\s*($key_regex)\s*=\s*(.+)}) {
+      $value = $2;
+      $value =~ s{\s+$}{};
+      $hash{$1} = $value;
+      ($hash{demeter} = $value) if ($1 eq "default");
+    };
+  };
+  $self->set_this_param($group, $param, %hash) if %hash;
+  close $CONFIG;
+  return $self;
+};
+
+sub set_this_param {
+  my ($self, $group, $param, %hash) = @_;
+  use Data::Dumper;
+  my $key = join(":", $group, $param);
+  $hash{default}     ||= 0;	# sanitize several attributes
+  $hash{description} ||= q{};
+  if ($hash{type} eq 'positive integer') {
+    $hash{maxint} ||= 1e13;
+    $hash{minint} ||= 0;
+  } elsif ($hash{type} eq 'boolean') {
+    $hash{onvalue}  ||= 1;
+    $hash{offvalue} ||= 0;
+  };
+  $self -> set($key=>\%hash);
+  $ini{$group}{$param} = $hash{default};
+  return $self;
+};
+
+## override a default value, for instance when reading an ini file
+
+## need to take care that a key from an ini file is actually from the configuration files
+sub set_default {
+  my ($self, $group, $param, $value) = @_;
+  return q{} if not $param;
+  my $key = join(":", $group, $param);
+  my $rhash = $self->get($key);
+  $rhash->{default} = $value;
+  if ($rhash->{type} eq 'boolean') {
+    $rhash->{default} = ($self->is_true($value)) ? "true" : "false";
+  } elsif ($rhash->{type} eq 'positive integer') {
+    ($rhash->{default} = $rhash->{maxint}) if ($value > $rhash->{maxint});
+    ($rhash->{default} = $rhash->{minint}) if ($value < $rhash->{minint});
+  };
+  $self -> set($key=>$rhash);
+  return $self;
+};
+# sub is_true {
+#   my ($self, $value) = @_;
+#   return 1 if ($value =~ m{^[ty]}i);
+#   return 0 if ($value =~ m{^[fn]}i);
+#   return 0 if (($value =~ m{$NUMBER}) and ($value == 0));
+#   return 1 if ($value =~ m{$NUMBER});
+#   return 0;
+# };
+
+sub new_params {
+  my ($self, $rhash) = @_;
+  $self->set($rhash);
+  return 1;
+};
+
+sub default {
+  my ($self, $group, $param) = @_;
+  return q{} if not $param;
+  my $key = join(":", $group, $param);
+  my $rhash = $self->get($key);
+  carp("$key is not a valid configuration parameter"), return 0 if not $rhash;
+  if ($rhash->{type} eq 'boolean') {
+    return $rhash->{onvalue}  || 1 if ($rhash->{default} eq 'true');
+    return $rhash->{offvalue} || 0;
+  };
+  if ($rhash->{type} eq 'positive integer') {
+    return $rhash->{maxint} if ($rhash->{default} > $rhash->{maxint});
+    return $rhash->{minint} if ($rhash->{default} < $rhash->{minint});
+  };
+  return $rhash->{default};
+};
+{
+  no warnings 'once';
+  # alternate names
+  *def = \ &default;
+}
+
+sub description {
+  my ($self, $group, $param) = @_;
+  my $key = ($param) ? join(":", $group, $param) : $group;
+  return $self->get($key) if (not $param);
+  my $rhash = $self->get($key);
+  carp("$key is not a valid configuration parameter"), return 0 if not $rhash;
+  return $rhash->{description};
+};
+sub attribute {
+  my ($self, $which, $group, $param) = @_;
+  return q{} if not $param;
+  my $key = join(":", $group, $param);
+  my $rhash = $self->get($key);
+  carp("$key is not a valid configuration parameter"), return 0 if not $rhash;
+  return $rhash->{$which} || q{};
+};
+sub Type     {my $self=shift; $self->attribute("type",     @_)};
+sub units    {my $self=shift; $self->attribute("units",    @_)};
+sub demeter  {my $self=shift; $self->attribute("demeter",  @_)};
+sub options  {my $self=shift; $self->attribute("options",  @_)};
+sub onvalue  {my $self=shift; $self->attribute("onvalue",  @_)};
+sub offvalue {my $self=shift; $self->attribute("offvalue", @_)};
+sub minint   {my $self=shift; $self->attribute("minint",   @_)};
+sub maxint   {my $self=shift; $self->attribute("maxint",   @_)};
+
+sub describe_param {
+  my ($self, $group, $param, $width) = @_;
+  my $config = $self->mode->config;
+  my $text = q{};
+  local $Text::Wrap::columns = $width || $config->default("operations", "config_text_width");
+  local $Text::Wrap::huge = "overflow";
+  if ($param) {
+    my $key = join(":", $group, $param);
+    my $rhash = $self->get($key);
+    return q{} if not $rhash;
+    $text .= "$group -> $param\n";
+    my $desc = wrap("    \"", "     ", $rhash->{description}) . "\"\n";
+    $desc =~ s{\%list}{\n        }g;
+    $desc =~ s{\%space}{ }g;
+    $desc =~ s{\%endlist}{}g;
+    $text .= $desc;
+    foreach my $k qw(type default demeter options units minint maxint onvalue offvalue) {
+      $text .= sprintf("  %-8s : %s\n", $k, $rhash->{$k}) if defined $rhash->{$k};
+    };
+  } else {
+    my $description = $self->get($group);
+    return q{} if not $description;
+    $text .= "$group:\n";
+    $text .= wrap("    \"", "     ", $description) . "\"\n";
+  };
+  return $text;
+};
+
+sub write_ini {
+  my ($self, $file) = @_;
+  $file ||= $self->ini_file;
+  my $ini_ref = tied %ini;
+  $ini_ref -> WriteConfig($file);
+  return $self;
+};
+
+sub read_ini {
+  my ($self) = @_;
+  my $inifile = $self->ini_file;
+  if (not -e $inifile) {
+    $self->write_ini($inifile);
+    return $self;
+  };
+  my %personal_ini;
+  my $ini_ref = tied %ini;
+  tie %personal_ini, 'Config::IniFiles', (-file=>$inifile, -import=>$ini_ref );
+  foreach my $g (keys %personal_ini) {
+    my $hash = $personal_ini{$g};
+    foreach my $p (keys %$hash) {
+      ($p = 'col'.$1) if ($p =~ m{c(\d)}); # compatibility, convert cN -> colN
+      $self->set_default($g, $p, $personal_ini{$g}{$p});
+    };
+  };
+  return $self;
+};
+
+
 1;
 
 =head1 NAME
@@ -368,7 +369,7 @@ Ifeffit::Demeter::Config - Demeter's configuration system
 
 =head1 VERSION
 
-This documentation refers to Ifeffit::Demeter version 0.1.
+This documentation refers to Ifeffit::Demeter version 0.2.
 
 =head1 DESCRIPTION
 
@@ -397,11 +398,11 @@ attributes, however.
 =head1 METHODS
 
 The normal idiom for accessing method of the Config class is to chain
-method calls starting with any other Demeter object.  Although you are
-free to store a reference to the Config object in a scalar, it usually
-is not necessary to do so.
+method calls starting with any other Demeter object.  Although you can
+certainly store a reference to the Config object as a scalar, it
+usually is not necessary to do so.
 
-The C<config> method, inhereted by all other objects from the Demeter
+The C<co> method, inhereted by all other objects from the Demeter
 base class, returns a reference to the Config object.  All of the
 examples below use the chain idiom and C<self> can be any kind of
 object.
@@ -414,20 +415,20 @@ object.
 
 Return the default value for a parameter.
 
-  print "Default fft kmin is ", $object->config->default("fft", "kmin"), $/;
+  print "Default fft kmin is ", $object->co->default("fft", "kmin"), $/;
 
 =item C<set_default>
 
 This method is called repeatedly by C<read_ini> to move the
 information from the user's ini file into the Config object.
 
-  $object -> config -> set_default("bkg", "rbkg", 1.2);
+  $object -> co -> set_default("bkg", "rbkg", 1.2);
 
 =item C<describe>
 
 Return a text description of a parameter.
 
-  print $object -> config -> describe("bkg", "kw");
+  print $object -> co -> describe("bkg", "kw");
    == prints ==>
     bkg -> kw
         "The default value for the k-weighting used to fit the background spline."
@@ -441,7 +442,7 @@ There is a third argument that controls the width of the description
 text, the default being 90 (as set by the
 C<operations-E<gt>config_text_width> parameter).
 
-  print $object -> config -> describe("bkg", "kw", 45);
+  print $object -> co -> describe("bkg", "kw", 45);
    == prints ==>
     bkg -> kw
         "The default value for the k-weighting
@@ -456,13 +457,13 @@ C<operations-E<gt>config_text_width> parameter).
 
 Return a list of known configuration groups.
 
-  @groups = $object -> config -> groups;
+  @groups = $object -> co -> groups;
 
 =item C<parameters>
 
 Return a list of parameters associated with a specified configuration group.
 
-  @params = $object -> config -> parameters('bkg');
+  @params = $object -> co -> parameters('bkg');
 
 =back
 
@@ -475,13 +476,13 @@ Return a list of parameters associated with a specified configuration group.
 Read default values from a user's ini file, overwriting the values
 read from the system-wide configuration file.
 
-  $object -> config -> read_ini($filename);
+  $object -> co -> read_ini($filename);
 
 =item C<write_ini>
 
 Write an ini file for a user.
 
-  $object -> config -> write_ini($filename);
+  $object -> co -> write_ini($filename);
 
 If the filename is not given, the user's ini file will be written.
 
@@ -527,9 +528,9 @@ associated convenience method of the same name.
 =item type
 
 This is one of string, regex, real, "positive integer", list, boolean,
-or color.
+color, or font.
 
-  print $object -> config -> type("fft", "kwindow")
+  print $object -> co -> type("fft", "kwindow")
     ==prints==>
       list
 
@@ -538,7 +539,7 @@ or color.
 This is the value associated with the parameter.  This is overridden
 by an imported INI file or by the C<set_default> method.
 
-  print $object -> config -> default("fft", "kwindow")
+  print $object -> co -> default("fft", "kwindow")
     ==prints==>
       hanning
 
@@ -548,7 +549,7 @@ This is the default value form the configuration file shipped with
 demeter.  This is untouched even when a default is overridden by an
 imported INI file.
 
-  print $object -> config -> demeter("fft", "kwindow")
+  print $object -> co -> demeter("fft", "kwindow")
     ==prints==>
       hanning
 
@@ -556,13 +557,13 @@ imported INI file.
 
 This is a text string explaining the purpose of the parameter.
 
-  print $object -> config -> description("fft", "kwindow")
+  print $object -> co -> description("fft", "kwindow")
     ==prints==>
       The default window type to use for the forward Fourier transform.
 
 This can also return the description text of a parameter group.
 
-  print $object -> config -> description("fft")
+  print $object -> co -> description("fft")
     ==prints==>
       These parameters determine how forward Fourier transforms are done by Demeter.
 
@@ -577,7 +578,7 @@ an associated convenience method of the same name.
 
 This specifies the units of the parameter, if appropriate.
 
-  print $object -> config -> units("bkg", "pre1")
+  print $object -> co -> units("bkg", "pre1")
     ==prints==>
       eV (relative to e0 or to the beginning of the data)
 
@@ -587,7 +588,7 @@ These are the values associated with the true and false states of a
 boolean parameter.  If unspecified in the configuration file, they
 default to 1 and 0.
 
-  print $object -> config -> onvalue("bkg", "flatten")
+  print $object -> co -> onvalue("bkg", "flatten")
     ==prints==>
       1
 
@@ -597,7 +598,7 @@ These are the minimum and maximum allowed values of a positive integer
 parameter.  If unspecified in the configuration file, they default to
 0 and 1e13.
 
-  print $object -> config -> maxint("bkg", "kw")
+  print $object -> co -> maxint("bkg", "kw")
     ==prints==>
       3
 
@@ -607,7 +608,7 @@ This are the possible options for a list parameter.  They are stored
 as a space-separated string.  This string will have to be split on the
 spaces to be used as a list.
 
-  print $object -> config -> options("fft", "kwindow")
+  print $object -> co -> options("fft", "kwindow")
     ==prints==>
       hanning kaiser-bessel welch parzen sine
 
@@ -615,15 +616,15 @@ spaces to be used as a list.
 
 =head1 USER DEFINED PARAMETERS
 
-The C<new_param> method creates a user-defined parameter and stores it
+The C<set> method creates a user-defined parameter and stores it
 in the Config object for later use.
 
-    $merged->new_params({ndata=>$ndata});
+    $merged->set(ndata=>$ndata);
 
 These user-defined parameter are the accessed via C<get> (rather than
 C<default>)
 
-    print "Number of sets in merge = ", $data->config->get("ndata");
+    print "Number of sets in merge = ", $data->co->get("ndata");
 
 The reason to use the Config object to store parameters is that they
 are easily used by the templating system that Demeter uses to do its
@@ -690,15 +691,15 @@ It can also be used to populate the preferences dialog in a GUI.  Here
 is a list of suggested widgets to use with each configuration type
 
    variable types         suggested widget
-     string                Entry
-     regex                 Entry
-     real                  Entry  -- validates to accept only numbers
-     positive integer      Entry with incrementers, restricted to be >= 0
-     list                  Menubutton or some other multiple selection widget
+     string                TextCtrl
+     regex                 TextCtrl
+     real                  TextCtrl -- validates to accept only numbers
+     positive integer      SpinCtrl -- restricted to be >= 0
+     list                  Choice or some other multiple selection widget
      boolean               Checkbutton
-     keypress              Entry  -- rigged to display one character at a time
-     color                 Button -- launches color browser
-     font                  Button -- does nothing at this time
+     keypress              TextCtrl -- rigged to display one character at a time
+     color                 ColorPicker -- launches color browser
+     font                  FontPicker -- does nothing at this time
 
 =head1 EMACS MAJOR MODE
 
@@ -734,7 +735,7 @@ problem for user-defined parameetrs.
 
 =item *
 
-There is no introspection method for returning all (sets) of user
+There is no introspection method for returning all (sets of) user
 defined parameters.
 
 =item *
@@ -755,7 +756,7 @@ When (how often) should ini files be written out?
 
 =back
 
-Please report problems to Bruce Ravel (bravel AT anl DOT gov)
+Please report problems to Bruce Ravel (bravel AT bnl DOT gov)
 
 Patches are welcome.
 
@@ -770,7 +771,7 @@ L<http://cars9.uchicago.edu/~ravel/software/>
 Copyright (c) 2006-2008 Bruce Ravel (bravel AT bnl DOT gov). All rights reserved.
 
 This module is free software; you can redistribute it and/or
-modify it under the same terms as Perl itself. See L<perlartistic>.
+modify it under the same terms as Perl itself. See L<perlgpl>.
 
 This program is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of

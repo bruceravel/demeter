@@ -15,10 +15,30 @@ package Ifeffit::Demeter::Plot;
 
 =cut
 
-use strict;
-use warnings;
-#use diagnostics;
-use Class::Std;
+use Moose;
+extends 'Ifeffit::Demeter';
+use MooseX::AttributeHelpers;
+use Moose::Util::TypeConstraints;
+use Ifeffit::Demeter::StrTypes qw( Element
+ 				   Edge
+ 				   Clamp
+ 				   FitSpace
+				   Window
+				   Empty
+				   DataType
+				   PgplotLine
+				   MERIP
+				   PlotWeight
+				   Interp
+ 				);
+use Ifeffit::Demeter::NumTypes qw( Natural
+				   PosInt
+				   PosNum
+				   NonNeg
+				   OneToFour
+                                   OneToTwentyNine
+				);
+
 use Carp;
 use Fatal qw(open close);
 use Regexp::List;
@@ -26,339 +46,242 @@ use Regexp::Optimizer;
 use Regexp::Common;
 use Readonly;
 Readonly my $NUMBER => $RE{num}{real};
-use YAML;
+use String::Random qw(random_string);
+#use YAML;
 
-{
-  use base qw( Ifeffit::Demeter
-               Ifeffit::Demeter::Dispose
-               Ifeffit::Demeter::Project
-             );
-  my $opt  = Regexp::List->new;
-  my $config = Ifeffit::Demeter->get_mode("params");
 
-  ## set default data parameter values
-  my %plot_defaults = (
-		       group              => 'plot_parameters',
-		       ## font and legend have special methods
-		       charsize		  => $config->default("plot", "charsize") || 1.2,
-		       charfont		  => $config->default("plot", "charfont") || 1,
-		       key_x		  => $config->default("plot", "key_x")    || 0.8,
-		       'key_y'		  => $config->default("plot", "key_y")    || 0.9,
-		       key_dy		  => $config->default("plot", "key_dy")   || 0.075,
+has 'charsize'  => (is => 'rw', isa =>  PosNum,    default => sub{ shift->mode->config->default("plot", "charsize") || 1.2});
+has 'charfont'  => (is => 'rw', isa =>  OneToFour, default => sub{ shift->mode->config->default("plot", "charfont") || 1});
+has 'key_x'     => (is => 'rw', isa =>  PosNum,    default => sub{ shift->mode->config->default("plot", "key_x")    || 0.8});
+has 'key_y'     => (is => 'rw', isa =>  PosNum,    default => sub{ shift->mode->config->default("plot", "key_y")    || 0.9});
+has 'key_dy'    => (is => 'rw', isa =>  PosNum,    default => sub{ shift->mode->config->default("plot", "key_dy")   || 0.075});
 
-		       ## plot area
-		       bg		  => $config->default("plot", "bg")        || "white",
-		       fg		  => $config->default("plot", "fg")        || "black",
-		       showgrid		  => $config->default("plot", "showgrid")  || 1,
-		       gridcolor	  => $config->default("plot", "gridcolor") || "grey82",
+## I need a Color type
+has 'bg'        => (is => 'rw', isa =>  'Str',    default => sub{ shift->mode->config->default("plot", "bg")        || "white"});
+has 'fg'        => (is => 'rw', isa =>  'Str',    default => sub{ shift->mode->config->default("plot", "fg")        || "black"});
+has 'showgrid'  => (is => 'rw', isa =>  'Bool',   default => sub{ shift->mode->config->default("plot", "showgrid")  || 1});
+has 'gridcolor' => (is => 'rw', isa =>  'Str',    default => sub{ shift->mode->config->default("plot", "gridcolor") || "grey82"});
 
-		       ## line colors
-		       increment          => 0,	     # integer
-		       c0		  => $config->default("plot", "c0") || "blue",
-		       c1		  => $config->default("plot", "c1") || "red",
-		       c2		  => $config->default("plot", "c2") || "green4",
-		       c3		  => $config->default("plot", "c3") || "darkviolet",
-		       c4		  => $config->default("plot", "c4") || "darkorange",
-		       c5		  => $config->default("plot", "c5") || "brown",
-		       c6		  => $config->default("plot", "c6") || "deeppink",
-		       c7		  => $config->default("plot", "c7") || "gold3",
-		       c8		  => $config->default("plot", "c8") || "cyan3",
-		       c9		  => $config->default("plot", "c9") || "yellowgreen",
+has 'increm'    => (is => 'rw', isa =>  Natural,    default => 0);
+has 'col0'	=> (is => 'rw', isa =>  'Str',    default => sub{ shift->mode->config->default("plot", "col0") || "blue"});
+has 'col1'	=> (is => 'rw', isa =>  'Str',    default => sub{ shift->mode->config->default("plot", "col1") || "red"});
+has 'col2'	=> (is => 'rw', isa =>  'Str',    default => sub{ shift->mode->config->default("plot", "col2") || "green4"});
+has 'col3'	=> (is => 'rw', isa =>  'Str',    default => sub{ shift->mode->config->default("plot", "col3") || "darkviolet"});
+has 'col4'	=> (is => 'rw', isa =>  'Str',    default => sub{ shift->mode->config->default("plot", "col4") || "darkorange"});
+has 'col5'	=> (is => 'rw', isa =>  'Str',    default => sub{ shift->mode->config->default("plot", "col5") || "brown"});
+has 'col6'	=> (is => 'rw', isa =>  'Str',    default => sub{ shift->mode->config->default("plot", "col6") || "deeppink"});
+has 'col7'	=> (is => 'rw', isa =>  'Str',    default => sub{ shift->mode->config->default("plot", "col7") || "gold3"});
+has 'col8'	=> (is => 'rw', isa =>  'Str',    default => sub{ shift->mode->config->default("plot", "col8") || "cyan3"});
+has 'col9'	=> (is => 'rw', isa =>  'Str',    default => sub{ shift->mode->config->default("plot", "col9") || "yellowgreen"});
 
-		       ## line styles
-		       datastyle	  => $config->default("plot", "datastyle")  || "solid", # (solid dashed dotted dot-dash points linespoints)
-		       fitstyle		  => $config->default("plot", "fitstyle")   || "solid", #   "
-		       partstyle	  => $config->default("plot", "partstyle")  || "solid", #   "
-		       pathstyle	  => $config->default("plot", "pathstyle")  || "solid", #   "
+has 'datastyle' => (is => 'rw', isa =>  PgplotLine, default => sub{ shift->mode->config->default("plot", "datastyle")  || "solid"});
+has 'fitstyle'  => (is => 'rw', isa =>  PgplotLine, default => sub{ shift->mode->config->default("plot", "fitstyle")   || "solid"});
+has 'partstyle' => (is => 'rw', isa =>  PgplotLine, default => sub{ shift->mode->config->default("plot", "partstyle")  || "solid"});
+has 'pathstyle' => (is => 'rw', isa =>  PgplotLine, default => sub{ shift->mode->config->default("plot", "pathstyle")  || "solid"});
 
-		       ## k,R,q space plots
-		       space              => 'r',  # (k r q)
-		       emin		  => $config->default("plot", "emin") || -200,
-		       emax		  => $config->default("plot", "emax") || 800,
-		       e_mu               => $config->default("plot", "e_mu") || 1,
-		       e_bkg              => $config->default("plot", "e_bkg") || 0,
-		       e_pre              => $config->default("plot", "e_pre") || 0,
-		       e_post             => $config->default("plot", "e_post") || 0,
-		       e_norm             => $config->default("plot", "e_norm") || 0,
-		       e_der              => $config->default("plot", "e_der") || 0,
-		       e_sec              => $config->default("plot", "e_sec") || 0,
-		       e_markers          => $config->default("plot", "e_markers") || 0,    #  "
-		       e_part             => q{},
-		       e_smooth           => $config->default("plot", "e_smooth") || 0,
-		       kmin		  => $config->default("plot", "kmin") || 0,
-		       kmax		  => $config->default("plot", "kmax") || 15,
-		       rmin		  => $config->default("plot", "rmin") || 0,
-		       rmax		  => $config->default("plot", "rmax") || 6,
-		       r_pl		  => $config->default("plot", "r_pl") || "m",
-		       qmin		  => $config->default("plot", "qmin") || 0,
-		       qmax		  => $config->default("plot", "qmax") || 15,
-		       'q_pl'		  => $config->default("plot", "q_pl") || "r",
+has 'space'	=> (is => 'rw', isa =>  FitSpace, default => 'r');
+has 'emin'	=> (is => 'rw', isa =>  'Num',    default => sub{ shift->mode->config->default("plot", "emin") || -200});
+has 'emax'	=> (is => 'rw', isa =>  'Num',    default => sub{ shift->mode->config->default("plot", "emax") || 800});
+has 'e_mu'	=> (is => 'rw', isa =>  'Bool',   default => sub{ shift->mode->config->default("plot", "e_mu") || 1});
+has 'e_bkg'	=> (is => 'rw', isa =>  'Bool',   default => sub{ shift->mode->config->default("plot", "e_bkg") || 0});
+has 'e_pre'	=> (is => 'rw', isa =>  'Bool',   default => sub{ shift->mode->config->default("plot", "e_pre") || 0});
+has 'e_post'	=> (is => 'rw', isa =>  'Bool',   default => sub{ shift->mode->config->default("plot", "e_post") || 0});
+has 'e_norm'	=> (is => 'rw', isa =>  'Bool',   default => sub{ shift->mode->config->default("plot", "e_norm") || 0});
+has 'e_der'	=> (is => 'rw', isa =>  'Bool',   default => sub{ shift->mode->config->default("plot", "e_der") || 0});
+has 'e_sec'	=> (is => 'rw', isa =>  'Bool',   default => sub{ shift->mode->config->default("plot", "e_sec") || 0});
+has 'e_markers'	=> (is => 'rw', isa =>  'Bool',   default => sub{ shift->mode->config->default("plot", "e_markers") || 0});
+has 'e_part'	=> (is => 'rw', isa =>  'Str',    default => q{});
+has 'e_smooth'	=> (is => 'rw', isa =>  'Bool',   default => sub{ shift->mode->config->default("plot", "e_smooth") || 0});
+has 'kmin'	=> (is => 'rw', isa =>  'Num',    default => sub{ shift->mode->config->default("plot", "kmin") || 0});
+has 'kmax'	=> (is => 'rw', isa =>  'Num',    default => sub{ shift->mode->config->default("plot", "kmax") || 15});
+has 'rmin'	=> (is => 'rw', isa =>  'Num',    default => sub{ shift->mode->config->default("plot", "rmin") || 0});
+has 'rmax'	=> (is => 'rw', isa =>  'Num',    default => sub{ shift->mode->config->default("plot", "rmax") || 6});
+has 'r_pl'	=> (is => 'rw', isa =>  MERIP,    default => sub{ shift->mode->config->default("plot", "r_pl") || "m"});
+has 'qmin'	=> (is => 'rw', isa =>  'Num',    default => sub{ shift->mode->config->default("plot", "qmin") || 0});
+has 'qmax'	=> (is => 'rw', isa =>  'Num',    default => sub{ shift->mode->config->default("plot", "qmax") || 15});
+has 'q_pl'	=> (is => 'rw', isa =>  MERIP,    default => sub{ shift->mode->config->default("plot", "q_pl") || "r"});
 
-		       ## window, k-weight
-		       kweight		  => "1",  # (1 2 3 arb)
-		       window_multiplier  => 1.05, # float
-		       plot_data	  => 0,    # boolean
-		       plot_fit		  => 0,    # boolean
-		       plot_win		  => 0,    # boolean
-		       plot_res		  => 0,    # boolean
-		       plot_bkg		  => 0,    # boolean
-		       plot_paths	  => 0,    # boolean
+has 'kweight'		=> (is => 'rw', isa =>  'Num',      default => "1");
+has 'window_multiplier' => (is => 'rw', isa =>  'Num',      default => 1.05);
+has 'plot_data'	        => (is => 'rw', isa =>  'Bool',     default => 0);
+has 'plot_fit'		=> (is => 'rw', isa =>  'Bool',     default => 0);
+has 'plot_win'		=> (is => 'rw', isa =>  'Bool',     default => 0);
+has 'plot_res'		=> (is => 'rw', isa =>  'Bool',     default => 0);
+has 'plot_bkg'		=> (is => 'rw', isa =>  'Bool',     default => 0);
+has 'plot_paths'	=> (is => 'rw', isa =>  'Bool',     default => 0);
+has 'plot_rmr_offset'	=> (is => 'rw', isa =>   NonNeg,    default => 0);
 
-		       ## indicators (not yet implemented)
-		       nindicators	  => $config->default("indicator", "n")     || 8,
-		       indicatorcolor	  => $config->default("indicator", "color") || "violetred",
-		       indicatorline	  => $config->default("indicator", "line")  || "solid",
 
-		       showmarker         => $config->default("marker", "show")  || 1,
-		       markertype         => $config->default("marker", "type")  || 9,    # number 1 to 29, 9 is a dotted circle
-		       markersize         => $config->default("marker", "size")  || 2,
-		       markercolor        => $config->default("marker", "color") || "orange",
+has 'nindicators'    => (is => 'rw', isa =>  PosInt,          default => sub{ shift->mode->config->default("indicator", "n")     || 8});
+has 'indicatorcolor' => (is => 'rw', isa =>  'Str',           default => sub{ shift->mode->config->default("indicator", "color") || "violetred"});
+has 'indicatorline'  => (is => 'rw', isa =>  'Str',           default => sub{ shift->mode->config->default("indicator", "line")  || "solid"});
+has 'showmarker'     => (is => 'rw', isa =>  'Str',           default => sub{ shift->mode->config->default("marker", "show")     || 1});
+has 'markertype'     => (is => 'rw', isa =>  OneToTwentyNine, default => sub{ shift->mode->config->default("marker", "type")     || 9});    # number 1 to 29, 9 is a dotted circle
+has 'markersize'     => (is => 'rw', isa =>  'Num',           default => sub{ shift->mode->config->default("marker", "size")     || 2});
+has 'markercolor'    => (is => 'rw', isa =>  'Str',           default => sub{ shift->mode->config->default("marker", "color")    || "orange"});
 
-		       ## locals, mostly handled by the plot methods
-		       new    => 1, # boolean
-		       color  => q{},
-		       xlabel => q{},
-		       ylabel => q{},
-		       key    => q{},
-		       title  => q{},
+has 'New'    => (is => 'rw', isa =>  'Bool',          default => 0);
+has 'color'  => (is => 'rw', isa =>  'Any',           default => q{});
+has 'xlabel' => (is => 'rw', isa =>  'Any',           default => q{});
+has 'ylabel' => (is => 'rw', isa =>  'Any',           default => q{});
+has 'key'    => (is => 'rw', isa =>  'Any',           default => q{});
+has 'title'  => (is => 'rw', isa =>  'Any',           default => q{});
 
-		       tempfiles => [],
-		       lastplot  => q{},
+has 'tempfiles' => (
+      metaclass => 'Collection::Array',
+      is        => 'rw',
+      isa       => 'ArrayRef[Str]',
+      default   => sub { [] },
+      provides  => {
+		    'push' => 'add_tempfile',
+		    'pop'  => 'remove_tempfile',
+		    'clear' => 'clear_tempfiles',
+      }
+  );
+
+
+has 'lastplot'  => (is => 'rw', isa => 'Any',        default => q{});
 
 		       ## interpolation parameters
-		       interp => $config->default("interpolation", "type") || "qinterp",
-
-		      );
-
-  my %attr = (number    => $opt->list2re(qw(charsize key_x key_y key_dy
-					    emin emax kmin kmax rmin rmax qmin qmax
-					    window_multiplier kweight
-					    rebin_emin rebin_emax rebin_pre rebin_xanes rebin_exafs
-					   )),
-	      boolean   => $opt->list2re(qw(plot_data plot_fit plot_win plot_res plot_bkg showgrid
-					    e_mu e_bkg e_pre e_post e_norm e_der e_sec e_markers new
-					   )),
-	      integer   => $opt->list2re(qw(e_smooth increment markertype)),
-	      line      => $opt->list2re(qw(indicatorline datastyle fitstyle partstyle)),
-	      linetypes => $opt->list2re(qw(solid dashed dotted dot-dash points linespoints)),
-	      color     => $opt->list2re(qw(c0 c1 c2 c3 c4 c5 c6 c7 c8 c9
-					    indicatorcolor bg fg gridcolor markercolor)),
-	      interp    => $opt->list2re(qw(linterp qinterp splint)),
-	     );
-
-  sub BUILD {
-    my ($self, $ident, $arguments) = @_;
-    $self -> set(\%plot_defaults);
-
-    ## plot specific attributes
-    $self -> set($arguments);
-
-    $self -> start_plot;
-    $self -> set_mode({plot=>$self});
-    return;
-  };
-  sub DEMOLISH {
-    my ($self) = @_;
-    return;
-  };
-
-  sub set {
-    my ($self, $r_hash) = @_;
-    my $re = $self->regexp;
-
-    foreach my $key (keys %$r_hash) {
-      my $k = lc $key;
-
-      carp("\"$key\" is not a valid Ifeffit::Demeter::Plot parameter"), next
-	if ($k !~ /$re/);
+has 'interp' => (is => 'rw', isa => Interp,          default => sub{ shift->mode->config->default("interpolation", "type") || "qinterp"});
 
 
-    SET: {
-	($k =~ m{\A$attr{number}\z}) and do { # numbers must be numbers
-	  croak("Ifeffit::Demeter::Plot: $k must be a number ($r_hash->{$k})")
-	    if ($r_hash->{$k} !~ m{\A$NUMBER\z});
-	  $self->SUPER::set({$k=>$r_hash->{$k}});
-	};
-	($k eq "interp") and do { # numbers must be numbers
-	  croak("Ifeffit::Demeter::Plot: $k must be one of linterp/qinterp/splint ($r_hash->{$k})")
-	    if ($r_hash->{$k} !~ m{\A$attr{interp}\z});
-	  $self->SUPER::set({$k=>$r_hash->{$k}});
-	};
-	($k eq 'charfont') and do {
-	  croak("Ifeffit::Demeter::Plot: charfont must be an integer from 1 to 4")
-	    if ($r_hash->{$k} !~ m{\A[1-4]\z});
-	  $self->SUPER::set({$k=>$r_hash->{$k}});
-	};
-	($k =~ m{\A$attr{line}\z}) and do {
-	  croak("Ifeffit::Demeter::Plot: $k must be one of solid, dashed, dotted, dot-dash, points, or linespoints")
-	    if (lc($r_hash->{$k}) !~ m{\A$attr{linetypes}\z}i);
-	  $self->SUPER::set({$k=>lc($r_hash->{$k})});
-	  last SET;
-	};
-
-	## norm and pre/post are mutually exclusive
-	($k eq 'e_norm') and do {
-	  $self->set({e_pre=>0, e_post=>0, e_sec=>0}) if ($r_hash->{$k});
-	  $self->SUPER::set({$k=>$r_hash->{$k}});
-	  last SET;
-	};
-	($k =~ m{\Ae_p(?:ost|re)}) and do {
-	  $self->set({e_norm=>0, e_der=>0, e_sec=>0}) if ($r_hash->{$k});
-	  $self->SUPER::set({$k=>$r_hash->{$k}});
-	  last SET;
-	};
-	## first and second deriv are mutually exclusive
-	## also derivs preclude pre/post/norm
-	($k eq 'e_der') and do {
-	  $self->set({e_sec=>0, e_pre=>0, e_post=>0, e_norm=>0}) if ($r_hash->{$k});
-	  $self->SUPER::set({$k=>$r_hash->{$k}});
-	  last SET;
-	};
-	($k eq 'e_sec') and do {
-	  $self->set({e_der=>0, e_pre=>0, e_post=>0, e_norm=>0}) if ($r_hash->{$k});
-	  $self->SUPER::set({$k=>$r_hash->{$k}});
-	  last SET;
-	};
-	($k =~ m{\A[rq]_pl\z}) and do {
-	  croak("Ifeffit::Demeter::Plot: $k must be one of m, e, r, i, or p")
-	    if ($r_hash->{$k} !~ m{\A[merip]\z});
-	  $self->SUPER::set({$k=>$r_hash->{$k}});
-	};
-
-	do {			# no special handling required
-	  $self->SUPER::set({$k=>$r_hash->{$k}});
-	};
-      };
-    };
-  };
-
-  ## return a list of valid plot parameter names
-  sub parameter_list {
-    my ($self) = @_;
-    return (sort keys %plot_defaults);
-  };
-
-  my $parameter_regexp = $opt->list2re(keys %plot_defaults);
-  sub _regexp {
-    my ($self) = @_;
-    return $parameter_regexp;
-  };
-
-  sub start_plot {
-    my ($self) = @_;
-    my $color = $self->get("c0");
-    $self -> cleantemp -> set({new       => 1,
-			       color     => $color,
-			       increment => 0,
-			       lastplot  => q{}});
-    $self -> new_params({plot_part => q{}});
-    return $self;
-  };
-  sub increment {
-    my ($self) = @_;
-    my $incr = $self->get('increment');
-    ++$incr;
-    $incr = $incr % 10;
-    my $color = $self->get("c$incr");
-    $self->set({new=>0, color=>$color, increment=>$incr});
-  };
-  sub reinitialize {
-    my ($self, $xl, $yl) = @_;
-    $self -> set({xlabel => $xl,
-		  ylabel => $yl,
-		  key    => q{},
-		  title  => q{},
-		  color  => q{},
-		  #new    => 1,
-		  e_part => q{},
-		  #increment => 0,
-		 });
-  };
-  sub end_plot {
-    my ($self) = @_;
-    return $self;
-  };
-
-  sub tempfile {
-    my ($self) = @_;
-    my $this = File::Spec->catfile($self->stash_folder, Ifeffit::Demeter::Tools->random_string(8));
-    $self->Push({tempfiles => $this});
-    return $this;
-  };
-  sub cleantemp {
-    my ($self) = @_;
-    foreach my $f (@{ $self->get('tempfiles') }) {
-      unlink $f;
-    };
-    $self -> set({tempfiles => []});
-    return $self;
-  };
-
-  sub legend {
-    my ($self, $arguments) = @_;
-    foreach my $which (qw(dy y x)) {
-      $arguments->{$which} ||= $arguments->{"key_".$which};
-      $arguments->{$which} ||= $plot_defaults{"key_".$which};
-    };
-
-    foreach my $key (keys %$arguments) {
-      next if ($key !~ m{\A(?:dy|x|y)\z});
-      carp("$key must be a positive number."), ($arguments->{$key}=$plot_defaults{"key_".$key}) if ($arguments->{$key} !~ m{$NUMBER});
-      carp("$key must be a positive number."), ($arguments->{$key}=$plot_defaults{"key_".$key}) if ($arguments->{$key} < 0);
-      $self->set({ "key_".$key=>$arguments->{$key} });
-    };
-    Ifeffit::put_scalar('&plot_key_x' , $self->get("key_x"));
-    Ifeffit::put_scalar('&plot_key_y0', $self->get("key_y"));
-    Ifeffit::put_scalar('&plot_key_dy', $self->get("key_dy"));
-    #my $command = sprintf("plot(key_x=%s, key_y=%s, key_dy=%s)\n", $self->get(qw(key_x key_y key_dy)));
-    #$self->dispose($command);
-    return $self;
-  };
-
-  ## size cannot be negative, font must be 1-4
-  sub font {
-    my ($self, $arguments) = @_;
-    $arguments->{font} ||= $arguments->{charfont};
-    $arguments->{size} ||= $arguments->{charsize};
-    $arguments->{font} ||= $plot_defaults{charfont};
-    $arguments->{size} ||= $plot_defaults{charsize};
-    carp("The font must be an integer from 1 to 4."), ($arguments->{font}=1)   if (($arguments->{font} < 1) or ($arguments->{font} > 4));
-    carp("The size must be a positive number."),      ($arguments->{size}=1.2) if ($arguments->{size} !~ m{$NUMBER});
-    carp("The size must be a positive number."),      ($arguments->{size}=1.2) if ($arguments->{size} < 0);
-    foreach my $key (keys %$arguments) {
-      next if ($key !~ m{\A(?:font|size)\z});
-      $self->set({ "char$key"=>$arguments->{$key} });
-    };
-    my $command = sprintf("plot(charfont=%d, charsize=%s)\n", $self->get(qw(charfont charsize)));
-    $self->dispose($command);
-    return $self;
-  };
-
-  sub label {
-    my ($self, $x, $y, $text) = @_;
-    my $command = $self->template("plot", "label", { x    => $x,
-						    'y'   => $y,
-						     text => $text
-						   });
-    #if ($self->get_mode("template_plot") eq 'gnuplot') {
-    #  $self->get_mode('external_plot_object')->gnuplot_cmd($command);
-    #} else {
-    $self -> dispose($command, "plotting");
-    #};
-    return $self;
-  };
-
-  sub file {
-    my ($self, $type, $file) = @_;
-    my %devices = (png => '/png', ps => '/cps');
-    my $command = $self->template("plot", "file", { device => $devices{$type},
-						    file   => $file });
-    $self -> dispose($command, "plotting");
-    return $self;
-  };
-
-
+sub BUILD {
+  my ($self) = @_;
+  $self -> start_plot;
+  $self -> mode -> plot($self);
+  return;
 };
+
+sub DESTROY {
+  my $self = shift;
+  foreach my $f (@{ $self->tempfiles }) {
+    unlink $f;
+  };
+  #$self->end_plot;
+};
+
+sub start_plot {
+  my ($self) = @_;
+  my $color = $self->col0;
+  #$self -> cleantemp; 
+  $self -> New(1);
+  $self -> color($color);
+  $self -> increm(0);
+  $self -> lastplot(q{});
+  $self -> co -> set(plot_part=>q{});
+  return $self;
+};
+
+sub increment {
+  my ($self) = @_;
+  my $incr = $self->increm;
+  ++$incr;
+  $incr = $incr % 10;
+  my $cc = 'col' . $incr;
+  my $color = $self->$cc;
+  $self->New(0);
+  $self->color($color);
+  return $self->increm($incr);
+};
+sub reinitialize {
+  my ($self, $xl, $yl) = @_;
+  $self -> xlabel($xl);
+  $self->ylabel($yl);
+  $self->key(q{});
+  $self->title(q{});
+  #$self->color(q{});
+  #$self->New(1);
+  $self->e_part(q{});
+  return $self->increm;
+};
+sub end_plot {
+  my ($self) = @_;
+  return $self;
+};
+
+
+sub tempfile {
+  my ($self) = @_;
+  my $this = File::Spec->catfile($self->stash_folder, random_string('cccccccc'));
+  $self->add_tempfile($this);
+  #print join(" ", @{$self->tempfiles}), $/;
+  return $this;
+};
+sub cleantemp {
+  my ($self) = @_;
+  foreach my $f (@{ $self->tempfiles }) {
+    unlink $f;
+  };
+  $self -> clear_tempfiles;
+  return $self;
+};
+
+
+sub legend {
+  my ($self, @arguments) = @_;
+  my %args = @arguments; # coerce to a hash
+  foreach my $which (qw(dy y x)) {
+    my $k = "key_".$which;
+    $args{$which} ||= $args{$k};
+    $args{$which} ||= $self->$k;
+  };
+
+  foreach my $key (keys %args) {
+    next if ($key !~ m{\A(?:dy|x|y)\z});
+    my $k = "key_".$key;
+    $self->$k($args{$key});
+  };
+  Ifeffit::put_scalar('&plot_key_x' , $self->key_x);
+  Ifeffit::put_scalar('&plot_key_y0', $self->key_y);
+  Ifeffit::put_scalar('&plot_key_dy', $self->key_dy);
+  return $self;
+};
+
+## size cannot be negative, font must be 1-4
+sub font {
+  my ($self, @arguments) = @_;
+  my %args = @arguments; # coerce to a hash
+  $args{font} ||= $args{charfont};
+  $args{size} ||= $args{charsize};
+  $args{font} ||= $self->charfont;
+  $args{size} ||= $self->charsize;
+  foreach my $key (keys %args) {
+    next if ($key !~ m{\A(?:font|size)\z});
+    my $k = "char$key";
+    $self->$k($args{$key});
+  };
+  my $command = sprintf("plot(charfont=%d, charsize=%s)\n", $self->charfont, $self->charsize);
+  $self->dispose($command);
+  return $self;
+};
+
+sub textlabel {
+  my ($self, $x, $y, $text) = @_;
+  my $command = $self->template("plot", "label", {  x    => $x,
+						   'y'   => $y,
+						    text => $text
+						 });
+  #if ($self->get_mode("template_plot") eq 'gnuplot') {
+  #  $self->get_mode('external_plot_object')->gnuplot_cmd($command);
+  #} else {
+  $self -> dispose($command, "plotting");
+  #};
+  return $self;
+};
+
+sub outfile {
+  my ($self, $type, $file) = @_;
+  my %devices = (png => '/png', ps => '/cps');
+  my $command = $self->template("plot", "file", { device => $devices{$type},
+						  file   => $file });
+  $self -> dispose($command, "plotting");
+  return $self;
+};
+
+
+
+
 1;
 
 =head1 NAME
@@ -367,12 +290,11 @@ Ifeffit::Demeter::Plot - Controlling plots of XAS data
 
 =head1 VERSION
 
-This documentation refers to Ifeffit::Demeter version 0.1.
+This documentation refers to Ifeffit::Demeter version 0.2.
 
 =head1 SYNOPSIS
 
-  $plot_object = Ifeffit::Demeter::Plot -> new();
-  $plot_object -> set({kweight=>3});
+  $object -> po -> set(kweight=>3);
 
 =head1 DESCRIPTION
 
@@ -381,7 +303,14 @@ pertaining to how plots of data and paths are made.
 
 =head1 METHODS
 
-This uses the C<new>, C<set>, and C<get> methods of the parent class.
+This uses the C<set>, and C<get> methods of the parent class.
+
+The typical way of accessing these methods is in a chain with the
+C<po> method.  All of the examples below demonstrate that.  You can
+also store the reference to the plot object as a scalar and used that:
+
+  $plot_object - $other_object -> po;
+  $plot_object -> set(kweight=>3);
 
 =over 4
 
@@ -392,7 +321,7 @@ after running this method will be a C<newplot()>.  Each subsequent plot until
 the next time C<start_plot> is called will be a C<plot()>.  Also, the sequence
 of colors is reset when this method is called.
 
-  $plotobject -> start_plot;
+  $object -> po -> start_plot;
 
 =item C<legend>
 
@@ -400,7 +329,7 @@ This is a convenience method for controlling the appearence of the legend in
 the plot.  This will set the legend parameters (C<key_x>, C<key_y>, and
 C<key_dy>) and return the Ifeffit command to reset the legend.
 
-  $plotobject -> legend({x=>0.6, y=>0.8, dy=>0.05});
+  $object -> po -> legend(x=>0.6, y=>0.8, dy=>0.05);
 
 Note that you get to drop "key" in the arguments to this method,
 although C<x> and C<key_x> will be interpreted the same.
@@ -411,21 +340,21 @@ This is a convenience method for controlling the appearence of the text in
 the plot.  This will set the text attributes (C<charfont> and
 C<charsize>) and return the Ifeffit command to reset the text.
 
-  $plotobject -> font({font=>4, size=>1.8})
+  $object -> po -> font(font=>4, size=>1.8)
 
 Note that you get to drop "char" in the arguments to this method,
 although C<font> and C<charfont> will be interpreted the same.
 
-The available fonts are: 1=sans serif, 2=roman, 3=italic, 4=script.
-If the font is not one of those numbers, it will fall back to 1.  The
-size cannot be negative.  Values larger than around 1.8 are allowed,
-but are probably a poor idea.
+The available pgplot fonts are: 1=sans serif, 2=roman, 3=italic,
+4=script.  If the font is not one of those numbers, it will fall back
+to 1.  The size cannot be negative.  Values larger than around 1.8 are
+allowed, but are probably a poor idea.
 
 =item C<label>
 
 Place a textual label on the plot at a specified point.
 
-  $plotobject -> label($x, $y, $text);
+  $object -> po -> label($x, $y, $text);
 
 =back
 
@@ -829,7 +758,7 @@ L<http://cars9.uchicago.edu/~ravel/software/>
 Copyright (c) 2006-2008 Bruce Ravel (bravel AT bnl DOT gov). All rights reserved.
 
 This module is free software; you can redistribute it and/or
-modify it under the same terms as Perl itself. See L<perlartistic>.
+modify it under the same terms as Perl itself. See L<perlgpl>.
 
 This program is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of

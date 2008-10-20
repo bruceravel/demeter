@@ -1,13 +1,13 @@
 { # -*- ifm -*-
   # Backward transform template
-  #   {$D} returns the ifeffit group name
-  #   {$D->get(""parameter")} returns the value of that parameter
+  #   {$D->group} returns the ifeffit group name
+  #   {$D->parameter} returns the value of that parameter
 }
 
-fftr(real    = {$D}.chir_re, 
-     imag    = {$D}.chir_im, 
-     r       = {$D}.r, 
-     rmin    = {$D->get("bft_rmin")},
-     rmax    = {$D->get("bft_rmax")}, 
-     dr      = {$D->get("bft_dr")}, 
-     rwindow = {$D->get("bft_rwindow")})
+fftr(real    = {$D->group}.chir_re, 
+     imag    = {$D->group}.chir_im, 
+     r       = {$D->group}.r, 
+     rmin    = {$D->bft_rmin},
+     rmax    = {$D->bft_rmax}, 
+     dr      = {$D->bft_dr}, 
+     rwindow = {$D->bft_rwindow})

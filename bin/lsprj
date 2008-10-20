@@ -34,34 +34,34 @@ my $result = GetOptions (
 			 "g"        => \$gnuplot,
 			 "xanes"    => \$xanes,
 			);
-Ifeffit::Demeter->plot_with('gnuplot') if $gnuplot;
 
 my ($file, @groups) = @ARGV;
 usage() if not $file;
 
 my $prj = Ifeffit::Demeter::Data::Prj->new();
-$prj -> set({file=>$file});
+$prj -> set(file=>$file);
+$prj -> plot_with('gnuplot') if $gnuplot;
 
 print '===> ', Cwd::abs_path($file), $/ x 2,
   $prj -> list(split(/,/,$params)), $/;
 
 my $stack = 0;
-if ($plot =~ m{[endkrq]}) {
+if (lc($plot) =~ m{[endkrq]}) {
   my @data = (@groups) ? $prj->records(@groups) : $prj -> slurp;
-  $data[0] -> po -> set({e_markers => 0});
-  $data[0] -> po -> set({e_norm    => 0})   if ($plot eq 'e');
-  $data[0] -> po -> set({e_norm    => 1})   if ($plot eq 'n');
-  $data[0] -> po -> set({e_der     => 1})   if ($plot eq 'd');
-  $data[0] -> po -> set({kweight   => 2})   if ($plot =~ m{[krq]});
-  $data[0] -> po -> set({r_pl      => 'r'}) if ($plot eq 'rr');
-  $data[0] -> po -> set({emin => -50, emax =>120}) if $xanes;
+  $data[0] -> po -> e_markers(0);
+  $data[0] -> po -> e_norm(0)    if (lc($plot) eq 'e');
+  $data[0] -> po -> e_norm(1)    if (lc($plot) eq 'n');
+  $data[0] -> po -> e_der(1)     if (lc($plot) eq 'd');
+  $data[0] -> po -> kweight(2)   if (lc($plot) =~ m{[krq]});
+  $data[0] -> po -> r_pl('r')    if (lc($plot) eq 'rr');
+  $data[0] -> po -> set(emin => -50, emax =>120) if $xanes;
   my $p = $plot;
-  ($p = 'e') if ($plot =~ m{[nd]});
-  ($p = 'r') if ($plot eq 'rr');
+  ($p = 'e') if (lc($plot) =~ m{[nd]});
+  ($p = 'r') if (lc($plot) eq 'rr');
   foreach my $d (@data) {
-    $d -> set({'y_offset' => $stack});
+    $d -> set('y_offset' => $stack);
     $d -> plot($p);
-    ($stack -= $inc) if ($plot =~ m{[nkrq]});
+    ($stack -= $inc) if (lc($plot) =~ m{[nkrq]});
   };
 
   $_ = $term->readline($prompt);

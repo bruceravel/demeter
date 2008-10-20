@@ -1,16 +1,16 @@
 { # -*- ifm -*-
   # fit parameter report
-  #   {$D} returns the ifeffit group name
-  #   {$D->get("parameter")} returns the value of that parameter
+  #   {$D->group} returns the ifeffit group name
+  #   {$D->parameter} returns the value of that parameter
 }
-: file                = {$D->get("file")}
-: k-range             = {$D->get("fft_kmin")} - {$D->get("fft_kmax")}
-: dk                  = {$D->get("fft_dk")}
-: k-window            = {$D->get("fft_kwindow")}
+: file                = {$D->file}
+: k-range             = {$D->fft_kmin} - {$D->fft_kmax}
+: dk                  = {$D->fft_dk}
+: k-window            = {$D->fft_kwindow}
 : k-weight            = {$D->_kw_string}
-: R-range             = {$D->get("bft_rmin")} - {$D->get("bft_rmax")}
-: dR                  = {$D->get("bft_dr")}
-: R-window            = {$D->get("bft_rwindow")}
-: fitting space       = {$D->get("fit_space")}
+: R-range             = {$D->bft_rmin} - {$D->bft_rmax}
+: dR                  = {$D->bft_dr}
+: R-window            = {$D->bft_rwindow}
+: fitting space       = {$D->fit_space}
 : background function = {$D->yesno("fit_do_bkg")}
-: phase correction    = {$D->get("fit_pcpath")}
+: phase correction    = {$D->fit_pcpath}

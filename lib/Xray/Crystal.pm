@@ -1,11 +1,10 @@
 package Xray::Crystal;
-use Carp;
-use strict;
-use warnings;
 
-BEGIN {
-  require "Xray/Crystal/Cell.pm";
-  require "Xray/Crystal/Site.pm";
+sub import {
+  foreach my $package (qw(Xray/Crystal/Cell Xray/Crystal/Site)) {
+    next if $INC{$package};
+    require "$package.pm";
+  };
 };
 
 1;
@@ -17,11 +16,11 @@ Xray::Crystal - A crystallography wrapper
 
 =head1 VERSION
 
-This documentation refers to Ifeffit::Demeter version 0.1.
+This documentation refers to Ifeffit::Demeter version 0.2.
 
 =head1 SYNOPSIS
 
-This is not used for anything at this time.
+This imports Xray::Crystal::Cell and Xray::Crystal::Site.
 
 =head1 DESCRIPTION
 
@@ -50,7 +49,7 @@ http://cars9.uchicago.edu/~ravel/software/
 Copyright (c) 2006-2008 Bruce Ravel (bravel AT bnl DOT gov). All rights reserved.
 
 This module is free software; you can redistribute it and/or
-modify it under the same terms as Perl itself. See L<perlartistic>.
+modify it under the same terms as Perl itself. See L<perlgpl>.
 
 This program is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of

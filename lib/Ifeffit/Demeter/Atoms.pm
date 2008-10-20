@@ -15,18 +15,28 @@ package Ifeffit::Demeter::Atoms;
 
 =cut
 
-use base qw(
-	     Ifeffit::Demeter
-	     Ifeffit::Demeter::Dispose
-	     Ifeffit::Demeter::Atoms::Absorption
-	   );
-use strict;
-use warnings;
+use Moose;
+extends 'Ifeffit::Demeter';
+with 'Ifeffit::Demeter::Atoms::Absorption';
+use Ifeffit::Demeter::StrTypes qw( Element
+ 				   Edge
+				   AtomsLattice
+				   AtomsGas
+				   AtomsObsolete
+                                   SpaceGroup
+				   Empty
+				);
+use Ifeffit::Demeter::NumTypes qw( Natural
+				   PosInt
+				   PosNum
+				   NonNeg
+				   OneToFour
+				);
+
+
 #use diagnostics;
-use aliased 'Ifeffit::Demeter::Tools';
 use Carp;
 use Chemistry::Elements qw(get_Z);
-use Class::Std;
 use Fatal qw(open close);
 use File::Basename;
 use Ifeffit;
@@ -37,334 +47,414 @@ use Regexp::Common;
 use Regexp::List;
 use Regexp::Optimizer;
 use Readonly;
+use Safe;
 use Text::Template;
 use Xray::Absorption;
-#use Xray::Crystal;
-use Xray::Crystal::Cell;
-use Xray::Crystal::Site;
+use Xray::Crystal;
 
 Readonly my $EPSILON => 0.0001;
 Readonly my $FRAC    => 100000;
+Readonly my $SEPARATOR    => '[ \t]*[ \t=,][ \t]*';
 
-{
-  my $config = Ifeffit::Demeter->get_mode("params");
-  my %defaults = (
-		  space	   => q{},
-		  a	   => 0,
-		  b	   => 0,
-		  c	   => 0,
-		  alpha	   => 0,
-		  beta	   => 0,
-		  gamma	   => 0,
-		  rmax	   => 0,
-		  rss	   => 0,
-		  edge     => 'k',
-		  iedge    => 1,
-		  eedge    => 0,
-		  core     => q{},
-		  corel    => q{},
-		  shift    => [],
-		  file	   => q{},
-		  titles   => [],
-		  template => q{},
-		  ipot_style => $config->default("atoms","ipot_style") || 'elements',
+Readonly my %EDGE_INDEX => (k =>1,  l1=>2,  l3=>3,  l3=>4,
+			    m1=>5,  m2=>6,  m3=>7,  m4=>8,  m5=>9,
+			    n1=>10, n2=>11, n3=>12, n4=>13, n5=>14, n6=>15, n7=>16,
+			   );
 
-		  nitrogen => 1,
-		  argon    => 0,
-		  xenon    => 0,
-		  krypton  => 0,
-		  helium   => 0,
 
-		  xsec     => 0,
-		  deltamu  => 0,
-		  density  => 0,
-		  mcmaster => 0,
-		  i0       => 0,
-		  selfamp  => 0,
-		  selfsig  => 0,
+has 'space'	       => (is => 'rw', isa =>'Str',      default => q{},
+			   triger => sub{ my ($self, $new) = @_; 
+					  return if not $new;
+					  $self->is_populated(0);
+					  $self->absorption_done(0);
+					  $self->mcmaster_done(0);
+					  $self->i0_done(0);
+					  $self->self_done(0);
+					});
+has 'a'		       => (is => 'rw', isa => NonNeg,    default=> 0,
+			   triger => sub{ my ($self, $new) = @_; 
+					  return if not $new;
+					  $self->is_populated(0);
+					  $self->absorption_done(0);
+					  $self->mcmaster_done(0);
+					  $self->i0_done(0);
+					  $self->self_done(0);
+					});
+has 'b'		       => (is => 'rw', isa => NonNeg,    default=> 0,
+			   triger => sub{ my ($self, $new) = @_; 
+					  return if not $new;
+					  $self->is_populated(0);
+					  $self->absorption_done(0);
+					  $self->mcmaster_done(0);
+					  $self->i0_done(0);
+					  $self->self_done(0);
+					});
+has 'c'		       => (is => 'rw', isa => NonNeg,    default=> 0,
+			   triger => sub{ my ($self, $new) = @_; 
+					  return if not $new;
+					  $self->is_populated(0);
+					  $self->absorption_done(0);
+					  $self->mcmaster_done(0);
+					  $self->i0_done(0);
+					  $self->self_done(0);
+					});
+has 'alpha'	       => (is => 'rw', isa => NonNeg,    default=> 90,
+			   triger => sub{ my ($self, $new) = @_; 
+					  return if not $new;
+					  $self->is_populated(0);
+					  $self->absorption_done(0);
+					  $self->mcmaster_done(0);
+					  $self->i0_done(0);
+					  $self->self_done(0);
+					});
+has 'beta'	       => (is => 'rw', isa => NonNeg,    default=> 90,
+			   triger => sub{ my ($self, $new) = @_; 
+					  return if not $new;
+					  $self->is_populated(0);
+					  $self->absorption_done(0);
+					  $self->mcmaster_done(0);
+					  $self->i0_done(0);
+					  $self->self_done(0);
+					});
+has 'gamma'	       => (is => 'rw', isa => NonNeg,    default=> 90,
+			   triger => sub{ my ($self, $new) = @_; 
+					  return if not $new;
+					  $self->is_populated(0);
+					  $self->absorption_done(0);
+					  $self->mcmaster_done(0);
+					  $self->i0_done(0);
+					  $self->self_done(0);
+					});
+has 'rmax'	       => (is => 'rw', isa => NonNeg,    default=> 0,
+			   trigger => sub{ my ($self, $new) = @_; $self->is_expanded(0) if $new});
+has 'rpath'	       => (is => 'rw', isa => NonNeg,    default=> 5,
+			   trigger => sub{ my ($self, $new) = @_; $self->is_expanded(0) if $new});
+has 'rss'	       => (is => 'rw', isa => NonNeg,    default=> 0);
+has 'edge'	       => (is => 'rw', isa => Empty.'|'.Edge, default=> q{},
+			   trigger => sub{ my ($self, $new) = @_; 
+					   if (exists($EDGE_INDEX{lc($new)})) {
+					     my ($central, $xcenter, $ycenter, $zcenter) = $self -> cell -> central($self->core);
+					     $self->iedge($EDGE_INDEX{lc($new)});
+					     $self->eedge(Xray::Absorption->get_energy($central->element, $new));
+					   } else {
+					     $self->iedge(0);
+					     $self->eedge(0);
+					   };
+					 });
+has 'iedge'	       => (is => 'rw', isa => PosInt,    default=> 1);
+has 'eedge'	       => (is => 'rw', isa => NonNeg,    default=> 0);
+has 'core'	       => (is => 'rw', isa =>'Str',      default=> q{});
+has 'corel'	       => (is => 'rw', isa =>'Str',      default=> q{});
+has 'shift' => (
+		metaclass => 'Collection::Array',
+		is        => 'rw',
+		isa       => 'ArrayRef',
+		default   => sub { [0, 0, 0] },
+		provides  => {
+			      'push'  => 'push_shift',
+			      'pop'   => 'pop_shift',
+			      'clear' => 'clear_shift',
+			     }
+	       );
+has 'file'	       => (is => 'rw', isa =>'Str', default=> q{},
+			   trigger => sub{ my ($self, $new) = @_;
+					   $self->read_inp if $new;
+					   #$self->is_imported(0) if $new
+					 });
+has 'titles' => (
+		 metaclass => 'Collection::Array',
+		 is        => 'rw',
+		 isa       => 'ArrayRef[Str]',
+		 default   => sub { [] },
+		 provides  => {
+			       'push'  => 'push_titles',
+			       'pop'   => 'pop_titles',
+			       'clear' => 'clear_titles',
+			      }
+		);
+has 'ipot_style'       => (is => 'rw', isa =>'Str', default=> sub{ shift->mode->config->default("atoms","ipot_style") || 'elements'},
+			   trigger => sub{ my ($self, $new) = @_; $self->is_ipots_set(0) if $new});
 
-		  is_imported	  => 0,
-		  is_populated	  => 0,
-		  is_ipots_set	  => 0,
-		  is_expanded	  => 0,
-		  absorption_done => 0,
-		  mcmaster_done	  => 0,
-		  i0_done	  => 0,
-		  self_done	  => 0,
+has 'nitrogen'	       => (is => 'rw', isa => NonNeg, default=> 0,
+			   trigger => sub{ my ($self, $new) = @_; ($new) ? $self->gases_set(1) : $self->gases_set(0) });
+has 'argon'	       => (is => 'rw', isa => NonNeg, default=> 0,
+			   trigger => sub{ my ($self, $new) = @_; ($new) ? $self->gases_set(1) : $self->gases_set(0) });
+has 'xenon'	       => (is => 'rw', isa => NonNeg, default=> 0,
+			   trigger => sub{ my ($self, $new) = @_; ($new) ? $self->gases_set(1) : $self->gases_set(0) });
+has 'krypton'	       => (is => 'rw', isa => NonNeg, default=> 0,
+			   trigger => sub{ my ($self, $new) = @_; ($new) ? $self->gases_set(1) : $self->gases_set(0) });
+has 'helium'	       => (is => 'rw', isa => NonNeg, default=> 0,
+			   trigger => sub{ my ($self, $new) = @_; ($new) ? $self->gases_set(1) : $self->gases_set(0) });
+has 'gases_set'        => (is => 'rw', isa =>'Bool',  default=> 0);
 
-		  sites    => [],
-		  cell	   => q{},
-		  cluster  => [],
-		  nclus    => 0,
+has 'xsec'	       => (is => 'rw', isa =>'Num', default=> 0);
+has 'deltamu'	       => (is => 'rw', isa =>'Num', default=> 0);
+has 'density'	       => (is => 'rw', isa =>'Num', default=> 0);
+has 'mcmaster'	       => (is => 'rw', isa =>'Num', default=> 0,
+			   trigger => sub{ my ($self, $new) = @_; my $n= $self->netsig; $self->netsig($n+$new); });
+has 'i0'	       => (is => 'rw', isa =>'Num', default=> 0,
+			   trigger => sub{ my ($self, $new) = @_; my $n= $self->netsig; $self->netsig($n+$new); });
+has 'selfamp'	       => (is => 'rw', isa =>'Num', default=> 0);
+has 'selfsig'	       => (is => 'rw', isa =>'Num', default=> 0,
+			   trigger => sub{ my ($self, $new) = @_; my $n= $self->netsig; $self->netsig($n+$new); });
+has 'netsig'	       => (is => 'rw', isa =>'Num', default=> 0);
+
+has 'is_imported'      => (is => 'rw', isa =>'Bool', default=> 0);
+has 'is_populated'     => (is => 'rw', isa =>'Bool', default=> 0);
+has 'is_ipots_set'     => (is => 'rw', isa =>'Bool', default=> 0);
+has 'is_expanded'      => (is => 'rw', isa =>'Bool', default=> 0);
+has 'absorption_done'  => (is => 'rw', isa =>'Bool', default=> 0);
+has 'mcmaster_done'    => (is => 'rw', isa =>'Bool', default=> 0);
+has 'i0_done'	       => (is => 'rw', isa =>'Bool', default=> 0);
+has 'self_done'	       => (is => 'rw', isa =>'Bool', default=> 0);
+
+has 'sites' => (
+		metaclass => 'Collection::Array',
+		is        => 'rw',
+		isa       => 'ArrayRef',
+		default   => sub { [] },
+		provides  => {
+			      'push'  => 'push_sites',
+			      'pop'   => 'pop_sites',
+			      'clear' => 'clear_sites',
+			     }
+	       );
+#has 'cell' => (is => 'rw', isa =>Empty.'|Xray::Crystal::Cell', default=> q{});
+has 'cell' => (is => 'rw', isa =>'Any', default=> q{});
+has 'cluster' => (
+		  metaclass => 'Collection::Array',
+		  is        => 'rw',
+		  isa       => 'ArrayRef',
+		  default   => sub { [] },
+		  provides  => {
+				'push'  => 'push_cluster',
+				'pop'   => 'pop_cluster',
+				'clear' => 'clear_cluster',
+			       }
 		 );
-  my %edge_index = (k =>1,  l1=>2,  l3=>3,  l3=>4,
-		    m1=>5,  m2=>6,  m3=>7,  m4=>8,  m5=>9,
-		    n1=>10, n2=>11, n3=>12, n4=>13, n5=>14, n6=>15, n7=>16,
-		   );
+has 'nclus'	       => (is => 'rw', isa =>'Str', default=> 0);
 
-  sub BUILD {
-    my ($self, $ident, $arguments) = @_;
-    $self -> set(\%defaults);
 
-    ## plot specific attributes
-    $self -> set($arguments);
 
-    return;
-  };
-  sub DEMOLISH {
-    my ($self) = @_;
-    return;
-  };
 
-  sub set {
-    my ($self, $r_hash) = @_;
-    my $re = $self->regexp;
-    my $lattice_regexp = $self->regexp("atoms_lattice");
-    foreach my $key (keys %$r_hash) {
-      my $k = lc $key;
+sub out {
+  my ($self, $key) = @_;
+  my $format = $self->co->default("atoms", "precision") || "9.5f";
+  $format = '%' . $format;
+  my $val = sprintf("$format", $self->$key);
+  return $val;
+};
 
-      carp("\"$key\" is not a valid Ifeffit::Demeter::Atoms parameter"), next
-	if ($k !~ /$re/);
+sub read_inp {
+  my ($self) = @_;
+  my $reading_atoms_list = 0;
+  my $file = $self->file;
+  croak("Atoms: no input file provided")      if (not    $file);
+  croak("Atoms: \"$file\" does not exist")    if (not -e $file);
+  croak("Atoms: \"$file\" could not be read") if (not -r $file);
+  #$self->set(file=>$file);
 
-      $self->SUPER::set({is_imported     =>0 }) if ($k eq "file");
-      $self->SUPER::set({is_populated    =>0,
-			 absorption_done =>0,
-			 mcmaster_done   =>0,
-			 i0_done         =>0,
-			 self_done       =>0,}) if ($k =~ m{$lattice_regexp});
-      $self->SUPER::set({is_expanded     =>0 }) if ($k eq "rmax");
-      $self->SUPER::set({is_ipots_set    =>0 }) if ($k eq "ipot_style");
+  open(my $INP, $file);
+  while (my $line = (<$INP>)) {
+    next if ($line =~ m{\A\s*\z});
+    next if ($line =~ m{\A\s*[\#\%\!\*]});
+    next if ($line =~ m{\A\s*-{2,}});
 
-      $self->SUPER::set({iedge =>$edge_index{lc($r_hash->{$k})} }) if ($k eq "edge");
+    chomp $line;
+    $line =~ s{^\s+}{};
+    $line =~ s{\s+$}{};
 
-      do {			# no special handling required
-	$self->SUPER::set({$k=>$r_hash->{$k}});
-      };
+    ($reading_atoms_list) and do {
+      $self->parse_atoms_line($line);
+      next;
     };
-    return $self;
-  };
 
-  sub out {
-    my ($self, $key) = @_;
-    my $config = Ifeffit::Demeter->get_mode("params");
-    my $format = $config->default("atoms", "precision") || "9.5f";
-    $format = '%' . $format;
-    my $val = sprintf("$format", $self->get($key));
-    return $val;
-  };
-
-  my $opt = Regexp::List->new;
-  my $parameter_regexp = $opt->list2re(keys %defaults);
-  sub _regexp {
-    my ($self) = @_;
-    return $parameter_regexp;
-  };
-
-  sub read_inp {
-    my ($self, $file) = @_;
-    my $sep = $self->regexp("separator");
-    my $reading_atoms_list = 0;
-    croak("Atoms: no input file provided")      if (not    $file);
-    croak("Atoms: \"$file\" does not exist")    if (not -e $file);
-    croak("Atoms: \"$file\" could not be read") if (not -r $file);
-    $self->set({file=>$file});
-
-    open(my $INP, $file);
-    while (my $line = (<$INP>)) {
-      next if ($line =~ m{\A\s*\z});
-      next if ($line =~ m{\A\s*[\#\%\!\*]});
-      next if ($line =~ m{\A\s*-{2,}});
-
-      chomp $line;
-      $line =~ s{^\s+}{};
-      $line =~ s{\s+$}{};
-
-      ($reading_atoms_list) and do {
-	$self->parse_atoms_line($line);
-	next;
-      };
-
-      ($line =~ m{\A\s*title}) and do {
-	$line =~ s{\A\s*title\s*=?\s*}{};
-	$self->Push({titles=>$line});
-	next;
-      };
-
-      ($line =~ m{\A\s*atoms?}) and do {
-	# read the remaining lines as the atoms list
-	$reading_atoms_list = 1;
-	next;
-      };
-
-      ## parse each line
-      $self->parse_line($line);
-
+    ($line =~ m{\A\s*title}) and do {
+      $line =~ s{\A\s*title\s*=?\s*}{};
+      $self->push_titles($line);
+      next;
     };
-    $self->set({is_imported=>1});
-    return $self;
+
+    ($line =~ m{\A\s*atoms?}) and do {
+      # read the remaining lines as the atoms list
+      $reading_atoms_list = 1;
+      next;
+    };
+
+    ## parse each line
+    $self->parse_line($line);
+
   };
+  $self->is_imported(1);
+  return $self;
+};
 
-  sub parse_line {
-    my ($self, $line) = @_;
-    #return if not $line;
-    my $sep = $self->regexp("separator");
-    my $file = $self->get("file");
+sub parse_line {
+  my ($self, $line) = @_;
+  #return if not $line;
+  my $file = $self->file;
 
-    my @words = split(/$sep/, $line);
-    my $key = shift @words;
-    (my $rest = $line) =~ s{\A$key$sep}{};
+  my @words = split(/$SEPARATOR/, $line);
+  my $key = shift @words;
+  (my $rest = $line) =~ s{\A$key$SEPARATOR}{};
 
-    if ($key =~ m{space(?:group)?}i) {
-      my $end = (length($rest) < 10) ? length($rest) : 10;
-      my $sg = substr($rest, 0, $end);
-      $self->set({space=>$sg});
-      $rest = substr($rest, $end, -1);
+  if ($key =~ m{space(?:group)?}i) {
+    my $end = (length($rest) < 10) ? length($rest) : 10;
+    my $sg = substr($rest, 0, $end);
+    $self->space($sg);
+    $rest = substr($rest, $end, -1);
+  } else {
+    @words = split(/$SEPARATOR/, $rest);
+    my $val = shift @words;
+    $rest =~ s{$val(?:$SEPARATOR)?}{};
+    my $vv = ($key =~ m{\bout}) ? shift @words : q{};
+    $rest =~ s{$vv(?:$SEPARATOR)?}{};
+    my $vvv = ($key =~ m{shi|daf|qve|ref}) ? shift @words : q{};
+    $rest =~ s{$vvv(?:$SEPARATOR)?}{};
+    my $vvvv = ($key =~ m{shi|daf|qve|ref}) ? shift @words : q{};
+    $rest =~ s{$vvvv(?:$SEPARATOR)?}{};
+
+    return if ($key =~ m{\#});
+    $key = lc($key);
+    if ($self->meta->has_method($key)) {
+      $self->$key(lc($val));
+    } elsif (is_AtomsObsolete($key)) {
+      carp("\"$key\" is a deprecated Atoms keyword ($file line $.)");
     } else {
-      @words = split(/$sep/, $rest);
-      my $val = shift @words;
-      $rest =~ s{$val(?:$sep)?}{};
-      my $vv = ($key =~ m{\bout}) ? shift @words : q{};
-      $rest =~ s{$vv(?:$sep)?}{};
-      my $vvv = ($key =~ m{shi|daf|qve|ref}) ? shift @words : q{};
-      $rest =~ s{$vvv(?:$sep)?}{};
-      my $vvvv = ($key =~ m{shi|daf|qve|ref}) ? shift @words : q{};
-      $rest =~ s{$vvvv(?:$sep)?}{};
-
-      return if ($key =~ m{\#});
-      my $keyword = $self->regexp;
-      my $obsolete = $self->regexp("atoms_obsolete");
-      if ($key =~ m{$keyword}) {
-	$self->set({lc($key)=>lc($val)});
-      } elsif ($key =~ m{$obsolete}) {
-	carp("\"$key\" is a deprecated Atoms keyword ($file line $.)");
-      } else {
-	carp("\"$key\" is not an Atoms keyword ($file line $.)");
-      };
+      carp("\"$key\" is not an Atoms keyword ($file line $.)");
     };
-    $self->parse_line($rest) if (($rest !~ m{\A\s*\z}) and ($rest !~ m{\A\s*[\#\%\!\*]}));
-    return $self;
   };
+  $self->parse_line($rest) if (($rest !~ m{\A\s*\z}) and ($rest !~ m{\A\s*[\#\%\!\*]}));
+  return $self;
+};
 
-  sub parse_atoms_line {
-    my ($self, $line) = @_;
-    return 0 if ($line =~ m{\A\s*[\#\%\!\*]});
-    my ($el, $x, $y, $z, $tag) = split(" ", $line);
-    $tag ||= $el;
-    my $this = join("|",$el, $x, $y, $z, $tag);
-    $self->Push({sites=>$this});
-    return $self;
+sub parse_atoms_line {
+  my ($self, $line) = @_;
+  return 0 if ($line =~ m{\A\s*[\#\%\!\*]});
+  my ($el, $x, $y, $z, $tag) = split(" ", $line);
+  $tag ||= $el;
+  my $this = join("|",$el, $x, $y, $z, $tag);
+  $self->push_sites($this);
+  return $self;
+};
+
+
+sub populate {
+  my ($self) = @_;
+  my @sites;
+  my $ra = $self->sites;
+  foreach my $s (@$ra) {
+    my ($el, $x, $y, $z, $tag) = split(/\|/, $s);
+    croak("$el is not a valid element symbol\n") if not is_Element($el);
+    push @sites, Xray::Crystal::Site->new(element=>$el, x=>_interpret($x), y=>_interpret($y), z=>_interpret($z), tag=>$tag);
   };
-
-
-  sub populate {
-    my ($self) = @_;
-    my @sites;
-    my $ra = $self->get("sites");
-    foreach my $s (@$ra) {
-      my ($el, $x, $y, $z, $tag) = split(/\|/, $s);
-      push @sites, Xray::Crystal::Site->new({elem=>$el, x=>$x, y=>$y, z=>$z, tag=>$tag});
-    };
-    ### creating and populating cell
-    my $cell = Xray::Crystal::Cell->new;
-    my ($space, $a, $b, $c, $alpha, $beta, $gamma) =
-      $self->get(qw(space a b c alpha beta gamma));
-    $cell -> set({space_group=>$space});
-    foreach my $key (qw(a b c alpha beta gamma)) {
-      my $val = $self->get($key);
-      $cell->set({$key=>$val}) if $val;
-    };
-    $self -> set({cell=>$cell});
-
-    ## Group: $cell->get(qw(given_group space_group class setting))
-    ## Bravais: $cell->get('bravais')
-    $cell->populate(\@sites);
-    my ($central, $xcenter, $ycenter, $zcenter) = $cell -> central($self->get("core"));
-    $self->set({is_populated => 1,
-		corel        => ucfirst(lc($central->get("element"))),
-		eedge        => Xray::Absorption->get_energy($central->get("element"), $self->get("edge")),
-	       });
-    return $self;
+  ### creating and populating cell
+  my $cell = Xray::Crystal::Cell->new;
+  $cell -> space_group($self->space);
+  foreach my $key (qw(a b c alpha beta gamma)) {
+    my $val = $self->$key;
+    $cell->$key($val) if $val;
   };
+  $self -> cell($cell);
+  ## Group: $cell->get(qw(given_group space_group class setting))
+  ## Bravais: $cell->get('bravais')
+  $cell->populate(\@sites);
+  foreach my $key (qw(a b c alpha beta gamma)) {
+    $self->$key($cell->$key);
+  };
+  my ($central, $xcenter, $ycenter, $zcenter) = $cell -> central($self->core);
+  $self->update_edge;
+  $self->set(is_populated => 1,
+	     corel        => ucfirst(lc($central->element)),
+	    );
+  return $self;
+};
 
 
-  sub build_cluster {
-    my ($self) = @_;
-    my $config = Ifeffit::Demeter->get_mode("params");
-    $self->populate if (not $self->get("is_populated"));
-    my ($cell, $core) = $self->get("cell", "core");
-    my @sites = @{ $cell->get("sites") };
-    map { $_ -> set({in_cluster => 0}) } @sites;
+sub _interpret {
+  my ($str) = @_;
+  my $cpt = new Safe;
+  my $retval = $cpt->reval($str);
+  return $retval;
+};
 
-    my $rmax = $self->get('rmax');
-    my @cluster = ();
-    my ($central, $xcenter, $ycenter, $zcenter) = $cell -> central($core);
-    #print join(" ", $xcenter, $ycenter, $zcenter), $/;
-    my $setting	      = $cell -> get("setting");
-    my $crystal_class = $cell -> get("class");
-    my $do_tetr	      = ($crystal_class eq "tetragonal" ) && ($setting);
+sub build_cluster {
+  my ($self) = @_;
+  $self->populate if (not $self->is_populated);
+  my ($cell, $core) = $self->get("cell", "core");
+  my @sites = @{ $cell->sites };
+  map { $_ -> in_cluster(0) } @sites;
 
-    #### here
-    my ($aa, $bb, $cc) = $cell -> get("a", "b", "c");
-    #print join(" ", $aa, $bb, $cc), $/;
-    my $xup = ceil($rmax/$aa - 1 + $xcenter);
-    my $xdn = ceil($rmax/$aa - $xcenter);
-    my $yup = ceil($rmax/$bb - 1 + $ycenter);
-    my $ydn = ceil($rmax/$bb - $ycenter);
-    my $zup = ceil($rmax/$cc - 1 + $zcenter);
-    my $zdn = ceil($rmax/$cc - $zcenter);
-    ##print join(" ", "up,dn", $xup, $xdn, $yup, $ydn, $zup, $zdn), $/;
+  my $rmax = $self->rmax;
+  my @cluster = ();
+  my ($central, $xcenter, $ycenter, $zcenter) = $cell -> central($core);
+  #print join(" ", $xcenter, $ycenter, $zcenter), $/;
+  my $setting	      = $cell->setting;
+  my $crystal_class   = $cell->class;
+  my $do_tetr	      = ($crystal_class eq "tetragonal" ) && ($setting);
 
-    #my $num_z = int($rmax/$cc) + 1; # |
-    my $rmax_squared = $rmax**2; # (sprintf "%9.5f", $rmax**2);
-    my ($contents) = $cell -> get("contents");
+  #### here
+  my ($aa, $bb, $cc) = $cell -> get("a", "b", "c");
+  #print join(" ", $aa, $bb, $cc), $/;
+  my $xup = ceil($rmax/$aa - 1 + $xcenter);
+  my $xdn = ceil($rmax/$aa - $xcenter);
+  my $yup = ceil($rmax/$bb - 1 + $ycenter);
+  my $ydn = ceil($rmax/$bb - $ycenter);
+  my $zup = ceil($rmax/$cc - 1 + $zcenter);
+  my $zdn = ceil($rmax/$cc - $zcenter);
+  ##print join(" ", "up,dn", $xup, $xdn, $yup, $ydn, $zup, $zdn), $/;
 
-    foreach my $nz (-$zdn .. $zup) {
-      foreach my $ny (-$ydn .. $yup) {
-	foreach my $nx (-$xdn .. $xup) {
-	  foreach my $pos (@{$contents}) {
-	    my ($x, $y, $z) = ($$pos[1]+$nx, $$pos[2]+$ny,  $$pos[3]+$nz);
-	    ($x, $y, $z) = ($x-$xcenter, $y-$ycenter, $z-$zcenter);
-	    ($x, $y, $z) =  $cell -> metric($x, $y, $z);
-	    ($do_tetr) and ($x, $y) = (($x+$y)/sqrt(2), ($x-$y)/sqrt(2));
-	    #my ($fx, $fy, $fz) = &rectify_formula(@$pos[4..6], $nx, $ny, $nz);
-	    #printf "out: %25s %25s %25s\n\n", $fx, $fy, $fz;
-	    my $r_squared = sprintf "%9.5f", $x**2 + $y**2 + $z**2;
-	    if ($r_squared < $rmax_squared) {
-	      my $this_site = [$x, $y, $z, $$pos[0],
-			       $r_squared,             # cache the
-			       (sprintf "%11.7f", $x), # stuff needed
-			       (sprintf "%11.7f", $y), # for sorting
-			       (sprintf "%11.7f", $z),
-	                       #$fx, $fy, $fz,
-			      ];
-	      $$pos[0] -> set({in_cluster => 1});
-	      push @cluster, $this_site;
-	      ## (push @neutral, $this_site);
-	    };
+  #my $num_z = int($rmax/$cc) + 1; # |
+  my $rmax_squared = $rmax**2; # (sprintf "%9.5f", $rmax**2);
+  my ($contents) = $cell -> contents;
+
+  foreach my $nz (-$zdn .. $zup) {
+    foreach my $ny (-$ydn .. $yup) {
+      foreach my $nx (-$xdn .. $xup) {
+	foreach my $pos (@{$contents}) {
+	  my ($x, $y, $z) = ($$pos[1]+$nx, $$pos[2]+$ny,  $$pos[3]+$nz);
+	  ($x, $y, $z) = ($x-$xcenter, $y-$ycenter, $z-$zcenter);
+	  ($x, $y, $z) =  $cell -> metric($x, $y, $z);
+	  ($do_tetr) and ($x, $y) = (($x+$y)/sqrt(2), ($x-$y)/sqrt(2));
+	  #my ($fx, $fy, $fz) = &rectify_formula(@$pos[4..6], $nx, $ny, $nz);
+	  #printf "out: %25s %25s %25s\n\n", $fx, $fy, $fz;
+	  my $r_squared = sprintf "%9.5f", $x**2 + $y**2 + $z**2;
+	  if ($r_squared < $rmax_squared) {
+	    my $this_site = [$x, $y, $z, $$pos[0],
+			     $r_squared,             # cache the
+			     (sprintf "%11.7f", $x), # stuff needed
+			     (sprintf "%11.7f", $y), # for sorting
+			     (sprintf "%11.7f", $z),
+			     #$fx, $fy, $fz,
+			    ];
+	    $$pos[0] -> in_cluster(1);
+	    push @cluster, $this_site;
+	    ## (push @neutral, $this_site);
 	  };
 	};
       };
     };
+  };
 
-    ## =============================== sort the cluster (& neutral clus.)
-    @cluster = sort {
-      ($a->[4] cmp $b->[4]) # sort by distance squared or ...
+  ## =============================== sort the cluster (& neutral clus.)
+  @cluster = sort {
+    ($a->[4] cmp $b->[4]) # sort by distance squared or ...
 	or
-      ($a->[3] cmp $b->[3]) # by tag alphabetically (using string coercion) or ...
+    ($a->[3] cmp $b->[3]) # by tag alphabetically (using string coercion) or ...
 	or
-      ($a->[7] cmp $b->[7]) # by z value or ...
+    ($a->[7] cmp $b->[7]) # by z value or ...
         or
-      ($a->[6] cmp $b->[6]) # by y value or ...
+    ($a->[6] cmp $b->[6]) # by y value or ...
         or
-      ($a->[5] cmp $b->[5]) # by x value
+    ($a->[5] cmp $b->[5]) # by x value
       ##	or
       ## ($ {$b->[3]}->{Host} <=> $ {$a->[3]}->{Host});	# hosts before dopants
-    } @cluster;
-    $self->set({cluster => \@cluster,
-		nclus   => $#cluster+1,
-		rss     => sprintf('%'.$config->default("atoms", "precision"),
-				   $cluster[1]->[4]*$config->default("atoms", "smallsphere")),
-	       });
+  } @cluster;
+  $self->set(cluster => \@cluster,
+	     nclus   => $#cluster+1,
+	     rss     => sprintf('%'.$self->co->default("atoms", "precision"),
+			 $cluster[1]->[4]*$self->co->default("atoms", "smallsphere")),
+	    );
 
 #     ## final adjustment to the formulas, store the formulas for the
 #     ## central atom ...
@@ -380,297 +470,333 @@ Readonly my $FRAC    => 100000;
 
     ## if this is a tetragonal crystal in the C or F setting , rotate
     ## all the coordinates back to the original setting
-    if ($do_tetr) {
-      my ($a, $b) = $cell->get("a", "b");
-      $cell -> set({b=>$a*sqrt(2), b=>$b*sqrt(2)});
-    };
-    $self->set({is_expanded=>1});
-    return $self;
+  if ($do_tetr) {
+    my ($a, $b) = $cell->get("a", "b");
+    $cell->b($a*sqrt(2));
+    $cell->b($b*sqrt(2));
   };
-
-
-  sub set_ipots {
-    my ($self) = @_;
-    my $config = Ifeffit::Demeter->get_mode("params");
-    $self->build_cluster if (not $self->get("is_expanded"));
-    my ($cell, $how) = $self->get("cell", "ipot_style");
-    my @sites = @{ $cell->get("sites") };
-    my $i = 1;
-    my %seen = ();
-    if ($how =~ m{\Ata}) {
-      foreach my $s (@sites) {
-	if ($s->get("in_cluster")) {
-	  my $tag = lc($s->get("tag"));
-	  $seen{$tag} = $i++ if (not $seen{$tag});
-	  $s -> set({ipot=>$seen{$tag}});
-	};
-      };
-    } elsif ($how =~ m{\Ael}) {
-      foreach my $s (@sites) {
-	if ($s->get("in_cluster")) {
-	  my $el = lc($s->get("element"));
-	  $seen{$el} = $i++ if (not $seen{$el});
-	  $s -> set({ipot=>$seen{$el}});
-	};
-      };
-    } else { ## sites
-      foreach my $s (@sites) {
-	if ($s->get("in_cluster")) {
-	  $s -> set({ipot=>$i});
-	  ++$i
-	};
-      };
-    };
-
-    ## get the reduced stoichiometry for feff8's potentials list
-    my @count = (0,0,0,0,0,0,0,0);
-    my $top = -999;
-    foreach my $s (@sites) {
-      my $ipot = $s->get("ipot");
-      $count[$ipot] += $s->get("in_cell");
-      $top = max($top, $ipot);
-    };
-    ## get greatest common divisor (thanks to Math::Cephes::Fraction
-    ## for "euclid" and List::Util for "reduce")
-    if ($config->default("atoms", "gcd")) {
-      my $gcd = reduce { (euclid($a,$b))[0] } @count[1..$top];
-      foreach my $s (1 .. $top) {
-	$count[$s] /= $gcd;
-      };
-    };
-    foreach my $s (@sites) {
-      my $ipot = $s->get("ipot");
-      $s->set({stoi=>$count[$ipot]});
-    };
-
-    $self->set({is_ipots_set=>1});
-    if (--$i > 7) {
-      carp("You have $i unique potentials, but Feff only allows 7.");
-      return -1;
-    };
-    return 0;
-  };
-
-  sub template {
-    my ($self, $file, $rhash) = @_;
-
-    my $cell = $self->get("cell");
-
-    my $tmpl = File::Spec->catfile(dirname($INC{"Ifeffit/Demeter.pm"}),
-				   "Demeter",
-				   "templates",
-				   "atoms",
-				   "$file.tmpl");
-    croak("Unknown Atoms template file -- type $file: $tmpl") if (not -e $tmpl);
-    my $template = Text::Template->new(TYPE => 'file', SOURCE => $tmpl)
-      or die "Couldn't construct template: $Text::Template::ERROR";
-    $rhash ||= {};
-    my $string = $template->fill_in(HASH => {A  => \$self,
-					     C  => \$cell,
-					     %$rhash},
-				    PACKAGE => "Ifeffit::Demeter::Templates");
-    $string ||= q{};
-    $string =~ s{^\s+}{};		# remove leading white space
-    $string =~ s{\n(?:[ \t]+\n)+}{\n};	# regularize white space between blocks of text
-    $string =~ s{\s+$}{\n};		# remove trailing white space
-    $string =~ s{<<->>\n}{}g;		# convert newline token into a real newline
-    $string =~ s{<<nl>>}{\n}g;		# convert newline token into a real newline
-    $string =~ s{<<( +)>>}{$1}g;	#} # convert white space token into real white space
-    return $string;
-  };
-
-
-  sub cluster_list {
-    my ($self, $pattern) = @_;
-    $pattern ||= "  %9.5f  %9.5f  %9.5f  %d  %-10s  %9.5f\n";
-    $self->set_ipots if (not $self->get("is_ipots_set"));
-    my $string = q{};
-    my @list = @ {$self->get("cluster") };
-    my $abs = shift @list;	# absorber must be ipot 0
-    $string .= sprintf($pattern,
-		       $abs->[0], $abs->[1], $abs->[2],
-		       0, $abs->[3], sqrt($abs->[4])
-		      );
-    foreach my $pos (@list) {
-      ## rely upon coercions
-      $string .= sprintf($pattern,
-			 $pos->[0], $pos->[1], $pos->[2],
-			 $pos->[3], $pos->[3], sqrt($pos->[4])
-			);
-    };
-    return $string;
-  };
-  sub R {
-    my ($self, $x, $y, $z) = @_;
-    return sqrt($x**2 + $y**2 + $z**2);
-  };
-
-  sub potentials_list {
-    my ($self, $pattern) = @_;
-    $self->set_ipots if (not $self->get("is_ipots_set"));
-    $pattern ||= "     %d     %-2d     %-10s\n";
-    my ($cell, $core) = $self->get("cell", "core");
-    my @sites = @{ $cell->get("sites") };
-    my $string = q{};
-    my %seen = ();
-    my ($abs) = $cell->central($core);
-    my $l = Xray::Absorption->get_l($abs->get("element"));
-    $string .= sprintf($pattern, 0, get_Z($abs->get("element")), $abs->get("element"),
-		       $l, $l, 0.001);
-    foreach my $s (sort {$a->get("ipot") <=> $b->get("ipot")} @sites) {
-      next if not $s->get("ipot");
-      next if $seen{$s->ipot};
-      $l = Xray::Absorption->get_l($s->get("element"));
-      $string .= sprintf($pattern, $s, get_Z($s->get("element")),
-			 $s->get("element"), $l, $l, $s->get("stoi"));
-      $seen{$s->ipot} = 1;
-    };
-    return $string;
-  };
-
-
-  sub sites_list {
-    my ($self, $pattern) = @_;
-    $self->populate if (not $self->get("is_populated"));
-    my $config = Ifeffit::Demeter->get_mode("params");
-    my $prec = '%'.$config->default("atoms", "precision");
-    $pattern ||= "  %-2s   $prec   $prec   $prec   %-10s\n";
-    my $cell = $self->get("cell");
-    my $rlist = $cell->get("sites");
-    my $string = q{};
-    foreach my $l (@$rlist) {
-      $string .= sprintf($pattern,
-			 ucfirst(lc($l->get("element"))),
-			 $l->get("x"), $l->get("y"), $l->get("z"), $l);
-    };
-    return $string;
-  };
-  sub p1_list {
-    my ($self, $pattern) = @_;
-    $self->populate if (not $self->get("is_populated"));
-    my $config = Ifeffit::Demeter->get_mode("params");
-    my $prec = '%'.$config->default("atoms", "precision");
-    $pattern ||= "  %-2s   $prec   $prec   $prec   %-10s\n";
-    my $cell = $self->get("cell");
-    my $rlist = $cell->get("contents");
-    my $string = q{};
-    foreach my $l (@$rlist) {
-      $string .= sprintf($pattern,
-			 ucfirst(lc($l->[0]->get("element"))),
-			 $$l[1], $$l[2], $$l[3], $l->[0])
-    };
-    return $string;
-  };
-
-  sub sg {
-    my ($self, $which, $pattern) = @_;
-    $self->populate if (not $self->get("is_populated"));
-    my $cell    = $self->get("cell");
-    my $rhash   = $cell->get("data");
-    $pattern ||= "      %-7s  %-7s  %-7s\n";
-    my ($prefix, $postfix) = ($which =~ m{(?:bravais|shiftvec)})
-                           ? ("      ", $/)
-			   : (q{}, q{});
-    my $re = $self->regexp("spacegroup");
-    ## typo?
-    return q{} if ($which !~ m{$re});
-    ## number of positions
-    if ($which eq "npos") {
-      my @positions = @ {$rhash->{positions}};
-      return $#positions + 1;
-    };
-    ## key is absent from this entry in database
-    return "$prefix<none>$postfix" if ((not exists($rhash->{$which})) and ($which ne "bravais"));
-    ## schoenflies
-    return ucfirst($rhash->{schoenflies}) if ($which eq "schoenflies");
-    ## number or symbol
-    return $rhash->{$which} if ($which =~ m{(?:number|full|new_symbol|thirtyfive)});
-    ## nicknames
-    return join(", ", @{$rhash->{shorthand}}) if ($which eq "shorthand");
-    ## shift vector from Int'l Tables
-    if ($which eq "shiftvec") {
-      my @shift = map {fract($FRAC*$_, $FRAC)} @{ $rhash->{shiftvec} };
-      return sprintf($pattern, map {$_->as_mixed_string} @shift);
-    };
-    ## Bravais translations
-    if ($which eq "bravais") {
-      my @bravais = @{ $cell->get("bravais") };
-      my $string = q{};
-      while (@bravais) {
-	my @vec = (fract($FRAC*shift(@bravais), $FRAC),
-		   fract($FRAC*shift(@bravais), $FRAC),
-		   fract($FRAC*shift(@bravais), $FRAC),
-		  );
-	$string .= sprintf($pattern, map {$_->as_mixed_string} @vec);
-      };
-      return $string;
-    };
-    ## symetric positions
-    if ($which eq "positions") {
-      my @positions = @ {$rhash->{positions}};
-      my $string = q{};
-      my $npos = $#positions + 1;
-      #$string .= "  $npos positions:\n";
-      foreach my $pos (@positions) {
-	my @this = @{ $pos };
-	map { $this[$_] =~ s{\$}{}g } (0 .. 2);
-	$string .= sprintf($pattern, @this);
-      };
-      return $string;
-    };
-    return q{};
-  };
-
-
-  sub titles {
-    my ($self, $prefix) = @_;
-    $prefix ||= " TITLE ";
-    my @titles = @{ $self->get("titles") };
-    my $string = q{};
-    foreach my $t (@titles) {
-      $string   .= $prefix . $t . $/;
-    };
-    return $string;
-  };
-
-
-  sub Write {
-    my ($self, $type) = @_;
-    #$type ||= "feff6";
-    $type = lc($type);
-    ($type = 'feff6') if ($type eq'feff');
-    return $self->atoms_file             if ($type eq 'atoms');
-    return $self->atoms_file('p1')       if ($type eq 'p1');
-    return $self->template("absorption") if ($type eq 'absorption');
-    if ($type eq 'spacegroup') {
-      $self->populate if (not $self->get("is_populated"));
-      return $self->template("spacegroup");
-    };
-    if ($type =~ m{feff}) {
-      $self->build_cluster if (not $self->get("is_expanded"));;
-      return $self->template($type);
-    };
-
-    ## still need: overfull, p1_cartesian, gnxas
-
-    ## fallback
-    #return $self->atoms_file;
-    $self->build_cluster if (not $self->get("is_expanded"));;
-    return $self->template('feff6');
-  };
-
-  sub atoms_file :STRINGIFY {
-    my ($self, $is_p1) = @_;
-    $is_p1 = 0 if ($is_p1 and ($is_p1 =~ ident($self)));  #enable :STRINGIFY
-    $self->populate if (not $self->get("is_populated"));
-    my $cell = $self -> get("cell");
-    my $string = $self->template("copyright", {type=>($is_p1) ? "P1" : "Atoms"});
-    $string   .= $self->template("atoms_header");
-    $string   .= ($is_p1) ? $self->p1_list : $self->sites_list;
-    return $string;
-  };
-
+  $self->is_expanded(1);
+  return $self;
 };
+
+
+sub set_ipots {
+  my ($self) = @_;
+  $self->build_cluster if (not $self->is_expanded);
+  my ($cell, $how) = $self->get("cell", "ipot_style");
+  my @sites = @{ $cell->sites };
+  my $i = 1;
+  my %seen = ();
+  if ($how =~ m{\Ata}) {
+    foreach my $s (@sites) {
+      if ($s->in_cluster) {
+	my $tag = lc($s->tag);
+	$seen{$tag} = $i++ if (not $seen{$tag});
+	$s -> ipot($seen{$tag});
+      };
+    };
+  } elsif ($how =~ m{\Ael}) {
+    foreach my $s (@sites) {
+      if ($s->in_cluster) {
+	my $el = lc($s->element);
+	$seen{$el} = $i++ if (not $seen{$el});
+	$s -> ipot($seen{$el});
+      };
+    };
+  } else { ## sites
+    foreach my $s (@sites) {
+      if ($s->in_cluster) {
+	$s -> ipot($i);
+	++$i
+      };
+    };
+  };
+
+  ## get the reduced stoichiometry for feff8's potentials list
+  my @count = (0,0,0,0,0,0,0,0);
+  my $top = -999;
+  foreach my $s (@sites) {
+    my $ipot = $s->ipot;
+    $count[$ipot] += $s->in_cell;
+    $top = max($top, $ipot);
+  };
+  ## get greatest common divisor (thanks to Math::Cephes::Fraction
+  ## for "euclid" and List::Util for "reduce")
+  if ($self->co->default("atoms", "gcd")) {
+    my $gcd = reduce { (euclid($a,$b))[0] } @count[1..$top];
+    foreach my $s (1 .. $top) {
+      $count[$s] /= $gcd;
+    };
+  };
+  foreach my $s (@sites) {
+    my $ipot = $s->ipot;
+    $s->stoi($count[$ipot]);
+  };
+
+  $self->is_ipots_set(1);
+  if (--$i > 7) {
+    carp("You have $i unique potentials, but Feff only allows 7.");
+    return -1;
+  };
+  return 0;
+};
+
+override 'template' => sub {
+  my ($self, $file, $rhash) = @_;
+
+  my $cell = $self->cell;
+
+  my $tmpl = File::Spec->catfile(dirname($INC{"Ifeffit/Demeter.pm"}),
+				 "Demeter",
+				 "templates",
+				 "atoms",
+				 "$file.tmpl");
+  croak("Unknown Atoms template file -- type $file: $tmpl") if (not -e $tmpl);
+  my $template = Text::Template->new(TYPE => 'file', SOURCE => $tmpl)
+    or croak("Couldn't construct template: $Text::Template::ERROR");
+  $rhash ||= {};
+  my $string = $template->fill_in(HASH => {A  => \$self,
+					   C  => \$cell,
+					   %$rhash},
+				  PACKAGE => "Ifeffit::Demeter::Templates");
+  $string ||= q{};
+  $string =~ s{^\s+}{};		# remove leading white space
+  $string =~ s{\n(?:[ \t]+\n)+}{\n};	# regularize white space between blocks of text
+  $string =~ s{\s+$}{\n};		# remove trailing white space
+  $string =~ s{<<->>\n}{}g;		# convert newline token into a real newline
+  $string =~ s{<<nl>>}{\n}g;		# convert newline token into a real newline
+  $string =~ s{<<( *)>>}{$1}g;	#} # convert white space token into real white space
+  return $string;
+};
+
+
+sub cluster_list {
+  my ($self, $pattern) = @_;
+  $pattern ||= "  %9.5f  %9.5f  %9.5f  %d  %-10s  %9.5f\n";
+  $self->set_ipots if (not $self->is_ipots_set);
+  my $string = q{};
+  my @list = @ {$self->cluster };
+  my $abs = shift @list;	# absorber must be ipot 0
+  $string .= sprintf($pattern,
+		     $abs->[0], $abs->[1], $abs->[2],
+		     0, $abs->[3]->tag, sqrt($abs->[4])
+		    );
+  foreach my $pos (@list) {
+    ## rely upon coercions
+    $string .= sprintf($pattern,
+		       $pos->[0], $pos->[1], $pos->[2],
+		       $pos->[3]->ipot, $pos->[3]->tag, sqrt($pos->[4])
+		      );
+  };
+  return $string;
+};
+sub R {
+  my ($self, $x, $y, $z) = @_;
+  return sqrt($x**2 + $y**2 + $z**2);
+};
+
+sub potentials_list {
+  my ($self, $pattern) = @_;
+  $self->set_ipots if (not $self->is_ipots_set);
+  $pattern ||= "     %d     %-2d     %-10s\n";
+  my ($cell, $core) = $self->get("cell", "core");
+  my @sites = @{ $cell->sites };
+  my $string = q{};
+  my %seen = ();
+  my ($abs) = $cell->central($core);
+  my $l = Xray::Absorption->get_l($abs->element);
+  $string .= sprintf($pattern, 0, get_Z($abs->element), $abs->element,
+		     $l, $l, 0.001);
+  foreach my $s (sort {$a->ipot <=> $b->ipot} @sites) {
+    next if not $s->ipot;
+    next if $seen{$s->ipot};
+    $l = Xray::Absorption->get_l($s->element);
+    $string .= sprintf($pattern, $s->ipot, get_Z($s->element),
+		       $s->element, $l, $l, $s->stoi);
+    $seen{$s->ipot} = 1;
+  };
+  return $string;
+};
+
+
+sub sites_list {
+  my ($self, $rhash) = @_;
+  $self->populate if (not $self->is_populated);
+  my $prec = '%'.$self->co->default("atoms", "precision");
+  $rhash->{pattern} ||= "  %-2s   $prec   $prec   $prec   %-10s\n";
+  $rhash->{prefix}  ||= q{};
+  my $cell = $self->cell;
+  my $rlist = $cell->sites;
+  my $string = q{};
+  foreach my $l (@$rlist) {
+    $string .= $rhash->{prefix} . sprintf($rhash->{pattern},
+					  ucfirst(lc($l->element)),
+					  $l->x, $l->y, $l->z, $l->tag);
+  };
+  return $string;
+};
+sub p1_list {
+  my ($self, $rhash) = @_;
+  $self->populate if (not $self->is_populated);
+  my $prec = '%'.$self->co->default("atoms", "precision");
+  $rhash->{pattern} ||= "  %-2s   $prec   $prec   $prec   %-10s\n";
+  $rhash->{prefix}  ||= q{};
+  my $cell = $self->cell;
+  my $rlist = $cell->contents;
+  my $string = q{};
+  foreach my $l (@$rlist) {
+    $string .= $rhash->{prefix} . sprintf($rhash->{pattern},
+					  ucfirst(lc($l->[0]->element)),
+					  $$l[1], $$l[2], $$l[3], $l->[0]->tag)
+  };
+  return $string;
+};
+
+sub sg {
+  my ($self, $which, $pattern) = @_;
+  $self->populate if (not $self->is_populated);
+  my $cell    = $self->cell;
+  my $rhash   = $cell->data;
+  $pattern  ||= "      %-7s  %-7s  %-7s\n";
+  my ($prefix, $postfix) = ($which =~ m{(?:bravais|shiftvec)})
+                         ? ("      ", $/)
+			 : (q{}, q{});
+  ## typo?
+  return q{} if (not is_SpaceGroup($which));
+  ## number of positions
+  if ($which eq "npos") {
+    my @positions = @ {$rhash->{positions}};
+    return $#positions + 1;
+  };
+  ## key is absent from this entry in database
+  return "$prefix<none>$postfix" if ((not exists($rhash->{$which})) and ($which ne "bravais"));
+  ## schoenflies
+  return ucfirst($rhash->{schoenflies}) if ($which eq "schoenflies");
+  ## number or symbol
+  return $rhash->{$which} if ($which =~ m{(?:number|full|new_symbol|thirtyfive)});
+  ## nicknames
+  return join(", ", @{$rhash->{shorthand}}) if ($which eq "shorthand");
+  ## shift vector from Int'l Tables
+  if ($which eq "shiftvec") {
+    my @shift = map {fract($FRAC*$_, $FRAC)} @{ $rhash->{shiftvec} };
+    return sprintf($pattern, map {$_->as_mixed_string} @shift);
+  };
+  ## Bravais translations
+  if ($which eq "bravais") {
+    my @bravais = @{ $cell->bravais };
+    my $string = q{};
+    while (@bravais) {
+      my @vec = (fract($FRAC*shift(@bravais), $FRAC),
+		 fract($FRAC*shift(@bravais), $FRAC),
+		 fract($FRAC*shift(@bravais), $FRAC),
+		);
+      $string .= sprintf($pattern, map {$_->as_mixed_string} @vec);
+    };
+    return $string;
+  };
+  ## symetric positions
+  if ($which eq "positions") {
+    my @positions = @ {$rhash->{positions}};
+    my $string = q{};
+    my $npos = $#positions + 1;
+    #$string .= "  $npos positions:\n";
+    foreach my $pos (@positions) {
+      my @this = @{ $pos };
+      map { $this[$_] =~ s{\$}{}g } (0 .. 2);
+      $string .= sprintf($pattern, @this);
+    };
+    return $string;
+  };
+  return q{};
+};
+
+
+sub titles {
+  my ($self, $prefix) = @_;
+  $prefix ||= " TITLE ";
+  my @titles = @{ $self->titles };
+  my $string = q{};
+  foreach my $t (@titles) {
+    $string   .= $prefix . $t . $/;
+  };
+  return $string;
+};
+
+sub update_absorption {
+  my ($self) = @_;
+  $self->_absorption if not $self->absorption_done;
+  $self->_mcmaster   if not $self->mcmaster_done;
+  $self->_i0         if (($self->gases_set) and not $self->i0_done);
+  $self->_self       if (($self->gases_set) and not $self->self_done);
+  return $self;
+};
+
+sub update_edge {
+  my ($self) = @_;
+  return $self if $self->edge;
+  my ($central, $xcenter, $ycenter, $zcenter) = $self -> cell -> central($self->core);
+  #print $central, $/;
+  #print join(" ", $central->meta->get_attribute_list), $/;
+  my $z = get_Z( $central->element );
+  ($z > 57) ? $self->edge('l3') : $self->edge('k');
+  return $self;
+};
+
+sub Write {
+  my ($self, $type) = @_;
+  #$type ||= "feff6";
+  $type = lc($type);
+  ($type = 'feff6') if ($type eq'feff');
+  $self->update_absorption;
+  return $self->atoms_file             if ($type eq 'atoms');
+  return $self->atoms_file('p1')       if ($type eq 'p1');
+  return $self->template("absorption") if (($type eq 'absorption') and $self->gases_set);
+  return $self->template("mcmaster")   if (($type eq 'absorption') and not $self->gases_set);
+  if ($type eq 'spacegroup') {
+    $self->populate if (not $self->is_populated);
+    return $self->template("spacegroup");
+  };
+  return $self->Write_feff($type) if ($type =~ m{feff});
+
+  ## still need: overfull, p1_cartesian, gnxas
+
+  ## fallback
+  return $self->Write_feff('feff6');
+};
+
+sub Write_feff {
+  my ($self, $type) = @_;
+  $self->build_cluster if (not $self->is_expanded);;
+  my $string = q{};
+  $string .= $self->template('copyright',  {type=> $type, prefix => ' * '});
+  $string .= $self->template('prettyline', {prefix => ' * '});
+  $string .= $self->atoms_file('feff', ' * ');
+  $string .= $self->template('prettyline', {prefix => ' * '});
+  $string .= $/;
+  if ($self->gases_set) {
+    $string .= $self->template('absorption', {prefix => ' * '});
+  } else {
+    $string .= $self->template('mcmaster', {prefix => ' * '});
+  };
+  $string .= $self->template($type);
+};
+
+sub atoms_file {
+  my ($self, $is_p1, $prefix) = @_;
+  $is_p1  ||= 0;
+  $prefix ||= q{};
+  $self->populate if (not $self->is_populated);
+  my $cell = $self -> cell;
+  my $string = q{};
+  my $type = ($is_p1 eq 'p1') ? 'P1'
+           : ($is_p1)         ? q{}
+	                      : 'Atoms';
+  $string   .= $self->template("copyright", {prefix=>$prefix, type=>$type}) if $type;
+  $string   .= $self->template("atoms_header", {prefix=>$prefix});
+  $string   .= ($type eq 'P1') ? $self->p1_list({prefix=>$prefix}) : $self->sites_list({prefix=>$prefix});
+  return $string;
+};
+
 1;
 
 =head1 NAME
@@ -679,11 +805,11 @@ Ifeffit::Demeter::Atoms - Convert crystallographic data to atomic lists
 
 =head1 VERSION
 
-This documentation refers to Ifeffit::Demeter version 0.1.
+This documentation refers to Ifeffit::Demeter version 0.2.
 
 =head1 SYNOPSIS
 
-These lines behave much like any earlier version of Atoms:
+These lines behave much like any other version of Atoms:
 
   use Ifeffit::Demeter;
   my $atoms = Ifeffit::Demeter::Atoms -> new()
@@ -714,8 +840,8 @@ given in square brackets.
 =item C<space> (string)
 
 The space group ofthe crystal.  This can be in any form recognized by
-L<Xray::Crystal::Cell>, including Hermann-Maguin, Schoenflies, number, or one
-of a few nicknames.
+L<Xray::Crystal::Cell>, including Hermann-Maguin, Schoenflies, number,
+or one of a few nicknames.
 
 =item C<a>	(real)
 
@@ -744,6 +870,13 @@ The angle between A and B, in degrees.
 =item C<rmax> (real)
 
 The extent of the cluster generated from the input crystal data.
+
+=item C<rpath> (real)
+
+The value used for the RMAX keyword in the F<feff.inp> file.  This is
+the length of the longest path to be calculated by the pathfinder.  A
+value much larger than about 6 will bog down Demeter's pathfinder in
+its current form.
 
 =item C<edge> (string) [k or l3 depending on Z-number]
 
@@ -835,13 +968,7 @@ Set attributes.  This takes a single argument which is a reference to
 a hash of attribute values.  The keys of that hash are any of the
 valid object attributes listed above.
 
-  $atoms -> set({a => 3.81, rmax => 6});
-
-=item C<Push>
-
-Push a single value onto a list-values attribute.
-
-  $atoms -> Push({titles => "crystal data at room temperature"});
+  $atoms -> set(a => 3.81, rmax => 6);
 
 =item C<get>
 
@@ -868,7 +995,7 @@ Import crystal data from a CIF file.
 
   $atoms -> read_inp("your_data.cif");
 
-CIF import is not yet working in Demeter 0.1.
+CIF import is not yet working in Demeter 0.2.
 
 =item C<atoms_file>
 
@@ -1064,7 +1191,7 @@ Need more testing of spacegroups and database.
 
 =back
 
-Please report problems to Bruce Ravel (bravel AT anl DOT gov)
+Please report problems to Bruce Ravel (bravel AT bnl DOT gov)
 
 Patches are welcome.
 
@@ -1081,7 +1208,7 @@ Copyright (c) 2006-2008 Bruce Ravel (bravel AT bnl DOT gov). All
 rights reserved.
 
 This module is free software; you can redistribute it and/or
-modify it under the same terms as Perl itself. See L<perlartistic>.
+modify it under the same terms as Perl itself. See L<perlgpl>.
 
 This program is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of

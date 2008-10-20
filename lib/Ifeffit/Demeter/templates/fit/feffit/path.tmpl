@@ -1,21 +1,21 @@
 { # -*- ifm -*-
   # path definition template
-  #   {$S} returns the ifeffit group name
-  #   {$S->get("parameter")} returns the value of that parameter
+  #   {$S->group} returns the ifeffit group name
+  #   {$S->parameter} returns the value of that parameter
 }
 {
   require File::Spec;
-  $nnnn = File::Spec->catfile($S->get('folder'), $S->get('file'));
+  $nnnn = File::Spec->catfile($S->folder, $S->file);
   $i = $S->Index;
   q{}
 }
 <<nl>>
 path   {$i}    {$nnnn}
 id     {$i}    {$S->label}
-s02    {$i}    {$S->get("s02")    || 1}
-e0     {$i}    {$S->get("e0")     || 0}
-delr   {$i}    {$S->get("delr")   || 0}
-sigma2 {$i}    {$S->get("sigma2") || 0}
-ei     {$i}    {$S->get("ei")     || 0}
-third  {$i}    {$S->get("third")  || 0}
-fourth {$i}    {$S->get("fourth") || 0}
+s02    {$i}    {$S->s02    || 1}
+e0     {$i}    {$S->e0     || 0}
+delr   {$i}    {$S->delr   || 0}
+sigma2 {$i}    {$S->sigma2 || 0}
+ei     {$i}    {$S->ei     || 0}
+third  {$i}    {$S->third  || 0}
+fourth {$i}    {$S->fourth || 0}

@@ -10,18 +10,18 @@
   # need to allow for fitting smoothed data to standard
 }
 {
-  $emin = $DS->get("bkg_e0") -  50;
-  $emax = $DS->get("bkg_e0") + 100;
+  $emin = $DS->bkg_e0 -  50;
+  $emax = $DS->bkg_e0 + 100;
   q()
 }
-##| auto-aligning {$D} to {$DS}
+##| auto-aligning {$D->group} to {$DS->group}
 guess(aa___esh   = 0,
       aa___scale = 1)
-def {$D}.xmui    = {$P->get("interp")}({$D}.energy+aa___esh, {$D}.xmu, {$DS}.energy+{$DS->get("bkg_eshift")})
-def aa___.res    = deriv({$DS}.xmu) - aa___scale*deriv({$D}.xmui)
-minimize(aa___.res, x={$DS}.energy, xmin={$emin}, xmax={$emax})
+def {$D->group}.xmui    = {$P->interp}({$D->group}.energy+aa___esh, {$D->group}.xmu, {$DS->group}.energy+{$DS->bkg_eshift})
+def aa___.res    = deriv({$DS->group}.xmu) - aa___scale*deriv({$D->group}.xmui)
+minimize(aa___.res, x={$DS->group}.energy, xmin={$emin}, xmax={$emax})
 set(aa___.res    = aa___.res,
-    {$D}.xmui    = {$D}.xmui)
+    {$D->group}.xmui    = {$D->group}.xmui)
 unguess
-erase aa___scale aa___.res {$D}.xmui
+erase aa___scale aa___.res {$D->group}.xmui
 <<nl>>

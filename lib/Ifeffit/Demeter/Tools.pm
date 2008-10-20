@@ -15,11 +15,11 @@ package Ifeffit::Demeter::Tools;
 
 =cut
 
-use strict;
-use warnings;
+use Moose::Role;
+
 use Carp;
 use Fatal qw(open close);
-use Ifeffit::Demeter::GDS;
+#use Ifeffit::Demeter::GDS;
 use Regexp::List;
 use Regexp::Optimizer;
 use List::Util qw(sum);
@@ -29,30 +29,16 @@ tzset();
 #use Memoize;
 #memoize('distance');
 
-use vars qw(@ISA @EXPORT @EXPORT_OK);
-require Exporter;
-@ISA = qw(Exporter);
-@EXPORT = qw(distance simpleGDS);
-@EXPORT_OK = qw();
+# use vars qw(@ISA @EXPORT @EXPORT_OK);
+# require Exporter;
+# @ISA = qw(Exporter);
+# @EXPORT = qw(distance simpleGDS);
+# @EXPORT_OK = qw();
 
 my %seen = ();
 my $opt  = Regexp::List->new;
 my $type_regexp = $opt->list2re(qw(guess def set restrain after skip merge lguess ldef));
 
-sub random_string {
-  my ($class, $nc) = @_;
-  $nc ||= 4;
-  my $number_of_characters = int($nc);
-  ($number_of_characters = 4) if ($number_of_characters < 1);
-  my $string = q{};
-  map { $string .= chr(97 + int(rand(26))) } (1 .. $number_of_characters);
-  while (exists $seen{$string}) {
-    $string = q{};
-    map { $string .= chr(97 + int(rand(26))) } (1 .. $number_of_characters);
-  };
-  $seen{$string} = 1;
-  return $string;
-};
 
 sub now {
   my ($self) = @_;
@@ -124,8 +110,7 @@ sub check_parens {
 
 ## take care in case this is called as a class method rather than as an exported function
 sub simpleGDS {
-  my $string = shift;
-  ($string = shift) if ($string =~ m{Ifeffit::Demeter::Tools});
+  my ($self, $string) = @_;
   ($string =~ s{(?:\A\s+|\s+\z)}{}g);    # trim leading and training space
 
   my ($type, $name, @rest) = split(" ", $string);
@@ -139,10 +124,10 @@ sub simpleGDS {
   ## croak if $name is one of the program variables
 
   ## finally, return the GDS object
-  return Ifeffit::Demeter::GDS -> new({type    => $type,
-				       name    => $name,
-				       mathexp => $mathexp,
-				      }),
+  return Ifeffit::Demeter::GDS -> new(gds     => $type,
+				      name    => $name,
+				      mathexp => $mathexp,
+				     ),
 };
 # {
 #   no warnings 'once';
@@ -161,6 +146,7 @@ sub is_osx {
 
 ## this is an exported function
 sub distance {
+  my $self = shift;
   croak("usage: distance(\@coords1, \@coords2) where each list contains exactly 3 elements, 6 total")
     unless ( $#_ == 5 );
   return sqrt( ($_[0]-$_[3])**2 +($_[1]-$_[4])**2 +($_[2]-$_[5])**2 );
@@ -192,6 +178,8 @@ sub halflength {
 };
 
 
+
+
 1;
 
 =head1 NAME
@@ -200,14 +188,14 @@ Ifeffit::Demeter::Tools - Utility methods for the Demeter class
 
 =head1 VERSION
 
-This documentation refers to Ifeffit::Demeter version 0.1.
+This documentation refers to Ifeffit::Demeter version 0.2.
 
 =head1 DESCRIPTION
 
 This module contains a number of methods that work better (in Bruce's
 opinion) as class methods than as object methods.
 
-=head1 EXPORTED FUNCTIONS
+=head1 METHODS
 
 =over 4
 
@@ -217,11 +205,12 @@ This is syntactic sugar for the GDS object constructor.  The following are
 equivalent:
 
   $gdsobject = Ifeffit::Demeter::GDS ->
-                  new({type    => 'guess',
-		       name    => 'alpha',
-		       mathexp => 0,
-		      });
-  $gdsobject = simpleGDS("guess alpha = 0");
+                  new(type    => 'guess',
+		      name    => 'alpha',
+		      mathexp => 0,
+		     );
+  #
+  $gdsobject = $demeter_object -> simpleGDS("guess alpha = 0");
 
 The text string that is the argument for this wrapper is parsed
 identically to how a guess parameter in a F<feffit.inp> file is
@@ -237,49 +226,19 @@ Each of the arrays passed to this function must be exactly three
 elements long and are assumed to contain the x, y, and z Cartesian
 coordinates, in that order.
 
-=back
-
-=head1 METHODS
-
-=over 4
-
-=item C<random_string>
-
-Generate a random string of lowercase alphabetic characters.  The
-argument is the length of the string.  The default string length is 4.
-4 characters provides a large enough key space for Ifeffit groups
-names in normal usage.
-
-   $string = Ifeffit::Demeter::Tools->random_string(4);
-
-Key space sizes:
-
-    # characters         size
-  --------------------------------
-         2                676
-         3             17,576
-         4            456,976
-         5         11,881,376
-         6       3.089157e+08
-
-Note that, as you approach the size of the key space, this method will
-slow down because it uses a ransack search over the unpopulated
-portion of the keyspace to find an unused one ;-) If you need >200,000
-keys, you probably should use a 5-digit space.
-
 =item C<now>
 
 This returns a string with the current date and time in a convenient,
 human-readable format.
 
-   print "The time is: ", Ifeffit::Demeter::Tools -> now, $/;
+   print "The time is: ", $demeter_object -> now, $/;
 
 =item C<environment>
 
 This returns a string showing the version numbers of Demeter and perl,
 and the identifier string for your operating system.
 
-   print "You are running: ", Ifeffit::Demeter::Tools -> environment, $/;
+   print "You are running: ", $demeter_object -> environment, $/;
 
 =item C<who>
 
@@ -288,7 +247,7 @@ machine, it returns a concatination of the USER and HOST environment
 variables.  On Windows it currently returns the fairly stupid
 "you@your.computer".
 
-   print "You are: ", Ifeffit::Demeter::Tools -> who, $/;
+   print "You are: ", $demeter_object -> who, $/;
 
 
 =item C<check_parens>
@@ -297,7 +256,7 @@ Return 0 if a string has matching round braces (parentheses).  A positive
 (negative) return value indicates the number of excess open (close) round
 braces.  This can be used a boolean check on a string.
 
-  $is_mismatched = Ifeffit::Demeter::Tools->check_parens($string);
+  $is_mismatched = $demeter_object->check_parens($string);
 
 This only matches round braces.  It ignores square, curly, or angle braces,
 none of which serve a purpose in Ifeffit math expressions.
@@ -306,13 +265,13 @@ none of which serve a purpose in Ifeffit math expressions.
 
 Return true if running on a Windows machine.
 
-  my $is_win = Ifeffit::Demeter::Tools -> is_windows;
+  my $is_win = $demeter_object -> is_windows;
 
 =item C<is_osx>
 
 Return true if running on a Macintosh OSX machine.
 
-  my $is_mac = Ifeffit::Demeter::Tools -> is_osx;
+  my $is_mac = $demeter_object -> is_osx;
 
 =item C<halflength>
 
@@ -322,7 +281,7 @@ path. The half length is the sum of the individual legs divided by
 2. The first item in the list is assumed to the absorber at and is
 tacked onto the end of the list to close the path.
 
-  my $hl = Ifeffit::Demeter::Tools ->
+  my $hl = $demeter_object ->
          halflength(\@coords1, \@coords2, ... \@coordsN);
 
 =back
@@ -357,7 +316,7 @@ L<http://cars9.uchicago.edu/~ravel/software/>
 Copyright (c) 2006-2008 Bruce Ravel (bravel AT bnl DOT gov). All rights reserved.
 
 This module is free software; you can redistribute it and/or
-modify it under the same terms as Perl itself. See L<perlartistic>.
+modify it under the same terms as Perl itself. See L<perlgpl>.
 
 This program is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of

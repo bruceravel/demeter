@@ -1,15 +1,15 @@
 { # -*- ifm -*-
   # template for overplot of chi(R)
-  #   {$D} returns the ifeffit group name
-  #   {$D->get("parameter")} returns the value of that parameter
-  #   {$P->get("parameter")} returns the value of a Plot parameter
+  #   {$D->group} returns the ifeffit group name
+  #   {$D->parameter} returns the value of that parameter
+  #   {$P->parameter} returns the value of a Plot parameter
 }
 {
  ## this code fragment chooses the correct array
  my %suffixes = ('m'=>"chir_mag", e=>"chir_mag", r=>"chir_re", i=>"chir_im", p=>"chir_pha");
- my $part     = lc($P->get("r_pl"));
+ my $part     = lc($P->r_pl);
  $suffix      = $suffixes{$part};
  q{}
 }
-plot({$D}.r, "{$D->get("plot_multiplier")}*{$D}.{$suffix}+{$D->get("y_offset")}",
-     style={$P->get("datastyle")}, color="{$P->get("color")}", key="{$P->get("key")}")
+plot({$D->group}.r, "{$D->plot_multiplier}*{$D->group}.{$suffix}+{$D->y_offset}",
+     style={$P->datastyle}, color="{$P->color}", key="{$P->key}")

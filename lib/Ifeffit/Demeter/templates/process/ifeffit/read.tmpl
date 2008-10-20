@@ -1,7 +1,7 @@
 { # -*- ifm -*-
   # import column data template
-  #   {$D} returns the ifeffit group name
-  #   {$D->get("parameter")} returns the value of that parameter
+  #   {$D->group} returns the ifeffit group name
+  #   {$D->parameter} returns the value of that parameter
 }
-##| Reading raw data "{$D->get('file')}" as group {$D}
-read_data(file="{$D->get('file')}", group={$D})
+##| Reading raw data "{$D->file}" as group {$D->group}
+read_data(file="{$D->file}", group={$D->group})

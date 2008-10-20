@@ -1,7 +1,7 @@
 { # -*- ifm -*-
   # save background subtracted data template
-  #   {$D} returns the ifeffit group name
-  #   {$D->get("parameter")} returns the value of that parameter
+  #   {$D->group} returns the ifeffit group name
+  #   {$D->parameter} returns the value of that parameter
   # the filename and titles were passed to the template method
   # $titles should contain a string that Ifeffit will be able to
   # interpret as a set of title lines already set in Ifeffit.  one
@@ -13,8 +13,8 @@
 }
 
 <<nl>>
-set {$D}.chib = {$D}.chi - ({$D}_bkg.chi*{$D}.win)
+set {$D->group}.chib = {$D->group}.chi - ({$D->group}_bkg.chi*{$D->group}.win)
 write_data(file="{$filename}",
-           ${$titles}, ${$D}_title_*,
+           ${$titles}, ${$D->group}_title_*,
            label="k chi window",
-           {$D}.k, {$D}.chib, {$D}.win)
+           {$D->group}.k, {$D->group}.chib, {$D->group}.win)

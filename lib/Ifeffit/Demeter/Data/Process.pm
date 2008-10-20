@@ -15,11 +15,9 @@ package Ifeffit::Demeter::Data::Process;
 
 =cut
 
-use strict;
-use warnings;
+use Moose::Role;
+
 use Carp;
-use Class::Std;
-use Class::Std::Utils;
 use Fatal qw(open close);
 use List::Util qw(reduce);
 use List::MoreUtils qw(minmax firstval);
@@ -31,28 +29,27 @@ Readonly my $EPSILON => 1e-5;
 # use aliased 'Ifeffit::Demeter::Tools';
 
 
-{
 
-  sub rebin {
-    my ($self, $rhash) = @_;
-    $$rhash{group} ||= q{};
-    my $standard = Ifeffit::Demeter->get_mode('standard');
-    $self->standard;		# make self the standard for rebinning
-    foreach my $k (keys %$rhash) {
-      $self -> new_params({"rebin_$k" => $$rhash{$k}});
-    };
-    my $rebinned = $self->clone;
-    $rebinned -> set_group($$rhash{group}) if ($$rhash{group} !~ m{\A\s*\z});
-    $rebinned -> set({generated	  => 1,
-		      update_norm => 1,
-		      label	  => $self->get('label') . " rebinned"});
-
-    my $string = $rebinned->template("process", "rebin");
-    $rebinned->dispose($string);
-
-    $standard->standard if (ref($standard) =~ m{Data});
-    return $rebinned;
+sub rebin {
+  my ($self, $rhash) = @_;
+  #$$rhash{group} ||= q{};
+  my $standard = $self->mode->standard;
+  $self->standard;		# make self the standard for rebinning
+  foreach my $k (keys %$rhash) {
+    $self -> new_params({"rebin_$k" => $$rhash{$k}});
   };
+  my $rebinned = $self->clone;
+  $rebinned -> generated(1);
+  $rebinned -> update_norm(1);
+  $rebinned -> name($self->name . " rebinned");
+
+  my $string = $rebinned->template("process", "rebin");
+  $rebinned->dispose($string);
+
+  (ref($standard) =~ m{Data}) ? $standard->standard : $self->unset_standard;
+  return $rebinned;
+};
+
 
   ## dispersive
   ## deconvolute
@@ -68,104 +65,104 @@ Readonly my $EPSILON => 1e-5;
 
 =cut
 
-  ## merge
-  sub merge {
-    my ($self, $how, @data) = @_;
-    $how = lc($how);
-    croak("Ifeffit::Demeter::Data::Process: \$data->merge(\$how, \@data) where \$how = e|k|n") if ($how !~ m{^[ekn]});
-    my $standard = Ifeffit::Demeter->get_mode('standard');
-    $self->standard;		# make self the standard for rebinning
+## merge
+sub merge {
+  my ($self, $how, @data) = @_;
+  $how = lc($how);
+  croak("Ifeffit::Demeter::Data::Process: \$data->merge(\$how, \@data) where \$how = e|k|n") if ($how !~ m{^[ekn]});
+  my $standard = $self->mode->standard;
+  $self->standard;		# make self the standard for merging
 
-    my $merged = $self->clone;
-    $self->mergeE('x', @data) if ($how =~ m{^e});
-    $self->mergeE('n', @data) if ($how =~ m{^n});
-    if ($how =~ m{^k}) {
-      $merged->set({is_chi=>1});
-      $self->mergek(@data);
-    };
-
-    my $ndata = $#data + 2;
-    $merged->new_params({ndata=>$ndata});
-    my $string = $merged->template("process", "merge_end"); #, {ndata=>$ndata});
-    $self->dispose($string);
-    $merged -> set({generated   => 1,
-		    is_merge    => 1,
-		    update_norm => ($how =~ m{^k}) ? 0 : 1,
-		    update_fft  => 1,
-		    bkg_eshift  => 0,
-		    i0_string   => q{},
-		    label	=> "merged data"});
-    if ($how =~ m{^k}) {
-      $merged -> set({is_xmu => 0, is_chi =>1});
-    } else {
-      $merged -> set({is_xmu => 1, is_chi =>0});
-    };
-
-    $standard->standard if (ref($standard) =~ m{Data});
-    return $merged;
+  my $merged = $self->clone;
+  $self->mergeE('x', @data) if ($how =~ m{^e});
+  $self->mergeE('n', @data) if ($how =~ m{^n});
+  if ($how =~ m{^k}) {
+    $merged->datatype('chi');
+    $self->mergek(@data);
   };
-  sub mergeE {
-    my ($self, $how, @data) = @_;
-    carp("Ifeffit::Demeter::Data::Process::mergeE: first argument MUST be x or n.") if ($how !~ m{^[nx]});
-    $self -> _update("normalize")  if ($how eq 'x');
-    $self -> _update("background") if ($how eq 'n');
 
-    my ($emin, $emax) = (-1e10, 1e10);
-    ## make an array in the m___erge group containing the longest common range of data
-    foreach my $d ($self, @data) {
-      next if (ref($d) !~ m{Data});
-      $d -> _update("normalize")  if ($how eq 'x');
-      $d -> _update("background") if ($how eq 'n');
-      my @array = $d->get_array("energy");
-      ($emin = $array[0])  if ($array[0]  > $emin);
-      ($emax = $array[-1]) if ($array[-1] < $emax);
-    };
-    $self -> new_params({merge_min   => $emin,
-			 merge_max   => $emax,
-			 merge_space => "energy",
-			 merge_data  => ($how eq 'x') ? "xmu" : 'norm',
-			});
-    my $string = $self->template("process", "merge_subarray");
-    $string   .= $self->template("process", "merge_start");
-    $self->dispose($string);
+  my $ndata = $#data + 2;
+  my $config = $self->mode->config;
+  $config -> set(ndata=>$ndata);
 
-    foreach my $d ($self, @data) {
-      next if (ref($d) !~ m{Data});
-      my $string = $d->template("process", "merge_interp");
-      $string   .= $d->template("process", "merge");
-      $self->dispose($string);
-    };
+  my $string = $merged->template("process", "merge_end"); #, {ndata=>$ndata});
+  $self->dispose($string);
+  $merged -> generated(1);
+  $merged -> is_merge($how);
+  $merged -> update_norm(($how =~ m{^k}) ? 0 : 1);
+  $merged -> update_fft(1);
+  $merged -> bkg_eshift(0);
+  $merged -> i0_string(q{});
+  $merged -> name("merged data");
+  ($how =~ m{^k}) ? $merged -> datatype('chi') : $merged -> datatype('xmu');
+
+  (ref($standard) =~ m{Data}) ? $standard->standard : $self->unset_standard;
+  return $merged;
+};
+sub mergeE {
+  my ($self, $how, @data) = @_;
+  carp("Ifeffit::Demeter::Data::Process::mergeE: first argument MUST be x or n.") if ($how !~ m{^[nx]});
+  $self -> _update("normalize")  if ($how eq 'x');
+  $self -> _update("background") if ($how eq 'n');
+
+  my ($emin, $emax) = (-1e10, 1e10);
+  ## make an array in the m___erge group containing the longest common range of data
+  foreach my $d ($self, @data) {
+    next if (ref($d) !~ m{Data});
+    $d -> _update("normalize")  if ($how eq 'x');
+    $d -> _update("background") if ($how eq 'n');
+    my @array = $d->get_array("energy");
+    ($emin = $array[0])  if ($array[0]  > $emin);
+    ($emax = $array[-1]) if ($array[-1] < $emax);
   };
-  sub mergek {
-    my ($self, @data) = @_;
-    $self -> _update("fft");
+  my $config = $self->mode->config;
+  $config -> set(merge_min   => $emin,
+		 merge_max   => $emax,
+		 merge_space => "energy",
+		 merge_data  => ($how eq 'x') ? "xmu" : 'norm',
+		);
+  my $string = $self->template("process", "merge_subarray");
+  $string   .= $self->template("process", "merge_start");
+  $self->dispose($string);
 
-    my ($kmin, $kmax) = (-1e10, 1e10);
-    ## make an array in the m___erge group containing the longest common range of data
-    foreach my $d ($self, @data) {
-      next if (ref($d) !~ m{Data});
-      $d -> _update("fft");
-      my @array = $d->get_array("k");
-      #print join("|", "----------", $d, $array[0], $array[-1]), $/;
-      ($kmin = $array[0])  if ($array[0]  > $kmin);
-      ($kmax = $array[-1]) if ($array[-1] < $kmax);
-    };
-    $self -> new_params({merge_min   => $kmin,
-			 merge_max   => $kmax,
-			 merge_space => "k",
-			 merge_data  => 'chi',
-			});
-    my $string = $self->template("process", "merge_subarray");
-    $string   .= $self->template("process", "merge_start");
+  foreach my $d ($self, @data) {
+    next if (ref($d) !~ m{Data});
+    my $string = $d->template("process", "merge_interp");
+    $string   .= $d->template("process", "merge");
     $self->dispose($string);
-
-    foreach my $d ($self, @data) {
-      next if (ref($d) !~ m{Data});
-      my $string = $d->template("process", "merge_interp");
-      $string   .= $d->template("process", "merge");
-      $self->dispose($string);
-    };
   };
+};
+sub mergek {
+  my ($self, @data) = @_;
+  $self -> _update("fft");
+
+  my ($kmin, $kmax) = (-1e10, 1e10);
+  ## make an array in the m___erge group containing the longest common range of data
+  foreach my $d ($self, @data) {
+    next if (ref($d) !~ m{Data});
+    $d -> _update("fft");
+    my @array = $d->get_array("k");
+    #print join("|", "----------", $d, $array[0], $array[-1]), $/;
+    ($kmin = $array[0])  if ($array[0]  > $kmin);
+    ($kmax = $array[-1]) if ($array[-1] < $kmax);
+  };
+  my $config = $self->mode->config;
+  $config -> set(merge_min   => $kmin,
+		 merge_max   => $kmax,
+		 merge_space => "k",
+		 merge_data  => 'chi',
+		);
+  my $string = $self->template("process", "merge_subarray");
+  $string   .= $self->template("process", "merge_start");
+  $self->dispose($string);
+
+  foreach my $d ($self, @data) {
+    next if (ref($d) !~ m{Data});
+    my $string = $d->template("process", "merge_interp");
+    $string   .= $d->template("process", "merge");
+    $self->dispose($string);
+  };
+};
 
 
 =for LiteratureReference (truncate)
@@ -179,32 +176,33 @@ Readonly my $EPSILON => 1e-5;
 
 =cut
 
-  sub Truncate {
-    my ($self, $beforeafter, $value) = @_;
-    if ($self->get("is_xmu")) {
-      $self -> _update("normalize");
-      $self -> new_params({trun_x => 'energy', 'trun_y' => 'xmu'});
-    } elsif ($self->get("is_chi")) {
-      $self -> new_params({trun_x => 'k', 'trun_y' => 'chi'});
-    };				# also not_data, trun_y can be something else
-    $self -> new_params({trun_ba => (lc($beforeafter) =~ m{\Ab}) ? 'before' : 'after',
-			 trun_value => $value});
+sub Truncate {
+  my ($self, $beforeafter, $value) = @_;
+  if ($self->datatype eq "xmu") {
+    $self -> _update("normalize");
+    $self -> mode -> config -> set(trun_x => 'energy', 'trun_y' => 'xmu');
+  } elsif ($self->datatype eq "chi") {
+    $self -> mode -> config -> set(trun_x => 'k', 'trun_y' => 'chi');
+  };				# also not_data, trun_y can be something else
+  $self -> mode -> config -> set(trun_ba => (lc($beforeafter) =~ m{\Ab}) ? 'before' : 'after',
+				 trun_value => $value);
 
-    my $string = q{};
-    if (lc($beforeafter) =~ m{\Ab}) { # truncate preceding values
-      $string = $self->template("process", "truncate_before");
-    } else {			    # truncate following values
-      $string = $self->template("process", "truncate_after");
-    };
-    $self->dispose($string);
-
-    ## flag data for reprocessing
-    if ($self->get("is_xmu")) {
-      $self->set({ update_norm => 1, });
-    } elsif ($self->get("is_chi")) {
-      $self->set({ update_fft => 1, });
-    };
+  my $string = q{};
+  if (lc($beforeafter) =~ m{\Ab}) { # truncate preceding values
+    $string = $self->template("process", "truncate_before");
+  } else {			    # truncate following values
+    $string = $self->template("process", "truncate_after");
   };
+  $self->dispose($string);
+
+  ## flag data for reprocessing
+  if ($self->datatype eq "xmu") {
+    $self->update_norm(1);
+  } elsif ($self->datatype eq "chi") {
+    $self->update_fft(1);
+  };
+};
+
 
 
 =for LiteratureReference (deglitch)
@@ -219,78 +217,80 @@ Readonly my $EPSILON => 1e-5;
 
 =cut
 
-  sub deglitch {
-    my ($self, @values) = @_;
-    carp("$self is not mu(E) data"), return if (not $self->get("is_xmu"));
-    $self -> _update("normalize");
-    my @x = $self->get_array("energy");
-    foreach my $v (@values) {
-      carp("$v is not within the data range of $self"), next if (($v < $x[0]) or ($v > $x[-1]));
-      my $nearest = reduce { abs($a-$v) < abs($b-$v) ? $a : $b } @x;
-      if ($nearest <= $x[2]) {
-	$self -> Truncate("before", $x[3]);
-      } elsif ($nearest >= $x[-2]) {
-	$self -> Truncate("after", $x[-3]);
-      } else {
-	$self -> new_params({degl_point => $nearest});
-	my $string = $self->template("process", "deglitch");
-	$self->dispose($string);
-      };
-    };
-    $self->set({ update_norm => 1, }); # flag for reprocessing
-  };
-
-
-  sub smooth {
-    my ($self, $n) = @_;
-    ($n = 1) if ($n < 1);
-    if ($self->get("is_xmu")) {
-      $self -> _update("normalize");
-      $self -> new_params({smooth_suffix => 'xmu'});
-    } elsif ($self->get("is_chi")) {
-      $self -> new_params({smooth_suffix => 'chi'});
-    };
-    foreach (1 .. int($n)) {
-      my $string = $self->template("process", "smooth");
+sub deglitch {
+  my ($self, @values) = @_;
+  carp("$self is not mu(E) data"), return if ($self->datatype ne "xmu");
+  $self -> _update("normalize");
+  my @x = $self->get_array("energy");
+  foreach my $v (@values) {
+    carp("$v is not within the data range of $self"), next if (($v < $x[0]) or ($v > $x[-1]));
+    my $nearest = reduce { abs($a-$v) < abs($b-$v) ? $a : $b } @x;
+    if ($nearest <= $x[2]) {
+      $self -> Truncate("before", $x[3]);
+    } elsif ($nearest >= $x[-2]) {
+      $self -> Truncate("after", $x[-3]);
+    } else {
+      $self -> mode -> config -> set(degl_point => $nearest);
+      my $string = $self->template("process", "deglitch");
       $self->dispose($string);
     };
-    # flag for reprocessing
-    if ($self->get("is_xmu")) {
-      $self->set({ update_norm => 1, });
-    } elsif ($self->get("is_chi")) {
-      $self->set({ update_fft => 1, });
-    };
   };
+  $self->update_norm(1); # flag for reprocessing
+};
 
 
-  sub convolve {
-    my ($self, $args) = @_;
-    my $config = Ifeffit::Demeter->get_mode("params");
-    croak("usage: \$self->convolve({width=>\$width, type=>\$type, which=>\$which})"), return
-      if (ref($args) !~ /HASH/);
-    $$args{width} ||= 0;
-    ($$args{width}  = 0) if ($$args{width} < 0);
-    $$args{type}  ||= $config->default("convolve", "type");
-    $$args{type}    = lc($$args{type});
-    ($$args{type}   = $config->default("convolve", "type")) if ($$args{type} !~ m{\A[gl]});
-    $$args{which} ||= 'xmu';
-    $$args{which}   = lc($$args{which});
-    ($$args{which}  = 'xmu')      if ($$args{type} !~ m{\A[cx]});
-    if ($$args{which} eq 'xmu') {
-      $self -> _update("normalize");
-    };
-    $self -> new_params({conv_type  => $$args{type},
-			 conv_width => $$args{width},
-			 conv_which => $$args{which},
-			});
-    my $string = $self->template("process", "convolve");
+sub smooth {
+  my ($self, $n) = @_;
+  ($n = 1) if ($n < 1);
+  if ($self->datatype eq "xmu") {
+    $self -> _update("normalize");
+    $self -> mode -> config -> set(smooth_suffix => 'xmu');
+  } elsif ($self->datatype eq "chi") {
+    $self -> mode -> config -> set(smooth_suffix => 'chi');
+  };
+  foreach (1 .. int($n)) {
+    my $string = $self->template("process", "smooth");
     $self->dispose($string);
-    if ($$args{which} eq 'xmu') {
-      $self->set({ update_norm => 1, });
-    } elsif ($$args{which} eq 'chi') {
-      $self->set({ update_fft => 1, });
-    };
   };
+  # flag for reprocessing
+  if ($self->datatype eq "xmu") {
+    $self->update_norm(1);
+  } elsif ($self->datatype eq "chi") {
+    $self->update_fft(1);
+  };
+};
+
+sub convolve {
+  my ($self, @args) = @_;
+  my $config = $self->mode->config;;
+  #croak("usage: \$self->convolve(width=>\$width, type=>\$type, which=>\$which)"), return
+  #  if (ref($args) !~ /HASH/);
+  my %args = @args;
+  $args{width} ||= 0;
+  ($args{width}  = 0) if ($args{width} < 0);
+  $args{type}  ||= $config->default("convolve", "type");
+  $args{type}    = lc($args{type});
+  ($args{type}   = $config->default("convolve", "type")) if ($args{type} !~ m{\A[gl]});
+  $args{which} ||= 'xmu';
+  $args{which}   = lc($args{which});
+  ($args{which}  = 'xmu')      if ($args{type} !~ m{\A[cx]});
+  if ($args{which} eq 'xmu') {
+    $self -> _update("normalize");
+  };
+  $config->set(conv_type  => $args{type},
+	       conv_width => $args{width},
+	       conv_which => $args{which},
+	      );
+  my $string = $self->template("process", "convolve");
+  $self->dispose($string);
+  if ($args{which} eq 'xmu') {
+    $self->update_norm(1);
+  } elsif ($args{which} eq 'chi') {
+    $self->update_fft(1);
+  };
+};
+
+
 
 =for LiteratureReference (noise)
   No one seems to ever have seen [a Banshee]; they are less a shape
@@ -301,40 +301,41 @@ Readonly my $EPSILON => 1e-5;
 
 =cut
 
-  sub noise {
-    my ($self, $args) = @_;
-    croak("usage: \$self->convolve({width=>\$width, which=>\$which})"), return
-      if (ref($args) !~ /HASH/);
-    $$args{noise} ||= 0;
-    ($$args{noise}  = 0) if ($$args{noise} < 0);
-    $$args{which} ||= 'xmu';
-    $$args{which}   = lc($$args{which});
-    ($$args{which}  = 'xmu') if ($$args{which} ne 'chi');
-    if ($$args{which} eq 'xmu') {
-      $self -> _update("normalize");
-      $$args{noise} *= $self->get("bkg_step");
-    } else {
-      $self -> _update("fft");
-    };
-    $self -> new_params({noise_level => $$args{noise},
-			 noise_which => $$args{which},
-			});
-    my $string = $self->template("process", "noise");
-    $self->dispose($string);
-    if ($$args{which} eq 'xmu') {
-      $self->set({ update_norm => 1, });
-    } elsif ($$args{which} eq 'chi') {
-      $self->set({ update_fft => 1, });
-    };
+sub noise {
+  my ($self, @args) = @_;
+  my $config = $self->mode->config;;
+  #croak("usage: \$self->convolve({width=>\$width, which=>\$which})"), return
+  #  if (ref($args) !~ /HASH/);
+  my %args = @args;
+  $args{noise} ||= 0;
+  ($args{noise}  = 0) if ($args{noise} < 0);
+  $args{which} ||= 'xmu';
+  $args{which}   = lc($args{which});
+  ($args{which}  = 'xmu') if ($args{which} ne 'chi');
+  if ($args{which} eq 'xmu') {
+    $self -> _update("normalize");
+    $args{noise} *= $self->bkg_step;
+  } else {
+    $self -> _update("fft");
   };
-
-
-  sub interpolate {
-    my ($self, @data) = @_;
-
+  $config -> set(noise_level => $args{noise},
+		 noise_which => $args{which},
+		);
+  my $string = $self->template("process", "noise");
+  $self->dispose($string);
+  if ($args{which} eq 'xmu') {
+    $self->update_norm(1);
+  } elsif ($args{which} eq 'chi') {
+    $self->update_fft(1);
   };
+};
+
+
+sub interpolate {
+  my ($self, @data) = @_;
 
 };
+
 
 1;
 
@@ -345,7 +346,7 @@ Ifeffit::Demeter::Data::Process - Processing XAS data
 
 =head1 VERSION
 
-This documentation refers to Ifeffit::Demeter version 0.1.
+This documentation refers to Ifeffit::Demeter version 0.2.
 
 =head1 DESCRIPTION
 
@@ -369,7 +370,7 @@ parameters that can be passed to the method via an anonymous hash.  It
 returns the reference to the new object and creates an appropriate set
 of Ifeffit arrays.  The new object is a clone of the original object.
 
-  $rebinned_group = $data -> rebin({pre=>-35, xanes=>0.3});
+  $rebinned_group = $data -> rebin(pre=>-35, xanes=>0.3);
   $rebinned_group -> plot('E');
 
 The parameter hash can contain zero or more of these parameters:
@@ -478,20 +479,20 @@ The type is either "Gaussian" or "Lorentzian".  The type is either
 "xmu" or "chi" -- that is convolute mu(E) or chi(k) data.
 
   $copy = $data -> clone;
-  $copy -> convolve({width=>2, type=>'gaussian', which=>'xmu'});
+  $copy -> convolve(width=>2, type=>'gaussian', which=>'xmu');
 
 =item C<noise>
 
 Add noise to a mu(E) or chi(k) spectrum.
 
   $copy = $data -> clone;
-  $copy -> noise({noise=>0.02, which=>'xmu'});
+  $copy -> noise(noise=>0.02, which=>'xmu');
 
 The amount of noise is intepretted differently for mu(E) data as for
 chi(k).  For chi(k) data, the supplied noise used as the RMS value of
 the noise to be applied to the un-weighted chi(k) data.  Consequently,
-you probably want to use a small value -- something on the order of
-0.001.
+you probably want to use a small value -- probably something on the
+order of 0.001.
 
 For mu(E) data, the noise is interpretted as a fraction of the edge
 step.  Thus the noise level for a given value scales with the size of
@@ -539,7 +540,7 @@ L<http://cars9.uchicago.edu/~ravel/software/>
 Copyright (c) 2006-2008 Bruce Ravel (bravel AT bnl DOT gov). All rights reserved.
 
 This module is free software; you can redistribute it and/or
-modify it under the same terms as Perl itself. See L<perlartistic>.
+modify it under the same terms as Perl itself. See L<perlgpl>.
 
 This program is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of

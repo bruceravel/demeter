@@ -15,157 +15,151 @@ package Ifeffit::Demeter::Fit::Happiness;
 
 =cut
 
-use strict;
-use warnings;
+use Moose::Role;
+
 use Carp;
-use Class::Std;
-use Class::Std::Utils;
 use Fatal qw(open close);
 
-{
+sub get_happiness {
+  my ($self)  = @_;
+  my $cheer   = 100;
+  my $summary = q{};
 
-  sub happiness {
-    my ($self)  = @_;
-    my $cheer   = 100;
-    my $summary = q{};
+  ## R-factor
+  my ($c, $s) = $self->_penalize_rfactor;
+  $cheer     -= $c;
+  $summary   .= $s;
 
-    ## R-factor
-    my ($c, $s) = $self->_penalize_rfactor;
-    $cheer     -= $c;
-    $summary   .= $s;
+  ## path parameter values
+  ($c, $s)    = $self->_penalize_pathparams;
+  $cheer     -= $c;
+  $summary   .= $s;
 
-    ## path parameter values
-    ($c, $s)    = $self->_penalize_pathparams;
-    $cheer     -= $c;
-    $summary   .= $s;
+  ## path parameter values
+  ($c, $s)    = $self->_penalize_restraints;
+  $cheer     -= $c;
+  $summary   .= $s;
 
-    ## path parameter values
-    ($c, $s)    = $self->_penalize_restraints;
-    $cheer     -= $c;
-    $summary   .= $s;
+  ## path parameter values
+  ($c, $s)    = $self->_penalize_nidp;
+  $cheer     -= $c;
+  $summary   .= $s;
 
-    ## path parameter values
-    ($c, $s)    = $self->_penalize_nidp;
-    $cheer     -= $c;
-    $summary   .= $s;
+  $cheer = 0 if ($cheer < 0);
+  return wantarray ? ($cheer, $summary) : $cheer;
+};
 
-    $cheer = 0 if ($cheer < 0);
-    return wantarray ? ($cheer, $summary) : $cheer;
+sub color {
+  my ($self, $cheer) = @_;
+  $cheer ||= $self->happiness;
+
+  my @bad  = $self->_slice_rgb( $self->co->default("happiness", "bad_color"    ) );
+  my @ok   = $self->_slice_rgb( $self->co->default("happiness", "average_color") );
+  my @good = $self->_slice_rgb( $self->co->default("happiness", "good_color"   ) );
+  my (@bottom, @top, $fraction);
+
+  my $min = $self->co->default("happiness", "minimum");
+  my $scaled = ($cheer < $min) ? 0 : ($cheer-$min) / (100-$min);
+  if ($scaled < 0.5) {
+    $fraction = $scaled / 0.5;
+    @bottom   = @bad;
+    @top      = @ok;
+  } else {
+    $fraction = ($scaled-0.5) / 0.5;
+    @bottom   = @ok;
+    @top      = @good;
   };
 
-  sub color {
-    my ($self) = @_;
-    my $cheer = $self->statistic("happiness");
+  my @answer = map { $bottom[$_] * (1-$fraction) + $top[$_] * $fraction } (0 .. 2);
+  return sprintf("#%X%X%X", @answer);
+};
 
-    my @bad  = $self->_slice_rgb( $self->config->default("happiness", "bad_color"    ) );
-    my @ok   = $self->_slice_rgb( $self->config->default("happiness", "average_color") );
-    my @good = $self->_slice_rgb( $self->config->default("happiness", "good_color"   ) );
-    my (@bottom, @top, $fraction);
+sub _slice_rgb {
+  my ($self, $string) = @_;
+  ## what if color is an rgb.txt named color?
+  ## use Color::Rgb and provide an rgb.txt file, perhaps in share/
+  $string =~ s{^\#}{};
+  my $r = substr($string, 0, 2);
+  my $g = substr($string, 2, 2);
+  my $b = substr($string, 4, 2);
+  return (eval "0x$r", eval "0x$g", eval "0x$b");
+};
 
-    my $min = $self->config->default("happiness", "minimum");
-    my $scaled = ($cheer < $min) ? 0 : ($cheer-$min) / (100-$min);
-    if ($scaled < 0.5) {
-      $fraction = $scaled / 0.5;
-      @bottom   = @bad;
-      @top      = @ok;
-    } else {
-      $fraction = ($scaled-0.5) / 0.5;
-      @bottom   = @ok;
-      @top      = @good;
-    };
+sub _penalize_rfactor {
+  my ($self) = @_;
+  my ($low, $high, $scale) = (
+			      $self->co->default("happiness", "rfactor_low"),
+			      $self->co->default("happiness", "rfactor_high"),
+			      $self->co->default("happiness", "rfactor_scale")
+			     );
+  my $maximum = $scale * ($high - $low);
 
-    my @answer = map { $bottom[$_] * (1-$fraction) + $top[$_] * $fraction } (0 .. 2);
-    return sprintf("#%X%X%X", @answer);
-  };
+  my $rfactor = $self->r_factor || 0;
+  return (0, q{}) if ($rfactor < $low);
+  my $penalty = ($rfactor-$low) * $scale;
+  $penalty = ($rfactor > $high) ? $maximum : $penalty;
+  my $summary = sprintf("An R-factor of %.5f gives a penalty of %.5f.\n",
+			$rfactor, $penalty);
+  return ($penalty, $summary);
+};
 
-  sub _slice_rgb :PRIVATE {
-    my ($self, $string) = @_;
-    ## what if color is an rgb.txt named color?
-    ## use Color::Rgb and provide an rgb.txt file, perhaps in share/
-    $string =~ s{^\#}{};
-    my $r = substr($string, 0, 2);
-    my $g = substr($string, 2, 2);
-    my $b = substr($string, 4, 2);
-    return (eval "0x$r", eval "0x$g", eval "0x$b");
-  };
+sub _penalize_pathparams {
+  my ($self) = @_;
+  my $scale  = $self->co->default("happiness", "pathparams_scale");
 
-  sub _penalize_rfactor :PRIVATE {
-    my ($self) = @_;
-    my ($low, $high, $scale) = (
-				$self->config->default("happiness", "rfactor_low"),
-				$self->config->default("happiness", "rfactor_high"),
-				$self->config->default("happiness", "rfactor_scale")
-			       );
-    my $maximum = $scale * ($high - $low);
-
-    my $rfactor = $self->statistic("r_factor") || 0;
-    return (0, q{}) if ($rfactor < $low);
-    my $penalty = ($rfactor-$low) * $scale;
-    $penalty = ($rfactor > $high) ? $maximum : $penalty;
-    my $summary = sprintf("An R-factor of %.5f gives a penalty of %.5f.\n",
-			  $rfactor, $penalty);
-    return ($penalty, $summary);
-  };
-
-  sub _penalize_pathparams :PRIVATE {
-    my ($self) = @_;
-    my $scale  = $self->config->default("happiness", "pathparams_scale");
-
-    my @paths   = @{ $self->paths };
-    my @params  = qw(e0 s02 delr sigma2); # third fourth dphase
-    my $count   = 0;
-    my $summary = q{};
-    foreach my $p (@paths) {
-      foreach my $pa (@params) {
-	my ($isok, $explanation) = $p->is_resonable($pa);
-	if (not $isok) {
-	  $summary .= "Penalty of $scale : " . $explanation . $/;
-	  ++$count;
-	};
+  my @paths   = @{ $self->paths };
+  my @params  = qw(e0 s02 delr sigma2); # third fourth dphase
+  my $count   = 0;
+  my $summary = q{};
+  foreach my $p (@paths) {
+    foreach my $pa (@params) {
+      my ($isok, $explanation) = $p->is_resonable($pa);
+      if (not $isok) {
+	$summary .= "Penalty of $scale : " . $explanation . $/;
+	++$count;
       };
     };
-    $count *= $scale;
-    return ($count, $summary);
   };
+  $count *= $scale;
+  return ($count, $summary);
+};
 
-  sub _penalize_restraints :PRIVATE {
-    my ($self) = @_;
-    my $scale  = $self->config->default("happiness", "restraints_scale");
+sub _penalize_restraints {
+  my ($self) = @_;
+  my $scale  = $self->co->default("happiness", "restraints_scale");
 
-    my @gds = @{ $self->gds };
-    my $chisqr  = $self->statistic("chi_square");
-    my $count   = 0;
-    my $summary = q{};
-    foreach my $g (@gds) {
-      next if ($g->type ne "restrain");
-      my $this = $g->bestfit;
-      $count += $this/$chisqr;
-      next if ($this == 0);
-      $summary .= sprintf("The restraint \"%s\" evaluated to %.3f for a penalty of %.3f.\n",
-			  $g->name, $g->bestfit, $scale*$this/$chisqr);
-    };
-    my $total = $scale * $count;
-    return ($total, $summary);
+  my @gds = @{ $self->gds };
+  my $chisqr  = $self->chi_square;
+  my $count   = 0;
+  my $summary = q{};
+  foreach my $g (@gds) {
+    next if ($g->gds ne "restrain");
+    my $this = $g->bestfit;
+    $count += $this/$chisqr;
+    next if ($this == 0);
+    $summary .= sprintf("The restraint \"%s\" evaluated to %.3f for a penalty of %.3f.\n",
+			$g->name, $g->bestfit, $scale*$this/$chisqr);
   };
+  my $total = $scale * $count;
+  return ($total, $summary);
+};
 
-  sub _penalize_nidp :PRIVATE {
-    my ($self) = @_;
-    my ($cutoff, $scale) = (
-			    $self->config->default("happiness", "nidp_cutoff"),
-			    $self->config->default("happiness", "nidp_scale"),
-			   );
-    my $nidp  = $self->statistic("n_idp");
-    my $nvar  = $self->statistic("n_varys");
-    my $diff  = $nidp-$nvar;
-    my $limit = (1 - $cutoff)*$nidp;
-    return (0, q{}) if ($diff > $limit);
-    my $penalty = ($limit-$diff) / $limit;
-    $penalty *= $scale;
-    my $summary = sprintf("Used %d of %.3f independent points for a penalty of %.3f\n",
-			  $nvar, $nidp, $penalty);
-    return ($penalty, $summary);
-  };
-
+sub _penalize_nidp {
+  my ($self) = @_;
+  my ($cutoff, $scale) = (
+			  $self->co->default("happiness", "nidp_cutoff"),
+			  $self->co->default("happiness", "nidp_scale"),
+			 );
+  my $nidp  = $self->n_idp;
+  my $nvar  = $self->n_varys;
+  my $diff  = $nidp-$nvar;
+  my $limit = (1 - $cutoff)*$nidp;
+  return (0, q{}) if ($diff > $limit);
+  my $penalty = ($limit-$diff) / $limit;
+  $penalty *= $scale;
+  my $summary = sprintf("Used %d of %.3f independent points for a penalty of %.3f\n",
+			$nvar, $nidp, $penalty);
+  return ($penalty, $summary);
 };
 
 1;
@@ -177,7 +171,7 @@ Ifeffit::Demeter::Fit::Happiness - Semantic evaluation of an EXAFS fit
 
 =head1 VERSION
 
-This documentation refers to Ifeffit::Demeter version 0.1.
+This documentation refers to Ifeffit::Demeter version 0.2.
 
 =head1 SYNOPSIS
 
@@ -242,16 +236,16 @@ It should have a small R-factor.
 
 =item *
 
-Th number of variables should be considerably less than the number of
+The number of variables should be considerably less than the number of
 independent points.
 
 =item *
 
-The S02 and sigma^2 path parameters should not be negative.
+The S02 and sigma2 path parameters should not be negative.
 
 =item
 
-The e0, deltaR and sigma^2 path parameters should not be too big.
+The e0, deltaR and sigma2 path parameters should not be too big.
 
 =back
 
@@ -282,14 +276,14 @@ an unhappy fit.
 
 The idea for a semantic parameter of this sort came from a radio piece
 (I think it was Eight Forty-Eight on Chicago Public Radio) I heard on
-a device called "The Ambient Orb".  Here is the URL:
-L<http://www.ambientdevices.com/cat/orb/orborder.html>.  The idea of
+a device called L<The Ambient
+Orb|http://www.ambientdevices.com/cat/orb/orborder.html>.  The idea of
 this device is that it snarfs stock data from the internet and glows
 green when the market is up and red when the market is down.  This
 provides a semantic, ambient indication of the state of one's stock
 portfolio.  The part that interested me when I first heard about this
-is that users of the ord tend to be less anxious about their
-portfolio.  Rather than needing to continuously check etrade.com, one
+is that users of the ord tend to be less anxious about their stock
+portfolios.  Rather than needing to continuously check etrade.com, one
 can glance a splash of color out of the corner of the eye.  I like the
 thought of having a visual indicator of how well a fit is working out
 while in the middle of a lengthy analysis session.
@@ -471,7 +465,7 @@ L<http://cars9.uchicago.edu/~ravel/software/>
 Copyright (c) 2006-2008 Bruce Ravel (bravel AT bnl DOT gov). All rights reserved.
 
 This module is free software; you can redistribute it and/or
-modify it under the same terms as Perl itself. See L<perlartistic>.
+modify it under the same terms as Perl itself. See L<perlgpl>.
 
 This program is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of

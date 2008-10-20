@@ -1,23 +1,24 @@
 { # -*- ifm -*-
   # template for overplotting in k
-  #   {$D} returns the ifeffit group name
-  #   {$D->get("parameter")} returns the value of that parameter
-  #   {$P->get("parameter")} returns the value of a Plot parameter
+  #   {$D->group} returns the ifeffit group name
+  #   {$D->parameter} returns the value of that parameter
+  #   {$P->parameter} returns the value of a Plot parameter
 }
 {
+  $this = $PT || $D;
   $file = $P->tempfile;
-  $D->points({file    => $file,
-              space   => 'k', 
-	      suffix  => 'chi',
-	      scale   => $D->get("plot_multiplier"),
-	      yoffset => $D->get("y_offset"),
-	      weight  => $P->get("kweight"),
-  	      part    => $C->get("plot_part"),
-	     });
-  $thiskey = $C->get("plot_part") || $P->get("key");
-  if (ref($thiskey) =~ m{Path}) { $thiskey = $thiskey->label };
+  $this->points(file    => $file,
+             space   => 'k', 
+	     suffix  => 'chi',
+	     scale   => $D->plot_multiplier,
+	     yoffset => $D->y_offset,
+	     weight  => $P->kweight,
+  	     part    => $C->get('plot_part'),
+	    );
+  $thiskey = $C->get('plot_part') || $P->key;
+  if (ref($PT) =~ m{Path}) { $thiskey = $PT->name || 'Path '.$PT->Index };
   q{}
 }
-# ifeffit group = {$D}
-replot '{$file}' using 1:2 with {$C->default("gnuplot", "datastyle")} ls {$P->get('increment')+1} title "{$thiskey}"
+# ifeffit group = {$D->group}
+replot '{$file}' using 1:2 with {$C->default("gnuplot", "datastyle")} ls {$P->increm+1} title "{$thiskey}"
 

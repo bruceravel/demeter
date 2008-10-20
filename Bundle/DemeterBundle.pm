@@ -20,39 +20,39 @@ or, as one way of handling problems,
   perl -MCPAN -e 'force install Bundle::DemeterBundle'
 
 Answer yes to any question posed by any package.  The YAML package
-will certanly ask several, as will Tree::Simple.
+will certainly ask several, as will Tree::Simple.
 
 =head1 CONTENTS
-
-Digest::SHA
 
 version
 
 Module::Build
 
-aliased
+Moose
+
+MooseX::AttributeHelpers
+
+MooseX::Clone
+
+MooseX::Singleton
+
+MooseX::Types
 
 Archive::Zip
 
 Chemistry::Elements
 
-Class::Std
-
-Class::Std::Utils
-
-Compress::Zlib
-
-Compress::Raw::Zlib
-
 Config::IniFiles
 
-Heap
-
-Want
+Digest::SHA
 
 Graphics::GnuplotIF
 
+Heap
+
 IO::Prompt
+
+IO:Scalar
 
 List::MoreUtils
 
@@ -64,17 +64,23 @@ Math::Round
 
 Math::Spline
 
-Module::Build
-
 Readonly
 
 Regexp::Common
 
 Regexp::Optimizer
 
+Scaler::Util
+
 Smart::Comments
 
+String::Random
+
 Term::ANSIColor
+
+Term::Twiddle
+
+Test::More
 
 Text::Template
 
@@ -82,9 +88,26 @@ Text::Wrap
 
 Tree::Simple
 
+Want
+
 YAML
 
-Term::Twiddle
+
+=head1 GUI
+
+I am not yet ready to make wxWidgets a dependence.
+
+I am using Wx 2.8.7 and WxPerl 0.86.  I cannot comment on whether
+earlier versions of either will work.
+
+=head1 DEPRECATED
+
+These are modules that were used in Demeter prior to revision 303.  At
+that revision I have merged the Moose branch back into the main trunk.
+I am now using Moose as my object model rather than the Calss:Std
+inside-out model.
+
+Class::Std, Class::Std::Utils, aliased
 
 =head1 DESCRIPTION
 
@@ -158,7 +181,7 @@ Bruce Ravel <bravel AT bnl DOT gov>
 Copyright (c) 2006-2007 Bruce Ravel (bravel AT bnl DOT gov). All rights reserved.
 
 This module is free software; you can redistribute it and/or
-modify it under the same terms as Perl itself. See L<perlartistic>.
+modify it under the same terms as Perl itself. See L<perlgpl>.
 
 This program is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of

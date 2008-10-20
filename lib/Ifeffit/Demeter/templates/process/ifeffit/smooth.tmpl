@@ -1,9 +1,9 @@
 { # -*- ifm -*-
   # deglich a single data point
-  #   {$D}  returns the ifeffit group name
-  #   {$D->get("parameter")} returns the value of that parameter
+  #   {$D->group}  returns the ifeffit group name
+  #   {$D->parameter} returns the value of that parameter
   #   {$C->get("parameter")} returns the generic parameter
 }
 ##|
-##| smoothing {$D}
-set {$D}.{$C->get("smooth_suffix")} = smooth({$D}.{$C->get("smooth_suffix")})
+##| smoothing {$D->group}
+set {$D->group}.{$C->get("smooth_suffix")} = smooth({$D->group}.{$C->get("smooth_suffix")})

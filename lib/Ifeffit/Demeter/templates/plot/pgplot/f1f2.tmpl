@@ -1,0 +1,17 @@
+{ # -*- ifm -*-
+  # template for plotting theoretical anomalous scattering
+  #   {$C} is the config object
+  #
+  # f1f2_emin  : beginning of plot range
+  # f1f2_emax  : end of plot range
+  # f1f2_egrid : spacing of plot grid
+  # f1f2_z     : element to be plotted
+  $z = Chemistry::Elements::get_Z($C->get("f1f2_z"));
+  $name = Chemistry::Elements::get_name($C->get("f1f2_z"));
+  $w = $C->get("f1f2_width") || -2;
+  $first = ($C->get("f1f2_newplot")) ? "newplot" : "plot";
+  q{}
+}
+{$first}(f1f2.energy, f1f2.f1, xmin={$C->get("f1f2_emin")}, xmax={$C->get("f1f2_emax")}, xlabel="Energy (eV)", ylabel="Scattering factor", key="{$name} f1")
+plot(f1f2.energy, f1f2.f2, key="{$name} f2")
+plot(title="Complex scattering factor")

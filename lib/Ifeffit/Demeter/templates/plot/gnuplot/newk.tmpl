@@ -1,31 +1,33 @@
 { # -*- ifm -*-
   # template for new plot in k
-  #   {$D} returns the ifeffit group name
-  #   {$D->get("parameter")} returns the value of that parameter
-  #   {$P->get("parameter")} returns the value of a Plot parameter
+  #   {$D->group} returns the ifeffit group name
+  #   {$D->parameter} returns the value of that parameter
+  #   {$P->parameter} returns the value of a Plot parameter
   #
   #  color fg bg grid gridcolor
 }
 {
-  $datastyle = ($P->get("datastyle") eq 'solid') ? 'lines' : 'points';
+  $datastyle = ($P->datastyle eq 'solid') ? 'lines' : 'points';
   $ylabel = $P->gnuplot_kylabel;
   $file = $P->tempfile;
-  $D->points({file    => $file,
-              space   => 'k', 
-	      suffix  => 'chi',
-	      scale   => $D->get("plot_multiplier"),
-	      yoffset => $D->get("y_offset"),
-	      weight  => $P->get("kweight"),
-	     });
+  $S->points(file    => $file,
+             space   => 'k', 
+	     suffix  => 'chi',
+	     scale   => $D->plot_multiplier,
+	     yoffset => $D->y_offset,
+	     weight  => $P->kweight,
+	    );
+  $thiskey = $C->get('plot_part') || $P->key;
+  if (ref($PT) =~ m{Path}) { $thiskey = $PT->name || 'Path '.$PT->Index };
   q{}
 }
 ## gnuplot script
 unset label
 
-set title "\{/*1.5 {$P->get("title")}\}"
+set title "\{/*1.5 {$P->title}\}"
 set xlabel "\{/*1.2 Wavenumber&\{aa\}(\{\305\}^\{-1\})\}"
 set ylabel "\{/*1.2 {$ylabel}\}"
-set xrange [ {$P->get("kmin")} : {$P->get("kmax")} ]
+set xrange [ {$P->kmin} : {$P->kmax} ]
 
-# ifeffit group = {$D}
-plot '{$file}' using 1:2 with {$datastyle} ls {$P->get('increment')+1} title "{$P->get("key")}"
+# ifeffit group = {$D->group}
+plot '{$file}' using 1:2 with {$datastyle} ls {$P->increm+1} title "{$thiskey}"

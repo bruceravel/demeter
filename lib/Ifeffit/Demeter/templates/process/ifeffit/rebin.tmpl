@@ -1,31 +1,31 @@
 { # -*- ifm -*-
   # template for rebinning data
-  #   {$D}  returns the ifeffit group name
-  #   {$DS} returns the data standard group name, which must be set
+  #   {$D->group}  returns the ifeffit group name
+  #   {$DS->group} returns the data standard group name, which must be set
   #         before using this template
-  #   {$D->get("parameter")} returns the value of that parameter
-  #   {$P->get("parameter")} returns the value of a Plot parameter
+  #   {$D->parameter} returns the value of that parameter
+  #   {$P->parameter} returns the value of a Plot parameter
 }
-##| rebinning {$DS} onto a standard EXAFS grid and saving as group {$D}
-set(re___bin_first  = floor({$DS}.energy) + {$DS->get("bkg_eshift")},
-    re___bin_last   = {$DS->get("bkg_e0")} + {$C->def("rebin","emin")},
+##| rebinning {$DS->group} onto a standard EXAFS grid and saving as group {$D->group}
+set(re___bin_first  = floor({$DS->group}.energy) + {$DS->bkg_eshift},
+    re___bin_last   = {$DS->bkg_e0} + {$C->def("rebin","emin")},
     re___bin.pre    = range(re___bin_first, re___bin_last, {$C->def("rebin","pre")}) )
 
 set(re___bin_first  = ceil(re___bin.pre) + {$C->def("rebin","xanes")},
-    re___bin_last   = {$DS->get("bkg_e0")} + {$C->def("rebin","emax")},
+    re___bin_last   = {$DS->bkg_e0} + {$C->def("rebin","emax")},
     re___bin.xanes  = range(re___bin_first, re___bin_last, {$C->def("rebin","xanes")}) )
 
-set(re___bin_first  = sqrt( etok * (ceil(re___bin.xanes) - {$DS->get("bkg_e0")}) ) + {$C->def("rebin","exafs")},
-    re___bin_last   = sqrt( etok * (ceil({$DS}.energy) - {$DS->get("bkg_e0")}) ),
+set(re___bin_first  = sqrt( etok * (ceil(re___bin.xanes) - {$DS->bkg_e0}) ) + {$C->def("rebin","exafs")},
+    re___bin_last   = sqrt( etok * (ceil({$DS->group}.energy) - {$DS->bkg_e0}) ),
     re___bin.exafs  = range(re___bin_first, re___bin_last, {$C->def("rebin","exafs")}),
-    re___bin.exafs  = re___bin.exafs**2 / etok + {$D->get("bkg_e0")} )
+    re___bin.exafs  = re___bin.exafs**2 / etok + {$D->bkg_e0} )
 
-set({$D}.energy  = join(re___bin.pre, re___bin.xanes),
-    {$D}.energy  = join({$D}.energy, re___bin.exafs),
-    re___bin.eee = {$DS}.energy + {$DS->get("bkg_eshift")},
-    {$D}.xmu     = rebin(re___bin.eee, {$DS}.xmu, {$D}.energy) )
-{ if ({$DS->get("is_col")}) {
-     "set $D.i0      = rebin(re___bin.eee, $DS.i0, {$D}.energy)\n"
+set({$D->group}.energy  = join(re___bin.pre, re___bin.xanes),
+    {$D->group}.energy  = join({$D->group}.energy, re___bin.exafs),
+    re___bin.eee = {$DS->group}.energy + {$DS->bkg_eshift},
+    {$D->group}.xmu     = rebin(re___bin.eee, {$DS->group}.xmu, {$D->group}.energy) )
+{ if ({$DS->datatype eq "col"}) {
+     "set $D->group.i0      = rebin(re___bin.eee, $DS->group.i0, {$D->group}.energy)\n"
   }
 }
 erase @group re___bin

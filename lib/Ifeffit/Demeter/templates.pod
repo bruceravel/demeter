@@ -4,7 +4,7 @@ An overview of Demeter's templating system.
 
 =head1 VERSION
 
-This documentation refers to Ifeffit::Demeter version 0.1.
+This documentation refers to Ifeffit::Demeter version 0.2.
 
 =head1 SYNOPSIS
 
@@ -14,17 +14,18 @@ This documentation refers to Ifeffit::Demeter version 0.1.
 =head1 DESCRIPTION
 
 Demeter uses L<Text::Template> to construct all text destined for
-Ifeffit as well as for atoms and feff input files.  The use of
-templating system add a bit of complexity to Demeter in the sense that
-the actual content of Ifeffit commands (or input files) us generated
-quite far away from the location in the code where that text is used.
-However, the use of a templating system adds a lot to Demeter.  Output
-can be highly customized or directed to a different target altogether.
-For example, it is already possible in version 0.1 to generate content
-for a F<feffit.inp> file rather than for an Ifeffit script.  In the
-future, templates will make it easy for Demeter to target multiple
-plotting backends, write out functional Demeter scripts, or upgrade to
-Ifeffit 2.0 (whenever that becomes available).
+Ifeffit as well as for atoms and feff input files and the plotting
+backends.  The use of templating system add a bit of complexity to
+Demeter in the sense that the actual content of Ifeffit commands (or
+input files) is generated quite far away from the location in the code
+where that text is used.  However, the use of a templating system adds
+a lot to Demeter.  Output can be highly customized or directed to a
+different target altogether.  For example, it is already possible in
+version 0.2 to generate content for a F<feffit.inp> file rather than
+for an Ifeffit script.  In the future, templates will make it easy for
+Demeter to target multiple plotting backends, write out functional
+Demeter scripts, or upgrade to Ifeffit 2.0 (whenever that becomes
+available).
 
 L<Text::Template> is wonderful -- it hits a real sweet spot between
 simple and powerful.  A template in this system is plain text with
@@ -52,7 +53,7 @@ system unaltered.
 
 The way that this template gets used is like so:
 
-  $data -> set_mode({template_process => "iff_columns"});
+  $data -> set_mode(template_process => "iff_columns");
   $string = $data -> template("process", "fft");
   $data -> dispose($string);
 
@@ -166,7 +167,7 @@ numbers.  The (currently) five template groups are:
 =item I<analysis>
 
 These templates are used for analysis chores that do not involve
-Feff. Thuings such as linear combination fitting and difference
+Feff. Things such as linear combination fitting and difference
 spectra go into this template group.
 
 =item I<atoms>
@@ -208,7 +209,7 @@ as L<explained here|Ifeffit::Demeter::Dispose/OTHER_USES_OF_set_mode>.
 
 =item I<plot>
 
-In Demeter version 0.1 there is only a "pgplot" template set.  In the
+In Demeter version 0.2 there is only a "pgplot" template set.  In the
 future new sets will be written for different plotting backends.  The
 plot template set is chosen by setting the C<template_plot> mode, as
 L<explained here|Ifeffit::Demeter::Dispose/OTHER_USES_OF_set_mode>.
@@ -258,7 +259,7 @@ New template sets:
 
 =item *
 
-gnuplot plotting backend
+finish up gnuplot plotting backend
 
 =item *
 
@@ -286,7 +287,7 @@ http://cars9.uchicago.edu/~ravel/software/
 Copyright (c) 2006-2008 Bruce Ravel (bravel AT bnl DOT gov). All rights reserved.
 
 This module is free software; you can redistribute it and/or
-modify it under the same terms as Perl itself. See L<perlartistic>.
+modify it under the same terms as Perl itself. See L<perlgpl>.
 
 This program is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of

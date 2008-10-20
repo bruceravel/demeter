@@ -1,10 +1,10 @@
 { # -*- ifm -*-
   # template for overplotting window function
-  #   {$D} returns the ifeffit group name
-  #   {$D->get("parameter")} returns the value of that parameter
-  #   {$P->get("parameter")} returns the value of a Plot parameter
+  #   {$D->group} returns the ifeffit group name
+  #   {$D->parameter} returns the value of that parameter
+  #   {$P->parameter} returns the value of a Plot parameter
   $suffix  = ($C->get("window_space") eq 'r') ? 'rwin' : 'win';
   q{}
 }
-plot({$D}.{$C->get("window_space")}, "{$C->get("window_size")}*{$D}.{$suffix}+{$D->get("y_offset")}",
-     style={$P->get("datastyle")}, color={$P->get("color")}, key="window")
+plot({$D->group}.{$C->get("window_space")}, "{$C->get("window_size")}*{$D->group}.{$suffix}+{$D->y_offset}",
+     style={$P->datastyle}, color={$P->color}, key="window")

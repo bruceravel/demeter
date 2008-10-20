@@ -1,0 +1,105 @@
+#!/usr/bin/perl -I../lib
+
+## Test Path object functionality of Demeter under Moose
+
+=for Copyright
+ .
+ Copyright (c) 2008 Bruce Ravel (bravel AT bnl DOT gov).
+ All rights reserved.
+ .
+ This file is free software; you can redistribute it and/or
+ modify it under the same terms as Perl itself. See The Perl
+ Artistic License.
+ .
+ This program is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+
+=cut
+
+use Test::More tests => 22;
+
+use Ifeffit;
+use Ifeffit::Demeter;
+use List::MoreUtils qw(all);
+
+
+my $this = Ifeffit::Demeter::Path -> new;
+my $OBJ  = 'Path';
+
+ok( ref($this) =~ m{$OBJ},                              "made a $OBJ object");
+ok( $this->plottable,                                   "$OBJ object is plottable");
+ok( $this->group =~ m{\A\w{5}\z},                       "$OBJ object has a proper group name");
+$this -> name('this');
+ok( $this->name eq 'this',                              "$OBJ object has a settable label");
+ok( $this->data,                                        "$OBJ object has an associated Data object");
+ok( ref($this->mode) =~ 'Mode',                         "$OBJ object can find the Mode object");
+ok( ref($this->mode->config) =~ 'Config',               "$OBJ object can find the Config object");
+ok( ref($this->mode->plot) =~ 'Plot',                   "$OBJ object can find the Plot object");
+ok( ($this->mode->template_plot     eq 'pgplot'  and
+     $this->mode->template_feff     eq 'feff6'   and
+     $this->mode->template_process  eq 'ifeffit' and
+     $this->mode->template_fit      eq 'ifeffit' and
+     $this->mode->template_analysis eq 'ifeffit'),
+                                                        "$OBJ object can find template sets");
+
+$this -> folder('./');
+$this -> file('feff0001.dat');
+ok( (($this->degen == 12)     and
+     ($this->nleg  == 2)      and
+     ($this->zcwif == 100)    and
+     (abs($this->reff - 2.5527)) < 0.0001),             "parse_nnnn works");
+
+$this->update_path(0);
+$this->update_fft(0);
+$this->update_bft(0);
+$this->update_path(1);
+ok( $this->update_bft,                                  "update flags work");
+
+$this->set(s02 => 1,
+	   e0 => 'enot',
+	   sigma2 => 'debye([cv], 500)',
+	  );
+$this -> rewrite_cv;
+ok( $this->sigma2 eq 'debye(57, 500)',                  "rewrite_cv works");
+
+$this -> delr_value(0.1);
+ok( abs($this->R - 2.6527) < 0.0001,                    "R works");
+
+$this->e0_value(5);
+my @list = $this->is_resonable('e0');
+ok( $list[0],                                           'e0 sanity test, ok');
+$this->e0_value(30);
+@list = $this->is_resonable('e0');
+ok(!$list[0],                                           'e0 sanity test, too large');
+
+$this->s02_value(0.8);
+my @list = $this->is_resonable('s02');
+ok( $list[0],                                           's02 sanity test, ok');
+$this->s02_value(-0.8);
+@list = $this->is_resonable('s02');
+ok(!$list[0],                                           's02 sanity test, negative');
+
+$this->sigma2_value(0.003);
+my @list = $this->is_resonable('sigma2');
+ok( $list[0],                                           'sigma2 sanity test, ok');
+$this->sigma2_value(-0.003);
+@list = $this->is_resonable('sigma2');
+ok(!$list[0],                                           'sigma2 sanity test, negative');
+$this->sigma2_value(0.3);
+@list = $this->is_resonable('sigma2');
+ok(!$list[0],                                           'sigma2 sanity test, too large');
+
+$this->delr_value(0.01);
+my @list = $this->is_resonable('delr');
+ok( $list[0],                                           'delr sanity test, ok');
+$this->delr_value(1);
+@list = $this->is_resonable('delr');
+ok(!$list[0],                                           'delr sanity test, too large');
+
+
+
+$this->Index(1);
+
+#$this->set_mode(screen=>1);
+#$this->plot('r');

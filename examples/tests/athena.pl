@@ -26,11 +26,9 @@ use strict;
 use Smart::Comments;
 
 use Ifeffit::Demeter;
-my $plot = Ifeffit::Demeter->get_mode("plot");
-$plot->set_mode({screen=>0, repscreen=>0});
 my $where = $ENV{DEMETER_TEST_DIR} || "..";
 
-my %common_to_all_data_sets = (bkg_rbkg    => 1.5,
+my @common_to_all_data_sets = (bkg_rbkg    => 1.5,
 			       bkg_spl1    => 0,    bkg_spl2    => 18,
 			                            bkg_nor2    => 1800,
 			       bkg_flatten => 1,
@@ -40,13 +38,15 @@ my %common_to_all_data_sets = (bkg_rbkg    => 1.5,
 			       denominator => '$3', # column 3 is It
 			       ln          => 1,    # these are transmission data
 			      );
-my @data = map {Ifeffit::Demeter::Data -> new({group => $_}) } qw(data0 data1 data2);
+my @data = map {Ifeffit::Demeter::Data -> new(group => $_) } qw(data0 data1 data2);
+my $plot = $data[0]->po;
+$plot->set_mode(screen=>0, repscreen=>0);
 
 ### Making Data groups
-foreach (@data) { $_ -> set(\%common_to_all_data_sets) };
-$data[0] -> set({file => "$where/data/fe.060", label => 'Fe 60K, scan 1', 'y_offset' => 1, });
-$data[1] -> set({file => "$where/data/fe.061", label => 'Fe 60K, scan 2', });
-$data[2] -> set({file => "$where/data/fe.062", label => 'Fe 60K, scan 3', });
+foreach (@data) { $_ -> set(@common_to_all_data_sets) };
+$data[0] -> set(file => "$where/data/fe.060", name => 'Fe 60K, scan 1', 'y_offset' => 1, );
+$data[1] -> set(file => "$where/data/fe.061", name => 'Fe 60K, scan 2', );
+$data[2] -> set(file => "$where/data/fe.062", name => 'Fe 60K, scan 3', );
 
 ### Plotting first group
 $data[0] -> plot('k');
@@ -55,6 +55,6 @@ $data[0] -> plot('k');
 $data[0]->write_athena("athena.prj", @data);
 
 ### Rereading athena.prj and replotting first group
-my $d = Ifeffit::Demeter::Data::Prj -> new({file=>"athena.prj"}) -> record(1);
+my $d = Ifeffit::Demeter::Data::Prj -> new(file=>"athena.prj") -> record(1);
 $d -> plot('k');
 1;

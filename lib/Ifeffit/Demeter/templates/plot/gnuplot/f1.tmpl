@@ -1,0 +1,22 @@
+{ # -*- ifm -*-
+  # template for plotting theoretical anomalous scattering
+  #   {$C} is the config object
+  #
+  # f1f2_emin  : beginning of plot range
+  # f1f2_emax  : end of plot range
+  # f1f2_egrid : spacing of plot grid
+  # f1f2_z     : element to be plotted
+  $z = Chemistry::Elements::get_Z($C->get("f1f2_z"));
+  $name = Chemistry::Elements::get_name($C->get("f1f2_z"));
+  $w = $C->get("f1f2_width") || -2;
+  $first = ($C->get("f1f2_newplot")) ? "plot" : "replot";
+  q{}
+}
+## gnuplot f1f2 plot script
+unset label
+set title  '\{/*1.5 Real part of the complex scattering factor\}'
+set xlabel '\{/*1.2 Energy (eV)\}'
+set ylabel '\{/*1.2 Complex scattering factor\}'
+set xrange [ 0.98*{$C->get("f1f2_emin")} : 1.04*{$C->get("f1f2_emax")} ]
+
+{$first} '{$C->get("f1f2_file")}' using 1:2 with lines ls 1 title '{$name} f1'

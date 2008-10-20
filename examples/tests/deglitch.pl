@@ -10,7 +10,7 @@
 
 =for Copyright
  .
- Copyright (c) 2006-2007 Bruce Ravel (bravel AT anl DOT gov).
+ Copyright (c) 2006-2008 Bruce Ravel (bravel AT bnl DOT gov).
  All rights reserved.
  .
  This file is free software; you can redistribute it and/or
@@ -28,25 +28,26 @@ use strict;
 use Smart::Comments;
 
 use Ifeffit::Demeter;
-my $plot = Ifeffit::Demeter->get_mode("plot");
-$plot->set_mode({screen=>0, repscreen=>0});
-$plot->set({emin=>-200, emax=>800, e_norm=>1, e_markers=>1, kweight=>2});
 my $where = $ENV{DEMETER_TEST_DIR} || "..";
 
 ## set up two data objects
-my %common_attributes = (energy      => '$1', # column 1 is energy
-			 numerator   => '$3', # column 3 is I0
-			 denominator => '$4', # column 4 is It
-			 ln          => 1,    # these are transmission data
-			);
+my @attributes = (energy      => '$1', # column 1 is energy
+		  numerator   => '$3', # column 3 is I0
+		  denominator => '$4', # column 4 is It
+		  ln          => 1,    # these are transmission data
+		 );
 ### Reading and plotting uhup.003
-my $d0 = Ifeffit::Demeter::Data -> new();
-$d0 -> set(\%common_attributes);
-$d0 -> set({file => "$where/data/uhup.003", label => 'HUP',});
+my $d0 = Ifeffit::Demeter::Data -> new(@attributes);
+$d0 -> set(file=>"$where/data/uhup.003", name=>'HUP');
+
+my $plot = $d0 -> po;
+$plot->set_mode(screen=>0, repscreen=>0);
+$plot->set(emin=>-200, emax=>800, e_norm=>1, e_markers=>1, kweight=>2);
+
 $d0 -> plot('e');
 
 ### Delitching points at 17385.686 and 17655.5 eV; replotting data
-$d0 -> set({label => "HUP, deglitched"});
+$d0 -> name("HUP, deglitched");
 $d0 -> deglitch(17385.686, 17655.5);
 $d0 -> plot('e');
 

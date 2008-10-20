@@ -1,21 +1,21 @@
 { # -*- ifm -*-
   # deglich a single data point
-  #   {$D}  returns the ifeffit group name
-  #   {$D->get("parameter")} returns the value of that parameter
+  #   {$D->group}  returns the ifeffit group name
+  #   {$D->parameter} returns the value of that parameter
   #   {$C->get("parameter")} returns the generic parameter
 }
 ##|
-##| deglitch {$C->get("degl_point")} from {$D}
-set(degl___n    = nofx({$D}.energy, {$C->get("degl_point")}),
+##| deglitch {$C->get("degl_point")} from {$D->group}
+set(degl___n    = nofx({$D->group}.energy, {$C->get("degl_point")}),
     degl___nm1  = degl___n - 1,
     degl___np1  = degl___n + 1,
-    degl___end  = npts({$D}.energy),
-    degl.x1     = slice({$D}.energy, 1,          degl___nm1),
-    degl.x2     = slice({$D}.energy, degl___np1, degl___end),
-    degl.y1     = slice({$D}.xmu,    1,          degl___nm1),
-    degl.y2     = slice({$D}.xmu,    degl___np1, degl___end),
-    {$D}.energy = join(degl.x1, degl.x2),
-    {$D}.xmu    = join(degl.y1, degl.y2) )
+    degl___end  = npts({$D->group}.energy),
+    degl.x1     = slice({$D->group}.energy, 1,          degl___nm1),
+    degl.x2     = slice({$D->group}.energy, degl___np1, degl___end),
+    degl.y1     = slice({$D->group}.xmu,    1,          degl___nm1),
+    degl.y2     = slice({$D->group}.xmu,    degl___np1, degl___end),
+    {$D->group}.energy = join(degl.x1, degl.x2),
+    {$D->group}.xmu    = join(degl.y1, degl.y2) )
 erase @group degl
 erase degl___n degl___nm1 degl___np1 degl___end
 ##|

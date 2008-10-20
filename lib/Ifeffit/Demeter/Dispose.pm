@@ -15,155 +15,155 @@ package Ifeffit::Demeter::Dispose;
 
 =cut
 
-
-use strict;
-use warnings;
-use Carp;
-use Class::Std;
-use Class::Std::Utils;
+use Moose::Role;
 use Fatal qw(open close);
 use Ifeffit;
 
-{
 
-  ##-----------------------------------------------------------------
-  ## dispose commands to ifeffit and elsewhere
-  sub dispose {
-    my ($self, $command, $plotting) = @_;
+##-----------------------------------------------------------------
+## dispose commands to ifeffit and elsewhere
+sub dispose {
+  my ($self, $command, $plotting) = @_;
 
-    my %how = Ifeffit::Demeter->get_mode;
-    Ifeffit::Demeter->set_mode({ echo=>q{} });
-    my $echo_buffer = q{};
+  $self->set_mode( echo=>q{} );
+  my $echo_buffer = q{};
 
-    $command  =~ s{\+ *-}{-}g; # suppress "+-" in command strings math expressions
-    $command  =~ s{- *-}{+}g;  # suppress "--" in command strings math expressions
-    ($command .= "\n") if ($command !~ /\n$/);
+  $command  =~ s{\+ *-}{-}g; # suppress "+-" in command strings math expressions
+  $command  =~ s{- *-}{+}g; # suppress "--" in command strings math expressions
+  ($command .= "\n") if ($command !~ /\n$/);
 
-    ## spit everything to the screen
-    if ($how{screen}) {
-      local $| = 1;
-      print STDOUT $command;
-    };
+  ## spit everything to the screen
+  if ($self->get_mode("screen")) {
+    local $| = 1;
+    print STDOUT $command;
+  };
 
-    ## dump everything to a file
-    if ($how{file}) {
-      local $| = 1;
-      open my $FH, ">".$how{file};
-      print $FH $command;
-      close $FH;
-    };
+  ## spit plot commands to the screen
+  if (($self->get_mode("plotscreen"))  and $plotting) {
+    local $| = 1;
+    print STDOUT $command;
+  };
 
-    ## dump plot commands to a file
-    if (($how{plotfile}) and $plotting) {
-      local $| = 1;
-      open my $FH, ">".$how{plotfile};
-      print $FH $command;
-      close $FH;
-    };
+  ## dump everything to a file
+  if ($self->get_mode("file")) {
+    local $| = 1;
+    open my $FH, ">".$self->get_mode("file");
+    print $FH $command;
+    close $FH;
+  };
 
-    ## concatinate to a scalar buffer
-    if (($how{buffer}) and (ref($how{buffer}) eq 'SCALAR')) {
-      ${ $how{buffer} } .=  $command;
-    };
+  ## dump plot commands to a file
+  if (($self->get_mode("plotfile")) and $plotting) {
+    local $| = 1;
+    open my $FH, ">".$self->get_mode("plotfile");
+    print $FH $command;
+    close $FH;
+  };
 
-    ## unknown buffer type
-    if (    ($how{buffer})
-	and (ref($how{buffer}) ne 'SCALAR')
-        and (ref($how{buffer}) ne 'ARRAY')  ) {
-      carp("Ifeffit::Demeter::Dispose: string mode value is not a scalar or array reference");
-    };
+  ## concatinate to a scalar buffer
+  if (($self->get_mode("buffer")) and (ref($self->get_mode("buffer")) eq 'SCALAR')) {
+    ${ $self->get_mode("buffer") } .=  $command;
+  };
 
-    if ($plotting and ($how{template_plot} eq 'gnuplot')) {
-      print $command;
-      $how{external_plot_object}->gnuplot_cmd($command);
-      $how{external_plot_object}->gnuplot_pause(-1);
-      my $gather = $self->po->get("lastplot");
-      $gather .= $command;
-      $self -> po -> set({lastplot=>$gather});
-      return 0;
-    };
+  ## unknown buffer type
+  if (    ($self->get_mode("buffer"))
+	  and (ref($self->get_mode("buffer")) ne 'SCALAR')
+	  and (ref($self->get_mode("buffer")) ne 'ARRAY')  ) {
+    carp("Ifeffit::Demeter::Dispose: string mode value is not a scalar or array reference");
+  };
 
-    ## don't bother reprocessing unless an output channel that
-    ## requires looping over every line
-    return 0 unless (
-		       ($how{buffer} and (ref($how{buffer}) eq 'ARRAY'))
-		     or $how{ifeffit}
-		     or $how{repscreen}
-		     or $how{repfile}
-		    );
-
-    my ($reprocessed, $eol) = (q{}, $/);
-    foreach my $thisline (split(/\n/, $command)) {
-
-      if (($how{buffer}) and (ref($how{buffer}) eq 'ARRAY')) {
-	push @{ $how{buffer} },  $thisline;
-      };
-
-      ## this next bit of insanity is an ifeffit optimization.  it is
-      ## considerably faster to have perl process multi-line commands
-      ## into long (up to 2048 characters) individual commands than to
-      ## use ifeffit and the swig wrapper. the point here is to
-      ## recognize parens-bound commands and concatinate them onto a
-      ## single line
-
-      ## want to not waste time on this if the output mode is for feffit!!
-      next if ($thisline =~ m{^\s*\#});
-      next if ($thisline =~ m{^\s*$});
-
-      $thisline =~ s{^\s+}{};
-      $thisline =~ s{\s+$}{};
-      $thisline =~ s{\s+=}{ =};
-      my $re = $self->regexp("commands", 1);
-      $eol = ($thisline =~ m{^$re\s*\(}) ? " " : $eol;
-      $eol = $/ if ($thisline =~ m{\)$});
-      $reprocessed .= $thisline . $eol;
-    };
-
-    ## send reprocessed command text to ifeffit
-    ifeffit($reprocessed) if $how{ifeffit};
-
-    ## send reprocessed command text to the screen
-    print STDOUT $reprocessed if $how{repscreen};
-
-    ## send reprocessed command text to a file
-    if ($how{repfile}) {
-      open my $FH, ">".$how{file};
-      print $FH $reprocessed;
-      close $FH;
-    };
-    Ifeffit::Demeter->set_mode({echo=>$echo_buffer});
-
+  if ($plotting and ($self->mode->template_plot eq 'gnuplot')) {
+    #print $command;
+    $self->mode->external_plot_object->gnuplot_cmd($command);
+    $self->mode->external_plot_object->gnuplot_pause(-1);
+    my $gather = $self->po->lastplot;
+    $gather .= $command;
+    $self -> po -> lastplot($gather);
     return 0;
   };
 
-  sub plot_dispose {
+  ## don't bother reprocessing unless an output channel that
+  ## requires looping over every line
+  return 0 unless (
+		   ($self->get_mode("buffer") and (ref($self->get_mode("buffer")) eq 'ARRAY'))
+		   or $self->get_mode("ifeffit")
+		   or $self->get_mode("repscreen")
+		   or $self->get_mode("repfile")
+		  );
 
+  my ($reprocessed, $eol) = (q{}, $/);
+  foreach my $thisline (split(/\n/, $command)) {
 
+    if (($self->get_mode("buffer")) and (ref($self->get_mode("buffer")) eq 'ARRAY')) {
+      push @{ $self->get_mode("buffer") },  $thisline;
+    };
+
+    ## this next bit of insanity is an ifeffit optimization.  it is
+    ## considerably faster to have perl process multi-line commands
+    ## into long (up to 2048 characters) individual commands than to
+    ## use ifeffit and the swig wrapper. the point here is to
+    ## recognize parens-bound commands and concatinate them onto a
+    ## single line
+
+    ## want to not waste time on this if the output mode is for feffit!!
+    next if ($thisline =~ m{^\s*\#});
+    next if ($thisline =~ m{^\s*$});
+
+    $thisline =~ s{^\s+}{};
+    $thisline =~ s{\s+$}{};
+    $thisline =~ s{\s+=}{ =};
+    my $re = $Ifeffit::Demeter::StrTypes::command_regexp;
+    $eol = ($thisline =~ m{^$re\s*\(}) ? " " : $eol;
+    $eol = $/ if ($thisline =~ m{\)$});
+    $reprocessed .= $thisline . $eol;
   };
 
+  ## send reprocessed command text to ifeffit
+  ifeffit($reprocessed) if $self->get_mode("ifeffit");
 
-  sub nl {
-    my ($self) = @_;
-    $self->dispose("\n");
+  ## send reprocessed command text to the screen
+  print STDOUT $reprocessed if $self->get_mode("repscreen");
+
+  ## send reprocessed command text to a file
+  if ($self->get_mode("repfile")) {
+    open my $FH, ">".$self->get_mode("file");
+    print $FH $reprocessed;
+    close $FH;
   };
+  $self->set_mode(echo=>$echo_buffer);
+
+  return 0;
+};
+
+sub plot_dispose {
 
 
-  sub Reset {
-    my ($self) = @_;
-    $self->dispose("reset");
-  };
+};
 
-  sub cursor {
-    my ($self) = @_;
-    $self->dispose("cursor(show, cross-hair)");
-    return(Ifeffit::get_scalar("cursor_x"), Ifeffit::get_scalar("cursor_y"));
-  };
 
-  sub screen_echo {
-    my ($self, $value) = @_;
-    $self->dispose("set \&screen_echo = $value");
-  };
+sub nl {
+  my ($self) = @_;
+  $self->dispose("\n");
+  return $self;
+};
 
+
+sub Reset {
+  my ($self) = @_;
+  $self->dispose("reset");
+  return $self;
+};
+
+sub cursor {
+  my ($self) = @_;
+  $self->dispose("cursor(show, cross-hair)");
+  return(Ifeffit::get_scalar("cursor_x"), Ifeffit::get_scalar("cursor_y"));
+};
+
+sub screen_echo {
+  my ($self, $value) = @_;
+  Ifeffit::ifeffit("set \&screen_echo = $value");
+  return $self;
 };
 
 1;
@@ -175,12 +175,12 @@ Ifeffit::Demeter::Dispose - Process Ifeffit and plotting command strings
 
 =head1 VERSION
 
-This documentation refers to Ifeffit::Demeter version 0.1.
+This documentation refers to Ifeffit::Demeter version 0.2.
 
 =head1 SYNOPSIS
 
-  Ifeffit::Demeter->set_mode({ifeffit=>1, buffer=>\@buffer, screen=>1});
   my $data_object = Ifeffit::Demeter::Data -> new();
+  $data_object -> set_mode(ifeffit=>1, buffer=>\@buffer, screen=>1);
   $data_object -> dispose($ifeffit_command);
 
 
@@ -204,12 +204,13 @@ efficiency, Demeter processes Ifeffit commands into a form that is
 harder for a human to read, but faster for Ifeffit to process.
 
 The main change made to Ifeffit command strings is to concatinate
-multi-line commands into a single line.  This significantly reduces
-the number of calls to the C<iff_exec> function in Ifeffit, which
-is one of the most time-consuming parts of the Demeter/Ifeffit stack.
-Given that Ifeffit allows command strings to be as much as 2048
-characters long, it is rare that an command generated by Demeter
-cannot be handled in this way.
+multi-line commands into a single line and to squeeze white space into
+a single space.  This significantly reduces the number of calls to the
+C<iff_exec> function in Ifeffit, which is one of the most
+time-consuming parts of the Demeter/Ifeffit stack.  Given that Ifeffit
+allows command strings to be as much as 2048 characters long, it is
+rare that an command generated by Demeter cannot be handled in this
+way.
 
 Also, the preprocessed text does not contain any lines that are only
 whitespace or are entirely commented out.
@@ -218,13 +219,13 @@ whitespace or are entirely commented out.
 
 =head2 C<dispose>
 
-This method dispatches command strings to various places.  Most
-methods in the Demeter system generate text.  The intent is that you
-accumulate text through successive method calls and the dispose of the
-text using this method.  The method takes two arguments, a scalar
-containing all the text that you have accumulates, and an optional
-argument that, when true, indicates that the commands are specifically
-plotting commands.
+This method dispatches command strings to various places.  Many
+methods in the Demeter system are command generators.  The intent is
+that to accumulate text through successive method calls and then
+dispose of the text using this method.  The method takes two
+arguments, a scalar containing all the text that you have accumulates,
+and an optional argument that, when true, indicates that the commands
+are specifically plotting commands.
 
 Demeter is very careful to segregate plotting commands from data
 processing commands and to dispose of them separately.  This allows
@@ -236,7 +237,7 @@ C<ifeffit> disposal channel enabled.
 
 Use the C<set_mode> class method to establish the disposal channels.
 
-   Ifeffit::Demeter->set_mode({ifeffit=>1, screen=>1, file=>0, buffer=>0});
+   Ifeffit::Demeter->set_mode(ifeffit=>1, screen=>1, file=>0, buffer=>0);
    $dataobject -> dispose($commands);
 
 There are several disposal channels:
@@ -264,17 +265,24 @@ an existing file, simply append C<E<gt>> to the beginning of the file
 name:
 
    # clobber foo and start a new file by that name
-   Ifeffit::Demeter->set_mode({file=>"foo"});
+   $dataobject -> set_mode(file=>"foo");
+   $dataobject -> dispose($commands);
+   #
+   # append to foo
+   $dataobject -> set_mode(file=>">foo");
    $dataobject -> dispose($commands);
 
-   # append to foo
-   Ifeffit::Demeter->set_mode({file=>">foo"});
-   $dataobject -> dispose($commands);
+=item plotscreen
+
+This behaves exactly like the C<screen> parameter, but applies only to
+commands disposed using the plotting flag.
 
 =item plotfile
 
 This behaves exactly like the C<file> parameter, but applies only to
-commands disposed using the plotting flag.
+commands disposed using the plotting flag.  This allows you to
+accumulate plotting commands into plotting scripts, which is handy for
+the gnuplot backend.
 
 =item buffer
 
@@ -286,7 +294,7 @@ If a scalar reference is used, the scalar is treated as a string and each
 command line is concatinated to the end of the string.
 
    $buffer = q{};
-   Ifeffit::Demeter->set_mode({buffer=>\$buffer});
+   $dataobject -> set_mode(buffer=>\$buffer);
    $dataobject -> dispose($commands);
    print $buffer;
 
@@ -294,9 +302,13 @@ If an array reference is used, each command line is pushed onto the end of the
 array.
 
    @buffer = ();
-   Ifeffit::Demeter->set_mode({buffer=>\@buffer});
+   $dataobject -> set_mode(buffer=>\@buffer);
    $dataobject -> dispose($commands);
    map {print $_} @buffer;
+
+An obvious improvement to this would be to allow the buffer attribute
+to be a reference to an arbitrary object which can be used in some
+domain-specific, user-defined manner.
 
 =item repscreen
 
@@ -345,7 +357,8 @@ C<&screen_echo>.  When set to 1, Ifeffit writes its feedback to STDOUT
 
 There are several other parameters that, like the ones that directly
 control the disposal of commands, have a pervasive impact on the
-operations of Demeter.  Also like the disposal parameters, these are
+operations of Demeter.  Many of these are the special variables in the
+templating subsystem.  Like the disposal parameters, these are
 accessed via the C<set_mode> and C<get_mode> methods.
 
 =over 4
@@ -358,29 +371,33 @@ I<What is this used for?>
 
 This is a reference to the active Plot object, which is the one used
 to format plots.  This is the object that should be modified to change
-how a plot is made.  See L<Ifeffit::Demeter::Plot>.
+how a plot is made.  See L<Ifeffit::Demeter::Plot>.  In a template,
+this is accessed by the C<$P> special variable.
 
-=item C<params>
+=item C<config>
 
-This is a reference to the active Config object, which is the one that
-stores a wide variety of configration parameters.  See
-L<Ifeffit::Demeter::Config>.
+This is a reference to the Config object, which stores a wide variety
+of configration parameters.  See L<Ifeffit::Demeter::Config>.  In a
+template, this is accessed by the C<$C> special variable.
 
 =item C<fit>
 
 This is a reference to the active Fit object, which is accessed when
 templates are evaluated to create commands for the fit.  See
-L<Ifeffit::Demeter::Fit>.
+L<Ifeffit::Demeter::Fit>.  In a template, this is accessed by the
+C<$F> special variable.
 
 =item C<standard>
 
 This is a reference to the Data object chosen as the standard for
-Athena-like methods.  This is used extensively by the templates.
+Athena-like methods.  This is used extensively by the templates.  In a
+template, this is accessed by the C<$DS> special variable.
 
 =item C<theory>
 
 This is a reference to the active Feff object, which is accessed when
-template for feff input files are evaluated.
+template for feff input files are evaluated.  In a template, this is
+accessed by the C<$T> special variable.
 
 =item C<template_process> [ifeffit]
 
@@ -439,9 +456,9 @@ will be dealt with should it ever come up.
 
 =item *
 
-The screen and repscreen disposal channels currently writes to
-STDOUT.  The user can direct STDOUT elsewhere.  It may be useful to
-have the option of specifying a filehandle for this channel.
+The screen, plotscreen, and repscreen disposal channels currently
+write to STDOUT.  The user can direct STDOUT elsewhere.  It may be
+useful to have the option of specifying a filehandle for this channel.
 
 =back
 
@@ -461,7 +478,7 @@ L<http://cars9.uchicago.edu/~ravel/software/>
 Copyright (c) 2006-2008 Bruce Ravel (bravel AT bnl DOT gov). All rights reserved.
 
 This module is free software; you can redistribute it and/or
-modify it under the same terms as Perl itself. See L<perlartistic>.
+modify it under the same terms as Perl itself. See L<perlgpl>.
 
 This program is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of

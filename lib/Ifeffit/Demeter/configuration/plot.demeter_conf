@@ -125,61 +125,61 @@ description
   grid to be drawn, unset the showgrid parameter or set gridcolor to
   the bg color.
 
-variable=c0
+variable=col0
 type=color
 default=blue
 description
   The color of the first line drawn in a plot.
 
-variable=c1
+variable=col1
 type=color
 default=red
 description
   The color of the second line drawn in a plot.
 
-variable=c2
+variable=col2
 type=color
 default=green4
 description
   The color of the third line drawn in a plot.
 
-variable=c3
+variable=col3
 type=color
 default=darkviolet
 description
   The color of the fourth line drawn in a plot.
 
-variable=c4
+variable=col4
 type=color
 default=darkorange
 description
   The color of the fifth line drawn in a plot.
 
-variable=c5
+variable=col5
 type=color
 default=brown
 description
   The color of the sixth line drawn in a plot.
 
-variable=c6
+variable=col6
 type=color
 default=deeppink
 description
   The color of the seventh line drawn in a plot.
 
-variable=c7
+variable=col7
 type=color
 default=gold
 description
   The color of the eighth line drawn in a plot.
 
-variable=c8
+variable=col8
 type=color
 default=cyan3
 description
   The color of the ninth line drawn in a plot.
 
-variable=c9
+variable=col9
 type=color
 default=yellowgreen
 description

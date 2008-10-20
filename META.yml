@@ -1,16 +1,15 @@
 ---
 name: Ifeffit-Demeter
-version: 0.1.0
+version: 0.2.0
 author:
   - 'Bruce Ravel <bravel AT bnl DOT gov>'
 abstract: An object oriented EXAFS data analysis system using Ifeffit
-license: perl
+license: gpl
 resources:
-  license: http://dev.perl.org/licenses/
+  license: http://www.opensource.org/licenses/gpl-license.php
 requires:
+  Archive::Zip: 0
   Chemistry::Elements: 0
-  Class::Std: 0
-  Class::Std::Utils: 0
   Digest::SHA: 0
   Heap: 0
   List::MoreUtils: 0
@@ -19,6 +18,11 @@ requires:
   Math::Round: 0
   Math::Spline: 0
   Module::Build: 0
+  Moose: 0
+  MooseX::AttributeHelpers: 0
+  MooseX::Clone: 0
+  MooseX::Singleton: 0
+  MooseX::Types: 0
   Readonly: 0
   Regexp::Common: 0
   Regexp::Optimizer: 0
@@ -27,70 +31,14 @@ requires:
   Tree::Simple: 0
   Want: 0
   YAML: 0
-  aliased: 0
   version: 0
 recommends:
+  Graphics::GnuplotIF: 0
   IO::Prompt: 0
   Smart::Comments: 0
   Term::ANSIColor: 0
   Term::ReadLine: 0
   Term::Twiddle: 0
-provides:
-  Ifeffit::Demeter:
-    file: lib/Ifeffit/Demeter.pm
-    version: 0.1.0
-  Ifeffit::Demeter::Atoms:
-    file: lib/Ifeffit/Demeter/Atoms.pm
-  Ifeffit::Demeter::Atoms::Absorption:
-    file: lib/Ifeffit/Demeter/Atoms/Absorption.pm
-  Ifeffit::Demeter::Config:
-    file: lib/Ifeffit/Demeter/Config.pm
-  Ifeffit::Demeter::Data:
-    file: lib/Ifeffit/Demeter/Data.pm
-  Ifeffit::Demeter::Data::Athena:
-    file: lib/Ifeffit/Demeter/Data/Athena.pm
-  Ifeffit::Demeter::Data::Defaults:
-    file: lib/Ifeffit/Demeter/Data/Defaults.pm
-  Ifeffit::Demeter::Data::E0:
-    file: lib/Ifeffit/Demeter/Data/E0.pm
-  Ifeffit::Demeter::Data::Mu:
-    file: lib/Ifeffit/Demeter/Data/Mu.pm
-  Ifeffit::Demeter::Data::Process:
-    file: lib/Ifeffit/Demeter/Data/Process.pm
-  Ifeffit::Demeter::Dispose:
-    file: lib/Ifeffit/Demeter/Dispose.pm
-  Ifeffit::Demeter::Feff:
-    file: lib/Ifeffit/Demeter/Feff.pm
-  Ifeffit::Demeter::Feff::Sanity:
-    file: lib/Ifeffit/Demeter/Feff/Sanity.pm
-  Ifeffit::Demeter::Fit:
-    file: lib/Ifeffit/Demeter/Fit.pm
-  Ifeffit::Demeter::Fit::Happiness:
-    file: lib/Ifeffit/Demeter/Fit/Happiness.pm
-  Ifeffit::Demeter::Fit::Sanity:
-    file: lib/Ifeffit/Demeter/Fit/Sanity.pm
-  Ifeffit::Demeter::GDS:
-    file: lib/Ifeffit/Demeter/GDS.pm
-  Ifeffit::Demeter::Path:
-    file: lib/Ifeffit/Demeter/Path.pm
-  Ifeffit::Demeter::Path::Sanity:
-    file: lib/Ifeffit/Demeter/Path/Sanity.pm
-  Ifeffit::Demeter::Plot:
-    file: lib/Ifeffit/Demeter/Plot.pm
-  Ifeffit::Demeter::Project:
-    file: lib/Ifeffit/Demeter/Project.pm
-  Ifeffit::Demeter::ScatteringPath:
-    file: lib/Ifeffit/Demeter/ScatteringPath.pm
-  Ifeffit::Demeter::Tools:
-    file: lib/Ifeffit/Demeter/Tools.pm
-  Ifeffit::Demeter::UI::Screen::Probe:
-    file: lib/Ifeffit/Demeter/UI/Screen/Probe.pm
-  Xray::Crystal:
-    file: lib/Xray/Crystal.pm
-  Xray::Crystal::Cell:
-    file: lib/Xray/Crystal/Cell.pm
-  Xray::Crystal::Site:
-    file: lib/Xray/Crystal/Site.pm
 generated_by: Module::Build version 0.2808
 meta-spec:
   url: http://module-build.sourceforge.net/META-spec-v1.2.html

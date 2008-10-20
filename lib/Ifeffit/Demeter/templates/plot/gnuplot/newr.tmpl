@@ -1,33 +1,36 @@
 { # -*- ifm -*-
   # template for new plot in R
-  #   {$D} returns the ifeffit group name
-  #   {$D->get("parameter")} returns the value of that parameter
-  #   {$P->get("parameter")} returns the value of a Plot parameter
+  #   {$D->group} returns the ifeffit group name
+  #   {$D->parameter} returns the value of that parameter
+  #   {$P->parameter} returns the value of a Plot parameter
   #
   #  color fg bg grid gridcolor
 }
 {
+  $this = $PT || $D;
   $ylabel = $P->gnuplot_rylabel;
   $file = $P->tempfile;
-  $D->points({file    => $file,
+  $this->points(file    => $file,
               space   => 'R', 
-	      suffix  => ($P->get('r_pl') eq 'm') ? 'chir_mag'
-	               : ($P->get('r_pl') eq 'r') ? 'chir_re'
-	               : ($P->get('r_pl') eq 'i') ? 'chir_im'
-	               : ($P->get('r_pl') eq 'p') ? 'chir_pha'
-		       :                            'chir_mag',
-	      scale   => $D->get("plot_multiplier"),
-	      yoffset => $D->get("y_offset")
-	     });
+	      suffix  => ($P->r_pl eq 'm') ? 'chir_mag'
+	               : ($P->r_pl eq 'r') ? 'chir_re'
+	               : ($P->r_pl eq 'i') ? 'chir_im'
+	               : ($P->r_pl eq 'p') ? 'chir_pha'
+		       :                     'chir_mag',
+	      scale   => $D->plot_multiplier,
+	      yoffset => $D->y_offset
+	     );
+  $thiskey = $C->get('plot_part') || $P->key;
+  if (ref($PT) =~ m{Path}) { $thiskey = $PT->name || 'Path '.$PT->Index };
   q{}
 }
 ## gnuplot script
 unset label
 
-set title "\{/*1.5 {$P->get("title")}\}"
+set title "\{/*1.5 {$P->title}\}"
 set xlabel "\{/*1.2 Radial distance&\{aa\}(\{\305\})\}"
 set ylabel "\{/*1.2 {$ylabel}\}"
-set xrange [ {$P->get("rmin")} : {$P->get("rmax")} ]
+set xrange [ {$P->rmin} : {$P->rmax} ]
 
-# ifeffit group = {$D}
-plot '{$file}' using 1:2 with {$C->default("gnuplot", "datastyle")} ls {$P->get('increment')+1} title "{$P->get("key")}"
+# ifeffit group = {$D->group}
+plot '{$file}' using 1:2 with {$C->default("gnuplot", "datastyle")} ls {$P->increm+1} title "{$thiskey}"

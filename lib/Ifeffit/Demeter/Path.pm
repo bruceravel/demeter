@@ -15,9 +15,14 @@ package Ifeffit::Demeter::Path;
 
 =cut
 
-use strict;
-use warnings;
-use Class::Std;
+use Moose;
+extends 'Ifeffit::Demeter';
+use Ifeffit::Demeter::StrTypes qw( Empty PathParam );
+use Ifeffit::Demeter::NumTypes qw( Natural PosInt );
+
+with 'Ifeffit::Demeter::Data::Arrays';
+with 'Ifeffit::Demeter::Path::Sanity';
+
 use Carp;
 use Fatal qw(open close);
 use File::Copy;
@@ -25,571 +30,467 @@ use File::Spec;
 use Regexp::List;
 use Regexp::Optimizer;
 use Ifeffit;
-use Ifeffit::Demeter::Data;
 use aliased 'Ifeffit::Demeter::Tools';
 
-{
-  use base qw( Ifeffit::Demeter
-               Ifeffit::Demeter::Path::Sanity
-               Ifeffit::Demeter::Dispose
-               Ifeffit::Demeter::Project
-             );
-  my %pp_trans = ('3rd'=>"third", '4th'=>"fourth", dphase=>"dphase",
-		  dr=>"delr", e0=>"e0", ei=>"ei", s02=>"s02", ss2=>"sigma2");
-  ## set default data parameter values
-  my %path_defaults = (
-		       group          => q{},
-		       ## path parameters, s02 thru dphase take an anon array of [mathexp, value]
-		       n	      => 0,	    # float
-		       s02	      => "1",       # mathexp, float
-		       s02_stored     => "1",
-		       s02_value      => 1,
-		       e0	      => q{},       # mathexp, float
-		       e0_stored      => 0,
-		       e0_value       => 0,
-		       delr	      => q{},       # mathexp, float
-		       delr_stored    => 0,
-		       delr_value     => 0,
-		       sigma2	      => q{},       # mathexp, float
-		       sigma2_stored  => 0,
-		       sigma2_value   => 0,
-		       ei	      => q{},       # mathexp, float
-		       ei_stored      => 0,
-		       ei_value       => 0,
-		       third	      => q{},       # mathexp, float
-		       third_stored   => 0,
-		       third_value    => 0,
-		       fourth	      => q{},       # mathexp, float
-		       fourth_stored  => 0,
-		       fourth_value   => 0,
-		       dphase	      => q{},       # mathexp, float
-		       dphase_stored  => 0,
-		       dphase_value   => 0,
-		       label	      => q{},
-		       id	      => q{},
-		       k_array	      => q{},	    # mathexp
-		       amp_array      => q{},	    # mathexp
-		       phase_array    => q{},	    # mathexp
-		       ## general parameters
-		       data	      => q{},	    # Data object
-		       parent	      => q{},	    # Feff object
-		       sp             => q{},       # ScatteringPath object
-		       sp_was         => q{},       # SP group name from a project
-		       folder         => q{},
-		       file	      => q{},
-		       index          => 0,	    # integer   pseudo-Read Only
-		       include	      => 1,	    # boolean
-		       is_col	      => 0,	    # boolean   Read Only
-		       is_ss	      => 1,	    # boolean   Read Only
-		       plot_after_fit => 0,	    # boolean
-		       ## feff interpretation parameters
-		       degen	      => 0,	    # integer   Read Only
-		       nleg	      => 2,	    # integer   Read Only
-		       reff	      => 0,	    # float     Read Only
-		       zcwif	      => 0,	    # float     Read Only
-		       intrpline      => q{},       #           Read Only
-		       geometry	      => q{},	    # multiline Read Only
+has '+plottable'      => (default => 1);
+has '+data'           => (isa => Empty.'|Ifeffit::Demeter::Data');
 
-		       ## data processing flags
-		       update_path    => 1,
-		       update_fft     => 1,
-		       update_bft     => 1,
-		      );
-  my $opt  = Regexp::List->new;
-  my $parameter_regexp = $opt->list2re(keys %path_defaults);
-  my $pp_regex = $opt->list2re(qw(s02 e0 delr e0 sigma2 ei third fourth dphase));
+has 'n'		      => (is=>'rw', isa=>'Num', default => 0);
 
-  sub BUILD {
-    my ($self, $ident, $arguments) = @_;
-    $self -> SUPER::set(\%path_defaults);
-    my $group = Tools -> random_string(4);
-    $self -> set_group($group);
+has 's02'	      => (is=>'rw', isa=>'Str', default => '1'); # trigger value into _stored
+has 's02_stored'      => (is=>'rw', isa=>'Str', default => '1');
+has 's02_value'	      => (is=>'rw', isa=>'Num', default => 1);
 
-    ## path specific attributes
-    $self -> set($arguments);
+has 'e0'	      => (is=>'rw', isa=>'Str', default => '0');
+has 'e0_stored'	      => (is=>'rw', isa=>'Str', default => '0');
+has 'e0_value'	      => (is=>'rw', isa=>'Num', default => 0);
 
-    my $val = $self->get_mode("datadefault");
-    if ($val =~ m{\A\s*\z}) {
-      $self->set_mode({datadefault=>Ifeffit::Demeter::Data->new({group=>'default___',
-								 label=>'D_E_F_A_U_L_T',
-								 fft_kmin=>3, fft_kmax=>15,
-								 bft_rmin=>1, bft_rmax=>6,
-								})
-		      });
+has 'delr'	      => (is=>'rw', isa=>'Str', default => '0');
+has 'delr_stored'     => (is=>'rw', isa=>'Str', default => '0');
+has 'delr_value'      => (is=>'rw', isa=>'Num', default => 0);
+
+has 'sigma2'	      => (is=>'rw', isa=>'Str', default => '0');
+has 'sigma2_stored'   => (is=>'rw', isa=>'Str', default => '0');
+has 'sigma2_value'    => (is=>'rw', isa=>'Num', default => 0);
+
+has 'ei'	      => (is=>'rw', isa=>'Str', default => '0');
+has 'ei_stored'	      => (is=>'rw', isa=>'Str', default => '0');
+has 'ei_value'	      => (is=>'rw', isa=>'Num', default => 0);
+
+has 'third'	      => (is=>'rw', isa=>'Str', default => '0');
+has 'third_stored'    => (is=>'rw', isa=>'Str', default => '0');
+has 'third_value'     => (is=>'rw', isa=>'Num', default => 0);
+
+has 'fourth'	      => (is=>'rw', isa=>'Str', default => '0');
+has 'fourth_stored'   => (is=>'rw', isa=>'Str', default => '0');
+has 'fourth_value'    => (is=>'rw', isa=>'Num', default => 0);
+
+has 'dphase'	      => (is=>'rw', isa=>'Str', default => '0');
+has 'dphase_stored'   => (is=>'rw', isa=>'Str', default => '0');
+has 'dphase_value'    => (is=>'rw', isa=>'Num', default => 0);
+
+has 'id'	      => (is=>'rw', isa=>'Str', default => q{});
+has 'k_array'	      => (is=>'rw', isa=>'Str', default => q{});
+has 'amp_array'	      => (is=>'rw', isa=>'Str', default => q{});
+has 'phase_array'     => (is=>'rw', isa=>'Str', default => q{});
+
+## object relationships
+has '+data'           => (isa => Empty.'|Ifeffit::Demeter::Data');
+has 'parent'          => (is=>'rw', isa => 'Any', default => q{});
+#has 'parent'          => (is=>'rw', isa => Empty.'|Ifeffit::Demeter::Feff', default => q{});
+has 'sp'              => (is=>'rw', isa=> 'Any',);
+#has 'sp'              => (is=>'rw', isa => Empty.'|Ifeffit::Demeter::ScatteringPath', default => q{});
+#has 'sp_was'          => (is=>'rw', isa => Empty.'|Ifeffit::Demeter::ScatteringPath', default => q{});
+
+has 'folder'          => (is=>'rw', isa=> 'Str',    default => q{},
+			  trigger => sub{ shift->parse_nnnn });
+has 'file'            => (is=>'rw', isa=> 'Str',    default => q{},
+			  trigger => sub{ shift->parse_nnnn });
+has 'Index'           => (is=>'rw', isa=>  Natural, default => 0);
+has 'include'         => (is=>'rw', isa=>  'Bool',  default => 1);
+
+has 'is_col'          => (is=>'rw', isa=>  'Bool',  default => 0);
+has 'is_ss'           => (is=>'rw', isa=>  'Bool',  default => 1);
+has 'plot_after_fit'  => (is=>'rw', isa=>  'Bool',  default => 0);
+
+## feff interpretation parameters
+has 'degen'           => (is=>'rw', isa=>  Natural, default => 0);
+has 'nleg'            => (is=>'rw', isa=>  PosInt,  default => 2);
+has 'reff'            => (is=>'rw', isa=> 'Num',    default => 0);
+has 'zcwif'           => (is=>'rw', isa=> 'Num',    default => 0);
+has 'intrpline'       => (is=>'rw', isa=> 'Str',    default => q{});
+has 'geometry'        => (is=>'rw', isa=> 'Str',    default => q{});
+
+## data processing flags
+has 'update_path'     => (is=>'rw', isa=>  'Bool',  default => 1,
+			  trigger => sub{ my($self, $new) = @_; $self->update_fft(1) if $new});
+has 'update_fft'      => (is=>'rw', isa=>  'Bool',  default => 1,
+			  trigger => sub{ my($self, $new) = @_; $self->update_bft(1) if $new});
+has 'update_bft'      => (is=>'rw', isa=>  'Bool',  default => 1);
+
+my $opt  = Regexp::List->new;
+#my $parameter_regexp = $opt->list2re(keys %path_defaults);
+my $pp_regex = $opt->list2re(qw(s02 e0 delr e0 sigma2 ei third fourth dphase));
+
+sub BUILD {
+  my ($self, @arguments) = @_;
+  my $val = $self->get_mode("datadefault");
+  if ((ref($self->data) !~ m{Data}) and (ref($val) !~ m{Data})) {
+    $self->mode->datadefault(Ifeffit::Demeter::Data->new(group=>'default___',
+							 name=>q{},
+							 cv=>57,
+							 fft_kmin=>3, fft_kmax=>15,
+							 bft_rmin=>1, bft_rmax=>6,
+							));
+  };
+  $self->data($self->mode->datadefault) if (ref($self->data) !~ m{Data});
+};
+
+### ---- this will be different working from a ScatteringPath object
+###      snarfing from the object will have to be part of an update
+sub _update {
+  my ($self, $which) = @_;
+  $which = lc($which);
+ WHICH: {
+    ($which eq 'path') and do {
+      $self->path(1) if $self->update_path;
+      last WHICH;
     };
-
-    return;
-  };
-
-#  sub DEMOLISH {
-#    my ($self) = @_;
-#    return;
-#  };
-
-
-  ## return a list of valid path parameter names
-  sub parameter_list {
-    my ($self) = @_;
-    return (sort keys %path_defaults);
-  };
-  sub _regexp {
-    my ($self) = @_;
-    return $parameter_regexp;
-  };
-
-  ## path specific methods
-  sub set {
-    my ($self, $r_hash) = @_;
-    my $re = $self->regexp;
-
-    foreach my $key (keys %$r_hash) {
-      my $k = lc $key;
-      carp("\"$key\" is not a valid Ifeffit::Demeter::Path parameter"), next
-	if ($k !~ /$re/);
-
-      ## special handling of some parameters
-    SET: {
-	#($k =~ /\b(?:data|feff)\b/) and do {	# set *_group when data|feff is set
-	#  croak("The argument of \"$key\" must be a valid Ifeffit::Demeter object")
-	#    if ($r_hash->{$k} and ref($r_hash->{$k}) !~ /Ifeffit/);
-	#  $self->SUPER::set({$k=>$r_hash->{$k}});
-	#  if ($r_hash->{$k}) {
-	#    my $g = $r_hash->{$k} -> get_group;
-	#    $self->SUPER::set({$k."_group"=>$g});
-	#  };
-	#  last SET;
-	#};
-	($k eq 'group') and do { # label defaults to group name unless otherwise specified
-	  croak("Ifeffit::Demeter::Path: $r_hash->{$k} is not a valid group name")
-	    if ($r_hash->{$k} !~ m{\A[a-z][a-z0-9:_\?&]{0,63}\z}io);
-	  $self->SUPER::set({$k=>$r_hash->{$k}});
-	};
-	#($k =~ m{\b$pp_regex\b}) and do {
-	#  $self->SUPER::set({$k=>[$r_hash->{$k}, 0]});
-	#  last SET;
-	#};
-	($k =~ m{\A(?:f(?:ile|older))\z}) and do {
-	  $self->SUPER::set({$k=>$r_hash->{$k}});
-	  $self->parse_nnnn;
-	  last SET;
-	};
-	($k =~ m{\Asp\z}) and do {
-	  croak("Ifeffit::Demeter::Path: the sp attribute must be ScatteringPath object")
-	    if ($r_hash->{$k} and (ref($r_hash->{$k}) !~ m{ScatteringPath}));
-	  $self->SUPER::set({$k=>$r_hash->{$k}});
-	  last SET;
-	};
-	($k =~ m{$re}) and do {
-	  $self->SUPER::set({$k=>$r_hash->{$k}}, "${k}_stored"=>$r_hash->{$k});
-	};
-	## handle update logic, if a step is flagged as needing update, all
-	## later steps must also be flagged as needing update
-	##      feffNNNN import -> fft -> bft
-	($k =~ m{\Aupdate_(path|fft|bft)}) and do {
-	  #$self->SUPER::set({ $key=>1 });  #### kludge alert!!
-	  $self->SUPER::set({ $key=>$r_hash->{$k} });
-	  last SET if ($1 eq 'bft');
-	  my %table = (path=>{update_fft=>1, update_bft=>1},
-	  	       fft =>{update_bft=>1},
-	  	      );
-	  if ($r_hash->{$k}) {
-	    $self->SUPER::set($table{$1})
-	  };
-	  last SET;
-	};
-	do {
-	  $self->SUPER::set({$k=>$r_hash->{$k}});
-	}
-      };
-
+    ($which eq 'fft') and do {
+      $self->path(1) if ($self->update_path);
+      last WHICH;
     };
-    return $self;
-  };
-
-  ### ---- this will be different working from a ScatteringPath object
-  ###      snarfing from the object will have to be part of an update
-  sub _update {
-    my ($self, $which) = @_;
-    $which = lc($which);
-  WHICH: {
-      ($which eq 'path') and do {
-	$self->path(1) if $self->get('update_path');
-	last WHICH;
-      };
-      ($which eq 'fft') and do {
-	$self->path(1) if ($self->get('update_path'));
-	last WHICH;
-      };
-      ($which eq 'bft') and do {
-	$self->path(1) if ($self->get('update_path'));
-	$self->fft;  # if ($self->get('update_fft'));  <--- kweight may have changed, just redo this
-	last WHICH;
-      };
-      ($which eq 'all') and do {
-	$self->path(1) if ($self->get('update_path'));
-	$self->fft;  # if ($self->get('update_fft'));
-	$self->bft;  # if ($self->get('update_bft'));
-	last WHICH;
-      };
-
+    ($which eq 'bft') and do {
+      $self->path(1) if ($self->update_path);
+      $self->fft;  # if ($self->update_fft);  <--- kweight may have changed, just redo this
+      last WHICH;
     };
-    return $self;
+    ($which eq 'all') and do {
+      $self->path(1) if ($self->update_path);
+      $self->fft;  # if ($self->update_fft);
+      $self->bft;  # if ($self->update_bft);
+      last WHICH;
+    };
   };
+  return $self;
+};
 
-  sub Index : NUMERIFY {
-    my ($self) = @_;
-    return $self->get('index');
-  };
-  sub data {
-    my ($self) = @_;
-    return $self->get('data') || $self->get_mode('datadefault') || q{};
-  };
-  sub plottable {
-    my ($self) = @_;
-    return 1;
-  };
+sub rm {
+  my ($self) = @_;
+  unlink File::Spec->catfile($self->get(qw(folder file)));
+  return $self;
+};
 
-  sub rm {
-    my ($self) = @_;
-    unlink File::Spec->catfile($self->get(qw(folder file)));
-    return $self;
-  };
-
-  sub display {
-    my ($self, $space) = @_;
-    my $pf = $self->get_mode("plot");
-    my $command = q{};
-    $command .= $self->_path_command(1);
-    $command .= $self->_fft_command;
-    $command .= $self->_bft_command;
-    $command .= $self->_plot_command($space);
-    $pf->increment; # increment the color for the next trace
-    return $command;
-  };
-
-  sub read_data {
-    my ($self) = @_;
-    my $string = $self->SUPER::read_data('feff.dat');
-    return $string;
-  };
+#sub read_data {
+#  my ($self) = @_;
+#  my $string = $self->read_data('feff.dat');
+#  return $string;
+#};
 
 
-  ## how to handle extended path parameters?
-  ## $index, $folder, $stash_dir all need to be known to the object
-  sub path {
-    my ($self, $do_ff2chi) = @_;
-    $self->_update_from_ScatteringPath if $self->get("sp");
-    $self->dispose($self->_path_command($do_ff2chi));
-    $self->set({update_path=>0});
-    return $self;
-  };
-  sub _update_from_ScatteringPath {
-    my ($self) = @_;
-    ## generate from a ScatteringPath object
-    my $sp     = $self->get("sp");
-    my $feff   = $sp  ->get("feff");
-    my ($workspace, $fname) = ($feff->get("workspace"), $sp->get("random_string"));
+## how to handle extended path parameters?
+## $index, $folder, $stash_dir all need to be known to the object
+sub path {
+  my ($self, $do_ff2chi) = @_;
+  $self->_update_from_ScatteringPath if $self->sp;
+  $self->dispose($self->_path_command($do_ff2chi));
+  $self->update_path(0);
+  return $self;
+};
+sub _update_from_ScatteringPath {
+  my ($self) = @_;
+  ## generate from a ScatteringPath object
+  my $sp     = $self->sp;
+  my $feff   = $self->parent;
+  my ($workspace, $fname) = ($feff->workspace, $sp->randstring);
 #    if ($fname and (-e File::Spec->catfile($workspace, $fname))) { # feffNNNN.dat is already there
-#      $self->set({folder => $workspace,
-#		  file   => $fname});
+#      $self->set(folder => $workspace,
+#		  file   => $fname);
 #      return $self;
 #    };
 
-    $feff -> make_one_path($sp)
-      -> make_feffinp("genfmt")
-	-> run_feff;
+  $feff -> make_one_path($sp)
+    -> make_feffinp("genfmt")
+      -> run_feff;
 
-    my $tempfile = "feff" . $feff->config->default('pathfinder', 'one_off_index') . ".dat";
-    $fname ||= $sp->get("random_string");
-    move(File::Spec->catfile($workspace, $tempfile),
-	 File::Spec->catfile($workspace, $fname));
-    $self->set({folder => $workspace,
-		file   => $fname});
-    my $label = $self -> get("label") || $sp->intrplist;
-    $self->set({label=>$label});
+  my $tempfile = "feff" . $self->co->default('pathfinder', 'one_off_index') . ".dat";
+  $fname ||= $sp->random_string;
+  move(File::Spec->catfile($workspace, $tempfile),
+       File::Spec->catfile($workspace, $fname));
+  $self->set(folder => $workspace,
+	     file   => $fname);
+  my $label = $self -> name || $sp->intrplist;
+  $self->set(name=>$label);
 
-    unlink File::Spec->catfile($feff->get("workspace"), "paths.dat");
-    unlink File::Spec->catfile($feff->get("workspace"), "feff.run");
-    unlink File::Spec->catfile($feff->get("workspace"), "nstar.dat");
-    if (not $feff->get('save')) {
-      unlink File::Spec->catfile($feff->get("workspace"), "feff.inp");
-      unlink File::Spec->catfile($feff->get("workspace"), "files.dat");
+  unlink File::Spec->catfile($feff->workspace, "paths.dat");
+  unlink File::Spec->catfile($feff->workspace, "feff.run");
+  unlink File::Spec->catfile($feff->workspace, "nstar.dat");
+  if (not $feff->save) {
+    unlink File::Spec->catfile($feff->workspace, "feff.inp");
+    unlink File::Spec->catfile($feff->workspace, "files.dat");
+  };
+  return $self;
+};
+sub _path_command {
+  my ($self, $do_ff2chi) = @_;
+  ## fret about long file names
+  my $string = $self->template("fit", "path");
+  $string   .= $self->template("fit", "ff2chi") if $do_ff2chi;
+  return $string;
+};
+sub rewrite_cv {
+  my ($self) = @_;
+  my $data   = $self->data;
+  my $cv     = $data->cv;
+  #$cv       =~ s{\.}{_}g;
+  foreach my $pp (qw(e0 ei sigma2 s02 delr third fourth dphase)) {
+    my $me = $self->$pp;
+    $me =~ s{\[?cv\]?}{$cv}g;
+    $self->$pp($me);
+  };
+};
+
+
+
+## paths are Fourier transformed just like their respective data,
+## these methods just rewrite the data fftf() and fftr() command
+## using the group name of the path
+sub fft {
+  my ($self) = @_;
+  $self->_update("fft");
+  $self->dispose($self->_fft_command);
+  $self->update_fft(0);
+};
+sub _fft_command{
+  my ($self) = @_;
+  my $group = $self->group;
+  my $dobject = $self->data->group;
+  my $string = $self->data->_fft_command;
+  $string =~ s{\b$dobject\b}{$group}g; # replace group names
+  return $string;
+};
+
+sub bft {
+  my ($self) = @_;
+  $self->_update("bft");
+  $self->dispose($self->_bft_command);
+  $self->update_bft(0);
+};
+sub _bft_command{
+  my ($self) = @_;
+  my $group = $self->group;
+  my $dobject = $self->data->group;
+  my $string = $self->data->_bft_command;
+  $string =~ s{\b$dobject\b}{$group}g; # replace group names
+  return $string;
+};
+
+sub plot {
+  my ($self, $space) = @_;
+  my $pf  = $self->mode->plot;
+  my $which = q{};
+  if (lc($space) eq 'k') {
+    $self -> _update("fft");
+    $which = "update_path";
+  } elsif (lc($space) eq 'r') {
+    $self -> _update("bft");
+    $which = "update_fft";
+  } elsif (lc($space) eq 'q') {
+    $self -> _update("all");
+    $which = "update_bft";
+  };
+  $self->dispose($self->_plot_command($space), "plotting");
+  $pf->increment;
+  $self->$which(0);
+};
+sub _plot_command{
+  my ($self, $space) = @_;
+  my $group     = $self->group;
+  my $label     = $self->name || $self->id;
+  my $dobject   = $self->data->group;
+  my $datalabel = $self->data->name;
+  $self->set_mode(path=>$self) if (ref($self) =~ m{Path});
+  my $string    = $self->data->_plot_command($space);
+  $self->set_mode(path=>q{});
+  $string =~ s{\b$dobject\b}{$group}g; # replace group names
+  ## (?<= ) is the positive zero-width look behind -- it only replaces
+  ## the label when it follows q{key="}, that way it won't get confused by
+  ## the same text in the title for a newplot
+  $string =~ s{(?<=key=")$datalabel}{$label};
+  return $string;
+};
+
+sub save {
+  my ($self, $what, $filename) = @_;
+  croak("No filename specified for save") unless $filename;
+  ($what = 'chi') if (lc($what) eq 'k');
+  croak("Valid save types are: chi r q") if ($what !~ m{\A(?:chi|r|q)\z});
+ WHAT: {
+    (lc($what) eq 'chi') and do {
+      $self->_update("path");
+      $self->dispose($self->_save_chi('k', $filename));
+      last WHAT;
     };
-    return $self;
-  };
-  sub _path_command {
-    my ($self, $do_ff2chi) = @_;
-    ## fret about long file names
-    my $string = $self->template("fit", "path");
-    $string   .= $self->template("fit", "ff2chi") if $do_ff2chi;
-    return $string;
-  };
-  sub rewrite_cv {
-    my ($self) = @_;
-    my $data   = $self->data;
-    my $cv     = $data->cv;
-    #$cv       =~ s{\.}{_}g;
-    foreach my $pp (qw(e0 ei sigma2 s02 delr third fourth dphase)) {
-      my $me = $self->get($pp);
-      $me =~ s{\[?cv\]?}{$cv}g;
-      $self->SUPER::set({$pp=>$me});
+    (lc($what) eq 'r') and do {
+      $self->_update("bft");
+      $self->dispose($self->_save_chi('r', $filename));
+      last WHAT;
+    };
+    (lc($what) eq 'q') and do {
+      $self->_update("all");
+      $self->dispose($self->_save_chi('q', $filename));
+      last WHAT;
     };
   };
+};
 
 
+sub parse_nnnn {
+  my ($self) = @_;
+  my $oneoff = "feff" . $self->co->default('pathfinder', 'one_off_index');
+  my ($folder, $file) = $self->get(qw(folder file));
+  my $fname = File::Spec -> catfile($folder, $file);
 
-  ## paths are Fourier transformed just like their respective data,
-  ## these methods just rewrite the data fftf() and fftr() command
-  ## using the group name of the path
-  sub fft {
-    my ($self) = @_;
-    $self->_update("fft");
-    $self->dispose($self->_fft_command);
-    $self->set({update_fft=>0});
-  };
-  sub _fft_command{
-    my ($self) = @_;
-    my $group = $self->get_group;
-    my $dobject = $self->data;
-    my $string = $dobject->_fft_command;
-    $string =~ s{\b$dobject\b}{$group}g; # replace group names
-    return $string;
-  };
+  return if not -f $fname;
 
-  sub bft {
-    my ($self) = @_;
-    $self->_update("bft");
-    $self->dispose($self->_bft_command);
-    $self->set({update_bft=>0});
-  };
-  sub _bft_command{
-    my ($self) = @_;
-    my $group = $self->get_group;
-    my $dobject = $self->data;
-    my $string = $dobject->_bft_command;
-    $string =~ s{\b$dobject\b}{$group}g; # replace group names
-    return $string;
-  };
-
-  sub plot {
-    my ($self, $space) = @_;
-    my $pf  = Ifeffit::Demeter->get_mode('plot');
-    my $which = q{};
-    if (lc($space) eq 'k') {
-      $self -> _update("fft");
-      $which = "update_path";
-    } elsif (lc($space) eq 'r') {
-      $self -> _update("bft");
-      $which = "update_fft";
-    } elsif (lc($space) eq 'q') {
-      $self -> _update("all");
-      $which = "update_bft";
+  open (my $NNNN, $fname);
+  my ($header, $geometry) = (0, q{});
+  while (<$NNNN>) {
+    if (m{\A\s*-------}) {
+      $header = 1;
+      next;
     };
-    $self->dispose($self->_plot_command($space), "plotting");
-    $pf->increment;
-    $self->set({$which=>0});
+    next if not $header;
+    last if m{\A\s+k\s+real};
+    $geometry .= $_;
   };
-  sub _plot_command{
-    my ($self, $space) = @_;
-    my $group     = $self->get_group;
-    my $label     = $self->label || $self->get("id");
-    my $dobject   = $self->data;
-    my $datalabel = $dobject->label;
-    #my $string    = $dobject->_plot_command($space);
-    my $string    = $dobject->_part_plot_command($self, $space);
-    $string =~ s{\b$dobject\b}{$group}g; # replace group names
-    ## (?<= ) is the positive zero-width look behind -- it only replaces
-    ## the label when it follows q{key="}, that way it won't get confused by
-    ## the same text in the title for a newplot
-    $string =~ s{(?<=key=")$datalabel}{$label};         # ") silly emacs!
-    return $string;
-  };
+  close $NNNN;
+  $self->set(geometry=>$geometry);
 
-  sub save {
-    my ($self, $what, $filename) = @_;
-    croak("No filename specified for save") unless $filename;
-    ($what = 'chi') if (lc($what) eq 'k');
-    croak("Valid save types are: chi r q") if ($what !~ m{\A(?:chi|r|q)\z});
-  WHAT: {
-      (lc($what) eq 'chi') and do {
-	$self->_update("path");
-	$self->dispose($self->_save_chi('k', $filename));
-	last WHAT;
-      };
-      (lc($what) eq 'r') and do {
-	$self->_update("bft");
-	$self->dispose($self->_save_chi('r', $filename));
-	last WHAT;
-      };
-      (lc($what) eq 'q') and do {
-	$self->_update("all");
-	$self->dispose($self->_save_chi('q', $filename));
-	last WHAT;
-      };
-    };
-  };
+  my @list = split(" ", $geometry);
+  my $n_set = $self->n;
+  $self->set(degen => int($list[1]),
+	     n     => $n_set || $list[1],
+	     nleg  => $list[0],
+	     reff  => $list[2]
+	    );
 
-
-  sub parse_nnnn {
-    my ($self) = @_;
-    my $oneoff = "feff" . $self->config->default('pathfinder', 'one_off_index');
-    my ($folder, $file) = $self->get(qw(folder file));
-    my $fname = File::Spec -> catfile($folder, $file);
-
-    return if not -f $fname;
-
-    open (my $NNNN, $fname);
-    my ($header, $geometry) = (0, q{});
-    while (<$NNNN>) {
-      if (m{\A\s*-------}) {
-        $header = 1;
-	next;
-      };
-      next if not $header;
-      last if m{\A\s+k\s+real};
-      $geometry .= $_;
-    };
-    close $NNNN;
-    $self->set({geometry=>$geometry});
-
-    $fname = File::Spec -> catfile($folder, 'files.dat');
+  $fname = File::Spec -> catfile($folder, 'files.dat');
+  if (-e $fname) {
     open (my $FILESDAT, $fname);
     while (<$FILESDAT>) {
       next if ($_ !~ /(?:$file|$oneoff)/); # $oneoff is matched when working from a ScatteringPath object
-      my @list = split(" ", $_);
-      my $n_set = $self->get("n");
-      $self->SUPER::set({zcwif =>     $list[2],
-			 degen => int($list[3]),
-			 n     => $n_set || int($list[3]),
-			 nleg  =>     $list[4],
-			 reff  =>     $list[5]
-			});
+      @list = split(" ", $_);
+      $n_set = $self->n;
+      $self->set(zcwif => $list[2],
+		 degen => int($list[3]),
+		 n     => $n_set || int($list[3]),
+		 nleg  => $list[4],
+		 reff  => $list[5]
+		);
     };
     close $FILESDAT;
-
-    return 0;
   };
 
-
-  sub fetch {
-    my ($self) = @_;
-
-    my $save = Ifeffit::get_scalar("\&screen_echo");
-    ifeffit("\&screen_echo = 0\n");
-
-    ifeffit(sprintf("show \@path %d\n", $self));
-
-    my $lines = Ifeffit::get_scalar('&echo_lines');
-    ifeffit("\&screen_echo = $save\n"), return if not $lines;
-    my $found = 0;
-    foreach my $l (1 .. $lines) {
-      my $response = Ifeffit::get_echo()."\n";
-      ($found = 1), next if ($response =~ m{\A PATH}x);
-      next if not $found;
-      chomp $response;
-      my @line = split(/\s+=\s*/, $response);
-    SWITCH: {
-
-	($line[0] eq 'id') and do {
-	  $self -> set({id=>$line[1]});
-	  last SWITCH;
-	};
-
-	($line[0] =~ m{(?:3rd|4th|d(?:phase|r)|e[0i]|s[0s]2)}) and do {
-	  $self -> evaluate($pp_trans{$line[0]}, $line[1]);
-	  last SWITCH;
-	}
-
-      };
-    };
-
-    ifeffit("\&screen_echo = $save\n");
-    return 0;
-  };
-
-  ## path parameter tools
-  sub evaluate {
-    my ($self, $key, $value) = @_;
-    my $array_ref = $self->get($key);
-    $self->SUPER::set({$key."_value"=>$value});
-    return 0;
-  };
-  sub value {
-    my ($self, $pathparam) = @_;
-    my $re = $self->regexp('pathparams');
-    return 0 if ($pathparam !~ m{$re});
-    return $self->get($pathparam."_value");
-  };
-
-  sub parent {
-    my ($self) = @_;
-    return $self->get("parent");
-  };
-  sub identity {
-    my ($self) = @_;
-    return sprintf("%s", $self->label);
-    ##return sprintf("%s : %s", $self->parent->label, $self->label);
-  };
-
-
-  ## log file tools
-
-  sub R {
-    my ($self) = @_;
-    my ($reff, $delr) = ($self->get('reff'), $self->value('delr'));
-    return $reff + $delr;
-  };
-  sub paragraph {
-    my ($self) = @_;
-    my $string = sprintf("    feff   = %s\n",     File::Spec->catfile($self->get(qw(folder file))));
-    $string   .= sprintf("    id     = %s\n",     $self->get(qw(id)));
-    $string   .= sprintf("    label  = %s\n",     $self->get(qw(label)));
-    $string   .= sprintf("    r      = %12.6f\n", $self->R);
-    $string   .= sprintf("    degen  = %12.6f\n", $self->get('n'));
-    foreach my $pp (qw(s02 e0 delr sigma2 third fourth ei)) {
-      $string .= sprintf("    %-6s = %12.6f\n",   $pp, $self->value($pp));
-    };
-    return $string;
-  };
-  sub row_main_label {
-    my ($self, $width) = @_;
-    $width ||= 15;
-    my $pattern = '  %-' . $width . join(" ", qw(s %8s %7s %9s %7s %7s %8s %8s)) . "\n";
-    my $string = sprintf($pattern, qw(label N S02 sigma^2 e0 delr Reff R));
-    $string .= "=" x (length($string)+2) . "\n";
-  };
-  sub row_main {
-    my ($self, $width) = @_;
-    $width ||= 15;
-    my $pattern = '  %-' . $width . join(" ", qw(s %8.3f %7.3f %9.5f %7.3f %8.5f %8.5f %8.5f)) . "\n";
-    my $string = sprintf($pattern,
-			 $self->get(qw(label n)),
-			 (map {$self->value($_)} (qw(s02 sigma2 e0 delr))),
-			 $self->get('reff'),
-			 $self->R,
-			);
-    return $string;
-  }
-
-  sub row_second_label {
-    my ($self, $width) = @_;
-    $width ||= 15;
-    my $pattern = '  %-' . $width . join(" ", qw(s %9s %9s %9s %9s)) . "\n";
-    my $string = sprintf($pattern, qw(label ei third fourth dphase));
-    $string .= "=" x (length($string)+1) . "\n";
-  };
-  sub row_second {
-    my ($self, $width) = @_;
-    $width ||= 15;
-    my $pattern = '  %-' . $width . join(" ", qw(s %9.5f %9.5f %9.5f %9.5f)) . "\n";
-    my $string = sprintf($pattern,
-			 $self->get('label'),
-			 (map {$self->value($_)} (qw(ei third fourth dphase))),
-			);
-    return $string;
-  };
-
+  return 0;
 };
+
+
+my %_pp_trans = ('3rd'=>"third", '4th'=>"fourth", dphase=>"dphase",
+		 dr=>"delr", e0=>"e0", ei=>"ei", s02=>"s02", ss2=>"sigma2");
+sub fetch {
+  my ($self) = @_;
+
+  my $save = Ifeffit::get_scalar("\&screen_echo");
+  ifeffit("\&screen_echo = 0\n");
+
+  ifeffit(sprintf("show \@path %d\n", $self->Index));
+
+  my $lines = Ifeffit::get_scalar('&echo_lines');
+  ifeffit("\&screen_echo = $save\n"), return if not $lines;
+  my $found = 0;
+  foreach my $l (1 .. $lines) {
+    my $response = Ifeffit::get_echo()."\n";
+    ($found = 1), next if ($response =~ m{\A PATH}x);
+    next if not $found;
+    chomp $response;
+    my @line = split(/\s+=\s*/, $response);
+  SWITCH: {
+
+      ($line[0] eq 'id') and do {
+	$self -> set(id=>$line[1]);
+	last SWITCH;
+      };
+
+      ($line[0] =~ m{(?:3rd|4th|d(?:phase|r)|e[0i]|s[0s]2)}) and do {
+	$self -> evaluate($_pp_trans{$line[0]}, $line[1]);
+	last SWITCH;
+      }
+
+    };
+  };
+
+  ifeffit("\&screen_echo = $save\n");
+  return 0;
+};
+
+## path parameter tools
+sub evaluate {
+  my ($self, $key, $value) = @_;
+  my $param = $key."_value";
+  $self->$param($value);
+  return 0;
+};
+sub value {
+  my ($self, $pathparam) = @_;
+  return 0 if (not is_PathParam($pathparam));
+  my $key = $pathparam."_value";
+  return $self->$key
+};
+
+sub identity {
+  my ($self) = @_;
+  return sprintf("%s", $self->name);
+  ##return sprintf("%s : %s", $self->parent->name, $self->name);
+};
+
+
+## log file tools
+
+sub R {
+  my ($self) = @_;
+  return $self->reff + $self->delr_value;
+};
+sub paragraph {
+  my ($self) = @_;
+  my $string = sprintf("    feff   = %s\n",     File::Spec->catfile($self->get(qw(folder file))));
+  $string   .= sprintf("    id     = %s\n",     $self->id);
+  $string   .= sprintf("    label  = %s\n",     $self->name);
+  $string   .= sprintf("    r      = %12.6f\n", $self->R);
+  $string   .= sprintf("    degen  = %12.6f\n", $self->n);
+  foreach my $pp (qw(s02 e0 delr sigma2 third fourth ei)) {
+    $string .= sprintf("    %-6s = %12.6f\n",   $pp, $self->$pp);
+  };
+  return $string;
+};
+sub row_main_label {
+  my ($self, $width) = @_;
+  $width ||= 15;
+  my $pattern = '  %-' . $width . join(" ", qw(s %8s %7s %9s %7s %7s %8s %8s)) . "\n";
+  my $string = sprintf($pattern, qw(name N S02 sigma^2 e0 delr Reff R));
+  $string .= "=" x (length($string)+2) . "\n";
+};
+sub row_main {
+  my ($self, $width) = @_;
+  $width ||= 15;
+  my $pattern = '  %-' . $width . join(" ", qw(s %8.3f %7.3f %9.5f %7.3f %8.5f %8.5f %8.5f)) . "\n";
+  my $string = sprintf($pattern,
+		       $self->name, $self->n,
+		       (map {$self->$_} (qw(s02_value sigma2_value e0_value delr_value))),
+		       $self->reff,
+		       $self->R,
+		      );
+  return $string;
+}
+
+sub row_second_label {
+  my ($self, $width) = @_;
+  $width ||= 15;
+  my $pattern = '  %-' . $width . join(" ", qw(s %9s %9s %9s %9s)) . "\n";
+  my $string = sprintf($pattern, qw(name ei third fourth dphase));
+  $string .= "=" x (length($string)+1) . "\n";
+};
+sub row_second {
+  my ($self, $width) = @_;
+  $width ||= 15;
+  my $pattern = '  %-' . $width . join(" ", qw(s %9.5f %9.5f %9.5f %9.5f)) . "\n";
+  my $string = sprintf($pattern,
+		       $self->name,
+		       (map {$self->$_} (qw(ei_value third_value fourth_value dphase_value))),
+		      );
+  return $string;
+};
+
 1;
 
 
@@ -600,33 +501,33 @@ Ifeffit::Demeter - Single and multiple scattering paths for EXAFS fitting
 
 =head1 VERSION
 
-This documentation refers to Ifeffit::Demeter version 0.1.
+This documentation refers to Ifeffit::Demeter version 0.2.
 
 
 =head1 SYNOPSIS
 
   $path_object -> new();
-  $path_object -> set({data     => $dobject,
-		       folder   => 'example/cu/',
-		       file     => "feff0001.dat",
-		       label    => "path 1",
-		       s02      => 'amp',
-		       e0       => 'enot',
-		       delr     => 'alpha*reff',
-		       sigma2   => 'debye(temp, theta) + sigmm',
-		      });
+  $path_object -> set(data     => $dobject,
+		      folder   => 'example/cu/',
+		      file     => "feff0001.dat",
+		      name     => "path 1",
+		      s02      => 'amp',
+		      e0       => 'enot',
+		      delr     => 'alpha*reff',
+		      sigma2   => 'debye(temp, theta) + sigmm',
+		     );
 
 or
 
   $path_object -> new();
-  $path_object -> set({data     => $dobject,
-                       sp       => $scattering_path_object
-		       label    => "path 1",
-		       s02      => 'amp',
-		       e0       => 'enot',
-		       delr     => 'alpha*reff',
-		       sigma2   => 'debye(temp, theta) + sigmm',
-		      });
+  $path_object -> set(data     => $dobject,
+                      sp       => $scattering_path_object
+		      name     => "path 1",
+		      s02      => 'amp',
+		      e0       => 'enot',
+		      delr     => 'alpha*reff',
+		      sigma2   => 'debye(temp, theta) + sigmm',
+		     );
 
 =head1 DESCRIPTION
 
@@ -652,16 +553,8 @@ C<s02>, which is 1.  The C<*_value> path parameter attributes contain
 the evaluation of the path parameter after the fit is made or the path
 is otherwise evaluated.
 
-The attributes marked "I<{read-only}>" are typically not set
-interactively.  Instead, they will be set as a side effect of other
-method calls.  For example, the nleg attribute will the set after the
-C<file> attribute is set.  C<nleg> is a piece of information that is
-determined from the C<`feffNNNN.dat'> file.  They are not strictly
-read-only.  You can set them if you want, but no care is taken to
-preserve your modification from subsequent method calls.
-
 For this Path object to be included in a fit, it is necessary that it
-be an attribute of a Fit object.  See L<Ifeffit::Demeter::Fit> for
+be gathered into a Fit object.  See L<Ifeffit::Demeter::Fit> for
 details.
 
 =head2 General attributes
@@ -676,7 +569,7 @@ if this is a reasonably short word and it B<must> follow the
 conventions of a valid group name in Ifeffit.  By default, this is a
 random, four-letter string.
 
-=item C<label> (string)
+=item C<name> (string)
 
 This is a text string used to describe this object in a user
 interface.  While the C<group> attribute should be short, this can be
@@ -721,7 +614,7 @@ Path object.
 If the C<sp> attribute is set, then this attribute will be set
 automatically.
 
-=item C<index> (integer) I<{read-only}>
+=item C<Index> (integer)
 
 This is the path index as required in the definition of an Ifeffit
 Path.  It is rarely necessary to set this by hand.  Indexing is
@@ -758,53 +651,53 @@ parameterize the amplitude of the path.
 
 =item C<s02> (string)
 
-=item C<s02_value> (number) I<{read-only}>
+=item C<s02_value> (number)
 
 This is the amplitude term for the path.
 
 =item C<e0> (string)
 
-=item C<e0_value> (number) I<{read-only}>
+=item C<e0_value> (number)
 
 This is the energy shift term for the path.
 
 =item C<delr> (string)
 
-=item C<delr_value> (number) I<{read-only}>
+=item C<delr_value> (number)
 
 This is the path length correction term for the path.
 
 =item C<sigma2> (string)
 
-=item C<sigma2_value> (number) I<{read-only}>
+=item C<sigma2_value> (number)
 
 This is the mean square displacement shift term for the path.
 
 =item C<ei> (string)
 
-=item C<ei_value> (number) I<{read-only}>
+=item C<ei_value> (number)
 
 This is the imaginary energy correction term for the path.
 
 =item C<third> (string)
 
-=item C<third_value> (number) I<{read-only}>
+=item C<third_value> (number)
 
 This is the third cumulant term for the path.
 
 =item C<fourth> (string)
 
-=item C<fourth_value> (number) I<{read-only}>
+=item C<fourth_value> (number)
 
 This is the fourth cumulant term for the path.
 
 =item C<dphase> (string)
 
-=item C<dphase_value> (number) I<{read-only}>
+=item C<dphase_value> (number)
 
 This is the constant phase shift term for the path.
 
-=item C<id> (string) I<{read-only}>
+=item C<id> (string)
 
 This is Ifeffit's identification string for the path.
 
@@ -835,22 +728,22 @@ object associated with the Path.
 
 =over 4
 
-=item C<degen> (number) I<{read-only}>
+=item C<degen> (number)
 
 This is the degeneracy in the F<feffNNNN.dat> file associated with
 this Path object.
 
-=item C<nleg> (integer) I<{read-only}>
+=item C<nleg> (integer)
 
 This is the number of legs in the F<feffNNNN.dat> file associated
 with this Path object.
 
-=item C<reff> (number) I<{read-only}>
+=item C<reff> (number)
 
 This is the effective path length in the F<feffNNNN.dat> file
 associated with this Path object.
 
-=item C<zcwif> (number) I<{read-only}>
+=item C<zcwif> (number)
 
 This is the amplitude (i.e. "Zabinsky curved wave importance factor")
 for the F<feffNNNN.dat> file associated with this Path object.
@@ -859,22 +752,22 @@ Note that this is always 0 for paths that come from ScatteringPath
 objects, since the ScatteringPath objct does not, at this time, have a
 way of computing the ZCWIF.
 
-=item C<intrpline> (string) I<{read-only}>
+=item C<intrpline> (string)
 
 This is a line of text relating to this path from the interpretation
 the Feff calculation.
 
-=item C<geometry> (multiline string) I<{read-only}>
+=item C<geometry> (multiline string)
 
 This is a textual description of the scattering geometry associated
 with this path.
 
-=item C<is_col> (boolean) I<{read-only}>
+=item C<is_col> (boolean)
 
 This is true when the path associated with this object is a colinear
 or nearly colinear multiple scattering path.
 
-=item C<is_ss> (boolean) I<{read-only}>
+=item C<is_ss> (boolean)
 
 This is true when the path associated with this object is a single
 scattering path.
@@ -1038,37 +931,6 @@ is equivalent to (and fewer keystrokes than):
 
 =back
 
-=head1 COERCIONS
-
-When the reference to the Path object is used in string context, it
-returns the group name.  So
-
-  $path_object -> set({group    => 'path1',
-                       data     => $data_object,
-		       folder   => 'example/cu/',
-		       file     => "feff0001.dat",
-		       label    => "path 1",
-		       index    => 1,
-		      });
-  print "This is $path_object.\n";
-
-will print
-
-  This is path1.
-
-Rather than
-
-  This is Ifeffit::Demeter::Path.
-
-When the reference to the Path object is used in numerical context, it
-returns the path index.  So
-
-  sprint("This is path number %d.\n", $path_object);
-
-will print
-
-  This is path number 1.
-
 =head1 DIAGNOSTICS
 
 =over 4
@@ -1102,9 +964,15 @@ Demeter's dependencies are in the F<Bundle/DemeterBundle.pm> file.
 
 =head1 BUGS AND LIMITATIONS
 
+=over 4
+
+=item *
+
 Automated indexing currently only works when doing a fit.  If you want
 to plot paths before doing a fit, you will need to assign indeces by
 hand.
+
+=back
 
 Please report problems to Bruce Ravel (bravel AT bnl DOT gov)
 
@@ -1122,7 +990,7 @@ L<http://cars9.uchicago.edu/~ravel/software/>
 Copyright (c) 2006-2008 Bruce Ravel (bravel AT bnl DOT gov). All rights reserved.
 
 This module is free software; you can redistribute it and/or
-modify it under the same terms as Perl itself. See L<perlartistic>.
+modify it under the same terms as Perl itself. See L<perlgpl>.
 
 This program is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of

@@ -1,7 +1,7 @@
 { # -*- ifm -*-
   # save chi(k) template
-  #   {$D} returns the ifeffit group name
-  #   {$D->get("parameter")} returns the value of that parameter
+  #   {$D->group} returns the ifeffit group name
+  #   {$D->parameter} returns the value of that parameter
   # the filename and titles were passed to the template method
   # $titles should contain a string that Ifeffit will be able to
   # interpret as a set of title lines already set in Ifeffit.  one
@@ -12,18 +12,18 @@
   #                             {filename=>$filename, titles=>"\$dem_data_*"});
 }
 ##|
-##| saving "{$D->label}" as chi(k)
-set {$D}.chik  = {$D}.k*{$D}.chi
-set {$D}.chik2 = {$D}.k^2*{$D}.chi
-set {$D}.chik3 = {$D}.k^3*{$D}.chi
+##| saving "{$D->name}" as chi(k)
+set {$D->group}.chik  = {$D->group}.k*{$D->group}.chi
+set {$D->group}.chik2 = {$D->group}.k^2*{$D->group}.chi
+set {$D->group}.chik3 = {$D->group}.k^3*{$D->group}.chi
 write_data(file  = "{$filename}",
            ${$titles},
-	   ${$D}_title_*,
+	   ${$D->group}_title_*,
            label = "k chi chik chik2 chik3 win",
-           {$D}.k,
-           {$D}.chi,
-           {$D}.chik,
-           {$D}.chik2,
-           {$D}.chik3,
-           {$D}.win)
-erase {$D}.chik, {$D}.chik2, {$D}.chik3
+           {$D->group}.k,
+           {$D->group}.chi,
+           {$D->group}.chik,
+           {$D->group}.chik2,
+           {$D->group}.chik3,
+           {$D->group}.win)
+erase {$D->group}.chik, {$D->group}.chik2, {$D->group}.chik3

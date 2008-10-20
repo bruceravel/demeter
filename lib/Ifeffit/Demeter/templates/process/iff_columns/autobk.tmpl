@@ -1,27 +1,27 @@
 { # -*- ifm -*-
   # spline template
-  #   {$D} returns the ifeffit group name
-  #   {$D->get(""parameter")} returns the value of that parameter
+  #   {$D->group} returns the ifeffit group name
+  #   {$D->parameter} returns the value of that parameter
 }
 
-spline("{$D}.energy+{$D->get("bkg_eshift")}",
-       {$D}.xmu,
-       e0         = {$D->get("bkg_e0")},
-       rbkg       = {$D->get("bkg_rbkg")},
-       {($D->get('bkg_stan') !~ /None/) && sprintf("k_std      = %s.k,",    $D->get("bkg_stan"))}
-       {($D->get('bkg_stan') !~ /None/) && sprintf("chi_std    = %s.chi, ", $D->get("bkg_stan"))}
-       {($D->get('bkg_fixstep') != 0)   && sprintf("edge_step  = %.7g,",    $D->get("bkg_step"))}
-       {($D->get('bkg_fixstep') != 0)   &&         "do_pre     = F, "}
-       kmin       = {$D->get("bkg_spl1")},
-       kmax       = {$D->get("bkg_spl2")},
-       kweight    = {$D->get("bkg_kw")},
-       dk         = {$D->get("bkg_dk")},
-       kwindow    = {$D->get("bkg_kwindow")},
-       pre1       = {$D->get("bkg_pre1")},
-       pre2       = {$D->get("bkg_pre2")},
-       norm_order = {$D->get("bkg_nnorm")},
-       norm1      = {$D->get("bkg_nor1")},
-       norm2      = {$D->get("bkg_nor2")},
-       clamp1     = {$D->get("bkg_clamp1")},
-       clamp2     = {$D->get("bkg_clamp2")},
+spline("{$D->group}.energy+{$D->bkg_eshift}",
+       {$D->group}.xmu,
+       e0         = {$D->bkg_e0},
+       rbkg       = {$D->bkg_rbkg},
+       {($D->bkg_stan !~ /None/) && sprintf("k_std      = %s.k,",    $D->bkg_stan)}
+       {($D->bkg_stan !~ /None/) && sprintf("chi_std    = %s.chi, ", $D->bkg_stan)}
+       {($D->bkg_fixstep != 0)   && sprintf("edge_step  = %.7g,",    $D->bkg_step)}
+       {($D->bkg_fixstep != 0)   &&         "do_pre     = F, "}
+       kmin       = {$D->bkg_spl1},
+       kmax       = {$D->bkg_spl2},
+       kweight    = {$D->bkg_kw},
+       dk         = {$D->bkg_dk},
+       kwindow    = {$D->bkg_kwindow},
+       pre1       = {$D->bkg_pre1},
+       pre2       = {$D->bkg_pre2},
+       norm_order = {$D->bkg_nnorm},
+       norm1      = {$D->bkg_nor1},
+       norm2      = {$D->bkg_nor2},
+       clamp1     = {$D->bkg_clamp1},
+       clamp2     = {$D->bkg_clamp2},
        interp     = quad)

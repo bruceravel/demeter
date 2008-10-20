@@ -1,0 +1,8 @@
+{ # -*- ifm -*-
+  # template for saving a plot to a file
+  #   {$device} is one of png ps etc
+}
+set output '{$file}'
+#set terminal {$device} color font '{$C->default("gnuplot","font")},{$C->default("gnuplot","fontsize")}' enhanced
+set terminal {$device} enhanced
+

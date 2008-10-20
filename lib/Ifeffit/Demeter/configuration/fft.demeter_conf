@@ -1,10 +1,10 @@
 ## -*- config -*-
 ###########################################################################
-##                          Demeter is copyright (c) 2007 Bruce Ravel
+##                     Demeter is copyright (c) 2007-2008 Bruce Ravel
 ##                                                     bravel@bnl.gov
 ##                                        http://xafs.org/BruceRavel/
 ##
-##                   Ifeffit is copyright (c) 1992-2007 Matt Newville
+##                   Ifeffit is copyright (c) 1992-2008 Matt Newville
 ##                                         newville@cars.uchicago.edu
 ##                       http://cars9.uchicago.edu/~newville/ifeffit/
 ##
@@ -81,8 +81,8 @@ description
 
 variable=pc
 type=boolean
-onvalue=yes
-offvalue=no
+onvalue=1
+offvalue=0
 default=false
 description
   True means to apply central atom phase corrections by default to the

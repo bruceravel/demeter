@@ -42,8 +42,9 @@ if ($ANSIColor_exists) {
 };
 
 use Ifeffit::Demeter;
-Ifeffit::Demeter->set_mode({ifeffit=>1, buffer=>0, screen=>0});
-#Ifeffit::Demeter->set_mode({template_process=>"iff_columns"});
+my $demeter = Ifeffit::Demeter->new;
+$demeter->set_mode(ifeffit=>1, buffer=>0, screen=>0);
+#$demeter->set_mode(template_process=>"iff_columns");
 
 use Getopt::Long;
 my ($light_background, $dark_background, $use_pgplot, $use_gnuplot) = (0, 1, 1, 0);
@@ -56,20 +57,20 @@ my $result = GetOptions (
 ($light_background = 1) if (not $dark_background);
 my $INDIC = ($light_background) ? BLUE : YELLOW;
 ($use_pgplot = 1) if (not $use_gnuplot);
-Ifeffit::Demeter->plot_with('gnuplot') if $use_gnuplot;
+$demeter->plot_with('gnuplot') if $use_gnuplot;
 
 
 my $term = new Term::ReadLine 'Demeter test harness';
-my $plot = Ifeffit::Demeter->get_mode('plot');
+my $plot = $demeter->po;
 
-my $dobject = Ifeffit::Demeter::Data -> new({group => 'data0'});
-$dobject -> set({file	   => "data/fe.060.xmu",
-		 fft_kmax  => 3,
-		 fft_kmin  => 14,
-		 label	   => 'My iron data',
-		 bkg_spl2  => 18,
-		 bkg_nor2  => 1800,
-		});
+my $dobject = Ifeffit::Demeter::Data -> new(group => 'data0');
+$dobject -> set(file      => "data/fe.060.xmu",
+		fft_kmax  => 3,
+		fft_kmin  => 14,
+		name      => 'My iron data',
+		bkg_spl2  => 18,
+		bkg_nor2  => 1800,
+	       );
 
 query();
 my $prompt = "Choose a way to plot the data [1-7 or q to quit] ";
@@ -127,104 +128,104 @@ sub spew {
 sub plot1 {
   my ($data) = @_;
   state("plotting mu + background + pre-edge + post-edge\n");
-  $data->po->set({e_mu      => 1,    e_bkg     => 1,
-		  e_norm    => 0,    e_der     => 0,
-		  e_pre     => 1,    e_post    => 1,
-		  e_markers => 1,
-		  emin      => -200, emax      => 2000,
-		 });
+  $data->po->set(e_mu      => 1,    e_bkg     => 1,
+		 e_norm    => 0,    e_der     => 0,
+		 e_pre     => 1,    e_post    => 1,
+		 e_markers => 1,
+		 emin      => -200, emax      => 2000,
+		);
   $data->plot('E');
 };
 
 sub plot2 {
   my ($data) = @_;
   state("normalized mu + normalized background\n");
-  $data->po->set({e_mu      => 1,    e_bkg     => 1,
-		  e_norm    => 1,    e_der     => 0,
-		  e_pre     => 0,    e_post    => 0,
-		  e_markers => 1,
-		  emin      => -200, emax      => 2000,
-		 });
-  $data->set({bkg_flatten=>0});
+  $data->po->set(e_mu      => 1,    e_bkg     => 1,
+		 e_norm    => 1,    e_der     => 0,
+		 e_pre     => 0,    e_post    => 0,
+		 e_markers => 1,
+		 emin      => -200, emax      => 2000,
+		);
+  $data->set(bkg_flatten=>0);
   $data->plot('E');
 };
 
 sub plot3 {
   my ($data) = @_;
   state("flattened mu + flattened background\n");
-  $data->po->set({e_mu      => 1,    e_bkg     => 1,
-		  e_norm    => 1,    e_der     => 0,
-		  e_pre     => 0,    e_post    => 0,
-		  e_markers => 1,
-		  emin      => -200, emax      => 2000,
-		 });
-  $data->set({bkg_flatten=>1});
+  $data->po->set(e_mu      => 1,    e_bkg     => 1,
+		 e_norm    => 1,    e_der     => 0,
+		 e_pre     => 0,    e_post    => 0,
+		 e_markers => 1,
+		 emin      => -200, emax      => 2000,
+		);
+  $data->set(bkg_flatten=>1);
   $data->plot('E');
 };
 
 sub plot4 {
   my ($data) = @_;
   state("derivative of mu\n");
-  $data->po->set({e_mu      => 1,    e_bkg     => 0,
-		  e_norm    => 0,    e_der     => 1,
-		  e_pre     => 0,    e_post    => 0,
-		  e_markers => 1,
-		  emin      => -20,  emax      => 120,
-		 });
-  $data->set({label=>'derivative'})->plot('E');
-  $data->po->set({e_norm => 1});
-  $data->set({label=>'norm. deriv.'})->plot('E');
+  $data->po->set(e_mu      => 1,    e_bkg     => 0,
+		 e_norm    => 0,    e_der     => 1,
+		 e_pre     => 0,    e_post    => 0,
+		 e_markers => 1,
+		 emin      => -20,  emax      => 120,
+		 );
+  $data->set(name=>'derivative')->plot('E');
+  $data->po->set(e_norm => 1);
+  $data->set(name=>'norm. deriv.')->plot('E');
 };
 
 sub plot5 {
   my ($data) = @_;
   state("scale three k-weights to plot together\n");
-  $data->po->legend({dy=>0.05, x=>0.73});
+  $data->po->legend(dy=>0.05, x=>0.73);
 
-  $data->po->set({kweight => 1, kmax => 17, });
-  $data->set({plot_multiplier => 5,   'y_offset'=>14, label=>'kw=1, scaled by 5'});
+  $data->po->set(kweight => 1, kmax => 17, );
+  $data->set(plot_multiplier => 5,   'y_offset'=>14, name=>'kw=1, scaled by 5');
   $data->plot('k');
 
-  $data->po->set({kweight => 2, });
-  $data->set({plot_multiplier => 1,   'y_offset'=>7,  label=>'kw=2, unscaled'});
+  $data->po->set(kweight => 2, );
+  $data->set(plot_multiplier => 1,   'y_offset'=>7,  name=>'kw=2, unscaled');
   $data->plot('k');
 
-  $data->po->set({kweight => 3, });
-  $data->set({plot_multiplier => 0.2, 'y_offset'=>0,  label=>'kw=3, scaled by 0.2'});
+  $data->po->set(kweight => 3, );
+  $data->set(plot_multiplier => 0.2, 'y_offset'=>0,  name=>'kw=3, scaled by 0.2');
   $data->plot('k');
 
-  $data->set({label=>'My iron data', plot_multiplier=>1}); # reset the label
+  $data->set(name=>'My iron data', plot_multiplier=>1); # reset the label
 };
 
 sub plot6 {
   my ($data) = @_;
   state("|chi(R)| + window\n");
-  $data -> po -> set({kweight => 2, r_pl => 'm', });
+  $data -> po -> set(kweight => 2, r_pl => 'm', );
   $data -> plot('r') -> plot_window('r');
 };
 
 sub plot7 {
   my ($data) = @_;
   state("envelope, real, imaginary in R\n");
-  $data->po->legend({dy=>0.05, x=>0.73});
+  $data->po->legend(dy=>0.05, x=>0.73);
 
-  $data->po->set({kweight => 2, r_pl => 'e', });
+  $data->po->set(kweight => 2, r_pl => 'e', );
   $data->plot('r');
 
-  $data->set({label=>'Real part'});
-  $data->po->set({r_pl => 'r', });
+  $data->set(name=>'Real part');
+  $data->po->set(r_pl => 'r', );
   $data->plot('r');
 
-  $data->set({label=>'Imaginary part'});
-  $data->po->set({r_pl => 'i', });
+  $data->set(name=>'Imaginary part');
+  $data->po->set(r_pl => 'i', );
   $data->plot('r');
 
-  $data->set({label=>'My iron data'}); # reset the label
+  $data->set(name=>'My iron data'); # reset the label
 };
 
 sub plot8 {
   my ($data) = @_;
   state("kq plot: chi(k)*k^2 + Re[chi(q)] + window\n");
-  $data -> po -> set({kweight => 2, 'q_pl' => 'r', qmax => 17, });
+  $data -> po -> set(kweight => 2, 'q_pl' => 'r', qmax => 17, );
   $data -> plot('kq') -> plot_window('k');
 };

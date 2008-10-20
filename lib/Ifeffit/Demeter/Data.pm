@@ -15,978 +15,610 @@ package Ifeffit::Demeter::Data;
 
 =cut
 
-use base qw(
-	     Ifeffit::Demeter
-	     Ifeffit::Demeter::Data::Mu
-	     Ifeffit::Demeter::Data::E0
-	     Ifeffit::Demeter::Data::Process
-	     Ifeffit::Demeter::Data::Defaults
-	     Ifeffit::Demeter::Data::Athena
-	     Ifeffit::Demeter::Dispose
-	     Ifeffit::Demeter::Project
-	   );
-use strict;
-use warnings;
-#use diagnostics;
-use aliased 'Ifeffit::Demeter::Tools';
-use Carp;
-use Class::Std;
-use Fatal qw(open close);
-use Ifeffit;
-use List::Util qw(min max);
-use List::MoreUtils qw(pairwise);
+use List::MoreUtils qw(any);
 use Regexp::Common;
-use Regexp::List;
-use Regexp::Optimizer;
 use Readonly;
 Readonly my $NUMBER   => $RE{num}{real};
 Readonly my $PI       => 4*atan2(1,1);
 Readonly my $NULLFILE => '@&^^null^&@';
 
-{
-  my $opt  = Regexp::List->new;
-  ## set default data parameter values
-  my $config = Ifeffit::Demeter->get_mode("params");
-  my %data_defaults = (
-		       group		  => q{my},
-		       tag		  => q{my},
-		       cv                 => 0,    # characteristic value
-		       file		  => $NULLFILE,
-		       from_athena        => 0,
-		       label		  => q{},
-		       fitsum		  => q{},  # fit/sum, indicated what was recently done
-		       fitting		  => 0,	   # boolean
-		       fit_data		  => 0,
+use Moose;
+extends 'Ifeffit::Demeter';
+with 'Ifeffit::Demeter::Data::Arrays';
+with 'Ifeffit::Demeter::Data::Athena';
+with 'Ifeffit::Demeter::Data::Defaults';
+with 'Ifeffit::Demeter::Data::E0';
+with 'Ifeffit::Demeter::Data::FT';
+with 'Ifeffit::Demeter::Data::IO';
+with 'Ifeffit::Demeter::Data::Mu';
+with 'Ifeffit::Demeter::Data::Parts';
+with 'Ifeffit::Demeter::Data::Plot';
+with 'Ifeffit::Demeter::Data::Process';
 
-		       columns            => q{},
-		       energy             => q{},
-		       numerator          => q{},
-		       denominator        => q{},
-		       ln                 => 0,
-		       energy_string      => q{},
-		       xmu_string         => q{},
-		       i0_string          => q{},
+use Moose::Util::TypeConstraints;
+use Ifeffit::Demeter::StrTypes qw( Element
+ 				   Edge
+ 				   Clamp
+ 				   FitSpace
+				   Window
+				   Empty
+				   DataType
+ 				);
+use Ifeffit::Demeter::NumTypes qw( Natural
+				   PosInt
+				   PosNum
+				   NonNeg
+				);
 
-		       is_col             => 0,
-		       is_xmu		  => 0,	   # boolean
-		       is_xmudat	  => 0,	   # boolean
-		       is_chi		  => 0,	   # boolean
-		       is_nor		  => 0,	   # boolean
-		       is_xanes		  => 0,	   # boolean
-		       generated          => 0,    # boolean
-		       is_merge           => 0,    # boolean
+## To do: triggers for keeping min/max pairs in the right order, respecting the complicated configuration rules
 
-		       update_data	  => 1,
-		       update_columns	  => 1,
-		       update_norm	  => 1,
-		       update_bkg	  => 1,
-		       update_fft	  => 1,
-		       update_bft	  => 1,
+has '+plottable'  => (default => 1);
+has '+data'       => (isa => Empty.'|Ifeffit::Demeter::Data');
+has 'tag'         => (is => 'rw', isa => 'Str',  default => q{});
+has 'cv'          => (is => 'rw', isa => 'Num',  default => 0);
+has 'file'        => (is => 'rw', isa => 'Str',  default => $NULLFILE,
+		      trigger => sub{my ($self, $new) = @_; $self->update_data(1) if $new} );
+has 'from_athena' => (is => 'rw', isa => 'Bool', default => 0);
+subtype 'FitSum'
+      => as 'Str'
+      => where { lc($_) =~ m{\A(?:\s*|fit|sum)\z} }
+      => message { "This is either a fit or a sum." };
+has 'fitsum'      => (is => 'rw', isa => 'FitSum', default => q{});
+has 'fitting'     => (is => 'rw', isa => 'Bool',   default => 0);
 
-		       ## processing level
-		       bkg_e0		  => 0,	       # number
-		       bkg_e0_fraction	  => $config->default("bkg", "e0_fraction") || 0.5,
-		       bkg_eshift	  => 0,	       # number
-		       bkg_kw		  => $config->default("bkg", "kw")   ||  2,
-		       bkg_rbkg		  => $config->default("bkg", "rbkg") ||  1,
-		       bkg_dk		  => $config->default("bkg", "dk")   ||  0,
-		       bkg_pre1		  => $config->default("bkg", "pre1") || -150,
-		       bkg_pre2		  => $config->default("bkg", "pre2") || -30,
-		       bkg_nor1		  => $config->default("bkg", "nor1") ||  150,
-		       bkg_nor2		  => $config->default("bkg", "nor2") ||  400,
-		       bkg_spl1		  => $config->default("bkg", "spl1") ||  0,
-		       bkg_spl2		  => $config->default("bkg", "spl2") ||  0,
-		       bkg_spl1e	  => 0,	       # number
-		       bkg_spl2e	  => 0,	       # number
-		       bkg_kwindow	  => $config->default("bkg", "kwindow") || 'hanning',
-		       bkg_slope	  => 0,		       # number
-		       bkg_int		  => 0,		       # number
-		       bkg_step		  => 0,		       # number
-		       bkg_fitted_step	  => 0,		       # number
-		       bkg_fixstep	  => 0,		       # boolean
-		       bkg_nc0		  => 0,		       # number
-		       bkg_nc1		  => 0,		       # number
-		       bkg_nc2		  => 0,		       # number
-		       bkg_flatten	  => $config->default("bkg", "flatten") || 1,
-		       bkg_fnorm	  => $config->default("bkg", "fnorm")   || 0,
-		       bkg_nnorm	  => $config->default("bkg", "nnorm")   || 3,
-		       bkg_stan		  => 'None',
-		       bkg_stan_lab	  => '0: None',
-		       bkg_clamp1	  => $config->default("bkg", "clamp1")  || 0,
-		       bkg_clamp2	  => $config->default("bkg", "clamp2")  || 24,
-		       bkg_nclamp	  => $config->default("bkg", "nclamp")  || 5,
-		       bkg_tie_e0	  => 0,		       # boolean
-		       bkg_former_e0	  => 0,		       # number
-		       bkg_cl		  => 0,		       # boolean
-		       bkg_z		  => 'H',	       # element
+## -------- column selection attributes
+has  $_  => (is => 'rw', isa => 'Str',  default => q{},
+	     trigger => sub{ my ($self, $new) = @_; if ($new) {$self->datatype('xmu'); $self->update_columns(1); $self->is_col(1)} })
+  foreach (qw(energy numerator denominator));
+has  $_  => (is => 'rw', isa => 'Str',  default => q{})
+  foreach (qw(columns energy_string xmu_string i0_string));
+has 'ln' => (is => 'rw', isa => 'Bool', default => 0,
+	     trigger => sub{ my ($self, $new) = @_; $self->update_columns(1), $self->is_col(1) if $new});
 
-		       fft_edge		  => 'K',	       # K L1 L2 L3
-		       fft_kmin		  => $config->default("fft", "kmin")     ||  3,
-		       fft_kmax		  => $config->default("fft", "kmax")     || -2,
-		       fft_dk		  => $config->default("fft", "dk")       ||  2,
-		       fft_kwindow	  => $config->default("fft", "kwindow")  || 'hanning',
-		       fft_pc		  => $config->default("fft", "pc")       ||  0,
-		       rmax_out		  => $config->default("fft", "rmax_out") ||  10,
+## -------- data type flags
+has 'datatype' => (is => 'rw', isa => Empty.'|'.DataType, default => q{});
+has  $_  => (is => 'rw', isa => 'Bool',  default => 0)
+  foreach (qw(is_col is_nor));
+has 'is_merge' => (is => 'rw', isa => 'Str',  default => q{});
+#foreach (qw(is_col is_xmu is_xmudat is_chi is_nor is_xanes is_merge));
 
-		       bft_rwindow	  => $config->default("bft", "rwindow")  || 'hanning',
-		       bft_rmin		  => $config->default("bft", "rmin")     ||  1,
-		       bft_rmax		  => $config->default("bft", "rmax")     ||  3,
-		       bft_dr		  => $config->default("bft", "dr")       ||  0.2,
+has 'generated'  => (is => 'rw', isa => 'Bool',  default => 0,
+		    trigger => sub{ my ($self, $new) = @_;
+				    $self->update_data(0);
+				    $self->update_columns(0);
+				    $self->is_col(0);
+				    $self->columns(q{});
+				    $self->energy(q{});
+				    $self->numerator(q{});
+				    $self->denominator(q{});
+				    $self->ln(0);
+				    $self->energy_string(q{});
+				    $self->xmu_string(q{});
+				  });
 
-		       ## fitting level
-		       fit_k1		  => $config->default("fit", "k1")         ||  1,
-		       fit_k2		  => $config->default("fit", "k2")         ||  0,
-		       fit_k3		  => $config->default("fit", "k3")         ||  1,
-		       fit_karb		  => $config->default("fit", "karb")       ||  0,
-		       fit_karb_value	  => $config->default("fit", "karb_value") ||  0,
-		       fit_space	  => $config->default("fit", "space")      || 'r',
-		       fit_epsilon	  => 0,	   # float
-		       fit_cormin	  => $config->default("fit", "cormin")     ||  0.4,
-		       fit_pcpath	  => 'None',
-		       fit_include	  => 1,	   # boolean
-		       fit_plot_after_fit => 0,	   # boolean
-		       fit_do_bkg	  => 0,	   # boolean
-		       fit_titles	  => q{},  # multiline
+## -------- data processing status flags
+has 'update_data'    => (is => 'rw', isa => 'Bool',  default => 1,
+			 trigger => sub{ my($self, $new) = @_; $self->update_columns(1) if $new});
 
-		       ## plotting level
-		       'y_offset'	  => 0,
-		       plot_multiplier	  => 1,
+has 'update_columns' => (is => 'rw', isa => 'Bool',  default => 1,
+			 trigger => sub{ my($self, $new) = @_; $self->update_norm(1) if $new});
 
-		      );
-  my $number_attr   = $opt->list2re(qw(fit_karb_value cv
-                                       bkg_e0 bkg_eshift bkg_kw bkg_rbkg bkg_dk
-                                       bkg_pre1 bkg_pre2 bkg_nor1 bkg_nor2
-                                       bkg_spl1 bkg_spl2 bkg_spl1e bkg_spl2e
-                                       bkg_slope bkg_int bkg_nc0 bkg_nc1 bkg_nc2
-                                       bkg_step bkg_fitted_step bkg_former_e0
-                                       fft_kmin fft_max fft_dk
-                                       bft_rmin bft_rmax bft_dr
-                                       fit_epsilon fit_cormin));
-  ##
-  my $boolean_attr  = $opt->list2re(qw(bkg_fixstep bkg_flatten bkg_fnorm
-                                       bkg_tie_e0 bkg_cl fit_k1 fit_k2 fit_k3
-                                       fit_karb fit_include fit_plot_after_fit
-                                       fit_do_bkg is_xmu is_chi is_nor is_xmudat is_nor
-				       fft_pc fitting is_merge generated is_col));
-  my $posint_attr   = $opt->list2re(qw(bkg_clamp1 bkg_clamp2 bkg_nclamp));
-  my $window_attr   = $opt->list2re(qw(bkg_kwindow fft_kwindow bft_rwindow));
-  my $window_regexp = $opt->list2re(qw(kaiser-bessel hanning parzen welch sine gaussian));
-  my $valid_group   = '\A[a-z][a-z0-9:_\?&]{0-63}\z';
+has 'update_norm'    => (is => 'rw', isa => 'Bool',  default => 1,
+			 trigger => sub{ my($self, $new) = @_; $self->update_bkg(1) if $new});
 
-  sub BUILD {
-    my ($self, $ident, $arguments) = @_;
-    $self -> set(\%data_defaults);
-    $self -> set({bkg_spl1=>$data_defaults{bkg_spl1}, bkg_spl2=>$data_defaults{bkg_spl2}});
-    $self->SUPER::set({is_xmu=>0, is_chi=>0});
-    my $group = $arguments->{group} || Tools -> random_string(4);
-    $self->set_group($group);
+has 'update_bkg'     => (is => 'rw', isa => 'Bool',  default => 1,
+			 trigger => sub{ my($self, $new) = @_; $self->update_fft(1) if $new});
 
-    ## data specific attributes
-    $self -> set($arguments);
+has 'update_fft'     => (is => 'rw', isa => 'Bool',  default => 1,
+			 trigger => sub{ my($self, $new) = @_; $self->update_bft(1) if $new});
+
+has 'update_bft'     => (is => 'rw', isa => 'Bool',  default => 1);
+
+
+has 'nidp' => (is => 'rw', isa => 'Num');
+
+## -------- background removal parameters
+has 'bkg_e0'          => (is => 'rw', isa => 'Num',   default => 0,
+			  trigger => sub{ my($self) = @_; $self->update_bkg(1), $self->update_norm(1) });
+
+has 'bkg_e0_fraction' => (is => 'rw', isa =>  PosNum, default => sub{ shift->mode->config->default("bkg", "e0_fraction") || 0.5});
+
+has 'bkg_eshift'      => (is => 'rw', isa => 'Num',   default => 0,
+			  trigger => sub{ my($self) = @_; $self->update_bkg(1), $self->update_norm(1) });
+
+has 'bkg_kw'          => (is => 'rw', isa =>  NonNeg, default => sub{ shift->mode->config->default("bkg", "kw")          || 1},
+			  trigger => sub{ my($self) = @_; $self->update_bkg(1) });
+
+has 'bkg_rbkg'        => (is => 'rw', isa =>  PosNum, default => sub{ shift->mode->config->default("bkg", "rbkg")        || 1},
+			  trigger => sub{ my($self) = @_; $self->update_bkg(1) });
+
+has 'bkg_dk'          => (is => 'rw', isa =>  NonNeg, default => sub{ shift->mode->config->default("bkg", "dk")          || 1},
+			  trigger => sub{ my($self) = @_; $self->update_bkg(1) });
+
+has 'bkg_pre1'        => (is => 'rw', isa => 'Num',   default => sub{ shift->mode->config->default("bkg", "pre1")        || -150},
+			  trigger => sub{ my($self) = @_; $self->update_bkg(1), $self->update_norm(1) });
+
+has 'bkg_pre2'        => (is => 'rw', isa => 'Num',   default => sub{ shift->mode->config->default("bkg", "pre2")        || -30},
+			  trigger => sub{ my($self) = @_; $self->update_bkg(1), $self->update_norm(1) });
+
+has 'bkg_nor1'        => (is => 'rw', isa => 'Num',   default => sub{ shift->mode->config->default("bkg", "nor1")        || 150},
+			  trigger => sub{ my($self) = @_; $self->update_bkg(1), $self->update_norm(1) });
+
+has 'bkg_nor2'        => (is => 'rw', isa => 'Num',   default => sub{ shift->mode->config->default("bkg", "nor2")        || 400},
+			  trigger => sub{ my($self) = @_; $self->update_bkg(1), $self->update_norm(1) });
+
+## these need a trigger
+has 'bkg_spl1'        => (is => 'rw', isa => 'Num',
+			  trigger => sub{ my($self) = @_; $self->update_bkg(1) },
+			  default => sub{ shift->mode->config->default("bkg", "spl1")        || 0});
+has 'bkg_spl2'        => (is => 'rw', isa => 'Num',
+			  trigger => sub{ my($self) = @_; $self->update_bkg(1) },
+			  default => sub{ shift->mode->config->default("bkg", "spl2")        || 0});
+has 'bkg_spl1e'       => (is => 'rw', isa => 'Num',
+			  trigger => sub{ my($self) = @_; $self->update_bkg(1) },
+			  default => 0);
+has 'bkg_spl2e'       => (is => 'rw', isa => 'Num',
+			  trigger => sub{ my($self) = @_; $self->update_bkg(1) },
+			  default => 0);
+
+has 'bkg_kwindow' => (is => 'rw', isa =>  Window,   default => sub{ shift->mode->config->default("bkg", "kwindow")     || 'kaiser-bessel'},
+		      trigger => sub{ my($self) = @_; $self->update_bkg(1) });
+
+has $_ => (is => 'rw', isa => 'Num',  default => 0) foreach (qw(bkg_slope bkg_int bkg_step bkg_fitted_step bkg_nc0 bkg_nc1 bkg_nc2 bkg_former_e0));
+
+has $_ => (is => 'rw', isa => 'Bool', default => 0) foreach (qw(bkg_fixstep bkg_tie_e0 bkg_cl));
+
+has 'bkg_z'       => (is => 'rw', isa =>  Element,  default => 'H');
+
+has 'bkg_stan'    => (is => 'rw', isa => 'Str',     default => 'None',
+		      trigger => sub{ my($self) = @_; $self->update_bkg(1) });
+
+has 'bkg_flatten' => (is => 'rw', isa => 'Bool',    default => sub{ shift->mode->config->default("bkg", "flatten") || 1});
+
+has 'bkg_fnorm'	  => (is => 'rw', isa => 'Bool',    default => sub{ shift->mode->config->default("bkg", "fnorm")   || 0},
+		      trigger => sub{ my($self) = @_; $self->update_bkg(1), $self->update_norm(1) });
+
+has 'bkg_nnorm'	  => (is => 'rw', isa =>  PosInt,   default => sub{ shift->mode->config->default("bkg", "nnorm")   || 3},
+		      trigger => sub{ my($self) = @_; $self->update_bkg(1), $self->update_norm(1) });
+
+has 'bkg_clamp1'  => (is => 'rw', isa =>  Natural,  default => sub{ shift->mode->config->default("bkg", "clamp1")  || 0},
+		      trigger => sub{ my($self) = @_; $self->update_bkg(1) });
+
+has 'bkg_clamp2'  => (is => 'rw', isa =>  Natural,  default => sub{ shift->mode->config->default("bkg", "clamp2")  || 24},
+		      trigger => sub{ my($self) = @_; $self->update_bkg(1) });
+
+has 'bkg_nclamp'  => (is => 'rw', isa =>  PosInt,   default => sub{ shift->mode->config->default("bkg", "nclamp")  || 5},
+		      trigger => sub{ my($self) = @_; $self->update_bkg(1) });
+
+## -------- foreward Fourier transform parameters
+has 'fft_edge'    => (is => 'rw', isa =>  Edge,    default => 'K');
+
+has 'fft_kmin'    => (is => 'rw', isa => 'Num',
+		      trigger => sub{ my($self) = @_; $self->update_fft(1); &_nidp},
+		      default => sub{ shift->mode->config->default("fft", "kmin")     ||  3});
+
+has 'fft_kmax'    => (is => 'rw', isa => 'Num',
+		      trigger => sub{ my($self) = @_; $self->update_fft(1); &_nidp},
+		      default => sub{ shift->mode->config->default("fft", "kmax")     || -2});
+
+has 'fft_dk'      => (is => 'rw', isa =>  NonNeg,  default => sub{ shift->mode->config->default("fft", "dk")       ||  2},
+		      trigger => sub{ my($self) = @_; $self->update_fft(1)});
+
+has 'fft_kwindow' => (is => 'rw', isa =>  Window,  default => sub{ shift->mode->config->default("fft", "kwindow")  || 'hanning'},
+		      trigger => sub{ my($self) = @_; $self->update_fft(1)});
+
+has 'fft_pc'      => (is => 'rw', isa => 'Bool',   default => sub{ shift->mode->config->default("fft", "pc")       ||  0},
+		      trigger => sub{ my($self) = @_; $self->update_fft(1)});
+
+has 'rmax_out'    => (is => 'rw', isa =>  PosNum,  default => sub{ shift->mode->config->default("fft", "rmax_out") ||  10},
+		      trigger => sub{ my($self) = @_; $self->update_fft(1)});
+
+## -------- backward Fourier transform parameters
+has 'bft_rwindow' => (is => 'rw', isa =>  Window,  default => sub{ shift->mode->config->default("bft", "rwindow")  || 'hanning'},
+		      trigger => sub{ my($self) = @_; $self->update_bft(1)});
+
+has 'bft_rmin'    => (is => 'rw', isa =>  PosNum,
+		      trigger => sub{ my($self) = @_; $self->update_bft(1); &_nidp},
+		      default => sub{ shift->mode->config->default("bft", "rmin")     ||  1});
+
+has 'bft_rmax'    => (is => 'rw', isa =>  PosNum,
+		      trigger => sub{ my($self) = @_; $self->update_bft(1); &_nidp},
+		      default => sub{ shift->mode->config->default("bft", "rmax")     ||  3});
+
+has 'bft_dr'      => (is => 'rw', isa =>  NonNeg,    default => sub{ shift->mode->config->default("bft", "dr")       ||  0.2},
+		      trigger => sub{ my($self) = @_; $self->update_bft(1)});
+
+
+## -------- fitting parameters
+has 'fit_k1'		  => (is => 'rw', isa => 'Bool',     default => sub{ shift->mode->config->default("fit", "k1")         ||  1});
+has 'fit_k2'		  => (is => 'rw', isa => 'Bool',     default => sub{ shift->mode->config->default("fit", "k2")         ||  1});
+has 'fit_k3'		  => (is => 'rw', isa => 'Bool',     default => sub{ shift->mode->config->default("fit", "k3")         ||  1});
+has 'fit_karb'		  => (is => 'rw', isa => 'Bool',     default => sub{ shift->mode->config->default("fit", "karb")       ||  0});
+has 'fit_karb_value'	  => (is => 'rw', isa =>  NonNeg,    default => sub{ shift->mode->config->default("fit", "karb_value") ||  0});
+has 'fit_space'	          => (is => 'rw', isa =>  FitSpace,  default => sub{ shift->mode->config->default("fit", "space")      || 'r'});
+has 'fit_epsilon'	  => (is => 'rw', isa => 'Num',      default => 0);
+has 'fit_cormin'	  => (is => 'rw', isa =>  PosNum,    default => sub{ shift->mode->config->default("fit", "cormin")     ||  0.4});
+## or Ifeffit::Demeter::Path
+has 'fit_pcpath'	  => (is => 'rw', isa => 'Str',      default => 'None');
+has 'fit_include'	  => (is => 'rw', isa => 'Bool',     default => 1);
+has 'fit_data'	          => (is => 'rw', isa =>  Natural,   default => 0);
+has 'fit_plot_after_fit'  => (is => 'rw', isa => 'Bool',     default => 0);
+has 'fit_do_bkg'          => (is => 'rw', isa => 'Bool',     default => 0);
+has 'fit_titles'	  => (is => 'rw', isa => 'Str',      default => q{});
+
+## -------- plotting parameters
+has 'y_offset'	          => (is => 'rw', isa => 'Num',      default => 0);
+has 'plot_multiplier'	  => (is => 'rw', isa => 'Num',      default => 1);
+
+
+
+## I do not know of a way to set the data attribute to this instance using "has"....
+sub BUILD {
+  my ($self, @params) = @_;
+  $self->data($self);
+  $self->tag($self->group);
+};
+
+
+#after 'clone' => sub {
+#  my $self = shift;
+#  if (
+#};
+
+
+sub _nidp {
+  my $self = shift;
+  $self->nidp( 2*($self->fft_kmax - $self->fft_kmin)*($self->bft_rmax - $self->bft_rmin)/$PI );
+}
+sub chi_noise {
+  my ($self) = @_;
+  my $string = $self->template("process", "chi_noise");
+  $self->dispose($string);
+  return (Ifeffit::get_scalar("epsilon_k"),
+	  Ifeffit::get_scalar("epsilon_r"),
+	  Ifeffit::get_scalar("kmax_suggest"),
+	 );
+};
+
+sub _kw_string {
+  my ($self) = @_;
+  my @list = ();
+  push @list, "1" if $self->fit_k1;
+  push @list, "2" if $self->fit_k2;
+  push @list, "3" if $self->fit_k3;
+  push @list, $self->fit_karb_value if $self->fit_karb;
+  return join(",", @list);
+};
+
+
+sub standard {
+  my ($self) = @_;
+  $self->mode->standard($self);
+  return $self;
+};
+sub unset_standard {
+  my ($self) = @_;
+  $self->mode->standard(q{});
+  return $self;
+};
+
+sub set_windows {
+  my ($self, $window) = @_;
+  $window = lc($window);
+  return 0 if not is_Window($window);
+  $self->bkg_kwindow($window);
+  $self->fft_kwindow($window);
+  $self->bft_rwindow($window);
+  return $self;
+};
+
+## test for athena project file
+sub determine_data_type {
+  my ($self) = @_;
+  my $file = $self->file;
+  return 0 if ($file eq $NULLFILE);
+  return 0 if is_Empty($file);
+  ## figure out how to interpret these data -- need some error checking
+  if ((not $self->is_col) and ($self->datatype ne "xmu") and ($self->datatype ne "chi") ) {
+    Ifeffit::ifeffit("read_data(file=\"$file\", group=b___lah)\n");
+    my $f = (split(" ", Ifeffit::get_string('$column_label')))[0];
+    my @x = Ifeffit::get_array("b___lah.$f");
+    Ifeffit::ifeffit("erase \@group b___lah\n");
+    if ($x[0] > 100) {		# seems to be energy data
+      $self->datatype('xmu');
+      $self->update_columns(0);
+      $self->update_norm(1);
+    } elsif ($x[-1] > 35) {	# seems to be relative energy data
+      $self->datatype('xmu');
+      $self->update_columns(0);
+      $self->update_norm(1);
+    } else {			# it's chi(k) data
+      $self->datatype('chi');
+      $self->update_columns(0);
+      $self->update_norm(0);
+      $self->update_bkg(0);
+    };
   };
-#   sub DEMOLISH {
-#     my ($self, $ident) = @_;
-#     my $group = $self->get_group;
-#     if ($group) {
-#       my $string = Ifeffit::Demeter->template("process", "erase_group", {dead=>$group});
-#       Ifeffit::Demeter->dispose($string);
-#     };
-#     return;
+  return $self;
+};
+
+
+sub _update {
+  my ($self, $which) = @_;
+  $which = lc($which);
+
+ WHICH: {
+    ($which eq 'data') and do {
+      $self->read_data if ($self->update_data);
+      last WHICH;
+    };
+    ($which eq 'normalize') and do {
+      $self->read_data if ($self->update_data);
+      $self->put_data  if ($self->update_columns);
+      last WHICH;
+    };
+    ($which eq 'background') and do {
+      $self->read_data if ($self->update_data);
+      $self->put_data  if ($self->update_columns);
+      $self->normalize if ($self->update_norm and ($self->datatype eq 'xmu'));
+      last WHICH;
+    };
+    ($which eq 'fft') and do {
+      $self->read_data if ($self->update_data);
+      $self->put_data  if ($self->update_columns);
+      $self->normalize if ($self->update_norm and ($self->datatype eq 'xmu'));
+      $self->autobk    if ($self->update_bkg  and ($self->datatype eq 'xmu'));
+      last WHICH;
+    };
+    ($which eq 'bft') and do {
+      $self->read_data if ($self->update_data);
+      $self->put_data  if ($self->update_columns);
+      $self->normalize if ($self->update_norm and ($self->datatype eq 'xmu'));
+      $self->autobk    if ($self->update_bkg  and ($self->datatype eq 'xmu'));
+      $self->fft       if ($self->update_fft);
+      last WHICH;
+    };
+    ($which eq 'all') and do {
+      $self->read_data if ($self->update_data);
+      $self->put_data  if ($self->update_columns);
+      $self->normalize if ($self->update_norm and ($self->datatype eq 'xmu'));
+      $self->autobk    if ($self->update_bkg  and ($self->datatype eq 'xmu'));
+      $self->fft       if ($self->update_fft);
+      $self->bft       if ($self->update_bft);
+      last WHICH;
+    };
+
+ };
+  return $self;
+};
+
+
+
+# sub read_data {
+#   my ($self, $type) = @_;
+#   $type ||= q{};
+#   $self->dispose($self->_read_data_command($type));
+#   $self->update_data(0);
+# };
+sub read_data {
+  my ($self) = @_;
+  my $type = ($self->is_col) ? q{}
+           :  $self->datatype;
+  if ((not $self->is_col) and (not $type)) {
+    $self->determine_data_type;
+    $type = $self->datatype;
+  };
+  my $string = $self->_read_data_command($type);
+  $self->dispose($string);
+  $self->update_data(0);
+  if ($self->is_col) {
+    $self->columns(Ifeffit::get_string("column_label"));
+  };
+  $self->sort_data;
+  $self->put_data;
+  return $self;
+};
+
+sub sort_data {
+  my ($self) = @_;
+  my @x = ();
+  if ($self->is_col) {
+
+    ## This block is a complicated bit.  The idea is to store all
+    ## the data in a list of lists.  In this way, I can sort all the
+    ## data in one swoop by sorting off the energy part of the list
+    ## of lists.  After sorting, I check the data for repeated
+    ## points and remove them.  Finally, I reload the data into
+    ## ifeffit and carry on like normal data
+
+    ## This gets a list of column labels
+    my @cols = split(" ", $self->columns);
+    my @lol;
+    ## energy value is zeroth in each anon list
+    unshift @cols, q{};
+    my $ecol = $self->energy;
+    $ecol =~ s{^\$}{};
+    my @array = $self->get_array($cols[$ecol]);
+    foreach (0 .. $#array) {push @{$lol[$_]}, $array[$_]};
+    foreach my $c (@cols) {
+      next unless $c;
+      ## load other cols (including energy col) into anon. lists
+      my @this_array = $self->get_array($c);
+      foreach (0 .. $#this_array) {push @{$lol[$_]}, $this_array[$_]};
+    };
+    ## sort the anon. lists by energy (i.e. zeroth element)
+    @lol = sort {$a->[0] <=> $b->[0]} @lol;
+
+    ## now fish thru lol looking for repeated energy points
+    my $ii = 0;
+    while ($ii < $#lol) {
+      ($lol[$ii+1]->[0] > $lol[$ii]->[0]) ? ++$ii : splice(@lol, $ii+1, 1);
+    };
+
+    ## now feed columns back to ifeffit
+    my $group = $self->group;
+    foreach my $c (1 .. $#cols) {
+      my @array;
+      foreach (@lol) {push @array, $_->[$c]};
+      $self->dispose("## replacing $group.$cols[$c] with sorted version");
+      $self->dispose("erase $group.$cols[$c]");
+      Ifeffit::put_array("$group.$cols[$c]", \@array);
+    };
+  };
+  return $self;
+};
+sub _read_data_command {
+  my ($self, $type) = @_;
+  my $string = q[];
+  if ($type eq 'xmu') {
+    $string  = $self->template("process", "read_xmu");
+    $string .= $self->template("process", "deriv");
+  } elsif ($type eq 'chi') {
+    $string = $self->template("process", "read_chi");
+  } elsif ($type eq 'feff.dat') {
+    $string = $self->template("process", "read_feffdat");
+  } else {
+    $string = $self->template("process", "read");
+  };
+  return $string;
+};
+
+
+
+sub rfactor {
+  my ($self) = @_;
+  my (@x, @dr, @di, @fr, @fi, $xmin, $xmax);
+  if (lc($self->fit_space) eq 'k') {
+    ($xmin,$xmax) = $self->get(qw(fft_kmin fft_kmax));
+    @x  = $self -> get_array("k");
+    @di = $self -> get_array("chi");
+    @fr = $self -> get_array("chi", "fit");
+  } elsif (lc($self->fit_space) eq 'r') {
+    ($xmin,$xmax) = $self->get(qw(bft_rmin bft_rmax));
+    @x  = $self -> get_array("r");
+    @dr = $self -> get_array("chir_re");
+    @di = $self -> get_array("chir_im");
+    @fr = $self -> get_array("chir_re", "fit");
+    @fi = $self -> get_array("chir_im", "fit");
+  } elsif (lc($self->fit_space) eq 'q') {
+    ($xmin,$xmax) = $self->get(qw(fft_kmin fft_kmax));
+    @x  = $self -> get_array("q");
+    @dr = $self -> get_array("chiq_re");
+    @di = $self -> get_array("chiq_im");
+    @fr = $self -> get_array("chiq_re", "fit");
+    @fi = $self -> get_array("chiq_im", "fit");
+  };
+  my ($numerator, $denominator) = (0,0);
+  foreach my $i (0 .. $#x) {
+    next if ($x[$i] < $xmin);
+    last if ($x[$i] > $xmax);
+    $numerator   += ($dr[$i] - $fr[$i])**2;
+    $denominator +=  $dr[$i]           **2;
+    if (lc($self->fit_space) ne 'k') {
+      $numerator   += ($di[$i] - $fi[$i])**2;
+      $denominator +=  $di[$i]           **2;
+    };
+  };
+  return ($denominator) ? $numerator/$denominator : 0;
+};
+
+
+
+
+1;
+
+
+#   sub read_fit {
+#     my ($self, $filename) = @_;
+#     croak("No filename specified for read_fit") unless $filename;
+#     my $command = $self-> template("fit", "read_fit", {filename => $filename,});
+#     $self->dispose($command);
+#     $self->set({update_fft=>1});
+#     return $self;
 #   };
 
-  sub data {
-    my ($self) = @_;
-    return $self;
-  };
-  sub plottable {
-    my ($self) = @_;
-    return 1;
-  };
+#   ## standard deviation array?
+#   sub serialize {
+#     my ($self, $filename) = @_;
+#     croak("No filename specified for serialize") unless $filename;
+#     open my $Y, ">".$filename;
+#     print $Y $self->SUPER::serialize;
+#     if ($self->get("is_xmu")) {
+#       my @array = $self->get_array("energy");
+#       print $Y YAML::Dump(\@array);
+#       @array = $self->get_array("xmu");
+#       print $Y YAML::Dump(\@array);
+#       if ($self->get("is_col")) {
+# 	@array = $self->get_array("i0");
+# 	print $Y YAML::Dump(\@array);
+#       }
+#     } elsif ($self->get("is_chi")) {
+#       my @array = $self->get_array("k");
+#       print $Y YAML::Dump(\@array);
+#       @array = $self->get_array("chi");
+#       print $Y YAML::Dump(\@array);
+#     };
+#     close $Y;
+#     return $self;
+#   };
+#   sub deserialize {
+#     my ($self, $filename_or_stream) = @_;
+#     croak("No filename or YAML stream specified for deserialize") unless $filename_or_stream;
+#     my $data = Ifeffit::Demeter::Data->new();
+#     my ($rhash, $ra1, $ra2, $ra3);
+#     if ($filename_or_stream =~ m{\n}) {
+#       ($rhash, $ra1, $ra2, $ra3) = YAML::Load($filename_or_stream);
+#     } else {
+#       ($rhash, $ra1, $ra2, $ra3) = YAML::LoadFile($filename_or_stream);
+#     };
+#     delete $$rhash{file};
+#     $data->set($rhash);
+#     if ($rhash->{is_xmu}) {
+#       Ifeffit::put_array("$data.energy", $ra1);
+#       Ifeffit::put_array("$data.xmu",    $ra2);
+#       Ifeffit::put_array("$data.i0",     $ra3) if (defined $ra3);
+#       $data->set({update_norm => 1});
+#     } elsif ($rhash->{is_chi}) {
+#       Ifeffit::put_array("$data.k",      $ra1);
+#       Ifeffit::put_array("$data.chi",    $ra2);
+#       $data->set({update_fft  => 1});
+#     };
+#     return $data;
+#   };
+#   {
+#     no warnings 'once';
+#     # alternate names
+#     *freeze = \ &serialize;
+#     *thaw   = \ &deserialize;
+#   }
 
-  sub cv {
-    my ($self) = @_;
-    return $self->get("cv");
-  };
-
-  sub standard {
-    my ($self) = @_;
-    Ifeffit::Demeter->set_mode({standard=>$self});
-    return $self;
-  };
-  sub unset_standard {
-    my ($self) = @_;
-    Ifeffit::Demeter->set_mode({standard=>q{}});
-    return $self;
-  };
-
-  ## return a list of valid data parameter names
-  sub parameter_list {
-    my ($self) = @_;
-    return (sort keys %data_defaults);
-  };
-  my $parameter_regexp = $opt->list2re(keys %data_defaults);
-  sub _regexp {
-    my ($self) = @_;
-    return $parameter_regexp;
-  };
-
-  sub set_group {
-    my ($self, $group) = @_;
-    $self->SUPER::set_group($group);
-    $self->set({tag => $group}) if ((not $self->get("tag")) or ($self->get("tag") eq 'my'));
-    return $self;
-  };
-
-  sub set {
-    my ($self, $r_hash) = @_;
-    my $re = $self->regexp;
-
-    my %update_table = (data	=> {update_columns=>1, update_norm=>1, update_bkg=>1, update_fft=>1, update_bft=>1},
-			columns	=> {update_norm=>1, update_bkg=>1, update_fft=>1, update_bft=>1},
-			norm	=> {update_bkg=>1,  update_fft=>1, update_bft=>1},
-			bkg	=> {update_fft=>1,  update_bft=>1},
-			fft	=> {update_bft=>1},
-			bft	=> {},
-		       );
-    my %range_check = (k=>0, r=>0);
-    foreach my $key (keys %$r_hash) {
-      my $k = lc $key;
-
-      carp("\"$key\" is not a valid Ifeffit::Demeter::Data parameter"), next
-	if ($k !~ /$re/);
-
-
-      #if (($k =~ m{\Abkg_clamp[12]}) and ($r_hash->{$k} !~ m{\A\+?[0-9]+\z})) {
-	#print ">>> $k  ", $r_hash->{$k}, "  ", $self->clamp($r_hash->{$k}), $/;
-	#$self->SUPER::set({$k=>$self->clamp($r_hash->{$k})});
-      #};
-
-      ## basic sanity checking of parameter values
-      if ($k =~ m{\A$number_attr\z}) { # numbers must be numbers
-	croak("Ifeffit::Demeter::Data: $k must be a number ($r_hash->{$k})")
-	  if ($r_hash->{$k} !~ m{\A$NUMBER\z});
-	++$range_check{$1} if ($k =~ /\A(?:bft|fft|fit)_([kr])m(?:ax|in)\z/);
-      };
-      if ($k =~ m{\A$posint_attr\z}) { # pos integers must be pos integers
-	croak("Ifeffit::Demeter::Data: $k must be a positive integer")
-	  if ($r_hash->{$k} !~ m{\A\+?[0-9]+\z});
-      };
-      if ($k =~ m{\A$window_attr\z}) { # windows must be windows
-	croak("Ifeffit::Demeter::Data: $k must be a window function")
-	  if (lc($r_hash->{$k}) !~ m{\A$window_regexp\z});
-      };
-
-      ## specialized sanity checking and processing
-    SET: {
-	($k =~ /\Ais_(?:chi|xmu)\z/) and do { # is_chi and is_xmu are exclusive
-	  my $other = ($k eq 'is_chi') ? 'is_xmu' : 'is_chi';
-	  $self->SUPER::set({$k=>$r_hash->{$k}});
-	  $self->SUPER::set({$other=>abs($r_hash->{$k}-1)});
-	  last SET;
-	};
-	($k eq 'is_col') and do {
-	  $self->SUPER::set({$k=>$r_hash->{$k}});
-	  if ($r_hash->{$k}) {
-	    $self->SUPER::set({is_xmu=>1, is_chi=>0});
-	  };
-	  last SET;
-	};
-	($k eq 'generated') and do {
-	  $self->SUPER::set({$k=>$r_hash->{$k}});
-	  $self->SUPER::set({file           => q{},
-			     update_data    => 0,
-			     update_columns => 0,
-			     is_col         => 0,
-			     columns        => q{},
-			     energy         => q{},
-			     numerator      => q{},
-			     denominator    => q{},
-			     ln             => 0,
-			     energy_string  => q{},
-			     xmu_string     => q{},});
-	  last SET;
-	};
-	($k eq 'group') and do { # label defaults to group name unless otherwise specified
-	  croak("Ifeffit::Demeter::Data: $r_hash->{$k} is not a valid group name")
-	    if ($r_hash->{$k} !~ m{\A[a-z][a-z0-9:_\?&]{0,63}\z}io);
-	  my $label = $self->get('label') || q{};
-	  $self->SUPER::set({label=>$r_hash->{$k}}) if ($label =~ m{\A\s*\z});
-	  $self->SUPER::set({$k=>$r_hash->{$k}});
-	  last SET;
-	};
-	($k =~ m{(?:energy|denominator|ln|numerator)}) and do {
-	  $self->SUPER::set({$k=>$r_hash->{$k}});
-	  if ($r_hash->{$k}) {
-	    $self->set({update_columns=>1, is_col=>1});
-	  };
-	  last SET;
-	};
-	($k =~ m{\Afile\z}) and do {
-	  croak("Ifeffit::Demeter::Data: $r_hash->{$k} is not a readable data file")
-	    if (($r_hash->{$k} ne $NULLFILE) and (not -e $r_hash->{$k}));
-	  $self->SUPER::set({$k=>$r_hash->{$k}});
-	  my $label = $self->get('label') || q{};
-	  $self->SUPER::set({label=>$r_hash->{$k}}) if ($label =~ m{\A\s*\z});
-	  $self->set({update_data=>1});
-	  $self->determine_data_type;
-	  last SET;
-	};
-	($k =~ m{\Afit_space\z}) and do {
-	  croak("Ifeffit::Demeter::Data: $k must be one of (k R q)")
-	    if (lc($r_hash->{$k}) !~ m{\A[krq]\z}i);
-	  $self->SUPER::set({$k=>lc($r_hash->{$k})});
-	  last SET;
-	};
-	($k =~ m{\Afft_edge\z}) and do {
-	  croak("Ifeffit::Demeter::Data: $k must be one of (K L1 L2 L3)")
-	    if (lc($r_hash->{$k}) !~ /\A(?:k|l[123])\z/i);
-	  $self->SUPER::set({$k=>lc($r_hash->{$k})});
-	  last SET;
-	};
-	($k =~ m{\Afitsum\z}) and do {
-	  croak("Ifeffit::Demeter::Data: $k must be one of (fit sum)")
-	    if (lc($r_hash->{$k}) !~ m{\A(?:fit|sum|\s*)\z}i);
-	  $self->SUPER::set({$k=>lc($r_hash->{$k})});
-	  last SET;
-	};
-
-	($k =~ /\Abkg_spl[12]\z/) and do {
-	  $self->SUPER::set({ $k=>$r_hash->{$k} });
-	  my $evalue = $self->k2e($r_hash->{$k}, "relative");
-	  my $key = $k . "e";
-	  $self->SUPER::set({ $key=>$evalue, %{$update_table{norm}} });
-	  last SET;
-	};
-	($k =~ /\Abkg_spl[12]e\z/) and do {
-	  $self->SUPER::set({ $k=>$r_hash->{$k} });
-	  my $kvalue = $self->e2k($r_hash->{$k}, "relative");
-	  my $key = substr($k, 0, -1);
-	  $self->SUPER::set({ $key=>$kvalue, %{$update_table{norm}} });
-	  last SET;
-	};
-	($k =~ m{\Abkg_}) and do {
-	  $self->SUPER::set({$k=>$r_hash->{$k}, %{$update_table{norm}} });
-	  last SET;
-	};
-	($k =~ m{\Afft_}) and do {
-	  $self->SUPER::set({$k=>$r_hash->{$k}, %{ $update_table{bkg}} });
-	  last SET;
-	};
-	($k =~ m{\Abft_}) and do {
-	  $self->SUPER::set({$k=>$r_hash->{$k}, %{$update_table{fft}} });
-	  last SET;
-	};
-
-	## handle update logic, if a step is flagged as needing update, all
-	## later steps must also be flagged as needing update
-	##      data -> normalization -> background -> fft -> bft
-	($k =~ m{\Aupdate_(columns|data|norm|bkg|fft)}) and do {
-	  $self->SUPER::set({ $key=>$r_hash->{$k} });
-	  if ($r_hash->{$k}) {
-	    $self->SUPER::set($update_table{$1});
-	  };
-	  if (($k eq "update_data") and $self->get("is_col")) {
-	    $self->SUPER::set({update_columns=>1});
-	  };
-	  last SET;
-	};
-
-	do {			# no special handling required
-	  $self->SUPER::set({$k=>$r_hash->{$k}});
-	};
-      };
-
-    };
-
-    ## make sure fft_kmin/fft_kmax and bft_rmin/bft_rmax are in the right order if any
-    ## of them have been set in this call to this method
-    if ($range_check{k}) {
-      my ($min, $max)    = sort {$a <=> $b} ( $self->get(qw(fft_kmin fft_kmax)) );
-      $self -> SUPER::set({fft_kmin=>$min, fft_kmax=>$max});
-    };
-    if ($range_check{r}) {
-      my ($min, $max)    = sort {$a <=> $b} ( $self->get(qw(bft_rmin bft_rmax)) );
-      $self -> SUPER::set({bft_rmin=>$min, bft_rmax=>$max});
-    };
-
-    return $self;
-  };
-
-  sub set_windows {
-    my ($self, $window) = @_;
-    $window = lc($window);
-    carp("window type must be one of Kaiser-Bessel, Hanning, Parzen, Welch, Sine, or Gaussian"),
-      return if ($window !~ m{\A$window_regexp\z});
-    $self->set({
-		bkg_kwindow => $window,
-		fft_kwindow => $window,
-		bft_rwindow => $window,
-	       });
-    return $self;
-  };
-
-  sub _update {
-    my ($self, $which) = @_;
-    $which = lc($which);
-    ##print join("|",$self->get(qw(update_data update_columns update_norm update_bkg))), $/;
-    my $is_xmu = $self->get("is_xmu");
-  WHICH: {
-      ($which eq 'normalize') and do {
-	$self->read_data if ($self->get('update_data'));
-	$self->put_data  if ($self->get('update_columns'));
-	last WHICH;
-      };
-      ($which eq 'background') and do {
-	$self->read_data if ($self->get('update_data'));
-	$self->put_data  if ($self->get('update_columns'));
-	$self->normalize if ($self->get('update_norm') and $is_xmu);
-	last WHICH;
-      };
-      ($which eq 'fft') and do {
-	$self->read_data if ($self->get('update_data'));
-	$self->put_data  if ($self->get('update_columns'));
-	$self->normalize if ($self->get('update_norm') and $is_xmu);
-	$self->autobk    if ($self->get('update_bkg')  and $is_xmu);
-	last WHICH;
-      };
-      ($which eq 'bft') and do {
-	$self->read_data if ($self->get('update_data'));
-	$self->put_data  if ($self->get('update_columns'));
-	$self->normalize if ($self->get('update_norm') and $is_xmu);
-	$self->autobk    if ($self->get('update_bkg')  and $is_xmu);
-	$self->fft       if ($self->get('update_fft'));
-	last WHICH;
-      };
-      ($which eq 'all') and do {
-	$self->read_data if ($self->get('update_data'));
-	$self->put_data  if ($self->get('update_columns'));
-	$self->normalize if ($self->get('update_norm') and $is_xmu);
-	$self->autobk    if ($self->get('update_bkg')  and $is_xmu);
-	$self->fft       if ($self->get('update_fft'));
-	$self->bft       if ($self->get('update_bft'));
-	last WHICH;
-      };
-
-    };
-    return $self;
-  };
+#   sub chi_noise {
+#     my ($self) = @_;
+#     my $string = $self->template("process", "chi_noise");
+#     $self->dispose($string);
+#     return (Ifeffit::get_scalar("epsilon_k"),
+# 	    Ifeffit::get_scalar("epsilon_r"),
+# 	    Ifeffit::get_scalar("kmax_suggest"),
+# 	   );
+#   };
 
 
-  ## this is a shortcut for doing FTs, plotting, and managing the plot object
-  sub display {
-    my ($self, $space) = @_;
-    my $how = Ifeffit::Demeter->get_mode('process');
-    my $pf  = Ifeffit::Demeter->get_mode('plot');
-    my $command = q{};
-    my %parts = (data => $pf->get('plot_data'),
-		 fit  => $pf->get('plot_fit'),
-		 res  => $pf->get('plot_res'),
-		 bkg  => $pf->get('plot_bkg'),
-		 win  => $pf->get('plot_win'),
-		);
-    #foreach my $p (@$r_parts) {
-    #  ++$parts{$p};
-    #};
-    foreach my $p (qw(data fit res bkg win)) {
-      next if not $parts{$p};
-      next if (($p eq 'bkg') and (not $self->get('fit_do_bkg')));
-      if ($p eq 'data') {
-	$command .= $self->_read_data_command;
-	$command .= $self->_fft_command($how,$pf);
-	$command .= $self->_bft_command($how,$pf);
-	$command .= $self->_plot_command($space, $pf);
-      } elsif ($p eq 'win') {
-	$command .= $self->_plot_window_command($space, $pf);
-      } elsif ($p =~ m{\A(?:bkg|fit|res|sum)\z}) {
-	$command .= $self->_part_fft_command($p, $how, $pf);
-	$command .= $self->_part_bft_command($p, $how);
-	$command .= $self->_part_plot_command($p, $space, $pf);
-      #} else {
-      #	carp("Ifeffit::Demeter::Data: invalid data part $part (data fit bkg res win)");
-      #	next;
-      };
-      $pf->increment; # increment the color for the next trace
-    };
-    $self->dispose($command);
-    return $command;
-  };
+#   sub plot_marker {
+#     my ($self, $requested, $x) = @_;
+#     my $command = q{};
+#     my @list = (ref($x) eq 'ARRAY') ? @$x : ($x);
+#     foreach my $xx (@list) {
+#       my $y = $self->yofx($requested, "", $xx);
+#       $command .= $self->template("plot", "marker", { x => $xx, 'y'=> $y });
+#     };
+#     #if ($self->get_mode("template_plot") eq 'gnuplot') {
+#     #  $self->get_mode('external_plot_object')->gnuplot_cmd($command);
+#     #} else {
+#       $self -> dispose($command, "plotting");
+#     #};
+#     return $self;
+#   };
 
-  sub determine_data_type {
-    my ($self) = @_;
-    my $file = $self->get("file");
-    return 0 if ($file eq $NULLFILE);
-    ## figure out how to interpret these data -- need some error checking
-    $self->set({is_col=>1}) if ($self->get("numerator") or $self->get("numerator"));
-    if ((not $self->get("is_col")) and (not $self->get("is_xmu")) and (not $self->get("is_chi")) ) {
-      Ifeffit::ifeffit("read_data(file=\"$file\", group=b___lah)\n");
-      my $f = (split(" ", Ifeffit::get_string('$column_label')))[0];
-      my @x = Ifeffit::get_array("b___lah.$f");
-      Ifeffit::ifeffit("erase \@group b___lah\n");
-      if ($x[0] > 100) {	# seems to be energy data
-	$self->set({is_xmu=>1});
-      } elsif ($x[-1] > 35) {   # seems to be relative energy data
-	$self->set({is_xmu=>1});
-      } else {			# it's chi(k) data
-	$self->set({is_chi=>1});
-      };
-    };
-    return $self;
-  };
-
-  sub read_data {
-    my ($self) = @_;
-    my $type = ($self->get('is_col')) ? q{}
-             : ($self->get('is_chi')) ? 'chi'
-	     :                          'xmu';
-    my $string = $self->SUPER::_read_data_command($type);
-    $self->dispose($string);
-    $self->set({update_data=>0});
-    if ($self->get('is_col')) {
-      $self->set({columns=>Ifeffit::get_string("column_label")});
-    };
-    $self->sort_data;
-    return $self;
-  };
-
-  sub sort_data {
-    my ($self) = @_;
-    my @x = ();
-    if ($self->get('is_col')) {
-
-      ## This block is a complicated bit.  The idea is to store all
-      ## the data in a list of lists.  In this way, I can sort all the
-      ## data in one swoop by sorting off the energy part of the list
-      ## of lists.  After sorting, I check the data for repeated
-      ## points and remove them.  Finally, I reload the data into
-      ## ifeffit and carry on like normal data
-
-      ## This gets a list of column labels
-      my @cols = split(" ", $self->get('columns'));
-      my @lol;
-      ## energy value is zeroth in each anon list
-      unshift @cols, q{};
-      my $ecol = $self->get("energy");
-      $ecol =~ s{^\$}{};
-      my @array = $self->get_array($cols[$ecol]);
-      foreach (0 .. $#array) {push @{$lol[$_]}, $array[$_]};
-      foreach my $c (@cols) {
-	next unless $c;
-	## load other cols (including energy col) into anon. lists
-	my @this_array = $self->get_array($c);
-	foreach (0 .. $#this_array) {push @{$lol[$_]}, $this_array[$_]};
-      };
-      ## sort the anon. lists by energy (i.e. zeroth element)
-      @lol = sort {$a->[0] <=> $b->[0]} @lol;
-
-      ## now fish thru lol looking for repeated energy points
-      my $ii = 0;
-      while ($ii < $#lol) {
-	($lol[$ii+1]->[0] > $lol[$ii]->[0]) ? ++$ii : splice(@lol, $ii+1, 1);
-      };
-
-      ## now feed columns back to ifeffit
-      foreach my $c (1 .. $#cols) {
-	my @array;
-	foreach (@lol) {push @array, $_->[$c]};
-	$self->dispose("## replacing $self.$cols[$c] with sorted version");
-	$self->dispose("erase $self.$cols[$c]");
-	Ifeffit::put_array("$self.$cols[$c]", \@array);
-      };
-    };
-    return $self;
-  };
-
-  sub save {
-    my ($self, $what, $filename) = @_;
-    croak("No filename specified for save") unless $filename;
-    ($what = 'chi') if (lc($what) eq 'k');
-    croak("Valid save types are: xmu norm chi r q fit bkgsub")
-      if ($what !~ m{\A(?:xmu|norm|chi|r|q|fit|bkgsub)\z});
-  WHAT: {
-      (lc($what) eq 'fit') and do {
-	$self->save_fit($filename);
-	last WHAT;
-      };
-      (lc($what) eq 'xmu') and do {
-	$self->_update("background");
-	carp("cannot save mu(E) file from chi(k) data"), return if ($self->get("is_chi"));
-	$self->save_xmu($filename);
-	last WHAT;
-      };
-      (lc($what) eq 'norm') and do {
-	$self->_update("background");
-	carp("cannot save norm(E) file from chi(k) data"), return if ($self->get("is_chi"));
-	$self->save_norm($filename);
-	last WHAT;
-      };
-      (lc($what) eq 'chi') and do {
-	$self->_update("fft");
-	$self->dispose($self->_save_chi('k', $filename));
-	last WHAT;
-      };
-      (lc($what) eq 'r') and do {
-	$self->_update("bft");
-	$self->dispose($self->_save_chi('r', $filename));
-	last WHAT;
-      };
-      (lc($what) eq 'q') and do {
-	$self->_update("all");
-	$self->dispose($self->_save_chi('q', $filename));
-	last WHAT;
-      };
-      (lc($what) eq 'bkgsub') and do {
-	$self->_update("all");
-	$self->dispose($self->save_bkgsub($filename));
-	last WHAT;
-      };
-    };
-    return $self;
-  };
-
-  ## need to include the data's titles in write_data() command
-  sub save_fit {
-    my ($self, $filename) = @_;
-    croak("No filename specified for save_fit") unless $filename;
-    $self->title_glob("dem_data_", "f");
-    my $command = $self-> template("fit", "save_fit", {filename => $filename,
-						       titles   => "dem_data_*"});
-    $self->dispose($command);
-    return $self;
-  };
-
-  sub save_bkgsub {
-    my ($self, $filename) = @_;
-    croak("No filename specified for save_bkgsub") unless $filename;
-    $self->title_glob("dem_data_", "f");
-    my $command = $self-> template("fit", "save_bkgsub", {filename => $filename,
-						          titles   => "dem_data_*"});
-    $self->dispose($command);
-    return $self;
-  };
-
-  sub read_fit {
-    my ($self, $filename) = @_;
-    croak("No filename specified for read_fit") unless $filename;
-    my $command = $self-> template("fit", "read_fit", {filename => $filename,});
-    $self->dispose($command);
-    $self->set({update_fft=>1});
-    return $self;
-  };
-
-  ## standard deviation array?
-  sub serialize {
-    my ($self, $filename) = @_;
-    croak("No filename specified for serialize") unless $filename;
-    open my $Y, ">".$filename;
-    print $Y $self->SUPER::serialize;
-    if ($self->get("is_xmu")) {
-      my @array = $self->get_array("energy");
-      print $Y YAML::Dump(\@array);
-      @array = $self->get_array("xmu");
-      print $Y YAML::Dump(\@array);
-      if ($self->get("is_col")) {
-	@array = $self->get_array("i0");
-	print $Y YAML::Dump(\@array);
-      }
-    } elsif ($self->get("is_chi")) {
-      my @array = $self->get_array("k");
-      print $Y YAML::Dump(\@array);
-      @array = $self->get_array("chi");
-      print $Y YAML::Dump(\@array);
-    };
-    close $Y;
-    return $self;
-  };
-  sub deserialize {
-    my ($self, $filename_or_stream) = @_;
-    croak("No filename or YAML stream specified for deserialize") unless $filename_or_stream;
-    my $data = Ifeffit::Demeter::Data->new();
-    my ($rhash, $ra1, $ra2, $ra3);
-    if ($filename_or_stream =~ m{\n}) {
-      ($rhash, $ra1, $ra2, $ra3) = YAML::Load($filename_or_stream);
-    } else {
-      ($rhash, $ra1, $ra2, $ra3) = YAML::LoadFile($filename_or_stream);
-    };
-    delete $$rhash{file};
-    $data->set($rhash);
-    if ($rhash->{is_xmu}) {
-      Ifeffit::put_array("$data.energy", $ra1);
-      Ifeffit::put_array("$data.xmu",    $ra2);
-      Ifeffit::put_array("$data.i0",     $ra3) if (defined $ra3);
-      $data->set({update_norm => 1});
-    } elsif ($rhash->{is_chi}) {
-      Ifeffit::put_array("$data.k",      $ra1);
-      Ifeffit::put_array("$data.chi",    $ra2);
-      $data->set({update_fft  => 1});
-    };
-    return $data;
-  };
-  {
-    no warnings 'once';
-    # alternate names
-    *freeze = \ &serialize;
-    *thaw   = \ &deserialize;
-  }
-
-  sub nidp {
-    my ($self) = @_;
-    my ($kmin, $kmax, $rmin, $rmax) = $self->get(qw(fft_kmin fft_kmax bft_rmin bft_rmax));
-    return 2 * ($kmax-$kmin) * ($rmax-$rmin) / $PI;
-  };
-
-  sub chi_noise {
-    my ($self) = @_;
-    my $string = $self->template("process", "chi_noise");
-    $self->dispose($string);
-    return (Ifeffit::get_scalar("epsilon_k"),
-	    Ifeffit::get_scalar("epsilon_r"),
-	    Ifeffit::get_scalar("kmax_suggest"),
-	   );
-  };
-
-  sub rfactor {
-    my ($self) = @_;
-    my (@x, @dr, @di, @fr, @fi, $xmin, $xmax);
-    if (lc($self->get('fit_space')) eq 'k') {
-      ($xmin,$xmax) = $self->get(qw(fft_kmin fft_kmax));
-      @x  = $self -> get_array("k");
-      @di = $self -> get_array("chi");
-      @fr = $self -> get_array("chi", "fit");
-    } elsif (lc($self->get('fit_space')) eq 'r') {
-      ($xmin,$xmax) = $self->get(qw(bft_rmin bft_rmax));
-      @x  = $self -> get_array("r");
-      @dr = $self -> get_array("chir_re");
-      @di = $self -> get_array("chir_im");
-      @fr = $self -> get_array("chir_re", "fit");
-      @fi = $self -> get_array("chir_im", "fit");
-    } elsif (lc($self->get('fit_space')) eq 'q') {
-      ($xmin,$xmax) = $self->get(qw(fft_kmin fft_kmax));
-      @x  = $self -> get_array("q");
-      @dr = $self -> get_array("chiq_re");
-      @di = $self -> get_array("chiq_im");
-      @fr = $self -> get_array("chiq_re", "fit");
-      @fi = $self -> get_array("chiq_im", "fit");
-    };
-    my ($numerator, $denominator) = (0,0);
-    foreach my $i (0 .. $#x) {
-      next if ($x[$i] < $xmin);
-      last if ($x[$i] > $xmax);
-      $numerator   += ($dr[$i] - $fr[$i])**2;
-      $denominator +=  $dr[$i]           **2;
-      if (lc($self->get('fit_space')) ne 'k') {
-	$numerator   += ($di[$i] - $fi[$i])**2;
-	$denominator +=  $di[$i]           **2;
-      };
-    };
-    return ($denominator) ? $numerator/$denominator : 0;
-  };
-
-  ## parts are plotted and Fourier transformed just like their
-  ## respective data, these methods just rewrite the data plot()
-  ## fftf() or fftr() command using the group name of the part
-  sub part_fft {
-    my ($self, $part) = @_;
-    $self->dispose($self->_part_fft_command($part));
-    return $self;
-  };
-  sub _part_fft_command {
-    my ($self, $pt) = @_;
-    my $part = ($pt eq 'sum') ? 'fit' : $pt; # sum is a synonym for fit
-    croak('part_fft: valid parts are fit, res, and bkg') if ($part !~ /(?:bkg|fit|res)/);
-    my $group = join("_", $self, $part);
-    my $string = $self->_fft_command;
-    $string =~ s{\b$self\b}{$group}g; # replace group names
-    return $string;
-  };
-  sub part_bft {
-    my ($self, $part) = @_;
-    $self->dispose($self->_part_bft_command($part))
-  };
-  sub _part_bft_command {
-    my ($self, $pt) = @_;
-    my $part = ($pt eq 'sum') ? 'fit' : $pt; # sum is a synonym for fit
-    croak('part_bft: valid parts are fit, res, and bkg') if ($part !~ /(?:bkg|fit|res)/);
-    my $group = join("_", $self, $part);
-    my $string = $self->_bft_command;
-    $string =~ s{\b$self\b}{$group}g; # replace group names
-    return $string;
-  };
-  sub part_plot {
-    my ($self, $part, $space) = @_;
-    $self->part_fft($part) if (lc($space) ne 'k');
-    $self->part_bft($part) if (lc($space) eq 'q');
-    my $command = $self->_part_plot_command($part, $space);
-    $self->dispose($command, "plotting");
-    return $self;
-  };
-  sub _part_plot_command {
-    my ($self, $pt, $space) = @_;
-    my $pf           = Ifeffit::Demeter->get_mode('plot');
-    $pt            ||= q{};
-    my $part         = ($pt eq 'sum') ? 'fit' : $pt; # sum is a synonym for fit
-    #croak('part_plot: valid parts are fit, res, and bkg') if ($part !~ /(?:bkg|fit|res)/);
-    my $group        = ($part =~ /(?:bkg|fit|res)/) ? join("_", $self, $part) : $self->label;
-    my %labels       = (bkg=>'background', fit=>$self->get('fitsum'), res=>'residual');
-    $labels{$part} ||= $part->label;
-    my $datalabel    = $self->label;
-
-    $self->new_params({plot_part => $part});
-    my $string = $self->hashes;
-    $string   .= ($part =~ /(?:bkg|fit|res)/) ? " plot $labels{$part} ___\n" : " plot path ___\n";
-    $string   .= $self->_plot_command($space, $pf);
-
-    #print $string  if ($part !~ /(?:bkg|fit|res)/);
-
-    ## (?<+ ) is the positive zero-width look behind -- it only # }
-    ## replaces the label when it follows q{key="}, i.e. it won't get
-    ## confused by the same text in the title for a newplot
-    if ($self->get_mode("pgplot")) {
-      $string =~ s{(?<=key=")$datalabel}{$labels{$part}};
-    } elsif ($self->get_mode("gnuplot")) {
-      $string =~ s{(?<=title ")$datalabel}{$labels{$part}};
-    };
-    if (($self->get_mode("gnuplot")) and ($datalabel =~ m{\A\s*\z})) {
-      $string =~ s{(?<=title ")$labels{$part}}{};
-    };
-    return $string if ($part !~ /(?:bkg|fit|res)/);
-
-    ## (?! ) is the negative zero-width look ahead -- it does not
-    ## replace the group name when it is followed by k, r, or q
-    $string =~ s{\b$self(?!\.[krq]\b)}{$group}g;                # }
-    return $string;
-  };
-
-  sub plot_window {
-    my ($self, $space) = @_;
-    $self->fft if (lc($space) eq 'k');
-    $self->bft if (lc($space) eq 'r');
-    $self->dispose($self->_prep_window_command($space));
-
-    #if (Ifeffit::Demeter->get_mode('template_plot') eq 'gnuplot') {
-    #  $self->get_mode('external_plot_object')->gnuplot_cmd($self->_plot_window_command($space));
-    #  $self->get_mode('external_plot_object')->gnuplot_pause(-1);
-    #} else {
-    $self->dispose($self->_plot_window_command($space), "plotting");
-    #};
-    return $self;
-  };
-  sub _prep_window_command {
-    my ($self, $sp) = @_;
-    my $pf      = Ifeffit::Demeter->get_mode('plot');
-    my $space   = lc($sp);
-    my %dsuff   = (k=>'chik',            r=>'chir_mag', 'q'=>'chiq_mag');
-    my $suffix  = ($space eq 'r') ? 'rwin' : 'win';
-    my $string  = "\n" . $self->hashes . " plot window ___\n";
-    if ($space eq 'r') {
-      $string .= $self->template("process", "prep_rwindow");
-    } else {
-      $string .= $self->template("process", "prep_kwindow");
-    };
-    return $string;
-  };
-
-  sub _plot_window_command {
-    my ($self, $sp) = @_;
-    my $pf      = Ifeffit::Demeter->get_mode('plot');
-    my $space   = lc($sp);
-    $self -> new_params({window_space => $space,
-			 window_size  => sprintf("%.5g", Ifeffit::get_scalar("win___dow")),
-			});
-    my $string = $self->template("plot", "window");
-    ## reinitialize the local plot parameters
-    $pf -> reinitialize(q{}, q{});
-    return $string;
-  };
-
-  sub data_parameter_report {
-    my ($self, $include_rfactor) = @_;
-    my $pf  = Ifeffit::Demeter->get_mode('plot');
-    my $data = $self->data;
-    my $string = $data->template("process", "data_report");
-    $string =~ s/\+ \-/- /g;
-    return $string;
-  };
-  sub fit_parameter_report {
-    my ($self, $include_rfactor, $fit_performed) = @_;
-    $include_rfactor ||= 0;
-    $fit_performed   ||= 0;
-    my $data = $self->data;
-    my $string = $data->template("fit", "fit_report");
-    if ($include_rfactor and $fit_performed) {	# only print this for a multiple data set fit
-      $string .= sprintf("\nr-factor for this data set = %.7f\n", $self->rfactor);
-    };
-    return $string;
-  };
-  sub _kw_string {
-    my ($self) = @_;
-    my @list = ();
-    push @list, "1" if $self->get("fit_k1");
-    push @list, "2" if $self->get("fit_k2");
-    push @list, "3" if $self->get("fit_k3");
-    push @list, $self->get("fit_karb_value") if $self->get("fit_karb");
-    return join(",", @list);
-  };
-
-  sub plot_marker {
-    my ($self, $requested, $x) = @_;
-    my $command = q{};
-    my @list = (ref($x) eq 'ARRAY') ? @$x : ($x);
-    foreach my $xx (@list) {
-      my $y = $self->yofx($requested, "", $xx);
-      $command .= $self->template("plot", "marker", { x => $xx, 'y'=> $y });
-    };
-    #if ($self->get_mode("template_plot") eq 'gnuplot') {
-    #  $self->get_mode('external_plot_object')->gnuplot_cmd($command);
-    #} else {
-      $self -> dispose($command, "plotting");
-    #};
-    return $self;
-  };
-
-  sub points {
-    my ($self, $args) = @_;
-    $$args{space}     = lc($$args{space});
-    $$args{shift}   ||= 0;
-    $$args{scale}   ||= 1;
-    $$args{yoffset} ||= 0;
-    $$args{part}    ||= q{};
-
-    my @x = ($$args{space} eq 'e') ? $self->get_array('energy')
-          : ($$args{space} eq 'k') ? $self->get_array('k')
-          : ($$args{space} eq 'r') ? $self->get_array('r')
-          :                          $self->get_array('q');
-    @x = map {$_ + $$args{shift}} @x;
-
-    my @y = ();
-    my $regexp = $self->regexp('data_parts');
-    if ($$args{part} =~ m{$regexp}) {
-      @y = $self->get_array($$args{suffix}, $$args{part});
-    } elsif (ref($$args{part}) =~ m{Path}) {
-      #print $$args{part}, "  ", ref($$args{part}), "  ", $$args{file}, $/;
-      @y = $$args{part}->get_array($$args{suffix});
-    } else {
-      @y = $self->get_array($$args{suffix});
-    };
-    if (defined $$args{weight}) {
-      @y = pairwise {$$args{scale}*$a**$$args{weight}*$b + $$args{yoffset}} @x, @y;
-    } else {
-      @y = map {$$args{scale}*$_ + $$args{yoffset}} @y;
-    };
-
-    my $message = q{};
-    pairwise { $message .= join(" ", $a, $b, $/) } @x, @y;
-    if ($$args{file}) {
-      open my $T, '>'.$$args{file};
-      print $T $message;
-      close $T;
-      return $$args{file};
-    } else {
-      return $message;
-    };
-  };
-
-};
-1;
 
 =head1 NAME
 
@@ -995,21 +627,18 @@ Ifeffit::Demeter::Data - Process and analyze EXAFS data with Ifeffit
 
 =head1 VERSION
 
-This documentation refers to Ifeffit::Demeter version 0.1.
+This documentation refers to Ifeffit::Demeter version 0.2.
 
 
 =head1 SYNOPSIS
 
-  my $data = Ifeffit::Demeter::Data ->
-       new({group => 'data0',});
-  $data -> set({file      => "example/cu/cu10k.chi",
-	        fft_kmax  => 3, # \ note that this gets
-	        fft_kmin  => 14,# / fixed automagically
-	        bft_rmax  => 4.3,
-	        fit_k1    => 1,
-	        fit_k3    => 1,
-	        label     => 'My copper data',
-	       });
+  my $data = Ifeffit::Demeter::Data -> new;
+  $data -> set(file      => "example/cu/cu10k.chi",
+	       name      => 'My copper data',
+	       fft_kmin  => 3,	       fft_kmax  => 14,
+	       bft_rmin  => 1,         bft_rmax  => 4.3,
+	       fit_k1    => 1,	       fit_k3    => 1,
+	      );
   $data -> plot("r");
 
 =head1 DESCRIPTION
@@ -1025,27 +654,26 @@ access an attribute not on this list will throw an exception.
 
 The type of argument expected in given in parentheses. i.e. number,
 integer, string, and so on.  The default value, if one exists, is
-given in square brackets.  The label "{read-only}" means that you can
-C<get> that attribute value, but C<set>ting it has no effect.
+given in square brackets.
 
 For a Data object to be included in a fit, it is necessary that it be
-an attribute of a Fit object.  See L<Ifeffit::Demeter::Fit> for
-details.
+gathered into a Fit object.  See L<Ifeffit::Demeter::Fit> for details.
 
 =head2 General Attributes
 
 =over 4
 
-=item C<group> (string) I<[random 4-letter string]>
+=item C<group> (string) I<[random 5-letter string]>
 
-This is the name associated with the data.  It's primary use is as the group
-name for the arrays associated with the data in Ifeffit.  That is, its arrays
-will be called I<group>.k, I<group>.chi, and so on.  It is best if this is a
-reasonably short word and it B<must> follow the conventions of a valid group
-name in Ifeffit.  The default group is a random four-letter string generated
-automatically when the object is created.
+This is the name associated with the data.  It's primary use is as the
+group name for the arrays associated with the data in Ifeffit.  That
+is, its arrays will be called I<group>.k, I<group>.chi, and so on.  It
+is best if this is a reasonably short word and it B<must> follow the
+conventions of a valid group name in Ifeffit.  The default group is a
+random five-letter string generated automatically when the object is
+created.
 
-=item C<tag> (string) I<[same random 4-letter string as group]>
+=item C<tag> (string) I<[same random 5-letter string as group]>
 
 Use to disambiguate guess parameter names when doing variable name
 substitution for local parameters.
@@ -1054,7 +682,7 @@ substitution for local parameters.
 
 This is the file containing the chi(k) associated with this data object.
 
-=item C<label> (string)
+=item C<name> (string)
 
 This is a text string used to describe this object in a plot ot a user
 interface.  Like the C<group> attribute, this should be short, but it
@@ -1192,12 +820,12 @@ the Autobk algorithm.  It is one of
 
    Kaiser-Bessel Hanning Welch Parzen Sine Gaussian
 
-=item C<bkg_slope> (number) {read-only}
+=item C<bkg_slope> (number)
 
 The slope of the pre-edge line.  This is set as part of the
 C<normalize> method.
 
-=item C<bkg_int> (number) {read-only}
+=item C<bkg_int> (number)
 
 The intercept of the pre-edge line.  This is set as part of the
 C<normalize> method.
@@ -1208,7 +836,7 @@ The edge step found by the C<normalize> method.  This attribute will
 be overwritten the next time the C<normalize> method is called unless
 the C<bkg_fixstep> atribute is set true.
 
-=item C<bkg_fitted_step> (number) {read-only}
+=item C<bkg_fitted_step> (number)
 
 The value of edge step found by the C<normalize> method, regardless of
 the setting of C<bkg_fixstep>.  This is needed to correctly flatten
@@ -1219,17 +847,17 @@ data.
 When true, the value of the c<bkg>_step will not be overwritten by the
 c<normalize> method.
 
-=item C<bkg_nc0> (number) {read-only}
+=item C<bkg_nc0> (number)
 
 The constant parameter in the post-edge regression.  This is set as part of
 the c<normalize> method.
 
-=item C<bkg_nc1> (number) {read-only}
+=item C<bkg_nc1> (number)
 
 The linear parameter in the post-edge regression.  This is set as part of
 the C<normalize> method.
 
-=item C<bkg_nc2> (number) {read-only}
+=item C<bkg_nc2> (number)
 
 The cubic parameter in the post-edge regression.  This is set as part of
 the C<normalize> method.
@@ -1383,25 +1011,26 @@ should be considered for plotting.
 
 If true, then k-weight of 1 will be used in the fit.  Setting more
 than one k-weighting parameter to true will result in a multiple
-k-weight fit.
+k-weight fit.  By default, fits are done with kweight of 1, 2, and 3.
 
-=item C<fit_k2> (boolean) I<[0]>
+=item C<fit_k2> (boolean) I<[1]>
 
 If true, then k-weight of 2 will be used in the fit.  Setting more
 than one k-weighting parameter to true will result in a multiple
-k-weight fit.
+k-weight fit.  By default, fits are done with kweight of 1, 2, and 3.
 
-=item C<fit_k3> (boolean) I<[0]>
+=item C<fit_k3> (boolean) I<[1]>
 
 If true, then k-weight of 3 will be used in the fit.  Setting more
 than one k-weighting parameter to true will result in a multiple
-k-weight fit.
+k-weight fit.  By default, fits are done with kweight of 1, 2, and 3.
 
 =item C<fit_karb> (boolean) I<[0]>
 
 If true, then the user-supplied, arbitrary k-weight will be used in
 the fit.  Setting more than one k-weighting parameter to true will
-result in a multiple k-weight fit.
+result in a multiple k-weight fit.  By default, fits are done with
+kweight of 1, 2, and 3.
 
 =item C<fit_karb_value> (number) I<[0]>
 
@@ -1449,7 +1078,7 @@ and the "bkg" part of the data will be created.
 These are title lines associated with this Data object.  These lines
 will be written to log files, output data files, etc.
 
-=item C<fitsum> (list) {read-only}
+=item C<fitsum> (list)
 
 This attribute indicates whether the Fit objects C<fit> or C<ff2chi>
 mehthod was most recently called.  It is one of C<fit> or C<sum>.
@@ -1682,22 +1311,6 @@ C<fit_do_bkg> attribute is true) a background.  Attributes of the
 L<Ifeffit::Demeter::Plot> object are used to specify which Data parts
 are shown in a plot.
 
-=head1 COERCIONS
-
-When the reference to the Data object is used in string context, it
-returns the group name.  So
-
-  my $data = Ifeffit::Demeter::Data ->
-       new({group => 'data0',
-	    file  => "example/cu/cu10k.chi",
-	    label => 'My copper data',
-	   });
-  print "This is $data.\n";
-
-will print
-
-  This is data0.
-
 =head1 DIAGNOSTICS
 
 These messages are classified as follows (listed in increasing order
@@ -1826,14 +1439,15 @@ Several features have not yet been implemented.
 
 =item *
 
-Not all of the Athena-like data process methods (alignment, merging, and
-so on) have been implemented yet.
+Only some of the Athena-like data process methods (alignment, merging,
+and so on) have been implemented at this time.  None of the analysis
+features of Athena (LCF, LR/PD, peak fitting) have been implemeneted.
 
 =item *
 
 Various background and normalization options: functional
 normalization, normalization order, background removal standard,
-Cromer-Liberman
+Cromer-Liberman.
 
 =item *
 
@@ -1845,7 +1459,7 @@ Standard deviation for merged data not written to serialization.
 
 =back
 
-Please report problems to Bruce Ravel (bravel AT anl DOT gov)
+Please report problems to Bruce Ravel (bravel AT bnl DOT gov)
 
 Patches are welcome.
 
@@ -1861,7 +1475,7 @@ L<http://cars9.uchicago.edu/~ravel/software/>
 Copyright (c) 2006-2008 Bruce Ravel (bravel AT bnl DOT gov). All rights reserved.
 
 This module is free software; you can redistribute it and/or
-modify it under the same terms as Perl itself. See L<perlartistic>.
+modify it under the same terms as Perl itself. See L<perlgpl>.
 
 This program is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of

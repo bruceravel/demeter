@@ -1,11 +1,11 @@
 { # -*- ifm -*-
   # template for new plot of chi(k)
-  #   {$D} returns the ifeffit group name
-  #   {$D->get("parameter")} returns the value of that parameter
-  #   {$P->get("parameter")} returns the value of a Plot parameter
+  #   {$D->group} returns the ifeffit group name
+  #   {$D->parameter} returns the value of that parameter
+  #   {$P->parameter} returns the value of a Plot parameter
 }
-newplot({$D}.k, "{$D->get("plot_multiplier")}*{$D}.k^{$P->get("kweight")}*{$D}.chi+{$D->get("y_offset")}",
-        xlabel="{$P->get("xlabel")}", ylabel="{$P->get("ylabel")}",
-	grid, gridcolor="{$P->get("gridcolor")}", xmin={$P->get("kmin")}, xmax={$P->get("kmax")},
-	style={$P->get("datastyle")}, color="{$P->get("color")}", key="{$P->get("key")}", 
-	title="{$P->get("title")}", fg="{$P->get("fg")}", bg="{$P->get("bg")}")
+newplot({$D->group}.k, "{$D->plot_multiplier}*{$D->group}.k^{$P->kweight}*{$D->group}.chi+{$D->y_offset}",
+        xlabel="{$P->xlabel}", ylabel="{$P->ylabel}",
+	grid, gridcolor="{$P->gridcolor}", xmin={$P->kmin}, xmax={$P->kmax},
+	style={$P->datastyle}, color="{$P->color}", key="{$P->key}", 
+	title="{$P->title}", fg="{$P->fg}", bg="{$P->bg}")

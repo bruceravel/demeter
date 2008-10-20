@@ -1,9 +1,9 @@
 { # -*- ifm -*-
   # template for converting columns to xmu
-  #   {$D} returns the ifeffit group name
-  #   {$D->get("parameter")} returns the value of that parameter
+  #   {$D->group} returns the ifeffit group name
+  #   {$D->parameter} returns the value of that parameter
 }
-##| making mu(E) from columns for group {$D}
-set({$D}.energy = {$D->get("energy_string")},
-    {$D}.xmu    = {$D->get("xmu_string")},
-    {$D}.i0     = {($D->get('i0_string'))} )
+##| making mu(E) from columns for group {$D->group}
+set({$D->group}.energy = {$D->energy_string},
+    {$D->group}.xmu    = {$D->xmu_string},
+    {$D->group}.i0     = {$D->i0_string} )

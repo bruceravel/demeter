@@ -1,7 +1,7 @@
 { # -*- ifm -*-
   # chi noise template
-  #   {$D} returns the ifeffit group name
-  #   {$D->get(""parameter")} returns the value of that parameter
+  #   {$D->group} returns the ifeffit group name
+  #   {$D->parameter} returns the value of that parameter
 }
-chi_noise({$D}.chi, k={$D}.k, kmin={$D->get("fft_kmin")}, kmax={$D->get("fft_kmax")}, dk={$D->get("fft_dk")},
-           kwindow={$D->get("fft_kwindow")}, kweight={$P->get("kweight")})
+chi_noise({$D->group}.chi, k={$D->group}.k, kmin={$D->fft_kmin}, kmax={$D->fft_kmax}, dk={$D->fft_dk},
+           kwindow={$D->fft_kwindow}, kweight={$P->kweight})

@@ -1,9 +1,9 @@
 { # -*- ifm -*-
   # pre-edge template
-  #   {$D} returns the ifeffit group name
-  #   {$D->get(""parameter")} returns the value of that parameter
+  #   {$D->group} returns the ifeffit group name
+  #   {$D->parameter} returns the value of that parameter
 }
 
-pre_edge("{$D}.energy+{$D->get("bkg_eshift")}", {$D}.xmu, e0={$D->get("bkg_e0")},
-         pre1={$D->get("bkg_pre1")}, pre2={$D->get("bkg_pre2")}, norm_order={$D->get("bkg_nnorm")},
-	 norm1={$D->get("bkg_nor1")}, norm2={$D->get("bkg_nor2")})
+pre_edge("{$D->group}.energy+{$D->bkg_eshift}", {$D->group}.xmu, e0={$D->bkg_e0},
+         pre1={$D->bkg_pre1}, pre2={$D->bkg_pre2}, norm_order={$D->bkg_nnorm},
+	 norm1={$D->bkg_nor1}, norm2={$D->bkg_nor2})

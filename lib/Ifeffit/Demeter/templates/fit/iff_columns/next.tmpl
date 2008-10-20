@@ -1,7 +1,7 @@
 { # -*- ifm -*-
   # next data set template
-  #   {$D} returns the ifeffit group name
-  #   {$D->get("parameter")} returns the value of that parameter
-  #   {$F->get("parameter")} returns the value for the current Fit
+  #   {$D->group} returns the ifeffit group name
+  #   {$D->parameter} returns the value of that parameter
+  #   {$F->parameter} returns the value for the current Fit
 }
-##| data set {$D->get("fit_data")} of {$F->get("ndata")}: {$D}
+##| data set {$D->fit_data} of {$F->ndata}: {$D->group}

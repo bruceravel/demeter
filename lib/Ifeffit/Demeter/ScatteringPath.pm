@@ -27,239 +27,175 @@ package Ifeffit::Demeter::ScatteringPath;
 
 =cut
 
-use strict;
-use warnings;
+use Moose;
+extends 'Ifeffit::Demeter';
+#use Ifeffit::Demeter::NumTypes qw( PosInt Natural NonNeg );
+
 use Chemistry::Elements qw(get_symbol);
-use Class::Std;
-use Class::Std::Utils;
 use Carp;
 use Fatal qw(open close);
 use List::Util qw(reduce);
 use List::MoreUtils qw(pairwise notall all any);
 #use Math::Complex;
 use Math::Round qw(round);
-use Math::Trig qw(acos atan);
+#use Math::Trig qw(acos atan);
+use POSIX qw(acos);
 use Regexp::List;
 use Regexp::Optimizer;
-use aliased 'Ifeffit::Demeter::Tools';
+#use aliased 'Ifeffit::Demeter::Tools';
 use Readonly;
-Readonly my $PI           => 2*atan2(1,0);
-Readonly my $EPSI         => 0.00001;
-Readonly my $TRIGEPS      => 1e-6;
-Readonly my $FUZZ_DEF     => 0.01;
-Readonly my $BETAFUZZ_DEF => 3;
+#Readonly my $PI           => 2*atan2(1,0);
+#Readonly my $EPSI         => 0.00001;
+#Readonly my $TRIGEPS      => 1e-6;
+use String::Random qw(random_string);
 
-{
 
-  my %params_of  :ATTR;
 
-  my $opt  = Regexp::List->new;
-  my %sp_defaults = (
-		     group         => q{},
+my $opt  = Regexp::List->new;
+
+# used in compute_beta and identify_path; made global as a speed
+# optimization I am trying to avoid directly calling variables of
+# other packages, but in this case it is warrented as a matter of
+# speed
+my $fsangle = $Ifeffit::Demeter::config->default("pathfinder", "fs_angle");
+my $ncangle = $Ifeffit::Demeter::config->default("pathfinder", "nc_angle");
+my $rtangle = $Ifeffit::Demeter::config->default("pathfinder", "rt_angle");
+
+
+## In principle, I would like to use MooseX::AttributeHelpers with
+## this class ass well.  I find that doing for the the ArrayRef valued
+## attributes adds a measurable amount of overhead.  Since this is
+## called SO MANY TIMES, it seems prudent to reduce the amount of
+## Moose-y overhead
+
 		     ## caller provides these two
-		     feff	   => q{}, # Feff object
-		     string	   => q{}, # special string
-		     ## computed by the evaluate method
-		     nkey	   => 0,   # integer key built from atoms indeces
-		     rleg	   => [],  # list of leg lengths
-		     beta	   => [],  # list of beta angles
-		     fs            => 0,
-		     eta	   => [],  # list of eta angles
-		     etanonzero    => 0,
-		     betakey       => q{},
-		     etakey        => q{},
-		     nleg          => 0,   # integer
-		     halflength	   => 0,   # positive float
-		     heapvalue	   => 0,   # used by Heap
-		     ## computed by collapsing (nearly) degenerate paths
-		     n             => 1,   # positive integer, minimum degeneracy is 1
-		     degeneracies  => [],  # list of string attributes
-		     fuzzy         => 0,
-		     type          => q{},
-		     weight        => 0,
-		     random_string => q{},
-		    );
-  my $sp_regexp = $opt->list2re(keys %sp_defaults);
+has 'feff'	   => (is => 'rw', isa => 'Ifeffit::Demeter::Feff');
+has 'string'	   => (is => 'rw', isa => 'Str',      default => q{});
 
-  sub BUILD {
-    my ($self, $ident, $arguments) = @_;
-    #$self -> set(\%sp_defaults);
-    while (my ($key,$value) = each %sp_defaults) {
-      $params_of{ident $self}{$key} = $value;
-    };
+has 'nkey'	   => (is => 'rw', isa => 'Int',      default => 0); # integer key built from atoms indeces
 
-    my $group = Tools->random_string(4);
-    $self -> set({group => $group});
+has 'rleg'	   => (is => 'rw', isa => 'ArrayRef', default => sub{[]});
+has 'beta'	   => (is => 'rw', isa => 'ArrayRef', default => sub{[]});
+has 'fs'	   => (is => 'rw', isa => 'Int',      default => 0);
+has 'eta'	   => (is => 'rw', isa => 'ArrayRef', default => sub{[]});
+has 'etanonzero'   => (is => 'rw', isa => 'Bool',     default => 0);
+has 'betakey'	   => (is => 'rw', isa => 'Str',      default => q{});
+has 'etakey'	   => (is => 'rw', isa => 'Str',      default => q{});
+has 'nleg'	   => (is => 'rw', isa => 'Int',      default => 2);
+has 'halflength'   => (is => 'rw', isa => 'Num',      default => 0);
 
-    ## path specific attributes
-    $self -> set($arguments);
+has 'heapvalue'	   => (is => 'rw', isa => 'Any',      default => 0);
 
-    return;
+has 'n'		   => (is => 'rw', isa => 'Int',      default => 1);
+
+has 'degeneracies' => (is => 'rw', isa => 'ArrayRef', default => sub{[]});
+has 'fuzzy'	   => (is => 'rw', isa => 'Num',      default => 0);
+has 'Type'	   => (is => 'rw', isa => 'Str',      default => q{});
+has 'weight'	   => (is => 'rw', isa => 'Num',      default => 0);
+has 'randstring'   => (is => 'rw', isa => 'Str',      default => q{});
+
+## set by details method:
+#has 'tags'         => (is => 'rw', isa => 'ArrayRef', default => sub{[]});
+#has 'ipots'        => (is => 'rw', isa => 'ArrayRef', default => sub{[]});
+#has 'elements'     => (is => 'rw', isa => 'ArrayRef', default => sub{[]});
+
+sub _betakey {
+  my ($self) = @_;
+  my @beta =  sort @{ $self->beta };
+  return join(q{}, @beta);
+};
+sub _etakey {
+  my ($self) = @_;
+  my @eta =  sort @{ $self->eta };
+  return join(q{}, @eta);
+};
+
+
+sub attributes {		# returns all SP attributes
+  my ($self) = @_;
+  return qw(feff string nkey rleg beta eta fs etanonzero betakey etakey nleg halflength
+	    heapvalue n degeneracies fuzzy Type weight randstring);
+};
+sub savelist { # returns all SP attributes that are saved when a Feff calc is serialized
+  my ($self) = @_;
+  return grep { ($_ ne 'feff') and ($_ ne 'heapvalue') } $self->attributes;
+};
+
+## construct the intrp line by disentangling the SP string
+sub intrplist {
+  my ($self, $string) = @_;
+  $string  ||= $self->string;
+  my $feff   = $self->feff;
+  my $token  = $self->co->default("pathfinder", "token") || '<+>';
+  my @atoms  = split(/\./, $self->string);
+  my @intrp = ($token);
+  my @sites  = @{ $feff->sites };
+  foreach my $a (@atoms[1 .. $#atoms-1]) {
+    my $this = ($a == $feff->abs_index) ? $token : $feff->site_tag($a);
+    push @intrp, sprintf("%-6s", $this);
   };
-  #sub DEMOLISH {
-  #  my ($self) = @_;
-  #  return;
+  push @intrp, $token;
+  return join(" ", @intrp);
+};
+
+
+## set halflength and beta list for this path
+sub evaluate {
+  my ($self) = @_;
+  my ($feff, $string) = $self->get(qw{feff string});
+
+  ## compute nlegs
+  $self -> compute_nleg_nkey($string);
+  $self -> compute_halflength($feff, $string);
+  $self -> compute_beta($feff, $string);
+  $self -> set(betakey=>$self->_betakey, etakey=>$self->_etakey);
+  $self -> identify_path;
+  $self -> randstring(random_string('ccccccccc').'.sp');
+  return $self;
+};
+
+sub compute_nleg_nkey {
+  my ($self, $string) = @_;
+  my @atoms  = split(/\./, $string);
+  my $na = $#atoms;
+  shift(@atoms); pop(@atoms); # remove central atom tokens
+  ## compute the numeric key built from the atoms in this path
+  ## this is used to assure order of how paths come off the heap
+  my ($nkey, $cofactor) = (0,1);
+  foreach (reverse @atoms) {
+    $nkey += $cofactor * $_;
+    $cofactor *= 1000;
+  };
+  $self->set(nleg=>$na, nkey=>$nkey);
+  return ($na, $nkey);
+};
+
+sub compute_halflength {
+  my ($self, $feff, $string) = @_;
+  croak("Ifeffit::Demeter::ScatteringPath::compute_halflength: feff and string attributes unset")
+    if not ( (ref($feff) =~ m{Feff}) and $string);
+  my @sites  = @{ $feff->sites };
+
+  ## keep a list of cartesian coordinates in this path
+  my @coords = @{ $feff->absorber };
+  ## each part of the string is a number which is the index of that atom
+  ## in the sites list of the Feff object
+  my @atoms  = split(/\./, $string);
+  shift(@atoms); pop(@atoms); # remove central atom tokens
+
+  ## deprecated
+  #foreach my $i (@atoms) {
+  #  ## so this pushes the cartesian coordinates of that site onto the coords list
+  #  push @coords, @{ $sites[$i] }[0..2];
   #};
-  sub set {
-    my ($self, $hashref) = @_;
-    foreach my $key (keys %$hashref) {
-      my $k = lc $key;
-      carp("\"$key\" is not a valid Ifeffit::Demeter::ScatteringPath parameter"), next if ($k !~ $sp_regexp);
-      $params_of{ident $self}{$k} = $hashref->{$k};
-    };
-    return $self;
-  };
-  sub Push {
-    my ($self, $hashref) = @_;
-    my $retval = 0;
-    foreach my $key (keys %$hashref) {
-      my $k = lc $key;
-      push @{ $params_of{ident $self}{$k} }, $hashref->{$k};
-      $retval = $#{ $params_of{ident $self}{$k} };
-    };
-    return $retval;
-  };
+  #my $halflength = sprintf("%.5f", Tools->halflength(@coords));
 
-  sub get {
-    #my ($self, @params) = @_;  # can shave a sliver of time by not instantiating new variables...
-    croak('Ifeffit::Demeter::ScatteringPath: usage: get($key) or get(@keys)') if @_ < 2;
-    my $self = shift;
-    my @values = ();
-    foreach my $key (@_) {
-      my $k = lc $key;
-      carp("Ifeffit::Demeter::ScatteringPath:: \"$key\" is not a valid parameter") if ($k !~ $sp_regexp);
-      push @values, $params_of{ident $self}{$k};
-    };
-    return wantarray ? @values : $values[0];
-  };
-  sub get_group : STRINGIFY {
-    my ($self) = @_;
-    return $self->get("group");
-  };
-  sub attributes {		# returns all SP attributes
-    my ($self) = @_;
-    return keys(%sp_defaults);
-  };
-  sub savelist {		# returns all SP attributes that are saved when a Feff calc is serialized
-    my ($self) = @_;
-    return grep { ($_ ne 'feff') and ($_ ne 'heapvalue') } $self->attributes;
-  };
-
-  ## convenience methods
-  sub feff {
-    my ($self) = @_;
-    return $self->get('feff');
-  };
-  sub halflength : NUMERIFY {
-    my ($self) = @_;
-    return $self->get('halflength');
-  };
-  sub nkey {
-    my ($self) = @_;
-    return $self->get('nkey');
-  };
-  sub nleg {
-    my ($self) = @_;
-    return $self->get('nleg');
-  };
-  sub betakey {
-    my ($self) = @_;
-    return $self->get('betakey');
-  };
-  sub _betakey {
-    my ($self) = @_;
-    my @beta =  sort @{ $self->get('beta') };
-    return join(q{}, @beta);
-  };
-  sub etakey {
-    my ($self) = @_;
-    return $self->get('etakey');
-  };
-  sub _etakey {
-    my ($self) = @_;
-    my @eta =  sort map { ($_ > $TRIGEPS) ? $_ : q{} }  @{ $self->get('eta') };
-    return join(q{}, @eta);
-  };
-  sub string {
-    my ($self) = @_;
-    return $self->get("string");
-  };
-
-  ## construct the intrp line by disentangling the SP string
-  sub intrplist {
-    my ($self, $string) = @_;
-    $string  ||= $self->get('string');
-    my $feff   = $self->get('feff');
-    my $config = $feff->get_mode("params");
-    my $token  = $config->default("pathfinder", "token") || '<+>';
-    my @atoms  = split(/\./, $self->get('string'));
-    my @intrp = ($token);
-    my @sites  = @{ $feff->get('sites') };
-    foreach my $a (@atoms[1 .. $#atoms-1]) {
-      my $this = ($a == $feff->get("abs_index")) ? $token: $feff->site_tag($a);
-      push @intrp, sprintf("%-6s", $this);
-    };
-    push @intrp, $token;
-    return join(" ", @intrp);
-  };
-
-
-  ## set halflength and beta list for this path
-  sub evaluate {
-    my ($self) = @_;
-    my ($feff, $string) = $self->get(qw{feff string});
-
-    ## compute nlegs
-    $self -> compute_nleg_nkey($string);
-    $self -> compute_halflength($feff, $string);
-    $self -> compute_beta($feff, $string);
-    $self -> set({betakey=>$self->_betakey, etakey=>$self->_etakey});
-    $self -> identify_path;
-    $self -> set({random_string=>Tools->random_string(9).'.sp'});
-    return $self;
-  };
-
-  sub compute_nleg_nkey {
-    my ($self, $string) = @_;
-    my @atoms  = split(/\./, $self->get('string'));
-    my $na = $#atoms;
-    shift(@atoms); pop(@atoms); # remove central atom tokens
-    ## compute the numeric key built from the atoms in this path
-    ## this is used to assure order of how paths come off the heap
-    my ($nkey, $cofactor) = (0,1);
-    foreach (reverse @atoms) {
-      $nkey += $cofactor * $_;
-      $cofactor *= 1000;
-    };
-    $self->set({nleg=>$na, nkey=>$nkey});
-    return ($na, $nkey);
-  };
-
-  sub compute_halflength {
-    my ($self, $feff, $string) = @_;
-    croak("Ifeffit::Demeter::ScatteringPath::compute_halflength: feff and string attributes unset")
-      if not ( (ref($feff) =~ m{Feff}) and $string);
-    my @sites  = @{ $feff->get('sites') };
-
-    ## keep a list of cartesian coordinates in this path
-    my @coords = @{ $feff->get('absorber') };
-    ## each part of the string is a number which is the index of that atom
-    ## in the sites list of the Feff object
-    my @atoms  = split(/\./, $self->get('string'));
-    shift(@atoms); pop(@atoms); # remove central atom tokens
-
-    ## deprecated
-    #foreach my $i (@atoms) {
-    #  ## so this pushes the cartesian coordinates of that site onto the coords list
-    #  push @coords, @{ $sites[$i] }[0..2];
-    #};
-    #my $halflength = sprintf("%.5f", Tools->halflength(@coords));
-
-    my $cindex = $feff->get(qw'abs_index');
-    my $halflength = sprintf("%.5f", 0.5*$feff->_length($cindex, @atoms, $cindex));
-    $self->set({halflength=>$halflength, heapvalue=>$halflength});
-    return $halflength;
-  };
+  my $cindex = $feff->abs_index;
+  #my $halflength = sprintf("%.5f", 0.5*$feff->_length($cindex, @atoms, $cindex));
+  my $halflength = sprintf("%.5f", 0.5*Ifeffit::Demeter::Feff::_length($cindex, @atoms, $cindex));
+  $self->set(halflength=>$halflength, heapvalue=>$halflength);
+  return $halflength;
+};
 
 
 =for Explanation (compute_beta)
@@ -285,178 +221,204 @@ Readonly my $BETAFUZZ_DEF => 3;
 
 =cut
 
-  sub _trig {
-    my ($x, $y, $z) = @_;
-    my $r   = sqrt($x*$x + $y*$y + $z*$z);
-    my $rxy = sqrt($x*$x + $y*$y);
-    my ($ct, $st, $cp, $sp) = (1, 0, 1, 0);
+# sub _trig {
+#   my ($x, $y, $z) = @_;
+#   my $TRIGEPS = 1e-6;
+#   my $rxysqr = $x*$x + $y*$y;
+#   my $r   = sqrt($rxysqr + $z*$z);
+#   my $rxy = sqrt($rxysqr);
+#   my ($ct, $st, $cp, $sp) = (1, 0, 1, 0);
+#   ($ct, $st) = ($z/$r,   $rxy/$r) if ($r   > $TRIGEPS);
+#   ($cp, $sp) = ($x/$rxy, $y/$rxy) if ($rxy > $TRIGEPS);
+#   return ($ct, $st, $cp, $sp);
+# };
+sub _trig {
+  my $TRIGEPS = 1e-6;
+  my $rxysqr = $_[0]*$_[0] + $_[1]*$_[1];
+  my $r   = sqrt($rxysqr + $_[2]*$_[2]);
+  my $rxy = sqrt($rxysqr);
+  my ($ct, $st, $cp, $sp) = (1, 0, 1, 0);
 
-    ($ct, $st) = ($z/$r,   $rxy/$r) if ($r   > $TRIGEPS);
-    ($cp, $sp) = ($x/$rxy, $y/$rxy) if ($rxy > $TRIGEPS);
+  ($ct, $st) = ($_[2]/$r,   $rxy/$r)    if ($r   > $TRIGEPS);
+  ($cp, $sp) = ($_[0]/$rxy, $_[1]/$rxy) if ($rxy > $TRIGEPS);
 
-    return ($ct, $st, $cp, $sp);
-  };
-  sub _arg {
-    my ($real, $imag) = @_;
-    my $th = 0;
-    ($real = 0) if (abs($real) < $TRIGEPS);
-    ($imag = 0) if (abs($imag) < $TRIGEPS);
-    if ((abs($real) > $TRIGEPS) or (abs($imag) > $TRIGEPS)) {
-      $th = atan2($imag, $real);
-    };
-    return $th;
-  };
-
-  sub compute_beta {
-    my ($self, $feff, $string) = @_;
-    my @sites  = @{ $feff->get('sites') };
-    my $ai = $feff->get("abs_index");
-    my @atoms  = split(/\./, $self->get('string'));
-    $atoms[0] = $ai;		#  replace central atom tokens
-    $atoms[-1] = $ai;
-
-    my (@alpha, @beta, @gamma, @eta, @aleph, @gimel, @rleg);
-    $alpha[0] = 0;
-    $beta[0]  = 0;
-    $gamma[0] = 0;
-    $eta[0]   = 0;
-    $aleph[0] = [0,0];
-    $gimel[0] = [0,0];
-    foreach my $j (1 .. $#atoms) {
-
-      ## nothing gets left undefined
-      $alpha[$j] = 0;
-      $beta[$j]  = 0;
-      $gamma[$j] = 0;
-      $eta[$j]   = 0;
-      $aleph[$j] = [0,0];
-      $gimel[$j] = [0,0];
-
-      my ($im1, $i, $ip1) = ($j-1, $j, $j+1);
-      if ($j == $#atoms) {
-	($im1, $i, $ip1) = ($j-1, 0, 1);
-      };#  elsif ($j == $#atoms+1) {
-# 	($im1, $i, $ip1) = ($#atoms-1, $#atoms, 0);
-#       };
-
-      my @asite = @{ $sites[$atoms[$im1]] }[0..2];
-      my @bsite = @{ $sites[$atoms[$i  ]] }[0..2];
-      my @csite = @{ $sites[$atoms[$ip1]] }[0..2];
-
-      my @vector = ( $csite[0]-$bsite[0], $csite[1]-$bsite[1], $csite[2]-$bsite[2]);
-      my ($ct, $st, $cp, $sp)     = _trig(@vector);
-      @vector    = ( $bsite[0]-$asite[0], $bsite[1]-$asite[1], $bsite[2]-$asite[2]);
-      $rleg[$j]  = sqrt($vector[0]**2 + $vector[1]**2 +$vector[2]**2);
-      my ($ctp, $stp, $cpp, $spp) = _trig(@vector);
-
-      my $cppp = $cp*$cpp + $sp*$spp;
-      my $sppp = $spp*$cp - $cpp*$sp;
-      my $phi  = atan2($sp,  $cp);
-      my $phip = atan2($spp, $cpp);
-
-      $beta[$j]  = $ct*$ctp + $st*$stp*$cppp;
-      $beta[$j]  = -1 if ($beta[$j] < -1); # care with roundoff
-      $beta[$j]  =  1 if ($beta[$j] >  1);
-      $beta[$j]  = acos($beta[$j]);
-      $beta[$j]  = sprintf("%.4f", 180 * $beta[$j]  / $PI);
-
-      $aleph[$j] = [-1*$st*$ctp + $ct*$stp*$cppp,     $stp*$sppp];
-      $gimel[$j] = [-1*$st*$ctp*$cppp + $ct*$stp,  -1*$st *$sppp];
-      #$aleph[$j] = Math::Complex->make(-1*$st*$ctp + $ct*$stp*$cppp,     $stp*$sppp);
-      #$gimel[$j] = Math::Complex->make(-1*$st*$ctp*$cppp + $ct*$stp,  -1*$st *$sppp);
-    };
-
-    my @asite = @{ $sites[$atoms[$#atoms]] }[0..2];
-    my @bsite = @{ $sites[$atoms[0      ]] }[0..2];
-    my @vector = ( $bsite[0]-$asite[0], $bsite[1]-$asite[1], $bsite[2]-$asite[2]);
-    $rleg[$#atoms+1] = sqrt($vector[0]**2 + $vector[1]**2 +$vector[2]**2);
-
-    #$alpha[0] = $alpha[$#atoms];
-    push @gimel, $gimel[0];
-    my $nonzero = 0;
-    foreach my $j (0 .. $#atoms) {
-      my $eer = ($aleph[$j]->[0] * $gimel[$j+1]->[0]) - ($aleph[$j]->[1] * $gimel[$j+1]->[1]);
-      my $eei = ($aleph[$j]->[1] * $gimel[$j+1]->[0]) + ($aleph[$j]->[0] * $gimel[$j+1]->[1]);
-      #my $ee = $aleph[$j] * $gimel[$j+1];
-      $eta[$j] = _arg($eer, $eei);
-      $eta[$j] = sprintf("%.4f", 180 * $eta[$j] / $PI);
-      ++$nonzero if ($eta[$j] > $TRIGEPS);
-    };
-    my $fs = 0;
-    foreach my $j (1 .. $#beta-1) {
-      ++$fs if ($beta[$j] < $feff->config->default("pathfinder", "fs_angle"));
-    };
-    $self->set({rleg=>\@rleg, beta=>\@beta, eta=>\@eta, etanonzero=>$nonzero, fs=>$fs});
-    return @beta;
+  return ($ct, $st, $cp, $sp);
+};
+sub _arg {
+  #my ($real, $imag) = @_;
+  my $TRIGEPS = 1e-6;
+  #my $th = 0;
+  ($_[0] = 0) if (abs($_[0]) < $TRIGEPS);
+  ($_[1] = 0) if (abs($_[1]) < $TRIGEPS);
+  #if ((abs($real) > $TRIGEPS) or (abs($imag) > $TRIGEPS)) {
+  return atan2($_[1], $_[0]) if ($_[0] || $_[1]);
+  return 0;
   };
 
+## this sub is not necessarily as readable as possible.  this is a big
+## time-sink for the pathfinder, so I am trying any little tweak that
+## doesn't break things to get a bit better performance out.  in
+## particular, I apologize for the confusing dereferencing in the
+## lines with asite/bsite/csite
+sub compute_beta {
+  my ($self, $feff, $string) = @_;
+  my ($TRIGEPS, $PI) = (1e-6, 2*atan2(1,0));
+  #my @sites  = @{ $feff->sites };
+  my $rsites  = $feff->sites;
+  my $ai      = $feff->abs_index;
+  #my @atoms   = split(/\./, $self->string);
+  my @atoms   = split(/\./, $string);
+  $atoms[0]   = $ai;		#  replace central atom tokens
+  $atoms[-1]  = $ai;
 
+  my (@alpha, @beta, @gamma, @eta, @aleph, @gimel, @rleg);
+  $alpha[0] = 0;
+  $beta[0]  = 0;
+  $gamma[0] = 0;
+  $eta[0]   = 0;
+  $aleph[0] = [0,0];
+  $gimel[0] = [0,0];
+  foreach my $j (1 .. $#atoms) {
 
-  ## degeneracy checking
-  sub compare {
-    my ($self, $other) = @_;
-    croak("ScatteringPaths from different Feff objects") if ($self->feff ne $other->feff);
-    my $feff      = $self->feff;
-    my $config    = $feff->get_mode("params");
-    my ($fz, $bf) = ($config->default("pathfinder", "fuzz"), $config->default("pathfinder", "betafuzz"));
-    my $FUZZ      = defined($fz) ? $fz : $FUZZ_DEF;
-    my $BETAFUZZ  = defined($bf) ? $bf : $BETAFUZZ_DEF;
-    $feff -> set({fuzz=>$FUZZ, betafuzz=>$BETAFUZZ});
+    ## nothing gets left undefined
+    #$alpha[$j] = 0;
+    #$beta[$j]  = 0;
+    #$gamma[$j] = 0;
+    #$eta[$j]   = 0;
+    #$aleph[$j] = [0,0];
+    #$gimel[$j] = [0,0];
 
-    ## compare path lengths
-    return "lengths different" if ( abs($self->halflength - $other->halflength) > $FUZZ );
+    my ($im1, $i, $ip1) = ($j-1, $j, $j+1);
+    if ($j == $#atoms) {
+      ($im1, $i, $ip1) = ($j-1, 0, 1);
+    };#  elsif ($j == $#atoms+1) {
+    # 	($im1, $i, $ip1) = ($#atoms-1, $#atoms, 0);
+    #       };
 
-    my @sites  = @{ $feff->get('sites') };
+    my @asite = @{ $rsites->[$atoms[$im1]] }[0..2];
+    my @bsite = @{ $rsites->[$atoms[$i  ]] }[0..2];
+    my @csite = @{ $rsites->[$atoms[$ip1]] }[0..2];
 
-    ## compare number of legs and ipots
-    my @this = split(/\./,  $self->string);
-    shift @this; pop @this;
-    my @that = split(/\./, $other->string);
-    shift @that; pop @that;
+    my @vector = ( $csite[0]-$bsite[0], $csite[1]-$bsite[1], $csite[2]-$bsite[2]);
+    my ($ct, $st, $cp, $sp)     = _trig(@vector);
+    @vector    = ( $bsite[0]-$asite[0], $bsite[1]-$asite[1], $bsite[2]-$asite[2]);
+    $rleg[$j]  = sqrt($vector[0]**2 + $vector[1]**2 +$vector[2]**2);
+    my ($ctp, $stp, $cpp, $spp) = _trig(@vector);
 
-    ## number of legs
-    return "nlegs different" if ($#this != $#that);
+    my $cppp = $cp*$cpp + $sp*$spp;
+    my $sppp = $spp*$cp - $cpp*$sp;
+    #my $phi  = atan2($sp,  $cp);
+    #my $phip = atan2($spp, $cpp);
 
-    ## ipots
-    my @this_ipot = map { ($_ eq '+') ? 0 : $sites[$_] -> [3] } @this;
-    my @that_ipot = map { ($_ eq '+') ? 0 : $sites[$_] -> [3] } @that;
-    my @ipot_compare = pairwise {$a == $b} @this_ipot, @that_ipot;
-    if (notall {$_} @ipot_compare) { # time reversal
-      ##($that_ipot[0], $that_ipot[-1]) = ($that_ipot[-1], $that_ipot[0]);
-      @that_ipot = reverse @that_ipot;
-      @ipot_compare = pairwise {$a == $b} @this_ipot, @that_ipot;
-      return "ipots different" if (notall {$_} @ipot_compare);
+    my $b = $ct*$ctp + $st*$stp*$cppp;
+    if ($b < -1) {
+      $beta[$j] = "180.0000";
+    } elsif ($b >  1) {
+      $beta[$j] = "0.0000";
+    } else {
+      $beta[$j] = sprintf("%.4f", 180 * acos($b)  / $PI);
     };
 
-    ## beta angles
-    @this = @{ $self ->get("beta") };
-    @that = @{ $other->get("beta") };
-    return "nlegs different" if ($#this != $#that);
-    my @angle_compare = pairwise { abs($a - $b) < $BETAFUZZ } @this, @that;
-    if (notall {$_} @angle_compare) { # time reversal
-      ($that[0], $that[-1]) = ($that[-1], $that[0]);
-      @that = reverse @that;
-      @angle_compare = pairwise { abs($a - $b) < $BETAFUZZ } @this, @that;
-      return "betas different" if (notall {$_} @angle_compare);
-    };
+#     $beta[$j]  = $ct*$ctp + $st*$stp*$cppp;
+#     $beta[$j]  = -1 if ($beta[$j] < -1); # care with roundoff
+#     $beta[$j]  =  1 if ($beta[$j] >  1);
+#     #$beta[$j]  = acos($beta[$j]);
+#     $beta[$j]  = sprintf("%.4f", 180 * acos($beta[$j])  / $PI);
 
-    ## eta angles
-    my @this_eta = @{ $self ->get("eta") };
-    my @that_eta = @{ $other->get("eta") };
-    my @eta_compare = pairwise { abs(abs($a) - abs($b)) < $BETAFUZZ } @this_eta, @that_eta;
-    if (notall {$_} @eta_compare) { # time reversal
-      ($that_eta[0], $that_eta[-1]) = ($that_eta[-1], $that_eta[0]);
-      @that_eta = reverse @that_eta;
-      @eta_compare = pairwise { abs(abs($a) - abs($b)) < $BETAFUZZ } @this_eta, @that_eta;
-      return "etas different" if (notall {$_} @eta_compare);
-    };
-
-    #$self->set({fuzzy=>$fuzzy}) if ( abs($self->halflength - $other->halflength) > $EPSI );
-    return q{};
+    $aleph[$j] = [-$st*$ctp + $ct*$stp*$cppp,   $stp*$sppp];
+    $gimel[$j] = [-$st*$ctp*$cppp + $ct*$stp,  -$st *$sppp];
   };
 
-  ## ----------------------------------------------------------------
-  ## textual reporting methods
+  my @asite = @{ $rsites->[$atoms[$#atoms]] }[0..2];
+  my @bsite = @{ $rsites->[$atoms[0      ]] }[0..2];
+  my @vector = ( $bsite[0]-$asite[0], $bsite[1]-$asite[1], $bsite[2]-$asite[2]);
+  $rleg[$#atoms+1] = sqrt($vector[0]**2 + $vector[1]**2 +$vector[2]**2);
+
+  #$alpha[0] = $alpha[$#atoms];
+  push @gimel, $gimel[0];
+  my $nonzero = 0;
+  foreach my $j (0 .. $#atoms) {
+    my $eer = ($aleph[$j]->[0] * $gimel[$j+1]->[0]) - ($aleph[$j]->[1] * $gimel[$j+1]->[1]);
+    my $eei = ($aleph[$j]->[1] * $gimel[$j+1]->[0]) + ($aleph[$j]->[0] * $gimel[$j+1]->[1]);
+    #my $ee = $aleph[$j] * $gimel[$j+1];
+    $eta[$j] = _arg($eer, $eei);
+    $eta[$j] = sprintf("%.4f", 180 * $eta[$j] / $PI);
+    ($nonzero=1) if ($eta[$j] > $TRIGEPS);
+  };
+  my $fs = 0;
+  foreach my $j (1 .. $#beta-1) {
+    ++$fs if ($beta[$j] < $fsangle); # fsangle defined globally, near line 49
+  };
+  $self->rleg(\@rleg);
+  $self->beta(\@beta);
+  $self->eta(\@eta);
+  $self->etanonzero($nonzero);
+  $self->fs($fs);
+  return @beta;
+};
+
+
+## degeneracy checking
+sub compare {
+  my ($self, $other) = @_;
+  croak("ScatteringPaths from different Feff objects") if ($self->feff ne $other->feff);
+  my $feff = $self->feff;
+
+  ## compare path lengths
+  return "lengths different" if ( abs($self->halflength - $other->halflength) > $feff->fuzz );
+
+  my @sites  = @{ $feff->sites };
+
+  ## compare number of legs and ipots
+  my @this = split(/\./,  $self->string);
+  shift @this; pop @this;
+  my @that = split(/\./, $other->string);
+  shift @that; pop @that;
+
+  ## number of legs
+  return "nlegs different" if ($#this != $#that);
+
+  ## ipots
+  my @this_ipot = map { ($_ eq '+') ? 0 : $sites[$_] -> [3] } @this;
+  my @that_ipot = map { ($_ eq '+') ? 0 : $sites[$_] -> [3] } @that;
+  my @ipot_compare = pairwise {$a == $b} @this_ipot, @that_ipot;
+  if (notall {$_} @ipot_compare) { # time reversal
+    ##($that_ipot[0], $that_ipot[-1]) = ($that_ipot[-1], $that_ipot[0]);
+    @that_ipot = reverse @that_ipot;
+    @ipot_compare = pairwise {$a == $b} @this_ipot, @that_ipot;
+    return "ipots different" if (notall {$_} @ipot_compare);
+  };
+
+  ## beta angles
+  @this = @{ $self ->beta };
+  @that = @{ $other->beta };
+  my $bfuzz = $feff->betafuzz;
+  return "nlegs different" if ($#this != $#that);
+  my @angle_compare = pairwise { abs($a - $b) < $bfuzz } @this, @that;
+  if (notall {$_} @angle_compare) { # time reversal
+    ($that[0], $that[-1]) = ($that[-1], $that[0]);
+    @that = reverse @that;
+    @angle_compare = pairwise { abs($a - $b) < $bfuzz } @this, @that;
+    return "betas different" if (notall {$_} @angle_compare);
+  };
+
+  ## eta angles
+  my @this_eta = @{ $self ->eta };
+  my @that_eta = @{ $other->eta };
+  my @eta_compare = pairwise { abs(abs($a) - abs($b)) < $feff->betafuzz } @this_eta, @that_eta;
+  if (notall {$_} @eta_compare) { # time reversal
+    ($that_eta[0], $that_eta[-1]) = ($that_eta[-1], $that_eta[0]);
+    @that_eta = reverse @that_eta;
+    @eta_compare = pairwise { abs(abs($a) - abs($b)) < $feff->betafuzz } @this_eta, @that_eta;
+    return "etas different" if (notall {$_} @eta_compare);
+  };
+
+  #$self->set(fuzzy=>$fuzzy) if ( abs($self->halflength - $other->halflength) > $EPSI );
+  return q{};
+};
+
+## ----------------------------------------------------------------
+## textual reporting methods
 
 =for Explanation (pathsdat)
   pathsdat writes out a paragraph in the format read from the paths.dat file by genfmt
@@ -470,59 +432,77 @@ Readonly my $BETAFUZZ_DEF => 3;
 
 =cut
 
-  sub pathsdat {
-    my ($self, $args) = @_;
-    $args->{index}  ||= 1;
-    $args->{angles}   = 1 if (not defined($args->{angles}));
-    $args->{string} ||= $self -> string;
-    $self -> set({random_string=>Tools->random_string(9).'.sp'}) if ($self->get("random_string") =~ m{\A\s*\z});
+sub pathsdat {
+  my ($self, @arguments) = @_;
+  my %args = @arguments;
+  $args{index}  ||= 1;
+  $args{angles}   = 1 if (not defined($args{angles}));
+  $args{string} ||= $self -> string;
+  $self -> randstring(random_string('ccccccccc').'.sp') if ($self->randstring =~ m{\A\s*\z});
 
+  my $feff = $self->feff;
+  my @sites = @{ $feff->sites };
+  my $pd = q{};
 
-    my $feff = $self->get('feff');
-    my @sites = @{ $feff->get('sites') };
-    my $pd = q{};
-
-    $pd .= sprintf("  %4d    %d  %6.3f  index, nleg, degeneracy, r= %.4f\n",
-		       $args->{index}, $self->get(qw(nleg n fuzzy)) );
-    $pd .= "      x           y           z     ipot  label";
-    $pd .= "      rleg      beta        eta" if ($args->{angles});
+  $pd .= sprintf("  %4d    %d  %6.3f  index, nleg, degeneracy, r= %.4f\n",
+		 $args{index}, $self->get(qw(nleg n fuzzy)) );
+  $pd .= "      x           y           z     ipot  label";
+  $pd .= "      rleg      beta        eta" if ($args{angles});
+  $pd .= "\n";
+  my @atoms = split(/\./, $args{string});
+  shift @atoms; pop @atoms;
+  my $i=1;
+  my ($rrleg, $rbeta, $reta) = $self->get(qw(rleg beta eta));
+  foreach my $a (@atoms) {
+    my @coords = @{ $sites[$a] };
+    ## use fuzzy length for fuzzily degenerate paths, need to scale coordinates
+    my $scale = $self->fuzzy / $self->halflength;
+    @coords[0..2] = map {$scale*$_} @coords[0..2];
+    ## this bit o' yuck gets a tag from the potentials list entry if not in the sites list
+    $coords[4] ||= $feff->site_tag($a);
+    $pd .= sprintf(" %11.6f %11.6f %11.6f   %d '%-6s'", @coords);
+    $pd .= sprintf("  %9.4f %9.4f %9.4f",$rrleg->[$i], $rbeta->[$i], $reta->[$i]) if $args{angles};
     $pd .= "\n";
-    my @atoms = split(/\./, $args->{string});
-    shift @atoms; pop @atoms;
-    my $i=1;
-    my ($rrleg, $rbeta, $reta) = $self->get(qw(rleg beta eta));
-    foreach my $a (@atoms) {
-      my @coords = @{ $sites[$a] };
-      ## use fuzzy length for fuzzily degenerate paths, need to scale coordinates
-      my $scale = $self->get("fuzzy") / $self->get("halflength");
-      @coords[0..2] = map {$scale*$_} @coords[0..2];
-      ## this bit o' yuck gets a tag from the potentials list entry if not in the sites list
-      $coords[4] ||= $feff->site_tag($a);
-      $pd .= sprintf(" %11.6f %11.6f %11.6f   %d '%-6s'", @coords);
-      $pd .= sprintf("  %9.4f %9.4f %9.4f",$rrleg->[$i], $rbeta->[$i], $reta->[$i]) if $args->{angles};
-      $pd .= "\n";
-      ++$i;
-    };
-    $pd .= sprintf(" %11.6f %11.6f %11.6f   %d '%-6s'", $feff->central, 0, 'abs');
-    $pd .= sprintf("  %9.4f %9.4f %9.4f", $rrleg->[$i], $rbeta->[$i], $reta->[$i]) if $args->{angles};
-    $pd .= "\n";
-    return $pd;
+    ++$i;
   };
+  $pd .= sprintf(" %11.6f %11.6f %11.6f   %d '%-6s'", $feff->central, 0, 'abs');
+  $pd .= sprintf("  %9.4f %9.4f %9.4f", $rrleg->[$i], $rbeta->[$i], $reta->[$i]) if $args{angles};
+  $pd .= "\n";
+  return $pd;
+};
 
-  sub all_strings {
-    my ($self) = @_;
-    return @{ $self->get('degeneracies') };
-  };
-  sub all_degeneracies {
-    my ($self) = @_;
-    my @dlist = @{ $self->get('degeneracies') };
-    return
-      map {
-	my $this = $self->intrplist($_);
-	$this =~ s{ +}{ }g;
-	$this;
-      } @{ $self->get('degeneracies') };
-  };
+sub details {
+  my ($self, $string) = @_;
+  my $feff = $self->feff;
+  my @list_of_sites = @{ $feff->sites };
+  my @list_of_ipots = @{ $feff->potentials };
+
+  my $pathstring = $string || $self->string;
+
+  my @this_path = split(/\./, $pathstring);
+  shift @this_path; pop @this_path;
+
+  my @ipots = map { $list_of_sites[$_]->[3] } @this_path;
+  my @tags  = map { $list_of_sites[$_]->[4] } @this_path;
+  my @elems = map { get_symbol($list_of_ipots[$_]->[1]) } @ipots;
+
+  return (ipots=>\@ipots, tags=>\@tags, elements=>\@elems);
+};
+
+sub all_strings {
+  my ($self) = @_;
+  return @{ $self->degeneracies };
+};
+sub all_degeneracies {
+  my ($self) = @_;
+  my @dlist = @{ $self->degeneracies };
+  return
+    map {
+      my $this = $self->intrplist($_);
+      $this =~ s{ +}{ }g;
+      $this;
+    } @{ $self->degeneracies };
+};
 
 
 
@@ -546,132 +526,128 @@ Readonly my $BETAFUZZ_DEF => 3;
 
 =cut
 
-  sub identify_path {
-    my ($self) = @_;
-    my ($nleg, $feff) = $self->get(qw(nleg feff));
-    my @beta = @{ $self->get("beta") };
-    my $fsangle = $feff->config->default("pathfinder", "fs_angle");
-    my $ncangle = $feff->config->default("pathfinder", "nc_angle");
-    my $rtangle = $feff->config->default("pathfinder", "rt_angle");
-    my ($type, $weight) = (q{}, 0);
+sub identify_path {
+  my ($self) = @_;
+  my ($nleg, $feff) = $self->get(qw(nleg feff));
+  my @beta = @{ $self->beta };
+  my ($type, $weight) = (q{}, 0);
 
-  TYPE: {
+ TYPE: {
 
-      ($nleg == 2) and do {
-	($weight, $type) = (2, "single scattering");
-	last TYPE;
-      };
-
-      (($nleg == 3) and (any {($_ < $ncangle)} @beta[1..2]) ) and do {
-	($weight, $type) = (2, "forward scattering");
-	last TYPE;
-      };
-
-      (($nleg == 3) and (any {($_ > (180-$ncangle))} @beta[1..2]) ) and do {
-	($weight, $type) = (2, "non-forward linear");
-	last TYPE;
-      };
-
-      (($nleg == 4) and ($beta[2] < $ncangle) and (all {($_ == 180)} ($beta[1],$beta[3])) ) and do {
-	($weight, $type) = (2, "forward through absorber");
-	last TYPE;
-      };
-
-      (($nleg == 4) and (all {($_ < $ncangle)} ($beta[1],$beta[3])) ) and do {
-	($weight, $type) = (2, "double forward scattering");
-	last TYPE;
-      };
-
-      (($nleg == 3) and (all {$_ >= (180-$rtangle)} @beta[1..3])) and do {
-	($weight, $type) = (1, "acute triangle");
-	last TYPE;
-      };
-
-      (($nleg == 4) and (all {$_ == 180} @beta[1..3])) and do {
-	($weight, $type) = (1, "rattle");
-	last TYPE;
-      };
-
-      (($nleg == 3) and (any {($_ < $rtangle) and ($_ > $fsangle)} @beta[1..2]) ) and do {
-	($weight, $type) = (1, "obtuse triangle");
-	last TYPE;
-      };
-
-      (($nleg == 3) and (any {($_ < $rtangle) and ($_ > $fsangle)} @beta[2..3]) ) and do {
-	($weight, $type) = (1, "obtuse triangle");
-	last TYPE;
-      };
-
-      (($nleg == 3) and (any {($_ < $fsangle) and ($_ > $ncangle)} @beta[1..2]) ) and do {
-	($weight, $type) = (1, "forward triangle");
-	last TYPE;
-      };
-
-      (($nleg == 4) and (all {($_ < $fsangle) and ($_ > $ncangle)} ($beta[1],$beta[3])) ) and do {
-	($weight, $type) = (1, "forward triangle");
-	last TYPE;
-      };
-
-      (($nleg == 4) and ($beta[2] != 180) and (all {$_ == 180} ($beta[1],$beta[3]))) and do {
-	($weight, $type) = (0, "hinge");
-	last TYPE;
-      };
-
-      (($nleg == 4) and ($beta[2] == 180) and (all {$_ != 180} ($beta[1],$beta[3]))) and do {
-	($weight, $type) = (0, "dog-leg");
-	last TYPE;
-      };
-
-      (($nleg == 4) and (all {($_ < $rtangle) and ($_ > $fsangle)} ($beta[1],$beta[3])) ) and do {
-	($weight, $type) = (0, "obtuse triangle");
-	last TYPE;
-      };
-
-      ($nleg == 3) and do {
-	($weight, $type) = (0, "other double scattering");
-	last TYPE;
-      };
-
-      ($nleg == 4) and do {
-	($weight, $type) = (0, "other triple scattering");
-	last TYPE;
-      };
-
+    ($nleg == 2) and do {
+      ($weight, $type) = (2, "single scattering");
+      last TYPE;
     };
 
-    $self -> set({weight=>$weight, type=>$type});
-    return $self;
-  };
-
-
-  ## ----------------------------------------------------------------
-  ## methods required by the Heap module
-  sub heap {
-    my ($self, $value) = @_;
-    if ($value) {
-      $self->set({heapvalue=>$value});
-      return 1;
-    } else {
-      return $self->get('heapvalue');
+    (($nleg == 3) and (any {($_ < $ncangle)} @beta[1..2]) ) and do {
+      ($weight, $type) = (2, "forward scattering");
+      last TYPE;
     };
+
+    (($nleg == 3) and (any {($_ > (180-$ncangle))} @beta[1..2]) ) and do {
+      ($weight, $type) = (2, "non-forward linear");
+      last TYPE;
+    };
+
+    (($nleg == 4) and ($beta[2] < $ncangle) and (all {($_ == 180)} ($beta[1],$beta[3])) ) and do {
+      ($weight, $type) = (2, "forward through absorber");
+      last TYPE;
+    };
+
+    (($nleg == 4) and (all {($_ < $ncangle)} ($beta[1],$beta[3])) ) and do {
+      ($weight, $type) = (2, "double forward scattering");
+      last TYPE;
+    };
+
+    (($nleg == 3) and (all {$_ >= (180-$rtangle)} @beta[1..3])) and do {
+      ($weight, $type) = (1, "acute triangle");
+      last TYPE;
+    };
+
+    (($nleg == 4) and (all {$_ == 180} @beta[1..3])) and do {
+      ($weight, $type) = (1, "rattle");
+      last TYPE;
+    };
+
+    (($nleg == 3) and (any {($_ < $rtangle) and ($_ > $fsangle)} @beta[1..2]) ) and do {
+      ($weight, $type) = (1, "obtuse triangle");
+      last TYPE;
+    };
+
+    (($nleg == 3) and (any {($_ < $rtangle) and ($_ > $fsangle)} @beta[2..3]) ) and do {
+      ($weight, $type) = (1, "obtuse triangle");
+      last TYPE;
+    };
+
+    (($nleg == 3) and (any {($_ < $fsangle) and ($_ > $ncangle)} @beta[1..2]) ) and do {
+      ($weight, $type) = (1, "forward triangle");
+      last TYPE;
+    };
+
+    (($nleg == 4) and (all {($_ < $fsangle) and ($_ > $ncangle)} ($beta[1],$beta[3])) ) and do {
+      ($weight, $type) = (1, "forward triangle");
+      last TYPE;
+    };
+
+    (($nleg == 4) and ($beta[2] != 180) and (all {$_ == 180} ($beta[1],$beta[3]))) and do {
+      ($weight, $type) = (0, "hinge");
+      last TYPE;
+    };
+
+    (($nleg == 4) and ($beta[2] == 180) and (all {$_ != 180} ($beta[1],$beta[3]))) and do {
+      ($weight, $type) = (0, "dog-leg");
+      last TYPE;
+    };
+
+    (($nleg == 4) and (all {($_ < $rtangle) and ($_ > $fsangle)} ($beta[1],$beta[3])) ) and do {
+      ($weight, $type) = (0, "obtuse triangle");
+      last TYPE;
+    };
+
+    ($nleg == 3) and do {
+      ($weight, $type) = (0, "other double scattering");
+      last TYPE;
+    };
+
+    ($nleg == 4) and do {
+      ($weight, $type) = (0, "other triple scattering");
+      last TYPE;
+    };
+
   };
 
-  sub cmp {
-    my ($self, $other) = @_;
-    return $self->halflength <=> $other->halflength
-                             ||
-                 $self->nleg <=> $other->nleg
-                             ||
-               $self->etakey cmp $other->etakey
-                             ||
-              $self->betakey cmp $other->betakey
-                             ||
-	         $self->nkey <=> $other->nkey;
-  };
-
-
+  $self -> weight($weight);
+  $self -> Type($type);
+  return $self;
 };
 
+
+## ----------------------------------------------------------------
+## methods required by the Heap module
+sub heap {
+  my ($self, $value) = @_;
+  if ($value) {
+    $self->heapvalue($value);
+    return 1;
+  } else {
+    return $self->heapvalue;
+  };
+};
+
+sub cmp {
+  my ($self, $other) = @_;
+  return $self->halflength <=> $other->halflength
+                           ||
+               $self->nleg <=> $other->nleg
+                           ||
+             $self->etakey cmp $other->etakey
+                           ||
+            $self->betakey cmp $other->betakey
+                           ||
+	       $self->nkey <=> $other->nkey;
+};
+
+__PACKAGE__->meta->make_immutable;
 1;
 
 =head1 NAME
@@ -681,12 +657,12 @@ Ifeffit::Demeter::ScatteringPath - Create and manipulate scattering paths
 
 =head1 VERSION
 
-This documentation refers to Ifeffit::Demeter version 0.1.
+This documentation refers to Ifeffit::Demeter version 0.2.
 
 
 =head1 SYNOPSIS
 
-   $sp_object -> new({feff=>$feff, string=>$string});
+   $sp_object -> new(feff=>$feff, string=>$string);
    $sp_object -> evaluate;
 
 Those are the only two attributes provided to the object.  Everything
@@ -801,8 +777,8 @@ from two or more feff calculations.
 
 =head2 Accessor methods
 
-The accessor methods of the parent class, C<get>, C<set>, and C<Push>
-are used my this class.
+The accessor methods of the parent class, C<get> and C<set> are used
+my this class.
 
 =over 4
 
@@ -815,7 +791,7 @@ This returns a list of all ScatteringPath object attributes.
        nleg string heapvalue group nkey weight etanonzero rleg fs
        degeneracies n random_string beta eta feff halflength fuzzy type
 
-=item C<attributes>
+=item C<savelist>
 
 This returns a list containing the subset of all ScatteringPath object
 attributes that need to be saved when a Feff calculation is serialized.
@@ -843,7 +819,7 @@ This method sets most attributes for the object based on the values of
 the feff and string attributes.  It calls the remaining methods in
 sequence.
 
-   $sp_object -> new({feff=>$feff, string=>$string});
+   $sp_object -> new(feff=>$feff, string=>$string);
    $sp_object -> evaluate;
 
 =item C<compute_nleg_nkey>
@@ -1074,7 +1050,7 @@ L<http://cars9.uchicago.edu/~ravel/software/>
 Copyright (c) 2006-2008 Bruce Ravel (bravel AT bnl DOT gov). All rights reserved.
 
 This module is free software; you can redistribute it and/or
-modify it under the same terms as Perl itself. See L<perlartistic>.
+modify it under the same terms as Perl itself. See L<perlgpl>.
 
 This program is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of

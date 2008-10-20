@@ -17,7 +17,7 @@
 
 use warnings;
 use strict;
-use Ifeffit::Demeter qw(Atoms);
+use Ifeffit::Demeter;
 use Getopt::Long;
 use Regexp::Common;
 use Readonly;
@@ -31,16 +31,20 @@ my $result = GetOptions (
 			 "a"	  => \$abs,
 			 "s"	  => \$sg,
 			);
+## missing command line switches
+##  atoms
+##  ipot style choice
+##  output precision
+##  other output formats
+##  write to a file
 
-my $atoms = Ifeffit::Demeter::Atoms->new();
-#$atoms->config->set_default("atoms", "precision", "7.3f");
-#$atoms->set({ipot_style=>'tags'});
+my $atoms = Ifeffit::Demeter::Atoms->new(file => $ARGV[0]||"atoms.inp");
 
 my $which = ($feff6) ? "feff6"
           : ($feff8) ? "feff8"
           : ($abs)   ? "absorption"
           : ($sg)    ? "spacegroup"
-          :            "feff6" ;  # atoms ?
-$atoms -> read_inp($ARGV[0]||"atoms.inp");
-$atoms -> set({rmax=>$rmax}) if ($rmax and $rmax =~ m{$NUMBER});
+          :            "feff6" ;
+$atoms -> set(rmax=>$rmax) if ($rmax and $rmax =~ m{$NUMBER});
+#print $atoms -> Write('atoms');
 print $atoms -> Write($which);

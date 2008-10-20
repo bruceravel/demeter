@@ -21,7 +21,7 @@ use File::Basename;
 use File::Copy;
 use File::Path;
 use File::Spec;
-use Ifeffit::Demeter qw(Feff);
+use Ifeffit::Demeter;
 use Getopt::Long;
 use Readonly;
 Readonly my $USAGE => "usage: dfeff [options] <myfeff.inp>\n";
@@ -68,17 +68,17 @@ if (not -d $workspace) {
 
 
 my $feff = Ifeffit::Demeter::Feff -> new();
-$feff->set({workspace => "$workspace",
-	    screen    => !$quiet,
-	    save      =>  $save,
-	    ccrit     =>  $keep});
-
 ## read the input file
 banner("Reading \"$inp\"");
-$feff -> rdinp($inp);
+$feff->set(workspace => "$workspace",
+	   screen    => !$quiet,
+	   save      =>  $save,
+	   ccrit     =>  $keep);
+$feff->file($inp);
+
 my $target = ($base eq 'feff.inp') ? 'original_feff.inp' : $base;
 copy($inp, File::Spec->catfile($workspace, $target));
-$feff -> set({rmax=>$rmax}) if ($rmax > 0);
+$feff -> rmax($rmax) if ($rmax > 0);
 
 mkpath($workspace) if not -d $workspace;
 

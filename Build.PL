@@ -6,13 +6,24 @@ my $build = Module::Build
   -> new(
 	 create_readme      => 0,
 	 ##create_makefile_pl => 'traditional',
-	 license            => 'perl',
+	 license            => 'gpl',
 	 module_name        => 'Ifeffit::Demeter',
 	 dist_author        => 'Bruce Ravel <bravel AT bnl DOT gov>',
 	 requires           => {
+				'version'	      => '0',
+				'Module::Build'	      => '0',
+
+				'Moose'    	      => '0',
+				'MooseX::AttributeHelpers' => '0',
+				'MooseX::Clone'       => '0',
+				'MooseX::Singleton'   => '0',
+				'MooseX::Types'       => '0',
+
+				#'Compress::Raw::Zlib' => '0',
+				#'Compress::Raw'       => '0',
+				'Archive::Zip'        => '0',
+
 				'Chemistry::Elements' => '0',
-				'Class::Std'	      => '0',
-				'Class::Std::Utils'   => '0',
 				#'Config::IniFiles'    => '0',
 				'Digest::SHA'	      => '0',
 				'Heap'		      => '0',
@@ -21,7 +32,6 @@ my $build = Module::Build
 				'Math::Derivative'    => '0',
 				'Math::Round'	      => '0',
 				'Math::Spline'	      => '0',
-				'Module::Build'	      => '0',
 				'Readonly'	      => '0',
 				'Regexp::Common'      => '0',
 				'Regexp::Optimizer'   => '0',
@@ -30,8 +40,6 @@ my $build = Module::Build
 				'Tree::Simple'	      => '0',
 				'Want'		      => '0',
 				'YAML'		      => '0',
-				'aliased'	      => '0',
-				'version'	      => '0',
 			       },
 	 PL_files           => {
 				'lib/Xray/Crystal/share/space_groups.db.PL' => 'lib/Xray/Crystal/share/space_groups.db'

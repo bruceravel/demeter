@@ -8,6 +8,7 @@ pod2projdocs -l ../lib \
              -l ../../libperlxray/Formula/lib \
              -l ../../libperlxray/Scattering/lib \
              -l ../../libperlxray/SpaceGroup/lib \
+             -e Gtk2 \
              -o html \
              -t Demeter \
              -d "Perl tools for X-ray Absorption Spectroscopy" 1

@@ -15,11 +15,10 @@ package Ifeffit::Demeter::Data::E0;
 
 =cut
 
-use strict;
-use warnings;
+use Moose::Role;
+use Ifeffit::Demeter::StrTypes qw( Element Edge );
+
 use Carp;
-use Class::Std;
-use Class::Std::Utils;
 use Fatal qw(open close);
 use Regexp::Optimizer;
 use Regexp::Common;
@@ -29,194 +28,193 @@ Readonly my $EPSILON => 1e-3;
 
 use Xray::Absorption;
 
-{
-
-  sub e0 {
-    my ($self, $mode) = @_;
-    ($mode = "ifeffit") if ($mode !~ m{\A(?:atomic|fraction|zero|$NUMBER)\z});
-    my $e0;
-  MODE: {
-      $e0 = $self->e0_ifeffit,                     last MODE if ($mode eq "ifeffit");
-      $e0 = $self->e0_zero_crossing,               last MODE if ($mode eq "zero");
-      $e0 = $self->e0_fraction,                    last MODE if ($mode eq "fraction");
-      $e0 = $self->e0_atomic,                      last MODE if ($mode eq "atomic");
-      $e0 = $mode->get("bkg_e0"), $self->set($e0), last MODE if (ref($mode) eq "Ifeffit::Demeter::Data");
-      ($mode =~ m{\A$NUMBER\z}) and do {
-	$self->set({bkg_e0=>$mode});
-	$e0 = $mode;
-	last MODE;
-      };
+sub e0 {
+  my ($self, $how) = @_;
+  ($how = "ifeffit") if (!$how);
+  ($how = "ifeffit") if (($how !~ m{\A(?:atomic|fraction|zero|$NUMBER)\z}) and (ref($how) !~ m{Data}));
+  $self->_update('normalize');
+  my $e0;
+ MODE: {
+    $e0 = $self->e0_ifeffit,        last MODE if ($how eq "ifeffit");
+    $e0 = $self->e0_zero_crossing,  last MODE if ($how eq "zero");
+    $e0 = $self->e0_fraction,       last MODE if ($how eq "fraction");
+    $e0 = $self->e0_atomic,         last MODE if ($how eq "atomic");
+    $e0 = $how->bkg_e0,             last MODE if (ref($how) =~ m{Data});
+    ($how =~ m{\A$NUMBER\z}) and do {
+      $self->bkg_e0($how);
+      $e0 = $how;
+      last MODE;
     };
-    $self->set({update_bkg=>1});
-    return $e0;
   };
+  $self->bkg_e0($e0);
+  $self->update_norm(1);
+  return $e0;
+};
 
-  sub e0_ifeffit {
-    my ($self) = @_;
-    $self->set({bkg_e0=>-9999999});	# force ifeffit to find e0
+sub e0_ifeffit {
+  my ($self) = @_;
+  $self->bkg_e0(-9999999);	# force ifeffit to find e0
+  $self->normalize;
+  my $e0 = $self->bkg_e0;
+  return $e0;
+};
+
+
+sub e0_fraction {
+  my ($self) = @_;
+  my $efrac = 0;
+  my $fraction = $self->bkg_e0_fraction;
+  $fraction ||= 0.5;
+  ($fraction = 0.5) if ($fraction <= 0);
+  ($fraction = 1.0) if ($fraction >  1);
+  my $esh =  $self->bkg_eshift;
+  my $prior = 0;
+  my $count = 1;
+  while (abs($self->bkg_e0-$prior) > $EPSILON) {
+    $prior = $self->bkg_e0;
     $self->normalize;
-    my $e0 = $self->get("bkg_e0");
-    return $e0;
-  };
-
-
-  sub e0_fraction {
-    my ($self) = @_;
-    my $efrac = 0;
-    my $fraction = $self->get("bkg_e0_fraction");
-    $fraction ||= 0.5;
-    ($fraction = 0.5) if ($fraction <= 0);
-    ($fraction = 1.0) if ($fraction >  1);
-    my $esh =  $self->get("bkg_eshift");
-    my $prior = 0;
-    my $count = 1;
-    while (abs($self->get("bkg_e0")-$prior) > $EPSILON) {
-      $prior = $self->get("bkg_e0");
-      $self->normalize;
-      my $fracstep = $fraction * $self->get("bkg_step");
-      my @x = map {$_ + $esh} $self->get_array("energy");
-      my @y = $self->get_array("pre");
-      $efrac = 0;
-      foreach my $i (0 .. $#x) {
-	next if ($y[$i] < $fracstep);
-	my $frac = ($fracstep - $y[$i-1]) / ($y[$i] - $y[$i-1]);
-	$efrac = $x[$i-1] + $frac*($x[$i] - $x[$i-1]);
-	last;
-      };
-      $self -> set({bkg_e0=>$efrac});
-      ++$count;
-      return $efrac if ($count > 5);	# it shouldn't take more than three
+    my $fracstep = $fraction * $self->bkg_step;
+    my @x = map {$_ + $esh} $self->get_array("energy");
+    my @y = $self->get_array("pre");
+    $efrac = 0;
+    foreach my $i (0 .. $#x) {
+      next if ($y[$i] < $fracstep);
+      my $frac = ($fracstep - $y[$i-1]) / ($y[$i] - $y[$i-1]);
+      $efrac = $x[$i-1] + $frac*($x[$i] - $x[$i-1]);
+      last;
+    };
+    $self -> bkg_e0($efrac);
+    ++$count;
+    return $efrac if ($count > 5);	# it shouldn't take more than three
                                         # unless something is very wrong with
                                         # these data
-    };
-    return $efrac;
   };
-
-  sub e0_zero_crossing {
-    my ($self) = @_;
-    my $shift = $self->get("bkg_eshift");
-    my @energy = map {$_ + $shift} $self->get_array("energy");
-    my @second = $self->get_array("sec");
-
-    my $e0index = 0;
-    foreach my $e (@energy) {
-      last if ($e > $self->get("bkg_e0"));
-      ++$e0index;
-    };
-    my ($enear, $ynear) = ($energy[$e0index], $second[$e0index]);
-    my ($ratio, $i) = (1, 1);
-    my ($above, $below) = (0,0);
-    while (1) {			# find points that bracket the zero crossing
-      (($above, $below) = (0,0)), last unless (exists($second[$e0index + $i]) and $second[$e0index]);
-      $ratio = $second[$e0index + $i] / $second[$e0index]; # this ratio is negative for a point bracketing the zero crossing
-      ($above, $below) = ($e0index+$i, $e0index+$i-1);
-      last if ($ratio < 0);
-      (($above, $below) = (0,0)), last unless exists($second[$e0index - $i]);
-      $ratio = $second[$e0index - $i] / $second[$e0index]; # this ratio is negative for a point bracketing the zero crossing
-      ($above, $below) = ($e0index-$i+1, $e0index-$i);
-      last if ($ratio < 0);
-      ++$i;
-    };
-    carp("Could not find zero crossing."), return if (($above == 0) and ($below == 0));
-
-    ## linearly interpolate between points that bracket the zero crossing
-    my $e0 = sprintf("%.3f", $energy[$below] - ($second[$below]/($second[$above]-$second[$below])) * ($energy[$above] - $energy[$below]));
-    return $e0;
-  };
-
-  sub e0_atomic {
-    my ($self) = @_;
-    my $e0 = Xray::Absorption->get_energy( $self->get(qw(bkg_z fft_edge)) );
-    return $e0;
-  };
-
-
-  sub calibrate {
-    my ($self, $ref, $e0) = @_;
-    $self -> _update("background");
-    $ref ||= $self->get("bkg_e0");
-    if (not $e0) {
-      my $rx = $self->regexp('element');
-      my ($z, $edge) = $self->get(qw(bkg_z fft_edge));
-      croak("You must specify the absorber element to calibrate to the tabulated edge energy.")
-	if (lc($z) !~ /$rx/);
-      $rx = $self->regexp('edge');
-      croak("You must specify the absorber edge to calibrate to the tabulated edge energy.")
-	if (lc($edge) !~ /$rx/);
-      $e0 = Xray::Absorption->get_energy($z, $edge);
-    };
-    my $delta = $e0 - $ref;
-    my $shift = $self->get("bkg_eshift") + $delta;
-    $self->set({bkg_e0     => $e0,
-	        bkg_eshift => $shift,
-		update_bkg => 1});
-    return $e0;
-  };
-
-  sub align {
-    my ($self, @data) = @_;
-    my $standard = Ifeffit::Demeter->get_mode('standard');
-    $self->standard;
-
-    my $shift = 0;
-    $self -> _update("background");
-    foreach my $d (@data) {
-      next if (ref($d) !~ m{Data});
-      $d -> _update("background");
-      $d -> dispose( $d-> template("process", "align") );
-      $shift = Ifeffit::get_scalar("aa___esh");
-      $d -> set({bkg_eshift=>$shift,
-		 update_bkg=>1});
-    };
-    $standard->standard if (ref($standard) =~ m{Data});
-    return $shift;
-  };
-
-
-  sub _e0_marker_command {
-    my ($self, $requested) = @_;
-    my $pf = $self->get_mode('plot');
-    my $suffix = ($pf->get("e_norm") and $pf->get("e_der"))         ? "nder" :
-                 ($pf->get("e_norm") and $self->get("bkg_flatten")) ? "flat" :
-                 ($pf->get("e_norm"))                               ? "norm" :
-                 ($pf->get("e_der"))                                ? "der"  :
-		                                                      "xmu";
-    my $y = $self->yofx($suffix, "", $self->get("bkg_e0"));
-    my $command = $self->template("plot", "marker", { x => $self->get("bkg_e0"),
-						     'y'=> $y+$self->get("y_offset")});
-    return $command;
-  };
-  sub _preline_marker_command {
-    my ($self, $requested) = @_;
-    my $pf = $self->get_mode('plot');
-    my $suffix = ($pf->get("e_norm") and $self->get("bkg_flatten")) ? "flat" :
-                 ($pf->get("e_norm"))                               ? "norm" :
-		                                                      "xmu";
-    my $x = $self->get("bkg_pre1") + $self->get("bkg_e0");
-    my $y = $self->yofx($suffix, "", $x);
-    my $command = $self->template("plot", "marker", { x => $x, 'y'=> $y});
-    $x    = $self->get("bkg_pre2") + $self->get("bkg_e0");
-    $y    = $self->yofx($suffix, "", $x);
-    $command   .= $self->template("plot", "marker", { x => $x, 'y'=> $y});
-    return $command;
-  };
-  sub _postline_marker_command {
-    my ($self, $requested) = @_;
-    my $pf = $self->get_mode('plot');
-    my $suffix = ($pf->get("e_norm") and $self->get("bkg_flatten")) ? "flat" :
-                 ($pf->get("e_norm"))                               ? "norm" :
-		                                                      "xmu";
-    my $x = $self->get("bkg_nor1") + $self->get("bkg_e0");
-    my $y = $self->yofx($suffix, "", $x);
-    my $command = $self->template("plot", "marker", { x => $x, 'y'=> $y});
-    $x    = $self->get("bkg_nor2") + $self->get("bkg_e0");
-    $y    = $self->yofx($suffix, "", $x);
-    $command   .= $self->template("plot", "marker", { x => $x, 'y'=> $y});
-    return $command;
-  };
-
-
+  return $efrac;
 };
+
+sub e0_zero_crossing {
+  my ($self) = @_;
+  my $shift = $self->bkg_eshift;
+  my @energy = map {$_ + $shift} $self->get_array("energy");
+  my @second = $self->get_array("sec");
+
+  my $e0index = 0;
+  foreach my $e (@energy) {
+    last if ($e > $self->bkg_e0);
+    ++$e0index;
+  };
+  my ($enear, $ynear) = ($energy[$e0index], $second[$e0index]);
+  my ($ratio, $i) = (1, 1);
+  my ($above, $below) = (0,0);
+  while (1) {			# find points that bracket the zero crossing
+    (($above, $below) = (0,0)), last unless (exists($second[$e0index + $i]) and $second[$e0index]);
+    $ratio = $second[$e0index + $i] / $second[$e0index]; # this ratio is negative for a point bracketing the zero crossing
+    ($above, $below) = ($e0index+$i, $e0index+$i-1);
+    last if ($ratio < 0);
+    (($above, $below) = (0,0)), last unless exists($second[$e0index - $i]);
+    $ratio = $second[$e0index - $i] / $second[$e0index]; # this ratio is negative for a point bracketing the zero crossing
+    ($above, $below) = ($e0index-$i+1, $e0index-$i);
+    last if ($ratio < 0);
+    ++$i;
+  };
+  carp("Could not find zero crossing."), return if (($above == 0) and ($below == 0));
+
+  ## linearly interpolate between points that bracket the zero crossing
+  my $e0 = sprintf("%.5f", $energy[$below] - ($second[$below]/($second[$above]-$second[$below])) * ($energy[$above] - $energy[$below]));
+  return $e0;
+};
+
+sub e0_atomic {
+  my ($self) = @_;
+  my $e0 = Xray::Absorption->get_energy( $self->bkg_z, $self->fft_edge);
+  return $e0;
+};
+
+
+sub calibrate {
+  my ($self, $ref, $e0) = @_;
+  $self -> _update("background");
+  $ref ||= $self->bkg_e0;
+  if (not $e0) {
+    my ($z, $edge) = ($self->bkg_z, $self->fft_edge);
+    croak("You must specify the absorber element to calibrate to the tabulated edge energy.")
+      if (not is_Element($z));
+    croak("You must specify the absorber edge to calibrate to the tabulated edge energy.")
+      if (not is_Edge($edge));
+    $e0 = Xray::Absorption->get_energy($z, $edge);
+  };
+  my $delta = $e0 - $ref;
+  my $shift = $self->bkg_eshift + $delta;
+  $self->bkg_e0($e0);
+  $self->bkg_eshift($shift);
+  $self->update_bkg(1);
+  return $e0;
+};
+
+sub align {
+  my ($self, @data) = @_;
+  my $standard = $self->get_mode('standard');
+  $self->standard;
+
+  my $shift = 0;
+  $self -> _update("background");
+  foreach my $d (@data) {
+    next if (ref($d) !~ m{Data});
+    $d -> _update("background");
+    $d -> dispose( $d-> template("process", "align") );
+    $shift = Ifeffit::get_scalar("aa___esh");
+    $d -> bkg_eshift($shift);
+    $d -> update_bkg(1);
+  };
+  $standard->standard if (ref($standard) =~ m{Data});
+  return $shift;
+};
+
+
+sub _e0_marker_command {
+  my ($self, $requested) = @_;
+  my $pf = $self->get_mode('plot');
+  my $suffix = ($pf->e_norm and $pf->e_der)         ? "nder" :
+               ($pf->e_norm and $self->bkg_flatten) ? "flat" :
+               ($pf->e_norm)                        ? "norm" :
+               ($pf->e_der)                         ? "der"  :
+		                                      "xmu";
+  my $y = $self->yofx($suffix, "", $self->bkg_e0);
+  my $command = $self->template("plot", "marker", { x => $self->bkg_e0,
+						   'y'=> $y+$self->y_offset});
+  return $command;
+};
+sub _preline_marker_command {
+  my ($self, $requested) = @_;
+  my $pf = $self->get_mode('plot');
+  my $suffix = ($pf->e_norm and $self->bkg_flatten) ? "flat" :
+               ($pf->e_norm)                        ? "norm" :
+		                                      "xmu";
+  my $x = $self->bkg_pre1 + $self->bkg_e0;
+  my $y = $self->yofx($suffix, "", $x);
+  my $command = $self->template("plot", "marker", { x => $x, 'y'=> $y});
+  $x    = $self->bkg_pre2 + $self->bkg_e0;
+  $y    = $self->yofx($suffix, "", $x);
+  $command   .= $self->template("plot", "marker", { x => $x, 'y'=> $y});
+  return $command;
+};
+sub _postline_marker_command {
+  my ($self, $requested) = @_;
+  my $pf = $self->get_mode('plot');
+  my $suffix = ($pf->e_norm and $self->bkg_flatten) ? "flat" :
+               ($pf->e_norm)                        ? "norm" :
+		                                      "xmu";
+  my $x = $self->bkg_nor1 + $self->bkg_e0;
+  my $y = $self->yofx($suffix, "", $x);
+  my $command = $self->template("plot", "marker", { x => $x, 'y'=> $y});
+  $x    = $self->bkg_nor2 + $self->bkg_e0;
+  $y    = $self->yofx($suffix, "", $x);
+  $command   .= $self->template("plot", "marker", { x => $x, 'y'=> $y});
+  return $command;
+};
+
+
+
 
 1;
 
@@ -227,7 +225,7 @@ Ifeffit::Demeter::Data::E0 - Calibrate and align XAS mu(E) data
 
 =head1 VERSION
 
-This documentation refers to Ifeffit::Demeter version 0.1.
+This documentation refers to Ifeffit::Demeter version 0.2.
 
 =head1 DESCRIPTION
 
@@ -268,9 +266,9 @@ the last Data object in the list.
 This method is used to set the edge energy for mu(E) data either to a
 number or a calculated value.
 
-  $e0 = $data -> e0($mode);
+  $e0 = $data -> e0($how);
 
-The C<$mode> argument can be any of the following.  If C<$mode> is
+The C<$how> argument can be any of the following.  If C<$how> is
 omitted, it defaults to "ifeffit".
 
 =over 4
@@ -291,7 +289,7 @@ Find the zero crossing of the second derivative of mu(E).  Starting
 from the current value of the edge energy (or from the value returned
 by Ifeffit's algorithm if the edge energy has not yet been set), step
 forward and backward until the parity of the second derivative
-spectrum switches.  Then linearly interpolate between the values
+spectrum switches.  Then, linearly interpolate between the values
 bracketing the parity change to find the zero value.
 
 =item I<fraction>
@@ -334,6 +332,14 @@ Demeter's dependencies are in the F<Bundle/DemeterBundle.pm> file.
 
 =head1 BUGS AND LIMITATIONS
 
+=over 4
+
+=item *
+
+Need a white line peak option to the C<e0> method
+
+=back
+
 Please report problems to Bruce Ravel (bravel AT bnl DOT gov)
 
 Patches are welcome.
@@ -349,7 +355,7 @@ L<http://cars9.uchicago.edu/~ravel/software/>
 Copyright (c) 2006-2008 Bruce Ravel (bravel AT bnl DOT gov). All rights reserved.
 
 This module is free software; you can redistribute it and/or
-modify it under the same terms as Perl itself. See L<perlartistic>.
+modify it under the same terms as Perl itself. See L<perlgpl>.
 
 This program is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of

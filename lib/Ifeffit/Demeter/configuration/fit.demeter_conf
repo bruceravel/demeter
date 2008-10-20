@@ -54,7 +54,7 @@ variable=k2
 type=boolean
 onvalue=1
 offvalue=0
-default=false
+default=true
 description
   When this is true, k-weighting of 2 will be used in the fit.
 

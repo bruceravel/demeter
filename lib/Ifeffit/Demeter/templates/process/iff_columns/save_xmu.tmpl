@@ -1,7 +1,7 @@
 { # -*- ifm -*-
   # save chi(k) template
-  #   {$D} returns the ifeffit group name
-  #   {$D->get("parameter")} returns the value of that parameter
+  #   {$D->group} returns the ifeffit group name
+  #   {$D->parameter} returns the value of that parameter
   # the filename and titles were passed to the template method
   # $titles should contain a string that Ifeffit will be able to
   # interpret as a set of title lines already set in Ifeffit.  one
@@ -11,14 +11,14 @@
   #   $string = $self->template("process", "save_xmu",
   #                             {filename=>$filename, titles=>"\$dem_data_*"});
 }
-##| saving "{$D->label}" as mu(E)
+##| saving "{$D->name}" as mu(E)
 write_data(file="{$filename}",
            ${$titles},
-	   ${$D}_title_*,
-           {$D}.energy,
-	   {$D}.xmu,
-	   {$D}.bkg,
-	   {$D}.preline,
-           {$D}.postline,
-	   {$D}.der,
-	   {$D}.sec)
+	   ${$D->group}_title_*,
+           {$D->group}.energy,
+	   {$D->group}.xmu,
+	   {$D->group}.bkg,
+	   {$D->group}.preline,
+           {$D->group}.postline,
+	   {$D->group}.der,
+	   {$D->group}.sec)

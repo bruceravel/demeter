@@ -1,7 +1,7 @@
 { # -*- ifm -*-
   # save chi(q) template
-  #   {$D} returns the ifeffit group name
-  #   {$D->get("parameter")} returns the value of that parameter
+  #   {$D->group} returns the ifeffit group name
+  #   {$D->parameter} returns the value of that parameter
   # the filename, titles, and kweight were passed to the template
   # method $titles should contain a string that Ifeffit will be able
   # to interpret as a set of title lines already set in Ifeffit.  one
@@ -11,21 +11,21 @@
   #   $string = $self->template("process", "save_chir",
   #                             {filename => $filename,
   #                              titles   => "\$dem_data_*",
-  #                              kweight  => $pf->get("kweight")});
+  #                              kweight  => $pf->kweight});
 }
 ##|
-##| saving "{$D->label}" as back-transformed chi(k)
-set {$D}.chik = {$D}.k^{$P->("kweight")}*{$D}.chi
+##| saving "{$D->name}" as back-transformed chi(k)
+set {$D->group}.chik = {$D->group}.k^{$P->kweight}*{$D->group}.chi
 write_data(file  = "{$filename}",
            ${$titles},
-	   ${$D}_title_*,
+	   ${$D->group}_title_*,
            label = "q chiq_re chiq_im chiq_mag chiq_pha win chik",
-           {$D}.q,
-           {$D}.chiq_re,
-           {$D}.chiq_im,
-           {$D}.chiq_mag,
-           {$D}.chiq_pha,
-           {$D}.win,
-           {$D}.chik)
-erase {$D}.chik
+           {$D->group}.q,
+           {$D->group}.chiq_re,
+           {$D->group}.chiq_im,
+           {$D->group}.chiq_mag,
+           {$D->group}.chiq_pha,
+           {$D->group}.win,
+           {$D->group}.chik)
+erase {$D->group}.chik
 

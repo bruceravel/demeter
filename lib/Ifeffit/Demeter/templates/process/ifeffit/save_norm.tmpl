@@ -1,7 +1,7 @@
 { # -*- ifm -*-
   # save norm(E) template
-  #   {$D} returns the ifeffit group name
-  #   {$D->get("parameter")} returns the value of that parameter
+  #   {$D->group} returns the ifeffit group name
+  #   {$D->parameter} returns the value of that parameter
   # the filename and titles were passed to the template method
   # $titles should contain a string that Ifeffit will be able to
   # interpret as a set of title lines already set in Ifeffit.  one
@@ -11,9 +11,9 @@
   #   $string = $self->template("process", "save_norm",
   #                             {filename=>$filename, titles=>"\$dem_data_*"});
 }
-##| saving "{$D->label}" as normalized mu(E)
-set({$D}.nder = deriv({$D}.norm)/deriv({$D}.energy),
-    {$D}.nsec = deriv({$D}.nder)/deriv({$D}.energy) )
-write_data(file="{$filename}", ${$titles}, ${$D}_title_*,
-           {$D}.energy, {$D}.norm, {$D}.nbkg, {$D}.flat,
-           {$D}.fbkg, {$D}.nder, {$D}.nsec)
+##| saving "{$D->name}" as normalized mu(E)
+set({$D->group}.nder = deriv({$D->group}.norm)/deriv({$D->group}.energy),
+    {$D->group}.nsec = deriv({$D->group}.nder)/deriv({$D->group}.energy) )
+write_data(file="{$filename}", ${$titles}, ${$D->group}_title_*,
+           {$D->group}.energy, {$D->group}.norm, {$D->group}.nbkg, {$D->group}.flat,
+           {$D->group}.fbkg, {$D->group}.nder, {$D->group}.nsec)

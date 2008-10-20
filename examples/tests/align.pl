@@ -8,7 +8,7 @@
 
 =for Copyright
  .
- Copyright (c) 2006-2007 Bruce Ravel (bravel AT anl DOT gov).
+ Copyright (c) 2006-2008 Bruce Ravel (bravel AT bnl DOT gov).
  All rights reserved.
  .
  This file is free software; you can redistribute it and/or
@@ -26,24 +26,27 @@ use strict;
 use Smart::Comments;
 
 use Ifeffit::Demeter;
-my $plot = Ifeffit::Demeter->get_mode("plot");
-$plot->set_mode({screen=>0, repscreen=>0});
-$plot->set({emin=>-30, emax=>70, e_norm=>1, e_markers=>1});
 my $where = $ENV{DEMETER_TEST_DIR} || "..";
 
 ## set up two data objects
-my %common_attributes = (bkg_pre1   => -30,    bkg_pre2   => -150,
+my @common_attributes = (bkg_pre1   => -31,    bkg_pre2   => -150,
 			 bkg_nor1   => 150,    bkg_nor2   => 1757.5,
 			 bkg_spl1   => 0.5,    bkg_spl2   => 22,
 			 fft_kmax   => 3,      fft_kmin   => 14,
 			);
 
-my $d0 = Ifeffit::Demeter::Data -> new({group => 'data0'});
-$d0 -> set(\%common_attributes);
-$d0 -> set({file => "$where/data/fe.060.xmu", label => '60K',});
-my $d1 = Ifeffit::Demeter::Data -> new({group => 'data1'});
-$d1 -> set(\%common_attributes);
-$d1 -> set({file => "$where/data/fe.300.xmu", label => '300K',});
+my $d0 = Ifeffit::Demeter::Data -> new();
+$d0 -> set(@common_attributes);
+$d0 -> set(file => "$where/data/fe.060.xmu", name => '60K',);
+
+my $d1 = Ifeffit::Demeter::Data -> new();
+$d1 -> set(@common_attributes);
+$d1 -> set(file => "$where/data/fe.300.xmu", name => '300K',);
+
+my $plot = $d0->po;
+$plot->set_mode(screen=>0, repscreen=>0);
+$plot->set(emin=>-30, emax=>70, e_norm=>1, e_markers=>1);
+
 
 ### plotting unaligned data
 foreach ($d0, $d1) {

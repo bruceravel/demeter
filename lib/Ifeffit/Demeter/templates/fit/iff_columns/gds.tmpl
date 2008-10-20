@@ -1,14 +1,15 @@
 { # -*- ifm -*-
   # GDS template
-  #   {$D} returns the ifeffit group name
-  #   {$D->get("parameter")} returns the value of that parameter
+  #   {$S->group} returns the ifeffit group name
+  #   {$S->parameter} returns the value of that parameter
 }
 {
-  $gds = $D->get('type');
+  $gds = lc($S->gds);
   ($gds = 'def') if ($gds =~ m{(?:after|restrain)});
+  ($gds = 'set') if ($gds eq "lguess");
   ($gds = "# ".$gds) if ($gds =~ m{(?:merge|skip)});
   $gds = sprintf("%-7s", $gds);
   q{}
 }
-{$gds} {$D->get("name")} = {$D->get("mathexp")}
+{$gds} {$S->name} = {$S->mathexp}
 

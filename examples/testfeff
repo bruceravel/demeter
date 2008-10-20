@@ -1,0 +1,170 @@
+#!/usr/bin/perl -I../lib/
+
+=for Explanation
+  This is a fairly simple example of using Demeter to process and plot
+  a simple Feff calculation.  There is some simple keyboard
+  interactivity.  Along with the plot, the code used to generate the
+  plot is written to the screen.
+  .
+  Use the -l command line switch to choose ANSII colors approporiate
+  for a screen with a bright background.
+
+=cut
+
+=for Copyright
+ .
+ Copyright (c) 2006-2008 Bruce Ravel (bravel AT bnl DOT gov).
+ All rights reserved.
+ .
+ This file is free software; you can redistribute it and/or
+ modify it under the same terms as Perl itself. See The Perl
+ Artistic License.
+ .
+ This program is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+
+=cut
+
+use warnings;
+use strict;
+use Term::ReadLine;
+
+use subs qw(BOLD RED RESET YELLOW GREEN BLUE UNDERLINE);
+my $ANSIColor_exists = (eval "require Term::ANSIColor");
+if ($ANSIColor_exists) {
+  import Term::ANSIColor qw(:constants);
+} else {
+  foreach my $s (qw(BOLD RED RESET YELLOW GREEN BLUE UNDERLINE)) {
+    eval "sub $s {q{}}";
+  };
+};
+
+use Ifeffit::Demeter;
+my $demeter = Ifeffit::Demeter->new;
+$demeter->set_mode(ifeffit=>1, buffer=>0, screen=>0);
+
+use Getopt::Long;
+my ($light_background, $dark_background, $use_pgplot, $use_gnuplot) = (0, 1, 1, 0);
+my $result = GetOptions (
+			 "d" => \$dark_background,
+			 "l" => \$light_background,
+			 "p" => \$use_pgplot,
+			 "g" => \$use_gnuplot,
+			);
+($light_background = 1) if (not $dark_background);
+my $INDIC = ($light_background) ? BLUE : YELLOW;
+($use_pgplot = 1) if (not $use_gnuplot);
+$demeter->plot_with('gnuplot') if $use_gnuplot;
+
+
+my $term = new Term::ReadLine 'Demeter test harness';
+my $plot = $demeter->po;
+
+my $feff = Ifeffit::Demeter::Feff->new(file=>'cu/orig.inp', workspace=>'feff');
+$feff -> make_workspace;
+print BOLD, RED, "\nComputing potentials for copper metal\n\n", RESET;
+$feff -> potph;
+$feff -> rmax(4.5);
+print BOLD, RED, "\nRunning Demeter's path finder\n\n", RESET;
+$feff -> pathfinder;
+
+query();
+my $prompt = "Choose a chore for this Feff calculation ";
+while ( defined ($_ = $term->readline($prompt)) ) {
+  $feff->clean_workspace, exit if ($_ =~ m{\Aq});
+  next if ($_ !~ m{\A(\d+)});
+  $feff->po->start_plot; # reset the plot for the next go around
+  SWITCH : {
+    &do_intrp,    next SWITCH if ($1 eq '1');
+    &do_pathsdat, next SWITCH if ($1 eq '2');
+    &do_plot,     next SWITCH if ($1 eq '3');
+    &do_yaml,     next SWITCH if ($1 eq '4');
+  };
+  query();
+};
+
+sub query {
+print $/, $/,
+  BOLD, RED, "This example demonstrates several basic chores for a Feff calculation\n\n", RESET,
+
+  BOLD, $INDIC, "1.", RESET, " Write an interpretation\n",
+  BOLD, $INDIC, "2.", RESET, " Write a paths.dat file\n",
+  BOLD, $INDIC, "3.", RESET, " Plot all paths\n",
+  BOLD, $INDIC, "4.", RESET, " Serialize the Feff calculation\n",
+
+  BOLD, $INDIC, "q.", RESET, " quit\n\n";
+}
+
+
+sub state {
+  print "\n" x 2, GREEN, "## ", "=" x 70, "\n", "## ", RESET;
+  print GREEN, $_[0], RESET, $/;
+};
+
+sub spew {
+  my ($which) = @_;
+  my $flag = 0;
+  print RESET, $/;
+  print BOLD, YELLOW, "\nHere is how it's done:\n", RESET;
+  print <<'EOH'
+    my $feff = Ifeffit::Demeter::Feff->new(file=>'cu/orig.inp', workspace=>'feff');
+    $feff -> make_workspace;
+    $feff -> potph;
+    $feff -> rmax(4.5);
+    $feff -> pathfinder;
+EOH
+  ;
+  print "    $which\n";
+};
+
+sub do_intrp {
+  state('Doing a Feff interpretation');
+  print $feff->intrp;
+  spew('$feff -> intrp;');
+  print "\n", UNDERLINE, "Return to continue >", RESET, " ";
+  my $how = <STDIN>;
+};
+
+sub do_pathsdat {
+  state('Writing a paths.dat file');
+  $feff->pathsdat;
+  open F, 'feff/paths.dat';
+  print $_ while (<F>);
+  close F;
+  spew('$feff -> pathsdat;
+    open F "feff/paths.dat";
+    print $_ while (<F>);
+    close F;
+');
+  print "\n", UNDERLINE, "Return to continue >", RESET, " ";
+  my $how = <STDIN>;
+};
+
+sub do_plot {
+  state('Plotting all paths');
+  my @list_of_paths = $feff->pathlist;
+  my $i = 0;
+  foreach my $sp (@{ $feff->pathlist }) {
+    Ifeffit::Demeter::Path -> new(parent=>$feff, sp=>$sp, Index=>++$i) -> plot('r');
+  };
+  spew('my @list_of_paths = $feff->pathlist;
+    my $i = 0;
+    foreach my $sp (@{ $feff->pathlist }) {
+      Ifeffit::Demeter::Path -> new(parent=>$feff, sp=>$sp, Index=>++$i)
+        -> plot("r");
+    };
+');
+  print "\n", UNDERLINE, "Return to continue >", RESET, " ";
+  my $how = <STDIN>;
+};
+
+sub do_yaml {
+  state('Serializing the Feff calculation');
+  $feff->freeze("feff.yaml");
+  print "Wrote feff.yaml to the current directory\n";
+  spew('$feff -> freeze("feff.yaml");');
+  print "\n", UNDERLINE, "Return to continue >", RESET, " ";
+  my $how = <STDIN>;
+};
+

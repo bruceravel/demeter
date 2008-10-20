@@ -15,32 +15,28 @@ package Ifeffit::Demeter::Data::Athena;
 
 =cut
 
-use strict;
-use warnings;
+use Moose::Role;
+
 use Carp;
-use Class::Std;
-use Class::Std::Utils;
 use Compress::Zlib;
 use Data::Dumper;
 use Fatal qw(open close);
 
-{
+sub write_athena {
+  my ($self, $filename, @list) = @_;
+  croak("You must supply a filename to the write_athena method") if ( (not defined($filename)) or
+								      (ref($filename) =~ m{Data}) );
+  my $gzout = gzopen($filename, 'wb9');
+  $gzout->gzwrite("# Athena project file -- Demeter version " . $self->version . "\n" .
+		  "# This file created at " . $self->now . "\n" .
+		  "# Using " . $self->environment . "\n\n");
 
-  sub write_athena {
-    my ($self, $filename, @list) = @_;
-    croak("You must supply a filename to the write_athena method") if ( (not defined($filename)) or
-									(ref($filename) =~ m{Data}) );
-    my $gzout = gzopen($filename, 'wb9');
-    $gzout->gzwrite("# Athena project file -- Demeter version " . $self->version . "\n" .
-                    "# This file created at " . Ifeffit::Demeter::Tools->now . "\n" .
-                    "# Using " . Ifeffit::Demeter::Tools->environment . "\n\n");
-
-    $gzout->gzwrite($self->write_record);
-    foreach my $d (@list) {
-      next if ($d eq $self);
-      $gzout->gzwrite($d->write_record);
-    };
-    $gzout->gzwrite('
+  $gzout->gzwrite($self->_write_record);
+  foreach my $d (@list) {
+    next if ($d eq $self);
+    $gzout->gzwrite($d->_write_record);
+  };
+  $gzout->gzwrite('
 
 1;
 
@@ -48,54 +44,67 @@ use Fatal qw(open close);
 # truncate-lines: t
 # End:
 ');
-    $gzout->gzclose;
-    return $self;
-  };
+  $gzout->gzclose;
+  return $self;
+};
 
-  sub write_record {
-    my ($self) = @_;
-    croak("You can only write Data objects to Athena files") if (ref($self) !~ m{Data});
+sub _write_record {
+  my ($self) = @_;
+  croak("You can only write Data objects to Athena files") if (ref($self) !~ m{Data});
+  #print $self->group, " ", $self->name, $/;
 
-    local $Data::Dumper::Indent = 0;
-    my ($string, $arraystring) = (q{}, q{});
+  local $Data::Dumper::Indent = 0;
+  my ($string, $arraystring) = (q{}, q{});
 
-    my @array = ();
-    if ($self->get("is_xmu")) {
-      $self -> _update("background");
-      @array        = $self -> get_array("energy");
-      $arraystring .= Data::Dumper->Dump([\@array], [qw/*x/]) . "\n";
-      @array        = $self -> get_array("xmu");
-      $arraystring .= Data::Dumper->Dump([\@array], [qw/*y/]) . "\n";
-      if ($self->get("i0_string")) {
-	@array        = $self -> get_array("i0");
-	$arraystring .= Data::Dumper->Dump([\@array], [qw/*i0/]) . "\n";
-      };
-      ## merge array?
-    } else {
-      $self->read_data if ($self->get('update_data'));
-      @array        = $self -> get_array("k");
-      $arraystring .= Data::Dumper->Dump([\@array], [qw/*x/]) . "\n";
-      @array        = $self -> get_array("chi");
-      $arraystring .= Data::Dumper->Dump([\@array], [qw/*y/]) . "\n";
-      ## merge array?
+  my @array = ();
+  if ($self->datatype eq "xmu") {
+    $self -> _update("background");
+    @array        = $self -> get_array("energy");
+    $arraystring .= Data::Dumper->Dump([\@array], [qw/*x/]) . "\n";
+    @array        = $self -> get_array("xmu");
+    $arraystring .= Data::Dumper->Dump([\@array], [qw/*y/]) . "\n";
+    if ($self->get("i0_string")) {
+      @array        = $self -> get_array("i0");
+      $arraystring .= Data::Dumper->Dump([\@array], [qw/*i0/]) . "\n";
     };
-
-    my %hash = $self -> get_all;
-    delete $hash{group};	# clean up non-athena attributes?
-    $hash{plot_yoffset} = $hash{y_offset};
-    delete $hash{y_offset};
-    $hash{plot_scale} = $hash{plot_multiplier};
-    delete $hash{plot_multiplier};
-    @array   = %hash;
-
-    $string  = '$old_group = \'' . $self . "';\n";
-    $string .= Data::Dumper->Dump([\@array], [qw/*args/]) . "\n";
-    $string .= $arraystring;
-    $string .= "[record]   # create object and set arrays in ifeffit\n\n";
-    return $string;
+    ## merge array?
+  } elsif ($self->datatype eq "chi") {
+    $self->read_data if ($self->update_data);
+    @array        = $self -> get_array("k");
+    $arraystring .= Data::Dumper->Dump([\@array], [qw/*x/]) . "\n";
+    @array        = $self -> get_array("chi");
+    $arraystring .= Data::Dumper->Dump([\@array], [qw/*y/]) . "\n";
+    ## merge array?
   };
+  ## xmudat?? xanes??
 
+  my %hash = $self -> get_all;
 
+  # -------- clean up non-athena attributes --------------------
+  delete $hash{$_} foreach (qw(group plottable data mode cv));
+  map {delete $hash{$_} if ($_ =~ m{\Afit}) } keys(%hash);
+
+  $hash{plot_yoffset} = $hash{y_offset};
+  delete $hash{y_offset};
+  $hash{plot_scale} = $hash{plot_multiplier};
+  delete $hash{plot_multiplier};
+  $hash{label} = $hash{name};
+  delete $hash{name};
+
+  $hash{is_xmu}    = 1 if ($hash{datatype} eq 'xmu');
+  $hash{is_chi}    = 1 if ($hash{datatype} eq 'chi');
+  $hash{is_xanes}  = 1 if ($hash{datatype} eq 'xanes');
+  $hash{is_xmudat} = 1 if ($hash{datatype} eq 'xmudat');
+  delete $hash{datatype};
+  # ------------------------------------------------------------
+
+  @array   = %hash;
+
+  $string  = '$old_group = \'' . $self->group . "';\n";
+  $string .= Data::Dumper->Dump([\@array], [qw/*args/]) . "\n";
+  $string .= $arraystring;
+  $string .= "[record]   # create object and set arrays in ifeffit\n\n";
+  return $string;
 };
 
 1;
@@ -107,7 +116,7 @@ Ifeffit::Demeter::Data::Athena - Write Athena project files
 
 =head1 VERSION
 
-This documentation refers to Ifeffit::Demeter version 0.1.
+This documentation refers to Ifeffit::Demeter version 0.2.
 
 =head1 DESCRIPTION
 
@@ -129,17 +138,6 @@ supplied.  If the caller is also in the list, it will I<not> be
 written twice to the project file.
 
   $data -> write_athena("athena.prj", @list_of_data);
-
-The athena project file will not contain a project journal.
-
-=item C<write_record>
-
-Return the athena project file entry for this Data object as a string.
-This is called repeatedly by C<write_athena>.
-
-  $record_string = $data -> write_record
-
-=back
 
 =head1 DIAGNOSTICS
 
@@ -171,16 +169,17 @@ Demeter's dependencies are in the F<Bundle/DemeterBundle.pm> file.
 
 =item *
 
-Attributes with no athena analog are not cleaned from the args list.
-
-=item *
-
-The plot features and indicator entries are not written to the project
-file.
+The plot features and indicator entries are not yet written to the
+project file.
 
 =item *
 
 The merge array is not currently written by C<write_record>.
+
+=item *
+
+The journal is not currently written by C<write_record>.  (Need a
+Journal object.)
 
 =back
 
@@ -199,7 +198,7 @@ L<http://cars9.uchicago.edu/~ravel/software/>
 Copyright (c) 2006-2008 Bruce Ravel (bravel AT bnl DOT gov). All rights reserved.
 
 This module is free software; you can redistribute it and/or
-modify it under the same terms as Perl itself. See L<perlartistic>.
+modify it under the same terms as Perl itself. See L<perlgpl>.
 
 This program is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of

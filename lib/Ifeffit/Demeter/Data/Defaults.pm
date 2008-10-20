@@ -15,11 +15,10 @@ package Ifeffit::Demeter::Data::Defaults;
 
 =cut
 
-use strict;
-use warnings;
+use Moose::Role;
+
 use Carp;
-use Class::Std;
-use Class::Std::Utils;
+
 use Fatal qw(open close);
 use Regexp::Optimizer;
 use Regexp::Common;
@@ -29,152 +28,144 @@ Readonly my $EPSILON => 1e-3;
 
 use Xray::Absorption;
 
-{
 
+sub resolve_defaults {
+  my ($self) = @_;
+  if ($self->datatype eq 'xmu') {
+    my @x = $self->get_array("energy");
+    #my @y = $self->get_array("xmu");
+    $self->resolve_pre(\@x);
+    $self->resolve_nor(\@x);
+    $self->resolve_spl(\@x);
+    $self->resolve_krange_xmu(\@x);
+    $self->resolve_e0_fraction;
+    $self->resolve_clamps;
+  } else {
+    my @x = $self->get_array("k");
+    #my @y = $self->get_array("chi");
+    $self->resolve_krange_chi(\@x);
+  };
+};
 
-  sub resolve_defaults {
-    my ($self) = @_;
-    my ($is_xmu, $is_chi) = $self->get(qw(is_xmu is_chi));
-    if ($is_xmu) {
-      my @x = $self->get_array("energy");
-      #my @y = $self->get_array("xmu");
-      $self->resolve_pre(\@x);
-      $self->resolve_nor(\@x);
-      $self->resolve_spl(\@x);
-      $self->resolve_krange_xmu(\@x);
-      $self->resolve_e0_fraction;
-      $self->resolve_clamps;
-    } else {
-      my @x = $self->get_array("k");
-      #my @y = $self->get_array("chi");
-      $self->resolve_krange_chi(\@x);
-    };
+sub resolve_e0_fraction {
+  my ($self) = @_;
+  my $fraction = $self->bkg_e0_fraction;
+  ($fraction = 1)   if ($fraction  > 1);
+  ($fraction = 0.5) if ($fraction <= 0);
+  $self->bkg_e0_fraction($fraction);
+};
+
+sub resolve_clamps {
+  my ($self) = @_;
+  my ($clamp1, $clamp2) = ($self->bkg_clamp1, $self->bkg_clamp2);
+  $clamp1 = $self->config->default("clamp", $clamp1) if $self->is_Clamp($clamp1);
+  $clamp2 = $self->config->default("clamp", $clamp2) if $self->is_Clamp($clamp2);
+  $self->bkg_clamp1($clamp1);
+  $self->bkg_clamp2($clamp2);
+};
+
+sub resolve_pre {
+  my ($self, $rx) = @_;
+  my ($first, $second, $e0, $bkg_pre1, $bkg_pre2) =
+    ($$rx[0], $$rx[1], $self->bkg_e0, $self->bkg_pre1, $self->bkg_pre2);
+  $first  -= $e0;
+  $second -= $e0;
+
+  ($bkg_pre1 *= 1000) if (abs($bkg_pre1) < 1);
+  my $pre1 = ($bkg_pre1  > 0) ? $first + $bkg_pre1
+           : ($bkg_pre1 == 0) ? $second
+	   : $bkg_pre1;
+
+  ($bkg_pre2 *= 1000) if (abs($bkg_pre2) < 1);
+  my $pre2 = ($bkg_pre2  > 0) ? $first + $bkg_pre2 : $bkg_pre2;
+
+  ($pre1, $pre2) = sort {$a <=> $b} ($pre1, $pre2);
+
+  $self->bkg_pre1(sprintf("%.3f",$pre1));
+  $self->bkg_pre2(sprintf("%.3f",$pre2));
+};
+
+sub resolve_nor {
+  my ($self, $rx) = @_;
+  my ($last, $e0, $bkg_nor1, $bkg_nor2) = 
+    ($$rx[-1], $self->bkg_e0, $self->bkg_nor1, $self->bkg_nor2);
+  $last -= $e0;
+
+  ## does this appear to be XANES data?
+  my $cutoff = $self->mode->config->default("xanes", "cutoff");
+  if ($cutoff and ($last < $cutoff)) {
+    ##carp "these are xanes data!\n";
+    ($bkg_nor1, $bkg_nor2) = ($self->mode->config->default("xanes", "nor1"),
+			      $self->mode->config->default("xanes", "nor2"));
   };
 
-  sub resolve_e0_fraction {
-    my ($self) = @_;
-    my $fraction = $self->get("bkg_e0_fraction");
-    ($fraction = 1)   if ($fraction  > 1);
-    ($fraction = 0.5) if ($fraction <= 0);
-    $self->set({bkg_e0_fraction=>$fraction});
-  };
+  ($bkg_nor1 *= 1000) if (abs($bkg_nor1) < 1);
+  my $nor1 = ($bkg_nor1  <= 0) ? $last + $bkg_nor1 : $bkg_nor1;
 
-  sub resolve_clamps {
-    my ($self) = @_;
-    my $config = Ifeffit::Demeter->get_mode("params");
-    my ($clamp1, $clamp2) = $self->get("bkg_clamp1", "bkg_clamp2");
-    my $clamp_regex = $self -> regexp("clamp");
-    $clamp1 = $config->default("clamp", $clamp1) if ( lc($clamp1) =~ m{\A$clamp_regex\z} );
-    $clamp2 = $config->default("clamp", $clamp2) if ( lc($clamp2) =~ m{\A$clamp_regex\z} );
-    $self->set({bkg_clamp1=>$clamp1, 
-		bkg_clamp2=>$clamp2});
-  };
+  ($bkg_nor2 *= 1000) if (abs($bkg_nor2) < 5);
+  my $nor2 = ($bkg_nor2  <= 0) ? $last + $bkg_nor2 : $bkg_nor2;
 
-  sub resolve_pre {
-    my ($self, $rx) = @_;
-    my ($first, $second, $e0, $bkg_pre1, $bkg_pre2) = 
-      ($$rx[0], $$rx[1], $self->get("bkg_e0", "bkg_pre1", "bkg_pre2"));
-    $first -= $e0;
-    $second -= $e0;
+  ($nor1, $nor2) = sort {$a <=> $b} ($nor1, $nor2);
 
-    ($bkg_pre1 *= 1000) if (abs($bkg_pre1) < 1);
-    my $pre1 = ($bkg_pre1  > 0) ? $first + $bkg_pre1
-             : ($bkg_pre1 == 0) ? $second
-	     : $bkg_pre1;
+  $self->bkg_nor1(sprintf("%.3f",$nor1));
+  $self->bkg_nor2(sprintf("%.3f",$nor2));
+};
 
-    ($bkg_pre2 *= 1000) if (abs($bkg_pre2) < 1);
-    my $pre2 = ($bkg_pre2  > 0) ? $first + $bkg_pre2 : $bkg_pre2;
+## should I worry about energy values, say value>30 means it is energy?
+sub resolve_spl {
+  my ($self, $rx) = @_;
+  my ($last, $e0, $bkg_spl1, $bkg_spl2) = 
+    ($$rx[-1], $self->bkg_e0, $self->bkg_spl1, $self->bkg_spl2);
+  my $lastk = $self->e2k($last, "absolute");
+  $last -= $e0;
+  $last = $self->e2k($last);
 
-    ($pre1, $pre2) = sort {$a <=> $b} ($pre1, $pre2);
+  my $spl1 = ($bkg_spl1  < 0) ? $last + $bkg_spl1 : $bkg_spl1;
+  my $spl2 = ($bkg_spl2  < 0) ? $last + $bkg_spl2
+           : ($bkg_spl2 == 0) ? $lastk
+           :                    $bkg_spl2;
 
-    $self -> set({bkg_pre1=>sprintf("%.3f",$pre1),
-		  bkg_pre2=>sprintf("%.3f",$pre2)});
-  };
+  ($spl1, $spl2) = sort {$a <=> $b} ($spl1, $spl2);
+  ($spl2 = $lastk) if ($spl2 > $lastk);
 
-  sub resolve_nor {
-    my ($self, $rx) = @_;
-    my $config = Ifeffit::Demeter->get_mode("params");
-    my ($last, $e0, $bkg_nor1, $bkg_nor2) = 
-      ($$rx[-1], $self->get("bkg_e0", "bkg_nor1", "bkg_nor2"));
-    $last -= $e0;
+  $self->bkg_spl1(sprintf("%.3f",$spl1));
+  $self->bkg_spl2(sprintf("%.3f",$spl2));
+};
 
-    ## does this appear to be XANES data?
-    my $cutoff = $config->default("xanes", "cutoff");
-    if ($cutoff and ($last < $cutoff)) {
-      ##carp "these are xanes data!\n";
-      ($bkg_nor1, $bkg_nor2) = ($config->default("xanes", "nor1"),
-				$config->default("xanes", "nor2"));
-    };
+sub resolve_krange_xmu {
+  my ($self, $rx) = @_;
+  my ($last, $e0, $fft_kmin, $fft_kmax) = ($$rx[-1], $self->bkg_e0, $self->fft_kmin, $self->fft_kmax);
+  my $lastk = $self->e2k($last, "absolute");
+  $last -= $e0;
+  $last = $self->e2k($last);
 
-    ($bkg_nor1 *= 1000) if (abs($bkg_nor1) < 1);
-    my $nor1 = ($bkg_nor1  <= 0) ? $last + $bkg_nor1 : $bkg_nor1;
+  my $kmin = ($fft_kmin  < 0) ? $last + $fft_kmin : $fft_kmin;
+  my $kmax = ($fft_kmax  < 0) ? $last + $fft_kmax
+           : ($fft_kmax == 0) ? $lastk
+           :                    $fft_kmax;
 
-    ($bkg_nor2 *= 1000) if (abs($bkg_nor2) < 5);
-    my $nor2 = ($bkg_nor2  <= 0) ? $last + $bkg_nor2 : $bkg_nor2;
+  ($kmin, $kmax) = sort {$a <=> $b} ($kmin, $kmax);
+  ($kmax = $lastk) if ($kmax > $lastk);
 
-    ($nor1, $nor2) = sort {$a <=> $b} ($nor1, $nor2);
+  $self->fft_kmin(sprintf("%.3f",$kmin));
+  $self->fft_kmax(sprintf("%.3f",$kmax));
+};
 
-    $self -> set({bkg_nor1=>sprintf("%.3f",$nor1),
-		  bkg_nor2=>sprintf("%.3f",$nor2)});
-  };
+sub resolve_krange_chi {
+  my ($self, $rx) = @_;
+  my @chi = @$rx;
+  my ($last, $fft_kmin, $fft_kmax) = ($chi[-1], $self->fft_kmin, $self->fft_kmax);
 
-  ## should I worry about energy values, say value>30 means it is energy?
-  sub resolve_spl {
-    my ($self, $rx) = @_;
-    my ($last, $e0, $bkg_spl1, $bkg_spl2) = 
-      ($$rx[-1], $self->get("bkg_e0", "bkg_spl1", "bkg_spl2"));
-    my $lastk = $self->e2k($last, "absolute");
-    $last -= $e0;
-    $last = $self->e2k($last);
+  my $kmin = ($fft_kmin  < 0) ? $last + $fft_kmin : $fft_kmin;
+  my $kmax = ($fft_kmax  < 0) ? $last + $fft_kmax
+           : ($fft_kmax == 0) ? $last
+           :                    $fft_kmax;
 
-    my $spl1 = ($bkg_spl1  < 0) ? $last + $bkg_spl1 : $bkg_spl1;
-    my $spl2 = ($bkg_spl2  < 0) ? $last + $bkg_spl2
-             : ($bkg_spl2 == 0) ? $lastk
-             :                    $bkg_spl2;
+  ($kmin, $kmax) = sort {$a <=> $b} ($kmin, $kmax);
+  ($kmax = $last) if ($kmax > $last);
 
-    ($spl1, $spl2) = sort {$a <=> $b} ($spl1, $spl2);
-    ($spl2 = $lastk) if ($spl2 > $lastk);
-
-    $self -> set({bkg_spl1=>sprintf("%.3f",$spl1),
-		  bkg_spl2=>sprintf("%.3f",$spl2)});
-  };
-
-  sub resolve_krange_xmu {
-    my ($self, $rx) = @_;
-    my ($last, $e0, $fft_kmin, $fft_kmax) = ($$rx[-1], $self->get("bkg_e0", "fft_kmin", "fft_kmax"));
-    my $lastk = $self->e2k($last, "absolute");
-    $last -= $e0;
-    $last = $self->e2k($last);
-
-    my $kmin = ($fft_kmin  < 0) ? $last + $fft_kmin : $fft_kmin;
-    my $kmax = ($fft_kmax  < 0) ? $last + $fft_kmax
-             : ($fft_kmax == 0) ? $lastk
-             :                    $fft_kmax;
-
-    ($kmin, $kmax) = sort {$a <=> $b} ($kmin, $kmax);
-    ($kmax = $lastk) if ($kmax > $lastk);
-
-    $self -> set({fft_kmin=>sprintf("%.3f",$kmin),
-		  fft_kmax=>sprintf("%.3f",$kmax)});
-  };
-
-  sub resolve_krange_chi {
-    my ($self, $rx) = @_;
-    my @chi = @$rx;
-    my ($last, $fft_kmin, $fft_kmax) = ($chi[-1], $self->get("fft_kmin", "fft_kmax"));
-
-    my $kmin = ($fft_kmin  < 0) ? $last + $fft_kmin : $fft_kmin;
-    my $kmax = ($fft_kmax  < 0) ? $last + $fft_kmax
-             : ($fft_kmax == 0) ? $last
-             :                    $fft_kmax;
-
-    ($kmin, $kmax) = sort {$a <=> $b} ($kmin, $kmax);
-    ($kmax = $last) if ($kmax > $last);
-
-    $self -> set({fft_kmin=>sprintf("%.3f",$kmin),
-		  fft_kmax=>sprintf("%.3f",$kmax)});
-  };
-
+  $self->fft_kmin(sprintf("%.3f",$kmin));
+  $self->fft_kmax(sprintf("%.3f",$kmax));
 };
 
 1;
@@ -186,12 +177,14 @@ Ifeffit::Demeter::Data::Defaults - Resolve default parameter values
 
 =head1 VERSION
 
-This documentation refers to Ifeffit::Demeter version 0.1.
+This documentation refers to Ifeffit::Demeter version 0.2.
 
 =head1 DESCRIPTION
 
-This subclass of Ifeffit::Demeter::Data contains methods resolving
-default parameter values from the contents of the data.
+This role of Ifeffit::Demeter::Data contains methods resolving default
+parameter values from the contents of the data.  These rarely need to
+be called in a program, but they need to be documented so that values
+in configuration files can be understood.
 
 =head1 METHODS
 
@@ -280,7 +273,7 @@ Demeter's dependencies are in the F<Bundle/DemeterBundle.pm> file.
 
 =head1 BUGS AND LIMITATIONS
 
-Please report problems to Bruce Ravel (bravel AT anl DOT gov)
+Please report problems to Bruce Ravel (bravel AT bnl DOT gov)
 
 Patches are welcome.
 
@@ -295,7 +288,7 @@ L<http://cars9.uchicago.edu/~ravel/software/>
 Copyright (c) 2006-2008 Bruce Ravel (bravel AT bnl DOT gov). All rights reserved.
 
 This module is free software; you can redistribute it and/or
-modify it under the same terms as Perl itself. See L<perlartistic>.
+modify it under the same terms as Perl itself. See L<perlgpl>.
 
 This program is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of
