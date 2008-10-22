@@ -1,0 +1,59 @@
+This folder conatins files related to a Demeter tutorial showing how
+the analysis was performed for the project described in this
+presentation [link to Hg/DNA talk from SLS XAS08 conference].
+
+Some background: XAS was measured on a solution containing 3mM Hg, 3mM
+duplex DNA, a buffer, and a salt all dissolved in water.  The DNA is
+the active part of a DNA sensor for Hg contamination in water.  The
+purpose of the experiment was to shed some light on how the Hg
+interacts with the DNA.
+
+Not knowing much about how the DNA might interact with the Hg, my
+approach was to generate feff.inp files with the Hg in various
+positions around each nucleotide.  In the example fleshed out here, I
+am placing the Hg atom at a position of relatively high symmetry near
+the N atom in thymidine's pyrimidine ring.  In other attempts to
+analyze the data (none shown here), I placed the Hg atom in other
+locations around each of the four nucleotides.
+
+From simple examination of the data, I know that the Hg atom is about
+2.04 Ang. away from its nearest neighbor.  For this attempt at fitting
+the data, I presume that the Hg atom is 2.04 Ang. from the N atom on
+thymidine's pyrimidine ring, that it is equidistant from the C atoms
+on either side of the N in the pyrimidine ring, and that it is in the
+plane of those three atoms.  All of this is shown in the
+`hg_thymidine.png' image file.  In that image, the pyrimidine ring is
+the bit in the grey box.
+
+The `dna2feff.pl' script sets up the set of coupled equations solving
+all the conditions described in the last pararaph and uses Ifeffit to
+solve them.  It them writes out a `feff.inp' based on the thymidine
+Protein Data Bank file `thymidine.pbd' with the Hg atom at the
+position solving the coupled equations.
+
+The `fit.pl' script then uses that `feff.inp' file and data contained
+in the `HgDNA_data.prj' Athena project file.  It sets up a fitting
+model and runs the fit.  The basic assumptions in this fitting model
+are that the Hg atom is in a position of high symmetry and that the
+pyrimidine ring is rigid compared to the Hg-N bond.
+
+Some things to notice in the fit script:
+
+  * Data is imported directly from the Athena project file using the
+    Prj object.
+
+  * A Data object, several GDS objects, and several Path objects are
+    set up.
+
+  * The various GDS objects encode the trigonometry relating the Hg-C
+    distance to the Hg-N distance.
+
+  * The paths from the calculation are shown in the `intrp.html'
+    file. 
+
+  * The "find_path" method is used to find the correct path for each
+    Path object.  That's not strictly necessary -- in this case I
+    could just count off the paths returned by the "pathlist" method
+    (which are returned in the order shown in the `intrp.html' file).
+    But I wanted to demonstrate Demeter's semantic path description
+    capabilities.

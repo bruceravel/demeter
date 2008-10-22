@@ -74,7 +74,7 @@ $feff -> pathfinder;
 
 
 ## -------- begin setting up paths
-##          note that I am using the find_path method here as a
+##          note that I am using the `find_path' method here as a
 ##          demonstration of how to use Demeter's semantic path
 ##          descriptions.  for instance, in the case of the first
 ##          path, I want to use "the SS path that is less than 3
@@ -170,6 +170,16 @@ my $fit = Ifeffit::Demeter::Fit->new(
 				     data  => [$data],
 				     paths => \@paths,
 				    );
+
+## Up to this point in the script, Demeter does not significantly
+## reduce the amount of typing you have to do to create a fitting
+## model.  Parameters *have* to be defined, data processing parameters
+## *have* to be set, paths *have* to be defined.  The benefit of
+## Demeter is how easy everything else is after this point.
+##
+## Running the fit is trivial.  Plotting the data, paths, and fit is
+## easy.  Logfiles, output files, project files -- all those things
+## are easily created as well.
 
 ## -------- do interesting things with the Fit object
 $fit -> fit;
