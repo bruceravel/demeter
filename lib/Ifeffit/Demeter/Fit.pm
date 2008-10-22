@@ -186,6 +186,7 @@ sub _verify_fit {
 		 exceed_max_params	  => 0,
 		 exceed_max_restraints	  => 0,
 		 program_var_names	  => 0,
+		 path_calculation_exists  => 0,
 
 		 errors			  => [],
 		 #warnings		  => [],
@@ -243,6 +244,9 @@ sub _verify_fit {
 
   ## 15. check that parameters do not have program variable names
   $self->S_program_var_names(\%problem);
+
+  ## 16. check that all Path objects have either a ScatteringPath or a folder/file defined
+  $self->S_path_calculation_exists(\%problem);
 
   return \%problem;
 };

@@ -1,0 +1,36 @@
+COMPND   T THYMIDINE-5p-MONOPHOSPHATE
+REMARK   T Part of HIC-Up: http://xray.bmc.uu.se/hicup
+REMARK   T Extracted from PDB file pdb1mw8.ent
+REMARK   T Formula C10 H15 N2 O8 P1
+REMARK   T Nr of non-hydrogen atoms  21
+REMARK   T Eigen-values covariance X/Y/Z      178.9      56.3      16.6
+REMARK   T Residue type   T
+REMARK   T Residue name     13
+REMARK   T Original residue name (for O) $600
+REMARK   T  RESOLUTION. 1.90 ANGSTROMS.
+REMARK   T occurs in        1 other PDB entries
+REMARK   T Also in 1.5-2.0A  :  1QZG
+REMARK   T Resolution (A)    :  1.90
+REMARK   T
+HETATM    1  O3P   T    13      -3.718  -2.000  -1.249  1.00 20.00      
+HETATM    2  P     T    13      -3.910  -1.598   0.290  1.00 20.00      
+HETATM    3  O1P   T    13      -5.357  -1.586   0.600  1.00 20.00      
+HETATM    4  O2P   T    13      -3.020  -2.446   1.110  1.00 20.00      
+HETATM    5  O5*   T    13      -3.352  -0.122   0.459  1.00 20.00      
+HETATM    6  C5*   T    13      -1.955   0.011   0.305  1.00 20.00      
+HETATM    7  C4*   T    13      -1.487   1.405   0.637  1.00 20.00      
+HETATM    8  O4*   T    13      -0.110   1.315   1.031  1.00 20.00      
+HETATM    9  C3*   T    13      -1.523   2.386  -0.517  1.00 20.00      
+HETATM   10  O3*   T    13      -1.777   3.699  -0.006  1.00 20.00      
+HETATM   11  C2*   T    13      -0.154   2.194  -1.161  1.00 20.00      
+HETATM   12  C1*   T    13       0.734   1.757   0.001  1.00 20.00      
+HETATM   13  N1    T    13       1.686   0.623  -0.156  1.00 20.00      
+HETATM   14  C2    T    13       1.546  -0.359  -1.107  1.00 20.00      
+HETATM   15  O2    T    13       0.649  -0.390  -1.930  1.00 20.00      
+HETATM   16  N3    T    13       2.524  -1.321  -1.063  1.00 20.00      
+HETATM   17  C4    T    13       3.587  -1.402  -0.181  1.00 20.00      
+HETATM   18  O4    T    13       4.407  -2.314  -0.224  1.00 20.00      
+HETATM   19  C5    T    13       3.655  -0.335   0.785  1.00 20.00      
+HETATM   20  C5M   T    13       4.864  -0.108   1.628  1.00 20.00      
+HETATM   21  C6    T    13       2.713   0.593   0.750  1.00 20.00      
+REMARK   T ENDHET

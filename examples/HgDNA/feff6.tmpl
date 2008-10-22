@@ -1,0 +1,32 @@
+ 
+ TITLE     Hg at site {center} in adenine
+
+ HOLE      4      1.0
+
+ CONTROL   1      1     1     1
+ PRINT     0      0     0     0
+
+ RMAX      5
+ FOLP      0 1.1
+ FOLP      1 1.1
+ FOLP      2 1.1
+ FOLP      3 1.1
+
+ POTENTIALS
+ *    ipot   Z  element
+        0   80   Hg        
+        1    8   O        
+        2    7   N        
+        3    6   C        
+        4   15   P        
+
+ ATOMS
+{$i = -1;
+ foreach $s (@sites) {
+  $OUT .= sprintf("    %9.5f   %9.5f   %9.5f   %s  %-2s   %9.5f  %2d\n", 
+       	  	  $s->[1], $s->[2], $s->[3], $ipot{$s->[0]}, $s->[0], $s->[4], $i++)
+ }
+}
+
+ END
+

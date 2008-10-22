@@ -2,7 +2,7 @@
 
 =for Copyright
  .
- Copyright (c) 2006-2007 Bruce Ravel (bravel AT bnl DOT gov).
+ Copyright (c) 2006-2008 Bruce Ravel (bravel AT bnl DOT gov).
  All rights reserved.
  .
  This file is free software; you can redistribute it and/or
@@ -24,7 +24,7 @@ use aliased 'Ifeffit::Demeter::Feff';
 my $feff = Feff -> new();
 $feff->set({workspace=>"pf", screen=>1, buffer=>q{}, save=>1});
 
-$feff -> rdinp("orig.inp") -> potentials();
+$feff -> rdinp("orig.inp") -> potph();
 $feff -> pathfinder; # sets pathlist attribute
 
 my @list_of_paths = $feff->pathlist;

@@ -30,12 +30,19 @@ use warnings;
 use strict;
 use Term::ReadLine;
 
-use subs qw(BOLD RED RESET YELLOW GREEN BLUE UNDERLINE);
+use subs qw(BOLD RED RESET YELLOW GREEN BLUE WHITE REVERSE DARK UNDERLINE);
+my $intrp_style = q{};
 my $ANSIColor_exists = (eval "require Term::ANSIColor");
 if ($ANSIColor_exists) {
   import Term::ANSIColor qw(:constants);
+  $intrp_style = {comment => DARK.WHITE,
+		  close   => RESET,
+		  1       => BOLD.YELLOW,
+		  2       => BOLD.GREEN,
+		  0       => q{},
+		 };
 } else {
-  foreach my $s (qw(BOLD RED RESET YELLOW GREEN BLUE UNDERLINE)) {
+  foreach my $s (qw(BOLD RED RESET YELLOW GREEN BLUE WHITE REVERSE DARK UNDERLINE)) {
     eval "sub $s {q{}}";
   };
 };
@@ -70,7 +77,7 @@ print BOLD, RED, "\nRunning Demeter's path finder\n\n", RESET;
 $feff -> pathfinder;
 
 query();
-my $prompt = "Choose a chore for this Feff calculation ";
+my $prompt = "Choose a chore for this Feff calculation (q to quit) ";
 while ( defined ($_ = $term->readline($prompt)) ) {
   $feff->clean_workspace, exit if ($_ =~ m{\Aq});
   next if ($_ !~ m{\A(\d+)});
@@ -102,6 +109,15 @@ sub state {
   print GREEN, $_[0], RESET, $/;
 };
 
+
+sub do_chore {
+  my $chore = $_[0];
+  eval $chore;
+  spew($chore);
+  print "\n", UNDERLINE, "Return to continue >", RESET, " ";
+  my $how = <STDIN>;
+};
+
 sub spew {
   my ($which) = @_;
   my $flag = 0;
@@ -120,51 +136,27 @@ EOH
 
 sub do_intrp {
   state('Doing a Feff interpretation');
-  print $feff->intrp;
-  spew('$feff -> intrp;');
-  print "\n", UNDERLINE, "Return to continue >", RESET, " ";
-  my $how = <STDIN>;
+  do_chore('print $feff->intrp($intrp_style);');
 };
 
 sub do_pathsdat {
   state('Writing a paths.dat file');
-  $feff->pathsdat;
-  open F, 'feff/paths.dat';
-  print $_ while (<F>);
-  close F;
-  spew('$feff -> pathsdat;
-    open F "feff/paths.dat";
+  do_chore('$feff -> pathsdat;
+    open F, "feff/paths.dat";
     print $_ while (<F>);
-    close F;
-');
-  print "\n", UNDERLINE, "Return to continue >", RESET, " ";
-  my $how = <STDIN>;
+    close F;');
 };
 
 sub do_plot {
   state('Plotting all paths');
-  my @list_of_paths = $feff->pathlist;
-  my $i = 0;
-  foreach my $sp (@{ $feff->pathlist }) {
-    Ifeffit::Demeter::Path -> new(parent=>$feff, sp=>$sp, Index=>++$i) -> plot('r');
-  };
-  spew('my @list_of_paths = $feff->pathlist;
+  do_chore('my @list_of_paths = $feff->pathlist;
     my $i = 0;
     foreach my $sp (@{ $feff->pathlist }) {
-      Ifeffit::Demeter::Path -> new(parent=>$feff, sp=>$sp, Index=>++$i)
-        -> plot("r");
-    };
-');
-  print "\n", UNDERLINE, "Return to continue >", RESET, " ";
-  my $how = <STDIN>;
+      Ifeffit::Demeter::Path -> new(parent=>$feff, sp=>$sp, Index=>++$i) -> plot("r");
+    };');
 };
 
 sub do_yaml {
   state('Serializing the Feff calculation');
-  $feff->freeze("feff.yaml");
-  print "Wrote feff.yaml to the current directory\n";
-  spew('$feff -> freeze("feff.yaml");');
-  print "\n", UNDERLINE, "Return to continue >", RESET, " ";
-  my $how = <STDIN>;
+  do_chore('$feff -> freeze("feff.yaml");');
 };
-

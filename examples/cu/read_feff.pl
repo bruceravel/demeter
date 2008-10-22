@@ -2,7 +2,7 @@
 
 =for Copyright
  .
- Copyright (c) 2006-2007 Bruce Ravel (bravel AT bnl DOT gov).
+ Copyright (c) 2006-2008 Bruce Ravel (bravel AT bnl DOT gov).
  All rights reserved.
  .
  This file is free software; you can redistribute it and/or
@@ -21,5 +21,5 @@ use Ifeffit::Demeter;
 
 my $feff = Ifeffit::Demeter::Feff -> new();
 $feff->set({workspace=>"temp", screen=>1, buffer=>q{}, save=>1});
-$feff -> rdinp("orig.inp") -> potentials();
+$feff -> rdinp("orig.inp") -> potph();
 #print $feff->get("misc.dat");

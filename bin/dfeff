@@ -85,7 +85,7 @@ mkpath($workspace) if not -d $workspace;
 ## potentials
 if ($do_pots) {
   banner("Computing atomic potentials");
-  $feff -> potentials;
+  $feff -> potph;
 };
 
 ## pathfinder
@@ -123,7 +123,7 @@ usage : dfeff [options] <myfeff.inp>
    -w, --workspace  (= folder) folder in which to run feff
    --rmax           (= number) set the maximum path length
    --all            run all parts of Feff sequentially
-   --potentials     calculate the pahse.bin file
+   --potentials     calculate the phase.bin file
    --pathfinder     run Demeter's pathfinder
    --ff2chi         write feffNNNN.dat file for every path
    --keep           use Feff's keep criteria when running genfmt

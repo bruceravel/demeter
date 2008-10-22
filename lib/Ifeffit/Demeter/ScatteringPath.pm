@@ -138,6 +138,13 @@ sub intrplist {
   return join(" ", @intrp);
 };
 
+sub intrpline {
+  my ($self, $i) = @_;
+  $i ||= 9999;
+  return sprintf " %4.4d  %2d   %6.3f  ----  %-29s       %2d  %d %s",
+    $i, $self->n, $self->halflength, $self->intrplist, $self->weight, , $self->nleg , $self->Type;
+};
+
 
 ## set halflength and beta list for this path
 sub evaluate {
@@ -482,9 +489,9 @@ sub details {
   my @this_path = split(/\./, $pathstring);
   shift @this_path; pop @this_path;
 
-  my @ipots = map { $list_of_sites[$_]->[3] } @this_path;
-  my @tags  = map { $list_of_sites[$_]->[4] } @this_path;
-  my @elems = map { get_symbol($list_of_ipots[$_]->[1]) } @ipots;
+  my @ipots = map { $list_of_sites[$_]->[3] || -1  } @this_path;
+  my @tags  = map { $list_of_sites[$_]->[4] || q{} } @this_path;
+  my @elems = map { get_symbol($list_of_ipots[$_]->[1]) || q{} } @ipots;
 
   return (ipots=>\@ipots, tags=>\@tags, elements=>\@elems);
 };

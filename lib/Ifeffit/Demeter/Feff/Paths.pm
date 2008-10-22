@@ -60,6 +60,8 @@ sub find_path {
     $params{element} = [ $params{element} ];
   };
 
+  $params{list} = $params{tag} || $params{tagmatch} || $params{ipot} || $params{element};
+
 
   my @list_of_paths = @{ $self->pathlist };
   return $list_of_paths[0] if none {$params{$_}} (keys %params);
@@ -71,16 +73,22 @@ sub find_path {
 
     my $is_the_one = 1;
 
+
     $is_the_one &&= ($p->nleg != $params{nlegs}) if $params{nlegs};
-    $is_the_one &&= ($p->fuzzy < $params{gt})    if $params{gt};
-    $is_the_one &&= ($p->fuzzy > $params{lt})    if $params{lt};
+    $is_the_one &&= ($p->fuzzy > $params{gt})    if $params{gt};
+    $is_the_one &&= ($p->fuzzy < $params{lt})    if $params{lt};
 
     next if not $is_the_one;
+
+    if (not $params{list}) {
+      return $p if $is_the_one;
+      next PATHS;
+    };
 
   DEGEN: foreach my $d (@{ $p->degeneracies }) {
       my $ok_so_far = $is_the_one;
       my %hash = $p->details($d);
-      # print join(" ", @{ $hash{tags}     }), $/;
+      # print join(" ", $d, @{ $hash{tags}     }), $/;
       # print join(" ", @{ $hash{ipots}    }), $/;
       # print join(" ", @{ $hash{elements} }), $/;
 

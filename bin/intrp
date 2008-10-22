@@ -44,7 +44,7 @@ if ($ANSIColor_exists) {
   $nocolor = 1;
 };
 
-my $feff = Ifeffit::Demeter::Feff -> thaw($ARGV[0]||"feff.yaml");
+my $feff = Ifeffit::Demeter::Feff -> new(yaml => $ARGV[0]||"feff.yaml");
 my $style = ($nocolor) ? q{}
           : ($latex)   ? "latex"
           : ($html)    ? "css"

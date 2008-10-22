@@ -19,7 +19,7 @@ use Moose::Role;
 use Ifeffit::Demeter::StrTypes qw( IfeffitFunction IfeffitProgramVar );
 
 use Carp;
-use Fatal qw(open close);
+use File::Spec;
 use List::MoreUtils qw(any);
 use Regexp::Optimizer;
 use Regexp::Common;
@@ -464,6 +464,19 @@ sub S_program_var_names {
       push (@{$$r_problem{errors}}, "\"" . $g->name . "\" is an Ifeffit program variable and cannot be a parameter in the fit.");
       ++$$r_problem{program_var_names};
     };
+  };
+};
+
+## 16. check that all Path objects have either a ScatteringPath or a folder/file defined
+sub S_path_calculation_exists {
+  my ($self, $r_problem) = @_;
+  my @paths = @{ $self->paths };
+  foreach my $p (@paths) {
+    next if (ref($p->sp) =~ m{ScatteringPath});
+    my $nnnn = File::Spec->catfile($p->folder, $p->file);
+    next if ((-e $nnnn) and $p->file);
+    push (@{$$r_problem{errors}}, "Path number " . $p->Index . " does not have a valid Feff calculation associated with it.");
+    ++$$r_problem{path_calculation_exists};
   };
 };
 

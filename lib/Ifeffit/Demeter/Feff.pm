@@ -365,7 +365,7 @@ sub genfmt {
   $self->check_workspace;
   ## verify that phase.bin has been written to workspace
   my $phbin = File::Spec->catfile($self->workspace, 'phase.bin');
-  $self->potentials if not -e $phbin;
+  $self->potph if not -e $phbin;
 
   ## generate a paths.dat file from the list of ScatteringPath objects
   $self->pathsdat(@list_of_path_indeces);
@@ -755,10 +755,7 @@ sub intrp {
   $text .=  $markup{comment} . "#     degen   Reff       scattering path                       I legs   type" .  $markup{close} . "\n";
   my $i = 0;
   foreach my $sp (@list_of_paths) {
-    $text .= sprintf " %s%4.4d  %2d   %6.3f  ----  %-29s       %2d  %d %s%s\n",
-      $markup{$sp->weight},
-	++$i, $sp->get(qw(n halflength)), $sp->intrplist, $sp->get(qw(weight nleg Type)),
-	  $markup{close};
+    $text .= $markup{$sp->weight} . $sp->intrpline(++$i) . $markup{close} . $/;
   };
   return $text;
 };
@@ -944,7 +941,7 @@ This documentation refers to Ifeffit::Demeter version 0.2.
   my $feff = Ifeffit::Demeter::Feff -> new();
   $feff->set(workspace=>"temp", screen=>1, buffer=>q{});
   $feff->rdinp("feff.inp")
-    -> potentials
+    -> potph
       -> pathfinder
         -> genfmt;
 
@@ -1163,12 +1160,12 @@ running genfmt, or running all of Feff.
     # or
   $feff -> make_feffinp("full");
 
-=item C<potentials>
+=item C<potph>
 
 Run Feff to compute the potentials.  The C<make_feffinp> method will
 be run if needed.
 
-  $feff -> potentials;
+  $feff -> potph;
 
 This runs just the first segment of Feff, generating the F<phase.bin>
 file.  Note that, when transfering a feff calculation between machines
@@ -1304,8 +1301,8 @@ terminal capable of displaying ANSI color:
               1       => BOLD.YELLOW,
               2       => BOLD.GREEN,
               0       => q{},
-             }
-    $feff->intrp($style);
+             };
+    print $feff->intrp($style);
 
 The ANSI color example is not pre-defined so that Term::ANSIColor does
 not have to be a Demeter requirement.  That said, it is probably the
