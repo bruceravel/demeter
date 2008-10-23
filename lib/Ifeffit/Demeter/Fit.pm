@@ -24,8 +24,12 @@ use MooseX::AttributeHelpers;
 
 with 'Ifeffit::Demeter::Fit::Happiness';
 with 'Ifeffit::Demeter::Fit::Sanity';
-with 'Ifeffit::Demeter::UI::Screen::Interview' if ($Ifeffit::Demeter::mode->ui eq 'screen');
-with 'Ifeffit::Demeter::Fit::Spinner'          if ($Ifeffit::Demeter::mode->ui eq 'screen');
+
+if ($Ifeffit::Demeter::mode->ui eq 'screen') {
+  with 'Ifeffit::Demeter::UI::Screen::Interview';
+  with 'Ifeffit::Demeter::UI::Screen::Spinner';
+};
+
 
 use Ifeffit::Demeter::NumTypes qw( NonNeg Natural NaturalC );
 
@@ -37,7 +41,7 @@ use File::Copy;
 use File::Path;
 use File::Spec;
 use List::Util qw(max);
-use List::MoreUtils qw(any none zip);
+use List::MoreUtils qw(any none zip uniq);
 use Regexp::Optimizer;
 use Regexp::Common;
 use Readonly;
@@ -970,67 +974,85 @@ sub correl_report {
 ## Serialization and deserialization of the Fit object
 
 ## need to serialize/deserialize correlations and statistics
-# sub serialize {
-#   my ($self, $fname) = @_;
-#   my @gds   = @{ $self->gds   };
-#   my @data  = @{ $self->data  };
-#   my @paths = @{ $self->paths };
+sub serialize {
+  my ($self, $fname) = @_;
+  my @gds   = @{ $self->gds   };
+  my @data  = @{ $self->data  };
+  my @paths = @{ $self->paths };
 
-#   my @gdsgroups   = map { $_->name      } @gds;
-#   my @datagroups  = map { $_->get_group } @data;
-#   my @pathsgroups = map { $_->get_group } grep {defined $_} @paths;
+  my @gdsgroups   = map { $_->group } @gds;
+  my @datagroups  = map { $_->group } @data;
+  my @pathsgroups = map { $_->group } grep {defined $_} @paths;
+  my @feffgroups  = map { $_->group } map {$_ -> parent} grep {defined $_} @paths;
+  @feffgroups = uniq @feffgroups;
 
-#   unlink ($fname) if (-e $fname);
+  unlink ($fname) if (-e $fname);
 
-#   my $folder = $self->project_folder("raw_demeter");
-#   my $fit_folder = File::Spec->catfile($folder, "fit");
-#   mkpath($fit_folder);
+  my $folder = $self->project_folder("raw_demeter");
+  my $fit_folder = File::Spec->catfile($folder, "fit");
+  mkpath($fit_folder);
 
-#   ## save a yaml containing the structure of the fit
-#   my $structure = File::Spec->catfile($fit_folder, "structure.yaml");
-#   open my $STRUCTURE, ">$structure";
-#   print $STRUCTURE YAML::Dump(\@gdsgroups, \@datagroups, \@pathsgroups);
-#   close $STRUCTURE;
+  ## save a yaml containing the structure of the fit
+  my $structure = File::Spec->catfile($fit_folder, "structure.yaml");
+  open my $STRUCTURE, ">$structure";
+  print $STRUCTURE YAML::Dump(\@gdsgroups, \@datagroups, \@pathsgroups, \@feffgroups);
+  close $STRUCTURE;
 
-#   ## save a yaml containing all GDS parameters
-#   my $gdsfile =  File::Spec->catfile($fit_folder, "gds.yaml");
-#   open my $gfile, ">$gdsfile";
-#   foreach my $p (@gds) {
-#     print $gfile $p->serialize;
-#   };
-#   close $gfile;
+  ## save a yaml containing all GDS parameters
+  my $gdsfile =  File::Spec->catfile($fit_folder, "gds.yaml");
+  open my $gfile, ">$gdsfile";
+  foreach my $p (@gds) {
+    print $gfile $p->serialization;
+  };
+  close $gfile;
 
-#   ## save a yaml for each data file
-#   foreach my $d (@data) {
-#     my $datafile =  File::Spec->catfile($fit_folder, "$d.yaml");
-#     $d->serialize($datafile);
-#   };
+  ## save a yaml for each data file
+  foreach my $d (@data) {
+    my $dd = $d->group;
+    my $datafile =  File::Spec->catfile($fit_folder, "$dd.yaml");
+    open my $dfile, ">$datafile";
 
-#   ## save a yaml containing the paths
-#   my $pathsfile =  File::Spec->catfile($fit_folder, "paths.yaml");
-#   my %feffs = ();
-#   open my $PATHS, ">$pathsfile";
-#   foreach my $p (@paths) {
-#     next if not defined($p);
-#     print $PATHS $p->serialize;
-#     if ($p->get("sp")) {	# this path used a ScatteringPath object
-#       my $this = sprintf("%s", $p->get("parent"));
-#       $feffs{$this} = $p->get("parent");
-#     } else {			# this path imported a feffNNNN.dat file
+    print $dfile $d->serialization;
+    if ($d->datatype eq 'xmu') {
+      print $dfile YAML::Dump($d->ref_array("energy"));
+      print $dfile YAML::Dump($d->ref_array("xmu"));
+      if ($d->is_col) {
+ 	print $dfile YAML::Dump($d->ref_array("i0"));
+      }
+    } elsif ($d->datatype eq "chi") {
+      print $dfile YAML::Dump($d->get_array("k"));
+      print $dfile YAML::Dump($d->get_array("chi"));
+    };
 
-#     };
-#   };
-#   close $PATHS;
-#   foreach my $f (values %feffs) {
-#     my $feffyaml = File::Spec->catfile($fit_folder, $f.".yaml");
-#     $f->serialize($feffyaml, 1);
-#     my $feff_from  = File::Spec->catfile($f->get("workspace"), "original_feff.inp");
-#     my $feff_to    = File::Spec->catfile($fit_folder, $f.".inp");
-#     copy($feff_from,  $feff_to);
-#     my $phase_from = File::Spec->catfile($f->get("workspace"), "phase.bin");
-#     my $phase_to   = File::Spec->catfile($fit_folder, $f.".bin");
-#     copy($phase_from, $phase_to);
-#   };
+    close $dfile;
+  };
+
+  ## save a yaml containing the paths
+  my $pathsfile =  File::Spec->catfile($fit_folder, "paths.yaml");
+  my %feffs = ();
+  open my $PATHS, ">$pathsfile";
+  foreach my $p (@paths) {
+    next if not defined($p);
+    print $PATHS $p->serialization;
+    if ($p->sp) {	# this path used a ScatteringPath object
+      my $this = sprintf("%s", $p->parent);
+      $feffs{$this} = $p->get("parent");
+    } else {			# this path imported a feffNNNN.dat file
+
+    };
+  };
+  close $PATHS;
+  foreach my $f (values %feffs) {
+    my $ff = $f->group;
+    my $feffyaml = File::Spec->catfile($fit_folder, $ff.".yaml");
+    $f->serialize($feffyaml, 1);
+    my $feff_from  = File::Spec->catfile($f->get("workspace"), "original_feff.inp");
+    my $feff_to    = File::Spec->catfile($fit_folder, $ff.".inp");
+    copy($feff_from,  $feff_to);
+    my $phase_from = File::Spec->catfile($f->get("workspace"), "phase.bin");
+    my $phase_to   = File::Spec->catfile($fit_folder, $ff.".bin");
+    copy($phase_from, $phase_to);
+  };
 
 #   ## save a yaml containing the fit properties
 #   my @properties = (@props, "cormin", "header", "footer");
@@ -1078,11 +1100,11 @@ sub correl_report {
 #   my $readme = File::Spec->catfile($self->share_folder, "Readme.fit_serialization");
 #   my $target = File::Spec->catfile($fit_folder, "Readme");
 #   copy($readme, $target);
-#   $self->zip_project($fit_folder, $fname);
-#   rmtree($fit_folder);
+#   #$self->zip_project($fit_folder, $fname);
+#   #rmtree($fit_folder);
 
-#   return $self;
-# };
+  return $self;
+};
 
 # sub deserialize {
 #   my ($class, $dpj, $with_plot) = @_;
@@ -1245,14 +1267,14 @@ sub correl_report {
 
 #   return $fitobject;
 # };
-# {
-#   no warnings 'once';
-#   # alternate names
-#   *freeze = \ &serialize;
-#   *thaw   = \ &deserialize;
-#   #*Dump   = \ &serialize;
-#   #*Load   = \ &deserialize;
-# }
+{
+  no warnings 'once';
+  # alternate names
+  *freeze = \ &serialize;
+  #*thaw   = \ &deserialize;
+  #*Dump   = \ &serialize;
+  #*Load   = \ &deserialize;
+}
 
 1;
 

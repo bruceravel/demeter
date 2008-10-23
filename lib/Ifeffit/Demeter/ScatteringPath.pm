@@ -113,12 +113,12 @@ sub _etakey {
 
 sub attributes {		# returns all SP attributes
   my ($self) = @_;
-  return qw(feff string nkey rleg beta eta fs etanonzero betakey etakey nleg halflength
-	    heapvalue n degeneracies fuzzy Type weight randstring);
+  return ($self->meta->get_attribute_list, qw(group name));
 };
 sub savelist { # returns all SP attributes that are saved when a Feff calc is serialized
   my ($self) = @_;
-  return grep { ($_ ne 'feff') and ($_ ne 'heapvalue') } $self->attributes;
+  ##print join(" ", $self->attributes), $/;
+  return grep { $_ !~ m{feff|heapvalue|data|plot|mode} } $self->attributes;
 };
 
 ## construct the intrp line by disentangling the SP string

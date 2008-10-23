@@ -830,7 +830,7 @@ sub serialize {
 
   my %cards = ();
   foreach my $key (qw(abs_index edge s02 rmax nlegs npaths rmultiplier pcrit ccrit
-		      workspace screen buffer save fuzz betafuzz eta_suppress miscdat)) {
+		      workspace screen buffer save fuzz betafuzz eta_suppress miscdat group)) {
     $cards{$key} = $self->$key;
   };
   $cards{zzz_arrays} = "titles othercards potentials absorber sites";

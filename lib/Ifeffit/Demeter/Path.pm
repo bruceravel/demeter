@@ -75,7 +75,6 @@ has 'amp_array'	      => (is=>'rw', isa=>'Str', default => q{});
 has 'phase_array'     => (is=>'rw', isa=>'Str', default => q{});
 
 ## object relationships
-has '+data'           => (isa => Empty.'|Ifeffit::Demeter::Data');
 has 'parent'          => (is=>'rw', isa => 'Any', default => q{});
 #has 'parent'          => (is=>'rw', isa => Empty.'|Ifeffit::Demeter::Feff', default => q{});
 has 'sp'              => (is=>'rw', isa=> 'Any',);

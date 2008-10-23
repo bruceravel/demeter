@@ -51,13 +51,16 @@ with 'Ifeffit::Demeter::Project';
 
 with 'MooseX::Clone';
 
+#use MooseX::Storage;
+#with Storage('format' => 'YAML', 'io' => 'File');
+
 
 my %seen_group;
 has 'group'     => (is => 'rw', isa => 'Str',  default => sub{_get_group()});
 has 'name'      => (is => 'rw', isa => 'Str',  default => q{});
 has 'plottable' => (is => 'ro', isa => 'Bool', default => 0);
 has 'data'      => (is => 'rw', isa => 'Any',  default => q{});
-
+# has 'stash_folder' => (is => 'ro', isa => 'Str');
 
 use Ifeffit::Demeter::Mode;
 use vars qw($mode);
@@ -130,14 +133,6 @@ sub import {
   };
 };
 
-
-# has 'stash_folder' => (is => 'ro', isa => 'Str');
-
-# sub BUILD {
-#   my ($self, @params) = @_;
-# };
-
-#use overload q{""} => sub { shift->group } ;
 
 ## -------- Accessor convenience methods
 sub set {
@@ -365,7 +360,7 @@ sub plot_with {
 ## -------- introspection methods
 sub get_all {
   my ($self) = @_;
-  my @keys   = $self->meta->get_attribute_list;
+  my @keys   = grep {$_ !~ m{data|plot|mode|parent}} $self->meta->get_attribute_list;
   push @keys, qw(name group plottable);
   my @values = map {$self->$_} @keys;
   my %hash   = zip(@keys, @values);
@@ -378,12 +373,19 @@ sub get_params_of {
 };
 
 
-## To do:
-##  * Push method
-##  * clone
-##  * new_params, re. Config object
-##  * yofx, get_array, ref_array, floor_ceil, arrays as an Array role
-
+sub serialization {
+  my ($self) = @_;
+  my %hash = $self->get_all;
+  return YAML::Dump(\%hash);
+};
+# {
+#   no warnings 'once';
+#   # alternate names
+#   *freeze = \ &serialize;
+#   #*thaw   = \ &deserialize;
+#   #*Dump   = \ &serialize;
+#   #*Load   = \ &deserialize;
+# }
 
 
 
@@ -456,11 +458,6 @@ __PACKAGE__->meta->make_immutable;
 1;
 
 
-#   sub serialize {
-#     my ($self) = @_;
-#     my %hash = $self->get_all;
-#     return YAML::Dump(\%hash);
-#   };
 
 
 

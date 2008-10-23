@@ -38,7 +38,7 @@ has 'template_test'     => (is => 'ro', isa => 'Str',              default => 't
 has 'echo'		   => (is => 'rw', isa => 'Any');
 has 'datadefault'	   => (is => 'rw', isa => 'Any');
 has 'external_plot_object' => (is => 'rw', isa => 'Any');
-has 'ui'                   => (is => 'rw', isa => 'Str', default => 'none');
+has 'ui'                   => (is => 'rw', isa => 'Str', default => 'none',);
 
 1;
 
@@ -201,8 +201,9 @@ L<Graphics::GnuplotIF> object.
 
 This is a string identifying the user interface backend.  At this
 time, its only use is to tell the Fit object to import the
-curses-based interview method in
-L<Ifeffit::Demeter::UI::Screen::Interview>.
+curses-based methods in
+L<Ifeffit::Demeter::UI::Screen::Interview> and
+L<Ifeffit::Demeter::UI::Screen::Spinner>.
 
 =back
 

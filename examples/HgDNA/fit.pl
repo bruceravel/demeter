@@ -1,8 +1,22 @@
 #!/usr/bin/perl -I/home/bruce/codes/demeter/lib
 
+=for Copyright
+ .
+ Copyright (c) 2006-2008 Bruce Ravel (bravel AT bnl DOT gov).
+ All rights reserved.
+ .
+ This file is free software; you can redistribute it and/or
+ modify it under the same terms as Perl itself. See  L<perlgpl>.
+ .
+ This program is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+
+=cut
+
 use warnings;
 use strict;
-use Ifeffit::Demeter qw(:ui=screen); # enable the use of the interview method for Fit
+use Ifeffit::Demeter qw(:ui=screen); # enable the use of Interview and Spinner
 ##use Ifeffit::Demeter qw(:ui=screen :plotwith=gnuplot);
 
 ## -------- clean up in preparation of the next fit
@@ -12,12 +26,12 @@ unlink("hgfit.dpj") if (-e "hgfit.dpj");
 ## I like to have a dummy object around for things like set_mode and
 ## simpleGDS, although you can use any object for those purposes...
 my $demeter = Ifeffit::Demeter->new;
-$demeter->set_mode(screen  => 0, ifeffit => 1, file => ">hgfit.iff");
-$demeter->po->set(kweight=>2, rmax=>6);
+$demeter -> set_mode(screen  => 0, ifeffit => 1, file => ">hgfit.iff");
+$demeter -> po -> set(kweight => 2, rmax => 6);
 
 
 ## -------- import data and set up the FT and fit parameters
-my $prj = Ifeffit::Demeter::Data::Prj -> new(file=>'HgDNA_data.prj');
+my $prj = Ifeffit::Demeter::Data::Prj -> new(file => 'HgDNA_data.prj');
 my $data = $prj -> record(2);	# import 2nd record, which contains the Hg/DNA data
 $data -> set(name       => 'Hg with DNA',
 	     fft_kmin   => 2.0,    fft_kmax  => 8.8,
@@ -83,85 +97,76 @@ my $index  = 0;
 my @common = (parent => $feff, data => $data, s02 => "amp", e0 => "enot",);
 
 my $p = $feff->find_path(lt=>3, tag=>['N']);	       ## find the nearest neighbor, N at a short distance
-push @paths, Ifeffit::Demeter::Path -> new()
-  -> set(@common,
-	 sp     => $p,
-	 Index  => ++$index,
-	 delr   => "deltaa",
-	 sigma2 => "ssn",
-	);
+push @paths, Ifeffit::Demeter::Path -> new(@common,
+					   sp     => $p,
+					   Index  => ++$index,
+					   delr   => "deltaa",
+					   sigma2 => "ssn",
+					  );
 
 $p = $feff->find_path(lt=>3, tag=>['C']);	       ## find the second neighbor C atoms in the pyrimidine ring
-push @paths, Ifeffit::Demeter::Path -> new()
-  -> set(@common,
-	 sp     => $p,
-	 Index  => ++$index,
-	 delr   => "c-reff",
-	 sigma2 => "ssc",
-	);
+push @paths, Ifeffit::Demeter::Path -> new(@common,
+					   sp     => $p,
+					   Index  => ++$index,
+					   delr   => "c-reff",
+					   sigma2 => "ssc",
+					  );
 
 $p = $feff->find_path(lt=>3.5, tag=>['O']);	       ## find the third neighbor O atoms dangling from the pyrimidine ring
-push @paths, Ifeffit::Demeter::Path -> new()
-  -> set(@common,
-	 sp     => $p,
-	 Index  => ++$index,
-	 delr   => "dro",
-	 sigma2 => "sso",
-	);
+push @paths, Ifeffit::Demeter::Path -> new(@common,
+					   sp     => $p,
+					   Index  => ++$index,
+					   delr   => "dro",
+					   sigma2 => "sso",
+					  );
 
 $p = $feff->find_path(lt=>4, tag=>['C', 'N']);	       ## find the C-N triangle paths
-push @paths, Ifeffit::Demeter::Path -> new()
-  -> set(@common,
-	 sp     => $p,
-	 Index  => ++$index,
-	 delr   => "(c-2.924)/2 + deltaa/2",
-	 sigma2 => "ssc+ssn",
-	);
+push @paths, Ifeffit::Demeter::Path -> new(@common,
+					   sp     => $p,
+					   Index  => ++$index,
+					   delr   => "(c-2.924)/2 + deltaa/2",
+					   sigma2 => "ssc+ssn",
+					  );
 
 $p = $feff->find_path(lt=>4, tag=>['N', 'C', 'N']);    ## find the N-C-N dog leg
-push @paths, Ifeffit::Demeter::Path -> new()
-  -> set(@common,
-	 sp     => $p,
-	 Index  => ++$index,
-	 delr   => "deltaa",
-	 sigma2 => "ssn",
-	);
+push @paths, Ifeffit::Demeter::Path -> new(@common,
+					   sp     => $p,
+					   Index  => ++$index,
+					   delr   => "deltaa",
+					   sigma2 => "ssn",
+					  );
 
 $p = $feff->find_path(lt=>4, tag=>['C', 'O']);	       ## find the C-O triangle
-push @paths, Ifeffit::Demeter::Path -> new()
-  -> set(@common,
-	 sp     => $p,
-	 Index  => ++$index,
-	 delr   => "(c-2.924)/2 + dro/2",
-	 sigma2 => "ssc+sso",
-	);
+push @paths, Ifeffit::Demeter::Path -> new(@common,
+					   sp     => $p,
+					   Index  => ++$index,
+					   delr   => "(c-2.924)/2 + dro/2",
+					   sigma2 => "ssc+sso",
+					  );
 
 $p = $feff->find_path(lt=>4.2, tag=>['N', 'O']);       ## find the N-O triangle
-push @paths, Ifeffit::Demeter::Path -> new()
-  -> set(@common,
-	 sp     => $p,
-	 Index  => ++$index,
-	 delr   => "deltaa/2 + dro/2",
-	 sigma2 => "ssn+sso",
-	);
+push @paths, Ifeffit::Demeter::Path -> new(@common,
+					   sp     => $p,
+					   Index  => ++$index,
+					   delr   => "deltaa/2 + dro/2",
+					   sigma2 => "ssn+sso",
+					  );
 
 $p = $feff->find_path(lt=>4.2, tag=>['C', 'O', 'C']);  ## find the C-O-C dog leg
-push @paths, Ifeffit::Demeter::Path -> new()
-  -> set(@common,
-	 sp     => $p,
-	 Index  => ++$index,
-	 delr   => "deltaa/2 + dro/2",
-	 sigma2 => "ssn+sso",
-	);
+push @paths, Ifeffit::Demeter::Path -> new(@common,
+					   sp     => $p,
+					   Index  => ++$index,
+					   delr   => "deltaa/2 + dro/2",
+					   sigma2 => "ssn+sso",
+					  );
 
 $p = $feff->find_path(lt=>4.2, tag=>['C', 'C']);       ## find the C-C triangle
-push @paths, Ifeffit::Demeter::Path -> new()
-  -> set(@common,
-	 sp     => $p,
-	 Index  => ++$index,
-	 delr   => "2*deltaa",
-	 sigma2 => "4*ssn",
-	);
+push @paths, Ifeffit::Demeter::Path -> new(@common,
+					   sp     => $p,
+					   Index  => ++$index,
+					   delr   => "2*deltaa",
+					   sigma2 => "4*ssn",
+					  );
 
 ## -------- a Fit object is a collection of GDS, Data, and Path objects
 my $fit = Ifeffit::Demeter::Fit->new(
@@ -183,11 +188,11 @@ my $fit = Ifeffit::Demeter::Fit->new(
 ## -------- do interesting things with the Fit object
 $fit -> fit;
 $fit -> logfile("hgfit.log", "Hg at N15 on pyrimidine", q{});
-#$fit -> freeze("hgfit.dpj");
-#$data -> save("fit", "hgfit.fit");
+$fit -> freeze("hgfit.dpj");
+$data -> save("fit", "hgfit.fit");
 
 ## -------- simple, on-screen interaction with the fit results
-$fit->interview;
+$fit -> interview;
 
 ## clean up path files after the fit
 system 'rm -rf 15/*.sp';

@@ -115,7 +115,7 @@ has 'update_fft'     => (is => 'rw', isa => 'Bool',  default => 1,
 has 'update_bft'     => (is => 'rw', isa => 'Bool',  default => 1);
 
 
-has 'nidp' => (is => 'rw', isa => 'Num');
+has 'nidp' => (is => 'rw', isa => 'Num', default => 0);
 
 ## -------- background removal parameters
 has 'bkg_e0'          => (is => 'rw', isa => 'Num',   default => 0,
