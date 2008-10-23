@@ -23,12 +23,11 @@
 
 use warnings;
 use strict;
-use Smart::Comments;
 
 use Ifeffit::Demeter;
 my $where = $ENV{DEMETER_TEST_DIR} || "..";
 
-### Reading, plotting fe.060
+print "Reading, plotting fe.060\n";
 my $d0 = Ifeffit::Demeter::Data -> new({group => 'data0'});
 $d0 -> set(file        => "$where/data/fe.060",
 	   name        => '60K',
@@ -48,13 +47,13 @@ $plot->set(emin=>-200, emax=>1200, e_norm=>1, e_markers=>1);
 
 $d0->plot('k');
 my $fname = "$d0.yaml";
-### ... and serialize it to a yaml
+print "... and serialize it to a yaml\n";
 $d0->freeze($fname);	# or freeze or Dump
 
-### Deserializing from $fname and plotting it as a different object
+print "Deserializing from $fname and plotting it as a different object\n";
 my $d1 = Ifeffit::Demeter::Data->thaw($fname); # or thaw or Load
 $d1->set(name=>"60K, deserialized", 'y_offset'=>-0.5);
-### ... and plot it
+print "... and plot it\n";
 $d1->plot("k");
 
 1;

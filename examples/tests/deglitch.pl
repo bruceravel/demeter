@@ -25,7 +25,6 @@
 
 use warnings;
 use strict;
-use Smart::Comments;
 
 use Ifeffit::Demeter;
 my $where = $ENV{DEMETER_TEST_DIR} || "..";
@@ -36,7 +35,7 @@ my @attributes = (energy      => '$1', # column 1 is energy
 		  denominator => '$4', # column 4 is It
 		  ln          => 1,    # these are transmission data
 		 );
-### Reading and plotting uhup.003
+print "Reading and plotting uhup.003\n";
 my $d0 = Ifeffit::Demeter::Data -> new(@attributes);
 $d0 -> set(file=>"$where/data/uhup.003", name=>'HUP');
 
@@ -46,7 +45,7 @@ $plot->set(emin=>-200, emax=>800, e_norm=>1, e_markers=>1, kweight=>2);
 
 $d0 -> plot('e');
 
-### Delitching points at 17385.686 and 17655.5 eV; replotting data
+print "Delitching points at 17385.686 and 17655.5 eV; replotting data\n";
 $d0 -> name("HUP, deglitched");
 $d0 -> deglitch(17385.686, 17655.5);
 $d0 -> plot('e');

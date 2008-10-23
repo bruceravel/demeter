@@ -23,14 +23,13 @@
 
 use warnings;
 use strict;
-use Smart::Comments;
 
 use Ifeffit::Demeter;
 my $where = $ENV{DEMETER_TEST_DIR} || "..";
 
 
 ## set up two data objects
-### Reading and plotting 60K Fe foil data
+print "Reading and plotting 60K Fe foil data\n";
 my $d0 = Ifeffit::Demeter::Data -> new(file => "$where/data/fe.060.xmu",
 				       name => 'Fe 60K',
 				       'y_offset' => 2);
@@ -42,12 +41,12 @@ $plot->set(emin=>-50, emax=>100, e_bkg=>0, e_norm=>0, e_markers=>1);
 
 $d0 -> plot('e');
 
-### 2% noise and replotting data
+print "2% noise and replotting data\n";
 my $d1 = $d0 -> clone(name => "2% noise", 'y_offset' => 1);
 $d1 -> noise(noise=>0.02, which=>'xmu');
 $d1 -> plot('e');
 
-### 10% noise and replotting data
+print "10% noise and replotting data\n";
 my $d2 = $d0 -> clone(name => "10% noise", y_offset => 0);
 $d2 -> noise(noise=>0.1, which=>'xmu');
 $d2 -> plot('e');

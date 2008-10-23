@@ -25,14 +25,13 @@
 
 use warnings;
 use strict;
-use Smart::Comments;
 
 use Ifeffit::Demeter;
 my $where = $ENV{DEMETER_TEST_DIR} || "..";
 
 
 ## set up two data objects
-### Reading and plotting 60K Fe foil data
+print "Reading and plotting 60K Fe foil data\n";
 my $d0 = Ifeffit::Demeter::Data -> new();
 $d0 -> set(file=>"$where/data/fe.060.xmu", name=>'Fe 60K');
 
@@ -43,12 +42,12 @@ $plot->set(emin=>-50, emax=>100, e_norm=>0, e_markers=>1, e_bkg=>0);
 
 $d0 -> plot('e');
 
-### Gaussian convolution and replotting data
+print "Gaussian convolution and replotting data\n";
 my $d1 = $d0 -> clone(name=>"2 eV, gaussian");
 $d1 -> convolve(width=>2, type=>'gaussian');
 $d1 -> plot('e');
 
-### Lorentzian convolution and replotting data
+print "Lorentzian convolution and replotting data\n";
 my $d2 = $d0 -> clone(name=> "2 eV, lorentzian");
 $d2 -> convolve(width=>2, type=>'lorentzian');
 $d2 -> plot('e');

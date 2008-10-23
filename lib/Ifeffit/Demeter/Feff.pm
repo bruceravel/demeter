@@ -15,6 +15,8 @@ package Ifeffit::Demeter::Feff;
 
 =cut
 
+use autodie qw(open close);
+
 use Moose;
 extends 'Ifeffit::Demeter';
 use MooseX::AttributeHelpers;
@@ -25,7 +27,6 @@ with 'Ifeffit::Demeter::Feff::Sanity';
 
 use Compress::Zlib;
 use Cwd;
-use Fatal qw(open close);
 use File::Path;
 use File::Spec;
 #use File::Temp qw(tempdir);
@@ -43,10 +44,6 @@ Readonly my $ETASUPPRESS  => 1;
 Readonly my $FUZZ_DEF     => 0.01;
 Readonly my $BETAFUZZ_DEF => 3;
 Readonly my $SEPARATOR    => '[ \t]*[ \t=,][ \t]*';
-#use aliased 'Ifeffit::Demeter::ScatteringPath';
-#use aliased 'Ifeffit::Demeter::Tools';
-
-
 
 my @leglength = ();
 my $shortest = 100000000;

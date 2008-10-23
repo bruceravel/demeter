@@ -24,7 +24,6 @@
 
 use warnings;
 use strict;
-use Smart::Comments;
 
 use Ifeffit::Demeter;
 
@@ -47,10 +46,10 @@ $plot->set_mode(screen=>0, repscreen=>0);
 $plot->set(emin=>-200, emax=>800, e_norm=>1, e_markers=>1, kweight=>2);
 
 
-### reading data and plotting
+print "reading data and plotting\n";
 $d0->plot('k');
 
-### rebinning data and plotting
+print "rebinning data and plotting\n";
 my $rebinned = $d0->rebin;
 $rebinned->plot('k');
 
@@ -59,6 +58,6 @@ print "--> original data is ", $d0->group, "\n--> rebinned data is ", $rebinned-
 $d0->dispose("show " . $d0->group . ".energy " . $rebinned->group . ".energy");
 $d0->screen_echo(0);
 
-### all done!
+print "all done!\n";
 
 1;

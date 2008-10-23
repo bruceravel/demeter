@@ -15,12 +15,12 @@ package Ifeffit::Demeter::Project;
 
 =cut
 
+use autodie qw(open close);
 
 use Moose::Role;
 
 use Archive::Zip qw( :ERROR_CODES :CONSTANTS );;
 use Carp;
-use Fatal qw(open close);
 use File::Path;
 use File::Spec;
 use Ifeffit;

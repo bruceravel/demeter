@@ -23,7 +23,6 @@
 
 use warnings;
 use strict;
-use Smart::Comments;
 
 use Ifeffit::Demeter;
 my $where = $ENV{DEMETER_TEST_DIR} || "..";
@@ -52,16 +51,16 @@ my $plot = $d0->po;
 $plot->set_mode(screen=>0, repscreen=>0);
 $plot->set(emin=>-30, emax=>70, e_norm=>1, e_markers=>1);
 
-### calibrating standard
+print "calibrating standard\n";
 $d0->calibrate;
 
-### aligning and setting E0 values
+print "aligning and setting E0 values\n";
 $d0->align($d1, $d2);
 $d1->e0($d0->bkg_e0);
 $d2->e0($d0->bkg_e0);
 my $merge = $d0->merge("N", $d1, $d2);
 
-### plotting data + merge
+print "plotting data + merge\n";
 foreach ($d0, $d1, $d2, $merge) {
   $_->plot('e');
 };

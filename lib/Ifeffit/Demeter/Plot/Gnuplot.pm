@@ -15,12 +15,13 @@ package Ifeffit::Demeter::Plot::Gnuplot;
 
 =cut
 
+use autodie qw(open close);
+
 use Moose;
 extends 'Ifeffit::Demeter::Plot';
 
 #use diagnostics;
 use Carp;
-use Fatal qw(open close);
 use Regexp::List;
 use Regexp::Optimizer;
 use Regexp::Common;

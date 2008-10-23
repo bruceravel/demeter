@@ -15,10 +15,11 @@ package Ifeffit::Demeter::Data::Process;
 
 =cut
 
+use autodie qw(open close);
+
 use Moose::Role;
 
 use Carp;
-use Fatal qw(open close);
 use List::Util qw(reduce);
 use List::MoreUtils qw(minmax firstval);
 # use Regexp::Optimizer;
@@ -26,7 +27,6 @@ use List::MoreUtils qw(minmax firstval);
 use Readonly;
 # Readonly my $NUMBER  => $RE{num}{real};
 Readonly my $EPSILON => 1e-5;
-# use aliased 'Ifeffit::Demeter::Tools';
 
 
 

@@ -15,8 +15,10 @@ package Ifeffit::Demeter::Dispose;
 
 =cut
 
+use autodie qw(open close);
+
 use Moose::Role;
-use Fatal qw(open close);
+
 use Ifeffit;
 
 

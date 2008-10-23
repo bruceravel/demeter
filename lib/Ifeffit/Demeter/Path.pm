@@ -15,6 +15,8 @@ package Ifeffit::Demeter::Path;
 
 =cut
 
+use autodie qw(open close);
+
 use Moose;
 extends 'Ifeffit::Demeter';
 use Ifeffit::Demeter::StrTypes qw( Empty PathParam );
@@ -24,13 +26,11 @@ with 'Ifeffit::Demeter::Data::Arrays';
 with 'Ifeffit::Demeter::Path::Sanity';
 
 use Carp;
-use Fatal qw(open close);
 use File::Copy;
 use File::Spec;
 use Regexp::List;
 use Regexp::Optimizer;
 use Ifeffit;
-use aliased 'Ifeffit::Demeter::Tools';
 
 has '+plottable'      => (default => 1);
 has '+data'           => (isa => Empty.'|Ifeffit::Demeter::Data');
@@ -109,7 +109,6 @@ has 'update_fft'      => (is=>'rw', isa=>  'Bool',  default => 1,
 has 'update_bft'      => (is=>'rw', isa=>  'Bool',  default => 1);
 
 my $opt  = Regexp::List->new;
-#my $parameter_regexp = $opt->list2re(keys %path_defaults);
 my $pp_regex = $opt->list2re(qw(s02 e0 delr e0 sigma2 ei third fourth dphase));
 
 sub BUILD {

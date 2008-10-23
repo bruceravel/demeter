@@ -15,10 +15,11 @@ package Ifeffit::Demeter::Data::Mu;
 
 =cut
 
+use autodie qw(open close);
+
 use Moose::Role;
 
 use Carp;
-use Fatal qw(open close);
 use File::Basename;
 use File::Spec;
 use List::MoreUtils qw(any);

@@ -23,7 +23,6 @@
 
 use warnings;
 use strict;
-use Smart::Comments;
 
 use Ifeffit::Demeter;
 my $where = $ENV{DEMETER_TEST_DIR} || "..";
@@ -42,19 +41,19 @@ my @data = map {Ifeffit::Demeter::Data -> new(group => $_) } qw(data0 data1 data
 my $plot = $data[0]->po;
 $plot->set_mode(screen=>0, repscreen=>0);
 
-### Making Data groups
+print "Making Data groups\n";
 foreach (@data) { $_ -> set(@common_to_all_data_sets) };
 $data[0] -> set(file => "$where/data/fe.060", name => 'Fe 60K, scan 1', 'y_offset' => 1, );
 $data[1] -> set(file => "$where/data/fe.061", name => 'Fe 60K, scan 2', );
 $data[2] -> set(file => "$where/data/fe.062", name => 'Fe 60K, scan 3', );
 
-### Plotting first group
+print "Plotting first group\n";
 $data[0] -> plot('k');
 
-### Writing athena file
+print "Writing athena file\n";
 $data[0]->write_athena("athena.prj", @data);
 
-### Rereading athena.prj and replotting first group
+print "Rereading athena.prj and replotting first group\n";
 my $d = Ifeffit::Demeter::Data::Prj -> new(file=>"athena.prj") -> record(1);
 $d -> plot('k');
 1;

@@ -27,13 +27,14 @@ package Ifeffit::Demeter::ScatteringPath;
 
 =cut
 
+use autodie qw(open close);
+
 use Moose;
 extends 'Ifeffit::Demeter';
 #use Ifeffit::Demeter::NumTypes qw( PosInt Natural NonNeg );
 
 use Chemistry::Elements qw(get_symbol);
 use Carp;
-use Fatal qw(open close);
 use List::Util qw(reduce);
 use List::MoreUtils qw(pairwise notall all any);
 #use Math::Complex;
@@ -42,7 +43,6 @@ use Math::Round qw(round);
 use POSIX qw(acos);
 use Regexp::List;
 use Regexp::Optimizer;
-#use aliased 'Ifeffit::Demeter::Tools';
 use Readonly;
 #Readonly my $PI           => 2*atan2(1,0);
 #Readonly my $EPSI         => 0.00001;

@@ -46,7 +46,6 @@ my $build = Module::Build
 			       },
 	 recommends         => {
 				'IO::Prompt'	      => '0',
-				'Smart::Comments'     => '0',
 				'Term::ANSIColor'     => '0',
 				'Term::ReadLine'      => '0',
 				'Term::Twiddle'	      => '0',

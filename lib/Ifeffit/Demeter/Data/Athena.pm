@@ -15,12 +15,13 @@ package Ifeffit::Demeter::Data::Athena;
 
 =cut
 
+use autodie qw(open close);
+
 use Moose::Role;
 
 use Carp;
 use Compress::Zlib;
 use Data::Dumper;
-use Fatal qw(open close);
 
 sub write_athena {
   my ($self, $filename, @list) = @_;

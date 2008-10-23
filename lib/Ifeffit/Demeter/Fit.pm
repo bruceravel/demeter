@@ -15,6 +15,9 @@ package Ifeffit::Demeter::Fit;
 
 =cut
 
+#use diagnostics;
+use autodie qw( open close );
+
 use Moose;
 extends 'Ifeffit::Demeter';
 use MooseX::AttributeHelpers;
@@ -22,15 +25,13 @@ use MooseX::AttributeHelpers;
 with 'Ifeffit::Demeter::Fit::Happiness';
 with 'Ifeffit::Demeter::Fit::Sanity';
 with 'Ifeffit::Demeter::UI::Screen::Interview' if ($Ifeffit::Demeter::mode->ui eq 'screen');
+with 'Ifeffit::Demeter::Fit::Spinner'          if ($Ifeffit::Demeter::mode->ui eq 'screen');
 
 use Ifeffit::Demeter::NumTypes qw( NonNeg Natural NaturalC );
-
-#use diagnostics;
 
 use Archive::Zip qw( :ERROR_CODES :CONSTANTS );
 use Carp;
 use Cwd;
-use Fatal qw( open close );
 use File::Basename;
 use File::Copy;
 use File::Path;
@@ -269,6 +270,7 @@ sub pre_fit {
 sub fit {
   my ($self) = @_;
 
+  $self->start_spinner("Demeter is performing a fit") if ($Ifeffit::Demeter::mode->ui eq 'screen');
   $self->pre_fit;
 
   my $r_problems = $self->_verify_fit;
@@ -378,6 +380,9 @@ sub fit {
   $self->happiness_summary( $joy[1] || q{} );
 
   $self->mode->fit(q{});
+
+  $self->stop_spinner if ($Ifeffit::Demeter::mode->ui eq 'screen');
+
   return $self;
 };
 {
@@ -388,6 +393,8 @@ sub fit {
 
 sub ff2chi {
   my ($self, $data) = @_;
+  $self->start_spinner("Demeter is doing a summation of paths") if ($Ifeffit::Demeter::mode->ui eq 'screen');
+
   my @alldata = @{ $self->data };
   $data ||= $alldata[0];
 
@@ -459,6 +466,9 @@ sub ff2chi {
   $self->happiness_summary(q{});
 
   $self->mode->fit(q{});
+
+  $self->stop_spinner if ($Ifeffit::Demeter::mode->ui eq 'screen');
+
   return $self;
 };
 {

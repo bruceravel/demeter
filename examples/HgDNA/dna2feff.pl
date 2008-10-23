@@ -2,11 +2,10 @@
 
 use warnings;
 use strict;
-use Fatal qw(open close);
+use autodie qw(open close);
 use File::Path;
 use List::Util qw(sum);
 use List::MoreUtils qw(pairwise);
-use Smart::Comments;
 use Text::Template;
 
 

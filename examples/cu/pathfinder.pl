@@ -17,11 +17,9 @@
 
 use warnings;
 use strict;
-use Smart::Comments;
 use Ifeffit::Demeter;
-use aliased 'Ifeffit::Demeter::Feff';
 
-my $feff = Feff -> new();
+my $feff = Ifeffit::Demeter::Feff -> new();
 $feff->set({workspace=>"pf", screen=>1, buffer=>q{}, save=>1});
 
 $feff -> rdinp("orig.inp") -> potph();
@@ -30,7 +28,7 @@ $feff -> pathfinder; # sets pathlist attribute
 my @list_of_paths = $feff->pathlist;
 $feff->pathsdat();
 
-### Freezing this cluster+pathlist to a YAML
+print "Freezing this cluster+pathlist to a YAML\n";
 $feff->freeze("feff.yaml");
 
-### Run the pf2.pl script to do something with this pathlist
+print "Run the pf2.pl script to do something with this pathlist\n";

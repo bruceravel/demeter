@@ -2,7 +2,6 @@
 
 use warnings;
 use strict;
-#use Smart::Comments;
 
 use Ifeffit::Demeter;
 use Xray::Site;

@@ -15,12 +15,13 @@ package Ifeffit::Demeter::GDS;
 
 =cut
 
+use autodie qw(open close);
+
 use Moose;
 extends 'Ifeffit::Demeter';
 use Ifeffit::Demeter::StrTypes qw( GDS NotReserved );
 
 use Carp;
-use Fatal qw(open close);
 use Regexp::List;
 use Regexp::Optimizer;
 use Regexp::Common;

@@ -20,13 +20,11 @@ use strict;
 
 use Ifeffit::Demeter qw(:ui=screen);
 
-use Smart::Comments;
-
 print "Multiple data set fit to 10K and 150K copper data using Demeter ", $Ifeffit::Demeter::VERSION, $/;
 
 unlink("mdsfit.iff") if (-e "mdsfit.iff");
 
-###--- make 2 Data objects and set the fit parameters
+print "--- make 2 Data objects and set the fit parameters\n";
 my @common = (fft_kmin   => 3,	  fft_kmax   => 14,
 	      bft_rmax   => 1.0,  bft_rmax   => 4.3,
 	      fit_k1     => 1,	  fit_k3     => 1,);
@@ -51,7 +49,7 @@ $data_010k->set_mode(screen  => 0,
 		    );
 
 
-###--- make GDS objects for an isotropic expansion, correlated Debye model
+print "--- make GDS objects for an isotropic expansion, correlated Debye model\n";
 my @gdsobjects =  (Ifeffit::Demeter::GDS -> new(gds	 => 'lguess',
 						name	 => 'alpha',
 						mathexp => 0,
@@ -77,7 +75,7 @@ my @gdsobjects =  (Ifeffit::Demeter::GDS -> new(gds	 => 'lguess',
 					       ),
 		  );
 
-###--- make Path objects for the first 5 paths in copper (3 shell fit)
+print "--- make Path objects for the first 5 paths in copper (3 shell fit)\n";
 my @paths_010k = ();
 foreach my $i (0 .. 4) {
   my $j = $i+1;
@@ -114,7 +112,7 @@ foreach my $i (0 .. 4) {
 					    );
 };
 
-###--- make a Fit object (a collection of GDS, Data, and Path objects)
+print "--- make a Fit object (a collection of GDS, Data, and Path objects)\n";
 my $fitobject = Ifeffit::Demeter::Fit -> new(gds   => \@gdsobjects,
 					     data  => [$data_010k, $data_150k],
 					     paths => [@paths_010k, @paths_150k],
@@ -125,7 +123,7 @@ my $fitobject = Ifeffit::Demeter::Fit -> new(gds   => \@gdsobjects,
 $data_010k->po->legend(dy => 0.05, # set nice legend parameters for the plot
 		       x  => 0.8);
 
-###--- do the fit (or the sum of paths)
+print "--- do the fit (or the sum of paths)\n";
 $fitobject -> fit;
 #$fitobject -> ff2chi($data_010k);
 $fitobject -> interview;
@@ -133,7 +131,7 @@ $fitobject -> interview;
 
 exit;
 
-###--- plot the data + fit + paths in a space
+print "--- plot the data + fit + paths in a space\n";
 my $space = 'r';
 $data_010k->po->set(plot_fit => 1,
 		    plot_win => 0,
@@ -148,13 +146,13 @@ foreach my $obj ($data_150k) { #, @paths_150k,) {
   $obj -> plot($space);
 };
 
-##--- write files with fit results
+print "--- write files with fit results\n";
 #$data_010k->save("fit", "mdsfit_010.fit");
 #$data_150k->save("fit", "mdsfit_150.fit");
 
-###--- write a log file
+print "--- write a log file\n";
 my ($header, $footer) = ("Fit to 10K and 150K copper data\n", q{});
 $fitobject -> logfile("mdsfit.log", $header, $footer);
 
-###--- freeze the fit
+print "--- freeze the fit\n";
 #$fitobject -> serialize("mdsfit.dpj");

@@ -2,7 +2,7 @@
 
 =for Copyright
  .
- Copyright (c) 2006-2007 Bruce Ravel (bravel AT bnl DOT gov).
+ Copyright (c) 2006-2008 Bruce Ravel (bravel AT bnl DOT gov).
  All rights reserved.
  .
  This file is free software; you can redistribute it and/or
@@ -17,15 +17,13 @@
 
 use warnings;
 use strict;
-use Smart::Comments;
 use Ifeffit::Demeter;
 use Term::ANSIColor qw(:constants);
-use aliased 'Ifeffit::Demeter::Feff';
 
 Ifeffit::Demeter->set_mode({screen => 0,});
 
-### Deserializing feff.yaml;
-my $feff = Feff -> thaw("feff.yaml");
+print "Deserializing feff.yaml\n";
+my $feff = Ifeffit::Demeter::Feff -> new(yaml=>"feff.yaml");
 $feff->set({workspace=>"pf", screen=>0, buffer=>q{}});
 $feff->po->legend({key_dy => 0.05, # set nice legend parameters for the plot
 		   key_x  => 0.6});
@@ -33,9 +31,9 @@ $feff->po->legend({key_dy => 0.05, # set nice legend parameters for the plot
 #$feff->pathsdat(1,2,6,9); # the first four SS paths
 my @list_of_paths = $feff->pathlist;
 
-### miscdat: $feff->get('misc.dat')
+print "miscdat: ", $feff->miscdat, $/;
 
-### Here are the 6 scattering geometries that contribute to path #2:
+print "Here are the 6 scattering geometries that contribute to path #2:\n";
 my $sp = $list_of_paths[1];
 my $j=1000;
 foreach my $s ($sp->all_strings) {
@@ -50,7 +48,7 @@ print $/, $feff->intrp({comment	=> BOLD.RED,
 		       });
 
 
-### Plotting the first 6 paths
+print "Plotting the first 6 paths\n";
 my @pobjects = ();
 foreach my $i (0 .. 7) {
   my $j = $i+1;
@@ -66,7 +64,5 @@ foreach my $i (0 .. 7) {
 
 $feff->pathsdat();
 
-### All done!
-
-
+print "All done!\n";
 

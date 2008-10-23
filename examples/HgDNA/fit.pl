@@ -2,7 +2,6 @@
 
 use warnings;
 use strict;
-use Smart::Comments;
 use Ifeffit::Demeter qw(:ui=screen); # enable the use of the interview method for Fit
 ##use Ifeffit::Demeter qw(:ui=screen :plotwith=gnuplot);
 

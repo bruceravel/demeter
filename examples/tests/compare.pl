@@ -22,7 +22,6 @@
 
 use warnings;
 use strict;
-use Smart::Comments;
 
 use Ifeffit::Demeter;
 my $where = $ENV{DEMETER_TEST_DIR} || "..";
@@ -54,17 +53,17 @@ $plot -> set(e_mu    => 1,
 	     'q_pl'  => 'r',
 	    );
 
-### Plotting in k-space ...
+print "Plotting in k-space ...\n";
 my $space = 'k';
 foreach (@data) { $_ -> plot($space) };
 
-### Sleeping for 3 seconds ...
+print "Sleeping for 3 seconds ...\n";
 sleep 3;
 
-### Plotting in R-space ...
+print "Plotting in R-space ...\n";
 $plot -> start_plot;
 $space = 'r';
 foreach (@data) { $_ -> plot($space) };
-### All done!
+print "All done!\n";
 
 1;

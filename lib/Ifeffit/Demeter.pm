@@ -767,11 +767,26 @@ C<plot_with> method during run-time.
 
 =item C<:ui=XX>
 
-Specify the user interface.  Currently the only option is C<screen>,
-which uses L<Ifeffit::Demeter::UI::Screen::Interview> as a role for
-the Fit object.  This imports the C<interview> method for use with the
-Fit object, allowing you to interact with the results of a fit in a
-simple manner at the console.
+Specify the user interface.  Currently the only option is C<screen>.
+Setting the UI to screen does two things:
+
+=over 4
+
+=item 1.
+
+Uses L<Ifeffit::Demeter::UI::Screen::Interview> as a role for the Fit
+object.  This imports the C<interview> method for use with the Fit
+object, allowing you to interact with the results of a fit in a simple
+manner at the console.
+
+=item 2.
+
+Uses L<Term::Twiddle> to provide some visual feedback on the screen
+while the fit or summation is happening.  This adds no real
+functionality, but serves to make it clear that I<something> is
+happening during the potentially lengthy fit.
+
+=back
 
 The interview method uses L<Term::ReadLine>.  This is made into a
 pragmatic interaction in Demeter in case you want to use
@@ -779,6 +794,9 @@ L<Term::ReadLine> in some other way in your program.  Not importing
 the interview method by default allows you to avoid this error message
 from Term::ReadLine when you are using it in some other capacity:
 C<Cannot create second readline interface, falling back to dumb.>
+
+Also L<Term::Twiddle> is not imported until it is needed, allowing
+this dependeny to be relaxed from a requirement to a suggestion.
 
 Future UI options might include C<tk>, C<wx>, or C<rpc>.
 

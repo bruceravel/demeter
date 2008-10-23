@@ -15,10 +15,11 @@ package Ifeffit::Demeter::Tools;
 
 =cut
 
+use autodie qw(open close);
+
 use Moose::Role;
 
 use Carp;
-use Fatal qw(open close);
 #use Ifeffit::Demeter::GDS;
 use Regexp::List;
 use Regexp::Optimizer;

@@ -15,10 +15,11 @@ package Ifeffit::Demeter::Fit::Happiness;
 
 =cut
 
+use autodie qw(open close);
+
 use Moose::Role;
 
 use Carp;
-use Fatal qw(open close);
 
 sub get_happiness {
   my ($self)  = @_;

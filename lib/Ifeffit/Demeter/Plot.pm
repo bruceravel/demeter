@@ -15,6 +15,8 @@ package Ifeffit::Demeter::Plot;
 
 =cut
 
+use autodie qw(open close);
+
 use Moose;
 extends 'Ifeffit::Demeter';
 use MooseX::AttributeHelpers;
@@ -40,7 +42,6 @@ use Ifeffit::Demeter::NumTypes qw( Natural
 				);
 
 use Carp;
-use Fatal qw(open close);
 use Regexp::List;
 use Regexp::Optimizer;
 use Regexp::Common;

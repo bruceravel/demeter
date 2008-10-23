@@ -17,11 +17,12 @@ package Ifeffit::Demeter::UI::Standards;
 
 use warnings;
 use strict;
+use autodie qw(open close);
+
 use Carp;
 use Chemistry::Elements qw(get_Z get_name);
 use Class::Std;
 use Class::Std::Utils;
-use Fatal qw(open close);
 use File::Basename;
 use File::Copy;
 use File::Spec;

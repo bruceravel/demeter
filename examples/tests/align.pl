@@ -23,7 +23,6 @@
 
 use warnings;
 use strict;
-use Smart::Comments;
 
 use Ifeffit::Demeter;
 my $where = $ENV{DEMETER_TEST_DIR} || "..";
@@ -48,22 +47,22 @@ $plot->set_mode(screen=>0, repscreen=>0);
 $plot->set(emin=>-30, emax=>70, e_norm=>1, e_markers=>1);
 
 
-### plotting unaligned data
+print "plotting unaligned data\n";
 foreach ($d0, $d1) {
   $_->plot('E');
 };
 
-### sleeping 3 seconds
+print "sleeping 3 seconds\n";
 sleep 3;
 
-### calibrating standard
+print "calibrating standard\n";
 $d0->calibrate;
 
-### aligning
+print "aligning\n";
 $d0->align($d1);
 $d1->e0($d0);
 
-### plotting aligned data
+print "plotting aligned data\n";
 $plot->start_plot;
 foreach ($d0, $d1) {
   $_->plot('E');

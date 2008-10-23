@@ -28,6 +28,8 @@ version
 
 Module::Build
 
+autodie
+
 Moose
 
 MooseX::AttributeHelpers
@@ -72,8 +74,6 @@ Regexp::Optimizer
 
 Scaler::Util
 
-Smart::Comments
-
 String::Random
 
 Term::ANSIColor
@@ -102,12 +102,17 @@ earlier versions of either will work.
 
 =head1 DEPRECATED
 
-These are modules that were used in Demeter prior to revision 303.  At
-that revision I have merged the Moose branch back into the main trunk.
-I am now using Moose as my object model rather than the Calss:Std
-inside-out model.
+These are modules that were used in Demeter prior to revision 303.
+Soon after that revision, I merged the Moose branch back into the main
+trunk.  I am now using Moose as my object model rather than the
+Calss:Std inside-out model.
 
-Class::Std, Class::Std::Utils, aliased
+I am also being mindful of suggestions at
+L<http://www.perlfoundation.org/perl5/index.cgi?pbp_module_recommendation_commentary>.
+
+These are the deprecated modules:
+
+  Class::Std, Class::Std::Utils, aliased, Smart::Comments
 
 =head1 DESCRIPTION
 

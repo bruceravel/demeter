@@ -15,6 +15,8 @@ package Ifeffit::Demeter::Atoms;
 
 =cut
 
+use autodie qw(open close);
+
 use Moose;
 extends 'Ifeffit::Demeter';
 with 'Ifeffit::Demeter::Atoms::Absorption';
@@ -37,7 +39,6 @@ use Ifeffit::Demeter::NumTypes qw( Natural
 #use diagnostics;
 use Carp;
 use Chemistry::Elements qw(get_Z);
-use Fatal qw(open close);
 use File::Basename;
 use Ifeffit;
 use List::Util qw(min max reduce);

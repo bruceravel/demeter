@@ -15,11 +15,12 @@ package Ifeffit::Demeter::Data::E0;
 
 =cut
 
+use autodie qw(open close);
+
 use Moose::Role;
 use Ifeffit::Demeter::StrTypes qw( Element Edge );
 
 use Carp;
-use Fatal qw(open close);
 use Regexp::Optimizer;
 use Regexp::Common;
 use Readonly;

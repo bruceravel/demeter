@@ -22,39 +22,38 @@
 
 use warnings;
 use strict;
-use Smart::Comments;
 
 use Ifeffit::Demeter;
 my $demeter = Ifeffit::Demeter->new;
 my $config = $demeter->co;
-### Testing the configuration system
+print "Testing the configuration system\n";
 $config->set_mode(screen  => 0, ifeffit => 1);
 
-### This is the full description of the "bkg" parameter group:
+print "This is the full description of the \"bkg\" parameter group:\n";
 print $config -> describe_param("bkg"),
   "\nHit return for next test ";
 my $toss = <STDIN>;
 print "\n";
 
-### This is the full description of the "bkg -> rbkg" parameter (number valued):
+print "This is the full description of the "bkg -> rbkg" parameter (number valued):\n";
 print $config -> describe_param("bkg", 'rbkg'),
   "\nHit return for next test ";
 $toss = <STDIN>;
 print "\n";
 
-### This is the full description of the "bkg -> rbkg" parameter (number valued, width=60):
+print "This is the full description of the "bkg -> rbkg" parameter (number valued, width=60):\n";
 print $config -> describe_param("bkg", 'rbkg', 60),
   "\nHit return for next test ";
 $toss = <STDIN>;
 print "\n";
 
-### This is the full description of the "fft -> kwindow" parameter (list valued)
+print "This is the full description of the "fft -> kwindow" parameter (list valued)\n";
 print $config -> describe_param("fft", 'kwindow'),
   "\nHit return for next test ";
 $toss = <STDIN>;
 print "\n";
 
-### Methods for configuration value attributes:
+print "Methods for configuration value attributes:\n";
 print "The current value of \"bkg -> flatten\":\t", $config->default("bkg", "flatten"), "\n",
   "The units for \"bkg -> pre1\":\t\t", $config->units("bkg", "pre1"), "\n",
   "Demeter's default for \"bkg -> pre1\":\t", $config->demeter("bkg", "pre1"), "\n",
@@ -65,6 +64,6 @@ print "The current value of \"bkg -> flatten\":\t", $config->default("bkg", "fla
 $toss = <STDIN>;
 print "\n";
 
-### Introspection methods:
+print "Introspection methods:\n";
 print "All configuration groups:\n", join(", ", $config->groups), "\n",
   "\nAll parameters in the \"bkg\" group:\n", join(", ", $config->parameters('bkg')), "\n";

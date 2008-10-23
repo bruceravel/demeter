@@ -24,7 +24,6 @@
 
 use warnings;
 use strict;
-use Smart::Comments;
 
 use Ifeffit::Demeter;
 my $where = $ENV{DEMETER_TEST_DIR} || "..";
@@ -43,23 +42,23 @@ my $plot = $d0->po;
 $plot->set_mode(screen=>0, repscreen=>0);
 $plot->set(emin=>-100, emax=>700, e_norm=>0, e_markers=>1);
 
-### plotting original data
+print "plotting original data\n";
 $d0 -> plot('E');
 
-### plotting data truncated before 7100
+print "plotting data truncated before 7100\n";
 $d0 -> Truncate('before', 7100);
 $d0 -> plot('E');
 
-### sleeping for 3 seconds
+print "sleeping for 3 seconds\n";
 sleep 3;
 
 $plot->start_plot;
 
-### plotting original data
+print "plotting original data\n";
 $d0 -> file("$where/data/fe.060.xmu",); # resetting file resets all
 $d0 -> plot('E');		        # data processing chores!
 
-### plotting data truncated after 7500
+print "plotting data truncated after 7500\n";
 $d0 -> Truncate('after', 7500);
 $d0 -> plot('E');
 

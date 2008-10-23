@@ -21,7 +21,6 @@ use warnings;
 use CPAN;
 use Cwd qw(cwd);
 use Getopt::Long;
-use Fatal qw(open close opendir closedir);
 use File::Copy;
 use File::Spec;
 use Pod::Text;
@@ -35,7 +34,7 @@ BEGIN {
 }
 
 my $bundir = File::Spec->catfile(cwd, "Bundle/");
-opendir(my $BUNDLE, $bundir);
+opendir(my $BUNDLE, $bundir) or die "could not open directory $bundir for reading";
 my @files = grep {/pm$/} readdir $BUNDLE;
 closedir $BUNDLE;
 my $this_package = q{};
@@ -123,7 +122,7 @@ sub bundle_list {
 
   ## snarf modules from the CONTENTS section
   my ($flag, @modlist) = (0, ());
-  open(my $BUN, $thisbundle);
+  open(my $BUN, $thisbundle) or die "could not find $thisbundle\n";
   while (<$BUN>) {
     $flag = 1, next if (m{=head1\s+CONTENTS});
     $flag = 0, next if (m{=head1});

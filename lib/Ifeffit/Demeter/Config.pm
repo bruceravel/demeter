@@ -15,6 +15,8 @@ package Ifeffit::Demeter::Config;
 
 =cut
 
+use autodie qw(open close);
+
 use MooseX::Singleton;
 extends 'Ifeffit::Demeter';
 use Moose::Util::TypeConstraints;
@@ -22,7 +24,6 @@ use Moose::Util::TypeConstraints;
 use Carp;
 #use diagnostics;
 use Config::IniFiles;
-use Fatal qw(open close);
 use File::Basename;
 use Regexp::List;
 use Regexp::Optimizer;
