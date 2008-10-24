@@ -81,18 +81,19 @@ has 'partstyle' => (is => 'rw', isa =>  PgplotLine, default => sub{ shift->mode-
 has 'pathstyle' => (is => 'rw', isa =>  PgplotLine, default => sub{ shift->mode->config->default("plot", "pathstyle")  || "solid"});
 
 has 'space'	=> (is => 'rw', isa =>  FitSpace, default => 'r');
-has 'emin'	=> (is => 'rw', isa =>  'Num',    default => sub{ shift->mode->config->default("plot", "emin") || -200});
-has 'emax'	=> (is => 'rw', isa =>  'Num',    default => sub{ shift->mode->config->default("plot", "emax") || 800});
-has 'e_mu'	=> (is => 'rw', isa =>  'Bool',   default => sub{ shift->mode->config->default("plot", "e_mu") || 1});
-has 'e_bkg'	=> (is => 'rw', isa =>  'Bool',   default => sub{ shift->mode->config->default("plot", "e_bkg") || 0});
-has 'e_pre'	=> (is => 'rw', isa =>  'Bool',   default => sub{ shift->mode->config->default("plot", "e_pre") || 0});
-has 'e_post'	=> (is => 'rw', isa =>  'Bool',   default => sub{ shift->mode->config->default("plot", "e_post") || 0});
-has 'e_norm'	=> (is => 'rw', isa =>  'Bool',   default => sub{ shift->mode->config->default("plot", "e_norm") || 0});
-has 'e_der'	=> (is => 'rw', isa =>  'Bool',   default => sub{ shift->mode->config->default("plot", "e_der") || 0});
-has 'e_sec'	=> (is => 'rw', isa =>  'Bool',   default => sub{ shift->mode->config->default("plot", "e_sec") || 0});
+has 'emin'	=> (is => 'rw', isa =>  'Num',    default => sub{ shift->mode->config->default("plot", "emin")	    || -200});
+has 'emax'	=> (is => 'rw', isa =>  'Num',    default => sub{ shift->mode->config->default("plot", "emax")	    || 800});
+has 'e_mu'	=> (is => 'rw', isa =>  'Bool',   default => sub{ shift->mode->config->default("plot", "e_mu")	    || 1});
+has 'e_bkg'	=> (is => 'rw', isa =>  'Bool',   default => sub{ shift->mode->config->default("plot", "e_bkg")	    || 0});
+has 'e_pre'	=> (is => 'rw', isa =>  'Bool',   default => sub{ shift->mode->config->default("plot", "e_pre")	    || 0});
+has 'e_post'	=> (is => 'rw', isa =>  'Bool',   default => sub{ shift->mode->config->default("plot", "e_post")    || 0});
+has 'e_norm'	=> (is => 'rw', isa =>  'Bool',   default => sub{ shift->mode->config->default("plot", "e_norm")    || 0});
+has 'e_der'	=> (is => 'rw', isa =>  'Bool',   default => sub{ shift->mode->config->default("plot", "e_der")	    || 0});
+has 'e_sec'	=> (is => 'rw', isa =>  'Bool',   default => sub{ shift->mode->config->default("plot", "e_sec")	    || 0});
 has 'e_markers'	=> (is => 'rw', isa =>  'Bool',   default => sub{ shift->mode->config->default("plot", "e_markers") || 0});
 has 'e_part'	=> (is => 'rw', isa =>  'Str',    default => q{});
-has 'e_smooth'	=> (is => 'rw', isa =>  'Bool',   default => sub{ shift->mode->config->default("plot", "e_smooth") || 0});
+has 'e_smooth'	=> (is => 'rw', isa =>  'Bool',   default => sub{ shift->mode->config->default("plot", "e_smooth")  || 0});
+has 'e_zero'	=> (is => 'rw', isa =>  'Bool',   default => 0);
 has 'kmin'	=> (is => 'rw', isa =>  'Num',    default => sub{ shift->mode->config->default("plot", "kmin") || 0});
 has 'kmax'	=> (is => 'rw', isa =>  'Num',    default => sub{ shift->mode->config->default("plot", "kmax") || 15});
 has 'rmin'	=> (is => 'rw', isa =>  'Num',    default => sub{ shift->mode->config->default("plot", "rmin") || 0});
@@ -529,9 +530,16 @@ q{},
 
 =item C<e_smooth> (integer) I<[0]>
 
-When non-sero, data plotted in energy will be smoothed using Ifeffit's
+When non-zero, data plotted in energy will be smoothed using Ifeffit's
 three-point smoothing function.  The number is the number of
 repititions of the smoothing function.
+
+=item C<e_zero> (boolean) I<[0]>
+
+When true, data plotted in energy have C<bkg_e0> subtracted from the
+energy array.  Thus mu(E) data are plotted with the edge energy at 0.
+The purpose of this is to facilitate overplotting data from different
+edges.
 
 =back
 
@@ -741,7 +749,15 @@ Demeter's dependencies are in the F<Bundle/DemeterBundle.pm> file.
 
 =head1 BUGS AND LIMITATIONS
 
-There are no known bugs in this module.
+=over 4
+
+=item *
+
+Need a boolean flag for indicating energy plots from 0 (i.e. with
+bkg_e0 subtracted from the energy array).  With this mu(E) from
+different edges can be easily overplotted.
+
+=back
 
 Please report problems to Bruce Ravel (bravel AT bnl DOT gov)
 

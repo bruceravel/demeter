@@ -13,13 +13,13 @@ This documentation refers to Ifeffit::Demeter version 0.2.
 =head1 DESCRIPTION
 
 This program provides a simple, screen-based interaction with the
-results of fit using Demeter which has been saved into a project file.
-All commands are entered as one or two keystrokes.  You can plot your
-data in k, R, or q along with the fit and the paths.  You can examine
-the guess, def, and set parameters and the fitting statistics.  And
-you can view the log file.  This is a fairly bare-bones application,
-but it provides most of what you need to examine your data analysis
-handiwork.
+results of a fit using Demeter which has been saved into a project
+file.  All commands are entered as one or two keystrokes.  You can
+plot your data in k, R, or q along with the fit and the paths.  You
+can examine the guess, def, and set parameters and the fitting
+statistics.  And you can view the log file.  This is a fairly
+bare-bones application, but it provides most of what you need to
+examine your data analysis handiwork.
 
 Here is an example of the main interview screen:
 
@@ -56,7 +56,7 @@ on one of the parameters:
 =head1 DEPENDENCIES
 
 Along with needing L<Ifeffit::Demeter> and
-L<Ifeffit::Demeter::UI::Screen::Interview>, this program uses
+L<Ifeffit::Demeter::UI::Screen::Interview>, this program requires
 L<Term::ANSIColor>, L<Term::ReadLine>, and L<Term::Twiddle>.
 
 =head1 BUGS AND LIMITATIONS

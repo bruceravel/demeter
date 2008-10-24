@@ -16,8 +16,8 @@
 
 use warnings;
 use strict;
-use Ifeffit::Demeter qw(:ui=screen); # enable the use of Interview and Spinner
-##use Ifeffit::Demeter qw(:ui=screen :plotwith=gnuplot);
+##use Ifeffit::Demeter qw(:ui=screen); # enable the use of Interview and Spinner
+use Ifeffit::Demeter qw(:ui=screen :plotwith=gnuplot);
 
 ## -------- clean up in preparation of the next fit
 unlink("hgfit.iff") if (-e "hgfit.iff");
@@ -183,12 +183,14 @@ my $fit = Ifeffit::Demeter::Fit->new(
 ##
 ## Running the fit is trivial.  Plotting the data, paths, and fit is
 ## easy.  Logfiles, output files, project files -- all those things
-## are easily created as well.
+## are easily created as well.  Another great feature of the fit
+## object is that it performs a sequence of sanity check before
+## starting the fit, effectively "spell-checking" your fitting model.
 
 ## -------- do interesting things with the Fit object
 $fit -> fit;
 $fit -> logfile("hgfit.log", "Hg at N15 on pyrimidine", q{});
-$fit -> freeze("hgfit.dpj");
+$fit -> freeze(file=>"hgfit.dpj");
 $data -> save("fit", "hgfit.fit");
 
 ## -------- simple, on-screen interaction with the fit results

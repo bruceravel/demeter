@@ -59,7 +59,9 @@ my %seen_group;
 has 'group'     => (is => 'rw', isa => 'Str',  default => sub{_get_group()});
 has 'name'      => (is => 'rw', isa => 'Str',  default => q{});
 has 'plottable' => (is => 'ro', isa => 'Bool', default => 0);
-has 'data'      => (is => 'rw', isa => 'Any',  default => q{});
+has 'data'      => (is => 'rw', isa => 'Any',  default => q{},
+		    trigger => sub{ my($self, $new) = @_; $self->datagroup($new->group) if $new});
+has 'datagroup' => (is => 'rw', isa => 'Str',  default => q{});
 # has 'stash_folder' => (is => 'ro', isa => 'Str');
 
 use Ifeffit::Demeter::Mode;
@@ -159,6 +161,10 @@ sub co {
 sub po {
   my ($self) = @_;
   return $self->mode->plot;
+};
+sub mo {
+  my ($self) = @_;
+  return $self->mode;
 };
 {
   no warnings 'once';
@@ -360,7 +366,7 @@ sub plot_with {
 ## -------- introspection methods
 sub get_all {
   my ($self) = @_;
-  my @keys   = grep {$_ !~ m{data|plot|mode|parent}} $self->meta->get_attribute_list;
+  my @keys   = grep {$_ !~ m{\A(?:data|plot|mode|parent|sp)\z}} $self->meta->get_attribute_list;
   push @keys, qw(name group plottable);
   my @values = map {$self->$_} @keys;
   my %hash   = zip(@keys, @values);
@@ -1204,6 +1210,14 @@ wrapper around C<get_mode> and is intended to be used in a method call
 chain with any Demeter object.
 
   $data -> po -> set("c9", 'yellowchiffon3');
+
+=item C<mo>
+
+This returns the Mode object.  Like the C<co> method, this is a
+wrapper around C<get_mode> and is intended to be used in a method call
+chain with any Demeter object.
+
+  print "on screen!" if ($data -> mo -> ui eq 'screen');
 
 =back
 

@@ -63,7 +63,7 @@ has 'contact'        => (is => 'rw', isa => 'Str',    default => q{});
 
 ## -------- serialization/deserialization
 has 'project'        => (is => 'rw', isa => 'Str',    default => q{},
-			 trigger => sub{my ($self, $new) = @_; $self->deserialize if $new} );
+			 trigger => sub{my ($self, $new) = @_; $self->deserialize($new) if $new} );
 
 ## -------- mechanics of the fit
 has 'cormin'         => (is => 'rw', isa =>  NonNeg,  default => sub{ shift->mode->config->default("fit", "cormin")  || 0});
@@ -274,7 +274,7 @@ sub pre_fit {
 sub fit {
   my ($self) = @_;
 
-  $self->start_spinner("Demeter is performing a fit") if ($Ifeffit::Demeter::mode->ui eq 'screen');
+  $self->start_spinner("Demeter is performing a fit") if ($self->mo->ui eq 'screen');
   $self->pre_fit;
 
   my $r_problems = $self->_verify_fit;
@@ -385,7 +385,7 @@ sub fit {
 
   $self->mode->fit(q{});
 
-  $self->stop_spinner if ($Ifeffit::Demeter::mode->ui eq 'screen');
+  $self->stop_spinner if ($self->mo->ui eq 'screen');
 
   return $self;
 };
@@ -397,7 +397,7 @@ sub fit {
 
 sub ff2chi {
   my ($self, $data) = @_;
-  $self->start_spinner("Demeter is doing a summation of paths") if ($Ifeffit::Demeter::mode->ui eq 'screen');
+  $self->start_spinner("Demeter is doing a summation of paths") if ($self->mo->ui eq 'screen');
 
   my @alldata = @{ $self->data };
   $data ||= $alldata[0];
@@ -471,7 +471,7 @@ sub ff2chi {
 
   $self->mode->fit(q{});
 
-  $self->stop_spinner if ($Ifeffit::Demeter::mode->ui eq 'screen');
+  $self->stop_spinner if ($self->mo->ui eq 'screen');
 
   return $self;
 };
@@ -975,7 +975,11 @@ sub correl_report {
 
 ## need to serialize/deserialize correlations and statistics
 sub serialize {
-  my ($self, $fname) = @_;
+  my ($self, @args) = @_;
+  my %args = @args;		# coerce args into a hash
+  $args{tree}   ||= 'fit';
+  $args{folder} ||= $self->group;
+
   my @gds   = @{ $self->gds   };
   my @data  = @{ $self->data  };
   my @paths = @{ $self->paths };
@@ -986,10 +990,10 @@ sub serialize {
   my @feffgroups  = map { $_->group } map {$_ -> parent} grep {defined $_} @paths;
   @feffgroups = uniq @feffgroups;
 
-  unlink ($fname) if (-e $fname);
+  unlink ($args{file}) if (-e $args{file});
 
   my $folder = $self->project_folder("raw_demeter");
-  my $fit_folder = File::Spec->catfile($folder, "fit");
+  my $fit_folder = File::Spec->catfile($folder, $args{tree}, $args{folder});
   mkpath($fit_folder);
 
   ## save a yaml containing the structure of the fit
@@ -1054,224 +1058,195 @@ sub serialize {
     copy($phase_from, $phase_to);
   };
 
-#   ## save a yaml containing the fit properties
-#   my @properties = (@props, "cormin", "header", "footer");
-#   my @vals = $self->get(@properties);
-#   my %props = zip(@properties, @vals);
-#   my $propsfile =  File::Spec->catfile($fit_folder, "props.yaml");
-#   open my $PROPS, ">$propsfile";
-#   print $PROPS YAML::Dump(\%props);
-#   close $PROPS;
+  ## save a yaml containing the fit properties
+  my @properties = grep {$_ !~ m{\A(?:gds|data|paths|project|rate|thingy)\z}} $self->meta->get_attribute_list;
+  my @vals = $self->get(@properties);
+  my %props = zip(@properties, @vals);
+  my $propsfile =  File::Spec->catfile($fit_folder, "fit.yaml");
+  open my $PROPS, ">$propsfile";
+  print $PROPS YAML::Dump(\%props);
+  close $PROPS;
 
-#   if (exists $statistics_of{ident $self}) {
-#     ## save a yaml containing the correlations
-#     my %correl = $self->all_correl;
-#     my $correlfile =  File::Spec->catfile($fit_folder, "correl.yaml");
-#     open my $CORREL, ">$correlfile";
-#     print $CORREL YAML::Dump(\%correl);
-#     close $CORREL;
+  ## write fit and log files to the folder
+  foreach my $d (@data) {
+    my $dd = $d->group;
+    $d -> _update("bft");
+    $d -> save("fit", File::Spec->catfile($fit_folder, $dd.".fit"));
+  };
+  $self -> logfile(File::Spec->catfile($fit_folder, "log"), $self->header, $self->footer);
 
-#     ## save a yaml containing the statistics
-#     my %stats = %{ $statistics_of{ident $self} };
-#     my $statsfile =  File::Spec->catfile($fit_folder, "stats.yaml");
-#     open my $STATS, ">$statsfile";
-#     print $STATS YAML::Dump(\%stats);
-#     close $STATS;
-
-#     ## write fit and log files to the folder
-#     foreach my $d (@data) {
-#       $d->_update("bft");
-#       $d->save("fit", File::Spec->catfile($fit_folder, $d.".fit"));
-#     };
-#     $self -> logfile(File::Spec->catfile($fit_folder, "log"),
-# 		     $self->name, q{}); #$footer);
-#   };
-
-#   ## finally save a yaml containing the Plot object
-#   my $pf = $self->po;
-#   my %plot = $pf -> get_all;
-#   my $plotfile =  File::Spec->catfile($fit_folder, "plot.yaml");
-#   open my $PLOT, ">$plotfile";
-#   print $PLOT YAML::Dump(\%plot);
-#   close $PLOT;
+  ## finally save a yaml containing the Plot object
+  my $plotfile =  File::Spec->catfile($fit_folder, "plot.yaml");
+  open my $PLOT, ">$plotfile";
+  print $PLOT $self->po->serialization;
+  close $PLOT;
 
 
 
-#   my $readme = File::Spec->catfile($self->share_folder, "Readme.fit_serialization");
-#   my $target = File::Spec->catfile($fit_folder, "Readme");
-#   copy($readme, $target);
-#   #$self->zip_project($fit_folder, $fname);
-#   #rmtree($fit_folder);
+  my $readme = File::Spec->catfile($self->share_folder, "Readme.fit_serialization");
+  my $target = File::Spec->catfile($fit_folder, "Readme");
+  copy($readme, $target);
+  if (not $args{nozip}) {
+    $self->zip_project($fit_folder, $args{file});
+    rmtree($fit_folder);
+  };
 
   return $self;
 };
 
-# sub deserialize {
-#   my ($class, $dpj, $with_plot) = @_;
-#   $with_plot ||= 0;
+sub deserialize {
+  my ($self, $dpj, $with_plot) = @_;
+  $self->start_spinner("Demeter is unpacking $dpj") if ($self->mo->ui eq 'screen');
 
-#   $dpj = File::Spec->rel2abs($dpj);
-#   my $folder = $class->project_folder("raw_demeter");
+  $with_plot ||= 0;
+  my (%datae, %sps,  %parents);
 
-#   my $zip = Archive::Zip->new();
-#   Echo("Error reading project file $dpj"), return 1 unless ($zip->read($dpj) == AZ_OK);
+  $dpj = File::Spec->rel2abs($dpj);
+  my $folder = $self->project_folder("raw_demeter");
 
-#   my $structure = $zip->contents('structure.yaml');
-#   my ($r_gdsnames, $r_data, $r_paths) = YAML::Load($structure);
+  my $zip = Archive::Zip->new();
+  carp("Error reading project file $dpj"), return 1 unless ($zip->read($dpj) == AZ_OK);
 
-#   ## import the data
-#   my @data = ();
-#   foreach my $d (@$r_data) {
-#     my $yaml = $zip->contents("$d.yaml");
-#     my $this = Ifeffit::Demeter::Data -> deserialize($yaml);
-#     $this -> set_group($d);
-#     $this -> set({file=>$dpj});
-#     $this -> set({update_data=>0, update_columns=>0});
-#     push @data, $this;
-#   };
+  my $structure = $zip->contents('structure.yaml');
+  my ($r_gdsnames, $r_data, $r_paths, $r_feff) = YAML::Load($structure);
 
-#   ## import the gds
-#   my @gds = ();
-#   my $yaml = $zip->contents("gds.yaml");
-#   my @list = YAML::Load($yaml);
-#   foreach my $i (0 .. $#list) {
-#     my $this = Ifeffit::Demeter::GDS->new();
-#     $this -> set($list[$i]);
-#     push @gds, $this;
-#     if ($this->type eq 'guess') {
-#       my $command = sprintf "guess %s = %f\n", $this->name, $this;
-#       $this->dispose($command);
-#     } else {
-#       $this->dispose($this);
-#     };
-#   };
+  ## import the data
+  my @data = ();
+  foreach my $d (@$r_data) {
+    my $yaml = $zip->contents("$d.yaml");
+    my ($r_attributes, $r_x, $r_y) = YAML::Load($yaml);
+    my @array = %$r_attributes;
+    my $this = Ifeffit::Demeter::Data -> new(@array);
+    $datae{$this->group} = $this;
+    if ($this->datatype eq 'xmu') {
+      Ifeffit::put_array($this->group.".energy", $r_x);
+      Ifeffit::put_array($this->group.".xmu",    $r_y);
+    } elsif  ($this->datatype eq 'chi') {
+      Ifeffit::put_array($this->group.".k",      $r_x);
+      Ifeffit::put_array($this->group.".chi",    $r_y);
+    };
+    $this -> set(update_data=>0, update_columns=>0);
+    push @data, $this;
+  };
 
-#   ## import the paths
-#   my @paths = ();
-#   my %feffs = ();
-#   $yaml = $zip->contents("paths.yaml");
-#   @list = YAML::Load($yaml);
-#   foreach my $i (0 .. $#list) {
-#     my $this = Ifeffit::Demeter::Path->new({group=>$r_paths->[$i]});
-#     $list[$i]->{group} = $r_paths->[$i];
+  ## import the gds
+  my @gds = ();
+  my $yaml = $zip->contents("gds.yaml");
+  my @list = YAML::Load($yaml);
+  foreach (@list) {
+    my @array = %{ $_ };
+    my $this = Ifeffit::Demeter::GDS->new(@array);
+    push @gds, $this;
+    my $command;
+    if ($this->gds eq 'guess') {
+      $command = sprintf "guess %s = %f\n", $this->name, $this->bestfit;
+    } elsif ($this->gds =~ m{\A(?:def|after)}) {
+      $command = sprintf "def %s = %s\n", $this->name, $this->mathexp;
+    } elsif ($this->gds eq 'set') {
+      $command = sprintf "set %s = %s\n", $this->name, $this->mathexp;
+    };
+    $this->dispose($command);
+  };
 
-#     my $sp_was = $list[$i]->{sp};
-#     $list[$i]->{sp} = q{};
+  my @feff = ();
+  foreach my $f (@$r_feff) {
+    my $this = Ifeffit::Demeter::Feff->new(group=>$f);
+    $parents{$this->group} = $this;
+    my $yaml = $zip->contents("$f.yaml");
+    my @refs = YAML::Load($yaml);
+    $this->read_yaml(\@refs);
+    foreach my $s (@{ $this->pathlist }) {
+      $sps{$s->group} = $s
+    };
+    push @feff, $this;
+  };
 
-#     $this -> set($list[$i]);
-#     $this -> set({sp_was => $sp_was});
-#     ++$feffs{$this->get("parent")} if $this->get("parent");
-#     my $datagroup = $this->get("data");
-#     foreach my $d (@data) {
-#       $this->set({data=>$d, update_path=>1}), last if ($d eq $datagroup);
-#     };
-#     push @paths, $this;
-#   };
+  ## import the paths
+  my @paths = ();
+  $yaml = $zip->contents("paths.yaml");
+  @list = YAML::Load($yaml);
+  foreach (@list) {
+    my $dg = $_->{datagroup};
+    my @array = %{ $_ };
+    my $this = Ifeffit::Demeter::Path->new(@array);
+    $this->datagroup($dg);
+    ## reconnect object relationships
+    $this->sp($sps{$this->spgroup});
+    $this->parent($parents{$this->parentgroup});
+    $this->data($datae{$this->datagroup});
+    push @paths, $this;
+  };
 
-#   ## make the fit object
-#   my $fitobject = Ifeffit::Demeter::Fit -> new({gds   => \@gds,
-# 						data  => \@data,
-# 						paths => \@paths,
-# 					       });
+  ## make the fit object
+  $self -> set(gds   => \@gds,
+	       data  => \@data,
+	       paths => \@paths,
+	      );
 
+  ## import the fit properties, statistics, correlations
+  $yaml = $zip->contents("fit.yaml");
+  my $rhash = YAML::Load($yaml);
+  my @array = %$rhash;
+  $self -> set(@array);
+  $self -> fit_performed(0);
 
-#   ## extract any feff calculations from the project
-#   my $project_folder = $fitobject->project_folder("fit_".$fitobject);
-#   $location_of{ident $fitobject} = $project_folder;
-#   foreach my $f (keys %feffs) {
-#     my $feff_folder = File::Spec->catfile($project_folder, "feff_".$f);
-#     mkpath($feff_folder);
-#     my $thisdir = cwd;
-#     chdir $feff_folder;
-#     my $ok = 0;
+  ## extract any feff calculations from the project
+  my $project_folder = $self->project_folder("fit_".$self->group);
+  #   $location_of{ident $fitobject} = $project_folder;
+  foreach my $f (@feff) {
+    my $ff = $f->group;
+    my $feff_folder = File::Spec->catfile($project_folder, "feff_".$ff);
+    mkpath($feff_folder);
+    my $thisdir = cwd;
+    chdir $feff_folder;
+    my $ok = 0;
 
 #     $ok = $zip -> extractMemberWithoutPaths("$f.inp");
 #     croak("Ifeffit::Demeter::Fit::deserialize: could not extract $f.inp from $dpj")  if ($ok != AZ_OK);
 #     rename("$f.inp", "oringinal_feff.inp");
 
-#     $ok = $zip -> extractMemberWithoutPaths("$f.yaml");
-#     croak("Ifeffit::Demeter::Fit::deserialize: could not extract $f.yaml from $dpj") if ($ok != AZ_OK);
-#     rename("$f.yaml", "feff.yaml");
+    $ok = $zip -> extractMemberWithoutPaths("$ff.yaml");
+    croak("Ifeffit::Demeter::Fit::deserialize: could not extract $f.yaml from $dpj") if ($ok != AZ_OK);
+    rename("$ff.yaml", "feff.yaml");
 
-#     $ok = $zip -> extractMemberWithoutPaths("$f.bin");
-#     croak("Ifeffit::Demeter::Fit::deserialize: could not extract $f.bin from $dpj")  if ($ok != AZ_OK);
-#     rename("$f.bin", "phase.bin");
+    $ok = $zip -> extractMemberWithoutPaths("$ff.bin");
+    croak("Ifeffit::Demeter::Fit::deserialize: could not extract $f.bin from $dpj")  if ($ok != AZ_OK);
+    rename("$ff.bin", "phase.bin");
 
-#     chdir $thisdir;
-#     my $feff_object = Ifeffit::Demeter::Feff -> thaw(File::Spec->catfile($feff_folder, "feff.yaml"));
-#     $feffs{$f} = [$feff_object, $feff_folder,];
-#     $feff_object -> set({workspace=>$feff_folder});
-#   };
+    chdir $thisdir;
+  };
 
-#   ## now loop back through the Data objects and point them at their correct Feff objects
-#   foreach my $p (@paths) {
-#     my $parent = $p->get("parent");
-#     next if (not $parent);
-#     $p -> set({parent      => $feffs{$parent}->[0],
-# 	       folder      => $feffs{$parent}->[1],
-# 	       update_path => 1,
-# 	      });
-#     ## now sync up the sp attribute with the appropriate SP object from the project
-#     my @pathlist = @{ $feffs{$parent}->[0]->get("pathlist") };
-#     foreach my $sp (@pathlist) {
-#       $p->set({sp => $sp}) if ($sp eq $p->get("sp_was"));
-#     };
-#   };
 
-#   ## import the fit properties
-#   $yaml = $zip->contents("props.yaml");
-#   if (defined($yaml)) {
-#     my $rhash = YAML::Load($yaml);
-#     $fitobject -> set($rhash);
-#     $fitobject -> set({fit_performed=>0});
-#   };
+  foreach my $d (@data) {
+    my $dd = $d->group;
+    ## import the fit data
+    my $thisdir = cwd;
+    chdir $self->stash_folder;
+    $zip -> extractMemberWithoutPaths("$dd.fit");
+    chdir $thisdir;
+    my $file = File::Spec->catfile($self->stash_folder, "$dd.fit");
+    my $command = $d->template("fit", "read_fit", {filename => $file});
+    $d->dispose($command);
+    $d->fitting(1);
+    unlink $file;
+  };
 
-#   ## import the statistics
-#   if (defined($yaml)) {
-#     $yaml = $zip->contents("stats.yaml");
-#     my $rhash = YAML::Load($yaml);
-#     while (my ($key, $value) = each %$rhash) {
-#       $statistics_of{ident $fitobject}{$key} = $value;
-#     };
-#   };
+  if ($with_plot) {
+    $yaml = $zip->contents("plot.yaml");
+    my $rhash = YAML::Load($yaml);
+    my @array = %$rhash;
+    $self -> po -> set(@array);
+  };
 
-#   ## import the correlations
-#   $yaml = $zip->contents("correl.yaml");
-#   if (defined($yaml)) {
-#     my $rhash = YAML::Load($yaml);
-#     while (my ($key, $value) = each %$rhash) {
-#       my ($x, $y) = split(/\|/, $key);
-#       $correlations_of{ident $fitobject}{$x}{$y} = $value;
-#     };
-#   };
-
-#   foreach my $d (@data) {
-#     ## import the fit data
-#     my $thisdir = cwd;
-#     chdir $fitobject->stash_folder;
-#     $zip -> extractMemberWithoutPaths("$d.fit");
-#     chdir $thisdir;
-#     my $file = File::Spec->catfile($fitobject->stash_folder, "$d.fit");
-#     my $command = $d->template("fit", "read_fit", {filename => $file});
-#     $d->dispose($command);
-#     $d->set({fitting=>1});
-#     unlink $file;
-#   };
-
-#   if ($with_plot) {
-#     $yaml = $zip->contents("plot.yaml");
-#     my $rhash = YAML::Load($yaml);
-#     my $pl = Ifeffit::Demeter->get_mode("plot");
-#     $pl -> set($rhash);
-#   };
-
-#   return $fitobject;
-# };
+  $self->location($project_folder);
+  $self->stop_spinner if ($self->mo->ui eq 'screen');
+  return $self;
+};
 {
   no warnings 'once';
   # alternate names
   *freeze = \ &serialize;
-  #*thaw   = \ &deserialize;
+  *thaw   = \ &deserialize;
   #*Dump   = \ &serialize;
   #*Load   = \ &deserialize;
 }
@@ -1410,6 +1385,13 @@ multiple data sets.  An ff2chi is always on a single data set.
 
 C<sum> is an alias for C<ff2chi>;
 
+=item C<rm>
+
+Clean up all on-disk trace of this fit project, typically at the end
+of script involving deserialization of project file.
+
+  $fitobject -> rm;
+
 =item C<gds>
 
 This method returns a reference to the list of GDS objects in this fit.
@@ -1531,11 +1513,11 @@ L<Ifeffit::Demeter::Fit::Happiness>.
 A fit can be serialized to a zip file containing YAML serializations
 of the various parts of the fit.
 
-  $fitobject->serialize("filename");
+  $fitobject->serialize("projectfile");
 
 One of these zip files can be deserialized to a Fit object:
 
-  $fitobject = Ifeffit::Demeter::Fit->deserialize("datafile");
+  $newfitobject = Ifeffit::Demeter::Fit->new(project=>"projectfile");
 
 The files are normal zip files and can be opened using a normal zip
 tool.
@@ -1603,11 +1585,8 @@ F<Bundle/DemeterBundle.pm> file.
 
 =item *
 
-Serialization!!!
-
-=item *
-
-Serialization with ScatteringPath?
+It is not clear how serialization and deserialization will work in the
+context of an artemis project with multiple fits conatined in one file.
 
 =item *
 

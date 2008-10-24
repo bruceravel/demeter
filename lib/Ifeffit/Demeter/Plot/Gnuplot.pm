@@ -206,6 +206,14 @@ Breakage if trying to plot a path with no data
 The file method is broken -- need to replace replot commands with
 continuations
 
+=item *
+
+Plotting individual paths is broken
+
+=item *
+
+Plotting parts other than fit in an rmr plot has repeated labels
+
 =back
 
 Please report problems to Bruce Ravel (bravel AT bnl DOT gov)

@@ -75,11 +75,15 @@ has 'amp_array'	      => (is=>'rw', isa=>'Str', default => q{});
 has 'phase_array'     => (is=>'rw', isa=>'Str', default => q{});
 
 ## object relationships
-has 'parent'          => (is=>'rw', isa => 'Any', default => q{});
-#has 'parent'          => (is=>'rw', isa => Empty.'|Ifeffit::Demeter::Feff', default => q{});
-has 'sp'              => (is=>'rw', isa=> 'Any',);
-#has 'sp'              => (is=>'rw', isa => Empty.'|Ifeffit::Demeter::ScatteringPath', default => q{});
-#has 'sp_was'          => (is=>'rw', isa => Empty.'|Ifeffit::Demeter::ScatteringPath', default => q{});
+has 'parentgroup'     => (is=>'rw', isa => 'Str', default => q{});
+has 'parent'          => (is=>'rw', isa => 'Any', default => q{},  # Empty.'|Ifeffit::Demeter::Feff'
+			  trigger => sub{ my($self, $new) = @_; $self->parentgroup($new->group) if $new});
+has 'spgroup'         => (is=>'rw', isa => 'Str', default => q{});
+has 'sp'              => (is=>'rw', isa => 'Any',                  # Empty.'|Ifeffit::Demeter::ScatteringPath'
+			  trigger => sub{ my($self, $new) = @_; $self->spgroup($new->group) if $new});
+has 'datagroup'       => (is=>'rw', isa => 'Str', default => q{});
+
+
 
 has 'folder'          => (is=>'rw', isa=> 'Str',    default => q{},
 			  trigger => sub{ shift->parse_nnnn });

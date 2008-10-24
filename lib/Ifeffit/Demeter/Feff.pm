@@ -885,7 +885,12 @@ sub deserialize {
   $yaml .= $buffer while $gz->gzreadline($buffer) > 0 ;
   my @refs = YAML::Load($yaml);
   $gz->gzclose;
-
+  $self->read_yaml(\@refs);
+  return $self;
+};
+sub read_yaml {
+  my ($self, $refs) = @_;
+  my @refs = @$refs;
   ## snarf attributes of Feff object
   my $rhash = shift @refs;
   foreach my $key (qw(abs_index edge s02 rmax nlegs npaths rmultiplier pcrit ccrit
@@ -903,6 +908,7 @@ sub deserialize {
   foreach my $path (@refs) {
     my $sp = Ifeffit::Demeter::ScatteringPath->new(feff=>$self);
     foreach my $key ($sp->savelist) {
+      next if not defined $path->{$key};
       $sp -> $key($path->{$key});
     };
     push @paths, $sp;
