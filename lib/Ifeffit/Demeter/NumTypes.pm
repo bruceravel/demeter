@@ -6,6 +6,7 @@ use MooseX::Types -declare => [qw( Natural
 				   PosInt
 				   OneToFour
 				   OneToTwentyNine
+				   Ipot
 				   NegInt
 				   PosNum
 				   NegNum
@@ -36,6 +37,11 @@ subtype PosInt,
 subtype OneToFour,
   as Int,
   where { $_ > 0 and $_ < 5 },
+  message { "Int is not between 1 and 4, inclusive" };
+
+subtype Ipot,
+  as Int,
+  where { $_ >= 0 and $_ <= 7 },
   message { "Int is not between 1 and 4, inclusive" };
 
 subtype OneToTwentyNine,

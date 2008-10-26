@@ -31,7 +31,7 @@ sub interview {
 
   $fit->po->r_pl('rmr');
   $fit->po->plot_fit(1);
-  #$fit->mode->screen(1);
+  #$fit->mo->screen(1);
 
   my @params = (q{}, qw(kweight space rpart qpart paths bkg res));
   #plot($fit, 1) unless $noplot;
@@ -43,7 +43,7 @@ sub interview {
       $fit->po->cleantemp,         return        if ($_ =~ m{\Aq});
       $fit->USI_help,              last DISPATCH if ($_ =~ m{\Ah});
       $fit->USI_version,           last DISPATCH if ($_ =~ m{\Av});
-      $fit->USI_Log,               last DISPATCH if ($_ =~ m{\Al});
+      $fit->USI_log,               last DISPATCH if ($_ =~ m{\Al});
       $fit->USI_plot($1),          last DISPATCH if ($_ =~ m{\Ap?(\d+)});
       $fit->USI_data_report($1),   last DISPATCH if ($_ =~ m{\Ad(\d+)});
       $fit->USI_gds,               last DISPATCH if ($_ =~ m{\Ag});
@@ -78,7 +78,7 @@ sub USI_stats {
   return 0;
 };
 
-sub USI_Log {
+sub USI_log {
   my ($fit) = @_;
   my $logout = File::Spec->catfile($fit->stash_folder, "probe_log");
   $fit->logfile($logout);

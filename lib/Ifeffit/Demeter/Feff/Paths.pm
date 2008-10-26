@@ -15,29 +15,26 @@ package Ifeffit::Demeter::Feff::Paths;
 
 =cut
 
-use Moose::Role;
-
 use Carp;
+use Chemistry::Elements qw(get_Z);
 use List::MoreUtils qw(all none pairwise);
 
+use Moose::Role;
+use Ifeffit::Demeter::NumTypes qw( Ipot PosNum );
 
-## Reff greater than
-## Reff less than
-## tag(s) matches
-## tag(s) equals
-## element is (are)
-## ipot is (are)
-## nlegs
 sub find_path {
   my ($self, @params) = @_;
   ## coerce arguments into a hash
   my %params = @params;
 
+  ## -------- recognize singular and plural for list-valued criteria
   ($params{tag}      = $params{tags})      if (exists($params{tags})      and not exists($params{tag}));
   ($params{tagmatch} = $params{tagsmatch}) if (exists($params{tagsmatch}) and not exists($params{tagmatch}));
   ($params{ipot}     = $params{ipots})     if (exists($params{ipots})     and not exists($params{ipot}));
   ($params{element}  = $params{elements})  if (exists($params{elements})  and not exists($params{element}));
 
+  ## -------- leave nothing undefined
+  $params{sp}       ||= 0;
   $params{gt}       ||= 0;
   $params{lt}       ||= 0;
   $params{tagmatch} ||= 0;
@@ -46,7 +43,11 @@ sub find_path {
   $params{ipot}     ||= 0;
   $params{nlegs}    ||= 0;
 
-  ## scalar valued tests need to be made into an array ref
+  carp("\$feff->find_path : the sp criterion must be a ScatteringPath object"), return 0 if ($params{sp} and (ref($params{sp}) !~ m{ScatteringPath}));
+  carp("\$feff->find_path : the lt criterion must be a positive number"),       return 0 if ($params{lt} and not is_PosNum($params{lt}));
+  carp("\$feff->find_path : the gt criterion must be a positive number"),       return 0 if ($params{gt} and not is_PosNum($params{gt}));
+
+  ## -------- scalar valued tests need to be made into array refs
   if ($params{tag} and (ref($params{tag}) ne 'ARRAY')) {
     $params{tag} = [ $params{tag} ];
   };
@@ -60,8 +61,22 @@ sub find_path {
     $params{element} = [ $params{element} ];
   };
 
-  $params{list} = $params{tag} || $params{tagmatch} || $params{ipot} || $params{element};
+  my $list_defined = $params{tag} || $params{tagmatch} || $params{ipot} || $params{element};
 
+  if ($params{ipot}) {
+    my $ipots_ok = 1;
+    foreach my $i (@{ $params{ipot} }) {
+      $ipots_ok &&= is_Ipot($i);
+    };
+    carp("\$feff->find_path : each part of the ipot criterion must be an integer between 0 and 7"), return 0 if not $ipots_ok;
+  };
+  if ($params{element}) {
+    my $elements_ok = 1;
+    foreach my $e (@{ $params{element} }) {
+      $elements_ok &&= get_Z($e);
+    };
+    carp("\$feff->find_path : each part of the element criterion must be an element name, symbol, or Z number"), return 0 if not $elements_ok;
+  };
 
   my @list_of_paths = @{ $self->pathlist };
   return $list_of_paths[0] if none {$params{$_}} (keys %params);
@@ -73,14 +88,14 @@ sub find_path {
 
     my $is_the_one = 1;
 
-
-    $is_the_one &&= ($p->nleg != $params{nlegs}) if $params{nlegs};
-    $is_the_one &&= ($p->fuzzy > $params{gt})    if $params{gt};
-    $is_the_one &&= ($p->fuzzy < $params{lt})    if $params{lt};
+    $is_the_one &&= ($p->fuzzy > $params{sp}->fuzzy) if $params{sp};
+    $is_the_one &&= ($p->nleg != $params{nlegs})     if $params{nlegs};
+    $is_the_one &&= ($p->fuzzy > $params{gt})        if $params{gt};
+    $is_the_one &&= ($p->fuzzy < $params{lt})        if $params{lt};
 
     next if not $is_the_one;
 
-    if (not $params{list}) {
+    if (not $list_defined) {
       return $p if $is_the_one;
       next PATHS;
     };
@@ -117,7 +132,168 @@ sub find_path {
       return $p if $ok_so_far;
     };
   };
+  return 0;
 };
 
 
 1;
+
+=head1 NAME
+
+Ifeffit::Demeter::Feff::Paths - Semantic descriptions of Feff paths
+
+=head1 VERSION
+
+This documentation refers to Ifeffit::Demeter version 0.2.
+
+=head1 SYNOPSIS
+
+    $feff -> Ifeffit::Demeter::Feff -> new(file=>"feff.inp");
+    $feff -> potph;
+    $feff -> pathfinder;
+    my $scatteringpath = $feff->find_path(lt=>3.5, tag=>'Dy');
+
+=head1 DESCRIPTION
+
+This role for the Feff object provides a mechanism for semantically
+describing paths from a Feff calculation.  The example in the synopsis
+finds the single scattering path that is less than 3.5 Angstroms long
+and scatters from a Dysprosium atom.
+
+This way of interacting with the Feff calculation really shines in a
+situation where structural distortions or modifications are introduced
+into Feff's input data.  Because Feff orders its paths by increasing
+half path length, the path index is not a reliable way of keeping
+track of a particular scattering geometry as different structural
+modifications are introduced.  Semantic mechanisms of probing the Feff
+calculation allow you to keep track of particular geometries
+regardless of the fine details of the strcuture provided to Feff.
+
+=head1 METHODS
+
+=over 4
+
+=item C<find_path>
+
+This method searches through a Feff calculation for a path that
+matches B<each> of the provided criteria.  The first such path is the
+one that returned.  The degeneracies associated with each path are
+also searched.  Thus order does not matter for the list-valued
+criteria and fuzzily degenerate paths will be found correctly.
+
+This method returns 0 if a path meeting the criteria cannot be found
+or if there is an error in specifying the criteria.
+
+The following criteria are available:
+
+=over 4
+
+=item C<lt>
+
+This criterion takes a number and requires that the returned path be
+shorter in half path length than that number.
+
+=item C<gt>
+
+This criterion takes a number and requires that the returned path be
+longer in half path length than that number.
+
+=item C<nleg>
+
+This criterion takes an integer and requires that the returned path
+have this number of scattering legs.  This criterion is redundant when
+the list-valued criteria are also used.
+
+=item C<sp>
+
+This criterion takes a ScatteringPath object and requires that the
+returned path be longer in half path length than that path.
+
+=item C<tag>
+
+This criterion takes a string or an anonymous array of strings and
+requires that the returned path contain the atoms which have this
+(these) tags.  The tag is the optional fifth column in a F<feff.inp>
+file written by Demeter's Atoms.  This criterion requires that the
+tags are lexically equal.  See the C<tagmatch> criterion for matching
+tags in the sense of regular expressions.
+
+=item C<tagmatch>
+
+This criterion takes a string or an anonymous array of strings and
+requires that the returned path contain the atoms which have tags
+matching the arguments of this criterion.  The tag is the optional
+fifth column in a F<feff.inp> file written by Demeter's Atoms.  This
+criterion requires that the tags match in the sense of regular
+expressions.  See the C<tag> criterion for requiring that tags be
+lexically equal.
+
+=item C<ipot>
+
+This criterion takes an integer from 0 to 7 or an anonymous array of
+such integers and requires that the returned path contain the atoms
+which have ipots equal to the arguments of this criterion.
+
+=item C<element>
+
+This criterion takes a string identifying an element (its name, its
+one or two letter symbol or its Z number) or an anonymous array of
+such strings and requires that the returned path contain the atoms
+which have the elements specified.
+
+=back
+
+The list-valued criterion are compared in order with the scattering
+atoms in a path.  As an example, this
+
+    my $scatteringpath = $feff->find_path(lt=>4, tag=>['Fe1', 'C1']);
+
+would return the first double scattering path that scatters from a
+site with the tag C<Fe1> then from a site with the tag C<C1> before
+completing the loop and returning to the central atom.
+
+=back
+
+=head1 CONFIGURATION AND ENVIRONMENT
+
+See L<Ifeffit::Demeter::Config> for a description of the configuration
+system.
+
+=head1 DEPENDENCIES
+
+The dependencies of the Ifeffit::Demeter system are in the
+F<Bundle/DemeterBundle.pm> file.
+
+=head1 BUGS AND LIMITATIONS
+
+=over 4
+
+=item *
+
+Return a list of paths matching the criteria?
+
+=back
+
+Please report problems to Bruce Ravel (bravel AT bnl DOT gov)
+
+Patches are welcome.
+
+=head1 AUTHOR
+
+Bruce Ravel (bravel AT bnl DOT gov)
+
+L<http://cars9.uchicago.edu/~ravel/software/>
+
+=head1 LICENCE AND COPYRIGHT
+
+Copyright (c) 2006-2008 Bruce Ravel (bravel AT bnl DOT gov). All rights reserved.
+
+This module is free software; you can redistribute it and/or
+modify it under the same terms as Perl itself. See L<perlgpl>.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+
+=cut
+

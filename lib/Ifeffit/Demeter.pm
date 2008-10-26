@@ -38,7 +38,7 @@ use Text::Template;
   they set out food, the bounty of Ceres, drenched
   in sea-salt, Ceres' utensils too, her mills and troughs,
   and bend to parch with fire the grain they had salvaged,
-  grind it find on stone.
+  grind it fine on stone.
                                 Virgil, The Aeneid, 1:209-213
 
 =cut
@@ -379,6 +379,8 @@ sub get_params_of {
 };
 
 
+
+## -------- serialization tool
 sub serialization {
   my ($self) = @_;
   my %hash = $self->get_all;
@@ -452,11 +454,11 @@ sub template {
 					   %$rhash},
 				  PACKAGE => "Ifeffit::Demeter::Templates");
   $string ||= q{};
-  $string =~ s{^\s+}{};			# remove leading white space
-  $string =~ s{\n(?:[ \t]+\n)+}{\n}; # regularize white space between blocks of text
-  $string =~ s{\s+$}{\n};	     # remove trailing white space
-  $string =~ s{<<nl>>}{\n}g; # convert newline token into a real newline
-  $string =~ s{<<( +)>>}{$1}g; #} # convert white space token into real white space
+  $string =~ s{^\s+}{};		      # remove leading white space
+  $string =~ s{\n(?:[ \t]+\n)+}{\n};  # regularize white space between blocks of text
+  $string =~ s{\s+$}{\n};	      # remove trailing white space
+  $string =~ s{<<nl>>}{\n}g;	      # convert newline token into a real newline
+  $string =~ s{<<( +)>>}{$1}g;	      # convert white space token into real white space
   return $string;
 };
 

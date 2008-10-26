@@ -131,8 +131,7 @@ This documentation refers to Ifeffit::Demeter version 0.2.
 
 =head1 SYNOPSIS
 
-    $feff -> Ifeffit::Demeter::Feff -> new();
-    $feff -> rdinp("feff.inp");
+    $feff -> Ifeffit::Demeter::Feff -> new(file=>"feff.inp");
 
 =head1 DESCRIPTION
 

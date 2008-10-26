@@ -996,13 +996,13 @@ sub serialize {
   my $fit_folder = File::Spec->catfile($folder, $args{tree}, $args{folder});
   mkpath($fit_folder);
 
-  ## save a yaml containing the structure of the fit
+  ## -------- save a yaml containing the structure of the fit
   my $structure = File::Spec->catfile($fit_folder, "structure.yaml");
   open my $STRUCTURE, ">$structure";
   print $STRUCTURE YAML::Dump(\@gdsgroups, \@datagroups, \@pathsgroups, \@feffgroups);
   close $STRUCTURE;
 
-  ## save a yaml containing all GDS parameters
+  ## -------- save a yaml containing all GDS parameters
   my $gdsfile =  File::Spec->catfile($fit_folder, "gds.yaml");
   open my $gfile, ">$gdsfile";
   foreach my $p (@gds) {
@@ -1010,7 +1010,7 @@ sub serialize {
   };
   close $gfile;
 
-  ## save a yaml for each data file
+  ## -------- save a yaml for each data file
   foreach my $d (@data) {
     my $dd = $d->group;
     my $datafile =  File::Spec->catfile($fit_folder, "$dd.yaml");
@@ -1031,7 +1031,7 @@ sub serialize {
     close $dfile;
   };
 
-  ## save a yaml containing the paths
+  ## -------- save a yaml containing the paths
   my $pathsfile =  File::Spec->catfile($fit_folder, "paths.yaml");
   my %feffs = ();
   open my $PATHS, ">$pathsfile";
@@ -1046,6 +1046,8 @@ sub serialize {
     };
   };
   close $PATHS;
+
+  ## -------- save yamls and phase.bin for the feff calculations
   foreach my $f (values %feffs) {
     my $ff = $f->group;
     my $feffyaml = File::Spec->catfile($fit_folder, $ff.".yaml");
@@ -1058,7 +1060,7 @@ sub serialize {
     copy($phase_from, $phase_to);
   };
 
-  ## save a yaml containing the fit properties
+  ## -------- save a yaml containing the fit properties
   my @properties = grep {$_ !~ m{\A(?:gds|data|paths|project|rate|thingy)\z}} $self->meta->get_attribute_list;
   my @vals = $self->get(@properties);
   my %props = zip(@properties, @vals);
@@ -1067,7 +1069,7 @@ sub serialize {
   print $PROPS YAML::Dump(\%props);
   close $PROPS;
 
-  ## write fit and log files to the folder
+  ## -------- write fit and log files to the folder
   foreach my $d (@data) {
     my $dd = $d->group;
     $d -> _update("bft");
@@ -1075,7 +1077,7 @@ sub serialize {
   };
   $self -> logfile(File::Spec->catfile($fit_folder, "log"), $self->header, $self->footer);
 
-  ## finally save a yaml containing the Plot object
+  ## -------- finally save a yaml containing the Plot object
   my $plotfile =  File::Spec->catfile($fit_folder, "plot.yaml");
   open my $PLOT, ">$plotfile";
   print $PLOT $self->po->serialization;
@@ -1110,7 +1112,7 @@ sub deserialize {
   my $structure = $zip->contents('structure.yaml');
   my ($r_gdsnames, $r_data, $r_paths, $r_feff) = YAML::Load($structure);
 
-  ## import the data
+  ## -------- import the data
   my @data = ();
   foreach my $d (@$r_data) {
     my $yaml = $zip->contents("$d.yaml");
@@ -1129,7 +1131,7 @@ sub deserialize {
     push @data, $this;
   };
 
-  ## import the gds
+  ## -------- import the gds
   my @gds = ();
   my $yaml = $zip->contents("gds.yaml");
   my @list = YAML::Load($yaml);
@@ -1148,6 +1150,7 @@ sub deserialize {
     $this->dispose($command);
   };
 
+  ## -------- import the feff calculations
   my @feff = ();
   foreach my $f (@$r_feff) {
     my $this = Ifeffit::Demeter::Feff->new(group=>$f);
@@ -1161,7 +1164,7 @@ sub deserialize {
     push @feff, $this;
   };
 
-  ## import the paths
+  ## -------- import the paths
   my @paths = ();
   $yaml = $zip->contents("paths.yaml");
   @list = YAML::Load($yaml);
@@ -1177,20 +1180,20 @@ sub deserialize {
     push @paths, $this;
   };
 
-  ## make the fit object
+  ## -------- make the fit object
   $self -> set(gds   => \@gds,
 	       data  => \@data,
 	       paths => \@paths,
 	      );
 
-  ## import the fit properties, statistics, correlations
+  ## -------- import the fit properties, statistics, correlations
   $yaml = $zip->contents("fit.yaml");
   my $rhash = YAML::Load($yaml);
   my @array = %$rhash;
   $self -> set(@array);
   $self -> fit_performed(0);
 
-  ## extract any feff calculations from the project
+  ## -------- extract files from the feff calculations from the project
   my $project_folder = $self->project_folder("fit_".$self->group);
   #   $location_of{ident $fitobject} = $project_folder;
   foreach my $f (@feff) {
@@ -1216,7 +1219,7 @@ sub deserialize {
     chdir $thisdir;
   };
 
-
+  ## -------- import the fit files and push arrays into Ifeffit
   foreach my $d (@data) {
     my $dd = $d->group;
     ## import the fit data
@@ -1231,6 +1234,7 @@ sub deserialize {
     unlink $file;
   };
 
+  ## -------- import the Plot object, if requested
   if ($with_plot) {
     $yaml = $zip->contents("plot.yaml");
     my $rhash = YAML::Load($yaml);
