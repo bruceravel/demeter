@@ -143,9 +143,6 @@ my $new = Ifeffit::Demeter::Feff -> new(workspace => './feff', file => 'feff/fef
 $ref = $new->sites;
 ok( $#{$ref} == 86,                                     'thaw: output feff.inp file has the correct number of sites');
 
-
-
-
-
 $this -> clean_workspace;
 ok( ! -d 'feff',                                        'clean workspace works');
+

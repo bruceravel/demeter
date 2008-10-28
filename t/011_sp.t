@@ -17,7 +17,7 @@
 
 =cut
 
-use Test::More tests => 9;
+use Test::More tests => 24;
 
 use Ifeffit;
 use Ifeffit::Demeter;
@@ -41,3 +41,62 @@ ok( ($this->mode->template_plot     eq 'pgplot'  and
      $this->mode->template_analysis eq 'ifeffit'),
                                                         "$OBJ object can find template sets");
 
+## -------- test path description semantics
+
+my $feff = Ifeffit::Demeter::Feff -> new(workspace => './feff', file => 'withHg.inp', screen => 0);
+$feff -> rmax(4.5);
+$feff -> pathfinder;
+#print $feff -> intrp;
+
+my $p = $feff -> find_path(tag=>'N13');
+ok( abs($p->fuzzy - 4.191) < 0.001,                     "find SS path by exact tag");
+
+my $pp = $feff -> find_path(tagmatch=>'N');
+ok( abs($pp->fuzzy - 2.040) < 0.001,                    "find SS path by tag match");
+
+$p = $feff -> find_path(tagmatch=>'N', sp=>$pp);
+ok( abs($p->fuzzy - 4.191) < 0.001,                     "find second SS path by tag match");
+
+$p = $feff -> find_path(tag=>['N13', 'N16']);
+ok( abs($p->fuzzy - 4.267) < 0.001,                     "find DS path by tag");
+
+$p = $feff -> find_path(tag=>['N16', 'N13']);
+ok( abs($p->fuzzy - 4.267) < 0.001,                     "find DS path by tag, opposite order");
+
+$p = $feff -> find_path(tagmatch=>['N', 'N']);
+ok( abs($p->fuzzy - 4.267) < 0.001,                     "find DS path by tag match");
+
+$p = $feff -> find_path(element=>'O');
+ok( abs($p->fuzzy - 3.036) < 0.001,                     "find SS path by element");
+
+$pp = $feff -> find_path(element=>['N', 'C', 'N']);
+ok( abs($pp->fuzzy - 3.418) < 0.001,                     "find TS path by element ");
+
+$p = $feff -> find_path(element=>['N', 'C', 'N'], gt => 3.5);
+ok( abs($p->fuzzy - 4.420) < 0.001,                     "find TS path by element w gt");
+
+$p = $feff -> find_path(element=>['N', 'C', 'N'], sp => $pp);
+ok( abs($p->fuzzy - 4.420) < 0.001,                     "find TS path by element w sp");
+
+$p = $feff -> find_path(ipot=>1);
+ok( abs($p->fuzzy - 3.036) < 0.001,                     "find SS path by ipot");
+
+$pp = $feff -> find_path(ipot=>[2, 3, 2]);
+ok( abs($pp->fuzzy - 3.418) < 0.001,                     "find TS path by ipot ");
+
+$p = $feff -> find_path(ipot=>[2, 3, 2], gt => 3.5);
+ok( abs($p->fuzzy - 4.420) < 0.001,                     "find TS path by ipot w gt");
+
+$p = $feff -> find_path(ipot=>[2, 3, 2], sp => $pp);
+ok( abs($p->fuzzy - 4.420) < 0.001,                     "find TS path by ipot w sp");
+
+
+my @list = $feff -> find_all_paths(element=>'N');
+##print join($/, map {$_->intrpline} @list), $/;
+ok( ((abs($list[0]->fuzzy - 2.040) < 0.001) and
+     (abs($list[1]->fuzzy - 4.191) < 0.001)),           "find_all_paths found both SS N paths");
+
+@list = $feff -> find_all_paths(nleg=>2);
+print join($/, map {$_->intrpline} @list), $/;
+
+$feff -> clean_workspace;

@@ -27,6 +27,8 @@ sub find_path {
   ## coerce arguments into a hash
   my %params = @params;
 
+  ## -------- recognize singular and plural for nlegs
+  ($params{nlegs}    = $params{nleg})      if (exists($params{nleg})      and not exists($params{nlegs}));
   ## -------- recognize singular and plural for list-valued criteria
   ($params{tag}      = $params{tags})      if (exists($params{tags})      and not exists($params{tag}));
   ($params{tagmatch} = $params{tagsmatch}) if (exists($params{tagsmatch}) and not exists($params{tagmatch}));
@@ -89,7 +91,7 @@ sub find_path {
     my $is_the_one = 1;
 
     $is_the_one &&= ($p->fuzzy > $params{sp}->fuzzy) if $params{sp};
-    $is_the_one &&= ($p->nleg != $params{nlegs})     if $params{nlegs};
+    $is_the_one &&= ($p->nleg == $params{nlegs})     if $params{nlegs};
     $is_the_one &&= ($p->fuzzy > $params{gt})        if $params{gt};
     $is_the_one &&= ($p->fuzzy < $params{lt})        if $params{lt};
 
@@ -135,6 +137,19 @@ sub find_path {
   return 0;
 };
 
+sub find_all_paths {
+  my ($self, @params) = @_;
+  my @list_of_paths;
+
+  my $path = $self->find_path(@params);
+  while ($path) {
+    push @list_of_paths, $path;
+    my $next = $self->find_path(@params, sp=>$path);
+    $path = $next;
+  };
+
+  return @list_of_paths;
+};
 
 1;
 
@@ -243,6 +258,10 @@ which have the elements specified.
 
 =back
 
+For several of the criteria, care is taken to recognize singluar and
+plural forms.  That is, C<nleg> and C<nlegs> are synonymous as
+criteria.
+
 The list-valued criterion are compared in order with the scattering
 atoms in a path.  As an example, this
 
@@ -251,6 +270,25 @@ atoms in a path.  As an example, this
 would return the first double scattering path that scatters from a
 site with the tag C<Fe1> then from a site with the tag C<C1> before
 completing the loop and returning to the central atom.
+
+=item C<find_all_paths>
+
+This returns a list of paths meeting the same criteria as for the
+C<find_path> method.  This is just a wrapper around the C<find_path>
+method which sequentially uses the C<sp> criterion to find each
+subsequent path meeting the input criteria.
+
+    my @list = $feff->find_all_paths(lt=>6, element=>['Fe', 'C']);
+
+This returns all double scattering paths which scatter from iron and
+carbon atoms and are less than 6 Angstroms.  The order of paths in the
+list is in order of increasing half path length.
+
+Another example:
+
+   my @list =  $feff->find_all_paths(lt=>6, nleg=>2);
+
+This returns all single scattering paths less than 6 Angstrongs.
 
 =back
 
