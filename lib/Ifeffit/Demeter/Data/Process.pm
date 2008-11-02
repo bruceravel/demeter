@@ -36,7 +36,7 @@ sub rebin {
   my $standard = $self->mode->standard;
   $self->standard;		# make self the standard for rebinning
   foreach my $k (keys %$rhash) {
-    $self -> new_params({"rebin_$k" => $$rhash{$k}});
+    $self -> c0 -> set("rebin_$k" => $$rhash{$k});
   };
   my $rebinned = $self->clone;
   $rebinned -> generated(1);
@@ -44,6 +44,9 @@ sub rebin {
   $rebinned -> name($self->name . " rebinned");
 
   my $string = $rebinned->template("process", "rebin");
+  $rebinned->dispose($string);
+
+  $string = $rebinned->template("process", "deriv");
   $rebinned->dispose($string);
 
   (ref($standard) =~ m{Data}) ? $standard->standard : $self->unset_standard;

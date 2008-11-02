@@ -23,6 +23,7 @@ my %note_of = (absorption   => 'periodic table of edge and line energies',
 	       transitions  => 'electronic transitions for fluorescence lines',
 	       find	    => 'ordered list of absorption edge energies',
 	       line	    => 'ordered list of fluorescence line energies',
+	       standards    => 'periodic table of XAS data standards',
 	       f1f2	    => 'periodic table of anomalous scattering',
 	       help	    => '',
 	       configure    => '',
@@ -34,6 +35,7 @@ my %label_of = (absorption   => 'Absorption',
 		transitions  => 'Transitions',
 		find	     => 'Edge finder',
 		line	     => 'Line finder',
+		standards    => 'Standards',
 		f1f2	     => "F' and F\"",
 		help	     => 'Document',
 		configure    => 'Configure',
@@ -41,7 +43,7 @@ my %label_of = (absorption   => 'Absorption',
 my $icon_dimension = 40;
 
 
-my @utilities = qw(absorption formulas ion data transitions find line f1f2 help);
+my @utilities = qw(absorption formulas ion data transitions find line standards f1f2);
 
 sub new {
   my $ref    = shift;
@@ -85,6 +87,7 @@ sub new {
       : ($utility eq 'ion')         ? Ifeffit::Demeter::UI::Hephaestus::Ion->new($page,$echoarea)
       : ($utility eq 'absorption')  ? Ifeffit::Demeter::UI::Hephaestus::Absorption->new($page,$echoarea)
       : ($utility eq 'data')        ? Ifeffit::Demeter::UI::Hephaestus::Data->new($page,$echoarea)
+      : ($utility eq 'standards')   ? Ifeffit::Demeter::UI::Hephaestus::Standards->new($page,$echoarea)
       : ($utility eq 'f1f2')        ? Ifeffit::Demeter::UI::Hephaestus::F1F2->new($page,$echoarea)
       : ($utility eq 'find')        ? Ifeffit::Demeter::UI::Hephaestus::EdgeFinder->new($page,$echoarea)
       : ($utility eq 'line')        ? Ifeffit::Demeter::UI::Hephaestus::LineFinder->new($page,$echoarea)
@@ -141,7 +144,7 @@ sub OnInit {
   Wx::InitAllImageHandlers();
 
   foreach my $m (qw(Absorption Formulas Ion Data Transitions EdgeFinder LineFinder
-		    F1F2 Help PeriodicTable EchoArea)) {
+		    Standards F1F2 Help PeriodicTable EchoArea)) {
     next if $INC{"Ifeffit/Demeter/UI/Hephaestus/$m.pm"};
     ##print "Ifeffit/Demeter/UI/Hephaestus/$m.pm\n";
     require "Ifeffit/Demeter/UI/Hephaestus/$m.pm";
@@ -222,6 +225,10 @@ icon.
 
 The line finder icon is from Fig 2, Ni panel at
 http://alpha.asi.ualberta.com/ProjectAreas/XraySpec/xrayproj.htm
+
+The standards icon is a photo of the EXAFS Materials
+box of foils swiped from the APS XSD website.
+http://www.aps.anl.gov/Xray_Science_Division/Beamline_Technical_Support/Equipment_Pool/Equipment_Information/3d_Metal_Foil_Set/
 EOH
   ;
   $info -> AddArtist($artwork);

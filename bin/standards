@@ -48,8 +48,10 @@ use Text::Template;
 
 use Ifeffit::Demeter;
 use Ifeffit::Demeter::UI::Standards;
-Ifeffit::Demeter->set_mode({screen=>0, repscreen=>0});
+my $demeter = Ifeffit::Demeter->new;
+$demeter->set_mode(screen=>0, repscreen=>0);
 my $standards = Ifeffit::Demeter::UI::Standards->new();
+$standards -> ini(q{});
 
 $| = 1;
 
@@ -84,7 +86,7 @@ my $result = GetOptions (
 			);
 help() if $help;
 ($light_background = 1) if (not $dark_background);
-Ifeffit::Demeter->plot_with('gnuplot') if $use_gnuplot;
+$demeter->plot_with('gnuplot') if $use_gnuplot;
 
 my $target = $ARGV[0] || 'screen';
 TARGET: {
@@ -115,12 +117,12 @@ TARGET: {
 sub screen {
   my ($standards) = @_;
   my ($choice, $element, $which, $error) = ('fe', 'fe', 'mu', q{});
-  #Ifeffit::Demeter->po->start_plot; # reset the plot for the next go around
+  #$demeter->po->start_plot; # reset the plot for the next go around
   my $term = new Term::ReadLine 'Reference spectra';
   print $standards->screen($choice, $element, $light_background, $error);
   my $prompt = "Enter an element or material, a number to plot, or q=quit > ",;
   while ( defined ($_ = $term->readline($prompt)) ) {
-    Ifeffit::Demeter->po->cleantemp, exit if ($_ =~ m{\Aq});
+    $demeter->po->cleantemp, exit if ($_ =~ m{\Aq});
     $error = q{};
 
     if ($standards -> element_exists (lc($_)) or
@@ -130,7 +132,7 @@ sub screen {
       ($element = $standards->get($choice,"element")) if $standards -> material_exists($choice);
 
     } elsif ($_ =~ m{\A([123])}) {
-      Ifeffit::Demeter->po->start_plot; # reset the plot for the next go around
+      $demeter->po->start_plot; # reset the plot for the next go around
       if ($standards -> material_exists($choice)) {
 	$which  = ($1 == 1) ? 'mu'
 	        : ($1 == 2) ? 'derivative'

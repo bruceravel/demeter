@@ -54,7 +54,7 @@ Heap
 
 IO::Prompt
 
-IO:Scalar
+IO::Scalar
 
 List::MoreUtils
 
@@ -72,7 +72,7 @@ Regexp::Common
 
 Regexp::Optimizer
 
-Scaler::Util
+Scalar::Util
 
 String::Random
 

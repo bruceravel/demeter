@@ -290,6 +290,23 @@ sub _plot_window_command {
   return $string;
 };
 
+sub plot_marker {
+  my ($self, $requested, $x) = @_;
+  my $command = q{};
+  my @list = (ref($x) eq 'ARRAY') ? @$x : ($x);
+  foreach my $xx (@list) {
+    my $y = $self->yofx($requested, "", $xx);
+    $command .= $self->template("plot", "marker", { x => $xx, 'y'=> $y });
+  };
+  #if ($self->get_mode("template_plot") eq 'gnuplot') {
+  #  $self->get_mode('external_plot_object')->gnuplot_cmd($command);
+  #} else {
+  $self -> dispose($command, "plotting");
+  #};
+  return $self;
+};
+
+
 1;
 
 =head1 NAME
