@@ -132,6 +132,7 @@ sub f1f2_get_data {
     $self->{echo}->echo('The energy grid size was too small and was reset to 1.');
   };
 
+  my $busy    = Wx::BusyCursor->new();
   $demeter -> plot_with('pgplot');
   $demeter -> co -> set(
 			f1f2_emin    => $self->{start}->GetValue,
@@ -153,6 +154,7 @@ sub f1f2_get_data {
   #undef $demeter;
   $self->{echo}->echo(sprintf("Plotted anomalous scattering factors for %s using the %s tables.",
 			      get_name($el), 'Cromer-Liberman'));
+  undef $busy;
   return 1;
 };
 

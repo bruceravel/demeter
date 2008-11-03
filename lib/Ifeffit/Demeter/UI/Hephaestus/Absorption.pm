@@ -259,6 +259,7 @@ sub on_key_down {
 
 sub filter_plot {
   my ($self, $event) = @_;
+  my $busy    = Wx::BusyCursor->new();
   my ($elem, $filter) = ($self->{element}, $self->{filterelement}->GetValue);
   my $z      = get_Z($elem);
   $self->{echo}->echo('You have not selected an absorbing element for the filter plot.'), return if not $z;
@@ -287,6 +288,7 @@ sub filter_plot {
 
   $demeter->po->cleantemp;
   undef $demeter;
+  undef $busy;
   $self->{echo}->echo(sprintf('Plotting %s as a filter for %s.', lc(get_name($filter)), lc(get_name($elem))));
   return 1;
 };

@@ -80,12 +80,14 @@ sub standards_get_data {
 
 sub make_standards_plot {
   my ($self, $event, $parent) = @_;
-  my $demeter = Ifeffit::Demeter->new;
-  $demeter -> plot_with('gnuplot');
-  my $which = ($parent->{howtoplot}->GetStringSelection =~ m{XANES}) ? 'mu' : 'deriv';
-  my $choice = $parent->{data}->GetStringSelection;
-  $standards->plot($choice, $which, 'plot');
-  undef($demeter);
+  my $busy    = Wx::BusyCursor->new();
+  #my $demeter = Ifeffit::Demeter->new;
+  #$demeter  -> plot_with('gnuplot');
+  my $which   = ($parent->{howtoplot}->GetStringSelection =~ m{XANES}) ? 'mu' : 'deriv';
+  my $choice  = $parent->{data}->GetStringSelection;
+  $standards -> plot($choice, $which, 'plot');
+  undef $busy;
+  #undef $demeter;
   return 1;
 };
 
