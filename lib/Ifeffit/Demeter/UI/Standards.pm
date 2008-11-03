@@ -190,10 +190,7 @@ sub plot {
 
   my $rebinned;
   if ($self->get($choice, 'rebin')) {
-    $data -> _update('fft');
     $rebinned = $data->rebin;
-    #$data = $rebinned;
-    #$rebinned -> update_norm(1);
     $rebinned -> name($data->name);
   };
   my $ddd = ($self->get($choice, 'rebin')) ? $rebinned : $data;

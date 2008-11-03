@@ -34,7 +34,8 @@ sub rebin {
   my ($self, $rhash) = @_;
   #$$rhash{group} ||= q{};
   my $standard = $self->mode->standard;
-  $self->standard;		# make self the standard for rebinning
+  $self -> _update('fft');
+  $self -> standard;		# make self the standard for rebinning
   foreach my $k (keys %$rhash) {
     $self -> c0 -> set("rebin_$k" => $$rhash{$k});
   };
