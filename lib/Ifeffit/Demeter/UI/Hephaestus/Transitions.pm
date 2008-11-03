@@ -28,7 +28,7 @@ sub new {
 
 =head1 NAME
 
-Ifeffit::Demeter::UI::Hephaestus::Transitions - Hephaestus' electronic tranistions utility
+Ifeffit::Demeter::UI::Hephaestus::Transitions - Hephaestus' electronic transitions utility
 
 =head1 VERSION
 

@@ -43,19 +43,19 @@ my %label_of = (absorption   => 'Absorption',
 my $icon_dimension = 40;
 
 
-my @utilities = qw(absorption formulas ion data transitions find line standards f1f2);
+my @utilities = qw(absorption formulas ion data transitions find line standards f1f2 configure help);
 
 sub new {
   my $ref    = shift;
   my $width  = 100;
-  my $height = ($#utilities+1) * $icon_dimension * 1.55 + 2*($#utilities+1);
+  my $height = ($#utilities+1) * $icon_dimension * 1.425; # + 2*($#utilities+1);
   my $self   = $ref->SUPER::new( undef,           # parent window
 				 -1,              # ID -1 means any
 				 'Hephaestus',    # title
 				 wxDefaultPosition, [-1,$height],
 			       );
 
-  my $tb = Wx::Toolbook->new( $self, -1, wxDefaultPosition, wxDefaultSize, wxBK_LEFT );
+  my $tb = Wx::Notebook->new( $self, -1, wxDefaultPosition, wxDefaultSize, wxBK_LEFT );
   my $echoarea = Ifeffit::Demeter::UI::Hephaestus::EchoArea->new($self);
   my $vbox = Wx::BoxSizer->new( wxVERTICAL);
 
@@ -78,7 +78,7 @@ sub new {
     my $header = Wx::StaticText->new( $page, -1, $label, wxDefaultPosition, wxDefaultSize );
     $header->SetForegroundColour( $header_color );
     $header->SetFont( Wx::Font->new( 16, wxDEFAULT, wxNORMAL, wxBOLD, 0, "" ) );
-    $hh -> Add($header, 0, wxALL, 0);
+    $hh -> Add($header, 0, wxLEFT, 5);
     $box -> Add($hh, 0);
 
     $self->{$utility}
@@ -110,7 +110,7 @@ sub new {
 
 
   ##            largest utility + width of toolbar text + width of icons
-  my $framesize = Wx::Size->new(1.05*$width+2.5*$icon_dimension+6,
+  my $framesize = Wx::Size->new(1.05*$width+$icon_dimension+103,
 				$height+($echoarea->GetSizeWH)[1]
 			       );
   $self -> SetSize($framesize);
