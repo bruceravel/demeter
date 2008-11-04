@@ -974,7 +974,7 @@ sub correl_report {
 ## Serialization and deserialization of the Fit object
 
 ## need to serialize/deserialize correlations and statistics
-sub serialize {
+override 'serialize' => sub {
   my ($self, @args) = @_;
   my %args = @args;		# coerce args into a hash
   $args{tree}   ||= 'fit';
@@ -1096,7 +1096,7 @@ sub serialize {
   return $self;
 };
 
-sub deserialize {
+override 'deserialize' => sub {
   my ($self, $dpj, $with_plot) = @_;
   $self->start_spinner("Demeter is unpacking $dpj") if ($self->mo->ui eq 'screen');
 

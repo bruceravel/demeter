@@ -21,6 +21,7 @@ use Readonly;
 Readonly my $NUMBER   => $RE{num}{real};
 Readonly my $PI       => 4*atan2(1,1);
 Readonly my $NULLFILE => '@&^^null^&@';
+use YAML;
 
 use Moose;
 extends 'Ifeffit::Demeter';
@@ -523,6 +524,54 @@ sub rfactor {
 };
 
 
+## this appends the actual data to the base class serialization
+override 'serialization' => sub {
+  my ($self) = @_;
+  my $string = $self->SUPER::serialization;
+  if ($self->datatype eq 'xmu') {
+    $string .= YAML::Dump($self->ref_array("energy"));
+    $string .= YAML::Dump($self->ref_array("xmu"));
+    if ($self->is_col) {
+      $string .= YAML::Dump($self->ref_array("i0"));
+    }
+  } elsif ($self->datatype eq "chi") {
+    $string .= YAML::Dump($self->get_array("k"));
+    $string .= YAML::Dump($self->get_array("chi"));
+  };
+  return $string;
+};
+
+override 'deserialize' => sub {
+  my ($self, $fname) = @_;
+  my @stuff = YAML::LoadFile($fname);
+
+  ## load the attributes
+  my %args = %{ $stuff[0] };
+  delete $args{plottable};
+  my @args = %args;
+  $self -> set(@args);
+  $self -> group($self->_get_group);
+  $self -> update_data(0);
+  $self -> update_columns(0);
+  $self -> update_norm(1);
+
+  my @x  = @{ $stuff[1] };
+  my @y  = @{ $stuff[2] };
+  my @i0 = @{ $stuff[3] };
+
+  if ($self->datatype eq 'xmu') {
+    Ifeffit::put_array($self->group.".xmu",    \@x);
+    Ifeffit::put_array($self->group.".energy", \@y);
+#     if ($self->is_col) {
+#       Ifeffit::put_array($self->group.".i0",   \@i0);
+#     };
+#   } elsif ($self->datatype eq 'chi') {
+#     Ifeffit::put_array($self->group.".k",      \@x);
+#     Ifeffit::put_array($self->group.".chi",    \@y);
+  };
+
+  return $self;
+};
 
 
 1;

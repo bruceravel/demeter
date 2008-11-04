@@ -35,19 +35,19 @@ print $config -> describe_param("bkg"),
 my $toss = <STDIN>;
 print "\n";
 
-print "This is the full description of the "bkg -> rbkg" parameter (number valued):\n";
+print "This is the full description of the \"bkg -> rbkg\" parameter (number valued):\n";
 print $config -> describe_param("bkg", 'rbkg'),
   "\nHit return for next test ";
 $toss = <STDIN>;
 print "\n";
 
-print "This is the full description of the "bkg -> rbkg" parameter (number valued, width=60):\n";
+print "This is the full description of the \"bkg -> rbkg\" parameter (number valued, width=60):\n";
 print $config -> describe_param("bkg", 'rbkg', 60),
   "\nHit return for next test ";
 $toss = <STDIN>;
 print "\n";
 
-print "This is the full description of the "fft -> kwindow" parameter (list valued)\n";
+print "This is the full description of the \"fft -> kwindow\" parameter (list valued)\n";
 print $config -> describe_param("fft", 'kwindow'),
   "\nHit return for next test ";
 $toss = <STDIN>;

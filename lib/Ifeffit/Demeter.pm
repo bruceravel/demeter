@@ -386,14 +386,28 @@ sub serialization {
   my %hash = $self->get_all;
   return YAML::Dump(\%hash);
 };
-# {
-#   no warnings 'once';
-#   # alternate names
-#   *freeze = \ &serialize;
-#   #*thaw   = \ &deserialize;
+
+sub serialize {
+  my ($self, $fname) = @_;
+  open my $F, '>'.$fname;
+  print $F $self->serialization;
+  close $F;
+  return $self;
+};
+sub deserialize {
+  my ($self, $fname) = @_;
+  my $r_args = YAML::LoadFile($fname);
+  $self->set(@$r_args);
+  return $self;
+};
+{
+  no warnings 'once';
+  # alternate names
+  *freeze = \ &serialize;
+  *thaw   = \ &deserialize;
 #   #*Dump   = \ &serialize;
 #   #*Load   = \ &deserialize;
-# }
+}
 
 
 
