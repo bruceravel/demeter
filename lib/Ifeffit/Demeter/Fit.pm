@@ -1014,21 +1014,7 @@ override 'serialize' => sub {
   foreach my $d (@data) {
     my $dd = $d->group;
     my $datafile =  File::Spec->catfile($fit_folder, "$dd.yaml");
-    open my $dfile, ">$datafile";
-
-    print $dfile $d->serialization;
-    if ($d->datatype eq 'xmu') {
-      print $dfile YAML::Dump($d->ref_array("energy"));
-      print $dfile YAML::Dump($d->ref_array("xmu"));
-      if ($d->is_col) {
- 	print $dfile YAML::Dump($d->ref_array("i0"));
-      }
-    } elsif ($d->datatype eq "chi") {
-      print $dfile YAML::Dump($d->get_array("k"));
-      print $dfile YAML::Dump($d->get_array("chi"));
-    };
-
-    close $dfile;
+    $d -> serialize($datafile);
   };
 
   ## -------- save a yaml containing the paths

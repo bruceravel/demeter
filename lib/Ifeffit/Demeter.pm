@@ -366,7 +366,7 @@ sub plot_with {
 ## -------- introspection methods
 sub get_all {
   my ($self) = @_;
-  my @keys   = grep {$_ !~ m{\A(?:data|plot|mode|parent|sp)\z}} $self->meta->get_attribute_list;
+  my @keys   = grep {$_ !~ m{\A(?:data|plot|plottable|mode|parent|sp)\z}} $self->meta->get_attribute_list;
   push @keys, qw(name group plottable);
   my @values = map {$self->$_} @keys;
   my %hash   = zip(@keys, @values);
@@ -380,7 +380,7 @@ sub get_params_of {
 
 
 
-## -------- serialization tool
+## -------- serialization tools
 sub serialization {
   my ($self) = @_;
   my %hash = $self->get_all;
@@ -405,8 +405,8 @@ sub deserialize {
   # alternate names
   *freeze = \ &serialize;
   *thaw   = \ &deserialize;
-#   #*Dump   = \ &serialize;
-#   #*Load   = \ &deserialize;
+  #*Dump   = \ &serialize;
+  #*Load   = \ &deserialize;
 }
 
 

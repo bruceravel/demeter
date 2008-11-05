@@ -42,10 +42,10 @@ $d0 -> set(file        => "$where/data/fe.060",
 	   ln		=> 1,	 # these are transmission data
 	  );
 my $plot = $d0->po;
-$plot->set_mode(screen=>1, repscreen=>0);
+$plot->set_mode(screen=>0, repscreen=>0);
 $plot->set(emin=>-200, emax=>1200, e_norm=>0, e_markers=>1);
 
-$d0->plot('E');
+$d0->plot('k');
 my $fname = $d0->group . ".yaml";
 print "... and serialize it to a yaml\n";
 #print $d0 -> serialization;
@@ -53,9 +53,9 @@ $d0->freeze($fname);	# or freeze or Dump
 
 print "Deserializing from $fname and plotting it as a different object\n";
 my $d1 = Ifeffit::Demeter::Data->new(); # or thaw or Load
-$d1 -> deserialize($fname);
-$d1->set(name=>"60K, deserialized",);# 'y_offset'=>-0.5);
+$d1 -> thaw($fname);
+$d1 -> set(name=>"60K, deserialized");
 print "... and plot it\n";
-$d1->plot("E");
+$d1->plot("k");
 
 1;

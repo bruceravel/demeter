@@ -541,6 +541,8 @@ override 'serialization' => sub {
   return $string;
 };
 
+#   ## standard deviation array?
+
 override 'deserialize' => sub {
   my ($self, $fname) = @_;
   my @stuff = YAML::LoadFile($fname);
@@ -560,113 +562,27 @@ override 'deserialize' => sub {
   my @i0 = @{ $stuff[3] };
 
   if ($self->datatype eq 'xmu') {
-    Ifeffit::put_array($self->group.".xmu",    \@x);
-    Ifeffit::put_array($self->group.".energy", \@y);
-#     if ($self->is_col) {
-#       Ifeffit::put_array($self->group.".i0",   \@i0);
-#     };
-#   } elsif ($self->datatype eq 'chi') {
-#     Ifeffit::put_array($self->group.".k",      \@x);
-#     Ifeffit::put_array($self->group.".chi",    \@y);
+    Ifeffit::put_array($self->group.".energy",    \@x);
+    Ifeffit::put_array($self->group.".xmu", \@y);
+    if ($self->is_col) {
+      Ifeffit::put_array($self->group.".i0",   \@i0);
+    };
+  } elsif ($self->datatype eq 'chi') {
+    Ifeffit::put_array($self->group.".k",      \@x);
+    Ifeffit::put_array($self->group.".chi",    \@y);
   };
 
   return $self;
 };
+{
+  no warnings 'once';
+  # alternate names
+  *thaw   = \ &deserialize;
+  #*Load   = \ &deserialize;
+}
 
 
 1;
-
-
-#   sub read_fit {
-#     my ($self, $filename) = @_;
-#     croak("No filename specified for read_fit") unless $filename;
-#     my $command = $self-> template("fit", "read_fit", {filename => $filename,});
-#     $self->dispose($command);
-#     $self->set({update_fft=>1});
-#     return $self;
-#   };
-
-#   ## standard deviation array?
-#   sub serialize {
-#     my ($self, $filename) = @_;
-#     croak("No filename specified for serialize") unless $filename;
-#     open my $Y, ">".$filename;
-#     print $Y $self->SUPER::serialize;
-#     if ($self->get("is_xmu")) {
-#       my @array = $self->get_array("energy");
-#       print $Y YAML::Dump(\@array);
-#       @array = $self->get_array("xmu");
-#       print $Y YAML::Dump(\@array);
-#       if ($self->get("is_col")) {
-# 	@array = $self->get_array("i0");
-# 	print $Y YAML::Dump(\@array);
-#       }
-#     } elsif ($self->get("is_chi")) {
-#       my @array = $self->get_array("k");
-#       print $Y YAML::Dump(\@array);
-#       @array = $self->get_array("chi");
-#       print $Y YAML::Dump(\@array);
-#     };
-#     close $Y;
-#     return $self;
-#   };
-#   sub deserialize {
-#     my ($self, $filename_or_stream) = @_;
-#     croak("No filename or YAML stream specified for deserialize") unless $filename_or_stream;
-#     my $data = Ifeffit::Demeter::Data->new();
-#     my ($rhash, $ra1, $ra2, $ra3);
-#     if ($filename_or_stream =~ m{\n}) {
-#       ($rhash, $ra1, $ra2, $ra3) = YAML::Load($filename_or_stream);
-#     } else {
-#       ($rhash, $ra1, $ra2, $ra3) = YAML::LoadFile($filename_or_stream);
-#     };
-#     delete $$rhash{file};
-#     $data->set($rhash);
-#     if ($rhash->{is_xmu}) {
-#       Ifeffit::put_array("$data.energy", $ra1);
-#       Ifeffit::put_array("$data.xmu",    $ra2);
-#       Ifeffit::put_array("$data.i0",     $ra3) if (defined $ra3);
-#       $data->set({update_norm => 1});
-#     } elsif ($rhash->{is_chi}) {
-#       Ifeffit::put_array("$data.k",      $ra1);
-#       Ifeffit::put_array("$data.chi",    $ra2);
-#       $data->set({update_fft  => 1});
-#     };
-#     return $data;
-#   };
-#   {
-#     no warnings 'once';
-#     # alternate names
-#     *freeze = \ &serialize;
-#     *thaw   = \ &deserialize;
-#   }
-
-#   sub chi_noise {
-#     my ($self) = @_;
-#     my $string = $self->template("process", "chi_noise");
-#     $self->dispose($string);
-#     return (Ifeffit::get_scalar("epsilon_k"),
-# 	    Ifeffit::get_scalar("epsilon_r"),
-# 	    Ifeffit::get_scalar("kmax_suggest"),
-# 	   );
-#   };
-
-
-#   sub plot_marker {
-#     my ($self, $requested, $x) = @_;
-#     my $command = q{};
-#     my @list = (ref($x) eq 'ARRAY') ? @$x : ($x);
-#     foreach my $xx (@list) {
-#       my $y = $self->yofx($requested, "", $xx);
-#       $command .= $self->template("plot", "marker", { x => $xx, 'y'=> $y });
-#     };
-#     #if ($self->get_mode("template_plot") eq 'gnuplot') {
-#     #  $self->get_mode('external_plot_object')->gnuplot_cmd($command);
-#     #} else {
-#       $self -> dispose($command, "plotting");
-#     #};
-#     return $self;
-#   };
 
 
 =head1 NAME
@@ -738,13 +654,21 @@ interface.  Like the C<group> attribute, this should be short, but it
 can be a bit more verbose.  It should be a single line, unlike the
 C<title> attibute.
 
+=item C<data_type> (string)
+
+Blah blah
+
 =item C<is_xmu> (boolean)
+
+  deprecated
 
 This is true if the file indicated by the C<file> attribute contains
 mu(E) data.  See the description of the C<read_data> method for how
 this gets set automatically and when you may need to set it by hand.
 
 =item C<is_chi> (boolean)
+
+  deprecated
 
 This is true if the file indicated by the C<file> attribute contains
 chi(k) data.  See the description of the C<read_data> method for how
