@@ -33,7 +33,7 @@ sub new {
   my $hbox = Wx::BoxSizer->new( wxHORIZONTAL );
   $self->SetSizer($hbox);
 
-  $self->{targetenergy} = 8046;
+  $self->{targetenergy} = $Ifeffit::Demeter::UI::Hephaestus::demeter->co->default(qw(hephaestus line_energy));
   $self->{echo} = $echoarea;
 
   ## -------- Edge energies

@@ -20,6 +20,7 @@ use autodie qw(open close);
 use MooseX::Singleton;
 extends 'Ifeffit::Demeter';
 use Moose::Util::TypeConstraints;
+use MooseX::AttributeHelpers;
 
 use Carp;
 #use diagnostics;
@@ -38,6 +39,18 @@ has 'config_file' => (is => 'ro', isa => 'Str',
 						     "Demeter",
 						     "configuration",
 						     "config.demeter_conf"));
+
+has 'other_config_files' => (
+			     metaclass => 'Collection::Array',
+			     is        => 'rw',
+			     isa       => 'ArrayRef[Str]',
+			     default   => sub { [] },
+			     provides  => {
+					   'push'  => 'push_titles',
+					   'pop'   => 'pop_titles',
+					   'clear' => 'clear_titles',
+					  },
+			    );
 
 has 'is_configured' => (is => 'rw', isa => 'Bool', default => 0);
 
@@ -116,8 +129,8 @@ sub parameters {
 =cut
 
 sub read_config {
-  my ($self) = @_;
-  $self->_read_config_file($self->config_file);
+  my ($self, $file) = @_;
+  $self->_read_config_file($file||$self->config_file);
   $self->is_configured(1);
   return $self;
 };

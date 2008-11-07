@@ -33,6 +33,7 @@
   $line2key   = ($z < 57) ? "K \\ga2" : "L \\ga1";
   $line3key   = ($z < 57) ? q{}       : "L \\ga2";
 
+  $width      = $C->get("filter_width");
   q{}
 }
 newplot(f1f2.energy, f1f2.f2, key='{$filtersymbol} filter', title='{$filtername} as a filter for {$absname}', xlabel='Energy (eV)', ylabel='filter and lines (arb. units)')
@@ -41,7 +42,7 @@ set line.2 = {$h2}*300*gauss(f1f2.energy, {$e2}, 30)
 plot(f1f2.energy, line.1, key='{$abssymbol} {$line1key}')
 plot(f1f2.energy, line.2, key='{$abssymbol} {$line2key}')
 {if ($line3) {
-  $OUT .= "set line.3 = " . $h3 . "*300*gauss(f1f2.energy, " . $e3 . ", 30)\n";
+  $OUT .= "set line.3 = " . $h3 . "*300*gauss(f1f2.energy, " . $e3 . ", " . $width . ")\n";
   $OUT .= "plot(f1f2.energy, line.3, key='" . $abssymbol . " " . $line3key . "')";
 }}
 set top = ceil(f1f2.f2)*1.2

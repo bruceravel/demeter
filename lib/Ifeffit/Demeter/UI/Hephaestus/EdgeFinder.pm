@@ -32,7 +32,7 @@ sub new {
   my $hbox = Wx::BoxSizer->new( wxHORIZONTAL );
   $self->SetSizer($hbox);
 
-  $self->{targetenergy} = 8979;
+  $self->{targetenergy} = $Ifeffit::Demeter::UI::Hephaestus::demeter->co->default(qw(hephaestus find_energy));
   $self->{echo} = $echoarea;
 
   ## -------- Edge energies
@@ -79,6 +79,10 @@ sub new {
   $self->{harmonicenergy} = Wx::StaticText->new($self, -1, q{});
   $self->{targetboxsizer} -> Add($self->{harmonicenergy}, 0, wxEXPAND|wxALL, 10);
   #$panel -> SetSizerAndFit( $panelsizer );
+  $self->{harmonics}->SetSelection($Ifeffit::Demeter::UI::Hephaestus::demeter->co->default(qw(hephaestus find_harmonic)) - 1);
+  if ($Ifeffit::Demeter::UI::Hephaestus::demeter->co->default(qw(hephaestus find_harmonic)) > 1) {
+    $self->search_edges;
+  };
 
 
   $hbox -> Add($self->{targetboxsizer}, 2, wxALIGN_CENTER_VERTICAL|wxALL, 5);

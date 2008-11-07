@@ -187,7 +187,8 @@ sub abs_get_data {
 sub l_filter {
   my $elem = $_[0];
   return q{} if (get_Z($elem) > 98);
-  my $en = Xray::Absorption -> get_energy($elem, 'la1') + 3*30;
+  my $demeter = $Ifeffit::Demeter::UI::Hephaestus::demeter;
+  my $en = Xray::Absorption -> get_energy($elem, 'la1') + $demeter->co->default(qw(hephaestus filter_offset))*$demeter->co->default(qw(hephaestus filter_width));
   my $filter = q{};
   foreach (@k_list) {
     $filter = $_->[0];
@@ -269,7 +270,6 @@ sub filter_plot {
   my $line2  = ($z < 57) ? "Ka2" : "La1";
 
   my $demeter = Ifeffit::Demeter->new;
-  $demeter -> plot_with('gnuplot');
   $demeter->co->set(
 		    filter_abs      => $z,
 		    filter_edge     => $edge,
@@ -277,6 +277,7 @@ sub filter_plot {
 		    filter_emin     => Xray::Absorption -> get_energy($z, $line2) - 400,
 		    filter_emax     => Xray::Absorption -> get_energy($z, $edge)  + 300,
 		    filter_file     => $demeter->po->tempfile,
+		    filter_width    => $demeter->co->default(qw(hephaestus filter_width)),
 		   );
   $demeter -> po -> start_plot;
   my $command = $demeter->template('plot', 'prep_filter');

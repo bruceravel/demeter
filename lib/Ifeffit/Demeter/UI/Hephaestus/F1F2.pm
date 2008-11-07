@@ -30,9 +30,9 @@ sub new {
   $self->{gridbox} = Wx::StaticBox->new($self, -1, 'Energy grid', wxDefaultPosition, wxDefaultSize);
   $self->{gridboxsizer} = Wx::StaticBoxSizer->new( $self->{gridbox}, wxHORIZONTAL );
 
-  $self->{startingenergy} = 3000;
-  $self->{endingenergy}   = 7000;
-  $self->{energygrid}     = 5;
+  $self->{startingenergy} = $Ifeffit::Demeter::UI::Hephaestus::demeter->co->default(qw(hephaestus f1f2_emin));
+  $self->{endingenergy}   = $Ifeffit::Demeter::UI::Hephaestus::demeter->co->default(qw(hephaestus f1f2_emax));
+  $self->{energygrid}     = $Ifeffit::Demeter::UI::Hephaestus::demeter->co->default(qw(hephaestus f1f2_grid));
   $self->{echo}           = $echoarea;
 
   my $label = Wx::StaticText->new($self, -1, 'Starting Energy', wxDefaultPosition, wxDefaultSize);

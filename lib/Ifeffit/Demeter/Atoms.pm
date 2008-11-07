@@ -20,6 +20,7 @@ use autodie qw(open close);
 use Moose;
 extends 'Ifeffit::Demeter';
 with 'Ifeffit::Demeter::Atoms::Absorption';
+use MooseX::AttributeHelpers;
 use Ifeffit::Demeter::StrTypes qw( Element
  				   Edge
 				   AtomsLattice

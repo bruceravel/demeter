@@ -137,11 +137,17 @@ sub identify_self {
   my @caller = caller;
   return dirname($caller[1]);
 };
-use vars qw($hephaestus_base);
+use vars qw($hephaestus_base $demeter);
 $hephaestus_base = identify_self();
 
 sub OnInit {
   Wx::InitAllImageHandlers();
+
+  $demeter = Ifeffit::Demeter->new;
+  my $conffile = File::Spec->catfile(dirname($INC{'Ifeffit/Demeter/UI/Hephaestus.pm'}), 'Hephaestus', 'data', "hephaestus.demeter_conf");
+  $demeter->co->read_config($conffile);
+  ## read ini file...
+  $demeter -> plot_with($demeter->co->default(qw(hephaestus plotwith)));
 
   foreach my $m (qw(Absorption Formulas Ion Data Transitions EdgeFinder LineFinder
 		    Standards F1F2 Help PeriodicTable EchoArea)) {

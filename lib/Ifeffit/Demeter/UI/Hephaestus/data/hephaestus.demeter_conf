@@ -1,0 +1,165 @@
+## -*- config -*-
+###########################################################################
+##      Demeter and Hephaestus is copyright (c) 2006-2008 Bruce Ravel
+##                                                     bravel@bnl.gov
+##                                        http://xafs.org/BruceRavel/
+##
+##                   Ifeffit is copyright (c) 1992-2007 Matt Newville
+##                                         newville@cars.uchicago.edu
+##                       http://cars9.uchicago.edu/~newville/ifeffit/
+##
+##	  The latest version of Demeter can always be found at
+##          http://cars9.uchicago.edu/~ravel/software/exafs/
+##
+## -------------------------------------------------------------------
+##     All rights reserved. This program is free software; you can
+##     redistribute it and/or modify it provided that the above notice
+##     of copyright, these terms of use, and the disclaimer of
+##     warranty below appear in the source code and documentation, and
+##     that none of the names of Argonne National Laboratory, The
+##     University of Chicago, University of Washington, or the authors
+##     appear in advertising or endorsement of works derived from this
+##     software without specific prior written permission from all
+##     parties.
+##
+##     THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+##     EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
+##     OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+##     NONINFRINGEMENT.  IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
+##     HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
+##     WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+##     FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
+##     OTHER DEALINGS IN THIS SOFTWARE.
+## -------------------------------------------------------------------
+###########################################################################
+
+
+## This file contains the Hephaestus configuration group
+
+
+######################################################################
+section=hephaestus
+section_description
+  These variables determine the behavior of Hephaestus.
+
+variable=plotwith
+type=list
+options=pgplot gnuplot
+default=pgplot
+description
+  This tells Hephaestus which plotting backend to use
+
+variable=resource
+type=list
+options=Elam McMaster Shaltout Henke Chantler CL
+default=Elam
+description
+  The data resource to use for most calculations.  Note that the CL
+  resource is always used in the F1F2 utility.
+
+variable=units
+type=list
+options=energy wavelength
+default=energy
+description
+  This specifies the default units to use to present energy values.
+
+variable=xsec
+type=list
+options=full photo hoherent incoherent
+default=full
+description
+  This sets the default cross-section to use in all calculations.
+
+variable=filter_width
+type=positive integer
+default=30
+description
+  This is the Gaussianlinewidth touse in filter plots.
+
+variable=filter_offset
+type=positive integer
+default=3
+description
+  This parameter is used to determine appropriate filter for an L3
+  edge -- a filter must have its K edge filter_offset*filterline_width
+  above the Lalpha1 line of the absorber 
+
+variable=formula_energy
+type=positive integer
+default=9000
+description
+  The initial energy value in the Formulas utility
+
+variable=ion_energy
+type=positive integer
+default=9000
+description
+  The initial energy value in the Ion Chambers utility
+
+variable=ion_length
+type=list
+options=3.3 6.6 10 15 30 45 60
+default=15
+description
+  The intial value for chamber length in the Ion Chambers utility
+
+variable=ion_gas1
+type=list
+options=He N2 Ne Ar Kr Xe
+default=N2
+description
+  The intial type for the primary ion chamber gas.  The initial
+  secondary gas is always He.
+
+variable=ion_pressure
+type=positive integer
+default=760
+description
+  The initial pressure for the Ion Chambers utility
+
+variable=ion_gain
+type=positive integer
+default=8
+minint=5
+maxint=11
+description
+  The initial value of the gain in the Ion Chambers utility
+
+variable=find_energy
+type=positive integer
+default=8978
+description
+  The energy value in the Edge Finder utility
+
+variable=find_harmonic
+type=positive integer
+minint=1
+maxint=3
+default=1
+description
+  The initial choice for harmonic in the Edge Finder utility
+
+variable=line_energy
+type=positive integer
+default=8045
+description
+  The energy value in the Line Finder utility
+
+variable=f1f2_emin
+type=positive integer
+default=3000
+description
+  The intial value for the minimum energy in the Anomalous Scattering utility
+
+variable=f1f2_emax
+type=positive integer
+default=7000
+description
+  The intial value for the maximum energy in the Anomalous Scattering utility
+
+variable=f1f2_grid
+type=positive integer
+default=5
+description
+  The intial value for the energy grid size in the Anomalous Scattering utility

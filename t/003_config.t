@@ -17,7 +17,7 @@
 
 =cut
  
-use Test::More tests => 17;
+use Test::More tests => 20;
 
 use Ifeffit;
 use Ifeffit::Demeter;
@@ -56,6 +56,7 @@ ok( ($groups[0] eq 'atoms' and $#groups == 16),                            'conf
 my @parameters = $demeter->mode->config->parameters('happiness');
 ok( ($parameters[0] eq 'average_color' and $#parameters == 10),            'configuration system introspection works: group parameters');
 
-#print $demeter->mode->config->demeter (qw(testing boolean)), $/;
-#print $demeter->mode->config->demeter (qw(testing string)), $/;
-#print $demeter->mode->config->demeter (qw(testing real)), $/;
+$demeter->co->read_config('test.demeter_conf');
+ok( (not $demeter->co->default(qw(testing boolean))),            'reading boolean from arbitrary config file');
+ok( $demeter->co->default(qw(testing string))  eq 'Hi there!',   'reading string from arbitrary config file');
+ok( $demeter->co->default(qw(testing real))    == 1.0,           'reading real from arbitrary config file');

@@ -23,7 +23,7 @@ sub new {
 
   my @choices = keys(%formula_of);
 
-  $self->{energyvalue} = 9000;
+  $self->{energyvalue} = $Ifeffit::Demeter::UI::Hephaestus::demeter->co->default(qw(hephaestus formula_energy));
   $self->{type}        = 'Density';
   $self->{units}       = 'energy';
   $self->{echo}        = $echoarea;

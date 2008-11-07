@@ -30,7 +30,12 @@ sub new {
   $parent->{lengths} = Wx::RadioBox->new( $self, -1, 'Chamber length', wxDefaultPosition, wxDefaultSize,
 					  \@Ifeffit::Demeter::UI::Hephaestus::Ion::lengths,
 					  1, wxRA_SPECIFY_COLS);
-  $parent->{lengths}->SetSelection(3);
+  my $i = 0;
+  my $setlength = $Ifeffit::Demeter::UI::Hephaestus::demeter->co->default(qw(hephaestus ion_length));
+  foreach my $l (@Ifeffit::Demeter::UI::Hephaestus::Ion::lengths) {
+    $parent->{lengths}->SetSelection($i), last if ($l =~ m{$setlength});
+    ++$i;
+  };
   $energy_chamber_box -> Add($parent->{lengths}, 0, wxEXPAND|wxALL, 10);
 
   my $lengthsizer = Wx::BoxSizer->new( wxHORIZONTAL );
@@ -77,6 +82,12 @@ sub new {
 					   [-1, -1], [50, -1], 
 					   \@Ifeffit::Demeter::UI::Hephaestus::Ion::gases,
 					 );
+  my $i = 0;
+  my $setgas = $Ifeffit::Demeter::UI::Hephaestus::demeter->co->default(qw(hephaestus ion_gas1));
+  foreach my $g (@Ifeffit::Demeter::UI::Hephaestus::Ion::gases) {
+    $parent->{primarygas}->SetSelection($i), last if ($g eq $setgas);
+    ++$i;
+  };
   $hbox->Add($parent->{primarygas}, 0, wxALL, 0);
 
 
@@ -110,12 +121,11 @@ sub new {
   my $label = Wx::StaticText->new($self, -1, 'Secondary gas');
   $hbox->Add($label, 0, wxALL, 5);
 
-  my @gases = @Ifeffit::Demeter::UI::Hephaestus::Ion::gases;
-  @gases = @gases[1,0,2..$#gases];
   $parent->{secondarygas} = Wx::Choice->new( $self, -1,
 					   [-1, -1], [50, -1],
-					   \@gases,
+					   \@Ifeffit::Demeter::UI::Hephaestus::Ion::gases,
 					 );
+  $parent->{secondarygas}->SetSelection(0);
   $hbox->Add($parent->{secondarygas}, 0, wxALL, 0);
 
 
@@ -145,7 +155,9 @@ sub new {
 
   my $label = Wx::StaticText->new($self, -1, 'Pressure (torr)');
   $pressure_box->Add($label, 0, wxALL, 5);
-  $parent->{pressure} = Wx::Slider->new($self, -1, 760, 0, 2300, [-1,-1], [-1,-1],
+  $parent->{pressure} = Wx::Slider->new($self, -1,
+					$Ifeffit::Demeter::UI::Hephaestus::demeter->co->default(qw(hephaestus ion_pressure)),
+					0, 2300, [-1,-1], [-1,-1],
 					wxSL_VERTICAL|wxSL_AUTOTICKS|wxSL_LABELS|wxSL_RIGHT|wxSL_INVERSE);
   $pressure_box->Add($parent->{pressure}, 1, wxALIGN_CENTER_HORIZONTAL|wxALL, 5);
 
@@ -174,7 +186,7 @@ use vars qw(@lengths @gases %density);
 @lengths = ('3.3 cm Lytle detector', '6.6 cm Lytle detector',
 	    '10 cm', '15 cm', '30 cm', '45 cm', '60 cm',
 	    'Use the custom length');
-@gases = (qw(N2 He Ne Ar Kr Xe));
+@gases = (qw(He N2 Ne Ar Kr Xe));
 %density  = (N  => 0.00125,
 	     Ar => 0.001784,
 	     He => 0.00009,
@@ -189,7 +201,8 @@ sub new {
   my $outerbox = Wx::BoxSizer->new( wxVERTICAL );
   $self->SetSizer($outerbox);
 
-  $self->{energy} = 9000;
+  my $demeter = $Ifeffit::Demeter::UI::Hephaestus::demeter;
+  $self->{energy} = $demeter->co->default(qw(hephaestus ion_energy));
   $self->{echo} = $echoarea;
 
   ## -------- horizontal box containing energy, chambers, sliders
@@ -241,7 +254,7 @@ sub new {
   $botbox -> Add($label, 0, wxLEFT|wxRIGHT, 5);
   $self->{amp} = Wx::SpinCtrl->new($self, -1, 8, wxDefaultPosition, [50,-1]);
   $self->{amp} -> SetRange(0,12);
-  $self->{amp} -> SetValue(8);
+  $self->{amp} -> SetValue($Ifeffit::Demeter::UI::Hephaestus::demeter->co->default(qw(hephaestus ion_gain)));
   $botbox -> Add($self->{amp}, 0, wxLEFT|wxRIGHT, 5);
   $label = Wx::StaticText->new($self, -1, 'with');
   $botbox -> Add($label, 0, wxLEFT|wxRIGHT, 5);
