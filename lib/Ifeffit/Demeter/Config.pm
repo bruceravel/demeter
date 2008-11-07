@@ -154,7 +154,9 @@ sub _read_config_file {
     if ($line =~ m{^\s*include\s*(.+)}) {
       ## handle include files by recursion
       (my $includefile = $1) =~ s{\s+(?:\#.*)?$}{};
-      $includefile = File::Spec->catfile(dirname($file), $includefile);
+      if (not -e $includefile) { # this allows for arbitrary include files
+	$includefile = File::Spec->catfile(dirname($file), $includefile);
+      };
       $self->_read_config_file($includefile);
     } elsif ($line =~ m{^\s*section\s*=\s*(\w+)}) {
       $group = $1;
@@ -441,7 +443,7 @@ Return a text description of a parameter.
 
 There is a third argument that controls the width of the description
 text, the default being 90 (as set by the
-C<operations-E<gt>config_text_width> parameter).
+C<operations--E<gt>config_text_width> parameter).
 
   print $object -> co -> describe("bkg", "kw", 45);
    == prints ==>

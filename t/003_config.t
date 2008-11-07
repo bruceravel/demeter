@@ -55,3 +55,7 @@ ok( ($groups[0] eq 'atoms' and $#groups == 16),                            'conf
 
 my @parameters = $demeter->mode->config->parameters('happiness');
 ok( ($parameters[0] eq 'average_color' and $#parameters == 10),            'configuration system introspection works: group parameters');
+
+#print $demeter->mode->config->demeter (qw(testing boolean)), $/;
+#print $demeter->mode->config->demeter (qw(testing string)), $/;
+#print $demeter->mode->config->demeter (qw(testing real)), $/;

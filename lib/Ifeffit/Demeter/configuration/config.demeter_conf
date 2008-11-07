@@ -93,3 +93,5 @@ include gnuplot.demeter_conf       ## gnuplot-specific parameters
 include ornaments.demeter_conf     ## plotting ornaments parameters (indicators markers)
 
 include pathfinder.demeter_conf    ## Feff pathfinder parameters
+
+# include /home/bruce/codes/demeter/t/test.demeter.conf

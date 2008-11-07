@@ -376,6 +376,21 @@ Plot the Fourier transform window in k or R space.
   $dataobject->plot_window($space);
   $pathobject->plot_window($space);
 
+=item C<plot_marker>
+
+Mark an arbitrary point in the data.
+
+  $data -> plot_marker($part, $x);
+
+or
+
+  $data -> plot_marker($part, \@x);
+
+The C<$part> is the suffix of the array to be marked, for example
+"xmu", "der", or "chi".  The second argument can be a point to mark or
+a reference to a list of points.
+
+
 =item C<default_k_weight>
 
 This returns the value of the default k-weight for a Data or Path

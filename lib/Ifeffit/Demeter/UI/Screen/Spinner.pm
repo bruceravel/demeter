@@ -84,7 +84,7 @@ same names.
 =item C<thingy>
 
 An array with the sequence of text strings comprising the spinner.
-The default is a throbber that goes from "[      ]" to "-+-" and
+The default is a throbber that goes from S<"[      ]"> to "-+-" and
 back.
 
 =item C<rate>
