@@ -17,7 +17,7 @@
 
 =cut
  
-use Test::More tests => 20;
+use Test::More tests => 23;
 
 use Ifeffit;
 use Ifeffit::Demeter;
@@ -51,12 +51,18 @@ ok( $demeter2->mode->config->get("var1") == 7,              'wrote and read an a
 ok( $demeter2->mode->config->get("var2") eq 'foo',          'wrote and read an arbitrary config parameter: string');
 
 my @groups = $demeter->mode->config->groups;
-ok( ($groups[0] eq 'atoms' and $#groups == 16),                            'configuration system introspection works: groups');
+ok( ($groups[0] eq 'atoms' and $#groups == 16),                  'configuration system introspection works: groups');
+my $groups = $demeter->mode->config->main_groups;
+ok( ($#{$groups} == 16),                                         'configuration system introspection works: main_groups');
 
 my @parameters = $demeter->mode->config->parameters('happiness');
-ok( ($parameters[0] eq 'average_color' and $#parameters == 10),            'configuration system introspection works: group parameters');
+ok( ($parameters[0] eq 'average_color' and $#parameters == 10),  'configuration system introspection works: group parameters');
 
 $demeter->co->read_config('test.demeter_conf');
 ok( (not $demeter->co->default(qw(testing boolean))),            'reading boolean from arbitrary config file');
 ok( $demeter->co->default(qw(testing string))  eq 'Hi there!',   'reading string from arbitrary config file');
 ok( $demeter->co->default(qw(testing real))    == 1.0,           'reading real from arbitrary config file');
+@groups = $demeter->mode->config->groups;
+ok( ($#groups == 17),                                            'introspection after reading new group: groups');
+$groups = $demeter->mode->config->main_groups;
+ok( ($#{$groups} == 16),                                         'introspection after reading new group: main_groups');

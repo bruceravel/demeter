@@ -40,22 +40,34 @@ has 'config_file' => (is => 'ro', isa => 'Str',
 						     "configuration",
 						     "config.demeter_conf"));
 
-has 'other_config_files' => (
+has 'all_config_files' => (
 			     metaclass => 'Collection::Array',
 			     is        => 'rw',
 			     isa       => 'ArrayRef[Str]',
 			     default   => sub { [] },
 			     provides  => {
-					   'push'  => 'push_titles',
-					   'pop'   => 'pop_titles',
-					   'clear' => 'clear_titles',
+					   'push'  => 'push_all_config_files',
+					   'pop'   => 'pop_all_config_files',
+					   'clear' => 'clear_all_config_files',
 					  },
 			    );
+
+has 'main_groups' => (
+		      metaclass => 'Collection::Array',
+		      is        => 'rw',
+		      isa       => 'ArrayRef[Str]',
+		      default   => sub { [] },
+		      provides  => {
+				    'push'  => 'push_main_groups',
+				    'pop'   => 'pop_main_groups',
+				    'clear' => 'clear_main_groups',
+				   },
+		     );
 
 has 'is_configured' => (is => 'rw', isa => 'Bool', default => 0);
 
 my $where = (($^O eq 'MSWin32') or ($^O eq 'cygwin')) ? "USERPROFILE" : "HOME";
-#my $where = (Ifeffit::Demeter->mode->is_windows) ? "USERPROFILE" : "HOME";
+#my $where = ($Ifeffit::Demeter::mode->is_windows) ? "USERPROFILE" : "HOME";
 has 'ini_file' => (is => 'ro', isa => 'Str',
 		   default => File::Spec->catfile($ENV{$where}, ".horae", "demeter.ini"));
 
@@ -71,6 +83,8 @@ sub BUILD {
   $self -> read_config;
   $self -> read_ini;
   $self -> mode -> config($self);
+  my @groups = $self->groups;
+  $self->main_groups(\@groups);
 };
 
 sub set {
@@ -147,6 +161,7 @@ sub _read_config_file {
 
   my $base = (split(/\./, basename($file)))[0];
   $self -> Push(___groups => $base);
+  $self -> push_all_config_files(File::Spec->rel2abs($file));
 
   ## the first time this is called, the regexp method has not yet
   ## been defined -- grrr..!
