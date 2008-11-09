@@ -23,8 +23,8 @@
 use warnings;
 use strict;
 
-use Ifeffit::Demeter;
-my $demeter = Ifeffit::Demeter->new;
+use Demeter;
+my $demeter = Demeter->new;
 my $config = $demeter->co;
 print "Testing the configuration system\n";
 $config->set_mode(screen  => 0, ifeffit => 1);

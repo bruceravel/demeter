@@ -5,7 +5,7 @@ standards - Visualization of a library of standard reference materials
 
 =head1 VERSION
 
-This documentation refers to Ifeffit::Demeter version 0.2.
+This documentation refers to Demeter version 0.2.
 
 =head1 SYNOPSIS
 
@@ -252,13 +252,13 @@ system.
 
 =head1 DEPENDENCIES
 
-The dependencies of the Ifeffit::Demeter system are in the
+The dependencies of the Demeter system are in the
 F<Bundle/DemeterBundle.pm> file.
 
 =head1 BUGS AND LIMITATIONS
 
-See L<Ifeffit::Demeter::Atoms> for bugs and limitations of the
-underlying libraries.
+See L<Demeter::Atoms> for bugs and limitations of the underlying
+libraries.
 
 =over 4
 

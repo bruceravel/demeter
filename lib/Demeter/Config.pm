@@ -1,4 +1,4 @@
-package Ifeffit::Demeter::Config;
+package Demeter::Config;
 
 =for Copyright
  .
@@ -18,7 +18,7 @@ package Ifeffit::Demeter::Config;
 use autodie qw(open close);
 
 use MooseX::Singleton;
-extends 'Ifeffit::Demeter';
+extends 'Demeter';
 use Moose::Util::TypeConstraints;
 use MooseX::AttributeHelpers;
 
@@ -35,7 +35,7 @@ use Text::Wrap;
 #use Data::Dumper;
 
 has 'config_file' => (is => 'ro', isa => 'Str',
-		      default => File::Spec->catfile(dirname($INC{"Ifeffit/Demeter.pm"}),
+		      default => File::Spec->catfile(dirname($INC{"Demeter.pm"}),
 						     "Demeter",
 						     "configuration",
 						     "config.demeter_conf"));
@@ -67,7 +67,7 @@ has 'main_groups' => (
 has 'is_configured' => (is => 'rw', isa => 'Bool', default => 0);
 
 my $where = (($^O eq 'MSWin32') or ($^O eq 'cygwin')) ? "USERPROFILE" : "HOME";
-#my $where = ($Ifeffit::Demeter::mode->is_windows) ? "USERPROFILE" : "HOME";
+#my $where = ($Demeter::mode->is_windows) ? "USERPROFILE" : "HOME";
 has 'ini_file' => (is => 'ro', isa => 'Str',
 		   default => File::Spec->catfile($ENV{$where}, ".horae", "demeter.ini"));
 
@@ -168,7 +168,7 @@ sub _read_config_file {
   my $opt  = Regexp::List->new;
   my $key_regex = $opt->list2re(qw(type default minint maxint options
 				   units onvalue offvalue));
-  ##my $key_regex = Ifeffit::Demeter -> regexp("config");
+  ##my $key_regex = Demeter -> regexp("config");
 
   my (%hash, $description, $group, $param, $value);
   my $line;
@@ -396,16 +396,16 @@ sub read_ini {
 
 =head1 NAME
 
-Ifeffit::Demeter::Config - Demeter's configuration system
+Demeter::Config - Demeter's configuration system
 
 =head1 VERSION
 
-This documentation refers to Ifeffit::Demeter version 0.2.
+This documentation refers to Demeter version 0.2.
 
 =head1 DESCRIPTION
 
-This subclass of Ifeffit::Demeter provides a general way of storing
-and manipulating parameters of all sorts, including configuration
+This subclass of Demeter provides a general way of storing and
+manipulating parameters of all sorts, including configuration
 parameters for controlling the behavior of Demeter's various
 subsystems, parameters using by Demeter-base applications, and
 parameters that get passed to the templating subsystem.  The C<$C>
@@ -663,8 +663,8 @@ work.  Also, the user-defined parameters will be serialized along with
 the Config object.
 
 This system is used extensively in the C<merge> method from
-L<Ifeffit::Demeter::Data::Process>.  See also the F<merge_*.tmpl>
-files in the "process" group of templates.
+L<Demeter::Data::Process>.  See also the F<merge_*.tmpl> files in the
+"process" group of templates.
 
 =head1 DIAGNOSTICS
 

@@ -17,13 +17,13 @@
 
 use warnings;
 use strict;
-use Ifeffit::Demeter;
+use Demeter;
 use Term::ANSIColor qw(:constants);
 
-Ifeffit::Demeter->set_mode({screen => 0,});
+Demeter->set_mode({screen => 0,});
 
 print "Deserializing feff.yaml\n";
-my $feff = Ifeffit::Demeter::Feff -> new(yaml=>"feff.yaml");
+my $feff = Demeter::Feff -> new(yaml=>"feff.yaml");
 $feff->set({workspace=>"pf", screen=>0, buffer=>q{}});
 $feff->po->legend({key_dy => 0.05, # set nice legend parameters for the plot
 		   key_x  => 0.6});
@@ -52,11 +52,11 @@ print "Plotting the first 6 paths\n";
 my @pobjects = ();
 foreach my $i (0 .. 7) {
   my $j = $i+1;
-  Ifeffit::Demeter::Path -> new()
-      -> set({sp    => $list_of_paths[$i],
-	      #label => "Path $j",
-	      index => $j,
-	     })
+  Demeter::Path -> new()
+      -> set(sp    => $list_of_paths[$i],
+	     #label => "Path $j",
+	     index => $j,
+	    )
 	-> plot('r')
 	  -> rm;
 };

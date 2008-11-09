@@ -1,4 +1,4 @@
-package Ifeffit::Demeter::Data::Athena;
+package Demeter::Data::Athena;
 
 =for Copyright
  .
@@ -113,17 +113,17 @@ sub _write_record {
 
 =head1 NAME
 
-Ifeffit::Demeter::Data::Athena - Write Athena project files
+Demeter::Data::Athena - Write Athena project files
 
 =head1 VERSION
 
-This documentation refers to Ifeffit::Demeter version 0.2.
+This documentation refers to Demeter version 0.2.
 
 =head1 DESCRIPTION
 
-This subclass of Ifeffit::Demeter::Data contains methods for
-interacting with Athena.  See L<Ifeffit::Demeter::Data::Prj> for
-Demeter's method of reading Athena project file.
+This subclass of Demeter::Data contains methods for interacting with
+Athena.  See L<Demeter::Data::Prj> for Demeter's method of
+reading Athena project file.
 
 =head1 METHODS
 
@@ -157,7 +157,7 @@ Athena project file.
 
 =head1 CONFIGURATION
 
-See L<Ifeffit::Demeter::Config> for a description of the configuration
+See L<Demeter::Config> for a description of the configuration
 system.
 
 =head1 DEPENDENCIES

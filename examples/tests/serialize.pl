@@ -24,11 +24,11 @@
 use warnings;
 use strict;
 
-use Ifeffit::Demeter;
+use Demeter;
 my $where = $ENV{DEMETER_TEST_DIR} || "..";
 
 print "Reading, plotting fe.060\n";
-my $d0 = Ifeffit::Demeter::Data -> new(group => 'data0');
+my $d0 = Demeter::Data -> new(group => 'data0');
 $d0 -> set(file        => "$where/data/fe.060",
 	   name        => '60K',
 	   bkg_pre1    => -30,   bkg_pre2    => -150,
@@ -52,7 +52,7 @@ print "... and serialize it to a yaml\n";
 $d0->freeze($fname);	# or freeze or Dump
 
 print "Deserializing from $fname and plotting it as a different object\n";
-my $d1 = Ifeffit::Demeter::Data->new(); # or thaw or Load
+my $d1 = Demeter::Data->new(); # or thaw or Load
 $d1 -> thaw($fname);
 $d1 -> set(name=>"60K, deserialized");
 print "... and plot it\n";

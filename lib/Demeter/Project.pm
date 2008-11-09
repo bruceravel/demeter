@@ -1,4 +1,4 @@
-package Ifeffit::Demeter::Project;
+package Demeter::Project;
 
 =for Copyright
  .
@@ -78,11 +78,11 @@ sub share_folder {
 
 =head1 NAME
 
-Ifeffit::Demeter::Project - Project file management
+Demeter::Project - Project file management
 
 =head1 VERSION
 
-This documentation refers to Ifeffit::Demeter version 0.2.
+This documentation refers to Demeter version 0.2.
 
 =head1 DESCRIPTION
 
@@ -102,7 +102,7 @@ None.
 
 =head1 CONFIGURATION AND ENVIRONMENT
 
-See L<Ifeffit::Demeter::Config> for a description of the configuration system.
+See L<Demeter::Config> for a description of the configuration system.
 
 =head1 DEPENDENCIES
 

@@ -17,7 +17,7 @@
 
 use warnings;
 use strict;
-use Ifeffit::Demeter;
+use Demeter;
 use File::Spec;
 use Term::ReadLine;
 my $term = new Term::ReadLine 'datawatcher';
@@ -90,7 +90,7 @@ my %prior = ();
 my %size  = ();
 my %seen  = ();
 @data  = ();
-Ifeffit::Demeter->plot_with('gnuplot') if $params{use_gnuplot};
+Demeter->plot_with('gnuplot') if $params{use_gnuplot};
 
 local $| = 1;
 print &welcome, &report;
@@ -129,7 +129,7 @@ while (1) {
 
     local $| = 1;
     print " $f";
-    my $new = Ifeffit::Demeter::Data->new();
+    my $new = Demeter::Data->new();
     $new -> set({file	     => $this,
 		 label       => $f,
 		 energy	     => $params{energy},

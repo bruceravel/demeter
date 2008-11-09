@@ -1,4 +1,4 @@
-package Ifeffit::Demeter::UI::Gtk2::Hephaestus::Absorption;
+package Demeter::UI::Gtk2::Hephaestus::Absorption;
 use strict;
 use warnings;
 use Carp;
@@ -8,7 +8,7 @@ use Glib qw(TRUE FALSE);
 use Gtk2::Ex::PodViewer;
 
 use base 'Gtk2::Frame';
-use Ifeffit::Demeter::UI::Gtk2::Hephaestus::PeriodicTable;
+use Demeter::UI::Gtk2::Hephaestus::PeriodicTable;
 use Gtk2::SimpleList;
 
 use Xray::Absorption;
@@ -39,7 +39,7 @@ sub new {
   my $self = Gtk2::Frame->new;
   bless $self, $class;
 
-  my $pt = Ifeffit::Demeter::UI::Gtk2::Hephaestus::PeriodicTable -> new($self, 'abs_get_data');
+  my $pt = Demeter::UI::Gtk2::Hephaestus::PeriodicTable -> new($self, 'abs_get_data');
 
   my $vbox = Gtk2::VBox->new;
 
@@ -143,7 +143,7 @@ sub filter_plot {
   my $edge   = ($z < 57) ? "K"   : "L3";
   my $line2  = ($z < 57) ? "Ka2" : "La1";
 
-  my $demeter = Ifeffit::Demeter->new;
+  my $demeter = Demeter->new;
   $demeter -> plot_with('gnuplot');
   $demeter->co->set(
 		    filter_abs      => $z,

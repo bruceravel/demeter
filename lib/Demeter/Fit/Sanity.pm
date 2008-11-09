@@ -1,4 +1,4 @@
-package Ifeffit::Demeter::Fit::Sanity;
+package Demeter::Fit::Sanity;
 
 =for Copyright
  .
@@ -16,7 +16,7 @@ package Ifeffit::Demeter::Fit::Sanity;
 =cut
 
 use Moose::Role;
-use Ifeffit::Demeter::StrTypes qw( IfeffitFunction IfeffitProgramVar );
+use Demeter::StrTypes qw( IfeffitFunction IfeffitProgramVar );
 
 use Carp;
 use File::Spec;
@@ -485,15 +485,15 @@ sub S_path_calculation_exists {
 
 =head1 NAME
 
-Ifeffit::Demeter::Fit::Sanity - Sanity checks for EXAFS fitting models
+Demeter::Fit::Sanity - Sanity checks for EXAFS fitting models
 
 =head1 VERSION
 
-This documentation refers to Ifeffit::Demeter version 0.2.
+This documentation refers to Demeter version 0.2.
 
 =head1 SYNOPSIS
 
-  my $fitobject = Ifeffit::Demeter::Fit ->
+  my $fitobject = Demeter::Fit ->
      new(gds   => \@gds_objects,
 	 data  => [$data_object],
 	 paths => \@path_objects,
@@ -508,7 +508,7 @@ this module.
 
 This module contains all the sanity checks made on a Fit object before
 the fit starts.  This file forms part of the base of the
-Ifeffit::Demeter::Fit class and serves no independent function.  That
+Demeter::Fit class and serves no independent function.  That
 is, using this module directly in a program does nothing useful -- it
 is purely a utility module for the Feff object.
 
@@ -600,7 +600,7 @@ reserved words.
 
 =head1 CONFIGURATION AND ENVIRONMENT
 
-See L<Ifeffit::Demeter> for a description of the configuration system.
+See L<Demeter> for a description of the configuration system.
 
 =head1 BUGS AND LIMITATIONS
 

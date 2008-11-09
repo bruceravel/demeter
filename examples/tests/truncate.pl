@@ -25,7 +25,7 @@
 use warnings;
 use strict;
 
-use Ifeffit::Demeter;
+use Demeter;
 my $where = $ENV{DEMETER_TEST_DIR} || "..";
 
 ## set up a data object
@@ -35,7 +35,7 @@ my @attributes = (bkg_pre1   => -30,    bkg_pre2   => -150,
 		  fft_kmax   => 3,      fft_kmin   => 14,
 		 );
 
-my $d0 = Ifeffit::Demeter::Data -> new(@attributes);
+my $d0 = Demeter::Data -> new(@attributes);
 $d0 -> set(file=>"$where/data/fe.060.xmu", name=>'60K');
 
 my $plot = $d0->po;

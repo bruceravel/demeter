@@ -1,4 +1,4 @@
-package Ifeffit::Demeter::UI::Standards;
+package Demeter::UI::Standards;
 
 =for Copyright
  .
@@ -29,8 +29,8 @@ use Text::Wrap;
 $Text::Wrap::columns = 75;
 
 use Xray::Absorption;
-use Ifeffit::Demeter;
-my $demeter = Ifeffit::Demeter->new;
+use Demeter;
+my $demeter = Demeter->new;
 #use Regexp::List;
 
 use Config::IniFiles;
@@ -54,7 +54,7 @@ my $config_regex = $opt->list2re(qw(emin emax key_x key_y));
 
 sub read_ini {
   my ($self) = @_;
-  my $file = File::Spec->catfile(Ifeffit::Demeter->location, "Demeter", "share", "standards", "standards.ini");
+  my $file = File::Spec->catfile(Demeter->location, "Demeter", "share", "standards", "standards.ini");
   my %ini;
   tie %ini, 'Config::IniFiles', ( -file => $file );
 
@@ -168,7 +168,7 @@ sub plot {
 				 bkg_flatten => 1,
 				 fft_kmax    => 3,    fft_kmin    => 17,
 				);
-  my $data = Ifeffit::Demeter::Data -> new(@common_to_all_data_sets);
+  my $data = Demeter::Data -> new(@common_to_all_data_sets);
   $data -> po -> start_plot;
 
   my $thisfile = $self->resolve_file($choice);
@@ -258,7 +258,7 @@ sub filter_plot {
 	       filter_emax     => Xray::Absorption -> get_energy($z, $edge)  + 300,
 	       filter_file     => $po->tempfile,
 	      );
-  #Ifeffit::Demeter -> set_mode({screen=>1});
+  #Demeter -> set_mode({screen=>1});
   $po -> start_plot;
   my $command = $demeter->template('plot', 'prep_filter');
   $po -> dispose($command);
@@ -266,7 +266,7 @@ sub filter_plot {
   $command = $demeter->template('plot', 'filter');
   $po -> legend(x => 0.15, y => 0.85, );
   $po -> dispose($command, "plotting");
-  #Ifeffit::Demeter -> set_mode(screen=>0);
+  #Demeter -> set_mode(screen=>0);
 };
 
 my @periodic_table =
@@ -482,17 +482,17 @@ sub athena {
 
 =head1 NAME
 
-Ifeffit::Demeter::UI::Standards - Standard reference material database interaction
+Demeter::UI::Standards - Standard reference material database interaction
 
 =head1 VERSION
 
-This documentation refers to Ifeffit::Demeter version 0.2.
+This documentation refers to Demeter version 0.2.
 
 =head1 SYNOPSIS
 
-  use Ifeffit::Demeter;
-  use Ifeffit::Demeter::UI::Standards;
-  my $standards = Ifeffit::Demeter::UI::Standards -> new;
+  use Demeter;
+  use Demeter::UI::Standards;
+  my $standards = Demeter::UI::Standards -> new;
 
 =head1 DESCRIPTION
 

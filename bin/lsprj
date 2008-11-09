@@ -23,7 +23,7 @@ use Term::ReadLine;
 my $term    = new Term::ReadLine 'demeter';
 my $prompt = "Press <Enter> to finish ";
 
-use Ifeffit::Demeter::Data::Prj;
+use Demeter::Data::Prj;
 
 my ($plot, $inc, $params, $gnuplot, $xanes) = (q{}, 0.2, q{}, 0, 0);
 my $result = GetOptions (
@@ -38,7 +38,7 @@ my $result = GetOptions (
 my ($file, @groups) = @ARGV;
 usage() if not $file;
 
-my $prj = Ifeffit::Demeter::Data::Prj->new();
+my $prj = Demeter::Data::Prj->new();
 $prj -> set(file=>$file);
 $prj -> plot_with('gnuplot') if $gnuplot;
 

@@ -1,4 +1,4 @@
-package Ifeffit::Demeter::Data::Prj;
+package Demeter::Data::Prj;
 
 =for Copyright
  .
@@ -18,7 +18,7 @@ package Ifeffit::Demeter::Data::Prj;
 use autodie qw(open close);
 
 use Moose;
-extends 'Ifeffit::Demeter';
+extends 'Demeter';
 use MooseX::AttributeHelpers;
 
 #use diagnostics;
@@ -165,7 +165,7 @@ sub _record {
   my @x    = $self->_array($index, 'x');
   my @y    = $self->_array($index, 'y');
 
-  my $data = Ifeffit::Demeter::Data->new(group=>$groupname, from_athena=>1);
+  my $data = Demeter::Data->new(group=>$groupname, from_athena=>1);
   my ($xsuff, $ysuff) = ($args{is_xmu}) ? qw(energy xmu) : qw(k chi);
   Ifeffit::put_array(join('.', $groupname, $xsuff), \@x);
   Ifeffit::put_array(join('.', $groupname, $ysuff), \@y);
@@ -304,24 +304,24 @@ sub _array {
 
 =head1 NAME
 
-Ifeffit::Demeter::Data::Athena - Read Athena project files
+Demeter::Data::Athena - Read Athena project files
 
 =head1 VERSION
 
-This documentation refers to Ifeffit::Demeter version 0.2.
+This documentation refers to Demeter version 0.2.
 
 =head1 DESCRIPTION
 
 This class contains methods for interacting with Athena project files.
 It is not a subclass of some other Demeter method.
 
-  $project   = Ifeffit::Demeter::Data::Prj->new(file=>'some.prj');
+  $project   = Demeter::Data::Prj->new(file=>'some.prj');
   @data     = $project -> slurp;         # import all records
   ($d1, $2) = $project -> record(3, 8);  # import specific records
 
 The script C<lsprj>, which comes with Demeter, uses this module.
 
-See L<Ifeffit::Demeter::Data::Athena> for Demeter's method of writing
+See L<Demeter::Data::Athena> for Demeter's method of writing
 Athena project file.
 
 =head1 METHODS
@@ -397,7 +397,7 @@ table of parameter values.
       2 : Iron oxide     1.0        2.0
       3 : Iron sulfide   1.0        3.0
 
-The attributes are those for the L<Ifeffit::Demeter::Data> object.
+The attributes are those for the L<Demeter::Data> object.
 
 =back
 
@@ -405,11 +405,11 @@ The attributes are those for the L<Ifeffit::Demeter::Data> object.
 
 =over 4
 
-=item C<Ifeffit::Demeter::Data::Prj: $file does not exist>
+=item C<Demeter::Data::Prj: $file does not exist>
 
 The Athena project file cannot be found on your computer.
 
-=item C<Ifeffit::Demeter::Data::Prj:$file cannot be read (permissions?)>
+=item C<Demeter::Data::Prj:$file cannot be read (permissions?)>
 
 The specified Athena project file cannot be read by Demeter, possibly
 because of permissions settings.
@@ -425,7 +425,7 @@ using the L<Compress::Zlib> module.
 
 There are no configuration options for this class.
 
-See L<Ifeffit::Demeter::Config> for a description of Demeter's
+See L<Demeter::Config> for a description of Demeter's
 configuration system.
 
 =head1 DEPENDENCIES

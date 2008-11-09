@@ -1,4 +1,4 @@
-package Ifeffit::Demeter::UI::Gtk2::Hephaestus::Help;
+package Demeter::UI::Gtk2::Hephaestus::Help;
 use strict;
 use warnings;
 use Carp;
@@ -16,7 +16,7 @@ sub new {
 
   my $page = Gtk2::Ex::PodViewer -> new;
 
-  my $pod = File::Spec->catfile($Ifeffit::Demeter::UI::Gtk2::Hephaestus::hephaestus_base,
+  my $pod = File::Spec->catfile($Demeter::UI::Gtk2::Hephaestus::hephaestus_base,
 				'Hephaestus', 'data', "hephaestus.pod");
   $page -> load($pod);
   $self -> add_with_viewport($page);

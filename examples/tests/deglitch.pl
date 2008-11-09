@@ -26,7 +26,7 @@
 use warnings;
 use strict;
 
-use Ifeffit::Demeter;
+use Demeter;
 my $where = $ENV{DEMETER_TEST_DIR} || "..";
 
 ## set up two data objects
@@ -36,7 +36,7 @@ my @attributes = (energy      => '$1', # column 1 is energy
 		  ln          => 1,    # these are transmission data
 		 );
 print "Reading and plotting uhup.003\n";
-my $d0 = Ifeffit::Demeter::Data -> new(@attributes);
+my $d0 = Demeter::Data -> new(@attributes);
 $d0 -> set(file=>"$where/data/uhup.003", name=>'HUP');
 
 my $plot = $d0 -> po;

@@ -1,4 +1,4 @@
-package Ifeffit::Demeter::Fit;
+package Demeter::Fit;
 
 =for Copyright
  .
@@ -19,19 +19,19 @@ package Ifeffit::Demeter::Fit;
 use autodie qw( open close );
 
 use Moose;
-extends 'Ifeffit::Demeter';
+extends 'Demeter';
 use MooseX::AttributeHelpers;
 
-with 'Ifeffit::Demeter::Fit::Happiness';
-with 'Ifeffit::Demeter::Fit::Sanity';
+with 'Demeter::Fit::Happiness';
+with 'Demeter::Fit::Sanity';
 
-if ($Ifeffit::Demeter::mode->ui eq 'screen') {
-  with 'Ifeffit::Demeter::UI::Screen::Interview';
-  with 'Ifeffit::Demeter::UI::Screen::Spinner';
+if ($Demeter::mode->ui eq 'screen') {
+  with 'Demeter::UI::Screen::Interview';
+  with 'Demeter::UI::Screen::Spinner';
 };
 
 
-use Ifeffit::Demeter::NumTypes qw( NonNeg Natural NaturalC );
+use Demeter::NumTypes qw( NonNeg Natural NaturalC );
 
 use Archive::Zip qw( :ERROR_CODES :CONSTANTS );
 use Carp;
@@ -163,7 +163,7 @@ sub rm {
 
 
 ## ------------------------------------------------------------
-## sanity checks     see Ifeffit::Demeter::Fit::Sanity
+## sanity checks     see Demeter::Fit::Sanity
 sub _verify_fit {
   my ($self) = @_;
   my %problem = (
@@ -203,7 +203,7 @@ sub _verify_fit {
   my @paths = @{ $self->paths };
   push (@{$problem{errors}}, "No paths component is defined for this fit"), ++$problem{paths_component} if ($#paths == -1);
 
-  ## all these tests live in Ifeffit::Demeter::Fit::Sanity, which is
+  ## all these tests live in Demeter::Fit::Sanity, which is
   ## part of the base of this module
 
   ## 1. check that all data and feffNNNN.dat files exist
@@ -574,9 +574,9 @@ sub _local_parameters {
 	      $this_type = "def";
 	      ($this_me = $type{$global}->mathexp) =~ s{\b($local_regex)\b}{$1_$tag}g;
 	    };
-	    my $new_gds = Ifeffit::Demeter::GDS->new(gds     => $this_type,
-						     name    => $local,
-						     mathexp => $this_me);
+	    my $new_gds = Demeter::GDS->new(gds     => $this_type,
+					    name    => $local,
+					    mathexp => $this_me);
 	    $self->push_gds($new_gds);
 	    $string .= $new_gds -> write_gds;
 	    ++$created{$local};
@@ -593,9 +593,9 @@ sub _local_parameters {
       my $me = $ldef->mathexp;
       $me =~ s{\b($local_regex)\b}{$1_$tag}g;
       next if ($created{$local});
-      my $new_gds = Ifeffit::Demeter::GDS->new(gds     => $ldef->type,
-					       name    => $local,
-					       mathexp => $me);
+      my $new_gds = Demeter::GDS->new(gds     => $ldef->type,
+				      name    => $local,
+				      mathexp => $me);
       $self->push_gds($new_gds);
       $string .= $new_gds -> write_gds  if ($ldef->gds eq 'def');
       $ldef->Use(0) if ($ldef->gds eq 'after');
@@ -615,9 +615,9 @@ sub _local_parameters {
       my $me = $lres->mathexp;
       $me =~ s{\b($local_regex)\b}{$1_$tag}g;
       next if ($created{$local});
-      my $new_gds = Ifeffit::Demeter::GDS->new(gds     => 'restrain',
-					       name    => $local,
-					       mathexp => $me);
+      my $new_gds = Demeter::GDS->new(gds     => 'restrain',
+				      name    => $local,
+				      mathexp => $me);
       $self->push_gds($new_gds);
       $lres -> Use(0);
       $string .= $new_gds -> write_gds;
@@ -787,7 +787,7 @@ sub fetch_statistics {
   Ifeffit::ifeffit("\&screen_echo = $save\n"), return if not $lines;
 
   my $opt  = Regexp::List->new;
-  my $fit_stats_regexp = $opt->list2re(@Ifeffit::Demeter::StrTypes::stat_list);
+  my $fit_stats_regexp = $opt->list2re(@Demeter::StrTypes::stat_list);
   foreach (1 .. $lines) {
     my $response = Ifeffit::get_echo()."\n";
     if ($response =~ m{($fit_stats_regexp)
@@ -878,7 +878,7 @@ sub fetch_correlations {
   my %correlations_of;
   my $d = $self -> data -> [0];
   $self->dispose($d->template("fit", "correl"));
-  #my $correl_text = Ifeffit::Demeter->get_mode("echo");
+  #my $correl_text = Demeter->get_mode("echo");
   my $lines = Ifeffit::get_scalar('&echo_lines');
   my @correl_text = ();
   foreach my $l (1 .. $lines) {
@@ -1104,7 +1104,7 @@ override 'deserialize' => sub {
     my $yaml = $zip->contents("$d.yaml");
     my ($r_attributes, $r_x, $r_y) = YAML::Load($yaml);
     my @array = %$r_attributes;
-    my $this = Ifeffit::Demeter::Data -> new(@array);
+    my $this = Demeter::Data -> new(@array);
     $datae{$this->group} = $this;
     if ($this->datatype eq 'xmu') {
       Ifeffit::put_array($this->group.".energy", $r_x);
@@ -1123,7 +1123,7 @@ override 'deserialize' => sub {
   my @list = YAML::Load($yaml);
   foreach (@list) {
     my @array = %{ $_ };
-    my $this = Ifeffit::Demeter::GDS->new(@array);
+    my $this = Demeter::GDS->new(@array);
     push @gds, $this;
     my $command;
     if ($this->gds eq 'guess') {
@@ -1139,7 +1139,7 @@ override 'deserialize' => sub {
   ## -------- import the feff calculations
   my @feff = ();
   foreach my $f (@$r_feff) {
-    my $this = Ifeffit::Demeter::Feff->new(group=>$f);
+    my $this = Demeter::Feff->new(group=>$f);
     $parents{$this->group} = $this;
     my $yaml = $zip->contents("$f.yaml");
     my @refs = YAML::Load($yaml);
@@ -1157,7 +1157,7 @@ override 'deserialize' => sub {
   foreach (@list) {
     my $dg = $_->{datagroup};
     my @array = %{ $_ };
-    my $this = Ifeffit::Demeter::Path->new(@array);
+    my $this = Demeter::Path->new(@array);
     $this->datagroup($dg);
     ## reconnect object relationships
     $this->sp($sps{$this->spgroup});
@@ -1191,15 +1191,15 @@ override 'deserialize' => sub {
     my $ok = 0;
 
 #     $ok = $zip -> extractMemberWithoutPaths("$f.inp");
-#     croak("Ifeffit::Demeter::Fit::deserialize: could not extract $f.inp from $dpj")  if ($ok != AZ_OK);
+#     croak("Demeter::Fit::deserialize: could not extract $f.inp from $dpj")  if ($ok != AZ_OK);
 #     rename("$f.inp", "oringinal_feff.inp");
 
     $ok = $zip -> extractMemberWithoutPaths("$ff.yaml");
-    croak("Ifeffit::Demeter::Fit::deserialize: could not extract $f.yaml from $dpj") if ($ok != AZ_OK);
+    croak("Demeter::Fit::deserialize: could not extract $f.yaml from $dpj") if ($ok != AZ_OK);
     rename("$ff.yaml", "feff.yaml");
 
     $ok = $zip -> extractMemberWithoutPaths("$ff.bin");
-    croak("Ifeffit::Demeter::Fit::deserialize: could not extract $f.bin from $dpj")  if ($ok != AZ_OK);
+    croak("Demeter::Fit::deserialize: could not extract $f.bin from $dpj")  if ($ok != AZ_OK);
     rename("$ff.bin", "phase.bin");
 
     chdir $thisdir;
@@ -1245,18 +1245,18 @@ override 'deserialize' => sub {
 
 =head1 NAME
 
-Ifeffit::Demeter::Fit - Fit EXAFS data using Ifeffit
+Demeter::Fit - Fit EXAFS data using Ifeffit
 
 =head1 VERSION
 
-This documentation refers to Ifeffit::Demeter version 0.2.
+This documentation refers to Demeter version 0.2.
 
 =head1 SYNOPSIS
 
-  my $fitobject = Ifeffit::Demeter::Fit -> new(gds   => \@gds_objects,
-                                               data  => [$data_object],
-                                               paths => \@path_objects,
-	                                      );
+  my $fitobject = Demeter::Fit -> new(gds   => \@gds_objects,
+                                      data  => [$data_object],
+                                      paths => \@path_objects,
+	                             );
   $fitobject -> fit;
   $fitobject -> evaluate;
   $fitobject -> logfile("cufit.log");
@@ -1357,7 +1357,7 @@ for computing the residual arrays are made.
 
 A number of sanity checks are made on the fitting model before the fit is
 performed.  For the complete list of these sanity checks, see
-L<Ifeffit::Demeter::Fit::Sanity>.
+L<Demeter::Fit::Sanity>.
 
 =item C<ff2chi>
 
@@ -1492,7 +1492,7 @@ method has been called.  This method is used by the C<logfile> method.
 This returns the happiness evaluation of the fit and is writtent to
 the log file.  The two return values are the happiness measurement and
 a text summary of how the happiness was evaluated.  See
-L<Ifeffit::Demeter::Fit::Happiness>.
+L<Demeter::Fit::Happiness>.
 
    ($happiness, $summery) = $fit -> happiness;
 
@@ -1507,7 +1507,7 @@ of the various parts of the fit.
 
 One of these zip files can be deserialized to a Fit object:
 
-  $newfitobject = Ifeffit::Demeter::Fit->new(project=>"projectfile");
+  $newfitobject = Demeter::Fit->new(project=>"projectfile");
 
 The files are normal zip files and can be opened using a normal zip
 tool.
@@ -1525,12 +1525,12 @@ of desperation):
 
 =over 4
 
-=item Ifeffit::Demeter::Fit: component not an array reference
+=item Demeter::Fit: component not an array reference
 
 (F) You have attempted to set one of the array-valued Fit attributes
 to something that is not a reference to an array.
 
-=item Ifeffit::Demeter::Fit: <key> is not a component of this fit
+=item Demeter::Fit: <key> is not a component of this fit
 
 (W) You have attempted to get an attribute value that is not one of
 C<gds>, C<data>, C<paths> or one of the scalar values.
@@ -1561,12 +1561,12 @@ epsilon_k epsilon_r data_total).
 
 =head1 CONFIGURATION AND ENVIRONMENT
 
-See L<Ifeffit::Demeter::Config> for a description of the configuration
-system.  See the fit group of configuration parameters.
+See L<Demeter::Config> for a description of the configuration system.
+See the fit group of configuration parameters.
 
 =head1 DEPENDENCIES
 
-The dependencies of the Ifeffit::Demeter system are in the
+The dependencies of the Demeter system are in the
 F<Bundle/DemeterBundle.pm> file.
 
 =head1 BUGS AND LIMITATIONS

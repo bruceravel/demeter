@@ -5,7 +5,7 @@ argus - Demeter's data watcher
 
 =head1 VERSION
 
-This documentation refers to Ifeffit::Demeter version 0.2.
+This documentation refers to Demeter version 0.2.
 
 =head1 SYNOPSIS
 
@@ -186,12 +186,12 @@ B<must> be set from the command line.
 
 =head1 CONFIGURATION AND ENVIRONMENT
 
-See L<Ifeffit::Demeter::Config> for a description of Demeter's
+See L<Demeter::Config> for a description of Demeter's
 configuration system.
 
 =head1 DEPENDENCIES
 
-The dependencies of the Ifeffit::Demeter system are in the
+The dependencies of the Demeter system are in the
 F<Bundle/DemeterBundle.pm> file.
 
 =head1 BUGS AND LIMITATIONS

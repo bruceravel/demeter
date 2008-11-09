@@ -18,9 +18,9 @@
 use warnings;
 use strict;
 
-use Ifeffit::Demeter qw(:ui=screen);
+use Demeter qw(:ui=screen);
 
-print "Multiple data set fit to 10K and 150K copper data using Demeter ", $Ifeffit::Demeter::VERSION, $/;
+print "Multiple data set fit to 10K and 150K copper data using Demeter ", $Demeter::VERSION, $/;
 
 unlink("mdsfit.iff") if (-e "mdsfit.iff");
 
@@ -29,14 +29,14 @@ my @common = (fft_kmin   => 3,	  fft_kmax   => 14,
 	      bft_rmax   => 1.0,  bft_rmax   => 4.3,
 	      fit_k1     => 1,	  fit_k3     => 1,);
 
-my $data_010k = Ifeffit::Demeter::Data -> new({group => 'data0',});
+my $data_010k = Demeter::Data -> new({group => 'data0',});
 $data_010k -> set(@common);
 $data_010k -> set(file	     => "cu10k.chi",
 		  cv         => 10,
 		  name       => '10 K copper data',
 		  "y_offset" => 2,
 		 );
-my $data_150k = Ifeffit::Demeter::Data -> new({group => 'data1',});
+my $data_150k = Demeter::Data -> new({group => 'data1',});
 $data_150k -> set(@common);
 $data_150k -> set(file       => "cu150k.chi",
 		  cv         => 150,
@@ -50,36 +50,36 @@ $data_010k->set_mode(screen  => 0,
 
 
 print "--- make GDS objects for an isotropic expansion, correlated Debye model\n";
-my @gdsobjects =  (Ifeffit::Demeter::GDS -> new(gds	 => 'lguess',
+my @gdsobjects =  (Demeter::GDS -> new(gds	 => 'lguess',
 						name	 => 'alpha',
 						mathexp => 0,
 					       ),
 
 		   ## here is some syntactic sugar provided by the Tools module
-		   #Ifeffit::Demeter::Tools -> simpleGDS("guess amp = 1"),
-		   Ifeffit::Demeter::GDS -> new(gds     => 'guess',
-						name    => 'amp',
-						mathexp => 1),
+		   #Demeter::Tools -> simpleGDS("guess amp = 1"),
+		   Demeter::GDS -> new(gds     => 'guess',
+				       name    => 'amp',
+				       mathexp => 1),
 
-		   Ifeffit::Demeter::GDS -> new(gds	 => 'guess',
-						name	 => 'enot',
-						mathexp  => 0,
-					       ),
-		   Ifeffit::Demeter::GDS -> new(gds	 => 'guess',
-						name	 => 'theta',
-						mathexp  => 500,
-					       ),
-		   Ifeffit::Demeter::GDS -> new(gds	 => 'set',
-						name	 => 'sigmm',
-						mathexp  => 0.0005,
-					       ),
+		   Demeter::GDS -> new(gds	 => 'guess',
+				       name	 => 'enot',
+				       mathexp  => 0,
+				      ),
+		   Demeter::GDS -> new(gds	 => 'guess',
+				       name	 => 'theta',
+				       mathexp  => 500,
+				      ),
+		   Demeter::GDS -> new(gds	 => 'set',
+				       name	 => 'sigmm',
+				       mathexp  => 0.0005,
+				      ),
 		  );
 
 print "--- make Path objects for the first 5 paths in copper (3 shell fit)\n";
 my @paths_010k = ();
 foreach my $i (0 .. 4) {
   my $j = $i+1;
-  $paths_010k[$i] = Ifeffit::Demeter::Path -> new();
+  $paths_010k[$i] = Demeter::Path -> new();
   $paths_010k[$i]->set(data     => $data_010k,
 		       folder   => './',
 		       file     => "feff000$j.dat",
@@ -113,7 +113,7 @@ foreach my $i (0 .. 4) {
 };
 
 print "--- make a Fit object (a collection of GDS, Data, and Path objects)\n";
-my $fitobject = Ifeffit::Demeter::Fit -> new(gds   => \@gdsobjects,
+my $fitobject = Demeter::Fit -> new(gds   => \@gdsobjects,
 					     data  => [$data_010k, $data_150k],
 					     paths => [@paths_010k, @paths_150k],
 					    );

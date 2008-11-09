@@ -1,4 +1,4 @@
-package Ifeffit::Demeter::UI::Hephaestus::Common;
+package Demeter::UI::Hephaestus::Common;
 
 use warnings;
 use strict;
@@ -49,17 +49,17 @@ sub slurp {
 
 =head1 NAME
 
-Ifeffit::Demeter::UI::Hephaestus::Common - Common functions used in Hephaestus
+Demeter::UI::Hephaestus::Common - Common functions used in Hephaestus
 
 =head1 VERSION
 
-This documentation refers to Ifeffit::Demeter version 0.2.
+This documentation refers to Demeter version 0.2.
 
 =head1 SYNOPSIS
 
 This module contains functions used by many parts of Hephaestus.
 
-  use Ifeffit::Demeter::UI::Hephaestus::Common qw(e2l);
+  use Demeter::UI::Hephaestus::Common qw(e2l);
 
 =head1 DESCRIPTION
 

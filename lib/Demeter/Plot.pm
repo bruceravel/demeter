@@ -1,4 +1,4 @@
-package Ifeffit::Demeter::Plot;
+package Demeter::Plot;
 
 =for Copyright
  .
@@ -18,28 +18,28 @@ package Ifeffit::Demeter::Plot;
 use autodie qw(open close);
 
 use Moose;
-extends 'Ifeffit::Demeter';
+extends 'Demeter';
 use MooseX::AttributeHelpers;
 use Moose::Util::TypeConstraints;
-use Ifeffit::Demeter::StrTypes qw( Element
- 				   Edge
- 				   Clamp
- 				   FitSpace
-				   Window
-				   Empty
-				   DataType
-				   PgplotLine
-				   MERIP
-				   PlotWeight
-				   Interp
- 				);
-use Ifeffit::Demeter::NumTypes qw( Natural
-				   PosInt
-				   PosNum
-				   NonNeg
-				   OneToFour
-                                   OneToTwentyNine
-				);
+use Demeter::StrTypes qw( Element
+			  Edge
+			  Clamp
+			  FitSpace
+			  Window
+			  Empty
+			  DataType
+			  PgplotLine
+			  MERIP
+			  PlotWeight
+			  Interp
+		       );
+use Demeter::NumTypes qw( Natural
+			  PosInt
+			  PosNum
+			  NonNeg
+			  OneToFour
+			  OneToTwentyNine
+		       );
 
 use Carp;
 use Regexp::List;
@@ -288,11 +288,11 @@ sub outfile {
 
 =head1 NAME
 
-Ifeffit::Demeter::Plot - Controlling plots of XAS data
+Demeter::Plot - Controlling plots of XAS data
 
 =head1 VERSION
 
-This documentation refers to Ifeffit::Demeter version 0.2.
+This documentation refers to Demeter version 0.2.
 
 =head1 SYNOPSIS
 
@@ -300,8 +300,8 @@ This documentation refers to Ifeffit::Demeter version 0.2.
 
 =head1 DESCRIPTION
 
-This subclass of Ifeffit::Demeter is for holding information
-pertaining to how plots of data and paths are made.
+This subclass of Demeter is for holding information pertaining to how
+plots of data and paths are made.
 
 =head1 METHODS
 
@@ -695,11 +695,11 @@ of desperation):
 
 =over 4
 
-=item C<$key is not a valid Ifeffit::Demeter::Data parameter>
+=item C<$key is not a valid Demeter::Data parameter>
 
 You have tried to set in invalid Plot parameter
 
-=item C<Ifeffit::Demeter::Plot: $k must be a number>
+=item C<Demeter::Plot: $k must be a number>
 
 You have attempted to set an attribute that takes a numerical value to
 something other than a number.
@@ -719,12 +719,12 @@ through 4.  The font was reset to sans-serif, which is number 1.
 (W) You have tried to set the font size to something that is not a positive
 number.  It was reset to size 1.2.
 
-=item C<Ifeffit::Demeter::Plot: $k must be one of solid, dashed, dotted, dot-dash, points, or linespoints>
+=item C<Demeter::Plot: $k must be one of solid, dashed, dotted, dot-dash, points, or linespoints>
 
 You have attempted to set an attribute controlling a line to an
 unknown line type.
 
-=item C<Ifeffit::Demeter::Plot: $k must be one of m, e, r, i, or p>
+=item C<Demeter::Plot: $k must be one of m, e, r, i, or p>
 
 You have set an attribute controlling which part of complex function
 is plotted to something that is not understood as complex function
@@ -739,9 +739,9 @@ Serialization of a Plot object is still an open question.
 
 =head1 CONFIGURATION AND ENVIRONMENT
 
-See L<Ifeffit::Demeter::Config> for a description of the configuration
-system.  The plot and ornaments configuration groups control the
-attributes of the Plot object.
+See L<Demeter::Config> for a description of the configuration system.
+The plot and ornaments configuration groups control the attributes of
+the Plot object.
 
 =head1 DEPENDENCIES
 

@@ -334,7 +334,7 @@ Xray::Crystal::Site - A crystallographic site object
 
 =head1 VERSION
 
-This documentation refers to Ifeffit::Demeter version 0.2.
+This documentation refers to Demeter version 0.2.
 
 =head1 SYNOPSIS
 

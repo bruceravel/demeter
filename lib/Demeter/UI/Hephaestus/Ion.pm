@@ -1,5 +1,5 @@
 ######################################################################
-package Ifeffit::Demeter::UI::Hephaestus::Ion::EnergyChamberBox;
+package Demeter::UI::Hephaestus::Ion::EnergyChamberBox;
 use strict;
 use warnings;
 use Carp;
@@ -28,11 +28,11 @@ sub new {
 
   $parent->{length} = '15cm';
   $parent->{lengths} = Wx::RadioBox->new( $self, -1, 'Chamber length', wxDefaultPosition, wxDefaultSize,
-					  \@Ifeffit::Demeter::UI::Hephaestus::Ion::lengths,
+					  \@Demeter::UI::Hephaestus::Ion::lengths,
 					  1, wxRA_SPECIFY_COLS);
   my $i = 0;
-  my $setlength = $Ifeffit::Demeter::UI::Hephaestus::demeter->co->default(qw(hephaestus ion_length));
-  foreach my $l (@Ifeffit::Demeter::UI::Hephaestus::Ion::lengths) {
+  my $setlength = $Demeter::UI::Hephaestus::demeter->co->default(qw(hephaestus ion_length));
+  foreach my $l (@Demeter::UI::Hephaestus::Ion::lengths) {
     $parent->{lengths}->SetSelection($i), last if ($l =~ m{$setlength});
     ++$i;
   };
@@ -59,7 +59,7 @@ sub numval {
 };
 
 ######################################################################
-package Ifeffit::Demeter::UI::Hephaestus::Ion::Primary;
+package Demeter::UI::Hephaestus::Ion::Primary;
 use strict;
 use warnings;
 use Carp;
@@ -80,11 +80,11 @@ sub new {
 
   $parent->{primarygas} = Wx::Choice->new( $self, -1,
 					   [-1, -1], [50, -1], 
-					   \@Ifeffit::Demeter::UI::Hephaestus::Ion::gases,
+					   \@Demeter::UI::Hephaestus::Ion::gases,
 					 );
   my $i = 0;
-  my $setgas = $Ifeffit::Demeter::UI::Hephaestus::demeter->co->default(qw(hephaestus ion_gas1));
-  foreach my $g (@Ifeffit::Demeter::UI::Hephaestus::Ion::gases) {
+  my $setgas = $Demeter::UI::Hephaestus::demeter->co->default(qw(hephaestus ion_gas1));
+  foreach my $g (@Demeter::UI::Hephaestus::Ion::gases) {
     $parent->{primarygas}->SetSelection($i), last if ($g eq $setgas);
     ++$i;
   };
@@ -101,7 +101,7 @@ sub new {
 
 
 ######################################################################
-package Ifeffit::Demeter::UI::Hephaestus::Ion::Secondary;
+package Demeter::UI::Hephaestus::Ion::Secondary;
 use strict;
 use warnings;
 use Carp;
@@ -123,7 +123,7 @@ sub new {
 
   $parent->{secondarygas} = Wx::Choice->new( $self, -1,
 					   [-1, -1], [50, -1],
-					   \@Ifeffit::Demeter::UI::Hephaestus::Ion::gases,
+					   \@Demeter::UI::Hephaestus::Ion::gases,
 					 );
   $parent->{secondarygas}->SetSelection(0);
   $hbox->Add($parent->{secondarygas}, 0, wxALL, 0);
@@ -139,7 +139,7 @@ sub new {
 
 
 ######################################################################
-package Ifeffit::Demeter::UI::Hephaestus::Ion::Pressure;
+package Demeter::UI::Hephaestus::Ion::Pressure;
 use strict;
 use warnings;
 use Carp;
@@ -156,7 +156,7 @@ sub new {
   my $label = Wx::StaticText->new($self, -1, 'Pressure (torr)');
   $pressure_box->Add($label, 0, wxALL, 5);
   $parent->{pressure} = Wx::Slider->new($self, -1,
-					$Ifeffit::Demeter::UI::Hephaestus::demeter->co->default(qw(hephaestus ion_pressure)),
+					$Demeter::UI::Hephaestus::demeter->co->default(qw(hephaestus ion_pressure)),
 					0, 2300, [-1,-1], [-1,-1],
 					wxSL_VERTICAL|wxSL_AUTOTICKS|wxSL_LABELS|wxSL_RIGHT|wxSL_INVERSE);
   $pressure_box->Add($parent->{pressure}, 1, wxALIGN_CENTER_HORIZONTAL|wxALL, 5);
@@ -167,7 +167,7 @@ sub new {
 
 
 ######################################################################
-package Ifeffit::Demeter::UI::Hephaestus::Ion;
+package Demeter::UI::Hephaestus::Ion;
 use strict;
 use warnings;
 use Carp;
@@ -201,21 +201,21 @@ sub new {
   my $outerbox = Wx::BoxSizer->new( wxVERTICAL );
   $self->SetSizer($outerbox);
 
-  my $demeter = $Ifeffit::Demeter::UI::Hephaestus::demeter;
+  my $demeter = $Demeter::UI::Hephaestus::demeter;
   $self->{energy} = $demeter->co->default(qw(hephaestus ion_energy));
   $self->{echo} = $echoarea;
 
   ## -------- horizontal box containing energy, chambers, sliders
   my $topbox = Wx::BoxSizer->new( wxHORIZONTAL );
 
-  my $energy_chamber = Ifeffit::Demeter::UI::Hephaestus::Ion::EnergyChamberBox -> new($self);
+  my $energy_chamber = Demeter::UI::Hephaestus::Ion::EnergyChamberBox -> new($self);
   $topbox -> Add($energy_chamber, 1, wxALL|wxEXPAND|wxGROW, 5);
 
-  my $primary = Ifeffit::Demeter::UI::Hephaestus::Ion::Primary -> new($self);
+  my $primary = Demeter::UI::Hephaestus::Ion::Primary -> new($self);
   $topbox -> Add($primary, 0, wxALL|wxGROW, 5);
-  my $secondary = Ifeffit::Demeter::UI::Hephaestus::Ion::Secondary -> new($self);
+  my $secondary = Demeter::UI::Hephaestus::Ion::Secondary -> new($self);
   $topbox -> Add($secondary, 0, wxALL|wxGROW, 5);
-  my $pressure = Ifeffit::Demeter::UI::Hephaestus::Ion::Pressure -> new($self);
+  my $pressure = Demeter::UI::Hephaestus::Ion::Pressure -> new($self);
   $topbox -> Add($pressure, 0, wxALL|wxGROW, 5);
 
   EVT_SCROLL($self->{primary},      sub{twiddle_sliders(@_, $self, 'primary')});
@@ -254,7 +254,7 @@ sub new {
   $botbox -> Add($label, 0, wxLEFT|wxRIGHT, 5);
   $self->{amp} = Wx::SpinCtrl->new($self, -1, 8, wxDefaultPosition, [50,-1]);
   $self->{amp} -> SetRange(0,12);
-  $self->{amp} -> SetValue($Ifeffit::Demeter::UI::Hephaestus::demeter->co->default(qw(hephaestus ion_gain)));
+  $self->{amp} -> SetValue($Demeter::UI::Hephaestus::demeter->co->default(qw(hephaestus ion_gain)));
   $botbox -> Add($self->{amp}, 0, wxLEFT|wxRIGHT, 5);
   $label = Wx::StaticText->new($self, -1, 'with');
   $botbox -> Add($label, 0, wxLEFT|wxRIGHT, 5);
@@ -387,18 +387,18 @@ sub numval {
 
 =head1 NAME
 
-Ifeffit::Demeter::UI::Hephaestus::Ion - Hephaestus' ion chamber utility
+Demeter::UI::Hephaestus::Ion - Hephaestus' ion chamber utility
 
 =head1 VERSION
 
-This documentation refers to Ifeffit::Demeter version 0.2.
+This documentation refers to Demeter version 0.2.
 
 =head1 SYNOPSIS
 
 The contents of Hephaestus' ion chamber utility can be added to any Wx
 application.
 
-  my $page = Ifeffit::Demeter::UI::Hephaestus::Ion->new($parent,$echoarea);
+  my $page = Demeter::UI::Hephaestus::Ion->new($parent,$echoarea);
   $sizer -> Add($page, 1, wxGROW|wxEXPAND|wxALL, 0);
 
 The arguments to the constructor method are a reference to the parent

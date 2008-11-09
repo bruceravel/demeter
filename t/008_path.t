@@ -20,11 +20,11 @@
 use Test::More tests => 22;
 
 use Ifeffit;
-use Ifeffit::Demeter;
+use Demeter;
 use List::MoreUtils qw(all);
 
 
-my $this = Ifeffit::Demeter::Path -> new;
+my $this = Demeter::Path -> new;
 my $OBJ  = 'Path';
 
 ok( ref($this) =~ m{$OBJ},                              "made a $OBJ object");

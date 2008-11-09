@@ -1,4 +1,4 @@
-package Ifeffit::Demeter::UI::Hephaestus::Formulas;
+package Demeter::UI::Hephaestus::Formulas;
 use strict;
 use warnings;
 use Carp;
@@ -23,7 +23,7 @@ sub new {
 
   my @choices = keys(%formula_of);
 
-  $self->{energyvalue} = $Ifeffit::Demeter::UI::Hephaestus::demeter->co->default(qw(hephaestus formula_energy));
+  $self->{energyvalue} = $Demeter::UI::Hephaestus::demeter->co->default(qw(hephaestus formula_energy));
   $self->{type}        = 'Density';
   $self->{units}       = 'energy';
   $self->{echo}        = $echoarea;
@@ -270,7 +270,7 @@ sub get_formula_data {
 sub use_element {
   my ($self, $event, $parent) = @_;
   $parent->{popup}  = Wx::Dialog->new($self, -1, 'Choose an element', wxDefaultPosition, wxDefaultSize, wxDEFAULT_DIALOG_STYLE );
-  my $pt            = Ifeffit::Demeter::UI::Hephaestus::PeriodicTable->new($parent->{popup}, 'put_element', $parent);
+  my $pt            = Demeter::UI::Hephaestus::PeriodicTable->new($parent->{popup}, 'put_element', $parent);
   my $vbox          = Wx::BoxSizer->new( wxVERTICAL );
   $parent->{popup} -> SetSizer($vbox);
   $vbox            -> Add($pt, 0, wxALIGN_CENTER_HORIZONTAL|wxALL, 5);
@@ -292,18 +292,18 @@ sub put_element {
 
 =head1 NAME
 
-Ifeffit::Demeter::UI::Hephaestus::Formulas - Hephaestus' formulas utility
+Demeter::UI::Hephaestus::Formulas - Hephaestus' formulas utility
 
 =head1 VERSION
 
-This documentation refers to Ifeffit::Demeter version 0.2.
+This documentation refers to Demeter version 0.2.
 
 =head1 SYNOPSIS
 
 The contents of Hephaestus' formulas utility can be added to any Wx
 application.
 
-  my $page = Ifeffit::Demeter::UI::Hephaestus::Formulas->new($parent,$echoarea);
+  my $page = Demeter::UI::Hephaestus::Formulas->new($parent,$echoarea);
   $sizer -> Add($page, 1, wxGROW|wxEXPAND|wxALL, 0);
 
 The arguments to the constructor method are a reference to the parent

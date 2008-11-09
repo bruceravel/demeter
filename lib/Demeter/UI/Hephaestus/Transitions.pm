@@ -1,4 +1,4 @@
-package Ifeffit::Demeter::UI::Hephaestus::Transitions;
+package Demeter::UI::Hephaestus::Transitions;
 use strict;
 use warnings;
 use Carp;
@@ -13,7 +13,7 @@ sub new {
 
   my $hbox = Wx::BoxSizer->new( wxVERTICAL );
 
-  my $file = File::Spec->catfile($Ifeffit::Demeter::UI::Hephaestus::hephaestus_base, 'Hephaestus', 'data', "trans_table.png");
+  my $file = File::Spec->catfile($Demeter::UI::Hephaestus::hephaestus_base, 'Hephaestus', 'data', "trans_table.png");
   my $bitmap = Wx::Bitmap->new($file, wxBITMAP_TYPE_PNG);
   my $picture = Wx::StaticBitmap->new($self, -1, $bitmap);
   $hbox -> Add($picture, 1, wxALIGN_CENTER_HORIZONTAL|wxALL, 5);
@@ -28,18 +28,18 @@ sub new {
 
 =head1 NAME
 
-Ifeffit::Demeter::UI::Hephaestus::Transitions - Hephaestus' electronic transitions utility
+Demeter::UI::Hephaestus::Transitions - Hephaestus' electronic transitions utility
 
 =head1 VERSION
 
-This documentation refers to Ifeffit::Demeter version 0.2.
+This documentation refers to Demeter version 0.2.
 
 =head1 SYNOPSIS
 
 The contents of Hephaestus' electronic transistions utility can be
 added to any Wx application.
 
-  my $page = Ifeffit::Demeter::UI::Hephaestus::Transitions->new($parent,$echoarea);
+  my $page = Demeter::UI::Hephaestus::Transitions->new($parent,$echoarea);
   $sizer -> Add($page, 1, wxGROW|wxEXPAND|wxALL, 0);
 
 The arguments to the constructor method are a reference to the parent

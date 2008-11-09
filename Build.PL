@@ -7,7 +7,7 @@ my $build = Module::Build
 	 create_readme      => 0,
 	 ##create_makefile_pl => 'traditional',
 	 license            => 'gpl',
-	 module_name        => 'Ifeffit::Demeter',
+	 module_name        => 'Demeter',
 	 dist_author        => 'Bruce Ravel <bravel AT bnl DOT gov>',
 	 requires           => {
 				'version'	      => '0',
@@ -53,7 +53,7 @@ my $build = Module::Build
 			       },
 	 sign               => 0,
 	);
-## do something about stuff in lib/Ifeffit/Demeter/configuration/
+## do something about stuff in lib/Demeter/configuration/
 $build->add_build_element('db');
 $build->add_build_element('stan');
 $build->add_build_element('ini');

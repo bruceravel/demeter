@@ -1,4 +1,4 @@
-package Ifeffit::Demeter::UI::Gtk2::Hephaestus::Data;
+package Demeter::UI::Gtk2::Hephaestus::Data;
 use strict;
 use warnings;
 use Carp;
@@ -9,7 +9,7 @@ use Glib qw(TRUE FALSE);
 use Gtk2::Ex::PodViewer;
 
 use base 'Gtk2::Frame';
-use Ifeffit::Demeter::UI::Gtk2::Hephaestus::PeriodicTable;
+use Demeter::UI::Gtk2::Hephaestus::PeriodicTable;
 use Gtk2::SimpleList;
 
 my %kalziumlist = (Name	      => 'Name',
@@ -27,7 +27,7 @@ my %kalziumlist = (Name	      => 'Name',
 		  );
 
 my %kalzium;
-tie %kalzium, 'Config::IniFiles', (-file=>File::Spec->catfile($Ifeffit::Demeter::UI::Gtk2::Hephaestus::hephaestus_base,
+tie %kalzium, 'Config::IniFiles', (-file=>File::Spec->catfile($Demeter::UI::Gtk2::Hephaestus::hephaestus_base,
 							      'Hephaestus', 'data', "kalziumrc"));
 
 sub new { 
@@ -35,7 +35,7 @@ sub new {
   my $self = Gtk2::Frame->new;
   bless $self, $class;
 
-  my $pt = Ifeffit::Demeter::UI::Gtk2::Hephaestus::PeriodicTable -> new($self, 'data_get_data');
+  my $pt = Demeter::UI::Gtk2::Hephaestus::PeriodicTable -> new($self, 'data_get_data');
 
   my $vbox = Gtk2::VBox->new;
 

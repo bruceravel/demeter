@@ -1,4 +1,4 @@
-package Ifeffit::Demeter::GDS;
+package Demeter::GDS;
 
 =for Copyright
  .
@@ -18,8 +18,8 @@ package Ifeffit::Demeter::GDS;
 use autodie qw(open close);
 
 use Moose;
-extends 'Ifeffit::Demeter';
-use Ifeffit::Demeter::StrTypes qw( GDS NotReserved );
+extends 'Demeter';
+use Demeter::StrTypes qw( GDS NotReserved );
 
 use Carp;
 use Regexp::List;
@@ -147,15 +147,15 @@ sub evaluate {
 
 =head1 NAME
 
-Ifeffit::Demeter::GDS - Guess, Set, Def, and other parameters for EXAFS fitting
+Demeter::GDS - Guess, Set, Def, and other parameters for EXAFS fitting
 
 =head1 VERSION
 
-This documentation refers to Ifeffit::Demeter version 0.2.
+This documentation refers to Demeter version 0.2.
 
 =head1 SYNOPSIS
 
-   $gds_object = Ifeffit::Demeter::GDS ->
+   $gds_object = Demeter::GDS ->
        new(gds     => 'guess',
 	   name    => 'alpha',
            mathexp => 0,
@@ -167,9 +167,8 @@ This documentation refers to Ifeffit::Demeter version 0.2.
 
 =head1 DESCRIPTION
 
-This subclass of the Ifeffit::Demeter class is inteded to hold
-information pertaining to guess, def, set, and other parameters for
-use in a fit.
+This subclass of the Demeter class is inteded to hold information
+pertaining to guess, def, set, and other parameters for use in a fit.
 
 =head1 ATTRIBUTES
 
@@ -283,7 +282,7 @@ after when local guess parameters are in play.
 =head2 Object handling methods
 
 The GDS object uses the C<new>, C<clone>, C<set>, and C<get> methods
-described in the L<Ifeffit::Demeter> documentation.
+described in the L<Demeter> documentation.
 
 =over 4
 
@@ -373,12 +372,11 @@ generated.
 =head1 SERIALIZATION AND DESERIALIZATION
 
 See the discussion of serialization and deserialization in
-C<Ifeffit::Demeter::Fit>.
+C<Demeter::Fit>.
 
 =head1 CONFIGURATION AND ENVIRONMENT
 
-See L<Ifeffit::Demeter::Config> for a description of the configuration
-system.
+See L<Demeter::Config> for a description of the configuration system.
 
 =head1 DEPENDENCIES
 

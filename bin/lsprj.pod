@@ -4,7 +4,7 @@ lsprj - List contents of an Athena project file
 
 =head1 VERSION
 
-This documentation refers to Ifeffit::Demeter version 0.2.
+This documentation refers to Demeter version 0.2.
 
 =head1 SYNOPSIS
 
@@ -74,7 +74,7 @@ stacked, with each subsequent trace being shifted downward by
 A comma separated list of data processing parameters to include in the
 list of groups.  This is a bit awkward to use in that you must specify
 the parameters using their internal representations as given explained
-in the documentation for L<Ifeffit::Demeter::Data>.  For instance,
+in the documentation for L<Demeter::Data>.  For instance,
 this will show the values for the background removal R_bkg and the
 forward Fourier transform kmin value:
 
@@ -88,7 +88,7 @@ forward Fourier transform kmin value:
 
 =head1 DEPENDENCIES
 
-This uses L<Ifeffit::Demeter> and its dependencies.
+This uses L<Demeter> and its dependencies.
 
 =head1 BUGS AND LIMITATIONS
 

@@ -19,124 +19,124 @@
 
 use Test::Simple tests => 300;
 
-use Ifeffit::Demeter;
-use Ifeffit::Demeter::StrTypes qw( Empty
-				   IfeffitCommand
-				   IfeffitFunction
-				   IfeffitProgramVar
-				   Window
-				   PathParam
-				   Element
-				   Edge
-				   FeffCard
-				   Clamp
-				   Config
-				   Statistic
-				   AtomsLattice
-				   AtomsGas
-				   AtomsObsolete
-				   SpaceGroup
-				   Plotting
-				   DataPart
-				   FitSpace
-				   PgplotLine
-				   MERIP
-				   PlotWeight
-				   Interp
-				   NotReserved
-				);
+use Demeter;
+use Demeter::StrTypes qw( Empty
+			  IfeffitCommand
+			  IfeffitFunction
+			  IfeffitProgramVar
+			  Window
+			  PathParam
+			  Element
+			  Edge
+			  FeffCard
+			  Clamp
+			  Config
+			  Statistic
+			  AtomsLattice
+			  AtomsGas
+			  AtomsObsolete
+			  SpaceGroup
+			  Plotting
+			  DataPart
+			  FitSpace
+			  PgplotLine
+			  MERIP
+			  PlotWeight
+			  Interp
+			  NotReserved
+		       );
 
-use Ifeffit::Demeter::NumTypes qw( Natural
-				   PosInt
-				   OneToFour
-				   OneToTwentyNine
-				   NegInt
-				   PosNum
-				   NegNum
-				   NonNeg
-				);
-my $demeter = Ifeffit::Demeter->new;
+use Demeter::NumTypes qw( Natural
+			  PosInt
+			  OneToFour
+			  OneToTwentyNine
+			  NegInt
+			  PosNum
+			  NegNum
+			  NonNeg
+		       );
+my $demeter = Demeter->new;
 
-foreach my $f (@Ifeffit::Demeter::StrTypes::command_list) {
+foreach my $f (@Demeter::StrTypes::command_list) {
   my $ff = scramble_case($f);
   ok( is_IfeffitCommand($ff), "command $ff recognized" );
 };
 
-foreach my $f (@Ifeffit::Demeter::StrTypes::function_list) {
+foreach my $f (@Demeter::StrTypes::function_list) {
   my $ff = scramble_case($f);
   ok( is_IfeffitFunction($ff), "function $ff recognized" );
 };
 
-foreach my $f (@Ifeffit::Demeter::StrTypes::program_list) {
+foreach my $f (@Demeter::StrTypes::program_list) {
   my $ff = scramble_case($f);
   ok( is_IfeffitProgramVar($ff), "program variable $ff recognized" );
 };
 
-foreach my $f (@Ifeffit::Demeter::StrTypes::window_list) {
+foreach my $f (@Demeter::StrTypes::window_list) {
   my $ff = scramble_case($f);
   ok( is_Window($ff), "program variable $ff recognized" );
 };
 
-foreach my $f (@Ifeffit::Demeter::StrTypes::pathparam_list) {
+foreach my $f (@Demeter::StrTypes::pathparam_list) {
   my $ff = scramble_case($f);
   ok( is_PathParam($ff), "path parameter $ff recognized" );
 };
 
 ## skip elements
 
-foreach my $f (@Ifeffit::Demeter::StrTypes::edge_list) {
+foreach my $f (@Demeter::StrTypes::edge_list) {
   my $ff = scramble_case($f);
   ok( is_Edge($ff), "edge symbol $ff recognized" );
 };
 
-foreach my $f (@Ifeffit::Demeter::StrTypes::feffcard_list) {
+foreach my $f (@Demeter::StrTypes::feffcard_list) {
   my $ff = scramble_case($f);
   ok( is_FeffCard($ff), "Feff card $ff recognized" );
 };
 
-foreach my $f (@Ifeffit::Demeter::StrTypes::clamp_list) {
+foreach my $f (@Demeter::StrTypes::clamp_list) {
   my $ff = scramble_case($f);
   ok( is_Clamp($ff), "clamp strength $ff recognized" );
 };
 
-foreach my $f (@Ifeffit::Demeter::StrTypes::config_list) {
+foreach my $f (@Demeter::StrTypes::config_list) {
   my $ff = scramble_case($f);
   ok( is_Config($ff), "configuration parameter $ff recognized" );
 };
 
-foreach my $f (@Ifeffit::Demeter::StrTypes::stat_list) {
+foreach my $f (@Demeter::StrTypes::stat_list) {
   my $ff = scramble_case($f);
   ok( is_Statistic($ff), "statistics parameter $ff recognized" );
 };
 
-foreach my $f (@Ifeffit::Demeter::StrTypes::lattice_list) {
+foreach my $f (@Demeter::StrTypes::lattice_list) {
   my $ff = scramble_case($f);
   ok( is_AtomsLattice($ff), "Atoms lattice parameter $ff recognized" );
 };
 
 ## skip atoms gas and obsolete
 
-foreach my $f (@Ifeffit::Demeter::StrTypes::sg_list) {
+foreach my $f (@Demeter::StrTypes::sg_list) {
   my $ff = scramble_case($f);
   ok( is_SpaceGroup($ff), "space group parameter $ff recognized" );
 };
 
-foreach my $f (@Ifeffit::Demeter::StrTypes::plotting_list) {
+foreach my $f (@Demeter::StrTypes::plotting_list) {
   my $ff = scramble_case($f);
   ok( is_Plotting($ff), "plotting backend $ff recognized" );
 };
 
-foreach my $f (@Ifeffit::Demeter::StrTypes::dataparts_list) {
+foreach my $f (@Demeter::StrTypes::dataparts_list) {
   my $ff = scramble_case($f);
   ok( is_DataPart($ff), "data part $ff recognized" );
 };
 
-foreach my $f (@Ifeffit::Demeter::StrTypes::pgplotlines_list) {
+foreach my $f (@Demeter::StrTypes::pgplotlines_list) {
   my $ff = scramble_case($f);
   ok( is_PgplotLine($ff), "PGPLOT linetype $ff recognized" );
 };
 
-foreach my $f (@Ifeffit::Demeter::StrTypes::notreserved_list) {
+foreach my $f (@Demeter::StrTypes::notreserved_list) {
   my $ff = scramble_case($f);
   ok( !is_PgplotLine($ff), "reserved word $ff recognized" );
 };

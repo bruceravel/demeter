@@ -1,4 +1,4 @@
-package Ifeffit::Demeter::Data::FT;
+package Demeter::Data::FT;
 use Moose::Role;
 
 sub fft {
@@ -32,15 +32,15 @@ sub _bft_command {
 
 =head1 NAME
 
-Ifeffit::Demeter::Data::FT - Fourier transform mu(E) data
+Demeter::Data::FT - Fourier transform mu(E) data
 
 =head1 VERSION
 
-This documentation refers to Ifeffit::Demeter version 0.2.
+This documentation refers to Demeter version 0.2.
 
 =head1 DESCRIPTION
 
-This role of Ifeffit::Demeter::Data contains methods for performing
+This role of Demeter::Data contains methods for performing
 Fourier transforms.
 
 =head1 METHODS
@@ -70,7 +70,7 @@ appropriate sequence of Ifeffit commands.
 
 =head1 CONFIGURATION
 
-See L<Ifeffit::Demeter::Config> for a description of the configuration
+See L<Demeter::Config> for a description of the configuration
 system.
 
 =head1 DEPENDENCIES

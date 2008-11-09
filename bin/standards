@@ -46,11 +46,11 @@ use File::Spec;
 use Term::ReadLine;
 use Text::Template;
 
-use Ifeffit::Demeter;
-use Ifeffit::Demeter::UI::Standards;
-my $demeter = Ifeffit::Demeter->new;
+use Demeter;
+use Demeter::UI::Standards;
+my $demeter = Demeter->new;
 $demeter->set_mode(screen=>0, repscreen=>0);
-my $standards = Ifeffit::Demeter::UI::Standards->new();
+my $standards = Demeter::UI::Standards->new();
 $standards -> ini(q{});
 
 $| = 1;

@@ -1,4 +1,4 @@
-package Ifeffit::Demeter::UI::Gtk2::Hephaestus::F1F2;
+package Demeter::UI::Gtk2::Hephaestus::F1F2;
 use strict;
 use warnings;
 use Carp;
@@ -8,11 +8,11 @@ use Glib qw(TRUE FALSE);
 use Gtk2::Ex::PodViewer;
 
 use base 'Gtk2::Frame';
-use Ifeffit::Demeter;
-use Ifeffit::Demeter::UI::Gtk2::Hephaestus::PeriodicTable;
+use Demeter;
+use Demeter::UI::Gtk2::Hephaestus::PeriodicTable;
 use Gtk2::SimpleList;
 
-my $demeter = Ifeffit::Demeter->new;
+my $demeter = Demeter->new;
 
 sub new { 
   my $class = shift;
@@ -20,7 +20,7 @@ sub new {
   bless $self, $class;
 
   ## -------- Periodic table
-  my $pt = Ifeffit::Demeter::UI::Gtk2::Hephaestus::PeriodicTable -> new($self, 'f1f2_get_data');
+  my $pt = Demeter::UI::Gtk2::Hephaestus::PeriodicTable -> new($self, 'f1f2_get_data');
   my $vbox = Gtk2::VBox->new;
   $pt   -> show;
   $vbox -> pack_start($pt, FALSE, FALSE, 1);

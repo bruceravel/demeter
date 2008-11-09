@@ -1,4 +1,4 @@
-package Ifeffit::Demeter::Fit::Happiness;
+package Demeter::Fit::Happiness;
 
 =for Copyright
  .
@@ -168,11 +168,11 @@ sub _penalize_nidp {
 
 =head1 NAME
 
-Ifeffit::Demeter::Fit::Happiness - Semantic evaluation of an EXAFS fit
+Demeter::Fit::Happiness - Semantic evaluation of an EXAFS fit
 
 =head1 VERSION
 
-This documentation refers to Ifeffit::Demeter version 0.2.
+This documentation refers to Demeter version 0.2.
 
 =head1 SYNOPSIS
 
@@ -312,7 +312,7 @@ excess of 0.06 incurs the full hit of 40 to the happiness.
 
 =item I<parameter values>
 
-Perform the sanity checks in L<Ifeffit::Demeter::Path::Sanity>.
+Perform the sanity checks in L<Demeter::Path::Sanity>.
 Penalize the happiness by 2 for each path parameter that fails a
 sanity check.
 
@@ -384,7 +384,7 @@ between the average and good colors.
 
 =head1 CONFIGURATION AND ENVIRONMENT
 
-See L<Ifeffit::Demeter::Config> for a description of the configuration
+See L<Demeter::Config> for a description of the configuration
 system.
 
 The following parameters are configurable so that the happiness

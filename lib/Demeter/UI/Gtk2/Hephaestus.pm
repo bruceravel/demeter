@@ -1,4 +1,4 @@
-package Ifeffit::Demeter::UI::Gtk2::Hephaestus;
+package Demeter::UI::Gtk2::Hephaestus;
 use strict;
 use warnings;
 use Carp;
@@ -9,15 +9,15 @@ use File::Basename;
 use File::Spec;
 
 use Ifeffit;
-use Ifeffit::Demeter;
+use Demeter;
 
 use base 'Gtk2::Window';
 
 sub import {
   foreach my $m (qw(Absorption Data EdgeFinder LineFinder Transitions F1F2 Help)) {
-    next if $INC{"Ifeffit/Demeter/UI/Gtk2/Hephaestus/$m.pm"};
-    ##print "Ifeffit/Demeter/UI/Gtk2/Hephaestus/$m.pm\n";
-    require "Ifeffit/Demeter/UI/Gtk2/Hephaestus/$m.pm";
+    next if $INC{"Demeter/UI/Gtk2/Hephaestus/$m.pm"};
+    ##print "Demeter/UI/Gtk2/Hephaestus/$m.pm\n";
+    require "Demeter/UI/Gtk2/Hephaestus/$m.pm";
   };
 };
 sub identify_self {
@@ -89,13 +89,13 @@ sub new {
     $display -> set_label_widget($labwidg);
     $display -> set_shadow_type('none');
 
-    my $this = ($page eq 'transitions') ? Ifeffit::Demeter::UI::Gtk2::Hephaestus::Transitions->new()
-             : ($page eq 'find')        ? Ifeffit::Demeter::UI::Gtk2::Hephaestus::EdgeFinder->new()
-             : ($page eq 'line')        ? Ifeffit::Demeter::UI::Gtk2::Hephaestus::LineFinder->new()
-             : ($page eq 'help')        ? Ifeffit::Demeter::UI::Gtk2::Hephaestus::Help->new()
-             : ($page eq 'absorption')  ? Ifeffit::Demeter::UI::Gtk2::Hephaestus::Absorption->new() # periodic tables
-             : ($page eq 'data')        ? Ifeffit::Demeter::UI::Gtk2::Hephaestus::Data->new()
-             : ($page eq 'f1f2')        ? Ifeffit::Demeter::UI::Gtk2::Hephaestus::F1F2->new()
+    my $this = ($page eq 'transitions') ? Demeter::UI::Gtk2::Hephaestus::Transitions->new()
+             : ($page eq 'find')        ? Demeter::UI::Gtk2::Hephaestus::EdgeFinder->new()
+             : ($page eq 'line')        ? Demeter::UI::Gtk2::Hephaestus::LineFinder->new()
+             : ($page eq 'help')        ? Demeter::UI::Gtk2::Hephaestus::Help->new()
+             : ($page eq 'absorption')  ? Demeter::UI::Gtk2::Hephaestus::Absorption->new() # periodic tables
+             : ($page eq 'data')        ? Demeter::UI::Gtk2::Hephaestus::Data->new()
+             : ($page eq 'f1f2')        ? Demeter::UI::Gtk2::Hephaestus::F1F2->new()
              :                            q{};
     if ($this) {
       $display->add($this);
@@ -110,7 +110,7 @@ sub new {
   $vbox->show_all();
 
   my %dispatch_table = (
-			$Gtk2::Gdk::Keysyms{q}    => sub { my $demeter = Ifeffit::Demeter->new;
+			$Gtk2::Gdk::Keysyms{q}    => sub { my $demeter = Demeter->new;
 							   $demeter->po->cleantemp;
 							   Gtk2->main_quit;
 							 },

@@ -1,4 +1,4 @@
-package Ifeffit::Demeter::Feff::Paths;
+package Demeter::Feff::Paths;
 
 =for Copyright
  .
@@ -20,7 +20,7 @@ use Chemistry::Elements qw(get_Z);
 use List::MoreUtils qw(all none pairwise);
 
 use Moose::Role;
-use Ifeffit::Demeter::NumTypes qw( Ipot PosNum );
+use Demeter::NumTypes qw( Ipot PosNum );
 
 sub find_path {
   my ($self, @params) = @_;
@@ -155,15 +155,15 @@ sub find_all_paths {
 
 =head1 NAME
 
-Ifeffit::Demeter::Feff::Paths - Semantic descriptions of Feff paths
+Demeter::Feff::Paths - Semantic descriptions of Feff paths
 
 =head1 VERSION
 
-This documentation refers to Ifeffit::Demeter version 0.2.
+This documentation refers to Demeter version 0.2.
 
 =head1 SYNOPSIS
 
-    $feff -> Ifeffit::Demeter::Feff -> new(file=>"feff.inp");
+    $feff -> Demeter::Feff -> new(file=>"feff.inp");
     $feff -> potph;
     $feff -> pathfinder;
     my $scatteringpath = $feff->find_path(lt=>3.5, tag=>'Dy');
@@ -294,12 +294,12 @@ This returns all single scattering paths less than 6 Angstrongs.
 
 =head1 CONFIGURATION AND ENVIRONMENT
 
-See L<Ifeffit::Demeter::Config> for a description of the configuration
+See L<Demeter::Config> for a description of the configuration
 system.
 
 =head1 DEPENDENCIES
 
-The dependencies of the Ifeffit::Demeter system are in the
+The dependencies of the Demeter system are in the
 F<Bundle/DemeterBundle.pm> file.
 
 =head1 BUGS AND LIMITATIONS

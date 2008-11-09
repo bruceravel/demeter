@@ -1,4 +1,4 @@
-package Ifeffit::Demeter::Atoms::Absorption;
+package Demeter::Atoms::Absorption;
 
 =for Copyright
  .
@@ -121,17 +121,17 @@ sub _self {
 
 =head1 NAME
 
-Ifeffit::Demeter::Atoms::Absorption - Interaction with tables of absorption coefficients
+Demeter::Atoms::Absorption - Interaction with tables of absorption coefficients
 
 =head1 VERSION
 
-This documentation refers to Ifeffit::Demeter version 0.2.
+This documentation refers to Demeter version 0.2.
 
 =head1 DESCRIPTION
 
-This role of L<Ifeffit::Demeter::Atoms> provides all of the methods
-involved in calculations using tables of X-ray absorption coefficients
-provided by the L<Xray::Absorption> package and the methods of the
+This role of L<Demeter::Atoms> provides all of the methods involved in
+calculations using tables of X-ray absorption coefficients provided by
+the L<Xray::Absorption> package and the methods of the
 L<Xray::Fluorescence> package.
 
 =head1 METHODS

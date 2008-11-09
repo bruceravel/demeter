@@ -1,4 +1,4 @@
-package Ifeffit::Demeter::Path::Sanity;
+package Demeter::Path::Sanity;
 
 =for Copyright
  .
@@ -140,11 +140,11 @@ sub test_fourth {
 
 =head1 NAME
 
-Ifeffit::Demeter::Path::Sanity - Sanity checks for path parameter values
+Demeter::Path::Sanity - Sanity checks for path parameter values
 
 =head1 VERSION
 
-This documentation refers to Ifeffit::Demeter version 0.2.
+This documentation refers to Demeter version 0.2.
 
 =head1 SYNOPSIS
 
@@ -166,7 +166,7 @@ However they are documented here so that the scope of such checks made
 is clearly understood.
 
 These rules are among the criteria used to evaluate the fit happiness.
-See <Ifeffit::Demeter::Fit::Happiness>.
+See <Demeter::Fit::Happiness>.
 
 =head1 METHODS
 
@@ -182,8 +182,8 @@ found.
 
 =head1 CONFIGURATION AND ENVIRONMENT
 
-See L<Ifeffit::Demeter::Config> for a description of the configuration
-system.  See the warnings configuration group.
+See L<Demeter::Config> for a description of the configuration system.
+See the warnings configuration group.
 
 =head1 DEPENDENCIES
 

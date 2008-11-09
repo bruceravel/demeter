@@ -1,4 +1,4 @@
-package Ifeffit::Demeter::UI::Hephaestus::LineFinder;
+package Demeter::UI::Hephaestus::LineFinder;
 use strict;
 use warnings;
 use Carp;
@@ -33,7 +33,7 @@ sub new {
   my $hbox = Wx::BoxSizer->new( wxHORIZONTAL );
   $self->SetSizer($hbox);
 
-  $self->{targetenergy} = $Ifeffit::Demeter::UI::Hephaestus::demeter->co->default(qw(hephaestus line_energy));
+  $self->{targetenergy} = $Demeter::UI::Hephaestus::demeter->co->default(qw(hephaestus line_energy));
   $self->{echo} = $echoarea;
 
   ## -------- Edge energies
@@ -121,18 +121,18 @@ sub search_lines {
 
 =head1 NAME
 
-Ifeffit::Demeter::UI::Hephaestus:::LineFinder - Hephaestus' line finder utility
+Demeter::UI::Hephaestus:::LineFinder - Hephaestus' line finder utility
 
 =head1 VERSION
 
-This documentation refers to Ifeffit::Demeter version 0.2.
+This documentation refers to Demeter version 0.2.
 
 =head1 SYNOPSIS
 
 The contents of Hephaestus' line finder utility can be added to any Wx
 application.
 
-  my $page = Ifeffit::Demeter::UI::Hephaestus::LineFinder->new($parent,$echoarea);
+  my $page = Demeter::UI::Hephaestus::LineFinder->new($parent,$echoarea);
   $sizer -> Add($page, 1, wxGROW|wxEXPAND|wxALL, 0);
 
 The arguments to the constructor method are a reference to the parent

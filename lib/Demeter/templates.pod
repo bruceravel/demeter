@@ -4,7 +4,7 @@ An overview of Demeter's templating system.
 
 =head1 VERSION
 
-This documentation refers to Ifeffit::Demeter version 0.2.
+This documentation refers to Demeter version 0.2.
 
 =head1 SYNOPSIS
 
@@ -62,14 +62,14 @@ line fills in the C<fft> template from the I<process> L<template
 group|/TEMPLATE GROUPS> using the parameters of the Data objects
 contained in C<$data>.  The C<template> method returns a string
 containing the appropriate Ifeffit commands.  This string is
-L<disposed|Ifeffit::Demeter::Dispose> in the last line.
+L<disposed|Demeter::Dispose> in the last line.
 
 Demeter uses certain conventions to push particular data into a
 template.  You can see two of those conventions in this example.
 C<$D>, when used inside of curly braces, refers to the Data object of
 the referent.  C<$P> refers to the current Plot object, which is
 defined as the C<plot> mode parameter and
-L<explained here|Ifeffit::Demeter::Dispose/OTHER_USES_OF_set_mode>.
+L<explained here|Demeter::Dispose/OTHER_USES_OF_set_mode>.
 
 Within the curly braces, Demeter syntax is used and Demeter methods
 are used to get data out of Demeetr objects.  Some templates contain
@@ -107,20 +107,20 @@ possibly C<demeter>) method to access system configuration parameters.
 The other use of C<$C> is to access user-defined parameters.  The
 merge templates for example make extensive use of this to set, for
 example, the boundaries of the merge range and the space in which the
-merge takes place.  See L<Ifeffit::Demeter::Config> for details on
+merge takes place.  See L<Demeter::Config> for details on
 setting user-defined Config parameetrs.  For user-defined parameters,
 you should use the C<get> method.
 
 =item C<$F>
 
 This refers to the current Fit object.  Normally, the C<fit> or C<sum>
-method of the L<Ifeffit::Demeter::Fit> class will set the default for
+method of the L<Demeter::Fit> class will set the default for
 you.
 
 =item C<$DS>
 
 This refers to the data object chosen as the data standard, as
-L<explained here|Ifeffit::Demeter::Dispose/OTHER_USES_OF_set_mode>.
+L<explained here|Demeter::Dispose/OTHER_USES_OF_set_mode>.
 Data processing methods such as C<align> will set the data standard so
 that C<$DS> evaluates correctly in templates.
 
@@ -141,7 +141,7 @@ method is quite similar to user-define Config attributes, but may be
 more convenient.  You can supply an additional argument to the
 C<template> method which is an anonymous hash.  An example would be
 the C<save_xmu> template from the I<process> tamplate group.  It is
-called like so in C<save_xmu> in C<Ifeffit::Demeter::Data::Mu>:
+called like so in C<save_xmu> in C<Demeter::Data::Mu>:
 
    my $string = $self->template("process", "save_xmu",
                                 {filename => $filename,
@@ -205,14 +205,14 @@ sets.
 
 The I<feff> template group has sets for "feff6", "feff7", and "feff8".
 The feff template set is chosen by setting the C<template_feff> mode,
-as L<explained here|Ifeffit::Demeter::Dispose/OTHER_USES_OF_set_mode>.
+as L<explained here|Demeter::Dispose/OTHER_USES_OF_set_mode>.
 
 =item I<plot>
 
 In Demeter version 0.2 there is only a "pgplot" template set.  In the
 future new sets will be written for different plotting backends.  The
 plot template set is chosen by setting the C<template_plot> mode, as
-L<explained here|Ifeffit::Demeter::Dispose/OTHER_USES_OF_set_mode>.
+L<explained here|Demeter::Dispose/OTHER_USES_OF_set_mode>.
 
 =item I<fit> and I<process>
 
@@ -223,7 +223,7 @@ align ifeffit command arguments into columns aligned at the equals
 sign wherever possible.  The second one may be a bit more human
 readable.  The fit and process template sets are chosen by setting the
 C<template_fit> and C<template_process> modes, as L<explained
-here|Ifeffit::Demeter::Dispose/OTHER_USES_OF_set_mode>.
+here|Demeter::Dispose/OTHER_USES_OF_set_mode>.
 
 =back
 
@@ -243,12 +243,12 @@ does not exist.
 
 =head1 CONFIGURATION AND ENVIRONMENT
 
-See L<Ifeffit::Demeter::Config> for details about the configuration
+See L<Demeter::Config> for details about the configuration
 system.
 
 =head1 DEPENDENCIES
 
-The dependencies of the Ifeffit::Demeter system are in the
+The dependencies of the Demeter system are in the
 F<Bundle/DemeterBundle.pm> file.
 
 =head1 BUGS AND LIMITATIONS

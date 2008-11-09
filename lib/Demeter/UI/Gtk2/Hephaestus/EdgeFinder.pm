@@ -1,4 +1,4 @@
-package Ifeffit::Demeter::UI::Gtk2::Hephaestus::EdgeFinder;
+package Demeter::UI::Gtk2::Hephaestus::EdgeFinder;
 use strict;
 use warnings;
 use Carp;

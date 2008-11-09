@@ -1,4 +1,4 @@
-package Ifeffit::Demeter::Tools;
+package Demeter::Tools;
 
 =for Copyright
  .
@@ -20,7 +20,7 @@ use autodie qw(open close);
 use Moose::Role;
 
 use Carp;
-#use Ifeffit::Demeter::GDS;
+#use Demeter::GDS;
 use Regexp::List;
 use Regexp::Optimizer;
 use List::Util qw(sum);
@@ -57,7 +57,7 @@ sub now {
 sub environment {
   my ($self) = @_;
   my $os = ($self->is_windows) ? windows_version() : $^O;
-  return "Demeter " . $Ifeffit::Demeter::VERSION . " with perl $] on $os";
+  return "Demeter " . $Demeter::VERSION . " with perl $] on $os";
 };
 
 ## http://aspn.activestate.com/ASPN/docs/ActivePerl/5.8/lib/Win32.html
@@ -125,10 +125,10 @@ sub simpleGDS {
   ## croak if $name is one of the program variables
 
   ## finally, return the GDS object
-  return Ifeffit::Demeter::GDS -> new(gds     => $type,
-				      name    => $name,
-				      mathexp => $mathexp,
-				     ),
+  return Demeter::GDS -> new(gds     => $type,
+			     name    => $name,
+			     mathexp => $mathexp,
+			    ),
 };
 # {
 #   no warnings 'once';
@@ -185,11 +185,11 @@ sub halflength {
 
 =head1 NAME
 
-Ifeffit::Demeter::Tools - Utility methods for the Demeter class
+Demeter::Tools - Utility methods for the Demeter class
 
 =head1 VERSION
 
-This documentation refers to Ifeffit::Demeter version 0.2.
+This documentation refers to Demeter version 0.2.
 
 =head1 DESCRIPTION
 
@@ -205,7 +205,7 @@ opinion) as class methods than as object methods.
 This is syntactic sugar for the GDS object constructor.  The following are
 equivalent:
 
-  $gdsobject = Ifeffit::Demeter::GDS ->
+  $gdsobject = Demeter::GDS ->
                   new(type    => 'guess',
 		      name    => 'alpha',
 		      mathexp => 0,
@@ -289,12 +289,11 @@ tacked onto the end of the list to close the path.
 
 =head1 CONFIGURATION AND ENVIRONMENT
 
-See L<Ifeffit::Demeter::Config> for a description of the configuration
-system.
+See L<Demeter::Config> for a description of the configuration system.
 
 =head1 DEPENDENCIES
 
-The dependencies of the Ifeffit::Demeter system are listed in the
+The dependencies of the Demeter system are listed in the
 F<Bundle/DemeterBundle.pm> file.
 
 =head1 BUGS AND LIMITATIONS

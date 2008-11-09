@@ -20,14 +20,14 @@
 use Test::More tests => 23;
 
 use Ifeffit;
-use Ifeffit::Demeter;
+use Demeter;
 
 use List::MoreUtils qw(none);
 
-my $demeter  = Ifeffit::Demeter -> new;
-my $demeter2 = Ifeffit::Demeter -> new;
+my $demeter  = Demeter -> new;
+my $demeter2 = Demeter -> new;
 
-ok( defined($demeter) && blessed $demeter eq 'Ifeffit::Demeter',    'new() works' );
+ok( defined($demeter) && blessed $demeter eq 'Demeter',    'new() works' );
 ok( $demeter->group =~ m{\A\w{5}\z},                                'group is set: '.$demeter->group);
 ok( $demeter->group ne $demeter2->group,                            'unique group names: '.$demeter->group.' & '.$demeter2->group);
 ok( -d $demeter->location,                                          'installation location identified');
@@ -57,9 +57,9 @@ ok( ref($demeter->get_mode('buffer')) eq 'ARRAY',                   'turn on buf
 
 
 ## other type constraint tests, see 002_types.t for exhaustive positive tests
-ok(!Ifeffit::Demeter::is_Window('Hamming'),                         'unknown window not recognized' );
-ok( Ifeffit::Demeter::is_Element('Cu'),                             'known element (Cu) is recognized' );
-ok(!Ifeffit::Demeter::is_Element('Ci'),                             'unknown element (Ci) not recognized' );
+ok(!Demeter::is_Window('Hamming'),                         'unknown window not recognized' );
+ok( Demeter::is_Element('Cu'),                             'known element (Cu) is recognized' );
+ok(!Demeter::is_Element('Ci'),                             'unknown element (Ci) not recognized' );
 
 ## simple tests of templates and the Disposal role -- see object specific test files for further tests
 my $string = $demeter -> template("test", "test", {x=>5});

@@ -20,10 +20,10 @@
 use Test::More tests => 23;
 
 use Ifeffit;
-use Ifeffit::Demeter;
+use Demeter;
 
-my $demeter  = Ifeffit::Demeter -> new;
-my $demeter2 = Ifeffit::Demeter -> new;
+my $demeter  = Demeter -> new;
+my $demeter2 = Demeter -> new;
 
 ok( ref($demeter->mode->config) =~ 'Config',                                    'found a config object');
 ok(!$demeter->mode->config->plottable,                                          "Config object is not plottable");

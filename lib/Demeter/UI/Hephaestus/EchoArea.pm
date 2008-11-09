@@ -1,4 +1,4 @@
-package Ifeffit::Demeter::UI::Hephaestus::EchoArea;
+package Demeter::UI::Hephaestus::EchoArea;
 use strict;
 use warnings;
 use Carp;
@@ -28,17 +28,17 @@ sub echo {
 
 =head1 NAME
 
-Ifeffit::Demeter::UI::Hephaestus::EchoArea - A run-time feedback widget
+Demeter::UI::Hephaestus::EchoArea - A run-time feedback widget
 
 =head1 VERSION
 
-This documentation refers to Ifeffit::Demeter version 0.2.
+This documentation refers to Demeter version 0.2.
 
 =head1 SYNOPSIS
 
 An echo area an be added to a Wx application:
 
-  my $echoarea = Ifeffit::Demeter::UI::Hephaestus::EchoArea->new($self);
+  my $echoarea = Demeter::UI::Hephaestus::EchoArea->new($self);
   $sizer -> Add($echoarea, 0, wxEXPAND|wxALL, 3);
 
 The argument to the constructor method is a reference to the parent in

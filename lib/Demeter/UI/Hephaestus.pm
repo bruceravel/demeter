@@ -1,4 +1,4 @@
-package  Ifeffit::Demeter::UI::HephaestusApp;
+package Demeter::UI::HephaestusApp;
 
 use strict;
 use warnings;
@@ -7,8 +7,8 @@ use Carp;
 use File::Spec;
 
 use Ifeffit;
-use Ifeffit::Demeter;
-use Ifeffit::Demeter::UI::Hephaestus::Common qw(hversion);
+use Demeter;
+use Demeter::UI::Hephaestus::Common qw(hversion);
 
 use Wx qw( :everything );
 use base 'Wx::Frame';
@@ -56,12 +56,12 @@ sub new {
 			       );
 
   my $tb = Wx::Notebook->new( $self, -1, wxDefaultPosition, wxDefaultSize, wxBK_LEFT );
-  my $echoarea = Ifeffit::Demeter::UI::Hephaestus::EchoArea->new($self);
+  my $echoarea = Demeter::UI::Hephaestus::EchoArea->new($self);
   my $vbox = Wx::BoxSizer->new( wxVERTICAL);
 
   my $imagelist = Wx::ImageList->new( $icon_dimension, $icon_dimension );
   foreach my $utility (@utilities) {
-    my $icon = File::Spec->catfile($Ifeffit::Demeter::UI::Hephaestus::hephaestus_base, 'Hephaestus', 'icons', "$utility.png");
+    my $icon = File::Spec->catfile($Demeter::UI::Hephaestus::hephaestus_base, 'Hephaestus', 'icons', "$utility.png");
     $imagelist->Add( Wx::Bitmap->new($icon, wxBITMAP_TYPE_PNG) );
   };
   $tb->AssignImageList( $imagelist );
@@ -82,16 +82,16 @@ sub new {
     $box -> Add($hh, 0);
 
     $self->{$utility}
-      = ($utility eq 'transitions') ? Ifeffit::Demeter::UI::Hephaestus::Transitions->new($page,$echoarea)
-      : ($utility eq 'help')        ? Ifeffit::Demeter::UI::Hephaestus::Help->new($page,$echoarea)
-      : ($utility eq 'ion')         ? Ifeffit::Demeter::UI::Hephaestus::Ion->new($page,$echoarea)
-      : ($utility eq 'absorption')  ? Ifeffit::Demeter::UI::Hephaestus::Absorption->new($page,$echoarea)
-      : ($utility eq 'data')        ? Ifeffit::Demeter::UI::Hephaestus::Data->new($page,$echoarea)
-      : ($utility eq 'standards')   ? Ifeffit::Demeter::UI::Hephaestus::Standards->new($page,$echoarea)
-      : ($utility eq 'f1f2')        ? Ifeffit::Demeter::UI::Hephaestus::F1F2->new($page,$echoarea)
-      : ($utility eq 'find')        ? Ifeffit::Demeter::UI::Hephaestus::EdgeFinder->new($page,$echoarea)
-      : ($utility eq 'line')        ? Ifeffit::Demeter::UI::Hephaestus::LineFinder->new($page,$echoarea)
-      : ($utility eq 'formulas')    ? Ifeffit::Demeter::UI::Hephaestus::Formulas->new($page,$echoarea)
+      = ($utility eq 'transitions') ? Demeter::UI::Hephaestus::Transitions->new($page,$echoarea)
+      : ($utility eq 'help')        ? Demeter::UI::Hephaestus::Help->new($page,$echoarea)
+      : ($utility eq 'ion')         ? Demeter::UI::Hephaestus::Ion->new($page,$echoarea)
+      : ($utility eq 'absorption')  ? Demeter::UI::Hephaestus::Absorption->new($page,$echoarea)
+      : ($utility eq 'data')        ? Demeter::UI::Hephaestus::Data->new($page,$echoarea)
+      : ($utility eq 'standards')   ? Demeter::UI::Hephaestus::Standards->new($page,$echoarea)
+      : ($utility eq 'f1f2')        ? Demeter::UI::Hephaestus::F1F2->new($page,$echoarea)
+      : ($utility eq 'find')        ? Demeter::UI::Hephaestus::EdgeFinder->new($page,$echoarea)
+      : ($utility eq 'line')        ? Demeter::UI::Hephaestus::LineFinder->new($page,$echoarea)
+      : ($utility eq 'formulas')    ? Demeter::UI::Hephaestus::Formulas->new($page,$echoarea)
       :                               0;
     if ($self->{$utility}) {
       $hh = Wx::BoxSizer->new( wxHORIZONTAL );
@@ -124,14 +124,14 @@ sub new {
 
 
 
-package Ifeffit::Demeter::UI::Hephaestus;
+package Demeter::UI::Hephaestus;
 use File::Basename;
 
 use Wx qw(wxBITMAP_TYPE_XPM wxID_EXIT wxID_ABOUT);
 use Wx::Event qw(EVT_MENU);
 use base 'Wx::App';
 
-use Ifeffit::Demeter::UI::Hephaestus::Common qw(hversion hcopyright hdescription slurp);
+use Demeter::UI::Hephaestus::Common qw(hversion hcopyright hdescription slurp);
 
 sub identify_self {
   my @caller = caller;
@@ -143,22 +143,22 @@ $hephaestus_base = identify_self();
 sub OnInit {
   Wx::InitAllImageHandlers();
 
-  $demeter = Ifeffit::Demeter->new;
-  my $conffile = File::Spec->catfile(dirname($INC{'Ifeffit/Demeter/UI/Hephaestus.pm'}), 'Hephaestus', 'data', "hephaestus.demeter_conf");
+  $demeter = Demeter->new;
+  my $conffile = File::Spec->catfile(dirname($INC{'Demeter/UI/Hephaestus.pm'}), 'Hephaestus', 'data', "hephaestus.demeter_conf");
   $demeter->co->read_config($conffile);
   ## read ini file...
   $demeter -> plot_with($demeter->co->default(qw(hephaestus plotwith)));
 
   foreach my $m (qw(Absorption Formulas Ion Data Transitions EdgeFinder LineFinder
 		    Standards F1F2 Help PeriodicTable EchoArea)) {
-    next if $INC{"Ifeffit/Demeter/UI/Hephaestus/$m.pm"};
-    ##print "Ifeffit/Demeter/UI/Hephaestus/$m.pm\n";
-    require "Ifeffit/Demeter/UI/Hephaestus/$m.pm";
+    next if $INC{"Demeter/UI/Hephaestus/$m.pm"};
+    ##print "Demeter/UI/Hephaestus/$m.pm\n";
+    require "Demeter/UI/Hephaestus/$m.pm";
   };
 
   ## -------- create a new frame and set icon
-  my $frame = Ifeffit::Demeter::UI::HephaestusApp->new;
-  my $iconfile = File::Spec->catfile(dirname($INC{'Ifeffit/Demeter/UI/Hephaestus.pm'}), 'Hephaestus', 'icons', "vulcan.xpm");
+  my $frame = Demeter::UI::HephaestusApp->new;
+  my $iconfile = File::Spec->catfile(dirname($INC{'Demeter/UI/Hephaestus.pm'}), 'Hephaestus', 'icons', "vulcan.xpm");
   my $icon = Wx::Icon->new( $iconfile, wxBITMAP_TYPE_XPM );
   $frame -> SetIcon($icon);
 
@@ -205,7 +205,7 @@ sub on_about {
 			 "Much of the data displayed in the Data\nutility was swiped from Kalzium (website...)\n",
 			 "Mossbauer data comes from http://mossbauer.org/",
 			] );
-  $info->SetLicense( slurp(File::Spec->catfile($Ifeffit::Demeter::UI::Hephaestus::hephaestus_base, 'Hephaestus', 'data', "GPL")) );
+  $info->SetLicense( slurp(File::Spec->catfile($Demeter::UI::Hephaestus::hephaestus_base, 'Hephaestus', 'data', "GPL")) );
   my $artwork = <<'EOH'
 The logo and main icon is "Vulcan Forging 
 Jupiter's Lightning Bolts" by Peter Paul
@@ -246,16 +246,16 @@ EOH
 
 =head1 NAME
 
-Ifeffit::Demeter::UI::Hephaestus - A souped-up periodic table for XAS
+Demeter::UI::Hephaestus - A souped-up periodic table for XAS
 
 =head1 VERSION
 
-This documentation refers to Ifeffit::Demeter version 0.2.
+This documentation refers to Demeter version 0.2.
 
 =head1 SYNOPSIS
 
-  use Ifeffit::Demeter::UI::Hephaestus;
-  my $window = Ifeffit::Demeter::UI::Hephaestus->new;
+  use Demeter::UI::Hephaestus;
+  my $window = Demeter::UI::Hephaestus->new;
   $window -> MainLoop;
 
 =head1 DESCRIPTION

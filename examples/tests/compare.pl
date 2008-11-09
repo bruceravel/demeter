@@ -23,7 +23,7 @@
 use warnings;
 use strict;
 
-use Ifeffit::Demeter;
+use Demeter;
 my $where = $ENV{DEMETER_TEST_DIR} || "..";
 
 my @common_to_all_data_sets = (bkg_rbkg    => 1.5,
@@ -32,8 +32,8 @@ my @common_to_all_data_sets = (bkg_rbkg    => 1.5,
 			       bkg_flatten => 1,
 			       fft_kmax    => 3,    fft_kmin    => 17,
 			      );
-my @data = (Ifeffit::Demeter::Data -> new({group => 'data0'}),
-	    Ifeffit::Demeter::Data -> new({group => 'data1'}),
+my @data = (Demeter::Data -> new({group => 'data0'}),
+	    Demeter::Data -> new({group => 'data1'}),
 	   );
 foreach (@data) { $_ -> set(@common_to_all_data_sets) };
 $data[0] -> set(file => "$where/data/fe.060.xmu", name => 'Fe 60K', 'y_offset' => 1, );

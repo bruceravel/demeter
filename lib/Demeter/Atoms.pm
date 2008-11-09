@@ -1,4 +1,4 @@
-package Ifeffit::Demeter::Atoms;
+package Demeter::Atoms;
 
 =for Copyright
  .
@@ -18,23 +18,23 @@ package Ifeffit::Demeter::Atoms;
 use autodie qw(open close);
 
 use Moose;
-extends 'Ifeffit::Demeter';
-with 'Ifeffit::Demeter::Atoms::Absorption';
+extends 'Demeter';
+with 'Demeter::Atoms::Absorption';
 use MooseX::AttributeHelpers;
-use Ifeffit::Demeter::StrTypes qw( Element
- 				   Edge
-				   AtomsLattice
-				   AtomsGas
-				   AtomsObsolete
-                                   SpaceGroup
-				   Empty
-				);
-use Ifeffit::Demeter::NumTypes qw( Natural
-				   PosInt
-				   PosNum
-				   NonNeg
-				   OneToFour
-				);
+use Demeter::StrTypes qw( Element
+			  Edge
+			  AtomsLattice
+			  AtomsGas
+			  AtomsObsolete
+			  SpaceGroup
+			  Empty
+		       );
+use Demeter::NumTypes qw( Natural
+			  PosInt
+			  PosNum
+			  NonNeg
+			  OneToFour
+		       );
 
 
 #use diagnostics;
@@ -548,7 +548,7 @@ override 'template' => sub {
 
   my $cell = $self->cell;
 
-  my $tmpl = File::Spec->catfile(dirname($INC{"Ifeffit/Demeter.pm"}),
+  my $tmpl = File::Spec->catfile(dirname($INC{"Demeter.pm"}),
 				 "Demeter",
 				 "templates",
 				 "atoms",
@@ -560,7 +560,7 @@ override 'template' => sub {
   my $string = $template->fill_in(HASH => {A  => \$self,
 					   C  => \$cell,
 					   %$rhash},
-				  PACKAGE => "Ifeffit::Demeter::Templates");
+				  PACKAGE => "Demeter::Templates");
   $string ||= q{};
   $string =~ s{^\s+}{};		# remove leading white space
   $string =~ s{\n(?:[ \t]+\n)+}{\n};	# regularize white space between blocks of text
@@ -803,18 +803,18 @@ sub atoms_file {
 
 =head1 NAME
 
-Ifeffit::Demeter::Atoms - Convert crystallographic data to atomic lists
+Demeter::Atoms - Convert crystallographic data to atomic lists
 
 =head1 VERSION
 
-This documentation refers to Ifeffit::Demeter version 0.2.
+This documentation refers to Demeter version 0.2.
 
 =head1 SYNOPSIS
 
 These lines behave much like any other version of Atoms:
 
-  use Ifeffit::Demeter;
-  my $atoms = Ifeffit::Demeter::Atoms -> new()
+  use Demeter;
+  my $atoms = Demeter::Atoms -> new()
     -> read_inp($ARGV[0]||"atoms.inp")
       -> Write('feff6');
 
@@ -1128,7 +1128,7 @@ permissions problem.
 The template file specified in the call to the C<Write> method could
 not located.
 
-=item C<"$key" is not a valid Ifeffit::Demeter::Atoms parameter>
+=item C<"$key" is not a valid Demeter::Atoms parameter>
 
 You have attempted to set an unrecognized  keyword.
 
@@ -1158,12 +1158,12 @@ output should be handled as a Feff object.
 
 =head1 CONFIGURATION AND ENVIRONMENT
 
-See L<Ifeffit::Demeter::Config> for a description of the configuration
-system.  Atoms uses the C<atoms> configuration group.
+See L<Demeter::Config> for a description of the configuration system.
+Atoms uses the C<atoms> configuration group.
 
 =head1 DEPENDENCIES
 
-The dependencies of the Ifeffit::Demeter system are in the
+The dependencies of the Demeter system are in the
 F<Bundle/DemeterBundle.pm> file.
 
 =head1 BUGS AND LIMITATIONS

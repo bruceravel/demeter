@@ -1,4 +1,4 @@
-package Ifeffit::Demeter::UI::Hephaestus::Help;
+package Demeter::UI::Hephaestus::Help;
 use strict;
 use warnings;
 use Carp;
@@ -93,18 +93,18 @@ sub OnBack {
 
 =head1 NAME
 
-Ifeffit::Demeter::UI::Hephaestus::Help - Hephaestus' document utility
+Demeter::UI::Hephaestus::Help - Hephaestus' document utility
 
 =head1 VERSION
 
-This documentation refers to Ifeffit::Demeter version 0.2.
+This documentation refers to Demeter version 0.2.
 
 =head1 SYNOPSIS
 
 The contents of Hephaestus' document utility can be added to any Wx
 application.
 
-  my $page = Ifeffit::Demeter::UI::Hephaestus::Help->new($parent,$echoarea);
+  my $page = Demeter::UI::Hephaestus::Help->new($parent,$echoarea);
   $sizer -> Add($page, 1, wxGROW|wxEXPAND|wxALL, 0);
 
 The arguments to the constructor method are a reference to the parent

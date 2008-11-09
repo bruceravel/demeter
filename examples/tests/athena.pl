@@ -24,7 +24,7 @@
 use warnings;
 use strict;
 
-use Ifeffit::Demeter;
+use Demeter;
 my $where = $ENV{DEMETER_TEST_DIR} || "..";
 
 my @common_to_all_data_sets = (bkg_rbkg    => 1.5,
@@ -37,7 +37,7 @@ my @common_to_all_data_sets = (bkg_rbkg    => 1.5,
 			       denominator => '$3', # column 3 is It
 			       ln          => 1,    # these are transmission data
 			      );
-my @data = map {Ifeffit::Demeter::Data -> new(group => $_) } qw(data0 data1 data2);
+my @data = map {Demeter::Data -> new(group => $_) } qw(data0 data1 data2);
 my $plot = $data[0]->po;
 $plot->set_mode(screen=>0, repscreen=>0);
 
@@ -54,6 +54,6 @@ print "Writing athena file\n";
 $data[0]->write_athena("athena.prj", @data);
 
 print "Rereading athena.prj and replotting first group\n";
-my $d = Ifeffit::Demeter::Data::Prj -> new(file=>"athena.prj") -> record(1);
+my $d = Demeter::Data::Prj -> new(file=>"athena.prj") -> record(1);
 $d -> plot('k');
 1;

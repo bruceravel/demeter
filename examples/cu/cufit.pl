@@ -18,13 +18,13 @@
 
 use warnings;
 use strict;
-use Ifeffit::Demeter qw(:ui=screen :template=iff_columns);
-print "Sample fit to copper data using Demeter ", $Ifeffit::Demeter::VERSION, $/;
+use Demeter qw(:ui=screen :template=iff_columns);
+print "Sample fit to copper data using Demeter ", $Demeter::VERSION, $/;
 unlink "cufit.iff" if (-e "cufit.iff");
 
 
 print "make a Data object and set the FT and fit parameters\n";
-my $dobject = Ifeffit::Demeter::Data -> new(group => 'data0',);
+my $dobject = Demeter::Data -> new(group => 'data0',);
 
 $dobject->set_mode(screen  => 0, ifeffit => 1, file => ">cufit.iff",
 		   ## the next two lines are equivalent to setting the :template pragma
@@ -47,19 +47,19 @@ $dobject ->set(file       => "cu10k.chi",
 	      );
 
 print "make GDS objects for an isotropic expansion, correlated Debye model fit to copper\n";
-my @gdsobjects =  (Ifeffit::Demeter::GDS -> new(gds => 'guess', name => 'alpha', mathexp => 0),
-		   Ifeffit::Demeter::GDS -> new(gds => 'guess', name => 'amp',   mathexp => 1),
-		   Ifeffit::Demeter::GDS -> new(gds => 'guess', name => 'enot',  mathexp => 0),
-		   Ifeffit::Demeter::GDS -> new(gds => 'guess', name => 'theta', mathexp => 500),
-		   Ifeffit::Demeter::GDS -> new(gds => 'set',   name => 'temp',  mathexp => 300),
-		   Ifeffit::Demeter::GDS -> new(gds => 'set',   name => 'sigmm', mathexp => 0.00052),
+my @gdsobjects =  (Demeter::GDS -> new(gds => 'guess', name => 'alpha', mathexp => 0),
+		   Demeter::GDS -> new(gds => 'guess', name => 'amp',   mathexp => 1),
+		   Demeter::GDS -> new(gds => 'guess', name => 'enot',  mathexp => 0),
+		   Demeter::GDS -> new(gds => 'guess', name => 'theta', mathexp => 500),
+		   Demeter::GDS -> new(gds => 'set',   name => 'temp',  mathexp => 300),
+		   Demeter::GDS -> new(gds => 'set',   name => 'sigmm', mathexp => 0.00052),
 		  );
 
 print "make Path objects for the first 5 paths in copper (3 shell fit)\n";
 my @pobjects = ();
 foreach my $i (0 .. 4) {
   my $j = $i+1;
-  $pobjects[$i] = Ifeffit::Demeter::Path -> new();
+  $pobjects[$i] = Demeter::Path -> new();
   $pobjects[$i]->set(data     => $dobject,
 		     #Index    => $j,
 		     folder   => './',
@@ -72,10 +72,10 @@ foreach my $i (0 .. 4) {
 };
 
 print "make a Fit object, which is just a collection of GDS, Data, and Path objects\n";
-my $fitobject = Ifeffit::Demeter::Fit -> new(gds   => \@gdsobjects,
-					     data  => [$dobject],
-					     paths => \@pobjects
-					    );
+my $fitobject = Demeter::Fit -> new(gds   => \@gdsobjects,
+				    data  => [$dobject],
+				    paths => \@pobjects
+				   );
 
 print "do the fit (or the sum of paths)\n";
 $fitobject -> fit;

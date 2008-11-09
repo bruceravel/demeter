@@ -1,4 +1,4 @@
-package Ifeffit::Demeter::Feff::Sanity;
+package Demeter::Feff::Sanity;
 
 =for Copyright
  .
@@ -32,7 +32,7 @@ $Text::Wrap::columns = 65;
 
 
 my $opt  = Regexp::List->new;
-#my $functions = Ifeffit::Demeter->regexp('functions');
+#my $functions = Demeter->regexp('functions');
 
 ## verify 1. all ipots are used
 ##        2. no atoms have undefined ipots
@@ -123,22 +123,23 @@ sub S_check_rmax {
 
 =head1 NAME
 
-Ifeffit::Demeter::Feff::Sanity - Sanity checks for feff.inp files
+Demeter::Feff::Sanity - Sanity checks for feff.inp files
 
 =head1 VERSION
 
-This documentation refers to Ifeffit::Demeter version 0.2.
+This documentation refers to Demeter version 0.2.
 
 =head1 SYNOPSIS
 
-    $feff -> Ifeffit::Demeter::Feff -> new(file=>"feff.inp");
+    $feff -> Demeter::Feff -> new(file=>"feff.inp");
 
 =head1 DESCRIPTION
 
-This module contains all the sanity checks made on a F<feff.inp> file.  This
-file forms part of the base of the Ifeffit::Demeter::Feff class and serves no
-independent function.  That is, using this module directly in a program does
-nothing useful -- it is purely a utility module for the Feff object.
+This module contains all the sanity checks made on a F<feff.inp> file.
+This file forms part of the base of the Demeter::Feff class and serves
+no independent function.  That is, using this module directly in a
+program does nothing useful -- it is purely a utility module for the
+Feff object.
 
 The user should never need to call the methods explicitly since they
 are called automatically whenever a F<feff.inp> file is imported.
@@ -201,11 +202,11 @@ I think these are all self-explanatory.
 
 =head1 CONFIGURATION AND ENVIRONMENT
 
-See L<Ifeffit::Demeter::Config> for a description of the configuration system.
+See L<Demeter::Config> for a description of the configuration system.
 
 =head1 DEPENDENCIES
 
-The dependencies of the Ifeffit::Demeter system are in the
+The dependencies of the Demeter system are in the
 F<Bundle/DemeterBundle.pm> file.
 
 =head1 BUGS AND LIMITATIONS

@@ -1,4 +1,4 @@
-package Ifeffit::Demeter;
+package Demeter;
 
 =for Copyright
  .
@@ -45,9 +45,9 @@ use Text::Template;
 
 use Moose;
 use Ifeffit;
-with 'Ifeffit::Demeter::Dispose';
-with 'Ifeffit::Demeter::Tools';
-with 'Ifeffit::Demeter::Project';
+with 'Demeter::Dispose';
+with 'Demeter::Tools';
+with 'Demeter::Project';
 
 with 'MooseX::Clone';
 
@@ -64,55 +64,55 @@ has 'data'      => (is => 'rw', isa => 'Any',  default => q{},
 has 'datagroup' => (is => 'rw', isa => 'Str',  default => q{});
 # has 'stash_folder' => (is => 'ro', isa => 'Str');
 
-use Ifeffit::Demeter::Mode;
+use Demeter::Mode;
 use vars qw($mode);
-$mode = Ifeffit::Demeter::Mode -> new;
-has 'mode' => (is => 'rw', isa => 'Ifeffit::Demeter::Mode', default => sub{$mode});
+$mode = Demeter::Mode -> new;
+has 'mode' => (is => 'rw', isa => 'Demeter::Mode', default => sub{$mode});
 
-use Ifeffit::Demeter::Config;
+use Demeter::Config;
 use vars qw($config);
-$config = Ifeffit::Demeter::Config -> new();
+$config = Demeter::Config -> new();
 
-use Ifeffit::Demeter::Plot;
+use Demeter::Plot;
 use vars qw($plot);
-$plot = Ifeffit::Demeter::Plot -> new();
+$plot = Demeter::Plot -> new();
 $plot -> screen_echo(0);
 
 $Gnuplot_exists = (eval "require Graphics::GnuplotIF");
-use Ifeffit::Demeter::StrTypes qw( Empty
-				   IfeffitCommand
-				   IfeffitFunction
-				   IfeffitProgramVar
-				   Window
-				   PathParam
-				   Element
-				   Edge
-				   FeffCard
-				   Clamp
-				   Config
-				   Statistic
-				   AtomsLattice
-				   AtomsGas
-				   AtomsObsolete
-				   SpaceGroup
-				   Plotting
-				   DataPart
-				   FitSpace
-				   PgplotLine
-				   MERIP
-				   PlotWeight
-				   Interp
-				   TemplateProcess
-				);
-use Ifeffit::Demeter::NumTypes qw( Natural
-				   PosInt
-				   OneToFour
-				   OneToTwentyNine
-				   NegInt
-				   PosNum
-				   NegNum
-				   NonNeg
-				);
+use Demeter::StrTypes qw( Empty
+			  IfeffitCommand
+			  IfeffitFunction
+			  IfeffitProgramVar
+			  Window
+			  PathParam
+			  Element
+			  Edge
+			  FeffCard
+			  Clamp
+			  Config
+			  Statistic
+			  AtomsLattice
+			  AtomsGas
+			  AtomsObsolete
+			  SpaceGroup
+			  Plotting
+			  DataPart
+			  FitSpace
+			  PgplotLine
+			  MERIP
+			  PlotWeight
+			  Interp
+			  TemplateProcess
+		       );
+use Demeter::NumTypes qw( Natural
+			  PosInt
+			  OneToFour
+			  OneToTwentyNine
+			  NegInt
+			  PosNum
+			  NegNum
+			  NonNeg
+		       );
 
 sub import {
   my ($class, @pragmata) = @_;
@@ -129,9 +129,9 @@ sub import {
     };
   };
   foreach my $m (qw(Data Plot Config Data/Prj GDS Path Fit Atoms Feff ScatteringPath)) {
-    next if $INC{"Ifeffit/Demeter/$m.pm"};
-    ##print "Ifeffit/Demeter/$m.pm\n";
-    require "Ifeffit/Demeter/$m.pm";
+    next if $INC{"Demeter/$m.pm"};
+    ##print "Demeter/$m.pm\n";
+    require "Demeter/$m.pm";
   };
 };
 
@@ -257,7 +257,7 @@ sub identify {
 };
 # sub environment {
 #   my ($self) = @_;
-#   return {demeter => $Ifeffit::Demeter::VERSION,
+#   return {demeter => $Demeter::VERSION,
 # 	  ifeffit => (split(" ", Ifeffit::get_string("\$&build")))[0],
 # 	  perl    => $],
 # 	  tk      => $Tk::VERSION,
@@ -349,14 +349,14 @@ sub plot_with {
 
  SWITCH: {
     ($backend eq 'pgplot') and do {
-      $self -> mode -> plot(Ifeffit::Demeter::Plot->new);
+      $self -> mode -> plot(Demeter::Plot->new);
       last SWITCH;
     };
 
     ($backend eq 'gnuplot') and do {
       $self -> mode -> external_plot_object( Graphics::GnuplotIF->new );
-      require Ifeffit::Demeter::Plot::Gnuplot;
-      $self -> mode -> plot( Ifeffit::Demeter::Plot::Gnuplot->new );
+      require Demeter::Plot::Gnuplot;
+      $self -> mode -> plot( Demeter::Plot::Gnuplot->new );
       last SWITCH;
     };
   };
@@ -439,7 +439,7 @@ sub template {
   my $theory   = $self->mode->theory;
   my $path     = $self->mode->path;
 
-  my $tmpl = File::Spec->catfile(dirname($INC{"Ifeffit/Demeter.pm"}),
+  my $tmpl = File::Spec->catfile(dirname($INC{"Demeter.pm"}),
 				 "Demeter",
 				 "templates",
 				 $category,
@@ -449,7 +449,7 @@ sub template {
     my $set = ($category eq 'plot') ? "pgplot" :
       ($category eq 'feff') ? "feff6"  :
 	"ifeffit";
-    $tmpl = File::Spec->catfile(dirname($INC{"Ifeffit/Demeter.pm"}),
+    $tmpl = File::Spec->catfile(dirname($INC{"Demeter.pm"}),
 				"Demeter", "templates", $category, $set, "$file.tmpl");
   };
   croak("Unknown Demeter template file: group $category; type $file; $tmpl") if (not -e $tmpl);
@@ -466,7 +466,7 @@ sub template {
 					   T  => \$theory,
 					   PT => \$path,
 					   %$rhash},
-				  PACKAGE => "Ifeffit::Demeter::Templates");
+				  PACKAGE => "Demeter::Templates");
   $string ||= q{};
   $string =~ s{^\s+}{};		      # remove leading white space
   $string =~ s{\n(?:[ \t]+\n)+}{\n};  # regularize white space between blocks of text
@@ -565,17 +565,17 @@ __PACKAGE__->meta->make_immutable;
 
 =head1 NAME
 
-Ifeffit::Demeter -  An object oriented EXAFS data analysis system using Ifeffit
+Demeter -  An object oriented EXAFS data analysis system using Ifeffit
 
 =head1 VERSION
 
-This documentation refers to Ifeffit::Demeter version 0.2.0
+This documentation refers to Demeter version 0.2.0
 
 =head1 SYNOPSIS
 
 Import Demeter components into your program:
 
-  use Ifeffit::Demeter;
+  use Demeter;
 
 This will import all Demeter components into your program.  The
 components are:
@@ -590,10 +590,10 @@ Here is a complete script for analyzing copper data:
   #!/usr/bin/perl
   use warnings;
   use strict;
-  use Ifeffit::Demeter;
+  use Demeter;
   #
   ## make a Data object
-  my $dobject = Ifeffit::Demeter::Data -> new({group => 'data0',});
+  my $dobject = Demeter::Data -> new({group => 'data0',});
   #
   print "Sample fit to copper data using Demeter " . $dobject->version . "\n";
   $dobject->set_mode(screen=>1, ifeffit=>1);
@@ -610,24 +610,24 @@ Here is a complete script for analyzing copper data:
   #
   ## GDS objects for isotropic expansion + correlated Debye model
   my @gdsobjects =
-    (Ifeffit::Demeter::GDS ->
+    (Demeter::GDS ->
         new(type => 'guess', name => 'alpha', mathexp => 0),
-     Ifeffit::Demeter::GDS ->
+     Demeter::GDS ->
         new(type => 'guess', name => 'amp',   mathexp => 1),
-     Ifeffit::Demeter::GDS ->
+     Demeter::GDS ->
         new(type => 'guess', name => 'enot',  mathexp => 0),
-     Ifeffit::Demeter::GDS ->
+     Demeter::GDS ->
         new(type => 'guess', name => 'theta', mathexp => 500),
-     Ifeffit::Demeter::GDS ->
+     Demeter::GDS ->
         new(type => 'set',   name => 'temp',  mathexp => 300),
-     Ifeffit::Demeter::GDS ->
+     Demeter::GDS ->
         new(type => 'set',   name => 'sigmm', mathexp => 0.00052),
     );
   #
   ## Path objects for the first 5 paths in copper (3 shell fit)
   my @pobjects = ();
   foreach my $i (0 .. 4) {
-    $pobjects[$i] = Ifeffit::Demeter::Path -> new();
+    $pobjects[$i] = Demeter::Path -> new();
     $pobjects[$i ]->set(data     => $dobject,
 		        folder   => 'example/cu/',
 		        file     => sprintf("feff%4.4d.dat", $i+1),
@@ -639,10 +639,10 @@ Here is a complete script for analyzing copper data:
   };
   #
   ## Fit object: collection of GDS, Data, and Path objects
-  my $fitobject = Ifeffit::Demeter::Fit -> new(gds   => \@gdsobjects,
-					       data  => [$dobject],
-					       paths => \@pobjects,
-					       );
+  my $fitobject = Demeter::Fit -> new(gds   => \@gdsobjects,
+				      data  => [$dobject],
+				      paths => \@pobjects,
+				     );
   ## do the fit (or the sum of paths)
   $fitobject -> fit;
   #
@@ -693,19 +693,19 @@ useful one-off scripts.  It can also be the back-end to sophisticated
 data analysis chores such as high-throughout data processing and
 analysis or complex physical modeling.
 
-Ifeffit::Demeter is a parent class for the objects that are directly
-manipulated in any real program using Ifeffit::Demeter.  These are
+Demeter is a parent class for the objects that are directly
+manipulated in any real program using Demeter.  These are
 several subclasses:
 
 =over 4
 
-=item L<Ifeffit::Demeter::Data>
+=item L<Demeter::Data>
 
 The Data object used to import chi(k) data from a column data file or
 an Athena project file.  It organizes parameters for Fourier
 transforms, fitting range, and other aspects of the fit.
 
-=item L<Ifeffit::Demeter::Path>
+=item L<Demeter::Path>
 
 The Path object used to define a path for use a fit and to set math
 expressions for its path parameters.  This object is typically
@@ -713,23 +713,23 @@ associated with a F<feffNNNN.dat> file from a Feff calculation.  That
 F<feffNNNN.dat> may have been generated by Feff in the normal manner
 or via the methods of Demeter's Feff object.
 
-=item L<Ifeffit::Demeter::GDS>
+=item L<Demeter::GDS>
 
 The object used to define a guess, def or set parameter for use in the
 fit.  This is also used to define restraints and a few other kinds of
 parameters.
 
-=item L<Ifeffit::Demeter::Fit>
+=item L<Demeter::Fit>
 
 This object is the collection of Data, Path, and GDS objects which
 compromises a fit.
 
-=item L<Ifeffit::Demeter::Atoms>
+=item L<Demeter::Atoms>
 
 A crystallography object which is used to generate the structure data
 for a Feff object.
 
-=item L<Ifeffit::Demeter::Feff>
+=item L<Demeter::Feff>
 
 A object defining the contents of a Feff calculation and providing
 methods for running parts of Feff.  This object provide a flexible
@@ -737,19 +737,19 @@ interface to Feff which is intended to address many of Feff's
 shortcomings and obviate the need to interact directly with Feff via
 its input file.
 
-=item L<Ifeffit::Demeter::ScatteringPath>
+=item L<Demeter::ScatteringPath>
 
 An object defining a scattering path from a Feff object.  This may be
 linked to a Path object used in a fit.
 
-=item L<Ifeffit::Demeter::Plot>
+=item L<Demeter::Plot>
 
-The object which controls how plots are made from the other
-Ifeffit::Demeter objects.  As described in its document, access to
-this object is provided in a consistent manner and is available to all
-other Demeter objects.
+The object which controls how plots are made from the other Demeter
+objects.  As described in its document, access to this object is
+provided in a consistent manner and is available to all other Demeter
+objects.
 
-=item L<Ifeffit::Demeter::Config>
+=item L<Demeter::Config>
 
 The object which controls configuraton of the the Demeter system and
 its components.  This is a singleton object (i.e. only one exists in
@@ -770,11 +770,11 @@ information.
 Demeter pragmata are ways of affecting the run-time behavior of a
 Demeter program by specfying that behavior at compile-time.
 
-     use Ifeffit::Demeter qw(:plotwith=gnuplot)
+     use Demeter qw(:plotwith=gnuplot)
    or
-     use Ifeffit::Demeter qw(:ui=screen)
+     use Demeter qw(:ui=screen)
    or
-     use Ifeffit::Demeter qw(:plotwith=gnuplot :ui=screen)
+     use Demeter qw(:plotwith=gnuplot :ui=screen)
 
 =over 4
 
@@ -793,7 +793,7 @@ Setting the UI to screen does two things:
 
 =item 1.
 
-Uses L<Ifeffit::Demeter::UI::Screen::Interview> as a role for the Fit
+Uses L<Demeter::UI::Screen::Interview> as a role for the Fit
 object.  This imports the C<interview> method for use with the Fit
 object, allowing you to interact with the results of a fit in a simple
 manner at the console.
@@ -851,7 +851,7 @@ In the future, a template set will be written when Ifeffit 2 becomes
 available.
 
 These can also be set during run-time using the C<set_mode> method -- see
-L<Ifeffit::Demeter::Mode>.
+L<Demeter::Mode>.
 
 =back
 
@@ -878,10 +878,10 @@ their attributes.
 
 This the constructor method.  It builds and initializes new objects.
 
-  use Ifeffit::Demeter;
-  $data_object -> Ifeffit::Demeter::Data -> new;
-  $path_object -> Ifeffit::Demeter::Path -> new;
-  $gds_object  -> Ifeffit::Demeter::GDS  -> new;
+  use Demeter;
+  $data_object -> Demeter::Data -> new;
+  $path_object -> Demeter::Path -> new;
+  $gds_object  -> Demeter::GDS  -> new;
 
 New can optionally take an array of attributes and values with the
 same syntax as the C<set> method.
@@ -1073,8 +1073,7 @@ internally by many of the methods typically invoked in your programs.
 
   $object -> dispose($ifeffit_command);
 
-See the document page for L<Ifeffit::Demeter::Dispose> for complete
-details.
+See the document page for L<Demeter::Dispose> for complete details.
 
 =head2 Operation modes
 
@@ -1179,12 +1178,12 @@ The methods for accessing the operation modes are:
 This is the method used to set the attributes described above.  Any Demeter
 object can call this method.
 
-   Ifeffit::Demeter -> set_mode(ifeffit => 1,
-                                screen  => 1,
-                                buffer  => \@buffer_array
-                               );
+   Demeter -> set_mode(ifeffit => 1,
+                       screen  => 1,
+                       buffer  => \@buffer_array
+                      );
 
-See L<Ifeffit::Demeter:Dispose> for more details.
+See L<Demeter:Dispose> for more details.
 
 =item C<get_mode>
 
@@ -1193,10 +1192,10 @@ their values.  When called with an argument (which must be one of the
 attributes), it returns the value of that attribute.  Any Demeter object can
 call this method.
 
-   %hash = Ifeffit::Demeter -> get_mode;
-   $value = Ifeffit::Demeter -> get_mode("screen");
+   %hash = $object -> get_mode;
+   $value = $object -> get_mode("screen");
 
-See L<Ifeffit::Demeter:Dispose> for more details.
+See L<Demeter:Dispose> for more details.
 
 =back
 
@@ -1289,12 +1288,12 @@ return false.
 
 =head1 CONFIGURATION AND ENVIRONMENT
 
-See L<Ifeffit::Demeter::Config> for details about the configuration
+See L<Demeter::Config> for details about the configuration
 system.
 
 =head1 DEPENDENCIES
 
-The dependencies of the Ifeffit::Demeter system are in the
+The dependencies of the Demeter system are in the
 F<Bundle/DemeterBundle.pm> file.
 
 =head1 BUGS AND LIMITATIONS

@@ -1,4 +1,4 @@
-package Ifeffit::Demeter::Path;
+package Demeter::Path;
 
 =for Copyright
  .
@@ -18,12 +18,12 @@ package Ifeffit::Demeter::Path;
 use autodie qw(open close);
 
 use Moose;
-extends 'Ifeffit::Demeter';
-use Ifeffit::Demeter::StrTypes qw( Empty PathParam );
-use Ifeffit::Demeter::NumTypes qw( Natural PosInt );
+extends 'Demeter';
+use Demeter::StrTypes qw( Empty PathParam );
+use Demeter::NumTypes qw( Natural PosInt );
 
-with 'Ifeffit::Demeter::Data::Arrays';
-with 'Ifeffit::Demeter::Path::Sanity';
+with 'Demeter::Data::Arrays';
+with 'Demeter::Path::Sanity';
 
 use Carp;
 use File::Copy;
@@ -33,7 +33,7 @@ use Regexp::Optimizer;
 use Ifeffit;
 
 has '+plottable'      => (default => 1);
-has '+data'           => (isa => Empty.'|Ifeffit::Demeter::Data');
+has '+data'           => (isa => Empty.'|Demeter::Data');
 
 has 'n'		      => (is=>'rw', isa=>'Num', default => 0);
 
@@ -76,10 +76,10 @@ has 'phase_array'     => (is=>'rw', isa=>'Str', default => q{});
 
 ## object relationships
 has 'parentgroup'     => (is=>'rw', isa => 'Str', default => q{});
-has 'parent'          => (is=>'rw', isa => 'Any', default => q{},  # Empty.'|Ifeffit::Demeter::Feff'
+has 'parent'          => (is=>'rw', isa => 'Any', default => q{},  # Empty.'|Demeter::Feff'
 			  trigger => sub{ my($self, $new) = @_; $self->parentgroup($new->group) if $new});
 has 'spgroup'         => (is=>'rw', isa => 'Str', default => q{});
-has 'sp'              => (is=>'rw', isa => 'Any',                  # Empty.'|Ifeffit::Demeter::ScatteringPath'
+has 'sp'              => (is=>'rw', isa => 'Any',                  # Empty.'|Demeter::ScatteringPath'
 			  trigger => sub{ my($self, $new) = @_; $self->spgroup($new->group) if $new});
 has 'datagroup'       => (is=>'rw', isa => 'Str', default => q{});
 
@@ -118,12 +118,12 @@ sub BUILD {
   my ($self, @arguments) = @_;
   my $val = $self->get_mode("datadefault");
   if ((ref($self->data) !~ m{Data}) and (ref($val) !~ m{Data})) {
-    $self->mode->datadefault(Ifeffit::Demeter::Data->new(group=>'default___',
-							 name=>q{},
-							 cv=>57,
-							 fft_kmin=>3, fft_kmax=>15,
-							 bft_rmin=>1, bft_rmax=>6,
-							));
+    $self->mode->datadefault(Demeter::Data->new(group=>'default___',
+						name=>q{},
+						cv=>57,
+						fft_kmin=>3, fft_kmax=>15,
+						bft_rmin=>1, bft_rmax=>6,
+					       ));
   };
   $self->data($self->mode->datadefault) if (ref($self->data) !~ m{Data});
 };
@@ -498,12 +498,12 @@ sub row_second {
 
 =head1 NAME
 
-Ifeffit::Demeter - Single and multiple scattering paths for EXAFS fitting
+Demeter - Single and multiple scattering paths for EXAFS fitting
 
 
 =head1 VERSION
 
-This documentation refers to Ifeffit::Demeter version 0.2.
+This documentation refers to Demeter version 0.2.
 
 
 =head1 SYNOPSIS
@@ -533,7 +533,7 @@ or
 
 =head1 DESCRIPTION
 
-This subclass of the Ifeffit::Demeter class is for holding information
+This subclass of the Demeter class is for holding information
 pertaining to theoretical paths from Feff for use in a fit.
 
 =head1 ATTRIBUTES
@@ -556,7 +556,7 @@ the evaluation of the path parameter after the fit is made or the path
 is otherwise evaluated.
 
 For this Path object to be included in a fit, it is necessary that it
-be gathered into a Fit object.  See L<Ifeffit::Demeter::Fit> for
+be gathered into a Fit object.  See L<Demeter::Fit> for
 details.
 
 =head2 General attributes
@@ -780,7 +780,7 @@ scattering path.
 
 The Path object inherits creation (C<new> and C<clone>) and accessor
 methods (C<set>, C<get>) from the parent class described in the
-L<Ifeffit::Demeter> documentation.
+L<Demeter> documentation.
 
 Additionally the Path object provides these methods:
 
@@ -937,14 +937,14 @@ is equivalent to (and fewer keystrokes than):
 
 =over 4
 
-=item C<Ifeffit::Demeter::Path: "group" is not a valid group name>
+=item C<Demeter::Path: "group" is not a valid group name>
 
 (F) You have used a group name that does not follow Ifeffit's rules for group
 names.  The group name must start with a letter.  After that only letters,
 numbers, &, ?, _, and : are acceptable characters.  The group name must be no
 longer than 64 characters.
 
-=item C<Ifeffit::Demeter::Path: the sp attribute must be ScatteringPath object>
+=item C<Demeter::Path: the sp attribute must be ScatteringPath object>
 
 (F) You have set the C<sp> attribute to something other than a
 ScatteringPath object.
@@ -954,11 +954,11 @@ ScatteringPath object.
 =head1 SERIALIZATION AND DESERIALIZATION
 
 See the discussion of serialization and deserialization in
-C<Ifeffit::Demeter::Fit>.
+C<Demeter::Fit>.
 
 =head1 CONFIGURATION AND ENVIRONMENT
 
-See L<Ifeffit::Demeter::Config> for a description of the configuration system.
+See L<Demeter::Config> for a description of the configuration system.
 
 =head1 DEPENDENCIES
 

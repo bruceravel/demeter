@@ -1,4 +1,4 @@
-package Ifeffit::Demeter::UI::Screen::Interview;
+package Demeter::UI::Screen::Interview;
 
 =for Copyright
  .
@@ -62,7 +62,7 @@ sub USI_help {
 };
 sub USI_version {
   my ($fit) = @_;
-  $message = Ifeffit::Demeter->identify . "\n";
+  $message = Demeter->identify . "\n";
   return 0;
 };
 sub USI_data_report {
@@ -280,16 +280,16 @@ sub USI_set {
 
 =head1 NAME
 
-Ifeffit::Demeter::UI::Screen::Interview - Simple screen interface to Demeter fit results
+Demeter::UI::Screen::Interview - Simple screen interface to Demeter fit results
 
 =head1 VERSION
 
-This documentation refers to Ifeffit::Demeter version 0.2.
+This documentation refers to Demeter version 0.2.
 
 =head1 SYNOPSIS
 
-  use Ifeffit::Demeter;
-  my $fit = Ifeffit::Demeter::Fit->new(project=>'project.dpj');
+  use Demeter;
+  my $fit = Demeter::Fit->new(project=>'project.dpj');
   $fit->interview;
 
 =head1 DESCRIPTION
@@ -390,8 +390,8 @@ on one of the parameters:
 
 =head1 CONFIGURATION AND ENVIRONMENT
 
-See L<Ifeffit::Demeter::Config> for a description of Demeter's
-configuration system.
+See L<Demeter::Config> for a description of Demeter's configuration
+system.
 
 =head1 DEPENDENCIES
 

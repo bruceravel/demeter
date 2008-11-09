@@ -20,9 +20,9 @@
 use Test::More tests => 24;
 
 use Ifeffit;
-use Ifeffit::Demeter;
+use Demeter;
 
-my $this = Ifeffit::Demeter::ScatteringPath -> new();
+my $this = Demeter::ScatteringPath -> new();
 my $OBJ  = 'ScatteringPath';
 
 ok( ref($this) =~ m{$OBJ},                              "made a $OBJ object");
@@ -43,7 +43,7 @@ ok( ($this->mode->template_plot     eq 'pgplot'  and
 
 ## -------- test path description semantics
 
-my $feff = Ifeffit::Demeter::Feff -> new(workspace => './feff', file => 'withHg.inp', screen => 0);
+my $feff = Demeter::Feff -> new(workspace => './feff', file => 'withHg.inp', screen => 0);
 $feff -> rmax(4.5);
 $feff -> pathfinder;
 #print $feff -> intrp;
@@ -97,6 +97,6 @@ ok( ((abs($list[0]->fuzzy - 2.040) < 0.001) and
      (abs($list[1]->fuzzy - 4.191) < 0.001)),           "find_all_paths found both SS N paths");
 
 @list = $feff -> find_all_paths(nleg=>2);
-print join($/, map {$_->intrpline} @list), $/;
+#print join($/, map {$_->intrpline} @list), $/;
 
 $feff -> clean_workspace;

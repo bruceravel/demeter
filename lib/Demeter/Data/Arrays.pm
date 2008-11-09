@@ -1,7 +1,7 @@
-package Ifeffit::Demeter::Data::Arrays;
+package Demeter::Data::Arrays;
 use Moose::Role;
 
-use Ifeffit::Demeter::StrTypes qw( DataPart FitSpace );
+use Demeter::StrTypes qw( DataPart FitSpace );
 use List::MoreUtils qw(pairwise);
 
 sub yofx {
@@ -120,11 +120,11 @@ sub points {
 
 =head1 NAME
 
-Ifeffit::Demeter::Data::Arrays - Data array methods for Demeter
+Demeter::Data::Arrays - Data array methods for Demeter
 
 =head1 VERSION
 
-This documentation refers to Ifeffit::Demeter version 0.2.
+This documentation refers to Demeter version 0.2.
 
 =head1 METHODS
 
@@ -161,9 +161,9 @@ part of a fit, i.e. C<bkg> or C<res>.
 Demeter's dependencies are in the F<Bundle/DemeterBundle.pm> file.
 
 L<Moose> is the basis of Demeter.  This module is implemented as a
-role and used by the L<Ifeffit::Demeter::Data> object.  I feel obloged
-to admit that I am using Moose roles in the most trivial fashion here.
-This is mostly an organization tool to keep modules small and methods
+role and used by the L<Demeter::Data> object.  I feel obliged to admit
+that I am using Moose roles in the most trivial fashion here.  This is
+mostly an organization tool to keep modules small and methods
 organized by common functionality.
 
 =head1 BUGS AND LIMITATIONS

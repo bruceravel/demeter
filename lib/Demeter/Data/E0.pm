@@ -1,4 +1,4 @@
-package Ifeffit::Demeter::Data::E0;
+package Demeter::Data::E0;
 
 =for Copyright
  .
@@ -18,7 +18,7 @@ package Ifeffit::Demeter::Data::E0;
 use autodie qw(open close);
 
 use Moose::Role;
-use Ifeffit::Demeter::StrTypes qw( Element Edge );
+use Demeter::StrTypes qw( Element Edge );
 
 use Carp;
 use Regexp::Optimizer;
@@ -222,15 +222,15 @@ sub _postline_marker_command {
 
 =head1 NAME
 
-Ifeffit::Demeter::Data::E0 - Calibrate and align XAS mu(E) data
+Demeter::Data::E0 - Calibrate and align XAS mu(E) data
 
 =head1 VERSION
 
-This documentation refers to Ifeffit::Demeter version 0.2.
+This documentation refers to Demeter version 0.2.
 
 =head1 DESCRIPTION
 
-This subclass of Ifeffit::Demeter::Data contains methods for calibrating
+This subclass of Demeter::Data contains methods for calibrating
 mu(E) data and adjusting e0.
 
 =head1 METHODS
@@ -324,7 +324,7 @@ that value.
 
 =head1 CONFIGURATION
 
-See L<Ifeffit::Demeter::Config> for a description of the configuration
+See L<Demeter::Config> for a description of the configuration
 system.
 
 =head1 DEPENDENCIES

@@ -1,4 +1,4 @@
-package Ifeffit::Demeter::Data::Plot;
+package Demeter::Data::Plot;
 use Moose::Role;
 
 use Regexp::Common;
@@ -239,7 +239,7 @@ sub rmr_offset {
 sub default_k_weight {
   my ($self) = @_;
   my $data = $self->data;
-  carp("Not an Ifeffit::Demeter::Data object"), return 1 if (ref($data) !~ /Data/);
+  carp("Not an Demeter::Data object"), return 1 if (ref($data) !~ /Data/);
   my $kw = 1;			# return 1 is no other selected
  SWITCH: {
     $kw = sprintf("%.3f", $data->fit_karb_value), last SWITCH
@@ -256,7 +256,7 @@ sub plot_window {
   $self->fft if (lc($space) eq 'k');
   $self->bft if (lc($space) eq 'r');
   $self->dispose($self->_prep_window_command($space));
-  #if (Ifeffit::Demeter->get_mode('template_plot') eq 'gnuplot') {
+  #if (Demeter->get_mode('template_plot') eq 'gnuplot') {
   #  $self->get_mode('external_plot_object')->gnuplot_cmd($self->_plot_window_command($space));
   #  $self->get_mode('external_plot_object')->gnuplot_pause(-1);
   #} else {
@@ -311,11 +311,11 @@ sub plot_marker {
 
 =head1 NAME
 
-Ifeffit::Demeter::Data::Plot - Data plotting methods for Demeter
+Demeter::Data::Plot - Data plotting methods for Demeter
 
 =head1 VERSION
 
-This documentation refers to Ifeffit::Demeter version 0.2.
+This documentation refers to Demeter version 0.2.
 
 =head1 METHODS
 
@@ -412,9 +412,9 @@ using Carp::carp for other objects and 1 is returned.
 Demeter's dependencies are in the F<Bundle/DemeterBundle.pm> file.
 
 L<Moose> is the basis of Demeter.  This module is implemented as a
-role and used by the L<Ifeffit::Demeter::Data> object.  I feel obloged
-to admit that I am using Moose roles in the most trivial fashion here.
-This is mostly an organization tool to keep modules small and methods
+role and used by the L<Demeter::Data> object.  I feel obloged to admit
+that I am using Moose roles in the most trivial fashion here.  This is
+mostly an organization tool to keep modules small and methods
 organized by common functionality.
 
 =head1 BUGS AND LIMITATIONS

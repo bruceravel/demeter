@@ -1,11 +1,11 @@
-package Ifeffit::Demeter::UI::Hephaestus::Absorption;
+package Demeter::UI::Hephaestus::Absorption;
 use strict;
 use warnings;
 use Carp;
 use Chemistry::Elements qw(get_Z get_name get_symbol);
 use Xray::Absorption;
-use Ifeffit::Demeter::UI::Hephaestus::PeriodicTable;
-use Ifeffit::Demeter::UI::Hephaestus::Common qw(e2l);
+use Demeter::UI::Hephaestus::PeriodicTable;
+use Demeter::UI::Hephaestus::Common qw(e2l);
 
 use Wx qw( :everything );
 use base 'Wx::Panel';
@@ -38,7 +38,7 @@ sub new {
   my $self = $class->SUPER::new($page, -1, wxDefaultPosition, wxDefaultSize, wxMAXIMIZE_BOX );
   $self->{echo} = $echoarea;
 
-  my $pt = Ifeffit::Demeter::UI::Hephaestus::PeriodicTable->new($self, 'abs_get_data');
+  my $pt = Demeter::UI::Hephaestus::PeriodicTable->new($self, 'abs_get_data');
   my $vbox = Wx::BoxSizer->new( wxVERTICAL );
   $self->SetSizer($vbox);
   $vbox -> Add($pt, 0, wxALIGN_CENTER_HORIZONTAL|wxALL, 5);
@@ -187,7 +187,7 @@ sub abs_get_data {
 sub l_filter {
   my $elem = $_[0];
   return q{} if (get_Z($elem) > 98);
-  my $demeter = $Ifeffit::Demeter::UI::Hephaestus::demeter;
+  my $demeter = $Demeter::UI::Hephaestus::demeter;
   my $en = Xray::Absorption -> get_energy($elem, 'la1') + $demeter->co->default(qw(hephaestus filter_offset))*$demeter->co->default(qw(hephaestus filter_width));
   my $filter = q{};
   foreach (@k_list) {
@@ -269,7 +269,7 @@ sub filter_plot {
   my $edge   = ($z < 57) ? "K"   : "L3";
   my $line2  = ($z < 57) ? "Ka2" : "La1";
 
-  my $demeter = Ifeffit::Demeter->new;
+  my $demeter = Demeter->new;
   $demeter->co->set(
 		    filter_abs      => $z,
 		    filter_edge     => $edge,
@@ -299,18 +299,18 @@ sub filter_plot {
 
 =head1 NAME
 
-Ifeffit::Demeter::UI::Hephaestus::Absorption - Hephaestus' absorption utility
+Demeter::UI::Hephaestus::Absorption - Hephaestus' absorption utility
 
 =head1 VERSION
 
-This documentation refers to Ifeffit::Demeter version 0.2.
+This documentation refers to Demeter version 0.2.
 
 =head1 SYNOPSIS
 
 The contents of Hephaestus' absorption utility can be added to any Wx
 application.
 
-  my $page = Ifeffit::Demeter::UI::Hephaestus::Absorption->new($parent,$echoarea);
+  my $page = Demeter::UI::Hephaestus::Absorption->new($parent,$echoarea);
   $sizer -> Add($page, 1, wxGROW|wxEXPAND|wxALL, 0);
 
 The arguments to the constructor method are a reference to the parent

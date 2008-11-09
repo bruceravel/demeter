@@ -26,12 +26,12 @@
 use warnings;
 use strict;
 
-use Ifeffit::Demeter;
+use Demeter;
 my $where = $ENV{DEMETER_TEST_DIR} || "..";
 
 
 print "Reading and plotting auo_noisy.xmu\n";
-my $d0 = Ifeffit::Demeter::Data -> new();
+my $d0 = Demeter::Data -> new();
 $d0 -> set(file=>"$where/data/auo_noisy.xmu", name=>'AuO, noisy');
 
 my $plot = $d0->po;

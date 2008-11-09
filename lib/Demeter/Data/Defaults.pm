@@ -1,4 +1,4 @@
-package Ifeffit::Demeter::Data::Defaults;
+package Demeter::Data::Defaults;
 
 =for Copyright
  .
@@ -174,15 +174,15 @@ sub resolve_krange_chi {
 
 =head1 NAME
 
-Ifeffit::Demeter::Data::Defaults - Resolve default parameter values
+Demeter::Data::Defaults - Resolve default parameter values
 
 =head1 VERSION
 
-This documentation refers to Ifeffit::Demeter version 0.2.
+This documentation refers to Demeter version 0.2.
 
 =head1 DESCRIPTION
 
-This role of Ifeffit::Demeter::Data contains methods resolving default
+This role of Demeter::Data contains methods resolving default
 parameter values from the contents of the data.  These rarely need to
 be called in a program, but they need to be documented so that values
 in configuration files can be understood.
@@ -265,8 +265,7 @@ for tuning these defaults.
 
 =head1 CONFIGURATION
 
-See L<Ifeffit::Demeter::Config> for a description of the configuration
-system.
+See L<Demeter::Config> for a description of the configuration system.
 
 =head1 DEPENDENCIES
 

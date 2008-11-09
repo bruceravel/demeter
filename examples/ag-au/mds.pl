@@ -27,15 +27,15 @@
 
 use warnings;
 use strict;
-use Ifeffit::Demeter qw(:ui=screen :plotwith=gnuplot);
+use Demeter qw(:ui=screen :plotwith=gnuplot);
 $| = 1;
 
-print "Multiple data set fit to several AgAu samples using Demeter $Ifeffit::Demeter::VERSION\n";
+print "Multiple data set fit to several AgAu samples using Demeter $Demeter::VERSION\n";
 
 unlink("ag-au.iff") if (-e "ag-au.iff");
 
 ## make a 2 Data objects and set the FT and fit parameters
-my $data_100 = Ifeffit::Demeter::Data -> new(group => 'ag100');
+my $data_100 = Demeter::Data -> new(group => 'ag100');
 $data_100 -> set_mode(screen=>0, ifeffit=>1, file=>">ag-au.iff");
 
 
@@ -80,7 +80,7 @@ my @gdsobjects =  ($data_100 -> simpleGDS("guess amp   = 1"),
 		  );
 
 my @paths = ();
-$paths[0] = Ifeffit::Demeter::Path -> new();
+$paths[0] = Demeter::Path -> new();
 $paths[0]->set(data     => $data_100,
 	       folder   => 'feff_ag/',
 	       file     => "feff0001.dat",
@@ -115,7 +115,7 @@ foreach my $i (2,4,6,8) {
 
 
 ## make a Fit object, which is just a collection of GDS, Data, and Path objects
-my $fitobject = Ifeffit::Demeter::Fit -> new;
+my $fitobject = Demeter::Fit -> new;
 $fitobject->set(gds   => \@gdsobjects,
 		data  => [$data_100, $data_80, $data_60, $data_50, $data_40],
 		paths => \@paths

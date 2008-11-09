@@ -25,7 +25,7 @@
 use warnings;
 use strict;
 
-use Ifeffit::Demeter;
+use Demeter;
 
 
 my $where = $ENV{DEMETER_TEST_DIR} || "..";
@@ -40,7 +40,7 @@ my @attributes = (file	      => "$where/data/uhup.101",
 		  bkg_kw      => 3,
 		 );
 
-my $d0 = Ifeffit::Demeter::Data -> new(@attributes);
+my $d0 = Demeter::Data -> new(@attributes);
 my $plot = $d0->po;
 $plot->set_mode(screen=>0, repscreen=>0);
 $plot->set(emin=>-200, emax=>800, e_norm=>1, e_markers=>1, kweight=>2);

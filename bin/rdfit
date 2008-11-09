@@ -1,7 +1,7 @@
 #!/usr/bin/perl -I/home/bruce/codes/demeter/lib
 use warnings;
 use strict;
-use Ifeffit::Demeter qw(:ui=screen);
+use Demeter qw(:ui=screen);
 use Getopt::Long;
 use Readonly;
 Readonly my $USAGE => "usage: rdfit myfit.dpj\n";
@@ -14,7 +14,7 @@ my $proj = $ARGV[0] || q{};
 die $USAGE if not $proj;
 die "rdfit: project file does not exist\n" if not -e $proj;
 
-my $fit = Ifeffit::Demeter::Fit->new(project=>$proj);
+my $fit = Demeter::Fit->new(project=>$proj);
 $fit -> plot_with('gnuplot') if $use_gnuplot;
 $fit -> po -> set(kweight=>2);
 $fit -> interview;

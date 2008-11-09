@@ -1,4 +1,4 @@
-package Ifeffit::Demeter::Feff;
+package Demeter::Feff;
 
 =for Copyright
  .
@@ -18,12 +18,12 @@ package Ifeffit::Demeter::Feff;
 use autodie qw(open close);
 
 use Moose;
-extends 'Ifeffit::Demeter';
+extends 'Demeter';
 use MooseX::AttributeHelpers;
-use Ifeffit::Demeter::StrTypes qw( AtomsEdge FeffCard );
-use Ifeffit::Demeter::NumTypes qw( Natural NonNeg PosInt );
-with 'Ifeffit::Demeter::Feff::Paths';
-with 'Ifeffit::Demeter::Feff::Sanity';
+use Demeter::StrTypes qw( AtomsEdge FeffCard );
+use Demeter::NumTypes qw( Natural NonNeg PosInt );
+with 'Demeter::Feff::Paths';
+with 'Demeter::Feff::Sanity';
 
 use Compress::Zlib;
 use Cwd;
@@ -636,7 +636,7 @@ sub _visit {
   return 0 if ($middle =~ m{\.$ai\z}); # the traversal will leave visitations ending in the
   # central atom on the tree
   my $string =  $CTOKEN . $middle . ".$CTOKEN";
-  my $sp     = Ifeffit::Demeter::ScatteringPath->new(feff=>$feff, string=>$string);
+  my $sp     = Demeter::ScatteringPath->new(feff=>$feff, string=>$string);
   $sp   -> evaluate;
   ## prune branches that involve non-0 eta angles (if desired)
   return 0 if ($feff->eta_suppress and $sp->etanonzero);
@@ -906,7 +906,7 @@ sub read_yaml {
   ## snarf attributes of each ScatteringPath object
   my @paths;
   foreach my $path (@refs) {
-    my $sp = Ifeffit::Demeter::ScatteringPath->new(feff=>$self);
+    my $sp = Demeter::ScatteringPath->new(feff=>$self);
     foreach my $key ($sp->savelist) {
       next if not defined $path->{$key};
       $sp -> $key($path->{$key});
@@ -931,17 +931,17 @@ __PACKAGE__->meta->make_immutable;
 
 =head1 NAME
 
-Ifeffit::Demeter::Feff - Make and manipulate Feff calculations
+Demeter::Feff - Make and manipulate Feff calculations
 
 
 =head1 VERSION
 
-This documentation refers to Ifeffit::Demeter version 0.2.
+This documentation refers to Demeter version 0.2.
 
 
 =head1 SYNOPSIS
 
-  my $feff = Ifeffit::Demeter::Feff -> new();
+  my $feff = Demeter::Feff -> new();
   $feff->set(workspace=>"temp", screen=>1, buffer=>q{});
   $feff->rdinp("feff.inp")
     -> potph
@@ -951,11 +951,11 @@ This documentation refers to Ifeffit::Demeter version 0.2.
 
 =head1 DESCRIPTION
 
-This subclass of the Ifeffit::Demeter class is for interacting with
-theory from Feff.  Computing the C<phase.bin> file is done by Feff via
-a pipe, as is running the genfmt portion of Feff.  Parsing the input
-file, pathfinding, and generating the C<paths.dat> to control genfmt
-have been implemented as methods of this object.
+This subclass of the Demeter class is for interacting with theory from
+Feff.  Computing the C<phase.bin> file is done by Feff via a pipe, as
+is running the genfmt portion of Feff.  Parsing the input file,
+pathfinding, and generating the C<paths.dat> to control genfmt have
+been implemented as methods of this object.
 
 =head1 ATTRIBUTES
 
@@ -1059,7 +1059,7 @@ Feff running step is finished.
 =head2 Accessor methods
 
 This uses the C<set> and C<get> methods of the parent class,
-L<Ifeffit::Demeter>.
+L<Demeter>.
 
 =head2 Feff replacement methods
 
@@ -1361,11 +1361,11 @@ C<deserialize>.
 
 =head1 CONFIGURATION AND ENVIRONMENT
 
-See L<Ifeffit::Demeter> for a description of the configuration system.
+See L<Demeter> for a description of the configuration system.
 
 =head1 DEPENDENCIES
 
-The dependencies of the Ifeffit::Demeter system are in the
+The dependencies of the Demeter system are in the
 F<Bundle/DemeterBundle.pm> file.
 
 =head1 BUGS AND LIMITATIONS
@@ -1411,8 +1411,7 @@ pathfinder.
 
 =back
 
-See L<Ifeffit::Demeter::ScatteringPath> for limitations of the
-pathfinder.
+See L<Demeter::ScatteringPath> for limitations of the pathfinder.
 
 Please report problems to Bruce Ravel (bravel AT bnl DOT gov)
 

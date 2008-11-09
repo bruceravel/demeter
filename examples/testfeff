@@ -47,8 +47,8 @@ if ($ANSIColor_exists) {
   };
 };
 
-use Ifeffit::Demeter;
-my $demeter = Ifeffit::Demeter->new;
+use Demeter;
+my $demeter = Demeter->new;
 $demeter->set_mode(ifeffit=>1, buffer=>0, screen=>0);
 
 use Getopt::Long;
@@ -68,7 +68,7 @@ $demeter->plot_with('gnuplot') if $use_gnuplot;
 my $term = new Term::ReadLine 'Demeter test harness';
 my $plot = $demeter->po;
 
-my $feff = Ifeffit::Demeter::Feff->new(file=>'cu/orig.inp', workspace=>'feff');
+my $feff = Demeter::Feff->new(file=>'cu/orig.inp', workspace=>'feff');
 $feff -> make_workspace;
 print BOLD, RED, "\nComputing potentials for copper metal\n\n", RESET;
 $feff -> potph;
@@ -124,7 +124,7 @@ sub spew {
   print RESET, $/;
   print BOLD, YELLOW, "\nHere is how it's done:\n", RESET;
   print <<'EOH'
-    my $feff = Ifeffit::Demeter::Feff->new(file=>'cu/orig.inp', workspace=>'feff');
+    my $feff = Demeter::Feff->new(file=>'cu/orig.inp', workspace=>'feff');
     $feff -> make_workspace;
     $feff -> potph;
     $feff -> rmax(4.5);
@@ -152,7 +152,7 @@ sub do_plot {
   do_chore('my @list_of_paths = $feff->pathlist;
     my $i = 0;
     foreach my $sp (@{ $feff->pathlist }) {
-      Ifeffit::Demeter::Path -> new(parent=>$feff, sp=>$sp, Index=>++$i) -> plot("r");
+      Demeter::Path -> new(parent=>$feff, sp=>$sp, Index=>++$i) -> plot("r");
     };');
 };
 

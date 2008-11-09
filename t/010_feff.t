@@ -20,9 +20,9 @@
 use Test::More tests => 32;
 
 use Ifeffit;
-use Ifeffit::Demeter;
+use Demeter;
 
-my $this = Ifeffit::Demeter::Feff -> new(workspace => './feff');
+my $this = Demeter::Feff -> new(workspace => './feff');
 my $OBJ  = 'Feff';
 
 ok( ref($this) =~ m{$OBJ},                              "made a $OBJ object");
@@ -81,7 +81,7 @@ open( my $fh, 'feff/feff.inp' );
 $text = do { local( $/ ) ; <$fh> } ;
 ok( $text =~ m{CONTROL\s+0\s+0\s+1\s+0},                'CONTROL written for genfmt');
 
-my $new = Ifeffit::Demeter::Feff -> new(workspace => './feff', file => 'feff/feff.inp');
+my $new = Demeter::Feff -> new(workspace => './feff', file => 'feff/feff.inp');
 $ref = $new->sites;
 ok( $#{$ref} == 86,                                     'output feff.inp file has the correct number of sites');
 
@@ -100,7 +100,7 @@ $this -> freeze('feff/feff.yaml');
 
 
 
-my $new = Ifeffit::Demeter::Feff -> new(yaml => 'feff/feff.yaml');
+my $new = Demeter::Feff -> new(yaml => 'feff/feff.yaml');
 
 
 ok( (($new->rmax == 4.0) and
@@ -139,7 +139,7 @@ open( my $fh, 'feff/feff.inp' );
 $text = do { local( $/ ) ; <$fh> } ;
 ok( $text =~ m{CONTROL\s+0\s+0\s+1\s+0},                'thaw: CONTROL written for genfmt');
 
-my $new = Ifeffit::Demeter::Feff -> new(workspace => './feff', file => 'feff/feff.inp');
+my $new = Demeter::Feff -> new(workspace => './feff', file => 'feff/feff.inp');
 $ref = $new->sites;
 ok( $#{$ref} == 86,                                     'thaw: output feff.inp file has the correct number of sites');
 

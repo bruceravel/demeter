@@ -1,4 +1,4 @@
-package Ifeffit::Demeter::UI::Hephaestus::Data;
+package Demeter::UI::Hephaestus::Data;
 use strict;
 use warnings;
 use Carp;
@@ -8,10 +8,10 @@ use Wx qw( :everything );
 use base 'Wx::Panel';
 use Wx::Event qw(EVT_LIST_ITEM_ACTIVATED EVT_LIST_ITEM_SELECTED);
 
-use Ifeffit::Demeter::UI::Hephaestus::PeriodicTable;
+use Demeter::UI::Hephaestus::PeriodicTable;
 
 my %kalzium;
-tie %kalzium, 'Config::IniFiles', (-file=>File::Spec->catfile($Ifeffit::Demeter::UI::Hephaestus::hephaestus_base,
+tie %kalzium, 'Config::IniFiles', (-file=>File::Spec->catfile($Demeter::UI::Hephaestus::hephaestus_base,
 							      'Hephaestus', 'data', "kalziumrc"));
 
 sub new {
@@ -19,7 +19,7 @@ sub new {
   my $self = $class->SUPER::new($page, -1, wxDefaultPosition, wxDefaultSize, wxMAXIMIZE_BOX );
   $self->{echo} = $echoarea;
 
-  my $pt = Ifeffit::Demeter::UI::Hephaestus::PeriodicTable->new($self, 'data_get_data');
+  my $pt = Demeter::UI::Hephaestus::PeriodicTable->new($self, 'data_get_data');
   my $vbox = Wx::BoxSizer->new( wxVERTICAL );
   $self->SetSizer($vbox);
   $vbox -> Add($pt, 0, wxALIGN_CENTER_HORIZONTAL|wxALL, 5);
@@ -104,18 +104,18 @@ sub unselect_data {
 
 =head1 NAME
 
-Ifeffit::Demeter::UI::Hephaestus::Data - Hephaestus' data utility
+Demeter::UI::Hephaestus::Data - Hephaestus' data utility
 
 =head1 VERSION
 
-This documentation refers to Ifeffit::Demeter version 0.2.
+This documentation refers to Demeter version 0.2.
 
 =head1 SYNOPSIS
 
 The contents of Hephaestus' data utility can be added to any Wx
 application.
 
-  my $page = Ifeffit::Demeter::UI::Hephaestus::Data->new($parent,$echoarea);
+  my $page = Demeter::UI::Hephaestus::Data->new($parent,$echoarea);
   $sizer -> Add($page, 1, wxGROW|wxEXPAND|wxALL, 0);
 
 The arguments to the constructor method are a reference to the parent

@@ -20,11 +20,11 @@
 use Test::More tests => 23;
 
 use Ifeffit;
-use Ifeffit::Demeter;
+use Demeter;
 use List::MoreUtils qw(all);
 
 
-my $this = Ifeffit::Demeter::Fit -> new;
+my $this = Demeter::Fit -> new;
 my $OBJ  = 'Fit';
 
 ok( ref($this) =~ m{$OBJ},                              "made a $OBJ object");
@@ -46,17 +46,17 @@ ok( ($this->mode->template_plot     eq 'pgplot'  and
 
 ## -------- populate a Fit object
 my @gds  = (
-	    Ifeffit::Demeter::GDS -> new(Type=>'guess', name=>amp,  mathexp=>1),
-	    Ifeffit::Demeter::GDS -> new(Type=>'guess', name=>enot, mathexp=>0),
-	    Ifeffit::Demeter::GDS -> new(Type=>'guess', name=>dcu,  mathexp=>0),
-	    Ifeffit::Demeter::GDS -> new(Type=>'guess', name=>ss,   mathexp=>0.003),
+	    Demeter::GDS -> new(Type=>'guess', name=>amp,  mathexp=>1),
+	    Demeter::GDS -> new(Type=>'guess', name=>enot, mathexp=>0),
+	    Demeter::GDS -> new(Type=>'guess', name=>dcu,  mathexp=>0),
+	    Demeter::GDS -> new(Type=>'guess', name=>ss,   mathexp=>0.003),
 	   );
-my $data = Ifeffit::Demeter::Data->new(file     => 'data.chi',
+my $data = Demeter::Data->new(file     => 'data.chi',
 				       name     => 'Cu 10K',
 				       fft_kmin => 3,   fft_kmax => 12,
 				       bft_rmin => 1,   bft_rmax => 2.6,
 );
-my $path = Ifeffit::Demeter::Path->new(folder => '.',    file   => 'feff0001.dat',
+my $path = Demeter::Path->new(folder => '.',    file   => 'feff0001.dat',
 				       data   => $data,
 				       Index  => 1,
 				       name   => 'first shell',

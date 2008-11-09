@@ -1,13 +1,13 @@
-package Ifeffit::Demeter::Mode;
+package Demeter::Mode;
 use Moose;
-use Ifeffit::Demeter::Config;
-use Ifeffit::Demeter::StrTypes qw( Empty
-				   TemplateProcess
-				   TemplateFit
-				   TemplatePlot
-				   TemplateFeff
-				   TemplateAnalysis
-				);
+use Demeter::Config;
+use Demeter::StrTypes qw( Empty
+			  TemplateProcess
+			  TemplateFit
+			  TemplatePlot
+			  TemplateFeff
+			  TemplateAnalysis
+		       );
 use Regexp::List;
 use Regexp::Optimizer;
 my $opt = Regexp::List->new;
@@ -19,12 +19,12 @@ has $_        => (is => 'rw', isa => 'Str',          default => q{}) foreach (qw
 has 'buffer'  => (is => 'rw', isa => 'ArrayRef|Str', default => q{});
 
 ## -------- default objects for templates
-has 'config'   => (is => 'rw', isa => 'Any');  #         Ifeffit::Demeter::Config);
-has 'plot'     => (is => 'rw', isa => 'Any');  #         Ifeffit::Demeter::Plot);
-has 'fit'      => (is => 'rw', isa => 'Any');  # Empty.'|Ifeffit::Demeter::Fit');
-has 'standard' => (is => 'rw', isa => 'Any');  # Empty.'|Ifeffit::Demeter::Data');
-has 'theory'   => (is => 'rw', isa => 'Any');  # Empty.'|Ifeffit::Demeter::Feff');
-has 'path'     => (is => 'rw', isa => 'Any');  # Empty.'|Ifeffit::Demeter::Path');
+has 'config'   => (is => 'rw', isa => 'Any');  #         Demeter::Config);
+has 'plot'     => (is => 'rw', isa => 'Any');  #         Demeter::Plot);
+has 'fit'      => (is => 'rw', isa => 'Any');  # Empty.'|Demeter::Fit');
+has 'standard' => (is => 'rw', isa => 'Any');  # Empty.'|Demeter::Data');
+has 'theory'   => (is => 'rw', isa => 'Any');  # Empty.'|Demeter::Feff');
+has 'path'     => (is => 'rw', isa => 'Any');  # Empty.'|Demeter::Path');
 
 ## -------- templates sets
 has 'template_process'  => (is => 'rw', isa => 'TemplateProcess',  default => 'ifeffit');
@@ -44,11 +44,11 @@ has 'ui'                   => (is => 'rw', isa => 'Str', default => 'none',);
 
 =head1 NAME
 
-Ifeffit::Demeter::Mode - Global attributes of the Demeter system
+Demeter::Mode - Global attributes of the Demeter system
 
 =head1 VERSION
 
-This documentation refers to Ifeffit::Demeter version 0.2.
+This documentation refers to Demeter version 0.2.
 
 =head1 DESCRIPTION
 
@@ -57,10 +57,9 @@ system in a way that makes those attributes available to any Demeter
 object.
 
 Access to this object is via the C<get_mode> and C<set_mode> methods
-of the Ifeffit::Demeter base class.  The convenience methods C<co> and
-C<po> of the Ifeffit::Demeter base class are used to gain access to
-the Config and Plot objects.  Any of these methods can be called by
-any Demeter object:
+of the Demeter base class.  The convenience methods C<co> and C<po> of
+the Demeter base class are used to gain access to the Config and Plot
+objects.  Any of these methods can be called by any Demeter object:
 
   $to_screen = $data_object     -> get_mode('screen');
   $to_screen = $gds_object      -> get_mode('screen');
@@ -201,9 +200,8 @@ L<Graphics::GnuplotIF> object.
 
 This is a string identifying the user interface backend.  At this
 time, its only use is to tell the Fit object to import the
-curses-based methods in
-L<Ifeffit::Demeter::UI::Screen::Interview> and
-L<Ifeffit::Demeter::UI::Screen::Spinner>.
+curses-based methods in L<Demeter::UI::Screen::Interview> and
+L<Demeter::UI::Screen::Spinner>.
 
 =back
 
@@ -216,12 +214,11 @@ generated.
 =head1 SERIALIZATION AND DESERIALIZATION
 
 See the discussion of serialization and deserialization in
-C<Ifeffit::Demeter::Fit>.
+C<Demeter::Fit>.
 
 =head1 CONFIGURATION AND ENVIRONMENT
 
-See L<Ifeffit::Demeter::Config> for a description of the configuration
-system.
+See L<Demeter::Config> for a description of the configuration system.
 
 =head1 DEPENDENCIES
 

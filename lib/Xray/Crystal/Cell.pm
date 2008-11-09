@@ -782,7 +782,7 @@ Xray::Crystal::Cell - A crystallographic unit cell object
 
 =head1 VERSION
 
-This documentation refers to Ifeffit::Demeter version 0.2.
+This documentation refers to Demeter version 0.2.
 
 =head1 SYNOPSIS
 
@@ -965,7 +965,7 @@ generate the cartesian coordinates for any atom in a cluster.
   ($x,$y,$z) = $cell -> metric($xf, $yf, $zf);
 
 This method is called repeatedly by the C<build_cluster> function in
-the L<Ifeffit::Demeter::Atoms> module.  The elements of the metric
+the L<Demeter::Atoms> module.  The elements of the metric
 tensor, i.e. the C<txx>, C<tyx>, C<tyz>, C<tzx>, and C<tzz> Cell
 attributes, are used to make the transformation according to this
 formula:

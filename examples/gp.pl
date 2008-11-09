@@ -4,11 +4,11 @@ use strict;
 use warnings;
 
 use Graphics::GnuplotIF qw(GnuplotIF);
-use Ifeffit::Demeter;
+use Demeter;
 use List::MoreUtils qw(pairwise);
 
-Ifeffit::Demeter->set_mode({screen=>0, ifeffit=>1, template_plot=>'gnuplot'});
-my @data = Ifeffit::Demeter::Data::Prj -> new({file=>'cyanobacteria.prj'})
+Demeter->set_mode({screen=>0, ifeffit=>1, template_plot=>'gnuplot'});
+my @data = Demeter::Data::Prj -> new({file=>'cyanobacteria.prj'})
    -> records(11, 9, 10);
 map { $_ -> _update('fft') } @data;
 

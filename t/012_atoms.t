@@ -20,9 +20,9 @@
 use Test::More tests => 18;
 
 use Ifeffit;
-use Ifeffit::Demeter;
+use Demeter;
 
-my $this = Ifeffit::Demeter::Atoms -> new();
+my $this = Demeter::Atoms -> new();
 my $OBJ  = 'Atoms';
 
 ok( ref($this) =~ m{$OBJ},                              "made a $OBJ object");

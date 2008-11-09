@@ -1,4 +1,4 @@
-package Ifeffit::Demeter::Dispose;
+package Demeter::Dispose;
 
 =for Copyright
  .
@@ -71,7 +71,7 @@ sub dispose {
   if (    ($self->get_mode("buffer"))
 	  and (ref($self->get_mode("buffer")) ne 'SCALAR')
 	  and (ref($self->get_mode("buffer")) ne 'ARRAY')  ) {
-    carp("Ifeffit::Demeter::Dispose: string mode value is not a scalar or array reference");
+    carp("Demeter::Dispose: string mode value is not a scalar or array reference");
   };
 
   if ($plotting and ($self->mode->template_plot eq 'gnuplot')) {
@@ -114,7 +114,7 @@ sub dispose {
     $thisline =~ s{^\s+}{};
     $thisline =~ s{\s+$}{};
     $thisline =~ s{\s+=}{ =};
-    my $re = $Ifeffit::Demeter::StrTypes::command_regexp;
+    my $re = $Demeter::StrTypes::command_regexp;
     $eol = ($thisline =~ m{^$re\s*\(}) ? " " : $eol;
     $eol = $/ if ($thisline =~ m{\)$});
     $reprocessed .= $thisline . $eol;
@@ -173,15 +173,15 @@ sub screen_echo {
 
 =head1 NAME
 
-Ifeffit::Demeter::Dispose - Process Ifeffit and plotting command strings
+Demeter::Dispose - Process Ifeffit and plotting command strings
 
 =head1 VERSION
 
-This documentation refers to Ifeffit::Demeter version 0.2.
+This documentation refers to Demeter version 0.2.
 
 =head1 SYNOPSIS
 
-  my $data_object = Ifeffit::Demeter::Data -> new();
+  my $data_object = Demeter::Data -> new();
   $data_object -> set_mode(ifeffit=>1, buffer=>\@buffer, screen=>1);
   $data_object -> dispose($ifeffit_command);
 
@@ -195,7 +195,7 @@ can dispose text.
 
 The command strings which are handled by the C<dispose> method are
 typically generated using the command templating system, which is
-described in L<Ifeffit::Demeter/TEMPLATES>.
+described in L<Demeter/TEMPLATES>.
 
 =head2 Reprocessed commands
 
@@ -239,7 +239,7 @@ C<ifeffit> disposal channel enabled.
 
 Use the C<set_mode> class method to establish the disposal channels.
 
-   Ifeffit::Demeter->set_mode(ifeffit=>1, screen=>1, file=>0, buffer=>0);
+   Demeter->set_mode(ifeffit=>1, screen=>1, file=>0, buffer=>0);
    $dataobject -> dispose($commands);
 
 There are several disposal channels:
@@ -373,21 +373,21 @@ I<What is this used for?>
 
 This is a reference to the active Plot object, which is the one used
 to format plots.  This is the object that should be modified to change
-how a plot is made.  See L<Ifeffit::Demeter::Plot>.  In a template,
-this is accessed by the C<$P> special variable.
+how a plot is made.  See L<Demeter::Plot>.  In a template, this is
+accessed by the C<$P> special variable.
 
 =item C<config>
 
 This is a reference to the Config object, which stores a wide variety
-of configration parameters.  See L<Ifeffit::Demeter::Config>.  In a
-template, this is accessed by the C<$C> special variable.
+of configration parameters.  See L<Demeter::Config>.  In a template,
+this is accessed by the C<$C> special variable.
 
 =item C<fit>
 
 This is a reference to the active Fit object, which is accessed when
 templates are evaluated to create commands for the fit.  See
-L<Ifeffit::Demeter::Fit>.  In a template, this is accessed by the
-C<$F> special variable.
+L<Demeter::Fit>.  In a template, this is accessed by the C<$F> special
+variable.
 
 =item C<standard>
 
@@ -425,8 +425,7 @@ plotted even if they are not yet associated with a Data object.
 
 =head1 CONFIGURATION
 
-See L<Ifeffit::Demeter::Config> for a description of the configuration
-system.
+See L<Demeter::Config> for a description of the configuration system.
 
 =head1 DEPENDENCIES
 

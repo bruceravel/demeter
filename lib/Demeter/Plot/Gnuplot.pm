@@ -1,4 +1,4 @@
-package Ifeffit::Demeter::Plot::Gnuplot;
+package Demeter::Plot::Gnuplot;
 
 =for Copyright
  .
@@ -18,7 +18,7 @@ package Ifeffit::Demeter::Plot::Gnuplot;
 use autodie qw(open close);
 
 use Moose;
-extends 'Ifeffit::Demeter::Plot';
+extends 'Demeter::Plot';
 
 #use diagnostics;
 use Carp;
@@ -102,7 +102,7 @@ override 'font' => sub {
 
 sub replot {
   my ($self) = @_;
-  carp("Ifeffit::Demeter::Plot::Gnuplot: Cannot replot, there is no previous plot."), return $self if ($self->get('lastplot') =~ m{\A\s*\z});
+  carp("Demeter::Plot::Gnuplot: Cannot replot, there is no previous plot."), return $self if ($self->get('lastplot') =~ m{\A\s*\z});
   $self -> dispose($self->get('lastplot'), "plotting");
   return $self;
 };
@@ -146,25 +146,25 @@ sub gnuplot_qylabel {
 
 =head1 NAME
 
-Ifeffit::Demeter::Plot::Gnuplot - Using Gnuplot with Demeter
+Demeter::Plot::Gnuplot - Using Gnuplot with Demeter
 
 =head1 VERSION
 
-This documentation refers to Ifeffit::Demeter version 0.2.
+This documentation refers to Demeter version 0.2.
 
 =head1 SYNOPSIS
 
-  use Ifeffit::Demeter (:gnuplot);
+  use Demeter (:gnuplot);
 
 or
 
-  use Ifeffit::Demeter;
+  use Demeter;
    ... and later ...
-  Ifeffit::Demeter -> plot_with("gnuplot");
+  Demeter -> plot_with("gnuplot");
 
 =head1 DESCRIPTION
 
-This base class of Ifeffit::Demeter::Plot contains methods for
+This base class of Demeter::Plot contains methods for
 interacting with Gnuplot via L<Graphics::GnuplotIF>.
 
 =head1 METHODS
@@ -183,7 +183,7 @@ interacting with Gnuplot via L<Graphics::GnuplotIF>.
 
 =head1 CONFIGURATION AND ENVIRONMENT
 
-See L<Ifeffit::Demeter::Config> for a description of the configuration
+See L<Demeter::Config> for a description of the configuration
 system.  The plot and ornaments configuration groups control the
 attributes of the Plot object.
 

@@ -1,4 +1,4 @@
-package Ifeffit::Demeter::UI::Hephaestus::Standards;
+package Demeter::UI::Hephaestus::Standards;
 use strict;
 use warnings;
 use Carp;
@@ -9,18 +9,18 @@ use base 'Wx::Panel';
 use Wx::Event qw(EVT_LIST_ITEM_ACTIVATED EVT_LIST_ITEM_SELECTED EVT_LISTBOX
 		 EVT_BUTTON EVT_KEY_DOWN EVT_RADIOBOX EVT_FILEPICKER_CHANGED);
 
-use Ifeffit::Demeter::UI::Standards;
-my $standards = Ifeffit::Demeter::UI::Standards->new();
+use Demeter::UI::Standards;
+my $standards = Demeter::UI::Standards->new();
 $standards -> ini(q{});
 
-use Ifeffit::Demeter::UI::Hephaestus::PeriodicTable;
+use Demeter::UI::Hephaestus::PeriodicTable;
 
 sub new {
   my ($class, $page, $echoarea) = @_;
   my $self = $class->SUPER::new($page, -1, wxDefaultPosition, wxDefaultSize, wxMAXIMIZE_BOX );
   $self->{echo} = $echoarea;
 
-  my $pt = Ifeffit::Demeter::UI::Hephaestus::PeriodicTable->new($self, 'standards_get_data');
+  my $pt = Demeter::UI::Hephaestus::PeriodicTable->new($self, 'standards_get_data');
   foreach my $i (1 .. 109) {
     my $el = get_symbol($i);
     $pt->{$el}->Disable if not $standards->element_exists($el);
@@ -84,7 +84,7 @@ sub standards_get_data {
 sub make_standards_plot {
   my ($self, $event, $parent) = @_;
   my $busy    = Wx::BusyCursor->new();
-  #my $demeter = Ifeffit::Demeter->new;
+  #my $demeter = Demeter->new;
   #$demeter  -> plot_with('gnuplot');
   my $which   = ($parent->{howtoplot}->GetStringSelection =~ m{XANES}) ? 'mu' : 'deriv';
   my $choice  = $parent->{data}->GetStringSelection;
@@ -108,18 +108,18 @@ sub echo_comment {
 
 =head1 NAME
 
-Ifeffit::Demeter::UI::Hephaestus::Standards - Hephaestus' XAS data standards utility
+Demeter::UI::Hephaestus::Standards - Hephaestus' XAS data standards utility
 
 =head1 VERSION
 
-This documentation refers to Ifeffit::Demeter version 0.2.
+This documentation refers to Demeter version 0.2.
 
 =head1 SYNOPSIS
 
 The contents of Hephaestus' absorption utility can be added to any Wx
 application.
 
-  my $page = Ifeffit::Demeter::UI::Hephaestus::Standards->new($parent,$echoarea);
+  my $page = Demeter::UI::Hephaestus::Standards->new($parent,$echoarea);
   $sizer -> Add($page, 1, wxGROW|wxEXPAND|wxALL, 0);
 
 The arguments to the constructor method are a reference to the parent

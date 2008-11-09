@@ -20,9 +20,9 @@
 use Test::More tests => 27;
 
 use Ifeffit;
-use Ifeffit::Demeter;
+use Demeter;
 
-my $this = Ifeffit::Demeter::GDS->new();
+my $this = Demeter::GDS->new();
 my $OBJ  = 'GDS';
 
 ok( ref($this) =~ m{$OBJ},                "made a $OBJ object");
@@ -62,13 +62,13 @@ $this -> evaluate;
 ok( (($this->mathexp == 5) and ($this->error == 0) and ($this->note =~ m{0\s+\+/\-\s+0})), "evaluate works");
 
 my $i = 0;
-foreach my $t (@Ifeffit::Demeter::StrTypes::gds_list) {
+foreach my $t (@Demeter::StrTypes::gds_list) {
   $this -> gds($t);
   ++$i;
   ok( $this -> gds eq $t,   "type $i ($t) can be set");
 };
 
-foreach my $w (@Ifeffit::Demeter::StrTypes::notreserved_list) {
+foreach my $w (@Demeter::StrTypes::notreserved_list) {
   eval "$this->name($w)";
   ok( $@,   "refused to set name to a reserved word: $w");
 };

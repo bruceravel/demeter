@@ -1,4 +1,4 @@
-package Ifeffit::Demeter::Data;
+package Demeter::Data;
 
 =for Copyright
  .
@@ -24,37 +24,37 @@ Readonly my $NULLFILE => '@&^^null^&@';
 use YAML;
 
 use Moose;
-extends 'Ifeffit::Demeter';
-with 'Ifeffit::Demeter::Data::Arrays';
-with 'Ifeffit::Demeter::Data::Athena';
-with 'Ifeffit::Demeter::Data::Defaults';
-with 'Ifeffit::Demeter::Data::E0';
-with 'Ifeffit::Demeter::Data::FT';
-with 'Ifeffit::Demeter::Data::IO';
-with 'Ifeffit::Demeter::Data::Mu';
-with 'Ifeffit::Demeter::Data::Parts';
-with 'Ifeffit::Demeter::Data::Plot';
-with 'Ifeffit::Demeter::Data::Process';
+extends 'Demeter';
+with 'Demeter::Data::Arrays';
+with 'Demeter::Data::Athena';
+with 'Demeter::Data::Defaults';
+with 'Demeter::Data::E0';
+with 'Demeter::Data::FT';
+with 'Demeter::Data::IO';
+with 'Demeter::Data::Mu';
+with 'Demeter::Data::Parts';
+with 'Demeter::Data::Plot';
+with 'Demeter::Data::Process';
 
 use Moose::Util::TypeConstraints;
-use Ifeffit::Demeter::StrTypes qw( Element
- 				   Edge
- 				   Clamp
- 				   FitSpace
-				   Window
-				   Empty
-				   DataType
- 				);
-use Ifeffit::Demeter::NumTypes qw( Natural
-				   PosInt
-				   PosNum
-				   NonNeg
-				);
+use Demeter::StrTypes qw( Element
+			  Edge
+			  Clamp
+			  FitSpace
+			  Window
+			  Empty
+			  DataType
+		       );
+use Demeter::NumTypes qw( Natural
+			  PosInt
+			  PosNum
+			  NonNeg
+		       );
 
 ## To do: triggers for keeping min/max pairs in the right order, respecting the complicated configuration rules
 
 has '+plottable'  => (default => 1);
-has '+data'       => (isa => Empty.'|Ifeffit::Demeter::Data');
+has '+data'       => (isa => Empty.'|Demeter::Data');
 has 'tag'         => (is => 'rw', isa => 'Str',  default => q{});
 has 'cv'          => (is => 'rw', isa => 'Num',  default => 0);
 has 'file'        => (is => 'rw', isa => 'Str',  default => $NULLFILE,
@@ -239,7 +239,7 @@ has 'fit_karb_value'	  => (is => 'rw', isa =>  NonNeg,    default => sub{ shift-
 has 'fit_space'	          => (is => 'rw', isa =>  FitSpace,  default => sub{ shift->mode->config->default("fit", "space")      || 'r'});
 has 'fit_epsilon'	  => (is => 'rw', isa => 'Num',      default => 0);
 has 'fit_cormin'	  => (is => 'rw', isa =>  PosNum,    default => sub{ shift->mode->config->default("fit", "cormin")     ||  0.4});
-## or Ifeffit::Demeter::Path
+## or Demeter::Path
 has 'fit_pcpath'	  => (is => 'rw', isa => 'Str',      default => 'None');
 has 'fit_include'	  => (is => 'rw', isa => 'Bool',     default => 1);
 has 'fit_data'	          => (is => 'rw', isa =>  Natural,   default => 0);
@@ -587,17 +587,17 @@ override 'deserialize' => sub {
 
 =head1 NAME
 
-Ifeffit::Demeter::Data - Process and analyze EXAFS data with Ifeffit
+Demeter::Data - Process and analyze EXAFS data with Ifeffit
 
 
 =head1 VERSION
 
-This documentation refers to Ifeffit::Demeter version 0.2.
+This documentation refers to Demeter version 0.2.
 
 
 =head1 SYNOPSIS
 
-  my $data = Ifeffit::Demeter::Data -> new;
+  my $data = Demeter::Data -> new;
   $data -> set(file      => "example/cu/cu10k.chi",
 	       name      => 'My copper data',
 	       fft_kmin  => 3,	       fft_kmax  => 14,
@@ -608,9 +608,8 @@ This documentation refers to Ifeffit::Demeter version 0.2.
 
 =head1 DESCRIPTION
 
-This subclass of the L<Ifeffit::Demeter> class is inteded to hold
-information pertaining to data for use in data processing and
-analysis.
+This subclass of the L<Demeter> class is inteded to hold information
+pertaining to data for use in data processing and analysis.
 
 =head1 ATTRIBUTES
 
@@ -622,7 +621,7 @@ integer, string, and so on.  The default value, if one exists, is
 given in square brackets.
 
 For a Data object to be included in a fit, it is necessary that it be
-gathered into a Fit object.  See L<Ifeffit::Demeter::Fit> for details.
+gathered into a Fit object.  See L<Demeter::Fit> for details.
 
 =head2 General Attributes
 
@@ -731,7 +730,7 @@ read_data method is called.
 =item C<bkg_e0_fraction> (number) I<[0.5]>
 
 This is a number between 0 and 1 used for the e0 algorithm which sets
-e0 to a fraction of the edge step.  See L<Ifeffit::Demeter::Data::E0>.
+e0 to a fraction of the edge step.  See L<Demeter::Data::E0>.
 
 =item C<bkg_eshift> (number) I<[0]>
 
@@ -1086,11 +1085,11 @@ a bad idea for this to be 0.
 
 =head1 METHODS
 
-This subclass inherits from Ifeffit::Demeter, so all of the methods of
-the parent class are available.
+This subclass inherits from Demeter, so all of the methods of the
+parent class are available.
 
-See L<Ifeffit::Demeter/Object_handling_methods> for a discussion of
-accessor methods.
+See L<Demeter/Object_handling_methods> for a discussion of accessor
+methods.
 
 =head2 I/O methods
 
@@ -1200,7 +1199,7 @@ attributes, and then make a plot.
 
 The argument is one of C<E>, C<k>, C<R>, C<q>, or C<kq>.  The details
 of the plot are determine by the current state of the
-L<Ifeffit::Demeter::Plot> object.
+L<Demeter::Plot> object.
 
 =back
 
@@ -1273,7 +1272,7 @@ The Data object has several parts associated with it.  Before a fit
 (or summation) is done, there are two parts: the data itself and the
 window.  After the fit, there is a residual, a fit, and (if the
 C<fit_do_bkg> attribute is true) a background.  Attributes of the
-L<Ifeffit::Demeter::Plot> object are used to specify which Data parts
+L<Demeter::Plot> object are used to specify which Data parts
 are shown in a plot.
 
 =head1 DIAGNOSTICS
@@ -1286,49 +1285,49 @@ of desperation):
 
 =over 4
 
-=item C<"$key" is not a valid Ifeffit::Demeter::Data parameter>
+=item C<"$key" is not a valid Demeter::Data parameter>
 
 (W) You have attempted to access an attribute that does not exist.  Check
 the spelling of the attribute at the point where you called the accessor.
 
-=item C<Ifeffit::Demeter::Data: "group" is not a valid group name>
+=item C<Demeter::Data: "group" is not a valid group name>
 
 (F) You have used a group name that does not follow Ifeffit's rules for group
 names.  The group name must start with a letter.  After that only letters,
 numbers, &, ?, _, and : are acceptable characters.  The group name must be no
 longer than 64 characters.
 
-=item C<Ifeffit::Demeter::Data: "$key" takes a number as an argument>
+=item C<Demeter::Data: "$key" takes a number as an argument>
 
 (F) You have attempted to set a numerical attribute with something
 that cannot be interpretted as a number.
 
 
-=item C<Ifeffit::Demeter::Data: $k must be a number>
+=item C<Demeter::Data: $k must be a number>
 
 (F) You have attempted to set an attribute that requires a numerical
 value to something that cannot be interpreted as a number.
 
-=item C<Ifeffit::Demeter::Data: $k must be a positive integer>
+=item C<Demeter::Data: $k must be a positive integer>
 
 (F) You have attempted to set an attribute that requires a positive
 integer value to something that cannot be interpreted as such.
 
-=item C<Ifeffit::Demeter::Data: $k must be a window function>
+=item C<Demeter::Data: $k must be a window function>
 
 (F) You have set a Fourier transform window attribute to something not
 recognized as a window function.
 
-=item C<Ifeffit::Demeter::Data: $r_hash->{$k} is not a readable data file>
+=item C<Demeter::Data: $r_hash->{$k} is not a readable data file>
 
 (F) You have set the C<file> attribute to something that cannot be
 found on disk.
 
-=item C<Ifeffit::Demeter::Data: $k must be one of (k R q)>
+=item C<Demeter::Data: $k must be one of (k R q)>
 
 (F) You have set a fitting space that is not one C<k>, C<R>, or C<q>.
 
-=item C<Ifeffit::Demeter::Data: $k must be one of (K L1 L2 L3)>
+=item C<Demeter::Data: $k must be one of (K L1 L2 L3)>
 
 (F) You have attempted to set the C<fft_edge> attribute to something
 that is not recognized as an edge symbol.
@@ -1392,8 +1391,8 @@ user interaction format for data processing.
 
 =head1 CONFIGURATION
 
-See L<Ifeffit::Demeter::Config> for a description of the configuration
-system.  Many attributes of a Data object can be configured via the
+See L<Demeter::Config> for a description of the configuration system.
+Many attributes of a Data object can be configured via the
 configuration system.  See, among others, the C<bkg>, C<fft>, C<bft>,
 and C<fit> configuration groups.
 

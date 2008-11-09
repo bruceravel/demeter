@@ -1,4 +1,4 @@
-package Ifeffit::Demeter::Data::Mu;
+package Demeter::Data::Mu;
 
 =for Copyright
  .
@@ -38,9 +38,9 @@ $Text::Wrap::columns = 65;
 use Chemistry::Elements qw(get_symbol);
 use Xray::Absorption;
 
-use Ifeffit::Demeter::StrTypes qw( Clamp );
+use Demeter::StrTypes qw( Clamp );
 
-  #my $config = Ifeffit::Demeter->get_mode("params");
+  #my $config = Demeter->get_mode("params");
   # my %clamp = ("None"   => 0,
   # 	       "Slight" => 3,
   # 	       "Weak"   => 6,
@@ -90,7 +90,7 @@ sub k2e {
 
 sub xmu_string {
   my ($self) = @_;
-  carp("Ifeffit::Demeter::Data::Mu: cannot put data unless the object contains mu(E) data"),
+  carp("Demeter::Data::Mu: cannot put data unless the object contains mu(E) data"),
     return 0 if ($self->datatype ne 'xmu');
   my $string = q{};
   $self->xmu_string($string);
@@ -471,11 +471,11 @@ sub _save_norm_command {
 
 =head1 NAME
 
-Ifeffit::Demeter::Data::Mu - Methods for processing and plotting mu(E) data
+Demeter::Data::Mu - Methods for processing and plotting mu(E) data
 
 =head1 SYNOPSIS
 
-  my $data = Ifeffit::Demeter::Data -> new;
+  my $data = Demeter::Data -> new;
   $data -> set(file      => "fe.060.xmu",
 	       name      => 'My copper data',
                bkg_rbkg  => 1.4,
@@ -485,8 +485,8 @@ Ifeffit::Demeter::Data::Mu - Methods for processing and plotting mu(E) data
 
 =head1 DESCRIPTION
 
-This role of Ifeffit::Demeter::Data contains methods for dealing
-with mu(E) data.
+This role of Demeter::Data contains methods for dealing with mu(E)
+data.
 
 =head1 METHODS
 
@@ -603,7 +603,7 @@ using the group's value for e0.
 
 =head1 CONFIGURATION
 
-See L<Ifeffit::Demeter::Config> for a description of the configuration
+See L<Demeter::Config> for a description of the configuration
 system.
 
 =head1 DEPENDENCIES

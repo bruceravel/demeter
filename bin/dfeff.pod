@@ -5,7 +5,7 @@ dfeff - Run Demeter's implementation of Feff6
 
 =head1 VERSION
 
-This documentation refers to Ifeffit::Demeter version 0.2.
+This documentation refers to Demeter version 0.2.
 
 =head1 SYNOPSIS
 
@@ -87,7 +87,7 @@ Display help information and quit.
 
 =head1 CONFIGURATION AND ENVIRONMENT
 
-See L<Ifeffit::Demeter::Config> for a description of Demeter's
+See L<Demeter::Config> for a description of Demeter's
 configuration system.  See the C<feff> configuration group.
 
 =head1 DEPENDENCIES
@@ -96,12 +96,12 @@ This script uses L<Term::ANSIColor> to color the terminal output, but
 it defaults gracefully to colorless output if this module is not
 available.
 
-The dependencies of the Ifeffit::Demeter system are in the
+The dependencies of the Demeter system are in the
 F<Bundle/DemeterBundle.pm> file.
 
 =head1 BUGS AND LIMITATIONS
 
-See L<Ifeffit::Demeter::Feff> and L<Ifeffit::Demeter::ScatteringPath>
+See L<Demeter::Feff> and L<Demeter::ScatteringPath>
 for bugs and limitations of the underlying libraries.
 
 There should be an option for running Feff's pathfinder for the sake

@@ -24,7 +24,7 @@
 use warnings;
 use strict;
 
-use Ifeffit::Demeter;
+use Demeter;
 my $where = $ENV{DEMETER_TEST_DIR} || "..";
 
 ## set up two data objects
@@ -34,11 +34,11 @@ my @common_attributes = (bkg_pre1   => -31,    bkg_pre2   => -150,
 			 fft_kmax   => 3,      fft_kmin   => 14,
 			);
 
-my $d0 = Ifeffit::Demeter::Data -> new();
+my $d0 = Demeter::Data -> new();
 $d0 -> set(@common_attributes);
 $d0 -> set(file => "$where/data/fe.060.xmu", name => '60K',);
 
-my $d1 = Ifeffit::Demeter::Data -> new();
+my $d1 = Demeter::Data -> new();
 $d1 -> set(@common_attributes);
 $d1 -> set(file => "$where/data/fe.300.xmu", name => '300K',);
 

@@ -1,4 +1,4 @@
-package Ifeffit::Demeter::Data::IO;
+package Demeter::Data::IO;
 
 =for Copyright
  .
@@ -81,7 +81,7 @@ sub _save_chi_command {
   };
   my $string = q{};
   $space = lc($space);
-  croak("Ifeffit::Demeter: '$space' is not a valid space for saving chi xdata (k k1 k2 k3 r q)")
+  croak("Demeter: '$space' is not a valid space for saving chi xdata (k k1 k2 k3 r q)")
     if ($space !~ /\A(?:k$NUMBER?|r|q)\z/); # }
 
   my $data = $self->data;
@@ -110,7 +110,7 @@ sub _save_chi_command {
     $string = $self->template("process", "save_chiq", {filename => $filename,
 						       titles	  => "dem_data_*",});
   } else {
-    croak("Ifeffit::Demeter::save: How did you get here?");
+    croak("Demeter::save: How did you get here?");
   }
 
   return $string;
@@ -175,7 +175,7 @@ sub title_glob {
   @titles = split(/\n/, $data->fit_parameter_report) if ($space eq 'f');
   my $i = 0;
   $self->dispose("erase \$$globname\*");
-  foreach my $line ("Demeter$type file -- Demeter $Ifeffit::Demeter::VERSION", @titles, "--") {
+  foreach my $line ("Demeter$type file -- Demeter $Demeter::VERSION", @titles, "--") {
     ++$i;
     my $t = sprintf("%s%2.2d", $globname, $i);
     Ifeffit::put_string($t, $line);
@@ -201,21 +201,21 @@ sub read_fit {
 
 =head1 NAME
 
-Ifeffit::Demeter::Data::IO - Data Input/Output methods for Demeter
+Demeter::Data::IO - Data Input/Output methods for Demeter
 
 =head1 VERSION
 
-This documentation refers to Ifeffit::Demeter version 0.2.
+This documentation refers to Demeter version 0.2.
 
 =head1 SYNOPSIS
 
-  use Ifeffit::Demeter;
-  my $data  = Ifeffit::Demeter::Data -> new(file=>'t/fe.060', @common_attributes);
+  use Demeter;
+  my $data  = Demeter::Data -> new(file=>'t/fe.060', @common_attributes);
   $data->save('xmu', 'data.xmu');
 
 =head1 DESCRIPTION
 
-This Ifeffit::Demeter::Data role contains methods for dealing
+This Demeter::Data role contains methods for dealing
 with data input/output.
 
 =head1 METHODS
@@ -298,7 +298,7 @@ chi(k), chi(R), chi(q), or a fit.
 Demeter's dependencies are in the F<Bundle/DemeterBundle.pm> file.
 
 L<Moose> is the basis of Demeter.  This module is implemented as a
-role and used by the L<Ifeffit::Demeter::Data> object.  I feel obloged
+role and used by the L<Demeter::Data> object.  I feel obloged
 to admit that I am using Moose roles in the most trivial fashion here.
 This is mostly an organization tool to keep modules small and methods
 organized by common functionality.

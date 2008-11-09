@@ -3,14 +3,14 @@
 use warnings;
 use strict;
 
-use Ifeffit::Demeter;
+use Demeter;
 use Xray::Site;
 use Xray::Cell;
 
-my $config = Ifeffit::Demeter->config;
+my $config = Demeter->config;
 #$config->set_default("atoms", "precision", "7.3f");
 
-my $atoms = Ifeffit::Demeter::Atoms->new();
+my $atoms = Demeter::Atoms->new();
 #$atoms->set({ipot_style=>'tags'});
 
 my $which = "absorption";  # absorption feff6 atoms feff8 spacegroup

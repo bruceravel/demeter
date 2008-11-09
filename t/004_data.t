@@ -20,10 +20,10 @@
 use Test::More tests => 53;
 
 use Ifeffit;
-use Ifeffit::Demeter;
+use Demeter;
 
-my $data  = Ifeffit::Demeter::Data -> new;
-my $data2 = Ifeffit::Demeter::Data -> new;
+my $data  = Demeter::Data -> new;
+my $data2 = Demeter::Data -> new;
 
 ok( ref($data) =~ m{Data},            "made a Data object");
 ok( $data->group ne $data2->group,    "made distinct Data objects");
@@ -75,7 +75,7 @@ ok( $data->update_columns &&
     $data->update_norm    && $data->update_bkg &&
     $data->update_fft     && $data->update_bft,            "everything flagged for update when data flagged for update");
 
-foreach (@Ifeffit::Demeter::StrTypes::datatype_list) {
+foreach (@Demeter::StrTypes::datatype_list) {
   $data->datatype($_);
   ok( $data->datatype eq $_,                               "can set data type: $_");
 };
@@ -95,14 +95,14 @@ ok( $string =~ $data->group,                                'simple template wor
 
 ## -------- Methods for setting E0
 my $fuzz = 0.002;
-my $data3 = Ifeffit::Demeter::Data -> new(file=>'fe.060',
+my $data3 = Demeter::Data -> new(file=>'fe.060',
 					  energy      => '$1', # column 1 is energy
 					  numerator   => '$2', # column 2 is I0
 					  denominator => '$3', # column 3 is It
 					  ln          => 1,    # these are transmission data
 					 );
 my $data5 = $data3->clone;
-my $data4 = Ifeffit::Demeter::Data -> new(file=>'fe.061',
+my $data4 = Demeter::Data -> new(file=>'fe.061',
 					  energy      => '$1', # column 1 is energy
 					  numerator   => '$2', # column 2 is I0
 					  denominator => '$3', # column 3 is It

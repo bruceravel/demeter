@@ -5,7 +5,7 @@ intrp - Write a textual interpretation of a Feff calculation
 
 =head1 VERSION
 
-This documentation refers to Ifeffit::Demeter version 0.2.
+This documentation refers to Demeter version 0.2.
 
 =head1 SYNOPSIS
 
@@ -63,7 +63,7 @@ necessary to make them free-standing html or compilable latex.
 
 =head1 CONFIGURATION AND ENVIRONMENT
 
-See L<Ifeffit::Demeter::Config> for a description of Demeter's
+See L<Demeter::Config> for a description of Demeter's
 configuration system.  The C<feff> configuration group controls many
 aspects of the interpretation.
 
@@ -79,12 +79,12 @@ B<not> do its interpretation using F<feff.inp>, F<files.dat>, and
 F<paths.dat>, like earlier incarnations and will B<not> do an
 interpretation of your non-Demeter Feff calculations.
 
-The dependencies of the Ifeffit::Demeter system are in the
+The dependencies of the Demeter system are in the
 F<Bundle/DemeterBundle.pm> file.
 
 =head1 BUGS AND LIMITATIONS
 
-See L<Ifeffit::Demeter::Feff> and L<Ifeffit::Demeter::ScatteringPath>
+See L<Demeter::Feff> and L<Demeter::ScatteringPath>
 for bugs and limitations of the underlying libraries.
 
 Please report problems to Bruce Ravel (bravel AT bnl DOT gov)

@@ -21,7 +21,7 @@ use File::Basename;
 use File::Copy;
 use File::Path;
 use File::Spec;
-use Ifeffit::Demeter;
+use Demeter;
 use Getopt::Long;
 use Readonly;
 Readonly my $USAGE => "usage: dfeff [options] <myfeff.inp>\n";
@@ -67,7 +67,7 @@ if (not -d $workspace) {
 };
 
 
-my $feff = Ifeffit::Demeter::Feff -> new();
+my $feff = Demeter::Feff -> new();
 ## read the input file
 banner("Reading \"$inp\"");
 $feff->set(workspace => "$workspace",
@@ -109,7 +109,7 @@ if ($do_ff2chi) {
 
 sub version {
   print "=== dfeff, Demeter's implementation of Feff6\n";
-  print "=== Demeter $Ifeffit::Demeter::VERSION, copyright (c) 2007-2008, Bruce Ravel, bravel AT bnl DOT gov\n";
+  print "=== Demeter $Demeter::VERSION, copyright (c) 2007-2008, Bruce Ravel, bravel AT bnl DOT gov\n";
   print "=== Feff6 is copyright (c) 1992-2008, The FEFF Project\n";
 };
 sub help {

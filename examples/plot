@@ -41,8 +41,8 @@ if ($ANSIColor_exists) {
   };
 };
 
-use Ifeffit::Demeter;
-my $demeter = Ifeffit::Demeter->new;
+use Demeter;
+my $demeter = Demeter->new;
 $demeter->set_mode(ifeffit=>1, buffer=>0, screen=>0);
 #$demeter->set_mode(template_process=>"iff_columns");
 
@@ -63,7 +63,7 @@ $demeter->plot_with('gnuplot') if $use_gnuplot;
 my $term = new Term::ReadLine 'Demeter test harness';
 my $plot = $demeter->po;
 
-my $dobject = Ifeffit::Demeter::Data -> new(group => 'data0');
+my $dobject = Demeter::Data -> new(group => 'data0');
 $dobject -> set(file      => "data/fe.060.xmu",
 		fft_kmax  => 3,
 		fft_kmin  => 14,

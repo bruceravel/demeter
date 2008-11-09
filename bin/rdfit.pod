@@ -4,7 +4,7 @@ rdfit - Simple interaction with Demeter fit projects
 
 =head1 VERSION
 
-This documentation refers to Ifeffit::Demeter version 0.2.
+This documentation refers to Demeter version 0.2.
 
 =head1 SYNOPSIS
 
@@ -55,9 +55,9 @@ on one of the parameters:
 
 =head1 DEPENDENCIES
 
-Along with needing L<Ifeffit::Demeter> and
-L<Ifeffit::Demeter::UI::Screen::Interview>, this program requires
-L<Term::ANSIColor>, L<Term::ReadLine>, and L<Term::Twiddle>.
+Along with needing L<Demeter> and L<Demeter::UI::Screen::Interview>,
+this program requires L<Term::ANSIColor>, L<Term::ReadLine>, and
+L<Term::Twiddle>.
 
 =head1 BUGS AND LIMITATIONS
 

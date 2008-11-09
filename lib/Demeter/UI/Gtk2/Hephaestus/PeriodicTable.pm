@@ -1,4 +1,4 @@
-package Ifeffit::Demeter::UI::Gtk2::Hephaestus::PeriodicTable;
+package Demeter::UI::Gtk2::Hephaestus::PeriodicTable;
 use strict;
 use warnings;
 use Carp;

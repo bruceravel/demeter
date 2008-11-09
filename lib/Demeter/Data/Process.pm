@@ -1,4 +1,4 @@
-package Ifeffit::Demeter::Data::Process;
+package Demeter::Data::Process;
 
 =for Copyright
  .
@@ -73,7 +73,7 @@ sub rebin {
 sub merge {
   my ($self, $how, @data) = @_;
   $how = lc($how);
-  croak("Ifeffit::Demeter::Data::Process: \$data->merge(\$how, \@data) where \$how = e|k|n") if ($how !~ m{^[ekn]});
+  croak("Demeter::Data::Process: \$data->merge(\$how, \@data) where \$how = e|k|n") if ($how !~ m{^[ekn]});
   my $standard = $self->mode->standard;
   $self->standard;		# make self the standard for merging
 
@@ -105,7 +105,7 @@ sub merge {
 };
 sub mergeE {
   my ($self, $how, @data) = @_;
-  carp("Ifeffit::Demeter::Data::Process::mergeE: first argument MUST be x or n.") if ($how !~ m{^[nx]});
+  carp("Demeter::Data::Process::mergeE: first argument MUST be x or n.") if ($how !~ m{^[nx]});
   $self -> _update("normalize")  if ($how eq 'x');
   $self -> _update("background") if ($how eq 'n');
 
@@ -346,16 +346,16 @@ sub interpolate {
 
 =head1 NAME
 
-Ifeffit::Demeter::Data::Process - Processing XAS data
+Demeter::Data::Process - Processing XAS data
 
 =head1 VERSION
 
-This documentation refers to Ifeffit::Demeter version 0.2.
+This documentation refers to Demeter version 0.2.
 
 =head1 DESCRIPTION
 
-This subclass of L<Ifeffit::Demeter::Data> contains methods for
-calibrating mu(E) data and adjusting e0.
+This subclass of L<Demeter::Data> contains methods for calibrating
+mu(E) data and adjusting e0.
 
 =head1 METHODS
 
@@ -413,7 +413,7 @@ is 0.07 inverse Angstrom.
 
 =back
 
-See L<Ifeffit::Demeter::Config> and the rebin configuration group for
+See L<Demeter::Config> and the rebin configuration group for
 details about configuring the defaults.
 
 =item C<merge>
@@ -507,8 +507,7 @@ edge step.
 
 =head1 CONFIGURATION
 
-See L<Ifeffit::Demeter::Config> for a description of the configuration
-system.
+See L<Demeter::Config> for a description of the configuration system.
 
 =head1 DEPENDENCIES
 

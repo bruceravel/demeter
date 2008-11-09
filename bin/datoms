@@ -17,7 +17,7 @@
 
 use warnings;
 use strict;
-use Ifeffit::Demeter;
+use Demeter;
 use Getopt::Long;
 use Regexp::Common;
 use Readonly;
@@ -38,7 +38,7 @@ my $result = GetOptions (
 ##  other output formats
 ##  write to a file
 
-my $atoms = Ifeffit::Demeter::Atoms->new(file => $ARGV[0]||"atoms.inp");
+my $atoms = Demeter::Atoms->new(file => $ARGV[0]||"atoms.inp");
 
 my $which = ($feff6) ? "feff6"
           : ($feff8) ? "feff8"

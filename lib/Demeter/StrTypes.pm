@@ -1,4 +1,4 @@
-package Ifeffit::Demeter::StrTypes;
+package Demeter::StrTypes;
 
 # predeclare our own types
 use MooseX::Types -declare => [qw( Empty
@@ -348,11 +348,11 @@ subtype NotReserved,
 
 =head1 NAME
 
-Ifeffit::Demeter::StrTypes - String type constraints
+Demeter::StrTypes - String type constraints
 
 =head1 VERSION
 
-This documentation refers to Ifeffit::Demeter version 0.2.
+This documentation refers to Demeter version 0.2.
 
 =head1 DESCRIPTION
 
@@ -361,8 +361,7 @@ L<MooseX::Types>.
 
 =head1 CONFIGURATION AND ENVIRONMENT
 
-See L<Ifeffit::Demeter::Config> for a description of the configuration
-system.
+See L<Demeter::Config> for a description of the configuration system.
 
 =head1 DEPENDENCIES
 

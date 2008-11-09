@@ -1,4 +1,4 @@
-package Ifeffit::Demeter::UI::Screen::Spinner;
+package Demeter::UI::Screen::Spinner;
 
 =for Copyright
  .
@@ -16,7 +16,7 @@ package Ifeffit::Demeter::UI::Screen::Spinner;
 =cut
 
 use Moose::Role;
-use Ifeffit::Demeter::NumTypes qw( PosNum );
+use Demeter::NumTypes qw( PosNum );
 
 use Term::Twiddle;
 
@@ -53,11 +53,11 @@ sub stop_spinner {
 
 =head1 NAME
 
-Ifeffit::Demeter::UI::Screen::Spinner - On screen indicator for lengthy operations
+Demeter::UI::Screen::Spinner - On screen indicator for lengthy operations
 
 =head1 VERSION
 
-This documentation refers to Ifeffit::Demeter version 0.2.
+This documentation refers to Demeter version 0.2.
 
 =head1 SYNOPSIS
 
@@ -69,7 +69,7 @@ This documentation refers to Ifeffit::Demeter version 0.2.
 
 This role for a Demeter object provides some on-screen feedback for
 lengthy procedures.  This role is imported when the UI mode is set to
-"screen".  See L<Ifeffit::Demeter/PRAGMATA>.  The idea is to provide a
+"screen".  See L<Demeter/PRAGMATA>.  The idea is to provide a
 spinny thing for the user to look at when running something time
 consuming from the command line.
 

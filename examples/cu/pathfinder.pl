@@ -17,9 +17,9 @@
 
 use warnings;
 use strict;
-use Ifeffit::Demeter;
+use Demeter;
 
-my $feff = Ifeffit::Demeter::Feff -> new();
+my $feff = Demeter::Feff -> new();
 $feff->set({workspace=>"pf", screen=>1, buffer=>q{}, save=>1});
 
 $feff -> rdinp("orig.inp") -> potph();

@@ -17,7 +17,7 @@
 
 use warnings;
 use strict;
-use Ifeffit::Demeter;
+use Demeter;
 use Getopt::Long;
 
 use subs qw(BOLD RED RESET YELLOW GREEN);
@@ -44,7 +44,7 @@ if ($ANSIColor_exists) {
   $nocolor = 1;
 };
 
-my $feff = Ifeffit::Demeter::Feff -> new(yaml => $ARGV[0]||"feff.yaml");
+my $feff = Demeter::Feff -> new(yaml => $ARGV[0]||"feff.yaml");
 my $style = ($nocolor) ? q{}
           : ($latex)   ? "latex"
           : ($html)    ? "css"
@@ -81,7 +81,7 @@ sub footer {
 };
 
 sub version {
-  print "intrp for Demeter $Ifeffit::Demeter::VERSION, copyright (c) 2008, Bruce Ravel, bravel AT bnl DOT gov\n";
+  print "intrp for Demeter $Demeter::VERSION, copyright (c) 2008, Bruce Ravel, bravel AT bnl DOT gov\n";
 };
 sub help {
   &version;

@@ -1,4 +1,4 @@
-package Ifeffit::Demeter::UI::Hephaestus::F1F2;
+package Demeter::UI::Hephaestus::F1F2;
 use strict;
 use warnings;
 use Carp;
@@ -11,15 +11,15 @@ use Wx::Event qw(EVT_BUTTON EVT_KEY_DOWN EVT_RADIOBOX EVT_FILEPICKER_CHANGED);
 use Wx::Perl::TextValidator;
 use base 'Wx::Panel';
 
-use Ifeffit::Demeter;
-use Ifeffit::Demeter::UI::Hephaestus::PeriodicTable;
-my $demeter = Ifeffit::Demeter->new;
+use Demeter;
+use Demeter::UI::Hephaestus::PeriodicTable;
+my $demeter = Demeter->new;
 
 sub new {
   my ($class, $page, $echoarea) = @_;
   my $self = $class->SUPER::new($page, -1, wxDefaultPosition, wxDefaultSize, wxMAXIMIZE_BOX );
 
-  my $pt = Ifeffit::Demeter::UI::Hephaestus::PeriodicTable->new($self, 'f1f2_get_data');
+  my $pt = Demeter::UI::Hephaestus::PeriodicTable->new($self, 'f1f2_get_data');
   my $vbox = Wx::BoxSizer->new( wxVERTICAL );
   $self->SetSizer($vbox);
   $vbox -> Add($pt, 0, wxALIGN_CENTER_HORIZONTAL|wxALL, 5);
@@ -30,9 +30,9 @@ sub new {
   $self->{gridbox} = Wx::StaticBox->new($self, -1, 'Energy grid', wxDefaultPosition, wxDefaultSize);
   $self->{gridboxsizer} = Wx::StaticBoxSizer->new( $self->{gridbox}, wxHORIZONTAL );
 
-  $self->{startingenergy} = $Ifeffit::Demeter::UI::Hephaestus::demeter->co->default(qw(hephaestus f1f2_emin));
-  $self->{endingenergy}   = $Ifeffit::Demeter::UI::Hephaestus::demeter->co->default(qw(hephaestus f1f2_emax));
-  $self->{energygrid}     = $Ifeffit::Demeter::UI::Hephaestus::demeter->co->default(qw(hephaestus f1f2_grid));
+  $self->{startingenergy} = $Demeter::UI::Hephaestus::demeter->co->default(qw(hephaestus f1f2_emin));
+  $self->{endingenergy}   = $Demeter::UI::Hephaestus::demeter->co->default(qw(hephaestus f1f2_emax));
+  $self->{energygrid}     = $Demeter::UI::Hephaestus::demeter->co->default(qw(hephaestus f1f2_grid));
   $self->{echo}           = $echoarea;
 
   my $label = Wx::StaticText->new($self, -1, 'Starting Energy', wxDefaultPosition, wxDefaultSize);
@@ -179,18 +179,18 @@ sub save_f1f2_data {
 
 =head1 NAME
 
-Ifeffit::Demeter::UI::Hephaestus::F1F2 - Hephaestus' anomalous scattering utility
+Demeter::UI::Hephaestus::F1F2 - Hephaestus' anomalous scattering utility
 
 =head1 VERSION
 
-This documentation refers to Ifeffit::Demeter version 0.2.
+This documentation refers to Demeter version 0.2.
 
 =head1 SYNOPSIS
 
 The contents of Hephaestus' anomalous scattering utility can be added
 to any Wx application.
 
-  my $page = Ifeffit::Demeter::UI::Hephaestus::F1F2->new($parent,$echoarea);
+  my $page = Demeter::UI::Hephaestus::F1F2->new($parent,$echoarea);
   $sizer -> Add($page, 1, wxGROW|wxEXPAND|wxALL, 0);
 
 The arguments to the constructor method are a reference to the parent

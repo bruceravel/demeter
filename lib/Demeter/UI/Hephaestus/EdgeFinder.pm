@@ -1,4 +1,4 @@
-package Ifeffit::Demeter::UI::Hephaestus::EdgeFinder;
+package Demeter::UI::Hephaestus::EdgeFinder;
 use strict;
 use warnings;
 use Carp;
@@ -32,7 +32,7 @@ sub new {
   my $hbox = Wx::BoxSizer->new( wxHORIZONTAL );
   $self->SetSizer($hbox);
 
-  $self->{targetenergy} = $Ifeffit::Demeter::UI::Hephaestus::demeter->co->default(qw(hephaestus find_energy));
+  $self->{targetenergy} = $Demeter::UI::Hephaestus::demeter->co->default(qw(hephaestus find_energy));
   $self->{echo} = $echoarea;
 
   ## -------- Edge energies
@@ -79,8 +79,8 @@ sub new {
   $self->{harmonicenergy} = Wx::StaticText->new($self, -1, q{});
   $self->{targetboxsizer} -> Add($self->{harmonicenergy}, 0, wxEXPAND|wxALL, 10);
   #$panel -> SetSizerAndFit( $panelsizer );
-  $self->{harmonics}->SetSelection($Ifeffit::Demeter::UI::Hephaestus::demeter->co->default(qw(hephaestus find_harmonic)) - 1);
-  if ($Ifeffit::Demeter::UI::Hephaestus::demeter->co->default(qw(hephaestus find_harmonic)) > 1) {
+  $self->{harmonics}->SetSelection($Demeter::UI::Hephaestus::demeter->co->default(qw(hephaestus find_harmonic)) - 1);
+  if ($Demeter::UI::Hephaestus::demeter->co->default(qw(hephaestus find_harmonic)) > 1) {
     $self->search_edges;
   };
 
@@ -148,18 +148,18 @@ sub search_edges {
 
 =head1 NAME
 
-Ifeffit::Demeter::UI::Hephaestus::EdgeFinder - Hephaestus' edge finder utility
+Demeter::UI::Hephaestus::EdgeFinder - Hephaestus' edge finder utility
 
 =head1 VERSION
 
-This documentation refers to Ifeffit::Demeter version 0.2.
+This documentation refers to Demeter version 0.2.
 
 =head1 SYNOPSIS
 
 The contents of Hephaestus' edge finder utility can be added to any Wx
 application.
 
-  my $page = Ifeffit::Demeter::UI::Hephaestus::EdgeFinder->new($parent,$echoarea);
+  my $page = Demeter::UI::Hephaestus::EdgeFinder->new($parent,$echoarea);
   $sizer -> Add($page, 1, wxGROW|wxEXPAND|wxALL, 0);
 
 The arguments to the constructor method are a reference to the parent

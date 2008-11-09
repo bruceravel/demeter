@@ -1,4 +1,4 @@
-package Ifeffit::Demeter::ScatteringPath;
+package Demeter::ScatteringPath;
 
 =for Copyright
  .
@@ -30,8 +30,8 @@ package Ifeffit::Demeter::ScatteringPath;
 use autodie qw(open close);
 
 use Moose;
-extends 'Ifeffit::Demeter';
-#use Ifeffit::Demeter::NumTypes qw( PosInt Natural NonNeg );
+extends 'Demeter';
+#use Demeter::NumTypes qw( PosInt Natural NonNeg );
 
 use Chemistry::Elements qw(get_symbol);
 use Carp;
@@ -57,9 +57,9 @@ my $opt  = Regexp::List->new;
 # optimization I am trying to avoid directly calling variables of
 # other packages, but in this case it is warrented as a matter of
 # speed
-my $fsangle = $Ifeffit::Demeter::config->default("pathfinder", "fs_angle");
-my $ncangle = $Ifeffit::Demeter::config->default("pathfinder", "nc_angle");
-my $rtangle = $Ifeffit::Demeter::config->default("pathfinder", "rt_angle");
+my $fsangle = $Demeter::config->default("pathfinder", "fs_angle");
+my $ncangle = $Demeter::config->default("pathfinder", "nc_angle");
+my $rtangle = $Demeter::config->default("pathfinder", "rt_angle");
 
 
 ## In principle, I would like to use MooseX::AttributeHelpers with
@@ -69,7 +69,7 @@ my $rtangle = $Ifeffit::Demeter::config->default("pathfinder", "rt_angle");
 ## Moose-y overhead
 
 		     ## caller provides these two
-has 'feff'	   => (is => 'rw', isa => 'Ifeffit::Demeter::Feff');
+has 'feff'	   => (is => 'rw', isa => 'Demeter::Feff');
 has 'string'	   => (is => 'rw', isa => 'Str',      default => q{});
 
 has 'nkey'	   => (is => 'rw', isa => 'Int',      default => 0); # integer key built from atoms indeces
@@ -186,7 +186,7 @@ sub compute_nleg_nkey {
 
 sub compute_halflength {
   my ($self, $feff, $string) = @_;
-  croak("Ifeffit::Demeter::ScatteringPath::compute_halflength: feff and string attributes unset")
+  croak("Demeter::ScatteringPath::compute_halflength: feff and string attributes unset")
     if not ( (ref($feff) =~ m{Feff}) and $string);
   my @sites  = @{ $feff->sites };
 
@@ -206,7 +206,7 @@ sub compute_halflength {
 
   my $cindex = $feff->abs_index;
   #my $halflength = sprintf("%.5f", 0.5*$feff->_length($cindex, @atoms, $cindex));
-  my $halflength = sprintf("%.5f", 0.5*Ifeffit::Demeter::Feff::_length($cindex, @atoms, $cindex));
+  my $halflength = sprintf("%.5f", 0.5*Demeter::Feff::_length($cindex, @atoms, $cindex));
   $self->set(halflength=>$halflength, heapvalue=>$halflength);
   return $halflength;
 };
@@ -666,12 +666,12 @@ __PACKAGE__->meta->make_immutable;
 
 =head1 NAME
 
-Ifeffit::Demeter::ScatteringPath - Create and manipulate scattering paths
+Demeter::ScatteringPath - Create and manipulate scattering paths
 
 
 =head1 VERSION
 
-This documentation refers to Ifeffit::Demeter version 0.2.
+This documentation refers to Demeter version 0.2.
 
 
 =head1 SYNOPSIS
@@ -686,8 +686,8 @@ else is computed from those two.
 
 This object handles the abstract representation of the scattering
 path.  This is part of Demeter's theory subsystem, unlike
-Ifeffit::Demeter::Path, which is part of Demeter's fitting subsytem.
-This object is used by Ifeffit::Demeter::Feff's path finder and
+Demeter::Path, which is part of Demeter's fitting subsytem.  This
+object is used by Demeter::Feff's path finder and
 just-in-time path calculator.
 
 This object requires that a Feff object has already been created and
@@ -758,7 +758,7 @@ sorting criterion.
 =item C<heapvalue>
 
 This is a value required by and used by the Heap algorithm.  It is
-computed using the halflength class method from L<Ifeffit::Demeter::Tools>.
+computed using the halflength class method from L<Demeter::Tools>.
 
 =item C<n>
 
@@ -844,8 +844,8 @@ the atoms in this path.  Set the nleg and nkey attributes.
 =item C<compute_halflength>
 
 Determine the half path length of this path and set the halfpath
-attribute.  Note that the Ifeffit::Demeter::Tools::halflength class
-method is used to compute this.
+attribute.  Note that the Demeter::Tools::halflength class method is
+used to compute this.
 
 
 =item C<compute_beta>
@@ -991,11 +991,11 @@ method.
 
 =over 4
 
-=item C<Ifeffit::Demeter::ScatteringPath: \"$key\" is not a valid parameter>
+=item C<Demeter::ScatteringPath: \"$key\" is not a valid parameter>
 
 You have tried to set or get an invalid ScatteringPath attribute.
 
-=item C<Ifeffit::Demeter::ScatteringPath::compute_halflength: feff and string attributes unset>
+=item C<Demeter::ScatteringPath::compute_halflength: feff and string attributes unset>
 
 You have attempted to compute a halflength without defining the path geometry.
 
@@ -1008,13 +1008,13 @@ different Feff objects.
 
 =head1 CONFIGURATION AND ENVIRONMENT
 
-See L<Ifeffit::Demeter::Config> for a description of the configuration
+See L<Demeter::Config> for a description of the configuration
 system.  The C<pathfinder> parameter group is used to configure the
 behavior of this module.
 
 =head1 DEPENDENCIES
 
-The dependencies of the Ifeffit::Demeter system are listed in the
+The dependencies of the Demeter system are listed in the
 F<Bundle/DemeterBundle.pm> file.
 
 =head1 BUGS AND LIMITATIONS
