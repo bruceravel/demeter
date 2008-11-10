@@ -22,7 +22,7 @@ use Test::More tests => 32;
 use Ifeffit;
 use Demeter;
 
-my $this = Demeter::Feff -> new(workspace => './feff');
+my $this = Demeter::Feff -> new(workspace => './t/feff');
 my $OBJ  = 'Feff';
 
 ok( ref($this) =~ m{$OBJ},                              "made a $OBJ object");
@@ -42,7 +42,7 @@ ok( ($this->mode->template_plot     eq 'pgplot'  and
                                                         "$OBJ object can find template sets");
 
 ## -------- parse a feff.inp file
-$this -> file('orig.inp');
+$this -> file('t/orig.inp');
 ok( (($this->rmax == 6.0) and
      ($this->edge eq '1') and
      ($this->s02  == 1.0)),                             'simple Feff cards read');
@@ -69,19 +69,19 @@ ok( $this->site_tag(19) eq 'Cu_3',                      'site_tag method works')
 
 ## -------- write different sorts of feff.inp files
 $this -> make_workspace;
-ok( -d 'feff',                                          'make workspace works');
+ok( -d 't/feff',                                        'make workspace works');
 
 $this->make_feffinp("potentials");
-open( my $fh, 'feff/feff.inp' );
+open( my $fh, 't/feff/feff.inp' );
 my $text = do { local( $/ ) ; <$fh> } ;
 ok( $text =~ m{CONTROL\s+1\s+0\s+0\s+0},                'CONTROL written for potentials');
 
 $this->make_feffinp("genfmt");
-open( my $fh, 'feff/feff.inp' );
+open( $fh, 't/feff/feff.inp' );
 $text = do { local( $/ ) ; <$fh> } ;
 ok( $text =~ m{CONTROL\s+0\s+0\s+1\s+0},                'CONTROL written for genfmt');
 
-my $new = Demeter::Feff -> new(workspace => './feff', file => 'feff/feff.inp');
+my $new = Demeter::Feff -> new(workspace => './t/feff', file => 't/feff/feff.inp');
 $ref = $new->sites;
 ok( $#{$ref} == 86,                                     'output feff.inp file has the correct number of sites');
 
@@ -89,32 +89,32 @@ ok( $#{$ref} == 86,                                     'output feff.inp file ha
 $this -> screen(0);
 $this -> buffer(1);
 $this -> potph;
-ok( ((-s 'feff/phase.bin' > 30000) and (-e 'feff/misc.dat')), 'feff module potph ran correctly');
+ok( ((-s 't/feff/phase.bin' > 30000) and (-e 't/feff/misc.dat')), 'feff module potph ran correctly');
 
 ok( $#{$this->iobuffer} > 12,                           'iobuffer works');
 
 $this -> screen(0);
 $this -> rmax(4);
 $this -> pathfinder;
-$this -> freeze('feff/feff.yaml');
+$this -> freeze('t/feff/feff.yaml');
 
 
 
-my $new = Demeter::Feff -> new(yaml => 'feff/feff.yaml');
+$new = Demeter::Feff -> new(yaml => 't/feff/feff.yaml');
 
 
 ok( (($new->rmax == 4.0) and
      ($new->edge eq '1') and
      ($new->s02  == 1.0)),                             'thaw: simple Feff cards read');
 
-my $ref = $new->potentials;
+$ref = $new->potentials;
 ok( $#{$ref} == 1,                                     'thaw: potentials list read');
 
 $ref = $new->sites;
 ok( $#{$ref} == 86,                                    'thaw: atoms list read');
 
 $ref = $new->titles;
-my $string = join(' | ', @$ref);
+$string = join(' | ', @$ref);
 ok( $string =~ m{example},                             'thaw: titles read');
 
 $ref = $new->absorber;
@@ -127,19 +127,19 @@ ok( $new->site_tag(19) eq 'Cu_3',                      'thaw: site_tag method wo
 
 ## -------- write different sorts of feff.inp files
 $new -> make_workspace;
-ok( -d 'feff',                                          'thaw: make workspace works');
+ok( -d 't/feff',                                        'thaw: make workspace works');
 
 $new->make_feffinp("potentials");
-open( my $fh, 'feff/feff.inp' );
-my $text = do { local( $/ ) ; <$fh> } ;
+open( $fh, 't/feff/feff.inp' );
+$text = do { local( $/ ) ; <$fh> } ;
 ok( $text =~ m{CONTROL\s+1\s+0\s+0\s+0},                'thaw: CONTROL written for potentials');
 
 $new->make_feffinp("genfmt");
-open( my $fh, 'feff/feff.inp' );
+open( $fh, 't/feff/feff.inp' );
 $text = do { local( $/ ) ; <$fh> } ;
 ok( $text =~ m{CONTROL\s+0\s+0\s+1\s+0},                'thaw: CONTROL written for genfmt');
 
-my $new = Demeter::Feff -> new(workspace => './feff', file => 'feff/feff.inp');
+$new = Demeter::Feff -> new(workspace => './t/feff', file => 't/feff/feff.inp');
 $ref = $new->sites;
 ok( $#{$ref} == 86,                                     'thaw: output feff.inp file has the correct number of sites');
 

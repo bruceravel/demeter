@@ -41,7 +41,7 @@ ok( ($this->mode->template_plot     eq 'pgplot'  and
      $this->mode->template_analysis eq 'ifeffit'),
                                                         "$OBJ object can find template sets");
 
-$this->file('PbFe12O19.inp');
+$this->file('t/PbFe12O19.inp');
 ok( abs($this->a - 5.873) < 0.001,                      "parsed an input file");
 ok( $#{ $this->sites } == 10,                           "number of sites parsed correctly");
 my $string = $this->Write('spacegroup');

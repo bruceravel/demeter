@@ -42,63 +42,118 @@ foreach my $f (@files) {
   ($this_package = $1), last if ($f =~ m{(\w*)Bundle\.pm});
 };
 
-my ($noforce, $help, $quickhelp, $system, $query, $copy, $proxy, $bundle) =
-   (0,        0,     0,          0,       0,      0,     q{},    "Bundle::".$this_package."Bundle");
-GetOptions("noforce"  => \$noforce, "n" => \$noforce,
-	   "bundle=s" => \$bundle,
-	   "proxy=s"  => \$proxy,   # q[192.168.1.140:3128] at BNL
-	   "system"   => \$system,  "s" => \$system,
-	   "query"    => \$query,   "q" => \$query,
-	   "help"     => \$help,    "h" => \$quickhelp,
-	   "c"        => \$copy,
+my %options = (
+	       noforce   => 0,
+	       help      => 0,
+	       quickhelp => 0,
+	       system    => 0,
+	       query     => 0,
+	       personal  => 0,
+	       copy      => 0,
+	       proxy     => q{},
+	       bundle    => "Bundle::".$this_package."Bundle",
+	      );
+#my ($noforce, $help, $quickhelp, $system, $query, $copy, $proxy, $bundle) =
+#   (0,        0,     0,          0,       0,      0,     q{},    "Bundle::".$this_package."Bundle");
+GetOptions("noforce"    => \$options{noforce},  "n" => \$options{noforce},
+	   "bundle=s"   => \$options{bundle},
+	   "proxy=s"    => \$options{proxy},    # q[http://192.168.1.130:3128] at BNL
+	   "personal"   => \$options{personal},
+	   "system"     => \$options{system},   "s" => \$options{system},
+	   "query"      => \$options{query},    "q" => \$options{query},
+	   "help"       => \$options{help},     "h" => \$options{quickhelp},
+	   "c"          => \$options{copy},
 	  );
 
 ## small chores then exit
-copyem(),                                                            exit if $copy;
-quickhelp(),                                                         exit if $quickhelp;
-Pod::Text -> new(sentence => 0, width => 78) -> parse_from_file($0), exit if $help;
+copyem(),                                                              exit if $options{copy};
+quickhelp(),                                                           exit if $options{quickhelp};
+Pod::Text -> new(sentence => 0, width => 78) -> parse_from_file($0),   exit if $options{help};
+die "The system and personal command line arguments are incompatible", exit if ($options{system} and $options{personal});
 
 ## remove the overloaded CPAN configuration and import the normal one
-if ($system) {
+if ($options{system}) {
   shift @INC;
   require CPAN::Config;
   import CPAN::Config;
 };
+if ($options{personal}) {
+  (-d $ENV{PERL5LIB}) or die "You have not yet defined the PERL5LIB environment variable.";
+
+  $CPAN::Config->{makepl_arg} = "PREFIX=$ENV{PERL5LIB}";
+#  $CPAN::Config->{make_arg} = "PREFIX=$ENV{PERL5LIB} LIB=$ENV{PERL5LIB}";
+#    $CPAN::Config->{makepl_arg} = join(" ",
+# 				      "INSTALLDIRS=perl",
+# 				      "PREFIX=$ENV{PERL5LIB}",
+# 				      "LIB=$ENV{PERL5LIB}",
+# 				      "LIB=$ENV{PERL5LIB}",
+# 				      "INSTALLMAN1DIR=$ENV{PERL5LIB}/man/man1",
+# 				      "INSTALLMAN3DIR=$ENV{PERL5LIB}/man/man3",
+# 				      "INSTALLSCRIPT=$ENV{PERL5LIB}/bin",
+# 				      "INSTALLBIN=$ENV{PERL5LIB}/bin",
+#  				    );
+#    $CPAN::Config->{make_arg} = $CPAN::Config->{makepl_arg};
+#    $CPAN::Config->{make} = $CPAN::Config->{make} . " " . $CPAN::Config->{make_arg};
+#   $CPAN::Config->{make_install_make_command} = $CPAN::Config->{make};
+#   $CPAN::Config->{make_install_arg} = $CPAN::Config->{makepl_arg};
+#   $CPAN::Config->{mbuildpl_arg} = join(" ",
+# 				       "--install_path lib=$ENV{PERL5LIB}",
+# 				       "--install_path arch=$ENV{PERL5LIB}",
+# 				       "--install_path bindoc=$ENV{PERL5LIB}/man",
+# 				       "--install_path libdoc=$ENV{PERL5LIB}/man",
+# 				       "--install_path script=$ENV{PERL5LIB}/bin",
+# 				       "--install_path bin=$ENV{PERL5LIB}/bin",
+# 				      );
+#   $CPAN::Config->{mbuild_arg} = $CPAN::Config->{mbuildpl_arg};
+#   $CPAN::Config->{mbuild_install_arg} = $CPAN::Config->{mbuildpl_arg};
+};
+
+
+## specify a proxy server
+if ($ENV{http_proxy}) {
+  $CPAN::Config->{http_proxy} = q{};
+  $CPAN::Config->{ftp_proxy}  = q{};
+};
+if ($options{proxy}) {
+  $CPAN::Config->{http_proxy} = $options{proxy};
+  $CPAN::Config->{ftp_proxy}  = $options{proxy};
+};
+
+
 banner("CPAN working directory:" . $CPAN::Config->{cpan_home});
 # print join($/, @INC), $/;
 # exit;
 
-## specify a proxy server
-if ($proxy) {
-  $CPAN::Config->{http_proxy} = $proxy;
-  $CPAN::Config->{ftp_proxy}  = $proxy;
-};
+#use Data::Dumper;
+#$Data::Dumper::Sortkeys = 1;
+#print Data::Dumper->Dump([$CPAN::Config]);
+#exit;
 
-my @modlist = bundle_list($bundle);
-foreach my $mod (@modlist) {
+my @modlist = bundle_list($options{bundle});
+foreach my $mod ('Math::Spline') { #(@modlist) {
   my @mm = CPAN::Shell->expand("Module", "/\^$mod\$/");
 
   if (not defined($mm[0])) {
     banner("Cannot determine version number for $mod: forcing install");
-    CPAN::Shell->force("install", $mod) if (not $query);
+    CPAN::Shell->force("install", $mod) if (not $options{query});
 
   } elsif (not defined($mm[0]->inst_version)) {
     banner("$mod not installed: forcing install");
-    CPAN::Shell->force("install", $mod) if (not $query);
+    CPAN::Shell->force("install", $mod) if (not $options{query});
 
   } elsif ($mm[0]->inst_version eq 'undef') {
     banner("Cannot determine version number for $mod: forcing install");
-    CPAN::Shell->force("install", $mod) if (not $query);
+    CPAN::Shell->force("install", $mod) if (not $options{query});
 
   } elsif ($mm[0]->inst_version lt $mm[0]->cpan_version) {
-    if ($noforce) {
+    if ($options{noforce}) {
       banner(sprintf("Upgrade required for %s from %s to %s: installing",
 		      $mod, $mm[0]->inst_version, $mm[0]->cpan_version));
-      CPAN::Shell->install($mod) if (not $query);
+      CPAN::Shell->install($mod) if (not $options{query});
     } else {
       banner(sprintf("Upgrade required for %s from %s to %s: forcing install",
 		      $mod, $mm[0]->inst_version, $mm[0]->cpan_version));
-      CPAN::Shell->force("install", $mod) if (not $query);
+      CPAN::Shell->force("install", $mod) if (not $options{query});
     };
 
   } else {
@@ -109,13 +164,13 @@ foreach my $mod (@modlist) {
 };
 
 # if ($force) {
-#   CPAN::Shell->force("install", $bundle);
+#   CPAN::Shell->force("install", $bundle);  INSTALLDIRS=site
 # } else {
 #   CPAN::Shell->upgrade($bundle);
 # };
 
 sub bundle_list {
-  my $thisbundle = $_[0] || $bundle;
+  my $thisbundle = $_[0] || $options{bundle};
   $thisbundle =~ s{::}{/};
   ($thisbundle .= '.pm') if ($thisbundle !~ m{\.pm\z});
   banner("Reading $thisbundle");
@@ -249,7 +304,7 @@ the side of installing.
 
 For those behind a proxy, the proxy can be specified from the command
 line.  For instance, those at Brookhaven National Laboratory will want
-to use C<--proxy=192.168.1.140:3128> at the command line.
+to use C<--proxy=http://192.168.1.130:3128/> at the command line.
 
 =head1 COMMAND LINE OPTIONS
 
@@ -264,7 +319,7 @@ installation even in the event of test failures.
 =item C<--proxy=URL:PORT>
 
 Specify a proxy server and port.  For instance, at Brookhaven, the
-proxy is "192.168.1.130:3128".
+proxy is "http://192.168.1.130:3128/".
 
 =item C<--query>, C<-q>
 

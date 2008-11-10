@@ -43,7 +43,7 @@ ok( ($this->mode->template_plot     eq 'pgplot'  and
 
 ## -------- test path description semantics
 
-my $feff = Demeter::Feff -> new(workspace => './feff', file => 'withHg.inp', screen => 0);
+my $feff = Demeter::Feff -> new(workspace => './t/feff', file => 't/withHg.inp', screen => 0);
 $feff -> rmax(4.5);
 $feff -> pathfinder;
 #print $feff -> intrp;

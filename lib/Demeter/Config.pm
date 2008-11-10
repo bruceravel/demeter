@@ -324,7 +324,7 @@ sub attribute {
   my $key = join(":", $group, $param);
   my $rhash = $self->get($key);
   carp("$key is not a valid configuration parameter"), return 0 if not $rhash;
-  return $rhash->{$which} || q{};
+  return $rhash->{$which} || 0;
 };
 sub Type     {my $self=shift; $self->attribute("type",     @_)};
 sub units    {my $self=shift; $self->attribute("units",    @_)};

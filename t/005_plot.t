@@ -65,5 +65,5 @@ $this->set_mode(ifeffit=>1);
 ok( $this -> textlabel(0.1, 0.2, "Hi there!"),                        "pgplot textlabel method (seems to) work");
 ok( $this -> outfile("png", "/dev/null"),                             "pgplot outfile method (seems to) work");
 
-my $string = $this -> template("test", "test", {x=>5});
+$string = $this -> template("test", "test", {x=>5});
 ok( $string =~ $this->group,                                'simple template works');

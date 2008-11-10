@@ -39,7 +39,7 @@ ok( $demeter->mode->config->default (qw(fit space))     eq 'r',                 
 ok( $demeter->mode->config->Type    (qw(bkg kw))        eq 'positive integer',  'Type accessor method');
 ok( $demeter->mode->config->maxint  (qw(bkg kw))        == 3,                   'maxint accessor method');
 ok( $demeter->mode->config->minint  (qw(plot charfont)) == 0,                   'minint accessor method');
-ok( $demeter->mode->config->units   (qw(bkg spl1))      == 'inverse Angstroms', 'units accessor method');
+ok( $demeter->mode->config->units   (qw(bkg spl1))      eq 'inverse Angstroms', 'units accessor method');
 ok( $demeter->mode->config->options (qw(fit space))     eq 'k r q',             'options accessor method');
 ok( $demeter->mode->config->onvalue (qw(fit k1))        == 1,                   'onvalue accessor method');
 ok( $demeter->mode->config->offvalue(qw(fit k1))        == 0,                   'offvalue accessor method');
@@ -58,7 +58,7 @@ ok( ($#{$groups} == 16),                                         'configuration 
 my @parameters = $demeter->mode->config->parameters('happiness');
 ok( ($parameters[0] eq 'average_color' and $#parameters == 10),  'configuration system introspection works: group parameters');
 
-$demeter->co->read_config('test.demeter_conf');
+$demeter->co->read_config('t/test.demeter_conf');
 ok( (not $demeter->co->default(qw(testing boolean))),            'reading boolean from arbitrary config file');
 ok( $demeter->co->default(qw(testing string))  eq 'Hi there!',   'reading string from arbitrary config file');
 ok( $demeter->co->default(qw(testing real))    == 1.0,           'reading real from arbitrary config file');

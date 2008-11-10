@@ -43,7 +43,7 @@ ok( ($this->mode->template_plot     eq 'pgplot'  and
      $this->mode->template_analysis eq 'ifeffit'),
                                                         "$OBJ object can find template sets");
 
-$this -> folder('./');
+$this -> folder('t');
 $this -> file('feff0001.dat');
 ok( (($this->degen == 12)     and
      ($this->nleg  == 2)      and
@@ -56,8 +56,8 @@ $this->update_bft(0);
 $this->update_path(1);
 ok( $this->update_bft,                                  "update flags work");
 
-$this->set(s02 => 1,
-	   e0 => 'enot',
+$this->set(s02    => 1,
+	   e0     => 'enot',
 	   sigma2 => 'debye([cv], 500)',
 	  );
 $this -> rewrite_cv;
@@ -74,14 +74,14 @@ $this->e0_value(30);
 ok(!$list[0],                                           'e0 sanity test, too large');
 
 $this->s02_value(0.8);
-my @list = $this->is_resonable('s02');
+@list = $this->is_resonable('s02');
 ok( $list[0],                                           's02 sanity test, ok');
 $this->s02_value(-0.8);
 @list = $this->is_resonable('s02');
 ok(!$list[0],                                           's02 sanity test, negative');
 
 $this->sigma2_value(0.003);
-my @list = $this->is_resonable('sigma2');
+@list = $this->is_resonable('sigma2');
 ok( $list[0],                                           'sigma2 sanity test, ok');
 $this->sigma2_value(-0.003);
 @list = $this->is_resonable('sigma2');
@@ -91,7 +91,7 @@ $this->sigma2_value(0.3);
 ok(!$list[0],                                           'sigma2 sanity test, too large');
 
 $this->delr_value(0.01);
-my @list = $this->is_resonable('delr');
+@list = $this->is_resonable('delr');
 ok( $list[0],                                           'delr sanity test, ok');
 $this->delr_value(1);
 @list = $this->is_resonable('delr');

@@ -24,7 +24,7 @@ use Demeter;
 use List::MoreUtils qw(all);
 
 
-my $this = Demeter::Data::Prj->new(file=>'cyanobacteria.prj');
+my $this = Demeter::Data::Prj->new(file=>'t/cyanobacteria.prj');
 my $OBJ  = 'Prj';
 
 ok( ref($this) =~ m{$OBJ},                              "made a $OBJ object");

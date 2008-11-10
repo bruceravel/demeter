@@ -69,6 +69,6 @@ foreach my $t (@Demeter::StrTypes::gds_list) {
 };
 
 foreach my $w (@Demeter::StrTypes::notreserved_list) {
-  eval "$this->name($w)";
+  eval "$this->name(\"$w\")";
   ok( $@,   "refused to set name to a reserved word: $w");
 };

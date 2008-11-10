@@ -59,7 +59,7 @@ ok( !$data->mode->standard,                                "can unset data stand
 
 ## -------- test that updating logic works correctly
 $data->update_data(0); $data->update_columns(0); $data->update_norm(0); $data->update_bkg(0); $data->update_fft(0); $data->update_bft(0);
-ok( !$update_bft,                                          "can flag all as up to date");
+ok( !$data->update_bft,                                    "can flag all as up to date");
 $data->update_fft(1);
 ok( $data->update_bft,                                     "bft flagged for update when fft flagged for update");
 $data->update_fft(0); $data->update_bft(0);
@@ -83,10 +83,10 @@ foreach (@Demeter::StrTypes::datatype_list) {
 $data -> set_windows('welch');
 ok( ($data->bkg_kwindow eq 'welch' and $data->fft_kwindow eq 'welch' and $data->bft_rwindow eq 'welch'), "set_windows works");
 
-$data->file('data.xmu');
+$data->file('t/data.xmu');
 $data->determine_data_type;
 ok( $data->datatype eq 'xmu',                               "determine_data_type works: xmu");
-$data2->file('data.chi');
+$data2->file('t/data.chi');
 $data2->determine_data_type;
 ok( $data2->datatype eq 'chi',                              "determine_data_type works: chi");
 
@@ -95,19 +95,19 @@ ok( $string =~ $data->group,                                'simple template wor
 
 ## -------- Methods for setting E0
 my $fuzz = 0.002;
-my $data3 = Demeter::Data -> new(file=>'fe.060',
-					  energy      => '$1', # column 1 is energy
-					  numerator   => '$2', # column 2 is I0
-					  denominator => '$3', # column 3 is It
-					  ln          => 1,    # these are transmission data
-					 );
+my $data3 = Demeter::Data -> new(file=>'t/fe.060',
+				 energy      => '$1', # column 1 is energy
+				 numerator   => '$2', # column 2 is I0
+				 denominator => '$3', # column 3 is It
+				 ln          => 1,    # these are transmission data
+				);
 my $data5 = $data3->clone;
-my $data4 = Demeter::Data -> new(file=>'fe.061',
-					  energy      => '$1', # column 1 is energy
-					  numerator   => '$2', # column 2 is I0
-					  denominator => '$3', # column 3 is It
-					  ln          => 1,    # these are transmission data
-					 );
+my $data4 = Demeter::Data -> new(file=>'t/fe.061',
+				 energy      => '$1', # column 1 is energy
+				 numerator   => '$2', # column 2 is I0
+				 denominator => '$3', # column 3 is It
+				 ln          => 1,    # these are transmission data
+				);
 
 $data3->e0('ifeffit'); ## how do I make this happen automatically??
 ok( ($data3->fft_edge eq 'K' and $data3->bkg_z eq 'Fe'),        'find_edge works: '.join(" ", $data3->fft_edge, $data3->bkg_z));

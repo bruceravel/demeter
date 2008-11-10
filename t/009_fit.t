@@ -46,23 +46,24 @@ ok( ($this->mode->template_plot     eq 'pgplot'  and
 
 ## -------- populate a Fit object
 my @gds  = (
-	    Demeter::GDS -> new(Type=>'guess', name=>amp,  mathexp=>1),
-	    Demeter::GDS -> new(Type=>'guess', name=>enot, mathexp=>0),
-	    Demeter::GDS -> new(Type=>'guess', name=>dcu,  mathexp=>0),
-	    Demeter::GDS -> new(Type=>'guess', name=>ss,   mathexp=>0.003),
+	    Demeter::GDS -> new(Type=>'guess', name=>'amp',  mathexp=>1),
+	    Demeter::GDS -> new(Type=>'guess', name=>'enot', mathexp=>0),
+	    Demeter::GDS -> new(Type=>'guess', name=>'dcu',  mathexp=>0),
+	    Demeter::GDS -> new(Type=>'guess', name=>'ss',   mathexp=>0.003),
 	   );
-my $data = Demeter::Data->new(file     => 'data.chi',
-				       name     => 'Cu 10K',
-				       fft_kmin => 3,   fft_kmax => 12,
-				       bft_rmin => 1,   bft_rmax => 2.6,
+my $data = Demeter::Data->new(file     => 't/data.chi',
+			      name     => 'Cu 10K',
+			      fft_kmin => 3,   fft_kmax => 12,
+			      bft_rmin => 1,   bft_rmax => 2.6,
 );
-my $path = Demeter::Path->new(folder => '.',    file   => 'feff0001.dat',
-				       data   => $data,
-				       Index  => 1,
-				       name   => 'first shell',
-				       s02    => 'amp',  e0     => 'enot',
-				       delr   => 'dcu',  sigma2 => 'ss',
-				      );
+my $path = Demeter::Path->new(folder => 't',
+			      file   => 'feff0001.dat',
+			      data   => $data,
+			      Index  => 1,
+			      name   => 'first shell',
+			      s02    => 'amp',  e0     => 'enot',
+			      delr   => 'dcu',  sigma2 => 'ss',
+			     );
 $this -> push_gds(@gds);
 $this -> push_data($data);
 $this -> push_paths($path);
@@ -115,10 +116,10 @@ ok( $list[0] == 20,  'R-factor penalty computed correctly');
 
 $this -> n_idp(9);
 $this -> n_varys(7);
-my @list = $this->_penalize_nidp;
+@list = $this->_penalize_nidp;
 ok( abs($list[0] - 40/3) < 0.001,  'nidp penalty computed correctly');
 
 $path -> e0_value(30);
 $path -> sigma2_value(-0.001);
-my @list = $this->_penalize_pathparams;
+@list = $this->_penalize_pathparams;
 ok( $list[0] == 4,  'path parameters penalty computed correctly');
