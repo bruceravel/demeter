@@ -8,7 +8,7 @@ use Wx qw( :everything );
 use base 'Wx::Panel';
 use Wx::Event qw(EVT_LIST_ITEM_ACTIVATED EVT_LIST_ITEM_SELECTED);
 
-use Demeter::UI::Hephaestus::PeriodicTable;
+use Demeter::UI::Wx::PeriodicTable;
 
 my %kalzium;
 tie %kalzium, 'Config::IniFiles', (-file=>File::Spec->catfile($Demeter::UI::Hephaestus::hephaestus_base,
@@ -19,7 +19,7 @@ sub new {
   my $self = $class->SUPER::new($page, -1, wxDefaultPosition, wxDefaultSize, wxMAXIMIZE_BOX );
   $self->{echo} = $echoarea;
 
-  my $pt = Demeter::UI::Hephaestus::PeriodicTable->new($self, 'data_get_data');
+  my $pt = Demeter::UI::Wx::PeriodicTable->new($self, 'data_get_data');
   my $vbox = Wx::BoxSizer->new( wxVERTICAL );
   $self->SetSizer($vbox);
   $vbox -> Add($pt, 0, wxALIGN_CENTER_HORIZONTAL|wxALL, 5);

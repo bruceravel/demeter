@@ -4,7 +4,7 @@ use warnings;
 use Carp;
 use Chemistry::Elements qw(get_Z get_name get_symbol);
 use Xray::Absorption;
-use Demeter::UI::Hephaestus::PeriodicTable;
+use Demeter::UI::Wx::PeriodicTable;
 use Demeter::UI::Hephaestus::Common qw(e2l);
 
 use Wx qw( :everything );
@@ -38,7 +38,7 @@ sub new {
   my $self = $class->SUPER::new($page, -1, wxDefaultPosition, wxDefaultSize, wxMAXIMIZE_BOX );
   $self->{echo} = $echoarea;
 
-  my $pt = Demeter::UI::Hephaestus::PeriodicTable->new($self, 'abs_get_data');
+  my $pt = Demeter::UI::Wx::PeriodicTable->new($self, 'abs_get_data');
   my $vbox = Wx::BoxSizer->new( wxVERTICAL );
   $self->SetSizer($vbox);
   $vbox -> Add($pt, 0, wxALIGN_CENTER_HORIZONTAL|wxALL, 5);

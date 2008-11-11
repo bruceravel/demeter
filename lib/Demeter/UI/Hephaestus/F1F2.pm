@@ -12,14 +12,14 @@ use Wx::Perl::TextValidator;
 use base 'Wx::Panel';
 
 use Demeter;
-use Demeter::UI::Hephaestus::PeriodicTable;
+use Demeter::UI::Wx::PeriodicTable;
 my $demeter = Demeter->new;
 
 sub new {
   my ($class, $page, $echoarea) = @_;
   my $self = $class->SUPER::new($page, -1, wxDefaultPosition, wxDefaultSize, wxMAXIMIZE_BOX );
 
-  my $pt = Demeter::UI::Hephaestus::PeriodicTable->new($self, 'f1f2_get_data');
+  my $pt = Demeter::UI::Wx::PeriodicTable->new($self, 'f1f2_get_data');
   my $vbox = Wx::BoxSizer->new( wxVERTICAL );
   $self->SetSizer($vbox);
   $vbox -> Add($pt, 0, wxALIGN_CENTER_HORIZONTAL|wxALL, 5);

@@ -1,4 +1,4 @@
-package Demeter::UI::Hephaestus::PeriodicTable;
+package Demeter::UI::Wx::PeriodicTable;
 use strict;
 use warnings;
 use Carp;
@@ -170,7 +170,7 @@ sub new {
 
 =head1 NAME
 
-Demeter::UI::Hephaestus::PeriodicTable - A periodic table widget
+Demeter::UI::Wx::PeriodicTable - A periodic table widget
 
 =head1 VERSION
 
@@ -180,7 +180,7 @@ This documentation refers to Demeter version 0.2.
 
 A periodic table an be added to a Wx application:
 
-  my $pt = Demeter::UI::Hephaestus::PeriodicTable
+  my $pt = Demeter::UI::Wx::PeriodicTable
              -> new($parent, 'method_name', $grandparent);
   $sizer -> Add($pt, 0, wxALIGN_CENTER_HORIZONTAL|wxALL, 5);
 

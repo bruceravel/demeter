@@ -13,14 +13,14 @@ use Demeter::UI::Standards;
 my $standards = Demeter::UI::Standards->new();
 $standards -> ini(q{});
 
-use Demeter::UI::Hephaestus::PeriodicTable;
+use Demeter::UI::Wx::PeriodicTable;
 
 sub new {
   my ($class, $page, $echoarea) = @_;
   my $self = $class->SUPER::new($page, -1, wxDefaultPosition, wxDefaultSize, wxMAXIMIZE_BOX );
   $self->{echo} = $echoarea;
 
-  my $pt = Demeter::UI::Hephaestus::PeriodicTable->new($self, 'standards_get_data');
+  my $pt = Demeter::UI::Wx::PeriodicTable->new($self, 'standards_get_data');
   foreach my $i (1 .. 109) {
     my $el = get_symbol($i);
     $pt->{$el}->Disable if not $standards->element_exists($el);
@@ -35,10 +35,10 @@ sub new {
   ## horizontal box for containing the rest of the controls
   my $hbox = Wx::BoxSizer->new( wxHORIZONTAL );
 
-  $self->{databox} = Wx::StaticBox->new($self, -1, 'Standards', wxDefaultPosition, wxDefaultSize);
-  $self->{databoxsizer} = Wx::StaticBoxSizer->new( $self->{databox}, wxVERTICAL );
-  $self->{data} = Wx::ListBox->new($self, -1, wxDefaultPosition, wxDefaultSize,
-				   [], wxLB_SINGLE|wxLB_ALWAYS_SB);
+  $self->{databox}       = Wx::StaticBox      -> new($self, -1, 'Standards', wxDefaultPosition, wxDefaultSize);
+  $self->{databoxsizer}  = Wx::StaticBoxSizer -> new( $self->{databox}, wxVERTICAL );
+  $self->{data}          = Wx::ListBox        -> new($self, -1, wxDefaultPosition, wxDefaultSize,
+						     [], wxLB_SINGLE|wxLB_ALWAYS_SB);
   $self->{databoxsizer} -> Add($self->{data}, 1, wxEXPAND|wxALL, 0);
   $hbox -> Add($self->{databoxsizer}, 2, wxEXPAND|wxALL, 5);
   EVT_LISTBOX( $self, $self->{data}, sub{echo_comment(@_, $self)} );
