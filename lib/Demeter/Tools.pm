@@ -60,6 +60,41 @@ sub environment {
   return "Demeter " . $Demeter::VERSION . " with perl $] on $os";
 };
 
+sub module_environment {
+  my ($self) = @_;
+  my $os = ($self->is_windows) ? windows_version() : $^O;
+  my $string = "Demeter " . $Demeter::VERSION . " with perl $] on $os\n";
+  $string .= "\n Major modules                   version\n";
+  $string .= '=' x 50 . "\n";
+  foreach my $p (qw(
+		     Ifeffit
+		     Moose
+		     MooseX::AttributeHelpers
+		     MooseX::Clone
+		     MooseX::Singleton
+		     MooseX::Types
+		     String::Random
+		     Text::Template
+		     Archive::Zip
+		     Chemistry::Elements
+		     Config::IniFiles
+		     Graphics::GnuplotIF
+		     Math::Cephes
+		     Math::Round
+		     Readonly
+		     Regexp::Common
+		     Regexp::Optimizer
+		     Heap::Fibonacci
+		     Tree::Simple
+		  )) {
+    my $v = '$' . $p . '::VERSION';
+    my $l = 30 - length($p);
+    $string .= sprintf(" %s %s %s\n", $p, '.' x $l, eval $v);
+  };
+  $string .= "\n";
+  return $string;
+};
+
 ## http://aspn.activestate.com/ASPN/docs/ActivePerl/5.8/lib/Win32.html
 ##     OS                    ID    MAJOR   MINOR
 ##     Win32s                 0      -       -

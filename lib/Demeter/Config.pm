@@ -21,6 +21,7 @@ use MooseX::Singleton;
 extends 'Demeter';
 use Moose::Util::TypeConstraints;
 use MooseX::AttributeHelpers;
+use vars qw($singleton);	# Moose 0.61, MooseX::Singleton 0.12 seem to need this
 
 use Carp;
 #use diagnostics;
