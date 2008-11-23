@@ -92,6 +92,7 @@ sub new {
       : ($utility eq 'find')        ? Demeter::UI::Hephaestus::EdgeFinder->new($page,$echoarea)
       : ($utility eq 'line')        ? Demeter::UI::Hephaestus::LineFinder->new($page,$echoarea)
       : ($utility eq 'formulas')    ? Demeter::UI::Hephaestus::Formulas->new($page,$echoarea)
+      : ($utility eq 'configure')   ? Demeter::UI::Hephaestus::Config->new($page,$echoarea)
       :                               0;
     if ($self->{$utility}) {
       $hh = Wx::BoxSizer->new( wxHORIZONTAL );
@@ -131,6 +132,7 @@ use Wx qw(wxBITMAP_TYPE_XPM wxID_EXIT wxID_ABOUT);
 use Wx::Event qw(EVT_MENU);
 use base 'Wx::App';
 
+use Demeter;
 use Demeter::UI::Hephaestus::Common qw(hversion hcopyright hdescription slurp);
 
 sub identify_self {
@@ -150,7 +152,7 @@ sub OnInit {
   $demeter -> plot_with($demeter->co->default(qw(hephaestus plotwith)));
 
   foreach my $m (qw(Absorption Formulas Ion Data Transitions EdgeFinder LineFinder
-		    Standards F1F2 Help EchoArea)) {
+		    Standards F1F2 Config Help EchoArea)) {
     next if $INC{"Demeter/UI/Hephaestus/$m.pm"};
     ##print "Demeter/UI/Hephaestus/$m.pm\n";
     require "Demeter/UI/Hephaestus/$m.pm";
