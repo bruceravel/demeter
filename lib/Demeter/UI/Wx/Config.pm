@@ -31,49 +31,47 @@ sub new {
   $mainsizer -> Add($right, 3, wxEXPAND|wxALL, 5);
 
   ## -------- Grid of controls
-  my $grid = Wx::GridBagSizer -> new(5,10);
+  $self->{grid} = Wx::GridBagSizer -> new(5,10);
 
   my $this = Wx::GBPosition->new(0, 0);
   my $label = Wx::StaticText->new( $self, -1, 'Parameter');
-  $grid -> Add($label, $this);
+  $self->{grid} -> Add($label, $this); #, wxALIGN_CENTER);
   $this = Wx::GBPosition->new(0, 1);
   $self->{Name} = Wx::StaticText->new( $self, -1, q{});
-  $grid -> Add($self->{Name}, $this);
+  $self->{grid} -> Add($self->{Name}, $this);
 
   $this = Wx::GBPosition->new(1, 0);
   $label = Wx::StaticText->new( $self, -1, 'Type');
-  $grid -> Add($label, $this);
+  $self->{grid} -> Add($label, $this);
   $this = Wx::GBPosition->new(1, 1);
   $self->{Type} = Wx::StaticText->new( $self, -1, q{});
-  $grid -> Add($self->{Type}, $this);
+  $self->{grid} -> Add($self->{Type}, $this);
 
   $this = Wx::GBPosition->new(2, 0);
   $label = Wx::StaticText->new( $self, -1, 'Your value');
-  $grid -> Add($label, $this);
+  $self->{grid} -> Add($label, $this);
   $this = Wx::GBPosition->new(2, 1);
   $self->{Value} = Wx::Button->new( $self, -1, q{});
-  $grid -> Add($self->{Value}, $this);
+  $self->{grid} -> Add($self->{Value}, $this);
 
   $this = Wx::GBPosition->new(2, 2);
   $label = Wx::StaticText->new( $self, -1, q{      });
-  $grid -> Add($label, $this);
+  $self->{grid} -> Add($label, $this);
 
   $this = Wx::GBPosition->new(2, 3);
   $label = Wx::StaticText->new( $self, -1, 'Demeter\'s value');
-  $grid -> Add($label, $this);
+  $self->{grid} -> Add($label, $this);
   $this = Wx::GBPosition->new(2, 4);
   $self->{Default} = Wx::Button->new( $self, -1, q{});
-  $grid -> Add($self->{Default}, $this);
+  $self->{grid} -> Add($self->{Default}, $this);
 
   $this = Wx::GBPosition->new(3, 0);
   $label = Wx::StaticText->new( $self, -1, 'Set');
-  $grid -> Add($label, $this);
-  $this = Wx::GBPosition->new(3, 1);
-  $self->{Set} = Wx::StaticText->new( $self, -1, q{});
-  $grid -> Add($self->{Set}, $this);
+  $self -> {grid} -> Add($label, $this);
+  $self -> {SetPosition} = Wx::GBPosition->new(3, 1);
+  $self -> set_stub;
 
-
-  $right -> Add($grid, 0, wxEXPAND|wxALL, 5);
+  $right -> Add($self->{grid}, 0, wxEXPAND|wxALL, 5);
 
   ## -------- Description text
   $self->{descbox} = Wx::StaticBox->new($self, -1, 'Description', wxDefaultPosition, wxDefaultSize);
@@ -133,6 +131,10 @@ sub tree_select {
   my $parent    = q{};
   my $is_parent = $self->{params}->ItemHasChildren($clickedon);
   $self->{desc}->Clear;
+  $self->{grid}->Detach($self->{Set});
+  $self->{Set} ->Destroy;
+  $self->{grid}->Layout;
+
   if (not $is_parent) {
     $parent = $self->{params}->GetItemParent($clickedon);
     $parent = $self->{params}->GetItemText($parent);
@@ -141,11 +143,55 @@ sub tree_select {
     $self->{Type}  -> SetLabel($demeter->co->Type($parent, $param));
     $self->{Value} -> SetLabel($demeter->co->default($parent, $param));
     $self->{Default} -> SetLabel($demeter->co->demeter($parent, $param));
+
+    my $type = $demeter->co->Type($parent, $param);
+
+  WIDGET: {
+      ($type eq 'list') and do {
+	$self->set_list_widget($parent, $param);
+	last WIDGET;
+      };
+
+      ## fall back
+      $self->set_stub;
+    };
+
   } else {
+    $self->set_stub;
     $self->{desc}->WriteText($demeter->co->description($param));
   };
 
 }
+
+sub set_stub {
+  my ($self) = @_;
+  $self->{Set} = Wx::StaticText->new( $self, -1, q{});
+  $self->{grid} -> Add($self->{Set}, $self->{SetPosition});
+  $self->{grid} -> Layout;
+  return $self->{Set};
+};
+
+##   string                Entry
+##   regex                 Entry
+##   real                  Entry  -- validates to accept only numbers
+##   positive integer      Entry with incrementers, restricted to be >= 0
+##   list                  Menubutton or some other multiple selection widget
+##   boolean               Checkbutton
+##   keypress              Entry  -- rigged to display one character at a time
+##   color                 Button -- launches color browser
+##   font                  Button -- does nothing at this time
+##   absolute energy
+
+sub set_list_widget {
+  my ($self, $parent, $param) = @_;
+  my @choices = split(" ", $demeter->co->options($parent, $param));
+
+  $self->{Set} = Wx::Choice->new( $self, -1, [-1, -1], [-1, -1], \@choices );
+  $self->{grid} -> Add($self->{Set}, $self->{SetPosition});
+  $self->{grid} -> Layout;
+  return $self->{Set};
+};
+
 
 1;
 

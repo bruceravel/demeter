@@ -40,7 +40,7 @@ my %label_of = (absorption   => 'Absorption',
 		help	     => 'Document',
 		configure    => 'Configure',
 	       );
-my $icon_dimension = 40;
+my $icon_dimension = 30;
 
 
 my @utilities = qw(absorption formulas ion data transitions find line standards f1f2 configure help);
@@ -48,13 +48,12 @@ my @utilities = qw(absorption formulas ion data transitions find line standards 
 sub new {
   my $ref    = shift;
   my $width  = 100;
-  my $height = ($#utilities+1) * $icon_dimension * 1.425; # + 2*($#utilities+1);
+  my $height = ($#utilities+1) * $icon_dimension * 1.57; # + 2*($#utilities+1);
   my $self   = $ref->SUPER::new( undef,           # parent window
 				 -1,              # ID -1 means any
 				 'Hephaestus',    # title
 				 wxDefaultPosition, [-1,$height],
 			       );
-
   my $tb = Wx::Notebook->new( $self, -1, wxDefaultPosition, wxDefaultSize, wxBK_LEFT );
   my $echoarea = Demeter::UI::Hephaestus::EchoArea->new($self);
   my $vbox = Wx::BoxSizer->new( wxVERTICAL);
@@ -99,6 +98,8 @@ sub new {
       $hh -> Add($self->{$utility}, 1, wxGROW|wxEXPAND|wxALL, 0);
       $box -> Add($hh, 1, wxGROW|wxEXPAND|wxALL, 0);
       my $this_width = ($self->{$utility}->GetSizeWH)[0];
+      my $this_height = ($self->{$utility}->GetSizeWH)[1];
+      ($height = $this_height) if ($this_height > $height);
       ## print $utility, "  ", $this_width, $/;
       $width = $this_width if ($this_width > $width);
     };
@@ -109,10 +110,9 @@ sub new {
   $vbox -> Add($echoarea, 0, wxEXPAND|wxALL, 3);
   EVT_TOOLBOOK_PAGE_CHANGED( $self, $tb, sub{$echoarea->echo(q{})} );
 
-
   ##            largest utility + width of toolbar text + width of icons
   my $framesize = Wx::Size->new(1.05*$width+$icon_dimension+103,
-				$height+($echoarea->GetSizeWH)[1]
+				$height+($echoarea->GetSizeWH)[1]+21
 			       );
   $self -> SetSize($framesize);
 
