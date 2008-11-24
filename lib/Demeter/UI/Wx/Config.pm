@@ -3,9 +3,10 @@ use strict;
 use warnings;
 use Carp;
 use Wx qw( :everything );
-use Wx::Event qw(EVT_BUTTON);
+use Wx::Event qw(EVT_BUTTON EVT_TREE_SEL_CHANGED);
 
 use Demeter;
+my $demeter = Demeter->new;
 
 use base 'Wx::Panel';
 
@@ -16,7 +17,7 @@ sub new {
   my $mainsizer = Wx::BoxSizer->new( wxHORIZONTAL );
   $self -> SetSizer($mainsizer);
 
-  ## -------- list of materials
+  ## -------- list of parameters
   $self->{paramsbox} = Wx::StaticBox->new($self, -1, 'Parameters', wxDefaultPosition, wxDefaultSize);
   $self->{paramsboxsizer} = Wx::StaticBoxSizer->new( $self->{paramsbox}, wxVERTICAL );
   $self->{params} = Wx::TreeCtrl->new($self, -1, wxDefaultPosition, wxDefaultSize,
@@ -24,22 +25,54 @@ sub new {
   $self->{paramsboxsizer} -> Add($self->{params}, 1, wxEXPAND|wxALL, 0);
   $mainsizer -> Add($self->{paramsboxsizer}, 1, wxEXPAND|wxALL, 5);
   #EVT_LISTBOX( $self, $self->{params}, sub{1;} );
+  EVT_TREE_SEL_CHANGED( $self, $self->{params}, \&tree_select );
 
   my $right = Wx::BoxSizer->new( wxVERTICAL );
   $mainsizer -> Add($right, 3, wxEXPAND|wxALL, 5);
 
   ## -------- Grid of controls
-  my $grid = Wx::GridBagSizer -> new(2,2);
-  my $row = 0;
-  foreach my $which (qw(Name Type Default Set)) {
-    my $this = Wx::GBPosition->new($row, 0);
-    my $label = Wx::StaticText->new( $self, -1, $which, [-1,-1], [-1,-1] );
-    my $cell = $grid -> Add($label, $this);
-    $this = Wx::GBPosition->new($row, 1);
-    my $widget = Wx::TextCtrl->new( $self, -1, q{});
-    $cell = $grid -> Add($widget, $this);
-    $row++;
-  };
+  my $grid = Wx::GridBagSizer -> new(5,10);
+
+  my $this = Wx::GBPosition->new(0, 0);
+  my $label = Wx::StaticText->new( $self, -1, 'Parameter');
+  $grid -> Add($label, $this);
+  $this = Wx::GBPosition->new(0, 1);
+  $self->{Name} = Wx::StaticText->new( $self, -1, q{});
+  $grid -> Add($self->{Name}, $this);
+
+  $this = Wx::GBPosition->new(1, 0);
+  $label = Wx::StaticText->new( $self, -1, 'Type');
+  $grid -> Add($label, $this);
+  $this = Wx::GBPosition->new(1, 1);
+  $self->{Type} = Wx::StaticText->new( $self, -1, q{});
+  $grid -> Add($self->{Type}, $this);
+
+  $this = Wx::GBPosition->new(2, 0);
+  $label = Wx::StaticText->new( $self, -1, 'Your value');
+  $grid -> Add($label, $this);
+  $this = Wx::GBPosition->new(2, 1);
+  $self->{Value} = Wx::Button->new( $self, -1, q{});
+  $grid -> Add($self->{Value}, $this);
+
+  $this = Wx::GBPosition->new(2, 2);
+  $label = Wx::StaticText->new( $self, -1, q{      });
+  $grid -> Add($label, $this);
+
+  $this = Wx::GBPosition->new(2, 3);
+  $label = Wx::StaticText->new( $self, -1, 'Demeter\'s value');
+  $grid -> Add($label, $this);
+  $this = Wx::GBPosition->new(2, 4);
+  $self->{Default} = Wx::Button->new( $self, -1, q{});
+  $grid -> Add($self->{Default}, $this);
+
+  $this = Wx::GBPosition->new(3, 0);
+  $label = Wx::StaticText->new( $self, -1, 'Set');
+  $grid -> Add($label, $this);
+  $this = Wx::GBPosition->new(3, 1);
+  $self->{Set} = Wx::StaticText->new( $self, -1, q{});
+  $grid -> Add($self->{Set}, $this);
+
+
   $right -> Add($grid, 0, wxEXPAND|wxALL, 5);
 
   ## -------- Description text
@@ -62,13 +95,57 @@ sub new {
   return $self;
 };
 
-# sub populate {
-#   my ($self, $grouplist) = @_;
-#   $demeter = Demeter->new;
-#   foreach my (@$grouplist) {
-    
-#   };
-# };
+sub populate {
+  my ($self, $grouplist) = @_;
+
+  my @grouplist;
+ LIST: {
+    ($grouplist eq 'base') and do {
+      @grouplist = $demeter->co->main_groups;
+      last LIST;
+    };
+    ($grouplist eq 'all') and do {
+      @grouplist = $demeter->co->groups;
+      last LIST;
+    };
+    (ref($grouplist) eq 'ARRAY') and do {
+      @grouplist = @$grouplist;
+      last LIST;
+    };
+    @grouplist = ($grouplist);
+  };
+  foreach my $g (@grouplist) {
+    my @params = $demeter->co->parameters($g);
+    my $root = $self->{params} -> AddRoot($g);
+    map {$self->{params} -> AppendItem($root, $_)} @params;
+  };
+  if ($#grouplist == 0) {
+    $self->{params}->ExpandAll;
+    my $this = $self->{params}->GetItemText( $self->{params}->GetSelection );
+    $self->{desc}->WriteText($demeter->co->description($this))
+  };
+};
+
+sub tree_select {
+  my ($self, $event) = @_;
+  my $clickedon = $event->GetItem;
+  my $param     = $self->{params}->GetItemText($clickedon);
+  my $parent    = q{};
+  my $is_parent = $self->{params}->ItemHasChildren($clickedon);
+  $self->{desc}->Clear;
+  if (not $is_parent) {
+    $parent = $self->{params}->GetItemParent($clickedon);
+    $parent = $self->{params}->GetItemText($parent);
+    $self->{desc}  -> WriteText($demeter->co->description($parent, $param));
+    $self->{Name}  -> SetLabel($param);
+    $self->{Type}  -> SetLabel($demeter->co->Type($parent, $param));
+    $self->{Value} -> SetLabel($demeter->co->default($parent, $param));
+    $self->{Default} -> SetLabel($demeter->co->demeter($parent, $param));
+  } else {
+    $self->{desc}->WriteText($demeter->co->description($param));
+  };
+
+}
 
 1;
 

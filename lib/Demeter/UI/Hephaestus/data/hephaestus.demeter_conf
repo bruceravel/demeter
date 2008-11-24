@@ -72,27 +72,27 @@ description
   This sets the default cross-section to use in all calculations.
 
 variable=filter_width
-type=positive integer
+type=real
 default=30
 description
-  This is the Gaussianlinewidth touse in filter plots.
+  This is the Gaussian linewidth to use in filter plots.
 
 variable=filter_offset
 type=positive integer
 default=3
 description
   This parameter is used to determine appropriate filter for an L3
-  edge -- a filter must have its K edge filter_offset*filterline_width
+  edge -- a filter must have its K edge (filter_offset*filter_width)
   above the Lalpha1 line of the absorber 
 
 variable=formula_energy
-type=positive integer
+type=absolute energy
 default=9000
 description
   The initial energy value in the Formulas utility
 
 variable=ion_energy
-type=positive integer
+type=absolute energy
 default=9000
 description
   The initial energy value in the Ion Chambers utility
@@ -127,7 +127,7 @@ description
   The initial value of the gain in the Ion Chambers utility
 
 variable=find_energy
-type=positive integer
+type=absolute energy
 default=8978
 description
   The energy value in the Edge Finder utility
@@ -141,19 +141,19 @@ description
   The initial choice for harmonic in the Edge Finder utility
 
 variable=line_energy
-type=positive integer
+type=absolute energy
 default=8045
 description
   The energy value in the Line Finder utility
 
 variable=f1f2_emin
-type=positive integer
+type=absolute energy
 default=3000
 description
   The intial value for the minimum energy in the Anomalous Scattering utility
 
 variable=f1f2_emax
-type=positive integer
+type=absolute energy
 default=7000
 description
   The intial value for the maximum energy in the Anomalous Scattering utility

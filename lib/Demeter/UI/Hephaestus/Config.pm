@@ -4,21 +4,15 @@ use warnings;
 use Carp;
 use Wx qw( :everything );
 
-use Demeter::UI::Wx::Config;
+use base 'Demeter::UI::Wx::Config';
 
-use base 'Wx::Panel';
+#use base 'Wx::Panel';
 
 sub new {
   my ($class, $page, $echoarea) = @_;
   my $self = $class->SUPER::new($page, -1, wxDefaultPosition, wxDefaultSize, wxMAXIMIZE_BOX );
   $self->{echo} = $echoarea;
-
-  my $hbox = Wx::BoxSizer->new( wxVERTICAL );
-
-  my $config = Demeter::UI::Wx::Config->new($self);
-  $hbox -> Add($config, 1, wxEXPAND|wxALL, 5);
-
-  $self->SetSizerAndFit($hbox);
+  $self->populate('hephaestus');
 
   return $self;
 };
