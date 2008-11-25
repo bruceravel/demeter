@@ -147,10 +147,9 @@ sub tree_select {
     my $type = $demeter->co->Type($parent, $param);
 
   WIDGET: {
-      ($type eq 'list') and do {
-	$self->set_list_widget($parent, $param);
-	last WIDGET;
-      };
+      $self->set_string_widget($parent, $param, $type), last WIDGET if ($type =~ m{(?:string|real|regex|absolute energy)});
+      $self->set_list_widget($parent, $param),   last WIDGET if ($type eq 'list');
+      $self->set_spin_widget($parent, $param),   last WIDGET if ($type eq 'positive integer');
 
       ## fall back
       $self->set_stub;
@@ -160,14 +159,14 @@ sub tree_select {
     $self->set_stub;
     $self->{desc}->WriteText($demeter->co->description($param));
   };
+  $self->{grid} -> Add($self->{Set}, $self->{SetPosition});
+  $self->{grid} -> Layout;
 
 }
 
 sub set_stub {
   my ($self) = @_;
   $self->{Set} = Wx::StaticText->new( $self, -1, q{});
-  $self->{grid} -> Add($self->{Set}, $self->{SetPosition});
-  $self->{grid} -> Layout;
   return $self->{Set};
 };
 
@@ -182,13 +181,30 @@ sub set_stub {
 ##   font                  Button -- does nothing at this time
 ##   absolute energy
 
+sub set_string_widget {
+  my ($self, $parent, $param, $type) = @_;
+  my $this = $demeter->co->default($parent, $param);
+  $self->{Set} = Wx::TextCtrl->new( $self, -1, $this, [-1, -1], [-1, -1] );
+
+  ## use $type to set validation
+
+  return $self->{Set};
+};
+
+
 sub set_list_widget {
   my ($self, $parent, $param) = @_;
   my @choices = split(" ", $demeter->co->options($parent, $param));
-
   $self->{Set} = Wx::Choice->new( $self, -1, [-1, -1], [-1, -1], \@choices );
-  $self->{grid} -> Add($self->{Set}, $self->{SetPosition});
-  $self->{grid} -> Layout;
+  return $self->{Set};
+};
+
+sub set_spin_widget {
+  my ($self, $parent, $param) = @_;
+  my $this = $demeter->co->default($parent, $param);
+  $self->{Set} = Wx::SpinCtrl->new($self, -1, $this, wxDefaultPosition, [-1,-1]);
+  $self->{Set} -> SetRange($demeter->co->minint($parent, $param),
+			   $demeter->co->maxint($parent, $param));
   return $self->{Set};
 };
 

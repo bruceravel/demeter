@@ -245,8 +245,8 @@ sub set_this_param {
   $hash{default}     ||= 0;	# sanitize several attributes
   $hash{description} ||= q{};
   if ($hash{type} eq 'positive integer') {
-    $hash{maxint} ||= 1e13;
-    $hash{minint} ||= 0;
+    $hash{maxint} ||= 1e9;
+    $hash{minint} ||= 1;
   } elsif ($hash{type} eq 'boolean') {
     $hash{onvalue}  ||= 1;
     $hash{offvalue} ||= 0;

@@ -115,14 +115,15 @@ description
 variable=ion_pressure
 type=positive integer
 default=760
+maxint=2300
 description
   The initial pressure for the Ion Chambers utility
 
 variable=ion_gain
 type=positive integer
 default=8
-minint=5
-maxint=11
+minint=4
+maxint=12
 description
   The initial value of the gain in the Ion Chambers utility
 
