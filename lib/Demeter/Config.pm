@@ -161,7 +161,7 @@ sub _read_config_file {
     if (not -r $file);
 
   my $base = (split(/\./, basename($file)))[0];
-  $self -> Push(___groups => $base);
+  #$self -> Push(___groups => $base);
   $self -> push_all_config_files(File::Spec->rel2abs($file));
 
   ## the first time this is called, the regexp method has not yet
@@ -187,9 +187,11 @@ sub _read_config_file {
 	$includefile = File::Spec->catfile(dirname($file), $includefile);
       };
       $self->_read_config_file($includefile);
+
     } elsif ($line =~ m{^\s*section\s*=\s*(\w+)}) {
       $group = $1;
       $group =~ s{\s+$}{};
+      $self -> Push(___groups => $group);
       $description = q{};
 
     } elsif ($line =~ m{^\s*section_description}) {
@@ -240,13 +242,15 @@ sub _read_config_file {
 
 sub set_this_param {
   my ($self, $group, $param, %hash) = @_;
-  use Data::Dumper;
+  #use Data::Dumper;
   my $key = join(":", $group, $param);
+  #local $| = 1;
+  #print $key, $/;
   $hash{default}     ||= 0;	# sanitize several attributes
   $hash{description} ||= q{};
   if ($hash{type} eq 'positive integer') {
     $hash{maxint} ||= 1e9;
-    $hash{minint} ||= 1;
+    $hash{minint} ||= 0;
   } elsif ($hash{type} eq 'boolean') {
     $hash{onvalue}  ||= 1;
     $hash{offvalue} ||= 0;
@@ -263,6 +267,8 @@ sub set_default {
   my ($self, $group, $param, $value) = @_;
   return q{} if not $param;
   my $key = join(":", $group, $param);
+  #local $| = 1;
+  #print $key, $/;
   my $rhash = $self->get($key);
   $rhash->{default} = $value;
   if ($rhash->{type} eq 'boolean') {
@@ -317,7 +323,15 @@ sub description {
   return $self->get($key) if (not $param);
   my $rhash = $self->get($key);
   carp("$key is not a valid configuration parameter"), return 0 if not $rhash;
-  return $rhash->{description};
+  my $desc = $rhash->{description};
+  if ($desc =~ m{\%list}) {
+    $desc =~ s{\%list}{\n        }g;
+    $desc =~ s{\%space}{ }g;
+    $desc =~ s{\%endlist}{}g;
+  #} else {
+  #  $desc = wrap("    ", "    ", $desc) . "\n";
+  };
+  return $desc;
 };
 sub attribute {
   my ($self, $which, $group, $param) = @_;
@@ -628,7 +642,7 @@ default to 1 and 0.
 
 These are the minimum and maximum allowed values of a positive integer
 parameter.  If unspecified in the configuration file, they default to
-0 and 1e13.
+0 and 1e9.
 
   print $object -> co -> maxint("bkg", "kw")
     ==prints==>

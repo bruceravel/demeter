@@ -112,6 +112,7 @@ description
 variable=size
 type=positive integer
 default=2
+minint=1
 maxint=5
 description
   This determines the size of the markers used to indicate special

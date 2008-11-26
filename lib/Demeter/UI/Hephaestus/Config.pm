@@ -12,7 +12,7 @@ sub new {
   my ($class, $page, $echoarea) = @_;
   my $self = $class->SUPER::new($page, -1, wxDefaultPosition, wxDefaultSize, wxMAXIMIZE_BOX );
   $self->{echo} = $echoarea;
-  $self->populate('hephaestus');
+  $self->populate('all');
 
   return $self;
 };

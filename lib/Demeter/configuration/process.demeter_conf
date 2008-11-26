@@ -80,7 +80,7 @@ description
   The step in wavenumber in the EXAFS region.
 
 ######################################################################
-section=rebin
+section=convolution
 section_description
   These parameters determine how convolution is performed by Demeter.
 

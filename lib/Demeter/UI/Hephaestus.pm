@@ -12,7 +12,7 @@ use Demeter::UI::Hephaestus::Common qw(hversion);
 
 use Wx qw( :everything );
 use base 'Wx::Frame';
-use Wx::Event qw(EVT_TOOLBOOK_PAGE_CHANGED EVT_TOOLBOOK_PAGE_CHANGING);
+use Wx::Event qw(EVT_NOTEBOOK_PAGE_CHANGED EVT_NOTEBOOK_PAGE_CHANGING);
 
 my $header_color = Wx::Colour->new(68, 31, 156);
 
@@ -108,7 +108,7 @@ sub new {
 
   $vbox -> Add($tb, 1, wxEXPAND|wxGROW, 0);
   $vbox -> Add($echoarea, 0, wxEXPAND|wxALL, 3);
-  EVT_TOOLBOOK_PAGE_CHANGED( $self, $tb, sub{$echoarea->echo(q{})} );
+  EVT_NOTEBOOK_PAGE_CHANGED( $self, $tb, sub{$echoarea->echo(q{})} );
 
   ##            largest utility + width of toolbar text + width of icons
   my $framesize = Wx::Size->new(1.05*$width+$icon_dimension+103,

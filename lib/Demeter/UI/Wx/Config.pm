@@ -112,10 +112,11 @@ sub populate {
     };
     @grouplist = ($grouplist);
   };
+  my $root = $self->{params} -> AddRoot('Root');
   foreach my $g (@grouplist) {
     my @params = $demeter->co->parameters($g);
-    my $root = $self->{params} -> AddRoot($g);
-    map {$self->{params} -> AppendItem($root, $_)} @params;
+    my $branch = $self->{params} -> AppendItem($root, $g);
+    map {$self->{params} -> AppendItem($branch, $_)} @params;
   };
   if ($#grouplist == 0) {
     $self->{params}->ExpandAll;
@@ -148,8 +149,10 @@ sub tree_select {
 
   WIDGET: {
       $self->set_string_widget($parent, $param, $type), last WIDGET if ($type =~ m{(?:string|real|regex|absolute energy)});
-      $self->set_list_widget($parent, $param),   last WIDGET if ($type eq 'list');
-      $self->set_spin_widget($parent, $param),   last WIDGET if ($type eq 'positive integer');
+      $self->set_list_widget($parent, $param),          last WIDGET if ($type eq 'list');
+      $self->set_spin_widget($parent, $param),          last WIDGET if ($type eq 'positive integer');
+      $self->set_boolean_widget($parent, $param),       last WIDGET if ($type eq 'boolean');
+      $self->set_color_widget($parent, $param),         last WIDGET if ($type eq 'boolean');
 
       ## fall back
       $self->set_stub;
@@ -170,16 +173,16 @@ sub set_stub {
   return $self->{Set};
 };
 
-##   string                Entry
-##   regex                 Entry
-##   real                  Entry  -- validates to accept only numbers
-##   positive integer      Entry with incrementers, restricted to be >= 0
-##   list                  Menubutton or some other multiple selection widget
-##   boolean               Checkbutton
+## x  string                Entry
+## x  regex                 Entry
+## x  real                  Entry  -- validates to accept only numbers
+## x  positive integer      Entry with incrementers, restricted to be >= 0
+## x  list                  Menubutton or some other multiple selection widget
+## x  boolean               Checkbutton
 ##   keypress              Entry  -- rigged to display one character at a time
 ##   color                 Button -- launches color browser
 ##   font                  Button -- does nothing at this time
-##   absolute energy
+## x  absolute energy
 
 sub set_string_widget {
   my ($self, $parent, $param, $type) = @_;
@@ -205,6 +208,24 @@ sub set_spin_widget {
   $self->{Set} = Wx::SpinCtrl->new($self, -1, $this, wxDefaultPosition, [-1,-1]);
   $self->{Set} -> SetRange($demeter->co->minint($parent, $param),
 			   $demeter->co->maxint($parent, $param));
+  return $self->{Set};
+};
+
+sub set_boolean_widget {
+  my ($self, $parent, $param) = @_;
+  my $this = $demeter->co->default($parent, $param);
+  $self->{Set} = Wx::CheckBox->new($self, -1, $param, wxDefaultPosition, [-1,-1]);
+  $self->{Set}->SetValue($this);
+  return $self->{Set};
+};
+
+sub set_color_widget {
+  my ($self, $parent, $param) = @_;
+  my $this = $demeter->co->default($parent, $param);
+  $self->{Set} = Wx::Button->new($self, -1, "Color dialog", wxDefaultPosition, [-1,-1]);
+  $self->{Default}->SetOwnBackgroundColour( WxColour->new(175, 0, 0) );
+  $self->{Default}->ClearBackground;
+  $self->{Default}->Update;
   return $self->{Set};
 };
 

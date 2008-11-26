@@ -183,7 +183,7 @@ description
 variable=partstyle
 type=list
 default=lines
-options=slines points linespoints
+options=lines points linespoints
 description
   The line style used to plot parts of a fit (i.e. the window, the
   residual, or the background).  Demeter does not provide complete
