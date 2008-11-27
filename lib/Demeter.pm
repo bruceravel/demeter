@@ -23,15 +23,16 @@ use version;
 our $VERSION = version->new('0.2.0');
 use vars qw($Gnuplot_exists);
 
-use Readonly;
-Readonly my $NUMBER => $RE{num}{real};
-
 use Carp;
 use File::Basename qw(dirname);
 use File::Spec;
 use List::MoreUtils qw(any minmax zip);
 use String::Random qw(random_string);
 use Text::Template;
+
+use Regexp::Common;
+use Readonly;
+Readonly my $NUMBER => $RE{num}{real};
 
 =for LiteratureReference
   Then, spent as they were from all their toil,
@@ -275,17 +276,25 @@ sub hashes {
 
 sub yesno {
   my ($self, $attribute) = @_;
-  my $value = $self->$attribute;
+  my $value = (any {$attribute eq $_} $self->meta->get_attribute_list)
+    ? $self->is_true($self->$attribute) # is an attribute t/f?
+      : $self->is_true($attribute); # is this word t/f?
+  #my $value = $self->is_true($self->$attribute);
   return ($value) ? 'yes' : 'no';
 };
 sub truefalse {
   my ($self, $attribute) = @_;
-  my $value = $self->$attribute;
+  my $value = (any {$attribute eq $_} $self->meta->get_attribute_list)
+    ? $self->is_true($self->$attribute) # is an attribute t/f?
+      : $self->is_true($attribute); # is this word t/f?
   return ($value) ? 'true' : 'false';
 };
 sub onezero {
   my ($self, $attribute) = @_;
-  my $value = $self->$attribute;
+  my $value = (any {$attribute eq $_} $self->meta->get_attribute_list)
+    ? $self->is_true($self->$attribute) # is an attribute t/f?
+      : $self->is_true($attribute); # is this word t/f?
+  #my $value = $self->is_true($self->$attribute);
   return ($value) ? '1' : '0';
 };
 sub is_true {

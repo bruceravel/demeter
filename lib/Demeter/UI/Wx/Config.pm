@@ -8,6 +8,9 @@ use Wx::Event qw(EVT_BUTTON EVT_TREE_SEL_CHANGED);
 use Demeter;
 my $demeter = Demeter->new;
 
+use Demeter::UI::Wx::ColourDatabase;
+my $cdb = Demeter::UI::Wx::ColourDatabase->new;
+
 use base 'Wx::Panel';
 
 sub new {
@@ -21,7 +24,7 @@ sub new {
   $self->{paramsbox} = Wx::StaticBox->new($self, -1, 'Parameters', wxDefaultPosition, wxDefaultSize);
   $self->{paramsboxsizer} = Wx::StaticBoxSizer->new( $self->{paramsbox}, wxVERTICAL );
   $self->{params} = Wx::TreeCtrl->new($self, -1, wxDefaultPosition, wxDefaultSize,
-				      wxTR_SINGLE|wxTR_HAS_BUTTONS);
+				      wxTR_SINGLE|wxTR_HAS_BUTTONS|wxTR_HIDE_ROOT);
   $self->{paramsboxsizer} -> Add($self->{params}, 1, wxEXPAND|wxALL, 0);
   $mainsizer -> Add($self->{paramsboxsizer}, 1, wxEXPAND|wxALL, 5);
   #EVT_LISTBOX( $self, $self->{params}, sub{1;} );
@@ -96,10 +99,11 @@ sub new {
 sub populate {
   my ($self, $grouplist) = @_;
 
+  $grouplist ||= 'all';
   my @grouplist;
  LIST: {
     ($grouplist eq 'base') and do {
-      @grouplist = $demeter->co->main_groups;
+      @grouplist = @{ $demeter->co->main_groups };
       last LIST;
     };
     ($grouplist eq 'all') and do {
@@ -139,20 +143,32 @@ sub tree_select {
   if (not $is_parent) {
     $parent = $self->{params}->GetItemParent($clickedon);
     $parent = $self->{params}->GetItemText($parent);
-    $self->{desc}  -> WriteText($demeter->co->description($parent, $param));
+
+    my $description = $demeter->co->description($parent, $param);
+    if ($demeter->co->units($parent, $param)) {
+      $description .= $/ x 3 . "This parameter is in units of " . $demeter->co->units($parent, $param) . ".";
+    };
+    $self->{desc}  -> WriteText($description);
     $self->{Name}  -> SetLabel($param);
     $self->{Type}  -> SetLabel($demeter->co->Type($parent, $param));
-    $self->{Value} -> SetLabel($demeter->co->default($parent, $param));
-    $self->{Default} -> SetLabel($demeter->co->demeter($parent, $param));
-
     my $type = $demeter->co->Type($parent, $param);
+
+    if ($type eq 'boolean') {
+      $self->{Value}   -> SetLabel($demeter->truefalse( $demeter->co->default($parent, $param) ));
+      $self->{Default} -> SetLabel($demeter->truefalse( $demeter->co->demeter($parent, $param) ));
+    } else {
+      $self->{Value} -> SetLabel($demeter->co->default($parent, $param));
+      $self->{Default} -> SetLabel($demeter->co->demeter($parent, $param));
+    };
+    $self->{Value}   -> SetOwnBackgroundColour(wxNullColour);
+    $self->{Default} -> SetOwnBackgroundColour(wxNullColour);
 
   WIDGET: {
       $self->set_string_widget($parent, $param, $type), last WIDGET if ($type =~ m{(?:string|real|regex|absolute energy)});
       $self->set_list_widget($parent, $param),          last WIDGET if ($type eq 'list');
       $self->set_spin_widget($parent, $param),          last WIDGET if ($type eq 'positive integer');
       $self->set_boolean_widget($parent, $param),       last WIDGET if ($type eq 'boolean');
-      $self->set_color_widget($parent, $param),         last WIDGET if ($type eq 'boolean');
+      $self->set_color_widget($parent, $param),         last WIDGET if ($type eq 'color');
 
       ## fall back
       $self->set_stub;
@@ -221,14 +237,92 @@ sub set_boolean_widget {
 
 sub set_color_widget {
   my ($self, $parent, $param) = @_;
-  my $this = $demeter->co->default($parent, $param);
   $self->{Set} = Wx::Button->new($self, -1, "Color dialog", wxDefaultPosition, [-1,-1]);
-  $self->{Default}->SetOwnBackgroundColour( WxColour->new(175, 0, 0) );
-  $self->{Default}->ClearBackground;
-  $self->{Default}->Update;
+
+  my $this = $demeter->co->default($parent, $param);
+  if ($this =~ m{\A\#}) {
+    my $col = Wx::Colour->new($this);
+    $self->{Value}->SetOwnBackgroundColour( $col );
+  } else {
+    $self->{Value}->SetOwnBackgroundColour( $cdb->Find($this) );
+  };
+
+  $this = $demeter->co->demeter($parent, $param);
+  if ($this =~ m{\A\#}) {
+    my $col = Wx::Colour->new($this);
+    $self->{Default}->SetOwnBackgroundColour( $col );
+  } else {
+    $self->{Default}->SetOwnBackgroundColour( $cdb->Find($this) );
+  };
+
   return $self->{Set};
 };
 
 
 1;
 
+=head1 NAME
+
+Demeter::UI::Wx::Config - A configuration widget for Demeter applications
+
+=head1 VERSION
+
+This documentation refers to Demeter version 0.2.
+
+=head1 SYNOPSIS
+
+A configuration widget can be added to a Wx application:
+
+  my $config = Demeter::UI::Wx::Config -> new;
+  $sizer -> Add($config, 0, wxALIGN_CENTER_HORIZONTAL|wxALL, 5);
+
+=head1 DESCRIPTION
+
+This is a configuration widget ...
+
+=head1 METHODS
+
+=over 4
+
+=item populate
+
+ all base list
+
+=back
+
+=head1 USING THE CONFIGURATION WIDGET
+
+=head2 Using the tree
+
+=head2 Using the controls
+
+=head2 Applying and saving parameter values
+
+=head1 DEPENDENCIES
+
+Demeter's dependencies are in the F<Bundle/DemeterBundle.pm> file.
+
+=head1 BUGS AND LIMITATIONS
+
+Please report problems to Bruce Ravel (bravel AT bnl DOT gov)
+
+Patches are welcome.
+
+=head1 AUTHOR
+
+Bruce Ravel (bravel AT bnl DOT gov)
+
+L<http://cars9.uchicago.edu/~ravel/software/>
+
+=head1 LICENCE AND COPYRIGHT
+
+Copyright (c) 2006-2008 Bruce Ravel (bravel AT bnl DOT gov). All rights reserved.
+
+This module is free software; you can redistribute it and/or
+modify it under the same terms as Perl itself. See L<perlgpl>.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+
+=cut

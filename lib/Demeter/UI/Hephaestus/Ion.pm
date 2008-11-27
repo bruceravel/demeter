@@ -152,12 +152,16 @@ sub new {
   my ($class, $parent) = @_;
   my $self = $class->SUPER::new($parent, -1, wxDefaultPosition, wxDefaultSize, wxMAXIMIZE_BOX );
   my $pressure_box = Wx::BoxSizer->new( wxVERTICAL );
+  my %max  = (torr => 2300, mbar => 3066, atm => 3);
+  my %line = (torr => 1, mbar => 1, atm => 0.01);
 
-  my $label = Wx::StaticText->new($self, -1, 'Pressure (torr)');
-  $pressure_box->Add($label, 0, wxALL, 5);
+  my $units = $Demeter::UI::Hephaestus::demeter->co->default("hephaestus", "ion_pressureunits");
+  $parent->{pressureunits} = Wx::StaticText->new($self, -1, "Pressure ($units)");
+  $pressure_box->Add($parent->{pressureunits}, 0, wxALL, 5);
   $parent->{pressure} = Wx::Slider->new($self, -1,
 					$Demeter::UI::Hephaestus::demeter->co->default(qw(hephaestus ion_pressure)),
-					0, 2300, [-1,-1], [-1,-1],
+					0, $max{$units},
+					[-1,-1], [-1,-1],
 					wxSL_VERTICAL|wxSL_AUTOTICKS|wxSL_LABELS|wxSL_RIGHT|wxSL_INVERSE);
   $pressure_box->Add($parent->{pressure}, 1, wxALIGN_CENTER_HORIZONTAL|wxALL, 5);
 
@@ -304,8 +308,6 @@ sub get_ion_data {
 
   my @gas = ($gases[$self->{primarygas}  ->GetCurrentSelection],
 	     $gases[$self->{secondarygas}->GetCurrentSelection]);
-  my %switch = (He=>'N2', N2=>'He');
-  ($gas[1] = $switch{$gas[1]}) if exists($switch{$gas[1]});
 
   my @fractions = ($self->{primary}  ->GetValue/100,
 		   $self->{secondary}->GetValue/100);

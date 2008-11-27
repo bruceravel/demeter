@@ -167,7 +167,7 @@ sub new {
 
 
 1;
-
+ 
 =head1 NAME
 
 Demeter::UI::Wx::PeriodicTable - A periodic table widget
@@ -239,3 +239,4 @@ but WITHOUT ANY WARRANTY; without even the implied warranty of
 MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 
 =cut
+ 

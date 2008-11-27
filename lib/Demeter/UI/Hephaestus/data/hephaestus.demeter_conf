@@ -74,6 +74,7 @@ description
 variable=filter_width
 type=real
 default=30
+units=energy
 description
   This is the Gaussian linewidth to use in filter plots.
 
@@ -88,12 +89,14 @@ description
 variable=formula_energy
 type=absolute energy
 default=9000
+units=energy
 description
   The initial energy value in the Formulas utility
 
 variable=ion_energy
 type=absolute energy
 default=9000
+units=energy
 description
   The initial energy value in the Ion Chambers utility
 
@@ -101,6 +104,7 @@ variable=ion_length
 type=list
 options=3.3 6.6 10 15 30 45 60
 default=15
+units=cm
 description
   The intial value for chamber length in the Ion Chambers utility
 
@@ -116,8 +120,27 @@ variable=ion_pressure
 type=positive integer
 default=760
 maxint=2300
+units=torr
 description
-  The initial pressure for the Ion Chambers utility
+  The initial pressure for the Ion Chambers utility in torr.  760 torr
+  is 1013.25 millibars or 1 atmosphere.  2300 torr is 3066.41
+  millibars or 3.02 atmospheres.  Conversions between units within
+  hephaestus will be rounded to the nearest integer for use with the
+  slider widget.
+
+## atm would be nice, but Wx::Slider takes an integer line size, so
+## not enough granularity
+variable=ion_pressureunits
+type=list
+options=torr mbar
+default=torr
+maxint=2300
+description
+  The units of pressure in the Ion Chambers utility.  760 torr is
+  1013.25 millibars or 1 atmosphere.  2300 torr is 3066.41 millibars
+  or 3.02 atmospheres.  Conversions between units within hephaestus
+  will be rounded to the nearest integer for use with the slider
+  widget.
 
 variable=ion_gain
 type=positive integer
@@ -130,6 +153,7 @@ description
 variable=find_energy
 type=absolute energy
 default=8978
+units=energy
 description
   The energy value in the Edge Finder utility
 
@@ -144,23 +168,27 @@ description
 variable=line_energy
 type=absolute energy
 default=8045
+units=energy
 description
   The energy value in the Line Finder utility
 
 variable=f1f2_emin
 type=absolute energy
 default=3000
+units=energy
 description
   The intial value for the minimum energy in the Anomalous Scattering utility
 
 variable=f1f2_emax
 type=absolute energy
 default=7000
+units=energy
 description
   The intial value for the maximum energy in the Anomalous Scattering utility
 
 variable=f1f2_grid
 type=positive integer
 default=5
+units=energy
 description
   The intial value for the energy grid size in the Anomalous Scattering utility
