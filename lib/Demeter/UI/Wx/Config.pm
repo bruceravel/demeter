@@ -2,6 +2,8 @@ package Demeter::UI::Wx::Config;
 use strict;
 use warnings;
 use Carp;
+use List::MoreUtils qw(firstidx);
+
 use Wx qw( :everything );
 use Wx::Event qw(EVT_BUTTON EVT_TREE_SEL_CHANGED);
 
@@ -14,7 +16,7 @@ my $cdb = Demeter::UI::Wx::ColourDatabase->new;
 use base 'Wx::Panel';
 
 sub new {
-  my ($class, $parent) = @_;
+  my ($class, $parent, $callback) = @_;
   my $self = $class->SUPER::new($parent, -1, wxDefaultPosition, wxDefaultSize, wxMAXIMIZE_BOX );
 
   my $mainsizer = Wx::BoxSizer->new( wxHORIZONTAL );
@@ -27,7 +29,6 @@ sub new {
 				      wxTR_SINGLE|wxTR_HAS_BUTTONS|wxTR_HIDE_ROOT);
   $self->{paramsboxsizer} -> Add($self->{params}, 1, wxEXPAND|wxALL, 0);
   $mainsizer -> Add($self->{paramsboxsizer}, 1, wxEXPAND|wxALL, 5);
-  #EVT_LISTBOX( $self, $self->{params}, sub{1;} );
   EVT_TREE_SEL_CHANGED( $self, $self->{params}, \&tree_select );
 
   my $right = Wx::BoxSizer->new( wxVERTICAL );
@@ -56,6 +57,7 @@ sub new {
   $this = Wx::GBPosition->new(2, 1);
   $self->{Value} = Wx::Button->new( $self, -1, q{});
   $self->{grid} -> Add($self->{Value}, $this);
+  EVT_BUTTON( $self, $self->{Value}, sub{my($self, $event) = @_; set_value($self, $event, 'default')} );
 
   $this = Wx::GBPosition->new(2, 2);
   $label = Wx::StaticText->new( $self, -1, q{      });
@@ -67,6 +69,7 @@ sub new {
   $this = Wx::GBPosition->new(2, 4);
   $self->{Default} = Wx::Button->new( $self, -1, q{});
   $self->{grid} -> Add($self->{Default}, $this);
+  EVT_BUTTON( $self, $self->{Default}, sub{my($self, $event) = @_; set_value($self, $event, 'demeter')} );
 
   $this = Wx::GBPosition->new(3, 0);
   $label = Wx::StaticText->new( $self, -1, 'Set');
@@ -74,7 +77,7 @@ sub new {
   $self -> {SetPosition} = Wx::GBPosition->new(3, 1);
   $self -> set_stub;
 
-  $right -> Add($self->{grid}, 0, wxEXPAND|wxALL, 5);
+  $right -> Add($self->{grid}, 0, wxEXPAND|wxALL, 10);
 
   ## -------- Description text
   $self->{descbox} = Wx::StaticBox->new($self, -1, 'Description', wxDefaultPosition, wxDefaultSize);
@@ -89,9 +92,12 @@ sub new {
   my $buttonbox = Wx::BoxSizer->new( wxHORIZONTAL );
   $self->{apply} = Wx::Button->new( $self, -1, 'Apply', wxDefaultPosition, wxDefaultSize );
   $buttonbox -> Add($self->{apply}, 1, wxEXPAND|wxALL, 5);
-  $self->{save} = Wx::Button->new( $self, -1, 'Save', wxDefaultPosition, wxDefaultSize );
+  $self->{save} = Wx::Button->new( $self, -1, 'Apply and Save', wxDefaultPosition, wxDefaultSize );
   $buttonbox -> Add($self->{save}, 1, wxEXPAND|wxALL, 5);
   $right -> Add($buttonbox, 0, wxEXPAND|wxALL, 5);
+
+  EVT_BUTTON( $self, $self->{apply}, sub{my($self, $event) = @_; $self->apply($callback, 0)} );
+  EVT_BUTTON( $self, $self->{save},  sub{my($self, $event) = @_; $self->apply($callback, 1)} );
 
   return $self;
 };
@@ -120,11 +126,14 @@ sub populate {
   foreach my $g (@grouplist) {
     my @params = $demeter->co->parameters($g);
     my $branch = $self->{params} -> AppendItem($root, $g);
-    map {$self->{params} -> AppendItem($branch, $_)} @params;
+    map {$self->{params} -> AppendItem($branch, $_) if ($_ !~ m{\Ac\d{1,2}\z})} @params;
   };
   if ($#grouplist == 0) {
     $self->{params}->ExpandAll;
+    my ($first, $toss) = $self->{params}->GetFirstChild($root);
+    $self->{params}->SelectItem($first);
     my $this = $self->{params}->GetItemText( $self->{params}->GetSelection );
+    $self->{desc}->Clear;
     $self->{desc}->WriteText($demeter->co->description($this))
   };
 };
@@ -147,6 +156,9 @@ sub tree_select {
     my $description = $demeter->co->description($parent, $param);
     if ($demeter->co->units($parent, $param)) {
       $description .= $/ x 3 . "This parameter is in units of " . $demeter->co->units($parent, $param) . ".";
+    };
+    if ($demeter->co->restart($parent, $param)) {
+      $description .= $/ x 3 . "A change in this parameter will take effect the next time you start Hephaestus.";
     };
     $self->{desc}  -> WriteText($description);
     $self->{Name}  -> SetLabel($param);
@@ -183,6 +195,64 @@ sub tree_select {
 
 }
 
+
+sub apply {
+  my ($self, $callback, $save) = @_;
+  my $selected = $self->{params}->GetSelection;
+  my $param    = $self->{params}->GetItemText($selected);
+  my $parent   = $self->{params}->GetItemParent($selected);
+  $parent      = $self->{params}->GetItemText($parent);
+
+  my $value;
+  my $type = $demeter->co->Type($parent, $param);
+ WIDGET: {
+    $value = $self->{Set}->GetValue,           last WIDGET if ($type =~ m{(?:string|real|regex|absolute energy)});
+    $value = $self->{Set}->GetStringSelection, last WIDGET if ($type eq 'list');
+    $value = $self->{Set}->GetValue,           last WIDGET if ($type eq 'positive integer');
+    $value = $demeter->onezero($self->{Set}->GetValue), last WIDGET if ($type eq 'boolean');
+    $value = $self->{Set}->GetColour->GetAsString(wxC2S_HTML_SYNTAX), last WIDGET if ($type eq 'color');
+  };
+
+  $demeter->co->set_default($parent, $param, $value);
+  $demeter->co->write_ini if $save;
+  $self->$callback($parent, $param, $value, $save);
+};
+
+sub set_value {
+  my ($self, $event, $which) = @_;
+  my $selected = $self->{params}->GetSelection;
+  my $param    = $self->{params}->GetItemText($selected);
+  my $parent   = $self->{params}->GetItemParent($selected);
+  $parent      = $self->{params}->GetItemText($parent);
+  my $value    = $demeter->co->$which($parent, $param);
+  #print join(" ", $which, $param, $parent, $value), $/;
+
+  my $type = $demeter->co->Type($parent, $param);
+ WIDGET: {
+    $self->{Set}->SetValue($value),                     last WIDGET if ($type =~ m{(?:string|real|regex|absolute energy)});
+
+    ($type eq 'list') and do {
+      $self->{Set}->SetSelection(firstidx {$_ eq $value} split(" ", $demeter->co->options($parent, $param)));
+      last WIDGET;
+    };
+
+    $self->{Set}->SetValue($value),                     last WIDGET if ($type eq 'positive integer');
+
+    $self->{Set}->SetValue($demeter->onezero($value)),  last WIDGET if ($type eq 'boolean');
+
+    ($type eq 'color') and do {
+      if ($value =~ m{\A\#}) {
+	my $col = Wx::Colour->new($value);
+	$self->{Set}   -> SetColour( $col );
+      } else {
+	$self->{Set}   -> SetColour( $cdb->Find($value) );
+      };
+      last WIDGET;
+    };
+
+  };
+};
+
 sub set_stub {
   my ($self) = @_;
   $self->{Set} = Wx::StaticText->new( $self, -1, q{});
@@ -213,8 +283,10 @@ sub set_string_widget {
 
 sub set_list_widget {
   my ($self, $parent, $param) = @_;
-  my @choices = split(" ", $demeter->co->options($parent, $param));
+  my @choices  = split(" ", $demeter->co->options($parent, $param));
   $self->{Set} = Wx::Choice->new( $self, -1, [-1, -1], [-1, -1], \@choices );
+  my $value    = $demeter->co->default($parent, $param);
+  $self->{Set}->SetSelection(firstidx {$_ eq $value} split(" ", $demeter->co->options($parent, $param)));
   return $self->{Set};
 };
 
@@ -237,14 +309,16 @@ sub set_boolean_widget {
 
 sub set_color_widget {
   my ($self, $parent, $param) = @_;
-  $self->{Set} = Wx::Button->new($self, -1, "Color dialog", wxDefaultPosition, [-1,-1]);
 
+  my $color;
   my $this = $demeter->co->default($parent, $param);
   if ($this =~ m{\A\#}) {
     my $col = Wx::Colour->new($this);
-    $self->{Value}->SetOwnBackgroundColour( $col );
+    $self->{Value} -> SetOwnBackgroundColour( $col );
+    $color = $col;
   } else {
-    $self->{Value}->SetOwnBackgroundColour( $cdb->Find($this) );
+    $self->{Value} -> SetOwnBackgroundColour( $cdb->Find($this) );
+    $color = $cdb->Find($this);
   };
 
   $this = $demeter->co->demeter($parent, $param);
@@ -254,6 +328,11 @@ sub set_color_widget {
   } else {
     $self->{Default}->SetOwnBackgroundColour( $cdb->Find($this) );
   };
+
+  $self->{Set} = Wx::ColourPickerCtrl->new( $self, -1, $color, [-1, -1],
+					    [-1, -1] );
+
+  #EVT_COLOURPICKER_CHANGED( $self, $self->{Set}, sub{ my ($self, $event) = @_; $self->color_picker; } );
 
   return $self->{Set};
 };

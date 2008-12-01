@@ -132,17 +132,19 @@ sub new {
   my $self = $class->SUPER::new($parent, -1, wxDefaultPosition, wxDefaultSize, wxMAXIMIZE_BOX );
 
 
+  my ($font_size, $gutter, $below_baseline) = (10, 6, 3);
+  my $bheight = $font_size + 2*$gutter + $below_baseline;
   my $tsz = Wx::GridBagSizer->new( 2, 2 );
 
   foreach my $el (@elements) {
     my $this = Wx::GBPosition->new($el->[1], $el->[2]);
-    my $button = Wx::Button->new( $self, -1, $el->[0], [-1,-1], [35,23], wxBU_EXACTFIT );
+    my $button = Wx::Button->new( $self, -1, $el->[0], [-1,-1], [35,$bheight], wxBU_EXACTFIT );
     $self->{$el->[0]} = $button;
     my $cell = $tsz -> Add($button, $this);
     my $which = $grandparent || $parent;
     EVT_BUTTON( $parent, $button, sub{$which->$command($el->[0])} );
     $button->SetForegroundColour( Wx::Colour->new(@{ $color_of{$el->[3]} }) );
-    $button->SetFont( Wx::Font->new( 10, wxDEFAULT, wxNORMAL, wxBOLD, 0, "" ) );
+    $button->SetFont( Wx::Font->new( $font_size, wxDEFAULT, wxNORMAL, wxBOLD, 0, "" ) );
   };
   my $label    = Wx::StaticText->new($self, -1, 'Lanthanides', [5,-1], [105,23], wxALIGN_RIGHT);
   $label      -> SetFont( Wx::Font->new( 10, wxDEFAULT, wxSLANT, wxNORMAL, 0, "" ) );

@@ -15,8 +15,13 @@
 
 =cut
 
+use Getopt::Long;
+my $wx = 0;
+my $result = GetOptions ("wx" => \$wx,);
+
 use Demeter;
 print Demeter->new->module_environment;
+print Demeter->new->wx_environment if ($wx);
 
 
 =head1 NAME
@@ -32,8 +37,17 @@ This documentation refers to Demeter version 0.2.
 This simple tool calls the C<module_environment> method and prints
 it's output to the screen.  It's sole purpose in life is as a
 diagnostic tool for understanding the environment in which Demeter is
-running.  There are no command line switches or other bells or
-whistles.
+running.
+
+=head1 OPTIONS
+
+=over 4
+
+=item C<--wx>
+
+Append information about Wx and WxPerl to the report.
+
+=back
 
 =head1 AUTHOR
 

@@ -123,11 +123,13 @@ type=color
 default=#FD7E6F
 description
   This is the color associated with a completely unhappy fit.  The
-  default value is a redish sort of color
+  default value is a reddish sort of color
 
 variable=minimum
-type=real
+type=positive integer
 default=60
+minint=0
+maxint=100
 description
   This is the happiness value associated with a completely unhappy fit
   when evaluating the color associated with the fit.

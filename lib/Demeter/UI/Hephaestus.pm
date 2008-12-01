@@ -100,8 +100,8 @@ sub new {
       my $this_width = ($self->{$utility}->GetSizeWH)[0];
       my $this_height = ($self->{$utility}->GetSizeWH)[1];
       ($height = $this_height) if ($this_height > $height);
-      ## print $utility, "  ", $this_width, $/;
-      $width = $this_width if ($this_width > $width);
+      ($width  = $this_width)  if ($this_width > $width);
+      #print $utility, "  ", $this_height, "  ", $height, $/;
     };
     $tb->AddPage($page, $label_of{$utility}, 0, $count);
   };
@@ -112,11 +112,12 @@ sub new {
 
   ##            largest utility + width of toolbar text + width of icons
   my $framesize = Wx::Size->new(1.05*$width+$icon_dimension+103,
-				$height+($echoarea->GetSizeWH)[1]+21
+				$height+($echoarea->GetSizeWH)[1]+42
 			       );
   $self -> SetSize($framesize);
 
 
+  $echoarea -> echo(q{});
   $self -> SetSizer($vbox);
   $vbox -> Fit($tb);
   $vbox -> SetSizeHints($tb);
@@ -146,9 +147,11 @@ sub OnInit {
   Wx::InitAllImageHandlers();
 
   $demeter = Demeter->new;
+  ## read hephaestus' demeter_conf file
   my $conffile = File::Spec->catfile(dirname($INC{'Demeter/UI/Hephaestus.pm'}), 'Hephaestus', 'data', "hephaestus.demeter_conf");
-  $demeter->co->read_config($conffile);
+  $demeter -> co -> read_config($conffile);
   ## read ini file...
+  $demeter -> co -> read_ini('hephaestus');
   $demeter -> plot_with($demeter->co->default(qw(hephaestus plotwith)));
 
   foreach my $m (qw(Absorption Formulas Ion Data Transitions EdgeFinder LineFinder

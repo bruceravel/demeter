@@ -95,6 +95,16 @@ sub module_environment {
   return $string;
 };
 
+sub wx_environment {
+  require Wx;
+  my $v = $Wx::VERSION;
+  my $l = 28;
+  my $string = sprintf(" Wx %s %s", '.' x $l, $v);
+  $string .= ", with " . $Wx::wxVERSION_STRING;
+  $string .= "\n" x 2;
+  return $string;
+};
+
 ## http://aspn.activestate.com/ASPN/docs/ActivePerl/5.8/lib/Win32.html
 ##     OS                    ID    MAJOR   MINOR
 ##     Win32s                 0      -       -

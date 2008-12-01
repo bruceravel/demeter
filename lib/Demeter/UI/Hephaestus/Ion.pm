@@ -339,7 +339,7 @@ sub get_ion_data {
   $self->{percentage}->SetLabel(sprintf("%.2f %%", 100*(1-exp(-1*$self->{xsec}*$self->{thislength}))));
 
   flux_calc($self);
-  $self->{echo}->echo(sprintf("This calculation uses the %s data resource and %s cross sections.", 
+  $self->{echo}->echo(sprintf("This calculation uses the %s data resource and %s cross sections.",
 				'Elam', 'total'));
 
 };

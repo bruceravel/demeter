@@ -94,6 +94,8 @@ sub set {
   foreach my $key (keys %hash) {
     my $k = lc $key;
     $params_of{$k} = $hash{$k};
+    my ($g, $p) = split(/:/, $k);
+    $ini{$g}{$p} = $params_of{lc $key}->{default} if $p;
   };
   return $self;
 };
@@ -168,7 +170,7 @@ sub _read_config_file {
   ## been defined -- grrr..!
   my $opt  = Regexp::List->new;
   my $key_regex = $opt->list2re(qw(type default minint maxint options
-				   units onvalue offvalue));
+				   units onvalue offvalue restart));
   ##my $key_regex = Demeter -> regexp("config");
 
   my (%hash, $description, $group, $param, $value);
@@ -248,6 +250,7 @@ sub set_this_param {
   #print $key, $/;
   $hash{default}     ||= 0;	# sanitize several attributes
   $hash{description} ||= q{};
+  $hash{restart}     ||= 0;
   if ($hash{type} eq 'positive integer') {
     $hash{maxint} ||= 1e9;
     $hash{minint} ||= 0;
@@ -270,6 +273,7 @@ sub set_default {
   #local $| = 1;
   #print $key, $/;
   my $rhash = $self->get($key);
+  return $self if (not $rhash);
   $rhash->{default} = $value;
   if ($rhash->{type} eq 'boolean') {
     $rhash->{default} = ($self->is_true($value)) ? "true" : "false";
@@ -349,6 +353,7 @@ sub onvalue  {my $self=shift; $self->attribute("onvalue",  @_)};
 sub offvalue {my $self=shift; $self->attribute("offvalue", @_)};
 sub minint   {my $self=shift; $self->attribute("minint",   @_)};
 sub maxint   {my $self=shift; $self->attribute("maxint",   @_)};
+sub restart  {my $self=shift; $self->attribute("restart",  @_)};
 
 sub describe_param {
   my ($self, $group, $param, $width) = @_;
@@ -383,11 +388,12 @@ sub write_ini {
   $file ||= $self->ini_file;
   my $ini_ref = tied %ini;
   $ini_ref -> WriteConfig($file);
+  #print $file, $/;
   return $self;
 };
 
 sub read_ini {
-  my ($self) = @_;
+  my ($self, $group) = @_;
   my $inifile = $self->ini_file;
   if (not -e $inifile) {
     $self->write_ini($inifile);
@@ -397,6 +403,7 @@ sub read_ini {
   my $ini_ref = tied %ini;
   tie %personal_ini, 'Config::IniFiles', (-file=>$inifile, -import=>$ini_ref );
   foreach my $g (keys %personal_ini) {
+    next if ($group and ($g ne $group));
     my $hash = $personal_ini{$g};
     foreach my $p (keys %$hash) {
       ($p = 'col'.$1) if ($p =~ m{c(\d)}); # compatibility, convert cN -> colN
@@ -627,6 +634,12 @@ This specifies the units of the parameter, if appropriate.
   print $object -> co -> units("bkg", "pre1")
     ==prints==>
       eV (relative to e0 or to the beginning of the data)
+
+=item restart
+
+This is true or false depending on whether changing the parameter
+takes effect immediately or if a restart of the application is
+required.
 
 =item onvalue/offvalue
 
