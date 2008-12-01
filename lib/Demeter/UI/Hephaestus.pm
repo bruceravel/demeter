@@ -26,7 +26,7 @@ my %note_of = (absorption   => 'periodic table of edge and line energies',
 	       standards    => 'periodic table of XAS data standards',
 	       f1f2	    => 'periodic table of anomalous scattering',
 	       help	    => '',
-	       configure    => '',
+	       configure    => 'control details of Hephaestus\' behavior',
 	     );
 my %label_of = (absorption   => 'Absorption',
 		formulas     => 'Formulas',

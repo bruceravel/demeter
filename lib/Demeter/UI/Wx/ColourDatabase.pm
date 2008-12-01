@@ -179,7 +179,7 @@ sub gnuplot {
 
 =head1 NAME
 
-Demeter::UI::Wx::ColourDatabase - An interface to Wx::ColourDatabase
+Demeter::UI::Wx::ColourDatabase - An objective interface to Wx::ColourDatabase
 
 =head1 VERSION
 

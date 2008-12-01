@@ -22,6 +22,9 @@ sub new {
   my $mainsizer = Wx::BoxSizer->new( wxHORIZONTAL );
   $self -> SetSizer($mainsizer);
 
+  my $font = wxNullFont;
+  $font->SetStyle(wxSLANT);
+
   ## -------- list of parameters
   $self->{paramsbox} = Wx::StaticBox->new($self, -1, 'Parameters', wxDefaultPosition, wxDefaultSize);
   $self->{paramsboxsizer} = Wx::StaticBoxSizer->new( $self->{paramsbox}, wxVERTICAL );
@@ -38,14 +41,17 @@ sub new {
   $self->{grid} = Wx::GridBagSizer -> new(5,10);
 
   my $this = Wx::GBPosition->new(0, 0);
-  my $label = Wx::StaticText->new( $self, -1, 'Parameter');
-  $self->{grid} -> Add($label, $this); #, wxALIGN_CENTER);
+  my $label = Wx::StaticText->new( $self, -1, 'Selection');
+  $label -> SetFont( $font );
+  $self->{grid} -> Add($label, $this); # wxDefaultSpan, wxALIGN_CENTER);
   $this = Wx::GBPosition->new(0, 1);
-  $self->{Name} = Wx::StaticText->new( $self, -1, q{});
-  $self->{grid} -> Add($self->{Name}, $this);
+  my $span       = Wx::GBSpan->new(1,4);
+  $self->{Name}  = Wx::StaticText->new( $self, -1, q{});
+  $self->{grid} -> Add($self->{Name}, $this, $span);
 
   $this = Wx::GBPosition->new(1, 0);
   $label = Wx::StaticText->new( $self, -1, 'Type');
+  $label -> SetFont( $font );
   $self->{grid} -> Add($label, $this);
   $this = Wx::GBPosition->new(1, 1);
   $self->{Type} = Wx::StaticText->new( $self, -1, q{});
@@ -53,6 +59,7 @@ sub new {
 
   $this = Wx::GBPosition->new(2, 0);
   $label = Wx::StaticText->new( $self, -1, 'Your value');
+  $label -> SetFont( $font );
   $self->{grid} -> Add($label, $this);
   $this = Wx::GBPosition->new(2, 1);
   $self->{Value} = Wx::Button->new( $self, -1, q{});
@@ -65,6 +72,7 @@ sub new {
 
   $this = Wx::GBPosition->new(2, 3);
   $label = Wx::StaticText->new( $self, -1, 'Demeter\'s value');
+  $label -> SetFont( $font );
   $self->{grid} -> Add($label, $this);
   $this = Wx::GBPosition->new(2, 4);
   $self->{Default} = Wx::Button->new( $self, -1, q{});
@@ -73,6 +81,7 @@ sub new {
 
   $this = Wx::GBPosition->new(3, 0);
   $label = Wx::StaticText->new( $self, -1, 'Set');
+  $label -> SetFont( $font );
   $self -> {grid} -> Add($label, $this);
   $self -> {SetPosition} = Wx::GBPosition->new(3, 1);
   $self -> set_stub;
@@ -161,7 +170,7 @@ sub tree_select {
       $description .= $/ x 3 . "A change in this parameter will take effect the next time you start this application";
     };
     $self->{desc}  -> WriteText($description);
-    $self->{Name}  -> SetLabel($param);
+    $self->{Name}  -> SetLabel(join(' --> ', $parent, $param));
     $self->{Type}  -> SetLabel($demeter->co->Type($parent, $param));
     my $type = $demeter->co->Type($parent, $param);
 
@@ -173,7 +182,9 @@ sub tree_select {
       $self->{Default} -> SetLabel($demeter->co->demeter($parent, $param));
     };
     $self->{Value}   -> SetOwnBackgroundColour(wxNullColour);
+    $self->{Value}   -> Enable;
     $self->{Default} -> SetOwnBackgroundColour(wxNullColour);
+    $self->{Default} -> Enable;
 
   WIDGET: {
       $self->set_string_widget($parent, $param, $type), last WIDGET if ($type =~ m{(?:string|real|regex|absolute energy)});
@@ -188,7 +199,13 @@ sub tree_select {
 
   } else {
     $self->set_stub;
-    $self->{desc}->WriteText($demeter->co->description($param));
+    $self->{Name}    -> SetLabel($param);
+    $self->{Type}    -> SetLabel('Parameter group');
+    $self->{Value}   -> SetLabel(q{});
+    $self->{Value}   -> Disable;
+    $self->{Default} -> SetLabel(q{});
+    $self->{Default} -> Disable;
+    $self->{desc}    -> WriteText($demeter->co->description($param));
   };
   $self->{grid} -> Add($self->{Set}, $self->{SetPosition});
   $self->{grid} -> Layout;
@@ -355,9 +372,27 @@ A configuration widget can be added to a Wx application:
   my $config = Demeter::UI::Wx::Config -> new($parent, \&callback);
   $sizer -> Add($config, 0, wxALIGN_CENTER_HORIZONTAL|wxALL, 5);
 
+The first argument is the window in which the configuration widget is
+to be packed.  The second is a reference to a callback that will be
+called whenever a parameter is altered.
+
 =head1 DESCRIPTION
 
-This is a configuration widget ...
+This is a widget for managing the rather dizzying array of
+configuration parameters controled by the L<Demeter::Config> object.
+Creating and packing the widget will give your user a way of examining
+the various parameters and and altering their values.
+
+To use this widget, you must provide a reference to a callback that
+will be called when a parameter value is changed.  For the example in
+the synopsis, the callback will be called like so:
+
+  $config -> &$callback($group, $parameter, $value, $save);
+
+Thus the callback must be a method of the object using this widget.
+The other things passed are the group and name of the configuration
+parameter, its new value, and a flag which is true if the ini file was
+saved.
 
 =head1 METHODS
 
@@ -365,7 +400,41 @@ This is a configuration widget ...
 
 =item populate
 
- all base list
+This is the only user servicable method of this widget.  It is used to
+populate the parameter tree with the desired subset of parameters.
+
+   $config->populate('all');
+     or
+   $config->populate('plot', 'bkg', 'fft', 'bft');
+     or
+   $config->populate('hephaestus');
+
+The second example might be used for a simple Athena-like application
+while the third example is what is actually used in Hephaestus.
+
+=over 4
+
+=item C<all>
+
+Display all groups known to the Config object.
+
+=item C<base>
+
+Display all groups known that are part of Demeter's principle set of
+groups.  Those are the ones that are imported into the Config object
+regardless of what the application is.  As an example of the
+difference between C<all> and C<base>, Hephaestus defines an
+application-specific parameter group called C<hephaestus>.  The
+C<hephaestus> group will be included in C<all> but not in C<base>.
+
+=item a list of specific groups
+
+The other option is to specify a list of one or more specific
+parameter groups to display in the tree.
+
+=back
+
+The default is to display all groups.
 
 =back
 
@@ -373,9 +442,45 @@ This is a configuration widget ...
 
 =head2 Using the tree
 
+Each parameter group is displayed to the right of an expander button.
+Under wxGtk, this is a little triangle that points down when the group
+is expaned and to the right when the group is collapsed.  Click on
+this button to open or close the parameter group.
+
+When you click on a parameter group, its description will be displayed
+in the description box.
+
+When you click on a parameter from a group that has been expanded in
+the list, its description will be displayed in the description box and
+other information will be displayed in the other controls on the right
+side of the window.
+
+You can only alter the value of a parameter that is selected in the
+tree.
+
 =head2 Using the controls
 
+A control appropriate to the type of widget will be displayed just
+above the description box.  For many parameter types, this is a box
+for entering text.  For integer-valued parameters, this is spin box
+that you can alter by typing in it directly or by clicking the little
+up and down arrows.  For true/false parameters, a check box is used.
+For color-valued parameters, a button which pops up a color picker is
+used.
+
+The buttons labeled as "your value" and "Demeter's value" can be used
+to restore the value of the control used to set the parameter value.
+"Demeter's value" is the system-wide default read from Demeter's
+configuration files, while the other value is the user's own value
+read from the user's ini file.
+
 =head2 Applying and saving parameter values
+
+To alter a parameter value for use within the current instance of a
+Demeter-based application, click the "Apply" button.  This will set
+the current parameter value in the Config object.  To alter a
+paremeter value I<and> save it for future use, click the button which
+says "Apply and save".  This will also write out the user's ini file.
 
 =head1 DEPENDENCIES
 
