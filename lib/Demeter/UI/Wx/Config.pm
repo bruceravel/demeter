@@ -158,7 +158,7 @@ sub tree_select {
       $description .= $/ x 3 . "This parameter is in units of " . $demeter->co->units($parent, $param) . ".";
     };
     if ($demeter->co->restart($parent, $param)) {
-      $description .= $/ x 3 . "A change in this parameter will take effect the next time you start Hephaestus.";
+      $description .= $/ x 3 . "A change in this parameter will take effect the next time you start this application";
     };
     $self->{desc}  -> WriteText($description);
     $self->{Name}  -> SetLabel($param);
@@ -352,7 +352,7 @@ This documentation refers to Demeter version 0.2.
 
 A configuration widget can be added to a Wx application:
 
-  my $config = Demeter::UI::Wx::Config -> new;
+  my $config = Demeter::UI::Wx::Config -> new($parent, \&callback);
   $sizer -> Add($config, 0, wxALIGN_CENTER_HORIZONTAL|wxALL, 5);
 
 =head1 DESCRIPTION
