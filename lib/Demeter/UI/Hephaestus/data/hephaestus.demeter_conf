@@ -56,8 +56,8 @@ default=Elam
 description
   The data resource to use for most calculations.  Note that the CL
   resource is always used in the F1F2 utility while the edge and line
-  energies from the Elam resource are always used in the edge and line
-  finders and in the absorption utility.
+  energies from the Elam resource is always used in the edge finder, line
+  finder and absorption utilities.
 
 variable=units
 type=list

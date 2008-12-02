@@ -167,7 +167,7 @@ sub tree_select {
       $description .= $/ x 3 . "This parameter is in units of " . $demeter->co->units($parent, $param) . ".";
     };
     if ($demeter->co->restart($parent, $param)) {
-      $description .= $/ x 3 . "A change in this parameter will take effect the next time you start this application";
+      $description .= $/ x 3 . "A change in this parameter will take effect the next time you start this application.";
     };
     $self->{desc}  -> WriteText($description);
     $self->{Name}  -> SetLabel(join(' --> ', $parent, $param));

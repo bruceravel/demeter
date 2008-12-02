@@ -222,13 +222,13 @@ sub new {
   my $pressure = Demeter::UI::Hephaestus::Ion::Pressure -> new($self);
   $topbox -> Add($pressure, 0, wxALL|wxGROW, 5);
 
-  EVT_SCROLL($self->{primary},      sub{twiddle_sliders(@_, $self, 'primary')});
-  EVT_SCROLL($self->{secondary},    sub{twiddle_sliders(@_, $self, 'secondary')});
-  EVT_SCROLL($self->{pressure},     sub{get_ion_data($self); $self->{pressure}->Refresh(1);});
-  EVT_CHOICE($self, $self->{primarygas},   sub{get_ion_data($self)});
-  EVT_CHOICE($self, $self->{secondarygas}, sub{get_ion_data($self)});
-  EVT_RADIOBOX($self, $self->{lengths}, sub{get_ion_data($self)});
-  EVT_KEY_DOWN($self->{energybox}, sub{energy_key_down(@_, $self)} );
+  EVT_SCROLL  ($self->{primary},             sub{twiddle_sliders(@_, $self, 'primary')});
+  EVT_SCROLL  ($self->{secondary},           sub{twiddle_sliders(@_, $self, 'secondary')});
+  EVT_SCROLL  ($self->{pressure},            sub{get_ion_data($self); $self->{pressure}->Refresh(1);});
+  EVT_CHOICE  ($self, $self->{primarygas},   sub{get_ion_data($self)});
+  EVT_CHOICE  ($self, $self->{secondarygas}, sub{get_ion_data($self)});
+  EVT_RADIOBOX($self, $self->{lengths},      sub{get_ion_data($self)});
+  EVT_KEY_DOWN($self->{energybox},           sub{energy_key_down(@_, $self)} );
 
   $outerbox -> Add($topbox);
 
@@ -421,7 +421,7 @@ This utility allows the user to predict the response of ion chambers
 given selected fill gases, ion chmaber length, and an incident photon
 energy.  Two gases can be mixed and the pressure can be adjusted in
 the calculation.  Photon flux can be calculated given an amplifier
-gain and voltage.
+gain and voltage.  (Keithley 428 or 427 amplifiers are assumed).
 
 =head1 CONFIGURATION
 

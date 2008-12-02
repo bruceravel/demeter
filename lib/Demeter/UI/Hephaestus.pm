@@ -8,6 +8,7 @@ use File::Spec;
 
 use Ifeffit;
 use Demeter;
+use Demeter::UI::Wx::EchoArea;
 use Demeter::UI::Hephaestus::Common qw(hversion);
 
 use Wx qw( :everything );
@@ -55,7 +56,7 @@ sub new {
 				 wxDefaultPosition, [-1,$height],
 			       );
   my $tb = Wx::Notebook->new( $self, -1, wxDefaultPosition, wxDefaultSize, wxBK_LEFT );
-  my $echoarea = Demeter::UI::Hephaestus::EchoArea->new($self);
+  my $echoarea = Demeter::UI::Wx::EchoArea->new($self);
   my $vbox = Wx::BoxSizer->new( wxVERTICAL);
 
   my $imagelist = Wx::ImageList->new( $icon_dimension, $icon_dimension );
@@ -155,7 +156,7 @@ sub OnInit {
   $demeter -> plot_with($demeter->co->default(qw(hephaestus plotwith)));
 
   foreach my $m (qw(Absorption Formulas Ion Data Transitions EdgeFinder LineFinder
-		    Standards F1F2 Config Help EchoArea)) {
+		    Standards F1F2 Config Help)) {
     next if $INC{"Demeter/UI/Hephaestus/$m.pm"};
     ##print "Demeter/UI/Hephaestus/$m.pm\n";
     require "Demeter/UI/Hephaestus/$m.pm";
@@ -296,6 +297,10 @@ Calculations not sensitive to units settings
 =item *
 
 There is a display problem with the pressure slider in the Ion utility
+
+=item *
+
+Consider SRS amplifiers in Ion utility
 
 =back
 
