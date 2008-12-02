@@ -55,7 +55,9 @@ options=Elam McMaster Shaltout Henke Chantler CL
 default=Elam
 description
   The data resource to use for most calculations.  Note that the CL
-  resource is always used in the F1F2 utility.
+  resource is always used in the F1F2 utility while the edge and line
+  energies from the Elam resource are always used in the edge and line
+  finders and in the absorption utility.
 
 variable=units
 type=list
@@ -69,7 +71,10 @@ type=list
 options=full photo coherent incoherent
 default=full
 description
-  This sets the default cross-section to use in all calculations.
+  This sets the default cross-section to use in all calculations.  The
+  options are to use the photoelectric, coherent, or incoherent
+  cross-section or the sum of all three.  A change in this parameter
+  will take effect the next time a calculation is performed.
 
 variable=filter_width
 type=real
@@ -110,6 +115,15 @@ units=cm
 restart=1
 description
   The intial value for chamber length in the Ion Chambers utility
+
+variable=ion_custom
+type=real
+default=20
+units=cm
+restart=1
+description
+  The initial value for the custom ion chamber length in the Ion
+  Chambers utility
 
 variable=ion_gas1
 type=list

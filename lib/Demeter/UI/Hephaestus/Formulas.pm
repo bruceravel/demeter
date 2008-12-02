@@ -124,8 +124,19 @@ sub get_formula_data {
   my %count;
   $self->{echo}->echo('You have not provided a formula.'), return if not $parent->{formula}->GetValue;
   my $ok = parse_formula($parent->{formula}->GetValue, \%count);
-  $parent->{echo}->echo(sprintf("This calculation uses the %s data resource and %s cross sections.", 
-				'Elam', 'total'));
+  $parent->{echo}->echo(sprintf("This calculation uses the %s data resource and %s cross sections.",
+				$Demeter::UI::Hephaestus::demeter->co->default('hephaestus', 'resource'),
+				$Demeter::UI::Hephaestus::demeter->co->default('hephaestus', 'xsec')
+			       ));
+
+  my $resource = Xray::Absorption->current_resource;
+  my $which = $Demeter::UI::Hephaestus::demeter->co->default('hephaestus', 'xsec');
+  if (($resource eq "mcmaster") or ($resource eq "elam")) {
+    ($which = "total")      if ($which eq "full");
+  } elsif ($resource eq "chantler") {
+    ($which = "total")      if ($which eq "full");
+    ($which = "scattering") if ($which =~ /coherent/);
+  };
 
   ## worry about energy and wavelength
   my $energy  = $parent->{energy}->GetValue;
@@ -160,7 +171,7 @@ sub get_formula_data {
     foreach my $k (sort (keys(%count))) {
       $weight  += Xray::Absorption -> get_atomic_weight($k) * $count{$k};
       my $scale = Xray::Absorption -> get_conversion($k);
-      my $this = Xray::Absorption -> cross_section($k, $energy, 'full');
+      my $this = Xray::Absorption -> cross_section($k, $energy, $which);
       $barns_per_formula_unit += $this * $count{$k};
       $amu_per_formula_unit += Xray::Absorption -> get_atomic_weight($k) * $count{$k};
       if ($count{$k} > 0.001) {
@@ -233,7 +244,7 @@ sub get_formula_data {
 	my ($bpfu, $apfu) = (0, 0);
 	my $energy = $enot + $step;
 	foreach my $k (keys(%count)) {
-	  my $this = Xray::Absorption -> cross_section($k, $energy, "full");
+	  my $this = Xray::Absorption -> cross_section($k, $energy, $which);
 	  $bpfu   += $this * $count{$k};
 	  $apfu   += Xray::Absorption -> get_atomic_weight($k) * $count{$k};
 	};
@@ -250,17 +261,17 @@ sub get_formula_data {
     if ($type eq 'Molarity') {
       $answer .= "\nRemember that a molarity calculation only considers the absorption of the solute. The solvent also absorbs.\n";
     };
-    my $which = "full";
-    #if ((lc($data{resource}) eq "mcmaster") or (lc($data{resource}) eq "elam")) {
-    #  ($which = "total")      if ($data{xsec} eq "full");
-    #  ($which = $data{xsec})  if ($data{xsec} =~ /coherent/);
-    #} elsif (lc($data{resource}) eq "chantler") {
-    #  ($which = "total")      if ($data{xsec} eq "full");
-    #  ($which = "scattering") if ($data{xsec} =~ /coherent/);
-    #};
-    my $resource = Xray::Absorption->current_resource;
+#     my $resource = Xray::Absorption->current_resource;
+#     my $which = $Demeter::UI::Hephaestus::demeter->co->default('hephaestus', 'xsec');
+#     if (($resource eq "mcmaster") or ($resource eq "elam")) {
+#       ($which = "total")      if ($which eq "full");
+#     } elsif (lc($data{resource}) eq "chantler") {
+#       ($which = "total")      if ($which eq "full");
+#       ($which = "scattering") if ($which =~ /coherent/);
+#     };
     ($resource = $1) if ($resource =~ m{(\w+)\.pm});
-    $answer .= "\nThe $resource database and the $which cross-sections were used in the calculation.";
+    $answer .= sprintf("\nThe %s database and the %s cross-sections were used in the calculation.",
+		       $resource, $which);
   } else {
     $answer .= "\nInput error:\n\t".$count{error};
   };
@@ -342,11 +353,6 @@ Demeter's dependencies are in the F<Bundle/DemeterBundle.pm> file.
 =item *
 
 Add and delete user materials using an ini file.
-
-=item *
-
-Allow the user to select data resources and to perform the caluclation
-using different parts of the total cross-section.
 
 =back
 

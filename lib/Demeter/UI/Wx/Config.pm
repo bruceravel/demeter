@@ -185,6 +185,9 @@ sub tree_select {
     $self->{Value}   -> Enable;
     $self->{Default} -> SetOwnBackgroundColour(wxNullColour);
     $self->{Default} -> Enable;
+    $self->{apply}   -> Enable;
+    $self->{save}    -> Enable;
+    $self->{apply}   -> Disable if $demeter->co->restart($parent, $param);
 
   WIDGET: {
       $self->set_string_widget($parent, $param, $type), last WIDGET if ($type =~ m{(?:string|real|regex|absolute energy)});
@@ -206,6 +209,8 @@ sub tree_select {
     $self->{Default} -> SetLabel(q{});
     $self->{Default} -> Disable;
     $self->{desc}    -> WriteText($demeter->co->description($param));
+    $self->{apply}   -> Disable;
+    $self->{save}    -> Disable;
   };
   $self->{grid} -> Add($self->{Set}, $self->{SetPosition});
   $self->{grid} -> Layout;
@@ -481,6 +486,9 @@ Demeter-based application, click the "Apply" button.  This will set
 the current parameter value in the Config object.  To alter a
 paremeter value I<and> save it for future use, click the button which
 says "Apply and save".  This will also write out the user's ini file.
+
+If a parameter is flagged as only taking effect when the application
+is restarted, the "Apply" button will be disabled.
 
 =head1 DEPENDENCIES
 

@@ -133,7 +133,7 @@ sub f1f2_get_data {
   };
 
   my $busy    = Wx::BusyCursor->new();
-  $demeter -> plot_with('pgplot');
+  ##$demeter -> plot_with('pgplot');
   $demeter -> co -> set(
 			f1f2_emin    => $self->{start}->GetValue,
 			f1f2_emax    => $self->{end}->GetValue,

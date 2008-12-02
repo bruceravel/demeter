@@ -140,7 +140,7 @@ sub identify_self {
   my @caller = caller;
   return dirname($caller[1]);
 };
-use vars qw($hephaestus_base $demeter);
+use vars qw($hephaestus_base $demeter $frame);
 $hephaestus_base = identify_self();
 
 sub OnInit {
@@ -162,7 +162,7 @@ sub OnInit {
   };
 
   ## -------- create a new frame and set icon
-  my $frame = Demeter::UI::HephaestusApp->new;
+  $frame = Demeter::UI::HephaestusApp->new;
   my $iconfile = File::Spec->catfile(dirname($INC{'Demeter/UI/Hephaestus.pm'}), 'Hephaestus', 'icons', "vulcan.xpm");
   my $icon = Wx::Icon->new( $iconfile, wxBITMAP_TYPE_XPM );
   $frame -> SetIcon($icon);
@@ -278,6 +278,30 @@ and perform an XAS experiment.
 Demeter's dependencies are in the F<Bundle/DemeterBundle.pm> file.
 
 =head1 BUGS AND LIMITATIONS
+
+=over 4
+
+=item *
+
+f'/f" plots are not colored correctly with the gnuplot backend
+
+=item *
+
+Add and delete user materials for Formula utility using an ini file.
+
+=item *
+
+Configuration callback currently does nothing with units
+
+=item *
+
+Calculations not sensitive to units settings
+
+=item *
+
+There is a display problem with the pressure slider in the Ion utility
+
+=back
 
 Please report problems to Bruce Ravel (bravel AT bnl DOT gov)
 

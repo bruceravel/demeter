@@ -41,7 +41,7 @@ sub new {
   my $lengthsizer = Wx::BoxSizer->new( wxHORIZONTAL );
   $label = Wx::StaticText->new($self, -1, 'Custom length', wxDefaultPosition, wxDefaultSize);
   $lengthsizer -> Add($label, 0, wxLEFT|wxRIGHT, 2);
-  $parent->{userlength} = 20;
+  $parent->{userlength} = $Demeter::UI::Hephaestus::demeter->co->default('hephaestus', 'ion_custom');
   $parent->{userlengthbox} = Wx::TextCtrl -> new($self, -1, $parent->{userlength}, wxDefaultPosition, [40,-1]);
   $parent->{userlengthbox}->SetValidator(numval());
   $lengthsizer -> Add($parent->{userlengthbox}, 0, wxLEFT|wxRIGHT|wxEXPAND, 2);
@@ -156,7 +156,7 @@ sub new {
   my %line = (torr => 1, mbar => 1, atm => 0.01);
 
   my $units = $Demeter::UI::Hephaestus::demeter->co->default("hephaestus", "ion_pressureunits");
-  $parent->{pressureunits} = Wx::StaticText->new($self, -1, "Pressure ($units)");
+  $parent->{pressureunits} = Wx::StaticText->new($self, -1, "Pressure ($units) ");
   $pressure_box->Add($parent->{pressureunits}, 0, wxALL, 5);
   $parent->{pressure} = Wx::Slider->new($self, -1,
 					$Demeter::UI::Hephaestus::demeter->co->default(qw(hephaestus ion_pressure)),
@@ -224,7 +224,7 @@ sub new {
 
   EVT_SCROLL($self->{primary},      sub{twiddle_sliders(@_, $self, 'primary')});
   EVT_SCROLL($self->{secondary},    sub{twiddle_sliders(@_, $self, 'secondary')});
-  EVT_SCROLL($self->{pressure},     sub{get_ion_data($self)});
+  EVT_SCROLL($self->{pressure},     sub{get_ion_data($self); $self->{pressure}->Refresh(1);});
   EVT_CHOICE($self, $self->{primarygas},   sub{get_ion_data($self)});
   EVT_CHOICE($self, $self->{secondarygas}, sub{get_ion_data($self)});
   EVT_RADIOBOX($self, $self->{lengths}, sub{get_ion_data($self)});
@@ -333,14 +333,16 @@ sub get_ion_data {
   $self->{thislength} = ($lengths[$self->{lengths}->GetSelection] =~ m{(\d+(?:\.\d)?)}) ? $1 : $self->{userlength};
   my $len = $self->{thislength};
   #print 1/$xsec, "  $len\n";
-  my $atm = $self->{pressure}->GetValue / 760;
+  my %conv  = (torr => 760, mbar => 1013.25, atm => 1);
+  my $atm = $self->{pressure}->GetValue / $conv{$Demeter::UI::Hephaestus::demeter->co->default('hephaestus', 'ion_pressureunits')};
   $atm ||= 0.001;
   $self->{xsec} *= $atm;
   $self->{percentage}->SetLabel(sprintf("%.2f %%", 100*(1-exp(-1*$self->{xsec}*$self->{thislength}))));
 
   flux_calc($self);
   $self->{echo}->echo(sprintf("This calculation uses the %s data resource and %s cross sections.",
-				'Elam', 'total'));
+			      $Demeter::UI::Hephaestus::demeter->co->default('hephaestus', 'resource'),
+			      'total'));
 
 };
 
@@ -350,7 +352,8 @@ sub ion_reset {
   $self->{lengths}->SetSelection(3);
   $self->{primary}->SetValue(100);
   $self->{secondary}->SetValue(0);
-  $self->{pressure}->SetValue(760);
+  my %conv  = (torr => 760, mbar => 1013.25, atm => 1);
+  $self->{pressure}->SetValue($conv{$Demeter::UI::Hephaestus::demeter->co->default('hephaestus', 'ion_pressureunits')});
   $self->{primarygas}->SetSelection(0);
   $self->{secondarygas}->SetSelection(0);
   $self->{amp} -> SetValue(8);
@@ -433,8 +436,8 @@ Demeter's dependencies are in the F<Bundle/DemeterBundle.pm> file.
 
 =item *
 
-Allow the user to select data resources and to perform the caluclation
-using different parts of the total cross-section.
+Allow the user to perform the caluclation using different parts of the
+total cross-section.
 
 =item *
 

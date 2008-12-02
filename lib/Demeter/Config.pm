@@ -249,6 +249,7 @@ sub set_this_param {
   #local $| = 1;
   #print $key, $/;
   $hash{default}     ||= 0;	# sanitize several attributes
+  $hash{was}         ||= 0;
   $hash{description} ||= q{};
   $hash{restart}     ||= 0;
   if ($hash{type} eq 'positive integer') {
@@ -274,6 +275,7 @@ sub set_default {
   #print $key, $/;
   my $rhash = $self->get($key);
   return $self if (not $rhash);
+  $rhash->{was} = $rhash->{default};
   $rhash->{default} = $value;
   if ($rhash->{type} eq 'boolean') {
     $rhash->{default} = ($self->is_true($value)) ? "true" : "false";
@@ -345,6 +347,7 @@ sub attribute {
   carp("$key is not a valid configuration parameter"), return 0 if not $rhash;
   return $rhash->{$which} || 0;
 };
+sub was      {my $self=shift; $self->attribute("was",      @_)};
 sub Type     {my $self=shift; $self->attribute("type",     @_)};
 sub units    {my $self=shift; $self->attribute("units",    @_)};
 sub demeter  {my $self=shift; $self->attribute("demeter",  @_)};
@@ -598,13 +601,25 @@ by an imported INI file or by the C<set_default> method.
 
 =item demeter
 
-This is the default value form the configuration file shipped with
+This is the default value from the configuration file shipped with
 demeter.  This is untouched even when a default is overridden by an
 imported INI file.
 
   print $object -> co -> demeter("fft", "kwindow")
     ==prints==>
       hanning
+
+=item was
+
+This is the previous value of the parameter from before the last time
+it was changed using the C<set_default> method.  If the parameter has
+not been changed since it was initialized, this method returns 0.  The
+primary use of this method is to aid in post-processing a change in
+parameter value in a GUI or other application.
+
+  print $object -> co -> demeter("fft", "kwindow")
+    ==prints==>
+      welch
 
 =item description
 

@@ -2,17 +2,18 @@ package Demeter::UI::Hephaestus::Config;
 use strict;
 use warnings;
 use Carp;
+
+use Xray::Absorption;
+
 use Wx qw( :everything );
 
 use base 'Demeter::UI::Wx::Config';
-
-#use base 'Wx::Panel';
 
 sub new {
   my ($class, $page, $echoarea) = @_;
   my $self = $class->SUPER::new($page, \&target);
   $self->{echo} = $echoarea;
-  $self->populate('all');
+  $self->populate('hephaestus');
 
   return $self;
 };
@@ -26,7 +27,7 @@ sub target {
       last SWITCH;
     };
     ($param eq 'resource') and do {
-      1;
+      Xray::Absorption->load($value);
       last SWITCH;
     };
     ($param eq 'units') and do {
@@ -38,7 +39,15 @@ sub target {
       last SWITCH;
     };
     ($param eq 'ion_pressureunits') and do {
-      1;
+      my %range = (torr => [1,2300], mbar => [1,3066], atm => [0.01,3]);
+      my %conv  = (torr => 760, mbar => 1013.25, atm => 1);
+      my $factor = $conv{$value} / $conv{$Demeter::UI::Hephaestus::demeter->co->was($parent, $param)};
+      $Demeter::UI::Hephaestus::frame->{ion}->{pressureunits}->SetLabel("Pressure ($value) ");
+      $Demeter::UI::Hephaestus::frame->{ion}->{pressureunits}->Refresh;
+      $Demeter::UI::Hephaestus::frame->{ion}->{pressure}->SetRange(@{$range{$value}});
+      my $val = $Demeter::UI::Hephaestus::frame->{ion}->{pressure}->GetValue;
+      $Demeter::UI::Hephaestus::frame->{ion}->{pressure}->SetValue(int($val*$factor));
+      $Demeter::UI::Hephaestus::frame->{ion}->{pressure}->Refresh;
       last SWITCH;
     };
   };
