@@ -25,7 +25,7 @@ my %note_of = (absorption   => 'periodic table of edge and line energies',
 	       line	    => 'ordered list of fluorescence line energies',
 	       standards    => 'periodic table of XAS data standards',
 	       f1f2	    => 'periodic table of anomalous scattering',
-	       help	    => '',
+	       help	    => 'Hephaestus User\'s Guide',
 	       configure    => 'control details of Hephaestus\' behavior',
 	     );
 my %label_of = (absorption   => 'Absorption',
@@ -48,7 +48,7 @@ my @utilities = qw(absorption formulas ion data transitions find line standards 
 sub new {
   my $ref    = shift;
   my $width  = 100;
-  my $height = ($#utilities+1) * $icon_dimension * 1.57; # + 2*($#utilities+1);
+  my $height = ($#utilities+1) * $icon_dimension * 1.6; # + 2*($#utilities+1);
   my $self   = $ref->SUPER::new( undef,           # parent window
 				 -1,              # ID -1 means any
 				 'Hephaestus',    # title
@@ -280,10 +280,6 @@ Demeter's dependencies are in the F<Bundle/DemeterBundle.pm> file.
 =head1 BUGS AND LIMITATIONS
 
 =over 4
-
-=item *
-
-f'/f" plots are not colored correctly with the gnuplot backend
 
 =item *
 

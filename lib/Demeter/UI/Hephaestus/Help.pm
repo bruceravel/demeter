@@ -6,6 +6,8 @@ use Carp;
 use Wx qw( :everything );
 use Wx::Event qw(EVT_BUTTON);
 use Wx::Html;
+use File::Basename;
+use File::Spec;
 use base 'Wx::Panel';
 
 sub new {
@@ -16,10 +18,10 @@ sub new {
   my $top_s = Wx::BoxSizer->new( wxVERTICAL );
   $self->SetSizer($top_s);
 
-  my $file = '/home/bruce/perl/Ifeffit/lib/aug/html/hephaestus.html';
+  my $file = File::Spec->catfile(dirname($INC{'Demeter/UI/Hephaestus.pm'}), 'Hephaestus', 'data', "hephaestus.html");
   $self->{html} = Wx::HtmlWindow->new($self, -1, wxDefaultPosition, wxDefaultSize );
   my $ok = $self->{html} -> LoadPage( $file );
-  #print join(" ", $self, $file, $ok), $/;
+
 
   my $but_s = Wx::BoxSizer->new( wxHORIZONTAL );
   my $print = Wx::Button->new( $self, -1, 'Print' );
@@ -36,7 +38,7 @@ sub new {
   $but_s->Add( $pages, 0, wxALL, 2 );
   #$but_s->Add( $prints, 0, wxALL, 2 );
 
-  $top_s->Add( $self->{html}, 1, wxGROW|wxALL, 5 );
+   $top_s->Add( $self->{html}, 1, wxGROW|wxALL, 5 );
   $top_s->Add( $but_s, 0, wxALL, 5 );
 
   $self->SetSizer( $top_s );
@@ -139,7 +141,8 @@ css file.
 
 =item *
 
-Would pod be better that html?
+Would pod be better that html?  Perhaps, but where is the Wx pod
+browser?
 
 =back
 

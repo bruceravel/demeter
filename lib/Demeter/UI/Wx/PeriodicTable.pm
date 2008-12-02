@@ -132,8 +132,8 @@ sub new {
   my $self = $class->SUPER::new($parent, -1, wxDefaultPosition, wxDefaultSize, wxMAXIMIZE_BOX );
 
 
-  my ($font_size, $gutter, $below_baseline) = (10, 6, 3);
-  my $bheight = $font_size + 2*$gutter + $below_baseline;
+  my $font_size = 10;
+  my $bheight = int(2.5*$font_size+1);
   my $tsz = Wx::GridBagSizer->new( 2, 2 );
 
   foreach my $el (@elements) {
