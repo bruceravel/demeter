@@ -1,4 +1,5 @@
 #!/usr/bin/perl
+
 =for Copyright
  .
  Copyright (c) 2006-2008 Bruce Ravel (bravel AT bnl DOT gov).
@@ -80,6 +81,7 @@ $build->add_build_element('fit_serialization');
 $build->add_build_element('htm');
 $build->add_build_element('ini');
 $build->add_build_element('png');
+$build->add_build_element('prj');
 $build->add_build_element('stan');
 $build->add_build_element('tmpl');
 $build->add_build_element('xpm');

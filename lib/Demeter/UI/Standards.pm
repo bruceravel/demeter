@@ -44,7 +44,7 @@ my %materials_of;
 my %elements_of;
 
 my $opt  = Regexp::List->new;
-my $attribute_regex = $opt->list2re(qw(tag comment crystal file element
+my $attribute_regex = $opt->list2re(qw(tag comment crystal file element record
 				       energy numerator denominator ln xmu from_web
 				       rebin calibrate xanes deriv
 				     ));
@@ -162,23 +162,32 @@ sub plot {
   my ($self, $choice, $which, $target) = @_;
   $choice = lc($choice);
 
-  my @common_to_all_data_sets = (bkg_rbkg    => 1.0,
-				 bkg_spl1    => 0,    bkg_spl2    => 18,
-				 bkg_nor1    => 100,  bkg_nor2    => 1000,
-				 bkg_flatten => 1,
-				 fft_kmax    => 3,    fft_kmin    => 17,
-				);
-  my $data = Demeter::Data -> new(@common_to_all_data_sets);
-  $data -> po -> start_plot;
-
+  my $data;
   my $thisfile = $self->resolve_file($choice);
   return "The download of the remote data file failed."                                if ($thisfile eq '^^PLOP^^: unsuccessful');
   return "You do not have perl's libwww installed, so remote files cannot be plotted." if ($thisfile eq '^^PLOP^^: nolibwww');
-  $data -> set(file => $thisfile,
-	       name => $self->get($choice, 'tag'),
-	      );
+
+  if ($self->get($choice, 'record')) { # this is an Athena project
+    my $prj = Demeter::Data::Prj->new(file=>$thisfile);
+    $data = $prj->record( $self->get($choice, 'record') );
+  } else {			# this is a file
+    my @common_to_all_data_sets = (bkg_rbkg    => 1.0,
+				   bkg_spl1    => 0,    bkg_spl2    => 18,
+				   bkg_nor1    => 100,  bkg_nor2    => 1000,
+				   bkg_flatten => 1,
+				   fft_kmax    => 3,    fft_kmin    => 17,
+				  );
+    $data = Demeter::Data -> new(@common_to_all_data_sets);
+    $data -> set(file => $thisfile,
+		 name => $self->get($choice, 'tag'),
+		);
+  };
+  $data -> po -> start_plot;
+
   if ($self->get($choice, 'xmu')) {
     $data -> set( is_col => 0 );
+  } elsif ($self->get($choice, 'record')) {
+    1;
   } else {
     $data -> set(
 		 energy      => $self->get($choice, 'energy'),
@@ -195,7 +204,7 @@ sub plot {
   };
   my $ddd = ($self->get($choice, 'rebin')) ? $rebinned : $data;
   $ddd->update_norm(1);
-  $ddd->calibrate(split(/,\s*/, $self->get($choice, 'calibrate')));
+  $ddd->calibrate(split(/,\s*/, $self->get($choice, 'calibrate'))) if not ($self->get($choice, 'record'));
 
   return $ddd if ($target eq 'athena');
 
@@ -208,6 +217,7 @@ sub plot {
 		    e_pre  => 0,
 		    e_post => 0,
 		    e_markers => 0,
+		    e_smooth => 3,
 		    emin   => $self->config('emin'),
 		    emax   => $self->config('emax'),
 		    );
@@ -503,7 +513,7 @@ with a box of foils from L<EXAFS Materials|http://exafsmaterials.com>.
 
 That document is fine as far as it goes, but the spectra are not all
 of the highest resolution and it only includes foils of a few select
-elements.  This implementation expands upon that by inlcuding
+elements.  This implementation expands upon that by including
 reference spectra other than foils.  It is extensible in the sense
 that new materials can be added easily.  Thus this visualization of
 standard reference spectra can cover more of the periodic table and
@@ -523,11 +533,11 @@ properly calibrate the data, and lists of points to mark in mu(E) or
 the derivative of mu(E).  The program behaves well in the absence of
 any of this metadata, but the utility of the program is dimished.
 
-This program is a wrapper around four distinct ways of visualizing
+This module is a wrapper around four distinct ways of visualizing
 standards data.  It can be used to interactively plot standards,
-selecting elements from an on-screen periodic table.  It can be used
-to generate a sequance of web pages that can be dropped on a web
-site. It can be used to generate a latex document that can be
+selecting elements from an on-screen periodic table or with a GUI.  It
+can be used to generate a sequence of web pages that can be dropped on
+a web site. It can be used to generate a latex document that can be
 converted to PDF and printed to replace the one from EXAFS Materials.
 Finally, is can be used to create an Athena project file containing a
 subset of the reference materials.
@@ -702,7 +712,7 @@ Setting C<verbose> to 0 turns off all messages to STDOUT.
 =head1 CONFIGURATION AND ENVIRONMENT
 
 The meta data -- that is the data about the reference data -- is
-contained in the F<standards.ini> file.  Here is an example
+contained in the F<standards.ini> file.  Here is an example:
 
   [fe]
   tag         = Iron foil
@@ -723,6 +733,23 @@ replaced with the actual installation location of Demeter.  The next
 four lines explain how to for mu(E) data from the columns in the file.
 The last three lines are used to calibrate the data and mark the
 interesting points in the XANES or derivative spectra.
+
+Another option is to import data from an Athena project file.  Here is
+an example:
+
+  [cd]
+  tag         = Cadmium foil
+  comment     = Cadmium foil, measured at APS 10ID Nov 18, 2006
+  crystal     = Si(111)
+  file        = %share%/standards/data/Cd.prj
+  record      = 1
+  xanes       = 26711, 26720.06, 25740.66, 25772.57
+  deriv       = 26711, 26714, 26734.60, 26745.10
+
+In this case, the C<record> parameter is used to identify the location
+of the data in the project file.  The Athena project file is presumed
+to contain well processed data, thus the rebinning and calibration
+steps are never performed for data from an project file.
 
 The first section of the F<standards.ini> file contains the
 configuration data and is used to control some aspects of the plots
@@ -750,7 +777,11 @@ latex output
 
 =item *
 
-user ini files or project-specific ini files
+load user ini files (i.e. ~/.horae/standards.ini)
+
+=item *
+
+load site-specific ini files
 
 =item *
 

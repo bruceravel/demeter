@@ -92,7 +92,7 @@ has 'e_der'	=> (is => 'rw', isa =>  'Bool',   default => sub{ shift->mode->confi
 has 'e_sec'	=> (is => 'rw', isa =>  'Bool',   default => sub{ shift->mode->config->default("plot", "e_sec")	    || 0});
 has 'e_markers'	=> (is => 'rw', isa =>  'Bool',   default => sub{ shift->mode->config->default("plot", "e_markers") || 0});
 has 'e_part'	=> (is => 'rw', isa =>  'Str',    default => q{});
-has 'e_smooth'	=> (is => 'rw', isa =>  'Bool',   default => sub{ shift->mode->config->default("plot", "e_smooth")  || 0});
+has 'e_smooth'	=> (is => 'rw', isa =>  'Int',    default => sub{ shift->mode->config->default("plot", "e_smooth")  || 0});
 has 'e_zero'	=> (is => 'rw', isa =>  'Bool',   default => 0);
 has 'kmin'	=> (is => 'rw', isa =>  'Num',    default => sub{ shift->mode->config->default("plot", "kmin") || 0});
 has 'kmax'	=> (is => 'rw', isa =>  'Num',    default => sub{ shift->mode->config->default("plot", "kmax") || 15});

@@ -128,9 +128,12 @@ lib/Demeter/share/peacock.jpg
 lib/Demeter/share/rgb_colors.dem
 lib/Demeter/share/gnuplot_colors.dem
 lib/Demeter/share/Readme.fit_serialization
+lib/Demeter/share/standards/data/Au.prj
+lib/Demeter/share/standards/data/Cd.prj
+lib/Demeter/share/standards/data/Fe.prj
+lib/Demeter/share/standards/data/Mn.prj
 lib/Demeter/share/standards/data/ag.stan
 lib/Demeter/share/standards/data/au.stan
-lib/Demeter/share/standards/data/cd.stan
 lib/Demeter/share/standards/data/co.stan
 lib/Demeter/share/standards/data/cu.stan
 lib/Demeter/share/standards/data/fe.stan

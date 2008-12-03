@@ -265,6 +265,9 @@ sub _record {
 		       :                      q{};
   $groupargs{update_data} = 0;
   $data -> set(%groupargs);
+  my $command = $data->template("process", "deriv");
+  $data->dispose($command);
+
   return $data;
 };
 
