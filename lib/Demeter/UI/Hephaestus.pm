@@ -1,5 +1,20 @@
 package Demeter::UI::HephaestusApp;
 
+=for Copyright
+ .
+ Copyright (c) 2006-2008 Bruce Ravel (bravel AT bnl DOT gov).
+ All rights reserved.
+ .
+ This file is free software; you can redistribute it and/or
+ modify it under the same terms as Perl itself. See The Perl
+ Artistic License.
+ .
+ This program is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+
+=cut
+
 use strict;
 use warnings;
 
@@ -211,7 +226,7 @@ sub on_about {
 			 "Much of the data displayed in the Data\nutility was swiped from Kalzium (website...)\n",
 			 "Mossbauer data comes from http://mossbauer.org/",
 			] );
-  $info->SetLicense( slurp(File::Spec->catfile($Demeter::UI::Hephaestus::hephaestus_base, 'Hephaestus', 'data', "GPL")) );
+  $info->SetLicense( slurp(File::Spec->catfile($Demeter::UI::Hephaestus::hephaestus_base, 'Hephaestus', 'data', "GPL.dem")) );
   my $artwork = <<'EOH'
 The logo and main icon is "Vulcan Forging 
 Jupiter's Lightning Bolts" by Peter Paul

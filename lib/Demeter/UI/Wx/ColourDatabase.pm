@@ -1,5 +1,21 @@
 package Demeter::UI::Wx::ColourDatabase;
 
+
+=for Copyright
+ .
+ Copyright (c) 2006-2008 Bruce Ravel (bravel AT bnl DOT gov).
+ All rights reserved.
+ .
+ This file is free software; you can redistribute it and/or
+ modify it under the same terms as Perl itself. See The Perl
+ Artistic License.
+ .
+ This program is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+
+=cut
+
 use strict;
 use warnings;
 use Carp;
@@ -9,7 +25,7 @@ use Wx qw(wxNullColour);
 use Demeter;
 my $demeter = Demeter->new;
 
-#################
+################# The stuff from here to the next row of hashes is taken from Mark Dootson
 
 sub new {
   my $class = shift;
@@ -26,7 +42,7 @@ sub AddColour {
   my $col = shift;
   my $colkey = $col->Red() . '-' . $col->Green() . '-' . $col->Blue();
   my @RGB = split(/-/, $colkey);
-  if(exists($self->{__colours}->{$name})) {
+  if (exists($self->{__colours}->{$name})) {
     # delete existing colkey
     my $existingkey = join('-', @{ $self->{__colours}->{$name} });
     delete($self->{__colourkeys}->{$existingkey});
@@ -40,7 +56,8 @@ sub Find {
   my $name = shift;
   my $colour = Wx::Colour->new(wxNullColour);
 
-  if(exists( $self->{__colours}->{$name} )) {
+  $name = uc($name) if (not exists( $self->{__colours}->{$name} ));
+  if (exists( $self->{__colours}->{$name} )) {
     ##                                             v-- alpha channel
     $colour->Set(@{ $self->{__colours}->{$name} }, 0);
   };
@@ -51,7 +68,7 @@ sub FindName {
   my $self = shift;
   my $col = shift;
   my $colname = "";
-  if($col->Ok()) {
+  if ($col->Ok()) {
     my $colkey = $col->Red() . '-' . $col->Green() . '-' . $col->Blue();
     $colname = $self->{__colourkeys}->{$colkey} || "";
   };
@@ -137,11 +154,11 @@ sub __init {
   };
 };
 
-###########
+###################################################################################################
 
 sub X11 {
   my ($self) = @_;
-  my $rgbtxt = File::Spec->catfile($demeter->location, "Demeter", "share", "rgb.txt");
+  my $rgbtxt = File::Spec->catfile($demeter->location, "Demeter", "share", "rgb_colors.dem");
   open RGB, $rgbtxt;
   while (<RGB>) {
     next if ($_ =~ m{^\!});
@@ -155,11 +172,12 @@ sub X11 {
     $self->{__colourkeys}->{$colkey} = $name;
   };
   close RGB;
+  return $self;
 };
 
 sub gnuplot {
   my ($self) = @_;
-  my $gp = File::Spec->catfile($demeter->location, "Demeter", "share", "gnuplot.colors");
+  my $gp = File::Spec->catfile($demeter->location, "Demeter", "share", "gnuplot_colors.dem");
   open GP, $gp;
   while (<GP>) {
     chomp;
@@ -172,6 +190,7 @@ sub gnuplot {
     $self->{__colourkeys}->{$colkey} = $name;
   };
   close GP;
+  return $self;
 };
 
 1;
@@ -201,11 +220,12 @@ rather than just class methods.
 
 =head1 DESCRIPTION
 
-This is an object oriented interface to Wx::Colourdatabase, extended
-to include the named colors from X11's rgb.txt file and from gnuplot.
-The purpose of this object is to simplify the interaction with Wx
-colored windows while using named colors.  The C<Add>, C<Find>, and
-C<FindName> methods from Wx::ColourDatabase are all implemented.
+This is an object oriented interface to the functionality provided by
+Wx::ColourDatabase and extended to include the named colors from X11's
+rgb.txt file and from gnuplot.  The purpose of this object is to
+simplify the interaction with Wx colored windows while using named
+colors.  The C<Add>, C<Find>, and C<FindName> methods from
+Wx::ColourDatabase are all implemented.
 
 Most of this was swiped from a post to the wxperl-users mailing list,
 L<http://www.nntp.perl.org/group/perl.wxperl.users/2007/06/msg3756.html>

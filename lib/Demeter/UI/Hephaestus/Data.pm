@@ -1,4 +1,20 @@
 package Demeter::UI::Hephaestus::Data;
+
+=for Copyright
+ .
+ Copyright (c) 2006-2008 Bruce Ravel (bravel AT bnl DOT gov).
+ All rights reserved.
+ .
+ This file is free software; you can redistribute it and/or
+ modify it under the same terms as Perl itself. See The Perl
+ Artistic License.
+ .
+ This program is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+
+=cut
+
 use strict;
 use warnings;
 use Carp;
@@ -12,7 +28,7 @@ use Demeter::UI::Wx::PeriodicTable;
 
 my %kalzium;
 tie %kalzium, 'Config::IniFiles', (-file=>File::Spec->catfile($Demeter::UI::Hephaestus::hephaestus_base,
-							      'Hephaestus', 'data', "kalziumrc"));
+							      'Hephaestus', 'data', "kalziumrc.dem"));
 
 sub new {
   my ($class, $page, $echoarea) = @_;

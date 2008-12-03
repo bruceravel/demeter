@@ -5,7 +5,6 @@ bin/datoms.pod
 bin/dfeff
 bin/dfeff.pod
 bin/hephaestus
-bin/hephaestus.gtk
 bin/intrp
 bin/intrp.pod
 bin/lsprj
@@ -126,6 +125,8 @@ lib/Demeter/share/Demeter.png
 lib/Demeter/share/Demeter_icon.png
 lib/Demeter/share/Demeter_large.png
 lib/Demeter/share/peacock.jpg
+lib/Demeter/share/rgb_colors.dem
+lib/Demeter/share/gnuplot_colors.dem
 lib/Demeter/share/Readme.fit_serialization
 lib/Demeter/share/standards/data/ag.stan
 lib/Demeter/share/standards/data/au.stan
@@ -143,6 +144,8 @@ lib/Demeter/share/standards/data/pt.stan
 lib/Demeter/share/standards/data/rh.stan
 lib/Demeter/share/standards/data/u4.stan
 lib/Demeter/share/standards/data/u6.stan
+lib/Demeter/share/standards/data/v.stan
+lib/Demeter/share/standards/data/v2o5.stan
 lib/Demeter/share/standards/data/zn.stan
 lib/Demeter/share/standards/data/zr.stan
 lib/Demeter/share/standards/standards.ini
@@ -300,12 +303,13 @@ lib/Demeter/UI/Hephaestus.pm
 lib/Demeter/UI/Hephaestus/Absorption.pm
 lib/Demeter/UI/Hephaestus/Common.pm
 lib/Demeter/UI/Hephaestus/Data.pm
-lib/Demeter/UI/Hephaestus/data/GPL
-lib/Demeter/UI/Hephaestus/data/kalziumrc
+lib/Demeter/UI/Hephaestus/data/GPL.dem
+lib/Demeter/UI/Hephaestus/data/hephaestus.demeter_conf
+lib/Demeter/UI/Hephaestus/data/hephaestus.htm
+lib/Demeter/UI/Hephaestus/data/kalziumrc.dem
 lib/Demeter/UI/Hephaestus/data/trans_table.png
 lib/Demeter/UI/Hephaestus/data/vulcan.png
 lib/Demeter/UI/Hephaestus/data/vulcan.xcf
-lib/Demeter/UI/Hephaestus/EchoArea.pm
 lib/Demeter/UI/Hephaestus/EdgeFinder.pm
 lib/Demeter/UI/Hephaestus/F1F2.pm
 lib/Demeter/UI/Hephaestus/Formulas.pm
@@ -327,6 +331,9 @@ lib/Demeter/UI/Hephaestus/LineFinder.pm
 lib/Demeter/UI/Hephaestus/Transitions.pm
 lib/Demeter/UI/Screen/Interview.pm
 lib/Demeter/UI/Standards.pm
+lib/Demeter/UI/Wx/ColourDatabase.pm
+lib/Demeter/UI/Wx/Config.pm
+lib/Demeter/UI/Wx/EchoArea.pm
 lib/Demeter/UI/Wx/PeriodicTable.pm
 lib/pod.css
 lib/Xray/Crystal.pm

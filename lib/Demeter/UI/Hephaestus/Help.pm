@@ -1,4 +1,20 @@
 package Demeter::UI::Hephaestus::Help;
+
+=for Copyright
+ .
+ Copyright (c) 2006-2008 Bruce Ravel (bravel AT bnl DOT gov).
+ All rights reserved.
+ .
+ This file is free software; you can redistribute it and/or
+ modify it under the same terms as Perl itself. See The Perl
+ Artistic License.
+ .
+ This program is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+
+=cut
+
 use strict;
 use warnings;
 use Carp;
@@ -18,7 +34,7 @@ sub new {
   my $top_s = Wx::BoxSizer->new( wxVERTICAL );
   $self->SetSizer($top_s);
 
-  my $file = File::Spec->catfile(dirname($INC{'Demeter/UI/Hephaestus.pm'}), 'Hephaestus', 'data', "hephaestus.html");
+  my $file = File::Spec->catfile(dirname($INC{'Demeter/UI/Hephaestus.pm'}), 'Hephaestus', 'data', "hephaestus.htm");
   $self->{html} = Wx::HtmlWindow->new($self, -1, wxDefaultPosition, wxDefaultSize );
   my $ok = $self->{html} -> LoadPage( $file );
 
