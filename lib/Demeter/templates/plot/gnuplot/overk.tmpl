@@ -8,13 +8,13 @@
   $this = $PT || $D;
   $file = $P->tempfile;
   $this->points(file    => $file,
-             space   => 'k', 
-	     suffix  => 'chi',
-	     scale   => $D->plot_multiplier,
-	     yoffset => $D->y_offset,
-	     weight  => $P->kweight,
-  	     part    => $C->get('plot_part'),
-	    );
+                space   => 'k', 
+	        suffix  => 'chi',
+	        scale   => $D->plot_multiplier,
+	        yoffset => $D->y_offset,
+	        weight  => $P->kweight,
+  	        part    => $C->get('plot_part'),
+	       );
   $thiskey = $C->get('plot_part') || $P->key;
   if (ref($PT) =~ m{Path}) { $thiskey = $PT->name || 'Path '.$PT->Index };
   q{}

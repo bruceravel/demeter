@@ -8,15 +8,15 @@
   $this = $PT || $D;
   $file = $P->tempfile;
   $this->points(file    => $file,
-  	      part    => $C->get('plot_part'),
-              space   => 'R', 
-	      suffix  => ($P->r_pl eq 'm') ? 'chir_mag'
-	               : ($P->r_pl eq 'r') ? 'chir_re'
-	               : ($P->r_pl eq 'i') ? 'chir_im'
-	               : ($P->r_pl eq 'p') ? 'chir_pha'
-		       :                     'chir_mag',
-	      scale   => $D->plot_multiplier,
-	      yoffset => $D->y_offset,
+  	        part    => $C->get('plot_part'),
+                space   => 'R', 
+	        suffix  => ($P->r_pl eq 'm') ? 'chir_mag'
+	                 : ($P->r_pl eq 'r') ? 'chir_re'
+	                 : ($P->r_pl eq 'i') ? 'chir_im'
+	                 : ($P->r_pl eq 'p') ? 'chir_pha'
+		         :                     'chir_mag',
+	        scale   => $D->plot_multiplier,
+	        yoffset => $D->y_offset,
 	     );
   $thiskey = $C->get('plot_part') || $P->key;
   if (ref($PT) =~ m{Path}) { $thiskey = $PT->name || 'Path '.$PT->Index };

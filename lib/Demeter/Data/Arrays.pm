@@ -89,7 +89,7 @@ sub points {
         :                         $self->get_array('q');
   @x = map {$_ + $args{shift}} @x;
   my @y = ();
-  if (is_DataPart($args{part})) {
+  if ((ref($self) =~ m{Data}) and is_DataPart($args{part})) {
     @y = $self->get_array($args{suffix}, $args{part});
   } elsif (ref($args{part}) =~ m{Path}) {
     #print $args{part}, "  ", ref($args{part}), "  ", $args{file}, $/;

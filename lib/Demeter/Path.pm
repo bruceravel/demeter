@@ -23,6 +23,7 @@ use Demeter::StrTypes qw( Empty PathParam );
 use Demeter::NumTypes qw( Natural PosInt );
 
 with 'Demeter::Data::Arrays';
+with 'Demeter::Path::FT';
 with 'Demeter::Path::Sanity';
 
 use Carp;
@@ -232,41 +233,6 @@ sub rewrite_cv {
   };
 };
 
-
-
-## paths are Fourier transformed just like their respective data,
-## these methods just rewrite the data fftf() and fftr() command
-## using the group name of the path
-sub fft {
-  my ($self) = @_;
-  $self->_update("fft");
-  $self->dispose($self->_fft_command);
-  $self->update_fft(0);
-};
-sub _fft_command{
-  my ($self) = @_;
-  my $group = $self->group;
-  my $dobject = $self->data->group;
-  my $string = $self->data->_fft_command;
-  $string =~ s{\b$dobject\b}{$group}g; # replace group names
-  return $string;
-};
-
-sub bft {
-  my ($self) = @_;
-  $self->_update("bft");
-  $self->dispose($self->_bft_command);
-  $self->update_bft(0);
-};
-sub _bft_command{
-  my ($self) = @_;
-  my $group = $self->group;
-  my $dobject = $self->data->group;
-  my $string = $self->data->_bft_command;
-  $string =~ s{\b$dobject\b}{$group}g; # replace group names
-  return $string;
-};
-
 sub plot {
   my ($self, $space) = @_;
   my $pf  = $self->mode->plot;
@@ -281,25 +247,11 @@ sub plot {
     $self -> _update("all");
     $which = "update_bft";
   };
+  $self->mode->path($self);
   $self->dispose($self->_plot_command($space), "plotting");
+  $self->mode->path(q{});
   $pf->increment;
   $self->$which(0);
-};
-sub _plot_command{
-  my ($self, $space) = @_;
-  my $group     = $self->group;
-  my $label     = $self->name || $self->id;
-  my $dobject   = $self->data->group;
-  my $datalabel = $self->data->name;
-  $self->set_mode(path=>$self) if (ref($self) =~ m{Path});
-  my $string    = $self->data->_plot_command($space);
-  $self->set_mode(path=>q{});
-  $string =~ s{\b$dobject\b}{$group}g; # replace group names
-  ## (?<= ) is the positive zero-width look behind -- it only replaces
-  ## the label when it follows q{key="}, that way it won't get confused by
-  ## the same text in the title for a newplot
-  $string =~ s{(?<=key=")$datalabel}{$label};
-  return $string;
 };
 
 sub save {

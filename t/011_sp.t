@@ -1,6 +1,6 @@
 #!/usr/bin/perl -I../lib
 
-## Test Feff object functionality of Demeter under Moose
+## Test ScatteringPath object functionality of Demeter under Moose
 
 =for Copyright
  .
