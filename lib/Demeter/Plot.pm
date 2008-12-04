@@ -169,6 +169,8 @@ sub start_plot {
   #$self -> cleantemp; 
   $self -> New(1);
   $self -> color($color);
+  $self -> xlabel(q{});
+  $self -> ylabel(q{});
   $self -> increm(0);
   $self -> lastplot(q{});
   $self -> co -> set(plot_part=>q{});

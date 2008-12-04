@@ -18,7 +18,7 @@ package Demeter::VPath;
 use Moose;
 extends 'Demeter';
 with 'Demeter::Data::Arrays';
-with 'Demeter::Path::FT';
+with 'Demeter::Path::Process';
 use MooseX::AttributeHelpers;
 use Demeter::StrTypes qw( Empty );
 

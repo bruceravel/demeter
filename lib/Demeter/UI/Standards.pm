@@ -363,10 +363,15 @@ sub screen {
 		   BOLD, $INDIC, "3", RESET, "plot filter",
 		  );
   if ($self->material_exists($choice)) {
+    my $record = $self->get($choice, 'record')
+      ? join(q{}, GREEN, "\tRecord: ", RESET, $self->get($choice, 'record'))
+	: q{};
+
                        ## red comment line
     $text .= join(q{}, RED, BOLD, "Comment: ", RESET, "\n",
 		  ## file and crystal
 		  GREEN, "\tFile: ",    RESET, basename($self->get($choice, 'file')),
+		  $record,
 		  GREEN, "\tCrystal: ", RESET, $self->get($choice, 'crystal'), "\n",
 		  ## comment, nicely wrapped
 		  wrap("\t", "\t", $self->get($choice, 'comment')), "\n"

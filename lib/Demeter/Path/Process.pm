@@ -1,4 +1,4 @@
-package Demeter::Path::FT;
+package Demeter::Path::Process;
 use Moose::Role;
 
 

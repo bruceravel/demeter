@@ -23,7 +23,7 @@ use Demeter::StrTypes qw( Empty PathParam );
 use Demeter::NumTypes qw( Natural PosInt );
 
 with 'Demeter::Data::Arrays';
-with 'Demeter::Path::FT';
+with 'Demeter::Path::Process';
 with 'Demeter::Path::Sanity';
 
 use Carp;
