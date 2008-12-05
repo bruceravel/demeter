@@ -45,6 +45,11 @@ has 'entries' => (
 			       }
 		 );
 
+sub BUILD {
+  my ($self, @params) = @_;
+  $self->mode->push_Prj($self);
+};
+
 sub Read {
   my ($self) = @_;
   my $file = $self->file;

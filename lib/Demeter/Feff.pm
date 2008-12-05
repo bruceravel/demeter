@@ -155,6 +155,10 @@ has 'iobuffer' => (
 		  );
 has 'save'         => (is=>'rw', isa => 'Bool',         default => 1);   # boolean
 
+sub BUILD {
+  my ($self, @params) = @_;
+  $self->mode->push_Feff($self);
+};
 
 
 sub central {

@@ -143,6 +143,10 @@ has 'correlations' => (
 				    }
 		      );
 
+sub BUILD {
+  my ($self, @params) = @_;
+  $self->mode->push_Fit($self);
+};
 
 #   sub set_all {
 #     my ($self, $which, $rhash)  = @_;
@@ -384,6 +388,7 @@ sub fit {
   $self->happiness_summary( $joy[1] || q{} );
 
   $self->mode->fit(q{});
+  #$_->update_fft(1) foreach (@datasets);
 
   $self->stop_spinner if ($self->mo->ui eq 'screen');
 
@@ -748,6 +753,8 @@ sub logfile {
   ($footer .= "\n") if ($footer !~ m{\n\z});
   print $LOG $footer;
   close $LOG;
+
+  #$_->update_fft(1) foreach (@{ $self->data });
   return $self;
 };
 

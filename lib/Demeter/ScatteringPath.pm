@@ -99,6 +99,12 @@ has 'randstring'   => (is => 'rw', isa => 'Str',      default => q{});
 #has 'ipots'        => (is => 'rw', isa => 'ArrayRef', default => sub{[]});
 #has 'elements'     => (is => 'rw', isa => 'ArrayRef', default => sub{[]});
 
+
+sub BUILD {
+  my ($self, @params) = @_;
+  $self->mode->push_ScatteringPath($self);
+};
+
 sub _betakey {
   my ($self) = @_;
   my @beta =  sort @{ $self->beta };

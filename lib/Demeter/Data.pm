@@ -258,6 +258,7 @@ sub BUILD {
   my ($self, @params) = @_;
   $self->data($self);
   $self->tag($self->group);
+  $self->mode->push_Data($self);
 };
 
 

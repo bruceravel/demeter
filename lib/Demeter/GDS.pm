@@ -39,6 +39,10 @@ has 'note'     => (is => 'rw', isa => 'Str',   default => q{});
 has 'autonote' => (is => 'rw', isa => 'Bool',  default => 1);
 has 'Use'      => (is => 'rw', isa => 'Bool',  default => 1);
 
+sub BUILD {
+  my ($self, @params) = @_;
+  $self->mode->push_GDS($self);
+};
 
 ## return a list of valid GDS attributes
 sub parameter_list {

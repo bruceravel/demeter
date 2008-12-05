@@ -103,7 +103,8 @@ has 'qmin'	=> (is => 'rw', isa =>  'Num',    default => sub{ shift->mode->config
 has 'qmax'	=> (is => 'rw', isa =>  'Num',    default => sub{ shift->mode->config->default("plot", "qmax") || 15});
 has 'q_pl'	=> (is => 'rw', isa =>  MERIP,    default => sub{ shift->mode->config->default("plot", "q_pl") || "r"});
 
-has 'kweight'		=> (is => 'rw', isa =>  'Num',      default => "1");
+has 'kweight'		=> (is => 'rw', isa =>  'Num',      default => "1",
+			    trigger => sub{my ($self) = @_; $self->propagate_kweight});
 has 'window_multiplier' => (is => 'rw', isa =>  'Num',      default => 1.05);
 has 'plot_data'	        => (is => 'rw', isa =>  'Bool',     default => 0);
 has 'plot_fit'		=> (is => 'rw', isa =>  'Bool',     default => 0);
@@ -152,15 +153,24 @@ sub BUILD {
   my ($self) = @_;
   $self -> start_plot;
   $self -> mode -> plot($self);
+  $self -> mode -> push_Plot($self);
   return;
 };
 
-sub DESTROY {
-  my $self = shift;
+# sub DEMOLISH {
+#   my $self = shift;
+#   foreach my $f (@{ $self->tempfiles }) {
+#     unlink $f;
+#   };
+#   #$self->end_plot;
+# };
+
+override 'alldone' => sub {
+  my ($self) = @_;
   foreach my $f (@{ $self->tempfiles }) {
     unlink $f;
   };
-  #$self->end_plot;
+  $self->end_plot;
 };
 
 sub start_plot {
@@ -283,7 +293,11 @@ sub outfile {
   return $self;
 };
 
-
+sub propagate_kweight {
+  my ($self) = @_;
+  my @data = @{ $self->mode->Data };
+  $_->update_fft(1) foreach (@data);
+};
 
 
 1;

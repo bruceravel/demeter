@@ -74,6 +74,11 @@ use Demeter::Config;
 use vars qw($config);
 $config = Demeter::Config -> new();
 
+sub alldone {
+  my ($self) = @_;
+  1;
+};
+
 use Demeter::Plot;
 use vars qw($plot);
 $plot = Demeter::Plot -> new();
@@ -174,6 +179,14 @@ sub mo {
   *plot_object = \& po;
 }
 
+sub finish {
+  my ($self) = @_;
+  foreach my $class (qw(Atoms Data Prj Feff Fit GDS Path Plot ScatteringPath VPath)) {
+    foreach my $obj (@{ $self->mode->$class}) {
+      $obj->alldone;
+    };
+  };
+};
 
 =for LiteratureReference (clone)
   For the Jews, on the other hand, the apparition of the Double was
@@ -356,13 +369,17 @@ sub plot_with {
   };
   $self->mode->template_plot($backend);
 
+  my $old_plot_object = $self -> mode -> plot;
+  ## need to preserve parameter values when switching plotting backends
  SWITCH: {
     ($backend eq 'pgplot') and do {
+      $old_plot_object->DESTROY;
       $self -> mode -> plot(Demeter::Plot->new);
       last SWITCH;
     };
 
     ($backend eq 'gnuplot') and do {
+      $old_plot_object->DESTROY;
       $self -> mode -> external_plot_object( Graphics::GnuplotIF->new );
       require Demeter::Plot::Gnuplot;
       $self -> mode -> plot( Demeter::Plot::Gnuplot->new );
@@ -1312,6 +1329,11 @@ F<Bundle/DemeterBundle.pm> file.
 =item *
 
 Serialization is incompletely implemented at this time.
+
+=item *
+
+You can switch plotting backends on the fly, but all parameter values
+get reset to their defaults.
 
 =back
 

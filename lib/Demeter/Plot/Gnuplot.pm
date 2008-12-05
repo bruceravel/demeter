@@ -39,6 +39,7 @@ after 'start_plot' => sub {
 
 override 'end_plot' => sub {
   my ($self) = @_;
+  unlink $_ foreach (@{ $self->tempfiles });
   $self->mode->external_plot_object->gnuplot_cmd("quit");
   return $self;
 };

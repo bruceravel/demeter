@@ -48,6 +48,10 @@ has 'update_fft'      => (is=>'rw', isa=>  'Bool',  default => 1,
 			  trigger => sub{ my($self, $new) = @_; $self->update_bft(1) if $new});
 has 'update_bft'      => (is=>'rw', isa=>  'Bool',  default => 1);
 
+sub BUILD {
+  my ($self, @params) = @_;
+  $self->mode->push_VPath($self);
+};
 
 sub include {
   my ($self, @paths) = @_;

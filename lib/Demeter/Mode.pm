@@ -1,6 +1,8 @@
 package Demeter::Mode;
 use Moose;
-use Demeter::Config;
+use MooseX::AttributeHelpers;
+use MooseX::Singleton;
+#use Demeter::Config;
 use Demeter::StrTypes qw( Empty
 			  TemplateProcess
 			  TemplateFit
@@ -34,6 +36,109 @@ has 'template_plot'     => (is => 'rw', isa => 'TemplatePlot',     default => 'p
 has 'template_feff'     => (is => 'rw', isa => 'TemplateFeff',     default => 'feff6');
 has 'template_test'     => (is => 'ro', isa => 'Str',              default => 'test');
 
+## -------- class collector arrays for sentinal functionality
+has 'Atoms' => (
+		metaclass => 'Collection::Array',
+		is        => 'rw',
+		isa       => 'ArrayRef',
+		default   => sub { [] },
+		provides  => {
+			      'push'    => 'push_Atoms',
+			      'clear'   => 'clear_Atoms',
+			     }
+	       );
+has 'Data' => (
+		metaclass => 'Collection::Array',
+		is        => 'rw',
+		isa       => 'ArrayRef',
+		default   => sub { [] },
+		provides  => {
+			      'push'    => 'push_Data',
+			      'clear'   => 'clear_Data',
+			     }
+	       );
+has 'Feff' => (
+		metaclass => 'Collection::Array',
+		is        => 'rw',
+		isa       => 'ArrayRef',
+		default   => sub { [] },
+		provides  => {
+			      'push'    => 'push_Feff',
+			      'clear'   => 'clear_Feff',
+			     }
+	       );
+has 'Fit' => (
+		metaclass => 'Collection::Array',
+		is        => 'rw',
+		isa       => 'ArrayRef',
+		default   => sub { [] },
+		provides  => {
+			      'push'    => 'push_Fit',
+			      'clear'   => 'clear_Fit',
+			     }
+	       );
+has 'GDS' => (
+		metaclass => 'Collection::Array',
+		is        => 'rw',
+		isa       => 'ArrayRef',
+		default   => sub { [] },
+		provides  => {
+			      'push'    => 'push_GDS',
+			      'clear'   => 'clear_GDS',
+			     }
+	       );
+has 'Path' => (
+		metaclass => 'Collection::Array',
+		is        => 'rw',
+		isa       => 'ArrayRef',
+		default   => sub { [] },
+		provides  => {
+			      'push'    => 'push_Path',
+			      'clear'   => 'clear_Path',
+			     }
+	       );
+has 'Plot' => (
+		metaclass => 'Collection::Array',
+		is        => 'rw',
+		isa       => 'ArrayRef',
+		default   => sub { [] },
+		provides  => {
+			      'push'    => 'push_Plot',
+			      'clear'   => 'clear_Plot',
+			     }
+	       );
+has 'ScatteringPath' => (
+		metaclass => 'Collection::Array',
+		is        => 'rw',
+		isa       => 'ArrayRef',
+		default   => sub { [] },
+		provides  => {
+			      'push'    => 'push_ScatteringPath',
+			      'clear'   => 'clear_ScatteringPath',
+			     }
+	       );
+has 'VPath' => (
+		metaclass => 'Collection::Array',
+		is        => 'rw',
+		isa       => 'ArrayRef',
+		default   => sub { [] },
+		provides  => {
+			      'push'    => 'push_VPath',
+			      'clear'   => 'clear_VPath',
+			     }
+	       );
+has 'Prj' => (
+		metaclass => 'Collection::Array',
+		is        => 'rw',
+		isa       => 'ArrayRef',
+		default   => sub { [] },
+		provides  => {
+			      'push'    => 'push_Prj',
+			      'clear'   => 'clear_Prj',
+			     }
+	       );
+
+
 ## -------- The Professor and Mary Anne
 has 'echo'		   => (is => 'rw', isa => 'Any');
 has 'datadefault'	   => (is => 'rw', isa => 'Any');
@@ -44,7 +149,7 @@ has 'ui'                   => (is => 'rw', isa => 'Str', default => 'none',);
 
 =head1 NAME
 
-Demeter::Mode - Global attributes of the Demeter system
+Demeter::Mode - Demeter's sentinal system
 
 =head1 VERSION
 
@@ -52,9 +157,9 @@ This documentation refers to Demeter version 0.2.
 
 =head1 DESCRIPTION
 
-This special object is used to store global attributes of the Demeter
-system in a way that makes those attributes available to any Demeter
-object.
+This special object is used to store global attributes of an instance
+of Demeter in a way that makes those attributes available to any
+Demeter object.
 
 Access to this object is via the C<get_mode> and C<set_mode> methods
 of the Demeter base class.  The convenience methods C<co> and C<po> of
@@ -66,6 +171,16 @@ objects.  Any of these methods can be called by any Demeter object:
   $to_screen = $path_object     -> get_mode('screen');
   $to_screen = $scattering_path -> get_mode('screen');
   $to_screen = $prj_object      -> get_mode('screen');
+    ## and so on ...
+
+This object also monitors the creation and destruction of Demeter
+objects (Atoms, Data, Data::Prj, Feff, Fit, GDS, Path, Plot,
+Scattering_Path, and VPath) and provides methods which give a way for
+one object to affect any other objects created during the instance of
+Demeter.  For example, when the kweight value of the Plot object is
+changed, it is necessary to signal all Data objects that they will
+need to update their forward Fourier transforms.  This object is the
+glue that allows things like that to happen.
 
 =head1 ATTRIBUTES
 
@@ -202,6 +317,47 @@ This is a string identifying the user interface backend.  At this
 time, its only use is to tell the Fit object to import the
 curses-based methods in L<Demeter::UI::Screen::Interview> and
 L<Demeter::UI::Screen::Spinner>.
+
+=back
+
+=head1 SENTINAL FUNCTIONALITY
+
+It should rarely be necessary that a user script needs to access this
+part of this object.  Mostly the sentinal functionality is handled
+behind the scenes, during object creation or destruction or at the end
+of a script.  The details are documented here for those times when one
+needs to see under the hood.
+
+Each Demeter object (Atoms, Data, Data::Prj, Feff, Fit, GDS, Path,
+Plot, Scattering_Path, and VPath) (Data::Prj is refered to just as
+Prj) has each of the following three function associated with it.
+
+All of my examples use the Data object.
+
+=over 4
+
+=item I<Object>
+
+This is the accessor for the attribute which holds the list of all
+Data objects created during this instance of Demeter.
+
+  my @list = @{ $object->mode->Data };
+
+=item C<push_>I<Object>
+
+This is the method used to append an object to the list;
+
+  $data_object->push_Data($data_object);
+
+This happens automatically when a Data object is created.
+
+=item C<clear_>I<Object>
+
+This method is used to clear the contents of the list.
+
+  $data_object->clear_Data;
+
+This is not used for anything at this time, but it seemed useful.
 
 =back
 

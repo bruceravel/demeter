@@ -121,13 +121,25 @@ sub BUILD {
   if ((ref($self->data) !~ m{Data}) and (ref($val) !~ m{Data})) {
     $self->mode->datadefault(Demeter::Data->new(group=>'default___',
 						name=>q{},
-						cv=>57,
+						cv=>42,
 						fft_kmin=>3, fft_kmax=>15,
 						bft_rmin=>1, bft_rmax=>6,
 					       ));
   };
   $self->data($self->mode->datadefault) if (ref($self->data) !~ m{Data});
+  $self->mode->push_Path($self);
 };
+
+override 'alldone' => sub {
+  my ($self) = @_;
+  return 0 if not $self->sp;
+  my $sp           = $self->sp;
+  my $randomstring = $sp->randstring;
+  my $feff         = $self->parent;
+  my $nnnn         = File::Spec->catfile($feff->workspace, $randomstring);
+  unlink $nnnn if -e $nnnn;
+};
+
 
 ### ---- this will be different working from a ScatteringPath object
 ###      snarfing from the object will have to be part of an update
