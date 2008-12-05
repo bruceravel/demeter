@@ -165,9 +165,11 @@ sub BUILD {
 #   #$self->end_plot;
 # };
 
-override 'alldone' => sub {
+sub alldone {
   my ($self) = @_;
+  print "Plot::alldone\n";
   foreach my $f (@{ $self->tempfiles }) {
+    print $f, $/;
     unlink $f;
   };
   $self->end_plot;

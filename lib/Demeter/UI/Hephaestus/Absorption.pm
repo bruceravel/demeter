@@ -285,7 +285,7 @@ sub filter_plot {
   my $edge   = ($z < 57) ? "K"   : "L3";
   my $line2  = ($z < 57) ? "Ka2" : "La1";
 
-  my $demeter = Demeter->new;
+  my $demeter = $Demeter::UI::Hephaestus::demeter;
   $demeter->co->set(
 		    filter_abs      => $z,
 		    filter_edge     => $edge,
@@ -304,7 +304,7 @@ sub filter_plot {
   $demeter -> dispose($command, "plotting");
 
   $demeter->po->cleantemp;
-  undef $demeter;
+  #undef $demeter;
   undef $busy;
   $self->{echo}->echo(sprintf('Plotting %s as a filter for %s.', lc(get_name($filter)), lc(get_name($elem))));
   return 1;

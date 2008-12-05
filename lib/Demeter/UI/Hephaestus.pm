@@ -195,7 +195,7 @@ sub OnInit {
   $bar->Append( $help, "&Help" );
   $frame->SetMenuBar( $bar );
   EVT_MENU( $frame, wxID_ABOUT, \&on_about );
-  EVT_MENU( $frame, wxID_EXIT, sub { $frame->Close } );
+  EVT_MENU( $frame, wxID_EXIT, sub { print "hi there!\n"; $demeter->finish; $frame->Close } );
 
   ## -------- final adjustment to frame size
   my @frameWH = $frame->GetSizeWH;
