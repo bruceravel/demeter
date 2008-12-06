@@ -29,7 +29,7 @@ use base 'Wx::Panel';
 
 use Demeter;
 use Demeter::UI::Wx::PeriodicTable;
-my $demeter = Demeter->new;
+my $demeter = $Demeter::UI::Hephaestus::demeter;
 
 sub new {
   my ($class, $page, $echoarea) = @_;
@@ -149,7 +149,7 @@ sub f1f2_get_data {
   };
 
   my $busy    = Wx::BusyCursor->new();
-  ##$demeter -> plot_with('pgplot');
+  $demeter -> po -> start_plot if ($self->{plot}->GetStringSelection =~ m{New});
   $demeter -> co -> set(
 			f1f2_emin    => $self->{start}->GetValue,
 			f1f2_emax    => $self->{end}->GetValue,
@@ -162,7 +162,6 @@ sub f1f2_get_data {
   my $which = ($self->{part}->GetStringSelection =~ m{both}) ? 'f1f2'
             : ($self->{part}->GetStringSelection =~ m{f'\z}) ? 'f1'
 	    :                                                  'f2';
-  $demeter -> po -> start_plot if ($self->{plot}->GetStringSelection =~ m{New});
   $demeter->dispose($demeter->template("plot", 'prep_f1f2'));
   $demeter->dispose($demeter->template("plot", $which), "plotting");
 

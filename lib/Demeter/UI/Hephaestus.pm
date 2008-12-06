@@ -146,7 +146,7 @@ package Demeter::UI::Hephaestus;
 use File::Basename;
 
 use Wx qw(wxBITMAP_TYPE_XPM wxID_EXIT wxID_ABOUT);
-use Wx::Event qw(EVT_MENU);
+use Wx::Event qw(EVT_MENU EVT_CLOSE);
 use base 'Wx::App';
 
 use Demeter;
@@ -195,7 +195,8 @@ sub OnInit {
   $bar->Append( $help, "&Help" );
   $frame->SetMenuBar( $bar );
   EVT_MENU( $frame, wxID_ABOUT, \&on_about );
-  EVT_MENU( $frame, wxID_EXIT, sub { print "hi there!\n"; $demeter->finish; $frame->Close } );
+  EVT_MENU( $frame, wxID_EXIT, sub{shift->Close} );
+  EVT_CLOSE( $frame,  \&on_close);
 
   ## -------- final adjustment to frame size
   my @frameWH = $frame->GetSizeWH;
@@ -209,6 +210,12 @@ sub OnInit {
   $frame->{line}->adjust_column_width;
 
   $frame -> Show( 1 );
+};
+
+sub on_close {
+  my ($self) = @_;
+  $demeter->finish;
+  $self->Destroy;
 };
 
 sub on_about {

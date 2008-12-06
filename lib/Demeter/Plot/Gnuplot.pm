@@ -29,7 +29,7 @@ use Readonly;
 Readonly my $NUMBER => $RE{num}{real};
 use String::Random qw(random_string);
 
-after 'start_plot' => sub {
+before 'start_plot' => sub {
   my ($self) = @_;
   $self->cleantemp;
   my $command = $self->template("plot", "start");
@@ -37,10 +37,10 @@ after 'start_plot' => sub {
   $self->lastplot(q{});
 };
 
-override 'end_plot' => sub {
+sub end_plot {
   my ($self) = @_;
-  unlink $_ foreach (@{ $self->tempfiles });
-  $self->clear_tempfiles;
+  $self->cleantemp;
+  #print join(" ", caller), $/;
   $self->mode->external_plot_object->gnuplot_cmd("quit");
   return $self;
 };

@@ -286,16 +286,16 @@ sub filter_plot {
   my $line2  = ($z < 57) ? "Ka2" : "La1";
 
   my $demeter = $Demeter::UI::Hephaestus::demeter;
-  $demeter->co->set(
-		    filter_abs      => $z,
-		    filter_edge     => $edge,
-		    filter_filter   => $filter,
-		    filter_emin     => Xray::Absorption -> get_energy($z, $line2) - 400,
-		    filter_emax     => Xray::Absorption -> get_energy($z, $edge)  + 300,
-		    filter_file     => $demeter->po->tempfile,
-		    filter_width    => $demeter->co->default(qw(hephaestus filter_width)),
-		   );
   $demeter -> po -> start_plot;
+  $demeter -> co -> set(
+			filter_abs      => $z,
+			filter_edge     => $edge,
+			filter_filter   => $filter,
+			filter_emin     => Xray::Absorption -> get_energy($z, $line2) - 400,
+			filter_emax     => Xray::Absorption -> get_energy($z, $edge)  + 300,
+			filter_file     => $demeter->po->tempfile,
+			filter_width    => $demeter->co->default(qw(hephaestus filter_width)),
+		       );
   my $command = $demeter->template('plot', 'prep_filter');
   $demeter -> dispose($command);
 
@@ -303,8 +303,6 @@ sub filter_plot {
   $demeter -> po -> legend(x => 0.15, y => 0.85, );
   $demeter -> dispose($command, "plotting");
 
-  $demeter->po->cleantemp;
-  #undef $demeter;
   undef $busy;
   $self->{echo}->echo(sprintf('Plotting %s as a filter for %s.', lc(get_name($filter)), lc(get_name($elem))));
   return 1;

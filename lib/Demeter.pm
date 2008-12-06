@@ -81,7 +81,7 @@ sub alldone {
 
 use Demeter::Plot;
 use vars qw($plot);
-$plot = Demeter::Plot -> new();
+$plot = Demeter::Plot -> new() if not $mode->plot;
 $plot -> screen_echo(0);
 
 $Gnuplot_exists = (eval "require Graphics::GnuplotIF");
@@ -373,13 +373,14 @@ sub plot_with {
   ## need to preserve parameter values when switching plotting backends
  SWITCH: {
     ($backend eq 'pgplot') and do {
-      $old_plot_object->DESTROY;
+      $old_plot_object->DEMOLISHALL if $old_plot_object;
       $self -> mode -> plot(Demeter::Plot->new);
       last SWITCH;
     };
 
     ($backend eq 'gnuplot') and do {
-      $old_plot_object->DESTROY;
+      #$self->mode->remove_Plot($old_plot_object);
+      $old_plot_object->DEMOLISHALL if $old_plot_object;
       $self -> mode -> external_plot_object( Graphics::GnuplotIF->new );
       require Demeter::Plot::Gnuplot;
       $self -> mode -> plot( Demeter::Plot::Gnuplot->new );

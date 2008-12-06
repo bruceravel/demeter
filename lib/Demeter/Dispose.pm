@@ -77,7 +77,7 @@ sub dispose {
   if ($plotting and ($self->mode->template_plot eq 'gnuplot')) {
     #print $command;
     $self->mode->external_plot_object->gnuplot_cmd($command);
-    $self->mode->external_plot_object->gnuplot_pause(-1);
+    # $self->mode->external_plot_object->gnuplot_pause(-1);
     my $gather = $self->po->lastplot;
     $gather .= $command;
     $self -> po -> lastplot($gather);

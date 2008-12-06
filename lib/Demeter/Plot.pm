@@ -167,18 +167,12 @@ sub BUILD {
 
 sub alldone {
   my ($self) = @_;
-  print "Plot::alldone\n";
-  foreach my $f (@{ $self->tempfiles }) {
-    print $f, $/;
-    unlink $f;
-  };
   $self->end_plot;
 };
 
 sub start_plot {
   my ($self) = @_;
   my $color = $self->col0;
-  #$self -> cleantemp; 
   $self -> New(1);
   $self -> color($color);
   $self -> xlabel(q{});
@@ -221,7 +215,6 @@ sub tempfile {
   my ($self) = @_;
   my $this = File::Spec->catfile($self->stash_folder, random_string('cccccccc'));
   $self->add_tempfile($this);
-  #print join(" ", @{$self->tempfiles}), $/;
   return $this;
 };
 sub cleantemp {
