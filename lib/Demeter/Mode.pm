@@ -289,6 +289,52 @@ A special template set used for testing Demeter.
 
 =back
 
+=head2 Object collections
+
+=over 4
+
+=item C<Atoms>
+
+A list of all Atoms objects created during this instance of Demeter.
+
+=item C<Data>
+
+A list of all Data objects created during this instance of Demeter.
+
+=item C<Feff>
+
+A list of all Feff objects created during this instance of Demeter.
+
+=item C<Fit>
+
+A list of all Fit objects created during this instance of Demeter.
+
+=item C<GDS>
+
+A list of all GDS objects created during this instance of Demeter.
+
+=item C<Path>
+
+A list of all Path objects created during this instance of Demeter.
+
+=item C<Plot>
+
+A list of all Plot objects created during this instance of Demeter.
+
+=item C<ScatteringPath>
+
+A list of all ScatteringPath objects created during this instance of Demeter.
+
+=item C<VPath>
+
+A list of all VPath objects created during this instance of Demeter.
+
+=item C<Prj>
+
+A list of all Data::Prj objects created during this instance of Demeter.
+
+=back
+
 =head2 Other attributes
 
 =over 4

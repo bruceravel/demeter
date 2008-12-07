@@ -91,7 +91,7 @@ $this -> buffer(1);
 $this -> potph;
 ok( ((-s 't/feff/phase.bin' > 30000) and (-e 't/feff/misc.dat')), 'feff module potph ran correctly');
 
-ok( $#{$this->iobuffer} > 12,                           'iobuffer works');
+ok( $#{$this->iobuffer} >= 10,                           'iobuffer works');
 
 $this -> screen(0);
 $this -> rmax(4);

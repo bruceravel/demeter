@@ -151,7 +151,7 @@ sub record {
   my ($self, @which) = @_;
   my @groups = ();
   foreach my $g (@which) {
-    my $gg = $g-1;;
+    my $gg = $g-1;
     my $entries_ref = $self -> entries;
     my @this = @{ $entries_ref->[$gg] };
     push @groups, $self->_record( @this );
@@ -170,7 +170,10 @@ sub _record {
   my @x    = $self->_array($index, 'x');
   my @y    = $self->_array($index, 'y');
 
-  my $data = Demeter::Data->new(group=>$groupname, from_athena=>1);
+  my $data = Demeter::Data->new(group	    => $groupname,
+				from_athena => 1,
+				prjrecord   => join(", ", $self->file, $index),
+			       );
   my ($xsuff, $ysuff) = ($args{is_xmu}) ? qw(energy xmu) : qw(k chi);
   Ifeffit::put_array(join('.', $groupname, $xsuff), \@x);
   Ifeffit::put_array(join('.', $groupname, $ysuff), \@y);

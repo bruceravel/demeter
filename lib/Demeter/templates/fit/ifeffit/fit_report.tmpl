@@ -2,8 +2,12 @@
   # fit parameter report
   #   {$D->group} returns the ifeffit group name
   #   {$D->parameter} returns the value of that parameter
+  ($file, $label) = ($D->file,      'file          ');
+  ($file, $label) = ($D->prjrecord, 'Athena project') if $D->from_athena;
+  q{}
 }
-: file                = {$D->file}
+: {$label}      = {$file}
+: name                = {$D->name}
 : k-range             = {$D->fft_kmin} - {$D->fft_kmax}
 : dk                  = {$D->fft_dk}
 : k-window            = {$D->fft_kwindow}

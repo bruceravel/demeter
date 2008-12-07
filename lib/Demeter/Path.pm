@@ -157,13 +157,13 @@ sub _update {
     };
     ($which eq 'bft') and do {
       $self->path(1) if ($self->update_path);
-      $self->fft;  # if ($self->update_fft);  <--- kweight may have changed, just redo this
+      $self->fft     if ($self->update_fft);  #<--- kweight may have changed, just redo this
       last WHICH;
     };
     ($which eq 'all') and do {
       $self->path(1) if ($self->update_path);
-      $self->fft;  # if ($self->update_fft);
-      $self->bft;  # if ($self->update_bft);
+      $self->fft     if ($self->update_fft);
+      $self->bft     if ($self->update_bft);
       last WHICH;
     };
   };
@@ -247,7 +247,6 @@ sub rewrite_cv {
 
 sub plot {
   my ($self, $space) = @_;
-  my $pf  = $self->mode->plot;
   my $which = q{};
   if (lc($space) eq 'k') {
     $self -> _update("fft");
@@ -262,7 +261,7 @@ sub plot {
   $self->mode->path($self);
   $self->dispose($self->_plot_command($space), "plotting");
   $self->mode->path(q{});
-  $pf->increment;
+  $self->po->increment;
   $self->$which(0);
 };
 

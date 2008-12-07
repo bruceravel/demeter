@@ -4,9 +4,10 @@
   #   {$D->parameter} returns the value of that parameter
   #   {$P->parameter} returns the value of a Plot parameter
   $suffix  = ($C->get("window_space") eq 'r') ? 'rwin' : 'win';
+  $datastyle = ($P->datastyle eq 'solid') ? 'lines' : 'points';
   $file = $P->tempfile;
   $D->points(file    => $file,
-             space   => $C->get("window_space"),
+             space   => ($C->get("window_space") eq 'r') ? 'r' : 'k',
 	     suffix  => ($C->get("window_space") eq 'r') ? 'rwin' : 'win',
 	     scale   => $C->get("window_size"),
 	     yoffset => $D->y_offset,

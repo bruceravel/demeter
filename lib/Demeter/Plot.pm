@@ -51,57 +51,57 @@ use String::Random qw(random_string);
 #use YAML;
 
 
-has 'charsize'  => (is => 'rw', isa =>  PosNum,    default => sub{ shift->mode->config->default("plot", "charsize") || 1.2});
-has 'charfont'  => (is => 'rw', isa =>  OneToFour, default => sub{ shift->mode->config->default("plot", "charfont") || 1});
-has 'key_x'     => (is => 'rw', isa =>  PosNum,    default => sub{ shift->mode->config->default("plot", "key_x")    || 0.8});
-has 'key_y'     => (is => 'rw', isa =>  PosNum,    default => sub{ shift->mode->config->default("plot", "key_y")    || 0.9});
-has 'key_dy'    => (is => 'rw', isa =>  PosNum,    default => sub{ shift->mode->config->default("plot", "key_dy")   || 0.075});
+has 'charsize'  => (is => 'rw', isa =>  PosNum,    default => sub{ shift->co->default("plot", "charsize") || 1.2});
+has 'charfont'  => (is => 'rw', isa =>  OneToFour, default => sub{ shift->co->default("plot", "charfont") || 1});
+has 'key_x'     => (is => 'rw', isa =>  PosNum,    default => sub{ shift->co->default("plot", "key_x")    || 0.8});
+has 'key_y'     => (is => 'rw', isa =>  PosNum,    default => sub{ shift->co->default("plot", "key_y")    || 0.9});
+has 'key_dy'    => (is => 'rw', isa =>  PosNum,    default => sub{ shift->co->default("plot", "key_dy")   || 0.075});
 
 ## I need a Color type
-has 'bg'        => (is => 'rw', isa =>  'Str',    default => sub{ shift->mode->config->default("plot", "bg")        || "white"});
-has 'fg'        => (is => 'rw', isa =>  'Str',    default => sub{ shift->mode->config->default("plot", "fg")        || "black"});
-has 'showgrid'  => (is => 'rw', isa =>  'Bool',   default => sub{ shift->mode->config->default("plot", "showgrid")  || 1});
-has 'gridcolor' => (is => 'rw', isa =>  'Str',    default => sub{ shift->mode->config->default("plot", "gridcolor") || "grey82"});
+has 'bg'        => (is => 'rw', isa =>  'Str',    default => sub{ shift->co->default("plot", "bg")        || "white"});
+has 'fg'        => (is => 'rw', isa =>  'Str',    default => sub{ shift->co->default("plot", "fg")        || "black"});
+has 'showgrid'  => (is => 'rw', isa =>  'Bool',   default => sub{ shift->co->default("plot", "showgrid")  || 1});
+has 'gridcolor' => (is => 'rw', isa =>  'Str',    default => sub{ shift->co->default("plot", "gridcolor") || "grey82"});
 
 has 'increm'    => (is => 'rw', isa =>  Natural,    default => 0);
-has 'col0'	=> (is => 'rw', isa =>  'Str',    default => sub{ shift->mode->config->default("plot", "col0") || "blue"});
-has 'col1'	=> (is => 'rw', isa =>  'Str',    default => sub{ shift->mode->config->default("plot", "col1") || "red"});
-has 'col2'	=> (is => 'rw', isa =>  'Str',    default => sub{ shift->mode->config->default("plot", "col2") || "green4"});
-has 'col3'	=> (is => 'rw', isa =>  'Str',    default => sub{ shift->mode->config->default("plot", "col3") || "darkviolet"});
-has 'col4'	=> (is => 'rw', isa =>  'Str',    default => sub{ shift->mode->config->default("plot", "col4") || "darkorange"});
-has 'col5'	=> (is => 'rw', isa =>  'Str',    default => sub{ shift->mode->config->default("plot", "col5") || "brown"});
-has 'col6'	=> (is => 'rw', isa =>  'Str',    default => sub{ shift->mode->config->default("plot", "col6") || "deeppink"});
-has 'col7'	=> (is => 'rw', isa =>  'Str',    default => sub{ shift->mode->config->default("plot", "col7") || "gold3"});
-has 'col8'	=> (is => 'rw', isa =>  'Str',    default => sub{ shift->mode->config->default("plot", "col8") || "cyan3"});
-has 'col9'	=> (is => 'rw', isa =>  'Str',    default => sub{ shift->mode->config->default("plot", "col9") || "yellowgreen"});
+has 'col0'	=> (is => 'rw', isa =>  'Str',    default => sub{ shift->co->default("plot", "col0") || "blue"});
+has 'col1'	=> (is => 'rw', isa =>  'Str',    default => sub{ shift->co->default("plot", "col1") || "red"});
+has 'col2'	=> (is => 'rw', isa =>  'Str',    default => sub{ shift->co->default("plot", "col2") || "green4"});
+has 'col3'	=> (is => 'rw', isa =>  'Str',    default => sub{ shift->co->default("plot", "col3") || "darkviolet"});
+has 'col4'	=> (is => 'rw', isa =>  'Str',    default => sub{ shift->co->default("plot", "col4") || "darkorange"});
+has 'col5'	=> (is => 'rw', isa =>  'Str',    default => sub{ shift->co->default("plot", "col5") || "brown"});
+has 'col6'	=> (is => 'rw', isa =>  'Str',    default => sub{ shift->co->default("plot", "col6") || "deeppink"});
+has 'col7'	=> (is => 'rw', isa =>  'Str',    default => sub{ shift->co->default("plot", "col7") || "gold3"});
+has 'col8'	=> (is => 'rw', isa =>  'Str',    default => sub{ shift->co->default("plot", "col8") || "cyan3"});
+has 'col9'	=> (is => 'rw', isa =>  'Str',    default => sub{ shift->co->default("plot", "col9") || "yellowgreen"});
 
-has 'datastyle' => (is => 'rw', isa =>  PgplotLine, default => sub{ shift->mode->config->default("plot", "datastyle")  || "solid"});
-has 'fitstyle'  => (is => 'rw', isa =>  PgplotLine, default => sub{ shift->mode->config->default("plot", "fitstyle")   || "solid"});
-has 'partstyle' => (is => 'rw', isa =>  PgplotLine, default => sub{ shift->mode->config->default("plot", "partstyle")  || "solid"});
-has 'pathstyle' => (is => 'rw', isa =>  PgplotLine, default => sub{ shift->mode->config->default("plot", "pathstyle")  || "solid"});
+has 'datastyle' => (is => 'rw', isa =>  PgplotLine, default => sub{ shift->co->default("plot", "datastyle")  || "solid"});
+has 'fitstyle'  => (is => 'rw', isa =>  PgplotLine, default => sub{ shift->co->default("plot", "fitstyle")   || "solid"});
+has 'partstyle' => (is => 'rw', isa =>  PgplotLine, default => sub{ shift->co->default("plot", "partstyle")  || "solid"});
+has 'pathstyle' => (is => 'rw', isa =>  PgplotLine, default => sub{ shift->co->default("plot", "pathstyle")  || "solid"});
 
 has 'space'	=> (is => 'rw', isa =>  FitSpace, default => 'r');
-has 'emin'	=> (is => 'rw', isa =>  'Num',    default => sub{ shift->mode->config->default("plot", "emin")	    || -200});
-has 'emax'	=> (is => 'rw', isa =>  'Num',    default => sub{ shift->mode->config->default("plot", "emax")	    || 800});
-has 'e_mu'	=> (is => 'rw', isa =>  'Bool',   default => sub{ shift->mode->config->default("plot", "e_mu")	    || 1});
-has 'e_bkg'	=> (is => 'rw', isa =>  'Bool',   default => sub{ shift->mode->config->default("plot", "e_bkg")	    || 0});
-has 'e_pre'	=> (is => 'rw', isa =>  'Bool',   default => sub{ shift->mode->config->default("plot", "e_pre")	    || 0});
-has 'e_post'	=> (is => 'rw', isa =>  'Bool',   default => sub{ shift->mode->config->default("plot", "e_post")    || 0});
-has 'e_norm'	=> (is => 'rw', isa =>  'Bool',   default => sub{ shift->mode->config->default("plot", "e_norm")    || 0});
-has 'e_der'	=> (is => 'rw', isa =>  'Bool',   default => sub{ shift->mode->config->default("plot", "e_der")	    || 0});
-has 'e_sec'	=> (is => 'rw', isa =>  'Bool',   default => sub{ shift->mode->config->default("plot", "e_sec")	    || 0});
-has 'e_markers'	=> (is => 'rw', isa =>  'Bool',   default => sub{ shift->mode->config->default("plot", "e_markers") || 0});
+has 'emin'	=> (is => 'rw', isa =>  'Num',    default => sub{ shift->co->default("plot", "emin")	  || -200});
+has 'emax'	=> (is => 'rw', isa =>  'Num',    default => sub{ shift->co->default("plot", "emax")	  || 800});
+has 'e_mu'	=> (is => 'rw', isa =>  'Bool',   default => sub{ shift->co->default("plot", "e_mu")	  || 1});
+has 'e_bkg'	=> (is => 'rw', isa =>  'Bool',   default => sub{ shift->co->default("plot", "e_bkg")	  || 0});
+has 'e_pre'	=> (is => 'rw', isa =>  'Bool',   default => sub{ shift->co->default("plot", "e_pre")	  || 0});
+has 'e_post'	=> (is => 'rw', isa =>  'Bool',   default => sub{ shift->co->default("plot", "e_post")    || 0});
+has 'e_norm'	=> (is => 'rw', isa =>  'Bool',   default => sub{ shift->co->default("plot", "e_norm")    || 0});
+has 'e_der'	=> (is => 'rw', isa =>  'Bool',   default => sub{ shift->co->default("plot", "e_der")	  || 0});
+has 'e_sec'	=> (is => 'rw', isa =>  'Bool',   default => sub{ shift->co->default("plot", "e_sec")	  || 0});
+has 'e_markers'	=> (is => 'rw', isa =>  'Bool',   default => sub{ shift->co->default("plot", "e_markers") || 0});
 has 'e_part'	=> (is => 'rw', isa =>  'Str',    default => q{});
-has 'e_smooth'	=> (is => 'rw', isa =>  'Int',    default => sub{ shift->mode->config->default("plot", "e_smooth")  || 0});
+has 'e_smooth'	=> (is => 'rw', isa =>  'Int',    default => sub{ shift->co->default("plot", "e_smooth")  || 0});
 has 'e_zero'	=> (is => 'rw', isa =>  'Bool',   default => 0);
-has 'kmin'	=> (is => 'rw', isa =>  'Num',    default => sub{ shift->mode->config->default("plot", "kmin") || 0});
-has 'kmax'	=> (is => 'rw', isa =>  'Num',    default => sub{ shift->mode->config->default("plot", "kmax") || 15});
-has 'rmin'	=> (is => 'rw', isa =>  'Num',    default => sub{ shift->mode->config->default("plot", "rmin") || 0});
-has 'rmax'	=> (is => 'rw', isa =>  'Num',    default => sub{ shift->mode->config->default("plot", "rmax") || 6});
-has 'r_pl'	=> (is => 'rw', isa =>  MERIP,    default => sub{ shift->mode->config->default("plot", "r_pl") || "m"});
-has 'qmin'	=> (is => 'rw', isa =>  'Num',    default => sub{ shift->mode->config->default("plot", "qmin") || 0});
-has 'qmax'	=> (is => 'rw', isa =>  'Num',    default => sub{ shift->mode->config->default("plot", "qmax") || 15});
-has 'q_pl'	=> (is => 'rw', isa =>  MERIP,    default => sub{ shift->mode->config->default("plot", "q_pl") || "r"});
+has 'kmin'	=> (is => 'rw', isa =>  'Num',    default => sub{ shift->co->default("plot", "kmin") || 0});
+has 'kmax'	=> (is => 'rw', isa =>  'Num',    default => sub{ shift->co->default("plot", "kmax") || 15});
+has 'rmin'	=> (is => 'rw', isa =>  'Num',    default => sub{ shift->co->default("plot", "rmin") || 0});
+has 'rmax'	=> (is => 'rw', isa =>  'Num',    default => sub{ shift->co->default("plot", "rmax") || 6});
+has 'r_pl'	=> (is => 'rw', isa =>  MERIP,    default => sub{ shift->co->default("plot", "r_pl") || "m"});
+has 'qmin'	=> (is => 'rw', isa =>  'Num',    default => sub{ shift->co->default("plot", "qmin") || 0});
+has 'qmax'	=> (is => 'rw', isa =>  'Num',    default => sub{ shift->co->default("plot", "qmax") || 15});
+has 'q_pl'	=> (is => 'rw', isa =>  MERIP,    default => sub{ shift->co->default("plot", "q_pl") || "r"});
 
 has 'kweight'		=> (is => 'rw', isa =>  'Num',      default => "1",
 			    trigger => sub{my ($self) = @_; $self->propagate_kweight});
@@ -115,13 +115,13 @@ has 'plot_paths'	=> (is => 'rw', isa =>  'Bool',     default => 0);
 has 'plot_rmr_offset'	=> (is => 'rw', isa =>   NonNeg,    default => 0);
 
 
-has 'nindicators'    => (is => 'rw', isa =>  PosInt,          default => sub{ shift->mode->config->default("indicator", "n")     || 8});
-has 'indicatorcolor' => (is => 'rw', isa =>  'Str',           default => sub{ shift->mode->config->default("indicator", "color") || "violetred"});
-has 'indicatorline'  => (is => 'rw', isa =>  'Str',           default => sub{ shift->mode->config->default("indicator", "line")  || "solid"});
-has 'showmarker'     => (is => 'rw', isa =>  'Str',           default => sub{ shift->mode->config->default("marker", "show")     || 1});
-has 'markertype'     => (is => 'rw', isa =>  OneToTwentyNine, default => sub{ shift->mode->config->default("marker", "type")     || 9});    # number 1 to 29, 9 is a dotted circle
-has 'markersize'     => (is => 'rw', isa =>  'Num',           default => sub{ shift->mode->config->default("marker", "size")     || 2});
-has 'markercolor'    => (is => 'rw', isa =>  'Str',           default => sub{ shift->mode->config->default("marker", "color")    || "orange"});
+has 'nindicators'    => (is => 'rw', isa =>  PosInt,          default => sub{ shift->co->default("indicator", "n")     || 8});
+has 'indicatorcolor' => (is => 'rw', isa =>  'Str',           default => sub{ shift->co->default("indicator", "color") || "violetred"});
+has 'indicatorline'  => (is => 'rw', isa =>  'Str',           default => sub{ shift->co->default("indicator", "line")  || "solid"});
+has 'showmarker'     => (is => 'rw', isa =>  'Str',           default => sub{ shift->co->default("marker", "show")     || 1});
+has 'markertype'     => (is => 'rw', isa =>  OneToTwentyNine, default => sub{ shift->co->default("marker", "type")     || 9});    # number 1 to 29, 9 is a dotted circle
+has 'markersize'     => (is => 'rw', isa =>  'Num',           default => sub{ shift->co->default("marker", "size")     || 2});
+has 'markercolor'    => (is => 'rw', isa =>  'Str',           default => sub{ shift->co->default("marker", "color")    || "orange"});
 
 has 'New'    => (is => 'rw', isa =>  'Bool',          default => 0);
 has 'color'  => (is => 'rw', isa =>  'Any',           default => q{});
@@ -131,22 +131,21 @@ has 'key'    => (is => 'rw', isa =>  'Any',           default => q{});
 has 'title'  => (is => 'rw', isa =>  'Any',           default => q{});
 
 has 'tempfiles' => (
-      metaclass => 'Collection::Array',
-      is        => 'rw',
-      isa       => 'ArrayRef[Str]',
-      default   => sub { [] },
-      provides  => {
-		    'push' => 'add_tempfile',
-		    'pop'  => 'remove_tempfile',
-		    'clear' => 'clear_tempfiles',
-      }
-  );
-
+		    metaclass => 'Collection::Array',
+		    is        => 'rw',
+		    isa       => 'ArrayRef[Str]',
+		    default   => sub { [] },
+		    provides  => {
+				  'push'  => 'add_tempfile',
+				  'pop'   => 'remove_tempfile',
+				  'clear' => 'clear_tempfiles',
+				 }
+		   );
 
 has 'lastplot'  => (is => 'rw', isa => 'Any',        default => q{});
 
 		       ## interpolation parameters
-has 'interp' => (is => 'rw', isa => Interp,          default => sub{ shift->mode->config->default("interpolation", "type") || "qinterp"});
+has 'interp' => (is => 'rw', isa => Interp,          default => sub{ shift->co->default("interpolation", "type") || "qinterp"});
 
 
 sub BUILD {
@@ -156,14 +155,6 @@ sub BUILD {
   $self -> mode -> push_Plot($self);
   return;
 };
-
-# sub DEMOLISH {
-#   my $self = shift;
-#   foreach my $f (@{ $self->tempfiles }) {
-#     unlink $f;
-#   };
-#   #$self->end_plot;
-# };
 
 sub alldone {
   my ($self) = @_;
@@ -290,8 +281,7 @@ sub outfile {
 
 sub propagate_kweight {
   my ($self) = @_;
-  my @data = @{ $self->mode->Data };
-  $_->update_fft(1) foreach (@data);
+  $_->update_fft(1) foreach (@{ $self->mode->Data }, @{ $self->mode->Path }, @{ $self->mode->VPath });
 };
 
 
@@ -570,7 +560,9 @@ The upper bound of the plot range in k.
 
 The k-weighting to use when plotting in k or in a Fourier transform
 before plottingin R or q.  Typically, this is 1, 2, or 3, but can
-actually be any number.
+actually be any number.  When this gets changed, all Data, Path, and
+VPath objects will be flagged as needing to be brought up-to-date for
+their forward Fourier transform.
 
 =back
 

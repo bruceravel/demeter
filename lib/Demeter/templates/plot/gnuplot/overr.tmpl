@@ -22,5 +22,5 @@
   if (ref($PT) =~ m{Path}) { $thiskey = $PT->name || 'Path '.$PT->Index };
   q{}
 }
-# ifeffit group = {$D->group}
+# {$this->name}: ifeffit group = {$D->group}
 replot '{$file}' using 1:2 with {$C->default("gnuplot", "datastyle")} ls {$P->increm+1} title "{$thiskey}"

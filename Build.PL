@@ -31,7 +31,7 @@ my $build = Module::Build
 				'version'		   => '0',
 				#'Module::Build'	   => '0',
 
-				'Moose'			   => '0.58',
+				'Moose'			   => '0.57',
 				'MooseX::AttributeHelpers' => '0',
 				'MooseX::Clone'		   => '0',
 				'MooseX::Singleton'	   => '0',

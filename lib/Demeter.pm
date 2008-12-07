@@ -27,6 +27,7 @@ use Carp;
 use File::Basename qw(dirname);
 use File::Spec;
 use List::MoreUtils qw(any minmax zip);
+#use Safe;
 use String::Random qw(random_string);
 use Text::Template;
 
@@ -161,16 +162,13 @@ sub get {
 };
 
 sub co {
-  my ($self) = @_;
-  return $self->mode->config;
+  return shift->mode->config;
 };
 sub po {
-  my ($self) = @_;
-  return $self->mode->plot;
+  return shift->mode->plot;
 };
 sub mo {
-  my ($self) = @_;
-  return $self->mode;
+  return shift->mode;
 };
 {
   no warnings 'once';
@@ -269,14 +267,6 @@ sub identify {
   #if ($full) {};
   return $string;
 };
-# sub environment {
-#   my ($self) = @_;
-#   return {demeter => $Demeter::VERSION,
-# 	  ifeffit => (split(" ", Ifeffit::get_string("\$&build")))[0],
-# 	  perl    => $],
-# 	  tk      => $Tk::VERSION,
-# 	 };
-# };
 sub version {
   my ($self) = @_;
   return $VERSION
@@ -484,6 +474,8 @@ sub template {
   my $template = Text::Template->new(TYPE => 'file', SOURCE => $tmpl)
     or die "Couldn't construct template: $Text::Template::ERROR";
   $rhash ||= {};
+
+  #my $compartment = new Safe;
   my $string = $template->fill_in(HASH => {S  => \$self,
 					   D  => \$data,
 					   P  => \$pf,
@@ -493,7 +485,9 @@ sub template {
 					   T  => \$theory,
 					   PT => \$path,
 					   %$rhash},
-				  PACKAGE => "Demeter::Templates");
+				  PACKAGE => "Demeter::Templates",
+				  #SAFE => $compartment,
+				 );
   $string ||= q{};
   $string =~ s{^\s+}{};		      # remove leading white space
   $string =~ s{\n(?:[ \t]+\n)+}{\n};  # regularize white space between blocks of text
@@ -1326,6 +1320,12 @@ F<Bundle/DemeterBundle.pm> file.
 =head1 BUGS AND LIMITATIONS
 
 =over 4
+
+=item *
+
+Template evaluation is a potential security hole in the sense that
+someone could put something like C<system 'rm -rf *'> in one of the
+templates.  L<Text::Template> supports using a L<Safe> compartment.
 
 =item *
 

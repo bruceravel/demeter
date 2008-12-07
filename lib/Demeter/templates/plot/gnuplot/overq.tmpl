@@ -5,22 +5,23 @@
   #   {$P->parameter} returns the value of a Plot parameter
 }
 {
+  $this = $PT || $D;
   $file = $P->tempfile;
-  $S->points(file    => $file,
-             space   => 'q', 
-	     suffix  => ($P->q_pl eq 'm') ? 'chiq_mag'
-	              : ($P->q_pl eq 'r') ? 'chiq_re'
-	              : ($P->q_pl eq 'i') ? 'chiq_im'
-	              : ($P->q_pl eq 'p') ? 'chiq_pha'
-		      :                     'chiq_mag',
-  	     part    => $C->get('plot_part'),
-	     scale   => $D->plot_multiplier,
-	     yoffset => $D->y_offset,
-	    );
+  $this->points(file    => $file,
+                space   => 'q', 
+	        suffix  => ($P->q_pl eq 'm') ? 'chiq_mag'
+	                 : ($P->q_pl eq 'r') ? 'chiq_re'
+	                 : ($P->q_pl eq 'i') ? 'chiq_im'
+	                 : ($P->q_pl eq 'p') ? 'chiq_pha'
+		         :                     'chiq_mag',
+   	        part    => $C->get('plot_part'),
+	        scale   => $D->plot_multiplier,
+	        yoffset => $D->y_offset,
+	       );
   $thiskey = $C->get('plot_part') || $P->key;
   if (ref($PT) =~ m{Path}) { $thiskey = $PT->name || 'Path '.$PT->Index };
   q{}
 }
-# ifeffit group = {$D->group}
+# {$this->name}: ifeffit group = {$D->group}
 replot '{$file}' using 1:2 with {$C->default("gnuplot", "datastyle")} ls {$P->increm+1} title "{$thiskey}"
 

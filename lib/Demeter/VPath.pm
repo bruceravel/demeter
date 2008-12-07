@@ -22,10 +22,10 @@ with 'Demeter::Path::Process';
 use MooseX::AttributeHelpers;
 use Demeter::StrTypes qw( Empty );
 
-has '+plottable'      => (default => 1);
-has '+data'           => (isa => Empty.'|Demeter::Data');
-has '+name'           => (default => 'virtual path');
-has 'id'              => (is => 'ro', isa => 'Str', default => 'virtual path');
+has '+plottable' => (default => 1);
+has '+data'      => (isa => Empty.'|Demeter::Data');
+has '+name'      => (default => 'virtual path');
+has 'id'         => (is => 'ro', isa => 'Str', default => 'virtual path');
 
 has 'paths' => (
 		metaclass => 'Collection::Array',
@@ -42,11 +42,11 @@ has 'paths' => (
 	       );
 
 ## data processing flags
-has 'update_path'     => (is=>'rw', isa=>  'Bool',  default => 1,
-			  trigger => sub{ my($self, $new) = @_; $self->update_fft(1) if $new});
-has 'update_fft'      => (is=>'rw', isa=>  'Bool',  default => 1,
-			  trigger => sub{ my($self, $new) = @_; $self->update_bft(1) if $new});
-has 'update_bft'      => (is=>'rw', isa=>  'Bool',  default => 1);
+has 'update_path' => (is=>'rw', isa=>  'Bool',  default => 1,
+		      trigger => sub{ my($self, $new) = @_; $self->update_fft(1) if $new});
+has 'update_fft'  => (is=>'rw', isa=>  'Bool',  default => 1,
+		      trigger => sub{ my($self, $new) = @_; $self->update_bft(1) if $new});
+has 'update_bft'  => (is=>'rw', isa=>  'Bool',  default => 1);
 
 sub BUILD {
   my ($self, @params) = @_;
@@ -69,7 +69,7 @@ sub clear {
   return $self;
 };
 
-## at least one consituent is required to actually be able to do something with a VPath
+## at least one consituent is required to actually do something with a VPath
 sub is_valid {
   my ($self) = @_;
   my @list = @{ $self->paths };
@@ -85,9 +85,8 @@ sub first {			# see prep_vpath.tmpl
 
 sub _update {
   my ($self, $which) = @_;
-  $which = lc($which);
-  foreach my $p ( @{ $self->paths } ) { # bring each constituent path up to date
-    $p->_update($which);
+  foreach my $p ( @{ $self->paths } ) {  # bring each constituent path up to date
+    $p->_update(lc($which));
   };
   return $self;
 };
@@ -100,6 +99,7 @@ sub sum {
     $self->mode->path($p);
     $command .= $self->template("process", "addto_vpath");
   };
+  $self->mode->path(q{});
   return $command;
 };
 
@@ -124,7 +124,9 @@ sub plot {
   $self->fft if ((lc($space) eq 'r') or (lc($space) eq 'q'));
   $self->bft if (lc($space) eq 'q');
   ## and plot the vpath
+  $self->mode->path($self);
   $self->dispose($self->_plot_command($space), "plotting");
+  $self->mode->path(q{});
   $self->po->increment;
   $self->$which(0);
   return $self;
@@ -158,7 +160,7 @@ to convey a sense of how several small paths affect the fit in
 aggregate.  A plot showing each individual path will be messy and
 won't actually convey the point.
 
-The VPath object is tool for addressing this.  A VPath, or virtual
+The VPath object is tool for addressing this.  A VPath, or "virtual
 path", is a sum of two or more paths which is Fourier transformed and
 plotted as a single object.  This cleans up your plot and more
 directly conveys the effect of the constituent paths on the fit.
@@ -191,6 +193,13 @@ the name will be "virtual path".  The C<data> attribute is set to be
 the same as the first Path in the list of paths contributing to the
 VPath.
 
+The methods C<push_paths>, C<pop_paths>, C<shift_paths>,
+C<unshift_paths>, and C<clear_paths> are defined to operate on this
+list.  But they should be used with caution.  The C<inlcude> and
+C<clear> methods below are wrappers around these which perform
+additional chores necessary for the correct operation of the VPath
+object.
+
 =head1 METHODS
 
 =over 4
@@ -204,14 +213,14 @@ paths:
     or
   $vpath -> include(@a_bunch_of_paths);
 
-While you could, in principle, use the C<paths> attribute accessor to
-set the list of paths, this method performs the additional chore of
-correctly setting the C<data> attribute.
+While you could, in principle, use the C<paths> attribute accessor and
+its service methods to set the list of paths, this method performs the
+additional chore of correctly setting the C<data> attribute.
 
 =item C<clear>
 
-This method empties out the path list without destroying the VPath
-object.
+This method empties out the path list abd unsets the data attribute
+without destroying the VPath object.
 
   $vpath -> clear;
   ## @{ $vpath->paths } is now ();
@@ -239,16 +248,6 @@ See L<Demeter::Config> for a description of the configuration system.
 Demeter's dependencies are in the F<Bundle/DemeterBundle.pm> file.
 
 =head1 BUGS AND LIMITATIONS
-
-=over 4
-
-=item *
-
-Automated indexing currently only works when doing a fit.  If you want
-to plot paths before doing a fit, you will need to assign indeces by
-hand.
-
-=back
 
 Please report problems to Bruce Ravel (bravel AT bnl DOT gov)
 

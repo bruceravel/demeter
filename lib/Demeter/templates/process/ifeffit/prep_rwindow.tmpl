@@ -2,4 +2,5 @@
   # window preparation template in k space
   #   {$D->group} returns the ifeffit group name
 }
+## prepping R-space window
 set win___dow = ceil({$D->group}.chir_mag)*{$P->window_multiplier}*{$D->plot_multiplier}

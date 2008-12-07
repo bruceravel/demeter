@@ -32,5 +32,5 @@ set xlabel "\{/*1.2 Radial distance&\{aa\}(\{\305\})\}"
 set ylabel "\{/*1.2 {$ylabel}\}"
 set xrange [ {$P->rmin} : {$P->rmax} ]
 
-# ifeffit group = {$D->group}
+# {$this->name}: ifeffit group = {$D->group}
 plot '{$file}' using 1:2 with {$C->default("gnuplot", "datastyle")} ls {$P->increm+1} title "{$thiskey}"

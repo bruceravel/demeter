@@ -29,5 +29,5 @@ set xlabel "\{/*1.2 Energy&\{aa\}(eV)\}"
 set ylabel "\{/*1.2 {$ylabel}\}"
 set xrange [ {$emin} : {$emax} ]
 
-# ifeffit group = {$D->group}
+# {$D->name}: ifeffit group = {$D->group}
 plot '{$file}' using 1:2 with {$datastyle} ls {$P->increm+1} title "{$P->key}"

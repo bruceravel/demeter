@@ -61,7 +61,7 @@ $this->set(s02    => 1,
 	   sigma2 => 'debye([cv], 500)',
 	  );
 $this -> rewrite_cv;
-ok( $this->sigma2 eq 'debye(57, 500)',                  "rewrite_cv works");
+ok( $this->sigma2 eq 'debye(42, 500)',                  "rewrite_cv works");
 
 $this -> delr_value(0.1);
 ok( abs($this->R - 2.6527) < 0.0001,                    "R works");

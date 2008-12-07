@@ -20,7 +20,6 @@ use autodie qw(open close);
 use Moose;
 extends 'Demeter::Plot';
 
-#use diagnostics;
 use Carp;
 use Regexp::List;
 use Regexp::Optimizer;
@@ -37,7 +36,7 @@ before 'start_plot' => sub {
   $self->lastplot(q{});
 };
 
-sub end_plot {
+override 'end_plot' => sub {
   my ($self) = @_;
   $self->cleantemp;
   #print join(" ", caller), $/;

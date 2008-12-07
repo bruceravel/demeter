@@ -15,6 +15,6 @@
 	    );
   q{}
 }
-# ifeffit group = {$D->group}
+# {$D->name}: ifeffit group = {$D->group}
 replot '{$file}' using 1:2 with {$C->default("gnuplot", "datastyle")} ls {$P->increm+1} title "{$P->key}"
 
