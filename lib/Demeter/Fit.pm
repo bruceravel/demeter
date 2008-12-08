@@ -56,7 +56,7 @@ $Text::Wrap::columns = 65;
 has 'description'    => (is => 'rw', isa => 'Str',    default => q{});
 has 'fom'            => (is => 'rw', isa => 'Num',    default => 0);
 has 'fitenvironment' => (is => 'rw', isa => 'Str',    default => sub{ shift->environment });
-has 'interface'      => (is => 'rw', isa => 'Str',    default => 'Demeter-based script');
+has 'interface'      => (is => 'rw', isa => 'Str',    default => 'Demeter-based perl script'); # should be sensitive to :ui "pragma"
 has 'time_of_fit'    => (is => 'rw', isa => 'Str',    default => q{});  # should be a Date/Time object
 has 'prepared_by'    => (is => 'rw', isa => 'Str',    default => sub{ shift->who });
 has 'contact'        => (is => 'rw', isa => 'Str',    default => q{});
@@ -196,6 +196,7 @@ sub _verify_fit {
 		 exceed_max_restraints	  => 0,
 		 program_var_names	  => 0,
 		 path_calculation_exists  => 0,
+		 merge_parameters_exists  => 0,
 
 		 errors			  => [],
 		 #warnings		  => [],
@@ -257,6 +258,9 @@ sub _verify_fit {
   ## 16. check that all Path objects have either a ScatteringPath or a folder/file defined
   $self->S_path_calculation_exists(\%problem);
 
+  ## 17. check that there are no unresolved merge parameetrs
+  $self->S_notice_merge(\%problem);
+
   return \%problem;
 };
 
@@ -308,6 +312,9 @@ sub fit {
   my $ndata = $#datasets + 1;
   my $ipath = 0;
   my $count = 0;
+  my $str = q{};
+  $self->name("fit to " . join(", ", map {$_->name} @datasets)) if not $self->name;
+  $self->description("fit to " . join(", ", map {$_->name} @datasets)) if not $self->description;
 
   ## munge parameters and path parameters to deal with lguess
   $command .= $self->_local_parameters;

@@ -154,7 +154,9 @@ sub record {
     my $gg = $g-1;
     my $entries_ref = $self -> entries;
     my @this = @{ $entries_ref->[$gg] };
-    push @groups, $self->_record( @this );
+    my $rec = $self->_record( @this );
+    push @groups, $rec;
+    $rec->prjrecord(join(", ", $self->file, $g));
   };
   return (wantarray) ? @groups : $groups[0];
 };
@@ -164,6 +166,7 @@ sub record {
   *records = \ &record;
 }
 
+## $index is the line number in the project file, *not* the record number
 sub _record {
   my ($self, $index, $groupname) = @_;
   my %args = $self->_array($index, 'args');
@@ -172,7 +175,6 @@ sub _record {
 
   my $data = Demeter::Data->new(group	    => $groupname,
 				from_athena => 1,
-				prjrecord   => join(", ", $self->file, $index),
 			       );
   my ($xsuff, $ysuff) = ($args{is_xmu}) ? qw(energy xmu) : qw(k chi);
   Ifeffit::put_array(join('.', $groupname, $xsuff), \@x);

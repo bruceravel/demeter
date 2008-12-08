@@ -32,6 +32,9 @@ use String::Random qw(random_string);
 use Text::Template;
 
 use Regexp::Common;
+#use Regexp::List;
+use Regexp::Optimizer;
+my $opt  = Regexp::List->new;
 use Readonly;
 Readonly my $NUMBER => $RE{num}{real};
 
@@ -110,6 +113,10 @@ use Demeter::StrTypes qw( Empty
 			  PlotWeight
 			  Interp
 			  TemplateProcess
+			  TemplateFit
+			  TemplatePlot
+			  TemplateFeff
+			  TemplateAnalysis
 		       );
 use Demeter::NumTypes qw( Natural
 			  PosInt
@@ -377,6 +384,20 @@ sub plot_with {
       last SWITCH;
     };
   };
+};
+
+## the type constraints aren't working as I expect...?
+sub template_set {
+  my ($self, $which) = @_;
+  my $template_regexp = $opt->list2re(qw(demeter ifeffit iff_columns feffit));
+  if ($which !~ m{$template_regexp}) {
+    carp("$which is not a valid template set, using ifeffit.");
+    return $self;
+  };
+  $self -> mode -> template_process($which);
+  $self -> mode -> template_fit($which);
+  #$self -> mode -> template_analysis($which);
+  return $self;
 };
 
 

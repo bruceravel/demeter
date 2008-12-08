@@ -479,6 +479,18 @@ sub S_path_calculation_exists {
   };
 };
 
+## 17. check that there are no unresolved merge parameetrs
+sub S_notice_merge {
+  my ($self, $r_problem) = @_;
+  my @gds = @{ $self->gds };
+  foreach my $g (@gds) {
+    if ($g->gds eq 'merge') {
+      push (@{$$r_problem{errors}}, "Parameter " . $g->name . " is an unresolved merge parameter.");
+      ++$$r_problem{merge_parameters_exists};
+    };
+  };
+};
+
 
 1;
 
@@ -595,6 +607,10 @@ fitting model.
 
 No GDS parameters have the names of Ifeffit program variables or other
 reserved words.
+
+=item *
+
+No merge parameters remain unresolved.
 
 =back
 
