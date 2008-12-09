@@ -66,7 +66,7 @@ has 'project'        => (is => 'rw', isa => 'Str',    default => q{},
 			 trigger => sub{my ($self, $new) = @_; $self->deserialize($new) if $new} );
 
 ## -------- mechanics of the fit
-has 'cormin'         => (is => 'rw', isa =>  NonNeg,  default => sub{ shift->mode->config->default("fit", "cormin")  || 0});
+has 'cormin'         => (is => 'rw', isa =>  NonNeg,  default => sub{ shift->mo->config->default("fit", "cormin")  || 0});
 has 'header'         => (is => 'rw', isa => 'Str',    default => q{});
 has 'footer'         => (is => 'rw', isa => 'Str',    default => q{});
 has 'restraints'     => (is => 'rw', isa => 'Str',    default => q{});
@@ -145,7 +145,7 @@ has 'correlations' => (
 
 sub BUILD {
   my ($self, @params) = @_;
-  $self->mode->push_Fit($self);
+  $self->mo->push_Fit($self);
 };
 
 #   sub set_all {
@@ -300,7 +300,7 @@ sub fit {
     croak("This fit has unrecoverable errors");
   };
 
-  $self->mode->fit($self);
+  $self->mo->fit($self);
   my $command = q{};
 
   foreach my $type (qw(guess lguess set def restrain)) {
@@ -394,7 +394,7 @@ sub fit {
   $self->happiness( $joy[0] || 0 );
   $self->happiness_summary( $joy[1] || q{} );
 
-  $self->mode->fit(q{});
+  $self->mo->fit(q{});
   #$_->update_fft(1) foreach (@datasets);
 
   $self->stop_spinner if ($self->mo->ui eq 'screen');
@@ -432,7 +432,7 @@ sub ff2chi {
     croak("This fit has unrecoverable errors");
   };
 
-  $self->mode->fit($self);
+  $self->mo->fit($self);
   my $command = q{};
   foreach my $type (qw(guess set def restrain)) {
     $command .= $self->_gds_commands($type);
@@ -481,7 +481,7 @@ sub ff2chi {
   $self->happiness(0);
   $self->happiness_summary(q{});
 
-  $self->mode->fit(q{});
+  $self->mo->fit(q{});
 
   $self->stop_spinner if ($self->mo->ui eq 'screen');
 
@@ -1255,6 +1255,7 @@ override 'deserialize' => sub {
   #*Load   = \ &deserialize;
 }
 
+__PACKAGE__->meta->make_immutable;
 1;
 
 =head1 NAME

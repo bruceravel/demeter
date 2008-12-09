@@ -83,7 +83,7 @@ sub BUILD {
   my ($self) = @_;
   $self -> read_config;
   $self -> read_ini;
-  $self -> mode -> config($self);
+  $self -> mo -> config($self);
   my @groups = $self->groups;
   $self->main_groups(\@groups);
 };
@@ -417,6 +417,7 @@ sub read_ini {
 };
 
 
+__PACKAGE__->meta->make_immutable;
 1;
 
 =head1 NAME

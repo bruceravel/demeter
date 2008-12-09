@@ -11,7 +11,7 @@ use List::Util qw(max);
 
 sub plot {
   my ($self, $space) = @_;
-  my $pf  = $self->mode->plot;
+  my $pf  = $self->mo->plot;
   $space ||= $pf->space;
   ($space = 'kq') if (lc($space) eq 'qk');
   my $which = (lc($space) eq 'e')   ? $self->_update('fft')
@@ -69,7 +69,7 @@ sub _plotk_command {
     croak("$class objects are not plottable");
   };
   $space ||= 'k';
-  my $pf  = $self->mode->plot;
+  my $pf  = $self->mo->plot;
   my $string = q{};
   my $group = $self->group;
   my $kw = $pf->kweight;
@@ -98,7 +98,7 @@ sub _plotR_command {
     my $class = ref $self;
     croak("$class objects are not plottable");
   };
-  my $pf  = $self->mode->plot;
+  my $pf  = $self->mo->plot;
   my $string = q{};
   my $group = $self->group;
   my %open   = ('m'=>"|",        e=>"Env[",     r=>"Re[",     i=>"Im[",     p=>"Phase[");
@@ -141,7 +141,7 @@ sub _plotq_command {
     my $class = ref $self;
     croak("$class objects are not plottable");
   };
-  my $pf  = $self->mode->plot;
+  my $pf  = $self->mo->plot;
   my $string = q{};
   my $group = $self->group;
   my %open   = ('m'=>"|",        e=>"Env[",     r=>"Re[",     i=>"Im[",     p=>"Phase["   );
@@ -179,7 +179,7 @@ sub _plotq_command {
 
 sub _plotkq_command {
   my ($self) = @_;
-  my $pf  = $self->mode->plot;
+  my $pf  = $self->po;
   if (not $self->plottable) {
     my $class = ref $self;
     croak("$class objects are not plottable");
@@ -201,24 +201,24 @@ sub plotRmr {
   my $string = q{};
   my ($lab, $yoff, $up) = ( $self->name, $self->y_offset, $self->rmr_offset );
   $self -> y_offset($yoff+$up);
-  my $rpart = $self->mode->plot->r_pl;
-  $self -> mode -> plot -> r_pl('m');
-  my $color = $self->mode->plot->color;
-  my $inc   = $self->mode->plot->increm;
+  my $rpart = $self->po->r_pl;
+  $self -> mo -> plot -> r_pl('m');
+  my $color = $self->po->color;
+  my $inc   = $self->po->increm;
   #$string .= $self->_plotR_command;
   $self -> plot;
-  $self -> mode -> plot -> New(0);
+  $self -> po -> New(0);
 
   $self -> y_offset($yoff);
   $self -> name(q{});
-  $self -> mode -> plot -> r_pl('r');
-  $self -> mode -> plot -> color($color);
-  $self -> mode -> plot -> increm($inc);
+  $self -> po -> r_pl('r');
+  $self -> po -> color($color);
+  $self -> po -> increm($inc);
   #$string .= $self->_plotR_command;
   $self -> plot;
   #$self -> dispose($string);
   $self -> name($lab);
-  $self -> mode -> plot -> r_pl($rpart);
+  $self -> po -> r_pl($rpart);
   return $self;
 };
 

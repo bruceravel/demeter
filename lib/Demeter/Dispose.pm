@@ -74,10 +74,10 @@ sub dispose {
     carp("Demeter::Dispose: string mode value is not a scalar or array reference");
   };
 
-  if ($plotting and ($self->mode->template_plot eq 'gnuplot')) {
+  if ($plotting and ($self->mo->template_plot eq 'gnuplot')) {
     #print $command;
-    $self->mode->external_plot_object->gnuplot_cmd($command);
-    # $self->mode->external_plot_object->gnuplot_pause(-1);
+    $self->mo->external_plot_object->gnuplot_cmd($command);
+    # $self->mo->external_plot_object->gnuplot_pause(-1);
     my $gather = $self->po->lastplot;
     $gather .= $command;
     $self -> po -> lastplot($gather);

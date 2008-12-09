@@ -119,15 +119,15 @@ sub BUILD {
   my ($self, @arguments) = @_;
   my $val = $self->get_mode("datadefault");
   if ((ref($self->data) !~ m{Data}) and (ref($val) !~ m{Data})) {
-    $self->mode->datadefault(Demeter::Data->new(group=>'default___',
+    $self->mo->datadefault(Demeter::Data->new(group=>'default___',
 						name=>q{},
 						cv=>42,
 						fft_kmin=>3, fft_kmax=>15,
 						bft_rmin=>1, bft_rmax=>6,
 					       ));
   };
-  $self->data($self->mode->datadefault) if (ref($self->data) !~ m{Data});
-  $self->mode->push_Path($self);
+  $self->data($self->mo->datadefault) if (ref($self->data) !~ m{Data});
+  $self->mo->push_Path($self);
 };
 
 override 'alldone' => sub {
@@ -258,9 +258,9 @@ sub plot {
     $self -> _update("all");
     $which = "update_bft";
   };
-  $self->mode->path($self);
+  $self->mo->path($self);
   $self->dispose($self->_plot_command($space), "plotting");
-  $self->mode->path(q{});
+  $self->mo->path(q{});
   $self->po->increment;
   $self->$which(0);
 };
@@ -456,6 +456,7 @@ sub row_second {
   return $string;
 };
 
+__PACKAGE__->meta->make_immutable;
 1;
 
 

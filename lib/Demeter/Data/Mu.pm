@@ -57,7 +57,7 @@ sub clamp {
     #return $1 if (lc($clampval) =~ m{\A($clamp_regex)\z});
     return $clampval;
   } elsif ( is_Clamp($clampval) ) {
-    return $self->mode->config->default("clamp", $clampval);
+    return $self->co->default("clamp", $clampval);
   } else {
     return 0;
   };
@@ -263,7 +263,7 @@ sub plotE {
 };
 sub _plotE_command {
   my ($self) = @_;
-  my $pf  = $self->mode->plot;
+  my $pf  = $self->mo->plot;
   if (not ref($self) =~ m{Data}) {
     my $class = ref $self;
     croak("$class objects are not plottable");

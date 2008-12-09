@@ -145,11 +145,15 @@ has 'Prj' => (
 
 
 ## -------- The Professor and Mary Anne
+has 'iwd' => (is => 'rw', isa => 'Str', default => q{});
+has 'cwd' => (is => 'rw', isa => 'Str', default => q{});
+
 has 'echo'		   => (is => 'rw', isa => 'Any');
 has 'datadefault'	   => (is => 'rw', isa => 'Any');
 has 'external_plot_object' => (is => 'rw', isa => 'Any');
 has 'ui'                   => (is => 'rw', isa => 'Str', default => 'none',);
 
+__PACKAGE__->meta->make_immutable;
 1;
 
 =head1 NAME
@@ -344,6 +348,14 @@ A list of all Data::Prj objects created during this instance of Demeter.
 
 =over 4
 
+=item C<iwd>
+
+The initial working directory when Demeter starts.
+
+=item C<cwd>
+
+Demeter's current working directory.
+
 =item echo
 
 ???
@@ -392,7 +404,7 @@ All of my examples use the Data object.
 This is the accessor for the attribute which holds the list of all
 Data objects created during this instance of Demeter.
 
-  my @list = @{ $object->mode->Data };
+  my @list = @{ $object->mo->Data };
 
 =item C<push_>I<Object>
 

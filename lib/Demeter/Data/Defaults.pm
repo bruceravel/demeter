@@ -93,11 +93,11 @@ sub resolve_nor {
   $last -= $e0;
 
   ## does this appear to be XANES data?
-  my $cutoff = $self->mode->config->default("xanes", "cutoff");
+  my $cutoff = $self->co->default("xanes", "cutoff");
   if ($cutoff and ($last < $cutoff)) {
     ##carp "these are xanes data!\n";
-    ($bkg_nor1, $bkg_nor2) = ($self->mode->config->default("xanes", "nor1"),
-			      $self->mode->config->default("xanes", "nor2"));
+    ($bkg_nor1, $bkg_nor2) = ($self->co->default("xanes", "nor1"),
+			      $self->co->default("xanes", "nor2"));
   };
 
   ($bkg_nor1 *= 1000) if (abs($bkg_nor1) < 1);

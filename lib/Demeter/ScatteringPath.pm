@@ -102,7 +102,7 @@ has 'randstring'   => (is => 'rw', isa => 'Str',      default => q{});
 
 sub BUILD {
   my ($self, @params) = @_;
-  $self->mode->push_ScatteringPath($self);
+  $self->mo->push_ScatteringPath($self);
 };
 
 sub _betakey {

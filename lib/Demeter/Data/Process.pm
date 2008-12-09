@@ -33,7 +33,7 @@ Readonly my $EPSILON => 1e-5;
 sub rebin {
   my ($self, $rhash) = @_;
   #$$rhash{group} ||= q{};
-  my $standard = $self->mode->standard;
+  my $standard = $self->mo->standard;
   $self -> _update('fft');
   $self -> standard;		# make self the standard for rebinning
   foreach my $k (keys %$rhash) {
@@ -74,7 +74,7 @@ sub merge {
   my ($self, $how, @data) = @_;
   $how = lc($how);
   croak("Demeter::Data::Process: \$data->merge(\$how, \@data) where \$how = e|k|n") if ($how !~ m{^[ekn]});
-  my $standard = $self->mode->standard;
+  my $standard = $self->mo->standard;
   $self->standard;		# make self the standard for merging
 
   my $merged = $self->clone;
@@ -86,7 +86,7 @@ sub merge {
   };
 
   my $ndata = $#data + 2;
-  my $config = $self->mode->config;
+  my $config = $self->mo->config;
   $config -> set(ndata=>$ndata);
 
   my $string = $merged->template("process", "merge_end"); #, {ndata=>$ndata});
@@ -119,7 +119,7 @@ sub mergeE {
     ($emin = $array[0])  if ($array[0]  > $emin);
     ($emax = $array[-1]) if ($array[-1] < $emax);
   };
-  my $config = $self->mode->config;
+  my $config = $self->mo->config;
   $config -> set(merge_min   => $emin,
 		 merge_max   => $emax,
 		 merge_space => "energy",
@@ -150,7 +150,7 @@ sub mergek {
     ($kmin = $array[0])  if ($array[0]  > $kmin);
     ($kmax = $array[-1]) if ($array[-1] < $kmax);
   };
-  my $config = $self->mode->config;
+  my $config = $self->mo->config;
   $config -> set(merge_min   => $kmin,
 		 merge_max   => $kmax,
 		 merge_space => "k",
@@ -184,11 +184,11 @@ sub Truncate {
   my ($self, $beforeafter, $value) = @_;
   if ($self->datatype eq "xmu") {
     $self -> _update("normalize");
-    $self -> mode -> config -> set(trun_x => 'energy', 'trun_y' => 'xmu');
+    $self -> mo -> config -> set(trun_x => 'energy', 'trun_y' => 'xmu');
   } elsif ($self->datatype eq "chi") {
-    $self -> mode -> config -> set(trun_x => 'k', 'trun_y' => 'chi');
+    $self -> mo -> config -> set(trun_x => 'k', 'trun_y' => 'chi');
   };				# also not_data, trun_y can be something else
-  $self -> mode -> config -> set(trun_ba => (lc($beforeafter) =~ m{\Ab}) ? 'before' : 'after',
+  $self -> mo -> config -> set(trun_ba => (lc($beforeafter) =~ m{\Ab}) ? 'before' : 'after',
 				 trun_value => $value);
 
   my $string = q{};
@@ -234,7 +234,7 @@ sub deglitch {
     } elsif ($nearest >= $x[-2]) {
       $self -> Truncate("after", $x[-3]);
     } else {
-      $self -> mode -> config -> set(degl_point => $nearest);
+      $self -> mo -> config -> set(degl_point => $nearest);
       my $string = $self->template("process", "deglitch");
       $self->dispose($string);
     };
@@ -248,9 +248,9 @@ sub smooth {
   ($n = 1) if ($n < 1);
   if ($self->datatype eq "xmu") {
     $self -> _update("normalize");
-    $self -> mode -> config -> set(smooth_suffix => 'xmu');
+    $self -> mo -> config -> set(smooth_suffix => 'xmu');
   } elsif ($self->datatype eq "chi") {
-    $self -> mode -> config -> set(smooth_suffix => 'chi');
+    $self -> mo -> config -> set(smooth_suffix => 'chi');
   };
   foreach (1 .. int($n)) {
     my $string = $self->template("process", "smooth");
@@ -266,7 +266,7 @@ sub smooth {
 
 sub convolve {
   my ($self, @args) = @_;
-  my $config = $self->mode->config;;
+  my $config = $self->mo->config;;
   #croak("usage: \$self->convolve(width=>\$width, type=>\$type, which=>\$which)"), return
   #  if (ref($args) !~ /HASH/);
   my %args = @args;
@@ -307,7 +307,7 @@ sub convolve {
 
 sub noise {
   my ($self, @args) = @_;
-  my $config = $self->mode->config;;
+  my $config = $self->mo->config;;
   #croak("usage: \$self->convolve({width=>\$width, which=>\$which})"), return
   #  if (ref($args) !~ /HASH/);
   my %args = @args;

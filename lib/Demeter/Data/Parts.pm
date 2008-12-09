@@ -49,7 +49,7 @@ sub part_plot {
 };
 sub _part_plot_command {
   my ($self, $pt, $space) = @_;
-  my $pf           = $self->mode->plot;
+  my $pf           = $self->mo->plot;
   $pt            ||= q{};
   my $part         = ($pt eq 'sum') ? 'fit' : $pt; # sum is a synonym for fit
   croak('part_plot: valid parts are fit, res, and bkg') if (not is_DataPart($part));

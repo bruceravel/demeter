@@ -22,7 +22,6 @@ sub bft {
 };
 sub _bft_command {
   my ($self) = @_;
-  my $pf  = $self->get_mode('plot');
   croak(ref($self)." objects cannot be Fourier transformed") if not $self->plottable;
   my $string = $self->template("process", "bft");
   return $string;

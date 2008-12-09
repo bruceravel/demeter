@@ -41,7 +41,7 @@ has 'Use'      => (is => 'rw', isa => 'Bool',  default => 1);
 
 sub BUILD {
   my ($self, @params) = @_;
-  $self->mode->push_GDS($self);
+  $self->mo->push_GDS($self);
 };
 
 ## return a list of valid GDS attributes
@@ -146,6 +146,7 @@ sub evaluate {
   return 1;
 };
 
+__PACKAGE__->meta->make_immutable;
 1;
 
 

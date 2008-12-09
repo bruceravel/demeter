@@ -132,6 +132,7 @@ sub plot {
   return $self;
 };
 
+__PACKAGE__->meta->make_immutable;
 1;
 
 

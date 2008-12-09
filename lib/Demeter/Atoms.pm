@@ -803,6 +803,7 @@ sub atoms_file {
   return $string;
 };
 
+__PACKAGE__->meta->make_immutable;
 1;
 
 =head1 NAME

@@ -151,8 +151,8 @@ has 'interp' => (is => 'rw', isa => Interp,          default => sub{ shift->co->
 sub BUILD {
   my ($self) = @_;
   $self -> start_plot;
-  $self -> mode -> plot($self);
-  $self -> mode -> push_Plot($self);
+  $self -> mo -> plot($self);
+  $self -> mo -> push_Plot($self);
   return;
 };
 
@@ -285,6 +285,7 @@ sub propagate_kweight {
 };
 
 
+__PACKAGE__->meta->make_immutable;
 1;
 
 =head1 NAME

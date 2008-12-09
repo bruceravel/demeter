@@ -174,7 +174,7 @@ sub align {
 
 sub _e0_marker_command {
   my ($self, $requested) = @_;
-  my $pf = $self->get_mode('plot');
+  my $pf = $self->po;
   my $suffix = ($pf->e_norm and $pf->e_der)         ? "nder" :
                ($pf->e_norm and $self->bkg_flatten) ? "flat" :
                ($pf->e_norm)                        ? "norm" :
@@ -187,7 +187,7 @@ sub _e0_marker_command {
 };
 sub _preline_marker_command {
   my ($self, $requested) = @_;
-  my $pf = $self->get_mode('plot');
+  my $pf = $self->po;
   my $suffix = ($pf->e_norm and $self->bkg_flatten) ? "flat" :
                ($pf->e_norm)                        ? "norm" :
 		                                      "xmu";
@@ -201,7 +201,7 @@ sub _preline_marker_command {
 };
 sub _postline_marker_command {
   my ($self, $requested) = @_;
-  my $pf = $self->get_mode('plot');
+  my $pf = $self->po;
   my $suffix = ($pf->e_norm and $self->bkg_flatten) ? "flat" :
                ($pf->e_norm)                        ? "norm" :
 		                                      "xmu";

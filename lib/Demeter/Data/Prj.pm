@@ -47,7 +47,7 @@ has 'entries' => (
 
 sub BUILD {
   my ($self, @params) = @_;
-  $self->mode->push_Prj($self);
+  $self->mo->push_Prj($self);
 };
 
 sub Read {
@@ -311,7 +311,7 @@ sub _array {
   return @array;
 };
 
-
+__PACKAGE__->meta->make_immutable;
 1;
 
 

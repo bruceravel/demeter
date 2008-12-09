@@ -157,7 +157,7 @@ has 'save'         => (is=>'rw', isa => 'Bool',         default => 1);   # boole
 
 sub BUILD {
   my ($self, @params) = @_;
-  $self->mode->push_Feff($self);
+  $self->mo->push_Feff($self);
 };
 
 

@@ -21,12 +21,16 @@ use Moose;
 extends 'Demeter::Plot';
 
 use Carp;
+use File::Spec;
 use Regexp::List;
 use Regexp::Optimizer;
 use Regexp::Common;
 use Readonly;
 Readonly my $NUMBER => $RE{num}{real};
 use String::Random qw(random_string);
+
+has 'error_log' => (is => 'ro', isa => 'Str',  default => File::Spec->catfile($Demeter::mode->iwd,
+									      $Demeter::mode->external_plot_object->{__error_log}));
 
 before 'start_plot' => sub {
   my ($self) = @_;
@@ -39,8 +43,9 @@ before 'start_plot' => sub {
 override 'end_plot' => sub {
   my ($self) = @_;
   $self->cleantemp;
-  #print join(" ", caller), $/;
-  $self->mode->external_plot_object->gnuplot_cmd("quit");
+  unlink $self->error_log;
+  #unlink $self->mode->external_plot_object->{__error_log}; # WTF is this for, anyway?
+  $self->mo->external_plot_object->gnuplot_cmd("quit");
   return $self;
 };
 
@@ -68,7 +73,7 @@ override 'legend' => sub {
     $self->$kk($args{$key});
   };
   ## this is wrong!!!
-  #$self->mode->external_plot_object->gnuplot_cmd("set key inside left top");
+  #$self->mo->external_plot_object->gnuplot_cmd("set key inside left top");
   return $self;
 };
 

@@ -122,39 +122,39 @@ has 'nidp'           => (is => 'rw', isa => 'Num', default => 0);
 has 'bkg_e0'          => (is => 'rw', isa => 'Num',   default => 0,
 			  trigger => sub{ my($self) = @_; $self->update_bkg(1), $self->update_norm(1) });
 
-has 'bkg_e0_fraction' => (is => 'rw', isa =>  PosNum, default => sub{ shift->mode->config->default("bkg", "e0_fraction") || 0.5});
+has 'bkg_e0_fraction' => (is => 'rw', isa =>  PosNum, default => sub{ shift->co->default("bkg", "e0_fraction") || 0.5});
 
 has 'bkg_eshift'      => (is => 'rw', isa => 'Num',   default => 0,
 			  trigger => sub{ my($self) = @_; $self->update_bkg(1), $self->update_norm(1) });
 
-has 'bkg_kw'          => (is => 'rw', isa =>  NonNeg, default => sub{ shift->mode->config->default("bkg", "kw")          || 1},
+has 'bkg_kw'          => (is => 'rw', isa =>  NonNeg, default => sub{ shift->co->default("bkg", "kw")          || 1},
 			  trigger => sub{ my($self) = @_; $self->update_bkg(1) });
 
-has 'bkg_rbkg'        => (is => 'rw', isa =>  PosNum, default => sub{ shift->mode->config->default("bkg", "rbkg")        || 1},
+has 'bkg_rbkg'        => (is => 'rw', isa =>  PosNum, default => sub{ shift->co->default("bkg", "rbkg")        || 1},
 			  trigger => sub{ my($self) = @_; $self->update_bkg(1) });
 
-has 'bkg_dk'          => (is => 'rw', isa =>  NonNeg, default => sub{ shift->mode->config->default("bkg", "dk")          || 1},
+has 'bkg_dk'          => (is => 'rw', isa =>  NonNeg, default => sub{ shift->co->default("bkg", "dk")          || 1},
 			  trigger => sub{ my($self) = @_; $self->update_bkg(1) });
 
-has 'bkg_pre1'        => (is => 'rw', isa => 'Num',   default => sub{ shift->mode->config->default("bkg", "pre1")        || -150},
+has 'bkg_pre1'        => (is => 'rw', isa => 'Num',   default => sub{ shift->co->default("bkg", "pre1")        || -150},
 			  trigger => sub{ my($self) = @_; $self->update_bkg(1), $self->update_norm(1) });
 
-has 'bkg_pre2'        => (is => 'rw', isa => 'Num',   default => sub{ shift->mode->config->default("bkg", "pre2")        || -30},
+has 'bkg_pre2'        => (is => 'rw', isa => 'Num',   default => sub{ shift->co->default("bkg", "pre2")        || -30},
 			  trigger => sub{ my($self) = @_; $self->update_bkg(1), $self->update_norm(1) });
 
-has 'bkg_nor1'        => (is => 'rw', isa => 'Num',   default => sub{ shift->mode->config->default("bkg", "nor1")        || 150},
+has 'bkg_nor1'        => (is => 'rw', isa => 'Num',   default => sub{ shift->co->default("bkg", "nor1")        || 150},
 			  trigger => sub{ my($self) = @_; $self->update_bkg(1), $self->update_norm(1) });
 
-has 'bkg_nor2'        => (is => 'rw', isa => 'Num',   default => sub{ shift->mode->config->default("bkg", "nor2")        || 400},
+has 'bkg_nor2'        => (is => 'rw', isa => 'Num',   default => sub{ shift->co->default("bkg", "nor2")        || 400},
 			  trigger => sub{ my($self) = @_; $self->update_bkg(1), $self->update_norm(1) });
 
 ## these need a trigger
 has 'bkg_spl1'        => (is => 'rw', isa => 'Num',
 			  trigger => sub{ my($self) = @_; $self->update_bkg(1) },
-			  default => sub{ shift->mode->config->default("bkg", "spl1")        || 0});
+			  default => sub{ shift->co->default("bkg", "spl1")        || 0});
 has 'bkg_spl2'        => (is => 'rw', isa => 'Num',
 			  trigger => sub{ my($self) = @_; $self->update_bkg(1) },
-			  default => sub{ shift->mode->config->default("bkg", "spl2")        || 0});
+			  default => sub{ shift->co->default("bkg", "spl2")        || 0});
 has 'bkg_spl1e'       => (is => 'rw', isa => 'Num',
 			  trigger => sub{ my($self) = @_; $self->update_bkg(1) },
 			  default => 0);
@@ -162,7 +162,7 @@ has 'bkg_spl2e'       => (is => 'rw', isa => 'Num',
 			  trigger => sub{ my($self) = @_; $self->update_bkg(1) },
 			  default => 0);
 
-has 'bkg_kwindow' => (is => 'rw', isa =>  Window,   default => sub{ shift->mode->config->default("bkg", "kwindow")     || 'kaiser-bessel'},
+has 'bkg_kwindow' => (is => 'rw', isa =>  Window,   default => sub{ shift->co->default("bkg", "kwindow")     || 'kaiser-bessel'},
 		      trigger => sub{ my($self) = @_; $self->update_bkg(1) });
 
 has $_ => (is => 'rw', isa => 'Num',  default => 0) foreach (qw(bkg_slope bkg_int bkg_step bkg_fitted_step bkg_nc0 bkg_nc1 bkg_nc2 bkg_former_e0));
@@ -174,21 +174,21 @@ has 'bkg_z'       => (is => 'rw', isa =>  Element,  default => 'H');
 has 'bkg_stan'    => (is => 'rw', isa => 'Str',     default => 'None',
 		      trigger => sub{ my($self) = @_; $self->update_bkg(1) });
 
-has 'bkg_flatten' => (is => 'rw', isa => 'Bool',    default => sub{ shift->mode->config->default("bkg", "flatten") || 1});
+has 'bkg_flatten' => (is => 'rw', isa => 'Bool',    default => sub{ shift->co->default("bkg", "flatten") || 1});
 
-has 'bkg_fnorm'	  => (is => 'rw', isa => 'Bool',    default => sub{ shift->mode->config->default("bkg", "fnorm")   || 0},
+has 'bkg_fnorm'	  => (is => 'rw', isa => 'Bool',    default => sub{ shift->co->default("bkg", "fnorm")   || 0},
 		      trigger => sub{ my($self) = @_; $self->update_bkg(1), $self->update_norm(1) });
 
-has 'bkg_nnorm'	  => (is => 'rw', isa =>  PosInt,   default => sub{ shift->mode->config->default("bkg", "nnorm")   || 3},
+has 'bkg_nnorm'	  => (is => 'rw', isa =>  PosInt,   default => sub{ shift->co->default("bkg", "nnorm")   || 3},
 		      trigger => sub{ my($self) = @_; $self->update_bkg(1), $self->update_norm(1) });
 
-has 'bkg_clamp1'  => (is => 'rw', isa =>  Natural,  default => sub{ shift->mode->config->default("bkg", "clamp1")  || 0},
+has 'bkg_clamp1'  => (is => 'rw', isa =>  Natural,  default => sub{ shift->co->default("bkg", "clamp1")  || 0},
 		      trigger => sub{ my($self) = @_; $self->update_bkg(1) });
 
-has 'bkg_clamp2'  => (is => 'rw', isa =>  Natural,  default => sub{ shift->mode->config->default("bkg", "clamp2")  || 24},
+has 'bkg_clamp2'  => (is => 'rw', isa =>  Natural,  default => sub{ shift->co->default("bkg", "clamp2")  || 24},
 		      trigger => sub{ my($self) = @_; $self->update_bkg(1) });
 
-has 'bkg_nclamp'  => (is => 'rw', isa =>  PosInt,   default => sub{ shift->mode->config->default("bkg", "nclamp")  || 5},
+has 'bkg_nclamp'  => (is => 'rw', isa =>  PosInt,   default => sub{ shift->co->default("bkg", "nclamp")  || 5},
 		      trigger => sub{ my($self) = @_; $self->update_bkg(1) });
 
 ## -------- foreward Fourier transform parameters
@@ -196,49 +196,49 @@ has 'fft_edge'    => (is => 'rw', isa =>  Edge,    default => 'K');
 
 has 'fft_kmin'    => (is => 'rw', isa => 'Num',
 		      trigger => sub{ my($self) = @_; $self->update_fft(1); &_nidp},
-		      default => sub{ shift->mode->config->default("fft", "kmin")     ||  3});
+		      default => sub{ shift->co->default("fft", "kmin")     ||  3});
 
 has 'fft_kmax'    => (is => 'rw', isa => 'Num',
 		      trigger => sub{ my($self) = @_; $self->update_fft(1); &_nidp},
-		      default => sub{ shift->mode->config->default("fft", "kmax")     || -2});
+		      default => sub{ shift->co->default("fft", "kmax")     || -2});
 
-has 'fft_dk'      => (is => 'rw', isa =>  NonNeg,  default => sub{ shift->mode->config->default("fft", "dk")       ||  2},
+has 'fft_dk'      => (is => 'rw', isa =>  NonNeg,  default => sub{ shift->co->default("fft", "dk")       ||  2},
 		      trigger => sub{ my($self) = @_; $self->update_fft(1)});
 
-has 'fft_kwindow' => (is => 'rw', isa =>  Window,  default => sub{ shift->mode->config->default("fft", "kwindow")  || 'hanning'},
+has 'fft_kwindow' => (is => 'rw', isa =>  Window,  default => sub{ shift->co->default("fft", "kwindow")  || 'hanning'},
 		      trigger => sub{ my($self) = @_; $self->update_fft(1)});
 
-has 'fft_pc'      => (is => 'rw', isa => 'Bool',   default => sub{ shift->mode->config->default("fft", "pc")       ||  0},
+has 'fft_pc'      => (is => 'rw', isa => 'Bool',   default => sub{ shift->co->default("fft", "pc")       ||  0},
 		      trigger => sub{ my($self) = @_; $self->update_fft(1)});
 
-has 'rmax_out'    => (is => 'rw', isa =>  PosNum,  default => sub{ shift->mode->config->default("fft", "rmax_out") ||  10},
+has 'rmax_out'    => (is => 'rw', isa =>  PosNum,  default => sub{ shift->co->default("fft", "rmax_out") ||  10},
 		      trigger => sub{ my($self) = @_; $self->update_fft(1)});
 
 ## -------- backward Fourier transform parameters
-has 'bft_rwindow' => (is => 'rw', isa =>  Window,  default => sub{ shift->mode->config->default("bft", "rwindow")  || 'hanning'},
+has 'bft_rwindow' => (is => 'rw', isa =>  Window,  default => sub{ shift->co->default("bft", "rwindow")  || 'hanning'},
 		      trigger => sub{ my($self) = @_; $self->update_bft(1)});
 
 has 'bft_rmin'    => (is => 'rw', isa =>  PosNum,
 		      trigger => sub{ my($self) = @_; $self->update_bft(1); &_nidp},
-		      default => sub{ shift->mode->config->default("bft", "rmin")     ||  1});
+		      default => sub{ shift->co->default("bft", "rmin")     ||  1});
 
 has 'bft_rmax'    => (is => 'rw', isa =>  PosNum,
 		      trigger => sub{ my($self) = @_; $self->update_bft(1); &_nidp},
-		      default => sub{ shift->mode->config->default("bft", "rmax")     ||  3});
+		      default => sub{ shift->co->default("bft", "rmax")     ||  3});
 
-has 'bft_dr'      => (is => 'rw', isa =>  NonNeg,    default => sub{ shift->mode->config->default("bft", "dr")       ||  0.2},
+has 'bft_dr'      => (is => 'rw', isa =>  NonNeg,    default => sub{ shift->co->default("bft", "dr")       ||  0.2},
 		      trigger => sub{ my($self) = @_; $self->update_bft(1)});
 
 
 ## -------- fitting parameters
-has 'fit_k1'		  => (is => 'rw', isa => 'Bool',     default => sub{ shift->mode->config->default("fit", "k1")         ||  1});
-has 'fit_k2'		  => (is => 'rw', isa => 'Bool',     default => sub{ shift->mode->config->default("fit", "k2")         ||  1});
-has 'fit_k3'		  => (is => 'rw', isa => 'Bool',     default => sub{ shift->mode->config->default("fit", "k3")         ||  1});
-has 'fit_karb'		  => (is => 'rw', isa => 'Bool',     default => sub{ shift->mode->config->default("fit", "karb")       ||  0});
-has 'fit_karb_value'	  => (is => 'rw', isa =>  NonNeg,    default => sub{ shift->mode->config->default("fit", "karb_value") ||  0});
-has 'fit_space'	          => (is => 'rw', isa =>  FitSpace,  default => sub{ shift->mode->config->default("fit", "space")      || 'r'});
+has 'fit_k1'		  => (is => 'rw', isa => 'Bool',     default => sub{ shift->co->default("fit", "k1")         ||  1});
+has 'fit_k2'		  => (is => 'rw', isa => 'Bool',     default => sub{ shift->co->default("fit", "k2")         ||  1});
+has 'fit_k3'		  => (is => 'rw', isa => 'Bool',     default => sub{ shift->co->default("fit", "k3")         ||  1});
+has 'fit_karb'		  => (is => 'rw', isa => 'Bool',     default => sub{ shift->co->default("fit", "karb")       ||  0});
+has 'fit_karb_value'	  => (is => 'rw', isa =>  NonNeg,    default => sub{ shift->co->default("fit", "karb_value") ||  0});
+has 'fit_space'	          => (is => 'rw', isa =>  FitSpace,  default => sub{ shift->co->default("fit", "space")      || 'r'});
 has 'fit_epsilon'	  => (is => 'rw', isa => 'Num',      default => 0);
-has 'fit_cormin'	  => (is => 'rw', isa =>  PosNum,    default => sub{ shift->mode->config->default("fit", "cormin")     ||  0.4});
+has 'fit_cormin'	  => (is => 'rw', isa =>  PosNum,    default => sub{ shift->co->default("fit", "cormin")     ||  0.4});
 ## or Demeter::Path
 has 'fit_pcpath'	  => (is => 'rw', isa => 'Str',      default => 'None');
 has 'fit_include'	  => (is => 'rw', isa => 'Bool',     default => 1);
@@ -566,7 +566,7 @@ override 'deserialize' => sub {
   #*Load   = \ &deserialize;
 }
 
-
+__PACKAGE__->meta->make_immutable;
 1;
 
 

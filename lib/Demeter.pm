@@ -24,6 +24,7 @@ our $VERSION = version->new('0.2.0');
 use vars qw($Gnuplot_exists);
 
 use Carp;
+use Cwd;
 use File::Basename qw(dirname);
 use File::Spec;
 use List::MoreUtils qw(any minmax zip);
@@ -73,6 +74,7 @@ use Demeter::Mode;
 use vars qw($mode);
 $mode = Demeter::Mode -> new;
 has 'mode' => (is => 'rw', isa => 'Demeter::Mode', default => sub{$mode});
+$mode -> iwd(&Cwd::cwd);
 
 use Demeter::Config;
 use vars qw($config);
@@ -169,13 +171,13 @@ sub get {
 };
 
 sub co {
-  return shift->mode->config;
+  return shift->mo->config;
 };
 sub po {
-  return shift->mode->plot;
+  return shift->mo->plot;
 };
 sub mo {
-  return shift->mode;
+  return $mode;
 };
 {
   no warnings 'once';
@@ -364,23 +366,23 @@ sub plot_with {
     carp("The gnuplot backend is not available -- reverting to pgplot");
     $backend = 'pgplot';
   };
-  $self->mode->template_plot($backend);
+  $self->mo->template_plot($backend);
 
-  my $old_plot_object = $self -> mode -> plot;
+  my $old_plot_object = $self -> mo -> plot;
   ## need to preserve parameter values when switching plotting backends
  SWITCH: {
     ($backend eq 'pgplot') and do {
       $old_plot_object->DEMOLISHALL if $old_plot_object;
-      $self -> mode -> plot(Demeter::Plot->new);
+      $self -> mo -> plot(Demeter::Plot->new);
       last SWITCH;
     };
 
     ($backend eq 'gnuplot') and do {
       #$self->mode->remove_Plot($old_plot_object);
       $old_plot_object->DEMOLISHALL if $old_plot_object;
-      $self -> mode -> external_plot_object( Graphics::GnuplotIF->new );
+      $self -> mo -> external_plot_object( Graphics::GnuplotIF->new );
       require Demeter::Plot::Gnuplot;
-      $self -> mode -> plot( Demeter::Plot::Gnuplot->new );
+      $self -> mo -> plot( Demeter::Plot::Gnuplot->new );
       last SWITCH;
     };
   };
@@ -394,8 +396,8 @@ sub template_set {
     carp("$which is not a valid template set, using ifeffit.");
     return $self;
   };
-  $self -> mode -> template_process($which);
-  $self -> mode -> template_fit($which);
+  $self -> mo -> template_process($which);
+  $self -> mo -> template_fit($which);
   #$self -> mode -> template_analysis($which);
   return $self;
 };
@@ -522,10 +524,6 @@ __PACKAGE__->meta->make_immutable;
 1;
 
 
-
-
-
-
 #   my $opt  = Regexp::List->new;
 #   my %regexp = (
 # 		commands   => $opt->list2re(qw{ f1f2 bkg_cl chi_noise color comment correl cursor
@@ -592,18 +590,6 @@ __PACKAGE__->meta->make_immutable;
 # 		data_parts => $opt->list2re(qw(fit bkg res)),
 # 	       );
 
-
-#   sub dumpit {
-#     my ($self) = @_;
-#     my %params=$self->get_all;
-#     use Data::Dumper;
-#     print Data::Dumper->Dump([\%params],[qw(*params)]);
-#   };
-
-# };
-
-
-1;
 
 =head1 NAME
 
