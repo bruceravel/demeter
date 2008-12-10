@@ -196,5 +196,4 @@ $data -> save("fit", "hgfit.fit");
 ## -------- simple, on-screen interaction with the fit results
 $fit -> interview;
 
-## clean up path files after the fit
-system 'rm -rf 15/*.sp';
+$fit -> finish;

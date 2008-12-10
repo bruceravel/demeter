@@ -62,7 +62,7 @@ with 'MooseX::Clone';
 
 
 my %seen_group;
-has 'group'     => (is => 'rw', isa => 'Str',  default => sub{_get_group()});
+has 'group'     => (is => 'rw', isa => 'Str',  default => sub{shift->_get_group()});
 has 'name'      => (is => 'rw', isa => 'Str',  default => q{});
 has 'plottable' => (is => 'ro', isa => 'Bool', default => 0);
 has 'data'      => (is => 'rw', isa => 'Any',  default => q{},
@@ -219,7 +219,7 @@ around 'clone' => sub {
   my $new = $self -> $code(@arguments);
 
   ## the cloned object needs its own group name
-  $new->group(_get_group());
+  $new->group($self->_get_group());
 
   ## data from Athena
   if ((ref($self) =~ m{Data}) and $self->from_athena) {
@@ -320,6 +320,7 @@ sub is_true {
 
 ## organize obtaining a unique group name
 sub _get_group {
+  my ($self) = @_;
   my $propose = random_string('ccccc');
   while ($seen_group{$propose}) {
     $propose = random_string('ccccc');
@@ -334,7 +335,7 @@ sub _get_group {
 ## return undef for an undefined mode
 sub get_mode {
   my ($self, @which) = @_;
-  my $mode = $self->mode;
+  my $mode = $self->mo;
   my @val;
   foreach my $w (@which) {             ##     vvvvvvv    wow, that works!
     $mode->meta->has_method($w) ? push @val, $mode->$w
@@ -345,7 +346,7 @@ sub get_mode {
 
 sub set_mode {
   my ($self, @which) = @_;
-  my $mode = $self->mode;
+  my $mode = $self->mo;
   my %which = @which; ## coerce the group list to a hash for convenience
   foreach my $k (keys %which) {
     next if not $mode->meta->has_method($k);
@@ -472,12 +473,12 @@ sub template {
   my ($self, $category, $file, $rhash) = @_;
 
   my $data     = $self->data;
-  my $pf       = $self->mode->plot;
-  my $config   = $self->mode->config;
-  my $fit      = $self->mode->fit;
-  my $standard = $self->mode->standard;
-  my $theory   = $self->mode->theory;
-  my $path     = $self->mode->path;
+  my $pf       = $self->mo->plot;
+  my $config   = $self->mo->config;
+  my $fit      = $self->mo->fit;
+  my $standard = $self->mo->standard;
+  my $theory   = $self->mo->theory;
+  my $path     = $self->mo->path;
 
   my $tmpl = File::Spec->catfile(dirname($INC{"Demeter.pm"}),
 				 "Demeter",

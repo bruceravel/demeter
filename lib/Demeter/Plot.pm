@@ -19,8 +19,9 @@ use autodie qw(open close);
 
 use Moose;
 extends 'Demeter';
+
 use MooseX::AttributeHelpers;
-use Moose::Util::TypeConstraints;
+#use Moose::Util::TypeConstraints;
 use Demeter::StrTypes qw( Element
 			  Edge
 			  Clamp
@@ -49,6 +50,12 @@ use Readonly;
 Readonly my $NUMBER => $RE{num}{real};
 use String::Random qw(random_string);
 #use YAML;
+
+## why do these not get inherited properly?
+has 'group'     => (is => 'rw', isa => 'Str',  default => sub{shift->_get_group()});
+has 'name'      => (is => 'rw', isa => 'Str',  default => q{});
+has 'plottable' => (is => 'ro', isa => 'Bool', default => 0);
+has 'data'      => (is => 'rw', isa => 'Any',  default => q{});
 
 
 has 'charsize'  => (is => 'rw', isa =>  PosNum,    default => sub{ shift->co->default("plot", "charsize") || 1.2});
@@ -150,9 +157,9 @@ has 'interp' => (is => 'rw', isa => Interp,          default => sub{ shift->co->
 
 sub BUILD {
   my ($self) = @_;
-  $self -> start_plot;
   $self -> mo -> plot($self);
   $self -> mo -> push_Plot($self);
+  $self -> start_plot;
   return;
 };
 
@@ -373,7 +380,7 @@ given in square brackets.
 
 =over 4
 
-=item C<group> (string) I<[a random four-letter string]>
+=item C<group> (string) I<[a random five-letter string]>
 
 This string is used as the unique identifier for the Plot object.
 

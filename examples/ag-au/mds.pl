@@ -149,3 +149,5 @@ $fitobject -> logfile("ag-au.log", $header, $footer);
 # };
 
 $fitobject -> interview;
+
+$fitobject -> finish;

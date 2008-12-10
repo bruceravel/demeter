@@ -36,7 +36,7 @@ snippets of perl code interspersed.  Here is an example:
      #   {$D} returns the ifeffit group name
      #   {$D->get(""parameter")} returns the value of that parameter
    }
-   fftf({$D->get_group}.chi,
+   fftf({$D->group}.chi,
         k        = {$D}.k,
         kmin     = {$D->get("fft_kmin")},
         kmax     = {$D->get("fft_kmax")},

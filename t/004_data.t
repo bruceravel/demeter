@@ -26,19 +26,19 @@ my $data  = Demeter::Data -> new;
 my $data2 = Demeter::Data -> new;
 
 ok( ref($data) =~ m{Data},            "made a Data object");
-ok( $data->group ne $data2->group,    "made distinct Data objects");
+ok( $data->group ne $data2->group,    "made distinct Data objects: " . $data->group . " ne " . $data2->group);
 ok( $data->plottable,                 "Data object is plottable");
-ok( ref($data->mode) =~ 'Mode',       'Data object can find the Mode object');
-ok( ref($data->mode->config) =~ 'Config',   'Data object can find the Config object');
-ok( ref($data->mode->plot) =~ 'Plot', 'Data object can find the Plot object');
+ok( ref($data->mo) =~ 'Mode',       'Data object can find the Mode object');
+ok( ref($data->mo->config) =~ 'Config',   'Data object can find the Config object');
+ok( ref($data->mo->plot) =~ 'Plot', 'Data object can find the Plot object');
 ok( $data->group =~ m{\A\w{5}\z},     'Data object has a proper group name');
 $data -> name('this');
 ok( $data->name eq 'this',           'Data object has a settable label');
-ok( ($data->mode->template_plot     eq 'pgplot'  and
-     $data->mode->template_feff     eq 'feff6'   and
-     $data->mode->template_process  eq 'ifeffit' and
-     $data->mode->template_fit      eq 'ifeffit' and
-     $data->mode->template_analysis eq 'ifeffit'),
+ok( ($data->mo->template_plot     eq 'pgplot'  and
+     $data->mo->template_feff     eq 'feff6'   and
+     $data->mo->template_process  eq 'ifeffit' and
+     $data->mo->template_fit      eq 'ifeffit' and
+     $data->mo->template_analysis eq 'ifeffit'),
                                        "Data object can find template sets");
 
 
@@ -53,9 +53,9 @@ $data -> bft_rmin(2); $data -> bft_rmax(3);
 ok( abs($data->nidp - 5.092) < 0.001,                      "FT and fit range triggers work to compute Nidp");
 ok( (($data eq $data->data) and ($data2 eq $data2->data)), "Data object is its own data");
 $data->standard;
-ok( $data eq $data->mode->standard,                        "can set data standard");
+ok( $data eq $data->mo->standard,                        "can set data standard");
 $data->unset_standard;
-ok( !$data->mode->standard,                                "can unset data standard");
+ok( !$data->mo->standard,                                "can unset data standard");
 
 ## -------- test that updating logic works correctly
 $data->update_data(0); $data->update_columns(0); $data->update_norm(0); $data->update_bkg(0); $data->update_fft(0); $data->update_bft(0);

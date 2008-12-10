@@ -82,6 +82,8 @@ $fitobject -> fit;
 
 $fitobject -> interview;
 
+$fitobject -> finish;
+
 exit;
 
 print "set nice legend parameters for the plot\n";

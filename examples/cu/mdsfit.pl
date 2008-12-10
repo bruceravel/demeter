@@ -128,6 +128,7 @@ $fitobject -> fit;
 #$fitobject -> ff2chi($data_010k);
 $fitobject -> interview;
 
+$fitobject -> finish;
 
 exit;
 

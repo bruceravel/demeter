@@ -160,6 +160,10 @@ sub BUILD {
   $self->mo->push_Feff($self);
 };
 
+sub alldone {
+  my ($self) = @_;
+  $self->clean_workspace if not $self->save;
+};
 
 sub central {
   my ($self) = @_;

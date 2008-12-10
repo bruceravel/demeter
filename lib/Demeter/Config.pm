@@ -22,7 +22,7 @@ use Moose;
 extends 'Demeter';
 use Moose::Util::TypeConstraints;
 use MooseX::AttributeHelpers;
-#use vars qw($singleton);	# Moose 0.61, MooseX::Singleton 0.12 seem to need this
+use vars qw($singleton);	# Moose 0.61, MooseX::Singleton 0.12 seem to need this
 
 use Carp;
 #use diagnostics;
@@ -35,6 +35,13 @@ use Readonly;
 Readonly my $NUMBER => $RE{num}{real};
 use Text::Wrap;
 #use Data::Dumper;
+
+## why do these not get inherited properly?
+has 'group'     => (is => 'rw', isa => 'Str',  default => sub{shift->_get_group()});
+has 'name'      => (is => 'rw', isa => 'Str',  default => q{});
+has 'plottable' => (is => 'ro', isa => 'Bool', default => 0);
+has 'data'      => (is => 'rw', isa => 'Any',  default => q{});
+
 
 has 'config_file' => (is => 'ro', isa => 'Str',
 		      default => File::Spec->catfile(dirname($INC{"Demeter.pm"}),
@@ -82,11 +89,13 @@ my %params_of;
 
 sub BUILD {
   my ($self) = @_;
+  #return $Demeter::mode->config if $Demeter::mode->config;
   $self -> read_config;
   $self -> read_ini;
   $self -> mo -> config($self);
   my @groups = $self->groups;
   $self->main_groups(\@groups);
+  return $self;
 };
 
 sub set {
@@ -361,7 +370,7 @@ sub restart  {my $self=shift; $self->attribute("restart",  @_)};
 
 sub describe_param {
   my ($self, $group, $param, $width) = @_;
-  my $config = $self->mode->config;
+  my $config = $self->mo->config;
   my $text = q{};
   local $Text::Wrap::columns = $width || $config->default("operations", "config_text_width");
   local $Text::Wrap::huge = "overflow";
@@ -803,6 +812,11 @@ See the F<Bundle/DemeterBundle.pm> file for a list of dependencies.
 =head1 BUGS AND LIMITATIONS
 
 =over 4
+
+=item *
+
+This object needs to be a singleton, but it also needs to extend
+Demeter.  How is that done in Moose?  I have no idea....
 
 =item *
 

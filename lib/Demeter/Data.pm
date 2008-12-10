@@ -256,7 +256,7 @@ sub BUILD {
   my ($self, @params) = @_;
   $self->data($self); # I do not know of a way to set the data attribute to this instance using "has"....
   $self->tag($self->group);
-  $self->mode->push_Data($self);
+  $self->mo->push_Data($self);
 };
 
 sub _nidp {

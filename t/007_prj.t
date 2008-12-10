@@ -33,14 +33,14 @@ ok( $this->group =~ m{\A\w{5}\z},                       "$OBJ object has a prope
 $this -> name('this');
 ok( $this->name eq 'this',                              "$OBJ object has a settable label");
 ok(!$this->data,                                        "$OBJ object has no associated Data object");
-ok( ref($this->mode) =~ 'Mode',                         "$OBJ object can find the Mode object");
-ok( ref($this->mode->config) =~ 'Config',               "$OBJ object can find the Config object");
-ok( ref($this->mode->plot) =~ 'Plot',                   "$OBJ object can find the Plot object");
-ok( ($this->mode->template_plot     eq 'pgplot'  and
-     $this->mode->template_feff     eq 'feff6'   and
-     $this->mode->template_process  eq 'ifeffit' and
-     $this->mode->template_fit      eq 'ifeffit' and
-     $this->mode->template_analysis eq 'ifeffit'),
+ok( ref($this->mo) =~ 'Mode',                         "$OBJ object can find the Mode object");
+ok( ref($this->co) =~ 'Config',               "$OBJ object can find the Config object");
+ok( ref($this->po) =~ 'Plot',                   "$OBJ object can find the Plot object");
+ok( ($this->mo->template_plot     eq 'pgplot'  and
+     $this->mo->template_feff     eq 'feff6'   and
+     $this->mo->template_process  eq 'ifeffit' and
+     $this->mo->template_fit      eq 'ifeffit' and
+     $this->mo->template_analysis eq 'ifeffit'),
                                                         "$OBJ object can find template sets");
 
 my @list = @{ $this->entries };

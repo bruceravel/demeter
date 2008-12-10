@@ -75,7 +75,7 @@ $dobject -> set(file      => "data/fe.060.xmu",
 query();
 my $prompt = "Choose a way to plot the data [1-7 or q to quit] ";
 while ( defined ($_ = $term->readline($prompt)) ) {
-  exit if ($_ =~ m{\Aq});
+  $plot->finish, exit if ($_ =~ m{\Aq});
   next if ($_ !~ m{\A([1-8])});
   plot($_,$dobject);
   $plot->start_plot; # reset the plot for the next go around
