@@ -6,7 +6,7 @@ author:
 abstract: An object oriented EXAFS data analysis system using Ifeffit
 license: gpl
 resources:
-  license: http://www.opensource.org/licenses/gpl-license.php
+  license: http://opensource.org/licenses/gpl-license.php
 requires:
   Archive::Zip: 0
   Chemistry::Elements: 0
@@ -17,12 +17,11 @@ requires:
   Math::Derivative: 0
   Math::Round: 0
   Math::Spline: 0
-  Module::Build: 0
-  Moose: 0
-  MooseX::AttributeHelpers: 0
-  MooseX::Clone: 0
-  MooseX::Singleton: 0
-  MooseX::Types: 0
+  Moose: 0.61
+  MooseX::AttributeHelpers: 0.13
+  MooseX::Clone: 0.03
+  MooseX::Singleton: 0.12
+  MooseX::Types: 0.07
   Readonly: 0
   Regexp::Common: 0
   Regexp::Optimizer: 0
@@ -38,7 +37,139 @@ recommends:
   Term::ANSIColor: 0
   Term::ReadLine: 0
   Term::Twiddle: 0
-generated_by: Module::Build version 0.2808
+  Wx: 0.86
+provides:
+  Demeter:
+    file: lib/Demeter.pm
+    version: 0.2.0
+  Demeter::Atoms:
+    file: lib/Demeter/Atoms.pm
+  Demeter::Atoms::Absorption:
+    file: lib/Demeter/Atoms/Absorption.pm
+  Demeter::Config:
+    file: lib/Demeter/Config.pm
+  Demeter::Data:
+    file: lib/Demeter/Data.pm
+  Demeter::Data::Arrays:
+    file: lib/Demeter/Data/Arrays.pm
+  Demeter::Data::Athena:
+    file: lib/Demeter/Data/Athena.pm
+  Demeter::Data::Defaults:
+    file: lib/Demeter/Data/Defaults.pm
+  Demeter::Data::E0:
+    file: lib/Demeter/Data/E0.pm
+  Demeter::Data::FT:
+    file: lib/Demeter/Data/FT.pm
+  Demeter::Data::IO:
+    file: lib/Demeter/Data/IO.pm
+  Demeter::Data::Mu:
+    file: lib/Demeter/Data/Mu.pm
+  Demeter::Data::Parts:
+    file: lib/Demeter/Data/Parts.pm
+  Demeter::Data::Plot:
+    file: lib/Demeter/Data/Plot.pm
+  Demeter::Data::Prj:
+    file: lib/Demeter/Data/Prj.pm
+  Demeter::Data::Process:
+    file: lib/Demeter/Data/Process.pm
+  Demeter::Dispose:
+    file: lib/Demeter/Dispose.pm
+  Demeter::Feff:
+    file: lib/Demeter/Feff.pm
+  Demeter::Feff::Paths:
+    file: lib/Demeter/Feff/Paths.pm
+  Demeter::Feff::Sanity:
+    file: lib/Demeter/Feff/Sanity.pm
+  Demeter::Fit:
+    file: lib/Demeter/Fit.pm
+  Demeter::Fit::Happiness:
+    file: lib/Demeter/Fit/Happiness.pm
+  Demeter::Fit::Sanity:
+    file: lib/Demeter/Fit/Sanity.pm
+  Demeter::GDS:
+    file: lib/Demeter/GDS.pm
+  Demeter::Mode:
+    file: lib/Demeter/Mode.pm
+  Demeter::NumTypes:
+    file: lib/Demeter/NumTypes.pm
+  Demeter::Path:
+    file: lib/Demeter/Path.pm
+  Demeter::Path::Process:
+    file: lib/Demeter/Path/Process.pm
+  Demeter::Path::Sanity:
+    file: lib/Demeter/Path/Sanity.pm
+  Demeter::Plot:
+    file: lib/Demeter/Plot.pm
+  Demeter::Plot::Gnuplot:
+    file: lib/Demeter/Plot/Gnuplot.pm
+  Demeter::Project:
+    file: lib/Demeter/Project.pm
+  Demeter::ScatteringPath:
+    file: lib/Demeter/ScatteringPath.pm
+  Demeter::StrTypes:
+    file: lib/Demeter/StrTypes.pm
+  Demeter::Tools:
+    file: lib/Demeter/Tools.pm
+  Demeter::UI::Hephaestus:
+    file: lib/Demeter/UI/Hephaestus.pm
+  Demeter::UI::Hephaestus::Absorption:
+    file: lib/Demeter/UI/Hephaestus/Absorption.pm
+  Demeter::UI::Hephaestus::Common:
+    file: lib/Demeter/UI/Hephaestus/Common.pm
+    version: 1.0.0
+  Demeter::UI::Hephaestus::Config:
+    file: lib/Demeter/UI/Hephaestus/Config.pm
+  Demeter::UI::Hephaestus::Data:
+    file: lib/Demeter/UI/Hephaestus/Data.pm
+  Demeter::UI::Hephaestus::EdgeFinder:
+    file: lib/Demeter/UI/Hephaestus/EdgeFinder.pm
+  Demeter::UI::Hephaestus::F1F2:
+    file: lib/Demeter/UI/Hephaestus/F1F2.pm
+  Demeter::UI::Hephaestus::Formulas:
+    file: lib/Demeter/UI/Hephaestus/Formulas.pm
+  Demeter::UI::Hephaestus::Help:
+    file: lib/Demeter/UI/Hephaestus/Help.pm
+  Demeter::UI::Hephaestus::Ion:
+    file: lib/Demeter/UI/Hephaestus/Ion.pm
+  Demeter::UI::Hephaestus::Ion::EnergyChamberBox:
+    file: lib/Demeter/UI/Hephaestus/Ion.pm
+  Demeter::UI::Hephaestus::Ion::Pressure:
+    file: lib/Demeter/UI/Hephaestus/Ion.pm
+  Demeter::UI::Hephaestus::Ion::Primary:
+    file: lib/Demeter/UI/Hephaestus/Ion.pm
+  Demeter::UI::Hephaestus::Ion::Secondary:
+    file: lib/Demeter/UI/Hephaestus/Ion.pm
+  Demeter::UI::Hephaestus::LineFinder:
+    file: lib/Demeter/UI/Hephaestus/LineFinder.pm
+  Demeter::UI::Hephaestus::Standards:
+    file: lib/Demeter/UI/Hephaestus/Standards.pm
+  Demeter::UI::Hephaestus::Transitions:
+    file: lib/Demeter/UI/Hephaestus/Transitions.pm
+  Demeter::UI::HephaestusApp:
+    file: lib/Demeter/UI/Hephaestus.pm
+  Demeter::UI::Screen::Interview:
+    file: lib/Demeter/UI/Screen/Interview.pm
+  Demeter::UI::Screen::Spinner:
+    file: lib/Demeter/UI/Screen/Spinner.pm
+  Demeter::UI::Standards:
+    file: lib/Demeter/UI/Standards.pm
+  Demeter::UI::Wx::ColourDatabase:
+    file: lib/Demeter/UI/Wx/ColourDatabase.pm
+  Demeter::UI::Wx::Config:
+    file: lib/Demeter/UI/Wx/Config.pm
+  Demeter::UI::Wx::EchoArea:
+    file: lib/Demeter/UI/Wx/EchoArea.pm
+  Demeter::UI::Wx::PeriodicTable:
+    file: lib/Demeter/UI/Wx/PeriodicTable.pm
+  Demeter::VPath:
+    file: lib/Demeter/VPath.pm
+  Xray::Crystal:
+    file: lib/Xray/Crystal.pm
+  Xray::Crystal::Cell:
+    file: lib/Xray/Crystal/Cell.pm
+  Xray::Crystal::Site:
+    file: lib/Xray/Crystal/Site.pm
+generated_by: Module::Build version 0.3
 meta-spec:
   url: http://module-build.sourceforge.net/META-spec-v1.2.html
   version: 1.2

@@ -72,13 +72,13 @@ has 'datagroup' => (is => 'rw', isa => 'Str',  default => q{});
 
 use Demeter::Mode;
 use vars qw($mode);
-$mode = Demeter::Mode -> new;
+$mode = Demeter::Mode -> instance;
 has 'mode' => (is => 'rw', isa => 'Demeter::Mode', default => sub{$mode});
 $mode -> iwd(&Cwd::cwd);
 
 use Demeter::Config;
 use vars qw($config);
-$config = Demeter::Config -> new();
+$config = Demeter::Config -> new;
 
 sub alldone {
   my ($self) = @_;

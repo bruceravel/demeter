@@ -1,7 +1,7 @@
 package Demeter::Mode;
-use Moose;
-use MooseX::AttributeHelpers;
+
 use MooseX::Singleton;
+use MooseX::AttributeHelpers;
 #use Demeter::Config;
 use Demeter::StrTypes qw( Empty
 			  TemplateProcess
@@ -13,6 +13,8 @@ use Demeter::StrTypes qw( Empty
 use Regexp::List;
 use Regexp::Optimizer;
 my $opt = Regexp::List->new;
+
+use vars qw($singleton);	# Moose 0.61, MooseX::Singleton 0.12 seem to need this
 
 ## -------- disposal modes
 has 'ifeffit' => (is => 'rw', isa => 'Bool',         default => 1);

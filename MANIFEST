@@ -56,12 +56,7 @@ examples/data/uhup.003
 examples/data/uhup.101
 examples/gp.pl
 examples/harness
-examples/HgDNA/
 examples/HgDNA/0README
-examples/HgDNA/15/feff.inp
-examples/HgDNA/15/files.dat
-examples/HgDNA/15/list.xyz
-examples/HgDNA/15/withHg.inp
 examples/HgDNA/dna2feff.pl
 examples/HgDNA/feff6.tmpl
 examples/HgDNA/fit.pl
@@ -219,7 +214,6 @@ lib/Demeter/templates/fit/iff_columns/background.tmpl
 lib/Demeter/templates/fit/iff_columns/correl.tmpl
 lib/Demeter/templates/fit/iff_columns/ff2chi.tmpl
 lib/Demeter/templates/fit/iff_columns/fit.tmpl
-lib/Demeter/templates/fit/iff_columns/fit_report.tmpl
 lib/Demeter/templates/fit/iff_columns/gds.tmpl
 lib/Demeter/templates/fit/iff_columns/next.tmpl
 lib/Demeter/templates/fit/iff_columns/residual.tmpl

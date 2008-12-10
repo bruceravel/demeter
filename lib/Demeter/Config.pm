@@ -17,11 +17,12 @@ package Demeter::Config;
 
 use autodie qw(open close);
 
-use MooseX::Singleton;
+#use MooseX::Singleton;
+use Moose;
 extends 'Demeter';
 use Moose::Util::TypeConstraints;
 use MooseX::AttributeHelpers;
-use vars qw($singleton);	# Moose 0.61, MooseX::Singleton 0.12 seem to need this
+#use vars qw($singleton);	# Moose 0.61, MooseX::Singleton 0.12 seem to need this
 
 use Carp;
 #use diagnostics;

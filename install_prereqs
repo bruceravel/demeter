@@ -130,7 +130,7 @@ banner("CPAN working directory:" . $CPAN::Config->{cpan_home});
 #exit;
 
 my @modlist = bundle_list($options{bundle});
-foreach my $mod ('Math::Spline') { #(@modlist) {
+foreach my $mod (@modlist) {
   my @mm = CPAN::Shell->expand("Module", "/\^$mod\$/");
 
   if (not defined($mm[0])) {
