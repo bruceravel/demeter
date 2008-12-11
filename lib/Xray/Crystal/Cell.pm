@@ -436,8 +436,9 @@ sub determine_monoclinic {
     };
   };
   ## if none of the preceding 6 blocks altered setting then there is a
-  ## mismatch between the symbol and the unique axis, so return 0.
-  ($setting = 0) if ($setting !~ /_[123]$/);
+  ## mismatch between the symbol and the unique axis, so return
+  ## presume it is in the standard setting.
+  ($setting = 'b_unique_1') if ($setting !~ /_[123]$/);
   $self->setting($setting);
   return $setting;
 };

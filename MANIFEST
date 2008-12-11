@@ -54,7 +54,6 @@ examples/data/fe.062
 examples/data/fe.300.xmu
 examples/data/uhup.003
 examples/data/uhup.101
-examples/gp.pl
 examples/harness
 examples/HgDNA/0README
 examples/HgDNA/dna2feff.pl
