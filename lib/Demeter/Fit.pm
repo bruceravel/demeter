@@ -697,7 +697,7 @@ sub properties_header {
   my ($self) = @_;
   my $string = "\n";
   foreach my $k (qw(name description fom time_of_fit fitenvironment interface prepared_by contact)) {
-    $string .= sprintf " %12s = %s\n", $k, $self->$k;
+    $string .= sprintf " %14s = %s\n", $k, $self->$k;
   };
   return $string;
 };

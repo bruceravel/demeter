@@ -144,7 +144,7 @@ sub import {
       next PRAG;
     };
   };
-  foreach my $m (qw(Data Plot Config Data/Prj GDS Path VPath Fit Atoms Feff ScatteringPath)) {
+  foreach my $m (qw(Data Plot Config Data/Prj GDS Path VPath SSPath Fit Atoms Feff ScatteringPath)) {
     next if $INC{"Demeter/$m.pm"};
     ##print "Demeter/$m.pm\n";
     require "Demeter/$m.pm";
@@ -189,7 +189,7 @@ sub mo {
 sub finish {
   my ($self) = @_;
   foreach my $class (qw(Atoms Data Prj Feff Fit GDS Path Plot ScatteringPath VPath)) {
-    foreach my $obj (@{ $self->mode->$class}) {
+    foreach my $obj (@{ $self->mo->$class}) {
       $obj->alldone;
     };
   };
@@ -212,7 +212,7 @@ sub finish {
 ##
 ## this is a poor example of OO -- there is too much downward
 ## reference to derived objects.  boo!
-around 'clone' => sub {
+around clone => sub {
   my ($code, $self, @arguments) = @_;
 
   ## clone using MooseX::Clone

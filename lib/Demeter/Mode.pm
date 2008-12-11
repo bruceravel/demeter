@@ -134,6 +134,16 @@ has 'VPath' => (
 			      'clear'   => 'clear_VPath',
 			     }
 	       );
+has 'SSPath' => (
+		metaclass => 'Collection::Array',
+		is        => 'rw',
+		isa       => 'ArrayRef',
+		default   => sub { [] },
+		provides  => {
+			      'push'    => 'push_SSPath',
+			      'clear'   => 'clear_SSPath',
+			     }
+	       );
 has 'Prj' => (
 		metaclass => 'Collection::Array',
 		is        => 'rw',
@@ -186,12 +196,12 @@ objects.  Any of these methods can be called by any Demeter object:
 
 This object also monitors the creation and destruction of Demeter
 objects (Atoms, Data, Data::Prj, Feff, Fit, GDS, Path, Plot,
-Scattering_Path, and VPath) and provides methods which give a way for
-one object to affect any other objects created during the instance of
-Demeter.  For example, when the kweight value of the Plot object is
-changed, it is necessary to signal all Data objects that they will
-need to update their forward Fourier transforms.  This object is the
-glue that allows things like that to happen.
+Scattering_Path, SSPath, and VPath) and provides methods which give a
+way for one object to affect any other objects created during the
+instance of Demeter.  For example, when the kweight value of the Plot
+object is changed, it is necessary to signal all Data objects that
+they will need to update their forward Fourier transforms.  This
+object is the glue that allows things like that to happen.
 
 =head1 ATTRIBUTES
 
@@ -340,6 +350,10 @@ A list of all ScatteringPath objects created during this instance of Demeter.
 
 A list of all VPath objects created during this instance of Demeter.
 
+=item C<SSPath>
+
+A list of all SSPath objects created during this instance of Demeter.
+
 =item C<Prj>
 
 A list of all Data::Prj objects created during this instance of Demeter.
@@ -394,8 +408,9 @@ of a script.  The details are documented here for those times when one
 needs to see under the hood.
 
 Each Demeter object (Atoms, Data, Data::Prj, Feff, Fit, GDS, Path,
-Plot, Scattering_Path, and VPath) (Data::Prj is refered to just as
-Prj) has each of the following three function associated with it.
+Plot, Scattering_Path, SSPath, and VPath) (Data::Prj is refered to
+just as Prj) has each of the following three function associated with
+it.
 
 All of my examples use the Data object.
 

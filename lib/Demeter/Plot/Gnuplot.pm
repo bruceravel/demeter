@@ -32,7 +32,7 @@ use String::Random qw(random_string);
 has 'error_log' => (is => 'ro', isa => 'Str',  default => File::Spec->catfile($Demeter::mode->iwd,
 									      $Demeter::mode->external_plot_object->{__error_log}));
 
-before 'start_plot' => sub {
+before start_plot => sub {
   my ($self) = @_;
   $self->cleantemp;
   my $command = $self->template("plot", "start");
@@ -40,7 +40,7 @@ before 'start_plot' => sub {
   $self->lastplot(q{});
 };
 
-override 'end_plot' => sub {
+override end_plot => sub {
   my ($self) = @_;
   $self->cleantemp;
   unlink $self->error_log;
@@ -49,14 +49,14 @@ override 'end_plot' => sub {
   return $self;
 };
 
-override 'tempfile' => sub {
+override tempfile => sub {
   my ($self) = @_;
   my $this = File::Spec->catfile($self->stash_folder, 'gp_'.random_string('cccccccc'));
   $self->add_tempfile($this);
   return $this;
 };
 
-override 'legend' => sub {
+override legend => sub {
   my ($self, @arguments) = @_;
   my %args = @arguments;
   foreach my $which (qw(dy y x)) {

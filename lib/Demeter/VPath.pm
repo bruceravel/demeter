@@ -50,7 +50,7 @@ has 'update_bft'  => (is=>'rw', isa=>  'Bool',  default => 1);
 
 sub BUILD {
   my ($self, @params) = @_;
-  $self->mode->push_VPath($self);
+  $self->mo->push_VPath($self);
 };
 
 sub include {
@@ -138,7 +138,7 @@ __PACKAGE__->meta->make_immutable;
 
 =head1 NAME
 
-Demeter - Virtual paths for EXAFS visualization
+Demeter::VPath - Virtual paths for EXAFS visualization
 
 =head1 VERSION
 

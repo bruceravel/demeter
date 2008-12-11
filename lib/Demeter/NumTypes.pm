@@ -42,7 +42,7 @@ subtype OneToFour,
 subtype Ipot,
   as Int,
   where { $_ >= 0 and $_ <= 7 },
-  message { "Int is not between 1 and 4, inclusive" };
+  message { "Int is not an ipot index (0 and 7, inclusive)" };
 
 subtype OneToTwentyNine,
   as Int,

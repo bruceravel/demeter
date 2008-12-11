@@ -91,7 +91,7 @@ has 'n'		   => (is => 'rw', isa => 'Int',      default => 1);
 has 'degeneracies' => (is => 'rw', isa => 'ArrayRef', default => sub{[]});
 has 'fuzzy'	   => (is => 'rw', isa => 'Num',      default => 0);
 has 'Type'	   => (is => 'rw', isa => 'Str',      default => q{});
-has 'weight'	   => (is => 'rw', isa => 'Num',      default => 0);
+has 'weight'	   => (is => 'rw', isa => 'Int',      default => 0);
 has 'randstring'   => (is => 'rw', isa => 'Str',      default => q{});
 
 ## set by details method:
