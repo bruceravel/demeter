@@ -78,7 +78,7 @@ has 'phase_array'     => (is=>'rw', isa=>'Str', default => q{});
 ## object relationships
 has 'parentgroup'     => (is=>'rw', isa => 'Str', default => q{});
 has 'parent'          => (is=>'rw', isa => 'Any', default => q{},  # Empty.'|Demeter::Feff'
-			  trigger => sub{ my($self, $new) = @_; $self->parentgroup($new->group) if $new});
+			  trigger => \&set_parent);
 has 'spgroup'         => (is=>'rw', isa => 'Str', default => q{});
 has 'sp'              => (is=>'rw', isa => 'Any',                  # Empty.'|Demeter::ScatteringPath'
 			  trigger => sub{ my($self, $new) = @_; $self->spgroup($new->group) if $new});
@@ -140,6 +140,15 @@ override 'alldone' => sub {
   unlink $nnnn if -e $nnnn;
 };
 
+
+sub set_parent {
+  my ($self, $feff) = @_;
+  $self->set_parent_method($feff);
+};
+sub set_parent_method {
+  my ($self, $feff) = @_;
+  $self->parentgroup($feff->group) if $feff;
+};
 
 ### ---- this will be different working from a ScatteringPath object
 ###      snarfing from the object will have to be part of an update

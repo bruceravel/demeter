@@ -376,26 +376,27 @@ Demeter's current working directory.
 
 ???
 
-=item datadefault
+=item C<datadefault>
 
 This is a Data object used as a fallback.  For instance, one might
 want to process and plot Path objects without having imported a Data
 object.  This global attribute will be used in that case to properly
 process and plot the Path.
 
-=item external_plot_object
+=item C<external_plot_object>
 
 For plotting backends that have an objective interface, this global
 attribute carried the refernece to that object.  For example, in the
 gnuplot backend, this contains a reference to the
 L<Graphics::GnuplotIF> object.
 
-=item ui
+=item C<ui>
 
 This is a string identifying the user interface backend.  At this
 time, its only use is to tell the Fit object to import the
 curses-based methods in L<Demeter::UI::Screen::Interview> and
-L<Demeter::UI::Screen::Spinner>.
+L<Demeter::UI::Screen::Spinner> when it is set to C<screen>.  Future
+possibilities might include C<wx> or C<rpc>.
 
 =back
 

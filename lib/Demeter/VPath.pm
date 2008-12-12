@@ -220,7 +220,7 @@ additional chore of correctly setting the C<data> attribute.
 
 =item C<clear>
 
-This method empties out the path list abd unsets the data attribute
+This method empties out the path list and unsets the data attribute
 without destroying the VPath object.
 
   $vpath -> clear;

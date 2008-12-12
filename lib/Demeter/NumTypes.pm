@@ -41,7 +41,7 @@ subtype OneToFour,
 
 subtype Ipot,
   as Int,
-  where { $_ >= 0 and $_ <= 7 },
+  where { ($_ > -1) and ($_ < 8) },
   message { "Int is not an ipot index (0 and 7, inclusive)" };
 
 subtype OneToTwentyNine,
