@@ -23,11 +23,11 @@ use Demeter::StrTypes qw( Empty );
 use Chemistry::Elements qw(get_symbol);
 use String::Random qw(random_string);
 
-has 'ipot'	 => (is => 'rw', isa => 'Int',   default => 0,
-			      trigger  => \&set_tag);
-has 'reff'	 => (is => 'rw', isa => 'Num',   default => 0.1,
-			      trigger  => sub{ my ($self, $new) = @_; $self->fuzzy($new);} );
-has 'fuzzy'	 => (is => 'rw', isa => 'Num',   default => 0.1);
+has 'ipot'	 => (is => 'rw', isa => 'Int',    default => 0,
+		     trigger  => \&set_tag);
+has 'reff'	 => (is => 'rw', isa => 'Num',    default => 0.1,
+		     trigger  => sub{ my ($self, $new) = @_; $self->fuzzy($new);} );
+has 'fuzzy'	 => (is => 'rw', isa => 'Num',    default => 0.1);
 has '+n'	 => (default => 1);
 has 'weight'	 => (is => 'ro', isa => 'Int',    default => 2);
 has 'Type'	 => (is => 'ro', isa => 'Str',    default => 'arbitrary single scattering');
@@ -53,11 +53,12 @@ after set_parent_method => sub {
 sub set_tag {
   my ($self) = @_;
   my $feff = $self->parent;
-  return 1 if not $feff;
+  return $self if not $feff;
   my @ipots = @{ $feff->potentials };
-  use Data::Dumper;
   my $tag   = $ipots[$self->ipot]->[2] || get_symbol($ipots[$self->ipot]->[1]);
   $self->tag($tag);
+  $self->name($tag . " arbitrary SS path") if not $self->name;
+  return $self;
 };
 
 ## construct the intrp line by disentangling the SP string
@@ -72,7 +73,7 @@ sub intrpline {
   my ($self, $i) = @_;
   $i ||= 9999;
   return sprintf " %4.4d  %2d   %6.3f  ----  %-29s       %2d  %d %s",
-    $i, $self->n, $self->reff, $self->intrplist, $self->weight, , $self->nleg , $self->Type;
+    $i, $self->n, $self->reff, $self->intrplist, $self->weight, $self->nleg, $self->Type;
 };
 
 sub pathsdat {
@@ -82,6 +83,7 @@ sub pathsdat {
   #$self -> randstring(random_string('ccccccccc').'.sp') if ($self->randstring =~ m{\A\s*\z});
 
   my $feff = $self->parent;
+  my @central = $feff->central;
   my @sites = @{ $feff->sites };
   my $pd = q{};
 
@@ -90,7 +92,7 @@ sub pathsdat {
   $pd .= "      x           y           z     ipot  label";
   $pd .= "      rleg      beta        eta" if ($args{angles});
   $pd .= "\n";
-  $pd .= sprintf(" %11.6f %11.6f %11.6f   %d '%-6s'\n", 0, 0, $self->reff, $self->ipot, $self->tag);
+  $pd .= sprintf(" %11.6f %11.6f %11.6f   %d '%-6s'\n", $central[0], $central[1], $central[2]+$self->reff, $self->ipot, $self->tag);
   $pd .= sprintf(" %11.6f %11.6f %11.6f   %d '%-6s'\n", $feff->central, 0, 'abs');
   return $pd;
 };
@@ -138,12 +140,12 @@ ScatteringPath object as the C<sp> attribute or you must set the
 C<folder> and C<file> attributes to point at the location of a
 F<feffNNNN.dat> file.
 
-For an SSPath object, you set none of those attributes yourself.
-Instead, you specify the C<ipot> and C<reff> attributes, which are new
-attributes for this subclass.  Demeter will then generate a single
-scattering path for that potential at that distance. The resulting
-path will have a natural degeneracy of 1, which can, of course, be
-overriden by the C<n> attribute.
+For an SSPath object, you set none of those attributes yourself (they
+all get set, but not by you).  Instead, you specify the C<ipot> and
+C<reff> attributes, which are new attributes for this subclass.
+Demeter will then generate a single scattering path for that potential
+at that distance. The resulting path will have a natural degeneracy of
+1, which can, of course, be overriden by the C<n> attribute.
 
 SSPath objects are plotted just like any Path object, as shown in the
 synopsis above.  They are used in fits in the same way as ordinary
@@ -205,7 +207,12 @@ Type constraints needed for several of the attributes.
 =item *
 
 Sanity checking, for instance, need to check that the requested ipot
-actually exists.
+actually exists; that parent and data are set before anything is done;
+...
+
+=item *
+
+Think about serialization by itself and in a fit.
 
 =back
 

@@ -36,39 +36,39 @@ use Ifeffit;
 has '+plottable'      => (default => 1);
 has '+data'           => (isa => Empty.'|Demeter::Data');
 
-has 'n'		      => (is=>'rw', isa=>'Num', default => 0);
+has 'n'		      => (is=>'rw', isa=>'Num', default =>  0);
 
 has 's02'	      => (is=>'rw', isa=>'Str', default => '1'); # trigger value into _stored
 has 's02_stored'      => (is=>'rw', isa=>'Str', default => '1');
-has 's02_value'	      => (is=>'rw', isa=>'Num', default => 1);
+has 's02_value'	      => (is=>'rw', isa=>'Num', default =>  1);
 
 has 'e0'	      => (is=>'rw', isa=>'Str', default => '0');
 has 'e0_stored'	      => (is=>'rw', isa=>'Str', default => '0');
-has 'e0_value'	      => (is=>'rw', isa=>'Num', default => 0);
+has 'e0_value'	      => (is=>'rw', isa=>'Num', default =>  0);
 
 has 'delr'	      => (is=>'rw', isa=>'Str', default => '0');
 has 'delr_stored'     => (is=>'rw', isa=>'Str', default => '0');
-has 'delr_value'      => (is=>'rw', isa=>'Num', default => 0);
+has 'delr_value'      => (is=>'rw', isa=>'Num', default =>  0);
 
 has 'sigma2'	      => (is=>'rw', isa=>'Str', default => '0');
 has 'sigma2_stored'   => (is=>'rw', isa=>'Str', default => '0');
-has 'sigma2_value'    => (is=>'rw', isa=>'Num', default => 0);
+has 'sigma2_value'    => (is=>'rw', isa=>'Num', default =>  0);
 
 has 'ei'	      => (is=>'rw', isa=>'Str', default => '0');
 has 'ei_stored'	      => (is=>'rw', isa=>'Str', default => '0');
-has 'ei_value'	      => (is=>'rw', isa=>'Num', default => 0);
+has 'ei_value'	      => (is=>'rw', isa=>'Num', default =>  0);
 
 has 'third'	      => (is=>'rw', isa=>'Str', default => '0');
 has 'third_stored'    => (is=>'rw', isa=>'Str', default => '0');
-has 'third_value'     => (is=>'rw', isa=>'Num', default => 0);
+has 'third_value'     => (is=>'rw', isa=>'Num', default =>  0);
 
 has 'fourth'	      => (is=>'rw', isa=>'Str', default => '0');
 has 'fourth_stored'   => (is=>'rw', isa=>'Str', default => '0');
-has 'fourth_value'    => (is=>'rw', isa=>'Num', default => 0);
+has 'fourth_value'    => (is=>'rw', isa=>'Num', default =>  0);
 
 has 'dphase'	      => (is=>'rw', isa=>'Str', default => '0');
 has 'dphase_stored'   => (is=>'rw', isa=>'Str', default => '0');
-has 'dphase_value'    => (is=>'rw', isa=>'Num', default => 0);
+has 'dphase_value'    => (is=>'rw', isa=>'Num', default =>  0);
 
 has 'id'	      => (is=>'rw', isa=>'Str', default => q{});
 has 'k_array'	      => (is=>'rw', isa=>'Str', default => q{});
@@ -80,7 +80,7 @@ has 'parentgroup'     => (is=>'rw', isa => 'Str', default => q{});
 has 'parent'          => (is=>'rw', isa => 'Any', default => q{},  # Empty.'|Demeter::Feff'
 			  trigger => \&set_parent);
 has 'spgroup'         => (is=>'rw', isa => 'Str', default => q{});
-has 'sp'              => (is=>'rw', isa => 'Any',                  # Empty.'|Demeter::ScatteringPath'
+has 'sp'              => (is=>'rw', isa => 'Any',                  # Empty.'|Demeter::ScatteringPath|Demeter::SSPath'
 			  trigger => sub{ my($self, $new) = @_; $self->spgroup($new->group) if $new});
 has 'datagroup'       => (is=>'rw', isa => 'Str', default => q{});
 
@@ -120,11 +120,10 @@ sub BUILD {
   my $val = $self->get_mode("datadefault");
   if ((ref($self->data) !~ m{Data}) and (ref($val) !~ m{Data})) {
     $self->mo->datadefault(Demeter::Data->new(group=>'default___',
-						name=>q{},
-						cv=>42,
-						fft_kmin=>3, fft_kmax=>15,
-						bft_rmin=>1, bft_rmax=>6,
-					       ));
+					      name=>'default___', cv=>42,
+					      fft_kmin=>3, fft_kmax=>15,
+					      bft_rmin=>1, bft_rmax=>6,
+					     ));
   };
   $self->data($self->mo->datadefault) if (ref($self->data) !~ m{Data});
   $self->mo->push_Path($self);

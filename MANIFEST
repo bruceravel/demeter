@@ -387,6 +387,7 @@ t/011_sp.t
 t/012_atoms.t
 t/013_spacegroups.t
 t/014_vpath.t
+t/015_sspath.t
 t/cyanobacteria.prj
 t/data.chi
 t/data.xmu
