@@ -160,8 +160,6 @@ use vars qw($hephaestus_base $demeter $frame);
 $hephaestus_base = identify_self();
 
 sub OnInit {
-  Wx::InitAllImageHandlers();
-
   $demeter = Demeter->new;
   $demeter -> mo -> ui('Wx');
   ## read hephaestus' demeter_conf file

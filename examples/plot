@@ -67,7 +67,7 @@ my $dobject = Demeter::Data -> new(group => 'data0');
 $dobject -> set(file      => "data/fe.060.xmu",
 		fft_kmax  => 3,
 		fft_kmin  => 14,
-		name      => 'My iron data',
+		#name      => 'My iron data',
 		bkg_spl2  => 18,
 		bkg_nor2  => 1800,
 	       );
@@ -146,7 +146,7 @@ sub plot2 {
 		 e_markers => 1,
 		 emin      => -200, emax      => 2000,
 		);
-  $data->set(bkg_flatten=>0);
+  $data->bkg_flatten(0);
   $data->plot('E');
 };
 
@@ -159,7 +159,7 @@ sub plot3 {
 		 e_markers => 1,
 		 emin      => -200, emax      => 2000,
 		);
-  $data->set(bkg_flatten=>1);
+  $data->bkg_flatten(1);
   $data->plot('E');
 };
 
@@ -173,7 +173,7 @@ sub plot4 {
 		 emin      => -20,  emax      => 120,
 		 );
   $data->set(name=>'derivative')->plot('E');
-  $data->po->set(e_norm => 1);
+  $data->po->e_norm(1);
   $data->set(name=>'norm. deriv.')->plot('E');
 };
 
@@ -186,11 +186,11 @@ sub plot5 {
   $data->set(plot_multiplier => 5,   'y_offset'=>14, name=>'kw=1, scaled by 5');
   $data->plot('k');
 
-  $data->po->set(kweight => 2, );
+  $data->po->kweight(2);
   $data->set(plot_multiplier => 1,   'y_offset'=>7,  name=>'kw=2, unscaled');
   $data->plot('k');
 
-  $data->po->set(kweight => 3, );
+  $data->po->kweight(3);
   $data->set(plot_multiplier => 0.2, 'y_offset'=>0,  name=>'kw=3, scaled by 0.2');
   $data->plot('k');
 

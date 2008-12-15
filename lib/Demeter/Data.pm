@@ -15,6 +15,7 @@ package Demeter::Data;
 
 =cut
 
+use File::Basename;
 use List::MoreUtils qw(any);
 use Regexp::Common;
 use Readonly;
@@ -122,7 +123,8 @@ has 'nidp'           => (is => 'rw', isa => 'Num', default => 0);
 has 'bkg_e0'          => (is => 'rw', isa => 'Num',   default => 0,
 			  trigger => sub{ my($self) = @_; $self->update_bkg(1), $self->update_norm(1) });
 
-has 'bkg_e0_fraction' => (is => 'rw', isa =>  PosNum, default => sub{ shift->co->default("bkg", "e0_fraction") || 0.5});
+has 'bkg_e0_fraction' => (is => 'rw', isa =>  PosNum, default => sub{ shift->co->default("bkg", "e0_fraction") || 0.5},
+			  trigger => sub{ my($self) = @_; $self->update_bkg(1), $self->update_norm(1) });
 
 has 'bkg_eshift'      => (is => 'rw', isa => 'Num',   default => 0,
 			  trigger => sub{ my($self) = @_; $self->update_bkg(1), $self->update_norm(1) });
@@ -174,7 +176,8 @@ has 'bkg_z'       => (is => 'rw', isa =>  Element,  default => 'H');
 has 'bkg_stan'    => (is => 'rw', isa => 'Str',     default => 'None',
 		      trigger => sub{ my($self) = @_; $self->update_bkg(1) });
 
-has 'bkg_flatten' => (is => 'rw', isa => 'Bool',    default => sub{ shift->co->default("bkg", "flatten") || 1});
+has 'bkg_flatten' => (is => 'rw', isa => 'Bool',    default => sub{ shift->co->default("bkg", "flatten") || 1},
+		      trigger => sub{ my($self) = @_; $self->update_norm(1) });
 
 has 'bkg_fnorm'	  => (is => 'rw', isa => 'Bool',    default => sub{ shift->co->default("bkg", "fnorm")   || 0},
 		      trigger => sub{ my($self) = @_; $self->update_bkg(1), $self->update_norm(1) });
@@ -402,6 +405,7 @@ sub read_data {
   };
   $self->sort_data;
   $self->put_data;
+  $self->name(basename($self->file, ".dat", ".xmu")) if not $self->name;
   return $self;
 };
 
