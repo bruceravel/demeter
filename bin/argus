@@ -50,30 +50,18 @@ use vars qw(%params @data);
 #my ($folder, $energy, $numer, $denom, $ln, $rebin, $prompt, $start) = (q{./}, '$1', '$2', '$3', 0, 0, 0, '000');
 #my ($pause, $headersize, $flush, $use_gnuplot) = (5, 2000, 30, 0);
 my $result = GetOptions (
-			 "folder=s"      => \$params{folder},
-			 "f=s"           => \$params{folder},
-
-			 "energy=s"      => \$params{energy},
-			 "e=s"           => \$params{energy},
-			 "numerator=s"   => \$params{numerator},
-			 "n=s"           => \$params{numerator},
-			 "denominator=s" => \$params{denominator},
-			 "d=s"           => \$params{denominator},
-			 "ln"            => \$params{ln},
-			 "l"             => \$params{ln},
-			 "rebin"         => \$params{rebin},
-			 "r"             => \$params{rebin},
-			 "start=s"       => \$params{start},
-			 "s=s"           => \$params{start},
-
-			 "interactive"   => \$params{prompt},
-			 "i"             => \$params{prompt},
-
-			 "g"             => \$params{use_gnuplot},
-
-			 "pause=i"       => \$params{pause},
-			 "headersize=i"  => \$params{headersize},
-			 "flush=i"       => \$params{flush},
+			 "folder|f=s"      => \$params{folder},
+			 "energy|e=s"      => \$params{energy},
+			 "numerator|n=s"   => \$params{numerator},
+			 "denominator|d=s" => \$params{denominator},
+			 "ln|l"            => \$params{ln},
+			 "rebin|r"         => \$params{rebin},
+			 "start|s=s"       => \$params{start},
+			 "interactive|i"   => \$params{prompt},
+			 "g"               => \$params{use_gnuplot},
+			 "pause=i"         => \$params{pause},
+			 "headersize=i"    => \$params{headersize},
+			 "flush=i"         => \$params{flush},
 			);
 
 ($params{pause}      = $params{pausedef})  if ($params{pause}      < 0);
@@ -130,13 +118,13 @@ while (1) {
     local $| = 1;
     print " $f";
     my $new = Demeter::Data->new();
-    $new -> set({file	     => $this,
-		 label       => $f,
-		 energy	     => $params{energy},
-		 numerator   => $params{numerator},
-		 denominator => $params{denominator},
-		 ln	     => $params{ln},
-		});
+    $new -> set(file	    => $this,
+		label       => $f,
+		energy	    => $params{energy},
+		numerator   => $params{numerator},
+		denominator => $params{denominator},
+		ln	    => $params{ln},
+	       );
     if ($params{rebin}) {
       push @data, $new->rebin;
     } else {
@@ -256,7 +244,7 @@ sub flush {
   ## reset ifeffit memory
   $data[0] -> Reset;
   ## reimport first
-  $data[0]->set({update_data=>1});
+  $data[0]->set(update_data=>1);
 };
 
 sub merge_and_write {

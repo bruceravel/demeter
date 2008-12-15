@@ -732,7 +732,7 @@ sub _collapse_heap {
 
 
 sub intrp {
-  my ($self, $style) = @_;
+  my ($self, $style, $rmax) = @_;
 
   my %markup  = (comment => q{}, 2 => q{}, 1=> q{}, 0=>q{}, close=>q{});
   if (defined($style) and (ref($style) eq 'HASH')) {
@@ -760,6 +760,7 @@ sub intrp {
   $text .=  $markup{comment} . "#     degen   Reff       scattering path                       I legs   type" .  $markup{close} . "\n";
   my $i = 0;
   foreach my $sp (@list_of_paths) {
+    last if ($rmax and ($sp->halflength > $rmax));
     $text .= $markup{$sp->weight} . $sp->intrpline(++$i) . $markup{close} . $/;
   };
   return $text;

@@ -27,8 +27,7 @@ use Demeter::Data::Prj;
 
 my ($plot, $inc, $params, $gnuplot, $xanes) = (q{}, 0.2, q{}, 0, 0);
 my $result = GetOptions (
-			 "plot=s"   => \$plot,
-			 "p=s"	    => \$plot,
+			 "plot|p=s" => \$plot,
 			 "stack=s"  => \$inc,
 			 "params=s" => \$params,
 			 "g"        => \$gnuplot,

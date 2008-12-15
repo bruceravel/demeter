@@ -59,6 +59,11 @@ header and footer.  That is, the output will be valid html or latex,
 but will not contain the lines at the beginning and end of the file
 necessary to make them free-standing html or compilable latex.
 
+=item C<--rmax> or C<-r>
+
+Restrict output to a given value of R.  If R is larger than the
+longest path, all paths will be displayed.
+
 =back
 
 =head1 CONFIGURATION AND ENVIRONMENT

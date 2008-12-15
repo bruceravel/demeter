@@ -61,28 +61,17 @@ my ($folder, $quiet, $skip, $noimage) = ('./', 0, 0, 0);
 my ($prjfile, $elements, $all) = (q{}, q{}, 0);
 my ($help, $use_gnuplot) = (0, 0);
 my $result = GetOptions (
-			 "d"        => \$dark_background,
-			 "l"        => \$light_background,
-
-			 "folder=s" => \$folder,
-			 "f=s"      => \$folder,
-			 "quiet"    => \$quiet,
-			 "q"	    => \$quiet,
-			 "skip"	    => \$skip,
-			 "s"	    => \$skip,
-			 "noimage"  => \$noimage,
-			 "n"	    => \$noimage,
-
-			 'outfile=s'  => \$prjfile,
-			 'o=s'        => \$prjfile,
-			 'elements=s' => \$elements,
-			 'e=s'        => \$elements,
-			 'a'          => \$all,
-
-			 "help"     => \$help,
-			 "h"        => \$help,
-
-			 "g"        => \$use_gnuplot,
+			 "d"            => \$dark_background,
+			 "l"            => \$light_background,
+			 "folder|f=s"   => \$folder,
+			 "quiet|q"      => \$quiet,
+			 "skip|s"       => \$skip,
+			 "noimage|n"    => \$noimage,
+			 'outfile|o=s'  => \$prjfile,
+			 'elements|e=s' => \$elements,
+			 'a'            => \$all,
+			 "help|h"       => \$help,
+			 "g"            => \$use_gnuplot,
 			);
 help() if $help;
 ($light_background = 1) if (not $dark_background);

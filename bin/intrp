@@ -21,17 +21,16 @@ use Demeter;
 use Getopt::Long;
 
 use subs qw(BOLD RED RESET YELLOW GREEN);
-my ($color, $nocolor, $latex, $html, $noframe, $version, $help) = (1,0,0,0,0,0,0);
+my ($color, $nocolor, $latex, $html, $noframe, $version, $help, $rmax) = (1,0,0,0,0,0,0,0);
 GetOptions (
-	    "color"   => \$color,
-	    "nocolor" => \$nocolor,
-	    "latex"   => \$latex,
-	    "html"    => \$html,
-	    "noframe" => \$noframe,
-	    "v"       => \$version,
-	    "version" => \$version,
-	    "h"       => \$help,
-	    "help"    => \$help,
+	    "color"     => \$color,
+	    "nocolor"   => \$nocolor,
+	    "latex"     => \$latex,
+	    "html"      => \$html,
+	    "noframe"   => \$noframe,
+	    "rmax|r=s"  => \$rmax,
+	    "version|v" => \$version,
+	    "help|h"    => \$help,
 	   );
 
 &version, exit if $version;
@@ -43,6 +42,7 @@ if ($ANSIColor_exists) {
 } else {
   $nocolor = 1;
 };
+($noframe = 1) if not ($latex or $html);
 
 my $feff = Demeter::Feff -> new(yaml => $ARGV[0]||"feff.yaml");
 my $style = ($nocolor) ? q{}
@@ -56,7 +56,7 @@ my $style = ($nocolor) ? q{}
 			 }
           :             q{};
 print header($latex, $html) if not $noframe;
-print body($feff->intrp($style), $latex, $html);
+print body($feff->intrp($style, $rmax), $latex, $html);
 print footer($latex, $html) if not $noframe;
 
 ## The end!

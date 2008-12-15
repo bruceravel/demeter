@@ -29,12 +29,12 @@ Readonly my $USAGE => "usage: dfeff [options] <myfeff.inp>\n";
 my ($workspace, $quiet, $version, $help, $save, $rmax) = (q{./},0,0,0,0,0);
 my ($all, $do_pots, $do_pf, $do_ff2chi, $keep) = (0, 0, 0, 0, 0);
 GetOptions (
-	    "w=s" => \$workspace, "workspace=s" => \$workspace,
-	    "q"   => \$quiet,     "quiet"       => \$quiet,
-	    "v"   => \$version,   "version"     => \$version,
-	    "h"   => \$help,      "help"        => \$help,
+	    "workspace|s=s" => \$workspace,
+	    "quiet|q"       => \$quiet,
+	    "version|v"     => \$version,
+	    "help|h"        => \$help,
 
-	    "rmax=s"   => \$rmax,
+	    "rmax|r=s" => \$rmax,
 	    all        => \$all,
 	    potentials => \$do_pots,
 	    pathfinder => \$do_pf,
