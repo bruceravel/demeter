@@ -744,6 +744,7 @@ sub logfile {
     foreach my $path (@all_paths) {
       next if not defined($path);
       next if ($path->data ne $data);
+      next if not $path->include;
       print $LOG $path->row_main($length);
     };
     print $LOG $/;
@@ -751,6 +752,7 @@ sub logfile {
     foreach my $path (@all_paths) {
       next if not defined($path);
       next if ($path->data ne $data);
+      next if not $path->include;
       print $LOG $path->row_second($length);
     };
   };
@@ -993,6 +995,7 @@ override 'serialize' => sub {
   my %args = @args;		# coerce args into a hash
   $args{tree}   ||= 'fit';
   $args{folder} ||= $self->group;
+  $args{file} ||= $args{project};
 
   my @gds   = @{ $self->gds   };
   my @data  = @{ $self->data  };
