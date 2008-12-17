@@ -405,9 +405,9 @@ sub template_set {
 
 
 ## -------- introspection methods
-sub get_all {
+sub all {
   my ($self) = @_;
-  my @keys   = grep {$_ !~ m{\A(?:data|plot|plottable|mode|parent|sp)\z}} $self->meta->get_attribute_list;
+  my @keys   = grep {$_ !~ m{\A(?:data|plot|plottable|mode|parent|sp)\z}} $self->get_params_of;
   push @keys, qw(name group plottable);
   my @values = map {$self->$_} @keys;
   my %hash   = zip(@keys, @values);
@@ -424,7 +424,7 @@ sub get_params_of {
 ## -------- serialization tools
 sub serialization {
   my ($self) = @_;
-  my %hash = $self->get_all;
+  my %hash = $self->all;
   return YAML::Dump(\%hash);
 };
 

@@ -254,7 +254,7 @@ sub default_k_weight {
 sub plot_window {
   my ($self, $space) = @_;
   $self->fft if (lc($space) eq 'k');
-  $self->bft if (lc($space) eq 'r');
+  $self->bft if (lc($space) =~ m{\Ar});
   $self->dispose($self->_prep_window_command($space));
   #if (Demeter->get_mode('template_plot') eq 'gnuplot') {
   #  $self->get_mode('external_plot_object')->gnuplot_cmd($self->_plot_window_command($space));
@@ -269,10 +269,11 @@ sub plot_window {
 sub _prep_window_command {
   my ($self, $sp) = @_;
   my $space   = lc($sp);
+  print ">>>", $space, $/;
   #my %dsuff   = (k=>'chik', r=>'chir_mag', 'q'=>'chiq_mag');
-  my $suffix  = ($space eq 'r') ? 'rwin' : 'win';
+  my $suffix  = ($space =~ m{\Ar}) ? 'rwin' : 'win';
   my $string  = "\n" . $self->hashes . " plot window ___\n";
-  if ($space eq 'r') {
+  if ($space =~ m{\Ar}) {
     $string .= $self->template("process", "prep_rwindow");
   } else {
     $string .= $self->template("process", "prep_kwindow");

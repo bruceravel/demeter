@@ -1,0 +1,32 @@
+{ # -*- ifm -*-
+  # path definition template
+  #   {$S->group} returns the ifeffit group name
+  #   {$S->parameter} returns the value of that parameter
+  #
+  ## what about file/folder   or   sp?
+  #
+  $spaces = "\n                                 ";
+  $add = q{};
+  ($add .= $spaces . "ei      => '" . $S->ei     . "',") if $S->ei;
+  ($add .= $spaces . "third   => '" . $S->third  . "',") if $S->third;
+  ($add .= $spaces . "fourth  => '" . $S->fourth . "',") if $S->fourth;
+  ($add .= $spaces . "dphase  => '" . $S->dphase . "',") if $S->dphase;
+  $ssp = q{};
+  ($ssp .= $spaces . "ipot    => '" . $S->ipot . "',") if (ref($S) =~ m{SSPath});
+  ($ssp .= $spaces . "reff    => '" . $S->reff . "',") if (ref($S) =~ m{SSPath});
+  $object = (ref($S) =~ m{SSPath}) ? 'SSPath' : 'Path';
+  q{};
+}
+<< >>
+## {$S -> name}
+push @path, Demeter::{$object} -> new(
+                                 data    => ${$S->data->group},
+				 parent  => ${$S->parent->group},{$ssp}
+                                 name    => '{$S -> name}',
+                                 degen   =>  {$S->n},
+                                 s02     => '{$S->s02}',
+                                 e0      => '{$S->e0}',
+                                 delr    => '{$S->delr}',
+                                 sigma2  => '{$S->sigma2}',{$add}
+				 include => {$S->include},
+                                );

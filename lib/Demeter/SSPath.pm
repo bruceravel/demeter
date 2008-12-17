@@ -97,6 +97,13 @@ sub pathsdat {
   return $pd;
 };
 
+override get_params_of => sub {
+  my ($self) = @_;
+  my @list1 = Demeter::SSPath->meta->get_attribute_list;
+  my @list2 = Demeter::Path->meta->get_attribute_list;
+  return (@list1, @list2);
+};
+
 
 __PACKAGE__->meta->make_immutable;
 1;

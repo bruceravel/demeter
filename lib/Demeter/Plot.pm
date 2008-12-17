@@ -288,7 +288,7 @@ sub outfile {
 
 sub propagate_kweight {
   my ($self) = @_;
-  $_->update_fft(1) foreach (@{ $self->mode->Data }, @{ $self->mode->Path }, @{ $self->mode->VPath });
+  $_->update_fft(1) foreach (@{ $self->mo->Data }, @{ $self->mo->Path }, @{ $self->mo->SSPath }, @{ $self->mo->VPath });
 };
 
 

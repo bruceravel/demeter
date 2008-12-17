@@ -64,6 +64,7 @@ has 'contact'        => (is => 'rw', isa => 'Str',    default => q{});
 ## -------- serialization/deserialization
 has 'project'        => (is => 'rw', isa => 'Str',    default => q{},
 			 trigger => sub{my ($self, $new) = @_; $self->deserialize($new) if $new} );
+has 'folder'         => (is => 'rw', isa => 'Str',    default => q{});
 
 ## -------- mechanics of the fit
 has 'cormin'         => (is => 'rw', isa =>  NonNeg,  default => sub{ shift->mo->config->default("fit", "cormin")  || 0});
@@ -158,6 +159,11 @@ sub BUILD {
 #     };
 #     return $self;
 #   };
+
+override 'alldone' => sub {
+  my ($self) = @_;
+  rmtree $self->folder;
+};
 
 sub rm {
   my ($self) = @_;
@@ -277,6 +283,7 @@ sub pre_fit {
   foreach my $d (@{ $self->data }) {
     $d -> fitting(0);
   };
+  $self->dispose($self->template("fit", "prep_fit"));
 };
 
 sub fit {
@@ -1010,17 +1017,17 @@ override 'serialize' => sub {
   unlink ($args{file}) if (-e $args{file});
 
   my $folder = $self->project_folder("raw_demeter");
-  my $fit_folder = File::Spec->catfile($folder, $args{tree}, $args{folder});
-  mkpath($fit_folder);
+  $self->folder(File::Spec->catfile($folder, $args{tree}, $args{folder}));
+  mkpath($self->folder);
 
   ## -------- save a yaml containing the structure of the fit
-  my $structure = File::Spec->catfile($fit_folder, "structure.yaml");
+  my $structure = File::Spec->catfile($self->folder, "structure.yaml");
   open my $STRUCTURE, ">$structure";
   print $STRUCTURE YAML::Dump(\@gdsgroups, \@datagroups, \@pathsgroups, \@feffgroups);
   close $STRUCTURE;
 
   ## -------- save a yaml containing all GDS parameters
-  my $gdsfile =  File::Spec->catfile($fit_folder, "gds.yaml");
+  my $gdsfile =  File::Spec->catfile($self->folder, "gds.yaml");
   open my $gfile, ">$gdsfile";
   foreach my $p (@gds) {
     print $gfile $p->serialization;
@@ -1030,12 +1037,12 @@ override 'serialize' => sub {
   ## -------- save a yaml for each data file
   foreach my $d (@data) {
     my $dd = $d->group;
-    my $datafile =  File::Spec->catfile($fit_folder, "$dd.yaml");
+    my $datafile =  File::Spec->catfile($self->folder, "$dd.yaml");
     $d -> serialize($datafile);
   };
 
   ## -------- save a yaml containing the paths
-  my $pathsfile =  File::Spec->catfile($fit_folder, "paths.yaml");
+  my $pathsfile =  File::Spec->catfile($self->folder, "paths.yaml");
   my %feffs = ();
   open my $PATHS, ">$pathsfile";
   foreach my $p (@paths) {
@@ -1053,21 +1060,22 @@ override 'serialize' => sub {
   ## -------- save yamls and phase.bin for the feff calculations
   foreach my $f (values %feffs) {
     my $ff = $f->group;
-    my $feffyaml = File::Spec->catfile($fit_folder, $ff.".yaml");
+    my $feffyaml = File::Spec->catfile($self->folder, $ff.".yaml");
     $f->serialize($feffyaml, 1);
     my $feff_from  = File::Spec->catfile($f->get("workspace"), "original_feff.inp");
-    my $feff_to    = File::Spec->catfile($fit_folder, $ff.".inp");
+    my $feff_to    = File::Spec->catfile($self->folder, $ff.".inp");
     copy($feff_from,  $feff_to);
     my $phase_from = File::Spec->catfile($f->get("workspace"), "phase.bin");
-    my $phase_to   = File::Spec->catfile($fit_folder, $ff.".bin");
+    my $phase_to   = File::Spec->catfile($self->folder, $ff.".bin");
     copy($phase_from, $phase_to);
   };
 
   ## -------- save a yaml containing the fit properties
-  my @properties = grep {$_ !~ m{\A(?:gds|data|paths|project|rate|thingy)\z}} $self->meta->get_attribute_list;
+  my @properties = grep {$_ !~ m{\A(?:gds|data|paths|project|folder|rate|thingy)\z}} $self->meta->get_attribute_list;
+  push @properties, 'name';
   my @vals = $self->get(@properties);
   my %props = zip(@properties, @vals);
-  my $propsfile =  File::Spec->catfile($fit_folder, "fit.yaml");
+  my $propsfile =  File::Spec->catfile($self->folder, "fit.yaml");
   open my $PROPS, ">$propsfile";
   print $PROPS YAML::Dump(\%props);
   close $PROPS;
@@ -1076,12 +1084,12 @@ override 'serialize' => sub {
   foreach my $d (@data) {
     my $dd = $d->group;
     $d -> _update("bft");
-    $d -> save("fit", File::Spec->catfile($fit_folder, $dd.".fit"));
+    $d -> save("fit", File::Spec->catfile($self->folder, $dd.".fit"));
   };
-  $self -> logfile(File::Spec->catfile($fit_folder, "log"), $self->header, $self->footer);
+  $self -> logfile(File::Spec->catfile($self->folder, "log"), $self->header, $self->footer);
 
   ## -------- finally save a yaml containing the Plot object
-  my $plotfile =  File::Spec->catfile($fit_folder, "plot.yaml");
+  my $plotfile =  File::Spec->catfile($self->folder, "plot.yaml");
   open my $PLOT, ">$plotfile";
   print $PLOT $self->po->serialization;
   close $PLOT;
@@ -1089,11 +1097,11 @@ override 'serialize' => sub {
 
 
   my $readme = File::Spec->catfile($self->share_folder, "Readme.fit_serialization");
-  my $target = File::Spec->catfile($fit_folder, "Readme");
+  my $target = File::Spec->catfile($self->folder, "Readme");
   copy($readme, $target);
   if (not $args{nozip}) {
-    $self->zip_project($fit_folder, $args{file});
-    rmtree($fit_folder);
+    $self->zip_project($self->folder, $args{file});
+    rmtree($self->folder);
   };
 
   return $self;
@@ -1150,7 +1158,10 @@ override 'deserialize' => sub {
     } elsif ($this->gds eq 'set') {
       $command = sprintf "set %s = %s\n", $this->name, $this->mathexp;
     };
-    $this->dispose($command);
+    ## restrain, skip, after, (merge, penalty) should not be disposed at this time
+    if ($this->gds =~ m{(?:guess|def|set)}) {
+      $this->dispose($command);
+    };
   };
 
   ## -------- import the feff calculations
@@ -1174,12 +1185,18 @@ override 'deserialize' => sub {
   foreach (@list) {
     my $dg = $_->{datagroup};
     my @array = %{ $_ };
-    my $this = Demeter::Path->new(@array);
-    $this->datagroup($dg);
+    my $this;
+    if (exists $_->{ipot}) {
+      $this = Demeter::SSPath->new(@array);
+      $this -> sp($this);
+    } else {
+      $this = Demeter::Path->new(@array);
+      $this -> sp($sps{$this->spgroup});
+    };
+    $this -> datagroup($dg);
     ## reconnect object relationships
-    $this->sp($sps{$this->spgroup});
-    $this->parent($parents{$this->parentgroup});
-    $this->data($datae{$this->datagroup});
+    $this -> parent($parents{$this->parentgroup});
+    $this -> data($datae{$this->datagroup});
     push @paths, $this;
   };
 
@@ -1198,6 +1215,7 @@ override 'deserialize' => sub {
 
   ## -------- extract files from the feff calculations from the project
   my $project_folder = $self->project_folder("fit_".$self->group);
+  $self->folder($project_folder);
   #   $location_of{ident $fitobject} = $project_folder;
   foreach my $f (@feff) {
     my $ff = $f->group;

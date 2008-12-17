@@ -1,0 +1,11 @@
+{ # -*- ifm -*-
+  # pre-edge template
+  #   {$D->group} returns the ifeffit group name
+  #   {$D->parameter} returns the value of that parameter
+}
+<< >>
+## normalize group {$D->group} : {$D->name}
+@params = (bkg_eshift => {$D->bkg_eshift}, bkg_e0 => {$D->bkg_e0}, bkg_pre1 => {$D->bkg_pre1}, bkg_pre2 => {$D->bkg_pre2},
+           bkg_nnorm => {$D->bkg_nnorm}, bkg_norm1 => {$D->bkg_nor1}, bkg_norm2 => {$D->bkg_nor2});
+${$D->group} -> set(@params);
+${$D->group} -> update_norm(1);

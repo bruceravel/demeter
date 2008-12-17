@@ -1,0 +1,13 @@
+{ # -*- ifm -*-
+  # Fit template
+  #   {$S->group} returns the ifeffit group name
+  #   {$S->parameter} returns the value of that parameter
+}
+<< >>
+my $fit = Demeter::Fit->new (
+                             name        => '{$F->name}',
+                             description => '{$F->description}',
+   	  		     gds         => \@gds,
+			     data        => \@data,
+			     paths       => \@paths
+			    );

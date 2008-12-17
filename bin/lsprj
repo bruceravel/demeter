@@ -64,8 +64,8 @@ if (lc($plot) =~ m{[endkrq]}) {
   };
 
   $_ = $term->readline($prompt);
-  $data[0]->po->cleantemp;
 };
+$prj->finish;
 
 sub usage {
   print "

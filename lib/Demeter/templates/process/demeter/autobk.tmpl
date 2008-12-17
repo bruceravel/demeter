@@ -1,0 +1,15 @@
+{ # -*- ifm -*-
+  # spline template
+  #   {$D->group} returns the ifeffit group name
+  #   {$D->parameter} returns the value of that parameter
+}
+<< >>
+## remove background for group {$D->group} : {$D->name}
+@params = (bkg_eshift => {$D->bkg_eshift}, bkg_e0 => {$D->bkg_e0}, bkg_rbkg => {$D->bkg_rbkg},
+	   bkg_stan => '{$D->bkg_stan}', bkg_fixstep => {$D->bkg_fixstep}, bkg_step => {$D->bkg_step},
+	   bkg_spl1 => {$D->bkg_spl1}, bkg_spl2 => {$D->bkg_spl2}, bkg_kw => {$D->bkg_kw}, bkg_dk => {$D->bkg_dk},
+	   bkg_kwindow => '{$D->bkg_kwindow}', bkg_pre1 => {$D->bkg_pre1}, bkg_pre2 => {$D->bkg_pre2},
+           bkg_nnorm => {$D->bkg_nnorm}, bkg_norm1 => {$D->bkg_nor1}, bkg_norm2 => {$D->bkg_nor2},
+	   bkg_clamp1 => {$D->bkg_clamp1}, bkg_clamp2 => {$D->bkg_clamp2});
+${$D->group} -> set(@params);
+${$D->group} -> update_bkg(1);

@@ -35,59 +35,59 @@ sub interview {
 
   my @params = (q{}, qw(kweight space rpart qpart paths bkg res));
   #plot($fit, 1) unless $noplot;
-  USI_plot($fit, 1, $fit->po->r_pl) unless $noplot;
-  &USI_query;
+  I_plot($fit, 1, $fit->po->r_pl) unless $noplot;
+  &I_query;
   my $prompt = "Choose data by number, select an operation by letter, or q=quit > ";
   while ( defined ($_ = $term->readline($prompt)) ) {
   DISPATCH: {
-      $fit->po->cleantemp,         return        if ($_ =~ m{\Aq});
-      $fit->USI_help,              last DISPATCH if ($_ =~ m{\Ah});
-      $fit->USI_version,           last DISPATCH if ($_ =~ m{\Av});
-      $fit->USI_log,               last DISPATCH if ($_ =~ m{\Al});
-      $fit->USI_plot($1),          last DISPATCH if ($_ =~ m{\Ap?(\d+)});
-      $fit->USI_data_report($1),   last DISPATCH if ($_ =~ m{\Ad(\d+)});
-      $fit->USI_gds,               last DISPATCH if ($_ =~ m{\Ag});
-      #$fit->USI_save($1),          last DISPATCH if ($_ =~ m{\As(\d+)});
-      $fit->USI_stats,             last DISPATCH if ($_ =~ m{\As});
-      $fit->USI_set($params[$1]),  last DISPATCH if ($_ =~ m{\Ac([1-7])});
+      $fit->po->cleantemp,       return        if ($_ =~ m{\Aq});
+      $fit->I_help,              last DISPATCH if ($_ =~ m{\Ah});
+      $fit->I_version,           last DISPATCH if ($_ =~ m{\Av});
+      $fit->I_log,               last DISPATCH if ($_ =~ m{\Al});
+      $fit->I_plot($1),          last DISPATCH if ($_ =~ m{\Ap?(\d+)});
+      $fit->I_data_report($1),   last DISPATCH if ($_ =~ m{\Ad(\d+)});
+      $fit->I_gds,               last DISPATCH if ($_ =~ m{\Ag});
+      #$fit->I_save($1),          last DISPATCH if ($_ =~ m{\As(\d+)});
+      $fit->I_stats,             last DISPATCH if ($_ =~ m{\As});
+      $fit->I_set($params[$1]),  last DISPATCH if ($_ =~ m{\Ac([1-7])});
     };
-    USI_query($fit);
+    I_query($fit);
   };
 };
 
-sub USI_help {
+sub I_help {
   my ($fit) = @_;
   $message = "No help yet";
   return 0;
 };
-sub USI_version {
+sub I_version {
   my ($fit) = @_;
   $message = Demeter->identify . "\n";
   return 0;
 };
-sub USI_data_report {
+sub I_data_report {
   my ($fit, $n) = @_;
   my @data = @{ $fit->data };
   $message  = BOLD . YELLOW . $data[$n-1]->name . RESET . "\n";
   $message .= $data[$n-1]->fit_parameter_report;
   return 0;
 };
-sub USI_stats {
+sub I_stats {
   my ($fit) = @_;
   $message = $fit->statistics_report;
   return 0;
 };
 
-sub USI_log {
+sub I_log {
   my ($fit) = @_;
-  my $logout = File::Spec->catfile($fit->stash_folder, "probe_log");
+  my $logout = File::Spec->catfile($fit->stash_folder, "...probe_log");
   $fit->logfile($logout);
   my $pager = $ENV{PAGER} || "more";
   system "$pager $logout";
   unlink $logout;
 }
 
-sub USI_query {
+sub I_query {
   my ($fit) = @_;
   my @data  = @{ $fit->data };
   my $plot = $fit->po;
@@ -128,7 +128,7 @@ sub USI_query {
   return 0;
 };
 
-sub USI_plot {
+sub I_plot {
   my ($fit, $i, $this) = @_;
   $this ||= $space;
   $this = 'rmr' if (($this eq 'r') and ($fit->po->r_pl eq 'rmr'));
@@ -138,6 +138,7 @@ sub USI_plot {
   --$i;
   return if ($i > $#data);
   $data[$i] -> plot($this);
+  $data[$i] -> plot_window($this) if $this ne 'rmr';
   if ($fit->po->plot_paths) {
     foreach my $p (@paths) {
       next unless ($data[$i] eq $p->data);
@@ -148,7 +149,7 @@ sub USI_plot {
 };
 
 
-sub USI_save {
+sub I_save {
 ##   my ($i) = @_;
 ##   plot($i); # this assures that the data are up to date for saving
 ##   --$i;
@@ -163,10 +164,11 @@ sub USI_save {
 ##   print "\nWrote $data[$i].$k.rsp ", UNDERLINE, "[return to continue] >", RESET, " ";
 ##   my $how = <STDIN>;
 ##   print $/;
+  1;
 };
 
 
-sub USI_show_gds {
+sub I_show_gds {
   my ($fit) = @_;
   my @gds = @{ $fit->gds };
   print $clear;
@@ -183,16 +185,16 @@ sub USI_show_gds {
   print "\n" if ($eol ne "\n");
 };
 
-sub USI_gds {
+sub I_gds {
   my ($fit) = @_;
   my @gds = @{ $fit->gds };
   my $prompt = "Choose a parameter for a full report or r to return >";
-  $fit->USI_show_gds;
+  $fit->I_show_gds;
   while ( defined ($_ = $term->readline($prompt)) ) {
     return if ($_ =~ m{\Ar}i);
     if ($_ =~ m{\A\d}i) {
       if (exists $gds[$_-1]) {
-	$fit->USI_show_gds;
+	$fit->I_show_gds;
 	my $report = $gds[$_-1]->full_report;
 	my $this   = $gds[$_-1]->name;
 	my $that   = BOLD . YELLOW . $this . RESET;
@@ -204,7 +206,7 @@ sub USI_gds {
 };
 
 
-sub USI_set {
+sub I_set {
   my ($fit, $which) = @_;
   my @data  = @{ $fit->data };
   my $prompt;

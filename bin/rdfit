@@ -20,4 +20,4 @@ $fit -> po -> set(kweight=>2);
 $fit -> interview;
 
 ## clean up
-$fit -> rm;
+$fit -> finish;

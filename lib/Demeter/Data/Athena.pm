@@ -79,7 +79,7 @@ sub _write_record {
   };
   ## xmudat?? xanes??
 
-  my %hash = $self -> get_all;
+  my %hash = $self -> all;
 
   # -------- clean up non-athena attributes --------------------
   delete $hash{$_} foreach (qw(group plottable data mode cv));
