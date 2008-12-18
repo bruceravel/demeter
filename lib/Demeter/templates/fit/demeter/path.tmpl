@@ -3,7 +3,7 @@
   #   {$S->group} returns the ifeffit group name
   #   {$S->parameter} returns the value of that parameter
   #
-  ## what about file/folder   or   sp?
+  ## this is a bit complicated given the large number of ways we can get a path from Feff
   #
   $spaces = "\n                                 ";
   $add = q{};
@@ -11,18 +11,22 @@
   ($add .= $spaces . "third   => '" . $S->third  . "',") if $S->third;
   ($add .= $spaces . "fourth  => '" . $S->fourth . "',") if $S->fourth;
   ($add .= $spaces . "dphase  => '" . $S->dphase . "',") if $S->dphase;
+  $provenance = q{};
+  ($provenance .= $spaces . "parent  => \$" . $S->parent->group . ",") if ($S->parent and $S->sp);
+  ($provenance .= $spaces . "sp      => >>placeholder<<,"            ) if ($S->sp and (ref($S) !~ m{SSPath}));
+  ($provenance .= $spaces . "folder  => '" . $S->folder        . "',") if ($S->folder and not $S->sp);
+  ($provenance .= $spaces . "file    => '" . $S->file          . "',") if ($S->file and not $S->sp);
   $ssp = q{};
-  ($ssp .= $spaces . "ipot    => '" . $S->ipot . "',") if (ref($S) =~ m{SSPath});
-  ($ssp .= $spaces . "reff    => '" . $S->reff . "',") if (ref($S) =~ m{SSPath});
+  ($ssp .= $spaces . "ipot    => '" . $S->ipot   . "',") if (ref($S) =~ m{SSPath});
+  ($ssp .= $spaces . "reff    => '" . $S->reff   . "',") if (ref($S) =~ m{SSPath});
   $object = (ref($S) =~ m{SSPath}) ? 'SSPath' : 'Path';
   q{};
 }
 << >>
 ## {$S -> name}
 push @path, Demeter::{$object} -> new(
-                                 data    => ${$S->data->group},
-				 parent  => ${$S->parent->group},{$ssp}
                                  name    => '{$S -> name}',
+                                 data    => ${$S->data->group},{$provenance}{$ssp}
                                  degen   =>  {$S->n},
                                  s02     => '{$S->s02}',
                                  e0      => '{$S->e0}',

@@ -136,7 +136,8 @@ sub _penalize_restraints {
   foreach my $g (@gds) {
     next if ($g->gds ne "restrain");
     my $this = $g->bestfit;
-    $count += $this/$chisqr;
+    my $addon = ($chisqr) ? $this/$chisqr : 0;
+    $count += $addon;
     next if ($this == 0);
     $summary .= sprintf("The restraint \"%s\" evaluated to %.3f for a penalty of %.3f.\n",
 			$g->name, $g->bestfit, $scale*$this/$chisqr);

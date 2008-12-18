@@ -69,6 +69,8 @@ subtype 'FitSum'
 has 'fitsum'      => (is => 'rw', isa => 'FitSum', default => q{});
 has 'fitting'     => (is => 'rw', isa => 'Bool',   default => 0);
 
+has 'provenance'  => (is => 'rw', isa => 'Str',    default => q{});
+
 ## -------- column selection attributes
 has  $_  => (is => 'rw', isa => 'Str',  default => q{},
 	     trigger => sub{ my ($self, $new) = @_; if ($new) {$self->datatype('xmu'); $self->update_columns(1); $self->is_col(1)} })
@@ -398,6 +400,7 @@ sub read_data {
     $type = $self->datatype;
   };
   my $string = $self->_read_data_command($type);
+  #$self->provenance($string);
   $self->dispose($string);
   $self->update_data(0);
   if ($self->is_col) {

@@ -26,11 +26,8 @@ unlink "cufit.iff" if (-e "cufit.iff");
 print "make a Data object and set the FT and fit parameters\n";
 my $dobject = Demeter::Data -> new(group => 'data0',);
 
-$dobject->set_mode(screen  => 0, ifeffit => 1, file => ">cufit.iff",
-		   ## the next two lines are equivalent to setting the :template pragma
-		   #template_process => "iff_columns",
-		   #template_fit     => "iff_columns",
-		  );
+$dobject->set_mode(screen  => 0, ifeffit => 0, file => ">cufit.iff", );
+$dobject -> template_set("demeter"); ## similar to the template pragma
 #$dobject->plot_with('gnuplot');
 my $plot_features = $dobject->po;
 

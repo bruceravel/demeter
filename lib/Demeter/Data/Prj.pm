@@ -157,6 +157,7 @@ sub record {
     my $rec = $self->_record( @this );
     push @groups, $rec;
     $rec->prjrecord(join(", ", $self->file, $g));
+    $rec->provenance($rec->template("process", "read_prj", {file=>$self->file, record=>$g}));
   };
   return (wantarray) ? @groups : $groups[0];
 };

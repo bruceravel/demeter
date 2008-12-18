@@ -4,6 +4,15 @@
   #   {$S->parameter} returns the value of that parameter
 }
 << >>
+{ foreach $d (@{$F->data}) {
+   $OUT .= sprintf("\@params = (bft_rmin => %.2f, bft_rmax => %.2f, fft_kmin => %.3f, fft_kmax => %.3f, 
+           fft_dk => %.3f, fft_kwindow => '%s', fit_space => '%s', fit_do_bkg => %d);\n", 
+                             $d->bft_rmin, $d->bft_rmax, $d->fft_kmin, $d->fft_kmax,
+                             $d->fft_dk, $d->fft_kwindow, $d->fit_space);
+   $OUT .= '$' . $d->group . " -> set(\@params);\n";
+   $OUT .= "push \@data, \$" . $d->group . ";\n";
+  }
+}
 my $fit = Demeter::Fit->new (
                              name        => '{$F->name}',
                              description => '{$F->description}',

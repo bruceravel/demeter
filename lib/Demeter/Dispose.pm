@@ -31,7 +31,8 @@ sub dispose {
   my $echo_buffer = q{};
 
   $command  =~ s{\+ *-}{-}g; # suppress "+-" in command strings math expressions
-  $command  =~ s{- *-}{+}g; # suppress "--" in command strings math expressions
+  $command  =~ s{- *-}{+}g;  # suppress "--" in command strings math expressions
+  return 0 if ($command =~ m{\A\s*\z});
   ($command .= "\n") if ($command !~ /\n$/);
 
   ## spit everything to the screen
