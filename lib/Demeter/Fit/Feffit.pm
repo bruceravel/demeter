@@ -347,6 +347,10 @@ C<cull_mkw> only works for a single data set, multiple k-weight fit.
 
 Only use integer part of kw value.
 
+=item *
+
+cormin, case insensitivity, pathparam synonyms, local, epsdat, epsr, rlast
+
 =back
 
 Please report problems to Bruce Ravel (bravel AT bnl DOT gov)

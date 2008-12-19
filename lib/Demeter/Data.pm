@@ -408,7 +408,6 @@ sub read_data {
   };
   $self->sort_data;
   $self->put_data;
-  print ">>>> ", $self->file, $/;
   $self->name(basename($self->file, ".dat", ".xmu", ".chi")) if not $self->name;
   return $self;
 };
