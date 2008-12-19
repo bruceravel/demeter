@@ -75,6 +75,7 @@ has 'ndata'          => (is => 'rw', isa =>  Natural, default => 0);
 has 'indeces'        => (is => 'rw', isa => 'Str',    default => q{});
 has 'location'       => (is => 'rw', isa => 'Str',    default => q{});
 has 'fit_performed'  => (is => 'rw', isa => 'Bool',   default => 0);
+has 'ignore_errors'  => (is => 'rw', isa => 'Bool',   default => 0);
 
 ## -------- array attributes
 has 'gds' => (
@@ -283,14 +284,14 @@ sub pre_fit {
   foreach my $d (@{ $self->data }) {
     $d -> fitting(0);
   };
-  $self->dispose($self->template("fit", "prep_fit"));
+  return $self->template("fit", "prep_fit");
 };
 
 sub fit {
   my ($self) = @_;
 
   $self->start_spinner("Demeter is performing a fit") if ($self->mo->ui eq 'screen');
-  $self->pre_fit;
+  my $prefit = $self->pre_fit;
 
   my $r_problems = $self->_verify_fit;
   my $stop = any { ($_ ne 'errors') and $$r_problems{$_} } (keys %$r_problems);
@@ -304,8 +305,9 @@ sub fit {
     };
     $all .= "\nThe calling reference is";
     carp($all);
-    croak("This fit has unrecoverable errors");
+    croak("This fit has unrecoverable errors") if not $self->ignore_errors;
   };
+  $self->dispose($prefit);
 
   $self->mo->fit($self);
   my $command = q{};
@@ -377,7 +379,11 @@ sub fit {
 
     $command .= $data->template("fit", "next") if ($count > 1);
     $self -> indeces(_normalize_paths(\@indexstring));
-    $command .= $data->template("fit", "fit");
+    if ($data->fit_data lt $self->ndata) {
+      $command .= $data->template("fit", "fit");
+    } else {
+      $command .= $data->template("fit", "endfit");
+    };
 
     $self -> restraints(q{}) if ($count == 1);
     $data -> fitsum('fit');

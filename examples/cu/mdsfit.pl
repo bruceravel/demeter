@@ -29,14 +29,16 @@ my @common = (fft_kmin   => 3,	  fft_kmax   => 14,
 	      bft_rmax   => 1.0,  bft_rmax   => 4.3,
 	      fit_k1     => 1,	  fit_k3     => 1,);
 
-my $data_010k = Demeter::Data -> new({group => 'data0',});
+my $data_010k = Demeter::Data -> new(group => 'data0');
+$data_010k -> set_mode(screen  => 0, ifeffit => 1, file => ">mdsfit.iff", );
+$data_010k -> template_set("demeter");
 $data_010k -> set(@common);
 $data_010k -> set(file	     => "cu10k.chi",
 		  cv         => 10,
 		  name       => '10 K copper data',
 		  "y_offset" => 2,
 		 );
-my $data_150k = Demeter::Data -> new({group => 'data1',});
+my $data_150k = Demeter::Data -> new(group => 'data1');
 $data_150k -> set(@common);
 $data_150k -> set(file       => "cu150k.chi",
 		  cv         => 150,
@@ -50,10 +52,10 @@ $data_010k->set_mode(screen  => 0,
 
 
 print "--- make GDS objects for an isotropic expansion, correlated Debye model\n";
-my @gdsobjects =  (Demeter::GDS -> new(gds	 => 'lguess',
-						name	 => 'alpha',
-						mathexp => 0,
-					       ),
+my @gdsobjects =  (Demeter::GDS -> new(gds     => 'lguess',
+				       name    => 'alpha',
+				       mathexp => 0,
+				      ),
 
 		   ## here is some syntactic sugar provided by the Tools module
 		   #Demeter::Tools -> simpleGDS("guess amp = 1"),
@@ -61,17 +63,17 @@ my @gdsobjects =  (Demeter::GDS -> new(gds	 => 'lguess',
 				       name    => 'amp',
 				       mathexp => 1),
 
-		   Demeter::GDS -> new(gds	 => 'guess',
-				       name	 => 'enot',
-				       mathexp  => 0,
+		   Demeter::GDS -> new(gds     => 'guess',
+				       name    => 'enot',
+				       mathexp => 0,
 				      ),
-		   Demeter::GDS -> new(gds	 => 'guess',
-				       name	 => 'theta',
-				       mathexp  => 500,
+		   Demeter::GDS -> new(gds     => 'guess',
+				       name    => 'theta',
+				       mathexp => 500,
 				      ),
-		   Demeter::GDS -> new(gds	 => 'set',
-				       name	 => 'sigmm',
-				       mathexp  => 0.0005,
+		   Demeter::GDS -> new(gds     => 'set',
+				       name    => 'sigmm',
+				       mathexp => 0.0005,
 				      ),
 		  );
 
@@ -107,16 +109,16 @@ foreach my $i (0 .. 4) {
 my @paths_150k = ();
 foreach my $i (0 .. 4) {
   my $j = $i+1;
-  $paths_150k[$i] = $paths_010k[$i] -> clone(data     => $data_150k,
-					     label    => "150K, path $j",
+  $paths_150k[$i] = $paths_010k[$i] -> clone(data => $data_150k,
+					     name => "150K, path $j",
 					    );
 };
 
 print "--- make a Fit object (a collection of GDS, Data, and Path objects)\n";
 my $fitobject = Demeter::Fit -> new(gds   => \@gdsobjects,
-					     data  => [$data_010k, $data_150k],
-					     paths => [@paths_010k, @paths_150k],
-					    );
+				    data  => [$data_010k, $data_150k],
+				    paths => [@paths_010k, @paths_150k],
+				   );
 #$fitobject -> serialize("mdsfit.dpj");
 #exit;
 
@@ -126,7 +128,7 @@ $data_010k->po->legend(dy => 0.05, # set nice legend parameters for the plot
 print "--- do the fit (or the sum of paths)\n";
 $fitobject -> fit;
 #$fitobject -> ff2chi($data_010k);
-$fitobject -> interview;
+#$fitobject -> interview;
 
 $fitobject -> finish;
 

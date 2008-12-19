@@ -2,7 +2,10 @@
   # import chi template
   #   {$D->group} returns the ifeffit group name
   #   {$D->parameter} returns the value of that parameter
+  $name = ($D->name) ? ", name => '".$D->name."'" : q{};
+  q{};
 }
 
 ##| Reading chi data "{$D->file}" as group {$D->group}
-my ${$S->group} = Demeter::Data->new(datatype=>'chi', name => '{$D->name}', file=>'{$D->file}');
+my ${$S->group} = Demeter::Data->new(datatype => 'chi'{$name},
+                               file => '{$D->file}');

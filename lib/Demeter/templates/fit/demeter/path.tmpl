@@ -5,7 +5,7 @@
   #
   ## this is a bit complicated given the large number of ways we can get a path from Feff
   #
-  $spaces = "\n                                 ";
+  $spaces = "\n                                  ";
   $add = q{};
   ($add .= $spaces . "ei      => '" . $S->ei     . "',") if $S->ei;
   ($add .= $spaces . "third   => '" . $S->third  . "',") if $S->third;
@@ -22,15 +22,15 @@
   $object = (ref($S) =~ m{SSPath}) ? 'SSPath' : 'Path';
   q{};
 }
-<< >>
 ## {$S -> name}
-push @path, Demeter::{$object} -> new(
-                                 name    => '{$S -> name}',
-                                 data    => ${$S->data->group},{$provenance}{$ssp}
-                                 degen   =>  {$S->n},
-                                 s02     => '{$S->s02}',
-                                 e0      => '{$S->e0}',
-                                 delr    => '{$S->delr}',
-                                 sigma2  => '{$S->sigma2}',{$add}
-				 include => {$S->include},
-                                );
+push @paths, Demeter::{$object} -> new(
+                                  Index   => {$S->Index},
+                                  name    => '{$S -> name}',
+                                  data    => ${$S->data->group},{$provenance}{$ssp}
+                                  degen   =>  {$S->n},
+                                  s02     => '{$S->s02}',
+                                  e0      => '{$S->e0}',
+                                  delr    => '{$S->delr}',
+                                  sigma2  => '{$S->sigma2}',{$add}
+                                  include => {$S->include},
+                                 );

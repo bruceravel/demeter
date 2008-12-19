@@ -1,0 +1,34 @@
+#!/usr/bin/perl -I/home/bruce/codes/demeter/lib
+
+=for Copyright
+ .
+ Copyright (c) 2008 Bruce Ravel (bravel AT bnl DOT gov).
+ All rights reserved.
+ .
+ This file is free software; you can redistribute it and/or
+ modify it under the same terms as Perl itself. See The Perl
+ Artistic License.
+ .
+ This program is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+
+=cut
+
+use warnings;
+use strict;
+use Demeter;
+
+my $fi = Demeter::Fit::Feffit->new(file=>$ARGV[0]);
+$fi -> template_set("demeter");
+$fi -> set_mode(ifeffit => 0);
+if (exists $ARGV[1]) {
+  unlink $ARGV[1] if (-e $ARGV[1]);
+  $fi -> set_mode(file => '>'.$ARGV[1]);
+} else {
+  $fi -> set_mode(screen => 1);
+};
+
+my $fit = $fi -> convert;
+$fit->ignore_errors(1);
+$fit->fit;

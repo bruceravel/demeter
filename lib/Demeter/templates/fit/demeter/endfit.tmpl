@@ -1,0 +1,24 @@
+{ # -*- ifm -*-
+  # Fit template
+  #   {$S->group} returns the ifeffit group name
+  #   {$S->parameter} returns the value of that parameter
+}
+<<nl>>
+{ foreach $d (@{$F->data}) {
+   $OUT .= sprintf("\@params = (bft_rmin => %.3f, bft_rmax => %.3f, fft_kmin => %.3f, fft_kmax => %.3f,
+           fft_dk => %.3f, fft_kwindow => '%s', fit_space => '%s', fit_do_bkg => %d,
+           fit_k1 => %d, fit_k2 => %d, fit_k3 => %d);\n",
+                             $d->bft_rmin, $d->bft_rmax, $d->fft_kmin, $d->fft_kmax,
+                             $d->fft_dk, $d->fft_kwindow, $d->fit_space, $d->fit_do_bkg, $d->fit_k1, $d->fit_k2, $d->fit_k3);
+   $OUT .= '$' . $d->group . " -> set(\@params);\n";
+   $OUT .= "push \@data, \$" . $d->group . ";\n";
+  }
+}
+my $fit = Demeter::Fit->new (
+                             name        => '{$F->name}',
+                             description => '{$F->description}',
+   	  		     gds         => \@gds,
+			     data        => \@data,
+			     paths       => \@paths
+			    );
+$fit -> fit;

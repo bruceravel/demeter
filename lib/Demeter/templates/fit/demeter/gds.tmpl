@@ -2,5 +2,7 @@
   # GDS template
   #   {$S->group} returns the ifeffit group name
   #   {$S->parameter} returns the value of that parameter
+  $start = ($S->gds eq 'lguess') ? q{#} : q{};
+  q{}
 }
-push @gds, Demeter::GDS->new(gds => '{$S->gds}', name => '{$S->name}', mathexp => '{$S->mathexp}');
+{$start}push @gds, Demeter::GDS->new(gds => '{$S->gds}', name => '{$S->name}', mathexp => '{$S->mathexp}');

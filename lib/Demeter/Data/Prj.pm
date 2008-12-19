@@ -318,7 +318,7 @@ __PACKAGE__->meta->make_immutable;
 
 =head1 NAME
 
-Demeter::Data::Athena - Read Athena project files
+Demeter::Data::Prj - Read data from Athena project files
 
 =head1 VERSION
 
