@@ -23,13 +23,15 @@ use STAR::Parser;
 
 sub read_cif {
   my ($self) = @_;
+  $self->clear;
   my $file = $self->cif;
-  croak("Atoms: no CIF file provided")        if (not    $file);
-  croak("Atoms: \"$file\" does not exist")    if (not -e $file);
-  croak("Atoms: \"$file\" could not be read") if (not -r $file);
+  $self->confess(": Atoms: no CIF file provided")        if (not    $file);
+  $self->confess(": Atoms: \"$file\" does not exist")    if (not -e $file);
+  $self->confess(": Atoms: \"$file\" could not be read") if (not -r $file);
 
   my @datablocks = STAR::Parser->parse($file);
-  my $datablock = $datablocks[0];
+  $self->confess(": CIF file \"$file\" does not have a record number " . ($self->record + 1)) if not exists($datablocks[$self->record]);
+  my $datablock = $datablocks[$self->record];
   ##    if STAR::Checker->check(-datablock=>$datablocks[0]);
 
   my @item;
@@ -44,9 +46,9 @@ sub read_cif {
     $item[0] ||= "";
     $item[0] =~ s///g;
     chomp $item[0];
-    if ($item[0] !~ /^\s*$/) {
+    if ($item[0] !~ m{\A\s*\z}) {
       foreach my $t (split(/\n/, $item[0])) {
-	$self->push_titles($t);
+	$self->push_titles($t) if ($t !~ m{\A\s*\z});
       };
     };
   };
@@ -61,7 +63,7 @@ sub read_cif {
   my $min = 100000;   # use lattice constants to compute default for Rmax
   foreach my $k (qw(a b c)) {
     @item = $datablock->get_item_data(-item=>"_cell_length_$k");
-    (my $this = $item[0]) =~ s/\(\d+\)//;
+    (my $this = $item[0]) =~ s{\(\d+\)}{};
     #print "$k $this\n";
     $self->$k($this);
     $min = 1.5*$this if ($min > 1.1*$this);
@@ -70,7 +72,7 @@ sub read_cif {
   $self->rmax($min);
   foreach my $k (qw(alpha beta gamma)) {
     @item = $datablock->get_item_data(-item=>"_cell_angle_$k");
-    (my $this = $item[0]) =~ s/\(\d+\)//;
+    (my $this = $item[0]) =~ s{\(\d+\)}{};
     #print "$k $this\n";
     $self->$k($this);
   };
@@ -121,7 +123,7 @@ sub _get_elem {
 
 =head1 NAME
 
-Demeter::Atoms::Cif - Methods for Crystallographic Information Files
+Demeter::Atoms::Cif - Methods for importing data from Crystallographic Information Files
 
 =head1 VERSION
 
@@ -129,6 +131,7 @@ This documentation refers to Demeter version 0.2.
 
 =head1 DESCRIPTION
 
+explain how to use cif and record
 
 =head1 METHODS
 
@@ -139,7 +142,6 @@ This documentation refers to Demeter version 0.2.
 =back
 
 =head1 BUGS AND LIMITATIONS
-
 
 Please report problems to Bruce Ravel (bravel AT bnl DOT gov)
 

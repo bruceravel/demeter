@@ -178,7 +178,7 @@ sub parse_line {
 
     ($line =~ m{\A(?:guess|local|set)}i) and do {
       ## $line now contains the gds line, push it onto gds list
-      push @gds, $line;
+      push @gds, lc($line);
       last LINE;
     };
 
@@ -199,7 +199,7 @@ sub parse_line {
 
     ($line =~ m{^($pp)\s*[ \t=,]\s*(\d+)\s*[ \t=,]\s*(.*)}i) and do {
       ## push this path parameter onto its list
-      $self->parse_pathparam($line);
+      $self->parse_pathparam(lc($line));
       last LINE;
     };
 
@@ -220,7 +220,7 @@ sub parse_pathparam {
   $pp = $SYNONYMS{$pp};
   if ($index == 0) {
     foreach my $v (keys %REPLACEMENT) {
-      ($me =~ s{\b$v\b}{$REPLACEMENT{$v}}) if ($me =~ m{$v});
+      ($me =~ s{\b$v\b}{$REPLACEMENT{$v}}g) if ($me =~ m{$v});
     };
     $self->$pp($me);
   } else {
@@ -274,7 +274,7 @@ sub convert {
     ($gds = 'def') if (($gds eq 'set') and ($mathexp !~ m{\A$NUMBER\z}));
     ($name = $REPLACEMENT{$name}) if (any {$name eq $_} keys(%REPLACEMENT));
     foreach my $v (keys %REPLACEMENT) {
-      ($mathexp =~ s{\b$v\b}{$REPLACEMENT{$v}}) if ($mathexp =~ m{$v});
+      ($mathexp =~ s{\b$v\b}{$REPLACEMENT{$v}}g) if ($mathexp =~ m{$v});
     };
     push @list_of_gds, Demeter::GDS->new(gds=>$gds, name=>$name, mathexp=>$mathexp);
   };
@@ -358,11 +358,16 @@ sub convert {
 	    last PP;
 	  };
 
+	  ($pp eq 'id') and do {
+	    $this_path->id($p->{id});
+	    last PP;
+	  };
+
 	  my $me = $p->{$pp};
 	  foreach my $v (keys %REPLACEMENT) {
 	    ($me =~ s{\b$v\b}{$REPLACEMENT{$v}}) if ($me =~ m{$v});
 	  };
-	  $this_path->$pp($p->{$pp});
+	  $this_path->$pp($me);
 
 	};
       };

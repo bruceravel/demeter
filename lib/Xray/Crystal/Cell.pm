@@ -69,7 +69,7 @@ has 'beta'	   => (is => 'rw', isa => 'Num', default => 90,
 has 'gamma'	   => (is => 'rw', isa => 'Num', default => 90,
 		       trigger => sub{ my ($self, $new) = @_; $self->determine_monoclinic; $self->geometry} );
 has 'angle'	   => (is => 'rw', isa => 'Str', default => q{});
-has 'setting'	   => (is => 'rw', isa => 'Int', default => 0);
+has 'setting'	   => (is => 'rw', isa => 'Int|Str', default => 0);
 
 has 'sites'	   => (
 		       metaclass => 'Collection::Array',
@@ -120,6 +120,16 @@ my $opt  = Regexp::List->new;
 my $sh_re = $opt->list2re(qw(hex hcp zincblende zns cubic salt perov perovskite
 			     gra graphite fcc salt nacl diamond bcc cscl));
 my $r_sg = retrieve(File::Spec->catfile(identify_self(), 'share', 'space_groups.db'));
+
+sub clear {
+  my ($self) = @_;
+  $self->$_(0)   foreach (qw(a b c setting));
+  $self->$_(90)  foreach (qw(alpha beta gamma));
+  $self->$_(q{}) foreach (qw(space_group class angle));
+  $self->clear_sites;
+  $self->clear_contents;
+  $self->clear_bravais;
+};
 
 sub get {
   my ($self, @arguments) = @_;

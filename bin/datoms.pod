@@ -46,13 +46,41 @@ coefficients.
 
 Write a space group summary
 
-=item C<-r>
+=item C<--rmax=#> or C<-r #>
 
 Specify a cluster size from the command line.
 
   atoms -r 5.2 mydata.inp
 
 =back
+
+=head1 CIF FILES
+
+Reding CIF files requires the use of one or two additional command
+line switches:
+
+=over 4
+
+=item C<--cif> or C<-c>
+
+This flag indicates that the file given on the command line is a CIF
+file rather than an Atoms input file.  B<No effort> is made to figure
+out whether your file is CIF or Atoms input.
+
+=item C<--rec=#>
+
+If your CIF file is a multi-record file, use this switch to indicate
+which record to import.  The default is to read the first record, so
+this switch does not need to be used for a single-record file.
+
+=back
+
+Note that a CIF file does not identify a central atom.  Demeter's CIF
+importer assuems that the heaviest atom in the material is the
+absorber.  As a command line utility, there is no convenient way to
+unambiguously identify the central atom.  Probably the best solution
+is to use this script to convert the CIF file to an atoms input file,
+edit that, then rerun this script to generate the Feff input file.
 
 =head1 CONFIGURATION AND ENVIRONMENT
 

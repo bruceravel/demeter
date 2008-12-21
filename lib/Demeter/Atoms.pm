@@ -159,16 +159,21 @@ has 'shift' => (
 			      'clear' => 'clear_shift',
 			     }
 	       );
-has 'file'	       => (is => 'rw', isa =>'Str', default=> q{},
-			   trigger => sub{ my ($self, $new) = @_;
-					   $self->read_inp if $new;
-					   #$self->is_imported(0) if $new
-					 });
-has 'cif'	       => (is => 'rw', isa =>'Str', default=> q{},
-			   trigger => sub{ my ($self, $new) = @_;
-					   $self->read_cif if $new;
-					   #$self->is_imported(0) if $new
-					 });
+has 'file'   => (is => 'rw', isa =>'Str', default=> q{},
+		 trigger => sub{ my ($self, $new) = @_;
+				 $self->read_inp if $new;
+				 #$self->is_imported(0) if $new
+			       });
+has 'cif'    => (is => 'rw', isa =>'Str', default=> q{},
+		 trigger => sub{ my ($self, $new) = @_;
+				 $self->read_cif if $new;
+				 #$self->is_imported(0) if $new
+			       });
+has 'record' => (is => 'rw', isa => NonNeg,    default=> 0,
+		 trigger => sub{ my ($self, $new) = @_;
+				 $self->read_cif if ($new and $self->cif);NonNeg
+				 #$self->is_imported(0) if $new
+			       });
 has 'titles' => (
 		 metaclass => 'Collection::Array',
 		 is        => 'rw',
@@ -258,9 +263,29 @@ sub out {
   return $val;
 };
 
+sub clear {
+  my ($self) = @_;
+  $self->$_(0)  foreach (qw(a b c rmax nitrogen argon xenon helium krypton gases_set));
+  $self->$_(90) foreach (qw(alpha beta gamma));
+  $self->clear_sites;
+  $self->clear_cluster;
+  $self->clear_shift;
+  $self->clear_titles;
+  $self->cell->clear;
+  $self->is_imported(0);
+  $self->is_populated(0);
+  $self->is_ipots_set(0);
+  $self->is_expanded(0);
+  $self->absorption_done(0);
+  $self->mcmaster_done(0);
+  $self->i0_done(0);
+  $self->self_done(0);
+};
+
 sub read_inp {
   my ($self) = @_;
   my $reading_atoms_list = 0;
+  $self->clear;
   my $file = $self->file;
   croak("Atoms: no input file provided")      if (not    $file);
   croak("Atoms: \"$file\" does not exist")    if (not -e $file);
@@ -904,7 +929,17 @@ The value of the shift vector, should one be necessary.
 
 =item C<file> (filename)
 
-The name of an atoms input file or a CIF file.
+The name of an atoms input file.
+
+=item C<cif> (filename)
+
+The name of a CIF file.
+
+=item C<record> (string) [0]
+
+The record to import from a multi-record CIF file.  The default is to
+read the first record.  Note that this is zero-based while you user
+interface probably should be one-based.
 
 =item C<titles> (array of strings)
 
@@ -1005,9 +1040,9 @@ Import crystal data from an Atoms input file.
 
 Import crystal data from a CIF file.
 
-  $atoms -> read_inp("your_data.cif");
+  $atoms -> read_cif("your_data.cif");
 
-CIF import is not yet working in Demeter 0.2.
+See L<Demeter::Atoms::Cif> for more details.
 
 =item C<atoms_file>
 

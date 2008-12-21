@@ -23,13 +23,16 @@ use Regexp::Common;
 use Readonly;
 Readonly my $NUMBER => $RE{num}{real};
 
-my ($feff6, $feff8, $abs, $sg, $rmax) = (0, 0, 0, 0, 0);
+my ($feff6, $feff8, $abs, $sg, $rmax, $cif, $record, $atinp) = (0, 0, 0, 0, 0, 0, 1, 0);
 my $result = GetOptions (
-			 "rmax=s" => \$rmax,
-			 "6"	  => \$feff6,
-			 "8"	  => \$feff8,
-			 "a"	  => \$abs,
-			 "s"	  => \$sg,
+			 "c|cif"    => \$cif,
+			 "rec=i"    => \$record,
+			 "r|rmax=s" => \$rmax,
+			 "6"	    => \$feff6,
+			 "8"	    => \$feff8,
+			 "a"	    => \$abs,
+			 "s"	    => \$sg,
+			 "atoms"    => \$atinp,
 			);
 ## missing command line switches
 ##  atoms
@@ -38,12 +41,14 @@ my $result = GetOptions (
 ##  other output formats
 ##  write to a file
 
-my $atoms = Demeter::Atoms->new(file => $ARGV[0]||"atoms.inp");
+my @call = ($cif) ? (record=>$record-1, cif => $ARGV[0]) : (file => $ARGV[0]||"atoms.inp");
+my $atoms = Demeter::Atoms->new(@call);
 
 my $which = ($feff6) ? "feff6"
           : ($feff8) ? "feff8"
           : ($abs)   ? "absorption"
           : ($sg)    ? "spacegroup"
+          : ($atinp) ? "atoms"
           :            "feff6" ;
 $atoms -> set(rmax=>$rmax) if ($rmax and $rmax =~ m{$NUMBER});
 #print $atoms -> Write('atoms');
