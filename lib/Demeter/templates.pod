@@ -38,12 +38,12 @@ snippets of perl code interspersed.  Here is an example:
    }
    fftf({$D->group}.chi,
         k        = {$D}.k,
-        kmin     = {$D->get("fft_kmin")},
-        kmax     = {$D->get("fft_kmax")},
-        dk       = {$D->get("fft_dk")},
-        kwindow  = {$D->get("fft_kwindow")},
-        kweight  = {$P->get("kweight")},
-        rmax_out = {$D->get("rmax_out")})
+        kmin     = {$D->fft_kmin},
+        kmax     = {$D->fft_kmax},
+        dk       = {$D->fft_dk"},
+        kwindow  = {$D->fft_kwindow},
+        kweight  = {$P->kweight},
+        rmax_out = {$D->rmax_out})
 
 This is the template for generating a forward Fourier transform
 command using the C<iff_columns> L<template set|/TEMPLATE SETS>.
@@ -90,8 +90,8 @@ This refers to the object that invoked the C<template> method.
 
 This refers to the Data object associated with the object that invoked
 the C<template> method.  For a Data object, C<$S> and C<$D> point at
-the same object.  For a Path object, however, C<$D> points at the Data
-object to which that Path object belongs.
+the same object.  For a Path, SSPath, or VPath object, however, C<$D>
+points at the Data object to which that Path object belongs.
 
 =item C<$P>
 
@@ -137,7 +137,7 @@ generated.
 =back
 
 There is one final mechanism for moving data into a template.  This
-method is quite similar to user-define Config attributes, but may be
+method is quite similar to user-defined Config attributes, but may be
 more convenient.  You can supply an additional argument to the
 C<template> method which is an anonymous hash.  An example would be
 the C<save_xmu> template from the I<process> tamplate group.  It is
@@ -149,9 +149,9 @@ called like so in C<save_xmu> in C<Demeter::Data::Mu>:
 
 The corresponding template looks like this:
 
-  write_data(file="{$filename}", ${$titles}, ${$D}_title_*,
-             {$D}.energy, {$D}.xmu, {$D}.bkg, {$D}.preline,
-             {$D}.postline, {$D}.der, {$D}.sec)
+  write_data(file="{$filename}", ${$titles}, ${$D->group}_title_*,
+             {$D->group}.energy, {$D->group}.xmu, {$D->group}.bkg, {$D->group}.preline,
+             {$D->group}.postline, {$D->group}.der, {$D->group}.sec)
 
 Here the filename and titles glob are passed in the anonymous hash and
 accessed in the template via their hash keys inside of curly brackets.
@@ -209,21 +209,25 @@ as L<explained here|Demeter::Dispose/OTHER_USES_OF_set_mode>.
 
 =item I<plot>
 
-In Demeter version 0.2 there is only a "pgplot" template set.  In the
-future new sets will be written for different plotting backends.  The
-plot template set is chosen by setting the C<template_plot> mode, as
-L<explained here|Demeter::Dispose/OTHER_USES_OF_set_mode>.
+The plotting template sets are "pgplot", "gnuplot", and "demeter".
+The first two generate commands for the currently available plotting
+backends.  The last is intended for use with the Demeter fitting and
+processing template set.  In the future new sets may be written for
+different plotting backends (for example, Grace would be a target that
+would work very well within Demeter).  The plot template set is chosen
+by setting the C<template_plot> mode, as L<explained
+here|Demeter::Dispose/OTHER_USES_OF_set_mode>.
 
 =item I<fit> and I<process>
 
-Template sets exist for Feffit and Ifeffit.  There are two version of
-the Ifeffit template set called "ifeffit" and "iff_columns".  The
-first set uses a fairly terse style while the second one tries to
-align ifeffit command arguments into columns aligned at the equals
-sign wherever possible.  The second one may be a bit more human
-readable.  The fit and process template sets are chosen by setting the
-C<template_fit> and C<template_process> modes, as L<explained
-here|Demeter::Dispose/OTHER_USES_OF_set_mode>.
+Template sets exist for Ifeffit, Feffit, and Demeter.  There are two
+version of the Ifeffit template set called "ifeffit" and
+"iff_columns".  The first set uses a fairly terse style while the
+second one tries to align ifeffit command arguments into columns
+aligned at the equals sign wherever possible.  The second one may be a
+bit more human readable.  The fit and process template sets are chosen
+by setting the C<template_fit> and C<template_process> modes, as
+L<explained here|Demeter::Dispose/OTHER_USES_OF_set_mode>.
 
 =back
 
@@ -259,11 +263,7 @@ New template sets:
 
 =item *
 
-finish up gnuplot plotting backend
-
-=item *
-
-Demeter script output
+More plotting backends?  Grace?  others?
 
 =item *
 

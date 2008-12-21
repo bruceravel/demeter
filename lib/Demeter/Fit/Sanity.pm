@@ -387,7 +387,8 @@ sub S_reff_rmax {
       next if not defined($p);
       next if ($p->data ne $d);
       if ($p->reff > ($d->bft_rmax+1)) {
-	push (@{$$r_problem{errors}}, "Reff for path \"" . $p->name . "\" is well beyond Rmax for data set \"" . $d->name . "\"");
+	my $identify = $p->name || $p->Index;
+	push (@{$$r_problem{errors}}, "Reff for path \"$identify\" is well beyond Rmax for data set \"" . $d->name . "\"");
 	++$$r_problem{reff_rmax};
       };
     };
@@ -474,7 +475,7 @@ sub S_path_calculation_exists {
     next if (ref($p->sp) =~ m{(?:ScatteringPath|SSPath)});
     my $nnnn = File::Spec->catfile($p->folder, $p->file);
     next if ((-e $nnnn) and $p->file);
-    push (@{$$r_problem{errors}}, "Path number " . $p->Index . " does not have a valid Feff calculation associated with it.");
+    push (@{$$r_problem{errors}}, "Path \"" . $p->name . "\" does not have a valid Feff calculation associated with it.");
     ++$$r_problem{path_calculation_exists};
   };
 };

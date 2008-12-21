@@ -20,6 +20,7 @@ use autodie qw(open close);
 use Moose;
 extends 'Demeter';
 with 'Demeter::Atoms::Absorption';
+with 'Demeter::Atoms::Cif';
 use MooseX::AttributeHelpers;
 use Demeter::StrTypes qw( Element
 			  Edge
@@ -163,6 +164,11 @@ has 'file'	       => (is => 'rw', isa =>'Str', default=> q{},
 					   $self->read_inp if $new;
 					   #$self->is_imported(0) if $new
 					 });
+has 'cif'	       => (is => 'rw', isa =>'Str', default=> q{},
+			   trigger => sub{ my ($self, $new) = @_;
+					   $self->read_cif if $new;
+					   #$self->is_imported(0) if $new
+					 });
 has 'titles' => (
 		 metaclass => 'Collection::Array',
 		 is        => 'rw',
@@ -222,7 +228,8 @@ has 'sites' => (
 			     }
 	       );
 #has 'cell' => (is => 'rw', isa =>Empty.'|Xray::Crystal::Cell', default=> q{});
-has 'cell' => (is => 'rw', isa =>'Any', default=> q{});
+has 'cell' => (is => 'rw', isa =>'Any', default=> sub{Xray::Crystal::Cell->new;},
+	      );
 has 'cluster' => (
 		  metaclass => 'Collection::Array',
 		  is        => 'rw',
@@ -355,20 +362,18 @@ sub populate {
     push @sites, Xray::Crystal::Site->new(element=>$el, x=>_interpret($x), y=>_interpret($y), z=>_interpret($z), tag=>$tag);
   };
   ### creating and populating cell
-  my $cell = Xray::Crystal::Cell->new;
-  $cell -> space_group($self->space);
+  $self -> cell -> space_group($self->space);
   foreach my $key (qw(a b c alpha beta gamma)) {
     my $val = $self->$key;
-    $cell->$key($val) if $val;
+    $self -> cell->$key($val) if $val;
   };
-  $self -> cell($cell);
   ## Group: $cell->get(qw(given_group space_group class setting))
   ## Bravais: $cell->get('bravais')
-  $cell->populate(\@sites);
+  $self -> cell->populate(\@sites);
   foreach my $key (qw(a b c alpha beta gamma)) {
-    $self->$key($cell->$key);
+    $self->$key($self->cell->$key);
   };
-  my ($central, $xcenter, $ycenter, $zcenter) = $cell -> central($self->core);
+  my ($central, $xcenter, $ycenter, $zcenter) = $self -> cell -> central($self->core);
   $self->update_edge;
   $self->set(is_populated => 1,
 	     corel        => ucfirst(lc($central->element)),

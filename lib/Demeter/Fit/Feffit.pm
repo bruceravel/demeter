@@ -24,44 +24,97 @@ use MooseX::AttributeHelpers;
 use Cwd qw(realpath);
 use File::Basename;
 use File::Spec;
+use List::MoreUtils qw(any);
 use Regexp::Optimizer;
 use Regexp::Common;
 use Readonly;
-Readonly my $NUMBER    => $RE{num}{real};
+Readonly my $NUMBER      => $RE{num}{real};
+Readonly my %REPLACEMENT => ( e0     => 'enot',
+			      ei     => 'eimag',
+			      s02    => 's_02',
+			      sigma2 => 'sigsqr',
+			      third  => 'cumul3',
+			      fourth => 'cumul4',
+			      dr     => 'd_r',
+			      dr1    => 'dr_1',
+			      dr2    => 'dr_2',
+			      dk     => 'd_k',
+			      dk1    => 'dk_1',
+			      dk2    => 'dk_2',
+			      etok   => 'e2k',
+			      pi     => 'pie',
+			    );
+## see line 488 and following in src/feffit/fitinp.f from the ifeffit source tree
+Readonly my %SYNONYMS => (path	  => 'path',
+			  feff	  => 'path',
+			  id	  => 'id',
+			  e0	  => 'e0',
+			  esh	  => 'e0',
+			  ee	  => 'e0',
+			  e0s	  => 'e0',
+			  s02	  => 's02',
+			  so2	  => 's02',
+			  amp	  => 's02',
+			  sigma2  => 'sigma2',
+			  ss2	  => 'sigma2',
+			  delr	  => 'delr',
+			  deltar  => 'delr',
+			  ei	  => 'ei',
+			  third	  => 'third',
+			  '3rd'	  => 'third',
+			  cubic	  => 'third',
+			  fourth  => 'fourth',
+			  '4th'	  => 'fourth',
+			  quartic => 'fourth',
+			 );
 
 my $opt  = Regexp::List->new;
 
 has 'file'    => (is => 'rw', isa => 'Str',  default => q{},
 		  trigger => sub{shift -> Read} );
-has 'cwd'     => (is => 'rw', isa => 'Str', default => 0);
+has 'cwd'     => (is => 'rw', isa => 'Str', default => q{});
 has 'ndata'   => (is => 'rw', isa => 'Int', default => 0);
+
+has 'e0'     => (is => 'rw', isa => 'Str', default => q{});
+has 's02'    => (is => 'rw', isa => 'Str', default => q{});
+has 'delr'   => (is => 'rw', isa => 'Str', default => q{});
+has 'sigma2' => (is => 'rw', isa => 'Str', default => q{});
 
 ## feffit keywords
 has 'all_re'       => (is => 'ro', isa => 'RegexpRef',
 		       default => sub{ $opt->list2re(qw(format formin formout rspout kspout qspout allout bkgfile out output
 							bkg data kmin kmax rmin rmax dk dk1 dk2 dr dr1 dr2 rlast kw kweight
-							nodegen noout nofit norun rspfit qspfit
+							nodegen noout nofit norun kspfit rspfit qspfit fit_space
 						      )) });
 has 'flag_re'      => (is => 'ro', isa => 'RegexpRef',
-		       default => sub{ $opt->list2re(qw(nodegen noout nofit norun rspfit qspfit)) });
+		       default => sub{ $opt->list2re(qw(nodegen noout nofit norun kspfit rspfit qspfit)) });
 has 'kop_re'       => (is => 'ro', isa => 'RegexpRef',
-		       default => sub{ $opt->list2re(qw(kmin kmax dk dk1 dk2 kw kweight)) });
+		       default => sub{ $opt->list2re(qw(kmin kmax dk dk1 dk2 kw kweight qmin qmax dq dq1 dq2 qw qweight)) });
 has 'rop_re'       => (is => 'ro', isa => 'RegexpRef',
 		       default => sub{ $opt->list2re(qw(rmin rmax dr dr1 dr2 rlast)) });
 has 'ignore_re'    => (is => 'ro', isa => 'RegexpRef',
-		       default => sub{ $opt->list2re(qw(format formin formout rspout kspout qspout allout
-							bkgfile out output mftwrt mftfit)) });
+		       default => sub{ $opt->list2re(qw(form format formin formout rspout kspout qspout allout
+							prmout pcout kfull fullk nerstp
+							bkgfile out output mftwrt mftfit mdocxx comment asccmt)) });
 has 'opparam_re'   => (is => 'ro', isa => 'RegexpRef',
-		       default => sub{ $opt->list2re(qw(bkg data kmin kmax rmin rmax dk dk1 dk2 dr dr1 dr2 kw kweight nodegen)) });
+		       default => sub{ $opt->list2re(qw(bkg data kmin kmax rmin rmax dk dk1 dk2 dr dr1 dr2 kw kweight nodegen fit_space)) });
 has 'pathparam_re' => (is => 'ro', isa => 'RegexpRef',
-		       default => sub{ $opt->list2re(qw(path id e0 s02 sigma2 delr ei third fourth)) });
+		       default => sub{ $opt->list2re(qw(path feff
+							id
+							e0 esh ee e0s
+							s02 so2 amp
+							sigma2 ss2
+							delr deltar
+							ei
+							third 3rd cubic
+							fourth 4th quartic)) });
 has 'comment_re'   => (is => 'ro', isa => 'RegexpRef',
 		       default => sub{ $opt->list2re('!', '#', '%') });
 
 
+my @gds;
 my @data;
 $data[0] = ({titles=>[], opparams=>{}, path=>[], feffcalcs=>[]});
-my @gds;
 
 sub Read {
   my ($self) = @_;
@@ -129,7 +182,7 @@ sub parse_line {
       last LINE;
     };
 
-    ($line =~ m{^end}i) and do {
+    ($line =~ m{\A(?:end|quit)}i) and do {
       return 1;
       last LINE;
     };
@@ -164,7 +217,15 @@ sub parse_pathparam {
   $line =~ s{[#!%].*$}{};	# remove end of line comments
   $line =~ m{^($ppre)\s*[ \t=,]\s*(\d+)\s*[ \t=,]\s*(.*)}i;
   my ($pp, $index, $me) = ($1, $2, $3);
-  $data[$self->ndata]->{path}->[$index]->{$pp} = $me;
+  $pp = $SYNONYMS{$pp};
+  if ($index == 0) {
+    foreach my $v (keys %REPLACEMENT) {
+      ($me =~ s{\b$v\b}{$REPLACEMENT{$v}}) if ($me =~ m{$v});
+    };
+    $self->$pp($me);
+  } else {
+    $data[$self->ndata]->{path}->[$index]->{$pp} = $me;
+  };
 };
 
 sub parse_opparam {
@@ -181,10 +242,10 @@ sub parse_opparam {
     } elsif (lc($key) eq 'kw') {
       $data[$self->ndata]->{opparams}->{$key} = int($words{$key});
     } elsif (lc($key) eq 'bkg') {
-      if ($data[$self->ndata]->{opparams}->{bkg} =~ m{^[1yt]}) {
-	$data[$self->ndata]->{opparams}->{bkg} = 'yes';
+      if ($words{$key} =~ m{\A[1yt]}) {
+	$data[$self->ndata]->{opparams}->{bkg} = 1;
       } else {
-	$data[$self->ndata]->{opparams}->{bkg} = 'no';
+	$data[$self->ndata]->{opparams}->{bkg} = 0;
       };
     } else {
       $data[$self->ndata]->{opparams}->{$key} = $words{$key};
@@ -210,7 +271,11 @@ sub convert {
     $g =~ s{\s+\z}{};
     my ($gds, $name, @rest) = split(" ", $g);
     my $mathexp = join(" ", @rest);
-    ($gds = 'def') if (($gds eq 'set') and ($mathexp !~ m{$NUMBER}));
+    ($gds = 'def') if (($gds eq 'set') and ($mathexp !~ m{\A$NUMBER\z}));
+    ($name = $REPLACEMENT{$name}) if (any {$name eq $_} keys(%REPLACEMENT));
+    foreach my $v (keys %REPLACEMENT) {
+      ($mathexp =~ s{\b$v\b}{$REPLACEMENT{$v}}) if ($mathexp =~ m{$v});
+    };
     push @list_of_gds, Demeter::GDS->new(gds=>$gds, name=>$name, mathexp=>$mathexp);
   };
 
@@ -221,6 +286,9 @@ sub convert {
     next if not defined($d);
     ++$index;
     my $this_data = Demeter::Data->new(Index=>$index);
+
+    ## -------- set title lines
+    $this_data->fit_titles(join("\n", @{$d->{titles}}));
 
     ## -------- set operational parameters
     my $nodegen = 0;
@@ -240,6 +308,20 @@ sub convert {
 	  last OP;
 	};
 
+	($o eq "bkg") and do {
+	  $this_data->fit_do_bkg($d->{opparams}->{$o});
+	  last OP;
+	};
+
+	($o =~ m{\A([kqr])spfit\z}) and do {
+	  $this_data->fit_space($1);
+	  last OP;
+	};
+	($o eq 'fit_space') and do {
+	  $this_data->fit_space($d->{opparams}->{$o});
+	  last OP;
+	};
+
 	($o =~ m{\Akw}) and do {
 	  $this_data->fit_k1(1) if ($d->{opparams}->{$o} =~ m{1});
 	  $this_data->fit_k2(1) if ($d->{opparams}->{$o} =~ m{2});
@@ -248,7 +330,8 @@ sub convert {
 	};
 
 	($o =~ m{\A(?:$kop)\z}) and do{
-	  my $att = ($o =~ m{dk}) ? 'fft_dk' : "fft_$o";
+	  (my $oo = $o) =~ s{q}{k};
+	  my $att = ($oo =~ m{dk}) ? 'fft_dk' : "fft_$o";
 	  $this_data->$att($d->{opparams}->{$o});
 	  last OP;
 	};
@@ -265,7 +348,9 @@ sub convert {
     foreach my $p (@{ $d->{path} }) {
       next if not defined($p);
       my $this_path = Demeter::Path->new(data=>$this_data);
+      my %is_set = (e0=>0, s02=>0, delr=>0, sigma2=>0);
       foreach my $pp (keys %$p) {
+	$is_set{$pp} = 1;
       PP: {
 	  ($pp eq 'path') and do {
 	    my ($file, $folder) = fileparse($p->{$pp});
@@ -273,12 +358,20 @@ sub convert {
 	    last PP;
 	  };
 
+	  my $me = $p->{$pp};
+	  foreach my $v (keys %REPLACEMENT) {
+	    ($me =~ s{\b$v\b}{$REPLACEMENT{$v}}) if ($me =~ m{$v});
+	  };
 	  $this_path->$pp($p->{$pp});
 
 	};
       };
       $this_path->n(1) if $nodegen;
+      foreach my $def (qw(e0 s02 delr sigma2)) {
+	$this_path->$def($self->$def) if (not $is_set{$def});
+      };
       push @list_of_paths, $this_path;
+      $this_path->name("path ".($#list_of_paths+1));
     };
 
     push @list_of_data, $this_data;
@@ -307,7 +400,6 @@ sub cull_mkw {
   };
 };
 
-
 1;
 
 
@@ -321,8 +413,41 @@ This documentation refers to Demeter version 0.2.
 
 =head1 DESCRIPTION
 
+Convert an old-style F<feffit.inp> file into the equivalent Demeter
+Fit object.
+
+   $inp = Demeter::Fit::Feffit->new(file=>$inpfile);
+   $fit = $inp -> convert;
+   $fit -> fit;
+
+This can be used to drive a Demeter-based Feffit act-alike or it can
+be used, along with the demeter template set, to convert a
+F<feffit.inp> into a Demeter-based perl script.
+
+Most features of Feffit are handled correctly, including C<include>
+files.  A few of the more obscure Feffit options are not handled at
+all.  Several Feffit options do not have Ifeffit or Demeter analogs,
+and so are ignored.  All the various synonyms of the feffit path
+parameters are correctly recognized, however this makes no attempt to
+follow the same (somewhat erratic) abbreviations of some parameters
+recognized by Feffit.
 
 =head1 METHODS
+
+Simply point this class at a F<feffit.inp> file by specifying the
+C<file> attribute at creation or via it's standard Moose accessor:
+
+   $inp = Demeter::Fit::Feffit->new(file=>$inpfile);
+     or
+   $inp = Demeter::Fit::Feffit->new;
+   $inp->file($inpfile);
+
+The F<feffit.inp> file will be parsed into an intermediate data
+structure when the C<file> attribute is set.
+
+The only outward looking method is C<convert>, which turns the
+intermediate data structure into a Fit object.  See L<Demeter::Fit>
+for what to do with that.
 
 =head1 CONFIGURATION
 
@@ -341,15 +466,37 @@ Demeter's dependencies are in the F<Bundle/DemeterBundle.pm> file.
 
 =item *
 
+The algorithm for recognizing a multiple k-weight fit in the
+F<feffit.inp> file is somewhat simplistic.  If a "multiple data set"
+fit (in the sense that the C<next data set> keyword is in the
+F<feffit.inp> file) has two data sets with the same input data file
+and different k-weights.  No attempt is made to verify that the
+fitting model used for each data set is, in fact, the same.  Since the
+MKW fit is usually implemented in Feffit using an include file, this
+seems like a safe approach.  But it is, in fact, possible to use a
+different model with the different k-weights.
+
+=item *
+
 C<cull_mkw> only works for a single data set, multiple k-weight fit.
 
 =item *
 
-Only use integer part of kw value.
+Only uses integer part of kw value.
 
 =item *
 
-cormin, case insensitivity, pathparam synonyms, local, epsdat, epsr, rlast
+cormin, case insensitivity, pathparam synonyms, local, epsdat, epsr,
+rlast, iwindow, ikwindow, irwindow
+
+  from fitinp.f:
+       wins(1) =  'hanning'
+       wins(2) =  'fhanning'
+       wins(3) =  'gaussian window'
+       wins(4) =  'kaiser-bessel'
+       wins(5) =  'parzen'
+       wins(6) =  'welch'
+       wins(7) =  'sine'
 
 =back
 

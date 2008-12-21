@@ -144,7 +144,7 @@ sub import {
       next PRAG;
     };
   };
-  foreach my $m (qw(Data Plot Config Data/Prj GDS Path VPath SSPath Fit Fit/Feffit Atoms Feff ScatteringPath)) {
+  foreach my $m (qw(Data Plot Config Data/Prj GDS Path VPath SSPath Fit Atoms Feff ScatteringPath)) {
     next if $INC{"Demeter/$m.pm"};
     ##print "Demeter/$m.pm\n";
     require "Demeter/$m.pm";

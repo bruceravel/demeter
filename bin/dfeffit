@@ -1,0 +1,79 @@
+#!/usr/bin/perl -I/home/bruce/codes/demeter/lib
+
+=for Copyright
+ .
+ Copyright (c) 2008 Bruce Ravel (bravel AT bnl DOT gov).
+ All rights reserved.
+ .
+ This file is free software; you can redistribute it and/or
+ modify it under the same terms as Perl itself. See The Perl
+ Artistic License.
+ .
+ This program is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+
+=cut
+
+use warnings;
+use strict;
+use Demeter qw(:ui=screen);
+use Demeter::Fit::Feffit;
+
+use File::Basename;
+use Getopt::Long;
+my ($run, $perl, $ifeffit, $quiet,$help) = (0,1,0,0,0);
+my $result = GetOptions (
+			 "r" => \$run,
+			 "p" => \$perl,
+			 "i" => \$ifeffit,
+			 "q" => \$quiet,
+			 "h" => \$help,
+			);
+++$help if not $ARGV[0];
+if ($help) {
+  print <<EOH
+  dfeffit -p infile outfile     --> convert to perl script (default)
+  dfeffit -i infile outfile     --> convert to ifeffit script
+  dfeffit -p infile [outfile]   --> run fit
+    -q suppreses screen outout
+    -h displays this message
+EOH
+  ;
+  exit;
+};
+die "The file '$ARGV[0]' does not exist\n" if (not -e $ARGV[0]);
+die "The file '$ARGV[0]' cannot be read\n" if (not -r $ARGV[0]);
+($perl, $ifeffit) = (0,0) if ($run);
+($perl, $run)     = (0,0) if ($ifeffit);
+
+## parse feffit.inp file
+my $inp = Demeter::Fit::Feffit->new(file=>$ARGV[0]);
+
+## select proper output target
+$inp -> template_set("demeter") if  $perl;
+$inp -> template_set("ifeffit") if ($run or $ifeffit);
+$inp -> set_mode(ifeffit  => 0) if  not $run;
+
+## screen or file output
+if (exists $ARGV[1]) {
+  unlink $ARGV[1] if (-e $ARGV[1]);
+  $inp -> set_mode(file => '>'.$ARGV[1]);
+} else {
+  $inp -> set_mode(screen => 1);
+};
+$inp -> set_mode(screen => 0) if $quiet;
+
+## make the Fit object and do the fit
+my $fit = $inp -> convert;
+$fit -> ignore_errors(1) if not $run;
+$fit -> fit;
+
+## do a few more things if a real fit was done
+if ($run) {
+  my $base = basename($ARGV[0]);
+  $fit -> logfile($base."_with_demeter.log");
+  $fit -> freeze(file=>$base.".dpj");
+  $fit -> interview;
+  $fit -> finish;
+};

@@ -2,6 +2,10 @@
   # Fit template
   #   {$S->group} returns the ifeffit group name
   #   {$S->parameter} returns the value of that parameter
+  $log = $F->name;
+  $log =~ s{fit to }{};
+  $log =~ s{ +}{_}g;
+  q{}
 }
 <<nl>>
 { foreach $d (@{$F->data}) {
@@ -22,3 +26,5 @@ my $fit = Demeter::Fit->new (
 			     paths       => \@paths
 			    );
 $fit -> fit;
+$fit -> logfile("{$log}.log");
+$fit -> freeze(file=>"{$log}.dpj");
