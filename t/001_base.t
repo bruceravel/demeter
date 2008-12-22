@@ -38,7 +38,7 @@ ok( $demeter->data =~ m{\A\s*\z},                                   'generic obj
 
 ok( $demeter->stash_folder =~ m{horae},                             'Project role works');
 
-my %hash = $demeter->get_all;
+my %hash = $demeter->all;
 ok( (($hash{group} =~ m{\A\w{5}\z}) and !$hash{plottable}),         'demeter can do introspection');
 
 
