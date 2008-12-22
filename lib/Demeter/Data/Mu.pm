@@ -65,6 +65,7 @@ sub clamp {
 
 sub e2k {
   my ($self, $e, $how) = @_;
+  return 0 if (not defined($e));
   return 0 if ($e<0);
   $how ||= 'rel';
   if ($how =~ m{rel}) {	# relative energy
@@ -327,7 +328,6 @@ sub _plotE_command {
 
   ## convert plot ranges from relative to absolute energies
   my ($emin, $emax) = map {$_ + $self->bkg_e0} ($pf->emin, $pf->emax);
-  my %this_plot = (emin=>$emin, emax=>$emax);
 
   my $string = q{};
   my ($xlorig, $ylorig) = ($pf->xlabel, $pf->ylabel);
@@ -352,8 +352,7 @@ sub _plotE_command {
     $pf->color(shift(@color_list));  # color is used by pgplot, not gnuplot
     $pf->key(shift(@key_list));
     $pf->e_part($suff);
-    $this_plot{suffix} = $suff;
-    $string .= $self->_plotE_string($pf, \%this_plot);
+    $string .= $self->_plotE_string;
     $pf->increment;
     $pf->New(0) if ($self->get_mode("template_plot") eq 'pgplot');;
     ++$counter;
@@ -383,9 +382,9 @@ sub _plotE_command {
 };
 
 sub _plotE_string {
-  my ($self, $pf, $this) = @_;
+  my ($self) = @_;
   my $group = $self->group;
-  my $string = ($pf->New)
+  my $string = ($self->po->New)
              ? $self->template("plot", "newe")
              : $self->template("plot", "overe");
   return $string;

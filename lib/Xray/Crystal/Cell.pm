@@ -399,8 +399,9 @@ sub determine_monoclinic {
       $axis =~ tr/g/c/;
     };
   };
+  $axis ||= q{b};   # this probably happens when all axes are 90
   #print "axis: $axis\n";
-  return $self if (not $axis);	#  angles no set yet
+  #return $self if (not $axis);	#  angles no set yet
 
   # if it has, then continue...
   my $setting = $axis . "_unique";

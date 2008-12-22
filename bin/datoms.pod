@@ -9,7 +9,7 @@ This documentation refers to Demeter version 0.2.
 
 =head1 SYNOPSIS
 
-  atoms [flag] [-r #] mydata.inp
+  atoms [flag] [-r #] [--cif --rec=#] mydata.inp
 
 If no input or CIF file is specified at the command line, F<atoms.inp>
 in the current working directory will be used, if available.
@@ -31,11 +31,11 @@ the F<feff.inp> file can be overridden from the command line.
 
 =item C<-6>
 
-Write an input file for Feff6
+Write an input file for Feff6.
 
 =item C<-8>
 
-Write an input file for Feff6
+Write an input file for Feff8.
 
 =item C<-a>
 
@@ -44,13 +44,19 @@ coefficients.
 
 =item C<-s>
 
-Write a space group summary
+Write a space group summary file.
+
+=item C<--atoms>
+
+Write an atoms input file.  This is most useful for interacting with a
+CIF file for which the central atom cannot be identified by Demeter's
+simplistic algorithm.
 
 =item C<--rmax=#> or C<-r #>
 
 Specify a cluster size from the command line.
 
-  atoms -r 5.2 mydata.inp
+  datoms -r 5.2 mydata.inp
 
 =back
 
@@ -65,7 +71,10 @@ line switches:
 
 This flag indicates that the file given on the command line is a CIF
 file rather than an Atoms input file.  B<No effort> is made to figure
-out whether your file is CIF or Atoms input.
+out whether your file is CIF or Atoms input -- it is up to you to
+correctly identify it using this command line flag.
+
+  datoms --cif --rec=2 my_cif_file.cif
 
 =item C<--rec=#>
 
@@ -119,7 +128,7 @@ OpenBabel integration
 
 =item *
 
-snarf atoms.inp files from Matt's database
+snarf atoms.inp files from Matt's database or CIF files from the web
 
 =back
 

@@ -70,7 +70,13 @@ has 'fitsum'      => (is => 'rw', isa => 'FitSum', default => q{});
 has 'fitting'     => (is => 'rw', isa => 'Bool',   default => 0);
 
 has 'provenance'  => (is => 'rw', isa => 'Str',    default => q{});
-has 'reference'   => (is => 'rw', isa => Empty.'|Demeter::Data', default => q{});
+
+
+has 'tying' => (is=>'rw', isa => 'Int', default => 0);
+has 'reference'   => (is => 'rw', isa => Empty.'|Demeter::Data', default => q{},
+		      ## need to be careful about deep recursion ....
+		      #trigger => sub{ my ($self, $new) = @_; $new->reference($self) if ($new);}
+		     );
 
 ## -------- column selection attributes
 has  $_  => (is => 'rw', isa => 'Str',  default => q{},
@@ -127,10 +133,16 @@ has 'bkg_e0'          => (is => 'rw', isa => 'Num',   default => 0,
 			  trigger => sub{ my($self) = @_; $self->update_bkg(1), $self->update_norm(1) });
 
 has 'bkg_e0_fraction' => (is => 'rw', isa =>  PosNum, default => sub{ shift->co->default("bkg", "e0_fraction") || 0.5},
-			  trigger => sub{ my($self) = @_; $self->update_bkg(1), $self->update_norm(1) });
+			  trigger => sub{ my($self) = @_; $self->update_bkg(1); $self->update_norm(1) });
 
+                                                                        # worry about deep recursion...
 has 'bkg_eshift'      => (is => 'rw', isa => 'Num',   default => 0,
-			  trigger => sub{ my($self) = @_; $self->update_bkg(1), $self->update_norm(1) });
+			  trigger => sub{ my($self) = @_; 
+					  $self->update_bkg(1);
+					  $self->update_norm(1);
+					  $self->shift_reference if not $self->tying;
+					  $self->tying(0);
+					});
 
 has 'bkg_kw'          => (is => 'rw', isa =>  NonNeg, default => sub{ shift->co->default("bkg", "kw")          || 1},
 			  trigger => sub{ my($self) = @_; $self->update_bkg(1) });
@@ -142,16 +154,16 @@ has 'bkg_dk'          => (is => 'rw', isa =>  NonNeg, default => sub{ shift->co-
 			  trigger => sub{ my($self) = @_; $self->update_bkg(1) });
 
 has 'bkg_pre1'        => (is => 'rw', isa => 'Num',   default => sub{ shift->co->default("bkg", "pre1")        || -150},
-			  trigger => sub{ my($self) = @_; $self->update_bkg(1), $self->update_norm(1) });
+			  trigger => sub{ my($self) = @_; $self->update_bkg(1); $self->update_norm(1) });
 
 has 'bkg_pre2'        => (is => 'rw', isa => 'Num',   default => sub{ shift->co->default("bkg", "pre2")        || -30},
-			  trigger => sub{ my($self) = @_; $self->update_bkg(1), $self->update_norm(1) });
+			  trigger => sub{ my($self) = @_; $self->update_bkg(1); $self->update_norm(1) });
 
 has 'bkg_nor1'        => (is => 'rw', isa => 'Num',   default => sub{ shift->co->default("bkg", "nor1")        || 150},
-			  trigger => sub{ my($self) = @_; $self->update_bkg(1), $self->update_norm(1) });
+			  trigger => sub{ my($self) = @_; $self->update_bkg(1); $self->update_norm(1) });
 
 has 'bkg_nor2'        => (is => 'rw', isa => 'Num',   default => sub{ shift->co->default("bkg", "nor2")        || 400},
-			  trigger => sub{ my($self) = @_; $self->update_bkg(1), $self->update_norm(1) });
+			  trigger => sub{ my($self) = @_; $self->update_bkg(1); $self->update_norm(1) });
 
 ## these need a trigger
 has 'bkg_spl1'        => (is => 'rw', isa => 'Num',
@@ -1413,6 +1425,12 @@ Demeter's dependencies are in the F<Bundle/DemeterBundle.pm> file.
 Several features have not yet been implemented.
 
 =over 4
+
+=item *
+
+Should there only be two items in a collection of tied references?
+Consider importing MED channels -- it would be reasonable for each
+channel and the reference to be a reference collection.
 
 =item *
 

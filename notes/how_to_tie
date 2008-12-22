@@ -1,0 +1,53 @@
+#!/usr/bin/perl -I./lib
+
+## this short script demonstrates how to tie Moose objects in the
+## sense that I want to tie a reference channel.  this is a way to use
+## a trigger to tie an attribute value without deeply recursing
+
+package MyThing;
+
+use Moose;
+
+## this attribute is sort of a semaphore that gets set and unset as
+## the tied attribute is set for each object
+has 'tying' => (is=>'rw', isa => 'Bool', default => 0);
+
+has 'thing' => (is=>'rw', isa => 'Int', default => 0,
+		trigger => sub { my ($self, $new) = @_;
+				 $self->do_tie($new) if not $self->tying;
+				 $self->tying(0);
+			       },
+	       );
+has 'tied' => (is=>'rw', isa => 'Any', default => q{},
+		trigger => sub { my ($self, $new) = @_;
+				 $self->tie_groups($new) if not $self->tying;
+				 $self->tying(0);
+			       },
+	      );
+
+sub tie_groups {
+  my ($self, $tie) = @_;
+  $self->tying(1);
+  $tie->tied($self) if $self->tied;
+};
+
+sub do_tie {
+  my ($self, $new) = @_;
+  #print "here\n";		# should see this twice
+  $self->tying(1);
+  $self->tied->thing($new) if $self->tied;
+};
+
+1;
+
+package main;
+
+my $a = MyThing->new;
+my $b = MyThing->new;
+
+$b->tied($a);
+
+$a->thing(7);
+print $b->thing, $/;
+$b->thing(34);
+print $a->thing, $/;

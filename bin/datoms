@@ -34,12 +34,6 @@ my $result = GetOptions (
 			 "s"	    => \$sg,
 			 "atoms"    => \$atinp,
 			);
-## missing command line switches
-##  atoms
-##  ipot style choice
-##  output precision
-##  other output formats
-##  write to a file
 
 my @call = ($cif) ? (record=>$record-1, cif => $ARGV[0]) : (file => $ARGV[0]||"atoms.inp");
 my $atoms = Demeter::Atoms->new(@call);
@@ -50,6 +44,5 @@ my $which = ($feff6) ? "feff6"
           : ($sg)    ? "spacegroup"
           : ($atinp) ? "atoms"
           :            "feff6" ;
-$atoms -> set(rmax=>$rmax) if ($rmax and $rmax =~ m{$NUMBER});
-#print $atoms -> Write('atoms');
+$atoms -> set(rmax=>$rmax) if ($rmax and $rmax =~ m{\A$NUMBER\z});
 print $atoms -> Write($which);

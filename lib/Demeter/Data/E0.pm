@@ -171,6 +171,20 @@ sub align {
   return $shift;
 };
 
+sub tie_reference {		# extend to more than two...?
+  my ($self, $ref) = @_;
+  $self -> reference($tie);
+  $tie  -> reference($self);
+  return $self;
+};
+sub shift_reference {		# extend to more than two...?
+  my ($self) = @_;
+  return if not $self->reference;
+  $self->tying(1);
+  my $this = $self->bkg_eshift;
+  $self->reference->bkg_eshift($this);
+  return $self;
+};
 
 sub _e0_marker_command {
   my ($self, $requested) = @_;

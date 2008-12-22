@@ -1,0 +1,34 @@
+{ # -*- ifm -*-
+  # template for new plot in energy
+  #   {$D->group} returns the ifeffit group name
+  #   {$D->parameter} returns the value of that parameter
+  #   {$P->parameter} returns the value of a Plot parameter
+}
+<<nl>>
+## begin plot of {$D->name}
+${$D->group} -> po -> start_plot;
+@params = (bkg_eshift=>{$D->bkg_eshift}, plot_multiplier=>{$D->plot_multiplier}, y_offset=>{$D->y_offset});
+${$D->group} -> set(@params);
+@params = (e_mu      =>  {$P->e_mu},
+ 	   e_bkg     =>  {$P->e_bkg},
+ 	   e_norm    =>  {$P->e_norm},
+           e_pre     =>  {$P->e_pre},
+           e_post    =>  {$P->e_post},
+           e_der     =>  {$P->e_der},
+           e_sec     =>  {$P->e_sec},
+           e_markers =>  {$P->e_markers},
+	   e_smooth  =>  {$P->e_markers},
+ 	   emin      =>  {$P->emin},
+ 	   emax      =>  {$P->emax},
+ 	   xlabel    => '{$P->xlabel}',
+	   ylabel    => '{$P->ylabel}',
+           gridcolor => '{$P->gridcolor}',
+	   style     =>  {$P->datastyle},
+	   color     => '{$P->color}',
+ 	   key	     => '{$P->key}', 
+           title     => '{$P->title}',
+	   fg	     => '{$P->fg}',
+	   bg	     => '{$P->bg}',
+	  );
+${$D->group} -> po -> set(@params);
+${$D->group} -> plot('E');

@@ -25,9 +25,9 @@ sub read_cif {
   my ($self) = @_;
   $self->clear;
   my $file = $self->cif;
-  $self->confess(": Atoms: no CIF file provided")        if (not    $file);
-  $self->confess(": Atoms: \"$file\" does not exist")    if (not -e $file);
-  $self->confess(": Atoms: \"$file\" could not be read") if (not -r $file);
+  $self->confess(": no CIF file provided")                 if (not    $file);
+  $self->confess(": CIF file \"$file\" does not exist")    if (not -e $file);
+  $self->confess(": CIF file \"$file\" could not be read") if (not -r $file);
 
   my @datablocks = STAR::Parser->parse($file);
   $self->confess(": CIF file \"$file\" does not have a record number " . ($self->record + 1)) if not exists($datablocks[$self->record]);
@@ -38,9 +38,13 @@ sub read_cif {
 
   ## titles: consider various common title-like entries, strip white
   ## space characters and stuff them into the title attribute
-  foreach my $i (qw(_chemical_name_mineral _chemical_name_systematic
-		    _chemical_formula_structural _chemical_formula_sum
-		    _publ_author_name _citation_journal_abbrev _publ_section_title
+  foreach my $i (qw(_chemical_name_mineral
+		    _chemical_name_systematic
+		    _chemical_formula_structural
+		    _chemical_formula_sum
+		    _publ_author_name
+		    _citation_journal_abbrev
+		    _publ_section_title
 		  )) {
     @item = $datablock->get_item_data(-item=>$i);
     $item[0] ||= "";
@@ -54,9 +58,9 @@ sub read_cif {
   };
 
   ## space group: try the number then the HM symbol and canonicalize it
-  @item = $datablock->get_item_data(-item=>"_symmetry_Int_Tables_number");
+  @item = $datablock->get_item_data(-item=>"_symmetry_space_group_name_H-M");
   my @sg = $self->cell->canonicalize_symbol($item[0]);
-  @item = $datablock->get_item_data(-item=>"_symmetry_space_group_name_H-M") if not $sg[0];
+  @item = $datablock->get_item_data(-item=>"_symmetry_Int_Tables_number") if not $sg[0];
   $self->space($item[0]);
 
   ## lattic parameters
@@ -117,6 +121,18 @@ sub _get_elem {
   return "??";
 };
 
+sub open_cif {
+  my ($self) = @_;
+  my @structures = STAR::Parser->parse($self->cif);
+  my @id = map { ($_->get_item_data(-item => '_chemical_name_systematic'   ))[0]
+		   or
+		 ($_->get_item_data(-item => '_chemical_name_mineral'      ))[0]
+		   or
+		 ($_->get_item_data(-item => '_chemical_formula_structural'))[0]
+	       } @structures;
+  return @id;
+};
+
 
 1;
 
@@ -138,6 +154,10 @@ explain how to use cif and record
 =over 4
 
 =item C<read_cif>
+
+=item C<open_cif>
+
+returns a list of identifiers of the structures in the CIF file
 
 =back
 

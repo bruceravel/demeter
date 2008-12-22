@@ -234,7 +234,7 @@ subtype SpaceGroup,
 
 ## -------- Plotting backends
 use vars qw(@plotting_list $plotting_regexp);
-@plotting_list = qw(pgplot gnuplot);
+@plotting_list = qw(pgplot gnuplot demeter);
 $plotting_regexp = $opt->list2re(@plotting_list);
 subtype Plotting,
   as Str,
@@ -284,7 +284,7 @@ subtype 'TemplateFit'
       => message { "That is not a valid fitting template group" };
 subtype 'TemplatePlot'
       => as 'Str'
-      => where { $_ =~ m{\A(?:gnuplot|pgplot)\z}i }
+      => where { $_ =~ m{\A(?:demeter|gnuplot|pgplot)\z}i }
       => message { "That is not a valid plotting template group" };
 subtype 'TemplateFeff'
       => as 'Str'

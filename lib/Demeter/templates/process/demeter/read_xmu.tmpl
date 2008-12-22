@@ -1,0 +1,11 @@
+{ # -*- ifm -*-
+  # import xmu template
+  #   {$D->group} returns the ifeffit group name
+  #   {$D->parameter} returns the value of that parameter
+  $name = ($D->name) ? ", name => '".$D->name."'" : q{};
+  q{};
+}
+
+##| Reading chi data "{$D->file}" as group {$D->group}
+my ${$S->group} = Demeter::Data->new(datatype => 'xmu'{$name},
+                               file => '{$D->file}');
