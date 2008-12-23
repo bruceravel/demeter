@@ -172,15 +172,15 @@ sub align {
 };
 
 sub tie_reference {		# extend to more than two...?
-  my ($self, $ref) = @_;
-  $self -> reference($tie);
-  $tie  -> reference($self);
+  my ($self, $tie) = @_;
+  $self->tying(1);		# prevent deep recursion
+  $tie->reference($self) if $self->reference;
   return $self;
 };
 sub shift_reference {		# extend to more than two...?
   my ($self) = @_;
   return if not $self->reference;
-  $self->tying(1);
+  $self->tying(1);		# prevent deep recursion
   my $this = $self->bkg_eshift;
   $self->reference->bkg_eshift($this);
   return $self;

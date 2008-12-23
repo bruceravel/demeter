@@ -72,11 +72,19 @@ has 'fitting'     => (is => 'rw', isa => 'Bool',   default => 0);
 has 'provenance'  => (is => 'rw', isa => 'Str',    default => q{});
 
 
-has 'tying' => (is=>'rw', isa => 'Int', default => 0);
+has 'tying' => (is=>'rw', isa => 'Bool', default => 0);
 has 'reference'   => (is => 'rw', isa => Empty.'|Demeter::Data', default => q{},
-		      ## need to be careful about deep recursion ....
-		      #trigger => sub{ my ($self, $new) = @_; $new->reference($self) if ($new);}
+		      trigger => sub{ my ($self, $new) = @_;
+				      $self->tie_reference($new) if not $self->tying;
+				      $self->tying(0);
+				    },
 		     );
+
+# subtype 'DemeterInt',
+#   => as 'Int'
+#   => where { }
+#   => message { "This group is frozen." };
+# has 'foo' => (is=>'rw', isa => 'DemeterInt', default => 0);
 
 ## -------- column selection attributes
 has  $_  => (is => 'rw', isa => 'Str',  default => q{},
@@ -135,13 +143,12 @@ has 'bkg_e0'          => (is => 'rw', isa => 'Num',   default => 0,
 has 'bkg_e0_fraction' => (is => 'rw', isa =>  PosNum, default => sub{ shift->co->default("bkg", "e0_fraction") || 0.5},
 			  trigger => sub{ my($self) = @_; $self->update_bkg(1); $self->update_norm(1) });
 
-                                                                        # worry about deep recursion...
 has 'bkg_eshift'      => (is => 'rw', isa => 'Num',   default => 0,
 			  trigger => sub{ my($self) = @_; 
 					  $self->update_bkg(1);
 					  $self->update_norm(1);
 					  $self->shift_reference if not $self->tying;
-					  $self->tying(0);
+					  $self->tying(0); # prevent deep recursion
 					});
 
 has 'bkg_kw'          => (is => 'rw', isa =>  NonNeg, default => sub{ shift->co->default("bkg", "kw")          || 1},

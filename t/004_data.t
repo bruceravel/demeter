@@ -17,7 +17,7 @@
 
 =cut
 
-use Test::More tests => 53;
+use Test::More tests => 55;
 
 use Ifeffit;
 use Demeter;
@@ -156,3 +156,10 @@ ok( abs($data3->e2k(50,   'rel') - 3.622)   < $fuzz, 'e2k, relative');
 ok( abs($data3->e2k(7162, 'abs') - 3.622)   < $fuzz, 'e2k, absolute');
 ok( abs($data3->k2e(4,    'rel') - 60.96)   < $fuzz, 'k2e, relative');
 ok( abs($data3->k2e(4,    'abs') - 7172.96) < $fuzz, 'k2e, absolute');
+
+## -------- test tying data groups as reference channels
+$data->reference($data2);
+$data->bkg_eshift(5);
+ok( $data2->bkg_eshift eq 5, 'tying refernce channels works');
+$data2->bkg_eshift(-3);
+ok( $data->bkg_eshift eq -3, 'tying refernce channels works both ways');
