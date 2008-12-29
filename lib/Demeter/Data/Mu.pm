@@ -29,6 +29,7 @@ use Readonly;
 Readonly my $NUMBER  => $RE{num}{real};
 Readonly my $INTEGER => $RE{num}{int};
 Readonly my $ETOK    => 0.262468292;
+Readonly my $PI      => 4*atan2(1,1);
 
 use Ifeffit;
 use Text::Template;
@@ -89,14 +90,49 @@ sub k2e {
   };
 };
 
-sub xmu_string {
-  my ($self) = @_;
-  carp("Demeter::Data::Mu: cannot put data unless the object contains mu(E) data"),
-    return 0 if ($self->datatype ne 'xmu');
-  my $string = q{};
-  $self->xmu_string($string);
-  return $string;
+## recompute E or k spline boundary when the other is changed
+sub spline_range {
+  my ($self, $which) = @_;
+ SWITCH: {
+    ($which eq 'spl1') and do {
+      $self->bkg_spl1e( $self->k2e($self->bkg_spl1, 'relative') );
+      last SWITCH;
+    };
+
+    ($which eq 'spl1e') and do {
+      $self->bkg_spl1( $self->e2k($self->bkg_spl1e, 'relative') );
+      last SWITCH;
+    };
+
+    ($which eq 'spl2') and do {
+      $self->bkg_spl2e( $self->k2e($self->bkg_spl2, 'relative') );
+      last SWITCH;
+    };
+
+    ($which eq 'spl2e') and do {
+      $self->bkg_spl1( $self->e2k($self->bkg_spl2e, 'relative') );
+      last SWITCH;
+    };
+  };
+  $self->set_nknots;
+  return $self;
 };
+
+## recompute this every time the spline range or Rbkg is changed
+sub set_nknots {
+  my ($self) = @_;
+  $self->knots( 2 * ($self->bkg_spl2 - $self->bkg_spl1) * $self->bkg_rbkg / $PI );
+  return $self;
+};
+
+# sub xmu_string {
+#   my ($self) = @_;
+#   carp("Demeter::Data::Mu: cannot put data unless the object contains mu(E) data"),
+#     return 0 if ($self->datatype ne 'xmu');
+#   my $string = q{};
+#   $self->xmu_string($string);
+#   return $string;
+# };
 sub put_data {
   my ($self) = @_;
 

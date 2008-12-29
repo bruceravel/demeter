@@ -96,8 +96,10 @@ has 'ln' => (is => 'rw', isa => 'Bool', default => 0,
 	     trigger => sub{ my ($self, $new) = @_; $self->update_columns(1), $self->is_col(1) if $new});
 
 ## -------- data type flags
-has 'datatype' => (is => 'rw', isa => Empty.'|'.DataType, default => q{});
-has  $_  => (is => 'rw', isa => 'Bool',  default => 0)
+has 'datatype' => (is => 'rw', isa => Empty.'|'.DataType, default => q{},
+		   trigger => sub{shift->explain_recordtype},
+		  );
+has  $_  => (is => 'rw', isa => 'Bool',  default => 0, trigger => sub{shift->explain_recordtype},)
   foreach (qw(is_col is_nor));
 has 'is_merge' => (is => 'rw', isa => 'Str',  default => q{});
 #foreach (qw(is_col is_xmu is_xmudat is_chi is_nor is_xanes is_merge));
@@ -115,6 +117,19 @@ has 'generated'  => (is => 'rw', isa => 'Bool',  default => 0,
 				    $self->energy_string(q{});
 				    $self->xmu_string(q{});
 				  });
+
+
+## -------- stuff for about dialog
+has 'recordtype'       => (is => 'rw', isa => 'Str',  default => q{});
+has 'plotsapces'       => (is => 'rw', isa => 'Str',  default => q{any});
+has 'npts'             => (is => 'rw', isa => 'Int',  default => 0);
+has 'xmax'             => (is => 'rw', isa => 'Num',  default => 0);
+has 'xmin'             => (is => 'rw', isa => 'Num',  default => 0);
+has 'epsk'             => (is => 'rw', isa => 'Num',  default => 0);
+has 'epsr'             => (is => 'rw', isa => 'Num',  default => 0);
+has 'recommended_kmax' => (is => 'rw', isa => 'Num',  default => 0);
+has 'nknots'           => (is => 'rw', isa => 'Num',  default => 0);
+
 
 ## -------- data processing status flags
 has 'update_data'    => (is => 'rw', isa => 'Bool',  default => 1,
@@ -155,7 +170,7 @@ has 'bkg_kw'          => (is => 'rw', isa =>  NonNeg, default => sub{ shift->co-
 			  trigger => sub{ my($self) = @_; $self->update_bkg(1) });
 
 has 'bkg_rbkg'        => (is => 'rw', isa =>  PosNum, default => sub{ shift->co->default("bkg", "rbkg")        || 1},
-			  trigger => sub{ my($self) = @_; $self->update_bkg(1) });
+			  trigger => sub{ my($self) = @_; $self->update_bkg(1); $self->set_nknots; });
 
 has 'bkg_dk'          => (is => 'rw', isa =>  NonNeg, default => sub{ shift->co->default("bkg", "dk")          || 1},
 			  trigger => sub{ my($self) = @_; $self->update_bkg(1) });
@@ -174,16 +189,16 @@ has 'bkg_nor2'        => (is => 'rw', isa => 'Num',   default => sub{ shift->co-
 
 ## these need a trigger
 has 'bkg_spl1'        => (is => 'rw', isa => 'Num',
-			  trigger => sub{ my($self) = @_; $self->update_bkg(1) },
+			  trigger => sub{ my($self) = @_; $self->update_bkg(1); $self->spline_range("spl1"); },
 			  default => sub{ shift->co->default("bkg", "spl1")        || 0});
 has 'bkg_spl2'        => (is => 'rw', isa => 'Num',
-			  trigger => sub{ my($self) = @_; $self->update_bkg(1) },
+			  trigger => sub{ my($self) = @_; $self->update_bkg(1); $self->spline_range("spl2"); },
 			  default => sub{ shift->co->default("bkg", "spl2")        || 0});
 has 'bkg_spl1e'       => (is => 'rw', isa => 'Num',
-			  trigger => sub{ my($self) = @_; $self->update_bkg(1) },
+			  trigger => sub{ my($self) = @_; $self->update_bkg(1); $self->spline_range("spl1e"); },
 			  default => 0);
 has 'bkg_spl2e'       => (is => 'rw', isa => 'Num',
-			  trigger => sub{ my($self) = @_; $self->update_bkg(1) },
+			  trigger => sub{ my($self) = @_; $self->update_bkg(1); $self->spline_range("spl2e"); },
 			  default => 0);
 
 has 'bkg_kwindow' => (is => 'rw', isa =>  Window,   default => sub{ shift->co->default("bkg", "kwindow")     || 'kaiser-bessel'},
@@ -282,6 +297,12 @@ sub BUILD {
   $self->data($self); # I do not know of a way to set the data attribute to this instance using "has"....
   $self->tag($self->group);
   $self->mo->push_Data($self);
+};
+
+sub about {
+  my ($self) = @_;
+  my $string = $self->template("process", "about");
+  return $string;
 };
 
 sub _nidp {
@@ -428,7 +449,26 @@ sub read_data {
   };
   $self->sort_data;
   $self->put_data;
+  my $array = ($type eq 'xmu') ? 'energy'
+            : ($type eq 'chi') ? 'k'
+	    :                    'energy';
+  my @x = $self->get_array($array); # set things for about dialog
+  $self->npts($#x+1);
+  $self->xmin($x[0]);
+  $self->xmax($x[$#x]);
   $self->name(basename($self->file, ".dat", ".xmu", ".chi")) if not $self->name;
+  return $self;
+};
+
+sub explain_recordtype {
+  my ($self) = @_;
+  my $string = ($self->datatype eq 'xmu')    ? 'mu(E)'
+             : ($self->datatype eq 'chi')    ? 'chi(k)'
+             : ($self->datatype eq 'xmudat') ? 'Feff mu(E)'
+	     :                                 'unknown';
+  $string = 'normalized ' . $string if $self->is_nor;
+  $string = 'merged '     . $string if $self->is_merge;
+  $self->recordtype($string);
   return $self;
 };
 

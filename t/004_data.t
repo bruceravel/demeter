@@ -163,3 +163,5 @@ $data->bkg_eshift(5);
 ok( $data2->bkg_eshift eq 5, 'tying refernce channels works');
 $data2->bkg_eshift(-3);
 ok( $data->bkg_eshift eq -3, 'tying refernce channels works both ways');
+
+print $data3->about;
