@@ -37,7 +37,7 @@ sub rebin {
   $self -> _update('fft');
   $self -> standard;		# make self the standard for rebinning
   foreach my $k (keys %$rhash) {
-    $self -> c0 -> set("rebin_$k" => $$rhash{$k});
+    $self -> co -> set("rebin_$k" => $$rhash{$k});
   };
   my $rebinned = $self->clone;
   $rebinned -> generated(1);
@@ -91,6 +91,10 @@ sub merge {
 
   my $string = $merged->template("process", "merge_end"); #, {ndata=>$ndata});
   $self->dispose($string);
+  if ($how !~ m{^k}) {
+    $string = $merged->template("process", "deriv");
+    $self->dispose($string);
+  };
   $merged -> generated(1);
   $merged -> is_merge($how);
   $merged -> update_norm(($how =~ m{^k}) ? 0 : 1);

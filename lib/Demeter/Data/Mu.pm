@@ -93,6 +93,7 @@ sub k2e {
 ## recompute E or k spline boundary when the other is changed
 sub spline_range {
   my ($self, $which) = @_;
+  $self->tying(1);		# prevent deep recursion
  SWITCH: {
     ($which eq 'spl1') and do {
       $self->bkg_spl1e( $self->k2e($self->bkg_spl1, 'relative') );
@@ -110,7 +111,7 @@ sub spline_range {
     };
 
     ($which eq 'spl2e') and do {
-      $self->bkg_spl1( $self->e2k($self->bkg_spl2e, 'relative') );
+      $self->bkg_spl2( $self->e2k($self->bkg_spl2e, 'relative') );
       last SWITCH;
     };
   };
@@ -121,7 +122,7 @@ sub spline_range {
 ## recompute this every time the spline range or Rbkg is changed
 sub set_nknots {
   my ($self) = @_;
-  $self->knots( 2 * ($self->bkg_spl2 - $self->bkg_spl1) * $self->bkg_rbkg / $PI );
+  $self->nknots( int( 2 * ($self->bkg_spl2 - $self->bkg_spl1) * $self->bkg_rbkg / $PI ) );
   return $self;
 };
 
@@ -283,6 +284,10 @@ sub autobk {
   ## first and second derivative
   $command = $self->template("process", "nderiv");
   $self->dispose($command);
+
+  ## note the largest value of the k array
+  my @k = $self->get_array('k');
+  $self->maxk($k[$#k]) if @k;
 
   $self->update_bkg(0);
   return $self;

@@ -22,8 +22,6 @@
 
 =cut
 
-use warnings;
-use strict;
 use Cwd;
 use File::Spec;
 use IO::Prompt;

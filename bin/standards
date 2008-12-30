@@ -38,8 +38,6 @@ BEGIN {
 };
 
 
-use warnings;
-use strict;
 use Chemistry::Elements qw(get_Z get_name);
 use File::Basename;
 use File::Spec;

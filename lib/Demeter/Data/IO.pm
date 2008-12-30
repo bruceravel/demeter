@@ -16,10 +16,16 @@ package Demeter::Data::IO;
 =cut
 
 use Moose::Role;
+
+use Carp;
+use List::MoreUtils qw(none);
 use Regexp::Common;
+use Regexp::Optimizer;
+my $opt  = Regexp::List->new;
+
 use Readonly;
 Readonly my $NUMBER   => $RE{num}{real};
-use Carp;
+
 
 sub save {
   my ($self, $what, $filename) = @_;
@@ -135,6 +141,64 @@ sub _save_bkgsub_command {
   my $command = $self-> template("fit", "save_bkgsub", {filename => $filename,
 							titles   => "dem_data_*"});
   return $self;
+};
+
+
+## xmu norm der nder sec nsec
+## chi chik chik2 chik3
+## chir_mag chir_re chir_im chir_phas
+## chiq_mag chiq_re chiq_im chiq_pha
+sub save_many {
+  my ($self, $outfile, $which, @groups) = @_;
+  my $command = $self->_save_many_command($outfile, $which, @groups);
+  #print $/, $command, $/;
+  $self->dispose($command);
+  return $self;
+};
+sub _save_many_command {
+  my ($self, $outfile, $which, @groups) = @_;
+  ($which = "chik1") if ($which eq 'chik');
+  my $e_regexp = $opt->list2re(qw(xmu norm der nder sec nsec));
+  my $n_regexp = $opt->list2re(qw(norm nder nsec));
+  my $k_regexp = $opt->list2re(qw(chi chik chik2 chik3));
+  my ($level, $space) = ($which =~ m{\A$n_regexp\z}) ? ('normalize', 'energy')
+                      : ($which =~ m{\Achir})        ? ('bft', 'r')
+                      : ($which =~ m{\Achiq})        ? ('all', 'q')
+                      : ($which =~ m{\Achi})         ? ('fft', 'k')
+	              :                                ('data', 'energy');
+  $self->mo->standard($self);
+  my $command = q{};
+
+  unshift @groups, $self if (none {$self->group eq $_->group} @groups);
+
+  if ($which =~ m{\Achik(\d*)\z}) {
+    my $w = $1 || 1;
+    $self -> co -> set(chik => $w);
+  };
+  foreach my $g (@groups) {
+    $g->_update($level);
+    if ($which =~ m{\Achik(\d*)\z})  { # make k-weighted chi(k) array
+      $command .= $g->template("process", "chikn");
+    } elsif ($which =~ m{$e_regexp}) { # interpolate energy data onto $self's grid
+      $command .= ($g->group eq $self->group)
+	        ? $g->template("process", "replicate",   {a=>$which, b=>"int"})
+	        : $g->template("process", "interpolate", {suffix=>$which});
+    };
+  };
+  $self -> co -> set(many_which  => $which,
+		     many_suffix => ($which =~ m{$e_regexp}) ? 'int' : $which,
+		     many_space  => $space,
+		     many_file   => $outfile,
+		     many_list   => \@groups,
+		    );
+  $command .= $self-> template("process", "save_many_header");
+  $command .= $self-> template("process", "save_many");
+  if ($which =~ m{\A(?:$e_regexp|chik(?:\d*))\z}) {
+    $command .= $self->template("process", "erase_chikn");
+  };
+
+  $self->mo->standard(q{});
+  return $command;
 };
 
 
@@ -273,6 +337,25 @@ Fit...
 Background subtracted chi(k) data....
 
 =back
+
+=item C<save_many>
+
+This method writes out a multi-column file containing a specified
+array from many Data objects.
+
+  $dataobjects[0] -> save_many($outfile, $which, @dataobjects);
+
+The first argument is a file name for the output file containing the
+data columns.  The second argument is one of:
+
+  xmu norm der sec nder nsec
+  chi chik chik2 chik3
+  chir_mag chir_re chir_im chir_pha
+  chiq_mag chiq_re chiq_im chiq_pha
+
+These are followed by the list of data groups to write to the file.
+The refering object will be added to the front of the list if it is
+not already included in the list.
 
 =item C<read_fit>
 

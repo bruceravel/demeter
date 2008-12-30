@@ -15,8 +15,6 @@
 
 =cut
 
-use warnings;
-use strict;
 use Demeter;
 use Getopt::Long;
 use Regexp::Common;

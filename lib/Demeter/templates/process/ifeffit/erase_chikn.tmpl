@@ -1,0 +1,6 @@
+{ # -*- ifm -*-
+  # erase k-weighted chi(k) arrays used for export
+  @list = @{ $C->get("many_list") };
+  q{}
+}
+erase{foreach $g (@list) {$OUT .= ' ' . $g->group . '.' . $C->get("many_suffix")}}

@@ -16,32 +16,28 @@
 =cut
 
 
-use warnings;
-use strict;
 use Demeter qw(:ui=screen :template=iff_columns);
 print "Sample fit to copper data using Demeter ", $Demeter::VERSION, $/;
 unlink "cufit.iff" if (-e "cufit.iff");
 
 
 print "make a Data object and set the FT and fit parameters\n";
-my $dobject = Demeter::Data -> new(group => 'data0',);
+my $dobject = Demeter::Data -> new();
 
-$dobject->set_mode(screen  => 0, ifeffit => 0, file => ">cufit.iff", );
-$dobject -> template_set("demeter"); ## similar to the template pragma
-#$dobject->plot_with('gnuplot');
+$dobject->set_mode(screen  => 0, ifeffit => 1, file => ">cufit.iff", );
+#$dobject -> template_set("demeter"); ## similar to the template pragma
+#$dobject -> plot_with('gnuplot');    ## similar to the plotwith pragma
 my $plot_features = $dobject->po;
 
 $dobject ->set(file       => "cu10k.chi",
-	       fft_kmin   => 3,
-	       fft_kmax   => 14,
+	       fft_kmin   => 3,	       fft_kmax   => 14,
 	       fit_space  => 'r',
-	       fit_k1     => 1,
-	       fit_k3     => 1,
-	       bft_rmin   => 1.6,
-	       bft_rmax   => 4.3,
+	       fit_k1     => 1,	       fit_k3     => 1,
+	       bft_rmin   => 1.6,      bft_rmax   => 4.3,
 	       fit_do_bkg => 0,
 	       name       => 'My copper data',
 	      );
+
 
 print "make GDS objects for an isotropic expansion, correlated Debye model fit to copper\n";
 my @gdsobjects =  (Demeter::GDS -> new(gds => 'guess', name => 'alpha', mathexp => 0),

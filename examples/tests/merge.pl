@@ -21,9 +21,6 @@
 
 =cut
 
-use warnings;
-use strict;
-
 use Demeter;
 my $where = $ENV{DEMETER_TEST_DIR} || "..";
 
@@ -38,13 +35,13 @@ my @attributes = (energy      => '$1', # column 1 is energy
 		  bkg_spl1    => 0.5,  bkg_spl2    => 22,
 		  fft_kmax    => 3,    fft_kmin    => 14,
 		 );
-my $d0 = Demeter::Data -> new(group => 'scan1', @attributes);
+my $d0 = Demeter::Data -> new(@attributes);
 $d0 -> set(file=>"$where/data/fe.060", name=>'scan 1');
 
-my $d1 = Demeter::Data -> new(group => 'scan2', @attributes);
+my $d1 = Demeter::Data -> new(@attributes);
 $d1 -> set(file=>"$where/data/fe.061", name=>'scan 2');
 
-my $d2 = Demeter::Data -> new(group => 'scan3', @attributes);
+my $d2 = Demeter::Data -> new(@attributes);
 $d2 -> set(file=>"$where/data/fe.062", name=>'scan 3');
 
 my $plot = $d0->po;
@@ -58,7 +55,7 @@ print "aligning and setting E0 values\n";
 $d0->align($d1, $d2);
 $d1->e0($d0->bkg_e0);
 $d2->e0($d0->bkg_e0);
-my $merge = $d0->merge("N", $d1, $d2);
+my $merge = $d0->merge("e", $d1, $d2);
 
 print "plotting data + merge\n";
 foreach ($d0, $d1, $d2, $merge) {

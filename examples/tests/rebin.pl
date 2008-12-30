@@ -22,9 +22,6 @@
 
 =cut
 
-use warnings;
-use strict;
-
 use Demeter;
 
 

@@ -15,9 +15,6 @@
 
 =cut
 
-use warnings;
-use strict;
-
 use Demeter qw(:ui=screen);
 
 print "Multiple data set fit to 10K and 150K copper data using Demeter ", $Demeter::VERSION, $/;

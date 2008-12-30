@@ -158,6 +158,14 @@ sub record {
     push @groups, $rec;
     $rec->prjrecord(join(", ", $self->file, $g));
     $rec->provenance($rec->template("process", "read_prj", {file=>$self->file, record=>$g}));
+
+    my $array = ($rec->datatype eq 'xmu') ? 'energy'
+              : ($rec->datatype eq 'chi') ? 'k'
+	      :                            'energy';
+    my @x = $rec->get_array($array); # set things for about dialog
+    $rec->npts($#x+1);
+    $rec->xmin($x[0]);
+    $rec->xmax($x[$#x]);
   };
   return (wantarray) ? @groups : $groups[0];
 };

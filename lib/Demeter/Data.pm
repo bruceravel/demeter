@@ -88,7 +88,13 @@ has 'reference'   => (is => 'rw', isa => Empty.'|Demeter::Data', default => q{},
 
 ## -------- column selection attributes
 has  $_  => (is => 'rw', isa => 'Str',  default => q{},
-	     trigger => sub{ my ($self, $new) = @_; if ($new) {$self->datatype('xmu'); $self->update_columns(1); $self->is_col(1)} })
+	     trigger => sub{ my ($self, $new) = @_;
+			     if ($new) {
+			       $self->datatype('xmu');
+			       $self->update_columns(1);
+			       $self->is_col(1)
+			     }
+			   })
   foreach (qw(energy numerator denominator));
 has  $_  => (is => 'rw', isa => 'Str',  default => q{})
   foreach (qw(columns energy_string xmu_string i0_string));
@@ -121,7 +127,7 @@ has 'generated'  => (is => 'rw', isa => 'Bool',  default => 0,
 
 ## -------- stuff for about dialog
 has 'recordtype'       => (is => 'rw', isa => 'Str',  default => q{});
-has 'plotsapces'       => (is => 'rw', isa => 'Str',  default => q{any});
+has 'plotspaces'       => (is => 'rw', isa => 'Str',  default => q{any});
 has 'npts'             => (is => 'rw', isa => 'Int',  default => 0);
 has 'xmax'             => (is => 'rw', isa => 'Num',  default => 0);
 has 'xmin'             => (is => 'rw', isa => 'Num',  default => 0);
@@ -129,6 +135,7 @@ has 'epsk'             => (is => 'rw', isa => 'Num',  default => 0);
 has 'epsr'             => (is => 'rw', isa => 'Num',  default => 0);
 has 'recommended_kmax' => (is => 'rw', isa => 'Num',  default => 0);
 has 'nknots'           => (is => 'rw', isa => 'Num',  default => 0);
+has 'maxk'             => (is => 'rw', isa => 'Num',  default => 0);
 
 
 ## -------- data processing status flags
@@ -189,16 +196,32 @@ has 'bkg_nor2'        => (is => 'rw', isa => 'Num',   default => sub{ shift->co-
 
 ## these need a trigger
 has 'bkg_spl1'        => (is => 'rw', isa => 'Num',
-			  trigger => sub{ my($self) = @_; $self->update_bkg(1); $self->spline_range("spl1"); },
+			  trigger => sub{ my($self) = @_;
+					  $self->update_bkg(1);
+					  $self->spline_range("spl1") if not $self->tying;
+					  $self->tying(0);
+					},
 			  default => sub{ shift->co->default("bkg", "spl1")        || 0});
 has 'bkg_spl2'        => (is => 'rw', isa => 'Num',
-			  trigger => sub{ my($self) = @_; $self->update_bkg(1); $self->spline_range("spl2"); },
+			  trigger => sub{ my($self) = @_;
+					  $self->update_bkg(1);
+					  $self->spline_range("spl2") if not $self->tying;
+					  $self->tying(0);
+					},
 			  default => sub{ shift->co->default("bkg", "spl2")        || 0});
 has 'bkg_spl1e'       => (is => 'rw', isa => 'Num',
-			  trigger => sub{ my($self) = @_; $self->update_bkg(1); $self->spline_range("spl1e"); },
+			  trigger => sub{ my($self) = @_;
+					  $self->update_bkg(1);
+					  $self->spline_range("spl1e") if not $self->tying;
+					  $self->tying(0);
+					},
 			  default => 0);
 has 'bkg_spl2e'       => (is => 'rw', isa => 'Num',
-			  trigger => sub{ my($self) = @_; $self->update_bkg(1); $self->spline_range("spl2e"); },
+			  trigger => sub{ my($self) = @_;
+					  $self->update_bkg(1);
+					  $self->spline_range("spl2e") if not $self->tying;
+					  $self->tying(0);
+					},
 			  default => 0);
 
 has 'bkg_kwindow' => (is => 'rw', isa =>  Window,   default => sub{ shift->co->default("bkg", "kwindow")     || 'kaiser-bessel'},
@@ -279,8 +302,7 @@ has 'fit_karb_value'	  => (is => 'rw', isa =>  NonNeg,    default => sub{ shift-
 has 'fit_space'	          => (is => 'rw', isa =>  FitSpace,  default => sub{ shift->co->default("fit", "space")      || 'r'});
 has 'fit_epsilon'	  => (is => 'rw', isa => 'Num',      default => 0);
 has 'fit_cormin'	  => (is => 'rw', isa =>  PosNum,    default => sub{ shift->co->default("fit", "cormin")     ||  0.4});
-## or Demeter::Path
-has 'fit_pcpath'	  => (is => 'rw', isa => 'Str',      default => 'None');
+has 'fit_pcpath'	  => (is => 'rw', isa => 'Str',      default => 'None'); # or Demeter::Path
 has 'fit_include'	  => (is => 'rw', isa => 'Bool',     default => 1);
 has 'fit_data'	          => (is => 'rw', isa =>  Natural,   default => 0);
 has 'fit_plot_after_fit'  => (is => 'rw', isa => 'Bool',     default => 0);
@@ -301,6 +323,7 @@ sub BUILD {
 
 sub about {
   my ($self) = @_;
+  $self->_update('bft');
   my $string = $self->template("process", "about");
   return $string;
 };
@@ -313,10 +336,10 @@ sub chi_noise {
   my ($self) = @_;
   my $string = $self->template("process", "chi_noise");
   $self->dispose($string);
-  return (Ifeffit::get_scalar("epsilon_k"),
-	  Ifeffit::get_scalar("epsilon_r"),
-	  Ifeffit::get_scalar("kmax_suggest"),
-	 );
+  $self->epsk( sprintf("%.3e", Ifeffit::get_scalar("epsilon_k")) );
+  $self->epsr( sprintf("%.3e", Ifeffit::get_scalar("epsilon_r")) );
+  $self->recommended_kmax( sprintf("%.3f", Ifeffit::get_scalar("kmax_suggest")) );
+  return $self;
 };
 
 sub _kw_string {
@@ -462,13 +485,24 @@ sub read_data {
 
 sub explain_recordtype {
   my ($self) = @_;
-  my $string = ($self->datatype eq 'xmu')    ? 'mu(E)'
-             : ($self->datatype eq 'chi')    ? 'chi(k)'
-             : ($self->datatype eq 'xmudat') ? 'Feff mu(E)'
-	     :                                 'unknown';
+  my $string = ($self->datatype eq 'xmu')        ? 'mu(E)'
+             : ($self->datatype eq 'chi')        ? 'chi(k)'
+             : ($self->datatype eq 'xmudat')     ? 'Feff mu(E)'
+             : ($self->datatype eq 'background') ? 'background'
+             : ($self->datatype eq 'detector')   ? 'detector'
+	     :                                     'unknown';
   $string = 'normalized ' . $string if $self->is_nor;
   $string = 'merged '     . $string if $self->is_merge;
   $self->recordtype($string);
+
+  $string = ($self->datatype eq 'xmu')        ? 'any'
+          : ($self->datatype eq 'chi')        ? 'k, R, or q'
+          : ($self->datatype eq 'xmudat')     ? 'any'
+          : ($self->datatype eq 'background') ? 'any'
+          : ($self->datatype eq 'detector')   ? 'energy'
+	  :                                     'any';
+  $self->plotspaces($string);
+
   return $self;
 };
 
@@ -527,11 +561,11 @@ sub _read_data_command {
     $string  = $self->template("process", "read_xmu");
     $string .= $self->template("process", "deriv");
   } elsif ($type eq 'chi') {
-    $string = $self->template("process", "read_chi");
+    $string  = $self->template("process", "read_chi");
   } elsif ($type eq 'feff.dat') {
-    $string = $self->template("process", "read_feffdat");
+    $string  = $self->template("process", "read_feffdat");
   } else {
-    $string = $self->template("process", "read");
+    $string  = $self->template("process", "read");
   };
   return $string;
 };
@@ -649,6 +683,7 @@ This documentation refers to Demeter version 0.2.
 
 =head1 SYNOPSIS
 
+  use Demeter;
   my $data = Demeter::Data -> new;
   $data -> set(file      => "example/cu/cu10k.chi",
 	       name      => 'My copper data',

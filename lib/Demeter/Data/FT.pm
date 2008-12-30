@@ -5,6 +5,7 @@ sub fft {
   my ($self) = @_;
   $self->_update("fft");
   $self->dispose($self->_fft_command);
+  $self->chi_noise;
   $self->update_fft(0);
 };
 sub _fft_command {

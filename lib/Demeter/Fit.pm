@@ -850,9 +850,8 @@ sub fetch_statistics {
     foreach my $d (@ {$self->data} ) {
       ($which = $d) if ($d->fitting);
     };
-    my @list = $which->chi_noise;
-    $self->epsilon_k(sprintf("%.5g", $list[0]));
-    $self->epsilon_r(sprintf("%.5g", $list[1]));
+    $self->epsilon_k($which->epsk);
+    $self->epsilon_r($which->epsr);
   };
 
   Ifeffit::ifeffit("\&screen_echo = $save\n");

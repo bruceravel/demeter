@@ -1,7 +1,17 @@
-"{$S->name}" is a {$S->recordtype} record.  It can be plotted in {$S->plotspaces} space. 
-It's Ifeffit group name is '{$S->group}'.
+{ # -*- ifm -*-
+  # about Data group template
+}
+"{$D->name}" is a {$D->recordtype} record.  It can be plotted in {$D->plotspaces} space. 
+It's Ifeffit group name is '{$D->group}'.
+{
+  $OUT .= ($D->is_col)    ? "\nmu(E) was constructed from columns as \"" . $D->xmu_string      . "\"\n"  : q{};
+  $OUT .= ($D->reference) ? "\nThis record is tied to \""                . $D->reference->name . "\"\n"  : q{};
+}
+This {$D->recordtype} record has {$D->npts} points from {$D->xmin} to {$D->xmax}.
 
-This {$S->recordtype} record has {$S->npts} from {$S->xmin} to {$S->xmax}.
+"{$D->name}" uses {$D->nknots} spline knots, evenly spaced in k between {$D->bkg_spl1}
+and {$D->bkg_spl2}.
 
-"{$S->name}" uses {$S->nknots} spline knots, evenly spaced in k between {$S->bkg_spl1}
-and {$S->bkg_spl2}.
+Measurement uncertainty in k: {$D->epsk}
+                        in r: {$D->epsr}
+Recommended kmax for the Fourier transform: {$D->recommended_kmax}

@@ -20,9 +20,6 @@
 
 =cut
 
-use warnings;
-use strict;
-
 use Demeter;
 my $where = $ENV{DEMETER_TEST_DIR} || "..";
 

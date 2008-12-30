@@ -617,16 +617,14 @@ components are:
    Atoms Data Data::Prj Path VPath SSPath Plot Config GDS
    Fit Feff ScatteringPath
 
-Using Demeter also imports L<strict> and L<warnings> into your program.
+Using Demeter automatically turns on L<strict> and L<warnings>.
 
 =head1 EXAMPLE
 
 Here is a complete script for analyzing copper data:
 
   #!/usr/bin/perl
-  use warnings;
-  use strict;
-  use Demeter;
+  use Demeter;  # automatically turn on L<strict> and L<warnings>
   #
   ## make a Data object
   my $dobject = Demeter::Data -> new({group => 'data0',});
@@ -933,9 +931,9 @@ their attributes.
 This the constructor method.  It builds and initializes new objects.
 
   use Demeter;
-  $data_object -> Demeter::Data -> new;
-  $path_object -> Demeter::Path -> new;
-  $gds_object  -> Demeter::GDS  -> new;
+  my $data_object = Demeter::Data -> new;
+  my $path_object = Demeter::Path -> new;
+  my $gds_object  = Demeter::GDS  -> new;
     ## and so on ...
 
 New can optionally take an array of attributes and values with the
@@ -1233,7 +1231,7 @@ The methods for accessing the operation modes are:
 This is the method used to set the attributes described above.  Any Demeter
 object can call this method.
 
-   Demeter -> set_mode(ifeffit => 1,
+   $object -> set_mode(ifeffit => 1,
                        screen  => 1,
                        buffer  => \@buffer_array
                       );
@@ -1283,9 +1281,8 @@ chain with any Demeter object.
 
 =item C<mo>
 
-This returns the Mode object.  Like the C<co> method, this is a
-wrapper around C<get_mode> and is intended to be used in a method call
-chain with any Demeter object.
+This returns the Mode object.  This is intended to be used in a method
+call chain with any Demeter object.
 
   print "on screen!" if ($data -> mo -> ui eq 'screen');
 

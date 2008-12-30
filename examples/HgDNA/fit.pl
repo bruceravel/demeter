@@ -14,9 +14,6 @@
 
 =cut
 
-use warnings;
-use strict;
-##use Demeter qw(:ui=screen); # enable the use of Interview and Spinner
 use Demeter qw(:ui=screen :plotwith=gnuplot);
 
 ## -------- clean up in preparation of the next fit

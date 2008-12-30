@@ -269,7 +269,6 @@ sub plot_window {
 sub _prep_window_command {
   my ($self, $sp) = @_;
   my $space   = lc($sp);
-  print ">>>", $space, $/;
   #my %dsuff   = (k=>'chik', r=>'chir_mag', 'q'=>'chiq_mag');
   my $suffix  = ($space =~ m{\Ar}) ? 'rwin' : 'win';
   my $string  = "\n" . $self->hashes . " plot window ___\n";

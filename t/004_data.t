@@ -160,8 +160,6 @@ ok( abs($data3->k2e(4,    'abs') - 7172.96) < $fuzz, 'k2e, absolute');
 ## -------- test tying data groups as reference channels
 $data->reference($data2);
 $data->bkg_eshift(5);
-ok( $data2->bkg_eshift eq 5, 'tying refernce channels works');
+ok( $data2->bkg_eshift eq 5, 'tying reference channels works');
 $data2->bkg_eshift(-3);
-ok( $data->bkg_eshift eq -3, 'tying refernce channels works both ways');
-
-print $data3->about;
+ok( $data->bkg_eshift eq -3, 'tying reference channels works both ways');

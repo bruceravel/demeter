@@ -1,0 +1,32 @@
+{
+  @list = @{ $C->get("many_list") };
+  %trans = (xmu      => 'mu(E)',
+   	    norm     => 'normalized mu(E)',
+	    der      => 'derivative mu(E)',
+	    sec      => 'second derivative mu(E)',
+ 	    nder     => 'derivative of normalized mu(E)',
+	    nsec     => 'second derivative of normalized mu(E)',
+  	    chi      => 'chi(k)',
+	    chik     => 'k * chi(k)',
+	    chik2    => 'k^2 * chi(k)',
+	    chik3    => 'k^3 * chi(k)',
+  	    chir_mag => 'magnitude of chi(R)',
+	    chir_re  => 'real part of chi(R)',
+	    chir_im  => 'imaginary part of chi(R)',
+	    chir_pha => 'phase of chi(R)',
+  	    chiq_mag => 'magnitude of chi(q)',
+	    chiq_re  => 'real part of chi(q)',
+	    chiq_im  => 'imaginary part of chi(q)',
+	    chiq_pha => 'phase of chi(q)',
+	   );
+  $i = 1;
+  q{}
+}
+$many_title_{$i++} = "Demeter multicolumn data file -- Demeter version {$S->version}"
+$many_title_{$i++} = "This file contains {$trans{$C->get("many_which")}} data from:"
+{
+  foreach $g (@list) {
+    $wherefrom = $g->prjrecord||$g->file;
+    $OUT .= "\$many_title_" . $i++ . ' = "_    ' . $g->name . " (" . $wherefrom . ")\"\n";
+  }
+}

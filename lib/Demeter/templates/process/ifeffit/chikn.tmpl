@@ -1,0 +1,4 @@
+{ # -*- ifm -*-
+  # build k-weighted chi(k) arrays for export
+}
+set {$S->group}.chik{$C->get("chik")} = {$S->group}.chi * {$S->group}.k ** {$C->get("chik")}

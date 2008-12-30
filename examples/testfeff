@@ -26,8 +26,6 @@
 
 =cut
 
-use warnings;
-use strict;
 use Term::ReadLine;
 
 use subs qw(BOLD RED RESET YELLOW GREEN BLUE WHITE REVERSE DARK UNDERLINE);

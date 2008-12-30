@@ -15,9 +15,7 @@
 
 =cut
 
-use warnings;
-use strict;
-use Demeter qw(:ui=screen);
+use Demeter;
 use Demeter::Fit::Feffit;
 
 use File::Basename;

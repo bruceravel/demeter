@@ -15,13 +15,12 @@
 
 =cut
 
-use warnings;
-use strict;
+use Demeter;
+
 use File::Basename;
 use File::Copy;
 use File::Path;
 use File::Spec;
-use Demeter;
 use Getopt::Long;
 use Readonly;
 Readonly my $USAGE => "usage: dfeff [options] <myfeff.inp>\n";

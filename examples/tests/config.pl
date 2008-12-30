@@ -20,9 +20,6 @@
 
 =cut
 
-use warnings;
-use strict;
-
 use Demeter;
 my $demeter = Demeter->new;
 my $config = $demeter->co;

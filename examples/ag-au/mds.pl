@@ -25,8 +25,6 @@
 
 =cut
 
-use warnings;
-use strict;
 use Demeter qw(:ui=screen :plotwith=gnuplot);
 $| = 1;
 

@@ -1,0 +1,6 @@
+{ # -*- ifm -*-
+  # template for interpolating to the energy grid of the data standard
+  # {$D->parameter} for the current Data group
+  # {$DS->parameter} for the Data standard
+}
+set {$D->group}.int = {$C->default("interpolation", "type")}({$D->group}.energy+{$D->bkg_eshift}, {$D->group}.{$suffix}, {$DS->group}.energy+{$DS->bkg_eshift})

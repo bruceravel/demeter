@@ -1,6 +1,5 @@
 #!/usr/bin/perl -I/home/bruce/codes/demeter/lib
-use warnings;
-use strict;
+
 use Demeter qw(:ui=screen);
 use Getopt::Long;
 use Readonly;
