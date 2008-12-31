@@ -1,8 +1,8 @@
-package Xray::SpaceGroup;
+package Xray::Crystal::SpaceGroup;
 
 =for Copyright
  .
- Copyright (c) 1999-2008 Bruce Ravel (bravel AT bnl DOT gov).
+ Copyright (c) 1999-2009 Bruce Ravel (bravel AT bnl DOT gov).
  All rights reserved.
  .
  This file is free software; you can redistribute it and/or
@@ -16,7 +16,6 @@ package Xray::SpaceGroup;
 =cut
 
 use Moose;
-use MooseX::AttributeHelpers;
 
 use Carp;
 use File::Basename;
@@ -32,7 +31,8 @@ use vars qw($VERSION);
 use version;
 $VERSION = version->new("0.1.0");
 
-has 'database'    => (is => 'ro', isa => 'Str', default => sub{File::Spec->catfile(dirname($INC{"Xray/SpaceGroup.pm"}),
+has 'database'    => (is => 'ro', isa => 'Str', default => sub{File::Spec->catfile(dirname($INC{"Xray/Crystal.pm"}),
+										   'Crystal',
 										   'share',
 										   'space_groups.db')});
 
@@ -58,43 +58,11 @@ has 'newsymbol'   => (is => 'rw', isa => 'Str', default => q{});
 has 'class'       => (is => 'rw', isa => 'Str', default => q{});
 has 'setting'     => (is => 'rw', isa => 'Str', default => q{0});
 has 'warning'     => (is => 'rw', isa => 'Str', default => q{});
-has 'data'        => (is => 'rw', isa => 'HashRef', default => sub{ {} });
 
-has 'nicknames' => (
-		    metaclass => 'Collection::Array',
-		    is        => 'rw',
-		    isa       => 'ArrayRef',
-		    default   => sub { [] },
-		    provides  => {
-				  'push'  => 'push_nicknames',
-				  'pop'   => 'pop_nicknames',
-				  'clear' => 'clear_nicknames',
-				 }
-		   );
-
-has 'bravais' => (
-		  metaclass => 'Collection::Array',
-		  is        => 'rw',
-		  isa       => 'ArrayRef',
-		  default   => sub { [] },
-		  provides  => {
-				'push'  => 'push_bravais',
-				'pop'   => 'pop_bravais',
-				'clear' => 'clear_bravais',
-			       }
-		 );
-
-has 'positions' => (
-		    metaclass => 'Collection::Array',
-		    is        => 'rw',
-		    isa       => 'ArrayRef',
-		    default   => sub { [] },
-		    provides  => {
-				  'push'  => 'push_positions',
-				  'pop'   => 'pop_positions',
-				  'clear' => 'clear_positions',
-				 }
-		   );
+has 'data'        => (is => 'rw', isa => 'HashRef',  default => sub{ {} });
+has 'nicknames'   => (is => 'rw', isa => 'ArrayRef', default => sub { [] }, );
+has 'bravais'     => (is => 'rw', isa => 'ArrayRef', default => sub { [] }, );
+has 'positions'   => (is => 'rw', isa => 'ArrayRef', default => sub { [] }, );
 
 
 my $r_sg;
@@ -229,7 +197,7 @@ sub _canonicalize_group {
   };
 
 				# this is not a symbol
-  $self->space_group(q{});
+  $self->group(q{});
   $self->setting(0);
   $self->data( {} );
   $self->warning(q{Your symbol could not be recognized as a space group symbol!});
@@ -325,6 +293,7 @@ sub _other_symbols {
   #print Data::Dumper->Dump([$rhash]);
   $self->number($$rhash{number} || 0);
   $self->schoenflies($$rhash{schoenflies} || q{});
+  $self->full($$rhash{full} || $sym);
   $self->thirtyfive($$rhash{thirtyfive}) if exists($$rhash{thirtyfive});
   $self->newsymbol ($$rhash{newsymbol})  if exists($$rhash{newsymbol});
   $self->nicknames ($$rhash{shorthand})  if exists($$rhash{shorthand});
@@ -460,6 +429,7 @@ sub set_rhombohedral {
   my $given = $self->given;
   my $class = $self->class;
   return $self if ($class ne "trigonal");
+  return $self if ($group !~ m{\Ar});
   $self->setting('rhombohedral');
   my $rhash = $self->data;
   $self->positions($$rhash{rhombohedral});
@@ -498,7 +468,8 @@ sub _set_positions {
 
 sub report {
   my ($self) = @_;
-  my $message = sprintf("Space group: %s (%d)\n",          $self->group, $self->number);
+  return $self->warning.$/ if not $self->group;
+  my $message = sprintf("Space group: %s (#%d)\n",         $self->group, $self->number);
   $message   .= sprintf("  supplied symbol        : %s\n", $self->given);
   $message   .= sprintf("  crystal class          : %s\n", $self->class);
   $message   .= sprintf("    Schoenflies symbol   : %s\n", $self->schoenflies);
@@ -526,3 +497,231 @@ sub _simple_fraction {		# stringify Bravais fractions
        : (abs($val - 2/3) < $EPSILON) ? '2/3'
        :                                '0';
 };
+
+1;
+
+
+=head1 NAME
+
+Xray::Crystal::SpaceGroup - A OO interface to the International Tables of Crystallography
+
+=head1 VERSION
+
+This documentation refers to Demeter version 0.2.
+
+=head1 SYNOPSIS
+
+  use Xray::Crystal;
+  my $sg   = Xray::Crystal::SpaceGroup->new;
+  $sg -> group("pm3m");
+  print $sg -> report;
+
+=head1 DESCRIPTION
+
+This provides an interface to the tables of space group symmetries
+from the International Tables of Crystallography.
+
+=head1 ATTRIBUTES
+
+This class uses Moose.  Like all Moose-y objects, each attribute
+shares a name with its accessor method.
+
+=over 4
+
+=item C<group>
+
+The space group symbol.  This is you point of entry into this class
+and this should be the only attribute you ever need to explicitly set.
+When you do so, the space group symbol will be canonicalized and all
+other attributes will be set with data from the sapce groups database.
+Once that is done, this attribute will contain the canonicalized
+Hermann-Maguin symbol for the requested space group.
+
+=item C<given>
+
+This is the symbol that was given to the C<group> accessor.
+
+=item C<number>
+
+This is the number of the space group as listed in the International
+Tables.
+
+=item C<full>
+
+This is the full Hermann-Maguin symbol for this space group, which,
+for some groups, is the same as canonical symbol.
+
+=item C<schoenflies>
+
+This is the Schoenflies symbol for this space group.
+
+=item C<thirtyfive>
+
+For groups that had a different symbol in the 1935 edition of the
+International Tables, that symbol is contained in this attribute.  For
+other groups, this is an empty string.
+
+=item C<newsymbol>
+
+For groups that have a new symbol (for instance to indicate a glide
+plane), that symbol is contained in this attribute.  For other groups,
+this is an empty string.
+
+=item C<class>
+
+The crystal class -- one of triclinic, monoclinic, orthorhombic,
+trigonal, tetragonal, hexagonal, or cubic.
+
+=item C<setting>
+
+A string indicating the crystal setting as determined from the space
+group symbol.  For groups without alternate setting choices, this is
+"positions".  For others, the string indicates the setting choice,
+which is used to fill the C<positions> attribute.
+
+=item C<warning>
+
+If the symbol supplied can be interpreted, this is filled with a text
+string indicating the reason.  Under normal conditions this is an
+empty string.
+
+=item C<data>
+
+This is filled with a hash reference containing all information about
+this group taken from the space groups database.
+
+=item C<nicknames>
+
+This is an array reference containing any nicknames by which this
+group can be recognized.  For example C<I m -3 m> has C<BCC> (for
+body-centered cubic) as a nickname.
+
+=item C<bravais>
+
+This is an array reference containing the Bravais translations
+associated with this space group.
+
+=item C<positions>
+
+This is an array reference containing array refernces to the symmetry
+positions associated with this space group.  This is the information
+used, along with the Bravais translations, to populate a unit cell.
+
+=back
+
+=head1 METHODS
+
+=over 4
+
+=item C<set_rhombohedral>
+
+If your trigonal group is specified with just the C<A> lattice
+constant and all angles of equal value, then you are using the
+rhombohedral setting.  Use this method to set the C<setting> and
+S<positions> attributes correctly.  If the space group is not an C<R>
+group, then this method does nothing.
+
+=item C<report>
+
+Print out a simple textual summary of a space group.
+
+  my $sg=Xray::Crystal::SpaceGroup->new;
+  $sg -> group('p63mc');
+  print $sg->report;
+
+  Space group: p 63 m c (#186)
+    supplied symbol        : p63mc
+    crystal class          : hexagonal
+      Schoenflies symbol   : c_6v^4
+      full symbol          : p 63 m c
+      nicknames            : graphite, gra
+      crystal setting      : positions
+      Bravais translations :
+        none
+      Positions :
+         $x         $y         $z
+        -$y         $x-$y      $z
+        -$x+$y     -$x         $z
+        -$x        -$y         $z+1/2
+         $y        -$x+$y      $z+1/2
+         $x-$y      $x         $z+1/2
+        -$y        -$x         $z
+        -$x+$y      $y         $z
+         $x         $x-$y      $z
+         $y         $x         $z+1/2
+         $x-$y     -$y         $z+1/2
+        -$x        -$x+$y      $z+1/2
+
+=back
+
+=head1 CONFIGURATION AND ENVIRONMENT
+
+
+=head1 DEPENDENCIES
+
+=over 4
+
+=item *
+
+L<Moose>
+
+=item *
+
+L<Carp>
+
+=item *
+
+L<File::Basename>
+
+=item *
+
+L<File::Spec>
+
+=item *
+
+L<List::MoreUtils>
+
+=item *
+
+L<Regexp::List>
+
+=item *
+
+L<Storable>
+
+=item *
+
+L<Readonly>
+
+=item *
+
+L<version>
+
+=back
+
+
+=head1 BUGS AND LIMITATIONS
+
+Please report problems to Bruce Ravel (bravel AT bnl DOT gov)
+
+Patches are welcome.
+
+=head1 AUTHOR
+
+Bruce Ravel (bravel AT bnl DOT gov)
+
+http://cars9.uchicago.edu/~ravel/software/
+
+
+=head1 LICENCE AND COPYRIGHT
+
+Copyright (c) 2006-2009 Bruce Ravel (bravel AT bnl DOT gov). All rights reserved.
+
+This module is free software; you can redistribute it and/or
+modify it under the same terms as Perl itself. See L<perlgpl>.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+
+=cut

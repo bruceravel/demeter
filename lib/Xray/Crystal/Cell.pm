@@ -114,6 +114,7 @@ has 'tzz'	   => (is => 'rw', isa => 'Num', default => 0);
 has 'occupancy'	   => (is => 'rw', isa => 'Num', default => 1);
 has 'data'	   => (is => 'rw', isa => 'HashRef', default => sub{ {} });
 has 'database'     => (is => 'ro', isa => 'Str', default => sub{ File::Spec->catfile(dirname($INC{"Xray/Crystal.pm"}),
+										     'Crystal',
 										     'share',
 										     'space_groups.db') });
 
