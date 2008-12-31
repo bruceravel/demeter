@@ -5,6 +5,8 @@ bin/datoms.pod
 bin/denv
 bin/dfeff
 bin/dfeff.pod
+bin/dfeffit
+bin/dfeffit.pod
 bin/hephaestus
 bin/intrp
 bin/intrp.pod
@@ -83,6 +85,7 @@ install_prereqs
 lib/Demeter.pm
 lib/Demeter/Atoms.pm
 lib/Demeter/Atoms/Absorption.pm
+lib/Demeter/Atoms/Cif.pm
 lib/Demeter/Config.pm
 lib/Demeter/configuration/000README
 lib/Demeter/configuration/atoms.demeter_conf
@@ -119,6 +122,7 @@ lib/Demeter/Feff.pm
 lib/Demeter/Feff/Paths.pm
 lib/Demeter/Feff/Sanity.pm
 lib/Demeter/Fit.pm
+lib/Demeter/Fit/Feffit.pm
 lib/Demeter/Fit/Happiness.pm
 lib/Demeter/Fit/Sanity.pm
 lib/Demeter/GDS.pm
@@ -206,8 +210,8 @@ lib/Demeter/templates/fit/feffit/save_fit.tmpl
 lib/Demeter/templates/fit/feffit/sum.tmpl
 lib/Demeter/templates/fit/ifeffit/background.tmpl
 lib/Demeter/templates/fit/ifeffit/correl.tmpl
-lib/Demeter/templates/fit/ifeffit/ff2chi.tmpl
 lib/Demeter/templates/fit/ifeffit/endfit.tmpl
+lib/Demeter/templates/fit/ifeffit/ff2chi.tmpl
 lib/Demeter/templates/fit/ifeffit/fit.tmpl
 lib/Demeter/templates/fit/ifeffit/fit_report.tmpl
 lib/Demeter/templates/fit/ifeffit/gds.tmpl
@@ -320,8 +324,8 @@ lib/Demeter/templates/process/ifeffit/prep_rwindow.tmpl
 lib/Demeter/templates/process/ifeffit/prep_vpath.tmpl
 lib/Demeter/templates/process/ifeffit/read.tmpl
 lib/Demeter/templates/process/ifeffit/read_chi.tmpl
-lib/Demeter/templates/process/ifeffit/read_xmu.tmpl
 lib/Demeter/templates/process/ifeffit/read_prj.tmpl
+lib/Demeter/templates/process/ifeffit/read_xmu.tmpl
 lib/Demeter/templates/process/ifeffit/rebin.tmpl
 lib/Demeter/templates/process/ifeffit/replicate.tmpl
 lib/Demeter/templates/process/ifeffit/save_chik.tmpl
@@ -395,12 +399,15 @@ lib/Demeter/VPath.pm
 lib/pod.css
 lib/Xray/Crystal.pm
 lib/Xray/Crystal/Cell.pm
-lib/Xray/Crystal/share/space_groups.db.PL
 lib/Xray/Crystal/Site.pm
+lib/Xray/SpaceGroup.pm
+lib/Xray/share/space_groups.db.PL
 LICENSE
 MANIFEST			This list of files
 META.yml
 notes/copyright.block
+notes/how_to_freeze
+notes/how_to_tie
 notes/notes
 notes/requires
 notes/tree.pl

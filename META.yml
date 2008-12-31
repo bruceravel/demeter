@@ -46,6 +46,8 @@ provides:
     file: lib/Demeter/Atoms.pm
   Demeter::Atoms::Absorption:
     file: lib/Demeter/Atoms/Absorption.pm
+  Demeter::Atoms::Cif:
+    file: lib/Demeter/Atoms/Cif.pm
   Demeter::Config:
     file: lib/Demeter/Config.pm
   Demeter::Data:
@@ -82,6 +84,8 @@ provides:
     file: lib/Demeter/Feff/Sanity.pm
   Demeter::Fit:
     file: lib/Demeter/Fit.pm
+  Demeter::Fit::Feffit:
+    file: lib/Demeter/Fit/Feffit.pm
   Demeter::Fit::Happiness:
     file: lib/Demeter/Fit/Happiness.pm
   Demeter::Fit::Sanity:
@@ -104,6 +108,8 @@ provides:
     file: lib/Demeter/Plot/Gnuplot.pm
   Demeter::Project:
     file: lib/Demeter/Project.pm
+  Demeter::SSPath:
+    file: lib/Demeter/SSPath.pm
   Demeter::ScatteringPath:
     file: lib/Demeter/ScatteringPath.pm
   Demeter::StrTypes:
