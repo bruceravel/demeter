@@ -244,9 +244,10 @@ around clone => sub {
     $new -> data($new);
 
   ## Path object
-  } elsif (ref($self) =~ m{Path}) {
-    #$new -> file($self->file);
-    1;
+  } elsif (ref($self) =~ m{::(?:SS|)Path}) {
+    my $i = $new->mo->pathindex;
+    $new->Index($i);
+    $new->mo->pathindex(++$i);
 
   ## any other kind of object
   } else {

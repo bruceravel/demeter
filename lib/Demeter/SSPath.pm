@@ -43,6 +43,9 @@ sub BUILD {
   my ($self, @params) = @_;
   $self->sp($self);
   $self->mo->push_SSPath($self);
+  #my $i = $self->mo->pathindex;  # this is not necessary -- handeled by Path's BUILD
+  #$self->Index($i);
+  #$self->mo->pathindex(++$i);
 };
 
 

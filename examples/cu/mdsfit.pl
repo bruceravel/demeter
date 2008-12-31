@@ -28,7 +28,7 @@ my @common = (fft_kmin   => 3,	  fft_kmax   => 14,
 
 my $data_010k = Demeter::Data -> new(group => 'data0');
 $data_010k -> set_mode(screen  => 0, ifeffit => 1, file => ">mdsfit.iff", );
-$data_010k -> template_set("demeter");
+#$data_010k -> template_set("demeter");
 $data_010k -> set(@common);
 $data_010k -> set(file	     => "cu10k.chi",
 		  cv         => 10,
@@ -41,11 +41,6 @@ $data_150k -> set(file       => "cu150k.chi",
 		  cv         => 150,
 		  name       => '150 K copper data',
 		 );
-
-$data_010k->set_mode(screen  => 0,
-		     ifeffit => 1,
-		     file    => ">mdsfit.iff",
-		    );
 
 
 print "--- make GDS objects for an isotropic expansion, correlated Debye model\n";
@@ -125,7 +120,7 @@ $data_010k->po->legend(dy => 0.05, # set nice legend parameters for the plot
 print "--- do the fit (or the sum of paths)\n";
 $fitobject -> fit;
 #$fitobject -> ff2chi($data_010k);
-#$fitobject -> interview;
+$fitobject -> interview;
 
 $fitobject -> finish;
 

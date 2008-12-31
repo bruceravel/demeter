@@ -126,7 +126,10 @@ sub BUILD {
 					     ));
   };
   $self->data($self->mo->datadefault) if (ref($self->data) !~ m{Data});
-  $self->mo->push_Path($self);
+  $self->mo->push_Path($self) if (ref($self) eq "Demeter::Path"); # don't do this for SSPath objects
+  my $i = $self->mo->pathindex;
+  $self->Index($i);
+  $self->mo->pathindex(++$i);
 };
 
 override 'alldone' => sub {
@@ -592,7 +595,9 @@ automatically.
 
 This is the path index as required in the definition of an Ifeffit
 Path.  It is rarely necessary to set this by hand.  Indexing is
-typically handled by Demeter.
+typically handled by Demeter.  Demeter organization of the fit makes
+use of lists of Path objects, so you are encouraged to think that way
+rather than to fret about the path indeces.
 
 =item C<include> (boolean)
 
@@ -759,11 +764,6 @@ Additionally the Path object provides these methods:
 =head2 Convenience methods
 
 =over 4
-
-=item C<Index>
-
-This method returns the Ifeffit path index for this object.  It is
-capitalized to avoid confusion with the built-in index function.
 
 =item C<data>
 

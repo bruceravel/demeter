@@ -97,9 +97,3 @@ $this->delr_value(1);
 @list = $this->is_resonable('delr');
 ok(!$list[0],                                           'delr sanity test, too large');
 
-
-
-$this->Index(1);
-
-#$this->set_mode(screen=>1);
-#$this->plot('r');

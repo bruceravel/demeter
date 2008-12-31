@@ -96,7 +96,6 @@ my @common = (parent => $feff, data => $data, s02 => "amp", e0 => "enot",);
 my $p = $feff->find_path(lt=>3, tag=>['N']);	       ## find the nearest neighbor, N at a short distance
 push @paths, Demeter::Path -> new(@common,
 				  sp     => $p,
-				  Index  => ++$index,
 				  delr   => "deltaa",
 				  sigma2 => "ssn",
 				 );
@@ -104,7 +103,6 @@ push @paths, Demeter::Path -> new(@common,
 $p = $feff->find_path(lt=>3, tag=>['C']);	       ## find the second neighbor C atoms in the pyrimidine ring
 push @paths, Demeter::Path -> new(@common,
 				  sp     => $p,
-				  Index  => ++$index,
 				  delr   => "c-reff",
 				  sigma2 => "ssc",
 				 );
@@ -112,7 +110,6 @@ push @paths, Demeter::Path -> new(@common,
 $p = $feff->find_path(lt=>3.5, tag=>['O']);	       ## find the third neighbor O atoms dangling from the pyrimidine ring
 push @paths, Demeter::Path -> new(@common,
 				  sp     => $p,
-				  Index  => ++$index,
 				  delr   => "dro",
 				  sigma2 => "sso",
 				 );
@@ -120,7 +117,6 @@ push @paths, Demeter::Path -> new(@common,
 $p = $feff->find_path(lt=>4, tag=>['C', 'N']);	       ## find the C-N triangle paths
 push @paths, Demeter::Path -> new(@common,
 				  sp     => $p,
-				  Index  => ++$index,
 				  delr   => "(c-2.924)/2 + deltaa/2",
 				  sigma2 => "ssc+ssn",
 				 );
@@ -128,7 +124,6 @@ push @paths, Demeter::Path -> new(@common,
 $p = $feff->find_path(lt=>4, tag=>['N', 'C', 'N']);    ## find the N-C-N dog leg
 push @paths, Demeter::Path -> new(@common,
 				  sp     => $p,
-				  Index  => ++$index,
 				  delr   => "deltaa",
 				  sigma2 => "ssn",
 				 );
@@ -136,7 +131,6 @@ push @paths, Demeter::Path -> new(@common,
 $p = $feff->find_path(lt=>4, tag=>['C', 'O']);	       ## find the C-O triangle
 push @paths, Demeter::Path -> new(@common,
 				  sp     => $p,
-				  Index  => ++$index,
 				  delr   => "(c-2.924)/2 + dro/2",
 				  sigma2 => "ssc+sso",
 				 );
@@ -144,7 +138,6 @@ push @paths, Demeter::Path -> new(@common,
 $p = $feff->find_path(lt=>4.2, tag=>['N', 'O']);       ## find the N-O triangle
 push @paths, Demeter::Path -> new(@common,
 				  sp     => $p,
-				  Index  => ++$index,
 				  delr   => "deltaa/2 + dro/2",
 				  sigma2 => "ssn+sso",
 				 );
@@ -152,7 +145,6 @@ push @paths, Demeter::Path -> new(@common,
 $p = $feff->find_path(lt=>4.2, tag=>['C', 'O', 'C']);  ## find the C-O-C dog leg
 push @paths, Demeter::Path -> new(@common,
 				  sp     => $p,
-				  Index  => ++$index,
 				  delr   => "deltaa/2 + dro/2",
 				  sigma2 => "ssn+sso",
 				 );
@@ -160,7 +152,6 @@ push @paths, Demeter::Path -> new(@common,
 $p = $feff->find_path(lt=>4.2, tag=>['C', 'C']);       ## find the C-C triangle
 push @paths, Demeter::Path -> new(@common,
 				  sp     => $p,
-				  Index  => ++$index,
 				  delr   => "2*deltaa",
 				  sigma2 => "4*ssn",
 				 );

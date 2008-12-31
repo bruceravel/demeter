@@ -150,7 +150,7 @@ sub do_plot {
   do_chore('my @list_of_paths = $feff->pathlist;
     my $i = 0;
     foreach my $sp (@{ $feff->pathlist }) {
-      Demeter::Path -> new(parent=>$feff, sp=>$sp, Index=>++$i) -> plot("r");
+      Demeter::Path -> new(parent=>$feff, sp=>$sp) -> plot("r");
     };');
 };
 

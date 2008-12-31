@@ -123,11 +123,9 @@ $fitobject->set(gds   => \@gdsobjects,
 $fitobject->po->legend(dy=>0.05, x=>0.8);
 
 ## do the fit
-print "  Doing fit ... ";
 $fitobject -> fit;
 
 ## save the results of the fit
-print "saving fit data ... ";
 $data_100 -> save("fit", "ag_100.fit");
 $data_80  -> save("fit", "ag_80.fit");
 $data_60  -> save("fit", "ag_60.fit");
@@ -135,16 +133,8 @@ $data_50  -> save("fit", "ag_50.fit");
 $data_40  -> save("fit", "ag_40.fit");
 
 ## write a log file
-print "writing log file.\n";
 my ($header, $footer) = ("Corefinement of several silver/gold data sets\n", q{});
 $fitobject -> logfile("ag-au.log", $header, $footer);
-
-# my $i = 0;
-# $fitobject->po->plot_fit(1);
-# foreach ($data_100, $data_80, $data_60, $data_50, $data_40) {
-#   $_ -> y_offset(-0.1 * $i++);	# stack the data sets + fits
-#   $_ -> plot('r');
-# };
 
 $fitobject -> interview;
 

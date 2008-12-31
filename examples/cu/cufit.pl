@@ -54,7 +54,6 @@ foreach my $i (0 .. 4) {
   my $j = $i+1;
   $pobjects[$i] = Demeter::Path -> new();
   $pobjects[$i]->set(data     => $dobject,
-		     #Index    => $j,
 		     folder   => './',
 		     file     => "feff000$j.dat",
 		     s02      => 'amp',

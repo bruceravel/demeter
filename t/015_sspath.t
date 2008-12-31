@@ -29,7 +29,7 @@ $feff -> potph;
 $feff -> rmax(4.5);
 $feff -> pathfinder;
 
-my $this = Demeter::SSPath -> new(parent=>$feff, ipot=>1, reff=>3.5, Index=>900);
+my $this = Demeter::SSPath -> new(parent=>$feff, ipot=>1, reff=>3.5);
 my $OBJ  = 'SSPath';
 
 ok( ref($this) =~ m{$OBJ},           "made a $OBJ object");

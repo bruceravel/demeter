@@ -285,7 +285,7 @@ sub convert {
   foreach my $d (@data) {
     next if not defined($d);
     ++$index;
-    my $this_data = Demeter::Data->new(Index=>$index);
+    my $this_data = Demeter::Data->new();
 
     ## -------- set title lines
     $this_data->fit_titles(join("\n", @{$d->{titles}}));

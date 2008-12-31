@@ -370,7 +370,7 @@ sub fit {
       ++$ipath;
       my $lab = $p->name;
       ($lab = "path $ipath") if ($lab =~ m{\A(?:\s*|path\s+\d+)\z});
-      $p->set(Index=>$ipath, name=>$lab);
+      $p->set(name=>$lab);
       $p->rewrite_cv;
       $command .= $p->_path_command(0);
       push @indexstring, $p->Index;
@@ -468,18 +468,12 @@ sub ff2chi {
     ++$ipath;
     my $lab = $p->name;
     ($lab = "path $ipath") if ($lab =~ m{\A(?:\s*|path\s+\d+)\z});
-    $p->set(Index=>$ipath, name=>$lab);
+    $p->set(name=>$lab);
     $p->rewrite_cv;
     $command .= $p->_path_command(0);
     push @indexstring, $p->Index;
   };
-##
-##
-##     foreach my $p (@{ $self->paths} }) {
-##       next if ($p->data ne $data);
-##       $command .= $p->_path_command(0);
-##       push @indexstring, $p->Index;
-##     };
+
   $command .= "\n";
   $command .= $data->hashes . " make sum of paths for data \"$data\"\n";
   $self -> indeces(_normalize_paths(\@indexstring));

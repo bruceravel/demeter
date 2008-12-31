@@ -24,7 +24,6 @@
 }
 ## {$S -> name}
 push @paths, Demeter::{$object} -> new(
-                                  Index   => {$S->Index},
                                   name    => '{$S -> name}',
                                   data    => ${$S->data->group},{$provenance}{$ssp}
                                   degen   =>  {$S->n},
