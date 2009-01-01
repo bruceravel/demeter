@@ -2,7 +2,7 @@ package Demeter::Tools;
 
 =for Copyright
  .
- Copyright (c) 2006-2008 Bruce Ravel (bravel AT bnl DOT gov).
+ Copyright (c) 2006-2009 Bruce Ravel (bravel AT bnl DOT gov).
  All rights reserved.
  .
  This file is free software; you can redistribute it and/or
@@ -234,7 +234,7 @@ Demeter::Tools - Utility methods for the Demeter class
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.2.
+This documentation refers to Demeter version 0.3.
 
 =head1 DESCRIPTION
 
@@ -358,7 +358,7 @@ L<http://cars9.uchicago.edu/~ravel/software/>
 
 =head1 LICENCE AND COPYRIGHT
 
-Copyright (c) 2006-2008 Bruce Ravel (bravel AT bnl DOT gov). All rights reserved.
+Copyright (c) 2006-2009 Bruce Ravel (bravel AT bnl DOT gov). All rights reserved.
 
 This module is free software; you can redistribute it and/or
 modify it under the same terms as Perl itself. See L<perlgpl>.

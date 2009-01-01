@@ -2,7 +2,7 @@
 
 =for Copyright
  .
- Copyright (c) 2008 Bruce Ravel (bravel AT bnl DOT gov).
+ Copyright (c) 2008-2009 Bruce Ravel (bravel AT bnl DOT gov).
  All rights reserved.
  .
  This file is free software; you can redistribute it and/or
@@ -108,8 +108,8 @@ if ($do_ff2chi) {
 
 sub version {
   print "=== dfeff, Demeter's implementation of Feff6\n";
-  print "=== Demeter $Demeter::VERSION, copyright (c) 2007-2008, Bruce Ravel, bravel AT bnl DOT gov\n";
-  print "=== Feff6 is copyright (c) 1992-2008, The FEFF Project\n";
+  print "=== Demeter $Demeter::VERSION, copyright (c) 2007-2009, Bruce Ravel, bravel AT bnl DOT gov\n";
+  print "=== Feff6 is copyright (c) 1992-2009, The FEFF Project\n";
 };
 sub help {
   &version;

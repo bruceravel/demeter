@@ -2,7 +2,7 @@ package Demeter;
 
 =for Copyright
  .
- Copyright (c) 2006-2008 Bruce Ravel (bravel AT bnl DOT gov).
+ Copyright (c) 2006-2009 Bruce Ravel (bravel AT bnl DOT gov).
  All rights reserved.
  .
  This file is free software; you can redistribute it and/or
@@ -20,7 +20,7 @@ package Demeter;
 require 5.8.0;
 #use diagnostics;
 use version;
-our $VERSION = version->new('0.2.0');
+our $VERSION = version->new('0.3.0');
 use vars qw($Gnuplot_exists);
 
 use Carp;
@@ -280,7 +280,7 @@ sub location {
 sub identify {
   my ($self, $full) = @_;
   $full ||= 0;
-  my $string = "Demeter $VERSION, copyright (c) 2006-2008 Bruce Ravel";
+  my $string = "Demeter $VERSION, copyright (c) 2006-2009 Bruce Ravel";
   #if ($full) {};
   return $string;
 };
@@ -606,7 +606,7 @@ Demeter -  An object oriented EXAFS data analysis system using Ifeffit
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.2.0
+This documentation refers to Demeter version 0.3.0
 
 =head1 SYNOPSIS
 
@@ -1386,7 +1386,7 @@ http://cars9.uchicago.edu/~ravel/software/
 
 =head1 LICENCE AND COPYRIGHT
 
-Copyright (c) 2006-2008 Bruce Ravel (bravel AT bnl DOT gov). All rights reserved.
+Copyright (c) 2006-2009 Bruce Ravel (bravel AT bnl DOT gov). All rights reserved.
 
 This module is free software; you can redistribute it and/or
 modify it under the same terms as Perl itself. See L<perlgpl>.
