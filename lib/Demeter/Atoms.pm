@@ -425,8 +425,8 @@ sub build_cluster {
   my @cluster = ();
   my ($central, $xcenter, $ycenter, $zcenter) = $cell -> central($core);
   #print join(" ", $xcenter, $ycenter, $zcenter), $/;
-  my $setting	      = $cell->setting;
-  my $crystal_class   = $cell->class;
+  my $setting	      = $cell->group->setting;
+  my $crystal_class   = $cell->group->class;
   my $do_tetr	      = ($crystal_class eq "tetragonal" ) && ($setting);
 
   #### here
@@ -691,9 +691,10 @@ sub p1_list {
 sub sg {
   my ($self, $which, $pattern) = @_;
   $self->populate if (not $self->is_populated);
+  ($which = "shorthand") if ($which eq 'nicknames');
   my $cell    = $self->cell;
-  my $rhash   = $cell->data;
-  $pattern  ||= "      %-7s  %-7s  %-7s\n";
+  my $rhash   = $cell->group->data;
+  $pattern  ||= "      %-8s  %-8s  %-8s\n";
   my ($prefix, $postfix) = ($which =~ m{(?:bravais|shiftvec)})
                          ? ("      ", $/)
 			 : (q{}, q{});
@@ -701,25 +702,25 @@ sub sg {
   return q{} if (not is_SpaceGroup($which));
   ## number of positions
   if ($which eq "npos") {
-    my @positions = @ {$rhash->{positions}};
+    my @positions = @ {$$rhash{positions}};
     return $#positions + 1;
   };
   ## key is absent from this entry in database
-  return "$prefix<none>$postfix" if ((not exists($rhash->{$which})) and ($which ne "bravais"));
+  return "$prefix<none>$postfix" if ((not exists($$rhash{$which})) and ($which ne "bravais"));
   ## schoenflies
-  return ucfirst($rhash->{schoenflies}) if ($which eq "schoenflies");
+  return ucfirst($$rhash{schoenflies}) if ($which eq "schoenflies");
   ## number or symbol
-  return $rhash->{$which} if ($which =~ m{(?:number|full|new_symbol|thirtyfive)});
+  return $$rhash{$which} if ($which =~ m{(?:number|full|new_symbol|thirtyfive)});
   ## nicknames
-  return join(", ", @{$rhash->{shorthand}}) if ($which eq "shorthand");
+  return join(", ", @{$$rhash{shorthand}}) if ($which eq "shorthand");
   ## shift vector from Int'l Tables
   if ($which eq "shiftvec") {
-    my @shift = map {fract($FRAC*$_, $FRAC)} @{ $rhash->{shiftvec} };
+    my @shift = map {fract($FRAC*$_, $FRAC)} @{ $$rhash{shiftvec} };
     return sprintf($pattern, map {$_->as_mixed_string} @shift);
   };
   ## Bravais translations
   if ($which eq "bravais") {
-    my @bravais = @{ $cell->bravais };
+    my @bravais = @{ $cell->group->bravais };
     my $string = q{};
     while (@bravais) {
       my @vec = (fract($FRAC*shift(@bravais), $FRAC),
@@ -732,14 +733,14 @@ sub sg {
   };
   ## symetric positions
   if ($which eq "positions") {
-    my @positions = @ {$rhash->{positions}};
+    my @positions = @ {$$rhash{positions}};
     my $string = q{};
     my $npos = $#positions + 1;
     #$string .= "  $npos positions:\n";
     foreach my $pos (@positions) {
       my @this = @{ $pos };
       map { $this[$_] =~ s{\$}{}g } (0 .. 2);
-      $string .= sprintf($pattern, @this);
+      $string .= sprintf($pattern, map {($_ =~ m{\A\-}) ? $_ : " $_"} @this);
     };
     return $string;
   };
@@ -790,7 +791,7 @@ sub Write {
   return $self->template("mcmaster")   if (($type eq 'absorption') and not $self->gases_set);
   if ($type eq 'spacegroup') {
     $self->populate if (not $self->is_populated);
-    return $self->template("spacegroup");
+    return $self->spacegroup_file(0, '# ');
   };
   return $self->Write_feff($type) if ($type =~ m{feff});
 
@@ -830,6 +831,17 @@ sub atoms_file {
   $string   .= $self->template("copyright", {prefix=>$prefix, type=>$type}) if $type;
   $string   .= $self->template("atoms_header", {prefix=>$prefix});
   $string   .= ($type eq 'P1') ? $self->p1_list({prefix=>$prefix}) : $self->sites_list({prefix=>$prefix});
+  return $string;
+};
+
+sub spacegroup_file {
+  my ($self) = @_;
+  my $prefix = '# ';
+  my $string = $self->template("copyright", {prefix=>$prefix, type=>"space group"});
+  $string   .= $self->template("atoms_header", {prefix=>$prefix});
+  $string   .= $self->sites_list({prefix=>$prefix});
+  $string   .= $/;
+  $string   .= $self->template("spacegroup");
   return $string;
 };
 

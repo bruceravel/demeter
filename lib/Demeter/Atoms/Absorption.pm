@@ -34,7 +34,7 @@ sub _absorption {
   my $energy   = Xray::Absorption -> get_energy($absorber->element, $self->edge);
   my $contents = $cell->contents;
 
-  my $bravais  = $cell->bravais;
+  my $bravais  = $cell->group->bravais;
   my $brav     = ($#{$bravais}+4) / 3;
   my $volume   = $cell->volume;
   my ($mass, $xsec, $delta_mu) = (0,0,0);

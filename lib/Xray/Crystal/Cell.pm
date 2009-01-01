@@ -16,11 +16,15 @@ package Xray::Crystal::Cell;
 =cut
 
 use Moose;
+use Moose::Util::TypeConstraints;
 use MooseX::AttributeHelpers;
+
+with 'MooseX::SetGet';
+
+use Xray::Crystal::SpaceGroup;
 
 use Carp;
 use File::Spec;
-use Regexp::List;
 use Storable;
 
 use Readonly;
@@ -38,11 +42,19 @@ sub identify_self {
 #my %params_of  :ATTR;
 
 
+subtype 'Empty',
+  as 'Str',
+  where { lc($_) =~ m{\A\s*\z} },
+  message { "That string is not an empty string" };
+
+has 'group'        => (is => 'rw', isa => 'Xray::Crystal::SpaceGroup',
+		       default => sub{Xray::Crystal::SpaceGroup->new});
 has 'space_group'  => (is => 'rw', isa => 'Str', default => q{},
 		      trigger => sub{
 			my ($self, $new) = @_;
 			return if ($new =~ m{\A\s*\z});
 			$self->given_group($new);
+			$self->group->group($new);
 		      });
 has 'given_group'  => (is => 'rw', isa => 'Str', default => q{});
 has 'a'		   => (is => 'rw', isa => 'Num', default => 0,
@@ -69,7 +81,6 @@ has 'beta'	   => (is => 'rw', isa => 'Num', default => 90,
 has 'gamma'	   => (is => 'rw', isa => 'Num', default => 90,
 		       trigger => sub{ my ($self, $new) = @_; $self->determine_monoclinic; $self->geometry} );
 has 'angle'	   => (is => 'rw', isa => 'Str', default => q{});
-has 'setting'	   => (is => 'rw', isa => 'Int|Str', default => 0);
 
 has 'sites'	   => (
 		       metaclass => 'Collection::Array',
@@ -93,18 +104,6 @@ has 'contents'	   => (
 				     'clear' => 'clear_contents',
 				    }
 		      );
-has 'bravais'	   => (
-		       metaclass => 'Collection::Array',
-		       is        => 'rw',
-		       isa       => 'ArrayRef',
-		       default   => sub { [] },
-		       provides  => {
-				     'push'  => 'push_bravais',
-				     'pop'   => 'pop_bravais',
-				     'clear' => 'clear_bravais',
-				    }
-		      );
-has 'class'	   => (is => 'rw', isa => 'Str', default => q{});
 has 'volume'	   => (is => 'rw', isa => 'Num', default => 1);
 has 'txx'	   => (is => 'rw', isa => 'Num', default => 0);
 has 'tyx'	   => (is => 'rw', isa => 'Num', default => 0);
@@ -112,210 +111,16 @@ has 'tyz'	   => (is => 'rw', isa => 'Num', default => 0);
 has 'tzx'	   => (is => 'rw', isa => 'Num', default => 0);
 has 'tzz'	   => (is => 'rw', isa => 'Num', default => 0);
 has 'occupancy'	   => (is => 'rw', isa => 'Num', default => 1);
-has 'data'	   => (is => 'rw', isa => 'HashRef', default => sub{ {} });
-has 'database'     => (is => 'ro', isa => 'Str', default => sub{ File::Spec->catfile(dirname($INC{"Xray/Crystal.pm"}),
-										     'Crystal',
-										     'share',
-										     'space_groups.db') });
 
-
-my $opt  = Regexp::List->new;
-my $sh_re = $opt->list2re(qw(hex hcp zincblende zns cubic salt perov perovskite
-			     gra graphite fcc salt nacl diamond bcc cscl));
-my $r_sg = retrieve(File::Spec->catfile(identify_self(), 'share', 'space_groups.db'));
 
 sub clear {
   my ($self) = @_;
-  $self->$_(0)   foreach (qw(a b c setting));
+  $self->group->clear;
+  $self->$_(0)   foreach (qw(a b c));
   $self->$_(90)  foreach (qw(alpha beta gamma));
-  $self->$_(q{}) foreach (qw(space_group class angle));
+  $self->$_(q{}) foreach (qw(space_group given_group angle));
   $self->clear_sites;
   $self->clear_contents;
-  $self->clear_bravais;
-};
-
-sub get {
-  my ($self, @arguments) = @_;
-  my @list;
-  foreach my $a (@arguments) {
-    push @list, $self->$a;
-  };
-  return wantarray ? @list : $list[0];
-};
-
-sub canonicalize_symbol {
-  my ($self, $this) = @_;
-  my $symbol = $this || $self->given_group;
-  my $sym;
-				# this is a null value
-  if (! $symbol) {
-    $self->space_group(q{});
-    $self->setting(0);
-    $self->data({});
-    return (q{},0);
-  };
-
-  $symbol = lc($symbol);	# lower case and ...
-  $symbol =~ s{[!\#%*].*$}{};   # trim off comments
-  $symbol =~ s{^\s+}{};	        # trim leading spaces
-  $symbol =~ s{\s+$}{};	        # trim trailing spaces
-  $symbol =~ s{\s+}{ }g;	# ... single space
-  $symbol =~ s{\s*/\s*}{/}g;	# spaces around slash
-
-  $symbol =~ s{2_1}{21}g;	# replace `i 4_1' with `i 41'
-  $symbol =~ s{3_([12])}{2$1}g; #  and so on ...
-  $symbol =~ s{4_([1-3])}{2$1}g;
-  $symbol =~ s{6_([1-5])}{2$1}g;
-
-  if ( ($symbol !~ m{[_^]})        and  # schoen
-       ($symbol !~ m{\A\d{1,3}\z}) and  # 1-230
-       ($symbol !~ m{\A($sh_re)\z}io)   # shorthands like 'cubic', 'zns'
-     ) {
-    #print $symbol;
-    $symbol = _insert_spaces($symbol);
-    #print "|$symbol|\n";
-  };
-				# this is the standard symbol
-  if (exists($r_sg->{$symbol})) {
-    $self->space_group($symbol);
-    $self->setting(0);
-    $self->data($r_sg->{$symbol});
-    return ($symbol, 0);
-  };
-
-  foreach $sym (keys %$r_sg ) {
-    next if ($sym eq "version");
-
-				# this is the Schoenflies symbol, (it
-				# must have a caret in it)
-    if ($symbol =~ /\^/) {
-      $symbol =~ s/\s+//g;	#   no spaces
-      $symbol =~ s/^v/d/g;	#   V -> D
-				# put ^ and _ in correct order
-      $symbol =~ s/([cdost])(\^[0-9]{1,2})(_[12346dihsv]{1,2})/$1$3$2/;
-      if ((exists $r_sg->{$sym}->{schoenflies}) and ($symbol eq $r_sg->{$sym}->{schoenflies}) ) {
-	$self->space_group($sym);
-	$self->setting(0);
-	$self->data($r_sg->{$sym});
-	return ($sym, 0);
-      };
-    };
-				# scalar valued fields
-				# this is a number between 1 and 230
-				#    or the 1935 symbol
- 				#    or a double glide plane symbol
- 				#    or the full symbol
-    foreach my $field ("thirtyfive", "number", "new_symbol", "full") {
-      if ( (exists $r_sg->{$sym}->{$field}) and ($symbol eq $r_sg->{$sym}->{$field}) ) {
-	$self->space_group($sym);
-	$self->setting(0);
-	$self->data($r_sg->{$sym});
-	return ($sym, 0);
-      };
-    };
-				# now check the array values fields
-    foreach my $field ("settings", "short", "shorthand") {
-      if (exists($r_sg->{$sym}->{$field})) {
-	my $i=0;
-	foreach my $setting ( @{$r_sg->{$sym}->{$field}} ) {
-	  ++$i;
-	  my $s = ($field eq "settings") ? $i : 0;
-	  if ($symbol eq $setting) {
-	    $self->space_group($sym);
-	    $self->setting($s);
-	    $self->data($r_sg->{$sym});
-	    return ($sym, $s);
-	  };
-	};
-      };
-    };
-  };
-
-				# this is not a symbol
-  $self->space_group(q{});
-  $self->setting(0);
-  $self->data({});
-  return (q{},0);
-};
-
-
-
-## This is the algorithm for dealing with user-supplied space group
-## symbols that do not have the canonical single space separating the
-## part of the symbol.
-sub _insert_spaces {
-  my $sym = $_[0];
-
-  my ($first, $second, $third, $fourth) = ("", "", "", "");
-
-  ## a few groups don't follow the rules below ...
-  ($sym =~ m{\b([rhc])32\b}i)                 && return "$1 3 2";
-  ($sym =~ m{\bp31([2cm])\b}i)                && return "p 3 1 $1";
-  ($sym =~ m{\bp(3[12]?)[22][12]\b}i)         && return "p $1 2 1";
-  ($sym =~ m{\bp(6[1-5]?)22\b}i)              && return "p $1 2 2";
-  ($sym =~ m{\b([fip])(4[1-3]?)32\b}i)        && return "$1 $2 3 2";
-  ($sym =~ m}\b([fipc])(4[1-3]?)(21?)(2)\b}i) && return "$1 $2 $3 $4";
-
-  ## the first symbol is always a single letter
-  $first = substr($sym, 0, 1);
-  my $index = 1;
-
-  my $subsym = substr($sym, $index);
-  if ($subsym =~ m{\A([ \t]+)}) {
-    $index += length($1);
-  };
-  if (substr($sym, $index, 4) =~ m{([2346][12345]\/[mnabcd])}) {
-    ## second symbol as in p 42/n c m
-    $second = $1;
-    $index += 4;
-  } elsif (substr($sym, $index, 3) =~ m{([2346]\/[mnabcd])}) {
-    ## second symbol as in p 4/n n c
-    $second = $1;
-    $index += 3;
-  } elsif (substr($sym, $index, 2) =~ m{(-[1346])}) {
-    ## second symbol as in p -3 1 m
-    $second = $1;
-    $index += 2;
-  } elsif (substr($sym, $index, 2) =~ m{(21|3[12]|4[123]|6[12345])}) {
-    ## second symbol as in p 32 1 2
-    $second = $1;
-    $index += 2;
-  } else {
-    $second = substr($sym, $index, 1);
-    $index += 1;
-  };
-
-  $subsym = substr($sym, $index);
-  if ($subsym =~ m{\A([ \t]+)}) {
-    $index += length($1);
-  };
-  if (substr($sym, $index, 4) =~ m{([2346][12345]\/[mnabcd])}) {
-    ## third symbol as in full symbol p 21/c 21/c 2/n
-    $third = $1;
-    $index += 4;
-  } elsif (substr($sym, $index, 3) =~ m{([2346]\/[mnabcd])}) {
-    ## third symbol as in full symbol p 4/m 21/b 2/m
-    $third = $1;
-    $index += 3;
-  } elsif (substr($sym, $index, 2) =~ m{(-[1346])}) {
-    ## third symbol as in f d -3 m
-    $third = $1;
-    $index += 2;
-  } elsif (substr($sym, $index, 2) =~ m{(21|3[12]|4[123]|6[12345])}) {
-    ## third symbol as in p 21 21 2
-    $third = $1;
-    $index += 2;
-  } else {
-    $third = substr($sym, $index, 1);
-    $index += 1;
-  };
-
-  ($index < length($sym)) and $fourth = substr($sym, $index);
-  $fourth =~ s{\A\s+}{};
-
-  $sym = join(" ", $first, $second, $third, $fourth);
-  $sym =~ s{\s+$}{};		# trim trailing spaces
-  return $sym;
 };
 
 
@@ -348,48 +153,15 @@ sub geometry {
   return $v;
 };
 
-sub set_bravais {
-  my ($self) = @_;
-  my %table = ( f => [  0, 1/2, 1/2, 1/2,   0, 1/2, 1/2, 1/2,   0],
-		i => [1/2, 1/2, 1/2],
-		c => [1/2, 1/2,   0],
-		a => [  0, 1/2, 1/2],
-		b => [1/2,   0, 1/2],
-		r => [2/3, 1/3, 1/3, 1/3, 2/3, 2/3],
-	      );
-  my $group   = $self->space_group;
-  my $g       = lc(substr($group, 0, 1));
-  my $setting = $self->setting;
-  $self->bravais([]);
-  $self->bravais($table{r})  if (($g eq 'r') and ($setting eq 0));
-  $self->bravais($table{$g}) if ($g =~ m{[abcfi]});
-  return $self;
-};
-
-sub crystal_class {
-  my ($self)  = @_;
-  my $group   = $self->space_group;
-  if (exists $r_sg->{$group}->{number}) {
-    my $num   = $r_sg->{$group}->{number};
-    my $class = ($num <= 0)   ? q{}
-	      : ($num <= 2)   ? "triclinic"
-	      : ($num <= 15)  ? "monoclinic"
-	      : ($num <= 74)  ? "orthorhombic"
-	      : ($num <= 142) ? "tetragonal"
-	      : ($num <= 167) ? "trigonal"
-	      : ($num <= 194) ? "hexagonal"
-	      : ($num <= 230) ? "cubic"
-	      : q{};
-    $self->class($class);
-  };
-  return $self;
-};
 
 
 sub determine_monoclinic {
   my ($self) = @_;
-  my ($group, $given, $class) = $self->get(qw(space_group given_group class));
-  return $self if ($class ne "monoclinic");
+  return $self if ($self->group->class ne "monoclinic");
+
+  my $group = $self->group->group;
+  my $given = $self->group->given;
+  my $class = $self->group->class;
   ($given = $group) if ($given =~ m{\A\d+\z});
 
   my $axis = ((abs( 90 - $self->alpha )) > $EPSILON) ? "a"
@@ -408,11 +180,11 @@ sub determine_monoclinic {
 
   # if it has, then continue...
   my $setting = $axis . "_unique";
-  my $number  = $r_sg->{$group}->{number};
+  my $number  = $self->group->number;
   ## these groups have one cell choice for each unique axis
   foreach my $n (3,4,5,6,8,10,11,12) {
     if ($number == $n) {
-      $self->setting($setting);
+      $self->group->setting($setting);
       return $self;
     };
   };
@@ -453,8 +225,8 @@ sub determine_monoclinic {
   ## mismatch between the symbol and the unique axis, so return
   ## presume it is in the standard setting.
   ($setting = 'b_unique_1') if ($setting !~ /_[123]$/);
-  $self->setting($setting);
-  return $setting;
+  $self->group->setting($setting);
+  return $self;
 };
 
 
@@ -541,17 +313,11 @@ sub multiplicity {
   ($class eq 'triclinic') and return 2;
 };
 
-sub get_shift {
-  my ($self) = @_;
-  my $sym = $self->space_group;
-  return (exists $r_sg->{$sym}->{shiftvec}) ? @{ $r_sg->{$sym}->{shiftvec} } : ();
-};
-
 
 sub cell_check {
   my $self = shift;
-  my ($class, $aa, $bb, $cc, $alpha, $beta, $gamma) =
-    $self -> get(qw(class a b c alpha beta gamma));
+  my ($aa, $bb, $cc, $alpha, $beta, $gamma) = $self -> get(qw(a b c alpha beta gamma));
+  my $class = $self->group->class;
   my $from_cell = q{};
  DETERMINE: {
 				# cubic
@@ -633,12 +399,6 @@ sub cell_check {
 };
 
 
-sub group_data {
-  my ($self) = @_;
-  my $group = $self->space_group;
-  return $r_sg->{$group};	# reference to this groups hash of data
-};
-
 
 sub populate {
   my ($self, $r_sites) = @_;
@@ -646,10 +406,7 @@ sub populate {
   my @minimal   = ();
   my @unit_cell = ();
 
-  $self -> canonicalize_symbol;
-  $self -> set_bravais
-    -> crystal_class
-      -> determine_monoclinic;
+  $self -> determine_monoclinic;
 
   my $count = 0;
   my %seen;			# need unique tags for formulas
@@ -659,7 +416,7 @@ sub populate {
     $site->utag(($seen{$tag}) ? join("_", $tag, $count) : $tag);
     ++$seen{$tag};
   };
-  my ($crystal_class, $setting) = $self->get(qw(class setting));
+  my ($crystal_class, $setting) = ($self->group->class, $self->group->setting);
 
   ## rotate a tetragonal group to the standard setting
   if (($crystal_class eq "tetragonal" ) and $setting) {
@@ -787,6 +544,7 @@ sub central {
 
 
 
+__PACKAGE__->meta->make_immutable;
 1;
 
 
@@ -805,7 +563,7 @@ This documentation refers to Demeter version 0.2.
   $cell -> space_group($space);
   $cell -> a($val);
    ##  and so on...
-  $cell->populate(\@sites);
+  $cell -> populate(\@sites);
    ## where @sites is a list of Site objects.
 
 =head1 DESCRIPTION
@@ -877,15 +635,15 @@ updated.  These include:
 
 =over 4
 
+=item C<group>
+
+This is a reference to an L<Xray::Crystal::SpaceGroup> object which
+has been initialized with the value of the C<space_group> attribute.
+
 =item C<given_group>
 
 The space group symbol used as the argument for
 the C<space_group> attribute when the C<make> method is called.
-
-=item C<setting>
-
-The setting of a low symmetry space group.  See
-below for a discussion of low symmetry space groups.
 
 =item C<contents>
 
@@ -960,16 +718,6 @@ Site that generated the position.  This is, admitedly, a complicated
 data structure and requires a lot of ``line-noise'' style perl to
 dereference all its elements.  It is, however, fairly efficient.
 
-=item C<class>
-
-This sets the C<class> attribute withe crystal class of the psace
-group.
-
-=item C<bravais>
-
-This sets the C<bravais> attribute with an anonymous array containing
-the Bravais translations for this space group.
-
 =item C<metric>
 
 Takes the three fractional coordinates and returns the cartesian
@@ -1011,6 +759,10 @@ appropriate to the space group, otherwise it returns an empty string.
 
   print $cell -> cell_check;
 
+=item C<clear>
+
+Reinitialize all attribute values;
+
 =back
 
 =head1 CONFIGURATION AND ENVIRONMENT
@@ -1022,10 +774,8 @@ There is nothing configurable and no environment variables are used.
   Moose and MooseX::AttributeHelpers
   Carp
   File::Spec
-  Regexp::List
   Storable
   Readonly
-
 
 =head1 BUGS AND LIMITATIONS
 
@@ -1048,10 +798,6 @@ get_symmetry_table
 =item *
 
 set_ipots
-
-=item *
-
-Interface with Xray::SpaceGroup
 
 =back
 

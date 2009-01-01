@@ -26,6 +26,8 @@ Readonly my $EPSILON  => 0.00001;
 use Moose;
 use Moose::Util::TypeConstraints;
 
+with 'MooseX::SetGet';
+
 sub _canonicalize_coordinate {
   my ($pos) = @_;
   $pos -= int($pos);		# move to first octant
@@ -112,21 +114,17 @@ has 'color'	  => (is => 'rw', isa => 'Str',  default => q{});
 my %seen = ();
 
 
-sub get {
-  my ($self, @arguments) = @_;
-  my @list;
-  foreach my $a (@arguments) {
-    push @list, $self->$a;
-  };
-  return wantarray ? @list : $list[0];
-};
-
 
 sub populate {
   my ($self, $cell) = @_;
   croak('usage: $site->populate($cell)') if (ref($cell) !~ m{Cell});
 
-  my ($group, $setting, $bravais, $class) = $cell->get(qw(space_group setting bravais class));
+  #my ($group, $setting, $bravais, $class) = $cell->get(qw(space_group setting bravais class));
+  my $group   = $cell->group;
+  my $setting = $cell->group->setting;
+  my $class   = $cell->group->class;
+  my $bravais = $cell->group->bravais;
+
   my ($x, $y, $z, $utag) = $self->get(qw(x y z utag));
   ## it would be nice to do this as a coercion up at the level of the
   ## attribute, but this certainly works...
@@ -194,7 +192,7 @@ EOH
   ;
 
   #---------------------------- loop over all symmetry operations
-  my $r_data = $cell->group_data;
+  my $r_data = $cell->group->data;
 
   foreach my $position (@{ $r_data->{$positions} }) {
     my $i = 0;
@@ -324,6 +322,7 @@ EOH
 };
 
 
+__PACKAGE__->meta->make_immutable;
 1;
 
 

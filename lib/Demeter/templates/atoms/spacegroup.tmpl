@@ -3,13 +3,14 @@
   #   {$A->sg("attribute")} returns a space group attribute
   #   {$C->get("parameter")} returns a Cell attribute
 }
-Spacegroup {uc($C->space_group)}
-  Number     : {$A->sg("number")}
+Spacegroup {uc($C->group->group)} (#{$A->sg("number")})
+
   Schoenflies: {$A->sg("schoenflies")}
   Full symbol: {$A->sg("full")}
   New symbol : {$A->sg("new_symbol")}
   Thirtyfive : {$A->sg("thirtyfive")}
-  Nicknames  : {$A->sg("shorthand")}
+  Nicknames  : {$A->sg("nicknames")}
+
   Common shift vector:
 {$A->sg("shiftvec")}
   Bravais translations:

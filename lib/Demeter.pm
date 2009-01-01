@@ -57,6 +57,8 @@ with 'Demeter::Project';
 
 with 'MooseX::Clone';
 
+with 'MooseX::SetGet';
+
 #use MooseX::Storage;
 #with Storage('format' => 'YAML', 'io' => 'File');
 
@@ -158,22 +160,22 @@ sub import {
 
 
 ## -------- Accessor convenience methods
-sub set {
-  my ($self, @arguments) = @_;
-  my %args = @arguments;
-  foreach my $k (keys %args) {
-    $self->$k($args{$k});
-  };
-  return $self;
-};
-sub get {
-  my ($self, @arguments) = @_;
-  my @list;
-  foreach my $a (@arguments) {
-    push @list, $self->$a;
-  };
-  return wantarray ? @list : $list[0];
-};
+# sub set {
+#   my ($self, @arguments) = @_;
+#   my %args = @arguments;
+#   foreach my $k (keys %args) {
+#     $self->$k($args{$k});
+#   };
+#   return $self;
+# };
+# sub get {
+#   my ($self, @arguments) = @_;
+#   my @list;
+#   foreach my $a (@arguments) {
+#     push @list, $self->$a;
+#   };
+#   return wantarray ? @list : $list[0];
+# };
 
 sub co {
   return shift->mo->config;

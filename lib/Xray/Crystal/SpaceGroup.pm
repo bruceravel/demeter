@@ -21,8 +21,12 @@ use Carp;
 use File::Basename;
 use File::Spec;
 use List::MoreUtils qw(any true);
-use Regexp::List;
 use Storable;
+
+use Regexp::List;
+my $opt   = Regexp::List->new;
+my $sh_re = $opt->list2re(qw(hex hcp zincblende zns cubic salt perov perovskite
+			     gra graphite fcc salt nacl diamond bcc cscl));
 
 use Readonly;
 Readonly my $EPSILON  => 0.00001;
@@ -39,6 +43,7 @@ has 'database'    => (is => 'ro', isa => 'Str', default => sub{File::Spec->catfi
 has 'determining_group' => (is => 'rw', isa => 'Bool', default => 0);
 has 'group'       => (is => 'rw', isa => 'Str', default => q{},
 		      trigger => sub{ my ($self, $new) = @_;
+				      return if not $new;
 				      if (not $self->determining_group) { # avoid deep recursion!
 					$self->given($new);
 					$self->_canonicalize_group;
@@ -62,6 +67,7 @@ has 'warning'     => (is => 'rw', isa => 'Str', default => q{});
 has 'data'        => (is => 'rw', isa => 'HashRef',  default => sub{ {} });
 has 'nicknames'   => (is => 'rw', isa => 'ArrayRef', default => sub { [] }, );
 has 'bravais'     => (is => 'rw', isa => 'ArrayRef', default => sub { [] }, );
+has 'shiftvec'    => (is => 'rw', isa => 'ArrayRef', default => sub { [] }, );
 has 'positions'   => (is => 'rw', isa => 'ArrayRef', default => sub { [] }, );
 
 
@@ -71,12 +77,14 @@ sub BUILD {
   $r_sg = retrieve($self->database);
 };
 
-my $opt  = Regexp::List->new;
-my $number_attr = $opt->list2re(qw(a b c alpha beta gamma));
-my $sh_re = $opt->list2re(qw(hex hcp zincblende zns cubic salt perov perovskite
-			     gra graphite fcc salt nacl diamond bcc cscl));
-
-
+sub clear {
+  my ($self) = @_;
+  $self->$_(q{}) foreach (qw(group given full schoenflies thirtyfive newsymbol class warning));
+  $self->setting(q{0});
+  $self->number(0);
+  $self->data( {} );
+  $self->$_( [] ) foreach (qw(nicknames bravais shiftvec positions));
+};
 
 sub _canonicalize_group {
   my ($self) = @_;
@@ -297,6 +305,7 @@ sub _other_symbols {
   $self->thirtyfive($$rhash{thirtyfive}) if exists($$rhash{thirtyfive});
   $self->newsymbol ($$rhash{newsymbol})  if exists($$rhash{newsymbol});
   $self->nicknames ($$rhash{shorthand})  if exists($$rhash{shorthand});
+  $self->shiftvec  ($$rhash{shiftvec})   if exists($$rhash{shiftvec});
   return $self;
 };
 
@@ -498,6 +507,7 @@ sub _simple_fraction {		# stringify Bravais fractions
        :                                '0';
 };
 
+__PACKAGE__->meta->make_immutable;
 1;
 
 
@@ -601,6 +611,13 @@ body-centered cubic) as a nickname.
 This is an array reference containing the Bravais translations
 associated with this space group.
 
+=item C<shiftvec>
+
+This is an array reference containing the vector that shifts an
+alternate centering in the International Tables to the "centre at
+origin" entry.  Only a few space groups have such alternate entries --
+for those groups this returns an empty array reference.
+
 =item C<positions>
 
 This is an array reference containing array refernces to the symmetry
@@ -611,9 +628,8 @@ used, along with the Bravais translations, to populate a unit cell.
 
 =head1 METHODS
 
-=over 4
 
-=item C<set_rhombohedral>
+=head2 set_rhombohedral
 
 If your trigonal group is specified with just the C<A> lattice
 constant and all angles of equal value, then you are using the
@@ -621,7 +637,7 @@ rhombohedral setting.  Use this method to set the C<setting> and
 S<positions> attributes correctly.  If the space group is not an C<R>
 group, then this method does nothing.
 
-=item C<report>
+=head2 report
 
 Print out a simple textual summary of a space group.
 
@@ -652,7 +668,6 @@ Print out a simple textual summary of a space group.
          $x-$y     -$y         $z+1/2
         -$x        -$x+$y      $z+1/2
 
-=back
 
 =head1 CONFIGURATION AND ENVIRONMENT
 

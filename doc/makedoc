@@ -9,7 +9,6 @@ pod2projdocs -l ../lib \
              -l ../../libperlxray/Absorption/server \
              -l ../../libperlxray/Formula/lib \
              -l ../../libperlxray/Scattering/lib \
-             -l ../../libperlxray/SpaceGroup/lib \
              -l ../../libperlxray/Ifeffit/lib \
              -o html \
              -t Demeter \

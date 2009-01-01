@@ -163,7 +163,7 @@ sub BUILD {
 
 override 'alldone' => sub {
   my ($self) = @_;
-  rmtree $self->folder;
+  rmtree $self->folder if (-d $self->folder);
 };
 
 sub rm {
