@@ -17,6 +17,8 @@ package Xray::Crystal::SpaceGroup;
 
 use Moose;
 
+with 'MooseX::SetGet';
+
 use Carp;
 use File::Basename;
 use File::Spec;
@@ -35,8 +37,7 @@ use vars qw($VERSION);
 use version;
 $VERSION = version->new("0.1.0");
 
-has 'database'    => (is => 'ro', isa => 'Str', default => sub{File::Spec->catfile(dirname($INC{"Xray/Crystal.pm"}),
-										   'Crystal',
+has 'database'    => (is => 'ro', isa => 'Str', default => sub{File::Spec->catfile(dirname($INC{"Xray/Crystal/SpaceGroup.pm"}),
 										   'share',
 										   'space_groups.db')});
 
@@ -50,7 +51,7 @@ has 'group'       => (is => 'rw', isa => 'Str', default => q{},
 					$self->_other_symbols;
 					$self->_set_bravais;
 					$self->_crystal_class;
-					$self->_determine_monoclinic;
+					#$self->_determine_monoclinic;
 					$self->_set_positions;
 				      };
 				    });
@@ -61,7 +62,7 @@ has 'schoenflies' => (is => 'rw', isa => 'Str', default => q{});
 has 'thirtyfive'  => (is => 'rw', isa => 'Str', default => q{});
 has 'newsymbol'   => (is => 'rw', isa => 'Str', default => q{});
 has 'class'       => (is => 'rw', isa => 'Str', default => q{});
-has 'setting'     => (is => 'rw', isa => 'Str', default => q{0});
+has 'setting'     => (is => 'rw', isa => 'Any', default => q{0});
 has 'warning'     => (is => 'rw', isa => 'Str', default => q{});
 
 has 'data'        => (is => 'rw', isa => 'HashRef',  default => sub{ {} });
@@ -110,14 +111,16 @@ sub _canonicalize_group {
   $symbol =~ s{\s+}{ }g;	# ... single space
   $symbol =~ s{\s*/\s*}{/}g;	# spaces around slash
 
-  $symbol =~ s{2_1}{21}g;	  # replace `i 4_1' with `i 41'
-  $symbol =~ s{3_([12])}{3$1}g;	  #  and so on ...
-  $symbol =~ s{4_([1-3])}{4$1}g;
-  $symbol =~ s{6_([1-5])}{6$1}g;
+  if ($symbol !~ /\^/) {	  # do not do these substitutions on Schoenflies symbols
+    $symbol =~ s{2_1}{21}g;	      # replace `i 4_1' with `i 41'
+    $symbol =~ s{3_([12])}{3$1}g;     #  and so on ...
+    $symbol =~ s{4_([1-3])}{4$1}g;
+    $symbol =~ s{6_([1-5])}{6$1}g;
+  };
 
   if ( ($symbol !~ m{[_^]})        and	 # schoen
        ($symbol !~ m{\A\d{1,3}\z}) and	 # 1-230
-       ($symbol !~ m{\A($sh_re)\z}io) # shorthands like 'cubic', 'zns'
+       ($symbol !~ m{\A($sh_re)\z}io)    # shorthands like 'cubic', 'zns'
      ) {
     #print $symbol;
     $symbol = _insert_spaces($symbol);
@@ -144,8 +147,8 @@ sub _canonicalize_group {
 				# this is the Schoenflies symbol, (it
 				# must have a caret in it)
     if ($symbol =~ /\^/) {
-      $symbol =~ s/\s+//g;	#   no spaces
-      $symbol =~ s/^v/d/g;	#   V -> D
+      $symbol =~ s{\s+}{}g;	#   no spaces
+      $symbol =~ s{^v}{d}g;	#   V -> D
 				# put ^ and _ in correct order
       $symbol =~ s/([cdost])(\^[0-9]{1,2})(_[12346dihsv]{1,2})/$1$3$2/;
       if ((exists $r_sg->{$sym}->{schoenflies}) and ($symbol eq $r_sg->{$sym}->{schoenflies}) ) {

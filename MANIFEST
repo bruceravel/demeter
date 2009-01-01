@@ -400,8 +400,8 @@ lib/pod.css
 lib/Xray/Crystal.pm
 lib/Xray/Crystal/Cell.pm
 lib/Xray/Crystal/Site.pm
-lib/Xray/SpaceGroup.pm
-lib/Xray/share/space_groups.db.PL
+lib/Xray/Crystal/share/space_groups.db.PL
+lib/Xray/Crystal/SpaceGroup.pm
 LICENSE
 MANIFEST			This list of files
 META.yml

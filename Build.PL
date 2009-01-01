@@ -60,7 +60,7 @@ my $build = Module::Build
 				'YAML'			   => '0',
 			       },
 	 PL_files           => {
-				'lib/Xray/share/space_groups.db.PL' => 'lib/Xray/share/space_groups.db'
+				'lib/Xray/Crystal/share/space_groups.db.PL' => 'lib/Xray/Crystal/share/space_groups.db'
 			       },
 	 recommends         => {
 				'IO::Prompt'	      => '0',

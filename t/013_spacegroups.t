@@ -1,15 +1,11 @@
 #!/usr/bin/perl -I/home/bruce/codes/demeter/lib
 
-use warnings;
-use strict;
 use Storable;
-
-use Xray::Crystal::Cell;
-
+use Xray::Crystal;
 use Test::More tests => 1300;
-my $cell     = Xray::Crystal::Cell->new;
-my $database = $cell->database;
-my $rhash    = retrieve($database);
+
+my $sg       = Xray::Crystal::SpaceGroup->new;
+my $rhash    = retrieve($sg->database);
 
 ## 	 number      => ,             number in table
 ## 	 schoenflies => "_^",         Schoenflies notation
@@ -26,39 +22,39 @@ foreach my $g (keys %$rhash) {
 
   if (exists $rhash->{$g}->{number}) {
     my $this = $rhash->{$g}->{number};
-    my @list = $cell->canonicalize_symbol($this);
-    ok( $list[0] eq $g,  "$g: number -- input: $this   found: $list[0]");
+    $sg->group($this);
+    ok( $sg->group eq $g,  "$g: number -- input: $this   found: ".$sg->group);
     ++$tests;
   };
 
   if (exists $rhash->{$g}->{schoenflies}) {
     my $this = $rhash->{$g}->{schoenflies};
-    my @list = $cell->canonicalize_symbol($this);
-    ok( $list[0] eq $g,  "$g: schoenflies ($this)");
+    $sg->group($this);
+    ok( $sg->group eq $g,  "$g: schoenflies -- input: $this   found: ".$sg->group);
     (my $that = $this) =~ s/([cdost])(_[12346dihsv]{1,2})(\^[0-9]{1,2})/$1$3$2/;
-    @list = $cell->canonicalize_symbol($this);
-    ok( $list[0] eq $g,  "$g: schoenflies reversed  -- input: $this   found: $list[0]");
+    $sg->group($that);
+    ok( $sg->group eq $g,  "$g: schoenflies reversed  -- input: $that   found: ".$sg->group);
     ++$tests;
   };
 
   if (exists $rhash->{$g}->{full}) {
     my $this = $rhash->{$g}->{full};
-    my @list = $cell->canonicalize_symbol($this);
-    ok( $list[0] eq $g,  "$g: full  -- input: $this   found: $list[0]");
+    $sg->group($this);
+    ok( $sg->group eq $g,  "$g: full  -- input: $this   found: ".$sg->group);
     ++$tests;
   };
 
   if (exists $rhash->{$g}->{new_symbol}) {
     my $this = $rhash->{$g}->{new_symbol};
-    my @list = $cell->canonicalize_symbol($this);
-    ok( $list[0] eq $g, "$g: new_symbol -- input: $this   found: $list[0]");
+    $sg->group($this);
+    ok( $sg->group eq $g, "$g: new_symbol -- input: $this   found: ".$sg->group);
     ++$tests;
   };
 
   if (exists $rhash->{$g}->{thirtyfive}) {
     my $this = $rhash->{$g}->{thirtyfive};
-    my @list = $cell->canonicalize_symbol($this);
-    ok( $list[0] eq $g,  "$g: thirtyfive -- input: $this   found: $list[0]");
+    $sg->group($this);
+    ok( $sg->group eq $g,  "$g: thirtyfive -- input: $this   found: ".$sg->group);
     ++$tests;
   };
 
@@ -67,10 +63,10 @@ foreach my $g (keys %$rhash) {
     my $i = 0;
     foreach my $this (@$rlist) {
       ++$i;
-      my @list = $cell->canonicalize_symbol($this);
+      $sg->group($this);
     SKIP: {
-	skip "(c -4 2 g) is a known failure", 1 if ($list[0] eq 'c -4 2 g2');
-	ok( $list[0] eq $g,  "$g: setting $i -- input: $this   found: $list[0]");
+	skip "(c -4 2 g) is a known failure", 1 if ($sg->group eq 'c -4 2 g2');
+	ok( $sg->group eq $g,  "$g: setting $i -- input: $this   found: ".$sg->group);
       };
       ++$tests;
     };
@@ -81,8 +77,8 @@ foreach my $g (keys %$rhash) {
     my $i = 0;
     foreach my $this (@$rlist) {
       ++$i;
-      my @list = $cell->canonicalize_symbol($this);
-      ok( $list[0] eq $g,  "$g: short $i -- input: $this   found: $list[0]");
+      $sg->group($this);
+      ok( $sg->group eq $g,  "$g: short $i -- input: $this   found: ".$sg->group);
       ++$tests;
     };
   };
@@ -92,17 +88,17 @@ foreach my $g (keys %$rhash) {
     my $i = 0;
     foreach my $this (@$rlist) {
       ++$i;
-      my @list = $cell->canonicalize_symbol($this);
-      ok( $list[0] eq $g,  "$g: shorthand $i -- input: $this   found: $list[0]");
+      $sg->group($this);
+      ok( $sg->group eq $g,  "$g: shorthand $i -- input: $this   found: ".$sg->group);
       ++$tests;
     };
   };
 
 };
 
-foreach my $this ("   p m -3 m", "pm3m", "p m3m", "pm-3m", "pm		3m", "p   m   3    m") {
-  my @list = $cell->canonicalize_symbol($this);
-  ok( $list[0] eq "p m -3 m",  "p m -3 m: spaces ($this  |$list[0]|)");
+foreach my $this ("   p m -3 m", "pm3m", "p m3m ", "pm-3m", "pm		3m", "p   m   3    m") {
+  $sg->group($this);
+  ok( $sg->group eq "p m -3 m",  "p m -3 m: spaces ($this|".$sg->group."|)");
   ++$tests;
 };
 
