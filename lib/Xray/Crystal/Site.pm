@@ -151,24 +151,25 @@ sub populate {
   #-------------------------- permute to alternate settings (orthorhombic)
   #                           1..5 |--> [ ba-c, cab, -cba, bca, a-cb ]
   if ($is_ortho) {
+    my $this_setting = ($setting eq "positions") ? 0 : $setting;
   FORWARD: {
-      ($setting == 1) and do {
+      ($this_setting == 1) and do {
 	( ($x, $y, $z) = (  $y,  $x, -$z) );
 	last FORWARD;
       };
-      ($setting == 2) and do {
+      ($this_setting == 2) and do {
 	( ($x, $y, $z) = (  $y,  $z,  $x) );
 	last FORWARD;
       };
-      ($setting == 3) and do {
+      ($this_setting == 3) and do {
 	( ($x, $y, $z) = (  $z,  $y, -$x) );
 	last FORWARD;
       };
-      ($setting == 4) and do {
+      ($this_setting == 4) and do {
 	( ($x, $y, $z) = (  $z,  $x,  $y) );
 	last FORWARD;
       };
-      ($setting == 5) and do {
+      ($this_setting == 5) and do {
 	( ($x, $y, $z) = (  $x,  $z, -$y) );
 	last FORWARD;
       };
@@ -246,11 +247,12 @@ EOH
 
     #-------------------------- permute back from alt. settings (orthorhombic)
     if ($is_ortho) {
-      ($setting == 1) and (($xposi, $yposi, $zposi) = ( $yposi, $xposi,-$zposi));
-      ($setting == 2) and (($xposi, $yposi, $zposi) = ( $zposi, $xposi, $yposi));
-      ($setting == 3) and (($xposi, $yposi, $zposi) = (-$zposi, $yposi, $xposi));
-      ($setting == 4) and (($xposi, $yposi, $zposi) = ( $yposi, $zposi, $xposi));
-      ($setting == 5) and (($xposi, $yposi, $zposi) = ( $xposi,-$zposi, $yposi));
+      my $this_setting = ($setting eq "positions") ? 0 : $setting;
+      ($this_setting == 1) and (($xposi, $yposi, $zposi) = ( $yposi, $xposi,-$zposi));
+      ($this_setting == 2) and (($xposi, $yposi, $zposi) = ( $zposi, $xposi, $yposi));
+      ($this_setting == 3) and (($xposi, $yposi, $zposi) = (-$zposi, $yposi, $xposi));
+      ($this_setting == 4) and (($xposi, $yposi, $zposi) = ( $yposi, $zposi, $xposi));
+      ($this_setting == 5) and (($xposi, $yposi, $zposi) = ( $xposi,-$zposi, $yposi));
     };
     # need to rectify formulas for orthorhombic settings
 

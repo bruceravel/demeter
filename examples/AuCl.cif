@@ -1,0 +1,166 @@
+data_6052-ICSD
+#©2003 by Fachinformationszentrum Karlsruhe, and the U.S. Secretary of 
+#Commerce on behalf of the United States.  All rights reserved.
+_database_code_ICSD                6052
+_audit_creation_date               1980/01/01
+_audit_update_record               2003/04/01
+_chemical_name_systematic          'Gold Chloride'
+_chemical_formula_structural       'Au Cl'
+_chemical_formula_sum              'Au1 Cl1'
+_publ_section_title
+;
+Die Kristalldaten der Goldhalogenide Au Br3 Und Au Cl
+;
+loop_
+_citation_id
+_citation_journal_abbrev
+_citation_year
+_citation_journal_volume
+_citation_page_first
+_citation_page_last
+_citation_journal_id_ASTM
+primary
+;
+Zeitschrift fuer Naturforschung, Teil B. Anorganische Chemie, 
+Organische Chemie (2,1947-32,1977)
+;
+ 1974 29 266 267 ZENBAX
+loop_
+_publ_author_name
+'Straehle, J.'
+'Loercher, K.P.'
+_cell_length_a                     6.739(1)
+_cell_length_b                     6.739(1)
+_cell_length_c                     8.699(2)
+_cell_angle_alpha                  90.
+_cell_angle_beta                   90.
+_cell_angle_gamma                  90.
+_cell_volume                       395.06
+_cell_formula_units_Z              8
+_symmetry_space_group_name_H-M     'I 41/a m d Z'
+_symmetry_Int_Tables_number        141
+loop_
+_symmetry_equiv_pos_site_id
+_symmetry_equiv_pos_as_xyz
+  1	'y+1/4, x+3/4, -z+1/4'
+  2	'y+1/4, -x+3/4, -z+1/4'
+  3	'x, y+1/2, -z'
+  4	'x, -y, -z'
+  5	'-y+3/4, x+3/4, -z+1/4'
+  6	'-y+3/4, -x+3/4, -z+1/4'
+  7	'-x, y+1/2, -z'
+  8	'-x, -y, -z'
+  9	'-y+3/4, -x+1/4, z+3/4'
+ 10	'-y+3/4, x+1/4, z+3/4'
+ 11	'-x, -y+1/2, z'
+ 12	'-x, y, z'
+ 13	'y+1/4, -x+1/4, z+3/4'
+ 14	'y+1/4, x+1/4, z+3/4'
+ 15	'x, -y+1/2, z'
+ 16	'x, y, z'
+ 17	'y+3/4, x+1/4, -z+3/4'
+ 18	'y+3/4, -x+1/4, -z+3/4'
+ 19	'x+1/2, y, -z+1/2'
+ 20	'x+1/2, -y+1/2, -z+1/2'
+ 21	'-y+1/4, x+1/4, -z+3/4'
+ 22	'-y+1/4, -x+1/4, -z+3/4'
+ 23	'-x+1/2, y, -z+1/2'
+ 24	'-x+1/2, -y+1/2, -z+1/2'
+ 25	'-y+1/4, -x+3/4, z+1/4'
+ 26	'-y+1/4, x+3/4, z+1/4'
+ 27	'-x+1/2, -y, z+1/2'
+ 28	'-x+1/2, y+1/2, z+1/2'
+ 29	'y+3/4, -x+3/4, z+1/4'
+ 30	'y+3/4, x+3/4, z+1/4'
+ 31	'x+1/2, -y, z+1/2'
+ 32	'x+1/2, y+1/2, z+1/2'
+loop_
+_atom_type_symbol
+_atom_type_oxidation_number
+Au1+  	1
+Cl1-  	-1
+loop_
+_atom_site_label
+_atom_site_type_symbol
+_atom_site_symmetry_multiplicity
+_atom_site_Wyckoff_symbol
+_atom_site_fract_x
+_atom_site_fract_y
+_atom_site_fract_z
+_atom_site_occupancy
+_atom_site_attached_hydrogens
+Au1 Au1+ 8 c 0 0 0 1. 0 
+Cl1 Cl1- 8 e 0 0.25 0.18 1. 0 
+
+#End of data_6052-ICSD
+
+
+data_22146-ICSD
+#©2003 by Fachinformationszentrum Karlsruhe, and the U.S. Secretary of 
+#Commerce on behalf of the United States.  All rights reserved.
+_database_code_ICSD                22146
+_audit_creation_date               1986/10/09
+_audit_update_record               1986/10/09
+_chemical_name_systematic          'Gold(III) Chloride'
+_chemical_formula_structural       'Au Cl3'
+_chemical_formula_sum              'Au1 Cl3'
+_publ_section_title
+;
+The crystal structure of gold(III)chloride
+;
+loop_
+_citation_id
+_citation_journal_abbrev
+_citation_year
+_citation_journal_volume
+_citation_page_first
+_citation_page_last
+_citation_journal_id_ASTM
+primary 'Acta Crystallographica (1,1948-23,1967)' 1958 11 284 288 ACCRA9
+loop_
+_publ_author_name
+'Clark, E.S.'
+'Templeton, D.H.'
+'MacGillavry, C.H.'
+_cell_length_a                     6.57(3)
+_cell_length_b                     11.04(6)
+_cell_length_c                     6.44(3)
+_cell_angle_alpha                  90.
+_cell_angle_beta                   113.3(3)
+_cell_angle_gamma                  90.
+_cell_volume                       429.02
+_cell_formula_units_Z              4
+_symmetry_space_group_name_H-M     'P 1 21/c 1'
+_symmetry_Int_Tables_number        14
+_refine_ls_R_factor_all            0.2
+loop_
+_symmetry_equiv_pos_site_id
+_symmetry_equiv_pos_as_xyz
+  1	'x, -y+1/2, z+1/2'
+  2	'-x, -y, -z'
+  3	'-x, y+1/2, -z+1/2'
+  4	'x, y, z'
+loop_
+_atom_type_symbol
+_atom_type_oxidation_number
+Au3+  	3
+Cl1-  	-1
+loop_
+_atom_site_label
+_atom_site_type_symbol
+_atom_site_symmetry_multiplicity
+_atom_site_Wyckoff_symbol
+_atom_site_fract_x
+_atom_site_fract_y
+_atom_site_fract_z
+_atom_site_occupancy
+_atom_site_attached_hydrogens
+_atom_site_B_iso_or_equiv
+Au1 Au3+ 4 e 0.0415(2) 0.0868(1) 0.2337(3) 1. 0 3.3 
+Cl1 Cl1- 4 e 0.258(2) 0.003(1) 0.059(2) 1. 0 4.1 
+Cl2 Cl1- 4 e 0.335(2) 0.169(1) 0.509(3) 1. 0 4.8 
+Cl3 Cl1- 4 e 0.820(2) 0.162(1) 0.395(3) 1. 0 4.9 
+
+#End of data_22146-ICSD
+
+

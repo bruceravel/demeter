@@ -57,13 +57,16 @@ sub read_cif {
     };
   };
 
-  ## space group: try the number then the HM symbol and canonicalize it
+  ## space group: try the HM symbol then the number and canonicalize it
   @item = $datablock->get_item_data(-item=>"_symmetry_space_group_name_H-M");
-  my @sg = $self->cell->canonicalize_symbol($item[0]);
-  @item = $datablock->get_item_data(-item=>"_symmetry_Int_Tables_number") if not $sg[0];
-  $self->space($item[0]);
+  $self->cell->group->group($item[0]);
+  if (not $self->cell->group->group) {
+    @item = $datablock->get_item_data(-item=>"_symmetry_Int_Tables_number");
+    $self->cell->group->group($item[0]);
+  };
+  $self->space($self->cell->group->group);
 
-  ## lattic parameters
+  ## lattice parameters
   my $min = 100000;   # use lattice constants to compute default for Rmax
   foreach my $k (qw(a b c)) {
     @item = $datablock->get_item_data(-item=>"_cell_length_$k");
@@ -92,9 +95,9 @@ sub read_cif {
   foreach my $i (0 .. $#tag) {
     my $ee = $el[$i] || $tag[$i];
     $ee = _get_elem($ee);
-    (my $xx = $x[$i]) =~ s/\(\d+\)//; # remove parenthesized error bars
-    (my $yy = $y[$i]) =~ s/\(\d+\)//;
-    (my $zz = $z[$i]) =~ s/\(\d+\)//;
+    (my $xx = $x[$i]) =~ s{\(\d+\)}{}; # remove parenthesized error bars
+    (my $yy = $y[$i]) =~ s{\(\d+\)}{};
+    (my $zz = $z[$i]) =~ s{\(\d+\)}{};
     (my $oo = $occ[$i]||1) =~ s/\(\d+\)//;
     ##print "$ee, $xx, $yy, $zz, $tag[$i], $oo\n";
     my $this = join("|",$ee, $xx, $yy, $zz, $tag[$i]);
@@ -147,7 +150,8 @@ This documentation refers to Demeter version 0.3.
 
 =head1 DESCRIPTION
 
-explain how to use cif and record
+This role allows data from a CIF file to be imported into a
+L<Demeter::Atoms> object.
 
 =head1 METHODS
 
@@ -155,13 +159,55 @@ explain how to use cif and record
 
 =item C<read_cif>
 
+Read a record from a CIF file.
+
+  my $atoms = Demeter::Atoms->new;
+  $atoms->file("my_structure.cif");
+  $atoms->record(2);
+
+This example reads the second record from the given CIF file.  If the
+record is not specified, the first record in the file will be
+imported.  That means that the correct thing is done in the case of a
+single-record CIF file.
+
+Note that a CIF file has no concept of a central atom in the XAS
+sense.  The default behavior is to select the heaviest atom as the
+central atom.
+
 =item C<open_cif>
 
-returns a list of identifiers of the structures in the CIF file
+Open a CIF file and return a list of identifiers of the structures in
+that file.
+
+  my @records = $atoms->open_cif;
+  print join($/, @records), $/;
+    ==prints==>
+      Gold Chloride
+      Gold(III) Chloride
+
+In a GUI, this could be used to present a dialog to the user for
+selecting the correct record from the CIF file.
+
+=back
+
+=head1 DEPENDENCIES
+
+=over 4
+
+=item *
+
+L<STAR::Parser>
+
+=item *
+
+L<Chemistry::Elements>
 
 =back
 
 =head1 BUGS AND LIMITATIONS
+
+This only reads the part of the CIF file that Demeter::Atoms uses.
+All other information in the CIF file is ignored.
 
 Please report problems to Bruce Ravel (bravel AT bnl DOT gov)
 
