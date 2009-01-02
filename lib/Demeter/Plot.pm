@@ -57,19 +57,19 @@ has 'name'      => (is => 'rw', isa => 'Str',  default => q{});
 has 'plottable' => (is => 'ro', isa => 'Bool', default => 0);
 has 'data'      => (is => 'rw', isa => 'Any',  default => q{});
 
-
+## -------- legend parameters
 has 'charsize'  => (is => 'rw', isa =>  PosNum,    default => sub{ shift->co->default("plot", "charsize") || 1.2});
 has 'charfont'  => (is => 'rw', isa =>  OneToFour, default => sub{ shift->co->default("plot", "charfont") || 1});
 has 'key_x'     => (is => 'rw', isa =>  PosNum,    default => sub{ shift->co->default("plot", "key_x")    || 0.8});
 has 'key_y'     => (is => 'rw', isa =>  PosNum,    default => sub{ shift->co->default("plot", "key_y")    || 0.9});
 has 'key_dy'    => (is => 'rw', isa =>  PosNum,    default => sub{ shift->co->default("plot", "key_dy")   || 0.075});
 
+## -------- colors
 ## I need a Color type
 has 'bg'        => (is => 'rw', isa =>  'Str',    default => sub{ shift->co->default("plot", "bg")        || "white"});
 has 'fg'        => (is => 'rw', isa =>  'Str',    default => sub{ shift->co->default("plot", "fg")        || "black"});
 has 'showgrid'  => (is => 'rw', isa =>  'Bool',   default => sub{ shift->co->default("plot", "showgrid")  || 1});
 has 'gridcolor' => (is => 'rw', isa =>  'Str',    default => sub{ shift->co->default("plot", "gridcolor") || "grey82"});
-
 has 'increm'    => (is => 'rw', isa =>  Natural,    default => 0);
 has 'col0'	=> (is => 'rw', isa =>  'Str',    default => sub{ shift->co->default("plot", "col0") || "blue"});
 has 'col1'	=> (is => 'rw', isa =>  'Str',    default => sub{ shift->co->default("plot", "col1") || "red"});
@@ -82,12 +82,16 @@ has 'col7'	=> (is => 'rw', isa =>  'Str',    default => sub{ shift->co->default(
 has 'col8'	=> (is => 'rw', isa =>  'Str',    default => sub{ shift->co->default("plot", "col8") || "cyan3"});
 has 'col9'	=> (is => 'rw', isa =>  'Str',    default => sub{ shift->co->default("plot", "col9") || "yellowgreen"});
 
+# -------- line types
 has 'datastyle' => (is => 'rw', isa =>  PgplotLine, default => sub{ shift->co->default("plot", "datastyle")  || "solid"});
 has 'fitstyle'  => (is => 'rw', isa =>  PgplotLine, default => sub{ shift->co->default("plot", "fitstyle")   || "solid"});
 has 'partstyle' => (is => 'rw', isa =>  PgplotLine, default => sub{ shift->co->default("plot", "partstyle")  || "solid"});
 has 'pathstyle' => (is => 'rw', isa =>  PgplotLine, default => sub{ shift->co->default("plot", "pathstyle")  || "solid"});
 
+## -------- default plotting space
 has 'space'	=> (is => 'rw', isa =>  FitSpace, default => 'r');
+
+## -------- energy plot parameters
 has 'emin'	=> (is => 'rw', isa =>  'Num',    default => sub{ shift->co->default("plot", "emin")	  || -200});
 has 'emax'	=> (is => 'rw', isa =>  'Num',    default => sub{ shift->co->default("plot", "emax")	  || 800});
 has 'e_mu'	=> (is => 'rw', isa =>  'Bool',   default => sub{ shift->co->default("plot", "e_mu")	  || 1});
@@ -97,10 +101,14 @@ has 'e_post'	=> (is => 'rw', isa =>  'Bool',   default => sub{ shift->co->defaul
 has 'e_norm'	=> (is => 'rw', isa =>  'Bool',   default => sub{ shift->co->default("plot", "e_norm")    || 0});
 has 'e_der'	=> (is => 'rw', isa =>  'Bool',   default => sub{ shift->co->default("plot", "e_der")	  || 0});
 has 'e_sec'	=> (is => 'rw', isa =>  'Bool',   default => sub{ shift->co->default("plot", "e_sec")	  || 0});
+has 'e_i0'	=> (is => 'rw', isa =>  'Bool',   default => sub{ shift->co->default("plot", "e_i0")	  || 0});
+has 'e_signal'	=> (is => 'rw', isa =>  'Bool',   default => sub{ shift->co->default("plot", "e_signal")  || 0});
 has 'e_markers'	=> (is => 'rw', isa =>  'Bool',   default => sub{ shift->co->default("plot", "e_markers") || 0});
 has 'e_part'	=> (is => 'rw', isa =>  'Str',    default => q{});
 has 'e_smooth'	=> (is => 'rw', isa =>  'Int',    default => sub{ shift->co->default("plot", "e_smooth")  || 0});
 has 'e_zero'	=> (is => 'rw', isa =>  'Bool',   default => 0);
+
+## -------- k, R, and q plot parameters
 has 'kmin'	=> (is => 'rw', isa =>  'Num',    default => sub{ shift->co->default("plot", "kmin") || 0});
 has 'kmax'	=> (is => 'rw', isa =>  'Num',    default => sub{ shift->co->default("plot", "kmax") || 15});
 has 'rmin'	=> (is => 'rw', isa =>  'Num',    default => sub{ shift->co->default("plot", "rmin") || 0});
@@ -121,7 +129,7 @@ has 'plot_bkg'		=> (is => 'rw', isa =>  'Bool',     default => 0);
 has 'plot_paths'	=> (is => 'rw', isa =>  'Bool',     default => 0);
 has 'plot_rmr_offset'	=> (is => 'rw', isa =>   NonNeg,    default => 0);
 
-
+## -------- ornaments
 has 'nindicators'    => (is => 'rw', isa =>  PosInt,          default => sub{ shift->co->default("indicator", "n")     || 8});
 has 'indicatorcolor' => (is => 'rw', isa =>  'Str',           default => sub{ shift->co->default("indicator", "color") || "violetred"});
 has 'indicatorline'  => (is => 'rw', isa =>  'Str',           default => sub{ shift->co->default("indicator", "line")  || "solid"});
@@ -130,6 +138,7 @@ has 'markertype'     => (is => 'rw', isa =>  OneToTwentyNine, default => sub{ sh
 has 'markersize'     => (is => 'rw', isa =>  'Num',           default => sub{ shift->co->default("marker", "size")     || 2});
 has 'markercolor'    => (is => 'rw', isa =>  'Str',           default => sub{ shift->co->default("marker", "color")    || "orange"});
 
+## -------- miscellaneous plotting parameters
 has 'New'    => (is => 'rw', isa =>  'Bool',          default => 0);
 has 'color'  => (is => 'rw', isa =>  'Any',           default => q{});
 has 'xlabel' => (is => 'rw', isa =>  'Any',           default => q{});
@@ -166,6 +175,20 @@ sub BUILD {
 sub alldone {
   my ($self) = @_;
   $self->end_plot;
+};
+
+## this is a little crufty, but I don't want to save all attribute
+## values in the plot_with method -- just the ones that need to be
+## saved
+sub clonable {
+  return qw(
+	     charsize charfont key_x key_y key_dy bg fg showgrid gridcolor
+	     col0 col1 col2 col3 col4 col5 col6 col7 col8 col9
+	     datastyle fitstyle partstyle pathstyle
+	     space emin emax e_mu e_norm e_bkg e_pre e_post e_der e_sec e_i0 e_signal e_markers e_smooth e_zero
+	     kmin kmax rmin rmax r_pl qmin qmax q_pl kweight window_multiplier
+	     plot_data plot_fit plot_win plot_res plot_bkg plot_paths plot_rmr_offset
+	  );
 };
 
 sub start_plot {
@@ -289,6 +312,10 @@ sub outfile {
 sub propagate_kweight {
   my ($self) = @_;
   $_->update_fft(1) foreach (@{ $self->mo->Data }, @{ $self->mo->Path }, @{ $self->mo->SSPath }, @{ $self->mo->VPath });
+};
+
+sub i0_text {
+  return 'I\d0\u';
 };
 
 
@@ -527,6 +554,16 @@ plot.
 
 A flag for whether to plot the mu(E) as a second derivative spectrum
 in an energy plot.
+
+=item C<e_i0> (boolean) I<[0]>
+
+A flag for whether to plot I0 in an energy plot.
+
+=item C<e_signal> (boolean) I<[0]>
+
+A flag for whether to plot the signal (i.e. the unormalized
+transmission or fluorescence channel -- this combined with the I0
+signal make up mu(E)) in an energy plot.
 
 =item C<C<e_markers>> (boolean) I<[0]>
 

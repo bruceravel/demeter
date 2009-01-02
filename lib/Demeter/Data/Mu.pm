@@ -162,32 +162,38 @@ sub put_data {
   unshift @cols, q{};
 
   my $energy_string = $self->energy;
-  my $xmu_string  = q{};
-  my $i0_string   = q{};
+  my ($xmu_string, $i0_string, $signal_string) = (q{}, q{}, q{});
   if ($self->ln) {
-    $xmu_string =   "ln(abs(  ("
-	        . $self->numerator
-                . ") / ("
-		. $self->denominator
-		. ") ))";
-    $i0_string  = $self->numerator;
+    $xmu_string    =   "ln(abs(  ("
+	           . $self->numerator
+                   . ") / ("
+		   . $self->denominator
+		   . ") ))";
+    $i0_string     = $self->numerator;
+    $signal_string = $self->denominator;
   } else {
-    $xmu_string = "(" . $self->numerator . ") / (" . $self->denominator . ")";
-    $i0_string = $self->denominator;
+    $xmu_string    = "(" . $self->numerator . ") / (" . $self->denominator . ")";
+    $i0_string     = $self->denominator;
+    $signal_string = $self->numerator;
   };
 
   ## resolve column tokens
   my $group = $self->group;
   $i0_string     =~ s{\$(\d+)}{$group.$cols[$1]}g;
+  $signal_string =~ s{\$(\d+)}{$group.$cols[$1]}g;
   $xmu_string    =~ s{\$(\d+)}{$group.$cols[$1]}g;
   $energy_string =~ s{\$(\d+)}{$group.$cols[$1]}g;
+
   $self->i0_string($i0_string);
+  $self->signal_string($signal_string);
   $self->xmu_string($xmu_string);
   $self->energy_string($energy_string);
 
   my $command = $self->template("process", "columns");
   $command   .= $self->template("process", "deriv");
   $self->dispose($command);
+  $self->i0_scale(Ifeffit::get_scalar('__i0_scale'));
+  $self->signal_scale(Ifeffit::get_scalar('__signal_scale'));
   $self->update_columns(0);
   $self->update_data(0);
 
@@ -208,6 +214,10 @@ sub normalize {
   my ($self) = @_;
   my $group = $self->group;
 
+  if ($self->datatype eq 'detector') {
+    carp($self->name . " is a detector group, which cannot be normalized\n");
+    return $self;
+  };
   $self->_update("normalize");
 
   my $fixed = $self->bkg_fixstep;
@@ -249,6 +259,10 @@ sub autobk {
   my ($self) = @_;
   my $group = $self->group;
 
+  if ($self->datatype eq 'detector') {
+    carp($self->name . " is a detector group, which cannot have its background removed\n");
+    return $self;
+  };
   $self->_update("background");
   my $fixed = $self->bkg_fixstep;
 
@@ -353,18 +367,36 @@ sub _plotE_command {
     push @key_list,    $self->name;
   };
   if ($pf->e_pre)  { # show the preline
-    push @suffix_list, 'preline' if ($pf->e_pre);
+    push @suffix_list, 'preline';
     my $n = $incr+2;
     my $cn = "col$n";
     push @color_list,  $pf->$cn;
     push @key_list,    "pre-edge";
   };
   if ($pf->e_post) { # show the postline
-    push @suffix_list, 'postline' if ($pf->e_post);
+    push @suffix_list, 'postline';
     my $n = $incr+3;
     my $cn = "col$n";
     push @color_list,  $pf->$cn;
     push @key_list,    "post-edge";
+  };
+  if ($pf->e_i0) { # show i0
+    if ($self->i0_string) {
+      push @suffix_list, 'i0';
+      my $n = $incr+4;
+      my $cn = "col$n";
+      push @color_list,  $pf->$cn;
+      push @key_list,    ($self->po->e_mu) ? $self->po->i0_text : $self->name . ": " . $self->po->i0_text;
+    };
+  };
+  if ($pf->e_signal) { # show signal
+    if ($self->signal_string) {
+      push @suffix_list, 'signal';
+      my $n = $incr+4;
+      my $cn = "col$n";
+      push @color_list,  $pf->$cn;
+      push @key_list,    ($self->po->e_mu) ? 'signal' : $self->name . ": signal";
+    };
   };
 
   ## convert plot ranges from relative to absolute energies

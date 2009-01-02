@@ -10,7 +10,7 @@
              space   => 'E', 
 	     suffix  => $P->e_part, 
 	     shift   => $D->bkg_eshift,
-	     scale   => $D->plot_multiplier,
+	     scale   => (($P->e_part =~ m{\A(?:i0|signal)\z}) and $P->e_mu) ? $D->plot_multiplier*$D->i0_scale : $D->plot_multiplier,
 	     yoffset => $D->y_offset
 	    );
   q{}

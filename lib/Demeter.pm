@@ -375,7 +375,14 @@ sub plot_with {
     carp("The gnuplot backend is not available -- reverting to pgplot");
     $backend = 'pgplot';
   };
+  $self->po->alldone;
   $self->mo->template_plot($backend);
+
+  my @atts = $self->po->clonable;
+  my @vals = $self->po->get(@atts);
+  my @to_set = zip(@atts, @vals);
+  #print join("|", caller), $/;
+  #print join("|", $self->po, @to_set), $/;
 
   my $old_plot_object = $self -> mo -> plot;
   ## need to preserve parameter values when switching plotting backends
@@ -391,10 +398,11 @@ sub plot_with {
       $old_plot_object->DEMOLISHALL if $old_plot_object;
       $self -> mo -> external_plot_object( Graphics::GnuplotIF->new );
       require Demeter::Plot::Gnuplot;
-      $self -> mo -> plot( Demeter::Plot::Gnuplot->new );
+      $self -> mo -> plot( Demeter::Plot::Gnuplot->new() );
       last SWITCH;
     };
   };
+  $self -> po -> set(@to_set);
 };
 
 ## the type constraints aren't working as I expect...?

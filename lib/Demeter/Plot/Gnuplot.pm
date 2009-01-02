@@ -148,6 +148,10 @@ sub gnuplot_qylabel {
   return sprintf('%s{/Symbol c}(q)%s&{aa}({\305}^{-%s})', $open, $close, $w);
 };
 
+override i0_text => sub {
+  return 'I_0';
+};
+
 1;
 
 =head1 NAME

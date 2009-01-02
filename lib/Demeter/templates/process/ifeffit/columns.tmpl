@@ -6,4 +6,11 @@
 ##| making mu(E) from columns for group {$D->group}
 set({$D->group}.energy = {$D->energy_string},
     {$D->group}.xmu    = {$D->xmu_string},
-    {$D->group}.i0     = {$D->i0_string} )
+    {$D->group}.i0     = {$D->i0_string},
+    {$D->group}.signal = {$D->signal_string}, )
+set __xmu_max = abs(ceil({$D->group}.xmu))
+set __i0_max  = ceil({$D->group}.i0)
+set __signal_max  = ceil({$D->group}.signal)
+set __i0_scale = __xmu_max / __i0_max
+set __signal_scale = __xmu_max / __signal_max
+erase __xmu_max __i0_max __signal_max

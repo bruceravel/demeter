@@ -3,6 +3,10 @@ use Moose::Role;
 
 sub fft {
   my ($self) = @_;
+  if ($self->datatype eq 'detector') {
+    carp($self->name . " is a detector group, which cannot be Frouier transformed\n");
+    return $self;
+  };
   $self->_update("fft");
   $self->dispose($self->_fft_command);
   $self->chi_noise;
@@ -17,6 +21,10 @@ sub _fft_command {
 
 sub bft {
   my ($self) = @_;
+  if ($self->datatype eq 'detector') {
+    carp($self->name . " is a detector group, which cannot be Frouier transformed\n");
+    return $self;
+  };
   $self->_update("fft");
   $self->dispose($self->_bft_command);
   $self->update_bft(0);

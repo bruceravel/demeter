@@ -68,6 +68,10 @@ sub _write_record {
       @array        = $self -> get_array("i0");
       $arraystring .= Data::Dumper->Dump([\@array], [qw/*i0/]) . "\n";
     };
+    if ($self->get("signal_string")) {
+      @array        = $self -> get_array("signal");
+      $arraystring .= Data::Dumper->Dump([\@array], [qw/*signal/]) . "\n";
+    };
     ## merge array?
   } elsif ($self->datatype eq "chi") {
     $self->read_data if ($self->update_data);
@@ -77,7 +81,7 @@ sub _write_record {
     $arraystring .= Data::Dumper->Dump([\@array], [qw/*y/]) . "\n";
     ## merge array?
   };
-  ## xmudat?? xanes??
+  ## xmudat?? xanes?? detector??
 
   my %hash = $self -> all;
 
@@ -171,6 +175,11 @@ Demeter's dependencies are in the F<Bundle/DemeterBundle.pm> file.
 =item *
 
 The plot features and indicator entries are not yet written to the
+project file.
+
+=item *
+
+xmudat and detector array types are not currently written to t he
 project file.
 
 =item *

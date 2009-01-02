@@ -154,6 +154,12 @@ by interpolation from the specified array.
 The second argument (C<q{}>) in this example, is used to specify a
 part of a fit, i.e. C<bkg> or C<res>.
 
+=item C<points>
+
+This method is used extensively by the gnuplot plotting template set
+to generate temporary files for Gnuplot.  See any of those plotting
+templates fro examples of how this is used.
+
 =back
 
 =head1 DEPENDENCIES

@@ -96,8 +96,10 @@ has  $_  => (is => 'rw', isa => 'Str',  default => q{},
 			     }
 			   })
   foreach (qw(energy numerator denominator));
+has  $_ => (is => 'rw', isa => 'Num',  default => 0) foreach (qw(i0_scale signal_scale));
+
 has  $_  => (is => 'rw', isa => 'Str',  default => q{})
-  foreach (qw(columns energy_string xmu_string i0_string));
+  foreach (qw(columns energy_string xmu_string i0_string signal_string));
 has 'ln' => (is => 'rw', isa => 'Bool', default => 0,
 	     trigger => sub{ my ($self, $new) = @_; $self->update_columns(1), $self->is_col(1) if $new});
 

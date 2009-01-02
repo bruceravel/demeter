@@ -181,6 +181,9 @@ sub _record {
   my %args = $self->_array($index, 'args');
   my @x    = $self->_array($index, 'x');
   my @y    = $self->_array($index, 'y');
+  my @i0   = $self->_array($index, 'i0');
+  my @std  = $self->_array($index, 'stddev');
+  my ($i0_scale, $is_merge) = (0,0);
 
   my $data = Demeter::Data->new(group	    => $groupname,
 				from_athena => 1,
@@ -188,12 +191,19 @@ sub _record {
   my ($xsuff, $ysuff) = ($args{is_xmu}) ? qw(energy xmu) : qw(k chi);
   Ifeffit::put_array(join('.', $groupname, $xsuff), \@x);
   Ifeffit::put_array(join('.', $groupname, $ysuff), \@y);
-
+  if (@i0) {
+    Ifeffit::put_array(join('.', $groupname, 'i0'), \@i0);
+    $i0_scale = max(@y) / max(@i0);
+  };
+  if (@std) {
+    Ifeffit::put_array(join('.', $groupname, 'stddev'), \@std);
+    $is_merge = 1;
+  };
   my %groupargs = ();
   foreach my $k (keys %args) {
     next if any { $k eq $_ } qw(
 				 bindtag deg_tol denominator detectors
-				 en_str file frozen i0 line mu_str
+				 en_str file frozen line mu_str
 				 numerator old_group original_label
 				 peak refsame project_marked not_data
 				 bkg_switch bkg_switch2
@@ -211,6 +221,10 @@ sub _record {
 	last SWITCH;
       };
       ($k eq 'importance') and do {
+	last SWITCH;
+      };
+      ($k eq 'i0') and do {
+	$groupargs{i0_string} = $args{i0};
 	last SWITCH;
       };
       ($k eq 'label') and do {
@@ -282,6 +296,8 @@ sub _record {
                        : ($args{is_xmudat}) ? 'xmudat'
                        : ($args{is_xanes})  ? 'xanes'
 		       :                      q{};
+  $groupargs{i0_scale}    = $i0_scale;
+  $groupargs{is_merge}    = $is_merge;
   $groupargs{update_data} = 0;
   $data -> set(%groupargs);
   my $command = $data->template("process", "deriv");

@@ -11,22 +11,28 @@ use List::Util qw(max);
 
 sub plot {
   my ($self, $space) = @_;
-  my $pf  = $self->mo->plot;
+  my $pf   = $self->mo->plot;
   $space ||= $pf->space;
-  ($space = 'kq') if (lc($space) eq 'qk');
-  my $which = (lc($space) eq 'e')   ? $self->_update('fft')
-            : (lc($space) eq 'k')   ? $self->_update('fft')
-            : (lc($space) eq 'r')   ? $self->_update('bft')
-            : (lc($space) eq 'rmr') ? $self->_update('bft')
-	    : (lc($space) eq 'q')   ? $self->_update('all')
-	    : (lc($space) eq 'kq')  ? $self->_update('all')
+  ($space  = 'kq') if (lc($space) eq 'qk');
+  $space   = lc($space);
+
+  if (($self->datatype eq 'detector') and ($space ne 'e')) {
+    carp($self->name . " is a detector group, which cannot be plotted in $space\n");
+    return $self;
+  };
+  my $which = ($space eq 'e')   ? $self->_update('fft')
+            : ($space eq 'k')   ? $self->_update('fft')
+            : ($space eq 'r')   ? $self->_update('bft')
+            : ($space eq 'rmr') ? $self->_update('bft')
+	    : ($space eq 'q')   ? $self->_update('all')
+	    : ($space eq 'kq')  ? $self->_update('all')
             :                        q{};
 
   $self->plotRmr, $pf->increment, return if (lc($space) eq 'rmr');
   $self->co->set(plot_part=>q{});
   my $command = $self->_plot_command($space);
   $self->dispose($command, "plotting");
-  $pf->increment if (lc($space) ne 'e');
+  $pf->increment if ($space ne 'e');
   if ((ref($self) =~ m{Data}) and $self->fitting) {
     foreach my $p (qw(fit res bkg)) {
       my $pp = "plot_$p";
@@ -44,6 +50,8 @@ sub plot {
 };
 sub _plot_command {
   my ($self, $space) = @_;
+  $space   = lc($space);
+
   if (not $self->plottable) {
     my $class = ref $self;
     croak("$class objects are not plottable");
@@ -52,12 +60,12 @@ sub _plot_command {
     my $class = ref $self;
     croak("$class objects are not plottable in energy");
   };
-  my $string = (lc($space) eq 'e')   ? $self->_plotE_command
-             : (lc($space) eq 'k')   ? $self->_plotk_command
-             : (lc($space) eq 'r')   ? $self->_plotR_command
-             : (lc($space) eq 'rmr') ? $self->_plotRmr_command
-	     : (lc($space) eq 'q')   ? $self->_plotq_command
-	     : (lc($space) eq 'kq')  ? $self->_plotkq_command
+  my $string = ($space eq 'e')   ? $self->_plotE_command
+             : ($space eq 'k')   ? $self->_plotk_command
+             : ($space eq 'r')   ? $self->_plotR_command
+             : ($space eq 'rmr') ? $self->_plotRmr_command
+	     : ($space eq 'q')   ? $self->_plotq_command
+	     : ($space eq 'kq')  ? $self->_plotkq_command
              : q{};
   return $string;
 };
