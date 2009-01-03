@@ -20,7 +20,7 @@ use Moose::Role;
 use Carp;
 use Readonly;
 use Xray::Absorption;
-use Xray::Fluorescence;
+use Xray::FluorescenceEXAFS;
 Readonly my $ETOK    => 0.262468292;
 
 
@@ -71,7 +71,7 @@ sub _mcmaster {
   my $absorber = scalar $cell->central($self->core);
   my $central  = $absorber->element;
   my $edge     = $self->edge;
-  my $mcmsig   = Xray::Fluorescence->mcmaster($central, $edge);
+  my $mcmsig   = Xray::FluorescenceEXAFS->mcmaster($central, $edge);
   $self->set(mcmaster => sprintf("%8.5f", $mcmsig),
 	     mcmaster_done => 1);
   return $self->mcmaster;
@@ -89,7 +89,7 @@ sub _i0 {
 
   my %gases = ();
   map {$gases{$_} = $self->$_ } qw(nitrogen argon krypton);
-  my $i0sig   = Xray::Fluorescence->i0($central, $edge, \%gases);
+  my $i0sig   = Xray::FluorescenceEXAFS->i0($central, $edge, \%gases);
   $self->set(i0 => sprintf("%8.5f", $i0sig),
 	     i0_done => 1);
 
@@ -109,7 +109,7 @@ sub _self {
     my $site = $position->[0];
     ++$count{$site -> element};
   };
-  my @answer = Xray::Fluorescence->self($central, $edge, \%count);
+  my @answer = Xray::FluorescenceEXAFS->self($central, $edge, \%count);
 
   $self->set(selfamp   => sprintf("%6.3f", $answer[0]),
 	     selfsig   => sprintf("%8.5f", $answer[1]),
@@ -132,7 +132,7 @@ This documentation refers to Demeter version 0.3.
 This role of L<Demeter::Atoms> provides all of the methods involved in
 calculations using tables of X-ray absorption coefficients provided by
 the L<Xray::Absorption> package and the methods of the
-L<Xray::Fluorescence> package.
+L<Xray::FluorescenceEXAFS> package.
 
 =head1 METHODS
 

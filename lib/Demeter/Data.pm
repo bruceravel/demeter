@@ -612,6 +612,7 @@ sub rfactor {
 };
 
 
+
 ## this appends the actual data to the base class serialization
 override 'serialization' => sub {
   my ($self) = @_;
