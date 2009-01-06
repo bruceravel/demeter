@@ -36,6 +36,7 @@ before start_plot => sub {
   my ($self) = @_;
   $self->cleantemp;
   my $command = $self->template("plot", "start");
+  $command .= $self->template("plot", "copyright") if $self->co->default("plot", "showcopyright");
   $self->dispose($command, "plotting");
   $self->lastplot(q{});
 };

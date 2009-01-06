@@ -57,7 +57,6 @@ my $INDIC = ($light_background) ? BLUE : YELLOW;
 ($use_pgplot = 1) if (not $use_gnuplot);
 $demeter->plot_with('gnuplot') if $use_gnuplot;
 
-
 my $term = new Term::ReadLine 'Demeter test harness';
 my $plot = $demeter->po;
 

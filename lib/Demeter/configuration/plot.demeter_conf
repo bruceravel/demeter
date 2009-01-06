@@ -45,6 +45,17 @@ section_description
   colors that your system recognizes, or hexadecimal triplets
   (i.e. "#0000FF" for blue and so on).
 
+variable=showcopyright
+type=boolean
+onvalue=1
+offvalue=0
+default=true
+restart=1
+description
+  This tells whether a copyright statement will be drawn on the plot.
+  Currently this only works for the gnuplot backend.  Set this to
+  false to suppress the copyright statement.
+
 variable=charsize
 type=real
 default=1.2
