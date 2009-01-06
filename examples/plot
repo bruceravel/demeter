@@ -62,19 +62,21 @@ my $term = new Term::ReadLine 'Demeter test harness';
 my $plot = $demeter->po;
 
 my $dobject = Demeter::Data -> new(group => 'data0');
-$dobject -> set(file      => "data/fe.060.xmu",
-		fft_kmax  => 3,
-		fft_kmin  => 14,
-		#name      => 'My iron data',
-		bkg_spl2  => 18,
-		bkg_nor2  => 1800,
+$dobject -> set(file        => "data/fe.060",
+		fft_kmax    => 3,    fft_kmin  => 14,
+		bkg_spl2    => 18,
+		bkg_nor2    => 1800,
+		energy      => '$1',
+		numerator   => '$2',
+		denominator => '$3',
+		ln          => 1,
 	       );
 
 query();
-my $prompt = "Choose a way to plot the data [1-7 or q to quit] ";
+my $prompt = "Choose a way to plot the data [1-9 or q to quit] ";
 while ( defined ($_ = $term->readline($prompt)) ) {
   $plot->finish, exit if ($_ =~ m{\Aq});
-  next if ($_ !~ m{\A([1-8])});
+  next if ($_ !~ m{\A([1-9])});
   plot($_,$dobject);
   $plot->start_plot; # reset the plot for the next go around
   query();
@@ -88,10 +90,11 @@ print $/, $/,
   BOLD, $INDIC, "2.", RESET, " normalized mu + normalized background\n",
   BOLD, $INDIC, "3.", RESET, " flattened mu + flattened background\n",
   BOLD, $INDIC, "4.", RESET, " derivative of mu\n",
-  BOLD, $INDIC, "5.", RESET, " three k-wights, stacked\n",
-  BOLD, $INDIC, "6.", RESET, " |chi(R)| + window\n",
-  BOLD, $INDIC, "7.", RESET, " envelope, real, imaginary in R\n",
-  BOLD, $INDIC, "8.", RESET, " kq plot: chi(k)*k^2 + Re[chi(q)] + window\n\n",
+  BOLD, $INDIC, "5.", RESET, " mu + I0 + signal\n",
+  BOLD, $INDIC, "6.", RESET, " three k-wights, stacked\n",
+  BOLD, $INDIC, "7.", RESET, " |chi(R)| + window\n",
+  BOLD, $INDIC, "8.", RESET, " envelope, real, imaginary in R\n",
+  BOLD, $INDIC, "9.", RESET, " kq plot: chi(k)*k^2 + Re[chi(q)] + window\n\n",
 
   BOLD, $INDIC, "q.", RESET, " quit\n\n";
 }
@@ -129,6 +132,7 @@ sub plot1 {
   $data->po->set(e_mu      => 1,    e_bkg     => 1,
 		 e_norm    => 0,    e_der     => 0,
 		 e_pre     => 1,    e_post    => 1,
+		 e_i0      => 0,    e_signal  => 0,
 		 e_markers => 1,
 		 emin      => -200, emax      => 2000,
 		);
@@ -141,6 +145,7 @@ sub plot2 {
   $data->po->set(e_mu      => 1,    e_bkg     => 1,
 		 e_norm    => 1,    e_der     => 0,
 		 e_pre     => 0,    e_post    => 0,
+		 e_i0      => 0,    e_signal  => 0,
 		 e_markers => 1,
 		 emin      => -200, emax      => 2000,
 		);
@@ -154,6 +159,7 @@ sub plot3 {
   $data->po->set(e_mu      => 1,    e_bkg     => 1,
 		 e_norm    => 1,    e_der     => 0,
 		 e_pre     => 0,    e_post    => 0,
+		 e_i0      => 0,    e_signal  => 0,
 		 e_markers => 1,
 		 emin      => -200, emax      => 2000,
 		);
@@ -167,6 +173,7 @@ sub plot4 {
   $data->po->set(e_mu      => 1,    e_bkg     => 0,
 		 e_norm    => 0,    e_der     => 1,
 		 e_pre     => 0,    e_post    => 0,
+		 e_i0      => 0,    e_signal  => 0,
 		 e_markers => 1,
 		 emin      => -20,  emax      => 120,
 		 );
@@ -176,6 +183,19 @@ sub plot4 {
 };
 
 sub plot5 {
+  my ($data) = @_;
+  state("mu + I0 + signal\n");
+  $data->po->set(e_mu      => 1,    e_bkg     => 0,
+		 e_norm    => 0,    e_der     => 0,
+		 e_pre     => 0,    e_post    => 0,
+		 e_i0      => 1,    e_signal  => 1,
+		 e_markers => 0,
+		 emin      => -20,  emax      => 120,
+		 );
+  $data->plot('E');
+};
+
+sub plot6 {
   my ($data) = @_;
   state("scale three k-weights to plot together\n");
   $data->po->legend(dy=>0.05, x=>0.73);
@@ -195,14 +215,14 @@ sub plot5 {
   $data->set(name=>'My iron data', plot_multiplier=>1); # reset the label
 };
 
-sub plot6 {
+sub plot7 {
   my ($data) = @_;
   state("|chi(R)| + window\n");
   $data -> po -> set(kweight => 2, r_pl => 'm', );
   $data -> plot('r') -> plot_window('r');
 };
 
-sub plot7 {
+sub plot8 {
   my ($data) = @_;
   state("envelope, real, imaginary in R\n");
   $data->po->legend(dy=>0.05, x=>0.73);
@@ -221,7 +241,7 @@ sub plot7 {
   $data->set(name=>'My iron data'); # reset the label
 };
 
-sub plot8 {
+sub plot9 {
   my ($data) = @_;
   state("kq plot: chi(k)*k^2 + Re[chi(q)] + window\n");
   $data -> po -> set(kweight => 2, 'q_pl' => 'r', qmax => 17, );

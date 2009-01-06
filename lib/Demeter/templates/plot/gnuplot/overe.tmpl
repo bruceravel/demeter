@@ -6,11 +6,14 @@
 }
 {
   $file = $P->tempfile;
+  $scale = (($P->e_part eq 'i0')     and $P->e_mu) ? $D->plot_multiplier*$D->i0_scale
+         : (($P->e_part eq 'signal') and $P->e_mu) ? $D->plot_multiplier*$D->signal_scale
+         :                                           $D->plot_multiplier;
   $S->points(file    => $file,
              space   => 'E', 
 	     suffix  => $P->e_part, 
 	     shift   => $D->bkg_eshift,
-	     scale   => (($P->e_part =~ m{\A(?:i0|signal)\z}) and $P->e_mu) ? $D->plot_multiplier*$D->i0_scale : $D->plot_multiplier,
+	     scale   => $scale,
 	     yoffset => $D->y_offset
 	    );
   q{}

@@ -392,7 +392,7 @@ sub _plotE_command {
   if ($pf->e_signal) { # show signal
     if ($self->signal_string) {
       push @suffix_list, 'signal';
-      my $n = $incr+4;
+      my $n = $incr+5;
       my $cn = "col$n";
       push @color_list,  $pf->$cn;
       push @key_list,    ($self->po->e_mu) ? 'signal' : $self->name . ": signal";

@@ -3,8 +3,10 @@
   #   {$D->group} returns the ifeffit group name
   #   {$D->parameter} returns the value of that parameter
   #   {$P->parameter} returns the value of a Plot parameter
-  $mult = $D->plot_multiplier;
-  $mult *= $D->i0_scale if (($P->e_part eq 'i0') and ($P->e_mu));
+  $scale = (($P->e_part eq 'i0')     and $P->e_mu) ? $D->i0_scale
+         : (($P->e_part eq 'signal') and $P->e_mu) ? $D->signal_scale
+         :                                           1;
+  $mult = $D->plot_multiplier * $scale;
 }
 plot("{$D->group}.energy+{$D->bkg_eshift}", "{$mult}*{$D->group}.{$P->e_part}+{$D->y_offset}",
      style={$P->datastyle}, color="{$P->color}", key="{$P->key}")

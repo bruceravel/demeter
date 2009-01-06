@@ -97,21 +97,21 @@ sub new {
     $box -> Add($hh, 0);
 
     $self->{$utility}
-      = ($utility eq 'transitions') ? Demeter::UI::Hephaestus::Transitions->new($page,$echoarea)
-      : ($utility eq 'help')        ? Demeter::UI::Hephaestus::Help->new($page,$echoarea)
-      : ($utility eq 'ion')         ? Demeter::UI::Hephaestus::Ion->new($page,$echoarea)
-      : ($utility eq 'absorption')  ? Demeter::UI::Hephaestus::Absorption->new($page,$echoarea)
-      : ($utility eq 'data')        ? Demeter::UI::Hephaestus::Data->new($page,$echoarea)
-      : ($utility eq 'standards')   ? Demeter::UI::Hephaestus::Standards->new($page,$echoarea)
-      : ($utility eq 'f1f2')        ? Demeter::UI::Hephaestus::F1F2->new($page,$echoarea)
-      : ($utility eq 'find')        ? Demeter::UI::Hephaestus::EdgeFinder->new($page,$echoarea)
-      : ($utility eq 'line')        ? Demeter::UI::Hephaestus::LineFinder->new($page,$echoarea)
-      : ($utility eq 'formulas')    ? Demeter::UI::Hephaestus::Formulas->new($page,$echoarea)
-      : ($utility eq 'configure')   ? Demeter::UI::Hephaestus::Config->new($page,$echoarea)
+      = ($utility eq 'absorption')  ? Demeter::UI::Hephaestus::Absorption  -> new($page,$echoarea)
+      : ($utility eq 'configure')   ? Demeter::UI::Hephaestus::Config      -> new($page,$echoarea)
+      : ($utility eq 'data')        ? Demeter::UI::Hephaestus::Data        -> new($page,$echoarea)
+      : ($utility eq 'f1f2')        ? Demeter::UI::Hephaestus::F1F2        -> new($page,$echoarea)
+      : ($utility eq 'find')        ? Demeter::UI::Hephaestus::EdgeFinder  -> new($page,$echoarea)
+      : ($utility eq 'formulas')    ? Demeter::UI::Hephaestus::Formulas    -> new($page,$echoarea)
+      : ($utility eq 'help')        ? Demeter::UI::Hephaestus::Help        -> new($page,$echoarea)
+      : ($utility eq 'ion')         ? Demeter::UI::Hephaestus::Ion         -> new($page,$echoarea)
+      : ($utility eq 'line')        ? Demeter::UI::Hephaestus::LineFinder  -> new($page,$echoarea)
+      : ($utility eq 'standards')   ? Demeter::UI::Hephaestus::Standards   -> new($page,$echoarea)
+      : ($utility eq 'transitions') ? Demeter::UI::Hephaestus::Transitions -> new($page,$echoarea)
       :                               0;
     if ($self->{$utility}) {
-      $hh = Wx::BoxSizer->new( wxHORIZONTAL );
-      $hh -> Add($self->{$utility}, 1, wxGROW|wxEXPAND|wxALL, 0);
+      $hh   = Wx::BoxSizer->new( wxHORIZONTAL );
+      $hh  -> Add($self->{$utility}, 1, wxGROW|wxEXPAND|wxALL, 0);
       $box -> Add($hh, 1, wxGROW|wxEXPAND|wxALL, 0);
       my $this_width = ($self->{$utility}->GetSizeWH)[0];
       my $this_height = ($self->{$utility}->GetSizeWH)[1];
