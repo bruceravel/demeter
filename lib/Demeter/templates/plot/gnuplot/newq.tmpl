@@ -26,7 +26,8 @@
   q{}
 }
 ## gnuplot script
-unset label 1
+unset label
+{$D->template("plot", "copyright") if $D->co->default("plot", "showcopyright")}
 
 set title "\{/*1.5 {$P->title}\}"
 set xlabel "\{/*1.2 Wavenumber&\{aa\}(\{\305\}^\{-1\})\}"
