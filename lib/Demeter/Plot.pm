@@ -43,6 +43,7 @@ use Demeter::NumTypes qw( Natural
 		       );
 
 use Carp;
+use PGPLOT;
 use Regexp::List;
 use Regexp::Optimizer;
 use Regexp::Common;
@@ -316,6 +317,17 @@ sub propagate_kweight {
 
 sub i0_text {
   return 'I\d0\u';
+};
+
+sub copyright_text {
+  my ($self) = @_;
+  if ($self->co->default("plot", "showcopyright")) {
+    pgsch(0.7);
+    my $string = sprintf("%s %s \\(0274) 2006-2009 Bruce Ravel", "Demeter", $self->version);
+    pgmtxt('B', 7, 0.65, 0.0, $string);
+    pgsch(1.0);
+  };
+  return q{};
 };
 
 

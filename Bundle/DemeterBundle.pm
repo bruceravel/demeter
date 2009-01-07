@@ -50,6 +50,10 @@ Digest::SHA
 
 Graphics::GnuplotIF
 
+ExtUtils::F77
+
+PGPLOT
+
 Heap
 
 IO::Prompt

@@ -162,6 +162,7 @@ $hephaestus_base = identify_self();
 sub OnInit {
   $demeter = Demeter->new;
   $demeter -> mo -> ui('Wx');
+  $demeter -> mo -> identity('Hephaestus');
   ## read hephaestus' demeter_conf file
   my $conffile = File::Spec->catfile(dirname($INC{'Demeter/UI/Hephaestus.pm'}), 'Hephaestus', 'data', "hephaestus.demeter_conf");
   $demeter -> co -> read_config($conffile);

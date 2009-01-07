@@ -165,7 +165,9 @@ has 'pathindex' => (is => 'rw', isa => 'Int', default => 1);
 has 'echo'		   => (is => 'rw', isa => 'Any');
 has 'datadefault'	   => (is => 'rw', isa => 'Any');
 has 'external_plot_object' => (is => 'rw', isa => 'Any');
-has 'ui'                   => (is => 'rw', isa => 'Str', default => 'none',);
+has 'plotting_initialized' => (is => 'rw', isa => 'Bool', default => 0);
+has 'identity'             => (is => 'rw', isa => 'Str',  default => 'Demeter',);
+has 'ui'                   => (is => 'rw', isa => 'Str',  default => 'none',);
 
 __PACKAGE__->meta->make_immutable;
 1;

@@ -36,7 +36,7 @@ before start_plot => sub {
   my ($self) = @_;
   $self->cleantemp;
   my $command = $self->template("plot", "start");
-  $command .= $self->template("plot", "copyright") if $self->co->default("plot", "showcopyright");
+  $command .= $self->copyright_text;
   $self->dispose($command, "plotting");
   $self->lastplot(q{});
 };
@@ -153,6 +153,14 @@ override i0_text => sub {
   return 'I_0';
 };
 
+override copyright_text => sub {
+  my ($self) = @_;
+  my $string = ($self->co->default("plot", "showcopyright"))
+             ? $self->template("plot", "copyright")
+	     : q{};
+  return $string;
+};
+
 1;
 
 =head1 NAME
@@ -203,6 +211,24 @@ attributes of the Plot object.
 This module requires L<Graphics::GnuplotIF> and gnuplot itself.  On a
 linux machine, I strongly recommend a version of gnuplot at 4.2 or
 higher so you can use the wonderful wxt terminal type.
+
+Also
+
+=over 4
+
+=item L<File::Spec>
+
+=item L<Regexp::List>
+
+=item L<Regexp::Optimizer>
+
+=item L<Regexp::Common>
+
+=item L<Readonly>
+
+=item L<String::Random>
+
+=back
 
 =head1 BUGS AND LIMITATIONS
 

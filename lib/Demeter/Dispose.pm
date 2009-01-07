@@ -35,19 +35,19 @@ sub dispose {
   return 0 if ($command =~ m{\A\s*\z});
   ($command .= "\n") if ($command !~ /\n$/);
 
-  ## spit everything to the screen
+  ## -------- spit everything to the screen
   if ($self->get_mode("screen")) {
     local $| = 1;
     print STDOUT $command;
   };
 
-  ## spit plot commands to the screen
+  ## -------- spit plot commands to the screen
   if (($self->get_mode("plotscreen"))  and $plotting) {
     local $| = 1;
     print STDOUT $command;
   };
 
-  ## dump everything to a file
+  ## -------- dump everything to a file
   if ($self->get_mode("file")) {
     local $| = 1;
     open my $FH, ">".$self->get_mode("file");
@@ -55,20 +55,24 @@ sub dispose {
     close $FH;
   };
 
-  ## dump plot commands to a file
+  ## -------- dump plot commands to a file
   if (($self->get_mode("plotfile")) and $plotting) {
+    if ($self->mo->template_plot eq 'gnuplot') {
+      my $crstring = $self->po->copyright_text;	## insert the copyright statement in a plot made with gnuplot
+      $command =~ s{(unset label)}{$1\n$crstring}g;
+    };
     local $| = 1;
     open my $FH, ">".$self->get_mode("plotfile");
     print $FH $command;
     close $FH;
   };
 
-  ## concatinate to a scalar buffer
+  ## -------- concatinate to a scalar buffer
   if (($self->get_mode("buffer")) and (ref($self->get_mode("buffer")) eq 'SCALAR')) {
     ${ $self->get_mode("buffer") } .=  $command;
   };
 
-  ## unknown buffer type
+  ## -------- unknown buffer type
   if (    ($self->get_mode("buffer"))
 	  and (ref($self->get_mode("buffer")) ne 'SCALAR')
 	  and (ref($self->get_mode("buffer")) ne 'ARRAY')  ) {
@@ -76,17 +80,19 @@ sub dispose {
   };
 
   if ($plotting and ($self->mo->template_plot eq 'gnuplot')) {
-    #print $command;
+    my $crstring = $self->po->copyright_text; ## insert the copyright statement in a plot made with gnuplot
+    $command =~ s{(unset label)}{$1\n$crstring}g;
+
     $self->mo->external_plot_object->gnuplot_cmd($command);
     # $self->mo->external_plot_object->gnuplot_pause(-1);
     my $gather = $self->po->lastplot;
     $gather .= $command;
     $self -> po -> lastplot($gather);
-    return 0;
+    return 0; ## need to short-circuit this so the gnuplot commands do not go to Ifeffit
   };
 
-  ## don't bother reprocessing unless an output channel that
-  ## requires looping over every line
+  ## -------- don't bother reprocessing unless an output channel that
+  ##          requires looping over every line
   return 0 unless (
 		   ($self->get_mode("buffer") and (ref($self->get_mode("buffer")) eq 'ARRAY'))
 		   or $self->get_mode("ifeffit")
@@ -108,7 +114,6 @@ sub dispose {
     ## recognize parens-bound commands and concatinate them onto a
     ## single line
 
-    ## want to not waste time on this if the output mode is for feffit!!
     next if ($thisline =~ m{^\s*\#});
     next if ($thisline =~ m{^\s*$});
 
@@ -121,13 +126,16 @@ sub dispose {
     $reprocessed .= $thisline . $eol;
   };
 
-  ## send reprocessed command text to ifeffit
-  ifeffit($reprocessed) if $self->get_mode("ifeffit");
+  ## -------- send reprocessed command text to ifeffit
+  if ($self->get_mode("ifeffit")) {
+    ifeffit($reprocessed);
+    $self -> po -> copyright_text if ($plotting and ($self->mo->template_plot eq 'pgplot')); ## insert the copyright statement in a plot made with pgplot
+  };
 
-  ## send reprocessed command text to the screen
+  ## -------- send reprocessed command text to the screen
   print STDOUT $reprocessed if $self->get_mode("repscreen");
 
-  ## send reprocessed command text to a file
+  ## -------- send reprocessed command text to a file
   if ($self->get_mode("repfile")) {
     open my $FH, ">".$self->get_mode("file");
     print $FH $reprocessed;
@@ -137,12 +145,6 @@ sub dispose {
 
   return 0;
 };
-
-sub plot_dispose {
-
-
-};
-
 
 sub nl {
   my ($self) = @_;
@@ -243,6 +245,10 @@ Use the C<set_mode> class method to establish the disposal channels.
    Demeter->set_mode(ifeffit=>1, screen=>1, file=>0, buffer=>0);
    $dataobject -> dispose($commands);
 
+When explicitly disposing a plotting command, use the plotting flag:
+
+   $dataobject -> dispose($commands, "plotting");
+
 There are several disposal channels:
 
 =over 6
@@ -250,13 +256,13 @@ There are several disposal channels:
 =item ifeffit
 
 This channel sends reprocessed command strings to ifeffit for
-processing.  The value of ifeffit in the hash is interpreted as a
-boolean.  By default, this channel is on and all the rest are off.
+processing.  This is a boolean.  By default, this channel is on and
+all the rest are off.
 
 =item screen
 
-This channel sends command strings to standard output.  The value of
-screen in the hash is interpreted as a boolean.
+This channel sends command strings to standard output.  This is a
+boolean.
 
 =item file
 
@@ -327,6 +333,11 @@ use of this channel is to debug the text actually sent to Ifeffit.
 
 =back
 
+Note that the C<dispose> method is also used to place a copyright
+statement on every plot.  This behavior can be suppressed by setting
+the C<plot-&gt;showcopyright> configuration parameter to a false
+value.
+
 =head2 other methods
 
 =over 4
@@ -366,42 +377,6 @@ accessed via the C<set_mode> and C<get_mode> methods.
 
 =over 4
 
-=item C<echo>
-
-I<What is this used for?>
-
-=item C<plot>
-
-This is a reference to the active Plot object, which is the one used
-to format plots.  This is the object that should be modified to change
-how a plot is made.  See L<Demeter::Plot>.  In a template, this is
-accessed by the C<$P> special variable.
-
-=item C<config>
-
-This is a reference to the Config object, which stores a wide variety
-of configration parameters.  See L<Demeter::Config>.  In a template,
-this is accessed by the C<$C> special variable.
-
-=item C<fit>
-
-This is a reference to the active Fit object, which is accessed when
-templates are evaluated to create commands for the fit.  See
-L<Demeter::Fit>.  In a template, this is accessed by the C<$F> special
-variable.
-
-=item C<standard>
-
-This is a reference to the Data object chosen as the standard for
-Athena-like methods.  This is used extensively by the templates.  In a
-template, this is accessed by the C<$DS> special variable.
-
-=item C<theory>
-
-This is a reference to the active Feff object, which is accessed when
-template for feff input files are evaluated.  In a template, this is
-accessed by the C<$T> special variable.
-
 =item C<template_process> [ifeffit]
 
 This is the template set used to generate data processing commands.
@@ -416,13 +391,9 @@ This is the template set used to generate plotting commands.  There is
 also an option to use the Gnuplot plotting backend by setting this
 parameter to "gnuplot".
 
-=item C<datadefault>
-
-This is a fallback Data object that gets created when Demeter is first
-loaded.  It is necessary so that Path objects can be manipulated and
-plotted even if they are not yet associated with a Data object.
-
 =back
+
+For still more possibilities, see L<Demeter::Mode>.
 
 =head1 CONFIGURATION
 

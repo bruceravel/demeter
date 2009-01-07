@@ -315,7 +315,7 @@ sub autobk {
 
 sub plotE {
   my ($self) = @_;
-  $self->dispose($self->_plotE_command)
+  $self -> dispose($self->_plotE_command);
 };
 sub _plotE_command {
   my ($self) = @_;
