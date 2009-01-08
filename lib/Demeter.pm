@@ -72,7 +72,6 @@ has 'frozen'    => (is => 'rw', isa => 'Bool', default => 0);
 has 'data'      => (is => 'rw', isa => 'Any',  default => q{},
 		    trigger => sub{ my($self, $new) = @_; $self->datagroup($new->group) if $new});
 has 'datagroup' => (is => 'rw', isa => 'Str',  default => q{});
-# has 'stash_folder' => (is => 'ro', isa => 'Str');
 
 use Demeter::Mode;
 use vars qw($mode);

@@ -90,6 +90,7 @@ my %params_of;
 sub BUILD {
   my ($self) = @_;
   #return $Demeter::mode->config if $Demeter::mode->config;
+  $self -> dot_folder;
   $self -> read_config;
   $self -> read_ini;
   $self -> mo -> config($self);
