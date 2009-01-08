@@ -1,6 +1,6 @@
 ---
 name: Demeter
-version: 0.2.0
+version: 0.3.0
 author:
   - 'Bruce Ravel <bravel AT bnl DOT gov>'
 abstract: An object oriented EXAFS data analysis system using Ifeffit
@@ -41,7 +41,7 @@ recommends:
 provides:
   Demeter:
     file: lib/Demeter.pm
-    version: 0.2.0
+    version: 0.3.0
   Demeter::Atoms:
     file: lib/Demeter/Atoms.pm
   Demeter::Atoms::Absorption:
@@ -169,12 +169,17 @@ provides:
     file: lib/Demeter/UI/Wx/PeriodicTable.pm
   Demeter::VPath:
     file: lib/Demeter/VPath.pm
+  MooseX::SetGet:
+    file: lib/MooseX/SetGet.pm
   Xray::Crystal:
     file: lib/Xray/Crystal.pm
   Xray::Crystal::Cell:
     file: lib/Xray/Crystal/Cell.pm
   Xray::Crystal::Site:
     file: lib/Xray/Crystal/Site.pm
+  Xray::Crystal::SpaceGroup:
+    file: lib/Xray/Crystal/SpaceGroup.pm
+    version: 0.1.0
 generated_by: Module::Build version 0.3
 meta-spec:
   url: http://module-build.sourceforge.net/META-spec-v1.2.html

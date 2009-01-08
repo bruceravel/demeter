@@ -29,6 +29,7 @@ examples/ag-au/ag.chi
 examples/ag-au/feff_ag/feff0001.dat
 examples/ag-au/feff_au/feff0001.dat
 examples/ag-au/mds.pl
+examples/AuCl.cif
 examples/cu/atoms.inp
 examples/cu/cu10k.chi
 examples/cu/cu10k.dat
@@ -236,8 +237,10 @@ lib/Demeter/templates/fit/iff_columns/restraint.tmpl
 lib/Demeter/templates/fit/iff_columns/save_bkgsub.tmpl
 lib/Demeter/templates/fit/iff_columns/save_fit.tmpl
 lib/Demeter/templates/fit/iff_columns/sum.tmpl
+lib/Demeter/templates/plot/demeter/copyright.tmpl
 lib/Demeter/templates/plot/demeter/newe.tmpl
 lib/Demeter/templates/plot/demeter/overe.tmpl
+lib/Demeter/templates/plot/gnuplot/copyright.tmpl
 lib/Demeter/templates/plot/gnuplot/f1.tmpl
 lib/Demeter/templates/plot/gnuplot/f1f2.tmpl
 lib/Demeter/templates/plot/gnuplot/f2.tmpl
@@ -258,6 +261,7 @@ lib/Demeter/templates/plot/gnuplot/prep_filter.tmpl
 lib/Demeter/templates/plot/gnuplot/restore.tmpl
 lib/Demeter/templates/plot/gnuplot/start.tmpl
 lib/Demeter/templates/plot/gnuplot/window.tmpl
+lib/Demeter/templates/plot/pgplot/copyright.tmpl
 lib/Demeter/templates/plot/pgplot/f1.tmpl
 lib/Demeter/templates/plot/pgplot/f1f2.tmpl
 lib/Demeter/templates/plot/pgplot/f2.tmpl
@@ -396,11 +400,12 @@ lib/Demeter/UI/Wx/Config.pm
 lib/Demeter/UI/Wx/EchoArea.pm
 lib/Demeter/UI/Wx/PeriodicTable.pm
 lib/Demeter/VPath.pm
+lib/MooseX/SetGet.pm
 lib/pod.css
 lib/Xray/Crystal.pm
 lib/Xray/Crystal/Cell.pm
-lib/Xray/Crystal/Site.pm
 lib/Xray/Crystal/share/space_groups.db.PL
+lib/Xray/Crystal/Site.pm
 lib/Xray/Crystal/SpaceGroup.pm
 LICENSE
 MANIFEST			This list of files
