@@ -1,4 +1,4 @@
-#!/usr/bin/perl -I./lib
+#!/usr/bin/perl
 
 ## this short script demonstrates how to tie Moose objects in the
 ## sense that I want to tie a reference channel.  this is a way to use

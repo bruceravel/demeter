@@ -1,4 +1,4 @@
-#!/usr/bin/perl -I/home/bruce/codes/demeter/lib
+#!/usr/bin/perl
 
 =begin Explanation
   This is the beginning of a demeter-based tool to replace and expand

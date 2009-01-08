@@ -1,4 +1,4 @@
-#!/usr/bin/perl -I/home/bruce/codes/demeter/lib
+#!/usr/bin/perl
 
 =for Explanation
  This plots 60 and 300 K iron foil data in k- and R-space.

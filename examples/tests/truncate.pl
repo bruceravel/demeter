@@ -1,4 +1,4 @@
-#!/usr/bin/perl -I/home/bruce/codes/demeter/lib
+#!/usr/bin/perl
 
 =for Explanation
  This example shows how to truncate points from the beginning or end

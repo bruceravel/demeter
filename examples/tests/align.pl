@@ -1,4 +1,4 @@
-#!/usr/bin/perl -I/home/bruce/codes/demeter/lib
+#!/usr/bin/perl
 
 =for Explanation
   This script uses Demeter to calibrate and align two data sets: iron

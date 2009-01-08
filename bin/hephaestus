@@ -1,4 +1,4 @@
-#!/usr/bin/perl -I./lib/
+#!/usr/bin/perl
 use File::Basename;
 use File::Spec;
 

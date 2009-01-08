@@ -1,4 +1,4 @@
-#!/usr/bin/perl -I/home/bruce/codes/demeter/lib
+#!/usr/bin/perl
 
 =for Explanation
  This reads iron foil data and writes out a usable Athena project

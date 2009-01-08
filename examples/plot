@@ -1,4 +1,4 @@
-#!/usr/bin/perl -I../lib/
+#!/usr/bin/perl
 
 =for Explanation
   This is a fairly simple example of using Demeter to process and plot

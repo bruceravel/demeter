@@ -44,6 +44,11 @@ use Demeter::NumTypes qw( Natural
 
 use Carp;
 use PGPLOT;
+{
+  ## suppress a trivial warning at "./Build test" time
+  no warnings;
+  my $foo = *PGPLOT::HANDLE;
+}
 use Regexp::List;
 use Regexp::Optimizer;
 use Regexp::Common;

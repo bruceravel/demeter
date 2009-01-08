@@ -1,4 +1,4 @@
-#!/usr/bin/perl -I../lib/
+#!/usr/bin/perl
 
 =begin Explanation
   This is a test harness for running and examining various short

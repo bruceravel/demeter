@@ -1,4 +1,4 @@
-#!/usr/bin/perl -I/home/bruce/codes/demeter/lib
+#!/usr/bin/perl
 
 =for Explanation
  This example shows how to use Demeter to deglitch data.  Deglitching

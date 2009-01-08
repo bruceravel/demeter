@@ -1,4 +1,4 @@
-#!/usr/bin/perl -I../lib
+#!/usr/bin/perl
 
 ## Test base functionality of Demeter under Moose
 

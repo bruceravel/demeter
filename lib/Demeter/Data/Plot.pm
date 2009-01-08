@@ -1,7 +1,6 @@
 package Demeter::Data::Plot;
 use Moose::Role;
 
-use PGPLOT;
 use Regexp::Common;
 use Readonly;
 Readonly my $NUMBER   => $RE{num}{real};

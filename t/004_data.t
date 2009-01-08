@@ -1,4 +1,4 @@
-#!/usr/bin/perl -I../lib
+#!/usr/bin/perl
 
 ## Test Data object functionality of Demeter under Moose
 

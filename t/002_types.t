@@ -1,4 +1,4 @@
-#!/usr/bin/perl -I../lib/
+#!/usr/bin/perl
 
 ## Test String and Numeric type constraints for Demeter under Moose
 

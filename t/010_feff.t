@@ -1,4 +1,4 @@
-#!/usr/bin/perl -I../lib
+#!/usr/bin/perl
 
 ## Test Feff object functionality of Demeter under Moose
 

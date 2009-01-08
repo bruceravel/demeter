@@ -1,4 +1,4 @@
-#!/usr/bin/perl -I/home/bruce/codes/demeter/lib/
+#!/usr/bin/perl
 ##
 ##  this Demeter example makes extensive use of the clone method for
 ##  generating similar, repetitive Data and Path objects
