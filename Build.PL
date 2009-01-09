@@ -6,8 +6,8 @@
  All rights reserved.
  .
  This file is free software; you can redistribute it and/or
- modify it under the same terms as Perl itself. See The Perl
- Artistic License.
+ modify it under the same terms as Perl itself. See The GNU
+ General Public License.
  .
  This program is distributed in the hope that it will be useful,
  but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -58,6 +58,9 @@ my $build = Module::Build
 				'Tree::Simple'		   => '0',
 				'Want'			   => '0',
 				'YAML'			   => '0',
+
+				'ExtUtils::F77'            => '0',
+				'PGPLOT'                   => '0',
 			       },
 	 PL_files           => {
 				'lib/Xray/Crystal/share/space_groups.db.PL' => 'lib/Xray/Crystal/share/space_groups.db'
