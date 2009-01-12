@@ -131,10 +131,7 @@ sub _plotR_command {
     $self->plot_multiplier(-1*$pm);
     my $this = $self->template("plot", "overr");
     my $datalabel = $self->name;
-    ## (?<+ ) is the positive zero-width look behind -- it only # }
-    ## replaces the label when it follows q{key="}, i.e. it won't get
-    ## confused by the same text in the title for a newplot
-    $this =~ s{(?<=key=")$datalabel}{};	# ") silly emacs!
+    $this = $self->po->fix_envelope($this, $datalabel);
     $string .= $this;
     $self->plot_multiplier($pm);
   };
@@ -173,10 +170,7 @@ sub _plotq_command {
     $self->plot_multiplier(-1*$pm);
     my $this = $self->template("plot", "overr");
     my $datalabel = $self->name;
-    ## (?<+ ) is the positive zero-width look behind -- it only # }
-    ## replaces the label when it follows q{key="}, i.e. it won't get
-    ## confused by the same text in the title for a newplot
-    $this =~ s{(?<=key=")$datalabel}{};	# ") silly emacs!
+    $this = $self->po->fix_envelope($this, $datalabel);
     $string .= $this;
     $self->plot_multiplier($pm);
   };

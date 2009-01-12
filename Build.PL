@@ -31,10 +31,10 @@ my $build = Module::Build
 				'version'		   => '0',
 				#'Module::Build'	   => '0',
 
-				'Moose'			   => '0.61',
+				'Moose'			   => '0.63',
 				'MooseX::AttributeHelpers' => '0.13',
 				'MooseX::Clone'		   => '0.03',
-				'MooseX::Singleton'	   => '0.12',
+				'MooseX::Singleton'	   => '0.13',
 				'MooseX::Types'		   => '0.07',
 
 				#'Compress::Raw::Zlib'	   => '0',

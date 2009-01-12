@@ -319,7 +319,7 @@ sub default {
   my $rhash = $self->get($key);
   carp("$key is not a valid configuration parameter"), return 0 if not $rhash;
   if ($rhash->{type} eq 'boolean') {
-    return $rhash->{onvalue}  || 1 if ($rhash->{default} eq 'true');
+    return $rhash->{onvalue}  || 1 if ($self->is_true($rhash->{default}));
     return $rhash->{offvalue} || 0;
   };
   if ($rhash->{type} eq 'positive integer') {

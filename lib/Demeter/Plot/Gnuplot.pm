@@ -161,6 +161,23 @@ override copyright_text => sub {
   return $string;
 };
 
+## avoid repeating the legend entry twice for the envelope function
+override fix_envelope => sub {
+  my ($self, $string, $datalabel) = @_;
+  ## (?<= ) is the positive zero-width look behind -- it only
+  ## replaces the label when it follows q{key="}, i.e. it won't get
+  ## confused by the same text in the title for a newplot
+  $string =~ s{(?<=title ")$datalabel"}{"};
+  return $string;
+};
+
+
+# this gives problems during cleanup:
+#        (in cleanup) Can't call method "execute" on an undefined
+#        value at /usr/local/share/perl/5.10.0/Moose/Object.pm line 53
+#        during global destruction.
+#__PACKAGE__->meta->make_immutable;
+
 1;
 
 =head1 NAME

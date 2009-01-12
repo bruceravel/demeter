@@ -30,6 +30,8 @@ Module::Build
 
 autodie
 
+YAML
+
 Moose
 
 MooseX::AttributeHelpers
@@ -89,9 +91,6 @@ Text::Wrap
 Tree::Simple
 
 Want
-
-YAML
-
 
 =head1 GUI
 

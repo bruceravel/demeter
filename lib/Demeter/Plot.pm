@@ -44,7 +44,8 @@ use Demeter::NumTypes qw( Natural
 
 use Carp;
 use vars qw($PGPLOT_exists);
-$PGPLOT_exists = 0; # (eval "require PGPLOT");
+$PGPLOT_exists = (eval "require PGPLOT");
+eval "PGPLOT->import" if $PGPLOT_exists;
 {
   ## suppress a trivial warning at "./Build test" time
   no warnings;
@@ -331,7 +332,7 @@ sub i0_text {
 
 sub copyright_text {
   my ($self) = @_;
-  return if not $PGPLOT_exists;
+  return q{} if not $PGPLOT_exists;
   if ($self->co->default("plot", "showcopyright")) {
     pgsch(0.7);
     my $string = sprintf("%s %s \\(0274) 2006-2009 Bruce Ravel", "Demeter", $self->version);
@@ -341,6 +342,15 @@ sub copyright_text {
   return q{};
 };
 
+## avoid repeating the legend entry twice for the envelope function
+sub fix_envelope {
+  my ($self, $string, $datalabel) = @_;
+  ## (?<= ) is the positive zero-width look behind -- it only
+  ## replaces the label when it follows q{key="}, i.e. it won't get
+  ## confused by the same text in the title for a newplot
+  $string =~ s{(?<=key=")$datalabel}{};
+  return $string;
+};
 
 __PACKAGE__->meta->make_immutable;
 1;
