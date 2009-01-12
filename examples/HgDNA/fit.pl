@@ -183,5 +183,3 @@ $data -> save("fit", "hgfit.fit");
 
 ## -------- simple, on-screen interaction with the fit results
 $fit -> interview;
-
-$fit -> finish;

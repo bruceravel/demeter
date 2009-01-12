@@ -93,6 +93,7 @@ has 'fuzzy'	   => (is => 'rw', isa => 'Num',      default => 0);
 has 'Type'	   => (is => 'rw', isa => 'Str',      default => q{});
 has 'weight'	   => (is => 'rw', isa => 'Int',      default => 0);
 has 'randstring'   => (is => 'rw', isa => 'Str',      default => q{});
+has 'file'         => (is => 'rw', isa => 'Str',      default => q{});
 
 ## set by details method:
 #has 'tags'         => (is => 'rw', isa => 'ArrayRef', default => sub{[]});
@@ -103,6 +104,17 @@ has 'randstring'   => (is => 'rw', isa => 'Str',      default => q{});
 sub BUILD {
   my ($self, @params) = @_;
   $self->mo->push_ScatteringPath($self);
+};
+sub DEMOLISH {
+  my ($self) = @_;
+  $self->alldone;
+};
+
+override 'alldone' => sub {
+  my ($self) = @_;
+  my $nnnn = $self->file;
+  unlink $nnnn if -e $nnnn;
+  return $self;
 };
 
 sub _betakey {

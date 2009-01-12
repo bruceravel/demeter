@@ -77,7 +77,7 @@ $feff -> pathfinder;
 query();
 my $prompt = "Choose a chore for this Feff calculation (q to quit) ";
 while ( defined ($_ = $term->readline($prompt)) ) {
-  $plot->finish,  exit if ($_ =~ m{\Aq});
+  exit if ($_ =~ m{\Aq});
   next if ($_ !~ m{\A(\d+)});
   $feff->po->start_plot; # reset the plot for the next go around
   SWITCH : {

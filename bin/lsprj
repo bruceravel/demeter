@@ -63,7 +63,6 @@ if (lc($plot) =~ m{[endkrq]}) {
 
   $_ = $term->readline($prompt);
 };
-$prj->finish;
 
 sub usage {
   print "

@@ -43,7 +43,8 @@ use Demeter::NumTypes qw( Natural
 		       );
 
 use Carp;
-use PGPLOT;
+use vars qw($PGPLOT_exists);
+$PGPLOT_exists = 0; # (eval "require PGPLOT");
 {
   ## suppress a trivial warning at "./Build test" time
   no warnings;
@@ -176,6 +177,10 @@ sub BUILD {
   $self -> mo -> push_Plot($self);
   $self -> start_plot;
   return;
+};
+sub DEMOLISH {
+  my ($self) = @_;
+  $self->alldone;
 };
 
 sub alldone {
@@ -326,6 +331,7 @@ sub i0_text {
 
 sub copyright_text {
   my ($self) = @_;
+  return if not $PGPLOT_exists;
   if ($self->co->default("plot", "showcopyright")) {
     pgsch(0.7);
     my $string = sprintf("%s %s \\(0274) 2006-2009 Bruce Ravel", "Demeter", $self->version);

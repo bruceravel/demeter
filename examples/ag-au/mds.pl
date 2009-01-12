@@ -137,5 +137,3 @@ my ($header, $footer) = ("Corefinement of several silver/gold data sets\n", q{})
 $fitobject -> logfile("ag-au.log", $header, $footer);
 
 $fitobject -> interview;
-
-$fitobject -> finish;

@@ -73,5 +73,4 @@ if ($run) {
   $fit -> logfile($base."_with_demeter.log");
   $fit -> freeze(file=>$base.".dpj");
   $fit -> interview;
-  $fit -> finish;
 };

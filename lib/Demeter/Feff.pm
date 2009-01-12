@@ -159,6 +159,10 @@ sub BUILD {
   my ($self, @params) = @_;
   $self->mo->push_Feff($self);
 };
+sub DEMOLISH {
+  my ($self) = @_;
+  $self->alldone;
+};
 
 sub alldone {
   my ($self) = @_;

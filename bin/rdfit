@@ -17,6 +17,3 @@ my $fit = Demeter::Fit->new(project=>$proj);
 $fit -> plot_with('gnuplot') if $use_gnuplot;
 $fit -> po -> set(kweight=>2);
 $fit -> interview;
-
-## clean up
-$fit -> finish;

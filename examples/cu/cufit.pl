@@ -26,7 +26,7 @@ my $dobject = Demeter::Data -> new();
 
 $dobject->set_mode(screen  => 0, ifeffit => 1, file => ">cufit.iff", );
 #$dobject -> template_set("demeter"); ## similar to the template pragma
-#$dobject -> plot_with('gnuplot');    ## similar to the plotwith pragma
+$dobject -> plot_with('gnuplot');    ## similar to the plotwith pragma
 my $plot_features = $dobject->po;
 
 $dobject ->set(file       => "cu10k.chi",
@@ -73,9 +73,6 @@ print "do the fit (or the sum of paths)\n";
 $fitobject -> fit;
 
 $fitobject -> interview;
-
-$fitobject -> finish;
-
 exit;
 
 print "set nice legend parameters for the plot\n";

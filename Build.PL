@@ -59,8 +59,6 @@ my $build = Module::Build
 				'Want'			   => '0',
 				'YAML'			   => '0',
 
-				'ExtUtils::F77'            => '0',
-				'PGPLOT'                   => '0',
 			       },
 	 PL_files           => {
 				'lib/Xray/Crystal/share/space_groups.db.PL' => 'lib/Xray/Crystal/share/space_groups.db'
@@ -71,6 +69,8 @@ my $build = Module::Build
 				'Term::ReadLine'      => '0',
 				'Term::Twiddle'	      => '0',
 				'Graphics::GnuplotIF' => '0',
+				'ExtUtils::F77'       => '0',
+				'PGPLOT'              => '0',
 				'Wx'                  => '0.86'
 			       },
 	 sign               => 0,

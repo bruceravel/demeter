@@ -713,6 +713,9 @@ bars, and correlations; and evaluates all path parameters.  Then plots
 are made, the results of the fit are saved as an ASCII data file, and
 a log file is written.
 
+When a Demeter script exits, care is taken to clean up all temporary
+file that may have been generated during the run.
+
 =head1 DESCRIPTION
 
 This module provides an object oriented interface to the EXAFS data

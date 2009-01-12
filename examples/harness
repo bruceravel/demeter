@@ -76,7 +76,7 @@ my $toggle_message = "turn " . REVERSE . "on" . RESET ." screen dump of Ifeffit 
 &query;
 while ( my $prompt = prompt "Choose a test by number, d# for description, h for help, or q to quit > ") {
  DISPATCH: {
-    $plot->finish,  exit          if ($prompt =~ m{\Aq});
+    exit                          if ($prompt =~ m{\Aq});
     &help,          last DISPATCH if ($prompt =~ m{\Ah});
     &version,       last DISPATCH if ($prompt =~ m{\Av});
     &toggle_screen, last DISPATCH if ($prompt =~ m{\At});

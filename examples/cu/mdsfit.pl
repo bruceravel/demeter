@@ -122,8 +122,6 @@ $fitobject -> fit;
 #$fitobject -> ff2chi($data_010k);
 $fitobject -> interview;
 
-$fitobject -> finish;
-
 exit;
 
 print "--- plot the data + fit + paths in a space\n";

@@ -131,15 +131,20 @@ sub BUILD {
   $self->Index($i);
   $self->mo->pathindex(++$i);
 };
+sub DEMOLISH {
+  my ($self) = @_;
+  $self->alldone;
+};
 
 override 'alldone' => sub {
   my ($self) = @_;
-  return 0 if not $self->sp;
-  my $sp           = $self->sp;
-  my $randomstring = $sp->randstring;
-  my $feff         = $self->parent;
-  my $nnnn         = File::Spec->catfile($feff->workspace, $randomstring);
-  unlink $nnnn if -e $nnnn;
+#   print $self, "  ", $self->sp, $/;
+#   return $self if not $self->sp;
+#   my $sp           = $self->sp;
+#   my $nnnn         = File::Spec->catfile($self->folder, $self->file);
+#   print $nnnn, $/;
+#   unlink $nnnn if -e $nnnn;
+  return $self;
 };
 
 
@@ -225,6 +230,7 @@ sub _update_from_ScatteringPath {
        File::Spec->catfile($workspace, $fname));
   $self->set(folder => $workspace,
 	     file   => $fname);
+  $self->sp->set(file=>File::Spec->catfile($workspace, $fname));
   my $label = $self -> name || $sp->intrplist;
   $self->set(name=>$label);
 

@@ -214,7 +214,6 @@ sub OnInit {
 
 sub on_close {
   my ($self) = @_;
-  $demeter->finish;
   $self->Destroy;
 };
 

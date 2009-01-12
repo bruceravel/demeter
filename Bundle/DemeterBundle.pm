@@ -50,10 +50,6 @@ Digest::SHA
 
 Graphics::GnuplotIF
 
-ExtUtils::F77
-
-PGPLOT
-
 Heap
 
 IO::Prompt
@@ -103,6 +99,12 @@ I am not yet ready to make wxWidgets a dependence.
 
 I am using Wx 2.8.7 and WxPerl 0.86.  I cannot comment on whether
 earlier versions of either will work.
+
+=head1 COMMENTED OUT
+
+The following modules are ones I might be including at some point:
+
+  ExtUtils::F77  PGPLOT
 
 =head1 DEPRECATED
 
