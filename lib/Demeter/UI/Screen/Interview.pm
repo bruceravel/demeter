@@ -29,6 +29,7 @@ my $message = q{};
 sub interview {
   my ($fit, $noplot) = @_;
 
+  $fit->po->start_plot;		# problems with cleanup after single rmr plot without this line (??? !!!)
   $fit->po->r_pl('rmr');
   $fit->po->plot_fit(1);
   #$fit->mo->screen(1);

@@ -136,18 +136,6 @@ sub DEMOLISH {
   $self->alldone;
 };
 
-override 'alldone' => sub {
-  my ($self) = @_;
-#   print $self, "  ", $self->sp, $/;
-#   return $self if not $self->sp;
-#   my $sp           = $self->sp;
-#   my $nnnn         = File::Spec->catfile($self->folder, $self->file);
-#   print $nnnn, $/;
-#   unlink $nnnn if -e $nnnn;
-  return $self;
-};
-
-
 sub set_parent {
   my ($self, $feff) = @_;
   $self->set_parent_method($feff);

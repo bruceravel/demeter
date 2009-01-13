@@ -203,23 +203,24 @@ sub plotRmr {
   croak(ref $self . " objects are not plottable") if not $self->plottable;
   my $string = q{};
   my ($lab, $yoff, $up) = ( $self->name, $self->y_offset, $self->rmr_offset );
+
+  ## plot magnitude part
   $self -> y_offset($yoff+$up);
   my $rpart = $self->po->r_pl;
-  $self -> mo -> plot -> r_pl('m');
+  $self -> po -> r_pl('m');
   my $color = $self->po->color;
   my $inc   = $self->po->increm;
-  #$string .= $self->_plotR_command;
-  $self -> plot;
+  $self -> plot('r');
   $self -> po -> New(0);
 
+  ## plot real part
   $self -> y_offset($yoff);
   $self -> name(q{});
   $self -> po -> r_pl('r');
   $self -> po -> color($color);
   $self -> po -> increm($inc);
-  #$string .= $self->_plotR_command;
-  $self -> plot;
-  #$self -> dispose($string);
+  $self -> plot('r');
+
   $self -> name($lab);
   $self -> po -> r_pl($rpart);
   return $self;

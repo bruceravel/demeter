@@ -48,6 +48,13 @@ sub BUILD {
   #$self->mo->pathindex(++$i);
 };
 
+override alldone => sub {
+  my ($self) = @_;
+  my $nnnn = File::Spec->catfile($self->folder, $self->randstring);
+  unlink $nnnn if (-e $nnnn);
+  return $self;
+};
+
 
 after set_parent_method => sub {
   my ($self) = @_;

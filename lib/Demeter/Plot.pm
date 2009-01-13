@@ -256,6 +256,7 @@ sub cleantemp {
     unlink $f;
   };
   $self -> clear_tempfiles;
+  #$self->tempfiles([]);
   return $self;
 };
 

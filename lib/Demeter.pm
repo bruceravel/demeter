@@ -85,7 +85,7 @@ $config = Demeter::Config -> new;
 
 sub alldone {
   my ($self) = @_;
-  1;
+  return $self;
 };
 
 use Demeter::Plot;
