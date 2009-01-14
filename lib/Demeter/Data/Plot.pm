@@ -310,6 +310,23 @@ sub plot_marker {
   return $self;
 };
 
+sub stack {
+  my ($self, $space, @list) = @_;
+  my $step = $self->y_offset;
+  my $save = $step;
+  foreach my $obj ($self, @list) {
+    my $this_y_offset = $obj -> data -> y_offset;
+    $obj  -> data  -> y_offset($step);
+    $obj  -> plot($space);
+    $step -= $self -> po -> stackjump;
+    $obj  -> data  -> y_offset($this_y_offset);
+  };
+  $self -> y_offset($save);
+  return $self;
+};
+
+
+
 
 1;
 
@@ -372,6 +389,17 @@ Make the plot of chi(k) along with the real part of chi(q) in
 wavenumber.
 
 =back
+
+=item C<stack>
+
+Make a stacked plot out of the caller and a supplied list of Data,
+Path, VPath, or SSPath objects.
+
+  $data -> po -> stackjump(0.3);
+  $data -> stack('R', @llist_of_data_and_paths);
+
+Uses the C<stackjump> Plot attribute and tsacks downward.  To stack
+upward, set C<stackjump> to a negative value.
 
 =item C<plot_window>
 

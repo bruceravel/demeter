@@ -78,8 +78,8 @@ attributes.
 
 =head1 ACKNOWLEDGEMENTS
 
-C<set> was swiped from L<MooseX::MutatorAttributes> by ben hengst, C<<
-<notbenh at cpan.org> >>.  C<get> was based closely upon C<set>.
+C<set> was swiped from L<MooseX::MutatorAttributes> by ben hengst,
+C<&lt;notbenh at cpan.org&gt;>.  C<get> was based closely upon C<set>.
 
 =head1 BUGS AND LIMITATIONS
 

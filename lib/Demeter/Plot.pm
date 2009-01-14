@@ -97,7 +97,7 @@ has 'partstyle' => (is => 'rw', isa =>  PgplotLine, default => sub{ shift->co->d
 has 'pathstyle' => (is => 'rw', isa =>  PgplotLine, default => sub{ shift->co->default("plot", "pathstyle")  || "solid"});
 
 ## -------- default plotting space
-has 'space'	=> (is => 'rw', isa =>  FitSpace, default => 'r');
+has 'space'	=> (is => 'rw', isa =>  'Str', default => 'r');
 
 ## -------- energy plot parameters
 has 'emin'	=> (is => 'rw', isa =>  'Num',    default => sub{ shift->co->default("plot", "emin")	  || -200});
@@ -145,6 +145,8 @@ has 'showmarker'     => (is => 'rw', isa =>  'Str',           default => sub{ sh
 has 'markertype'     => (is => 'rw', isa =>  OneToTwentyNine, default => sub{ shift->co->default("marker", "type")     || 9});    # number 1 to 29, 9 is a dotted circle
 has 'markersize'     => (is => 'rw', isa =>  'Num',           default => sub{ shift->co->default("marker", "size")     || 2});
 has 'markercolor'    => (is => 'rw', isa =>  'Str',           default => sub{ shift->co->default("marker", "color")    || "orange"});
+
+has 'stackjump'      => (is => 'rw', isa =>  'Num',           default => 0);
 
 ## -------- miscellaneous plotting parameters
 has 'New'    => (is => 'rw', isa =>  'Bool',          default => 0);
