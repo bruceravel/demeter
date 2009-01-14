@@ -355,7 +355,7 @@ sub fix_envelope {
   return $string;
 };
 
-__PACKAGE__->meta->make_immutable;
+#__PACKAGE__->meta->make_immutable;
 1;
 
 =head1 NAME
