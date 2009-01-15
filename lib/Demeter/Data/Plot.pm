@@ -5,13 +5,14 @@ use Regexp::Common;
 use Readonly;
 Readonly my $NUMBER   => $RE{num}{real};
 use List::Util qw(max);
+use List::MoreUtils qw(uniq);
 
 ##-----------------------------------------------------------------
 ## plotting methods
 
 sub plot {
   my ($self, $space) = @_;
-  my $pf   = $self->mo->plot;
+  my $pf   = $self->po;
   $space ||= $pf->space;
   ($space  = 'kq') if (lc($space) eq 'qk');
   $space   = lc($space);
@@ -257,8 +258,11 @@ sub default_k_weight {
 
 sub plot_window {
   my ($self, $space) = @_;
+  $space ||= lc($self->po->space);
+  $space = 'k' if ($space =~ m{[kq]});
+  $space = 'r' if ($space =~ m{r});
   $self->fft if (lc($space) eq 'k');
-  $self->bft if (lc($space) =~ m{\Ar});
+  $self->bft if (lc($space) eq 'r');
   $self->dispose($self->_prep_window_command($space));
   #if (Demeter->get_mode('template_plot') eq 'gnuplot') {
   #  $self->get_mode('external_plot_object')->gnuplot_cmd($self->_plot_window_command($space));
@@ -311,13 +315,14 @@ sub plot_marker {
 };
 
 sub stack {
-  my ($self, $space, @list) = @_;
+  my ($self, @list) = @_;
+  my @plotlist = uniq($self, @list);
   my $step = $self->y_offset;
   my $save = $step;
-  foreach my $obj ($self, @list) {
+  foreach my $obj (@plotlist) {
     my $this_y_offset = $obj -> data -> y_offset;
     $obj  -> data  -> y_offset($step);
-    $obj  -> plot($space);
+    $obj  -> plot;
     $step -= $self -> po -> stackjump;
     $obj  -> data  -> y_offset($this_y_offset);
   };
@@ -350,15 +355,24 @@ processing chores need to be done, you can be sure that the object
 being plotted will always be brought up-to-date with respect to
 background removal and Fourier transforms before plotting.
 
-  $dataobject -> plot($space);
-  $pathobject -> plot($space);
+  $dataobject -> plot;
+  $pathobject -> plot;
+
+The value of the C<space> attribute of the Plot object is used to
+determine the plotting space, but that can be overridden with the
+optional argument.  These do the same thing:
+
+  $dataobject -> po -> space('q');
+  $dataobject -> plot;
+    ## and
+  $dataobject -> plot('q');
 
 This method returns a reference to invoking object, so method calls
 can be chained:
 
-  $dataobject -> plot($space) -> plot_window($space);
+  $dataobject -> plot -> plot_window;
 
-C<$space> can be any of the following and is case insensitive:
+The C<space> can be any of the following and is case insensitive:
 
 =over 4
 
@@ -396,17 +410,38 @@ Make a stacked plot out of the caller and a supplied list of Data,
 Path, VPath, or SSPath objects.
 
   $data -> po -> stackjump(0.3);
-  $data -> stack('R', @llist_of_data_and_paths);
+  $data -> stack(@list_of_data_and_paths);
 
-Uses the C<stackjump> Plot attribute and tsacks downward.  To stack
-upward, set C<stackjump> to a negative value.
+The value of the C<space> attribute of the Plot object is used to
+determine the plotting space and, unlike the C<plot> method, that
+cannot be overridden in the argument list.
+
+This uses the C<stackjump> attribute of the Plot object for the
+spacing between traces and it stacks downward.  To stack upward, set
+C<stackjump> to a negative value.
+
+If the caller is also in the argument list, it will only be plotted
+once.  That is, these do the same thing:
+
+   $a -> stack($b, $c, $d);
+    ## and
+   $a -> stack($a, $b, $c, $d);
 
 =item C<plot_window>
 
 Plot the Fourier transform window in k or R space.
 
-  $dataobject->plot_window($space);
-  $pathobject->plot_window($space);
+  $dataobject->plot_window;
+  $pathobject->plot_window;
+
+The value of the C<space> attribute of the Plot object is used to
+determine the plotting space, but that can be overridden with the
+optional argument.  These do the same thing:
+
+  $dataobject -> po -> space('k');
+  $dataobject -> plot_window;
+    ## and
+  $dataobject -> plot_window('k');
 
 =item C<plot_marker>
 

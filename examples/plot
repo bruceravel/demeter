@@ -134,8 +134,9 @@ sub plot1 {
 		 e_i0      => 0,    e_signal  => 0,
 		 e_markers => 1,
 		 emin      => -200, emax      => 2000,
+		 space     => 'E',
 		);
-  $data->plot('E');
+  $data->plot;
 };
 
 sub plot2 {
@@ -147,9 +148,10 @@ sub plot2 {
 		 e_i0      => 0,    e_signal  => 0,
 		 e_markers => 1,
 		 emin      => -200, emax      => 2000,
+		 space     => 'E',
 		);
   $data->bkg_flatten(0);
-  $data->plot('E');
+  $data->plot;
 };
 
 sub plot3 {
@@ -161,9 +163,10 @@ sub plot3 {
 		 e_i0      => 0,    e_signal  => 0,
 		 e_markers => 1,
 		 emin      => -200, emax      => 2000,
+		 space     => 'E',
 		);
   $data->bkg_flatten(1);
-  $data->plot('E');
+  $data->plot;
 };
 
 sub plot4 {
@@ -175,10 +178,11 @@ sub plot4 {
 		 e_i0      => 0,    e_signal  => 0,
 		 e_markers => 1,
 		 emin      => -20,  emax      => 120,
+		 space     => 'E',
 		 );
-  $data->set(name=>'derivative')->plot('E');
+  $data->set(name=>'derivative')->plot;
   $data->po->e_norm(1);
-  $data->set(name=>'norm. deriv.')->plot('E');
+  $data->set(name=>'norm. deriv.')->plot;
 };
 
 sub plot5 {
@@ -190,8 +194,9 @@ sub plot5 {
 		 e_i0      => 1,    e_signal  => 1,
 		 e_markers => 0,
 		 emin      => -20,  emax      => 120,
+		 space     => 'E',
 		 );
-  $data->plot('E');
+  $data->plot;
 };
 
 sub plot6 {
@@ -199,17 +204,17 @@ sub plot6 {
   state("scale three k-weights to plot together\n");
   $data->po->legend(dy=>0.05, x=>0.73);
 
-  $data->po->set(kweight => 1, kmax => 17, );
+  $data->po->set(kweight => 1, kmax => 17, space => 'k');
   $data->set(plot_multiplier => 5,   'y_offset'=>14, name=>'kw=1, scaled by 5');
-  $data->plot('k');
+  $data->plot;
 
   $data->po->kweight(2);
   $data->set(plot_multiplier => 1,   'y_offset'=>7,  name=>'kw=2, unscaled');
-  $data->plot('k');
+  $data->plot;
 
   $data->po->kweight(3);
   $data->set(plot_multiplier => 0.2, 'y_offset'=>0,  name=>'kw=3, scaled by 0.2');
-  $data->plot('k');
+  $data->plot;
 
   $data->set(name=>'My iron data', plot_multiplier=>1); # reset the label
 };
@@ -217,8 +222,8 @@ sub plot6 {
 sub plot7 {
   my ($data) = @_;
   state("|chi(R)| + window\n");
-  $data -> po -> set(kweight => 2, r_pl => 'm', );
-  $data -> plot('r') -> plot_window('r');
+  $data -> po -> set(kweight => 2, r_pl => 'm', space => 'r', );
+  $data -> plot -> plot_window;
 };
 
 sub plot8 {
@@ -226,16 +231,16 @@ sub plot8 {
   state("envelope, real, imaginary in R\n");
   $data->po->legend(dy=>0.05, x=>0.73);
 
-  $data->po->set(kweight => 2, r_pl => 'e', );
-  $data->plot('r');
+  $data->po->set(kweight => 2, r_pl => 'e', space => 'r');
+  $data->plot;
 
   $data->set(name=>'Real part');
   $data->po->set(r_pl => 'r', );
-  $data->plot('r');
+  $data->plot;
 
   $data->set(name=>'Imaginary part');
   $data->po->set(r_pl => 'i', );
-  $data->plot('r');
+  $data->plot;
 
   $data->set(name=>'My iron data'); # reset the label
 };
@@ -243,6 +248,6 @@ sub plot8 {
 sub plot9 {
   my ($data) = @_;
   state("kq plot: chi(k)*k^2 + Re[chi(q)] + window\n");
-  $data -> po -> set(kweight => 2, 'q_pl' => 'r', qmax => 17, );
-  $data -> plot('kq') -> plot_window('k');
+  $data -> po -> set(kweight => 2, 'q_pl' => 'r', qmax => 17, space => 'kq');
+  $data -> plot -> plot_window;
 };

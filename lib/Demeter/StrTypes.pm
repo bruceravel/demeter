@@ -21,6 +21,7 @@ use MooseX::Types -declare => [qw( Empty
 				   Plotting
 				   DataPart
 				   FitSpace
+				   PlotSpace
 				   DataType
 				   TemplateProcess
 				   TemplateFit
@@ -48,7 +49,7 @@ my $opt  = Regexp::List->new;
 subtype Empty,
   as Str,
   where { lc($_) =~ m{\A\s*\z} },
-  message { "That string is not an empty string" };
+  message { "That string ($_) is not an empty string" };
 
 ## -------- Ifeffit commands
 use vars qw(@command_list $command_regexp);
@@ -64,7 +65,7 @@ $command_regexp = $opt->list2re( @command_list );
 subtype IfeffitCommand,
   as Str,
   where { lc($_) =~ m{\A$command_regexp\z} },
-  message { "That string is not an Ifeffit command" };
+  message { "That string ($_) is not an Ifeffit command" };
 
 
 ## -------- Ifeffit function
@@ -77,7 +78,7 @@ $function_regexp = $opt->list2re( @function_list );
 subtype IfeffitFunction,
   as Str,
   where { lc($_) =~ m{\A$function_regexp\z} },
-  message { "That string is not an Ifeffit function" };
+  message { "That string ($_) is not an Ifeffit function" };
 
 ## -------- Ifeffit program variables
 use vars qw(@program_list $program_regexp);
@@ -94,7 +95,7 @@ $program_regexp = $opt->list2re(@program_list);
 subtype IfeffitProgramVar,
   as Str,
   where { lc($_) =~ m{\A$program_regexp\z} },
-  message { "That string is not an Ifeffit program variable" };
+  message { "That string ($_) is not an Ifeffit program variable" };
 
 ## -------- Window types
 use vars qw(@window_list $window_regexp);
@@ -103,7 +104,7 @@ $window_regexp = $opt->list2re(@window_list);
 subtype Window,
   as Str,
   where { lc($_) =~ m{\A$window_regexp\z} },
-  message { "That string is not the name of Fourier transform window type" };
+  message { "That string ($_) is not the name of Fourier transform window type" };
 
 ## -------- Path Parameters
 use vars qw(@pathparam_list $pathparam_regexp);
@@ -112,7 +113,7 @@ $pathparam_regexp = $opt->list2re(@pathparam_list);
 subtype PathParam,
   as Str,
   where { lc($_) =~ m{\A$pathparam_regexp\z} },
-  message { "That string is not a path parameter" };
+  message { "That string ($_) is not a path parameter" };
 
 ## -------- Element symbols
 use vars qw(@element_list $element_regexp);
@@ -126,7 +127,7 @@ $element_regexp = $opt->list2re(@element_list);
 subtype Element,
   as Str,
   where { lc($_) =~ m{\A$element_regexp\z} },
-  message { "That string is not an element symbol" };
+  message { "That string ($_) is not an element symbol" };
 
 ## -------- Edge symbols
 use vars qw(@edge_list $edge_regexp);
@@ -135,7 +136,7 @@ $edge_regexp = $opt->list2re(@edge_list);
 subtype Edge,
   as Str,
   where { lc($_) =~ m{\A$edge_regexp\z} },
-  message { "That string is not an edge symbol" };
+  message { "That string ($_) is not an edge symbol" };
 
 ## -------- Atoms Edge symbols
 use vars qw(@atomsedge_list $atomsedge_regexp);
@@ -144,7 +145,7 @@ $atomsedge_regexp = $opt->list2re(@atomsedge_list);
 subtype AtomsEdge,
   as Str,
   where { lc($_) =~ m{\A$atomsedge_regexp\z} },
-  message { "That string is not an atoms edge symbol" };
+  message { "That string ($_) is not an atoms edge symbol" };
 
 ## -------- Feff "cards"
 use vars qw(@feffcard_list $feffcard_regexp);
@@ -160,7 +161,7 @@ $feffcard_regexp = $opt->list2re(@feffcard_list);
 subtype FeffCard,
   as Str,
   where { lc($_) =~ m{\A$feffcard_regexp\z} },
-  message { "That string is not a Feff keyword" };
+  message { "That string ($_) is not a Feff keyword" };
 
 ## -------- Clamp words
 use vars qw(@clamp_list $clamp_regexp);
@@ -169,7 +170,7 @@ $clamp_regexp = $opt->list2re(@clamp_list);
 subtype Clamp,
   as Str,
   where { lc($_) =~ m{\A$clamp_regexp\z} },
-  message { "That string is not a clamp strength" };
+  message { "That string ($_) is not a clamp strength" };
 
 
 ## -------- Configuration keywords
@@ -179,7 +180,7 @@ $config_regexp = $opt->list2re(@config_list);
 subtype Config,
   as Str,
   where { lc($_) =~ m{\A$config_regexp\z} },
-  message { "That string is not a Demeter configuration keyword" };
+  message { "That string is ($_) not a Demeter configuration keyword" };
 
 ## -------- Statistics keywords
 use vars qw(@stat_list $stat_regexp);
@@ -189,7 +190,7 @@ $stat_regexp = $opt->list2re(@stat_list);
 subtype Statistic,
   as Str,
   where { lc($_) =~ m{\A$stat_regexp\z} },
-  message { "That string is not a Demeter statistical parameter" };
+  message { "That string ($_) is not a Demeter statistical parameter" };
 
 
 ## -------- Atoms lattice keywords
@@ -199,7 +200,7 @@ $lattice_regexp = $opt->list2re(@lattice_list);
 subtype AtomsLattice,
   as Str,
   where { lc($_) =~ m{\A$lattice_regexp\z} },
-  message { "That string is not an Atoms lattice keyword" };
+  message { "That string ($_) is not an Atoms lattice keyword" };
 
 ## -------- Atoms gas keywords
 use vars qw(@gas_list $gas_regexp);
@@ -208,7 +209,7 @@ $gas_regexp = $opt->list2re(@gas_list);
 subtype AtomsGas,
   as Str,
   where { lc($_) =~ m{\A$gas_regexp\z} },
-  message { "That string is not an Atoms gas keyword" };
+  message { "That string ($_) is not an Atoms gas keyword" };
 
 ## -------- Atoms obsolete keywords
 use vars qw(@obsolete_list $obsolete_regexp);
@@ -220,7 +221,7 @@ $obsolete_regexp = $opt->list2re(@obsolete_list);
 subtype AtomsObsolete,
   as Str,
   where { lc($_) =~ m{\A$obsolete_regexp\z} },
-  message { "That string is not an Atoms obsolete keyword" };
+  message { "That string ($_) is not an Atoms obsolete keyword" };
 
 ## -------- Spacegroup database keys
 use vars qw(@sg_list $sg_regexp);
@@ -230,7 +231,7 @@ $sg_regexp = $opt->list2re(@sg_list);
 subtype SpaceGroup,
   as Str,
   where { lc($_) =~ m{\A$sg_regexp\z} },
-  message { "That string is not a spacegroup database key" };
+  message { "That string ($_) is not a spacegroup database key" };
 
 ## -------- Plotting backends
 use vars qw(@plotting_list $plotting_regexp);
@@ -239,7 +240,7 @@ $plotting_regexp = $opt->list2re(@plotting_list);
 subtype Plotting,
   as Str,
   where { lc($_) =~ m{\A$plotting_regexp\z} },
-  message { "That string is not a Demeter plotting backend" };
+  message { "That string ($_) is not a Demeter plotting backend" };
 
 ## -------- Data parts
 use vars qw(@dataparts_list $dataparts_regexp);
@@ -248,7 +249,7 @@ $dataparts_regexp = $opt->list2re(@dataparts_list);
 subtype DataPart,
   as Str,
   where { lc($_) =~ m{\A$dataparts_regexp\z} },
-  message { "That string is not a Demeter data part" };
+  message { "That string ($_) is not a Demeter data part" };
 
 ## -------- Data types
 use vars qw(@datatype_list $datatype_regexp);
@@ -257,7 +258,7 @@ $datatype_regexp = $opt->list2re(@datatype_list);
 subtype DataType,
   as Str,
   where { lc($_) =~ m{\A$datatype_regexp\z} },
-  message { "That string is not a Demeter data type" };
+  message { "That string ($_) is not a Demeter data type" };
 
 ## -------- Fitting spaces
 use vars qw(@fitspace_list $fitspace_regexp);
@@ -266,7 +267,16 @@ $fitspace_regexp = $opt->list2re(@fitspace_list);
 subtype FitSpace,
   as Str,
   where { lc($_) =~ m{\A$fitspace_regexp\z} },
-  message { "That string is not a Demeter fitting space" };
+  message { "That string ($_) is not a Demeter fitting space" };
+
+## -------- Plotting spaces
+use vars qw(@plotspace_list $plotspace_regexp);
+@plotspace_list = qw(e k r q rmr kq);
+$plotspace_regexp = $opt->list2re(@plotspace_list);
+subtype PlotSpace,
+  as Str,
+  where { lc($_) =~ m{\A$plotspace_regexp\z} },
+  message { "That string ($_) is not a Demeter plotting space" };
 
 
 ## -------- Mode object type contstraints
@@ -277,23 +287,23 @@ subtype FitSpace,
 subtype 'TemplateProcess'
       => as 'Str'
       => where { $_ =~ m{\A(?:demeter|ifeffit|iff_columns|feffit)\z}i }
-      => message { "That is not a valid processing template group" };
+      => message { "That ($_) is not a valid processing template group" };
 subtype 'TemplateFit'
       => as 'Str'
       => where { $_ =~ m{\A(?:demeter|ifeffit|iff_columns|feffit)\z}i }
-      => message { "That is not a valid fitting template group" };
+      => message { "That ($_) is not a valid fitting template group" };
 subtype 'TemplatePlot'
       => as 'Str'
       => where { $_ =~ m{\A(?:demeter|gnuplot|pgplot)\z}i }
-      => message { "That is not a valid plotting template group" };
+      => message { "That ($_) is not a valid plotting template group" };
 subtype 'TemplateFeff'
       => as 'Str'
       => where { $_ =~ m{\Afeff[68]\z}i }
-      => message { "That is not a valid Feff template group" };
+      => message { "That ($_) is not a valid Feff template group" };
 subtype 'TemplateAnalysis'
       => as 'Str'
       => where { $_ =~ m{\A(?:demeter|ifeffit|iff_columns)\z}i }
-      => message { "That is not a valid plotting template group" };
+      => message { "That ($_) is not a valid plotting template group" };
 
 
 ## -------- Line types in PGPLOT
@@ -303,17 +313,17 @@ $pgplotlines_regexp = $opt->list2re(@pgplotlines_list);
 subtype PgplotLine,
   as Str,
   where { lc($_) =~ m{\A$pgplotlines_regexp\z} },
-  message { "That string is not a PGPLOT line type" };
+  message { "That string ($_) is not a PGPLOT line type" };
 
 subtype MERIP,
   as Str,
   where { lc($_) =~ m{\A(?:[merip]|rmr)\z} },
-  message { "That string is not a complex function part" };
+  message { "That string ($_) is not a complex function part" };
 
 subtype PlotWeight,
   as Str,
   where { lc($_) =~ m{\A(?:1|2|3|arb)\z} },
-  message { "That string is not a plotting k-weight" };
+  message { "That string ($_) is not a plotting k-weight" };
 
 ## -------- Ifeffit interpolation functions
 use vars qw(@interp_list $interp_regexp);
@@ -322,7 +332,7 @@ $interp_regexp = $opt->list2re(@interp_list);
 subtype Interp,
   as Str,
   where { lc($_) =~ m{\A$interp_regexp\z} },
-  message { "That string is not an interpolation type" };
+  message { "That string ($_) is not an interpolation type" };
 
 ## -------- Parameter types
 use vars qw(@gds_list $gds_regexp);
@@ -331,7 +341,7 @@ $gds_regexp = $opt->list2re(@gds_list);
 subtype GDS,
   as Str,
   where { lc($_) =~ m{\A$gds_regexp\z} },
-  message { "That string is not a parameter type" };
+  message { "That string ($_) is not a parameter type" };
 
 ## -------- Reserved words cannot be parameter names
 use vars qw(@notreserved_list $notreserved_regexp);

@@ -106,6 +106,7 @@ sub sum {
 sub plot {
   my ($self, $space) = @_;
   return $self if not $self->is_valid;
+  $space ||= $self->po->space;
   my $which = q{};
   ## make sure all the constituent paths are up to date
   if (lc($space) eq 'k') {

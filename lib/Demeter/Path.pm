@@ -253,6 +253,7 @@ sub rewrite_cv {
 
 sub plot {
   my ($self, $space) = @_;
+  $space ||= $self->po->space;
   my $which = q{};
   if (lc($space) eq 'k') {
     $self -> _update("fft");
@@ -598,7 +599,7 @@ rather than to fret about the path indeces.
 
 When this is true, this Path will be included in the next fit.
 
-=item C<plot>_after_fit (boolean)
+=item C<plot_after_fit> (boolean)
 
 This is a flag for use by a user interface to indicate that after a
 fit is finished, this Path should be plotted.
