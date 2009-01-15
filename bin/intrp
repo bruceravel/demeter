@@ -43,6 +43,7 @@ if ($ANSIColor_exists) {
 ($noframe = 1) if not ($latex or $html);
 
 my $feff = Demeter::Feff -> new(yaml => $ARGV[0]||"feff.yaml");
+$feff -> save(1);
 my $style = ($nocolor) ? q{}
           : ($latex)   ? "latex"
           : ($html)    ? "css"

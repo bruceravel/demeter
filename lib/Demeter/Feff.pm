@@ -140,8 +140,8 @@ has 'pathlist' => (		# list of ScatteringPath objects
 has 'npaths'       => (is=>'rw', isa =>  Natural,   default => 0);
 
 		       ## reporting and processing
-has 'screen'       => (is=>'rw', isa => 'Bool',         default => 1);   # boolean
-has 'buffer'       => (is=>'rw', isa => 'Bool',         default => 0);   # boolean
+has 'screen'       => (is=>'rw', isa => 'Bool', default => 1);
+has 'buffer'       => (is=>'rw', isa => 'Bool', default => 0);
 has 'iobuffer' => (
 		   metaclass => 'Collection::Array',
 		   is        => 'rw',
@@ -153,7 +153,7 @@ has 'iobuffer' => (
 				 'clear' => 'clear_iobuffer',
 				}
 		  );
-has 'save'         => (is=>'rw', isa => 'Bool',         default => 1);   # boolean
+has 'save' => (is=>'rw', isa => 'Bool', default => 1);
 
 sub BUILD {
   my ($self, @params) = @_;

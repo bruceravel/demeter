@@ -218,7 +218,8 @@ sub _update_from_ScatteringPath {
        File::Spec->catfile($workspace, $fname));
   $self->set(folder => $workspace,
 	     file   => $fname);
-  $self->sp->set(file=>File::Spec->catfile($workspace, $fname));
+  $self->sp->set(folder => $workspace,
+		 file   => $fname);
   my $label = $self -> name || $sp->intrplist;
   $self->set(name=>$label);
 

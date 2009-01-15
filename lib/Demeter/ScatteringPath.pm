@@ -35,6 +35,7 @@ extends 'Demeter';
 
 use Chemistry::Elements qw(get_symbol);
 use Carp;
+use File::Spec;
 use List::Util qw(reduce);
 use List::MoreUtils qw(pairwise notall all any);
 #use Math::Complex;
@@ -93,6 +94,7 @@ has 'fuzzy'	   => (is => 'rw', isa => 'Num',      default => 0);
 has 'Type'	   => (is => 'rw', isa => 'Str',      default => q{});
 has 'weight'	   => (is => 'rw', isa => 'Int',      default => 0);
 has 'randstring'   => (is => 'rw', isa => 'Str',      default => q{});
+has 'folder'       => (is => 'rw', isa => 'Str',      default => q{});
 has 'file'         => (is => 'rw', isa => 'Str',      default => q{});
 
 ## set by details method:
@@ -112,7 +114,7 @@ sub DEMOLISH {
 
 override 'alldone' => sub {
   my ($self) = @_;
-  my $nnnn = $self->file;
+  my $nnnn = File::Spec->catfile($self->folder, $self->file);
   unlink $nnnn if -e $nnnn;
   return $self;
 };
