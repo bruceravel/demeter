@@ -15,9 +15,6 @@ package Demeter::UI::HephaestusApp;
 
 =cut
 
-use strict;
-use warnings;
-
 use Carp;
 use File::Spec;
 
