@@ -41,11 +41,47 @@ sub new {
 
 
 
-  ## -------- lattice constant controls
   $hbox = Wx::BoxSizer->new( wxHORIZONTAL );
+  my $buttonbox = Wx::BoxSizer->new( wxVERTICAL );
+  $hbox -> Add($buttonbox, 1, wxGROW|wxALL, 10);
+
+  $self->{toolbar} = Wx::ToolBar->new($self, -1, wxDefaultPosition, wxDefaultSize, wxTB_VERTICAL|wxTB_TEXT);
+
+  my $icon = File::Spec->catfile($Demeter::UI::Atoms::atoms_base, 'Atoms', 'icons', "open.png");
+  $self->{toolbar} -> AddTool(-1, Wx::Bitmap->new($icon, wxBITMAP_TYPE_PNG), wxNullBitmap, wxITEM_NORMAL, undef,
+			      "Open file", "Open an Atoms input or CIF file");
+
+  $icon = File::Spec->catfile($Demeter::UI::Atoms::atoms_base, 'Atoms', 'icons', "save.png");
+  $self->{toolbar} -> AddTool(-1, Wx::Bitmap->new($icon, wxBITMAP_TYPE_PNG), wxNullBitmap, wxITEM_NORMAL, undef,
+			      "Save data", "Save an atoms input file from these data");
+
+  $icon = File::Spec->catfile($Demeter::UI::Atoms::atoms_base, 'Atoms', 'icons', "exec.png");
+  $self->{toolbar} -> AddTool(-1, Wx::Bitmap->new($icon, wxBITMAP_TYPE_PNG), wxNullBitmap, wxITEM_NORMAL, undef,
+			      "Run Atoms", "Generate input data for Feff from this crystallographic data");
+
+  $icon = File::Spec->catfile($Demeter::UI::Atoms::atoms_base, 'Atoms', 'icons', "add.png");
+  $self->{toolbar} -> AddTool(-1, Wx::Bitmap->new($icon, wxBITMAP_TYPE_PNG), wxNullBitmap, wxITEM_NORMAL, undef,
+			      "Add a site", "Add one more item to the list of sites");
+
+
+  $self->{toolbar} -> Realize;
+  $buttonbox -> Add($self->{toolbar}, 0, wxALL, 5);
+
+#   $self->{open} = Wx::Button->new($self, -1, 'Open file');
+#   $buttonbox -> Add($self->{open}, 0, wxGrow|wxEXPAND|wxTOP|wxBOTTOM, 5);
+
+#   $self->{run} = Wx::Button->new($self, -1, 'Run Atoms');
+#   $buttonbox -> Add($self->{run}, 1, wxGrow|wxEXPAND|wxTOP|wxBOTTOM, 25);
+
+#   $self->{add} = Wx::Button->new($self, -1, 'Add a site');
+#   $buttonbox -> Add($self->{add}, 0, wxGrow|wxEXPAND|wxTOP|wxBOTTOM, 5);
+
+  my $sidebox = Wx::BoxSizer->new( wxVERTICAL );
+  $hbox -> Add($sidebox, 4, wxGROW|wxALL);
+
+  ## -------- lattice constant controls
   $self->{latticebox}       = Wx::StaticBox->new($self, -1, 'Lattice Constants', wxDefaultPosition, wxDefaultSize);
   $self->{latticeboxsizer}  = Wx::StaticBoxSizer->new( $self->{latticebox}, wxVERTICAL );
-
   my $tsz = Wx::GridBagSizer->new( 6, 10 );
 
   my $width = 10;
@@ -56,19 +92,19 @@ sub new {
   $tsz -> Add($self->{a},Wx::GBPosition->new(0,1));
 
   $label = Wx::StaticText->new($self, -1, 'B', wxDefaultPosition, [$width,-1]);
-  $tsz -> Add($label,Wx::GBPosition->new(1,0));
+  $tsz -> Add($label,Wx::GBPosition->new(0,2));
   $self->{b} = Wx::TextCtrl->new($self, -1, q{}, wxDefaultPosition, [$width*7,-1]);
-  $tsz -> Add($self->{b},Wx::GBPosition->new(1,1));
+  $tsz -> Add($self->{b},Wx::GBPosition->new(0,3));
 
   $label = Wx::StaticText->new($self, -1, 'C', wxDefaultPosition, [$width,-1]);
-  $tsz -> Add($label,Wx::GBPosition->new(2,0));
+  $tsz -> Add($label,Wx::GBPosition->new(0,4));
   $self->{c} = Wx::TextCtrl->new($self, -1, q{}, wxDefaultPosition, [$width*7,-1]);
-  $tsz -> Add($self->{c},Wx::GBPosition->new(2,1));
+  $tsz -> Add($self->{c},Wx::GBPosition->new(0,5));
 
   $label = Wx::StaticText->new($self, -1, 'α', wxDefaultPosition, [$width,-1]);
-  $tsz -> Add($label,Wx::GBPosition->new(0,2));
+  $tsz -> Add($label,Wx::GBPosition->new(1,0));
   $self->{alpha} = Wx::TextCtrl->new($self, -1, q{}, wxDefaultPosition, [$width*7,-1]);
-  $tsz -> Add($self->{alpha},Wx::GBPosition->new(0,3));
+  $tsz -> Add($self->{alpha},Wx::GBPosition->new(1,1));
 
   $label = Wx::StaticText->new($self, -1, 'β', wxDefaultPosition, [$width,-1]);
   $tsz -> Add($label,Wx::GBPosition->new(1,2));
@@ -76,17 +112,14 @@ sub new {
   $tsz -> Add($self->{beta},Wx::GBPosition->new(1,3));
 
   $label = Wx::StaticText->new($self, -1, 'γ', wxDefaultPosition, [$width,-1]);
-  $tsz -> Add($label,Wx::GBPosition->new(2,2));
+  $tsz -> Add($label,Wx::GBPosition->new(1,4));
   $self->{gamma} = Wx::TextCtrl->new($self, -1, q{}, wxDefaultPosition, [$width*7,-1]);
-  $tsz -> Add($self->{gamma},Wx::GBPosition->new(2,3));
+  $tsz -> Add($self->{gamma},Wx::GBPosition->new(1,5));
 
   $self->{latticeboxsizer} -> Add($tsz, 0, wxEXPAND|wxALL, 5);
-  $hbox -> Add($self->{latticeboxsizer}, 0, wxALIGN_CENTER_HORIZONTAL|wxALL, 5);
+  $sidebox -> Add($self->{latticeboxsizer}, 0, wxGROW|wxALL, 5);
   $vbox -> Add($hbox, 0, wxGROW|wxALL);
   ## -------- end of lattice constant controls
-
-  my $sidebox = Wx::BoxSizer->new( wxVERTICAL );
-  $hbox -> Add($sidebox, 0, wxGROW|wxALL);
 
   $hbox = Wx::BoxSizer->new( wxHORIZONTAL );
   $sidebox -> Add($hbox, 0, wxEXPAND|wxALL, 5);
@@ -182,6 +215,12 @@ sub AddSite {
 
   $self->{"tag$i"} = Wx::TextCtrl->new($self, -1, q{tag}, wxDefaultPosition, [$width,-1]);
   $self->{$this} -> Add($self->{"tag$i"}, 0, wxALL, 3);
+
+  my $bmp = Wx::Bitmap->new(File::Spec->catfile($Demeter::UI::Atoms::atoms_base, 'Atoms', 'icons', "delsite.png"), wxBITMAP_TYPE_PNG);
+  $self->{"del$i"} = Wx::BitmapButton->new($self, -1, $bmp, wxDefaultPosition, [20,20]);
+  $self->{"del$i"} -> SetBitmapSelected($bmp);
+  $self->{"del$i"} -> SetBitmapFocus($bmp);
+  $self->{$this} -> Add($self->{"del$i"}, 0, wxALL, 3);
 
   return $self;
 };

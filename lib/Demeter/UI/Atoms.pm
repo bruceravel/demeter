@@ -34,9 +34,9 @@ sub new {
 				 -1,              # ID -1 means any
 				 'Atoms',         # title
 				 wxDefaultPosition,
-				 [700,700],
+				 [550,750],
 			       );
-  my $nb = Wx::Toolbook->new( $self, -1, wxDefaultPosition, wxDefaultSize, wxNB_LEFT );
+  my $nb = Wx::Notebook->new( $self, -1, wxDefaultPosition, wxDefaultSize, wxNB_TOP );
   my $echoarea = Demeter::UI::Wx::EchoArea->new($self);
   my $vbox = Wx::BoxSizer->new( wxVERTICAL);
 
