@@ -1,4 +1,4 @@
-package  Demeter::UI::Atoms::Xtal;
+package  Demeter::UI::Atoms::Xtal::SiteList;
 
 =for Copyright
  .
@@ -15,28 +15,96 @@ package  Demeter::UI::Atoms::Xtal;
 
 =cut
 
+use Wx qw( :everything );
+use base qw(Wx::Grid);
+
+sub new {
+  my $class = shift;
+  my $this = $class->SUPER::new($_[0], -1, wxDefaultPosition, wxDefaultSize, wxVSCROLL|wxALWAYS_SHOW_SB);
+
+  $this -> CreateGrid(10,6);
+  #$this -> EnableScrolling(1,1);
+  #$this -> SetScrollbars(20, 20, 50, 50);
+
+  $this -> SetColLabelValue(0, 'Core');
+  $this -> SetColSize      (0,  40);
+  $this -> SetColLabelValue(1, 'El.');
+  $this -> SetColSize      (1,  40);
+  $this -> SetColLabelValue(2, 'x');
+  $this -> SetColSize      (2,  90);
+  $this -> SetColLabelValue(3, 'y');
+  $this -> SetColSize      (3,  90);
+  $this -> SetColLabelValue(4, 'z');
+  $this -> SetColSize      (4,  90);
+  $this -> SetColLabelValue(5, 'Tag');
+  $this -> SetColSize      (5,  50);
+  #$this -> SetColLabelValue(6,  q{});
+  #$this -> SetColSize      (6,  20);
+
+  foreach (0 .. $this->GetNumberRows) {
+    $this->AutoSizeRow($_, 1);
+    $this->SetReadOnly( $_, 6, 1 );
+  };
+
+  return $this;
+};
+
+
+package  Demeter::UI::Atoms::Xtal;
+
+
 use Chemistry::Elements qw(get_Z get_name get_symbol);
 use Xray::Absorption;
-use Demeter::UI::Wx::PeriodicTable;
+#use Demeter::UI::Wx::GridTable;
 
 use Wx qw( :everything );
 use base 'Wx::Panel';
-use Wx::Event qw(EVT_BUTTON  EVT_KEY_DOWN);
+use Wx::Grid;
+use Wx::Event qw(EVT_BUTTON  EVT_KEY_DOWN EVT_TOOL_ENTER EVT_ENTER_WINDOW EVT_LEAVE_WINDOW);
 
+my %hints = (
+	     titles  => "Text describing this structure which also be used as title lines in the Feff calculation",
+	     a	     => "The value of the A lattice constant in Ångstroms",
+	     b	     => "The value of the B lattice constant in Ångstroms",
+	     c	     => "The value of the C lattice constant in Ångstroms",
+	     alpha   => "The value of the alpha lattice angle (between B and C) in degrees",
+	     beta    => "The value of the beta lattice angle (between A and C) in degrees",
+	     gamma   => "The value of the gamma lattice angle (between A and B) in degrees",
+	     rmax    => "The size of the cluster of atoms in Ångstroms",
+	     rpath   => "The maximum path length in Feff's path expansion, in Ångstroms",
+	     shift_x => "The x-coordinate of the vector for recentering this crystal",
+	     shift_y => "The y-coordinate of the vector for recentering this crystal",
+	     shift_z => "The z-coordinate of the vector for recentering this crystal",
+	     edge    => "The absorption edge to use in the Feff calculation",
+
+	     open    => "Open an Atoms input file or a CIF file",
+	     save    => "Save an atoms input file from these crystallographic data",
+	     exec    => "Generate input data for Feff from these crystallographic data",
+	     add     => "Add another site to the list of sites",
+
+	     radio   => "Select this site as the absorbing atom in the Feff calculation",
+	     element => "The element occupying this unique crystallographic site",
+	     x       => "The x-coordinate of this unique crystallographic site",
+	     y       => "The x-coordinate of this unique crystallographic site",
+	     z       => "The x-coordinate of this unique crystallographic site",
+	     tag     => "A short string identifying this unique crystallographic site",
+	     del     => "Click this button to remove this crystallographic site",
+	    );
 
 sub new {
-  my ($class, $page, $echoarea) = @_;
+  my ($class, $page, $statusbar) = @_;
   my $self = $class->SUPER::new($page, -1, wxDefaultPosition, wxDefaultSize, wxMAXIMIZE_BOX );
-  $self->{echo} = $echoarea;
+  $self->{statusbar} = $statusbar;
   my $vbox = Wx::BoxSizer->new( wxVERTICAL );
 
   my $hbox = Wx::BoxSizer->new( wxHORIZONTAL );
   $self->{titlesbox}       = Wx::StaticBox->new($self, -1, 'Titles', wxDefaultPosition, wxDefaultSize);
   $self->{titlesboxsizer}  = Wx::StaticBoxSizer->new( $self->{titlesbox}, wxVERTICAL );
   $self->{titles}          = Wx::TextCtrl->new($self, -1, q{}, wxDefaultPosition, wxDefaultSize, wxTE_MULTILINE|wxHSCROLL);
+  $self->set_hint("titles");
   $self->{titlesboxsizer} -> Add($self->{titles}, 1, wxGROW|wxALL, 0);
   $hbox -> Add($self->{titlesboxsizer}, 1, wxGROW|wxALL, 5);
-  $vbox -> Add($hbox, 1, wxGROW|wxALL);
+  $vbox -> Add($hbox, 0, wxGROW|wxALL);
 
 
 
@@ -45,39 +113,18 @@ sub new {
   my $buttonbox = Wx::BoxSizer->new( wxVERTICAL );
   $hbox -> Add($buttonbox, 1, wxGROW|wxALL, 10);
 
-  $self->{toolbar} = Wx::ToolBar->new($self, -1, wxDefaultPosition, wxDefaultSize, wxTB_VERTICAL|wxTB_TEXT);
-
-  my $icon = File::Spec->catfile($Demeter::UI::Atoms::atoms_base, 'Atoms', 'icons', "open.png");
-  $self->{toolbar} -> AddTool(-1, Wx::Bitmap->new($icon, wxBITMAP_TYPE_PNG), wxNullBitmap, wxITEM_NORMAL, undef,
-			      "Open file", "Open an Atoms input or CIF file");
-
-  $icon = File::Spec->catfile($Demeter::UI::Atoms::atoms_base, 'Atoms', 'icons', "save.png");
-  $self->{toolbar} -> AddTool(-1, Wx::Bitmap->new($icon, wxBITMAP_TYPE_PNG), wxNullBitmap, wxITEM_NORMAL, undef,
-			      "Save data", "Save an atoms input file from these data");
-
-  $icon = File::Spec->catfile($Demeter::UI::Atoms::atoms_base, 'Atoms', 'icons', "exec.png");
-  $self->{toolbar} -> AddTool(-1, Wx::Bitmap->new($icon, wxBITMAP_TYPE_PNG), wxNullBitmap, wxITEM_NORMAL, undef,
-			      "Run Atoms", "Generate input data for Feff from this crystallographic data");
-
-  $icon = File::Spec->catfile($Demeter::UI::Atoms::atoms_base, 'Atoms', 'icons', "add.png");
-  $self->{toolbar} -> AddTool(-1, Wx::Bitmap->new($icon, wxBITMAP_TYPE_PNG), wxNullBitmap, wxITEM_NORMAL, undef,
-			      "Add a site", "Add one more item to the list of sites");
-
+  $self->{toolbar} = Wx::ToolBar->new($self, -1, wxDefaultPosition, wxDefaultSize, wxTB_VERTICAL|wxTB_3DBUTTONS|wxTB_TEXT);
+  $self->{toolbar} -> AddTool(-1, "Open file",  $self->icon("open"), wxNullBitmap, wxITEM_NORMAL, q{}, $hints{open});
+  $self->{toolbar} -> AddTool(-1, "Save data",  $self->icon("save"), wxNullBitmap, wxITEM_NORMAL, q{}, $hints{save});
+  $self->{toolbar} -> AddTool(-1, "Run Atoms",  $self->icon("exec"), wxNullBitmap, wxITEM_NORMAL, q{}, $hints{exec});
+  $self->{toolbar} -> AddTool(-1, "Add a site", $self->icon("add"),  wxNullBitmap, wxITEM_NORMAL, q{}, $hints{add} );
+  EVT_TOOL_ENTER( $self, $self->{toolbar}, \&OnToolEnter );
 
   $self->{toolbar} -> Realize;
   $buttonbox -> Add($self->{toolbar}, 0, wxALL, 5);
 
-#   $self->{open} = Wx::Button->new($self, -1, 'Open file');
-#   $buttonbox -> Add($self->{open}, 0, wxGrow|wxEXPAND|wxTOP|wxBOTTOM, 5);
-
-#   $self->{run} = Wx::Button->new($self, -1, 'Run Atoms');
-#   $buttonbox -> Add($self->{run}, 1, wxGrow|wxEXPAND|wxTOP|wxBOTTOM, 25);
-
-#   $self->{add} = Wx::Button->new($self, -1, 'Add a site');
-#   $buttonbox -> Add($self->{add}, 0, wxGrow|wxEXPAND|wxTOP|wxBOTTOM, 5);
-
   my $sidebox = Wx::BoxSizer->new( wxVERTICAL );
-  $hbox -> Add($sidebox, 4, wxGROW|wxALL);
+  $hbox -> Add($sidebox, 3, wxGROW|wxALL);
 
   ## -------- lattice constant controls
   $self->{latticebox}       = Wx::StaticBox->new($self, -1, 'Lattice Constants', wxDefaultPosition, wxDefaultSize);
@@ -87,33 +134,33 @@ sub new {
   my $width = 10;
 
   my $label = Wx::StaticText->new($self, -1, 'A', wxDefaultPosition, [$width,-1]);
-  $tsz -> Add($label,Wx::GBPosition->new(0,0));
   $self->{a} = Wx::TextCtrl->new($self, -1, q{}, wxDefaultPosition, [$width*7,-1]);
+  $tsz -> Add($label,    Wx::GBPosition->new(0,0));
   $tsz -> Add($self->{a},Wx::GBPosition->new(0,1));
 
   $label = Wx::StaticText->new($self, -1, 'B', wxDefaultPosition, [$width,-1]);
-  $tsz -> Add($label,Wx::GBPosition->new(0,2));
   $self->{b} = Wx::TextCtrl->new($self, -1, q{}, wxDefaultPosition, [$width*7,-1]);
+  $tsz -> Add($label,    Wx::GBPosition->new(0,2));
   $tsz -> Add($self->{b},Wx::GBPosition->new(0,3));
 
-  $label = Wx::StaticText->new($self, -1, 'C', wxDefaultPosition, [$width,-1]);
-  $tsz -> Add($label,Wx::GBPosition->new(0,4));
+  $label     = Wx::StaticText->new($self, -1, 'C', wxDefaultPosition, [$width,-1]);
   $self->{c} = Wx::TextCtrl->new($self, -1, q{}, wxDefaultPosition, [$width*7,-1]);
+  $tsz -> Add($label,    Wx::GBPosition->new(0,4));
   $tsz -> Add($self->{c},Wx::GBPosition->new(0,5));
 
-  $label = Wx::StaticText->new($self, -1, 'α', wxDefaultPosition, [$width,-1]);
-  $tsz -> Add($label,Wx::GBPosition->new(1,0));
-  $self->{alpha} = Wx::TextCtrl->new($self, -1, q{}, wxDefaultPosition, [$width*7,-1]);
+  $label         = Wx::StaticText->new($self, -1, 'α', wxDefaultPosition, [$width,-1]);
+  $self->{alpha} = Wx::TextCtrl  ->new($self, -1, q{}, wxDefaultPosition, [$width*7,-1]);
+  $tsz -> Add($label,        Wx::GBPosition->new(1,0));
   $tsz -> Add($self->{alpha},Wx::GBPosition->new(1,1));
 
-  $label = Wx::StaticText->new($self, -1, 'β', wxDefaultPosition, [$width,-1]);
-  $tsz -> Add($label,Wx::GBPosition->new(1,2));
-  $self->{beta} = Wx::TextCtrl->new($self, -1, q{}, wxDefaultPosition, [$width*7,-1]);
-  $tsz -> Add($self->{beta},Wx::GBPosition->new(1,3));
+  $label        = Wx::StaticText->new($self, -1, 'β', wxDefaultPosition, [$width,-1]);
+  $self->{beta} = Wx::TextCtrl  ->new($self, -1, q{}, wxDefaultPosition, [$width*7,-1]);
+  $tsz -> Add($label,        Wx::GBPosition->new(1,2));
+  $tsz -> Add($self->{beta}, Wx::GBPosition->new(1,3));
 
-  $label = Wx::StaticText->new($self, -1, 'γ', wxDefaultPosition, [$width,-1]);
-  $tsz -> Add($label,Wx::GBPosition->new(1,4));
-  $self->{gamma} = Wx::TextCtrl->new($self, -1, q{}, wxDefaultPosition, [$width*7,-1]);
+  $label         = Wx::StaticText->new($self, -1, 'γ', wxDefaultPosition, [$width,-1]);
+  $self->{gamma} = Wx::TextCtrl  ->new($self, -1, q{}, wxDefaultPosition, [$width*7,-1]);
+  $tsz -> Add($label,        Wx::GBPosition->new(1,4));
   $tsz -> Add($self->{gamma},Wx::GBPosition->new(1,5));
 
   $self->{latticeboxsizer} -> Add($tsz, 0, wxEXPAND|wxALL, 5);
@@ -173,56 +220,50 @@ sub new {
   $sidebox -> Add($self->{shiftboxsizer}, 0, wxEXPAND|wxALL, 5);
   ## -------- end of R constant controls
 
+  $self->set_hint($_) foreach (qw(a b c alpha beta gamma rmax rpath shift_x shift_y shift_z edge));
 
 
   $hbox = Wx::BoxSizer->new( wxHORIZONTAL );
-  $self->{sitesbox}       = Wx::StaticBox->new($self, -1, 'Sites', wxDefaultPosition, wxDefaultSize);
-  $self->{sitesboxsizer}  = Wx::StaticBoxSizer->new( $self->{sitesbox}, wxVERTICAL );
-  foreach my $i (1..5) {
-    $self->AddSite($i);
+  $self->{sitesgrid} = Demeter::UI::Atoms::Xtal::SiteList->new($self, -1);
+
+  $hbox -> Add($self->{sitesgrid}, 1, wxGROW|wxALL, 5);
+  $vbox -> Add($hbox, 1, wxGROW|wxALL, 5);
+
+  $self -> SetSizer( $vbox );
+  return $self;
+};
+
+sub icon {
+  my ($self, $which) = @_;
+  my $icon = File::Spec->catfile($Demeter::UI::Atoms::atoms_base, 'Atoms', 'icons', "$which.png");
+  return wxNullBitmap if (not -e $icon);
+  return Wx::Bitmap->new($icon, wxBITMAP_TYPE_ANY)
+};
+
+sub set_hint {
+  my ($self, $w) = @_;
+  (my $ww = $w) =~ s{\d+\z}{};
+  EVT_ENTER_WINDOW($self->{$w}, sub{my($widg, $event) = @_; 
+				    $self->OnTextCtrlEnter($widg, $event, $hints{$ww}||q{No hint!})});
+  EVT_LEAVE_WINDOW($self->{$w}, sub{$self->OnTextCtrlLeave});
+};
+
+sub OnToolEnter {
+  my ($self, $event) = @_;
+  if ( $event->GetSelection > -1 ) {
+    $self->{statusbar}->PushStatusText($self->{toolbar}->GetToolLongHelp($event->GetSelection));
+  } else {
+    $self->{statusbar}->PopStatusText();
   };
-  $hbox -> Add($self->{sitesboxsizer}, 1, wxGROW|wxALL, 5);
-  $vbox -> Add($hbox, 2, wxGROW|wxALL);
-
-
-
-  $self -> SetSizerAndFit( $vbox );
-  return $self;
+};
+sub OnTextCtrlEnter {
+  my ($self, $widget, $event, $hint) = @_;
+  $self->{statusbar}->PushStatusText($hint);
+};
+sub OnTextCtrlLeave {
+  my ($self) = @_;
+  $self->{statusbar}->PopStatusText();
 };
 
-sub AddSite {
-  my ($self, $i) = @_;
-  my $width = 70;
-  my $this = 'box'.$i;
-  $self->{$this} = Wx::BoxSizer->new( wxHORIZONTAL );
-  $self->{sitesboxsizer} -> Add($self->{$this}, 0, wxGROW|wxALL, 0);
-
-  $self->{"radio$i"} = ($i == 1) ? Wx::RadioButton->new($self, -1, $i, wxDefaultPosition, wxDefaultSize, wxRB_GROUP)
-    : Wx::RadioButton->new($self, -1, $i, wxDefaultPosition, wxDefaultSize);
-  $self->{$this} -> Add($self->{"radio$i"}, 0, wxALL, 3);
-
-  $self->{"element$i"} = Wx::TextCtrl->new($self, -1, q{El}, wxDefaultPosition, [30,-1]);
-  $self->{$this} -> Add($self->{"element$i"}, 0, wxALL, 3);
-
-  $self->{"x$i"} = Wx::TextCtrl->new($self, -1, q{x}, wxDefaultPosition, [$width,-1]);
-  $self->{$this} -> Add($self->{"x$i"}, 0, wxALL, 3);
-
-  $self->{"y$i"} = Wx::TextCtrl->new($self, -1, q{y}, wxDefaultPosition, [$width,-1]);
-  $self->{$this} -> Add($self->{"y$i"}, 0, wxALL, 3);
-
-  $self->{"z$i"} = Wx::TextCtrl->new($self, -1, q{z}, wxDefaultPosition, [$width,-1]);
-  $self->{$this} -> Add($self->{"z$i"}, 0, wxALL, 3);
-
-  $self->{"tag$i"} = Wx::TextCtrl->new($self, -1, q{tag}, wxDefaultPosition, [$width,-1]);
-  $self->{$this} -> Add($self->{"tag$i"}, 0, wxALL, 3);
-
-  my $bmp = Wx::Bitmap->new(File::Spec->catfile($Demeter::UI::Atoms::atoms_base, 'Atoms', 'icons', "delsite.png"), wxBITMAP_TYPE_PNG);
-  $self->{"del$i"} = Wx::BitmapButton->new($self, -1, $bmp, wxDefaultPosition, [20,20]);
-  $self->{"del$i"} -> SetBitmapSelected($bmp);
-  $self->{"del$i"} -> SetBitmapFocus($bmp);
-  $self->{$this} -> Add($self->{"del$i"}, 0, wxALL, 3);
-
-  return $self;
-};
 
 1;

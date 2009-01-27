@@ -37,10 +37,14 @@ sub new {
 				 [550,750],
 			       );
   my $nb = Wx::Notebook->new( $self, -1, wxDefaultPosition, wxDefaultSize, wxNB_TOP );
-  my $echoarea = Demeter::UI::Wx::EchoArea->new($self);
+  #my $echoarea = Demeter::UI::Wx::EchoArea->new($self);
   my $vbox = Wx::BoxSizer->new( wxVERTICAL);
 
-  my @utilities = qw(Atoms Feff Paths Configure);
+  my $statusbar = $self->CreateStatusBar;
+  my $demeter = Demeter->new;
+  $statusbar -> SetStatusText("Welcome to Atoms (" . $demeter->identify . ")");
+
+  my @utilities = qw(Atoms Feff Paths Console Configure);
 
   my $imagelist = Wx::ImageList->new( $icon_dimension, $icon_dimension );
   foreach my $utility (@utilities) {
@@ -56,7 +60,7 @@ sub new {
     $page -> SetSizer($box);
 
     $self->{$utility}
-      = ($utility eq 'Atoms')  ? Demeter::UI::Atoms::Xtal  -> new($page,$echoarea)
+      = ($utility eq 'Atoms')  ? Demeter::UI::Atoms::Xtal  -> new($page, $statusbar)
       :                          0;
 
     my $hh   = Wx::BoxSizer->new( wxHORIZONTAL );
@@ -68,10 +72,10 @@ sub new {
   };
 
   $vbox -> Add($nb, 1, wxEXPAND|wxGROW, 0);
-  $vbox -> Add($echoarea, 0, wxEXPAND|wxALL, 3);
+  #$vbox -> Add($echoarea, 0, wxEXPAND|wxALL, 3);
   #EVT_NOTEBOOK_PAGE_CHANGED( $self, $nb, sub{$echoarea->echo(q{})} );
 
-  $echoarea -> echo(q{});
+  #$echoarea -> echo(q{});
   $self -> SetSizer($vbox);
   $vbox -> Fit($nb);
   $vbox -> SetSizeHints($nb);

@@ -279,7 +279,7 @@ sub location {
 sub identify {
   my ($self, $full) = @_;
   $full ||= 0;
-  my $string = "Demeter $VERSION, copyright (c) 2006-2009 Bruce Ravel";
+  my $string = "Demeter $VERSION, copyright © 2006-2009 Bruce Ravel";
   #if ($full) {};
   return $string;
 };
