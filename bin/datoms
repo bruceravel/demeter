@@ -21,7 +21,7 @@ use Regexp::Common;
 use Readonly;
 Readonly my $NUMBER => $RE{num}{real};
 
-my ($feff6, $feff8, $abs, $sg, $rmax, $cif, $record, $atinp) = (0, 0, 0, 0, 0, 0, 1, 0);
+my ($feff6, $feff8, $abs, $sg, $rmax, $cif, $record, $atinp, $wx) = (0, 0, 0, 0, 0, 0, 1, 0, 0);
 my $result = GetOptions (
 			 "c|cif"    => \$cif,
 			 "rec=i"    => \$record,
@@ -31,7 +31,14 @@ my $result = GetOptions (
 			 "a"	    => \$abs,
 			 "s"	    => \$sg,
 			 "atoms"    => \$atinp,
+			 "wx"       => \$wx,
 			);
+
+if ($wx) {
+  wx();
+  exit;
+};
+
 
 my @call = ($cif) ? (record=>$record-1, cif => $ARGV[0]) : (file => $ARGV[0]||"atoms.inp");
 my $atoms = Demeter::Atoms->new(@call);
@@ -44,3 +51,12 @@ my $which = ($feff6) ? "feff6"
           :            "feff6" ;
 $atoms -> set(rmax=>$rmax) if ($rmax and $rmax =~ m{\A$NUMBER\z});
 print $atoms -> Write($which);
+
+
+sub wx {
+ require Wx;
+ require Demeter::UI::Atoms;
+ Wx::InitAllImageHandlers();
+ my $window = Demeter::UI::Atoms->new;
+ $window   -> MainLoop;
+};

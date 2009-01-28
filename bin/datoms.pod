@@ -9,10 +9,13 @@ This documentation refers to Demeter version 0.3.
 
 =head1 SYNOPSIS
 
-  atoms [flag] [-r #] [--cif --rec=#] mydata.inp
+  atoms [flag] [-r #] [--cif --rec=#] [--wx] mydata.inp
 
 If no input or CIF file is specified at the command line, F<atoms.inp>
 in the current working directory will be used, if available.
+
+If the C<--wx> flag for running the GUI is given, all other command
+line arguments are ignored.
 
 =head1 DESCRIPTION
 
@@ -28,6 +31,10 @@ By default, an input file for Feff6 is written.  This and aspects of
 the F<feff.inp> file can be overridden from the command line.
 
 =over 4
+
+=item C<--wx>
+
+Run the wxWidgets-based GUI.
 
 =item C<-6>
 

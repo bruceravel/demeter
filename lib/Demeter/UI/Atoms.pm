@@ -34,7 +34,7 @@ sub new {
 				 -1,              # ID -1 means any
 				 'Atoms',         # title
 				 wxDefaultPosition,
-				 [550,750],
+				 [550,700],
 			       );
   my $nb = Wx::Notebook->new( $self, -1, wxDefaultPosition, wxDefaultSize, wxNB_TOP );
   #my $echoarea = Demeter::UI::Wx::EchoArea->new($self);
@@ -64,8 +64,8 @@ sub new {
       :                          0;
 
     my $hh   = Wx::BoxSizer->new( wxHORIZONTAL );
-    $hh  -> Add($self->{$utility}, 1, wxGROW|wxEXPAND|wxALL, 0);
-    $box -> Add($hh, 1, wxGROW|wxEXPAND|wxALL, 0);
+    $hh  -> Add($self->{$utility}, 1, wxSHAPED|wxALL, 0);
+    $box -> Add($hh, 1, wxSHAPED|wxALL, 0);
 
 
     $nb->AddPage($page, $utility, 0, $count);
@@ -141,7 +141,8 @@ sub OnInit {
   #my @barWH = $bar->GetSizeWH;
   #my $framesize = Wx::Size->new($frameWH[0], $frameWH[1]+$barWH[1]);
   #$frame -> SetSize($framesize);
-  #$frame -> SetMinSize($framesize);
+  $frame -> SetMinSize($frame->GetSize);
+  #$frame -> SetMaxSize($frame->GetSize);
 
   $frame -> Show( 1 );
 }

@@ -267,6 +267,7 @@ sub clear {
   my ($self) = @_;
   $self->$_(0)  foreach (qw(a b c rmax nitrogen argon xenon helium krypton gases_set));
   $self->$_(90) foreach (qw(alpha beta gamma));
+  $self->space(q{});
   $self->clear_sites;
   $self->clear_cluster;
   $self->clear_shift;

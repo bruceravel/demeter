@@ -1,9 +1,0 @@
-#!/usr/bin/perl
-use Wx qw(:splashscreen wxBITMAP_TYPE_PNG wxBITMAP_TYPE_XPM);
-
-use Demeter;
-use Demeter::UI::Atoms;
-
-Wx::InitAllImageHandlers();
-my $window = Demeter::UI::Atoms->new;
-$window   -> MainLoop;
