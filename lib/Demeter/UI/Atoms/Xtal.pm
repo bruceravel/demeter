@@ -434,3 +434,7 @@ sub clear_all {
 };
 
 1;
+
+## Prompt for clear_all with a config parameter for turning prompt off
+## Right-click on grid: copy, cut, paste
+## Jigger interaction with boolean renderer in grid
