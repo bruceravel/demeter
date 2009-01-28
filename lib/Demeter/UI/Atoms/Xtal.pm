@@ -60,7 +60,7 @@ use Xray::Absorption;
 use Wx qw( :everything );
 use base 'Wx::Panel';
 use Wx::Grid;
-use Wx::Event qw(EVT_BUTTON  EVT_KEY_DOWN EVT_TOOL_ENTER EVT_ENTER_WINDOW EVT_LEAVE_WINDOW);
+use Wx::Event qw(EVT_BUTTON  EVT_KEY_DOWN EVT_MENU EVT_TOOL_ENTER EVT_ENTER_WINDOW EVT_LEAVE_WINDOW);
 
 my %hints = (
 	     titles  => "Text describing this structure which also be used as title lines in the Feff calculation",
@@ -114,6 +114,7 @@ sub new {
   $hbox -> Add($buttonbox, 1, wxGROW|wxALL, 10);
 
   $self->{toolbar} = Wx::ToolBar->new($self, -1, wxDefaultPosition, wxDefaultSize, wxTB_VERTICAL|wxTB_3DBUTTONS|wxTB_TEXT);
+  EVT_MENU( $self->{toolbar}, -1, sub{my ($toolbar, $event) = @_; OnToolClick($toolbar, $event, $self)} );
   $self->{toolbar} -> AddTool(-1, "Open file",  $self->icon("open"), wxNullBitmap, wxITEM_NORMAL, q{}, $hints{open});
   $self->{toolbar} -> AddTool(-1, "Save data",  $self->icon("save"), wxNullBitmap, wxITEM_NORMAL, q{}, $hints{save});
   $self->{toolbar} -> AddTool(-1, "Run Atoms",  $self->icon("exec"), wxNullBitmap, wxITEM_NORMAL, q{}, $hints{exec});
@@ -265,5 +266,32 @@ sub OnTextCtrlLeave {
   $self->{statusbar}->PopStatusText();
 };
 
+sub OnToolClick {
+  my ($toolbar, $event, $self) = @_;
+  ##                 Vv--order of toolbar on the screen--vV
+  my @callbacks = qw(open_file save_file run_atoms add_site);
+  my $closure = $callbacks[$toolbar->GetToolPos($event->GetId)];
+  $self->$closure;
+};
+
+sub open_file {
+  my ($self) = @_;
+  print "$self: open file\n";
+};
+
+sub save_file {
+  my ($self) = @_;
+  print "$self: save file\n";
+};
+
+sub run_atoms {
+  my ($self) = @_;
+  print "$self: run atoms\n";
+};
+
+sub add_site {
+  my ($self) = @_;
+  print "$self: add site\n";
+};
 
 1;

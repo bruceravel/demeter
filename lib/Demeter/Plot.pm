@@ -337,14 +337,16 @@ sub i0_text {
 sub copyright_text {
   my ($self) = @_;
   return q{} if not $PGPLOT_exists;
-  eval "pgupdt()";
-  return q{} if $@; # test for situation where PGPLOT was not linked correctly
-  if ($self->co->default("plot", "showcopyright")) {
-    pgsch(0.7);
-    my $string = sprintf("%s %s \\(0274) 2006-2009 Bruce Ravel", "Demeter", $self->version);
-    pgmtxt('B', 7, 0.65, 0.0, $string);
-    pgsch(1.0);
-  };
+  #{				# this does not work
+    #eval "pgupdt()";
+    #return q{} if $@; # test for situation where PGPLOT was not linked correctly
+  #};
+  #if ($self->co->default("plot", "showcopyright")) {
+  #  pgsch(0.7);
+  #  my $string = sprintf("%s %s \\(0274) 2006-2009 Bruce Ravel", "Demeter", $self->version);
+  #  pgmtxt('B', 7, 0.65, 0.0, $string);
+  #  pgsch(1.0);
+  #};
   return q{};
 };
 
