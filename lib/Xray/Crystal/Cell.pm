@@ -50,12 +50,12 @@ subtype 'Empty',
 has 'group'        => (is => 'rw', isa => 'Xray::Crystal::SpaceGroup',
 		       default => sub{Xray::Crystal::SpaceGroup->new});
 has 'space_group'  => (is => 'rw', isa => 'Str', default => q{},
-		      trigger => sub{
-			my ($self, $new) = @_;
-			return if ($new =~ m{\A\s*\z});
-			$self->given_group($new);
-			$self->group->group($new);
-		      });
+		       trigger => sub{
+			 my ($self, $new) = @_;
+			 return if ($new =~ m{\A\s*\z});
+			 $self->given_group($new);
+			 $self->group->group($new);
+		       });
 has 'given_group'  => (is => 'rw', isa => 'Str', default => q{});
 has 'a'		   => (is => 'rw', isa => 'Num', default => 0,
 		       trigger => sub {

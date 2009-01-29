@@ -54,9 +54,11 @@ sub new {
 package  Demeter::UI::Atoms::Xtal;
 
 use Demeter;
+use Demeter::StrTypes qw( Element );
 
 use Cwd;
 use Chemistry::Elements qw(get_Z get_name get_symbol);
+use List::MoreUtils qw(firstidx);
 use Xray::Absorption;
 #use Demeter::UI::Wx::GridTable;
 
@@ -89,6 +91,7 @@ my %hints = (
 	     save     => "Save an atoms input file from these crystallographic data",
 	     exec     => "Generate input data for Feff from these crystallographic data",
 	     clear    => "Clear this crystal structure",
+	     output   => "Write a feff.inp file or some other format",
 	     add      => "Add another entry to the list of sites",
 
 	     radio    => "Select this site as the absorbing atom in the Feff calculation",
@@ -104,18 +107,21 @@ my $atoms = Demeter::Atoms->new;
 
 
 sub new {
-  my ($class, $page, $statusbar) = @_;
+  my ($class, $page, $parent, $statusbar) = @_;
   my $self = $class->SUPER::new($page, -1, wxDefaultPosition, wxDefaultSize, wxMAXIMIZE_BOX );
+  $self->{parent}    = $parent;
   $self->{statusbar} = $statusbar;
   my $vbox = Wx::BoxSizer->new( wxVERTICAL );
 
 
   $self->{toolbar} = Wx::ToolBar->new($self, -1, wxDefaultPosition, wxDefaultSize, wxTB_HORIZONTAL|wxTB_3DBUTTONS|wxTB_TEXT);
   EVT_MENU( $self->{toolbar}, -1, sub{my ($toolbar, $event) = @_; OnToolClick($toolbar, $event, $self)} );
-  $self->{toolbar} -> AddTool(-1, "Open file",  $self->icon("open"),  wxNullBitmap, wxITEM_NORMAL, q{}, $hints{open} );
-  $self->{toolbar} -> AddTool(-1, "Save data",  $self->icon("save"),  wxNullBitmap, wxITEM_NORMAL, q{}, $hints{save} );
-  $self->{toolbar} -> AddTool(-1, "Run Atoms",  $self->icon("exec"),  wxNullBitmap, wxITEM_NORMAL, q{}, $hints{exec} );
-  $self->{toolbar} -> AddTool(-1, "Clear all",  $self->icon("empty"), wxNullBitmap, wxITEM_NORMAL, q{}, $hints{clear});
+  $self->{toolbar} -> AddTool(-1, "Open file",  $self->icon("open"),   wxNullBitmap, wxITEM_NORMAL, q{}, $hints{open} );
+  $self->{toolbar} -> AddTool(-1, "Save data",  $self->icon("save"),   wxNullBitmap, wxITEM_NORMAL, q{}, $hints{save} );
+  $self->{toolbar} -> AddTool(-1, "Export",     $self->icon("output"), wxNullBitmap, wxITEM_NORMAL, q{}, $hints{output});
+  $self->{toolbar} -> AddTool(-1, "Clear all",  $self->icon("empty"),  wxNullBitmap, wxITEM_NORMAL, q{}, $hints{clear});
+  $self->{toolbar} -> AddSeparator;
+  $self->{toolbar} -> AddTool(-1, "Run Atoms",  $self->icon("exec"),   wxNullBitmap, wxITEM_NORMAL, q{}, $hints{exec} );
   EVT_TOOL_ENTER( $self, $self->{toolbar}, sub{my ($toolbar, $event) = @_; &OnToolEnter($toolbar, $event, 'toolbar')} );
   $self->{toolbar} -> Realize;
   $vbox -> Add($self->{toolbar}, 0, wxALL, 5);
@@ -164,13 +170,13 @@ sub new {
 
   $hh = Wx::BoxSizer->new( wxHORIZONTAL );
   $spacebox -> Add($hh, 0, wxEXPAND|wxALL, 5);  $label        = Wx::StaticText->new($self, -1, 'Style', wxDefaultPosition, [-1,-1]);
-  $self->{template} = Wx::Choice    ->new($self, -1, [-1, -1], [-1, -1], ['Feff6 - tags', 'Feff6 - sites', 'Feff6 - species',
-									  'Feff8 - tags', 'Feff8 - sites', 'Feff8 - species',
-									 ], );
+  $self->{template} = Wx::Choice    ->new($self, -1, [-1, -1], [-1, -1], $self->templates, );
   $hh->Add($label,            0, wxEXPAND|wxALL, 5);
   $hh->Add($self->{template}, 0, wxEXPAND|wxALL, 5);
   EVT_CHOICE($self, $self->{template}, \&OnWidgetLeave);
 
+  my $initial = "Feff" . $atoms->co->default("atoms", "feff_version") . " - " . $atoms->co->default("atoms", "ipot_style");
+  $self->{template}->SetSelection(firstidx {$_ eq $initial } @{ $self->templates });
 
   $self->{addbar} = Wx::ToolBar->new($self, -1, wxDefaultPosition, wxDefaultSize, wxTB_VERTICAL|wxTB_3DBUTTONS|wxTB_TEXT);
   EVT_MENU( $self->{addbar}, -1, sub{my ($toolbar, $event) = @_; AddSite($toolbar, $event, $self)} );
@@ -292,6 +298,13 @@ sub icon {
   return Wx::Bitmap->new($icon, wxBITMAP_TYPE_ANY)
 };
 
+sub templates {
+  my ($self) = @_;
+  return ['Feff6 - tags', 'Feff6 - sites', 'Feff6 - elements',
+	  'Feff8 - tags', 'Feff8 - sites', 'Feff8 - elements',
+	 ];
+};
+
 sub set_hint {
   my ($self, $w) = @_;
   (my $ww = $w) =~ s{\d+\z}{};
@@ -303,24 +316,24 @@ sub set_hint {
 sub OnToolEnter {
   my ($self, $event, $which) = @_;
   if ( $event->GetSelection > -1 ) {
-    $self->{statusbar}->PushStatusText($self->{$which}->GetToolLongHelp($event->GetSelection));
+    $self->{statusbar}->SetStatusText($self->{$which}->GetToolLongHelp($event->GetSelection));
   } else {
-    $self->{statusbar}->PopStatusText();
+    $self->{statusbar}->SetStatusText(q{});
   };
 };
 sub OnWidgetEnter {
   my ($self, $widget, $event, $hint) = @_;
-  $self->{statusbar}->PushStatusText($hint);
+  $self->{statusbar}->SetStatusText($hint);
 };
 sub OnWidgetLeave {
   my ($self) = @_;
-  $self->{statusbar}->PopStatusText();
+  $self->{statusbar}->SetStatusText(q{});
 };
 
 sub OnToolClick {
   my ($toolbar, $event, $self) = @_;
   ##                 Vv--order of toolbar on the screen--vV
-  my @callbacks = qw(open_file save_file run_atoms clear_all);
+  my @callbacks = qw(open_file save_file write_output clear_all noop run_atoms );
   my $closure = $callbacks[$toolbar->GetToolPos($event->GetId)];
   $self->$closure;
 };
@@ -330,14 +343,19 @@ sub AddSite {
   $self->{sitesgrid} -> SetCellAlignment($self->{sitesgrid}->GetNumberRows, 0, wxALIGN_CENTRE, wxALIGN_CENTRE);
 };
 
+sub noop {
+  return 1;
+};
+
 sub open_file {
   my ($self) = @_;
-  my $fd = Wx::FileDialog->new( $self, "Output File", cwd, q{},
+  my $fd = Wx::FileDialog->new( $self, "Import crystal data", cwd, q{},
 				"input file (*.inp)|*.inp|CIF file (*.cif)|*.cif|All files|*.*",
 				wxFD_OPEN|wxFD_FILE_MUST_EXIST|wxFD_CHANGE_DIR|wxFD_PREVIEW,
 				wxDefaultPosition);
   $fd -> ShowModal;
   my $file = File::Spec->catfile($fd->GetDirectory, $fd->GetFilename);
+  $self->clear_all;
   $atoms->file($file);
   $atoms->populate;
 
@@ -377,8 +395,57 @@ sub open_file {
     };
     ++$i;
   };
-
+  $self->{statusbar}->SetStatusText("Imported crystal data from $file.");
 };
+
+sub get_crystal_data {
+  my ($self) = @_;
+
+  $atoms->clear;
+
+  my @titles = split(/\n/, $self->{titles}->GetValue);
+  $atoms->titles(\@titles);
+
+  my $this = $self->{space}->GetValue || q{};
+  $atoms->space($this);
+
+  foreach my $param (qw(a b c alpha beta gamma rmax rpath)) {
+    $this = $self->{$param}->GetValue || 0;
+    $atoms->$param($this);
+  };
+
+  my @shift = map { $self->{$_}->GetValue || 0 } qw(shift_x shift_y shift_z);
+  $atoms->shift(\@shift);
+
+  foreach my $row (0 .. $self->{sitesgrid}->GetNumberRows) {
+    next if not is_Element($self->{sitesgrid}->GetCellValue($row, 1));
+    $atoms->core($self->{sitesgrid}->GetCellValue($row, 5)) if $self->{sitesgrid}->GetCellValue($row, 0);
+    my $this = join("|",
+		    $self->{sitesgrid}->GetCellValue($row, 1),
+		    $self->{sitesgrid}->GetCellValue($row, 2),
+		    $self->{sitesgrid}->GetCellValue($row, 3),
+		    $self->{sitesgrid}->GetCellValue($row, 4),
+		    $self->{sitesgrid}->GetCellValue($row, 5),
+		   );
+    $atoms->push_sites($this);
+  };
+
+  my $seems_ok = 0;
+  $seems_ok = (
+	            ($atoms->space)
+	       and  ($#{ $atoms->sites } > -1)
+	       and  ($atoms->a)
+	      );
+
+  return 0 if not $seems_ok;
+
+  $atoms->populate;
+  $this = (qw(K L1 L2 L3))[$self->{edge}->GetCurrentSelection] || 'K';
+  $atoms->edge($this);
+
+  return 1;
+};
+
 
 sub verify_angle {
   my ($self, $angle) = @_;
@@ -410,14 +477,47 @@ sub verify_angle {
 };
 
 
+sub unusable_data {
+  my ($self) = @_;
+  $self->{statusbar}->SetStatusText("These crystallographic data cannot be processed.");
+};
+
 sub save_file {
   my ($self) = @_;
-  print "$self: save file\n";
+  my $seems_ok = $self->get_crystal_data;
+  if ($seems_ok) {
+    my $fd = Wx::FileDialog->new( $self, "Export crystal data", cwd, q{atoms.inp},
+				  "input file (*.inp)|*.inp|All files|*.*",
+				  wxFD_SAVE|wxFD_CHANGE_DIR,
+				  wxDefaultPosition);
+    $fd -> ShowModal;
+    my $file = File::Spec->catfile($fd->GetDirectory, $fd->GetFilename);
+    open my $OUT, ">".$file;
+    print $OUT $atoms -> Write('atoms');
+    close $OUT;
+    $self->{statusbar}->SetStatusText("Saved crystal data to $file.");
+  } else {
+    $self->unusable_data();
+  };
 };
 
 sub run_atoms {
   my ($self) = @_;
-  print "$self: run atoms\n";
+  my $seems_ok = $self->get_crystal_data;
+  my $this = (@{ $self->templates })[$self->{template}->GetCurrentSelection] || 'Feff6 - tags';
+  my ($template, $style) = split(/ - /, $this);
+  $atoms -> ipot_style($style);
+  if ($seems_ok) {
+    my $busy    = Wx::BusyCursor->new();
+    my $save = $atoms->co->default("atoms", "atoms_in_feff");
+    $atoms->co->set_default("atoms", "atoms_in_feff", 0);
+    $self->{parent}->{Feff}->{feff}->SetValue($atoms -> Write($template));
+    $atoms->co->set_default("atoms", "atoms_in_feff", $save);
+    undef $busy;
+    $self->{parent}->{notebook}->ChangeSelection(1);
+  } else {
+    $self->unusable_data();
+  };
 };
 
 sub clear_all {
@@ -429,8 +529,13 @@ sub clear_all {
   $self->{rpath}->SetValue(5);
   $self->{sitesgrid}->ClearGrid;
   $self->{sitesgrid}->DeleteRows(6, $self->{sitesgrid}->GetNumberRows - 6, 1);
-  $self->{$_}->SetSelection(0) foreach (qw(edge template));
+  $self->{edge}->SetSelection(0); # foreach (qw(edge template));
   return $self;
+};
+
+sub write_output {
+  my ($self) = @_;
+  print "$self: write special output\n";
 };
 
 1;

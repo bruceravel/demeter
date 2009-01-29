@@ -65,9 +65,13 @@ Readonly my %EDGE_INDEX => (k =>1,  l1=>2,  l3=>3,  l3=>4,
 			   );
 
 
+#has 'cell' => (is => 'rw', isa =>Empty.'|Xray::Crystal::Cell', default=> q{});
+has 'cell' => (is => 'rw', isa =>'Any', default=> sub{Xray::Crystal::Cell->new;},
+	      );
 has 'space'	       => (is => 'rw', isa =>'Str',      default => q{},
-			   triger => sub{ my ($self, $new) = @_; 
+			   triger => sub{ my ($self, $new) = @_;
 					  return if not $new;
+					  $self -> cell -> space_group($new);
 					  $self->is_populated(0);
 					  $self->absorption_done(0);
 					  $self->mcmaster_done(0);
@@ -232,9 +236,6 @@ has 'sites' => (
 			      'clear' => 'clear_sites',
 			     }
 	       );
-#has 'cell' => (is => 'rw', isa =>Empty.'|Xray::Crystal::Cell', default=> q{});
-has 'cell' => (is => 'rw', isa =>'Any', default=> sub{Xray::Crystal::Cell->new;},
-	      );
 has 'cluster' => (
 		  metaclass => 'Collection::Array',
 		  is        => 'rw',
@@ -335,6 +336,7 @@ sub parse_line {
 
   my @words = split(/$SEPARATOR/, $line);
   my $key = shift @words;
+
   (my $rest = $line) =~ s{\A$key$SEPARATOR}{};
 
   if ($key =~ m{space(?:group)?}i) {
@@ -355,7 +357,9 @@ sub parse_line {
 
     return if ($key =~ m{\#});
     $key = lc($key);
-    if ($self->meta->has_method($key)) {
+    if (($self->meta->has_method($key)) and ($key =~ m{shi|daf|qve|ref})) {
+      $self->$key([$val, $vvv, $vvvv]);
+    } elsif ($self->meta->has_method($key)) {
       $self->$key(lc($val));
     } elsif (is_AtomsObsolete($key)) {
       carp("\"$key\" is a deprecated Atoms keyword ($file line $.)");
@@ -807,10 +811,12 @@ sub Write_feff {
   $self->build_cluster if (not $self->is_expanded);;
   my $string = q{};
   $string .= $self->template('copyright',  {type=> $type, prefix => ' * '});
-  $string .= $self->template('prettyline', {prefix => ' * '});
-  $string .= $self->atoms_file('feff', ' * ');
-  $string .= $self->template('prettyline', {prefix => ' * '});
-  $string .= $/;
+  if ($self->co->default("atoms", "atoms_in_feff")) {
+    $string .= $self->template('prettyline', {prefix => ' * '});
+    $string .= $self->atoms_file('feff', ' * ');
+    $string .= $self->template('prettyline', {prefix => ' * '});
+    $string .= $/;
+  }
   if ($self->gases_set) {
     $string .= $self->template('absorption', {prefix => ' * '});
   } else {

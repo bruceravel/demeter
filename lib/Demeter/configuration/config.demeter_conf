@@ -86,6 +86,8 @@ include operations.demeter_conf    ## operations parameters
 
 include atoms.demeter_conf         ## atoms i/o parameters
 
+include feff.demeter_conf          ## feff i/o parameters
+
 include plot.demeter_conf          ## plotting parameters
 
 include gnuplot.demeter_conf       ## gnuplot-specific parameters

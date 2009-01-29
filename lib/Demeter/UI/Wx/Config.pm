@@ -82,24 +82,24 @@ sub new {
   $self->{grid} -> Add($self->{Value}, $this);
   EVT_BUTTON( $self, $self->{Value}, sub{my($self, $event) = @_; set_value($self, $event, 'default')} );
 
-  $this = Wx::GBPosition->new(2, 2);
-  $label = Wx::StaticText->new( $self, -1, q{      });
-  $self->{grid} -> Add($label, $this);
+#   $this = Wx::GBPosition->new(2, 2);
+#   $label = Wx::StaticText->new( $self, -1, q{      });
+#   $self->{grid} -> Add($label, $this);
 
-  $this = Wx::GBPosition->new(2, 3);
+  $this = Wx::GBPosition->new(3, 0);
   $label = Wx::StaticText->new( $self, -1, 'Demeter\'s value');
   $label -> SetFont( $font );
   $self->{grid} -> Add($label, $this);
-  $this = Wx::GBPosition->new(2, 4);
+  $this = Wx::GBPosition->new(3, 1);
   $self->{Default} = Wx::Button->new( $self, -1, q{});
   $self->{grid} -> Add($self->{Default}, $this);
   EVT_BUTTON( $self, $self->{Default}, sub{my($self, $event) = @_; set_value($self, $event, 'demeter')} );
 
-  $this = Wx::GBPosition->new(3, 0);
+  $this = Wx::GBPosition->new(4, 0);
   $label = Wx::StaticText->new( $self, -1, 'Set');
   $label -> SetFont( $font );
   $self -> {grid} -> Add($label, $this);
-  $self -> {SetPosition} = Wx::GBPosition->new(3, 1);
+  $self -> {SetPosition} = Wx::GBPosition->new(4, 1);
   $self -> set_stub;
 
   $right -> Add($self->{grid}, 0, wxEXPAND|wxALL, 10);

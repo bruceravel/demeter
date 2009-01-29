@@ -39,7 +39,6 @@ if ($wx) {
   exit;
 };
 
-
 my @call = ($cif) ? (record=>$record-1, cif => $ARGV[0]) : (file => $ARGV[0]||"atoms.inp");
 my $atoms = Demeter::Atoms->new(@call);
 

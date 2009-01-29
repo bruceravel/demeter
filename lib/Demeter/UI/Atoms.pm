@@ -19,7 +19,7 @@ use Carp;
 use File::Spec;
 
 use Demeter;
-use Demeter::UI::Wx::EchoArea;
+#use Demeter::UI::Wx::EchoArea;
 
 use Wx qw( :everything );
 use base 'Wx::Frame';
@@ -34,9 +34,10 @@ sub new {
 				 -1,              # ID -1 means any
 				 'Atoms',         # title
 				 wxDefaultPosition,
-				 [550,700],
+				 [580,700],
 			       );
   my $nb = Wx::Notebook->new( $self, -1, wxDefaultPosition, wxDefaultSize, wxNB_TOP );
+  $self->{notebook} = $nb;
   #my $echoarea = Demeter::UI::Wx::EchoArea->new($self);
   my $vbox = Wx::BoxSizer->new( wxVERTICAL);
 
@@ -44,7 +45,7 @@ sub new {
   my $demeter = Demeter->new;
   $statusbar -> SetStatusText("Welcome to Atoms (" . $demeter->identify . ")");
 
-  my @utilities = qw(Atoms Feff Paths Console Configure);
+  my @utilities = qw(Atoms Feff Paths Console Document Configure);
 
   my $imagelist = Wx::ImageList->new( $icon_dimension, $icon_dimension );
   foreach my $utility (@utilities) {
@@ -60,12 +61,17 @@ sub new {
     $page -> SetSizer($box);
 
     $self->{$utility}
-      = ($utility eq 'Atoms')  ? Demeter::UI::Atoms::Xtal  -> new($page, $statusbar)
-      :                          0;
+      = ($utility eq 'Atoms')     ? Demeter::UI::Atoms::Xtal    -> new($page, $self, $statusbar)
+      : ($utility eq 'Feff')      ? Demeter::UI::Atoms::Feff    -> new($page, $self, $statusbar)
+      : ($utility eq 'Configure') ? Demeter::UI::Atoms::Config  -> new($page, $self, $statusbar)
+      : ($utility eq 'Paths')     ? Demeter::UI::Atoms::Paths   -> new($page, $self, $statusbar)
+      : ($utility eq 'Console')   ? Demeter::UI::Atoms::Console -> new($page, $self, $statusbar)
+      : ($utility eq 'Document')  ? Demeter::UI::Atoms::Doc     -> new($page, $self, $statusbar)
+      :                             0;
 
     my $hh   = Wx::BoxSizer->new( wxHORIZONTAL );
-    $hh  -> Add($self->{$utility}, 1, wxSHAPED|wxALL, 0);
-    $box -> Add($hh, 1, wxSHAPED|wxALL, 0);
+    $hh  -> Add($self->{$utility}, 1, wxEXPAND|wxALL, 0);
+    $box -> Add($hh, 1, wxEXPAND|wxALL, 0);
 
 
     $nb->AddPage($page, $utility, 0, $count);
@@ -109,7 +115,7 @@ sub OnInit {
 #   $demeter -> co -> read_ini('atoms');
 #   $demeter -> plot_with($demeter->co->default(qw(atoms plotwith)));
 
-  foreach my $m (qw(Xtal)) {
+  foreach my $m (qw(Xtal Feff Config Paths Doc Console)) {
     next if $INC{"Demeter/UI/Atoms/$m.pm"};
     ##print "Demeter/UI/Atoms/$m.pm\n";
     require "Demeter/UI/Atoms/$m.pm";

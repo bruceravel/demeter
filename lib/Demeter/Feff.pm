@@ -734,6 +734,21 @@ sub _collapse_heap {
 
 
 
+sub intrp_header {
+  my ($self, %markup) = @_;
+  map {$markup{$_} ||= q{} } qw(comment open close 0 1 2);
+  my $text = q{};
+  my @list_of_paths = @{ $self-> pathlist };
+  my @lines = split(/\n/, $self->_pathsdat_head('#'));
+  $text .= $markup{comment} . shift(@lines) . $markup{close} . "\n";
+  $text .= $markup{comment} . shift(@lines) . $markup{close} . "\n";
+  $text .= sprintf "%s# The central atom is denoted by this token: %s%s\n",      $markup{comment}, $self->co->default("pathfinder", "token") || '<+>', $markup{close};
+  $text .= sprintf "%s# Cluster size = %.5f Angstroms, containing %s atoms%s\n", $markup{comment}, $self->rmax, $self->nsites,                         $markup{close};
+  $text .= sprintf "%s# %d paths were found%s\n",                                $markup{comment}, $#list_of_paths+1,                                  $markup{close};
+  $text .= sprintf "%s# Forward scattering cutoff %.2f%s\n",                     $markup{comment}, $self->co->default("pathfinder", "fs_angle"),       $markup{close};
+  foreach (@lines) { $text .= $markup{comment} . $_ . $markup{close} . "\n" };
+  return $text;
+};
 
 sub intrp {
   my ($self, $style, $rmax) = @_;
@@ -753,14 +768,7 @@ sub intrp {
 
   my $text = q{};
   my @list_of_paths = @{ $self-> pathlist };
-  my @lines = split(/\n/, $self->_pathsdat_head('#'));
-  $text .= $markup{comment} . shift(@lines) . $markup{close} . "\n";
-  $text .= $markup{comment} . shift(@lines) . $markup{close} . "\n";
-  $text .= sprintf "%s# The central atom is denoted by this token: %s%s\n",      $markup{comment}, $self->co->default("pathfinder", "token") || '<+>', $markup{close};
-  $text .= sprintf "%s# Cluster size = %.5f Angstroms, containing %s atoms%s\n", $markup{comment}, $self->rmax, $self->nsites,                         $markup{close};
-  $text .= sprintf "%s# %d paths were found%s\n",                                $markup{comment}, $#list_of_paths+1,                                  $markup{close};
-  $text .= sprintf "%s# Forward scattering cutoff %.2f%s\n",                     $markup{comment}, $self->co->default("pathfinder", "fs_angle"),       $markup{close};
-  foreach (@lines) { $text .= $markup{comment} . $_ . $markup{close} . "\n" };
+  $text .= $self->intrp_header(%markup);
   $text .=  $markup{comment} . "#     degen   Reff       scattering path                       I legs   type" .  $markup{close} . "\n";
   my $i = 0;
   foreach my $sp (@list_of_paths) {

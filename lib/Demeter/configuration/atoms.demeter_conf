@@ -50,6 +50,22 @@ description
   The size of the margin around the edges of a unit cell which is
   included into the "overfull" unit cell.
 
+variable=feff_version
+type=list
+options=6 8
+default=6
+description
+  The default version of Feff for which to generate a feff.inp file.
+
+variable=atoms_in_feff
+type=boolean
+onvalue=1
+offvalue=0
+default=true
+description
+  When true, this tells Demeter to put a copy of the crystal data in
+  the header of the feff.inp file that gets genereated.
+
 variable=ipot_style
 type=list
 options=sites tags elements
