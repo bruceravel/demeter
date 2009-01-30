@@ -30,7 +30,7 @@ sub new {
   my $self = $class->SUPER::new($page, \&target);
   $self->{parent}    = $parent;
   $self->{statusbar} = $statusbar;
-  $self->populate(['atoms', 'feff']);
+  $self->populate(['atoms', 'feff', 'pathfinder']);
 
   return $self;
 };

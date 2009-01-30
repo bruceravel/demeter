@@ -16,6 +16,7 @@ package  Demeter::UI::Atoms::Xtal::SiteList;
 =cut
 
 use Wx qw( :everything );
+use Wx::Perl::Carp;
 use base qw(Wx::Grid);
 
 sub new {
@@ -355,7 +356,7 @@ sub open_file {
 				wxDefaultPosition);
   $fd -> ShowModal;
   my $file = File::Spec->catfile($fd->GetDirectory, $fd->GetFilename);
-  $self->clear_all;
+  $self->clear_all(1);
   $atoms->file($file);
   $atoms->populate;
 
@@ -420,13 +421,13 @@ sub get_crystal_data {
   foreach my $row (0 .. $self->{sitesgrid}->GetNumberRows) {
     next if not is_Element($self->{sitesgrid}->GetCellValue($row, 1));
     $atoms->core($self->{sitesgrid}->GetCellValue($row, 5)) if $self->{sitesgrid}->GetCellValue($row, 0);
-    my $this = join("|",
-		    $self->{sitesgrid}->GetCellValue($row, 1),
-		    $self->{sitesgrid}->GetCellValue($row, 2),
-		    $self->{sitesgrid}->GetCellValue($row, 3),
-		    $self->{sitesgrid}->GetCellValue($row, 4),
-		    $self->{sitesgrid}->GetCellValue($row, 5),
-		   );
+    carp("not an element") if not is_Element($self->{sitesgrid}->GetCellValue($row, 1));
+    my $el   = $self->{sitesgrid}->GetCellValue($row, 1) || q{};
+    my $x    = $self->{sitesgrid}->GetCellValue($row, 2) || 0;
+    my $y    = $self->{sitesgrid}->GetCellValue($row, 3) || 0;
+    my $z    = $self->{sitesgrid}->GetCellValue($row, 4) || 0;
+    my $tag  = $self->{sitesgrid}->GetCellValue($row, 5) || $el;
+    my $this = join("|", $el, $x, $y, $z, $tag);
     $atoms->push_sites($this);
   };
 
@@ -521,15 +522,21 @@ sub run_atoms {
 };
 
 sub clear_all {
-  my ($self) = @_;
-  $atoms->clear;
-  $self->{$_}->Clear foreach (qw(a b c alpha beta gamma titles space));
-  $self->{$_}->SetValue(0) foreach (qw(shift_x shift_y shift_z));
-  $self->{rmax}->SetValue(8);
-  $self->{rpath}->SetValue(5);
-  $self->{sitesgrid}->ClearGrid;
-  $self->{sitesgrid}->DeleteRows(6, $self->{sitesgrid}->GetNumberRows - 6, 1);
-  $self->{edge}->SetSelection(0); # foreach (qw(edge template));
+  my ($self, $skip_dialog) = @_;
+  my $yesno = Wx::MessageDialog->new($self, "Do you really wish to discard these crystal data?",
+				     "Discard?", wxYES_NO);
+  if ((not $skip_dialog) and ($yesno->ShowModal == wxID_NO)) {
+    $self->{statusbar}->SetStatusText("Not discarding data.");
+  } else {
+    $atoms->clear;
+    $self->{$_}->Clear foreach (qw(a b c alpha beta gamma titles space));
+    $self->{$_}->SetValue(0) foreach (qw(shift_x shift_y shift_z));
+    $self->{rmax}->SetValue(8);
+    $self->{rpath}->SetValue(5);
+    $self->{sitesgrid}->ClearGrid;
+    $self->{sitesgrid}->DeleteRows(6, $self->{sitesgrid}->GetNumberRows - 6, 1);
+    $self->{edge}->SetSelection(0); # foreach (qw(edge template));
+  };
   return $self;
 };
 
