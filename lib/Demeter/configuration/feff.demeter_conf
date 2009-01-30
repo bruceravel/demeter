@@ -52,3 +52,23 @@ description
   Demeter handled everything else.  As of version 0.3, this is also
   the only option.
 
+variable=intrp2color
+type=color
+default=#046a15
+description
+  The color of the interpretation text for high importance paths.  The
+  default is a dark green.
+
+variable=intrp1color
+type=color
+default=#78670e
+description
+  The color of the interpretation text for medium importance paths.  The
+  default is a dark yellow.
+
+variable=intrp0color
+type=color
+default=#787878
+description
+  The color of the interpretation text for low importance paths.  The
+  default is a grey tone.
