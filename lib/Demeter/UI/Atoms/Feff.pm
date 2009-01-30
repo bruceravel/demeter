@@ -102,7 +102,10 @@ sub clear_all {
 
 sub insert_boilerplate {
   my ($self) = @_;
-  $self->{feff}->SetValue("Insert boilerplate here");
+  my $feff   = Demeter::Feff->new(screen=>0, buffer=>1, save=>0);
+  $self->{feff}->SetValue($feff->template("feff", "boilerplate"));
+  undef $feff;
+  $self->{statusbar}->SetStatusText("Fill in this boilerplate with your structure....");
 };
 
 sub run_feff {
@@ -132,7 +135,7 @@ sub run_feff {
     my $idx = $self->{parent}->{Paths}->{paths}->InsertImageStringItem($i, sprintf("%4.4d", $i), 0);
     $self->{parent}->{Paths}->{paths}->SetItemData($idx, $i++);
     $self->{parent}->{Paths}->{paths}->SetItem($idx, 1, $p->n);
-    $self->{parent}->{Paths}->{paths}->SetItem($idx, 2, $p->fuzzy);
+    $self->{parent}->{Paths}->{paths}->SetItem($idx, 2, sprintf("%.4f", $p->fuzzy));
     $self->{parent}->{Paths}->{paths}->SetItem($idx, 3, $p->intrplist);
     $self->{parent}->{Paths}->{paths}->SetItem($idx, 4, $p->weight);
     $self->{parent}->{Paths}->{paths}->SetItem($idx, 5, $p->nleg);

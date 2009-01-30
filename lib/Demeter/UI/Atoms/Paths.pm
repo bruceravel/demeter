@@ -54,11 +54,11 @@ sub new {
 
   $self->{paths}->SetColumnWidth( 0, 50 );
   $self->{paths}->SetColumnWidth( 1, 50 );
-  $self->{paths}->SetColumnWidth( 2, 50 );
+  $self->{paths}->SetColumnWidth( 2, 55 );
   $self->{paths}->SetColumnWidth( 3, 190 );
   $self->{paths}->SetColumnWidth( 4, 35 );
   $self->{paths}->SetColumnWidth( 5, 40 );
-  $self->{paths}->SetColumnWidth( 6, 150 );
+  $self->{paths}->SetColumnWidth( 6, 180 );
 
 
 

@@ -6,7 +6,7 @@
   #   {$C->out("parameter")} returns a formatted Cell real-valued attribute
 }
 << >>
-{foreach $t (@{ $A->titles }) { $OUT .= " TITLE = $t\n";}}<<->>
+{foreach $t (@{ $A->titles }) { $OUT .= " TITLE $t\n";}}<<->>
 
  *  {$A->corel} {uc($A->edge)} edge energy = {$A->eedge} eV
  EDGE      {uc($A->edge)}

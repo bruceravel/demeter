@@ -6,7 +6,7 @@
   #   {$C->out("parameter")} returns a formatted Cell real-valued attribute
 }
 << >>
-{foreach $t (@{ $A->titles }) { $OUT .= " TITLE = $t\n";}}<<->>
+{foreach $t (@{ $A->titles }) { $OUT .= " TITLE $t\n";}}<<->>
 
  HOLE      {$A->iedge}   1.0   * FYI: ({$A->corel} {uc($A->edge)} edge @ {$A->eedge} eV, second number is S0^2)
  *         mphase,mpath,mfeff,mchi

@@ -535,7 +535,14 @@ sub clear_all {
 
 sub write_output {
   my ($self) = @_;
-  print "$self: write special output\n";
+  my $dialog = Wx::SingleChoiceDialog->new( $self, "Output format", "Output format",
+					    ["Feff6", "Feff8", "Atoms", "P1", "Symmetry", "Absorption"]
+					  );
+  if( $dialog->ShowModal == wxID_CANCEL ) {
+    $self->{statusbar}->SetStatusText("Output cancelled.");
+  } else {
+    $self->{statusbar}->SetStatusText("Writing " . $dialog->GetStringSelection . " output.");
+  }
 };
 
 1;
