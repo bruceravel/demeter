@@ -27,6 +27,8 @@ use Wx qw( :everything );
 use base 'Wx::Frame';
 use Wx::Event qw(EVT_NOTEBOOK_PAGE_CHANGED EVT_NOTEBOOK_PAGE_CHANGING);
 
+$SIG{__WARN__} = sub {Wx::Perl::Carp::warn($_[0])};
+
 my $header_color = Wx::Colour->new(68, 31, 156);
 
 my %note_of = (absorption   => 'periodic table of edge and line energies',

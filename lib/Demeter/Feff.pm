@@ -274,7 +274,7 @@ sub rdinp {
   if (any {$problems{$_}} qw(rmax_outside_cluster)) {
     carp("The following warnings were issued while reading $file:\n  "
 	 . join("\n  ", @{$problems{warnings}})
-	 . $/);
+	 . $/ . $/);
   };
   ## errors:
   my $stop = 0;

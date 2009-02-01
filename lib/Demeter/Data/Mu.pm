@@ -128,7 +128,7 @@ sub set_nknots {
 
 # sub xmu_string {
 #   my ($self) = @_;
-#   carp("Demeter::Data::Mu: cannot put data unless the object contains mu(E) data"),
+#   carp("Demeter::Data::Mu: cannot put data unless the object contains mu(E) data\n\n"),
 #     return 0 if ($self->datatype ne 'xmu');
 #   my $string = q{};
 #   $self->xmu_string($string);
@@ -215,7 +215,7 @@ sub normalize {
   my $group = $self->group;
 
   if ($self->datatype eq 'detector') {
-    carp($self->name . " is a detector group, which cannot be normalized\n");
+    carp($self->name . " is a detector group, which cannot be normalized\n\n");
     return $self;
   };
   $self->_update("normalize");
@@ -260,7 +260,7 @@ sub autobk {
   my $group = $self->group;
 
   if ($self->datatype eq 'detector') {
-    carp($self->name . " is a detector group, which cannot have its background removed\n");
+    carp($self->name . " is a detector group, which cannot have its background removed\n\n");
     return $self;
   };
   $self->_update("background");
@@ -325,7 +325,7 @@ sub _plotE_command {
     croak("$class objects are not plottable");
   };
   if ($self->datatype ne 'xmu') {
-    carp("$self cannot be plotted in energy");
+    carp("$self cannot be plotted in energy\n\n");
     return;
   };
 

@@ -16,7 +16,6 @@ package  Demeter::UI::Atoms::Xtal::SiteList;
 =cut
 
 use Wx qw( :everything );
-use Wx::Perl::Carp;
 use base qw(Wx::Grid);
 
 sub new {
@@ -87,6 +86,7 @@ my %hints = (
 	     shift_z  => "The z-coordinate of the vector for recentering this crystal",
 	     edge     => "The absorption edge to use in the Feff calculation",
 	     template => "Choose the output style",
+	     sitesgrid => "Hit return or tab to finish editing a cell in the sites grid",
 
 	     open     => "Open an Atoms input file or a CIF file -- Hint: Right click for recent files",
 	     save     => "Save an atoms input file from these crystallographic data",
@@ -275,7 +275,8 @@ sub new {
   $sidebox -> Add($self->{shiftboxsizer}, 0, wxGROW|wxALL, 5);
   ## -------- end of R constant controls
 
-  $self->set_hint($_) foreach (qw(a b c alpha beta gamma space rmax rpath shift_x shift_y shift_z edge template));
+  $self->set_hint($_) foreach (qw(a b c alpha beta gamma space rmax rpath
+				  shift_x shift_y shift_z edge template));
 
 
   $hbox = Wx::BoxSizer->new( wxHORIZONTAL );
@@ -309,7 +310,7 @@ sub templates {
 sub set_hint {
   my ($self, $w) = @_;
   (my $ww = $w) =~ s{\d+\z}{};
-  EVT_ENTER_WINDOW($self->{$w}, sub{my($widg, $event) = @_; 
+  EVT_ENTER_WINDOW($self->{$w}, sub{my($widg, $event) = @_;
 				    $self->OnWidgetEnter($widg, $event, $hints{$ww}||q{No hint!})});
   EVT_LEAVE_WINDOW($self->{$w}, sub{$self->OnWidgetLeave});
 };
@@ -354,7 +355,10 @@ sub open_file {
 				"input file (*.inp)|*.inp|CIF file (*.cif)|*.cif|All files|*.*",
 				wxFD_OPEN|wxFD_FILE_MUST_EXIST|wxFD_CHANGE_DIR|wxFD_PREVIEW,
 				wxDefaultPosition);
-  $fd -> ShowModal;
+  if ($fd->ShowModal == wxID_CANCEL) {
+    $self->{statusbar}->SetStatusText("Crystal data import cancelled.");
+    return;
+  };
   my $file = File::Spec->catfile($fd->GetDirectory, $fd->GetFilename);
   $self->clear_all(1);
   $atoms->file($file);
@@ -396,6 +400,10 @@ sub open_file {
     };
     ++$i;
   };
+
+  my $ie = firstidx {lc($_) eq lc($atoms->edge)} qw(K L1 L2 L3);
+  $self->{edge}->SetSelection($ie);
+
   $self->{statusbar}->SetStatusText("Imported crystal data from $file.");
 };
 
@@ -418,11 +426,19 @@ sub get_crystal_data {
   my @shift = map { $self->{$_}->GetValue || 0 } qw(shift_x shift_y shift_z);
   $atoms->shift(\@shift);
 
+  my $core_selected = 0;
+  my $first_valid_row = -1;
+  my $count_valid_row = 0;
   foreach my $row (0 .. $self->{sitesgrid}->GetNumberRows) {
-    next if not is_Element($self->{sitesgrid}->GetCellValue($row, 1));
-    $atoms->core($self->{sitesgrid}->GetCellValue($row, 5)) if $self->{sitesgrid}->GetCellValue($row, 0);
-    carp("not an element") if not is_Element($self->{sitesgrid}->GetCellValue($row, 1));
     my $el   = $self->{sitesgrid}->GetCellValue($row, 1) || q{};
+    next if ($el =~ m{\A\s*\z});
+    ++$count_valid_row;
+    my $rr = $row+1; warn("$el is not an element symbol at site $rr\n"), return 0 if not is_Element($el);
+    ($first_valid_row = $row) if ($first_valid_row == -1);
+    if ($self->{sitesgrid}->GetCellValue($row, 0)) {
+      $atoms->core($self->{sitesgrid}->GetCellValue($row, 5));
+      ++$core_selected;
+    };
     my $x    = $self->{sitesgrid}->GetCellValue($row, 2) || 0;
     my $y    = $self->{sitesgrid}->GetCellValue($row, 3) || 0;
     my $z    = $self->{sitesgrid}->GetCellValue($row, 4) || 0;
@@ -430,7 +446,14 @@ sub get_crystal_data {
     my $this = join("|", $el, $x, $y, $z, $tag);
     $atoms->push_sites($this);
   };
-
+  if ($count_valid_row and not $core_selected) {	# set first site as core if core not chosen
+    $atoms->core(
+		 $self->{sitesgrid}->GetCellValue($first_valid_row, 5)
+		 ||
+		 $self->{sitesgrid}->GetCellValue($first_valid_row, 1)
+		);
+    $self->{sitesgrid}->SetCellValue($first_valid_row, 0, 1);
+  };
   my $seems_ok = 0;
   $seems_ok = (
 	            ($atoms->space)
@@ -491,12 +514,15 @@ sub save_file {
 				  "input file (*.inp)|*.inp|All files|*.*",
 				  wxFD_SAVE|wxFD_CHANGE_DIR,
 				  wxDefaultPosition);
-    $fd -> ShowModal;
-    my $file = File::Spec->catfile($fd->GetDirectory, $fd->GetFilename);
-    open my $OUT, ">".$file;
-    print $OUT $atoms -> Write('atoms');
-    close $OUT;
-    $self->{statusbar}->SetStatusText("Saved crystal data to $file.");
+    if ($fd -> ShowModal == wxID_CANCEL) {
+      $self->{statusbar}->SetStatusText("Saving crystal data aborted.")
+    } else {
+      my $file = File::Spec->catfile($fd->GetDirectory, $fd->GetFilename);
+      open my $OUT, ">".$file;
+      print $OUT $atoms -> Write('atoms');
+      close $OUT;
+      $self->{statusbar}->SetStatusText("Saved crystal data to $file.");
+    };
   } else {
     $self->unusable_data();
   };
@@ -542,14 +568,19 @@ sub clear_all {
 
 sub write_output {
   my ($self) = @_;
-  my $dialog = Wx::SingleChoiceDialog->new( $self, "Output format", "Output format",
-					    ["Feff6", "Feff8", "Atoms", "P1", "Symmetry", "Absorption"]
-					  );
-  if( $dialog->ShowModal == wxID_CANCEL ) {
-    $self->{statusbar}->SetStatusText("Output cancelled.");
+  my $seems_ok = $self->get_crystal_data;
+  if ($seems_ok) {
+    my $dialog = Wx::SingleChoiceDialog->new( $self, "Output format", "Output format",
+					      ["Feff6", "Feff8", "Atoms", "P1", "Symmetry", "Absorption"]
+					    );
+    if( $dialog->ShowModal == wxID_CANCEL ) {
+      $self->{statusbar}->SetStatusText("Output cancelled.");
+    } else {
+      $self->{statusbar}->SetStatusText("Writing " . $dialog->GetStringSelection . " output.");
+    }
   } else {
-    $self->{statusbar}->SetStatusText("Writing " . $dialog->GetStringSelection . " output.");
-  }
+    $self->unusable_data();
+  };
 };
 
 1;
@@ -557,3 +588,4 @@ sub write_output {
 ## Prompt for clear_all with a config parameter for turning prompt off
 ## Right-click on grid: copy, cut, paste
 ## Jigger interaction with boolean renderer in grid
+## cif

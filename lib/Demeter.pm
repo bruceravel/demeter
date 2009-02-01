@@ -150,6 +150,7 @@ sub import {
       next PRAG;
     };
   };
+
   foreach my $m (qw(Data Plot Config Data/Prj GDS Path VPath SSPath Fit Atoms Feff ScatteringPath)) {
     next if $INC{"Demeter/$m.pm"};
     ##print "Demeter/$m.pm\n";
@@ -367,11 +368,11 @@ sub set_mode {
 sub plot_with {
   my ($self, $backend) = @_;
   if (! is_Plotting($backend)) {
-    carp("'$backend' is not a valid plotting backend for Demeter -- reverting to pgplot");
+    carp("'$backend' is not a valid plotting backend for Demeter -- reverting to pgplot\n\n");
     $backend = 'pgplot';
   };
   if ((not $Gnuplot_exists) and (lc($backend) eq 'gnuplot')) {
-    carp("The gnuplot backend is not available -- reverting to pgplot");
+    carp("The gnuplot backend is not available -- reverting to pgplot\n\n");
     $backend = 'pgplot';
   };
   $self->po->alldone;
@@ -409,7 +410,7 @@ sub template_set {
   my ($self, $which) = @_;
   my $template_regexp = $opt->list2re(qw(demeter ifeffit iff_columns feffit));
   if ($which !~ m{$template_regexp}) {
-    carp("$which is not a valid template set, using ifeffit.");
+    carp("$which is not a valid template set, using ifeffit.\n\n");
     return $self;
   };
   $self -> mo -> template_process($which);

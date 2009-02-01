@@ -95,7 +95,7 @@ sub resolve_nor {
   ## does this appear to be XANES data?
   my $cutoff = $self->co->default("xanes", "cutoff");
   if ($cutoff and ($last < $cutoff)) {
-    ##carp "these are xanes data!\n";
+    ##carp "these are xanes data!\n\n";
     ($bkg_nor1, $bkg_nor2) = ($self->co->default("xanes", "nor1"),
 			      $self->co->default("xanes", "nor2"));
   };

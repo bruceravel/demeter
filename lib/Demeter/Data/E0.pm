@@ -118,7 +118,7 @@ sub e0_zero_crossing {
     last if ($ratio < 0);
     ++$i;
   };
-  carp("Could not find zero crossing."), return if (($above == 0) and ($below == 0));
+  carp("Could not find zero crossing.\n\n"), return if (($above == 0) and ($below == 0));
 
   ## linearly interpolate between points that bracket the zero crossing
   my $e0 = sprintf("%.5f", $energy[$below] - ($second[$below]/($second[$above]-$second[$below])) * ($energy[$above] - $energy[$below]));

@@ -34,9 +34,9 @@ sub new {
 
   $self->{headerbox}       = Wx::StaticBox->new($self, -1, 'Description', wxDefaultPosition, wxDefaultSize);
   $self->{headerboxsizer}  = Wx::StaticBoxSizer->new( $self->{headerbox}, wxVERTICAL );
-  $self->{header} = Wx::TextCtrl->new($self, -1, q{}, wxDefaultPosition, wxDefaultSize,
-				       wxTE_MULTILINE|wxHSCROLL|wxALWAYS_SHOW_SB);
-  $self->{header}->SetFont( Wx::Font->new( 9, wxTELETYPE, wxNORMAL, wxNORMAL, 0, "" ) );
+  $self->{header}          = Wx::TextCtrl->new($self, -1, q{}, wxDefaultPosition, wxDefaultSize,
+					       wxTE_MULTILINE|wxHSCROLL|wxALWAYS_SHOW_SB);
+  $self->{header}         -> SetFont( Wx::Font->new( 9, wxTELETYPE, wxNORMAL, wxNORMAL, 0, "" ) );
   $self->{headerboxsizer} -> Add($self->{header}, 0, wxEXPAND|wxALL, 0);
 
   $vbox -> Add($self->{headerboxsizer}, 0, wxEXPAND|wxALL, 5);
@@ -44,23 +44,21 @@ sub new {
   $self->{pathsbox}       = Wx::StaticBox->new($self, -1, 'Scattering Paths', wxDefaultPosition, wxDefaultSize);
   $self->{pathsboxsizer}  = Wx::StaticBoxSizer->new( $self->{pathsbox}, wxVERTICAL );
   $self->{paths} = Wx::ListView->new($self, -1, wxDefaultPosition, wxDefaultSize, wxLC_REPORT|wxLC_HRULES);
-  $self->{paths}->InsertColumn( 0, q{} );
-  $self->{paths}->InsertColumn( 1, "Degen" );
-  $self->{paths}->InsertColumn( 2, "Reff" );
+  $self->{paths}->InsertColumn( 0,  q{}		     );
+  $self->{paths}->InsertColumn( 1, "Degen"	     );
+  $self->{paths}->InsertColumn( 2, "Reff"	     );
   $self->{paths}->InsertColumn( 3, "Scattering path" );
-  $self->{paths}->InsertColumn( 4, "Imp." );
-  $self->{paths}->InsertColumn( 5, "Legs" );
-  $self->{paths}->InsertColumn( 6, "Type" );
+  $self->{paths}->InsertColumn( 4, "Imp."	     );
+  $self->{paths}->InsertColumn( 5, "Legs"	     );
+  $self->{paths}->InsertColumn( 6, "Type"	     );
 
-  $self->{paths}->SetColumnWidth( 0, 50 );
-  $self->{paths}->SetColumnWidth( 1, 50 );
-  $self->{paths}->SetColumnWidth( 2, 55 );
+  $self->{paths}->SetColumnWidth( 0,  50 );
+  $self->{paths}->SetColumnWidth( 1,  50 );
+  $self->{paths}->SetColumnWidth( 2,  55 );
   $self->{paths}->SetColumnWidth( 3, 190 );
-  $self->{paths}->SetColumnWidth( 4, 35 );
-  $self->{paths}->SetColumnWidth( 5, 40 );
+  $self->{paths}->SetColumnWidth( 4,  35 );
+  $self->{paths}->SetColumnWidth( 5,  40 );
   $self->{paths}->SetColumnWidth( 6, 180 );
-
-
 
   $self->{pathsboxsizer} -> Add($self->{paths}, 1, wxEXPAND|wxALL, 0);
 
@@ -99,11 +97,37 @@ sub noop {
 };
 
 sub save {
-  print "save a yaml\n";
+  my ($self) = @_;
+  return if not $self->{paths}->GetItemCount;
+  my $fd = Wx::FileDialog->new( $self, "Save Feff calculation", cwd, q{feff.yaml},
+				"Feff calculations (*.yaml)|*.yaml|All files|*.*",
+				wxFD_SAVE|wxFD_CHANGE_DIR,
+				wxDefaultPosition);
+  if ($fd -> ShowModal == wxID_CANCEL) {
+    $self->{statusbar}->SetStatusText("Saving Feff calculation aborted.")
+  } else {
+    my $yaml = File::Spec->catfile($fd->GetDirectory, $fd->GetFilename);
+    $self->{parent}->{Feff}->{feffobject}->freeze($yaml);
+    $self->{statusbar}->SetStatusText("Saved Feff calculation to $yaml.")
+  };
 };
 
 sub plot {
-  print "plot some paths\n";
+  my ($self) = @_;
+  return if not $self->{paths}->GetItemCount;
+  my $this = $self->{paths}->GetFirstSelected;
+  $self->{statusbar}->SetStatusText("No paths are selected!") if ($this == -1);
+  $Demeter::UI::Atoms::demeter->po->start_plot;
+  while ($this != -1) {
+    my $i    = $self->{paths}->GetItemData($this);
+    my $feff = $self->{parent}->{Feff}->{feffobject};
+    my $sp   = $feff->pathlist->[$i]; # the ScatteringPath associated with this selected item
+    Demeter::Path -> new(parent=>$feff, sp=>$sp) -> plot("r");
+    #my $path_object = Demeter::Path -> new(parent=>$feff_object, sp=>$sp);
+    #$path_object -> plot("r");
+    #undef $path_object;
+    $this    = $self->{paths}->GetNextSelected($this);
+  };
 };
 
 

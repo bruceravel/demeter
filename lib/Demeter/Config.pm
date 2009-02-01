@@ -168,9 +168,9 @@ sub _read_config_file {
   ## need to distinguish between a relative filename and a fully
   ## resolved file.
 
-  carp("The Demeter configuration file ($file) does not exist"), return 0
+  carp("The Demeter configuration file ($file) does not exist\n\n"), return 0
     if (not -e $file);
-  carp("The Demeter configuration file ($file) cannot be opened"), return 0
+  carp("The Demeter configuration file ($file) cannot be opened\n\n"), return 0
     if (not -r $file);
 
   my $base = (split(/\./, basename($file)))[0];
@@ -317,7 +317,7 @@ sub default {
   return q{} if not $param;
   my $key = join(":", $group, $param);
   my $rhash = $self->get($key);
-  carp("$key is not a valid configuration parameter"), return 0 if not $rhash;
+  carp("$key is not a valid configuration parameter\n\n"), return 0 if not $rhash;
   if ($rhash->{type} eq 'boolean') {
     return $rhash->{onvalue}  || 1 if ($self->is_true($rhash->{default}));
     return $rhash->{offvalue} || 0;
@@ -339,7 +339,7 @@ sub description {
   my $key = ($param) ? join(":", $group, $param) : $group;
   return $self->get($key) if (not $param);
   my $rhash = $self->get($key);
-  carp("$key is not a valid configuration parameter"), return 0 if not $rhash;
+  carp("$key is not a valid configuration parameter\n\n"), return 0 if not $rhash;
   my $desc = $rhash->{description};
   if ($desc =~ m{\%list}) {
     $desc =~ s{\%list}{\n        }g;
@@ -355,7 +355,7 @@ sub attribute {
   return q{} if not $param;
   my $key = join(":", $group, $param);
   my $rhash = $self->get($key);
-  carp("$key is not a valid configuration parameter"), return 0 if not $rhash;
+  carp("$key is not a valid configuration parameter\n\n"), return 0 if not $rhash;
   return $rhash->{$which} || 0;
 };
 sub was      {my $self=shift; $self->attribute("was",      @_)};

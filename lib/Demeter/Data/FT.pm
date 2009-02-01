@@ -4,7 +4,7 @@ use Moose::Role;
 sub fft {
   my ($self) = @_;
   if ($self->datatype eq 'detector') {
-    carp($self->name . " is a detector group, which cannot be Frouier transformed\n");
+    carp($self->name . " is a detector group, which cannot be Frouier transformed\n\n");
     return $self;
   };
   $self->_update("fft");
@@ -22,7 +22,7 @@ sub _fft_command {
 sub bft {
   my ($self) = @_;
   if ($self->datatype eq 'detector') {
-    carp($self->name . " is a detector group, which cannot be Frouier transformed\n");
+    carp($self->name . " is a detector group, which cannot be Frouier transformed\n\n");
     return $self;
   };
   $self->_update("fft");

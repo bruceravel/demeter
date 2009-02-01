@@ -109,7 +109,7 @@ sub merge {
 };
 sub mergeE {
   my ($self, $how, @data) = @_;
-  carp("Demeter::Data::Process::mergeE: first argument MUST be x or n.") if ($how !~ m{^[nx]});
+  carp("Demeter::Data::Process::mergeE: first argument MUST be x or n.\n\n") if ($how !~ m{^[nx]});
   $self -> _update("normalize")  if ($how eq 'x');
   $self -> _update("background") if ($how eq 'n');
 
@@ -227,11 +227,11 @@ sub Truncate {
 
 sub deglitch {
   my ($self, @values) = @_;
-  carp("$self is not mu(E) data"), return if ($self->datatype ne "xmu");
+  carp("$self is not mu(E) data\n\n"), return if ($self->datatype ne "xmu");
   $self -> _update("normalize");
   my @x = $self->get_array("energy");
   foreach my $v (@values) {
-    carp("$v is not within the data range of $self"), next if (($v < $x[0]) or ($v > $x[-1]));
+    carp("$v is not within the data range of $self\n\n"), next if (($v < $x[0]) or ($v > $x[-1]));
     my $nearest = reduce { abs($a-$v) < abs($b-$v) ? $a : $b } @x;
     if ($nearest <= $x[2]) {
       $self -> Truncate("before", $x[3]);

@@ -15,10 +15,8 @@ package Demeter::UI::AtomsApp;
 
 =cut
 
-use Carp;
 use File::Spec;
 
-use Demeter;
 #use Demeter::UI::Wx::EchoArea;
 
 use Wx qw( :everything );
@@ -42,8 +40,7 @@ sub new {
   my $vbox = Wx::BoxSizer->new( wxVERTICAL);
 
   my $statusbar = $self->CreateStatusBar;
-  my $demeter = Demeter->new;
-  $statusbar -> SetStatusText("Welcome to Atoms (" . $demeter->identify . ")");
+  $statusbar -> SetStatusText("Welcome to Atoms (" . $Demeter::UI::Atoms::demeter->identify . ")");
 
   my @utilities = qw(Atoms Feff Paths Console Document Configure);
 
@@ -91,11 +88,19 @@ sub new {
 
 package Demeter::UI::Atoms;
 
+use Demeter qw(:plotwith=gnuplot);
+use vars qw($demeter);
+$demeter = Demeter->new;
+
 use File::Basename;
 
-use Wx qw(wxBITMAP_TYPE_XPM wxID_EXIT wxID_ABOUT);
+use Wx qw(wxBITMAP_TYPE_ANY wxID_EXIT wxID_ABOUT);
 use Wx::Event qw(EVT_MENU EVT_CLOSE);
 use base 'Wx::App';
+
+use Wx::Perl::Carp;
+$SIG{__WARN__} = sub {Wx::Perl::Carp::warn($_[0])};
+#$SIG{__DIE__}  = sub {Wx::Perl::Carp::croak($_[0])};
 
 sub identify_self {
   my @caller = caller;
@@ -123,9 +128,9 @@ sub OnInit {
 
   ## -------- create a new frame and set icon
   $frame = Demeter::UI::AtomsApp->new;
-  #my $iconfile = File::Spec->catfile(dirname($INC{'Demeter/UI/Atoms.pm'}), 'Atoms', 'icons', "atoms.xpm");
-  #my $icon = Wx::Icon->new( $iconfile, wxBITMAP_TYPE_XPM );
-  #$frame -> SetIcon($icon);
+  my $iconfile = File::Spec->catfile(dirname($INC{'Demeter/UI/Atoms.pm'}), 'Atoms', 'icons', "atoms.png");
+  my $icon = Wx::Icon->new( $iconfile, wxBITMAP_TYPE_ANY );
+  $frame -> SetIcon($icon);
 
   ## -------- Set up menubar
   my $bar = Wx::MenuBar->new;

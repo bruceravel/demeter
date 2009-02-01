@@ -55,11 +55,11 @@ sub Read {
   my $file = $self->file;
   return 0 if not $file;
   if (not -e $file) {
-    carp(ref($self) . ": $file does not exist");
+    carp(ref($self) . ": $file does not exist\n\n");
     return -1;
   };
   if (not -r $file) {
-    carp(ref($self) . ": $file cannot be read (permissions?)");
+    carp(ref($self) . ": $file cannot be read (permissions?)\n\n");
     return -1;
   };
 

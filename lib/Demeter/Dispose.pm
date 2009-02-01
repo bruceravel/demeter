@@ -76,7 +76,7 @@ sub dispose {
   if (    ($self->get_mode("buffer"))
 	  and (ref($self->get_mode("buffer")) ne 'SCALAR')
 	  and (ref($self->get_mode("buffer")) ne 'ARRAY')  ) {
-    carp("Demeter::Dispose: string mode value is not a scalar or array reference");
+    carp("Demeter::Dispose: string mode value is not a scalar or array reference\n\n");
   };
 
   if ($plotting and ($self->mo->template_plot eq 'gnuplot')) {

@@ -69,8 +69,8 @@ override legend => sub {
   foreach my $key (keys %args) {
     next if ($key !~ m{\A(?:dy|x|y)\z});
     my $kk = "key_".$key;
-    carp("$key must be a positive number."), ($args{$key}=$self->po->$kk) if ($args{$key} !~ m{$NUMBER});
-    carp("$key must be a positive number."), ($args{$key}=$self->po->$kk) if ($args{$key} < 0);
+    carp("$key must be a positive number.\n\n"), ($args{$key}=$self->po->$kk) if ($args{$key} !~ m{$NUMBER});
+    carp("$key must be a positive number.\n\n"), ($args{$key}=$self->po->$kk) if ($args{$key} < 0);
     $self->$kk($args{$key});
   };
   ## this is wrong!!!
@@ -109,7 +109,7 @@ override 'font' => sub {
 
 sub replot {
   my ($self) = @_;
-  carp("Demeter::Plot::Gnuplot: Cannot replot, there is no previous plot."), return $self if ($self->get('lastplot') =~ m{\A\s*\z});
+  carp("Demeter::Plot::Gnuplot: Cannot replot, there is no previous plot.\n\n"), return $self if ($self->get('lastplot') =~ m{\A\s*\z});
   $self -> dispose($self->get('lastplot'), "plotting");
   return $self;
 };

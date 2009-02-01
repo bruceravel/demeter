@@ -105,12 +105,15 @@ sub save_file {
 				"input file (*.inp)|*.inp|All files|*.*",
 				wxFD_SAVE|wxFD_CHANGE_DIR,
 				wxDefaultPosition);
-  $fd -> ShowModal;
-  my $file = File::Spec->catfile($fd->GetDirectory, $fd->GetFilename);
-  open my $OUT, ">".$file;
-  print $OUT $self->{feff}->GetValue;
-  close $OUT;
-  $self->{statusbar}->SetStatusText("Saved feff input file to $file.");
+  if ($fd -> ShowModal == wxID_CANCEL) {
+    $self->{statusbar}->SetStatusText("Saving feff input file aborted.")
+  } else {
+    my $file = File::Spec->catfile($fd->GetDirectory, $fd->GetFilename);
+    open my $OUT, ">".$file;
+    print $OUT $self->{feff}->GetValue;
+    close $OUT;
+    $self->{statusbar}->SetStatusText("Saved feff input file to $file.");
+  };
 };
 
 sub clear_all {
@@ -138,10 +141,12 @@ sub insert_boilerplate {
 
 sub run_feff {
   my ($self) = @_;
+  return 1 if ($self->{feff}->GetNumberOfLines <= 1);
   my $busy   = Wx::BusyCursor->new();
   my $feff   = Demeter::Feff->new(screen=>0, buffer=>1, save=>0);
   $feff -> workspace(File::Spec->catfile($feff->stash_folder, $feff->group));
   $feff -> make_workspace;
+  $self->{feffobject} = $feff;
 
   my $inpfile = File::Spec->catfile($feff->stash_folder, $feff->group . ".inp");
   open my $OUT, ">".$inpfile;
@@ -166,13 +171,15 @@ sub run_feff {
   foreach my $p (@{ $feff->pathlist }) {
     my $idx = $self->{parent}->{Paths}->{paths}->InsertImageStringItem($i, sprintf("%4.4d", $i), 0);
     $self->{parent}->{Paths}->{paths}->SetItemTextColour($idx, $COLOURS[$p->weight]);
-    $self->{parent}->{Paths}->{paths}->SetItemData($idx, $i++);
+    $self->{parent}->{Paths}->{paths}->SetItemData($idx, $i);
+    #$self->{parent}->{Paths}->{paths}->SetItemData($idx, $i++);
     $self->{parent}->{Paths}->{paths}->SetItem($idx, 1, $p->n);
     $self->{parent}->{Paths}->{paths}->SetItem($idx, 2, sprintf("%.4f", $p->fuzzy));
     $self->{parent}->{Paths}->{paths}->SetItem($idx, 3, $p->intrplist);
     $self->{parent}->{Paths}->{paths}->SetItem($idx, 4, $p->weight);
     $self->{parent}->{Paths}->{paths}->SetItem($idx, 5, $p->nleg);
     $self->{parent}->{Paths}->{paths}->SetItem($idx, 6, $p->Type);
+    ++$i;
   };
 
   $self->{parent}->{notebook}->ChangeSelection(2);
@@ -195,3 +202,7 @@ sub now {
 };
 
 1;
+
+
+## croak when feff executable doesn't exist
+## croak when sanity checks fail in read_inp

@@ -18,7 +18,7 @@ sub plot {
   $space   = lc($space);
 
   if (($self->datatype eq 'detector') and ($space ne 'e')) {
-    carp($self->name . " is a detector group, which cannot be plotted in $space\n");
+    carp($self->name . " is a detector group, which cannot be plotted in $space\n\n");
     return $self;
   };
   my $which = ($space eq 'e')   ? $self->_update('fft')
@@ -244,7 +244,7 @@ sub rmr_offset {
 sub default_k_weight {
   my ($self) = @_;
   my $data = $self->data;
-  carp("Not an Demeter::Data object"), return 1 if (ref($data) !~ /Data/);
+  carp("Not an Demeter::Data object\n\n"), return 1 if (ref($data) !~ /Data/);
   my $kw = 1;			# return 1 is no other selected
  SWITCH: {
     $kw = sprintf("%.3f", $data->fit_karb_value), last SWITCH

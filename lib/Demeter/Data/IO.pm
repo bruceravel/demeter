@@ -42,13 +42,13 @@ sub save {
     };
     (lc($what) eq 'xmu') and do {
       $self->_update("fft");
-      carp("cannot save mu(E) file from chi(k) data"), return if ($self->datatype eq "chi");
+      carp("cannot save mu(E) file from chi(k) data\n\n"), return if ($self->datatype eq "chi");
       $string = $self->_save_xmu_command($filename);
       last WHAT;
     };
     (lc($what) eq 'norm') and do {
       $self->_update("fft");
-      carp("cannot save norm(E) file from chi(k) data"), return if ($self->datatype eq "chi");
+      carp("cannot save norm(E) file from chi(k) data\n\n"), return if ($self->datatype eq "chi");
       $string = $self->_save_norm_command($filename);
       last WHAT;
     };

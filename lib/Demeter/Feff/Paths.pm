@@ -45,9 +45,9 @@ sub find_path {
   $params{ipot}     ||= 0;
   $params{nlegs}    ||= 0;
 
-  carp("\$feff->find_path : the sp criterion must be a ScatteringPath object"), return 0 if ($params{sp} and (ref($params{sp}) !~ m{ScatteringPath}));
-  carp("\$feff->find_path : the lt criterion must be a positive number"),       return 0 if ($params{lt} and not is_PosNum($params{lt}));
-  carp("\$feff->find_path : the gt criterion must be a positive number"),       return 0 if ($params{gt} and not is_PosNum($params{gt}));
+  carp("\$feff->find_path : the sp criterion must be a ScatteringPath object\n\n"), return 0 if ($params{sp} and (ref($params{sp}) !~ m{ScatteringPath}));
+  carp("\$feff->find_path : the lt criterion must be a positive number\n\n"),       return 0 if ($params{lt} and not is_PosNum($params{lt}));
+  carp("\$feff->find_path : the gt criterion must be a positive number\n\n"),       return 0 if ($params{gt} and not is_PosNum($params{gt}));
 
   ## -------- scalar valued tests need to be made into array refs
   if ($params{tag} and (ref($params{tag}) ne 'ARRAY')) {
@@ -70,14 +70,14 @@ sub find_path {
     foreach my $i (@{ $params{ipot} }) {
       $ipots_ok &&= is_Ipot($i);
     };
-    carp("\$feff->find_path : each part of the ipot criterion must be an integer between 0 and 7"), return 0 if not $ipots_ok;
+    carp("\$feff->find_path : each part of the ipot criterion must be an integer between 0 and 7\n\n"), return 0 if not $ipots_ok;
   };
   if ($params{element}) {
     my $elements_ok = 1;
     foreach my $e (@{ $params{element} }) {
       $elements_ok &&= get_Z($e);
     };
-    carp("\$feff->find_path : each part of the element criterion must be an element name, symbol, or Z number"), return 0 if not $elements_ok;
+    carp("\$feff->find_path : each part of the element criterion must be an element name, symbol, or Z number\n\n"), return 0 if not $elements_ok;
   };
 
   my @list_of_paths = @{ $self->pathlist };

@@ -362,9 +362,9 @@ sub parse_line {
     } elsif ($self->meta->has_method($key)) {
       $self->$key(lc($val));
     } elsif (is_AtomsObsolete($key)) {
-      carp("\"$key\" is a deprecated Atoms keyword ($file line $.)");
+      carp("\"$key\" is a deprecated Atoms keyword ($file line $.)\n\n");
     } else {
-      carp("\"$key\" is not an Atoms keyword ($file line $.)");
+      carp("\"$key\" is not an Atoms keyword ($file line $.)\n\n");
     };
   };
   $self->parse_line($rest) if (($rest !~ m{\A\s*\z}) and ($rest !~ m{\A\s*[\#\%\!\*]}));
@@ -576,7 +576,8 @@ sub set_ipots {
 
   $self->is_ipots_set(1);
   if (--$i > 7) {
-    carp("You have $i unique potentials, but Feff only allows 7.");
+    my $ii = $i+1;
+    carp("You have $ii unique potentials, but Feff only allows 7.\n\n");
     return -1;
   };
   return 0;

@@ -18,7 +18,7 @@ package Demeter::UI::Wx::ColourDatabase;
 
 use strict;
 use warnings;
-use Carp;
+#use Carp;
 use File::Spec;
 use Wx qw(wxNullColour);
 

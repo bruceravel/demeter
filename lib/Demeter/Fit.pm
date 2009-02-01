@@ -303,7 +303,7 @@ sub fit {
       ++$i;
       $all .= "\n  $i: " . $message;
     };
-    $all .= "\nThe calling reference is";
+    $all .= "\nThe calling reference is\n\n";
     carp($all);
     croak("This fit has unrecoverable errors") if not $self->ignore_errors;
   };
@@ -440,7 +440,7 @@ sub ff2chi {
       ++$i;
       $all .= "\n  $i: " . $message;
     };
-    $all .= "\nThe calling reference is";
+    $all .= "\nThe calling reference is\n\n";
     carp($all);
     croak("This fit has unrecoverable errors");
   };
@@ -855,7 +855,7 @@ sub fetch_statistics {
 # sub statistic {
 #   my ($self, $stat) = @_;
 #   my $fit_stats_regexp = $self->regexp("stats", "bare");
-#   carp("'$stat' is not a fitting statistic ($STAT_TEXT)"), return q{} if ($stat !~ m{$fit_stats_regexp});
+#   carp("'$stat' is not a fitting statistic ($STAT_TEXT)\n\n"), return q{} if ($stat !~ m{$fit_stats_regexp});
 #   return $statistics_of{ident $self}{$stat};
 # };
 
@@ -1117,7 +1117,7 @@ override 'deserialize' => sub {
   my $folder = $self->project_folder("raw_demeter");
 
   my $zip = Archive::Zip->new();
-  carp("Error reading project file $dpj"), return 1 unless ($zip->read($dpj) == AZ_OK);
+  carp("Error reading project file $dpj\n\n"), return 1 unless ($zip->read($dpj) == AZ_OK);
 
   my $structure = $zip->contents('structure.yaml');
   my ($r_gdsnames, $r_data, $r_paths, $r_feff) = YAML::Load($structure);
