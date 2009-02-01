@@ -280,13 +280,17 @@ sub location {
 sub identify {
   my ($self, $full) = @_;
   $full ||= 0;
-  my $string = "Demeter $VERSION, copyright © 2006-2009 Bruce Ravel";
+  my $string = sprintf("Demeter %s, %s", $self->version, $self->copyright);
   #if ($full) {};
   return $string;
 };
 sub version {
   my ($self) = @_;
   return $VERSION
+};
+sub copyright {
+  my ($self) = @_;
+  return "copyright © 2006-2009 Bruce Ravel";
 };
 sub hashes {
   my ($self) = @_;

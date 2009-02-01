@@ -12,7 +12,7 @@ use base 'Wx::Panel';
 use Wx::Event qw(EVT_CHOICE EVT_KEY_DOWN EVT_MENU EVT_TOOL_ENTER EVT_ENTER_WINDOW EVT_LEAVE_WINDOW);
 
 my %hints = (
-	     save => "Save this feff.inp file",
+	     save => "Save this Feff calculation to a Demeter save file",
 	     plot => "Plot selected paths",
 	    );
 
@@ -117,6 +117,7 @@ sub plot {
   return if not $self->{paths}->GetItemCount;
   my $this = $self->{paths}->GetFirstSelected;
   $self->{statusbar}->SetStatusText("No paths are selected!") if ($this == -1);
+  my $busy   = Wx::BusyCursor->new();
   $Demeter::UI::Atoms::demeter->po->start_plot;
   while ($this != -1) {
     my $i    = $self->{paths}->GetItemData($this);
@@ -128,7 +129,39 @@ sub plot {
     #undef $path_object;
     $this    = $self->{paths}->GetNextSelected($this);
   };
+  undef $busy;
 };
 
 
 1;
+
+=head1 NAME
+
+Demeter::UI::Atoms::Paths - Atoms' path organizer utility
+
+=head1 VERSION
+
+This documentation refers to Demeter version 0.3.
+
+=head1 DESCRIPTION
+
+This class is used to populate the Paths tab in the Wx version of Atoms.
+
+=head1 AUTHOR
+
+Bruce Ravel (bravel AT bnl DOT gov)
+
+L<http://cars9.uchicago.edu/~ravel/software/>
+
+=head1 LICENCE AND COPYRIGHT
+
+Copyright (c) 2006-2009 Bruce Ravel (bravel AT bnl DOT gov). All rights reserved.
+
+This module is free software; you can redistribute it and/or
+modify it under the same terms as Perl itself. See L<perlgpl>.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+
+=cut

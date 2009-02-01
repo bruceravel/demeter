@@ -571,12 +571,22 @@ sub write_output {
   my $seems_ok = $self->get_crystal_data;
   if ($seems_ok) {
     my $dialog = Wx::SingleChoiceDialog->new( $self, "Output format", "Output format",
-					      ["Feff6", "Feff8", "Atoms", "P1", "Symmetry", "Absorption"]
+					      ["Feff6", "Feff8", "Atoms", "P1", "Spacegroup", "Absorption"]
 					    );
     if( $dialog->ShowModal == wxID_CANCEL ) {
       $self->{statusbar}->SetStatusText("Output cancelled.");
     } else {
-      $self->{statusbar}->SetStatusText("Writing " . $dialog->GetStringSelection . " output.");
+      my $fd = Wx::FileDialog->new( $self, "Export crystal data to a special file", cwd, q{},
+				    "All files|*", wxFD_SAVE|wxFD_CHANGE_DIR, wxDefaultPosition);
+      if ($fd -> ShowModal == wxID_CANCEL) {
+	$self->{statusbar}->SetStatusText("Saving output file aborted.")
+      } else {
+	my $file = File::Spec->catfile($fd->GetDirectory, $fd->GetFilename);
+	open my $OUT, ">".$file;
+	print $OUT $atoms -> Write(lc($dialog->GetStringSelection));
+	close $OUT;
+	$self->{statusbar}->SetStatusText("Wrote " . $dialog->GetStringSelection . " output to $file");
+      };
     }
   } else {
     $self->unusable_data();
@@ -585,7 +595,34 @@ sub write_output {
 
 1;
 
-## Prompt for clear_all with a config parameter for turning prompt off
-## Right-click on grid: copy, cut, paste
-## Jigger interaction with boolean renderer in grid
-## cif
+=head1 NAME
+
+Demeter::UI::Atoms::Xtal - Atoms' crystal utility
+
+=head1 VERSION
+
+This documentation refers to Demeter version 0.3.
+
+=head1 DESCRIPTION
+
+This class is used to populate the Atoms tab in the Wx version of Atoms.
+
+=head1 AUTHOR
+
+Bruce Ravel (bravel AT bnl DOT gov)
+
+L<http://cars9.uchicago.edu/~ravel/software/>
+
+=head1 LICENCE AND COPYRIGHT
+
+Copyright (c) 2006-2009 Bruce Ravel (bravel AT bnl DOT gov). All rights reserved.
+
+This module is free software; you can redistribute it and/or
+modify it under the same terms as Perl itself. See L<perlgpl>.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+
+=cut
+

@@ -72,3 +72,11 @@ default=#787878
 description
   The color of the interpretation text for low importance paths.  The
   default is a grey tone.
+
+variable=plotwith
+type=list
+options=pgplot gnuplot
+default=pgplot
+description
+  This tells Demeter which plotting backend to use in an application
+  that does not normally handle and plot data.

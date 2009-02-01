@@ -304,6 +304,10 @@ Demeter's dependencies are in the F<Bundle/DemeterBundle.pm> file.
 
 =item *
 
+Use a StatusBar.
+
+=item *
+
 Add and delete user materials for Formula utility using an ini file.
 
 =item *

@@ -34,11 +34,11 @@ the F<feff.inp> file can be overridden from the command line.
 
 =item C<--wx>
 
-Run the wxWidgets-based GUI.
+Run the wxWidgets-based GUI (ignoring all other command-line flags).
 
 =item C<-6>
 
-Write an input file for Feff6.
+Write an input file for Feff6 (which is the default).
 
 =item C<-8>
 
@@ -127,7 +127,7 @@ ipot style
 
 =item *
 
-feff7, P1 and overfull
+feff7, overfull
 
 =item *
 

@@ -17,8 +17,6 @@ package Demeter::UI::AtomsApp;
 
 use File::Spec;
 
-#use Demeter::UI::Wx::EchoArea;
-
 use Wx qw( :everything );
 use base 'Wx::Frame';
 use Wx::Event qw(EVT_NOTEBOOK_PAGE_CHANGED EVT_NOTEBOOK_PAGE_CHANGING);
@@ -36,7 +34,6 @@ sub new {
 			       );
   my $nb = Wx::Notebook->new( $self, -1, wxDefaultPosition, wxDefaultSize, wxNB_TOP );
   $self->{notebook} = $nb;
-  #my $echoarea = Demeter::UI::Wx::EchoArea->new($self);
   my $vbox = Wx::BoxSizer->new( wxVERTICAL);
 
   my $statusbar = $self->CreateStatusBar;
@@ -52,7 +49,6 @@ sub new {
   $nb->AssignImageList( $imagelist );
   foreach my $utility (@utilities) {
     my $count = $nb->GetPageCount;
-    #my $select = ($count) ? 0 : 1;
     my $page = Wx::Panel->new($nb, -1, wxDefaultPosition, wxDefaultSize);
     my $box = Wx::BoxSizer->new( wxVERTICAL );
     $page -> SetSizer($box);
@@ -60,10 +56,10 @@ sub new {
     $self->{$utility}
       = ($utility eq 'Atoms')     ? Demeter::UI::Atoms::Xtal    -> new($page, $self, $statusbar)
       : ($utility eq 'Feff')      ? Demeter::UI::Atoms::Feff    -> new($page, $self, $statusbar)
-      : ($utility eq 'Configure') ? Demeter::UI::Atoms::Config  -> new($page, $self, $statusbar)
       : ($utility eq 'Paths')     ? Demeter::UI::Atoms::Paths   -> new($page, $self, $statusbar)
       : ($utility eq 'Console')   ? Demeter::UI::Atoms::Console -> new($page, $self, $statusbar)
       : ($utility eq 'Document')  ? Demeter::UI::Atoms::Doc     -> new($page, $self, $statusbar)
+      : ($utility eq 'Configure') ? Demeter::UI::Atoms::Config  -> new($page, $self, $statusbar)
       :                             0;
 
     my $hh   = Wx::BoxSizer->new( wxHORIZONTAL );
@@ -75,10 +71,8 @@ sub new {
   };
 
   $vbox -> Add($nb, 1, wxEXPAND|wxGROW, 0);
-  #$vbox -> Add($echoarea, 0, wxEXPAND|wxALL, 3);
   #EVT_NOTEBOOK_PAGE_CHANGED( $self, $nb, sub{$echoarea->echo(q{})} );
 
-  #$echoarea -> echo(q{});
   $self -> SetSizer($vbox);
   $vbox -> Fit($nb);
   $vbox -> SetSizeHints($nb);
@@ -88,7 +82,7 @@ sub new {
 
 package Demeter::UI::Atoms;
 
-use Demeter qw(:plotwith=gnuplot);
+use Demeter;
 use vars qw($demeter);
 $demeter = Demeter->new;
 
@@ -110,15 +104,9 @@ use vars qw($atoms_base $demeter $frame);
 $atoms_base = identify_self();
 
 sub OnInit {
-#   $demeter = Demeter->new;
-#   $demeter -> mo -> ui('Wx');
-#   $demeter -> mo -> identity('Atoms');
-#   ## read atoms' demeter_conf file
-#   my $conffile = File::Spec->catfile(dirname($INC{'Demeter/UI/Atoms.pm'}), 'Atoms', 'data', "atoms.demeter_conf");
-#   $demeter -> co -> read_config($conffile);
-#   ## read ini file...
-#   $demeter -> co -> read_ini('atoms');
-#   $demeter -> plot_with($demeter->co->default(qw(atoms plotwith)));
+  $demeter -> mo -> ui('Wx');
+  $demeter -> mo -> identity('Atoms');
+  $demeter -> plot_with($demeter->co->default(qw(feff plotwith)));
 
   foreach my $m (qw(Xtal Feff Config Paths Doc Console)) {
     next if $INC{"Demeter/UI/Atoms/$m.pm"};
@@ -153,7 +141,7 @@ sub OnInit {
   #my $framesize = Wx::Size->new($frameWH[0], $frameWH[1]+$barWH[1]);
   #$frame -> SetSize($framesize);
   $frame -> SetMinSize($frame->GetSize);
-  #$frame -> SetMaxSize($frame->GetSize);
+  $frame -> SetMaxSize($frame->GetSize);
 
   $frame -> Show( 1 );
 }
@@ -162,10 +150,172 @@ sub on_close {
   my ($self) = @_;
   $self->Destroy;
 };
+
 sub on_about {
   my ($self) = @_;
-  1;
+
+  my $info = Wx::AboutDialogInfo->new;
+
+  $info->SetName( 'Atoms' );
+  #$info->SetVersion( $demeter->version );
+  $info->SetDescription( "Crystallography for the X-ray absorption spectroscopist" );
+  $info->SetCopyright( $demeter->identify );
+  $info->SetWebSite( 'http://cars9.uchicago.edu/iffwiki/Demeter', 'The Demeter web site' );
+  $info->SetDevelopers( ["Bruce Ravel <bravel\@bnl.gov>\n",
+			] );
+  $info->SetLicense( slurp(File::Spec->catfile($Demeter::UI::Atoms::atoms_base, 'Atoms', 'data', "GPL.dem")) );
+  my $artwork = <<'EOH'
+The Atoms logo is a perovskite as rendered by a
+ball-and-stick moolecule viewer.
+
+The Feff logo is taken from the Feff document wiki.
+
+The template icon on the Feff page is the icon Ubuntu
+uses for the game glpuzzle, leter called jigzo
+http://www.resorama.com/glpuzzle/
+
+All other icons icons are from the Kids icon set for
+KDE by Everaldo Coelho, http://www.everaldo.com
+EOH
+  ;
+  $info -> AddArtist($artwork);
+
+  Wx::AboutBox( $info );
 };
 
+sub slurp {
+  my $file = shift;
+  local $/;
+  open(my $FH, $file);
+  my $text = <$FH>;
+  close $FH;
+  return $text;
+};
 
 1;
+
+
+=head1 NAME
+
+Demeter::UI::Atoms - Crystallography for the X-ray absorption spectroscopist
+
+=head1 VERSION
+
+This documentation refers to Demeter version 0.3.
+
+=head1 SYNOPSIS
+
+This short program launches the Wx interface to Atoms:
+
+  use Wx;
+  use Demeter::UI::Atoms;
+  Wx::InitAllImageHandlers();
+  my $window = Demeter::UI::Atoms->new;
+  $window -> MainLoop;
+
+=head1 DESCRIPTION
+
+Atoms is a graphical interface to crystallography classes and classes
+for interacting with Feff, as well as to tables of X-ray absorption
+coefficients and elemental data.  The main purpose of Atoms is help
+the user generate input data for Feff, run the Feff calculation, and
+organize Feff's output for use in a fit to EXAFS data.
+
+For more information see L<Demeter::Atoms>, L<Demeter::Feff>, and
+L<Demeter::ScatteringPath>.
+
+=head1 USE
+
+Things to explain:
+
+=over 4
+
+=item *
+
+how to use grid
+
+=item *
+
+statusbar
+
+=item *
+
+why Feff tab is so simple
+
+=item *
+
+how to use ListCtrl on paths tab
+
+=item *
+
+L<Demeter::UI::Wx::Config> for Configuration tab
+
+=back
+
+=head1 CONFIGURATION
+
+Many aspects of Atoms and its UI are configurable using the
+Configuration tab in the Wx application.
+
+=head1 DEPENDENCIES
+
+This is a Wx application.  Demeter's dependencies are in the
+F<Bundle/DemeterBundle.pm> file.
+
+=head1 BUGS AND LIMITATIONS
+
+=over 4
+
+=item *
+
+Config parameter for turning OK/Cancel dialogs off
+
+=item *
+
+Right-click on grid: copy, cut, paste
+
+=item *
+
+Jigger interaction with boolean renderer in grid
+
+=item *
+
+cif
+
+=item *
+
+Croak when feff executable doesn't exist & when sanity checks fail in
+read_inp
+
+=item *
+
+Correctly clean up Path gatherer in Mode object after a plot
+
+=item *
+
+How is plotting going to work when this is bolted onto Artemis?
+
+=back
+
+Please report problems to Bruce Ravel (bravel AT bnl DOT gov)
+
+Patches are welcome.
+
+=head1 AUTHOR
+
+Bruce Ravel (bravel AT bnl DOT gov)
+
+L<http://cars9.uchicago.edu/~ravel/software/>
+
+=head1 LICENCE AND COPYRIGHT
+
+Copyright (c) 2006-2009 Bruce Ravel (bravel AT bnl DOT gov). All rights reserved.
+
+This module is free software; you can redistribute it and/or
+modify it under the same terms as Perl itself. See L<perlgpl>.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+
+=cut

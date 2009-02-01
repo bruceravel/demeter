@@ -30,3 +30,34 @@ sub new {
 };
 
 1;
+
+=head1 NAME
+
+Demeter::UI::Atoms::Console - Atoms' output console
+
+=head1 VERSION
+
+This documentation refers to Demeter version 0.3.
+
+=head1 DESCRIPTION
+
+This class is used to populate the Console tab in the Wx version of Atoms.
+
+=head1 AUTHOR
+
+Bruce Ravel (bravel AT bnl DOT gov)
+
+L<http://cars9.uchicago.edu/~ravel/software/>
+
+=head1 LICENCE AND COPYRIGHT
+
+Copyright (c) 2006-2009 Bruce Ravel (bravel AT bnl DOT gov). All rights reserved.
+
+This module is free software; you can redistribute it and/or
+modify it under the same terms as Perl itself. See L<perlgpl>.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+
+=cut
