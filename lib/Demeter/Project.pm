@@ -40,6 +40,14 @@ sub dot_folder {
   my $folder = ($self->is_windows) ? q{}
     : File::Spec->catfile($ENV{HOME}, ".horae");
   mkpath($folder) if (not -d $folder);
+  my $mrufile = File::Spec->catfile($folder, "demeter.mru");
+  if (not -e $mrufile) {
+    open(my $MRU, ">".$mrufile);
+    print $MRU "## Recently used files: " . $self->identify . $/ x 3;
+    print $MRU "[__dummy__]\n";
+    print $MRU "x=y\n";
+    close $MRU;
+  };
   return $folder;
 };
 sub stash_folder {

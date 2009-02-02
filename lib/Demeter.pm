@@ -54,6 +54,7 @@ use Ifeffit;
 with 'Demeter::Dispose';
 with 'Demeter::Tools';
 with 'Demeter::Project';
+with 'Demeter::MRU';
 
 with 'MooseX::Clone';
 

@@ -68,7 +68,9 @@ Readonly my $EPSILON => 1e-3;
 use Wx qw( :everything );
 use base 'Wx::Panel';
 use Wx::Grid;
-use Wx::Event qw(EVT_CHOICE EVT_KEY_DOWN EVT_MENU EVT_TOOL_ENTER EVT_ENTER_WINDOW EVT_LEAVE_WINDOW);
+use Wx::Event qw(EVT_CHOICE EVT_KEY_DOWN EVT_MENU EVT_TOOL_ENTER EVT_ENTER_WINDOW
+		 EVT_LEAVE_WINDOW EVT_TOOL_RCLICKED
+		 EVT_GRID_CELL_LEFT_CLICK EVT_GRID_CELL_RIGHT_CLICK);
 
 my %hints = (
 	     titles   => "Text describing this structure which also be used as title lines in the Feff calculation",
@@ -126,7 +128,7 @@ sub new {
   EVT_TOOL_ENTER( $self, $self->{toolbar}, sub{my ($toolbar, $event) = @_; &OnToolEnter($toolbar, $event, 'toolbar')} );
   $self->{toolbar} -> Realize;
   $vbox -> Add($self->{toolbar}, 0, wxALL, 5);
-
+  EVT_TOOL_RCLICKED($self->{toolbar}, -1, sub{my ($toolbar, $event) = @_; OnToolRightClick($toolbar, $event, $self)});
 
   my $hbox = Wx::BoxSizer->new( wxHORIZONTAL );
   $self->{titlesbox}       = Wx::StaticBox->new($self, -1, 'Titles', wxDefaultPosition, wxDefaultSize);
@@ -281,6 +283,8 @@ sub new {
 
   $hbox = Wx::BoxSizer->new( wxHORIZONTAL );
   $self->{sitesgrid} = Demeter::UI::Atoms::Xtal::SiteList->new($self, -1);
+  EVT_GRID_CELL_LEFT_CLICK($self->{sitesgrid}, \&OnGridClick);
+  EVT_GRID_CELL_RIGHT_CLICK($self->{sitesgrid}, \&PostGridMenu);
 
   $hbox -> Add($self->{sitesgrid}, 1, wxSHAPED|wxALL|wxALIGN_CENTER_HORIZONTAL, 0);
   $vbox -> Add($hbox, 1, wxSHAPED|wxALL|wxALIGN_CENTER_HORIZONTAL, 5);
@@ -339,6 +343,44 @@ sub OnToolClick {
   my $closure = $callbacks[$toolbar->GetToolPos($event->GetId)];
   $self->$closure;
 };
+sub OnToolRightClick {
+  my ($toolbar, $event, $self) = @_;
+  return if not ($toolbar->GetToolPos($event->GetId) == 0);
+  my @mrulist = $atoms->get_mru_list("atoms");
+  my $dialog = Wx::SingleChoiceDialog->new( $self, "Select a recent crystal data file",
+					    "Recent crystal data files", \@mrulist );
+  Demeter::UI::Atoms::_doublewide($dialog);
+  if( $dialog->ShowModal == wxID_CANCEL ) {
+    $self->{statusbar}->SetStatusText("Import cancelled.");
+  } else {
+   $self->open_file( $dialog->GetStringSelection );
+  };
+};
+
+## this overrides a click event on the core column to make those
+## checkboxes work like radioboxes.  a click event elsewhere on the
+## grid is passed through
+sub OnGridClick {
+  my ($self, $event) = @_;
+  $event->Skip(1), return if ($event->GetCol != 0);
+  my $row = $event->GetRow;
+  foreach my $rr (0 .. $self->GetNumberRows) {
+    $self->SetCellValue($rr, 0, 0)
+  };
+  $self->SetCellValue($row, 0, 1)
+};
+
+sub PostGridMenu {
+  my ($self, $event) = @_;
+  my $row = $event->GetRow;
+  my $menu = Wx::Menu->new(q{});
+  $menu->Append(-1, "Copy site");
+  $menu->Append(-1, "Cut site");
+  $menu->Append(-1, "Paste site");
+  $self->SelectRow($row);
+  $self->PopupMenu($menu, $event->GetPosition);
+};
+
 sub AddSite {
   my ($toolbar, $event, $self) = @_;
   $self->{sitesgrid} -> InsertRows($self->{sitesgrid}->GetNumberRows, 1, 1);
@@ -350,16 +392,18 @@ sub noop {
 };
 
 sub open_file {
-  my ($self) = @_;
-  my $fd = Wx::FileDialog->new( $self, "Import crystal data", cwd, q{},
-				"input file (*.inp)|*.inp|CIF file (*.cif)|*.cif|All files|*.*",
-				wxFD_OPEN|wxFD_FILE_MUST_EXIST|wxFD_CHANGE_DIR|wxFD_PREVIEW,
-				wxDefaultPosition);
-  if ($fd->ShowModal == wxID_CANCEL) {
-    $self->{statusbar}->SetStatusText("Crystal data import cancelled.");
-    return;
+  my ($self, $file) = @_;
+  if ((not $file) or (not -e $file)) {
+    my $fd = Wx::FileDialog->new( $self, "Import crystal data", cwd, q{},
+				  "input file (*.inp)|*.inp|CIF file (*.cif)|*.cif|All files|*.*",
+				  wxFD_OPEN|wxFD_FILE_MUST_EXIST|wxFD_CHANGE_DIR|wxFD_PREVIEW,
+				  wxDefaultPosition);
+    if ($fd->ShowModal == wxID_CANCEL) {
+      $self->{statusbar}->SetStatusText("Crystal data import cancelled.");
+      return;
+    };
+    $file = File::Spec->catfile($fd->GetDirectory, $fd->GetFilename);
   };
-  my $file = File::Spec->catfile($fd->GetDirectory, $fd->GetFilename);
   $self->clear_all(1);
   $atoms->file($file);
   $atoms->populate;
@@ -403,6 +447,8 @@ sub open_file {
 
   my $ie = firstidx {lc($_) eq lc($atoms->edge)} qw(K L1 L2 L3);
   $self->{edge}->SetSelection($ie);
+
+  $atoms -> push_mru("atoms", $file);
 
   $self->{statusbar}->SetStatusText("Imported crystal data from $file.");
 };
@@ -521,6 +567,7 @@ sub save_file {
       open my $OUT, ">".$file;
       print $OUT $atoms -> Write('atoms');
       close $OUT;
+      $atoms -> push_mru("atoms", $file);
       $self->{statusbar}->SetStatusText("Saved crystal data to $file.");
     };
   } else {

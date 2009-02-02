@@ -166,7 +166,7 @@ sub on_about {
   $info->SetLicense( slurp(File::Spec->catfile($Demeter::UI::Atoms::atoms_base, 'Atoms', 'data', "GPL.dem")) );
   my $artwork = <<'EOH'
 The Atoms logo is a perovskite as rendered by a
-ball-and-stick moolecule viewer.
+ball-and-stick molecule viewer.
 
 The Feff logo is taken from the Feff document wiki.
 
@@ -191,6 +191,14 @@ sub slurp {
   close $FH;
   return $text;
 };
+
+sub _doublewide {
+  my ($widget) = @_;
+  my ($w, $h) = $widget->GetSizeWH;
+  $widget -> SetSizeWH(2*$w, $h);
+};
+
+
 
 1;
 
@@ -272,11 +280,8 @@ Config parameter for turning OK/Cancel dialogs off
 
 =item *
 
-Right-click on grid: copy, cut, paste
-
-=item *
-
-Jigger interaction with boolean renderer in grid
+Assign functionality to Right-click on grid: copy, cut, paste.  Also
+need to apply that functionality to a right click on row label
 
 =item *
 

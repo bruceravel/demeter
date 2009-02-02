@@ -9,10 +9,11 @@ use File::Spec;
 use Wx qw( :everything );
 use base 'Wx::Panel';
 
-use Wx::Event qw(EVT_CHOICE EVT_KEY_DOWN EVT_MENU EVT_TOOL_ENTER EVT_ENTER_WINDOW EVT_LEAVE_WINDOW);
+use Wx::Event qw(EVT_CHOICE EVT_KEY_DOWN EVT_MENU EVT_TOOL_ENTER EVT_TOOL_RCLICKED
+		 EVT_ENTER_WINDOW EVT_LEAVE_WINDOW);
 
 my %hints = (
-	     open     => "Import an existing feff.inp file",
+	     open     => "Import an existing feff.inp file -- Hint: Right click for recent files",
 	     save     => "Save this feff.inp file",
 	     exec     => "Run Feff on this cluster",
 	     boiler   => "Insert boilerplate for a feff.inp file",
@@ -38,6 +39,7 @@ sub new {
   EVT_TOOL_ENTER( $self, $self->{toolbar}, sub{my ($toolbar, $event) = @_; &OnToolEnter($toolbar, $event, 'toolbar')} );
   $self->{toolbar} -> Realize;
   $vbox -> Add($self->{toolbar}, 0, wxALL, 5);
+  EVT_TOOL_RCLICKED($self->{toolbar}, -1, sub{my ($toolbar, $event) = @_; OnToolRightClick($toolbar, $event, $self)});
 
 
   $self->{feffbox}       = Wx::StaticBox->new($self, -1, 'Feff input file', wxDefaultPosition, wxDefaultSize);
@@ -76,26 +78,42 @@ sub OnToolClick {
   my $closure = $callbacks[$toolbar->GetToolPos($event->GetId)];
   $self->$closure;
 };
+sub OnToolRightClick {
+  my ($toolbar, $event, $self) = @_;
+  return if not ($toolbar->GetToolPos($event->GetId) == 0);
+  my @mrulist = $Demeter::UI::Atoms::demeter->get_mru_list("feff");
+  my $dialog = Wx::SingleChoiceDialog->new( $self, "Select a recent feff.inp files",
+					    "Recent feff.inp files", \@mrulist );
+  Demeter::UI::Atoms::_doublewide($dialog);
+  if( $dialog->ShowModal == wxID_CANCEL ) {
+    $self->{statusbar}->SetStatusText("Import cancelled.");
+  } else {
+   $self->import( $dialog->GetStringSelection );
+  };
+};
 
 sub noop {
   return 1;
 };
 
 sub import {
-  my ($self) = @_;
+  my ($self, $file) = @_;
   return if not $self->clear_all;
-  my $fd = Wx::FileDialog->new( $self, "Import a feff.inp file", cwd, q{},
-				"input file (*.inp)|*.inp|All files|*.*",
-				wxFD_OPEN|wxFD_FILE_MUST_EXIST|wxFD_CHANGE_DIR|wxFD_PREVIEW,
-				wxDefaultPosition);
-  $fd -> ShowModal;
-  my $file = File::Spec->catfile($fd->GetDirectory, $fd->GetFilename);
+  if ((not $file) or (not -e $file)) {
+    my $fd = Wx::FileDialog->new( $self, "Import a feff.inp file", cwd, q{},
+				  "input file (*.inp)|*.inp|All files|*.*",
+				  wxFD_OPEN|wxFD_FILE_MUST_EXIST|wxFD_CHANGE_DIR|wxFD_PREVIEW,
+				  wxDefaultPosition);
+    $fd -> ShowModal;
+    $file = File::Spec->catfile($fd->GetDirectory, $fd->GetFilename);
+  };
   $self->{feff}->SetValue(q{});
   local $/;
   open(my $INP, $file);
   my $text = <$INP>;
   close $INP;
   $self->{feff}->SetValue($text);
+  $Demeter::UI::Atoms::demeter -> push_mru("feff", $file);
 };
 
 
@@ -112,6 +130,7 @@ sub save_file {
     open my $OUT, ">".$file;
     print $OUT $self->{feff}->GetValue;
     close $OUT;
+    $Demeter::UI::Atoms::demeter -> push_mru("feff", $file);
     $self->{statusbar}->SetStatusText("Saved feff input file to $file.");
   };
 };
