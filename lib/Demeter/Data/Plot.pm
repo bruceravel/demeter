@@ -91,7 +91,7 @@ sub _plotk_command {
          :                                        $ylorig;
   (my $title = $self->name||q{}) =~ s{D_E_F_A_U_L_T}{Plot of paths};
   $pf->key($self->name);
-  $pf->title(sprintf("%s in %s space", $title, $space));
+  $pf->title(sprintf("%s in %s space", $title, $space)) if not $pf->title;
   $pf->xlabel($xl);
   $pf->ylabel($yl);
   $string = ($pf->New)
@@ -122,7 +122,7 @@ sub _plotR_command {
     if ($yl =~ /^\s*$/);
   (my $title = $self->name||q{}) =~ s{D_E_F_A_U_L_T}{Plot of paths};
   $pf->key($self->name);
-  $pf->title(sprintf("%s in R space", $title));
+  $pf->title(sprintf("%s in R space", $title)) if not $pf->title;
 
   $string = ($pf->New)
           ? $self->template("plot", "newr")
@@ -161,7 +161,7 @@ sub _plotq_command {
     if ($yl =~ /^\s*$/);
   (my $title = $self->name) =~ s{D_E_F_A_U_L_T}{Plot of paths};
   $pf->key($self->name);
-  $pf->title(sprintf("%s in q space", $title));
+  $pf->title(sprintf("%s in q space", $title)) if not $pf->title;
 
   $string = ($pf->New)
           ? $self->template("plot", "newq")

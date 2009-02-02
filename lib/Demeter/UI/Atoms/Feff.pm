@@ -82,6 +82,7 @@ sub OnToolRightClick {
   my ($toolbar, $event, $self) = @_;
   return if not ($toolbar->GetToolPos($event->GetId) == 0);
   my @mrulist = $Demeter::UI::Atoms::demeter->get_mru_list("feff");
+  $self->{statusbar}->SetStatusText("There are no recent feff.inp files."), return if not @mrulist;
   my $dialog = Wx::SingleChoiceDialog->new( $self, "Select a recent feff.inp files",
 					    "Recent feff.inp files", \@mrulist );
   Demeter::UI::Atoms::_doublewide($dialog);

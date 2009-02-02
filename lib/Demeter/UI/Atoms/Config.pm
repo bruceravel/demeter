@@ -40,7 +40,7 @@ sub target {
 
  SWITCH: {
     ($param eq 'plotwith') and do {
-      $Demeter::UI::Atoms::demeter->po->plot_with($value);
+      $Demeter::UI::Atoms::demeter->plot_with($value);
       last SWITCH;
     };
   };

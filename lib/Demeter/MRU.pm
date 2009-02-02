@@ -54,6 +54,7 @@ sub get_mru_list {
   my ($self, $group) = @_;
   my %mru;
   tie %mru, 'Config::IniFiles', ( -file => File::Spec->catfile($self->dot_folder, "demeter.mru") );
+  return () if not $mru{$group};
 
   my %hash = %{ $mru{$group} };
   my @list_of_files = map { $hash{$_} } sort keys %hash;

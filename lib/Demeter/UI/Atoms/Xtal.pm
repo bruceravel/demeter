@@ -55,55 +55,58 @@ package  Demeter::UI::Atoms::Xtal;
 
 use Demeter;
 use Demeter::StrTypes qw( Element );
+use Demeter::NumTypes qw( PosNum );
 
 use Cwd;
 use Chemistry::Elements qw(get_Z get_name get_symbol);
 use List::MoreUtils qw(firstidx);
+use Regexp::Common;
 use Xray::Absorption;
 #use Demeter::UI::Wx::GridTable;
 
 use Readonly;
 Readonly my $EPSILON => 1e-3;
+Readonly my $NUMBER => $RE{num}{real};
 
 use Wx qw( :everything );
 use base 'Wx::Panel';
 use Wx::Grid;
 use Wx::Event qw(EVT_CHOICE EVT_KEY_DOWN EVT_MENU EVT_TOOL_ENTER EVT_ENTER_WINDOW
 		 EVT_LEAVE_WINDOW EVT_TOOL_RCLICKED
-		 EVT_GRID_CELL_LEFT_CLICK EVT_GRID_CELL_RIGHT_CLICK);
+		 EVT_GRID_CELL_LEFT_CLICK EVT_GRID_CELL_RIGHT_CLICK EVT_GRID_LABEL_RIGHT_CLICK);
 
 my %hints = (
-	     titles   => "Text describing this structure which also be used as title lines in the Feff calculation",
-	     space    => "The space group symbol (Hermann-Maguin, Schoenflies or number)",
-	     a	      => "The value of the A lattice constant in Ångstroms",
-	     b	      => "The value of the B lattice constant in Ångstroms",
-	     c	      => "The value of the C lattice constant in Ångstroms",
-	     alpha    => "The value of the alpha lattice angle (between B and C) in degrees",
-	     beta     => "The value of the beta lattice angle (between A and C) in degrees",
-	     gamma    => "The value of the gamma lattice angle (between A and B) in degrees",
-	     rmax     => "The size of the cluster of atoms in Ångstroms",
-	     rpath    => "The maximum path length in Feff's path expansion, in Ångstroms",
-	     shift_x  => "The x-coordinate of the vector for recentering this crystal",
-	     shift_y  => "The y-coordinate of the vector for recentering this crystal",
-	     shift_z  => "The z-coordinate of the vector for recentering this crystal",
-	     edge     => "The absorption edge to use in the Feff calculation",
-	     template => "Choose the output style",
+	     titles    => "Text describing this structure which also be used as title lines in the Feff calculation",
+	     space     => "The space group symbol (Hermann-Maguin, Schoenflies or number)",
+	     a	       => "The value of the A lattice constant in Ångstroms",
+	     b	       => "The value of the B lattice constant in Ångstroms",
+	     c	       => "The value of the C lattice constant in Ångstroms",
+	     alpha     => "The value of the alpha lattice angle (between B and C) in degrees",
+	     beta      => "The value of the beta lattice angle (between A and C) in degrees",
+	     gamma     => "The value of the gamma lattice angle (between A and B) in degrees",
+	     rmax      => "The size of the cluster of atoms in Ångstroms",
+	     rpath     => "The maximum path length in Feff's path expansion, in Ångstroms",
+	     shift_x   => "The x-coordinate of the vector for recentering this crystal",
+	     shift_y   => "The y-coordinate of the vector for recentering this crystal",
+	     shift_z   => "The z-coordinate of the vector for recentering this crystal",
+	     edge      => "The absorption edge to use in the Feff calculation",
+	     template  => "Choose the output file style and the ipot selection style",
 	     sitesgrid => "Hit return or tab to finish editing a cell in the sites grid",
 
-	     open     => "Open an Atoms input file or a CIF file -- Hint: Right click for recent files",
-	     save     => "Save an atoms input file from these crystallographic data",
-	     exec     => "Generate input data for Feff from these crystallographic data",
-	     clear    => "Clear this crystal structure",
-	     output   => "Write a feff.inp file or some other format",
-	     add      => "Add another entry to the list of sites",
+	     open      => "Open an Atoms input file or a CIF file -- Hint: Right click for recent files",
+	     save      => "Save an atoms input file from these crystallographic data",
+	     exec      => "Generate input data for Feff from these crystallographic data",
+	     clear     => "Clear this crystal structure",
+	     output    => "Write a feff.inp file or some other format",
+	     add       => "Add another entry to the list of sites",
 
-	     radio    => "Select this site as the absorbing atom in the Feff calculation",
-	     element  => "The element occupying this unique crystallographic site",
-	     x	      => "The x-coordinate of this unique crystallographic site",
-	     y	      => "The x-coordinate of this unique crystallographic site",
-	     z	      => "The x-coordinate of this unique crystallographic site",
-	     tag      => "A short string identifying this unique crystallographic site",
-	     del      => "Click this button to remove this crystallographic site",
+	     radio     => "Select this site as the absorbing atom in the Feff calculation",
+	     element   => "The element occupying this unique crystallographic site",
+	     x	       => "The x-coordinate of this unique crystallographic site",
+	     y	       => "The x-coordinate of this unique crystallographic site",
+	     z	       => "The x-coordinate of this unique crystallographic site",
+	     tag       => "A short string identifying this unique crystallographic site",
+	     del       => "Click this button to remove this crystallographic site",
 	    );
 
 my $atoms = Demeter::Atoms->new;
@@ -114,6 +117,8 @@ sub new {
   my $self = $class->SUPER::new($page, -1, wxDefaultPosition, wxDefaultSize, wxMAXIMIZE_BOX );
   $self->{parent}    = $parent;
   $self->{statusbar} = $statusbar;
+  $self->{buffered_site} = 0;
+
   my $vbox = Wx::BoxSizer->new( wxVERTICAL );
 
 
@@ -285,6 +290,8 @@ sub new {
   $self->{sitesgrid} = Demeter::UI::Atoms::Xtal::SiteList->new($self, -1);
   EVT_GRID_CELL_LEFT_CLICK($self->{sitesgrid}, \&OnGridClick);
   EVT_GRID_CELL_RIGHT_CLICK($self->{sitesgrid}, \&PostGridMenu);
+  EVT_GRID_LABEL_RIGHT_CLICK($self->{sitesgrid}, \&PostGridMenu);
+  EVT_MENU($self->{sitesgrid}, -1, \&OnGridMenu);
 
   $hbox -> Add($self->{sitesgrid}, 1, wxSHAPED|wxALL|wxALIGN_CENTER_HORIZONTAL, 0);
   $vbox -> Add($hbox, 1, wxSHAPED|wxALL|wxALIGN_CENTER_HORIZONTAL, 5);
@@ -307,8 +314,8 @@ sub icon {
 sub templates {
   my ($self) = @_;
   return ['Feff6 - tags', 'Feff6 - sites', 'Feff6 - elements',
-	  'Feff8 - tags', 'Feff8 - sites', 'Feff8 - elements',
 	 ];
+  #'Feff8 - tags', 'Feff8 - sites', 'Feff8 - elements',
 };
 
 sub set_hint {
@@ -347,6 +354,7 @@ sub OnToolRightClick {
   my ($toolbar, $event, $self) = @_;
   return if not ($toolbar->GetToolPos($event->GetId) == 0);
   my @mrulist = $atoms->get_mru_list("atoms");
+  $self->{statusbar}->SetStatusText("There are no recent crystal data files."), return if not @mrulist;
   my $dialog = Wx::SingleChoiceDialog->new( $self, "Select a recent crystal data file",
 					    "Recent crystal data files", \@mrulist );
   Demeter::UI::Atoms::_doublewide($dialog);
@@ -373,12 +381,48 @@ sub OnGridClick {
 sub PostGridMenu {
   my ($self, $event) = @_;
   my $row = $event->GetRow;
+  return if ($row < 0);
   my $menu = Wx::Menu->new(q{});
-  $menu->Append(-1, "Copy site");
-  $menu->Append(-1, "Cut site");
-  $menu->Append(-1, "Paste site");
+  $menu->Append(0, "Copy site");
+  $menu->Append(1, "Cut site");
+  $menu->Append(2, "Paste site");
+  $self->{selected_site} = [
+			    $self->GetCellValue($row,1),
+			    $self->GetCellValue($row,2),
+			    $self->GetCellValue($row,3),
+			    $self->GetCellValue($row,4),
+			    $self->GetCellValue($row,5),
+			   ];
+  $self->{selected_row} = $row;
   $self->SelectRow($row);
   $self->PopupMenu($menu, $event->GetPosition);
+};
+sub OnGridMenu {
+  my ($self, $event) = @_;
+  my $which = $event->GetId;
+  my $string = join(",", @{ $self->{selected_site} });
+ SWITCH: {
+    ($which == 0) and do {
+      $self->{buffered_site} = $self->{selected_site};
+      last SWITCH;
+    };
+    ($which == 1) and do {
+      $self->{buffered_site} = $self->{selected_site};
+      $self->DeleteRows($self->{selected_row}, 1, 1);
+      $self->AppendRows(1,1) if ($self->GetNumberRows < 6);
+      $self->SetCellAlignment($self->GetNumberRows, 0, wxALIGN_CENTRE, wxALIGN_CENTRE);
+      last SWITCH;
+    };
+    ($which == 2) and do {
+      my $r = $self->{selected_row};
+      last SWITCH if not $self->{buffered_site};
+      my @site = @{ $self->{buffered_site} };
+      $self -> InsertRows($r, 1, 1);
+      $self -> SetCellAlignment($r, 0, wxALIGN_CENTRE, wxALIGN_CENTRE);
+      map { $self->SetCellValue($r, $_+1, $site[$_]) } (0 .. 4);
+      last SWITCH;
+    };
+  };
 };
 
 sub AddSite {
@@ -456,6 +500,7 @@ sub open_file {
 sub get_crystal_data {
   my ($self) = @_;
 
+  my $problems = q{};
   $atoms->clear;
 
   my @titles = split(/\n/, $self->{titles}->GetValue);
@@ -463,13 +508,20 @@ sub get_crystal_data {
 
   my $this = $self->{space}->GetValue || q{};
   $atoms->space($this);
+  $atoms->cell->space_group($this); # why is this necessary!!!!!  why is the trigger not being triggered?????
+  $problems .= $atoms->cell->group->warning.$/ if $atoms->cell->group->warning;
 
   foreach my $param (qw(a b c alpha beta gamma rmax rpath)) {
     $this = $self->{$param}->GetValue || 0;
-    $atoms->$param($this);
+    if (is_PosNum($this)) {
+      $atoms->$param($this);
+    } else {
+      $problems .= "\"$this\" is not a valid value for \"$param\" (should be a positive number).\n\n";
+    };
   };
 
   my @shift = map { $self->{$_}->GetValue || 0 } qw(shift_x shift_y shift_z);
+  map { $problems .= "\"$_\" is not a valid value for a shift coordinate (should be a number or a simple fraction).\n\n" if ($_ !~ m{\A$NUMBER\z}) } @shift;
   $atoms->shift(\@shift);
 
   my $core_selected = 0;
@@ -479,7 +531,8 @@ sub get_crystal_data {
     my $el   = $self->{sitesgrid}->GetCellValue($row, 1) || q{};
     next if ($el =~ m{\A\s*\z});
     ++$count_valid_row;
-    my $rr = $row+1; warn("$el is not an element symbol at site $rr\n"), return 0 if not is_Element($el);
+    my $rr = $row+1;
+    warn("$el is not an element symbol at site $rr\n"), return 0 if not is_Element($el);
     ($first_valid_row = $row) if ($first_valid_row == -1);
     if ($self->{sitesgrid}->GetCellValue($row, 0)) {
       $atoms->core($self->{sitesgrid}->GetCellValue($row, 5));
@@ -489,6 +542,9 @@ sub get_crystal_data {
     my $y    = $self->{sitesgrid}->GetCellValue($row, 3) || 0;
     my $z    = $self->{sitesgrid}->GetCellValue($row, 4) || 0;
     my $tag  = $self->{sitesgrid}->GetCellValue($row, 5) || $el;
+    $problems .= "\"$x\" is not a valid x-coordinate value for site $rr (should be a number).\n\n" if ($x !~ m{\A$NUMBER\z});;
+    $problems .= "\"$y\" is not a valid y-coordinate value for site $rr (should be a number.\n\n" if ($y !~ m{\A$NUMBER\z});;
+    $problems .= "\"$z\" is not a valid z-coordinate value for site $rr (should be a number).\n\n" if ($z !~ m{\A$NUMBER\z});;
     my $this = join("|", $el, $x, $y, $z, $tag);
     $atoms->push_sites($this);
   };
@@ -507,6 +563,10 @@ sub get_crystal_data {
 	       and  ($atoms->a)
 	      );
 
+  if ($problems) {
+    $seems_ok = 0;
+    warn($problems);
+  };
   return 0 if not $seems_ok;
 
   $atoms->populate;

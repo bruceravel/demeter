@@ -26,6 +26,7 @@ sub new {
   $self->{toolbar} = Wx::ToolBar->new($self, -1, wxDefaultPosition, wxDefaultSize, wxTB_HORIZONTAL|wxTB_3DBUTTONS|wxTB_TEXT);
   EVT_MENU( $self->{toolbar}, -1, sub{my ($toolbar, $event) = @_; OnToolClick($toolbar, $event, $self)} );
   $self->{toolbar} -> AddTool(-1, "Save calculation",  $self->icon("save"), wxNullBitmap, wxITEM_NORMAL, q{}, $hints{save});
+  $self->{toolbar} -> AddSeparator;
   $self->{toolbar} -> AddTool(-1, "Plot selected",     $self->icon("plot"), wxNullBitmap, wxITEM_NORMAL, q{}, $hints{plot});
   EVT_TOOL_ENTER( $self, $self->{toolbar}, sub{my ($toolbar, $event) = @_; &OnToolEnter($toolbar, $event, 'toolbar')} );
   $self->{toolbar} -> Realize;
@@ -35,7 +36,7 @@ sub new {
   $self->{headerbox}       = Wx::StaticBox->new($self, -1, 'Description', wxDefaultPosition, wxDefaultSize);
   $self->{headerboxsizer}  = Wx::StaticBoxSizer->new( $self->{headerbox}, wxVERTICAL );
   $self->{header}          = Wx::TextCtrl->new($self, -1, q{}, wxDefaultPosition, wxDefaultSize,
-					       wxTE_MULTILINE|wxHSCROLL|wxALWAYS_SHOW_SB);
+					       wxTE_MULTILINE|wxHSCROLL|wxALWAYS_SHOW_SB|wxTE_READONLY);
   $self->{header}         -> SetFont( Wx::Font->new( 9, wxTELETYPE, wxNORMAL, wxNORMAL, 0, "" ) );
   $self->{headerboxsizer} -> Add($self->{header}, 0, wxEXPAND|wxALL, 0);
 
@@ -87,7 +88,7 @@ sub OnToolEnter {
 sub OnToolClick {
   my ($toolbar, $event, $self) = @_;
   ##                 Vv--order of toolbar on the screen--vV
-  my @callbacks = qw(save plot);
+  my @callbacks = qw(save noop plot);
   my $closure = $callbacks[$toolbar->GetToolPos($event->GetId)];
   $self->$closure;
 };
@@ -108,6 +109,7 @@ sub save {
   } else {
     my $yaml = File::Spec->catfile($fd->GetDirectory, $fd->GetFilename);
     $self->{parent}->{Feff}->{feffobject}->freeze($yaml);
+    #$self->{parent}->{Feff}->{feffobject}->push_mru("feffcalc", $yaml);
     $self->{statusbar}->SetStatusText("Saved Feff calculation to $yaml.")
   };
 };
@@ -119,16 +121,19 @@ sub plot {
   $self->{statusbar}->SetStatusText("No paths are selected!") if ($this == -1);
   my $busy   = Wx::BusyCursor->new();
   $Demeter::UI::Atoms::demeter->po->start_plot;
+  my $save = $Demeter::UI::Atoms::demeter->po->title;
+  $Demeter::UI::Atoms::demeter->po->title("Feff calculation");
   while ($this != -1) {
     my $i    = $self->{paths}->GetItemData($this);
     my $feff = $self->{parent}->{Feff}->{feffobject};
     my $sp   = $feff->pathlist->[$i]; # the ScatteringPath associated with this selected item
-    Demeter::Path -> new(parent=>$feff, sp=>$sp) -> plot("r");
+    Demeter::Path -> new(parent=>$feff, sp=>$sp, name=>$sp->intrplist) -> plot("r");
     #my $path_object = Demeter::Path -> new(parent=>$feff_object, sp=>$sp);
     #$path_object -> plot("r");
     #undef $path_object;
     $this    = $self->{paths}->GetNextSelected($this);
   };
+  $Demeter::UI::Atoms::demeter->po->title($save);
   undef $busy;
 };
 

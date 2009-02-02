@@ -280,11 +280,6 @@ Config parameter for turning OK/Cancel dialogs off
 
 =item *
 
-Assign functionality to Right-click on grid: copy, cut, paste.  Also
-need to apply that functionality to a right click on row label
-
-=item *
-
 cif
 
 =item *

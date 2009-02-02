@@ -383,14 +383,11 @@ sub plot_with {
   $self->po->alldone;
   $self->mo->template_plot($backend);
 
-  my @atts = $self->po->clonable;
+  my @atts = $self->po->clonable; # preserve parameter values when switching plotting backends
   my @vals = $self->po->get(@atts);
   my @to_set = zip(@atts, @vals);
-  #print join("|", caller), $/;
-  #print join("|", $self->po, @to_set), $/;
 
   my $old_plot_object = $self -> mo -> plot;
-  ## need to preserve parameter values when switching plotting backends
  SWITCH: {
     ($backend eq 'pgplot') and do {
       $old_plot_object->DEMOLISHALL if $old_plot_object;

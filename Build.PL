@@ -69,8 +69,8 @@ my $build = Module::Build
 				'Term::ReadLine'      => '0',
 				'Term::Twiddle'	      => '0',
 				'Graphics::GnuplotIF' => '0',
-				'ExtUtils::F77'       => '0',
-				'PGPLOT'              => '0',
+				#'ExtUtils::F77'       => '0',
+				#'PGPLOT'              => '0',
 				'Wx'                  => '0.86'
 			       },
 	 sign               => 0,

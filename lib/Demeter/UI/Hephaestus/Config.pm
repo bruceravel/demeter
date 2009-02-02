@@ -39,7 +39,7 @@ sub target {
 
  SWITCH: {
     ($param eq 'plotwith') and do {
-      $Demeter::UI::Hephaestus::demeter->po->plot_with($value);
+      $Demeter::UI::Hephaestus::demeter->plot_with($value);
       last SWITCH;
     };
     ($param eq 'resource') and do {

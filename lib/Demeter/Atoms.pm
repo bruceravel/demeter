@@ -68,7 +68,7 @@ Readonly my %EDGE_INDEX => (k =>1,  l1=>2,  l3=>3,  l3=>4,
 #has 'cell' => (is => 'rw', isa =>Empty.'|Xray::Crystal::Cell', default=> q{});
 has 'cell' => (is => 'rw', isa =>'Any', default=> sub{Xray::Crystal::Cell->new;},
 	      );
-has 'space'	       => (is => 'rw', isa =>'Str',      default => q{},
+has 'space'	       => (is => 'rw', isa =>'Str', default => q{},
 			   triger => sub{ my ($self, $new) = @_;
 					  return if not $new;
 					  $self -> cell -> space_group($new);
