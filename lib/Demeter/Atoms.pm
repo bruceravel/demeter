@@ -142,7 +142,7 @@ has 'edge'	       => (is => 'rw', isa => Empty.'|'.Edge, default=> q{},
 					   if (exists($EDGE_INDEX{lc($new)})) {
 					     my ($central, $xcenter, $ycenter, $zcenter) = $self -> cell -> central($self->core);
 					     $self->iedge($EDGE_INDEX{lc($new)});
-					     $self->eedge(Xray::Absorption->get_energy($central->element, $new));
+					     $self->eedge(Xray::Absorption->get_energy($central->element, $new)) if ($central =~ m{Site});
 					   } else {
 					     $self->iedge(0);
 					     $self->eedge(0);

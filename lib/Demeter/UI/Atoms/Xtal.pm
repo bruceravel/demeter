@@ -439,7 +439,7 @@ sub open_file {
   my ($self, $file) = @_;
   if ((not $file) or (not -e $file)) {
     my $fd = Wx::FileDialog->new( $self, "Import crystal data", cwd, q{},
-				  "input file (*.inp)|*.inp|CIF file (*.cif)|*.cif|All files|*.*",
+				  "input and CIF files (*.inp;*.cif)|*.inp;*.cif|input file (*.inp)|*.inp|CIF file (*.cif)|*.cif|All files|*.*",
 				  wxFD_OPEN|wxFD_FILE_MUST_EXIST|wxFD_CHANGE_DIR|wxFD_PREVIEW,
 				  wxDefaultPosition);
     if ($fd->ShowModal == wxID_CANCEL) {
@@ -449,7 +449,27 @@ sub open_file {
     $file = File::Spec->catfile($fd->GetDirectory, $fd->GetFilename);
   };
   $self->clear_all(1);
-  $atoms->file($file);
+
+  my $is_cif = 0;
+  $is_cif = 1 if ($file =~ m{\.cif\z});
+  if ($is_cif) {
+    $atoms->cif($file);
+    my @records = $atoms->open_cif;
+    if ($#records) {  ## post a selection dialog for a cif file with more than one record
+      my $dialog = Wx::SingleChoiceDialog->new( $self, "Choose a record from this CIF file",
+						"CIF file", \@records );
+      if( $dialog->ShowModal == wxID_CANCEL ) {
+	$self->{statusbar}->SetStatusText("Import cancelled.");
+	return;
+      } else {
+	$atoms->record($dialog->GetSelection);
+      };
+    } else {
+      $atoms->record(0);
+    };
+  } else {
+    $atoms->file($file);
+  };
   $atoms->populate;
 
   ## load values into their widgets

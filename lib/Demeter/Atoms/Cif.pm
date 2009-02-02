@@ -48,7 +48,7 @@ sub read_cif {
 		  )) {
     @item = $datablock->get_item_data(-item=>$i);
     $item[0] ||= "";
-    $item[0] =~ s///g;
+    $item[0] =~ s{}{}g;
     chomp $item[0];
     if ($item[0] !~ m{\A\s*\z}) {
       foreach my $t (split(/\n/, $item[0])) {
