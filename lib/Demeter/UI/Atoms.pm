@@ -66,8 +66,7 @@ sub new {
     $hh  -> Add($self->{$utility}, 1, wxEXPAND|wxALL, 0);
     $box -> Add($hh, 1, wxEXPAND|wxALL, 0);
 
-
-    $nb->AddPage($page, $utility, 0, $count);
+    $nb  -> AddPage($page, $utility, 0, $count);
   };
 
   $vbox -> Add($nb, 1, wxEXPAND|wxGROW, 0);
@@ -234,31 +233,103 @@ L<Demeter::ScatteringPath>.
 
 =head1 USE
 
-Things to explain:
+=head2 Atoms tab
 
-=over 4
+This section of this document explains a biut about the mechanics of
+using the wx Atoms client.  This is not an explanation of the
+algorithms used to convert crystal data to Feff input structures, nor
+is this an explanation of crystallography in general.
 
-=item *
+Most of the Atoms tab is pretty straight forward.  Numbers should be
+entered in the text controls for lattice constants, radial distances,
+and the shift vector.  The shift vector coordinates can be written as
+simple fractions -- things like C<1/2> or C<2/3>.  If any of these
+cannot be interpreted as a number, a warning will be flagged and the
+calculation will not proceed.
 
-how to use grid
+The space group symbol can be a Hermann-Maguin or Schoenflies symbol,
+a number between 1 and 230 corresponding to the order of space groups
+listed in the International Tables, or a common name like C<fcc> or
+C<bcc>.  Atoms tries really hard to interpret what you write.  For
+instance, white space is ignored and the super- and subscripts of a
+Schoenflies symbol can come in either order.
 
-=item *
+The grid of unique sites should be fairly straightforward to use.
+Simply enter a two letter element symbol in the second column, numbers
+in the next three columns, and a string up to 10 characters long in
+the last column.
 
-statusbar
+The numbers for the site coordinates can be expressed as simple
+fractions, such as C<1/2> or C<2/3>.  In fact, using fractions is
+highly recommended as it obviates issues of precision for numbers like
+1/3 and 2/3.
 
-=item *
+If an element symbol cannot be intepreted as such or a site
+coordinate cannot be interpreted as a number, a warning will be
+flagged and the calculation will be stopped.
 
-why Feff tab is so simple
+To choose a site as the central atom, click on its check button.
 
-=item *
+You can copy, cut, and paste a site by right clicking anywhere on the
+row containing that site and choosing from the popup menu.
 
-how to use ListCtrl on paths tab
+Empty rows will be ignored, as will rows with an empty string as the
+atom symbol.
 
-=item *
+If you need more space, click on the "Add site" button just above the
+grid.
 
-L<Demeter::UI::Wx::Config> for Configuration tab
+=head2 Feff tab
 
-=back
+This tab is quite simple.  The F<feff.inp> file is displayed in the
+big text area.  In principle, the data that goes into the F<feff.inp>
+file could be stuffed into various widgets, but that seems more
+complicated than necessary to me.  If the user needs to modify the
+F<feff.inp> file, it seems easiest to do so using a text editor rather
+than having to click thorugh a buncg of controls.
+
+=head2 Paths tab
+
+The path list displays a summary of Feff calculation.  You can select
+paths by left-clicking.  Holding the control key while left-clicking
+adds to the selection, while holding the shift key while left-clicking
+selects all paths between the current and previous selections.
+
+Once paths are selected, they can be plotted as the magnitude of R
+using k-weight of 2 and a reasonable set of Fourier transform
+parameters.  Click the plot button in the tool bar to do so.
+
+The save file for these data is Demeter's Feff serialization file.
+See L<Demeter::Feff>.
+
+=head2 Console tab
+
+This tab displays the screen output of every Feff calculation as well
+as some other information.
+
+=head2 Configure tab
+
+You can customize the behavior of many parts of Atoms, Feff, or the
+path finder using this tab.
+
+See L<Demeter::UI::Wx::Config> for instructions on using Demeter's
+graphical configuration tool.
+
+=head2 Tool bars
+
+Much ofthe functionality of the various tabs is found on the tool
+bars, which are the lines of colorful buttons at the top of some
+tabs. Data appropriate to the tabs can be imported or saved using
+these buttons and the major task of each tab (i.e. running Atoms,
+running Feff, or plotting paths) is accomplished via the tool bars.
+
+=head2 Status bar
+
+The status bar is the narrow strip at the bottom of the screen which
+is used to convey information to the user.  When the mouse passes over
+many of the controls in the program, a short hint is displayed in the
+status bar.  The status bar is also used to display messages at the
+end of certain chores performed by the program.
 
 =head1 CONFIGURATION
 
@@ -277,10 +348,6 @@ F<Bundle/DemeterBundle.pm> file.
 =item *
 
 Config parameter for turning OK/Cancel dialogs off
-
-=item *
-
-cif
 
 =item *
 

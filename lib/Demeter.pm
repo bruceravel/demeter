@@ -421,6 +421,11 @@ sub template_set {
   return $self;
 };
 
+sub reset_path_indeces {
+  my ($self) = @_;
+  $self -> mo -> pathindex(1);
+  return $self;
+};
 
 ## -------- introspection methods
 sub all {

@@ -133,3 +133,27 @@ default=1000
 description
   This is the frequency of reporting an update indicator during the
   degeneracy checking of the tree in the pathfinder.
+
+variable=label
+type=string
+default=[%P]
+description
+  This is a mini-template that will be used to construct the name of
+  the path.  The following is a table of tokens that will be replaced
+  with data from the path.
+  .  %i   path index
+  .  %I   index, padded to 4 chars
+  .  %p   path geometry
+  .  %P   geometry, leading and trailing central atom tokens trimmed
+  .  %r   R effective (fuzzy)
+  .  %n   number of legs
+  .  %d   path degeneracy (fuzzy)
+  .  %t   heuristic path type
+  .  %m   heuristic importance
+  .  %g   Ifeffit group name
+  .  %%   a literal percent sign
+  .
+  .
+  As an example, if you wanted a path name that indicated the length,
+  degeneracy, and number of legs you might set this to: "R=%r degen=%d
+  nleg=%n".

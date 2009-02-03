@@ -141,6 +141,7 @@ sub savelist { # returns all SP attributes that are saved when a Feff calc is se
   return grep { $_ !~ m{feff|heapvalue|data|plot|mode} } $self->attributes;
 };
 
+
 ## construct the intrp line by disentangling the SP string
 sub intrplist {
   my ($self, $string) = @_;

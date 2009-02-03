@@ -187,6 +187,36 @@ sub rm {
 #};
 
 
+## need a make_name for a path that does not come from ScatteringPath
+sub make_name {
+  my ($self) = @_;
+  my $sp = $self->sp;
+  my $pattern = $self->co->default("pathfinder", "label");
+  my $token = $self->co->default("pathfinder", "token");
+  my $noends = $sp->intrplist;
+  my $re = $opt -> list2re($token);
+  $noends =~ s{\A$re}{};
+  $noends =~ s{$re\z}{};
+  my %table = (i   => $self->Index,
+	       I   => sprintf("%4.4d", $self->Index),
+	       p   => $sp->intrplist,
+	       P   => $noends,
+	       r   => sprintf("%.3f", $sp->fuzzy),
+	       n   => $sp->nleg,
+	       d   => $sp->n,
+	       t   => $sp->Type,
+	       m   => $sp->weight,
+	       g   => $sp->group,
+	       '%' => '%',
+	      );
+  $pattern =~ s{\%([iIpPrndtmg%])}{$table{$1}}g;
+  $pattern =~ s{\s+}{ }g;
+  $self->name($pattern);
+  return $self;
+};
+
+
+
 ## how to handle extended path parameters?
 ## $index, $folder, $stash_dir all need to be known to the object
 sub path {
@@ -211,6 +241,7 @@ sub _update_from_ScatteringPath {
   $feff -> make_one_path($sp)
     -> make_feffinp("genfmt")
       -> run_feff;
+  $self -> make_name;
 
   my $tempfile = "feff" . $self->co->default('pathfinder', 'one_off_index') . ".dat";
   $fname ||= $sp->random_string;

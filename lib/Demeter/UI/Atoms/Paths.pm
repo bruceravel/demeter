@@ -121,6 +121,7 @@ sub plot {
   $self->{statusbar}->SetStatusText("No paths are selected!") if ($this == -1);
   my $busy   = Wx::BusyCursor->new();
   $Demeter::UI::Atoms::demeter->po->start_plot;
+  $Demeter::UI::Atoms::demeter->reset_path_indeces;
   my $save = $Demeter::UI::Atoms::demeter->po->title;
   $Demeter::UI::Atoms::demeter->po->title("Feff calculation");
   while ($this != -1) {
