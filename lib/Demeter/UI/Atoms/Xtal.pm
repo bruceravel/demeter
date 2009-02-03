@@ -541,8 +541,10 @@ sub get_crystal_data {
   };
 
   my @shift = map { $self->{$_}->GetValue || 0 } qw(shift_x shift_y shift_z);
-  map { $problems .= "\"$_\" is not a valid value for a shift coordinate (should be a number or a simple fraction).\n\n" if ($_ !~ m{\A$NUMBER\z}) } @shift;
-  $atoms->shift(\@shift);
+  @shift = map { $self->number($_) } @shift;
+  $problems .= "\"" . $self->{shift_x}->GetValue . "\" is not a valid value for a shift coordinate (should be a number or a simple fraction).\n\n" if ($shift[0] == -9999);
+  $problems .= "\"" . $self->{shift_y}->GetValue . "\" is not a valid value for a shift coordinate (should be a number or a simple fraction).\n\n" if ($shift[1] == -9999);
+  $problems .= "\"" . $self->{shift_z}->GetValue . "\" is not a valid value for a shift coordinate (should be a number or a simple fraction).\n\n" if ($shift[2] == -9999);
 
   my $core_selected = 0;
   my $first_valid_row = -1;
@@ -558,13 +560,13 @@ sub get_crystal_data {
       $atoms->core($self->{sitesgrid}->GetCellValue($row, 5));
       ++$core_selected;
     };
-    my $x    = $self->{sitesgrid}->GetCellValue($row, 2) || 0;
-    my $y    = $self->{sitesgrid}->GetCellValue($row, 3) || 0;
-    my $z    = $self->{sitesgrid}->GetCellValue($row, 4) || 0;
+    my $x    = $self->{sitesgrid}->GetCellValue($row, 2) || 0; $x = $self->number($x);
+    my $y    = $self->{sitesgrid}->GetCellValue($row, 3) || 0; $y = $self->number($y);
+    my $z    = $self->{sitesgrid}->GetCellValue($row, 4) || 0; $z = $self->number($z);
     my $tag  = $self->{sitesgrid}->GetCellValue($row, 5) || $el;
-    $problems .= "\"$x\" is not a valid x-coordinate value for site $rr (should be a number).\n\n" if ($x !~ m{\A$NUMBER\z});;
-    $problems .= "\"$y\" is not a valid y-coordinate value for site $rr (should be a number.\n\n" if ($y !~ m{\A$NUMBER\z});;
-    $problems .= "\"$z\" is not a valid z-coordinate value for site $rr (should be a number).\n\n" if ($z !~ m{\A$NUMBER\z});;
+    $problems .= "\"" . $self->{sitesgrid}->GetCellValue($row, 2) . "\" is not a valid x-coordinate value for site $rr (should be a number).\n\n" if ($x == -9999);
+    $problems .= "\"" . $self->{sitesgrid}->GetCellValue($row, 3) . "\" is not a valid y-coordinate value for site $rr (should be a number).\n\n" if ($y == -9999);
+    $problems .= "\"" . $self->{sitesgrid}->GetCellValue($row, 4) . "\" is not a valid z-coordinate value for site $rr (should be a number).\n\n" if ($z == -9999);
     my $this = join("|", $el, $x, $y, $z, $tag);
     $atoms->push_sites($this);
   };
@@ -589,6 +591,7 @@ sub get_crystal_data {
   };
   return 0 if not $seems_ok;
 
+  $atoms->shift(\@shift);
   $atoms->populate;
   $this = (qw(K L1 L2 L3))[$self->{edge}->GetCurrentSelection] || 'K';
   $atoms->edge($this);
@@ -596,6 +599,31 @@ sub get_crystal_data {
   return 1;
 };
 
+sub number {
+  my ($self, $string) = @_;
+
+  ## empty string
+  return 0 if ($string =~ m{\A\s*\z});
+
+  ## floating point number
+  return sprintf("%9.5f", $string) if ($string =~ m{\A\s*$NUMBER\s*\z});
+
+  ## binary operation
+  if ($string =~ m{
+		    \A\s*	   # leading white space
+		    (?:$NUMBER)	   # a number
+		    \s*		   # more white space
+		    [+-/*]	   # a binary operator
+		    \s*		   # more white space
+		    (?:$NUMBER)	   # a second number
+		    \s*\z	   # trailing whitespace
+		}x) {
+    my $num = eval $string;
+    return sprintf("%9.5f", $num);
+  };
+
+  return -9999;
+};
 
 sub verify_angle {
   my ($self, $angle) = @_;
@@ -626,6 +654,19 @@ sub verify_angle {
   return $atoms->$angle || 0;
 };
 
+sub edge_absorber {
+  my ($self) = @_;
+  my $edge = (qw(K L1 L2 L3))[$self->{edge}->GetCurrentSelection];
+  my $abs;
+  foreach my $row (0 .. $self->{sitesgrid}->GetNumberRows) {
+    ($abs = $self->{sitesgrid}->GetCellValue($row, 1)), last if $self->{sitesgrid}->GetCellValue($row, 0);
+  };
+  $abs = ucfirst(lc($abs));
+  my $z = get_Z($abs);
+  return "Measuring an L edge of $abs seems unusual.... Do you wish to continue" if (($edge ne 'K') and ($z <  60));
+  return "Measuring a K edge of $abs seems unusual.... Do you wish to continue"  if (($edge eq 'K') and ($z >= 60));
+  return q{};
+};
 
 sub unusable_data {
   my ($self) = @_;
@@ -663,6 +704,15 @@ sub run_atoms {
   $atoms -> ipot_style($style);
   if ($seems_ok) {
     my $busy    = Wx::BusyCursor->new();
+    ## * check edge against absorber
+    my $ea = $self->edge_absorber;
+    if ($ea) {
+      my $yesno = Wx::MessageDialog->new($self, $ea, "Continue?", wxYES_NO);
+      if ($yesno->ShowModal == wxID_NO) {
+	$self->{statusbar}->SetStatusText("Aborting calculation.");
+	return;
+      };
+    };
     my $save = $atoms->co->default("atoms", "atoms_in_feff");
     $atoms->co->set_default("atoms", "atoms_in_feff", 0);
     $self->{parent}->{Feff}->{feff}->SetValue($atoms -> Write($template));

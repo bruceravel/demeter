@@ -55,9 +55,10 @@ use Text::Template;
 use Xray::Absorption;
 use Xray::Crystal;
 
-Readonly my $EPSILON => 0.0001;
-Readonly my $FRAC    => 100000;
-Readonly my $SEPARATOR    => '[ \t]*[ \t=,][ \t]*';
+Readonly my $EPSILON   => 0.0001;
+Readonly my $FRAC      => 100000;
+Readonly my $SEPARATOR => '[ \t]*[ \t=,][ \t]*';
+Readonly my $NUMBER    => $RE{num}{real};
 
 Readonly my %EDGE_INDEX => (k =>1,  l1=>2,  l3=>3,  l3=>4,
 			    m1=>5,  m2=>6,  m3=>7,  m4=>8,  m5=>9,
@@ -376,6 +377,7 @@ sub parse_atoms_line {
   return 0 if ($line =~ m{\A\s*[\#\%\!\*]});
   my ($el, $x, $y, $z, $tag) = split(" ", $line);
   $tag ||= $el;
+  ($tag = $el) if ($tag =~ m{$NUMBER});
   my $this = join("|",$el, $x, $y, $z, $tag);
   $self->push_sites($this);
   return $self;
