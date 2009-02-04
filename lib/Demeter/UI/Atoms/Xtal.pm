@@ -248,12 +248,12 @@ sub new {
 
   $label = Wx::StaticText->new($self, -1, 'Cluster size', wxDefaultPosition, [-1,-1]);
   $tsz -> Add($label,Wx::GBPosition->new(0,0));
-  $self->{rmax} = Wx::TextCtrl->new($self, -1, 8.0, wxDefaultPosition, [$width,-1]);
+  $self->{rmax} = Wx::TextCtrl->new($self, -1, $atoms->rmax, wxDefaultPosition, [$width,-1]);
   $tsz -> Add($self->{rmax},Wx::GBPosition->new(0,1));
 
   $label = Wx::StaticText->new($self, -1, 'Longest path', wxDefaultPosition, [-1,-1]);
   $tsz -> Add($label,Wx::GBPosition->new(0,2));
-  $self->{rpath} = Wx::TextCtrl->new($self, -1, 5.0, wxDefaultPosition, [$width,-1]);
+  $self->{rpath} = Wx::TextCtrl->new($self, -1, $atoms->rpath, wxDefaultPosition, [$width,-1]);
   $tsz -> Add($self->{rpath},Wx::GBPosition->new(0,3));
 
   $self->{Rboxsizer} -> Add($tsz, 0, wxGROW|wxALL, 5);
@@ -531,6 +531,18 @@ sub get_crystal_data {
   $atoms->cell->space_group($this); # why is this necessary!!!!!  why is the trigger not being triggered?????
   $problems .= $atoms->cell->group->warning.$/ if $atoms->cell->group->warning;
 
+  foreach my $param (qw(b c)) {
+    next if $self->{$param}->GetValue;
+    $self->{$param}->SetValue($self->{a}->GetValue);
+  };
+  foreach my $param (qw(alpha beta gamma)) {
+    $self->{$param}->SetValue($self->verify_angle($param));
+  };
+  foreach my $param (qw(rmax rpath)) {
+    next if is_PosNum($self->{$param}->GetValue);
+    $self->{$param}->SetValue($atoms->co->default("atoms", $param));
+  };
+
   foreach my $param (qw(a b c alpha beta gamma rmax rpath)) {
     $this = $self->{$param}->GetValue || 0;
     if (is_PosNum($this)) {
@@ -663,8 +675,9 @@ sub edge_absorber {
   };
   $abs = ucfirst(lc($abs));
   my $z = get_Z($abs);
-  return "Measuring an L edge of $abs seems unusual.... Do you wish to continue" if (($edge ne 'K') and ($z <  60));
-  return "Measuring a K edge of $abs seems unusual.... Do you wish to continue"  if (($edge eq 'K') and ($z >= 60));
+  return q{} if (not $atoms->co->default("atoms", "abs_edge_check"));
+  return "Measuring EXAFS of an L edge of $abs seems unusual.... Do you wish to continue?" if (($edge =~ m{L[123]}) and ($z <  60));
+  return "Measuring EXAFS of a K edge of $abs seems unusual.... Do you wish to continue?"  if (($edge eq 'K')       and ($z >= 60));
   return q{};
 };
 
@@ -726,22 +739,29 @@ sub run_atoms {
 
 sub clear_all {
   my ($self, $skip_dialog) = @_;
+  return $self->_do_clear_all if (not $atoms->co->default("atoms", "do_confirm"));
   my $yesno = Wx::MessageDialog->new($self, "Do you really wish to discard these crystal data?",
 				     "Discard?", wxYES_NO);
   if ((not $skip_dialog) and ($yesno->ShowModal == wxID_NO)) {
     $self->{statusbar}->SetStatusText("Not discarding data.");
   } else {
-    $atoms->clear;
-    $self->{$_}->Clear foreach (qw(a b c alpha beta gamma titles space));
-    $self->{$_}->SetValue(0) foreach (qw(shift_x shift_y shift_z));
-    $self->{rmax}->SetValue(8);
-    $self->{rpath}->SetValue(5);
-    $self->{sitesgrid}->ClearGrid;
-    $self->{sitesgrid}->DeleteRows(6, $self->{sitesgrid}->GetNumberRows - 6, 1);
-    $self->{edge}->SetSelection(0); # foreach (qw(edge template));
+    $self->_do_clear_all;
   };
   return $self;
 };
+sub _do_clear_all {
+  my ($self) = @_;
+  $atoms->clear;
+  $self->{$_}->Clear foreach (qw(a b c alpha beta gamma titles space));
+  $self->{$_}->SetValue(0) foreach (qw(shift_x shift_y shift_z));
+  $self->{rmax}->SetValue(8);
+  $self->{rpath}->SetValue(5);
+  $self->{sitesgrid}->ClearGrid;
+  $self->{sitesgrid}->DeleteRows(6, $self->{sitesgrid}->GetNumberRows - 6, 1);
+  $self->{edge}->SetSelection(0); # foreach (qw(edge template));
+  return $self;
+};
+
 
 sub write_output {
   my ($self) = @_;

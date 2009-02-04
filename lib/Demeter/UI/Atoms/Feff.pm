@@ -25,6 +25,7 @@ sub new {
   my $self = $class->SUPER::new($page, -1, wxDefaultPosition, wxDefaultSize, wxMAXIMIZE_BOX );
   $self->{parent}    = $parent;
   $self->{statusbar} = $statusbar;
+  $self->{feffobject} = $Demeter::UI::Atoms::demeter;
   my $vbox = Wx::BoxSizer->new( wxVERTICAL );
 
 
@@ -138,6 +139,7 @@ sub save_file {
 
 sub clear_all {
   my ($self) = @_;
+  $self->{feff}->SetValue(q{}), return 1 if (not $self->{feffobject}->co->default("atoms", "do_confirm"));
   return 1 if ($self->{feff}->GetNumberOfLines <= 1);
   my $yesno = Wx::MessageDialog->new($self, "Do you really wish to discard this feff.inp file and replace it with a new one?",
 				     "Discard?", wxYES_NO);

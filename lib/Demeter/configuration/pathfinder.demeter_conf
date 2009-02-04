@@ -54,6 +54,7 @@ description
 variable=fuzz
 type=real
 default=0.03
+units=Angstroms
 description
   This is the length degeneracy fuzziness.  Two paths with half
   lengths which differ by less than this amount will be considered
@@ -68,6 +69,7 @@ description
 variable=betafuzz
 type=real
 default=3
+units=degrees
 description
   This is the beta angle degeneracy fuzziness.  Two paths with
   scattering angles which differ by less than this amount will be
@@ -95,6 +97,7 @@ description
 variable=fs_angle
 type=real
 default=20
+units=degrees
 description
   This is the cut-off angle above which a scattering event is no
   longer considered to be in the forward direction.
@@ -102,6 +105,7 @@ description
 variable=nc_angle
 type=real
 default=5
+units=degrees
 description
   This is the cut-off angle above which a scattering event is no
   longer considered to be nearly collinear.
@@ -109,6 +113,7 @@ description
 variable=rt_angle
 type=real
 default=70
+units=degrees
 description
   This is the cut-off angle above which a scattering event is
   considered to be at a nearly right angle.

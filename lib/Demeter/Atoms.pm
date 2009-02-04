@@ -60,7 +60,7 @@ Readonly my $FRAC      => 100000;
 Readonly my $SEPARATOR => '[ \t]*[ \t=,][ \t]*';
 Readonly my $NUMBER    => $RE{num}{real};
 
-Readonly my %EDGE_INDEX => (k =>1,  l1=>2,  l3=>3,  l3=>4,
+Readonly my %EDGE_INDEX => (k =>1,  l1=>2,  l2=>3,  l3=>4,
 			    m1=>5,  m2=>6,  m3=>7,  m4=>8,  m5=>9,
 			    n1=>10, n2=>11, n3=>12, n4=>13, n5=>14, n6=>15, n7=>16,
 			   );
@@ -133,9 +133,9 @@ has 'gamma'	       => (is => 'rw', isa => NonNeg,    default=> 90,
 					  $self->i0_done(0);
 					  $self->self_done(0);
 					});
-has 'rmax'	       => (is => 'rw', isa => NonNeg,    default=> 0,
+has 'rmax'	       => (is => 'rw', isa => NonNeg,    default=> sub{ shift->co->default("atoms", "rmax")  ||  8},
 			   trigger => sub{ my ($self, $new) = @_; $self->is_expanded(0) if $new});
-has 'rpath'	       => (is => 'rw', isa => NonNeg,    default=> 5,
+has 'rpath'	       => (is => 'rw', isa => NonNeg,    default=> sub{ shift->co->default("atoms", "rpath") ||  5},
 			   trigger => sub{ my ($self, $new) = @_; $self->is_expanded(0) if $new});
 has 'rss'	       => (is => 'rw', isa => NonNeg,    default=> 0);
 has 'edge'	       => (is => 'rw', isa => Empty.'|'.Edge, default=> q{},
@@ -149,7 +149,7 @@ has 'edge'	       => (is => 'rw', isa => Empty.'|'.Edge, default=> q{},
 					     $self->eedge(0);
 					   };
 					 });
-has 'iedge'	       => (is => 'rw', isa => PosInt,    default=> 1);
+has 'iedge'	       => (is => 'rw', isa => Natural,    default=> 1);
 has 'eedge'	       => (is => 'rw', isa => NonNeg,    default=> 0);
 has 'core'	       => (is => 'rw', isa =>'Str',      default=> q{});
 has 'corel'	       => (is => 'rw', isa =>'Str',      default=> q{});
@@ -377,7 +377,7 @@ sub parse_atoms_line {
   return 0 if ($line =~ m{\A\s*[\#\%\!\*]});
   my ($el, $x, $y, $z, $tag) = split(" ", $line);
   $tag ||= $el;
-  ($tag = $el) if ($tag =~ m{$NUMBER});
+  ($tag = $el) if ($tag =~ m{\A$NUMBER\z});
   my $this = join("|",$el, $x, $y, $z, $tag);
   $self->push_sites($this);
   return $self;
@@ -401,11 +401,12 @@ sub populate {
   };
   ## Group: $cell->get(qw(given_group space_group class setting))
   ## Bravais: $cell->get('bravais')
-  $self -> cell->populate(\@sites);
+  $self -> cell -> populate(\@sites);
   foreach my $key (qw(a b c alpha beta gamma)) {
     $self->$key($self->cell->$key);
   };
   my ($central, $xcenter, $ycenter, $zcenter) = $self -> cell -> central($self->core);
+  #print join("|", $self->core, $central, $xcenter, $ycenter, $zcenter), $/;
   $self->update_edge;
   $self->set(is_populated => 1,
 	     corel        => ucfirst(lc($central->element)),

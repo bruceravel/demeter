@@ -12,8 +12,12 @@ use base 'Wx::Panel';
 use Wx::Event qw(EVT_CHOICE EVT_KEY_DOWN EVT_MENU EVT_TOOL_ENTER EVT_ENTER_WINDOW EVT_LEAVE_WINDOW);
 
 my %hints = (
-	     save => "Save this Feff calculation to a Demeter save file",
-	     plot => "Plot selected paths",
+	     save     => "Save this Feff calculation to a Demeter save file",
+	     plot     => "Plot selected paths",
+	     chik     => "Plot paths in k space",
+	     chir_mag => "Plot paths as the magnitude of chi(R)",
+	     chir_re  => "Plot paths as the real part of chi(R)",
+	     chir_im  => "Plot paths as the imaginary part of chi(R)",
 	    );
 
 sub new {
@@ -25,9 +29,16 @@ sub new {
 
   $self->{toolbar} = Wx::ToolBar->new($self, -1, wxDefaultPosition, wxDefaultSize, wxTB_HORIZONTAL|wxTB_3DBUTTONS|wxTB_TEXT);
   EVT_MENU( $self->{toolbar}, -1, sub{my ($toolbar, $event) = @_; OnToolClick($toolbar, $event, $self)} );
-  $self->{toolbar} -> AddTool(-1, "Save calculation",  $self->icon("save"), wxNullBitmap, wxITEM_NORMAL, q{}, $hints{save});
+  $self->{toolbar} -> AddTool(1, "Save calc.",      $self->icon("save"), wxNullBitmap, wxITEM_NORMAL, q{}, $hints{save});
   $self->{toolbar} -> AddSeparator;
-  $self->{toolbar} -> AddTool(-1, "Plot selected",     $self->icon("plot"), wxNullBitmap, wxITEM_NORMAL, q{}, $hints{plot});
+  $self->{toolbar} -> AddTool(3, "Plot selection",  $self->icon("plot"), wxNullBitmap, wxITEM_NORMAL, q{}, $hints{plot});
+  $self->{toolbar} -> AddSeparator;
+  $self->{toolbar} -> AddRadioTool(5, 'chi(k)',     $self->icon("chik"),    wxNullBitmap, q{}, $hints{chik});
+  $self->{toolbar} -> AddRadioTool(6, '|chi(R)|',   $self->icon("chirmag"), wxNullBitmap, q{}, $hints{chir_mag});
+  $self->{toolbar} -> AddRadioTool(7, 'Re[chi(R)]', $self->icon("chirre"),  wxNullBitmap, q{}, $hints{chir_re});
+  $self->{toolbar} -> AddRadioTool(8, 'Im[chi(R)]', $self->icon("chirim"),  wxNullBitmap, q{}, $hints{chir_im});
+  $self->{toolbar} -> ToggleTool(6, 1);
+
   EVT_TOOL_ENTER( $self, $self->{toolbar}, sub{my ($toolbar, $event) = @_; &OnToolEnter($toolbar, $event, 'toolbar')} );
   $self->{toolbar} -> Realize;
   $vbox -> Add($self->{toolbar}, 0, wxALL, 5);
@@ -87,14 +98,28 @@ sub OnToolEnter {
 
 sub OnToolClick {
   my ($toolbar, $event, $self) = @_;
-  ##                 Vv--order of toolbar on the screen--vV
-  my @callbacks = qw(save noop plot);
+  ##                 Vv---------order of toolbar on the screen------------vV
+  my @callbacks = qw(save noop plot noop set_plot set_plot set_plot set_plot);
   my $closure = $callbacks[$toolbar->GetToolPos($event->GetId)];
-  $self->$closure;
+  $self->$closure($event->GetId);
 };
 
 sub noop {
   return 1;
+};
+
+sub set_plot {
+  my ($self, $id) = @_;
+  ## set plotting space
+  my $space = ($id == 5) ? 'k' : 'r';
+  $self->{parent}->{Feff}->{feffobject}->po->space($space);
+  # set part of R space plot
+  my %pl = (5 => q{}, 6 => 'm', 7 => 'r', 8 => 'i');
+  $self->{parent}->{Feff}->{feffobject}->po->r_pl($pl{$id}) if $pl{$id};
+  # sensible status bar message
+  my %as = (5 => 'chi(k)', 6 => 'the magnitude of chi(R)', 7 => 'the real part of chi(R)', 8 => 'the imaginary part of chi(R)');
+  $self->{statusbar}->SetStatusText("Plotting as $as{$id}");
+  return $self;
 };
 
 sub save {
@@ -128,7 +153,8 @@ sub plot {
     my $i    = $self->{paths}->GetItemData($this);
     my $feff = $self->{parent}->{Feff}->{feffobject};
     my $sp   = $feff->pathlist->[$i]; # the ScatteringPath associated with this selected item
-    Demeter::Path -> new(parent=>$feff, sp=>$sp, name=>$sp->intrplist) -> plot("r");
+    my $space = $self->{parent}->{Feff}->{feffobject}->po->space;
+    Demeter::Path -> new(parent=>$feff, sp=>$sp, name=>$sp->intrplist) -> plot($space);
     #my $path_object = Demeter::Path -> new(parent=>$feff_object, sp=>$sp);
     #$path_object -> plot("r");
     #undef $path_object;

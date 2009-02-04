@@ -271,7 +271,9 @@ flagged and the calculation will be stopped.
 To choose a site as the central atom, click on its check button.
 
 You can copy, cut, and paste a site by right clicking anywhere on the
-row containing that site and choosing from the popup menu.
+row containing that site and choosing from the popup menu.  When you
+paste a site, it will be inserted into the grid above the site you
+clicked on.
 
 Empty rows will be ignored, as will rows with an empty string as the
 atom symbol.

@@ -806,8 +806,9 @@ sub run_feff {
   my ($self) = @_;
   my $cwd = cwd();
   chdir $self->workspace;
+  my $exe = $self->co->default("feff", "executable");
   unless ($self->is_windows) { # avoid problems if feff->feff_executable isn't
-    my $which = `which feff6`;
+    my $which = `which $exe`;
     chomp $which;
     if (not -x $which) {
       croak("Could not find the feff6 executable");

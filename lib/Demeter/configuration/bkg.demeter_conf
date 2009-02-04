@@ -47,6 +47,7 @@ variable=e0
 type=list
 options=derivative zero fraction atomic
 default=derivative  
+units=eV
 description
   This determines how the default value of E0 is determined.  The
   derivative method is the Ifeffit default and is related to finding
@@ -100,6 +101,7 @@ description
 variable=dk
 type=real
 default=0
+units=inverse Angstroms
 description
   The width of the Fourier window sill used for the Forward transform
   during background removal.

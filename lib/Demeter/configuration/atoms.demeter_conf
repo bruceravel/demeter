@@ -108,3 +108,42 @@ description
   stoichiometry as determined from the fully decorated unit cell.
   When false, the stoichiometry counts in the potentials list will
   be the numbers or each ipot in the unit cell.
+
+variable=rmax
+type=real
+default=8.0
+units=Angstroms
+description
+  This is the default value for Rmax in an atoms calculation.  Rmax is
+  the radial extent ofthe cluster used to compute the potentials.  See
+  also rpath.
+
+variable=rpath
+type=real
+default=5.0
+units=Angstroms
+description
+  This is the default value for Rpath in an atoms calculation.  path
+  is the length of the longest path found by the pathfinder.  See also
+  rmax.
+
+variable=abs_edge_check
+type=boolean
+onvalue=1
+offvalue=0
+default=true
+description
+  When false, Atoms will not flag a warning when the choice of absorber
+  and edge do not make sense for an EXAFS measurement.  In practice,
+  this means that K edges are expected to be for Z numbers below 60
+  and L edges are expected for Z numbers 60 and above.
+
+variable=do_confirm
+type=boolean
+onvalue=1
+offvalue=0
+default=true
+description
+  When false, this tells an Atoms/Feff GUI not to post confirmation
+  dialogs associated with cleaing out the contents of the Atoms or
+  Feff interfaces.
