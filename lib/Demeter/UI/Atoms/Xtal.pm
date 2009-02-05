@@ -59,6 +59,7 @@ use Demeter::NumTypes qw( PosNum );
 
 use Cwd;
 use Chemistry::Elements qw(get_Z get_name get_symbol);
+use File::Basename;
 use List::MoreUtils qw(firstidx);
 use Regexp::Common;
 use Xray::Absorption;
@@ -160,24 +161,33 @@ sub new {
 
   ## -------- space group and edge controls
   my $spacebox = Wx::BoxSizer->new( wxVERTICAL );
-  $leftbox -> Add($spacebox, 0, wxEXPAND|wxALL, 5);
+  $leftbox -> Add($spacebox, 0, wxEXPAND|wxALL, 0);
 
   my $hh = Wx::BoxSizer->new( wxHORIZONTAL );
-  $spacebox -> Add($hh, 0, wxEXPAND|wxALL, 5);
-  my $label      = Wx::StaticText->new($self, -1, 'Space Group', wxDefaultPosition, [-1,-1]);
-  $self->{space} = Wx::TextCtrl  ->new($self, -1, q{}, wxDefaultPosition, [$width*7,-1]);
+  $spacebox -> Add($hh, 1, wxEXPAND|wxALL, 0);
+  my $label      = Wx::StaticText->new($self, -1, 'Name', wxDefaultPosition, [-1,-1]);
+  $self->{name}  = Wx::TextCtrl  ->new($self, -1, q{}, wxDefaultPosition, [$width*7,-1]);
   $hh->Add($label,        0, wxEXPAND|wxALL, 5);
-  $hh->Add($self->{space}, 0, wxEXPAND|wxALL, 5);
+  $hh->Add($self->{name}, 1, wxEXPAND|wxALL, 5);
 
   $hh = Wx::BoxSizer->new( wxHORIZONTAL );
-  $spacebox -> Add($hh, 0, wxEXPAND|wxALL, 5);  $label        = Wx::StaticText->new($self, -1, 'Edge', wxDefaultPosition, [-1,-1]);
+  $spacebox -> Add($hh, 1, wxEXPAND|wxALL, 0);
+  $label      = Wx::StaticText->new($self, -1, 'Space Group', wxDefaultPosition, [-1,-1]);
+  $self->{space} = Wx::TextCtrl  ->new($self, -1, q{}, wxDefaultPosition, [$width*7,-1]);
+  $hh->Add($label,        0, wxEXPAND|wxALL, 5);
+  $hh->Add($self->{space}, 1, wxEXPAND|wxALL, 5);
+
+  $hh = Wx::BoxSizer->new( wxHORIZONTAL );
+  $spacebox -> Add($hh, 0, wxEXPAND|wxALL, 0);
+  $label        = Wx::StaticText->new($self, -1, 'Edge', wxDefaultPosition, [-1,-1]);
   $self->{edge} = Wx::Choice    ->new($self, -1, [-1, -1], [-1, -1], ['K', 'L1', 'L2', 'L3'], );
   $hh->Add($label,        0, wxEXPAND|wxALL, 5);
   $hh->Add($self->{edge}, 0, wxEXPAND|wxALL, 5);
   EVT_CHOICE($self, $self->{edge}, \&OnWidgetLeave);
 
   $hh = Wx::BoxSizer->new( wxHORIZONTAL );
-  $spacebox -> Add($hh, 0, wxEXPAND|wxALL, 5);  $label        = Wx::StaticText->new($self, -1, 'Style', wxDefaultPosition, [-1,-1]);
+  $spacebox -> Add($hh, 0, wxEXPAND|wxALL, 0);
+  $label        = Wx::StaticText->new($self, -1, 'Style', wxDefaultPosition, [-1,-1]);
   $self->{template} = Wx::Choice    ->new($self, -1, [-1, -1], [-1, -1], $self->templates, );
   $hh->Add($label,            0, wxEXPAND|wxALL, 5);
   $hh->Add($self->{template}, 0, wxEXPAND|wxALL, 5);
@@ -470,6 +480,10 @@ sub open_file {
   } else {
     $atoms->file($file);
   };
+  my $name = basename($file, '.cif', '.inp');
+  $atoms -> name($name) if not $atoms->name;
+  $self->{name}->SetValue($name);
+  $Demeter::UI::Atoms::frame->SetTitle("Atoms: ".$name);
   $atoms->populate;
 
   ## load values into their widgets

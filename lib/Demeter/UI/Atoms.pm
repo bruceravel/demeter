@@ -115,7 +115,7 @@ sub OnInit {
 
   ## -------- create a new frame and set icon
   $frame = Demeter::UI::AtomsApp->new;
-  my $iconfile = File::Spec->catfile(dirname($INC{'Demeter/UI/Atoms.pm'}), 'Atoms', 'icons', "atoms.png");
+  my $iconfile = File::Spec->catfile(dirname($INC{'Demeter/UI/Atoms.pm'}), 'Atoms', 'icons', "atoms_nottransparent.png");
   my $icon = Wx::Icon->new( $iconfile, wxBITMAP_TYPE_ANY );
   $frame -> SetIcon($icon);
 
