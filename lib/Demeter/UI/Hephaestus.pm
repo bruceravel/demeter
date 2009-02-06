@@ -15,7 +15,7 @@ package Demeter::UI::HephaestusApp;
 
 =cut
 
-use Carp;
+use Wx::Perl::Carp;
 use File::Spec;
 
 use Ifeffit;

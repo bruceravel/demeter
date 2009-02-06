@@ -245,6 +245,7 @@ sub new {
   EVT_CHOICE  ($self, $self->{secondarygas}, sub{get_ion_data($self)});
   EVT_RADIOBOX($self, $self->{lengths},      sub{get_ion_data($self)});
   EVT_KEY_DOWN($self->{energybox},           sub{energy_key_down(@_, $self)} );
+  EVT_KEY_DOWN($self->{userlengthbox},       sub{energy_key_down(@_, $self)} );
 
   $outerbox -> Add($topbox);
 
