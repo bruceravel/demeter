@@ -19,7 +19,7 @@ sub identify_self {
   my @caller = caller;
   return dirname($caller[1]);
 };
-use vars qw($artemis_base %frames);
+use vars qw($artemis_base $icon %frames);
 $artemis_base = identify_self();
 
 my %hints = (
@@ -46,7 +46,7 @@ sub OnInit {
 				[Wx::SystemSettings::GetMetric(wxSYS_SCREEN_X), 170] # size -- entire width of screen
 			       );
   my $iconfile = File::Spec->catfile(dirname($INC{'Demeter/UI/Artemis.pm'}), 'Artemis', 'icons', "artemis.png");
-  my $icon = Wx::Icon->new( $iconfile, wxBITMAP_TYPE_ANY );
+  $icon = Wx::Icon->new( $iconfile, wxBITMAP_TYPE_ANY );
   $frames{main} -> SetIcon($icon);
 
   ## -------- Set up menubar
@@ -161,7 +161,9 @@ sub OnInit {
   #$hbox  -> SetSizeHints($toolbar);
 
   foreach my $part (qw(GDS Plot History)) {
-    $frames{$part} = eval "Demeter::UI::Artemis::$part->new";
+    my $pp = "Demeter::UI::Artemis::".$part;
+    $frames{$part} = $pp->new;
+    $frames{$part} -> SetIcon($icon);
   };
   $frames{main} -> Show( 1 );
 }
@@ -187,6 +189,10 @@ sub on_about {
   $info->SetLicense( slurp(File::Spec->catfile($artemis_base, 'Atoms', 'data', "GPL.dem")) );
   my $artwork = <<'EOH'
 Blah blah blah
+
+Some icons taken from the Fairytale icon set at Wikimedia commons,
+http://commons.wikimedia.org/ and others from the Gartoon Redux icon
+set from http:://www.gnome-look.org
 
 All other icons icons are from the Kids icon set for
 KDE by Everaldo Coelho, http://www.everaldo.com

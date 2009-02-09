@@ -28,7 +28,6 @@ sub new {
   $self->{feffobject} = $Demeter::UI::Atoms::demeter;
   my $vbox = Wx::BoxSizer->new( wxVERTICAL );
 
-
   $self->{toolbar} = Wx::ToolBar->new($self, -1, wxDefaultPosition, wxDefaultSize, wxTB_HORIZONTAL|wxTB_3DBUTTONS|wxTB_TEXT);
   EVT_MENU( $self->{toolbar}, -1, sub{my ($toolbar, $event) = @_; OnToolClick($toolbar, $event, $self)} );
   $self->{toolbar} -> AddTool(-1, "Open file",  $self->icon("open"),        wxNullBitmap, wxITEM_NORMAL, q{}, $hints{open} );
@@ -42,6 +41,13 @@ sub new {
   $vbox -> Add($self->{toolbar}, 0, wxALL, 5);
   EVT_TOOL_RCLICKED($self->{toolbar}, -1, sub{my ($toolbar, $event) = @_; OnToolRightClick($toolbar, $event, $self)});
 
+
+  my $hh = Wx::BoxSizer->new( wxHORIZONTAL );
+  $vbox -> Add($hh, 0, wxEXPAND|wxALL, 0);
+  my $label      = Wx::StaticText->new($self, -1, 'Name of this Feff calculation: ', wxDefaultPosition, [-1,-1]);
+  $self->{name}  = Wx::TextCtrl  ->new($self, -1, q{}, wxDefaultPosition, [70,-1], wxTE_READONLY);
+  $hh->Add($label,        0, wxEXPAND|wxALL, 5);
+  $hh->Add($self->{name}, 1, wxEXPAND|wxALL, 5);
 
   $self->{feffbox}       = Wx::StaticBox->new($self, -1, 'Feff input file', wxDefaultPosition, wxDefaultSize);
   $self->{feffboxsizer}  = Wx::StaticBoxSizer->new( $self->{feffbox}, wxVERTICAL );
@@ -174,6 +180,7 @@ sub run_feff {
   open my $OUT, ">".$inpfile;
   print $OUT $self->{feff}->GetValue;
   close $OUT;
+  $feff->name($self->{name}->GetValue);
   $feff->file($inpfile);
 
   $self->{parent}->{Console}->{console}->AppendText($self->now("Feff calculation begin at ", $feff));
@@ -183,6 +190,7 @@ sub run_feff {
   $self->{statusbar}->SetStatusText("Finding scattering paths using Demeter's pathfinder...");
   $feff->pathfinder;
 
+  $self->{parent}->{Paths}->{name}->SetValue($feff->name);
   $self->{parent}->{Paths}->{header}->SetValue($feff->intrp_header);
   $self->{parent}->{Paths}->{paths}->DeleteAllItems;
   my @COLOURS = (Wx::Colour->new( $feff->co->default('feff', 'intrp0color') ),

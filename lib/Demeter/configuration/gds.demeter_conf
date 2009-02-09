@@ -1,0 +1,98 @@
+## -*- config -*-
+###########################################################################
+##                     Demeter is copyright (c) 2007-2009 Bruce Ravel
+##                                                     bravel@bnl.gov
+##                                        http://xafs.org/BruceRavel/
+##
+##                   Ifeffit is copyright (c) 1992-2007 Matt Newville
+##                                         newville@cars.uchicago.edu
+##                       http://cars9.uchicago.edu/~newville/ifeffit/
+##
+##	  The latest version of Demeter can always be found at
+##          http://cars9.uchicago.edu/~ravel/software/exafs/
+##
+## -------------------------------------------------------------------
+##     All rights reserved. This program is free software; you can
+##     redistribute it and/or modify it provided that the above notice
+##     of copyright, these terms of use, and the disclaimer of
+##     warranty below appear in the source code and documentation, and
+##     that none of the names of Argonne National Laboratory, The
+##     University of Chicago, University of Washington, or the authors
+##     appear in advertising or endorsement of works derived from this
+##     software without specific prior written permission from all
+##     parties.
+##
+##     THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+##     EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
+##     OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+##     NONINFRINGEMENT.  IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
+##     HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
+##     WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+##     FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
+##     OTHER DEALINGS IN THIS SOFTWARE.
+## -------------------------------------------------------------------
+###########################################################################
+
+
+## This file contains the bkg configuration group for Demeter
+
+
+######################################################################
+section=gds
+section_description
+  These parameters determine how GDS parameters are displayed in a GUI
+
+variable=guess_color
+type=color
+default=#a300a3
+description
+  The color of the text for a guess parameter.  The default is a
+  purple shade.
+
+variable=def_color
+type=color
+default=#008b00
+description
+  The color of the text for a def parameter.  The default is a
+  green shade.
+
+variable=set_color
+type=color
+default=#000000
+description
+  The color of the text for a set parameter.  The default is black.
+
+variable=skip_color
+type=color
+default=#b2b2b2
+description
+  The color of the text for a skip parameter.  The default is a
+  grey tone.
+
+variable=restrain_color
+type=color
+default=#cd9b1d
+description
+  The color of the text for a restraint.  The default is an
+  orange shade.
+
+variable=after_color
+type=color
+default=#4a708b
+description
+  The color of the text for an after parameter.  The default is a
+  blue shade.
+
+variable=penalty_color
+type=color
+default=#8b5a2b
+description
+  The color of the text for a penalty parameter.  The default is a
+  brownish shade.
+
+variable=merge_color
+type=color
+default=#ee0000
+description
+  The color of the text for an unresolved merged parameter.  The
+  default is bright red.

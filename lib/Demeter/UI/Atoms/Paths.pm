@@ -43,6 +43,13 @@ sub new {
   $self->{toolbar} -> Realize;
   $vbox -> Add($self->{toolbar}, 0, wxALL, 5);
 
+  my $hh = Wx::BoxSizer->new( wxHORIZONTAL );
+  $vbox -> Add($hh, 0, wxEXPAND|wxALL, 0);
+  my $label      = Wx::StaticText->new($self, -1, 'Name of this Feff calculation: ', wxDefaultPosition, [-1,-1]);
+  $self->{name}  = Wx::TextCtrl  ->new($self, -1, q{}, wxDefaultPosition, [70,-1], wxTE_READONLY);
+  $hh->Add($label,        0, wxEXPAND|wxALL, 5);
+  $hh->Add($self->{name}, 1, wxEXPAND|wxALL, 5);
+
 
   $self->{headerbox}       = Wx::StaticBox->new($self, -1, 'Description', wxDefaultPosition, wxDefaultSize);
   $self->{headerboxsizer}  = Wx::StaticBoxSizer->new( $self->{headerbox}, wxVERTICAL );
@@ -120,6 +127,11 @@ sub set_plot {
   my %as = (5 => 'chi(k)', 6 => 'the magnitude of chi(R)', 7 => 'the real part of chi(R)', 8 => 'the imaginary part of chi(R)');
   $self->{statusbar}->SetStatusText("Plotting as $as{$id}");
   return $self;
+};
+
+sub clear_all {
+  my ($self) = 
+
 };
 
 sub save {

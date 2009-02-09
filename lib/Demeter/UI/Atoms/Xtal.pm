@@ -537,6 +537,9 @@ sub get_crystal_data {
   my $problems = q{};
   $atoms->clear;
 
+  $atoms->name($self->{name}->GetValue || "Feff:".$atoms->group);
+  $self->{name}->SetValue($atoms->name);
+
   my @titles = split(/\n/, $self->{titles}->GetValue);
   $atoms->titles(\@titles);
 
@@ -743,6 +746,7 @@ sub run_atoms {
     my $save = $atoms->co->default("atoms", "atoms_in_feff");
     $atoms->co->set_default("atoms", "atoms_in_feff", 0);
     $self->{parent}->{Feff}->{feff}->SetValue($atoms -> Write($template));
+    $self->{parent}->{Feff}->{name}->SetValue($atoms -> name);
     $atoms->co->set_default("atoms", "atoms_in_feff", $save);
     undef $busy;
     $self->{parent}->{notebook}->ChangeSelection(1);
