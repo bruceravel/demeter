@@ -1,0 +1,14 @@
+#!/usr/bin/perl
+
+use Wx qw(:splashscreen wxBITMAP_TYPE_PNG wxBITMAP_TYPE_XPM);
+use Demeter::UI::Artemis;
+
+## -------- Manage the splash screen
+Wx::InitAllImageHandlers();
+#my $logo   = File::Spec->catfile(dirname($INC{'Demeter/UI/Hephaestus.pm'}), 'Hephaestus', 'data', 'vulcan.png');
+#my $bitmap = Wx::Bitmap->new( $logo, wxBITMAP_TYPE_PNG );
+#my $splash = Wx::SplashScreen->new( $bitmap, wxSPLASH_CENTRE_ON_SCREEN|wxSPLASH_TIMEOUT, 5000, undef, -1 );
+#$splash   -> Refresh;
+
+my $window = Demeter::UI::Artemis->new;
+$window   -> MainLoop;
