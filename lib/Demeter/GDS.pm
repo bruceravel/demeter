@@ -28,16 +28,17 @@ use Regexp::Common;
 use Readonly;
 Readonly my $NUMBER => $RE{num}{real};
 
-has '+name'    => (isa => NotReserved);
-has 'gds'      => (is => 'rw', isa =>  GDS,    default => 'guess');
-has 'mathexp'  => (is => 'rw', isa => 'Str',   default => q{});  ##,trigger => sub{ my ($self, $new) = @_; $self->stored($new));
-has 'stored'   => (is => 'rw', isa => 'Str',   default => q{});
-has 'bestfit'  => (is => 'rw', isa => 'Num',   default => 0);
-has 'error'    => (is => 'rw', isa => 'Num',   default => -1);
-has 'modified' => (is => 'rw', isa => 'Bool',  default => 1);
-has 'note'     => (is => 'rw', isa => 'Str',   default => q{});
-has 'autonote' => (is => 'rw', isa => 'Bool',  default => 1);
-has 'Use'      => (is => 'rw', isa => 'Bool',  default => 1);
+has '+name'	  => (isa => NotReserved);
+has 'gds'	  => (is => 'rw', isa =>  GDS,    default => 'guess');
+has 'mathexp'	  => (is => 'rw', isa => 'Str',   default => q{});	##,trigger => sub{ my ($self, $new) = @_; $self->stored($new));
+has 'stored'	  => (is => 'rw', isa => 'Str',   default => q{});
+has 'bestfit'	  => (is => 'rw', isa => 'Num',   default => 0);
+has 'error'	  => (is => 'rw', isa => 'Num',   default => -1);
+has 'modified'	  => (is => 'rw', isa => 'Bool',  default => 1);
+has 'note'	  => (is => 'rw', isa => 'Str',   default => q{});
+has 'autonote'	  => (is => 'rw', isa => 'Bool',  default => 1);
+has 'highlighted' => (is => 'rw', isa => 'Bool',  default => 0);
+has 'Use'	  => (is => 'rw', isa => 'Bool',  default => 1);
 
 sub BUILD {
   my ($self, @params) = @_;

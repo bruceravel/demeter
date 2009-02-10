@@ -33,7 +33,7 @@ my %gridcolors = (
 		  merge	   => Wx::Colour->new($Demeter::UI::Artemis::demeter->co->default('gds','merge_color'   )),
 		 );
   my %hints = (
-	       grab	 => "Use the best fit values as rthe initial values for all guess parameters",
+	       grab	 => "Use the best fit values from the last fit as the initial values for all guess parameters",
 	       reset	 => "Restore all parameters to their initial values in Ifeffit",
 	       convert	 => "Change all guess parameters to set",
 	       discard	 => "Discard all parameters",
@@ -45,10 +45,10 @@ my %gridcolors = (
 
 
 sub new {
-  my $class = shift;
-  my $this = $class->SUPER::new($_[0], -1, "Artemis: Guess, Def, Set parameters",
+  my ($class, $parent) = @_;
+  my $this = $class->SUPER::new($parent, -1, "Artemis: Guess, Def, Set parameters",
 				wxDefaultPosition, [-1,-1], #[725,480],
-				wxDEFAULT_FRAME_STYLE);
+				wx_MINIMIZE_BOX|wxCAPTION|wxSYSTEM_MENU|wxRESIZE_BORDER);
   my $statusbar = $this->CreateStatusBar;
   $statusbar -> SetStatusText(q{});
 
@@ -92,11 +92,10 @@ sub new {
   $toolbar -> AddTool(1, "Grab all",    Demeter::UI::Artemis::icon("addgds"),  wxNullBitmap, wxITEM_NORMAL, q{}, $hints{grab} );
   $toolbar -> AddTool(2, "Reset all",   Demeter::UI::Artemis::icon("reset"),   wxNullBitmap, wxITEM_NORMAL, q{}, $hints{reset} );
   #$toolbar -> AddTool(3, "Guess->set",  Demeter::UI::Artemis::icon("convert"), wxNullBitmap, wxITEM_NORMAL, q{}, $hints{convert} );
-  #$toolbar -> AddSeparator;
   $toolbar -> AddCheckTool(3, "Highlight",   Demeter::UI::Artemis::icon("highlight"), wxNullBitmap, q{}, $hints{highlight} );
+  $toolbar -> AddSeparator;
   $toolbar -> AddTool(4, "Import GDS",  Demeter::UI::Artemis::icon("import"), wxNullBitmap, wxITEM_NORMAL, q{},  $hints{import});
   $toolbar -> AddTool(5, "Export GDS",  Demeter::UI::Artemis::icon("export"), wxNullBitmap, wxITEM_NORMAL, q{},  $hints{export});
-  $toolbar -> AddSeparator;
   $toolbar -> AddTool(6, "Discard all", Demeter::UI::Artemis::icon("discard"), wxNullBitmap, wxITEM_NORMAL, q{}, $hints{discard} );
   $toolbar -> AddSeparator;
   $toolbar -> AddTool(7, "Add GDS",     Demeter::UI::Artemis::icon("addgds"),  wxNullBitmap, wxITEM_NORMAL, q{}, $hints{addgds} );
@@ -116,7 +115,15 @@ sub OnSetType {
   if ($event->GetCol == 0) {
     my $row = $event->GetRow;
     my $newval = $self->GetCellValue($row, 0);
-    foreach my $c (0 .. $self->GetNumberCols) { $self->SetCellTextColour($row, $c, $gridcolors{$newval}) };
+    foreach my $c (0 .. $self->GetNumberCols) {
+      if ($newval eq 'merge') {
+	$self->SetCellBackgroundColour($row, $c, $gridcolors{merge});
+	$self->SetCellTextColour($row, $c, wxWHITE);
+      } else {
+	$self->SetCellBackgroundColour($row, $c, wxNullColour);
+	$self->SetCellTextColour($row, $c, $gridcolors{$newval});
+      };
+    };
   };
 };
 
@@ -133,18 +140,22 @@ sub PostGridMenu {
     $change->Append($ind++, $t);
   };
 
+  ## test for how many are selected
   my $menu = Wx::Menu->new(q{});
-  $menu->Append	         (0,	    "Copy $this");
-  $menu->Append	         (1,	    "Cut $this");
-  $menu->Append	         (2,	    "Paste above $this");
+  $menu->Append	         (0,	    "Copy $this");        # or selected
+  $menu->Append	         (1,	    "Cut $this");         # or selected
+  $menu->Append	         (2,	    "Paste above $this"); # or selected
   $menu->AppendSeparator;
-  $menu->Append	         (4,	    "Grab best fit for $this");
-  $menu->AppendSubMenu   ($change,  "Change selected to");
-  $menu->Append	         (6,	    "Build restraint from $this");
-  $menu->Append	         (7,	    "Annotate $this");
+  $menu->Append	         (4,	    "Insert blank line above $this");
+  $menu->Append	         (5,	    "Insert blank line below $this");
   $menu->AppendSeparator;
-  $menu->Append	         (9,	    "Find where $this is used");
-  $menu->Append	         (10,	    "Rename $this globally");
+  $menu->AppendSubMenu   ($change,  "Change selected to");      # or selected
+  $menu->Append	         (8,	    "Grab best fit for $this"); # or selected
+  $menu->Append	         (9,	    "Build restraint from $this");
+  $menu->Append	         (10,	    "Annotate $this");
+  $menu->AppendSeparator;
+  $menu->Append	         (12,	    "Find where $this is used");
+  $menu->Append	         (13,	    "Rename $this globally");
   $self->SelectRow($row, 1);
   $self->PopupMenu($menu, $event->GetPosition);
 };
@@ -153,7 +164,8 @@ sub OnGridMenu {
   my ($self, $event) = @_;
   my $which = $event->GetId;
   if ($which < 100) {
-    my @callbacks = qw(copy cut paste noop grab set_type build_restraint annotate noop find global);
+    ##                  0    1    2     3        4            5       6      7       8       9             10     11   12    13
+    my @callbacks = qw(copy cut paste noop insert_above insert_below noop set_type grab build_restraint annotate noop find global);
     print $which, ":  perform ", $callbacks[$which], $/;
   } else {
     my $i = $which - 100;

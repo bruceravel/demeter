@@ -1,4 +1,5 @@
-package  Demeter::UI::Artemis::History;
+package  Demeter::UI::Artemis::Plot::Indicators;
+
 
 =for Copyright
  .
@@ -16,16 +17,18 @@ package  Demeter::UI::Artemis::History;
 =cut
 
 use Wx qw( :everything );
-use base qw(Wx::Frame);
+use base qw(Wx::Panel);
 
 sub new {
   my ($class, $parent) = @_;
-  my $this = $class->SUPER::new($parent, -1, "Artemis: Fit history",
-				wxDefaultPosition, wxDefaultSize,
-				wx_MINIMIZE_BOX|wxCAPTION|wxSYSTEM_MENU|wxRESIZE_BORDER);
+  my $this = $class->SUPER::new($parent, -1, wxDefaultPosition, wxDefaultSize);
 
+  my $box  = Wx::BoxSizer->new( wxVERTICAL );
+  my $text = Wx::StaticText->new($this, -1, "Controls for creating, managing, and erasing indicators", [-1,-1], [250,250]);
+  $box -> Add($text, 0, wxALL, 0);
 
-
+  $this -> SetSizer($box);
+  return $this;
 };
 
 1;

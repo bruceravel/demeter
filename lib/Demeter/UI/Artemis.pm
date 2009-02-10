@@ -8,7 +8,7 @@ use File::Basename;
 use File::Spec;
 
 use Wx qw(:everything);
-use Wx::Event qw(EVT_MENU EVT_CLOSE EVT_TOOL_ENTER);
+use Wx::Event qw(EVT_MENU EVT_CLOSE EVT_TOOL_ENTER EVT_CHECKBOX);
 use base 'Wx::App';
 
 use Wx::Perl::Carp;
@@ -23,9 +23,9 @@ use vars qw($artemis_base $icon %frames);
 $artemis_base = identify_self();
 
 my %hints = (
-	     gds => "Display the Guess/Def/Set dialog",
-	     plot => "Display the plotting dialog",
-	     fit => "Display the fit history dialog",
+	     gds  => "Display the Guess/Def/Set parameters dialog",
+	     plot => "Display the plotting controls dialog",
+	     fit  => "Display the fit history dialog",
 	    );
 
 sub OnInit {
@@ -42,7 +42,7 @@ sub OnInit {
 
   ## -------- create a new frame and set icon
   $frames{main} = Wx::Frame->new(undef, -1, 'Artemis: EXAFS data analysis',
-				[0,0], # position -- along top of screen
+				[1,1], # position -- along top of screen
 				[Wx::SystemSettings::GetMetric(wxSYS_SCREEN_X), 170] # size -- entire width of screen
 			       );
   my $iconfile = File::Spec->catfile(dirname($INC{'Demeter/UI/Artemis.pm'}), 'Artemis', 'icons', "artemis.png");
@@ -60,9 +60,6 @@ sub OnInit {
   $bar->Append( $file, "&File" );
   $bar->Append( $help, "&Help" );
   $frames{main}->SetMenuBar( $bar );
-  EVT_MENU( $frames{main}, wxID_ABOUT, \&on_about );
-  EVT_MENU( $frames{main}, wxID_EXIT, sub{shift->Close} );
-  EVT_CLOSE( $frames{main},  \&on_close);
 
   my $hbox = Wx::BoxSizer->new( wxHORIZONTAL);
 
@@ -70,11 +67,9 @@ sub OnInit {
   my $vbox = Wx::BoxSizer->new( wxVERTICAL);
   $hbox -> Add($vbox, 0, wxALL, 5);
   my $toolbar = Wx::ToolBar->new($frames{main}, -1, wxDefaultPosition, wxDefaultSize, wxTB_VERTICAL|wxTB_HORZ_TEXT);
-  EVT_MENU( $toolbar, -1, sub{my ($toolbar, $event) = @_; OnToolClick($toolbar, $event, $frames{main})} );
-  $toolbar -> AddCheckTool(-1, "Show GDS",           icon("gds"),     wxNullBitmap, wxITEM_NORMAL, q{}, $hints{gds} );
-  $toolbar -> AddCheckTool(-1, "  Show plot tools",  icon("plot"),    wxNullBitmap, wxITEM_NORMAL, q{}, $hints{plot} );
-  $toolbar -> AddCheckTool(-1, "  Show fit history", icon("history"), wxNullBitmap, wxITEM_NORMAL, q{}, $hints{fit} );
-  EVT_TOOL_ENTER( $frames{main}, $toolbar, sub{my ($toolbar, $event) = @_; &OnToolEnter($toolbar, $event, 'toolbar')} );
+  $toolbar -> AddCheckTool(-1, "Show GDS",           icon("gds"),     wxNullBitmap, q{}, $hints{gds} );
+  $toolbar -> AddCheckTool(-1, "  Show plot tools",  icon("plot"),    wxNullBitmap, q{}, $hints{plot} );
+  $toolbar -> AddCheckTool(-1, "  Show fit history", icon("history"), wxNullBitmap, q{}, $hints{fit} );
   $toolbar -> Realize;
   $vbox -> Add($toolbar, 0, wxALL, 0);
 
@@ -89,8 +84,7 @@ sub OnInit {
   my $datavbox = Wx::BoxSizer->new( wxVERTICAL );
   $datalist->SetSizer($datavbox);
   my $datatool = Wx::ToolBar->new($datalist, -1, wxDefaultPosition, wxDefaultSize, wxTB_VERTICAL|wxTB_HORZ_TEXT|wxTB_LEFT);
-  my $thing = $datatool -> AddTool(-1, "New data", icon("add"), wxNullBitmap, wxITEM_NORMAL, q{}, q{} );
-  #$thing -> SetFont(Wx::Font->new( 10, wxTELETYPE, wxNORMAL, wxNORMAL, 0, "" ) );
+  $datatool -> AddTool(-1, "New data", icon("add"), wxNullBitmap, wxITEM_NORMAL, q{}, "Import a new data set" );
   $datatool -> AddSeparator;
   $datatool -> AddCheckTool(-1, "Show data set 1", icon("pixel"), wxNullBitmap, wxITEM_NORMAL, q{}, q{} );
   $datatool -> AddCheckTool(-1, "Show data set 2 blah blah", icon("pixel"), wxNullBitmap, wxITEM_NORMAL, q{}, q{} );
@@ -115,7 +109,7 @@ sub OnInit {
   my $feffvbox = Wx::BoxSizer->new( wxVERTICAL);
   $fefflist->SetSizer($feffvbox);
   my $fefftool = Wx::ToolBar->new($fefflist, -1, wxDefaultPosition, wxDefaultSize, wxTB_VERTICAL|wxTB_HORZ_TEXT|wxTB_LEFT);
-  $fefftool -> AddTool(-1, "New Feff calculation", icon("add"), wxNullBitmap, wxITEM_NORMAL, q{}, q{} );
+  $fefftool -> AddTool(-1, "New Feff calculation", icon("add"), wxNullBitmap, wxITEM_NORMAL, q{}, "Import a new Feff calculation" );
   $fefftool -> AddSeparator;
   $fefftool -> AddCheckTool(-1, "Show feff calc 1", icon("pixel"), wxNullBitmap, wxITEM_NORMAL, q{}, q{} );
   $fefftool -> AddCheckTool(-1, "Show feff calc 2", icon("pixel"), wxNullBitmap, wxITEM_NORMAL, q{}, q{} );
@@ -132,24 +126,34 @@ sub OnInit {
   $vbox = Wx::BoxSizer->new( wxVERTICAL);
   $hbox -> Add($vbox, 1, wxGROW|wxLEFT|wxRIGHT|wxTOP, 5);
 
-  my $fitbutton = Wx::Button->new($frames{main}, -1, "Fit", wxDefaultPosition, wxDefaultSize);
-  $fitbutton -> SetForegroundColour(Wx::Colour->new("#ffffff"));
-  $fitbutton -> SetBackgroundColour(Wx::Colour->new(0, 192, 0, 0));
-  $fitbutton -> SetFont(Wx::Font->new( 10, wxDEFAULT, wxNORMAL, wxBOLD, 0, "" ) );
-  $vbox->Add($fitbutton, 0, wxGROW|wxALL, 0);
-
   my $hfit = Wx::BoxSizer->new( wxHORIZONTAL);
   $vbox -> Add($hfit, 0, wxGROW|wxTOP|wxBOTTOM, 5);
   my $label = Wx::StaticText->new($frames{main}, -1, "Name");
-  my $name  = Wx::TextCtrl->new($frames{main}, -1, q{});
-  $hfit -> Add($label, 0, wxALL, 5);
-  $hfit -> Add($name, 1, wxALL, 2);
+  my $name  = Wx::TextCtrl->new($frames{main}, -1, "Fit 1");
+  my $sum_button = Wx::CheckBox->new($frames{main}, -1, "Do summation");
+  $hfit -> Add($label,      0, wxALL, 5);
+  $hfit -> Add($name,       1, wxALL, 2);
+  $hfit -> Add($sum_button, 0, wxALL, 2);
 
   my $descbox      = Wx::StaticBox->new($frames{main}, -1, 'Fit description', wxDefaultPosition, wxDefaultSize);
   my $descboxsizer = Wx::StaticBoxSizer->new( $descbox, wxVERTICAL );
   my $description  = Wx::TextCtrl->new($frames{main}, -1, q{}, wxDefaultPosition, [-1, 25], wxTE_MULTILINE);
   $descboxsizer   -> Add($description,  1, wxGROW|wxALL, 0);
   $vbox           -> Add($descboxsizer, 1, wxGROW|wxALL, 0);
+
+  my $fitbutton = Wx::Button->new($frames{main}, -1, "Fit", wxDefaultPosition, wxDefaultSize);
+  $fitbutton -> SetForegroundColour(Wx::Colour->new("#000000"));
+  $fitbutton -> SetBackgroundColour(Wx::Colour->new($demeter->co->default("happiness", "average_color")));
+  $fitbutton -> SetFont(Wx::Font->new( 10, wxDEFAULT, wxNORMAL, wxBOLD, 0, "" ) );
+  $hbox->Add($fitbutton, 0, wxGROW|wxALL, 2);
+
+  EVT_MENU	 ($frames{main}, wxID_ABOUT, \&on_about );
+  EVT_MENU	 ($frames{main}, wxID_EXIT,  sub{shift->Close} );
+  EVT_CLOSE	 ($frames{main},             \&on_close);
+  EVT_MENU	 ($toolbar,      -1,         sub{my ($toolbar, $event) = @_; OnToolClick($toolbar, $event, $frames{main})} );
+  EVT_TOOL_ENTER ($frames{main}, $toolbar,   sub{my ($toolbar, $event) = @_; &OnToolEnter($toolbar, $event, 'toolbar')} );
+  EVT_CHECKBOX	 ($sum_button,   -1,         sub{my ($cb, $event)      = @_; OnSumClick($cb, $event, $fitbutton)});
+
 
   ## -------- status bar
   my $statusbar = $frames{main}->CreateStatusBar;
@@ -162,7 +166,7 @@ sub OnInit {
 
   foreach my $part (qw(GDS Plot History)) {
     my $pp = "Demeter::UI::Artemis::".$part;
-    $frames{$part} = $pp->new;
+    $frames{$part} = $pp->new($frames{main});
     $frames{$part} -> SetIcon($icon);
   };
   $frames{main} -> Show( 1 );
@@ -239,6 +243,15 @@ sub OnToolClick {
   my ($toolbar, $event, $self) = @_;
   my $which = (qw(GDS Plot History))[$toolbar->GetToolPos($event->GetId)];
   $frames{$which}->Show($toolbar->GetToolState($event->GetId));
+};
+
+sub OnSumClick {
+  my ($check, $event, $fb) = @_;
+  if ($check->IsChecked) {
+    $fb -> SetLabel("Sum");
+  } else {
+    $fb -> SetLabel("Fit");
+  };
 };
 
 
