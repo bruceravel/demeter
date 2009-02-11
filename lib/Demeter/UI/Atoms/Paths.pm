@@ -129,10 +129,10 @@ sub set_plot {
   return $self;
 };
 
-sub clear_all {
-  my ($self) = 
-
-};
+#sub clear_all {
+#  my ($self) = #
+#
+#};
 
 sub save {
   my ($self) = @_;

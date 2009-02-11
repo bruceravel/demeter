@@ -483,7 +483,7 @@ sub open_file {
   my $name = basename($file, '.cif', '.inp');
   $atoms -> name($name) if not $atoms->name;
   $self->{name}->SetValue($name);
-  $Demeter::UI::Atoms::frame->SetTitle("Atoms: ".$name);
+  $Demeter::UI::Atoms::frame->SetTitle("Atoms: ".$name) if defined($Demeter::UI::Atoms::frame);
   $atoms->populate;
 
   ## load values into their widgets

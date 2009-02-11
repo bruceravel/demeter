@@ -23,6 +23,12 @@ use Wx::Event qw(EVT_NOTEBOOK_PAGE_CHANGED EVT_NOTEBOOK_PAGE_CHANGING);
 
 my $icon_dimension = 30;
 
+foreach my $m (qw(Xtal Feff Config Paths Doc Console)) {
+  next if $INC{"Demeter/UI/Atoms/$m.pm"};
+  #print "Demeter/UI/Atoms/$m.pm\n";
+  require "Demeter/UI/Atoms/$m.pm";
+};
+
 sub new {
   my $ref    = shift;
   my $width  = 100;
@@ -106,12 +112,6 @@ sub OnInit {
   $demeter -> mo -> ui('Wx');
   $demeter -> mo -> identity('Atoms');
   $demeter -> plot_with($demeter->co->default(qw(feff plotwith)));
-
-  foreach my $m (qw(Xtal Feff Config Paths Doc Console)) {
-    next if $INC{"Demeter/UI/Atoms/$m.pm"};
-    ##print "Demeter/UI/Atoms/$m.pm\n";
-    require "Demeter/UI/Atoms/$m.pm";
-  };
 
   ## -------- create a new frame and set icon
   $frame = Demeter::UI::AtomsApp->new;

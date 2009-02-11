@@ -18,6 +18,7 @@ package  Demeter::UI::Artemis::Plot::Limits;
 
 use Wx qw( :everything );
 use base qw(Wx::Panel);
+use Wx::Event qw(EVT_MENU EVT_CLOSE EVT_TOOL_ENTER EVT_CHECKBOX);
 
 my $parts = ['Magnitude', 'Real part', 'Imaginary part'];
 
@@ -52,23 +53,25 @@ sub new {
   $hh -> Add($po{qpart}, 1, wxRIGHT, 5);
 
   ## -------- toggles for fit, win, bkg, res
-  $hh   = Wx::BoxSizer->new( wxHORIZONTAL );
-  $szr -> Add($hh, 0, wxGROW|wxALL, 5);
-  $po{fit} = Wx::CheckBox->new($this, -1, "Plot fit");
-  #$po{fit} -> Select(1);
-  $hh -> Add($po{fit}, 0, wxALL, 2);
-  $po{background} = Wx::CheckBox->new($this, -1, "Plot background");
-  $hh -> Add($po{background}, 0, wxALL, 2);
+  ##    after a fit: turn on fit toggle, bkg toggle is bkg refined
+  my $gbs  =  Wx::GridBagSizer->new( 5,10 );
+  $szr -> Add($gbs, 0, wxGROW|wxTOP|wxBOTTOM, 10);
 
-  $hh   = Wx::BoxSizer->new( wxHORIZONTAL );
-  $szr -> Add($hh, 0, wxGROW|wxALL, 5);
+  $po{fit} = Wx::CheckBox->new($this, -1, "Plot fit");
+  $gbs -> Add($po{fit}, Wx::GBPosition->new(0,1));
+  $po{background} = Wx::CheckBox->new($this, -1, "Plot background");
+  $gbs -> Add($po{background}, Wx::GBPosition->new(0,2));
+
   $po{window} = Wx::CheckBox->new($this, -1, "Plot window");
-  $hh -> Add($po{window}, 0, wxALL, 2);
+  $gbs -> Add($po{window}, Wx::GBPosition->new(1,1));
+  $po{window} -> SetValue(1);
   $po{residual} = Wx::CheckBox->new($this, -1, "Plot residual");
-  $hh -> Add($po{residual}, 0, wxALL, 2);
+  $gbs -> Add($po{residual}, Wx::GBPosition->new(1,2));
+
+  $szr -> Add(Wx::StaticLine->new($this, -1, wxDefaultPosition, wxDefaultSize, wxLI_HORIZONTAL), 0, wxGROW|wxLEFT|wxRIGHT, 5);
 
   ## -------- limits in k, R, and q
-  my $gbs  =  Wx::GridBagSizer->new( 10,5 );
+  $gbs  =  Wx::GridBagSizer->new( 10,5 );
   $szr -> Add($gbs, 0, wxGROW|wxTOP, 15);
   my %po;
 

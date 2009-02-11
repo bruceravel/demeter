@@ -1,9 +1,11 @@
 package Demeter::UI::Artemis;
 
-use Demeter;
+use Demeter qw(:plotwith=gnuplot);
+use Demeter::UI::Atoms;
 use vars qw($demeter);
 $demeter = Demeter->new;
 
+use Cwd;
 use File::Basename;
 use File::Spec;
 
@@ -19,7 +21,7 @@ sub identify_self {
   my @caller = caller;
   return dirname($caller[1]);
 };
-use vars qw($artemis_base $icon %frames);
+use vars qw($artemis_base $icon %frames %widgets);
 $artemis_base = identify_self();
 
 my %hints = (
@@ -67,9 +69,9 @@ sub OnInit {
   my $vbox = Wx::BoxSizer->new( wxVERTICAL);
   $hbox -> Add($vbox, 0, wxALL, 5);
   my $toolbar = Wx::ToolBar->new($frames{main}, -1, wxDefaultPosition, wxDefaultSize, wxTB_VERTICAL|wxTB_HORZ_TEXT);
-  $toolbar -> AddCheckTool(-1, "Show GDS",           icon("gds"),     wxNullBitmap, q{}, $hints{gds} );
-  $toolbar -> AddCheckTool(-1, "  Show plot tools",  icon("plot"),    wxNullBitmap, q{}, $hints{plot} );
-  $toolbar -> AddCheckTool(-1, "  Show fit history", icon("history"), wxNullBitmap, q{}, $hints{fit} );
+  $widgets{gds_toggle}     = $toolbar -> AddCheckTool(-1, "Show GDS",           icon("gds"),     wxNullBitmap, q{}, $hints{gds} );
+  $widgets{plot_toggle}    = $toolbar -> AddCheckTool(-1, "  Show plot tools",  icon("plot"),    wxNullBitmap, q{}, $hints{plot} );
+  $widgets{history_toggle} = $toolbar -> AddCheckTool(-1, "  Show fit history", icon("history"), wxNullBitmap, q{}, $hints{fit} );
   $toolbar -> Realize;
   $vbox -> Add($toolbar, 0, wxALL, 0);
 
@@ -86,12 +88,12 @@ sub OnInit {
   my $datatool = Wx::ToolBar->new($datalist, -1, wxDefaultPosition, wxDefaultSize, wxTB_VERTICAL|wxTB_HORZ_TEXT|wxTB_LEFT);
   $datatool -> AddTool(-1, "New data", icon("add"), wxNullBitmap, wxITEM_NORMAL, q{}, "Import a new data set" );
   $datatool -> AddSeparator;
-  $datatool -> AddCheckTool(-1, "Show data set 1", icon("pixel"), wxNullBitmap, wxITEM_NORMAL, q{}, q{} );
-  $datatool -> AddCheckTool(-1, "Show data set 2 blah blah", icon("pixel"), wxNullBitmap, wxITEM_NORMAL, q{}, q{} );
-  $datatool -> AddCheckTool(-1, "Show data set 3", icon("pixel"), wxNullBitmap, wxITEM_NORMAL, q{}, q{} );
-  $datatool -> AddCheckTool(-1, "Show data set 4", icon("pixel"), wxNullBitmap, wxITEM_NORMAL, q{}, q{} );
-  $datatool -> AddCheckTool(-1, "Show data set 5", icon("pixel"), wxNullBitmap, wxITEM_NORMAL, q{}, q{} );
-  $datatool -> AddCheckTool(-1, "Show data set 6", icon("pixel"), wxNullBitmap, wxITEM_NORMAL, q{}, q{} );
+  #   $datatool -> AddCheckTool(-1, "Show data set 1", icon("pixel"), wxNullBitmap, wxITEM_NORMAL, q{}, q{} );
+  #   $datatool -> AddCheckTool(-1, "Show data set 2 blah blah", icon("pixel"), wxNullBitmap, wxITEM_NORMAL, q{}, q{} );
+  #   $datatool -> AddCheckTool(-1, "Show data set 3", icon("pixel"), wxNullBitmap, wxITEM_NORMAL, q{}, q{} );
+  #   $datatool -> AddCheckTool(-1, "Show data set 4", icon("pixel"), wxNullBitmap, wxITEM_NORMAL, q{}, q{} );
+  #   $datatool -> AddCheckTool(-1, "Show data set 5", icon("pixel"), wxNullBitmap, wxITEM_NORMAL, q{}, q{} );
+  #   $datatool -> AddCheckTool(-1, "Show data set 6", icon("pixel"), wxNullBitmap, wxITEM_NORMAL, q{}, q{} );
   $datatool -> Realize;
   $datavbox     -> Add($datatool);
   $databoxsizer -> Add($datalist, 1, wxGROW|wxALL, 0);
@@ -111,12 +113,12 @@ sub OnInit {
   my $fefftool = Wx::ToolBar->new($fefflist, -1, wxDefaultPosition, wxDefaultSize, wxTB_VERTICAL|wxTB_HORZ_TEXT|wxTB_LEFT);
   $fefftool -> AddTool(-1, "New Feff calculation", icon("add"), wxNullBitmap, wxITEM_NORMAL, q{}, "Import a new Feff calculation" );
   $fefftool -> AddSeparator;
-  $fefftool -> AddCheckTool(-1, "Show feff calc 1", icon("pixel"), wxNullBitmap, wxITEM_NORMAL, q{}, q{} );
-  $fefftool -> AddCheckTool(-1, "Show feff calc 2", icon("pixel"), wxNullBitmap, wxITEM_NORMAL, q{}, q{} );
-  $fefftool -> AddCheckTool(-1, "Show feff calc 3", icon("pixel"), wxNullBitmap, wxITEM_NORMAL, q{}, q{} );
-  $fefftool -> AddCheckTool(-1, "Show feff calc 4", icon("pixel"), wxNullBitmap, wxITEM_NORMAL, q{}, q{} );
-  $fefftool -> AddCheckTool(-1, "Show feff calc 5", icon("pixel"), wxNullBitmap, wxITEM_NORMAL, q{}, q{} );
-  $fefftool -> AddCheckTool(-1, "Show feff calc 6", icon("pixel"), wxNullBitmap, wxITEM_NORMAL, q{}, q{} );
+  #   $fefftool -> AddCheckTool(-1, "Show feff calc 1", icon("pixel"), wxNullBitmap, q{}, q{} );
+  #   $fefftool -> AddCheckTool(-1, "Show feff calc 2", icon("pixel"), wxNullBitmap, q{}, q{} );
+  #   $fefftool -> AddCheckTool(-1, "Show feff calc 3", icon("pixel"), wxNullBitmap, q{}, q{} );
+  #   $fefftool -> AddCheckTool(-1, "Show feff calc 4", icon("pixel"), wxNullBitmap, q{}, q{} );
+  #   $fefftool -> AddCheckTool(-1, "Show feff calc 5", icon("pixel"), wxNullBitmap, q{}, q{} );
+  #   $fefftool -> AddCheckTool(-1, "Show feff calc 6", icon("pixel"), wxNullBitmap, q{}, q{} );
   $fefftool -> Realize;
   $feffvbox     -> Add($fefftool);
   $feffboxsizer -> Add($fefflist, 1, wxGROW|wxALL, 0);
@@ -150,14 +152,15 @@ sub OnInit {
   EVT_MENU	 ($frames{main}, wxID_ABOUT, \&on_about );
   EVT_MENU	 ($frames{main}, wxID_EXIT,  sub{shift->Close} );
   EVT_CLOSE	 ($frames{main},             \&on_close);
-  EVT_MENU	 ($toolbar,      -1,         sub{my ($toolbar, $event) = @_; OnToolClick($toolbar, $event, $frames{main})} );
-  EVT_TOOL_ENTER ($frames{main}, $toolbar,   sub{my ($toolbar, $event) = @_; &OnToolEnter($toolbar, $event, 'toolbar')} );
-  EVT_CHECKBOX	 ($sum_button,   -1,         sub{my ($cb, $event)      = @_; OnSumClick($cb, $event, $fitbutton)});
+  EVT_MENU	 ($toolbar,      -1,         sub{my ($toolbar,  $event) = @_; OnToolClick($toolbar,  $event, $frames{main})} );
+  EVT_MENU	 ($fefftool,     -1,         sub{my ($fefftool, $event) = @_; OnFeffClick($fefftool, $event, $frames{main})} );
+  EVT_TOOL_ENTER ($frames{main}, $toolbar,   sub{my ($toolbar,  $event) = @_; OnToolEnter($toolbar,  $event, 'toolbar')} );
+  EVT_CHECKBOX	 ($sum_button,   -1,         sub{my ($cb,       $event) = @_; OnSumClick ($cb,       $event, $fitbutton)});
 
 
   ## -------- status bar
-  my $statusbar = $frames{main}->CreateStatusBar;
-  $statusbar -> SetStatusText("Welcome to Artemis (" . $demeter->identify . ")");
+  $widgets{statusbar} = $frames{main}->CreateStatusBar;
+  $widgets{statusbar} -> SetStatusText("Welcome to Artemis (" . $demeter->identify . ")");
 
 
   $frames{main} -> SetSizer($hbox);
@@ -170,6 +173,8 @@ sub OnInit {
     $frames{$part} -> SetIcon($icon);
   };
   $frames{main} -> Show( 1 );
+  $toolbar->ToggleTool($widgets{plot_toggle}->GetId,1);
+  $frames{Plot} -> Show( 1 );
 }
 
 sub on_close {
@@ -244,6 +249,54 @@ sub OnToolClick {
   my $which = (qw(GDS Plot History))[$toolbar->GetToolPos($event->GetId)];
   $frames{$which}->Show($toolbar->GetToolState($event->GetId));
 };
+
+
+sub OnFeffClick {
+  my ($feffbar, $event, $self) = @_;
+  my $which = $feffbar->GetToolPos($event->GetId);
+
+  if ($which == 0) {
+
+    ## also yaml data
+    my $fd = Wx::FileDialog->new( $self, "Import crystal or Feff data", cwd, q{},
+				  "input and CIF files (*.inp;*.cif)|*.inp;*.cif|input file (*.inp)|*.inp|CIF file (*.cif)|*.cif|All files|*.*",
+				  wxFD_OPEN|wxFD_FILE_MUST_EXIST|wxFD_CHANGE_DIR|wxFD_PREVIEW,
+				  wxDefaultPosition);
+    if ($fd->ShowModal == wxID_CANCEL) {
+      $widgets{statusbar}->SetStatusText("Crystal/Feff data import cancelled.");
+      return;
+    };
+    my $file = File::Spec->catfile($fd->GetDirectory, $fd->GetFilename);
+
+    my $name = basename($file);	# ok for importing an atoms or CIF file
+
+    my $newtool = $feffbar -> AddCheckTool(-1, "Show $name", icon("pixel"), wxNullBitmap, q{}, q{} );
+    #$feffbar -> Realize;
+    do_the_size_dance($self);
+    my $ifeff = $newtool->GetId;
+    my $fnum = sprintf("feff%s", $ifeff);
+    $frames{$fnum} =  Demeter::UI::AtomsApp->new;
+    $frames{$fnum} -> SetTitle('Artemis: Atoms and Feff');
+    $frames{$fnum} -> Show(1);
+    $feffbar->ToggleTool($ifeff,1);
+    $frames{$fnum}->{Atoms}->Demeter::UI::Atoms::Xtal::open_file($file);
+    #$newtool -> SetLabel( $frames{$fnum}->{Atoms}->{name}->GetValue );
+
+  } else {
+    my $this = sprintf("feff%s", $event->GetId);
+    return if not exists($frames{$this});
+    $frames{$this}->Show($feffbar->GetToolState($event->GetId));
+  };
+
+};
+
+sub do_the_size_dance {
+  my ($top) = @_;
+  my @size = $top->GetSizeWH;
+  $top -> SetSize($size[0], $size[1]+1);
+  $top -> SetSize($size[0], $size[1]);
+};
+
 
 sub OnSumClick {
   my ($check, $event, $fb) = @_;
