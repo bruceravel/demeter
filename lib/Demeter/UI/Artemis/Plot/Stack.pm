@@ -25,37 +25,37 @@ sub new {
 
   my $box = Wx::BoxSizer->new( wxVERTICAL );
   my $top =  Wx::BoxSizer->new( wxHORIZONTAL );
-  $box -> Add($top);
+  $box -> Add($top, 0, wxGROW);
 
   my $stackbox       = Wx::StaticBox->new($this, -1, 'Stack plots', wxDefaultPosition, wxDefaultSize);
   my $stackboxsizer  = Wx::StaticBoxSizer->new( $stackbox, wxHORIZONTAL );
 
   my $vv =  Wx::BoxSizer->new( wxVERTICAL );
-  my @stack = (Wx::RadioButton->new($this, -1, "Never",        wxDefaultPosition, wxDefaultSize, wxRB_GROUP),
+  my @stack = (Wx::RadioButton->new($this, -1, "Never",       wxDefaultPosition, wxDefaultSize, wxRB_GROUP),
 	       Wx::RadioButton->new($this, -1, 'Only |χ(R)|', wxDefaultPosition, wxDefaultSize),
-	       Wx::RadioButton->new($this, -1, "Always",       wxDefaultPosition, wxDefaultSize));
+	       Wx::RadioButton->new($this, -1, "Always",      wxDefaultPosition, wxDefaultSize));
 
   $vv -> Add($_) foreach @stack;
 
   my $label  = Wx::StaticText->new($this, -1, 'Starting value');
-  my $start  = Wx::TextCtrl->new($this, -1, 0, wxDefaultPosition, [50, -1]);
+  my $start  = Wx::TextCtrl->new($this, -1, 0, wxDefaultPosition, [-1, -1]);
   $vv -> Add($label, 0, wxTOP, 10);
-  $vv -> Add($start, 0, wxLEFT|wxRIGHT, 15);
+  $vv -> Add($start, 0, wxGROW|wxLEFT|wxRIGHT, 15);
 
   $label  = Wx::StaticText->new($this, -1, 'Increment');
-  my $increment = Wx::TextCtrl->new($this, -1, 0, wxDefaultPosition, [50, -1]);
+  my $increment = Wx::TextCtrl->new($this, -1, 0, wxDefaultPosition, [-1, -1]);
   $vv -> Add($label,     0, wxTOP, 10);
-  $vv -> Add($increment, 0, wxLEFT|wxRIGHT, 15);
+  $vv -> Add($increment, 0, wxGROW|wxLEFT|wxRIGHT, 15);
 
   $stackboxsizer->Add($vv, 0, wxALL, 5);
-  $top->Add($stackboxsizer, 0, wxBOTTOM, 2);
+  $top->Add($stackboxsizer, 1, wxTOP|wxBOTTOM, 3);
 
 
 
   my $invert = Wx::RadioBox->new($this, -1, "Invert paths", wxDefaultPosition, wxDefaultSize,
-				 ['Never', 'Only |χ(R)|', '|χ(R)| & |χ(q)|'],
+				 ['Never', 'Only |χ(R)|', '|χ(R)| and |χ(q)|'],
 				 wxRA_SPECIFY_ROWS, 3);
-  $top -> Add($invert, 0, wxALL, 2);
+  $top -> Add($invert, 1, wxALL, 3);
 
 
 
@@ -65,7 +65,7 @@ sub new {
   my $offset = Wx::TextCtrl->new($this, -1, 0);
   $dsboxsizer -> Add($label, 0, wxALL, 5);
   $dsboxsizer -> Add($offset, 1, wxALL, 5);
-  $box->Add($dsboxsizer, 0, wxGROW|wxALL, 5);
+  $box->Add($dsboxsizer, 0, wxGROW|wxALL, 3);
 
 
   $this -> SetSizer($box);

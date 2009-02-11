@@ -29,7 +29,7 @@ sub new {
 
   ## -------- plotting part for chi(R)
   my $hh = Wx::BoxSizer->new( wxHORIZONTAL );
-  $szr  -> Add($hh, 0, wxGROW|wxALL, 5);
+  $szr  -> Add($hh, 0, wxALL, 5);
   my $label  = Wx::StaticText->new($this, -1, "Plot χ(R) as: ");
   $po{rpart} = Wx::Choice->new($this, -1, wxDefaultPosition, wxDefaultSize, $parts);
   my $which = 0;
@@ -41,7 +41,7 @@ sub new {
 
   ## -------- plotting part for chi(q)
   $hh   = Wx::BoxSizer->new( wxHORIZONTAL );
-  $szr -> Add($hh, 0, wxGROW|wxALL, 5);
+  $szr -> Add($hh, 0, wxALL, 5);
   my $label  = Wx::StaticText->new($this, -1, "Plot χ(q) as: ");
   $po{qpart} = Wx::Choice->new($this, -1, wxDefaultPosition, wxDefaultSize, $parts);
   my $which = 1;
@@ -51,13 +51,21 @@ sub new {
   $hh -> Add($label, 0, wxLEFT|wxRIGHT, 5);
   $hh -> Add($po{qpart}, 1, wxRIGHT, 5);
 
-  ## -------- toggles for win, bkg, res
-  $po{window} = Wx::CheckBox->new($this, -1, "Plot window");
-  $szr -> Add($po{window}, 0, wxGROW|wxALL, 2);
+  ## -------- toggles for fit, win, bkg, res
+  $hh   = Wx::BoxSizer->new( wxHORIZONTAL );
+  $szr -> Add($hh, 0, wxGROW|wxALL, 5);
+  $po{fit} = Wx::CheckBox->new($this, -1, "Plot fit");
+  #$po{fit} -> Select(1);
+  $hh -> Add($po{fit}, 0, wxALL, 2);
   $po{background} = Wx::CheckBox->new($this, -1, "Plot background");
-  $szr -> Add($po{background}, 0, wxGROW|wxALL, 2);
+  $hh -> Add($po{background}, 0, wxALL, 2);
+
+  $hh   = Wx::BoxSizer->new( wxHORIZONTAL );
+  $szr -> Add($hh, 0, wxGROW|wxALL, 5);
+  $po{window} = Wx::CheckBox->new($this, -1, "Plot window");
+  $hh -> Add($po{window}, 0, wxALL, 2);
   $po{residual} = Wx::CheckBox->new($this, -1, "Plot residual");
-  $szr -> Add($po{residual}, 0, wxGROW|wxALL, 2);
+  $hh -> Add($po{residual}, 0, wxALL, 2);
 
   ## -------- limits in k, R, and q
   my $gbs  =  Wx::GridBagSizer->new( 10,5 );
@@ -65,29 +73,35 @@ sub new {
   my %po;
 
   $label    = Wx::StaticText->new($this, -1, "kmin");
-  $po{kmin} = Wx::TextCtrl  ->new($this, -1, $Demeter::UI::Artemis::demeter->co->default("plot", "kmin"));
+  $po{kmin} = Wx::TextCtrl  ->new($this, -1, $Demeter::UI::Artemis::demeter->co->default("plot", "kmin"),
+				  wxDefaultPosition, [50,-1]);
   $gbs     -> Add($label,    Wx::GBPosition->new(0,1));
   $gbs     -> Add($po{kmin}, Wx::GBPosition->new(0,2));
   $label    = Wx::StaticText->new($this, -1, "kmax");
-  $po{kmax} = Wx::TextCtrl  ->new($this, -1, $Demeter::UI::Artemis::demeter->co->default("plot", "kmax"));
+  $po{kmax} = Wx::TextCtrl  ->new($this, -1, $Demeter::UI::Artemis::demeter->co->default("plot", "kmax"),
+				  wxDefaultPosition, [50,-1]);
   $gbs     -> Add($label,    Wx::GBPosition->new(0,3));
   $gbs     -> Add($po{kmax}, Wx::GBPosition->new(0,4));
 
   $label    = Wx::StaticText->new($this, -1, "rmin");
-  $po{rmin} = Wx::TextCtrl  ->new($this, -1, $Demeter::UI::Artemis::demeter->co->default("plot", "rmin"));
+  $po{rmin} = Wx::TextCtrl  ->new($this, -1, $Demeter::UI::Artemis::demeter->co->default("plot", "rmin"),
+				  wxDefaultPosition, [50,-1]);
   $gbs     -> Add($label,    Wx::GBPosition->new(1,1));
   $gbs     -> Add($po{rmin}, Wx::GBPosition->new(1,2));
   $label    = Wx::StaticText->new($this, -1, "rmax");
-  $po{rmax} = Wx::TextCtrl  ->new($this, -1, $Demeter::UI::Artemis::demeter->co->default("plot", "rmax"));
+  $po{rmax} = Wx::TextCtrl  ->new($this, -1, $Demeter::UI::Artemis::demeter->co->default("plot", "rmax"),
+				  wxDefaultPosition, [50,-1]);
   $gbs     -> Add($label,    Wx::GBPosition->new(1,3));
   $gbs     -> Add($po{rmax}, Wx::GBPosition->new(1,4));
 
   $label    = Wx::StaticText->new($this, -1, "qmin");
-  $po{qmin} = Wx::TextCtrl  ->new($this, -1, $Demeter::UI::Artemis::demeter->co->default("plot", "qmin"));
+  $po{qmin} = Wx::TextCtrl  ->new($this, -1, $Demeter::UI::Artemis::demeter->co->default("plot", "qmin"),
+				  wxDefaultPosition, [50,-1]);
   $gbs     -> Add($label,    Wx::GBPosition->new(2,1));
   $gbs     -> Add($po{qmin}, Wx::GBPosition->new(2,2));
   $label    = Wx::StaticText->new($this, -1, "qmax");
-  $po{qmax} = Wx::TextCtrl  ->new($this, -1, $Demeter::UI::Artemis::demeter->co->default("plot", "qmax"));
+  $po{qmax} = Wx::TextCtrl  ->new($this, -1, $Demeter::UI::Artemis::demeter->co->default("plot", "qmax"),
+				  wxDefaultPosition, [50,-1]);
   $gbs     -> Add($label,    Wx::GBPosition->new(2,3));
   $gbs     -> Add($po{qmax}, Wx::GBPosition->new(2,4));
 

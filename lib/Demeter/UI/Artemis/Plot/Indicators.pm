@@ -24,7 +24,7 @@ sub new {
   my $this = $class->SUPER::new($parent, -1, wxDefaultPosition, wxDefaultSize);
 
   my $box  = Wx::BoxSizer->new( wxVERTICAL );
-  my $text = Wx::StaticText->new($this, -1, "Controls for creating, managing, and erasing indicators", [-1,-1], [250,250]);
+  my $text = Wx::StaticText->new($this, -1, "Controls for creating, managing, and erasing indicators", [-1,-1], [200,200]);
   $box -> Add($text, 0, wxALL, 0);
 
   $this -> SetSizer($box);

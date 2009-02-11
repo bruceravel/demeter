@@ -62,12 +62,7 @@ sub new {
     $b -> SetFont(Wx::Font->new( 10, wxDEFAULT, wxNORMAL, wxBOLD, 0, "" ) );
   };
 
-#   my $imagelist = Wx::ImageList->new( 1,1 );
-#   foreach my $i (0..3) {
-#     $imagelist->Add( Demeter::UI::Artemis::icon("pixel") );
-#   };
   my $nb = Wx::Notebook->new( $this, -1, wxDefaultPosition, wxDefaultSize, wxBK_TOP );
-#   $nb->AssignImageList( $imagelist );
   foreach my $utility (qw(limits stack indicators VPaths)) {
     my $count = $nb->GetPageCount;
     my $page = ($utility eq 'limits')     ? Demeter::UI::Artemis::Plot::Limits     -> new($nb)
@@ -90,7 +85,7 @@ sub new {
   my $groupbox       = Wx::StaticBox->new($this, -1, 'Plotting list', wxDefaultPosition, wxDefaultSize);
   my $groupboxsizer  = Wx::StaticBoxSizer->new( $groupbox, wxHORIZONTAL );
 
-  my $grouplist = Wx::CheckListBox->new($this, -1, wxDefaultPosition, wxDefaultSize, [ qw(a b c a b c a b c a b c a b c a b c a b c ) ]);
+  my $grouplist = Wx::CheckListBox->new($this, -1, wxDefaultPosition, wxDefaultSize, [ qw(a b c a b c a b c a  ) ]);
   foreach my $i (0 .. $grouplist->GetCount) {
     $grouplist -> Check($i, 1) if ($grouplist->GetString($i) !~ m{c});
   };
