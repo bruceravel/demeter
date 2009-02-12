@@ -118,6 +118,16 @@ sub S_check_rmax {
   };
 };
 
+
+sub S_check_cluster_size {
+  my ($self, $r_problems) = @_;
+  my $nsites = $#{ $self->sites };
+  if ($nsites > 500) {
+    $$r_problems{cluster_too_big} = 1;
+    push @{$$r_problems{errors}}, "Your cluster size if larger than the copiled limit in Feff6L of 500 atoms."
+  };
+};
+
 1;
 
 

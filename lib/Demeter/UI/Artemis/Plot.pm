@@ -100,7 +100,7 @@ sub new {
   #$this -> SetSizer( $hbox );
   $this -> SetSizerAndFit( $hbox );
   #print $yy, " ", $hh, $/;
-  $this -> SetSize($this->GetSize->GetWidth,$hh*0.8);
+  #$this -> SetSize($this->GetSize->GetWidth,$hh*0.8);
   #$this -> SetMaxSize($this->GetSize);
   return $this;
 

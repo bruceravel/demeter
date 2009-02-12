@@ -46,7 +46,12 @@ override end_plot => sub {
   $self->cleantemp;
   unlink $self->error_log;
   #unlink $self->mode->external_plot_object->{__error_log}; # WTF is this for, anyway?
-  $self -> mo -> external_plot_object->gnuplot_cmd("quit") if ($self->mo and ($self->mo->external_plot_object =~ m{Gnuplot}));
+  $self -> mo -> external_plot_object->gnuplot_cmd("quit")
+    if ($self->mo
+	and
+	$self->mo->external_plot_object
+	and
+	($self->mo->external_plot_object =~ m{Gnuplot}));
   $self -> mo -> external_plot_object( q{} );
   return $self;
 };

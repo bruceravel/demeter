@@ -176,12 +176,24 @@ sub run_feff {
   $feff -> make_workspace;
   $self->{feffobject} = $feff;
 
-  my $inpfile = File::Spec->catfile($feff->stash_folder, $feff->group . ".inp");
+  my $inpfile = File::Spec->catfile($feff->workspace, $feff->group . ".inp");
   open my $OUT, ">".$inpfile;
   print $OUT $self->{feff}->GetValue;
   close $OUT;
   $feff->name($self->{name}->GetValue);
   $feff->file($inpfile);
+
+  my %problems = %{ $feff->problems };
+  my @warnings = @{ $problems{warnings} };
+  my @errors   = @{ $problems{errors}   };
+  if (@errors) {
+    warn join($/, @errors) . $/;
+    undef $busy;
+    return;
+  };
+  if (@warnings) {
+    warn join($/, @warnings) . $/;
+  };
 
   $self->{parent}->{Console}->{console}->AppendText($self->now("Feff calculation begin at ", $feff));
   $self->{statusbar}->SetStatusText("Computing potentials using Feff6 ...");
@@ -197,7 +209,7 @@ sub run_feff {
 		 Wx::Colour->new( $feff->co->default('feff', 'intrp1color') ),
 		 Wx::Colour->new( $feff->co->default('feff', 'intrp2color') )
 		);
-  my $i      = 0;
+  my $i = 0;
   foreach my $p (@{ $feff->pathlist }) {
     my $idx = $self->{parent}->{Paths}->{paths}->InsertImageStringItem($i, sprintf("%4.4d", $i), 0);
     $self->{parent}->{Paths}->{paths}->SetItemTextColour($idx, $COLOURS[$p->weight]);
@@ -219,7 +231,7 @@ sub run_feff {
   $feff->clear_iobuffer;
 
   $self->{statusbar}->SetStatusText("Feff calculation complete!");
-  unlink $inpfile;
+  #unlink $inpfile;
   undef $busy;
 };
 

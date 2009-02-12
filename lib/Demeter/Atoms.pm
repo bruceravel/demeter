@@ -494,6 +494,9 @@ sub build_cluster {
       ##	or
       ## ($ {$b->[3]}->{Host} <=> $ {$a->[3]}->{Host});	# hosts before dopants
   } @cluster;
+  if ($#cluster > 499) {
+    warn("Your cluster has more than 500 atoms, which is the hard-wired limit for Feff6L.  You might want to reduce the value of Rmax.\n");
+  };
   $self->set(cluster => \@cluster,
 	     nclus   => $#cluster+1,
 	     rss     => sprintf('%'.$self->co->default("atoms", "precision"),

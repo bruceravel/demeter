@@ -153,6 +153,7 @@ sub OnInit {
   EVT_MENU	 ($frames{main}, wxID_EXIT,  sub{shift->Close} );
   EVT_CLOSE	 ($frames{main},             \&on_close);
   EVT_MENU	 ($toolbar,      -1,         sub{my ($toolbar,  $event) = @_; OnToolClick($toolbar,  $event, $frames{main})} );
+  EVT_MENU	 ($datatool,     -1,         sub{my ($fefftool, $event) = @_; OnDataClick($datatool, $event, $frames{main})} );
   EVT_MENU	 ($fefftool,     -1,         sub{my ($fefftool, $event) = @_; OnFeffClick($fefftool, $event, $frames{main})} );
   EVT_TOOL_ENTER ($frames{main}, $toolbar,   sub{my ($toolbar,  $event) = @_; OnToolEnter($toolbar,  $event, 'toolbar')} );
   EVT_CHECKBOX	 ($sum_button,   -1,         sub{my ($cb,       $event) = @_; OnSumClick ($cb,       $event, $fitbutton)});
@@ -250,7 +251,24 @@ sub OnToolClick {
   $frames{$which}->Show($toolbar->GetToolState($event->GetId));
 };
 
-
+sub OnDataClick {
+  my ($databar, $event, $self) = @_;
+  my $which = $databar->GetToolPos($event->GetId);
+  if ($which == 0) {
+    my $fd = Wx::FileDialog->new( $self, "Import an Athena project", cwd, q{},
+				  "Athena project (*.prj)|*.prj|All files|*.*",
+				  wxFD_OPEN|wxFD_FILE_MUST_EXIST|wxFD_CHANGE_DIR|wxFD_PREVIEW,
+				  wxDefaultPosition);
+    if ($fd->ShowModal == wxID_CANCEL) {
+      $widgets{statusbar}->SetStatusText("data data import cancelled.");
+      return;
+    };
+    my $file = File::Spec->catfile($fd->GetDirectory, $fd->GetFilename);
+    print "$file\n";
+  } else {
+    1;
+  };
+};
 sub OnFeffClick {
   my ($feffbar, $event, $self) = @_;
   my $which = $feffbar->GetToolPos($event->GetId);

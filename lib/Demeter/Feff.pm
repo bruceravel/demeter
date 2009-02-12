@@ -154,6 +154,7 @@ has 'iobuffer' => (
 				}
 		  );
 has 'save' => (is=>'rw', isa => 'Bool', default => 1);
+has 'problems' => (is=>'rw', isa => 'HashRef', default => sub{ {} });
 
 sub BUILD {
   my ($self, @params) = @_;
@@ -261,6 +262,7 @@ sub rdinp {
 		  used_ipot_gt_7       => 0,
 		  defined_ipot_gt_7    => 0,
 		  rmax_outside_cluster => 0,
+		  cluster_too_big      => 0,
 
 		  errors               => [],
 		  warnings             => [],
@@ -268,6 +270,7 @@ sub rdinp {
   ## sanity checks on input data
   $self->S_check_ipots(\%problems);
   $self->S_check_rmax(\%problems);
+  $self->S_check_cluster_size(\%problems);
   #use Data::Dumper;
   #print Data::Dumper->Dump([\%problems],[qw(*problems)]);
   ##warnings:
@@ -279,12 +282,13 @@ sub rdinp {
   ## errors:
   my $stop = 0;
   foreach my $k (keys %problems) {
-    next if (any {$k eq $_} (qw(rmax_outside_cluster warnings errors)));
+    next if (any {$k eq $_} (qw(rmax_outside_cluster warnings errors cluster_too_big)));
     $stop += $problems{$k};
   };
-  croak("The following errors were found in $file:\n  "
+  carp("The following errors were found in $file:\n  "
 	. join("\n  ", @{$problems{errors}})
 	. $/) if $stop;
+  $self->problems(\%problems);
   return $self;
 };
 
@@ -355,9 +359,11 @@ sub potph {
   {
     local( $/ );
     my $miscdat = File::Spec->catfile($self->get("workspace"), "misc.dat");
-    open( my $fh, $miscdat );
-    $self->miscdat(<$fh>);
-    unlink $miscdat if not $self->save;
+    if (-e $miscdat) {
+      open( my $fh, $miscdat );
+      $self->miscdat(<$fh>);
+      unlink $miscdat if not $self->save;
+    };
   };
 
   ## clean up from this feff run

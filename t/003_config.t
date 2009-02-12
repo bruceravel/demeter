@@ -51,9 +51,9 @@ ok( $demeter2->co->get("var1") == 7,              'wrote and read an arbitrary c
 ok( $demeter2->co->get("var2") eq 'foo',          'wrote and read an arbitrary config parameter: string');
 
 my @groups = $demeter->co->groups;
-ok( ($groups[0] eq 'atoms' and $#groups == 17),                  'configuration system introspection works: groups '.$#groups);
+ok( ($groups[0] eq 'atoms' and $#groups == 19),                  'configuration system introspection works: groups '.$#groups);
 my $groups = $demeter->co->main_groups;
-ok( ($#{$groups} == 17),                                         'configuration system introspection works: main_groups '.$#groups);
+ok( ($#{$groups} == 19),                                         'configuration system introspection works: main_groups '.$#groups);
 
 my @parameters = $demeter->co->parameters('happiness');
 ok( ($parameters[0] eq 'average_color' and $#parameters == 10),  'configuration system introspection works: group parameters');
@@ -63,9 +63,9 @@ ok( (not $demeter->co->default(qw(testing boolean))),            'reading boolea
 ok( $demeter->co->default(qw(testing string))  eq 'Hi there!',   'reading string from arbitrary config file');
 ok( $demeter->co->default(qw(testing real))    == 1.0,           'reading real from arbitrary config file');
 @groups = $demeter->co->groups;
-ok( ($#groups == 18),                                            'introspection after reading new group: groups');
+ok( ($#groups == 20),                                            'introspection after reading new group: groups');
 $groups = $demeter->co->main_groups;
-ok( ($#{$groups} == 17),                                         'introspection after reading new group: main_groups');
+ok( ($#{$groups} == 19),                                         'introspection after reading new group: main_groups');
 
 #my $first = $demeter->co;
 #my $new = Demeter::Config->new('Demeter::Config');
