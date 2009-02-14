@@ -15,6 +15,9 @@ package  Demeter::UI::Artemis::GDS;
 
 =cut
 
+use strict;
+use warnings;
+
 use Wx qw( :everything );
 use Wx::Grid;
 use base qw(Wx::Frame);
@@ -48,7 +51,7 @@ sub new {
   my ($class, $parent) = @_;
   my $this = $class->SUPER::new($parent, -1, "Artemis: Guess, Def, Set parameters",
 				wxDefaultPosition, [-1,-1], #[725,480],
-				wx_MINIMIZE_BOX|wxCAPTION|wxSYSTEM_MENU|wxRESIZE_BORDER);
+				wxMINIMIZE_BOX|wxCAPTION|wxSYSTEM_MENU|wxRESIZE_BORDER);
   my $statusbar = $this->CreateStatusBar;
   $statusbar -> SetStatusText(q{});
 

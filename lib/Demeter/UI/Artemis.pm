@@ -36,7 +36,7 @@ sub OnInit {
   #$demeter -> plot_with($demeter->co->default(qw(feff plotwith)));
 
   ## -------- import all of Artemis' various parts
-  foreach my $m (qw(GDS Plot History)) {
+  foreach my $m (qw(GDS Plot History Data Prj)) {
     next if $INC{"Demeter/UI/Artemis/$m.pm"};
     ##print "Demeter/UI/Artemis/$m.pm\n";
     require "Demeter/UI/Artemis/$m.pm";
@@ -97,7 +97,7 @@ sub OnInit {
   $datatool -> Realize;
   $datavbox     -> Add($datatool);
   $databoxsizer -> Add($datalist, 1, wxGROW|wxALL, 0);
-  $hbox         -> Add($databoxsizer, 1, wxGROW|wxALL, 0);
+  $hbox         -> Add($databoxsizer, 2, wxGROW|wxALL, 0);
 
 
   ## -------- Feff box
@@ -122,20 +122,30 @@ sub OnInit {
   $fefftool -> Realize;
   $feffvbox     -> Add($fefftool);
   $feffboxsizer -> Add($fefflist, 1, wxGROW|wxALL, 0);
-  $hbox         -> Add($feffboxsizer, 1, wxGROW|wxALL, 0);
+  $hbox         -> Add($feffboxsizer, 2, wxGROW|wxALL, 0);
 
   ## -------- Fit box
   $vbox = Wx::BoxSizer->new( wxVERTICAL);
-  $hbox -> Add($vbox, 1, wxGROW|wxLEFT|wxRIGHT|wxTOP, 5);
+  $hbox -> Add($vbox, 3, wxGROW|wxLEFT|wxRIGHT|wxTOP, 5);
 
-  my $hfit = Wx::BoxSizer->new( wxHORIZONTAL);
-  $vbox -> Add($hfit, 0, wxGROW|wxTOP|wxBOTTOM, 5);
+  my $hname = Wx::BoxSizer->new( wxHORIZONTAL);
+  $vbox -> Add($hname, 0, wxGROW|wxTOP|wxBOTTOM, 0);
   my $label = Wx::StaticText->new($frames{main}, -1, "Name");
   my $name  = Wx::TextCtrl->new($frames{main}, -1, "Fit 1");
+  $hname -> Add($label,      0, wxALL, 5);
+  $hname -> Add($name,       1, wxALL, 2);
+
+  my $hfit = Wx::BoxSizer->new( wxHORIZONTAL);
+  $vbox -> Add($hfit, 0, wxGROW|wxTOP|wxBOTTOM, 0);
+  $label = Wx::StaticText->new($frames{main}, -1, "Fit space");
+  my $fitspace = Wx::Choice->new($frames{main}, -1, wxDefaultPosition, wxDefaultSize, [qw(k R q)]);
   my $sum_button = Wx::CheckBox->new($frames{main}, -1, "Do summation");
-  $hfit -> Add($label,      0, wxALL, 5);
-  $hfit -> Add($name,       1, wxALL, 2);
-  $hfit -> Add($sum_button, 0, wxALL, 2);
+  $hfit  -> Add($label,   0, wxALL, 5);
+  $hfit  -> Add($fitspace,   0, wxALL, 2);
+  $hfit  -> Add($sum_button, 1, wxALL, 2);
+  $fitspace->SetSelection(1) if ($demeter->co->default("fit", "space") eq 'r');
+  $fitspace->SetSelection(2) if ($demeter->co->default("fit", "space") eq 'q');
+
 
   my $descbox      = Wx::StaticBox->new($frames{main}, -1, 'Fit description', wxDefaultPosition, wxDefaultSize);
   my $descboxsizer = Wx::StaticBoxSizer->new( $descbox, wxVERTICAL );
@@ -264,9 +274,29 @@ sub OnDataClick {
       return;
     };
     my $file = File::Spec->catfile($fd->GetDirectory, $fd->GetFilename);
-    print "$file\n";
+
+    ##
+    my $selection = 0;
+    $frames{prj} =  Demeter::UI::Artemis::Prj->new($frames{main}, $file);
+    $frames{prj} -> ShowModal;
+
+
+    my $data = $frames{prj}->{prj}->record($frames{prj}->{record});
+    $data->po->start_plot;
+    $data->plot('k');
+    my $newtool = $databar -> AddCheckTool(-1, "Show ".$data->name, icon("pixel"), wxNullBitmap, q{}, q{} );
+    do_the_size_dance($self);
+    my $idata = $newtool->GetId;
+    my $dnum = sprintf("data%s", $idata);
+    $frames{$dnum} =  Demeter::UI::Artemis::Data->new;
+    $frames{$dnum} -> SetTitle("Artemis: ".$data->name);
+    $frames{$part} -> SetIcon($icon);
+    $frames{$dnum} -> Show(1);
+    $databar->ToggleTool($idata,1);
   } else {
-    1;
+    my $this = sprintf("data%s", $event->GetId);
+    return if not exists($frames{$this});
+    $frames{$this}->Show($databar->GetToolState($event->GetId));
   };
 };
 sub OnFeffClick {

@@ -134,6 +134,33 @@ sub list {
   return $response;
 };
 
+sub allnames {
+  my ($self) = @_;
+  my @names;
+  ## slurp up record labels
+  foreach my $group (@{ $self->entries }) {
+    my $index = $group->[0];
+    my %args = $self->_array($index, 'args');
+    push @names, $args{label};
+  };
+  return @names;
+};
+sub plot_as_chi {
+  my ($self) = @_;
+  my (@names, @entries);
+  ## slurp up record labels and optional attributes
+  foreach my $group (@{ $self->entries }) {
+    my $index = $group->[0];
+    my %args = $self->_array($index, 'args');
+    next if ($args{datatype} and ($args{datatype} =~ m{(?:detector|background|xanes)}));
+    next if $args{is_xanes};
+    next if $args{not_data};
+    push @names, $args{label};
+    push @entries, $group;
+  };
+  return \@names, \@entries;
+};
+
 sub slurp {
   my ($self, $which) = @_;
   ($which = q{}) if (lc($which) eq 'all');
@@ -215,6 +242,7 @@ sub _record {
 	last SWITCH;
       };
       ($k eq 'titles') and do {
+	$groupargs{titles} = $args{titles};
 	last SWITCH;
       };
       ($k eq 'reference') and do {
@@ -436,6 +464,22 @@ table of parameter values.
       3 : Iron sulfide   1.0        3.0
 
 The attributes are those for the L<Demeter::Data> object.
+
+=item C<allnames>
+
+This returns the labels as displayed in Athena's groups list as an array.
+
+  my @names = $prj -> allnames;
+
+=item C<plot_as_chi>
+
+This returns the same sort of list as the C<entries> accessor, except
+that all the gorups that cannot be plotted as chi(K) (i.e. detector
+groups, xanes groups, etc) have been filtered out.  Two array
+references are returned, the first containing the names of those
+groups, the second containing the filtered entries list.
+
+  my ($names_ref, $entries_ref) = $prj -> plot_as_chi;
 
 =back
 

@@ -15,6 +15,9 @@ package  Demeter::UI::Artemis::History;
 
 =cut
 
+use strict;
+use warnings;
+
 use Wx qw( :everything );
 use base qw(Wx::Frame);
 
@@ -22,7 +25,7 @@ sub new {
   my ($class, $parent) = @_;
   my $this = $class->SUPER::new($parent, -1, "Artemis: Fit history",
 				wxDefaultPosition, wxDefaultSize,
-				wx_MINIMIZE_BOX|wxCAPTION|wxSYSTEM_MENU|wxRESIZE_BORDER);
+				wxMINIMIZE_BOX|wxCAPTION|wxSYSTEM_MENU|wxRESIZE_BORDER);
 
 
 

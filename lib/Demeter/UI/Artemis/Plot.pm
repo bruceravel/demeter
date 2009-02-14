@@ -15,6 +15,9 @@ package  Demeter::UI::Artemis::Plot;
 
 =cut
 
+use strict;
+use warnings;
+
 use Wx qw( :everything );
 use base qw(Wx::Frame);
 
@@ -37,7 +40,7 @@ sub new {
 
   my $this = $class->SUPER::new($parent, -1, "Artemis: Plot controls",
 				[0,$yy], wxDefaultSize,
-				wx_MINIMIZE_BOX|wxCAPTION|wxSYSTEM_MENU|wxRESIZE_BORDER);
+				wxMINIMIZE_BOX|wxCAPTION|wxSYSTEM_MENU|wxRESIZE_BORDER);
 
   my $statusbar = $this->CreateStatusBar;
   $statusbar -> SetStatusText(q{});
@@ -61,6 +64,13 @@ sub new {
     $b -> SetBackgroundColour(Wx::Colour->new($Demeter::UI::Artemis::demeter->co->default("happiness", "average_color")));
     $b -> SetFont(Wx::Font->new( 10, wxDEFAULT, wxNORMAL, wxBOLD, 0, "" ) );
   };
+
+  my $kweight = Wx::RadioBox->new($this, -1, "k-weight", wxDefaultPosition, wxDefaultSize,
+				  [0, 1, 2, 3, 'kw'],
+				  1, wxRA_SPECIFY_ROWS);
+  $left -> Add($kweight, 0, wxLEFT|wxRIGHT|wxGROW, 5);
+  $kweight->SetSelection(2);
+
 
   my $nb = Wx::Notebook->new( $this, -1, wxDefaultPosition, wxDefaultSize, wxBK_TOP );
   foreach my $utility (qw(limits stack indicators VPaths)) {
