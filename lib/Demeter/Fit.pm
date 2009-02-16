@@ -67,7 +67,7 @@ has 'project'        => (is => 'rw', isa => 'Str',    default => q{},
 has 'folder'         => (is => 'rw', isa => 'Str',    default => q{});
 
 ## -------- mechanics of the fit
-has 'cormin'         => (is => 'rw', isa =>  NonNeg,  default => sub{ shift->mo->config->default("fit", "cormin")  || 0});
+has 'cormin'         => (is => 'rw', isa =>  NonNeg,  default => sub{ shift->co->default("fit", "cormin")  || 0.4});
 has 'header'         => (is => 'rw', isa => 'Str',    default => q{});
 has 'footer'         => (is => 'rw', isa => 'Str',    default => q{});
 has 'restraints'     => (is => 'rw', isa => 'Str',    default => q{});
@@ -727,7 +727,7 @@ sub logfile {
   print $LOG $/;
   print $LOG $self->gds_report;
   print $LOG $/;
-  print $LOG $self->correl_report; # arg is cormin
+  print $LOG $self->correl_report(); # arg is cormin
 
   foreach my $data (@{ $self->data }) {
     next if (not $data->fitting);

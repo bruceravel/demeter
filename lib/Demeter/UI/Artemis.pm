@@ -288,9 +288,10 @@ sub OnDataClick {
     do_the_size_dance($self);
     my $idata = $newtool->GetId;
     my $dnum = sprintf("data%s", $idata);
-    $frames{$dnum} =  Demeter::UI::Artemis::Data->new;
+    $frames{$dnum}  =  Demeter::UI::Artemis::Data->new;
     $frames{$dnum} -> SetTitle("Artemis: ".$data->name);
-    $frames{$part} -> SetIcon($icon);
+    $frames{$dnum} -> SetIcon($icon);
+    $frames{$dnum} -> populate($data);
     $frames{$dnum} -> Show(1);
     $databar->ToggleTool($idata,1);
   } else {

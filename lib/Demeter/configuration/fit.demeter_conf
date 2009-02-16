@@ -90,11 +90,11 @@ description
 
 variable=cormin
 type=real
-default=0.25
+default=0.4
 description
   The is the default value for the smallest correlation reported at
   the end of a fit.  Only correlations whose absolute values exceed
-  this value will be reported.  If you set this to 0 or a negative
+  this value will be reported.  If you set this to a negative
   number, all correlations will be reported.  If you set it to a
   number equal to or larger than 1, then correlations will not be
   reported.
