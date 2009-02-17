@@ -19,6 +19,7 @@ use strict;
 use warnings;
 
 use Wx qw( :everything );
+use Wx::DND;
 use Wx::Grid;
 use base qw(Wx::Frame);
 use Wx::Event qw(EVT_GRID_CELL_CHANGE EVT_GRID_CELL_RIGHT_CLICK EVT_GRID_LABEL_RIGHT_CLICK EVT_MENU);
@@ -52,8 +53,8 @@ sub new {
   my $this = $class->SUPER::new($parent, -1, "Artemis: Guess, Def, Set parameters",
 				wxDefaultPosition, [-1,-1], #[725,480],
 				wxMINIMIZE_BOX|wxCAPTION|wxSYSTEM_MENU|wxRESIZE_BORDER);
-  my $statusbar = $this->CreateStatusBar;
-  $statusbar -> SetStatusText(q{});
+  $this->{statusbar} = $this->CreateStatusBar;
+  $this->{statusbar} -> SetStatusText(q{});
 
   my $hbox = Wx::BoxSizer->new( wxHORIZONTAL );
 
@@ -76,6 +77,8 @@ sub new {
   $grid -> SetColSize      (3,  80);
 
   $grid -> SetRowLabelSize(40);
+
+  $grid -> SetDropTarget( Demeter::UI::Artemis::GDS::TextDropTarget->new( $grid, $this ) );
 
   foreach my $row (0 .. $grid->GetNumberRows) {
     $grid -> SetCellEditor($row, 0, Wx::GridCellChoiceEditor->new($types));
@@ -175,5 +178,74 @@ sub OnGridMenu {
     print $which, ":  change selected to ", $types->[$i], $/;
   };
 };
+
+
+
+package Demeter::UI::Artemis::GDS::TextDropTarget;
+
+use strict;
+use warnings;
+
+use Wx qw( :everything );
+use base qw(Wx::TextDropTarget);
+
+sub new {
+  my $class  = shift;
+  my $grid   = shift;
+  my $parent = shift;
+  my $this = $class->SUPER::new( @_ );
+  $this->{GRID} = $grid;
+  $this->{PARENT} = $parent;
+  return $this;
+};
+
+sub OnDropText {
+  my ($this, $x, $y, $text) = @_;
+  my $grid   = $this->{GRID};
+  my $parent = $this->{PARENT};
+  my $drop   = $grid->YToRow($y) - 1;
+  ($drop = 0) if ($drop < 0);
+  my $rownum = $drop + 1;
+
+  #print join("|", $y, $grid->YToRow($y), $drop, $rownum), $/;
+  #return 1;
+
+  $text =~ s{\A\s+}{};		# leading and training white space
+  $text =~ s{\s+\z}{};
+
+  ## text with white space
+  if ($text =~ m{\s}) {
+    $parent->{statusbar}->SetStatusText("Ifeffit guess/def/set parameters names cannot have white space ($text)");
+
+  ## text starting with a number
+  } elsif ($text =~ m{\A\d}) {
+    $parent->{statusbar}->SetStatusText("Ifeffit guess/def/set parameters names cannot start with numbers ($text)");
+
+  ## text with unallowed characters
+  } elsif ($text =~ m{[^a-z0-9_?]}i) {
+    $parent->{statusbar}->SetStatusText("Ifeffit guess/def/set parameters names can only use [a-z0-9_?] ($text)");
+
+  ## row already has a parameter in it
+  } elsif ($grid -> GetCellValue($drop, 1) !~ m{\A\s*\z}) {
+    my $yesno = Wx::MessageDialog->new($parent,
+				       sprintf("Replace %s with %s?", $grid -> GetCellValue($drop, 1), $text),
+				       "Replace parameter?",
+				       wxYES_NO|wxNO_DEFAULT|wxICON_QUESTION);
+    if ($yesno->ShowModal == wxID_NO) {
+      return 1;
+    } else {
+      $grid -> SetCellValue($drop, 1, $text);
+      $parent->{statusbar}->SetStatusText("Dropped \"$text\" into row $rownum");
+    };
+
+  ## just drop it
+  } else {
+   $grid -> SetCellValue($drop, 1, $text);
+   $parent->{statusbar}->SetStatusText("Dropped \"$text\" into row $rownum");
+ };
+  return 1;
+}
+
+
 
 1;
