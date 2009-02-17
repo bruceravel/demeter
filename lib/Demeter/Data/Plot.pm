@@ -21,15 +21,19 @@ sub plot {
     carp($self->name . " is a detector group, which cannot be plotted in $space\n\n");
     return $self;
   };
-  my $which = ($space eq 'e')   ? $self->_update('fft')
-            : ($space eq 'k')   ? $self->_update('fft')
-            : ($space eq 'r')   ? $self->_update('bft')
-            : ($space eq 'rmr') ? $self->_update('bft')
-	    : ($space eq 'q')   ? $self->_update('all')
-	    : ($space eq 'kq')  ? $self->_update('all')
-            :                        q{};
+  my $which = ($space eq 'e')    ? $self->_update('fft')
+            : ($space eq 'k')    ? $self->_update('fft')
+            : ($space eq 'k123') ? $self->_update('fft')
+            : ($space eq 'r123') ? $self->_update('bft')
+            : ($space eq 'r')    ? $self->_update('bft')
+            : ($space eq 'rmr')  ? $self->_update('bft')
+	    : ($space eq 'q')    ? $self->_update('all')
+	    : ($space eq 'kq')   ? $self->_update('all')
+            :                      q{};
 
-  $self->plotRmr, $pf->increment, return if (lc($space) eq 'rmr');
+  $self->plotk123, $pf->increment, return if (lc($space) eq 'k123');
+  $self->plotR123, $pf->increment, return if (lc($space) eq 'r123');
+  $self->plotRmr,  $pf->increment, return if (lc($space) eq 'rmr');
   $self->co->set(plot_part=>q{});
   my $command = $self->_plot_command($space);
   $self->dispose($command, "plotting");
@@ -62,12 +66,13 @@ sub _plot_command {
     my $class = ref $self;
     croak("$class objects are not plottable in energy");
   };
-  my $string = ($space eq 'e')   ? $self->_plotE_command
-             : ($space eq 'k')   ? $self->_plotk_command
-             : ($space eq 'r')   ? $self->_plotR_command
-             : ($space eq 'rmr') ? $self->_plotRmr_command
-	     : ($space eq 'q')   ? $self->_plotq_command
-	     : ($space eq 'kq')  ? $self->_plotkq_command
+  my $string = ($space eq 'e')    ? $self->_plotE_command
+            #: ($space eq 'k123') ? $self->_plotk123_command
+             : ($space eq 'k')    ? $self->_plotk_command
+             : ($space eq 'r')    ? $self->_plotR_command
+            #: ($space eq 'rmr')  ? $self->_plotRmr_command
+	     : ($space eq 'q')    ? $self->_plotq_command
+	     : ($space eq 'kq')   ? $self->_plotkq_command
              : q{};
   return $string;
 };
@@ -191,7 +196,8 @@ sub _plotkq_command {
   my $string = q{};
   my $save = $self->name;
   $self->name($save . " in k space");
-  $string .= $self->_plotk_command('k and q');
+  $pf -> title("$save in k and q space");
+  $string .= $self->_plotk_command;
   $pf -> increment;
   $self->name($save . " in q space");
   $string .= $self->_plotq_command;
@@ -199,14 +205,95 @@ sub _plotkq_command {
   return $string;
 };
 
+sub plotk123 {
+  my ($self) = @_;
+
+  my @save = ($self->name, $self->plot_multiplier, $self->y_offset, $self->po->kweight);
+  my $string .= $self->template("process", "k123");
+  $self->dispose($string);
+  my @max = (Ifeffit::get_scalar("__123_max1"), Ifeffit::get_scalar("__123_max2"), Ifeffit::get_scalar("__123_max3"));
+
+  $self->po->kweight(1);
+  $self->po->title($self->name . " at kweight = 1, 2, and 3");
+  my $scale = sprintf("%.3f", $max[1]/$max[0]);
+  $self->set(plot_multiplier => $scale, 'y_offset'=>1.2*$max[1],  name=>"$save[0]: kw=1, scaled by $scale");
+  $self->plot('k');
+
+  $self->po->kweight(2);
+  $self->set(plot_multiplier => 1,   'y_offset'=>0,  name=>"$save[0]: kw=2, unscaled");
+  $self->plot('k');
+
+  $self->po->kweight(3);
+  $scale = sprintf("%.3f", $max[1]/$max[2]);
+  $self->set(plot_multiplier => $scale, 'y_offset'=>-1.2*$max[1],  name=>"$save[0]: kw=3, scaled by $scale");
+  $self->plot('k');
+
+  $self->po->kweight(2);
+  $self->set(plot_multiplier => 1,   'y_offset'=>1.2*$max[1]);
+  $self->plot_window('k') if $self->po->plot_win;
+
+  $self->po->title(q{});
+  $self->name($save[0]);
+  $self->plot_multiplier($save[1]);
+  $self->y_offset($save[2]);
+  $self->po->kweight($save[3]);
+  return $self;
+};
+
+sub plotR123 {
+  my ($self) = @_;
+
+  my @save = ($self->name, $self->plot_multiplier, $self->y_offset, $self->po->kweight);
+
+  my @max;
+  $self->po->kweight(1);
+  $self->_update('bft');
+  my @chir = Ifeffit::get_array($self->group.".chir_mag");
+  push @max, max(@chir);
+  $self->po->kweight(2);
+  $self->_update('bft');
+  @chir = Ifeffit::get_array($self->group.".chir_mag");
+  push @max, max(@chir);
+  $self->po->kweight(3);
+  $self->_update('bft');
+  @chir = Ifeffit::get_array($self->group.".chir_mag");
+  push @max, max(@chir);
+
+  $self->po->kweight(1);
+  $self->po->title($self->name . " at kweight = 1, 2, and 3");
+  my $scale = sprintf("%.3f", $max[1]/$max[0]);
+  $self->set(plot_multiplier => $scale, 'y_offset'=>$max[1],  name=>"$save[0]: kw=1, scaled by $scale");
+  $self->plot('r');
+
+  $self->po->kweight(2);
+  $self->set(plot_multiplier => 1,   'y_offset'=>0,  name=>"$save[0]: kw=2, unscaled");
+  $self->plot('r');
+
+  $self->po->kweight(3);
+  $scale = sprintf("%.3f", $max[1]/$max[2]);
+  $self->set(plot_multiplier => $scale, 'y_offset'=>-$max[1],  name=>"$save[0]: kw=3, scaled by $scale");
+  $self->plot('r');
+
+  $self->po->kweight(2);
+  $self->_update('bft');
+  $self->set(plot_multiplier => 1,   'y_offset'=>$max[1]);
+  $self->plot_window('r') if $self->po->plot_win;
+
+  $self->po->title(q{});
+  $self->name($save[0]);
+  $self->plot_multiplier($save[1]);
+  $self->y_offset($save[2]);
+  $self->po->kweight($save[3]);
+  return $self;
+};
+
 sub plotRmr {
   my ($self) = @_;
   croak(ref $self . " objects are not plottable") if not $self->plottable;
   my $string = q{};
-  my ($lab, $yoff, $up) = ( $self->name, $self->y_offset, $self->rmr_offset );
+  my ($lab, $yoff, $down) = ( $self->name, $self->y_offset, $self->rmr_offset );
 
   ## plot magnitude part
-  $self -> y_offset($yoff+$up);
   my $rpart = $self->po->r_pl;
   $self -> po -> r_pl('m');
   my $color = $self->po->color;
@@ -215,12 +302,13 @@ sub plotRmr {
   $self -> po -> New(0);
 
   ## plot real part
-  $self -> y_offset($yoff);
+  $self -> y_offset($yoff+$down);
   $self -> name(q{});
   $self -> po -> r_pl('r');
   $self -> po -> color($color);
   $self -> po -> increm($inc);
   $self -> plot('r');
+  $self -> y_offset($yoff);
 
   $self -> name($lab);
   $self -> po -> r_pl($rpart);
@@ -235,9 +323,9 @@ sub rmr_offset {
   $self->_update('bft');
   if ($self->po->plot_rmr_offset) {
     my $kw = $self -> po -> kweight;
-    return 10**($kw-1) * $self->po->offset if ($kw == 1);
+    return -10**($kw-1) * $self->po->offset if ($kw == 1);
   };
-  return 0.6*max($self->get_array("chir_mag"));
+  return -0.6*max($self->get_array("chir_mag"));
 };
 
 

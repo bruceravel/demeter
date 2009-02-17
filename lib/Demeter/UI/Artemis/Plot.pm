@@ -20,6 +20,7 @@ use warnings;
 
 use Wx qw( :everything );
 use base qw(Wx::Frame);
+use Wx::Event qw(EVT_BUTTON EVT_RADIOBOX);
 
 use Demeter::UI::Artemis::Plot::Limits;
 use Demeter::UI::Artemis::Plot::Stack;
@@ -27,6 +28,8 @@ use Demeter::UI::Artemis::Plot::Indicators;
 use Demeter::UI::Artemis::Plot::VPaths;
 
 use List::Util qw(sum);
+
+my $demeter = $Demeter::UI::Artemis::demeter;
 
 sub new {
   my ($class, $parent) = @_;
@@ -55,33 +58,34 @@ sub new {
 
   my $buttonbox  = Wx::BoxSizer->new( wxHORIZONTAL );
   $left -> Add($buttonbox, 0, wxALL, 5);
-  my $k_button = Wx::Button->new($this, -1, "k", wxDefaultPosition, wxDefaultSize);
-  my $r_button = Wx::Button->new($this, -1, "R", wxDefaultPosition, wxDefaultSize);
-  my $q_button = Wx::Button->new($this, -1, "q", wxDefaultPosition, wxDefaultSize);
-  foreach my $b ($k_button, $r_button, $q_button) {
-    $buttonbox -> Add($b, 1, wxALL, 2);
-    $b -> SetForegroundColour(Wx::Colour->new("#000000"));
-    $b -> SetBackgroundColour(Wx::Colour->new($Demeter::UI::Artemis::demeter->co->default("happiness", "average_color")));
-    $b -> SetFont(Wx::Font->new( 10, wxDEFAULT, wxNORMAL, wxBOLD, 0, "" ) );
+  $this->{k_button} = Wx::Button->new($this, -1, "k", wxDefaultPosition, wxDefaultSize);
+  $this->{r_button} = Wx::Button->new($this, -1, "R", wxDefaultPosition, wxDefaultSize);
+  $this->{q_button} = Wx::Button->new($this, -1, "q", wxDefaultPosition, wxDefaultSize);
+  foreach my $b (qw(k_button r_button q_button)) {
+    $buttonbox -> Add($this->{$b}, 1, wxALL, 2);
+    $this->{$b} -> SetForegroundColour(Wx::Colour->new("#000000"));
+    $this->{$b} -> SetBackgroundColour(Wx::Colour->new($Demeter::UI::Artemis::demeter->co->default("happiness", "average_color")));
+    $this->{$b} -> SetFont(Wx::Font->new( 10, wxDEFAULT, wxNORMAL, wxBOLD, 0, "" ) );
   };
 
-  my $kweight = Wx::RadioBox->new($this, -1, "k-weight", wxDefaultPosition, wxDefaultSize,
-				  [0, 1, 2, 3, 'kw'],
-				  1, wxRA_SPECIFY_ROWS);
-  $left -> Add($kweight, 0, wxLEFT|wxRIGHT|wxGROW, 5);
-  $kweight->SetSelection(2);
+  $this->{kweight} = Wx::RadioBox->new($this, -1, "k-weight", wxDefaultPosition, wxDefaultSize,
+				       [0, 1, 2, 3], # [0, 1, 2, 3, 'kw'],
+				       1, wxRA_SPECIFY_ROWS);
+  $left -> Add($this->{kweight}, 0, wxLEFT|wxRIGHT|wxGROW, 5);
+  $this->{kweight}->SetSelection(2);
+  EVT_RADIOBOX($this, $this->{radiobox}, sub{ $demeter->po->kweight($this->{kweight}->GetStringSelection) });
 
 
   my $nb = Wx::Notebook->new( $this, -1, wxDefaultPosition, wxDefaultSize, wxBK_TOP );
   foreach my $utility (qw(limits stack indicators VPaths)) {
     my $count = $nb->GetPageCount;
-    my $page = ($utility eq 'limits')     ? Demeter::UI::Artemis::Plot::Limits     -> new($nb)
-             : ($utility eq 'stack')      ? Demeter::UI::Artemis::Plot::Stack      -> new($nb)
-             : ($utility eq 'indicators') ? Demeter::UI::Artemis::Plot::Indicators -> new($nb)
-             : ($utility eq 'VPaths')     ? Demeter::UI::Artemis::Plot::VPaths     -> new($nb)
-	     :                              q{};
-    next if not $page;
-    $nb->AddPage($page, $utility, 0);#, $count);
+    $this->{page}->{$utility} = ($utility eq 'limits')     ? Demeter::UI::Artemis::Plot::Limits     -> new($nb)
+                              : ($utility eq 'stack')      ? Demeter::UI::Artemis::Plot::Stack      -> new($nb)
+                              : ($utility eq 'indicators') ? Demeter::UI::Artemis::Plot::Indicators -> new($nb)
+                              : ($utility eq 'VPaths')     ? Demeter::UI::Artemis::Plot::VPaths     -> new($nb)
+	                      :                              q{};
+    next if not $this->{page}->{$utility};
+    $nb->AddPage($this->{page}->{$utility}, $utility, 0);#, $count);
   };
   $left -> Add($nb, 1, wxGROW|wxALL, 5);
 

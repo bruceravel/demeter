@@ -284,6 +284,7 @@ sub OnDataClick {
     my $data = $frames{prj}->{prj}->record($frames{prj}->{record});
     $data->po->start_plot;
     $data->plot('k');
+    $data->plot_window('k') if $data->po->plot_win;
     my $newtool = $databar -> AddCheckTool(-1, "Show ".$data->name, icon("pixel"), wxNullBitmap, q{}, q{} );
     do_the_size_dance($self);
     my $idata = $newtool->GetId;

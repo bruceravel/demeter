@@ -1,0 +1,14 @@
+{ # -*- ifm -*-
+  # template for organizing a k123 plot
+  #   {$D->group} returns the ifeffit group name
+}
+
+set {$D->group}.k1 = {$D->group}.chi * {$D->group}.k
+set {$D->group}.k2 = {$D->group}.chi * {$D->group}.k**2
+set {$D->group}.k3 = {$D->group}.chi * {$D->group}.k**3
+
+set __123_max1 = ceil({$D->group}.k1)
+set __123_max2 = ceil({$D->group}.k2)
+set __123_max3 = ceil({$D->group}.k3)
+
+erase {$D->group}.k1 {$D->group}.k2 {$D->group}.k3

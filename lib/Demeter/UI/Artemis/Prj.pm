@@ -105,6 +105,7 @@ sub plot_selection {
 sub do_plot {
   my ($this, $prj, $record) = @_;
   my $busy   = Wx::BusyCursor->new();
+  my @save = ($prj->po->r_pl, $prj->po->q_pl);
   my $data = $prj->record($record);
   $this->{journal}->SetValue(join($/, @{$data->titles}));
   $prj->po->start_plot;
@@ -120,6 +121,8 @@ sub do_plot {
   $prj->po->q_pl('i') if ($plotas == 6);
   $prj->po->kweight(2);
   $data -> plot($space);
+  $prj->po->r_pl($save[0]);
+  $prj->po->q_pl($save[1]);
   undef $data;
   undef $busy;
 };
