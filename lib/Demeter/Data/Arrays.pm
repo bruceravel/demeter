@@ -65,7 +65,8 @@ sub arrays {
   Ifeffit::ifeffit("\&screen_echo = $save\n"), return if not $lines;
   foreach my $l (1 .. $lines) {
     my $response = Ifeffit::get_echo();
-    if ($response =~ m{\A\s*$self\.([^\s]+)\s+=}) {
+    my $group = $self->group;
+    if ($response =~ m{\A\s*$group\.([^\s]+)\s+=}) {
       push @arrays, $1;
     };
   };

@@ -31,9 +31,27 @@ sub plot {
 	    : ($space eq 'kq')   ? $self->_update('all')
             :                      q{};
 
-  $self->plotk123, $pf->increment, return if (lc($space) eq 'k123');
-  $self->plotR123, $pf->increment, return if (lc($space) eq 'r123');
-  $self->plotRmr,  $pf->increment, return if (lc($space) eq 'rmr');
+ SWITCH: {
+    (lc($space) eq 'k123') and do {
+      $self -> plotk123;
+      $pf   -> increment;
+      return $self;
+      last SWITCH;
+    };
+    (lc($space) eq 'r123') and do {
+      $self -> plotR123;
+      $pf   -> increment;
+      return $self;
+      last SWITCH;
+    };
+    (lc($space) eq 'rmr' ) and do {
+      $self -> plotRmr;
+      $pf   -> increment;
+      return $self;
+      last SWITCH;
+    };
+  };
+
   $self->co->set(plot_part=>q{});
   my $command = $self->_plot_command($space);
   $self->dispose($command, "plotting");
@@ -71,6 +89,7 @@ sub _plot_command {
              : ($space eq 'k')    ? $self->_plotk_command
              : ($space eq 'r')    ? $self->_plotR_command
             #: ($space eq 'rmr')  ? $self->_plotRmr_command
+            #: ($space eq 'r123') ? $self->_plotR123_command
 	     : ($space eq 'q')    ? $self->_plotq_command
 	     : ($space eq 'kq')   ? $self->_plotkq_command
              : q{};
@@ -472,6 +491,11 @@ Make the plot in energy.
 
 Make the plot of chi(k) in wavenumber.
 
+=item k123
+
+Make the plot of chi(k) in wavenumber with k-weightings of 1, 2, and 3
+scaled and offset.
+
 =item r
 
 Make the plot of chi(R) in distance.
@@ -480,6 +504,11 @@ Make the plot of chi(R) in distance.
 
 Make a stacked plot of the magnitude and real part of chi(R).  This is
 a particularly nice plot to make after a fit.
+
+=item r123
+
+Make the plot of chi(R) in distance with k-weightings of 1, 2, and 3
+scaled and offset.
 
 =item q
 
@@ -491,6 +520,16 @@ Make the plot of chi(k) along with the real part of chi(q) in
 wavenumber.
 
 =back
+
+The C<k123>, C<r123>, C<rmr>, and C<kq> plots are good single data set
+plot types, while the other forms are more appropriate for multiple
+data set plots.
+
+The C<k123>, C<r123>, C<rmr>, and C<kq> plotting options require using
+the syntax for which the argument is passed ot the C<plot> method.
+That is, you should specify:
+
+  $data -> plot('k123');
 
 =item C<stack>
 

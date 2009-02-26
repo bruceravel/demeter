@@ -7,9 +7,12 @@ use Cwd;
 use File::Spec;
 
 use Wx qw( :everything );
+use Wx::DND;
 use base 'Wx::Panel';
 
-use Wx::Event qw(EVT_CHOICE EVT_KEY_DOWN EVT_MENU EVT_TOOL_ENTER EVT_ENTER_WINDOW EVT_LEAVE_WINDOW);
+use Wx::Event qw(EVT_CHOICE EVT_KEY_DOWN EVT_MENU EVT_TOOL_ENTER
+		 EVT_ENTER_WINDOW EVT_LEAVE_WINDOW
+		 EVT_LEFT_DOWN);
 
 my %hints = (
 	     save     => "Save this Feff calculation to a Demeter save file",
@@ -79,6 +82,8 @@ sub new {
   $self->{paths}->SetColumnWidth( 5,  40 );
   $self->{paths}->SetColumnWidth( 6, 180 );
 
+  EVT_LEFT_DOWN($self->{paths}, sub{OnDrag(@_, $self)});
+
   $self->{pathsboxsizer} -> Add($self->{paths}, 1, wxEXPAND|wxALL, 0);
 
   $vbox -> Add($self->{pathsboxsizer}, 1, wxEXPAND|wxALL, 5);
@@ -92,6 +97,19 @@ sub icon {
   my $icon = File::Spec->catfile($Demeter::UI::Atoms::atoms_base, 'Atoms', 'icons', "$which.png");
   return wxNullBitmap if (not -e $icon);
   return Wx::Bitmap->new($icon, wxBITMAP_TYPE_ANY)
+};
+
+sub OnDrag {
+  my ($this, $event, $parent) = @_;
+  my $which = $this->FindItemAtPos(-1, $event->GetPosition, 1);
+  my @pathlist = @{ $parent->{parent}->{Feff}->{feffobject}->pathlist };
+  print $pathlist[$which]->intrpline, $/;
+  my $data = Demeter::UI::Atoms::Paths::DataObject->new($pathlist[$which]);
+  my $source = Wx::DropSource->new( $this );
+  $source->SetData( $data );
+  $source->DoDragDrop(1);
+  print $source->GetDataHere, $/;
+  $event->Skip(1);
 };
 
 sub OnToolEnter {
@@ -175,6 +193,44 @@ sub plot {
   $Demeter::UI::Atoms::demeter->po->title($save);
   undef $busy;
 };
+
+
+
+package Demeter::UI::Atoms::Paths::DataObject;
+
+#use Demeter;
+use base qw(Wx::PlDataObjectSimple);
+
+sub new {
+  my ($class, $data) = @_;
+  my $self = $class->SUPER::new( Wx::DataFormat->newUser( __PACKAGE__ ) );
+  $self->{Data} = $data;
+  return $self;
+};
+
+sub SetData {
+  my ($self, @data) = @_;
+  $self->{Data} = \@data ;
+  return 1;
+};
+
+sub GetData {
+  my ($self) = @_;
+  return $self->{Data} ;
+};
+
+sub GetDataHere {
+  my ($self) = @_;
+  return @{ $self->{Data} };
+}
+
+sub GetDataSize {
+  my ($self) = @_;
+  return $#{ $self->{Data} };
+}
+
+sub GetPerlData { $_[0]->{Data} };
+
 
 
 1;
