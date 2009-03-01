@@ -1,7 +1,8 @@
-package  Demeter::UI::Atoms::Paths;
+package Demeter::UI::Atoms::Paths;
 
 use Demeter;
 use Demeter::StrTypes qw( Element );
+use Demeter::UI::Artemis::DND::PathDrag;
 
 use Cwd;
 use File::Spec;
@@ -12,7 +13,7 @@ use base 'Wx::Panel';
 
 use Wx::Event qw(EVT_CHOICE EVT_KEY_DOWN EVT_MENU EVT_TOOL_ENTER
 		 EVT_ENTER_WINDOW EVT_LEAVE_WINDOW
-		 EVT_LEFT_DOWN);
+		 EVT_LEFT_DOWN EVT_LIST_BEGIN_DRAG);
 
 my %hints = (
 	     save     => "Save this Feff calculation to a Demeter save file",
@@ -82,7 +83,7 @@ sub new {
   $self->{paths}->SetColumnWidth( 5,  40 );
   $self->{paths}->SetColumnWidth( 6, 180 );
 
-  EVT_LEFT_DOWN($self->{paths}, sub{OnDrag(@_, $self)});
+  EVT_LIST_BEGIN_DRAG($self, $self->{paths}, \&OnDrag);
 
   $self->{pathsboxsizer} -> Add($self->{paths}, 1, wxEXPAND|wxALL, 0);
 
@@ -100,16 +101,23 @@ sub icon {
 };
 
 sub OnDrag {
-  my ($this, $event, $parent) = @_;
-  my $which = $this->FindItemAtPos(-1, $event->GetPosition, 1);
+  my ($parent, $event) = @_;
+  my $list = $parent->{paths};
+  my $which = $event->GetIndex;
   my @pathlist = @{ $parent->{parent}->{Feff}->{feffobject}->pathlist };
-  print $pathlist[$which]->intrpline, $/;
-  my $data = Demeter::UI::Atoms::Paths::DataObject->new($pathlist[$which]);
-  my $source = Wx::DropSource->new( $this );
-  $source->SetData( $data );
+  my @data;
+  my $item = $list->GetFirstSelected;
+  while ($item ne -1) {
+    push @data, $pathlist[$item];
+    #print $pathlist[$item]->intrpline, $/;
+    $item = $list->GetNextSelected($item);
+  };
+  my $source = Wx::DropSource->new( $list );
+  my $dragdata = Demeter::UI::Artemis::DND::PathDrag->new(@data);
+  $source->SetData( $dragdata );
   $source->DoDragDrop(1);
-  print $source->GetDataHere, $/;
-  $event->Skip(1);
+  #print join(" ", @{$dragdata->GetData}), $/;
+  #$event->Skip(1);
 };
 
 sub OnToolEnter {
@@ -193,43 +201,6 @@ sub plot {
   $Demeter::UI::Atoms::demeter->po->title($save);
   undef $busy;
 };
-
-
-
-package Demeter::UI::Atoms::Paths::DataObject;
-
-#use Demeter;
-use base qw(Wx::PlDataObjectSimple);
-
-sub new {
-  my ($class, $data) = @_;
-  my $self = $class->SUPER::new( Wx::DataFormat->newUser( __PACKAGE__ ) );
-  $self->{Data} = $data;
-  return $self;
-};
-
-sub SetData {
-  my ($self, @data) = @_;
-  $self->{Data} = \@data ;
-  return 1;
-};
-
-sub GetData {
-  my ($self) = @_;
-  return $self->{Data} ;
-};
-
-sub GetDataHere {
-  my ($self) = @_;
-  return @{ $self->{Data} };
-}
-
-sub GetDataSize {
-  my ($self) = @_;
-  return $#{ $self->{Data} };
-}
-
-sub GetPerlData { $_[0]->{Data} };
 
 
 

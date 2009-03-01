@@ -21,6 +21,7 @@ use warnings;
 use Wx qw( :everything);
 use base qw(Wx::Frame);
 use Wx::Event qw(EVT_MENU EVT_CLOSE EVT_TOOL_ENTER EVT_CHECKBOX EVT_CHOICE EVT_BUTTON);
+use Wx::DND;
 use Wx::Perl::TextValidator;
 
 use List::MoreUtils qw(firstidx);
@@ -230,6 +231,9 @@ sub new {
 	     1, wxGROW|wxALL, 5);
   $this->{pathlist}->AddPage($page, "Path list", 1);
 
+
+  $this->{pathlist}->SetDropTarget( Demeter::UI::Artemis::Data::DropTarget->new( $this->{pathlist} ) );
+
   $rightpane -> SetSizerAndFit($right);
 
 
@@ -287,5 +291,51 @@ sub fetch_parameters {
   ## toggles, kweights, epsilon, pcpath
 };
 
+
+package Demeter::UI::Artemis::Data::DropTarget;
+
+use Demeter::UI::Artemis::DND::PathDrag;
+use base qw(Wx::DropTarget);
+
+sub new {
+  my $class = shift;
+  my $this = $class->SUPER::new;
+
+  my $data = Demeter::UI::Artemis::DND::PathDrag->new();
+  $this->SetDataObject( $data );
+  $this->{DATA} = $data;
+  $this->{BOOK} = $_[0];
+
+  return $this;
+};
+
+#sub data { $_[0]->{DATA} }
+#sub textctrl { $_[0]->{TEXTCTRL} }
+
+#sub OnData {
+#  my ($this, $x, $y, $def) = @_;
+#  print $this->GetData, $/;
+  #print join(" ", @{$this->{DATA}->GetData}), $/;
+
+#   print "Dropped perl data at ($x, $y)";
+#   $this->GetData;
+#   my $PerlData = $this->data->GetPerlData;
+#   my $text = '';
+#   foreach (keys %$PerlData) {
+# 	  $text .= "$_ = $PerlData->{$_} ";
+#   }
+#   print "( $text )";
+
+#   #$this->textctrl->SetValue( $text );
+
+#   return $def;
+#};
+
+sub OnDrop {
+  my ($this, $x, $y, $def) = @_;
+  print $this->GetData, $/;
+  #print join(" ", @{$this->GetData}), $/;
+  1;
+};
 
 1;
