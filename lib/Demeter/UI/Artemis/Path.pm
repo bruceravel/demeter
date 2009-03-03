@@ -67,9 +67,9 @@ sub new {
   my %labels = (label  => 'Label',
 		degen  => 'N',
 		s02    => 'S02',
-		e0     => 'deltaE0',
-		dr     => 'deltaR',
-		ss     => 'sigma^2',
+		e0     => 'ΔE0',
+		dr     => 'ΔR',
+		ss     => 'σ²',
 		ei     => 'Ei',
 		third  => '3rd',
 		fourth => '4th',
@@ -99,12 +99,14 @@ sub populate {
   $this->{geombox} -> SetLabel(" " . $pathobject->sp->intrplist . " ");
 
   my $geometry = $pathobject->sp->pathsdat;
-  $geometry =~ s{\d+\s* }{};
-  $geometry =~ s{index, }{};
+  $geometry =~ s{.*\n}{};
+  #$geometry =~ s{\d+\s* }{};
+  #$geometry =~ s{index, }{};
   $this->{geometry} -> SetValue($geometry);
 
   $this->{include} -> SetValue(1);
 
+  $this->{pp_label} -> SetValue($pathobject->sp->labelline);
   $this->{pp_degen} -> SetValue($pathobject->degen);
 };
 

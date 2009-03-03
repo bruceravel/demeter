@@ -163,7 +163,12 @@ sub intrpline {
   my ($self, $i) = @_;
   $i ||= 9999;
   return sprintf " %4.4d  %2d   %6.3f  ----  %-29s       %2d  %d %s",
-    $i, $self->n, $self->fuzzy, $self->intrplist, $self->weight, , $self->nleg , $self->Type;
+    $i, $self->n, $self->fuzzy, $self->intrplist, $self->weight, $self->nleg , $self->Type;
+};
+
+sub labelline {
+  my ($self) = @_;
+  return sprintf("Reff=%6.3f  nleg=%d   degen=%2d", $self->fuzzy, $self->nleg, $self->n);
 };
 
 {

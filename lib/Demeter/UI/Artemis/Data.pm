@@ -224,6 +224,7 @@ sub new {
 
   $this->{pathlist} = Wx::Treebook->new( $rightpane, -1, wxDefaultPosition, [500,-1], wxBK_LEFT );
   $right -> Add($this->{pathlist}, 1, wxGROW|wxALL, 5);
+  #$this->{pathlist}->SetIndent(0);
 
   my $page = Wx::Panel->new($this->{pathlist}, -1, wxDefaultPosition, [390,-1]);
   my $hh = Wx::BoxSizer->new( wxHORIZONTAL );
