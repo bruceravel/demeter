@@ -24,28 +24,40 @@ use Wx::Grid;
 use base qw(Wx::Frame);
 use Wx::Event qw(EVT_GRID_CELL_CHANGE EVT_GRID_CELL_RIGHT_CLICK EVT_GRID_LABEL_RIGHT_CLICK EVT_MENU);
 
-my $types = [qw(guess def set skip restrain after penalty merge)];
+my $types = [qw(guess def set lguess skip restrain after penalty merge)];
 
 my %gridcolors = (
 		  guess	   => Wx::Colour->new($Demeter::UI::Artemis::demeter->co->default('gds','guess_color'   )),
 		  def	   => Wx::Colour->new($Demeter::UI::Artemis::demeter->co->default('gds','def_color'     )),
 		  set	   => Wx::Colour->new($Demeter::UI::Artemis::demeter->co->default('gds','set_color'     )),
+		  lguess   => Wx::Colour->new($Demeter::UI::Artemis::demeter->co->default('gds','lguess_color'  )),
 		  skip	   => Wx::Colour->new($Demeter::UI::Artemis::demeter->co->default('gds','skip_color'    )),
 		  restrain => Wx::Colour->new($Demeter::UI::Artemis::demeter->co->default('gds','restrain_color')),
 		  after	   => Wx::Colour->new($Demeter::UI::Artemis::demeter->co->default('gds','after_color'   )),
 		  penalty  => Wx::Colour->new($Demeter::UI::Artemis::demeter->co->default('gds','penalty_color' )),
 		  merge	   => Wx::Colour->new($Demeter::UI::Artemis::demeter->co->default('gds','merge_color'   )),
 		 );
-  my %hints = (
-	       grab	 => "Use the best fit values from the last fit as the initial values for all guess parameters",
-	       reset	 => "Restore all parameters to their initial values in Ifeffit",
-	       convert	 => "Change all guess parameters to set",
-	       discard	 => "Discard all parameters",
-	       highlight => "Toggle highlighting of parameters which match a regular expression",
-	       import	 => "Import parameters from a text file",
-	       export	 => "Export parameters to a text file",
-	       addgds	 => "Add space for one more parameter",
+my %explain = (#                                                                                                                V
+	       guess	 => "A parameter that is varied in the fit",
+	       def	 => "A parameter that is functionally dependent on guess parameter(s) \& is reevaluated throughout the fit",
+	       set	 => "A parameter that is evaluated at the beginning of the fit and not varied further",
+	       lguess	 => "A guess parameter that is varied independently for each data set for which it is used",
+	       skip	 => "A parameter that is ignored in the fit but retained in the project",
+	       restrain	 => "A parameter expressing prior knowledge of the fit model and added in quadrature to the fitting metric",
+	       after	 => "A parameter that will be evaluated once the fit is finished and reported in the log file",
+	       penalty	 => "A parameter used to modifiy the happiness of the fit",
+	       merge	 => "A parameter from a merging of fit projects whose name poses a conflict and which much be resolved",
 	      );
+my %hints = (
+	     grab      => "Use the best fit values from the last fit as the initial values for all guess parameters",
+	     reset     => "Restore all parameters to their initial values in Ifeffit",
+	     convert   => "Change all guess parameters to set",
+	     discard   => "Discard all parameters",
+	     highlight => "Toggle highlighting of parameters which match a regular expression",
+	     import    => "Import parameters from a text file",
+	     export    => "Export parameters to a text file",
+	     addgds    => "Add space for one more parameter",
+	    );
 
 
 sub new {
@@ -88,8 +100,8 @@ sub new {
   };
   EVT_GRID_CELL_CHANGE($grid, \&OnSetType);
   EVT_GRID_CELL_RIGHT_CLICK($grid, \&PostGridMenu);
-  EVT_GRID_LABEL_RIGHT_CLICK($grid, \&PostGridMenu);
-  EVT_MENU($grid, -1, \&OnGridMenu);
+  EVT_GRID_LABEL_RIGHT_CLICK($grid, sub{PostGridMenu(@_, $this)});
+  EVT_MENU($grid, -1, sub{OnGridMenu(@_, $this)});
 
   $hbox -> Add($grid, 1, wxGROW|wxALL, 5);
 
@@ -134,7 +146,7 @@ sub OnSetType {
 };
 
 sub PostGridMenu {
-  my ($self, $event) = @_;
+  my ($self, $event, $parent) = @_;
   my $row = $event->GetRow;
   return if ($row < 0);
   my $this = $self->GetCellValue($row, 1) || "current row";
@@ -144,6 +156,11 @@ sub PostGridMenu {
   foreach my $t (@$types) {
     next if ($t eq 'merge');
     $change->Append($ind++, $t);
+  };
+  my $explain = Wx::Menu->new(q{});
+  $ind = 200;
+  foreach my $t (@$types) {
+    $explain->Append($ind++, $t);
   };
 
   ## test for how many are selected
@@ -162,17 +179,22 @@ sub PostGridMenu {
   $menu->AppendSeparator;
   $menu->Append	         (12,	    "Find where $this is used");
   $menu->Append	         (13,	    "Rename $this globally");
+  $menu->AppendSeparator;
+  $menu->AppendSubMenu   ($explain, "Explain");
   $self->SelectRow($row, 1);
   $self->PopupMenu($menu, $event->GetPosition);
 };
 
 sub OnGridMenu {
-  my ($self, $event) = @_;
+  my ($self, $event, $parent) = @_;
   my $which = $event->GetId;
   if ($which < 100) {
     ##                  0    1    2     3        4            5       6      7       8       9             10     11   12    13
     my @callbacks = qw(copy cut paste noop insert_above insert_below noop set_type grab build_restraint annotate noop find global);
     print $which, ":  perform ", $callbacks[$which], $/;
+  } elsif ($which > 199) {
+    my $i = $which - 200;
+    $parent->{statusbar} -> SetStatusText($types->[$i] . ": " . $explain{$types->[$i]});
   } else {
     my $i = $which - 100;
     print $which, ":  change selected to ", $types->[$i], $/;

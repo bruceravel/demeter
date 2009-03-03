@@ -62,6 +62,13 @@ default=#000000
 description
   The color of the text for a set parameter.  The default is black.
 
+variable=lguess_color
+type=color
+default=#3E1C8F
+description
+  The color of the text for an lguess parameter.  The default is
+  a dark purple.
+
 variable=skip_color
 type=color
 default=#b2b2b2
@@ -94,5 +101,6 @@ variable=merge_color
 type=color
 default=#ee0000
 description
-  The color of the text for an unresolved merged parameter.  The
-  default is bright red.
+  The color of the background for an unresolved merged parameter.  The
+  default is bright red.  The text will be white, so choose this color
+  wisely to keep the text legible.

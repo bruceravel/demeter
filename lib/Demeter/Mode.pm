@@ -43,7 +43,7 @@ has 'template_plot'     => (is => 'rw', isa => 'TemplatePlot',     default => 'p
 has 'template_feff'     => (is => 'rw', isa => 'TemplateFeff',     default => 'feff6');
 has 'template_test'     => (is => 'ro', isa => 'Str',              default => 'test');
 
-## -------- class collector arrays for sentinal functionality
+## -------- class collector arrays for sentinel functionality
 has 'Atoms' => (
 		metaclass => 'Collection::Array',
 		is        => 'rw',
@@ -184,7 +184,7 @@ __PACKAGE__->meta->make_immutable;
 
 =head1 NAME
 
-Demeter::Mode - Demeter's sentinal system
+Demeter::Mode - Demeter's sentinel system
 
 =head1 VERSION
 
@@ -414,10 +414,10 @@ possibilities might include C<wx> or C<rpc>.
 
 =back
 
-=head1 SENTINAL FUNCTIONALITY
+=head1 SENTINEL FUNCTIONALITY
 
 It should rarely be necessary that a user script needs to access this
-part of this object.  Mostly the sentinal functionality is handled
+part of this object.  Mostly the sentinel functionality is handled
 behind the scenes, during object creation or destruction or at the end
 of a script.  The details are documented here for those times when one
 needs to see under the hood.
@@ -453,6 +453,27 @@ This method is used to clear the contents of the list.
   $data_object->clear_Data;
 
 This is not used for anything at this time, but it seemed useful.
+
+=back
+
+=head2 Sentinel methods
+
+=over 4
+
+=item C<fetch>
+
+This method returns and object reference given its group name.
+
+  $object = $demeter_object->mo->fetch("ScatteringPath", $group);
+
+In this example, the ScatteringPath object whose group name is $group
+will be returned.  The first argument is one of the Demeter object
+types.  This method was written to facilitate drag and drop in the Wx
+version of Artemis.  Wx's drag and drop capability does not easily do
+DND on blessed references.  It was much easier to do DND on an array
+of group names, which are simple strings.  I then needed this method
+to convert the list of group names back into a list of object
+references.
 
 =back
 
