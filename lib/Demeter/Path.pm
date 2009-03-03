@@ -81,7 +81,12 @@ has 'parent'          => (is=>'rw', isa => 'Any', default => q{},  # Empty.'|Dem
 			  trigger => \&set_parent);
 has 'spgroup'         => (is=>'rw', isa => 'Str', default => q{});
 has 'sp'              => (is=>'rw', isa => 'Any',                  # Empty.'|Demeter::ScatteringPath|Demeter::SSPath'
-			  trigger => sub{ my($self, $new) = @_; $self->spgroup($new->group) if $new});
+			  trigger => sub{ my($self, $new) = @_; 
+					  if ($new) {
+					    $self->spgroup($new->group);
+					    $self->make_name;
+					  };
+					});
 has 'datagroup'       => (is=>'rw', isa => 'Str', default => q{});
 
 

@@ -108,15 +108,14 @@ sub OnDrag {
   my @data;
   my $item = $list->GetFirstSelected;
   while ($item ne -1) {
-    push @data, $pathlist[$item];
+    push @data, $pathlist[$item]->group;
     #print $pathlist[$item]->intrpline, $/;
     $item = $list->GetNextSelected($item);
   };
   my $source = Wx::DropSource->new( $list );
-  my $dragdata = Demeter::UI::Artemis::DND::PathDrag->new(@data);
+  my $dragdata = Demeter::UI::Artemis::DND::PathDrag->new(\@data);
   $source->SetData( $dragdata );
   $source->DoDragDrop(1);
-  #print join(" ", @{$dragdata->GetData}), $/;
   #$event->Skip(1);
 };
 

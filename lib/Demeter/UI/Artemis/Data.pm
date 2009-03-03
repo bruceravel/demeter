@@ -33,16 +33,17 @@ sub new {
   my ($class, $parent) = @_;
 
   my $this = $class->SUPER::new($parent, -1, "Artemis: Data controls",
-				wxDefaultPosition, wxDefaultSize,
+				wxDefaultPosition, [900,-1],
 				wxCAPTION|wxMINIMIZE_BOX|wxSYSTEM_MENU|wxRESIZE_BORDER);
   my $statusbar = $this->CreateStatusBar;
   $statusbar -> SetStatusText(q{});
   my $hbox  = Wx::BoxSizer->new( wxHORIZONTAL );
-  my $splitter = Wx::SplitterWindow->new($this, -1, wxDefaultPosition, wxDefaultSize, wxSP_3D);
-  $hbox->Add($splitter, 0, wxGROW|wxALL, 0);
+  #my $splitter = Wx::SplitterWindow->new($this, -1, wxDefaultPosition, [900,-1], wxSP_3D);
+  #$hbox->Add($splitter, 1, wxGROW|wxALL, 1);
 
-  my $leftpane = Wx::Panel->new($splitter, -1);
+  my $leftpane = Wx::Panel->new($this, -1);
   my $left = Wx::BoxSizer->new( wxVERTICAL );
+  $hbox->Add($leftpane, 0, wxGROW|wxALL, 0);
 
   ## -------- name
   my $namebox  = Wx::BoxSizer->new( wxHORIZONTAL );
@@ -217,27 +218,28 @@ sub new {
   $leftpane -> SetSizerAndFit($left);
 
 
-  my $rightpane = Wx::Panel->new($splitter, -1);
+  my $rightpane = Wx::Panel->new($this, -1, wxDefaultPosition, [390,-1]);
   my $right = Wx::BoxSizer->new( wxVERTICAL );
+  $hbox->Add($rightpane, 1, wxGROW|wxALL, 0);
 
-  $this->{pathlist} = Wx::Treebook->new( $rightpane, -1, wxDefaultPosition, wxDefaultSize, wxBK_LEFT );
+  $this->{pathlist} = Wx::Treebook->new( $rightpane, -1, wxDefaultPosition, [500,-1], wxBK_LEFT );
   $right -> Add($this->{pathlist}, 1, wxGROW|wxALL, 5);
 
-  my $page = Wx::Panel->new($this->{pathlist}, -1);
+  my $page = Wx::Panel->new($this->{pathlist}, -1, wxDefaultPosition, [390,-1]);
   my $hh = Wx::BoxSizer->new( wxHORIZONTAL );
   $page -> SetSizer($hh);
 
-  $hh -> Add(Wx::StaticText -> new($page, -1, "Drag paths from the Feff interpretation\nlist and drop them in this space\nto add paths to this data set."),
+  $hh -> Add(Wx::StaticText -> new($page, -1, "Drag paths from the Feff interpretation\nlist and drop them in this space\nto add paths to this data set.", wxDefaultPosition, [390,-1]),
 	     1, wxGROW|wxALL, 5);
   $this->{pathlist}->AddPage($page, "Path list", 1);
 
 
-  $this->{pathlist}->SetDropTarget( Demeter::UI::Artemis::Data::DropTarget->new( $this->{pathlist} ) );
+  $this->{pathlist}->SetDropTarget( Demeter::UI::Artemis::Data::DropTarget->new( $this, $this->{pathlist} ) );
 
   $rightpane -> SetSizerAndFit($right);
 
 
-  $splitter -> SplitVertically($leftpane, $rightpane, 0);
+  #$splitter -> SplitVertically($leftpane, $rightpane, -500);
   #$splitter -> SetSashSize(10);
 
   $this -> SetSizerAndFit( $hbox );
@@ -294,8 +296,13 @@ sub fetch_parameters {
 
 package Demeter::UI::Artemis::Data::DropTarget;
 
-use Demeter::UI::Artemis::DND::PathDrag;
+use Wx qw( :everything);
 use base qw(Wx::DropTarget);
+use Demeter::UI::Artemis::DND::PathDrag;
+use Demeter::UI::Artemis::Path;
+
+use Regexp::List;
+my $opt  = Regexp::List->new;
 
 sub new {
   my $class = shift;
@@ -304,7 +311,8 @@ sub new {
   my $data = Demeter::UI::Artemis::DND::PathDrag->new();
   $this->SetDataObject( $data );
   $this->{DATA} = $data;
-  $this->{BOOK} = $_[0];
+  $this->{PARENT} = $_[0];
+  $this->{BOOK}   = $_[1];
 
   return $this;
 };
@@ -312,30 +320,28 @@ sub new {
 #sub data { $_[0]->{DATA} }
 #sub textctrl { $_[0]->{TEXTCTRL} }
 
-#sub OnData {
-#  my ($this, $x, $y, $def) = @_;
-#  print $this->GetData, $/;
-  #print join(" ", @{$this->{DATA}->GetData}), $/;
-
-#   print "Dropped perl data at ($x, $y)";
-#   $this->GetData;
-#   my $PerlData = $this->data->GetPerlData;
-#   my $text = '';
-#   foreach (keys %$PerlData) {
-# 	  $text .= "$_ = $PerlData->{$_} ";
-#   }
-#   print "( $text )";
-
-#   #$this->textctrl->SetValue( $text );
-
-#   return $def;
-#};
-
-sub OnDrop {
+sub OnData {
   my ($this, $x, $y, $def) = @_;
-  print $this->GetData, $/;
-  #print join(" ", @{$this->GetData}), $/;
-  1;
+  $this->GetData;		# this line is what transfers the data from the Source to the Target
+  my $book  = $this->{BOOK};
+  my $spref = $this->{DATA}->{Data};
+  my @sparray = map { $demeter->mo->fetch("ScatteringPath", $_) } @$spref;
+  foreach my $sp ( @sparray ) {
+    my $thispath = Demeter::Path->new(
+				      parent => $sp->feff,
+				      data   => $this->{PARENT}->{data},
+				      sp     => $sp,
+				      degen  => $sp->n,
+				     );
+    my $label = $thispath->name;
+
+    my $page = Demeter::UI::Artemis::Path->new($book, $thispath);
+
+    $book->AddPage($page, $label, 1);
+  };
+
+  return $def;
 };
+
 
 1;

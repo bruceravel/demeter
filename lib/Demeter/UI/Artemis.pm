@@ -327,6 +327,7 @@ sub OnFeffClick {
     my $fnum = sprintf("feff%s", $ifeff);
     $frames{$fnum} =  Demeter::UI::AtomsApp->new;
     $frames{$fnum} -> SetTitle('Artemis: Atoms and Feff');
+    $frames{$fnum} -> SetIcon($icon);
     $frames{$fnum} -> Show(1);
     $feffbar->ToggleTool($ifeff,1);
     $frames{$fnum}->{Atoms}->Demeter::UI::Atoms::Xtal::open_file($file);

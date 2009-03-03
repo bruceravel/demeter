@@ -169,6 +169,16 @@ has 'plotting_initialized' => (is => 'rw', isa => 'Bool', default => 0);
 has 'identity'             => (is => 'rw', isa => 'Str',  default => 'Demeter',);
 has 'ui'                   => (is => 'rw', isa => 'Str',  default => 'none',);
 
+sub fetch {
+  my ($self, $type, $group) = @_;
+  return 0 if ($type !~ m{(?:Atoms|Data|Feff|Fit|GDS|Path|Plot|ScatteringPath|VPath|SSPath|Prj)});
+  my $list = $self->$type;
+  foreach my $o (@$list) {
+    return $o if ($o->group eq $group);
+  };
+  return 0;
+};
+
 __PACKAGE__->meta->make_immutable;
 1;
 
