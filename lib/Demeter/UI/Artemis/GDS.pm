@@ -22,7 +22,8 @@ use Wx qw( :everything );
 use Wx::DND;
 use Wx::Grid;
 use base qw(Wx::Frame);
-use Wx::Event qw(EVT_GRID_CELL_CHANGE EVT_GRID_CELL_RIGHT_CLICK EVT_GRID_LABEL_RIGHT_CLICK EVT_MENU);
+use Wx::Event qw(EVT_GRID_CELL_CHANGE EVT_GRID_CELL_RIGHT_CLICK  EVT_MENU
+		 EVT_GRID_LABEL_LEFT_CLICK EVT_GRID_LABEL_RIGHT_CLICK);
 
 my $types = [qw(guess def set lguess skip restrain after penalty merge)];
 
@@ -100,6 +101,7 @@ sub new {
   };
   EVT_GRID_CELL_CHANGE($grid, \&OnSetType);
   EVT_GRID_CELL_RIGHT_CLICK($grid, \&PostGridMenu);
+  EVT_GRID_LABEL_LEFT_CLICK($grid,  sub{StartDrag(@_, $this)});
   EVT_GRID_LABEL_RIGHT_CLICK($grid, sub{PostGridMenu(@_, $this)});
   EVT_MENU($grid, -1, sub{OnGridMenu(@_, $this)});
 
@@ -201,7 +203,19 @@ sub OnGridMenu {
   };
 };
 
+sub StartDrag {
+  my ($self, $event, $parent) = @_;
+  my $row = $event->GetRow;
+  $event->Skip(1), return if ($row < 0);
+  my $param = $self->GetCellValue($row, 1);
+  $event->Skip(1), return if ($param =~ m{\A\s*\z});
 
+  my $source = Wx::DropSource->new( $self );
+  my $dragdata = Wx::TextDataObject->new($param);
+  $source->SetData( $dragdata );
+  $source->DoDragDrop(1);
+  
+};
 
 package Demeter::UI::Artemis::GDS::TextDropTarget;
 
@@ -234,6 +248,8 @@ sub OnDropText {
 
   $text =~ s{\A\s+}{};		# leading and training white space
   $text =~ s{\s+\z}{};
+
+  return 0 if ($text eq $grid -> GetCellValue($drop, 1));
 
   ## text with white space
   if ($text =~ m{\s}) {

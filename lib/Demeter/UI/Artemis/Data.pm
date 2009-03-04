@@ -184,7 +184,7 @@ sub new {
   ## -------- k-weights
   my $kwbox      = Wx::StaticBox->new($leftpane, -1, 'Fitting k weights ', wxDefaultPosition, wxDefaultSize);
   my $kwboxsizer = Wx::StaticBoxSizer->new( $kwbox, wxHORIZONTAL );
-  $left         -> Add($kwboxsizer, 1, wxGROW|wxALL, 5);
+  $left         -> Add($kwboxsizer, 0, wxGROW|wxALL, 5);
 
   $this->{k1}   = Wx::CheckBox->new($leftpane, -1, "1",     wxDefaultPosition, wxDefaultSize);
   $this->{k2}   = Wx::CheckBox->new($leftpane, -1, "2",     wxDefaultPosition, wxDefaultSize);
@@ -218,12 +218,25 @@ sub new {
   $leftpane -> SetSizerAndFit($left);
 
 
+  $hbox -> Add(Wx::StaticLine->new($this, -1, wxDefaultPosition, [4, -1], wxLI_VERTICAL), 0, wxGROW|wxALL, 5);
+
   my $rightpane = Wx::Panel->new($this, -1, wxDefaultPosition, [390,-1]);
   my $right = Wx::BoxSizer->new( wxVERTICAL );
   $hbox->Add($rightpane, 1, wxGROW|wxALL, 0);
 
-  $this->{pathlist} = Wx::Treebook->new( $rightpane, -1, wxDefaultPosition, [500,-1], wxBK_LEFT );
+
+
+
+  my $imagelist = Wx::ImageList->new( 1,1 );
+  foreach my $i (0 .. 1) {
+    my $icon = File::Spec->catfile($Demeter::UI::Artemis::artemis_base, 'Artemis', 'icons', "pixel.png");
+    $imagelist->Add( Wx::Bitmap->new($icon, wxBITMAP_TYPE_PNG) );
+  };
+
+  $this->{pathlist} = Wx::Listbook->new( $rightpane, -1, wxDefaultPosition, [500,-1], wxBK_LEFT );
   $right -> Add($this->{pathlist}, 1, wxGROW|wxALL, 5);
+  $this->{pathlist}->AssignImageList( $imagelist );
+  #$this->{pathlist}->SetPadding(Wx::Size->new(2,2));
   #$this->{pathlist}->SetIndent(0);
 
   my $page = Wx::Panel->new($this->{pathlist}, -1, wxDefaultPosition, [390,-1]);
@@ -232,7 +245,7 @@ sub new {
 
   $hh -> Add(Wx::StaticText -> new($page, -1, "Drag paths from the Feff interpretation\nlist and drop them in this space\nto add paths to this data set.", wxDefaultPosition, [390,-1]),
 	     1, wxGROW|wxALL, 5);
-  $this->{pathlist}->AddPage($page, "Path list", 1);
+  $this->{pathlist}->AddPage($page, "Path list", 1, 0);
 
 
   $this->{pathlist}->SetDropTarget( Demeter::UI::Artemis::Data::DropTarget->new( $this, $this->{pathlist} ) );
@@ -338,7 +351,7 @@ sub OnData {
 
     my $page = Demeter::UI::Artemis::Path->new($book, $thispath);
 
-    $book->AddPage($page, $label, 1);
+    $book->AddPage($page, $label, 1, 0);
   };
 
   return $def;
