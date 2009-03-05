@@ -29,13 +29,13 @@ $feff -> potph;
 $feff -> rmax(4.5);
 $feff -> pathfinder;
 
-my $this = Demeter::SSPath -> new(parent=>$feff, ipot=>1, reff=>3.5);
+my $this = Demeter::SSPath -> new(parent=>$feff, ipot=>2, reff=>3.5);
 my $OBJ  = 'SSPath';
 
 ok( ref($this) =~ m{$OBJ},           "made a $OBJ object");
-ok($this->plottable,                 "$OBJ object is plottable");
+ok( $this->plottable,                "$OBJ object is plottable");
 ok( $this->group =~ m{\A\w{5}\z},    "$OBJ object has a proper group name");
-ok( $this->name =~ 'arbitrary',      "name set to its default (" . $this->name . ")");
+ok( $this->name =~ m{SS},            "name set to its default (" . $this->name . ")");
 $this -> name('this');
 ok( $this->name eq 'this',           "$OBJ object has a settable label");
 ok( $this->data,                     "$OBJ object has an associated Data object");
