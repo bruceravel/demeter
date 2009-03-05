@@ -67,8 +67,15 @@ sub set_tag {
   my @ipots = @{ $feff->potentials };
   my $tag   = $ipots[$self->ipot]->[2] || get_symbol($ipots[$self->ipot]->[1]);
   $self->tag($tag);
-  $self->name($tag . " arbitrary SS path") if not $self->name;
+  $self->make_name;
   return $self;
+};
+
+override make_name => sub {
+  my ($self) = @_;
+  my $tag = $self->tag;
+  my $name = $tag . " SS";
+  $self->name($name); # if not $self->name;
 };
 
 ## construct the intrp line by disentangling the SP string
