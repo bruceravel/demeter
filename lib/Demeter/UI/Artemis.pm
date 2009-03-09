@@ -341,6 +341,10 @@ sub OnFeffClick {
 
 };
 
+
+## the tool bars only seem to update after a resize.  I could not
+## figure out how to force an update without resizing, so this sub
+## jiggles the window and voila! the new tool button appears.
 sub do_the_size_dance {
   my ($top) = @_;
   my @size = $top->GetSizeWH;

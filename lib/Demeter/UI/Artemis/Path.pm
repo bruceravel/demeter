@@ -23,7 +23,7 @@ use base qw(Wx::Panel);
 
 sub new {
   my ($class, $parent, $pathobject) = @_;
-  my $this = $class->SUPER::new($parent, -1, wxDefaultPosition, [390,-1]);
+  my $this = $class->SUPER::new($parent, -1, wxDefaultPosition, [300,-1]);
 
   my $vbox = Wx::BoxSizer->new( wxVERTICAL );
   $this -> SetSizer($vbox);
@@ -37,10 +37,10 @@ sub new {
   my $hbox = Wx::BoxSizer->new( wxHORIZONTAL );
   $vbox -> Add($hbox, 0, wxGROW|wxALL, 0);
 
-  my $left  = Wx::BoxSizer->new( wxVERTICAL );
-  $hbox -> Add($left,  0, wxGROW|wxALL, 5);
-  $this->{showfeff} = Wx::ToggleButton->new($this, -1, "Show feff");
-  $left -> Add($this->{showfeff}, 0, wxALL, 0);
+  ## my $left  = Wx::BoxSizer->new( wxVERTICAL );
+  ## $hbox -> Add($left,  0, wxGROW|wxALL, 5);
+  ## $this->{showfeff} = Wx::ToggleButton->new($this, -1, "Show feff");
+  ## $left -> Add($this->{showfeff}, 0, wxALL, 0);
 
   my $right = Wx::BoxSizer->new( wxVERTICAL );
   $hbox -> Add($right, 0, wxGROW|wxALL, 5);
@@ -55,11 +55,11 @@ sub new {
   ## -------- geometry
   $this->{geombox}  = Wx::StaticBox->new($this, -1, 'Geometry ', wxDefaultPosition, wxDefaultSize);
   my $geomboxsizer  = Wx::StaticBoxSizer->new( $this->{geombox}, wxHORIZONTAL );
-  $this->{geometry} = Wx::TextCtrl->new($this, -1, q{}, wxDefaultPosition, wxDefaultSize,
+  $this->{geometry} = Wx::TextCtrl->new($this, -1, q{}, wxDefaultPosition, [308,-1],
 					wxVSCROLL|wxHSCROLL|wxTE_MULTILINE|wxTE_READONLY|wxNO_BORDER);
   $this->{geometry} -> SetFont( Wx::Font->new( 9, wxTELETYPE, wxNORMAL, wxNORMAL, 0, "" ) );
   $geomboxsizer -> Add($this->{geometry}, 1, wxGROW|wxALL, 0);
-  $vbox         -> Add($geomboxsizer, 1, wxGROW|wxALL, 0);
+  $vbox         -> Add($geomboxsizer, 1, wxALL, 0);
 
   ## -------- path parameters
   my $gbs = Wx::GridBagSizer->new( 3, 10 );
@@ -77,7 +77,7 @@ sub new {
   my $i = 0;
   foreach my $k (qw(label degen s02 e0 dr ss ei third fourth)) {
     my $label        = Wx::StaticText->new($this, -1, $labels{$k}, wxDefaultPosition, wxDefaultSize, wxALIGN_RIGHT);
-    my $w = ($k eq 'degen') ? 50 : 290;
+    my $w = ($k eq 'degen') ? 50 : 250;
     $this->{"pp_$k"} = Wx::TextCtrl  ->new($this, -1, q{}, wxDefaultPosition, [$w,-1]);
     $gbs     -> Add($label,           Wx::GBPosition->new($i,1));
     $gbs     -> Add($this->{"pp_$k"}, Wx::GBPosition->new($i,2));
@@ -108,6 +108,11 @@ sub populate {
 
   $this->{pp_label} -> SetValue($pathobject->sp->labelline);
   $this->{pp_degen} -> SetValue($pathobject->degen);
+};
+
+sub fetch_parameters {
+  my ($this) = @_;
+  
 };
 
 

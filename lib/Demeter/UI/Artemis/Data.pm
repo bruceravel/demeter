@@ -33,7 +33,7 @@ sub new {
   my ($class, $parent) = @_;
 
   my $this = $class->SUPER::new($parent, -1, "Artemis: Data controls",
-				wxDefaultPosition, [900,-1],
+				wxDefaultPosition, [800,480],
 				wxCAPTION|wxMINIMIZE_BOX|wxSYSTEM_MENU|wxRESIZE_BORDER);
   my $statusbar = $this->CreateStatusBar;
   $statusbar -> SetStatusText(q{});
@@ -72,7 +72,7 @@ sub new {
     $buttonboxsizer -> Add($this->{$b}, 1, wxALL, 2);
     $this->{$b} -> SetForegroundColour(Wx::Colour->new("#000000"));
     $this->{$b} -> SetBackgroundColour(Wx::Colour->new($Demeter::UI::Artemis::demeter->co->default("happiness", "average_color")));
-    $this->{$b} -> SetFont(Wx::Font->new( 10, wxDEFAULT, wxNORMAL, wxBOLD, 0, "" ) );
+    $this->{$b} -> SetFont(Wx::Font->new( 10, wxDEFAULT, wxNORMAL, wxNORMAL, 0, "" ) );
   };
   EVT_BUTTON($this, $this->{plot_rmr},  sub{$this->fetch_parameters;
 					    $this->{data}->po->start_plot;
@@ -97,14 +97,14 @@ sub new {
   my $titlesbox      = Wx::StaticBox->new($leftpane, -1, 'Title lines ', wxDefaultPosition, wxDefaultSize);
   my $titlesboxsizer = Wx::StaticBoxSizer->new( $titlesbox, wxHORIZONTAL );
   $this->{titles}      = Wx::TextCtrl->new($leftpane, -1, q{}, wxDefaultPosition, wxDefaultSize,
-					  wxVSCROLL|wxHSCROLL|wxTE_MULTILINE|wxTE_READONLY|wxNO_BORDER);
-  $titlesboxsizer -> Add($this->{titles}, 1, wxGROW|wxALL, 0);
-  $left           -> Add($titlesboxsizer, 0, wxGROW|wxALL, 5);
+					   wxVSCROLL|wxHSCROLL|wxTE_MULTILINE|wxTE_READONLY|wxNO_BORDER);
+  $titlesboxsizer -> Add($this->{titles}, 1, wxALL|wxGROW, 0);
+  $left           -> Add($titlesboxsizer, 0, wxALL|wxGROW, 5);
 
 
   ## --------- toggles
   my $togglebox  = Wx::BoxSizer->new( wxHORIZONTAL );
-  $left    -> Add($togglebox, 0, wxGROW|wxALL, 0);
+  $left    -> Add($togglebox, 0, wxALIGN_CENTER_HORIZONTAL|wxALL, 0);
   $this->{include}    = Wx::CheckBox->new($leftpane, -1, "Include in fit", wxDefaultPosition, wxDefaultSize);
   $this->{plot_after} = Wx::CheckBox->new($leftpane, -1, "Plot after fit", wxDefaultPosition, wxDefaultSize);
   $this->{fit_bkg}    = Wx::CheckBox->new($leftpane, -1, "Fit background", wxDefaultPosition, wxDefaultSize);
@@ -117,7 +117,7 @@ sub new {
   ## -------- Fourier transform parameters
   my $ftbox      = Wx::StaticBox->new($leftpane, -1, 'Fourier transform parameters ', wxDefaultPosition, wxDefaultSize);
   my $ftboxsizer = Wx::StaticBoxSizer->new( $ftbox, wxVERTICAL );
-  $left         -> Add($ftboxsizer, 0, wxALL, 5);
+  $left         -> Add($ftboxsizer, 0, wxALL|wxGROW|wxALIGN_CENTER_HORIZONTAL, 5);
 
   my $gbs = Wx::GridBagSizer->new( 5, 10 );
 
@@ -167,19 +167,19 @@ sub new {
   $ftboxsizer -> Add($gbs, 1, wxGROW|wxALL, 5);
 
   my $windowsbox  = Wx::BoxSizer->new( wxHORIZONTAL );
-  $ftboxsizer -> Add($windowsbox, 0, wxALL, 0);
+  $ftboxsizer -> Add($windowsbox, 0, wxALIGN_CENTER_HORIZONTAL|wxALL, 0);
 
-  $label     = Wx::StaticText->new($leftpane, -1, "k window");
+  $label     = Wx::StaticText->new($leftpane, -1, "FT window");
   $this->{kwindow} = Wx::Choice  ->new($leftpane, -1, , wxDefaultPosition, wxDefaultSize, $windows);
   $windowsbox -> Add($label, 0, wxALL, 5);
   $windowsbox -> Add($this->{kwindow}, 0, wxALL, 2);
   $this->{kwindow}->SetSelection(firstidx {$_ eq $demeter->co->default("fft", "kwindow")} @$windows);
 
-  $label     = Wx::StaticText->new($leftpane, -1, "R window");
-  $this->{rwindow} = Wx::Choice  ->new($leftpane, -1, , wxDefaultPosition, wxDefaultSize, $windows);
-  $windowsbox -> Add($label, 0, wxALL, 5);
-  $windowsbox -> Add($this->{rwindow}, 0, wxALL, 2);
-  $this->{rwindow}->SetSelection(firstidx {$_ eq $demeter->co->default("bft", "rwindow")} @$windows);
+#   $label     = Wx::StaticText->new($leftpane, -1, "R window");
+#   $this->{rwindow} = Wx::Choice  ->new($leftpane, -1, , wxDefaultPosition, wxDefaultSize, $windows);
+#   $windowsbox -> Add($label, 0, wxALL, 5);
+#   $windowsbox -> Add($this->{rwindow}, 0, wxALL, 2);
+#   $this->{rwindow}->SetSelection(firstidx {$_ eq $demeter->co->default("bft", "rwindow")} @$windows);
 
   ## -------- k-weights
   my $kwbox      = Wx::StaticBox->new($leftpane, -1, 'Fitting k weights ', wxDefaultPosition, wxDefaultSize);
@@ -220,11 +220,12 @@ sub new {
 
   $hbox -> Add(Wx::StaticLine->new($this, -1, wxDefaultPosition, [4, -1], wxLI_VERTICAL), 0, wxGROW|wxALL, 5);
 
-  my $rightpane = Wx::Panel->new($this, -1, wxDefaultPosition, [390,-1]);
+
+  ##-------- paths list for this data
+
+  my $rightpane = Wx::Panel->new($this, -1, wxDefaultPosition, [-1,-1]);
   my $right = Wx::BoxSizer->new( wxVERTICAL );
   $hbox->Add($rightpane, 1, wxGROW|wxALL, 0);
-
-
 
 
   my $imagelist = Wx::ImageList->new( 1,1 );
@@ -233,18 +234,19 @@ sub new {
     $imagelist->Add( Wx::Bitmap->new($icon, wxBITMAP_TYPE_PNG) );
   };
 
-  $this->{pathlist} = Wx::Listbook->new( $rightpane, -1, wxDefaultPosition, [500,-1], wxBK_LEFT );
+  $this->{pathlist} = Wx::Listbook->new( $rightpane, -1, wxDefaultPosition, wxDefaultSize, wxBK_LEFT );
   $right -> Add($this->{pathlist}, 1, wxGROW|wxALL, 5);
   $this->{pathlist}->AssignImageList( $imagelist );
+  #$this->{pathlist}->SetPageSize(Wx::Size->new(300,400));
   #$this->{pathlist}->SetPadding(Wx::Size->new(2,2));
   #$this->{pathlist}->SetIndent(0);
 
-  my $page = Wx::Panel->new($this->{pathlist}, -1, wxDefaultPosition, [390,-1]);
+  my $page = Wx::Panel->new($this->{pathlist}, -1, wxDefaultPosition, [-1,-1]);
   my $hh = Wx::BoxSizer->new( wxHORIZONTAL );
   $page -> SetSizer($hh);
 
   $hh -> Add(Wx::StaticText -> new($page, -1, "Drag paths from the Feff interpretation\nlist and drop them in this space\nto add paths to this data set.", wxDefaultPosition, [390,-1]),
-	     1, wxGROW|wxALL, 5);
+	     0, wxALL, 5);
   $this->{pathlist}->AddPage($page, "Path list", 1, 0);
 
 
@@ -256,7 +258,7 @@ sub new {
   #$splitter -> SplitVertically($leftpane, $rightpane, -500);
   #$splitter -> SetSashSize(10);
 
-  $this -> SetSizerAndFit( $hbox );
+  $this -> SetSizer( $hbox );
   return $this;
 };
 
@@ -285,8 +287,10 @@ sub populate {
 
   EVT_CHECKBOX($self, $self->{pcplot}, sub{$data->fit_do_pcpath($self->{pcplot}->GetValue)});
 
-  EVT_CHOICE($self, $self->{kwindow}, sub{$data->fft_kwindow($self->{kwindow}->GetStringSelection)});
-  EVT_CHOICE($self, $self->{rwindow}, sub{$data->bft_rwindow($self->{rwindow}->GetStringSelection)});
+  EVT_CHOICE($self, $self->{kwindow}, sub{$data->fft_kwindow($self->{kwindow}->GetStringSelection);
+					  $data->bft_rwindow($self->{kwindow}->GetStringSelection);
+					});
+  #EVT_CHOICE($self, $self->{rwindow}, sub{$data->bft_rwindow($self->{rwindow}->GetStringSelection)});
 
   return $self;
 }
@@ -295,14 +299,30 @@ sub fetch_parameters {
   my ($this) = @_;
   $this->{data}->name($this->{name}->GetValue);
 
-  $this->{data}->fft_kmin($this->{kmin}->GetValue);
-  $this->{data}->fft_kmax($this->{kmax}->GetValue);
-  $this->{data}->fft_dk  ($this->{dk}  ->GetValue);
-  $this->{data}->bft_rmin($this->{rmin}->GetValue);
-  $this->{data}->bft_rmax($this->{rmax}->GetValue);
-  $this->{data}->bft_dr  ($this->{dr}  ->GetValue);
-  $this->{data}->fft_kwindow($this->{kwindow}->GetStringSelection);
-  $this->{data}->bft_rwindow($this->{rwindow}->GetStringSelection);
+  my $titles = $this->{titles}->GetValue;
+  my @list   = split(/\n/, $titles);
+  $this->{data}->titles(\@list);
+
+  $this->{data}->fft_kmin(      $this->{kmin}      ->GetValue		);
+  $this->{data}->fft_kmax(      $this->{kmax}      ->GetValue		);
+  $this->{data}->fft_dk(        $this->{dk}        ->GetValue		);
+  $this->{data}->bft_rmin(      $this->{rmin}      ->GetValue		);
+  $this->{data}->bft_rmax(      $this->{rmax}      ->GetValue		);
+  $this->{data}->bft_dr(        $this->{dr}        ->GetValue		);
+  $this->{data}->fft_kwindow(   $this->{kwindow}   ->GetStringSelection	);
+  $this->{data}->bft_rwindow(   $this->{kwindow}   ->GetStringSelection	);
+  $this->{data}->fit_k1(        $this->{k1}        ->GetValue		);
+  $this->{data}->fit_k2(        $this->{k2}        ->GetValue		);
+  $this->{data}->fit_k3(        $this->{k3}        ->GetValue		);
+  $this->{data}->fit_karb(      $this->{karb}      ->GetValue		);
+  $this->{data}->fit_karb_value($this->{karb_value}->GetValue		);
+  $this->{data}->fit_epsilon   ($this->{epsilon}   ->GetValue		);
+
+  $this->{data}->fit_include       ($this->{include}    ->GetValue      );
+  $this->{data}->fit_plot_after_fit($this->{plot_after} ->GetValue      );
+  $this->{data}->fit_do_bkg        ($this->{fit_bkg}    ->GetValue      );
+  $this->{data}->fit_do_pcpath     ($this->{pcplot}     ->GetValue      );
+
 
   ## toggles, kweights, epsilon, pcpath
 };
