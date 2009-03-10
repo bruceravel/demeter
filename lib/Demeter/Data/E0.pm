@@ -171,6 +171,31 @@ sub align {
   return $shift;
 };
 
+sub align_with_reference {
+  my ($self, @data) = @_;
+  my $standard = $self->get_mode('standard');
+  if ($self->reference) {
+    $self->reference->standard;
+  } else {
+    $self->standard;
+  };
+  my $shift = 0;
+  $self -> _update("background");
+  $self -> reference -> _update("background") if $self->reference;
+  foreach my $d (@data) {
+    next if (ref($d) !~ m{Data});
+    my $this = $d->reference || $d;
+    $this -> _update("background");
+    $this -> dispose( $this-> template("process", "align") );
+    $shift = Ifeffit::get_scalar("aa___esh");
+    $this -> bkg_eshift($shift);
+    $this -> update_bkg(1);
+    $this -> reference -> update_bkg(1) if $this->reference;
+  };
+  $standard->standard if (ref($standard) =~ m{Data});
+  return $shift;
+};
+
 sub tie_reference {		# extend to more than two...?
   my ($self, $tie) = @_;
   $self->tying(1);		# prevent deep recursion
@@ -267,11 +292,23 @@ thrown.  The return value is the new value of the edge energy.
 
 =item C<align>
 
-This method align each item in a list of data objects to the Data object on
+This method aligns each item in a list of data objects to the Data object on
 which the method is called.  That is, align each Data object in the argument
 list to the calling object.
 
   $standard_data -> align(@list_of_data_to_align);
+
+Each argument must be a Data object.  The return value is the energy shift of
+the last Data object in the list.
+
+=item C<align_with_reference>
+
+This method align each item in a list of data objects to the Data
+object on which the method is called using the reference channels, if
+available.  That is, align each Data object in the argument list to
+the calling object, using their reference channels.
+
+  $standard_data -> align_with_reference(@list_of_data_to_align);
 
 Each argument must be a Data object.  The return value is the energy shift of
 the last Data object in the list.
