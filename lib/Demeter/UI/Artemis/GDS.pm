@@ -76,7 +76,7 @@ sub new {
 
   my $grid = Wx::Grid->new($this, -1, wxDefaultPosition, wxDefaultSize, wxVSCROLL);
 
-  $grid -> CreateGrid(18,4);
+  $grid -> CreateGrid(12,4);
   #$grid -> EnableScrolling(1,1);
   #$grid -> SetScrollbars(20, 20, 50, 50);
 
@@ -85,7 +85,7 @@ sub new {
   $grid -> SetColLabelValue(1, 'Name');
   $grid -> SetColSize      (1,  100);
   $grid -> SetColLabelValue(2, 'Math expression');
-  $grid -> SetColSize      (2,  300);
+  $grid -> SetColSize      (2,  400);
   $grid -> SetColLabelValue(3, 'Evaluated');
   $grid -> SetColSize      (3,  80);
 
@@ -108,19 +108,19 @@ sub new {
   $hbox -> Add($grid, 1, wxGROW|wxALL, 5);
 
 
-  my $toolbar = Wx::ToolBar->new($this, -1, wxDefaultPosition, wxDefaultSize,   wxTB_VERTICAL|wxTB_3DBUTTONS|wxTB_TEXT);
+  my $toolbar = Wx::ToolBar->new($this, -1, wxDefaultPosition, wxDefaultSize,   wxTB_VERTICAL|wxTB_3DBUTTONS|wxTB_HORZ_LAYOUT|wxTB_TEXT);
   $toolbar -> AddTool(1, "Grab all",    Demeter::UI::Artemis::icon("addgds"),  wxNullBitmap, wxITEM_NORMAL, q{}, $hints{grab} );
   $toolbar -> AddTool(2, "Reset all",   Demeter::UI::Artemis::icon("reset"),   wxNullBitmap, wxITEM_NORMAL, q{}, $hints{reset} );
   #$toolbar -> AddTool(3, "Guess->set",  Demeter::UI::Artemis::icon("convert"), wxNullBitmap, wxITEM_NORMAL, q{}, $hints{convert} );
   $toolbar -> AddCheckTool(3, "Highlight",   Demeter::UI::Artemis::icon("highlight"), wxNullBitmap, q{}, $hints{highlight} );
   $toolbar -> AddSeparator;
-  $toolbar -> AddTool(4, "Import GDS",  Demeter::UI::Artemis::icon("import"), wxNullBitmap, wxITEM_NORMAL, q{},  $hints{import});
-  $toolbar -> AddTool(5, "Export GDS",  Demeter::UI::Artemis::icon("export"), wxNullBitmap, wxITEM_NORMAL, q{},  $hints{export});
+  $toolbar -> AddTool(4, " Import GDS",  Demeter::UI::Artemis::icon("import"), wxNullBitmap, wxITEM_NORMAL, q{},  $hints{import});
+  $toolbar -> AddTool(5, " Export GDS",  Demeter::UI::Artemis::icon("export"), wxNullBitmap, wxITEM_NORMAL, q{},  $hints{export});
   $toolbar -> AddTool(6, "Discard all", Demeter::UI::Artemis::icon("discard"), wxNullBitmap, wxITEM_NORMAL, q{}, $hints{discard} );
   $toolbar -> AddSeparator;
   $toolbar -> AddTool(7, "Add GDS",     Demeter::UI::Artemis::icon("addgds"),  wxNullBitmap, wxITEM_NORMAL, q{}, $hints{addgds} );
   $toolbar -> Realize;
-  $hbox -> Add($toolbar, 0, wxSHAPED|wxALL|wxALIGN_CENTER_HORIZONTAL, 5);
+  $hbox -> Add($toolbar, 0, wxSHAPED|wxALL, 5);
 
   $this -> SetSizerAndFit( $hbox );
   $this -> SetMinSize($this->GetSize);

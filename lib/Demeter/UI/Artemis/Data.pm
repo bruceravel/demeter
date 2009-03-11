@@ -33,7 +33,7 @@ sub new {
   my ($class, $parent) = @_;
 
   my $this = $class->SUPER::new($parent, -1, "Artemis: Data controls",
-				wxDefaultPosition, [800,480],
+				wxDefaultPosition, [800,495],
 				wxCAPTION|wxMINIMIZE_BOX|wxSYSTEM_MENU|wxRESIZE_BORDER);
   my $statusbar = $this->CreateStatusBar;
   $statusbar -> SetStatusText(q{});
@@ -50,7 +50,10 @@ sub new {
   $left    -> Add($namebox, 0, wxGROW|wxTOP|wxBOTTOM, 5);
   $namebox -> Add(Wx::StaticText->new($leftpane, -1, "Name"), 0, wxLEFT|wxRIGHT|wxTOP, 5);
   $this->{name} = Wx::TextCtrl->new($leftpane, -1, q{}, wxDefaultPosition, wxDefaultSize,);
-  $namebox -> Add($this->{name}, 1, wxGROW|wxLEFT|wxRIGHT|wxTOP, 2);
+  $namebox -> Add($this->{name}, 3, wxGROW|wxLEFT|wxRIGHT|wxTOP, 2);
+  $namebox -> Add(Wx::StaticText->new($leftpane, -1, "FOM"), 0, wxLEFT|wxRIGHT|wxTOP, 5);
+  $this->{fom} = Wx::TextCtrl->new($leftpane, -1, q{}, wxDefaultPosition, wxDefaultSize,);
+  $namebox -> Add($this->{fom}, 1, wxGROW|wxLEFT|wxRIGHT|wxTOP, 2);
 
   ## -------- file name and record number
   my $filebox  = Wx::BoxSizer->new( wxHORIZONTAL );

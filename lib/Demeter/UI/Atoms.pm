@@ -36,7 +36,7 @@ sub new {
 				 -1,              # ID -1 means any
 				 'Atoms',         # title
 				 wxDefaultPosition,
-				 [580,700],
+				 [560,700],
 			       );
   my $nb = Wx::Notebook->new( $self, -1, wxDefaultPosition, wxDefaultSize, wxNB_TOP );
   $self->{notebook} = $nb;

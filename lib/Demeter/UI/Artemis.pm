@@ -45,7 +45,7 @@ sub OnInit {
   ## -------- create a new frame and set icon
   $frames{main} = Wx::Frame->new(undef, -1, 'Artemis: EXAFS data analysis',
 				[1,1], # position -- along top of screen
-				[Wx::SystemSettings::GetMetric(wxSYS_SCREEN_X), 170] # size -- entire width of screen
+				[Wx::SystemSettings::GetMetric(wxSYS_SCREEN_X), 150] # size -- entire width of screen
 			       );
   my $iconfile = File::Spec->catfile(dirname($INC{'Demeter/UI/Artemis.pm'}), 'Artemis', 'icons', "artemis.png");
   $icon = Wx::Icon->new( $iconfile, wxBITMAP_TYPE_ANY );
@@ -82,18 +82,13 @@ sub OnInit {
   my $databoxsizer  = Wx::StaticBoxSizer->new( $databox, wxVERTICAL );
 
   my $datalist = Wx::ScrolledWindow->new($frames{main}, -1, wxDefaultPosition, wxDefaultSize, wxVSCROLL);
-  $datalist->SetScrollbars(20, 20, 50, 50);
+  # $datalist->SetScrollbars(20, 20, 50, 50);
   my $datavbox = Wx::BoxSizer->new( wxVERTICAL );
   $datalist->SetSizer($datavbox);
   my $datatool = Wx::ToolBar->new($datalist, -1, wxDefaultPosition, wxDefaultSize, wxTB_VERTICAL|wxTB_HORZ_TEXT|wxTB_LEFT);
   $datatool -> AddTool(-1, "New data", icon("add"), wxNullBitmap, wxITEM_NORMAL, q{}, "Import a new data set" );
   $datatool -> AddSeparator;
   #   $datatool -> AddCheckTool(-1, "Show data set 1", icon("pixel"), wxNullBitmap, wxITEM_NORMAL, q{}, q{} );
-  #   $datatool -> AddCheckTool(-1, "Show data set 2 blah blah", icon("pixel"), wxNullBitmap, wxITEM_NORMAL, q{}, q{} );
-  #   $datatool -> AddCheckTool(-1, "Show data set 3", icon("pixel"), wxNullBitmap, wxITEM_NORMAL, q{}, q{} );
-  #   $datatool -> AddCheckTool(-1, "Show data set 4", icon("pixel"), wxNullBitmap, wxITEM_NORMAL, q{}, q{} );
-  #   $datatool -> AddCheckTool(-1, "Show data set 5", icon("pixel"), wxNullBitmap, wxITEM_NORMAL, q{}, q{} );
-  #   $datatool -> AddCheckTool(-1, "Show data set 6", icon("pixel"), wxNullBitmap, wxITEM_NORMAL, q{}, q{} );
   $datatool -> Realize;
   $datavbox     -> Add($datatool);
   $databoxsizer -> Add($datalist, 1, wxGROW|wxALL, 0);
@@ -107,21 +102,16 @@ sub OnInit {
   my $feffboxsizer  = Wx::StaticBoxSizer->new( $feffbox, wxVERTICAL );
 
   my $fefflist = Wx::ScrolledWindow->new($frames{main}, -1, wxDefaultPosition, wxDefaultSize, wxVSCROLL);
-  $fefflist->SetScrollbars(20, 20, 50, 50);
+  # $fefflist->SetScrollbars(20, 20, 50, 50);
   my $feffvbox = Wx::BoxSizer->new( wxVERTICAL);
   $fefflist->SetSizer($feffvbox);
   my $fefftool = Wx::ToolBar->new($fefflist, -1, wxDefaultPosition, wxDefaultSize, wxTB_VERTICAL|wxTB_HORZ_TEXT|wxTB_LEFT);
   $fefftool -> AddTool(-1, "New Feff calculation", icon("add"), wxNullBitmap, wxITEM_NORMAL, q{}, "Import a new Feff calculation" );
   $fefftool -> AddSeparator;
   #   $fefftool -> AddCheckTool(-1, "Show feff calc 1", icon("pixel"), wxNullBitmap, q{}, q{} );
-  #   $fefftool -> AddCheckTool(-1, "Show feff calc 2", icon("pixel"), wxNullBitmap, q{}, q{} );
-  #   $fefftool -> AddCheckTool(-1, "Show feff calc 3", icon("pixel"), wxNullBitmap, q{}, q{} );
-  #   $fefftool -> AddCheckTool(-1, "Show feff calc 4", icon("pixel"), wxNullBitmap, q{}, q{} );
-  #   $fefftool -> AddCheckTool(-1, "Show feff calc 5", icon("pixel"), wxNullBitmap, q{}, q{} );
-  #   $fefftool -> AddCheckTool(-1, "Show feff calc 6", icon("pixel"), wxNullBitmap, q{}, q{} );
   $fefftool -> Realize;
   $feffvbox     -> Add($fefftool);
-  $feffboxsizer -> Add($fefflist, 1, wxGROW|wxALL, 0);
+  $feffboxsizer -> Add($fefflist, 0, wxGROW|wxALL, 0);
   $hbox         -> Add($feffboxsizer, 2, wxGROW|wxALL, 0);
 
   ## -------- Fit box
@@ -136,22 +126,28 @@ sub OnInit {
   $hname -> Add($name,       1, wxALL, 2);
 
   my $hfit = Wx::BoxSizer->new( wxHORIZONTAL);
-  $vbox -> Add($hfit, 0, wxGROW|wxTOP|wxBOTTOM, 0);
-  $label = Wx::StaticText->new($frames{main}, -1, "Fit space");
-  my $fitspace = Wx::Choice->new($frames{main}, -1, wxDefaultPosition, wxDefaultSize, [qw(k R q)]);
+  $vbox -> Add($hfit, 0, wxGROW|wxTOP|wxBOTTOM, 3);
+  $label = Wx::StaticText->new($frames{main}, -1, "Fit space:");
+  #my $fitspace = Wx::Choice->new($frames{main}, -1, wxDefaultPosition, wxDefaultSize, [qw(k R q)]);
+  my @fitspace = (Wx::RadioButton->new($frames{main}, -1, 'k', wxDefaultPosition, wxDefaultSize, wxRB_GROUP),
+		  Wx::RadioButton->new($frames{main}, -1, 'R', wxDefaultPosition, wxDefaultSize),
+		  Wx::RadioButton->new($frames{main}, -1, 'q', wxDefaultPosition, wxDefaultSize),
+		 );
+
+
   my $sum_button = Wx::CheckBox->new($frames{main}, -1, "Do summation");
-  $hfit  -> Add($label,   0, wxALL, 5);
-  $hfit  -> Add($fitspace,   0, wxALL, 2);
-  $hfit  -> Add($sum_button, 1, wxALL, 2);
-  $fitspace->SetSelection(1) if ($demeter->co->default("fit", "space") eq 'r');
-  $fitspace->SetSelection(2) if ($demeter->co->default("fit", "space") eq 'q');
+  $hfit  -> Add($label,   0, wxALL, 3);
+  map {$hfit  -> Add($_,   0, wxLEFT|wxRIGHT, 2)} @fitspace;
+  $hfit  -> Add($sum_button, 1, wxLEFT|wxRIGHT, 40);
+  $fitspace[1]->SetValue(1) if ($demeter->co->default("fit", "space") eq 'r');
+  $fitspace[2]->SetValue(2) if ($demeter->co->default("fit", "space") eq 'q');
 
 
   my $descbox      = Wx::StaticBox->new($frames{main}, -1, 'Fit description', wxDefaultPosition, wxDefaultSize);
   my $descboxsizer = Wx::StaticBoxSizer->new( $descbox, wxVERTICAL );
   my $description  = Wx::TextCtrl->new($frames{main}, -1, q{}, wxDefaultPosition, [-1, 25], wxTE_MULTILINE);
   $descboxsizer   -> Add($description,  1, wxGROW|wxALL, 0);
-  $vbox           -> Add($descboxsizer, 1, wxGROW|wxALL, 0);
+  $vbox           -> Add($descboxsizer, 0, wxGROW|wxALL, 0);
 
   my $fitbutton = Wx::Button->new($frames{main}, -1, "Fit", wxDefaultPosition, wxDefaultSize);
   $fitbutton -> SetForegroundColour(Wx::Colour->new("#000000"));

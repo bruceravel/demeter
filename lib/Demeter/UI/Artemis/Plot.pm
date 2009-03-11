@@ -45,8 +45,8 @@ sub new {
 				[0,$yy], wxDefaultSize,
 				wxMINIMIZE_BOX|wxCAPTION|wxSYSTEM_MENU|wxRESIZE_BORDER);
 
-  my $statusbar = $this->CreateStatusBar;
-  $statusbar -> SetStatusText(q{});
+  #my $statusbar = $this->CreateStatusBar;
+  #$statusbar -> SetStatusText(q{});
 
   my $hbox  = Wx::BoxSizer->new( wxVERTICAL );
 
@@ -57,10 +57,10 @@ sub new {
 
 
   my $buttonbox  = Wx::BoxSizer->new( wxHORIZONTAL );
-  $left -> Add($buttonbox, 0, wxALL, 5);
-  $this->{k_button} = Wx::Button->new($this, -1, "k", wxDefaultPosition, wxDefaultSize);
-  $this->{r_button} = Wx::Button->new($this, -1, "R", wxDefaultPosition, wxDefaultSize);
-  $this->{q_button} = Wx::Button->new($this, -1, "q", wxDefaultPosition, wxDefaultSize);
+  $left -> Add($buttonbox, 0, wxGROW|wxALL, 5);
+  $this->{k_button} = Wx::Button->new($this, -1, "k", wxDefaultPosition, [50,-1]);
+  $this->{r_button} = Wx::Button->new($this, -1, "R", wxDefaultPosition, [50,-1] );
+  $this->{q_button} = Wx::Button->new($this, -1, "q", wxDefaultPosition, [50,-1] );
   foreach my $b (qw(k_button r_button q_button)) {
     $buttonbox -> Add($this->{$b}, 1, wxALL, 2);
     $this->{$b} -> SetForegroundColour(Wx::Colour->new("#000000"));
@@ -85,7 +85,7 @@ sub new {
                               : ($utility eq 'VPaths')     ? Demeter::UI::Artemis::Plot::VPaths     -> new($nb)
 	                      :                              q{};
     next if not $this->{page}->{$utility};
-    $nb->AddPage($this->{page}->{$utility}, $utility, 0);#, $count);
+    $nb->AddPage($this->{page}->{$utility}, ($utility eq 'indicators') ? 'indic.' : $utility, 0);#, $count);
   };
   $left -> Add($nb, 1, wxGROW|wxALL, 5);
 
@@ -105,7 +105,7 @@ sub new {
   };
 
   $groupboxsizer -> Add($grouplist,     1, wxGROW|wxALL, 0);
-  $right         -> Add($groupboxsizer, 1, wxGROW|wxALL, 0);
+  $right         -> Add($groupboxsizer, 0, wxGROW|wxALL, 0);
 
   my $reset_plot = Wx::Button->new($this, -1, "Reset plot list", wxDefaultPosition, wxDefaultSize);
   $right        -> Add($reset_plot, 0, wxGROW|wxALL, 5);

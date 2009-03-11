@@ -33,7 +33,7 @@ sub new {
   ## -------- plotting part for chi(R)
   my $hh = Wx::BoxSizer->new( wxHORIZONTAL );
   $szr  -> Add($hh, 0, wxALL, 5);
-  my $label  = Wx::StaticText->new($this, -1, "Plot χ(R) as: ");
+  my $label  = Wx::StaticText->new($this, -1, "Plot χ(R): ");
   $this->{rpart} = Wx::Choice->new($this, -1, wxDefaultPosition, wxDefaultSize, $parts);
   my $which = 0;
   ($which = 1) if ($demeter->co->default("plot", "r_pl") eq 'r');
@@ -45,7 +45,7 @@ sub new {
   ## -------- plotting part for chi(q)
   $hh   = Wx::BoxSizer->new( wxHORIZONTAL );
   $szr -> Add($hh, 0, wxALL, 5);
-  my $label  = Wx::StaticText->new($this, -1, "Plot χ(q) as: ");
+  my $label  = Wx::StaticText->new($this, -1, "Plot χ(q): ");
   $this->{qpart} = Wx::Choice->new($this, -1, wxDefaultPosition, wxDefaultSize, $parts);
   my $which = 1;
   ($which = 0) if ($demeter->co->default("plot", "q_pl") eq 'm');
@@ -61,22 +61,22 @@ sub new {
 
   ## -------- toggles for fit, win, bkg, res
   ##    after a fit: turn on fit toggle, bkg toggle is bkg refined
-  my $gbs  =  Wx::GridBagSizer->new( 5,10 );
+  my $gbs  =  Wx::GridBagSizer->new( 5,5 );
   $szr -> Add($gbs, 0, wxGROW|wxTOP|wxBOTTOM, 10);
 
   $this->{fit} = Wx::CheckBox->new($this, -1, "Plot fit");
-  $gbs -> Add($this->{fit}, Wx::GBPosition->new(0,1));
+  $gbs -> Add($this->{fit}, Wx::GBPosition->new(0,0));
   $demeter->po->plot_fit(0);
-  $this->{background} = Wx::CheckBox->new($this, -1, "Plot background");
-  $gbs -> Add($this->{background}, Wx::GBPosition->new(0,2));
+  $this->{background} = Wx::CheckBox->new($this, -1, "Plot bkg");
+  $gbs -> Add($this->{background}, Wx::GBPosition->new(0,1));
   $demeter->po->plot_bkg(0);
 
   $this->{window} = Wx::CheckBox->new($this, -1, "Plot window");
-  $gbs -> Add($this->{window}, Wx::GBPosition->new(1,1));
+  $gbs -> Add($this->{window}, Wx::GBPosition->new(1,0));
   $this->{window} -> SetValue(1);
   $demeter->po->plot_win(1);
   $this->{residual} = Wx::CheckBox->new($this, -1, "Plot residual");
-  $gbs -> Add($this->{residual}, Wx::GBPosition->new(1,2));
+  $gbs -> Add($this->{residual}, Wx::GBPosition->new(1,1));
   $demeter->po->plot_res(0);
 
   EVT_CHECKBOX($this, $this->{fit},        sub{OnPlotToggle(@_, 'fit',        'plot_fit')});
