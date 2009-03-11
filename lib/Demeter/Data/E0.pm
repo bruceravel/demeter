@@ -198,6 +198,11 @@ sub align_with_reference {
   $standard->standard if (ref($standard) =~ m{Data});
   return $shift;
 };
+{
+  no warnings 'once';
+  # alternate names
+  *alignwr = \ &align_with_reference;
+};
 
 sub tie_reference {		# extend to more than two...?
   my ($self, $tie) = @_;
@@ -315,6 +320,10 @@ the calling object, using their reference channels.
 
 Each argument must be a Data object.  The return value is the energy shift of
 the last Data object in the list.
+
+=item C<alignwr>
+
+This is an alias for C<align_with_reference>.
 
 =item C<e0>
 
