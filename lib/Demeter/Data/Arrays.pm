@@ -1,6 +1,6 @@
 package Demeter::Data::Arrays;
 use Moose::Role;
-
+use Carp;
 use Demeter::StrTypes qw( DataPart FitSpace );
 use List::MoreUtils qw(pairwise);
 
@@ -30,8 +30,9 @@ sub get_array {
   my $opt  = Regexp::List->new;
   my @list = $self->arrays;
   my $group_regexp = $opt->list2re(@list);
+  my $grp = $self->group;
   if ($suffix !~ m{\b$group_regexp\b}) {
-    croak("The group $self does not have an array $self.$suffix (" . join(" ", @list) . ")");
+    croak("The group $grp does not have an array $grp.$suffix (" . join(" ", @list) . ")");
   };
   my $group = $self->group;
   my $text = ($part =~ m{(?:bkg|fit|res)}) ? "${group}_$part.$suffix" : "$group.$suffix";

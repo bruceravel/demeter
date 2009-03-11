@@ -89,8 +89,8 @@ sub _write_record {
   delete $hash{$_} foreach (qw(group plottable data mode cv));
   map {delete $hash{$_} if ($_ =~ m{\Afit}) } keys(%hash);
 
-  $hash{plot_yoffset} = $hash{y_offset};
-  delete $hash{y_offset};
+  $hash{plot_yoffset} = $hash{'y_offset'};
+  delete $hash{'y_offset'};
   $hash{plot_scale} = $hash{plot_multiplier};
   delete $hash{plot_multiplier};
   $hash{label} = $hash{name};
@@ -101,6 +101,8 @@ sub _write_record {
   $hash{is_xanes}  = 1 if ($hash{datatype} eq 'xanes');
   $hash{is_xmudat} = 1 if ($hash{datatype} eq 'xmudat');
   delete $hash{datatype};
+
+  $hash{reference} = $hash{reference}->group if ($hash{reference});
   # ------------------------------------------------------------
 
   @array   = %hash;

@@ -173,24 +173,27 @@ sub align {
 
 sub align_with_reference {
   my ($self, @data) = @_;
-  my $standard = $self->get_mode('standard');
-  if ($self->reference) {
-    $self->reference->standard;
-  } else {
-    $self->standard;
-  };
-  my $shift = 0;
+  my $selfref = $self->reference;
   $self -> _update("background");
   $self -> reference -> _update("background") if $self->reference;
+  my $standard = $self->get_mode('standard');
+  my $shift = 0;
   foreach my $d (@data) {
     next if (ref($d) !~ m{Data});
-    my $this = $d->reference || $d;
+    my $useref = $selfref and $d->reference;
+    if ($useref) {
+      $self->reference->standard;
+    } else {
+      $self->standard;
+    };
+    my $this = ($useref) ? $d->reference : $d;
     $this -> _update("background");
     $this -> dispose( $this-> template("process", "align") );
     $shift = Ifeffit::get_scalar("aa___esh");
     $this -> bkg_eshift($shift);
     $this -> update_bkg(1);
     $this -> reference -> update_bkg(1) if $this->reference;
+
   };
   $standard->standard if (ref($standard) =~ m{Data});
   return $shift;
