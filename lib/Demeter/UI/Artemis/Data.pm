@@ -41,7 +41,7 @@ sub new {
   #my $splitter = Wx::SplitterWindow->new($this, -1, wxDefaultPosition, [900,-1], wxSP_3D);
   #$hbox->Add($splitter, 1, wxGROW|wxALL, 1);
 
-  my $leftpane = Wx::Panel->new($this, -1);
+  my $leftpane = Wx::Panel->new($this, -1, wxDefaultPosition, wxDefaultSize);
   my $left = Wx::BoxSizer->new( wxVERTICAL );
   $hbox->Add($leftpane, 0, wxGROW|wxALL, 0);
 
@@ -50,29 +50,29 @@ sub new {
   $left    -> Add($namebox, 0, wxGROW|wxTOP|wxBOTTOM, 5);
   $namebox -> Add(Wx::StaticText->new($leftpane, -1, "Name"), 0, wxLEFT|wxRIGHT|wxTOP, 5);
   $this->{name} = Wx::TextCtrl->new($leftpane, -1, q{}, wxDefaultPosition, wxDefaultSize,);
-  $namebox -> Add($this->{name}, 3, wxGROW|wxLEFT|wxRIGHT|wxTOP, 2);
+  $namebox -> Add($this->{name}, 1, wxLEFT|wxRIGHT|wxTOP, 5);
   $namebox -> Add(Wx::StaticText->new($leftpane, -1, "FOM"), 0, wxLEFT|wxRIGHT|wxTOP, 5);
-  $this->{fom} = Wx::TextCtrl->new($leftpane, -1, q{}, wxDefaultPosition, wxDefaultSize,);
-  $namebox -> Add($this->{fom}, 1, wxGROW|wxLEFT|wxRIGHT|wxTOP, 2);
+  $this->{fom} = Wx::TextCtrl->new($leftpane, -1, q{}, wxDefaultPosition, [60,-1],);
+  $namebox -> Add($this->{fom}, 0, wxGROW|wxLEFT|wxRIGHT|wxTOP, 5);
 
   ## -------- file name and record number
   my $filebox  = Wx::BoxSizer->new( wxHORIZONTAL );
   $left    -> Add($filebox, 0, wxGROW|wxALL, 0);
   $filebox -> Add(Wx::StaticText->new($leftpane, -1, "Data source: "), 0, wxALL, 5);
   $this->{datasource} = Wx::TextCtrl->new($leftpane, -1, q{}, wxDefaultPosition, wxDefaultSize, wxTE_READONLY);
-  $filebox -> Add($this->{datasource}, 1, wxGROW|wxLEFT|wxRIGHT|wxTOP, 2);
+  $filebox -> Add($this->{datasource}, 1, wxGROW|wxLEFT|wxRIGHT|wxTOP, 5);
   ##$this->{datasource} -> SetInsertionPointEnd;
 
   ## -------- single data set plot buttons
-  my $buttonbox  = Wx::StaticBox->new($leftpane, -1, 'Plot this data set as ', wxDefaultPosition, wxDefaultSize);
+  my $buttonbox  = Wx::StaticBox->new($leftpane, -1, 'Plot this data set as ', wxDefaultPosition, [350,-1]);
   my $buttonboxsizer = Wx::StaticBoxSizer->new( $buttonbox, wxHORIZONTAL );
   $left -> Add($buttonboxsizer, 0, wxGROW|wxALL, 5);
-  $this->{plot_rmr}  = Wx::Button->new($leftpane, -1, "Rmr",  wxDefaultPosition, wxDefaultSize);
-  $this->{plot_k123} = Wx::Button->new($leftpane, -1, "k123", wxDefaultPosition, wxDefaultSize);
-  $this->{plot_r123} = Wx::Button->new($leftpane, -1, "R123", wxDefaultPosition, wxDefaultSize);
-  $this->{plot_kq}   = Wx::Button->new($leftpane, -1, "kq",   wxDefaultPosition, wxDefaultSize);
+  $this->{plot_rmr}  = Wx::Button->new($leftpane, -1, "Rmr",  wxDefaultPosition, [80,-1]);
+  $this->{plot_k123} = Wx::Button->new($leftpane, -1, "k123", wxDefaultPosition, [80,-1]);
+  $this->{plot_r123} = Wx::Button->new($leftpane, -1, "R123", wxDefaultPosition, [80,-1]);
+  $this->{plot_kq}   = Wx::Button->new($leftpane, -1, "kq",   wxDefaultPosition, [80,-1]);
   foreach my $b (qw(plot_k123 plot_r123 plot_rmr plot_kq)) {
-    $buttonboxsizer -> Add($this->{$b}, 1, wxALL, 2);
+    $buttonboxsizer -> Add($this->{$b}, 1, wxGROW|wxALL, 2);
     $this->{$b} -> SetForegroundColour(Wx::Colour->new("#000000"));
     $this->{$b} -> SetBackgroundColour(Wx::Colour->new($Demeter::UI::Artemis::demeter->co->default("happiness", "average_color")));
     $this->{$b} -> SetFont(Wx::Font->new( 10, wxDEFAULT, wxNORMAL, wxNORMAL, 0, "" ) );
@@ -99,10 +99,10 @@ sub new {
   ## -------- title lines
   my $titlesbox      = Wx::StaticBox->new($leftpane, -1, 'Title lines ', wxDefaultPosition, wxDefaultSize);
   my $titlesboxsizer = Wx::StaticBoxSizer->new( $titlesbox, wxHORIZONTAL );
-  $this->{titles}      = Wx::TextCtrl->new($leftpane, -1, q{}, wxDefaultPosition, wxDefaultSize,
+  $this->{titles}      = Wx::TextCtrl->new($leftpane, -1, q{}, wxDefaultPosition, [350,-1],
 					   wxVSCROLL|wxHSCROLL|wxTE_MULTILINE|wxTE_READONLY|wxNO_BORDER);
-  $titlesboxsizer -> Add($this->{titles}, 1, wxALL|wxGROW, 0);
-  $left           -> Add($titlesboxsizer, 0, wxALL|wxGROW, 5);
+  $titlesboxsizer -> Add($this->{titles}, 0, wxALL|wxALIGN_CENTER_HORIZONTAL, 0);
+  $left           -> Add($titlesboxsizer, 0, wxALL|wxALIGN_CENTER_HORIZONTAL, 5);
 
 
   ## --------- toggles
@@ -120,7 +120,7 @@ sub new {
   ## -------- Fourier transform parameters
   my $ftbox      = Wx::StaticBox->new($leftpane, -1, 'Fourier transform parameters ', wxDefaultPosition, wxDefaultSize);
   my $ftboxsizer = Wx::StaticBoxSizer->new( $ftbox, wxVERTICAL );
-  $left         -> Add($ftboxsizer, 0, wxALL|wxGROW|wxALIGN_CENTER_HORIZONTAL, 5);
+  $left         -> Add($ftboxsizer, 0, wxGROW|wxALL|wxALIGN_CENTER_HORIZONTAL, 5);
 
   my $gbs = Wx::GridBagSizer->new( 5, 10 );
 
@@ -167,10 +167,10 @@ sub new {
   $this->{rmax} -> SetValidator( Wx::Perl::TextValidator->new( qr([0-9.]) ) );
   $this->{dr}   -> SetValidator( Wx::Perl::TextValidator->new( qr([0-9.]) ) );
 
-  $ftboxsizer -> Add($gbs, 1, wxGROW|wxALL, 5);
+  $ftboxsizer -> Add($gbs, 0, wxALL, 5);
 
   my $windowsbox  = Wx::BoxSizer->new( wxHORIZONTAL );
-  $ftboxsizer -> Add($windowsbox, 0, wxALIGN_CENTER_HORIZONTAL|wxALL, 0);
+  $ftboxsizer -> Add($windowsbox, 0, wxALIGN_LEFT|wxALL, 0);
 
   $label     = Wx::StaticText->new($leftpane, -1, "FT window");
   $this->{kwindow} = Wx::Choice  ->new($leftpane, -1, , wxDefaultPosition, wxDefaultSize, $windows);
@@ -187,7 +187,7 @@ sub new {
   ## -------- k-weights
   my $kwbox      = Wx::StaticBox->new($leftpane, -1, 'Fitting k weights ', wxDefaultPosition, wxDefaultSize);
   my $kwboxsizer = Wx::StaticBoxSizer->new( $kwbox, wxHORIZONTAL );
-  $left         -> Add($kwboxsizer, 0, wxGROW|wxALL, 5);
+  $left         -> Add($kwboxsizer, 0, wxALL|wxGROW|wxALIGN_CENTER_HORIZONTAL, 5);
 
   $this->{k1}   = Wx::CheckBox->new($leftpane, -1, "1",     wxDefaultPosition, wxDefaultSize);
   $this->{k2}   = Wx::CheckBox->new($leftpane, -1, "2",     wxDefaultPosition, wxDefaultSize);
@@ -207,7 +207,7 @@ sub new {
 
   ## -------- epsilon and phase correction
   my $extrabox  = Wx::BoxSizer->new( wxHORIZONTAL );
-  $left        -> Add($extrabox, 0, wxGROW|wxALL, 0);
+  $left        -> Add($extrabox, 0, wxALL|wxGROW|wxALIGN_CENTER_HORIZONTAL, 0);
 
   $extrabox -> Add(Wx::StaticText->new($leftpane, -1, "ε(k)"), 0, wxALL, 5);
   $this->{epsilon} = Wx::TextCtrl->new($leftpane, -1, 0, wxDefaultPosition, [50,-1]);
@@ -218,7 +218,7 @@ sub new {
 
   $this->{epsilon} -> SetValidator( Wx::Perl::TextValidator->new( qr([0-9.]) ) );
 
-  $leftpane -> SetSizerAndFit($left);
+  $leftpane -> SetSizer($left);
 
 
   $hbox -> Add(Wx::StaticLine->new($this, -1, wxDefaultPosition, [4, -1], wxLI_VERTICAL), 0, wxGROW|wxALL, 5);
