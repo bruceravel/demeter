@@ -10,7 +10,7 @@ use File::Basename;
 use File::Spec;
 
 use Wx qw(:everything);
-use Wx::Event qw(EVT_MENU EVT_CLOSE EVT_TOOL_ENTER EVT_CHECKBOX);
+use Wx::Event qw(EVT_MENU EVT_CLOSE EVT_TOOL_ENTER EVT_CHECKBOX EVT_BUTTON);
 use base 'Wx::App';
 
 use Wx::Perl::Carp;
@@ -69,9 +69,9 @@ sub OnInit {
   my $vbox = Wx::BoxSizer->new( wxVERTICAL);
   $hbox -> Add($vbox, 0, wxALL, 5);
   my $toolbar = Wx::ToolBar->new($frames{main}, -1, wxDefaultPosition, wxDefaultSize, wxTB_VERTICAL|wxTB_HORZ_TEXT);
-  $widgets{gds_toggle}     = $toolbar -> AddCheckTool(-1, "Show GDS",           icon("gds"),     wxNullBitmap, q{}, $hints{gds} );
-  $widgets{plot_toggle}    = $toolbar -> AddCheckTool(-1, "  Show plot tools",  icon("plot"),    wxNullBitmap, q{}, $hints{plot} );
-  $widgets{history_toggle} = $toolbar -> AddCheckTool(-1, "  Show fit history", icon("history"), wxNullBitmap, q{}, $hints{fit} );
+  $frames{main}->{gds_toggle}     = $toolbar -> AddCheckTool(-1, "Show GDS",           icon("gds"),     wxNullBitmap, q{}, $hints{gds} );
+  $frames{main}->{plot_toggle}    = $toolbar -> AddCheckTool(-1, "  Show plot tools",  icon("plot"),    wxNullBitmap, q{}, $hints{plot} );
+  $frames{main}->{history_toggle} = $toolbar -> AddCheckTool(-1, "  Show fit history", icon("history"), wxNullBitmap, q{}, $hints{fit} );
   $toolbar -> Realize;
   $vbox -> Add($toolbar, 0, wxALL, 0);
 
@@ -163,11 +163,11 @@ sub OnInit {
   EVT_MENU	 ($fefftool,     -1,         sub{my ($fefftool, $event) = @_; OnFeffClick($fefftool, $event, $frames{main})} );
   EVT_TOOL_ENTER ($frames{main}, $toolbar,   sub{my ($toolbar,  $event) = @_; OnToolEnter($toolbar,  $event, 'toolbar')} );
   EVT_CHECKBOX	 ($sum_button,   -1,         sub{my ($cb,       $event) = @_; OnSumClick ($cb,       $event, $fitbutton)});
-
+  EVT_BUTTON     ($fitbutton,    -1,         sub{fit(@_, \%frames)});
 
   ## -------- status bar
-  $widgets{statusbar} = $frames{main}->CreateStatusBar;
-  $widgets{statusbar} -> SetStatusText("Welcome to Artemis (" . $demeter->identify . ")");
+  $frames{main}->{statusbar} = $frames{main}->CreateStatusBar;
+  $frames{main}->{statusbar} -> SetStatusText("Welcome to Artemis (" . $demeter->identify . ")");
 
 
   $frames{main} -> SetSizer($hbox);
@@ -180,7 +180,7 @@ sub OnInit {
     $frames{$part} -> SetIcon($icon);
   };
   $frames{main} -> Show( 1 );
-  $toolbar->ToggleTool($widgets{plot_toggle}->GetId,1);
+  $toolbar->ToggleTool($frames{main}->{plot_toggle}->GetId,1);
   $frames{Plot} -> Show( 1 );
 }
 
@@ -217,6 +217,17 @@ EOH
   $info -> AddArtist($artwork);
 
   Wx::AboutBox( $info );
+};
+
+sub fit {
+  my ($button, $event, $rframes) = @_;
+  my (@data, @paths, @gds);
+  foreach my $k (keys(%$rframes)) {
+    next unless ($k =~ m{\Adata});
+    my $this = $rframes->{$k}->{data};
+    $this->fetch_parameters;
+    push @data, $this;
+  };
 };
 
 sub button_label {
@@ -266,7 +277,7 @@ sub OnDataClick {
 				  wxFD_OPEN|wxFD_FILE_MUST_EXIST|wxFD_CHANGE_DIR|wxFD_PREVIEW,
 				  wxDefaultPosition);
     if ($fd->ShowModal == wxID_CANCEL) {
-      $widgets{statusbar}->SetStatusText("data data import cancelled.");
+      $frames{main}->{statusbar}->SetStatusText("data data import cancelled.");
       return;
     };
     my $file = File::Spec->catfile($fd->GetDirectory, $fd->GetFilename);
@@ -291,6 +302,7 @@ sub OnDataClick {
     $frames{$dnum} -> populate($data);
     $frames{$dnum} -> Show(1);
     $databar->ToggleTool($idata,1);
+    delete $frames{prj};
   } else {
     my $this = sprintf("data%s", $event->GetId);
     return if not exists($frames{$this});
@@ -309,7 +321,7 @@ sub OnFeffClick {
 				  wxFD_OPEN|wxFD_FILE_MUST_EXIST|wxFD_CHANGE_DIR|wxFD_PREVIEW,
 				  wxDefaultPosition);
     if ($fd->ShowModal == wxID_CANCEL) {
-      $widgets{statusbar}->SetStatusText("Crystal/Feff data import cancelled.");
+      $frames{main}->{statusbar}->SetStatusText("Crystal/Feff data import cancelled.");
       return;
     };
     my $file = File::Spec->catfile($fd->GetDirectory, $fd->GetFilename);

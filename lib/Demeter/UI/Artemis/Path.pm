@@ -92,6 +92,7 @@ sub new {
 
 sub populate {
   my ($this, $parent, $pathobject) = @_;
+  $this->{path} = $pathobject;
 
   my $label = "Path: " . $pathobject->parent->name . " - " . $pathobject->name;
   $this->{idlabel} -> SetLabel($label);
