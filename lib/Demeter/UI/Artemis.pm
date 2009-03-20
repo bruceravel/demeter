@@ -15,7 +15,7 @@ use base 'Wx::App';
 
 use Wx::Perl::Carp;
 $SIG{__WARN__} = sub {Wx::Perl::Carp::warn($_[0])};
-#$SIG{__DIE__}  = sub {Wx::Perl::Carp::croak($_[0])};
+$SIG{__DIE__}  = sub {Wx::Perl::Carp::warn($_[0])};
 
 sub identify_self {
   my @caller = caller;
@@ -225,9 +225,34 @@ sub fit {
   foreach my $k (keys(%$rframes)) {
     next unless ($k =~ m{\Adata});
     my $this = $rframes->{$k}->{data};
-    $this->fetch_parameters;
+    $rframes->{$k}->fetch_parameters;
     push @data, $this;
+
+    my $npath = $rframes->{$k}->{pathlist}->GetPageCount - 1;
+    foreach my $p (0 .. $npath) {
+      my $path = $rframes->{$k}->{pathlist}->GetPage($p);
+      $path->fetch_parameters;
+      push @paths, $path->{path};
+    };
   };
+
+  my $grid = $rframes->{GDS}->{grid};
+  foreach my $row (0 .. $grid->GetNumberRows) {
+    my $name = $grid -> GetCellValue($row, 1);
+    next if ($name =~ m{\A\s*\z});
+    my $type = $grid -> GetCellValue($row, 0);
+    my $mathexp = $grid -> GetCellValue($row, 2);
+    push @gds, Demeter::GDS->new(name=>$name, gds=>$type, mathexp=>$mathexp);
+  };
+
+  my $fit = Demeter::Fit->new(data => \@data, paths => \@paths, gds => \@gds);
+  $fit->ignore_errors(1);
+  $fit->set_mode(ifeffit=>1, screen=>1);
+  $fit->fit;
+  $fit->po->start_plot;
+  $fit->po->plot_fit(1);
+  $data[0]->plot('Rmr');
+
 };
 
 sub button_label {

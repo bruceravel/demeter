@@ -361,6 +361,7 @@ sub OnData {
   my ($this, $x, $y, $def) = @_;
   $this->GetData;		# this line is what transfers the data from the Source to the Target
   my $book  = $this->{BOOK};
+  $book->DeletePage(0) if $book->GetPage(0) =~ m{Panel};
   my $spref = $this->{DATA}->{Data};
   my @sparray = map { $demeter->mo->fetch("ScatteringPath", $_) } @$spref;
   foreach my $sp ( @sparray ) {

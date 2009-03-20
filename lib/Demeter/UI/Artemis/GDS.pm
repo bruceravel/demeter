@@ -75,6 +75,7 @@ sub new {
 
 
   my $grid = Wx::Grid->new($this, -1, wxDefaultPosition, wxDefaultSize, wxVSCROLL);
+  $this->{grid} = $grid;
 
   $grid -> CreateGrid(12,4);
   #$grid -> EnableScrolling(1,1);

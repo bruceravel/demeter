@@ -20,7 +20,7 @@ use autodie qw(open close);
 use Moose;
 extends 'Demeter';
 use Demeter::StrTypes qw( Empty PathParam );
-use Demeter::NumTypes qw( Natural PosInt );
+use Demeter::NumTypes qw( Natural PosInt NonNeg );
 
 with 'Demeter::Data::Arrays';
 with 'Demeter::Path::Process';
@@ -103,7 +103,7 @@ has 'is_ss'           => (is=>'rw', isa=>  'Bool',  default => 1);
 has 'plot_after_fit'  => (is=>'rw', isa=>  'Bool',  default => 0);
 
 ## feff interpretation parameters
-has 'degen'           => (is=>'rw', isa=>  Natural, default => 0);
+has 'degen'           => (is=>'rw', isa=>  NonNeg, default => 0);
 has 'nleg'            => (is=>'rw', isa=>  PosInt,  default => 2);
 has 'reff'            => (is=>'rw', isa=> 'Num',    default => 0);
 has 'zcwif'           => (is=>'rw', isa=> 'Num',    default => 0);

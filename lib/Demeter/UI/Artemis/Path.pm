@@ -65,19 +65,19 @@ sub new {
   my $gbs = Wx::GridBagSizer->new( 3, 10 );
 
   my %labels = (label  => 'Label',
-		degen  => 'N',
+		n      => 'N',
 		s02    => 'S02',
 		e0     => 'ΔE0',
-		dr     => 'ΔR',
-		ss     => 'σ²',
+		delr   => 'ΔR',
+		sigma2 => 'σ²',
 		ei     => 'Ei',
 		third  => '3rd',
 		fourth => '4th',
 	       );
   my $i = 0;
-  foreach my $k (qw(label degen s02 e0 dr ss ei third fourth)) {
+  foreach my $k (qw(label n s02 e0 delr sigma2 ei third fourth)) {
     my $label        = Wx::StaticText->new($this, -1, $labels{$k}, wxDefaultPosition, wxDefaultSize, wxALIGN_RIGHT);
-    my $w = ($k eq 'degen') ? 50 : 250;
+    my $w = ($k eq 'n') ? 50 : 250;
     $this->{"pp_$k"} = Wx::TextCtrl  ->new($this, -1, q{}, wxDefaultPosition, [$w,-1]);
     $gbs     -> Add($label,           Wx::GBPosition->new($i,1));
     $gbs     -> Add($this->{"pp_$k"}, Wx::GBPosition->new($i,2));
@@ -108,12 +108,16 @@ sub populate {
   $this->{include} -> SetValue(1);
 
   $this->{pp_label} -> SetValue($pathobject->sp->labelline);
-  $this->{pp_degen} -> SetValue($pathobject->degen);
+  $this->{pp_n} -> SetValue($pathobject->degen);
 };
 
 sub fetch_parameters {
   my ($this) = @_;
-  
+  foreach my $k (qw(n s02 e0 delr sigma2 ei third fourth)) {
+    $this->{path}->$k($this->{"pp_$k"}->GetValue);
+  };
+  $this->{path}->include( $this->{include}->GetValue );
+  $this->{path}->plot_after_fit($this->{plotafter}->GetValue );
 };
 
 
