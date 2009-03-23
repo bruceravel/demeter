@@ -713,21 +713,29 @@ sub logfile {
   my ($self, $fname, $header, $footer) = @_;
   $header ||= $self->get('header') || q{};
   $footer ||= $self->get('footer') || q{};
-  $self -> set(header=>$header, footer=>$footer);
   open my $LOG, ">$fname";
+  print $LOG $self->logtext($header, $footer);
+  close $LOG;
+  return $self;
+};
+sub logtext {
+  my ($self, $header, $footer) = @_;
+  $self -> set(header=>$header, footer=>$footer);
   ($header .= "\n") if ($header !~ m{\n\z});
-  print $LOG $header;
-  print $LOG $self->properties_header;
-  print $LOG "\n";
-  print $LOG "=*" x 38 . "=\n\n";
+  my $text = q{};
 
-  print $LOG $self->statistics_report;
-  print $LOG $/;
-  print $LOG $self->happiness_report;
-  print $LOG $/;
-  print $LOG $self->gds_report;
-  print $LOG $/;
-  print $LOG $self->correl_report(); # arg is cormin
+  $text .= $header;
+  $text .= $self->properties_header;
+  $text .= "\n";
+  $text .= "=*" x 38 . "=\n\n";
+
+  $text .= $self->statistics_report;
+  $text .= $/;
+  $text .= $self->happiness_report;
+  $text .= $/;
+  $text .= $self->gds_report;
+  $text .= $/;
+  $text .= $self->correl_report(); # arg is cormin
 
   foreach my $data (@{ $self->data }) {
     next if (not $data->fitting);
@@ -740,38 +748,36 @@ sub logfile {
       $data->part_fft("fit") if (lc($data->fitsum) eq 'sum');
       $data->part_bft("fit") if (lc($data->fitsum) eq 'sum');
     };
-    print $LOG $/;
-    print $LOG "===== Data set >> " . $data->name . " << ====================================\n\n" ;
-    print $LOG $data->fit_parameter_report($#{ $self->data }, $self->fit_performed);
-    print $LOG $/;
+    $text .= $/;
+    $text .= "===== Data set >> " . $data->name . " << ====================================\n\n" ;
+    $text .= $data->fit_parameter_report($#{ $self->data }, $self->fit_performed);
+    $text .= $/;
     my @all_paths = @{ $self->paths };
     ## figure out how wide the column of path labels should be
     my $length = max( map { length($_->name) if ($_->data eq $data) } @all_paths ) + 1;
-    print $LOG $all_paths[0]->row_main_label($length);
+    $text .= $all_paths[0]->row_main_label($length);
     foreach my $path (@all_paths) {
       next if not defined($path);
       next if ($path->data ne $data);
       next if not $path->include;
-      print $LOG $path->row_main($length);
+      $text .= $path->row_main($length);
     };
-    print $LOG $/;
-    print $LOG $all_paths[0]->row_second_label($length);
+    $text .= $/;
+    $text .= $all_paths[0]->row_second_label($length);
     foreach my $path (@all_paths) {
       next if not defined($path);
       next if ($path->data ne $data);
       next if not $path->include;
-      print $LOG $path->row_second($length);
+      $text .= $path->row_second($length);
     };
   };
 
-  print $LOG "\n";
-  print $LOG "=*" x 38 . "=\n\n";
+  $text .= "\n";
+  $text .= "=*" x 38 . "=\n\n";
   ($footer .= "\n") if ($footer !~ m{\n\z});
-  print $LOG $footer;
-  close $LOG;
+  $text .= $footer;
 
-  #$_->update_fft(1) foreach (@{ $self->data });
-  return $self;
+  return $text;
 };
 
 

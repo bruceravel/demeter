@@ -86,9 +86,9 @@ sub new {
   $grid -> SetColLabelValue(1, 'Name');
   $grid -> SetColSize      (1,  100);
   $grid -> SetColLabelValue(2, 'Math expression');
-  $grid -> SetColSize      (2,  400);
+  $grid -> SetColSize      (2,  330);
   $grid -> SetColLabelValue(3, 'Evaluated');
-  $grid -> SetColSize      (3,  80);
+  $grid -> SetColSize      (3,  150);
 
   $grid -> SetRowLabelSize(40);
 
@@ -216,6 +216,24 @@ sub StartDrag {
   $source->SetData( $dragdata );
   $source->DoDragDrop(1);
   
+};
+
+
+sub fill_results {
+  my ($this, @gds) = @_;
+  my $grid = $this->{grid};
+  foreach my $row (0 .. $grid->GetNumberRows) {
+    foreach my $g (@gds) {
+      next if (lc($g->name) ne lc($grid->GetCellValue($row, 1)));
+      my $text;
+      if ($g->gds eq 'guess') {
+	$text = sprintf("%.5f +/- %.5f", $g->bestfit, $g->error);
+      } elsif ($g->gds =~ m{(?:after|def|penalty)}) {
+	$text = sprintf("%.5f", $g->bestfit);
+      };
+      $grid -> SetCellValue($row, 3, $text);
+    };
+  };
 };
 
 package Demeter::UI::Artemis::GDS::TextDropTarget;

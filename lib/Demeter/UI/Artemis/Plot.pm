@@ -79,13 +79,13 @@ sub new {
   my $nb = Wx::Notebook->new( $this, -1, wxDefaultPosition, wxDefaultSize, wxBK_TOP );
   foreach my $utility (qw(limits stack indicators VPaths)) {
     my $count = $nb->GetPageCount;
-    $this->{page}->{$utility} = ($utility eq 'limits')     ? Demeter::UI::Artemis::Plot::Limits     -> new($nb)
-                              : ($utility eq 'stack')      ? Demeter::UI::Artemis::Plot::Stack      -> new($nb)
-                              : ($utility eq 'indicators') ? Demeter::UI::Artemis::Plot::Indicators -> new($nb)
-                              : ($utility eq 'VPaths')     ? Demeter::UI::Artemis::Plot::VPaths     -> new($nb)
-	                      :                              q{};
-    next if not $this->{page}->{$utility};
-    $nb->AddPage($this->{page}->{$utility}, ($utility eq 'indicators') ? 'indic.' : $utility, 0);#, $count);
+    $this->{$utility} = ($utility eq 'limits')     ? Demeter::UI::Artemis::Plot::Limits     -> new($nb)
+                      : ($utility eq 'stack')      ? Demeter::UI::Artemis::Plot::Stack      -> new($nb)
+                      : ($utility eq 'indicators') ? Demeter::UI::Artemis::Plot::Indicators -> new($nb)
+                      : ($utility eq 'VPaths')     ? Demeter::UI::Artemis::Plot::VPaths     -> new($nb)
+	              :                              q{};
+    next if not $this->{$utility};
+    $nb->AddPage($this->{$utility}, ($utility eq 'indicators') ? 'indic.' : $utility, 0);#, $count);
   };
   $left -> Add($nb, 1, wxGROW|wxALL, 5);
 

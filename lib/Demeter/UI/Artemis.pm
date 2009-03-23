@@ -21,7 +21,8 @@ sub identify_self {
   my @caller = caller;
   return dirname($caller[1]);
 };
-use vars qw($artemis_base $icon %frames %widgets);
+use vars qw($artemis_base $icon $nset %frames %widgets);
+$nset = 0;
 $artemis_base = identify_self();
 
 my %hints = (
@@ -149,11 +150,11 @@ sub OnInit {
   $descboxsizer   -> Add($description,  1, wxGROW|wxALL, 0);
   $vbox           -> Add($descboxsizer, 0, wxGROW|wxALL, 0);
 
-  my $fitbutton = Wx::Button->new($frames{main}, -1, "Fit", wxDefaultPosition, wxDefaultSize);
-  $fitbutton -> SetForegroundColour(Wx::Colour->new("#000000"));
-  $fitbutton -> SetBackgroundColour(Wx::Colour->new($demeter->co->default("happiness", "average_color")));
-  $fitbutton -> SetFont(Wx::Font->new( 10, wxDEFAULT, wxNORMAL, wxBOLD, 0, "" ) );
-  $hbox->Add($fitbutton, 0, wxGROW|wxALL, 2);
+  $frames{main}->{fitbutton}  = Wx::Button->new($frames{main}, -1, "Fit", wxDefaultPosition, wxDefaultSize);
+  $frames{main}->{fitbutton} -> SetForegroundColour(Wx::Colour->new("#000000"));
+  $frames{main}->{fitbutton} -> SetBackgroundColour(Wx::Colour->new($demeter->co->default("happiness", "average_color")));
+  $frames{main}->{fitbutton} -> SetFont(Wx::Font->new( 10, wxDEFAULT, wxNORMAL, wxBOLD, 0, "" ) );
+  $hbox->Add($frames{main}->{fitbutton}, 0, wxGROW|wxALL, 2);
 
   EVT_MENU	 ($frames{main}, wxID_ABOUT, \&on_about );
   EVT_MENU	 ($frames{main}, wxID_EXIT,  sub{shift->Close} );
@@ -162,8 +163,8 @@ sub OnInit {
   EVT_MENU	 ($datatool,     -1,         sub{my ($fefftool, $event) = @_; OnDataClick($datatool, $event, $frames{main})} );
   EVT_MENU	 ($fefftool,     -1,         sub{my ($fefftool, $event) = @_; OnFeffClick($fefftool, $event, $frames{main})} );
   EVT_TOOL_ENTER ($frames{main}, $toolbar,   sub{my ($toolbar,  $event) = @_; OnToolEnter($toolbar,  $event, 'toolbar')} );
-  EVT_CHECKBOX	 ($sum_button,   -1,         sub{my ($cb,       $event) = @_; OnSumClick ($cb,       $event, $fitbutton)});
-  EVT_BUTTON     ($fitbutton,    -1,         sub{fit(@_, \%frames)});
+  EVT_CHECKBOX	 ($sum_button,   -1,         sub{my ($cb,       $event) = @_; OnSumClick ($cb,       $event, $frames{main}->{fitbutton})});
+  EVT_BUTTON     ($frames{main}->{fitbutton}, -1, sub{fit(@_, \%frames)});
 
   ## -------- status bar
   $frames{main}->{statusbar} = $frames{main}->CreateStatusBar;
@@ -245,14 +246,36 @@ sub fit {
     push @gds, Demeter::GDS->new(name=>$name, gds=>$type, mathexp=>$mathexp);
   };
 
+  ## get name, fom, and description + other properties
   my $fit = Demeter::Fit->new(data => \@data, paths => \@paths, gds => \@gds);
   $fit->ignore_errors(1);
-  $fit->set_mode(ifeffit=>1, screen=>1);
+  $fit->set_mode(ifeffit=>1, screen=>0);
   $fit->fit;
+  #print $fit->logtext(q{}, q{});
   $fit->po->start_plot;
+  $rframes->{Plot}->{limits}->{fit}->SetValue(1);
   $fit->po->plot_fit(1);
   $data[0]->plot('Rmr');
 
+  $rframes->{GDS}->fill_results(@gds);
+
+  set_happiness_color($fit->color);
+};
+
+
+sub set_happiness_color {
+  my $color = $_[0] || $demeter->co->default("happiness", "average_color");
+  $frames{main}->{fitbutton} -> SetBackgroundColour(Wx::Colour->new($color));
+  $frames{Plot}->{k_button}  -> SetBackgroundColour(Wx::Colour->new($color));
+  $frames{Plot}->{r_button}  -> SetBackgroundColour(Wx::Colour->new($color));
+  $frames{Plot}->{q_button}  -> SetBackgroundColour(Wx::Colour->new($color));
+  foreach my $k (keys(%frames)) {
+    next unless ($k =~ m{\Adata});
+    $frames{$k}->{plot_k123} -> SetBackgroundColour(Wx::Colour->new($color));
+    $frames{$k}->{plot_r123} -> SetBackgroundColour(Wx::Colour->new($color));
+    $frames{$k}->{plot_rmr}  -> SetBackgroundColour(Wx::Colour->new($color));
+    $frames{$k}->{plot_kq}   -> SetBackgroundColour(Wx::Colour->new($color));
+  };
 };
 
 sub button_label {
@@ -321,13 +344,14 @@ sub OnDataClick {
     do_the_size_dance($self);
     my $idata = $newtool->GetId;
     my $dnum = sprintf("data%s", $idata);
-    $frames{$dnum}  =  Demeter::UI::Artemis::Data->new;
+    $frames{$dnum}  = Demeter::UI::Artemis::Data->new($self, $nset++);
     $frames{$dnum} -> SetTitle("Artemis: ".$data->name);
     $frames{$dnum} -> SetIcon($icon);
     $frames{$dnum} -> populate($data);
     $frames{$dnum} -> Show(1);
     $databar->ToggleTool($idata,1);
     delete $frames{prj};
+    set_happiness_color();
   } else {
     my $this = sprintf("data%s", $event->GetId);
     return if not exists($frames{$this});

@@ -21,19 +21,26 @@ sub plot {
     carp($self->name . " is a detector group, which cannot be plotted in $space\n\n");
     return $self;
   };
-  my $which = ($space eq 'e')    ? $self->_update('fft')
-            : ($space eq 'k')    ? $self->_update('fft')
-            : ($space eq 'k123') ? $self->_update('fft')
-            : ($space eq 'r123') ? $self->_update('bft')
-            : ($space eq 'r')    ? $self->_update('bft')
-            : ($space eq 'rmr')  ? $self->_update('bft')
-	    : ($space eq 'q')    ? $self->_update('all')
-	    : ($space eq 'kq')   ? $self->_update('all')
-            :                      q{};
+  my $which = ($space eq 'e')     ? $self->_update('fft')
+            : ($space eq 'k')     ? $self->_update('fft')
+            : ($space eq 'k123')  ? $self->_update('fft')
+            : ($space eq 'r123')  ? $self->_update('bft')
+            : ($space eq 'r')     ? $self->_update('bft')
+            : ($space eq 'rmr')   ? $self->_update('bft')
+	    : ($space eq 'q')     ? $self->_update('all')
+	    : ($space eq 'kq')    ? $self->_update('all')
+	    : ($space eq 'kqfit') ? $self->_update('all')
+            :                       q{};
 
  SWITCH: {
     (lc($space) eq 'k123') and do {
       $self -> plotk123;
+      $pf   -> increment;
+      return $self;
+      last SWITCH;
+    };
+    (lc($space) eq 'kqfit') and do {
+      $self -> plot_kqfit;
       $pf   -> increment;
       return $self;
       last SWITCH;
@@ -231,6 +238,7 @@ sub plotk123 {
   my $string .= $self->template("process", "k123");
   $self->dispose($string);
   my @max = (Ifeffit::get_scalar("__123_max1"), Ifeffit::get_scalar("__123_max2"), Ifeffit::get_scalar("__123_max3"));
+  my $winsave = $self->po->plot_win;
 
   $self->po->kweight(1);
   $self->po->title($self->name . " at kweight = 1, 2, and 3");
@@ -238,6 +246,7 @@ sub plotk123 {
   $self->set(plot_multiplier => $scale, 'y_offset'=>1.2*$max[1],  name=>"$save[0]: kw=1, scaled by $scale");
   $self->plot('k');
 
+  $self->po->plot_win(0);
   $self->po->kweight(2);
   $self->set(plot_multiplier => 1,   'y_offset'=>0,  name=>"$save[0]: kw=2, unscaled");
   $self->plot('k');
@@ -251,6 +260,7 @@ sub plotk123 {
   $self->set(plot_multiplier => 1,   'y_offset'=>1.2*$max[1]);
   $self->plot_window('k') if $self->po->plot_win;
 
+  $self->po->plot_win($winsave);
   $self->po->title(q{});
   $self->name($save[0]);
   $self->plot_multiplier($save[1]);
@@ -265,6 +275,7 @@ sub plotR123 {
   my @save = ($self->name, $self->plot_multiplier, $self->y_offset, $self->po->kweight);
 
   my @max;
+  my $winsave = $self->po->plot_win;
   $self->po->kweight(1);
   $self->_update('bft');
   my @chir = Ifeffit::get_array($self->group.".chir_mag");
@@ -284,6 +295,7 @@ sub plotR123 {
   $self->set(plot_multiplier => $scale, 'y_offset'=>$max[1],  name=>"$save[0]: kw=1, scaled by $scale");
   $self->plot('r');
 
+  $self->po->plot_win(0);
   $self->po->kweight(2);
   $self->set(plot_multiplier => 1,   'y_offset'=>0,  name=>"$save[0]: kw=2, unscaled");
   $self->plot('r');
@@ -298,6 +310,7 @@ sub plotR123 {
   $self->set(plot_multiplier => 1,   'y_offset'=>$max[1]);
   $self->plot_window('r') if $self->po->plot_win;
 
+  $self->po->plot_win($winsave);
   $self->po->title(q{});
   $self->name($save[0]);
   $self->plot_multiplier($save[1]);
@@ -311,6 +324,7 @@ sub plotRmr {
   croak(ref $self . " objects are not plottable") if not $self->plottable;
   my $string = q{};
   my ($lab, $yoff, $down) = ( $self->name, $self->y_offset, $self->rmr_offset );
+  my $winsave = $self->po->plot_win;
 
   ## plot magnitude part
   my $rpart = $self->po->r_pl;
@@ -321,6 +335,7 @@ sub plotRmr {
   $self -> po -> New(0);
 
   ## plot real part
+  $self -> po -> plot_win(0);
   $self -> y_offset($yoff+$down);
   $self -> name(q{});
   $self -> po -> r_pl('r');
@@ -329,8 +344,45 @@ sub plotRmr {
   $self -> plot('r');
   $self -> y_offset($yoff);
 
+  $self->po->plot_win($winsave);
   $self -> name($lab);
   $self -> po -> r_pl($rpart);
+  return $self;
+};
+
+sub plot_kqfit {
+  my ($self) = @_;
+  croak(ref $self . " objects are not plottable") if not $self->plottable;
+  my ($lab, $yoff) = ( $self->name, $self->y_offset );
+  my $winsave = $self->po->plot_win;
+  my $qpart = $self->po->q_pl;
+
+  ## figure out the vertical spacing between the traces
+  my $string = $self->template("process", "k123");
+  $self->dispose($string);
+  my @max = (Ifeffit::get_scalar("__123_max1"), Ifeffit::get_scalar("__123_max2"), Ifeffit::get_scalar("__123_max3"));
+  my $k = int($self->po->kweight);
+  ($k = 3) if ($k > 3);
+  ($k = 1) if ($k < 1);
+  my $down = $max[$k-1];
+
+  $self->po->title($self->name . " at in k and q space");
+
+  ## plot magnitude part
+  $self -> name('k space');
+  $self -> plot('k');
+
+  ## plot real part
+  $self -> po -> plot_win(0);
+  $self -> po -> q_pl('r');
+  $self -> y_offset($yoff-$down);
+  $self -> name('real part of q space');
+  $self -> plot('q');
+  $self -> y_offset($yoff);
+
+  $self->po->plot_win($winsave);
+  $self -> name($lab);
+  $self -> po -> q_pl($qpart);
   return $self;
 };
 

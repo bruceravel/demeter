@@ -30,7 +30,7 @@ my $windows = [qw(hanning kaiser-bessel welch parzen sine)];
 my $demeter = $Demeter::UI::Artemis::demeter;
 
 sub new {
-  my ($class, $parent) = @_;
+  my ($class, $parent, $nset) = @_;
 
   my $this = $class->SUPER::new($parent, -1, "Artemis: Data controls",
 				wxDefaultPosition, [800,495],
@@ -51,9 +51,9 @@ sub new {
   $namebox -> Add(Wx::StaticText->new($leftpane, -1, "Name"), 0, wxLEFT|wxRIGHT|wxTOP, 5);
   $this->{name} = Wx::TextCtrl->new($leftpane, -1, q{}, wxDefaultPosition, wxDefaultSize,);
   $namebox -> Add($this->{name}, 1, wxLEFT|wxRIGHT|wxTOP, 5);
-  $namebox -> Add(Wx::StaticText->new($leftpane, -1, "FOM"), 0, wxLEFT|wxRIGHT|wxTOP, 5);
-  $this->{fom} = Wx::TextCtrl->new($leftpane, -1, q{}, wxDefaultPosition, [60,-1],);
-  $namebox -> Add($this->{fom}, 0, wxGROW|wxLEFT|wxRIGHT|wxTOP, 5);
+  $namebox -> Add(Wx::StaticText->new($leftpane, -1, "CV"), 0, wxLEFT|wxRIGHT|wxTOP, 5);
+  $this->{cv} = Wx::TextCtrl->new($leftpane, -1, $nset, wxDefaultPosition, [60,-1],);
+  $namebox -> Add($this->{cv}, 0, wxGROW|wxLEFT|wxRIGHT|wxTOP, 5);
 
   ## -------- file name and record number
   my $filebox  = Wx::BoxSizer->new( wxHORIZONTAL );
@@ -80,7 +80,6 @@ sub new {
   EVT_BUTTON($this, $this->{plot_rmr},  sub{$this->fetch_parameters;
 					    $this->{data}->po->start_plot;
 					    $this->{data}->plot('rmr');
-					    $this->{data}->plot_window('r') if $this->{data}->po->plot_win;
 					  });
   EVT_BUTTON($this, $this->{plot_k123}, sub{$this->fetch_parameters;
 					    $this->{data}->po->start_plot;
@@ -92,8 +91,8 @@ sub new {
 					  });
   EVT_BUTTON($this, $this->{plot_kq},   sub{$this->fetch_parameters;
 					    $this->{data}->po->start_plot;
-					    $this->{data}->plot('kq');
-					    $this->{data}->plot_window('k') if $this->{data}->po->plot_win;
+					    $this->{data}->plot('kqfit');
+					    #$this->{data}->plot_window('k') if $this->{data}->po->plot_win;
 					  });
 
   ## -------- title lines
@@ -276,6 +275,7 @@ sub populate {
   $self->{kmax}->SetValue($data->fft_kmax);
   $self->{dk}->SetValue($data->fft_dk);
   $self->{rmin}->SetValue($data->bft_rmin);
+  $self->{rmin}->SetValue($data->bkg_rbkg + 0.05) if ($data->bft_rmin < $data->bkg_rbkg);
   $self->{rmax}->SetValue($data->bft_rmax);
   $self->{dr}->SetValue($data->bft_dr);
 
