@@ -68,6 +68,8 @@ Math::Round
 
 Math::Spline
 
+Pod::POM
+
 Readonly
 
 Regexp::Common

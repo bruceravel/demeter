@@ -29,6 +29,7 @@ use File::Basename qw(dirname);
 use File::Spec;
 use List::MoreUtils qw(any minmax zip);
 #use Safe;
+use Pod::POM;
 use String::Random qw(random_string);
 use Text::Template;
 
@@ -73,6 +74,8 @@ has 'frozen'    => (is => 'rw', isa => 'Bool', default => 0);
 has 'data'      => (is => 'rw', isa => 'Any',  default => q{},
 		    trigger => sub{ my($self, $new) = @_; $self->datagroup($new->group) if $new});
 has 'datagroup' => (is => 'rw', isa => 'Str',  default => q{});
+has 'trouble'   => (is => 'rw', isa => 'Str',  default => q{});
+
 
 use Demeter::Mode;
 use vars qw($mode);
@@ -442,7 +445,52 @@ sub get_params_of {
   return $self->meta->get_attribute_list;
 };
 
+sub add_trouble {
+  my ($self, $new) = @_;
+  my $tr = $self->trouble;
+  if (not $tr) {
+    $self->trouble($new);
+  } else {
+    $self->trouble($tr . '|' . $new);
+  };
+  return $self;
+};
 
+sub translate_trouble {
+  my ($self, $trouble) = @_;
+  return q{} if (ref($self) !~ m{(Data|Fit|GDS|Path)\z});
+  my $obj = (ref($self) =~ m{Data}) ? 0
+          : (ref($self) =~ m{Path}) ? 1
+          : (ref($self) =~ m{GDS})  ? 2
+          : (ref($self) =~ m{Fit})  ? 3
+	  :                           -1;
+  return q{} if ($obj == -1);
+
+  my $parser = Pod::POM->new();
+  my $pom = $parser->parse($INC{'Demeter/Fit/Sanity.pm'});
+
+  my $sections = $pom->head1();
+  my $troubles_section;
+  foreach my $s (@$sections) {
+    next unless ($s->title() eq 'TROUBLE REPORTING');
+    $troubles_section = $s;
+    last;
+  };
+
+  my $text = q{};
+  foreach my $item ($troubles_section->head2->[$obj]->over->[0]->item) {
+    my $this = $item->title;
+    if ($which =~ m{$this}) {
+      my $content = $item->content();
+      $content =~ s{\n}{ }g;
+      $content =~ s{\s+\z}{};
+      $text = $content;
+    };
+  };
+  undef $parser;
+  undef $pom;
+  return $text || $self->trouble;
+};
 
 ## -------- serialization tools
 sub serialization {
@@ -1356,6 +1404,28 @@ All others return false.
    $can_plot = $object -> plottable;
 
 =back
+
+=head2 Utility methods
+
+Demeter provides a generic mechanism for reporting on errors in a
+fitting model.  When using Demeter non-interactively, useful messages
+about problems in the fitting model will be written to standard
+output.  Critical problems in a non-interactive mode will be cause the
+script to croak (see L<Carp>).
+
+In an interactive mode (such as with the Wx interface), the
+C<add_trouble> method is used to fill the C<trouble> attribute, which
+is inherited by all Demeter objects.  In the default, untroubled
+state, an object will have the C<trouble> attribute set to an empty
+string (i.e. something logically false).  As problems are found in the
+fitting model (see L<Demeter::Fit::Sanity>), the C<trouble> attribute
+gets short text strings appended to it.  The list of problems an
+object has are separated by pipe characters (C<|>).
+
+See L<Demeter::Fit::Sanity> for a complete description of these
+problem codes.  The Fit, Data, Path, and GDS objects each have their
+own set of problem codes.
+
 
 =head1 DIAGNOSTICS
 

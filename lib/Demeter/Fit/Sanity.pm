@@ -43,9 +43,11 @@ sub S_data_files_exist {
     if (not -e $file) {
       push (@{$$r_problem{errors}}, "The data file \"$file\" does not exist.");
       ++$$r_problem{data_files};
+      $d->add_trouble('-e');
     } elsif (not -r $file) {
       push (@{$$r_problem{errors}}, "The data file \"$file\" cannot be read.");
       ++$$r_problem{data_files};
+      $d->add_trouble('-r');
     };
   };
 };
@@ -59,9 +61,11 @@ sub S_feff_files_exist {
     if (not -e $file) {
       push (@{$$r_problem{errors}}, "The feffNNNN,dat file \"$file\" does not exist.");
       ++$$r_problem{data_files};
+      $p->add_trouble('-e');
     } elsif (not -r $file) {
       push (@{$$r_problem{errors}}, "The feffNNNN.dat file \"$file\" cannot be read.");
       ++$$r_problem{data_files};
+      $p->add_trouble('-r');
     };
   };
 };
@@ -92,6 +96,7 @@ sub S_defined_not_used {
     if (not $found) {
       push (@{$$r_problem{errors}}, "The guess parameter \"" . $g->name . "\" is not used elsewhere in the fit");
       ++$$r_problem{defined_not_used};
+      $g->trouble('notused');
     };
   };
 };
@@ -123,9 +128,11 @@ sub S_used_not_defined {
       if (lc($token) =~ m{\[?cv\]?}) {
 	++$$r_problem{used_not_defined};
 	push(@{$$r_problem{errors}}, 'The [cv] token is not currently supported in def parameter math expressions.');
+	$g->add_trouble('usecv');
       } else {
 	++$$r_problem{used_not_defined};
 	push(@{$$r_problem{errors}}, "The parameter \"" . $g->name . "\" uses an undefined token: $token");
+	$g->add_trouble('useundef');
       };
     };
   };
@@ -147,6 +154,7 @@ sub S_used_not_defined {
 	push(@{$$r_problem{errors}},
 	     "The math expression for $pp for \"$label\" uses an undefined token: $token"
 	    );
+	$p->add_trouble($pp.'_useundef_'.$token);
       };
     };
   };
@@ -162,10 +170,12 @@ sub S_binary_ops {
     next if ($g->gds =~ m{(?:merge|skip)});
     my $mathexp = $g->mathexp;
     if ($mathexp =~ m{($bad_binary_op_regexp)}) {
+      my $which = $1;
       ++$$r_problem{binary_ops};
       push(@{$$r_problem{errors}},
-	   "The math expression for \"" . $g->name . "\" uses an invalid binary operation: $1"
+	   "The math expression for \"" . $g->name . "\" uses an invalid binary operation: $which"
 	  );
+      $g->add_trouble("binary_$which");
     };
   };
   foreach my $p (@paths) {
@@ -174,10 +184,12 @@ sub S_binary_ops {
     foreach my $pp (qw(s02 e0 delr sigma2 ei third fourth dphase)) {
       my $mathexp = $p->$pp;
       if ($mathexp =~ m{($bad_binary_op_regexp)}) {
+	my $which = $1;
 	++$$r_problem{binary_ops};
 	push(@{$$r_problem{errors}},
-	     "The math expression for $pp for \"$label\" uses an invalid binary operation: $1"
+	     "The math expression for $pp for \"$label\" uses an invalid binary operation: $which"
 	    );
+	$p->add_trouble($pp."_binary_".$which);
       };
     };
   };
@@ -197,6 +209,7 @@ sub S_function_names {
       if (not is_IfeffitFunction($match)) {
 	push (@{$$r_problem{errors}}, "$match (used in the math expression for \"$name\") is not a valid Ifeffit function");
 	++$$r_problem{function_names};
+	$g->add_trouble("function_$match");
       };
     };
   };
@@ -210,6 +223,7 @@ sub S_function_names {
 	if (not is_IfeffitFunction($match)) {
 	  push (@{$$r_problem{errors}}, "$match (used in the math expression for $pp for \"$label\") is not a valid Ifeffit function");
 	  ++$$r_problem{function_names};
+	  $p->add_trouble($pp."_function_".$match);
 	};
       };
     };
@@ -229,8 +243,11 @@ sub S_unique_group_names {
   my %cv_seen  = ();
   foreach my $d (@data) {
     ++$dseen{$d->group};
+    $d->add_trouble('namenotunique') if ($dseen{$d->group} > 1);
     ++$tag_seen{$d->tag};
+    $d->add_trouble('tagnotunique')  if ($tag_seen{$d->tag} > 1);
     ++$cv_seen{$d->cv};
+    $d->add_trouble('cvnotunique')   if ($cv_seen{$d->cv} > 1);
   };
   foreach my $s (keys %dseen) {
     if ($dseen{$s} > 1) {
@@ -256,6 +273,7 @@ sub S_unique_group_names {
   foreach my $p (@paths) {
     next if not defined($p);
     ++$pseen{$p->group};
+    $p->add_trouble('namenotunique') if ($pseen{$p->group} > 1);
   };
   foreach my $s (keys %pseen) {
     if ($pseen{$s} > 1) {
@@ -269,6 +287,7 @@ sub S_unique_group_names {
   foreach my $p (@data, @paths) {
     next if not defined($p);
     ++$seen{$p->group};
+    $p->add_trouble('pathdataname') if ($seen{$p->group} > 1);
   };
   foreach my $s (keys %seen) {
     if ($seen{$s} > 1 and $pseen{$s} and $pseen{$s} < 2 and $dseen{$s} < 2) {
@@ -285,6 +304,7 @@ sub S_gds_unique_names {
   my %seen = ();
   foreach my $g (@gds) {
     ++$seen{$g->name};
+    $g->add_trouble('notunique') if ($seen{$g->name} > 1);
   };
   foreach my $s (keys %seen) {
     if ($seen{$s} > 1) {
@@ -306,6 +326,7 @@ sub S_parens_not_match {
     if ($not_ok) {
       push (@{$$r_problem{errors}}, "The math expression for \"$name\" has mismatched parens.");
       ++$$r_problem{parens_not_match};
+      $g->add_trouble('parens');
     };
   };
   foreach my $p (@paths) {
@@ -317,6 +338,7 @@ sub S_parens_not_match {
       if ($not_ok) {
 	push (@{$$r_problem{errors}}, "The math expression for $pp for \"$label\" has mismatched parens.");
 	++$$r_problem{parens_not_match};
+	$p->add_trouble($pp."_parens");
       };
     };
   };
@@ -332,11 +354,13 @@ sub S_data_parameters {
     if ($kmin >= $kmax) {
       push (@{$$r_problem{errors}}, "The value of kmin for data set \"$d\" is not smaller than kmax");
       ++$$r_problem{data_parameters};
+      $d->add_trouble('kminkmax');
     };
     my ($rmin, $rmax) = $d->get(qw(bft_rmin bft_rmax));
     if ($kmin >= $kmax) {
       push (@{$$r_problem{errors}}, "The value of Rmin for data set \"$d\" is not smaller than Rmax");
       ++$$r_problem{data_parameters};
+      $d->add_trouble('rminrmax');
     };
   };
 };
@@ -359,6 +383,7 @@ sub S_nidp {
   if ($nguess > $nidp) {
     push (@{$$r_problem{errors}}, sprintf("You have %.1f independent points in %d data sets but have used %d guess parameters.", $nidp, $ndata, $nguess));
     ++$$r_problem{nidp};
+    $self->add_trouble('nvarnidp');
   };
 };
 
@@ -372,6 +397,7 @@ sub S_rmin_rbkg {
     if ($d->bft_rmin < $d->bkg_rbkg) {
       push (@{$$r_problem{errors}}, "Rmin is smaller than Rbkg for data set " . $d->name);
       ++$$r_problem{rmin_rbkg};
+      $d->add_trouble('rminrbkg');
     };
   };
 };
@@ -390,6 +416,7 @@ sub S_reff_rmax {
 	my $identify = $p->name || $p->Index;
 	push (@{$$r_problem{errors}}, "Reff for path \"$identify\" is well beyond Rmax for data set \"" . $d->name . "\"");
 	++$$r_problem{reff_rmax};
+	$p->add_trouble('reffrmax');
       };
     };
   };
@@ -422,14 +449,17 @@ sub S_exceed_ifeffit_limits {
   if ($n_guess > Ifeffit::get_scalar('&max_varys')) {
     push (@{$$r_problem{errors}}, "You have defined more than Ifeffit's limit of " . Ifeffit::get_scalar('&max_varys') . " guess parameters.");
     ++$$r_problem{exceed_max_nvarys};
+    $self->add_trouble('nvarys');
   };
   if ($n_params > Ifeffit::get_scalar('&max_scalars')) {
     push (@{$$r_problem{errors}}, "You have defined more than Ifeffit's limit of " . Ifeffit::get_scalar('&max_scalars') . " scalars.  (Wow!)");
     ++$$r_problem{exceed_max_params};
+    $self->add_trouble('nparams');
   };
   if ($n_restraint > 10) {
     push (@{$$r_problem{errors}}, "You have defined more than Ifeffit's limit of 10 restraints.");
     ++$$r_problem{exceed_max_restraints};
+    $self->add_trouble('nrestraints');
   };
 
   ## number of data sets
@@ -440,6 +470,7 @@ sub S_exceed_ifeffit_limits {
   if ($n_data > Ifeffit::get_scalar('&max_data_sets')) {
     push (@{$$r_problem{errors}}, "You have defined more than Ifeffit's limit of " . Ifeffit::get_scalar('&max_datasets') . " data sets.");
     ++$$r_problem{exceed_max_datasets};
+    $self->add_trouble('ndatasets');
   };
 
   ## number of paths
@@ -451,6 +482,7 @@ sub S_exceed_ifeffit_limits {
   if ($n_paths > Ifeffit::get_scalar('&max_paths')) {
     push (@{$$r_problem{errors}}, "You have defined more than Ifeffit's limit of " . Ifeffit::get_scalar('&max_paths') . " paths.");
     ++$$r_problem{exceed_max_paths};
+    $self->add_trouble('npaths');
   };
 
 };
@@ -463,6 +495,7 @@ sub S_program_var_names {
     if (is_IfeffitProgramVar($g->name)) {
       push (@{$$r_problem{errors}}, "\"" . $g->name . "\" is an Ifeffit program variable and cannot be a parameter in the fit.");
       ++$$r_problem{program_var_names};
+      $g->add_trouble('progvar');
     };
   };
 };
@@ -477,6 +510,7 @@ sub S_path_calculation_exists {
     next if ((-e $nnnn) and $p->file);
     push (@{$$r_problem{errors}}, "Path \"" . $p->name . "\" does not have a valid Feff calculation associated with it.");
     ++$$r_problem{path_calculation_exists};
+    $p->add_trouble('nocalc');
   };
 };
 
@@ -488,6 +522,7 @@ sub S_notice_merge {
     if ($g->gds eq 'merge') {
       push (@{$$r_problem{errors}}, "Parameter " . $g->name . " is an unresolved merge parameter.");
       ++$$r_problem{merge_parameters_exists};
+      $g->add_trouble('merge');
     };
   };
 };
@@ -612,6 +647,189 @@ reserved words.
 =item *
 
 No merge parameters remain unresolved.
+
+=back
+
+=head1 TROUBLE REPORTING
+
+The C<trouble> attribute of an Demeter object will be filled with a
+pipe-separated list of problem codes.
+
+Some error codes contain additional information to further identify
+the problem.  These codes have a keyword separated from the other
+information by an underscore, making these sufficiently eacy to parse
+on the fly.
+
+Here are the explanations:
+
+=head2 Problems with Data objects
+
+=over 4
+
+=item C<-e>
+
+This data file does not exist.
+
+=item C<-r>
+
+This data file cannot be read.
+
+=item C<namenotunique>
+
+The Ifeffit group name of this data group is not unique.
+
+=item C<pathdataname>
+
+This path has an Ifeffit group name which is used by a Path object.
+
+=item C<tagnotunique>
+
+The tag of this data group is not unique.
+
+=item C<cvnotunique>
+
+The characteristic value of this data group is not unique.
+
+=item C<kminkmax>
+
+C<kmin> is larger than C<kmax>.
+
+=item C<rminrmax>
+
+C<rmin> is larger than C<rmax>.
+
+=item C<rminrbkg>
+
+C<rmin> is smaller than the value of C<rbkg> used in the background
+removal.
+
+=back
+
+=head2 Problems with Path objects
+
+=over 4
+
+=item C<-e>
+
+The path file does not exist (perhaps the Feff calculationw as not run).
+
+=item C<-r>
+
+The path file cannot be read.
+
+=item C<$pp> + C<_useundef_> + C<$token>
+
+The math expression for the C<$pp> pathparameter contains an undefined
+token.
+
+=item C<$pp> + C<_binary_> + C<$which>
+
+The math expression for the C<$pp> pathparameter contains an unallowed
+binary math operator.
+
+=item C<$pp> + C<_function_> + C<$match>
+
+The math expression for the C<$pp> pathparameter contains a
+mathematical function unknown to Ifeffit.
+
+=item C<namenotunique>
+
+The Ifeffit group name for this path is not unique.
+
+=item C<pathdataname>
+
+This path has an Ifeffit group name which is used by a Data object.
+
+=item C<$pp> + C<_parens_>
+
+The math expression for the C<$pp> pathparameter has unmatched parentheses.
+
+=item C<reffrmax>
+
+The R effective for tihs path is well beyond the C<rmax> value of its
+Data object.
+
+=item C<nocalc>
+
+It seems as though the Feff calculation for this path has not been made yet.
+
+=back
+
+=head2 Problems with GDS objects
+
+=over 4
+
+=item C<usecv>
+
+This is a def parameter which uses the characteristic value (cv).
+This is not yet allowed for def parameters.
+
+=item C<useundef>
+
+The math expression for this GDS parameter uses an undefined parameter
+name.
+
+=item C<binary_$which>
+
+The math expression for this GDS parameter contains an unallowed
+binary math operator.
+
+=item C<function_$match>
+
+The math expression for this GDS parameter contains a mathematical
+function unknown to Ifeffit.
+
+=item C<notunique>
+
+The name of this GDS parameter is not unique.
+
+=item C<parens>
+
+The math expression for this GDS parameter has unmatched parentheses.
+
+=item C<progvar>
+
+The name of this GDS parameter is an Ifeffit program variable name.
+
+=item C<merge>
+
+This is an unresolved parameter from the merge of fitting projects.
+
+=back
+
+=head2 Problems with Fit objects
+
+=over 4
+
+=item C<nvarnidp>
+
+This fitting model uses more guess parameters than the available
+information content of the data.
+
+=item C<nvarys>
+
+This fitting model uses more than Ifeffit's compiled-in limit of guess
+parameters
+
+=item C<nparams>
+
+This fitting model uses more than Ifeffit's compiled-in limit of
+parameters.
+
+=item C<nrestraints>
+
+This fitting model uses more than Ifeffit's compiled-in limit of
+restraints.
+
+=item C<ndatasets>
+
+This fitting model uses more than Ifeffit's compiled-in limit of
+data sets.
+
+=item C<npaths>
+
+This fitting model uses more than Ifeffit's compiled-in limit of
+paths.
 
 =back
 

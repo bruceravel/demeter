@@ -127,7 +127,7 @@ sub OnInit {
   $hname -> Add($name,       1, wxALL, 2);
 
   my $hfit = Wx::BoxSizer->new( wxHORIZONTAL);
-  $vbox -> Add($hfit, 0, wxGROW|wxTOP|wxBOTTOM, 3);
+  $vbox -> Add($hfit, 1, wxGROW|wxTOP|wxBOTTOM, 3);
   $label = Wx::StaticText->new($frames{main}, -1, "Fit space:");
   #my $fitspace = Wx::Choice->new($frames{main}, -1, wxDefaultPosition, wxDefaultSize, [qw(k R q)]);
   my @fitspace = (Wx::RadioButton->new($frames{main}, -1, 'k', wxDefaultPosition, wxDefaultSize, wxRB_GROUP),
@@ -223,6 +223,14 @@ EOH
 sub fit {
   my ($button, $event, $rframes) = @_;
   my (@data, @paths, @gds);
+  $rframes->{main}->{statusbar}->SetStatusText("Fitting (please be patient, it may take a while...)");
+  my $busy = Wx::BusyCursor->new();
+
+  ## reset all relevant widgets to their initial states (i.e. assume
+  ## that the last fit returned trouble and that the widgets
+  ## containing the responsible data were colored in some way to
+  ## indicate that)
+
   foreach my $k (keys(%$rframes)) {
     next unless ($k =~ m{\Adata});
     my $this = $rframes->{$k}->{data};
@@ -248,18 +256,25 @@ sub fit {
 
   ## get name, fom, and description + other properties
   my $fit = Demeter::Fit->new(data => \@data, paths => \@paths, gds => \@gds);
-  $fit->ignore_errors(1);
+  #$fit->ignore_errors(1);
   $fit->set_mode(ifeffit=>1, screen=>0);
-  $fit->fit;
-  #print $fit->logtext(q{}, q{});
-  $fit->po->start_plot;
-  $rframes->{Plot}->{limits}->{fit}->SetValue(1);
-  $fit->po->plot_fit(1);
-  $data[0]->plot('Rmr');
+  my $result = $fit->fit;
+  if ($result eq $fit) {
+    #print $fit->logtext(q{}, q{});
+    $fit->po->start_plot;
+    $rframes->{Plot}->{limits}->{fit}->SetValue(1);
+    $fit->po->plot_fit(1);
+    $data[0]->plot('Rmr');
 
-  $rframes->{GDS}->fill_results(@gds);
+    $rframes->{GDS}->fill_results(@gds);
 
-  set_happiness_color($fit->color);
+    set_happiness_color($fit->color);
+    $rframes->{main}->{statusbar}->SetStatusText("Your fit is finished!");
+  } else {
+    $rframes->{main}->{statusbar}->SetStatusText("Your fit could not be finished due to imput errors.");
+  };
+  check_for_trouble($fit);
+  undef $busy;
 };
 
 
@@ -275,6 +290,15 @@ sub set_happiness_color {
     $frames{$k}->{plot_r123} -> SetBackgroundColour(Wx::Colour->new($color));
     $frames{$k}->{plot_rmr}  -> SetBackgroundColour(Wx::Colour->new($color));
     $frames{$k}->{plot_kq}   -> SetBackgroundColour(Wx::Colour->new($color));
+  };
+};
+
+sub check_for_trouble {
+  my ($fit) = @_;
+  local $| = 1;
+  foreach my $obj (@{ $fit->gds }, @{ $fit->data }, @{ $fit->paths }) {
+    next if not $obj->trouble;
+    printf("%-15s : %s\n", $obj->name, $obj->translate_trouble($obj->trouble));
   };
 };
 
@@ -333,8 +357,15 @@ sub OnDataClick {
     ##
     my $selection = 0;
     $frames{prj} =  Demeter::UI::Artemis::Prj->new($frames{main}, $file);
-    $frames{prj} -> ShowModal;
+    my $result = $frames{prj} -> ShowModal;
 
+    if (
+	($result == wxID_CANCEL) or     # cancel button clicked
+	($frames{prj}->{record} == -1)  # import button without selecting a group
+       ) {
+      $frames{main}->{statusbar}->SetStatusText("Data import cancelled.");
+      return;
+    };
 
     my $data = $frames{prj}->{prj}->record($frames{prj}->{record});
     $data->po->start_plot;
@@ -352,6 +383,7 @@ sub OnDataClick {
     $databar->ToggleTool($idata,1);
     delete $frames{prj};
     set_happiness_color();
+    $frames{main}->{statusbar}->SetStatusText("Imported data \"" . $data->name . "\" from $file.");
   } else {
     my $this = sprintf("data%s", $event->GetId);
     return if not exists($frames{$this});
@@ -389,6 +421,7 @@ sub OnFeffClick {
     $feffbar->ToggleTool($ifeff,1);
     $frames{$fnum}->{Atoms}->Demeter::UI::Atoms::Xtal::open_file($file);
     #$newtool -> SetLabel( $frames{$fnum}->{Atoms}->{name}->GetValue );
+    $frames{main}->{statusbar}->SetStatusText("Imported crystal data \"$name\".");
 
   } else {
     my $this = sprintf("feff%s", $event->GetId);

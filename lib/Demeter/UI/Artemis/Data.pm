@@ -80,19 +80,23 @@ sub new {
   EVT_BUTTON($this, $this->{plot_rmr},  sub{$this->fetch_parameters;
 					    $this->{data}->po->start_plot;
 					    $this->{data}->plot('rmr');
+					    $parent->{statusbar}->SetStatusText("Plotted \"" . $this->{data}->name . "\" as the magnitude and real part of chi(R).");
 					  });
   EVT_BUTTON($this, $this->{plot_k123}, sub{$this->fetch_parameters;
 					    $this->{data}->po->start_plot;
 					    $this->{data}->plot('k123');
+					    $parent->{statusbar}->SetStatusText("Plotted \"" . $this->{data}->name . "\" in k with three k-weights.");
 					  });
   EVT_BUTTON($this, $this->{plot_r123}, sub{$this->fetch_parameters;
 					    $this->{data}->po->start_plot;
 					    $this->{data}->plot('r123');
+					    $parent->{statusbar}->SetStatusText("Plotted \"" . $this->{data}->name . "\" in R with three k-weights.");
 					  });
   EVT_BUTTON($this, $this->{plot_kq},   sub{$this->fetch_parameters;
 					    $this->{data}->po->start_plot;
 					    $this->{data}->plot('kqfit');
 					    #$this->{data}->plot_window('k') if $this->{data}->po->plot_win;
+					    $parent->{statusbar}->SetStatusText("Plotted \"" . $this->{data}->name . "\" in k- and q-space.");
 					  });
 
   ## -------- title lines

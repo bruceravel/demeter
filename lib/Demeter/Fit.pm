@@ -278,12 +278,19 @@ sub _verify_fit {
 sub pre_fit {
   my ($self) = @_;
   ## reset use attribute (in case this fit involved local parameters)
+  ## and clear all trouble attributes
   foreach my $gds (@{ $self->gds }) {
     $gds -> Use(1);
+    $gds -> trouble(q{});
   };
   foreach my $d (@{ $self->data }) {
     $d -> fitting(0);
+    $d -> trouble(q{});
   };
+  foreach my $p (@{ $self->paths }) {
+    $p -> trouble(q{});
+  };
+  $self -> trouble(q{});
   return $self->template("fit", "prep_fit");
 };
 
@@ -305,7 +312,13 @@ sub fit {
     };
     $all .= "\nThe calling reference is\n\n";
     carp($all);
-    croak("This fit has unrecoverable errors") if not $self->ignore_errors;
+    if (not $self->ignore_errors) {
+      if ($self->mo->ui eq 'Wx') {
+	return "This fit has unrecoverable errors";
+      } else {
+	croak("This fit has unrecoverable errors");
+      };
+    };
   };
   $self->dispose($prefit);
 

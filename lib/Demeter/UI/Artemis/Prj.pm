@@ -35,7 +35,7 @@ sub new {
   my $prj = Demeter::Data::Prj->new(file=>$file);
   my ($names, $entries) = $prj -> plot_as_chi;
   $this->{prj}    = $prj;
-  $this->{record} = 0;
+  $this->{record} = -1;
 
   my $hbox  = Wx::BoxSizer->new( wxHORIZONTAL );
 
@@ -106,6 +106,7 @@ sub do_plot {
   my ($this, $prj, $record) = @_;
   my $busy   = Wx::BusyCursor->new();
   my @save = ($prj->po->r_pl, $prj->po->q_pl);
+  $this->{record} = $record;
   my $data = $prj->record($record);
   $this->{journal}->SetValue(join($/, @{$data->titles}));
   $prj->po->start_plot;
