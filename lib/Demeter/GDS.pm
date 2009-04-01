@@ -147,6 +147,12 @@ sub evaluate {
   return 1;
 };
 
+sub push_ifeffit {
+  my ($self) = @_;
+  $self->dispose($self->write_gds);
+  return $self;
+};
+
 __PACKAGE__->meta->make_immutable;
 1;
 

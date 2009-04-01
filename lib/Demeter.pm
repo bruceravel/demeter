@@ -480,7 +480,7 @@ sub translate_trouble {
   my $text = q{};
   foreach my $item ($troubles_section->head2->[$obj]->over->[0]->item) {
     my $this = $item->title;
-    if ($which =~ m{$this}) {
+    if ($trouble =~ m{$this}) {
       my $content = $item->content();
       $content =~ s{\n}{ }g;
       $content =~ s{\s+\z}{};

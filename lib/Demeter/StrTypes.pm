@@ -336,7 +336,7 @@ subtype Interp,
 
 ## -------- Parameter types
 use vars qw(@gds_list $gds_regexp);
-@gds_list = qw(guess def set lguess restrain after skip merge);
+@gds_list = qw(guess def set lguess restrain after skip penalty merge);
 $gds_regexp = $opt->list2re(@gds_list);
 subtype GDS,
   as Str,

@@ -10,7 +10,7 @@ use File::Basename;
 use File::Spec;
 
 use Wx qw(:everything);
-use Wx::Event qw(EVT_MENU EVT_CLOSE EVT_TOOL_ENTER EVT_CHECKBOX EVT_BUTTON);
+use Wx::Event qw(EVT_MENU EVT_CLOSE EVT_TOOL_ENTER EVT_CHECKBOX EVT_BUTTON EVT_TOGGLEBUTTON);
 use base 'Wx::App';
 
 use Wx::Perl::Carp;
@@ -28,6 +28,7 @@ $artemis_base = identify_self();
 my %hints = (
 	     gds  => "Display the Guess/Def/Set parameters dialog",
 	     plot => "Display the plotting controls dialog",
+	     log  => "Display the fit log",
 	     fit  => "Display the fit history dialog",
 	    );
 
@@ -37,7 +38,7 @@ sub OnInit {
   #$demeter -> plot_with($demeter->co->default(qw(feff plotwith)));
 
   ## -------- import all of Artemis' various parts
-  foreach my $m (qw(GDS Plot History Data Prj)) {
+  foreach my $m (qw(GDS Plot History Log Data Prj)) {
     next if $INC{"Demeter/UI/Artemis/$m.pm"};
     ##print "Demeter/UI/Artemis/$m.pm\n";
     require "Demeter/UI/Artemis/$m.pm";
@@ -127,7 +128,7 @@ sub OnInit {
   $hname -> Add($name,       1, wxALL, 2);
 
   my $hfit = Wx::BoxSizer->new( wxHORIZONTAL);
-  $vbox -> Add($hfit, 1, wxGROW|wxTOP|wxBOTTOM, 3);
+  $vbox -> Add($hfit, 0, wxGROW|wxTOP|wxBOTTOM, 3);
   $label = Wx::StaticText->new($frames{main}, -1, "Fit space:");
   #my $fitspace = Wx::Choice->new($frames{main}, -1, wxDefaultPosition, wxDefaultSize, [qw(k R q)]);
   my @fitspace = (Wx::RadioButton->new($frames{main}, -1, 'k', wxDefaultPosition, wxDefaultSize, wxRB_GROUP),
@@ -148,13 +149,21 @@ sub OnInit {
   my $descboxsizer = Wx::StaticBoxSizer->new( $descbox, wxVERTICAL );
   my $description  = Wx::TextCtrl->new($frames{main}, -1, q{}, wxDefaultPosition, [-1, 25], wxTE_MULTILINE);
   $descboxsizer   -> Add($description,  1, wxGROW|wxALL, 0);
-  $vbox           -> Add($descboxsizer, 0, wxGROW|wxALL, 0);
+  $vbox           -> Add($descboxsizer, 1, wxGROW|wxALL, 0);
+
+  $vbox = Wx::BoxSizer->new( wxVERTICAL);
+  $hbox -> Add($vbox, 0, wxGROW|wxALL, 0);
 
   $frames{main}->{fitbutton}  = Wx::Button->new($frames{main}, -1, "Fit", wxDefaultPosition, wxDefaultSize);
   $frames{main}->{fitbutton} -> SetForegroundColour(Wx::Colour->new("#000000"));
   $frames{main}->{fitbutton} -> SetBackgroundColour(Wx::Colour->new($demeter->co->default("happiness", "average_color")));
   $frames{main}->{fitbutton} -> SetFont(Wx::Font->new( 10, wxDEFAULT, wxNORMAL, wxBOLD, 0, "" ) );
-  $hbox->Add($frames{main}->{fitbutton}, 0, wxGROW|wxALL, 2);
+  $vbox->Add($frames{main}->{fitbutton}, 1, wxGROW|wxALL, 2);
+
+  $frames{main}->{log_toggle} = Wx::ToggleButton -> new($frames{main}, -1, "Show log",);
+  $vbox->Add($frames{main}->{log_toggle}, 0, wxGROW|wxALL, 2);
+
+
 
   EVT_MENU	 ($frames{main}, wxID_ABOUT, \&on_about );
   EVT_MENU	 ($frames{main}, wxID_EXIT,  sub{shift->Close} );
@@ -175,7 +184,7 @@ sub OnInit {
   #$hbox  -> Fit($toolbar);
   #$hbox  -> SetSizeHints($toolbar);
 
-  foreach my $part (qw(GDS Plot History)) {
+  foreach my $part (qw(GDS Plot Log History)) {
     my $pp = "Demeter::UI::Artemis::".$part;
     $frames{$part} = $pp->new($frames{main});
     $frames{$part} -> SetIcon($icon);
@@ -183,6 +192,9 @@ sub OnInit {
   $frames{main} -> Show( 1 );
   $toolbar->ToggleTool($frames{main}->{plot_toggle}->GetId,1);
   $frames{Plot} -> Show( 1 );
+  EVT_TOGGLEBUTTON($frames{main}->{log_toggle}, -1, sub{ $frames{Log}->Show($frames{main}->{log_toggle}->GetValue) });
+
+  1;
 }
 
 sub on_close {
@@ -245,13 +257,17 @@ sub fit {
     };
   };
 
+  ## do I need to take care at this point about GDS's with the same name?
   my $grid = $rframes->{GDS}->{grid};
   foreach my $row (0 .. $grid->GetNumberRows) {
     my $name = $grid -> GetCellValue($row, 1);
     next if ($name =~ m{\A\s*\z});
     my $type = $grid -> GetCellValue($row, 0);
     my $mathexp = $grid -> GetCellValue($row, 2);
-    push @gds, Demeter::GDS->new(name=>$name, gds=>$type, mathexp=>$mathexp);
+    my $thisgds = $grid->{$name} || Demeter::GDS->new(); # take care to reuse GDS objects whenever possible
+    $thisgds -> set(name=>$name, gds=>$type, mathexp=>$mathexp);
+    $grid->{$name} = $thisgds;
+    push @gds, $thisgds;
   };
 
   ## get name, fom, and description + other properties
@@ -286,7 +302,7 @@ sub set_happiness_color {
   $frames{Plot}->{q_button}  -> SetBackgroundColour(Wx::Colour->new($color));
   foreach my $k (keys(%frames)) {
     next unless ($k =~ m{\Adata});
-    $frames{$k}->{plot_k123} -> SetBackgroundColour(Wx::Colour->new($color));
+    $frames{$k}->{'plot_k123'} -> SetBackgroundColour(Wx::Colour->new($color));
     $frames{$k}->{plot_r123} -> SetBackgroundColour(Wx::Colour->new($color));
     $frames{$k}->{plot_rmr}  -> SetBackgroundColour(Wx::Colour->new($color));
     $frames{$k}->{plot_kq}   -> SetBackgroundColour(Wx::Colour->new($color));
@@ -349,7 +365,7 @@ sub OnDataClick {
 				  wxFD_OPEN|wxFD_FILE_MUST_EXIST|wxFD_CHANGE_DIR|wxFD_PREVIEW,
 				  wxDefaultPosition);
     if ($fd->ShowModal == wxID_CANCEL) {
-      $frames{main}->{statusbar}->SetStatusText("data data import cancelled.");
+      $frames{main}->{statusbar}->SetStatusText("Data import cancelled.");
       return;
     };
     my $file = File::Spec->catfile($fd->GetDirectory, $fd->GetFilename);

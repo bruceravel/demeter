@@ -104,3 +104,12 @@ description
   The color of the background for an unresolved merged parameter.  The
   default is bright red.  The text will be white, so choose this color
   wisely to keep the text legible.
+
+variable=highlight_color
+type=color
+default=#fffacd
+description
+  The color of the background for a highlighted parameter.  This
+  should probably be a fairly light color so that the various text
+  colors are easily legible.  The default is a pale yellow.
+

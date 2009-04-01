@@ -18,6 +18,23 @@ package  Demeter::UI::Artemis::GDS;
 use strict;
 use warnings;
 
+use Cwd;
+use File::Spec;
+use Regexp::Optimizer;
+my $opt  = Regexp::List->new;
+
+use Readonly;
+## 0:grab all  1:reset all  2:toggle highlight  4:import   5:export  6:discard all  8:add one
+Readonly my $GRAB	 => 0;
+Readonly my $RESET	 => 1;
+Readonly my $HIGHLIGHT	 => 2;
+Readonly my $IMPORT	 => 4;
+Readonly my $EXPORT	 => 5;
+Readonly my $DISCARD	 => 6;
+Readonly my $ADD	 => 8;
+Readonly my $PARAM_REGEX => '(guess|def|set|lguess|restrain|after|skip|penalty|merge)';
+Readonly my $SEPARATOR	 => '[ \t]*[ \t=,][ \t]*';
+
 use Wx qw( :everything );
 use Wx::DND;
 use Wx::Grid;
@@ -109,19 +126,21 @@ sub new {
   $hbox -> Add($grid, 1, wxGROW|wxALL, 5);
 
 
-  my $toolbar = Wx::ToolBar->new($this, -1, wxDefaultPosition, wxDefaultSize,   wxTB_VERTICAL|wxTB_3DBUTTONS|wxTB_HORZ_LAYOUT|wxTB_TEXT);
-  $toolbar -> AddTool(1, "Grab all",    Demeter::UI::Artemis::icon("addgds"),  wxNullBitmap, wxITEM_NORMAL, q{}, $hints{grab} );
-  $toolbar -> AddTool(2, "Reset all",   Demeter::UI::Artemis::icon("reset"),   wxNullBitmap, wxITEM_NORMAL, q{}, $hints{reset} );
-  #$toolbar -> AddTool(3, "Guess->set",  Demeter::UI::Artemis::icon("convert"), wxNullBitmap, wxITEM_NORMAL, q{}, $hints{convert} );
-  $toolbar -> AddCheckTool(3, "Highlight",   Demeter::UI::Artemis::icon("highlight"), wxNullBitmap, q{}, $hints{highlight} );
-  $toolbar -> AddSeparator;
-  $toolbar -> AddTool(4, " Import GDS",  Demeter::UI::Artemis::icon("import"), wxNullBitmap, wxITEM_NORMAL, q{},  $hints{import});
-  $toolbar -> AddTool(5, " Export GDS",  Demeter::UI::Artemis::icon("export"), wxNullBitmap, wxITEM_NORMAL, q{},  $hints{export});
-  $toolbar -> AddTool(6, "Discard all", Demeter::UI::Artemis::icon("discard"), wxNullBitmap, wxITEM_NORMAL, q{}, $hints{discard} );
-  $toolbar -> AddSeparator;
-  $toolbar -> AddTool(7, "Add GDS",     Demeter::UI::Artemis::icon("addgds"),  wxNullBitmap, wxITEM_NORMAL, q{}, $hints{addgds} );
-  $toolbar -> Realize;
-  $hbox -> Add($toolbar, 0, wxSHAPED|wxALL, 5);
+  $this->{toolbar} = Wx::ToolBar->new($this, -1, wxDefaultPosition, wxDefaultSize,   wxTB_VERTICAL|wxTB_3DBUTTONS|wxTB_HORZ_LAYOUT|wxTB_TEXT);
+  $this->{toolbar} -> AddTool(-1,    "Use best fit", Demeter::UI::Artemis::icon("addgds"),  wxNullBitmap, wxITEM_NORMAL, q{}, $hints{grab} );
+  $this->{toolbar} -> AddTool(-1,   "Reset all",    Demeter::UI::Artemis::icon("reset"),   wxNullBitmap, wxITEM_NORMAL, q{}, $hints{reset} );
+  #$this->{toolbar} -> AddTool(3, "Guess->set",  Demeter::UI::Artemis::icon("convert"), wxNullBitmap, wxITEM_NORMAL, q{}, $hints{convert} );
+  $this->{toolbar} -> AddCheckTool($HIGHLIGHT, "Highlight",   Demeter::UI::Artemis::icon("highlight"), wxNullBitmap, q{}, $hints{highlight} );
+  $this->{toolbar} -> AddSeparator;
+  $this->{toolbar} -> AddTool(-1,  " Import GDS",  Demeter::UI::Artemis::icon("import"), wxNullBitmap, wxITEM_NORMAL, q{},  $hints{import});
+  $this->{toolbar} -> AddTool(-1,  " Export GDS",  Demeter::UI::Artemis::icon("export"), wxNullBitmap, wxITEM_NORMAL, q{},  $hints{export});
+  $this->{toolbar} -> AddTool(-1, "Discard all",  Demeter::UI::Artemis::icon("discard"), wxNullBitmap, wxITEM_NORMAL, q{}, $hints{discard} );
+  $this->{toolbar} -> AddSeparator;
+  $this->{toolbar} -> AddTool(-1,     "Add GDS",      Demeter::UI::Artemis::icon("addgds"),  wxNullBitmap, wxITEM_NORMAL, q{}, $hints{addgds} );
+  $this->{toolbar} -> Realize;
+  $hbox -> Add($this->{toolbar}, 0, wxSHAPED|wxALL, 5);
+
+  EVT_MENU($this->{toolbar}, -1, sub{my ($toolbar,  $event) = @_; OnToolClick($toolbar, $event, $grid, $this)} );
 
   $this -> SetSizerAndFit( $hbox );
   $this -> SetMinSize($this->GetSize);
@@ -131,19 +150,239 @@ sub new {
 
 sub noop {};
 
+
+sub OnToolClick {
+  my ($toolbar, $event, $grid, $parent) = @_;
+  ## 0:grab all  1:reset all  2:toggle highlight  4:import   5:export  6:discard all  8:add one
+  my $which = $toolbar->GetToolPos($event->GetId);
+ SWITCH: {
+    ($which == $GRAB) and do {	     # grab best fit values
+      use_best_fit($grid, $parent);
+      last SWITCH;
+    };
+
+    ($which == $RESET) and do {	     # reset all
+      reset_all($grid, $parent);
+      last SWITCH;
+    };
+
+    ($which == $HIGHLIGHT) and do {  # toggle highlight
+      highlight($grid, $parent);
+      last SWITCH;
+    };
+
+    ($which == $IMPORT) and do {     # import from text
+      import($grid, $parent);
+      last SWITCH;
+    };
+
+    ($which == $EXPORT) and do {     # export to text
+      export($grid, $parent);
+      last SWITCH;
+    };
+
+    ($which == $DISCARD) and do {    # discard all
+      discard_all($grid, $parent);
+      last SWITCH;
+    };
+
+    ($which == $ADD) and do {	     # add a line
+      $grid->AppendRows(1,1);
+      last SWITCH;
+    };
+  };
+};
+
+sub use_best_fit {
+  my ($grid, $parent) = @_;
+  my $count = 0;
+  foreach my $row (0 .. $grid->GetNumberRows) {
+    my $type = $grid->GetCellValue($row, 0);
+    next unless ($type eq 'guess');
+    my $evaluated = $grid->GetCellValue($row, 3);
+    next unless ($evaluated !~ m{\A\s*\z});
+    $evaluated =~ s{\+/-\s*.*}{};
+    $grid->SetCellValue($row, 2, $evaluated);
+    $grid->SetCellValue($row, 3, q{});
+    ++$count;
+  };
+  if ($count) {
+    $parent->{statusbar}->SetStatusText("Using best fit values as the new initial guesses.");
+    return 1;
+  };
+  $parent->{statusbar}->SetStatusText("Not using best fit values -- have you done a fit yet?");
+  return 0;
+};
+
+sub reset_all {
+  my ($grid, $parent) = @_;
+  foreach my $row (0 .. $grid->GetNumberRows) {
+    my $name = $grid -> GetCellValue($row, 1);
+    next if ($name =~ m{\A\s*\z});
+    my $type = $grid -> GetCellValue($row, 0);
+    my $mathexp = $grid -> GetCellValue($row, 2);
+    my $thisgds = $grid->{$name} || Demeter::GDS->new(); # take care to reuse GDS objects whenever possible
+    $thisgds -> set(name=>$name, gds=>$type, mathexp=>$mathexp);
+    $grid->{$name} = $thisgds;
+    $thisgds->push_ifeffit;
+  };
+  $parent->{statusbar}->SetStatusText("Reset all parameter values in Ifeffit.");
+  return 1;
+};
+
+sub highlight {
+  my ($grid, $parent) = @_;
+  my $is_down = $parent->{toolbar}->GetToolState($HIGHLIGHT);
+  ($parent->{toolbar}->GetToolState($HIGHLIGHT)) ? set_highlight($grid, $parent) : clear_highlight($grid, $parent);
+  return $grid;
+};
+
+sub set_highlight {
+  my ($grid, $parent) = @_;
+  my $ted = Wx::TextEntryDialog->new( $parent, "Enter a regular expression", "Highlight parameters matching", q{}, wxOK|wxCANCEL);
+  if ($ted->ShowModal == wxID_CANCEL) {
+    $parent->{statusbar}->SetStatusText("Parameter highlighting cancelled.");
+    return;
+  };
+  my $re;
+  my $regex = $ted->GetValue;
+  my $is_ok = eval '$re = qr/$regex/i';
+  $parent->{statusbar}->SetStatusText("Oops!  \"$regex\" is not a valid regular expression"), return unless $is_ok;
+  clear_highlight($grid,$parent);
+  foreach my $row (0 .. $grid->GetNumberRows) {
+    next if ($grid -> GetCellValue($row, 0) eq 'merge');
+    my $name = $grid -> GetCellValue($row, 1);
+    next if ($name =~ m{\A\s*\z});
+    my $mathexp = $grid -> GetCellValue($row, 2);
+    if (($name =~ $re) or ($mathexp =~ m{\b$re\b})) {
+      foreach my $col (0 .. $grid->GetNumberCols) {
+	$grid->SetCellBackgroundColour($row, $col, Wx::Colour->new($Demeter::UI::Artemis::demeter->co->default('gds','highlight_color')));
+      };
+    };
+  };
+  $grid -> Refresh;
+  $parent->{statusbar}->SetStatusText("Highlighted parameters matching /$regex/.") if $parent;
+};
+sub clear_highlight {
+  my ($grid, $parent) = @_;
+  foreach my $row (0 .. $grid->GetNumberRows) {
+    next if ($grid -> GetCellValue($row, 0) eq 'merge');
+    map { $grid->SetCellBackgroundColour($row, $_, wxNullColour)} (0 .. 3);
+  };
+  $grid -> Refresh;
+  $parent->{statusbar}->SetStatusText("Cleared all highlights.") if $parent;
+};
+
+sub import {
+  my ($grid, $parent) = @_;
+
+  my $fd = Wx::FileDialog->new( $parent, "Import parameters from a text file", cwd, q{},
+				"Text file|*.txt|All files|*.*",
+				wxFD_OPEN|wxFD_FILE_MUST_EXIST|wxFD_CHANGE_DIR|wxFD_PREVIEW,
+				wxDefaultPosition);
+  if ($fd -> ShowModal == wxID_CANCEL) {
+    $parent->{statusbar}->SetStatusText("Parameter import aborted.")
+  } else {
+    my $file = File::Spec->catfile($fd->GetDirectory, $fd->GetFilename);
+    my $comment = $opt->list2re('!', '#', '%');
+
+    my $start = $grid->GetNumberRows;
+    foreach my $row (reverse(0 .. $grid->GetNumberRows)) {
+      last if ($grid->GetCellValue($row, 1) or $grid->GetCellValue($row, 2));
+      $start = $row;
+    };
+
+    open(my $PARAM, $file);
+    foreach my $line (<$PARAM>) {
+      next unless ($line =~ m{\A$PARAM_REGEX});
+
+      $grid->AppendRows(1,1) if ($start >= $grid->GetNumberRows);
+
+      $line =~ s{$comment.*\z}{};	# strip comments
+      $line =~ s{\s+\z}{};
+      my ($gds, $name, @rest) = split(/$SEPARATOR/, $line);
+      my $mathexp = join(" ", @rest);
+      $grid -> SetCellValue($start, 0, $gds);
+      $grid -> SetCellValue($start, 1, $name);
+      $grid -> SetCellValue($start, 2, $mathexp);
+      set_type($grid, $start);
+      ++$start;
+    };
+    close $PARAM;
+  };
+
+};
+sub export {
+  my ($grid, $parent) = @_;
+
+  my $fd = Wx::FileDialog->new( $parent, "Export parameters to a text file", cwd, q{},
+				"Text file|*.txt|All files|*.*", wxFD_SAVE|wxFD_CHANGE_DIR|wxFD_OVERWRITE_PROMPT,
+				wxDefaultPosition);
+  my $file;
+  if ($fd -> ShowModal == wxID_CANCEL) {
+    $parent->{statusbar}->SetStatusText("Parameter export aborted.");
+    return 0;
+  } else {
+    $file = File::Spec->catfile($fd->GetDirectory, $fd->GetFilename);
+  };
+  open(my $PARAM, '>'.$file);
+  foreach my $row (0 .. $grid->GetNumberRows-1) {
+    my $name = $grid -> GetCellValue($row, 1);
+    next if ($name =~ m{\A\s*\z});
+    my $type = $grid -> GetCellValue($row, 0);
+    my $mathexp = $grid -> GetCellValue($row, 2);
+    my $thisgds = $grid->{$name} || Demeter::GDS->new(); # take care to reuse GDS objects whenever possible
+    $thisgds -> set(name=>$name, gds=>$type, mathexp=>$mathexp);
+    $grid->{$name} = $thisgds;
+    print $PARAM $grid->{$name}->template("process", "gds_out");
+  };
+  close $PARAM;
+  $parent->{statusbar}->SetStatusText("Exported parameters to \"$file\".")
+};
+
+sub discard_all {
+  my ($grid, $parent) = @_;
+  my $yesno = Wx::MessageDialog->new($parent,
+				     "Really throw away all parameters?",
+				     "Verify action",
+				     wxYES_NO|wxNO_DEFAULT|wxICON_QUESTION);
+  if ($yesno->ShowModal == wxID_NO) {
+    return 0;
+  } else {
+    foreach my $row (0 .. $grid->GetNumberRows-1) {
+      discard($grid, $row);
+    };
+  };
+  $parent->{statusbar}->SetStatusText("Discarded all parameters.")
+};
+sub discard {
+  my ($grid, $row) = @_;
+  $grid -> SetCellValue($row, 0, 'guess');
+  set_type($grid, $row);
+  my $name = $grid->GetCellValue($row, 1);
+  $grid -> SetCellValue($row, 1, q{});
+  $grid -> SetCellValue($row, 2, q{});
+  $grid -> SetCellValue($row, 3, q{});
+  delete $grid->{$name} if exists $grid ->{$name};
+};
+
 sub OnSetType {
   my ($self, $event) = @_;
   if ($event->GetCol == 0) {
     my $row = $event->GetRow;
-    my $newval = $self->GetCellValue($row, 0);
-    foreach my $c (0 .. $self->GetNumberCols) {
-      if ($newval eq 'merge') {
-	$self->SetCellBackgroundColour($row, $c, $gridcolors{merge});
-	$self->SetCellTextColour($row, $c, wxWHITE);
-      } else {
-	$self->SetCellBackgroundColour($row, $c, wxNullColour);
-	$self->SetCellTextColour($row, $c, $gridcolors{$newval});
-      };
+    set_type($self, $row);
+  };
+};
+sub set_type {
+  my ($grid, $row) = @_;
+  my $newval = $grid->GetCellValue($row, 0);
+  foreach my $c (0 .. $grid->GetNumberCols) {
+    if ($newval eq 'merge') {
+      $grid->SetCellBackgroundColour($row, $c, $gridcolors{merge});
+      $grid->SetCellTextColour($row, $c, wxWHITE);
+    } else {
+      $grid->SetCellBackgroundColour($row, $c, wxNullColour);
+      $grid->SetCellTextColour($row, $c, $gridcolors{$newval});
     };
   };
 };
