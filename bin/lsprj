@@ -18,18 +18,19 @@
 use Cwd;
 use Getopt::Long;
 use Term::ReadLine;
-my $term    = new Term::ReadLine 'demeter';
+my $term   = new Term::ReadLine 'demeter';
 my $prompt = "Press <Enter> to finish ";
 
-use Demeter::Data::Prj;
+use Demeter;
 
-my ($plot, $inc, $params, $gnuplot, $xanes) = (q{}, 0.2, q{}, 0, 0);
+my ($plot, $inc, $params, $gnuplot, $xanes, $kw) = (q{}, 0.2, q{}, 0, 0, 2);
 my $result = GetOptions (
-			 "plot|p=s" => \$plot,
-			 "stack=s"  => \$inc,
-			 "params=s" => \$params,
-			 "g"        => \$gnuplot,
-			 "xanes"    => \$xanes,
+			 "plot|p=s"     => \$plot,
+			 "stack=s"      => \$inc,
+			 "params=s"     => \$params,
+			 "g"            => \$gnuplot,
+			 "xanes"        => \$xanes,
+			 "kw|kweight=i" => \$kw,
 			);
 
 my ($file, @groups) = @ARGV;
@@ -49,7 +50,7 @@ if (lc($plot) =~ m{[endkrq]}) {
   $data[0] -> po -> e_norm(0)    if (lc($plot) eq 'e');
   $data[0] -> po -> e_norm(1)    if (lc($plot) eq 'n');
   $data[0] -> po -> e_der(1)     if (lc($plot) eq 'd');
-  $data[0] -> po -> kweight(2)   if (lc($plot) =~ m{[krq]});
+  $data[0] -> po -> kweight($kw) if (lc($plot) =~ m{[krq]});
   $data[0] -> po -> r_pl('r')    if (lc($plot) eq 'rr');
   $data[0] -> po -> set(emin => -50, emax =>120) if $xanes;
   my $p = $plot;
@@ -74,6 +75,7 @@ sub usage {
    --stack=val          specify stacking offset for plots
    --params=param_list  comma separated list of parameters
    --xanes              restrict energy plots to [-50:120]
+   --kw=i, --kweight=i  use a kweighting of \"i\"
 
  Optionally, you can list groups numbers to plot a subset of the
  contents of the project file.

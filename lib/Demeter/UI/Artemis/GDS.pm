@@ -40,7 +40,9 @@ use Wx::DND;
 use Wx::Grid;
 use base qw(Wx::Frame);
 use Wx::Event qw(EVT_GRID_CELL_CHANGE EVT_GRID_CELL_RIGHT_CLICK  EVT_MENU
-		 EVT_GRID_LABEL_LEFT_CLICK EVT_GRID_LABEL_RIGHT_CLICK);
+		 EVT_GRID_LABEL_LEFT_CLICK EVT_GRID_LABEL_RIGHT_CLICK EVT_GRID_RANGE_SELECT);
+
+use Demeter::UI::Artemis::GDS::Restraint;
 
 my $types = [qw(guess def set lguess skip restrain after penalty merge)];
 
@@ -94,9 +96,7 @@ sub new {
   my $grid = Wx::Grid->new($this, -1, wxDefaultPosition, wxDefaultSize, wxVSCROLL);
   $this->{grid} = $grid;
 
-  $grid -> CreateGrid(12,4);
-  #$grid -> EnableScrolling(1,1);
-  #$grid -> SetScrollbars(20, 20, 50, 50);
+  $grid -> CreateGrid(12,4,wxGridSelectRows);
 
   $grid -> SetColLabelValue(0, 'Type');
   $grid -> SetColSize      (0,  85);
@@ -112,35 +112,32 @@ sub new {
   $grid -> SetDropTarget( Demeter::UI::Artemis::GDS::TextDropTarget->new( $grid, $this ) );
 
   foreach my $row (0 .. $grid->GetNumberRows) {
-    $grid -> SetCellEditor($row, 0, Wx::GridCellChoiceEditor->new($types));
-    $grid -> SetCellValue($row, 0, "guess");
-    $grid -> SetReadOnly($row, 3, 1);
-    foreach my $c (0 .. $grid->GetNumberCols) { $grid->SetCellTextColour($row, $c, $gridcolors{guess}) };
+    $this->initialize_row($row);
   };
-  EVT_GRID_CELL_CHANGE($grid, \&OnSetType);
-  EVT_GRID_CELL_RIGHT_CLICK($grid, \&PostGridMenu);
-  EVT_GRID_LABEL_LEFT_CLICK($grid,  sub{StartDrag(@_, $this)});
-  EVT_GRID_LABEL_RIGHT_CLICK($grid, sub{PostGridMenu(@_, $this)});
-  EVT_MENU($grid, -1, sub{OnGridMenu(@_, $this)});
+  EVT_GRID_CELL_CHANGE      ($grid,     sub{ $this->OnSetType(@_)     });
+  EVT_GRID_CELL_RIGHT_CLICK ($grid,     sub{ $this->PostGridMenu(@_)  });
+  EVT_GRID_LABEL_LEFT_CLICK ($grid,     sub{ $this->StartDrag(@_)     });
+  EVT_GRID_LABEL_RIGHT_CLICK($grid,     sub{ $this->PostGridMenu(@_)  });
+  EVT_MENU                  ($grid, -1, sub{ $this->OnGridMenu(@_)    });
+  EVT_GRID_RANGE_SELECT     ($grid,     sub{ $this->OnRangeSelect(@_) });
 
   $hbox -> Add($grid, 1, wxGROW|wxALL, 5);
 
 
   $this->{toolbar} = Wx::ToolBar->new($this, -1, wxDefaultPosition, wxDefaultSize,   wxTB_VERTICAL|wxTB_3DBUTTONS|wxTB_HORZ_LAYOUT|wxTB_TEXT);
-  $this->{toolbar} -> AddTool(-1,    "Use best fit", Demeter::UI::Artemis::icon("addgds"),  wxNullBitmap, wxITEM_NORMAL, q{}, $hints{grab} );
-  $this->{toolbar} -> AddTool(-1,   "Reset all",    Demeter::UI::Artemis::icon("reset"),   wxNullBitmap, wxITEM_NORMAL, q{}, $hints{reset} );
-  #$this->{toolbar} -> AddTool(3, "Guess->set",  Demeter::UI::Artemis::icon("convert"), wxNullBitmap, wxITEM_NORMAL, q{}, $hints{convert} );
+  $this->{toolbar} -> AddTool(-1, " Use best fit", Demeter::UI::Artemis::icon("bestfit"),  wxNullBitmap, wxITEM_NORMAL, q{}, $hints{grab} );
+  $this->{toolbar} -> AddTool(-1, "Reset all",     Demeter::UI::Artemis::icon("reset"),   wxNullBitmap, wxITEM_NORMAL, q{}, $hints{reset} );
   $this->{toolbar} -> AddCheckTool($HIGHLIGHT, "Highlight",   Demeter::UI::Artemis::icon("highlight"), wxNullBitmap, q{}, $hints{highlight} );
   $this->{toolbar} -> AddSeparator;
-  $this->{toolbar} -> AddTool(-1,  " Import GDS",  Demeter::UI::Artemis::icon("import"), wxNullBitmap, wxITEM_NORMAL, q{},  $hints{import});
-  $this->{toolbar} -> AddTool(-1,  " Export GDS",  Demeter::UI::Artemis::icon("export"), wxNullBitmap, wxITEM_NORMAL, q{},  $hints{export});
-  $this->{toolbar} -> AddTool(-1, "Discard all",  Demeter::UI::Artemis::icon("discard"), wxNullBitmap, wxITEM_NORMAL, q{}, $hints{discard} );
+  $this->{toolbar} -> AddTool(-1, " Import GDS",   Demeter::UI::Artemis::icon("import"), wxNullBitmap, wxITEM_NORMAL, q{},  $hints{import});
+  $this->{toolbar} -> AddTool(-1, " Export GDS",   Demeter::UI::Artemis::icon("export"), wxNullBitmap, wxITEM_NORMAL, q{},  $hints{export});
+  $this->{toolbar} -> AddTool(-1, "Discard all",   Demeter::UI::Artemis::icon("discard"), wxNullBitmap, wxITEM_NORMAL, q{}, $hints{discard} );
   $this->{toolbar} -> AddSeparator;
-  $this->{toolbar} -> AddTool(-1,     "Add GDS",      Demeter::UI::Artemis::icon("addgds"),  wxNullBitmap, wxITEM_NORMAL, q{}, $hints{addgds} );
+  $this->{toolbar} -> AddTool(-1, "Add GDS",       Demeter::UI::Artemis::icon("addgds"),  wxNullBitmap, wxITEM_NORMAL, q{}, $hints{addgds} );
   $this->{toolbar} -> Realize;
   $hbox -> Add($this->{toolbar}, 0, wxSHAPED|wxALL, 5);
 
-  EVT_MENU($this->{toolbar}, -1, sub{my ($toolbar,  $event) = @_; OnToolClick($toolbar, $event, $grid, $this)} );
+  EVT_MENU($this->{toolbar}, -1, sub{ $this->OnToolClick(@_, $grid) } );
 
   $this -> SetSizerAndFit( $hbox );
   $this -> SetMinSize($this->GetSize);
@@ -151,50 +148,63 @@ sub new {
 sub noop {};
 
 
+sub initialize_row {
+  my ($parent, $row) = @_;
+  $parent->{grid} -> SetCellEditor($row, 0, Wx::GridCellChoiceEditor->new($types));
+  $parent->{grid} -> SetCellValue($row, 0, "guess");
+  $parent->{grid} -> SetReadOnly($row, 3, 1);
+  foreach my $c (0 .. $parent->{grid}->GetNumberCols) { $parent->{grid}->SetCellTextColour($row, $c, $gridcolors{guess}) };
+};
+
+######## Toolbar section ############################################################
+
 sub OnToolClick {
-  my ($toolbar, $event, $grid, $parent) = @_;
+  my ($parent, $toolbar, $event, $grid) = @_;
   ## 0:grab all  1:reset all  2:toggle highlight  4:import   5:export  6:discard all  8:add one
   my $which = $toolbar->GetToolPos($event->GetId);
  SWITCH: {
     ($which == $GRAB) and do {	     # grab best fit values
-      use_best_fit($grid, $parent);
+      $parent->use_best_fit;
       last SWITCH;
     };
 
     ($which == $RESET) and do {	     # reset all
-      reset_all($grid, $parent);
+      $parent->reset_all;
       last SWITCH;
     };
 
     ($which == $HIGHLIGHT) and do {  # toggle highlight
-      highlight($grid, $parent);
+      $parent->highlight;
       last SWITCH;
     };
 
     ($which == $IMPORT) and do {     # import from text
-      import($grid, $parent);
+      $parent->import;
       last SWITCH;
     };
 
     ($which == $EXPORT) and do {     # export to text
-      export($grid, $parent);
+      $parent->export;
       last SWITCH;
     };
 
     ($which == $DISCARD) and do {    # discard all
-      discard_all($grid, $parent);
+      $parent->discard_all;
       last SWITCH;
     };
 
     ($which == $ADD) and do {	     # add a line
       $grid->AppendRows(1,1);
+      $parent->initialize_row( $grid->GetNumberRows - 1 );
+      $parent->{grid}->ClearSelection;
       last SWITCH;
     };
   };
 };
 
 sub use_best_fit {
-  my ($grid, $parent) = @_;
+  my ($parent) = @_;
+  my $grid = $parent->{grid};
   my $count = 0;
   foreach my $row (0 .. $grid->GetNumberRows) {
     my $type = $grid->GetCellValue($row, 0);
@@ -215,7 +225,8 @@ sub use_best_fit {
 };
 
 sub reset_all {
-  my ($grid, $parent) = @_;
+  my ($parent) = @_;
+  my $grid = $parent->{grid};
   foreach my $row (0 .. $grid->GetNumberRows) {
     my $name = $grid -> GetCellValue($row, 1);
     next if ($name =~ m{\A\s*\z});
@@ -231,14 +242,16 @@ sub reset_all {
 };
 
 sub highlight {
-  my ($grid, $parent) = @_;
+  my ($parent) = @_;
   my $is_down = $parent->{toolbar}->GetToolState($HIGHLIGHT);
-  ($parent->{toolbar}->GetToolState($HIGHLIGHT)) ? set_highlight($grid, $parent) : clear_highlight($grid, $parent);
-  return $grid;
+  ($is_down) ? $parent->set_highlight : $parent->clear_highlight;
+  $parent->{statusbar}->SetStatusText("Cleared all highlights.") if not $is_down;
+  return $parent;
 };
 
 sub set_highlight {
-  my ($grid, $parent) = @_;
+  my ($parent) = @_;
+  my $grid = $parent->{grid};
   my $ted = Wx::TextEntryDialog->new( $parent, "Enter a regular expression", "Highlight parameters matching", q{}, wxOK|wxCANCEL);
   if ($ted->ShowModal == wxID_CANCEL) {
     $parent->{statusbar}->SetStatusText("Parameter highlighting cancelled.");
@@ -248,7 +261,7 @@ sub set_highlight {
   my $regex = $ted->GetValue;
   my $is_ok = eval '$re = qr/$regex/i';
   $parent->{statusbar}->SetStatusText("Oops!  \"$regex\" is not a valid regular expression"), return unless $is_ok;
-  clear_highlight($grid,$parent);
+  $parent->clear_highlight;
   foreach my $row (0 .. $grid->GetNumberRows) {
     next if ($grid -> GetCellValue($row, 0) eq 'merge');
     my $name = $grid -> GetCellValue($row, 1);
@@ -260,21 +273,33 @@ sub set_highlight {
       };
     };
   };
-  $grid -> Refresh;
+  $grid -> ForceRefresh;
   $parent->{statusbar}->SetStatusText("Highlighted parameters matching /$regex/.") if $parent;
 };
 sub clear_highlight {
-  my ($grid, $parent) = @_;
+  my ($parent) = @_;
+  my $grid = $parent->{grid};
   foreach my $row (0 .. $grid->GetNumberRows) {
     next if ($grid -> GetCellValue($row, 0) eq 'merge');
     map { $grid->SetCellBackgroundColour($row, $_, wxNullColour)} (0 .. 3);
   };
-  $grid -> Refresh;
-  $parent->{statusbar}->SetStatusText("Cleared all highlights.") if $parent;
+  $grid -> ForceRefresh;
+};
+
+sub find_next_empty_row {
+  my ($parent) = @_;
+  my $grid = $parent->{grid};
+  my $start = $grid->GetNumberRows;
+  foreach my $row (reverse(0 .. $grid->GetNumberRows)) {
+    last if ($grid->GetCellValue($row, 1) or $grid->GetCellValue($row, 2));
+    $start = $row;
+  };
+  return $start;
 };
 
 sub import {
-  my ($grid, $parent) = @_;
+  my ($parent) = @_;
+  my $grid = $parent->{grid};
 
   my $fd = Wx::FileDialog->new( $parent, "Import parameters from a text file", cwd, q{},
 				"Text file|*.txt|All files|*.*",
@@ -286,11 +311,7 @@ sub import {
     my $file = File::Spec->catfile($fd->GetDirectory, $fd->GetFilename);
     my $comment = $opt->list2re('!', '#', '%');
 
-    my $start = $grid->GetNumberRows;
-    foreach my $row (reverse(0 .. $grid->GetNumberRows)) {
-      last if ($grid->GetCellValue($row, 1) or $grid->GetCellValue($row, 2));
-      $start = $row;
-    };
+    my $start = $parent->find_next_empty_row;
 
     open(my $PARAM, $file);
     foreach my $line (<$PARAM>) {
@@ -305,7 +326,7 @@ sub import {
       $grid -> SetCellValue($start, 0, $gds);
       $grid -> SetCellValue($start, 1, $name);
       $grid -> SetCellValue($start, 2, $mathexp);
-      set_type($grid, $start);
+      $parent->set_type($start);
       ++$start;
     };
     close $PARAM;
@@ -313,52 +334,64 @@ sub import {
 
 };
 sub export {
-  my ($grid, $parent) = @_;
+  my ($parent) = @_;
+  my $grid = $parent->{grid};
 
   my $fd = Wx::FileDialog->new( $parent, "Export parameters to a text file", cwd, q{},
 				"Text file|*.txt|All files|*.*", wxFD_SAVE|wxFD_CHANGE_DIR|wxFD_OVERWRITE_PROMPT,
 				wxDefaultPosition);
-  my $file;
   if ($fd -> ShowModal == wxID_CANCEL) {
     $parent->{statusbar}->SetStatusText("Parameter export aborted.");
     return 0;
   } else {
-    $file = File::Spec->catfile($fd->GetDirectory, $fd->GetFilename);
+    my $file = File::Spec->catfile($fd->GetDirectory, $fd->GetFilename);
+    open(my $PARAM, '>'.$file);
+    foreach my $row (0 .. $grid->GetNumberRows-1) {
+      my $thisgds = $parent->tie_GDS_to_grid($row);
+      next if not $thisgds;
+      print $PARAM $thisgds->template("process", "gds_out");
+    };
+    close $PARAM;
+    $parent->{statusbar}->SetStatusText("Exported parameters to \"$file\".")
   };
-  open(my $PARAM, '>'.$file);
-  foreach my $row (0 .. $grid->GetNumberRows-1) {
-    my $name = $grid -> GetCellValue($row, 1);
-    next if ($name =~ m{\A\s*\z});
-    my $type = $grid -> GetCellValue($row, 0);
-    my $mathexp = $grid -> GetCellValue($row, 2);
-    my $thisgds = $grid->{$name} || Demeter::GDS->new(); # take care to reuse GDS objects whenever possible
-    $thisgds -> set(name=>$name, gds=>$type, mathexp=>$mathexp);
-    $grid->{$name} = $thisgds;
-    print $PARAM $grid->{$name}->template("process", "gds_out");
-  };
-  close $PARAM;
-  $parent->{statusbar}->SetStatusText("Exported parameters to \"$file\".")
 };
 
+sub tie_GDS_to_grid {
+  my ($parent, $row) = @_;
+  my $grid = $parent->{grid};
+  my $name = $grid -> GetCellValue($row, 1);
+  return 0 if ($name =~ m{\A\s*\z});
+  my $type = $grid -> GetCellValue($row, 0);
+  my $mathexp = $grid -> GetCellValue($row, 2);
+  my $thisgds = $grid->{$name} || Demeter::GDS->new(); # take care to reuse GDS objects whenever possible
+  $thisgds -> set(name=>$name, gds=>$type, mathexp=>$mathexp);
+  $grid->{$name} = $thisgds;
+  return $thisgds;
+};
+
+
 sub discard_all {
-  my ($grid, $parent) = @_;
+  my ($parent) = @_;
+  my $grid = $parent->{grid};
   my $yesno = Wx::MessageDialog->new($parent,
 				     "Really throw away all parameters?",
 				     "Verify action",
 				     wxYES_NO|wxNO_DEFAULT|wxICON_QUESTION);
   if ($yesno->ShowModal == wxID_NO) {
+    $parent->{statusbar}->SetStatusText("Not discarding parameters.");
     return 0;
   } else {
     foreach my $row (0 .. $grid->GetNumberRows-1) {
-      discard($grid, $row);
+      $parent->discard($row);
     };
   };
   $parent->{statusbar}->SetStatusText("Discarded all parameters.")
 };
 sub discard {
-  my ($grid, $row) = @_;
+  my ($parent, $row) = @_;
+  my $grid = $parent->{grid};
   $grid -> SetCellValue($row, 0, 'guess');
-  set_type($grid, $row);
+  $parent->set_type($row);
   my $name = $grid->GetCellValue($row, 1);
   $grid -> SetCellValue($row, 1, q{});
   $grid -> SetCellValue($row, 2, q{});
@@ -367,14 +400,16 @@ sub discard {
 };
 
 sub OnSetType {
-  my ($self, $event) = @_;
+  my ($parent, $self, $event) = @_;
   if ($event->GetCol == 0) {
     my $row = $event->GetRow;
-    set_type($self, $row);
+    $parent->set_type($row);
+    $parent->{grid}->ClearSelection;
   };
 };
 sub set_type {
-  my ($grid, $row) = @_;
+  my ($parent, $row) = @_;
+  my $grid = $parent->{grid};
   my $newval = $grid->GetCellValue($row, 0);
   foreach my $c (0 .. $grid->GetNumberCols) {
     if ($newval eq 'merge') {
@@ -387,10 +422,21 @@ sub set_type {
   };
 };
 
+
+######## Context menu section ############################################################
+
+sub OnRangeSelect {
+  my ($parent, $self, $event) = @_;
+  return unless $event->Selecting;
+  $parent->{grid}->SelectBlock($event->GetTopLeftCoords, $event->GetBottomRightCoords, 1);
+  $parent->{grid}->ForceRefresh;
+  $event->Skip;
+};
 sub PostGridMenu {
-  my ($self, $event, $parent) = @_;
+  my ($parent, $self, $event) = @_;
   my $row = $event->GetRow;
   return if ($row < 0);
+  $parent->{clicked_row} = $row;
   my $this = $self->GetCellValue($row, 1) || "current row";
 
   my $change = Wx::Menu->new(q{});
@@ -428,23 +474,156 @@ sub PostGridMenu {
 };
 
 sub OnGridMenu {
-  my ($self, $event, $parent) = @_;
+  my ($parent, $self, $event) = @_;
   my $which = $event->GetId;
   if ($which < 100) {
     ##                  0    1    2     3        4            5       6      7       8       9             10     11   12    13
-    my @callbacks = qw(copy cut paste noop insert_above insert_below noop set_type grab build_restraint annotate noop find global);
-    print $which, ":  perform ", $callbacks[$which], $/;
-  } elsif ($which > 199) {
+    my @callbacks = qw(copy cut paste noop insert_above insert_below noop set_type grab build_restraint annotate noop find rename_global);
+    my $cb = $callbacks[$which];
+    $parent->$cb;
+  } elsif ($which > 199) {	# explain submenu
     my $i = $which - 200;
     $parent->{statusbar} -> SetStatusText($types->[$i] . ": " . $explain{$types->[$i]});
-  } else {
+  } else {			# change type submenu
     my $i = $which - 100;
-    print $which, ":  change selected to ", $types->[$i], $/;
+    $parent->change($types->[$i]);
   };
 };
 
+sub copy {
+  my ($parent) = @_;
+  $parent->{grid}->ClearSelection;
+  $parent->{statusbar}->SetStatusText("perform copy");
+};
+sub cut {
+  my ($parent) = @_;
+  $parent->{grid}->ClearSelection;
+  $parent->{statusbar}->SetStatusText("perform cut");
+};
+sub paste {
+  my ($parent) = @_;
+  $parent->{grid}->ClearSelection;
+  $parent->{statusbar}->SetStatusText("perform paste");
+};
+
+sub insert_above {
+  my ($parent) = @_;
+  my $row = $parent->{clicked_row};
+  $parent->{grid}->InsertRows($row,1,1);
+  $parent->initialize_row($row);
+  $parent->{grid}->ClearSelection;
+  $parent->{statusbar}->SetStatusText("Inserted a row above row $row.");
+};
+sub insert_below {
+  my ($parent) = @_;
+  my $row = $parent->{clicked_row};
+  $parent->{grid}->InsertRows($row+1,1,1);
+  $parent->initialize_row($row+1);
+  $parent->{grid}->ClearSelection;
+  $parent->{statusbar}->SetStatusText("Inserted a row below row $row.");
+};
+sub grab {
+  my ($parent) = @_;
+  my $row = $parent->{clicked_row};
+  my $type = $parent->{grid}->GetCellValue($row,0);
+  my $name = $parent->{grid}->GetCellValue($row,1);
+  $parent->{statusbar}->SetStatusText("Grab aborted -- $name is not a guess parameter."), return if ($type ne 'guess');
+  my $bestfit = $parent->{grid}->GetCellValue($row,3);
+  $parent->{statusbar}->SetStatusText("$name does not have a best fit value."), return if ($bestfit =~ m{\A\s*\z});
+  $bestfit =~ s{\+/-\s*.*}{};
+  $parent->{grid}->SetCellValue($row, 2, $bestfit);
+  $parent->{grid}->SetCellValue($row, 3, q{});
+  $parent->{grid}->ClearSelection;
+  $parent->{statusbar}->SetStatusText("Using $bestfit as the initial guess for $name.");
+};
+sub build_restraint {
+  my ($parent) = @_;
+  my $row = $parent->{clicked_row};
+  my $target = $parent->find_next_empty_row;
+  my $name = $parent->{grid}->GetCellValue($row,1);
+  if ($name =~ m{\A\s*\z}) {
+    $parent->{statusbar}->SetStatusText("This row does not have a named parameter.");
+    return;
+  };
+
+  my $thisgds = $parent->tie_GDS_to_grid($row);
+  my $restraint_builder = Demeter::UI::Artemis::GDS::Restraint->new($parent, $name);
+
+  ##$restraint_builder->{scale}->SetValue(2000);
+  ## need to somehow get appropriate values for the three parameters into the dialog
+
+  my $result = $restraint_builder -> ShowModal;
+  if ($result == wxID_CANCEL) {
+    $parent->{statusbar}->SetStatusText("Building restraint cancelled.");
+    return;
+  };
+  my $res  = "res_" . $name;
+  my ($scale, $low, $high) = ($restraint_builder->{scale} -> GetValue,
+			      $restraint_builder->{low}   -> GetValue,
+			      $restraint_builder->{high}  -> GetValue);
+
+  $parent->{grid}->SetCellValue($target, 0, "restrain");
+  $parent->{grid}->SetCellValue($target, 1, $res);
+  my $string = "$scale*penalty($name, $low, $high)";
+  $parent->{grid}->SetCellValue($target, 2, $string);
+  $parent->set_type($target);
+  $parent->{statusbar}->SetStatusText("Set restraint $res = $string");
+  $parent->{grid}->ClearSelection;
+  return $parent;
+};
+sub annotate {
+  my ($parent) = @_;
+
+  my $row = $parent->{clicked_row};
+  my $thisgds = $parent->tie_GDS_to_grid($row);
+  $parent->{statusbar}->SetStatusText("Annotation aborted -- this row does not contain a named parameter."), return if not $thisgds;
+  my $name = $parent->{grid}->GetCellValue($row,1);
+  my $ted = Wx::TextEntryDialog->new( $parent, "Annotate $name", "Annotate $name", q{}, wxOK|wxCANCEL);
+  if ($ted->ShowModal == wxID_CANCEL) {
+    $parent->{statusbar}->SetStatusText("Parameter annotation cancelled.");
+    return;
+  };
+  my $note = $ted->GetValue;
+  $thisgds->annotate($note);
+  $parent->{grid}->ClearSelection;
+  $parent->{statusbar}->SetStatusText("$name : $note");
+};
+sub find {
+  my ($parent) = @_;
+  $parent->{grid}->ClearSelection;
+  $parent->{statusbar}->SetStatusText("perform find");
+};
+sub rename_global {
+  my ($parent) = @_;
+  $parent->{grid}->ClearSelection;
+  $parent->{statusbar}->SetStatusText("perform rename_global");
+};
+
+
+sub change {
+  my ($parent, $type) = @_;
+  my $row = $parent->{clicked_row};
+
+  foreach my $row (0 .. $parent->{grid}->GetNumberRows-1) {
+    next if not $parent->{grid}->IsInSelection($row,0);
+    $parent->{grid}->SetCellValue($row, 0, $type);
+    $parent->set_type($row);
+  };
+  #delete $parent->{clicked_row};
+  $parent->{grid}->ClearSelection;
+  return $parent;
+};
+
+
+
+
+
+
+
+######## Other functionality ############################################################
+
 sub StartDrag {
-  my ($self, $event, $parent) = @_;
+  my ($parent, $self, $event) = @_;
   my $row = $event->GetRow;
   $event->Skip(1), return if ($row < 0);
   my $param = $self->GetCellValue($row, 1);
@@ -454,7 +633,6 @@ sub StartDrag {
   my $dragdata = Wx::TextDataObject->new($param);
   $source->SetData( $dragdata );
   $source->DoDragDrop(1);
-  
 };
 
 
@@ -467,8 +645,10 @@ sub fill_results {
       my $text;
       if ($g->gds eq 'guess') {
 	$text = sprintf("%.5f +/- %.5f", $g->bestfit, $g->error);
-      } elsif ($g->gds =~ m{(?:after|def|penalty)}) {
+      } elsif ($g->gds =~ m{(?:after|def|penalty|restrain)}) {
 	$text = sprintf("%.5f", $g->bestfit);
+      } elsif ($g->gds =~ m{(?:lguess|merge|set|skip)}) {
+	1;
       };
       $grid -> SetCellValue($row, 3, $text);
     };

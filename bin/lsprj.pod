@@ -19,6 +19,9 @@ project file without actually opening it.
 The data from the project file can also be plotted by supplying the
 optinal C<--plot> command line switch.
 
+A short usage message will be printed to the screen if you leave off
+the filename at the command line.
+
 =head1 COMMAND LINE SWITCHES
 
 =over 4
@@ -44,7 +47,7 @@ plot derivative mu(E)
 
 =item k
 
-plot k^2-weighted chi(k)
+plot k-weighted chi(k)
 
 =item r
 
@@ -69,6 +72,15 @@ Data plotted as normalized mu(E), chi(k), chi(R), or chi(q) are
 stacked, with each subsequent trace being shifted downward by
 0.2.  The amount of the shift can be specified with this switch.
 
+=item C<-kw> or C<-kweight>
+
+Override the default k-weight (which is 2).
+
+=item C<--xanes>
+
+When plotting mu(E) or normalized mu(E) this flag restricts the plot
+to 50 volts below and 120 volts above the edge.
+
 =item C<--params>
 
 A comma separated list of data processing parameters to include in the
@@ -80,9 +92,15 @@ forward Fourier transform kmin value:
 
   lsprj my.prj --params=bkg_rbkg,fft_kmin,
    ==prints==>
-        1 : HgO        bkg_rbkg=1.0    fft_kmin=2
-        2 : HgS black  bkg_rbkg=1.0    fft_kmin=2
-        3 : HgS red    bkg_rbkg=1.0    fft_kmin=2
+    #       record     bkg_rbkg   fft_kmin
+    # ----------------------------------------------------
+        1 : HgO        1.0        2
+        2 : HgS black  1.0        2
+        3 : HgS red    1.0        2
+
+=item C<-g>
+
+Use the gnuplot plotting backend.  The default is to use pgplot.
 
 =back
 

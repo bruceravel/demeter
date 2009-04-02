@@ -296,10 +296,10 @@ sub fit {
 
 sub set_happiness_color {
   my $color = $_[0] || $demeter->co->default("happiness", "average_color");
-  $frames{main}->{fitbutton} -> SetBackgroundColour(Wx::Colour->new($color));
-  $frames{Plot}->{k_button}  -> SetBackgroundColour(Wx::Colour->new($color));
-  $frames{Plot}->{r_button}  -> SetBackgroundColour(Wx::Colour->new($color));
-  $frames{Plot}->{q_button}  -> SetBackgroundColour(Wx::Colour->new($color));
+  $frames{main}->{fitbutton}  -> SetBackgroundColour(Wx::Colour->new($color));
+  $frames{Plot}->{k_button}   -> SetBackgroundColour(Wx::Colour->new($color));
+  $frames{Plot}->{r_button}   -> SetBackgroundColour(Wx::Colour->new($color));
+  $frames{Plot}->{'q_button'} -> SetBackgroundColour(Wx::Colour->new($color));
   foreach my $k (keys(%frames)) {
     next unless ($k =~ m{\Adata});
     $frames{$k}->{'plot_k123'} -> SetBackgroundColour(Wx::Colour->new($color));
