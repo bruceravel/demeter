@@ -76,6 +76,7 @@ has 'indeces'        => (is => 'rw', isa => 'Str',    default => q{});
 has 'location'       => (is => 'rw', isa => 'Str',    default => q{});
 has 'fit_performed'  => (is => 'rw', isa => 'Bool',   default => 0);
 has 'ignore_errors'  => (is => 'rw', isa => 'Bool',   default => 0);
+has 'stop'           => (is => 'rw', isa => 'Bool',   default => 0);
 
 ## -------- array attributes
 has 'gds' => (
@@ -296,6 +297,7 @@ sub pre_fit {
 
 sub fit {
   my ($self) = @_;
+  $self->stop(0);
 
   $self->start_spinner("Demeter is performing a fit") if ($self->mo->ui eq 'screen');
   my $prefit = $self->pre_fit;
@@ -304,6 +306,7 @@ sub fit {
   my $stop = any { ($_ ne 'errors') and $$r_problems{$_} } (keys %$r_problems);
   my $all = q{};
   if ($stop) {
+    $self->stop(1);
     $all .= "The following errors were found:";
     my $i = 0;
     foreach my $message (@{ $r_problems->{errors} }) {
@@ -320,6 +323,7 @@ sub fit {
       };
     };
   };
+  return "Tilt!" if $self->stop;
   $self->dispose($prefit);
 
   $self->mo->fit($self);
@@ -419,6 +423,10 @@ sub fit {
   my @joy = $self->get_happiness;
   $self->happiness( $joy[0] || 0 );
   $self->happiness_summary( $joy[1] || q{} );
+
+  foreach my $g (@ {$self->gds}) {
+    $g->autoannotate;
+  };
 
   $self->mo->fit(q{});
   #$_->update_fft(1) foreach (@datasets);
@@ -733,6 +741,8 @@ sub logfile {
 };
 sub logtext {
   my ($self, $header, $footer) = @_;
+  $header ||= q{};
+  $footer ||= q{};
   $self -> set(header=>$header, footer=>$footer);
   ($header .= "\n") if ($header !~ m{\n\z});
   my $text = q{};
@@ -1018,9 +1028,11 @@ sub correl_report {
 override 'serialize' => sub {
   my ($self, @args) = @_;
   my %args = @args;		# coerce args into a hash
-  $args{tree}   ||= 'fit';
+  $args{tree}   ||= File::Spec->catfile($self->project_folder("raw_demeter"), 'fit');
   $args{folder} ||= $self->group;
-  $args{file} ||= $args{project};
+  $args{file}   ||= $args{project};
+  ($args{nozip} = 1) if not $args{file};
+  $args{copyfeff} ||= 0;
 
   my @gds   = @{ $self->gds   };
   my @data  = @{ $self->data  };
@@ -1032,10 +1044,9 @@ override 'serialize' => sub {
   my @feffgroups  = map { $_->group } map {$_ -> parent} grep {defined $_} @paths;
   @feffgroups = uniq @feffgroups;
 
-  unlink ($args{file}) if (-e $args{file});
+  unlink ($args{file}) if ($args{file} and (-e $args{file}));
 
-  my $folder = $self->project_folder("raw_demeter");
-  $self->folder(File::Spec->catfile($folder, $args{tree}, $args{folder}));
+  $self->folder(File::Spec->catfile($args{tree}, $args{folder}));
   mkpath($self->folder);
 
   ## -------- save a yaml containing the structure of the fit
@@ -1075,17 +1086,21 @@ override 'serialize' => sub {
   };
   close $PATHS;
 
-  ## -------- save yamls and phase.bin for the feff calculations
-  foreach my $f (values %feffs) {
-    my $ff = $f->group;
-    my $feffyaml = File::Spec->catfile($self->folder, $ff.".yaml");
-    $f->serialize($feffyaml, 1);
-    my $feff_from  = File::Spec->catfile($f->get("workspace"), "original_feff.inp");
-    my $feff_to    = File::Spec->catfile($self->folder, $ff.".inp");
-    copy($feff_from,  $feff_to);
-    my $phase_from = File::Spec->catfile($f->get("workspace"), "phase.bin");
-    my $phase_to   = File::Spec->catfile($self->folder, $ff.".bin");
-    copy($phase_from, $phase_to);
+  ## -------- save yamls and phase.bin for the feff calculations (turn
+  ##          this off in Artemis, where interaction with feff files
+  ##          is handled somewhat differently)
+  if ($args{copyfeff}) {
+    foreach my $f (values %feffs) {
+      my $ff = $f->group;
+      my $feffyaml = File::Spec->catfile($self->folder, $ff.".yaml");
+      $f->serialize($feffyaml, 1);
+      my $feff_from  = File::Spec->catfile($f->get("workspace"), "original_feff.inp");
+      my $feff_to    = File::Spec->catfile($self->folder, $ff.".inp");
+      copy($feff_from,  $feff_to);
+      my $phase_from = File::Spec->catfile($f->get("workspace"), "phase.bin");
+      my $phase_to   = File::Spec->catfile($self->folder, $ff.".bin");
+      copy($phase_from, $phase_to);
+    };
   };
 
   ## -------- save a yaml containing the fit properties

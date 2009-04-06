@@ -478,15 +478,24 @@ sub translate_trouble {
   };
 
   my $text = q{};
+  my ($pp, $token) = (q{}, q{});
   foreach my $item ($troubles_section->head2->[$obj]->over->[0]->item) {
     my $this = $item->title;
-    if ($trouble =~ m{$this}) {
+    my $match = $trouble;
+    ($pp, $token) = (q{}, q{});
+    if ($trouble =~ m{_}) {
+      ($match, $pp, $token) = split(/_/, $trouble);
+    };
+    #print $this, "  ", $trouble, "  ", $obj, $/;
+    if ($this =~ m{$match}) {
       my $content = $item->content();
       $content =~ s{\n}{ }g;
       $content =~ s{\s+\z}{};
       $text = $content;
     };
   };
+  $text =~ s{C<\$pp>}{$pp};
+  $text =~ s{C<\$token>}{$token};
   undef $parser;
   undef $pom;
   return $text || $self->trouble;

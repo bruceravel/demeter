@@ -154,7 +154,7 @@ sub S_used_not_defined {
 	push(@{$$r_problem{errors}},
 	     "The math expression for $pp for \"$label\" uses an undefined token: $token"
 	    );
-	$p->add_trouble($pp.'_useundef_'.$token);
+	$p->add_trouble(join('_', 'useundef', $pp, $token));
       };
     };
   };
@@ -189,7 +189,7 @@ sub S_binary_ops {
 	push(@{$$r_problem{errors}},
 	     "The math expression for $pp for \"$label\" uses an invalid binary operation: $which"
 	    );
-	$p->add_trouble($pp."_binary_".$which);
+	$p->add_trouble(join('_', 'binary', $pp, $which));
       };
     };
   };
@@ -223,7 +223,7 @@ sub S_function_names {
 	if (not is_IfeffitFunction($match)) {
 	  push (@{$$r_problem{errors}}, "$match (used in the math expression for $pp for \"$label\") is not a valid Ifeffit function");
 	  ++$$r_problem{function_names};
-	  $p->add_trouble($pp."_function_".$match);
+	  $p->add_trouble(join('_', 'function', $pp, $match));
 	};
       };
     };
@@ -338,7 +338,7 @@ sub S_parens_not_match {
       if ($not_ok) {
 	push (@{$$r_problem{errors}}, "The math expression for $pp for \"$label\" has mismatched parens.");
 	++$$r_problem{parens_not_match};
-	$p->add_trouble($pp."_parens");
+	$p->add_trouble("parens_".$pp);
       };
     };
   };
@@ -717,20 +717,20 @@ The path file does not exist (perhaps the Feff calculationw as not run).
 
 The path file cannot be read.
 
-=item C<$pp> + C<_useundef_> + C<$token>
+=item C<useundef> + C<$pp> + C<$token>
 
 The math expression for the C<$pp> pathparameter contains an undefined
-token.
+parameter, C<$token>.
 
-=item C<$pp> + C<_binary_> + C<$which>
+=item C<binary> + C<$pp> + C<$token>
 
 The math expression for the C<$pp> pathparameter contains an unallowed
-binary math operator.
+binary math operator, C<$token>.
 
-=item C<$pp> + C<_function_> + C<$match>
+=item C<function> + C<$pp> + C<$token>
 
 The math expression for the C<$pp> pathparameter contains a
-mathematical function unknown to Ifeffit.
+mathematical function unknown to Ifeffit, C<$token>.
 
 =item C<namenotunique>
 
@@ -740,7 +740,7 @@ The Ifeffit group name for this path is not unique.
 
 This path has an Ifeffit group name which is used by a Data object.
 
-=item C<$pp> + C<_parens_>
+=item C<parens> + C<$pp>
 
 The math expression for the C<$pp> pathparameter has unmatched parentheses.
 
@@ -759,6 +759,11 @@ It seems as though the Feff calculation for this path has not been made yet.
 
 =over 4
 
+=item C<notused>
+
+This is a guess parameter which is not used in the math expressions
+for any def or path parameters.
+
 =item C<usecv>
 
 This is a def parameter which uses the characteristic value (cv).
@@ -769,15 +774,15 @@ This is not yet allowed for def parameters.
 The math expression for this GDS parameter uses an undefined parameter
 name.
 
-=item C<binary_$which>
+=item C<binary> + C<$token>
 
 The math expression for this GDS parameter contains an unallowed
-binary math operator.
+binary math operator, C<$token>.
 
-=item C<function_$match>
+=item C<function> + C<$token>
 
 The math expression for this GDS parameter contains a mathematical
-function unknown to Ifeffit.
+function unknown to Ifeffit, C<$token>.
 
 =item C<notunique>
 

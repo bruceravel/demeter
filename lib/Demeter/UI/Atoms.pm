@@ -30,7 +30,7 @@ foreach my $m (qw(Xtal Feff Config Paths Doc Console)) {
 };
 
 sub new {
-  my $ref    = shift;
+  my ($ref, $base) = @_;
   my $width  = 100;
   my $self   = $ref->SUPER::new( undef,           # parent window
 				 -1,              # ID -1 means any
@@ -39,6 +39,7 @@ sub new {
 				 [560,700],
 			       );
   my $nb = Wx::Notebook->new( $self, -1, wxDefaultPosition, wxDefaultSize, wxNB_TOP );
+  $self->{base} = $base;
   $self->{notebook} = $nb;
   my $vbox = Wx::BoxSizer->new( wxVERTICAL);
 

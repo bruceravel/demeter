@@ -67,6 +67,8 @@ sub new {
     my $bestfit = $gds->bestfit || $gds->mathexp;
     ($bestfit = 1) if ($bestfit !~ m{\A$NUMBER\z});
     my ($lo, $hi) = sort {$a <=> $b} ($bestfit/2, $bestfit*2);
+    $lo = (abs($lo) < 0.01) ? sprintf("%.6f", $lo) : sprintf("%.3f", $lo);
+    $hi = (abs($hi) < 0.01) ? sprintf("%.6f", $hi) : sprintf("%.3f", $hi);
     $this->{low} ->SetValue($lo);
     $this->{high}->SetValue($hi);
   };

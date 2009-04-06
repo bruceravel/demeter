@@ -2,12 +2,17 @@ package Demeter::UI::Artemis;
 
 use Demeter qw(:plotwith=gnuplot);
 use Demeter::UI::Atoms;
+use Demeter::UI::Artemis::Project;
+use base qw(Demeter::UI::Artemis::Project);
+
 use vars qw($demeter);
 $demeter = Demeter->new;
 
 use Cwd;
 use File::Basename;
+use File::Path;
 use File::Spec;
+use String::Random qw(random_string);
 
 use Wx qw(:everything);
 use Wx::Event qw(EVT_MENU EVT_CLOSE EVT_TOOL_ENTER EVT_CHECKBOX EVT_BUTTON EVT_TOGGLEBUTTON);
@@ -194,11 +199,22 @@ sub OnInit {
   $frames{Plot} -> Show( 1 );
   EVT_TOGGLEBUTTON($frames{main}->{log_toggle}, -1, sub{ $frames{Log}->Show($frames{main}->{log_toggle}->GetValue) });
 
+  ## -------- disk space to hold this project
+  my $this = random_string('cccccccc');
+  my $project_folder = File::Spec->catfile($demeter->stash_folder, $this);
+  $frames{main}->{project_folder} = $project_folder;
+  mkpath($project_folder,0);
+  #foreach my $subdir (qw(data feff sp paths vpaths fits)) {
+  #  mkpath(File::Spec->catfile($project_folder, $subdir), 0);
+  #};
+
   1;
 }
 
 sub on_close {
   my ($self) = @_;
+  ## offer to save project....
+  rmtree($self->{project_folder});
   foreach (values(%frames)) {$_->Destroy};
 };
 
@@ -260,6 +276,7 @@ sub fit {
   ## do I need to take care at this point about GDS's with the same name?
   my $grid = $rframes->{GDS}->{grid};
   foreach my $row (0 .. $grid->GetNumberRows) {
+    $grid -> SetCellValue($row, 3, q{});
     my $name = $grid -> GetCellValue($row, 1);
     next if ($name =~ m{\A\s*\z});
     my $type = $grid -> GetCellValue($row, 0);
@@ -272,10 +289,17 @@ sub fit {
 
   ## get name, fom, and description + other properties
   my $fit = Demeter::Fit->new(data => \@data, paths => \@paths, gds => \@gds);
+  #write_project(\%frames, $fit);
   #$fit->ignore_errors(1);
+
   $fit->set_mode(ifeffit=>1, screen=>0);
   my $result = $fit->fit;
   if ($result eq $fit) {
+    $fit -> serialize(tree     => File::Spec->catfile($frames{main}->{project_folder}, 'fits'),
+		      folder   => $fit->group,
+		      nozip    => 1,
+		      copyfeff => 0,
+		     );
     #print $fit->logtext(q{}, q{});
     $fit->po->start_plot;
     $rframes->{Plot}->{limits}->{fit}->SetValue(1);
@@ -283,6 +307,9 @@ sub fit {
     $data[0]->plot('Rmr');
 
     $rframes->{GDS}->fill_results(@gds);
+    $rframes->{Log}->{text}->SetValue($fit->logtext);
+    $rframes->{Log}->Show(1);
+    $rframes->{main}->{log_toggle}->SetValue(1);
 
     set_happiness_color($fit->color);
     $rframes->{main}->{statusbar}->SetStatusText("Your fit is finished!");
@@ -312,10 +339,12 @@ sub set_happiness_color {
 sub check_for_trouble {
   my ($fit) = @_;
   local $| = 1;
+  my $text = q{};
   foreach my $obj (@{ $fit->gds }, @{ $fit->data }, @{ $fit->paths }) {
     next if not $obj->trouble;
-    printf("%-15s : %s\n", $obj->name, $obj->translate_trouble($obj->trouble));
+    $text .= sprintf("%-15s : %s\n\n", $obj->name, $obj->translate_trouble($obj->trouble));
   };
+  print $text;
 };
 
 sub button_label {
@@ -430,7 +459,8 @@ sub OnFeffClick {
     do_the_size_dance($self);
     my $ifeff = $newtool->GetId;
     my $fnum = sprintf("feff%s", $ifeff);
-    $frames{$fnum} =  Demeter::UI::AtomsApp->new;
+    my $base = File::Spec->catfile($frames{main}->{project_folder}, 'feff');
+    $frames{$fnum} =  Demeter::UI::AtomsApp->new($base);
     $frames{$fnum} -> SetTitle('Artemis: Atoms and Feff');
     $frames{$fnum} -> SetIcon($icon);
     $frames{$fnum} -> Show(1);

@@ -24,11 +24,17 @@ use base qw(Wx::Frame);
 sub new {
   my ($class, $parent) = @_;
   my $this = $class->SUPER::new($parent, -1, "Artemis: Fit log",
-				wxDefaultPosition, wxDefaultSize,
+				wxDefaultPosition, [550,500],
 				wxMINIMIZE_BOX|wxCAPTION|wxSYSTEM_MENU|wxRESIZE_BORDER);
+  my $vbox = Wx::BoxSizer->new( wxVERTICAL );
 
+  $this->{text} = Wx::TextCtrl->new($this, -1, q{}, wxDefaultPosition, wxDefaultSize,
+				    wxTE_MULTILINE|wxTE_READONLY|wxHSCROLL);
+  $this->{text} -> SetFont( Wx::Font->new( 9, wxTELETYPE, wxNORMAL, wxNORMAL, 0, "" ) );
 
-
+  $vbox -> Add($this->{text}, 1, wxGROW, 0);
+  $this -> SetSizer($vbox);
+  return $this;
 };
 
 1;

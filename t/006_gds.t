@@ -17,7 +17,7 @@
 
 =cut
 
-use Test::More tests => 27;
+use Test::More tests => 28;
 
 use Ifeffit;
 use Demeter;

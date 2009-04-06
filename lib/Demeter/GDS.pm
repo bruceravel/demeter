@@ -32,13 +32,17 @@ has '+name'	  => (isa => NotReserved);
 has 'gds'	  => (is => 'rw', isa =>  GDS,    default => 'guess');
 has 'mathexp'	  => (is => 'rw', isa => 'Str',   default => q{});	##,trigger => sub{ my ($self, $new) = @_; $self->stored($new));
 has 'stored'	  => (is => 'rw', isa => 'Str',   default => q{});
-has 'bestfit'	  => (is => 'rw', isa => 'Num',   default => 0);
+has 'bestfit'	  => (is => 'rw', isa => 'Num',   default => 0,
+		      trigger => sub{my ($self, $new) = @_; $self->modified(1) if $new} );
 has 'error'	  => (is => 'rw', isa => 'Num',   default => -1);
 has 'modified'	  => (is => 'rw', isa => 'Bool',  default => 1);
-has 'note'	  => (is => 'rw', isa => 'Str',   default => q{});
+has 'note'	  => (is => 'rw', isa => 'Str',   default => q{},
+		     trigger => sub{my ($self, $new) = @_; $self->autonote(1) if ($new =~ m{\A\s*\z})} );
 has 'autonote'	  => (is => 'rw', isa => 'Bool',  default => 1);
 has 'highlighted' => (is => 'rw', isa => 'Bool',  default => 0);
 has 'Use'	  => (is => 'rw', isa => 'Bool',  default => 1);
+
+has 'expandsto'	  => (is => 'rw', isa => 'Str',   default => q{});
 
 sub BUILD {
   my ($self, @params) = @_;
@@ -62,6 +66,21 @@ sub annotate {
   my ($self, $string) = @_;
   my $auto = (defined($string) and ($string !~ m{\A\s*\z})) ? 0 : 1;
   $self->set(note=>$string, autonote=>$auto);
+};
+
+sub autoannotate {
+  my ($self) = @_;
+  return if not $self->autonote;
+  my $string = q{};
+  if ($self->gds eq 'guess') {
+    $string = sprintf("%s : %.5f +/- %.5f", $self->name, $self->bestfit, $self->error);
+  } elsif ($self->gds =~ m{(?:def|after|penalty|restrain)}) {
+    $string = sprintf("%s : %.5f (:= %s)", $self->name, $self->bestfit, $self->mathexp);
+  #} elsif ($self->gds eq 'lguess') {
+  #  $string = $self->expandsto;
+  #
+  # do nothing with skip, set, merge
+  };
 };
 
 sub report {

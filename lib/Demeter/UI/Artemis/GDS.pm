@@ -268,6 +268,7 @@ sub set_highlight {
     next if ($name =~ m{\A\s*\z});
     my $mathexp = $grid -> GetCellValue($row, 2);
     if (($name =~ $re) or ($mathexp =~ m{\b$re\b})) {
+      ## set GDS object highlighted attribute to 1 -- do I *really* need to do this...
       foreach my $col (0 .. $grid->GetNumberCols) {
 	$grid->SetCellBackgroundColour($row, $col, Wx::Colour->new($Demeter::UI::Artemis::demeter->co->default('gds','highlight_color')));
       };

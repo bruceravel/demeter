@@ -361,7 +361,10 @@ sub potph {
     my $miscdat = File::Spec->catfile($self->get("workspace"), "misc.dat");
     if (-e $miscdat) {
       open( my $fh, $miscdat );
-      $self->miscdat(<$fh>);
+      my $text = <$fh>;
+      my $null = chr(0);
+      $text =~ s{$null}{}g;	# frakkin' feff
+      $self->miscdat($text);
       unlink $miscdat if not $self->save;
     };
   };

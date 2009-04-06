@@ -170,9 +170,10 @@ sub insert_boilerplate {
 sub run_feff {
   my ($self) = @_;
   return 1 if ($self->{feff}->GetNumberOfLines <= 1);
-  my $busy   = Wx::BusyCursor->new();
-  my $feff   = Demeter::Feff->new(screen=>0, buffer=>1, save=>0);
-  $feff -> workspace(File::Spec->catfile($feff->stash_folder, $feff->group));
+  my $busy = Wx::BusyCursor->new();
+  my $feff = Demeter::Feff->new(screen=>0, buffer=>1, save=>0);
+  my $base = $self->{parent}->{base} || $feff->stash_folder;
+  $feff -> workspace(File::Spec->catfile($base, $feff->group));
   $feff -> make_workspace;
   $self->{feffobject} = $feff;
 
@@ -201,6 +202,8 @@ sub run_feff {
 
   $self->{statusbar}->SetStatusText("Finding scattering paths using Demeter's pathfinder...");
   $feff->pathfinder;
+  my $yaml = File::Spec->catfile($feff->workspace, $feff->group.".yaml");
+  $feff->freeze($yaml);
 
   $self->{parent}->{Paths}->{name}->SetValue($feff->name);
   $self->{parent}->{Paths}->{header}->SetValue($feff->intrp_header);
