@@ -18,50 +18,64 @@ package Demeter::UI::Artemis::Project;
 use strict;
 use warnings;
 
+use Archive::Zip qw( :ERROR_CODES :CONSTANTS );
+use Cwd;
+
+use Wx qw(:everything);
+
 require Exporter;
 
 use vars qw(@ISA @EXPORT);
 @ISA       = qw(Exporter);
-@EXPORT    = qw(write_project zip_project);
+@EXPORT    = qw(save_project read_project);
 
 use File::Spec;
 
-sub write_project {
-  my ($rframes, $fit) = @_;
-
-  foreach my $k (keys %$rframes) {
-    next if ($k =~ m{(?:History|Log|Plot)});
-
-  SWITCH: {
-
-      ($k =~ m{\Adata}) and do {
-	last SWITCH;
-      };
-
-      ($k =~ m{\Afeff}) and do {
-	last SWITCH;
-      };
-
-      ($k eq 'GDS') and do {
-	my $gdsfile = File::Spec->catfile($rframes->{main}->{project_folder}, 'fits',
-					  $fit->group . "_gds.yaml");
-	open(my $GDS, '>', $gdsfile);
-	foreach my $g (@{ $fit->gds }) {
-	  print $GDS $g->serialization;
-	};
-	close $GDS;
-	last SWITCH;
-      };
-
+sub save_project {
+  my ($rframes, $fname) = @_;
+  if (not $fname) {
+    my $fd = Wx::FileDialog->new( $rframes->{main}, "Save project file", cwd, q{artemis.dfp},
+				  "Demeter fitting project (*.dfp)|*.inp|All files|*.*",
+				  wxFD_SAVE|wxFD_CHANGE_DIR,
+				  wxDefaultPosition);
+    if ($fd->ShowModal == wxID_CANCEL) {
+      $rframes->{main}->{statusbar}->SetStatusText("Saving project cancelled.");
+      return;
     };
-
-
+    $fname = File::Spec->catfile($fd->GetDirectory, $fd->GetFilename);
   };
-  
+  Demeter::UI::Artemis::uptodate($rframes);
+
+  print join(" ",
+	     $rframes->{main}->{project_folder},
+	     $fname,
+	     ), $/;
+
+  my $zip = Archive::Zip->new();
+  $zip->addTree( $rframes->{main}->{project_folder}, "" );
+  carp('error writing zip-style project') unless ($zip->writeToFileNamed( $fname ) == AZ_OK);
+  undef $zip;
 };
 
-sub zip_project {
-  my ($self) = @_;
+sub read_project {
+  my ($rframes, $fname) = @_;
+  if (not $fname) {
+    my $fd = Wx::FileDialog->new( $rframes->{main}, "Import an Artemis project", cwd, q{},
+				  "Artemis project (*.dfp)|*.dfp|All files|*.*",
+				  wxFD_OPEN|wxFD_FILE_MUST_EXIST|wxFD_CHANGE_DIR|wxFD_PREVIEW,
+				  wxDefaultPosition);
+    if ($fd->ShowModal == wxID_CANCEL) {
+      $rframes->{main}->{statusbar}->SetStatusText("Project import cancelled.");
+      return;
+    };
+    $fname = File::Spec->catfile($fd->GetDirectory, $fd->GetFilename);
+  };
+
+  my $zip = Archive::Zip->new();
+  carp("Error reading project file $fname"), return 1 unless ($zip->read($fname) == AZ_OK);
+  $zip->extractTree("", $rframes->{main}->{project_folder}.'/');
+  undef $zip;
+
   1;
 };
 

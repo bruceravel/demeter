@@ -3,11 +3,12 @@ package Demeter::UI::Artemis;
 use Demeter qw(:plotwith=gnuplot);
 use Demeter::UI::Atoms;
 use Demeter::UI::Artemis::Project;
-use base qw(Demeter::UI::Artemis::Project);
+#use base qw(Demeter::UI::Artemis::Project);
 
 use vars qw($demeter);
 $demeter = Demeter->new;
 
+use Config::IniFiles 2.45;
 use Cwd;
 use File::Basename;
 use File::Path;
@@ -18,6 +19,10 @@ use Wx qw(:everything);
 use Wx::Event qw(EVT_MENU EVT_CLOSE EVT_TOOL_ENTER EVT_CHECKBOX EVT_BUTTON EVT_TOGGLEBUTTON);
 use base 'Wx::App';
 
+use Readonly;
+Readonly my $ID_READ_PROJECT => Wx::NewId();
+Readonly my $ID_SAVE_PROJECT => Wx::NewId();
+
 use Wx::Perl::Carp;
 $SIG{__WARN__} = sub {Wx::Perl::Carp::warn($_[0])};
 $SIG{__DIE__}  = sub {Wx::Perl::Carp::warn($_[0])};
@@ -26,7 +31,7 @@ sub identify_self {
   my @caller = caller;
   return dirname($caller[1]);
 };
-use vars qw($artemis_base $icon $nset %frames %widgets);
+use vars qw($artemis_base $icon $nset %frames %fit_order);
 $nset = 0;
 $artemis_base = identify_self();
 
@@ -60,14 +65,16 @@ sub OnInit {
 
   ## -------- Set up menubar
   my $bar = Wx::MenuBar->new;
-  my $file = Wx::Menu->new;
-  $file->Append( wxID_EXIT, "E&xit" );
+  my $filemenu = Wx::Menu->new;
+  $filemenu->Append( $ID_READ_PROJECT, "Read project", "Read from a project file",       wxITEM_NORMAL );
+  $filemenu->Append( $ID_SAVE_PROJECT, "Save project", "Save project to a project file", wxITEM_NORMAL );
+  $filemenu->Append( wxID_EXIT, "E&xit" );
 
-  my $help = Wx::Menu->new;
-  $help->Append( wxID_ABOUT, "&About..." );
+  my $helpmenu = Wx::Menu->new;
+  $helpmenu->Append( wxID_ABOUT, "&About..." );
 
-  $bar->Append( $file, "&File" );
-  $bar->Append( $help, "&Help" );
+  $bar->Append( $filemenu, "&File" );
+  $bar->Append( $helpmenu, "&Help" );
   $frames{main}->SetMenuBar( $bar );
 
   my $hbox = Wx::BoxSizer->new( wxHORIZONTAL);
@@ -170,8 +177,9 @@ sub OnInit {
 
 
 
-  EVT_MENU	 ($frames{main}, wxID_ABOUT, \&on_about );
-  EVT_MENU	 ($frames{main}, wxID_EXIT,  sub{shift->Close} );
+  #EVT_MENU	 ($frames{main}, wxID_ABOUT, \&on_about );
+  #EVT_MENU	 ($frames{main}, wxID_EXIT,  sub{shift->Close} );
+  EVT_MENU	 ($frames{main}, -1, sub{my ($frame,  $event) = @_; OnMenuClick($frame,  $event)} );
   EVT_CLOSE	 ($frames{main},             \&on_close);
   EVT_MENU	 ($toolbar,      -1,         sub{my ($toolbar,  $event) = @_; OnToolClick($toolbar,  $event, $frames{main})} );
   EVT_MENU	 ($datatool,     -1,         sub{my ($fefftool, $event) = @_; OnDataClick($datatool, $event, $frames{main})} );
@@ -204,9 +212,15 @@ sub OnInit {
   my $project_folder = File::Spec->catfile($demeter->stash_folder, $this);
   $frames{main}->{project_folder} = $project_folder;
   mkpath($project_folder,0);
-  #foreach my $subdir (qw(data feff sp paths vpaths fits)) {
-  #  mkpath(File::Spec->catfile($project_folder, $subdir), 0);
-  #};
+
+  my $orderfile = File::Spec->catfile($frames{main}->{project_folder}, "order");
+  $frames{main}->{order_file} = $orderfile;
+  if (! -e $orderfile) {
+    open(my $ORD, '>', $orderfile);
+    print $ORD, q{};
+    close $ORD;
+  };
+  tie %fit_order, 'Config::IniFiles', ( -file=>$orderfile, -allowempty=>1,  );
 
   1;
 }
@@ -248,16 +262,9 @@ EOH
   Wx::AboutBox( $info );
 };
 
-sub fit {
-  my ($button, $event, $rframes) = @_;
+sub uptodate {
+  my ($rframes) = @_;
   my (@data, @paths, @gds);
-  $rframes->{main}->{statusbar}->SetStatusText("Fitting (please be patient, it may take a while...)");
-  my $busy = Wx::BusyCursor->new();
-
-  ## reset all relevant widgets to their initial states (i.e. assume
-  ## that the last fit returned trouble and that the widgets
-  ## containing the responsible data were colored in some way to
-  ## indicate that)
 
   foreach my $k (keys(%$rframes)) {
     next unless ($k =~ m{\Adata});
@@ -286,10 +293,26 @@ sub fit {
     $grid->{$name} = $thisgds;
     push @gds, $thisgds;
   };
+  return (\@data, \@paths, \@gds);
+};
+
+sub fit {
+  my ($button, $event, $rframes) = @_;
+  $rframes->{main}->{statusbar}->SetStatusText("Fitting (please be patient, it may take a while...)");
+  my $busy = Wx::BusyCursor->new();
+
+  ## reset all relevant widgets to their initial states (i.e. assume
+  ## that the last fit returned trouble and that the widgets
+  ## containing the responsible data were colored in some way to
+  ## indicate that)
+
+  my ($rdata, $rpaths, $rgds) = uptodate($rframes);
+  my @data  = @$rdata;
+  my @paths = @$rpaths;
+  my @gds   = @$rgds;
 
   ## get name, fom, and description + other properties
   my $fit = Demeter::Fit->new(data => \@data, paths => \@paths, gds => \@gds);
-  #write_project(\%frames, $fit);
   #$fit->ignore_errors(1);
 
   $fit->set_mode(ifeffit=>1, screen=>0);
@@ -300,7 +323,12 @@ sub fit {
 		      nozip    => 1,
 		      copyfeff => 0,
 		     );
-    #print $fit->logtext(q{}, q{});
+    my $thisfit = $fit_order{order}{current} || 0;
+    ++$thisfit;
+    $fit_order{order}{$thisfit} = $fit->group;
+    $fit_order{order}{current}  = $thisfit;
+    tied( %fit_order )->WriteConfig($frames{main}->{order_file});
+
     $fit->po->start_plot;
     $rframes->{Plot}->{limits}->{fit}->SetValue(1);
     $fit->po->plot_fit(1);
@@ -375,6 +403,29 @@ sub _doublewide {
   $widget -> SetSizeWH(2*$w, $h);
 };
 
+sub OnMenuClick {
+  my ($self, $event) = @_;
+  my $id = $event->GetId;
+ SWITCH: {
+    ($id == wxID_ABOUT) and do {
+      &on_about;
+      return;
+    };
+    ($id == wxID_EXIT) and do {
+      $self->Close;
+      return;
+    };
+    ($id == $ID_READ_PROJECT) and do {
+      read_project(\%frames);
+      last SWITCH;
+    };
+    ($id == $ID_SAVE_PROJECT) and do {
+      save_project(\%frames);
+      last SWITCH;
+    };
+
+  };
+};
 
 sub OnToolEnter {
   1;

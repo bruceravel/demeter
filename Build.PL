@@ -42,7 +42,7 @@ my $build = Module::Build
 				'Archive::Zip'		   => '0',
 
 				'Chemistry::Elements'	   => '0',
-				#'Config::IniFiles'	   => '0',
+				'Config::IniFiles'	   => '2.45',
 				'Digest::SHA'		   => '0',
 				'Heap'			   => '0',
 				'List::MoreUtils'	   => '0',

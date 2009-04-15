@@ -301,7 +301,6 @@ sub find_next_empty_row {
 sub import {
   my ($parent) = @_;
   my $grid = $parent->{grid};
-
   my $fd = Wx::FileDialog->new( $parent, "Import parameters from a text file", cwd, q{},
 				"Text file|*.txt|All files|*.*",
 				wxFD_OPEN|wxFD_FILE_MUST_EXIST|wxFD_CHANGE_DIR|wxFD_PREVIEW,

@@ -20,6 +20,7 @@ use warnings;
 
 use Wx qw( :everything );
 use base qw(Wx::Panel);
+use Wx::Event qw(EVT_RIGHT_DOWN EVT_ENTER_WINDOW EVT_LEAVE_WINDOW);
 
 sub new {
   my ($class, $parent, $pathobject) = @_;
@@ -77,11 +78,15 @@ sub new {
   my $i = 0;
   foreach my $k (qw(label n s02 e0 delr sigma2 ei third fourth)) {
     my $label        = Wx::StaticText->new($this, -1, $labels{$k}, wxDefaultPosition, wxDefaultSize, wxALIGN_RIGHT);
+    $label->{which} = $k;
     my $w = ($k eq 'n') ? 50 : 250;
     $this->{"pp_$k"} = Wx::TextCtrl  ->new($this, -1, q{}, wxDefaultPosition, [$w,-1]);
     $gbs     -> Add($label,           Wx::GBPosition->new($i,1));
     $gbs     -> Add($this->{"pp_$k"}, Wx::GBPosition->new($i,2));
     ++$i;
+    EVT_RIGHT_DOWN($label, \&DoLabelKeyPress);
+    #EVT_ENTER_WINDOW($label, \&DoLabelEnter);
+    #EVT_LEAVE_WINDOW($label, \&DoLabelLeave);
   };
   $vbox -> Add($gbs, 2, wxGROW|wxALL, 10);
 
@@ -120,5 +125,32 @@ sub fetch_parameters {
   $this->{path}->plot_after_fit($this->{plotafter}->GetValue );
 };
 
+sub DoLabelEnter {
+  my ($st, $event) = @_;
+  print "entering ", $st->{which}, $/;
+};
+sub DoLabelLeave {
+  my ($st, $event) = @_;
+  print "leaving ", $st->{which}, $/;
+};
+
+## use this to post context menu for path parameter
+sub DoLabelKeyPress {
+  #print join(" ", @_), $/;
+  my ($st, $event) = @_;
+  print $st->{which}, $/;
+};
+
+## edit for many paths : TextCtrl with toggles for choices
+## -----------
+## 1. export to every path, this feff calc, this data set
+## 2. export to every path, each feff calc, this data set
+## 3. export to every path, each feff calc, each data set
+## 4. selected
+## ------------
+## 5. grab from previous
+## 6. grab from next
+##
+## for sigma^2: insert Debye, insert Einstein
 
 1;
