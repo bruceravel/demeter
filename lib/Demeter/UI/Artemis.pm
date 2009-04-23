@@ -127,6 +127,7 @@ sub OnInit {
   $feffvbox     -> Add($fefftool);
   $feffboxsizer -> Add($fefflist, 0, wxGROW|wxALL, 0);
   $hbox         -> Add($feffboxsizer, 2, wxGROW|wxALL, 0);
+  $frames{main}->{fefftool} = $fefftool;
 
   ## -------- Fit box
   $vbox = Wx::BoxSizer->new( wxVERTICAL);
@@ -208,7 +209,7 @@ sub OnInit {
   EVT_TOGGLEBUTTON($frames{main}->{log_toggle}, -1, sub{ $frames{Log}->Show($frames{main}->{log_toggle}->GetValue) });
 
   ## -------- disk space to hold this project
-  my $this = random_string('cccccccc');
+  my $this = '_dem_' . random_string('cccccccc');
   my $project_folder = File::Spec->catfile($demeter->stash_folder, $this);
   $frames{main}->{project_folder} = $project_folder;
   mkpath($project_folder,0);
@@ -503,22 +504,10 @@ sub OnFeffClick {
     };
     my $file = File::Spec->catfile($fd->GetDirectory, $fd->GetFilename);
 
-    my $name = basename($file);	# ok for importing an atoms or CIF file
-
-    my $newtool = $feffbar -> AddCheckTool(-1, "Show $name", icon("pixel"), wxNullBitmap, q{}, q{} );
-    #$feffbar -> Realize;
-    do_the_size_dance($self);
-    my $ifeff = $newtool->GetId;
-    my $fnum = sprintf("feff%s", $ifeff);
-    my $base = File::Spec->catfile($frames{main}->{project_folder}, 'feff');
-    $frames{$fnum} =  Demeter::UI::AtomsApp->new($base);
-    $frames{$fnum} -> SetTitle('Artemis: Atoms and Feff');
-    $frames{$fnum} -> SetIcon($icon);
+    my ($fnum, $ifeff) = make_feff_frame($self, $file);
     $frames{$fnum} -> Show(1);
+    $frames{$fnum}->{statusbar}->SetStatusText("Imported crystal data from " . basename($file));
     $feffbar->ToggleTool($ifeff,1);
-    $frames{$fnum}->{Atoms}->Demeter::UI::Atoms::Xtal::open_file($file);
-    #$newtool -> SetLabel( $frames{$fnum}->{Atoms}->{name}->GetValue );
-    $frames{main}->{statusbar}->SetStatusText("Imported crystal data \"$name\".");
 
   } else {
     my $this = sprintf("feff%s", $event->GetId);
@@ -526,6 +515,28 @@ sub OnFeffClick {
     $frames{$this}->Show($feffbar->GetToolState($event->GetId));
   };
 
+};
+
+sub make_feff_frame {
+  my ($self, $file) = @_;
+  my $feffbar = $self->{fefftool};
+  my $name = basename($file);	# ok for importing an atoms or CIF file
+
+  my $newtool = $feffbar -> AddCheckTool(-1, "Show $name", icon("pixel"), wxNullBitmap, q{}, q{} );
+  do_the_size_dance($self);
+  my $ifeff = $newtool->GetId;
+  my $fnum = sprintf("feff%s", $ifeff);
+  my $base = File::Spec->catfile($self->{project_folder}, 'feff');
+  $frames{$fnum} =  Demeter::UI::AtomsApp->new($base);
+  $frames{$fnum} -> SetTitle('Artemis: Atoms and Feff');
+  $frames{$fnum} -> SetIcon($icon);
+  $frames{$fnum}->{Atoms}->Demeter::UI::Atoms::Xtal::open_file($file);
+  #$newtool -> SetLabel( $frames{$fnum}->{Atoms}->{name}->GetValue );
+
+  $frames{$fnum} -> Show(0);
+  $feffbar->ToggleTool($ifeff,0);
+
+  return ($fnum, $ifeff);
 };
 
 

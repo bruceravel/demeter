@@ -45,6 +45,7 @@ sub new {
 
   my $statusbar = $self->CreateStatusBar;
   $statusbar -> SetStatusText("Welcome to Atoms (" . $Demeter::UI::Atoms::demeter->identify . ")");
+  $self->{statusbar} = $statusbar;
 
   my @utilities = qw(Atoms Feff Paths Console Document Configure);
 

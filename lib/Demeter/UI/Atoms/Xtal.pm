@@ -704,26 +704,32 @@ sub unusable_data {
 };
 
 sub save_file {
-  my ($self) = @_;
+  my ($self, $file) = @_;
   my $seems_ok = $self->get_crystal_data;
   if ($seems_ok) {
-    my $fd = Wx::FileDialog->new( $self, "Export crystal data", cwd, q{atoms.inp},
-				  "input file (*.inp)|*.inp|All files|*.*",
-				  wxFD_SAVE|wxFD_CHANGE_DIR,
-				  wxDefaultPosition);
-    if ($fd -> ShowModal == wxID_CANCEL) {
-      $self->{statusbar}->SetStatusText("Saving crystal data aborted.")
-    } else {
-      my $file = File::Spec->catfile($fd->GetDirectory, $fd->GetFilename);
-      open my $OUT, ">".$file;
-      print $OUT $atoms -> Write('atoms');
-      close $OUT;
-      $atoms -> push_mru("atoms", $file);
-      $self->{statusbar}->SetStatusText("Saved crystal data to $file.");
+    if (not $file) {
+      my $fd = Wx::FileDialog->new( $self, "Export crystal data", cwd, q{atoms.inp},
+				    "input file (*.inp)|*.inp|All files|*.*",
+				    wxFD_SAVE|wxFD_CHANGE_DIR|wxFD_OVERWRITE_PROMPT,
+				    wxDefaultPosition);
+      if ($fd -> ShowModal == wxID_CANCEL) {
+	$self->{statusbar}->SetStatusText("Saving crystal data aborted.");
+	return 0;
+      } else {
+	$file = File::Spec->catfile($fd->GetDirectory, $fd->GetFilename);
+      };
     };
   } else {
     $self->unusable_data();
+    return 0;
   };
+
+  open my $OUT, ">".$file;
+  print $OUT $atoms -> Write('atoms');
+  close $OUT;
+  $atoms -> push_mru("atoms", $file);
+  $self->{statusbar}->SetStatusText("Saved crystal data to $file.");
+  return 1;
 };
 
 sub run_atoms {

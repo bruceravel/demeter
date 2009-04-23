@@ -205,6 +205,21 @@ sub run_feff {
   my $yaml = File::Spec->catfile($feff->workspace, $feff->group.".yaml");
   $feff->freeze($yaml);
 
+  $self->fill_intrp_page($feff);
+
+  $self->{parent}->{notebook}->ChangeSelection(2);
+
+  $self->{parent}->{Console}->{console}->AppendText(join("\n", @{ $feff->iobuffer }));
+  $self->{parent}->{Console}->{console}->AppendText($self->now("Feff calculation finished at ", $feff));
+  $feff->clear_iobuffer;
+
+  $self->{statusbar}->SetStatusText("Feff calculation complete!");
+  #unlink $inpfile;
+  undef $busy;
+};
+
+sub fill_intrp_page {
+  my ($self, $feff) = @_;
   $self->{parent}->{Paths}->{name}->SetValue($feff->name);
   $self->{parent}->{Paths}->{header}->SetValue($feff->intrp_header);
   $self->{parent}->{Paths}->{paths}->DeleteAllItems;
@@ -226,16 +241,6 @@ sub run_feff {
     $self->{parent}->{Paths}->{paths}->SetItem($idx, 6, $p->Type);
     ++$i;
   };
-
-  $self->{parent}->{notebook}->ChangeSelection(2);
-
-  $self->{parent}->{Console}->{console}->AppendText(join("\n", @{ $feff->iobuffer }));
-  $self->{parent}->{Console}->{console}->AppendText($self->now("Feff calculation finished at ", $feff));
-  $feff->clear_iobuffer;
-
-  $self->{statusbar}->SetStatusText("Feff calculation complete!");
-  #unlink $inpfile;
-  undef $busy;
 };
 
 sub now {

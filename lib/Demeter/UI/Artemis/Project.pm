@@ -20,6 +20,8 @@ use warnings;
 
 use Archive::Zip qw( :ERROR_CODES :CONSTANTS );
 use Cwd;
+use File::Basename;
+use File::Spec;
 
 use Wx qw(:everything);
 
@@ -33,10 +35,18 @@ use File::Spec;
 
 sub save_project {
   my ($rframes, $fname) = @_;
+
+  Demeter::UI::Artemis::uptodate($rframes);
+  foreach my $k (keys(%$rframes)) {
+    next unless ($k =~ m{\Afeff});
+    next if (ref($rframes->{$k}->{Feff}->{feffobject}) !~ m{Feff});
+    my $file = File::Spec->catfile($rframes->{$k}->{Feff}->{feffobject}->workspace, 'atoms.inp');
+    $rframes->{$k}->{Atoms}->save_file($file);
+  };
   if (not $fname) {
     my $fd = Wx::FileDialog->new( $rframes->{main}, "Save project file", cwd, q{artemis.dfp},
-				  "Demeter fitting project (*.dfp)|*.inp|All files|*.*",
-				  wxFD_SAVE|wxFD_CHANGE_DIR,
+				  "Demeter fitting project (*.dfp)|*.dfp|All files|*.*",
+				  wxFD_SAVE|wxFD_CHANGE_DIR|wxFD_OVERWRITE_PROMPT,
 				  wxDefaultPosition);
     if ($fd->ShowModal == wxID_CANCEL) {
       $rframes->{main}->{statusbar}->SetStatusText("Saving project cancelled.");
@@ -44,12 +54,6 @@ sub save_project {
     };
     $fname = File::Spec->catfile($fd->GetDirectory, $fd->GetFilename);
   };
-  Demeter::UI::Artemis::uptodate($rframes);
-
-  print join(" ",
-	     $rframes->{main}->{project_folder},
-	     $fname,
-	     ), $/;
 
   my $zip = Archive::Zip->new();
   $zip->addTree( $rframes->{main}->{project_folder}, "" );
@@ -75,6 +79,47 @@ sub read_project {
   carp("Error reading project file $fname"), return 1 unless ($zip->read($fname) == AZ_OK);
   $zip->extractTree("", $rframes->{main}->{project_folder}.'/');
   undef $zip;
+
+  my $projfolder = $rframes->{main}->{project_folder};
+
+  tie my %order, 'Config::IniFiles', ( -file=>File::Spec->catfile($projfolder, 'order'), -allowempty=>1,  );
+  %Demeter::UI::Artemis::fit_order = %order;
+  undef %order;
+  #use Data::Dumper;
+  #print Data::Dumper->Dump([\%Demeter::UI::Artemis::fit_order]);
+
+  opendir(my $FEFF, File::Spec->catfile($projfolder, 'feff/'));
+  my @dirs = grep { $_ =~ m{\A[a-z]} } readdir($FEFF);
+  closedir $FEFF;
+  foreach my $d (@dirs) {
+    ## import atoms.inp
+    my $atoms = File::Spec->catfile($projfolder, 'feff', $d, 'atoms.inp');
+    my ($fnum, $ifeff) = Demeter::UI::Artemis::make_feff_frame($rframes->{main}, $atoms);
+
+    ## import feff.inp
+    my $feff = File::Spec->catfile($projfolder, 'feff', $d, $d.'.inp');
+    my $text = Demeter::UI::Artemis::slurp($feff);
+    $rframes->{$fnum}->{Feff}->{feff}->SetValue($text);
+
+    ## import feff yaml
+    my $yaml = File::Spec->catfile($projfolder, 'feff', $d, $d.'.yaml');
+    my $feffobject = Demeter::Feff->new(yaml=>$yaml);
+    $rframes->{$fnum}->{Feff}->fill_intrp_page($feffobject);
+    $rframes->{$fnum}->{notebook}->ChangeSelection(2);
+
+    $rframes->{$fnum}->{statusbar}->SetStatusText("Imported crystal and Feff data from ". basename($fname));
+  };
+
+  opendir(my $FITS, File::Spec->catfile($projfolder, 'fits/'));
+  @dirs = grep { $_ =~ m{\A[a-z]} } readdir($FITS);
+  closedir $FITS;
+  my $current = $Demeter::UI::Artemis::fit_order{order}{current};
+  $current = $Demeter::UI::Artemis::fit_order{order}{$current};
+  foreach my $d (@dirs) {
+    next unless ($d eq $current);
+    
+  };
+
 
   1;
 };

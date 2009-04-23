@@ -273,7 +273,7 @@ has 'fft_dk'      => (is => 'rw', isa =>  NonNeg,  default => sub{ shift->co->de
 has 'fft_kwindow' => (is => 'rw', isa =>  Window,  default => sub{ shift->co->default("fft", "kwindow")  || 'hanning'},
 		      trigger => sub{ my($self) = @_; $self->update_fft(1)});
 
-has 'fft_pc'      => (is => 'rw', isa => 'Bool',   default => sub{ shift->co->default("fft", "pc")       ||  0},
+has 'fft_pc'      => (is => 'rw', isa => 'Any',   default => sub{ shift->co->default("fft", "pc")       ||  0},
 		      trigger => sub{ my($self) = @_; $self->update_fft(1)});
 
 has 'rmax_out'    => (is => 'rw', isa =>  PosNum,  default => sub{ shift->co->default("fft", "rmax_out") ||  10},

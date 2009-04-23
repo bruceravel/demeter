@@ -104,4 +104,4 @@ $dobject->save("fit", "cufit.fit");
 print "write log and serialization files\n";
 my ($header, $footer) = ("Fit to copper data", q{});
 $fitobject -> logfile("cufit.log", $header, $footer);
-#$fitobject -> serialize("cufit");
+$fitobject -> freeze(file=>"cufit.dpj");

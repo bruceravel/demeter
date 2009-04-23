@@ -63,7 +63,7 @@ has 'contact'        => (is => 'rw', isa => 'Str',    default => q{});
 
 ## -------- serialization/deserialization
 has 'project'        => (is => 'rw', isa => 'Str',    default => q{},
-			 trigger => sub{my ($self, $new) = @_; $self->deserialize($new) if $new} );
+			 trigger => sub{my ($self, $new) = @_; $self->deserialize(file=>$new) if $new} );
 has 'folder'         => (is => 'rw', isa => 'Str',    default => q{});
 
 ## -------- mechanics of the fit
@@ -1041,7 +1041,7 @@ override 'serialize' => sub {
   my @gdsgroups   = map { $_->group } @gds;
   my @datagroups  = map { $_->group } @data;
   my @pathsgroups = map { $_->group } grep {defined $_} @paths;
-  my @feffgroups  = map { $_->group } map {$_ -> parent} grep {defined $_} @paths;
+  my @feffgroups  = map { $_ ?  $_->group : q{} } map {$_ -> parent} grep {defined $_} @paths;
   @feffgroups = uniq @feffgroups;
 
   unlink ($args{file}) if ($args{file} and (-e $args{file}));
@@ -1141,25 +1141,33 @@ override 'serialize' => sub {
 };
 
 override 'deserialize' => sub {
-  my ($self, $dpj, $with_plot) = @_;
-  $self->start_spinner("Demeter is unpacking $dpj") if ($self->mo->ui eq 'screen');
+  my ($self, @args) = @_;
+  my %args = @args;
+  $args{plot}   ||= 0;
+  $args{file}   ||= 0;
+  $args{folder} ||= 0;
 
-  $with_plot ||= 0;
-  my (%datae, %sps,  %parents);
+  my (%datae, %sps,  %parents, $dpj, $zip, $project_folder);
 
-  $dpj = File::Spec->rel2abs($dpj);
-  my $folder = $self->project_folder("raw_demeter");
 
-  my $zip = Archive::Zip->new();
-  carp("Error reading project file $dpj\n\n"), return 1 unless ($zip->read($dpj) == AZ_OK);
+  if ($args{file}) {
+    $dpj = File::Spec->rel2abs($dpj);
+    $self->start_spinner("Demeter is unpacking $dpj") if ($self->mo->ui eq 'screen');
+    my $folder = $self->project_folder("raw_demeter");
 
-  my $structure = $zip->contents('structure.yaml');
+    $zip = Archive::Zip->new();
+    carp("Error reading project file ".$args{file}."\n\n"), return 1 unless ($zip->read($args{file}) == AZ_OK);
+  };
+
+  my $structure = ($args{file}) ? $zip->contents('structure.yaml')
+    : Demeter::UI::Artemis::slurp(File::Spec->catfile($args{folder}, 'structure.yaml'));
   my ($r_gdsnames, $r_data, $r_paths, $r_feff) = YAML::Load($structure);
 
   ## -------- import the data
   my @data = ();
   foreach my $d (@$r_data) {
-    my $yaml = $zip->contents("$d.yaml");
+    my $yaml = ($args{file}) ? $zip->contents("$d.yaml")
+      : Demeter::UI::Artemis::slurp(File::Spec->catfile($args{folder}, "$d.yaml"));
     my ($r_attributes, $r_x, $r_y) = YAML::Load($yaml);
     my @array = %$r_attributes;
     my $this = Demeter::Data -> new(@array);
@@ -1177,7 +1185,8 @@ override 'deserialize' => sub {
 
   ## -------- import the gds
   my @gds = ();
-  my $yaml = $zip->contents("gds.yaml");
+  my $yaml = ($args{file}) ? $zip->contents("gds.yaml")
+    : Demeter::UI::Artemis::slurp(File::Spec->catfile($args{folder}, "gds.yaml"));
   my @list = YAML::Load($yaml);
   foreach (@list) {
     my @array = %{ $_ };
@@ -1202,21 +1211,26 @@ override 'deserialize' => sub {
   foreach my $f (@$r_feff) {
     my $this = Demeter::Feff->new(group=>$f);
     $parents{$this->group} = $this;
-    my $yaml = $zip->contents("$f.yaml");
-    my @refs = YAML::Load($yaml);
-    $this->read_yaml(\@refs);
-    foreach my $s (@{ $this->pathlist }) {
-      $sps{$s->group} = $s
+    my $yaml = ($args{file}) ? $zip->contents("$f.yaml")
+      : Demeter::UI::Artemis::slurp(File::Spec->catfile($args{folder}, "$f.yaml"));
+    if (defined $yaml) {
+      my @refs = YAML::Load($yaml);
+      $this->read_yaml(\@refs);
+      foreach my $s (@{ $this->pathlist }) {
+	$sps{$s->group} = $s
+      };
+      push @feff, $this;
     };
-    push @feff, $this;
   };
 
   ## -------- import the paths
   my @paths = ();
-  $yaml = $zip->contents("paths.yaml");
+  $yaml = ($args{file}) ? $zip->contents("paths.yaml")
+    : Demeter::UI::Artemis::slurp(File::Spec->catfile($args{folder}, "paths.yaml"));
   @list = YAML::Load($yaml);
   foreach (@list) {
     my $dg = $_->{datagroup};
+    $_->{data} = $datae{$dg};
     my @array = %{ $_ };
     my $this;
     if (exists $_->{ipot}) {
@@ -1240,37 +1254,40 @@ override 'deserialize' => sub {
 	      );
 
   ## -------- import the fit properties, statistics, correlations
-  $yaml = $zip->contents("fit.yaml");
+  $yaml = ($args{file}) ? $zip->contents("fit.yaml")
+    : Demeter::UI::Artemis::slurp(File::Spec->catfile($args{folder}, "fit.yaml"));
   my $rhash = YAML::Load($yaml);
   my @array = %$rhash;
   $self -> set(@array);
   $self -> fit_performed(0);
 
   ## -------- extract files from the feff calculations from the project
-  my $project_folder = $self->project_folder("fit_".$self->group);
-  $self->folder($project_folder);
-  #   $location_of{ident $fitobject} = $project_folder;
-  foreach my $f (@feff) {
-    my $ff = $f->group;
-    my $feff_folder = File::Spec->catfile($project_folder, "feff_".$ff);
-    mkpath($feff_folder);
-    my $thisdir = cwd;
-    chdir $feff_folder;
-    my $ok = 0;
+  if ($args{file}) {
+    $project_folder = $self->project_folder("fit_".$self->group);
+    $self->folder($project_folder);
+    #   $location_of{ident $fitobject} = $project_folder;
+    foreach my $f (@feff) {
+      my $ff = $f->group;
+      my $feff_folder = File::Spec->catfile($project_folder, "feff_".$ff);
+      mkpath($feff_folder);
+      my $thisdir = cwd;
+      chdir $feff_folder;
+      my $ok = 0;
 
-#     $ok = $zip -> extractMemberWithoutPaths("$f.inp");
-#     croak("Demeter::Fit::deserialize: could not extract $f.inp from $dpj")  if ($ok != AZ_OK);
-#     rename("$f.inp", "oringinal_feff.inp");
+      #     $ok = $zip -> extractMemberWithoutPaths("$f.inp");
+      #     croak("Demeter::Fit::deserialize: could not extract $f.inp from $dpj")  if ($ok != AZ_OK);
+      #     rename("$f.inp", "oringinal_feff.inp");
 
-    $ok = $zip -> extractMemberWithoutPaths("$ff.yaml");
-    croak("Demeter::Fit::deserialize: could not extract $f.yaml from $dpj") if ($ok != AZ_OK);
-    rename("$ff.yaml", "feff.yaml");
+      $ok = $zip -> extractMemberWithoutPaths("$ff.yaml");
+      croak("Demeter::Fit::deserialize: could not extract $f.yaml from $dpj") if ($ok != AZ_OK);
+      rename("$ff.yaml", "feff.yaml");
 
-    $ok = $zip -> extractMemberWithoutPaths("$ff.bin");
-    croak("Demeter::Fit::deserialize: could not extract $f.bin from $dpj")  if ($ok != AZ_OK);
-    rename("$ff.bin", "phase.bin");
+      $ok = $zip -> extractMemberWithoutPaths("$ff.bin");
+      croak("Demeter::Fit::deserialize: could not extract $f.bin from $dpj")  if ($ok != AZ_OK);
+      rename("$ff.bin", "phase.bin");
 
-    chdir $thisdir;
+      chdir $thisdir;
+    };
   };
 
   ## -------- import the fit files and push arrays into Ifeffit
@@ -1289,8 +1306,9 @@ override 'deserialize' => sub {
   };
 
   ## -------- import the Plot object, if requested
-  if ($with_plot) {
-    $yaml = $zip->contents("plot.yaml");
+  if ($args{plot}) {
+    $yaml = ($args{file}) ? $zip->contents("plot.yaml")
+      : Demeter::UI::Artemis::slurp(File::Spec->catfile($args{folder}, "plot.yaml"));
     my $rhash = YAML::Load($yaml);
     my @array = %$rhash;
     $self -> po -> set(@array);
