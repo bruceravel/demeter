@@ -107,6 +107,7 @@ sub OnInit {
   $datavbox     -> Add($datatool);
   $databoxsizer -> Add($datalist, 1, wxGROW|wxALL, 0);
   $hbox         -> Add($databoxsizer, 2, wxGROW|wxALL, 0);
+  $frames{main}->{datatool} = $datatool;
 
 
   ## -------- Feff box
@@ -465,21 +466,13 @@ sub OnDataClick {
     };
 
     my $data = $frames{prj}->{prj}->record($frames{prj}->{record});
+    my ($dnum, $idata) = make_data_frame($self, $data);
     $data->po->start_plot;
     $data->plot('k');
     $data->plot_window('k') if $data->po->plot_win;
-    my $newtool = $databar -> AddCheckTool(-1, "Show ".$data->name, icon("pixel"), wxNullBitmap, q{}, q{} );
-    do_the_size_dance($self);
-    my $idata = $newtool->GetId;
-    my $dnum = sprintf("data%s", $idata);
-    $frames{$dnum}  = Demeter::UI::Artemis::Data->new($self, $nset++);
-    $frames{$dnum} -> SetTitle("Artemis: ".$data->name);
-    $frames{$dnum} -> SetIcon($icon);
-    $frames{$dnum} -> populate($data);
     $frames{$dnum} -> Show(1);
     $databar->ToggleTool($idata,1);
     delete $frames{prj};
-    set_happiness_color();
     $frames{main}->{statusbar}->SetStatusText("Imported data \"" . $data->name . "\" from $file.");
   } else {
     my $this = sprintf("data%s", $event->GetId);
@@ -487,6 +480,25 @@ sub OnDataClick {
     $frames{$this}->Show($databar->GetToolState($event->GetId));
   };
 };
+sub make_data_frame {
+  my ($self, $data) = @_;
+  my $databar = $self->{datatool};
+
+  my $newtool = $databar -> AddCheckTool(-1, "Show ".$data->name, icon("pixel"), wxNullBitmap, q{}, q{} );
+  do_the_size_dance($self);
+  my $idata = $newtool->GetId;
+  my $dnum = sprintf("data%s", $idata);
+  $frames{$dnum}  = Demeter::UI::Artemis::Data->new($self, $nset++);
+  $frames{$dnum} -> SetTitle("Artemis: ".$data->name);
+  $frames{$dnum} -> SetIcon($icon);
+  $frames{$dnum} -> populate($data);
+  set_happiness_color();
+  $frames{$dnum} -> Show(0);
+  $databar->ToggleTool($idata,0);
+  return ($dnum, $idata);
+};
+
+
 sub OnFeffClick {
   my ($feffbar, $event, $self) = @_;
   my $which = $feffbar->GetToolPos($event->GetId);
@@ -516,7 +528,6 @@ sub OnFeffClick {
   };
 
 };
-
 sub make_feff_frame {
   my ($self, $file) = @_;
   my $feffbar = $self->{fefftool};

@@ -142,6 +142,17 @@ sub who {
   return join("\@", scalar getpwuid($<), hostname()||"localhost");
 };
 
+
+sub slurp {
+  my ($class, $file) = @_;
+  local $/;
+  open(my $FH, $file);
+  my $text = <$FH>;
+  close $FH;
+  return $text;
+};
+
+
 ## see http://www.perlmonks.org/index.pl?node_id=38942
 sub check_parens {
   my ($class, $string) = @_;

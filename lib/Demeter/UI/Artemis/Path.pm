@@ -112,8 +112,15 @@ sub populate {
 
   $this->{include} -> SetValue(1);
 
-  $this->{pp_label} -> SetValue($pathobject->sp->labelline);
-  $this->{pp_n} -> SetValue($pathobject->degen);
+  $this->{pp_label}  -> SetValue($pathobject->sp->labelline);
+  $this->{pp_n}      -> SetValue($pathobject->degen);
+  $this->{pp_s02}    -> SetValue($pathobject->s02);
+  $this->{pp_e0}     -> SetValue($pathobject->e0     || q{});
+  $this->{pp_delr}   -> SetValue($pathobject->delr   || q{});
+  $this->{pp_sigma2} -> SetValue($pathobject->sigma2 || q{});
+  $this->{pp_ei}     -> SetValue($pathobject->ei     || q{});
+  $this->{pp_third}  -> SetValue($pathobject->third  || q{});
+  $this->{pp_fourth} -> SetValue($pathobject->fourth || q{});
 };
 
 sub fetch_parameters {

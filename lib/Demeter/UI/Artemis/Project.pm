@@ -88,6 +88,8 @@ sub read_project {
   #use Data::Dumper;
   #print Data::Dumper->Dump([\%Demeter::UI::Artemis::fit_order]);
 
+  ## -------- import feff calculations from the project file
+  my %feffs;
   opendir(my $FEFF, File::Spec->catfile($projfolder, 'feff/'));
   my @dirs = grep { $_ =~ m{\A[a-z]} } readdir($FEFF);
   closedir $FEFF;
@@ -104,24 +106,69 @@ sub read_project {
     ## import feff yaml
     my $yaml = File::Spec->catfile($projfolder, 'feff', $d, $d.'.yaml');
     my $feffobject = Demeter::Feff->new(yaml=>$yaml);
+    $feffs{$d} = $feffobject;
     $rframes->{$fnum}->{Feff}->fill_intrp_page($feffobject);
     $rframes->{$fnum}->{notebook}->ChangeSelection(2);
 
     $rframes->{$fnum}->{statusbar}->SetStatusText("Imported crystal and Feff data from ". basename($fname));
   };
 
+  ## -------- import fit history from project file (currently only importing most recent)
   opendir(my $FITS, File::Spec->catfile($projfolder, 'fits/'));
   @dirs = grep { $_ =~ m{\A[a-z]} } readdir($FITS);
   closedir $FITS;
   my $current = $Demeter::UI::Artemis::fit_order{order}{current};
   $current = $Demeter::UI::Artemis::fit_order{order}{$current};
+  my $fit;
   foreach my $d (@dirs) {
     next unless ($d eq $current);
-    
+    $fit = Demeter::Fit->new;
+    $fit->deserialize(folder=> File::Spec->catfile($projfolder, 'fits', $d));
   };
 
+  ## -------- load up the GDS parameters
+  my $grid  = $rframes->{GDS}->{grid};
+  my $start = $rframes->{GDS}->find_next_empty_row;
+  foreach my $g (@{$fit->gds}) {
+    $grid->AppendRows(1,1) if ($start >= $grid->GetNumberRows);
+    $grid -> SetCellValue($start, 0, $g->gds);
+    $grid -> SetCellValue($start, 1, $g->name);
+    $grid -> SetCellValue($start, 2, $g->mathexp);
+    my $text = q{};
+    if ($g->gds eq 'guess') {
+      $text = sprintf("%.5f +/- %.5f", $g->bestfit, $g->error);
+    } elsif ($g->gds =~ m{(?:after|def|penalty|restrain)}) {
+      $text = sprintf("%.5f", $g->bestfit);
+    } elsif ($g->gds =~ m{(?:lguess|merge|set|skip)}) {
+      1;
+    };
+    $grid -> SetCellValue($start, 3, $text);
+    $rframes->{GDS}->set_type($start);
+    ++$start;
+  };
 
+  foreach my $d (@{$fit->data}) {
+    my ($dnum, $idata) = Demeter::UI::Artemis::make_data_frame($rframes->{main}, $d);
+    $rframes->{$dnum}->{pathlist}->DeletePage(0) if $rframes->{$dnum}->{pathlist}->GetPage(0) =~ m{Panel};
+    foreach my $p (@{$fit->paths}) {
+      next if ($p->data ne $d);
+      $p->parent($feffs{$p->parentgroup});
+      $p->sp(find_sp($p, \%feffs));
+      my $page = Demeter::UI::Artemis::Path->new($rframes->{$dnum}->{pathlist}, $p);
+      $rframes->{$dnum}->{pathlist}->AddPage($page, $p->name, 1, 0);
+    };
+  };
   1;
+};
+
+sub find_sp {
+  my ($path, $rfeffs) = @_;
+  foreach my $f (values %$rfeffs) {
+    foreach my $sp (@{ $f->pathlist }) {
+      return $sp if ($path->spgroup eq $sp->group);
+    };
+  };
+  return q{};
 };
 
 
