@@ -711,7 +711,7 @@ removal.
 
 =item C<-e>
 
-The path file does not exist (perhaps the Feff calculationw as not run).
+The path file does not exist (perhaps the Feff calculation was not run).
 
 =item C<-r>
 

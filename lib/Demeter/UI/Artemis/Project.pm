@@ -56,7 +56,7 @@ sub save_project {
   };
 
   my $zip = Archive::Zip->new();
-  $zip->addTree( $rframes->{main}->{project_folder}, "" );
+  $zip->addTree( $rframes->{main}->{project_folder}, "",  sub{ not m{\.sp$} });
   carp('error writing zip-style project') unless ($zip->writeToFileNamed( $fname ) == AZ_OK);
   undef $zip;
 };
@@ -106,6 +106,7 @@ sub read_project {
     ## import feff yaml
     my $yaml = File::Spec->catfile($projfolder, 'feff', $d, $d.'.yaml');
     my $feffobject = Demeter::Feff->new(yaml=>$yaml);
+    $feffobject -> workspace(File::Spec->catfile($projfolder, 'feff', $d));
     $feffs{$d} = $feffobject;
     $rframes->{$fnum}->{Feff}->fill_intrp_page($feffobject);
     $rframes->{$fnum}->{notebook}->ChangeSelection(2);
@@ -151,6 +152,7 @@ sub read_project {
     my ($dnum, $idata) = Demeter::UI::Artemis::make_data_frame($rframes->{main}, $d);
     $rframes->{$dnum}->{pathlist}->DeletePage(0) if $rframes->{$dnum}->{pathlist}->GetPage(0) =~ m{Panel};
     foreach my $p (@{$fit->paths}) {
+      $p->set(folder=>$feffs{$p->parentgroup}->workspace, file=>q{}, update_path=>1);
       next if ($p->data ne $d);
       $p->parent($feffs{$p->parentgroup});
       $p->sp(find_sp($p, \%feffs));

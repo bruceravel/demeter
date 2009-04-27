@@ -58,6 +58,8 @@ sub new {
 
   $vbox -> Add($self->{feffboxsizer}, 1, wxEXPAND|wxALL, 5);
 
+  $self->{feffobject} = Demeter::Feff->new(screen=>0, buffer=>1, save=>0);
+
   $self -> SetSizerAndFit( $vbox );
   return $self;
 };
@@ -171,11 +173,11 @@ sub run_feff {
   my ($self) = @_;
   return 1 if ($self->{feff}->GetNumberOfLines <= 1);
   my $busy = Wx::BusyCursor->new();
-  my $feff = Demeter::Feff->new(screen=>0, buffer=>1, save=>0);
+  my $feff = $self->{feffobject};
+  $feff -> clear;
   my $base = $self->{parent}->{base} || $feff->stash_folder;
   $feff -> workspace(File::Spec->catfile($base, $feff->group));
   $feff -> make_workspace;
-  $self->{feffobject} = $feff;
 
   my $inpfile = File::Spec->catfile($feff->workspace, $feff->group . ".inp");
   open my $OUT, ">".$inpfile;
