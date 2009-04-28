@@ -8,12 +8,13 @@ use Demeter::UI::Artemis::Project;
 use vars qw($demeter);
 $demeter = Demeter->new;
 
-use Config::IniFiles 2.45;
 use Cwd;
 use File::Basename;
+use File::Copy;
 use File::Path;
 use File::Spec;
 use String::Random qw(random_string);
+use YAML;
 
 use Wx qw(:everything);
 use Wx::Event qw(EVT_MENU EVT_CLOSE EVT_TOOL_ENTER EVT_CHECKBOX EVT_BUTTON EVT_TOGGLEBUTTON);
@@ -32,6 +33,7 @@ sub identify_self {
   return dirname($caller[1]);
 };
 use vars qw($artemis_base $icon $nset %frames %fit_order);
+$fit_order{order}{current} = 0;
 $nset = 0;
 $artemis_base = identify_self();
 
@@ -215,15 +217,18 @@ sub OnInit {
   $frames{main}->{project_folder} = $project_folder;
   mkpath($project_folder,0);
 
+  my $readme = File::Spec->catfile($demeter->share_folder, "Readme.fit_serialization");
+  my $target = File::Spec->catfile($project_folder, "Readme");
+  copy($readme, $target);
+
   my $orderfile = File::Spec->catfile($frames{main}->{project_folder}, "order");
   $frames{main}->{order_file} = $orderfile;
-  if (! -e $orderfile) {
-    open(my $ORD, '>', $orderfile);
-    print $ORD, q{};
-    close $ORD;
+  if (not -e $orderfile) {
+    my $string .= YAML::Dump(%fit_order);
+    open(my $ORDER, '>'.$orderfile);
+    print $ORDER $string;
+    close $ORDER;
   };
-  tie %fit_order, 'Config::IniFiles', ( -file=>$orderfile, -allowempty=>1,  );
-
   1;
 }
 
@@ -329,7 +334,11 @@ sub fit {
     ++$thisfit;
     $fit_order{order}{$thisfit} = $fit->group;
     $fit_order{order}{current}  = $thisfit;
-    tied( %fit_order )->WriteConfig($frames{main}->{order_file});
+    my $string .= YAML::Dump(%fit_order);
+    open(my $ORDER, '>'.$frames{main}->{order_file});
+    print $ORDER $string;
+    close $ORDER;
+
 
     $fit->po->start_plot;
     $rframes->{Plot}->{limits}->{fit}->SetValue(1);

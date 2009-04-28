@@ -1133,13 +1133,14 @@ override 'serialize' => sub {
   close $PLOT;
 
 
-
-  my $readme = File::Spec->catfile($self->share_folder, "Readme.fit_serialization");
-  my $target = File::Spec->catfile($self->folder, "Readme");
-  copy($readme, $target);
-  if (not $args{nozip}) {
-    $self->zip_project($self->folder, $args{file});
-    rmtree($self->folder);
+  if ($args{file}) {
+    my $readme = File::Spec->catfile($self->share_folder, "Readme.fit_serialization");
+    my $target = File::Spec->catfile($self->folder, "Readme");
+    copy($readme, $target);
+    if (not $args{nozip}) {
+      $self->zip_project($self->folder, $args{file});
+      rmtree($self->folder);
+    };
   };
 
   return $self;

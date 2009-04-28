@@ -22,6 +22,7 @@ use Archive::Zip qw( :ERROR_CODES :CONSTANTS );
 use Cwd;
 use File::Basename;
 use File::Spec;
+use YAML;
 
 use Wx qw(:everything);
 
@@ -44,8 +45,8 @@ sub save_project {
     $rframes->{$k}->{Atoms}->save_file($file);
   };
   if (not $fname) {
-    my $fd = Wx::FileDialog->new( $rframes->{main}, "Save project file", cwd, q{artemis.dfp},
-				  "Demeter fitting project (*.dfp)|*.dfp|All files|*.*",
+    my $fd = Wx::FileDialog->new( $rframes->{main}, "Save project file", cwd, q{artemis.fpj},
+				  "Demeter fitting project (*.fpj)|*.fpj|All files|*.*",
 				  wxFD_SAVE|wxFD_CHANGE_DIR|wxFD_OVERWRITE_PROMPT,
 				  wxDefaultPosition);
     if ($fd->ShowModal == wxID_CANCEL) {
@@ -65,7 +66,7 @@ sub read_project {
   my ($rframes, $fname) = @_;
   if (not $fname) {
     my $fd = Wx::FileDialog->new( $rframes->{main}, "Import an Artemis project", cwd, q{},
-				  "Artemis project (*.dfp)|*.dfp|All files|*.*",
+				  "Artemis project (*.fpj)|*.fpj|All files|*.*",
 				  wxFD_OPEN|wxFD_FILE_MUST_EXIST|wxFD_CHANGE_DIR|wxFD_PREVIEW,
 				  wxDefaultPosition);
     if ($fd->ShowModal == wxID_CANCEL) {
@@ -82,9 +83,7 @@ sub read_project {
 
   my $projfolder = $rframes->{main}->{project_folder};
 
-  tie my %order, 'Config::IniFiles', ( -file=>File::Spec->catfile($projfolder, 'order'), -allowempty=>1,  );
-  %Demeter::UI::Artemis::fit_order = %order;
-  undef %order;
+  %Demeter::UI::Artemis::fit_order = YAML::LoadFile(File::Spec->catfile($projfolder, 'order'));
   #use Data::Dumper;
   #print Data::Dumper->Dump([\%Demeter::UI::Artemis::fit_order]);
 

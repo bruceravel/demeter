@@ -1,9 +1,16 @@
 
-This Readme file explains the structure of the Ifeffit::Demeter::Fit
-serialization file.
+This Readme file explains the structure of the Demeter::Fit
+serialization.  This structure deals with two similar but not
+identical situations.  When a Demeter fitting script is run, the
+serialization file contains all data associated with the fit and with
+the Feff calculation(s) all in one place.  When a fitting project from
+Artemis (which can contain an arbitrary number of Feff calculations
+and individual fits) is saved to a file, there are parallel directory
+trees for the Feff calculations and the individual fits.
 
-The file is a normal zip file with the "dpj" extension (which you
-probably figured out, if you are reading this file).
+The serialization file is a normal zip file with the "dpj" extension
+when serializing an individual fit and "fpj" when serializing and
+Artemis fitting project.
 
 Contained in the zip file are several YAML files descript the various
 objects included in the fit, several column data files with the
@@ -64,8 +71,12 @@ Fit files:
   Data object (usually a random 4 or 5 character string).
 
 Feff calculation:
-  A set of files <feff>.bin, <feff>.yaml for each Feff calculation,
-  where <feff> is the identifier for the Feff object.
+  A set of files <feff>.bin, <feff>.yaml, <feff>.inp for each Feff
+  calculation, where <feff> is the identifier for the Feff object.
+  There may also be an atoms.inp file.
 
-To deserialize this fit within a Demeter script:
-  my $fitobject = Ifeffit::Demeter::Fit->new(project=>$filename);
+To deserialize a ".dpj" file within a Demeter script:
+  my $fitobject = Demeter::Fit->new(project=>$filename);
+
+To import a ".fpj" file into Artemis, read it in using the appropriate
+menu item.

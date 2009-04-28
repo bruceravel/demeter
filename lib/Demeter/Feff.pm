@@ -173,9 +173,10 @@ sub clear {
   $self->clear_absorber;
   $self->clear_othercards;
   $self->clear_pathlist;
-  $self->set(abs_index => 0, edge => 'K', s02 => 1, rmax => 0, nlegs => 4,
-	     rmultiplier => 1, pcrit => 0, ccrit => 0, miscdat => q{},
-	     npaths => 0,);
+  $self->set(abs_index   => 0, edge  => 'K', s02   => 1, rmax    => 0,   nlegs => 4,
+	     rmultiplier => 1, pcrit =>  0,  ccrit => 0, miscdat => q{},
+	     npaths      => 0,
+	    );
   return $self;
 };
 
