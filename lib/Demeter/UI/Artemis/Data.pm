@@ -35,8 +35,9 @@ sub new {
   my $this = $class->SUPER::new($parent, -1, "Artemis: Data controls",
 				wxDefaultPosition, [800,495],
 				wxCAPTION|wxMINIMIZE_BOX|wxSYSTEM_MENU|wxRESIZE_BORDER);
-  my $statusbar = $this->CreateStatusBar;
-  $statusbar -> SetStatusText(q{});
+  $this->{statusbar} = $this->CreateStatusBar;
+  $this->{statusbar} -> SetStatusText(q{});
+  #$this->{statusbar}->SetForegroundColour(Wx::Colour->new("#00ff00")); ??????
   my $hbox  = Wx::BoxSizer->new( wxHORIZONTAL );
   #my $splitter = Wx::SplitterWindow->new($this, -1, wxDefaultPosition, [900,-1], wxSP_3D);
   #$hbox->Add($splitter, 1, wxGROW|wxALL, 1);
@@ -377,7 +378,7 @@ sub OnData {
 				     );
     my $label = $thispath->name;
 
-    my $page = Demeter::UI::Artemis::Path->new($book, $thispath);
+    my $page = Demeter::UI::Artemis::Path->new($book, $thispath, $this->{PARENT});
 
     $book->AddPage($page, $label, 1, 0);
   };

@@ -85,9 +85,10 @@ sub OnInit {
   my $vbox = Wx::BoxSizer->new( wxVERTICAL);
   $hbox -> Add($vbox, 0, wxALL, 5);
   my $toolbar = Wx::ToolBar->new($frames{main}, -1, wxDefaultPosition, wxDefaultSize, wxTB_VERTICAL|wxTB_HORZ_TEXT);
-  $frames{main}->{gds_toggle}     = $toolbar -> AddCheckTool(-1, "Show GDS",           icon("gds"),     wxNullBitmap, q{}, $hints{gds} );
-  $frames{main}->{plot_toggle}    = $toolbar -> AddCheckTool(-1, "  Show plot tools",  icon("plot"),    wxNullBitmap, q{}, $hints{plot} );
-  $frames{main}->{history_toggle} = $toolbar -> AddCheckTool(-1, "  Show fit history", icon("history"), wxNullBitmap, q{}, $hints{fit} );
+  $frames{main}->{toolbar} = $toolbar;
+  $frames{main}->{gds_toggle}     = $toolbar -> AddCheckTool(1, "Show GDS",           icon("gds"),     wxNullBitmap, q{}, $hints{gds} );
+  $frames{main}->{plot_toggle}    = $toolbar -> AddCheckTool(2, "  Show plot tools",  icon("plot"),    wxNullBitmap, q{}, $hints{plot} );
+  $frames{main}->{history_toggle} = $toolbar -> AddCheckTool(3, "  Show fit history", icon("history"), wxNullBitmap, q{}, $hints{fit} );
   $toolbar -> Realize;
   $vbox -> Add($toolbar, 0, wxALL, 0);
 

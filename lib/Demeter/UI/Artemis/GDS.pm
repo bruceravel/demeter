@@ -250,15 +250,17 @@ sub highlight {
 };
 
 sub set_highlight {
-  my ($parent) = @_;
+  my ($parent, $regex) = @_;
   my $grid = $parent->{grid};
-  my $ted = Wx::TextEntryDialog->new( $parent, "Enter a regular expression", "Highlight parameters matching", q{}, wxOK|wxCANCEL);
-  if ($ted->ShowModal == wxID_CANCEL) {
-    $parent->{statusbar}->SetStatusText("Parameter highlighting cancelled.");
-    return;
+  if (not $regex) {
+    my $ted = Wx::TextEntryDialog->new( $parent, "Enter a regular expression", "Highlight parameters matching", q{}, wxOK|wxCANCEL);
+    if ($ted->ShowModal == wxID_CANCEL) {
+      $parent->{statusbar}->SetStatusText("Parameter highlighting cancelled.");
+      return;
+    };
+    $regex = $ted->GetValue;
   };
   my $re;
-  my $regex = $ted->GetValue;
   my $is_ok = eval '$re = qr/$regex/i';
   $parent->{statusbar}->SetStatusText("Oops!  \"$regex\" is not a valid regular expression"), return unless $is_ok;
   $parent->clear_highlight;
@@ -296,6 +298,17 @@ sub find_next_empty_row {
     $start = $row;
   };
   return $start;
+};
+
+sub put_param {
+  my ($parent, $type, $name, $mathexp) = @_;
+  my $grid = $parent->{grid};
+  my $start = $parent->find_next_empty_row;
+  $grid->AppendRows(1,1) if ($start >= $grid->GetNumberRows);
+  $grid -> SetCellValue($start, 0, $type);
+  $grid -> SetCellValue($start, 1, $name);
+  $grid -> SetCellValue($start, 2, $mathexp);
+  $parent->set_type($start);
 };
 
 sub import {

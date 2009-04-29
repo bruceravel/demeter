@@ -107,6 +107,7 @@ sub read_project {
     my $feffobject = Demeter::Feff->new(yaml=>$yaml);
     $feffobject -> workspace(File::Spec->catfile($projfolder, 'feff', $d));
     $feffs{$d} = $feffobject;
+    $rframes->{$fnum}->{Feff}->{feffobject} = $feffobject;
     $rframes->{$fnum}->{Feff}->fill_intrp_page($feffobject);
     $rframes->{$fnum}->{notebook}->ChangeSelection(2);
 
@@ -155,7 +156,7 @@ sub read_project {
       next if ($p->data ne $d);
       $p->parent($feffs{$p->parentgroup});
       $p->sp(find_sp($p, \%feffs));
-      my $page = Demeter::UI::Artemis::Path->new($rframes->{$dnum}->{pathlist}, $p);
+      my $page = Demeter::UI::Artemis::Path->new($rframes->{$dnum}->{pathlist}, $p, $rframes->{$dnum});
       $rframes->{$dnum}->{pathlist}->AddPage($page, $p->name, 1, 0);
     };
   };

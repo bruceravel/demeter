@@ -20,11 +20,24 @@ use warnings;
 
 use Wx qw( :everything );
 use base qw(Wx::Panel);
-use Wx::Event qw(EVT_RIGHT_DOWN EVT_ENTER_WINDOW EVT_LEAVE_WINDOW);
+use Wx::Event qw(EVT_RIGHT_DOWN EVT_ENTER_WINDOW EVT_LEAVE_WINDOW EVT_MENU);
+
+my %labels = (label  => 'Label',
+	      n      => 'N',
+	      s02    => 'S02',
+	      e0     => 'ΔE0',
+	      delr   => 'ΔR',
+	      sigma2 => 'σ²',
+	      ei     => 'Ei',
+	      third  => '3rd',
+	      fourth => '4th',
+	     );
 
 sub new {
-  my ($class, $parent, $pathobject) = @_;
+  my ($class, $parent, $pathobject, $datapage) = @_;
   my $this = $class->SUPER::new($parent, -1, wxDefaultPosition, [300,-1]);
+  $this->{listbook} = $parent;
+  $this->{datapage} = $datapage;
 
   my $vbox = Wx::BoxSizer->new( wxVERTICAL );
   $this -> SetSizer($vbox);
@@ -65,16 +78,6 @@ sub new {
   ## -------- path parameters
   my $gbs = Wx::GridBagSizer->new( 3, 10 );
 
-  my %labels = (label  => 'Label',
-		n      => 'N',
-		s02    => 'S02',
-		e0     => 'ΔE0',
-		delr   => 'ΔR',
-		sigma2 => 'σ²',
-		ei     => 'Ei',
-		third  => '3rd',
-		fourth => '4th',
-	       );
   my $i = 0;
   foreach my $k (qw(label n s02 e0 delr sigma2 ei third fourth)) {
     my $label        = Wx::StaticText->new($this, -1, $labels{$k}, wxDefaultPosition, wxDefaultSize, wxALIGN_RIGHT);
@@ -84,7 +87,8 @@ sub new {
     $gbs     -> Add($label,           Wx::GBPosition->new($i,1));
     $gbs     -> Add($this->{"pp_$k"}, Wx::GBPosition->new($i,2));
     ++$i;
-    EVT_RIGHT_DOWN($label, \&DoLabelKeyPress);
+    EVT_RIGHT_DOWN($label, sub{DoLabelKeyPress(@_, $this)});
+    EVT_MENU($label, -1, sub{ $this->OnLabelMenu(@_)    });
     #EVT_ENTER_WINDOW($label, \&DoLabelEnter);
     #EVT_LEAVE_WINDOW($label, \&DoLabelLeave);
   };
@@ -141,11 +145,114 @@ sub DoLabelLeave {
   print "leaving ", $st->{which}, $/;
 };
 
+
+use Readonly;
+Readonly my $CLEAR	 => 0;
+Readonly my $THISFEFF	 => 2;
+Readonly my $THISDATA	 => 3;
+Readonly my $EACHDATA	 => 4;
+Readonly my $SELECTED	 => 5;
+Readonly my $PREV	 => 7;
+Readonly my $NEXT	 => 8;
+Readonly my $DEBYE	 => 10;
+Readonly my $EINS	 => 11;
+
 ## use this to post context menu for path parameter
 sub DoLabelKeyPress {
   #print join(" ", @_), $/;
-  my ($st, $event) = @_;
-  print $st->{which}, $/;
+  my ($st, $event, $page) = @_;
+  my $param =  $st->{which};
+  return 0 if (($param eq 'n') or ($param eq 'label'));
+  my $label = $labels{$param};
+  my $menu = Wx::Menu->new(q{});
+  $menu->Append($CLEAR,    "Clear $label");
+  $menu->AppendSeparator;
+  $menu->Append($THISFEFF, "Export this $label to every path in THIS Feff calculation");
+  $menu->Append($THISDATA, "Export this $label to every path in THIS data set");
+  $menu->Append($EACHDATA, "Export this $label to every path in EVERY data set");
+  $menu->Append($SELECTED, "Export this $label to selected paths");
+  $menu->AppendSeparator;
+  $menu->Append($PREV,     "Grab $label from previous path");
+  $menu->Append($NEXT,     "Grab $label from next path");
+  if ($param eq 'sigma2') {
+    $menu->AppendSeparator;
+    $menu->Append($DEBYE, "Insert Debye model");
+    $menu->Append($EINS,  "Insert Einstein model");
+  };
+  $menu->Enable($EACHDATA, 0);
+  $menu->Enable($SELECTED, 0);
+
+  my $this = 0;
+  foreach my $n (0 .. $page->{listbook}->GetPageCount-1) {
+    $this = $n if ($page->{listbook}->GetPage($n) eq $page);
+  };
+  $menu->Enable($PREV, 0) if ($this == 0);
+  $menu->Enable($NEXT, 0) if ($this == $page->{listbook}->GetPageCount-1);
+  $st->PopupMenu($menu, $event->GetPosition);
+};
+
+sub OnLabelMenu {
+  my ($currentpage, $st, $event) = @_;
+  my $listbook = $currentpage->{listbook};
+  my $param = $st->{which};
+  my $id = $event->GetId;
+
+  my $this = 0;
+  foreach my $n (0 .. $listbook->GetPageCount-1) {
+    $this = $n if ($listbook->GetPage($n) eq $currentpage);
+  };
+  my $thisfeff = $currentpage->{path}->parent->group;
+  my $thisme = $currentpage->{"pp_$param"}->GetValue;
+
+ SWITCH: {
+    ($id == $CLEAR) and do {		# clear
+      $currentpage->{"pp_$param"}->SetValue(q{});
+      $currentpage->{datapage}->{statusbar}->SetStatusText("Cleared $labels{$param} for this path." );
+      last SWITCH;
+    };
+
+    (($id == $THISFEFF) or ($id == $THISDATA)) and do {
+      foreach my $n (0 .. $listbook->GetPageCount-1) {
+	my $pagefeff = $listbook->GetPage($n)->{path}->parent->group;
+	next if (($id == $THISFEFF) and ($pagefeff ne $thisfeff));
+	$listbook->GetPage($n)->{"pp_$param"}->SetValue($thisme);
+	my $which = ($id == $THISFEFF) ? "Feff calculation" : "data set";
+	$currentpage->{datapage}->{statusbar}->SetStatusText("Set $labels{$param} for every path in this $which." );
+      };
+      last SWITCH;
+    };
+
+    ($id == $EACHDATA) and do {
+      ## from %frames keys, find data pages, loop over all {listpath} pages
+      print $currentpage->{datapage}, $/;
+      $currentpage->{datapage}->{statusbar}->SetStatusText("Set $labels{$param} for every path in every data set." );
+      last SWITCH;
+    };
+
+    (($id == $PREV) or ($id == $NEXT)) and do {
+      my $which = ($id == $PREV) ? $this - 1 : $this + 1;
+      $currentpage->{"pp_$param"}->SetValue( $listbook->GetPage($which)->{"pp_$param"}->GetValue );
+      $which = ($id == $PREV) ? "previous" : "next";
+      $currentpage->{datapage}->{statusbar}->SetStatusText("Grabbed $labels{$param} from the $which path." );
+      last SWITCH;
+    };
+
+    (($id == $DEBYE) or ($id == $EINS)) and do {	# correlated Debye model / Einstein model
+      my $theta = ($id == $DEBYE) ? 'thetad' : 'thetae';
+      my $func  = ($id == $DEBYE) ? 'debye'  : 'eins';
+      my $full  = ($id == $DEBYE) ? 'Debye'  : 'Einstein';
+      $currentpage->{"pp_$param"}->SetValue("$func(temp, $theta)");
+      $Demeter::UI::Artemis::frames{GDS}  -> put_param(qw(set temp 300));
+      $Demeter::UI::Artemis::frames{GDS}  -> put_param('guess', $theta, '500');
+      $Demeter::UI::Artemis::frames{GDS}  -> clear_highlight;
+      $Demeter::UI::Artemis::frames{GDS}  -> set_highlight('\A(?:temp|theta[de])\z');
+      $Demeter::UI::Artemis::frames{GDS}  -> Show(1);
+      $Demeter::UI::Artemis::frames{main} -> {toolbar}->ToggleTool(1,1);
+      $Demeter::UI::Artemis::frames{GDS}  -> {toolbar}->ToggleTool(2,1);
+      $currentpage->{datapage}->{statusbar}->SetStatusText("Inserted math expression for $full model and created two GDS parameters." );
+      last SWITCH;
+    };
+  };
 };
 
 ## edit for many paths : TextCtrl with toggles for choices
