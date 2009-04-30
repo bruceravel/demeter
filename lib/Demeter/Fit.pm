@@ -47,6 +47,7 @@ use Regexp::Common;
 use Readonly;
 Readonly my $NUMBER    => $RE{num}{real};
 Readonly my $STAT_TEXT => "n_idp n_varys chi_square chi_reduced r_factor epsilon_k epsilon_r data_total";
+use Text::Wrap;
 use YAML;
 
 use Text::Wrap;
@@ -77,6 +78,7 @@ has 'location'       => (is => 'rw', isa => 'Str',    default => q{});
 has 'fit_performed'  => (is => 'rw', isa => 'Bool',   default => 0);
 has 'ignore_errors'  => (is => 'rw', isa => 'Bool',   default => 0);
 has 'stop'           => (is => 'rw', isa => 'Bool',   default => 0);
+has 'troubletext'    => (is => 'rw', isa => 'Str',    default => q{});
 
 ## -------- array attributes
 has 'gds' => (
@@ -183,98 +185,68 @@ sub rm {
 ## sanity checks     see Demeter::Fit::Sanity
 sub _verify_fit {
   my ($self) = @_;
-  my %problem = (
-		 gds_component		  => 0,
-		 data_component		  => 0,
-		 paths_component	  => 0,
-		 data_files		  => 0,
-		 feff_nnnn_files	  => 0,
-		 defined_not_used	  => 0,
-		 used_not_defined	  => 0,
-		 binary_ops		  => 0,
-		 function_names		  => 0,
-		 unique_group_names	  => 0,
-		 unique_tags		  => 0,
-		 unique_cvs		  => 0,
-		 gds_unique_names	  => 0,
-		 parens_not_match	  => 0,
-		 data_parameters	  => 0,
-		 nidp			  => 0,
-		 rmin_rbkg		  => 0,
-		 reff_rmax		  => 0,
-		 exceed_max_nvarys	  => 0,
-		 exceed_max_paths	  => 0,
-		 exceed_max_datasets	  => 0,
-		 exceed_max_params	  => 0,
-		 exceed_max_restraints	  => 0,
-		 program_var_names	  => 0,
-		 path_calculation_exists  => 0,
-		 merge_parameters_exists  => 0,
-
-		 errors			  => [],
-		 #warnings		  => [],
-		  );
+  my $trouble_found = 0;
   my @gds   = @{ $self->gds };
-  push (@{$problem{errors}}, "No gds component is defined for this fit"),   ++$problem{gds_component}   if ($#gds   == -1);
+  $self->add_trouble("gds"),   ++$trouble_found if ($#gds   == -1);
   my @data  = @{ $self->data };
-  push (@{$problem{errors}}, "No data component is defined for this fit"),  ++$problem{data_component}  if ($#data  == -1);
+  $self->add_trouble("data"),  ++$trouble_found if ($#data  == -1);
   my @paths = @{ $self->paths };
-  push (@{$problem{errors}}, "No paths component is defined for this fit"), ++$problem{paths_component} if ($#paths == -1);
+  $self->add_trouble("paths"), ++$trouble_found if ($#paths == -1);
 
   ## all these tests live in Demeter::Fit::Sanity, which is
   ## part of the base of this module
 
   ## 1. check that all data and feffNNNN.dat files exist
-  $self->S_data_files_exist(\%problem);
-  $self->S_feff_files_exist(\%problem);
+  $trouble_found += $self->S_data_files_exist;
+  $trouble_found += $self->S_feff_files_exist;
 
   ## 2. check that all guesses are used in defs and pathparams
-  $self->S_defined_not_used(\%problem);
+  $trouble_found += $self->S_defined_not_used;
 
   ## 3. check that defs and path paramers do not use undefined GDS parameters
-  $self->S_used_not_defined(\%problem);
+  $trouble_found += $self->S_used_not_defined;
 
   ## 4. check that ++ -- // *** do not appear in math expression
-  $self->S_binary_ops(\%problem);
+  $trouble_found += $self->S_binary_ops;
 
   ## 5. check that all function() names are valid in math expressions
-  $self->S_function_names(\%problem);
+  $trouble_found += $self->S_function_names;
 
   ## 6. check that all data have unique group names and tags
   ## 7. check that all paths have unique group names
-  $self->S_unique_group_names(\%problem);
+  $trouble_found += $self->S_unique_group_names;
 
-    ## 8. check that all GDS have unique names
-  $self->S_gds_unique_names(\%problem);
+  ## 8. check that all GDS have unique names
+  $trouble_found += $self->S_gds_unique_names;
 
   ## 9. check that parens match
-  $self->S_parens_not_match(\%problem);
+  $trouble_found += $self->S_parens_not_match;
 
   ## 10. check that data parameters are sensible
-  $self->S_data_parameters(\%problem);
+  $trouble_found += $self->S_data_parameters;
 
   ## 11. check number of guesses against Nidp
-  $self->S_nidp(\%problem);
+  $trouble_found += $self->S_nidp;
 
   ## 12. verify that Rmin is >= Rbkg for data imported as mu(E)
-  $self->S_rmin_rbkg(\%problem);
+  $trouble_found += $self->S_rmin_rbkg;
 
   ## 13. verify that Reffs of all paths are within some margin of rmax
-  $self->S_reff_rmax(\%problem);
+  $trouble_found += $self->S_reff_rmax;
 
   ## 14. check that Ifeffit's hard wired limits are not exceeded
-  $self->S_exceed_ifeffit_limits(\%problem);
+  $trouble_found += $self->S_exceed_ifeffit_limits;
 
   ## 15. check that parameters do not have program variable names
-  $self->S_program_var_names(\%problem);
+  $trouble_found += $self->S_program_var_names;
 
   ## 16. check that all Path objects have either a ScatteringPath or a folder/file defined
-  $self->S_path_calculation_exists(\%problem);
+  $trouble_found += $self->S_path_calculation_exists;
 
   ## 17. check that there are no unresolved merge parameetrs
-  $self->S_notice_merge(\%problem);
+  $trouble_found += $self->S_notice_merge;
 
-  return \%problem;
+  return $trouble_found;
 };
 
 
@@ -297,6 +269,7 @@ sub pre_fit {
     $p -> trouble(q{});
   };
   $self -> trouble(q{});
+  $self -> troubletext(q{});
   return $self->template("fit", "prep_fit");
 };
 
@@ -307,19 +280,12 @@ sub fit {
   $self->start_spinner("Demeter is performing a fit") if ($self->mo->ui eq 'screen');
   my $prefit = $self->pre_fit;
 
-  my $r_problems = $self->_verify_fit;
-  my $stop = any { ($_ ne 'errors') and $$r_problems{$_} } (keys %$r_problems);
-  my $all = q{};
-  if ($stop) {
+  my $trouble_found = $self->_verify_fit;
+  if ($trouble_found) {
     $self->stop(1);
-    $all .= "The following errors were found:";
-    my $i = 0;
-    foreach my $message (@{ $r_problems->{errors} }) {
-      ++$i;
-      $all .= "\n  $i: " . $message;
-    };
-    $all .= "\nThe calling reference is\n\n";
-    carp($all);
+    my $text = $self->trouble_report;
+    carp($text);
+    $self->troubletext($text);
     if (not $self->ignore_errors) {
       if ($self->mo->ui eq 'Wx') {
 	return "This fit has unrecoverable errors";
@@ -449,27 +415,30 @@ sub fit {
 sub ff2chi {
   my ($self, $data) = @_;
   $self->start_spinner("Demeter is doing a summation of paths") if ($self->mo->ui eq 'screen');
+  my $prefit = $self->pre_fit;
 
   my @alldata = @{ $self->data };
   $data ||= $alldata[0];
 
-  $self -> pre_fit;
   $data -> fitting(1);
 
-  my $r_problems = $self->_verify_fit;
-  my $stop = any { ($_ ne 'errors') and $$r_problems{$_} } (keys %$r_problems);
-  my $all = q{};
-  if ($stop) {
-    $all .= "The following errors were found:";
-    my $i = 0;
-    foreach my $message (@{ $r_problems->{errors} }) {
-      ++$i;
-      $all .= "\n  $i: " . $message;
+  my $trouble_found = $self->_verify_fit;
+  if ($trouble_found) {
+    $self->stop(1);
+    my $text = $self->trouble_report;
+    carp($text);
+    $self->troubletext($text);
+    if (not $self->ignore_errors) {
+      if ($self->mo->ui eq 'Wx') {
+	return "This summation has unrecoverable errors";
+      } else {
+	croak("This summation has unrecoverable errors");
+      };
     };
-    $all .= "\nThe calling reference is\n\n";
-    carp($all);
-    croak("This fit has unrecoverable errors");
   };
+  return "Tilt!" if $self->stop;
+  $self->dispose($prefit);
+
 
   $self->mo->fit($self);
   my $command = q{};
@@ -525,6 +494,23 @@ sub ff2chi {
   # alternate names
   *sum = \ &ff2chi;
 }
+
+
+sub trouble_report {
+  my ($fit) = @_;
+  my $text = q{};
+  $Text::Wrap::columns = 60;
+  foreach my $obj (@{ $fit->data }, @{ $fit->gds }, @{ $fit->paths }) {
+    next if not $obj->trouble;
+    my $which = ref($obj);
+    $which =~ s{Demeter::}{};
+    foreach my $t (split(/\|/, $obj->trouble)) {
+      $text .= sprintf("%s: %s\n%s\n\n", uc($which), $obj->name, wrap("     ", "     ", $obj->translate_trouble($t)));
+      ##$text .= sprintf("%s: %s\t(%s)\n%s\n\n", $which, $obj->name, $t, wrap("     ", "     ", $obj->translate_trouble($t)));
+    };
+  };
+  return $text;
+};
 
 sub _gds_commands {
   my ($self, $type) = @_;

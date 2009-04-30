@@ -146,16 +146,25 @@ sub DoLabelLeave {
 };
 
 
+sub this_path {
+  my ($page) = @_;
+  my $this = 0;
+  foreach my $n (0 .. $page->{listbook}->GetPageCount-1) {
+    $this = $n if ($page->{listbook}->GetPage($n) eq $page);
+  };
+  return $this;
+};
+
 use Readonly;
-Readonly my $CLEAR	 => 0;
-Readonly my $THISFEFF	 => 2;
-Readonly my $THISDATA	 => 3;
-Readonly my $EACHDATA	 => 4;
-Readonly my $SELECTED	 => 5;
-Readonly my $PREV	 => 7;
-Readonly my $NEXT	 => 8;
-Readonly my $DEBYE	 => 10;
-Readonly my $EINS	 => 11;
+Readonly my $CLEAR	 => Wx::NewId();
+Readonly my $THISFEFF	 => Wx::NewId();
+Readonly my $THISDATA	 => Wx::NewId();
+Readonly my $EACHDATA	 => Wx::NewId();
+Readonly my $SELECTED	 => Wx::NewId();
+Readonly my $PREV	 => Wx::NewId();
+Readonly my $NEXT	 => Wx::NewId();
+Readonly my $DEBYE	 => Wx::NewId();
+Readonly my $EINS	 => Wx::NewId();
 
 ## use this to post context menu for path parameter
 sub DoLabelKeyPress {
@@ -182,10 +191,7 @@ sub DoLabelKeyPress {
   $menu->Enable($EACHDATA, 0);
   $menu->Enable($SELECTED, 0);
 
-  my $this = 0;
-  foreach my $n (0 .. $page->{listbook}->GetPageCount-1) {
-    $this = $n if ($page->{listbook}->GetPage($n) eq $page);
-  };
+  my $this = $page->this_path;
   $menu->Enable($PREV, 0) if ($this == 0);
   $menu->Enable($NEXT, 0) if ($this == $page->{listbook}->GetPageCount-1);
   $st->PopupMenu($menu, $event->GetPosition);
@@ -197,10 +203,7 @@ sub OnLabelMenu {
   my $param = $st->{which};
   my $id = $event->GetId;
 
-  my $this = 0;
-  foreach my $n (0 .. $listbook->GetPageCount-1) {
-    $this = $n if ($listbook->GetPage($n) eq $currentpage);
-  };
+  my $this = $currentpage->this_path();
   my $thisfeff = $currentpage->{path}->parent->group;
   my $thisme = $currentpage->{"pp_$param"}->GetValue;
 
@@ -213,11 +216,13 @@ sub OnLabelMenu {
 
     (($id == $THISFEFF) or ($id == $THISDATA)) and do {
       foreach my $n (0 .. $listbook->GetPageCount-1) {
-	my $pagefeff = $listbook->GetPage($n)->{path}->parent->group;
-	next if (($id == $THISFEFF) and ($pagefeff ne $thisfeff));
-	$listbook->GetPage($n)->{"pp_$param"}->SetValue($thisme);
-	my $which = ($id == $THISFEFF) ? "Feff calculation" : "data set";
-	$currentpage->{datapage}->{statusbar}->SetStatusText("Set $labels{$param} for every path in this $which." );
+	my $how = ($id == $THISFEFF) ? 0 : 1;
+	$currentpage->{datapage}->add_parameters($param, $thisme, $how)
+# 	my $pagefeff = $listbook->GetPage($n)->{path}->parent->group;
+# 	next if (($id == $THISFEFF) and ($pagefeff ne $thisfeff));
+# 	$listbook->GetPage($n)->{"pp_$param"}->SetValue($thisme);
+#	my $which = ($id == $THISFEFF) ? "Feff calculation" : "data set";
+#	$currentpage->{datapage}->{statusbar}->SetStatusText("Set $labels{$param} for every path in this $which." );
       };
       last SWITCH;
     };

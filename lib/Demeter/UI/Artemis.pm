@@ -253,7 +253,7 @@ sub on_about {
   $info->SetDevelopers( ["Bruce Ravel <bravel\@bnl.gov>\n",
 			 "Ifeffit is copyright © 1992-2009 Matt Newville"
 			] );
-  $info->SetLicense( slurp(File::Spec->catfile($artemis_base, 'Atoms', 'data', "GPL.dem")) );
+  $info->SetLicense( slurp(File::Spec->catfile($artemis_base, 'Artemis', 'share', "GPL.dem")) );
   my $artwork = <<'EOH'
 Blah blah blah
 
@@ -354,9 +354,12 @@ sub fit {
     set_happiness_color($fit->color);
     $rframes->{main}->{statusbar}->SetStatusText("Your fit is finished!");
   } else {
-    $rframes->{main}->{statusbar}->SetStatusText("Your fit could not be finished due to imput errors.");
+    $rframes->{Log}->{text}->SetValue($fit->troubletext);
+    #$rframes->{Log}->Show(1);
+    #$rframes->{main}->{log_toggle}->SetValue(1);
+    set_happiness_color($fit->co->default("happiness", "bad_color"));
+    $rframes->{main}->{statusbar}->SetStatusText("The error report from the fit that just failed are written in the log window.");
   };
-  check_for_trouble($fit);
   undef $busy;
 };
 
@@ -374,17 +377,6 @@ sub set_happiness_color {
     $frames{$k}->{plot_rmr}  -> SetBackgroundColour(Wx::Colour->new($color));
     $frames{$k}->{plot_kq}   -> SetBackgroundColour(Wx::Colour->new($color));
   };
-};
-
-sub check_for_trouble {
-  my ($fit) = @_;
-  local $| = 1;
-  my $text = q{};
-  foreach my $obj (@{ $fit->gds }, @{ $fit->data }, @{ $fit->paths }) {
-    next if not $obj->trouble;
-    $text .= sprintf("%-15s : %s\n\n", $obj->name, $obj->translate_trouble($obj->trouble));
-  };
-  print $text;
 };
 
 sub button_label {

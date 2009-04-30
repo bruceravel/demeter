@@ -35,45 +35,46 @@ $Text::Wrap::columns = 65;
 my $opt  = Regexp::List->new;
 
 sub S_data_files_exist {
-  my ($self, $r_problem) = @_;
+  my ($self) = @_;
+  my $found = 0;
   my @data = @{ $self->data };
   foreach my $d (@data) {
     next if $d->from_athena;
     my $file = $d->file;
     if (not -e $file) {
-      push (@{$$r_problem{errors}}, "The data file \"$file\" does not exist.");
-      ++$$r_problem{data_files};
+      ++$found;
       $d->add_trouble('-e');
     } elsif (not -r $file) {
-      push (@{$$r_problem{errors}}, "The data file \"$file\" cannot be read.");
-      ++$$r_problem{data_files};
+      ++$found;
       $d->add_trouble('-r');
     };
   };
+  return $found;
 };
 
 sub S_feff_files_exist {
-  my ($self, $r_problem) = @_;
+  my ($self) = @_;
+  my $found = 0;
   my @paths = @{ $self->paths };
   foreach my $p (@paths) {
     my ($pathto, $nnnn) = $p->get(qw(folder file));
     my $file = File::Spec->catfile($pathto, $nnnn);
     if (not -e $file) {
-      push (@{$$r_problem{errors}}, "The feffNNNN,dat file \"$file\" does not exist.");
-      ++$$r_problem{data_files};
+      ++$found;
       $p->add_trouble('-e');
     } elsif (not -r $file) {
-      push (@{$$r_problem{errors}}, "The feffNNNN.dat file \"$file\" cannot be read.");
-      ++$$r_problem{data_files};
+      ++$found;
       $p->add_trouble('-r');
     };
   };
+  return $found;
 };
 
 
 ## 1. check that all guesses are used in defs and pathparams
 sub S_defined_not_used {
-  my ($self, $r_problem) = @_;
+  my ($self) = @_;
+  my $found = 0;
   my @gds   = @{ $self->gds };
   my @paths = @{ $self->paths };
   foreach my $g (@gds) {
@@ -94,16 +95,17 @@ sub S_defined_not_used {
       };
     };
     if (not $found) {
-      push (@{$$r_problem{errors}}, "The guess parameter \"" . $g->name . "\" is not used elsewhere in the fit");
-      ++$$r_problem{defined_not_used};
+      ++$found;
       $g->trouble('notused');
     };
   };
+  return $found;
 };
 
 ## 2. check that defs and path paramers do not use undefined GDS parameters
 sub S_used_not_defined {
-  my ($self, $r_problem) = @_;
+  my ($self) = @_;
+  my $found = 0;
   my @gds   = @{ $self->gds };
   my @paths = @{ $self->paths };
   my @all_params = ();
@@ -126,12 +128,10 @@ sub S_used_not_defined {
       next if ($token =~ m{\A$params_regexp\z});  # defined param, ok
       next if (lc($token) eq 'reff');             # reff, ok
       if (lc($token) =~ m{\[?cv\]?}) {
-	++$$r_problem{used_not_defined};
-	push(@{$$r_problem{errors}}, 'The [cv] token is not currently supported in def parameter math expressions.');
+	++$found;
 	$g->add_trouble('usecv');
       } else {
-	++$$r_problem{used_not_defined};
-	push(@{$$r_problem{errors}}, "The parameter \"" . $g->name . "\" uses an undefined token: $token");
+	++$found;
 	$g->add_trouble('useundef');
       };
     };
@@ -150,19 +150,20 @@ sub S_used_not_defined {
 	next if ($token =~ m{\A$params_regexp\z});  # defined param, ok
 	next if (lc($token) eq 'reff');             # reff, ok
 	next if (lc($token) =~ m{\[?cv\]?});        # cv, ok
-	++$$r_problem{used_not_defined};
-	push(@{$$r_problem{errors}},
-	     "The math expression for $pp for \"$label\" uses an undefined token: $token"
-	    );
+	++$found;
+	#     "The math expression for $pp for \"$label\" uses an undefined token: $token"
+	#    );
 	$p->add_trouble(join('_', 'useundef', $pp, $token));
       };
     };
   };
+  return $found;
 };
 
 ## 3. check that ++ -- // *** ^^ do not appear in math expression
 sub S_binary_ops {
-  my ($self, $r_problem) = @_;
+  my ($self) = @_;
+  my $found = 0;
   my @gds   = @{ $self->gds };
   my @paths = @{ $self->paths };
   my $bad_binary_op_regexp = $opt -> list2re('++', '--', '***', '//', '^^');
@@ -171,10 +172,9 @@ sub S_binary_ops {
     my $mathexp = $g->mathexp;
     if ($mathexp =~ m{($bad_binary_op_regexp)}) {
       my $which = $1;
-      ++$$r_problem{binary_ops};
-      push(@{$$r_problem{errors}},
-	   "The math expression for \"" . $g->name . "\" uses an invalid binary operation: $which"
-	  );
+      ++$found;
+      #	   "The math expression for \"" . $g->name . "\" uses an invalid binary operation: $which"
+      #	  );
       $g->add_trouble("binary_$which");
     };
   };
@@ -185,19 +185,20 @@ sub S_binary_ops {
       my $mathexp = $p->$pp;
       if ($mathexp =~ m{($bad_binary_op_regexp)}) {
 	my $which = $1;
-	++$$r_problem{binary_ops};
-	push(@{$$r_problem{errors}},
-	     "The math expression for $pp for \"$label\" uses an invalid binary operation: $which"
-	    );
+	++$found;
+	#     "The math expression for $pp for \"$label\" uses an invalid binary operation: $which"
+	#    );
 	$p->add_trouble(join('_', 'binary', $pp, $which));
       };
     };
   };
+  return $found;
 };
 
 ## 4. check that all function() names are valid in math expressions
 sub S_function_names {
-  my ($self, $r_problem) = @_;
+  my ($self) = @_;
+  my $found = 0;
   my @gds   = @{ $self->gds   };
   my @paths = @{ $self->paths };
 
@@ -207,8 +208,7 @@ sub S_function_names {
     if ($g->mathexp =~ m{(\b\w+)\s*\(}) {
       my $match = $1;
       if (not is_IfeffitFunction($match)) {
-	push (@{$$r_problem{errors}}, "$match (used in the math expression for \"$name\") is not a valid Ifeffit function");
-	++$$r_problem{function_names};
+	++$found;
 	$g->add_trouble("function_$match");
       };
     };
@@ -221,19 +221,20 @@ sub S_function_names {
       if ($mathexp =~ m{(\b\w+)\s*\(}) {
 	my $match = $1;
 	if (not is_IfeffitFunction($match)) {
-	  push (@{$$r_problem{errors}}, "$match (used in the math expression for $pp for \"$label\") is not a valid Ifeffit function");
-	  ++$$r_problem{function_names};
+	  ++$found;
 	  $p->add_trouble(join('_', 'function', $pp, $match));
 	};
       };
     };
   };
+  return $found;
 };
 
 ## 5. check that all data have unique group names
 ## 6. check that all paths have unique group names
 sub S_unique_group_names {
-  my ($self, $r_problem) = @_;
+  my ($self) = @_;
+  my $found = 0;
   my @data  = @{ $self->data  };
   my @paths = @{ $self->paths };
 
@@ -251,20 +252,17 @@ sub S_unique_group_names {
   };
   foreach my $s (keys %dseen) {
     if ($dseen{$s} > 1) {
-      push (@{$$r_problem{errors}}, "The data group name \"$s\" was used more than once.");
-      ++$$r_problem{unique_group_names};
+      ++$found;
     };
   };
   foreach my $s (keys %tag_seen) {
     if ($tag_seen{$s} > 1) {
-      push (@{$$r_problem{errors}}, "The data tag \"$s\" was used more than once.");
-      ++$$r_problem{unique_tags};
+      ++$found;
     };
   };
   ## foreach my $s (keys %cv_seen) {
   ##  if ($cv_seen{$s} > 1) {
-  ## 	 push (@{$$r_problem{errors}}, "The data characteristic value \"$s\" was used more than once.");
-  ## 	 ++$$r_problem{unique_cvs};
+  ## 	 ++$found;
   ##  };
   ## };
 
@@ -277,8 +275,7 @@ sub S_unique_group_names {
   };
   foreach my $s (keys %pseen) {
     if ($pseen{$s} > 1) {
-      push (@{$$r_problem{errors}}, "The path group name \"$s\" was used more than once.");
-      ++$$r_problem{unique_group_names};
+      ++$found;
     };
   };
 
@@ -291,15 +288,16 @@ sub S_unique_group_names {
   };
   foreach my $s (keys %seen) {
     if ($seen{$s} > 1 and $pseen{$s} and $pseen{$s} < 2 and $dseen{$s} < 2) {
-      push (@{$$r_problem{errors}}, "The group name \"$s\" was used for more than one object.");
-      ++$$r_problem{unique_group_names};
+      ++$found;
     };
   };
+  return $found;
 };
 
 ## 7. check that all GDS have unique names
 sub S_gds_unique_names {
-  my ($self, $r_problem) = @_;
+  my ($self) = @_;
+  my $found = 0;
   my @gds = @{ $self->gds };
   my %seen = ();
   foreach my $g (@gds) {
@@ -308,15 +306,16 @@ sub S_gds_unique_names {
   };
   foreach my $s (keys %seen) {
     if ($seen{$s} > 1) {
-      push (@{$$r_problem{errors}}, "The parameter \"$s\" was defined more than once.");
-      ++$$r_problem{gds_unique_names};
+      ++$found;
     };
   };
+  return $found;
 };
 
 ## 8. check that parens match
 sub S_parens_not_match {
-  my ($self, $r_problem) = @_;
+  my ($self) = @_;
+  my $found = 0;
   my @gds   = @{ $self->gds   };
   my @paths = @{ $self->paths };
   foreach my $g (@gds) {
@@ -324,8 +323,7 @@ sub S_parens_not_match {
     my $name = $g->name;
     my $not_ok = $self->check_parens($g->mathexp);
     if ($not_ok) {
-      push (@{$$r_problem{errors}}, "The math expression for \"$name\" has mismatched parens.");
-      ++$$r_problem{parens_not_match};
+      ++$found;
       $g->add_trouble('parens');
     };
   };
@@ -336,38 +334,39 @@ sub S_parens_not_match {
       my $mathexp = $p->$pp;
       my $not_ok = $self->check_parens($mathexp);
       if ($not_ok) {
-	push (@{$$r_problem{errors}}, "The math expression for $pp for \"$label\" has mismatched parens.");
-	++$$r_problem{parens_not_match};
+	++$found;
 	$p->add_trouble("parens_".$pp);
       };
     };
   };
+  return $found;
 };
 
 ## 9. check that data params make sense
 sub S_data_parameters {
-  my ($self, $r_problem) = @_;
+  my ($self) = @_;
+  my $found = 0;
   my @data  = @{ $self->data  };
   foreach my $d (@data) {
     next if (not $d->fit_include);
     my ($kmin, $kmax) = $d->get(qw(fft_kmin fft_kmax));
     if ($kmin >= $kmax) {
-      push (@{$$r_problem{errors}}, "The value of kmin for data set \"$d\" is not smaller than kmax");
-      ++$$r_problem{data_parameters};
+      ++$found;
       $d->add_trouble('kminkmax');
     };
     my ($rmin, $rmax) = $d->get(qw(bft_rmin bft_rmax));
-    if ($kmin >= $kmax) {
-      push (@{$$r_problem{errors}}, "The value of Rmin for data set \"$d\" is not smaller than Rmax");
-      ++$$r_problem{data_parameters};
+    if ($rmin >= $rmax) {
+      ++$found;
       $d->add_trouble('rminrmax');
     };
   };
+  return $found;
 };
 
 ## 10. check that number of guesses does not exceed Nidp
 sub S_nidp {
-  my ($self, $r_problem) = @_;
+  my ($self) = @_;
+  my $found = 0;
   my @gds   = @{ $self->gds   };
   my @data  = @{ $self->data  };
   my ($nidp, $ndata) = (0,0);
@@ -381,30 +380,32 @@ sub S_nidp {
     ++$nguess if ($g->gds eq 'guess');
   };
   if ($nguess > $nidp) {
-    push (@{$$r_problem{errors}}, sprintf("You have %.1f independent points in %d data sets but have used %d guess parameters.", $nidp, $ndata, $nguess));
-    ++$$r_problem{nidp};
+    ++$found;
     $self->add_trouble('nvarnidp');
   };
+  return $found;
 };
 
 ## 11. check that rmin is not greater than rbkg
 sub S_rmin_rbkg {
-  my ($self, $r_problem) = @_;
+  my ($self) = @_;
+  my $found = 0;
   my @data  = @{ $self->data  };
   foreach my $d (@data) {
     next if ($d->datatype eq 'chi');
     next if (not $d->fit_include);
     if ($d->bft_rmin < $d->bkg_rbkg) {
-      push (@{$$r_problem{errors}}, "Rmin is smaller than Rbkg for data set " . $d->name);
-      ++$$r_problem{rmin_rbkg};
+      ++$found;
       $d->add_trouble('rminrbkg');
     };
   };
+  return $found;
 };
 
 ## 12. check that reff is not far beyond Rmax for any path
 sub S_reff_rmax {
-  my ($self, $r_problem) = @_;
+  my ($self) = @_;
+  my $found = 0;
   my @data  = @{ $self->data  };
   my @paths = @{ $self->paths };
   foreach my $d (@data) {
@@ -414,12 +415,12 @@ sub S_reff_rmax {
       next if ($p->data ne $d);
       if ($p->reff > ($d->bft_rmax+1)) {
 	my $identify = $p->name || $p->Index;
-	push (@{$$r_problem{errors}}, "Reff for path \"$identify\" is well beyond Rmax for data set \"" . $d->name . "\"");
-	++$$r_problem{reff_rmax};
+	++$found;
 	$p->add_trouble('reffrmax');
       };
     };
   };
+  return $found;
 };
 
 #  &max_scalars   =   65536.000000000
@@ -432,7 +433,8 @@ sub S_reff_rmax {
 #  restraints     =      10
 ## 13. check that ifeffit hardwired limits are not exceeded
 sub S_exceed_ifeffit_limits {
-  my ($self, $r_problem) = @_;
+  my ($self) = @_;
+  my $found = 0;
   my @gds   = @{ $self->gds   };
   my @data  = @{ $self->data  };
   my @paths = @{ $self->paths };
@@ -447,18 +449,15 @@ sub S_exceed_ifeffit_limits {
     ++$n_restraint if ($g->gds eq 'restrain');
   };
   if ($n_guess > Ifeffit::get_scalar('&max_varys')) {
-    push (@{$$r_problem{errors}}, "You have defined more than Ifeffit's limit of " . Ifeffit::get_scalar('&max_varys') . " guess parameters.");
-    ++$$r_problem{exceed_max_nvarys};
+    ++$found;
     $self->add_trouble('nvarys');
   };
   if ($n_params > Ifeffit::get_scalar('&max_scalars')) {
-    push (@{$$r_problem{errors}}, "You have defined more than Ifeffit's limit of " . Ifeffit::get_scalar('&max_scalars') . " scalars.  (Wow!)");
-    ++$$r_problem{exceed_max_params};
+    ++$found;
     $self->add_trouble('nparams');
   };
   if ($n_restraint > 10) {
-    push (@{$$r_problem{errors}}, "You have defined more than Ifeffit's limit of 10 restraints.");
-    ++$$r_problem{exceed_max_restraints};
+    ++$found;
     $self->add_trouble('nrestraints');
   };
 
@@ -468,8 +467,7 @@ sub S_exceed_ifeffit_limits {
     ++$n_data if ($d->fit_include);
   };
   if ($n_data > Ifeffit::get_scalar('&max_data_sets')) {
-    push (@{$$r_problem{errors}}, "You have defined more than Ifeffit's limit of " . Ifeffit::get_scalar('&max_datasets') . " data sets.");
-    ++$$r_problem{exceed_max_datasets};
+    ++$found;
     $self->add_trouble('ndatasets');
   };
 
@@ -480,51 +478,54 @@ sub S_exceed_ifeffit_limits {
     ++$n_paths if ($p->include);
   };
   if ($n_paths > Ifeffit::get_scalar('&max_paths')) {
-    push (@{$$r_problem{errors}}, "You have defined more than Ifeffit's limit of " . Ifeffit::get_scalar('&max_paths') . " paths.");
-    ++$$r_problem{exceed_max_paths};
+    ++$found;
     $self->add_trouble('npaths');
   };
 
+  return $found;
 };
 
 ## 14. check that parameters do not have program variable names
 sub S_program_var_names {
-  my ($self, $r_problem) = @_;
+  my ($self) = @_;
+  my $found = 0;
   my @gds = @{ $self->gds };
   foreach my $g (@gds) {
     if (is_IfeffitProgramVar($g->name)) {
-      push (@{$$r_problem{errors}}, "\"" . $g->name . "\" is an Ifeffit program variable and cannot be a parameter in the fit.");
-      ++$$r_problem{program_var_names};
+      ++$found;
       $g->add_trouble('progvar');
     };
   };
+  return $found;
 };
 
 ## 16. check that all Path objects have either a ScatteringPath or a folder/file defined
 sub S_path_calculation_exists {
-  my ($self, $r_problem) = @_;
+  my ($self) = @_;
+  my $found = 0;
   my @paths = @{ $self->paths };
   foreach my $p (@paths) {
     next if (ref($p->sp) =~ m{(?:ScatteringPath|SSPath)});
     my $nnnn = File::Spec->catfile($p->folder, $p->file);
     next if ((-e $nnnn) and $p->file);
-    push (@{$$r_problem{errors}}, "Path \"" . $p->name . "\" does not have a valid Feff calculation associated with it.");
-    ++$$r_problem{path_calculation_exists};
+    ++$found;
     $p->add_trouble('nocalc');
   };
+  return $found;
 };
 
 ## 17. check that there are no unresolved merge parameetrs
 sub S_notice_merge {
-  my ($self, $r_problem) = @_;
+  my ($self) = @_;
+  my $found = 0;
   my @gds = @{ $self->gds };
   foreach my $g (@gds) {
     if ($g->gds eq 'merge') {
-      push (@{$$r_problem{errors}}, "Parameter " . $g->name . " is an unresolved merge parameter.");
-      ++$$r_problem{merge_parameters_exists};
+      ++$found;
       $g->add_trouble('merge');
     };
   };
+  return $found;
 };
 
 
@@ -657,8 +658,10 @@ pipe-separated list of problem codes.
 
 Some error codes contain additional information to further identify
 the problem.  These codes have a keyword separated from the other
-information by an underscore, making these sufficiently eacy to parse
-on the fly.
+information by an underscore, making these sufficiently easy to parse
+on the fly.  Indeed, the C<translate_trouble> method of the base
+object (see L<Demeter>) does just that, so error reporting during a
+fit is an example of literate programming.
 
 Here are the explanations:
 
@@ -700,8 +703,8 @@ C<rmin> is larger than C<rmax>.
 
 =item C<rminrbkg>
 
-C<rmin> is smaller than the value of C<rbkg> used in the background
-removal.
+C<rmin> is smaller than the value of C<rbkg> that was used in the
+background removal.
 
 =back
 
@@ -719,17 +722,17 @@ The path file cannot be read.
 
 =item C<useundef> + C<$pp> + C<$token>
 
-The math expression for the C<$pp> pathparameter contains an undefined
+The math expression for the C<$pp> path parameter contains an undefined
 parameter, C<$token>.
 
 =item C<binary> + C<$pp> + C<$token>
 
-The math expression for the C<$pp> pathparameter contains an unallowed
+The math expression for the C<$pp> path parameter contains an unallowed
 binary math operator, C<$token>.
 
 =item C<function> + C<$pp> + C<$token>
 
-The math expression for the C<$pp> pathparameter contains a
+The math expression for the C<$pp> path parameter contains a
 mathematical function unknown to Ifeffit, C<$token>.
 
 =item C<namenotunique>
@@ -742,7 +745,7 @@ This path has an Ifeffit group name which is used by a Data object.
 
 =item C<parens> + C<$pp>
 
-The math expression for the C<$pp> pathparameter has unmatched parentheses.
+The math expression for the C<$pp> path parameter has unmatched parentheses.
 
 =item C<reffrmax>
 
@@ -805,6 +808,18 @@ This is an unresolved parameter from the merge of fitting projects.
 =head2 Problems with Fit objects
 
 =over 4
+
+=item C<gds>
+
+No GDS parameters are defined for this fit
+
+=item C<data>
+
+No data sets are defined for this fit
+
+=item C<paths>
+
+No paths are defined for this fit
 
 =item C<nvarnidp>
 

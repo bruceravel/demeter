@@ -445,7 +445,7 @@ sub get_params_of {
   return $self->meta->get_attribute_list;
 };
 
-sub add_trouble {
+sub add_trouble {		# |-separated list of trouble codes, see Demeter::Fit::Sanity
   my ($self, $new) = @_;
   my $tr = $self->trouble;
   if (not $tr) {
@@ -458,12 +458,12 @@ sub add_trouble {
 
 sub translate_trouble {
   my ($self, $trouble) = @_;
-  return q{} if (ref($self) !~ m{(Data|Fit|GDS|Path)\z});
+  return q{} if (ref($self) !~ m{(?:Data|Fit|GDS|Path)\z});
   my $obj = (ref($self) =~ m{Data}) ? 0
           : (ref($self) =~ m{Path}) ? 1
           : (ref($self) =~ m{GDS})  ? 2
           : (ref($self) =~ m{Fit})  ? 3
-	  :                           -1;
+	  :                          -1;
   return q{} if ($obj == -1);
 
   my $parser = Pod::POM->new();
@@ -479,14 +479,13 @@ sub translate_trouble {
 
   my $text = q{};
   my ($pp, $token) = (q{}, q{});
-  foreach my $item ($troubles_section->head2->[$obj]->over->[0]->item) {
+  foreach my $item ($troubles_section->head2->[$obj]->over->[0]->item) { # ick! Pod::POM is confusing!
     my $this = $item->title;
     my $match = $trouble;
     ($pp, $token) = (q{}, q{});
     if ($trouble =~ m{_}) {
       ($match, $pp, $token) = split(/_/, $trouble);
     };
-    #print $this, "  ", $trouble, "  ", $obj, $/;
     if ($this =~ m{$match}) {
       my $content = $item->content();
       $content =~ s{\n}{ }g;
@@ -496,6 +495,7 @@ sub translate_trouble {
   };
   $text =~ s{C<\$pp>}{$pp};
   $text =~ s{C<\$token>}{$token};
+  $text =~ s{C<([^>]*)>}{$1}g;
   undef $parser;
   undef $pom;
   return $text || $self->trouble;

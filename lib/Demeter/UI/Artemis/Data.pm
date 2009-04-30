@@ -24,17 +24,80 @@ use Wx::Event qw(EVT_MENU EVT_CLOSE EVT_TOOL_ENTER EVT_CHECKBOX EVT_CHOICE EVT_B
 use Wx::DND;
 use Wx::Perl::TextValidator;
 
+use Demeter::UI::Artemis::Data::AddParameter;
+
 use List::MoreUtils qw(firstidx);
 
 my $windows = [qw(hanning kaiser-bessel welch parzen sine)];
 my $demeter = $Demeter::UI::Artemis::demeter;
 
+use Readonly;
+Readonly my $ID_DATA_RENAME  => Wx::NewId();
+Readonly my $ID_DATA_DIFF    => Wx::NewId();
+Readonly my $ID_DATA_DEGEN_N => Wx::NewId();
+Readonly my $ID_DATA_DEGEN_1 => Wx::NewId();
+Readonly my $ID_DATA_DISCARD => Wx::NewId();
+Readonly my $ID_DATA_EPSK    => Wx::NewId();
+Readonly my $ID_DATA_NIDP    => Wx::NewId();
+
+Readonly my $PATH_RENAME => Wx::NewId();
+Readonly my $PATH_SHOW   => Wx::NewId();
+Readonly my $PATH_ADD    => Wx::NewId();
+Readonly my $PATH_EXPORT => Wx::NewId();
+Readonly my $PATH_CLONE  => Wx::NewId();
+
+Readonly my $PATH_SAVE_K  => Wx::NewId();
+Readonly my $PATH_SAVE_R  => Wx::NewId();
+Readonly my $PATH_SAVE_Q  => Wx::NewId();
+
 sub new {
   my ($class, $parent, $nset) = @_;
 
   my $this = $class->SUPER::new($parent, -1, "Artemis: Data controls",
-				wxDefaultPosition, [800,495],
+				wxDefaultPosition, [800,520],
 				wxCAPTION|wxMINIMIZE_BOX|wxSYSTEM_MENU|wxRESIZE_BORDER);
+  $this->{menubar}   = Wx::MenuBar->new;
+
+  my $degen_menu    = Wx::Menu->new;
+  $degen_menu->Append( $ID_DATA_DEGEN_N, "Feff's values", "Set degeneracies for all paths in this data set to values from Feff",  wxITEM_NORMAL );
+  $degen_menu->Append( $ID_DATA_DEGEN_1, "one", "Set degeneracies for all paths in this data set to one (1)",  wxITEM_NORMAL );
+
+  $this->{datamenu}  = Wx::Menu->new;
+  $this->{datamenu}->Append( $ID_DATA_RENAME,   "Rename this data set",     "Rename this data set",  wxITEM_NORMAL );
+  $this->{datamenu}->Append( $ID_DATA_DIFF,     "Make difference spectrum", "Make a difference spectrum using the selected paths", wxITEM_NORMAL );
+  $this->{datamenu}->AppendSubMenu($degen_menu, "Set all degeneracies to");
+  $this->{datamenu}->AppendSeparator;
+  $this->{datamenu}->Append( $ID_DATA_DISCARD, "Discard this data set",    "Discard this data set", wxITEM_NORMAL );
+  $this->{datamenu}->AppendSeparator;
+  $this->{datamenu}->Append( $ID_DATA_EPSK,    "Show epsilon_k",           "Show statistical noise for these data", wxITEM_NORMAL );
+  $this->{datamenu}->Append( $ID_DATA_NIDP,    "Show Nidp",                "Show the number if independent points in these data", wxITEM_NORMAL );
+
+
+  my $include_menu  = Wx::Menu->new;
+  my $discard_menu  = Wx::Menu->new;
+  my $save_menu     = Wx::Menu->new;
+  $save_menu->Append($PATH_SAVE_K, "χ(k)", "Save the currently displayed path as χ(k)", wxITEM_NORMAL);
+  $save_menu->Append($PATH_SAVE_R, "χ(R)", "Save the currently displayed path as χ(R)", wxITEM_NORMAL);
+  $save_menu->Append($PATH_SAVE_Q, "χ(q)", "Save the currently displayed path as χ(q)", wxITEM_NORMAL);
+
+  $this->{pathsmenu} = Wx::Menu->new;
+  $this->{pathsmenu}->Append( $PATH_RENAME, "Rename path",            "Rename the path currently on display", wxITEM_NORMAL );
+  $this->{pathsmenu}->Append( $PATH_SHOW,   "Show path",              "Evaluate and show the path parameters for the currently display path", wxITEM_NORMAL );
+  $this->{pathsmenu}->AppendSeparator;
+  $this->{pathsmenu}->Append( $PATH_ADD,    "Add path parameter",     "Add path parameter to many paths", wxITEM_NORMAL );
+  $this->{pathsmenu}->Append( $PATH_EXPORT, "Export path parameters", "Export path parameters from currently displayed path", wxITEM_NORMAL );
+  $this->{pathsmenu}->AppendSeparator;
+  $this->{pathsmenu}->AppendSubMenu($include_menu, "Include ...");
+  $this->{pathsmenu}->AppendSubMenu($discard_menu, "Discard ...");
+  $this->{pathsmenu}->AppendSeparator;
+  $this->{pathsmenu}->AppendSubMenu($save_menu, "Save path as ..." );
+  $this->{pathsmenu}->Append( $PATH_CLONE, "Clone path", "Make a copy of the currently displayed path", wxITEM_NORMAL );
+
+  $this->{menubar}->Append( $this->{datamenu},  "&Data" );
+  $this->{menubar}->Append( $this->{pathsmenu}, "&Paths" );
+  $this->SetMenuBar( $this->{menubar} );
+  EVT_MENU($this, -1, sub{OnMenuClick(@_)} );
+
   $this->{statusbar} = $this->CreateStatusBar;
   $this->{statusbar} -> SetStatusText(q{});
   #$this->{statusbar}->SetForegroundColour(Wx::Colour->new("#00ff00")); ??????
@@ -311,18 +374,18 @@ sub fetch_parameters {
   my @list   = split(/\n/, $titles);
   $this->{data}->titles(\@list);
 
-  $this->{data}->fft_kmin(      $this->{kmin}      ->GetValue		);
-  $this->{data}->fft_kmax(      $this->{kmax}      ->GetValue		);
-  $this->{data}->fft_dk(        $this->{dk}        ->GetValue		);
-  $this->{data}->bft_rmin(      $this->{rmin}      ->GetValue		);
-  $this->{data}->bft_rmax(      $this->{rmax}      ->GetValue		);
-  $this->{data}->bft_dr(        $this->{dr}        ->GetValue		);
-  $this->{data}->fft_kwindow(   $this->{kwindow}   ->GetStringSelection	);
-  $this->{data}->bft_rwindow(   $this->{kwindow}   ->GetStringSelection	);
-  $this->{data}->fit_k1(        $this->{k1}        ->GetValue		);
-  $this->{data}->fit_k2(        $this->{k2}        ->GetValue		);
-  $this->{data}->fit_k3(        $this->{k3}        ->GetValue		);
-  $this->{data}->fit_karb(      $this->{karb}      ->GetValue		);
+  $this->{data}->fft_kmin      ($this->{kmin}      ->GetValue		);
+  $this->{data}->fft_kmax      ($this->{kmax}      ->GetValue		);
+  $this->{data}->fft_dk        ($this->{dk}        ->GetValue		);
+  $this->{data}->bft_rmin      ($this->{rmin}      ->GetValue		);
+  $this->{data}->bft_rmax      ($this->{rmax}      ->GetValue		);
+  $this->{data}->bft_dr        ($this->{dr}        ->GetValue		);
+  $this->{data}->fft_kwindow   ($this->{kwindow}   ->GetStringSelection	);
+  $this->{data}->bft_rwindow   ($this->{kwindow}   ->GetStringSelection	);
+  $this->{data}->fit_k1        ($this->{k1}        ->GetValue		);
+  $this->{data}->fit_k2        ($this->{k2}        ->GetValue		);
+  $this->{data}->fit_k3        ($this->{k3}        ->GetValue		);
+  $this->{data}->fit_karb      ($this->{karb}      ->GetValue		);
   $this->{data}->fit_karb_value($this->{karb_value}->GetValue		);
   $this->{data}->fit_epsilon   ($this->{epsilon}   ->GetValue		);
 
@@ -333,6 +396,49 @@ sub fetch_parameters {
 
 
   ## toggles, kweights, epsilon, pcpath
+};
+
+
+sub OnMenuClick {
+  my ($datapage, $event)  = @_;
+  my $id = $event->GetId;
+ SWITCH: {
+    ($id == $PATH_ADD) and do {
+      my $param_dialog = Demeter::UI::Artemis::Data::AddParameter->new($datapage);
+      my $result = $param_dialog -> ShowModal;
+      if ($result == wxID_CANCEL) {
+	$datapage->{statusbar}->SetStatusText("Path parameter editing cancelled.");
+	return;
+      };
+      my ($param, $me, $how) = ($param_dialog->{param}, $param_dialog->{me}->GetValue, $param_dialog->{apply}->GetSelection);
+      $datapage->add_parameters($param, $me, $how);
+      last SWITCH;
+    };
+  };
+};
+
+## how = 0 : each path this feff
+## how = 1 : each path this data
+## how = 2 : each path each data   (not yet)
+## how = 3 : selected paths        (not yet)
+sub add_parameters {
+  my ($self, $param, $me, $how) = @_;
+  my $displayed_path = $self->{pathlist}->GetCurrentPage;
+  my $displayed_feff = $displayed_path->{path}->parent->group;
+  my $which = q{};
+  if ($how < 2) {
+    foreach my $n (0 .. $self->{pathlist}->GetPageCount-1) {
+      my $pagefeff = $self->{pathlist}->GetPage($n)->{path}->parent->group;
+      next if (($how == 0) and ($pagefeff ne $displayed_feff));
+      $self->{pathlist}->GetPage($n)->{"pp_$param"}->SetValue($me);
+    };
+    $which = ($how == 0) ? "every path in this Feff calculation" : "every path in this data set";
+  } elsif ($how == 2) {
+    $which = "every path in every data set";
+  } else {
+    $which = "the selected paths";
+  };
+  $self->{statusbar}->SetStatusText("Set $param to \"$me\" for $which." );
 };
 
 

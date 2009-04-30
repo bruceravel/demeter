@@ -612,13 +612,6 @@ sub rfactor {
   return ($denominator) ? $numerator/$denominator : 0;
 };
 
-override 'translate_trouble' => sub {
-  my ($self) = @_;
-  open my $SANITY, $INC{'Demeter/Fit/Sanity.pm'};
-  
-  close $SANITY;
-};
-
 
 
 ## this appends the actual data to the base class serialization
