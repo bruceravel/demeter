@@ -43,8 +43,12 @@ Readonly my $ID_DATA_NIDP    => Wx::NewId();
 Readonly my $PATH_RENAME => Wx::NewId();
 Readonly my $PATH_SHOW   => Wx::NewId();
 Readonly my $PATH_ADD    => Wx::NewId();
-Readonly my $PATH_EXPORT => Wx::NewId();
 Readonly my $PATH_CLONE  => Wx::NewId();
+
+Readonly my $PATH_EXPORT_FEFF => Wx::NewId();
+Readonly my $PATH_EXPORT_DATA => Wx::NewId();
+Readonly my $PATH_EXPORT_EACH => Wx::NewId();
+Readonly my $PATH_EXPORT_SEL  => Wx::NewId();
 
 Readonly my $PATH_SAVE_K  => Wx::NewId();
 Readonly my $PATH_SAVE_R  => Wx::NewId();
@@ -73,6 +77,18 @@ sub new {
   $this->{datamenu}->Append( $ID_DATA_NIDP,    "Show Nidp",                "Show the number if independent points in these data", wxITEM_NORMAL );
 
 
+  my $export_menu   = Wx::Menu->new;
+  $export_menu->Append($PATH_EXPORT_FEFF, "each path THIS Feff calculation",
+		       "Export all path parameters from the currently displayed path to all paths in this Feff calculation", wxITEM_NORMAL );
+  $export_menu->Append($PATH_EXPORT_DATA, "each path THIS data set",
+		       "Export all path parameters from the currently displayed path to all paths in this data set", wxITEM_NORMAL );
+  $export_menu->Append($PATH_EXPORT_EACH, "each path EVERY data set",
+		       "Export all path parameters from the currently displayed path to all paths in every data set", wxITEM_NORMAL );
+  $export_menu->Append($PATH_EXPORT_SEL,  "each selected path",
+		       "Export all path parameters from the currently displayed path to all selected paths", wxITEM_NORMAL );
+  $export_menu->Enable($PATH_EXPORT_EACH, 0);
+  $export_menu->Enable($PATH_EXPORT_SEL,  0);
+
   my $include_menu  = Wx::Menu->new;
   my $discard_menu  = Wx::Menu->new;
   my $save_menu     = Wx::Menu->new;
@@ -85,13 +101,13 @@ sub new {
   $this->{pathsmenu}->Append( $PATH_SHOW,   "Show path",              "Evaluate and show the path parameters for the currently display path", wxITEM_NORMAL );
   $this->{pathsmenu}->AppendSeparator;
   $this->{pathsmenu}->Append( $PATH_ADD,    "Add path parameter",     "Add path parameter to many paths", wxITEM_NORMAL );
-  $this->{pathsmenu}->Append( $PATH_EXPORT, "Export path parameters", "Export path parameters from currently displayed path", wxITEM_NORMAL );
+  $this->{pathsmenu}->AppendSubMenu($export_menu, "Export all path parameters to");
   $this->{pathsmenu}->AppendSeparator;
   $this->{pathsmenu}->AppendSubMenu($include_menu, "Include ...");
   $this->{pathsmenu}->AppendSubMenu($discard_menu, "Discard ...");
   $this->{pathsmenu}->AppendSeparator;
-  $this->{pathsmenu}->AppendSubMenu($save_menu, "Save path as ..." );
-  $this->{pathsmenu}->Append( $PATH_CLONE, "Clone path", "Make a copy of the currently displayed path", wxITEM_NORMAL );
+  $this->{pathsmenu}->AppendSubMenu($save_menu, "Save this path as ..." );
+  $this->{pathsmenu}->Append( $PATH_CLONE, "Clone this path", "Make a copy of the currently displayed path", wxITEM_NORMAL );
 
   $this->{menubar}->Append( $this->{datamenu},  "&Data" );
   $this->{menubar}->Append( $this->{pathsmenu}, "&Paths" );
@@ -414,6 +430,7 @@ sub OnMenuClick {
       $datapage->add_parameters($param, $me, $how);
       last SWITCH;
     };
+
   };
 };
 

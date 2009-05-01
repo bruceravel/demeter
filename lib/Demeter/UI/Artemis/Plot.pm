@@ -41,7 +41,7 @@ sub new {
   my $yy = sum($pos->y, $h, $windowsize, $parent->GetStatusBar->GetSize->GetHeight);
   my $hh = Wx::SystemSettings::GetMetric(wxSYS_SCREEN_Y) - $yy - 2*$windowsize;
 
-  my $this = $class->SUPER::new($parent, -1, "Artemis: Plot controls",
+  my $this = $class->SUPER::new($parent, -1, "Artemis *PLOT*",
 				[0,$yy], wxDefaultSize,
 				wxMINIMIZE_BOX|wxCAPTION|wxSYSTEM_MENU|wxRESIZE_BORDER);
 

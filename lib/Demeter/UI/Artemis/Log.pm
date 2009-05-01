@@ -23,7 +23,7 @@ use base qw(Wx::Frame);
 
 sub new {
   my ($class, $parent) = @_;
-  my $this = $class->SUPER::new($parent, -1, "Artemis: Fit log",
+  my $this = $class->SUPER::new($parent, -1, "Artemis *LOG*",
 				wxDefaultPosition, [550,500],
 				wxMINIMIZE_BOX|wxCAPTION|wxSYSTEM_MENU|wxRESIZE_BORDER);
   my $vbox = Wx::BoxSizer->new( wxVERTICAL );

@@ -148,6 +148,7 @@ sub read_project {
     ++$start;
   };
 
+  my $count = 0;
   foreach my $d (@{$fit->data}) {
     my ($dnum, $idata) = Demeter::UI::Artemis::make_data_frame($rframes->{main}, $d);
     $rframes->{$dnum}->{pathlist}->DeletePage(0) if $rframes->{$dnum}->{pathlist}->GetPage(0) =~ m{Panel};
@@ -159,6 +160,11 @@ sub read_project {
       my $page = Demeter::UI::Artemis::Path->new($rframes->{$dnum}->{pathlist}, $p, $rframes->{$dnum});
       $rframes->{$dnum}->{pathlist}->AddPage($page, $p->name, 1, 0);
     };
+    if (not $count) {
+      $rframes->{$dnum}->Show(1);
+      $rframes->{main}->{datatool}->ToggleTool($idata,1);
+    };
+    ++$count;
   };
   1;
 };

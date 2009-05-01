@@ -230,6 +230,7 @@ sub OnInit {
     print $ORDER $string;
     close $ORDER;
   };
+  read_project(\%frames, $ARGV[0]) if ($ARGV[0] and -e $ARGV[0]);
   1;
 }
 
@@ -491,7 +492,7 @@ sub make_data_frame {
   my $idata = $newtool->GetId;
   my $dnum = sprintf("data%s", $idata);
   $frames{$dnum}  = Demeter::UI::Artemis::Data->new($self, $nset++);
-  $frames{$dnum} -> SetTitle("Artemis: ".$data->name);
+  $frames{$dnum} -> SetTitle("Artemis *DATA* : ".$data->name);
   $frames{$dnum} -> SetIcon($icon);
   $frames{$dnum} -> populate($data);
   set_happiness_color();
@@ -541,7 +542,7 @@ sub make_feff_frame {
   my $fnum = sprintf("feff%s", $ifeff);
   my $base = File::Spec->catfile($self->{project_folder}, 'feff');
   $frames{$fnum} =  Demeter::UI::AtomsApp->new($base);
-  $frames{$fnum} -> SetTitle('Artemis: Atoms and Feff');
+  $frames{$fnum} -> SetTitle('Artemis *FEFF* : Atoms and Feff');
   $frames{$fnum} -> SetIcon($icon);
   $frames{$fnum}->{Atoms}->Demeter::UI::Atoms::Xtal::open_file($file);
   #$newtool -> SetLabel( $frames{$fnum}->{Atoms}->{name}->GetValue );
