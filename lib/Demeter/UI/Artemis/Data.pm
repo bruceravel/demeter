@@ -25,6 +25,7 @@ use Wx::DND;
 use Wx::Perl::TextValidator;
 
 use Demeter::UI::Artemis::Data::AddParameter;
+use Demeter::UI::Wx::CheckListBook;
 
 use List::MoreUtils qw(firstidx);
 
@@ -34,9 +35,12 @@ my $demeter = $Demeter::UI::Artemis::demeter;
 use Readonly;
 Readonly my $ID_DATA_RENAME  => Wx::NewId();
 Readonly my $ID_DATA_DIFF    => Wx::NewId();
+Readonly my $ID_DATA_TRANSFER => Wx::NewId();
+Readonly my $ID_DATA_VPATH   => Wx::NewId();
 Readonly my $ID_DATA_DEGEN_N => Wx::NewId();
 Readonly my $ID_DATA_DEGEN_1 => Wx::NewId();
 Readonly my $ID_DATA_DISCARD => Wx::NewId();
+Readonly my $ID_DATA_KMAXSUGEST => Wx::NewId();
 Readonly my $ID_DATA_EPSK    => Wx::NewId();
 Readonly my $ID_DATA_NIDP    => Wx::NewId();
 
@@ -54,27 +58,34 @@ Readonly my $PATH_SAVE_K  => Wx::NewId();
 Readonly my $PATH_SAVE_R  => Wx::NewId();
 Readonly my $PATH_SAVE_Q  => Wx::NewId();
 
+Readonly my $MARK_ALL    => Wx::NewId();
+Readonly my $MARK_NONE   => Wx::NewId();
+Readonly my $MARK_INVERT => Wx::NewId();
+Readonly my $MARK_REGEXP => Wx::NewId();
+
 sub new {
   my ($class, $parent, $nset) = @_;
 
   my $this = $class->SUPER::new($parent, -1, "Artemis: Data controls",
 				wxDefaultPosition, [800,520],
 				wxCAPTION|wxMINIMIZE_BOX|wxSYSTEM_MENU|wxRESIZE_BORDER);
+  $this ->{PARENT} = $parent;
   $this->{menubar}   = Wx::MenuBar->new;
 
-  my $degen_menu    = Wx::Menu->new;
-  $degen_menu->Append( $ID_DATA_DEGEN_N, "Feff's values", "Set degeneracies for all paths in this data set to values from Feff",  wxITEM_NORMAL );
-  $degen_menu->Append( $ID_DATA_DEGEN_1, "one", "Set degeneracies for all paths in this data set to one (1)",  wxITEM_NORMAL );
-
   $this->{datamenu}  = Wx::Menu->new;
-  $this->{datamenu}->Append( $ID_DATA_RENAME,   "Rename this data set",     "Rename this data set",  wxITEM_NORMAL );
-  $this->{datamenu}->Append( $ID_DATA_DIFF,     "Make difference spectrum", "Make a difference spectrum using the selected paths", wxITEM_NORMAL );
-  $this->{datamenu}->AppendSubMenu($degen_menu, "Set all degeneracies to");
+  $this->{datamenu}->Append($ID_DATA_RENAME,  "Rename this χ(k)",         "Rename this data set",  wxITEM_NORMAL );
+  $this->{datamenu}->Append($ID_DATA_DIFF,    "Make difference spectrum", "Make a difference spectrum using the marked paths", wxITEM_NORMAL );
+  $this->{datamenu}->Append($ID_DATA_TRANSFER, "Transfer marked paths", "Transfer marked paths to the plotting list", wxITEM_NORMAL );
+  $this->{datamenu}->Append($ID_DATA_VPATH,   "Make VPath", "Make a virtual path from the set of marked paths", wxITEM_NORMAL );
   $this->{datamenu}->AppendSeparator;
-  $this->{datamenu}->Append( $ID_DATA_DISCARD, "Discard this data set",    "Discard this data set", wxITEM_NORMAL );
+  $this->{datamenu}->Append($ID_DATA_DEGEN_N, "Set all degens to Feff",   "Set degeneracies for all paths in this data set to values from Feff",  wxITEM_NORMAL );
+  $this->{datamenu}->Append($ID_DATA_DEGEN_1, "Set all degens to one",    "Set degeneracies for all paths in this data set to one (1)",  wxITEM_NORMAL );
   $this->{datamenu}->AppendSeparator;
-  $this->{datamenu}->Append( $ID_DATA_EPSK,    "Show epsilon_k",           "Show statistical noise for these data", wxITEM_NORMAL );
-  $this->{datamenu}->Append( $ID_DATA_NIDP,    "Show Nidp",                "Show the number if independent points in these data", wxITEM_NORMAL );
+  $this->{datamenu}->Append($ID_DATA_DISCARD, "Discard this χ(k)",        "Discard this data set", wxITEM_NORMAL );
+  $this->{datamenu}->AppendSeparator;
+  $this->{datamenu}->Append($ID_DATA_KMAXSUGEST, "Set kmax to Ifeffit's suggestion", "Set kmax to Ifeffit's suggestion", wxITEM_NORMAL );
+  $this->{datamenu}->Append($ID_DATA_EPSK,    "Show ε(k)",               "Show statistical noise for these data", wxITEM_NORMAL );
+  $this->{datamenu}->Append($ID_DATA_NIDP,    "Show Nidp",                "Show the number if independent points in these data", wxITEM_NORMAL );
 
 
   my $export_menu   = Wx::Menu->new;
@@ -84,10 +95,9 @@ sub new {
 		       "Export all path parameters from the currently displayed path to all paths in this data set", wxITEM_NORMAL );
   $export_menu->Append($PATH_EXPORT_EACH, "each path EVERY data set",
 		       "Export all path parameters from the currently displayed path to all paths in every data set", wxITEM_NORMAL );
-  $export_menu->Append($PATH_EXPORT_SEL,  "each selected path",
-		       "Export all path parameters from the currently displayed path to all selected paths", wxITEM_NORMAL );
+  $export_menu->Append($PATH_EXPORT_SEL,  "each marked path",
+		       "Export all path parameters from the currently displayed path to all marked paths", wxITEM_NORMAL );
   $export_menu->Enable($PATH_EXPORT_EACH, 0);
-  $export_menu->Enable($PATH_EXPORT_SEL,  0);
 
   my $include_menu  = Wx::Menu->new;
   my $discard_menu  = Wx::Menu->new;
@@ -109,8 +119,16 @@ sub new {
   $this->{pathsmenu}->AppendSubMenu($save_menu, "Save this path as ..." );
   $this->{pathsmenu}->Append( $PATH_CLONE, "Clone this path", "Make a copy of the currently displayed path", wxITEM_NORMAL );
 
-  $this->{menubar}->Append( $this->{datamenu},  "&Data" );
+  $this->{markmenu}  = Wx::Menu->new;
+  $this->{markmenu}->Append( $MARK_ALL,    "Mark all",     "Mark all paths for this χ(k)", wxITEM_NORMAL );
+  $this->{markmenu}->Append( $MARK_NONE,   "Unmark all",   "Unmark all paths for this χ(k)", wxITEM_NORMAL );
+  $this->{markmenu}->Append( $MARK_INVERT, "Invert marks", "Invert all marks for this χ(k)", wxITEM_NORMAL );
+  $this->{markmenu}->Append( $MARK_REGEXP, "Mark regexp",  "Mark by regular expression for this χ(k)", wxITEM_NORMAL );
+
+
+  $this->{menubar}->Append( $this->{datamenu},  "&Chi(k)" );
   $this->{menubar}->Append( $this->{pathsmenu}, "&Paths" );
+  $this->{menubar}->Append( $this->{markmenu},  "&Marks" );
   $this->SetMenuBar( $this->{menubar} );
   EVT_MENU($this, -1, sub{OnMenuClick(@_)} );
 
@@ -301,7 +319,7 @@ sub new {
 
   $this->{epsilon} -> SetValidator( Wx::Perl::TextValidator->new( qr([0-9.]) ) );
 
-  $leftpane -> SetSizer($left);
+  $leftpane -> SetSizerAndFit($left);
 
 
   $hbox -> Add(Wx::StaticLine->new($this, -1, wxDefaultPosition, [4, -1], wxLI_VERTICAL), 0, wxGROW|wxALL, 5);
@@ -320,20 +338,13 @@ sub new {
     $imagelist->Add( Wx::Bitmap->new($icon, wxBITMAP_TYPE_PNG) );
   };
 
-  $this->{pathlist} = Wx::Listbook->new( $rightpane, -1, wxDefaultPosition, wxDefaultSize, wxBK_LEFT );
+  $this->{pathlist} = Demeter::UI::Wx::CheckListBook->new( $rightpane, -1, wxDefaultPosition, wxDefaultSize, wxBK_LEFT );
   $right -> Add($this->{pathlist}, 1, wxGROW|wxALL, 5);
-  $this->{pathlist}->AssignImageList( $imagelist );
+  #$this->{pathlist}->AssignImageList( $imagelist );
   #$this->{pathlist}->SetPageSize(Wx::Size->new(300,400));
   #$this->{pathlist}->SetPadding(Wx::Size->new(2,2));
   #$this->{pathlist}->SetIndent(0);
 
-  my $page = Wx::Panel->new($this->{pathlist}, -1, wxDefaultPosition, [-1,-1]);
-  my $hh = Wx::BoxSizer->new( wxHORIZONTAL );
-  $page -> SetSizer($hh);
-
-  $hh -> Add(Wx::StaticText -> new($page, -1, "Drag paths from the Feff interpretation\nlist and drop them in this space\nto add paths to this data set.", wxDefaultPosition, [390,-1]),
-	     0, wxALL, 5);
-  $this->{pathlist}->AddPage($page, "Path list", 1, 0);
 
 
   $this->{pathlist}->SetDropTarget( Demeter::UI::Artemis::Data::DropTarget->new( $this, $this->{pathlist} ) );
@@ -344,7 +355,7 @@ sub new {
   #$splitter -> SplitVertically($leftpane, $rightpane, -500);
   #$splitter -> SetSashSize(10);
 
-  $this -> SetSizer( $hbox );
+  $this -> SetSizerAndFit( $hbox );
   return $this;
 };
 
@@ -418,7 +429,39 @@ sub fetch_parameters {
 sub OnMenuClick {
   my ($datapage, $event)  = @_;
   my $id = $event->GetId;
+  #print "1  $id  $PATH_ADD\n";
  SWITCH: {
+
+    (($id == $ID_DATA_DEGEN_N) or ($id == $ID_DATA_DEGEN_1)) and do {
+      $datapage->set_degens($id);
+      last SWITCH;
+    };
+
+    ($id == $ID_DATA_KMAXSUGEST) and do {
+      $datapage->{data}->chi_noise;
+      $datapage->{kmax}->SetValue($datapage->{data}->recommended_kmax);
+      $datapage->{data}->fft_kmax($datapage->{data}->recommended_kmax);
+      my $text = sprintf("The number of independent points in this data set is now %.2f", $datapage->{data}->nidp);
+      $datapage->{statusbar}->SetStatusText($text);
+      last SWITCH;
+    };
+    ($id == $ID_DATA_EPSK) and do {
+      $datapage->{data}->chi_noise;
+      my $text = sprintf("Statistical noise: ε(k) = %.2e and ε(R) = %.2e", $datapage->{data}->epsk, $datapage->{data}->epsr);
+      $datapage->{statusbar}->SetStatusText($text);
+      last SWITCH;
+    };
+    ($id == $ID_DATA_NIDP) and do {
+      my $text = sprintf("The number of independent points in this data set is %.2f", $datapage->{data}->nidp);
+      $datapage->{statusbar}->SetStatusText($text);
+      last SWITCH;
+    };
+
+    ($id == $PATH_RENAME) and do {
+      $datapage->{pathlist}->RenameSelection;
+      last SWITCH;
+    };
+
     ($id == $PATH_ADD) and do {
       my $param_dialog = Demeter::UI::Artemis::Data::AddParameter->new($datapage);
       my $result = $param_dialog -> ShowModal;
@@ -431,13 +474,29 @@ sub OnMenuClick {
       last SWITCH;
     };
 
+
+    (($id == $MARK_ALL) or ($id == $MARK_NONE) or ($id == $MARK_INVERT) or ($id == $MARK_REGEXP)) and do {
+      $datapage->mark($id);
+      last SWITCH;
+    };
+  };
+};
+
+sub set_degens {
+  my ($self, $how) = @_;
+  foreach my $n (0 .. $self->{pathlist}->GetPageCount-1) {
+    my $page = $self->{pathlist}->GetPage($n);
+    my $pathobject = $self->{pathlist}->{LIST}->GetClientData($n)->{path};
+    my $value = ($how eq $ID_DATA_DEGEN_N) ? $pathobject->degen : 1;
+    $page->{pp_n} -> SetValue($value);
+    $pathobject->n($value);
   };
 };
 
 ## how = 0 : each path this feff
 ## how = 1 : each path this data
 ## how = 2 : each path each data   (not yet)
-## how = 3 : selected paths        (not yet)
+## how = 3 : marked paths          (not yet)
 sub add_parameters {
   my ($self, $param, $me, $how) = @_;
   my $displayed_path = $self->{pathlist}->GetCurrentPage;
@@ -453,9 +512,62 @@ sub add_parameters {
   } elsif ($how == 2) {
     $which = "every path in every data set";
   } else {
-    $which = "the selected paths";
+    foreach my $n (0 .. $self->{pathlist}->GetPageCount-1) {
+      next if (not $self->{pathlist}->IsChecked($n));
+      $self->{pathlist}->GetPage($n)->{"pp_$param"}->SetValue($me);
+    };
+    $which = "the marked paths";
   };
   $self->{statusbar}->SetStatusText("Set $param to \"$me\" for $which." );
+};
+
+
+sub mark {
+  my ($self, $mode) = @_;
+  my $how = $mode;
+  ($how = 'all')    if ($mode == $MARK_ALL);
+  ($how = 'none')   if ($mode == $MARK_NONE);
+  ($how = 'invert') if ($mode == $MARK_INVERT);
+  ($how = 'regexp') if ($mode == $MARK_REGEXP);
+ SWITCH: {
+    (($how eq 'all') or ($how eq 'none')) and do {
+      my $onoff = ($how eq 'all') ? 1 : 0;
+      foreach my $i (0 .. $self->{pathlist}->GetPageCount-1) {
+	$self->{pathlist}->Check($i, $onoff);
+      };
+      my $word = ($how eq 'all') ? 'Marked' : 'Unmarked';
+      $self->{statusbar}->SetStatusText("$word all paths.");
+      last SWITCH;
+    };
+    ($how eq 'invert') and do {
+      foreach my $i (0 .. $self->{pathlist}->GetPageCount-1) {
+	my $this = $self->{pathlist}->IsChecked($i);
+	$self->{pathlist}->Check($i, not $this);
+      };
+      $self->{statusbar}->SetStatusText("Inverted all marks.");
+      last SWITCH;
+    };
+    ($how eq 'regexp') and do {
+      my $regex = q{};
+      my $ted = Wx::TextEntryDialog->new( $self, "Enter a regular expression", "Highlight parameters matching", q{}, wxOK|wxCANCEL, Wx::GetMousePosition);
+      if ($ted->ShowModal == wxID_CANCEL) {
+	$self->{statusbar}->SetStatusText("Parameter highlighting cancelled.");
+	return;
+      };
+      $regex = $ted->GetValue;
+      my $re;
+      my $is_ok = eval '$re = qr/$regex/';
+      if (not $is_ok) {
+	$self->{PARENT}->{statusbar}->SetStatusText("Oops!  \"$regex\" is not a valid regular expression");
+	return;
+      };
+      foreach my $i (0 .. $self->{pathlist}->GetPageCount-1) {
+	$self->{pathlist}->Check($i, 1) if ($self->{pathlist}->GetPageText($i) =~ m{$re});
+      };
+      $self->{statusbar}->SetStatusText("Marked all paths matching /$regex/.");
+      last SWITCH;
+    };
+  };
 };
 
 

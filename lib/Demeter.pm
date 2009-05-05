@@ -445,6 +445,13 @@ sub get_params_of {
   return $self->meta->get_attribute_list;
 };
 
+sub matches {
+  my ($self, $regexp, $attribute) = @_;
+  $attribute ||= 'name';
+  return 1 if ($self->$attribute =~ m{$regexp});
+  return 0;
+};
+
 sub add_trouble {		# |-separated list of trouble codes, see Demeter::Fit::Sanity
   my ($self, $new) = @_;
   my $tr = $self->trouble;
@@ -1087,6 +1094,20 @@ user-defined parameters.
 Returns the YAML serialization string for the object.  See the Fit
 objects serialize method for complete details of serialization of a
 fitting model.
+
+=item C<matches>
+
+This is a gneeralized way of testing to see if an attribute value
+matches a regular expression.  By default it tries to match the
+supplied regular expression again the C<name> attribute.
+
+  $is_match = $object->matches($regexp);
+
+You can supply a second argument to match against some other
+attribute.  For instance, to match the C<group> attribute against a
+regular expression:
+
+  $group_matches = $object->matches($regexp, 'group');
 
 =back
 

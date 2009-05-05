@@ -152,6 +152,8 @@ sub read_project {
   foreach my $d (@{$fit->data}) {
     my ($dnum, $idata) = Demeter::UI::Artemis::make_data_frame($rframes->{main}, $d);
     $rframes->{$dnum}->{pathlist}->DeletePage(0) if $rframes->{$dnum}->{pathlist}->GetPage(0) =~ m{Panel};
+    my $first = $rframes->{$dnum}->{pathlist}->GetPage(0);
+    ($first->DeletePage(0)) if (ref($first) =~ m{Panel});
     foreach my $p (@{$fit->paths}) {
       $p->set(folder=>$feffs{$p->parentgroup}->workspace, file=>q{}, update_path=>1);
       next if ($p->data ne $d);
@@ -160,6 +162,7 @@ sub read_project {
       my $page = Demeter::UI::Artemis::Path->new($rframes->{$dnum}->{pathlist}, $p, $rframes->{$dnum});
       $rframes->{$dnum}->{pathlist}->AddPage($page, $p->name, 1, 0);
     };
+    $rframes->{$dnum}->{pathlist}->SetSelection(0);
     if (not $count) {
       $rframes->{$dnum}->Show(1);
       $rframes->{main}->{datatool}->ToggleTool($idata,1);

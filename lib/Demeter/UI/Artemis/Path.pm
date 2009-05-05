@@ -33,14 +33,26 @@ my %labels = (label  => 'Label',
 	      fourth => '4th',
 	     );
 
+my %explanation =
+  (
+   label  => 'The label is a user-supplied bit of text identifying or describing the path.',
+   n      => 'N is the degeneracy of the path.  For a SS path this can often be interpreted as the coordination number.',
+   s02    => 'S02 is the amplitude factor in the EXAFS equation, which includes S02 and possibly other amplitude factors.',
+   e0     => 'ΔE0 is an energy shift typically interpreted as the alignment of the energy grids of the data and theory.',
+   delr   => 'ΔR is an adjustment to the half path length of the path.  For a SS path, this is an adjustment to the interatomic distance.',
+   sigma2 => 'σ² is the mean square displacement about the half path length of the path.',
+   ei     => 'Ei is a correction to the imaginary energy, which includes the effect of the mean free path and other loss terms from Feff.',
+   third  => '3rd is the value of the third cumulant for this path.',
+   fourth => '4th is the value of the fourth cumulant for this path.',
+  );
+
 sub new {
   my ($class, $parent, $pathobject, $datapage) = @_;
-  my $this = $class->SUPER::new($parent, -1, wxDefaultPosition, [300,-1]);
+  my $this = $class->SUPER::new($parent, -1, wxDefaultPosition, [420,300]);
   $this->{listbook} = $parent;
   $this->{datapage} = $datapage;
 
   my $vbox = Wx::BoxSizer->new( wxVERTICAL );
-  $this -> SetSizer($vbox);
 
   ## -------- identifier string
   $this->{idlabel} = Wx::StaticText -> new($this, -1, "Feff name : Path name");
@@ -51,19 +63,14 @@ sub new {
   my $hbox = Wx::BoxSizer->new( wxHORIZONTAL );
   $vbox -> Add($hbox, 0, wxGROW|wxALL, 0);
 
-  ## my $left  = Wx::BoxSizer->new( wxVERTICAL );
-  ## $hbox -> Add($left,  0, wxGROW|wxALL, 5);
-  ## $this->{showfeff} = Wx::ToggleButton->new($this, -1, "Show feff");
-  ## $left -> Add($this->{showfeff}, 0, wxALL, 0);
-
-  my $right = Wx::BoxSizer->new( wxVERTICAL );
-  $hbox -> Add($right, 0, wxGROW|wxALL, 5);
-  $this->{include}      = Wx::CheckBox->new($this, -1, "Include this path in the fit");
-  $this->{plotafter}    = Wx::CheckBox->new($this, -1, "Plot this path after fit");
+  my $gbs = Wx::GridBagSizer->new( 5,5 );
+  $hbox -> Add($gbs, 0, wxGROW|wxALL, 5);
+  $this->{include}      = Wx::CheckBox->new($this, -1, "Include path");
+  $this->{plotafter}    = Wx::CheckBox->new($this, -1, "Plot after fit");
   $this->{useasdefault} = Wx::CheckBox->new($this, -1, "Use this path as the default after the fit");
-  $right -> Add($this->{include},      0, wxALL, 0);
-  $right -> Add($this->{plotafter},    0, wxTOP|wxBOTTOM, 3);
-  $right -> Add($this->{useasdefault}, 0, wxALL, 0);
+  $gbs -> Add($this->{include},      Wx::GBPosition->new(0,0));
+  $gbs -> Add($this->{plotafter},    Wx::GBPosition->new(0,1));
+  $gbs -> Add($this->{useasdefault}, Wx::GBPosition->new(1,0), Wx::GBSpan->new(1,2));
 
 
   ## -------- geometry
@@ -73,10 +80,10 @@ sub new {
 					wxVSCROLL|wxHSCROLL|wxTE_MULTILINE|wxTE_READONLY|wxNO_BORDER);
   $this->{geometry} -> SetFont( Wx::Font->new( 9, wxTELETYPE, wxNORMAL, wxNORMAL, 0, "" ) );
   $geomboxsizer -> Add($this->{geometry}, 1, wxGROW|wxALL, 0);
-  $vbox         -> Add($geomboxsizer, 1, wxALL, 0);
+  $vbox         -> Add($geomboxsizer, 1, wxLEFT|wxRIGHT, 5);
 
   ## -------- path parameters
-  my $gbs = Wx::GridBagSizer->new( 3, 10 );
+  $gbs = Wx::GridBagSizer->new( 3, 10 );
 
   my $i = 0;
   foreach my $k (qw(label n s02 e0 delr sigma2 ei third fourth)) {
@@ -89,12 +96,25 @@ sub new {
     ++$i;
     EVT_RIGHT_DOWN($label, sub{DoLabelKeyPress(@_, $this)});
     EVT_MENU($label, -1, sub{ $this->OnLabelMenu(@_)    });
-    #EVT_ENTER_WINDOW($label, \&DoLabelEnter);
-    #EVT_LEAVE_WINDOW($label, \&DoLabelLeave);
+    #EVT_ENTER_WINDOW($label, sub{$this->DoLabelEnter});
+    #EVT_LEAVE_WINDOW($label, sub{$this->DoLabelLeave});
   };
   $vbox -> Add($gbs, 2, wxGROW|wxALL, 10);
 
+  $hbox = Wx::BoxSizer->new( wxHORIZONTAL );
+  $vbox -> Add($hbox, 0, wxGROW|wxALL, 0);
+  my $sz = 20; # [$sz,$sz]
+  $this->{upbutton} = Wx::Button->new($this, wxID_UP, q{}, wxDefaultPosition, wxDefaultSize, wxBU_EXACTFIT);
+  $hbox -> Add($this->{upbutton}, 0, wxALL, 1);
+  $this->{dnbutton} = Wx::Button->new($this, wxID_DOWN, q{}, wxDefaultPosition, wxDefaultSize, wxBU_EXACTFIT);
+  $hbox -> Add($this->{dnbutton}, 0, wxALL, 1);
+  $this->{plotmarkedbutton} = Wx::Button->new($this, -1, q{&Transfer marked}, wxDefaultPosition, wxDefaultSize, wxBU_EXACTFIT);
+  $hbox -> Add($this->{plotmarkedbutton}, 0, wxALL, 1);
+  $this->{makevpathbutton} = Wx::Button->new($this, -1, q{Make &VPath}, wxDefaultPosition, wxDefaultSize, wxBU_EXACTFIT);
+  $hbox -> Add($this->{makevpathbutton}, 0, wxALL, 1);
+
   $this -> populate($parent, $pathobject);
+  $this -> SetSizerAndFit($vbox);
 
   return $this;
 };
@@ -103,7 +123,7 @@ sub populate {
   my ($this, $parent, $pathobject) = @_;
   $this->{path} = $pathobject;
 
-  my $label = "Path: " . $pathobject->parent->name . " - " . $pathobject->name;
+  my $label = $pathobject->parent->name . " : " . $pathobject->name;
   $this->{idlabel} -> SetLabel($label);
 
   $this->{geombox} -> SetLabel(" " . $pathobject->sp->intrplist . " ");
@@ -138,6 +158,7 @@ sub fetch_parameters {
 
 sub DoLabelEnter {
   my ($st, $event) = @_;
+  print join(" ", $st, $event), $/;
   print "entering ", $st->{which}, $/;
 };
 sub DoLabelLeave {
@@ -160,36 +181,40 @@ Readonly my $CLEAR	 => Wx::NewId();
 Readonly my $THISFEFF	 => Wx::NewId();
 Readonly my $THISDATA	 => Wx::NewId();
 Readonly my $EACHDATA	 => Wx::NewId();
-Readonly my $SELECTED	 => Wx::NewId();
+Readonly my $MARKED	 => Wx::NewId();
 Readonly my $PREV	 => Wx::NewId();
 Readonly my $NEXT	 => Wx::NewId();
 Readonly my $DEBYE	 => Wx::NewId();
 Readonly my $EINS	 => Wx::NewId();
+Readonly my $EXPLAIN	 => Wx::NewId();
 
 ## use this to post context menu for path parameter
 sub DoLabelKeyPress {
   #print join(" ", @_), $/;
   my ($st, $event, $page) = @_;
   my $param =  $st->{which};
-  return 0 if (($param eq 'n') or ($param eq 'label'));
+  #return 0 if (($param eq 'n') or ($param eq 'label'));
   my $label = $labels{$param};
   my $menu = Wx::Menu->new(q{});
   $menu->Append($CLEAR,    "Clear $label");
-  $menu->AppendSeparator;
-  $menu->Append($THISFEFF, "Export this $label to every path in THIS Feff calculation");
-  $menu->Append($THISDATA, "Export this $label to every path in THIS data set");
-  $menu->Append($EACHDATA, "Export this $label to every path in EVERY data set");
-  $menu->Append($SELECTED, "Export this $label to selected paths");
-  $menu->AppendSeparator;
-  $menu->Append($PREV,     "Grab $label from previous path");
-  $menu->Append($NEXT,     "Grab $label from next path");
-  if ($param eq 'sigma2') {
+  if (($param ne 'label') and ($param ne 'n')) {
     $menu->AppendSeparator;
-    $menu->Append($DEBYE, "Insert Debye model");
-    $menu->Append($EINS,  "Insert Einstein model");
+    $menu->Append($THISFEFF, "Export this $label to every path in THIS Feff calculation");
+    $menu->Append($THISDATA, "Export this $label to every path in THIS data set");
+    $menu->Append($EACHDATA, "Export this $label to every path in EVERY data set");
+    $menu->Append($MARKED,   "Export this $label to marked paths");
+    $menu->AppendSeparator;
+    $menu->Append($PREV,     "Grab $label from previous path");
+    $menu->Append($NEXT,     "Grab $label from next path");
+    if ($param eq 'sigma2') {
+      $menu->AppendSeparator;
+      $menu->Append($DEBYE, "Insert Debye model");
+      $menu->Append($EINS,  "Insert Einstein model");
+    };
   };
+  $menu->AppendSeparator;
+  $menu->Append($EXPLAIN,  "Explain $label");
   $menu->Enable($EACHDATA, 0);
-  $menu->Enable($SELECTED, 0);
 
   my $this = $page->this_path;
   $menu->Enable($PREV, 0) if ($this == 0);
@@ -215,15 +240,12 @@ sub OnLabelMenu {
     };
 
     (($id == $THISFEFF) or ($id == $THISDATA)) and do {
-      foreach my $n (0 .. $listbook->GetPageCount-1) {
-	my $how = ($id == $THISFEFF) ? 0 : 1;
-	$currentpage->{datapage}->add_parameters($param, $thisme, $how)
-# 	my $pagefeff = $listbook->GetPage($n)->{path}->parent->group;
-# 	next if (($id == $THISFEFF) and ($pagefeff ne $thisfeff));
-# 	$listbook->GetPage($n)->{"pp_$param"}->SetValue($thisme);
-#	my $which = ($id == $THISFEFF) ? "Feff calculation" : "data set";
-#	$currentpage->{datapage}->{statusbar}->SetStatusText("Set $labels{$param} for every path in this $which." );
-      };
+      my $how = ($id == $THISFEFF) ? 0 : 1;
+      $currentpage->{datapage}->add_parameters($param, $thisme, $how);
+      last SWITCH;
+    };
+    ($id == $MARKED) and do {
+      $currentpage->{datapage}->add_parameters($param, $thisme, 3);
       last SWITCH;
     };
 
@@ -257,8 +279,22 @@ sub OnLabelMenu {
       $currentpage->{datapage}->{statusbar}->SetStatusText("Inserted math expression for $full model and created two GDS parameters." );
       last SWITCH;
     };
+
+    ($id == $EXPLAIN) and do {
+      $currentpage->{datapage}->{statusbar}->SetStatusText($explanation{$param});
+      last SWITCH;
+    };
+
   };
 };
+
+sub Rename {
+  my ($self, $newname) = @_;
+  $self->{path}->name($newname);
+  my $label = $self->{path}->parent->name . " : " . $newname;
+  $self->{idlabel} -> SetLabel($label);
+};
+
 
 ## edit for many paths : TextCtrl with toggles for choices
 ## -----------

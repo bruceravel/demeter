@@ -185,7 +185,7 @@ sub new {
 
 
 1;
- 
+
 =head1 NAME
 
 Demeter::UI::Wx::PeriodicTable - A periodic table widget

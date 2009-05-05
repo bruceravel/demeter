@@ -26,7 +26,7 @@ sub new {
   my ($class, $parent) = @_;
 
   my $this = $class->SUPER::new($parent, -1, "Artemis: Edit a path parameter",
-				wxDefaultPosition, wxDefaultSize,
+				Wx::GetMousePosition, wxDefaultSize,
 				wxMINIMIZE_BOX|wxCAPTION|wxSYSTEM_MENU|wxSTAY_ON_TOP
 			       );
   my $vbox  = Wx::BoxSizer->new( wxVERTICAL );
@@ -35,7 +35,7 @@ sub new {
   my $hbox = Wx::BoxSizer->new( wxHORIZONTAL );
   $vbox -> Add($hbox, 0, wxGROW|wxALL, 5);
   $hbox -> Add(Wx::StaticText->new($this, -1, "Parameter"), 0, wxALL, 5);
-  $this->{paramlabel} = Wx::Choice->new($this, -1, wxDefaultPosition, wxDefaultSize, ['S02','ΔE0','ΔR','σ²','Ei','3rd','4th']);
+  $this->{paramlabel} = Wx::Choice->new($this, -1, wxDefaultPosition, wxDefaultSize, ['S02','ΔE0','ΔR','σ²','Ei','3rd','4th', 'Label']);
   $hbox->Add($this->{paramlabel}, 1, wxGROW|wxALL, 2);
   EVT_CHOICE($this, $this->{paramlabel}, \&OnChoice);
   $this->{param} = 's02';
@@ -53,11 +53,10 @@ sub new {
 				      'all paths in this Feff calculation',
 				      'all paths in this data set',
 				      'all paths in all data sets',
-				      'all selected paths',
+				      'all marked paths',
 				     ],
 				     4, wxRA_SPECIFY_ROWS);
   $this->{apply}->Enable(2,0);
-  $this->{apply}->Enable(3,0);
   $hbox->Add($this->{apply}, 1, wxGROW|wxALL, 2);
 
 
@@ -76,12 +75,12 @@ sub new {
 sub OnChoice {
   my ($dialog, $event) = @_;
   my $param = $dialog->{paramlabel}->GetStringSelection;
-  $param = ($param =~ m{E0})          ? 'e0'
-         : ($param =~ m{R})           ? 'delr'
-         : ($param =~ m{3rd})         ? 'third'
-	 : ($param =~ m{4th})         ? 'fourth'
-	 : ($param =~ m{(?:S02|Ei)})  ? $param
-         :                              'sigma2';
+  $param = ($param =~ m{E0})                       ? 'e0'
+         : ($param =~ m{R})                        ? 'delr'
+         : ($param =~ m{3rd})                      ? 'third'
+	 : ($param =~ m{4th})                      ? 'fourth'
+	 : ($param =~ m{(?:S02|Ei|Label|Dphase)}i) ? $param
+         :                                           'sigma2';
   $param = lc($param);
   $dialog->{param} = $param;
 };

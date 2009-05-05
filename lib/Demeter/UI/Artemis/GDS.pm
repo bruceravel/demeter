@@ -253,16 +253,26 @@ sub set_highlight {
   my ($parent, $regex) = @_;
   my $grid = $parent->{grid};
   if (not $regex) {
-    my $ted = Wx::TextEntryDialog->new( $parent, "Enter a regular expression", "Highlight parameters matching", q{}, wxOK|wxCANCEL);
+    my $ted = Wx::TextEntryDialog->new( $parent, "Enter a regular expression", "Highlight parameters matching", q{}, wxOK|wxCANCEL, Wx::GetMousePosition);
     if ($ted->ShowModal == wxID_CANCEL) {
       $parent->{statusbar}->SetStatusText("Parameter highlighting cancelled.");
+      $parent->{toolbar}->ToggleTool($HIGHLIGHT, 0);
       return;
     };
     $regex = $ted->GetValue;
+    if ($regex =~ m{\A\s*\z}) {
+      $parent->{statusbar}->SetStatusText("Parameter highlighting cancelled (no regular expression provided).");
+      $parent->{toolbar}->ToggleTool($HIGHLIGHT, 0);
+      return;
+    };
   };
   my $re;
   my $is_ok = eval '$re = qr/$regex/i';
-  $parent->{statusbar}->SetStatusText("Oops!  \"$regex\" is not a valid regular expression"), return unless $is_ok;
+  if (not $is_ok) {
+    $parent->{statusbar}->SetStatusText("Oops!  \"$regex\" is not a valid regular expression");
+    $parent->{toolbar}->ToggleTool($HIGHLIGHT, 0);
+    return;
+  };
   $parent->clear_highlight;
   foreach my $row (0 .. $grid->GetNumberRows) {
     next if ($grid -> GetCellValue($row, 0) eq 'merge');
@@ -591,7 +601,7 @@ sub annotate {
   my $thisgds = $parent->tie_GDS_to_grid($row);
   $parent->{statusbar}->SetStatusText("Annotation aborted -- this row does not contain a named parameter."), return if not $thisgds;
   my $name = $parent->{grid}->GetCellValue($row,1);
-  my $ted = Wx::TextEntryDialog->new( $parent, "Annotate $name", "Annotate $name", q{}, wxOK|wxCANCEL);
+  my $ted = Wx::TextEntryDialog->new( $parent, "Annotate $name", "Annotate $name", q{}, wxOK|wxCANCEL, Wx::GetMousePosition);
   if ($ted->ShowModal == wxID_CANCEL) {
     $parent->{statusbar}->SetStatusText("Parameter annotation cancelled.");
     return;
