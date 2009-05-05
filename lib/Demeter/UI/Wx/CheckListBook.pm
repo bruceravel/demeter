@@ -246,6 +246,7 @@ sub OnLeftDclick {
 
 sub RenameSelection {
   my ($self) = @_;
+  my $check_state = $self->{LIST}->IsChecked($self->{LIST}->GetSelection);
   my $oldname = $self->{LIST}->GetStringSelection;
   my $ted = Wx::TextEntryDialog->new( $self, "Enter the new name for \"$oldname\"", "Rename item", q{}, wxOK|wxCANCEL, Wx::GetMousePosition);
   return if ($ted->ShowModal == wxID_CANCEL);
@@ -254,6 +255,7 @@ sub RenameSelection {
   $self->{LIST}->SetString($self->{LIST}->GetSelection, $newname);
   my $page = $self->{LIST}->GetClientData($self->{LIST}->GetSelection);
   $page->Rename($newname) if $page->can('Rename');
+  $self->{LIST}->Check($self->{LIST}->GetSelection, $check_state);
 };
 
 sub OnRightDown {

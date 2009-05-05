@@ -491,10 +491,10 @@ sub row_second_label {
 sub row_second {
   my ($self, $width) = @_;
   $width ||= 15;
-  my $pattern = '  %-' . $width . join(" ", qw(s %9.5f %9.5f %9.5f %9.5f)) . "\n";
+  my $pattern = '  %-' . $width . join(" ", qw(s %9.5f %9.5f %9.5f)) . "\n";
   my $string = sprintf($pattern,
 		       $self->name,
-		       (map {$self->$_} (qw(ei_value third_value fourth_value dphase_value))),
+		       (map {$self->$_} (qw(ei_value third_value fourth_value))),
 		      );
   return $string;
 };

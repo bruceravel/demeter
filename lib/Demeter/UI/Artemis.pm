@@ -3,7 +3,6 @@ package Demeter::UI::Artemis;
 use Demeter qw(:plotwith=gnuplot);
 use Demeter::UI::Atoms;
 use Demeter::UI::Artemis::Project;
-#use base qw(Demeter::UI::Artemis::Project);
 
 use vars qw($demeter);
 $demeter = Demeter->new;
@@ -68,12 +67,12 @@ sub OnInit {
   ## -------- Set up menubar
   my $bar = Wx::MenuBar->new;
   my $filemenu = Wx::Menu->new;
-  $filemenu->Append( $ID_READ_PROJECT, "Read project", "Read from a project file",       wxITEM_NORMAL );
-  $filemenu->Append( $ID_SAVE_PROJECT, "Save project", "Save project to a project file", wxITEM_NORMAL );
-  $filemenu->Append( wxID_EXIT, "E&xit" );
+  $filemenu->Append($ID_READ_PROJECT, "Read project", "Read from a project file", wxITEM_NORMAL );
+  $filemenu->Append($ID_SAVE_PROJECT, "Save project", "Save to a project file",   wxITEM_NORMAL );
+  $filemenu->Append(wxID_EXIT, "E&xit" );
 
   my $helpmenu = Wx::Menu->new;
-  $helpmenu->Append( wxID_ABOUT, "&About..." );
+  $helpmenu->Append(wxID_ABOUT, "&About..." );
 
   $bar->Append( $filemenu, "&File" );
   $bar->Append( $helpmenu, "&Help" );
@@ -182,9 +181,7 @@ sub OnInit {
 
 
 
-  #EVT_MENU	 ($frames{main}, wxID_ABOUT, \&on_about );
-  #EVT_MENU	 ($frames{main}, wxID_EXIT,  sub{shift->Close} );
-  EVT_MENU	 ($frames{main}, -1, sub{my ($frame,  $event) = @_; OnMenuClick($frame,  $event)} );
+  EVT_MENU	 ($frames{main}, -1,         sub{my ($frame,  $event) = @_; OnMenuClick($frame,  $event)} );
   EVT_CLOSE	 ($frames{main},             \&on_close);
   EVT_MENU	 ($toolbar,      -1,         sub{my ($toolbar,  $event) = @_; OnToolClick($toolbar,  $event, $frames{main})} );
   EVT_MENU	 ($datatool,     -1,         sub{my ($fefftool, $event) = @_; OnDataClick($datatool, $event, $frames{main})} );

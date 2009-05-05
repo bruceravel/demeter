@@ -20,7 +20,7 @@ use warnings;
 
 use Wx qw( :everything );
 use base qw(Wx::Panel);
-use Wx::Event qw(EVT_RIGHT_DOWN EVT_ENTER_WINDOW EVT_LEAVE_WINDOW EVT_MENU);
+use Wx::Event qw(EVT_RIGHT_DOWN EVT_ENTER_WINDOW EVT_LEAVE_WINDOW EVT_MENU EVT_CHECKBOX);
 
 my %labels = (label  => 'Label',
 	      n      => 'N',
@@ -71,7 +71,7 @@ sub new {
   $gbs -> Add($this->{include},      Wx::GBPosition->new(0,0));
   $gbs -> Add($this->{plotafter},    Wx::GBPosition->new(0,1));
   $gbs -> Add($this->{useasdefault}, Wx::GBPosition->new(1,0), Wx::GBSpan->new(1,2));
-
+  EVT_CHECKBOX($this, $this->{include}, sub{include_label(@_)});
 
   ## -------- geometry
   $this->{geombox}  = Wx::StaticBox->new($this, -1, 'Geometry ', wxDefaultPosition, wxDefaultSize);
@@ -112,6 +112,8 @@ sub new {
   $hbox -> Add($this->{plotmarkedbutton}, 0, wxALL, 1);
   $this->{makevpathbutton} = Wx::Button->new($this, -1, q{Make &VPath}, wxDefaultPosition, wxDefaultSize, wxBU_EXACTFIT);
   $hbox -> Add($this->{makevpathbutton}, 0, wxALL, 1);
+
+  map {$this->{$_} -> Enable(0)} qw(upbutton dnbutton plotmarkedbutton makevpathbutton);
 
   $this -> populate($parent, $pathobject);
   $this -> SetSizerAndFit($vbox);
@@ -288,10 +290,25 @@ sub OnLabelMenu {
   };
 };
 
+sub include_label {
+  my ($self, $event, $n) = @_;
+  my $which = $n || $self->{datapage}->{pathlist}->{LIST}->GetSelection; # this fails for the first item in the list!!!
+  my $check_state = $self->{datapage}->{pathlist}->{LIST}->IsChecked($which);
+  my $inc   = $self->{include}->IsChecked;
+  $self->{path}->include($inc);
+  my $label = $self->{path}->name;
+  $self->Rename($label);
+  ($label = sprintf("((( %s )))", $label)) if not $inc;
+  $self->{datapage}->{pathlist}->SetPageText($which, $label);
+  $self->{datapage}->{pathlist}->{LIST}->Check($which, $check_state);
+};
+
 sub Rename {
   my ($self, $newname) = @_;
+  my $included = $self->{path}->include;
   $self->{path}->name($newname);
   my $label = $self->{path}->parent->name . " : " . $newname;
+  ($label = sprintf("((( %s )))", $label)) if not $included;
   $self->{idlabel} -> SetLabel($label);
 };
 

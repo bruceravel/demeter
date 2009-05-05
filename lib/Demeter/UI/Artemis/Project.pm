@@ -161,6 +161,7 @@ sub read_project {
       $p->sp(find_sp($p, \%feffs));
       my $page = Demeter::UI::Artemis::Path->new($rframes->{$dnum}->{pathlist}, $p, $rframes->{$dnum});
       $rframes->{$dnum}->{pathlist}->AddPage($page, $p->name, 1, 0);
+      $page->include_label;
     };
     $rframes->{$dnum}->{pathlist}->SetSelection(0);
     if (not $count) {
