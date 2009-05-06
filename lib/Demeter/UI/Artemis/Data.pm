@@ -440,6 +440,13 @@ sub make_menubar {
   $self->{menubar}->Append( $self->{markmenu},    "&Marks" );
   $self->{menubar}->Append( $self->{includemenu}, "&Include" );
   $self->{menubar}->Append( $self->{discardmenu}, "Di&scard" );
+
+  map { $self->{datamenu}   ->Enable($_,0) } ($ID_DATA_RENAME, $ID_DATA_DIFF, $ID_DATA_TRANSFER, $ID_DATA_VPATH, $ID_DATA_DISCARD);
+  map { $self->{summenu}    ->Enable($_,0) } ($SUM_MARKED, $SUM_INCLUDED, $SUM_IM);
+  map { $self->{pathsmenu}  ->Enable($_,0) } ($PATH_SHOW, $PATH_CLONE);
+  map { $self->{discardmenu}->Enable($_,0) } ($DISCARD_ALL, $DISCARD_MARKED, $DISCARD_UNMARKED, $DISCARD_EXCLUDED,
+					      $DISCARD_AFTER, $DISCARD_MS, $DISCARD_LOW, $DISCARD_R)
+
 };
 
 sub populate {
@@ -484,25 +491,27 @@ sub fetch_parameters {
   my @list   = split(/\n/, $titles);
   $this->{data}->titles(\@list);
 
-  $this->{data}->fft_kmin      ($this->{kmin}      ->GetValue		);
-  $this->{data}->fft_kmax      ($this->{kmax}      ->GetValue		);
-  $this->{data}->fft_dk        ($this->{dk}        ->GetValue		);
-  $this->{data}->bft_rmin      ($this->{rmin}      ->GetValue		);
-  $this->{data}->bft_rmax      ($this->{rmax}      ->GetValue		);
-  $this->{data}->bft_dr        ($this->{dr}        ->GetValue		);
-  $this->{data}->fft_kwindow   ($this->{kwindow}   ->GetStringSelection	);
-  $this->{data}->bft_rwindow   ($this->{kwindow}   ->GetStringSelection	);
-  $this->{data}->fit_k1        ($this->{k1}        ->GetValue		);
-  $this->{data}->fit_k2        ($this->{k2}        ->GetValue		);
-  $this->{data}->fit_k3        ($this->{k3}        ->GetValue		);
-  $this->{data}->fit_karb      ($this->{karb}      ->GetValue		);
-  $this->{data}->fit_karb_value($this->{karb_value}->GetValue		);
-  $this->{data}->fit_epsilon   ($this->{epsilon}   ->GetValue		);
+  $this->{data}->cv	            ($this->{cv}        ->GetValue	    );
 
-  $this->{data}->fit_include       ($this->{include}    ->GetValue      );
-  $this->{data}->fit_plot_after_fit($this->{plot_after} ->GetValue      );
-  $this->{data}->fit_do_bkg        ($this->{fit_bkg}    ->GetValue      );
-  $this->{data}->fit_do_pcpath     ($this->{pcplot}     ->GetValue      );
+  $this->{data}->fft_kmin	    ($this->{kmin}      ->GetValue	    );
+  $this->{data}->fft_kmax	    ($this->{kmax}      ->GetValue	    );
+  $this->{data}->fft_dk		    ($this->{dk}        ->GetValue	    );
+  $this->{data}->bft_rmin	    ($this->{rmin}      ->GetValue	    );
+  $this->{data}->bft_rmax	    ($this->{rmax}      ->GetValue	    );
+  $this->{data}->bft_dr		    ($this->{dr}        ->GetValue	    );
+  $this->{data}->fft_kwindow	    ($this->{kwindow}   ->GetStringSelection);
+  $this->{data}->bft_rwindow	    ($this->{kwindow}   ->GetStringSelection);
+  $this->{data}->fit_k1		    ($this->{k1}        ->GetValue	    );
+  $this->{data}->fit_k2		    ($this->{k2}        ->GetValue	    );
+  $this->{data}->fit_k3		    ($this->{k3}        ->GetValue	    );
+  $this->{data}->fit_karb	    ($this->{karb}      ->GetValue	    );
+  $this->{data}->fit_karb_value	    ($this->{karb_value}->GetValue	    );
+  $this->{data}->fit_epsilon	    ($this->{epsilon}   ->GetValue	    );
+
+  $this->{data}->fit_include	    ($this->{include}    ->GetValue         );
+  $this->{data}->fit_plot_after_fit ($this->{plot_after} ->GetValue         );
+  $this->{data}->fit_do_bkg	    ($this->{fit_bkg}    ->GetValue         );
+  $this->{data}->fit_do_pcpath	    ($this->{pcplot}     ->GetValue         );
 
 
   ## toggles, kweights, epsilon, pcpath
@@ -896,7 +905,7 @@ sub sum {
           : ($mode == $SUM_MARKED)   ? 'marked'
           : ($mode == $SUM_IM)       ? 'included and marked'
           :                            $mode;
-  print "summinging $how\n";
+  print "summing $how\n";
 };
 
 package Demeter::UI::Artemis::Data::DropTarget;

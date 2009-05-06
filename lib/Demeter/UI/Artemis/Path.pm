@@ -52,11 +52,15 @@ sub new {
   $this->{listbook} = $parent;
   $this->{datapage} = $datapage;
 
+  $this->{color2} = Wx::Colour->new( $this->{datapage}->{data}->co->default('feff', 'intrp2color') );
+  $this->{color1} = Wx::Colour->new( $this->{datapage}->{data}->co->default('feff', 'intrp1color') );
+  $this->{color0} = Wx::Colour->new( $this->{datapage}->{data}->co->default('feff', 'intrp0color') );
+
   my $vbox = Wx::BoxSizer->new( wxVERTICAL );
 
   ## -------- identifier string
   $this->{idlabel} = Wx::StaticText -> new($this, -1, "Feff name : Path name");
-  $this->{idlabel}->SetFont( Wx::Font->new( 10, wxDEFAULT, wxNORMAL, wxBOLD, 0, "" ) );
+  $this->{idlabel}->SetFont( Wx::Font->new( 12, wxDEFAULT, wxNORMAL, wxBOLD, 0, "" ) );
   $vbox -> Add($this->{idlabel}, 0, wxGROW|wxALL, 5);
 
   ## -------- show feff button and various check buttons
@@ -72,6 +76,7 @@ sub new {
   $gbs -> Add($this->{plotafter},    Wx::GBPosition->new(0,1));
   $gbs -> Add($this->{useasdefault}, Wx::GBPosition->new(1,0), Wx::GBSpan->new(1,2));
   EVT_CHECKBOX($this, $this->{include}, sub{include_label(@_)});
+  $this->{useasdefault}->Enable(0);
 
   ## -------- geometry
   $this->{geombox}  = Wx::StaticBox->new($this, -1, 'Geometry ', wxDefaultPosition, wxDefaultSize);
@@ -81,6 +86,16 @@ sub new {
   $this->{geometry} -> SetFont( Wx::Font->new( 9, wxTELETYPE, wxNORMAL, wxNORMAL, 0, "" ) );
   $geomboxsizer -> Add($this->{geometry}, 1, wxGROW|wxALL, 0);
   $vbox         -> Add($geomboxsizer, 1, wxLEFT|wxRIGHT, 5);
+
+  $this->{geometry}->{2} = Wx::TextAttr->new(Wx::Colour->new( $this->{datapage}->{data}->co->default('feff', 'intrp2color') ),
+					     wxNullColour,
+					     Wx::Font->new( 10, wxDEFAULT, wxSLANT, wxNORMAL, 0, "" ) );
+  $this->{geometry}->{1} = Wx::TextAttr->new(Wx::Colour->new( $this->{datapage}->{data}->co->default('feff', 'intrp1color') ),
+					     wxNullColour,
+					     Wx::Font->new( 10, wxDEFAULT, wxSLANT, wxNORMAL, 0, "" ) );
+  $this->{geometry}->{0} = Wx::TextAttr->new(Wx::Colour->new( $this->{datapage}->{data}->co->default('feff', 'intrp0color') ),
+					     wxNullColour,
+					     Wx::Font->new( 10, wxDEFAULT, wxSLANT, wxNORMAL, 0, "" ) );
 
   ## -------- path parameters
   $gbs = Wx::GridBagSizer->new( 3, 10 );
@@ -127,6 +142,7 @@ sub populate {
 
   my $label = $pathobject->parent->name . " : " . $pathobject->name;
   $this->{idlabel} -> SetLabel($label);
+  $this->{idlabel} -> SetForegroundColour($this->{"color" . $pathobject->sp->weight});
 
   $this->{geombox} -> SetLabel(" " . $pathobject->sp->intrplist . " ");
 
@@ -134,7 +150,12 @@ sub populate {
   $geometry =~ s{.*\n}{};
   #$geometry =~ s{\d+\s* }{};
   #$geometry =~ s{index, }{};
-  $this->{geometry} -> SetValue($geometry);
+  $this->{geometry} -> SetValue(q{});
+  my $imp = sprintf(" %s, %s\n", $pathobject->sp->Type, (qw(low medium high))[$pathobject->sp->weight]);
+  $this->{geometry} -> WriteText($imp);
+  $this->{geometry} -> SetStyle(0, length($imp), $this->{geometry}->{$pathobject->sp->weight});
+  $this->{geometry} -> WriteText($geometry);
+  $this->{geometry} -> SetInsertionPoint(0);
 
   $this->{include} -> SetValue(1);
 
@@ -155,7 +176,8 @@ sub fetch_parameters {
     $this->{path}->$k($this->{"pp_$k"}->GetValue);
   };
   $this->{path}->include( $this->{include}->GetValue );
-  $this->{path}->plot_after_fit($this->{plotafter}->GetValue );
+  $this->{path}->plot_after_fit($this->{plotafter}->GetValue);
+  ## default path after fit...
 };
 
 sub DoLabelEnter {

@@ -143,20 +143,15 @@ sub OnInit {
   $hname -> Add($label,      0, wxALL, 5);
   $hname -> Add($name,       1, wxALL, 2);
 
-  my $hfit = Wx::BoxSizer->new( wxHORIZONTAL);
-  $vbox -> Add($hfit, 0, wxGROW|wxTOP|wxBOTTOM, 3);
   $label = Wx::StaticText->new($frames{main}, -1, "Fit space:");
-  #my $fitspace = Wx::Choice->new($frames{main}, -1, wxDefaultPosition, wxDefaultSize, [qw(k R q)]);
   my @fitspace = (Wx::RadioButton->new($frames{main}, -1, 'k', wxDefaultPosition, wxDefaultSize, wxRB_GROUP),
 		  Wx::RadioButton->new($frames{main}, -1, 'R', wxDefaultPosition, wxDefaultSize),
 		  Wx::RadioButton->new($frames{main}, -1, 'q', wxDefaultPosition, wxDefaultSize),
 		 );
 
 
-  my $sum_button = Wx::CheckBox->new($frames{main}, -1, "Do summation");
-  $hfit  -> Add($label,   0, wxALL, 3);
-  map {$hfit  -> Add($_,   0, wxLEFT|wxRIGHT, 2)} @fitspace;
-  $hfit  -> Add($sum_button, 1, wxLEFT|wxRIGHT, 40);
+  $hname  -> Add($label,   0, wxALL, 3);
+  map {$hname  -> Add($_,   0, wxLEFT|wxRIGHT, 2)} @fitspace;
   $fitspace[1]->SetValue(1) if ($demeter->co->default("fit", "space") eq 'r');
   $fitspace[2]->SetValue(2) if ($demeter->co->default("fit", "space") eq 'q');
 
@@ -187,7 +182,6 @@ sub OnInit {
   EVT_MENU	 ($datatool,     -1,         sub{my ($fefftool, $event) = @_; OnDataClick($datatool, $event, $frames{main})} );
   EVT_MENU	 ($fefftool,     -1,         sub{my ($fefftool, $event) = @_; OnFeffClick($fefftool, $event, $frames{main})} );
   EVT_TOOL_ENTER ($frames{main}, $toolbar,   sub{my ($toolbar,  $event) = @_; OnToolEnter($toolbar,  $event, 'toolbar')} );
-  EVT_CHECKBOX	 ($sum_button,   -1,         sub{my ($cb,       $event) = @_; OnSumClick ($cb,       $event, $frames{main}->{fitbutton})});
   EVT_BUTTON     ($frames{main}->{fitbutton}, -1, sub{fit(@_, \%frames)});
 
   ## -------- status bar
@@ -560,18 +554,6 @@ sub do_the_size_dance {
   $top -> SetSize($size[0], $size[1]+1);
   $top -> SetSize($size[0], $size[1]);
 };
-
-
-sub OnSumClick {
-  my ($check, $event, $fb) = @_;
-  if ($check->IsChecked) {
-    $fb -> SetLabel("Sum");
-  } else {
-    $fb -> SetLabel("Fit");
-  };
-};
-
-
 
 1;
 
