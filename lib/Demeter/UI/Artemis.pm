@@ -56,13 +56,15 @@ sub OnInit {
   };
 
   ## -------- create a new frame and set icon
-  $frames{main} = Wx::Frame->new(undef, -1, 'Artemis: EXAFS data analysis',
+  $frames{main} = Wx::Frame->new(undef, -1, 'Artemis - EXAFS data analysis',
 				[1,1], # position -- along top of screen
 				[Wx::SystemSettings::GetMetric(wxSYS_SCREEN_X), 150] # size -- entire width of screen
 			       );
   my $iconfile = File::Spec->catfile(dirname($INC{'Demeter/UI/Artemis.pm'}), 'Artemis', 'icons', "artemis.png");
   $icon = Wx::Icon->new( $iconfile, wxBITMAP_TYPE_ANY );
   $frames{main} -> SetIcon($icon);
+  $frames{main} -> {currentfit} = q{};
+  $frames{main} -> {projectname} = q{};
 
   ## -------- Set up menubar
   my $bar = Wx::MenuBar->new;
@@ -306,6 +308,12 @@ sub fit {
   ## containing the responsible data were colored in some way to
   ## indicate that)
 
+  #foreach my $f (keys %$rframes) {
+  #  next if ($f !~ m{data});
+  #  print $rframes->{$f}->{pathlist}->GetPage(0)->{path}->parentgroup;
+  #};
+  #return;
+
   my ($rdata, $rpaths, $rgds) = uptodate($rframes);
   my @data  = @$rdata;
   my @paths = @$rpaths;
@@ -314,6 +322,7 @@ sub fit {
   ## get name, fom, and description + other properties
   my $fit = Demeter::Fit->new(data => \@data, paths => \@paths, gds => \@gds);
   #$fit->ignore_errors(1);
+  $rframes->{main} -> {currentfit} = $fit;
 
   $fit->set_mode(ifeffit=>1, screen=>0);
   my $result = $fit->fit;
@@ -365,9 +374,9 @@ sub set_happiness_color {
   foreach my $k (keys(%frames)) {
     next unless ($k =~ m{\Adata});
     $frames{$k}->{'plot_k123'} -> SetBackgroundColour(Wx::Colour->new($color));
-    $frames{$k}->{plot_r123} -> SetBackgroundColour(Wx::Colour->new($color));
-    $frames{$k}->{plot_rmr}  -> SetBackgroundColour(Wx::Colour->new($color));
-    $frames{$k}->{plot_kq}   -> SetBackgroundColour(Wx::Colour->new($color));
+    $frames{$k}->{plot_r123}   -> SetBackgroundColour(Wx::Colour->new($color));
+    $frames{$k}->{plot_rmr}    -> SetBackgroundColour(Wx::Colour->new($color));
+    $frames{$k}->{plot_kq}     -> SetBackgroundColour(Wx::Colour->new($color));
   };
 };
 
@@ -523,16 +532,16 @@ sub OnFeffClick {
 
 };
 sub make_feff_frame {
-  my ($self, $file) = @_;
+  my ($self, $file, $name, $feffobject) = @_;
   my $feffbar = $self->{fefftool};
-  my $name = basename($file);	# ok for importing an atoms or CIF file
+  $name ||= basename($file);	# ok for importing an atoms or CIF file
 
   my $newtool = $feffbar -> AddCheckTool(-1, "Show $name", icon("pixel"), wxNullBitmap, q{}, q{} );
   do_the_size_dance($self);
   my $ifeff = $newtool->GetId;
   my $fnum = sprintf("feff%s", $ifeff);
   my $base = File::Spec->catfile($self->{project_folder}, 'feff');
-  $frames{$fnum} =  Demeter::UI::AtomsApp->new($base);
+  $frames{$fnum} =  Demeter::UI::AtomsApp->new($base, $feffobject);
   $frames{$fnum} -> SetTitle('Artemis *FEFF* : Atoms and Feff');
   $frames{$fnum} -> SetIcon($icon);
   $frames{$fnum}->{Atoms}->Demeter::UI::Atoms::Xtal::open_file($file);

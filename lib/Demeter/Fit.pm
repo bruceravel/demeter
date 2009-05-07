@@ -872,12 +872,6 @@ sub fetch_statistics {
   return 0;
 };
 
-# sub statistic {
-#   my ($self, $stat) = @_;
-#   my $fit_stats_regexp = $self->regexp("stats", "bare");
-#   carp("'$stat' is not a fitting statistic ($STAT_TEXT)\n\n"), return q{} if ($stat !~ m{$fit_stats_regexp});
-#   return $statistics_of{ident $self}{$stat};
-# };
 
 sub statistics_report {
   my ($self) = @_;
@@ -905,7 +899,7 @@ sub happiness_report {
     $string .= "   $line\n";
   };
   $string .= "***** Note: happiness is a semantic parameter and should *****\n";
-  $string .= "*****           NEVER be reported in a publication.      *****\n";
+  $string .= "*****    NEVER be reported in a publication -- NEVER!    *****\n";
   return $string;
 };
 

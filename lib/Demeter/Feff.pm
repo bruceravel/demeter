@@ -158,6 +158,7 @@ has 'problems' => (is=>'rw', isa => 'HashRef', default => sub{ {} });
 
 sub BUILD {
   my ($self, @params) = @_;
+  #print join(" ", caller(1)), $/;
   $self->mo->push_Feff($self);
 };
 sub DEMOLISH {
@@ -875,7 +876,7 @@ sub serialize {
   croak("No filename specified for serializing Feff object") unless $filename;
 
   my %cards = ();
-  foreach my $key (qw(abs_index edge s02 rmax nlegs npaths rmultiplier pcrit ccrit
+  foreach my $key (qw(abs_index edge s02 rmax name nlegs npaths rmultiplier pcrit ccrit
 		      workspace screen buffer save fuzz betafuzz eta_suppress miscdat group)) {
     $cards{$key} = $self->$key;
   };
@@ -939,7 +940,7 @@ sub read_yaml {
   my @refs = @$refs;
   ## snarf attributes of Feff object
   my $rhash = shift @refs;
-  foreach my $key (qw(abs_index edge s02 rmax nlegs npaths rmultiplier pcrit ccrit
+  foreach my $key (qw(abs_index edge s02 rmax name nlegs npaths rmultiplier pcrit ccrit
 		      workspace screen buffer save fuzz betafuzz eta_suppress miscdat)) {
     $self -> $key($rhash->{$key});
   };

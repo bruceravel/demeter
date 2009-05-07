@@ -139,13 +139,16 @@ description
   This is the frequency of reporting an update indicator during the
   degeneracy checking of the tree in the pathfinder.
 
-variable=label
+variable=name
 type=string
 default=%P
 description
   This is a mini-template that will be used to construct the name of
-  the path.  The following is a table of tokens that will be replaced
-  with data from the path.
+  the path.  The name is intended to explain just the path itself and
+  not its parentage.  In Artemis, this is the label at the top of the
+  Path page which is colored according to the importance of the path.
+  See the label parameter.  The following is a table of tokens that
+  will be replaced with data from the path.
   .  %i   path index
   .  %I   index, padded to 4 chars
   .  %p   path geometry
@@ -156,6 +159,34 @@ description
   .  %t   heuristic path type
   .  %m   heuristic importance
   .  %g   Ifeffit group name
+  .  %f   name of parent Feff calculation
+  .  %%   a literal percent sign
+  .
+  .
+  As an example, if you wanted a path name that indicated the length,
+  degeneracy, and number of legs you might set this to: "R=%r degen=%d
+  nleg=%n".
+
+variable=label
+type=string
+default=[%f]%P
+description
+  This is a mini-template that will be used to construct the label of
+  the path.  The name is intended to explain just the path and its
+  parentage.  In Artemis, this is the label in the checklist of paths
+  on the Data page.  See the name parameter.  The following is a table
+  of tokens that will be replaced with data from the path.
+  .  %i   path index
+  .  %I   index, padded to 4 chars
+  .  %p   path geometry
+  .  %P   geometry, leading and trailing central atom tokens trimmed
+  .  %r   R effective (fuzzy)
+  .  %n   number of legs
+  .  %d   path degeneracy (fuzzy)
+  .  %t   heuristic path type
+  .  %m   heuristic importance
+  .  %g   Ifeffit group name
+  .  %f   name of parent Feff calculation
   .  %%   a literal percent sign
   .
   .

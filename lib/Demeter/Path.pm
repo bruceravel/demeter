@@ -35,6 +35,7 @@ use Ifeffit;
 
 has '+plottable'      => (default => 1);
 has '+data'           => (isa => Empty.'|Demeter::Data');
+has 'label'	      => (is=>'rw', isa=>'Str', default => q{});
 
 has 'n'		      => (is=>'rw', isa=>'Num', default =>  0);
 
@@ -212,9 +213,19 @@ sub make_name {
 	       t   => $sp->Type,
 	       m   => $sp->weight,
 	       g   => $sp->group,
+	       f   => $sp->feff->name,
 	       '%' => '%',
 	      );
-  $pattern =~ s{\%([iIpPrndtmg%])}{$table{$1}}g;
+  my $regex = '[' . join('', keys(%table)) . ']';
+
+  $pattern =~ s{\%($regex)}{$table{$1}}g;
+  $pattern =~ s{\s+}{ }g;
+  $pattern =~ s{\A\s+}{ }g;
+  $pattern =~ s{\s+\z}{ }g;
+  $self->label($pattern);
+
+  $pattern = $self->co->default("pathfinder", "name");
+  $pattern =~ s{\%($regex)}{$table{$1}}g;
   $pattern =~ s{\s+}{ }g;
   $self->name($pattern);
   return $self;

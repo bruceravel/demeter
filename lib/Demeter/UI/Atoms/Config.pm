@@ -26,10 +26,10 @@ use Wx qw( :everything );
 use base 'Demeter::UI::Wx::Config';
 
 sub new {
-  my ($class, $page, $parent, $statusbar) = @_;
+  my ($class, $page, $parent) = @_;
   my $self = $class->SUPER::new($page, \&target);
   $self->{parent}    = $parent;
-  $self->{statusbar} = $statusbar;
+  $self->{statusbar} = $parent->{statusbar};
   $self->populate(['atoms', 'feff', 'pathfinder']);
 
   return $self;

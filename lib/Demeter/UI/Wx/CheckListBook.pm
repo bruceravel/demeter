@@ -20,7 +20,7 @@ use Readonly;
 Readonly my $NUMBER => $RE{num}{real};
 
 use Wx qw( :everything );
-use Wx::Event qw(EVT_LISTBOX EVT_LEFT_DOWN EVT_RIGHT_DOWN EVT_CHECKLISTBOX EVT_LEFT_DCLICK);
+use Wx::Event qw(EVT_LISTBOX EVT_LEFT_DOWN EVT_MIDDLE_DOWN EVT_RIGHT_DOWN EVT_CHECKLISTBOX EVT_LEFT_DCLICK EVT_MOUSEWHEEL);
 
 use base 'Wx::SplitterWindow';
 
@@ -34,18 +34,21 @@ sub new {
   my ($w, $h) = ($size->GetWidth, $size->GetHeight);
 
   if (($w <= 0) or ($h <= 0)) {
-    ($w = 400) if ($w <= 0);
+    ($w = 520) if ($w <= 0);
     ($h = 300) if ($h <= 0);
     $self -> SetSize($w, $h);
   };
 
   $self->{LIST} = Wx::CheckListBox->new($self, -1, wxDefaultPosition, Wx::Size->new(int($w/4),$h), [ ], wxLB_SINGLE);
+  $self->{LIST} -> SetFont( Wx::Font->new( 8, wxDEFAULT, wxNORMAL, wxNORMAL, 0, "" ) );
   $self->{LIST}->{PARENT} = $self;
   EVT_LEFT_DOWN($self->{LIST}, sub{OnLeftDown(@_)});
   EVT_LEFT_DCLICK($self->{LIST}, sub{OnLeftDclick(@_)});
+  EVT_MIDDLE_DOWN($self->{LIST}, sub{OnMiddleDown(@_)});
   EVT_RIGHT_DOWN($self->{LIST}, sub{OnRightDown(@_)});
   EVT_LISTBOX($self, $self->{LIST}, sub{OnList(@_)});
   EVT_CHECKLISTBOX($self, $self->{LIST}, sub{OnCheck(@_)});
+  EVT_MOUSEWHEEL($self->{LIST}, sub{OnWheel(@_)});
 
   $self->{PAGE}  = Wx::Panel->new($self, -1, wxDefaultPosition, Wx::Size->new($w-int($w/4),$h));
 
@@ -168,7 +171,7 @@ sub GetSelection {
 };
 sub SetSelection {
   my ($self, $pos) = @_;
-  $self->{LIST}->SetSelection(0);
+  $self->{LIST} -> SetSelection($pos);
   $self->{VIEW} -> Hide;
   $self->{LIST} -> GetClientData($pos) -> Show;
   $self->{VIEW} = $self->{LIST} -> GetClientData($pos);
@@ -186,12 +189,19 @@ sub SetPageText {
   $self->{LIST}->SetString($id, $text);
 };
 
-#  AdvanceSelection
 #  HitTest
 #  InsertPage
-#  OnSelChange
-#  SetPadding
-#  SetPageSize
+
+sub AdvanceSelection {
+  my ($self, $dir) = @_;
+  my $sel = $self->{LIST}->GetSelection;
+
+  return if (($sel == 0) and (not $dir)); # already at top
+  return if (($sel == $self->GetPageCount-1) and $dir); # already at bottom
+
+  my $new = ($dir) ? $sel+1 : $sel-1;
+  $self->SetSelection($new);
+};
 
 sub GetThemeBackgroundColour {
   return wxNullColour;
@@ -209,6 +219,9 @@ sub IsChecked {
   return $self->{LIST}->IsChecked($id);
 };
 
+sub one {
+  return 1;
+};
 sub noop {
   return 1;
 };
@@ -216,11 +229,15 @@ sub noop {
   no warnings 'once';
   # alternate names
   *AssignImageList = \ &noop;
-  *GetImageList = \ &noop;
-  *SetImageList = \ &noop;
-  *GetPageImage = \ &noop;
-  *SetPageImage = \ &noop;
-  *GetRowCount = \ &noop;
+  *GetImageList	   = \ &noop;
+  *SetImageList	   = \ &noop;
+  *GetPageImage	   = \ &noop;
+  *SetPageImage	   = \ &noop;
+  *SetPadding	   = \ &noop;
+  *SetPageSize	   = \ &noop;
+
+  *GetRowCount	   = \ &one;
+  *OnSelChange	   = \ &one;
 }
 
 
@@ -248,7 +265,7 @@ sub RenameSelection {
   my ($self) = @_;
   my $check_state = $self->{LIST}->IsChecked($self->{LIST}->GetSelection);
   my $oldname = $self->{LIST}->GetStringSelection;
-  my $ted = Wx::TextEntryDialog->new( $self, "Enter the new name for \"$oldname\"", "Rename item", q{}, wxOK|wxCANCEL, Wx::GetMousePosition);
+  my $ted = Wx::TextEntryDialog->new( $self, "Enter the new name for \"$oldname\"", "Rename item", $oldname, wxOK|wxCANCEL, Wx::GetMousePosition);
   return if ($ted->ShowModal == wxID_CANCEL);
   my $newname = $ted->GetValue;
   return if ($newname =~ m{\A\s*\z});
@@ -261,6 +278,11 @@ sub RenameSelection {
 sub OnRightDown {
   my ($self, $event) = @_;
   print "right clicking\n";
+  ##$event->Skip;
+}
+sub OnMiddleDown {
+  my ($self, $event) = @_;
+  print "middle clicking\n";
   ##$event->Skip;
 }
 
@@ -294,6 +316,17 @@ sub OnCheck {
   my ($self, $event) = @_;
   my $sel = $event->GetSelection;
   #print $sel, $/;
+  $event->Skip;
+};
+
+sub OnWheel {
+  my ($self, $event) = @_;
+  if ($event->GetWheelRotation < 0) { # scroll down, inrease selection
+    $self->{PARENT}->AdvanceSelection(1);
+  } else {			      # scroll up, decrease selection
+    $self->{PARENT}->AdvanceSelection(0);
+  };
+
   $event->Skip;
 };
 1;

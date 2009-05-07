@@ -21,11 +21,11 @@ my %hints = (
 	    );
 
 sub new {
-  my ($class, $page, $parent, $statusbar) = @_;
+  my ($class, $page, $parent) = @_;
   my $self = $class->SUPER::new($page, -1, wxDefaultPosition, wxDefaultSize, wxMAXIMIZE_BOX );
   $self->{parent}    = $parent;
-  $self->{statusbar} = $statusbar;
-  $self->{feffobject} = $Demeter::UI::Atoms::demeter;
+  $self->{statusbar} = $parent->{statusbar};
+  #$self->{feffobject} = $parent->{feffobject} || $Demeter::UI::Atoms::demeter;
   my $vbox = Wx::BoxSizer->new( wxVERTICAL );
 
   $self->{toolbar} = Wx::ToolBar->new($self, -1, wxDefaultPosition, wxDefaultSize, wxTB_HORIZONTAL|wxTB_3DBUTTONS|wxTB_TEXT);
@@ -58,7 +58,9 @@ sub new {
 
   $vbox -> Add($self->{feffboxsizer}, 1, wxEXPAND|wxALL, 5);
 
-  $self->{feffobject} = Demeter::Feff->new(screen=>0, buffer=>1, save=>0);
+  #print ">>> ", $parent->{feffobject}, $/;
+  $self->{feffobject} = $parent->{feffobject} || Demeter::Feff->new(screen=>0, buffer=>1, save=>0);
+  #$self->{feffobject} = Demeter::Feff->new(screen=>0, buffer=>1, save=>0);
 
   $self -> SetSizerAndFit( $vbox );
   return $self;
@@ -178,6 +180,7 @@ sub run_feff {
   my $base = $self->{parent}->{base} || $feff->stash_folder;
   $feff -> workspace(File::Spec->catfile($base, $feff->group));
   $feff -> make_workspace;
+  $feff -> name($self->{name}->GetValue);
 
   my $inpfile = File::Spec->catfile($feff->workspace, $feff->group . ".inp");
   open my $OUT, ">".$inpfile;

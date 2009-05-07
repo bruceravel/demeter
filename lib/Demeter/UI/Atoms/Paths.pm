@@ -25,10 +25,10 @@ my %hints = (
 	    );
 
 sub new {
-  my ($class, $page, $parent, $statusbar) = @_;
+  my ($class, $page, $parent) = @_;
   my $self = $class->SUPER::new($page, -1, wxDefaultPosition, wxDefaultSize, wxMAXIMIZE_BOX );
   $self->{parent}    = $parent;
-  $self->{statusbar} = $statusbar;
+  $self->{statusbar} = $parent->{statusbar};
   my $vbox = Wx::BoxSizer->new( wxVERTICAL );
 
   $self->{toolbar} = Wx::ToolBar->new($self, -1, wxDefaultPosition, wxDefaultSize, wxTB_HORIZONTAL|wxTB_3DBUTTONS|wxTB_TEXT);

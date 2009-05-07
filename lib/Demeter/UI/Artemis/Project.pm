@@ -32,12 +32,25 @@ use vars qw(@ISA @EXPORT);
 @ISA       = qw(Exporter);
 @EXPORT    = qw(save_project read_project);
 
+use File::Basename;
 use File::Spec;
 
 sub save_project {
   my ($rframes, $fname) = @_;
 
-  Demeter::UI::Artemis::uptodate($rframes);
+  ## make sure we are fully up to date and serialised
+  my ($rdata, $rpaths, $rgds) = Demeter::UI::Artemis::uptodate($rframes);
+  my @data  = @$rdata;
+  my @paths = @$rpaths;
+  my @gds   = @$rgds;
+  ## get name, fom, and description + other properties
+  $rframes->{main} -> {currentfit} -> set(data => \@data, paths => \@paths, gds => \@gds);
+  $rframes->{main} -> {currentfit} -> serialize(tree     => File::Spec->catfile($rframes->{main}->{project_folder}, 'fits'),
+						folder   => $rframes->{main}->{currentfit}->group,
+						nozip    => 1,
+						copyfeff => 0,
+					       );
+
   foreach my $k (keys(%$rframes)) {
     next unless ($k =~ m{\Afeff});
     next if (ref($rframes->{$k}->{Feff}->{feffobject}) !~ m{Feff});
@@ -56,10 +69,15 @@ sub save_project {
     $fname = File::Spec->catfile($fd->GetDirectory, $fd->GetFilename);
   };
 
+
+
   my $zip = Archive::Zip->new();
   $zip->addTree( $rframes->{main}->{project_folder}, "",  sub{ not m{\.sp$} });
   carp('error writing zip-style project') unless ($zip->writeToFileNamed( $fname ) == AZ_OK);
   undef $zip;
+
+  $rframes->{main}->{projectname} = basename($fname);
+  $rframes->{main}->SetTitle(basename($fname, '.fpj') . ' - Artemis - EXAFS data analysis');
 };
 
 sub read_project {
@@ -93,23 +111,28 @@ sub read_project {
   my @dirs = grep { $_ =~ m{\A[a-z]} } readdir($FEFF);
   closedir $FEFF;
   foreach my $d (@dirs) {
+    ## import feff yaml
+    my $yaml = File::Spec->catfile($projfolder, 'feff', $d, $d.'.yaml');
+    my $feffobject = Demeter::Feff->new(yaml=>$yaml, group=>$d); # force group to be the same as before
+
     ## import atoms.inp
     my $atoms = File::Spec->catfile($projfolder, 'feff', $d, 'atoms.inp');
-    my ($fnum, $ifeff) = Demeter::UI::Artemis::make_feff_frame($rframes->{main}, $atoms);
+    my ($fnum, $ifeff) = Demeter::UI::Artemis::make_feff_frame($rframes->{main}, $atoms, $feffobject->name, $feffobject);
 
     ## import feff.inp
     my $feff = File::Spec->catfile($projfolder, 'feff', $d, $d.'.inp');
     my $text = Demeter::UI::Artemis::slurp($feff);
     $rframes->{$fnum}->{Feff}->{feff}->SetValue($text);
 
-    ## import feff yaml
-    my $yaml = File::Spec->catfile($projfolder, 'feff', $d, $d.'.yaml');
-    my $feffobject = Demeter::Feff->new(yaml=>$yaml);
+    ## make Feff frame
     $feffobject -> workspace(File::Spec->catfile($projfolder, 'feff', $d));
     $feffs{$d} = $feffobject;
     $rframes->{$fnum}->{Feff}->{feffobject} = $feffobject;
     $rframes->{$fnum}->{Feff}->fill_intrp_page($feffobject);
     $rframes->{$fnum}->{notebook}->ChangeSelection(2);
+
+    $rframes->{$fnum}->{Feff} ->{name}->SetValue($feffobject->name);
+    $rframes->{$fnum}->{Paths}->{name}->SetValue($feffobject->name);
 
     $rframes->{$fnum}->{statusbar}->SetStatusText("Imported crystal and Feff data from ". basename($fname));
   };
@@ -123,8 +146,9 @@ sub read_project {
   my $fit;
   foreach my $d (@dirs) {
     next unless ($d eq $current);
-    $fit = Demeter::Fit->new;
+    $fit = Demeter::Fit->new(group=>$d);
     $fit->deserialize(folder=> File::Spec->catfile($projfolder, 'fits', $d));
+    $rframes->{main} -> {currentfit} = $fit;
   };
 
   ## -------- load up the GDS parameters
@@ -160,7 +184,7 @@ sub read_project {
       $p->parent($feffs{$p->parentgroup});
       $p->sp(find_sp($p, \%feffs));
       my $page = Demeter::UI::Artemis::Path->new($rframes->{$dnum}->{pathlist}, $p, $rframes->{$dnum});
-      $rframes->{$dnum}->{pathlist}->AddPage($page, $p->name, 1, 0);
+      $rframes->{$dnum}->{pathlist}->AddPage($page, $p->label, 1, 0);
       $page->include_label;
     };
     $rframes->{$dnum}->{pathlist}->SetSelection(0);
@@ -170,7 +194,10 @@ sub read_project {
     };
     ++$count;
   };
-  1;
+
+
+  $rframes->{main}->{projectname} = basename($fname);
+  $rframes->{main}->SetTitle(basename($fname, '.fpj') . ' - Artemis - EXAFS data analysis');
 };
 
 sub find_sp {

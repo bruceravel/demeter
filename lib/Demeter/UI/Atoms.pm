@@ -30,7 +30,7 @@ foreach my $m (qw(Xtal Feff Config Paths Doc Console)) {
 };
 
 sub new {
-  my ($ref, $base) = @_;
+  my ($ref, $base, $feffobject) = @_;
   my $width  = 100;
   my $self   = $ref->SUPER::new( undef,           # parent window
 				 -1,              # ID -1 means any
@@ -41,6 +41,7 @@ sub new {
   my $nb = Wx::Notebook->new( $self, -1, wxDefaultPosition, wxDefaultSize, wxNB_TOP );
   $self->{base} = $base;
   $self->{notebook} = $nb;
+  $self->{feffobject} = $feffobject;
   my $vbox = Wx::BoxSizer->new( wxVERTICAL);
 
   my $statusbar = $self->CreateStatusBar;
@@ -62,12 +63,12 @@ sub new {
     $page -> SetSizer($box);
 
     $self->{$utility}
-      = ($utility eq 'Atoms')     ? Demeter::UI::Atoms::Xtal    -> new($page, $self, $statusbar)
-      : ($utility eq 'Feff')      ? Demeter::UI::Atoms::Feff    -> new($page, $self, $statusbar)
-      : ($utility eq 'Paths')     ? Demeter::UI::Atoms::Paths   -> new($page, $self, $statusbar)
-      : ($utility eq 'Console')   ? Demeter::UI::Atoms::Console -> new($page, $self, $statusbar)
-      : ($utility eq 'Document')  ? Demeter::UI::Atoms::Doc     -> new($page, $self, $statusbar)
-      : ($utility eq 'Configure') ? Demeter::UI::Atoms::Config  -> new($page, $self, $statusbar)
+      = ($utility eq 'Atoms')     ? Demeter::UI::Atoms::Xtal    -> new($page, $self)
+      : ($utility eq 'Feff')      ? Demeter::UI::Atoms::Feff    -> new($page, $self)
+      : ($utility eq 'Paths')     ? Demeter::UI::Atoms::Paths   -> new($page, $self)
+      : ($utility eq 'Console')   ? Demeter::UI::Atoms::Console -> new($page, $self)
+      : ($utility eq 'Document')  ? Demeter::UI::Atoms::Doc     -> new($page, $self)
+      : ($utility eq 'Configure') ? Demeter::UI::Atoms::Config  -> new($page, $self)
       :                             0;
 
     my $hh   = Wx::BoxSizer->new( wxHORIZONTAL );

@@ -48,19 +48,19 @@ sub new {
   #my $statusbar = $this->CreateStatusBar;
   #$statusbar -> SetStatusText(q{});
 
-  my $hbox  = Wx::BoxSizer->new( wxVERTICAL );
+  my $vbox  = Wx::BoxSizer->new( wxVERTICAL );
 
   my $left  = Wx::BoxSizer->new( wxVERTICAL );
-  $hbox -> Add($left,  0, wxALL, 0);
+  $vbox -> Add($left,  0, wxGROW|wxALL, 0);
 
 
 
 
   my $buttonbox  = Wx::BoxSizer->new( wxHORIZONTAL );
   $left -> Add($buttonbox, 0, wxGROW|wxALL, 5);
-  $this->{k_button} = Wx::Button->new($this, -1, "k", wxDefaultPosition, [50,-1]);
-  $this->{r_button} = Wx::Button->new($this, -1, "R", wxDefaultPosition, [50,-1] );
-  $this->{q_button} = Wx::Button->new($this, -1, "q", wxDefaultPosition, [50,-1] );
+  $this->{k_button} = Wx::Button->new($this, -1, "&k", wxDefaultPosition, [50,-1]);
+  $this->{r_button} = Wx::Button->new($this, -1, "&R", wxDefaultPosition, [50,-1] );
+  $this->{q_button} = Wx::Button->new($this, -1, "&q", wxDefaultPosition, [50,-1] );
   foreach my $b (qw(k_button r_button q_button)) {
     $buttonbox -> Add($this->{$b}, 1, wxALL, 2);
     $this->{$b} -> SetForegroundColour(Wx::Colour->new("#000000"));
@@ -93,11 +93,11 @@ sub new {
 
 
 
-  my $right = Wx::BoxSizer->new( wxVERTICAL );
-  $hbox -> Add($right, 1, wxGROW|wxALL, 5);
+  my $hbox = Wx::BoxSizer->new( wxHORIZONTAL );
+  $vbox -> Add($hbox, 1, wxGROW|wxALL, 5);
 
   my $groupbox       = Wx::StaticBox->new($this, -1, 'Plotting list', wxDefaultPosition, wxDefaultSize);
-  my $groupboxsizer  = Wx::StaticBoxSizer->new( $groupbox, wxHORIZONTAL );
+  my $groupboxsizer  = Wx::StaticBoxSizer->new( $groupbox, wxVERTICAL );
 
   my $grouplist = Wx::CheckListBox->new($this, -1, wxDefaultPosition, wxDefaultSize, [ qw(a b c a b c a b c a  ) ]);
   foreach my $i (0 .. $grouplist->GetCount) {
@@ -105,20 +105,17 @@ sub new {
   };
 
   $groupboxsizer -> Add($grouplist,     1, wxGROW|wxALL, 0);
-  $right         -> Add($groupboxsizer, 0, wxGROW|wxALL, 0);
+  $hbox          -> Add($groupboxsizer, 1, wxGROW|wxALL, 0);
 
-  my $reset_plot = Wx::Button->new($this, -1, "Reset plot list", wxDefaultPosition, wxDefaultSize);
-  $right        -> Add($reset_plot, 0, wxGROW|wxALL, 5);
+  $hbox = Wx::BoxSizer->new( wxHORIZONTAL );
+  $groupboxsizer -> Add($hbox, 0, wxGROW|wxALL, 0);
+  $this->{freeze} = Wx::Button->new($this, -1, "&Freeze", wxDefaultPosition, wxDefaultSize);
+  $hbox -> Add($this->{freeze}, 1, wxGROW|wxALL, 5);
+  $this->{reset} = Wx::Button->new($this, -1, "Re&set", wxDefaultPosition, wxDefaultSize);
+  $hbox -> Add($this->{reset}, 1, wxGROW|wxALL, 5);
 
-
-  #$this -> SetSizer( $hbox );
-  $this -> SetSizerAndFit( $hbox );
-  #print $yy, " ", $hh, $/;
-  #$this -> SetSize($this->GetSize->GetWidth,$hh*0.8);
-  #$this -> SetMaxSize($this->GetSize);
+  $this -> SetSizerAndFit( $vbox );
   return $this;
-
-
 };
 
 1;

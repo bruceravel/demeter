@@ -55,7 +55,7 @@ Readonly my $PATH_CLONE  => Wx::NewId();
 Readonly my $PATH_EXPORT_FEFF => Wx::NewId();
 Readonly my $PATH_EXPORT_DATA => Wx::NewId();
 Readonly my $PATH_EXPORT_EACH => Wx::NewId();
-Readonly my $PATH_EXPORT_SEL  => Wx::NewId();
+Readonly my $PATH_EXPORT_MARKED  => Wx::NewId();
 
 Readonly my $PATH_SAVE_K  => Wx::NewId();
 Readonly my $PATH_SAVE_R  => Wx::NewId();
@@ -100,7 +100,7 @@ sub new {
   my ($class, $parent, $nset) = @_;
 
   my $this = $class->SUPER::new($parent, -1, "Artemis: Data controls",
-				wxDefaultPosition, [800,520],
+				wxDefaultPosition, [860,520],
 				wxCAPTION|wxMINIMIZE_BOX|wxSYSTEM_MENU|wxRESIZE_BORDER);
   $this ->{PARENT} = $parent;
   $this->make_menubar;
@@ -143,10 +143,10 @@ sub new {
   my $buttonbox  = Wx::StaticBox->new($leftpane, -1, 'Plot this data set as ', wxDefaultPosition, [350,-1]);
   my $buttonboxsizer = Wx::StaticBoxSizer->new( $buttonbox, wxHORIZONTAL );
   $left -> Add($buttonboxsizer, 0, wxGROW|wxALL, 5);
-  $this->{plot_rmr}  = Wx::Button->new($leftpane, -1, "Rmr",  wxDefaultPosition, [80,-1]);
-  $this->{plot_k123} = Wx::Button->new($leftpane, -1, "k123", wxDefaultPosition, [80,-1]);
-  $this->{plot_r123} = Wx::Button->new($leftpane, -1, "R123", wxDefaultPosition, [80,-1]);
-  $this->{plot_kq}   = Wx::Button->new($leftpane, -1, "kq",   wxDefaultPosition, [80,-1]);
+  $this->{plot_rmr}  = Wx::Button->new($leftpane, -1, "R&mr",  wxDefaultPosition, [80,-1]);
+  $this->{plot_k123} = Wx::Button->new($leftpane, -1, "&k123", wxDefaultPosition, [80,-1]);
+  $this->{plot_r123} = Wx::Button->new($leftpane, -1, "&R123", wxDefaultPosition, [80,-1]);
+  $this->{plot_kq}   = Wx::Button->new($leftpane, -1, "k&q",   wxDefaultPosition, [80,-1]);
   foreach my $b (qw(plot_k123 plot_r123 plot_rmr plot_kq)) {
     $buttonboxsizer -> Add($this->{$b}, 1, wxGROW|wxALL, 2);
     $this->{$b} -> SetForegroundColour(Wx::Colour->new("#000000"));
@@ -373,7 +373,7 @@ sub make_menubar {
 		       "Export all path parameters from the currently displayed path to all paths in this data set", wxITEM_NORMAL );
   $export_menu->Append($PATH_EXPORT_EACH, "each path EVERY data set",
 		       "Export all path parameters from the currently displayed path to all paths in every data set", wxITEM_NORMAL );
-  $export_menu->Append($PATH_EXPORT_SEL,  "each marked path",
+  $export_menu->Append($PATH_EXPORT_MARKED,  "each marked path",
 		       "Export all path parameters from the currently displayed path to all marked paths", wxITEM_NORMAL );
   $export_menu->Enable($PATH_EXPORT_EACH, 0);
 
@@ -434,12 +434,12 @@ sub make_menubar {
   $self->{discardmenu}->Append($DISCARD_R,      "Discard all paths > R",  "Discard all paths shorter than a specified length in the fit", wxITEM_NORMAL );
 
 
-  $self->{menubar}->Append( $self->{datamenu},    "D&ata" );
+  $self->{menubar}->Append( $self->{datamenu},    "Da&ta" );
   $self->{menubar}->Append( $self->{summenu},     "&Sum" );
   $self->{menubar}->Append( $self->{pathsmenu},   "&Paths" );
-  $self->{menubar}->Append( $self->{markmenu},    "&Marks" );
+  $self->{menubar}->Append( $self->{markmenu},    "M&arks" );
   $self->{menubar}->Append( $self->{includemenu}, "&Include" );
-  $self->{menubar}->Append( $self->{discardmenu}, "Di&scard" );
+  $self->{menubar}->Append( $self->{discardmenu}, "Dis&card" );
 
   map { $self->{datamenu}   ->Enable($_,0) } ($ID_DATA_RENAME, $ID_DATA_DIFF, $ID_DATA_TRANSFER, $ID_DATA_VPATH, $ID_DATA_DISCARD);
   map { $self->{summenu}    ->Enable($_,0) } ($SUM_MARKED, $SUM_INCLUDED, $SUM_IM);
@@ -569,6 +569,11 @@ sub OnMenuClick {
       last SWITCH;
     };
 
+    (($id == $PATH_EXPORT_FEFF) or ($id == $PATH_EXPORT_DATA) or ($id == $PATH_EXPORT_EACH) or ($id == $PATH_EXPORT_MARKED)) and do {
+      $datapage->export_pp($id);
+      last SWITCH;
+    };
+
     (($id == $SUM_INCLUDED) or ($id == $SUM_MARKED) or ($id == $SUM_IM)) and do {
       $datapage->sum($id);
       last SWITCH;
@@ -635,6 +640,30 @@ sub add_parameters {
     $which = "the marked paths";
   };
   $self->{statusbar}->SetStatusText("Set $param to \"$me\" for $which." );
+};
+
+sub export_pp {
+  my ($self, $mode) = @_;
+  my $how = ($mode == $PATH_EXPORT_FEFF)   ? 0
+          : ($mode == $PATH_EXPORT_DATA)   ? 1
+          : ($mode == $PATH_EXPORT_EACH)   ? 2
+          : ($mode == $PATH_EXPORT_MARKED) ? 3
+	  :                                  $mode;
+  my $npaths = $self->{pathlist}->GetPageCount-1;
+  my $displayed_path = $self->{pathlist}->GetCurrentPage;
+  my $displayed_feff = $displayed_path->{path}->parent->group;
+
+  foreach my $i (0 .. $npaths) {
+    next if ($self->{pathlist}->GetSelection == $i);
+    foreach my $pp (qw(s02 e0 delr sigma2 ei third fourth)) {
+      $self->add_parameters($pp, $displayed_path->{"pp_$pp"}->GetValue, $how);
+    };
+  };
+  my $which = ('each path in this Feff calculation',
+	       'each path in this data set',
+	       'each path in each data set',
+	       'the marked paths')[$how];
+  $self->{statusbar}->SetStatusText("Exported these path parameters to $which." );
 };
 
 
@@ -948,7 +977,7 @@ sub OnData {
 				      sp     => $sp,
 				      degen  => $sp->n,
 				     );
-    my $label = $thispath->name;
+    my $label = $thispath->label;
 
     my $page = Demeter::UI::Artemis::Path->new($book, $thispath, $this->{PARENT});
 

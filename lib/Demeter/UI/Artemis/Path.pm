@@ -20,7 +20,7 @@ use warnings;
 
 use Wx qw( :everything );
 use base qw(Wx::Panel);
-use Wx::Event qw(EVT_RIGHT_DOWN EVT_ENTER_WINDOW EVT_LEAVE_WINDOW EVT_MENU EVT_CHECKBOX);
+use Wx::Event qw(EVT_RIGHT_DOWN EVT_ENTER_WINDOW EVT_LEAVE_WINDOW EVT_MENU EVT_CHECKBOX EVT_BUTTON);
 
 my %labels = (label  => 'Label',
 	      n      => 'N',
@@ -59,12 +59,18 @@ sub new {
   my $vbox = Wx::BoxSizer->new( wxVERTICAL );
 
   ## -------- identifier string
-  $this->{idlabel} = Wx::StaticText -> new($this, -1, "Feff name : Path name");
-  $this->{idlabel}->SetFont( Wx::Font->new( 12, wxDEFAULT, wxNORMAL, wxBOLD, 0, "" ) );
-  $vbox -> Add($this->{idlabel}, 0, wxGROW|wxALL, 5);
+  my $hbox = Wx::BoxSizer->new( wxHORIZONTAL );
+  $vbox -> Add($hbox, 0, wxGROW|wxALL, 0);
+  $this->{fefflabel}  = Wx::StaticText -> new($this, -1, "[Feff name] ");
+  $this->{fefflabel} -> SetFont( Wx::Font->new( 12, wxDEFAULT, wxNORMAL, wxBOLD, 0, "" ) );
+  $hbox -> Add($this->{fefflabel}, 0, wxLEFT|wxTOP|wxBOTTOM, 5);
+
+  $this->{idlabel}  = Wx::StaticText -> new($this, -1, "Path name");
+  $this->{idlabel} -> SetFont( Wx::Font->new( 12, wxDEFAULT, wxNORMAL, wxBOLD, 0, "" ) );
+  $hbox -> Add($this->{idlabel}, 0, wxRIGHT|wxTOP|wxBOTTOM, 5);
 
   ## -------- show feff button and various check buttons
-  my $hbox = Wx::BoxSizer->new( wxHORIZONTAL );
+  $hbox = Wx::BoxSizer->new( wxHORIZONTAL );
   $vbox -> Add($hbox, 0, wxGROW|wxALL, 0);
 
   my $gbs = Wx::GridBagSizer->new( 5,5 );
@@ -85,7 +91,7 @@ sub new {
 					wxVSCROLL|wxHSCROLL|wxTE_MULTILINE|wxTE_READONLY|wxNO_BORDER);
   $this->{geometry} -> SetFont( Wx::Font->new( 9, wxTELETYPE, wxNORMAL, wxNORMAL, 0, "" ) );
   $geomboxsizer -> Add($this->{geometry}, 1, wxGROW|wxALL, 0);
-  $vbox         -> Add($geomboxsizer, 1, wxLEFT|wxRIGHT, 5);
+  $vbox         -> Add($geomboxsizer, 1, wxALL, 5);
 
   $this->{geometry}->{2} = Wx::TextAttr->new(Wx::Colour->new( $this->{datapage}->{data}->co->default('feff', 'intrp2color') ),
 					     wxNullColour,
@@ -101,6 +107,7 @@ sub new {
   $gbs = Wx::GridBagSizer->new( 3, 10 );
 
   my $i = 0;
+
   foreach my $k (qw(label n s02 e0 delr sigma2 ei third fourth)) {
     my $label        = Wx::StaticText->new($this, -1, $labels{$k}, wxDefaultPosition, wxDefaultSize, wxALIGN_RIGHT);
     $label->{which} = $k;
@@ -114,21 +121,25 @@ sub new {
     #EVT_ENTER_WINDOW($label, sub{$this->DoLabelEnter});
     #EVT_LEAVE_WINDOW($label, sub{$this->DoLabelLeave});
   };
-  $vbox -> Add($gbs, 2, wxGROW|wxALL, 10);
+  $vbox -> Add($gbs, 2, wxGROW|wxTOP|wxBOTTOM, 10);
 
   $hbox = Wx::BoxSizer->new( wxHORIZONTAL );
   $vbox -> Add($hbox, 0, wxGROW|wxALL, 0);
   my $sz = 20; # [$sz,$sz]
   $this->{upbutton} = Wx::Button->new($this, wxID_UP, q{}, wxDefaultPosition, wxDefaultSize, wxBU_EXACTFIT);
   $hbox -> Add($this->{upbutton}, 0, wxALL, 1);
+  EVT_BUTTON($this, $this->{upbutton}, sub{OnUpButton(@_)});
   $this->{dnbutton} = Wx::Button->new($this, wxID_DOWN, q{}, wxDefaultPosition, wxDefaultSize, wxBU_EXACTFIT);
   $hbox -> Add($this->{dnbutton}, 0, wxALL, 1);
-  $this->{plotmarkedbutton} = Wx::Button->new($this, -1, q{&Transfer marked}, wxDefaultPosition, wxDefaultSize, wxBU_EXACTFIT);
-  $hbox -> Add($this->{plotmarkedbutton}, 0, wxALL, 1);
+  EVT_BUTTON($this, $this->{dnbutton}, sub{OnDownButton(@_)});
+  $this->{transferbutton} = Wx::Button->new($this, -1, q{Trans&fer marked}, wxDefaultPosition, wxDefaultSize, wxBU_EXACTFIT);
+  $hbox -> Add($this->{transferbutton}, 0, wxALL, 1);
+  EVT_BUTTON($this, $this->{transferbutton}, sub{OnTransferButton(@_)});
   $this->{makevpathbutton} = Wx::Button->new($this, -1, q{Make &VPath}, wxDefaultPosition, wxDefaultSize, wxBU_EXACTFIT);
   $hbox -> Add($this->{makevpathbutton}, 0, wxALL, 1);
+  EVT_BUTTON($this, $this->{makevpathbutton}, sub{OnMakeVPathButton(@_)});
 
-  map {$this->{$_} -> Enable(0)} qw(upbutton dnbutton plotmarkedbutton makevpathbutton);
+  #map {$this->{$_} -> Enable(0)} qw(upbutton dnbutton plotmarkedbutton makevpathbutton);
 
   $this -> populate($parent, $pathobject);
   $this -> SetSizerAndFit($vbox);
@@ -140,8 +151,11 @@ sub populate {
   my ($this, $parent, $pathobject) = @_;
   $this->{path} = $pathobject;
 
-  my $label = $pathobject->parent->name . " : " . $pathobject->name;
-  $this->{idlabel} -> SetLabel($label);
+  $this->{fefflabel} -> SetLabel('[' . $pathobject->parent->name . '] ');
+  my $name = $pathobject->name;
+  $name =~ s{\A\s+}{};
+  $name =~ s{\s+\z}{};
+  $this->{idlabel} -> SetLabel($name);
   $this->{idlabel} -> SetForegroundColour($this->{"color" . $pathobject->sp->weight});
 
   $this->{geombox} -> SetLabel(" " . $pathobject->sp->intrplist . " ");
@@ -318,8 +332,11 @@ sub include_label {
   my $check_state = $self->{datapage}->{pathlist}->{LIST}->IsChecked($which);
   my $inc   = $self->{include}->IsChecked;
   $self->{path}->include($inc);
-  my $label = $self->{path}->name;
-  $self->Rename($label);
+
+  my $label = $self->{path}->label;
+  my $name = $self->{path}->name;
+
+  $self->Rename($name);
   ($label = sprintf("((( %s )))", $label)) if not $inc;
   $self->{datapage}->{pathlist}->SetPageText($which, $label);
   $self->{datapage}->{pathlist}->{LIST}->Check($which, $check_state);
@@ -329,9 +346,30 @@ sub Rename {
   my ($self, $newname) = @_;
   my $included = $self->{path}->include;
   $self->{path}->name($newname);
-  my $label = $self->{path}->parent->name . " : " . $newname;
+  $self->{path}->label($newname);
+  my $label = $newname;
   ($label = sprintf("((( %s )))", $label)) if not $included;
   $self->{idlabel} -> SetLabel($label);
+};
+
+sub OnUpButton {
+  my ($self, $event) = @_;
+  print "clicked up button\n";
+};
+
+sub OnDownButton {
+  my ($self, $event) = @_;
+  print "clicked down button\n";
+};
+
+sub OnTransferButton {
+  my ($self, $event) = @_;
+  print "clicked transfer button\n";
+};
+
+sub OnMakeVPathButton {
+  my ($self, $event) = @_;
+  print "clicked make VPath button\n";
 };
 
 

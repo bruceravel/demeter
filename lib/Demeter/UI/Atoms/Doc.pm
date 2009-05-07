@@ -10,10 +10,10 @@ use Wx::Event qw(EVT_CHOICE EVT_KEY_DOWN EVT_MENU EVT_TOOL_ENTER EVT_ENTER_WINDO
 
 
 sub new {
-  my ($class, $page, $parent, $statusbar) = @_;
+  my ($class, $page, $parent) = @_;
   my $self = $class->SUPER::new($page, -1, wxDefaultPosition, wxDefaultSize, wxMAXIMIZE_BOX );
   $self->{parent}    = $parent;
-  $self->{statusbar} = $statusbar;
+  $self->{statusbar} = $parent->{statusbar};
   my $vbox = Wx::BoxSizer->new( wxVERTICAL );
 
   $self->{docbox}       = Wx::StaticBox->new($self, -1, 'Document', wxDefaultPosition, wxDefaultSize);
