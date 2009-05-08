@@ -24,6 +24,8 @@ use Wx::Event qw(EVT_MENU EVT_CLOSE EVT_TOOL_ENTER EVT_CHECKBOX EVT_CHOICE EVT_B
 use Wx::DND;
 use Wx::Perl::TextValidator;
 
+use Wx::Perl::Carp;
+
 use Demeter::UI::Artemis::Data::AddParameter;
 use Demeter::UI::Wx::CheckListBook;
 
@@ -124,12 +126,16 @@ sub new {
   my $namebox  = Wx::BoxSizer->new( wxHORIZONTAL );
   $left    -> Add($namebox, 0, wxGROW|wxTOP|wxBOTTOM, 5);
   #$namebox -> Add(Wx::StaticText->new($leftpane, -1, "Name"), 0, wxLEFT|wxRIGHT|wxTOP, 5);
+
+  $this->{plotgrab} = Wx::BitmapButton->new($leftpane, -1, Demeter::UI::Artemis::icon('plotgrab'));
+  $namebox -> Add($this->{plotgrab}, 0, wxLEFT|wxRIGHT|wxTOP, 3);
   $this->{name} = Wx::StaticText->new($leftpane, -1, q{}, wxDefaultPosition, wxDefaultSize, wxRAISED_BORDER );
   $this->{name}->SetFont( Wx::Font->new( 12, wxDEFAULT, wxNORMAL, wxBOLD, 0, "" ) );
   $namebox -> Add($this->{name}, 1, wxLEFT|wxRIGHT|wxTOP, 5);
   $namebox -> Add(Wx::StaticText->new($leftpane, -1, "CV"), 0, wxLEFT|wxRIGHT|wxTOP, 5);
   $this->{cv} = Wx::TextCtrl->new($leftpane, -1, $nset, wxDefaultPosition, [60,-1],);
-  $namebox -> Add($this->{cv}, 0, wxGROW|wxLEFT|wxRIGHT|wxTOP, 3);
+  $namebox -> Add($this->{cv}, 0, wxLEFT|wxRIGHT|wxTOP, 3);
+  EVT_BUTTON($this, $this->{plotgrab}, sub{transfer(@_)});
 
   ## -------- file name and record number
   my $filebox  = Wx::BoxSizer->new( wxHORIZONTAL );
@@ -239,6 +245,7 @@ sub new {
   $gbs     -> Add($label,      Wx::GBPosition->new(1,5));
   $gbs     -> Add($this->{dr}, Wx::GBPosition->new(1,6));
 
+  $this->{cv}   -> SetValidator( Wx::Perl::TextValidator->new( qr([0-9.\-]) ) );
   $this->{kmin} -> SetValidator( Wx::Perl::TextValidator->new( qr([0-9.]) ) );
   $this->{kmax} -> SetValidator( Wx::Perl::TextValidator->new( qr([0-9.]) ) );
   $this->{dk}   -> SetValidator( Wx::Perl::TextValidator->new( qr([0-9.]) ) );
@@ -491,8 +498,6 @@ sub fetch_parameters {
   my @list   = split(/\n/, $titles);
   $this->{data}->titles(\@list);
 
-  $this->{data}->cv	            ($this->{cv}        ->GetValue	    );
-
   $this->{data}->fft_kmin	    ($this->{kmin}      ->GetValue	    );
   $this->{data}->fft_kmax	    ($this->{kmax}      ->GetValue	    );
   $this->{data}->fft_dk		    ($this->{dk}        ->GetValue	    );
@@ -513,8 +518,15 @@ sub fetch_parameters {
   $this->{data}->fit_do_bkg	    ($this->{fit_bkg}    ->GetValue         );
   $this->{data}->fit_do_pcpath	    ($this->{pcplot}     ->GetValue         );
 
-
-  ## toggles, kweights, epsilon, pcpath
+  my $cv = $this->{cv}->GetValue;
+  # things that are not caught by $RE{num}{real} or the validator
+  if (($cv =~ m{\-.*\-}) or ($cv =~ m{\..*\.}) or ($cv =~ m{[^-]+-})) {
+    carp(sprintf("Oops. The CV for data set \"%s\" is not a number ($cv).\n\n", $this->{data}->name));
+    return 0;
+  } else {
+    $this->{data}->cv($cv);
+  };
+  return 1;
 };
 
 
@@ -935,6 +947,13 @@ sub sum {
           : ($mode == $SUM_IM)       ? 'included and marked'
           :                            $mode;
   print "summing $how\n";
+};
+
+sub transfer {
+  my ($self, $event) = @_;
+
+  my $name = $self->{data}->name;
+  $self->{statusbar} -> SetStatusText("Transfered data set \"$name\" to the plotting list.");
 };
 
 package Demeter::UI::Artemis::Data::DropTarget;

@@ -61,9 +61,13 @@ sub new {
   ## -------- identifier string
   my $hbox = Wx::BoxSizer->new( wxHORIZONTAL );
   $vbox -> Add($hbox, 0, wxGROW|wxALL, 0);
+  $this->{plotgrab} = Wx::BitmapButton->new($this, -1, Demeter::UI::Artemis::icon('plotgrab'));
+  $hbox -> Add($this->{plotgrab}, 0, wxLEFT|wxRIGHT|wxTOP, 3);
   $this->{fefflabel}  = Wx::StaticText -> new($this, -1, "[Feff name] ");
   $this->{fefflabel} -> SetFont( Wx::Font->new( 12, wxDEFAULT, wxNORMAL, wxBOLD, 0, "" ) );
   $hbox -> Add($this->{fefflabel}, 0, wxLEFT|wxTOP|wxBOTTOM, 5);
+  EVT_BUTTON($this, $this->{plotgrab}, sub{transfer(@_)});
+
 
   $this->{idlabel}  = Wx::StaticText -> new($this, -1, "Path name");
   $this->{idlabel} -> SetFont( Wx::Font->new( 12, wxDEFAULT, wxNORMAL, wxBOLD, 0, "" ) );
@@ -122,6 +126,7 @@ sub new {
     #EVT_LEAVE_WINDOW($label, sub{$this->DoLabelLeave});
   };
   $vbox -> Add($gbs, 2, wxGROW|wxTOP|wxBOTTOM, 10);
+  $this->{pp_n} -> SetValidator( Wx::Perl::TextValidator->new( qr([0-9.]) ) );
 
   $hbox = Wx::BoxSizer->new( wxHORIZONTAL );
   $vbox -> Add($hbox, 0, wxGROW|wxALL, 0);
@@ -370,6 +375,13 @@ sub OnTransferButton {
 sub OnMakeVPathButton {
   my ($self, $event) = @_;
   print "clicked make VPath button\n";
+};
+
+sub transfer {
+  my ($self, $event) = @_;
+
+  my $name = $self->{datapage}->{pathlist}->GetPageText($self->{datapage}->{pathlist}->GetSelection);
+  $self->{datapage}->{statusbar} -> SetStatusText("Transfered path \"$name\" to the plotting list.");
 };
 
 

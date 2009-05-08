@@ -39,7 +39,7 @@ sub save_project {
   my ($rframes, $fname) = @_;
 
   ## make sure we are fully up to date and serialised
-  my ($rdata, $rpaths, $rgds) = Demeter::UI::Artemis::uptodate($rframes);
+  my ($abort, $rdata, $rpaths, $rgds) = Demeter::UI::Artemis::uptodate($rframes);
   my @data  = @$rdata;
   my @paths = @$rpaths;
   my @gds   = @$rgds;

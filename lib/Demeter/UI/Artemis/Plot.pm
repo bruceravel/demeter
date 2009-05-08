@@ -99,9 +99,9 @@ sub new {
   my $groupbox       = Wx::StaticBox->new($this, -1, 'Plotting list', wxDefaultPosition, wxDefaultSize);
   my $groupboxsizer  = Wx::StaticBoxSizer->new( $groupbox, wxVERTICAL );
 
-  my $grouplist = Wx::CheckListBox->new($this, -1, wxDefaultPosition, wxDefaultSize, [ qw(a b c a b c a b c a  ) ]);
+  my $grouplist = Wx::CheckListBox->new($this, -1, wxDefaultPosition, wxDefaultSize, [ qw(0 1 2 3 4 5 6 7 8 9 10 ) ], wxLB_MULTIPLE);
   foreach my $i (0 .. $grouplist->GetCount) {
-    $grouplist -> Check($i, 1) if ($grouplist->GetString($i) !~ m{c});
+    $grouplist -> Check($i, 1) if ($i%3);
   };
 
   $groupboxsizer -> Add($grouplist,     1, wxGROW|wxALL, 0);

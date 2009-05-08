@@ -267,11 +267,12 @@ EOH
 sub uptodate {
   my ($rframes) = @_;
   my (@data, @paths, @gds);
+  my $abort = 0;
 
   foreach my $k (keys(%$rframes)) {
     next unless ($k =~ m{\Adata});
     my $this = $rframes->{$k}->{data};
-    $rframes->{$k}->fetch_parameters;
+    ++$abort if ($rframes->{$k}->fetch_parameters == 0);
     push @data, $this;
 
     my $npath = $rframes->{$k}->{pathlist}->GetPageCount - 1;
@@ -295,7 +296,7 @@ sub uptodate {
     $grid->{$name} = $thisgds;
     push @gds, $thisgds;
   };
-  return (\@data, \@paths, \@gds);
+  return ($abort, \@data, \@paths, \@gds);
 };
 
 sub fit {
@@ -314,10 +315,15 @@ sub fit {
   #};
   #return;
 
-  my ($rdata, $rpaths, $rgds) = uptodate($rframes);
+  my ($abort, $rdata, $rpaths, $rgds) = uptodate($rframes);
   my @data  = @$rdata;
   my @paths = @$rpaths;
   my @gds   = @$rgds;
+  if ($abort) {
+    $rframes->{main}->{statusbar}->SetStatusText("There is a problem in your fit.");
+    return;
+  };
+
 
   ## get name, fom, and description + other properties
   my $fit = Demeter::Fit->new(data => \@data, paths => \@paths, gds => \@gds);
