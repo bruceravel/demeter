@@ -23,7 +23,7 @@ use base qw(Wx::Frame);
 
 sub new {
   my ($class, $parent) = @_;
-  my $this = $class->SUPER::new($parent, -1, "Artemis *HISTORY*",
+  my $this = $class->SUPER::new($parent, -1, "Artemis [History]",
 				wxDefaultPosition, wxDefaultSize,
 				wxMINIMIZE_BOX|wxCAPTION|wxSYSTEM_MENU|wxRESIZE_BORDER);
 

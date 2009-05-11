@@ -146,7 +146,8 @@ sub OnChoice {
   my ($this, $event, $choice, $accessor) = @_;
   $demeter->po->$accessor(lc(substr($this->{$choice}->GetStringSelection, 0, 1)));
   my $plotframe = $Demeter::UI::Artemis::frames{Plot};
-  $plotframe->plot($event, $plotframe->{last});
+  my $space = substr($choice, 0, 1);
+  $plotframe->plot($event, $space);
 };
 
 1;

@@ -31,40 +31,41 @@ sub new {
   my $stackboxsizer  = Wx::StaticBoxSizer->new( $stackbox, wxHORIZONTAL );
 
   my $vv =  Wx::BoxSizer->new( wxVERTICAL );
-  my $stack = Wx::CheckBox->new($this, -1, "Do stacked plot", wxDefaultPosition, wxDefaultSize);
+  $this->{dostack} = Wx::CheckBox->new($this, -1, "Do stacked plot", wxDefaultPosition, wxDefaultSize);
 
-  $vv -> Add($stack, 0, wxTOP, 2);
+  $vv -> Add($this->{dostack}, 0, wxTOP, 2);
 
   my $label  = Wx::StaticText->new($this, -1, 'Starting value');
-  my $start  = Wx::TextCtrl->new($this, -1, 0, wxDefaultPosition, [-1, -1]);
+  $this->{start}  = Wx::TextCtrl->new($this, -1, 0, wxDefaultPosition, [-1, -1]);
   $vv -> Add($label, 0, wxTOP, 2);
-  $vv -> Add($start, 0, wxGROW|wxLEFT|wxRIGHT, 5);
+  $vv -> Add($this->{start}, 0, wxGROW|wxLEFT|wxRIGHT, 5);
 
-  $label  = Wx::StaticText->new($this, -1, 'Increment');
-  my $increment = Wx::TextCtrl->new($this, -1, 0, wxDefaultPosition, [-1, -1]);
+  $label  = Wx::StaticText->new($this, -1, 'Downward offset');
+  $this->{increment} = Wx::TextCtrl->new($this, -1, 0, wxDefaultPosition, [-1, -1]);
   $vv -> Add($label,     0, wxTOP, 2);
-  $vv -> Add($increment, 0, wxGROW|wxLEFT|wxRIGHT, 5);
+  $vv -> Add($this->{increment}, 0, wxGROW|wxLEFT|wxRIGHT, 5);
 
   $stackboxsizer->Add($vv, 1, wxGROW|wxALL, 5);
   $box->Add($stackboxsizer, 1, wxGROW|wxTOP|wxBOTTOM, 3);
 
 
 
-  my $invert = Wx::RadioBox->new($this, -1, "Invert paths", wxDefaultPosition, wxDefaultSize,
-				 ['Never', "|χ(R)| + |χ(q)|", 'Only |χ(R)|'],
-				 2, wxRA_SPECIFY_ROWS);
-  $box -> Add($invert, 0, wxGROW|wxALL, 3);
+  $this->{invert} = Wx::RadioBox->new($this, -1, "Invert paths", wxDefaultPosition, wxDefaultSize,
+				      ['Never', "|χ(R)| + |χ(q)|", 'Only |χ(R)|'],
+				      2, wxRA_SPECIFY_ROWS);
+  $box -> Add($this->{invert}, 0, wxGROW|wxALL, 3);
 
 
 
   my $dsbox       = Wx::StaticBox->new($this, -1, 'Stack data sets', wxDefaultPosition, wxDefaultSize);
   my $dsboxsizer  = Wx::StaticBoxSizer->new( $dsbox, wxHORIZONTAL );
   $label  = Wx::StaticText->new($this, -1, 'Offset');
-  my $offset = Wx::TextCtrl->new($this, -1, 0);
+  $this->{offset} = Wx::TextCtrl->new($this, -1, 0);
   $dsboxsizer -> Add($label, 0, wxALL, 5);
-  $dsboxsizer -> Add($offset, 1, wxALL, 5);
+  $dsboxsizer -> Add($this->{offset}, 1, wxALL, 5);
   $box->Add($dsboxsizer, 0, wxGROW|wxALL, 3);
 
+  $this->{offset}->Enable(0);
 
   $this -> SetSizer($box);
   return $this;

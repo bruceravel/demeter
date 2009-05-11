@@ -77,7 +77,7 @@ sub save_project {
   undef $zip;
 
   $rframes->{main}->{projectname} = basename($fname);
-  $rframes->{main}->SetTitle(basename($fname, '.fpj') . ' - Artemis - EXAFS data analysis');
+  $rframes->{main}->SetTitle('Artemis [EXAFS data analysis] ' . basename($fname, '.fpj'));
 };
 
 sub read_project {
@@ -197,7 +197,7 @@ sub read_project {
 
 
   $rframes->{main}->{projectname} = basename($fname);
-  $rframes->{main}->SetTitle(basename($fname, '.fpj') . ' - Artemis - EXAFS data analysis');
+  $rframes->{main}->SetTitle('Artemis [EXAFS data analysis] ' . basename($fname, '.fpj'));
 };
 
 sub find_sp {

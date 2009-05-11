@@ -382,7 +382,7 @@ sub OnMakeVPathButton {
 sub transfer {
   my ($self, $event) = @_;
   my $plotlist  = $Demeter::UI::Artemis::frames{Plot}->{plotlist};
-  my $name      = $self->{datapage}->{pathlist}->GetPageText($self->{datapage}->{pathlist}->GetSelection);
+  my $name      = $self->{path}->label;
   my $found     = 0;
   my $thisgroup = $self->{path}->group;
   foreach my $i (0 .. $plotlist->GetCount - 1) {

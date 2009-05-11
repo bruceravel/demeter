@@ -82,7 +82,7 @@ my %hints = (
 
 sub new {
   my ($class, $parent) = @_;
-  my $this = $class->SUPER::new($parent, -1, "Artemis *GDS* : Guess, Def, Set parameters",
+  my $this = $class->SUPER::new($parent, -1, "Artemis [GDS] Guess, Def, Set parameters",
 				wxDefaultPosition, [-1,-1], #[725,480],
 				wxMINIMIZE_BOX|wxCAPTION|wxSYSTEM_MENU|wxRESIZE_BORDER);
   $this->{statusbar} = $this->CreateStatusBar;

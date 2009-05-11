@@ -20,7 +20,7 @@ use warnings;
 
 use Wx qw( :everything );
 use base qw(Wx::Frame);
-use Wx::Event qw(EVT_BUTTON EVT_RADIOBOX EVT_RIGHT_UP EVT_MENU);
+use Wx::Event qw(EVT_BUTTON EVT_RADIOBOX EVT_RIGHT_DOWN EVT_MENU);
 
 use Demeter::UI::Artemis::Plot::Limits;
 use Demeter::UI::Artemis::Plot::Stack;
@@ -39,9 +39,8 @@ sub new {
   ## position of upper left corner
   my $windowsize = sum(wxSYS_BORDER_Y, wxSYS_BORDER_Y, wxSYS_BORDER_Y, wxSYS_FRAMESIZE_Y);
   my $yy = sum($pos->y, $h, $windowsize, $parent->GetStatusBar->GetSize->GetHeight);
-  my $hh = Wx::SystemSettings::GetMetric(wxSYS_SCREEN_Y) - $yy - 2*$windowsize;
 
-  my $this = $class->SUPER::new($parent, -1, "Artemis *PLOT*",
+  my $this = $class->SUPER::new($parent, -1, "Artemis [Plot]",
 				[0,$yy], wxDefaultSize,
 				wxMINIMIZE_BOX|wxCAPTION|wxSYSTEM_MENU|wxRESIZE_BORDER);
   $this->{last} = q{};
@@ -113,7 +112,7 @@ sub new {
 
   $groupboxsizer -> Add($this->{plotlist},     1, wxGROW|wxALL, 0);
   $hbox          -> Add($groupboxsizer, 1, wxGROW|wxALL, 0);
-  EVT_RIGHT_UP($this->{plotlist}, sub{OnRightUp(@_)});
+  EVT_RIGHT_DOWN($this->{plotlist}, sub{OnRightDown(@_)});
   EVT_MENU($this->{plotlist}, -1, sub{ $this->OnPlotMenu(@_)    });
 
   $hbox = Wx::BoxSizer->new( wxHORIZONTAL );
@@ -125,6 +124,8 @@ sub new {
   EVT_BUTTON($this, $this->{clear}, sub{$_[0]->{plotlist}->Clear});
 
   $this -> SetSizerAndFit( $vbox );
+  my $hh = Wx::SystemSettings::GetMetric(wxSYS_SCREEN_Y) - $yy - 2*$windowsize - $this->GetParent->GetSize->GetHeight;
+  $this -> SetSize(Wx::Size->new(-1, $hh));
   return $this;
 };
 
@@ -140,10 +141,48 @@ sub plot {
   return if ($space !~ m{[krq]}i);
   $self->fetch_parameters;
   $demeter->po->start_plot;
+  my @list = ();
   foreach my $i (0 .. $self->{plotlist}->GetCount-1) {
     next if not $self->{plotlist}->IsChecked($i);
-    $self->{plotlist}->GetClientData($i)->plot($space);
+    push @list, $self->{plotlist}->GetClientData($i);
   };
+
+
+  my $invert_r = (    (lc($space) eq 'r')
+		  and ($self->{stack}->{invert}->GetStringSelection !~ m{Never})
+		  and ($self->{limits}->{rpart}->GetStringSelection eq 'Magnitude') );
+  my $invert_q = (    (lc($space) eq 'q')
+		  and ($self->{stack}->{invert}->GetStringSelection !~ m{(?:Never|Only)})
+		  and ($self->{limits}->{qpart}->GetStringSelection eq 'Magnitude') );
+
+
+  ## for data set stacking, determine how many data sets are
+  ## represented in the list, pre-set y_offsets for the data groups,
+  ## process normally, reset y_offsets to their starting values
+
+  ## stack overrides invert
+  if ($self->{stack}->{dostack}->GetValue) {
+    my $save = $list[0]->data->y_offset;
+    $list[0] -> data -> y_offset($self->{stack}->{start}->GetValue);
+    $list[0] -> po -> stackjump($self->{stack}->{increment}->GetValue);
+    $list[0] -> po -> space($space);
+    $list[0] -> stack(@list);
+    $list[0] -> data -> y_offset($save);
+  } elsif ($invert_r or $invert_q) {
+    foreach my $obj (@list) {
+      if (ref($obj) =~ m{Data}) { # Data plotted normally
+	$obj->plot($space);
+      } else {			# invert Path or VPath
+	my $save = $obj->data->plot_multiplier;
+	$obj->data->plot_multiplier(-1*$save);
+	$obj->plot($space);
+	$obj->data->plot_multiplier($save);
+      };
+    };
+  } else {			# plot normally
+    $_->plot($space) foreach @list;
+  };
+
   $self->{last} = $space;
 };
 
@@ -151,10 +190,11 @@ use Readonly;
 Readonly my $PLOT_REMOVE => Wx::NewId();
 Readonly my $PLOT_TOGGLE => Wx::NewId();
 
-sub OnRightUp {
+sub OnRightDown {
   my ($self, $event) = @_;
   my @sel  = $self->GetSelections;
-  my $name = ($#sel == 0) ? sprintf("\"%s\"", $self->GetString($sel[0])) : 'selected';
+  return if ($#sel == -1);
+  my $name = ($#sel == 0) ? sprintf("\"%s\"", $self->GetString($sel[0])) : 'selected items';
   my $menu = Wx::Menu->new(q{});
   $menu->Append($PLOT_REMOVE, "Remove $name from plotting list");
   $menu->Append($PLOT_TOGGLE, "Toggle $name for plotting");

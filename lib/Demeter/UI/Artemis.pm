@@ -141,9 +141,9 @@ sub OnInit {
   my $hname = Wx::BoxSizer->new( wxHORIZONTAL);
   $vbox -> Add($hname, 0, wxGROW|wxTOP|wxBOTTOM, 0);
   my $label = Wx::StaticText->new($frames{main}, -1, "Name");
-  my $name  = Wx::TextCtrl->new($frames{main}, -1, "Fit 1");
-  $hname -> Add($label,      0, wxALL, 5);
-  $hname -> Add($name,       1, wxALL, 2);
+  $frames{main}->{name}  = Wx::TextCtrl->new($frames{main}, -1, "Fit 1");
+  $hname -> Add($label,                0, wxALL, 5);
+  $hname -> Add($frames{main}->{name}, 1, wxALL, 2);
 
   $label = Wx::StaticText->new($frames{main}, -1, "Fit space:");
   my @fitspace = (Wx::RadioButton->new($frames{main}, -1, 'k', wxDefaultPosition, wxDefaultSize, wxRB_GROUP),
@@ -355,6 +355,7 @@ sub fit {
 
     $rframes->{GDS}->fill_results(@gds);
     $rframes->{Log}->{text}->SetValue($fit->logtext);
+    $rframes->{Log}->SetTitle("Artemis [Log] " . $rframes->{main}->{name}->GetValue);
     $rframes->{Log}->Show(1);
     $rframes->{main}->{log_toggle}->SetValue(1);
 
@@ -511,7 +512,7 @@ sub make_data_frame {
   my $idata = $newtool->GetId;
   my $dnum = sprintf("data%s", $idata);
   $frames{$dnum}  = Demeter::UI::Artemis::Data->new($self, $nset++);
-  $frames{$dnum} -> SetTitle("Artemis *DATA* : ".$data->name);
+  $frames{$dnum} -> SetTitle("Artemis [Data] ".$data->name);
   $frames{$dnum} -> SetIcon($icon);
   $frames{$dnum} -> populate($data);
   set_happiness_color();
@@ -561,7 +562,7 @@ sub make_feff_frame {
   my $fnum = sprintf("feff%s", $ifeff);
   my $base = File::Spec->catfile($self->{project_folder}, 'feff');
   $frames{$fnum} =  Demeter::UI::AtomsApp->new($base, $feffobject);
-  $frames{$fnum} -> SetTitle('Artemis *FEFF* : Atoms and Feff');
+  $frames{$fnum} -> SetTitle('Artemis [Feff] Atoms and Feff');
   $frames{$fnum} -> SetIcon($icon);
   $frames{$fnum}->{Atoms}->Demeter::UI::Atoms::Xtal::open_file($file);
   #$newtool -> SetLabel( $frames{$fnum}->{Atoms}->{name}->GetValue );
