@@ -20,7 +20,7 @@ use warnings;
 
 use Wx qw( :everything );
 use base qw(Wx::Frame);
-use Wx::Event qw(EVT_BUTTON EVT_RADIOBOX);
+use Wx::Event qw(EVT_BUTTON EVT_RADIOBOX EVT_RIGHT_UP EVT_MENU);
 
 use Demeter::UI::Artemis::Plot::Limits;
 use Demeter::UI::Artemis::Plot::Stack;
@@ -44,7 +44,7 @@ sub new {
   my $this = $class->SUPER::new($parent, -1, "Artemis *PLOT*",
 				[0,$yy], wxDefaultSize,
 				wxMINIMIZE_BOX|wxCAPTION|wxSYSTEM_MENU|wxRESIZE_BORDER);
-
+  $this->{last} = q{};
   #my $statusbar = $this->CreateStatusBar;
   #$statusbar -> SetStatusText(q{});
 
@@ -67,13 +67,23 @@ sub new {
     $this->{$b} -> SetBackgroundColour(Wx::Colour->new($Demeter::UI::Artemis::demeter->co->default("happiness", "average_color")));
     $this->{$b} -> SetFont(Wx::Font->new( 10, wxDEFAULT, wxNORMAL, wxBOLD, 0, "" ) );
   };
+  EVT_BUTTON($this, $this->{k_button}, sub{plot(@_, 'k')});
+  EVT_BUTTON($this, $this->{r_button}, sub{plot(@_, 'r')});
+  EVT_BUTTON($this, $this->{q_button}, sub{plot(@_, 'q')});
 
   $this->{kweight} = Wx::RadioBox->new($this, -1, "k-weight", wxDefaultPosition, wxDefaultSize,
-				       [0, 1, 2, 3], # [0, 1, 2, 3, 'kw'],
+				       [0, 1, 2, 3, 'kw'],
 				       1, wxRA_SPECIFY_ROWS);
   $left -> Add($this->{kweight}, 0, wxLEFT|wxRIGHT|wxGROW, 5);
   $this->{kweight}->SetSelection(2);
-  EVT_RADIOBOX($this, $this->{radiobox}, sub{ $demeter->po->kweight($this->{kweight}->GetStringSelection) });
+  $this->{kweight}->Enable(4, 0);
+  EVT_RADIOBOX($this, $this->{kweight},
+	       sub{
+		 my ($self, $event) = @_;
+		 my $kw = $this->{kweight}->GetStringSelection;
+		 $demeter->po->kweight($kw);
+		 $self->plot($event, $self->{last});
+	       });
 
 
   my $nb = Wx::Notebook->new( $this, -1, wxDefaultPosition, wxDefaultSize, wxBK_TOP );
@@ -90,32 +100,69 @@ sub new {
   $left -> Add($nb, 1, wxGROW|wxALL, 5);
 
 
-
-
-
   my $hbox = Wx::BoxSizer->new( wxHORIZONTAL );
   $vbox -> Add($hbox, 1, wxGROW|wxALL, 5);
 
   my $groupbox       = Wx::StaticBox->new($this, -1, 'Plotting list', wxDefaultPosition, wxDefaultSize);
   my $groupboxsizer  = Wx::StaticBoxSizer->new( $groupbox, wxVERTICAL );
 
-  my $grouplist = Wx::CheckListBox->new($this, -1, wxDefaultPosition, wxDefaultSize, [ qw(0 1 2 3 4 5 6 7 8 9 10 ) ], wxLB_MULTIPLE);
-  foreach my $i (0 .. $grouplist->GetCount) {
-    $grouplist -> Check($i, 1) if ($i%3);
-  };
+  $this->{plotlist} = Wx::CheckListBox->new($this, -1, wxDefaultPosition, [-1,200], [ ], wxLB_MULTIPLE);
+  #foreach my $i (0 .. $this->{plotlist}->GetCount) {
+  #  $this->{plotlist} -> Check($i, 1) if ($i%3);
+  #};
 
-  $groupboxsizer -> Add($grouplist,     1, wxGROW|wxALL, 0);
+  $groupboxsizer -> Add($this->{plotlist},     1, wxGROW|wxALL, 0);
   $hbox          -> Add($groupboxsizer, 1, wxGROW|wxALL, 0);
+  EVT_RIGHT_UP($this->{plotlist}, sub{OnRightUp(@_)});
+  EVT_MENU($this->{plotlist}, -1, sub{ $this->OnPlotMenu(@_)    });
 
   $hbox = Wx::BoxSizer->new( wxHORIZONTAL );
   $groupboxsizer -> Add($hbox, 0, wxGROW|wxALL, 0);
-  $this->{freeze} = Wx::Button->new($this, -1, "&Freeze", wxDefaultPosition, wxDefaultSize);
+  $this->{freeze} = Wx::CheckBox->new($this, -1, "&Freeze");
   $hbox -> Add($this->{freeze}, 1, wxGROW|wxALL, 5);
-  $this->{reset} = Wx::Button->new($this, -1, "Re&set", wxDefaultPosition, wxDefaultSize);
-  $hbox -> Add($this->{reset}, 1, wxGROW|wxALL, 5);
+  $this->{clear} = Wx::Button->new($this, -1, "&Clear", wxDefaultPosition, wxDefaultSize);
+  $hbox -> Add($this->{clear}, 1, wxGROW|wxALL, 5);
+  EVT_BUTTON($this, $this->{clear}, sub{$_[0]->{plotlist}->Clear});
 
   $this -> SetSizerAndFit( $vbox );
   return $this;
+};
+
+sub fetch_parameters {
+  my ($self) = @_;
+  foreach my $p (qw(kmin kmax rmin rmax qmin qmax)) {
+    $demeter->po->$p($self->{limits}->{$p}->GetValue);
+  };
+};
+
+sub plot {
+  my ($self, $event, $space) = @_;
+  return if ($space !~ m{[krq]}i);
+  $self->fetch_parameters;
+  $demeter->po->start_plot;
+  foreach my $i (0 .. $self->{plotlist}->GetCount-1) {
+    next if not $self->{plotlist}->IsChecked($i);
+    $self->{plotlist}->GetClientData($i)->plot($space);
+  };
+  $self->{last} = $space;
+};
+
+use Readonly;
+Readonly my $PLOT_REMOVE => Wx::NewId();
+Readonly my $PLOT_TOGGLE => Wx::NewId();
+
+sub OnRightUp {
+  my ($self, $event) = @_;
+  my @sel  = $self->GetSelections;
+  my $name = ($#sel == 0) ? sprintf("\"%s\"", $self->GetString($sel[0])) : 'selected';
+  my $menu = Wx::Menu->new(q{});
+  $menu->Append($PLOT_REMOVE, "Remove $name from plotting list");
+  $menu->Append($PLOT_TOGGLE, "Toggle $name for plotting");
+  $self->PopupMenu($menu, $event->GetPosition);
+};
+
+sub OnPlotMenu {
+  print join(" ", @_), $/;
 };
 
 1;

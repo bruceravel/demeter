@@ -137,12 +137,13 @@ sub new {
   $this->{dnbutton} = Wx::Button->new($this, wxID_DOWN, q{}, wxDefaultPosition, wxDefaultSize, wxBU_EXACTFIT);
   $hbox -> Add($this->{dnbutton}, 0, wxALL, 1);
   EVT_BUTTON($this, $this->{dnbutton}, sub{OnDownButton(@_)});
-  $this->{transferbutton} = Wx::Button->new($this, -1, q{Trans&fer marked}, wxDefaultPosition, wxDefaultSize, wxBU_EXACTFIT);
-  $hbox -> Add($this->{transferbutton}, 0, wxALL, 1);
-  EVT_BUTTON($this, $this->{transferbutton}, sub{OnTransferButton(@_)});
-  $this->{makevpathbutton} = Wx::Button->new($this, -1, q{Make &VPath}, wxDefaultPosition, wxDefaultSize, wxBU_EXACTFIT);
-  $hbox -> Add($this->{makevpathbutton}, 0, wxALL, 1);
-  EVT_BUTTON($this, $this->{makevpathbutton}, sub{OnMakeVPathButton(@_)});
+
+  #   $this->{transferbutton} = Wx::Button->new($this, -1, q{Trans&fer marked}, wxDefaultPosition, wxDefaultSize, wxBU_EXACTFIT);
+  #   $hbox -> Add($this->{transferbutton}, 0, wxALL, 1);
+  #   EVT_BUTTON($this, $this->{transferbutton}, sub{OnTransferButton(@_)});
+  #   $this->{makevpathbutton} = Wx::Button->new($this, -1, q{Make &VPath}, wxDefaultPosition, wxDefaultSize, wxBU_EXACTFIT);
+  #   $hbox -> Add($this->{makevpathbutton}, 0, wxALL, 1);
+  #   EVT_BUTTON($this, $this->{makevpathbutton}, sub{OnMakeVPathButton(@_)});
 
   #map {$this->{$_} -> Enable(0)} qw(upbutton dnbutton plotmarkedbutton makevpathbutton);
 
@@ -377,10 +378,27 @@ sub OnMakeVPathButton {
   print "clicked make VPath button\n";
 };
 
+
 sub transfer {
   my ($self, $event) = @_;
-
-  my $name = $self->{datapage}->{pathlist}->GetPageText($self->{datapage}->{pathlist}->GetSelection);
+  my $plotlist  = $Demeter::UI::Artemis::frames{Plot}->{plotlist};
+  my $name      = $self->{datapage}->{pathlist}->GetPageText($self->{datapage}->{pathlist}->GetSelection);
+  my $found     = 0;
+  my $thisgroup = $self->{path}->group;
+  foreach my $i (0 .. $plotlist->GetCount - 1) {
+    if ($thisgroup eq $plotlist->GetClientData($i)->group) {
+      $found = 1;
+      last;
+    };
+  };
+  if ($found) {
+    $self->{datapage}->{statusbar} -> SetStatusText("\"$name\" is already in the plotting list.");
+    return;
+  };
+  $plotlist->Append("Path: $name");
+  my $i = $plotlist->GetCount - 1;
+  $plotlist->SetClientData($i, $self->{path});
+  $plotlist->Check($i,1);
   $self->{datapage}->{statusbar} -> SetStatusText("Transfered path \"$name\" to the plotting list.");
 };
 

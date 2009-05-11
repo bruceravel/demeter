@@ -358,6 +358,19 @@ sub fit {
     $rframes->{Log}->Show(1);
     $rframes->{main}->{log_toggle}->SetValue(1);
 
+    ## fill in plotting list
+    if (not $rframes->{Plot}->{freeze}->GetValue) {
+      $rframes->{Plot}->{plotlist}->Clear;
+      foreach my $k (sort (keys (%$rframes))) {
+	next if ($k !~ m{data});
+	$rframes->{$k}->transfer if $rframes->{$k}->{plot_after}->GetValue;
+	foreach my $p (0 .. $rframes->{$k}->{pathlist}->GetPageCount -1) {
+	  my $pathpage = $rframes->{$k}->{pathlist}->{LIST}->GetClientData($p);
+	  $pathpage->transfer if $pathpage->{plotafter}->GetValue;
+	};
+      };
+    };
+
     set_happiness_color($fit->color);
     $rframes->{main}->{statusbar}->SetStatusText("Your fit is finished!");
   } else {

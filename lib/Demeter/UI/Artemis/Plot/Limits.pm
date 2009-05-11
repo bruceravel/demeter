@@ -139,10 +139,14 @@ sub new {
 sub OnPlotToggle {
   my ($this, $event, $button, $accessor) = @_;
   $demeter->po->$accessor($this->{$button}->GetValue);
+  my $plotframe = $Demeter::UI::Artemis::frames{Plot};
+  $plotframe->plot($event, $plotframe->{last});
 };
 sub OnChoice {
   my ($this, $event, $choice, $accessor) = @_;
   $demeter->po->$accessor(lc(substr($this->{$choice}->GetStringSelection, 0, 1)));
+  my $plotframe = $Demeter::UI::Artemis::frames{Plot};
+  $plotframe->plot($event, $plotframe->{last});
 };
 
 1;

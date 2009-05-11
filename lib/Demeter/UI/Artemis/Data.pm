@@ -38,26 +38,26 @@ use Regexp::Common;
 use Readonly;
 Readonly my $NUMBER => $RE{num}{real};
 
-Readonly my $ID_DATA_RENAME  => Wx::NewId();
-Readonly my $ID_DATA_DIFF    => Wx::NewId();
-Readonly my $ID_DATA_TRANSFER => Wx::NewId();
-Readonly my $ID_DATA_VPATH   => Wx::NewId();
-Readonly my $ID_DATA_DEGEN_N => Wx::NewId();
-Readonly my $ID_DATA_DEGEN_1 => Wx::NewId();
-Readonly my $ID_DATA_DISCARD => Wx::NewId();
-Readonly my $ID_DATA_KMAXSUGEST => Wx::NewId();
-Readonly my $ID_DATA_EPSK    => Wx::NewId();
-Readonly my $ID_DATA_NIDP    => Wx::NewId();
+Readonly my $DATA_RENAME     => Wx::NewId();
+Readonly my $DATA_DIFF	     => Wx::NewId();
+Readonly my $DATA_TRANSFER   => Wx::NewId();
+Readonly my $DATA_VPATH	     => Wx::NewId();
+Readonly my $DATA_DEGEN_N    => Wx::NewId();
+Readonly my $DATA_DEGEN_1    => Wx::NewId();
+Readonly my $DATA_DISCARD    => Wx::NewId();
+Readonly my $DATA_KMAXSUGEST => Wx::NewId();
+Readonly my $DATA_EPSK	     => Wx::NewId();
+Readonly my $DATA_NIDP	     => Wx::NewId();
 
 Readonly my $PATH_RENAME => Wx::NewId();
 Readonly my $PATH_SHOW   => Wx::NewId();
 Readonly my $PATH_ADD    => Wx::NewId();
 Readonly my $PATH_CLONE  => Wx::NewId();
 
-Readonly my $PATH_EXPORT_FEFF => Wx::NewId();
-Readonly my $PATH_EXPORT_DATA => Wx::NewId();
-Readonly my $PATH_EXPORT_EACH => Wx::NewId();
-Readonly my $PATH_EXPORT_MARKED  => Wx::NewId();
+Readonly my $PATH_EXPORT_FEFF   => Wx::NewId();
+Readonly my $PATH_EXPORT_DATA   => Wx::NewId();
+Readonly my $PATH_EXPORT_EACH   => Wx::NewId();
+Readonly my $PATH_EXPORT_MARKED => Wx::NewId();
 
 Readonly my $PATH_SAVE_K  => Wx::NewId();
 Readonly my $PATH_SAVE_R  => Wx::NewId();
@@ -74,24 +74,24 @@ Readonly my $MARK_BEFORE => Wx::NewId();
 Readonly my $MARK_INC    => Wx::NewId();
 Readonly my $MARK_EXC    => Wx::NewId();
 
-Readonly my $INCLUDE_ALL => Wx::NewId();
-Readonly my $EXCLUDE_ALL => Wx::NewId();
+Readonly my $INCLUDE_ALL    => Wx::NewId();
+Readonly my $EXCLUDE_ALL    => Wx::NewId();
 Readonly my $INCLUDE_INVERT => Wx::NewId();
 Readonly my $INCLUDE_MARKED => Wx::NewId();
 Readonly my $EXCLUDE_MARKED => Wx::NewId();
-Readonly my $EXCLUDE_AFTER => Wx::NewId();
-Readonly my $INCLUDE_SS => Wx::NewId();
-Readonly my $INCLUDE_HIGH => Wx::NewId();
-Readonly my $INCLUDE_R => Wx::NewId();
+Readonly my $EXCLUDE_AFTER  => Wx::NewId();
+Readonly my $INCLUDE_SS     => Wx::NewId();
+Readonly my $INCLUDE_HIGH   => Wx::NewId();
+Readonly my $INCLUDE_R      => Wx::NewId();
 
-Readonly my $DISCARD_ALL    => Wx::NewId();
-Readonly my $DISCARD_MARKED => Wx::NewId();
+Readonly my $DISCARD_ALL      => Wx::NewId();
+Readonly my $DISCARD_MARKED   => Wx::NewId();
 Readonly my $DISCARD_UNMARKED => Wx::NewId();
 Readonly my $DISCARD_EXCLUDED => Wx::NewId();
-Readonly my $DISCARD_AFTER  => Wx::NewId();
-Readonly my $DISCARD_MS     => Wx::NewId();
-Readonly my $DISCARD_LOW    => Wx::NewId();
-Readonly my $DISCARD_R      => Wx::NewId();
+Readonly my $DISCARD_AFTER    => Wx::NewId();
+Readonly my $DISCARD_MS	      => Wx::NewId();
+Readonly my $DISCARD_LOW      => Wx::NewId();
+Readonly my $DISCARD_R	      => Wx::NewId();
 
 Readonly my $SUM_INCLUDED => Wx::NewId();
 Readonly my $SUM_MARKED   => Wx::NewId();
@@ -159,27 +159,10 @@ sub new {
     $this->{$b} -> SetBackgroundColour(Wx::Colour->new($Demeter::UI::Artemis::demeter->co->default("happiness", "average_color")));
     $this->{$b} -> SetFont(Wx::Font->new( 10, wxDEFAULT, wxNORMAL, wxNORMAL, 0, "" ) );
   };
-  EVT_BUTTON($this, $this->{plot_rmr},  sub{$this->fetch_parameters;
-					    $this->{data}->po->start_plot;
-					    $this->{data}->plot('rmr');
-					    $parent->{statusbar}->SetStatusText("Plotted \"" . $this->{data}->name . "\" as the magnitude and real part of chi(R).");
-					  });
-  EVT_BUTTON($this, $this->{plot_k123}, sub{$this->fetch_parameters;
-					    $this->{data}->po->start_plot;
-					    $this->{data}->plot('k123');
-					    $parent->{statusbar}->SetStatusText("Plotted \"" . $this->{data}->name . "\" in k with three k-weights.");
-					  });
-  EVT_BUTTON($this, $this->{plot_r123}, sub{$this->fetch_parameters;
-					    $this->{data}->po->start_plot;
-					    $this->{data}->plot('r123');
-					    $parent->{statusbar}->SetStatusText("Plotted \"" . $this->{data}->name . "\" in R with three k-weights.");
-					  });
-  EVT_BUTTON($this, $this->{plot_kq},   sub{$this->fetch_parameters;
-					    $this->{data}->po->start_plot;
-					    $this->{data}->plot('kqfit');
-					    #$this->{data}->plot_window('k') if $this->{data}->po->plot_win;
-					    $parent->{statusbar}->SetStatusText("Plotted \"" . $this->{data}->name . "\" in k- and q-space.");
-					  });
+  EVT_BUTTON($this, $this->{plot_rmr},  sub{plot(@_, 'rmr')});
+  EVT_BUTTON($this, $this->{plot_k123}, sub{plot(@_, 'k123')});
+  EVT_BUTTON($this, $this->{plot_r123}, sub{plot(@_, 'r123')});
+  EVT_BUTTON($this, $this->{plot_kq},   sub{plot(@_, 'kqfit')});
 
   ## -------- title lines
   my $titlesbox      = Wx::StaticBox->new($leftpane, -1, 'Title lines ', wxDefaultPosition, wxDefaultSize);
@@ -352,19 +335,19 @@ sub make_menubar {
 
   ## -------- chi(k) menu
   $self->{datamenu}  = Wx::Menu->new;
-  $self->{datamenu}->Append($ID_DATA_RENAME,      "Rename this χ(k)",         "Rename this data set",  wxITEM_NORMAL );
-  $self->{datamenu}->Append($ID_DATA_DIFF,        "Make difference spectrum", "Make a difference spectrum using the marked paths", wxITEM_NORMAL );
-  $self->{datamenu}->Append($ID_DATA_TRANSFER,    "Transfer marked paths",    "Transfer marked paths to the plotting list", wxITEM_NORMAL );
-  $self->{datamenu}->Append($ID_DATA_VPATH,       "Make VPath",               "Make a virtual path from the set of marked paths", wxITEM_NORMAL );
+  $self->{datamenu}->Append($DATA_RENAME,      "Rename this χ(k)",         "Rename this data set",  wxITEM_NORMAL );
+  $self->{datamenu}->Append($DATA_DIFF,        "Make difference spectrum", "Make a difference spectrum using the marked paths", wxITEM_NORMAL );
+  $self->{datamenu}->Append($DATA_TRANSFER,    "Transfer marked paths",    "Transfer marked paths to the plotting list", wxITEM_NORMAL );
+  $self->{datamenu}->Append($DATA_VPATH,       "Make VPath",               "Make a virtual path from the set of marked paths", wxITEM_NORMAL );
   $self->{datamenu}->AppendSeparator;
-  $self->{datamenu}->Append($ID_DATA_DEGEN_N,     "Set all degens to Feff",   "Set degeneracies for all paths in this data set to values from Feff",  wxITEM_NORMAL );
-  $self->{datamenu}->Append($ID_DATA_DEGEN_1,     "Set all degens to one",    "Set degeneracies for all paths in this data set to one (1)",  wxITEM_NORMAL );
+  $self->{datamenu}->Append($DATA_DEGEN_N,     "Set all degens to Feff",   "Set degeneracies for all paths in this data set to values from Feff",  wxITEM_NORMAL );
+  $self->{datamenu}->Append($DATA_DEGEN_1,     "Set all degens to one",    "Set degeneracies for all paths in this data set to one (1)",  wxITEM_NORMAL );
   $self->{datamenu}->AppendSeparator;
-  $self->{datamenu}->Append($ID_DATA_DISCARD,     "Discard this χ(k)",        "Discard this data set", wxITEM_NORMAL );
+  $self->{datamenu}->Append($DATA_DISCARD,     "Discard this χ(k)",        "Discard this data set", wxITEM_NORMAL );
   $self->{datamenu}->AppendSeparator;
-  $self->{datamenu}->Append($ID_DATA_KMAXSUGEST, "Set kmax to Ifeffit's suggestion", "Set kmax to Ifeffit's suggestion, which is computed based on the staistical noise", wxITEM_NORMAL );
-  $self->{datamenu}->Append($ID_DATA_EPSK,       "Show ε",                           "Show statistical noise for these data", wxITEM_NORMAL );
-  $self->{datamenu}->Append($ID_DATA_NIDP,       "Show Nidp",                        "Show the number of independent points in these data", wxITEM_NORMAL );
+  $self->{datamenu}->Append($DATA_KMAXSUGEST, "Set kmax to Ifeffit's suggestion", "Set kmax to Ifeffit's suggestion, which is computed based on the staistical noise", wxITEM_NORMAL );
+  $self->{datamenu}->Append($DATA_EPSK,       "Show ε",                           "Show statistical noise for these data", wxITEM_NORMAL );
+  $self->{datamenu}->Append($DATA_NIDP,       "Show Nidp",                        "Show the number of independent points in these data", wxITEM_NORMAL );
 
   ## -------- sum menu
   $self->{summenu} = Wx::Menu->new;
@@ -443,12 +426,12 @@ sub make_menubar {
 
   $self->{menubar}->Append( $self->{datamenu},    "Da&ta" );
   $self->{menubar}->Append( $self->{summenu},     "&Sum" );
-  $self->{menubar}->Append( $self->{pathsmenu},   "&Paths" );
+  $self->{menubar}->Append( $self->{pathsmenu},   "&Path" );
   $self->{menubar}->Append( $self->{markmenu},    "M&arks" );
   $self->{menubar}->Append( $self->{includemenu}, "&Include" );
   $self->{menubar}->Append( $self->{discardmenu}, "Dis&card" );
 
-  map { $self->{datamenu}   ->Enable($_,0) } ($ID_DATA_RENAME, $ID_DATA_DIFF, $ID_DATA_TRANSFER, $ID_DATA_VPATH, $ID_DATA_DISCARD);
+  map { $self->{datamenu}   ->Enable($_,0) } ($DATA_RENAME, $DATA_DIFF, $DATA_VPATH, $DATA_DISCARD);
   map { $self->{summenu}    ->Enable($_,0) } ($SUM_MARKED, $SUM_INCLUDED, $SUM_IM);
   map { $self->{pathsmenu}  ->Enable($_,0) } ($PATH_SHOW, $PATH_CLONE);
   map { $self->{discardmenu}->Enable($_,0) } ($DISCARD_ALL, $DISCARD_MARKED, $DISCARD_UNMARKED, $DISCARD_EXCLUDED,
@@ -529,6 +512,20 @@ sub fetch_parameters {
   return 1;
 };
 
+sub plot {
+  my ($self, $event, $how) = @_;
+  $self->fetch_parameters;
+  $Demeter::UI::Artemis::frames{Plot}->fetch_parameters;
+  $self->{data}->po->start_plot;
+  $self->{data}->plot($how);
+  my $text = ($how eq 'rmr')   ? "as the magnitude and real part of chi(R)"
+           : ($how eq 'r123')  ? "in R with three k-weights"
+           : ($how eq 'k123')  ? "in k with three k-weights"
+           : ($how eq 'kqfit') ? "in k- and q-space"
+	   :                     q{};
+  $self->{statusbar}->SetStatusText(sprintf("Plotted \"%s\" %s.",
+					    $self->{data}->name, $text));
+};
 
 sub OnMenuClick {
   my ($datapage, $event)  = @_;
@@ -536,12 +533,18 @@ sub OnMenuClick {
   #print "1  $id  $PATH_ADD\n";
  SWITCH: {
 
-    (($id == $ID_DATA_DEGEN_N) or ($id == $ID_DATA_DEGEN_1)) and do {
+    (($id == $DATA_DEGEN_N) or ($id == $DATA_DEGEN_1)) and do {
       $datapage->set_degens($id);
       last SWITCH;
     };
 
-    ($id == $ID_DATA_KMAXSUGEST) and do {
+    ($id == $DATA_TRANSFER) and do {
+      foreach my $p (0 .. $datapage->{pathlist}->GetPageCount - 1) {
+	$datapage->{pathlist}->GetPage($p)->transfer if $datapage->{pathlist}->IsChecked($p);
+      };
+    };
+
+    ($id == $DATA_KMAXSUGEST) and do {
       $datapage->fetch_parameters;
       $datapage->{data}->chi_noise;
       $datapage->{kmax}->SetValue($datapage->{data}->recommended_kmax);
@@ -550,14 +553,14 @@ sub OnMenuClick {
       $datapage->{statusbar}->SetStatusText($text);
       last SWITCH;
     };
-    ($id == $ID_DATA_EPSK) and do {
+    ($id == $DATA_EPSK) and do {
       $datapage->fetch_parameters;
       $datapage->{data}->chi_noise;
       my $text = sprintf("Statistical noise: ε(k) = %.2e and ε(R) = %.2e", $datapage->{data}->epsk, $datapage->{data}->epsr);
       $datapage->{statusbar}->SetStatusText($text);
       last SWITCH;
     };
-    ($id == $ID_DATA_NIDP) and do {
+    ($id == $DATA_NIDP) and do {
       $datapage->fetch_parameters;
       my $text = sprintf("The number of independent points in this data set is %.2f", $datapage->{data}->nidp);
       $datapage->{statusbar}->SetStatusText($text);
@@ -620,7 +623,7 @@ sub set_degens {
   foreach my $n (0 .. $self->{pathlist}->GetPageCount-1) {
     my $page = $self->{pathlist}->GetPage($n);
     my $pathobject = $self->{pathlist}->{LIST}->GetClientData($n)->{path};
-    my $value = ($how eq $ID_DATA_DEGEN_N) ? $pathobject->degen : 1;
+    my $value = ($how eq $DATA_DEGEN_N) ? $pathobject->degen : 1;
     $page->{pp_n} -> SetValue($value);
     $pathobject->n($value);
   };
@@ -951,8 +954,24 @@ sub sum {
 
 sub transfer {
   my ($self, $event) = @_;
-
-  my $name = $self->{data}->name;
+  my $plotlist  = $Demeter::UI::Artemis::frames{Plot}->{plotlist};
+  my $name      = $self->{data}->name;
+  my $found     = 0;
+  my $thisgroup = $self->{data}->group;
+  foreach my $i (0 .. $plotlist->GetCount - 1) {
+    if ($thisgroup eq $plotlist->GetClientData($i)->group) {
+      $found = 1;
+      last;
+    };
+  };
+  if ($found) {
+    $self->{statusbar} -> SetStatusText("\"$name\" is already in the plotting list.");
+    return;
+  };
+  $plotlist->Append("Data: $name");
+  my $i = $plotlist->GetCount - 1;
+  $plotlist->SetClientData($i, $self->{data});
+  $plotlist->Check($i,1);
   $self->{statusbar} -> SetStatusText("Transfered data set \"$name\" to the plotting list.");
 };
 
