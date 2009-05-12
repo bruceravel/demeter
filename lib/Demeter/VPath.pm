@@ -40,6 +40,19 @@ has 'paths' => (
 			      'clear'   => 'clear_paths',
 			     }
 	       );
+has 'pathgroups' => (
+		     metaclass => 'Collection::Array',
+		     is        => 'rw',
+		     isa       => 'ArrayRef[Str]',
+		     default   => sub { [] },
+		     provides  => {
+				   'push'    => 'push_pathgroups',
+				   'pop'     => 'pop_pathgroups',
+				   'shift'   => 'shift_pathgroups',
+				   'unshift' => 'unshift_pathgroups',
+				   'clear'   => 'clear_pathgroups',
+			     }
+	       );
 
 ## data processing flags
 has 'update_path' => (is=>'rw', isa=>  'Bool',  default => 1,
@@ -53,10 +66,16 @@ sub BUILD {
   $self->mo->push_VPath($self);
 };
 
+sub label {
+  my ($self) = @_;
+  return $self->name;
+};
+
 sub include {
   my ($self, @paths) = @_;
   foreach my $p (@paths) {
     $self->push_paths($p);
+    $self->push_pathgroups($p->group);
     $self->data($p->data) if not $self->data;
   };
   return $self;
@@ -65,6 +84,7 @@ sub include {
 sub clear {
   my ($self) = @_;
   $self->clear_paths;
+  $self->clear_pathgroups;
   $self->data(q{});
   return $self;
 };

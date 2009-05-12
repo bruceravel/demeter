@@ -431,7 +431,7 @@ sub make_menubar {
   $self->{menubar}->Append( $self->{includemenu}, "&Include" );
   $self->{menubar}->Append( $self->{discardmenu}, "Dis&card" );
 
-  map { $self->{datamenu}   ->Enable($_,0) } ($DATA_RENAME, $DATA_DIFF, $DATA_VPATH, $DATA_DISCARD);
+  map { $self->{datamenu}   ->Enable($_,0) } ($DATA_RENAME, $DATA_DIFF, $DATA_DISCARD);
   map { $self->{summenu}    ->Enable($_,0) } ($SUM_MARKED, $SUM_INCLUDED, $SUM_IM);
   map { $self->{pathsmenu}  ->Enable($_,0) } ($PATH_SHOW, $PATH_CLONE);
   map { $self->{discardmenu}->Enable($_,0) } ($DISCARD_ALL, $DISCARD_MARKED, $DISCARD_UNMARKED, $DISCARD_EXCLUDED,
@@ -542,6 +542,16 @@ sub OnMenuClick {
       foreach my $p (0 .. $datapage->{pathlist}->GetPageCount - 1) {
 	$datapage->{pathlist}->GetPage($p)->transfer if $datapage->{pathlist}->IsChecked($p);
       };
+      last SWITCH;
+    };
+
+    ($id == $DATA_VPATH) and do {
+      my @list = ();
+      foreach my $p (0 .. $datapage->{pathlist}->GetPageCount - 1) {
+	push(@list, $datapage->{pathlist}->GetPage($p)->{path}) if $datapage->{pathlist}->IsChecked($p);
+      };
+      $Demeter::UI::Artemis::frames{Plot}->{VPaths}->add_vpath(@list);
+      last SWITCH;
     };
 
     ($id == $DATA_KMAXSUGEST) and do {

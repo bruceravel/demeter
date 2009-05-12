@@ -352,7 +352,7 @@ sub Rename {
   my ($self, $newname) = @_;
   my $included = $self->{path}->include;
   $self->{path}->name($newname);
-  $self->{path}->label($newname);
+  $self->{path}->label(sprintf("[%s] %s", $self->{path}->parent->name, $newname));
   my $label = $newname;
   ($label = sprintf("((( %s )))", $label)) if not $included;
   $self->{idlabel} -> SetLabel($label);

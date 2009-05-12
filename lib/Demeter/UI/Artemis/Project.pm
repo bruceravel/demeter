@@ -30,7 +30,7 @@ require Exporter;
 
 use vars qw(@ISA @EXPORT);
 @ISA       = qw(Exporter);
-@EXPORT    = qw(save_project read_project);
+@EXPORT    = qw(save_project read_project modified);
 
 use File::Basename;
 use File::Spec;
@@ -76,8 +76,8 @@ sub save_project {
   carp('error writing zip-style project') unless ($zip->writeToFileNamed( $fname ) == AZ_OK);
   undef $zip;
 
-  $rframes->{main}->{projectname} = basename($fname);
-  $rframes->{main}->SetTitle('Artemis [EXAFS data analysis] ' . basename($fname, '.fpj'));
+  $rframes->{main}->{projectname} = basename($fname, '.fpj');
+  modified(0);
 };
 
 sub read_project {
@@ -195,9 +195,8 @@ sub read_project {
     ++$count;
   };
 
-
-  $rframes->{main}->{projectname} = basename($fname);
-  $rframes->{main}->SetTitle('Artemis [EXAFS data analysis] ' . basename($fname, '.fpj'));
+  $rframes->{main}->{projectname} = basename($fname, '.fpj');
+  modified(0);
 };
 
 sub find_sp {
@@ -210,5 +209,15 @@ sub find_sp {
   return q{};
 };
 
+
+sub modified {
+  my ($is_modified) = @_;
+  my $main = $Demeter::UI::Artemis::frames{main};
+  if ($is_modified) {
+    $main->SetTitle('Artemis [EXAFS data analysis] *' . $main->{projectname} . '*');
+  } else {
+    $main->SetTitle('Artemis [EXAFS data analysis] ' . $main->{projectname});
+  };
+};
 
 1;

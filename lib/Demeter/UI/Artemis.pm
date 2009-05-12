@@ -65,6 +65,7 @@ sub OnInit {
   $frames{main} -> SetIcon($icon);
   $frames{main} -> {currentfit} = q{};
   $frames{main} -> {projectname} = q{};
+  $frames{main} -> {modified} = 0;
 
   ## -------- Set up menubar
   my $bar = Wx::MenuBar->new;
@@ -296,6 +297,7 @@ sub uptodate {
     $grid->{$name} = $thisgds;
     push @gds, $thisgds;
   };
+  modified(1);
   return ($abort, \@data, \@paths, \@gds);
 };
 

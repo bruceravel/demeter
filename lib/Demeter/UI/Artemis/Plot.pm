@@ -74,8 +74,9 @@ sub new {
 				       [0, 1, 2, 3, 'kw'],
 				       1, wxRA_SPECIFY_ROWS);
   $left -> Add($this->{kweight}, 0, wxLEFT|wxRIGHT|wxGROW, 5);
-  $this->{kweight}->SetSelection(2);
+  $this->{kweight}->SetSelection($demeter->co->default('plot', 'kweight'));
   $this->{kweight}->Enable(4, 0);
+  $demeter->po->kweight($demeter->co->default('plot', 'kweight'));
   EVT_RADIOBOX($this, $this->{kweight},
 	       sub{
 		 my ($self, $event) = @_;
@@ -97,6 +98,7 @@ sub new {
     $nb->AddPage($this->{$utility}, ($utility eq 'indicators') ? 'indic.' : $utility, 0);#, $count);
   };
   $left -> Add($nb, 1, wxGROW|wxALL, 5);
+  $this->{notebook} = $nb;
 
 
   my $hbox = Wx::BoxSizer->new( wxHORIZONTAL );
@@ -139,6 +141,7 @@ sub fetch_parameters {
 sub plot {
   my ($self, $event, $space) = @_;
   return if ($space !~ m{[krq]}i);
+  my ($abort, $rdata, $rpaths, $rgds) = Demeter::UI::Artemis::uptodate(\%Demeter::UI::Artemis::frames);
   $self->fetch_parameters;
   $demeter->po->start_plot;
   my @list = ();
