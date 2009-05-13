@@ -84,6 +84,7 @@ Readonly my $INCLUDE_SS     => Wx::NewId();
 Readonly my $INCLUDE_HIGH   => Wx::NewId();
 Readonly my $INCLUDE_R      => Wx::NewId();
 
+Readonly my $DISCARD_THIS     => Wx::NewId();
 Readonly my $DISCARD_ALL      => Wx::NewId();
 Readonly my $DISCARD_MARKED   => Wx::NewId();
 Readonly my $DISCARD_UNMARKED => Wx::NewId();
@@ -413,6 +414,8 @@ sub make_menubar {
 
   ## -------- discard menu
   $self->{discardmenu}  = Wx::Menu->new;
+  $self->{discardmenu}->Append($DISCARD_THIS,     "Discard this path", "Discard the currently displayed path", wxITEM_NORMAL );
+  $self->{discardmenu}->AppendSeparator;
   $self->{discardmenu}->Append($DISCARD_ALL,      "Discard all",      "Discard all paths",          wxITEM_NORMAL );
   $self->{discardmenu}->Append($DISCARD_MARKED,   "Discard marked",   "Discard all marked paths",   wxITEM_NORMAL );
   $self->{discardmenu}->Append($DISCARD_UNMARKED, "Discard unmarked", "Discard all UNmarked paths", wxITEM_NORMAL );
@@ -433,9 +436,7 @@ sub make_menubar {
 
   map { $self->{datamenu}   ->Enable($_,0) } ($DATA_RENAME, $DATA_DIFF, $DATA_DISCARD);
   map { $self->{summenu}    ->Enable($_,0) } ($SUM_MARKED, $SUM_INCLUDED, $SUM_IM);
-  map { $self->{pathsmenu}  ->Enable($_,0) } ($PATH_SHOW, $PATH_CLONE);
-  map { $self->{discardmenu}->Enable($_,0) } ($DISCARD_ALL, $DISCARD_MARKED, $DISCARD_UNMARKED, $DISCARD_EXCLUDED,
-					      $DISCARD_AFTER, $DISCARD_MS, $DISCARD_LOW, $DISCARD_R)
+  map { $self->{pathsmenu}  ->Enable($_,0) } ($PATH_CLONE);
 
 };
 
@@ -577,6 +578,23 @@ sub OnMenuClick {
       last SWITCH;
     };
 
+    ($id == $PATH_SHOW) and do { # show a dialog with the path paragraph
+      my $pathobject = $datapage->{pathlist}->GetPage($datapage->{pathlist}->GetSelection)->{path};
+      my $show = Wx::Dialog->new($datapage, -1, $pathobject->label.', evaluated', wxDefaultPosition, [450,350],
+				 wxOK|wxICON_INFORMATION);
+      my $box  = Wx::BoxSizer->new( wxVERTICAL );
+      my $text = Wx::TextCtrl->new($show, -1, q{}, wxDefaultPosition, wxDefaultSize,
+				   wxVSCROLL|wxHSCROLL|wxTE_MULTILINE|wxTE_READONLY|wxNO_BORDER);
+      $text -> SetFont(Wx::Font->new( 10, wxTELETYPE, wxNORMAL, wxNORMAL, 0, "" ) );
+      $text -> SetValue($pathobject->paragraph);
+      $box  -> Add($text, 1, wxGROW|wxALL, 5);
+      my $button = Wx::Button->new($show, wxID_OK, "OK", wxDefaultPosition, wxDefaultSize, 0,);
+      $box -> Add($button, 0, wxGROW|wxALL, 5);
+      $show -> SetSizer( $box );
+      $show -> ShowModal;
+      last SWITCH;
+    };
+
     ($id == $PATH_RENAME) and do {
       $datapage->{pathlist}->RenameSelection;
       last SWITCH;
@@ -618,9 +636,9 @@ sub OnMenuClick {
        last SWITCH;
     };
 
-    (($id == $DISCARD_ALL)      or ($id == $DISCARD_MARKED) or ($id == $DISCARD_UNMARKED) or 
-     ($id == $DISCARD_EXCLUDED) or ($id == $DISCARD_AFTER) or
-     ($id == $DISCARD_MS)       or ($id == $DISCARD_LOW)    or ($id == $DISCARD_R)) and do {
+    (($id == $DISCARD_THIS)     or ($id == $DISCARD_ALL)      or ($id == $DISCARD_MARKED) or
+     ($id == $DISCARD_UNMARKED) or ($id == $DISCARD_EXCLUDED) or ($id == $DISCARD_AFTER)  or
+     ($id == $DISCARD_MS)       or ($id == $DISCARD_LOW  )    or ($id == $DISCARD_R)        ) and do {
        $datapage->discard($id);
        last SWITCH;
     };
@@ -941,7 +959,8 @@ sub include {
 
 sub discard {
   my ($self, $mode) = @_;
-  my $how = ($mode == $DISCARD_ALL)      ? 'all'
+  my $how = ($mode == $DISCARD_THIS)     ? 'this'
+          : ($mode == $DISCARD_ALL)      ? 'all'
           : ($mode == $DISCARD_MARKED)   ? 'marked'
           : ($mode == $DISCARD_UNMARKED) ? 'unmarked'
           : ($mode == $DISCARD_EXCLUDED) ? 'excluded'
@@ -950,7 +969,91 @@ sub discard {
           : ($mode == $DISCARD_LOW)      ? 'low'
           : ($mode == $DISCARD_R)        ? 'r'
           :                                $mode;
-  print "discarding $how\n";
+  my $npaths = $self->{pathlist}->GetPageCount-1;
+  my $sel    = $self->{pathlist}->GetSelection;
+  my $text   = q{};
+  my @count  = reverse(0 .. $npaths);
+
+ SWITCH: {
+    ($how eq 'this') and do {
+      $self->{pathlist}->DeletePage($sel);
+      $text = "Discarded the path that was displayed.";
+      last SWITCH;
+    };
+
+    ($how eq 'all') and do {
+      $self->{pathlist}->Clear;
+      $text = "Discarded all paths.";
+      last SWITCH;
+    };
+
+    ($how eq 'marked') and do {
+      foreach my $i (@count) {
+	$self->{pathlist}->DeletePage($i) if $self->{pathlist}->IsChecked($i);
+      };
+      $text = "Discarded all paths that were marked.";
+      last SWITCH;
+    };
+
+    ($how eq 'unmarked') and do {
+      foreach my $i (@count) {
+	$self->{pathlist}->DeletePage($i) if not $self->{pathlist}->IsChecked($i);
+      };
+      $text = "Discarded all unmarked paths.";
+      last SWITCH;
+    };
+
+    ($how eq 'excluded') and do {
+      foreach my $i (@count) {
+	$self->{pathlist}->DeletePage($i) if not $self->{pathlist}->GetPage($i)->{path}->include;
+      };
+      $text = "Discarded paths which were not included in the fit.";
+      last SWITCH;
+    };
+
+    ($how eq 'after') and do {
+      foreach my $i (@count) {
+	$self->{pathlist}->DeletePage($i) if ($i>$sel);
+      };
+      $text = "Discarded all paths after the one currently displayed.";
+      last SWITCH;
+    };
+
+    ($how eq 'ms') and do {
+      foreach my $i (@count) {
+	$self->{pathlist}->DeletePage($i) if not $self->{pathlist}->GetPage($i)->{path}->sp->nleg == 2;
+      };
+      $text = "Discarded all multiple scattering paths.";
+      last SWITCH;
+    };
+
+    ($how eq 'low') and do {
+      foreach my $i (@count) {
+	$self->{pathlist}->DeletePage($i) if ($self->{pathlist}->GetPage($i)->{path}->sp->weight < 1);
+      };
+      $text = "Discarded all low importance paths.";
+      last SWITCH;
+    };
+
+    ($how eq 'r') and do {
+      my $ted = Wx::TextEntryDialog->new( $self, "Discard paths longer than this path length:", "Enter a path length", q{}, wxOK|wxCANCEL, Wx::GetMousePosition);
+      if ($ted->ShowModal == wxID_CANCEL) {
+	$self->{statusbar}->SetStatusText("Path discarding cancelled.");
+	return;
+      };
+      my $r = $ted->GetValue;
+      if ($r !~ m{$NUMBER}) {
+	$self->{statusbar}->SetStatusText("Oops!  That wasn't a number.");
+	return;
+      };
+      foreach my $i (@count) {
+	$self->{pathlist}->DeletePage($i) if ($self->{pathlist}->GetPage($i)->{path}->sp->fuzzy > $r);
+      };
+      $text = "Discarded all paths longer that $r " . chr(197) . '.';
+    };
+  };
+  $self->{statusbar}->SetStatusText($text);
+  $self->{pathlist}->InitialPage if not $self->{pathlist}->{VIEW};
 };
 
 sub sum {

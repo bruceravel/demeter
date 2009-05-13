@@ -464,11 +464,11 @@ sub paragraph {
   my ($self) = @_;
   my $string = sprintf("    feff   = %s\n",     File::Spec->catfile($self->get(qw(folder file))));
   $string   .= sprintf("    id     = %s\n",     $self->id);
-  $string   .= sprintf("    label  = %s\n",     $self->name);
+  $string   .= sprintf("    name   = %s\n",     $self->name);
   $string   .= sprintf("    r      = %12.6f\n", $self->R);
   $string   .= sprintf("    degen  = %12.6f\n", $self->n);
   foreach my $pp (qw(s02 e0 delr sigma2 third fourth ei)) {
-    $string .= sprintf("    %-6s = %12.6f\n",   $pp, $self->$pp);
+    $string .= sprintf("    %-6s = %12.6f\n",   $pp, $self->value($pp)||0);
   };
   return $string;
 };

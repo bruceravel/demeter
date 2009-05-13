@@ -120,6 +120,13 @@ sub DeletePage {
   return 1;
 };
 
+sub Clear {
+  my ($self, $page) = @_;
+  foreach my $i (reverse(0 .. $self->GetPageCount-1)) {
+    $self->DeletePage($i);
+  };
+};
+
 ## take and page object or a page id and return both
 sub page_and_id {
   my ($self, $arg) = @_;

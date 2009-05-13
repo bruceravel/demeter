@@ -35,15 +35,19 @@ sub new {
 
   $vv -> Add($this->{dostack}, 0, wxTOP, 2);
 
+  my $hbox =  Wx::BoxSizer->new( wxHORIZONTAL );
+  $vv -> Add($hbox, 0, wxTOP, 5);
   my $label  = Wx::StaticText->new($this, -1, 'Starting value');
   $this->{start}  = Wx::TextCtrl->new($this, -1, 0, wxDefaultPosition, [-1, -1]);
-  $vv -> Add($label, 0, wxTOP, 2);
-  $vv -> Add($this->{start}, 0, wxGROW|wxLEFT|wxRIGHT, 5);
+  $hbox -> Add($label, 0, wxTOP, 2);
+  $hbox -> Add($this->{start}, 0, wxGROW|wxLEFT|wxRIGHT, 5);
 
+  $hbox =  Wx::BoxSizer->new( wxHORIZONTAL );
+  $vv -> Add($hbox, 0, wxTOP, 5);
   $label  = Wx::StaticText->new($this, -1, 'Downward offset');
   $this->{increment} = Wx::TextCtrl->new($this, -1, 0, wxDefaultPosition, [-1, -1]);
-  $vv -> Add($label,     0, wxTOP, 2);
-  $vv -> Add($this->{increment}, 0, wxGROW|wxLEFT|wxRIGHT, 5);
+  $hbox -> Add($label,     0, wxTOP, 2);
+  $hbox -> Add($this->{increment}, 0, wxGROW|wxLEFT|wxRIGHT, 5);
 
   $stackboxsizer->Add($vv, 1, wxGROW|wxALL, 5);
   $box->Add($stackboxsizer, 1, wxGROW|wxTOP|wxBOTTOM, 3);
