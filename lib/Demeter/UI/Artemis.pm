@@ -16,7 +16,7 @@ use String::Random qw(random_string);
 use YAML;
 
 use Wx qw(:everything);
-use Wx::Event qw(EVT_MENU EVT_CLOSE EVT_TOOL_ENTER EVT_CHECKBOX EVT_BUTTON EVT_TOGGLEBUTTON);
+use Wx::Event qw(EVT_MENU EVT_CLOSE EVT_TOOL_ENTER EVT_CHECKBOX EVT_BUTTON EVT_TOGGLEBUTTON EVT_ENTER_WINDOW EVT_LEAVE_WINDOW);
 use base 'Wx::App';
 
 use Readonly;
@@ -83,6 +83,10 @@ sub OnInit {
 
   my $hbox = Wx::BoxSizer->new( wxHORIZONTAL);
 
+  ## -------- status bar
+  $frames{main}->{statusbar} = $frames{main}->CreateStatusBar;
+  $frames{main}->{statusbar} -> SetStatusText("Welcome to Artemis (" . $demeter->identify . ")");
+
   ## -------- GDS and Plot toolbar
   my $vbox = Wx::BoxSizer->new( wxVERTICAL);
   $hbox -> Add($vbox, 0, wxALL, 5);
@@ -145,6 +149,7 @@ sub OnInit {
   $frames{main}->{name}  = Wx::TextCtrl->new($frames{main}, -1, "Fit 1");
   $hname -> Add($label,                0, wxALL, 5);
   $hname -> Add($frames{main}->{name}, 1, wxALL, 2);
+  mouseover($frames{main}->{name}, "Provide a short description of this fitting model.");
 
   $label = Wx::StaticText->new($frames{main}, -1, "Fit space:");
   my @fitspace = (Wx::RadioButton->new($frames{main}, -1, 'k', wxDefaultPosition, wxDefaultSize, wxRB_GROUP),
@@ -158,12 +163,16 @@ sub OnInit {
   $fitspace[1]->SetValue(1) if ($demeter->co->default("fit", "space") eq 'r');
   $fitspace[2]->SetValue(2) if ($demeter->co->default("fit", "space") eq 'q');
 
+  mouseover($fitspace[0], "Evaluate the fitting metric in k-space.");
+  mouseover($fitspace[1], "Evaluate the fitting metric in R-space.");
+  mouseover($fitspace[2], "Evaluate the fitting metric in q-space.");
 
   my $descbox      = Wx::StaticBox->new($frames{main}, -1, 'Fit description', wxDefaultPosition, wxDefaultSize);
   my $descboxsizer = Wx::StaticBoxSizer->new( $descbox, wxVERTICAL );
   my $description  = Wx::TextCtrl->new($frames{main}, -1, q{}, wxDefaultPosition, [-1, 25], wxTE_MULTILINE);
   $descboxsizer   -> Add($description,  1, wxGROW|wxALL, 0);
   $vbox           -> Add($descboxsizer, 1, wxGROW|wxALL, 0);
+  mouseover($description, "Use this space to fully describe this fitting model.");
 
   $vbox = Wx::BoxSizer->new( wxVERTICAL);
   $hbox -> Add($vbox, 0, wxGROW|wxALL, 0);
@@ -173,6 +182,7 @@ sub OnInit {
   $frames{main}->{fitbutton} -> SetBackgroundColour(Wx::Colour->new($demeter->co->default("happiness", "average_color")));
   $frames{main}->{fitbutton} -> SetFont(Wx::Font->new( 10, wxDEFAULT, wxNORMAL, wxBOLD, 0, "" ) );
   $vbox->Add($frames{main}->{fitbutton}, 1, wxGROW|wxALL, 2);
+  mouseover($frames{main}->{fitbutton}, "Start the fit.");
 
   $frames{main}->{log_toggle} = Wx::ToggleButton -> new($frames{main}, -1, "Show log",);
   $vbox->Add($frames{main}->{log_toggle}, 0, wxGROW|wxALL, 2);
@@ -187,9 +197,6 @@ sub OnInit {
   EVT_TOOL_ENTER ($frames{main}, $toolbar,   sub{my ($toolbar,  $event) = @_; OnToolEnter($toolbar,  $event, 'toolbar')} );
   EVT_BUTTON     ($frames{main}->{fitbutton}, -1, sub{fit(@_, \%frames)});
 
-  ## -------- status bar
-  $frames{main}->{statusbar} = $frames{main}->CreateStatusBar;
-  $frames{main}->{statusbar} -> SetStatusText("Welcome to Artemis (" . $demeter->identify . ")");
 
 
   $frames{main} -> SetSizer($hbox);
@@ -227,6 +234,13 @@ sub OnInit {
   read_project(\%frames, $ARGV[0]) if ($ARGV[0] and -e $ARGV[0]);
   1;
 }
+
+sub mouseover {
+  my ($widget, $text) = @_;
+  my $sb = $frames{main}->{statusbar};
+  EVT_ENTER_WINDOW($widget, sub{$sb->PushStatusText($text); $_[1]->Skip});
+  EVT_LEAVE_WINDOW($widget, sub{$sb->PopStatusText;         $_[1]->Skip});
+};
 
 sub on_close {
   my ($self) = @_;
@@ -270,6 +284,21 @@ sub uptodate {
   my (@data, @paths, @gds);
   my $abort = 0;
 
+  ## do I need to take care at this point about GDS's with the same name?
+  my $grid = $rframes->{GDS}->{grid};
+  foreach my $row (0 .. $grid->GetNumberRows) {
+    $grid -> SetCellValue($row, 3, q{});
+    my $name = $grid -> GetCellValue($row, 1);
+    next if ($name =~ m{\A\s*\z});
+    my $type = $grid -> GetCellValue($row, 0);
+    my $mathexp = $grid -> GetCellValue($row, 2);
+    my $thisgds = $grid->{$name} || Demeter::GDS->new(); # take care to reuse GDS objects whenever possible
+    $thisgds -> set(name=>$name, gds=>$type, mathexp=>$mathexp);
+    $grid->{$name} = $thisgds;
+    push @gds, $thisgds;
+    $thisgds->dispose($thisgds->write_gds);
+  };
+
   foreach my $k (keys(%$rframes)) {
     next unless ($k =~ m{\Adata});
     my $this = $rframes->{$k}->{data};
@@ -284,19 +313,6 @@ sub uptodate {
     };
   };
 
-  ## do I need to take care at this point about GDS's with the same name?
-  my $grid = $rframes->{GDS}->{grid};
-  foreach my $row (0 .. $grid->GetNumberRows) {
-    $grid -> SetCellValue($row, 3, q{});
-    my $name = $grid -> GetCellValue($row, 1);
-    next if ($name =~ m{\A\s*\z});
-    my $type = $grid -> GetCellValue($row, 0);
-    my $mathexp = $grid -> GetCellValue($row, 2);
-    my $thisgds = $grid->{$name} || Demeter::GDS->new(); # take care to reuse GDS objects whenever possible
-    $thisgds -> set(name=>$name, gds=>$type, mathexp=>$mathexp);
-    $grid->{$name} = $thisgds;
-    push @gds, $thisgds;
-  };
   modified(1);
   return ($abort, \@data, \@paths, \@gds);
 };

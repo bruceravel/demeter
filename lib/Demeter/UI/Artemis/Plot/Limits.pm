@@ -18,7 +18,7 @@ package  Demeter::UI::Artemis::Plot::Limits;
 
 use Wx qw( :everything );
 use base qw(Wx::Panel);
-use Wx::Event qw(EVT_MENU EVT_CLOSE EVT_TOOL_ENTER EVT_CHECKBOX EVT_CHOICE);
+use Wx::Event qw(EVT_MENU EVT_CLOSE EVT_TOOL_ENTER EVT_CHECKBOX EVT_CHOICE EVT_ENTER_WINDOW EVT_LEAVE_WINDOW );
 use Wx::Perl::TextValidator;
 
 my $parts = ['Magnitude', 'Real part', 'Imaginary part'];
@@ -58,6 +58,8 @@ sub new {
   $demeter->po->q_pl('r');
   EVT_CHOICE($this, $this->{rpart}, sub{OnChoice(@_, 'rpart', 'r_pl')});
   EVT_CHOICE($this, $this->{qpart}, sub{OnChoice(@_, 'qpart', 'q_pl')});
+  $this->mouseover("rpart", "Choose the part of the complex χ(R) function to display when plotting the contents of the plotting list.");
+  $this->mouseover("qpart", "Choose the part of the complex χ(q) function to display when plotting the contents of the plotting list.");
 
   ## -------- toggles for fit, win, bkg, res
   ##    after a fit: turn on fit toggle, bkg toggle is bkg refined
@@ -83,6 +85,12 @@ sub new {
   EVT_CHECKBOX($this, $this->{background}, sub{OnPlotToggle(@_, 'background', 'plot_bkg')});
   EVT_CHECKBOX($this, $this->{window},     sub{OnPlotToggle(@_, 'window',     'plot_win')});
   EVT_CHECKBOX($this, $this->{residual},   sub{OnPlotToggle(@_, 'residual',   'plot_res')});
+
+  $this->mouseover("fit",        "Include the most recent fit when plotting a data set from the plotting list.");
+  $this->mouseover("background", "Include the refined background when plotting a data set from the plotting list.");
+  $this->mouseover("window",     "Include the most window function when making a plot from the plotting list.");
+  $this->mouseover("residual",   "Include the residual of the most recent fit when plotting a data set from the plotting list.");
+
 
   $szr -> Add(Wx::StaticLine->new($this, -1, wxDefaultPosition, wxDefaultSize, wxLI_HORIZONTAL), 0, wxGROW|wxLEFT|wxRIGHT, 5);
 
@@ -131,10 +139,25 @@ sub new {
   $this->{qmin} -> SetValidator( Wx::Perl::TextValidator->new( qr([0-9.]) ) );
   $this->{qmax} -> SetValidator( Wx::Perl::TextValidator->new( qr([0-9.]) ) );
 
+  $this->mouseover("kmin", "The lower bound of a plot of χ(k).");
+  $this->mouseover("kmax", "The upper bound of a plot of χ(k).");
+  $this->mouseover("rmin", "The lower bound of a plot of χ(r).");
+  $this->mouseover("rmax", "The upper bound of a plot of χ(r).");
+  $this->mouseover("qmin", "The lower bound of a plot of χ(q).");
+  $this->mouseover("qmax", "The upper bound of a plot of χ(q).");
+
 
   $this -> SetSizer($szr);
   return $this;
 };
+
+sub mouseover {
+  my ($self, $widget, $text) = @_;
+  my $sb = $Demeter::UI::Artemis::frames{main}->{statusbar};
+  EVT_ENTER_WINDOW($self->{$widget}, sub{$sb->PushStatusText($text); $_[1]->Skip});
+  EVT_LEAVE_WINDOW($self->{$widget}, sub{$sb->PopStatusText;         $_[1]->Skip});
+};
+
 
 sub OnPlotToggle {
   my ($this, $event, $button, $accessor) = @_;

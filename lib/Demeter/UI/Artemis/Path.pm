@@ -67,7 +67,7 @@ sub new {
   $this->{fefflabel} -> SetFont( Wx::Font->new( 12, wxDEFAULT, wxNORMAL, wxBOLD, 0, "" ) );
   $hbox -> Add($this->{fefflabel}, 0, wxLEFT|wxTOP|wxBOTTOM, 5);
   EVT_BUTTON($this, $this->{plotgrab}, sub{transfer(@_)});
-
+  $this->mouseover("plotgrab", "Transfer this path to the plotting list.");
 
   $this->{idlabel}  = Wx::StaticText -> new($this, -1, "Path name");
   $this->{idlabel} -> SetFont( Wx::Font->new( 12, wxDEFAULT, wxNORMAL, wxBOLD, 0, "" ) );
@@ -88,6 +88,10 @@ sub new {
   EVT_CHECKBOX($this, $this->{include}, sub{include_label(@_)});
   $this->{useasdefault}->Enable(0);
 
+  $this->mouseover("include", "Check this button to include this path in the fit, uncheck to exclude it.");
+  $this->mouseover("plotafter", "Check this button to have this path automatically transfered to the plotting list after a fit.");
+
+
   ## -------- geometry
   $this->{geombox}  = Wx::StaticBox->new($this, -1, 'Geometry ', wxDefaultPosition, wxDefaultSize);
   my $geomboxsizer  = Wx::StaticBoxSizer->new( $this->{geombox}, wxHORIZONTAL );
@@ -107,6 +111,8 @@ sub new {
 					     wxNullColour,
 					     Wx::Font->new( 10, wxDEFAULT, wxSLANT, wxNORMAL, 0, "" ) );
 
+  $this->mouseover("geometry", "This box contains a succinct description of the geometry of this path.");
+
   ## -------- path parameters
   $gbs = Wx::GridBagSizer->new( 3, 10 );
 
@@ -122,7 +128,7 @@ sub new {
     ++$i;
     EVT_RIGHT_DOWN($label, sub{DoLabelKeyPress(@_, $this)});
     EVT_MENU($label, -1, sub{ $this->OnLabelMenu(@_)    });
-    #EVT_ENTER_WINDOW($label, sub{$this->DoLabelEnter});
+    #EVT_ENTER_WINDOW($label, sub{print "hi\n"});#$this->DoLabelEnter});
     #EVT_LEAVE_WINDOW($label, sub{$this->DoLabelLeave});
   };
   $vbox -> Add($gbs, 2, wxGROW|wxTOP|wxBOTTOM, 10);
@@ -138,6 +144,10 @@ sub new {
   $hbox -> Add($this->{dnbutton}, 0, wxALL, 1);
   EVT_BUTTON($this, $this->{dnbutton}, sub{OnDownButton(@_)});
 
+  $this->mouseover("upbutton", "Move this path up in the path list.");
+  $this->mouseover("dnbutton", "Move this path down in the path list.");
+
+
   #   $this->{transferbutton} = Wx::Button->new($this, -1, q{Trans&fer marked}, wxDefaultPosition, wxDefaultSize, wxBU_EXACTFIT);
   #   $hbox -> Add($this->{transferbutton}, 0, wxALL, 1);
   #   EVT_BUTTON($this, $this->{transferbutton}, sub{OnTransferButton(@_)});
@@ -151,6 +161,12 @@ sub new {
   $this -> SetSizerAndFit($vbox);
 
   return $this;
+};
+
+sub mouseover {
+  my ($self, $widget, $text) = @_;
+  EVT_ENTER_WINDOW($self->{$widget}, sub{$self->{datapage}->{statusbar}->PushStatusText($text); $_[1]->Skip});
+  EVT_LEAVE_WINDOW($self->{$widget}, sub{$self->{datapage}->{statusbar}->PopStatusText;         $_[1]->Skip});
 };
 
 sub populate {

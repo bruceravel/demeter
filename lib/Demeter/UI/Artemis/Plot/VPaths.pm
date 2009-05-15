@@ -105,7 +105,9 @@ sub OnMenu {
       my $vpath = $listbox->GetClientData($sel);
       foreach my $i (0 .. $Demeter::UI::Artemis::frames{Plot}->{plotlist}->GetCount-1) {
 	if ($Demeter::UI::Artemis::frames{Plot}->{plotlist}->GetClientData($i)->group eq $vpath->group) {
+	  my $obj = $Demeter::UI::Artemis::frames{Plot}->{plotlist}->GetClientData($i);
 	  $Demeter::UI::Artemis::frames{Plot}->{plotlist}->Delete($i);
+	  $obj -> DESTROY;
 	  last;
 	};
       };

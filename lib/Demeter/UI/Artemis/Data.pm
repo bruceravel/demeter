@@ -20,7 +20,7 @@ use warnings;
 
 use Wx qw( :everything);
 use base qw(Wx::Frame);
-use Wx::Event qw(EVT_MENU EVT_CLOSE EVT_TOOL_ENTER EVT_CHECKBOX EVT_CHOICE EVT_BUTTON);
+use Wx::Event qw(EVT_MENU EVT_CLOSE EVT_TOOL_ENTER EVT_CHECKBOX EVT_CHOICE EVT_BUTTON EVT_ENTER_WINDOW EVT_LEAVE_WINDOW);
 use Wx::DND;
 use Wx::Perl::TextValidator;
 
@@ -95,9 +95,9 @@ Readonly my $DISCARD_MS	      => Wx::NewId();
 Readonly my $DISCARD_LOW      => Wx::NewId();
 Readonly my $DISCARD_R	      => Wx::NewId();
 
-Readonly my $SUM_INCLUDED => Wx::NewId();
-Readonly my $SUM_MARKED   => Wx::NewId();
-Readonly my $SUM_IM       => Wx::NewId();
+# Readonly my $SUM_INCLUDED => Wx::NewId();
+# Readonly my $SUM_MARKED   => Wx::NewId();
+# Readonly my $SUM_IM       => Wx::NewId();
 
 
 sub new {
@@ -139,6 +139,9 @@ sub new {
   $namebox -> Add($this->{cv}, 0, wxLEFT|wxRIGHT|wxTOP, 3);
   EVT_BUTTON($this, $this->{plotgrab}, sub{transfer(@_)});
 
+  $this->mouseover("plotgrab", "Transfer this data set to the plotting list.");
+  $this->mouseover("cv",       "The characteristic value for this data set, which is used in certain advanced modeling features.  (The CV must be a number.)");
+
   ## -------- file name and record number
   my $filebox  = Wx::BoxSizer->new( wxHORIZONTAL );
   $left    -> Add($filebox, 0, wxGROW|wxALL, 0);
@@ -166,6 +169,12 @@ sub new {
   EVT_BUTTON($this, $this->{plot_r123}, sub{plot(@_, 'r123')});
   EVT_BUTTON($this, $this->{plot_kq},   sub{plot(@_, 'kqfit')});
 
+  $this->mouseover("plot_rmr",  "Plot this data set as |χ(R)| and Re[χ(R)].");
+  $this->mouseover("plot_k123", "Plot this data set as χ(k) with all three k-weights and scaled to the same size.");
+  $this->mouseover("plot_r123", "Plot this data set as χ(R) with all three k-weights and scaled to the same size.");
+  $this->mouseover("plot_kq",   "Plot this data set as both χ(k) and Re[χ(q)].");
+
+
   ## -------- title lines
   my $titlesbox      = Wx::StaticBox->new($leftpane, -1, 'Title lines ', wxDefaultPosition, wxDefaultSize);
   my $titlesboxsizer = Wx::StaticBoxSizer->new( $titlesbox, wxHORIZONTAL );
@@ -173,6 +182,7 @@ sub new {
 					   wxVSCROLL|wxHSCROLL|wxTE_MULTILINE|wxTE_READONLY|wxNO_BORDER);
   $titlesboxsizer -> Add($this->{titles}, 0, wxALL|wxALIGN_CENTER_HORIZONTAL, 0);
   $left           -> Add($titlesboxsizer, 0, wxALL|wxALIGN_CENTER_HORIZONTAL, 5);
+  $this->mouseover("titles", "These lines will be written to output files.  Use them to describe this data set.");
 
 
   ## --------- toggles
@@ -186,6 +196,11 @@ sub new {
   $togglebox -> Add($this->{fit_bkg},    1, wxALL, 5);
   $this->{include}    -> SetValue(1);
   $this->{plot_after} -> SetValue(1);
+
+  $this->mouseover("include",    "Click here to include this data in the fit.  Unclick to exclude it.");
+  $this->mouseover("plot_after", "Click here to have this data set automatically transfered tothe plotting list after the fit.");
+  $this->mouseover("fit_bkg",    "Click here to co-refine a background spline during the fit.");
+
 
   ## -------- Fourier transform parameters
   my $ftbox      = Wx::StaticBox->new($leftpane, -1, 'Fourier transform parameters ', wxDefaultPosition, wxDefaultSize);
@@ -238,6 +253,14 @@ sub new {
   $this->{rmax} -> SetValidator( Wx::Perl::TextValidator->new( qr([0-9.]) ) );
   $this->{dr}   -> SetValidator( Wx::Perl::TextValidator->new( qr([0-9.]) ) );
 
+  $this->mouseover("kmin", "The lower bound in k-space for the Fourier transform and fit.");
+  $this->mouseover("kmax", "The upper bound in k-space for the Fourier transform and fit.");
+  $this->mouseover("dk",   "The width of the window sill in k-space for the Fourier transform.");
+  $this->mouseover("rmin", "The lower bound in R-space for the fit and the backwards Fourier transform.");
+  $this->mouseover("rmax", "The upper bound in R-space for the fit and the backwards Fourier transform.");
+  $this->mouseover("dr",   "The width of the window sill in R-space for the backwards Fourier transform.");
+
+
   $ftboxsizer -> Add($gbs, 0, wxALL, 5);
 
   my $windowsbox  = Wx::BoxSizer->new( wxHORIZONTAL );
@@ -248,6 +271,9 @@ sub new {
   $windowsbox -> Add($label, 0, wxALL, 5);
   $windowsbox -> Add($this->{kwindow}, 0, wxALL, 2);
   $this->{kwindow}->SetSelection(firstidx {$_ eq $demeter->co->default("fft", "kwindow")} @$windows);
+
+  $this->mouseover("kwindow", "The functional form of the window used for both forwards and backwards Fourier transforms.");
+
 
 #   $label     = Wx::StaticText->new($leftpane, -1, "R window");
 #   $this->{rwindow} = Wx::Choice  ->new($leftpane, -1, , wxDefaultPosition, wxDefaultSize, $windows);
@@ -276,6 +302,13 @@ sub new {
   $this->{karb} -> SetValue($demeter->co->default('fit', 'karb'));
   $this->{karb_value} -> SetValidator( Wx::Perl::TextValidator->new( qr([0-9.]) ) );
 
+  $this->mouseover("k1", "Use a k-weight of 1 when evaluating the fit.  You may choose any or all k-weight for fitting.");
+  $this->mouseover("k2", "Use a k-weight of 2 when evaluating the fit.  You may choose any or all k-weight for fitting.");
+  $this->mouseover("k3", "Use a k-weight of 3 when evaluating the fit.  You may choose any or all k-weight for fitting.");
+  $this->mouseover("karb", "Use the supplied value of k-weight when evaluating the fit.  You may choose any or all k-weight for fitting.");
+  $this->mouseover("karb_value", "The user-supplied value of k-weight for use in the fit.  You may choose any or all k-weight for fitting.");
+
+
   ## -------- epsilon and phase correction
   my $extrabox  = Wx::BoxSizer->new( wxHORIZONTAL );
   $left        -> Add($extrabox, 0, wxALL|wxGROW|wxALIGN_CENTER_HORIZONTAL, 0);
@@ -289,6 +322,7 @@ sub new {
   $this->{pcplot}->Enable(0);
 
   $this->{epsilon} -> SetValidator( Wx::Perl::TextValidator->new( qr([0-9.]) ) );
+  $this->mouseover("epsilon", "A user specified value for the measurement uncertainty.  A value of 0 means to let Ifeffit determine the uncertainty.");
 
   $leftpane -> SetSizerAndFit($left);
 
@@ -330,6 +364,12 @@ sub new {
   return $this;
 };
 
+sub mouseover {
+  my ($self, $widget, $text) = @_;
+  EVT_ENTER_WINDOW($self->{$widget}, sub{$self->{statusbar}->PushStatusText($text); $_[1]->Skip});
+  EVT_LEAVE_WINDOW($self->{$widget}, sub{$self->{statusbar}->PopStatusText;         $_[1]->Skip});
+};
+
 
 sub make_menubar {
   my ($self) = @_;
@@ -353,11 +393,11 @@ sub make_menubar {
   $self->{datamenu}->Append($DATA_EPSK,       "Show ε",                           "Show statistical noise for these data", wxITEM_NORMAL );
   $self->{datamenu}->Append($DATA_NIDP,       "Show Nidp",                        "Show the number of independent points in these data", wxITEM_NORMAL );
 
-  ## -------- sum menu
-  $self->{summenu} = Wx::Menu->new;
-  $self->{summenu}->Append($SUM_INCLUDED, "Sum included", "Make a summation of all paths for this χ(k) which are included in the fit", wxITEM_NORMAL );
-  $self->{summenu}->Append($SUM_IM,       "Sum marked and included", "Make a summation of all marked paths for this χ(k) which are also included in the fit", wxITEM_NORMAL );
-  $self->{summenu}->Append($SUM_MARKED,   "Sum marked",   "Make a summation of all marked paths for this χ(k) regardless of whether they are included in the fit", wxITEM_NORMAL );
+#   ## -------- sum menu
+#   $self->{summenu} = Wx::Menu->new;
+#   $self->{summenu}->Append($SUM_INCLUDED, "Sum included", "Make a summation of all paths for this χ(k) which are included in the fit", wxITEM_NORMAL );
+#   $self->{summenu}->Append($SUM_IM,       "Sum marked and included", "Make a summation of all marked paths for this χ(k) which are also included in the fit", wxITEM_NORMAL );
+#   $self->{summenu}->Append($SUM_MARKED,   "Sum marked",   "Make a summation of all marked paths for this χ(k) regardless of whether they are included in the fit", wxITEM_NORMAL );
 
   ## -------- paths menu
   my $export_menu   = Wx::Menu->new;
@@ -431,14 +471,14 @@ sub make_menubar {
 
 
   $self->{menubar}->Append( $self->{datamenu},    "Da&ta" );
-  $self->{menubar}->Append( $self->{summenu},     "&Sum" );
+#  $self->{menubar}->Append( $self->{summenu},     "&Sum" );
   $self->{menubar}->Append( $self->{pathsmenu},   "&Path" );
   $self->{menubar}->Append( $self->{markmenu},    "M&arks" );
   $self->{menubar}->Append( $self->{includemenu}, "&Include" );
   $self->{menubar}->Append( $self->{discardmenu}, "Dis&card" );
 
   map { $self->{datamenu} ->Enable($_,0) } ($DATA_DIFF, $DATA_REPLACE);
-  map { $self->{summenu}  ->Enable($_,0) } ($SUM_MARKED, $SUM_INCLUDED, $SUM_IM);
+#  map { $self->{summenu}  ->Enable($_,0) } ($SUM_MARKED, $SUM_INCLUDED, $SUM_IM);
   map { $self->{pathsmenu}->Enable($_,0) } ($PATH_CLONE);
 
 };
@@ -593,6 +633,8 @@ sub OnMenuClick {
 
     ($id == $PATH_SHOW) and do { # show a dialog with the path paragraph
       my $pathobject = $datapage->{pathlist}->GetPage($datapage->{pathlist}->GetSelection)->{path};
+      my ($abort, $rdata, $rpaths, $rgds) = Demeter::UI::Artemis::uptodate(\%Demeter::UI::Artemis::frames);
+      $pathobject->_update("fft");
       my $show = Wx::Dialog->new($datapage, -1, $pathobject->label.', evaluated', wxDefaultPosition, [450,350],
 				 wxOK|wxICON_INFORMATION);
       my $box  = Wx::BoxSizer->new( wxVERTICAL );
@@ -630,10 +672,10 @@ sub OnMenuClick {
       last SWITCH;
     };
 
-    (($id == $SUM_INCLUDED) or ($id == $SUM_MARKED) or ($id == $SUM_IM)) and do {
-      $datapage->sum($id);
-      last SWITCH;
-    };
+#     (($id == $SUM_INCLUDED) or ($id == $SUM_MARKED) or ($id == $SUM_IM)) and do {
+#       $datapage->sum($id);
+#       last SWITCH;
+#     };
 
     (($id == $MARK_ALL) or ($id == $MARK_NONE) or ($id == $MARK_INVERT) or ($id == $MARK_REGEXP) or
      ($id == $MARK_SS)  or ($id == $MARK_HIGH) or ($id == $MARK_R)      or ($id == $MARK_BEFORE) or
@@ -1134,14 +1176,14 @@ sub discard {
   $self->{pathlist}->InitialPage if not $self->{pathlist}->{VIEW};
 };
 
-sub sum {
-  my ($self, $mode) = @_;
-  my $how = ($mode == $SUM_INCLUDED) ? 'included'
-          : ($mode == $SUM_MARKED)   ? 'marked'
-          : ($mode == $SUM_IM)       ? 'included and marked'
-          :                            $mode;
-  print "summing $how\n";
-};
+# sub sum {
+#   my ($self, $mode) = @_;
+#   my $how = ($mode == $SUM_INCLUDED) ? 'included'
+#           : ($mode == $SUM_MARKED)   ? 'marked'
+#           : ($mode == $SUM_IM)       ? 'included and marked'
+#           :                            $mode;
+#   print "summing $how\n";
+# };
 
 sub transfer {
   my ($self, $event) = @_;

@@ -39,6 +39,10 @@ sub new {
     $self -> SetSize($w, $h);
   };
 
+  #$self->{LEFT} = Wx::Panel->new( $self, -1, wxDefaultPosition, Wx::Size->new(int($w/4),$h) );
+  #my $box = Wx::BoxSizer->new( wxVERTICAL );
+  #$self->{LEFT} -> SetSizerAndFit($box);
+
   $self->{LIST} = Wx::CheckListBox->new($self, -1, wxDefaultPosition, Wx::Size->new(int($w/4),$h), [ ], wxLB_SINGLE);
   $self->{LIST} -> SetFont( Wx::Font->new( 8, wxDEFAULT, wxNORMAL, wxNORMAL, 0, "" ) );
   $self->{LIST}->{PARENT} = $self;
@@ -49,6 +53,8 @@ sub new {
   EVT_LISTBOX($self, $self->{LIST}, sub{OnList(@_)});
   EVT_CHECKLISTBOX($self, $self->{LIST}, sub{OnCheck(@_)});
   EVT_MOUSEWHEEL($self->{LIST}, sub{OnWheel(@_)});
+
+  #$box -> Add($self->{LIST}, 1, wxGROW|wxALL, 0);
 
   $self->{PAGE}  = Wx::Panel->new($self, -1, wxDefaultPosition, Wx::Size->new($w-int($w/4),$h));
 

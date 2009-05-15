@@ -20,7 +20,7 @@ use warnings;
 
 use Wx qw( :everything );
 use base qw(Wx::Frame);
-use Wx::Event qw(EVT_BUTTON EVT_RADIOBOX EVT_RIGHT_DOWN EVT_MENU);
+use Wx::Event qw(EVT_BUTTON EVT_RADIOBOX EVT_RIGHT_DOWN EVT_MENU EVT_ENTER_WINDOW EVT_LEAVE_WINDOW);
 
 use Demeter::UI::Artemis::Plot::Limits;
 use Demeter::UI::Artemis::Plot::Stack;
@@ -70,11 +70,17 @@ sub new {
   EVT_BUTTON($this, $this->{r_button}, sub{plot(@_, 'r')});
   EVT_BUTTON($this, $this->{q_button}, sub{plot(@_, 'q')});
 
+  $this->mouseover("k_button", "Plot the contents of the plotting list in k-space.");
+  $this->mouseover("r_button", "Plot the contents of the plotting list in R-space.");
+  $this->mouseover("q_button", "Plot the contents of the plotting list in back-transform k-space.");
+
+
   $this->{kweight} = Wx::RadioBox->new($this, -1, "k-weight", wxDefaultPosition, wxDefaultSize,
 				       [0, 1, 2, 3, 'kw'],
 				       1, wxRA_SPECIFY_ROWS);
   $left -> Add($this->{kweight}, 0, wxLEFT|wxRIGHT|wxGROW, 5);
   $this->{kweight}->SetSelection($demeter->co->default('plot', 'kweight'));
+  $this->mouseover("kweight", "Select a value of k-weight to use when plotting data.");
   $this->{kweight}->Enable(4, 0);
   $demeter->po->kweight($demeter->co->default('plot', 'kweight'));
   EVT_RADIOBOX($this, $this->{kweight},
@@ -123,13 +129,24 @@ sub new {
   $hbox -> Add($this->{freeze}, 1, wxGROW|wxALL, 5);
   $this->{clear} = Wx::Button->new($this, -1, "&Clear", wxDefaultPosition, wxDefaultSize);
   $hbox -> Add($this->{clear}, 1, wxGROW|wxALL, 5);
-  EVT_BUTTON($this, $this->{clear}, sub{$_[0]->{plotlist}->Clear});
+  EVT_BUTTON($this, $this->{clear}, sub{$_[0]->{plotlist}->Clear; $_[0]->{freeze}->SetValue(0);});
+
+  $this->mouseover("freeze", "When this button is checked, the plotting list will NOT be refreshed after a fit finishes.");
+  $this->mouseover("clear",  "Clear all items from the plotting list.");
 
   $this -> SetSizerAndFit( $vbox );
   my $hh = Wx::SystemSettings::GetMetric(wxSYS_SCREEN_Y) - $yy - 2*$windowsize - $this->GetParent->GetSize->GetHeight;
   $this -> SetSize(Wx::Size->new(-1, $hh));
   return $this;
 };
+
+sub mouseover {
+  my ($self, $widget, $text) = @_;
+  my $sb = $Demeter::UI::Artemis::frames{main}->{statusbar};
+  EVT_ENTER_WINDOW($self->{$widget}, sub{$sb->PushStatusText($text); $_[1]->Skip});
+  EVT_LEAVE_WINDOW($self->{$widget}, sub{$sb->PopStatusText;         $_[1]->Skip});
+};
+
 
 sub fetch_parameters {
   my ($self) = @_;
@@ -157,7 +174,6 @@ sub plot {
   my $invert_q = (    (lc($space) eq 'q')
 		  and ($self->{stack}->{invert}->GetStringSelection !~ m{(?:Never|Only)})
 		  and ($self->{limits}->{qpart}->GetStringSelection eq 'Magnitude') );
-
 
   ## for data set stacking, determine how many data sets are
   ## represented in the list, pre-set y_offsets for the data groups,
