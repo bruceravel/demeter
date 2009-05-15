@@ -45,6 +45,7 @@ Readonly my $DATA_VPATH	     => Wx::NewId();
 Readonly my $DATA_DEGEN_N    => Wx::NewId();
 Readonly my $DATA_DEGEN_1    => Wx::NewId();
 Readonly my $DATA_DISCARD    => Wx::NewId();
+Readonly my $DATA_REPLACE    => Wx::NewId();
 Readonly my $DATA_KMAXSUGEST => Wx::NewId();
 Readonly my $DATA_EPSK	     => Wx::NewId();
 Readonly my $DATA_NIDP	     => Wx::NewId();
@@ -337,6 +338,8 @@ sub make_menubar {
   ## -------- chi(k) menu
   $self->{datamenu}  = Wx::Menu->new;
   $self->{datamenu}->Append($DATA_RENAME,      "Rename this χ(k)",         "Rename this data set",  wxITEM_NORMAL );
+  $self->{datamenu}->Append($DATA_REPLACE,     "Replace this χ(k)",        "Replace this data set",  wxITEM_NORMAL );
+  $self->{datamenu}->AppendSeparator;
   $self->{datamenu}->Append($DATA_DIFF,        "Make difference spectrum", "Make a difference spectrum using the marked paths", wxITEM_NORMAL );
   $self->{datamenu}->Append($DATA_TRANSFER,    "Transfer marked paths",    "Transfer marked paths to the plotting list", wxITEM_NORMAL );
   $self->{datamenu}->Append($DATA_VPATH,       "Make VPath",               "Make a virtual path from the set of marked paths", wxITEM_NORMAL );
@@ -434,9 +437,9 @@ sub make_menubar {
   $self->{menubar}->Append( $self->{includemenu}, "&Include" );
   $self->{menubar}->Append( $self->{discardmenu}, "Dis&card" );
 
-  map { $self->{datamenu}   ->Enable($_,0) } ($DATA_RENAME, $DATA_DIFF, $DATA_DISCARD);
-  map { $self->{summenu}    ->Enable($_,0) } ($SUM_MARKED, $SUM_INCLUDED, $SUM_IM);
-  map { $self->{pathsmenu}  ->Enable($_,0) } ($PATH_CLONE);
+  map { $self->{datamenu} ->Enable($_,0) } ($DATA_DIFF, $DATA_REPLACE);
+  map { $self->{summenu}  ->Enable($_,0) } ($SUM_MARKED, $SUM_INCLUDED, $SUM_IM);
+  map { $self->{pathsmenu}->Enable($_,0) } ($PATH_CLONE);
 
 };
 
@@ -533,6 +536,16 @@ sub OnMenuClick {
   my $id = $event->GetId;
   #print "1  $id  $PATH_ADD\n";
  SWITCH: {
+
+    ($id == $DATA_RENAME) and do {
+      $datapage->Rename;
+      last SWITCH;
+    };
+
+    ($id == $DATA_DISCARD) and do {
+      $datapage->discard_data;
+      last SWITCH;
+    };
 
     (($id == $DATA_DEGEN_N) or ($id == $DATA_DEGEN_1)) and do {
       $datapage->set_degens($id);
@@ -644,6 +657,37 @@ sub OnMenuClick {
     };
 
   };
+};
+
+sub Rename {
+  my ($datapage) = @_;
+  my $dnum = $datapage->{dnum};
+  (my $id = $dnum) =~ s{data}{};
+
+  my $name = $datapage->{data}->name;
+  my $ted = Wx::TextEntryDialog->new($datapage, "Enter a new name for \"$name\":", "Rename \"$name\"", q{}, wxOK|wxCANCEL, Wx::GetMousePosition);
+  if ($ted->ShowModal == wxID_CANCEL) {
+    $datapage->{statusbar}->SetStatusText("Data renaming cancelled.");
+    return;
+  };
+  my $newname = $ted->GetValue;
+  $datapage->{data}->name($newname);
+  $datapage->{name}->SetLabel($newname);
+
+  my $plotlist = $Demeter::UI::Artemis::frames{Plot}->{plotlist};
+  foreach my $i (0 .. $plotlist->GetCount-1) {
+    if ($datapage->{data}->group eq $plotlist->GetClientData($i)->group) {
+      my $checked = $plotlist->IsChecked($i);
+      $plotlist->SetString($i, "Data: ".$newname);
+      $plotlist->Check($i, $checked);
+    };
+  };
+
+  my $datatool = $Demeter::UI::Artemis::frames{main}->{datatool};
+  $datatool->DeleteTool($id);
+  $datatool->AddCheckTool($id, "Show $newname", Demeter::UI::Artemis::icon("pixel"), wxNullBitmap, q{}, q{} );
+  $datatool->Realize;
+  $datatool->ToggleTool($id,1);
 };
 
 sub set_degens {
@@ -957,9 +1001,43 @@ sub include {
   };
 };
 
+sub discard_data {
+  my ($self) = @_;
+  my $dataobject = $self->{data};
+
+  my $yesno = Wx::MessageDialog->new($self, "Do you really wish to discard this data set?",
+				     "Discard?", wxYES_NO);
+  return if ($yesno->ShowModal == wxID_NO);
+
+  ## remove data and its paths & VPaths from the plot list
+  my $plotlist = $Demeter::UI::Artemis::frames{Plot}->{plotlist};
+  foreach my $i (0 .. $plotlist->GetCount-1) {
+    if ($self->{data}->group eq $plotlist->GetClientData($i)->data->group) {
+      $plotlist->Delete($i);
+    };
+  };
+
+  ## get rid of all the paths
+  $self->discard('all');
+
+  ## remove the button from the data tool bar
+  my $dnum = $self->{dnum};
+  (my $id = $dnum) =~ s{data}{};
+  my $datatool = $Demeter::UI::Artemis::frames{main}->{datatool};
+  $datatool->DeleteTool($id);
+
+  ## remove the frame with the datapage
+  $Demeter::UI::Artemis::frames{$dnum}->Hide;
+  ## that's not quite right!
+
+  ## destroy the data object
+  $dataobject->DESTROY;
+};
+
 sub discard {
   my ($self, $mode) = @_;
-  my $how = ($mode == $DISCARD_THIS)     ? 'this'
+  my $how = ($mode !~ m{$NUMBER})        ? $mode
+          : ($mode == $DISCARD_THIS)     ? 'this'
           : ($mode == $DISCARD_ALL)      ? 'all'
           : ($mode == $DISCARD_MARKED)   ? 'marked'
           : ($mode == $DISCARD_UNMARKED) ? 'unmarked'

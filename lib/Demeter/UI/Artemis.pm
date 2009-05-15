@@ -182,7 +182,7 @@ sub OnInit {
   EVT_MENU	 ($frames{main}, -1,         sub{my ($frame,  $event) = @_; OnMenuClick($frame,  $event)} );
   EVT_CLOSE	 ($frames{main},             \&on_close);
   EVT_MENU	 ($toolbar,      -1,         sub{my ($toolbar,  $event) = @_; OnToolClick($toolbar,  $event, $frames{main})} );
-  EVT_MENU	 ($datatool,     -1,         sub{my ($fefftool, $event) = @_; OnDataClick($datatool, $event, $frames{main})} );
+  EVT_MENU	 ($datatool,     -1,         sub{my ($datatool, $event) = @_; OnDataClick($datatool, $event, $frames{main})} );
   EVT_MENU	 ($fefftool,     -1,         sub{my ($fefftool, $event) = @_; OnFeffClick($fefftool, $event, $frames{main})} );
   EVT_TOOL_ENTER ($frames{main}, $toolbar,   sub{my ($toolbar,  $event) = @_; OnToolEnter($toolbar,  $event, 'toolbar')} );
   EVT_BUTTON     ($frames{main}->{fitbutton}, -1, sub{fit(@_, \%frames)});
@@ -513,10 +513,12 @@ sub make_data_frame {
   do_the_size_dance($self);
   my $idata = $newtool->GetId;
   my $dnum = sprintf("data%s", $idata);
+  $frames{main}  -> {$dnum."_button"} = $newtool;
   $frames{$dnum}  = Demeter::UI::Artemis::Data->new($self, $nset++);
   $frames{$dnum} -> SetTitle("Artemis [Data] ".$data->name);
   $frames{$dnum} -> SetIcon($icon);
   $frames{$dnum} -> populate($data);
+  $frames{$dnum} -> {dnum} = $dnum;
   set_happiness_color();
   $frames{$dnum} -> Show(0);
   $databar->ToggleTool($idata,0);
