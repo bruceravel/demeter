@@ -339,6 +339,11 @@ sub _plotE_command {
   my @suffix_list = ();
   my @color_list  = ();
   my @key_list    = ();
+  my @save = ($self->bkg_eshift, $self->bkg_e0);
+  if ($self->po->e_zero) {
+    $self->bkg_eshift($save[0] - $self->bkg_e0);
+    $self->bkg_e0(0);
+  };
   if ($pf->e_bkg) { # show the background
     my $this = 'bkg';
     ($this = 'nbkg') if ($pf->e_norm);
@@ -451,6 +456,10 @@ sub _plotE_command {
   ## reinitialize the local plot parameters
   #$pf -> reinitialize($xlorig, $ylorig);
   #return ($self->get_mode("template_plot") eq 'gnuplot') ? $markers.$string : $string.$markers;
+  if ($self->po->e_zero) {
+    $self->bkg_eshift($save[0]);
+    $self->bkg_e0($save[1]);
+  };
   return $string.$markers;
 };
 

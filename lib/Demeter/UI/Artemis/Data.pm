@@ -42,6 +42,7 @@ Readonly my $DATA_RENAME     => Wx::NewId();
 Readonly my $DATA_DIFF	     => Wx::NewId();
 Readonly my $DATA_TRANSFER   => Wx::NewId();
 Readonly my $DATA_VPATH	     => Wx::NewId();
+Readonly my $DATA_BALANCE    => Wx::NewId();
 Readonly my $DATA_DEGEN_N    => Wx::NewId();
 Readonly my $DATA_DEGEN_1    => Wx::NewId();
 Readonly my $DATA_DISCARD    => Wx::NewId();
@@ -384,6 +385,7 @@ sub make_menubar {
   $self->{datamenu}->Append($DATA_TRANSFER,    "Transfer marked paths",    "Transfer marked paths to the plotting list", wxITEM_NORMAL );
   $self->{datamenu}->Append($DATA_VPATH,       "Make VPath",               "Make a virtual path from the set of marked paths", wxITEM_NORMAL );
   $self->{datamenu}->AppendSeparator;
+  $self->{datamenu}->Append($DATA_BALANCE,     "Balance interstitial energies", "Adjust E0 for every path so that the interstitial energies for each Feff calculation are balanced",  wxITEM_NORMAL );
   $self->{datamenu}->Append($DATA_DEGEN_N,     "Set all degens to Feff",   "Set degeneracies for all paths in this data set to values from Feff",  wxITEM_NORMAL );
   $self->{datamenu}->Append($DATA_DEGEN_1,     "Set all degens to one",    "Set degeneracies for all paths in this data set to one (1)",  wxITEM_NORMAL );
   $self->{datamenu}->AppendSeparator;
@@ -477,7 +479,7 @@ sub make_menubar {
   $self->{menubar}->Append( $self->{includemenu}, "&Include" );
   $self->{menubar}->Append( $self->{discardmenu}, "Dis&card" );
 
-  map { $self->{datamenu} ->Enable($_,0) } ($DATA_DIFF, $DATA_REPLACE);
+  map { $self->{datamenu} ->Enable($_,0) } ($DATA_DIFF, $DATA_REPLACE, $DATA_BALANCE);
 #  map { $self->{summenu}  ->Enable($_,0) } ($SUM_MARKED, $SUM_INCLUDED, $SUM_IM);
   map { $self->{pathsmenu}->Enable($_,0) } ($PATH_CLONE);
 
@@ -1044,12 +1046,14 @@ sub include {
 };
 
 sub discard_data {
-  my ($self) = @_;
+  my ($self, $force) = @_;
   my $dataobject = $self->{data};
 
-  my $yesno = Wx::MessageDialog->new($self, "Do you really wish to discard this data set?",
-				     "Discard?", wxYES_NO);
-  return if ($yesno->ShowModal == wxID_NO);
+  if (not $force) {
+    my $yesno = Wx::MessageDialog->new($self, "Do you really wish to discard this data set?",
+				       "Discard?", wxYES_NO);
+    return if ($yesno->ShowModal == wxID_NO);
+  };
 
   ## remove data and its paths & VPaths from the plot list
   my $plotlist = $Demeter::UI::Artemis::frames{Plot}->{plotlist};

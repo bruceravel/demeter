@@ -32,6 +32,7 @@ use File::Spec;
 #use File::Temp qw(tempdir);
 use List::Util qw(sum);
 use List::MoreUtils qw(any false notall);
+use Regexp::Common;
 use Regexp::List;
 use Regexp::Optimizer;
 use Tree::Simple;
@@ -44,6 +45,7 @@ Readonly my $ETASUPPRESS  => 1;
 Readonly my $FUZZ_DEF     => 0.01;
 Readonly my $BETAFUZZ_DEF => 3;
 Readonly my $SEPARATOR    => '[ \t]*[ \t=,][ \t]*';
+Readonly my $NUMBER       => $RE{num}{real};
 
 my @leglength = ();
 my $shortest = 100000000;
@@ -118,6 +120,7 @@ has 'othercards' => (
 		    );
 has 'workspace'    => (is=>'rw', isa => 'Str', default => q{}); # valid directory
 has 'miscdat'      => (is=>'rw', isa => 'Str', default => q{});
+has 'vint'         => (is=>'rw', isa => 'Num', default => 0);
 has 'yaml'         => (is=>'rw', isa => 'Str', default => q{},
 		       trigger => sub{my ($self, $new) = @_; $self->deserialize if $new} );
 
@@ -381,6 +384,7 @@ sub potph {
       my $null = chr(0);
       $text =~ s{$null}{}g;	# frakkin' feff
       $self->miscdat($text);
+      $self->vint($1) if ($text =~ m{Vint\s*=\s*($NUMBER)});
       unlink $miscdat if not $self->save;
     };
   };

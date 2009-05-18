@@ -30,7 +30,7 @@ require Exporter;
 
 use vars qw(@ISA @EXPORT);
 @ISA       = qw(Exporter);
-@EXPORT    = qw(save_project read_project modified);
+@EXPORT    = qw(save_project read_project modified close_project);
 
 use File::Basename;
 use File::Spec;
@@ -220,4 +220,40 @@ sub modified {
   };
 };
 
+
+sub close_project {
+  my ($rframes) = @_;
+  my $yesno = Wx::MessageDialog->new($rframes->{main},
+				     "Save this project before closing?",
+				     "Save project?",
+				     wxYES_NO|wxCANCEL|wxYES_DEFAULT|wxICON_QUESTION);
+  my $result = $yesno->ShowModal;
+  if ($result == wxID_CANCEL) {
+    $rframes->{main}->{statusbar}->SetStatusText("Not closing project.");
+    return 0;
+  };
+  save_project($rframes) if $result == wxID_YES;
+
+  ## -------- clear GDS
+  $rframes->{GDS}->discard_all(1);
+  $rframes->{GDS}->Show(0);
+  $rframes->{main}->{toolbar}->ToggleTool(1,0);
+
+  ## -------- clear GDS
+  $rframes->{Log}->{text}->SetValue(q{});
+  $rframes->{Log}->Show(0);
+  $rframes->{main}->{log_toggle}->SetValue(0);
+
+  ## -------- clear all Data
+  foreach my $k (keys %$rframes) {
+    next unless ($k =~ m{data});
+    $rframes->{$k}->discard_data(1);
+  };
+
+  ## -------- clear all Feff
+  foreach my $k (keys %$rframes) {
+    next unless ($k =~ m{feff});
+    Demeter::UI::Artemis::discard_feff($k, 1);
+  };
+};
 1;

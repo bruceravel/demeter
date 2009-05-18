@@ -19,9 +19,7 @@ use Wx qw(:everything);
 use Wx::Event qw(EVT_MENU EVT_CLOSE EVT_TOOL_ENTER EVT_CHECKBOX EVT_BUTTON EVT_TOGGLEBUTTON EVT_ENTER_WINDOW EVT_LEAVE_WINDOW);
 use base 'Wx::App';
 
-use Readonly;
-Readonly my $ID_READ_PROJECT => Wx::NewId();
-Readonly my $ID_SAVE_PROJECT => Wx::NewId();
+#use Readonly;
 
 use Wx::Perl::Carp;
 $SIG{__WARN__} = sub {Wx::Perl::Carp::warn($_[0])};
@@ -70,8 +68,10 @@ sub OnInit {
   ## -------- Set up menubar
   my $bar = Wx::MenuBar->new;
   my $filemenu = Wx::Menu->new;
-  $filemenu->Append($ID_READ_PROJECT, "Read project", "Read from a project file", wxITEM_NORMAL );
-  $filemenu->Append($ID_SAVE_PROJECT, "Save project", "Save to a project file",   wxITEM_NORMAL );
+  $filemenu->Append(wxID_OPEN, "Open project", "Read from a project file" );
+  $filemenu->Append(wxID_SAVE, "Save project", "Save to a project file" );
+  $filemenu->AppendSeparator;
+  $filemenu->Append(wxID_CLOSE, "&Close" );
   $filemenu->Append(wxID_EXIT, "E&xit" );
 
   my $helpmenu = Wx::Menu->new;
@@ -109,7 +109,7 @@ sub OnInit {
   my $datavbox = Wx::BoxSizer->new( wxVERTICAL );
   $datalist->SetSizer($datavbox);
   my $datatool = Wx::ToolBar->new($datalist, -1, wxDefaultPosition, wxDefaultSize, wxTB_VERTICAL|wxTB_HORZ_TEXT|wxTB_LEFT);
-  $datatool -> AddTool(-1, "New data", icon("add"), wxNullBitmap, wxITEM_NORMAL, q{}, "Import a new data set" );
+  $datatool -> AddTool(-1, "New data           ", icon("add"), wxNullBitmap, wxITEM_NORMAL, q{}, "Import a new data set" );
   $datatool -> AddSeparator;
   #   $datatool -> AddCheckTool(-1, "Show data set 1", icon("pixel"), wxNullBitmap, wxITEM_NORMAL, q{}, q{} );
   $datatool -> Realize;
@@ -454,15 +454,19 @@ sub OnMenuClick {
       &on_about;
       return;
     };
+    ($id == wxID_CLOSE) and do {
+      close_project(\%frames);
+      return;
+    };
     ($id == wxID_EXIT) and do {
       $self->Close;
       return;
     };
-    ($id == $ID_READ_PROJECT) and do {
+    ($id == wxID_OPEN) and do {
       read_project(\%frames);
       last SWITCH;
     };
-    ($id == $ID_SAVE_PROJECT) and do {
+    ($id == wxID_SAVE) and do {
       save_project(\%frames);
       last SWITCH;
     };
@@ -586,6 +590,7 @@ sub make_feff_frame {
   $frames{$fnum} -> SetIcon($icon);
   $frames{$fnum}->{Atoms}->Demeter::UI::Atoms::Xtal::open_file($file);
   #$newtool -> SetLabel( $frames{$fnum}->{Atoms}->{name}->GetValue );
+  $frames{$fnum} -> {fnum} = $fnum;
 
   $frames{$fnum} -> Show(0);
   $feffbar->ToggleTool($ifeff,0);
@@ -603,6 +608,32 @@ sub do_the_size_dance {
   $top -> SetSize($size[0], $size[1]+1);
   $top -> SetSize($size[0], $size[1]);
 };
+
+
+sub discard_feff {
+  my ($which, $force) = @_;
+  my $feffobject = $frames{$which}->{feffobject};
+
+  if (not $force) {
+    my $yesno = Wx::MessageDialog->new($frames{main}, "Do you really wish to discard this Feff calculation?",
+				       "Discard?", wxYES_NO);
+    return if ($yesno->ShowModal == wxID_NO);
+  };
+
+  ## remove the button from the data tool bar
+  my $fnum = $frames{$which}->{fnum};
+  (my $id = $fnum) =~ s{feff}{};
+  my $fefftool = $frames{main}->{fefftool};
+  $fefftool->DeleteTool($id);
+
+  ## remove the frame with the datapage
+  $frames{$fnum}->Hide;
+  ## that's not quite right!
+
+  ## destroy the ScatteringPath object
+  ## destroy the feff object
+  $feffobject->DESTROY;
+}
 
 1;
 

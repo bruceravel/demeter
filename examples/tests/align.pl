@@ -34,6 +34,7 @@ my @common_attributes = (bkg_pre1   => -31,    bkg_pre2   => -150,
 my $d0 = Demeter::Data -> new();
 $d0 -> set(@common_attributes);
 $d0 -> set(file => "$where/data/fe.060.xmu", name => '60K',);
+$d0 -> po -> e_zero(1);
 
 my $d1 = Demeter::Data -> new();
 $d1 -> set(@common_attributes);
@@ -42,7 +43,6 @@ $d1 -> set(file => "$where/data/fe.300.xmu", name => '300K',);
 my $plot = $d0->po;
 $plot->set_mode(screen=>0, repscreen=>0);
 $plot->set(emin=>-30, emax=>70, e_norm=>1, e_markers=>1);
-
 
 print "plotting unaligned data\n";
 foreach ($d0, $d1) {

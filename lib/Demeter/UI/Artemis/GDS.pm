@@ -394,19 +394,20 @@ sub tie_GDS_to_grid {
 
 
 sub discard_all {
-  my ($parent) = @_;
+  my ($parent, $force) = @_;
   my $grid = $parent->{grid};
-  my $yesno = Wx::MessageDialog->new($parent,
-				     "Really throw away all parameters?",
-				     "Verify action",
-				     wxYES_NO|wxNO_DEFAULT|wxICON_QUESTION);
-  if ($yesno->ShowModal == wxID_NO) {
-    $parent->{statusbar}->SetStatusText("Not discarding parameters.");
-    return 0;
-  } else {
-    foreach my $row (0 .. $grid->GetNumberRows-1) {
-      $parent->discard($row);
+  if (not $force) {
+    my $yesno = Wx::MessageDialog->new($parent,
+				       "Really throw away all parameters?",
+				       "Verify action",
+				       wxYES_NO|wxNO_DEFAULT|wxICON_QUESTION);
+    if ($yesno->ShowModal == wxID_NO) {
+      $parent->{statusbar}->SetStatusText("Not discarding parameters.");
+      return 0;
     };
+  };
+  foreach my $row (0 .. $grid->GetNumberRows-1) {
+    $parent->discard($row);
   };
   $parent->{statusbar}->SetStatusText("Discarded all parameters.")
 };
