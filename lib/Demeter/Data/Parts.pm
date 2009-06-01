@@ -16,7 +16,8 @@ sub part_fft {
 sub _part_fft_command {
   my ($self, $pt) = @_;
   my $part = ($pt eq 'sum') ? 'fit' : $pt; # sum is a synonym for fit
-  croak('part_fft: valid parts are fit, res, and bkg') if (not is_DataPart($part));
+  croak('part_fft: valid parts are fit, res, run, and bkg') if (not is_DataPart($part));
+  return if ($part eq'run');
   my $datagroup = $self->group;
   my $group = join("_", $datagroup, $part);
   my $string = $self->_fft_command;
@@ -31,7 +32,8 @@ sub part_bft {
 sub _part_bft_command {
   my ($self, $pt) = @_;
   my $part = ($pt eq 'sum') ? 'fit' : $pt; # sum is a synonym for fit
-  croak('part_bft: valid parts are fit, res, and bkg') if (not is_DataPart($part));
+  croak('part_bft: valid parts are fit, res, run, and bkg') if (not is_DataPart($part));
+  return if ($part eq'run');
   my $datagroup = $self->group;
   my $group = join("_", $datagroup, $part);
   my $string = $self->_bft_command;
@@ -52,12 +54,12 @@ sub _part_plot_command {
   my $pf           = $self->mo->plot;
   $pt            ||= q{};
   my $part         = ($pt eq 'sum') ? 'fit' : $pt; # sum is a synonym for fit
-  croak('part_plot: valid parts are fit, res, and bkg') if (not is_DataPart($part));
+  croak('part_plot: valid parts are fit, res, run, and bkg') if (not is_DataPart($part));
   croak('part_plot: valid plot spaces are k, R, and q') if (not is_FitSpace($space));
 
   my $datagroup    = $self->group;
   my $group        = (is_DataPart($part)) ? join("_", $datagroup, $part) : $self->name;  ## huh?
-  my %labels       = (bkg=>'background', fit=>$self->fitsum, res=>'residual');
+  my %labels       = (bkg=>'background', fit=>$self->fitsum, res=>'residual', run=>'running R-factor');
   $labels{$part} ||= $part->name;
   my $datalabel    = $self->name;
 

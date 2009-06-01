@@ -35,7 +35,8 @@ sub get_array {
     croak("The group $grp does not have an array $grp.$suffix (" . join(" ", @list) . ")");
   };
   my $group = $self->group;
-  my $text = ($part =~ m{(?:bkg|fit|res)}) ? "${group}_$part.$suffix" : "$group.$suffix";
+  my $text = ($part =~ m{(?:bkg|fit|res|run)}) ? "${group}_$part.$suffix" : "$group.$suffix";
+  #$self->running if ($part eq 'run');
   return Ifeffit::get_array($text);
 };
 sub ref_array {

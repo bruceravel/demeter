@@ -20,6 +20,7 @@ use warnings;
 
 use Cwd;
 use File::Spec;
+use List::MoreUtils qw(uniq);
 use Regexp::Optimizer;
 my $opt  = Regexp::List->new;
 
@@ -95,6 +96,7 @@ sub new {
 
   my $grid = Wx::Grid->new($this, -1, wxDefaultPosition, wxDefaultSize, wxVSCROLL);
   $this->{grid} = $grid;
+  $this->{buffer} = q{};
 
   $grid -> CreateGrid(12,4,wxGridSelectRows);
 
@@ -227,6 +229,7 @@ sub use_best_fit {
 sub reset_all {
   my ($parent) = @_;
   my $grid = $parent->{grid};
+  my @gds = ();
   foreach my $row (0 .. $grid->GetNumberRows) {
     my $name = $grid -> GetCellValue($row, 1);
     next if ($name =~ m{\A\s*\z});
@@ -235,10 +238,11 @@ sub reset_all {
     my $thisgds = $grid->{$name} || Demeter::GDS->new(); # take care to reuse GDS objects whenever possible
     $thisgds -> set(name=>$name, gds=>$type, mathexp=>$mathexp);
     $grid->{$name} = $thisgds;
+    push @gds, $thisgds;
     $thisgds->push_ifeffit;
   };
   $parent->{statusbar}->SetStatusText("Reset all parameter values in Ifeffit.");
-  return 1;
+  return \@gds;
 };
 
 sub highlight {
@@ -463,6 +467,11 @@ sub PostGridMenu {
   $parent->{clicked_row} = $row;
   my $this = $self->GetCellValue($row, 1) || "current row";
 
+  my @sel = grep {$parent->{grid}->IsInSelection($_,0)} (0 .. $parent->{grid}->GetNumberRows-1);
+  my $which = ($#sel > 0) ? 'selected' : $this;
+  @sel = sort {$a <=> $b} uniq(@sel, $row);
+  $parent->{selected} = \@sel;
+
   my $change = Wx::Menu->new(q{});
   my $ind = 100;
   foreach my $t (@$types) {
@@ -477,15 +486,15 @@ sub PostGridMenu {
 
   ## test for how many are selected
   my $menu = Wx::Menu->new(q{});
-  $menu->Append	         (0,	    "Copy $this");        # or selected
-  $menu->Append	         (1,	    "Cut $this");         # or selected
-  $menu->Append	         (2,	    "Paste above $this"); # or selected
+  $menu->Append	         (0,	    "Copy $which");        # or selected
+  $menu->Append	         (1,	    "Cut $which");         # or selected
+  $menu->Append	         (2,	    "Paste below $this");  # or selected
   $menu->AppendSeparator;
   $menu->Append	         (4,	    "Insert blank line above $this");
   $menu->Append	         (5,	    "Insert blank line below $this");
   $menu->AppendSeparator;
-  $menu->AppendSubMenu   ($change,  "Change selected to");      # or selected
-  $menu->Append	         (8,	    "Grab best fit for $this"); # or selected
+  $menu->AppendSubMenu   ($change,  "Change $which to");         # or selected
+  $menu->Append	         (8,	    "Grab best fit for $which"); # or selected
   $menu->Append	         (9,	    "Build restraint from $this");
   $menu->Append	         (10,	    "Annotate $this");
   $menu->AppendSeparator;
@@ -494,6 +503,10 @@ sub PostGridMenu {
   $menu->AppendSeparator;
   $menu->AppendSubMenu   ($explain, "Explain");
   $self->SelectRow($row, 1);
+
+  if (($which =~ m{\A\s*\z}) or ($which eq 'current row')) {
+    $menu->Enable($_,0) foreach (0, 8, 9, 10, 12, 13);
+  };
   $self->PopupMenu($menu, $event->GetPosition);
 };
 
@@ -516,16 +529,53 @@ sub OnGridMenu {
 
 sub copy {
   my ($parent) = @_;
+  my $grid = $parent->{grid};
+  my @list = ();
+  foreach my $r (@{ $parent->{selected} }) {
+    my $name = $grid -> GetCellValue($r, 1);
+    push @list, $grid->{$name};
+  };
+  $grid->{buffer} = \@list;
+  my $s = ($#list > 0) ? q{s} : q{};
   $parent->{grid}->ClearSelection;
-  $parent->{statusbar}->SetStatusText("perform copy");
+  $parent->{statusbar}->SetStatusText("Copied parameter$s ".join(", ", map {$_->name} @list));
 };
 sub cut {
   my ($parent) = @_;
+  my $grid = $parent->{grid};
+  $parent->copy;
   $parent->{grid}->ClearSelection;
-  $parent->{statusbar}->SetStatusText("perform cut");
+
+  foreach my $g (@{ $grid->{buffer} }) {
+    my $name = $g->name;
+    foreach my $r (0 .. $parent->{grid}->GetNumberRows-1) {
+      next if ($name ne $grid->GetCellValue($r, 1));
+      $grid->DeleteRows($r,1,1);
+    };
+  };
+  my $s = ($#{$grid->{buffer}} > 0) ? q{s} : q{};
+  $parent->{statusbar}->SetStatusText("Cut parameter$s ".join(", ", map {$_->name} @{$grid->{buffer}}));
 };
+
 sub paste {
   my ($parent) = @_;
+  my $row = $parent->{clicked_row};
+  foreach my $g (@{ $parent->{grid}->{buffer} }) {
+    my $this = $parent->insert_below;
+    $parent->{grid} -> SetCellValue($this, 0, $g->gds);
+    $parent->{grid} -> SetCellValue($this, 1, $g->name);
+    $parent->{grid} -> SetCellValue($this, 2, $g->mathexp);
+    my $text = q{};
+    if ($g->gds eq 'guess') {
+      $text = sprintf("%.5f +/- %.5f", $g->bestfit, $g->error);
+    } elsif ($g->gds =~ m{(?:after|def|penalty|restrain)}) {
+      $text = sprintf("%.5f", $g->bestfit);
+    } elsif ($g->gds =~ m{(?:lguess|merge|set|skip)}) {
+      $text = q{};
+    };
+    $parent->{grid} -> SetCellValue($this, 3, $text);
+    $parent->set_type($this);
+  };
   $parent->{grid}->ClearSelection;
   $parent->{statusbar}->SetStatusText("perform paste");
 };
@@ -537,6 +587,7 @@ sub insert_above {
   $parent->initialize_row($row);
   $parent->{grid}->ClearSelection;
   $parent->{statusbar}->SetStatusText("Inserted a row above row $row.");
+  return $row;
 };
 sub insert_below {
   my ($parent) = @_;
@@ -545,6 +596,7 @@ sub insert_below {
   $parent->initialize_row($row+1);
   $parent->{grid}->ClearSelection;
   $parent->{statusbar}->SetStatusText("Inserted a row below row $row.");
+  return $row+1;
 };
 sub grab {
   my ($parent) = @_;

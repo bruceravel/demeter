@@ -135,6 +135,7 @@ has 'plot_fit'		=> (is => 'rw', isa =>  'Bool',     default => 0);
 has 'plot_win'		=> (is => 'rw', isa =>  'Bool',     default => 0);
 has 'plot_res'		=> (is => 'rw', isa =>  'Bool',     default => 0);
 has 'plot_bkg'		=> (is => 'rw', isa =>  'Bool',     default => 0);
+has 'plot_run'		=> (is => 'rw', isa =>  'Bool',     default => 0);
 has 'plot_paths'	=> (is => 'rw', isa =>  'Bool',     default => 0);
 has 'plot_rmr_offset'	=> (is => 'rw', isa =>   NonNeg,    default => 0);
 
@@ -202,7 +203,7 @@ sub clonable {
 	     datastyle fitstyle partstyle pathstyle
 	     space emin emax e_mu e_norm e_bkg e_pre e_post e_der e_sec e_i0 e_signal e_markers e_smooth e_zero
 	     kmin kmax rmin rmax r_pl qmin qmax q_pl kweight window_multiplier
-	     plot_data plot_fit plot_win plot_res plot_bkg plot_paths plot_rmr_offset
+	     plot_data plot_fit plot_win plot_res plot_run plot_bkg plot_paths plot_rmr_offset
 	  );
 };
 
@@ -721,6 +722,11 @@ value of the largest point in the plot, then by this number.
 
 When making a plot after a fit, the residual will be plotted when this
 is true.
+
+=item C<plot_run> (boolean) I<[0]>
+
+When making a plot after a fit, the running R-factor will be plotted
+when this is true.
 
 =item C<plot_bkg> (boolean) I<[0]>
 

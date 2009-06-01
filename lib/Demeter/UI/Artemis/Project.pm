@@ -39,7 +39,8 @@ sub save_project {
   my ($rframes, $fname) = @_;
 
   ## make sure we are fully up to date and serialised
-  my ($abort, $rdata, $rpaths, $rgds) = Demeter::UI::Artemis::uptodate($rframes);
+  my ($abort, $rdata, $rpaths) = Demeter::UI::Artemis::uptodate($rframes);
+  my $rgds = $rframes->{GDS}->reset_all;
   my @data  = @$rdata;
   my @paths = @$rpaths;
   my @gds   = @$rgds;
@@ -159,6 +160,7 @@ sub read_project {
     $grid -> SetCellValue($start, 0, $g->gds);
     $grid -> SetCellValue($start, 1, $g->name);
     $grid -> SetCellValue($start, 2, $g->mathexp);
+    $grid -> {$g->name} = $g;
     my $text = q{};
     if ($g->gds eq 'guess') {
       $text = sprintf("%.5f +/- %.5f", $g->bestfit, $g->error);

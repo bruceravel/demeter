@@ -158,7 +158,7 @@ sub fetch_parameters {
 sub plot {
   my ($self, $event, $space) = @_;
   return if ($space !~ m{[krq]}i);
-  my ($abort, $rdata, $rpaths, $rgds) = Demeter::UI::Artemis::uptodate(\%Demeter::UI::Artemis::frames);
+  my ($abort, $rdata, $rpaths) = Demeter::UI::Artemis::uptodate(\%Demeter::UI::Artemis::frames);
   $self->fetch_parameters;
   $demeter->po->start_plot;
   my @list = ();

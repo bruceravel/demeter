@@ -285,19 +285,19 @@ sub uptodate {
   my $abort = 0;
 
   ## do I need to take care at this point about GDS's with the same name?
-  my $grid = $rframes->{GDS}->{grid};
-  foreach my $row (0 .. $grid->GetNumberRows) {
-    $grid -> SetCellValue($row, 3, q{});
-    my $name = $grid -> GetCellValue($row, 1);
-    next if ($name =~ m{\A\s*\z});
-    my $type = $grid -> GetCellValue($row, 0);
-    my $mathexp = $grid -> GetCellValue($row, 2);
-    my $thisgds = $grid->{$name} || Demeter::GDS->new(); # take care to reuse GDS objects whenever possible
-    $thisgds -> set(name=>$name, gds=>$type, mathexp=>$mathexp);
-    $grid->{$name} = $thisgds;
-    push @gds, $thisgds;
-    $thisgds->dispose($thisgds->write_gds);
-  };
+  #   my $grid = $rframes->{GDS}->{grid};
+  #   foreach my $row (0 .. $grid->GetNumberRows) {
+  #     $grid -> SetCellValue($row, 3, q{});
+  #     my $name = $grid -> GetCellValue($row, 1);
+  #     next if ($name =~ m{\A\s*\z});
+  #     my $type = $grid -> GetCellValue($row, 0);
+  #     my $mathexp = $grid -> GetCellValue($row, 2);
+  #     my $thisgds = $grid->{$name} || Demeter::GDS->new(); # take care to reuse GDS objects whenever possible
+  #     $thisgds -> set(name=>$name, gds=>$type, mathexp=>$mathexp);
+  #     $grid->{$name} = $thisgds;
+  #     push @gds, $thisgds;
+  #     $thisgds->dispose($thisgds->write_gds);
+  #   };
 
   foreach my $k (keys(%$rframes)) {
     next unless ($k =~ m{\Adata});
@@ -314,7 +314,7 @@ sub uptodate {
   };
 
   modified(1);
-  return ($abort, \@data, \@paths, \@gds);
+  return ($abort, \@data, \@paths);
 };
 
 sub fit {
@@ -333,7 +333,9 @@ sub fit {
   #};
   #return;
 
-  my ($abort, $rdata, $rpaths, $rgds) = uptodate($rframes);
+  my ($abort, $rdata, $rpaths) = uptodate($rframes);
+  my $rgds = $rframes->{GDS}->reset_all;
+
   my @data  = @$rdata;
   my @paths = @$rpaths;
   my @gds   = @$rgds;

@@ -635,7 +635,7 @@ sub OnMenuClick {
 
     ($id == $PATH_SHOW) and do { # show a dialog with the path paragraph
       my $pathobject = $datapage->{pathlist}->GetPage($datapage->{pathlist}->GetSelection)->{path};
-      my ($abort, $rdata, $rpaths, $rgds) = Demeter::UI::Artemis::uptodate(\%Demeter::UI::Artemis::frames);
+      my ($abort, $rdata, $rpaths) = Demeter::UI::Artemis::uptodate(\%Demeter::UI::Artemis::frames);
       $pathobject->_update("fft");
       my $show = Wx::Dialog->new($datapage, -1, $pathobject->label.', evaluated', wxDefaultPosition, [450,350],
 				 wxOK|wxICON_INFORMATION);

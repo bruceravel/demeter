@@ -81,15 +81,21 @@ sub new {
   $gbs -> Add($this->{residual}, Wx::GBPosition->new(1,1));
   $demeter->po->plot_res(0);
 
+  $this->{running} = Wx::CheckBox->new($this, -1, "Plot running R-factor");
+  $gbs -> Add($this->{running}, Wx::GBPosition->new(2,0), Wx::GBSpan->new(1,2));
+  $demeter->po->plot_run(0);
+
   EVT_CHECKBOX($this, $this->{fit},        sub{OnPlotToggle(@_, 'fit',        'plot_fit')});
   EVT_CHECKBOX($this, $this->{background}, sub{OnPlotToggle(@_, 'background', 'plot_bkg')});
   EVT_CHECKBOX($this, $this->{window},     sub{OnPlotToggle(@_, 'window',     'plot_win')});
   EVT_CHECKBOX($this, $this->{residual},   sub{OnPlotToggle(@_, 'residual',   'plot_res')});
+  EVT_CHECKBOX($this, $this->{running},    sub{OnPlotToggle(@_, 'running',    'plot_run')});
 
   $this->mouseover("fit",        "Include the most recent fit when plotting a data set from the plotting list.");
   $this->mouseover("background", "Include the refined background when plotting a data set from the plotting list.");
   $this->mouseover("window",     "Include the most window function when making a plot from the plotting list.");
   $this->mouseover("residual",   "Include the residual of the most recent fit when plotting a data set from the plotting list.");
+  $this->mouseover("residual",   "Include the running R-factor of the most recent fit when plotting a data set from the plotting list.");
 
 
   $szr -> Add(Wx::StaticLine->new($this, -1, wxDefaultPosition, wxDefaultSize, wxLI_HORIZONTAL), 0, wxGROW|wxLEFT|wxRIGHT, 5);

@@ -64,7 +64,8 @@ sub plot {
   $self->dispose($command, "plotting");
   $pf->increment if ($space ne 'e');
   if ((ref($self) =~ m{Data}) and $self->fitting) {
-    foreach my $p (qw(fit res bkg)) {
+    foreach my $p (qw(fit res bkg run)) {
+      $self->running if ($p eq 'run');
       my $pp = "plot_$p";
       next if not $pf->$pp;
       next if (($p eq 'bkg') and (not $self->fit_do_bkg));
@@ -489,6 +490,68 @@ sub stack {
   return $self;
 };
 
+
+sub running {
+  my ($self, $space) = @_;
+  my ($diffsum, $max, $suff) = (0,0,q{});
+  my @running = ();
+ SWITCH: {
+    (lc($space) eq 'k') and do {
+      my $kw   = $self->po->kweight;
+      my @x    = $self->get_array('k');
+      my @data = $self->get_array('chi');
+      my @fit  = $self->get_array('chi', 'fit');
+      my ($kmin, $kmax) = $self->get(qw(fft_kmin fft_kmax));
+      foreach my $i (0 .. $#x) {
+	push(@running, 0),        next if ($x[$i] < $kmin);
+	push(@running, $x[$i-1]), next if ($x[$i] > $kmax);
+	$diffsum += ($data[$i]*$x[$i]**$kw - $fit[$i]*$x[$i]**$kw)**2;
+	push @running, $diffsum;
+      };
+      $max = max(@running);
+      $suff = 'chi';
+    };
+
+    (lc($space) eq 'r') and do {
+      my $kw    = $self->po->kweight;
+      my @x     = $self->get_array('k');
+      my @datar = $self->get_array('chir_re');
+      my @fitr  = $self->get_array('chir_re', 'fit');
+      my @datai = $self->get_array('chir_im');
+      my @fiti  = $self->get_array('chir_im', 'fit');
+      my ($rmin, $rmax) = $self->get(qw(bft_rmin bft_rmax));
+      foreach my $i (0 .. $#x) {
+	push(@running, 0),        next if ($x[$i] < $rmin);
+	push(@running, $x[$i-1]), next if ($x[$i] > $rmax);
+	$diffsum += ($datar[$i]-$fitr[$i])**2 + ($datai[$i]-$fiti[$i])**2;
+	push @running, $diffsum;
+      };
+      $max = max(@running);
+      $suff = 'chir';
+    };
+
+    (lc($space) eq 'q') and do {
+      my $kw    = $self->po->kweight;
+      my @x     = $self->get_array('q');
+      my @datar = $self->get_array('chiq_re');
+      my @fitr  = $self->get_array('chiq_re', 'fit');
+      my @datai = $self->get_array('chiq_im');
+      my @fiti  = $self->get_array('chiq_im', 'fit');
+      my ($kmin, $kmax) = $self->get(qw(fft_kmin fft_kmax));
+      foreach my $i (0 .. $#x) {
+	push(@running, 0),        next if ($x[$i] < $kmin);
+	push(@running, $x[$i-1]), next if ($x[$i] > $kmax);
+	$diffsum += ($datar[$i]-$fitr[$i])**2 + ($datai[$i]-$fiti[$i])**2;
+	push @running, $diffsum;
+      };
+      $max = max(@running);
+      $suff = 'chiq';
+    };
+  };
+
+  @running = map {$_ / $max} @running;
+  Ifeffit::put_array($self->group."_run.$suff", \@running);
+};
 
 
 
