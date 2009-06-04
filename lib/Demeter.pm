@@ -571,12 +571,13 @@ sub template {
 				 "Demeter",
 				 "templates",
 				 $category,
-				 $self->get_mode("template_$category"),
+				 $self->get_mode("template_$category") || q{xxx},
 				 "$file.tmpl");
   if (not -e $tmpl) {		# fall back to ifeffit/pgplot template
     my $set = ($category eq 'plot') ? "pgplot" :
-      ($category eq 'feff') ? "feff6"  :
-	"ifeffit";
+              ($category eq 'feff') ? "feff6"  :
+              ($category eq 'test') ? 'test'   :
+                                      "ifeffit";
     $tmpl = File::Spec->catfile(dirname($INC{"Demeter.pm"}),
 				"Demeter", "templates", $category, $set, "$file.tmpl");
   };

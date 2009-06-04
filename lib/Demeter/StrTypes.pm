@@ -284,26 +284,26 @@ subtype PlotSpace,
 ## is it a good idea to define these type constraints?  if precludes
 ## the user adding new template sets...
 ## Possibly, the validation should look for the template set on disk...?
-subtype 'TemplateProcess'
-      => as 'Str'
-      => where { $_ =~ m{\A(?:demeter|ifeffit|iff_columns|feffit)\z}i }
-      => message { "That ($_) is not a valid processing template group" };
-subtype 'TemplateFit'
-      => as 'Str'
-      => where { $_ =~ m{\A(?:demeter|ifeffit|iff_columns|feffit)\z}i }
-      => message { "That ($_) is not a valid fitting template group" };
-subtype 'TemplatePlot'
-      => as 'Str'
-      => where { $_ =~ m{\A(?:demeter|gnuplot|pgplot)\z}i }
-      => message { "That ($_) is not a valid plotting template group" };
-subtype 'TemplateFeff'
-      => as 'Str'
-      => where { $_ =~ m{\Afeff[68]\z}i }
-      => message { "That ($_) is not a valid Feff template group" };
-subtype 'TemplateAnalysis'
-      => as 'Str'
-      => where { $_ =~ m{\A(?:demeter|ifeffit|iff_columns)\z}i }
-      => message { "That ($_) is not a valid plotting template group" };
+subtype TemplateProcess,
+  as Str,
+  where { $_ =~ m{\A(?:demeter|ifeffit|iff_columns|feffit)\z}i },
+  message { "That ($_) is not a valid processing template group" };
+subtype TemplateFit,
+  as Str,
+  where { $_ =~ m{\A(?:demeter|ifeffit|iff_columns|feffit)\z}i },
+  message { "That ($_) is not a valid fitting template group" };
+subtype TemplatePlot,
+  as Str,
+  where { $_ =~ m{\A(?:demeter|gnuplot|pgplot)\z}i },
+  message { "That ($_) is not a valid plotting template group" };
+subtype TemplateFeff,
+  as Str,
+  where { $_ =~ m{\Afeff[68]\z}i },
+  message { "That ($_) is not a valid Feff template group" };
+subtype TemplateAnalysis,
+  as Str,
+  where { $_ =~ m{\A(?:demeter|ifeffit|iff_columns)\z}i },
+  message { "That ($_) is not a valid plotting template group" };
 
 
 ## -------- Line types in PGPLOT

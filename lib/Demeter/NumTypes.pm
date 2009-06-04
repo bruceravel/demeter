@@ -26,8 +26,8 @@ subtype NaturalC,
   message { "Int is not larger than or equal to 0" };
 
 coerce NaturalC,
-  => from 'Num'
-  => via sub{ int($_) };
+  from Num,
+  via sub{ int($_) };
 
 subtype PosInt,
   as Int,
