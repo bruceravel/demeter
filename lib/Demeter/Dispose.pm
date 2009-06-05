@@ -26,6 +26,7 @@ use Ifeffit;
 ## dispose commands to ifeffit and elsewhere
 sub dispose {
   my ($self, $command, $plotting) = @_;
+  return if not $command;
 
   $self->set_mode( echo=>q{} );
   my $echo_buffer = q{};

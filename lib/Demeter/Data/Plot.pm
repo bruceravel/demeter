@@ -64,12 +64,16 @@ sub plot {
   $self->dispose($command, "plotting");
   $pf->increment if ($space ne 'e');
   if ((ref($self) =~ m{Data}) and $self->fitting) {
-    foreach my $p (qw(fit res bkg run)) {
-      $self->running if ($p eq 'run');
+    foreach my $p (qw(fit res bkg)) {
       my $pp = "plot_$p";
       next if not $pf->$pp;
       next if (($p eq 'bkg') and (not $self->fit_do_bkg));
       $self->part_plot($p, $space);
+      $pf->increment;
+    };
+    if ($pf->plot_run) {
+      $self->running($space);
+      $self->plot_run($space);
       $pf->increment;
     };
     if ($pf->plot_win) {
@@ -458,6 +462,23 @@ sub _plot_window_command {
   return $string;
 };
 
+sub plot_run {
+  my ($self, $space) = @_;
+  my $save   = $self->po->kweight;
+  my $suff = (lc($space) eq 'k') ? 'chi'
+           : (lc($space) eq 'r') ? 'chir_mag'
+	   :                       'chiq_mag';
+  my @fc = $self->floor_ceil($suff);
+
+  $self -> co -> set(run_space => $space,
+		     run_scale => $fc[1]*$self->po->window_multiplier);
+  $self->po->kweight(0) if ($space eq 'k');
+  my $string = $self->template("plot", "run");
+  $self->dispose($string, "plotting");
+  $self->po->kweight($save);
+return $self;
+}
+
 sub plot_marker {
   my ($self, $requested, $x) = @_;
   my $command = q{};
@@ -493,6 +514,7 @@ sub stack {
 
 sub running {
   my ($self, $space) = @_;
+  $space ||= $self->po->space;
   my ($diffsum, $max, $suff) = (0,0,q{});
   my @running = ();
  SWITCH: {
@@ -504,17 +526,17 @@ sub running {
       my ($kmin, $kmax) = $self->get(qw(fft_kmin fft_kmax));
       foreach my $i (0 .. $#x) {
 	push(@running, 0),        next if ($x[$i] < $kmin);
-	push(@running, $x[$i-1]), next if ($x[$i] > $kmax);
+	push(@running, $running[$i-1]), next if ($x[$i] > $kmax);
 	$diffsum += ($data[$i]*$x[$i]**$kw - $fit[$i]*$x[$i]**$kw)**2;
 	push @running, $diffsum;
       };
       $max = max(@running);
-      $suff = 'chi';
+      $suff = 'krun';
     };
 
     (lc($space) eq 'r') and do {
       my $kw    = $self->po->kweight;
-      my @x     = $self->get_array('k');
+      my @x     = $self->get_array('r');
       my @datar = $self->get_array('chir_re');
       my @fitr  = $self->get_array('chir_re', 'fit');
       my @datai = $self->get_array('chir_im');
@@ -522,12 +544,12 @@ sub running {
       my ($rmin, $rmax) = $self->get(qw(bft_rmin bft_rmax));
       foreach my $i (0 .. $#x) {
 	push(@running, 0),        next if ($x[$i] < $rmin);
-	push(@running, $x[$i-1]), next if ($x[$i] > $rmax);
+	push(@running, $running[$i-1]), next if ($x[$i] > $rmax);
 	$diffsum += ($datar[$i]-$fitr[$i])**2 + ($datai[$i]-$fiti[$i])**2;
 	push @running, $diffsum;
       };
       $max = max(@running);
-      $suff = 'chir';
+      $suff = 'rrun';
     };
 
     (lc($space) eq 'q') and do {
@@ -540,17 +562,17 @@ sub running {
       my ($kmin, $kmax) = $self->get(qw(fft_kmin fft_kmax));
       foreach my $i (0 .. $#x) {
 	push(@running, 0),        next if ($x[$i] < $kmin);
-	push(@running, $x[$i-1]), next if ($x[$i] > $kmax);
+	push(@running, $running[$i-1]), next if ($x[$i] > $kmax);
 	$diffsum += ($datar[$i]-$fitr[$i])**2 + ($datai[$i]-$fiti[$i])**2;
 	push @running, $diffsum;
       };
       $max = max(@running);
-      $suff = 'chiq';
+      $suff = 'qrun';
     };
   };
 
   @running = map {$_ / $max} @running;
-  Ifeffit::put_array($self->group."_run.$suff", \@running);
+  Ifeffit::put_array($self->group.".$suff", \@running);
 };
 
 
@@ -684,6 +706,27 @@ optional argument.  These do the same thing:
   $dataobject -> plot_window;
     ## and
   $dataobject -> plot_window('k');
+
+=item C<running>
+
+Compute the running R-factor for the fit.  This is running sum of the
+misfit in the sapce being plotted.  It is related to, but not the same
+as, the R-factor of the fit as it is computed on the fly for the
+current plotting conditions and is scaled to plot nicely in the
+current plot.
+
+  $dataobject -> running($space);
+
+The array is then stored in the same Ifeffit group as the data itself
+but with a suffix of C<krun>, C<rrun>, or C<qrun> depending on when
+space is being plotted.
+
+In k-space, the running R-factor is the sum of the squares of the
+difference between the k-weighted data and fit.  In R- and q-space, it
+is the sum in quadrature of the differneces of the real and imaginary
+parts.  The scaling is then chosen so that the plot is zero below the
+Fourier transform (k or q) of fitting range (R) and is the same height
+as the plotted window function above the FT or fitting range.
 
 =item C<plot_marker>
 

@@ -125,6 +125,17 @@ description
   This is the color associated with a completely unhappy fit.  The
   default value is a reddish sort of color
 
+variable=shoulder
+type=real
+default=0.6
+description
+  This fractional value determines when the happiness color switches
+  from being interpolated between the bad and average colors to being
+  interpolated between the average and good colors.  A number above
+  0.5 means that a higher happiness is required to yeild a green color
+  while a number below 0.5 means a worse happiness is reuqired to
+  yield a red color.  This must be between 0 and 1.
+
 variable=minimum
 type=positive integer
 default=60

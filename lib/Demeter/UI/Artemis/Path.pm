@@ -35,7 +35,7 @@ my %labels = (label  => 'Label',
 
 my %explanation =
   (
-   label  => 'The label is a user-supplied bit of text identifying or describing the path.',
+   label  => 'The label is a snippet of user-supplied text identifying or describing the path.',
    n      => 'N is the degeneracy of the path.  For a SS path this can often be interpreted as the coordination number.',
    s02    => 'S02 is the amplitude factor in the EXAFS equation, which includes S02 and possibly other amplitude factors.',
    e0     => 'ΔE0 is an energy shift typically interpreted as the alignment of the energy grids of the data and theory.',

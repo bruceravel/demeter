@@ -72,6 +72,21 @@ my $fitobject = Demeter::Fit -> new(gds   => \@gdsobjects,
 print "do the fit (or the sum of paths)\n";
 $fitobject -> fit;
 
+$plot_features->set(plot_data => 1,
+		    plot_fit  => 1,
+		    plot_bkg  => 0,
+		    plot_res  => 0,
+		    plot_win  => 1,
+		    plot_run  => 1,
+		    kweight   => 2,
+		    r_pl      => 'r',
+		    'q_pl'    => 'r',
+		   );
+
+$dobject->plot('r');
+my $end = <STDIN>;
+exit;
+
 $fitobject -> interview;
 exit;
 
@@ -86,10 +101,12 @@ $plot_features->set(plot_data => 1,
 		    plot_bkg  => 0,
 		    plot_res  => 0,
 		    plot_win  => 1,
+		    plot_run  => 1,
 		    kweight   => 2,
 		    r_pl      => 'm',
 		    'q_pl'    => 'r',
 		   );
+
 my $s = 0;  # stack the plot interestingly...
 foreach my $obj ($dobject, @pobjects,) {
   $obj -> plot($space);

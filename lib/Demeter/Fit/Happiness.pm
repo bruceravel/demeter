@@ -61,12 +61,13 @@ sub color {
 
   my $min = $self->co->default("happiness", "minimum");
   my $scaled = ($cheer < $min) ? 0 : ($cheer-$min) / (100-$min);
-  if ($scaled < 0.5) {
-    $fraction = $scaled / 0.5;
+  my $center = $self->co->default("happiness", "shoulder");
+  if ($scaled < $center) {
+    $fraction = $scaled / $center;
     @bottom   = @bad;
     @top      = @ok;
   } else {
-    $fraction = ($scaled-0.5) / 0.5;
+    $fraction = ($scaled-$center) / $center;
     @bottom   = @ok;
     @top      = @good;
   };

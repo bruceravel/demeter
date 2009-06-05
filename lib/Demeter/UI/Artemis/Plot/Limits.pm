@@ -95,7 +95,7 @@ sub new {
   $this->mouseover("background", "Include the refined background when plotting a data set from the plotting list.");
   $this->mouseover("window",     "Include the most window function when making a plot from the plotting list.");
   $this->mouseover("residual",   "Include the residual of the most recent fit when plotting a data set from the plotting list.");
-  $this->mouseover("residual",   "Include the running R-factor of the most recent fit when plotting a data set from the plotting list.");
+  $this->mouseover("running",    "Include the running R-factor of the most recent fit when plotting a data set from the plotting list.");
 
 
   $szr -> Add(Wx::StaticLine->new($this, -1, wxDefaultPosition, wxDefaultSize, wxLI_HORIZONTAL), 0, wxGROW|wxLEFT|wxRIGHT, 5);

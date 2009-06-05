@@ -177,12 +177,9 @@ sub _read_config_file {
   #$self -> Push(___groups => $base);
   $self -> push_all_config_files(File::Spec->rel2abs($file));
 
-  ## the first time this is called, the regexp method has not yet
-  ## been defined -- grrr..!
   my $opt  = Regexp::List->new;
   my $key_regex = $opt->list2re(qw(type default minint maxint options
 				   units onvalue offvalue restart));
-  ##my $key_regex = Demeter -> regexp("config");
 
   my (%hash, $description, $group, $param, $value);
   my $line;

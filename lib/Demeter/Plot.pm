@@ -328,7 +328,12 @@ sub outfile {
 
 sub propagate_kweight {
   my ($self) = @_;
-  $_->update_fft(1) foreach (@{ $self->mo->Data }, @{ $self->mo->Path }, @{ $self->mo->SSPath }, @{ $self->mo->VPath });
+  $_->update_fft(1) foreach (
+			     @{ $self->mo->Data   },
+			     @{ $self->mo->Path   },
+			     @{ $self->mo->SSPath },
+			     @{ $self->mo->VPath  },
+			    );
 };
 
 sub i0_text {
@@ -626,8 +631,8 @@ repititions of the smoothing function.
 
 When true, data plotted in energy have C<bkg_e0> subtracted from the
 energy array.  Thus mu(E) data are plotted with the edge energy at 0.
-The purpose of this is to facilitate overplotting data from different
-edges.
+The purpose of this is to facilitate overplotting mu(E) data from
+different edges.
 
 =back
 
@@ -646,7 +651,7 @@ The upper bound of the plot range in k.
 =item C<kweight> (number) I<[1]>
 
 The k-weighting to use when plotting in k or in a Fourier transform
-before plottingin R or q.  Typically, this is 1, 2, or 3, but can
+before plotting in R or q.  Typically, this is 1, 2, or 3, but can
 actually be any number.  When this gets changed, all Data, Path, and
 VPath objects will be flagged as needing to be brought up-to-date for
 their forward Fourier transform.

@@ -189,9 +189,11 @@ sub plot {
     $list[0] -> data -> y_offset($save);
   } elsif ($invert_r or $invert_q) {
     foreach my $obj (@list) {
-      if (ref($obj) =~ m{Data}) { # Data plotted normally
+      if (ref($obj) =~ m{Data}) {       # Data plotted normally
 	$obj->plot($space);
-      } else {			# invert Path or VPath
+      } elsif (ref($obj) =~ m{VPath}) { # VPath plotted normally
+	$obj->plot($space);
+      } else {			        # invert Path
 	my $save = $obj->data->plot_multiplier;
 	$obj->data->plot_multiplier(-1*$save);
 	$obj->plot($space);

@@ -1,0 +1,23 @@
+{ # -*- ifm -*-
+  # template for overplotting window function
+  #   {$D->group} returns the ifeffit group name
+  #   {$D->parameter} returns the value of that parameter
+  #   {$P->parameter} returns the value of a Plot parameter
+  $suffix  = ($C->get("run_space") =~ m{\Ak}) ? 'krun' 
+           : ($C->get("run_space") =~ m{\Ar}) ? 'rrun'
+	   :                                    'qrun';
+  $space   = ($C->get("run_space") =~ m{\Ak}) ? 'k' 
+           : ($C->get("run_space") =~ m{\Ar}) ? 'r'
+	   :                                    'q';
+  $datastyle = ($P->datastyle eq 'solid') ? 'lines' : 'points';
+  $file = $P->tempfile;
+  $D->points(file    => $file,
+             space   => $space,
+	     suffix  => $suffix,
+	     scale   => $C->get("run_scale"),
+	     yoffset => $D->y_offset,
+	    );
+  q{}
+}
+###__ plot running R-factor ___
+replot '{$file}' using 1:2 with {$datastyle} ls {$P->increm+1} title "running R-factor"

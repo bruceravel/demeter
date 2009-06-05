@@ -2,7 +2,7 @@ package Demeter::Data::Arrays;
 use Moose::Role;
 use Carp;
 use Demeter::StrTypes qw( DataPart FitSpace );
-use List::MoreUtils qw(pairwise);
+use List::MoreUtils qw(pairwise minmax);
 
 sub yofx {
   my ($self, $suffix, $part, $x) = @_;
@@ -49,6 +49,11 @@ sub ref_array {
 sub floor_ceil {
   my ($self, $suffix, $part) = @_;
   my @array = $self->get_array($suffix, $part);
+  if ($suffix eq 'chi') {
+    my @k = $self->get_array('k');
+    my $w = $self->po->kweight;
+    @array = map { $array[$_] * $k[$_] ** $w } (0 .. $#array);
+  };
   my ($min, $max) = minmax(@array);
   return ($min, $max);
 };
@@ -93,7 +98,8 @@ sub points {
   @x = map {$_ + $args{shift}} @x;
   my @y = ();
   if ((ref($self) =~ m{Data}) and is_DataPart($args{part})) {
-    @y = $self->get_array($args{suffix}, $args{part});
+    my $suff = ($args{part} eq 'run') ? substr($args{suffix}, 0, 4) : $args{suffix};
+    @y = $self->get_array($suff, $args{part});
   } elsif (ref($args{part}) =~ m{Path}) {
     #print $args{part}, "  ", ref($args{part}), "  ", $args{file}, $/;
     @y = $args{part}->get_array($args{suffix});
