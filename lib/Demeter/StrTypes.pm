@@ -244,7 +244,7 @@ subtype Plotting,
 
 ## -------- Data parts
 use vars qw(@dataparts_list $dataparts_regexp);
-@dataparts_list = qw(fit bkg res run);
+@dataparts_list = qw(fit bkg res);
 $dataparts_regexp = $opt->list2re(@dataparts_list);
 subtype DataPart,
   as Str,
