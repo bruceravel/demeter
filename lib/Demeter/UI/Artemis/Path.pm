@@ -137,25 +137,6 @@ sub new {
   $hbox = Wx::BoxSizer->new( wxHORIZONTAL );
   $vbox -> Add($hbox, 0, wxGROW|wxALL, 0);
   my $sz = 20; # [$sz,$sz]
-  $this->{upbutton} = Wx::Button->new($this, wxID_UP, q{}, wxDefaultPosition, wxDefaultSize, wxBU_EXACTFIT);
-  $hbox -> Add($this->{upbutton}, 0, wxALL, 1);
-  EVT_BUTTON($this, $this->{upbutton}, sub{OnUpButton(@_)});
-  $this->{dnbutton} = Wx::Button->new($this, wxID_DOWN, q{}, wxDefaultPosition, wxDefaultSize, wxBU_EXACTFIT);
-  $hbox -> Add($this->{dnbutton}, 0, wxALL, 1);
-  EVT_BUTTON($this, $this->{dnbutton}, sub{OnDownButton(@_)});
-
-  $this->mouseover("upbutton", "Move this path up in the path list.");
-  $this->mouseover("dnbutton", "Move this path down in the path list.");
-
-
-  #   $this->{transferbutton} = Wx::Button->new($this, -1, q{Trans&fer marked}, wxDefaultPosition, wxDefaultSize, wxBU_EXACTFIT);
-  #   $hbox -> Add($this->{transferbutton}, 0, wxALL, 1);
-  #   EVT_BUTTON($this, $this->{transferbutton}, sub{OnTransferButton(@_)});
-  #   $this->{makevpathbutton} = Wx::Button->new($this, -1, q{Make &VPath}, wxDefaultPosition, wxDefaultSize, wxBU_EXACTFIT);
-  #   $hbox -> Add($this->{makevpathbutton}, 0, wxALL, 1);
-  #   EVT_BUTTON($this, $this->{makevpathbutton}, sub{OnMakeVPathButton(@_)});
-
-  #map {$this->{$_} -> Enable(0)} qw(upbutton dnbutton plotmarkedbutton makevpathbutton);
 
   $this -> populate($parent, $pathobject);
   $this -> SetSizerAndFit($vbox);
@@ -374,25 +355,6 @@ sub Rename {
   $self->{idlabel} -> SetLabel($label);
 };
 
-sub OnUpButton {
-  my ($self, $event) = @_;
-  print "clicked up button\n";
-};
-
-sub OnDownButton {
-  my ($self, $event) = @_;
-  print "clicked down button\n";
-};
-
-sub OnTransferButton {
-  my ($self, $event) = @_;
-  print "clicked transfer button\n";
-};
-
-sub OnMakeVPathButton {
-  my ($self, $event) = @_;
-  print "clicked make VPath button\n";
-};
 
 
 sub transfer {

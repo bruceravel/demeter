@@ -17,7 +17,7 @@ package  Demeter::UI::Artemis::Prj;
 
 use Wx qw( :everything );
 use base qw(Wx::Dialog);
-use Wx::Event qw(EVT_LISTBOX EVT_BUTTON EVT_RADIOBOX);
+use Wx::Event qw(EVT_CLOSE EVT_LISTBOX EVT_BUTTON EVT_RADIOBOX);
 
 use strict;
 use warnings;
@@ -29,7 +29,7 @@ sub new {
 
   my $this = $class->SUPER::new($parent, -1, "Artemis: Import from Athena project file",
 				wxDefaultPosition, wxDefaultSize,
-				wxMINIMIZE_BOX|wxCAPTION|wxSYSTEM_MENU|wxSTAY_ON_TOP
+				wxMINIMIZE_BOX|wxCAPTION|wxSYSTEM_MENU|wxCLOSE_BOX|wxSTAY_ON_TOP
 			       );
 
   my $prj = Demeter::Data::Prj->new(file=>$file);
@@ -53,7 +53,7 @@ sub new {
   my $journalbox      = Wx::StaticBox->new($this, -1, 'Data group title lines', wxDefaultPosition, wxDefaultSize);
   my $journalboxsizer = Wx::StaticBoxSizer->new( $journalbox, wxHORIZONTAL );
   $this->{journal}      = Wx::TextCtrl->new($this, -1, q{}, wxDefaultPosition, wxDefaultSize,
-					  wxVSCROLL|wxHSCROLL|wxTE_MULTILINE|wxTE_READONLY|wxNO_BORDER);
+					    wxVSCROLL|wxHSCROLL|wxTE_MULTILINE|wxTE_READONLY|wxNO_BORDER);
   $journalboxsizer -> Add($this->{journal}, 1, wxGROW|wxALL, 0);
   $right           -> Add($journalboxsizer, 1, wxGROW|wxALL, 5);
 
@@ -81,6 +81,11 @@ sub new {
 
   $this -> SetSizerAndFit( $hbox );
   return $this;
+};
+
+sub on_close {
+  my ($self) = @_;
+  $self->SetReturnCode(wxID_CANCEL);
 };
 
 sub ShouldPreventAppExit {

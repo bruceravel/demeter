@@ -140,7 +140,7 @@ sub transfer {
   my $i = $plotlist->GetCount - 1;
   $plotlist->SetClientData($i, $vpath);
   $plotlist->Check($i,1);
-  $Demeter::UI::Artemis::frames{main}->{statusbar} -> SetStatusText("Transfered path \"$name\" to the plotting list.");
+  $Demeter::UI::Artemis::frames{main}->{statusbar} -> SetStatusText("Transfered VPath \"$name\" to the plotting list.");
 };
 
 1;

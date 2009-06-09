@@ -40,7 +40,7 @@ use Wx qw( :everything );
 use Wx::DND;
 use Wx::Grid;
 use base qw(Wx::Frame);
-use Wx::Event qw(EVT_GRID_CELL_CHANGE EVT_GRID_CELL_RIGHT_CLICK  EVT_MENU
+use Wx::Event qw(EVT_CLOSE EVT_GRID_CELL_CHANGE EVT_GRID_CELL_RIGHT_CLICK  EVT_MENU
 		 EVT_GRID_LABEL_LEFT_CLICK EVT_GRID_LABEL_RIGHT_CLICK EVT_GRID_RANGE_SELECT);
 
 use Demeter::UI::Artemis::GDS::Restraint;
@@ -85,9 +85,10 @@ sub new {
   my ($class, $parent) = @_;
   my $this = $class->SUPER::new($parent, -1, "Artemis [GDS] Guess, Def, Set parameters",
 				wxDefaultPosition, [-1,-1], #[725,480],
-				wxMINIMIZE_BOX|wxCAPTION|wxSYSTEM_MENU|wxRESIZE_BORDER);
+				wxMINIMIZE_BOX|wxCAPTION|wxSYSTEM_MENU|wxCLOSE_BOX|wxRESIZE_BORDER);
   $this->{statusbar} = $this->CreateStatusBar;
   $this->{statusbar} -> SetStatusText(q{});
+  EVT_CLOSE($this, \&on_close);
 
   my $hbox = Wx::BoxSizer->new( wxHORIZONTAL );
 
@@ -149,6 +150,11 @@ sub new {
 
 sub noop {};
 
+sub on_close {
+  my ($self) = @_;
+  $self->Show(0);
+  $self->GetParent->{toolbar}->ToggleTool(1, 0);
+};
 
 sub initialize_row {
   my ($parent, $row) = @_;

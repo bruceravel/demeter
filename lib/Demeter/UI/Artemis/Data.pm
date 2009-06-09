@@ -106,11 +106,12 @@ sub new {
 
   my $this = $class->SUPER::new($parent, -1, "Artemis: Data controls",
 				wxDefaultPosition, [860,520],
-				wxCAPTION|wxMINIMIZE_BOX|wxSYSTEM_MENU|wxRESIZE_BORDER);
+				wxCAPTION|wxMINIMIZE_BOX|wxCLOSE_BOX|wxSYSTEM_MENU); #|wxRESIZE_BORDER
   $this ->{PARENT} = $parent;
   $this->make_menubar;
   $this->SetMenuBar( $this->{menubar} );
   EVT_MENU($this, -1, sub{OnMenuClick(@_)} );
+  EVT_CLOSE($this, \&on_close);
 
   $this->{statusbar} = $this->CreateStatusBar;
   $this->{statusbar} -> SetStatusText(q{});
@@ -346,12 +347,26 @@ sub new {
 
   $this->{pathlist} = Demeter::UI::Wx::CheckListBook->new( $rightpane, -1, wxDefaultPosition, wxDefaultSize, wxBK_LEFT );
   $right -> Add($this->{pathlist}, 1, wxGROW|wxALL, 5);
-  #$this->{pathlist}->AssignImageList( $imagelist );
-  #$this->{pathlist}->SetPageSize(Wx::Size->new(300,400));
-  #$this->{pathlist}->SetPadding(Wx::Size->new(2,2));
-  #$this->{pathlist}->SetIndent(0);
 
+  my $pathbuttons = Wx::BoxSizer->new( wxHORIZONTAL );
+  $right -> Add($pathbuttons, 0, wxGROW|wxALL, 5);
 
+  $this->{up}        = Wx::Button->new($rightpane, wxID_UP,   q{},        wxDefaultPosition, wxDefaultSize, wxBU_EXACTFIT);
+  $this->{down}      = Wx::Button->new($rightpane, wxID_DOWN, q{},        wxDefaultPosition, wxDefaultSize, wxBU_EXACTFIT);
+  $this->{makevpath} = Wx::Button->new($rightpane, -1, 'Make &VPath',     wxDefaultPosition, wxDefaultSize, wxBU_EXACTFIT);
+  $this->{transfer}  = Wx::Button->new($rightpane, -1, 'Transfer marked', wxDefaultPosition, wxDefaultSize, wxBU_EXACTFIT);
+  $pathbuttons -> Add($this->{up},        0, wxLEFT|wxRIGHT, 5);
+  $pathbuttons -> Add($this->{down},      0, wxLEFT|wxRIGHT, 5);
+  $pathbuttons -> Add($this->{makevpath}, 0, wxLEFT|wxRIGHT, 5);
+  $pathbuttons -> Add($this->{transfer},  0, wxLEFT|wxRIGHT, 5);
+  $this->mouseover("up",        "Move the current path up in the path list");
+  $this->mouseover("down",      "Move the current path up in the path list");
+  $this->mouseover("makevpath", "Make a VPath out of the marked paths");
+  $this->mouseover("transfer",  "Transfer each of the marked paths to the plotting list");
+  EVT_BUTTON($this, $this->{up},        sub{$this->OnUpButton});
+  EVT_BUTTON($this, $this->{down},      sub{$this->OnDownButton});
+  EVT_BUTTON($this, $this->{makevpath}, sub{$this->OnMakeVPathButton});
+  EVT_BUTTON($this, $this->{transfer},  sub{$this->OnTransferButton});
 
   $this->{pathlist}->SetDropTarget( Demeter::UI::Artemis::Data::DropTarget->new( $this, $this->{pathlist} ) );
 
@@ -371,6 +386,51 @@ sub mouseover {
   EVT_LEAVE_WINDOW($self->{$widget}, sub{$self->{statusbar}->PopStatusText;         $_[1]->Skip});
 };
 
+sub on_close {
+  my ($self) = @_;
+  $self->Show(0);
+  my $id = substr($self->{dnum}, 4);
+  $self->{PARENT}->{datatool}->ToggleTool($id, 0);
+};
+
+sub OnUpButton {
+  my ($self, $event) = @_;
+  my $pathpage = $self->{pathlist}->GetPage($self->{pathlist}->GetSelection);
+  return if ($pathpage !~ m{Path});
+  my $pos = $self->{pathlist}->GetSelection;
+  print "clicked up button -- position $pos shown\n";
+};
+sub OnDownButton {
+  my ($self, $event) = @_;
+  my $pathpage = $self->{pathlist}->GetPage($self->{pathlist}->GetSelection);
+  return if ($pathpage !~ m{Path});
+  my $pos = $self->{pathlist}->GetSelection;
+  print "clicked down button -- position $pos shown\n";
+};
+
+sub OnTransferButton {
+  my ($self, $event) = @_;
+  my $pathpage = $self->{pathlist}->GetPage($self->{pathlist}->GetSelection);
+  return if ($pathpage !~ m{Path});
+  foreach my $p (0 .. $self->{pathlist}->GetPageCount - 1) {
+    $self->{pathlist}->GetPage($p)->transfer if $self->{pathlist}->IsChecked($p);
+  };
+  $self->{statusbar}->SetStatusText("Transfered marked groups to plotting list");
+};
+
+sub OnMakeVPathButton {
+  my ($self, $event) = @_;
+  my $pathpage = $self->{pathlist}->GetPage($self->{pathlist}->GetSelection);
+  return if ($pathpage !~ m{Path});
+
+  my @list = ();
+  foreach my $p (0 .. $self->{pathlist}->GetPageCount - 1) {
+    push(@list, $self->{pathlist}->GetPage($p)->{path}) if $self->{pathlist}->IsChecked($p);
+  };
+  return if ($#list == -1);
+  $Demeter::UI::Artemis::frames{Plot}->{VPaths}->add_vpath(@list);
+  $self->{statusbar}->SetStatusText("Made a VPath from the marked groups");
+};
 
 sub make_menubar {
   my ($self) = @_;
@@ -595,18 +655,12 @@ sub OnMenuClick {
     };
 
     ($id == $DATA_TRANSFER) and do {
-      foreach my $p (0 .. $datapage->{pathlist}->GetPageCount - 1) {
-	$datapage->{pathlist}->GetPage($p)->transfer if $datapage->{pathlist}->IsChecked($p);
-      };
+      $datapage->OnTransferButton;
       last SWITCH;
     };
 
     ($id == $DATA_VPATH) and do {
-      my @list = ();
-      foreach my $p (0 .. $datapage->{pathlist}->GetPageCount - 1) {
-	push(@list, $datapage->{pathlist}->GetPage($p)->{path}) if $datapage->{pathlist}->IsChecked($p);
-      };
-      $Demeter::UI::Artemis::frames{Plot}->{VPaths}->add_vpath(@list);
+      $datapage->OnMakeVPathButton;
       last SWITCH;
     };
 

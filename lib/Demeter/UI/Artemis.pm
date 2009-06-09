@@ -594,6 +594,10 @@ sub make_feff_frame {
   #$newtool -> SetLabel( $frames{$fnum}->{Atoms}->{name}->GetValue );
   $frames{$fnum} -> {fnum} = $fnum;
 
+  EVT_CLOSE($frames{$fnum}, sub{  $frames{$fnum}->Show(0);
+				  $frames{main}->{fefftool}->ToggleTool($ifeff, 0);
+				});
+
   $frames{$fnum} -> Show(0);
   $feffbar->ToggleTool($ifeff,0);
 

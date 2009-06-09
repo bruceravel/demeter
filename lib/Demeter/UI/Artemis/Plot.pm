@@ -20,7 +20,7 @@ use warnings;
 
 use Wx qw( :everything );
 use base qw(Wx::Frame);
-use Wx::Event qw(EVT_BUTTON EVT_RADIOBOX EVT_RIGHT_DOWN EVT_MENU EVT_ENTER_WINDOW EVT_LEAVE_WINDOW);
+use Wx::Event qw(EVT_CLOSE EVT_BUTTON EVT_RADIOBOX EVT_RIGHT_DOWN EVT_MENU EVT_ENTER_WINDOW EVT_LEAVE_WINDOW);
 
 use Demeter::UI::Artemis::Plot::Limits;
 use Demeter::UI::Artemis::Plot::Stack;
@@ -42,7 +42,8 @@ sub new {
 
   my $this = $class->SUPER::new($parent, -1, "Artemis [Plot]",
 				[0,$yy], wxDefaultSize,
-				wxMINIMIZE_BOX|wxCAPTION|wxSYSTEM_MENU|wxRESIZE_BORDER);
+				wxMINIMIZE_BOX|wxCAPTION|wxSYSTEM_MENU|wxCLOSE_BOX);
+  EVT_CLOSE($this, \&on_close);
   $this->{last} = q{};
   #my $statusbar = $this->CreateStatusBar;
   #$statusbar -> SetStatusText(q{});
@@ -139,6 +140,13 @@ sub new {
   $this -> SetSize(Wx::Size->new(-1, $hh));
   return $this;
 };
+
+sub on_close {
+  my ($self) = @_;
+  $self->Show(0);
+  $self->GetParent->{toolbar}->ToggleTool(2, 0);
+};
+
 
 sub mouseover {
   my ($self, $widget, $text) = @_;
