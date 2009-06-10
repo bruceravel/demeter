@@ -184,8 +184,12 @@ sub clear {
   return $self;
 };
 
-sub alldone {
+override 'alldone' => sub {
   my ($self) = @_;
+  foreach my $sp (@{ $self->pathlist }) {
+    $sp->DEMOLISH;
+  };
+  $self->remove;
   $self->clean_workspace if not $self->save;
 };
 

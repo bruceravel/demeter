@@ -20,7 +20,8 @@ use vars qw($singleton);	# Moose 0.61, MooseX::Singleton 0.12 seem to need this
 has 'ifeffit' => (is => 'rw', isa => 'Bool',         default => 1);
 has $_        => (is => 'rw', isa => 'Bool',         default => 0)   foreach (qw(screen plotscreen repscreen));
 has $_        => (is => 'rw', isa => 'Str',          default => q{}) foreach (qw(file plotfile repfile));
-has 'buffer'  => (is => 'rw', isa => 'ArrayRef|Str', default => q{});
+has 'buffer'     => (is => 'rw', isa => 'ArrayRef | ScalarRef');
+has 'plotbuffer' => (is => 'rw', isa => 'ArrayRef | ScalarRef');
 
 ## -------- default objects for templates
 has 'config'   => (is => 'rw', isa => 'Any');  #         Demeter::Config);
@@ -52,6 +53,7 @@ has 'Atoms' => (
 		provides  => {
 			      'push'    => 'push_Atoms',
 			      'clear'   => 'clear_Atoms',
+			      'splice'  => 'splice_Atoms',
 			     }
 	       );
 has 'Data' => (
@@ -62,6 +64,7 @@ has 'Data' => (
 		provides  => {
 			      'push'    => 'push_Data',
 			      'clear'   => 'clear_Data',
+			      'splice'  => 'splice_Data',
 			     }
 	       );
 has 'Feff' => (
@@ -72,6 +75,7 @@ has 'Feff' => (
 		provides  => {
 			      'push'    => 'push_Feff',
 			      'clear'   => 'clear_Feff',
+			      'splice'  => 'splice_Feff',
 			     }
 	       );
 has 'Fit' => (
@@ -82,6 +86,7 @@ has 'Fit' => (
 		provides  => {
 			      'push'    => 'push_Fit',
 			      'clear'   => 'clear_Fit',
+			      'splice'  => 'splice_Fit',
 			     }
 	       );
 has 'GDS' => (
@@ -92,6 +97,7 @@ has 'GDS' => (
 		provides  => {
 			      'push'    => 'push_GDS',
 			      'clear'   => 'clear_GDS',
+			      'splice'  => 'splice_GDS',
 			     }
 	       );
 has 'Path' => (
@@ -102,6 +108,7 @@ has 'Path' => (
 		provides  => {
 			      'push'    => 'push_Path',
 			      'clear'   => 'clear_Path',
+			      'splice'  => 'splice_Path',
 			     }
 	       );
 has 'Plot' => (
@@ -112,6 +119,7 @@ has 'Plot' => (
 		provides  => {
 			      'push'    => 'push_Plot',
 			      'clear'   => 'clear_Plot',
+			      'splice'  => 'splice_Plot',
 			     }
 	       );
 has 'ScatteringPath' => (
@@ -122,6 +130,7 @@ has 'ScatteringPath' => (
 		provides  => {
 			      'push'    => 'push_ScatteringPath',
 			      'clear'   => 'clear_ScatteringPath',
+			      'splice'  => 'splice_ScatteringPath',
 			     }
 	       );
 has 'VPath' => (
@@ -132,6 +141,7 @@ has 'VPath' => (
 		provides  => {
 			      'push'    => 'push_VPath',
 			      'clear'   => 'clear_VPath',
+			      'splice'  => 'splice_VPath',
 			     }
 	       );
 has 'SSPath' => (
@@ -142,6 +152,7 @@ has 'SSPath' => (
 		provides  => {
 			      'push'    => 'push_SSPath',
 			      'clear'   => 'clear_SSPath',
+			      'splice'  => 'splice_SSPath',
 			     }
 	       );
 has 'Prj' => (
@@ -152,6 +163,7 @@ has 'Prj' => (
 		provides  => {
 			      'push'    => 'push_Prj',
 			      'clear'   => 'clear_Prj',
+			      'splice'  => 'splice_Prj',
 			     }
 	       );
 
@@ -178,6 +190,51 @@ sub fetch {
   };
   return 0;
 };
+
+sub remove {
+  my ($self, $object) = @_;
+  my $type = (split(/::/, ref $object))[-1];
+  ($type = 'Plot') if ($type eq 'Gnuplot');
+  my $group = $object->group;
+  my ($i, $which) = (0, -1);
+  return if ($#{$self->$type} == -1);
+  foreach my $o (@{$self->$type}) {
+    if ($o->group eq $group) {
+      $which = $i;
+      last;
+    };
+    ++$i;
+  };
+  return if ($which == -1);
+  my $method = "splice_".$type;
+  #local $| = 1;
+  #print join("|", $#{$self->$type}, $method, $type, $which), $/;
+  $self->$method($which, 1);
+};
+
+sub everything {
+  my ($self) = @_;
+  return (@{ $self->Atoms	   },
+	  @{ $self->Data	   },
+	  @{ $self->Feff	   },
+	  @{ $self->Fit		   },
+	  @{ $self->GDS		   },
+	  @{ $self->Path	   },
+	  @{ $self->Plot	   },
+	  @{ $self->ScatteringPath },
+	  @{ $self->VPath	   },
+	  @{ $self->SSPath	   },
+	  @{ $self->Prj		   });
+};
+
+sub destroy_all {
+  my ($self) = @_;
+  foreach my $obj ($self->everything) {
+    #print $obj;
+    $obj -> DESTROY;
+  };
+};
+
 
 __PACKAGE__->meta->make_immutable;
 1;

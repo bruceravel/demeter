@@ -89,6 +89,12 @@ $config = Demeter::Config -> new;
 
 sub alldone {
   my ($self) = @_;
+  $self->remove;
+  return $self;
+};
+sub remove {
+  my ($self) = @_;
+  $self->mo->remove($self);
   return $self;
 };
 
@@ -399,7 +405,7 @@ sub plot_with {
     };
 
     ($backend eq 'gnuplot') and do {
-      #$self->mode->remove_Plot($old_plot_object);
+      $old_plot_object->remove;
       $old_plot_object->DEMOLISHALL if $old_plot_object;
       $self -> mo -> external_plot_object( Graphics::GnuplotIF->new );
       require Demeter::Plot::Gnuplot;

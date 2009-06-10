@@ -171,6 +171,7 @@ sub DEMOLISH {
 
 override 'alldone' => sub {
   my ($self) = @_;
+  $self->remove;
   rmtree $self->folder if (-d $self->folder);
 };
 

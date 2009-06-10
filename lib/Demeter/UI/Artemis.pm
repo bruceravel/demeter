@@ -4,8 +4,9 @@ use Demeter qw(:plotwith=gnuplot);
 use Demeter::UI::Atoms;
 use Demeter::UI::Artemis::Project;
 
-use vars qw($demeter);
+use vars qw($demeter $buffer $plotbuffer);
 $demeter = Demeter->new;
+$demeter->set_mode(buffer=>\$buffer, plotbuffer=>\$plotbuffer);
 
 use Cwd;
 use File::Basename;
@@ -19,7 +20,8 @@ use Wx qw(:everything);
 use Wx::Event qw(EVT_MENU EVT_CLOSE EVT_TOOL_ENTER EVT_CHECKBOX EVT_BUTTON EVT_TOGGLEBUTTON EVT_ENTER_WINDOW EVT_LEAVE_WINDOW);
 use base 'Wx::App';
 
-#use Readonly;
+use Readonly;
+Readonly my $SHOW_BUFFER => Wx::NewId();
 
 use Wx::Perl::Carp;
 $SIG{__WARN__} = sub {Wx::Perl::Carp::warn($_[0])};
@@ -47,7 +49,7 @@ sub OnInit {
   #$demeter -> plot_with($demeter->co->default(qw(feff plotwith)));
 
   ## -------- import all of Artemis' various parts
-  foreach my $m (qw(GDS Plot History Log Data Prj)) {
+  foreach my $m (qw(GDS Plot History Log Buffer Data Prj)) {
     next if $INC{"Demeter/UI/Artemis/$m.pm"};
     ##print "Demeter/UI/Artemis/$m.pm\n";
     require "Demeter/UI/Artemis/$m.pm";
@@ -70,6 +72,8 @@ sub OnInit {
   my $filemenu = Wx::Menu->new;
   $filemenu->Append(wxID_OPEN, "Open project", "Read from a project file" );
   $filemenu->Append(wxID_SAVE, "Save project", "Save to a project file" );
+  $filemenu->AppendSeparator;
+  $filemenu->Append($SHOW_BUFFER, "Show command buffer", "Show the Ifeffit and plotting commands buffer");
   $filemenu->AppendSeparator;
   $filemenu->Append(wxID_CLOSE, "&Close" );
   $filemenu->Append(wxID_EXIT, "E&xit" );
@@ -203,7 +207,7 @@ sub OnInit {
   #$hbox  -> Fit($toolbar);
   #$hbox  -> SetSizeHints($toolbar);
 
-  foreach my $part (qw(GDS Plot Log History)) {
+  foreach my $part (qw(GDS Plot Log History Buffer)) {
     my $pp = "Demeter::UI::Artemis::".$part;
     $frames{$part} = $pp->new($frames{main});
     $frames{$part} -> SetIcon($icon);
@@ -245,6 +249,7 @@ sub mouseover {
 sub on_close {
   my ($self) = @_;
   ## offer to save project....
+  $demeter->mo->destroy_all;
   rmtree($self->{project_folder});
   foreach (values(%frames)) {$_->Destroy};
 };
@@ -333,6 +338,11 @@ sub fit {
   #};
   #return;
 
+
+  $buffer = q{};
+  $plotbuffer = q{};
+
+
   my ($abort, $rdata, $rpaths) = uptodate($rframes);
   my $rgds = $rframes->{GDS}->reset_all;
 
@@ -367,7 +377,6 @@ sub fit {
     print $ORDER $string;
     close $ORDER;
 
-
     $fit->po->start_plot;
     $rframes->{Plot}->{limits}->{fit}->SetValue(1);
     $fit->po->plot_fit(1);
@@ -392,6 +401,10 @@ sub fit {
       };
     };
 
+    $frames{Buffer}->insert('ifeffit', $buffer);
+    $frames{Buffer}->insert('plot', $plotbuffer);
+    $buffer = q{};
+    $plotbuffer = q{};
     set_happiness_color($fit->color);
     $rframes->{main}->{statusbar}->SetStatusText("Your fit is finished!");
   } else {
@@ -401,6 +414,8 @@ sub fit {
     set_happiness_color($fit->co->default("happiness", "bad_color"));
     $rframes->{main}->{statusbar}->SetStatusText("The error report from the fit that just failed are written in the log window.");
   };
+
+
   undef $busy;
 };
 
@@ -470,6 +485,10 @@ sub OnMenuClick {
     };
     ($id == wxID_SAVE) and do {
       save_project(\%frames);
+      last SWITCH;
+    };
+    ($id == $SHOW_BUFFER) and do {
+      $frames{Buffer}->Show(1);
       last SWITCH;
     };
 
@@ -632,8 +651,9 @@ sub discard_feff {
   my $fefftool = $frames{main}->{fefftool};
   $fefftool->DeleteTool($id);
 
-  ## remove the frame with the datapage
+  ## remove the frame with the feff calculation
   $frames{$fnum}->Hide;
+  delete $frames{$fnum};
   ## that's not quite right!
 
   ## destroy the ScatteringPath object

@@ -70,7 +70,17 @@ sub dispose {
 
   ## -------- concatinate to a scalar buffer
   if (($self->get_mode("buffer")) and (ref($self->get_mode("buffer")) eq 'SCALAR')) {
-    ${ $self->get_mode("buffer") } .=  $command;
+    if (not $plotting) {
+      ${ $self->get_mode("buffer") } .=  $command;
+    } elsif ($plotting and not $self->get_mode("plotbuffer")) {
+      ${ $self->get_mode("buffer") } .=  $command;
+    } else {
+      1;
+    };
+  };
+
+  if ($plotting and $self->get_mode("plotbuffer") and (ref($self->get_mode("plotbuffer")) eq 'SCALAR')) {
+    ${ $self->get_mode("plotbuffer") } .=  $command;
   };
 
   ## -------- unknown buffer type

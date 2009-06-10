@@ -236,6 +236,8 @@ sub close_project {
   };
   save_project($rframes) if $result == wxID_YES;
 
+  Demeter::UI::Artemis::set_happiness_color($rframes->{main} -> {currentfit}->co->default("happiness", "average_color"));
+
   ## -------- clear GDS
   $rframes->{GDS}->discard_all(1);
   $rframes->{GDS}->Show(0);
@@ -257,5 +259,6 @@ sub close_project {
     next unless ($k =~ m{feff});
     Demeter::UI::Artemis::discard_feff($k, 1);
   };
+
 };
 1;

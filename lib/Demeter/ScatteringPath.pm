@@ -116,6 +116,7 @@ override 'alldone' => sub {
   my ($self) = @_;
   my $nnnn = File::Spec->catfile($self->folder, $self->file);
   unlink $nnnn if -e $nnnn;
+  $self->remove;
   return $self;
 };
 

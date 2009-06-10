@@ -324,6 +324,11 @@ sub BUILD {
   $self->mo->push_Data($self);
 };
 
+sub DEMOLISH {
+  my ($self) = @_;
+  $self->alldone;
+};
+
 sub about {
   my ($self) = @_;
   $self->_update('bft');

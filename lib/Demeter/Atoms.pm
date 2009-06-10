@@ -256,6 +256,10 @@ sub BUILD {
   $self->mode->push_Atoms($self);
 };
 
+sub DEMOLISH {
+  my ($self) = @_;
+  $self->alldone;
+};
 
 sub out {
   my ($self, $key) = @_;

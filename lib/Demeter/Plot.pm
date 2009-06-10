@@ -188,8 +188,9 @@ sub DEMOLISH {
   $self->alldone;
 };
 
-sub alldone {
+override 'alldone' => sub {
   my ($self) = @_;
+  $self->remove;
   $self->end_plot;
 };
 
