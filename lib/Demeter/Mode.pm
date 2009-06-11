@@ -23,6 +23,10 @@ has $_        => (is => 'rw', isa => 'Str',          default => q{}) foreach (qw
 has 'buffer'     => (is => 'rw', isa => 'ArrayRef | ScalarRef');
 has 'plotbuffer' => (is => 'rw', isa => 'ArrayRef | ScalarRef');
 
+has 'callback'     => (is => 'rw', isa => 'CodeRef');
+has 'plotcallback' => (is => 'rw', isa => 'CodeRef');
+has 'feedback'     => (is => 'rw', isa => 'CodeRef');
+
 ## -------- default objects for templates
 has 'config'   => (is => 'rw', isa => 'Any');  #         Demeter::Config);
 has 'plot'     => (is => 'rw', isa => 'Any');  #         Demeter::Plot);
@@ -199,7 +203,7 @@ sub remove {
   my ($i, $which) = (0, -1);
   return if ($#{$self->$type} == -1);
   foreach my $o (@{$self->$type}) {
-    if ($o->group eq $group) {
+    if (defined($o) and ($o->group eq $group)) {
       $which = $i;
       last;
     };
@@ -312,6 +316,25 @@ Dispose reprocessed commands to a file when a filename is given.
 
 Dispose commands to a string or array when given a reference to a
 string or array.
+
+=item C<plotbuffer>
+
+Optionally dispose of plotting commands to a difference string or
+array reference.
+
+=item C<callback>
+
+Dispose commands by sending them as the argument to a user-supplied
+code rerference.
+
+=item C<plotcallback>
+
+Optionally dispose of plotting commands to a difference code
+reference.
+
+=item C<feedback>
+
+A code ref for disposing of feedback from Ifeffit.
 
 =back
 

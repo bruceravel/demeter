@@ -77,6 +77,7 @@ sub save_project {
   carp('error writing zip-style project') unless ($zip->writeToFileNamed( $fname ) == AZ_OK);
   undef $zip;
 
+  $Demeter::UI::Artemis::demeter->push_mru("artemis", $fname);
   $rframes->{main}->{projectname} = basename($fname, '.fpj');
   modified(0);
 };
@@ -197,6 +198,7 @@ sub read_project {
     ++$count;
   };
 
+  $Demeter::UI::Artemis::demeter->push_mru("artemis", $fname);
   $rframes->{main}->{projectname} = basename($fname, '.fpj');
   modified(0);
 };
@@ -215,11 +217,10 @@ sub find_sp {
 sub modified {
   my ($is_modified) = @_;
   my $main = $Demeter::UI::Artemis::frames{main};
-  if ($is_modified) {
-    $main->SetTitle('Artemis [EXAFS data analysis] *' . $main->{projectname} . '*');
-  } else {
-    $main->SetTitle('Artemis [EXAFS data analysis] ' . $main->{projectname});
-  };
+  my $title = ($is_modified)
+    ? 'Artemis [EXAFS data analysis] *' . $main->{projectname} . '*'
+      : 'Artemis [EXAFS data analysis] ' . $main->{projectname};
+  $main->SetTitle($title);
 };
 
 

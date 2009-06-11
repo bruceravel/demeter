@@ -74,7 +74,7 @@ my @gds = (
 
 ## -------- run the feff calculation
 my $feff = Demeter::Feff->new(file=>'15/withHg.inp', workspace=>'15');
-$feff -> set(screen=>0, buffer=>q{}, save=>1);
+$feff -> set(screen=>0{}, save=>1);
 $feff -> co -> set_default("pathfinder", "fs_angle", 25);
 $feff -> potph;
 $feff -> rmax(4.5);

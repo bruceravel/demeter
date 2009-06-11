@@ -187,6 +187,7 @@ sub clear {
 override 'alldone' => sub {
   my ($self) = @_;
   foreach my $sp (@{ $self->pathlist }) {
+    next if not defined($sp);	# may have been demolished elsewhere
     $sp->DEMOLISH;
   };
   $self->remove;

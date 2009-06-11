@@ -24,7 +24,7 @@ Demeter->set_mode({screen => 0,});
 
 print "Deserializing feff.yaml\n";
 my $feff = Demeter::Feff -> new(yaml=>"feff.yaml");
-$feff->set({workspace=>"pf", screen=>0, buffer=>q{}});
+$feff->set(workspace=>"pf", screen=>0);
 $feff->po->legend({key_dy => 0.05, # set nice legend parameters for the plot
 		   key_x  => 0.6});
 

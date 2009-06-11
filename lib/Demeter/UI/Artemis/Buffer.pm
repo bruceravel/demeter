@@ -38,14 +38,20 @@ sub new {
   my $box = Wx::BoxSizer->new( wxVERTICAL );
 
   $this->{IFEFFIT} = Wx::Panel->new($splitter, -1);
-  my $iffbox = Wx::StaticBox->new($this->{IFEFFIT}, -1, ' Ifeffit buffer ', wxDefaultPosition, wxDefaultSize);
+  my $iffbox = Wx::StaticBox->new($this->{IFEFFIT}, -1, ' Command buffer ', wxDefaultPosition, wxDefaultSize);
   my $iffboxsizer  = Wx::StaticBoxSizer->new( $iffbox, wxHORIZONTAL );
   $this->{iffcommands} = Wx::TextCtrl->new($this->{IFEFFIT}, -1, q{}, wxDefaultPosition, wxDefaultSize,
 					   wxVSCROLL|wxHSCROLL|wxTE_MULTILINE|wxTE_READONLY|wxNO_BORDER);
-  $iffboxsizer -> Add($this->{iffcommands}, 1, wxALL|wxGROW, 0);
+  $iffboxsizer -> Add($this->{iffcommands}, 1, wxALL|wxGROW, 5);
   $box -> Add($iffboxsizer, 1, wxGROW|wxALL, 5);
   $this->{IFEFFIT} -> SetSizerAndFit($box);
 
+  $this->{IFEFFIT}->{feedback} = Wx::TextAttr->new(Wx::Colour->new( '#000099' ),
+						   wxNullColour,
+						   Wx::Font->new( 9, wxTELETYPE, wxNORMAL, wxNORMAL, 0, "" ) );
+  $this->{IFEFFIT}->{warning}  = Wx::TextAttr->new(Wx::Colour->new( '#990000' ),
+						   wxNullColour,
+						   Wx::Font->new( 9, wxTELETYPE, wxNORMAL, wxNORMAL, 0, "" ) );
 
 
   $this->{PLOT} = Wx::Panel->new($splitter, -1, wxDefaultPosition, wxDefaultSize);
@@ -55,7 +61,7 @@ sub new {
   my $pltboxsizer  = Wx::StaticBoxSizer->new( $pltbox, wxHORIZONTAL );
   $this->{pltcommands} = Wx::TextCtrl->new($this->{PLOT}, -1, q{}, wxDefaultPosition, wxDefaultSize,
 					   wxVSCROLL|wxHSCROLL|wxTE_MULTILINE|wxTE_READONLY|wxNO_BORDER);
-  $pltboxsizer -> Add($this->{pltcommands}, 1, wxALL|wxGROW, 0);
+  $pltboxsizer -> Add($this->{pltcommands}, 1, wxALL|wxGROW, 5);
   $box -> Add($pltboxsizer, 1, wxGROW|wxALL, 5);
   $this->{PLOT} -> SetSizerAndFit($box);
 
@@ -75,7 +81,17 @@ sub insert {
   my ($self, $which, $text) = @_;
   return if ($which !~ m{\A(?:ifeffit|plot)\z});
   my $textctrl = ($which eq 'ifeffit') ? 'iffcommands' : 'pltcommands';
+  my $was = $self->{$textctrl}->GetInsertionPoint;
   $self->{$textctrl} -> AppendText($text);
+  my $is = $self->{$textctrl}->GetInsertionPoint;
+  return ($was, $is);
+};
+
+sub color {
+  my ($self, $which, $begin, $end, $color) = @_;
+  return if ($which !~ m{\A(?:ifeffit|plot)\z});
+  my $textctrl = ($which eq 'ifeffit') ? 'iffcommands' : 'pltcommands';
+  $self->{$textctrl}->SetStyle($begin, $end, $self->{IFEFFIT}->{$color});
 };
 
 

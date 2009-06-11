@@ -41,7 +41,7 @@ if ($ANSIColor_exists) {
 
 use Demeter;
 my $demeter = Demeter->new;
-$demeter->set_mode(ifeffit=>1, buffer=>0, screen=>0);
+$demeter->set_mode(ifeffit=>1, screen=>0);
 #$demeter->set_mode(template_process=>"iff_columns");
 
 use Getopt::Long;

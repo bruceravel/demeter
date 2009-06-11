@@ -68,6 +68,22 @@ sub dispose {
     close $FH;
   };
 
+  ## -------- use a disposal callback
+  if ($self->get_mode("callback")) {
+    my $coderef = $self->get_mode("callback");
+    if (not $plotting) {
+      &$coderef($command);
+    } elsif ($plotting and not $self->get_mode("plotcallback")) {
+      &$coderef($command);
+    } else {
+      1;
+    };
+  };
+  if ($plotting and $self->get_mode("plotcallback")) {
+    my $coderef = $self->get_mode("plotcallback");
+    &$coderef($command);
+  };
+
   ## -------- concatinate to a scalar buffer
   if (($self->get_mode("buffer")) and (ref($self->get_mode("buffer")) eq 'SCALAR')) {
     if (not $plotting) {
@@ -141,6 +157,16 @@ sub dispose {
   if ($self->get_mode("ifeffit")) {
     ifeffit($reprocessed);
     $self -> po -> copyright_text if ($plotting and ($self->mo->template_plot eq 'pgplot')); ## insert the copyright statement in a plot made with pgplot
+
+    my $coderef = $self->get_mode("feedback");
+    if ($coderef) {
+      my ($lines, $response) = (Ifeffit::get_scalar('&echo_lines')||0, "");
+      if ($lines) {
+	map {$response .= Ifeffit::get_echo()."\n"} (1 .. $lines);
+	($response) and &$coderef($response);
+      };
+    };
+
   };
 
   ## -------- send reprocessed command text to the screen
@@ -329,6 +355,32 @@ array.
 An obvious improvement to this would be to allow the buffer attribute
 to be a reference to an arbitrary object which can be used in some
 domain-specific, user-defined manner.
+
+=item plotbuffer
+
+This is an optional output channel for the plotting commands.  If
+unset, plotting commands go to the same channel as specified by
+C<buffer>.  This channel works identically to C<buffer>, albeit
+redirected to a different place.
+
+=item callback
+
+This channel sends disposed text to a user supplied code ref.  For
+instance, in Artemis, this is a subroutine that prints the disposed
+lines to the command buffer.  This code ref takes a single argument,
+which is the text to be disposed.
+
+=item plotcallback
+
+This optional channel redirects plotting commands to a differnt code
+ref from C<callback>.  If unset, plotting commands are disposed to
+C<callback>'s code ref.
+
+=item feedback
+
+This channel sends feedback from Ifeffit to a user supplied code ref.
+Note that lines indicating a problem in Ifeffit's output start with a
+star (*).  Information lines start with text.
 
 =item repscreen
 

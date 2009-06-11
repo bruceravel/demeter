@@ -6,13 +6,14 @@ use Demeter::UI::Artemis::Project;
 
 use vars qw($demeter $buffer $plotbuffer);
 $demeter = Demeter->new;
-$demeter->set_mode(buffer=>\$buffer, plotbuffer=>\$plotbuffer);
+$demeter->set_mode(ifeffit=>1, screen=>0);
 
 use Cwd;
 use File::Basename;
 use File::Copy;
 use File::Path;
 use File::Spec;
+use Scalar::Util qw(blessed);
 use String::Random qw(random_string);
 use YAML;
 
@@ -46,7 +47,6 @@ my %hints = (
 sub OnInit {
   $demeter -> mo -> ui('Wx');
   $demeter -> mo -> identity('Artemis');
-  #$demeter -> plot_with($demeter->co->default(qw(feff plotwith)));
 
   ## -------- import all of Artemis' various parts
   foreach my $m (qw(GDS Plot History Log Buffer Data Prj)) {
@@ -56,7 +56,7 @@ sub OnInit {
   };
 
   ## -------- create a new frame and set icon
-  $frames{main} = Wx::Frame->new(undef, -1, 'Artemis - EXAFS data analysis',
+  $frames{main} = Wx::Frame->new(undef, -1, 'Artemis [EXAFS data analysis] - <untitled>',
 				[1,1], # position -- along top of screen
 				[Wx::SystemSettings::GetMetric(wxSYS_SCREEN_X), 150] # size -- entire width of screen
 			       );
@@ -64,7 +64,7 @@ sub OnInit {
   $icon = Wx::Icon->new( $iconfile, wxBITMAP_TYPE_ANY );
   $frames{main} -> SetIcon($icon);
   $frames{main} -> {currentfit} = q{};
-  $frames{main} -> {projectname} = q{};
+  $frames{main} -> {projectname} = '<untitled>';
   $frames{main} -> {modified} = 0;
 
   ## -------- Set up menubar
@@ -235,6 +235,14 @@ sub OnInit {
     print $ORDER $string;
     close $ORDER;
   };
+
+  ## now that everything is established, set up disposal callbacks to
+  ## display Ifeffit commands in the buffer window
+  $demeter->set_mode(callback     => \&ifeffit_buffer,
+		     plotcallback => ($demeter->mo->template_plot eq 'pgplot') ? \&ifeffit_buffer : \&plot_buffer,
+		     feedback     => \&feedback,
+		    );
+
   read_project(\%frames, $ARGV[0]) if ($ARGV[0] and -e $ARGV[0]);
   1;
 }
@@ -248,7 +256,19 @@ sub mouseover {
 
 sub on_close {
   my ($self) = @_;
+
   ## offer to save project....
+  my $yesno = Wx::MessageDialog->new($frames{main},
+				     "Save this project before exiting?",
+				     "Save project?",
+				     wxYES_NO|wxCANCEL|wxYES_DEFAULT|wxICON_QUESTION);
+  my $result = $yesno->ShowModal;
+  if ($result == wxID_CANCEL) {
+    $frames{main}->{statusbar}->SetStatusText("Not exiting project.");
+    return 0;
+  };
+  save_project(\%frames) if $result == wxID_YES;
+
   $demeter->mo->destroy_all;
   rmtree($self->{project_folder});
   foreach (values(%frames)) {$_->Destroy};
@@ -313,6 +333,7 @@ sub uptodate {
     my $npath = $rframes->{$k}->{pathlist}->GetPageCount - 1;
     foreach my $p (0 .. $npath) {
       my $path = $rframes->{$k}->{pathlist}->GetPage($p);
+      next if (blessed($path) !~ m{Path});
       $path->fetch_parameters;
       push @paths, $path->{path};
     };
@@ -337,11 +358,6 @@ sub fit {
   #  print $rframes->{$f}->{pathlist}->GetPage(0)->{path}->parentgroup;
   #};
   #return;
-
-
-  $buffer = q{};
-  $plotbuffer = q{};
-
 
   my ($abort, $rdata, $rpaths) = uptodate($rframes);
   my $rgds = $rframes->{GDS}->reset_all;
@@ -400,11 +416,6 @@ sub fit {
 	};
       };
     };
-
-    $frames{Buffer}->insert('ifeffit', $buffer);
-    $frames{Buffer}->insert('plot', $plotbuffer);
-    $buffer = q{};
-    $plotbuffer = q{};
     set_happiness_color($fit->color);
     $rframes->{main}->{statusbar}->SetStatusText("Your fit is finished!");
   } else {
@@ -418,6 +429,22 @@ sub fit {
 
   undef $busy;
 };
+
+sub ifeffit_buffer {
+  my ($text) = @_;
+  $frames{Buffer}->insert('ifeffit', $text);
+};
+sub plot_buffer {
+  my ($text) = @_;
+  $frames{Buffer}->insert('plot', $text);
+};
+sub feedback {
+  my ($text) = @_;
+  my ($was, $is) = $frames{Buffer}->insert('ifeffit', $text);
+  my $color = ($text =~ m{\A\s*\*}) ? 'warning' : 'feedback';
+  $frames{Buffer}->color('ifeffit', $was, $is, $color);
+};
+
 
 
 sub set_happiness_color {
@@ -539,6 +566,7 @@ sub OnDataClick {
     $frames{$dnum} -> Show(1);
     $databar->ToggleTool($idata,1);
     delete $frames{prj};
+    $demeter->push_mru("athena", $file);
     $frames{main}->{statusbar}->SetStatusText("Imported data \"" . $data->name . "\" from $file.");
   } else {
     my $this = sprintf("data%s", $event->GetId);
@@ -559,10 +587,12 @@ sub make_data_frame {
   $frames{$dnum} -> SetTitle("Artemis [Data] ".$data->name);
   $frames{$dnum} -> SetIcon($icon);
   $frames{$dnum} -> populate($data);
+  $frames{$dnum} -> transfer;
   $frames{$dnum} -> {dnum} = $dnum;
   set_happiness_color();
   $frames{$dnum} -> Show(0);
   $databar->ToggleTool($idata,0);
+  modified(1);
   return ($dnum, $idata);
 };
 
@@ -619,6 +649,7 @@ sub make_feff_frame {
 
   $frames{$fnum} -> Show(0);
   $feffbar->ToggleTool($ifeff,0);
+  modified(1);
 
   return ($fnum, $ifeff);
 };

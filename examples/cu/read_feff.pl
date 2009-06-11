@@ -20,6 +20,6 @@ use strict;
 use Demeter;
 
 my $feff = Demeter::Feff -> new();
-$feff->set({workspace=>"temp", screen=>1, buffer=>q{}, save=>1});
+$feff->set(workspace=>"temp", screen=>1, save=>1);
 $feff -> rdinp("orig.inp") -> potph();
 #print $feff->get("misc.dat");

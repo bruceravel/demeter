@@ -20,7 +20,7 @@ use strict;
 use Demeter;
 
 my $feff = Demeter::Feff -> new();
-$feff->set({workspace=>"pf", screen=>1, buffer=>q{}, save=>1});
+$feff->set(workspace=>"pf", screen=>1, save=>1);
 
 $feff -> rdinp("orig.inp") -> potph();
 $feff -> pathfinder; # sets pathlist attribute

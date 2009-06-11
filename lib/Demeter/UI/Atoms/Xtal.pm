@@ -526,7 +526,7 @@ sub open_file {
   my $ie = firstidx {lc($_) eq lc($atoms->edge)} qw(K L1 L2 L3);
   $self->{edge}->SetSelection($ie);
 
-  $atoms -> push_mru("atoms", $file);
+  $atoms -> push_mru("atoms", $file) if ($file !~ m{_dem_});
 
   $self->{statusbar}->SetStatusText("Imported crystal data from $file.");
 };

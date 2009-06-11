@@ -64,7 +64,8 @@ ok(!Demeter::is_Element('Ci'),                             'unknown element (Ci)
 ## simple tests of templates and the Disposal role -- see object specific test files for further tests
 my $string = $demeter -> template("test", "test", {x=>5});
 ok( $string =~ $demeter->group,                                     'simple template works');
-$demeter->set_mode(screen=>0, file=>q{}, buffer=>q{});
+my $buffer;
+$demeter->set_mode(screen=>0, file=>q{}, buffer=>\$buffer);
 $demeter->dispose($string);
 ok( Ifeffit::get_scalar('a') == 5,                                  'simple disposal to Ifeffit: scalar');
 ok( Ifeffit::get_array('t.x') == 5,                                 'simple disposal to Ifeffit: array');
