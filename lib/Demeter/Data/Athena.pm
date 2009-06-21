@@ -64,7 +64,7 @@ sub _write_record {
     $arraystring .= Data::Dumper->Dump([\@array], [qw/*x/]) . "\n";
     @array        = $self -> get_array("xmu");
     $arraystring .= Data::Dumper->Dump([\@array], [qw/*y/]) . "\n";
-    if ($self->get("i0_string")) {
+    if (($self->i0_string) and ($self->i0_string ne '1')) {
       @array        = $self -> get_array("i0");
       $arraystring .= Data::Dumper->Dump([\@array], [qw/*i0/]) . "\n";
     };

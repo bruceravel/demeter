@@ -105,7 +105,7 @@ sub new {
   my ($class, $parent, $nset) = @_;
 
   my $this = $class->SUPER::new($parent, -1, "Artemis: Data controls",
-				wxDefaultPosition, [860,520],
+				wxDefaultPosition, [810,520],
 				wxCAPTION|wxMINIMIZE_BOX|wxCLOSE_BOX|wxSYSTEM_MENU); #|wxRESIZE_BORDER
   $this ->{PARENT} = $parent;
   $this->make_menubar;
@@ -153,13 +153,13 @@ sub new {
   ##$this->{datasource} -> SetInsertionPointEnd;
 
   ## -------- single data set plot buttons
-  my $buttonbox  = Wx::StaticBox->new($leftpane, -1, 'Plot this data set as ', wxDefaultPosition, [350,-1]);
+  my $buttonbox  = Wx::StaticBox->new($leftpane, -1, 'Plot this data set as ', wxDefaultPosition, [-1,-1]);
   my $buttonboxsizer = Wx::StaticBoxSizer->new( $buttonbox, wxHORIZONTAL );
   $left -> Add($buttonboxsizer, 0, wxGROW|wxALL, 5);
-  $this->{plot_rmr}  = Wx::Button->new($leftpane, -1, "R&mr",  wxDefaultPosition, [80,-1]);
-  $this->{plot_k123} = Wx::Button->new($leftpane, -1, "&k123", wxDefaultPosition, [80,-1]);
-  $this->{plot_r123} = Wx::Button->new($leftpane, -1, "&R123", wxDefaultPosition, [80,-1]);
-  $this->{plot_kq}   = Wx::Button->new($leftpane, -1, "k&q",   wxDefaultPosition, [80,-1]);
+  $this->{plot_rmr}  = Wx::Button->new($leftpane, -1, "R&mr",  wxDefaultPosition, [70,-1]);
+  $this->{plot_k123} = Wx::Button->new($leftpane, -1, "&k123", wxDefaultPosition, [70,-1]);
+  $this->{plot_r123} = Wx::Button->new($leftpane, -1, "&R123", wxDefaultPosition, [70,-1]);
+  $this->{plot_kq}   = Wx::Button->new($leftpane, -1, "k&q",   wxDefaultPosition, [70,-1]);
   foreach my $b (qw(plot_k123 plot_r123 plot_rmr plot_kq)) {
     $buttonboxsizer -> Add($this->{$b}, 1, wxGROW|wxALL, 2);
     $this->{$b} -> SetForegroundColour(Wx::Colour->new("#000000"));
@@ -180,10 +180,10 @@ sub new {
   ## -------- title lines
   my $titlesbox      = Wx::StaticBox->new($leftpane, -1, 'Title lines ', wxDefaultPosition, wxDefaultSize);
   my $titlesboxsizer = Wx::StaticBoxSizer->new( $titlesbox, wxHORIZONTAL );
-  $this->{titles}      = Wx::TextCtrl->new($leftpane, -1, q{}, wxDefaultPosition, [350,-1],
+  $this->{titles}      = Wx::TextCtrl->new($leftpane, -1, q{}, wxDefaultPosition, [300,-1],
 					   wxVSCROLL|wxHSCROLL|wxTE_MULTILINE|wxTE_READONLY|wxNO_BORDER);
-  $titlesboxsizer -> Add($this->{titles}, 0, wxALL|wxALIGN_CENTER_HORIZONTAL, 0);
-  $left           -> Add($titlesboxsizer, 0, wxALL|wxALIGN_CENTER_HORIZONTAL, 5);
+  $titlesboxsizer -> Add($this->{titles}, 1, wxALL|wxGROW, 0);
+  $left           -> Add($titlesboxsizer, 1, wxALL|wxGROW, 5);
   $this->mouseover("titles", "These lines will be written to output files.  Use them to describe this data set.");
 
 
@@ -193,9 +193,9 @@ sub new {
   $this->{include}    = Wx::CheckBox->new($leftpane, -1, "Include in fit", wxDefaultPosition, wxDefaultSize);
   $this->{plot_after} = Wx::CheckBox->new($leftpane, -1, "Plot after fit", wxDefaultPosition, wxDefaultSize);
   $this->{fit_bkg}    = Wx::CheckBox->new($leftpane, -1, "Fit background", wxDefaultPosition, wxDefaultSize);
-  $togglebox -> Add($this->{include},    1, wxALL, 5);
-  $togglebox -> Add($this->{plot_after}, 1, wxALL, 5);
-  $togglebox -> Add($this->{fit_bkg},    1, wxALL, 5);
+  $togglebox -> Add($this->{include},    0, wxALL, 5);
+  $togglebox -> Add($this->{plot_after}, 0, wxALL, 5);
+  $togglebox -> Add($this->{fit_bkg},    0, wxALL, 5);
   $this->{include}    -> SetValue(1);
   $this->{plot_after} -> SetValue(1);
 

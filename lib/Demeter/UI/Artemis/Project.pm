@@ -78,6 +78,7 @@ sub save_project {
   undef $zip;
 
   $Demeter::UI::Artemis::demeter->push_mru("artemis", $fname);
+  &Demeter::UI::Artemis::set_mru;
   $rframes->{main}->{projectname} = basename($fname, '.fpj');
   modified(0);
 };
@@ -199,6 +200,7 @@ sub read_project {
   };
 
   $Demeter::UI::Artemis::demeter->push_mru("artemis", $fname);
+  &Demeter::UI::Artemis::set_mru;
   $rframes->{main}->{projectname} = basename($fname, '.fpj');
   modified(0);
 };

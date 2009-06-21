@@ -363,11 +363,11 @@ sub OnToolClick {
 sub OnToolRightClick {
   my ($toolbar, $event, $self) = @_;
   return if not ($toolbar->GetToolPos($event->GetId) == 0);
-  my @mrulist = $atoms->get_mru_list("atoms");
-  $self->{statusbar}->SetStatusText("There are no recent crystal data files."), return if not @mrulist;
-  my $dialog = Wx::SingleChoiceDialog->new( $self, "Select a recent crystal data file",
-					    "Recent crystal data files", \@mrulist );
-  Demeter::UI::Atoms::_doublewide($dialog);
+  my $dialog = Demeter::UI::Wx::MRU->new($self, 'atoms',
+					 "Select a recent crystal data file",
+					 "Recent crystal data files");
+  $self->{statusbar}->SetStatusText("There are no recent crystal data files."), return
+    if ($dialog == -1);
   if( $dialog->ShowModal == wxID_CANCEL ) {
     $self->{statusbar}->SetStatusText("Import cancelled.");
   } else {

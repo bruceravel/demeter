@@ -3,6 +3,7 @@ package Demeter::UI::Artemis;
 use Demeter qw(:plotwith=gnuplot);
 use Demeter::UI::Atoms;
 use Demeter::UI::Artemis::Project;
+use Demeter::UI::Wx::MRU;
 
 use vars qw($demeter $buffer $plotbuffer);
 $demeter = Demeter->new;
@@ -18,10 +19,13 @@ use String::Random qw(random_string);
 use YAML;
 
 use Wx qw(:everything);
-use Wx::Event qw(EVT_MENU EVT_CLOSE EVT_TOOL_ENTER EVT_CHECKBOX EVT_BUTTON EVT_TOGGLEBUTTON EVT_ENTER_WINDOW EVT_LEAVE_WINDOW);
+use Wx::Event qw(EVT_MENU EVT_CLOSE EVT_TOOL_ENTER EVT_CHECKBOX EVT_BUTTON
+		 EVT_TOGGLEBUTTON EVT_ENTER_WINDOW EVT_LEAVE_WINDOW
+		 EVT_TOOL_RCLICKED);
 use base 'Wx::App';
 
 use Readonly;
+Readonly my $MRU         => Wx::NewId();
 Readonly my $SHOW_BUFFER => Wx::NewId();
 
 use Wx::Perl::Carp;
@@ -70,13 +74,17 @@ sub OnInit {
   ## -------- Set up menubar
   my $bar = Wx::MenuBar->new;
   my $filemenu = Wx::Menu->new;
+  my $mrumenu = Wx::Menu->new;
   $filemenu->Append(wxID_OPEN, "Open project", "Read from a project file" );
+  $filemenu->AppendSubMenu($mrumenu, "Recent projects", "Open a submenu of recently used files" );
   $filemenu->Append(wxID_SAVE, "Save project", "Save to a project file" );
   $filemenu->AppendSeparator;
   $filemenu->Append($SHOW_BUFFER, "Show command buffer", "Show the Ifeffit and plotting commands buffer");
   $filemenu->AppendSeparator;
   $filemenu->Append(wxID_CLOSE, "&Close" );
   $filemenu->Append(wxID_EXIT, "E&xit" );
+  $frames{main}->{filemenu} = $filemenu;
+  $frames{main}->{mrumenu}  = $mrumenu;
 
   my $helpmenu = Wx::Menu->new;
   $helpmenu->Append(wxID_ABOUT, "&About..." );
@@ -113,7 +121,7 @@ sub OnInit {
   my $datavbox = Wx::BoxSizer->new( wxVERTICAL );
   $datalist->SetSizer($datavbox);
   my $datatool = Wx::ToolBar->new($datalist, -1, wxDefaultPosition, wxDefaultSize, wxTB_VERTICAL|wxTB_HORZ_TEXT|wxTB_LEFT);
-  $datatool -> AddTool(-1, "New data           ", icon("add"), wxNullBitmap, wxITEM_NORMAL, q{}, "Import a new data set" );
+  $datatool -> AddTool(0, "New data           ", icon("add"), wxNullBitmap, wxITEM_NORMAL, q{}, "Import a new data set" );
   $datatool -> AddSeparator;
   #   $datatool -> AddCheckTool(-1, "Show data set 1", icon("pixel"), wxNullBitmap, wxITEM_NORMAL, q{}, q{} );
   $datatool -> Realize;
@@ -121,6 +129,8 @@ sub OnInit {
   $databoxsizer -> Add($datalist, 1, wxGROW|wxALL, 0);
   $hbox         -> Add($databoxsizer, 2, wxGROW|wxALL, 0);
   $frames{main}->{datatool} = $datatool;
+
+  EVT_TOOL_RCLICKED($frames{main}->{datatool}, -1, \&OnDataRightClick);
 
 
   ## -------- Feff box
@@ -236,6 +246,7 @@ sub OnInit {
     close $ORDER;
   };
 
+  set_mru();
   ## now that everything is established, set up disposal callbacks to
   ## display Ifeffit commands in the buffer window
   $demeter->set_mode(callback     => \&ifeffit_buffer,
@@ -490,9 +501,24 @@ sub _doublewide {
   $widget -> SetSizeWH(2*$w, $h);
 };
 
+sub set_mru {
+  my ($self) = @_;
+
+  foreach my $i (0 .. $frames{main}->{mrumenu}->GetMenuItemCount-1) {
+    $frames{main}->{mrumenu}->Delete($frames{main}->{mrumenu}->FindItemByPosition(0));
+  };
+
+  my @list = $demeter->get_mru_list('artemis');
+  foreach my $f (@list) {
+    $frames{main}->{mrumenu}->Append(-1, $f)
+  };
+};
+
 sub OnMenuClick {
   my ($self, $event) = @_;
   my $id = $event->GetId;
+  my $mru = $frames{main}->{mrumenu}->GetLabel($id);
+
  SWITCH: {
     ($id == wxID_ABOUT) and do {
       &on_about;
@@ -518,6 +544,10 @@ sub OnMenuClick {
       $frames{Buffer}->Show(1);
       last SWITCH;
     };
+    ($mru) and do {
+      read_project(\%frames, $mru);
+      last SWITCH;
+    };
 
   };
 };
@@ -530,12 +560,37 @@ sub OnToolClick {
   my $which = (qw(GDS Plot History))[$toolbar->GetToolPos($event->GetId)];
   $frames{$which}->Show($toolbar->GetToolState($event->GetId));
 };
+sub OnDataRightClick {
+  my ($toolbar, $event) = @_;
+  return if ($event->GetId != 0);
+
+  #my @mrulist = $demeter->get_mru_list("athena");
+  my $dialog = Demeter::UI::Wx::MRU->new($frames{main}, 'athena', "Select a recent Athena project file", "Recent Athena project files");
+  $frames{main}->{statusbar}->SetStatusText("There are no recent Athena project files."), return
+    if ($dialog == -1);
+  if( $dialog->ShowModal == wxID_CANCEL ) {
+    $frames{main}->{statusbar}->SetStatusText("Import cancelled.");
+  } else {
+    import_prj($dialog->GetStringSelection);
+  };
+};
 
 sub OnDataClick {
   my ($databar, $event, $self) = @_;
   my $which = $databar->GetToolPos($event->GetId);
   if ($which == 0) {
-    my $fd = Wx::FileDialog->new( $self, "Import an Athena project", cwd, q{},
+    import_prj(0);
+  } else {
+    my $this = sprintf("data%s", $event->GetId);
+    return if not exists($frames{$this});
+    $frames{$this}->Show($databar->GetToolState($event->GetId));
+  };
+};
+sub import_prj {
+  my ($fname) = @_;
+  my $file = $fname;
+  if (not $fname) {
+    my $fd = Wx::FileDialog->new( $frames{main}, "Import an Athena project", cwd, q{},
 				  "Athena project (*.prj)|*.prj|All files|*.*",
 				  wxFD_OPEN|wxFD_FILE_MUST_EXIST|wxFD_CHANGE_DIR|wxFD_PREVIEW,
 				  wxDefaultPosition);
@@ -543,36 +598,31 @@ sub OnDataClick {
       $frames{main}->{statusbar}->SetStatusText("Data import cancelled.");
       return;
     };
-    my $file = File::Spec->catfile($fd->GetDirectory, $fd->GetFilename);
+    $file = File::Spec->catfile($fd->GetDirectory, $fd->GetFilename);
+  }
+  ##
+  my $selection = 0;
+  $frames{prj} =  Demeter::UI::Artemis::Prj->new($frames{main}, $file);
+  my $result = $frames{prj} -> ShowModal;
 
-    ##
-    my $selection = 0;
-    $frames{prj} =  Demeter::UI::Artemis::Prj->new($frames{main}, $file);
-    my $result = $frames{prj} -> ShowModal;
-
-    if (
-	($result == wxID_CANCEL) or     # cancel button clicked
-	($frames{prj}->{record} == -1)  # import button without selecting a group
-       ) {
-      $frames{main}->{statusbar}->SetStatusText("Data import cancelled.");
-      return;
-    };
-
-    my $data = $frames{prj}->{prj}->record($frames{prj}->{record});
-    my ($dnum, $idata) = make_data_frame($self, $data);
-    $data->po->start_plot;
-    $data->plot('k');
-    $data->plot_window('k') if $data->po->plot_win;
-    $frames{$dnum} -> Show(1);
-    $databar->ToggleTool($idata,1);
-    delete $frames{prj};
-    $demeter->push_mru("athena", $file);
-    $frames{main}->{statusbar}->SetStatusText("Imported data \"" . $data->name . "\" from $file.");
-  } else {
-    my $this = sprintf("data%s", $event->GetId);
-    return if not exists($frames{$this});
-    $frames{$this}->Show($databar->GetToolState($event->GetId));
+  if (
+      ($result == wxID_CANCEL) or     # cancel button clicked
+      ($frames{prj}->{record} == -1)  # import button without selecting a group
+     ) {
+    $frames{main}->{statusbar}->SetStatusText("Data import cancelled.");
+    return;
   };
+
+  my $data = $frames{prj}->{prj}->record($frames{prj}->{record});
+  my ($dnum, $idata) = make_data_frame($frames{main}, $data);
+  $data->po->start_plot;
+  $data->plot('k');
+  $data->plot_window('k') if $data->po->plot_win;
+  $frames{$dnum} -> Show(1);
+  $frames{main}->{datatool}->ToggleTool($idata,1);
+  delete $frames{prj};
+  $demeter->push_mru("athena", $file);
+  $frames{main}->{statusbar}->SetStatusText("Imported data \"" . $data->name . "\" from $file.");
 };
 sub make_data_frame {
   my ($self, $data) = @_;

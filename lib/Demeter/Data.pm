@@ -95,7 +95,15 @@ has  $_  => (is => 'rw', isa => 'Str',  default => q{},
 			       $self->is_col(1)
 			     }
 			   })
-  foreach (qw(energy numerator denominator));
+  foreach (qw(energy numerator));
+has  denominator  => (is => 'rw', isa => 'Str',  default => q{1},
+		      trigger => sub{ my ($self, $new) = @_;
+				      if ($new) {
+					$self->datatype('xmu');
+					$self->update_columns(1);
+					$self->is_col(1)
+				      }
+				    });
 has  $_ => (is => 'rw', isa => 'Num',  default => 0) foreach (qw(i0_scale signal_scale));
 
 has  $_  => (is => 'rw', isa => 'Str',  default => q{})
