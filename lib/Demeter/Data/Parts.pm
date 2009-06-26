@@ -76,11 +76,12 @@ sub _part_plot_command {
   if ($self->get_mode("template_plot") eq "pgplot") {
     $string =~ s{(?<=key=")$datalabel}{$labels{$part}} if ($datalabel);
   } elsif ($self->get_mode("template_plot") eq "gnuplot") {
-    $string =~ s{(?<=title ")$datalabel}{$labels{$part}} if ($datalabel);
+    $string =~ s{(?<=title \")fit\"}{$labels{$part}\"};# if ($pt eq 'sum');
+    $string =~ s{(?<=title \").*\"}{\"}     if ($datalabel =~ m{\A\s*\z});
   };
-  if (($self->get_mode("template_plot") eq "gnuplot") and ($datalabel =~ m{\A\s*\z})) {
-    $string =~ s{(?<=title ")$labels{$part}}{};
-  };
+  #if (($self->get_mode("template_plot") eq "gnuplot") and ($datalabel =~ m{\A\s*\z})) {
+  #  $string =~ s{(?<=title ")$labels{$part}}{};
+  #};
   return $string if (not is_DataPart($part));
 
   ## (?! ) is the negative zero-width look ahead -- it does not
