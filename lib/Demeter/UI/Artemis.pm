@@ -1,6 +1,6 @@
 package Demeter::UI::Artemis;
 
-use Demeter qw(:plotwith=gnuplot);
+use Demeter; # qw(:plotwith=gnuplot);
 use Demeter::UI::Atoms;
 use Demeter::UI::Artemis::Project;
 use Demeter::UI::Wx::MRU;
