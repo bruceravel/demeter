@@ -69,8 +69,8 @@ Readonly my %EDGE_INDEX => (k =>1,  l1=>2,  l2=>3,  l3=>4,
 #has 'cell' => (is => 'rw', isa =>Empty.'|Xray::Crystal::Cell', default=> q{});
 has 'cell' => (is => 'rw', isa =>'Any', default=> sub{Xray::Crystal::Cell->new;},
 	      );
-has 'space'	       => (is => 'rw', isa =>'Str', default => q{},
-			   triger => sub{ my ($self, $new) = @_;
+has 'space'	       => (is => 'rw', isa => 'Str', default => sub{q{}},
+			   trigger => sub{ my ($self, $new) = @_;
 					  return if not $new;
 					  $self -> cell -> space_group($new);
 					  $self->is_populated(0);
@@ -80,7 +80,7 @@ has 'space'	       => (is => 'rw', isa =>'Str', default => q{},
 					  $self->self_done(0);
 					});
 has 'a'		       => (is => 'rw', isa => NonNeg,    default=> 0,
-			   triger => sub{ my ($self, $new) = @_; 
+			   trigger => sub{ my ($self, $new) = @_; 
 					  return if not $new;
 					  $self->is_populated(0);
 					  $self->absorption_done(0);
@@ -89,7 +89,7 @@ has 'a'		       => (is => 'rw', isa => NonNeg,    default=> 0,
 					  $self->self_done(0);
 					});
 has 'b'		       => (is => 'rw', isa => NonNeg,    default=> 0,
-			   triger => sub{ my ($self, $new) = @_; 
+			   trigger => sub{ my ($self, $new) = @_; 
 					  return if not $new;
 					  $self->is_populated(0);
 					  $self->absorption_done(0);
@@ -98,7 +98,7 @@ has 'b'		       => (is => 'rw', isa => NonNeg,    default=> 0,
 					  $self->self_done(0);
 					});
 has 'c'		       => (is => 'rw', isa => NonNeg,    default=> 0,
-			   triger => sub{ my ($self, $new) = @_; 
+			   trigger => sub{ my ($self, $new) = @_; 
 					  return if not $new;
 					  $self->is_populated(0);
 					  $self->absorption_done(0);
@@ -107,7 +107,7 @@ has 'c'		       => (is => 'rw', isa => NonNeg,    default=> 0,
 					  $self->self_done(0);
 					});
 has 'alpha'	       => (is => 'rw', isa => NonNeg,    default=> 90,
-			   triger => sub{ my ($self, $new) = @_; 
+			   trigger => sub{ my ($self, $new) = @_; 
 					  return if not $new;
 					  $self->is_populated(0);
 					  $self->absorption_done(0);
@@ -116,7 +116,7 @@ has 'alpha'	       => (is => 'rw', isa => NonNeg,    default=> 90,
 					  $self->self_done(0);
 					});
 has 'beta'	       => (is => 'rw', isa => NonNeg,    default=> 90,
-			   triger => sub{ my ($self, $new) = @_; 
+			   trigger => sub{ my ($self, $new) = @_; 
 					  return if not $new;
 					  $self->is_populated(0);
 					  $self->absorption_done(0);
@@ -125,7 +125,7 @@ has 'beta'	       => (is => 'rw', isa => NonNeg,    default=> 90,
 					  $self->self_done(0);
 					});
 has 'gamma'	       => (is => 'rw', isa => NonNeg,    default=> 90,
-			   triger => sub{ my ($self, $new) = @_; 
+			   trigger => sub{ my ($self, $new) = @_; 
 					  return if not $new;
 					  $self->is_populated(0);
 					  $self->absorption_done(0);
@@ -764,7 +764,7 @@ sub sg {
 };
 
 
-sub titles {
+sub all_titles {
   my ($self, $prefix) = @_;
   $prefix ||= " TITLE ";
   my @titles = @{ $self->titles };

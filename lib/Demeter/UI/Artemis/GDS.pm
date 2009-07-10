@@ -544,7 +544,7 @@ sub copy {
   $grid->{buffer} = \@list;
   my $s = ($#list > 0) ? q{s} : q{};
   $parent->{grid}->ClearSelection;
-  $parent->{statusbar}->SetStatusText("Copied parameter$s ".join(", ", map {$_->name} @list));
+  $parent->{statusbar}->SetStatusText("Copied parameter$s ".join(", ", map {defined($_) and $_->name} @list));
 };
 sub cut {
   my ($parent) = @_;
@@ -553,20 +553,21 @@ sub cut {
   $parent->{grid}->ClearSelection;
 
   foreach my $g (@{ $grid->{buffer} }) {
-    my $name = $g->name;
+    my $name = (defined $g) ? $g->name : q{};
     foreach my $r (0 .. $parent->{grid}->GetNumberRows-1) {
       next if ($name ne $grid->GetCellValue($r, 1));
       $grid->DeleteRows($r,1,1);
     };
   };
   my $s = ($#{$grid->{buffer}} > 0) ? q{s} : q{};
-  $parent->{statusbar}->SetStatusText("Cut parameter$s ".join(", ", map {$_->name} @{$grid->{buffer}}));
+  $parent->{statusbar}->SetStatusText("Cut parameter$s ".join(", ", map {defined($_) and $_->name} @{$grid->{buffer}}));
 };
 
 sub paste {
   my ($parent) = @_;
   my $row = $parent->{clicked_row};
   foreach my $g (@{ $parent->{grid}->{buffer} }) {
+    next if not defined($g);
     my $this = $parent->insert_below;
     $parent->{grid} -> SetCellValue($this, 0, $g->gds);
     $parent->{grid} -> SetCellValue($this, 1, $g->name);

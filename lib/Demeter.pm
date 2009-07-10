@@ -196,6 +196,9 @@ sub po {
 sub mo {
   return $mode;
 };
+sub dd {
+  return shift->mo->datadefault;
+};
 {
   no warnings 'once';
   # alternate names
@@ -1391,6 +1394,22 @@ This returns the Mode object.  This is intended to be used in a method
 call chain with any Demeter object.
 
   print "on screen!" if ($data -> mo -> ui eq 'screen');
+
+=item C<dd>
+
+This returns the default Data object.  When a Path object is created,
+if it is created without having its C<data> attribute set to an
+existing Data object, a new Data object with sensible default values
+for all of its attributs is created and stored as the C<datadefault>
+attribute of the Mode object.
+
+Path objects always rely on their associated Data objects for plotting
+and processing parameters.  So every Path object B<must> have an
+associated Data object.  If the C<data> attribute is not specified by
+the user, the default Data object will be used.
+
+  print ref($object->dd);
+       ===prints===> Demeter::Data
 
 =back
 
