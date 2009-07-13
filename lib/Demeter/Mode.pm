@@ -234,8 +234,8 @@ sub everything {
 sub destroy_all {
   my ($self) = @_;
   foreach my $obj ($self->everything) {
-    #print $obj;
-    $obj -> DESTROY;
+    #print $obj, $/;
+    $obj -> DEMOLISHALL; #DESTROY;
   };
 };
 

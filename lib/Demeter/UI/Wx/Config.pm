@@ -18,7 +18,7 @@ package Demeter::UI::Wx::Config;
 use strict;
 use warnings;
 use Carp;
-use List::MoreUtils qw(firstidx);
+use List::MoreUtils qw(firstidx uniq);
 
 use Wx qw( :everything );
 use Wx::Event qw(EVT_BUTTON EVT_TREE_SEL_CHANGED);
@@ -39,7 +39,7 @@ sub new {
   $self -> SetSizer($mainsizer);
 
   my $font = wxNullFont;
-  $font->SetStyle(wxSLANT);
+  $font->SetStyle(wxBOLD);
 
   ## -------- list of parameters
   $self->{paramsbox} = Wx::StaticBox->new($self, -1, 'Parameters', wxDefaultPosition, wxDefaultSize);
@@ -132,21 +132,28 @@ sub populate {
 
   $grouplist ||= 'all';
   my @grouplist;
- LIST: {
-    ($grouplist eq 'base') and do {
-      @grouplist = @{ $demeter->co->main_groups };
-      last LIST;
+  my @removelist;
+  my @templist = (ref($grouplist) eq 'ARRAY') ? @$grouplist : ($grouplist);
+  foreach my $t (@templist) {
+    if ($t eq 'base') {
+      push @grouplist,  @{ $demeter->co->main_groups };
+    } elsif ($t eq 'all' ) {
+      push @grouplist,  $demeter->co->groups;
+    } elsif ($t =~ m{\A\!(\w+)}) {
+      push @removelist, $1;
+    } else {
+      push @grouplist, $t;
     };
-    ($grouplist eq 'all') and do {
-      @grouplist = $demeter->co->groups;
-      last LIST;
-    };
-    (ref($grouplist) eq 'ARRAY') and do {
-      @grouplist = @$grouplist;
-      last LIST;
-    };
-    @grouplist = ($grouplist);
   };
+
+  @grouplist = uniq(@grouplist);
+#  print join(" ", @grouplist), $/;
+#  print join(" ", @removelist), $/;
+  if (@removelist) {
+    my $regex = join("|", @removelist);
+    @grouplist = grep { $_ !~ m{(?:$regex)}  } @grouplist;
+  };
+
   my $root = $self->{params} -> AddRoot('Root');
   foreach my $g (@grouplist) {
     my @params = $demeter->co->parameters($g);

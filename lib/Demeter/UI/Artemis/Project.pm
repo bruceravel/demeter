@@ -151,7 +151,8 @@ sub read_project {
     next unless ($d eq $current);
     $fit = Demeter::Fit->new(group=>$d);
     $fit->deserialize(folder=> File::Spec->catfile($projfolder, 'fits', $d));
-    $rframes->{main} -> {currentfit} = $fit;
+    $rframes->{main}->{currentfit} = $fit;
+    $rframes->{Plot}->{limits}->{fit}->SetValue(1);
   };
 
   ## -------- load up the GDS parameters

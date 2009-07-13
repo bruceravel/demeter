@@ -27,6 +27,7 @@ use base 'Wx::App';
 use Readonly;
 Readonly my $MRU         => Wx::NewId();
 Readonly my $SHOW_BUFFER => Wx::NewId();
+Readonly my $CONFIG      => Wx::NewId();
 
 use Wx::Perl::Carp;
 $SIG{__WARN__} = sub {Wx::Perl::Carp::warn($_[0])};
@@ -52,8 +53,13 @@ sub OnInit {
   $demeter -> mo -> ui('Wx');
   $demeter -> mo -> identity('Artemis');
 
+  my $conffile = File::Spec->catfile(dirname($INC{'Demeter/UI/Artemis.pm'}), 'Artemis', 'share', "artemis.demeter_conf");
+  $demeter -> co -> read_config($conffile);
+  $demeter -> co -> read_ini('artemis');
+  $demeter -> plot_with($demeter->co->default(qw(artemis plotwith)));
+
   ## -------- import all of Artemis' various parts
-  foreach my $m (qw(GDS Plot History Log Buffer Data Prj)) {
+  foreach my $m (qw(GDS Plot History Log Buffer Config Data Prj)) {
     next if $INC{"Demeter/UI/Artemis/$m.pm"};
     ##print "Demeter/UI/Artemis/$m.pm\n";
     require "Demeter/UI/Artemis/$m.pm";
@@ -86,10 +92,14 @@ sub OnInit {
   $frames{main}->{filemenu} = $filemenu;
   $frames{main}->{mrumenu}  = $mrumenu;
 
+  my $settingsmenu = Wx::Menu->new;
+  $settingsmenu->Append($CONFIG, "Edit Preferences", "Show the preferences editing dialog");
+
   my $helpmenu = Wx::Menu->new;
   $helpmenu->Append(wxID_ABOUT, "&About..." );
 
   $bar->Append( $filemenu, "&File" );
+  $bar->Append( $settingsmenu, "&Settings" );
   $bar->Append( $helpmenu, "&Help" );
   $frames{main}->SetMenuBar( $bar );
 
@@ -217,7 +227,7 @@ sub OnInit {
   #$hbox  -> Fit($toolbar);
   #$hbox  -> SetSizeHints($toolbar);
 
-  foreach my $part (qw(GDS Plot Log History Buffer)) {
+  foreach my $part (qw(GDS Plot Log History Buffer Config)) {
     my $pp = "Demeter::UI::Artemis::".$part;
     $frames{$part} = $pp->new($frames{main});
     $frames{$part} -> SetIcon($icon);
@@ -542,6 +552,10 @@ sub OnMenuClick {
     };
     ($id == $SHOW_BUFFER) and do {
       $frames{Buffer}->Show(1);
+      last SWITCH;
+    };
+    ($id == $CONFIG) and do {
+      $frames{Config}->Show(1);
       last SWITCH;
     };
     ($mru) and do {

@@ -288,7 +288,7 @@ sub convert {
     my $this_data = Demeter::Data->new();
 
     ## -------- set title lines
-    $this_data->fit_titles(join("\n", @{$d->{titles}}));
+    #$this_data->fit_titles(join("\n", @{$d->{titles}}));
 
     ## -------- set operational parameters
     my $nodegen = 0;
