@@ -305,11 +305,11 @@ sub new {
   $this->{karb} -> SetValue($demeter->co->default('fit', 'karb'));
   $this->{karb_value} -> SetValidator( Wx::Perl::TextValidator->new( qr([0-9.]) ) );
 
-  $this->mouseover("k1", "Use a k-weight of 1 when evaluating the fit.  You may choose any or all k-weight for fitting.");
-  $this->mouseover("k2", "Use a k-weight of 2 when evaluating the fit.  You may choose any or all k-weight for fitting.");
-  $this->mouseover("k3", "Use a k-weight of 3 when evaluating the fit.  You may choose any or all k-weight for fitting.");
-  $this->mouseover("karb", "Use the supplied value of k-weight when evaluating the fit.  You may choose any or all k-weight for fitting.");
-  $this->mouseover("karb_value", "The user-supplied value of k-weight for use in the fit.  You may choose any or all k-weight for fitting.");
+  $this->mouseover("k1", "Use a k-weight of 1 when evaluating the fit.  You may choose any or all k-weights for fitting.");
+  $this->mouseover("k2", "Use a k-weight of 2 when evaluating the fit.  You may choose any or all k-weights for fitting.");
+  $this->mouseover("k3", "Use a k-weight of 3 when evaluating the fit.  You may choose any or all k-weights for fitting.");
+  $this->mouseover("karb", "Use the supplied value of k-weight when evaluating the fit.  You may choose any or all k-weights for fitting.");
+  $this->mouseover("karb_value", "The user-supplied value of k-weight for use in the fit.  You may choose any or all k-weights for fitting.");
 
 
   ## -------- epsilon and phase correction
@@ -1328,3 +1328,62 @@ sub OnData {
 
 
 1;
+
+
+=head1 NAME
+
+Demeter::UI::Artemis::Data - Data group interface for Artemis
+
+=head1 VERSION
+
+This documentation refers to Demeter version 0.3.
+
+=head1 SYNOPSIS
+
+This module provides a window for displaying Demeter's data interface,
+which includes the L<Demeter::UI::Wx::CheckListBook> interface to the
+paths associated with the data group.
+
+=head1 CONFIGURATION
+
+
+=head1 DEPENDENCIES
+
+Demeter's dependencies are in the F<Bundle/DemeterBundle.pm> file.
+
+=head1 BUGS AND LIMITATIONS
+
+=over 4
+
+=item *
+
+Many things still missing from the menus
+
+=item *
+
+Replace data group without replacing paths.
+
+=back
+
+Please report problems to Bruce Ravel (bravel AT bnl DOT gov)
+
+Patches are welcome.
+
+=head1 AUTHOR
+
+Bruce Ravel (bravel AT bnl DOT gov)
+
+L<http://cars9.uchicago.edu/~ravel/software/>
+
+=head1 LICENCE AND COPYRIGHT
+
+Copyright (c) 2006-2009 Bruce Ravel (bravel AT bnl DOT gov). All rights reserved.
+
+This module is free software; you can redistribute it and/or
+modify it under the same terms as Perl itself. See L<perlgpl>.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+
+=cut

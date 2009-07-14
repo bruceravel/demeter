@@ -64,3 +64,57 @@ sub on_close {
 };
 
 1;
+
+
+=head1 NAME
+
+Demeter::UI::Artemis::Config - A configuration buffer for Artemis
+
+=head1 VERSION
+
+This documentation refers to Demeter version 0.3.
+
+=head1 SYNOPSIS
+
+This module provides a window for displaying Demeter's standard
+Wx-based configuration utility.
+
+=head1 CONFIGURATION
+
+
+=head1 DEPENDENCIES
+
+Demeter's dependencies are in the F<Bundle/DemeterBundle.pm> file.
+
+=head1 BUGS AND LIMITATIONS
+
+=over 4
+
+=item *
+
+Exclude "atoms", "feff", and "pathfinder" groups?
+
+=back
+
+Please report problems to Bruce Ravel (bravel AT bnl DOT gov)
+
+Patches are welcome.
+
+=head1 AUTHOR
+
+Bruce Ravel (bravel AT bnl DOT gov)
+
+L<http://cars9.uchicago.edu/~ravel/software/>
+
+=head1 LICENCE AND COPYRIGHT
+
+Copyright (c) 2006-2009 Bruce Ravel (bravel AT bnl DOT gov). All rights reserved.
+
+This module is free software; you can redistribute it and/or
+modify it under the same terms as Perl itself. See L<perlgpl>.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+
+=cut
