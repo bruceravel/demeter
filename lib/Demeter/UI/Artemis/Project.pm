@@ -200,6 +200,12 @@ sub read_project {
     ++$count;
   };
 
+  $rframes->{Log}->{text}->SetValue($fit->logtext);
+  $rframes->{Log}->SetTitle("Artemis [Log] " . $rframes->{main}->{name}->GetValue);
+  $rframes->{Log}->Show(0);
+  $rframes->{main}->{log_toggle}->SetValue(0);
+  Demeter::UI::Artemis::set_happiness_color($fit->color);
+
   $Demeter::UI::Artemis::demeter->push_mru("artemis", $fname);
   &Demeter::UI::Artemis::set_mru;
   $rframes->{main}->{projectname} = basename($fname, '.fpj');

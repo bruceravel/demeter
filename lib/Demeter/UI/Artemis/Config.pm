@@ -19,13 +19,13 @@ use strict;
 use warnings;
 
 use Wx qw( :everything );
-use Wx::Event qw(EVT_CLOSE);
+use Wx::Event qw(EVT_CLOSE EVT_BUTTON);
 use base qw(Wx::Frame);
 
 sub new {
   my ($class, $parent) = @_;
   my $this = $class->SUPER::new($parent, -1, "Artemis [Preferences]",
-				wxDefaultPosition, [600,500],
+				wxDefaultPosition, [650,500],
 				wxMINIMIZE_BOX|wxCAPTION|wxSYSTEM_MENU|wxCLOSE_BOX|wxRESIZE_BORDER);
   EVT_CLOSE($this, \&on_close);
 
@@ -34,6 +34,9 @@ sub new {
   $config->populate(['all', 'artemis']);
   $box->Add($config, 1, wxGROW|wxALL, 5);
 
+  my $close = Wx::Button->new($this, -1, "&Close");
+  $box->Add($close, 0, wxGROW|wxALL, 5);
+  EVT_BUTTON($this, $close, \&on_close);
 
   $this->SetSizer($box);
   return $this;

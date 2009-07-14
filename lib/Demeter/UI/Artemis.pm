@@ -25,9 +25,13 @@ use Wx::Event qw(EVT_MENU EVT_CLOSE EVT_TOOL_ENTER EVT_CHECKBOX EVT_BUTTON
 use base 'Wx::App';
 
 use Readonly;
-Readonly my $MRU         => Wx::NewId();
-Readonly my $SHOW_BUFFER => Wx::NewId();
-Readonly my $CONFIG      => Wx::NewId();
+Readonly my $MRU          => Wx::NewId();
+Readonly my $SHOW_BUFFER  => Wx::NewId();
+Readonly my $CONFIG       => Wx::NewId();
+Readonly my $SHOW_GROUPS  => Wx::NewId();
+Readonly my $SHOW_ARRAYS  => Wx::NewId();
+Readonly my $SHOW_SCALARS => Wx::NewId();
+Readonly my $SHOW_STRINGS => Wx::NewId();
 
 use Wx::Perl::Carp;
 $SIG{__WARN__} = sub {Wx::Perl::Carp::warn($_[0])};
@@ -85,14 +89,20 @@ sub OnInit {
   $filemenu->AppendSubMenu($mrumenu, "Recent projects", "Open a submenu of recently used files" );
   $filemenu->Append(wxID_SAVE, "Save project", "Save to a project file" );
   $filemenu->AppendSeparator;
-  $filemenu->Append($SHOW_BUFFER, "Show command buffer", "Show the Ifeffit and plotting commands buffer");
-  $filemenu->AppendSeparator;
   $filemenu->Append(wxID_CLOSE, "&Close" );
   $filemenu->Append(wxID_EXIT, "E&xit" );
   $frames{main}->{filemenu} = $filemenu;
   $frames{main}->{mrumenu}  = $mrumenu;
 
+  my $showmenu = Wx::Menu->new;
+  $showmenu->Append($SHOW_GROUPS,  "groups",  "Show Ifeffit groups");
+  $showmenu->Append($SHOW_ARRAYS,  "arrays",  "Show Ifeffit arrays");
+  $showmenu->Append($SHOW_SCALARS, "scalars", "Show Ifeffit scalars");
+  $showmenu->Append($SHOW_STRINGS, "strings", "Show Ifeffit strings");
+
   my $settingsmenu = Wx::Menu->new;
+  $settingsmenu->AppendSubMenu($showmenu, "Show Ifeffit ...", "Show variables from Ifeffit");
+  $settingsmenu->Append($SHOW_BUFFER, "Show command buffer", "Show the Ifeffit and plotting commands buffer");
   $settingsmenu->Append($CONFIG, "Edit Preferences", "Show the preferences editing dialog");
 
   my $helpmenu = Wx::Menu->new;
@@ -264,7 +274,10 @@ sub OnInit {
 		     feedback     => \&feedback,
 		    );
 
-  read_project(\%frames, $ARGV[0]) if ($ARGV[0] and -e $ARGV[0]);
+  if ($ARGV[0] and -e $ARGV[0]) {
+    my $file = File::Spec->rel2abs( $ARGV[0] );
+    read_project(\%frames, $file);
+  };
   1;
 }
 
@@ -563,7 +576,27 @@ sub OnMenuClick {
       last SWITCH;
     };
 
+    (($id == $SHOW_GROUPS)  or ($id == $SHOW_ARRAYS) or
+     ($id == $SHOW_SCALARS) or ($id == $SHOW_STRINGS)) and do {
+       show_ifeffit($id);
+      last SWITCH;
+    };
+
+
   };
+};
+
+sub show_ifeffit {
+  my ($id) = @_;
+  my $text = ($id =~ m{\A[a-z]+\z}) ? "\@group $id"
+           : ($id == $SHOW_GROUPS)  ? "\@groups"
+           : ($id == $SHOW_ARRAYS)  ? "\@arrays"
+           : ($id == $SHOW_SCALARS) ? "\@scalars"
+           : ($id == $SHOW_STRINGS) ? "\@strings"
+           :                          q{};
+  return if not $text;
+  $demeter->dispose("show $text");
+  $frames{Buffer}->Show(1);
 };
 
 sub OnToolEnter {

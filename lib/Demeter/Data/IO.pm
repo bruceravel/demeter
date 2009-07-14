@@ -254,6 +254,7 @@ sub read_fit {
   my $command = $self-> template("fit", "read_fit", {filename => $filename,});
   $self->dispose($command);
   $self->update_fft(1);
+  $self->po->plot_fit(1);
   return $self;
 };
 

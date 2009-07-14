@@ -1294,8 +1294,7 @@ override 'deserialize' => sub {
       $file = File::Spec->catfile($args{folder}, "$dd.fit");
       $project_folder = $args{folder};
     };
-    my $command = $d->template("fit", "read_fit", {filename => $file});
-    $d->dispose($command);
+    $d->read_fit($file) if (-e $file);
     $d->fitting(1);
     unlink $file;
   };

@@ -50,6 +50,7 @@ Readonly my $DATA_REPLACE    => Wx::NewId();
 Readonly my $DATA_KMAXSUGEST => Wx::NewId();
 Readonly my $DATA_EPSK	     => Wx::NewId();
 Readonly my $DATA_NIDP	     => Wx::NewId();
+Readonly my $DATA_SHOW	     => Wx::NewId();
 
 Readonly my $PATH_RENAME => Wx::NewId();
 Readonly my $PATH_SHOW   => Wx::NewId();
@@ -440,6 +441,7 @@ sub make_menubar {
   $self->{datamenu}  = Wx::Menu->new;
   $self->{datamenu}->Append($DATA_RENAME,      "Rename this χ(k)",         "Rename this data set",  wxITEM_NORMAL );
   $self->{datamenu}->Append($DATA_REPLACE,     "Replace this χ(k)",        "Replace this data set",  wxITEM_NORMAL );
+  $self->{datamenu}->Append($DATA_SHOW,        "Show this Ifeffit group",  "Show the arrays associated with this group in Ifeffit",  wxITEM_NORMAL );
   $self->{datamenu}->AppendSeparator;
   $self->{datamenu}->Append($DATA_DIFF,        "Make difference spectrum", "Make a difference spectrum using the marked paths", wxITEM_NORMAL );
   $self->{datamenu}->Append($DATA_TRANSFER,    "Transfer marked paths",    "Transfer marked paths to the plotting list", wxITEM_NORMAL );
@@ -649,6 +651,11 @@ sub OnMenuClick {
       last SWITCH;
     };
 
+    ($id == $DATA_SHOW) and do {
+      Demeter::UI::Artemis::show_ifeffit($datapage->{data}->group);
+      last SWITCH;
+    };
+
     (($id == $DATA_DEGEN_N) or ($id == $DATA_DEGEN_1)) and do {
       $datapage->set_degens($id);
       last SWITCH;
@@ -689,13 +696,14 @@ sub OnMenuClick {
 
     ($id == $PATH_SHOW) and do { # show a dialog with the path paragraph
       my $pathobject = $datapage->{pathlist}->GetPage($datapage->{pathlist}->GetSelection)->{path};
+      #Demeter::UI::Artemis::show_ifeffit($pathobject->group);
       my ($abort, $rdata, $rpaths) = Demeter::UI::Artemis::uptodate(\%Demeter::UI::Artemis::frames);
       $pathobject->_update("fft");
       my $show = Wx::Dialog->new($datapage, -1, $pathobject->label.', evaluated', wxDefaultPosition, [450,350],
-				 wxOK|wxICON_INFORMATION);
+ 				 wxOK|wxICON_INFORMATION);
       my $box  = Wx::BoxSizer->new( wxVERTICAL );
       my $text = Wx::TextCtrl->new($show, -1, q{}, wxDefaultPosition, wxDefaultSize,
-				   wxVSCROLL|wxHSCROLL|wxTE_MULTILINE|wxTE_READONLY|wxNO_BORDER);
+ 				   wxVSCROLL|wxHSCROLL|wxTE_MULTILINE|wxTE_READONLY|wxNO_BORDER);
       $text -> SetFont(Wx::Font->new( 10, wxTELETYPE, wxNORMAL, wxNORMAL, 0, "" ) );
       $text -> SetValue($pathobject->paragraph);
       $box  -> Add($text, 1, wxGROW|wxALL, 5);
