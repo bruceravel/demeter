@@ -20,6 +20,8 @@ extends 'Demeter::Path';
 use Demeter::NumTypes qw( Ipot PosNum PosInt );
 use Demeter::StrTypes qw( Empty );
 
+with 'Demeter::UI::Screen::Pause' if ($Demeter::mode->ui eq 'screen');
+
 use Chemistry::Elements qw(get_symbol);
 use String::Random qw(random_string);
 

@@ -52,6 +52,9 @@ use Demeter::NumTypes qw( Natural
 			  NonNeg
 		       );
 
+with 'Demeter::UI::Screen::Pause' if ($Demeter::mode->ui eq 'screen');
+
+
 ## To do: triggers for keeping min/max pairs in the right order, respecting the complicated configuration rules
 
 has '+plottable'  => (default => 1);

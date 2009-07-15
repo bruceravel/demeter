@@ -26,6 +26,8 @@ with 'Demeter::Data::Arrays';
 with 'Demeter::Path::Process';
 with 'Demeter::Path::Sanity';
 
+with 'Demeter::UI::Screen::Pause' if ($Demeter::mode->ui eq 'screen');
+
 use Carp;
 use File::Copy;
 use File::Spec;

@@ -22,6 +22,8 @@ with 'Demeter::Path::Process';
 use MooseX::AttributeHelpers;
 use Demeter::StrTypes qw( Empty );
 
+with 'Demeter::UI::Screen::Pause' if ($Demeter::mode->ui eq 'screen');
+
 has '+plottable' => (default => 1);
 has '+data'      => (isa => Empty.'|Demeter::Data');
 has '+name'      => (default => 'virtual path');
