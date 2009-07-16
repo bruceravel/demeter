@@ -20,6 +20,13 @@ sub yofx {
   return $y_interp;
 };
 
+sub put_xmu {
+  my ($self, $arrayref) = @_;
+  Ifeffit::put_array($self->group.'.xmu', $arrayref);
+  $self -> update_norm(1);
+  return $self;
+};
+
 sub get_array {
   my ($self, $suffix, $part) = @_;
   $part ||= q{};
@@ -144,30 +151,47 @@ This documentation refers to Demeter version 0.3.
 Read an array from Ifeffit.  The argument is the Ifeffit array suffix
 of the array to import.
 
-  @array = $data->get_array("xmu");
+  @array = $dataobject->get_array("xmu");
+
+=item C<ref_array>
+
+Get a reference to an array from Ifeffit.  The argument is the Ifeffit
+array suffix of the array to import.
+
+  $ref_to_array = $dataobject->ref_array("xmu");
+
+=item C<put_xmu>
+
+Push an array onto the Ifeffit array representing the xmu data
+associated with the Data object.  The purpose of this is to modify the
+mu(E) data for a Data object in place.  An example would be to apply a
+dead time correction without creating a new group to contain the
+corrected data.
+
+  $dataobject -> put_xmu(\@xmu_array);
 
 =item C<floor_ceil>
 
-Return a two element list containingthe smallest and largest values of
-an array in Ifeffit.
+Return a two element list containing the smallest and largest values
+of an array in Ifeffit.
 
-  ($min, $max) = $data->floor_ceil("xmu");
+  ($min, $max) = $dataobject->floor_ceil("xmu");
 
 =item C<yofx>
 
 Return the y value corresponding to an given x-value.  This is found
 by interpolation from the specified array.
 
-  $y = $data->yofx("xmu", q{}, $x);
+  $y = $dataobject->yofx("xmu", q{}, $x);
 
-The second argument (C<q{}>) in this example, is used to specify a
-part of a fit, i.e. C<bkg> or C<res>.
+The second argument (C<q{}> in this example) is used to specify a part
+of a fit, i.e. C<bkg> or C<res>.
 
 =item C<points>
 
 This method is used extensively by the gnuplot plotting template set
-to generate temporary files for Gnuplot.  See any of those plotting
-templates fro examples of how this is used.
+to generate temporary files for plotting with Gnuplot.  See any of
+those plotting templates for examples of how this is used.
 
 =back
 

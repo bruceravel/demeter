@@ -420,7 +420,9 @@ sub _plotE_command {
 	:                                 'x\gm(E)';
   };
   $pf->key($self->name);
-  $pf->title(sprintf("%s", $self->name||q{}));
+  my $title = $self->name||q{Data};
+  $pf->title(sprintf("%s in energy", $title)) if not $pf->title;
+  #$pf->title(sprintf("%s", $self->name||q{}));
   $pf->xlabel($xl);
   $pf->ylabel($yl);
 
