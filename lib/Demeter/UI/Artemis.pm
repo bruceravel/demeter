@@ -407,6 +407,7 @@ sub fit {
 
   ## get name, fom, and description + other properties
   my $fit = Demeter::Fit->new(data => \@data, paths => \@paths, gds => \@gds);
+  $fit->interface("Artemis (Wx)");
   #$fit->ignore_errors(1);
   $rframes->{main} -> {currentfit} = $fit;
 

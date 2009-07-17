@@ -712,12 +712,15 @@ sub evaluate {
   return $self;
 };
 
+my @keys = qw(name description fom time_of_fit fitenvironment interface prepared_by contact);
+my @vals = ('Name', 'Description', 'Figure of merit', 'Time of fit', 'Environment', 'Interface', 'Prepared by', 'Contact');
+my %properties = zip(@keys, @vals);
 
 sub properties_header {
   my ($self) = @_;
   my $string = "\n";
-  foreach my $k (qw(name description fom time_of_fit fitenvironment interface prepared_by contact)) {
-    $string .= sprintf " %14s = %s\n", $k, $self->$k;
+  foreach my $k (@keys) {
+    $string .= sprintf " %-15s : %s\n", $properties{$k}, $self->$k;
   };
   return $string;
 };

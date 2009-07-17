@@ -101,6 +101,7 @@ sub AddPage {
   $self->{VIEW}  = $page;
   $self->{VIEW} -> Show(1);
   $self->{PAGEBOX} -> Layout;
+  return $self->{LIST} -> GetCount;
 };
 
 sub RemovePage {

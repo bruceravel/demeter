@@ -194,7 +194,15 @@ sub fetch_parameters {
   };
   $this->{path}->include( $this->{include}->GetValue );
   $this->{path}->plot_after_fit($this->{plotafter}->GetValue);
+  $this->{path}->mark($this->marked);
   ## default path after fit...
+};
+
+sub marked {
+  my ($this) = @_;
+  my $which = $this->{datapage}->{pathlist}->{LIST}->GetSelection; # this fails for the first item in the list!!!
+  my $check_state = $this->{datapage}->{pathlist}->{LIST}->IsChecked($which) || 0;
+  return $check_state;
 };
 
 sub DoLabelEnter {
@@ -243,7 +251,7 @@ sub DoLabelKeyPress {
     $menu->Append($THISFEFF, "Export this $label to every path in THIS Feff calculation");
     $menu->Append($THISDATA, "Export this $label to every path in THIS data set");
     $menu->Append($EACHDATA, "Export this $label to every path in EVERY data set");
-    $menu->Append($MARKED,   "Export this $label to marked paths");
+    $menu->Append($MARKED,   "Export this $label to marked paths in THIS data set");
     $menu->AppendSeparator;
     $menu->Append($PREV,     "Grab $label from previous path");
     $menu->Append($NEXT,     "Grab $label from next path");
@@ -255,7 +263,7 @@ sub DoLabelKeyPress {
   };
   $menu->AppendSeparator;
   $menu->Append($EXPLAIN,  "Explain $label");
-  $menu->Enable($EACHDATA, 0);
+  #$menu->Enable($EACHDATA, 0);
 
   my $this = $page->this_path;
   $menu->Enable($PREV, 0) if ($this == 0);
@@ -292,7 +300,7 @@ sub OnLabelMenu {
 
     ($id == $EACHDATA) and do {
       ## from %frames keys, find data pages, loop over all {listpath} pages
-      print $currentpage->{datapage}, $/;
+      $currentpage->{datapage}->add_parameters($param, $thisme, 2);
       $currentpage->{datapage}->{statusbar}->SetStatusText("Set $labels{$param} for every path in every data set." );
       last SWITCH;
     };
@@ -332,7 +340,7 @@ sub OnLabelMenu {
 sub include_label {
   my ($self, $event, $n) = @_;
   my $which = $n || $self->{datapage}->{pathlist}->{LIST}->GetSelection; # this fails for the first item in the list!!!
-  my $check_state = $self->{datapage}->{pathlist}->{LIST}->IsChecked($which);
+  my $check_state = $self->marked; #{datapage}->{pathlist}->{LIST}->IsChecked($which);
   my $inc   = $self->{include}->IsChecked;
   $self->{path}->include($inc);
 

@@ -23,6 +23,7 @@ use Cwd;
 use File::Basename;
 use File::Spec;
 use YAML;
+use Carp;
 
 use Wx qw(:everything);
 
@@ -189,8 +190,9 @@ sub read_project {
       $p->parent($feffs{$p->parentgroup});
       $p->sp(find_sp($p, \%feffs));
       my $page = Demeter::UI::Artemis::Path->new($rframes->{$dnum}->{pathlist}, $p, $rframes->{$dnum});
-      $rframes->{$dnum}->{pathlist}->AddPage($page, $p->label, 1, 0);
+      my $n = $rframes->{$dnum}->{pathlist}->AddPage($page, $p->label, 1, 0);
       $page->include_label;
+      $rframes->{$dnum}->{pathlist}->Check($n, $p->mark);
     };
     $rframes->{$dnum}->{pathlist}->SetSelection(0);
     if (not $count) {

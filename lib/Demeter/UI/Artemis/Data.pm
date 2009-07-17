@@ -51,11 +51,13 @@ Readonly my $DATA_KMAXSUGEST => Wx::NewId();
 Readonly my $DATA_EPSK	     => Wx::NewId();
 Readonly my $DATA_NIDP	     => Wx::NewId();
 Readonly my $DATA_SHOW	     => Wx::NewId();
+Readonly my $DATA_YAML	     => Wx::NewId();
 
 Readonly my $PATH_RENAME => Wx::NewId();
 Readonly my $PATH_SHOW   => Wx::NewId();
 Readonly my $PATH_ADD    => Wx::NewId();
 Readonly my $PATH_CLONE  => Wx::NewId();
+Readonly my $PATH_YAML	 => Wx::NewId();
 
 Readonly my $PATH_EXPORT_FEFF   => Wx::NewId();
 Readonly my $PATH_EXPORT_DATA   => Wx::NewId();
@@ -96,10 +98,6 @@ Readonly my $DISCARD_AFTER    => Wx::NewId();
 Readonly my $DISCARD_MS	      => Wx::NewId();
 Readonly my $DISCARD_LOW      => Wx::NewId();
 Readonly my $DISCARD_R	      => Wx::NewId();
-
-# Readonly my $SUM_INCLUDED => Wx::NewId();
-# Readonly my $SUM_MARKED   => Wx::NewId();
-# Readonly my $SUM_IM       => Wx::NewId();
 
 
 sub new {
@@ -441,7 +439,6 @@ sub make_menubar {
   $self->{datamenu}  = Wx::Menu->new;
   $self->{datamenu}->Append($DATA_RENAME,      "Rename this χ(k)",         "Rename this data set",  wxITEM_NORMAL );
   $self->{datamenu}->Append($DATA_REPLACE,     "Replace this χ(k)",        "Replace this data set",  wxITEM_NORMAL );
-  $self->{datamenu}->Append($DATA_SHOW,        "Show this Ifeffit group",  "Show the arrays associated with this group in Ifeffit",  wxITEM_NORMAL );
   $self->{datamenu}->AppendSeparator;
   $self->{datamenu}->Append($DATA_DIFF,        "Make difference spectrum", "Make a difference spectrum using the marked paths", wxITEM_NORMAL );
   $self->{datamenu}->Append($DATA_TRANSFER,    "Transfer marked paths",    "Transfer marked paths to the plotting list", wxITEM_NORMAL );
@@ -457,11 +454,6 @@ sub make_menubar {
   $self->{datamenu}->Append($DATA_EPSK,       "Show ε",                           "Show statistical noise for these data", wxITEM_NORMAL );
   $self->{datamenu}->Append($DATA_NIDP,       "Show Nidp",                        "Show the number of independent points in these data", wxITEM_NORMAL );
 
-#   ## -------- sum menu
-#   $self->{summenu} = Wx::Menu->new;
-#   $self->{summenu}->Append($SUM_INCLUDED, "Sum included", "Make a summation of all paths for this χ(k) which are included in the fit", wxITEM_NORMAL );
-#   $self->{summenu}->Append($SUM_IM,       "Sum marked and included", "Make a summation of all marked paths for this χ(k) which are also included in the fit", wxITEM_NORMAL );
-#   $self->{summenu}->Append($SUM_MARKED,   "Sum marked",   "Make a summation of all marked paths for this χ(k) regardless of whether they are included in the fit", wxITEM_NORMAL );
 
   ## -------- paths menu
   my $export_menu   = Wx::Menu->new;
@@ -471,9 +463,8 @@ sub make_menubar {
 		       "Export all path parameters from the currently displayed path to all paths in this data set", wxITEM_NORMAL );
   $export_menu->Append($PATH_EXPORT_EACH, "each path EVERY data set",
 		       "Export all path parameters from the currently displayed path to all paths in every data set", wxITEM_NORMAL );
-  $export_menu->Append($PATH_EXPORT_MARKED,  "each marked path",
+  $export_menu->Append($PATH_EXPORT_MARKED,  "each marked path in THIS data set",
 		       "Export all path parameters from the currently displayed path to all marked paths", wxITEM_NORMAL );
-  $export_menu->Enable($PATH_EXPORT_EACH, 0);
 
   my $save_menu     = Wx::Menu->new;
   $save_menu->Append($PATH_SAVE_K, "χ(k)", "Save the currently displayed path as χ(k) with all path parameters evaluated", wxITEM_NORMAL);
@@ -489,6 +480,14 @@ sub make_menubar {
   $self->{pathsmenu}->AppendSeparator;
   $self->{pathsmenu}->AppendSubMenu($save_menu, "Save this path as ..." );
   $self->{pathsmenu}->Append($PATH_CLONE, "Clone this path", "Make a copy of the currently displayed path", wxITEM_NORMAL );
+
+  $self->{debugmenu}  = Wx::Menu->new;
+  $self->{debugmenu}->Append($DATA_SHOW, "Show this Ifeffit group",  "Show the arrays associated with this group in Ifeffit",  wxITEM_NORMAL );
+  $self->{debugmenu}->Append($PATH_SHOW, "Show path",                "Evaluate and show the path parameters for the currently display path", wxITEM_NORMAL );
+  $self->{debugmenu}->AppendSeparator;
+  $self->{debugmenu}->Append($DATA_YAML, "Show YAML for this data set",  "Show YAML for this data set",  wxITEM_NORMAL );
+  $self->{debugmenu}->Append($PATH_YAML, "Show YAML for displayed path", "Show YAML for displayed path", wxITEM_NORMAL );
+
 
   ## -------- marks menu
   $self->{markmenu}  = Wx::Menu->new;
@@ -535,11 +534,11 @@ sub make_menubar {
 
 
   $self->{menubar}->Append( $self->{datamenu},    "Da&ta" );
-#  $self->{menubar}->Append( $self->{summenu},     "&Sum" );
   $self->{menubar}->Append( $self->{pathsmenu},   "&Path" );
   $self->{menubar}->Append( $self->{markmenu},    "M&arks" );
   $self->{menubar}->Append( $self->{includemenu}, "&Include" );
   $self->{menubar}->Append( $self->{discardmenu}, "Dis&card" );
+  $self->{menubar}->Append( $self->{debugmenu},   "Debu&g" );
 
   map { $self->{datamenu} ->Enable($_,0) } ($DATA_DIFF, $DATA_REPLACE, $DATA_BALANCE);
 #  map { $self->{summenu}  ->Enable($_,0) } ($SUM_MARKED, $SUM_INCLUDED, $SUM_IM);
@@ -551,6 +550,7 @@ sub populate {
   my ($self, $data) = @_;
   $self->{data} = $data;
   $self->{name}->SetLabel($data->name);
+  $self->{cv}->SetValue($data->cv);
   $self->{datasource}->SetValue($data->prjrecord);
   #$self->{datasource}->ShowPosition($self->{datasource}->GetLastPosition);
   $self->{titles}->SetValue(join("\n", @{ $data->titles }));
@@ -696,21 +696,25 @@ sub OnMenuClick {
 
     ($id == $PATH_SHOW) and do { # show a dialog with the path paragraph
       my $pathobject = $datapage->{pathlist}->GetPage($datapage->{pathlist}->GetSelection)->{path};
-      #Demeter::UI::Artemis::show_ifeffit($pathobject->group);
       my ($abort, $rdata, $rpaths) = Demeter::UI::Artemis::uptodate(\%Demeter::UI::Artemis::frames);
       $pathobject->_update("fft");
-      my $show = Wx::Dialog->new($datapage, -1, $pathobject->label.', evaluated', wxDefaultPosition, [450,350],
- 				 wxOK|wxICON_INFORMATION);
-      my $box  = Wx::BoxSizer->new( wxVERTICAL );
-      my $text = Wx::TextCtrl->new($show, -1, q{}, wxDefaultPosition, wxDefaultSize,
- 				   wxVSCROLL|wxHSCROLL|wxTE_MULTILINE|wxTE_READONLY|wxNO_BORDER);
-      $text -> SetFont(Wx::Font->new( 10, wxTELETYPE, wxNORMAL, wxNORMAL, 0, "" ) );
-      $text -> SetValue($pathobject->paragraph);
-      $box  -> Add($text, 1, wxGROW|wxALL, 5);
-      my $button = Wx::Button->new($show, wxID_OK, "OK", wxDefaultPosition, wxDefaultSize, 0,);
-      $box -> Add($button, 0, wxGROW|wxALL, 5);
-      $show -> SetSizer( $box );
-      $show -> ShowModal;
+      $datapage->show_text($pathobject->paragraph, $pathobject->label.', evaluated');
+      last SWITCH;
+    };
+
+    ($id == $DATA_YAML) and do {
+      $datapage->fetch_parameters;
+      my $dataobject = $datapage->{data};
+      my $yaml = $dataobject->serialization;
+      $datapage->show_text($yaml, 'YAML of ' . $dataobject->name);
+      last SWITCH;
+    };
+
+    ($id == $PATH_YAML) and do {
+      my $pathobject = $datapage->{pathlist}->GetPage($datapage->{pathlist}->GetSelection)->{path};
+      my ($abort, $rdata, $rpaths) = Demeter::UI::Artemis::uptodate(\%Demeter::UI::Artemis::frames);
+      $pathobject->_update("fft");
+      $datapage->show_text($pathobject->serialization, 'YAML of '.$pathobject->label);
       last SWITCH;
     };
 
@@ -736,11 +740,6 @@ sub OnMenuClick {
       last SWITCH;
     };
 
-#     (($id == $SUM_INCLUDED) or ($id == $SUM_MARKED) or ($id == $SUM_IM)) and do {
-#       $datapage->sum($id);
-#       last SWITCH;
-#     };
-
     (($id == $MARK_ALL) or ($id == $MARK_NONE) or ($id == $MARK_INVERT) or ($id == $MARK_REGEXP) or
      ($id == $MARK_SS)  or ($id == $MARK_HIGH) or ($id == $MARK_R)      or ($id == $MARK_BEFORE) or
      ($id == $MARK_INC) or ($id == $MARK_EXC)) and do {
@@ -763,6 +762,22 @@ sub OnMenuClick {
     };
 
   };
+};
+
+sub show_text {
+  my ($parent, $content, $title) = @_;
+  my $show = Wx::Dialog->new($parent, -1, $title, wxDefaultPosition, [450,350],
+			     wxOK|wxICON_INFORMATION);
+  my $box  = Wx::BoxSizer->new( wxVERTICAL );
+  my $text = Wx::TextCtrl->new($show, -1, q{}, wxDefaultPosition, wxDefaultSize,
+			       wxVSCROLL|wxHSCROLL|wxTE_MULTILINE|wxTE_READONLY|wxNO_BORDER);
+  $text -> SetFont(Wx::Font->new( 10, wxTELETYPE, wxNORMAL, wxNORMAL, 0, "" ) );
+  $text -> SetValue($content);
+  $box  -> Add($text, 1, wxGROW|wxALL, 5);
+  my $button = Wx::Button->new($show, wxID_OK, "OK", wxDefaultPosition, wxDefaultSize, 0,);
+  $box -> Add($button, 0, wxGROW|wxALL, 5);
+  $show -> SetSizer( $box );
+  $show -> ShowModal;
 };
 
 sub Rename {
@@ -824,7 +839,14 @@ sub add_parameters {
     };
     $which = ($how == 0) ? "every path in this Feff calculation" : "every path in this data set";
   } elsif ($how == 2) {
-    $which = "every path in every data set";
+    foreach my $fr (keys %Demeter::UI::Artemis::frames) {
+      next if ($fr !~ m{data});
+      my $datapage = $Demeter::UI::Artemis::frames{$fr};
+      foreach my $n (0 .. $datapage->{pathlist}->GetPageCount-1) {
+	$datapage->{pathlist}->GetPage($n)->{"pp_$param"}->SetValue($me);
+      };
+      $which = "every path in every data set";
+    };
   } else {
     foreach my $n (0 .. $self->{pathlist}->GetPageCount-1) {
       next if (not $self->{pathlist}->IsChecked($n));
