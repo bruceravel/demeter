@@ -1,0 +1,92 @@
+## -*- config -*-
+###########################################################################
+##                     Demeter is copyright (c) 2007-2009 Bruce Ravel
+##                                                     bravel@bnl.gov
+##                                        http://xafs.org/BruceRavel/
+##
+##                   Ifeffit is copyright (c) 1992-2007 Matt Newville
+##                                         newville@cars.uchicago.edu
+##                       http://cars9.uchicago.edu/~newville/ifeffit/
+##
+##	  The latest version of Demeter can always be found at
+##          http://cars9.uchicago.edu/~ravel/software/exafs/
+##
+## -------------------------------------------------------------------
+##     All rights reserved. This program is free software; you can
+##     redistribute it and/or modify it provided that the above notice
+##     of copyright, these terms of use, and the disclaimer of
+##     warranty below appear in the source code and documentation, and
+##     that none of the names of Argonne National Laboratory, The
+##     University of Chicago, University of Washington, or the authors
+##     appear in advertising or endorsement of works derived from this
+##     software without specific prior written permission from all
+##     parties.
+##
+##     THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+##     EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
+##     OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+##     NONINFRINGEMENT.  IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
+##     HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
+##     WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+##     FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
+##     OTHER DEALINGS IN THIS SOFTWARE.
+## -------------------------------------------------------------------
+###########################################################################
+
+
+## This file contains the FSPath configuration group for Demeter
+
+######################################################################
+section=fspath
+section_description
+  These variables control the behavior of Demeter's quick first shell
+  scattering path system.
+
+variable=distance
+type=real
+default=2.0
+units=Angstroms
+description
+  The default distance between absorber and scatterer.
+
+variable=edge
+type=list
+default=K
+options=K L1 L2 L3
+description
+  The default edge.
+
+variable=min
+type=real
+default=1.7
+description
+  The minimum allowable value of the interatomic distance for any
+  absorber/scatterer pair.  An error and exit will be triggered if a
+  distance shorter than this value is given by the user.
+
+variable=max_lowz
+type=real
+default=2.5
+description
+  The maximum allowable value for the interatomic distance for a low Z
+  scatterer.  For scatterers lighter than Ar, an error and exit will
+  be triggered if a distance larger than this value is given by the user.
+
+variable=max_metal
+type=real
+default=2.9
+description
+  The maximum allowable value for the interatomic distance for a metal
+  scatterer (which is defined as any element heavier than Cl).  For
+  metal scatterers, an error and exit will be triggered if a distance
+  larger than this value is given by the user.
+
+variable=coordination
+type=list
+default=6
+options=4 6
+description
+  The coordination number used in the Feff calculation for the FSPath
+  object.  If set to six, an octohedral coordination environment will
+  be used.  If set to four, a tetrahedral coordination environment
+  will be used.

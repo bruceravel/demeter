@@ -25,6 +25,7 @@ use Demeter::StrTypes qw( Empty );
 with 'Demeter::UI::Screen::Pause' if ($Demeter::mode->ui eq 'screen');
 
 has '+plottable' => (default => 1);
+has '+pathtype'  => (default => 1);
 has '+data'      => (isa => Empty.'|Demeter::Data');
 has '+name'      => (default => 'virtual path');
 has 'id'         => (is => 'ro', isa => 'Str', default => 'virtual path');

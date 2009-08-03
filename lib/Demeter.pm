@@ -69,6 +69,7 @@ my %seen_group;
 has 'group'     => (is => 'rw', isa => 'Str',  default => sub{shift->_get_group()});
 has 'name'      => (is => 'rw', isa => 'Str',  default => q{});
 has 'plottable' => (is => 'ro', isa => 'Bool', default => 0);
+has 'pathtype'  => (is => 'ro', isa => 'Bool', default => 0);
 has 'mark'      => (is => 'rw', isa => 'Bool', default => 0);
 has 'frozen'    => (is => 'rw', isa => 'Bool', default => 0);
 has 'data'      => (is => 'rw', isa => 'Any',  default => q{},
@@ -161,7 +162,7 @@ sub import {
     };
   };
 
-  foreach my $m (qw(Data Plot Config Data/Prj GDS Path VPath SSPath Fit Atoms Feff ScatteringPath)) {
+  foreach my $m (qw(Data Plot Config Data/Prj GDS Path VPath SSPath FSPath Fit Atoms Feff ScatteringPath)) {
     next if $INC{"Demeter/$m.pm"};
     ##print "Demeter/$m.pm\n";
     require "Demeter/$m.pm";

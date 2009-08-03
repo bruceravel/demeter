@@ -1,0 +1,75 @@
+{
+  $r = sprintf('%.5f', $S->distance);
+  $rr3 = sprintf('%.5f', $S->distance/sqrt(3));
+  $r2r3 = sprintf('%.5f', 2*$S->distance/sqrt(3));
+  $r3r3 = sprintf('%.5f', 3*$S->distance/sqrt(3));
+  $r4r3 = sprintf('%.5f', 4*$S->distance/sqrt(3));
+  q{};
+}
+<<nl>>
+ TITLE Quick first shell theory: {$S->absorber}-{$S->scatterer}
+
+ HOLE {$S->hole}   1.0
+
+ CONTROL   1      1     1     1
+ PRINT     1      0     0     0
+
+ RMAX        {1.01*$r}
+ NLEG        4
+
+ POTENTIALS
+ *    ipot   Z  element
+        0   {Chemistry::Elements::get_Z($S->absorber)}   {$S->absorber}
+        1   {Chemistry::Elements::get_Z($S->absorber)}   {$S->absorber}
+        2   {Chemistry::Elements::get_Z($S->scatterer)}   {$S->scatterer}
+
+ ATOMS
+ *   x          y          z      ipot
+    0.00000    0.00000    0.00000  0
+    {$rr3}    {$rr3}    {$rr3}  2
+   -{$rr3}   -{$rr3}    {$rr3}  2
+   -{$rr3}    {$rr3}   -{$rr3}  2
+    {$rr3}   -{$rr3}   -{$rr3}  2
+    {$r2r3}    {$r2r3}    0.00000  1
+   -{$r2r3}    {$r2r3}    0.00000  1
+    {$r2r3}   -{$r2r3}    0.00000  1
+   -{$r2r3}   -{$r2r3}    0.00000  1
+    {$r2r3}    0.00000    {$r2r3}  1
+   -{$r2r3}    0.00000    {$r2r3}  1
+    0.00000    {$r2r3}    {$r2r3}  1
+    0.00000   -{$r2r3}    {$r2r3}  1
+    {$r2r3}    0.00000   -{$r2r3}  1
+   -{$r2r3}    0.00000   -{$r2r3}  1
+    0.00000    {$r2r3}   -{$r2r3}  1
+    0.00000   -{$r2r3}   -{$r2r3}  1
+   -{$r3r3}    {$rr3}    {$rr3}  2
+   -{$rr3}    {$r3r3}    {$rr3}  2
+    {$r3r3}   -{$rr3}    {$rr3}  2
+    {$rr3}   -{$r3r3}    {$rr3}  2
+   -{$rr3}    {$rr3}    {$r3r3}  2
+    {$rr3}   -{$rr3}    {$r3r3}  2
+    {$r3r3}    {$rr3}   -{$rr3}  2
+    {$rr3}    {$r3r3}   -{$rr3}  2
+   -{$r3r3}   -{$rr3}   -{$rr3}  2
+   -{$rr3}   -{$r3r3}   -{$rr3}  2
+    {$rr3}    {$rr3}   -{$r3r3}  2
+   -{$rr3}   -{$rr3}   -{$r3r3}  2
+    {$r4r3}    0.00000    0.00000  1
+   -{$r4r3}    0.00000    0.00000  1
+    0.00000    {$r4r3}    0.00000  1
+    0.00000   -{$r4r3}    0.00000  1
+    0.00000    0.00000    {$r4r3}  1
+    0.00000    0.00000   -{$r4r3}  1
+    {$r3r3}    {$r3r3}    {$rr3}  2
+   -{$r3r3}   -{$r3r3}    {$rr3}  2
+    {$r3r3}    {$rr3}    {$r3r3}  2
+    {$rr3}    {$r3r3}    {$r3r3}  2
+   -{$r3r3}   -{$rr3}    {$r3r3}  2
+   -{$rr3}   -{$r3r3}    {$r3r3}  2
+   -{$r3r3}    {$r3r3}   -{$rr3}  2
+    {$r3r3}   -{$r3r3}   -{$rr3}  2
+   -{$r3r3}    {$rr3}   -{$r3r3}  2
+   -{$rr3}    {$r3r3}   -{$r3r3}  2
+    {$r3r3}   -{$rr3}   -{$r3r3}  2
+    {$rr3}   -{$r3r3}   -{$r3r3}  2
+ END

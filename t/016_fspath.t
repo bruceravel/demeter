@@ -1,6 +1,6 @@
 #!/usr/bin/perl
 
-## Test SSPath object functionality of Demeter under Moose
+## Test FSPath object functionality of Demeter under Moose
 
 =for Copyright
  .
@@ -17,25 +17,18 @@
 
 =cut
 
-use Test::More tests => 16;
+use Test::More tests => 17;
 
-# use Ifeffit;
 use Demeter;
+use File::Path;
 
-## an SSPath requires that a Feff object exist
-my $feff = Demeter::Feff -> new(workspace => './t/feff', file => 't/withHg.inp', screen => 0);
-$feff -> make_workspace;
-$feff -> potph;
-$feff -> rmax(4.5);
-$feff -> pathfinder;
-
-my $this = Demeter::SSPath -> new(parent=>$feff, ipot=>2, reff=>3.5);
-my $OBJ  = 'SSPath';
+my $this = Demeter::FSPath -> new();
+my $OBJ  = 'FSPath';
 
 ok( ref($this) =~ m{$OBJ},           "made a $OBJ object");
 ok( $this->plottable,                "$OBJ object is plottable");
 ok( $this->group =~ m{\A\w{5}\z},    "$OBJ object has a proper group name");
-ok( $this->name =~ m{SS},            "name set to its default (" . $this->name . ")");
+ok( $this->name =~ m{FS},            "name set to its default (" . $this->name . ")");
 $this -> name('this');
 ok( $this->name eq 'this',           "$OBJ object has a settable label");
 ok( $this->data,                     "$OBJ object has an associated Data object");
@@ -49,34 +42,21 @@ ok( ($this->mo->template_plot     eq 'pgplot'  and
      $this->mo->template_analysis eq 'ifeffit'),
                                      "$OBJ object can find template sets");
 
-$this->path;
-ok( (($this->degen == 1)      and
-     ($this->nleg  == 2)      and
-     ($this->zcwif == 100)    and
-     (abs($this->reff - 3.5)) < 0.0001),
-                                     "parse_nnnn works");
+$this->abs(29);
+ok( $this->absorber eq 'Cu',         'Setting absorber works');
+my @list = @{ $this->gds };
+ok( $#list == -1,                    'GDS list not set yet');
+$this->scat('fluorine');
+ok( $this->scatterer eq 'F',         'Setting scatterer works');
+@list = @{ $this->gds };
+ok( $#list == 3,                     'GDS list correct length');
+ok( (    ($list[0]->name eq 'aa_cu_f')
+     and ($list[1]->name eq 'ee_cu_f')
+     and ($list[2]->name eq 'dr_cu_f')
+     and ($list[3]->name eq 'ss_cu_f')),   'GDS parameters named correctly');
+$this->workspace('./fs');
+$this->_update('path');
+ok( $this->parent =~ m{Feff},              'Feff object associated');
+ok( $this->feff_done,                      'Feff calculation was made');
 
-$this->update_path(0);
-$this->update_fft(0);
-$this->update_bft(0);
-$this->update_path(1);
-ok( $this->update_bft,               "update flags work");
-
-$this->set(s02    => 1,
-	   e0     => 'enot',
-	   sigma2 => 'debye([cv], 500)',
-	  );
-$this -> rewrite_cv;
-ok( $this->sigma2 eq 'debye(42, 500)', "rewrite_cv works");
-
-$this -> delr(0.1);
-ok( abs($this->R - 3.5) < 0.0001,      "R works");
-
-$this->e0_value(5);
-my @list = $this->is_resonable('e0');
-ok( $list[0],                          'e0 sanity test, ok');
-$this->e0_value(30);
-@list = $this->is_resonable('e0');
-ok(!$list[0],                          'e0 sanity test, too large');
-
-$feff -> clean_workspace;
+rmtree('./fs');

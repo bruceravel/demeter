@@ -1,0 +1,12 @@
+title =	Cu 222
+a =	3.61
+nitrogen= 1
+core =	cu	rmax =	7.0	space =	fcc
+atom
+  Cu    0       0       0	
+
+
+!!&& Local Variables:
+!!&& input-program-name: "atoms"
+!!&& End:
+%# Input-mode Time-stamp: <2001/12/24 12:44:04 bruce>

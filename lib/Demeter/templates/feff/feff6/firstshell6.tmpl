@@ -1,0 +1,58 @@
+{
+  $r = sprintf('%.5f', $S->distance);
+  $r2 = sprintf('%.5f', 2*$S->distance);
+  q{};
+}
+<<nl>>
+ TITLE Quick first shell theory: {$S->absorber}-{$S->scatterer}
+
+ HOLE {$S->hole}   1.0
+
+ CONTROL   1      1     1     1
+ PRINT     1      0     0     0
+
+ RMAX        {1.01*$r}
+ NLEG        4
+
+ POTENTIALS
+ *    ipot   Z  element
+        0   {Chemistry::Elements::get_Z($S->absorber)}   {$S->absorber}
+        1   {Chemistry::Elements::get_Z($S->absorber)}   {$S->absorber}
+        2   {Chemistry::Elements::get_Z($S->scatterer)}   {$S->scatterer}
+
+ ATOMS
+ *   x          y          z      ipot
+    0.00000    0.00000    0.00000  0
+    {$r}    0.00000    0.00000  2
+   -{$r}    0.00000    0.00000  2
+    0.00000    {$r}    0.00000  2
+    0.00000   -{$r}    0.00000  2
+    0.00000    0.00000    {$r}  2
+    0.00000    0.00000   -{$r}  2
+    {$r}    {$r}    0.00000  1
+   -{$r}    {$r}    0.00000  1
+    {$r}   -{$r}    0.00000  1
+   -{$r}   -{$r}    0.00000  1
+    {$r}    0.00000    {$r}  1
+   -{$r}    0.00000    {$r}  1
+    0.00000    {$r}    {$r}  1
+    0.00000   -{$r}    {$r}  1
+    {$r}    0.00000   -{$r}  1
+   -{$r}    0.00000   -{$r}  1
+    0.00000    {$r}   -{$r}  1
+    0.00000   -{$r}   -{$r}  1
+    {$r}    {$r}    {$r}  2
+   -{$r}    {$r}    {$r}  2
+    {$r}   -{$r}    {$r}  2
+   -{$r}   -{$r}    {$r}  2
+    {$r}    {$r}   -{$r}  2
+   -{$r}    {$r}   -{$r}  2
+    {$r}   -{$r}   -{$r}  2
+   -{$r}   -{$r}   -{$r}  2
+    {$r2}    0.00000    0.00000  1
+   -{$r2}    0.00000    0.00000  1
+    0.00000    {$r2}    0.00000  1
+    0.00000   -{$r2}    0.00000  1
+    0.00000    0.00000    {$r2}  1
+    0.00000    0.00000   -{$r2}  1
+ END

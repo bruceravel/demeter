@@ -36,6 +36,7 @@ use Regexp::Optimizer;
 use Ifeffit;
 
 has '+plottable'      => (default => 1);
+has '+pathtype'       => (default => 1);
 has '+data'           => (isa => Empty.'|Demeter::Data');
 has 'label'	      => (is=>'rw', isa=>'Str', default => q{});
 

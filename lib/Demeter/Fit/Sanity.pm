@@ -115,6 +115,7 @@ sub S_used_not_defined {
   };
   my $params_regexp = $opt->list2re(@all_params);
   my $tokenizer_regexp = $opt->list2re('-', '+', '*', '^', '/', '(', ')', ',', " ", "\t");
+
   foreach my $g (@gds) {
     next if ($g->gds =~ m{(?:guess|merge|skip)});
     my $mathexp = $g->mathexp;

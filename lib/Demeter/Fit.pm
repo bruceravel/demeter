@@ -61,6 +61,7 @@ has 'interface'      => (is => 'rw', isa => 'Str',    default => 'Demeter-based 
 has 'time_of_fit'    => (is => 'rw', isa => 'Str',    default => q{});  # should be a Date/Time object
 has 'prepared_by'    => (is => 'rw', isa => 'Str',    default => sub{ shift->who });
 has 'contact'        => (is => 'rw', isa => 'Str',    default => q{});
+has 'fitted'         => (is => 'rw', isa => 'Bool',   default => 0);
 
 ## -------- serialization/deserialization
 has 'project'        => (is => 'rw', isa => 'Str',    default => q{},
@@ -267,7 +268,13 @@ sub pre_fit {
     $d -> trouble(q{});
   };
   foreach my $p (@{ $self->paths }) {
+    $p -> _update('path') if (ref($p) =~ m{FSPath});
     $p -> trouble(q{});
+    #print $/;
+    #print $p->s02, $/;
+    #print $p->e0, $/;
+    #print $p->delr, $/;
+    #print $p->sigma2, $/;
   };
   $self -> trouble(q{});
   $self -> troubletext(q{});
@@ -400,6 +407,7 @@ sub fit {
     $g->autoannotate;
   };
 
+  $self->fitted(1);
   $self->mo->fit(q{});
   #$_->update_fft(1) foreach (@datasets);
 

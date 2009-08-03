@@ -98,4 +98,6 @@ include pathfinder.demeter_conf    ## Feff pathfinder parameters
 
 include gds.demeter_conf           ## GDS in GUI parameters
 
+include fspath.demeter_conf        ## quick first shell scattering
+
 # include /home/bruce/codes/demeter/t/test.demeter.conf

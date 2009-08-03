@@ -159,6 +159,17 @@ has 'SSPath' => (
 			      'splice'  => 'splice_SSPath',
 			     }
 	       );
+has 'FSPath' => (
+		metaclass => 'Collection::Array',
+		is        => 'rw',
+		isa       => 'ArrayRef',
+		default   => sub { [] },
+		provides  => {
+			      'push'    => 'push_FSPath',
+			      'clear'   => 'clear_FSPath',
+			      'splice'  => 'splice_FSPath',
+			     }
+	       );
 has 'Prj' => (
 		metaclass => 'Collection::Array',
 		is        => 'rw',
@@ -187,7 +198,7 @@ has 'ui'                   => (is => 'rw', isa => 'Str',  default => 'none',);
 
 sub fetch {
   my ($self, $type, $group) = @_;
-  return 0 if ($type !~ m{(?:Atoms|Data|Feff|Fit|GDS|Path|Plot|ScatteringPath|VPath|SSPath|Prj)});
+  return 0 if ($type !~ m{(?:Atoms|Data|Feff|Fit|GDS|Path|Plot|ScatteringPath|VPath|SSPath|FSPath|Prj)});
   my $list = $self->$type;
   foreach my $o (@$list) {
     return $o if ($o->group eq $group);
@@ -228,6 +239,7 @@ sub everything {
 	  @{ $self->ScatteringPath },
 	  @{ $self->VPath	   },
 	  @{ $self->SSPath	   },
+	  @{ $self->FSPath	   },
 	  @{ $self->Prj		   });
 };
 

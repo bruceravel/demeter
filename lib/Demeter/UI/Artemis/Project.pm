@@ -46,6 +46,9 @@ sub save_project {
   my @paths = @$rpaths;
   my @gds   = @$rgds;
   ## get name, fom, and description + other properties
+
+  $rframes->{main} -> {currentfit}  = Demeter::Fit->new(interface=>"Artemis (Wx)")
+    if (not $rframes->{main} -> {currentfit});
   $rframes->{main} -> {currentfit} -> set(data => \@data, paths => \@paths, gds => \@gds);
   $rframes->{main} -> {currentfit} -> serialize(tree     => File::Spec->catfile($rframes->{main}->{project_folder}, 'fits'),
 						folder   => $rframes->{main}->{currentfit}->group,
@@ -248,7 +251,7 @@ sub close_project {
   };
   save_project($rframes) if $result == wxID_YES;
 
-  Demeter::UI::Artemis::set_happiness_color($rframes->{main} -> {currentfit}->co->default("happiness", "average_color"))
+  Demeter::UI::Artemis::set_happiness_color(Demeter::UI::Artemis::demeter->co->default("happiness", "average_color"))
       if (exists $rframes->{main} -> {currentfit});
 
   ## -------- clear GDS
