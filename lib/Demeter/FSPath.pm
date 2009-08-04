@@ -73,6 +73,8 @@ has 'string'	 => (is => 'ro', isa => 'Str',    default => q{});
 has 'tag'	 => (is => 'rw', isa => 'Str',    default => q{});
 has 'randstring' => (is => 'rw', isa => 'Str',    default => sub{random_string('ccccccccc').'.sp'});
 
+has 'use_third'  => (is => 'rw', isa => 'Bool',   default => 0);
+has 'use_fourth' => (is => 'rw', isa => 'Bool',   default => 0);
 has 'feff_done'  => (is => 'rw', isa => 'Bool',   default => 0);
 
 has 'gds' => (
@@ -84,11 +86,11 @@ has 'gds' => (
 			      'push'    => 'push_gds',
 			      'clear'   => 'clear_gds',
 			      'splice'  => 'splice_gds',
-			     }
+			     },
 	       );
 
 
-## the sp attribute must be set to this SSPath object so that the Path
+## the sp attribute must be set to this FSPath object so that the Path
 ## _update_from_ScatteringPath method can be used to generate the
 ## feffNNNN.dat file.  an ugly but functional bit of voodoo
 sub BUILD {
@@ -131,6 +133,7 @@ override path => sub {
   my ($self) = @_;
   if (not $self->parent) {
     my $feff = Demeter::Feff->new(workspace => $self->workspace, screen => 0);
+    #$self->check_workspace;
     $self->parent($feff);
   };
   #$self->guesses;
@@ -147,6 +150,23 @@ override path => sub {
   return $self;
 };
 
+sub check_workspace {
+  my ($self) = @_;
+  return 0 if ($self->workspace and (-d $self->workspace));
+  croak <<EOH
+
+Feff is sort of an old-fashioned program.  It reads from a fixed input
+file and writes fixed output files.  All this needs to happen in a
+specified directory.
+
+You must explicitly establish a workspace for the Feff calculation
+associated with this FSPath object:
+  \$fspath->workspace("/path/to/workspace/")
+
+EOH
+  ;
+};
+
 sub guesses {
   my ($self) = @_;
   return $self if ((not $self->abs) or (not $self->scat));
@@ -157,11 +177,19 @@ sub guesses {
 	      $self->simpleGDS("guess dr_$elems = 0"),
 	      $self->simpleGDS("guess ss_$elems = 0.003"),
 	     );
-  $self->gds(\@list);
   $self->set(s02    => "aa_$elems",
 	     e0	    => "ee_$elems",
 	     delr   => "dr_$elems",
 	     sigma2 => "ss_$elems");
+  if ($self->use_third) {
+    push @list, $self->simpleGDS("guess c3_$elems = 0");
+    $self->third("c3_$elems");
+  };
+  if ($self->use_fourth) {
+    push @list, $self->simpleGDS("guess c4_$elems = 0");
+    $self->third("c4_$elems");
+  };
+  $self->gds(\@list);
   return $self;
 };
 
@@ -203,6 +231,7 @@ first shell fit.
                                     edge => $edge,
                                     dist => 2.0,
                                     data => $data_object,
+                                    workspace => "/path/to/work/space",
                                    );
   ##
   ## later...
@@ -218,26 +247,45 @@ oject.  For instance, plotting:
 
 =head1 DESCRIPTION
 
-This object is rather like a SSPath except that it does not require an
-existing Feff object.  The purpose of this object is to streamline a
-simple first shell fit by requiring only the element symbols of an
+This object is rather like an SSPath except that it is not built from
+an existing Feff object.  The purpose of this object is to streamline
+a simple first shell fit by requiring only the element symbols of an
 absorber/scatterer pair and their approximate distance apart.  The
 generation of a Feff object, including the Feff calculation will be
-handeled automatically.  Once made, this can be treated like a normal
+handled automatically.  Once made, this can be treated like a normal
 Path object, which it extends (in the Moose sense).
 
 To further simplify a first shell fit, the FSPath also autogenerates a
 set of four GDS parameters, which get stored in the C<gds> attribute.
 The C<s02>, C<e0>, C<delr>, and C<sigma2> attributes which are
-inherited from the Path object get set appropriately.
+inherited from the Path object get set appropriately.  There are flags
+for optionally including 3rd or 4th cumulants in the fit.
+
+The FSPath object can be used in a fit along with ordinary Path
+objects.  Like with an L<Demeter::SSPath> object, just include the
+FSPath object in the list of paths when setting up a L<Demeter::Fit>
+object.  The one caveat is that you have to explicitly include the
+automatically generated guess parameters in the Fit object's GDS list.
+This is most easily done using the C<gds> method of the FSPath object,
+as explained below.  There is no way provided (and this is an
+intentional design decision) for the Fit object to regognize a FSPath
+object and automaticalluy include its associated GDS objects in the
+fit.
+
+Note that this object does nothing to examine or modify the attributes
+of its associated Data object.  You need to set Fourier transform and
+fitting ranges appropriately for a fit using an FSPath object.  One
+way of doing this is to read from an Athena project file that has
+those parameters sets appropriately.  The other, of course, is to
+manipulate the Data object in your script.
 
 =head1 ATTRIBUTES
 
 As with any Moose object, the attribute names are the name of the
 accessor methods.
 
-Along with the standard attributes of a Demeter object (C<name>,
-C<plottable>, C<data>, and so on), an SSPath has the following:
+Along with the standard attributes of any Demeter object (C<name>,
+C<plottable>, C<data>, and so on), an FSPath has the following:
 
 =over 4
 
@@ -257,9 +305,28 @@ The edge at which to make the Feff calculation.
 
 The separation in Angstroms between the absorber and scatterer.
 
+=item C<workspace>
+
+You must supply a space on disk for the Feff calculation to use.  None
+is assumed and not providing a workspace will result in an error and
+exit.
+
+=item C<use_third> and C<use_fourth>
+
+These are boolean flags which tell the FSPath object whether to define
+and use third and/or fourth cumulant parameters in the fit.  For
+instance:
+
+  $fspath -> use_third(1);
+
+or
+
+  $fspath -> set(use_third=>1, use_fourth=>1);
+
 =item C<gds>
 
-This contains a reference to the list of 4 GDS parameters which were
+This contains a reference to the list of 4 (or 5 or 6, depending on
+whether 3rd and 4th cumulants are used) GDS parameters which were
 autogenerated as part of the FSPath object.  This is intended for use
 in defining a Fit object:
 

@@ -162,7 +162,7 @@ sub import {
     };
   };
 
-  foreach my $m (qw(Data Plot Config Data/Prj GDS Path VPath SSPath FSPath Fit Atoms Feff ScatteringPath)) {
+  foreach my $m (qw(Data Plot Config Data/Prj GDS Path VPath SSPath FSPath Fit Atoms Feff ScatteringPath StructuralUnit)) {
     next if $INC{"Demeter/$m.pm"};
     ##print "Demeter/$m.pm\n";
     require "Demeter/$m.pm";
@@ -209,7 +209,7 @@ sub dd {
 
 sub finish {
   my ($self) = @_;
-  foreach my $class (qw(Atoms Data Prj Feff Fit GDS Path Plot ScatteringPath VPath)) {
+  foreach my $class (qw(Atoms Data Prj Feff Fit GDS Path Plot ScatteringPath VPath StructuralUnit)) {
     foreach my $obj (@{ $self->mo->$class}) {
       $obj->alldone;
     };
