@@ -33,10 +33,9 @@ my $fspath = Demeter::FSPath->new(
 				  scat      => 'O',
 				  distance  => 2.1,
 				  workspace => './fs/',
+				  data      => $data,
 				 );
 
-## like a normal path object, an FSPath needs to be assigned to a Data object
-$fspath -> data($data);
 #$fspath -> co -> set_default(qw(fspath coordination 4));
 
 ## define, perform, and examine a fit
