@@ -58,6 +58,7 @@ Readonly my $PATH_SHOW   => Wx::NewId();
 Readonly my $PATH_ADD    => Wx::NewId();
 Readonly my $PATH_CLONE  => Wx::NewId();
 Readonly my $PATH_YAML	 => Wx::NewId();
+Readonly my $PATH_HISTO  => Wx::NewId();
 
 Readonly my $PATH_EXPORT_FEFF   => Wx::NewId();
 Readonly my $PATH_EXPORT_DATA   => Wx::NewId();
@@ -480,6 +481,7 @@ sub make_menubar {
   $self->{pathsmenu}->AppendSeparator;
   $self->{pathsmenu}->AppendSubMenu($save_menu, "Save this path as ..." );
   $self->{pathsmenu}->Append($PATH_CLONE, "Clone this path", "Make a copy of the currently displayed path", wxITEM_NORMAL );
+  $self->{pathsmenu}->Append($PATH_HISTO, "Make histogram", "Generate a histogram using the currently displayed path", wxITEM_NORMAL );
 
   $self->{debugmenu}  = Wx::Menu->new;
   $self->{debugmenu}->Append($DATA_SHOW, "Show this Ifeffit group",  "Show the arrays associated with this group in Ifeffit",  wxITEM_NORMAL );

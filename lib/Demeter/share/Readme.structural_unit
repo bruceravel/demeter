@@ -1,0 +1,17 @@
+
+This Readme file explains the structure of the Demeter::StructuralUnit
+serialization.  The serialization file is a normal zip file with the
+"dsu" extension (_D_emeter _s_tructural _u_nit).
+
+A structural unit is a collection of Demeter objects which implement a
+conceptual component of a fit.  In a script or a GUI, a structural
+unit is defined as a selection of paths.  Contained in this zip file
+are serializations of a number of Path objects, the Feff objects from
+which those paths were computed, and all GDS objects referenced by the
+Path's math expressions.
+
+The serializations of the Path, Feff, and GDS objects are YAML files.
+Also contained herein are the phase.bin files associated with the Feff
+objects. 
+
+
