@@ -20,6 +20,7 @@ use warnings;
 use Carp;
 use Chemistry::Elements qw(get_Z get_name get_symbol);
 use Xray::Absorption;
+Xray::Absorption->load('elam');
 use Demeter::UI::Wx::PeriodicTable;
 use Demeter::UI::Hephaestus::Common qw(e2l);
 

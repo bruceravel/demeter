@@ -75,10 +75,11 @@ has 'main_groups' => (
 
 has 'is_configured' => (is => 'rw', isa => 'Bool', default => 0);
 
-my $where = (($^O eq 'MSWin32') or ($^O eq 'cygwin')) ? "USERPROFILE" : "HOME";
+my $where = (($^O eq 'MSWin32') or ($^O eq 'cygwin')) ? "APPDATA" : "HOME";
+my $where = (($^O eq 'MSWin32') or ($^O eq 'cygwin')) ? "demeter" : ".horae";
 #my $where = ($Demeter::mode->is_windows) ? "USERPROFILE" : "HOME";
 has 'ini_file' => (is => 'ro', isa => 'Str',
-		   default => File::Spec->catfile($ENV{$where}, ".horae", "demeter.ini"));
+		   default => File::Spec->catfile($ENV{$where}, $stem, "demeter.ini"));
 
 
 my %ini;

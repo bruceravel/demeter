@@ -7,11 +7,11 @@ bin/dfeff
 bin/dfeff.pod
 bin/dfeffit
 bin/dfeffit.pod
-bin/hephaestus
+bin/dhephaestus
 bin/intrp
 bin/intrp.pod
-bin/lsprj
-bin/lsprj.pod
+bin/dlsprj
+bin/dlsprj.pod
 bin/rdfit
 bin/rdfit.pod
 bin/standards

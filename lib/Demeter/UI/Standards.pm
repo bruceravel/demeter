@@ -292,7 +292,7 @@ my @periodic_table =
    ['Ce', 'Pr', 'Nd', 'Pm', 'Sm', 'Eu', 'Gd', 'Tb', 'Dy', 'Ho', 'Er', 'Tm', 'Yb', 'Lu',],
    ['Th', 'Pa', 'U',  'Np', 'Pu', 'Am', 'Cm', 'Bk', 'Cf', 'Es', 'Fm', 'Md', 'No', 'Lr',],
   );
-my $clear = `clear`;
+my $clear = (($^O eq 'MSWin32') or ($^O eq 'cygwin')) ? q{} : `clear`;
 
 use subs qw(BOLD RED RESET YELLOW GREEN BLUE MAGENTA CYAN UNDERLINE REVERSE);
 my $ANSIColor_exists = (eval "require Term::ANSIColor");
