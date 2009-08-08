@@ -21,8 +21,11 @@ use Test::More tests => 32;
 
 use Ifeffit;
 use Demeter;
+my $demeter  = Demeter -> new;
 
-my $this = Demeter::Feff -> new(workspace => './t/feff');
+my $where = ($demeter->is_windows) ? './feff' : './t/feff';
+
+my $this = Demeter::Feff -> new(workspace => $where);
 my $OBJ  = 'Feff';
 
 ok( ref($this) =~ m{$OBJ},                              "made a $OBJ object");
@@ -42,7 +45,8 @@ ok( ($this->mo->template_plot     eq 'pgplot'  and
                                                         "$OBJ object can find template sets");
 
 ## -------- parse a feff.inp file
-$this -> file('t/orig.inp');
+my $file = ($demeter->is_windows) ? 'orig.inp' : 't/orig.inp';
+$this -> file($file);
 ok( (($this->rmax == 6.0) and
      ($this->edge eq '1') and
      ($this->s02  == 1.0)),                             'simple Feff cards read');
@@ -69,19 +73,19 @@ ok( $this->site_tag(19) eq 'Cu_3',                      'site_tag method works')
 
 ## -------- write different sorts of feff.inp files
 $this -> make_workspace;
-ok( -d 't/feff',                                        'make workspace works');
+ok( -d $where,                                          'make workspace works');
 
 $this->make_feffinp("potentials");
-open( my $fh, 't/feff/feff.inp' );
+open( my $fh, "$where/feff.inp" );
 my $text = do { local( $/ ) ; <$fh> } ;
 ok( $text =~ m{CONTROL\s+1\s+0\s+0\s+0},                'CONTROL written for potentials');
 
 $this->make_feffinp("genfmt");
-open( $fh, 't/feff/feff.inp' );
+open( $fh, "$where/feff.inp" );
 $text = do { local( $/ ) ; <$fh> } ;
 ok( $text =~ m{CONTROL\s+0\s+0\s+1\s+0},                'CONTROL written for genfmt');
 
-my $new = Demeter::Feff -> new(workspace => './t/feff', file => 't/feff/feff.inp');
+my $new = Demeter::Feff -> new(workspace => $where, file => "$where/feff.inp");
 $ref = $new->sites;
 ok( $#{$ref} == 86,                                     'output feff.inp file has the correct number of sites');
 
@@ -89,18 +93,18 @@ ok( $#{$ref} == 86,                                     'output feff.inp file ha
 $this -> screen(0);
 $this -> buffer(1);
 $this -> potph;
-ok( ((-s 't/feff/phase.bin' > 30000) and (-e 't/feff/misc.dat')), 'feff module potph ran correctly');
+ok( ((-s "$where/phase.bin" > 30000) and (-e "$where/misc.dat")), 'feff module potph ran correctly');
 
 ok( $#{$this->iobuffer} >= 10,                           'iobuffer works');
 
 $this -> screen(0);
 $this -> rmax(4);
 $this -> pathfinder;
-$this -> freeze('t/feff/feff.yaml');
+$this -> freeze("$where/feff.yaml");
 
 
 
-$new = Demeter::Feff -> new(yaml => 't/feff/feff.yaml');
+$new = Demeter::Feff -> new(yaml => "$where/feff.yaml");
 
 
 ok( (($new->rmax == 4.0) and
@@ -127,19 +131,19 @@ ok( $new->site_tag(19) eq 'Cu_3',                      'thaw: site_tag method wo
 
 ## -------- write different sorts of feff.inp files
 $new -> make_workspace;
-ok( -d 't/feff',                                        'thaw: make workspace works');
+ok( -d $where,                                         'thaw: make workspace works');
 
 $new->make_feffinp("potentials");
-open( $fh, 't/feff/feff.inp' );
+open( $fh, "$where/feff.inp" );
 $text = do { local( $/ ) ; <$fh> } ;
 ok( $text =~ m{CONTROL\s+1\s+0\s+0\s+0},                'thaw: CONTROL written for potentials');
 
 $new->make_feffinp("genfmt");
-open( $fh, 't/feff/feff.inp' );
+open( $fh, "$where/feff.inp" );
 $text = do { local( $/ ) ; <$fh> } ;
 ok( $text =~ m{CONTROL\s+0\s+0\s+1\s+0},                'thaw: CONTROL written for genfmt');
 
-$new = Demeter::Feff -> new(workspace => './t/feff', file => 't/feff/feff.inp');
+$new = Demeter::Feff -> new(workspace => $where, file => "$where/feff.inp");
 $ref = $new->sites;
 ok( $#{$ref} == 86,                                     'thaw: output feff.inp file has the correct number of sites');
 

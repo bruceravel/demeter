@@ -850,7 +850,7 @@ sub run_feff {
     };
   };
   local $| = 1;		# unbuffer output of fork
-  my $pid = open(my $WRITEME, "feff6 |");
+  my $pid = open(my $WRITEME, "$exe |");
   while (<$WRITEME>) {
     $self->report($_);
   };
