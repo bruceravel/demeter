@@ -76,11 +76,7 @@ has 'main_groups' => (
 has 'is_configured' => (is => 'rw', isa => 'Bool', default => 0);
 
 my $where = (($^O eq 'MSWin32') or ($^O eq 'cygwin')) ? "APPDATA" : "HOME";
-<<<<<<< .mine
 my $stem  = (($^O eq 'MSWin32') or ($^O eq 'cygwin')) ? "demeter" : ".horae";
-=======
-my $stem = (($^O eq 'MSWin32') or ($^O eq 'cygwin')) ? "demeter" : ".horae";
->>>>>>> .r504
 #my $where = ($Demeter::mode->is_windows) ? "USERPROFILE" : "HOME";
 has 'ini_file' => (is => 'ro', isa => 'Str',
 		   default => File::Spec->catfile($ENV{$where}, $stem, "demeter.ini"));
@@ -247,8 +243,10 @@ sub _read_config_file {
       $value = $2;
       $value =~ s{\s+$}{};
       $hash{$1} = $value;
-      my $which = ($self->is_windows) ? 'windows' : 'default';
-      ($hash{demeter} = $value) if ($1 eq $which);
+      ($hash{demeter} = $value) if ($1 eq 'default');
+      if (($self->is_windows) and ($1 eq 'windows')) {
+	$hash{demeter} = $value
+      };
     };
   };
   $self->set_this_param($group, $param, %hash) if %hash;
@@ -274,7 +272,7 @@ sub set_this_param {
     $hash{offvalue} ||= 0;
   };
   $self -> set($key=>\%hash);
-  $ini{$group}{$param} = ($self->is_windows) ? $hash{windows} : $hash{default};
+  $ini{$group}{$param} = (($self->is_windows) and (exists $hash{windows})) ? $hash{windows} : $hash{default};
   return $self;
 };
 
