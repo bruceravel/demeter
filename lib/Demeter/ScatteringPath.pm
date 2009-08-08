@@ -31,6 +31,7 @@ use autodie qw(open close);
 
 use Moose;
 extends 'Demeter';
+with 'Demeter::ScatteringPath::Histogram';
 #use Demeter::NumTypes qw( PosInt Natural NonNeg );
 
 use Chemistry::Elements qw(get_symbol);
@@ -64,7 +65,7 @@ my $rtangle = $Demeter::config->default("pathfinder", "rt_angle");
 
 
 ## In principle, I would like to use MooseX::AttributeHelpers with
-## this class ass well.  I find that doing for the the ArrayRef valued
+## this class as well.  I find that doing for the the ArrayRef valued
 ## attributes adds a measurable amount of overhead.  Since this is
 ## called SO MANY TIMES, it seems prudent to reduce the amount of
 ## Moose-y overhead

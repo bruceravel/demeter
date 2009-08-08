@@ -251,16 +251,18 @@ sub _update_from_ScatteringPath {
   my $sp     = $self->sp;
   my $feff   = $self->parent;
   my ($workspace, $fname) = ($feff->workspace, $sp->randstring);
-#    if ($fname and (-e File::Spec->catfile($workspace, $fname))) { # feffNNNN.dat is already there
-#      $self->set(folder => $workspace,
-#		  file   => $fname);
-#      return $self;
-#    };
+
+  ## this feffNNNN.dat has already been generated
+  if ($fname and (-e File::Spec->catfile($workspace, $fname))) {
+    $self->set(folder => $workspace,
+	       file   => $fname);
+    return $self;
+  };
 
   $feff -> make_one_path($sp)
     -> make_feffinp("genfmt")
       -> run_feff;
-  $self -> make_name;
+  $self -> make_name if not $self->name;
 
   my $tempfile = "feff" . $self->co->default('pathfinder', 'one_off_index') . ".dat";
   $fname ||= $sp->random_string;

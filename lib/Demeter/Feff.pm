@@ -24,6 +24,7 @@ use Demeter::StrTypes qw( AtomsEdge FeffCard );
 use Demeter::NumTypes qw( Natural NonNeg PosInt );
 with 'Demeter::Feff::Paths';
 with 'Demeter::Feff::Sanity';
+with 'Demeter::UI::Screen::Pause' if ($Demeter::mode->ui eq 'screen');
 
 use Compress::Zlib;
 use Cwd;

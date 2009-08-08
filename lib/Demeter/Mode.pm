@@ -220,7 +220,10 @@ sub fetch {
 sub remove {
   my ($self, $object) = @_;
   my $type = (split(/::/, ref $object))[-1];
-  ($type = 'Plot') if ($type eq 'Gnuplot');
+  if ($type eq 'Gnuplot') {
+    #$self->po->end_plot;
+    $type = 'Plot';
+  };
   my $group = $object->group;
   my ($i, $which) = (0, -1);
   return if ($#{$self->$type} == -1);
