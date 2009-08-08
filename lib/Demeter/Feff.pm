@@ -349,7 +349,7 @@ sub make_workspace {
 
 sub clean_workspace {
   my ($self) = @_;
-  rmtree($self->workspace) if (-d $self->workspace);
+  rmtree($self->workspace, 0 , 1) if (-d $self->workspace);
   return $self;
 };
 

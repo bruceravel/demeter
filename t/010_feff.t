@@ -23,7 +23,11 @@ use Ifeffit;
 use Demeter;
 my $demeter  = Demeter -> new;
 
-my $where = ($demeter->is_windows) ? './feff' : './t/feff';
+use Cwd;
+use File::Spec;
+my $orig = File::Spec->catfile(cwd, 't', 'orig.inp');
+
+my $where = ($demeter->is_windows) ? File::Spec->catfile(cwd, 't', 'feff') : './t/feff';
 
 my $this = Demeter::Feff -> new(workspace => $where);
 my $OBJ  = 'Feff';
@@ -45,7 +49,7 @@ ok( ($this->mo->template_plot     eq 'pgplot'  and
                                                         "$OBJ object can find template sets");
 
 ## -------- parse a feff.inp file
-my $file = ($demeter->is_windows) ? 'orig.inp' : 't/orig.inp';
+my $file = ($demeter->is_windows) ? $orig : 't/orig.inp';
 $this -> file($file);
 ok( (($this->rmax == 6.0) and
      ($this->edge eq '1') and
@@ -148,5 +152,5 @@ $ref = $new->sites;
 ok( $#{$ref} == 86,                                     'thaw: output feff.inp file has the correct number of sites');
 
 $this -> clean_workspace;
-ok( ! -d 'feff',                                        'clean workspace works');
+ok( not (-d $where),                                    'clean workspace works');
 
