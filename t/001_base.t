@@ -36,7 +36,8 @@ ok( $demeter->identify =~ m{copyright},                             'identity st
 ok( !$demeter->plottable,                                           'generic object is not plottable');
 ok( $demeter->data =~ m{\A\s*\z},                                   'generic object has no data');
 
-ok( $demeter->stash_folder =~ m{horae},                             'Project role works');
+my $token = ($demeter->is_windows) ? 'demeter' : 'horae';
+ok( $demeter->stash_folder =~ m{$token},                             'Project role works');
 
 my %hash = $demeter->all;
 ok( (($hash{group} =~ m{\A\w{5}\z}) and !$hash{plottable}),         'demeter can do introspection');

@@ -32,6 +32,8 @@ use List::MoreUtils qw(any minmax zip);
 use Pod::POM;
 use String::Random qw(random_string);
 use Text::Template;
+use Xray::Absorption;
+Xray::Absorption->load('elam');
 
 use Regexp::Common;
 #use Regexp::List;

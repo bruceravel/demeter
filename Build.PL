@@ -29,8 +29,8 @@ my $build = Module::Build
 	 dist_author        => 'Bruce Ravel <bravel AT bnl DOT gov>',
 	 requires           => {
 				'version'		   => '0',
-				'autodie'                  => '0'.
-				#'Module::Build'	   => '0',
+				'autodie'                  => '0',
+				'Module::Build'	           => '0',
 
 				'Moose'			   => '0.63',
 				'MooseX::AttributeHelpers' => '0.13',
