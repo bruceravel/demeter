@@ -148,13 +148,13 @@ This documentation refers to Demeter version 0.3.
 The contents of Hephaestus' line finder utility can be added to any Wx
 application.
 
-  my $page = Demeter::UI::Hephaestus::LineFinder->new($parent,$echoarea);
+  my $page = Demeter::UI::Hephaestus::LineFinder->new($parent,$statusbar);
   $sizer -> Add($page, 1, wxGROW|wxEXPAND|wxALL, 0);
 
 The arguments to the constructor method are a reference to the parent
 in which this is placed and a reference to a mechanism for displaying
-progress and warning messages.  The C<$echoarea> object must provide a
-method called C<echo>.
+progress and warning messages.  C<$statusbar> is the StatusBar of the
+parent window.
 
 C<$page> contains most of what is displayed in the main part of the
 Hephaestus frame.  Only the label at the top is not included in

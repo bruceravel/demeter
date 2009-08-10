@@ -20,12 +20,36 @@ use strict;
 use warnings;
 use Module::Build;
 
-my $build = Module::Build
+## deal with the fact that Text::Wrap does not live in a package
+## called Text-Wrap.  This confuses ppm, so post-process the ppd file
+## to point at the requirement that ppm will resolve.
+my $class = Module::Build->subclass(
+				    class => "My::Builder",
+				    code => q{
+
+sub ACTION_ppd {
+   my $self = shift;
+   $self->SUPER::ACTION_ppd;
+
+   open O, '>__temp__';
+   open I, 'Demeter.ppd';
+   while (<I>) {
+     $_ =~ s{Text-Wrap}{Text-Tabs+Wrap};
+     print O $_;
+   };
+   close I;
+   close O;
+   rename '__temp__', 'Demeter.ppd';
+};
+},
+				   );
+
+my $build = $class
   -> new(
+	 module_name        => 'Demeter',
 	 create_readme      => 0,
 	 ##create_makefile_pl => 'traditional',
 	 license            => 'gpl',
-	 module_name        => 'Demeter',
 	 dist_author        => 'Bruce Ravel <bravel AT bnl DOT gov>',
 	 requires           => {
 				'version'		   => '0',

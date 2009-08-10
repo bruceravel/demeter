@@ -201,7 +201,7 @@ sub run_feff {
     warn join($/, @warnings) . $/;
   };
 
-  $self->{parent}->{Console}->{console}->AppendText($self->now("Feff calculation begin at ", $feff));
+  $self->{parent}->{Console}->{console}->AppendText($self->now("Feff calculation beginning at ", $feff));
   $self->{statusbar}->SetStatusText("Computing potentials using Feff6 ...");
   $feff->potph;
 

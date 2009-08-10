@@ -102,8 +102,9 @@ sub new {
   $self->{edgebox} = Wx::StaticBox->new($self, -1, 'Element edges', wxDefaultPosition, wxDefaultSize);
   $self->{edgeboxsizer} = Wx::StaticBoxSizer->new( $self->{edgebox}, wxVERTICAL );
   $self->{edge} = Wx::ListView->new($self, -1, wxDefaultPosition, wxDefaultSize, wxLC_REPORT|wxLC_HRULES|wxLC_SINGLE_SEL);
-  $self->{edge}->InsertColumn( 0, "Edge", wxLIST_FORMAT_LEFT, 60 );
-  $self->{edge}->InsertColumn( 1, "Energy" );
+  $self->{edge}->InsertColumn( 0, "Edge", wxLIST_FORMAT_LEFT, 55 );
+  $self->{edge}->InsertColumn( 1, "Energy", wxLIST_FORMAT_RIGHT, 70  );
+  $self->{edge}->InsertColumn( 2, "γ(ch)", wxLIST_FORMAT_RIGHT, 55  );
   $i = 0;
   foreach my $row (@EDGELIST) {
     my $idx = $self->{edge}->InsertImageStringItem($i, $row, 0);
@@ -112,16 +113,16 @@ sub new {
   };
   EVT_LIST_ITEM_ACTIVATED($self->{edge}, $self->{edge}, sub{highlight_lines(@_, $self)});
   $self->{edgeboxsizer} -> Add($self->{edge}, 1, wxGROW|wxALL, 0);
-  $hbox -> Add($self->{edgeboxsizer}, 10, wxGROW|wxALL, 5);
+  $hbox -> Add($self->{edgeboxsizer}, 13, wxGROW|wxALL, 5);
 
   ## -------- Line energies
   $self->{linebox} = Wx::StaticBox->new($self, -1, 'Element lines', wxDefaultPosition, wxDefaultSize);
   $self->{lineboxsizer} = Wx::StaticBoxSizer->new( $self->{linebox}, wxVERTICAL );
   $self->{line} = Wx::ListView->new($self, -1, wxDefaultPosition, wxDefaultSize, wxLC_REPORT|wxLC_HRULES);
-  $self->{line}->InsertColumn( 0, "Line" );
+  $self->{line}->InsertColumn( 0, "Line", wxLIST_FORMAT_LEFT, 50 );
   $self->{line}->InsertColumn( 1, "Transition" );
-  $self->{line}->InsertColumn( 2, "Energy" );
-  $self->{line}->InsertColumn( 3, "Strength" );
+  $self->{line}->InsertColumn( 2, "Energy", wxLIST_FORMAT_RIGHT, 70 );
+  $self->{line}->InsertColumn( 3, "Strength", wxLIST_FORMAT_RIGHT );
   $i = 0;
   foreach my $row (@LINELIST) {
     my $idx = $self->{line}->InsertImageStringItem($i, $row, 0);
@@ -130,7 +131,7 @@ sub new {
   };
   EVT_LIST_ITEM_ACTIVATED($self->{line}, $self->{line}, sub{highlight_edge(@_, $self)});
   $self->{lineboxsizer} -> Add($self->{line}, 2, wxGROW|wxALL, 0);
-  $hbox -> Add($self->{lineboxsizer}, 20, wxGROW|wxALL, 5);
+  $hbox -> Add($self->{lineboxsizer}, 18, wxGROW|wxALL, 5);
 
 
 #  $vbox -> Add( 100, 10, 0, wxGROW );
@@ -175,12 +176,18 @@ sub abs_get_data {
   foreach my $edge (@EDGELIST) {
     my $energy = Xray::Absorption->get_energy($el, $edge);
     my $out = $energy;
+    my $gammaval = ($energy) ? Xray::Absorption->get_gamma($el, $edge) : 0;
+    my $gamma = (not $gammaval)   ? q{}
+              : ($gammaval > 100) ? sprintf("%.2f", $gammaval)
+	      :                     sprintf("%.2f", $gammaval);
     if (not $energy) {
       $out = q{};
     } elsif ($do_wavelengh) {
       $out = sprintf("%.5f", e2l($energy));
     };
-    $self->{edge}->SetItem($i++, 1, $out);
+    $self->{edge}->SetItem($i, 1, $out);
+    $self->{edge}->SetItem($i, 2, $gamma);
+    ++$i;
   };
 
   $i = 0;
@@ -198,7 +205,7 @@ sub abs_get_data {
     $self->{line}->SetItem($i++, 3, $strength);
   };
 
-  $self->{echo}->echo(q{});
+  $self->{echo}->SetStatusText(q{});
 };
 
 sub l_filter {
@@ -238,7 +245,7 @@ sub highlight_lines {
     next if ($transition !~ m{\A$edge});
     $parent->{line}->SetItemState($ll, wxLIST_STATE_SELECTED, wxLIST_STATE_SELECTED );
   };
-  $parent->{echo}->echo("Selected all lines associated with the $edge edge.");
+  $parent->{echo}->SetStatusText("Selected all lines associated with the $edge edge.");
 };
 sub highlight_edge {
   my ($self, $event, $parent) = @_;
@@ -257,7 +264,7 @@ sub highlight_edge {
       ++$ll;
       next if ($transition !~ m{\A$edge});
       $parent->{line}->SetItemState($ll, wxLIST_STATE_SELECTED, wxLIST_STATE_SELECTED );
-      $parent->{echo}->echo("Selected all lines associated with the $edge edge.");
+      $parent->{echo}->SetStatusText("Selected all lines associated with the $edge edge.");
     };
   };
 };
@@ -280,8 +287,8 @@ sub filter_plot {
   my $busy    = Wx::BusyCursor->new();
   my ($elem, $filter) = ($self->{element}, $self->{filterelement}->GetValue);
   my $z      = get_Z($elem);
-  $self->{echo}->echo('You have not selected an absorbing element for the filter plot.'), return if not $z;
-  $self->{echo}->echo('Your filter material, \"$filter\", is not a valid element.'), return if not get_Z($filter);
+  $self->{echo}->SetStatusText('You have not selected an absorbing element for the filter plot.'), return if not $z;
+  $self->{echo}->SetStatusText('Your filter material, \"$filter\", is not a valid element.'), return if not get_Z($filter);
 
   my $edge   = ($z < 57) ? "K"   : "L3";
   my $line2  = ($z < 57) ? "Ka2" : "La1";
@@ -305,7 +312,7 @@ sub filter_plot {
   $demeter -> dispose($command, "plotting");
 
   undef $busy;
-  $self->{echo}->echo(sprintf('Plotting %s as a filter for %s.', lc(get_name($filter)), lc(get_name($elem))));
+  $self->{echo}->SetStatusText(sprintf('Plotting %s as a filter for %s.', lc(get_name($filter)), lc(get_name($elem))));
   return 1;
 };
 
@@ -325,13 +332,13 @@ This documentation refers to Demeter version 0.3.
 The contents of Hephaestus' absorption utility can be added to any Wx
 application.
 
-  my $page = Demeter::UI::Hephaestus::Absorption->new($parent,$echoarea);
+  my $page = Demeter::UI::Hephaestus::Absorption->new($parent,$statusbar);
   $sizer -> Add($page, 1, wxGROW|wxEXPAND|wxALL, 0);
 
 The arguments to the constructor method are a reference to the parent
 in which this is placed and a reference to a mechanism for displaying
-progress and warning messages.  The C<$echoarea> object must provide a
-method called C<echo>.
+progress and warning messages.  C<$statusbar> is the StatusBar of the
+parent window.
 
 C<$page> contains most of what is displayed in the main part of the
 Hephaestus frame.  Only the label at the top is not included in

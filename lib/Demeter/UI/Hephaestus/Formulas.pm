@@ -81,6 +81,7 @@ sub new {
   $self->{densityunits} = Wx::StaticText->new($self, -1, 'g/cm^3', wxDefaultPosition, wxDefaultSize);
   $tsz -> Add($self->{densityunits}, Wx::GBPosition->new(1,2));
   EVT_KEY_DOWN( $self->{density}, sub{on_key_down(@_, $self)} );
+  $self->{dm}->SetSelection(0);
 
   ## -------- Energy
   $label = Wx::StaticText->new($self, -1, 'Energy', wxDefaultPosition, [$width,-1]);
@@ -138,9 +139,9 @@ sub get_formula_data {
   my $answer = "\n";
   my @edges = ();
   my %count;
-  $self->{echo}->echo('You have not provided a formula.'), return if not $parent->{formula}->GetValue;
+  $self->{echo}->SetStatusText('You have not provided a formula.'), return if not $parent->{formula}->GetValue;
   my $ok = parse_formula($parent->{formula}->GetValue, \%count);
-  $parent->{echo}->echo(sprintf("This calculation uses the %s data resource and %s cross sections.",
+  $parent->{echo}->SetStatusText(sprintf("This calculation uses the %s data resource and %s cross sections.",
 				$Demeter::UI::Hephaestus::demeter->co->default('hephaestus', 'resource'),
 				$Demeter::UI::Hephaestus::demeter->co->default('hephaestus', 'xsec')
 			       ));
@@ -177,7 +178,7 @@ sub get_formula_data {
 
   if ((not $energy) or (not looks_like_number($energy)) or ($energy < 0)) {
     $answer .= "\n(Energy too low or not provided. Absorption calculation canceled.)";
-    $parent->{echo}->echo("Energy too low or not provided. Absorption calculation canceled.");
+    $parent->{echo}->SetStatusText("Energy too low or not provided. Absorption calculation canceled.");
   } elsif ($ok) {
     my ($weight, $xsec, $dens) = (0,0,$density);
     $dens = ($density and looks_like_number($density) and ($density > 0)) ? $density : 0;
@@ -241,11 +242,11 @@ sub get_formula_data {
 	if (not $density) {
 	  $answer .=
 	    "\n(The absorption length calculation requires a value for density.)";
-	  $self->{echo}->echo("The absorption length calculation requires a value for density.");
+	  $self->{echo}->SetStatusText("The absorption length calculation requires a value for density.");
 	} elsif (not looks_like_number($density)) {
 	  $answer .=
 	    "\n(The value for density is not a number.)";
-	  $self->{echo}->echo("The value for density is not a number.");
+	  $self->{echo}->SetStatusText("The value for density is not a number.");
 	};
 	$answer .=
 	  sprintf("\n\nA sample of 1 absorption length with area of 1 square cm requires %.3f miligrams of sample at %.2f %s.\n",
@@ -311,7 +312,7 @@ sub put_element {
   $self->{popup}->Destroy;
   $self->{formula}->SetValue($el);
   $self->{density}->SetValue(Xray::Absorption->get_density($el));
-  $self->{echo}->echo(sprintf("You selected %s from the pop-up periodic table.",get_name($el)));
+  $self->{echo}->SetStatusText(sprintf("You selected %s from the pop-up periodic table.",get_name($el)));
 };
 
 
@@ -331,13 +332,13 @@ This documentation refers to Demeter version 0.3.
 The contents of Hephaestus' formulas utility can be added to any Wx
 application.
 
-  my $page = Demeter::UI::Hephaestus::Formulas->new($parent,$echoarea);
+  my $page = Demeter::UI::Hephaestus::Formulas->new($parent,$statusbar);
   $sizer -> Add($page, 1, wxGROW|wxEXPAND|wxALL, 0);
 
 The arguments to the constructor method are a reference to the parent
 in which this is placed and a reference to a mechanism for displaying
-progress and warning messages.  The C<$echoarea> object must provide a
-method called C<echo>.
+progress and warning messages.  C<$statusbar> is the StatusBar of the
+parent window.
 
 C<$page> contains most of what is displayed in the main part of the
 Hephaestus frame.  Only the label at the top is not included in

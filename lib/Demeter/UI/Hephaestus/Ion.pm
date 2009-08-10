@@ -317,11 +317,11 @@ sub get_ion_data {
 
   $self->{userlength} = $self->{userlengthbox}->GetValue;
   if (($self->{lengths}->GetSelection == 7) and (not $self->{userlength})) {
-    $self->{echo}->echo('You have not specified a custom ion chamber length.');
+    $self->{echo}->SetStatusText('You have not specified a custom ion chamber length.');
     $self->{percentage}->SetLabel('0 %');
     return;
   };
-  $self->{echo}->echo(q{});
+  $self->{echo}->SetStatusText(q{});
 
   my @gas = ($gases[$self->{primarygas}  ->GetCurrentSelection],
 	     $gases[$self->{secondarygas}->GetCurrentSelection]);
@@ -357,7 +357,7 @@ sub get_ion_data {
   $self->{percentage}->SetLabel(sprintf("%.2f %%", 100*(1-exp(-1*$self->{xsec}*$self->{thislength}))));
 
   flux_calc($self);
-  $self->{echo}->echo(sprintf("This calculation uses the %s data resource and %s cross sections.",
+  $self->{echo}->SetStatusText(sprintf("This calculation uses the %s data resource and %s cross sections.",
 			      $Demeter::UI::Hephaestus::demeter->co->default('hephaestus', 'resource'),
 			      'total'));
 
@@ -371,12 +371,12 @@ sub ion_reset {
   $self->{secondary}->SetValue(0);
   my %conv  = (torr => 760, mbar => 1013.25, atm => 1);
   $self->{pressure}->SetValue($conv{$Demeter::UI::Hephaestus::demeter->co->default('hephaestus', 'ion_pressureunits')});
-  $self->{primarygas}->SetSelection(0);
+  $self->{primarygas}->SetSelection(1);
   $self->{secondarygas}->SetSelection(0);
   $self->{amp} -> SetValue(8);
   $self->{volts} -> SetValue(0);
   get_ion_data($self);
-  $self->{echo}->echo('Reset all controls to their default values.');
+  $self->{echo}->SetStatusText('Reset all controls to their default values.');
 };
 
 sub energy_key_down {
@@ -420,13 +420,14 @@ This documentation refers to Demeter version 0.3.
 The contents of Hephaestus' ion chamber utility can be added to any Wx
 application.
 
-  my $page = Demeter::UI::Hephaestus::Ion->new($parent,$echoarea);
+  my $page = Demeter::UI::Hephaestus::Ion->new($parent,$statusbar);
   $sizer -> Add($page, 1, wxGROW|wxEXPAND|wxALL, 0);
 
 The arguments to the constructor method are a reference to the parent
 in which this is placed and a reference to a mechanism for displaying
-progress and warning messages.  The C<$echoarea> object must provide a
-method called C<echo>.
+progress and warning messages.  C<$statusbar> is the StatusBar of the
+parent window.  C<$statusbar> is the StatusBar of the
+parent window.
 
 C<$page> contains most of what is displayed in the main part of the
 Hephaestus frame.  Only the label at the top is not included in

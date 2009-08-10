@@ -20,12 +20,12 @@ use File::Spec;
 
 use Ifeffit;
 use Demeter;
-use Demeter::UI::Wx::EchoArea;
+#use Demeter::UI::Wx::EchoArea;
 use Demeter::UI::Hephaestus::Common qw(hversion);
 
 use Wx qw( :everything );
 use base 'Wx::Frame';
-use Wx::Event qw(EVT_NOTEBOOK_PAGE_CHANGED EVT_NOTEBOOK_PAGE_CHANGING);
+use Wx::Event qw(EVT_TOOLBOOK_PAGE_CHANGED EVT_TOOLBOOK_PAGE_CHANGING);
 
 $SIG{__WARN__} = sub {Wx::Perl::Carp::warn($_[0])};
 
@@ -69,8 +69,10 @@ sub new {
 				 'Hephaestus',    # title
 				 wxDefaultPosition, [-1,$height],
 			       );
-  my $tb = Wx::Notebook->new( $self, -1, wxDefaultPosition, wxDefaultSize, wxBK_LEFT );
-  my $echoarea = Demeter::UI::Wx::EchoArea->new($self);
+  my $tb = Wx::Toolbook->new( $self, -1, wxDefaultPosition, wxDefaultSize, wxBK_LEFT );
+  #my $echoarea = Demeter::UI::Wx::EchoArea->new($self);
+  my $statusbar = $self->CreateStatusBar;
+  $self->{statusbar} = $statusbar;
   my $vbox = Wx::BoxSizer->new( wxVERTICAL);
 
   my $imagelist = Wx::ImageList->new( $icon_dimension, $icon_dimension );
@@ -96,17 +98,17 @@ sub new {
     $box -> Add($hh, 0);
 
     $self->{$utility}
-      = ($utility eq 'absorption')  ? Demeter::UI::Hephaestus::Absorption  -> new($page,$echoarea)
-      : ($utility eq 'configure')   ? Demeter::UI::Hephaestus::Config      -> new($page,$echoarea)
-      : ($utility eq 'data')        ? Demeter::UI::Hephaestus::Data        -> new($page,$echoarea)
-      : ($utility eq 'f1f2')        ? Demeter::UI::Hephaestus::F1F2        -> new($page,$echoarea)
-      : ($utility eq 'find')        ? Demeter::UI::Hephaestus::EdgeFinder  -> new($page,$echoarea)
-      : ($utility eq 'formulas')    ? Demeter::UI::Hephaestus::Formulas    -> new($page,$echoarea)
-      : ($utility eq 'help')        ? Demeter::UI::Hephaestus::Help        -> new($page,$echoarea)
-      : ($utility eq 'ion')         ? Demeter::UI::Hephaestus::Ion         -> new($page,$echoarea)
-      : ($utility eq 'line')        ? Demeter::UI::Hephaestus::LineFinder  -> new($page,$echoarea)
-      : ($utility eq 'standards')   ? Demeter::UI::Hephaestus::Standards   -> new($page,$echoarea)
-      : ($utility eq 'transitions') ? Demeter::UI::Hephaestus::Transitions -> new($page,$echoarea)
+      = ($utility eq 'absorption')  ? Demeter::UI::Hephaestus::Absorption  -> new($page,$statusbar)
+      : ($utility eq 'configure')   ? Demeter::UI::Hephaestus::Config      -> new($page,$statusbar)
+      : ($utility eq 'data')        ? Demeter::UI::Hephaestus::Data        -> new($page,$statusbar)
+      : ($utility eq 'f1f2')        ? Demeter::UI::Hephaestus::F1F2        -> new($page,$statusbar)
+      : ($utility eq 'find')        ? Demeter::UI::Hephaestus::EdgeFinder  -> new($page,$statusbar)
+      : ($utility eq 'formulas')    ? Demeter::UI::Hephaestus::Formulas    -> new($page,$statusbar)
+      : ($utility eq 'help')        ? Demeter::UI::Hephaestus::Help        -> new($page,$statusbar)
+      : ($utility eq 'ion')         ? Demeter::UI::Hephaestus::Ion         -> new($page,$statusbar)
+      : ($utility eq 'line')        ? Demeter::UI::Hephaestus::LineFinder  -> new($page,$statusbar)
+      : ($utility eq 'standards')   ? Demeter::UI::Hephaestus::Standards   -> new($page,$statusbar)
+      : ($utility eq 'transitions') ? Demeter::UI::Hephaestus::Transitions -> new($page,$statusbar)
       :                               0;
     if ($self->{$utility}) {
       $hh   = Wx::BoxSizer->new( wxHORIZONTAL );
@@ -122,17 +124,17 @@ sub new {
   };
 
   $vbox -> Add($tb, 1, wxEXPAND|wxGROW, 0);
-  $vbox -> Add($echoarea, 0, wxEXPAND|wxALL, 3);
-  EVT_NOTEBOOK_PAGE_CHANGED( $self, $tb, sub{$echoarea->echo(q{})} );
+  #$vbox -> Add($echoarea, 0, wxEXPAND|wxALL, 3);
+  EVT_TOOLBOOK_PAGE_CHANGED( $self, $tb, sub{$statusbar->SetStatusText(q{})} );
 
   ##            largest utility + width of toolbar text + width of icons
   my $framesize = Wx::Size->new(1.05*$width+$icon_dimension+103,
-				$height+($echoarea->GetSizeWH)[1]+42
+				$height+42
 			       );
   $self -> SetSize($framesize);
 
 
-  $echoarea -> echo(q{});
+  #$echoarea -> echo(q{});
   $self -> SetSizer($vbox);
   $vbox -> Fit($tb);
   $vbox -> SetSizeHints($tb);

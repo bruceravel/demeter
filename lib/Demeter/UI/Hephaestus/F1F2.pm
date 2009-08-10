@@ -130,22 +130,22 @@ sub f1f2_get_data {
 
   ## -------- error checking
   if ($self->{start}->GetValue < 100) {
-    $self->{echo}->echo('The starting energy is below 100 eV.  Plot canceled.');
+    $self->{echo}->SetStatusText('The starting energy is below 100 eV.  Plot canceled.');
     return;
   };
   if ($self->{end}->GetValue < 100) {
-    $self->{echo}->echo('The ending energy is below 100 eV.  Plot canceled.');
+    $self->{echo}->SetStatusText('The ending energy is below 100 eV.  Plot canceled.');
     return;
   };
   if ($self->{start}->GetValue > $self->{end}->GetValue) {
     my ($start, $end) = ($self->{start}->GetValue, $self->{end}->GetValue);
     $self->{start}->SetValue($end);
     $self->{end}->SetValue($start);
-    $self->{echo}->echo('The start and end values of the energy grid were out of order.');
+    $self->{echo}->SetStatusText('The start and end values of the energy grid were out of order.');
   };
   if ($self->{grid}->GetValue < 1) {
     $self->{grid}->SetValue(1);
-    $self->{echo}->echo('The energy grid size was too small and was reset to 1.');
+    $self->{echo}->SetStatusText('The energy grid size was too small and was reset to 1.');
   };
 
   my $busy    = Wx::BusyCursor->new();
@@ -167,7 +167,7 @@ sub f1f2_get_data {
 
   #$demeter->po->cleantemp;
   #undef $demeter;
-  $self->{echo}->echo(sprintf("Plotted anomalous scattering factors for %s using the %s tables.",
+  $self->{echo}->SetStatusText(sprintf("Plotted anomalous scattering factors for %s using the %s tables.",
 			      get_name($el), 'Cromer-Liberman'));
   undef $busy;
   return 1;
@@ -205,13 +205,13 @@ This documentation refers to Demeter version 0.3.
 The contents of Hephaestus' anomalous scattering utility can be added
 to any Wx application.
 
-  my $page = Demeter::UI::Hephaestus::F1F2->new($parent,$echoarea);
+  my $page = Demeter::UI::Hephaestus::F1F2->new($parent,$statusbar);
   $sizer -> Add($page, 1, wxGROW|wxEXPAND|wxALL, 0);
 
 The arguments to the constructor method are a reference to the parent
 in which this is placed and a reference to a mechanism for displaying
-progress and warning messages.  The C<$echoarea> object must provide a
-method called C<echo>.
+progress and warning messages.  C<$statusbar> is the StatusBar of the
+parent window.
 
 C<$page> contains most of what is displayed in the main part of the
 Hephaestus frame.  Only the label at the top is not included in

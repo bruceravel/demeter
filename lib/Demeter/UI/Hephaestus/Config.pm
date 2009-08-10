@@ -69,8 +69,8 @@ sub target {
   };
 
   ($save)
-    ? $self->{echo}->echo("Now using $value for $parent-->$param and an ini file was saved")
-      : $self->{echo}->echo("Now using $value for $parent-->$param");
+    ? $self->{echo}->SetStatusText("Now using $value for $parent-->$param and an ini file was saved")
+      : $self->{echo}->SetStatusText("Now using $value for $parent-->$param");
 
 };
 
