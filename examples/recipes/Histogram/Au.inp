@@ -1,0 +1,15 @@
+title name:     gold
+title formula:  Au
+title sites:    Au1
+title refer1:   Kittel, ISSP
+title refer2:
+title schoen:
+title notes1:   metal, fcc
+space  f m 3 m
+a    = 4.08
+alpha= 90
+rmax = 6.00
+core = Au1
+atom
+Au     0.00000   0.00000   0.00000  Au1
+------

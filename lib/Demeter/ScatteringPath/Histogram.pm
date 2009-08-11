@@ -2,6 +2,8 @@ package Demeter::ScatteringPath::Histogram;
 use Moose::Role;
 
 use List::Util qw(sum);
+use Readonly;
+Readonly my $EPSILON  => 0.00001;
 
 sub make_histogram {
   my ($self, $rx, $ry, $common) = @_;
@@ -19,7 +21,7 @@ sub make_histogram {
 				  @$common,
 				 );
     $this -> make_name;
-    $this -> name($this->name . " at " . $rx->[$i]);
+    $this -> name($this->name . " at " . sprintf("%.3f",$rx->[$i]));
     push @paths, $this;
   };
 
@@ -40,8 +42,9 @@ sub histogram_from_file {
   foreach my $line (<$H>) {
     chomp $line;
     next if ($line =~ m{\A\s*\z});
-    next if ($line =~ m{\A\#\*\%;});
+    next if ($line =~ m{\A[\#\*\%;]});
     my @list = split(" ", $line);
+    next if ($list[$ycol] < $EPSILON);
     next if ($list[$xcol] < $rmin);
     next if ($list[$xcol] > $rmax);
     push @x, $list[$xcol];
