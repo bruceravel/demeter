@@ -15,6 +15,7 @@ package Demeter::Data;
 
 =cut
 
+use Carp;
 use File::Basename;
 use List::MoreUtils qw(any);
 use Regexp::Common;
@@ -476,6 +477,8 @@ sub _update {
 
 sub read_data {
   my ($self) = @_;
+  my $return = $self->readable($self->file);
+  croak($return) if $return;
   my $type = ($self->is_col) ? q{}
            :  $self->datatype;
   if ((not $self->is_col) and (not $type)) {

@@ -20,6 +20,22 @@ sub yofx {
   return $y_interp;
 };
 
+sub iofx {
+  my ($self, $space, $x) = @_;
+  $space = lc($space);
+  croak("not a valid space in iofx") if ($space !~ m{\A(?:energy|k|r|q)\z});
+  my @x = $self->get_array($space);
+  if ($space eq 'energy') {
+    @x = map {$_ + $self->bkg_eshift} @x;
+  };
+  my $i = 0;
+  foreach (@x) {
+    last if $x<$_;
+    ++$i;
+  };
+  return $i;
+};
+
 sub put_xmu {
   my ($self, $arrayref) = @_;
   Ifeffit::put_array($self->group.'.xmu', $arrayref);
@@ -179,13 +195,23 @@ of an array in Ifeffit.
 
 =item C<yofx>
 
-Return the y value corresponding to an given x-value.  This is found
+Return the y value corresponding to a given x-value.  This is found
 by interpolation from the specified array.
 
   $y = $dataobject->yofx("xmu", q{}, $x);
 
 The second argument (C<q{}> in this example) is used to specify a part
 of a fit, i.e. C<bkg> or C<res>.
+
+=item C<iofx>
+
+Return the index of the value just lower than a given x-value.  This
+is found by simple comparison with the values in the specified array.
+
+  $i = $dataobject->iofx($space, $x);
+
+This is intended to probe the x-axis of a data space, so the first
+argument must be one of C<energy>, C<k>, C<R>, or C<q>).
 
 =item C<points>
 

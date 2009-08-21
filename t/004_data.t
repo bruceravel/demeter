@@ -17,7 +17,7 @@
 
 =cut
 
-use Test::More tests => 55;
+use Test::More tests => 57;
 
 use Ifeffit;
 use Demeter;
@@ -123,6 +123,12 @@ ok( abs($data3->bkg_e0 - 7112) < $fuzz,                         'find e0: atomic
 $data5->e0;
 $data3->e0($data5);
 ok( abs($data3->bkg_e0 - 7105.506) < $fuzz,                     'find e0: other Data object (' . $data3->bkg_e0 . ')');
+
+#print $data3->yofx('xmu', '', 7112), $/;
+ok(abs($data3->yofx('xmu', q{}, 7112) - 1.17) < 0.01,           'yofx method works');
+#print $data3->iofx('energy', 7112), $/;
+ok($data3->iofx('energy', 7112) == 77,                          'iofx works');
+
 
 $data3->calibrate(7105.292, 7112);
 ok( (abs($data3->bkg_e0 - 7112) < $fuzz and

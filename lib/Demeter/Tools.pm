@@ -152,6 +152,13 @@ sub slurp {
   return $text;
 };
 
+sub readable {
+  my ($self, $file) = @_;
+  return "$file does not exist"  if (not -e $file);
+  return "$file is not readable" if (not -r $file);
+  return 0;
+};
+
 
 ## see http://www.perlmonks.org/index.pl?node_id=38942
 sub check_parens {
