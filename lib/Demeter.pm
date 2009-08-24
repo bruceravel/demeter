@@ -164,7 +164,7 @@ sub import {
     };
   };
 
-  foreach my $m (qw(Data Plot Config Data/Prj GDS Path VPath SSPath FSPath Fit Atoms Feff ScatteringPath StructuralUnit)) {
+  foreach my $m (qw(Data Plot Config Data/Prj Data/MultiChannel GDS Path VPath SSPath FSPath Fit Atoms Feff ScatteringPath StructuralUnit)) {
     next if $INC{"Demeter/$m.pm"};
     ##print "Demeter/$m.pm\n";
     require "Demeter/$m.pm";
@@ -1135,9 +1135,13 @@ object, Demeter will keep track of which data processing stages need
 to be redone.  Consequently, the C<plot> method may be the only data
 processing method you ever need to call.
 
+This section, then, is included in the documentation for the sake of
+completeness and to give you a sense of what Demeter is doing behind
+the scenes when you ask it to make a plot.
+
 These methods call the corersponding code generating methods then
-dispose of that code.  The code generators are documented below, but
-should rarely be necessary to call directly.
+dispose of that code.  The code generators are not explicitly
+documented and should rarely be necessary to call directly.
 
 =over 4
 
@@ -1152,6 +1156,10 @@ This method is more commonly used for Data objects.  Calling this
 method on a Path object will import the raw C<feffNNNN.dat> file.  See
 the C<write_path> method of the Path subclass for importing a
 C<feffNNNN.dat> file and turning it into chi(k) data.
+
+=item normalization and background removal
+
+See L<Demeter::Data::Mu>.
 
 =item C<fft>
 
@@ -1171,6 +1179,12 @@ using parameters that have been established using the C<set> method.
 
 If the data need to be imported or forward transformed, they will be
 automatically.
+
+=back
+
+=head2 I/O methods
+
+=over 4
 
 =item C<plot>
 

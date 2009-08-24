@@ -193,6 +193,18 @@ has 'Prj' => (
 			     }
 	       );
 
+has 'MultiChannel' => (
+		metaclass => 'Collection::Array',
+		is        => 'rw',
+		isa       => 'ArrayRef',
+		default   => sub { [] },
+		provides  => {
+			      'push'    => 'push_MultiChannel',
+			      'clear'   => 'clear_MultiChannel',
+			      'splice'  => 'splice_MultiChannel',
+			     }
+	       );
+
 
 ## -------- The Professor and Mary Anne
 has 'iwd' => (is => 'rw', isa => 'Str', default => q{});
@@ -209,7 +221,7 @@ has 'ui'                   => (is => 'rw', isa => 'Str',  default => 'none',);
 
 sub fetch {
   my ($self, $type, $group) = @_;
-  return 0 if ($type !~ m{(?:Atoms|Data|Feff|Fit|GDS|Path|Plot|ScatteringPath|VPath|SSPath|FSPath|StructuralUnit|Prj)});
+  return 0 if ($type !~ m{(?:Atoms|Data|Feff|Fit|GDS|Path|Plot|ScatteringPath|VPath|SSPath|FSPath|StructuralUnit|Prj|MultiChannel)});
   my $list = $self->$type;
   foreach my $o (@$list) {
     return $o if ($o->group eq $group);
@@ -255,7 +267,8 @@ sub everything {
 	  @{ $self->SSPath	   },
 	  @{ $self->FSPath	   },
 	  @{ $self->StructuralUnit },
-	  @{ $self->Prj		   });
+	  @{ $self->Prj		   },
+	  @{ $self->MultiChannel   });
 };
 
 sub destroy_all {

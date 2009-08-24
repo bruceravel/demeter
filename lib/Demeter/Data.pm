@@ -60,6 +60,7 @@ with 'Demeter::UI::Screen::Pause' if ($Demeter::mode->ui eq 'screen');
 
 has '+plottable'  => (default => 1);
 has '+data'       => (isa => Empty.'|Demeter::Data');
+has 'is_temp'     => (is => 'ro', isa => 'Bool', default => 0); # is not Demeter::Data::MultiChannel
 has 'tag'         => (is => 'rw', isa => 'Str',  default => q{});
 has 'cv'          => (is => 'rw', isa => 'Num',  default => 0);
 has 'file'        => (is => 'rw', isa => 'Str',  default => $NULLFILE,
@@ -439,6 +440,9 @@ sub _update {
       $self->put_data  if ($self->update_columns);
       last WHICH;
     };
+    ($self->is_temp) and do {	# bail if this is a Data::MultiChannel object
+      return $self;		# this effectively disables most Data object
+    };				# functionality for D:MC.
     ($which eq 'background') and do {
       $self->read_data if ($self->update_data);
       $self->put_data  if ($self->update_columns);
@@ -494,6 +498,7 @@ sub read_data {
   };
   $self->sort_data;
   $self->put_data;
+  return $self if $self->is_temp; # bail if this is a Data::MultiChannel object
   my $array = ($type eq 'xmu') ? 'energy'
             : ($type eq 'chi') ? 'k'
 	    :                    'energy';

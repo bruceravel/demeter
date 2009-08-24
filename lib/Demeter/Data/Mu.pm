@@ -575,9 +575,11 @@ data.
 
 =head2 Data processing methods
 
-None of these methods are called explicitly in a script, rather they
-get called behind the scenes when plots are made using the C<plot>
-or C<save> methods.  They are documented here for completeness.
+These methods are very rarely called explicitly in a script.  Rather
+they get called behind the scenes when plots are made using the
+C<plot> method or if some other method is called which requires that
+the data first be processed in energy.  They are documented here for
+completeness.
 
 =over 4
 
@@ -609,6 +611,15 @@ object.
 This method is not typically called directly.  Instead it is called as
 one of the options of the more generic C<plot> method.
 
+=back
+
+=head2 I/O methods
+
+These are methods used to write out column ASCII data containing data
+in energy space.
+
+=over 4
+
 =item C<save_xmu>
 
 This method writes an output mu(E) file containing the background,
@@ -634,6 +645,9 @@ one of the options of the more generic C<save> method.
 
 =head2 Code generating methods
 
+Again, these are rarely needed in user scripts, but are documented for
+completeness.
+
 =over 4
 
 =item C<step>
@@ -654,6 +668,9 @@ disposes of the commands.
 =back
 
 =head2 Utility methods
+
+These are handy methods related to energy space data processing that
+might be needed in a user script.
 
 =over 4
 
