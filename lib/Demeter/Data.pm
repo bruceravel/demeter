@@ -490,7 +490,7 @@ sub read_data {
     $type = $self->datatype;
   };
   my $string = $self->_read_data_command($type);
-  #$self->provenance($string);
+  $self->provenance("Imported from file ".$self->file);
   $self->dispose($string);
   $self->update_data(0);
   if ($self->is_col) {

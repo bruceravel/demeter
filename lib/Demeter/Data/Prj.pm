@@ -184,7 +184,8 @@ sub record {
     my $rec = $self->_record( @this );
     push @groups, $rec;
     $rec->prjrecord(join(", ", $self->file, $g));
-    $rec->provenance($rec->template("process", "read_prj", {file=>$self->file, record=>$g}));
+    #$rec->provenance($rec->template("process", "read_prj", {file=>$self->file, record=>$g}));
+    $rec->provenance(sprintf("Athena project file %s, record %d", $self->file, $g));
 
     my $array = ($rec->datatype eq 'xmu') ? 'energy'
               : ($rec->datatype eq 'chi') ? 'k'

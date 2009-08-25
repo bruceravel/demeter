@@ -8,6 +8,11 @@ has '+is_col'    => (default => 1);
 has '+plottable' => (default => 0);
 has '+name'      => (default => 'multichannel data',);
 
+sub BUILD {
+  my ($self, @params) = @_;
+  $self->mo->push_MultiChannel($self);
+};
+
 override 'put_data' => sub {
   my ($self) = @_;
   my $string = $self->_read_data_command('raw');
@@ -25,7 +30,7 @@ sub make_data {
   my @cols = split(" ", $self->columns);
   unshift @cols, q{};
 
-  my $energy_string = $args{energy};
+  my $energy_string = $self->energy;
   my ($xmu_string, $i0_string, $signal_string) = (q{}, q{}, q{});
   if ($args{ln}) {
     $xmu_string    =   "ln(abs(  ("
@@ -42,7 +47,7 @@ sub make_data {
   };
 
   delete $args{$_} foreach (qw(ln energy numerator denominator));
-  my $this = Demeter::Data->new(%args, datatype=>'xmu');
+  my $this = Demeter::Data->new(%args, datatype=>'xmu', energy=>$energy_string);
 
   ## resolve column tokens
   my $group = $self->group;
@@ -56,9 +61,6 @@ sub make_data {
   $this->xmu_string($xmu_string);
   $this->energy_string($energy_string);
 
-  #$this->mo->standard($self);
-  #$this->mo->standard(q{});
-
   my $command = $this->template("process", "columns");
   $command   .= $this->template("process", "deriv");
   $this->dispose($command);
@@ -66,6 +68,7 @@ sub make_data {
   $this->signal_scale(Ifeffit::get_scalar('__signal_scale'));
   $this->update_columns(0);
   $this->update_data(0);
+  $this->provenance(sprintf("Imported from multichannel data file %s", $self->file));
 
   $this->initialize_e0;
 
@@ -78,6 +81,7 @@ sub make_data {
 sub discard {
   my ($self) = @_;
   $self->dispose("erase \@group " . $self->group);
+  $self->alldone;
   $self->DEMOLISH;
 };
 
@@ -100,14 +104,14 @@ single column data file that uses Ifeffit as efficiently as possible.
 
   my $mc = Demeter::Data::MultiChannel->new(file => $file,
                                             energy => '$1');
-  my $data1 = $mc->make_data(numerator   => '$2',
-                             denominator => '$6',
-                             ln          => 1,
-                             name        => 'Channel 1');
-  my $data2 = $mc->make_data(numerator   => '$3',
-                             denominator => '$7',
-                             ln          => 1,
-                             name        => 'Channel 2');
+  my $data1 = $mc->make_data(numerator   => '$3',
+                             denominator => '$2',
+                             ln          => 0,
+                             name        => 'MED Channel 1');
+  my $data2 = $mc->make_data(numerator   => '$4',
+                             denominator => '$2',
+                             ln          => 0,
+                             name        => 'MED Channel 2');
   $_->plot('E') foreach ($data1, $data2);
 
 The data file containing multiple channels of data is imported by the
@@ -119,12 +123,14 @@ wrangling that Ifeffit must perform.
 
 This method was written for the mutichannel ioniziation chambers
 discussed in (give reference).  This class would also be useful for
-generating fuorescence data groups from each individual channel of a
-energy dispersve detector.
+generating fuorescence data groups from each individual channel of an
+energy dispersive detector.
 
 This object inherits from L<Demeter::Data> although most data
 processing capabilities of the Data object are disabled in a simple
-way.
+way.  Many of the array handling methods described in
+L<Demeter::Data::Arrays> are useful when dealing with
+Data::MultiChannel objects.
 
 =head1 METHODS
 
@@ -136,8 +142,8 @@ methods are inherited from the Data object.
 When a Data::MultiChannel object is created, you B<must> specify the
 C<file> and C<energy> attributes, both of which are inherited from the
 Data object.  The C<energy> attribute is required so that the raw data
-arrays can be properly sorted and is pushed onto all Data objects make
-using C<make_data>.
+arrays can be properly sorted.  The energy array is then pushed onto
+all Data objects make using C<make_data>.
 
 The C<make_data> certainly requires that the C<numerator>,
 C<denominator>, and C<ln> attributes are set so that mu(E) data can be
