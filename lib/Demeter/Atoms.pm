@@ -42,7 +42,6 @@ use Demeter::NumTypes qw( Natural
 use Carp;
 use Chemistry::Elements qw(get_Z);
 use File::Basename;
-use Ifeffit;
 use List::Util qw(min max reduce);
 use Math::Cephes::Fraction qw(fract euclid);
 use POSIX qw(ceil);

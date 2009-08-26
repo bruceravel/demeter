@@ -3,10 +3,9 @@
 use Demeter; # qw(:plotwith=gnuplot);
 use File::Basename;
 
-$| = 1;
+local $| = 1;
 
 my @sample = ("Re metal", "Reo2", "ReO3", "NH4ReO4");
-
 
 my $prjfile = shift(@ARGV);	# first argument is the output prj file name
 my @all_data;

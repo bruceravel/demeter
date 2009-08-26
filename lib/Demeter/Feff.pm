@@ -38,7 +38,6 @@ use Regexp::List;
 use Regexp::Optimizer;
 use Tree::Simple;
 use Heap::Fibonacci;
-use Ifeffit;
 use Readonly;
 Readonly my $NLEGMAX      => 4;
 Readonly my $CTOKEN       => '+';

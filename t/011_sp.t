@@ -19,7 +19,6 @@
 
 use Test::More tests => 24;
 
-use Ifeffit;
 use Demeter;
 use Cwd;
 

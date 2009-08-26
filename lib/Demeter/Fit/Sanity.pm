@@ -27,7 +27,6 @@ use Readonly;
 Readonly my $NUMBER  => $RE{num}{real};
 #Readonly my $INTEGER => $RE{num}{int};
 
-use Ifeffit;
 use Text::Wrap;
 $Text::Wrap::columns = 65;
 

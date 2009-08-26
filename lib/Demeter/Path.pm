@@ -33,7 +33,6 @@ use File::Copy;
 use File::Spec;
 use Regexp::List;
 use Regexp::Optimizer;
-use Ifeffit;
 
 has '+plottable'      => (default => 1);
 has '+pathtype'       => (default => 1);
@@ -406,12 +405,12 @@ sub fetch {
   my ($self) = @_;
 
   my $save = Ifeffit::get_scalar("\&screen_echo");
-  ifeffit("\&screen_echo = 0\n");
+  Ifeffit::ifeffit("\&screen_echo = 0\n");
 
-  ifeffit(sprintf("show \@path %d\n", $self->Index));
+  Ifeffit::ifeffit(sprintf("show \@path %d\n", $self->Index));
 
   my $lines = Ifeffit::get_scalar('&echo_lines');
-  ifeffit("\&screen_echo = $save\n"), return if not $lines;
+  Ifeffit::ifeffit("\&screen_echo = $save\n"), return if not $lines;
   my $found = 0;
   foreach my $l (1 .. $lines) {
     my $response = Ifeffit::get_echo()."\n";
@@ -434,7 +433,7 @@ sub fetch {
     };
   };
 
-  ifeffit("\&screen_echo = $save\n");
+  Ifeffit::ifeffit("\&screen_echo = $save\n");
   return 0;
 };
 

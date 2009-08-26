@@ -17,7 +17,6 @@ package Demeter::UI::Screen::Interview;
 
 use Moose::Role;
 
-use Ifeffit;
 use Term::ANSIColor qw(:constants);
 use Term::ReadLine;
 

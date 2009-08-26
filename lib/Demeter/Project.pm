@@ -23,7 +23,6 @@ use Archive::Zip qw( :ERROR_CODES :CONSTANTS );;
 use Carp;
 use File::Path;
 use File::Spec;
-use Ifeffit;
 
 
 sub identify_self {

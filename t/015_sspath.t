@@ -19,7 +19,6 @@
 
 use Test::More tests => 16;
 
-# use Ifeffit;
 use Demeter;
 
 ## an SSPath requires that a Feff object exist

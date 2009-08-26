@@ -55,7 +55,7 @@ sub get_array {
   my @array = Ifeffit::get_array($text);
   if (not @array) {		# only do this error check if the specified array is not returned
     my $opt  = Regexp::List->new;
-    my @list = $self->arrays;
+    my @list = $self->arrays;	# this is the slow line -- it requires calls to ifeffit, get_scalar, and get_echo
     my $group_regexp = $opt->list2re(@list);
     my $grp = $self->group;
     if ($suffix !~ m{\b$group_regexp\b}) {

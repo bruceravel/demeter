@@ -19,7 +19,6 @@
 
 use Test::More tests => 18;
 
-use Ifeffit;
 use Demeter;
 
 my $this = Demeter::Atoms -> new();

@@ -19,7 +19,6 @@
 
 use Test::More tests => 11;
 
-# use Ifeffit;
 use Demeter;
 
 my $this = Demeter::VPath -> new();

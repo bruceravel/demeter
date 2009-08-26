@@ -31,7 +31,7 @@ Readonly my $INTEGER => $RE{num}{int};
 Readonly my $ETOK    => 0.262468292;
 Readonly my $PI      => 4*atan2(1,1);
 
-use Ifeffit;
+#use Ifeffit;
 use Text::Template;
 use Text::Wrap;
 $Text::Wrap::columns = 65;

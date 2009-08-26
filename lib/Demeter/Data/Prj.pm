@@ -24,7 +24,7 @@ use MooseX::AttributeHelpers;
 #use diagnostics;
 use Carp;
 use Compress::Zlib;
-use Ifeffit;
+#use Ifeffit;
 use List::Util qw(max);
 use List::MoreUtils qw(any none);
 use Safe;

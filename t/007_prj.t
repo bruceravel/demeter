@@ -19,7 +19,6 @@
 
 use Test::More tests => 22;
 
-use Ifeffit;
 use Demeter;
 use List::MoreUtils qw(all);
 

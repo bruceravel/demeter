@@ -19,7 +19,6 @@
 
 use Test::More tests => 28;
 
-use Ifeffit;
 use Demeter;
 
 my $this = Demeter::GDS->new();

@@ -19,7 +19,6 @@
 
 use Test::More tests => 57;
 
-use Ifeffit;
 use Demeter;
 
 my $data  = Demeter::Data -> new;

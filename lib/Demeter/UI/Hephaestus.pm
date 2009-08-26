@@ -18,7 +18,6 @@ package Demeter::UI::HephaestusApp;
 use Wx::Perl::Carp;
 use File::Spec;
 
-use Ifeffit;
 use Demeter;
 #use Demeter::UI::Wx::EchoArea;
 use Demeter::UI::Hephaestus::Common qw(hversion);

@@ -12,6 +12,7 @@ sub BUILD {
   $self->mo->push_MultiChannel($self);
 };
 
+## make this a null op
 override 'put_data' => sub {
   my ($self) = @_;
 #  my $string = $self->_read_data_command('raw');
@@ -68,10 +69,7 @@ sub make_data {
   $this->update_columns(0);
   $this->update_data(0);
   $this->provenance(sprintf("Imported from multichannel data file %s", $self->file));
-
   $this->initialize_e0;
-
-
 
   return $this;
 };
@@ -113,6 +111,10 @@ single column data file that uses Ifeffit as efficiently as possible.
                              name        => 'MED Channel 2');
   $_->plot('E') foreach ($data1, $data2);
 
+    ## later on...
+
+  $mc -> discard;
+
 The data file containing multiple channels of data is imported by the
 Data::MultiChannel object.  Normal Data objects are created using the
 C<make_data> method.  The advantage of this over simply re-importing
@@ -133,22 +135,32 @@ Data::MultiChannel objects.
 
 =head1 METHODS
 
-The only outward looking method specific to this object is
-C<make_data>, which returns a Data object and which is used to
-generate Data objects from the Data::MultiChannel object.  All other
-methods are inherited from the Data object.
+=over 4
 
-When a Data::MultiChannel object is created, you B<must> specify the
-C<file> and C<energy> attributes, both of which are inherited from the
-Data object.  The C<energy> attribute is required so that the raw data
-arrays can be properly sorted.  The energy array is then pushed onto
-all Data objects make using C<make_data>.
+=item C<make_data>
+
+This returns a Data object.  When a Data::MultiChannel object is
+created, you B<must> specify the C<file> and C<energy> attributes,
+both of which are inherited from the Data object.  The C<energy>
+attribute is required so that the raw data arrays can be properly
+sorted.  The energy array is then pushed onto all Data objects make
+using C<make_data>.
 
 The C<make_data> certainly requires that the C<numerator>,
 C<denominator>, and C<ln> attributes are set so that mu(E) data can be
 generated from the columns of the data file.  All other Data
 attributes specified in the C<make_data> method call will be passed
 along to the data object.
+
+=item C<discard>
+
+This method destroys the Data::MultiChannel object and also removes
+all its associated arrays from Ifeffit.  It is hard to make all that
+happen automatically B<and> at the proper time, so it is a good idea
+to explicitly do this when you are finished with a Data::MultiChannel
+object.
+
+=back
 
 =head1 CONFIGURATION
 

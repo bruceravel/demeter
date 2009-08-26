@@ -150,6 +150,7 @@ sub import {
   my ($class, @pragmata) = @_;
   strict->import;
   warnings->import;
+  #Ifeffit->import;
 
   ##print join(" ", $class, caller), $/;
  PRAG: foreach my $p (@pragmata) {
