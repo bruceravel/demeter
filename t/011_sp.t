@@ -21,6 +21,7 @@ use Test::More tests => 24;
 
 use Ifeffit;
 use Demeter;
+use Cwd;
 
 my $this = Demeter::ScatteringPath -> new();
 my $OBJ  = 'ScatteringPath';
@@ -31,9 +32,9 @@ ok( $this->group =~ m{\A\w{5}\z},                       "$OBJ object has a prope
 $this -> name('this');
 ok( $this->name eq 'this',                              "$OBJ object has a settable label");
 ok( !$this->data,                                       "$OBJ object has no associated Data object");
-ok( ref($this->mo) =~ 'Mode',                         "$OBJ object can find the Mode object");
-ok( ref($this->co) =~ 'Config',               "$OBJ object can find the Config object");
-ok( ref($this->po) =~ 'Plot',                   "$OBJ object can find the Plot object");
+ok( ref($this->mo) =~ 'Mode',                           "$OBJ object can find the Mode object");
+ok( ref($this->co) =~ 'Config',                         "$OBJ object can find the Config object");
+ok( ref($this->po) =~ 'Plot',                           "$OBJ object can find the Plot object");
 ok( ($this->mo->template_plot     eq 'pgplot'  and
      $this->mo->template_feff     eq 'feff6'   and
      $this->mo->template_process  eq 'ifeffit' and
@@ -43,52 +44,56 @@ ok( ($this->mo->template_plot     eq 'pgplot'  and
 
 ## -------- test path description semantics
 
-my $feff = Demeter::Feff -> new(workspace => './t/feff', file => 't/withHg.inp', screen => 0);
+my $demeter = Demeter -> new;
+my $where   = ($demeter->is_windows) ? File::Spec->catfile(cwd, 't', 'feff') : './t/feff';
+my $orig    = File::Spec->catfile(cwd, 't', 'withHg.inp');
+my $file    = ($demeter->is_windows) ? $orig : 't/withHg.inp';
+my $feff    = Demeter::Feff -> new(workspace => $where, file => $orig, screen => 0);
 $feff -> rmax(4.5);
 $feff -> pathfinder;
 #print $feff -> intrp;
 
 my $p = $feff -> find_path(tag=>'N13');
-ok( abs($p->fuzzy - 4.191) < 0.001,                     "find SS path by exact tag");
+ok( abs($p->fuzzy - 4.191) < 0.001,                     sprintf("find SS path by exact tag (%s)",$p->fuzzy));
 
 my $pp = $feff -> find_path(tagmatch=>'N');
-ok( abs($pp->fuzzy - 2.040) < 0.001,                    "find SS path by tag match");
+ok( abs($pp->fuzzy - 2.040) < 0.001,                    sprintf("find SS path by tag match (%s)",$pp->fuzzy));
 
 $p = $feff -> find_path(tagmatch=>'N', sp=>$pp);
-ok( abs($p->fuzzy - 4.191) < 0.001,                     "find second SS path by tag match");
+ok( abs($p->fuzzy - 4.191) < 0.001,                     sprintf("find second SS path by tag match (%s)",$p->fuzzy));
 
 $p = $feff -> find_path(tag=>['N13', 'N16']);
-ok( abs($p->fuzzy - 4.267) < 0.001,                     "find DS path by tag");
+ok( abs($p->fuzzy - 4.267) < 0.001,                     sprintf("find DS path by tag (%s)",$p->fuzzy));
 
 $p = $feff -> find_path(tag=>['N16', 'N13']);
-ok( abs($p->fuzzy - 4.267) < 0.001,                     "find DS path by tag, opposite order");
+ok( abs($p->fuzzy - 4.267) < 0.001,                     sprintf("find DS path by tag, opposite order (%s)",$p->fuzzy));
 
 $p = $feff -> find_path(tagmatch=>['N', 'N']);
-ok( abs($p->fuzzy - 4.267) < 0.001,                     "find DS path by tag match");
+ok( abs($p->fuzzy - 4.267) < 0.001,                     sprintf("find DS path by tag match (%s)",$p->fuzzy));
 
 $p = $feff -> find_path(element=>'O');
-ok( abs($p->fuzzy - 3.036) < 0.001,                     "find SS path by element");
+ok( abs($p->fuzzy - 3.036) < 0.001,                     sprintf("find SS path by element (%s)",$p->fuzzy));
 
 $pp = $feff -> find_path(element=>['N', 'C', 'N']);
-ok( abs($pp->fuzzy - 3.418) < 0.001,                     "find TS path by element ");
+ok( abs($pp->fuzzy - 3.418) < 0.001,                    sprintf("find TS path by element (%s)",$pp->fuzzy));
 
 $p = $feff -> find_path(element=>['N', 'C', 'N'], gt => 3.5);
-ok( abs($p->fuzzy - 4.420) < 0.001,                     "find TS path by element w gt");
+ok( abs($p->fuzzy - 4.420) < 0.001,                     sprintf("find TS path by element w gt (%s)",$p->fuzzy));
 
 $p = $feff -> find_path(element=>['N', 'C', 'N'], sp => $pp);
-ok( abs($p->fuzzy - 4.420) < 0.001,                     "find TS path by element w sp");
+ok( abs($p->fuzzy - 4.420) < 0.001,                     sprintf("find TS path by element w sp (%s)",$p->fuzzy));
 
 $p = $feff -> find_path(ipot=>1);
-ok( abs($p->fuzzy - 3.036) < 0.001,                     "find SS path by ipot");
+ok( abs($p->fuzzy - 3.036) < 0.001,                     sprintf("find SS path by ipot (%s)",$p->fuzzy));
 
 $pp = $feff -> find_path(ipot=>[2, 3, 2]);
-ok( abs($pp->fuzzy - 3.418) < 0.001,                     "find TS path by ipot ");
+ok( abs($pp->fuzzy - 3.418) < 0.001,                    sprintf("find TS path by ipot (%s)",$pp->fuzzy));
 
 $p = $feff -> find_path(ipot=>[2, 3, 2], gt => 3.5);
-ok( abs($p->fuzzy - 4.420) < 0.001,                     "find TS path by ipot w gt");
+ok( abs($p->fuzzy - 4.420) < 0.001,                     sprintf("find TS path by ipot w gt (%s)",$p->fuzzy));
 
 $p = $feff -> find_path(ipot=>[2, 3, 2], sp => $pp);
-ok( abs($p->fuzzy - 4.420) < 0.001,                     "find TS path by ipot w sp");
+ok( abs($p->fuzzy - 4.420) < 0.001,                     sprintf("find TS path by ipot w sp (%s)",$p->fuzzy));
 
 
 my @list = $feff -> find_all_paths(element=>'N');
