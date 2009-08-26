@@ -5,7 +5,6 @@ extends 'Demeter::Data';
 
 has '+is_temp'   => (default => 1);
 has '+is_col'    => (default => 1);
-has '+plottable' => (default => 0);
 has '+name'      => (default => 'multichannel data',);
 
 sub BUILD {
@@ -15,8 +14,8 @@ sub BUILD {
 
 override 'put_data' => sub {
   my ($self) = @_;
-  my $string = $self->_read_data_command('raw');
-  $self->dispose($string);
+#  my $string = $self->_read_data_command('raw');
+#  $self->dispose($string);
   $self->update_data(0);
 };
 

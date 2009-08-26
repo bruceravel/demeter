@@ -571,11 +571,10 @@ sub sort_data {
 
     ## now feed columns back to ifeffit
     my $group = $self->group;
+    $self->dispose("## replacing arrays for $group with sorted versions\nerase \@group $group"); #.$cols[$c]");
     foreach my $c (1 .. $#cols) {
       my @array;
       foreach (@lol) {push @array, $_->[$c]};
-      $self->dispose("## replacing $group.$cols[$c] with sorted version");
-      $self->dispose("erase $group.$cols[$c]");
       Ifeffit::put_array("$group.$cols[$c]", \@array);
     };
   };

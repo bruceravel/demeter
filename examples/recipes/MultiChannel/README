@@ -1,0 +1,42 @@
+
+Recipe for processing column data files containing multiple channels
+of data.
+
+Goal: 
+   You wish to create several Data objects using the information
+   contained in one column data file. 
+
+Problem: 
+   Reading in that column data file is very slow, doing so for each
+   Data object to be created results in an unreasonably slow program.
+
+Solution:
+   Use the Demeter::Data::MultiChannel object.
+
+
+D::D::MC is an extension of the normal Demeter::Data object, so it
+shares all the mechanisms for importing data from column data files.
+The purpose of D::D::MC is to provide a temporary storage space for
+the contents of the data file.  It provides a method -- make_data --
+which creates a new Demeter::Data object and populates with mu(E) data
+created from the Ifeffit arrays read in when the D::D::MC object is
+created.  This results in substantially less array wrangling in
+Ifeffit, resulting in a much faster program.
+
+The example in this directory involves data measured on 4 rhenium
+standards using the new 4-channel ionization chambers at X23A2.  These
+ion chambers allow measurement of up to four sample simultaneously in
+transmission.   The resulting data file has an energy column, 4 I0
+columns, and 4 It columns (one for each sample).  The mc2prj script
+disentangles these columns of data using the D::D::MC object and
+exports the data to an Athena project file.
+
+This would be an effective way to import data measured using a
+multi-element fluorescence detector in the situation where you wish to
+create one Demeter::Data object for each channel of the detector.
+Given that an MED file might contain many dozens of columns (if the
+input and output count rates and other parameters of the MED are
+writtten as columns of data, it is not uncommon to have 100+ column
+MED data file), using D::D::MC rather than repeatedly importing the
+large data file will result in a very large time savings.
+

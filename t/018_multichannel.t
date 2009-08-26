@@ -25,7 +25,7 @@ my $this = Demeter::Data::MultiChannel -> new();
 my $OBJ  = 'MultiChannel';
 
 ok( ref($this) =~ m{$OBJ},           "made a $OBJ object");
-ok(!$this->plottable,                "$OBJ object is not plottable");
+ok( $this->plottable,                "$OBJ object is plottable");
 ok( $this->group =~ m{\A\w{5}\z},    "$OBJ object has a proper group name");
 ok( $this->name =~ m{multichannel data}, "name set to its default (" . $this->name . ")");
 $this -> name('this');

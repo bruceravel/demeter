@@ -1,0 +1,100 @@
+#!/usr/bin/perl
+
+use Demeter; # qw(:plotwith=gnuplot);
+use File::Basename;
+
+$| = 1;
+
+my @sample = ("Re metal", "Reo2", "ReO3", "NH4ReO4");
+
+
+my $prjfile = shift(@ARGV);	# first argument is the output prj file name
+my @all_data;
+
+my $first = shift(@ARGV);	# process the first data file on the command line
+my @first_set = process($first, 0);
+push @all_data, @first_set;
+my $ref = $first_set[-1];	# grab the reference channel from the first data file
+
+foreach my $file (@ARGV) {	# process the rest, aligning to the reference of the first
+  push @all_data, process($file, $ref);
+};
+print "exporting $prjfile ... ";
+$all_data[0]->write_athena($prjfile, @all_data);
+$all_data[0]->po->end_plot;
+print "and done!\n";
+
+
+
+sub process {			# returns a list of Data objects
+  my ($file, $ref) = @_;
+  my ($name, $suffix) = split(/\./, $file);
+  my @data;
+
+  ## import the column data file as a Data::MultiChannel object then
+  ## use the make_data method to dole out the appropriate channels to
+  ## each new Data group
+  print "importing $file: ";
+  my $mc = Demeter::Data::MultiChannel->new(file   => $file,
+					    energy => '$1',
+					   );
+  $mc -> po -> title($file);
+
+  print "channel 1, ";
+  $data[0] = $mc->make_data(numerator   => '$2',
+			    denominator => '$6',
+			    ln          => 1,
+			   );
+  $data[0] -> po -> set(e_norm=>1, e_markers=>0, emin=>-40, emax=>60);
+  $data[0] -> po -> start_plot;
+
+  #my @temp      = $mc->get_array('temp');
+  #my @inttime   = $mc->get_array('inttime');
+  #my @energy    = $mc->get_array('nergy');
+  #my $iedge     = $data[0]->iofx('energy',$data[0]->bkg_e0); # get the array index at the edge
+  #my $this_temp = sprintf("%d", 200 * ($temp[$iedge]/$inttime[$iedge]/10000 - 1));
+  my $this_temp = 0;
+
+  $data[0] -> name(groupname($sample[0], $suffix));
+  $data[0] -> plot('e');
+
+
+  print "channel 2, ";
+  $data[1] = $mc->make_data(numerator   => '$5',
+			    denominator => '$9',
+			    name        => groupname($sample[1], $suffix),
+			    ln          => 1,
+			   ) -> plot('e');
+  print "channel 3, ";
+  $data[2] = $mc->make_data(numerator   => '$4',
+			    denominator => '$8',
+			    name        => groupname($sample[2], $suffix),
+			    ln          => 1,
+			   ) -> plot('e');
+  print "channel 4, ";
+  $data[3] = $mc->make_data(numerator	=> '$3',
+			    denominator => '$7',
+			    name        => groupname($sample[3], $suffix),
+			    ln          => 1,
+			   ) -> plot('e');
+  print "reference, ";
+  $data[4] = $mc->make_data(numerator => '$9',
+			    denominator => '$10',
+			    name        => "$file Ref",
+			    ln => 1,
+			   );
+
+  print $/;
+
+  #return @data if not $ref;
+  ## align reference channel to reference channel and push the energy shift to the other channels
+  #my $shift = $ref->align($data[4]);
+  #$_->bkg_eshift($shift) foreach @data[0..3];
+
+  $mc->discard;
+  return @data;
+};
+
+sub groupname {
+  return sprintf("%s %s", @_);
+};

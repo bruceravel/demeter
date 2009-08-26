@@ -275,28 +275,28 @@ sub autobk {
   if ($self->bkg_fixstep) {
     $fixed = $self->bkg_step;
   };
-  $self->dispose($command);
+  #$self->dispose($command);
 
   ## begin setting up all the generated arrays from the background removal
   $self->update_bkg(0);
   $self->update_fft(1);
   $self->bkg_cl(0);
-  $command = $self->template("process", "post_autobk");
-  $self->dispose($command);
+  $command .= $self->template("process", "post_autobk");
+  #$self->dispose($command);
 
 #     $command .= sprintf("set $group.fbkg = ($group.bkg-$group.preline+(%.5f-$group.line)*$group.theta)/%.5f\n",
 # 			$self->get(qw(bkg_fitted_step bkg_step)))
 #       if not $self->get('is_xanes');
 
   if ($self->bkg_fixstep or $self->is_nor or $self->datatype eq 'xanes') {
-    $command = $self->template("process", "flatten_fit");
+    $command .= $self->template("process", "flatten_fit");
   } else {
-    $command = $self->template("process", "flatten_set");
+    $command .= $self->template("process", "flatten_set");
   };
-  $self->dispose($command);
+  #$self->dispose($command);
 
   ## first and second derivative
-  $command = $self->template("process", "nderiv");
+  $command .= $self->template("process", "nderiv");
   $self->dispose($command);
 
   ## note the largest value of the k array

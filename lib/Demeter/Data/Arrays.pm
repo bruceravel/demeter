@@ -50,17 +50,20 @@ sub get_array {
     my $class = ref $self;
     croak("$class objects have no arrays associated with them");
   };
-  my $opt  = Regexp::List->new;
-  my @list = $self->arrays;
-  my $group_regexp = $opt->list2re(@list);
-  my $grp = $self->group;
-  if ($suffix !~ m{\b$group_regexp\b}) {
-    croak("The group $grp does not have an array $grp.$suffix (" . join(" ", @list) . ")");
-  };
   my $group = $self->group;
   my $text = ($part =~ m{(?:bkg|fit|res|run)}) ? "${group}_$part.$suffix" : "$group.$suffix";
-  #$self->running if ($part eq 'run');
-  return Ifeffit::get_array($text);
+  my @array = Ifeffit::get_array($text);
+  if (not @array) {		# only do this error check if the specified array is not returned
+    my $opt  = Regexp::List->new;
+    my @list = $self->arrays;
+    my $group_regexp = $opt->list2re(@list);
+    my $grp = $self->group;
+    if ($suffix !~ m{\b$group_regexp\b}) {
+      croak("The group $grp does not have an array $grp.$suffix (" . join(" ", @list) . ")");
+    };
+    #$self->running if ($part eq 'run');
+  };
+  return @array;
 };
 sub ref_array {
   my ($self, $suffix, $part) = @_;
@@ -88,8 +91,7 @@ sub arrays {
     croak("$class objects have no arrays associated with them");
   };
   my $save = Ifeffit::get_scalar("\&screen_echo");
-  Ifeffit::ifeffit("\&screen_echo = 0\n");
-  Ifeffit::ifeffit("show \@group ".$self->group);
+  Ifeffit::ifeffit("\&screen_echo = 0\nshow \@group ".$self->group);
   my @arrays = ();
   my $lines = Ifeffit::get_scalar('&echo_lines');
   Ifeffit::ifeffit("\&screen_echo = $save\n"), return if not $lines;
@@ -100,7 +102,7 @@ sub arrays {
       push @arrays, $1;
     };
   };
-  Ifeffit::ifeffit("\&screen_echo = $save\n");
+  Ifeffit::ifeffit("\&screen_echo = $save\n") if $save;
   return @arrays;
 };
 

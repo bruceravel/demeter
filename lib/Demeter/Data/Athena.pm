@@ -59,7 +59,7 @@ sub _write_record {
 
   my @array = ();
   if ($self->datatype eq "xmu") {
-    $self -> _update("background");
+    #$self -> _update("background");
     @array        = $self -> get_array("energy");
     $arraystring .= Data::Dumper->Dump([\@array], [qw/*x/]) . "\n";
     @array        = $self -> get_array("xmu");

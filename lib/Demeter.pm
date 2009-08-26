@@ -445,7 +445,7 @@ sub reset_path_indeces {
 ## -------- introspection methods
 sub all {
   my ($self) = @_;
-  my @keys   = grep {$_ !~ m{\A(?:data|plot|plottable|mode|parent|sp)\z}} $self->get_params_of;
+  my @keys   = grep {$_ !~ m{\A(?:data|plot|plottable|is_temp|mode|parent|sp)\z}} $self->get_params_of;
   push @keys, qw(name group mark plottable);
   my @values = map {$self->$_} @keys;
   my %hash   = zip(@keys, @values);
