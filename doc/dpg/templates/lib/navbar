@@ -4,10 +4,11 @@
     <tr>
       <td align=left>
         [ <a href="[% dots %]/index.html">Home</a> ] &nbsp;&nbsp;
-        [ <a href="[% site.url.athena %]">[% athena_link %]</a> ] &nbsp;&nbsp;
+        [ <a href="[% site.url.demeter %]">[% demeter_link %]</a> ] &nbsp;&nbsp;
         [ <a href="[% site.url.ifeffit %]">[% ifeffit_link %]</a> ] &nbsp;&nbsp;
+        [ <a href="[% site.url.feff %]">[% feff_link %]</a> ] &nbsp;&nbsp;
         [ <a href="[% site.url.xafsorg %]">xafs.org</a> ] &nbsp;&nbsp;
-	[ <a href="[% dots %]/athena.pdf">PDF doc</a> ]
+	[ <a href="[% dots %]/demeter.pdf">PDF doc</a> ]
       </td>
       <td align=right>
         [% PROCESS menu/prevnext -%]

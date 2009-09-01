@@ -20,12 +20,20 @@
 use Test::More tests => 4;
 
 use Demeter;
+my $demeter  = Demeter -> new;
+use Cwd;
+use File::Spec;
 
-my $data = Demeter::Data->new(file=>"data.xmu");
+my $orig = File::Spec->catfile(cwd, 't', 'data.xmu');
+my $file = ($demeter->is_windows) ? $orig : 't/data.xmu';
+
+my $data = Demeter::Data->new(file=>$file);
 $data->_update('data');
 ok( $data->provenance =~ m{mu\(E\)},              "mu(E) file");
 
-$data = Demeter::Data->new(file=>"fe.060",
+$orig = File::Spec->catfile(cwd, 't', 'fe.060');
+$file = ($demeter->is_windows) ? $orig : 't/fe.060';
+$data = Demeter::Data->new(file=>$file,
 			   energy => '$1',
 			   numerator => '$2',
 			   denominator => '$3',
@@ -34,11 +42,15 @@ $data = Demeter::Data->new(file=>"fe.060",
 $data->_update('data');
 ok( $data->provenance =~ m{column data},          "column data");
 
-my $prj = Demeter::Data::Prj->new(file=>"cyanobacteria.prj");
+$orig = File::Spec->catfile(cwd, 't', 'cyanobacteria.prj');
+$file = ($demeter->is_windows) ? $orig : 't/cyanobacteria.prj';
+my $prj = Demeter::Data::Prj->new(file=>$file);
 $data=$prj->record(9);
 ok( $data->provenance =~ m{Athena},               "Athena project record");
 
-my $mc = Demeter::Data::MultiChannel->new(file=>"re4chan.000",
+$orig = File::Spec->catfile(cwd, 't', 're4chan.000');
+$file = ($demeter->is_windows) ? $orig : 't/re4chan.000';
+my $mc = Demeter::Data::MultiChannel->new(file=>$file,
 					  energy => '$1'
 					 );
 $data = $mc -> make_data(numerator=>'$2',

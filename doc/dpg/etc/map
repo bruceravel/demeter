@@ -110,9 +110,9 @@
 		       menu = [ 'collection', 'sanity', 'after', 'happiness' ]
 		       page = {
 			      collection = { name = 'Setting up a fitting model' }
-			      sannity    = { name = 'Sanity checking a fitting model' }
+			      sanity     = { name = 'Sanity checking a fitting model' }
 			      after      = { name = 'After a fit finishes' }
-			      ahppiness  = { name = 'The non-statistical happiness parameter' }
+			      happiness  = { name = 'The non-statistical happiness parameter' }
 			      }
 		       }
 	    perl   = {

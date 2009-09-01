@@ -1,4 +1,4 @@
-[% META title = 'Introdcution'
+[% META title = 'Introduction'
         about = ''
 	chapter = 1
 	nosubpages = 1
@@ -6,5 +6,20 @@
 
 
 [% FILTER html_para %]
-Introduction.
+Introduction.  Boilerplate is limited...
+[% END %]
+
+[% WRAPPER codeexample %]
+#!/usr/bin/perl
+## -----------------------------------------------------------
+use Demeter; ## strict and warnings imported automatically with Demeter
+## -----------------------------------------------------------
+[% END %]
+
+[% FILTER html_para %]
+
+Exporting these two perl pragmata is accomplished in the same manner
+as for Moose itself.  The magic behind this is
+[% INCLUDE html/link text="explained here"
+                     link="http://hanekomu.at/blog/dev/20080924-1114-dissecting_the_moose_2-pragmatic_goodness.html"  %].
 [% END %]

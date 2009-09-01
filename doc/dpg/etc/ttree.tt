@@ -1,9 +1,9 @@
-## This file is copyright (c) 2007 Bruce Ravel and
+## This file is copyright (c) 2009 Bruce Ravel and
 ## licensed under The Creative Commons Attribution-ShareAlike License.
 
 ### directories
-src  = [% installdir %]/template/src
-lib  = [% installdir %]/template/lib
+src  = [% installdir %]/templates/src
+lib  = [% installdir %]/templates/lib
 dest = [% installdir %]/html
 
 ### copy images and other binary files

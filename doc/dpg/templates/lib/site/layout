@@ -8,8 +8,8 @@
 
 
 <div class=sidebar>
-  <a href="[% dots %]/pallas.html"><img src=[% dots %]/../images/Demeter.png
-    width=100% border=0 alt = '[Athena logo]'></a>
+  <a href="[% dots %]/ceres.html"><img src=[% dots %]/../images/Isis-Sothis-Demeter_sm.jpg
+    width=100% border=0 alt='[Demeter logo]'></a>
   <br />
   [% INCLUDE menu/nest menu = site.map %]
 </div>

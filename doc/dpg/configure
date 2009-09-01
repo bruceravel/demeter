@@ -1,6 +1,6 @@
 #!/bin/sh
 
-## This file is copyright (c) 2007-2008 Bruce Ravel and
+## This file is copyright (c) 2009 Bruce Ravel and
 ## licensed under The Creative Commons Attribution-ShareAlike License.
 
 ## use the Template Toolkit to configure itself for building the
@@ -28,7 +28,7 @@ for b in $files; do
 done
 
 echo "  copying map and version templates"
-cp etc/map etc/version template/lib/config/
-#cp etc/map etc/version template/latex/config/
-#cp etc/map etc/version template/pod/config/
-#cp etc/map etc/version template/mobile/config/
+cp etc/map etc/version templates/lib/config/
+#cp etc/map etc/version templates/latex/config/
+#cp etc/map etc/version templates/pod/config/
+#cp etc/map etc/version templates/mobile/config/

@@ -1,5 +1,5 @@
 [%
-   document_version = "1.5"
-   athena_version   = "0.8.56"
-   crdate           = 2008
+   document_version = "0.1"
+   demeter_version  = "0.3.0"
+   crdate           = 2009
 -%]

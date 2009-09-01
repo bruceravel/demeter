@@ -175,7 +175,7 @@ has 'cif'    => (is => 'rw', isa =>'Str', default=> q{},
 			       });
 has 'record' => (is => 'rw', isa => NonNeg,    default=> 0,
 		 trigger => sub{ my ($self, $new) = @_;
-				 $self->read_cif if ($new and $self->cif);NonNeg
+				 $self->read_cif if ($new and $self->cif);
 				 #$self->is_imported(0) if $new
 			       });
 has 'titles' => (
