@@ -127,12 +127,19 @@ sub _get_elem {
 sub open_cif {
   my ($self) = @_;
   my @structures = STAR::Parser->parse($self->cif);
-  my @id = map { ($_->get_item_data(-item => '_chemical_name_systematic'   ))[0]
-		   or
-		 ($_->get_item_data(-item => '_chemical_name_mineral'      ))[0]
-		   or
-		 ($_->get_item_data(-item => '_chemical_formula_structural'))[0]
-	       } @structures;
+  my @id;
+  foreach my $this (@structures) {
+    my @str  = $this->get_item_data(-item => '_chemical_name_systematic');
+    @str     = $this->get_item_data(-item => '_chemical_name_mineral') if not @str;
+    @str     = $this->get_item_data(-item => '_chemical_formula_structural') if not @str;
+    push @id, @str;
+  };
+#   my @id = map { ($_->get_item_data(-item => '_chemical_name_systematic'   ))[0]
+# 		   or
+# 		 ($_->get_item_data(-item => '_chemical_name_mineral'      ))[0]
+# 		   or
+# 		 ($_->get_item_data(-item => '_chemical_formula_structural'))[0]
+# 	       } @structures;
   return @id;
 };
 
