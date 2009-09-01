@@ -1,0 +1,18 @@
+[% dots  = template.nosubpages ? ".." : "../.." -%]
+<div class=copyright>
+  [% athena %] is copyright &copy; 2001-[% crdate %] Bruce Ravel
+  <br />
+  This document is copyright &copy; 2007-[% crdate %] Bruce Ravel
+  <br />
+  email: [% bruce_mail %]
+  <br />
+  [% USE image "${site.url.images}/somerights20.png" %]
+  <a href="[% site.url.cc %]">[% image.tag(border=0) | replace("$rooturl", "$dots") %]</a> &nbsp;&nbsp;&nbsp;
+  <br />
+  This document is licensed under <a href="[% site.url.cc %]">
+  The Creative Commons Attribution-ShareAlike License</a>.
+  <br />
+  If [% athena %] and this document are useful to you, please consider
+  <a href="[% site.url.ccsupport %]">supporting The Creative Commons</a>.
+</div>
+

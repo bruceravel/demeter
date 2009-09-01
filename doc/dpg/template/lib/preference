@@ -1,0 +1,2 @@
+<span class=pref>&nbsp;&nbsp;&diams;[% group | ucfirst %] &mdash;&rsaquo;
+[% option | lower %]</span>&nbsp;

@@ -1,0 +1,8 @@
+[% FILTER html_para -%]
+<p align=center>
+[% INCLUDE image file="comingsoon.jpg" %]
+</p>
+<p align=center>
+[% what %] is on [% athena %]'s to do list.
+</p>
+[% END %]

@@ -1,0 +1,9 @@
+
+[% site = {
+	   name      = 'Athena Book'
+	   server    = 'http://cars9.uchicago.edu' 
+	   admin     = 'bravel@anl.gov'
+	   copyright = '2007 Bruce Ravel'
+	   floatdir  = "smfigureright"
+	  };
+-%]

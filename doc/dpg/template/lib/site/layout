@@ -1,0 +1,24 @@
+[% dots  = template.nosubpages ? "." : ".." -%]
+<div class=topbar>
+  [% PROCESS navbar %]
+  [% INCLUDE site/logo %]
+</div>
+
+<hr class=hide />
+
+
+<div class=sidebar>
+  <a href="[% dots %]/pallas.html"><img src=[% dots %]/../images/Demeter.png
+    width=100% border=0 alt = '[Athena logo]'></a>
+  <br />
+  [% INCLUDE menu/nest menu = site.map %]
+</div>
+
+[% content %]
+
+<hr class=hide />
+
+<div class=bottombar>
+  [% PROCESS navbar %]
+  [% PROCESS copyright %]
+</div>

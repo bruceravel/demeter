@@ -1,0 +1,2 @@
+<span class=key>[% key | ucfirst %]</span>[% IF letter %]-<span class=key>[% letter %]</span> [% END -%]
+
