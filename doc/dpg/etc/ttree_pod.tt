@@ -2,16 +2,16 @@
 ## licensed under The Creative Commons Attribution-ShareAlike License.
 
 ### directories
-src  = /home/bruce/codes/aug/templates/src
-lib  = /home/bruce/codes/aug/templates/lib
-dest = /home/bruce/codes/aug/html
+src  = [% installdir %]/templates/src
+lib  = [% installdir %]/templates/pod
+dest = [% installdir %]/pod
 
 ### copy images and other binary files
 copy = \.(png|gif|jpg|pdf)$
 ### copy athena, artemis, and demeter project files
 copy = \.(prj|apj|dpj)$
 ### copy the style sheet
-copy = \.css$
+### copy = \.css$
 
 ### ignore svn and emacs backup/temporary files
 ignore = \.(svn)\b
@@ -20,8 +20,7 @@ ignore = ~$
 ignore = \.example$
 ignore = \.sty$
 ignore = \.ltx$
-ignore = \.pod$
-ignore = ^auto
+ignore = \.css$
 
 ### options
 verbose
@@ -33,10 +32,10 @@ pre_process = config/main
 wrapper     = site/wrapper
 
 ### local variables
-define rootdir = /home/bruce/codes/aug
-define rooturl = /home/bruce/codes/aug
-define document_style = 'html'
+define rootdir = [% installdir %]
+define rooturl = [% installdir %]
+define document_style = 'pod'
 define debug   = 0
 
 ### en passant suffix conversion
-suffix tt=html
+suffix tt=pod
