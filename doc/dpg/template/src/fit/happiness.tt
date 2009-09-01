@@ -1,0 +1,5 @@
+[% META title = 'The non-statistical happiness parameter' %]
+
+[% FILTER html_para %]
+The non-statistical happiness parameter
+[% END %]

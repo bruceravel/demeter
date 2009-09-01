@@ -1,0 +1,6 @@
+[% META title = 'The basics of data processing'
+	chapter = 1 %]
+
+[% FILTER html_para -%]
+Basics...
+[% END %]

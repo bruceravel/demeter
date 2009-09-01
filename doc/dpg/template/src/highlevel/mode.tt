@@ -1,0 +1,5 @@
+[% META title = 'Mode object' %]
+
+[% FILTER html_para %]
+Mode object
+[% END %]

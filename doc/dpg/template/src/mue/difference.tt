@@ -1,0 +1,5 @@
+[% META title = 'Difference spectra' %]
+
+[% FILTER html_para %]
+Difference spectra
+[% END %]

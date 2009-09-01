@@ -1,0 +1,6 @@
+[% META title = 'Scattering paths'
+	chapter = 1 %]
+
+[% FILTER html_para -%]
+Scattering paths
+[% END %]

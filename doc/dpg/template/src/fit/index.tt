@@ -1,0 +1,6 @@
+[% META title = 'Fitting EXAFS data'
+	chapter = 1 %]
+
+[% FILTER html_para -%]
+Basics of fitting...
+[% END %]

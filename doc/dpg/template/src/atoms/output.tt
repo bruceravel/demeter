@@ -1,0 +1,5 @@
+[% META title = 'Output' %]
+
+[% FILTER html_para %]
+Output
+[% END %]

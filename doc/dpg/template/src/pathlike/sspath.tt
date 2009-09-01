@@ -1,0 +1,5 @@
+[% META title = 'SSPath object' %]
+
+[% FILTER html_para %]
+SSPath
+[% END %]

@@ -3,7 +3,7 @@ package Demeter::Data::MultiChannel;
 use Moose;
 extends 'Demeter::Data';
 
-has '+is_temp'   => (default => 1);
+has '+is_mc'     => (default => 1);
 has '+is_col'    => (default => 1);
 has '+name'      => (default => 'multichannel data',);
 
@@ -68,7 +68,7 @@ sub make_data {
   $this->signal_scale(Ifeffit::get_scalar('__signal_scale'));
   $this->update_columns(0);
   $this->update_data(0);
-  $this->provenance(sprintf("Imported from multichannel data file %s", $self->file));
+  $this->provenance(sprintf("multichannel data file %s", $self->file));
   $this->initialize_e0;
 
   return $this;

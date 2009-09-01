@@ -1,0 +1,5 @@
+[% META title = 'Fuzzy degeneracy' %]
+
+[% FILTER html_para %]
+Fuzzy degeneracy
+[% END %]

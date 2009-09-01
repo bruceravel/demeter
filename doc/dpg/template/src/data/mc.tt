@@ -1,0 +1,5 @@
+[% META title = 'Importing multichannel data files' %]
+
+[% FILTER html_para %]
+Importing multichannel data files
+[% END %]

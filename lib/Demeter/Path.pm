@@ -405,12 +405,15 @@ sub fetch {
   my ($self) = @_;
 
   my $save = Ifeffit::get_scalar("\&screen_echo");
-  Ifeffit::ifeffit("\&screen_echo = 0\n");
+  #Ifeffit::ifeffit("\&screen_echo = 0\n");
 
-  Ifeffit::ifeffit(sprintf("show \@path %d\n", $self->Index));
+  Ifeffit::ifeffit(sprintf("\&screen_echo = 0\nshow \@path %d\n", $self->Index));
 
   my $lines = Ifeffit::get_scalar('&echo_lines');
-  Ifeffit::ifeffit("\&screen_echo = $save\n"), return if not $lines;
+  if (not $lines) {
+    Ifeffit::ifeffit("\&screen_echo = $save\n") if $save;
+    return;
+  };
   my $found = 0;
   foreach my $l (1 .. $lines) {
     my $response = Ifeffit::get_echo()."\n";
@@ -433,7 +436,7 @@ sub fetch {
     };
   };
 
-  Ifeffit::ifeffit("\&screen_echo = $save\n");
+  Ifeffit::ifeffit("\&screen_echo = $save\n") if $save;
   return 0;
 };
 

@@ -1,0 +1,5 @@
+[% META title = 'MSPath object' %]
+
+[% FILTER html_para %]
+MSPath
+[% END %]

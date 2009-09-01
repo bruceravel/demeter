@@ -1,0 +1,5 @@
+[% META title = 'Plot object' %]
+
+[% FILTER html_para %]
+Plot object
+[% END %]

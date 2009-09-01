@@ -1,0 +1,5 @@
+[% META title = 'Simple GDS Interface' %]
+
+[% FILTER html_para %]
+Simple access
+[% END %]

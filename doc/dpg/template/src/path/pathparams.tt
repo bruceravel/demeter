@@ -1,0 +1,5 @@
+[% META title = 'Path parameters' %]
+
+[% FILTER html_para %]
+Path parameters
+[% END %]

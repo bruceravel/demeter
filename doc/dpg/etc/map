@@ -1,0 +1,153 @@
+[% # map of pages in the Athena book
+   # this file lives in the etc/ directory and is copied to the
+   # config/ directory for each display medium when the configure
+   # script is run
+
+   map = {
+       name = 'Athena Book'
+       menu = [ 'index',
+		'forward',
+		'intro',
+		'import',
+		'bkg',
+		'plot',
+		'ui',
+		'params',
+		'output',
+                'process',
+		'analysis',
+		'examples',
+		'hephaestus'
+	      ]
+       page = {
+	    index   = { name = 'Home' }
+	    forward = { name = 'Forward' }
+	    intro   = { name = 'Introduction'}
+	    bkg     = {
+		    name = 'Background Removal'
+		    menu = [ 'norm', 'ft', 'rbkg', 'kweight', 'range' ]
+		    page = {
+			   norm    = { name = 'Normalization' }
+			   ft      = { name = 'Introduction to Fourier transforms' }
+			   rbkg    = { name = 'The Rbkg parameter' }
+			   kweight = { name = 'Spline clamps and k-weight' }
+			   range   = { name = 'Spline range' }
+			   }
+		    }
+	    plot    = {
+		      name = 'Plotting'
+		      menu = [ 'tabs', 'krange', 'stack', 'indic', 'pf', 'params', 'etc' ]
+		      page = {
+			     tabs   = { name = 'Plot space tabs' }
+			     krange = { name = 'Spectral resolution and k-range' }
+			     stack  = { name = 'Stacking plots' }
+			     indic  = { name = 'Plot indicators' }
+			     pf     = { name = 'Point finder' }
+			     params = { name = 'Group-specific parameters' }
+			     etc    = { name = 'Other plotting features' }
+                      }
+		    }
+	    import   = {
+		       name = 'Importing Data'
+		       menu = [ 'columns', 'projsel', 'multiple',
+                                'ref', 'preproc', 'plugin' ]
+		       page = {
+			      columns  = { name = 'The column selection dialog' }
+			      projsel  = { name = 'The project selection dialog' }
+			      multiple = { name = 'Importing multiple data sets' }
+			      ref      = { name = 'Reference channel' }
+			      preproc  = { name = 'Data preprocessing' }
+			      plugin   = { name = 'Filetype plugins' }
+			      }
+		       }
+	    output   = {
+		       name = 'Output files'
+		       menu = [ 'column', 'project', 'report' ]
+		       page = {
+			      column  = { name = 'Column output files' }
+			      project = { name = 'Project files' }
+			      report  = { name = 'Report files' }
+			      }
+		       }
+	    ui       = {
+		       name = 'User Interface'
+		       menu = [ 'glist', 'mark', 'pluck', 'styles',
+				'kweight', 'frozen', 'palettes', 'prefs' ]
+		       page = {
+			      glist    = { name = 'Using the group list' }
+			      mark     = { name = 'Marking groups' }
+			      pluck    = { name = 'Pluck buttons' }
+			      styles   = { name = 'Plot styles' }
+			      kweight  = { name = 'Using k-weights' }
+			      frozen   = { name = 'Frozen groups' }
+			      palettes = { name = 'Palettes' }
+			      prefs    = { name = 'Setting preferences' }
+			      }
+		       }
+	    params   = {
+		       name = 'Setting parameter values'
+		       menu = [ 'constrain', 'e0', 'defaults' ]
+		       page = {
+			      constrain = { name = 'Constraining parameters' }
+			      e0        = { name = 'Edge energy' }
+			      defaults  = { name = 'Default values' }
+			      }
+		       }
+	    process  = {
+		       name = 'Data processing'
+		       menu = [ 'cal', 'align', 'pixel', 'deg',
+				'trun', 'rebin', 'smooth', 'conv',
+				'deconv', 'sa', 'mee', 'merge' ]
+		       page = {
+			      cal    = { name = 'Calibration' }
+			      align  = { name = 'Alignment' }
+			      pixel  = { name = 'Dispersive XAS' }
+			      deg    = { name = 'Deglitching' }
+			      trun   = { name = 'Truncation' }
+			      rebin  = { name = 'Rebinning' }
+			      smooth = { name = 'Smoothing' }
+			      conv   = { name = 'Convolution and noise' }
+			      deconv = { name = 'Deconvolution' }
+			      sa     = { name = 'Self-Absorption correction' }
+			      mee    = { name = 'Multi-electron excitations' }
+			      merge  = { name = 'Merging' }
+			      }
+		       }
+	    analysis = {
+		       name = 'Data analysis'
+		       menu = [ 'lcf', 'peak', 'lr', 'pca', 'diff' ]
+		       page = {
+			      lcf  = { name = 'Linear combination fitting' }
+			      peak = { name = 'Peak fitting' }
+			      lr   = { name = 'Log-ratio/phase-difference' }
+			      pca  = { name = 'Principle component analysis' }
+			      diff = { name = 'Difference spectra' }
+			      }
+		       }
+	    examples   = {
+                          name = 'Worked examples'
+			  menu = ['data' 'moo3' 'aucl']
+			  page = {
+				 data = { name = 'Basic data processing' }
+				 moo3 = { name = 'A hard background removal' }
+				 aucl = { name = 'Linear combination analysis' }
+				 }
+			 }
+	    hephaestus   = { name = 'Hephaestus'}
+	      }
+          };
+
+    # save map in site
+    site.map = map;
+-%]
+
+[% SWITCH document_style %]
+[% CASE 'html' %]
+   [%# expand map recursively %]
+   [% PROCESS config/expand %]
+[% CASE 'latex' %]
+   [%# do nothing %]
+[% CASE 'pod' %]
+   [%# expand map recursively %]
+   [% PROCESS config/expand %]
+[% END -%]

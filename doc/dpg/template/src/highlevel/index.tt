@@ -1,0 +1,6 @@
+[% META title = 'High level actions of the object model'
+	chapter = 1 %]
+
+[% FILTER html_para -%]
+High level actions of the object model
+[% END %]

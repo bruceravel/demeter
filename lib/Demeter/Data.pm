@@ -60,7 +60,7 @@ with 'Demeter::UI::Screen::Pause' if ($Demeter::mode->ui eq 'screen');
 
 has '+plottable'  => (default => 1);
 has '+data'       => (isa => Empty.'|Demeter::Data');
-has 'is_temp'     => (is => 'ro', isa => 'Bool', default => 0); # is not Demeter::Data::MultiChannel
+has 'is_mc'     => (is => 'ro', isa => 'Bool', default => 0); # is not Demeter::Data::MultiChannel
 has 'tag'         => (is => 'rw', isa => 'Str',  default => q{});
 has 'cv'          => (is => 'rw', isa => 'Num',  default => 0);
 has 'file'        => (is => 'rw', isa => 'Str',  default => $NULLFILE,
@@ -440,7 +440,7 @@ sub _update {
       $self->put_data  if ($self->update_columns);
       last WHICH;
     };
-    ($self->is_temp) and do {	# bail if this is a Data::MultiChannel object
+    ($self->is_mc) and do {	# bail if this is a Data::MultiChannel object
       return $self;		# this effectively disables most Data object
     };				# functionality for D:MC.
     ($which eq 'background') and do {
@@ -490,7 +490,7 @@ sub read_data {
     $type = $self->datatype;
   };
   my $string = $self->_read_data_command($type);
-  $self->provenance("Imported from file ".$self->file);
+  #$self->provenance("Imported from file ".$self->file);
   $self->dispose($string);
   $self->update_data(0);
   if ($self->is_col) {
@@ -498,7 +498,7 @@ sub read_data {
   };
   $self->sort_data;
   $self->put_data;
-  return $self if $self->is_temp; # bail if this is a Data::MultiChannel object
+  return $self if $self->is_mc; # bail if this is a Data::MultiChannel object
   my $array = ($type eq 'xmu') ? 'energy'
             : ($type eq 'chi') ? 'k'
 	    :                    'energy';
@@ -586,12 +586,15 @@ sub _read_data_command {
   if ($type eq 'xmu') {
     $string  = $self->template("process", "read_xmu");
     $string .= $self->template("process", "deriv");
+    $self->provenance("mu(E) file ".$self->file);
   } elsif ($type eq 'chi') {
     $string  = $self->template("process", "read_chi");
+    $self->provenance("chi(k) file ".$self->file);
   } elsif ($type eq 'feff.dat') {
     $string  = $self->template("process", "read_feffdat");
   } else {
     $string  = $self->template("process", "read");
+    $self->provenance("column data file ".$self->file);
   };
   return $string;
 };
@@ -776,6 +779,11 @@ the project file name and the record number separated by a comma:
 This will be set automatically by the Data::Prj C<record> method.
 Setting it by hand I<does not> trigger a reading of the record.  So,
 you should pretend that this is a read-only attribute.
+
+=item C<provenance> (string)
+
+This is a short string explaining where the data object came from,
+e.g. from a column data file or an Athena project file.
 
 =item C<name> (string)
 

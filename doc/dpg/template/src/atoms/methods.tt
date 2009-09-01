@@ -1,0 +1,5 @@
+[% META title = 'Object methods' %]
+
+[% FILTER html_para %]
+Object methods
+[% END %]

@@ -1,0 +1,5 @@
+[% META title = 'Config object' %]
+
+[% FILTER html_para %]
+Config object
+[% END %]

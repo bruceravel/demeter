@@ -1,0 +1,5 @@
+[% META title = 'VPath object' %]
+
+[% FILTER html_para %]
+VPath
+[% END %]

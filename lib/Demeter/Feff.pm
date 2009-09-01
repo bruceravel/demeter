@@ -951,7 +951,7 @@ sub read_yaml {
   my $rhash = shift @refs;
   foreach my $key (qw(abs_index edge s02 rmax name nlegs npaths rmultiplier pcrit ccrit
 		      workspace screen buffer save fuzz betafuzz eta_suppress miscdat)) {
-    $self -> $key($rhash->{$key});
+    $self -> $key($rhash->{$key}) if exists $rhash->{$key};
   };
   $self -> set(titles     => shift(@refs),
 	       othercards => shift(@refs),

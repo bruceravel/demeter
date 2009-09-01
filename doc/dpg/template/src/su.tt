@@ -1,0 +1,10 @@
+[% META title = 'Structural units'
+        about = 'Defining structural motifs in an EXAFS fit'
+	chapter = 1
+	nosubpages = 1
+%]
+
+
+[% FILTER html_para %]
+Structural unit issues.
+[% END %]

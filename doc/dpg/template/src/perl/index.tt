@@ -1,0 +1,6 @@
+[% META title = 'Using perl to structure a fit'
+	chapter = 1 %]
+
+[% FILTER html_para -%]
+Using perl in your fitting model
+[% END %]

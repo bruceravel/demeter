@@ -1,0 +1,5 @@
+[% META title = 'Semantic path descriptions' %]
+
+[% FILTER html_para %]
+Semantic path descriptions
+[% END %]

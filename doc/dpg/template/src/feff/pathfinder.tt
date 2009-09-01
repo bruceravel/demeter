@@ -1,0 +1,5 @@
+[% META title = 'The path finder' %]
+
+[% FILTER html_para %]
+The path finder
+[% END %]

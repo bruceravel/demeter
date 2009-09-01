@@ -1,0 +1,10 @@
+[% META title = "Local guess parameters and the characteristic value"
+        about = ''
+	chapter = 1
+	nosubpages = 1
+%]
+
+
+[% FILTER html_para %]
+Local guess parameters and the characteristic value
+[% END %]

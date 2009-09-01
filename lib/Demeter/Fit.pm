@@ -835,11 +835,13 @@ sub fetch_statistics {
   my ($self) = @_;
 
   my $save = Ifeffit::get_scalar("\&screen_echo");
-  Ifeffit::ifeffit("\&screen_echo = 0\n");
-  Ifeffit::ifeffit("show $STAT_TEXT\n");
+  Ifeffit::ifeffit("\&screen_echo = 0\nshow $STAT_TEXT\n");
 
   my $lines = Ifeffit::get_scalar('&echo_lines');
-  Ifeffit::ifeffit("\&screen_echo = $save\n"), return if not $lines;
+  if (not $lines) {
+    Ifeffit::ifeffit("\&screen_echo = $save\n") if $save;
+    return;
+  };
 
   my $opt  = Regexp::List->new;
   my $fit_stats_regexp = $opt->list2re(@Demeter::StrTypes::stat_list);
@@ -880,7 +882,7 @@ sub fetch_statistics {
     $self->epsilon_r($which->epsr);
   };
 
-  Ifeffit::ifeffit("\&screen_echo = $save\n");
+  Ifeffit::ifeffit("\&screen_echo = $save\n") if $save;
   return 0;
 };
 
