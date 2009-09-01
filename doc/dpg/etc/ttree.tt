@@ -2,8 +2,8 @@
 ## licensed under The Creative Commons Attribution-ShareAlike License.
 
 ### directories
-src  = [% installdir %]/templates/src
-lib  = [% installdir %]/templates/lib
+src  = [% installdir %]/template/src
+lib  = [% installdir %]/template/lib
 dest = [% installdir %]/html
 
 ### copy images and other binary files
