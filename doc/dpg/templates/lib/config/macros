@@ -26,6 +26,7 @@
 [% MACRO fpp     BLOCK -%] [% PROCESS font/mono a='f"(E)' | trim %] [%- END -%]
 [% MACRO e0      BLOCK -%] E<sub>0</sub> [%- END -%]
 [% MACRO delr    BLOCK -%] &Delta;R [%- END -%]
+[% MACRO rbkg    BLOCK -%] R<sub>bkg</sub> [%- END -%]
 
 [% MACRO la1    BLOCK -%] L&alpha;<sub>1</sub> [%- END -%]
 [% MACRO l3     BLOCK -%] L<sub>III</sub>     [%- END -%]

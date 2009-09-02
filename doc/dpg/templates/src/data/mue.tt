@@ -1,12 +1,17 @@
 [% META title = 'Importing mu(E) data files' %]
 
 [% FILTER html_para %]
-Importing mu(E) data files
+The most basic form of data import is from a column data file with
+columns including energy and [% mu %].  In that case, the data has
+already been processed from its raw form and saved in an immediately
+useful form.
+
+Importing a data file of this sort is very simple, as shown in this
+example: 
 [% END %]
 
-[% WRAPPER codeexample %]
+[% WRAPPER codeexample -%]
 #!/usr/bin/perl
-
 use Demeter;
 
 my $data = Demeter::Data -> new(file => "data/fe.060.xmu",
@@ -16,12 +21,32 @@ $data -> plot('E');
 [% END %]
 
 [% FILTER html_para %]
-You can set some of the processing parameters...
+As always, the program begins by importing the [% demeter %] package.
+At line 4, the Data object is created -- as all [% demeter %] objects
+are created -- by the [% INCLUDE font/mono a="new" %] method.  The
+object is given a name and the file containing the data is specified.
+
+For a data file containing [% mu %] data, it is usually not necessary
+to explicitly identify the data as such.  [% demeter %] will analyze
+the contents of the data file and recognize it as [% mu %] data.  In
+the rare case that [% mu %] data is not recognized as such, it can be
+explicitly specified like so:
 [% END %]
 
-[% WRAPPER codeexample %]
-#!/usr/bin/perl
+[% WRAPPER codeexample -%]
+$data -> datatype('mu');
+[% END %]
 
+[% FILTER html_para %]
+Parameters for normalization, background removal, Fourier transforms
+are set as attributes of the Data object.  In this example, several
+basic data processing parameters (discussed in detail in the
+docuemntation for the [% INCLUDE font/module a="Demeter::Data" %]
+module) are set using the [% INCLUDE font/mono a="set" %] method.
+[% END %]
+
+[% WRAPPER codeexample -%]
+#!/usr/bin/perl
 use Demeter;
 
 my $data = Demeter::Data -> new(file => "data/fe.060.xmu",
@@ -35,7 +60,55 @@ $data -> set(bkg_rbkg    => 1.5,
 $data -> plot('E');
 [% END %]
 
+[% PROCESS section label="Setting attributes" %]
+
 [% FILTER html_para %]
-Discuss new, set, and accessors...
+Since the parameters used for normalization, background removal,
+Fourier transforms are all implemented as normal Moose attributes,
+they are accessed and evaluated as normal Moose attributes.  There are
+several ways of doing this, including those inherent to Moose and
+those defined by the [% INCLUDE font/module a="MooseX::SetGet" %]
+module which comes with [% demeter %].
+
+To obtain [% INCLUDE font/mono a="bkg_rbkg" %], the [% rbkg %] value
+for background removal, you can do this: [% END %]
+
+[% WRAPPER codeexample -%]
+my $rbkg = $data -> bkg_rbkg;
 [% END %]
 
+[% FILTER html_para %]
+To set a new value for [% rbkg %], do this:
+[% END %]
+
+[% WRAPPER codeexample -%]
+$data -> bkg_rbkg(1.2);
+[% END %]
+
+[% FILTER html_para %]
+To get and set several parameters at a time, you can use the 
+[% INCLUDE font/mono a="get" %] and
+[% INCLUDE font/mono a="set" %] methods:
+[% END %]
+
+[% WRAPPER codeexample -%]
+my @values = $data -> get('bkg_rbkg', 'bkg_nor1', 'bkg_nor2');
+$data -> set(bkg_rbkg => 1.2, bkg_nor1 => 50, bkg_nor2 => 600);
+[% END %]
+
+[% FILTER html_para %]
+Finally, parameters can be set at the time of object creation:
+[% END %]
+
+[% WRAPPER codeexample -%]
+#!/usr/bin/perl
+use Demeter;
+
+my $data = Demeter::Data -> new(file => "data/fe.060.xmu",
+                                name => 'Fe 60K',
+                                bkg_rbkg => 1.5,
+                                bkg_spl1 => 0,    bkg_spl2 => 18,
+                                bkg_nor1 => 100,  bkg_nor2 => 1800,
+                                fft_kmax => 3,    fft_kmin => 17,
+                               );
+[% END %]

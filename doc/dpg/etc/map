@@ -26,9 +26,10 @@
 	    intro   = { name = 'Introduction'}
 	    data    = {
 		    name = 'Basics of data processing'
-		    menu = [ 'mue', 'columns', 'athena', 'mc', 'plot' ]
+		    menu = [ 'mue', 'chi', 'columns', 'athena', 'mc', 'plot' ]
 		    page = {
 			   mue     = { name = 'Importing mu(E) data files' }
+			   chi     = { name = 'Importing chi(k) data files' }
 			   columns = { name = 'Importing column data files' }
 			   athena  = { name = 'Importing data from Athena project files' }
 			   mc      = { name = 'Importing multichannel data files' }
