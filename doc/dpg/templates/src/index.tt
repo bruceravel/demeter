@@ -1,5 +1,5 @@
 [% META title = "Demeter Programmer's Guide"
-        about = "A middleware interface to Feff and Ifeffit"
+        about = "Middleware for Feff and Ifeffit"
         chapter = 1
 	nosubpages = 1
 %]

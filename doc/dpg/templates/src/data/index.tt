@@ -2,5 +2,36 @@
 	chapter = 1 %]
 
 [% FILTER html_para -%]
-Basics...
+This chapter introduces you to data import using [% demeter %] and
+provides an overview of the most basic data processing and plotting
+chores.  At the end of this chapter, you will be able to import XAS
+data from a variety of sources and make attractive plots of one or
+more data sets in any of energy, k-space, R-space, or back-transform
+k-space.
+
+The sections of thiose chapter deal with importing data from each of
+the following kinds of files.
+[% END %]
+
+[% WRAPPER html/list type="ul" %]
+[% WRAPPER html/li %]
+ASCII data file containing columns of energy and [% mu %]
+[% END %]
+[% WRAPPER html/li %]
+ASCII data file containing columns of wavenumber and [% chik %]
+[% END %]
+[% WRAPPER html/li %]
+ASCII data file containing columns of energy and detector readings
+[% END %]
+[% WRAPPER html/li %]
+[% athena %] project files
+[% END %]
+[% WRAPPER html/li %]
+ASCII data file containing columns of energy and detector readings for
+multiple channels of data
+[% END %]
+[% END %]
+
+[% FILTER html_para -%]
+The final section provides and overview of [% demeter %]'s plotting capabilities.
 [% END %]

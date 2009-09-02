@@ -1,0 +1,10 @@
+[% META title = 'Output formats'
+        about = ''
+	chapter = 1
+	nosubpages = 1
+%]
+
+
+[% FILTER html_para %]
+Output formats
+[% END %]

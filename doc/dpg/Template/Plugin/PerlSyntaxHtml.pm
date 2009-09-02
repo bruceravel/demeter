@@ -57,9 +57,9 @@ sub filter {
     $ln = $formatter->format_token($ln, 'Line');
     $return_text .= "$ln&nbsp;&nbsp;";
     my $this = $formatter->format_string($l);
-    if ($this =~ m{\A(\s+)}) {
+    while ($this =~ m{(\s{2,})}) {
       my $space = "&nbsp;" x length($1);
-      $this =~ s{\A\s+}{$space};
+      $this =~ s{$1}{$space};
     };
     $return_text .= $this;
     $return_text .= $/;

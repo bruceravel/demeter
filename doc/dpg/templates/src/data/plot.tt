@@ -1,5 +1,136 @@
 [% META title = 'Plotting and basic data processing' %]
 
 [% FILTER html_para %]
-Plotting and basic data processing
+Once you have imported data, you will want to start doing interesting
+things with it.  [% INCLUDE font/quote a="Interesting things" %] are,
+of course, the topic of the rest of this programming guide.  The first
+interesting thing to discuss is plotting.
+
+One might think that topics such as background removal, normalization,
+and Fourier transforms are discussion-worthy.  In fact, [% demeter %]
+goes to great lengths to assure that you do not need to ever worry
+about having to explicitly do any of those data processing chores.
+Certainly methods exist for doing those data processing chores, but it
+should never be necessary to call them explicitly.  (If you find a
+case where you need to do so, please consider that as a bug and report
+it to Bruce.)
+
+[% demeter %] keeps track of the state of the Data object and will
+re-perform data processing steps as necessary.  For example, if you
+change the value of one of the back-Fourier transform range
+attributes, [% demeter %] will know that the back-transform must be
+recomputed the next time the [% chiq %] data is in some way used.
+Similarly, if a background removal attribute is changed, then 
+[% demeter %] will know that all steps of data processing must be
+re-done.
+
+[% demeter %] is also aware of what data processing steps must be
+up-to-date in order to properly perform any method, including
+plotting.  Thus if you do this:
+[% END %]
+
+[% WRAPPER codeexample -%]
+$data -> plot('k');
+[% END %]
+
+[% FILTER html_para %]
+[% demeter %] knows to check wether the background removal,
+normalization, and forward transform are up to date and to perform
+them if they are not.
+
+Plotting in the four spaces is quite straightforward:
+[% END %]
+
+[% WRAPPER html/list type="dl" %]
+[% WRAPPER html/dt dt="plot in energy" %]
+[% INCLUDE font/mono a="\$data->plot('E');" %]
+[% END %]
+[% WRAPPER html/dt dt="plot in k" %]
+[% INCLUDE font/mono a="\$data->plot('k');" %]
+[% END %]
+[% WRAPPER html/dt dt="plot in R" %]
+[% INCLUDE font/mono a="\$data->plot('R');" %]
+[% END %]
+[% WRAPPER html/dt dt="plot in back-transform k" %]
+[% INCLUDE font/mono a="\$data->plot('q');" %]
+[% END %]
+[% END %]
+
+[% FILTER html_para %]
+There are also a numer of pre-defined, specialty plots
+[% END %]
+
+[% WRAPPER html/list type="dl" %]
+[% WRAPPER html/dt dt="plot the magnitude and real part of chi(R)" %]
+[% INCLUDE font/mono a="\$data->plot('rmr');" %]
+[% END %]
+[% WRAPPER html/dt dt="plot chi(k) with k-weights of 1, 2, and 3,
+                       scaled to be the same size" %]
+[% INCLUDE font/mono a="\$data->plot('k123');" %]
+[% END %]
+[% WRAPPER html/dt dt="plot chi(R) with k-weights of 1, 2, and 3,
+                       scaled to be the same size" %]
+[% INCLUDE font/mono a="\$data->plot('R123');" %]
+[% END %]
+[% WRAPPER html/dt dt="plot in chi(k) with the real part of chi(q)" %]
+[% INCLUDE font/mono a="\$data->plot('kq');" %]
+[% END %]
+[% END %]
+
+
+[% FILTER html_para %]
+Note that the argument of the [% INCLUDE font/mono a="plot" %] method
+is case insensitive.  Little attempt is made to glean meaning from
+that argument.  If it is not one of the strings shown above, 
+the [% INCLUDE font/mono a="plot" %] method will likely return an
+error.
+
+The [% INCLUDE font/mono a="plot" %] method typically will overplot
+data, that is add a new trace to the existing plot.  If you wish to
+start a new plot, you must explicitly do so, as shown on line 8 of
+this example.
+[% END %]
+
+
+[% WRAPPER codeexample -%]
+#!/usr/bin/perl
+use Demeter;
+
+my $prj = Demeter::Data::Prj -> new(file=>'iron_data.prj');
+my ($data1, $data2) = $prj -> records(1,2);
+$_ -> plot('k') foreach ($data1, $data2);
+sleep 3,
+$data1 -> po -> start_plot;
+$_ -> plot('R') foreach ($data1, $data2);
+[% END %]
+
+[% FILTER html_para %]
+The details of the funny syntax using the 
+[% INCLUDE font/mono a="po" %] method is explained in
+[% INCLUDE html/link text="the section on the Plot object"
+                     link="../highlevel/plot.html" %].
+
+It is very helpful to make use of perl's data structures and control
+structures when precessing large quatities of data.  In this example,
+a list of attribute names and values common to all Data objects is
+defined starting at line 4 and then pushed onto each Data object at
+line before plotting at line 13.  Because attributes were updated, the
+plot will trigger all appropriate data processing steps.
+[% END %]
+
+[% WRAPPER codeexample -%]
+#!/usr/bin/perl
+use Demeter;
+
+my @params = (bkg_pre1    => -30,  bkg_pre2    => -150,
+              bkg_nor1    => 150,  bkg_nor2    => 1757.5,
+              bkg_spl1    => 0.5,  bkg_spl2    => 22,
+              fft_kmax    => 3,    fft_kmin    => 14,);
+
+my $prj = Demeter::Data::Prj -> new(file=>'iron_data.prj');
+my ($data1, $data2) = $prj -> records(1,2);
+foreach my $obj ($data1, $data2) {
+   $obj -> set(@params);
+   $obj -> plot('R');
+};
 [% END %]

@@ -1,5 +1,6 @@
 [% META title = 'Plot object' %]
 
 [% FILTER html_para %]
-Plot object
+The Plot object is used to control the details of how plots are made
+and displayed by [% demeter %] programs.
 [% END %]

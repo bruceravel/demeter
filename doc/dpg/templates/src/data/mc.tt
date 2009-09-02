@@ -1,5 +1,119 @@
 [% META title = 'Importing multichannel data files' %]
 
 [% FILTER html_para %]
-Importing multichannel data files
+Often data files contain multiple columns of data that can be
+independently processed as [% mu %] data.  One way of handling that
+situation is to simply point several Data objects at the same file,
+specifying different columns for each object.  That is fine and it
+certainly works, but it makes inefficient use of [% ifeffit %].
+
+Each time that a Data object imports its data file, it makes temporary
+arrays in [% ifeffit %] to hold the contents of each column.  The
+creation and destruction of a possibly large number of unused arrays
+is noticeably time consuming.  To get around the problem of repeatedly
+creating the same set of temporary arrays, use the Data::MultiChannel
+object. 
+
+Like the 
+[% INCLUDE html/link text="Data::Prj object"
+                     link="athena.html" %],
+The Data::MultiChannel object is a transitional object from which Data
+objects are created.  In this example, a four-element detector was
+used to measure fluorescence data and each data channel is imported
+into an individual Data object.  Once all the channels are imported,
+they are plotted in energy for direct comparison.
+[% END %]
+
+
+[% WRAPPER codeexample -%]
+#!/usr/bin/perl
+use Demeter;
+
+my $file = 'med_data.000'
+my $mc = Demeter::Data::MultiChannel->new(file   => $file,
+                                          energy => '$1',
+                                         );
+$data[0] = $mc->make_data(numerator   => '$4',
+                          denominator => '$2',
+                          ln          => 0,
+                          name        => 'MED Channel 1'
+                         );
+$data[1] = $mc->make_data(numerator   => '$5',
+                          denominator => '$2',
+                          ln          => 0,
+                          name        => 'MED Channel 2'
+                         );
+$data[2] = $mc->make_data(numerator   => '$6',
+                          denominator => '$2',
+                          ln          => 0,
+                          name        => 'MED Channel 3'
+                         );
+$data[3] = $mc->make_data(numerator   => '$7',
+                          denominator => '$2',
+                          ln          => 0,
+                          name        => 'MED Channel 4'
+                         );
+$_ -> plot('E') foreach @data;
+[% END %]
+
+[% FILTER html_para %]
+The Data::MultiChannel object is defined at lines 5 and 6.  This
+object is actually inherited from the normal Data object, whcih allows
+it to use teh Data ojects existing methods for file import.  Although
+the Data::MultiChannel object has all the same attributes as the Data
+object, the only two that matter are [% INCLUDE font/mono a='file' %]
+and [% INCLUDE font/mono a='energy' %].  The column containing the
+energy must be specified so that the data can be sorted ([% demeter %]
+deals gracefully with data that are not in monotonically ascending
+order, which sometimes happens in some impementations of quick XAS).
+This value for the [% INCLUDE font/mono a='energy' %] attribute are
+pushed onto the Data object created using the 
+[% INCLUDE font/mono a='make_data' %] method.
+
+The [% INCLUDE font/mono a='make_data' %] method is sued to generate a
+Data object from the Data::MultiChannel object.  You must specify the 
+[% INCLUDE font/mono a='numerator' %],
+[% INCLUDE font/mono a='denominator' %], and
+[% INCLUDE font/mono a='ln' %] attributes as arguments of the 
+[% INCLUDE font/mono a='make_data' %] method.  You can specify any
+other Data attributes in the same manner as the Data creator method,
+[% INCLUDE font/mono a='new' %].
+
+Once created by [% INCLUDE font/mono a='make_data' %], these Data
+objects are identical in every way to Data objects created in other
+ways.
+
+Another common use of the Data::MultiChannel object is to import the
+reference channel from a normal XAS data file.  Here is an example:
+[% END %]
+
+[% WRAPPER codeexample -%]
+#!/usr/bin/perl
+use Demeter;
+
+my $file = 'fe2o3.000'
+my $mc = Demeter::Data::MultiChannel->new(file   => $file,
+                                          energy => '$1',
+                                         );
+
+$data = $mc->make_data(numerator   => '$2',
+                       denominator => '$3',
+                       ln          => 1,
+                       name        => 'Fe2O3'
+                      );
+$ref  = $mc->make_data(numerator   => '$3',
+                       denominator => '$4',
+                       ln          => 1,
+                       name        => '  Ref Fe2O3 (Fe foil)'
+                      );
+$data -> reference($ref);
+[% END %]
+
+[% FILTER html_para %]
+In this example, the data are from a transmission experiment with a
+reference foil between the [% it %] and [% ir %] detectors.  In this
+case, [% mu %] for the reference is ln([% it %]/[% ir %]), which are
+in columns 3 and 4.  Line 19 then sets up the data/reference
+relationship so that energy shifts applied to the reference will also
+be applied to the data.
 [% END %]

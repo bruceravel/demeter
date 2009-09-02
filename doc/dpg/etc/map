@@ -19,7 +19,8 @@
 		'lgcv',
 		'pathlike'
 		'su',
-		'ui'
+		'ui',
+		'output'
 	      ]
        page = {
 	    index   = { name = 'Home' }
@@ -55,8 +56,9 @@
 		    }
 	    highlevel   = {
 		       name = 'High level actions for Demeter objects'
-		       menu = [ 'mode', 'plot', 'config', 'methods' ]
+		       menu = [ 'dispose', 'mode', 'plot', 'config', 'methods' ]
 		       page = {
+			      dispose = { name = 'Command disposal and command templates' }
 			      mode    = { name = 'The Mode object' }
 			      plot    = { name = 'The Plot object' }
 			      config  = { name = 'The Config object' }
@@ -137,6 +139,7 @@
 			 }
 	    su   = { name = 'Structural Units'}
 	    ui   = { name = 'User interfaces'}
+	    output   = { name = 'Output formats'}
 	      }
           };
 

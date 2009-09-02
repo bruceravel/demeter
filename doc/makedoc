@@ -10,7 +10,7 @@ pod2projdocs -l ../lib \
              -l ../../libperlxray/Formula/lib \
              -l ../../libperlxray/Scattering/lib \
              -l ../../libperlxray/Ifeffit/lib \
-             -o html \
+             -o pods \
              -t Demeter \
              -d "Perl tools for X-ray Absorption Spectroscopy" 1
 rm ../bin/install_prereqs.pl ../bin/denv.pl ../bin/dhephaestus.pl

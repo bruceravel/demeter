@@ -2,4 +2,42 @@
 
 [% FILTER html_para %]
 Mode object
+
+sentinal, pathindex, [% INCLUDE font/mono a="everything" %] method
+
+get all objects from this instance of [% demeter %]:
+[% END %]
+
+[% WRAPPER codeexample -%]
+my @all_atoms  = @{ $any_object->mo->Atoms };
+my @all_data   = @{ $any_object->mo->Data };
+my @all_feff   = @{ $any_object->mo->Feff };
+my @all_fit    = @{ $any_object->mo->Fit };
+my @all_gds    = @{ $any_object->mo->GDS };
+my @all_path   = @{ $any_object->mo->Path };
+my @all_plot   = @{ $any_object->mo->Plot };
+my @all_sp     = @{ $any_object->mo->ScatteringPath; };
+my @all_vpath  = @{ $any_object->mo->VPath; };
+my @all_sspath = @{ $any_object->mo->SSPath; };
+my @all_fspath = @{ $any_object->mo->FSPath; };
+my @all_su     = @{ $any_object->mo->StructuralUnit; };
+my @all_prj    = @{ $any_object->mo->Prj; };
+my @all_mc     = @{ $any_object->mo->MultiChannel; };
+[% END %]
+
+[% FILTER html_para %]
+These are attributes of the Mode object.  The accessor returns an
+array reference.  The [% INCLUDE font/mono a="\@{ }" %] syntax
+dereferences the array.  References in perl are explained in detail in the
+[% INCLUDE html/link text="perlref document"
+                     link="http://perldoc.perl.org/perlref.html" %].
+
+
+default objects for templates and other purposes
+
+choosing between template sets
+
+datadefault, identity, ui
+
+
 [% END %]
