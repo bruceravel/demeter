@@ -62,7 +62,7 @@ class and inherited by all objects.  It is used all throughout
 [% demeter %] programs.  The syntax is quite simple:
 [% END %]
 
-[% WRAPPER codeexample -%]
+[% WRAPPER codesample -%]
 $any_object -> dispose($text);
 $any_object -> dispose($text, 'plotting');
 [% END %]
@@ -91,7 +91,7 @@ of the base class which is inherited by all objects.  The syntax of
 methods in [% demeter %]:
 [% END %]
 
-[% WRAPPER codeexample -%]
+[% WRAPPER codesample -%]
 $any_object -> set_mode(screen=>1, ifeffit=>1);
 [% END %]
 

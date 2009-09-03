@@ -29,7 +29,7 @@ up-to-date in order to properly perform any method, including
 plotting.  Thus if you do this:
 [% END %]
 
-[% WRAPPER codeexample -%]
+[% WRAPPER codesample -%]
 $data -> plot('k');
 [% END %]
 

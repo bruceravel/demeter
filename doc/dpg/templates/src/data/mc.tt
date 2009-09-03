@@ -58,20 +58,21 @@ $_ -> plot('E') foreach @data;
 
 [% FILTER html_para %]
 The Data::MultiChannel object is defined at lines 5 and 6.  This
-object is actually inherited from the normal Data object, whcih allows
-it to use teh Data ojects existing methods for file import.  Although
+object is inherited from the normal Data object, which allows
+it to use the Data object's existing methods for file import.  Although
 the Data::MultiChannel object has all the same attributes as the Data
 object, the only two that matter are [% INCLUDE font/mono a='file' %]
 and [% INCLUDE font/mono a='energy' %].  The column containing the
-energy must be specified so that the data can be sorted ([% demeter %]
+energy must be specified so that the data can be sorted ([%- demeter %]
 deals gracefully with data that are not in monotonically ascending
 order, which sometimes happens in some impementations of quick XAS).
-This value for the [% INCLUDE font/mono a='energy' %] attribute are
+This value for the [% INCLUDE font/mono a='energy' %] attribute is
 pushed onto the Data object created using the 
 [% INCLUDE font/mono a='make_data' %] method.
 
-The [% INCLUDE font/mono a='make_data' %] method is sued to generate a
-Data object from the Data::MultiChannel object.  You must specify the 
+The [% INCLUDE font/mono a='make_data' %] method is used to generate a
+Data object from the Data::MultiChannel object.  You 
+[% INCLUDE font/b a='must' %] specify the 
 [% INCLUDE font/mono a='numerator' %],
 [% INCLUDE font/mono a='denominator' %], and
 [% INCLUDE font/mono a='ln' %] attributes as arguments of the 

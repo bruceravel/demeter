@@ -33,5 +33,5 @@ multiple channels of data
 [% END %]
 
 [% FILTER html_para -%]
-The final section provides and overview of [% demeter %]'s plotting capabilities.
+The final section provides an overview of [% demeter %]'s plotting capabilities.
 [% END %]

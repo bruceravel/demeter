@@ -37,7 +37,7 @@ the rare case that [% chik %] data is not recognized as such, it can be
 explicitly specified like so:
 [% END %]
 
-[% WRAPPER codeexample -%]
+[% WRAPPER codesample -%]
 $data -> datatype('chi');
 [% END %]
 

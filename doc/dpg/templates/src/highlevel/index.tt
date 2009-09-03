@@ -24,7 +24,7 @@ Each of these special objects has an associated method of the base
 class used for accessing the object.   They are demonstrated here:
 [% END %]
 
-[% WRAPPER codeexample -%]
+[% WRAPPER codesample -%]
 my $mode_object   = $object -> mo;
 my $plot_object   = $object -> po;
 my $config_object = $object -> co;

@@ -15,8 +15,18 @@ foreach my $key (qw(comment_normal comment_pod directive label quote
 
 };
 
+sub filter_with_linum {
+  my $text = shift;
+  filter($text, 1);
+};
+sub filter_without_linum {
+  my $text = shift;
+  filter($text, 0);
+};
+
 sub filter {
   my $text = shift;
+  my $do_linum = shift;
   my $formatter = new Syntax::Highlight::Perl;
   $formatter->unstable(0);
   $formatter->set_format(
@@ -52,10 +62,14 @@ sub filter {
   my @lines = split(/\n/, $text);
   my $return_text = q{};
   foreach my $l (@lines) {
-    my $ln = sprintf("%5s", $formatter->line_count()+1);
-    $ln =~ s{ }{&nbsp;}g;
-    $ln = $formatter->format_token($ln, 'Line');
-    $return_text .= "$ln&nbsp;&nbsp;";
+    if ($do_linum) {
+      my $ln = sprintf("%5s", $formatter->line_count()+1);
+      $ln =~ s{ }{&nbsp;}g;
+      $ln = $formatter->format_token($ln, 'Line');
+      $return_text .= "$ln&nbsp;&nbsp;";
+    } else {
+      $return_text .= "&nbsp;&nbsp;";
+    };
     my $this = $formatter->format_string($l);
     while ($this =~ m{(\s{2,})}) {
       my $space = "&nbsp;" x length($1);
@@ -68,7 +82,8 @@ sub filter {
 };
 sub load {
   my ($class, $context) = @_;
-  $context->define_filter('highlighter', \&filter);
+  $context->define_filter('highlighter', \&filter_with_linum);
+  $context->define_filter('highlighter_nolinum', \&filter_without_linum);
   return $class;
 };
 1;

@@ -8,7 +8,7 @@ sentinal, pathindex, [% INCLUDE font/mono a="everything" %] method
 get all objects from this instance of [% demeter %]:
 [% END %]
 
-[% WRAPPER codeexample -%]
+[% WRAPPER codesample -%]
 my @all_atoms  = @{ $any_object->mo->Atoms };
 my @all_data   = @{ $any_object->mo->Data };
 my @all_feff   = @{ $any_object->mo->Feff };

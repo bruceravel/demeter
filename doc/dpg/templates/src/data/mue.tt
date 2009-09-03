@@ -33,7 +33,7 @@ the rare case that [% mu %] data is not recognized as such, it can be
 explicitly specified like so:
 [% END %]
 
-[% WRAPPER codeexample -%]
+[% WRAPPER codesample -%]
 $data -> datatype('mu');
 [% END %]
 
@@ -73,7 +73,7 @@ module which comes with [% demeter %].
 To obtain [% INCLUDE font/mono a="bkg_rbkg" %], the [% rbkg %] value
 for background removal, you can do this: [% END %]
 
-[% WRAPPER codeexample -%]
+[% WRAPPER codesample -%]
 my $rbkg = $data -> bkg_rbkg;
 [% END %]
 
@@ -81,7 +81,7 @@ my $rbkg = $data -> bkg_rbkg;
 To set a new value for [% rbkg %], do this:
 [% END %]
 
-[% WRAPPER codeexample -%]
+[% WRAPPER codesample -%]
 $data -> bkg_rbkg(1.2);
 [% END %]
 
@@ -91,7 +91,7 @@ To get and set several parameters at a time, you can use the
 [% INCLUDE font/mono a="set" %] methods:
 [% END %]
 
-[% WRAPPER codeexample -%]
+[% WRAPPER codesample -%]
 my @values = $data -> get('bkg_rbkg', 'bkg_nor1', 'bkg_nor2');
 $data -> set(bkg_rbkg => 1.2, bkg_nor1 => 50, bkg_nor2 => 600);
 [% END %]

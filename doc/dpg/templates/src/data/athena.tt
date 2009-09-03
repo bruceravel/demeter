@@ -73,7 +73,7 @@ ways.  To obtain a listing of contents of the project file, use the
 [% INCLUDE font/mono a='list' %] method.
 [% END %]
 
-[% WRAPPER codeexample -%]
+[% WRAPPER codesample -%]
 print $prj -> list;
    ##==prints==>
    # #     record
@@ -88,7 +88,7 @@ To create a simple table of parameter values, supply a list of
 attribute names to the [% INCLUDE font/mono a='list' %] method.
 [% END %]
 
-[% WRAPPER codeexample -%]
+[% WRAPPER codesample -%]
 print $prj -> list(qw(bkg_rbkg fft_kmin));
   ## ==prints==>
   #  #     record         bkg_rbkg   fft_kmin
