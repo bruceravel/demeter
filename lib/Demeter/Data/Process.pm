@@ -197,9 +197,11 @@ sub Truncate {
 
   my $string = q{};
   if (lc($beforeafter) =~ m{\Ab}) { # truncate preceding values
-    $string = $self->template("process", "truncate_before");
+    $string  = $self->template("process", "truncate_before");
+    $string .= $self->template("process", "trun_signal_before") if ($self->datatype eq "xmu");
   } else {			    # truncate following values
-    $string = $self->template("process", "truncate_after");
+    $string  = $self->template("process", "truncate_after");
+    $string .= $self->template("process", "trun_signal_after")  if ($self->datatype eq "xmu");
   };
   $self->dispose($string);
 

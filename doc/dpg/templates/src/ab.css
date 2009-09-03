@@ -136,6 +136,16 @@ pre {
   margin-left: 4%;
   margin-right: 10%;
 }
+.todo {
+  background: #ccffea;
+  border-top: solid 3px #274f3e;
+  border-left: solid 20px #274f3e;
+  border-bottom: solid 3px #274f3e;
+  border-right: solid 3px #274f3e;
+  padding: 8px;
+  margin-left: 4%;
+  margin-right: 10%;
+}
 
 .key {
   font: 0.9em monospace;

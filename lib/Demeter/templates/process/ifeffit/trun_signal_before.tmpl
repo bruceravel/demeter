@@ -1,0 +1,8 @@
+{ # -*- ifm -*-
+  # truncate a i0 and signal from an energy data group
+  #   {$D->group}  returns the ifeffit group name
+  #   {$D->parameter} returns the value of that parameter
+  #   {$C->get("parameter")} returns the generic parameter
+}
+set({$D->group}.i0     = slice({$D->group}.i0,     trun___n, trun___end),
+    {$D->group}.signal = slice({$D->group}.signal, trun___n, trun___end) )

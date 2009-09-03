@@ -1,5 +1,75 @@
 [% META title = 'Object methods' %]
 
+[% PROCESS section label="Manually inputing crystal data" %]
+
 [% FILTER html_para %]
-Object methods
+Starting with this [% INCLUDE font/file a="atoms.inp" %] file
+[% END %]
+
+[% WRAPPER html/pre %]
+title YBCO: Y Ba2 Cu3 O7 
+space P M M M 
+rmax=5.2              a 3.823   b 3.886 c 11.681
+core=cu2
+atom
+! At.type   x        y       z      tag
+   Y       0.5      0.5     0.5   
+   Ba      0.5      0.5     0.184
+   Cu      0        0       0        cu1
+   Cu      0        0       0.356    cu2
+   O       0        0.5     0        o1
+   O       0        0       0.158    o2
+   O       0        0.5     0.379    o3
+   O       0.5      0       0.377    o4
+[% END %]
+
+[% FILTER html_para %]
+you can manually load up the attributes of the Atoms object.  This is
+what the [% atoms %] interface in [% artemis %] does.  A
+straight-forward, brute-force approach is shown in this example:
+[% END %]
+
+[% WRAPPER codeexample -%]
+#!/usr/bin/perl
+use Demeter;
+
+my $atoms = Demeter::Atoms->new();
+$atoms -> set(a=>3.823, b=>3.886, c=>11.681);
+$atoms -> space('P M M M');
+## add each site
+$atoms -> push_sites( join("|", 'Y',  0.5, 0.5, 0.5,   'y'  ) );
+$atoms -> push_sites( join("|", 'Ba', 0.5, 0.5, 0.184, 'ba' ) );
+$atoms -> push_sites( join("|", 'Cu', 0.0, 0.0, 0.0,   'cu1') );
+$atoms -> push_sites( join("|", 'Cu', 0.0, 0.0, 0.356, 'cu2') );
+$atoms -> push_sites( join("|", 'O',  0.0, 0.5, 0.0,   'o1' ) );
+$atoms -> push_sites( join("|", 'O',  0.0, 0.0, 0.158, 'o2' ) );
+$atoms -> push_sites( join("|", 'O',  0.0, 0.5, 0.379, 'o3' ) );
+$atoms -> push_sites( join("|", 'O',  0.5, 0.0, 0.377, 'o4' ) );
+$atoms -> core('cu2');
+$atoms -> set(rpath=>5.2, rmax => 8);
+print $atoms->Write("feff6");
+[% END %]
+
+[% FILTER html_para %]
+Once all the data is set, simply call the 
+[% INCLUDE font/mono a="Write" %] method and the object will take care
+of populating the cell and explanding the cluster.
+
+Note the odd syntax in lines 8 through 15 for loading the
+[% INCLUDE font/mono a="sites" %] attribute.  The elements of that
+array are strings of vertical-bar-separated values of element symbol,
+fractional x coordinate, fractional y coordinate, fractional z
+coordinate, and tag.  Note that the tag has a limit of 10 characters.
+
+At line 16, the central atom is chosen by specifying a valid tag as
+the value of the [% INCLUDE font/mono a="core" %] attribute.
+[% END %]
+
+[% PROCESS section label="Other methods" %]
+
+[% FILTER html_para %]
+Absorption calculations: xsec, deltamu density mcmaster i0 selfsig
+selfamp netsig
+
+Mentions cluster and nclus attributes
 [% END %]

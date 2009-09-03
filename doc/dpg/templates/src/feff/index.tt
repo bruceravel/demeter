@@ -2,5 +2,75 @@
 	chapter = 1 %]
 
 [% FILTER html_para -%]
-Feff
+[% ifeffit %] ships with a free copy of [% feff %].  Although deep
+support for [% feff8 %] is on the long range list of objectives for 
+[% demeter %], currently only [% feff6 %] is well supported.  This
+seems reasonable as [% demeter %] currently have no special
+capabilities for XANES or other inner shell spectroscopy analysis
+beyond basic, [% athena %]-level functionality.
+
+When run outside of [% demeter %], [% feff6 %] is usually treated as a
+single program that starts by reading an input file and ends by
+writing out [% INCLUDE font/file a="feffNNNN.dat" %] files containing
+the contributions from each individual scattering path.  In fact, 
+[% feff %] runs in five distinct steps:
+[% END %]
+
+[% WRAPPER html/list type="ol" %]
+[% WRAPPER html/li %]
+Read the [% INCLUDE font/file a="feff.inp" %] file
+[% END %]
+[% WRAPPER html/li %]
+Compute the atomic potentials (called [% INCLUDE font/em a="potph" %]
+in the internal language of the [% feff %] program)
+[% END %]
+[% WRAPPER html/li %]
+Find all possible scattering paths with the cluster defined by the
+[% INCLUDE font/file a="feff.inp" %] file ([% INCLUDE font/em a="pathfinder" %])
+[% END %]
+[% WRAPPER html/li %]
+Using the geometric information from the paths finder and the atomic
+potentials, compute the contribution from each scattering path
+([% INCLUDE font/em a="genfmt" %])
+[% END %]
+[% WRAPPER html/li %]
+Sum the contributions from the scattering paths into a calculated 
+[% chik %] ([% INCLUDE font/em a="ff2chi" %])
+[% END %]
+[% END %]
+
+[% FILTER html_para -%]
+It is actually possibly to run each of these steps independently of
+the others by using the [% INCLUDE font/mono a="PRINT" %] keyword in
+the [% INCLUDE font/file a="feff.inp" %] file.  That keyword takes
+four arguments which turn on and off the potph, pathfinder, genfmt,
+and ff2chi parts of [% feff %].  Thus it is relatively easy to break 
+[% feff %] down into its constituent parts, thus gaining fine-grained
+control over how [% feff %] behaves.
+
+[% demeter %] exploits this fine grained control.  The potph part of
+[% feff %] is run normally.  [% feff %]'s pathfinder is not used by 
+[% demeter %], as discussed in
+[% INCLUDE html/link text="a later section" link="pathfinder.html" %].
+
+The genfmt part of [% feff %] is used by [% demeter %], but not in the
+normal way.  Individual paths are computed one at a time and only when
+needed.  This just-in-time calculation of scattering path
+contributions happens behind the scenes.  As [% demeter %] user, you
+should never have to worry about the individual paths being
+calculated.  In much the same way that you can trust [% demeter %] to
+perform background removal and Fourier transforms of data as needed
+for plotting, you can trust that whenever you wish to plot a path or
+use it in a fit, [% demeter %] will calculate it if needed or reuse it
+if it is still up to date.
+
+Finally, the ff2chi part of [% feff %] is never used.  You could say
+that [% ifeffit %] is an elaborate re-write of ff2chi!
+
+[% demeter %]'s interface to [% feff %] is one of its more elaborate
+parts and it offers several powerful, new features that may be
+unfamliar even to the experienced [% feff %] user.  By the end of this
+chapter, you should be able to create rich, feature-full tools which
+access the capabilities of [% feff %] for simulation or fitting of
+EXAFS spectra.
 [% END %]

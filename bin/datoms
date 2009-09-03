@@ -21,7 +21,7 @@ use Regexp::Common;
 use Readonly;
 Readonly my $NUMBER => $RE{num}{real};
 
-my ($feff6, $feff8, $abs, $sg, $rmax, $cif, $record, $atinp, $wx) = (0, 0, 0, 0, 0, 0, 1, 0, 0);
+my ($feff6, $feff8, $abs, $sg, $p1, $rmax, $cif, $record, $atinp, $wx) = (0, 0, 0, 0, 0, 0, 0, 1, 0, 0);
 my $result = GetOptions (
 			 "c|cif"    => \$cif,
 			 "rec=i"    => \$record,
@@ -30,6 +30,7 @@ my $result = GetOptions (
 			 "8"	    => \$feff8,
 			 "a"	    => \$abs,
 			 "s"	    => \$sg,
+			 "p"	    => \$p1,
 			 "atoms"    => \$atinp,
 			 "wx"       => \$wx,
 			);
@@ -46,6 +47,7 @@ my $which = ($feff6) ? "feff6"
           : ($feff8) ? "feff8"
           : ($abs)   ? "absorption"
           : ($sg)    ? "spacegroup"
+          : ($p1)    ? "p1"
           : ($atinp) ? "atoms"
           :            "feff6" ;
 $atoms -> set(rmax=>$rmax) if ($rmax and $rmax =~ m{\A$NUMBER\z});

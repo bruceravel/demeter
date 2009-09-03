@@ -33,11 +33,15 @@ my @attributes = (bkg_pre1   => -30,    bkg_pre2   => -150,
 		 );
 
 my $d0 = Demeter::Data -> new(@attributes);
-$d0 -> set(file=>"$where/data/fe.060.xmu", name=>'60K');
+$d0 -> set(file=>"$where/data/fe.060", name=>'60K',
+	   ln	       => 1,
+	   energy      => q{$1},
+	   numerator   => q{$2},
+	   denominator => q{$3});
 
 my $plot = $d0->po;
 $plot->set_mode(screen=>0, repscreen=>0);
-$plot->set(emin=>-100, emax=>700, e_norm=>0, e_markers=>1);
+$plot->set(emin=>-100, emax=>700, e_norm=>0, e_markers=>1,);
 
 print "plotting original data\n";
 $d0 -> plot('E');
@@ -52,7 +56,11 @@ sleep 3;
 $plot->start_plot;
 
 print "plotting original data\n";
-$d0 -> file("$where/data/fe.060.xmu",); # resetting file resets all
+$d0 -> file("$where/data/fe.060",
+	    ln		=> 1,
+	    energy	=> q{$1},
+	    numerator	=> q{$2},
+	    denominator	=> q{$3}); # resetting file resets all
 $d0 -> plot('E');		        # data processing chores!
 
 print "plotting data truncated after 7500\n";

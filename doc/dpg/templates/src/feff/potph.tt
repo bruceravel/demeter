@@ -1,5 +1,12 @@
 [% META title = 'Computng potentials' %]
 
 [% FILTER html_para %]
-Computing potentials
+The part of [% feff %] that computes potentials is one of its
+essential parts and is used by [% demeter %].  Continuing with the
+example from the previous section, we can use an instrumented Feff
+object to compute potentials.
+[% END %]
+
+[% WRAPPER codesample -%] 
+$feff->potph
 [% END %]

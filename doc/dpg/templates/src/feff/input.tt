@@ -1,5 +1,61 @@
 [% META title = 'Input data for Feff' %]
 
 [% FILTER html_para %]
-Input data for Feff
+[% feff %] is, let's face it, a bit long in the tooth.  It requires
+that its instructions be contained is a rather rigidly structured
+textual input file.  The keywords of the file are called 
+[% INCLUDE font/quote a="cards" %] in the [% feff %] documentation --
+a word whose etymology probably escapes [% feff %]'s younger users.
+
+[% demeter %] goes through some serious gymnastics in an attempt to
+hide [% feff %]'s clunky interface.  The need for an input file is
+unavoidable and [% demeter %] does, in fact, read in and write out [%
+INCLUDE font/file a="feff.inp" %] files repeatedly.  It does so,
+however, in a stealthy way that should require the attention of the
+programmer using [% demeter %] only at the very beginning of the
+process.
+
+Creating a Feff object and populating with the contents of a
+[% INCLUDE font/file a="feff.inp" %] file are done in a way that
+should be quite familiar at this point:
+[% END %]
+
+[% WRAPPER codeexample -%] 
+#!/usr/bin/perl
+use Demeter;
+
+my $feff = Demeter::Feff -> new(file => "feff/feff.inp");
+$feff->set(workspace=>"feff/", screen=>0,);
+[% END %]
+
+[% FILTER html_para %]
+Because [% feff %] is heavily dependent on disk-based IO to do its
+work, you must specify a [% INCLUDE font/mono a="workspace" %].  This
+is a directory on disk where the various files  that [% feff %] needs
+to do its business can be written.  In the example that will be
+running through this section, that workspace is a subdirectory called 
+[% INCLUDE font/file a="feff/" %].
+
+The [% INCLUDE font/mono a="screen" %] attribute is a boolean which
+will suppress the messages the [% feff %] would normally write to
+standard output when set to 0.
+
+When the [% INCLUDE font/mono a="file" %] attribute is set, that input
+file will be parsed and its contents stored as attributes of the Feff
+object.  At this point, the new Feff object is fully instrumented and
+ready to start being used for interesting work.
+[% END %]
+
+
+[% WRAPPER html/todo %] 
+A method of the Feff
+object to directly import an Atoms object without needing to write
+and read a [% INCLUDE font/file a="feff.inp" %] file.
+[% END %]
+
+[% WRAPPER html/todo %] 
+Integration with 
+[% INCLUDE html/link text="OpenBabel" link="http://openbabel.org/" %]
+so that other cluster file formats can be used directly as input to 
+[% feff %].
 [% END %]

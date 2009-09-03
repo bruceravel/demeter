@@ -191,15 +191,41 @@ everything between parentheses will be sent to [% ifeffit %] as a
 single string.  This is accomplished within the [% INCLUDE font/mono
 a="dispose" %] method via the application of a few regular
 expressions.  The reprocessed string is then sent to [% ifeffit %].
-Depending on the template set used, this optimization ranges from
-significant to extremely significant.
+
+As a small example of how reprocessing works, this human-friendly
+command:
+[% END %]
+
+[% WRAPPER html/pre %]
+pre_edge("data0.energy+0",
+         data0.xmu,
+         e0         = -9999999,
+         pre1       = -150,
+         pre2       = -30,
+         norm_order = 3,
+         norm1      = 150,
+         norm2      = 1800)                                                                                            
+[% END %]
+
+[% FILTER html_para %]
+will be reprocessed into this one-line command before being shuffled
+off to [% ifeffit %].
+[% END %]
+
+[% WRAPPER html/pre %]
+pre_edge("data0.energy+0", data0.xmu, e0=-9999999, pre1=-150, pre2=-30, norm_order=3, norm1=150, norm2=1800)
+[% END %]
+
+[% FILTER html_para %]
+which, when summed over dozens or hundreds of [% ifeffit %] commands,
+results in a substantial performance improvement.
 
 The [% INCLUDE font/mono a="repscreen" %] and 
 [% INCLUDE font/mono a="repfile" %] disposal targets are provided to
-check up on the behavior of this optimization.  It is quite well
-tested, but if you suspect that reprocessing is damaging the commands
-sent to [% ifeffit %] use one of those disposal channels to see the
-text that is actually being sent.
+debug the behavior of this optimization.  Reprocessing is quite well
+tested.  However, if you suspect that reprocessing is damaging the
+commands sent to [% ifeffit %], use one of those disposal channels to
+see the text that is actually being sent.
 [% END %]
 
 
@@ -215,11 +241,11 @@ specific backend targets, and
 [% INCLUDE font/quote a="template groups" %] which, are groups of
 templates which serve related functions.  All template sets must
 have a complete representation of template groups to be fully
-functional. 
+functional.
 
 The templates are found in [% INCLUDE font/file a="lib/templates/" %]
 directory underneath the installation location of the [% demeter %]
-package.  One of the reasons for exaplaining the templating system in
+package.  One of the reasons for explaining the templating system in
 this level of detail is to underscore that it is quite possible to add
 new template sets.  By following the model of the existing template
 sets, new output types can be created for [% demeter %].  Indeed, when
@@ -283,10 +309,14 @@ strange.  Its purpose is, indeed, to allow [% demeter %] programs to
 write [% demeter %] programs.  The intent is to allow a GUI to export
 a file containing a [% demeter %] program that can be used to make a
 fit using the same fitting model that was created using the GUI.
-[% END %]
 
+The possibility of having these different output targets is the main
+reason for using a templating system.  Having command creation
+containined in these small template files separate from the code may
+seem like an unnecessary layer of abstraction and misdirection, but it
+offers [% demeter %] a lot of flexibility and power.  This is even
+more evident for the plotting backends.
 
-[% FILTER html_para %]
 [% demeter %] currently ships with two different sets in the plotting
 category.  More information about plotting backends can be found in
 [% INCLUDE html/link text="the user interface chapter" link="../ui.html" %].
@@ -307,6 +337,16 @@ have to do separate from the installation of [% demeter %].
 [% END %]
 
 [% FILTER html_para %]
+In the future, I would like to add more plotting backends to
+[% demeter %].  Certainly, any of the plot creation tools from CPAN
+(such as 
+[% INCLUDE html/link text="GD" link="http://search.cpan.org/~lds/GD/" %]
+or
+[% INCLUDE html/link text="Chart" link="http://search.cpan.org/~chartgrp/Chart/" %])
+would be possible, as would something like
+[% INCLUDE html/link text="Grace" link="http://plasma-gate.weizmann.ac.il/Grace/" %],
+which uses a text file as its input.
+
 [% demeter %] currently ships with two different sets in the [% feff %]
 input template category, one for [% feff6 %] and one for [% feff8 %].
 (Actually the [% feff8 %] set has not yet been written at the time
@@ -350,4 +390,12 @@ The first four groups must be provided completely by any template set.
 Although if a template is missing from a template set, [% demeter %]
 will fall back to using the template for that chore found in the 
 [% INCLUDE font/mono a="ifeffit" %] set.
+[% END %]
+
+[% PROCESS subsection label="The template method" %]
+
+[% FILTER html_para %]
+Explain syntax.
+
+Explain default objects.
 [% END %]
