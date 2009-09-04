@@ -35,7 +35,7 @@ my @data = (Demeter::Data -> new(),
 	   );
 foreach (@data) { $_ -> set(@common_to_all_data_sets) };
 $data[0] -> set(file => "$where/data/fe.060.xmu", name => 'Fe 60K', );
-$data[1] -> set(file => "$where/data/cu010k.dat", name => 'Cu 10K', y_offset => -0.4);
+$data[1] -> set(file => "$where/data/cu010k.dat", name => 'Cu 10K', ); #y_offset => -0.4);
 
 my $plot = $data[0]->po;
 $plot->set_mode(screen=>0, repscreen=>0);

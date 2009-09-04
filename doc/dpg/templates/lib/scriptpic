@@ -4,18 +4,15 @@
    parts = fst.split('\.');
    label = parts.first;
    dots  = template.nosubpages ? "../images" : "../../images";
+   file = "${dots}/${this}";
 %]
-<table>
-<tr>
-<td width=50% align=top>
-<strong><font size=+1>Example plot:</font><br><u>[% title %]</u></strong><br>
-[% WRAPPER codesample %]
+<span class=plottitle>[% title %]</span>
+[% WRAPPER html/perlblock %]
+[% FILTER html_line_break %]
+[% FILTER highlighter_nolinum %]
 [%- content -%]
 [% END %]
-</td>
-<td width=50% align=center>
-[%- file = "${dots}/${this}" -%] 
-<img src="[% file %]" width=100%>
-</td>
-</tr>
-</table>
+<a href="[% file %]" target="_blank">Click here to see this plot in a new window</a>
+[% END %]
+[% END %]
+

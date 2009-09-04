@@ -2,13 +2,48 @@
 
 [% FILTER html_para %]
 The Plot object is used to control the details of how plots are made
-and displayed by [% demeter %] programs.
+and displayed by [% demeter %] programs.  It is useful to consider how
+[% athena %] works in order to understand the relationship of the Plot
+object to the rest of [% demeter %].  In [% athena %], the plot
+controls are separate from the controls for the parameters of any
+individual data set.  For example, the range over which data are
+plotted in energy or R-space is, in some, sense, a global parameter
+not associated with a particular data set.  The Plot object serves
+this role.  The details of the plot in [% demeter %] are global.  To
+plot a plottable object (Data, Path, or any of the Path-like objects),
+[% demeter %] consults the Plot object for those details.
+
+To make the Plot object readily accessible at all times in your
+program, the [% INCLUDE font/mono a="po" %] method is a method of the
+base class and is inherited by all [% demeter %] objects.  Thus, given
+any object, you can [% INCLUDE font/quote a="find" %] the Plot object
+like so:
+[% END %]
+
+[% WRAPPER codesample -%]
+$the_plot_object = $any_object -> po;
+[% END %]
+
+[% FILTER html_para %]
+Any method of the plot object is easily called by chaining with the 
+[% INCLUDE font/mono a="po" %] method.  For example to start a new
+plot (as opposed to overplotting), you do this
+[% END %]
+
+[% WRAPPER codesample -%]
+$any_object -> po -> start_plot;
+[% END %]
+
+[% FILTER html_para %]
+The [% INCLUDE font/mono a="start_plot" %] method reinitializes the
+Plot object to begin a new plot.  Along with clearing the plotting
+display, this restarts the trace colors and resets the plot title.
 [% END %]
 
 [% PROCESS section label="Plotting in energy" %]
 
 
-[% WRAPPER scriptpic this="plot_e_prepost.png" title="mu + background + pre-edge + post-edge" %]
+[% WRAPPER scriptpic this="plot_e_prepost.png" title="Data, background, pre-edge, & post-edge" -%]
 my @eplot = (e_mu      => 1,     e_bkg     => 1,
              e_norm    => 0,     e_der     => 0,
              e_pre     => 1,     e_post    => 1,
@@ -22,7 +57,36 @@ $data -> po -> start_plot;
 $data -> plot;
 [% END %]
 
-[% WRAPPER scriptpic this="plot_e_norm.png" title="normalized mu + normalized background" %]
+[% FILTER html_para %]
+This example demonstrates the common and useful plot showing the data
+along with the background function and the regressed polynomials used
+to normalize the data.  Note that the Plot object has a number of
+boolean attributes which turn features of the energy plot on and off.
+Also note that the range of the plot is set by
+the values of the [% INCLUDE font/mono a="emin" %] and 
+[% INCLUDE font/mono a="emax" %] attributes of the Plot object.
+
+Also note that, as was discussed in
+[% INCLUDE html/link text="the chapter on the Data object"
+                     link="../data/index.html" %],
+there is no need to explicitly perform the data normalization or
+background removal.  [% demeter %] knows what needs to be done to
+bring the data up to date for plotting and will perform all necessary
+chores before actually generating the plot.  This allows you to focus
+on what you need to accomplish.
+
+One final point about this example.  I have created the
+[% INCLUDE font/mono a="\@eplot" %]
+array to hold the attributes of the Plot object.  I then pass that
+array as the argument of the [% INCLUDE font/mono a="set" %] method of
+the Plot object.  Those attributes could be listed as explicit
+arguments of the [% INCLUDE font/mono a="set" %] method.  As always in
+perl, 
+[% INCLUDE html/link text="there's more than one way to do it"
+link="http://en.wikipedia.org/wiki/There's_more_than_one_way_to_do_it" %].
+[% END %]
+
+[% WRAPPER scriptpic this="plot_e_norm.png" title="Normalized data & background" -%]
 my @eplot = (e_mu      => 1,     e_bkg     => 1,
              e_norm    => 1,     e_der     => 0,
              e_pre     => 0,     e_post    => 0,
@@ -37,7 +101,12 @@ $data -> po -> start_plot;
 $data -> plot;
 [% END %]
 
-[% WRAPPER scriptpic this="plot_e_flat.png" title="flattened mu + flattened background" %]
+[% FILTER html_para %]
+This example shows how to plot data and background function after
+normalization. 
+[% END %]
+
+[% WRAPPER scriptpic this="plot_e_flat.png" title="Flattened data & background" -%]
 my @eplot = (e_mu      => 1,     e_bkg     => 1,
              e_norm    => 1,     e_der     => 0,
              e_pre     => 0,     e_post    => 0,
@@ -50,6 +119,106 @@ $data -> po -> set(@eplot);
 $data -> bkg_flatten(1);
 $data -> po -> start_plot;
 $data -> plot;
+[% END %]
+
+[% FILTER html_para %]
+This example shows how to plot the flattened data and background
+function, that is, the normalized data with the difference in slope
+and quadrature between the pre- and post-edge lines subtracted out
+after the edge.  Note that the switch for turning flattening on and
+off is an attribute of the Data object  
+[% INCLUDE font/b a="not" %] the Plot object.  This allows the option
+of overplotting one data set that is normalized with another that is
+flattened. 
+[% END %]
+
+[% WRAPPER scriptpic this="plot_e_i0signal.png" title="Derivative of mu" -%]
+my @eplot = (e_mu      => 1,     e_bkg     => 0,
+             e_norm    => 0,     e_der     => 1,
+             e_pre     => 0,     e_post    => 0,
+             e_i0      => 0,     e_signal  => 0,
+             e_markers => 0,
+             emin      => -20,   emax      => 120,
+             space     => 'E',
+            ); 
+$data -> po -> start_plot;
+$data -> set(name=>'derivative') -> plot;
+$data -> po -> e_norm(1);
+$data -> set(name=>'norm. deriv.') -> plot;
+[% END %]
+
+[% FILTER html_para %]
+This example shows two interesting features we haven't yet seen.  This
+shows how things get overplotted, in this case the derivative of 
+[% mu %] and the derivative of normalized [% mu %].  The overplotting
+happens simply by calling the [% INCLUDE font/mono a="plot" %] mthod a
+second time without calling [% INCLUDE font/mono a="start_plot" %].
+In this way, any number of things can be overplotted.
+
+Also note the use of chained method calls to set the Data object's
+[% INCLUDE font/mono a="name" %] attribute appropriately before
+plotting.  The [% INCLUDE font/mono a="name" %] method always returns
+the object that called it, which allows for this sort of chaining
+magic to happen.  There is no advantage to chained method calls -- you
+could rename the Data object and then plot it in the subsequent line.
+The cahined calls are a bit more concise.
+[% END %]
+
+[% WRAPPER scriptpic this="plot_e_i0signal.png" title="Data, I0 channel, & signal channel" -%]
+my @eplot = (e_mu      => 1,     e_bkg     => 0,
+             e_norm    => 0,     e_der     => 0,
+             e_pre     => 0,     e_post    => 0,
+             e_i0      => 1,     e_signal  => 1,
+             e_markers => 0,
+             emin      => -20,   emax      => 120,
+             space     => 'E',
+            ); 
+$data -> po -> start_plot;
+$data -> plot;
+[% END %]
+
+[% FILTER html_para %]
+[% demeter %] saves arrays containing [% i0 %] and the signal
+channel, which can then be plotted along with the data.  
+[% demeter %] takes care to scale these arrays so that they plot
+nicely with the data.
+[% END %]
+
+
+[% WRAPPER scriptpic this="plot_e_ezero.png" title="Data at two
+different edges with E0 subtracted" -%]
+my @common = (bkg_rbkg    => 1.5,
+              bkg_spl1    => 0,    bkg_spl2    => 18,
+              bkg_nor2    => 1800,
+              bkg_flatten => 1,
+             );
+my @data = (Demeter::Data -> new(),
+            Demeter::Data -> new(),
+           );
+foreach (@data) { $_ -> set(@common) };
+$data[0] -> set(file => "$where/data/fe.060.xmu",
+                name => 'Fe 60K', );
+$data[1] -> set(file => "$where/data/cu010k.dat",
+                name => 'Cu 10K', );
+
+## decide how to plot the data
+$plot -> set(e_mu    => 1,   e_bkg   => 0,
+             e_norm  => 1,
+             e_pre   => 0,   e_post  => 0,
+             e_zero  => 1,
+             emin    => -30, emax    => 150,
+            );
+foreach (@data) { $_ -> plot('E') };
+[% END %]
+
+[% FILTER html_para %]
+[% demeter %] offers an easy way to plot [% mu %] data with the 
+[% e0 %] value subtracted.  This places the edge at 0 on the x-axis,
+allowing you to overplot data from different edges.  When the
+[% INCLUDE font/mono a="e_zero" %] attribute of the Plot object is set
+to 1, each Data object's [% INCLUDE font/mono a="bkg_eshift" %]
+attribute is temporarily set so that the edge will show up at 0 in the
+plot. 
 [% END %]
 
 [% PROCESS section label="Plotting in k" %]
