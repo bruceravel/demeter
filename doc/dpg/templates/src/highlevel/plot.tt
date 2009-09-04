@@ -4,3 +4,57 @@
 The Plot object is used to control the details of how plots are made
 and displayed by [% demeter %] programs.
 [% END %]
+
+[% PROCESS section label="Plotting in energy" %]
+
+
+[% WRAPPER scriptpic this="plot_e_prepost.png" title="mu + background + pre-edge + post-edge" %]
+my @eplot = (e_mu      => 1,     e_bkg     => 1,
+             e_norm    => 0,     e_der     => 0,
+             e_pre     => 1,     e_post    => 1,
+             e_i0      => 0,     e_signal  => 0,
+             e_markers => 1,
+             emin      => -200,  emax      => 2000,
+             space     => 'E',
+            ); 
+$data -> po -> set(@eplot);
+$data -> po -> start_plot;
+$data -> plot;
+[% END %]
+
+[% WRAPPER scriptpic this="plot_e_norm.png" title="normalized mu + normalized background" %]
+my @eplot = (e_mu      => 1,     e_bkg     => 1,
+             e_norm    => 1,     e_der     => 0,
+             e_pre     => 0,     e_post    => 0,
+             e_i0      => 0,     e_signal  => 0,
+             e_markers => 1,
+             emin      => -200,  emax      => 2000,
+             space     => 'E',
+            ); 
+$data -> po -> set(@eplot);
+$data -> bkg_flatten(0);
+$data -> po -> start_plot;
+$data -> plot;
+[% END %]
+
+[% WRAPPER scriptpic this="plot_e_flat.png" title="flattened mu + flattened background" %]
+my @eplot = (e_mu      => 1,     e_bkg     => 1,
+             e_norm    => 1,     e_der     => 0,
+             e_pre     => 0,     e_post    => 0,
+             e_i0      => 0,     e_signal  => 0,
+             e_markers => 1,
+             emin      => -200,  emax      => 2000,
+             space     => 'E',
+            ); 
+$data -> po -> set(@eplot);
+$data -> bkg_flatten(1);
+$data -> po -> start_plot;
+$data -> plot;
+[% END %]
+
+[% PROCESS section label="Plotting in k" %]
+
+[% PROCESS section label="Plotting in R" %]
+
+[% PROCESS section label="Plotting in q" %]
+

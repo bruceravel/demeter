@@ -1,0 +1,21 @@
+[% USE PerlSyntaxHtml %]
+[% USE image "${rootdir}/images/${this}" %]
+[% ww    = image.width;
+   parts = fst.split('\.');
+   label = parts.first;
+   dots  = template.nosubpages ? "../images" : "../../images";
+%]
+<table>
+<tr>
+<td width=50% align=top>
+<strong><font size=+1>Example plot:</font><br><u>[% title %]</u></strong><br>
+[% WRAPPER codesample %]
+[%- content -%]
+[% END %]
+</td>
+<td width=50% align=center>
+[%- file = "${dots}/${this}" -%] 
+<img src="[% file %]" width=100%>
+</td>
+</tr>
+</table>
