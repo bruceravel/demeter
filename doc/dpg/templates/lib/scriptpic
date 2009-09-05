@@ -1,18 +1,12 @@
 [% USE PerlSyntaxHtml %]
-[% USE image "${rootdir}/images/${this}" %]
-[% ww    = image.width;
-   parts = fst.split('\.');
-   label = parts.first;
-   dots  = template.nosubpages ? "../images" : "../../images";
+[% dots  = template.nosubpages ? "../images" : "../../images";
    file = "${dots}/${this}";
 %]
+<br>
 <span class=plottitle>[% title %]</span>
-[% WRAPPER html/perlblock %]
-[% FILTER html_line_break %]
-[% FILTER highlighter_nolinum %]
+[% WRAPPER html/perlblock -%]
+[% FILTER highlighter %]
 [%- content -%]
-[% END %]
-<a href="[% file %]" target="_blank">Click here to see this plot in a new window</a>
-[% END %]
-[% END %]
+[%- END -%]
+[%- END -%]
 

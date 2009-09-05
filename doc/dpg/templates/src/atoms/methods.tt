@@ -48,7 +48,7 @@ $atoms -> push_sites( join("|", 'O',  0.5, 0.0, 0.377, 'o4' ) );
 $atoms -> core('cu2');
 $atoms -> set(rpath=>5.2, rmax => 8);
 print $atoms->Write("feff6");
-[% END %]
+[%- END %]
 
 [% FILTER html_para %]
 Once all the data is set, simply call the 

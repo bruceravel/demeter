@@ -116,25 +116,55 @@ pre {
   font: 1.3em sans-serif;
   font-weight: bold;
   color:#c75c1a;
-  border:1px dotted #c75c1a;
+  border-top:1px dotted #c75c1a;
+  border-bottom:1px dotted #c75c1a;
   padding-top: 2px;
   padding-bottom: 2px;
   padding-left: 16px;
-  padding-right: 8px;
+  padding-right: 16px;
 }
 
 .perlblock {
   font: 1em monospace; 
   margin-left: 5%;
-  margin-right: 10%;
+  margin-right: 2%;
+  margin-top: 8px;
+  margin-bottom: 0px;
+  background: #fff8ed;
+  border-top: solid 1px;
+  border-left: solid 1px;
+  border-bottom: solid 1px;
+  border-right: solid 1px;
+  padding-top: 2px;
+  padding-bottom: 8px;
+  padding-left: 8px;
+}
+.perlsample {
+  font: 1em monospace; 
+  margin-left: 5%;
+  margin-right: 2%;
+  margin-top: 8px;
+  margin-bottom: 0px;
   background: #fff8ed;
   border-top: solid 1px;
   border-left: solid 1px;
   border-bottom: solid 3px;
   border-right: solid 3px;
-  padding-top: 8px;
+  padding-top: 2px;
   padding-bottom: 8px;
   padding-left: 8px;
+}
+
+.olscript {
+  background-color: #e8e8e8;
+  padding-top: 2px;
+  padding-bottom: 8px;
+  padding-left: 8px;
+  padding: 0 0 0 0;
+  margin-left: 5%;
+  margin-right: 2%;
+  margin-top: 8px;
+  margin-bottom: 0px;
 }
 
 .caution {

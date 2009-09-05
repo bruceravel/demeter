@@ -63,10 +63,11 @@ sub filter {
   my $return_text = q{};
   foreach my $l (@lines) {
     if ($do_linum) {
-      my $ln = sprintf("%5s", $formatter->line_count()+1);
-      $ln =~ s{ }{&nbsp;}g;
-      $ln = $formatter->format_token($ln, 'Line');
-      $return_text .= "$ln&nbsp;&nbsp;";
+      #my $ln = sprintf("%5s", $formatter->line_count()+1);
+      #$ln =~ s{ }{&nbsp;}g;
+      #$ln = $formatter->format_token($ln, 'Line');
+      #$return_text .= "$ln&nbsp;&nbsp;";
+      $return_text .= "<li>";
     } else {
       $return_text .= "&nbsp;&nbsp;";
     };
@@ -78,6 +79,7 @@ sub filter {
     $return_text .= $this;
     $return_text .= $/;
   };
+  chomp $return_text;
   return $return_text;
 };
 sub load {

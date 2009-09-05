@@ -594,12 +594,12 @@ associated convenience method of the same name.
 
 =over 4
 
-=item type
+=item Type
 
 This is one of string, regex, real, "positive integer", list, boolean,
 color, or font.
 
-  print $object -> co -> type("fft", "kwindow")
+  print $object -> co -> Type("fft", "kwindow")
     ==prints==>
       list
 

@@ -211,8 +211,8 @@ A GDS object has these attributes:
 
 This is the name of the parameter.  It must respect the conventions
 for a parameter name in Ifeffit.  They can contain only letters,
-numbers, '&', '?', ':', and `_' (underscore).  They are limited to 64
-characters.  and cannot begin with a numeral.
+numbers, '&', '?', ':', and '_' (underscore).  They are limited to 64
+characters and cannot begin with a numeral.
 
 =item C<gds> (guess def set lguess restrain after merge skip)
 

@@ -43,7 +43,7 @@ display, this restarts the trace colors and resets the plot title.
 [% PROCESS section label="Plotting in energy" %]
 
 
-[% WRAPPER scriptpic this="plot_e_prepost.png" title="Data, background, pre-edge, & post-edge" -%]
+[% WRAPPER scriptpic title="Data, background, pre-edge, & post-edge" -%]
 my @eplot = (e_mu      => 1,     e_bkg     => 1,
              e_norm    => 0,     e_der     => 0,
              e_pre     => 1,     e_post    => 1,
@@ -57,7 +57,7 @@ $data -> po -> start_plot;
 $data -> plot;
 [% END %]
 
-[% FILTER html_para %]
+[% WRAPPER scriptcaption this="plot_e_prepost.png" %]
 This example demonstrates the common and useful plot showing the data
 along with the background function and the regressed polynomials used
 to normalize the data.  Note that the Plot object has a number of
@@ -74,7 +74,9 @@ background removal.  [% demeter %] knows what needs to be done to
 bring the data up to date for plotting and will perform all necessary
 chores before actually generating the plot.  This allows you to focus
 on what you need to accomplish.
+[% END %]
 
+[% FILTER html_para %]
 One final point about this example.  I have created the
 [% INCLUDE font/mono a="\@eplot" %]
 array to hold the attributes of the Plot object.  I then pass that
@@ -86,7 +88,7 @@ perl,
 link="http://en.wikipedia.org/wiki/There's_more_than_one_way_to_do_it" %].
 [% END %]
 
-[% WRAPPER scriptpic this="plot_e_norm.png" title="Normalized data & background" -%]
+[% WRAPPER scriptpic title="Normalized data & background" -%]
 my @eplot = (e_mu      => 1,     e_bkg     => 1,
              e_norm    => 1,     e_der     => 0,
              e_pre     => 0,     e_post    => 0,
@@ -101,12 +103,12 @@ $data -> po -> start_plot;
 $data -> plot;
 [% END %]
 
-[% FILTER html_para %]
+[% WRAPPER scriptcaption this="plot_e_norm.png" %]
 This example shows how to plot data and background function after
 normalization. 
 [% END %]
 
-[% WRAPPER scriptpic this="plot_e_flat.png" title="Flattened data & background" -%]
+[% WRAPPER scriptpic title="Flattened data & background" -%]
 my @eplot = (e_mu      => 1,     e_bkg     => 1,
              e_norm    => 1,     e_der     => 0,
              e_pre     => 0,     e_post    => 0,
@@ -121,7 +123,7 @@ $data -> po -> start_plot;
 $data -> plot;
 [% END %]
 
-[% FILTER html_para %]
+[% WRAPPER scriptcaption this="plot_e_flat.png" %]
 This example shows how to plot the flattened data and background
 function, that is, the normalized data with the difference in slope
 and quadrature between the pre- and post-edge lines subtracted out
@@ -132,7 +134,7 @@ of overplotting one data set that is normalized with another that is
 flattened. 
 [% END %]
 
-[% WRAPPER scriptpic this="plot_e_i0signal.png" title="Derivative of mu" -%]
+[% WRAPPER scriptpic title="Derivative of mu" -%]
 my @eplot = (e_mu      => 1,     e_bkg     => 0,
              e_norm    => 0,     e_der     => 1,
              e_pre     => 0,     e_post    => 0,
@@ -147,7 +149,7 @@ $data -> po -> e_norm(1);
 $data -> set(name=>'norm. deriv.') -> plot;
 [% END %]
 
-[% FILTER html_para %]
+[% WRAPPER scriptcaption this="plot_e_deriv.png" %]
 This example shows two interesting features we haven't yet seen.  This
 shows how things get overplotted, in this case the derivative of 
 [% mu %] and the derivative of normalized [% mu %].  The overplotting
@@ -164,7 +166,7 @@ could rename the Data object and then plot it in the subsequent line.
 The cahined calls are a bit more concise.
 [% END %]
 
-[% WRAPPER scriptpic this="plot_e_i0signal.png" title="Data, I0 channel, & signal channel" -%]
+[% WRAPPER scriptpic title="Data, I0 channel, & signal channel" -%]
 my @eplot = (e_mu      => 1,     e_bkg     => 0,
              e_norm    => 0,     e_der     => 0,
              e_pre     => 0,     e_post    => 0,
@@ -177,7 +179,7 @@ $data -> po -> start_plot;
 $data -> plot;
 [% END %]
 
-[% FILTER html_para %]
+[% WRAPPER scriptcaption this="plot_e_i0signal.png" %]
 [% demeter %] saves arrays containing [% i0 %] and the signal
 channel, which can then be plotted along with the data.  
 [% demeter %] takes care to scale these arrays so that they plot
@@ -185,8 +187,7 @@ nicely with the data.
 [% END %]
 
 
-[% WRAPPER scriptpic this="plot_e_ezero.png" title="Data at two
-different edges with E0 subtracted" -%]
+[% WRAPPER scriptpic title="Data at two different edges with E0 subtracted" -%]
 my @common = (bkg_rbkg    => 1.5,
               bkg_spl1    => 0,    bkg_spl2    => 18,
               bkg_nor2    => 1800,
@@ -208,10 +209,11 @@ $plot -> set(e_mu    => 1,   e_bkg   => 0,
              e_zero  => 1,
              emin    => -30, emax    => 150,
             );
+$data[0] -> po -> start_plot;
 foreach (@data) { $_ -> plot('E') };
 [% END %]
 
-[% FILTER html_para %]
+[% WRAPPER scriptcaption this="plot_e_ezero.png" %]
 [% demeter %] offers an easy way to plot [% mu %] data with the 
 [% e0 %] value subtracted.  This places the edge at 0 on the x-axis,
 allowing you to overplot data from different edges.  When the
@@ -223,7 +225,139 @@ plot.
 
 [% PROCESS section label="Plotting in k" %]
 
+[% WRAPPER scriptpic title="Plotting in k-space" -%]
+$data -> po -> start_plot;
+$data -> po -> kweight(2);
+$data -> plot('k');
+[% END %]
+
+[% WRAPPER scriptcaption this="plot_k.png" %]
+Again, [% demeter %] will take care of the background removal when you
+request a plot in k-space.  Note that the k-weight to use for plotting
+is an attribute of the Plot object.
+[% END %]
+
+[% WRAPPER scriptpic title="k-space with all three k-weights" -%]
+$data -> po -> start_plot;
+$data -> plot('k123');
+[% END %]
+
+[% WRAPPER scriptcaption this="plot_k_k123.png" %]
+[% demeter %] has several types of interesting, pre-defined plots.
+One of these, the [% INCLUDE font/quote a="k123 plot" %], will overplot
+the data three times, once each with k-weight values of 1, 2, and 3.
+The copy of the data with k-weight of two is plotted normally.  The
+other two copies are scaled up or down to be about the same size as
+the k-weight of 2 copy.  The data are analyzed and the scaling and
+offset constents are chosen to be apprporiate to the data.
+[% END %]
+
 [% PROCESS section label="Plotting in R" %]
+
+[% WRAPPER scriptpic title="Magnitude in R-space & R-space window" -%]
+$data -> po -> set(kweight => 2, r_pl => 'm', space => 'r', );
+$data -> po -> start_plot;
+$data -> plot -> plot_window;
+[% END %]
+
+[% WRAPPER scriptcaption this="plot_r_magwin.png" %]
+This example shows a common kind of plot, [% chir %] data with the
+back-Transform windowsing function, which is also used by 
+[% demeter %] as the fitting range when a fit is evaluated in R-space.
+The [% INCLUDE font/mono a="r_pl" %] attribute of the Plot object is
+set to [% INCLUDE font/mono a="m" %], indicating that the magnitude of
+[% chir %] should be plotted.
+
+Note that the [% INCLUDE font/mono a="plot_window" %] method was
+indicated in a chained method call.  This is not required, but is
+possible because the [% INCLUDE font/mono a="plot" %] method returns
+the calling object.
+
+The [% INCLUDE font/mono a="plot_window" %] method observes the value
+of the Plot object's [% INCLUDE font/mono a="space" %] attribute.
+That is, if the plot s being made in k or q, the k-space window will
+be plotted.  If the plot is being made in R, the R-space window will
+be plotted.
+[% END %]
+
+[% WRAPPER scriptpic title="Data in R-space as envelope, real part, & imaginary part" -%]
+$data -> po -> set(kweight => 2, r_pl => 'e', space => 'r');
+$data -> po -> start_plot;
+$data -> plot;
+
+$data -> set(name=>'Real part');
+$data -> po -> set(r_pl => 'r', );
+$data -> plot;
+
+$data -> set(name=>'Imaginary part');
+$data -> po->set(r_pl => 'i', );
+$data -> plot;
+[% END %]
+
+[% WRAPPER scriptcaption this="plot_r_mri.png" %]
+Multiple parts of the complex [% chi(R) %] are overplotted by
+repeatedly plotting data in R-space without calling the
+[% INCLUDE font/mono a="start_plot" %] method.  The value of 
+[% INCLUDE font/mono a="r_pl" %] is set between each part of the
+plot.  Note that the [% INCLUDE font/quote a="envelope" %] is the
+magnitude plotted twice, once multiplied by -1.
+[% END %]
+
+
+[% WRAPPER scriptpic title="R-space
+with all three k-weights" -%]
+$data -> po -> start_plot;
+$data -> plot('r123');
+[% END %]
+
+[% WRAPPER scriptcaption this="plot_r_r123.png" %]
+The [% INCLUDE font/quote a="R123 plot" %] is the second of the
+pre-packaged specialty plot types.  This one, is just like the k123
+plot in that three copies of the data are overplotted using each of
+the three k-weights with scaling and offset computed automatically.
+This R123 plot was plotted as the magnitude of [% chir %].  The R123
+plot respects the value of the [% INCLUDE font/mono a="r_pl" %]
+attribute of the Plot object.
+[% END %]
+
+[% WRAPPER scriptpic this="plot_r_rmr.png" title="Magnitude and real
+part in R space" -%]
+$data -> po -> start_plot;
+$data -> po -> kweight(2);
+$data -> plot('rmr');
+[% END %]
+
+[% WRAPPER scriptcaption this="plot_r_rmr.png" %]
+The [% INCLUDE font/quote a="Rmr plot" %] is the third of the
+pre-packaged specialty plot types.  This one plots the magnitude and
+real part of [% chir %] with an appropriate offset between them.  This
+is the default plot type made after a fit finishes.  In that case, the
+data and fit are overplotted as magnitude and real.
+[% END %]
 
 [% PROCESS section label="Plotting in q" %]
 
+[% WRAPPER scriptpic title="Plotting in back-transform k-space" -%]
+$data -> po -> set(kweight => 2, q_pl => 'r');
+$data -> po -> start_plot;
+$data -> plot('q');
+[% END %]
+
+[% WRAPPER scriptcaption this="plot_q.png" %]
+Plotting the back-transformed [% chiq %] is specified by plotting in
+[% INCLUDE font/quote a="q" %].  The part of the complex [% chiq %] is
+specified using the [% INCLUDE font/mono a="q_pl" %] attribute of the
+Plot object.
+[% END %]
+
+[% WRAPPER scriptpic title="k-space & the real part of back-transform k-space" -%]
+$data -> po -> start_plot;
+$data -> po -> kweight(2);
+$data -> plot('kq');
+[% END %]
+
+[% WRAPPER scriptcaption this="plot_kq.png" %]
+The final specialty plot type in [% demeter %] is the 
+[% INCLUDE font/quote a="kq plot" %].  This overplots [% chik %] with
+the real part of [% chiq %].
+[% END %]

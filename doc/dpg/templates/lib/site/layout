@@ -16,6 +16,7 @@
 
 [% content %]
 
+<br />
 <hr class=hide />
 
 <div class=bottombar>

@@ -1,3 +1,5 @@
-<p class=perlblock>
+<pre class=olscript>
+<ol class=perlblock>
 [% content %]
-</p>
+</ol>
+</pre>
