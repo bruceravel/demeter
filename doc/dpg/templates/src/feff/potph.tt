@@ -7,6 +7,44 @@ example from the previous section, we can use an instrumented Feff
 object to compute potentials.
 [% END %]
 
-[% WRAPPER codesample -%] 
-$feff->potph
+[% WRAPPER codeexample -%] 
+#!/usr/bin/perl
+use Demeter;
+
+my $feff = Demeter::Feff -> new(file => "feff/feff.inp");
+$feff -> set(workspace => "feff/", screen => 0,);
+$feff -> potph
+[% END %]
+
+[% FILTER html_para %]
+When the [% INCLUDE font/mono a="potph" %] method is called, 
+[% demeter %] writes a [% INCLUDE font/file a="feff.inp" %] file using
+the data from the original input file but with the 
+[% INCLUDE font/mono a="CONTROL" %] keyword set such that only the 
+[% INCLUDE font/em a="potph" %] part of [% feff %] gets run.  At the
+end of this, [% feff %]'s [% INCLUDE font/file a="phase.bin" %] file
+will be written into the [% INCLUDE font/mono a="workspace" %]
+directory.
+
+That's it.  This part of [% feff %] is used as-is by [% demeter %].
+In the course of fitting, you might find that you need to move an atom
+by such a large amount that you will want to recompute the potentials.
+For smaller moves, [% demeter %] (and [% ifeffit %]) assume that the
+primary effect of the move on the EXAFS is from changing the value of
+R in the EXAFS equation.  Thus we assume that the changes in the
+scattering amplitude and phase shift due to the small change in the
+potential surface caused by a readjustment of the interatomic distance
+are small compared to effect of R in the EXAFS equation.
+
+At this time, there is not an obvious mechanism in [% demeter %] to
+close this loop in the situation where the potentials need to be
+recalculated.  That is, there are no tools for rewriting the atoms
+list in [% INCLUDE font/file a="feff.inp" %] based on changes in
+inter-atomic distance uncovered in a fit.
+[% END %]
+
+[% WRAPPER html/todo %] 
+Track geometric parameters from [% atoms %] to every site in the 
+[% feff %] input file.  Then provide tools for parameterizing
+interatomic distances based on the geometry.
 [% END %]

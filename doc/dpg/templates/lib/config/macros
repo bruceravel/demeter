@@ -39,6 +39,7 @@
 [% MACRO if      BLOCK -%] I<sub>f</sub> [%- END -%]
 [% MACRO ir      BLOCK -%] I<sub>r</sub> [%- END -%]
 [% MACRO rbkg    BLOCK -%] R<sub>bkg</sub> [%- END -%]
+[% MACRO reff    BLOCK -%] R<sub>eff</sub> [%- END -%]
 
 [% MACRO la1    BLOCK -%] L&alpha;<sub>1</sub> [%- END -%]
 [% MACRO l3     BLOCK -%] L<sub>III</sub>     [%- END -%]

@@ -2,5 +2,74 @@
 	chapter = 1 %]
 
 [% FILTER html_para -%]
-Basics...
+In [% demeter %], every part of a fit is an object.  The same is true
+of the parameters of the fit.  A new guess parameter is defined like
+so:
+[% END %]
+
+[% WRAPPER codesample -%]
+my $new_param = Demeter::GDS->new(gds     => 'guess',
+                                  name    => 'deltar',
+                                  mathexp => 0.0);
+[% END %]
+
+[% FILTER html_para -%]
+Every GDS object requires specifying these three attributes.  The type
+of parameter, denoted by the [% INCLUDE font/mono a='gds' %]
+attribute, is explained in detail in
+[% INCLUDE html/link text="the next section" link="types.html" %].
+The [% INCLUDE font/mono a='name' %] is the string that identifies the
+parameter and is used in the math expressions for path parameters and
+other kinds of GDS objects.  In the case of a guess parameter, the 
+[% INCLUDE font/mono a='mathexp' %] is the initial value of the
+parameter to be used at the start of the fit.  For other kinds of GDS
+ojbects, the [% INCLUDE font/mono a='mathexp' %] attributes might take
+an actual math expression, i.e. a character string to be interpreted
+and evaluated by [% ifeffit %].
+
+[% INCLUDE font/mono a='gds' %],
+[% INCLUDE font/mono a='name' %], and
+[% INCLUDE font/mono a='mathexp' %] are normal attrinutes of the GDS
+object and can be treated like attributes of any object.  So, for
+instance, if you wish to change the starting valule of the 
+[% INCLUDE font/mono a='deltar' %] parameter, you can do like so:
+[% END %]
+
+[% WRAPPER codesample -%]
+my $new_param = mathexp(0.025);
+[% END %]
+
+[% FILTER html_para -%]
+Here is another example, this time for a def parameter that takes an
+actual math expression:
+[% END %]
+
+[% WRAPPER codesample -%]
+my $new_param = Demeter::GDS->new(gds     => 'def',
+                                  name    => 'c',
+                                  mathexp => '(a + b) * tan(angle/2) / (a - b)');
+[% END %]
+
+[% PROCESS section label="Simplified interface" %]
+
+[% FILTER html_para -%]
+Although the syntax for the GDS object is identical to the syntax for
+all other [% demeter %] objects, it seems somehow more cumbersome in
+this case -- particularly for anyone who goes back to the good ol'
+days of writing [% INCLUDE font/file a='feffit.inp' %] files.  As a
+bit of syntactic sugar, the [% demeter %] base class offers a method
+that takes a character string as its sole argument.  That character
+string is parsed the same way as a parameter definition in a 
+[% INCLUDE font/file a='feffit.inp' %] file.
+[% END %]
+
+[% WRAPPER codesample -%]
+my $new_param = $any_object->simpleGDS('guess deltar = 0.0');
+[% END %]
+
+[% FILTER html_para -%]
+The [% INCLUDE font/mono a='simpleGDS' %] simply parses the string and
+uses that to create a GDS object, which it then returns.  The normal
+and simple syntax can be used interchangeably and for all GDS types.
+They are completely equivalent.
 [% END %]

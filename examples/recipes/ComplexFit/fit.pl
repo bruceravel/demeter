@@ -73,15 +73,16 @@ my @gds = (
 
 
 ## -------- run the feff calculation
-my $feff = Demeter::Feff->new(file=>'15/withHg.inp', workspace=>'15');
-$feff -> set(screen=>0{}, save=>1);
+my $feff = Demeter::Feff->new(file=>'withHg.inp', workspace=>'15');
+$feff -> set(screen=>q{}, save=>1);
+$feff -> make_workspace('15');
 $feff -> co -> set_default("pathfinder", "fs_angle", 25);
 $feff -> potph;
 $feff -> rmax(4.5);
 $feff -> pathfinder;
 ## $feff -> freeze('15/feff.yaml');
 ## print $feff -> intrp, $/;
-
+## exit;
 
 ## -------- begin setting up paths
 ##          note that I am using the `find_path' method here as a

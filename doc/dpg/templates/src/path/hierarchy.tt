@@ -1,5 +1,0 @@
-[% META title = 'Object hierarchy' %]
-
-[% FILTER html_para %]
-Object hierarchy
-[% END %]

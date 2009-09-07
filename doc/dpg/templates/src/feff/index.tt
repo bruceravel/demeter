@@ -41,7 +41,7 @@ Sum the contributions from the scattering paths into a calculated
 
 [% FILTER html_para -%]
 It is actually possibly to run each of these steps independently of
-the others by using the [% INCLUDE font/mono a="PRINT" %] keyword in
+the others by using the [% INCLUDE font/mono a="CONTROL" %] keyword in
 the [% INCLUDE font/file a="feff.inp" %] file.  That keyword takes
 four arguments which turn on and off the potph, pathfinder, genfmt,
 and ff2chi parts of [% feff %].  Thus it is relatively easy to break 

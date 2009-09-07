@@ -2,5 +2,81 @@
 	chapter = 1 %]
 
 [% FILTER html_para -%]
-Scattering paths
+This chapter explains how to use the results of a [% feff %]
+calculation.  The Path object is the component of a fitting model that
+encapsolates the contribution from an individual scattering geometry.
+Here is an example of a typical Path object:
+[% END %]
+
+[% WRAPPER codeexample -%] 
+my $paths = Demeter::Path -> new(parent => $feff_object, 
+                                 data   => $data_object,
+                                 sp     => $sp_object,
+                                 s02    => "amp",
+                                 e0     => "enot",
+                                 delr   => "deltaa",
+                                 sigma2 => "ssn",
+                                );
+[% END %]
+
+[% FILTER html_para -%]
+In lines 4 through 7, the path parameters are set using the names of
+[% INCLUDE html/link link="../gds/index.html" text="GDS parameters" %].
+More information about setting and querying path parameter values 
+[% INCLUDE html/link link="pathparams.html" text="later in this chapter" %].
+
+Lines 1 through 3 show the hierarchy of the Path object.  The Path
+object relies upon connections to [% demeter %] objects to do its
+work.  
+[% END %]
+
+[% WRAPPER html/list type="dl" %]
+[% WRAPPER html/dt dt="parent" %]
+At line 1, the [% INCLUDE font/quote a="parent" %] 
+[% INCLUDE html/link link="../feff/index.html" text="Feff object" %].
+is identified.  The parent is the Feff object that was used to run the
+[% feff %] calulcation that generated this scattering path.  The Path
+object needs to know 
+[% END %]
+[% WRAPPER html/dt dt="data" %]
+[% FILTER html_para -%]
+At line 2, the [% INCLUDE html/link link="../feff/index.html" text="Data object" %]
+containing the data for which this scattering path is being used to
+model.  This connection is required for two reasons.  The 
+[% INCLUDE html/link link="../feff/index.html" text="Fit object" %]
+uses this linkage to properly create the [% ifeffit %] commands
+involved in running the fit.  The other use of the Data object
+connection is to plot the Path object properly.  The Fourier transform
+parameters of the Data object are used to process the scattering path
+for plotting.
+
+The [% INCLUDE font/mono a="data" %] attribute is not stricly
+required.  When [% demeter %] is imported at the beginning of your
+program, a [% INCLUDE html/link link="../highlevel/methods.html" text="default Data object" %]
+is created using a sensible set of processing parameters.  If the 
+[% INCLUDE font/mono a="data" %] attribute is not explicitly set, the
+default Data object is used.  This allows you to sensibly plot
+scattering paths without actually importing data into a Data object.
+When using a Path object as part of a simulation or a fit, it is
+important to properly identify the [% INCLUDE font/mono a="data" %] 
+attribute so that the path is Fourier transformed in the same manner
+as its associated data.
+[% END %]
+[% END %]
+[% WRAPPER html/dt dt="sp" %]
+The final part of the Path object's hierarchy is shown in line 3.  The
+ScatteringPath object is the thing that links the [% feff %]
+calculation with the Path object.  This is explained in detail in 
+[% INCLUDE html/link text="the next section" link="paths.html" %].
+As it might seem confusing that two different objects are involved
+in defining a scattering path, here is the way to think about it.  The
+Path object is outward expression of the scattering path and is
+intended to resemble a path paragraph in a
+[% INCLUDE font/file a="feffit.inp" %] file or a 
+[% INCLUDE font/mono q="path" %] command in an [% ifeffit %]
+script.  The ScatteringPath object is aware of all the details of the
+path finder and encapsolates the results of the [% feff %]
+calculation, much like the [% INCLUDE font/file a="feffNNNN.dat" %]
+but with lots of object-oriented functionality surrounding it.
+[% END %]
 [% END %]

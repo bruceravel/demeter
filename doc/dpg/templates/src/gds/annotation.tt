@@ -1,5 +1,0 @@
-[% META title = 'Annotating parameters' %]
-
-[% FILTER html_para %]
-Annotating parameters
-[% END %]

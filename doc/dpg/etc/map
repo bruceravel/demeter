@@ -76,23 +76,20 @@
 		       }
 	    feff       = {
 		       name = 'Feff'
-		       menu = [ 'input', 'potph', 'pathfinder', 'intrp',
-				'paths', 'semantic', 'fuzzy' ]
+		       menu = [ 'input', 'potph', 'pathfinder', 'intrp' ]
 		       page = {
 			      input      = { name = 'Feff input' }
 			      potph      = { name = 'Calculating potentials' }
 			      pathfinder = { name = 'Running the path finder' }
 			      intrp      = { name = 'Feff interpretation' }
-			      paths      = { name = 'Calculating individual paths' }
-			      semantic   = { name = 'Semantic path descriptions' }
-			      fuzzy      = { name = 'Fuzzy degeneracy' }
 			      }
 		       }
 	    path   = {
 		       name = 'Scattering paths'
-		       menu = [ 'hierarchy', 'pathparams', 'plot', 'existing' ]
+		       menu = [ 'paths', 'semantic', 'pathparams', 'plot', 'existing' ]
 		       page = {
-			      hierarchy  = { name = 'The hierarchy of the Path object' }
+			      paths      = { name = 'Calculating individual paths' }
+			      semantic   = { name = 'Semantic path descriptions' }
 			      pathparams = { name = 'Setting path parameters' }
 			      plot       = { name = 'Plotting individual paths' }
 			      existing   = { name = 'Using an existing Feff calculation' }
@@ -100,12 +97,10 @@
 		       }
 	    gds  = {
 		       name = 'Guess/Def/Set parameters'
-		       menu = [ 'types', 'simple', 'reporting', 'annotation' ]
+		       menu = [ 'types', 'reporting' ]
 		       page = {
 			      types      = { name = 'Parameter types' }
-			      simple     = { name = 'Simplified interface' }
 			      reporting  = { name = 'Reporting on GDS parameters' }
-			      annotation = { name = 'Annotating GDS parameters' }
 			      }
 		       }
 	    fit = {
