@@ -39,6 +39,7 @@ usage() if not $file;
 my $prj = Demeter::Data::Prj->new();
 $prj -> set(file=>$file);
 $prj -> plot_with('gnuplot') if $gnuplot;
+#$prj -> set_mode(screen => 1);
 
 print '===> ', Cwd::abs_path($file), $/ x 2,
   $prj -> list(split(/,/,$params)), $/;
@@ -63,6 +64,7 @@ if (lc($plot) =~ m{[endkrq]}) {
   };
 
   $_ = $term->readline($prompt);
+  $data[0] -> po -> end_plot;
 };
 
 sub usage {

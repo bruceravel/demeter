@@ -325,9 +325,10 @@ sub _record {
                        : ($args{is_xmudat}) ? 'xmudat'
                        : ($args{is_xanes})  ? 'xanes'
 		       :                      q{};
-  $groupargs{i0_scale}    = $i0_scale;
-  $groupargs{is_merge}    = $is_merge;
-  $groupargs{update_data} = 0;
+  $groupargs{i0_scale}       = $i0_scale;
+  $groupargs{is_merge}       = $is_merge;
+  $groupargs{update_data}    = 0;
+  $groupargs{update_columns} = 0;
   $data -> set(%groupargs);
   my $command = $data->template("process", "deriv");
   $data->dispose($command);
