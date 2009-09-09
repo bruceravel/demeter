@@ -75,12 +75,12 @@ ways.  To obtain a listing of contents of the project file, use the
 
 [% WRAPPER codesample -%]
 print $prj -> list;
-   ##==prints==>
-   # #     record
-   # # -------------------------------------------
-   #   1 : Iron foil
-   #   2 : Iron oxide
-   #   3 : Iron sulfide
+   ## ==prints==>
+   #  #     record
+   #  # -------------------------------------------
+   #    1 : Iron foil
+   #    2 : Iron oxide
+   #    3 : Iron sulfide
 [% END %]
 
 [% FILTER html_para %]

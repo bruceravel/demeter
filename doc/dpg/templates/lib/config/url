@@ -5,7 +5,7 @@
          biglogo = "$rooturl/images/Demeter.png"
          logo    = "$rooturl/images/Demeter.png"
          css     = "$rooturl/html/ab.css"
-         perlcss = "$rooturl/html/perl.css"
+         perlcss = "$rooturl/html/ppi.css"
 	 athena  = "http://cars9.uchicago.edu/~ravel/software"
 	 demeter = "http://cars9.uchicago.edu/iffwiki/Demeter"
 	 feff    = "http://leonardo.phys.washington.edu/feff/wiki/index.php?title=FEFF_Documentation"

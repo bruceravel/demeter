@@ -1,4 +1,4 @@
-[% # map of pages in the Athena book
+[% # map of pages in the Demeter book
    # this file lives in the etc/ directory and is copied to the
    # config/ directory for each display medium when the configure
    # script is run
@@ -20,7 +20,8 @@
 		'pathlike'
 		'su',
 		'ui',
-		'output'
+		'output',
+		'examples'
 	      ]
        page = {
 	    index   = { name = 'Home' }
@@ -81,7 +82,7 @@
 			      input      = { name = 'Feff input' }
 			      potph      = { name = 'Calculating potentials' }
 			      pathfinder = { name = 'Running the path finder' }
-			      intrp      = { name = 'Feff interpretation' }
+			      intrp      = { name = 'Path interpretation' }
 			      }
 		       }
 	    path   = {
@@ -135,9 +136,17 @@
 	    su   = { name = 'Structural Units'}
 	    ui   = { name = 'User interfaces'}
 	    output   = { name = 'Output formats'}
-	      }
-          };
 
+	    examples   = {
+                          name = 'Full examples'
+			  menu = ['methyltin', 'uranyl']
+			  page = {
+				 methyltin = { name = "Methyltin chloride" }
+				 uranyl    = { name = "Uranyl complex in solution" }
+				 }
+			 }
+          }
+      };
     # save map in site
     site.map = map;
 -%]

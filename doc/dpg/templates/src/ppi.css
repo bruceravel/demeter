@@ -2,196 +2,107 @@
 
   This stylesheet is (c) 2009 Bruce Ravel.
   
-  This docuemnt and this stylesheet are licensed under a Creative
+  This document and this stylesheet are licensed under a Creative
   Commons Attribution-Share-Alike License.
   See http://creativecommons.org/licenses/by-sa/3.0/
 
 */
 
 /*
-   arrayindex   	 	
-   attribute 		
-   bom 		 	
-   cast 		 	
-   comment 		
-   dashedword 		
-   data 		 	
-   end 		 	
-   heredoc 		
-   label 		 	
-   magic 		 	
-   ./ number 		 	
-   ./ number::binary 		
-   ./ number::exp 		
-   ./ number::float 		
-   ./ number::hex 		
-   ./ number::octal 		
-   ./ number::version 	
-   ./ operator 		
-   ./ pod 			
-   prototype 		
-   quote 			
-   ./ quote::double 		
-   quote::interpolate 	
-   ./ quote::literal 		
-   ./ quote::single 		
-   quotelike 		
-   ./ quotelike::backtick 	
-   quotelike::command 	
-   quotelike::readline 	
-   quotelike::regexp 	
-   ./ quotelike::words 	
-   regexp 			
-   regexp::match 		
-   regexp::substitute 	
-   regexp::transliterate 	
-   separator 		
-   ./ structure 		
-   ./ symbol 			
-   ./ unknown 		
-   ./ whitespace 		
-   ./ word 			
+This is an exhaustive (?) list of token types for PPI::Token
+   arrayindex
+   attribute
+   bom
+   cast
+   ./ comment
+   dashedword
+   data
+   end
+   heredoc
+   label
+   ./ magic
+   ./ number
+   ./ number::binary
+   ./ number::exp
+   ./ number::float
+   ./ number::hex
+   ./ number::octal
+   ./ number::version
+   ./ operator
+   ./ pod
+   prototype
+   quote
+   ./ quote::double
+   quote::interpolate
+   ./ quote::literal
+   ./ quote::single
+   quotelike
+   ./ quotelike::backtick
+   quotelike::command
+   quotelike::readline
+   quotelike::regexp
+   ./ quotelike::words
+   regexp
+   regexp::match
+   regexp::substitute
+   regexp::transliterate
+   separator
+   ./ structure
+   ./ symbol
+   ./ unknown
+   ./ whitespace
+   ./ word
 */
 
-.keyword {
-  font: 1em monospace;
-  color: #8B3E2F;
-}
-.word {
-  font: 1em monospace;
-  color: #cc0000;
-}
 
-.pod {
-  font: 1em monospace;
-  color: #aa0000;
-}
+.comment    { font: 1em monospace; color: #aa0000; }
+.keyword    { font: 1em monospace; color: #8B3E2F; }
+.magic      { font: 1em monospace; color: #cd1076; }
+.pod        { font: 1em monospace; color: #aa0000; }
+.readline   { font: 1em monospace; color: #265288; }
+.structure  { font: 1em monospace; color: #000000; }
+.symbol     { font: 1em monospace; color: #460078; }
+.word       { font: 1em monospace; color: #000088; }
 
-.operator {
-  font: 1em monospace;
-  color: #000000;
-}
-.structure {
-  font: 1em monospace;
-  color: #000000;
-}
-.unknown {
-  font: 1em monospace;
-  color: #000000;
-}
-.whitespace {
-  font: 1em monospace;
-  color: #000000;
-}
+/* things that don't get colored */
+.cast       { font: 1em monospace; color: #000000; }
+.operator   { font: 1em monospace; color: #000000; }
+.unknown    { font: 1em monospace; color: #000000; }
+.whitespace { font: 1em monospace; color: #000000; }
 
-.number {
-  font: 1em monospace;
-  color: #000000;
-}
-.binary {
-  font: 1em monospace;
-  color: #000000;
-}
-.exp {
-  font: 1em monospace;
-  color: #000000;
-}
-.float {
-  font: 1em monospace;
-  color: #000000;
-}
-.hex {
-  font: 1em monospace;
-  color: #000000;
-}
-.number {
-  font: 1em monospace;
-  color: #000000;
-}
-.version {
-  font: 1em monospace;
-  color: #000000;
-}
+/* quote and quotelike types */
+.backtick   { font: 1em monospace; color: #007700; }
+.double     { font: 1em monospace; color: #007700; }
+.literal    { font: 1em monospace; color: #007700; }
+.single     { font: 1em monospace; color: #007700; }
+.words      { font: 1em monospace; color: #007700; }
 
-.single {
-  font: 1em monospace;
-  color: #007700;
-}
-.double {
-  font: 1em monospace;
-  color: #007700;
-}
-.backtick {
-  font: 1em monospace;
-  color: #007700;
-}
-.literal {
-  font: 1em monospace;
-  color: #007700;
-}
-.words {
-  font: 1em monospace;
-  color: #007700;
-}
+/* number types */
+.number     { font: 1em monospace; color: #000000; }
+.binary     { font: 1em monospace; color: #000000; }
+.exp        { font: 1em monospace; color: #000000; }
+.float      { font: 1em monospace; color: #000000; }
+.hex        { font: 1em monospace; color: #000000; }
+.octal      { font: 1em monospace; color: #000000; }
+.version    { font: 1em monospace; color: #000000; }
 
-.perl_subroutine {
-  font: 1em monospace;
-  color: #aa00aa;
-}
-.symbol {
-  font: 1em monospace;
-  color: #333333;
-}
-.perl_array {
-  font: 1em monospace;
-  color: #000000;
-}
-.perl_typeglob {
-  font: 1em monospace;
-  color: #333333;
-}
-.perl_character {
-  font: 1em monospace;
-  color: #000000;
-}
-.perl_function {
-  font: 1em monospace;
-  color: #8B3E2F;
-}
-.perl_operator {
-  font: 1em monospace;
-  color: #00868B;
-}
-.perl_bareword {
-  font: 1em monospace;
-  color: #000000;
-}
-.perl_package {
-  font: 1em monospace;
-  color: #473C8B;
-}
-.perl_number {
-  font: 1em monospace;
-  color: #000000;
-}
-.perl_symbol {
-  font: 1em monospace;
-  color: #000000;
-}
-.perl_codeterm {
-  font: 1em monospace;
-  color: #000000;
-}
-.perl_data {
-  font: 1em monospace;
-  color: #000000;
-}
-.perl_line {
-  font: 1em monospace;
-  color: #8c4112;
-}
-.perl_filename {
-  font: 1em monospace;
-  color: #000000;
-}
+/* things that I don't yet know what color they should be */
+.arrayindex    { font: 1em monospace; color: #000000; background: #a0ffa2; }
+.attribute     { font: 1em monospace; color: #000000; background: #a0ffa2; }
+.bom           { font: 1em monospace; color: #000000; background: #a0ffa2; }
+.dashedword    { font: 1em monospace; color: #000000; background: #a0ffa2; }
+.data          { font: 1em monospace; color: #000000; background: #a0ffa2; }
+.end           { font: 1em monospace; color: #000000; background: #a0ffa2; }
+.heredoc       { font: 1em monospace; color: #000000; background: #a0ffa2; }
+.label         { font: 1em monospace; color: #000000; background: #a0ffa2; }
+.prototype     { font: 1em monospace; color: #000000; background: #a0ffa2; }
+.quote         { font: 1em monospace; color: #000000; background: #a0ffa2; }
+.interpolate   { font: 1em monospace; color: #000000; background: #a0ffa2; }
+.quotelike     { font: 1em monospace; color: #000000; background: #a0ffa2; }
+.command       { font: 1em monospace; color: #000000; background: #a0ffa2; }
+.regexp        { font: 1em monospace; color: #000000; background: #a0ffa2; }
+.match         { font: 1em monospace; color: #000000; background: #a0ffa2; }
+.substitute    { font: 1em monospace; color: #000000; background: #a0ffa2; }
+.transliterate { font: 1em monospace; color: #000000; background: #a0ffa2; }
+.separator     { font: 1em monospace; color: #000000; background: #a0ffa2; }
 

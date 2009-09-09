@@ -98,7 +98,6 @@ $data -> set(file        => 'soil.dat',
              numerator   => '$4',  # column 4 is If
              denominator => '$2',  # column 2 is I0
              ln          => 0,     # these are fluorescence data
-             @params,
             );
 [% END %]
 
@@ -133,7 +132,6 @@ $data -> set(file        => 'soil.dat',
              numerator   => '$4+$5+$6+$7',  # four fluo channels
              denominator => '$2',
              ln          => 0,
-             @params,
             );
 [% END %]
 
@@ -167,10 +165,7 @@ like so:
 #!/usr/bin/perl
 use Demeter;
 
-## mono d-spacing = 1.92017
-## steps/degree   = 4000
-## hc             = 12398.61
-## convert radians to degrees = 57.29577951
+## d-spacing = 1.92017    steps/deg = 4000    hc = 12398.61    rads->degs = 57.29577951
 my $data = Demeter::Data -> new();
 $data -> set(file        => "lytle.dat",
              name        => 'Fe 60K',
