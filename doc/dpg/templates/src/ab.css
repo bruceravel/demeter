@@ -156,6 +156,7 @@ pre {
 }
 
 .olscript {
+  font: 1em monospace; 
   background-color: #e8e8e8;
   padding-top: 2px;
   padding-bottom: 8px;

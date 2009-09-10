@@ -34,7 +34,7 @@ sub filter {
     } else {
       $return_text .= "&nbsp;&nbsp;";
     };
-    $l =~ s{<br>}{\n};		# make linebreaks literal to avoid super long lines
+    #$l =~ s{<br>}{\n};		# make linebreaks literal to avoid super long lines
 
     ## need to post-process comment and other multi-line spans
 

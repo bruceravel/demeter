@@ -3,3 +3,20 @@
 [% FILTER html_para %]
 
 [% END %]
+
+[% WRAPPER codeexample -%] 
+#!/usr/bin/perl
+use Demeter;
+
+my $feff = Demeter::Feff -> new(file => "feff/feff.inp");
+$feff -> set(workspace => "feff/", screen => 0,);
+$feff -> potph
+$feff -> pathfinder;
+
+my @list_of_paths = @{ $feff-> pathlist };
+foreach (@list[0..4]) {
+  my $this = Demeter::Path->new(parent=>$feff,
+				sp=>$_);
+  $this-> plot('r');
+};
+[% END %]

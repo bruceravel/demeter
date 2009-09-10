@@ -25,6 +25,7 @@ has 'prompt'   => (is => 'rw', isa => 'Str', default => "Hit return to continue>
 
 sub pause {
   my ($self, $length) = @_;
+  $length ||= -1;
   $length = -1 if ($length !~ m{$NUMBER});
   my $keypress = $length;
   if ($length > 0) {
