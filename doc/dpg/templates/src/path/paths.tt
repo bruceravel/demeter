@@ -14,7 +14,7 @@ $feff -> potph
 $feff -> pathfinder;
 
 my @list_of_paths = @{ $feff-> pathlist };
-foreach (@list[0..4]) {
+foreach (@list_of_paths[0..4]) {
   my $this = Demeter::Path->new(parent=>$feff,
 				sp=>$_);
   $this-> plot('r');
