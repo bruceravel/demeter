@@ -158,12 +158,12 @@ my @list_of_paths = @{ $feff->pathlist };
 my @paths = ();
 my $carbon  = Demeter::VPath->new(name=>"carbon SS + MS");
 my $axialms = Demeter::VPath->new(name=>"axial MS");
-my $index = 0;
+my $counter = 0;
 my @common = (parent => $feff, data => $data, s02 => "amp", e0 => "enot");
 
 ## axial oxygen
 my $this_path = Demeter::Path -> new()
-  -> set(@common, sp => $list_of_paths[$index++],
+  -> set(@common, sp => $list_of_paths[$counter++],
          name   => "axial oxygens",
          delr   => "drax",      sigma2 => "ssax",
         );
@@ -171,7 +171,7 @@ push @paths, $this_path;
 
 ## equatorial oxygen
 $this_path = Demeter::Path -> new()
-  -> set(@common, sp => $list_of_paths[$index++],
+  -> set(@common, sp => $list_of_paths[$counter++],
          name   => "equatorial oxygens",
          delr   => "dreq",      sigma2 => "sseq",
         );
@@ -179,7 +179,7 @@ push @paths, $this_path;
 
 ## carbon
 $this_path = Demeter::Path -> new()
-  -> set(@common, sp => $list_of_paths[$index++],
+  -> set(@common, sp => $list_of_paths[$counter++],
          name   => "C",
          delr   => "drc",       sigma2 => "ssc",
         );
@@ -188,7 +188,7 @@ $carbon->include($this_path);
 
 ## C-O triangle
 $this_path = Demeter::Path -> new()
-  -> set(@common, sp => $list_of_paths[$index++],
+  -> set(@common, sp => $list_of_paths[$counter++],
          name   => "C-O triangle",
          delr   => "(dreq+drc)/2",   sigma2 => "2*(sseq+ssc)/3",
         );
@@ -197,7 +197,7 @@ $carbon->include($this_path);
 
 ## axial oxygen rattle MS path
 $this_path = Demeter::Path -> new()
-  -> set(@common, sp => $list_of_paths[$index++],
+  -> set(@common, sp => $list_of_paths[$counter++],
          name   => "axial MS rattle",
          delr   => "drax*2",   sigma2 => "ssax*4",
         );
@@ -206,7 +206,7 @@ $axialms->include($this_path);
 
 ## axial oxygen non-forward scattering MS path
 $this_path = Demeter::Path -> new()
-  -> set(@common, sp => $list_of_paths[$index++],
+  -> set(@common, sp => $list_of_paths[$counter++],
          name   => "axial MS non-forward linear",
          delr   => "drax*2",   sigma2 => "ssax*2",
         );
@@ -215,7 +215,7 @@ $axialms->include($this_path);
 
 ## axial oxygen forward scattering through absorber MS path
 $this_path = Demeter::Path -> new()
-  -> set(@common, sp => $list_of_paths[$index++],
+  -> set(@common, sp => $list_of_paths[$counter++],
          name   => "axial MS forward linear",
          delr   => "drax*2",   sigma2 => "ssax*2",
         );
