@@ -139,7 +139,7 @@ my @list = $feff->find_all_paths( lt=>6, nleg=>2 );
 
 [% FILTER html_para %]
 For more details, see the 
-[% INCLUDE font/file a="Demeter::Data::Paths" %] documentation.
+[% INCLUDE font/file a="Demeter::Feff::Paths" %] documentation.
 
 The 
 [% INCLUDE html/link text="example of Hg absorbed to DNA" 

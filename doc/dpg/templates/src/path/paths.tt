@@ -50,7 +50,7 @@ use Demeter;
 
 my $feff = Demeter::Feff -> new(file => "feff/feff.inp");
 $feff -> set(workspace => "feff/", screen => 0,);
-$feff -> potph
+$feff -> potph;
 $feff -> pathfinder;
 
 my @list_of_paths = @{ $feff-> pathlist };

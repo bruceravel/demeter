@@ -1,5 +1,24 @@
 [% META title = 'Running Feff outside of Demeter' %]
 
 [% FILTER html_para %]
-Running Feff outside of Demeter
+You can import [% INCLUDE font/file a="feffNNNN.dat" %] files from a 
+[% feff %] calculation run outside of [% demeter %].  The trick is to
+explicitly specify the [% INCLUDE font/mono a="folder" %] and
+[% INCLUDE font/mono a="file" %]
+[% END %]
+
+[% WRAPPER codesample -%]
+$path -> new(data     => $data,
+             folder   => './',
+             file     => 'feff0001.dat',
+             s02      => 'amp',
+             e0       => 'enot',
+             delr     => 'alpha*reff',
+             sigma2   => 'debye(temp, theta) + sigmm',
+            );
+[% END %]
+
+[% WRAPPER html/todo %]
+Implement interpretation functionality for external [% feff %] calculations.
+Implement semantic path descriptions for  external [% feff %] calculations.
 [% END %]
