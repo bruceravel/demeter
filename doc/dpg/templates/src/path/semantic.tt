@@ -41,10 +41,10 @@ finds the path meeting that description:
 
 [% WRAPPER codesample -%]
 my $feff = Demeter::Feff->new(yaml=>'myfeff.yaml', workspace=>'mycalc');
-my $this_path = $feff->find_path(gt => 3, lt=>4, tag=>['Al']);
-push @paths, Demeter::Path -> new(feff => $feff,
-                                  sp   => $this_path,
-                                 );
+my $this_sp = $feff->find_path(gt => 3, lt=>4, tag=>['Al']);
+my $path = Demeter::Path -> new(feff => $feff,
+                                sp   => $this_sp,
+                               );
 [% END %]
 
 [% FILTER html_para %]
@@ -128,6 +128,16 @@ atoms in a path and the match is only true is each element mataches a
 scatterer in a path.  Thus is not necessary to specify the nleg
 criterion when any of the list valued criteria are used.
 
+Here is an example of using the [% INCLUDE font/mono a="find_all_paths" %]
+method to find all single scattering paths in a [% feff %]
+calculcation which are shorter than 6 [% AA %].
+[% END %]
+
+[% WRAPPER codesample -%]
+my @list = $feff->find_all_paths( lt=>6, nleg=>2 );
+[% END %]
+
+[% FILTER html_para %]
 For more details, see the 
 [% INCLUDE font/file a="Demeter::Data::Paths" %] documentation.
 
