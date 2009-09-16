@@ -1,11 +1,12 @@
 package Demeter::Data::Plot;
 use Moose::Role;
 
+use Carp;
 use Regexp::Common;
 use Readonly;
 Readonly my $NUMBER   => $RE{num}{real};
 use List::Util qw(max);
-use List::MoreUtils qw(uniq);
+use List::MoreUtils qw(uniq zip);
 
 ##-----------------------------------------------------------------
 ## plotting methods
@@ -54,6 +55,21 @@ sub plot {
     (lc($space) eq 'rmr' ) and do {
       $self -> plotRmr;
       $pf   -> increment;
+      return $self;
+      last SWITCH;
+    };
+    (lc($space) eq 'quad' ) and do {
+      $self -> quadplot;
+      return $self;
+      last SWITCH;
+    };
+    (lc($space) eq 'stddev' ) and do {
+      $self -> stddevplot;
+      return $self;
+      last SWITCH;
+    };
+    (lc($space) eq 'variance' ) and do {
+      $self -> varianceplot;
       return $self;
       last SWITCH;
     };
@@ -575,6 +591,107 @@ sub running {
   Ifeffit::put_array($self->group.".$suff", \@running);
 };
 
+sub stddevplot {
+  my ($self) = @_;
+  if (not $self->is_merge) {
+    carp("Sorry, the stddevplot is only for merged data.");
+    return $self;
+  };
+  my @e = qw(e_bkg e_pre e_post e_markers e_i0 e_signal);
+  my @zeros = map {0} @e;
+  my @vals = $self->po->get(@e);
+  $self -> po -> set(zip(@e, @zeros));
+
+  $self -> po -> start_plot;
+  my $string = q{};
+  if ($self->is_merge eq 'e') {
+    $self -> po -> e_norm(0);
+    $self -> plot('e');
+    $string = $self->template("plot", "stddeve");
+  } elsif ($self->is_merge eq 'n') {
+    $self -> po -> e_norm(1);
+    $self -> plot('e');
+    $string = $self->template("plot", "stddevn");
+  } elsif ($self->is_merge eq 'k') {
+    $self -> plot('k');
+    $string = $self->template("plot", "stddevk");
+  };
+  $self -> dispose($string, 'plotting');
+
+  $self -> po -> set(zip(@e, @vals));
+  return $self;
+};
+
+sub varianceplot {
+  my ($self) = @_;
+  if (not $self->is_merge) {
+    carp("Sorry, the stddevplot is only for merged data.");
+    return $self;
+  };
+  my @e = qw(e_bkg e_pre e_post e_markers e_i0 e_signal);
+  my @zeros = map {0} @e;
+  my @vals = $self->po->get(@e);
+  $self -> po -> set(zip(@e, @zeros));
+
+  $self -> co -> set(stddev_max=>max($self->get_array('stddev')));
+
+  $self -> po -> start_plot;
+  my $string = q{};
+  if ($self->is_merge eq 'k') {
+    $self -> co -> set(data_max=>max($self->get_array('chi')));
+    $self -> plot('k');
+    $string = $self->template("plot", "variancek");
+  } else {
+    $self -> co -> set(data_max=>max($self->get_array('xmu')));
+    $self -> po -> e_norm(1) if ($self->is_merge eq 'n');
+    $self -> plot('e');
+    $string = $self->template("plot", "variancee");
+  };
+  $self -> dispose($string, 'plotting');
+
+  $self -> po -> set(zip(@e, @vals));
+  return $self;
+};
+
+
+sub quadplot {
+  my ($self) = @_;
+  if ($self->mo->template_plot ne 'gnuplot') {
+    carp(sprintf("Sorry, the quadplot is not possible with the %s backend.", $self->mo->template_plot));
+    return $self;
+  };
+  $self -> po -> start_plot;
+  my $string = $self->template("plot", "quadstart");
+  $self -> dispose($string, 'plotting');
+
+  my @e = qw(e_bkg e_pre e_post e_markers e_i0 e_signal);
+  my @zeros = map {0} @e;
+  my @vals = $self->po->get(@e);
+  $self -> po -> set(zip(@e, @zeros));
+  #$self -> po -> e_markers(0);
+  #$self -> po -> e_bkg(1);
+
+  $self -> po -> title('energy');
+  $self -> plot('e');
+
+  $self -> po -> title('k space');
+  $self -> po -> New(1);
+  $self -> plot('k');
+
+  $self -> po -> title('R space');
+  $self -> po -> New(1);
+  $self -> plot('r');
+
+  $self -> po -> title('q space');
+  $self -> po -> space('q');
+  $self -> po -> New(1);
+  $self -> plot;
+
+  $string = $self->template("plot", "quadend");
+  $self -> dispose($string, 'plotting');
+
+  $self -> po -> set(zip(@e, @vals));
+};
 
 
 1;

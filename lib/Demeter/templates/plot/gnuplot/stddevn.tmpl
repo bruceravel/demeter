@@ -1,0 +1,32 @@
+{ # -*- ifm -*-
+  # template for overplotting in energy
+  #   {$D->group} returns the ifeffit group name
+  #   {$D->parameter} returns the value of that parameter
+  #   {$P->parameter} returns the value of a Plot parameter
+}
+{
+  $suffix = ($D->bkg_flatten) ? 'flat' : 'norm';
+  $file1 = $P->tempfile;
+  $S->points(file     => $file1,
+             space    => 'E', 
+	     suffix   => $suffix,
+	     add      => 'stddev', 
+	     shift    => $D->bkg_eshift,
+	     scale    => $D->plot_multiplier,
+	     yoffset  => $D->y_offset
+	    );
+  $file2 = $P->tempfile;
+  $S->points(file     => $file2,
+             space    => 'E', 
+	     suffix   => $suffix,
+	     subtract => 'stddev', 
+	     shift    => $D->bkg_eshift,
+	     scale    => $D->plot_multiplier,
+	     yoffset  => $D->y_offset
+	    );
+  q{}
+}
+# {$D->name}: ifeffit group = {$D->group}
+replot '{$file1}' using 1:2 with {$C->default("gnuplot", "datastyle")} ls {$P->increm+1} title "{$P->key} + Std. Dev."
+replot '{$file2}' using 1:2 with {$C->default("gnuplot", "datastyle")} ls {$P->increm+1} title "{$P->key} - Std. Dev."
+

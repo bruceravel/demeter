@@ -1,0 +1,37 @@
+{ # -*- ifm -*-
+  # template for overplotting in k
+  #   {$D->group} returns the ifeffit group name
+  #   {$D->parameter} returns the value of that parameter
+  #   {$P->parameter} returns the value of a Plot parameter
+}
+{
+  $this = $PT || $D;
+  $file1 = $P->tempfile;
+  $this->points(file     => $file1,
+                space    => 'k', 
+	        suffix   => 'chi',
+                add      => 'stddev', 
+	        scale    => $D->plot_multiplier,
+	        yoffset  => $D->y_offset,
+	        weight   => $P->kweight,
+  	        part     => $C->get('plot_part'),
+	       );
+  $file2 = $P->tempfile;
+  $this->points(file     => $file2,
+                space    => 'k', 
+	        suffix   => 'chi',
+                subtract => 'stddev', 
+	        scale    => $D->plot_multiplier,
+	        yoffset  => $D->y_offset,
+	        weight   => $P->kweight,
+  	        part     => $C->get('plot_part'),
+	       );
+
+  $thiskey = $C->get('plot_part') || $P->key;
+  if (ref($PT) =~ m{Path}) { $thiskey = $PT->name || 'Path '.$PT->Index };
+  q{}
+}
+# {$this->name}: ifeffit group = {$D->group}
+replot '{$file1}' using 1:2 with {$C->default("gnuplot", "datastyle")} ls {$P->increm+1} title "{$thiskey} + Std. Dev."
+replot '{$file2}' using 1:2 with {$C->default("gnuplot", "datastyle")} ls {$P->increm+1} title "{$thiskey} - Std. Dev."
+

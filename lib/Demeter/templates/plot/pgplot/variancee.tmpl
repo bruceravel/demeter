@@ -1,0 +1,10 @@
+{ # -*- ifm -*-
+  # template for overplotting variance
+  #   {$D->group} returns the ifeffit group name
+  #   {$D->parameter} returns the value of that parameter
+  #   {$P->parameter} returns the value of a Plot parameter
+  $mult = $D->plot_multiplier * $C->get("data_max") / $C->get("stddev_max");
+  q{};
+}
+plot("{$D->group}.energy+{$D->bkg_eshift}", "{$mult}*{$D->group}.stddev+{$D->y_offset}",
+     style={$P->datastyle}, color="{$P->color}", key="{sprintf("%d", $mult)} * Std. Dev.")

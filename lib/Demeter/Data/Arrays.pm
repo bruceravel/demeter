@@ -110,11 +110,13 @@ sub arrays {
 sub points {
   my ($self, @arguments) = @_;
   my %args = @arguments;
-  $args{space}     = lc($args{space});
-  $args{shift}   ||= 0;
-  $args{scale}   ||= 1;
-  $args{yoffset} ||= 0;
-  $args{part}    ||= q{};
+  $args{space}      = lc($args{space});
+  $args{shift}    ||= 0;
+  $args{scale}    ||= 1;
+  $args{yoffset}  ||= 0;
+  $args{part}     ||= q{};
+  $args{add}      ||= q{};
+  $args{subtract} ||= q{};
 
   my @x = ($args{space} eq 'e') ? $self->get_array('energy')
         : ($args{space} eq 'k') ? $self->get_array('k')
@@ -122,12 +124,21 @@ sub points {
         :                         $self->get_array('q');
   @x = map {$_ + $args{shift}} @x;
   my @y = ();
+  my @z = ();
   if ((ref($self) =~ m{Data}) and is_DataPart($args{part})) {
     my $suff = ($args{part} eq 'run') ? substr($args{suffix}, 0, 4) : $args{suffix};
     @y = $self->get_array($suff, $args{part});
   } elsif (ref($args{part}) =~ m{Path}) {
     #print $args{part}, "  ", ref($args{part}), "  ", $args{file}, $/;
     @y = $args{part}->get_array($args{suffix});
+  } elsif ($args{add}) {
+    @y = $self->get_array($args{suffix});
+    @z = $self->get_array($args{add});
+    @y = pairwise {$a + $b + $args{yoffset}} @y, @z;
+  } elsif ($args{subtract}) {
+    @y = $self->get_array($args{suffix});
+    @z = $self->get_array($args{subtract});
+    @y = pairwise {$a - $b + $args{yoffset}} @y, @z;
   } else {
     @y = $self->get_array($args{suffix});
   };

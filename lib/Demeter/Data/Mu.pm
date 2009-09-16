@@ -462,7 +462,7 @@ sub _plotE_command {
     $self->bkg_eshift($save[0]);
     $self->bkg_e0($save[1]);
   };
-  return $string.$markers;
+  return $string.$markers.$/;
 };
 
 sub _plotE_string {

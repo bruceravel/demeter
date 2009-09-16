@@ -178,6 +178,7 @@ override fix_envelope => sub {
 };
 
 
+
 # this gives problems during cleanup:
 #        (in cleanup) Can't call method "execute" on an undefined
 #        value at /usr/local/share/perl/5.10.0/Moose/Object.pm line 53
@@ -273,6 +274,11 @@ Plotting individual paths is broken
 =item *
 
 Plotting parts other than fit in an rmr plot has repeated labels
+
+=item *
+
+Quadplot cannot currently do pre, post, or bkg dues to extensive use
+of replot not being consistent with multiplot
 
 =back
 

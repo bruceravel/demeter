@@ -21,7 +21,7 @@ use Moose::Role;
 
 use Carp;
 use List::Util qw(reduce);
-use List::MoreUtils qw(minmax firstval);
+use List::MoreUtils qw(minmax firstval uniq);
 # use Regexp::Optimizer;
 # use Regexp::Common;
 use Readonly;
@@ -74,34 +74,60 @@ sub merge {
   my ($self, $how, @data) = @_;
   $how = lc($how);
   croak("Demeter::Data::Process: \$data->merge(\$how, \@data) where \$how = e|k|n") if ($how !~ m{^[ekn]});
+
+  my %howstring = (e => 'mu(E)', n => 'normalized mu(E)', k => 'chi(k)');
+
   my $standard = $self->mo->standard;
   $self->standard;		# make self the standard for merging
 
   my $merged = $self->clone;
-  $self->mergeE('x', @data) if ($how =~ m{^e});
-  $self->mergeE('n', @data) if ($how =~ m{^n});
+  $merged -> generated(1);	# should this trigger the next three lines?
+  $merged -> file(q{});
+  $merged -> update_data(0);
+  $merged -> update_columns(0);
+
   if ($how =~ m{^k}) {
     $merged->datatype('chi');
     $self->mergek(@data);
+  } elsif ($how =~ m{^e}) {
+    $merged->datatype('xmu');
+    $self->mergeE('x', @data);
+  } elsif ($how =~ m{^n}) {
+    $merged->datatype('xmu');
+    $self->mergeE('n', @data);
   };
 
-  my $ndata = $#data + 2;
-  my $config = $self->mo->config;
-  $config -> set(ndata=>$ndata);
+  my @uniq = uniq($self, @data);
+  my $ndata = $#uniq + 1;
+  $self -> co -> set(ndata=>$ndata);
 
-  my $string = $merged->template("process", "merge_end"); #, {ndata=>$ndata});
+  my $string = $merged->template("process", "merge_norm"); #, {ndata=>$ndata});
   $self->dispose($string);
-  if ($how !~ m{^k}) {
-    $string = $merged->template("process", "deriv");
+
+  $merged->mo->standard($merged);
+  foreach my $d (uniq($self, @data)) {
+    next if (ref($d) !~ m{Data});
+    my $string = $d->template("process", "merge_stddev");
     $self->dispose($string);
   };
-  $merged -> generated(1);
+  $string  = $merged->template("process", "merge_stddev_end");
+  $string .= $merged->template("process", "merge_end");
+  $self->dispose($string);
+
+
+  if ($how !~ m{^k}) {
+    $string  = $merged->template("process", "deriv");
+    $self   -> dispose($string);
+    $merged -> update_norm(1);
+    $merged -> initialize_e0;
+  } else {
+    $merged -> update_norm(0);
+  };
   $merged -> is_merge($how);
-  $merged -> update_norm(($how =~ m{^k}) ? 0 : 1);
   $merged -> update_fft(1);
   $merged -> bkg_eshift(0);
   $merged -> i0_string(q{});
-  $merged -> name("merged data");
+  $merged -> name("data merged as " . $howstring{$how});
   ($how =~ m{^k}) ? $merged -> datatype('chi') : $merged -> datatype('xmu');
 
   (ref($standard) =~ m{Data}) ? $standard->standard : $self->unset_standard;
@@ -133,7 +159,7 @@ sub mergeE {
   $string   .= $self->template("process", "merge_start");
   $self->dispose($string);
 
-  foreach my $d ($self, @data) {
+  foreach my $d (uniq($self, @data)) {
     next if (ref($d) !~ m{Data});
     my $string = $d->template("process", "merge_interp");
     $string   .= $d->template("process", "merge");
@@ -164,7 +190,7 @@ sub mergek {
   $string   .= $self->template("process", "merge_start");
   $self->dispose($string);
 
-  foreach my $d ($self, @data) {
+  foreach my $d (uniq($self, @data)) {
     next if (ref($d) !~ m{Data});
     my $string = $d->template("process", "merge_interp");
     $string   .= $d->template("process", "merge");

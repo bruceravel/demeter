@@ -4,6 +4,11 @@
   # $ndata is a passed parameter and is the normalization constant for
   # the merge (number of data sets or sum of importances)
 }
+{
+  $suff = ($C->get("merge_space") eq 'energy') ? 'xmu' : 'chi';
+  $n = $C->get("ndata");
+  $sum = $C->get("ndata");
+  q{};
+}
 ##| setting up arrays for merge
-erase m___erge_n1 m___erge_n2
-erase @group m___erge
+set({$D->group}.stddev = sqrt( (m___erge.stddev*{$n}) / ({$sum}*{$n-1}) ))

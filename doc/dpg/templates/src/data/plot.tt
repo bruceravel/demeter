@@ -57,7 +57,7 @@ Plotting in the four spaces is quite straightforward:
 [% END %]
 
 [% FILTER html_para %]
-There are also a numer of pre-defined, specialty plots
+There are also a number of pre-defined, specialty plots
 [% END %]
 
 [% WRAPPER html/list type="dl" %]
@@ -74,6 +74,84 @@ There are also a numer of pre-defined, specialty plots
 [% END %]
 [% WRAPPER html/dt dt="plot in chi(k) with the real part of chi(q)" %]
 [% INCLUDE font/mono a="\$data->plot('kq');" %]
+[% END %]
+[% WRAPPER html/dt dt="plot merged data with standard deviation" %]
+[% WRAPPER codeexample -%]
+#!/usr/bin/perl
+use Demeter;
+my @common = (energy => '$1', numerator => '$2', denominator => '$3', ln => 1,);
+my @data = (
+            Demeter::Data->new(file => 'examples/data/fe.060',
+                               name => "Fe scan 1",
+                               @common,
+                              ),
+            Demeter::Data->new(file => 'examples/data/fe.061',
+                               name => "Fe scan 2",
+                               @common,
+                              ),
+            Demeter::Data->new(file => 'examples/data/fe.062',
+                               name => "Fe scan 3",
+                               @common,
+                              ),
+           );
+my $merged = $data[0]->merge('e', @data);
+$merged->plot('stddev');
+[% END %]
+[% WRAPPER scriptcaption this="plot_stddev.png" %]
+This shows the [% INCLUDE html/link text="merge" link="../mue/merge.html" %]
+of [% mu %] of 3 iron foil scans along with the
+standard deviation array.  The standard deviation has been added to
+and subtracted from the [% mu %] spectrum, so the red trace is an
+error margin for the [% mu %] spectrum.
+Note that this plot type can only be plotted using a Data
+object which contains the data from a merge.  Trying to plot a
+non-merged Data object in this way will return a warning without
+plotting anything.
+[% INCLUDE font/em a="I really need to show noisier data in this example." %]
+[% END %]
+[% END %]
+[% WRAPPER html/dt dt="plot merged data with standard deviation" %]
+[% WRAPPER codeexample -%]
+#!/usr/bin/perl
+use Demeter;
+my @common = (energy => '$1', numerator => '$2', denominator => '$3', ln => 1,);
+my @data = (
+            Demeter::Data->new(file => 'examples/data/fe.060',
+                               name => "Fe scan 1",
+                               @common,
+                              ),
+            Demeter::Data->new(file => 'examples/data/fe.061',
+                               name => "Fe scan 2",
+                               @common,
+                              ),
+            Demeter::Data->new(file => 'examples/data/fe.062',
+                               name => "Fe scan 3",
+                               @common,
+                              ),
+           );
+my $merged = $data[0]->merge('e', @data);
+$merged->plot('variance');
+[% END %]
+[% WRAPPER scriptcaption this="plot_variance.png" %]
+This shows the [% INCLUDE html/link text="merge" link="../mue/merge.html" %]
+of [% mu %] of 3 iron foil scans along with the
+standard deviation array.  The standard deviation has been scaled to
+plot with the [% mu %] spectrum.  The scaling factor is given in the
+legend.  Note that this plot type can only be plotted using a Data
+object which contains the data from a merge.  Trying to plot a
+non-merged Data object in this way will return a warning without
+plotting anything.
+[% END %]
+[% END %]
+[% WRAPPER html/dt dt="quad plot with data in all four spaces" %]
+[% WRAPPER codesample -%]
+$data->plot('quad');
+[% END %]
+[% WRAPPER scriptcaption this="plot_quad.png" %]
+This quad plot shows data on MnOOH in all four spaces.  The current
+value of k-weighting in the Plot object is used in this kind of plot.
+[% INCLUDE font/em a="This kind of plot cannot be made with the pgplot plotting backend." %]
+[% END %]
 [% END %]
 [% END %]
 
