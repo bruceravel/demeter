@@ -44,7 +44,8 @@ section_description
   the gnuplot plotting backend. Colors can be gnuplot named colors (in
   a gnuplot session type "show palette colornames" to see gnuplot's
   named colors, or hexadecimal triplets (i.e. "#0000FF" for blue and
-  so on).
+  so on).  For details about gnuplot syntax, see
+  http://gnuplot.info/docs/gnuplot.html
 
 
 variable=persist
@@ -62,6 +63,14 @@ default=wxt
 description
   This is the terminal type to use when plotting with gnuplot.
 
+variable=termparams
+type=string
+default=enhanced
+description
+  Use this to specify parameters of the terminal type.  Be sure to
+  follow gnuplot's syntax -- Demeter does no error checking on the
+  value of this parameter.
+
 variable=font
 type=font
 default=Arial
@@ -75,6 +84,14 @@ minint=8
 maxint=100
 description
   This is the font size to use by default in gnuplot plots.
+
+variable=keyparams
+type=string
+default=top right width 1 height 1 box
+description
+  Use this to set the parameters of the legend.  Be sure to follow
+  gnuplot's syntax -- Demeter does no error checking on the value of
+  this parameter.
 
 variable=bg
 type=color

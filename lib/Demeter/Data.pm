@@ -571,7 +571,7 @@ sub sort_data {
 
     ## now feed columns back to ifeffit
     my $group = $self->group;
-    $self->dispose("## replacing arrays for $group with sorted versions\nerase \@group $group"); #.$cols[$c]");
+    $self->dispose("##| replacing arrays for $group with sorted versions\nerase \@group $group"); #.$cols[$c]");
     foreach my $c (1 .. $#cols) {
       my @array;
       foreach (@lol) {push @array, $_->[$c]};

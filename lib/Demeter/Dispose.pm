@@ -21,6 +21,31 @@ use Moose::Role;
 
 use Ifeffit;
 
+#use subs qw(BOLD RED MAGENTA YELLOW RESET);
+my $ANSIColor_exists = (eval "require Term::ANSIColor");
+if ($ANSIColor_exists) {
+  import Term::ANSIColor qw(:constants);
+} else {
+  sub BOLD    {q{}};
+  sub RED     {q{}};
+  sub MAGENTA {q{}};
+  sub YELLOW  {q{}};
+  sub RESET   {q{}};
+};
+sub ansify {
+  my ($thisline) = @_;
+  my ($start, $end) = (q{}, q{});
+  if ($thisline =~ m{\A\#\#\|}) {
+    ($start, $end) = (BOLD.RED, RESET);
+  } elsif ($thisline =~ m{\A\#\#\#__}) {
+    ($start, $end) = (BOLD.YELLOW, RESET);
+  } elsif ($thisline =~ m{\A\#}) {
+    ($start, $end) = (BOLD.MAGENTA, RESET);
+  };
+  return ($start, $end);
+};
+
+
 
 ##-----------------------------------------------------------------
 ## dispose commands to ifeffit and elsewhere
@@ -36,16 +61,22 @@ sub dispose {
   return 0 if ($command =~ m{\A\s*\z});
   ($command .= "\n") if ($command !~ /\n$/);
 
-  ## -------- spit everything to the screen
+  ## -------- spit everything to the screen, use ANSI colors if available and ui=screen
   if ($self->get_mode("screen")) {
     local $| = 1;
-    print STDOUT $command;
+    foreach my $thisline (split(/\n/, $command)) {
+      my ($start, $end) = ($self->mo->ui eq 'screen') ? ansify($thisline) : (q{}, q{});
+      print STDOUT $start, $thisline, $end, $/;
+    };
   };
 
-  ## -------- spit plot commands to the screen
+  ## -------- spit plot commands to the screen, use ANSI colors if available and ui=screen
   if (($self->get_mode("plotscreen"))  and $plotting) {
     local $| = 1;
-    print STDOUT $command;
+    foreach my $thisline (split(/\n/, $command)) {
+      my ($start, $end) = ($self->mo->ui eq 'screen') ? ansify($thisline) : (q{}, q{});
+      print STDOUT $start, $thisline, $end, $/;
+    };
   };
 
   ## -------- dump everything to a file

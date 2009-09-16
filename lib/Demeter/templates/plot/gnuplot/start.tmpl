@@ -1,4 +1,4 @@
-set term {$C->default("gnuplot","terminal")} font '{$C->default("gnuplot","font")},{$C->default("gnuplot","fontsize")}' enhanced
+set term {$C->default("gnuplot","terminal")} font '{$C->default("gnuplot","font")},{$C->default("gnuplot","fontsize")}' {$C->default("gnuplot","termparams")}
 set encoding iso_8859_15
 
 ## line styles
@@ -16,5 +16,7 @@ set style line 10 linecolor rgb "{$C->default("gnuplot", "col9")}"
 ## marker styles
 set style line 12 linecolor rgb "{$C->default("gnuplot", "markercolor")}"
 
+## plot formatting
 set style line 20 linecolor rgb "{$C->default("gnuplot", "gridcolor")}"
 set grid ls 20
+set key {$C->default("gnuplot", "keyparams")}

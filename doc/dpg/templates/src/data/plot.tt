@@ -43,37 +43,54 @@ Plotting in the four spaces is quite straightforward:
 
 [% WRAPPER html/list type="dl" %]
 [% WRAPPER html/dt dt="plot in energy" %]
-[% INCLUDE font/mono a="\$data->plot('E');" %]
+[% WRAPPER codesample -%]
+$data->plot('E');
+[% END %]
 [% END %]
 [% WRAPPER html/dt dt="plot in k" %]
-[% INCLUDE font/mono a="\$data->plot('k');" %]
+[% WRAPPER codesample -%]
+$data->plot('k');
+[% END %]
 [% END %]
 [% WRAPPER html/dt dt="plot in R" %]
-[% INCLUDE font/mono a="\$data->plot('R');" %]
+[% WRAPPER codesample -%]
+$data->plot('R');
+[% END %]
 [% END %]
 [% WRAPPER html/dt dt="plot in back-transform k" %]
-[% INCLUDE font/mono a="\$data->plot('q');" %]
+[% WRAPPER codesample -%]
+$data->plot('q');
+[% END %]
 [% END %]
 [% END %]
 
 [% FILTER html_para %]
-There are also a number of pre-defined, specialty plots
+There are also a number of pre-defined, specialty plots.  (Need to
+show examples of rmr, r123, k123, and kq.)
 [% END %]
 
 [% WRAPPER html/list type="dl" %]
 [% WRAPPER html/dt dt="plot the magnitude and real part of chi(R)" %]
-[% INCLUDE font/mono a="\$data->plot('rmr');" %]
+[% WRAPPER codesample -%]
+$data->plot('rmr');
+[% END %]
 [% END %]
 [% WRAPPER html/dt dt="plot chi(k) with k-weights of 1, 2, and 3,
                        scaled to be the same size" %]
-[% INCLUDE font/mono a="\$data->plot('k123');" %]
+[% WRAPPER codesample -%]
+$data->plot('k123');
+[% END %]
 [% END %]
 [% WRAPPER html/dt dt="plot chi(R) with k-weights of 1, 2, and 3,
                        scaled to be the same size" %]
-[% INCLUDE font/mono a="\$data->plot('R123');" %]
+[% WRAPPER codesample -%]
+$data->plot('R123');
+[% END %]
 [% END %]
 [% WRAPPER html/dt dt="plot in chi(k) with the real part of chi(q)" %]
-[% INCLUDE font/mono a="\$data->plot('kq');" %]
+[% WRAPPER codesample -%]
+$data->plot('kq');
+[% END %]
 [% END %]
 [% WRAPPER html/dt dt="plot merged data with standard deviation" %]
 [% WRAPPER codeexample -%]
@@ -111,25 +128,8 @@ plotting anything.
 [% END %]
 [% END %]
 [% WRAPPER html/dt dt="plot merged data with standard deviation" %]
-[% WRAPPER codeexample -%]
-#!/usr/bin/perl
-use Demeter;
-my @common = (energy => '$1', numerator => '$2', denominator => '$3', ln => 1,);
-my @data = (
-            Demeter::Data->new(file => 'examples/data/fe.060',
-                               name => "Fe scan 1",
-                               @common,
-                              ),
-            Demeter::Data->new(file => 'examples/data/fe.061',
-                               name => "Fe scan 2",
-                               @common,
-                              ),
-            Demeter::Data->new(file => 'examples/data/fe.062',
-                               name => "Fe scan 3",
-                               @common,
-                              ),
-           );
-my $merged = $data[0]->merge('e', @data);
+Change line 19 in the script shown above to this:
+[% WRAPPER codesample -%]
 $merged->plot('variance');
 [% END %]
 [% WRAPPER scriptcaption this="plot_variance.png" %]

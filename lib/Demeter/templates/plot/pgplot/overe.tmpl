@@ -7,6 +7,7 @@
          : (($P->e_part eq 'signal') and $P->e_mu) ? $D->signal_scale
          :                                           1;
   $mult = $D->plot_multiplier * $scale;
+  q{};
 }
 plot("{$D->group}.energy+{$D->bkg_eshift}", "{$mult}*{$D->group}.{$P->e_part}+{$D->y_offset}",
      style={$P->datastyle}, color="{$P->color}", key="{$P->key}")
