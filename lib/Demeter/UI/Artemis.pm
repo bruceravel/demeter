@@ -467,11 +467,21 @@ sub fit {
 
 sub ifeffit_buffer {
   my ($text) = @_;
-  $frames{Buffer}->insert('ifeffit', $text);
+  foreach my $line (split(/\n/, $text)) {
+    my ($was, $is) = $frames{Buffer}->insert('ifeffit', $line);
+    my $color = ($line =~ m{\A\#}) ? 'comment' : 'normal';
+    $frames{Buffer}->color('ifeffit', $was, $is, $color);
+    $frames{Buffer}->insert('ifeffit', $/)
+  };
 };
 sub plot_buffer {
   my ($text) = @_;
-  $frames{Buffer}->insert('plot', $text);
+  foreach my $line (split(/\n/, $text)) {
+    my ($was, $is) = $frames{Buffer}->insert('plot', $line);
+    my $color = ($line =~ m{\A\#}) ? 'comment' : 'normal';
+    $frames{Buffer}->color('plot', $was, $is, $color);
+    $frames{Buffer}->insert('plot', $/)
+  };
 };
 sub feedback {
   my ($text) = @_;

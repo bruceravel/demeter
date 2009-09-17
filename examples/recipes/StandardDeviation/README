@@ -1,0 +1,16 @@
+
+This example demonstrates the use of merged Data groups and the
+standard deviation array.  In the short script in this directory,
+three iron foil scans are imported, then a merged Data group is made
+from them.  Three ways of visualizing the merge are then shown:
+
+ 1. Plot the merge along with the data that went into the merge
+
+ 2. Plot the data along with the data +/- the standard deviation.
+    This plots a sort of error margin around the data.
+
+ 3. Plot the data along with the standard deviation array.  The
+    standard deviation is scaled up to plot on the scale as the data.
+    This kind of plot shows the distribution of the standard deviation
+    across the data -- it is usually largest near the edge.
+

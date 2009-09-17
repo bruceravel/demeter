@@ -119,6 +119,19 @@ $data_010k->po->legend(dy => 0.05, # set nice legend parameters for the plot
 
 print "--- do the fit (or the sum of paths)\n";
 $fitobject -> fit;
+
+$data_010k -> plot_with('gnuplot');
+$data_010k->po->set(plot_data => 1,   plot_fit  => 1,
+                      plot_bkg  => 0,   plot_res  => 0,
+                      plot_win  => 0,   plot_run  => 0,
+                      kweight   => 2,
+                      r_pl      => 'r',
+                     );
+$data_010k -> y_offset(12);
+$_->plot('rmr') foreach ($data_010k, $data_150k);
+$data_010k -> pause;
+exit;
+
 #$fitobject -> ff2chi($data_010k);
 $fitobject -> interview;
 

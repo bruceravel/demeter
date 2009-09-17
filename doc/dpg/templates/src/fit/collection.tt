@@ -1,5 +1,141 @@
 [% META title = 'Setting up an EXAFS fit' %]
 
+
+[% PROCESS section label="Multiple data set fitting" %]
+
 [% FILTER html_para %]
-Setting up
+The following script expands upon the example in the previous section
+by expanding the isotropic expansion and correlated Debye fitting
+model to a simultaneous refinement of two data sets.  In this example,
+two copper foils measurements were made at 10 K and 150 K.  Both are
+imported from an [% athena %] project file and a Fit object is
+established using both data sets.
 [% END %]
+
+[% WRAPPER codeexample -%]
+#!/usr/bin/perl
+use Demeter qw(:ui=screen);
+
+## import an Athena project file with copper metal in it
+my $prj = Demeter::Data::Prj->new(file='cu_data.prj');
+
+## make a Data object and set the FT and fit parameters
+my @data = $prj->records(1, 2);
+$data[0] -> name('10 K copper data');
+$data[1] -> name('150 K copper data');
+my @common = (fft_kmin   => 3,        fft_kmax   => 14,
+              fit_k1     => 1,        fit_k3     => 1,
+              bft_rmin   => 1.6,      bft_rmax   => 4.3,
+              fit_do_bkg => 0,
+             );
+$_ -> set(@common) foreach @data;
+
+## make GDS objects for an isotropic expansion, correlated Debye model fit to copper
+my @gds =  (Demeter::GDS -> new(gds => 'guess', name => 'alpha10',  mathexp => 0),
+            Demeter::GDS -> new(gds => 'guess', name => 'alpha150', mathexp => 0),
+            Demeter::GDS -> new(gds => 'guess', name => 'amp',      mathexp => 1),
+            Demeter::GDS -> new(gds => 'guess', name => 'enot',     mathexp => 0),
+            Demeter::GDS -> new(gds => 'guess', name => 'theta',    mathexp => 500),
+            Demeter::GDS -> new(gds => 'set',   name => 'sigmm',    mathexp => 0.00052),
+           );
+
+## run a Feff calculation on copper metal
+my $feff = Demeter::Feff -> new(file => "cu_metal.inp");
+$feff -> set(workspace => "cu_workspace/", screen => 0,);
+$feff -> potph -> pathfinder;
+my @list_of_paths = @{ $feff-> pathlist };
+
+## make Path objects for the first 5 paths in copper (3 shell fit)
+my @paths = ();
+foreach my $i (0 .. 4) {
+  ## paths for data at 10K
+  $paths[$i] = Demeter::Path -> new();
+  $paths[$i]->set(data     => $data[0],
+                  sp       => $list_of_paths[$i];
+                  s02      => 'amp',
+                  e0       => 'enot',
+                  delr     => 'alpha10*reff',
+                  sigma2   => 'debye(10, theta) + sigmm',
+                 );
+
+  ## paths for data at 150K
+  my $j = $i+5;
+  $paths[$j] = $paths[$i] -> clone;
+  $paths[$j] -> set(data     => $data[1],
+                    delr     => 'alpha150*reff',
+                    sigma2   => 'debye(150, theta) + sigmm',
+                   );
+};
+
+## make a Fit object
+my $fit = Demeter::Fit -> new(gds   => \@gds,
+                              data  => \@data,
+                              paths => \@paths
+                             );
+
+## do the fit
+$fit -> fit;
+
+## set up some plotting parameters
+$data[0] -> po -> set(plot_data => 1,   plot_fit  => 1,
+                      plot_bkg  => 0,   plot_res  => 0,
+                      plot_win  => 0,   plot_run  => 0,
+                      kweight   => 2,
+                     );
+$data[0] -> y_offset(6);
+$_ -> plot('rmr') foreach @data;
+$data[0] -> pause;
+[% END %]
+
+[% FILTER html_para %]
+This script bears a strog resemblance to the one in the previous
+section.  There are a couple of small differences.  At lines 8-16, two
+records are imported from the [% athena %] project file.  They both
+have parameters set appropriately.  One fewer GDS ojects at lines
+19-25 is defined compared to theprevious script.  This is because the
+temperature parameter of [% ifeffit %]'s
+[% INCLUDE font/mono a='debye' %] function is explicitly set to the
+correct value at lines 43 and 51.
+
+One major difference of this multiple data set fitting model is at
+line 57.  Both Data objects are supplied to the Fit object.  This is
+the fundamental difference between a single and multiple data set fit
+-- the number of items in the Fit object's 
+[% INCLUDE font/mono a='data' %] attribute.  Very cool!
+
+The other major difference is shown at lines 47-52.  In those lines a
+set of Path objects is set up and associated with the second Data
+object.  At lines 37-44, Path objects are set up for the 10 K data in
+identical manner to the script in the previous section.  At line 48,
+each Path object is cloned, returning a new Path object which is
+an identical copy.  These copies are added to the
+[% INCLUDE font/mono a='@paths' %] list, with care taken at line 47
+to do the counting correctly.  In lines 49-52, only those parameters
+that need to be changed to be appropriate for the 150 K data set are
+set to their new values.  At line 49, the cloned paths are
+associated with the 150 K Data object.  At lines 50 and 51, the
+temperature dependent path parameters are set appropriately.
+
+Note that the [% INCLUDE font/mono a='sp' %] atrtibute is 
+[% INCLUDE font/b a='not' %] changed for the cloned paths.  This is
+central to [% demeter %]'s efficient use of [% feff %].  The same
+ScatteringPath object is used for the Path object associated with the
+10 K Data object [% INCLUDE font/b a='and' %] for the Path object
+associated with the 150 K Data object.  This is comewhat equivalent,
+conceptually, with using the same 
+[% INCLUDE font/file a='feffNNNN.dat' %] file in two different path
+paragraphs in a [% feffit %] input file.
+[% END %]
+
+[% WRAPPER scriptcaption this="cumds.png" %]
+Another impoirtant thing demonstrated by this example is how a fairly
+elaborate polot can be generated with a small number of lines of
+code.  The plot to the right is what gets made by lines 65-71.  Lines
+65-69 set some parameters of the Plot object.  Line 70 sets a vertical
+offset for the plot of the 10 K data.  At line 71
+[% INCLUDE html/link text="Rmr plots" link="../data/plot.html" %]
+are made for each Data object.  That's a lot of plot for two lines of
+code! 
+[% END %]
+
+[% PROCESS section label="Using multiple Feff calculations" %]

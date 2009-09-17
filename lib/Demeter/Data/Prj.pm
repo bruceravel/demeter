@@ -20,6 +20,7 @@ use autodie qw(open close);
 use Moose;
 extends 'Demeter';
 use MooseX::AttributeHelpers;
+use MooseX::StrictConstructor;
 
 #use diagnostics;
 use Carp;

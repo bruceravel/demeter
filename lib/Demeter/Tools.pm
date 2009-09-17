@@ -71,6 +71,7 @@ sub module_environment {
 		     Moose
 		     MooseX::AttributeHelpers
 		     MooseX::Clone
+		     MooseX::StrictConstructor
 		     MooseX::Singleton
 		     MooseX::Types
 		     String::Random

@@ -21,6 +21,7 @@ use autodie qw( open close );
 use Moose;
 extends 'Demeter';
 use MooseX::AttributeHelpers;
+use MooseX::StrictConstructor;
 
 with 'Demeter::Fit::Happiness';
 with 'Demeter::Fit::Sanity';

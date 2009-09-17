@@ -21,27 +21,46 @@ use Moose::Role;
 
 use Ifeffit;
 
-#use subs qw(BOLD RED MAGENTA YELLOW RESET);
+use subs qw(BOLD RED MAGENTA YELLOW CYAN ON_RED WHITE RESET);
 my $ANSIColor_exists = (eval "require Term::ANSIColor");
 if ($ANSIColor_exists) {
   import Term::ANSIColor qw(:constants);
 } else {
+  ## this eval works when Term::ANSIColor is not available AND when running tests
+  eval '
   sub BOLD    {q{}};
   sub RED     {q{}};
   sub MAGENTA {q{}};
   sub YELLOW  {q{}};
-  sub RESET   {q{}};
+  sub CYAN    {q{}};
+  sub WHITE   {q{}};
+  sub ON_RED  {q{}};
+  sub RESET   {q{}};';
 };
 sub ansify {
-  my ($thisline) = @_;
+  my ($thisline, $kind) = @_;
   my ($start, $end) = (q{}, q{});
-  if ($thisline =~ m{\A\#\#\|}) {
-    ($start, $end) = (BOLD.RED, RESET);
-  } elsif ($thisline =~ m{\A\#\#\#__}) {
-    ($start, $end) = (BOLD.YELLOW, RESET);
-  } elsif ($thisline =~ m{\A\#}) {
-    ($start, $end) = (BOLD.MAGENTA, RESET);
+
+ COLOR:{
+    ($kind eq 'comment') and do {
+      if ($thisline =~ m{\A\#\#\|}) {
+	($start, $end) = (BOLD.RED, RESET);
+      } elsif ($thisline =~ m{\A\#\#\#__}) {
+	($start, $end) = (BOLD.YELLOW, RESET);
+      } elsif ($thisline =~ m{\A\#}) {
+	($start, $end) = (BOLD.MAGENTA, RESET);
+      };
+      last COLOR;
+    };
+    ($kind eq 'feedback') and do {
+      if ($thisline =~ m{\A\s*\*}) {
+	print STDOUT WHITE, ON_RED, $thisline, RESET;
+      } else {
+	print STDOUT CYAN, $thisline, RESET;
+      };
+    };
   };
+
   return ($start, $end);
 };
 
@@ -65,7 +84,7 @@ sub dispose {
   if ($self->get_mode("screen")) {
     local $| = 1;
     foreach my $thisline (split(/\n/, $command)) {
-      my ($start, $end) = ($self->mo->ui eq 'screen') ? ansify($thisline) : (q{}, q{});
+      my ($start, $end) = ($self->mo->ui eq 'screen') ? ansify($thisline, 'comment') : (q{}, q{});
       print STDOUT $start, $thisline, $end, $/;
     };
   };
@@ -74,7 +93,7 @@ sub dispose {
   if (($self->get_mode("plotscreen"))  and $plotting) {
     local $| = 1;
     foreach my $thisline (split(/\n/, $command)) {
-      my ($start, $end) = ($self->mo->ui eq 'screen') ? ansify($thisline) : (q{}, q{});
+      my ($start, $end) = ($self->mo->ui eq 'screen') ? ansify($thisline, 'comment') : (q{}, q{});
       print STDOUT $start, $thisline, $end, $/;
     };
   };
@@ -189,15 +208,26 @@ sub dispose {
     ifeffit($reprocessed);
     $self -> po -> copyright_text if ($plotting and ($self->mo->template_plot eq 'pgplot')); ## insert the copyright statement in a plot made with pgplot
 
+    ## this mess parses Ifeffit's feedback and sends it either to the feedback code ref or to the screen
     my $coderef = $self->get_mode("feedback");
-    if ($coderef) {
+    if ($coderef or $self->get_mode("screen") or  $self->get_mode("plotscreen")) {
       my ($lines, $response) = (Ifeffit::get_scalar('&echo_lines')||0, "");
-      if ($lines) {
-	map {$response .= Ifeffit::get_echo()."\n"} (1 .. $lines);
-	($response) and &$coderef($response);
+      if ($lines) {		# is there feedback?
+	foreach my $i (1 .. $lines) {
+	  my $response = Ifeffit::get_echo();
+
+	  ## send to feedback code ref
+	  if ($coderef) {
+	    ($response) and &$coderef($response."\n");
+
+	  ## send to the screen with ANSI colorization
+	  } elsif ($self->get_mode("screen") or ($self->get_mode("plotscreen") and $plotting)) {
+	    ansify($response.$/, "feedback")
+	  };
+
+	};
       };
     };
-
   };
 
   ## -------- send reprocessed command text to the screen
@@ -330,7 +360,20 @@ all the rest are off.
 =item screen
 
 This channel sends command strings to standard output.  This is a
-boolean.
+boolean.  If the UI is set to screen (see L<Demeter::Mode>) and the
+L<Term::ANSIColor> package is installed, then comments in the screen
+output will be colored red, pink, or yellow depending on the comment
+character.
+
+The colors are:
+
+  red           data processing comments
+  pink          plotting comments
+  yellow        fitting comments
+  light blue    feedback from Ifeffit
+  white on red  error messages from Ifeffit
+
+These colors are not configurable at this time. (But they could be...)
 
 =item file
 
@@ -352,7 +395,10 @@ name:
 =item plotscreen
 
 This behaves exactly like the C<screen> parameter, but applies only to
-commands disposed using the plotting flag.
+commands disposed using the plotting flag.  If the UI is set to screen
+(see L<Demeter::Mode>) and the L<Term::ANSIColor> package is
+installed, then comments in the screen output will be colored red,
+pink, or yellow depending on the comment character.
 
 =item plotfile
 
@@ -396,28 +442,30 @@ redirected to a different place.
 
 =item callback
 
-This channel sends disposed text to a user supplied code ref.  For
-instance, in Artemis, this is a subroutine that prints the disposed
-lines to the command buffer.  This code ref takes a single argument,
-which is the text to be disposed.
+This channel sends disposed text to a user supplied code reference.
+For instance, in Artemis, this is a subroutine that prints the
+disposed lines to the command buffer.  This code ref takes a single
+argument, which is the text to be disposed.
 
 =item plotcallback
 
 This optional channel redirects plotting commands to a differnt code
-ref from C<callback>.  If unset, plotting commands are disposed to
-C<callback>'s code ref.
+reference from C<callback>.  If unset, plotting commands are disposed
+to C<callback>'s code ref.
 
 =item feedback
 
-This channel sends feedback from Ifeffit to a user supplied code ref.
-Note that lines indicating a problem in Ifeffit's output start with a
-star (*).  Information lines start with text.
+This channel sends feedback from Ifeffit to a user supplied code
+reference.  Note that lines indicating a problem in Ifeffit's output
+start with a star (*).  Information lines start with text.
 
 =item repscreen
 
 This channel sends reprocessed command strings to standard output.
 The value of screen in the hash is interpreted as a boolean.  The main
-use of this channel is to debug the text actually sent to Ifeffit.
+use of this channel is to debug the text actually sent to Ifeffit.  No
+colorizing is done because comments are stripped from the reprocessed
+commands.
 
 =item repfile
 
@@ -461,33 +509,8 @@ C<&screen_echo>.  When set to 1, Ifeffit writes its feedback to STDOUT
 
 =back
 
-=head1 OTHER USES OF set_mode
-
-There are several other parameters that, like the ones that directly
-control the disposal of commands, have a pervasive impact on the
-operations of Demeter.  Many of these are the special variables in the
-templating subsystem.  Like the disposal parameters, these are
-accessed via the C<set_mode> and C<get_mode> methods.
-
-=over 4
-
-=item C<template_process> [ifeffit]
-
-This is the template set used to generate data processing commands.
-
-=item C<template_fit> [ifeffit]
-
-This is the template set used to generate fitting commands.
-
-=item C<template_plot> [pgplot]
-
-This is the template set used to generate plotting commands.  There is
-also an option to use the Gnuplot plotting backend by setting this
-parameter to "gnuplot".
-
-=back
-
-For still more possibilities, see L<Demeter::Mode>.
+For more information about effecting command generation and disposal,
+see L<Demeter::Mode>.
 
 =head1 CONFIGURATION
 
@@ -503,8 +526,9 @@ Demeter's dependencies are in the F<Bundle/DemeterBundle.pm> file.
 
 =item *
 
-Currently, nothing is done to capture feedback from Ifeffit.
-This is a serious shortcoming.
+Currently, the only way to capture Ifeffit's feedback is via the
+C<feedback> callback.  Feedback should be captured, sent to the
+various screen modes, and (optionally) colorized.
 
 =item *
 

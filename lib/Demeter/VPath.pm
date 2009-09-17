@@ -20,6 +20,7 @@ extends 'Demeter';
 with 'Demeter::Data::Arrays';
 with 'Demeter::Path::Process';
 use MooseX::AttributeHelpers;
+use MooseX::StrictConstructor;
 use Demeter::StrTypes qw( Empty );
 
 with 'Demeter::UI::Screen::Pause' if ($Demeter::mode->ui eq 'screen');

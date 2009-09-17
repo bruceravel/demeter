@@ -38,6 +38,7 @@ with 'Demeter::Data::Parts';
 with 'Demeter::Data::Plot';
 with 'Demeter::Data::Process';
 
+use MooseX::StrictConstructor;
 use Moose::Util::TypeConstraints;
 use Demeter::StrTypes qw( Element
 			  Edge
@@ -60,7 +61,7 @@ with 'Demeter::UI::Screen::Pause' if ($Demeter::mode->ui eq 'screen');
 
 has '+plottable'  => (default => 1);
 has '+data'       => (isa => Empty.'|Demeter::Data');
-has 'is_mc'     => (is => 'ro', isa => 'Bool', default => 0); # is not Demeter::Data::MultiChannel
+has 'is_mc'       => (is => 'ro', isa => 'Bool', default => 0); # is not Demeter::Data::MultiChannel
 has 'tag'         => (is => 'rw', isa => 'Str',  default => q{});
 has 'cv'          => (is => 'rw', isa => 'Num',  default => 0);
 has 'file'        => (is => 'rw', isa => 'Str',  default => $NULLFILE,

@@ -53,6 +53,7 @@ Readonly my $NUMBER => $RE{num}{real};
 =cut
 
 use Moose;
+use MooseX::StrictConstructor;
 use Ifeffit;
 with 'Demeter::Dispose';
 with 'Demeter::Tools';
@@ -60,8 +61,7 @@ with 'Demeter::Project';
 with 'Demeter::MRU';
 
 with 'MooseX::Clone';
-
-with 'MooseX::SetGet';
+with 'MooseX::SetGet';		# this is mine....
 
 #use MooseX::Storage;
 #with Storage('format' => 'YAML', 'io' => 'File');

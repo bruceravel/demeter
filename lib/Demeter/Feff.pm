@@ -20,6 +20,7 @@ use autodie qw(open close);
 use Moose;
 extends 'Demeter';
 use MooseX::AttributeHelpers;
+use MooseX::StrictConstructor;
 use Demeter::StrTypes qw( AtomsEdge FeffCard );
 use Demeter::NumTypes qw( Natural NonNeg PosInt );
 with 'Demeter::Feff::Paths';

@@ -46,10 +46,16 @@ sub new {
   $box -> Add($iffboxsizer, 1, wxGROW|wxALL, 5);
   $this->{IFEFFIT} -> SetSizerAndFit($box);
 
+  $this->{IFEFFIT}->{normal}   = Wx::TextAttr->new(Wx::Colour->new( '#000000' ),
+						   wxNullColour,
+						   Wx::Font->new( 9, wxTELETYPE, wxNORMAL, wxNORMAL, 0, "" ) );
+  $this->{IFEFFIT}->{comment}  = Wx::TextAttr->new(Wx::Colour->new( '#B22222' ),
+						   wxNullColour,
+						   Wx::Font->new( 9, wxTELETYPE, wxNORMAL, wxNORMAL, 0, "" ) );
   $this->{IFEFFIT}->{feedback} = Wx::TextAttr->new(Wx::Colour->new( '#000099' ),
 						   wxNullColour,
 						   Wx::Font->new( 9, wxTELETYPE, wxNORMAL, wxNORMAL, 0, "" ) );
-  $this->{IFEFFIT}->{warning}  = Wx::TextAttr->new(Wx::Colour->new( '#990000' ),
+  $this->{IFEFFIT}->{warning}  = Wx::TextAttr->new(Wx::Colour->new( '#ff9e1f' ),
 						   wxNullColour,
 						   Wx::Font->new( 9, wxTELETYPE, wxNORMAL, wxNORMAL, 0, "" ) );
 

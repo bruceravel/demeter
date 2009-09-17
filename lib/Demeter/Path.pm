@@ -18,6 +18,7 @@ package Demeter::Path;
 use autodie qw(open close);
 
 use Moose;
+use MooseX::StrictConstructor;
 extends 'Demeter';
 use Demeter::StrTypes qw( Empty PathParam );
 use Demeter::NumTypes qw( Natural PosInt NonNeg );

@@ -1,6 +1,7 @@
 package Demeter::Data::MultiChannel;
 
 use Moose;
+use MooseX::StrictConstructor;
 extends 'Demeter::Data';
 
 has '+is_mc'     => (default => 1);
@@ -82,6 +83,8 @@ sub discard {
   $self->DEMOLISH;
 };
 
+
+__PACKAGE__->meta->make_immutable;
 1;
 
 

@@ -38,6 +38,8 @@ MooseX::AttributeHelpers
 
 MooseX::Clone
 
+MooseX::StrictConstructor
+
 MooseX::Singleton
 
 MooseX::Types
@@ -100,6 +102,12 @@ I am not yet ready to make wxWidgets a dependence.
 
 I am using Wx 2.8.7 and WxPerl 0.86.  I cannot comment on whether
 earlier versions of either will work.
+
+=head1 DOCUMENT
+
+Building the Demeter Programming Guide (./doc/dpg/) requires the following:
+
+  Template  PPI  PPI::HTML  Image::Size
 
 =head1 COMMENTED OUT
 
