@@ -24,14 +24,14 @@ use Demeter;
 my $this = Demeter::GDS->new();
 my $OBJ  = 'GDS';
 
-ok( ref($this) =~ m{$OBJ},                "made a $OBJ object");
-ok(!$this->plottable,                     "$OBJ object is not plottable");
-ok( $this->group =~ m{\A\w{5}\z},         "$OBJ object has a proper group name");
+ok( ref($this) =~ m{$OBJ},        "made a $OBJ object");
+ok(!$this->plottable,             "$OBJ object is not plottable");
+ok( $this->group =~ m{\A\w{5}\z}, "$OBJ object has a proper group name");
 $this -> name('this');
-ok( $this->name eq 'this',                "$OBJ object has a settable label");
-ok(!$this->data,                          "$OBJ object has no associated Data object");
-ok( ref($this->mo) =~ 'Mode',           "$OBJ object can find the Mode object");
-ok( ref($this->co) =~ 'Config', "$OBJ object can find the Config object");
+ok( $this->name eq 'this',        "$OBJ object has a settable label");
+ok(!$this->data,                  "$OBJ object has no associated Data object");
+ok( ref($this->mo) =~ 'Mode',     "$OBJ object can find the Mode object");
+ok( ref($this->co) =~ 'Config',   "$OBJ object can find the Config object");
 ok( ref($this->po) =~ 'Plot',     "$OBJ object can find the Plot object");
 ok( ($this->mo->template_plot     eq 'pgplot'  and
      $this->mo->template_feff     eq 'feff6'   and

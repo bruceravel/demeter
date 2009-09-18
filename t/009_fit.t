@@ -26,15 +26,15 @@ use List::MoreUtils qw(all);
 my $this = Demeter::Fit -> new;
 my $OBJ  = 'Fit';
 
-ok( ref($this) =~ m{$OBJ},                              "made a $OBJ object");
-ok(!$this->plottable,                                   "$OBJ object is not plottable");
-ok( $this->group =~ m{\A\w{5}\z},                       "$OBJ object has a proper group name");
+ok( ref($this) =~ m{$OBJ},                    "made a $OBJ object");
+ok(!$this->plottable,                         "$OBJ object is not plottable");
+ok( $this->group =~ m{\A\w{5}\z},             "$OBJ object has a proper group name");
 $this -> name('this');
-ok( $this->name eq 'this',                              "$OBJ object has a settable label");
-ok( $this->data,                                        "$OBJ object has an associated Data object");
-ok( ref($this->mo) =~ 'Mode',                         "$OBJ object can find the Mode object");
+ok( $this->name eq 'this',                    "$OBJ object has a settable label");
+ok( $this->data,                              "$OBJ object has an associated Data object");
+ok( ref($this->mo) =~ 'Mode',                 "$OBJ object can find the Mode object");
 ok( ref($this->co) =~ 'Config',               "$OBJ object can find the Config object");
-ok( ref($this->po) =~ 'Plot',                   "$OBJ object can find the Plot object");
+ok( ref($this->po) =~ 'Plot',                 "$OBJ object can find the Plot object");
 ok( ($this->mo->template_plot     eq 'pgplot'  and
      $this->mo->template_feff     eq 'feff6'   and
      $this->mo->template_process  eq 'ifeffit' and
@@ -45,10 +45,10 @@ ok( ($this->mo->template_plot     eq 'pgplot'  and
 
 ## -------- populate a Fit object
 my @gds  = (
-	    Demeter::GDS -> new(Type=>'guess', name=>'amp',  mathexp=>1),
-	    Demeter::GDS -> new(Type=>'guess', name=>'enot', mathexp=>0),
-	    Demeter::GDS -> new(Type=>'guess', name=>'dcu',  mathexp=>0),
-	    Demeter::GDS -> new(Type=>'guess', name=>'ss',   mathexp=>0.003),
+	    Demeter::GDS -> new(gds=>'guess', name=>'amp',  mathexp=>1),
+	    Demeter::GDS -> new(gds=>'guess', name=>'enot', mathexp=>0),
+	    Demeter::GDS -> new(gds=>'guess', name=>'dcu',  mathexp=>0),
+	    Demeter::GDS -> new(gds=>'guess', name=>'ss',   mathexp=>0.003),
 	   );
 my $data = Demeter::Data->new(file     => 't/data.chi',
 			      name     => 'Cu 10K',
