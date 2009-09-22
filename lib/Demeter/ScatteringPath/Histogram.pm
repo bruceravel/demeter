@@ -1,6 +1,7 @@
 package Demeter::ScatteringPath::Histogram;
 use Moose::Role;
 
+use Carp;
 use List::Util qw(sum);
 use Readonly;
 Readonly my $EPSILON  => 0.00001;
@@ -10,6 +11,7 @@ sub make_histogram {
   my @paths = ();
 
   my $total = sum(@$ry);
+  print $total, $/;
   my $rnot = $self->fuzzy;
   foreach my $i (0 .. $#{$rx}) {
     my $deltar = $rx->[$i] - $rnot;
@@ -22,6 +24,7 @@ sub make_histogram {
 				 );
     $this -> make_name;
     $this -> name($this->name . " at " . sprintf("%.3f",$rx->[$i]));
+    $this -> update_path(1);
     push @paths, $this;
   };
 
@@ -37,7 +40,7 @@ sub histogram_from_file {
   $xcol  -= 1;
   $ycol  -= 1;
   my (@x, @y);
-  return (\@x, \@y) if (not -e $fname);
+  carp("$fname could not be imported as a histogram file"), return (\@x, \@y) if (not -e $fname);
   open(my $H, $fname);
   foreach my $line (<$H>) {
     chomp $line;
