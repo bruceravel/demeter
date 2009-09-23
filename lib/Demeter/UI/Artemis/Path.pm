@@ -121,7 +121,7 @@ sub new {
   foreach my $k (qw(label n s02 e0 delr sigma2 ei third fourth)) {
     my $label        = Wx::StaticText->new($this, -1, $labels{$k}, wxDefaultPosition, wxDefaultSize, wxALIGN_RIGHT);
     $label->{which} = $k;
-    my $w = ($k eq 'n') ? 50 : 250;
+    my $w = 250;
     $this->{"pp_$k"} = Wx::TextCtrl  ->new($this, -1, q{}, wxDefaultPosition, [$w,-1]);
     $gbs     -> Add($label,           Wx::GBPosition->new($i,1));
     $gbs     -> Add($this->{"pp_$k"}, Wx::GBPosition->new($i,2));

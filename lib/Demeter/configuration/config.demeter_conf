@@ -100,4 +100,6 @@ include gds.demeter_conf           ## GDS in GUI parameters
 
 include fspath.demeter_conf        ## quick first shell scattering
 
+include histogram.demeter_conf     ## histogram creation
+
 # include /home/bruce/codes/demeter/t/test.demeter.conf

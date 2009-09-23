@@ -30,7 +30,7 @@ my @list_of_paths = @{ $feff->pathlist };
 ## -------- Import some data
 my $data  = Demeter::Data::Prj->new(file=>'Aunano.prj') -> record(5);
 $data -> set(fft_kmin=>3,   fft_kmax=>16,
-	     bft_rmin=>1.6, bft_rmax=>3.2,
+	     bft_rmin=>1.8, bft_rmax=>3.2,
 	     fit_k1=>1,     fit_k2=>0,    fit_k3=>1,
 	    );
 
@@ -52,7 +52,7 @@ my @gds = (
 	   Demeter::GDS->new(gds=>'guess', name=>'amp',    mathexp=>6),
 	   Demeter::GDS->new(gds=>'guess', name=>'enot',   mathexp=>0),
 	   Demeter::GDS->new(gds=>'set',   name=>'alpha',  mathexp=>0),
-	   Demeter::GDS->new(gds=>'guess', name=>'sigsqr', mathexp=>0.002),
+	   Demeter::GDS->new(gds=>'set',   name=>'sigsqr', mathexp=>0.0),
 	  );
 
 ## -------- Do the fit

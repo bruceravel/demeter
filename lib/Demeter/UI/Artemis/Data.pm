@@ -27,6 +27,7 @@ use Wx::Perl::TextValidator;
 use Wx::Perl::Carp;
 
 use Demeter::UI::Artemis::Data::AddParameter;
+use Demeter::UI::Artemis::Data::Histogram;
 use Demeter::UI::Wx::CheckListBook;
 
 use List::MoreUtils qw(firstidx);
@@ -763,6 +764,17 @@ sub OnMenuClick {
        last SWITCH;
     };
 
+    ($id == $PATH_HISTO) and do {
+      my $histo_dialog = Demeter::UI::Artemis::Data::Histogram->new($datapage);
+      my $result = $histo_dialog -> ShowModal;
+      if ($result == wxID_CANCEL) {
+	$datapage->{statusbar}->SetStatusText("Cancelled histogram creation.");
+	return;
+      };
+      $datapage -> process_histogram($histo_dialog);
+      last SWITCH;
+    };
+
   };
 };
 
@@ -1182,6 +1194,7 @@ sub discard {
           :                                $mode;
   my $npaths = $self->{pathlist}->GetPageCount-1;
   my $sel    = $self->{pathlist}->GetSelection;
+  my $page   = $self->{pathlist}->GetPage($sel);
   my $text   = q{};
   my @count  = reverse(0 .. $npaths);
 
@@ -1200,7 +1213,10 @@ sub discard {
 
     ($how eq 'marked') and do {
       foreach my $i (@count) {
-	$self->{pathlist}->DeletePage($i) if $self->{pathlist}->IsChecked($i);
+	if ($self->{pathlist}->IsChecked($i)) {
+	  $self->{pathlist}->DeletePage($i);
+	  ($sel = 0) if ($sel = $i);
+	};
       };
       $text = "Discarded all paths that were marked.";
       last SWITCH;
@@ -1208,7 +1224,10 @@ sub discard {
 
     ($how eq 'unmarked') and do {
       foreach my $i (@count) {
-	$self->{pathlist}->DeletePage($i) if not $self->{pathlist}->IsChecked($i);
+	if (not $self->{pathlist}->IsChecked($i)) {
+	  $self->{pathlist}->DeletePage($i);
+	  ($sel = 0) if ($sel = $i);
+	};
       };
       $text = "Discarded all unmarked paths.";
       last SWITCH;
@@ -1216,7 +1235,10 @@ sub discard {
 
     ($how eq 'excluded') and do {
       foreach my $i (@count) {
-	$self->{pathlist}->DeletePage($i) if not $self->{pathlist}->GetPage($i)->{path}->include;
+	if (not $self->{pathlist}->GetPage($i)->{path}->include) {
+	  $self->{pathlist}->DeletePage($i);
+	  ($sel = 0) if ($sel = $i);
+	};
       };
       $text = "Discarded paths which were not included in the fit.";
       last SWITCH;
@@ -1232,7 +1254,10 @@ sub discard {
 
     ($how eq 'ms') and do {
       foreach my $i (@count) {
-	$self->{pathlist}->DeletePage($i) if not $self->{pathlist}->GetPage($i)->{path}->sp->nleg == 2;
+	if (not $self->{pathlist}->GetPage($i)->{path}->sp->nleg == 2) {
+	  $self->{pathlist}->DeletePage($i);
+	  ($sel = 0) if ($sel = $i);
+	};
       };
       $text = "Discarded all multiple scattering paths.";
       last SWITCH;
@@ -1240,7 +1265,10 @@ sub discard {
 
     ($how eq 'low') and do {
       foreach my $i (@count) {
-	$self->{pathlist}->DeletePage($i) if ($self->{pathlist}->GetPage($i)->{path}->sp->weight < 1);
+	if ($self->{pathlist}->GetPage($i)->{path}->sp->weight < 1) {
+	  $self->{pathlist}->DeletePage($i);
+	  ($sel = 0) if ($sel = $i);
+	};
       };
       $text = "Discarded all low importance paths.";
       last SWITCH;
@@ -1258,13 +1286,22 @@ sub discard {
 	return;
       };
       foreach my $i (@count) {
-	$self->{pathlist}->DeletePage($i) if ($self->{pathlist}->GetPage($i)->{path}->sp->fuzzy > $r);
+	if ($self->{pathlist}->GetPage($i)->{path}->sp->fuzzy > $r) {
+	  $self->{pathlist}->DeletePage($i);
+	  ($sel = 0) if ($sel = $i);
+	};
       };
       $text = "Discarded all paths longer that $r " . chr(197) . '.';
     };
   };
   $self->{statusbar}->SetStatusText($text);
-  $self->{pathlist}->InitialPage if not $self->{pathlist}->{VIEW};
+  if (not $self->{pathlist}->{VIEW}) {
+    $self->{pathlist}->InitialPage;
+  } else {
+    $page = $self->{pathlist}->GetPage(0) if ($sel == 0);
+    my ($p, $i) = $self->{pathlist}->page_and_id($page);
+    $self->{pathlist}->SetSelection($i);
+  };
 };
 
 # sub sum {
@@ -1297,6 +1334,42 @@ sub transfer {
   $plotlist->SetClientData($i, $self->{data});
   $plotlist->Check($i,1);
   $self->{statusbar} -> SetStatusText("Transfered data set \"$name\" to the plotting list.");
+};
+
+
+sub process_histogram {
+  my ($datapage, $histo_dialog) = @_;
+  my $pathpage = $datapage->{pathlist}->GetPage($datapage->{pathlist}->GetSelection);
+  my $sp = $pathpage->{path}->sp;
+  my @common = (data=>$datapage->{data});
+
+  ## -------- from file:
+  if ($histo_dialog->{filesel}) {
+    my ($file, $rmin, $rmax, $xcol, $ycol) = ($histo_dialog->{filepicker}->GetTextCtrl->GetValue,
+					      $histo_dialog->{filermin}->GetValue,
+					      $histo_dialog->{filermax}->GetValue,
+					      $histo_dialog->{filexcol}->GetValue,
+					      $histo_dialog->{fileycol}->GetValue, );
+    carp("$file does not exist"), return if (not -e $file);
+    carp("$file cannot be read"), return if (not -r $file);
+    my ($rx, $ry) = $sp->histogram_from_file($file, $xcol, $ycol, $rmin, $rmax);
+    my @paths = $sp -> make_histogram($rx, $ry, \@common);
+
+    foreach my $p (@paths) {
+      my $page = Demeter::UI::Artemis::Path->new($datapage->{pathlist}, $p, $datapage);
+      $datapage->{pathlist}->AddPage($page, $p->name, 1, 0);
+      $page->include_label;
+    };
+    #my $id = $datapage->{pathlist}->GetSelection;
+    #$datapage->{pathlist}->DeletePage($id);
+    #$datapage->{pathlist}->SetSelection($id);
+  } elsif ($histo_dialog->{filesel}) {
+    printf("%s  %s  %s  %s\n",
+	   $sp,
+	   $histo_dialog->{gammargrid}->GetValue,
+	   $histo_dialog->{gammarmin}->GetValue,
+	   $histo_dialog->{gammarmax}->GetValue);
+  };
 };
 
 package Demeter::UI::Artemis::Data::DropTarget;

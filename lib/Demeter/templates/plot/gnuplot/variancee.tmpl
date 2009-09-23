@@ -6,7 +6,7 @@
 }
 {
   $file = $P->tempfile;
-  $mult = $D->plot_multiplier * $C->get("data_max") / $C->get("stddev_max");
+  $mult = $D->plot_multiplier * $C->get("data_max") / $C->get("stddev_max") / 2;
   $S->points(file    => $file,
              space   => 'E', 
 	     suffix  => 'stddev', 
