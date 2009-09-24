@@ -323,12 +323,22 @@ sub find_next_empty_row {
 sub put_param {
   my ($parent, $type, $name, $mathexp) = @_;
   my $grid = $parent->{grid};
+  $type = 'merge' if $parent->param_present($name);
   my $start = $parent->find_next_empty_row;
   $grid->AppendRows(1,1) if ($start >= $grid->GetNumberRows);
   $grid -> SetCellValue($start, 0, $type);
   $grid -> SetCellValue($start, 1, $name);
   $grid -> SetCellValue($start, 2, $mathexp);
   $parent->set_type($start);
+};
+
+sub param_present {
+  my ($parent, $name) = @_;
+  my $grid = $parent->{grid};
+  foreach my $row (0 .. $grid->GetNumberRows) {
+    return 1 if ($grid->GetCellValue($row, 1) eq $name);
+  };
+  return 0;
 };
 
 sub import {

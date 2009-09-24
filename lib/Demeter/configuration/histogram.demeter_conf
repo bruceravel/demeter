@@ -78,3 +78,16 @@ maxint=1000
 description
   The default column number for the y-axis when reading a distribution
   from a file.
+
+variable=epsilon
+type=real
+default=1e-7
+units=Angstroms
+description
+  The size of an amplitude considered to be too small to include in a
+  histogram model.  Think carefully about this parameter -- a
+  histogram with lots of bins probably need a small epsilon.  Setting
+  this strictly to zero is probably a poor idea -- if you want to
+  include all the tiny but non-zero paths, make this number very small
+  (e.g. 1e-10).
+

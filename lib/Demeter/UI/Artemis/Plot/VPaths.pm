@@ -49,6 +49,11 @@ sub add_vpath {
     return;
   };
   my $name = $ted->GetValue;
+  $self->add_named_vpath($name, @list);
+};
+
+sub add_named_vpath {
+  my ($self, $name, @list) = @_;
 
   my $vpath = Demeter::VPath->new(name => $name);
   $vpath -> include(@list);
@@ -61,8 +66,8 @@ sub add_vpath {
   $self->transfer($this);
 
   $Demeter::UI::Artemis::frames{Plot}->{notebook}->SetSelection(3);
+  return $vpath;
 };
-
 
 use Readonly;
 Readonly my $VPATH_TRANSFER => Wx::NewId();

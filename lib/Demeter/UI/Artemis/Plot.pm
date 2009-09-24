@@ -166,6 +166,7 @@ sub fetch_parameters {
 sub plot {
   my ($self, $event, $space) = @_;
   return if ($space !~ m{[krq]}i);
+  my $busy = Wx::BusyCursor->new();
   my ($abort, $rdata, $rpaths) = Demeter::UI::Artemis::uptodate(\%Demeter::UI::Artemis::frames);
   $self->fetch_parameters;
   $demeter->po->start_plot;
@@ -213,6 +214,7 @@ sub plot {
   };
 
   $self->{last} = $space;
+  undef $busy;
 };
 
 use Readonly;

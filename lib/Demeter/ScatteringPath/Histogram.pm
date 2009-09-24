@@ -3,33 +3,41 @@ use Moose::Role;
 
 use Carp;
 use List::Util qw(sum);
+use Scalar::Util qw(looks_like_number);
 use Readonly;
 Readonly my $EPSILON  => 0.00001;
 
 sub make_histogram {
-  my ($self, $rx, $ry, $common) = @_;
+  my ($self, $rx, $ry, $s02, $scale, $common) = @_;
   my @paths = ();
 
-  my $total = sum(@$ry);
-  ##print $total, $/;
+  my $total = (looks_like_number($ry->[0])) ? sum(@$ry) : 1; # not quite right...
+  #print $total, $/;
   my $rnot = $self->fuzzy;
   foreach my $i (0 .. $#{$rx}) {
     my $deltar = $rx->[$i] - $rnot;
-    my $amp = $ry->[$i] / $total;
+    my $amp = $ry->[$i];
+    if (looks_like_number($amp)) {
+      $amp = sprintf("%.6f", $ry->[$i] / $total);
+      next if ($amp < $self->co->default(qw(histogram epsilon)));
+    };
+    $deltar = ($scale) ? sprintf("%s*reff + %.5f*(1+%s)", $scale, $deltar, $scale) : sprintf("%.5f", $deltar);
     my $this = Demeter::Path->new(sp     => $self,
 				  delr   => $deltar,
-				  degen  => $amp,
+				  degen  => 1,
 				  n      => 1,
+				  s02    => $s02 . ' * ' . $amp,
 				  parent => $self->feff,
 				  @$common,
 				 );
     $this -> make_name;
-    $this -> name($this->name . " at " . sprintf("%.3f",$rx->[$i]));
+    (my $oldname = $this->name) =~ s{\s*\z}{};
+    $this -> name($oldname . '@ ' . sprintf("%.3f",$rx->[$i]));
     $this -> update_path(1);
     push @paths, $this;
   };
 
-  return @paths;
+  return \@paths;
 };
 
 sub histogram_from_file {
@@ -67,10 +75,54 @@ sub histogram_from_function {
 };
 
 sub histogram_gamma {
-  my ($self, $string, $rmin, $rmax) = @_;
-  my (@x, @y);
+  my ($self, $rmin, $rmax, $grid) = @_;
+  my (@x, @y, @z);
+  my $r = $rmin;
+  while ($r <= $rmax+$EPSILON) {
+    push @x, $r;
+    my $term = sprintf("t%d",int($r*10000));
+    push @y, "max(0, cn_gamma * prefactor * ((p_gamma+$term)**(p_gamma-1)) * exp(-p_gamma-$term))";
+    push @z, Demeter::GDS->new(gds=>'def', name=>$term, mathexp=>"2 * ($r - reff) / (sigma_gamma*beta_gamma)");
+    $r += $grid;
+  };
   ## use string to generate arrays in Ifeffit
-  return \@x, \@y;
+  return \@x, \@y, \@z;
+};
+
+sub make_gamma_histogram {
+  my ($self, $rx, $ry, $rz, $common) = @_;
+
+  my @gds = (Demeter::GDS->new(gds => 'guess', name => 'cn_gamma',    mathexp => '1'    ),
+	     Demeter::GDS->new(gds => 'guess', name => 'ss_gamma',    mathexp => '0.009'),
+	     Demeter::GDS->new(gds => 'guess', name => 'c3_gamma',    mathexp => '0.001'),
+
+	     Demeter::GDS->new(gds => 'def',   name => 'sigma_gamma', mathexp => 'sqrt(ss_gamma)'    ),
+	     Demeter::GDS->new(gds => 'def',   name => 'beta_gamma',  mathexp => 'c3_gamma / sigma_gamma**3' ),
+	     Demeter::GDS->new(gds => 'def',   name => 'p_gamma',     mathexp => '4 / beta_gamma**2' ),
+	     Demeter::GDS->new(gds => 'def',   name => 'prefactor',   mathexp => '2 / (sigma_gamma * abs(beta_gamma) * gamma(p_gamma))' ),
+	    );
+
+  my @paths = ();
+  my $rnot = $self->fuzzy;
+  foreach my $i (0 .. $#{$rx}) {
+    my $deltar = sprintf("%.4f", $rx->[$i] - $rnot);
+    my $this = Demeter::Path->new(sp     => $self,
+				  delr   => $deltar,
+				  s02    => $ry->[$i],
+				  sigma2 => 0,
+				  n      => 1,
+				  parent => $self->feff,
+				  @$common,
+				 );
+    $this -> make_name;
+    (my $oldname = $this->name) =~ s{\s*\z}{};
+    $this -> name($oldname . '@ ' . sprintf("%.4f",$rx->[$i]));
+    $this -> update_path(1);
+    push @paths, $this;
+    push @gds, $rz->[$i];
+  };
+
+  return \@paths, \@gds;
 };
 
 
@@ -96,7 +148,7 @@ This documentation refers to Demeter version 0.3.
 =head1 DESCRIPTION
 
 This role of the ScatteringPath object provides tools for generating
-and parametering arbitrary distribution functions.
+and parameterizing arbitrary distribution functions.
 
 =head1 METHODS
 
@@ -122,15 +174,22 @@ Read data from a text file to define a gamma-like dsitribution function.
 =item C<make_histogram>
 
 Given the array references from C<histogram_from_file> or
-C<histogram_gamma>, return a list of Path objects defining the
-historgram.
+C<histogram_gamma>, return a reference to a list of Path objects
+defining the histogram.
 
-  @paths = $firstshell -> make_histogram($rx, $ry, \@common);
+  $ref_paths = $firstshell -> make_histogram($rx, $ry, $scale, \@common);
 
 The caller is the ScatteringPath object used as the Feff calculation
 for each bin in the histogram.  The first two arguments are the array
-references.  The remaining arguments will be passed to each resulting
-Path object.
+references.  C<@rx> must be a referecne to an array of numbers -- the
+x-axis values.  C<@ry> may be a reference to an array of numbers or
+strings.  If numbers, they are taken as the bin poulations.  If
+strings, they are taken to be math expressions for computing the bin
+populations.
+
+The third argument is the name of a parameter that will be
+used as an isotropic scaling factor for the dletaR parameter.  The
+remaining arguments will be passed to each resulting Path object.
 
 =back
 
@@ -153,7 +212,8 @@ Need to implement Gamma-like function
 
 =item *
 
-
+Need to implement user-defined distribution, although I don't have a
+clear idea how to do so...
 
 =back
 

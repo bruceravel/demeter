@@ -42,6 +42,7 @@ has 'note'	  => (is => 'rw', isa => 'Str',   default => q{},
 has 'autonote'	  => (is => 'rw', isa => 'Bool',  default => 1);
 has 'highlighted' => (is => 'rw', isa => 'Bool',  default => 0);
 has 'Use'	  => (is => 'rw', isa => 'Bool',  default => 1);
+has 'is_merge'	  => (is => 'rw', isa => 'Bool',  default => 0);
 
 has 'expandsto'	  => (is => 'rw', isa => 'Str',   default => q{});
 

@@ -2,7 +2,7 @@
 
 use Demeter qw(:plotwith=gnuplot :ui=screen);
 my $demeter = Demeter->new;
-$demeter -> set_mode(screen=>0);
+$demeter -> set_mode(screen=>1);
 
 ## -------- These commented out lines were used to generate a feff.inp
 ##          file from crystal data and then to calculate potentials with
@@ -41,22 +41,22 @@ $data -> set(fft_kmin=>3,   fft_kmax=>16,
 my $firstshell = $list_of_paths[0];
 
 my ($rx, $ry) = $firstshell->histogram_from_file('RDFDAT20K', 1, 2, 2.5, 3.0);
-my @common = (s02 => 'amp', sigma2 => 'sigsqr', e0 => 'enot', data=>$data);
+my $common = [sigma2 => 'sigsqr', e0 => 'enot', data=>$data];
 
-my @paths = $firstshell -> make_histogram($rx, $ry, \@common);
+my $paths = $firstshell -> make_histogram($rx, $ry, 'amp', q{}, $common);
 my $vpath = Demeter::VPath->new(name=>'histo');
-$vpath->include(@paths);
+$vpath->include(@$paths);
 
 ## -------- Some parameters
 my @gds = (
 	   Demeter::GDS->new(gds=>'guess', name=>'amp',    mathexp=>6),
 	   Demeter::GDS->new(gds=>'guess', name=>'enot',   mathexp=>0),
-	   Demeter::GDS->new(gds=>'set',   name=>'alpha',  mathexp=>0),
-	   Demeter::GDS->new(gds=>'set',   name=>'sigsqr', mathexp=>0.0),
+	   #Demeter::GDS->new(gds=>'set',   name=>'alpha',  mathexp=>0),
+	   Demeter::GDS->new(gds=>'guess',   name=>'sigsqr', mathexp=>0.0),
 	  );
 
 ## -------- Do the fit
-my $fit = Demeter::Fit->new(gds=>\@gds, data=>[$data], paths=>\@paths);
+my $fit = Demeter::Fit->new(gds=>\@gds, data=>[$data], paths=>$paths);
 $fit->fit;
 
 #$_->push_ifeffit foreach @gds;

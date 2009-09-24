@@ -108,7 +108,9 @@ sub RemovePage {
   my ($self, $page) = @_;
   my ($obj, $id) = $self->page_and_id($page);
   return 0 if ($id == -1);
-  my $new = ($id == 0) ? $id : $id - 1;
+  my $new = ($id == 0) ? $id+1 : $id - 1;
+  ($new = 0) if ($new >= $self->GetPageCount);
+  ##print " ======== $id   $new\n";
   $self->{VIEW} -> Hide;
   $self->{LIST} -> GetClientData($new) -> Show;
   $self->{VIEW}  = ($self->{LIST}->IsEmpty) ? q{} : $self->{LIST}->GetClientData($new);
@@ -137,7 +139,7 @@ sub Clear {
 ## take a page object or a page id and return both
 sub page_and_id {
   my ($self, $arg) = @_;
-  my ($id, $obj) = (-1,-1,q{});
+  my ($id, $obj) = (-1,-1);
   if (ref($arg) =~ m{Wx}) {
     foreach my $pos (0 .. $self->{LIST}->GetCount-1) {
       if ($arg eq $self->{LIST}->GetClientData($pos)) {
@@ -186,6 +188,7 @@ sub GetSelection {
 sub SetSelection {
   my ($self, $pos) = @_;
   $self->{LIST} -> SetSelection($pos);
+  ## plotzing here:
   $self->{VIEW} -> Hide;
   $self->{LIST} -> GetClientData($pos) -> Show;
   $self->{VIEW} = $self->{LIST} -> GetClientData($pos);

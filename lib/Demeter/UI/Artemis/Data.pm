@@ -1295,13 +1295,7 @@ sub discard {
     };
   };
   $self->{statusbar}->SetStatusText($text);
-  if (not $self->{pathlist}->{VIEW}) {
-    $self->{pathlist}->InitialPage;
-  } else {
-    $page = $self->{pathlist}->GetPage(0) if ($sel == 0);
-    my ($p, $i) = $self->{pathlist}->page_and_id($page);
-    $self->{pathlist}->SetSelection($i);
-  };
+  $self->{pathlist}->InitialPage if (not $self->{pathlist}->{VIEW});
 };
 
 # sub sum {
@@ -1340,29 +1334,44 @@ sub transfer {
 sub process_histogram {
   my ($datapage, $histo_dialog) = @_;
   my $pathpage = $datapage->{pathlist}->GetPage($datapage->{pathlist}->GetSelection);
+  my $pathname = $pathpage->{path}->name;
   my $sp = $pathpage->{path}->sp;
-  my @common = (data=>$datapage->{data});
+  my $common = [data=>$datapage->{data}];
 
   ## -------- from file:
   if ($histo_dialog->{filesel}) {
-    my ($file, $rmin, $rmax, $xcol, $ycol) = ($histo_dialog->{filepicker}->GetTextCtrl->GetValue,
-					      $histo_dialog->{filermin}->GetValue,
-					      $histo_dialog->{filermax}->GetValue,
-					      $histo_dialog->{filexcol}->GetValue,
-					      $histo_dialog->{fileycol}->GetValue, );
+    my ($file, $rmin, $rmax, $xcol, $ycol, $amp, $scale) = 
+      ($histo_dialog->{filepicker} -> GetTextCtrl -> GetValue,
+       $histo_dialog->{filermin}   -> GetValue,
+       $histo_dialog->{filermax}   -> GetValue,
+       $histo_dialog->{filexcol}   -> GetValue,
+       $histo_dialog->{fileycol}   -> GetValue,
+       $histo_dialog->{fileamp}    -> GetValue,
+       $histo_dialog->{filescale}  -> GetValue,
+      );
     carp("$file does not exist"), return if (not -e $file);
     carp("$file cannot be read"), return if (not -r $file);
     my ($rx, $ry) = $sp->histogram_from_file($file, $xcol, $ycol, $rmin, $rmax);
-    my @paths = $sp -> make_histogram($rx, $ry, \@common);
+    my $paths = $sp -> make_histogram($rx, $ry, $amp, $scale, $common);
 
-    foreach my $p (@paths) {
-      my $page = Demeter::UI::Artemis::Path->new($datapage->{pathlist}, $p, $datapage);
-      $datapage->{pathlist}->AddPage($page, $p->name, 1, 0);
-      $page->include_label;
-    };
-    #my $id = $datapage->{pathlist}->GetSelection;
-    #$datapage->{pathlist}->DeletePage($id);
+    my $id = $datapage->{pathlist}->GetSelection;
+    $datapage->{pathlist}->DeletePage($id);
     #$datapage->{pathlist}->SetSelection($id);
+    foreach my $p (@$paths) {
+      my $histo_name = '[' . $p->parent->name . '] ' . $p->name;
+      my $page = Demeter::UI::Artemis::Path->new($datapage->{pathlist}, $p, $datapage);
+      $datapage->{pathlist}->AddPage($page, $histo_name, 1, 0);
+      #$page->include_label;
+    };
+    $Demeter::UI::Artemis::frames{Plot}->{VPaths}->add_named_vpath("histogram from $pathname", @$paths);
+
+    $Demeter::UI::Artemis::frames{GDS}  -> put_param('guess', $amp, '1');
+    $Demeter::UI::Artemis::frames{GDS}  -> clear_highlight;
+    $Demeter::UI::Artemis::frames{GDS}  -> set_highlight('\A(?:amp)\z');
+    $Demeter::UI::Artemis::frames{GDS}  -> Show(1);
+    $Demeter::UI::Artemis::frames{main} -> {toolbar}->ToggleTool(1,1);
+    $Demeter::UI::Artemis::frames{GDS}  -> {toolbar}->ToggleTool(2,1);
+
   } elsif ($histo_dialog->{filesel}) {
     printf("%s  %s  %s  %s\n",
 	   $sp,

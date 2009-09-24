@@ -6,16 +6,16 @@
 }
 {
   $kstring   = q{};
-  $kstring  .= "       kweight    = 1,\n" if $D->fit_k1;
-  $kstring  .= "       kweight    = 2,\n" if $D->fit_k2;
-  $kstring  .= "       kweight    = 3,\n" if $D->fit_k3;
-  $kstring  .= sprintf("       kweight    = %.3f,\n", $D->karb_value) if $D->fit_karb;
-  $kstring ||= "       kweight    = 1,\n";
+  $kstring  .= "kweight=1, " if $D->fit_k1;
+  $kstring  .= "kweight=2, " if $D->fit_k2;
+  $kstring  .= "kweight=3, " if $D->fit_k3;
+  $kstring  .= sprintf("kweight=%.3f, ", $D->fit_karb_value) if $D->fit_karb;
+  $kstring ||= "kweight=1, ";
   $kstring   = substr($kstring, 0, -2);
   q{}
 }
 ###__ perform the fit
-feffit({$F->indeces},
+feffit({$F->indeces}, 
        group      = {$D->group}_fit,
        chi        = {$D->group}.chi,
        k          = {$D->group}.k,
@@ -25,9 +25,9 @@ feffit({$F->indeces},
        kmin       = {$D->fft_kmin},
        kmax       = {$D->fft_kmax}, 
        dk         = {$D->fft_dk},
-       kwindow    = {$D->fft_kwindow}, 
+       kwindow    = {$D->fft_kwindow},
        fit_space  = {$D->fit_space},
-       do_bkg     = {$D->yesno("fit_do_bkg")}, 
+       do_bkg     = {$D->yesno("fit_do_bkg")},
        data_set   = {$D->fit_data},
        data_total = {$F->ndata},
 {$F->restraints})
