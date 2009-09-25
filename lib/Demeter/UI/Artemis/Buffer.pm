@@ -19,8 +19,14 @@ use strict;
 use warnings;
 
 use Wx qw( :everything );
-use Wx::Event qw(EVT_CLOSE);
+use Wx::Event qw(EVT_CLOSE EVT_CHAR EVT_BUTTON);
 use base qw(Wx::Frame);
+
+use Ifeffit;
+use List::MoreUtils qw(uniq);
+
+my @ifeffit_buffer = ();
+my $pointer = -1;
 
 sub new {
   my ($class, $parent) = @_;
@@ -28,10 +34,10 @@ sub new {
 				wxDefaultPosition, [500,800],
 				wxMINIMIZE_BOX|wxCAPTION|wxSYSTEM_MENU|wxCLOSE_BOX|wxRESIZE_BORDER);
   EVT_CLOSE($this, \&on_close);
-  #my $vbox = Wx::BoxSizer->new( wxVERTICAL );
+  my $vbox = Wx::BoxSizer->new( wxVERTICAL );
 
   my $splitter = Wx::SplitterWindow->new($this, -1, wxDefaultPosition, wxDefaultSize, wxSP_NOBORDER );
-  #$vbox->Add($splitter, 1, wxGROW|wxALL, 0);
+  $vbox->Add($splitter, 1, wxGROW|wxALL, 0);
 
 
   $this->{IFEFFIT} = Wx::Panel->new($splitter, -1, wxDefaultPosition, wxDefaultSize);
@@ -46,18 +52,11 @@ sub new {
   $box -> Add($iffboxsizer, 1, wxGROW|wxALL, 5);
   $this->{IFEFFIT} -> SetSizerAndFit($box);
 
-  $this->{IFEFFIT}->{normal}   = Wx::TextAttr->new(Wx::Colour->new( '#000000' ),
-						   wxNullColour,
-						   Wx::Font->new( 9, wxTELETYPE, wxNORMAL, wxNORMAL, 0, "" ) );
-  $this->{IFEFFIT}->{comment}  = Wx::TextAttr->new(Wx::Colour->new( '#B22222' ),
-						   wxNullColour,
-						   Wx::Font->new( 9, wxTELETYPE, wxNORMAL, wxNORMAL, 0, "" ) );
-  $this->{IFEFFIT}->{feedback} = Wx::TextAttr->new(Wx::Colour->new( '#000099' ),
-						   wxNullColour,
-						   Wx::Font->new( 9, wxTELETYPE, wxNORMAL, wxNORMAL, 0, "" ) );
-  $this->{IFEFFIT}->{warning}  = Wx::TextAttr->new(Wx::Colour->new( '#ff9e1f' ),
-						   wxNullColour,
-						   Wx::Font->new( 9, wxTELETYPE, wxNORMAL, wxNORMAL, 0, "" ) );
+  my @font = (9, wxTELETYPE, wxNORMAL, wxNORMAL, 0, "" );
+  $this->{IFEFFIT}->{normal}   = Wx::TextAttr->new(Wx::Colour->new( '#000000' ), wxNullColour, Wx::Font->new( @font ) );
+  $this->{IFEFFIT}->{comment}  = Wx::TextAttr->new(Wx::Colour->new( '#046A15' ), wxNullColour, Wx::Font->new( @font ) );
+  $this->{IFEFFIT}->{feedback} = Wx::TextAttr->new(Wx::Colour->new( '#000099' ), wxNullColour, Wx::Font->new( @font ) );
+  $this->{IFEFFIT}->{warning}  = Wx::TextAttr->new(Wx::Colour->new( '#ff9e1f' ), wxNullColour, Wx::Font->new( @font ) );
 
 
   $this->{PLOT} = Wx::Panel->new($splitter, -1, wxDefaultPosition, wxDefaultSize);
@@ -71,13 +70,25 @@ sub new {
   $box -> Add($pltboxsizer, 1, wxGROW|wxALL, 5);
   $this->{PLOT} -> SetSizerAndFit($box);
 
-  $this->{iffcommands} -> SetFont( Wx::Font->new( 9, wxTELETYPE, wxNORMAL, wxNORMAL, 0, "" ) );
-  $this->{pltcommands} -> SetFont( Wx::Font->new( 9, wxTELETYPE, wxNORMAL, wxNORMAL, 0, "" ) );
-
+  $this->{iffcommands} -> SetFont( Wx::Font->new( @font ) );
+  $this->{pltcommands} -> SetFont( Wx::Font->new( @font ) );
 
   $splitter->SplitHorizontally($this->{IFEFFIT}, $this->{PLOT}, 500);
 
-  #$this->SetSizerAndFit($vbox);
+  my $hbox = Wx::BoxSizer->new( wxHORIZONTAL );
+  $vbox->Add($hbox, 0, wxGROW|wxALL, 0);
+
+  $this->{ifeffitprompt} = Wx::StaticText->new($this, -1, sprintf("  Ifeffit [%4d]> ", 1), wxDefaultPosition, wxDefaultSize);
+  $hbox->Add( $this->{ifeffitprompt}, 0, wxALL, 2);
+  $this->{commandline} = Wx::TextCtrl->new($this, -1, q{}, wxDefaultPosition, [50,-1], wxTE_PROCESS_ENTER|wxHSCROLL);
+  $hbox->Add( $this->{commandline}, 1, wxALL|wxGROW, 0);
+  EVT_CHAR($this->{commandline}, sub{ OnChar($this, @_) });
+
+  $this->{close} = Wx::Button->new($this, wxID_CLOSE, q{}, wxDefaultPosition, wxDefaultSize);
+  $vbox -> Add($this->{close}, 0, wxGROW|wxALL, 5);
+  EVT_BUTTON($this, $this->{close}, \&on_close);
+
+  $this->SetSizer($vbox);
 
 
   return $this;
@@ -98,6 +109,46 @@ sub color {
   return if ($which !~ m{\A(?:ifeffit|plot)\z});
   my $textctrl = ($which eq 'ifeffit') ? 'iffcommands' : 'pltcommands';
   $self->{$textctrl}->SetStyle($begin, $end, $self->{IFEFFIT}->{$color});
+};
+
+
+# wxEVENT_TYPE_TEXT_ENTER_COMMAND
+sub OnChar {
+  my ($parent, $textctrl, $event) = @_;
+  my $prompt   = $parent->{ifeffitprompt};
+  my $code = $event->GetKeyCode;
+  my $skip = 1;
+  if ($code == 13) { # enter
+    my $command = $textctrl->GetValue;
+    if ($command !~ m{\A\s*\z}) {
+      ## turn off all disposal modes other than ifeffit
+      $Demeter::UI::Artemis::demeter->dispose($command);
+      push @ifeffit_buffer, $command;
+      @ifeffit_buffer = reverse( uniq( reverse(@ifeffit_buffer)));
+      $pointer = $#ifeffit_buffer+1;
+      $textctrl -> SetValue(q{});
+    };
+    $skip = 0;
+  } elsif ($code == WXK_UP) {
+    $textctrl->SetValue(q{});
+    --$pointer;
+    $pointer = 0 if ($pointer < 0);
+    $textctrl->SetValue($ifeffit_buffer[$pointer]);
+    $skip = 0;
+  } elsif ($code == WXK_DOWN) {
+    $textctrl->SetValue(q{});
+    ++$pointer;
+    if ($pointer > $#ifeffit_buffer) {
+      $pointer = $#ifeffit_buffer+1;
+      $textctrl -> SetValue(q{});
+    } else {
+      $textctrl -> SetValue($ifeffit_buffer[$pointer]);
+    };
+    $skip = 0;
+  };
+  $prompt -> SetLabel(sprintf("Ifeffit [%4d]> ", $pointer+1)) if not $skip;
+  $event  -> Skip($skip);
+  return;
 };
 
 
@@ -122,6 +173,8 @@ This documentation refers to Demeter version 0.3.
 
 This module provides a space to display the text issued as commands to
 Ifeffit and as plotting commands to the plotting backend.
+
+It also provides a simple Ifeffit command line and command history.
 
 =head1 CONFIGURATION
 

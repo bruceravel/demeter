@@ -28,6 +28,7 @@ use Wx::Perl::Carp;
 
 use Demeter::UI::Artemis::Data::AddParameter;
 use Demeter::UI::Artemis::Data::Histogram;
+use Demeter::UI::Artemis::Data::Quickfs;
 use Demeter::UI::Wx::CheckListBook;
 
 use List::MoreUtils qw(firstidx);
@@ -35,6 +36,9 @@ use List::MoreUtils qw(firstidx);
 my $windows = [qw(hanning kaiser-bessel welch parzen sine)];
 my $demeter = $Demeter::UI::Artemis::demeter;
 
+use Regexp::List;
+use Regexp::Optimizer;
+my $reopt  = Regexp::List->new;
 use Regexp::Common;
 use Readonly;
 Readonly my $NUMBER => $RE{num}{real};
@@ -54,6 +58,7 @@ Readonly my $DATA_NIDP	     => Wx::NewId();
 Readonly my $DATA_SHOW	     => Wx::NewId();
 Readonly my $DATA_YAML	     => Wx::NewId();
 
+Readonly my $PATH_FSPATH => Wx::NewId();
 Readonly my $PATH_RENAME => Wx::NewId();
 Readonly my $PATH_SHOW   => Wx::NewId();
 Readonly my $PATH_ADD    => Wx::NewId();
@@ -474,6 +479,8 @@ sub make_menubar {
   $save_menu->Append($PATH_SAVE_Q, "χ(q)", "Save the currently displayed path as χ(q) with all path parameters evaluated", wxITEM_NORMAL);
 
   $self->{pathsmenu} = Wx::Menu->new;
+  $self->{pathsmenu}->Append($PATH_FSPATH, "Quick first shell model", "Generate a quick first shell fitting model", wxITEM_NORMAL );
+  $self->{pathsmenu}->AppendSeparator;
   $self->{pathsmenu}->Append($PATH_RENAME, "Rename path",            "Rename the path currently on display", wxITEM_NORMAL );
   $self->{pathsmenu}->Append($PATH_SHOW,   "Show path",              "Evaluate and show the path parameters for the currently display path", wxITEM_NORMAL );
   $self->{pathsmenu}->AppendSeparator;
@@ -502,10 +509,10 @@ sub make_menubar {
   $self->{markmenu}->Append($MARK_INC,    "Mark included", "Mark all paths included in the fit",   wxITEM_NORMAL );
   $self->{markmenu}->Append($MARK_EXC,    "Mark excluded", "Mark all paths excluded from the fit", wxITEM_NORMAL );
   $self->{markmenu}->AppendSeparator;
+  $self->{markmenu}->Append($MARK_BEFORE, "Mark before current",   "Mark this path and all paths above it in the path list for this χ(k)", wxITEM_NORMAL );
   $self->{markmenu}->Append($MARK_SS,     "Mark SS paths",         "Mark all single scattering paths for this χ(k)", wxITEM_NORMAL );
   $self->{markmenu}->Append($MARK_HIGH,   "Mark high importance",  "Mark all high importance paths for this χ(k)", wxITEM_NORMAL );
-  $self->{markmenu}->Append($MARK_R,      "Mark paths < R",        "Mark all paths shorter than a specified path length for this χ(k)", wxITEM_NORMAL );
-  $self->{markmenu}->Append($MARK_BEFORE, "Mark before current",   "Mark this path and all paths above it in the path list for this χ(k)", wxITEM_NORMAL );
+  $self->{markmenu}->Append($MARK_R,      "Mark all paths < R",    "Mark all paths shorter than a specified path length for this χ(k)", wxITEM_NORMAL );
 
   ## -------- include menu
   $self->{includemenu}  = Wx::Menu->new;
@@ -718,6 +725,17 @@ sub OnMenuClick {
       my ($abort, $rdata, $rpaths) = Demeter::UI::Artemis::uptodate(\%Demeter::UI::Artemis::frames);
       $pathobject->_update("fft");
       $datapage->show_text($pathobject->serialization, 'YAML of '.$pathobject->label);
+      last SWITCH;
+    };
+
+    ($id == $PATH_FSPATH) and do {
+      my $qfs_dialog = Demeter::UI::Artemis::Data::Quickfs->new($datapage);
+      my $result = $qfs_dialog -> ShowModal;
+      if ($result == wxID_CANCEL) {
+	$datapage->{statusbar}->SetStatusText("Cancelled quick first shell model creation.");
+	return;
+      };
+      $datapage -> quickfs($qfs_dialog);
       last SWITCH;
     };
 
@@ -1380,6 +1398,70 @@ sub process_histogram {
 	   $histo_dialog->{gammarmax}->GetValue);
   };
 };
+
+
+my @element_list = qw(h he li be b c n o f ne na mg al si p s cl ar k ca
+		      sc ti v cr mn fe co ni cu zn ga ge as se br kr rb
+		      sr y zr nb mo tc ru rh pd ag cd in sn sb te i xe cs
+		      ba la ce pr nd pm sm eu gd tb dy ho er tm yb lu hf
+		      ta w re os ir pt au hg tl pb bi po at rn fr ra ac
+		      th pa u np pu);
+my $element_regexp = $reopt->list2re(@element_list);
+
+sub quickfs {
+  my ($datapage, $dialog) = @_;
+  my ($abs, $scat, $distance, $edge) = ($dialog->{abs}->GetValue,
+					$dialog->{scat}->GetValue,
+					$dialog->{distance}->GetValue,
+					$dialog->{edge}->GetStringSelection,);
+
+  if (lc($abs) !~ m{\A$element_regexp\z}) {
+    $datapage->{statusbar} -> SetStatusText("Absorber $abs is not a valid element symbol.");
+    return;
+  };
+  if (lc($scat) !~ m{\A$element_regexp\z}) {
+    $datapage->{statusbar} -> SetStatusText("Scatterer $scat is not a valid element symbol.");
+    return;
+  };
+
+  my $firstshell = Demeter::FSPath->new();
+  $firstshell -> set(abs       => $abs,
+		     scat      => $scat,
+		     distance  => $distance,
+		     edge      => $edge,
+		     data      => $datapage->{data},
+		     workspace => File::Spec->catfile($Demeter::UI::Artemis::frames{main}->{project_folder}, 'feff', $firstshell->group),
+		    );
+  $firstshell -> _update('bft');
+  $datapage->{pathlist}->DeletePage(0) if $datapage->{pathlist}->GetPage(0) =~ m{Panel};
+  my $page = Demeter::UI::Artemis::Path->new($datapage->{pathlist}, $firstshell, $datapage);
+  $datapage->{pathlist}->AddPage($page, "$abs - $scat", 1, 0);
+  $page->{pp_n} -> SetValue(1);
+
+  my $grid  = $Demeter::UI::Artemis::frames{GDS}->{grid};
+  my $start = $Demeter::UI::Artemis::frames{GDS}->find_next_empty_row;
+  foreach my $g (@{$firstshell->gds}) {
+    $grid -> AppendRows(1,1) if ($start >= $grid->GetNumberRows);
+    $grid -> SetCellValue($start, 0, $g->gds);
+    $grid -> SetCellValue($start, 1, $g->name);
+    $grid -> SetCellValue($start, 2, $g->mathexp);
+    $grid -> {$g->name} = $g;
+    my $text = q{};
+    if ($g->gds eq 'guess') {
+      $text = sprintf("%.5f +/- %.5f", $g->bestfit, $g->error);
+    } elsif ($g->gds =~ m{(?:after|def|penalty|restrain)}) {
+      $text = sprintf("%.5f", $g->bestfit);
+    } elsif ($g->gds =~ m{(?:lguess|merge|set|skip)}) {
+      1;
+    };
+    $grid -> SetCellValue($start, 3, $text);
+    $Demeter::UI::Artemis::frames{GDS}->set_type($start);
+    ++$start;
+  };
+
+
+};
+
 
 package Demeter::UI::Artemis::Data::DropTarget;
 

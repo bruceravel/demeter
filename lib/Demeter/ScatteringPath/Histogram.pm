@@ -82,7 +82,7 @@ sub histogram_gamma {
     push @x, $r;
     my $term = sprintf("t%d",int($r*10000));
     push @y, "max(0, cn_gamma * prefactor * ((p_gamma+$term)**(p_gamma-1)) * exp(-p_gamma-$term))";
-    push @z, Demeter::GDS->new(gds=>'def', name=>$term, mathexp=>"2 * ($r - reff) / (sigma_gamma*beta_gamma)");
+    push @z, Demeter::GDS->new(gds=>'def', name=>$term, mathexp=>"2 * ($r - reff + dr_gamma) / (sigma_gamma*beta_gamma)");
     $r += $grid;
   };
   ## use string to generate arrays in Ifeffit
@@ -94,9 +94,10 @@ sub make_gamma_histogram {
 
   my @gds = (Demeter::GDS->new(gds => 'guess', name => 'cn_gamma',    mathexp => '1'    ),
 	     Demeter::GDS->new(gds => 'guess', name => 'ss_gamma',    mathexp => '0.009'),
+	     Demeter::GDS->new(gds => 'guess', name => 'dr_gamma',    mathexp => '0'),
 	     Demeter::GDS->new(gds => 'guess', name => 'c3_gamma',    mathexp => '0.001'),
 
-	     Demeter::GDS->new(gds => 'def',   name => 'sigma_gamma', mathexp => 'sqrt(ss_gamma)'    ),
+	     Demeter::GDS->new(gds => 'def',   name => 'sigma_gamma', mathexp => 'sqrt(max(0,ss_gamma))'    ),
 	     Demeter::GDS->new(gds => 'def',   name => 'beta_gamma',  mathexp => 'c3_gamma / sigma_gamma**3' ),
 	     Demeter::GDS->new(gds => 'def',   name => 'p_gamma',     mathexp => '4 / beta_gamma**2' ),
 	     Demeter::GDS->new(gds => 'def',   name => 'prefactor',   mathexp => '2 / (sigma_gamma * abs(beta_gamma) * gamma(p_gamma))' ),
@@ -105,7 +106,7 @@ sub make_gamma_histogram {
   my @paths = ();
   my $rnot = $self->fuzzy;
   foreach my $i (0 .. $#{$rx}) {
-    my $deltar = sprintf("%.4f", $rx->[$i] - $rnot);
+    my $deltar = sprintf("%.4f + dr_gamma", $rx->[$i] - $rnot);
     my $this = Demeter::Path->new(sp     => $self,
 				  delr   => $deltar,
 				  s02    => $ry->[$i],
@@ -152,6 +153,8 @@ and parameterizing arbitrary distribution functions.
 
 =head1 METHODS
 
+=head2 Histogram from a file
+
 =over 4
 
 =item C<histogram_from_file>
@@ -164,12 +167,6 @@ Returns array references containing the x- and y-axis data.
 The arguments are the filename, the column numbers (counting from 1)
 containing the R-grid and the amplitudes of the distributions, and the
 minimum and maximum r-values to read from the file.
-
-=item C<histogram_gamma>
-
-Read data from a text file to define a gamma-like dsitribution function.
-
-  unimplemented
 
 =item C<make_histogram>
 
@@ -193,6 +190,39 @@ remaining arguments will be passed to each resulting Path object.
 
 =back
 
+=head2 Histogram from a Gamm-like distribution
+
+=over 4
+
+=item C<histogram_gamma>
+
+Define a gamma-like dsitribution function.
+
+  my ($rx, $ry, $rz) = $fspath -> sp -> histogram_gamma(1.8, 3.0, 0.03);
+
+The return values are array references.  The first is to the grid in R
+space defined by the parameters of the method.  The second is a list
+of text strings which will be to define the C<s02> parameters of each
+bin.  The third is a list of GDS objects conatining additional def and
+guess parameters required as part of the fitting model.
+
+=item C<make_gamma_histogram>
+
+Generate Path and GDS objects required to do the gamma-like fit using
+a histogram.  The first three arguments of the method are the return
+values of C<histogram_gamma>, the last is an array reference which
+will be passed as the attributes of each Path object generated.
+
+  my ($paths, $gamma_gds) = $fspath -> sp -> make_gamma_histogram($rx, $ry, $rz, $common);
+
+To finish off the fit, you would do something like this:
+
+  my $e0  = Demeter::GDS->new(gds=>'guess', name=>'enot',   mathexp=>0);
+  my $fit = Demeter::Fit->new(gds=>[$e0, @$gamma_gds], data=>[$data], paths=>$paths);
+  $fit->fit;
+
+=back
+
 =head1 CONFIGURATION AND ENVIRONMENT
 
 See L<Demeter::Config> for a description of the configuration
@@ -208,7 +238,7 @@ attributes of the Plot object.
 
 =item *
 
-Need to implement Gamma-like function
+Fits using the Gamma-like distribution are not very stable...
 
 =item *
 

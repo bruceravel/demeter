@@ -17,9 +17,10 @@ package Demeter::FSPath;
 
 use Moose;
 use MooseX::AttributeHelpers;
+use MooseX::StrictConstructor;
 extends 'Demeter::Path';
 use Demeter::NumTypes qw( Ipot PosNum PosInt );
-use Demeter::StrTypes qw( Edge Empty );
+use Demeter::StrTypes qw( Edge Empty ElementSymbol);
 
 use Carp;
 use Chemistry::Elements qw(get_symbol get_Z);
@@ -29,14 +30,14 @@ use String::Random qw(random_string);
 
 with 'Demeter::UI::Screen::Pause' if ($Demeter::mode->ui eq 'screen');
 
-has 'abs'	   => (is => 'rw', isa => 'Str',    default => q{},
+has 'abs'	   => (is => 'rw', isa => ElementSymbol, default => q{Fe},
 		       trigger => sub{my ($self, $new) = @_;
 				      $self->absorber(get_symbol($new));
 				      $self->guesses;
 				      $self->feff_done(0);
 				    });
 has 'absorber'     => (is => 'rw', isa => 'Str',    default => q{},);
-has 'scat'	   => (is => 'rw', isa => 'Str',    default => q{},
+has 'scat'	   => (is => 'rw', isa => ElementSymbol, default => q{O},
 		       trigger => sub{my ($self, $new) = @_;
 				      $self->scatterer(get_symbol($new));
 				      $self->guesses;
@@ -95,7 +96,7 @@ has 'gds' => (
 ## feffNNNN.dat file.  an ugly but functional bit of voodoo
 sub BUILD {
   my ($self, @params) = @_;
-  $self->sp($self);
+  #$self->sp($self);
   $self->update_path(1);
   $self->mo->push_FSPath($self);
 };
@@ -111,9 +112,11 @@ override alldone => sub {
 
 override make_name => sub {
   my ($self) = @_;
-  my $tag = $self->tag;
-  my $name = $tag . " FS";
-  $self->name($name); # if not $self->name;
+  #my $tag = $self->tag;
+  #my $name = $tag . " FS";
+  #$self->name($name); # if not $self->name;
+  my $elems = join('-', $self->absorber, $self->scatterer);
+  $self->name($elems);
 };
 
 override set_parent_method => sub {
@@ -132,7 +135,7 @@ override set_parent_method => sub {
 override path => sub {
   my ($self) = @_;
   if (not $self->parent) {
-    my $feff = Demeter::Feff->new(workspace => $self->workspace, screen => 0);
+    my $feff = Demeter::Feff->new(workspace => $self->workspace, screen => 0, name=>'qfs');
     #$self->check_workspace;
     $self->parent($feff);
   };
@@ -144,6 +147,7 @@ override path => sub {
   };
   my @list = @{ $self->parent->pathlist };
   $self->sp($list[0]);
+  $self->n(1);
   $self->_update_from_ScatteringPath;
   $self->dispose($self->_path_command(1));
   $self->update_path(0);
@@ -172,6 +176,7 @@ sub guesses {
   return $self if ((not $self->abs) or (not $self->scat));
   $self->clear_gds;
   my $elems = join('_', lc($self->absorber), lc($self->scatterer));
+  #$self->name($elems) if (not $self->name or ($self->name =~ m{FS\s*\z}));
   my @list = ($self->simpleGDS("guess aa_$elems = 1"),
 	      $self->simpleGDS("guess ee_$elems = 0"),
 	      $self->simpleGDS("guess dr_$elems = 0"),
@@ -193,6 +198,18 @@ sub guesses {
   return $self;
 };
 
+sub unset_parameters {
+  my ($self) = @_;
+  $self->set(s02    => 1,
+	     e0	    => 0,
+	     delr   => 0,
+	     sigma2 => 0,
+	     third  => 0,
+	     fourth => 0);
+  $self -> _update('bft');	# this makes it ready to use immediately
+  return $self;
+};
+
 sub verify_distance {
   my ($self, $d) = @_;
   return $self if (not $self->scatterer);
@@ -208,33 +225,50 @@ sub verify_distance {
   };
 };
 
-sub amplitude {
-  my ($self) = @_;
-  return $self->gds->[0];
+sub parameter {
+  my ($self, $which) = @_;
+  $which = lc($which);
+  my $id = ($which eq 's02')    ? 0
+         : ($which eq 'e0')     ? 1
+         : ($which eq 'delr')   ? 2
+         : ($which eq 'sigma2') ? 3
+         : ($which eq 'third')  ? 4
+         : ($which eq 'fourth') ? 5
+	 :                       -1;
+  return 0 if ($id == -1);
+  return 0 if ($id == 4 and not $self->use_third);
+  return 0 if ($id == 5 and not $self->use_fourth);
+  $id = 4 if (($id == 5) and $self->use_fourth and not $self->use_third);
+  return $self->gds->[$id];
 };
-sub e0 {
-  my ($self) = @_;
-  return $self->gds->[1];
-};
-sub delr {
-  my ($self) = @_;
-  return $self->gds->[2];
-};
-sub sigma2 {
-  my ($self) = @_;
-  return $self->gds->[3];
-};
-sub c3 {
-  my ($self) = @_;
-  return 0 if not $self->use_third;
-  return $self->gds->[4];
-};
-sub c4 {
-  my ($self) = @_;
-  return 0 if not $self->use_fourth;
-  return $self->gds->[4] if not $self->use_third;
-  return $self->gds->[5];
-};
+
+# sub amplitude {
+#   my ($self) = @_;
+#   return $self->gds->[0];
+# };
+# sub e0 {
+#   my ($self) = @_;
+#   return $self->gds->[1];
+# };
+# sub delr {
+#   my ($self) = @_;
+#   return $self->gds->[2];
+# };
+# sub sigma2 {
+#   my ($self) = @_;
+#   return $self->gds->[3];
+# };
+# sub c3 {
+#   my ($self) = @_;
+#   return 0 if not $self->use_third;
+#   return $self->gds->[4];
+# };
+# sub c4 {
+#   my ($self) = @_;
+#   return 0 if not $self->use_fourth;
+#   return $self->gds->[4] if not $self->use_third;
+#   return $self->gds->[5];
+# };
 
 
 __PACKAGE__->meta->make_immutable;
@@ -254,11 +288,11 @@ This documentation refers to Demeter version 0.3.
 Build a single scattering path of a given length for use in a quick
 first shell fit.
 
-  my $fspath = Demeter::FSPath->new(abs  => $absorber_element,
-                                    scat => $scatterer_element,
-                                    edge => $edge,
-                                    dist => 2.0,
-                                    data => $data_object,
+  my $fspath = Demeter::FSPath->new(abs	      => $absorber_element,
+                                    scat      => $scatterer_element,
+                                    edge      => $edge,
+                                    distance  => 2.0,
+                                    data      => $data_object,
                                     workspace => "/path/to/work/space",
                                    );
   ##
@@ -310,7 +344,8 @@ manipulate the Data object in your script.
 =head1 ATTRIBUTES
 
 As with any Moose object, the attribute names are the name of the
-accessor methods.
+accessor methods.  FSPath extends Path, so it has all of Path's
+attributes.
 
 Along with the standard attributes of any Demeter object (C<name>,
 C<plottable>, C<data>, and so on), an FSPath has the following:
@@ -329,7 +364,7 @@ The element symbol, name, or number of the scattering atom.
 
 The edge at which to make the Feff calculation.
 
-=item C<dist>
+=item C<distance>
 
 The separation in Angstroms between the absorber and scatterer.
 
@@ -366,48 +401,34 @@ in defining a Fit object:
 
 =head1 METHODS
 
-There are several convenience methods for accessing the GDS objects
-that get auto-generated by the FSPath object.
+=over 4
 
-=over
+=item C<parameter>
 
-=item C<amplitude>
+This is a convenience methods for accessing the GDS objects that get
+auto-generated by the FSPath object.  It returns the specified GDS
+object.
 
-Returns the GDS object used as the amplitude variable.
+  my $amp_gds    = $fspath->parameter('s02');
+  my $e0_gds     = $fspath->parameter('e0');
+  my $delr_gds   = $fspath->parameter('delr');
+  my $sigma2_gds = $fspath->parameter('sigma2');
+  my $third_gds  = $fspath->parameter('third');
+  my $fourth_gds = $fspath->parameter('fourth');
 
-  my $amp_gds = $fspath->amplitude;
+=item C<unset_parameters>
 
-=item C<e0>
+This clears the autogenerated path parameters, setting them all
+literally to 0, except for C<s02>, which is set literally to 1.
 
-Returns the GDS object used as the e0 variable.
+This is useful in a situation where you wish to use the quick first
+shell scattering path in some other context than the quick first shell
+fit shown in the Synopsis above.  An example might be to use the path
+as the basis of a histogram (see
+L<Demeter::ScatteringPath::Histogram>).  In that case you might do
+something like:
 
-  my $e0_gds = $fspath->e0;
-
-=item C<delr>
-
-Returns the GDS object used as the delr variable.
-
-  my $dr_gds = $fspath->delr;
-
-=item C<sigma2>
-
-Returns the GDS object used as the sigma^2 variable.
-
-  my $ss_gds = $fspath->sigma2;
-
-=item C<c3>
-
-Returns the GDS object used as the third cumulant variable.  This
-returns 0 if a third cumulant was not used.
-
-  my $c3_gds = $fspath->c3;
-
-=item C<c4>
-
-Returns the GDS object used as the fourth cumulant variable.  This
-returns 0 if a fourth cumulant was not used.
-
-  my $c4_gds = $fspath->c4;
+  my ($rx, $ry, $rz) = $fspath -> sp -> histogram_gamma(1.8, 3.0, 0.1);
 
 =back
 

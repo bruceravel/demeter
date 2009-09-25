@@ -8,6 +8,7 @@ use MooseX::Types -declare => [qw( Empty
 				   Window
 				   PathParam
 				   Element
+				   ElementSymbol
 				   Edge
 				   AtomsEdge
 				   FeffCard
@@ -41,6 +42,7 @@ use MooseX::Types -declare => [qw( Empty
 # import builtin types
 use MooseX::Types::Moose 'Str';
 
+use Chemistry::Elements qw(get_symbol);
 use Regexp::List;
 use Regexp::Optimizer;
 my $opt  = Regexp::List->new;
@@ -128,6 +130,13 @@ subtype Element,
   as Str,
   where { lc($_) =~ m{\A$element_regexp\z} },
   message { "That string ($_) is not an element symbol" };
+
+subtype ElementSymbol,
+  as Str,
+  where { lc(get_symbol($_)) =~ m{\A$element_regexp\z} },
+  message { "That string ($_) is not an element symbol" };
+
+
 
 ## -------- Edge symbols
 use vars qw(@edge_list $edge_regexp);
@@ -336,7 +345,7 @@ subtype Interp,
 
 ## -------- Parameter types
 use vars qw(@gds_list $gds_regexp);
-@gds_list = qw(guess def set lguess restrain after skip penalty);
+@gds_list = qw(guess def set lguess restrain after skip penalty merge);
 $gds_regexp = $opt->list2re(@gds_list);
 subtype GDS,
   as Str,

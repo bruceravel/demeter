@@ -80,6 +80,8 @@ sub new {
   #$this -> SetAffirmativeId($this->{cancel}->GetId);
 
   $this -> SetSizerAndFit( $hbox );
+
+  $this->{grouplist}->SetSelection(0), $this->do_plot($prj,1);
   return $this;
 };
 

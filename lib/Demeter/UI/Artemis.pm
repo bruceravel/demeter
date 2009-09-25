@@ -218,7 +218,7 @@ sub OnInit {
   $vbox->Add($frames{main}->{fitbutton}, 1, wxGROW|wxALL, 2);
   mouseover($frames{main}->{fitbutton}, "Start the fit.");
 
-  $frames{main}->{log_toggle} = Wx::ToggleButton -> new($frames{main}, -1, "Show log",);
+  $frames{main}->{log_toggle} = Wx::ToggleButton -> new($frames{main}, -1, "Show &log",);
   $vbox->Add($frames{main}->{log_toggle}, 0, wxGROW|wxALL, 2);
 
 
