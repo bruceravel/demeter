@@ -41,70 +41,70 @@ use Regexp::Optimizer;
 my $reopt  = Regexp::List->new;
 use Regexp::Common;
 use Readonly;
-Readonly my $NUMBER => $RE{num}{real};
+Readonly my $NUMBER		=> $RE{num}{real};
 
-Readonly my $DATA_RENAME     => Wx::NewId();
-Readonly my $DATA_DIFF	     => Wx::NewId();
-Readonly my $DATA_TRANSFER   => Wx::NewId();
-Readonly my $DATA_VPATH	     => Wx::NewId();
-Readonly my $DATA_BALANCE    => Wx::NewId();
-Readonly my $DATA_DEGEN_N    => Wx::NewId();
-Readonly my $DATA_DEGEN_1    => Wx::NewId();
-Readonly my $DATA_DISCARD    => Wx::NewId();
-Readonly my $DATA_REPLACE    => Wx::NewId();
-Readonly my $DATA_KMAXSUGEST => Wx::NewId();
-Readonly my $DATA_EPSK	     => Wx::NewId();
-Readonly my $DATA_NIDP	     => Wx::NewId();
-Readonly my $DATA_SHOW	     => Wx::NewId();
-Readonly my $DATA_YAML	     => Wx::NewId();
+Readonly my $DATA_RENAME	=> Wx::NewId();
+Readonly my $DATA_DIFF		=> Wx::NewId();
+Readonly my $DATA_TRANSFER	=> Wx::NewId();
+Readonly my $DATA_VPATH		=> Wx::NewId();
+Readonly my $DATA_BALANCE	=> Wx::NewId();
+Readonly my $DATA_DEGEN_N	=> Wx::NewId();
+Readonly my $DATA_DEGEN_1	=> Wx::NewId();
+Readonly my $DATA_DISCARD	=> Wx::NewId();
+Readonly my $DATA_REPLACE	=> Wx::NewId();
+Readonly my $DATA_KMAXSUGEST	=> Wx::NewId();
+Readonly my $DATA_EPSK		=> Wx::NewId();
+Readonly my $DATA_NIDP		=> Wx::NewId();
+Readonly my $DATA_SHOW		=> Wx::NewId();
+Readonly my $DATA_YAML		=> Wx::NewId();
 
-Readonly my $PATH_FSPATH => Wx::NewId();
-Readonly my $PATH_RENAME => Wx::NewId();
-Readonly my $PATH_SHOW   => Wx::NewId();
-Readonly my $PATH_ADD    => Wx::NewId();
-Readonly my $PATH_CLONE  => Wx::NewId();
-Readonly my $PATH_YAML	 => Wx::NewId();
-Readonly my $PATH_HISTO  => Wx::NewId();
+Readonly my $PATH_FSPATH	=> Wx::NewId();
+Readonly my $PATH_RENAME	=> Wx::NewId();
+Readonly my $PATH_SHOW		=> Wx::NewId();
+Readonly my $PATH_ADD		=> Wx::NewId();
+Readonly my $PATH_CLONE		=> Wx::NewId();
+Readonly my $PATH_YAML		=> Wx::NewId();
+Readonly my $PATH_HISTO		=> Wx::NewId();
 
-Readonly my $PATH_EXPORT_FEFF   => Wx::NewId();
-Readonly my $PATH_EXPORT_DATA   => Wx::NewId();
-Readonly my $PATH_EXPORT_EACH   => Wx::NewId();
-Readonly my $PATH_EXPORT_MARKED => Wx::NewId();
+Readonly my $PATH_EXPORT_FEFF	=> Wx::NewId();
+Readonly my $PATH_EXPORT_DATA	=> Wx::NewId();
+Readonly my $PATH_EXPORT_EACH	=> Wx::NewId();
+Readonly my $PATH_EXPORT_MARKED	=> Wx::NewId();
 
-Readonly my $PATH_SAVE_K  => Wx::NewId();
-Readonly my $PATH_SAVE_R  => Wx::NewId();
-Readonly my $PATH_SAVE_Q  => Wx::NewId();
+Readonly my $PATH_SAVE_K	=> Wx::NewId();
+Readonly my $PATH_SAVE_R	=> Wx::NewId();
+Readonly my $PATH_SAVE_Q	=> Wx::NewId();
 
-Readonly my $MARK_ALL    => Wx::NewId();
-Readonly my $MARK_NONE   => Wx::NewId();
-Readonly my $MARK_INVERT => Wx::NewId();
-Readonly my $MARK_REGEXP => Wx::NewId();
-Readonly my $MARK_SS     => Wx::NewId();
-Readonly my $MARK_HIGH   => Wx::NewId();
-Readonly my $MARK_R      => Wx::NewId();
-Readonly my $MARK_BEFORE => Wx::NewId();
-Readonly my $MARK_INC    => Wx::NewId();
-Readonly my $MARK_EXC    => Wx::NewId();
+Readonly my $MARK_ALL		=> Wx::NewId();
+Readonly my $MARK_NONE		=> Wx::NewId();
+Readonly my $MARK_INVERT	=> Wx::NewId();
+Readonly my $MARK_REGEXP	=> Wx::NewId();
+Readonly my $MARK_SS		=> Wx::NewId();
+Readonly my $MARK_HIGH		=> Wx::NewId();
+Readonly my $MARK_R		=> Wx::NewId();
+Readonly my $MARK_BEFORE	=> Wx::NewId();
+Readonly my $MARK_INC		=> Wx::NewId();
+Readonly my $MARK_EXC		=> Wx::NewId();
 
-Readonly my $INCLUDE_ALL    => Wx::NewId();
-Readonly my $EXCLUDE_ALL    => Wx::NewId();
-Readonly my $INCLUDE_INVERT => Wx::NewId();
-Readonly my $INCLUDE_MARKED => Wx::NewId();
-Readonly my $EXCLUDE_MARKED => Wx::NewId();
-Readonly my $EXCLUDE_AFTER  => Wx::NewId();
-Readonly my $INCLUDE_SS     => Wx::NewId();
-Readonly my $INCLUDE_HIGH   => Wx::NewId();
-Readonly my $INCLUDE_R      => Wx::NewId();
+Readonly my $INCLUDE_ALL	=> Wx::NewId();
+Readonly my $EXCLUDE_ALL	=> Wx::NewId();
+Readonly my $INCLUDE_INVERT	=> Wx::NewId();
+Readonly my $INCLUDE_MARKED	=> Wx::NewId();
+Readonly my $EXCLUDE_MARKED	=> Wx::NewId();
+Readonly my $EXCLUDE_AFTER	=> Wx::NewId();
+Readonly my $INCLUDE_SS		=> Wx::NewId();
+Readonly my $INCLUDE_HIGH	=> Wx::NewId();
+Readonly my $INCLUDE_R		=> Wx::NewId();
 
-Readonly my $DISCARD_THIS     => Wx::NewId();
-Readonly my $DISCARD_ALL      => Wx::NewId();
-Readonly my $DISCARD_MARKED   => Wx::NewId();
-Readonly my $DISCARD_UNMARKED => Wx::NewId();
-Readonly my $DISCARD_EXCLUDED => Wx::NewId();
-Readonly my $DISCARD_AFTER    => Wx::NewId();
-Readonly my $DISCARD_MS	      => Wx::NewId();
-Readonly my $DISCARD_LOW      => Wx::NewId();
-Readonly my $DISCARD_R	      => Wx::NewId();
+Readonly my $DISCARD_THIS	=> Wx::NewId();
+Readonly my $DISCARD_ALL	=> Wx::NewId();
+Readonly my $DISCARD_MARKED	=> Wx::NewId();
+Readonly my $DISCARD_UNMARKED	=> Wx::NewId();
+Readonly my $DISCARD_EXCLUDED	=> Wx::NewId();
+Readonly my $DISCARD_AFTER	=> Wx::NewId();
+Readonly my $DISCARD_MS		=> Wx::NewId();
+Readonly my $DISCARD_LOW	=> Wx::NewId();
+Readonly my $DISCARD_R		=> Wx::NewId();
 
 
 sub new {
@@ -151,11 +151,11 @@ sub new {
   $this->mouseover("cv",       "The characteristic value for this data set, which is used in certain advanced modeling features.  (The CV must be a number.)");
 
   ## -------- file name and record number
-  my $filebox  = Wx::BoxSizer->new( wxHORIZONTAL );
-  $left    -> Add($filebox, 0, wxGROW|wxALL, 0);
-  $filebox -> Add(Wx::StaticText->new($leftpane, -1, "Data source: "), 0, wxALL, 5);
+  my $filebox  = Wx::StaticBox->new($leftpane, -1, 'Data source ', wxDefaultPosition, [-1,-1]);
+  my $fileboxsizer = Wx::StaticBoxSizer->new( $filebox, wxHORIZONTAL );
+  $left    -> Add($fileboxsizer, 0, wxGROW|wxALL, 5);
   $this->{datasource} = Wx::TextCtrl->new($leftpane, -1, q{}, wxDefaultPosition, wxDefaultSize, wxTE_READONLY);
-  $filebox -> Add($this->{datasource}, 1, wxGROW|wxLEFT|wxRIGHT|wxTOP, 5);
+  $fileboxsizer -> Add($this->{datasource}, 1, wxGROW|wxLEFT|wxRIGHT|wxTOP, 0);
   ##$this->{datasource} -> SetInsertionPointEnd;
 
   ## -------- single data set plot buttons
@@ -191,23 +191,6 @@ sub new {
   $titlesboxsizer -> Add($this->{titles}, 1, wxALL|wxGROW, 0);
   $left           -> Add($titlesboxsizer, 1, wxALL|wxGROW, 5);
   $this->mouseover("titles", "These lines will be written to output files.  Use them to describe this data set.");
-
-
-  ## --------- toggles
-  my $togglebox  = Wx::BoxSizer->new( wxHORIZONTAL );
-  $left    -> Add($togglebox, 0, wxALIGN_CENTER_HORIZONTAL|wxALL, 0);
-  $this->{include}    = Wx::CheckBox->new($leftpane, -1, "Include in fit", wxDefaultPosition, wxDefaultSize);
-  $this->{plot_after} = Wx::CheckBox->new($leftpane, -1, "Plot after fit", wxDefaultPosition, wxDefaultSize);
-  $this->{fit_bkg}    = Wx::CheckBox->new($leftpane, -1, "Fit background", wxDefaultPosition, wxDefaultSize);
-  $togglebox -> Add($this->{include},    0, wxALL, 5);
-  $togglebox -> Add($this->{plot_after}, 0, wxALL, 5);
-  $togglebox -> Add($this->{fit_bkg},    0, wxALL, 5);
-  $this->{include}    -> SetValue(1);
-  $this->{plot_after} -> SetValue(1);
-
-  $this->mouseover("include",    "Click here to include this data in the fit.  Unclick to exclude it.");
-  $this->mouseover("plot_after", "Click here to have this data set automatically transfered tothe plotting list after the fit.");
-  $this->mouseover("fit_bkg",    "Click here to co-refine a background spline during the fit.");
 
 
   ## -------- Fourier transform parameters
@@ -299,11 +282,11 @@ sub new {
   $this->{k3}   = Wx::CheckBox->new($leftpane, -1, "3",     wxDefaultPosition, wxDefaultSize);
   $this->{karb} = Wx::CheckBox->new($leftpane, -1, "other", wxDefaultPosition, wxDefaultSize);
   $this->{karb_value} = Wx::TextCtrl->new($leftpane, -1, $demeter->co->default('fit', 'karb_value'), wxDefaultPosition, wxDefaultSize);
-  $kwboxsizer -> Add($this->{k1}, 1, wxALL, 5);
-  $kwboxsizer -> Add($this->{k2}, 1, wxALL, 5);
-  $kwboxsizer -> Add($this->{k3}, 1, wxALL, 5);
-  $kwboxsizer -> Add($this->{karb}, 0, wxALL, 5);
-  $kwboxsizer -> Add($this->{karb_value}, 0, wxALL, 5);
+  $kwboxsizer -> Add($this->{k1}, 1, wxLEFT|wxRIGHT, 5);
+  $kwboxsizer -> Add($this->{k2}, 1, wxLEFT|wxRIGHT, 5);
+  $kwboxsizer -> Add($this->{k3}, 1, wxLEFT|wxRIGHT, 5);
+  $kwboxsizer -> Add($this->{karb}, 0, wxLEFT|wxRIGHT, 5);
+  $kwboxsizer -> Add($this->{karb_value}, 0, wxLEFT|wxRIGHT, 5);
   $this->{k1}   -> SetValue($demeter->co->default('fit', 'k1'));
   $this->{k2}   -> SetValue($demeter->co->default('fit', 'k2'));
   $this->{k3}   -> SetValue($demeter->co->default('fit', 'k3'));
@@ -316,17 +299,38 @@ sub new {
   $this->mouseover("karb", "Use the supplied value of k-weight when evaluating the fit.  You may choose any or all k-weights for fitting.");
   $this->mouseover("karb_value", "The user-supplied value of k-weight for use in the fit.  You may choose any or all k-weights for fitting.");
 
+  my $otherbox      = Wx::StaticBox->new($leftpane, -1, 'Other parameters ', wxDefaultPosition, wxDefaultSize);
+  my $otherboxsizer = Wx::StaticBoxSizer->new( $otherbox, wxVERTICAL );
+  $left            -> Add($otherboxsizer, 0, wxALL|wxGROW|wxALIGN_CENTER_HORIZONTAL, 5);
+
+
+  ## --------- toggles
+  my $togglebox  = Wx::BoxSizer->new( wxHORIZONTAL );
+  $otherboxsizer -> Add($togglebox, 0, wxALIGN_CENTER_HORIZONTAL|wxALL, 0);
+  $this->{include}    = Wx::CheckBox->new($leftpane, -1, "Include in fit", wxDefaultPosition, wxDefaultSize);
+  $this->{plot_after} = Wx::CheckBox->new($leftpane, -1, "Plot after fit", wxDefaultPosition, wxDefaultSize);
+  $this->{fit_bkg}    = Wx::CheckBox->new($leftpane, -1, "Fit background", wxDefaultPosition, wxDefaultSize);
+  $togglebox -> Add($this->{include},    0, wxALL, 5);
+  $togglebox -> Add($this->{plot_after}, 0, wxALL, 5);
+  $togglebox -> Add($this->{fit_bkg},    0, wxALL, 5);
+  $this->{include}    -> SetValue(1);
+  $this->{plot_after} -> SetValue(1);
+
+  $this->mouseover("include",    "Click here to include this data in the fit.  Unclick to exclude it.");
+  $this->mouseover("plot_after", "Click here to have this data set automatically transfered tothe plotting list after the fit.");
+  $this->mouseover("fit_bkg",    "Click here to co-refine a background spline during the fit.");
+
 
   ## -------- epsilon and phase correction
-  my $extrabox  = Wx::BoxSizer->new( wxHORIZONTAL );
-  $left        -> Add($extrabox, 0, wxALL|wxGROW|wxALIGN_CENTER_HORIZONTAL, 0);
+  my $extrabox    = Wx::BoxSizer->new( wxHORIZONTAL );
+  $otherboxsizer -> Add($extrabox, 0, wxALL|wxGROW|wxALIGN_CENTER_HORIZONTAL, 0);
 
   $extrabox -> Add(Wx::StaticText->new($leftpane, -1, "ε(k)"), 0, wxALL, 5);
   $this->{epsilon} = Wx::TextCtrl->new($leftpane, -1, 0, wxDefaultPosition, [50,-1]);
   $extrabox  -> Add($this->{epsilon}, 0, wxALL, 2);
-  $extrabox  -> Add(Wx::StaticText->new($leftpane, -1, q{}), 1, wxALL, 5);
+  $extrabox  -> Add(Wx::StaticText->new($leftpane, -1, q{}), 1, wxALL, 0);
   $this->{pcplot}  = Wx::CheckBox->new($leftpane, -1, "Plot with phase correction", wxDefaultPosition, wxDefaultSize);
-  $extrabox  -> Add($this->{pcplot}, 0, wxALL, 5);
+  $extrabox  -> Add($this->{pcplot}, 0, wxALL, 0);
   $this->{pcplot}->Enable(0);
 
   $this->{epsilon} -> SetValidator( Wx::Perl::TextValidator->new( qr([0-9.]) ) );
@@ -387,7 +391,7 @@ sub new {
 };
 
 sub mouseover {
-  my ($self, $widget, $text) = @_;
+  my ($self, $widget, $text) = @_;                                         # $event --v
   EVT_ENTER_WINDOW($self->{$widget}, sub{$self->{statusbar}->PushStatusText($text); $_[1]->Skip});
   EVT_LEAVE_WINDOW($self->{$widget}, sub{$self->{statusbar}->PopStatusText;         $_[1]->Skip});
 };
@@ -1437,6 +1441,7 @@ sub quickfs {
   my $page = Demeter::UI::Artemis::Path->new($datapage->{pathlist}, $firstshell, $datapage);
   $datapage->{pathlist}->AddPage($page, "$abs - $scat", 1, 0);
   $page->{pp_n} -> SetValue(1);
+  $page->{pp_label} -> SetValue(sprintf("%s-%s path at %s", $firstshell->absorber, $firstshell->scatterer, $firstshell->reff));
 
   my $grid  = $Demeter::UI::Artemis::frames{GDS}->{grid};
   my $start = $Demeter::UI::Artemis::frames{GDS}->find_next_empty_row;

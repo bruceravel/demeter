@@ -145,10 +145,12 @@ override path => sub {
     $self->parent->pathfinder;
     $self->feff_done(1);
   };
+  $_->push_ifeffit foreach @{ $self->gds };
   my @list = @{ $self->parent->pathlist };
   $self->sp($list[0]);
   $self->n(1);
   $self->_update_from_ScatteringPath;
+  $self->label(sprintf("%s-%s path at %s", $self->absorber, $self->scatterer, $self->reff));
   $self->dispose($self->_path_command(1));
   $self->update_path(0);
   return $self;
@@ -449,6 +451,10 @@ Demeter's dependencies are in the F<Bundle/DemeterBundle.pm> file.
 =head1 BUGS AND LIMITATIONS
 
 =over 4
+
+=item *
+
+C<n> and C<label> don't get reset correctly
 
 =item *
 

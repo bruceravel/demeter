@@ -434,7 +434,7 @@ sub fit {
     $data[0]->plot('Rmr');
 
     $rframes->{GDS}->fill_results(@gds);
-    $rframes->{Log}->{text}->SetValue($fit->logtext);
+    $rframes->{Log}->put_log($fit->logtext, $fit->color);
     $rframes->{Log}->SetTitle("Artemis [Log] " . $rframes->{main}->{name}->GetValue);
     $rframes->{Log}->Show(1);
     $rframes->{main}->{log_toggle}->SetValue(1);

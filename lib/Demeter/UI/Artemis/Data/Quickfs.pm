@@ -21,6 +21,7 @@ use warnings;
 use Wx qw( :everything );
 use base qw(Wx::Dialog);
 use Wx::Event qw(EVT_LISTBOX EVT_BUTTON EVT_RADIOBOX EVT_CHOICE);
+use Demeter::UI::Wx::PeriodicTable;
 
 sub new {
   my ($class, $parent) = @_;
@@ -35,30 +36,58 @@ sub new {
   $vbox -> Add($gbs, 0, wxGROW|wxALL, 5);
 
   $gbs -> Add( Wx::StaticText -> new($this, -1, 'Absorber:'),  Wx::GBPosition->new(0,0));
-  $gbs -> Add( Wx::StaticText -> new($this, -1, 'Scatterer:'), Wx::GBPosition->new(0,2));
+  $gbs -> Add( Wx::StaticText -> new($this, -1, 'Scatterer:'), Wx::GBPosition->new(0,3));
   $gbs -> Add( Wx::StaticText -> new($this, -1, 'Distance:'),  Wx::GBPosition->new(1,0));
-  $gbs -> Add( Wx::StaticText -> new($this, -1, 'Edge:'),      Wx::GBPosition->new(1,2));
+  $gbs -> Add( Wx::StaticText -> new($this, -1, 'Edge:'),      Wx::GBPosition->new(1,3));
 
   $this->{abs}      = Wx::TextCtrl -> new($this, -1, 'Fe',  wxDefaultPosition, [60, -1]);
   $this->{scat}     = Wx::TextCtrl -> new($this, -1, 'O',   wxDefaultPosition, [60, -1]);
   $this->{distance} = Wx::TextCtrl -> new($this, -1, '2.1', wxDefaultPosition, [60, -1]);
   $this->{edge}     = Wx::Choice   -> new($this, -1,      , wxDefaultPosition, wxDefaultSize, [qw(K L1 L2 L3)]);
 
-  $gbs -> Add( $this->{abs},      Wx::GBPosition->new(0,1));
-  $gbs -> Add( $this->{scat},     Wx::GBPosition->new(0,3));
-  $gbs -> Add( $this->{distance}, Wx::GBPosition->new(1,1));
-  $gbs -> Add( $this->{edge},     Wx::GBPosition->new(1,3));
+  $this->{abspt}  = Wx::BitmapButton->new($this, -1, Demeter::UI::Artemis::icon("orbits"), wxDefaultPosition, wxDefaultSize);
+  $this->{scatpt} = Wx::BitmapButton->new($this, -1, Demeter::UI::Artemis::icon("orbits"), wxDefaultPosition, wxDefaultSize);
+  EVT_BUTTON($this, $this->{abspt},  sub{$this->{which}='abs',  use_element(@_, $this)} );
+  EVT_BUTTON($this, $this->{scatpt}, sub{$this->{which}='scat', use_element(@_, $this)} );
 
-  $this->{ok} = Wx::Button->new($this, wxID_OK, "Create this first shell model", wxDefaultPosition, wxDefaultSize, 0, );
+
+  $gbs -> Add( $this->{abs},      Wx::GBPosition->new(0,1));
+  $gbs -> Add( $this->{abspt},    Wx::GBPosition->new(0,2));
+  $gbs -> Add( $this->{scat},     Wx::GBPosition->new(0,4));
+  $gbs -> Add( $this->{scatpt},   Wx::GBPosition->new(0,5));
+  $gbs -> Add( $this->{distance}, Wx::GBPosition->new(1,1));
+  $gbs -> Add( $this->{edge},     Wx::GBPosition->new(1,4));
+
+  $this->{ok} = Wx::Button->new($this, wxID_OK, q{}, wxDefaultPosition, wxDefaultSize, 0, );
   $vbox -> Add($this->{ok}, 0, wxGROW|wxALL, 5);
 
-  $this->{cancel} = Wx::Button->new($this, wxID_CANCEL, "Cancel", wxDefaultPosition, wxDefaultSize);
+  $this->{cancel} = Wx::Button->new($this, wxID_CANCEL, q{}, wxDefaultPosition, wxDefaultSize);
   $vbox -> Add($this->{cancel}, 0, wxGROW|wxALL, 5);
 
 
   $this -> SetSizerAndFit( $vbox );
   return $this;
 };
+
+
+sub use_element {
+  my ($self, $event, $parent) = @_;
+  $parent->{popup}  = Wx::Dialog->new($self, -1, 'Choose an element', wxDefaultPosition, wxDefaultSize, wxDEFAULT_DIALOG_STYLE );
+  my $pt            = Demeter::UI::Wx::PeriodicTable->new($parent->{popup}, 'put_element', $parent);
+  my $vbox          = Wx::BoxSizer->new( wxVERTICAL );
+  $parent->{popup} -> SetSizer($vbox);
+  $vbox            -> Add($pt, 0, wxALIGN_CENTER_HORIZONTAL|wxALL, 5);
+  $parent->{popup} -> SetSize(Wx::Size->new(map {$_*1.1} $pt->GetSizeWH));
+  $parent->{popup} -> ShowModal;
+};
+
+sub put_element {
+  my ($self, $el) = @_;
+  $self->{popup}->Destroy;
+  my $which = $self->{which};
+  $self->{$which}->SetValue($el);
+};
+
 
 sub ShouldPreventAppExit {
   0

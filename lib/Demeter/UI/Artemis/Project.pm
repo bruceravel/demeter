@@ -205,7 +205,8 @@ sub read_project {
     ++$count;
   };
 
-  $rframes->{Log}->{text}->SetValue($fit->logtext);
+  #$rframes->{Log}->{text}->SetValue($fit->logtext);
+  $rframes->{Log}->put_log($fit->logtext, $fit->color);
   $rframes->{Log}->SetTitle("Artemis [Log] " . $rframes->{main}->{name}->GetValue);
   $rframes->{Log}->Show(0);
   $rframes->{main}->{log_toggle}->SetValue(0);
