@@ -357,6 +357,7 @@ sub new {
 
   $this->{pathlist} = Demeter::UI::Wx::CheckListBook->new( $rightpane, -1, wxDefaultPosition, wxDefaultSize, wxBK_LEFT );
   $right -> Add($this->{pathlist}, 1, wxGROW|wxALL, 5);
+  $this->{pathlist} -> set_initial_page_callback(sub{$this->quickfs});
 
   my $pathbuttons = Wx::BoxSizer->new( wxHORIZONTAL );
   $right -> Add($pathbuttons, 0, wxGROW|wxALL, 5);
@@ -733,13 +734,7 @@ sub OnMenuClick {
     };
 
     ($id == $PATH_FSPATH) and do {
-      my $qfs_dialog = Demeter::UI::Artemis::Data::Quickfs->new($datapage);
-      my $result = $qfs_dialog -> ShowModal;
-      if ($result == wxID_CANCEL) {
-	$datapage->{statusbar}->SetStatusText("Cancelled quick first shell model creation.");
-	return;
-      };
-      $datapage -> quickfs($qfs_dialog);
+      $datapage -> quickfs;
       last SWITCH;
     };
 
@@ -1413,7 +1408,16 @@ my @element_list = qw(h he li be b c n o f ne na mg al si p s cl ar k ca
 my $element_regexp = $reopt->list2re(@element_list);
 
 sub quickfs {
-  my ($datapage, $dialog) = @_;
+  my ($datapage) = @_;
+
+  my $dialog = Demeter::UI::Artemis::Data::Quickfs->new($datapage);
+  my $result = $dialog -> ShowModal;
+  if ($result == wxID_CANCEL) {
+    $datapage->{statusbar}->SetStatusText("Cancelled quick first shell model creation.");
+    return;
+  };
+
+  my $busy = Wx::BusyCursor->new();
   my ($abs, $scat, $distance, $edge) = ($dialog->{abs}->GetValue,
 					$dialog->{scat}->GetValue,
 					$dialog->{distance}->GetValue,
@@ -1463,7 +1467,7 @@ sub quickfs {
     $Demeter::UI::Artemis::frames{GDS}->set_type($start);
     ++$start;
   };
-
+  undef $busy;
 
 };
 

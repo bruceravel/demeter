@@ -18,10 +18,18 @@ package Demeter::UI::Wx::PeriodicTable;
 use strict;
 use warnings;
 use Carp;
+use Chemistry::Elements qw(get_Z get_name);
 use Wx qw( :everything );
-use Wx::Event qw(EVT_BUTTON);
+use Wx::Event qw(EVT_BUTTON EVT_ENTER_WINDOW EVT_LEAVE_WINDOW);
 
 use base 'Wx::Panel';
+
+use constant {
+  ELEMENT => 0,
+  ROW     => 1,
+  COL     => 2,
+  PHASE   => 3,
+};
 
 #           columns: 0 -- 17    rows: 0 -- 8
 #           [ symbol, row, column, phase]
@@ -137,41 +145,38 @@ my @elements = (['H',  0, 0,  'g'],
 	       );
 
 my %color_of = (
-		m => [ 82, 139, 139],	# metal (Dark Slate Grey)
-		g => [205,   0,   0],	# gas (Red)
-		s => [ 85,  26, 139],	# semi-metal (Purple)
-		n => [  0, 139,   0],	# non-metal (Green)
+		m => [ 82, 139, 139, 0],	# metal (Dark Slate Grey)
+		g => [205,   0,   0, 0],	# gas (Red)
+		s => [ 85,  26, 139, 0],	# semi-metal (Purple)
+		n => [  0, 139,   0, 0],	# non-metal (Green)
 	       );
 
 sub new {
-  my ($class, $parent, $command, $grandparent) = @_;
+  my ($class, $parent, $command, $statusbar) = @_;
   my $self = $class->SUPER::new($parent, -1, wxDefaultPosition, wxDefaultSize, wxMAXIMIZE_BOX );
 
-
   my $font_size = 10;
-  my $bheight = int(2.5*$font_size+1);
+  my $bheight = int(2.5*$font_size+3);
   my $tsz = Wx::GridBagSizer->new( 2, 2 );
 
   foreach my $el (@elements) {
-    my $this = Wx::GBPosition->new($el->[1], $el->[2]);
-    my $button = Wx::Button->new( $self, -1, $el->[0], [-1,-1], [35,$bheight], wxBU_EXACTFIT );
-    $self->{$el->[0]} = $button;
+    my $this = Wx::GBPosition->new($el->[ROW], $el->[COL]);
+    my $button = Wx::Button->new( $self, -1, $el->[ELEMENT], [-1,-1], [35,$bheight], wxBU_EXACTFIT );
+    $self->{$el->[ELEMENT]} = $button;
     my $cell = $tsz -> Add($button, $this);
-    my $which = $grandparent || $parent;
-    EVT_BUTTON( $parent, $button, sub{$which->$command($el->[0])} );
-    $button->SetForegroundColour( Wx::Colour->new(@{ $color_of{$el->[3]} }) );
+    EVT_BUTTON( $parent, $button, sub{&$command($el->[ELEMENT])} );
+    my $text = sprintf("%s: %s, element #%d", $el->[ELEMENT], get_name($el->[ELEMENT]), get_Z($el->[ELEMENT]));
+    EVT_ENTER_WINDOW($button, sub{$statusbar->PushStatusText($text) if $statusbar; $_[1]->Skip});
+    EVT_LEAVE_WINDOW($button, sub{$statusbar->PopStatusText         if $statusbar; $_[1]->Skip});
+    $button->SetForegroundColour( Wx::Colour->new(@{ $color_of{$el->[PHASE]} }) );
     $button->SetFont( Wx::Font->new( $font_size, wxDEFAULT, wxNORMAL, wxBOLD, 0, "" ) );
   };
-  my $label    = Wx::StaticText->new($self, -1, 'Lanthanides', [5,-1], [105,23], wxALIGN_RIGHT);
-  $label      -> SetFont( Wx::Font->new( 10, wxDEFAULT, wxSLANT, wxNORMAL, 0, "" ) );
-  my $position = Wx::GBPosition->new(7,0);
-  my $span     = Wx::GBSpan->new(1,3);
-  $tsz        -> Add($label, $position, $span);
-  $label       = Wx::StaticText->new($self, -1, 'Actinides', wxDefaultPosition, [105,23], wxALIGN_RIGHT);
-  $label      -> SetFont( Wx::Font->new( 10, wxDEFAULT, wxSLANT, wxNORMAL, 0, "" ) );
-  $position    = Wx::GBPosition->new(8,0);
-  $span        = Wx::GBSpan->new(1,3);
-  $tsz        -> Add($label, $position, $span);
+  my $label = Wx::StaticText->new($self, -1, 'Lanthanides', [5,-1], [105,23], wxALIGN_RIGHT);
+  $label   -> SetFont( Wx::Font->new( 10, wxDEFAULT, wxSLANT, wxNORMAL, 0, "" ) );
+  $tsz     -> Add($label, Wx::GBPosition->new(7,0), Wx::GBSpan->new(1,3));
+  $label    = Wx::StaticText->new($self, -1, 'Actinides', wxDefaultPosition, [105,23], wxALIGN_RIGHT);
+  $label   -> SetFont( Wx::Font->new( 10, wxDEFAULT, wxSLANT, wxNORMAL, 0, "" ) );
+  $tsz     -> Add($label, Wx::GBPosition->new(8,0), Wx::GBSpan->new(1,3));
 
   # tell we want automatic layout
   $self->SetAutoLayout( 1 );
@@ -199,35 +204,30 @@ This documentation refers to Demeter version 0.3.
 A periodic table an be added to a Wx application:
 
   my $pt = Demeter::UI::Wx::PeriodicTable
-             -> new($parent, 'method_name', $grandparent);
+             -> new($parent, $command, $sb);
   $sizer -> Add($pt, 0, wxALIGN_CENTER_HORIZONTAL|wxALL, 5);
 
 The arguments to the constructor method is a reference to the parent
-in which this is placed, the name (as a string) of a method to bind
-as a callback to the buttons in the table, and (optionally) the parent
-of the parent.  If the grandparent is defined, the periodic table will
-be packed in it, otherwise it will be packed in the $parent.  The
-grandparent is used in Hephaestus when the periodic table is displayed
-as a pop-up window.
+in which this is placed, the name (as a string) of a method to bind as
+a callback to the buttons in the table, and (optionally) the parent of
+the parent.  If the statusbar is defined, it will be used to display
+mouse-over messages as the buttons in the table are visited.
 
 The callback will be called as
 
-  $parent->$method_name($element_selected);
+  $command($element_selected);
 
 That is, the element of the button pushed will be passed as the
 argument of the callback.  This is a very simple mechanism that
-assumes the callback method only needs the element symbol.  Any other
-information needed by the callback must be in C<$parent>.
+assumes the callback method only needs the element symbol.
 
 =head1 DESCRIPTION
 
 This is a periodic table widget which can be put in a widget or used
 as an element picker.  It is used by the absorption, data, and
-anomalous scattering utilities as well as by the formulas utilities as
-a pop-up.
-
-=head1 CONFIGURATION
-
+anomalous scattering utilities in Hephaestus as well as by the
+formulas utility as a pop-up.  It is also used in Artemis in the quick
+first shell theory dialog.
 
 =head1 DEPENDENCIES
 

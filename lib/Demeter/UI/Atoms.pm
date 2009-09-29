@@ -114,7 +114,7 @@ $atoms_base = identify_self();
 sub OnInit {
   $demeter -> mo -> ui('Wx');
   $demeter -> mo -> identity('Atoms');
-  $demeter -> plot_with($demeter->co->default(qw(feff plotwith)));
+  $demeter -> plot_with($demeter->co->default(qw(plot plotwith)));
 
   ## -------- create a new frame and set icon
   $frame = Demeter::UI::AtomsApp->new;

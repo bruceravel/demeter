@@ -168,7 +168,7 @@ sub OnInit {
   $demeter -> co -> read_config($conffile);
   ## read ini file...
   $demeter -> co -> read_ini('hephaestus');
-  $demeter -> plot_with($demeter->co->default(qw(hephaestus plotwith)));
+  $demeter -> plot_with($demeter->co->default(qw(plot plotwith)));
 
   foreach my $m (qw(Absorption Formulas Ion Data Transitions EdgeFinder LineFinder
 		    Standards F1F2 Config Help)) {

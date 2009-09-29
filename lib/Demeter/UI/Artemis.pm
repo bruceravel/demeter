@@ -60,7 +60,7 @@ sub OnInit {
   my $conffile = File::Spec->catfile(dirname($INC{'Demeter/UI/Artemis.pm'}), 'Artemis', 'share', "artemis.demeter_conf");
   $demeter -> co -> read_config($conffile);
   $demeter -> co -> read_ini('artemis');
-  $demeter -> plot_with($demeter->co->default(qw(artemis plotwith)));
+  $demeter -> plot_with($demeter->co->default(qw(plot plotwith)));
 
   ## -------- import all of Artemis' various parts
   foreach my $m (qw(GDS Plot History Log Buffer Config Data Prj)) {
@@ -407,7 +407,7 @@ sub fit {
 
   ## get name, fom, and description + other properties
   my $fit = Demeter::Fit->new(data => \@data, paths => \@paths, gds => \@gds);
-  $fit->interface("Artemis (Wx)");
+  $fit->interface("Artemis (Wx $Wx::VERSION)");
   #$fit->ignore_errors(1);
   $rframes->{main} -> {currentfit} = $fit;
 

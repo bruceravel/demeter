@@ -21,7 +21,7 @@ use warnings;
 use Wx qw( :everything );
 use base qw(Wx::Dialog);
 use Wx::Event qw(EVT_LISTBOX EVT_BUTTON EVT_RADIOBOX EVT_CHOICE);
-use Demeter::UI::Wx::PeriodicTable;
+use Demeter::UI::Wx::PeriodicTableDialog;
 
 sub new {
   my ($class, $parent) = @_;
@@ -72,12 +72,8 @@ sub new {
 
 sub use_element {
   my ($self, $event, $parent) = @_;
-  $parent->{popup}  = Wx::Dialog->new($self, -1, 'Choose an element', wxDefaultPosition, wxDefaultSize, wxDEFAULT_DIALOG_STYLE );
-  my $pt            = Demeter::UI::Wx::PeriodicTable->new($parent->{popup}, 'put_element', $parent);
-  my $vbox          = Wx::BoxSizer->new( wxVERTICAL );
-  $parent->{popup} -> SetSizer($vbox);
-  $vbox            -> Add($pt, 0, wxALIGN_CENTER_HORIZONTAL|wxALL, 5);
-  $parent->{popup} -> SetSize(Wx::Size->new(map {$_*1.1} $pt->GetSizeWH));
+  my $how = ($parent->{which} eq 'abs') ? 'an absorber' : 'a scatterer';
+  $parent->{popup}  = Demeter::UI::Wx::PeriodicTableDialog->new($self, -1, "Select $how element", sub{$self->put_element($_[0])});
   $parent->{popup} -> ShowModal;
 };
 

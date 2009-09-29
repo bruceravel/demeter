@@ -45,6 +45,15 @@ section_description
   colors that your system recognizes, or hexadecimal triplets
   (i.e. "#0000FF" for blue and so on).
 
+variable=plotwith
+type=list
+options=pgplot gnuplot
+default=pgplot
+description
+  This tells Demeter UIs which plotting backend to use.  This is
+  currently used by Artemis, Hephaestus and the Atoms GUI but is not
+  used by default in a common Demeter script.
+
 variable=showcopyright
 type=boolean
 onvalue=1

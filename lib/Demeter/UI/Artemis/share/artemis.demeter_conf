@@ -47,4 +47,4 @@ type=list
 options=pgplot gnuplot
 default=pgplot
 description
-  This tells Artemis which plotting backend to use
+  This tells Artemis which plotting backend to use (not in use..)

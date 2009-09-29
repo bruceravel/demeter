@@ -44,7 +44,7 @@ sub new {
   $this->{happiness}  = Wx::TextAttr->new(Wx::Colour->new('#acacac'), wxNullColour, Wx::Font->new( @font ) );
   $this->{parameters} = Wx::TextAttr->new(Wx::Colour->new('#000000'), wxNullColour, Wx::Font->new( @underline ) );
   $this->{header}     = Wx::TextAttr->new(Wx::Colour->new('#736853'), wxNullColour, Wx::Font->new( @bold ) );
-  $this->{data}       = Wx::TextAttr->new(Wx::Colour->new('#ffffff'), Wx::Colour->new('#000055'), Wx::Font->new( @font ) );
+  $this->{data}       = Wx::TextAttr->new(Wx::Colour->new('#ffffff'), Wx::Colour->new('#000055'), Wx::Font->new( @bold ) );
 
 
   $vbox -> Add($this->{text}, 1, wxGROW, 0);

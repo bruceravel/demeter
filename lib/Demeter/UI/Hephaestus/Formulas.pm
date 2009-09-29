@@ -26,7 +26,7 @@ use Xray::Absorption;
 use Wx qw( :everything );
 use Wx::Event qw(EVT_LISTBOX EVT_BUTTON EVT_KEY_DOWN);
 use base 'Wx::Panel';
-use Demeter::UI::Wx::PeriodicTable;
+use Demeter::UI::Wx::PeriodicTableDialog;
 
 
 my (%formula_of, %density_of);
@@ -298,12 +298,7 @@ sub get_formula_data {
 
 sub use_element {
   my ($self, $event, $parent) = @_;
-  $parent->{popup}  = Wx::Dialog->new($self, -1, 'Choose an element', wxDefaultPosition, wxDefaultSize, wxDEFAULT_DIALOG_STYLE );
-  my $pt            = Demeter::UI::Wx::PeriodicTable->new($parent->{popup}, 'put_element', $parent);
-  my $vbox          = Wx::BoxSizer->new( wxVERTICAL );
-  $parent->{popup} -> SetSizer($vbox);
-  $vbox            -> Add($pt, 0, wxALIGN_CENTER_HORIZONTAL|wxALL, 5);
-  $parent->{popup} -> SetSize(Wx::Size->new(map {$_*1.1} $pt->GetSizeWH));
+  $parent->{popup}  = Demeter::UI::Wx::PeriodicTableDialog->new($self, -1, "Choose an element", sub{$self->put_element($_[0])});
   $parent->{popup} -> ShowModal;
 };
 

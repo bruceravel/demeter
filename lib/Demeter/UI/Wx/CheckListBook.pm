@@ -20,9 +20,13 @@ use Readonly;
 Readonly my $NUMBER => $RE{num}{real};
 
 use Wx qw( :everything );
-use Wx::Event qw(EVT_LISTBOX EVT_LEFT_DOWN EVT_MIDDLE_DOWN EVT_RIGHT_DOWN EVT_CHECKLISTBOX EVT_LEFT_DCLICK EVT_MOUSEWHEEL);
+use Wx::Event qw(EVT_LISTBOX EVT_LEFT_DOWN EVT_MIDDLE_DOWN EVT_RIGHT_DOWN EVT_CHECKLISTBOX
+		 EVT_LEFT_DCLICK EVT_MOUSEWHEEL EVT_HYPERLINK);
 
 use base 'Wx::SplitterWindow';
+
+use vars qw($initial_page_callback);
+$initial_page_callback = sub{ print "callback\n" };
 
 ## height, width, ratio
 sub new {
@@ -79,12 +83,25 @@ sub InitialPage {
   $self->{LIST}->Append('Path list');
   $self->{LIST}->Select(0);
   $self->{VIEW} = Wx::Panel->new($self->{PAGE}, -1, wxDefaultPosition, Wx::Size->new($self->{W}-int($self->{W}/4),$self->{H}));
-  my $hh = Wx::BoxSizer->new( wxVERTICAL );
-  $hh -> Add(Wx::StaticText -> new($self->{VIEW}, -1, "Drag paths from the Feff interpretation\nlist and drop them in this space\nto add paths to this data set.", [10,10], [300,300]),
-	     0, wxALL, 5);
+  my $vv = Wx::BoxSizer->new( wxVERTICAL );
+  my $dndtext = Wx::StaticText -> new($self->{VIEW}, -1, "Drag paths from a Feff interpretation list and drop them in this space to add paths to this data set.", wxDefaultPosition, [300,-1]);
+  $dndtext -> Wrap(280);
+  $vv -> Add($dndtext, 0, wxALL, 5);
+  $vv -> Add(Wx::StaticText -> new($self->{VIEW}, -1, "\tor"),
+	     0, wxALL, 10);
+  my $hl = Wx::HyperlinkCtrl->new( $self->{VIEW}, -1, 'Click here to start a quick first shell fit', q{},
+				   wxDefaultPosition, wxDefaultSize );
+  EVT_HYPERLINK( $self, $hl, $initial_page_callback );
+  $vv -> Add($hl, 0, wxALL, 5);
+  $self->{VIEW} -> SetSizer($vv);
   $self->{PAGEBOX} -> Add($self->{VIEW}, 1, wxGROW|wxALL, 5);
   $self->{LIST} -> SetClientData($end, $self->{VIEW});
   $self->{LIST} -> Show;
+};
+
+sub set_initial_page_callback {
+  my ($self, $callback) = @_;
+  $initial_page_callback = $callback;
 };
 
 sub AddPage {

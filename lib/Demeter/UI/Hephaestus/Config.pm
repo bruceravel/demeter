@@ -29,7 +29,9 @@ sub new {
   my ($class, $page, $echoarea) = @_;
   my $self = $class->SUPER::new($page, \&target);
   $self->{echo} = $echoarea;
-  $self->populate('hephaestus');
+  my @list = ('hephaestus', 'plot');
+  push @list, 'gnuplot' if ($Demeter::UI::Hephaestus::demeter->co->default(qw(plot plotwith)) eq 'gnuplot');
+  $self->populate(\@list);
 
   return $self;
 };

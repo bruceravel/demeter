@@ -36,7 +36,7 @@ my %labels = (label  => 'Label',
 my %explanation =
   (
    label  => 'The label is a snippet of user-supplied text identifying or describing the path.',
-   n      => 'N is the degeneracy of the path.  For a SS path this can often be interpreted as the coordination number.',
+   n      => 'N is the degeneracy of the path and is multiplied by S02.  For SS paths this can often be interpreted as the coordination number.',
    s02    => 'S02 is the amplitude factor in the EXAFS equation, which includes S02 and possibly other amplitude factors.',
    e0     => 'ΔE0 is an energy shift typically interpreted as the alignment of the energy grids of the data and theory.',
    delr   => 'ΔR is an adjustment to the half path length of the path.  For a SS path, this is an adjustment to the interatomic distance.',
@@ -95,7 +95,7 @@ sub new {
   ## -------- geometry
   $this->{geombox}  = Wx::StaticBox->new($this, -1, 'Geometry ', wxDefaultPosition, wxDefaultSize);
   my $geomboxsizer  = Wx::StaticBoxSizer->new( $this->{geombox}, wxHORIZONTAL );
-  $this->{geometry} = Wx::TextCtrl->new($this, -1, q{}, wxDefaultPosition, [308,-1],
+  $this->{geometry} = Wx::TextCtrl->new($this, -1, q{}, wxDefaultPosition, [298,-1],
 					wxVSCROLL|wxHSCROLL|wxTE_MULTILINE|wxTE_READONLY|wxNO_BORDER);
   $this->{geometry} -> SetFont( Wx::Font->new( 9, wxTELETYPE, wxNORMAL, wxNORMAL, 0, "" ) );
   $geomboxsizer -> Add($this->{geometry}, 1, wxGROW|wxALL, 0);
@@ -128,7 +128,8 @@ sub new {
     ++$i;
     EVT_RIGHT_DOWN($label, sub{DoLabelKeyPress(@_, $this)});
     EVT_MENU($label, -1, sub{ $this->OnLabelMenu(@_)    });
-    #EVT_ENTER_WINDOW($label, sub{print "hi\n"});#$this->DoLabelEnter});
+    $this->mouseover("pp_$k", $explanation{$k});
+    EVT_ENTER_WINDOW($label, sub{print "hi\n"});#$this->DoLabelEnter});
     #EVT_LEAVE_WINDOW($label, sub{$this->DoLabelLeave});
   };
   $vbox -> Add($gbs, 2, wxGROW|wxTOP|wxBOTTOM, 10);
@@ -261,8 +262,8 @@ sub DoLabelKeyPress {
       $menu->Append($EINS,  "Insert Einstein model");
     };
   };
-  $menu->AppendSeparator;
-  $menu->Append($EXPLAIN,  "Explain $label");
+  #$menu->AppendSeparator;
+  #$menu->Append($EXPLAIN,  "Explain $label");
   #$menu->Enable($EACHDATA, 0);
 
   my $this = $page->this_path;

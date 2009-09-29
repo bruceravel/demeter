@@ -35,7 +35,7 @@ sub new {
   my ($class, $page, $echoarea) = @_;
   my $self = $class->SUPER::new($page, -1, wxDefaultPosition, wxDefaultSize, wxMAXIMIZE_BOX );
 
-  my $pt = Demeter::UI::Wx::PeriodicTable->new($self, 'f1f2_get_data');
+  my $pt = Demeter::UI::Wx::PeriodicTable->new($self, sub{$self->f1f2_get_data($_[0])});
   my $vbox = Wx::BoxSizer->new( wxVERTICAL );
   $self->SetSizer($vbox);
   $vbox -> Add($pt, 0, wxALIGN_CENTER_HORIZONTAL|wxALL, 5);

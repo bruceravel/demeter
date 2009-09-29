@@ -1,6 +1,6 @@
 ## -*- config -*-
 ###########################################################################
-##      Demeter and Hephaestus is copyright (c) 2006-2008 Bruce Ravel
+##      Demeter and Hephaestus is copyright (c) 2006-2009 Bruce Ravel
 ##                                                     bravel@bnl.gov
 ##                                        http://xafs.org/BruceRavel/
 ##
@@ -41,13 +41,6 @@
 section=hephaestus
 section_description
   These variables determine the behavior of Hephaestus.
-
-variable=plotwith
-type=list
-options=pgplot gnuplot
-default=pgplot
-description
-  This tells Hephaestus which plotting backend to use
 
 variable=resource
 type=list
