@@ -347,7 +347,7 @@ sub fit {
     $data -> set(fitting=>1, fit_data=>$count);
 
     ## read the data
-    if ($data->from_athena) {
+    if (($data->from_athena)  or ($data->datatype eq 'xmu')) {
       $data -> _update('fft');
     } else {
       $command .= "\n";

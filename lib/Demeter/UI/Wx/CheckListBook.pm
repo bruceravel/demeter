@@ -21,16 +21,18 @@ Readonly my $NUMBER => $RE{num}{real};
 
 use Wx qw( :everything );
 use Wx::Event qw(EVT_LISTBOX EVT_LEFT_DOWN EVT_MIDDLE_DOWN EVT_RIGHT_DOWN EVT_CHECKLISTBOX
-		 EVT_LEFT_DCLICK EVT_MOUSEWHEEL EVT_HYPERLINK);
+		 EVT_LEFT_DCLICK EVT_MOUSEWHEEL);
 
 use base 'Wx::SplitterWindow';
 
-use vars qw($initial_page_callback);
-$initial_page_callback = sub{ print "callback\n" };
+use vars qw(@initial_page_callback);
+@initial_page_callback = (sub{ print "callback 1\n" },
+			  sub{ print "callback 2\n" },
+			 );
 
 ## height, width, ratio
 sub new {
-  my ($class, $parent, $id, $position, $size) = @_;
+  my ($class, $parent, $id, $position, $size, $initial) = @_;
   #print join(" ", $parent, $id, $position, $size), $/;
   $position = Wx::Size->new(@$position) if (ref($position) !~ m{Point});
   $size = Wx::Size->new(@$size) if (ref($size) !~ m{Size});
@@ -72,6 +74,11 @@ sub new {
   $self->{H} = $h;
   $self->{CTRL}  = 0;
   $self->{SHIFT} = 0;
+  $initial ||= Wx::Panel->new($self, -1, wxDefaultPosition, wxDefaultSize);
+  $self->{initial} = $initial;
+  $self->{initial} -> Reparent($self->{PAGE});
+  $self->{PAGEBOX} -> Add($self->{initial}, 1, wxGROW|wxALL, 5);
+  $self->{initial} -> Hide;
   $self->InitialPage;
   return $self;
 };
@@ -82,26 +89,23 @@ sub InitialPage {
   $self->{LIST}->Clear;
   $self->{LIST}->Append('Path list');
   $self->{LIST}->Select(0);
-  $self->{VIEW} = Wx::Panel->new($self->{PAGE}, -1, wxDefaultPosition, Wx::Size->new($self->{W}-int($self->{W}/4),$self->{H}));
-  my $vv = Wx::BoxSizer->new( wxVERTICAL );
-  my $dndtext = Wx::StaticText -> new($self->{VIEW}, -1, "Drag paths from a Feff interpretation list and drop them in this space to add paths to this data set.", wxDefaultPosition, [300,-1]);
-  $dndtext -> Wrap(280);
-  $vv -> Add($dndtext, 0, wxALL, 5);
-  $vv -> Add(Wx::StaticText -> new($self->{VIEW}, -1, "\tor"),
-	     0, wxALL, 10);
-  my $hl = Wx::HyperlinkCtrl->new( $self->{VIEW}, -1, 'Click here to start a quick first shell fit', q{},
-				   wxDefaultPosition, wxDefaultSize );
-  EVT_HYPERLINK( $self, $hl, $initial_page_callback );
-  $vv -> Add($hl, 0, wxALL, 5);
-  $self->{VIEW} -> SetSizer($vv);
-  $self->{PAGEBOX} -> Add($self->{VIEW}, 1, wxGROW|wxALL, 5);
-  $self->{LIST} -> SetClientData($end, $self->{VIEW});
-  $self->{LIST} -> Show;
+
+  $self->{VIEW} = $self->{initial};
+  $self->{VIEW} -> Show(1);
+
+  $self->{LIST}-> SetClientData($end, $self->{VIEW});
+  $self->{LIST}-> Show;
+};
+
+sub do_callback {
+  my ($self, $which) = @_;
+  my $this = $self->{callbacks}->[$which];
+  &$this;
 };
 
 sub set_initial_page_callback {
-  my ($self, $callback) = @_;
-  $initial_page_callback = $callback;
+  my ($self, @callbacks) = @_;
+  @initial_page_callback = @callbacks;
 };
 
 sub AddPage {
@@ -141,7 +145,7 @@ sub DeletePage {
   my ($obj, $id) = $self->page_and_id($page);
   return 0 if ($id == -1);
   $self->RemovePage($id);
-  $obj->Destroy;
+  $obj->Destroy if $obj !~ m{Panel}; # need to save initial page for later use
   ($self->{VIEW} = q{}) if ($self->{LIST}->IsEmpty);
   return 1;
 };

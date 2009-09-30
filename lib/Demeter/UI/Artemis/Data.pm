@@ -20,7 +20,9 @@ use warnings;
 
 use Wx qw( :everything);
 use base qw(Wx::Frame);
-use Wx::Event qw(EVT_MENU EVT_CLOSE EVT_TOOL_ENTER EVT_CHECKBOX EVT_CHOICE EVT_BUTTON EVT_ENTER_WINDOW EVT_LEAVE_WINDOW);
+use Wx::Event qw(EVT_MENU EVT_CLOSE EVT_TOOL_ENTER EVT_CHECKBOX EVT_CHOICE
+		 EVT_BUTTON EVT_ENTER_WINDOW EVT_LEAVE_WINDOW
+		 EVT_HYPERLINK);
 use Wx::DND;
 use Wx::Perl::TextValidator;
 
@@ -355,9 +357,9 @@ sub new {
     $imagelist->Add( Wx::Bitmap->new($icon, wxBITMAP_TYPE_PNG) );
   };
 
-  $this->{pathlist} = Demeter::UI::Wx::CheckListBook->new( $rightpane, -1, wxDefaultPosition, wxDefaultSize, wxBK_LEFT );
+  my $panel = $this->initial_page_panel;
+  $this->{pathlist} = Demeter::UI::Wx::CheckListBook->new( $rightpane, -1, wxDefaultPosition, wxDefaultSize, $panel, wxBK_LEFT );
   $right -> Add($this->{pathlist}, 1, wxGROW|wxALL, 5);
-  $this->{pathlist} -> set_initial_page_callback(sub{$this->quickfs});
 
   my $pathbuttons = Wx::BoxSizer->new( wxHORIZONTAL );
   $right -> Add($pathbuttons, 0, wxGROW|wxALL, 5);
@@ -396,6 +398,42 @@ sub mouseover {
   EVT_ENTER_WINDOW($self->{$widget}, sub{$self->{statusbar}->PushStatusText($text); $_[1]->Skip});
   EVT_LEAVE_WINDOW($self->{$widget}, sub{$self->{statusbar}->PopStatusText;         $_[1]->Skip});
 };
+
+sub initial_page_panel {
+  my ($self) = @_;
+  my $panel = Wx::Panel->new($self, -1, wxDefaultPosition, wxDefaultSize);
+
+  my $vv = Wx::BoxSizer->new( wxVERTICAL );
+
+  my $dndtext = Wx::StaticText    -> new($panel, -1, "Drag paths from a Feff interpretation list and drop them in this space to add paths to this data set", wxDefaultPosition, [300,-1]);
+  $dndtext   -> Wrap(280);
+  my $atoms   = Wx::HyperlinkCtrl -> new($panel, -1, 'Import crystal data',           q{}, wxDefaultPosition, wxDefaultSize );
+  my $qfs     = Wx::HyperlinkCtrl -> new($panel, -1, 'Start a quick first shell fit', q{}, wxDefaultPosition, wxDefaultSize );
+  my $su      = Wx::StaticText    -> new($panel, -1, 'Import a structural unit',           wxDefaultPosition, wxDefaultSize );
+  my $feff    = Wx::StaticText    -> new($panel, -1, 'Import a Feff calculation',          wxDefaultPosition, wxDefaultSize );
+
+  EVT_HYPERLINK($self, $atoms, sub{Demeter::UI::Artemis::new_feff($Demeter::UI::Artemis::frames{main});});
+  EVT_HYPERLINK($self, $qfs,   sub{$self->quickfs;});
+  $_ -> SetFont( Wx::Font->new( 10, wxDEFAULT, wxITALIC, wxNORMAL, 0, "" ) ) foreach ($dndtext, $qfs, $atoms, $su, $feff);
+  $_ -> Enable(0) foreach ($su, $feff);
+  $_ -> SetVisitedColour($_->GetNormalColour) foreach ($qfs, $atoms); #, $su, $feff);
+
+  ##my $or = Wx::StaticText -> new($panel, -1, "\tor");
+
+  $vv -> Add($dndtext,                                  0, wxALL, 5 );
+  $vv -> Add(Wx::StaticText -> new($panel, -1, "\tor"), 0, wxALL, 10);
+  $vv -> Add($atoms,                                    0, wxALL, 5 );
+  $vv -> Add(Wx::StaticText -> new($panel, -1, "\tor"), 0, wxALL, 10);
+  $vv -> Add($qfs,                                      0, wxALL, 5 );
+  $vv -> Add(Wx::StaticText -> new($panel, -1, "\tor"), 0, wxALL, 10);
+  $vv -> Add($su,                                       0, wxALL, 5 );
+  $vv -> Add(Wx::StaticText -> new($panel, -1, "\tor"), 0, wxALL, 10);
+  $vv -> Add($feff,                                     0, wxALL, 5 );
+
+  $panel -> SetSizer($vv);
+  return $panel;
+};
+
 
 sub on_close {
   my ($self) = @_;
@@ -1382,12 +1420,15 @@ sub process_histogram {
     };
     $Demeter::UI::Artemis::frames{Plot}->{VPaths}->add_named_vpath("histogram from $pathname", @$paths);
 
-    $Demeter::UI::Artemis::frames{GDS}  -> put_param('guess', $amp, '1');
-    $Demeter::UI::Artemis::frames{GDS}  -> clear_highlight;
-    $Demeter::UI::Artemis::frames{GDS}  -> set_highlight('\A(?:amp)\z');
-    $Demeter::UI::Artemis::frames{GDS}  -> Show(1);
+    my $gdsframe = $Demeter::UI::Artemis::frames{GDS};
+    $gdsframe  -> put_param('guess', $amp,   '1');
+    $gdsframe  -> put_param('guess', $scale, '0') if $scale;
+    $gdsframe  -> clear_highlight;
+    my $re = ($scale)  ?  '\A(?:'.$amp.'|'.$scale.')\z'  :  '\A(?:'.$amp.')\z';
+    $gdsframe  -> set_highlight($re);
+    $gdsframe  -> Show(1);
     $Demeter::UI::Artemis::frames{main} -> {toolbar}->ToggleTool(1,1);
-    $Demeter::UI::Artemis::frames{GDS}  -> {toolbar}->ToggleTool(2,1);
+    $gdsframe  -> {toolbar}->ToggleTool(2,1);
 
   } elsif ($histo_dialog->{filesel}) {
     printf("%s  %s  %s  %s\n",
@@ -1447,26 +1488,8 @@ sub quickfs {
   $page->{pp_n} -> SetValue(1);
   $page->{pp_label} -> SetValue(sprintf("%s-%s path at %s", $firstshell->absorber, $firstshell->scatterer, $firstshell->reff));
 
-  my $grid  = $Demeter::UI::Artemis::frames{GDS}->{grid};
-  my $start = $Demeter::UI::Artemis::frames{GDS}->find_next_empty_row;
-  foreach my $g (@{$firstshell->gds}) {
-    $grid -> AppendRows(1,1) if ($start >= $grid->GetNumberRows);
-    $grid -> SetCellValue($start, 0, $g->gds);
-    $grid -> SetCellValue($start, 1, $g->name);
-    $grid -> SetCellValue($start, 2, $g->mathexp);
-    $grid -> {$g->name} = $g;
-    my $text = q{};
-    if ($g->gds eq 'guess') {
-      $text = sprintf("%.5f +/- %.5f", $g->bestfit, $g->error);
-    } elsif ($g->gds =~ m{(?:after|def|penalty|restrain)}) {
-      $text = sprintf("%.5f", $g->bestfit);
-    } elsif ($g->gds =~ m{(?:lguess|merge|set|skip)}) {
-      1;
-    };
-    $grid -> SetCellValue($start, 3, $text);
-    $Demeter::UI::Artemis::frames{GDS}->set_type($start);
-    ++$start;
-  };
+  $Demeter::UI::Artemis::frames{GDS}->put_gds($_) foreach (@{$firstshell->gds});
+
   undef $busy;
 
 };

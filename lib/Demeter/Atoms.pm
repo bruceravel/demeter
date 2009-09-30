@@ -216,9 +216,12 @@ has 'selfsig'	       => (is => 'rw', isa =>'Num', default=> 0,
 			   trigger => sub{ my ($self, $new) = @_; my $n= $self->netsig; $self->netsig($n+$new); });
 has 'netsig'	       => (is => 'rw', isa =>'Num', default=> 0);
 
-has 'is_imported'      => (is => 'rw', isa =>'Bool', default=> 0);
-has 'is_populated'     => (is => 'rw', isa =>'Bool', default=> 0);
-has 'is_ipots_set'     => (is => 'rw', isa =>'Bool', default=> 0);
+has 'is_imported'      => (is => 'rw', isa =>'Bool', default=> 0,
+			   trigger => sub{ my ($self, $new) = @_; $self->is_populated(0) if ($new==0); });
+has 'is_populated'     => (is => 'rw', isa =>'Bool', default=> 0,
+			   trigger => sub{ my ($self, $new) = @_; $self->is_ipots_set(0) if ($new==0); });
+has 'is_ipots_set'     => (is => 'rw', isa =>'Bool', default=> 0,
+			   trigger => sub{ my ($self, $new) = @_; $self->is_expanded(0)  if ($new==0); });
 has 'is_expanded'      => (is => 'rw', isa =>'Bool', default=> 0);
 has 'absorption_done'  => (is => 'rw', isa =>'Bool', default=> 0);
 has 'mcmaster_done'    => (is => 'rw', isa =>'Bool', default=> 0);
@@ -258,6 +261,11 @@ sub BUILD {
 sub DEMOLISH {
   my ($self) = @_;
   $self->alldone;
+};
+
+sub refresh {
+  my ($self) = @_;
+  $self->is_populated(0);
 };
 
 sub out {

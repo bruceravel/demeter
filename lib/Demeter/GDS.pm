@@ -35,7 +35,7 @@ has 'mathexp'	  => (is => 'rw', isa => 'Str',   default => q{});	##,trigger => s
 has 'stored'	  => (is => 'rw', isa => 'Str',   default => q{});
 has 'bestfit'	  => (is => 'rw', isa => 'Num',   default => 0,
 		      trigger => sub{my ($self, $new) = @_; $self->modified(1) if $new} );
-has 'error'	  => (is => 'rw', isa => 'Num',   default => -1);
+has 'error'	  => (is => 'rw', isa => 'Num',   default => 0);
 has 'modified'	  => (is => 'rw', isa => 'Bool',  default => 1);
 has 'note'	  => (is => 'rw', isa => 'Str',   default => q{},
 		     trigger => sub{my ($self, $new) = @_; $self->autonote(1) if ($new =~ m{\A\s*\z})} );

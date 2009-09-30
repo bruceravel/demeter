@@ -320,6 +320,11 @@ sub find_next_empty_row {
   return $start;
 };
 
+sub put_gds {
+  my ($parent, $gds) = @_;
+  $parent->put_param($gds->gds, $gds->name, $gds->mathexp);
+};
+
 sub put_param {
   my ($parent, $type, $name, $mathexp) = @_;
   my $grid = $parent->{grid};

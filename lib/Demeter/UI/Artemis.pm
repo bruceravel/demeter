@@ -710,23 +710,7 @@ sub OnFeffClick {
   my $which = $feffbar->GetToolPos($event->GetId);
 
   if ($which == 0) {
-
-    ## also yaml data
-    my $fd = Wx::FileDialog->new( $self, "Import crystal or Feff data", cwd, q{},
-				  "input and CIF files (*.inp;*.cif)|*.inp;*.cif|input file (*.inp)|*.inp|CIF file (*.cif)|*.cif|All files|*.*",
-				  wxFD_OPEN|wxFD_FILE_MUST_EXIST|wxFD_CHANGE_DIR|wxFD_PREVIEW,
-				  wxDefaultPosition);
-    if ($fd->ShowModal == wxID_CANCEL) {
-      $frames{main}->{statusbar}->SetStatusText("Crystal/Feff data import cancelled.");
-      return;
-    };
-    my $file = File::Spec->catfile($fd->GetDirectory, $fd->GetFilename);
-
-    my ($fnum, $ifeff) = make_feff_frame($self, $file);
-    $frames{$fnum} -> Show(1);
-    $frames{$fnum}->{statusbar}->SetStatusText("Imported crystal data from " . basename($file));
-    $feffbar->ToggleTool($ifeff,1);
-
+    new_feff($self);
   } else {
     my $this = sprintf("feff%s", $event->GetId);
     return if not exists($frames{$this});
@@ -734,6 +718,27 @@ sub OnFeffClick {
   };
 
 };
+
+sub new_feff {
+  my ($self) = @_;
+  my $feffbar = $self->{fefftool};
+  ## also yaml data
+  my $fd = Wx::FileDialog->new( $self, "Import crystal or Feff data", cwd, q{},
+				"input and CIF files (*.inp;*.cif)|*.inp;*.cif|input file (*.inp)|*.inp|CIF file (*.cif)|*.cif|All files|*.*",
+				wxFD_OPEN|wxFD_FILE_MUST_EXIST|wxFD_CHANGE_DIR|wxFD_PREVIEW,
+				wxDefaultPosition);
+  if ($fd->ShowModal == wxID_CANCEL) {
+    $self->{statusbar}->SetStatusText("Crystal/Feff data import cancelled.");
+    return;
+  };
+  my $file = File::Spec->catfile($fd->GetDirectory, $fd->GetFilename);
+
+  my ($fnum, $ifeff) = make_feff_frame($self, $file);
+  $frames{$fnum} -> Show(1);
+  $frames{$fnum}->{statusbar}->SetStatusText("Imported crystal data from " . basename($file));
+  $feffbar->ToggleTool($ifeff,1);
+};
+
 sub make_feff_frame {
   my ($self, $file, $name, $feffobject) = @_;
   my $feffbar = $self->{fefftool};

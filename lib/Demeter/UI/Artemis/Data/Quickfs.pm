@@ -37,8 +37,8 @@ sub new {
 
   $gbs -> Add( Wx::StaticText -> new($this, -1, 'Absorber:'),  Wx::GBPosition->new(0,0));
   $gbs -> Add( Wx::StaticText -> new($this, -1, 'Scatterer:'), Wx::GBPosition->new(0,3));
-  $gbs -> Add( Wx::StaticText -> new($this, -1, 'Distance:'),  Wx::GBPosition->new(1,0));
-  $gbs -> Add( Wx::StaticText -> new($this, -1, 'Edge:'),      Wx::GBPosition->new(1,3));
+  $gbs -> Add( Wx::StaticText -> new($this, -1, 'Edge:'),      Wx::GBPosition->new(1,0));
+  $gbs -> Add( Wx::StaticText -> new($this, -1, 'Distance:'),  Wx::GBPosition->new(1,3));
 
   $this->{abs}      = Wx::TextCtrl -> new($this, -1, 'Fe',  wxDefaultPosition, [60, -1]);
   $this->{scat}     = Wx::TextCtrl -> new($this, -1, 'O',   wxDefaultPosition, [60, -1]);
@@ -55,8 +55,8 @@ sub new {
   $gbs -> Add( $this->{abspt},    Wx::GBPosition->new(0,2));
   $gbs -> Add( $this->{scat},     Wx::GBPosition->new(0,4));
   $gbs -> Add( $this->{scatpt},   Wx::GBPosition->new(0,5));
-  $gbs -> Add( $this->{distance}, Wx::GBPosition->new(1,1));
-  $gbs -> Add( $this->{edge},     Wx::GBPosition->new(1,4));
+  $gbs -> Add( $this->{edge},     Wx::GBPosition->new(1,1));
+  $gbs -> Add( $this->{distance}, Wx::GBPosition->new(1,4));
 
   $this->{ok} = Wx::Button->new($this, wxID_OK, q{}, wxDefaultPosition, wxDefaultSize, 0, );
   $vbox -> Add($this->{ok}, 0, wxGROW|wxALL, 5);
