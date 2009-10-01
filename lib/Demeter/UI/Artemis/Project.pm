@@ -62,7 +62,7 @@ sub save_project {
     my $file = File::Spec->catfile($rframes->{$k}->{Feff}->{feffobject}->workspace, 'atoms.inp');
     $rframes->{$k}->{Atoms}->save_file($file);
   };
-  if (not $fname) {
+  if ((not $fname) or ($fname =~ m{\<untitled\>})) {
     my $fd = Wx::FileDialog->new( $rframes->{main}, "Save project file", cwd, q{artemis.fpj},
 				  "Demeter fitting project (*.fpj)|*.fpj|All files|*.*",
 				  wxFD_SAVE|wxFD_CHANGE_DIR|wxFD_OVERWRITE_PROMPT,
@@ -84,6 +84,8 @@ sub save_project {
   $Demeter::UI::Artemis::demeter->push_mru("artemis", $fname);
   &Demeter::UI::Artemis::set_mru;
   $rframes->{main}->{projectname} = basename($fname, '.fpj');
+  $rframes->{main}->{projectpath} = $fname;
+  $rframes->{main}->{statusbar}->SetStatusText("Saved project as ".$rframes->{main}->{projectpath});
   modified(0);
 };
 
@@ -122,26 +124,27 @@ sub read_project {
     my $yaml = File::Spec->catfile($projfolder, 'feff', $d, $d.'.yaml');
     my $feffobject = Demeter::Feff->new(yaml=>$yaml, group=>$d); # force group to be the same as before
 
-    ## import atoms.inp
-    my $atoms = File::Spec->catfile($projfolder, 'feff', $d, 'atoms.inp');
-    my ($fnum, $ifeff) = Demeter::UI::Artemis::make_feff_frame($rframes->{main}, $atoms, $feffobject->name, $feffobject);
+    if (not $feffobject->hidden) {
+      ## import atoms.inp
+      my $atoms = File::Spec->catfile($projfolder, 'feff', $d, 'atoms.inp');
+      my ($fnum, $ifeff) = Demeter::UI::Artemis::make_feff_frame($rframes->{main}, $atoms, $feffobject->name, $feffobject);
 
-    ## import feff.inp
-    my $feff = File::Spec->catfile($projfolder, 'feff', $d, $d.'.inp');
-    my $text = Demeter::UI::Artemis::slurp($feff);
-    $rframes->{$fnum}->{Feff}->{feff}->SetValue($text);
+      ## import feff.inp
+      my $feff = File::Spec->catfile($projfolder, 'feff', $d, $d.'.inp');
+      my $text = Demeter::UI::Artemis::slurp($feff);
+      $rframes->{$fnum}->{Feff}->{feff}->SetValue($text);
 
-    ## make Feff frame
-    $feffobject -> workspace(File::Spec->catfile($projfolder, 'feff', $d));
-    $feffs{$d} = $feffobject;
-    $rframes->{$fnum}->{Feff}->{feffobject} = $feffobject;
-    $rframes->{$fnum}->{Feff}->fill_intrp_page($feffobject);
-    $rframes->{$fnum}->{notebook}->ChangeSelection(2);
+      ## make Feff frame
+      $feffobject -> workspace(File::Spec->catfile($projfolder, 'feff', $d));
+      $feffs{$d} = $feffobject;
+      $rframes->{$fnum}->{Feff}->{feffobject} = $feffobject;
+      $rframes->{$fnum}->{Feff}->fill_intrp_page($feffobject);
+      $rframes->{$fnum}->{notebook}->ChangeSelection(2);
 
-    $rframes->{$fnum}->{Feff} ->{name}->SetValue($feffobject->name);
-    $rframes->{$fnum}->{Paths}->{name}->SetValue($feffobject->name);
-
-    $rframes->{$fnum}->{statusbar}->SetStatusText("Imported crystal and Feff data from ". basename($fname));
+      $rframes->{$fnum}->{Feff} ->{name}->SetValue($feffobject->name);
+      $rframes->{$fnum}->{Paths}->{name}->SetValue($feffobject->name);
+      $rframes->{$fnum}->{statusbar}->SetStatusText("Imported crystal and Feff data from ". basename($fname));
+    };
   };
 
   ## -------- import fit history from project file (currently only importing most recent)
@@ -214,6 +217,7 @@ sub read_project {
 
   $Demeter::UI::Artemis::demeter->push_mru("artemis", $fname);
   &Demeter::UI::Artemis::set_mru;
+  $rframes->{main}->{projectpath} = $fname;
   $rframes->{main}->{projectname} = basename($fname, '.fpj');
   modified(0);
 };

@@ -79,6 +79,7 @@ sub OnInit {
   $frames{main} -> SetIcon($icon);
   $frames{main} -> {currentfit} = q{};
   $frames{main} -> {projectname} = '<untitled>';
+  $frames{main} -> {projectpath} = q{};
   $frames{main} -> {modified} = 0;
 
   ## -------- Set up menubar
@@ -87,7 +88,8 @@ sub OnInit {
   my $mrumenu = Wx::Menu->new;
   $filemenu->Append(wxID_OPEN, "Open project", "Read from a project file" );
   $filemenu->AppendSubMenu($mrumenu, "Recent projects", "Open a submenu of recently used files" );
-  $filemenu->Append(wxID_SAVE, "Save project", "Save to a project file" );
+  $filemenu->Append(wxID_SAVE, "Save project", "Save project" );
+  $filemenu->Append(wxID_SAVEAS, "Save project as...", "Save to a new project file" );
   $filemenu->AppendSeparator;
   $filemenu->Append(wxID_CLOSE, "&Close" );
   $filemenu->Append(wxID_EXIT, "E&xit" );
@@ -571,6 +573,11 @@ sub OnMenuClick {
       last SWITCH;
     };
     ($id == wxID_SAVE) and do {
+      #my $fpj = File::Spec->catfile();
+      save_project(\%frames, $frames{main}->{projectname}.'.fpj');
+      last SWITCH;
+    };
+    ($id == wxID_SAVEAS) and do {
       save_project(\%frames);
       last SWITCH;
     };

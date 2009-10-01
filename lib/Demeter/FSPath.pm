@@ -25,6 +25,7 @@ use Demeter::StrTypes qw( Edge Empty ElementSymbol);
 use Carp;
 use Chemistry::Elements qw(get_symbol get_Z);
 use File::Spec;
+use List::MoreUtils qw(zip);
 use String::Random qw(random_string);
 
 
@@ -63,7 +64,14 @@ has 'distance'	   => (is => 'rw', isa =>  PosNum,  default => sub{ shift->co->de
 				    });
 has 'coordination' => (is => 'rw', isa =>  PosInt,  default => 6,);
 
-has 'workspace'    => (is => 'rw', isa => 'Str',    default => q{});
+has '+parent'      => (default => sub{ Demeter::Feff->new(name=>'qfs', screen=>0, hidden=>1) });
+has 'workspace'    => (is => 'rw', isa => 'Str',   default => q{},
+		      trigger => sub{ my $this = shift;
+				      $this->parent(Demeter::Feff->new(name=>'qfs', screen=>0)) if not $this->parent;
+				      $this->parent->workspace($this->workspace);
+				      $this->parent->make_workspace($this->workspace);
+				      $this->set_parent;
+				    });
 
 
 has 'fuzzy'	 => (is => 'rw', isa =>  PosNum,  default => 2.0);
@@ -101,6 +109,15 @@ sub BUILD {
   $self->mo->push_FSPath($self);
 };
 
+override 'all' => sub {
+  my ($self) = @_;
+  my @keys   = grep {$_ !~ m{\A(?:data|plot|plottable|is_mc|mode|parent|sp|gds)\z}} $self->get_params_of;
+  push @keys, qw(name group mark plottable);
+  my @values = map {$self->$_} @keys;
+  my %hash   = zip(@keys, @values);
+  return %hash;
+};
+
 override alldone => sub {
   my ($self) = @_;
   my $nnnn = File::Spec->catfile($self->folder, $self->randstring);
@@ -121,6 +138,8 @@ override make_name => sub {
 
 override set_parent_method => sub {
   my ($self, $feff) = @_;
+  $feff ||= $self->parent;
+  return if not $self->workspace;
   my $text = ($self->co->default("fspath","coordination") == 6)
     ? $self->template("feff", "firstshell6")
       : $self->template("feff", "firstshell4");
@@ -141,6 +160,7 @@ override path => sub {
   };
   #$self->guesses;
   if (not $self->feff_done) {
+    #$self->parent->screen(1);
     $self->parent->potph;
     $self->parent->pathfinder;
     $self->feff_done(1);
@@ -171,6 +191,12 @@ associated with this FSPath object:
 
 EOH
   ;
+};
+
+sub save_feff_yaml {
+  my ($self) = @_;
+  my $yaml = File::Spec->catfile($self->workspace, $self->parent->group . '.yaml');
+  $self->parent->serialize($yaml);
 };
 
 sub guesses {
