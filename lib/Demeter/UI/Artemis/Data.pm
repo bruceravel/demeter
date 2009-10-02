@@ -66,6 +66,7 @@ Readonly my $PATH_SHOW		=> Wx::NewId();
 Readonly my $PATH_ADD		=> Wx::NewId();
 Readonly my $PATH_CLONE		=> Wx::NewId();
 Readonly my $PATH_YAML		=> Wx::NewId();
+Readonly my $PATH_TYPE		=> Wx::NewId();
 Readonly my $PATH_HISTO		=> Wx::NewId();
 
 Readonly my $PATH_EXPORT_FEFF	=> Wx::NewId();
@@ -540,6 +541,7 @@ sub make_menubar {
   $self->{debugmenu}->AppendSeparator;
   $self->{debugmenu}->Append($DATA_YAML, "Show YAML for this data set",  "Show YAML for this data set",  wxITEM_NORMAL );
   $self->{debugmenu}->Append($PATH_YAML, "Show YAML for displayed path", "Show YAML for displayed path", wxITEM_NORMAL );
+  $self->{debugmenu}->Append($PATH_TYPE, "Show type of displayed path",  "Show type of displayed path (Path | FSPath | SSPath | MSPath | ThreeBody)", wxITEM_NORMAL );
 
 
   ## -------- marks menu
@@ -768,6 +770,13 @@ sub OnMenuClick {
       my ($abort, $rdata, $rpaths) = Demeter::UI::Artemis::uptodate(\%Demeter::UI::Artemis::frames);
       $pathobject->_update("fft");
       $datapage->show_text($pathobject->serialization, 'YAML of '.$pathobject->label);
+      last SWITCH;
+    };
+
+    ($id == $PATH_TYPE) and do {
+      my $type = ref($datapage->{pathlist}->GetPage($datapage->{pathlist}->GetSelection)->{path});
+      $type =~ s{Demeter::}{};
+      $datapage->{statusbar}->SetStatusText("This path is a $type");
       last SWITCH;
     };
 

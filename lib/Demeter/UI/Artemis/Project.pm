@@ -191,10 +191,12 @@ sub read_project {
     my $first = $rframes->{$dnum}->{pathlist}->GetPage(0);
     ($first->DeletePage(0)) if (ref($first) =~ m{Panel});
     foreach my $p (@{$fit->paths}) {
-      $p->set(folder=>$feffs{$p->parentgroup}->workspace, file=>q{}, update_path=>1);
+      my $feff = $feffs{$p->{parentgroup}} || $fit -> mo -> fetch('Feff', $p->{parentgroup});
+      $p->set(folder=>$feff->workspace, file=>q{}, update_path=>1);
       next if ($p->data ne $d);
-      $p->parent($feffs{$p->parentgroup});
-      $p->sp(find_sp($p, \%feffs));
+      $p->parent($feff);
+      my $this_sp = find_sp($p, \%feffs) || $fit->mo->fetch('ScatteringPath', $p->spgroup);
+      $p->sp($this_sp);
       my $page = Demeter::UI::Artemis::Path->new($rframes->{$dnum}->{pathlist}, $p, $rframes->{$dnum});
       my $n = $rframes->{$dnum}->{pathlist}->AddPage($page, $p->label, 1, 0);
       $page->include_label;

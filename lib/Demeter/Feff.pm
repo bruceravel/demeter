@@ -230,6 +230,7 @@ sub site_tag {
 
 sub rdinp {
   my ($self) = @_;
+  $self->clear;
   my $file = $self->file;
   my $mode = q{};
   open (my $INP, $file);

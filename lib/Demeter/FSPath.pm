@@ -25,7 +25,7 @@ use Demeter::StrTypes qw( Edge Empty ElementSymbol);
 use Carp;
 use Chemistry::Elements qw(get_symbol get_Z);
 use File::Spec;
-use List::MoreUtils qw(zip);
+use List::MoreUtils qw(uniq zip);
 use String::Random qw(random_string);
 
 
@@ -111,8 +111,9 @@ sub BUILD {
 
 override 'all' => sub {
   my ($self) = @_;
-  my @keys   = grep {$_ !~ m{\A(?:data|plot|plottable|is_mc|mode|parent|sp|gds)\z}} $self->get_params_of;
+  my @keys   = map {$_->name} grep {$_->name !~ m{\A(?:data|plot|plottable|is_mc|mode|parent|sp|gds)\z}} $self->meta->get_all_attributes;
   push @keys, qw(name group mark plottable);
+  #print join($/, @keys), $/;
   my @values = map {$self->$_} @keys;
   my %hash   = zip(@keys, @values);
   return %hash;
@@ -139,6 +140,8 @@ override make_name => sub {
 override set_parent_method => sub {
   my ($self, $feff) = @_;
   $feff ||= $self->parent;
+  return if not $feff;
+  $self->parentgroup($feff->group);
   return if not $self->workspace;
   my $text = ($self->co->default("fspath","coordination") == 6)
     ? $self->template("feff", "firstshell6")

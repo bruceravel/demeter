@@ -1231,14 +1231,23 @@ override 'deserialize' => sub {
   $yaml = ($args{file}) ? $zip->contents("paths.yaml")
     : $self->slurp(File::Spec->catfile($args{folder}, "paths.yaml"));
   @list = YAML::Load($yaml);
-  foreach (@list) {
-    my $dg = $_->{datagroup};
-    $_->{data} = $datae{$dg};
-    my @array = %{ $_ };
+  foreach my $plotlike (@list) {
+    my $dg = $plotlike->{datagroup};
+    $plotlike->{data} = $datae{$dg};
+    if (exists $plotlike->{absorber}) { # this is an FSPath
+      delete $plotlike->{$_} foreach qw(workspace Type weight string pathtype plottable);
+    };
+    my @array = %{ $plotlike };
     my $this;
-    if (exists $_->{ipot}) {
+    if (exists $plotlike->{ipot}) {
       $this = Demeter::SSPath->new(@array);
       $this -> sp($this);
+    } elsif (exists $plotlike->{absorber}) {
+      my $feff = $parents{$plotlike->{parentgroup}} || $data[0] -> mo -> fetch('Feff', $plotlike->{parentgroup});
+      $this = Demeter::FSPath->new(workspace=>$feff->workspace);
+      $this -> set(@array);
+      my $sp = $sps{$this->spgroup} || $data[0] -> mo -> fetch('Feff', $this->spgroup);
+      $this -> sp($sp);
     } else {
       $this = Demeter::Path->new(@array);
       $this -> sp($sps{$this->spgroup});
