@@ -430,11 +430,6 @@ sub fit {
     print $ORDER $string;
     close $ORDER;
 
-    $fit->po->start_plot;
-    $rframes->{Plot}->{limits}->{fit}->SetValue(1);
-    $fit->po->plot_fit(1);
-    $data[0]->plot('Rmr');
-
     $rframes->{GDS}->fill_results(@gds);
     $rframes->{Log}->put_log($fit->logtext, $fit->color);
     $rframes->{Log}->SetTitle("Artemis [Log] " . $rframes->{main}->{name}->GetValue);
@@ -454,6 +449,17 @@ sub fit {
       };
     };
     set_happiness_color($fit->color);
+
+    $fit->po->start_plot;
+    $rframes->{Plot}->{limits}->{fit}->SetValue(1);
+    $fit->po->plot_fit(1);
+    my $how = $fit->co->default("artemis", "plot_after_fit");
+    if ($how =~ m{\A(?:rmr|r123|k123|kq)\z}) {
+      $data[0]->plot($how);
+    } elsif ($how =~ m{\A[krq]\z}) {
+      $rframes->{Plot}->plot(q{}, $how);
+    };
+
     $rframes->{main}->{statusbar}->SetStatusText("Your fit is finished!");
   } else {
     $rframes->{Log}->{text}->SetValue($fit->troubletext);

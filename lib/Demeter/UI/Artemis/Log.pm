@@ -81,7 +81,7 @@ sub put_log {
     my $is = $self -> {text} -> GetInsertionPoint;
 
     my $color = ($line =~ m{(?:parameters|variables):})                     ? 'parameters'
-              : ($line =~ m{(?:Happiness|semantic|NEVER|gives a penalty)})  ? 'happiness'
+              : ($line =~ m{(?:Happiness|semantic|NEVER|a penalty of)})     ? 'happiness'
               : ($line =~ m{\A(?:R-factor|Reduced)})                        ? 'stats'
               : ($line =~ m{\A(?:=+\s+Data set)})                           ? 'data'
               : ($line =~ m{\A (?:Name|Description|Figure|Time|Environment|Interface|Prepared|Contact)}) ? 'header'

@@ -67,9 +67,9 @@ sub new {
     $this->{$b} -> SetBackgroundColour(Wx::Colour->new($Demeter::UI::Artemis::demeter->co->default("happiness", "average_color")));
     $this->{$b} -> SetFont(Wx::Font->new( 10, wxDEFAULT, wxNORMAL, wxBOLD, 0, "" ) );
   };
-  EVT_BUTTON($this, $this->{k_button}, sub{plot(@_, 'k')});
-  EVT_BUTTON($this, $this->{r_button}, sub{plot(@_, 'r')});
-  EVT_BUTTON($this, $this->{q_button}, sub{plot(@_, 'q')});
+  EVT_BUTTON($this, $this->{k_button},   sub{plot(@_, 'k')});
+  EVT_BUTTON($this, $this->{r_button},   sub{plot(@_, 'r')});
+  EVT_BUTTON($this, $this->{'q_button'}, sub{plot(@_, 'q')});
 
   $this->mouseover("k_button", "Plot the contents of the plotting list in k-space.");
   $this->mouseover("r_button", "Plot the contents of the plotting list in R-space.");

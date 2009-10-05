@@ -42,9 +42,28 @@ section=artemis
 section_description
   These variables determine the behavior of Artemis.
 
-variable=plotwith
-type=list
-options=pgplot gnuplot
-default=pgplot
+# variable=plotwith
+# type=list
+# options=pgplot gnuplot
+# default=pgplot
+# description
+#   This tells Artemis which plotting backend to use (not in use..)
+
+variable=debug_menus
+type=boolean
+onvalue=1
+offvalue=0
+default=false
 description
-  This tells Artemis which plotting backend to use (not in use..)
+  If true, display debugging menus in Artemis frames.
+
+variable=plot_after_fit
+type=list
+default=rmr
+options=rmr r123 k123 kq  k r q none
+description
+  This tells Artemis which kind of plot to make when a fit finishes.
+  The default is to plot each data marked for plotting after the fit
+  as Rmr.  The k, r, and q options will use the contents of the
+  plotting list.  The none options means not to make a plot after the
+  fit finishes.

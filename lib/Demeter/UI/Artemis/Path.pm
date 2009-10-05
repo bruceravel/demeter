@@ -341,7 +341,7 @@ sub OnLabelMenu {
 sub include_label {
   my ($self, $event, $n) = @_;
   my $which = $n || $self->{datapage}->{pathlist}->{LIST}->GetSelection; # this fails for the first item in the list!!!
-  my $check_state = $self->marked; #{datapage}->{pathlist}->{LIST}->IsChecked($which);
+  my $check_state = $self->{datapage}->{pathlist}->{LIST}->IsChecked($which);
   my $inc   = $self->{include}->IsChecked;
   $self->{path}->include($inc);
 

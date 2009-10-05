@@ -83,11 +83,21 @@ Readonly my $MARK_NONE		=> Wx::NewId();
 Readonly my $MARK_INVERT	=> Wx::NewId();
 Readonly my $MARK_REGEXP	=> Wx::NewId();
 Readonly my $MARK_SS		=> Wx::NewId();
+Readonly my $MARK_MS		=> Wx::NewId();
 Readonly my $MARK_HIGH		=> Wx::NewId();
-Readonly my $MARK_R		=> Wx::NewId();
+Readonly my $MARK_LOW		=> Wx::NewId();
+Readonly my $MARK_RBELOW	=> Wx::NewId();
+Readonly my $MARK_RABOVE	=> Wx::NewId();
 Readonly my $MARK_BEFORE	=> Wx::NewId();
+Readonly my $MARK_AFTER  	=> Wx::NewId();
 Readonly my $MARK_INC		=> Wx::NewId();
 Readonly my $MARK_EXC		=> Wx::NewId();
+
+Readonly my $ACTION_INCLUDE     => Wx::NewId();
+Readonly my $ACTION_EXCLUDE     => Wx::NewId();
+Readonly my $ACTION_DISCARD     => Wx::NewId();
+Readonly my $ACTION_VPATH       => Wx::NewId();
+Readonly my $ACTION_TRANSFER    => Wx::NewId();
 
 Readonly my $INCLUDE_ALL	=> Wx::NewId();
 Readonly my $EXCLUDE_ALL	=> Wx::NewId();
@@ -95,9 +105,9 @@ Readonly my $INCLUDE_INVERT	=> Wx::NewId();
 Readonly my $INCLUDE_MARKED	=> Wx::NewId();
 Readonly my $EXCLUDE_MARKED	=> Wx::NewId();
 Readonly my $EXCLUDE_AFTER	=> Wx::NewId();
-Readonly my $INCLUDE_SS		=> Wx::NewId();
+Readonly my $INCLUDE_SS     	=> Wx::NewId();
 Readonly my $INCLUDE_HIGH	=> Wx::NewId();
-Readonly my $INCLUDE_R		=> Wx::NewId();
+Readonly my $INCLUDE_R  	=> Wx::NewId();
 
 Readonly my $DISCARD_THIS	=> Wx::NewId();
 Readonly my $DISCARD_ALL	=> Wx::NewId();
@@ -105,9 +115,9 @@ Readonly my $DISCARD_MARKED	=> Wx::NewId();
 Readonly my $DISCARD_UNMARKED	=> Wx::NewId();
 Readonly my $DISCARD_EXCLUDED	=> Wx::NewId();
 Readonly my $DISCARD_AFTER	=> Wx::NewId();
-Readonly my $DISCARD_MS		=> Wx::NewId();
+Readonly my $DISCARD_MS	        => Wx::NewId();
 Readonly my $DISCARD_LOW	=> Wx::NewId();
-Readonly my $DISCARD_R		=> Wx::NewId();
+Readonly my $DISCARD_R  	=> Wx::NewId();
 
 
 sub new {
@@ -490,10 +500,11 @@ sub make_menubar {
   $self->{datamenu}  = Wx::Menu->new;
   $self->{datamenu}->Append($DATA_RENAME,      "Rename this χ(k)",         "Rename this data set",  wxITEM_NORMAL );
   $self->{datamenu}->Append($DATA_REPLACE,     "Replace this χ(k)",        "Replace this data set",  wxITEM_NORMAL );
-  $self->{datamenu}->AppendSeparator;
   $self->{datamenu}->Append($DATA_DIFF,        "Make difference spectrum", "Make a difference spectrum using the marked paths", wxITEM_NORMAL );
-  $self->{datamenu}->Append($DATA_TRANSFER,    "Transfer marked paths",    "Transfer marked paths to the plotting list", wxITEM_NORMAL );
-  $self->{datamenu}->Append($DATA_VPATH,       "Make VPath",               "Make a virtual path from the set of marked paths", wxITEM_NORMAL );
+  #$self->{datamenu}->Append($DATA_TRANSFER,    "Transfer marked paths",    "Transfer marked paths to the plotting list", wxITEM_NORMAL );
+  #$self->{datamenu}->Append($DATA_VPATH,       "Make VPath",               "Make a virtual path from the set of marked paths", wxITEM_NORMAL );
+  $self->{datamenu}->AppendSeparator;
+  $self->{datamenu}->Append($PATH_FSPATH,      "Quick first shell model", "Generate a quick first shell fitting model", wxITEM_NORMAL );
   $self->{datamenu}->AppendSeparator;
   $self->{datamenu}->Append($DATA_BALANCE,     "Balance interstitial energies", "Adjust E0 for every path so that the interstitial energies for each Feff calculation are balanced",  wxITEM_NORMAL );
   $self->{datamenu}->Append($DATA_DEGEN_N,     "Set all degens to Feff",   "Set degeneracies for all paths in this data set to values from Feff",  wxITEM_NORMAL );
@@ -523,10 +534,10 @@ sub make_menubar {
   $save_menu->Append($PATH_SAVE_Q, "χ(q)", "Save the currently displayed path as χ(q) with all path parameters evaluated", wxITEM_NORMAL);
 
   $self->{pathsmenu} = Wx::Menu->new;
-  $self->{pathsmenu}->Append($PATH_FSPATH, "Quick first shell model", "Generate a quick first shell fitting model", wxITEM_NORMAL );
-  $self->{pathsmenu}->AppendSeparator;
   $self->{pathsmenu}->Append($PATH_RENAME, "Rename path",            "Rename the path currently on display", wxITEM_NORMAL );
-  $self->{pathsmenu}->Append($PATH_SHOW,   "Show path",              "Evaluate and show the path parameters for the currently display path", wxITEM_NORMAL );
+  $self->{pathsmenu}->Append($PATH_SHOW,   "Show path",              "Evaluate and show the path parameters for the path currently on display", wxITEM_NORMAL );
+  $self->{pathsmenu}->AppendSeparator;
+  $self->{pathsmenu}->Append($DISCARD_THIS, "Discard this path",     "Discard the path currently on display", wxITEM_NORMAL );
   $self->{pathsmenu}->AppendSeparator;
   $self->{pathsmenu}->Append($PATH_ADD,    "Add path parameter",     "Add path parameter to many paths", wxITEM_NORMAL );
   $self->{pathsmenu}->AppendSubMenu($export_menu, "Export all path parameters to");
@@ -541,7 +552,7 @@ sub make_menubar {
   $self->{debugmenu}->AppendSeparator;
   $self->{debugmenu}->Append($DATA_YAML, "Show YAML for this data set",  "Show YAML for this data set",  wxITEM_NORMAL );
   $self->{debugmenu}->Append($PATH_YAML, "Show YAML for displayed path", "Show YAML for displayed path", wxITEM_NORMAL );
-  $self->{debugmenu}->Append($PATH_TYPE, "Show type of displayed path",  "Show type of displayed path (Path | FSPath | SSPath | MSPath | ThreeBody)", wxITEM_NORMAL );
+  $self->{debugmenu}->Append($PATH_TYPE, "Identify displayed path",      "Show the object type of the displayed path (Path | FSPath | SSPath | MSPath | ThreeBody)", wxITEM_NORMAL );
 
 
   ## -------- marks menu
@@ -555,48 +566,65 @@ sub make_menubar {
   $self->{markmenu}->Append($MARK_EXC,    "Mark excluded", "Mark all paths excluded from the fit", wxITEM_NORMAL );
   $self->{markmenu}->AppendSeparator;
   $self->{markmenu}->Append($MARK_BEFORE, "Mark before current",   "Mark this path and all paths above it in the path list for this χ(k)", wxITEM_NORMAL );
+  $self->{markmenu}->Append($MARK_AFTER,  "Mark after current",    "Mark all paths after this one in the path list for this χ(k)", wxITEM_NORMAL );
+  $self->{markmenu}->AppendSeparator;
   $self->{markmenu}->Append($MARK_SS,     "Mark SS paths",         "Mark all single scattering paths for this χ(k)", wxITEM_NORMAL );
+  $self->{markmenu}->Append($MARK_MS,     "Mark MS paths",         "Mark all multiple scattering paths for this χ(k)", wxITEM_NORMAL );
+  $self->{markmenu}->AppendSeparator;
   $self->{markmenu}->Append($MARK_HIGH,   "Mark high importance",  "Mark all high importance paths for this χ(k)", wxITEM_NORMAL );
-  $self->{markmenu}->Append($MARK_R,      "Mark all paths < R",    "Mark all paths shorter than a specified path length for this χ(k)", wxITEM_NORMAL );
+  $self->{markmenu}->Append($MARK_LOW,    "Mark low importance",   "Mark all low importance paths for this χ(k)", wxITEM_NORMAL );
+  $self->{markmenu}->AppendSeparator;
+  $self->{markmenu}->Append($MARK_RBELOW, "Mark all paths < R",    "Mark all paths shorter than a specified path length for this χ(k)", wxITEM_NORMAL );
+  $self->{markmenu}->Append($MARK_RABOVE, "Mark all paths > R",    "Mark all paths longer than a specified path length for this χ(k)", wxITEM_NORMAL );
 
-  ## -------- include menu
-  $self->{includemenu}  = Wx::Menu->new;
-  $self->{includemenu}->Append($INCLUDE_ALL,    "Include all", "Include all paths in the fit",                     wxITEM_NORMAL );
-  $self->{includemenu}->Append($EXCLUDE_ALL,    "Exclude all", "Exclude all paths from the fit",                   wxITEM_NORMAL );
-  $self->{includemenu}->Append($INCLUDE_INVERT, "Invert all",  "Invert whether all paths are included in the fit", wxITEM_NORMAL );
-  $self->{includemenu}->AppendSeparator;
-  $self->{includemenu}->Append($INCLUDE_MARKED, "Include marked", "Include all marked paths in the fit",   wxITEM_NORMAL );
-  $self->{includemenu}->Append($EXCLUDE_MARKED, "Exclude marked", "Exclude all marked paths from the fit", wxITEM_NORMAL );
-  $self->{includemenu}->AppendSeparator;
-  $self->{includemenu}->Append($EXCLUDE_AFTER,  "Exclude after current",   "Exclude all paths after the current from the fit", wxITEM_NORMAL );
-  $self->{includemenu}->Append($INCLUDE_SS,     "Include all SS paths",    "Include all single scattering paths in the fit", wxITEM_NORMAL );
-  $self->{includemenu}->Append($INCLUDE_HIGH,   "Include high importance", "Include all high importance paths in the fit", wxITEM_NORMAL );
-  $self->{includemenu}->Append($INCLUDE_R,      "Include all paths < R",   "Include all paths shorter than a specified length in the fit", wxITEM_NORMAL );
+#   ## -------- include menu
+#   $self->{includemenu}  = Wx::Menu->new;
+#   $self->{includemenu}->Append($INCLUDE_ALL,    "Include all", "Include all paths in the fit",                     wxITEM_NORMAL );
+#   $self->{includemenu}->Append($EXCLUDE_ALL,    "Exclude all", "Exclude all paths from the fit",                   wxITEM_NORMAL );
+#   $self->{includemenu}->Append($INCLUDE_INVERT, "Invert all",  "Invert whether all paths are included in the fit", wxITEM_NORMAL );
+#   $self->{includemenu}->AppendSeparator;
+#   $self->{includemenu}->Append($INCLUDE_MARKED, "Include marked", "Include all marked paths in the fit",   wxITEM_NORMAL );
+#   $self->{includemenu}->Append($EXCLUDE_MARKED, "Exclude marked", "Exclude all marked paths from the fit", wxITEM_NORMAL );
+#   $self->{includemenu}->AppendSeparator;
+#   $self->{includemenu}->Append($EXCLUDE_AFTER,  "Exclude after current",   "Exclude all paths after the current from the fit", wxITEM_NORMAL );
+#   $self->{includemenu}->Append($INCLUDE_SS,     "Include all SS paths",    "Include all single scattering paths in the fit", wxITEM_NORMAL );
+#   $self->{includemenu}->Append($INCLUDE_HIGH,   "Include high importance", "Include all high importance paths in the fit", wxITEM_NORMAL );
+#   $self->{includemenu}->Append($INCLUDE_R,      "Include all paths < R",   "Include all paths shorter than a specified length in the fit", wxITEM_NORMAL );
 
-  ## -------- discard menu
-  $self->{discardmenu}  = Wx::Menu->new;
-  $self->{discardmenu}->Append($DISCARD_THIS,     "Discard this path", "Discard the currently displayed path", wxITEM_NORMAL );
-  $self->{discardmenu}->AppendSeparator;
-  $self->{discardmenu}->Append($DISCARD_ALL,      "Discard all",      "Discard all paths",          wxITEM_NORMAL );
-  $self->{discardmenu}->Append($DISCARD_MARKED,   "Discard marked",   "Discard all marked paths",   wxITEM_NORMAL );
-  $self->{discardmenu}->Append($DISCARD_UNMARKED, "Discard unmarked", "Discard all UNmarked paths", wxITEM_NORMAL );
-  $self->{discardmenu}->Append($DISCARD_EXCLUDED, "Discard excluded", "Discard all excluded paths", wxITEM_NORMAL );
-  $self->{discardmenu}->AppendSeparator;
-  $self->{discardmenu}->Append($DISCARD_AFTER,  "Discard after current",  "Discard all paths after the current from the fit", wxITEM_NORMAL );
-  $self->{discardmenu}->Append($DISCARD_MS,     "Discard all MS paths",   "Discard all multiple scattering paths in the fit", wxITEM_NORMAL );
-  $self->{discardmenu}->Append($DISCARD_LOW,    "Discard low importance", "Discard all low importance paths in the fit", wxITEM_NORMAL );
-  $self->{discardmenu}->Append($DISCARD_R,      "Discard all paths > R",  "Discard all paths shorter than a specified length in the fit", wxITEM_NORMAL );
+#   ## -------- discard menu
+#   $self->{discardmenu}  = Wx::Menu->new;
+#   $self->{discardmenu}->Append($DISCARD_THIS,     "Discard this path", "Discard the currently displayed path", wxITEM_NORMAL );
+#   $self->{discardmenu}->AppendSeparator;
+#   $self->{discardmenu}->Append($DISCARD_ALL,      "Discard all",      "Discard all paths",          wxITEM_NORMAL );
+#   $self->{discardmenu}->Append($DISCARD_MARKED,   "Discard marked",   "Discard all marked paths",   wxITEM_NORMAL );
+#   $self->{discardmenu}->Append($DISCARD_UNMARKED, "Discard unmarked", "Discard all UNmarked paths", wxITEM_NORMAL );
+#   $self->{discardmenu}->Append($DISCARD_EXCLUDED, "Discard excluded", "Discard all excluded paths", wxITEM_NORMAL );
+#   $self->{discardmenu}->AppendSeparator;
+#   $self->{discardmenu}->Append($DISCARD_AFTER,  "Discard after current",  "Discard all paths after the current from the fit", wxITEM_NORMAL );
+#   $self->{discardmenu}->Append($DISCARD_MS,     "Discard all MS paths",   "Discard all multiple scattering paths in the fit", wxITEM_NORMAL );
+#   $self->{discardmenu}->Append($DISCARD_LOW,    "Discard low importance", "Discard all low importance paths in the fit", wxITEM_NORMAL );
+#   $self->{discardmenu}->Append($DISCARD_R,      "Discard all paths > R",  "Discard all paths shorter than a specified length in the fit", wxITEM_NORMAL );
 
+   ## -------- actions menu
+  $self->{actionsmenu} = Wx::Menu->new;
+  $self->{actionsmenu}->Append($ACTION_VPATH,     "Make VPath from marked",  "Make a virtual path from all marked paths", wxITEM_NORMAL );
+  $self->{actionsmenu}->Append($ACTION_TRANSFER,  "Transfer marked",  "Transfer all marked paths to the plotting list",   wxITEM_NORMAL );
+  $self->{actionsmenu}->AppendSeparator;
+  $self->{actionsmenu}->Append($ACTION_INCLUDE,   "Include marked",   "Include all marked paths in the fit",   wxITEM_NORMAL );
+  $self->{actionsmenu}->Append($ACTION_EXCLUDE,   "Exclude marked",   "Exclude all marked paths from the fit", wxITEM_NORMAL );
+  $self->{actionsmenu}->AppendSeparator;
+  $self->{actionsmenu}->Append($ACTION_DISCARD,   "Discard marked",   "Discard all marked paths",              wxITEM_NORMAL );
 
   $self->{menubar}->Append( $self->{datamenu},    "Da&ta" );
   $self->{menubar}->Append( $self->{pathsmenu},   "&Path" );
   $self->{menubar}->Append( $self->{markmenu},    "M&arks" );
-  $self->{menubar}->Append( $self->{includemenu}, "&Include" );
-  $self->{menubar}->Append( $self->{discardmenu}, "Dis&card" );
-  $self->{menubar}->Append( $self->{debugmenu},   "Debu&g" );
+  $self->{menubar}->Append( $self->{actionsmenu}, "Actions" );
+  #$self->{menubar}->Append( $self->{includemenu}, "&Include" );
+  #$self->{menubar}->Append( $self->{discardmenu}, "Dis&card" );
+  $self->{menubar}->Append( $self->{debugmenu},   "Debu&g" ) if ($demeter->co->default("artemis", "debug_menus"));
 
   map { $self->{datamenu} ->Enable($_,0) } ($DATA_DIFF, $DATA_REPLACE, $DATA_BALANCE);
-#  map { $self->{summenu}  ->Enable($_,0) } ($SUM_MARKED, $SUM_INCLUDED, $SUM_IM);
+  #map { $self->{summenu}  ->Enable($_,0) } ($SUM_MARKED, $SUM_INCLUDED, $SUM_IM);
   map { $self->{pathsmenu}->Enable($_,0) } ($PATH_CLONE);
 
 };
@@ -807,25 +835,55 @@ sub OnMenuClick {
       last SWITCH;
     };
 
-    (($id == $MARK_ALL) or ($id == $MARK_NONE) or ($id == $MARK_INVERT) or ($id == $MARK_REGEXP) or
-     ($id == $MARK_SS)  or ($id == $MARK_HIGH) or ($id == $MARK_R)      or ($id == $MARK_BEFORE) or
-     ($id == $MARK_INC) or ($id == $MARK_EXC)) and do {
+    (($id == $MARK_ALL)    or ($id == $MARK_NONE)   or ($id == $MARK_INVERT) or ($id == $MARK_REGEXP) or
+     ($id == $MARK_SS)     or ($id == $MARK_MS)     or ($id == $MARK_HIGH)   or ($id == $MARK_LOW)    or
+     ($id == $MARK_RBELOW) or ($id == $MARK_RABOVE) or ($id == $MARK_BEFORE) or ($id == $MARK_AFTER)  or
+     ($id == $MARK_INC)    or ($id == $MARK_EXC)) and do {
       $datapage->mark($id);
       last SWITCH;
     };
 
-    (($id == $INCLUDE_ALL)    or ($id == $EXCLUDE_ALL)    or ($id == $INCLUDE_INVERT) or
-     ($id == $INCLUDE_MARKED) or ($id == $EXCLUDE_MARKED) or ($id == $EXCLUDE_AFTER) or
-     ($id == $INCLUDE_SS)     or ($id == $INCLUDE_HIGH)   or ($id == $INCLUDE_R)) and do {
-       $datapage->include($id);
-       last SWITCH;
+    #(($id == $INCLUDE_ALL)    or ($id == $EXCLUDE_ALL)    or ($id == $INCLUDE_INVERT) or
+    # ($id == $INCLUDE_MARKED) or ($id == $EXCLUDE_MARKED) or ($id == $EXCLUDE_AFTER) or
+    # ($id == $INCLUDE_SS)     or ($id == $INCLUDE_HIGH)   or ($id == $INCLUDE_R)) and do {
+    #   $datapage->include($id);
+    #   last SWITCH;
+    #};
+
+    #(($id == $DISCARD_THIS)     or ($id == $DISCARD_ALL)      or ($id == $DISCARD_MARKED) or
+    # ($id == $DISCARD_UNMARKED) or ($id == $DISCARD_EXCLUDED) or ($id == $DISCARD_AFTER)  or
+    # ($id == $DISCARD_MS)       or ($id == $DISCARD_LOW  )    or ($id == $DISCARD_R)        ) and do {
+    #   $datapage->discard($id);
+    #   last SWITCH;
+    #};
+
+    ($id == $ACTION_TRANSFER) and do {
+      $datapage->OnTransferButton;
+      last SWITCH;
     };
 
-    (($id == $DISCARD_THIS)     or ($id == $DISCARD_ALL)      or ($id == $DISCARD_MARKED) or
-     ($id == $DISCARD_UNMARKED) or ($id == $DISCARD_EXCLUDED) or ($id == $DISCARD_AFTER)  or
-     ($id == $DISCARD_MS)       or ($id == $DISCARD_LOW  )    or ($id == $DISCARD_R)        ) and do {
-       $datapage->discard($id);
-       last SWITCH;
+    ($id == $ACTION_VPATH) and do {
+      $datapage->OnMakeVPathButton;
+      last SWITCH;
+    };
+
+    ($id == $ACTION_INCLUDE) and do {
+      $datapage->include('marked');
+      last SWITCH;
+    };
+
+    ($id == $ACTION_EXCLUDE) and do {
+      $datapage->include('marked_none');
+      last SWITCH;
+    };
+
+    ($id == $DISCARD_THIS) and do {
+      $datapage->discard('this');
+      last SWITCH;
+    };
+    ($id == $ACTION_DISCARD) and do {
+      $datapage->discard('marked');
+      last SWITCH;
     };
 
     ($id == $PATH_HISTO) and do {
@@ -962,14 +1020,19 @@ sub export_pp {
 
 sub mark {
   my ($self, $mode) = @_;
-  my $how = ($mode == $MARK_ALL)    ? 'all'
+  my $how = ($mode !~ m{$NUMBER})   ? $mode
+          : ($mode == $MARK_ALL)    ? 'all'
           : ($mode == $MARK_NONE)   ? 'none'
           : ($mode == $MARK_INVERT) ? 'invert'
           : ($mode == $MARK_REGEXP) ? 'regexp'
           : ($mode == $MARK_SS)     ? 'ss'
+          : ($mode == $MARK_MS)     ? 'ms'
           : ($mode == $MARK_HIGH)   ? 'high'
-          : ($mode == $MARK_R)      ? 'r'
+          : ($mode == $MARK_LOW)    ? 'low'
+          : ($mode == $MARK_RBELOW) ? 'shorter'
+          : ($mode == $MARK_RABOVE) ? 'longer'
           : ($mode == $MARK_BEFORE) ? 'before'
+          : ($mode == $MARK_AFTER)  ? 'after'
           : ($mode == $MARK_INC)    ? 'included'
           : ($mode == $MARK_EXC)    ? 'excluded'
           :                            $mode;
@@ -1020,6 +1083,14 @@ sub mark {
       $self->{statusbar}->SetStatusText("Marked all single scattering paths.");
       last SWITCH;
     };
+    ($how eq 'ms') and do {
+      foreach my $i (0 .. $self->{pathlist}->GetPageCount-1) {
+	my $path = $self->{pathlist}->GetPage($i)->{path};
+	$self->{pathlist}->Check($i, 1) if ($path->sp->nleg > 2);
+      };
+      $self->{statusbar}->SetStatusText("Marked all multiple scattering paths.");
+      last SWITCH;
+    };
     ($how eq 'high') and do {
       foreach my $i (0 .. $self->{pathlist}->GetPageCount-1) {
 	my $path = $self->{pathlist}->GetPage($i)->{path};
@@ -1028,8 +1099,16 @@ sub mark {
       $self->{statusbar}->SetStatusText("Marked all high importance paths.");
       last SWITCH;
     };
-    ($how eq 'r') and do {
-      my $ted = Wx::TextEntryDialog->new( $self, "Mark paths shorter than this path length:", "Enter a path length", q{}, wxOK|wxCANCEL, Wx::GetMousePosition);
+    ($how eq 'low') and do {
+      foreach my $i (0 .. $self->{pathlist}->GetPageCount-1) {
+	my $path = $self->{pathlist}->GetPage($i)->{path};
+	$self->{pathlist}->Check($i, 1) if ($path->sp->weight==0);
+      };
+      $self->{statusbar}->SetStatusText("Marked all low importance paths.");
+      last SWITCH;
+    };
+    (($how eq 'longer') or ($how eq 'shorter')) and do {
+      my $ted = Wx::TextEntryDialog->new( $self, "Mark paths $how than this path length:", "Enter a path length", q{}, wxOK|wxCANCEL, Wx::GetMousePosition);
       if ($ted->ShowModal == wxID_CANCEL) {
 	$self->{statusbar}->SetStatusText("Path marking cancelled.");
 	return;
@@ -1041,9 +1120,10 @@ sub mark {
       };
       foreach my $i (0 .. $self->{pathlist}->GetPageCount-1) {
 	my $path = $self->{pathlist}->GetPage($i)->{path};
-	$self->{pathlist}->Check($i, 1) if ($path->sp->fuzzy<$r);
+	$self->{pathlist}->Check($i, 1) if (($how eq 'shorter') and ($path->sp->fuzzy < $r));
+	$self->{pathlist}->Check($i, 1) if (($how eq 'longer')  and ($path->sp->fuzzy > $r));
       };
-      $self->{statusbar}->SetStatusText("Marked all paths shorter than $r " . chr(197) . '.');
+      $self->{statusbar}->SetStatusText("Marked all paths $how than $r " . chr(197) . '.');
       last SWITCH;
     };
 
@@ -1054,6 +1134,15 @@ sub mark {
 	$self->{pathlist}->Check($i, 1);
       };
       $self->{statusbar}->SetStatusText("Marked this path and all paths before this one.");
+      last SWITCH;
+    };
+    ($how eq 'after') and do {
+      my $sel = $self->{pathlist}->GetSelection;
+      foreach my $i (0 .. $self->{pathlist}->GetPageCount-1) {
+	next if ($i <= $sel);
+	$self->{pathlist}->Check($i, 1);
+      };
+      $self->{statusbar}->SetStatusText("Marked all paths after this one.");
       last SWITCH;
     };
 
@@ -1079,7 +1168,8 @@ sub mark {
 
 sub include {
   my ($self, $mode) = @_;
-  my $how = ($mode == $INCLUDE_ALL)    ? 'all'
+  my $how = ($mode !~ m{$NUMBER})      ? $mode
+          : ($mode == $INCLUDE_ALL)    ? 'all'
           : ($mode == $EXCLUDE_ALL)    ? 'none'
           : ($mode == $INCLUDE_INVERT) ? 'invert'
           : ($mode == $INCLUDE_MARKED) ? 'marked'
