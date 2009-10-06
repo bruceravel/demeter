@@ -16,6 +16,7 @@
 =cut
 
 use Cwd;
+use File::Basename;
 use Getopt::Long;
 use Term::ReadLine;
 my $term   = new Term::ReadLine 'demeter';
@@ -47,6 +48,7 @@ print '===> ', Cwd::abs_path($file), $/ x 2,
 my $stack = 0;
 if (lc($plot) =~ m{[endkrq]}) {
   my @data = (@groups) ? $prj->records(@groups) : $prj -> slurp;
+  $data[0] -> po -> title(basename($file, '.prj'));
   $data[0] -> po -> e_markers(0);
   $data[0] -> po -> e_norm(0)    if (lc($plot) eq 'e');
   $data[0] -> po -> e_norm(1)    if (lc($plot) eq 'n');

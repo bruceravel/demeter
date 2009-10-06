@@ -121,8 +121,15 @@ override 'all' => sub {
 
 override alldone => sub {
   my ($self) = @_;
+  $self->data(q{});
   my $nnnn = File::Spec->catfile($self->folder, $self->randstring);
   unlink $nnnn if (-e $nnnn);
+  #print join(" ", caller(2)), $/;
+  #print "demolishing parent and gdss\n";
+  $self->parent->DEMOLISH if $self->parent;
+  foreach my $g (@{$self->gds}) {
+    $g->DEMOLISH;
+  };
   $self->remove;
   return $self;
 };

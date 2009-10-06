@@ -48,7 +48,7 @@ sub make_data {
   };
 
   delete $args{$_} foreach (qw(ln energy numerator denominator));
-  my $this = Demeter::Data->new(%args, datatype=>'xmu', energy=>$energy_string);
+  my $this = Demeter::Data->new(%args, datatype=>'xmu', energy=>$energy_string, file=>$self->file);
 
   ## resolve column tokens
   my $group = $self->group;

@@ -52,13 +52,13 @@ sub new {
   $self->{LIST} = Wx::CheckListBox->new($self, -1, wxDefaultPosition, Wx::Size->new(int($w/4),$h), [ ], wxLB_SINGLE);
   $self->{LIST} -> SetFont( Wx::Font->new( 8, wxDEFAULT, wxNORMAL, wxNORMAL, 0, "" ) );
   $self->{LIST}->{PARENT} = $self;
-  EVT_LEFT_DOWN($self->{LIST}, sub{OnLeftDown(@_)});
-  EVT_LEFT_DCLICK($self->{LIST}, sub{OnLeftDclick(@_)});
-  EVT_MIDDLE_DOWN($self->{LIST}, sub{OnMiddleDown(@_)});
-  EVT_RIGHT_DOWN($self->{LIST}, sub{OnRightDown(@_)});
-  EVT_LISTBOX($self, $self->{LIST}, sub{OnList(@_)});
-  EVT_CHECKLISTBOX($self, $self->{LIST}, sub{OnCheck(@_)});
-  EVT_MOUSEWHEEL($self->{LIST}, sub{OnWheel(@_)});
+  EVT_LEFT_DOWN(   $self->{LIST},        sub{OnLeftDown(@_)}  );
+  EVT_LEFT_DCLICK( $self->{LIST},        sub{OnLeftDclick(@_)});
+  EVT_MIDDLE_DOWN( $self->{LIST},        sub{OnMiddleDown(@_)});
+  EVT_RIGHT_DOWN(  $self->{LIST},        sub{OnRightDown(@_)} );
+  EVT_LISTBOX(     $self, $self->{LIST}, sub{OnList(@_)}      );
+  EVT_CHECKLISTBOX($self, $self->{LIST}, sub{OnCheck(@_)}     );
+  EVT_MOUSEWHEEL(  $self->{LIST},        sub{OnWheel(@_)}     );
 
   #$box -> Add($self->{LIST}, 1, wxGROW|wxALL, 0);
 

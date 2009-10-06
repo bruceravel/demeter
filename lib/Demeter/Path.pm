@@ -141,10 +141,10 @@ sub BUILD {
   $self->Index($i);
   $self->mo->pathindex(++$i);
 };
-sub DEMOLISH {
-  my ($self) = @_;
-  $self->alldone;
-};
+#sub DEMOLISH {
+#  my ($self) = @_;
+#  $self->alldone;
+#};
 
 sub set_parent {
   my ($self, $feff) = @_;

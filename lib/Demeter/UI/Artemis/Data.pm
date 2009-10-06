@@ -1354,7 +1354,9 @@ sub discard {
 
  SWITCH: {
     ($how eq 'this') and do {
+      my $path = $self->{pathlist}->GetPage->{path};
       $self->{pathlist}->DeletePage($sel);
+      $path->DEMOLISH;
       $text = "Discarded the path that was displayed.";
       last SWITCH;
     };

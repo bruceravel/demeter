@@ -90,6 +90,11 @@ use Demeter::Config;
 use vars qw($config);
 $config = Demeter::Config -> new;
 
+sub DEMOLISH {
+  my ($self) = @_;
+  $self->alldone;
+};
+
 sub alldone {
   my ($self) = @_;
   $self->remove;
@@ -97,7 +102,7 @@ sub alldone {
 };
 sub remove {
   my ($self) = @_;
-  $self->mo->remove($self);
+  $self->mo->remove($self) if (defined($self) and ref($self) =~ m{Demeter});;
   return $self;
 };
 
