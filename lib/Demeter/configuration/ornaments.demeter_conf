@@ -71,6 +71,16 @@ description
   used to indicate user-defined points in any plotting space whenever
   new plots are made.
 
+variable=margin
+type=real
+default=1.1
+description
+  This is a multiplicative factor used to plot the indicator.  The
+  vertical size of the indicator is typically determined by the
+  minimum and maximum values of the data being plotted.  Those min and
+  max values will be scaled by this number so that the indicator plots
+  a little bigger than the data.
+
 ######################################################################
 section=marker
 section_description

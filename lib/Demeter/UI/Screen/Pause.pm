@@ -34,7 +34,7 @@ if ($ANSIColor_exists) {
 
 has 'prompt' => (is => 'rw', isa => 'Str', default => REVERSE."Hit return to continue> ".RESET);
 
-sub pause {
+override 'pause' => sub {
   my ($self, $length) = @_;
   $length ||= -1;
   $length = -1 if ($length !~ m{$NUMBER});

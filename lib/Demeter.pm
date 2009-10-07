@@ -170,7 +170,8 @@ sub import {
     };
   };
 
-  foreach my $m (qw(Data Plot Config Data/Prj Data/MultiChannel GDS Path VPath SSPath FSPath Fit Atoms Feff ScatteringPath StructuralUnit)) {
+  foreach my $m (qw(Data Plot Plot/Indicator Config Data/Prj Data/MultiChannel GDS Path VPath SSPath FSPath
+		    Fit Atoms Feff ScatteringPath StructuralUnit)) {
     next if $INC{"Demeter/$m.pm"};
     ##print "Demeter/$m.pm\n";
     require "Demeter/$m.pm";
@@ -629,6 +630,8 @@ sub template {
   $string =~ s{<<( +)>>}{$1}g;	      # convert white space token into real white space
   return $string;
 };
+
+sub pause {};
 
 __PACKAGE__->meta->make_immutable;
 1;

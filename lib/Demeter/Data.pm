@@ -37,6 +37,7 @@ with 'Demeter::Data::Mu';
 with 'Demeter::Data::Parts';
 with 'Demeter::Data::Plot';
 with 'Demeter::Data::Process';
+with 'Demeter::Data::Units';
 
 use MooseX::StrictConstructor;
 use Moose::Util::TypeConstraints;
@@ -315,7 +316,7 @@ has 'fit_k2'		  => (is => 'rw', isa => 'Bool',     default => sub{ shift->co->de
 has 'fit_k3'		  => (is => 'rw', isa => 'Bool',     default => sub{ shift->co->default("fit", "k3")         ||  1});
 has 'fit_karb'		  => (is => 'rw', isa => 'Bool',     default => sub{ shift->co->default("fit", "karb")       ||  0});
 has 'fit_karb_value'	  => (is => 'rw', isa =>  NonNeg,    default => sub{ shift->co->default("fit", "karb_value") ||  0});
-has 'fit_space'	          => (is => 'rw', isa =>  FitSpace,  default => sub{ shift->co->default("fit", "space")      || 'r'});
+has 'fit_space'	          => (is => 'rw', isa =>  FitSpace,  default => sub{ shift->co->default("fit", "space")      || 'r'}, coerce => 1);
 has 'fit_epsilon'	  => (is => 'rw', isa => 'Num',      default => 0);
 has 'fit_cormin'	  => (is => 'rw', isa =>  PosNum,    default => sub{ shift->co->default("fit", "cormin")     ||  0.4});
 has 'fit_do_pcpath'	  => (is => 'rw', isa => 'Bool',     default => 0); # or Demeter::Path

@@ -179,6 +179,12 @@ default=#008b8b
 description
   The color of a marker.
 
+variable=indicatorcolor
+type=color
+default=#D02090
+description
+  The color of an indicator.
+
 variable=datastyle
 type=list
 default=lines

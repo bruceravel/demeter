@@ -248,6 +248,6 @@ sub plot8 {
 sub plot9 {
   my ($data) = @_;
   state("kq plot: chi(k)*k^2 + Re[chi(q)] + window\n");
-  $data -> po -> set(kweight => 2, 'q_pl' => 'r', qmax => 17, space => 'kq');
-  $data -> plot -> plot_window;
+  $data -> po -> set(kweight => 2, 'q_pl' => 'r', qmax => 17);
+  $data -> plot('kq') -> plot_window;
 };

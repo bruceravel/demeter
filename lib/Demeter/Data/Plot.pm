@@ -17,6 +17,7 @@ sub plot {
   $space ||= $pf->space;
   ($space  = 'kq') if (lc($space) eq 'qk');
   $space   = lc($space);
+  $self->po->space(substr($space, 0, 1));
 
   if (($self->datatype eq 'detector') and ($space ne 'e')) {
     carp($self->name . " is a detector group, which cannot be plotted in $space\n\n");
@@ -694,6 +695,36 @@ sub quadplot {
 };
 
 
+sub suffix {
+  my ($self) = @_;
+  my $suff = 'xmu';
+  my $po = $self->po;
+  if (($po->space eq 'e') and $po->e_norm) {
+    $suff = 'norm';
+  } elsif (($po->space eq 'e') and $po->e_norm and $self->bkg_flatten) {
+    $suff = 'flat';
+  } elsif  ($po->space eq 'k') {
+    $suff = 'chi';
+  } elsif (($po->space eq 'r') and ($po->r_pl eq 'm')) {
+    $suff = 'chir_mag';
+  } elsif (($po->space eq 'r') and ($po->r_pl eq 'r')) {
+    $suff = 'chir_im';
+  } elsif (($po->space eq 'r') and ($po->r_pl eq 'i')) {
+    $suff = 'chir_re';
+  } elsif (($po->space eq 'q') and ($po->r_pl eq 'p')) {
+    $suff = 'chir_pha';
+  } elsif (($po->space eq 'q') and ($po->q_pl eq 'm')) {
+    $suff = 'chir_mag';
+  } elsif (($po->space eq 'q') and ($po->q_pl eq 'r')) {
+    $suff = 'chir_im';
+  } elsif (($po->space eq 'q') and ($po->q_pl eq 'i')) {
+    $suff = 'chir_re';
+  } elsif (($po->space eq 'q') and ($po->q_pl eq 'p')) {
+    $suff = 'chir_pha';
+  };
+  return $suff;
+};
+
 1;
 
 =head1 NAME
@@ -873,6 +904,11 @@ using Carp::carp for other objects and 1 is returned.
 
     $kw = $data_object -> default_k_weight;
 
+=item C<suffix>
+
+A utility method that returns the suffix of the data array that will
+be plotted based on the current settings in the Plot object.  This is
+used in templates.
 
 =back
 

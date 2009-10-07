@@ -25,7 +25,7 @@ use MooseX::AttributeHelpers;
 use Demeter::StrTypes qw( Element
 			  Edge
 			  Clamp
-			  PlotSpace
+			  PlotType
 			  FitSpace
 			  Window
 			  Empty
@@ -98,7 +98,7 @@ has 'partstyle' => (is => 'rw', isa =>  PgplotLine, default => sub{ shift->co->d
 has 'pathstyle' => (is => 'rw', isa =>  PgplotLine, default => sub{ shift->co->default("plot", "pathstyle")  || "solid"});
 
 ## -------- default plotting space
-has 'space'	=> (is => 'rw', isa =>  PlotSpace, default => 'r');
+has 'space'	=> (is => 'rw', isa =>  PlotType, default => 'r');
 
 ## -------- energy plot parameters
 has 'emin'	=> (is => 'rw', isa =>  'Num',    default => sub{ shift->co->default("plot", "emin")	  || -200});

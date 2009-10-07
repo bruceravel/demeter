@@ -64,32 +64,6 @@ sub clamp {
   };
 };
 
-sub e2k {
-  my ($self, $e, $how) = @_;
-  return 0 if (not defined($e));
-  return 0 if ($e<0);
-  $how ||= 'rel';
-  if ($how =~ m{rel}) {	# relative energy
-    return sqrt($e*$ETOK);
-  } else {			# absolute energy
-    my $e0 = $self->bkg_e0;
-    ($e < $e0) and ($e0 = 0);
-    return sqrt(($e-$e0)*$ETOK);
-  };
-};
-
-sub k2e {
-  my ($self, $k, $how) = @_;
-  return 0 if ($k<0);
-  $how ||= 'rel';
-  if ($how =~ m{rel}) {		# relative energy
-    return $k**2 / $ETOK;
-  } else {			# absolute energy
-    my $e0 = $self->bkg_e0;
-    return ($k**2 / $ETOK) + $e0;
-  };
-};
-
 ## recompute E or k spline boundary when the other is changed
 sub spline_range {
   my ($self, $which) = @_;
@@ -688,16 +662,6 @@ of the elements.
 This method translates between numeric and descriptive values of
 clamping strengths.  See the clamp configuration group for tuning the
 translation between string and numeric clamp values.
-
-=item C<e2k>
-
-This method converts between relative energy values and wavenumber
-using the group's value for e0.
-
-=item C<k2e>
-
-This method converts between relative wavenumber and energy values
-using the group's value for e0.
 
 =back
 

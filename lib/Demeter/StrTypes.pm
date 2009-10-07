@@ -23,6 +23,7 @@ use MooseX::Types -declare => [qw( Empty
 				   DataPart
 				   FitSpace
 				   PlotSpace
+				   PlotType
 				   DataType
 				   TemplateProcess
 				   TemplateFit
@@ -275,17 +276,38 @@ use vars qw(@fitspace_list $fitspace_regexp);
 $fitspace_regexp = $opt->list2re(@fitspace_list);
 subtype FitSpace,
   as Str,
-  where { lc($_) =~ m{\A$fitspace_regexp\z} },
+  where { $_ =~ m{\A$fitspace_regexp\z} },
   message { "That string ($_) is not a Demeter fitting space" };
+
+coerce FitSpace,
+  from Str,
+  via { lc($_) };
 
 ## -------- Plotting spaces
 use vars qw(@plotspace_list $plotspace_regexp);
-@plotspace_list = qw(e k r q rmr kq);
+@plotspace_list = qw(e k r q);
 $plotspace_regexp = $opt->list2re(@plotspace_list);
 subtype PlotSpace,
   as Str,
-  where { lc($_) =~ m{\A$plotspace_regexp\z} },
+  where { $_ =~ m{\A$plotspace_regexp\z} },
   message { "That string ($_) is not a Demeter plotting space" };
+
+coerce PlotSpace,
+  from Str,
+  via { lc($_) };
+
+## -------- Plotting types
+use vars qw(@plottype_list $plottype_regexp);
+@plottype_list = qw(e k r q rmr kq r123 k123);
+$plottype_regexp = $opt->list2re(@plottype_list);
+subtype PlotType,
+  as Str,
+  where { $_ =~ m{\A$plotspace_regexp\z} },
+  message { "That string ($_) is not a Demeter plot type" };
+
+coerce PlotType,
+  from Str,
+  via { lc($_) };
 
 
 ## -------- Mode object type contstraints

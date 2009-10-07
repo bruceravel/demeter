@@ -18,6 +18,10 @@ set style line 10 linecolor rgb "{$C->default("gnuplot", "col9")}"
 ## marker styles
 set style line 12 linecolor rgb "{$C->default("gnuplot", "markercolor")}"
 
+## indicator styles
+set style line 16 linecolor rgb "{$C->default("gnuplot", "indicatorcolor")}" lw 1.5
+unset arrow
+
 ## plot formatting
 set style line 20 linecolor rgb "{$C->default("gnuplot", "gridcolor")}"
 set grid ls 20

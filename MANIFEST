@@ -251,6 +251,7 @@ examples/recipes/Histogram/phase.bin
 examples/recipes/Histogram/rdf.gp
 examples/recipes/Histogram/RDFDAT0K
 examples/recipes/Histogram/RDFDAT20K
+examples/recipes/Indicators/indic.pl
 examples/recipes/MixedShell/ab5c5.020.xmu
 examples/recipes/MixedShell/abc.pl
 examples/recipes/MixedShell/AgBr.inp
@@ -319,6 +320,7 @@ lib/Demeter/Data/Parts.pm
 lib/Demeter/Data/Plot.pm
 lib/Demeter/Data/Prj.pm
 lib/Demeter/Data/Process.pm
+lib/Demeter/Data/Units.pm
 lib/Demeter/Dispose.pm
 lib/Demeter/Feff.pm
 lib/Demeter/Feff/Paths.pm
@@ -337,6 +339,7 @@ lib/Demeter/Path/Process.pm
 lib/Demeter/Path/Sanity.pm
 lib/Demeter/Plot.pm
 lib/Demeter/Plot/Gnuplot.pm
+lib/Demeter/Plot/Indicator.pm
 lib/Demeter/Project.pm
 lib/Demeter/ScatteringPath.pm
 lib/Demeter/ScatteringPath/Histogram.pm
@@ -457,6 +460,7 @@ lib/Demeter/templates/plot/gnuplot/f1f2.tmpl
 lib/Demeter/templates/plot/gnuplot/f2.tmpl
 lib/Demeter/templates/plot/gnuplot/file.tmpl
 lib/Demeter/templates/plot/gnuplot/filter.tmpl
+lib/Demeter/templates/plot/gnuplot/indicator.tmpl
 lib/Demeter/templates/plot/gnuplot/label.tmpl
 lib/Demeter/templates/plot/gnuplot/marker.tmpl
 lib/Demeter/templates/plot/gnuplot/newe.tmpl
@@ -486,6 +490,7 @@ lib/Demeter/templates/plot/pgplot/f1f2.tmpl
 lib/Demeter/templates/plot/pgplot/f2.tmpl
 lib/Demeter/templates/plot/pgplot/file.tmpl
 lib/Demeter/templates/plot/pgplot/filter.tmpl
+lib/Demeter/templates/plot/pgplot/indicator.tmpl
 lib/Demeter/templates/plot/pgplot/label.tmpl
 lib/Demeter/templates/plot/pgplot/marker.tmpl
 lib/Demeter/templates/plot/pgplot/newe.tmpl
@@ -772,6 +777,7 @@ t/016_fspath.t
 t/017_structuralunit.t
 t/018_multichannel.t
 t/019_provenance.t
+t/020_indicator.t
 t/cyanobacteria.prj
 t/data.chi
 t/data.xmu

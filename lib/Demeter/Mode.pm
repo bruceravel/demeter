@@ -115,17 +115,6 @@ has 'Path' => (
 			      'splice'  => 'splice_Path',
 			     }
 	       );
-has 'Plot' => (
-		metaclass => 'Collection::Array',
-		is        => 'rw',
-		isa       => 'ArrayRef',
-		default   => sub { [] },
-		provides  => {
-			      'push'    => 'push_Plot',
-			      'clear'   => 'clear_Plot',
-			      'splice'  => 'splice_Plot',
-			     }
-	       );
 has 'ScatteringPath' => (
 		metaclass => 'Collection::Array',
 		is        => 'rw',
@@ -204,6 +193,28 @@ has 'MultiChannel' => (
 			      'splice'  => 'splice_MultiChannel',
 			     }
 	       );
+has 'Plot' => (
+		metaclass => 'Collection::Array',
+		is        => 'rw',
+		isa       => 'ArrayRef',
+		default   => sub { [] },
+		provides  => {
+			      'push'    => 'push_Plot',
+			      'clear'   => 'clear_Plot',
+			      'splice'  => 'splice_Plot',
+			     }
+	       );
+has 'Indicator' => (
+		metaclass => 'Collection::Array',
+		is        => 'rw',
+		isa       => 'ArrayRef',
+		default   => sub { [] },
+		provides  => {
+			      'push'    => 'push_Indicator',
+			      'clear'   => 'clear_Indicator',
+			      'splice'  => 'splice_Indicator',
+			     }
+	       );
 
 
 ## -------- The Professor and Mary Anne
@@ -221,7 +232,7 @@ has 'ui'                   => (is => 'rw', isa => 'Str',  default => 'none',);
 
 sub fetch {
   my ($self, $type, $group) = @_;
-  return 0 if ($type !~ m{(?:Atoms|Data|Feff|Fit|GDS|Path|Plot|ScatteringPath|VPath|SSPath|FSPath|StructuralUnit|Prj|MultiChannel)});
+  return 0 if ($type !~ m{(?:Atoms|Data|Feff|Fit|GDS|Path|Plot|Indicator|ScatteringPath|VPath|SSPath|FSPath|StructuralUnit|Prj|MultiChannel)});
   my $list = $self->$type;
   foreach my $o (@$list) {
     return $o if ($o->group eq $group);
@@ -235,6 +246,8 @@ sub remove {
   if ($type eq 'Gnuplot') {
     #$self->po->end_plot;
     $type = 'Plot';
+  } elsif ($type eq 'Demeter') {
+    return;
   };
   my $group = $object->group;
   my ($i, $which) = (0, -1);
@@ -261,14 +274,16 @@ sub everything {
 	  @{ $self->Fit		   },
 	  @{ $self->GDS		   },
 	  @{ $self->Path	   },
-	  @{ $self->Plot	   },
 	  @{ $self->ScatteringPath },
 	  @{ $self->VPath	   },
 	  @{ $self->SSPath	   },
 	  @{ $self->FSPath	   },
 	  @{ $self->StructuralUnit },
 	  @{ $self->Prj		   },
-	  @{ $self->MultiChannel   });
+	  @{ $self->MultiChannel   },
+	  @{ $self->Plot	   },
+	  @{ $self->Indicator	   },
+	 );
 };
 
 sub destroy_all {

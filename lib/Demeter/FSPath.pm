@@ -128,7 +128,7 @@ override alldone => sub {
   #print "demolishing parent and gdss\n";
   $self->parent->DEMOLISH if $self->parent;
   foreach my $g (@{$self->gds}) {
-    $g->DEMOLISH;
+    $g->DEMOLISH if (defined $g);
   };
   $self->remove;
   return $self;
