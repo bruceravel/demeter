@@ -95,21 +95,21 @@ sub new {
   ## -------- geometry
   $this->{geombox}  = Wx::StaticBox->new($this, -1, 'Geometry ', wxDefaultPosition, wxDefaultSize);
   my $geomboxsizer  = Wx::StaticBoxSizer->new( $this->{geombox}, wxHORIZONTAL );
-  $this->{geometry} = Wx::TextCtrl->new($this, -1, q{}, wxDefaultPosition, [298,-1],
+  $this->{geometry} = Wx::TextCtrl->new($this, -1, q{}, wxDefaultPosition, [-1,110],
 					wxVSCROLL|wxHSCROLL|wxTE_MULTILINE|wxTE_READONLY|wxNO_BORDER);
   $this->{geometry} -> SetFont( Wx::Font->new( 9, wxTELETYPE, wxNORMAL, wxNORMAL, 0, "" ) );
   $geomboxsizer -> Add($this->{geometry}, 1, wxGROW|wxALL, 0);
-  $vbox         -> Add($geomboxsizer, 1, wxALL, 5);
+  $vbox         -> Add($geomboxsizer,     1, wxGROW|wxALL, 5);
+
+  #my ($w,$h) = $this->{geometry}->GetSizeWH;
+  #$this->{geometry}->SetSizeWH($w, 1.5*$h);
 
   $this->{geometry}->{2} = Wx::TextAttr->new(Wx::Colour->new( $this->{datapage}->{data}->co->default('feff', 'intrp2color') ),
-					     wxNullColour,
-					     Wx::Font->new( 10, wxDEFAULT, wxSLANT, wxNORMAL, 0, "" ) );
+					     wxNullColour, Wx::Font->new( 10, wxDEFAULT, wxSLANT, wxNORMAL, 0, "" ) );
   $this->{geometry}->{1} = Wx::TextAttr->new(Wx::Colour->new( $this->{datapage}->{data}->co->default('feff', 'intrp1color') ),
-					     wxNullColour,
-					     Wx::Font->new( 10, wxDEFAULT, wxSLANT, wxNORMAL, 0, "" ) );
+					     wxNullColour, Wx::Font->new( 10, wxDEFAULT, wxSLANT, wxNORMAL, 0, "" ) );
   $this->{geometry}->{0} = Wx::TextAttr->new(Wx::Colour->new( $this->{datapage}->{data}->co->default('feff', 'intrp0color') ),
-					     wxNullColour,
-					     Wx::Font->new( 10, wxDEFAULT, wxSLANT, wxNORMAL, 0, "" ) );
+					     wxNullColour, Wx::Font->new( 10, wxDEFAULT, wxSLANT, wxNORMAL, 0, "" ) );
 
   $this->mouseover("geometry", "This box contains a succinct description of the geometry of this path.");
 

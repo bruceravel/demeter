@@ -2,6 +2,7 @@ package Demeter::Mode;
 
 use MooseX::Singleton;
 use MooseX::AttributeHelpers;
+with 'MooseX::SetGet';
 #use Demeter::Config;
 use Demeter::StrTypes qw( Empty
 			  TemplateProcess
@@ -14,12 +15,12 @@ use Regexp::List;
 use Regexp::Optimizer;
 my $opt = Regexp::List->new;
 
-use vars qw($singleton);	# Moose 0.61, MooseX::Singleton 0.12 seem to need this
+#use vars qw($singleton);	# Moose 0.61, MooseX::Singleton 0.12 seem to need this
 
 ## -------- disposal modes
-has 'ifeffit' => (is => 'rw', isa => 'Bool',         default => 1);
-has $_        => (is => 'rw', isa => 'Bool',         default => 0)   foreach (qw(screen plotscreen repscreen));
-has $_        => (is => 'rw', isa => 'Str',          default => q{}) foreach (qw(file plotfile repfile));
+has 'ifeffit'    => (is => 'rw', isa => 'Bool',                 default => 1);
+has $_           => (is => 'rw', isa => 'Bool',                 default => 0)   foreach (qw(screen plotscreen repscreen));
+has $_           => (is => 'rw', isa => 'Str',                  default => q{}) foreach (qw(file plotfile repfile));
 has 'buffer'     => (is => 'rw', isa => 'ArrayRef | ScalarRef');
 has 'plotbuffer' => (is => 'rw', isa => 'ArrayRef | ScalarRef');
 
@@ -414,7 +415,7 @@ template variable.
 
 =item C<standard>
 
-A reference to the current Data object used a data processing
+A reference to the current Data object used as a data processing
 standard.  C<$DS> is the special template variable.
 
 =item C<theory>

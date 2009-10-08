@@ -78,7 +78,7 @@ Gnuplot would blink off the screen.  The
 [% INCLUDE font/mono a='pause' %] method is imported when the UI is
 set to screen, as at line 3.  Without explicitly setting the screen
 UI, attempting to call the [% INCLUDE font/mono a='pause' %] method
-will result in an error.
+will do nothing.
 [% END %]
 
 [% WRAPPER codeexample -%]

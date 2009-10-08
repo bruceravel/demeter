@@ -14,6 +14,7 @@ use File::Basename;
 use File::Copy;
 use File::Path;
 use File::Spec;
+use List::MoreUtils qw(zip);
 use Scalar::Util qw(blessed);
 use String::Random qw(random_string);
 use YAML;
@@ -25,13 +26,17 @@ use Wx::Event qw(EVT_MENU EVT_CLOSE EVT_TOOL_ENTER EVT_CHECKBOX EVT_BUTTON
 use base 'Wx::App';
 
 use Readonly;
-Readonly my $MRU          => Wx::NewId();
-Readonly my $SHOW_BUFFER  => Wx::NewId();
-Readonly my $CONFIG       => Wx::NewId();
-Readonly my $SHOW_GROUPS  => Wx::NewId();
-Readonly my $SHOW_ARRAYS  => Wx::NewId();
-Readonly my $SHOW_SCALARS => Wx::NewId();
-Readonly my $SHOW_STRINGS => Wx::NewId();
+Readonly my $MRU	    => Wx::NewId();
+Readonly my $SHOW_BUFFER    => Wx::NewId();
+Readonly my $CONFIG	    => Wx::NewId();
+Readonly my $SHOW_GROUPS    => Wx::NewId();
+Readonly my $SHOW_ARRAYS    => Wx::NewId();
+Readonly my $SHOW_SCALARS   => Wx::NewId();
+Readonly my $SHOW_STRINGS   => Wx::NewId();
+Readonly my $IMPORT_FEFFIT  => Wx::NewId();
+Readonly my $IMPORT_OLD     => Wx::NewId();
+Readonly my $EXPORT_IFEFFIT => Wx::NewId();
+Readonly my $EXPORT_DEMETER => Wx::NewId();
 
 use Wx::Perl::Carp;
 $SIG{__WARN__} = sub {Wx::Perl::Carp::warn($_[0])};
@@ -83,13 +88,26 @@ sub OnInit {
   $frames{main} -> {modified} = 0;
 
   ## -------- Set up menubar
-  my $bar = Wx::MenuBar->new;
-  my $filemenu = Wx::Menu->new;
-  my $mrumenu = Wx::Menu->new;
+  my $bar        = Wx::MenuBar->new;
+  my $filemenu   = Wx::Menu->new;
+  my $mrumenu    = Wx::Menu->new;
+
+  my $importmenu = Wx::Menu->new;
+  $importmenu->Append($IMPORT_OLD,     "an old-style Artemis project",  "Import the current fitting model from an old-style Artemis project file");
+  $importmenu->Append($IMPORT_FEFFIT,  "a feffit.inp file",             "Import a fitting model from a feffit.inp file");
+  $importmenu->Enable($_, 0) foreach ($IMPORT_OLD, $IMPORT_FEFFIT);
+
+  my $exportmenu = Wx::Menu->new;
+  $exportmenu->Append($EXPORT_IFEFFIT,  "to Ifeffit script",  "Export the current fitting model as an Ifeffit script");
+  $exportmenu->Append($EXPORT_DEMETER,  "to Demeter script",  "Export the current fitting model as a perl script using Demeter");
+
   $filemenu->Append(wxID_OPEN, "Open project", "Read from a project file" );
   $filemenu->AppendSubMenu($mrumenu, "Recent projects", "Open a submenu of recently used files" );
   $filemenu->Append(wxID_SAVE, "Save project", "Save project" );
   $filemenu->Append(wxID_SAVEAS, "Save project as...", "Save to a new project file" );
+  $filemenu->AppendSeparator;
+  $filemenu->AppendSubMenu($importmenu, "Import...", "Export a fitting model from ..." );
+  $filemenu->AppendSubMenu($exportmenu, "Export...", "Export the current fitting model as ..." );
   $filemenu->AppendSeparator;
   $filemenu->Append(wxID_CLOSE, "&Close" );
   $filemenu->Append(wxID_EXIT, "E&xit" );
@@ -110,9 +128,9 @@ sub OnInit {
   my $helpmenu = Wx::Menu->new;
   $helpmenu->Append(wxID_ABOUT, "&About..." );
 
-  $bar->Append( $filemenu, "&File" );
-  $bar->Append( $settingsmenu, "&Settings" );
-  $bar->Append( $helpmenu, "&Help" );
+  $bar->Append( $filemenu,      "&File" );
+  $bar->Append( $settingsmenu,  "&Settings" );
+  $bar->Append( $helpmenu,      "&Help" );
   $frames{main}->SetMenuBar( $bar );
 
   my $hbox = Wx::BoxSizer->new( wxHORIZONTAL);
@@ -606,6 +624,14 @@ sub OnMenuClick {
       last SWITCH;
     };
 
+    ($id == $EXPORT_IFEFFIT) and do {
+      export(\%frames, 'ifeffit');
+      last SWITCH;
+    };
+    ($id == $EXPORT_DEMETER) and do {
+      export(\%frames, 'demeter');
+      last SWITCH;
+    };
 
   };
 };
@@ -817,6 +843,58 @@ sub discard_feff {
   ## destroy the feff object
   $feffobject->DESTROY;
 }
+
+sub export {
+  my ($rframes, $how) = @_;
+
+  ## make a disposable Fit objkect
+  my ($abort, $rdata, $rpaths) = uptodate($rframes);
+  my $rgds = $rframes->{GDS}->reset_all;
+  my @data  = @$rdata;
+  my @paths = @$rpaths;
+  my @gds   = @$rgds;
+  if ($abort) {
+    $rframes->{main}->{statusbar}->SetStatusText("There is a problem in your fit.");
+    return;
+  };
+  my $fit = Demeter::Fit->new(data => \@data, paths => \@paths, gds => \@gds);
+
+  my $suffix = ($how eq 'ifeffit') ? 'iff' : 'pl';
+  ## prompt for a filename
+  my $fd = Wx::FileDialog->new( $rframes->{main}, "Export this fitting model", cwd, "artemis.$suffix",
+				"fitting scripts (*.$suffix)|*.$suffix|All files|*.*",
+				wxFD_SAVE|wxFD_CHANGE_DIR|wxFD_OVERWRITE_PROMPT,
+				wxDefaultPosition);
+  if ($fd->ShowModal == wxID_CANCEL) {
+    $rframes->{main}->{statusbar}->SetStatusText("Exporting fitting model cancelled.");
+    return;
+  };
+  my $fname = File::Spec->catfile($fd->GetDirectory, $fd->GetFilename);
+  unlink $fname;
+
+  ## save mode settings
+  my @modes = qw(template_process template_fit ifeffit file callback plotcallback feedback);
+  my @values = $fit -> mo -> get(@modes);
+
+  ## set mode settings appropriate to file output
+  $fit -> mo -> template_process($how);
+  $fit -> mo -> template_fit($how);
+  $fit -> mo -> ifeffit(0);
+  $fit -> mo -> file('>'.$fname);
+  $fit -> mo -> callback(sub{});
+  $fit -> mo -> plotcallback(sub{});
+  $fit -> mo -> feedback(sub{});
+
+  ## do the fit, this writing the script file
+  $fit -> fit;
+
+  ## restore mode settings
+  $fit -> mo -> set(zip(@modes, @values));
+
+  undef $fit;
+
+};
+
 
 1;
 

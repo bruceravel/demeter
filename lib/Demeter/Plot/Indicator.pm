@@ -38,7 +38,6 @@ has 'ymax'   => (is => 'rw', isa => 'Num',  default =>  0,
 				 $self->y2($new * $self->co->default('indicator','margin'));
 			       };
 			     });
-
 has 'y1'     => (is => 'rw', isa => 'Num',  default =>  0);
 has 'y2'     => (is => 'rw', isa => 'Num',  default =>  0);
 
@@ -71,35 +70,43 @@ sub xcoord {
   $x    = $self->x if (($self->po->space eq 'q') and ($self->space eq 'k'));
   $x    = $self->x if (($self->po->space eq 'k') and ($self->space eq 'q'));
   my $e0 = ($self->po->space eq 'e') ? $self->mo->standard->bkg_e0 : 0;
-  return $x+$e0;
+  return sprintf("%.8g", $x+$e0);
 };
 sub y1coord {
   my ($self) = @_;
-  my $x = ($self->po->space eq $self->space) ? $self->x : $self->x2;
-  $x    = $self->x if (($self->po->space eq 'q') and ($self->space eq 'k'));
-  $x    = $self->x if (($self->po->space eq 'k') and ($self->space eq 'q'));
+  my $y1 = 0;
+  if ($self->y1) {
+    $y1 = $self->y1;
+  } else {
+    my $x  = ($self->po->space eq $self->space) ? $self->x : $self->x2;
+    $x     = $self->x if (($self->po->space eq 'q') and ($self->space eq 'k'));
+    $x     = $self->x if (($self->po->space eq 'k') and ($self->space eq 'q'));
 
-  my $kw = ($self->po->space eq 'k') ? ($self->po->kweight) : 0;
-  my $yy = $self->mo->standard->yofx($self->mo->standard->suffix, q{}, $self->xcoord) * $x**$kw;
-  my @m  = $self->mo->standard->floor_ceil($self->mo->standard->suffix);
-  my $sy = abs($m[0] - $m[1]) / 4;
-  my $y1 = $self->y1 || $yy-$sy;
-  my $yoff = $self->mo->standard->y_offset;
-  return $y1+$yoff;
+    my $kw = ($self->po->space eq 'k') ? ($self->po->kweight) : 0;
+    my $yy = $self->mo->standard->yofx($self->mo->standard->suffix, q{}, $self->xcoord) * $x**$kw;
+    my @m  = $self->mo->standard->floor_ceil($self->mo->standard->suffix);
+    my $sy = abs($m[0] - $m[1]) / 4;
+    $y1    = $yy-$sy;
+  };
+  return sprintf("%.8g", $y1 + $self->mo->standard->y_offset);
 };
 sub y2coord {
   my ($self) = @_;
-  my $x = ($self->po->space eq $self->space) ? $self->x : $self->x2;
-  $x    = $self->x if (($self->po->space eq 'q') and ($self->space eq 'k'));
-  $x    = $self->x if (($self->po->space eq 'k') and ($self->space eq 'q'));
+  my $y2 = 0;
+  if ($self->y2) {
+    $y2 = $self->y2;
+  } else {
+    my $x  = ($self->po->space eq $self->space) ? $self->x : $self->x2;
+    $x     = $self->x if (($self->po->space eq 'q') and ($self->space eq 'k'));
+    $x     = $self->x if (($self->po->space eq 'k') and ($self->space eq 'q'));
 
-  my $kw = ($self->po->space eq 'k') ? ($self->po->kweight) : 0;
-  my $yy = $self->mo->standard->yofx($self->mo->standard->suffix, q{}, $self->xcoord) * $x**$kw;
-  my @m  = $self->mo->standard->floor_ceil($self->mo->standard->suffix);
-  my $sy = abs($m[0] - $m[1]) / 4;
-  my $y2 = $self->y2 || $yy+$sy;
-  my $yoff = $self->mo->standard->y_offset;
-  return $y2+$yoff;
+    my $kw = ($self->po->space eq 'k') ? ($self->po->kweight) : 0;
+    my $yy = $self->mo->standard->yofx($self->mo->standard->suffix, q{}, $self->xcoord) * $x**$kw;
+    my @m  = $self->mo->standard->floor_ceil($self->mo->standard->suffix);
+    my $sy = abs($m[0] - $m[1]) / 4;
+    $y2    = $yy+$sy;
+  };
+  return sprintf("%.8g", $y2 + $self->mo->standard->y_offset);
 };
 
 
@@ -120,14 +127,13 @@ Mark a position in k-space:
 
   my $data = Demeter::Data->new( ... );
   $data -> standard;
-  $data -> plot('k');
-  my ($min, $max) = $data->floor_ceil("chi");
-  my $indic = Demeter::Plot::Indicator->new(space=>'k', x=>5);
+  $data -> plot('E');
+  my $indic = Demeter::Plot::Indicator->new(space=>'k', x=>42);
   $indic -> plot;
 
-then, show where that k-value is in energy:
+then, show where that energy value is in k:
 
-  $data  -> plot('e');
+  $data  -> plot('k');
   $indic -> plot;
 
 =head1 DESCRIPTION
@@ -142,7 +148,8 @@ spaces. Points selected in R can only be plotted in R.
 
 Note that you B<must> set a data standard (see L<Demeter::Mode>) to be
 able to plot an indicator.  The indicator is always scaled to the size
-of a data set.
+of the standard data set.  It also uses the C<y_offset> attribute of
+the standard and its E0 shift when plotting in energy.
 
 In normal operation, the upper and lower bounds of the indicator are
 genertated automatically, but they can be explicitly set using the
@@ -154,7 +161,7 @@ C<ymin> and C<ymax> attributes.
 
 =item C<space>
 
-An indicator is associated with a space, one of e, k, r, or q.
+An indicator is associated with a space, one of E, k, R, or q.
 
 =item C<x>
 
@@ -171,14 +178,16 @@ C<x>, although it wont actually be used for anything.
 
 =item C<active>
 
-This turns plotting of the indicator on and off.
+This turns plotting of the indicator on and off.  When set to 0, the
+C<plot> method returns silently.  This, then, is the equivalent of
+"commenting out" an indicator without deleting it.
 
 =item C<i>
 
 This is an auto-generated index associated with the indicator.  In
 practice, this is used in gnuplot to provide a tag for the (headless)
-arrow that is plotted as the indicator.  The is no need to set this,
-but this attribute is accessed in the gnuplot indicator template.
+arrow that is plotted as the indicator.  There is no need to set this.
+This attribute is accessed by the gnuplot indicator template.
 
 =item C<ymin>
 
@@ -210,12 +219,28 @@ be overwritten the next time that C<ymax> is set.
 
 =item C<plot>
 
-Plot the indicator.
+Plot the indicator in the space oset by the C<space> attribute of the
+Plot object.
+
+  $indic -> plot;
+
+An indicator created in energy, k, or q will be plotted in energy, k,
+or q.  Attempting to plot in R an indicator created in energy, k, or q
+will silently do nothing.  Similarly, an indicator created in R will
+silently do nothing when plotted in energy, k, or q.  This behavior
+allows you to do something like this:
+
+  $_ -> plot($space) foreach (@all_data, @all_indicators);
+
+This will plot sensibly without regard to the value of C<$space> or
+how the indicators were created.
 
 =item C<xcoord>
 
 Return the value of the x-coordinate of the indicator based on the
 current settings of the Plot and standard Data object.
+
+  my $x = $indic->xcoord;
 
 =item C<y1coord>
 
@@ -223,13 +248,20 @@ Return the value of the lower y-coordinate of the indicator based on
 the value of C<ymax> or current settings of the Plot and standard Data
 object.
 
+  my $y1 = $indic->y1coord;
+
 =item C<y2coord>
 
 Return the value of the upper y-coordinate of the indicator based on
 the value of C<ymin> or current settings of the Plot and standard Data
 object.
 
+  my $y2 = $indic->y2coord;
+
 =back
+
+The C<xcoord>, C<y1coord>, and C<y2coord> are used in the templates
+for plotting indicators.
 
 =head1 SERIALIZATION AND DESERIALIZATION
 
