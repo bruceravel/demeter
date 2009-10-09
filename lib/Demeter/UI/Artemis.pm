@@ -3,6 +3,7 @@ package Demeter::UI::Artemis;
 use Demeter; # qw(:plotwith=gnuplot);
 use Demeter::UI::Atoms;
 use Demeter::UI::Artemis::Project;
+use Demeter::UI::Artemis::ShowText;
 use Demeter::UI::Wx::MRU;
 
 use vars qw($demeter $buffer $plotbuffer);
@@ -37,6 +38,8 @@ Readonly my $IMPORT_FEFFIT  => Wx::NewId();
 Readonly my $IMPORT_OLD     => Wx::NewId();
 Readonly my $EXPORT_IFEFFIT => Wx::NewId();
 Readonly my $EXPORT_DEMETER => Wx::NewId();
+Readonly my $PLOT_YAML      => Wx::NewId();
+Readonly my $MODE_STATUS    => Wx::NewId();
 
 use Wx::Perl::Carp;
 $SIG{__WARN__} = sub {Wx::Perl::Carp::warn($_[0])};
@@ -59,8 +62,11 @@ my %hints = (
 	    );
 
 sub OnInit {
+  my ($app) = @_;
   $demeter -> mo -> ui('Wx');
   $demeter -> mo -> identity('Artemis');
+
+  #my $app = $class->SUPER::new;
 
   my $conffile = File::Spec->catfile(dirname($INC{'Demeter/UI/Artemis.pm'}), 'Artemis', 'share', "artemis.demeter_conf");
   $demeter -> co -> read_config($conffile);
@@ -125,8 +131,14 @@ sub OnInit {
   $settingsmenu->Append($SHOW_BUFFER, "Show command buffer", "Show the Ifeffit and plotting commands buffer");
   $settingsmenu->Append($CONFIG, "Edit Preferences", "Show the preferences editing dialog");
 
+  my $debugmenu = Wx::Menu->new;
+  $debugmenu->Append($PLOT_YAML, "Show YAML for Plot object",  "Show YAML for Plot object",  wxITEM_NORMAL );
+  $debugmenu->Append($MODE_STATUS, "Mode status",  "Mode status",  wxITEM_NORMAL );
+
   my $helpmenu = Wx::Menu->new;
   $helpmenu->Append(wxID_ABOUT, "&About..." );
+  $helpmenu->AppendSubMenu($debugmenu, 'Debug options', 'Display debugging tools')
+    if ($demeter->co->default("artemis", "debug_menus"));
 
   $bar->Append( $filemenu,      "&File" );
   $bar->Append( $settingsmenu,  "&Settings" );
@@ -309,7 +321,7 @@ sub mouseover {
 };
 
 sub on_close {
-  my ($self) = @_;
+  my ($self, $event) = @_;
 
   ## offer to save project....
   my $yesno = Wx::MessageDialog->new($frames{main},
@@ -322,11 +334,22 @@ sub on_close {
     return 0;
   };
   save_project(\%frames) if $result == wxID_YES;
-
-  $demeter->mo->destroy_all;
   rmtree($self->{project_folder});
-  foreach (values(%frames)) {$_->Destroy};
+  $demeter->mo->destroy_all;
+  foreach my $f (values(%frames)) {
+    next if ($f !~ m{Demeter});
+    #print '>', $f, '<', $/;
+    $f->Destroy;
+  };
+  $frames{main}->Destroy;
+  $event->Skip(1);
 };
+
+#sub OnExit {
+#  my ($self, $event) = @_;
+#  $demeter->mo->destroy_all;
+#  $event->Skip(1);
+#};
 
 sub on_about {
   my ($self) = @_;
@@ -633,6 +656,18 @@ sub OnMenuClick {
       last SWITCH;
     };
 
+    ($id == $PLOT_YAML) and do {
+      $frames{Plot}->fetch_parameters;
+      my $yaml   = $demeter->po->serialization;
+      my $dialog = Demeter::UI::Artemis::ShowText->new($frames{main}, $yaml, 'YAML of Plot object') -> Show;
+      last SWITCH;
+    };
+
+    ($id == $MODE_STATUS) and do {
+      my $dialog = Demeter::UI::Artemis::ShowText->new($frames{main}, $demeter->mo->report('all'), 'Overview of this instance of Demeter') -> Show;
+      last SWITCH;
+    };
+
   };
 };
 
@@ -821,6 +856,7 @@ sub do_the_size_dance {
 sub discard_feff {
   my ($which, $force) = @_;
   my $feffobject = $frames{$which}->{feffobject};
+  ##my $atomsobject = $frames{$which}->{Atoms}
 
   if (not $force) {
     my $yesno = Wx::MessageDialog->new($frames{main}, "Do you really wish to discard this Feff calculation?",
@@ -836,8 +872,8 @@ sub discard_feff {
 
   ## remove the frame with the feff calculation
   $frames{$fnum}->Hide;
+  $frames{$fnum}->Destroy;
   delete $frames{$fnum};
-  ## that's not quite right!
 
   ## destroy the ScatteringPath object
   ## destroy the feff object

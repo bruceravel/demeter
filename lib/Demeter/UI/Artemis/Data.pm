@@ -31,6 +31,7 @@ use Wx::Perl::Carp;
 use Demeter::UI::Artemis::Data::AddParameter;
 use Demeter::UI::Artemis::Data::Histogram;
 use Demeter::UI::Artemis::Data::Quickfs;
+use Demeter::UI::Artemis::ShowText;
 use Demeter::UI::Wx::CheckListBook;
 
 use List::MoreUtils qw(firstidx);
@@ -783,7 +784,8 @@ sub OnMenuClick {
       my $pathobject = $datapage->{pathlist}->GetPage($datapage->{pathlist}->GetSelection)->{path};
       my ($abort, $rdata, $rpaths) = Demeter::UI::Artemis::uptodate(\%Demeter::UI::Artemis::frames);
       $pathobject->_update("fft");
-      $datapage->show_text($pathobject->paragraph, $pathobject->label.', evaluated');
+      my $dialog = Demeter::UI::Artemis::ShowText->new($datapage, $pathobject->paragraph, $pathobject->label.', evaluated')
+	-> Show;
       last SWITCH;
     };
 
@@ -791,7 +793,8 @@ sub OnMenuClick {
       $datapage->fetch_parameters;
       my $dataobject = $datapage->{data};
       my $yaml = $dataobject->serialization;
-      $datapage->show_text($yaml, 'YAML of ' . $dataobject->name);
+      my $dialog = Demeter::UI::Artemis::ShowText->new($datapage, $yaml, 'YAML of ' . $dataobject->name)
+	-> Show;
       last SWITCH;
     };
 
@@ -799,7 +802,8 @@ sub OnMenuClick {
       my $pathobject = $datapage->{pathlist}->GetPage($datapage->{pathlist}->GetSelection)->{path};
       my ($abort, $rdata, $rpaths) = Demeter::UI::Artemis::uptodate(\%Demeter::UI::Artemis::frames);
       $pathobject->_update("fft");
-      $datapage->show_text($pathobject->serialization, 'YAML of '.$pathobject->label);
+      my $dialog = Demeter::UI::Artemis::ShowText->new($datapage, $pathobject->serialization, 'YAML of '.$pathobject->label)
+	-> Show;
       last SWITCH;
     };
 
@@ -902,21 +906,21 @@ sub OnMenuClick {
   };
 };
 
-sub show_text {
-  my ($parent, $content, $title) = @_;
-  my $show = Wx::Dialog->new($parent, -1, $title, wxDefaultPosition, [450,350],
-			     wxOK|wxICON_INFORMATION);
-  my $box  = Wx::BoxSizer->new( wxVERTICAL );
-  my $text = Wx::TextCtrl->new($show, -1, q{}, wxDefaultPosition, wxDefaultSize,
-			       wxVSCROLL|wxHSCROLL|wxTE_MULTILINE|wxTE_READONLY|wxNO_BORDER);
-  $text -> SetFont(Wx::Font->new( 10, wxTELETYPE, wxNORMAL, wxNORMAL, 0, "" ) );
-  $text -> SetValue($content);
-  $box  -> Add($text, 1, wxGROW|wxALL, 5);
-  my $button = Wx::Button->new($show, wxID_OK, "OK", wxDefaultPosition, wxDefaultSize, 0,);
-  $box -> Add($button, 0, wxGROW|wxALL, 5);
-  $show -> SetSizer( $box );
-  $show -> ShowModal;
-};
+# sub show_text {
+#   my ($parent, $content, $title) = @_;
+#   my $show = Wx::Dialog->new($parent, -1, $title, wxDefaultPosition, [450,350],
+# 			     wxOK|wxICON_INFORMATION);
+#   my $box  = Wx::BoxSizer->new( wxVERTICAL );
+#   my $text = Wx::TextCtrl->new($show, -1, q{}, wxDefaultPosition, wxDefaultSize,
+# 			       wxVSCROLL|wxHSCROLL|wxTE_MULTILINE|wxTE_READONLY|wxNO_BORDER);
+#   $text -> SetFont(Wx::Font->new( 10, wxTELETYPE, wxNORMAL, wxNORMAL, 0, "" ) );
+#   $text -> SetValue($content);
+#   $box  -> Add($text, 1, wxGROW|wxALL, 5);
+#   my $button = Wx::Button->new($show, wxID_OK, "OK", wxDefaultPosition, wxDefaultSize, 0,);
+#   $box -> Add($button, 0, wxGROW|wxALL, 5);
+#   $show -> SetSizer( $box );
+#   $show -> ShowModal;
+# };
 
 sub Rename {
   my ($datapage) = @_;

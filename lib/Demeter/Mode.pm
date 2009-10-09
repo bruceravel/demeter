@@ -217,6 +217,9 @@ has 'Indicator' => (
 			     }
 	       );
 
+has 'types' => (is => 'ro', isa => 'ArrayRef',
+		default => sub{[qw(Atoms Data Feff Fit GDS Path Plot Indicator ScatteringPath
+				   VPath SSPath FSPath StructuralUnit Prj MultiChannel)]},);
 
 ## -------- The Professor and Mary Anne
 has 'iwd' => (is => 'rw', isa => 'Str', default => q{});
@@ -233,7 +236,8 @@ has 'ui'                   => (is => 'rw', isa => 'Str',  default => 'none',);
 
 sub fetch {
   my ($self, $type, $group) = @_;
-  return 0 if ($type !~ m{(?:Atoms|Data|Feff|Fit|GDS|Path|Plot|Indicator|ScatteringPath|VPath|SSPath|FSPath|StructuralUnit|Prj|MultiChannel)});
+  my $re = join("|", @{$self->types});
+  return 0 if ($type !~ m{(?:$re)});
   my $list = $self->$type;
   foreach my $o (@$list) {
     return $o if ($o->group eq $group);
@@ -291,10 +295,27 @@ sub destroy_all {
   my ($self) = @_;
   foreach my $obj ($self->everything) {
     #print $obj, $/;
-    $obj -> DEMOLISHALL; #DESTROY;
+    $obj -> DEMOLISH; #DESTROY;
   };
 };
 
+sub report {
+  my ($self, $which) = @_;
+  my $text = q{};
+  foreach my $this (sort @{$self->types}) {
+    $text .= sprintf("\n%-20s %d\n", $this, $#{$self->$this}+1);
+    if (($this eq $which) or ($which eq 'all')) {
+      my $att = ($this eq 'ScatteringPath') ? 'intrpline'
+	      : ($this eq 'Plot')           ? 'backend'
+	      :                               'name';
+      my $i = 0;
+      foreach my $obj (@{$self->$this}) {
+	$text .= sprintf("\t%3d: %s\n", ++$i, $obj->$att);
+      };
+    };
+  };
+  return $text
+};
 
 __PACKAGE__->meta->make_immutable;
 1;

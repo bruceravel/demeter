@@ -266,7 +266,7 @@ sub close_project {
   $rframes->{GDS}->Show(0);
   $rframes->{main}->{toolbar}->ToggleTool(1,0);
 
-  ## -------- clear GDS
+  ## -------- clear Log
   $rframes->{Log}->{text}->SetValue(q{});
   $rframes->{Log}->Show(0);
   $rframes->{main}->{log_toggle}->SetValue(0);
@@ -281,6 +281,18 @@ sub close_project {
   foreach my $k (keys %$rframes) {
     next unless ($k =~ m{feff});
     Demeter::UI::Artemis::discard_feff($k, 1);
+  };
+
+  ## -------- clear all Paths
+  my @list = @{$Demeter::UI::Artemis::demeter->mo->Path};
+  foreach my $p (@list) {
+    $p->DEMOLISH;
+  };
+
+  ## -------- clear all Fits
+  @list = @{$Demeter::UI::Artemis::demeter->mo->Fit};
+  foreach my $f (@list) {
+    $f->DEMOLISH;
   };
 
 };

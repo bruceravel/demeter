@@ -65,6 +65,7 @@ has 'group'     => (is => 'rw', isa => 'Str',  default => sub{shift->_get_group(
 has 'name'      => (is => 'rw', isa => 'Str',  default => q{});
 has 'plottable' => (is => 'ro', isa => 'Bool', default => 0);
 has 'data'      => (is => 'rw', isa => 'Any',  default => q{});
+has 'backend'   => (is => 'rw', isa => 'Str',  default => q{pgplot});
 
 ## -------- legend parameters
 has 'charsize'  => (is => 'rw', isa =>  PosNum,    default => sub{ shift->co->default("plot", "charsize") || 1.2});
@@ -190,8 +191,8 @@ sub DEMOLISH {
 
 override 'alldone' => sub {
   my ($self) = @_;
-  $self->remove;
   $self->end_plot;
+  $self->remove;
 };
 
 ## this is a little crufty, but I don't want to save all attribute

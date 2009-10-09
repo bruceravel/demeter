@@ -27,6 +27,7 @@ use List::MoreUtils qw(uniq);
 
 my @ifeffit_buffer = ();
 my $pointer = -1;
+my $prompttext = "  Ifeffit [%4d]> ";
 
 sub new {
   my ($class, $parent) = @_;
@@ -78,7 +79,7 @@ sub new {
   my $hbox = Wx::BoxSizer->new( wxHORIZONTAL );
   $vbox->Add($hbox, 0, wxGROW|wxALL, 0);
 
-  $this->{ifeffitprompt} = Wx::StaticText->new($this, -1, sprintf("  Ifeffit [%4d]> ", 1), wxDefaultPosition, wxDefaultSize);
+  $this->{ifeffitprompt} = Wx::StaticText->new($this, -1, sprintf($prompttext, 1), wxDefaultPosition, wxDefaultSize);
   $hbox->Add( $this->{ifeffitprompt}, 0, wxALL, 2);
   $this->{commandline} = Wx::TextCtrl->new($this, -1, q{}, wxDefaultPosition, [50,-1], wxTE_PROCESS_ENTER|wxHSCROLL);
   $hbox->Add( $this->{commandline}, 1, wxALL|wxGROW, 0);
@@ -129,11 +130,12 @@ sub OnChar {
       $textctrl -> SetValue(q{});
     };
     $skip = 0;
-  } elsif ($code == WXK_UP) {
+  } elsif (($code == WXK_UP) and (@ifeffit_buffer)) {
     $textctrl->SetValue(q{});
     --$pointer;
     $pointer = 0 if ($pointer < 0);
     $textctrl->SetValue($ifeffit_buffer[$pointer]);
+    $textctrl->SetInsertionPointEnd;
     $skip = 0;
   } elsif ($code == WXK_DOWN) {
     $textctrl->SetValue(q{});
@@ -144,9 +146,10 @@ sub OnChar {
     } else {
       $textctrl -> SetValue($ifeffit_buffer[$pointer]);
     };
+    $textctrl->SetInsertionPointEnd;
     $skip = 0;
   };
-  $prompt -> SetLabel(sprintf("Ifeffit [%4d]> ", $pointer+1)) if not $skip;
+  $prompt -> SetLabel(sprintf($prompttext, $pointer+1)) if not $skip;
   $event  -> Skip($skip);
   return;
 };

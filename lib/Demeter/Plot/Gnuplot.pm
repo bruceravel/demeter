@@ -31,6 +31,7 @@ use String::Random qw(random_string);
 
 has 'error_log' => (is => 'ro', isa => 'Str',  default => File::Spec->catfile($Demeter::mode->iwd,
 									      $Demeter::mode->external_plot_object->{__error_log}));
+has '+backend'  => (default => q{gnuplot});
 
 before start_plot => sub {
   my ($self) = @_;
