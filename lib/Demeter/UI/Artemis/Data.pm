@@ -1646,6 +1646,7 @@ sub OnData {
     my $reff = $spref->[3];
     my $ipot = $spref->[4];
     my $sspath = Demeter::SSPath->new(parent => $feff,
+				      data   => $this->{PARENT}->{data},
 				      reff   => $reff,
 				      ipot   => $ipot
 				     );

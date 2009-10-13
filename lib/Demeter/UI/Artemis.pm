@@ -599,14 +599,15 @@ sub set_mru {
 
   my @list = $demeter->get_mru_list('artemis');
   foreach my $f (@list) {
-    $frames{main}->{mrumenu}->Append(-1, $f)
+    $frames{main}->{mrumenu}->Append(-1, $f);
   };
 };
 
 sub OnMenuClick {
   my ($self, $event) = @_;
   my $id = $event->GetId;
-  my $mru = $frames{main}->{mrumenu}->GetLabel($id);
+  my $mru = $frames{main}->{mrumenu}->GetLabelFromText($id);
+  #print "$id    $mru\n";
 
  SWITCH: {
     ($id == wxID_ABOUT) and do {

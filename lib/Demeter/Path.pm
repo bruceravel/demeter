@@ -88,7 +88,7 @@ has 'sp'              => (is=>'rw', isa => 'Any',                  # Empty.'|Dem
 			  trigger => sub{ my($self, $new) = @_; 
 					  if ($new) {
 					    $self->spgroup($new->group);
-					    $self->parent($new->parent) if not $self->parent;
+					    $self->parent($new->feff) if not $self->parent;
 					    $self->make_name;
 					  };
 					});
