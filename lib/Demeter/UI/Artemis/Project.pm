@@ -160,6 +160,12 @@ sub read_project {
     $fit->deserialize(folder=> File::Spec->catfile($projfolder, 'fits', $d));
     $rframes->{main}->{currentfit} = $fit;
     $rframes->{Plot}->{limits}->{fit}->SetValue(1);
+    my $current = $fit->number || 1;
+    ++$current;
+    $fit->mo->currentfit($current);
+    my $name = ($fit->name =~ m{\A\s*Fit\s+\d+\z}) ? 'Fit '.$fit->mo->currentfit : $fit->name;
+    $rframes->{main}->{name}->SetValue($name);
+    $rframes->{main}->{description}->SetValue($fit->description);
   };
 
   ## -------- load up the GDS parameters

@@ -82,6 +82,13 @@ override make_name => sub {
   $self->name($name); # if not $self->name;
 };
 
+
+sub labelline {
+  my ($self) = @_;
+  return sprintf("Reff=%6.3f  nleg=%d   degen=%2d", $self->fuzzy, 2, 1);
+};
+
+
 ## construct the intrp line by disentangling the SP string
 sub intrplist {
   my ($self) = @_;

@@ -23,14 +23,14 @@ use Wx::Event qw(EVT_NOTEBOOK_PAGE_CHANGED EVT_NOTEBOOK_PAGE_CHANGING);
 
 my $icon_dimension = 30;
 
-foreach my $m (qw(Xtal Feff Config Paths Doc Console)) {
+foreach my $m (qw(Xtal Feff Config Paths Doc Console SS)) {
   next if $INC{"Demeter/UI/Atoms/$m.pm"};
   #print "Demeter/UI/Atoms/$m.pm\n";
   require "Demeter/UI/Atoms/$m.pm";
 };
 
 sub new {
-  my ($ref, $base, $feffobject) = @_;
+  my ($ref, $base, $feffobject, $component) = @_;
   my $width  = 100;
   my $self   = $ref->SUPER::new( undef,           # parent window
 				 -1,              # ID -1 means any
@@ -42,13 +42,14 @@ sub new {
   $self->{base} = $base;
   $self->{notebook} = $nb;
   $self->{feffobject} = $feffobject;
+  $self->{component}  = $component;
   my $vbox = Wx::BoxSizer->new( wxVERTICAL);
 
   my $statusbar = $self->CreateStatusBar;
   $statusbar -> SetStatusText("Welcome to Atoms (" . $Demeter::UI::Atoms::demeter->identify . ")");
   $self->{statusbar} = $statusbar;
 
-  my @utilities = qw(Atoms Feff Paths Console Document Configure);
+  my @utilities = ($component) ? qw(Atoms Feff Paths SS Console) : qw(Atoms Feff Paths Console Document Configure);
 
   my $imagelist = Wx::ImageList->new( $icon_dimension, $icon_dimension );
   foreach my $utility (@utilities) {
@@ -69,6 +70,7 @@ sub new {
       : ($utility eq 'Console')   ? Demeter::UI::Atoms::Console -> new($page, $self)
       : ($utility eq 'Document')  ? Demeter::UI::Atoms::Doc     -> new($page, $self)
       : ($utility eq 'Configure') ? Demeter::UI::Atoms::Config  -> new($page, $self)
+      : ($utility eq 'SS')        ? Demeter::UI::Atoms::SS      -> new($page, $self)
       :                             0;
 
     my $hh   = Wx::BoxSizer->new( wxHORIZONTAL );

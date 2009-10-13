@@ -1639,20 +1639,37 @@ sub OnData {
   my $book  = $this->{BOOK};
   $book->DeletePage(0) if $book->GetPage(0) =~ m{Panel};
   my $spref = $this->{DATA}->{Data};
-  my @sparray = map { $demeter->mo->fetch("ScatteringPath", $_) } @$spref;
-  foreach my $sp ( @sparray ) {
-    my $thispath = Demeter::Path->new(
-				      parent => $sp->feff,
-				      data   => $this->{PARENT}->{data},
-				      sp     => $sp,
-				      degen  => $sp->n,
+  my $is_sspath = ($spref->[0] eq 'SSPath') ? 1 : 0;
+  if ($is_sspath) {
+    my $feff = $demeter->mo->fetch("Feff", $spref->[1]);
+    my $name = $spref->[2];
+    my $reff = $spref->[3];
+    my $ipot = $spref->[4];
+    my $sspath = Demeter::SSPath->new(parent => $feff,
+				      reff   => $reff,
+				      ipot   => $ipot
 				     );
-    my $label = $thispath->label;
-
-    my $page = Demeter::UI::Artemis::Path->new($book, $thispath, $this->{PARENT});
-
+    my $label = $sspath->name;
+    my $page = Demeter::UI::Artemis::Path->new($book, $sspath, $this->{PARENT});
     $book->AddPage($page, $label, 1, 0);
+    $page->{pp_n}->SetValue(1);
+    $sspath->make_name;
+    $sspath->set(name=>$name, label=>$name) if ($name);
     $page->include_label;
+  } else {			#  this is a normal path
+    my @sparray = map { $demeter->mo->fetch("ScatteringPath", $_) } @$spref;
+    foreach my $sp ( @sparray ) {
+      my $thispath = Demeter::Path->new(
+					parent => $sp->feff,
+					data   => $this->{PARENT}->{data},
+					sp     => $sp,
+					degen  => $sp->n,
+				       );
+      my $label = $thispath->label;
+      my $page = Demeter::UI::Artemis::Path->new($book, $thispath, $this->{PARENT});
+      $book->AddPage($page, $label, 1, 0);
+      $page->include_label;
+    };
   };
 
   return $def;

@@ -225,7 +225,8 @@ has 'types' => (is => 'ro', isa => 'ArrayRef',
 has 'iwd' => (is => 'rw', isa => 'Str', default => q{});
 has 'cwd' => (is => 'rw', isa => 'Str', default => q{});
 
-has 'pathindex' => (is => 'rw', isa => 'Int', default => 1);
+has 'pathindex'  => (is => 'rw', isa => 'Int', default => 1);
+has 'currentfit' => (is => 'rw', isa => 'Int', default => 1);
 
 has 'echo'		   => (is => 'rw', isa => 'Any');
 has 'datadefault'	   => (is => 'rw', isa => 'Any');
@@ -233,6 +234,12 @@ has 'external_plot_object' => (is => 'rw', isa => 'Any');
 has 'plotting_initialized' => (is => 'rw', isa => 'Bool', default => 0);
 has 'identity'             => (is => 'rw', isa => 'Str',  default => 'Demeter',);
 has 'ui'                   => (is => 'rw', isa => 'Str',  default => 'none',);
+
+sub increment_fit {
+  my ($self) = @_;
+  $self->currentfit($self->currentfit + 1);
+  return $self->currentfit;
+};
 
 sub fetch {
   my ($self, $type, $group) = @_;

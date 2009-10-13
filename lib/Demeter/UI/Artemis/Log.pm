@@ -85,6 +85,7 @@ sub put_log {
               : ($line =~ m{\A(?:R-factor|Reduced)})                        ? 'stats'
               : ($line =~ m{\A(?:=+\s+Data set)})                           ? 'data'
               : ($line =~ m{\A (?:Name|Description|Figure|Time|Environment|Interface|Prepared|Contact)}) ? 'header'
+              : ($line =~ m{\A\s+\.\.\.})                                   ? 'header'
 	      :                                                               'normal';
 
 

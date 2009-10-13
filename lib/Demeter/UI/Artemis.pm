@@ -235,10 +235,10 @@ sub OnInit {
 
   my $descbox      = Wx::StaticBox->new($frames{main}, -1, 'Fit description', wxDefaultPosition, wxDefaultSize);
   my $descboxsizer = Wx::StaticBoxSizer->new( $descbox, wxVERTICAL );
-  my $description  = Wx::TextCtrl->new($frames{main}, -1, q{}, wxDefaultPosition, [-1, 25], wxTE_MULTILINE);
-  $descboxsizer   -> Add($description,  1, wxGROW|wxALL, 0);
+  $frames{main}->{description}  = Wx::TextCtrl->new($frames{main}, -1, q{}, wxDefaultPosition, [-1, 25], wxTE_MULTILINE);
+  $descboxsizer   -> Add($frames{main}->{description},  1, wxGROW|wxALL, 0);
   $vbox           -> Add($descboxsizer, 1, wxGROW|wxALL, 0);
-  mouseover($description, "Use this space to fully describe this fitting model.");
+  mouseover($frames{main}->{description}, "Use this space to fully describe this fitting model.");
 
   $vbox = Wx::BoxSizer->new( wxVERTICAL);
   $hbox -> Add($vbox, 0, wxGROW|wxALL, 0);
@@ -451,6 +451,10 @@ sub fit {
   ## get name, fom, and description + other properties
   my $fit = Demeter::Fit->new(data => \@data, paths => \@paths, gds => \@gds);
   $fit->interface("Artemis (Wx $Wx::VERSION)");
+  my $name = $rframes->{main}->{name}->GetValue || 'Fit '.$fit->mo->currentfit;
+  $fit->name($name);
+  $fit->description($rframes->{main}->{description}->GetValue);
+  $fit -> fom($fit->mo->currentfit);
   #$fit->ignore_errors(1);
   $rframes->{main} -> {currentfit} = $fit;
 
@@ -510,7 +514,9 @@ sub fit {
     $rframes->{main}->{statusbar}->SetStatusText("The error report from the fit that just failed are written in the log window.");
   };
 
-
+  my $this_name = $fit->name;
+  $rframes->{main}->{name}->SetValue("Fit ". $fit->mo->currentfit) if ($this_name =~ m{\A\s*Fit\s+\d+\z});
+  $rframes->{main}->{description}->SetValue($fit->description);
   undef $busy;
 };
 
@@ -823,7 +829,7 @@ sub make_feff_frame {
   my $ifeff = $newtool->GetId;
   my $fnum = sprintf("feff%s", $ifeff);
   my $base = File::Spec->catfile($self->{project_folder}, 'feff');
-  $frames{$fnum} =  Demeter::UI::AtomsApp->new($base, $feffobject);
+  $frames{$fnum} =  Demeter::UI::AtomsApp->new($base, $feffobject, 1);
   $frames{$fnum} -> SetTitle('Artemis [Feff] Atoms and Feff');
   $frames{$fnum} -> SetIcon($icon);
   $frames{$fnum}->{Atoms}->Demeter::UI::Atoms::Xtal::open_file($file);

@@ -63,6 +63,7 @@ has 'time_of_fit'    => (is => 'rw', isa => 'Str',    default => q{});  # should
 has 'prepared_by'    => (is => 'rw', isa => 'Str',    default => sub{ shift->who });
 has 'contact'        => (is => 'rw', isa => 'Str',    default => q{});
 has 'fitted'         => (is => 'rw', isa => 'Bool',   default => 0);
+has 'number'         => (is => 'rw', isa => 'Num',    default => 0);
 
 ## -------- serialization/deserialization
 has 'project'        => (is => 'rw', isa => 'Str',    default => q{},
@@ -153,6 +154,7 @@ has 'correlations' => (
 sub BUILD {
   my ($self, @params) = @_;
   $self->mo->push_Fit($self);
+  $self->number($self->mo->currentfit);
 };
 
 #   sub set_all {
@@ -288,6 +290,7 @@ sub fit {
 
   $self->start_spinner("Demeter is performing a fit") if ($self->mo->ui eq 'screen');
   my $prefit = $self->pre_fit;
+  $self->number($self->mo->currentfit);
 
   my $trouble_found = $self->_verify_fit;
   if ($trouble_found) {
@@ -410,6 +413,7 @@ sub fit {
 
   $self->fitted(1);
   $self->mo->fit(q{});
+  $self->mo->increment_fit;
   #$_->update_fft(1) foreach (@datasets);
 
   $self->stop_spinner if ($self->mo->ui eq 'screen');
@@ -729,7 +733,13 @@ sub properties_header {
   my ($self) = @_;
   my $string = "\n";
   foreach my $k (@keys) {
-    $string .= sprintf " %-15s : %s\n", $properties{$k}, $self->$k;
+    if ($k eq 'description') {
+      my @lines = split($/, $self->$k);
+      $string .= sprintf " %-15s : %s\n", $properties{$k}, shift @lines;
+      $string .= (sprintf " %-15s   %s\n", '        ...', $_) foreach @lines;
+    } else {
+      $string .= sprintf " %-15s : %s\n", $properties{$k}, $self->$k;
+    };
   };
   return $string;
 };
