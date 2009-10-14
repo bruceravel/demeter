@@ -17,7 +17,7 @@
 
 =cut
 
-use Test::More tests => 22;
+use Test::More tests => 23;
 
 use Demeter;
 use List::MoreUtils qw(all);
@@ -96,3 +96,6 @@ $this->delr_value(1);
 @list = $this->is_resonable('delr');
 ok(!$list[0],                                           'delr sanity test, too large');
 
+my $feff = Demeter::Feff -> new;
+$this->parent($feff);
+ok($this->parent eq $this->feff,                        'feff as alias for parent attribute');

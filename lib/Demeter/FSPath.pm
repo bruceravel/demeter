@@ -16,6 +16,7 @@ package Demeter::FSPath;
 =cut
 
 use Moose;
+use MooseX::Aliases;
 use MooseX::AttributeHelpers;
 use MooseX::StrictConstructor;
 extends 'Demeter::Path';
@@ -64,7 +65,7 @@ has 'distance'	   => (is => 'rw', isa =>  PosNum,  default => sub{ shift->co->de
 				    });
 has 'coordination' => (is => 'rw', isa =>  PosInt,  default => 6,);
 
-has '+parent'      => (default => sub{ Demeter::Feff->new(name=>'qfs', screen=>0, hidden=>1) });
+has '+parent'      => (default => sub{ Demeter::Feff->new(name=>'qfs', screen=>0, hidden=>1) },);
 has 'workspace'    => (is => 'rw', isa => 'Str',   default => q{},
 		      trigger => sub{ my $this = shift;
 				      $this->parent(Demeter::Feff->new(name=>'qfs', screen=>0)) if not $this->parent;

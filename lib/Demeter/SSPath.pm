@@ -99,9 +99,11 @@ sub intrplist {
 
 sub intrpline {
   my ($self, $i) = @_;
-  $i ||= 9999;
+  #print join($/,     $i, $self->n, $self->reff, $self->intrplist, $self->weight, $self->nleg, $self->Type), $/;
+  #$i ||= 9999;
+
   return sprintf " %4.4d  %2d   %6.3f  ----  %-29s       %2d  %d %s",
-    $i, $self->n, $self->reff, $self->intrplist, $self->weight, $self->nleg, $self->Type;
+    9999, $self->n, $self->reff, $self->intrplist, $self->weight, $self->nleg, $self->Type;
 };
 
 sub pathsdat {
@@ -193,8 +195,9 @@ objects can be used as you wish in the Fit object's path list.
 As with any Moose object, the attribute names are the name of the
 accessor methods.
 
-Along with the standard attributes of a Demeter object (C<name>,
-C<plottable>, C<data>, and so on), an SSPath has the following:
+This extends L<Demeter::Path>.  Along with the standard attributes of
+any Demeter object (C<name>, C<plottable>, C<data>, and so on), and of
+the Path object, an SSPath has the following:
 
 =over 4
 

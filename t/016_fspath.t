@@ -17,7 +17,7 @@
 
 =cut
 
-use Test::More tests => 15;
+use Test::More tests => 16;
 
 use Demeter;
 use File::Path;
@@ -56,5 +56,7 @@ $this->workspace('./fs');
 $this->_update('path');
 ok( $this->parent =~ m{Feff},              'Feff object associated');
 ok( $this->feff_done,                      'Feff calculation was made');
+
+ok($this->parent eq $this->feff,           'feff as alias for parent attribute');
 
 rmtree('./fs');

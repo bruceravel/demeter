@@ -17,7 +17,7 @@
 
 =cut
 
-use Test::More tests => 16;
+use Test::More tests => 17;
 
 use Demeter;
 
@@ -77,5 +77,7 @@ ok( $list[0],                          'e0 sanity test, ok');
 $this->e0_value(30);
 @list = $this->is_resonable('e0');
 ok(!$list[0],                          'e0 sanity test, too large');
+
+ok($this->parent eq $this->feff,           'feff as alias for parent attribute');
 
 $feff -> clean_workspace;

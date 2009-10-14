@@ -30,6 +30,7 @@ package Demeter::ScatteringPath;
 use autodie qw(open close);
 
 use Moose;
+use MooseX::Aliases;
 extends 'Demeter';
 with 'Demeter::ScatteringPath::Histogram';
 #use Demeter::NumTypes qw( PosInt Natural NonNeg );
@@ -71,7 +72,7 @@ my $rtangle = $Demeter::config->default("pathfinder", "rt_angle");
 ## Moose-y overhead
 
 		     ## caller provides these two
-has 'feff'	   => (is => 'rw', isa => 'Demeter::Feff');
+has 'feff'	   => (is => 'rw', isa => 'Demeter::Feff', alias => 'parent');
 has 'string'	   => (is => 'rw', isa => 'Str',      default => q{});
 
 has 'nkey'	   => (is => 'rw', isa => 'Int',      default => 0); # integer key built from atoms indeces
@@ -741,7 +742,7 @@ attributes, but often C<get> them.
 =item C<feff>
 
 A reference to the Feff object from which this ScatteringPath was
-created.
+created.  C<parent> is an alias for C<feff>.
 
 =item C<string>
 

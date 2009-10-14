@@ -17,7 +17,7 @@
 
 =cut
 
-use Test::More tests => 24;
+use Test::More tests => 25;
 
 use Demeter;
 use Cwd;
@@ -50,9 +50,10 @@ my $file    = ($demeter->is_windows) ? $orig : 't/withHg.inp';
 my $feff    = Demeter::Feff -> new(workspace => $where, file => $orig, screen => 0);
 $feff -> rmax(4.5);
 $feff -> pathfinder;
-print $feff -> intrp;
+#print $feff -> intrp;
 
 my $p = $feff -> find_path(tag=>'N13');
+ok($p->parent eq $p->feff,                             'parent as alias for feff attribute');
 ok( abs($p->fuzzy - 4.191) < 0.001,                     sprintf("find SS path by exact tag (%s)",$p->fuzzy));
 
 my $pp = $feff -> find_path(tagmatch=>'N');

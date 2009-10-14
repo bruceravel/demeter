@@ -1244,23 +1244,30 @@ override 'deserialize' => sub {
   foreach my $plotlike (@list) {
     my $dg = $plotlike->{datagroup};
     $plotlike->{data} = $datae{$dg};
-    if (exists $plotlike->{absorber}) { # this is an FSPath
+    if (exists $plotlike->{absorber}) {  # this is an FSPath
       delete $plotlike->{$_} foreach qw(workspace Type weight string pathtype plottable);
+    } elsif (exists $plotlike->{ipot}) { # this is an SSPath
+      delete $plotlike->{$_} foreach qw(Type weight string pathtype plottable);
     };
     my @array = %{ $plotlike };
     my $this;
-    if (exists $plotlike->{ipot}) {
-      $this = Demeter::SSPath->new(@array);
+    if (exists $plotlike->{ipot}) {          # this is an SSPath
+      my $feff = $parents{$plotlike->{parentgroup}} || $data[0] -> mo -> fetch('Feff', $plotlike->{parentgroup});
+      $this = Demeter::SSPath->new(parent=>$feff);
+      $this -> set(@array);
       $this -> sp($this);
-    } elsif (exists $plotlike->{absorber}) {
+      #print $this, "  ", $this->sp, $/;
+    } elsif (exists $plotlike->{absorber}) { # this is an FSPath
       my $feff = $parents{$plotlike->{parentgroup}} || $data[0] -> mo -> fetch('Feff', $plotlike->{parentgroup});
       $this = Demeter::FSPath->new(workspace=>$feff->workspace);
       $this -> set(@array);
-      my $sp = $sps{$this->spgroup} || $data[0] -> mo -> fetch('Feff', $this->spgroup);
+      my $sp = $sps{$this->spgroup} || $data[0] -> mo -> fetch('ScatteringPath', $this->spgroup);
       $this -> sp($sp);
     } else {
       $this = Demeter::Path->new(@array);
-      $this -> sp($sps{$this->spgroup});
+      my $sp = $sps{$this->spgroup} || $data[0] -> mo -> fetch('ScatteringPath', $this->spgroup);
+      $this -> sp($sp);
+      #print $this, "  ", $this->sp, $/;
     };
     $this -> datagroup($dg);
     ## reconnect object relationships

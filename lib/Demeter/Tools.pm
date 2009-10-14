@@ -69,6 +69,7 @@ sub module_environment {
   foreach my $p (qw(
 		     Ifeffit
 		     Moose
+		     MooseX::Aliases
 		     MooseX::AttributeHelpers
 		     MooseX::Clone
 		     MooseX::StrictConstructor

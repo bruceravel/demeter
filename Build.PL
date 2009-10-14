@@ -57,6 +57,7 @@ my $build = $class
 				'Module::Build'	            => '0',
 
 				'Moose'			    => '0.63',
+				'MooseX::Aliases'           => '0.05',
 				'MooseX::AttributeHelpers'  => '0.13',
 				'MooseX::Clone'		    => '0.03',
 				'MooseX::StrictConstructor' => '0.08',

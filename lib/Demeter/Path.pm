@@ -18,6 +18,7 @@ package Demeter::Path;
 use autodie qw(open close);
 
 use Moose;
+use MooseX::Aliases;
 use MooseX::StrictConstructor;
 extends 'Demeter';
 use Demeter::StrTypes qw( Empty PathParam );
@@ -82,7 +83,8 @@ has 'phase_array'     => (is=>'rw', isa=>'Str', default => q{});
 ## object relationships
 has 'parentgroup'     => (is=>'rw', isa => 'Str', default => q{});
 has 'parent'          => (is=>'rw', isa => 'Any', default => q{},  # Empty.'|Demeter::Feff'
-			  trigger => \&set_parent);
+			  trigger => \&set_parent,
+			  alias   => 'feff');
 has 'spgroup'         => (is=>'rw', isa => 'Str', default => q{});
 has 'sp'              => (is=>'rw', isa => 'Any',                  # Empty.'|Demeter::ScatteringPath|Demeter::SSPath'
 			  trigger => sub{ my($self, $new) = @_; 
@@ -608,6 +610,7 @@ attibute.
 =item C<parent> (Feff object)
 
 This is the reference to the Feff object that this Path is a part of.
+C<feff> is an alias for C<parent>.
 
 =item C<data> (Data object)
 

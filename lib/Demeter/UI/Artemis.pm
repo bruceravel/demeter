@@ -40,6 +40,7 @@ Readonly my $EXPORT_IFEFFIT => Wx::NewId();
 Readonly my $EXPORT_DEMETER => Wx::NewId();
 Readonly my $PLOT_YAML      => Wx::NewId();
 Readonly my $MODE_STATUS    => Wx::NewId();
+Readonly my $PERL_MODULES   => Wx::NewId();
 
 use Wx::Perl::Carp;
 $SIG{__WARN__} = sub {Wx::Perl::Carp::warn($_[0])};
@@ -134,6 +135,7 @@ sub OnInit {
   my $debugmenu = Wx::Menu->new;
   $debugmenu->Append($PLOT_YAML, "Show YAML for Plot object",  "Show YAML for Plot object",  wxITEM_NORMAL );
   $debugmenu->Append($MODE_STATUS, "Mode status",  "Mode status",  wxITEM_NORMAL );
+  $debugmenu->Append($PERL_MODULES, "Perl modules", "Show perl module versions", wxITEM_NORMAL );
 
   my $helpmenu = Wx::Menu->new;
   $helpmenu->Append(wxID_ABOUT, "&About..." );
@@ -599,6 +601,7 @@ sub set_mru {
 
   my @list = $demeter->get_mru_list('artemis');
   foreach my $f (@list) {
+    #print ">> $f\n";
     $frames{main}->{mrumenu}->Append(-1, $f);
   };
 };
@@ -606,8 +609,9 @@ sub set_mru {
 sub OnMenuClick {
   my ($self, $event) = @_;
   my $id = $event->GetId;
-  my $mru = $frames{main}->{mrumenu}->GetLabelFromText($id);
+  my $mru = $frames{main}->{mrumenu}->GetLabel($id);
   #print "$id    $mru\n";
+  $mru =~ s{__}{_}g; 		# wtf!?!?!?
 
  SWITCH: {
     ($id == wxID_ABOUT) and do {
@@ -667,6 +671,12 @@ sub OnMenuClick {
       $frames{Plot}->fetch_parameters;
       my $yaml   = $demeter->po->serialization;
       my $dialog = Demeter::UI::Artemis::ShowText->new($frames{main}, $yaml, 'YAML of Plot object') -> Show;
+      last SWITCH;
+    };
+
+    ($id == $PERL_MODULES) and do {
+      my $text   = $demeter->module_environment . $demeter -> wx_environment;
+      my $dialog = Demeter::UI::Artemis::ShowText->new($frames{main}, $text, 'Perl module versions') -> Show;
       last SWITCH;
     };
 

@@ -201,8 +201,8 @@ sub read_project {
       $p->set(folder=>$feff->workspace, file=>q{}, update_path=>1);
       next if ($p->data ne $d);
       $p->parent($feff);
-      my $this_sp = find_sp($p, \%feffs) || $fit->mo->fetch('ScatteringPath', $p->spgroup);
-      $p->sp($this_sp);
+      #my $this_sp = find_sp($p, \%feffs) || $fit->mo->fetch('ScatteringPath', $p->spgroup);
+      #$p->sp($this_sp);
       my $page = Demeter::UI::Artemis::Path->new($rframes->{$dnum}->{pathlist}, $p, $rframes->{$dnum});
       my $n = $rframes->{$dnum}->{pathlist}->AddPage($page, $p->label, 1, 0);
       $page->include_label;

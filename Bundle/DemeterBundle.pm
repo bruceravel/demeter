@@ -34,6 +34,8 @@ YAML
 
 Moose
 
+MooseX::Aliases
+
 MooseX::AttributeHelpers
 
 MooseX::Clone

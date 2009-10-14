@@ -310,7 +310,8 @@ sub report {
   my ($self, $which) = @_;
   my $text = q{};
   foreach my $this (sort @{$self->types}) {
-    $text .= sprintf("\n%-20s %d\n", $this, $#{$self->$this}+1);
+    my $n = 19 - length($this);
+    $text .= sprintf("\n%s %s %d\n", $this, '.' x $n, $#{$self->$this}+1);
     if (($this eq $which) or ($which eq 'all')) {
       my $att = ($this eq 'ScatteringPath') ? 'intrpline'
 	      : ($this eq 'Plot')           ? 'backend'
