@@ -87,6 +87,7 @@ sub S_defined_not_used {
     };
     foreach my $p (@paths) {
       next if (ref($p) !~ m{Path});
+      next if not $p->include;
       last if $found;
       foreach my $pp (qw(s02 e0 delr sigma2 ei third fourth dphase)) {
 	++$found if ($p->$pp =~ /\b$name\b/);
@@ -138,6 +139,7 @@ sub S_used_not_defined {
   };
   foreach my $p (@paths) {
     next if not defined($p);
+    next if not $p->include;
     my $label = $p->name;
     foreach my $pp (qw(s02 e0 delr sigma2 ei third fourth dphase)) {
       my @list = split(/$tokenizer_regexp+/, $p->$pp);

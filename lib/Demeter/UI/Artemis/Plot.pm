@@ -128,7 +128,7 @@ sub new {
   $groupboxsizer -> Add($hbox, 0, wxGROW|wxALL, 0);
   $this->{freeze} = Wx::CheckBox->new($this, -1, "&Freeze");
   $hbox -> Add($this->{freeze}, 1, wxGROW|wxALL, 5);
-  $this->{clear} = Wx::Button->new($this, -1, "&Clear", wxDefaultPosition, wxDefaultSize);
+  $this->{clear} = Wx::Button->new($this, wxID_CLEAR, q{}, wxDefaultPosition, wxDefaultSize);
   $hbox -> Add($this->{clear}, 1, wxGROW|wxALL, 5);
   EVT_BUTTON($this, $this->{clear}, sub{$_[0]->{plotlist}->Clear; $_[0]->{freeze}->SetValue(0);});
 

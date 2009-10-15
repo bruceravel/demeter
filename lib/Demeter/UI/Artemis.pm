@@ -245,7 +245,7 @@ sub OnInit {
   $vbox = Wx::BoxSizer->new( wxVERTICAL);
   $hbox -> Add($vbox, 0, wxGROW|wxALL, 0);
 
-  $frames{main}->{fitbutton}  = Wx::Button->new($frames{main}, -1, "Fit", wxDefaultPosition, wxDefaultSize);
+  $frames{main}->{fitbutton}  = Wx::Button->new($frames{main}, -1, "F&it", wxDefaultPosition, wxDefaultSize);
   $frames{main}->{fitbutton} -> SetForegroundColour(Wx::Colour->new("#000000"));
   $frames{main}->{fitbutton} -> SetBackgroundColour(Wx::Colour->new($demeter->co->default("happiness", "average_color")));
   $frames{main}->{fitbutton} -> SetFont(Wx::Font->new( 10, wxDEFAULT, wxNORMAL, wxBOLD, 0, "" ) );

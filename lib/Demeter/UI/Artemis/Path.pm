@@ -186,6 +186,8 @@ sub populate {
   $this->{pp_ei}     -> SetValue($pathobject->ei     || q{});
   $this->{pp_third}  -> SetValue($pathobject->third  || q{});
   $this->{pp_fourth} -> SetValue($pathobject->fourth || q{});
+
+  $this->{include}   -> SetValue($pathobject->include);
 };
 
 sub fetch_parameters {

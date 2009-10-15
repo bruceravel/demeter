@@ -37,7 +37,7 @@ sub new {
   $text -> SetFont(Wx::Font->new( 10, wxTELETYPE, wxNORMAL, wxNORMAL, 0, "" ) );
   $text -> SetValue($content);
   $vbox  -> Add($text, 1, wxGROW|wxALL, 5);
-  my $button = Wx::Button->new($this, wxID_OK, "OK", wxDefaultPosition, wxDefaultSize, 0,);
+  my $button = Wx::Button->new($this, wxID_OK, q{}, wxDefaultPosition, wxDefaultSize, 0,);
   $vbox -> Add($button, 0, wxGROW|wxALL, 5);
 
 

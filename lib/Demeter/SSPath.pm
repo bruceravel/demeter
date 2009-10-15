@@ -71,7 +71,7 @@ sub set_tag {
   my @ipots = @{ $feff->potentials };
   my $tag   = $ipots[$self->ipot]->[2] || get_symbol($ipots[$self->ipot]->[1]);
   $self->tag($tag);
-  $self->make_name;
+  $self->make_name  if not $self->name;
   return $self;
 };
 

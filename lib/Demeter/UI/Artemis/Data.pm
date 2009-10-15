@@ -1614,6 +1614,7 @@ use base qw(Wx::DropTarget);
 use Demeter::UI::Artemis::DND::PathDrag;
 use Demeter::UI::Artemis::Path;
 
+use Scalar::Util qw(looks_like_number);
 use Regexp::List;
 my $opt  = Regexp::List->new;
 
@@ -1637,7 +1638,7 @@ sub OnData {
   my ($this, $x, $y, $def) = @_;
   $this->GetData;		# this line is what transfers the data from the Source to the Target
   my $book  = $this->{BOOK};
-  $book->DeletePage(0) if $book->GetPage(0) =~ m{Panel};
+  $book->DeletePage(0) if ($book->GetPage(0) =~ m{Panel});
   my $spref = $this->{DATA}->{Data};
   my $is_sspath = ($spref->[0] eq 'SSPath') ? 1 : 0;
   if ($is_sspath) {
@@ -1645,6 +1646,12 @@ sub OnData {
     my $name = $spref->[2];
     my $reff = $spref->[3];
     my $ipot = $spref->[4];
+    if (not looks_like_number($reff)) {
+      my $text = "Your distance, $reff, is not a number.  This arbitrary single scattering path cannot be created.";
+      $this->{PARENT}->{statusbar}->SetStatusText($text);
+      Wx::MessageDialog->new($this->{PARENT}, $text, "Error!", wxOK|wxICON_ERROR) -> ShowModal;
+      return $def;
+    };
     my $sspath = Demeter::SSPath->new(parent => $feff,
 				      data   => $this->{PARENT}->{data},
 				      reff   => $reff,
