@@ -719,6 +719,7 @@ sub plot {
 	   :                     q{};
   $self->{statusbar}->SetStatusText(sprintf("Plotted \"%s\" %s.",
 					    $self->{data}->name, $text));
+  $Demeter::UI::Artemis::frames{Plot}->{indicators}->plot($self->{data});
 };
 
 sub OnMenuClick {

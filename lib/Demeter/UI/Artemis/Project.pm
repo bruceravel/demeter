@@ -76,6 +76,12 @@ sub save_project {
 
   my $po = $rframes->{main} -> {currentfit}->po;
   $po -> serialize(File::Spec->catfile($rframes->{main}->{plot_folder}, 'plot.yaml'));
+  open(my $IN, '>'.File::Spec->catfile($rframes->{main}->{plot_folder}, 'indicators.yaml'));
+  foreach my $j (1..5) {
+    my $this = $rframes->{Plot}->{indicators}->{'group'.$j};
+    print $IN $Demeter::UI::Artemis::demeter->mo->fetch('Indicator', $this) -> serialization;
+  };
+  close $IN;
 
   my $zip = Archive::Zip->new();
   $zip->addTree( $rframes->{main}->{project_folder}, "",  sub{ not m{\.sp$} });
@@ -221,6 +227,11 @@ sub read_project {
   if (-e $py) {
     $Demeter::UI::Artemis::demeter->po->set(%{YAML::LoadFile($py)});
     $rframes->{Plot}->populate;
+  };
+  my $iy = File::Spec->catfile($rframes->{main}->{plot_folder}, 'indicators.yaml');
+  if (-e $iy) {
+    my @list = YAML::LoadFile($iy);
+    $rframes->{Plot}->{indicators}->populate(@list);
   };
 
   $rframes->{Log}->{name} = $fit->name;

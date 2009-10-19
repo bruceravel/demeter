@@ -109,7 +109,12 @@ sub y2coord {
   return sprintf("%.8g", $y2 + $self->mo->standard->y_offset);
 };
 
+sub report {
+  my ($self) = @_;
+  return sprintf("at %s = %.3f (%s)", $self->space, $self->x, ($self->active)?'active':'inactive');
+};
 
+__PACKAGE__->meta->make_immutable;
 1;
 
 

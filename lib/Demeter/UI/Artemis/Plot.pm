@@ -27,7 +27,7 @@ use Demeter::UI::Artemis::Plot::Stack;
 use Demeter::UI::Artemis::Plot::Indicators;
 use Demeter::UI::Artemis::Plot::VPaths;
 
-use List::Util qw(sum);
+use List::Util qw(first sum);
 
 my $demeter = $Demeter::UI::Artemis::demeter;
 
@@ -247,6 +247,9 @@ sub plot {
   } else {			# plot normally
     $_->plot($space) foreach @list;
   };
+
+  my $ds = first {ref($_) =~ m{Data}} @list;
+  $self->{indicators}->plot($ds);
 
   $self->{last} = $space;
   undef $busy;

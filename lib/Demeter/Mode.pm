@@ -315,10 +315,11 @@ sub report {
     if (($this eq $which) or ($which eq 'all')) {
       my $att = ($this eq 'ScatteringPath') ? 'intrpline'
 	      : ($this eq 'Plot')           ? 'backend'
+	      : ($this eq 'Indicator')      ? 'report'
 	      :                               'name';
       my $i = 0;
       foreach my $obj (@{$self->$this}) {
-	$text .= sprintf("\t%3d: %s\n", ++$i, $obj->$att);
+	$text .= sprintf("\t%3d (%s) : %s\n", ++$i, $obj->group, $obj->$att);
       };
     };
   };
