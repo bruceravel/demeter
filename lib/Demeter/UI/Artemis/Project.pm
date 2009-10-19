@@ -74,17 +74,18 @@ sub save_project {
     $fname = File::Spec->catfile($fd->GetDirectory, $fd->GetFilename);
   };
 
-
+  my $po = $rframes->{main} -> {currentfit}->po;
+  $po -> serialize(File::Spec->catfile($rframes->{main}->{plot_folder}, 'plot.yaml'));
 
   my $zip = Archive::Zip->new();
   $zip->addTree( $rframes->{main}->{project_folder}, "",  sub{ not m{\.sp$} });
   carp('error writing zip-style project') unless ($zip->writeToFileNamed( $fname ) == AZ_OK);
   undef $zip;
 
-  $Demeter::UI::Artemis::demeter->push_mru("artemis", $fname);
+  $Demeter::UI::Artemis::demeter->push_mru("artemis", File::Spec->rel2abs($fname));
   &Demeter::UI::Artemis::set_mru;
   $rframes->{main}->{projectname} = basename($fname, '.fpj');
-  $rframes->{main}->{projectpath} = $fname;
+  $rframes->{main}->{projectpath} = File::Spec->rel2abs($fname);
   $rframes->{main}->{statusbar}->SetStatusText("Saved project as ".$rframes->{main}->{projectpath});
   modified(0);
 };
@@ -216,7 +217,13 @@ sub read_project {
     ++$count;
   };
 
-  #$rframes->{Log}->{text}->SetValue($fit->logtext);
+  my $py = File::Spec->catfile($rframes->{main}->{plot_folder}, 'plot.yaml');
+  if (-e $py) {
+    $Demeter::UI::Artemis::demeter->po->set(%{YAML::LoadFile($py)});
+    $rframes->{Plot}->populate;
+  };
+
+  $rframes->{Log}->{name} = $fit->name;
   $rframes->{Log}->put_log($fit->logtext, $fit->color);
   $rframes->{Log}->SetTitle("Artemis [Log] " . $rframes->{main}->{name}->GetValue);
   $rframes->{Log}->Show(0);

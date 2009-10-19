@@ -299,6 +299,8 @@ sub OnInit {
     print $ORDER $string;
     close $ORDER;
   };
+  $frames{main}->{plot_folder} = File::Spec->catfile($frames{main}->{project_folder}, 'plot');
+  mkpath($frames{main}->{plot_folder}, 0);
 
   set_mru();
   ## now that everything is established, set up disposal callbacks to
@@ -417,6 +419,7 @@ sub uptodate {
       push @paths, $path->{path};
     };
   };
+  $rframes->{Plot}->fetch_parameters;
 
   modified(1);
   return ($abort, \@data, \@paths);
@@ -478,6 +481,7 @@ sub fit {
     close $ORDER;
 
     $rframes->{GDS}->fill_results(@gds);
+    $rframes->{Log}->{name} = $fit->name;
     $rframes->{Log}->put_log($fit->logtext, $fit->color);
     $rframes->{Log}->SetTitle("Artemis [Log] " . $rframes->{main}->{name}->GetValue);
     $rframes->{Log}->Show(1);
@@ -632,7 +636,7 @@ sub OnMenuClick {
     };
     ($id == wxID_SAVE) and do {
       #my $fpj = File::Spec->catfile();
-      save_project(\%frames, $frames{main}->{projectname}.'.fpj');
+      save_project(\%frames, $frames{main}->{projectpath});
       last SWITCH;
     };
     ($id == wxID_SAVEAS) and do {

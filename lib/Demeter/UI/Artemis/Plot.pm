@@ -58,10 +58,10 @@ sub new {
 
   my $buttonbox  = Wx::BoxSizer->new( wxHORIZONTAL );
   $left -> Add($buttonbox, 0, wxGROW|wxALL, 5);
-  $this->{k_button} = Wx::Button->new($this, -1, "&k", wxDefaultPosition, [50,-1]);
-  $this->{r_button} = Wx::Button->new($this, -1, "&R", wxDefaultPosition, [50,-1] );
-  $this->{q_button} = Wx::Button->new($this, -1, "&q", wxDefaultPosition, [50,-1] );
-  foreach my $b (qw(k_button r_button q_button)) {
+  $this->{k_button}   = Wx::Button->new($this, -1, "&k", wxDefaultPosition, [50,-1]);
+  $this->{r_button}   = Wx::Button->new($this, -1, "&R", wxDefaultPosition, [50,-1] );
+  $this->{'q_button'} = Wx::Button->new($this, -1, "&q", wxDefaultPosition, [50,-1] );
+  foreach my $b ('k_button', 'r_button', 'q_button') {
     $buttonbox -> Add($this->{$b}, 1, wxALL, 2);
     $this->{$b} -> SetForegroundColour(Wx::Colour->new("#000000"));
     $this->{$b} -> SetBackgroundColour(Wx::Colour->new($Demeter::UI::Artemis::demeter->co->default("happiness", "average_color")));
@@ -161,6 +161,41 @@ sub fetch_parameters {
   foreach my $p (qw(kmin kmax rmin rmax qmin qmax)) {
     $demeter->po->$p($self->{limits}->{$p}->GetValue);
   };
+  $demeter->po->stackdo($self->{stack}->{dostack}->GetValue);
+  $demeter->po->stackstart($self->{stack}->{start}->GetValue);
+  $demeter->po->stackinc($self->{stack}->{increment}->GetValue);
+  $demeter->po->stackdata($self->{stack}->{offset}->GetValue);
+  my $val = ($self->{stack}->{invert}->GetStringSelection eq 'Never')  ? 0
+          : ($self->{stack}->{invert}->GetStringSelection =~ m{Only})  ? 2
+          :                                                              1;
+  $demeter->po->invert_paths($val);
+};
+
+sub populate {
+  my ($self) = @_;
+  foreach my $p (qw(kmin kmax rmin rmax qmin qmax)) {
+    $self->{limits}->{$p}->SetValue($demeter->po->$p);
+  };
+  $self->{kweight}->SetSelection($demeter->po->kweight);
+  my $val = ($demeter->po->r_pl eq 'm') ? 0
+          : ($demeter->po->r_pl eq 'r') ? 1
+	  :                               2;
+  $self->{limits}->{rpart}      -> SetSelection($val);
+  $val    = ($demeter->po->q_pl eq 'm') ? 0
+          : ($demeter->po->q_pl eq 'r') ? 1
+	  :                               2;
+  $self->{limits}->{qpart}      -> SetSelection($val);
+  $self->{limits}->{fit}        -> SetValue($demeter->po->plot_fit);
+  $self->{limits}->{background} -> SetValue($demeter->po->plot_bkg);
+  $self->{limits}->{window}     -> SetValue($demeter->po->plot_win);
+  $self->{limits}->{residual}   -> SetValue($demeter->po->plot_res);
+  $self->{limits}->{running}    -> SetValue($demeter->po->plot_run);
+
+  $self->{stack} ->{dostack}    -> SetValue($demeter->po->stackdo);
+  $self->{stack} ->{start}      -> SetValue($demeter->po->stackstart);
+  $self->{stack} ->{increment}  -> SetValue($demeter->po->stackinc);
+  $self->{stack} ->{offset}     -> SetValue($demeter->po->stackdata);
+  $self->{stack} ->{invert}     -> SetSelection($demeter->po->invert_paths);
 };
 
 sub plot {

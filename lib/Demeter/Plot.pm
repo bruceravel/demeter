@@ -52,6 +52,7 @@ eval "PGPLOT->import" if $PGPLOT_exists;
   no warnings;
   my $foo = *PGPLOT::HANDLE;
 }
+use List::MoreUtils qw(zip);
 use Regexp::List;
 use Regexp::Optimizer;
 use Regexp::Common;
@@ -150,6 +151,11 @@ has 'markersize'     => (is => 'rw', isa =>  'Num',           default => sub{ sh
 has 'markercolor'    => (is => 'rw', isa =>  'Str',           default => sub{ shift->co->default("marker", "color")    || "orange"});
 
 has 'stackjump'      => (is => 'rw', isa =>  'Num',           default => 0);
+has 'stackstart'     => (is => 'rw', isa =>  'Num',           default => 0);
+has 'stackinc'       => (is => 'rw', isa =>  'Num',           default => 0);
+has 'stackdo'        => (is => 'rw', isa =>  'Bool',          default => 0);
+has 'stackdata'      => (is => 'rw', isa =>  'Num',           default => 0);
+has 'invert_paths'   => (is => 'rw', isa =>  'Int',           default => 0);
 
 ## -------- miscellaneous plotting parameters
 has 'New'    => (is => 'rw', isa =>  'Bool',          default => 0);
@@ -193,6 +199,14 @@ override 'alldone' => sub {
   my ($self) = @_;
   $self->end_plot;
   $self->remove;
+};
+
+sub all {
+  my ($self) = @_;
+  my @keys   = map {$_->name} grep {$_->name !~ m{\A(?:data|plot|plottable|is_mc|mode|error_log|lastplot|tempfiles|pathtype)\z}} $self->meta->get_all_attributes;
+  my @values = map {$self->$_} @keys;
+  my %hash   = zip(@keys, @values);
+  return %hash;
 };
 
 ## this is a little crufty, but I don't want to save all attribute

@@ -107,34 +107,34 @@ sub new {
 
   $label    = Wx::StaticText->new($this, -1, "kmin");
   $this->{kmin} = Wx::TextCtrl  ->new($this, -1, $demeter->co->default("plot", "kmin"),
-				  wxDefaultPosition, [50,-1]);
+				      wxDefaultPosition, [50,-1]);
   $gbs     -> Add($label,    Wx::GBPosition->new(0,1));
   $gbs     -> Add($this->{kmin}, Wx::GBPosition->new(0,2));
   $label    = Wx::StaticText->new($this, -1, "kmax");
   $this->{kmax} = Wx::TextCtrl  ->new($this, -1, $demeter->co->default("plot", "kmax"),
-				  wxDefaultPosition, [50,-1]);
+				      wxDefaultPosition, [50,-1]);
   $gbs     -> Add($label,    Wx::GBPosition->new(0,3));
   $gbs     -> Add($this->{kmax}, Wx::GBPosition->new(0,4));
 
   $label    = Wx::StaticText->new($this, -1, "rmin");
   $this->{rmin} = Wx::TextCtrl  ->new($this, -1, $demeter->co->default("plot", "rmin"),
-				  wxDefaultPosition, [50,-1]);
+				      wxDefaultPosition, [50,-1]);
   $gbs     -> Add($label,    Wx::GBPosition->new(1,1));
   $gbs     -> Add($this->{rmin}, Wx::GBPosition->new(1,2));
   $label    = Wx::StaticText->new($this, -1, "rmax");
   $this->{rmax} = Wx::TextCtrl  ->new($this, -1, $demeter->co->default("plot", "rmax"),
-				  wxDefaultPosition, [50,-1]);
+				      wxDefaultPosition, [50,-1]);
   $gbs     -> Add($label,    Wx::GBPosition->new(1,3));
   $gbs     -> Add($this->{rmax}, Wx::GBPosition->new(1,4));
 
   $label    = Wx::StaticText->new($this, -1, "qmin");
   $this->{qmin} = Wx::TextCtrl  ->new($this, -1, $demeter->co->default("plot", "qmin"),
-				  wxDefaultPosition, [50,-1]);
+				      wxDefaultPosition, [50,-1]);
   $gbs     -> Add($label,    Wx::GBPosition->new(2,1));
   $gbs     -> Add($this->{qmin}, Wx::GBPosition->new(2,2));
   $label    = Wx::StaticText->new($this, -1, "qmax");
   $this->{qmax} = Wx::TextCtrl  ->new($this, -1, $demeter->co->default("plot", "qmax"),
-				  wxDefaultPosition, [50,-1]);
+				      wxDefaultPosition, [50,-1]);
   $gbs     -> Add($label,    Wx::GBPosition->new(2,3));
   $gbs     -> Add($this->{qmax}, Wx::GBPosition->new(2,4));
 

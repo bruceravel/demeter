@@ -37,6 +37,7 @@ sub new {
   EVT_CLOSE($this, \&on_close);
   my $vbox = Wx::BoxSizer->new( wxVERTICAL );
 
+  $this->{name} = q{};
   $this->{text} = Wx::TextCtrl->new($this, -1, q{}, wxDefaultPosition, wxDefaultSize,
 				    wxTE_MULTILINE|wxTE_READONLY|wxHSCROLL);
   $this->{text} -> SetFont( Wx::Font->new( 9, wxTELETYPE, wxNORMAL, wxNORMAL, 0, "" ) );
@@ -99,7 +100,8 @@ sub put_log {
 sub on_save {
   my ($self) = @_;
 
-  my $fd = Wx::FileDialog->new( $self, "Save log file", cwd, q{artemis.log},
+  (my $pref = $self->{name}) =~ s{\s+}{_}g;
+  my $fd = Wx::FileDialog->new( $self, "Save log file", cwd, $pref.q{.log},
 				"Log files (*.log)|*.log",
 				wxFD_SAVE|wxFD_CHANGE_DIR|wxFD_OVERWRITE_PROMPT,
 				wxDefaultPosition);
