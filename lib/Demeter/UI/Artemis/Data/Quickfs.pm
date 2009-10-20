@@ -40,7 +40,9 @@ sub new {
   $gbs -> Add( Wx::StaticText -> new($this, -1, 'Edge:'),      Wx::GBPosition->new(1,0));
   $gbs -> Add( Wx::StaticText -> new($this, -1, 'Distance:'),  Wx::GBPosition->new(1,3));
 
-  $this->{abs}      = Wx::TextCtrl -> new($this, -1, 'Fe',  wxDefaultPosition, [60, -1]);
+  my $abs = $parent->{data}->bkg_z;
+  $abs = 'Fe' if ($abs eq 'He');
+  $this->{abs}      = Wx::TextCtrl -> new($this, -1, $abs,  wxDefaultPosition, [60, -1]);
   $this->{scat}     = Wx::TextCtrl -> new($this, -1, 'O',   wxDefaultPosition, [60, -1]);
   $this->{distance} = Wx::TextCtrl -> new($this, -1, '2.1', wxDefaultPosition, [60, -1]);
   $this->{edge}     = Wx::Choice   -> new($this, -1,      , wxDefaultPosition, wxDefaultSize, [qw(K L1 L2 L3)]);

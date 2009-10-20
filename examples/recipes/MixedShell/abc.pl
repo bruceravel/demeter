@@ -2,12 +2,7 @@
 
 use Demeter qw(:plotwith=gnuplot :ui=screen);
 
-my $data = Demeter::Data->new(file=>'ab5c5.020.xmu');
-$data -> datatype('xmu');
-$data -> set(bkg_pre2=>-60, bkg_rbkg=>1.5,
-	     fft_kmin=>3,   fft_kmax=>15.5,
-	     bft_rmin=>1.7, bft_rmax=>2.9,
-	    );
+my $data = Demeter::Data::Prj->new(file=>'abc.prj')->record(1);
 $data -> set_mode(screen=>0);
 
 ## -------- import atoms.inp files and write feff.inp for AgBr

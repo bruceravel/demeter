@@ -254,12 +254,12 @@ sub verify_distance {
   return $self if (not $self->scatterer);
   $d ||= $self->distance;
   if ($d < $self->co->default("fspath", "min")) {
-    croak(sprintf("%f is too short to be a scatterer", $d));
+    carp(sprintf("%f is awfully short to be a scatterer!\n", $d));
   } elsif (get_Z($self->scatterer) > 17) {
-    croak(sprintf("%f is too long for a metal scatterer (%s)", $d, $self->scatterer))
+    carp(sprintf("%f is awfully long for a metal scatterer (%s)!\n", $d, $self->scatterer))
       if ($d > $self->co->default("fspath", "max_metal"));
   } elsif (get_Z($self->scatterer) < 18) {
-    croak(sprintf("%f is too long for a low Z scatterer (%s)", $d, $self->scatterer))
+    carp(sprintf("%f is awfully long for a low Z scatterer (%s)!\n", $d, $self->scatterer))
       if ($d > $self->co->default("fspath", "max_lowz"));
   };
 };
