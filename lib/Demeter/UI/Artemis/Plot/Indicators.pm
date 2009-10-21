@@ -98,7 +98,7 @@ sub fetch {
 
 sub populate {
   my ($self, @list) = @_;
-  foreach my $i (@list) {
+  foreach my $i (@list) {	# thawing the yaml returns a list of hash references containing attributes and their values
     my $indic = Demeter::Plot::Indicator->new(%$i);
     my $j = $indic->i;
     next if ($j > $nind);

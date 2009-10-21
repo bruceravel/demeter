@@ -302,6 +302,8 @@ sub OnInit {
   $frames{main}->{plot_folder} = File::Spec->catfile($frames{main}->{project_folder}, 'plot');
   mkpath($frames{main}->{plot_folder}, 0);
 
+  $frames{main}->{autosave_file} = File::Spec->catfile($demeter->stash_folder, $this.'.autosave');
+
   set_mru();
   ## now that everything is established, set up disposal callbacks to
   ## display Ifeffit commands in the buffer window
@@ -310,7 +312,9 @@ sub OnInit {
 		     feedback     => \&feedback,
 		    );
 
-  if ($ARGV[0] and -e $ARGV[0]) {
+  if ($demeter->co->default("artemis", "autosave") and autosave_exists()) {
+    import_autosave();
+  } elsif ($ARGV[0] and -e $ARGV[0]) {
     my $file = File::Spec->rel2abs( $ARGV[0] );
     read_project(\%frames, $file);
   };
@@ -339,6 +343,7 @@ sub on_close {
   };
   save_project(\%frames) if $result == wxID_YES;
   rmtree($self->{project_folder});
+  unlink $frames{main}->{autosave_file};
   $demeter->mo->destroy_all;
   foreach my $f (values(%frames)) {
     next if ($f !~ m{Demeter});
@@ -441,6 +446,8 @@ sub fit {
   #};
   #return;
 
+  autosave();
+
   my ($abort, $rdata, $rpaths) = uptodate($rframes);
   my $rgds = $rframes->{GDS}->reset_all;
 
@@ -465,6 +472,7 @@ sub fit {
 
   $fit->set_mode(ifeffit=>1, screen=>0);
   my $result = $fit->fit;
+  my $finishtext = q{};
   if ($result eq $fit) {
     $fit -> serialize(tree     => File::Spec->catfile($frames{main}->{project_folder}, 'fits'),
 		      folder   => $fit->group,
@@ -511,18 +519,20 @@ sub fit {
       $rframes->{Plot}->plot(q{}, $how);
     };
 
-    $rframes->{main}->{statusbar}->SetStatusText("Your fit is finished!");
+    $finishtext = "Your fit is finished!";
   } else {
     $rframes->{Log}->{text}->SetValue($fit->troubletext);
     #$rframes->{Log}->Show(1);
     #$rframes->{main}->{log_toggle}->SetValue(1);
     set_happiness_color($fit->co->default("happiness", "bad_color"));
-    $rframes->{main}->{statusbar}->SetStatusText("The error report from the fit that just failed are written in the log window.");
+    $finishtext = "The error report from the fit that just failed are written in the log window.";
   };
 
   my $this_name = $fit->name;
   $rframes->{main}->{name}->SetValue("Fit ". $fit->mo->currentfit) if ($this_name =~ m{\A\s*Fit\s+\d+\z});
   $rframes->{main}->{description}->SetValue($fit->description);
+  autosave();
+  $rframes->{main}->{statusbar}->SetStatusText($finishtext);
   undef $busy;
 };
 
@@ -775,6 +785,8 @@ sub import_prj {
   $frames{main}->{datatool}->ToggleTool($idata,1);
   delete $frames{prj};
   $demeter->push_mru("athena", $file);
+  autosave();
+  chdir dirname($file);
   $frames{main}->{statusbar}->SetStatusText("Imported data \"" . $data->name . "\" from $file.");
 };
 sub make_data_frame {
@@ -830,6 +842,7 @@ sub new_feff {
 
   my ($fnum, $ifeff) = make_feff_frame($self, $file);
   $frames{$fnum} -> Show(1);
+  autosave();
   $frames{$fnum}->{statusbar}->SetStatusText("Imported crystal data from " . basename($file));
   $feffbar->ToggleTool($ifeff,1);
 };

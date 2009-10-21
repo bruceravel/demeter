@@ -28,6 +28,7 @@ use Wx::Perl::TextValidator;
 
 use Wx::Perl::Carp;
 
+use Demeter::UI::Artemis::Project;
 use Demeter::UI::Artemis::Data::AddParameter;
 use Demeter::UI::Artemis::Data::Histogram;
 use Demeter::UI::Artemis::Data::Quickfs;
@@ -492,6 +493,7 @@ sub OnMakeVPathButton {
   };
   return if ($#list == -1);
   $Demeter::UI::Artemis::frames{Plot}->{VPaths}->add_vpath(@list);
+  autosave();
   $self->{statusbar}->SetStatusText("Made a VPath from the marked groups");
 };
 
@@ -1602,6 +1604,8 @@ sub quickfs {
   $page->{pp_label} -> SetValue(sprintf("%s-%s path at %s", $firstshell->absorber, $firstshell->scatterer, $firstshell->reff));
 
   $Demeter::UI::Artemis::frames{GDS}->put_gds($_) foreach (@{$firstshell->gds});
+
+  autosave();
 
   undef $busy;
 

@@ -1,4 +1,4 @@
-package  Demeter::UI::Wx::MRU;
+package Demeter::UI::Wx::AutoSave;
 
 =for Copyright
  .
@@ -17,21 +17,27 @@ package  Demeter::UI::Wx::MRU;
 
 use Wx qw( :everything );
 use base qw(Wx::SingleChoiceDialog);
-use Wx::Event qw(EVT_CLOSE EVT_LISTBOX EVT_BUTTON EVT_RADIOBOX);
 
 use Demeter;
 
 my $demeter = Demeter->new();
 sub new {
-  my ($class, $parent, $type, $text, $title) = @_;
+  my ($class, $parent, $text, $title) = @_;
 
-  my @mrulist = $demeter->get_mru_list($type);
-  return -1 if not @mrulist;
+  opendir(my $stash, $demeter->stash_folder);
+  my @list = grep {$_ =~ m{autosave\z}} readdir $stash;
+  close $stash;
+  return -1 if not @list;
+  my @toss = @list;
 
   my $dialog = $class->SUPER::new( $parent,
-				   $text  || "Select a recent $type file",
-				   $title || "Recent $type files",
-				   \@mrulist );
+				   $text  || "Select an autosave file",
+				   $title || "Select an autosave file",
+				   \@list,
+				   \@toss,
+				   wxSTAY_ON_TOP|wxDEFAULT_DIALOG_STYLE|wxRESIZE_BORDER|wxOK|wxCANCEL|wxCENTRE,
+				   Wx::GetMousePosition
+				 );
   _doublewide($dialog);
 
   return $dialog;;

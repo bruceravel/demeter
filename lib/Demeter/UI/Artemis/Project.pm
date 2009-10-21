@@ -21,17 +21,21 @@ use warnings;
 use Archive::Zip qw( :ERROR_CODES :CONSTANTS );
 use Cwd;
 use File::Basename;
+use File::Path;
 use File::Spec;
+use List::MoreUtils qw(any);
 use YAML;
 use Carp;
 
 use Wx qw(:everything);
+use Demeter::UI::Wx::AutoSave;
 
 require Exporter;
 
 use vars qw(@ISA @EXPORT);
 @ISA       = qw(Exporter);
-@EXPORT    = qw(save_project read_project modified close_project);
+@EXPORT    = qw(save_project read_project modified close_project
+		autosave clear_autosave autosave_exists import_autosave);
 
 use File::Basename;
 use File::Spec;
@@ -60,6 +64,7 @@ sub save_project {
     next unless ($k =~ m{\Afeff});
     next if (ref($rframes->{$k}->{Feff}->{feffobject}) !~ m{Feff});
     my $file = File::Spec->catfile($rframes->{$k}->{Feff}->{feffobject}->workspace, 'atoms.inp');
+    mkpath $rframes->{$k}->{Feff}->{feffobject}->workspace if (! -d $rframes->{$k}->{Feff}->{feffobject}->workspace);
     $rframes->{$k}->{Atoms}->save_file($file);
   };
   if ((not $fname) or ($fname =~ m{\<untitled\>})) {
@@ -79,7 +84,8 @@ sub save_project {
   open(my $IN, '>'.File::Spec->catfile($rframes->{main}->{plot_folder}, 'indicators.yaml'));
   foreach my $j (1..5) {
     my $this = $rframes->{Plot}->{indicators}->{'group'.$j};
-    print $IN $Demeter::UI::Artemis::demeter->mo->fetch('Indicator', $this) -> serialization;
+    my $found = $Demeter::UI::Artemis::demeter->mo->fetch('Indicator', $this);
+    print($IN $found -> serialization) if $found;
   };
   close $IN;
 
@@ -88,12 +94,51 @@ sub save_project {
   carp('error writing zip-style project') unless ($zip->writeToFileNamed( $fname ) == AZ_OK);
   undef $zip;
 
-  $Demeter::UI::Artemis::demeter->push_mru("artemis", File::Spec->rel2abs($fname));
-  &Demeter::UI::Artemis::set_mru;
-  $rframes->{main}->{projectname} = basename($fname, '.fpj');
-  $rframes->{main}->{projectpath} = File::Spec->rel2abs($fname);
-  $rframes->{main}->{statusbar}->SetStatusText("Saved project as ".$rframes->{main}->{projectpath});
-  modified(0);
+  if ($fname !~ m{autosave\z}) {
+    clear_autosave();
+    $Demeter::UI::Artemis::demeter->push_mru("artemis", File::Spec->rel2abs($fname));
+    &Demeter::UI::Artemis::set_mru;
+    $rframes->{main}->{projectname} = basename($fname, '.fpj');
+    $rframes->{main}->{projectpath} = File::Spec->rel2abs($fname);
+    $rframes->{main}->{statusbar}->SetStatusText("Saved project as ".$rframes->{main}->{projectpath});
+    modified(0);
+  };
+};
+
+sub autosave {
+  return if not $Demeter::UI::Artemis::demeter->co->default("artemis", "autosave");
+  my $main = $Demeter::UI::Artemis::frames{main};
+  $main->{statusbar}->SetStatusText("Performed autosave ...");
+  unlink $main->{autosave_file};
+  save_project(\%Demeter::UI::Artemis::frames, $main->{autosave_file});
+  $main->{statusbar}->SetStatusText("Performed autosave ... done!");
+};
+sub clear_autosave {
+  return if not $Demeter::UI::Artemis::demeter->co->default("artemis", "autosave");
+  my $main = $Demeter::UI::Artemis::frames{main};
+  unlink $main->{autosave_file};
+  $main->{statusbar}->SetStatusText("Removed autosave file.");
+};
+sub autosave_exists {
+  opendir(my $stash, $Demeter::UI::Artemis::demeter->stash_folder);
+  my @list = readdir $stash;
+  closedir $stash;
+  return any {$_ =~ m{autosave\z}} @list;
+};
+sub import_autosave {
+  my $dialog = Demeter::UI::Wx::AutoSave->new($Demeter::UI::Artemis::frames{main});
+  $Demeter::UI::Artemis::frames{main}->{statusbar}->SetStatusText("There are no autosave files."), return
+    if ($dialog == -1);
+  $dialog->SetFocus;
+  if( $dialog->ShowModal == wxID_CANCEL ) {
+    $Demeter::UI::Artemis::frames{main}->{statusbar}->SetStatusText("Autosave import cancelled.");
+  } else {
+    my $this = File::Spec->catfile($Demeter::UI::Artemis::demeter->stash_folder, $dialog->GetStringSelection);
+    read_project(\%Demeter::UI::Artemis::frames, $this);
+    unlink $this;
+    ## need to clean up the corresponding folder, if it has been left behind
+  };
+
 };
 
 sub read_project {

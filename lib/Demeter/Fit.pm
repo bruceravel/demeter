@@ -734,7 +734,7 @@ sub properties_header {
   my $string = "\n";
   foreach my $k (@keys) {
     if ($k eq 'description') {
-      my @lines = split($/, $self->$k);
+      my @lines = ($self->$k) ? split($/, $self->$k) : (q{});
       $string .= sprintf " %-15s : %s\n", $properties{$k}, shift @lines;
       $string .= (sprintf " %-15s   %s\n", '        ...', $_) foreach @lines;
     } else {

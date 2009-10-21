@@ -61,6 +61,9 @@ sub new {
   #print ">>> ", $parent->{feffobject}, $/;
   $self->{feffobject} = $parent->{feffobject} || Demeter::Feff->new(screen=>0, buffer=>1, save=>0);
   #$self->{feffobject} = Demeter::Feff->new(screen=>0, buffer=>1, save=>0);
+  my $base = $self->{parent}->{base} || $self->{feffobject}->stash_folder;
+  $self->{feffobject} -> workspace(File::Spec->catfile($base, $self->{feffobject}->group));
+  $self->{feffobject} -> make_workspace;
 
   $self -> SetSizerAndFit( $vbox );
   return $self;
@@ -177,9 +180,6 @@ sub run_feff {
   my $busy = Wx::BusyCursor->new();
   my $feff = $self->{feffobject};
   $feff -> clear;
-  my $base = $self->{parent}->{base} || $feff->stash_folder;
-  $feff -> workspace(File::Spec->catfile($base, $feff->group));
-  $feff -> make_workspace;
   $feff -> name($self->{name}->GetValue);
 
   my $inpfile = File::Spec->catfile($feff->workspace, $feff->group . ".inp");
