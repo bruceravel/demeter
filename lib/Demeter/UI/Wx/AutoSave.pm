@@ -31,8 +31,8 @@ sub new {
   my @toss = @list;
 
   my $dialog = $class->SUPER::new( $parent,
-				   $text  || "Select an autosave file",
-				   $title || "Select an autosave file",
+				   $text  || "Restore from an autosave file",
+				   $title || "Restore from an autosave file",
 				   \@list,
 				   \@toss,
 				   wxSTAY_ON_TOP|wxDEFAULT_DIALOG_STYLE|wxRESIZE_BORDER|wxOK|wxCANCEL|wxCENTRE,
@@ -46,7 +46,7 @@ sub new {
 sub _doublewide {
   my ($dialog) = @_;
   my ($w, $h) = $dialog->GetSizeWH;
-  $dialog -> SetSizeWH(2*$w, $h);
+  $dialog -> SetSizeWH(2*$w, $h/2);
 };
 
 1;

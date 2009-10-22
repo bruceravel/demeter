@@ -115,7 +115,7 @@ Building the Demeter Programming Guide (./doc/dpg/) requires the following:
 
 The following modules are ones I might be including at some point:
 
-  ExtUtils::F77  PGPLOT
+  ExtUtils::F77  PGPLOT  File::Touch
 
 =head1 DEPRECATED
 

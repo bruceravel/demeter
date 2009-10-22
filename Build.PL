@@ -71,6 +71,7 @@ my $build = $class
 				'Chemistry::Elements'	   => '0',
 				'Config::IniFiles'	   => '2.45',
 				'Digest::SHA'		   => '0',
+				#'File::Touch'		   => '0',
 				'Heap'			   => '0',
 				'List::MoreUtils'	   => '0',
 				'Math::Cephes'		   => '0',

@@ -15,6 +15,7 @@ use File::Basename;
 use File::Copy;
 use File::Path;
 use File::Spec;
+use File::Touch;
 use List::MoreUtils qw(zip);
 use Scalar::Util qw(blessed);
 use String::Random qw(random_string);
@@ -303,6 +304,7 @@ sub OnInit {
   mkpath($frames{main}->{plot_folder}, 0);
 
   $frames{main}->{autosave_file} = File::Spec->catfile($demeter->stash_folder, $this.'.autosave');
+  #touch(File::Spec->catfile($frames{main}->{project_folder}, $this));
 
   set_mru();
   ## now that everything is established, set up disposal callbacks to
@@ -464,6 +466,7 @@ sub fit {
   my $fit = Demeter::Fit->new(data => \@data, paths => \@paths, gds => \@gds);
   $fit->interface("Artemis (Wx $Wx::VERSION)");
   my $name = $rframes->{main}->{name}->GetValue || 'Fit '.$fit->mo->currentfit;
+  my $startingname = $name;
   $fit->name($name);
   $fit->description($rframes->{main}->{description}->GetValue);
   $fit -> fom($fit->mo->currentfit);
@@ -531,7 +534,7 @@ sub fit {
   my $this_name = $fit->name;
   $rframes->{main}->{name}->SetValue("Fit ". $fit->mo->currentfit) if ($this_name =~ m{\A\s*Fit\s+\d+\z});
   $rframes->{main}->{description}->SetValue($fit->description);
-  autosave();
+  autosave($name);
   $rframes->{main}->{statusbar}->SetStatusText($finishtext);
   undef $busy;
 };

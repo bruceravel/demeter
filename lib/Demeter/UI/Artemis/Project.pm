@@ -90,7 +90,7 @@ sub save_project {
   close $IN;
 
   my $zip = Archive::Zip->new();
-  $zip->addTree( $rframes->{main}->{project_folder}, "",  sub{ not m{\.sp$} });
+  $zip->addTree( $rframes->{main}->{project_folder}, "",  sub{ not m{\.sp$} }); #and not m{_dem_\w{8}\z}
   carp('error writing zip-style project') unless ($zip->writeToFileNamed( $fname ) == AZ_OK);
   undef $zip;
 
@@ -110,6 +110,9 @@ sub autosave {
   my $main = $Demeter::UI::Artemis::frames{main};
   $main->{statusbar}->SetStatusText("Performed autosave ...");
   unlink $main->{autosave_file};
+  my $name = $_[0] || $main->{name}->GetValue;
+  $name =~ s{\s+}{_}g;
+  $main->{autosave_file} = File::Spec->catfile($Demeter::UI::Artemis::demeter->stash_folder, $name.'.autosave');
   save_project(\%Demeter::UI::Artemis::frames, $main->{autosave_file});
   $main->{statusbar}->SetStatusText("Performed autosave ... done!");
 };
@@ -205,6 +208,7 @@ sub read_project {
   closedir $FITS;
   my $current = $Demeter::UI::Artemis::fit_order{order}{current};
   $current = $Demeter::UI::Artemis::fit_order{order}{$current};
+  $current ||= $dirs[0];
   my $fit;
   foreach my $d (@dirs) {
     next unless ($d eq $current);
