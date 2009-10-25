@@ -19,5 +19,5 @@ set({$S->group}.chik  = {$S->group}.k*{$S->group}.chi,
     {$S->group}.chik3 = {$S->group}.k^3*{$S->group}.chi )
 write_data(file="{$filename}", ${$titles}, ${$D->group}_title_*,
            label="k chi chik chik2 chik3 win",
-           {$S->group}.k, {$S->group}.chi, {$S->group}.chik, {$S->group}.chik2, {$S->group}.chik3, {$S->group}.win)
+           {$S->group}.k, {$S->group}.chi, {$S->group}.chik, {$S->group}.chik2, {$S->group}.chik3, {$D->group}.win)
 erase {$S->group}.chik, {$S->group}.chik2, {$S->group}.chik3

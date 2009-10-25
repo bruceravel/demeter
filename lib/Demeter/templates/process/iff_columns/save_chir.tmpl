@@ -12,15 +12,15 @@
   #                             {filename=>$filename, titles=>"\$dem_data_*"});
 }
 ##|
-##| saving "{$D->name}" as chi(R)
+##| saving "{$S->name}" as chi(R)
 write_data(file  = "{$filename}",
            ${$titles},
 	   ${$D->group}_title_*,
            label = "r chir_re chir_im chir_mag chir_pha win",
-           {$D->group}.r,
-           {$D->group}.chir_re,
-           {$D->group}.chir_im,
-           {$D->group}.chir_mag,
-           {$D->group}.chir_pha,
+           {$S->group}.r,
+           {$S->group}.chir_re,
+           {$S->group}.chir_im,
+           {$S->group}.chir_mag,
+           {$S->group}.chir_pha,
            {$D->group}.rwin)
 

@@ -88,8 +88,8 @@ sub put_log {
               : ($line =~ m{\A (?:Name|Description|Figure|Time|Environment|Interface|Prepared|Contact)}) ? 'header'
               : ($line =~ m{\A\s+\.\.\.})                                   ? 'header'
 	      :                                                               'normal';
-
-
+    $color = 'normal' if ((not $Demeter::UI::Artemis::demeter->co->default("artemis", "happiness"))
+			  and ($color eq 'stats'));
     $self->{text}->SetStyle($was, $is, $self->{$color});
   };
   $self->{text}->ShowPosition(0);

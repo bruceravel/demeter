@@ -96,7 +96,7 @@ sub ShouldPreventAppExit {
 
 sub OnPlotAs {
   my ($this, $event, $prj, $names) = @_;
-  return if not $this->{grouplist}->GetSelections;
+  return if ($this->{grouplist}->GetSelections < 0);
   my ($sel) = $this->{grouplist}->GetSelections;
   $this -> do_plot($prj, $sel+1);
 };

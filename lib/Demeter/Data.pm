@@ -1239,55 +1239,9 @@ method of the parent class.
 
 =item C<save>
 
-This method returns the Ifeffit commands necessary to write column data files
-based on the data object.  This method takes two arguments, the output
-filename and the type of the output file.  The types are:
-
-=over 4
-
-=item xmu
-
-This is a 7 column file: energy, mu(E), bkg(E), pre(E), post(E), derivative of
-mu(E), and second derivative of mu(E).
-
-=item norm
-
-This is a 7 column file: energy, normalized mu(E), normalized bkg(E),
-flattened mu(E), flattened bkg(E), derivative of norm(E), and second
-derivative of norm(E).
-
-=item chi
-
-This is a 6 or 7 column file: k, chi(k), window, k*chi(k), k^2*chi(k), and
-k^3*chi(k).  If the fft_karb attribute is true, then seventh column containg
-the fft_karb_value-weighted chi(k) will be included.
-
-=item r
-
-This is a 6 column file: R, real part, imaginary part, magnitude, phase,
-and window.
-
-=item q
-
-This is a 7 column file: back transform k, real part, imaginary part,
-magnitude, phase, and window in k. The last column is the original chi(k)
-weighted by the k-weight used in the Fourier transform.
-
-=item fit
-
-This is a 5 or 6 column file: k, chi(k), fit(k), residual(k), and
-k-window.  If the C<fit_do_bkg> attribute is true, then the background
-in k will be the column between the residual and the window.  Note
-that there is not an equivalent save file with the data I<and> the fit
-in R- or q-space.
-
-=back
-
-   $command = $dobject -> save("cufit.fit", "fit");
-
-This method will automatically generate useful headers for the output
-data file.  These headers will include the title lines associated with
-the data in Ifeffit and the text of the C<fit_parameter_report> method.
+This method returns the Ifeffit commands necessary to write column
+data files based on the data object.  See C<Demeter::Data::IO> for
+details.
 
 =item C<data_parameter_report>
 

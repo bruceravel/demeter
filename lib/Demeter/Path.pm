@@ -25,6 +25,7 @@ use Demeter::StrTypes qw( Empty PathParam );
 use Demeter::NumTypes qw( Natural PosInt NonNeg );
 
 with 'Demeter::Data::Arrays';
+with 'Demeter::Data::IO';
 with 'Demeter::Path::Process';
 with 'Demeter::Path::Sanity';
 
@@ -335,17 +336,17 @@ sub save {
  WHAT: {
     (lc($what) eq 'chi') and do {
       $self->_update("path");
-      $self->dispose($self->_save_chi('k', $filename));
+      $self->dispose($self->_save_chi_command('k', $filename));
       last WHAT;
     };
     (lc($what) eq 'r') and do {
       $self->_update("bft");
-      $self->dispose($self->_save_chi('r', $filename));
+      $self->dispose($self->_save_chi_command('r', $filename));
       last WHAT;
     };
     (lc($what) eq 'q') and do {
       $self->_update("all");
-      $self->dispose($self->_save_chi('q', $filename));
+      $self->dispose($self->_save_chi_command('q', $filename));
       last WHAT;
     };
   };
@@ -815,6 +816,19 @@ methods (C<set>, C<get>) from the parent class described in the
 L<Demeter> documentation.
 
 Additionally the Path object provides these methods:
+
+=head2 I/O methods
+
+=over 4
+
+=item C<save>
+
+This method returns the Ifeffit commands necessary to write column
+data files based on the Path object.  See C<Demeter::Data::IO> for
+details.  Only the C<chi>, C<r>, and C<q> options are available for
+writing Path column data files.
+
+=back
 
 =head2 Convenience methods
 

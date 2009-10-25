@@ -568,6 +568,7 @@ sub feedback {
 
 sub set_happiness_color {
   my $color = $_[0] || $demeter->co->default("happiness", "average_color");
+  $color = wxNullColour if (not $demeter->co->default("artemis", "happiness"));
   $frames{main}->{fitbutton}  -> SetBackgroundColour(Wx::Colour->new($color));
   $frames{Plot}->{k_button}   -> SetBackgroundColour(Wx::Colour->new($color));
   $frames{Plot}->{r_button}   -> SetBackgroundColour(Wx::Colour->new($color));

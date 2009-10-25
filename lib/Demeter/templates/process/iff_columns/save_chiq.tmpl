@@ -14,18 +14,18 @@
   #                              kweight  => $pf->kweight});
 }
 ##|
-##| saving "{$D->name}" as back-transformed chi(k)
-set {$D->group}.chik = {$D->group}.k^{$P->kweight}*{$D->group}.chi
+##| saving "{$S->name}" as back-transformed chi(k)
+set {$S->group}.chik = {$S->group}.k^{$P->kweight}*{$S->group}.chi
 write_data(file  = "{$filename}",
            ${$titles},
 	   ${$D->group}_title_*,
            label = "q chiq_re chiq_im chiq_mag chiq_pha win chik",
-           {$D->group}.q,
-           {$D->group}.chiq_re,
-           {$D->group}.chiq_im,
-           {$D->group}.chiq_mag,
-           {$D->group}.chiq_pha,
+           {$S->group}.q,
+           {$S->group}.chiq_re,
+           {$S->group}.chiq_im,
+           {$S->group}.chiq_mag,
+           {$S->group}.chiq_pha,
            {$D->group}.win,
-           {$D->group}.chik)
-erase {$D->group}.chik
+           {$S->group}.chik)
+erase {$S->group}.chik
 

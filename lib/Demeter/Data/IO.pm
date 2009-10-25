@@ -28,7 +28,7 @@ Readonly my $NUMBER   => $RE{num}{real};
 
 
 sub save {
-  my ($self, $what, $filename) = @_;
+  my ($self, $what, $filename, $how) = @_;
   croak("No filename specified for save") unless $filename;
   ($what = 'chi') if (lc($what) eq 'k');
   ($what = 'xmu') if (lc($what) eq 'e');
@@ -37,7 +37,7 @@ sub save {
   my $string = q{};
  WHAT: {
     (lc($what) eq 'fit') and do {
-      $string = $self->_save_fit_command($filename);
+      $string = $self->_save_fit_command($filename, $how);
       last WHAT;
     };
     (lc($what) eq 'xmu') and do {
@@ -90,7 +90,7 @@ sub _save_chi_command {
   croak("Demeter: '$space' is not a valid space for saving chi xdata (k k1 k2 k3 r q)")
     if ($space !~ /\A(?:k$NUMBER?|r|q)\z/); # }
 
-  my $data = $self->data;
+  #my $data = $self->data;
   my $how = ($space eq 'k') ? "chi(k)" :
             ($space eq 'r') ? "chi(R)" :
 	                      "chi(q)" ;
@@ -126,11 +126,49 @@ sub _save_chi_command {
 
 ## need to include the data's titles in write_data() command
 sub _save_fit_command {
-  my ($self, $filename) = @_;
+  my ($self, $filename, $how) = @_;
+  $how ||= q{};
   croak("No filename specified for save_fit") unless $filename;
-  $self->title_glob("dem_data_", "f");
-  my $command = $self-> template("fit", "save_fit", {filename => $filename,
-						     titles   => "dem_data_*"});
+  my $template = ($how eq 'k1')   ? 'save_fit_kw'
+               : ($how eq 'k2')   ? 'save_fit_kw'
+               : ($how eq 'k3')   ? 'save_fit_kw'
+               : ($how eq 'rmag') ? 'save_fit_r'
+               : ($how eq 'rre')  ? 'save_fit_r'
+               : ($how eq 'rim')  ? 'save_fit_r'
+               : ($how eq 'qmag') ? 'save_fit_q'
+               : ($how eq 'qre')  ? 'save_fit_q'
+               : ($how eq 'qim')  ? 'save_fit_q'
+               :                    'save_fit';
+  my $suffix = ($how eq 'rmag') ? 'chir_mag'
+             : ($how eq 'rre')  ? 'chir_re'
+             : ($how eq 'rim')  ? 'chir_im'
+	     : ($how eq 'qmag') ? 'chiq_mag'
+             : ($how eq 'qre')  ? 'chiq_re'
+             : ($how eq 'qim')  ? 'chiq_im'
+	     :                    q{};
+  my $kweight = ($how eq 'k1') ? 1
+              : ($how eq 'k2') ? 2
+              : ($how eq 'k3') ? 3
+	      :                  0;
+
+  if ($how =~ m{\A[rq]}) {
+    $self->_update('all');
+    $self->part_fft('fit');
+    $self->part_fft('res');
+    $self->part_fft('bkg') if $self->fit_do_bkg;
+  };
+  if ($how =~ m{\Aq}) {
+    $self->part_bft('fit');
+    $self->part_bft('res');
+    $self->part_bft('bkg') if $self->fit_do_bkg;
+  };
+  $self->title_glob("dem_data_", "f", $how);
+
+  my $command = $self-> template("fit", $template, {filename => $filename,
+						    titles   => "dem_data_*",
+						    suffix   => $suffix,
+						    kweight  => $kweight,
+						   });
   return $command;
 };
 
@@ -225,7 +263,8 @@ sub rfactor {
 
 
 sub title_glob {
-  my ($self, $globname, $space) = @_;
+  my ($self, $globname, $space, $how) = @_;
+  $how ||= q{};
   my $data = $self->data;
   $space = lc($space);
   my $type = ($space eq 'e') ? " mu(E)"   :
@@ -292,10 +331,14 @@ with data input/output.
 This method is a wrapper around Ifeffit command generators for saving
 the various kinds of output files.  The syntax is
 
-  $dataobject -> save('xmu', 'data.xmu');
+  $dataobject -> save($type, $filename);
 
-The first argument is one of C<xmu>, C<norm>, C<chi>, C<r>, C<q>,
-C<fit>, and C<bkgsub>.  The second argument is a file name.
+The C<$type> argument is one of C<xmu>, C<norm>, C<chi>, C<r>, C<q>,
+C<fit>, and C<bkgsub>.  The second argument is the output file name.
+
+This method will automatically generate useful headers for the output
+data file.  These headers will include the title lines associated with
+the data in Ifeffit and the text of the C<fit_parameter_report> method.
 
 =over 4
 
@@ -331,7 +374,22 @@ kweight of the Plot object is used to generate chi(R).
 
 =item C<fit>
 
-Fit...
+This is one of a variety of five or six column files.  The default fit
+file contains k, chi(k), the fit in k, the residual in k, the
+background in k (if the background was fit), and the window.  When
+passing an additional parameter, the fit file can be written out in
+another way.
+
+    $dataobject -> save('fit', 'my.fit', $type);
+
+If type is left off, the default, un-k-weighted fit file is written.
+The other options are:
+
+    k1 k2 k3 rmag rre rim qmag qre qim
+
+The first three export k-weighted data.  The next three are for the
+magnitude, real, or imaginary parts of chi(R).  The final three are
+for the magnitude, real, or imaginary parts of chi(q).
 
 =item C<bkgsub>
 

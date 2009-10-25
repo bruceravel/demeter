@@ -12,18 +12,18 @@
   #                             {filename=>$filename, titles=>"\$dem_data_*"});
 }
 ##|
-##| saving "{$D->name}" as chi(k)
-set {$D->group}.chik  = {$D->group}.k*{$D->group}.chi
-set {$D->group}.chik2 = {$D->group}.k^2*{$D->group}.chi
-set {$D->group}.chik3 = {$D->group}.k^3*{$D->group}.chi
+##| saving "{$S->name}" as chi(k)
+set {$S->group}.chik  = {$S->group}.k*{$S->group}.chi
+set {$S->group}.chik2 = {$S->group}.k^2*{$S->group}.chi
+set {$S->group}.chik3 = {$S->group}.k^3*{$S->group}.chi
 write_data(file  = "{$filename}",
            ${$titles},
 	   ${$D->group}_title_*,
            label = "k chi chik chik2 chik3 win",
-           {$D->group}.k,
-           {$D->group}.chi,
-           {$D->group}.chik,
-           {$D->group}.chik2,
-           {$D->group}.chik3,
+           {$S->group}.k,
+           {$S->group}.chi,
+           {$S->group}.chik,
+           {$S->group}.chik2,
+           {$S->group}.chik3,
            {$D->group}.win)
-erase {$D->group}.chik, {$D->group}.chik2, {$D->group}.chik3
+erase {$S->group}.chik, {$S->group}.chik2, {$S->group}.chik3

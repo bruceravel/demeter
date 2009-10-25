@@ -85,6 +85,10 @@ $plot_features->set(plot_data => 1,
 
 $dobject->plot('r');
 my $end = <STDIN>;
+
+print "save the results of the fit\n";
+$dobject->save("fit", "cufit.fit");
+$pobjects[0]->save("r", "path0.rsp");
 exit;
 
 $fitobject -> interview;
@@ -116,6 +120,9 @@ foreach my $obj ($dobject, @pobjects,) {
 
 print "save the results of the fit\n";
 $dobject->save("fit", "cufit.fit");
+$dobject->save("fit", "rmag.fit", 'rmag');
+$dobject->save("fit", "rre.fit", 'rre');
+$dobject->save("fit", "rim.fit", 'rim');
 #$pobjects[0]->save("r", "path0.r");
 
 print "write log and serialization files\n";

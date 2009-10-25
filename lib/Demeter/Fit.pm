@@ -17,6 +17,7 @@ package Demeter::Fit;
 
 #use diagnostics;
 use autodie qw( open close );
+use File::Spec;
 
 use Moose;
 extends 'Demeter';
@@ -519,7 +520,12 @@ sub trouble_report {
     my $which = ref($obj);
     $which =~ s{Demeter::}{};
     foreach my $t (split(/\|/, $obj->trouble)) {
-      $text .= sprintf("%s: %s\n%s\n\n", uc($which), $obj->name, wrap("     ", "     ", $obj->translate_trouble($t)));
+      my $pathfile = q{};
+      if ($which =~ m{Path}) {
+	$pathfile = ($obj->sp) ? $obj->sp->intrpline : File::Spec->catfile($obj->folder, $obj->file);
+	$pathfile = '(' . $pathfile . ')';
+      };
+      $text .= sprintf("%s: %s %s\n%s\n\n", uc($which), $obj->name, $pathfile, wrap("     ", "     ", $obj->translate_trouble($t)));
       ##$text .= sprintf("%s: %s\t(%s)\n%s\n\n", $which, $obj->name, $t, wrap("     ", "     ", $obj->translate_trouble($t)));
     };
   };

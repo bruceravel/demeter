@@ -1,0 +1,32 @@
+{ # -*- ifm -*-
+  # save fit template
+  #   {$D->group} returns the ifeffit group name
+  #   {$D->parameter} returns the value of that parameter
+  # the filename and titles were passed to the template method
+  # $titles should contain a string that Ifeffit will be able to
+  # interpret as a set of title lines already set in Ifeffit.  one
+  # common way of doing this is with a glob structure, like
+  # $dem_data_*
+  # example:
+  #   $string = $self->template("process", "save_chik",
+  #                             {filename=>$filename, titles=>"\$dem_data_*"});
+}
+{
+  ($bkg, $label) = ($D->fit_do_bkg)
+                 ? ($D->group."_bkg.chi, ", "k chi_k$kweight fit residual background window")
+                 : (q{},                    "k chi_k$kweight fit residual win");
+  $bkgstring = ($D->fit_do_bkg)
+             ? $D->group . '_bkg.chik = ' . $D->group . '.k^' . $kweight . '*' . $D->group . '_bkg.chi'
+             : q{};
+  q{}
+}
+<<nl>>
+set({$D->group}.chik     = {$D->group}.k^{$kweight}*{$D->group}.chi,
+    {$D->group}_fit.chik = {$D->group}.k^{$kweight}*{$D->group}_fit.chi,
+    {$D->group}_res.chik = {$D->group}.k^{$kweight}*{$D->group}_res.chi,
+    {$bkgstring})
+write_data(file="{$filename}",
+           ${$titles}, ${$D->group}_title_*, "chi(k) weighted by {$kweight}",
+           label="{$label}",
+           {$D->group}.k, {$D->group}.chik, {$D->group}_fit.chik, {$D->group}_res.chik, {$bkg}{$D->group}.win)
+erase {$D->group}.chik {$D->group}_fit.chik {$D->group}_res.chik {$D->group}_bkg.chik
