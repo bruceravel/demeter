@@ -15,7 +15,7 @@ use File::Basename;
 use File::Copy;
 use File::Path;
 use File::Spec;
-use File::Touch;
+#use File::Touch;
 use List::MoreUtils qw(zip);
 use Scalar::Util qw(blessed);
 use String::Random qw(random_string);

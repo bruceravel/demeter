@@ -20,31 +20,33 @@ use strict;
 use warnings;
 use Module::Build;
 
-## deal with the fact that Text::Wrap does not live in a package
-## called Text-Wrap.  This confuses ppm, so post-process the ppd file
-## to point at the requirement that ppm will resolve.
-my $class = Module::Build->subclass(
-				    class => "My::Builder",
-				    code => q{
+# Text::Wrap is in core -- this is not necessary
+#
+# ## deal with the fact that Text::Wrap does not live in a package
+# ## called Text-Wrap.  This confuses ppm, so post-process the ppd file
+# ## to point at the requirement that ppm will resolve.
+# my $class = Module::Build->subclass(
+# 				    class => "My::Builder",
+# 				    code => q{
+#
+# sub ACTION_ppd {
+#    my $self = shift;
+#    $self->SUPER::ACTION_ppd;
+#
+#    open O, '>__temp__';
+#    open I, 'Demeter.ppd';
+#    while (<I>) {
+#      $_ =~ s{Text-Wrap}{Text-Tabs+Wrap};
+#      print O $_;
+#    };
+#    close I;
+#    close O;
+#    rename '__temp__', 'Demeter.ppd';
+# };
+# },
+# 				   );
 
-sub ACTION_ppd {
-   my $self = shift;
-   $self->SUPER::ACTION_ppd;
-
-   open O, '>__temp__';
-   open I, 'Demeter.ppd';
-   while (<I>) {
-     $_ =~ s{Text-Wrap}{Text-Tabs+Wrap};
-     print O $_;
-   };
-   close I;
-   close O;
-   rename '__temp__', 'Demeter.ppd';
-};
-},
-				   );
-
-my $build = $class
+my $build = Module::Build # $class
   -> new(
 	 module_name        => 'Demeter',
 	 create_readme      => 0,
@@ -52,7 +54,6 @@ my $build = $class
 	 license            => 'gpl',
 	 dist_author        => 'Bruce Ravel <bravel AT bnl DOT gov>',
 	 requires           => {
-				'version'		    => '0',
 				'autodie'                   => '0',
 				'Module::Build'	            => '0',
 
@@ -84,7 +85,6 @@ my $build = $class
 				'Regexp::Optimizer'	   => '0',
 				'String::Random'           => '0',
 				'Text::Template'	   => '0',
-				'Text::Wrap'		   => '0',
 				'Tree::Simple'		   => '0',
 				'Want'			   => '0',
 				'YAML'			   => '0',
@@ -94,17 +94,24 @@ my $build = $class
 				'lib/Xray/Crystal/share/space_groups.db.PL' => 'lib/Xray/Crystal/share/space_groups.db'
 			       },
 	 recommends         => {
+				## these two add functionality when using demeter at the command line
 				'IO::Prompt'	      => '0',
-				'Term::ANSIColor'     => '0',
-				'Term::ReadLine'      => '0',
 				'Term::Twiddle'	      => '0',
+
+				## this is required for the gnuplot plotting backend
 				'Graphics::GnuplotIF' => '0',
+
+				## these are used to build the demeter programming guide
 				'Template'            => '2.22',
 				'PPI'                 => '0',
 				'PPI::HTML'           => '0',
+
+				## GUI for Artemis and Hephaestus
+				'Wx'                  => '0.86'
+
+				## these are used for direct access to the pgplot terminal
 				#'ExtUtils::F77'       => '0',
 				#'PGPLOT'              => '0',
-				'Wx'                  => '0.86'
 			       },
 	 sign               => 0,
 	);

@@ -336,16 +336,19 @@ sub save {
  WHAT: {
     (lc($what) eq 'chi') and do {
       $self->_update("path");
+      $self->data->_update('bft'); # need window from data object
       $self->dispose($self->_save_chi_command('k', $filename));
       last WHAT;
     };
     (lc($what) eq 'r') and do {
       $self->_update("bft");
+      $self->data->_update('all');
       $self->dispose($self->_save_chi_command('r', $filename));
       last WHAT;
     };
     (lc($what) eq 'q') and do {
       $self->_update("all");
+      $self->data->_update('bft');
       $self->dispose($self->_save_chi_command('q', $filename));
       last WHAT;
     };

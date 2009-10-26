@@ -35,6 +35,7 @@ use Demeter::UI::Artemis::Data::Quickfs;
 use Demeter::UI::Artemis::ShowText;
 use Demeter::UI::Wx::CheckListBook;
 
+use Cwd;
 use List::MoreUtils qw(firstidx);
 
 my $windows = [qw(hanning kaiser-bessel welch parzen sine)];
@@ -87,6 +88,7 @@ Readonly my $MARK_REGEXP	=> Wx::NewId();
 Readonly my $MARK_SS		=> Wx::NewId();
 Readonly my $MARK_MS		=> Wx::NewId();
 Readonly my $MARK_HIGH		=> Wx::NewId();
+Readonly my $MARK_MID		=> Wx::NewId();
 Readonly my $MARK_LOW		=> Wx::NewId();
 Readonly my $MARK_RBELOW	=> Wx::NewId();
 Readonly my $MARK_RABOVE	=> Wx::NewId();
@@ -534,9 +536,9 @@ sub make_menubar {
 		       "Export all path parameters from the currently displayed path to all marked paths", wxITEM_NORMAL );
 
   my $save_menu     = Wx::Menu->new;
-  $save_menu->Append($PATH_SAVE_K, "χ(k)", "Save the currently displayed path as χ(k) with all path parameters evaluated", wxITEM_NORMAL);
-  $save_menu->Append($PATH_SAVE_R, "χ(R)", "Save the currently displayed path as χ(R) with all path parameters evaluated", wxITEM_NORMAL);
-  $save_menu->Append($PATH_SAVE_Q, "χ(q)", "Save the currently displayed path as χ(q) with all path parameters evaluated", wxITEM_NORMAL);
+  $save_menu->Append($PATH_SAVE_K, "k-space", "Save the currently displayed path as χ(k) with all path parameters evaluated", wxITEM_NORMAL);
+  $save_menu->Append($PATH_SAVE_R, "R-space", "Save the currently displayed path as χ(R) with all path parameters evaluated", wxITEM_NORMAL);
+  $save_menu->Append($PATH_SAVE_Q, "q-space", "Save the currently displayed path as χ(q) with all path parameters evaluated", wxITEM_NORMAL);
 
   $self->{pathsmenu} = Wx::Menu->new;
   $self->{pathsmenu}->Append($PATH_RENAME, "Rename path",            "Rename the path currently on display", wxITEM_NORMAL );
@@ -547,7 +549,7 @@ sub make_menubar {
   $self->{pathsmenu}->Append($PATH_ADD,    "Add path parameter",     "Add path parameter to many paths", wxITEM_NORMAL );
   $self->{pathsmenu}->AppendSubMenu($export_menu, "Export all path parameters to");
   $self->{pathsmenu}->AppendSeparator;
-  $self->{pathsmenu}->AppendSubMenu($save_menu, "Save this path as ..." );
+  $self->{pathsmenu}->AppendSubMenu($save_menu, "Save this path in ..." );
   $self->{pathsmenu}->Append($PATH_CLONE, "Clone this path", "Make a copy of the currently displayed path", wxITEM_NORMAL );
   $self->{pathsmenu}->Append($PATH_HISTO, "Make histogram", "Generate a histogram using the currently displayed path", wxITEM_NORMAL );
 
@@ -577,6 +579,7 @@ sub make_menubar {
   $self->{markmenu}->Append($MARK_MS,     "Mark MS paths",         "Mark all multiple scattering paths for this χ(k)", wxITEM_NORMAL );
   $self->{markmenu}->AppendSeparator;
   $self->{markmenu}->Append($MARK_HIGH,   "Mark high importance",  "Mark all high importance paths for this χ(k)", wxITEM_NORMAL );
+  $self->{markmenu}->Append($MARK_MID,    "Mark mid importance",   "Mark all mid importance paths for this χ(k)", wxITEM_NORMAL );
   $self->{markmenu}->Append($MARK_LOW,    "Mark low importance",   "Mark all low importance paths for this χ(k)", wxITEM_NORMAL );
   $self->{markmenu}->AppendSeparator;
   $self->{markmenu}->Append($MARK_RBELOW, "Mark all paths < R",    "Mark all paths shorter than a specified path length for this χ(k)", wxITEM_NORMAL );
@@ -844,8 +847,14 @@ sub OnMenuClick {
       last SWITCH;
     };
 
+    (($id == $PATH_SAVE_K) or ($id == $PATH_SAVE_R) or ($id == $PATH_SAVE_Q)) and do {
+      $datapage->save_path($id);
+      last SWITCH;
+    };
+
+
     (($id == $MARK_ALL)    or ($id == $MARK_NONE)   or ($id == $MARK_INVERT) or ($id == $MARK_REGEXP) or
-     ($id == $MARK_SS)     or ($id == $MARK_MS)     or ($id == $MARK_HIGH)   or ($id == $MARK_LOW)    or
+     ($id == $MARK_SS)     or ($id == $MARK_MS)     or ($id == $MARK_HIGH)   or ($id == $MARK_MID)    or ($id == $MARK_LOW)    or
      ($id == $MARK_RBELOW) or ($id == $MARK_RABOVE) or ($id == $MARK_BEFORE) or ($id == $MARK_AFTER)  or
      ($id == $MARK_INC)    or ($id == $MARK_EXC)) and do {
       $datapage->mark($id);
@@ -1026,6 +1035,36 @@ sub export_pp {
   $self->{statusbar}->SetStatusText("Exported these path parameters to $which." );
 };
 
+sub save_path {
+  my ($self, $mode, $filename) = @_;
+  my $space = (lc($mode) =~ m{\A[kqr]\z}) ? lc($mode)
+            : ($mode == $PATH_SAVE_K)     ? 'k'
+            : ($mode == $PATH_SAVE_R)     ? 'r'
+            : ($mode == $PATH_SAVE_Q)     ? 'q'
+	    :                               'k';
+  my $displayed_path = $self->{pathlist}->GetCurrentPage;
+  my $path = $displayed_path->{path};
+  if (not $filename) {
+    my $suggest = $path->name;
+    $suggest =~ s{\A\s+}{};
+    $suggest =~ s{\s+\z}{};
+    $suggest =~ s{\s+}{_}g;
+    $suggest = sprintf("%s.%s%s", $suggest, $space, 'sp');
+    my $suff = sprintf("%s%s", $space, 'sp');
+    my $fd = Wx::FileDialog->new( $self, "Save path", cwd, $suggest,
+				  "Demeter fitting project (*.$suff)|*.$suff|All files|*.*",
+				  wxFD_SAVE|wxFD_CHANGE_DIR|wxFD_OVERWRITE_PROMPT,
+				  wxDefaultPosition);
+    if ($fd->ShowModal == wxID_CANCEL) {
+      $self->{statusbar}->SetStatusText("Saving path cancelled.");
+      return;
+    };
+    $filename = File::Spec->catfile($fd->GetDirectory, $fd->GetFilename);
+  };
+  $path->save($space, $filename);
+  $self->{statusbar}->SetStatusText("Saved path \"".$path->name."\"to $space space." );
+};
+
 
 sub mark {
   my ($self, $mode) = @_;
@@ -1041,6 +1080,7 @@ sub mark {
           : ($mode == $MARK_SS)     ? 'ss'
           : ($mode == $MARK_MS)     ? 'ms'
           : ($mode == $MARK_HIGH)   ? 'high'
+          : ($mode == $MARK_MID)    ? 'mid'
           : ($mode == $MARK_LOW)    ? 'low'
           : ($mode == $MARK_RBELOW) ? 'shorter'
           : ($mode == $MARK_RABOVE) ? 'longer'
@@ -1110,6 +1150,14 @@ sub mark {
 	$self->{pathlist}->Check($i, 1) if ($path->sp->weight==2);
       };
       $self->{statusbar}->SetStatusText("Marked all high importance paths.");
+      last SWITCH;
+    };
+    ($how eq 'mid') and do {
+      foreach my $i (0 .. $self->{pathlist}->GetPageCount-1) {
+	my $path = $self->{pathlist}->GetPage($i)->{path};
+	$self->{pathlist}->Check($i, 1) if ($path->sp->weight==1);
+      };
+      $self->{statusbar}->SetStatusText("Marked all mid importance paths.");
       last SWITCH;
     };
     ($how eq 'low') and do {

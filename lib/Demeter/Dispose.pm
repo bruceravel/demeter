@@ -21,7 +21,7 @@ use Moose::Role;
 
 use Ifeffit;
 
-use subs qw(BOLD RED MAGENTA YELLOW CYAN ON_RED WHITE RESET);
+use subs qw(BOLD BLACK RED GREEN YELLOW BLUE MAGENTA CYAN WHITE ON_RED RESET);
 my $ANSIColor_exists = (eval "require Term::ANSIColor");
 if ($ANSIColor_exists) {
   import Term::ANSIColor qw(:constants);
@@ -29,26 +29,39 @@ if ($ANSIColor_exists) {
   ## this eval works when Term::ANSIColor is not available AND when running tests
   eval '
   sub BOLD    {q{}};
+  sub BLACK   {q{}};
   sub RED     {q{}};
-  sub MAGENTA {q{}};
+  sub GREEN   {q{}};
   sub YELLOW  {q{}};
+  sub BLUE    {q{}};
+  sub MAGENTA {q{}};
   sub CYAN    {q{}};
   sub WHITE   {q{}};
   sub ON_RED  {q{}};
   sub RESET   {q{}};';
 };
-sub ansify {
-  my ($thisline, $kind) = @_;
+sub _ansify {
+  my ($self, $thisline, $kind) = @_;
   my ($start, $end) = (q{}, q{});
 
+  my %color_of = (
+		  black	  => BLACK,
+		  red	  => RED,
+		  green	  => GREEN,
+		  yellow  => YELLOW,
+		  blue	  => BLUE,
+		  magenta => MAGENTA,
+		  cyan	  => CYAN,
+		  white	  => WHITE,
+	       );
  COLOR:{
     ($kind eq 'comment') and do {
       if ($thisline =~ m{\A\#\#\|}) {
-	($start, $end) = (BOLD.RED, RESET);
+	($start, $end) = (BOLD.$color_of{$self->co->default("screen", "comment")}, RESET);
       } elsif ($thisline =~ m{\A\#\#\#__}) {
-	($start, $end) = (BOLD.YELLOW, RESET);
+	($start, $end) = (BOLD.$color_of{$self->co->default("screen", "hashes" )}, RESET);
       } elsif ($thisline =~ m{\A\#}) {
-	($start, $end) = (BOLD.MAGENTA, RESET);
+	($start, $end) = (BOLD.$color_of{$self->co->default("screen", "other"  )}, RESET);
       };
       last COLOR;
     };
@@ -56,7 +69,7 @@ sub ansify {
       if ($thisline =~ m{\A\s*\*}) {
 	print STDOUT WHITE, ON_RED, $thisline, RESET;
       } else {
-	print STDOUT CYAN, $thisline, RESET;
+	print STDOUT $color_of{$self->co->default("screen", "feedback")}, $thisline, RESET;
       };
     };
   };
@@ -84,7 +97,7 @@ sub dispose {
   if ($self->get_mode("screen")) {
     local $| = 1;
     foreach my $thisline (split(/\n/, $command)) {
-      my ($start, $end) = ($self->mo->ui eq 'screen') ? ansify($thisline, 'comment') : (q{}, q{});
+      my ($start, $end) = ($self->mo->ui eq 'screen') ? $self->_ansify($thisline, 'comment') : (q{}, q{});
       print STDOUT $start, $thisline, $end, $/;
     };
   };
@@ -93,7 +106,7 @@ sub dispose {
   if (($self->get_mode("plotscreen"))  and $plotting) {
     local $| = 1;
     foreach my $thisline (split(/\n/, $command)) {
-      my ($start, $end) = ($self->mo->ui eq 'screen') ? ansify($thisline, 'comment') : (q{}, q{});
+      my ($start, $end) = ($self->mo->ui eq 'screen') ? $self->_ansify($thisline, 'comment') : (q{}, q{});
       print STDOUT $start, $thisline, $end, $/;
     };
   };
@@ -222,7 +235,7 @@ sub dispose {
 
 	  ## send to the screen with ANSI colorization
 	  } elsif ($self->get_mode("screen") or ($self->get_mode("plotscreen") and $plotting)) {
-	    ansify($response.$/, "feedback")
+	    $self->_ansify($response.$/, "feedback")
 	  };
 
 	};
@@ -365,7 +378,7 @@ L<Term::ANSIColor> package is installed, then comments in the screen
 output will be colored red, pink, or yellow depending on the comment
 character.
 
-The colors are:
+The default colors are:
 
   red           data processing comments
   pink          plotting comments
@@ -373,7 +386,7 @@ The colors are:
   light blue    feedback from Ifeffit
   white on red  error messages from Ifeffit
 
-These colors are not configurable at this time. (But they could be...)
+These colors are configurable in the screen group.
 
 =item file
 
@@ -523,12 +536,6 @@ Demeter's dependencies are in the F<Bundle/DemeterBundle.pm> file.
 =head1 BUGS AND LIMITATIONS
 
 =over 4
-
-=item *
-
-Currently, the only way to capture Ifeffit's feedback is via the
-C<feedback> callback.  Feedback should be captured, sent to the
-various screen modes, and (optionally) colorized.
 
 =item *
 

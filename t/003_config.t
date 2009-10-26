@@ -19,7 +19,7 @@
 
 use Test::More tests => 24;
 
-my $number_of_groups = 21;
+my $number_of_groups = 22;
 
 use Demeter;
 

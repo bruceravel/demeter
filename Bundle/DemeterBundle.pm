@@ -24,8 +24,6 @@ will certainly ask several, as will Tree::Simple.
 
 =head1 CONTENTS
 
-version
-
 Module::Build
 
 autodie
@@ -84,15 +82,11 @@ Scalar::Util
 
 String::Random
 
-Term::ANSIColor
-
 Term::Twiddle
 
 Test::More
 
 Text::Template
-
-Text::Wrap
 
 Tree::Simple
 
@@ -116,6 +110,10 @@ Building the Demeter Programming Guide (./doc/dpg/) requires the following:
 The following modules are ones I might be including at some point:
 
   ExtUtils::F77  PGPLOT  File::Touch
+
+The following are in core:
+
+  Text::Wrap   Term::ANSIColor   version
 
 =head1 DEPRECATED
 
