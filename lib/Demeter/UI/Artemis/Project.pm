@@ -45,7 +45,7 @@ sub save_project {
 
   ## make sure we are fully up to date and serialised
   my ($abort, $rdata, $rpaths) = Demeter::UI::Artemis::uptodate($rframes);
-  my $rgds = $rframes->{GDS}->reset_all;
+  my $rgds = $rframes->{GDS}->reset_all(1);
   my @data  = @$rdata;
   my @paths = @$rpaths;
   my @gds   = @$rgds;
@@ -88,6 +88,9 @@ sub save_project {
     print($IN $found -> serialization) if $found;
   };
   close $IN;
+  open(my $JO, '>'.File::Spec->catfile($rframes->{main}->{project_folder}, 'journal'));
+  print $JO $rframes->{Journal}->{journal}->GetValue;
+  close $JO;
 
   my $zip = Archive::Zip->new();
   $zip->addTree( $rframes->{main}->{project_folder}, "",  sub{ not m{\.sp$} }); #and not m{_dem_\w{8}\z}
@@ -283,9 +286,14 @@ sub read_project {
     $rframes->{Plot}->{indicators}->populate(@list);
   };
 
+  my $journal = File::Spec->catfile($rframes->{main}->{project_folder}, 'journal');
+  if (-e $journal) {
+    $rframes->{Journal}->{journal}->SetValue($Demeter::UI::Artemis::demeter->slurp($journal));
+  };
+
   $rframes->{Log}->{name} = $fit->name;
   $rframes->{Log}->put_log($fit->logtext, $fit->color);
-  $rframes->{Log}->SetTitle("Artemis [Log] " . $rframes->{main}->{name}->GetValue);
+  $rframes->{Log}->SetTitle("Artemis [Log] " . $fit->name);
   $rframes->{Log}->Show(0);
   $rframes->{main}->{log_toggle}->SetValue(0);
   Demeter::UI::Artemis::set_happiness_color($fit->color);
@@ -367,6 +375,10 @@ sub close_project {
   foreach my $f (@list) {
     $f->DEMOLISH;
   };
+
+  ## -------- clear Journal
+  $rframes->{Journal}->{journal}->SetValue(q{});
+  unlink File::Spec->catfile($rframes->{main}->{project_folder}, 'journal');
 
 };
 1;

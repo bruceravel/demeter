@@ -22,7 +22,7 @@ use Cwd;
 use File::Spec;
 use List::MoreUtils qw(uniq);
 use Regexp::Optimizer;
-my $opt  = Regexp::List->new;
+my $opt = Regexp::List->new;
 
 use Readonly;
 ## 0:grab all  1:reset all  2:toggle highlight  4:import   5:export  6:discard all  8:add one
@@ -66,7 +66,7 @@ my %explain = (#                                                                
 	       skip	 => "A parameter that is ignored in the fit but retained in the project",
 	       restrain	 => "A parameter expressing prior knowledge of the fit model and added in quadrature to the fitting metric",
 	       after	 => "A parameter that will be evaluated once the fit is finished and reported in the log file",
-	       penalty	 => "A parameter used to modifiy the happiness of the fit",
+	       penalty	 => "A parameter that is evaluated and used as a penalty against the happiness of the fit",
 	       merge	 => "A parameter from a merging of fit projects whose name poses a conflict and which much be resolved",
 	      );
 my %hints = (
@@ -233,7 +233,8 @@ sub use_best_fit {
 };
 
 sub reset_all {
-  my ($parent) = @_;
+  my ($parent, $no_ifeffit) = @_;
+  $no_ifeffit ||= 0;
   my $grid = $parent->{grid};
   my @gds = ();
   foreach my $row (0 .. $grid->GetNumberRows) {
@@ -245,7 +246,7 @@ sub reset_all {
     $thisgds -> set(name=>$name, gds=>$type, mathexp=>$mathexp);
     $grid->{$name} = $thisgds;
     push @gds, $thisgds;
-    $thisgds->push_ifeffit;
+    $thisgds->push_ifeffit if (not $no_ifeffit);
   };
   $parent->{statusbar}->SetStatusText("Reset all parameter values in Ifeffit.");
   return \@gds;

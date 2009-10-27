@@ -30,6 +30,10 @@ tzset();
 #use Memoize;
 #memoize('distance');
 
+use Readonly;
+Readonly my $FRAC => 100000;
+
+
 # use vars qw(@ISA @EXPORT @EXPORT_OK);
 # require Exporter;
 # @ISA = qw(Exporter);
@@ -81,7 +85,6 @@ sub module_environment {
 		     Chemistry::Elements
 		     Config::IniFiles
 		     Graphics::GnuplotIF
-		     Math::Cephes
 		     Math::Round
 		     Readonly
 		     Regexp::Common
@@ -119,6 +122,8 @@ sub wx_environment {
 ##     Windows XP             2      5       1
 ##     Windows Server 2003    2      5       2
 ##     Windows Vista          2      6       0
+##     Windows Server 2008    2      6       0  note this overlap .. not a huge issue for this app...
+##     Windows 7              2      6       1
 sub windows_version {
   my @os = eval "Win32::GetOSVersion()";
   my $os = "Some Windows thing";
@@ -132,8 +137,9 @@ sub windows_version {
     $os = "Windows 2000",        last SWITCH if (($os[4] == 2) and ($os[1] == 5) and ($os[2] == 0));
     $os = "Windows XP",          last SWITCH if (($os[4] == 2) and ($os[1] == 5) and ($os[2] == 1));
     $os = "Windows Server 2003", last SWITCH if (($os[4] == 2) and ($os[1] == 5) and ($os[2] == 2));
-    $os = "Windows Vista",       last SWITCH if (($os[4] == 2) and ($os[1] == 6));
-    #$os = "Windows Vista",       last SWITCH if (($os[4] == 2) and ($os[1] == 6) and ($os[2] == 0));
+    $os = "Windows Vista",       last SWITCH if (($os[4] == 2) and ($os[1] == 6) and ($os[2] == 0));
+    $os = "Windows Server 2008", last SWITCH if (($os[4] == 2) and ($os[1] == 6) and ($os[2] == 0));
+    $os = "Windows 7",           last SWITCH if (($os[4] == 2) and ($os[1] == 6) and ($os[2] == 1));
   };
   return $os;
 };
@@ -174,7 +180,6 @@ sub check_parens {
   return $count;
 };
 
-## take care in case this is called as a class method rather than as an exported function
 sub simpleGDS {
   my ($self, $string) = @_;
   ($string =~ s{(?:\A\s+|\s+\z)}{}g);    # trim leading and training space
@@ -243,6 +248,40 @@ sub halflength {
   return sum(@legs)/2;
 };
 
+
+sub euclid {
+  my $class = shift;
+  my @numbers = sort {$a < $b} @_;
+
+  my $b = abs $numbers[0];
+  my $c = abs $numbers[1];
+
+  my $rem = $b % $c;
+  return $c if $rem == 0;
+  if($c == 0) {
+    return $c;
+  } else {
+    $class->euclid($c, $rem);
+  };
+};
+
+sub fract {
+  my ($class, $value) = @_;
+  return '0' if not $value;
+  $value *= $FRAC;
+  my $gcd = $class->euclid($value, $FRAC);
+  my $n = sprintf('%d', $value/$gcd);
+  my $d = sprintf('%d', $FRAC/$gcd);
+  my $string = q{};
+  if (abs($d) > 25) {
+    $string = sprintf("%.5f", $value/$FRAC);
+  } elsif (abs($n) > abs($d)) {
+    $string = sprintf('%d %d/%d', int($n / $d), abs($n) % $d, $d);
+  } else {
+    $string = sprintf('%d/%d', $n, $d);
+  };
+  return $string;
+};
 
 
 
@@ -350,6 +389,24 @@ tacked onto the end of the list to close the path.
   my $hl = $demeter_object ->
          halflength(\@coords1, \@coords2, ... \@coordsN);
 
+=item C<euclid>
+
+Return the greatest common denominator of two numbers.
+
+  my $gcd = $demeter_object->euclid(1071, 462);
+  ## $gcd is 21
+
+This is used by Demeter::Atoms to determine stoichiometry for the
+feff8 input file's potentials list.
+
+=item C<fract>
+
+Returns a fraction of rational numbers given an input float,using 5
+significant digits beyond the decimal.
+
+  my $frac = $demeter_object -> fract(0.5);
+  ## will print as "1/2"
+
 =back
 
 =head1 CONFIGURATION AND ENVIRONMENT
@@ -363,13 +420,27 @@ F<Bundle/DemeterBundle.pm> file.
 
 =head1 BUGS AND LIMITATIONS
 
+=over 4
+
+=item *
+
 The C<who> method should poke at the registry on Windows.
+
+=item *
+
+The C<fract> method should define what a small integer is and return a
+decimal representation when the ratio is not of small numbers.
+
+=back
 
 Please report problems to Bruce Ravel (bravel AT bnl DOT gov)
 
 Patches are welcome.
 
 =head1 AUTHOR
+
+The euclid method was swiped from Math::Numbers by David Moreno Garza
+and is Copyright (C) 2007 and is licensed like Perl itself.
 
 Bruce Ravel (bravel AT bnl DOT gov)
 

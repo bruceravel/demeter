@@ -62,8 +62,6 @@ IO::Scalar
 
 List::MoreUtils
 
-Math::Cephes
-
 Math::Derivative
 
 Math::Round
@@ -77,8 +75,6 @@ Readonly
 Regexp::Common
 
 Regexp::Optimizer
-
-Scalar::Util
 
 String::Random
 
@@ -109,11 +105,11 @@ Building the Demeter Programming Guide (./doc/dpg/) requires the following:
 
 The following modules are ones I might be including at some point:
 
-  ExtUtils::F77  PGPLOT  File::Touch
+  ExtUtils::F77  PGPLOT  File::Touch   Math::Cephes
 
 The following are in core:
 
-  Text::Wrap   Term::ANSIColor   version
+  Text::Wrap   Term::ANSIColor   version   Scalar::Util
 
 =head1 DEPRECATED
 

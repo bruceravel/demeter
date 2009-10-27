@@ -57,10 +57,11 @@ $nset = 0;
 $artemis_base = identify_self();
 
 my %hints = (
-	     gds  => "Display the Guess/Def/Set parameters dialog",
-	     plot => "Display the plotting controls dialog",
-	     log  => "Display the fit log",
-	     fit  => "Display the fit history dialog",
+	     gds     => "Display the Guess/Def/Set parameters dialog",
+	     plot    => "Display the plotting controls dialog",
+	     log     => "Display the fit log",
+	     fit     => "Display the fit history dialog",
+	     journal => "Diaply the fit journal",
 	    );
 
 sub OnInit {
@@ -76,7 +77,7 @@ sub OnInit {
   $demeter -> plot_with($demeter->co->default(qw(plot plotwith)));
 
   ## -------- import all of Artemis' various parts
-  foreach my $m (qw(GDS Plot History Log Buffer Config Data Prj)) {
+  foreach my $m (qw(GDS Plot History Journal Log Buffer Config Data Prj)) {
     next if $INC{"Demeter/UI/Artemis/$m.pm"};
     ##print "Demeter/UI/Artemis/$m.pm\n";
     require "Demeter/UI/Artemis/$m.pm";
@@ -85,7 +86,7 @@ sub OnInit {
   ## -------- create a new frame and set icon
   $frames{main} = Wx::Frame->new(undef, -1, 'Artemis [EXAFS data analysis] - <untitled>',
 				[1,1], # position -- along top of screen
-				[Wx::SystemSettings::GetMetric(wxSYS_SCREEN_X), 150] # size -- entire width of screen
+				[Wx::SystemSettings::GetMetric(wxSYS_SCREEN_X), 165] # size -- entire width of screen
 			       );
   my $iconfile = File::Spec->catfile(dirname($INC{'Demeter/UI/Artemis.pm'}), 'Artemis', 'icons', "artemis.png");
   $icon = Wx::Icon->new( $iconfile, wxBITMAP_TYPE_ANY );
@@ -159,9 +160,10 @@ sub OnInit {
   $hbox -> Add($vbox, 0, wxALL, 5);
   my $toolbar = Wx::ToolBar->new($frames{main}, -1, wxDefaultPosition, wxDefaultSize, wxTB_VERTICAL|wxTB_HORZ_TEXT);
   $frames{main}->{toolbar} = $toolbar;
-  $frames{main}->{gds_toggle}     = $toolbar -> AddCheckTool(1, "Show GDS",           icon("gds"),     wxNullBitmap, q{}, $hints{gds} );
-  $frames{main}->{plot_toggle}    = $toolbar -> AddCheckTool(2, "  Show plot tools",  icon("plot"),    wxNullBitmap, q{}, $hints{plot} );
-  $frames{main}->{history_toggle} = $toolbar -> AddCheckTool(3, "  Show fit history", icon("history"), wxNullBitmap, q{}, $hints{fit} );
+  $frames{main}->{gds_toggle}     = $toolbar -> AddCheckTool(1, "GDS",      icon("gds"),     wxNullBitmap, q{}, $hints{gds} );
+  $frames{main}->{plot_toggle}    = $toolbar -> AddCheckTool(2, "Plot",     icon("plot"),    wxNullBitmap, q{}, $hints{plot} );
+  $frames{main}->{history_toggle} = $toolbar -> AddCheckTool(3, " History", icon("history"), wxNullBitmap, q{}, $hints{fit} );
+  $frames{main}->{journal_toggle} = $toolbar -> AddCheckTool(4, " Journal", icon("journal"), wxNullBitmap, q{}, $hints{journal} );
   $toolbar -> Realize;
   $vbox -> Add($toolbar, 0, wxALL, 0);
 
@@ -272,7 +274,7 @@ sub OnInit {
   #$hbox  -> Fit($toolbar);
   #$hbox  -> SetSizeHints($toolbar);
 
-  foreach my $part (qw(GDS Plot Log History Buffer Config)) {
+  foreach my $part (qw(GDS Plot Log History Journal Buffer Config)) {
     my $pp = "Demeter::UI::Artemis::".$part;
     $frames{$part} = $pp->new($frames{main});
     $frames{$part} -> SetIcon($icon);
@@ -521,7 +523,6 @@ sub fit {
     } elsif ($how =~ m{\A[krq]\z}) {
       $rframes->{Plot}->plot(q{}, $how);
     };
-
     $finishtext = "Your fit is finished!";
   } else {
     $rframes->{Log}->{text}->SetValue($fit->troubletext);
@@ -724,7 +725,7 @@ sub OnToolEnter {
 };
 sub OnToolClick {
   my ($toolbar, $event, $self) = @_;
-  my $which = (qw(GDS Plot History))[$toolbar->GetToolPos($event->GetId)];
+  my $which = (qw(GDS Plot History Journal))[$toolbar->GetToolPos($event->GetId)];
   $frames{$which}->Show($toolbar->GetToolState($event->GetId));
 };
 sub OnDataRightClick {

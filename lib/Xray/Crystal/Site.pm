@@ -271,7 +271,7 @@ EOH
 				  $ypos+$$bravais[$i+1],
 				  $zpos+$$bravais[$i+2]);
       #------------------------ permute back from alt. settings (orthorhombic)
-      if ($is_ortho) {
+      if ($is_ortho and ($setting ne 'positions')) {
       BACKWARD: {
 	  ($setting == 1) and do {
 	    (($xposi, $yposi, $zposi)=( $yposi, $xposi,-$zposi));

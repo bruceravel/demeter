@@ -19,6 +19,7 @@ use autodie qw(open close);
 
 use Moose;
 extends 'Demeter';
+with 'Demeter::Tools';
 with 'Demeter::Atoms::Absorption';
 with 'Demeter::Atoms::Cif';
 use MooseX::AttributeHelpers;
@@ -43,7 +44,7 @@ use Carp;
 use Chemistry::Elements qw(get_Z);
 use File::Basename;
 use List::Util qw(min max reduce);
-use Math::Cephes::Fraction qw(fract euclid);
+#use Math::Cephes::Fraction qw(fract);
 use POSIX qw(ceil);
 use Regexp::Common;
 use Regexp::List;
@@ -578,10 +579,11 @@ sub set_ipots {
     $count[$ipot] += $s->in_cell;
     $top = max($top, $ipot);
   };
-  ## get greatest common divisor (thanks to Math::Cephes::Fraction
-  ## for "euclid" and List::Util for "reduce")
+  ## get greatest common divisor (thanks to Demeter::Tools for
+  ## "euclid" (which was swiped from Math::Numbers) and List::Util for
+  ## "reduce")
   if ($self->co->default("atoms", "gcd")) {
-    my $gcd = reduce { (euclid($a,$b))[0] } @count[1..$top];
+    my $gcd = reduce { ($self->euclid($a,$b))[0] } @count[1..$top];
     foreach my $s (1 .. $top) {
       $count[$s] /= $gcd;
     };
@@ -738,19 +740,26 @@ sub sg {
   return join(", ", @{$$rhash{shorthand}}) if ($which eq "shorthand");
   ## shift vector from Int'l Tables
   if ($which eq "shiftvec") {
-    my @shift = map {fract($FRAC*$_, $FRAC)} @{ $$rhash{shiftvec} };
-    return sprintf($pattern, map {$_->as_mixed_string} @shift);
+    #my @shift = map {fract($FRAC*$_, $FRAC)} @{ $$rhash{shiftvec} };
+    #return sprintf($pattern, map {$_->as_mixed_string} @shift);
+    my @shift = map {$self->fract($_)} @{ $$rhash{shiftvec} };
+    return sprintf($pattern, @shift);
   };
   ## Bravais translations
   if ($which eq "bravais") {
     my @bravais = @{ $cell->group->bravais };
     my $string = q{};
     while (@bravais) {
-      my @vec = (fract($FRAC*shift(@bravais), $FRAC),
-		 fract($FRAC*shift(@bravais), $FRAC),
-		 fract($FRAC*shift(@bravais), $FRAC),
+      #my @vec = (fract($FRAC*shift(@bravais), $FRAC),
+	#	 fract($FRAC*shift(@bravais), $FRAC),
+	#	 fract($FRAC*shift(@bravais), $FRAC),
+	#	);
+      #$string .= sprintf($pattern, map {$_->as_mixed_string} @vec);
+      my @vec = ($self->fract(shift(@bravais)),
+		 $self->fract(shift(@bravais)),
+		 $self->fract(shift(@bravais)),
 		);
-      $string .= sprintf($pattern, map {$_->as_mixed_string} @vec);
+      $string .= sprintf($pattern, @vec);
     };
     return $string;
   };
