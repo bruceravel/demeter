@@ -27,7 +27,7 @@ sub new {
   my ($class, $parent, $content, $title) = @_;
 
   my $this = $class->SUPER::new($parent, -1, $title,
-				Wx::GetMousePosition, [450,350],
+				Wx::GetMousePosition, [475,350],
 				wxMINIMIZE_BOX|wxCLOSE_BOX|wxCAPTION|wxSYSTEM_MENU|wxRESIZE_BORDER
 			       );
   my $vbox  = Wx::BoxSizer->new( wxVERTICAL );

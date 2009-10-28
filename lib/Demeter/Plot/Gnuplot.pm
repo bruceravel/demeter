@@ -198,7 +198,7 @@ This documentation refers to Demeter version 0.3.
 
 =head1 SYNOPSIS
 
-  use Demeter (:gnuplot);
+  use Demeter (:plotwith=gnuplot);
 
 or
 
@@ -267,10 +267,6 @@ Breakage if trying to plot a path with no data
 
 The file method is broken -- need to replace replot commands with
 continuations
-
-=item *
-
-Plotting individual paths is broken
 
 =item *
 

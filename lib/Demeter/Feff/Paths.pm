@@ -271,6 +271,32 @@ would return the first double scattering path that scatters from a
 site with the tag C<Fe1> then from a site with the tag C<C1> before
 completing the loop and returning to the central atom.
 
+Some more examples:
+
+   my $scatteringpath = $feff->find_path(gt=>4, ipots=>[2]);
+
+In this example, the scattering path will be the first one that is
+longer than 4 Angstroms, is a single scattering path, and scatters
+from unique potential number 2.
+
+   my $nextscatteringpath = $feff->find_path(sp=>$scatteringpath);
+
+In this example, the path returned will be the next longer single
+scattering path than the previous example and which also scatters from
+unique potential number 2.
+
+   my $scatteringpath = $feff->find_path(lt=>5.3, element=>["O", "Ti", "O"]);
+
+This will return the shortest triple scattering path shorter than 5.3
+Angstroms which scatters from oxygen, then titanium, then oxygen.
+
+   my $scatteringpath = $feff->find_path(tagmatch=>["O[1-3]"]);
+
+This will return the shortest first path (with no other length
+restriction) which scatters from a site whose tag matches the given
+regular expression -- in this case it will match any of O1, O2, or O3.
+
+
 =item C<find_all_paths>
 
 This returns a list of paths meeting the same criteria as for the
@@ -288,7 +314,7 @@ Another example:
 
    my @list =  $feff->find_all_paths(lt=>6, nleg=>2);
 
-This returns all single scattering paths less than 6 Angstrongs.
+This returns all single scattering paths less than 6 Angstroms.
 
 =back
 
@@ -306,15 +332,11 @@ F<Bundle/DemeterBundle.pm> file.
 
 =over 4
 
-=item *
-
-Return a list of paths matching the criteria?
-
-=back
-
 Please report problems to Bruce Ravel (bravel AT bnl DOT gov)
 
 Patches are welcome.
+
+=back
 
 =head1 AUTHOR
 

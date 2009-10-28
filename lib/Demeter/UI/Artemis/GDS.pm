@@ -44,6 +44,7 @@ use Wx::Event qw(EVT_CLOSE EVT_GRID_CELL_CHANGE EVT_GRID_CELL_RIGHT_CLICK  EVT_M
 		 EVT_GRID_LABEL_LEFT_CLICK EVT_GRID_LABEL_RIGHT_CLICK EVT_GRID_RANGE_SELECT);
 
 use Demeter::UI::Artemis::GDS::Restraint;
+use Demeter::UI::Artemis::ShowText;
 
 my $types = [qw(guess def set lguess skip restrain after penalty merge)];
 
@@ -670,6 +671,7 @@ sub build_restraint {
   $parent->{grid}->ClearSelection;
   return $parent;
 };
+
 sub annotate {
   my ($parent) = @_;
 
@@ -687,15 +689,96 @@ sub annotate {
   $parent->{grid}->ClearSelection;
   $parent->{statusbar}->SetStatusText("$name : $note");
 };
+
 sub find {
   my ($parent) = @_;
+  my $thisrow = $parent->{clicked_row};
+  my $this = $parent->{grid}->GetCellValue($thisrow,1);
+  my $text = $this . " is used\n";
+  my $count = 0;
+
+  ## -------- find all GDS parameter math expressions using this parameter
+  foreach my $row (0 .. $parent->{grid}->GetNumberRows-1) {
+    next if ($row == $thisrow);
+    my $me = $parent->{grid}->GetCellValue($row,2);
+    if ($me =~ m{\b$this\b}) {
+      ++$count;
+      $text .= sprintf("%4d.  in the math expression for %s parameter '%s'\n",
+		       $count,
+		       $parent->{grid}->GetCellValue($row,0),
+		       $parent->{grid}->GetCellValue($row,1));
+    };
+  };
+
+  ## -------- find all path parameter math expressions using this parameter
+  foreach my $f (keys %Demeter::UI::Artemis::frames) {
+    next if ($f !~ m{\Adata});
+    foreach my $p (0 .. $Demeter::UI::Artemis::frames{$f}->{pathlist}->GetPageCount - 1) {
+      my $page = $Demeter::UI::Artemis::frames{$f}->{pathlist}->GetPage($p);
+      foreach my $k (qw(s02 e0 delr sigma2 ei third fourth)) {
+	my $pp = $page->{"pp_$k"}->GetValue;
+	if ($pp =~ m{\b$this\b}) {
+	  ++$count;
+	  $text .= sprintf("%4d.  in the %s path parameter for path '%s%s'\n", 
+			   $count, $k, $page->{fefflabel}->GetLabel, $page->{idlabel}->GetLabel);
+	};
+      };
+    };
+  };
+
+  ## -------- report back
+  $parent->{statusbar}->SetStatusText("$this is not used in this project"), return if ($count == 0);
+  Demeter::UI::Artemis::ShowText->new($Demeter::UI::Artemis::frames{main}, $text, "Found $this") -> Show;
   $parent->{grid}->ClearSelection;
-  $parent->{statusbar}->SetStatusText("perform find");
 };
+
 sub rename_global {
   my ($parent) = @_;
+  my $thisrow = $parent->{clicked_row};
+  my $this = $parent->{grid}->GetCellValue($thisrow,1);
+  my $count = 0;
+
+  ## -------- get new name
+  my $ted = Wx::TextEntryDialog->new( $parent, "Rename $this", "Rename $this", q{}, wxOK|wxCANCEL, Wx::GetMousePosition);
+  if ($ted->ShowModal == wxID_CANCEL) {
+    $parent->{statusbar}->SetStatusText("Parameter renaming cancelled.");
+    return;
+  };
+  my $newname = $ted->GetValue;
+
+  ## -------- change this parameter's name
+  $parent->{grid}->SetCellValue($thisrow,1,$newname);
+  ++$count;
+
+  ## -------- modify all GDS math expressions containing this parameter
+  foreach my $row (0 .. $parent->{grid}->GetNumberRows-1) {
+    next if ($row == $thisrow);
+    my $me = $parent->{grid}->GetCellValue($row,2);
+    if ($me =~ m{\b$this\b}) {
+      $me =~ s{$this}{$newname}g;
+      $parent->{grid}->SetCellValue($row,2,$me);
+      ++$count;
+    };
+  };
+
+  ## -------- modify all path parameter math expressions containing this parameter
+  foreach my $f (keys %Demeter::UI::Artemis::frames) {
+    next if ($f !~ m{\Adata});
+    foreach my $p (0 .. $Demeter::UI::Artemis::frames{$f}->{pathlist}->GetPageCount - 1) {
+      my $page = $Demeter::UI::Artemis::frames{$f}->{pathlist}->GetPage($p);
+      foreach my $k (qw(s02 e0 delr sigma2 ei third fourth)) {
+	my $pp = $page->{"pp_$k"}->GetValue;
+	if ($pp =~ m{\b$this\b}) {
+	  $pp =~ s{$this}{$newname}g;
+	  $page->{"pp_$k"}->SetValue($pp);
+	  ++$count;
+	};
+      };
+    };
+  };
+
   $parent->{grid}->ClearSelection;
-  $parent->{statusbar}->SetStatusText("perform rename_global");
+  $parent->{statusbar}->SetStatusText("Replaced $count instances of '$this' with '$newname'");
 };
 
 

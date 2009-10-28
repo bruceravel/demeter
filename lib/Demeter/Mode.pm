@@ -241,6 +241,12 @@ sub increment_fit {
   return $self->currentfit;
 };
 
+sub reset_path_index {
+  my ($self) = @_;
+  $self->pathindex(1);
+  return $self->pathindex;
+};
+
 sub fetch {
   my ($self, $type, $group) = @_;
   my $re = join("|", @{$self->types});
@@ -628,7 +634,7 @@ This is not used for anything at this time, but it seemed useful.
 
 =item C<fetch>
 
-This method returns and object reference given its group name.
+This method returns an object reference given its group name.
 
   $object = $demeter_object->mo->fetch("ScatteringPath", $group);
 
@@ -640,6 +646,12 @@ DND on blessed references.  It was much easier to do DND on an array
 of group names, which are simple strings.  I then needed this method
 to convert the list of group names back into a list of object
 references.
+
+=item C<reset_path_index>
+
+This resets the path counter to 1.  This is used when closing one
+project and starting a new one so that path indexing can start at 1 in
+the new fit.  See C<close_project> in L<Demeter::UI::Artemis::Project>.
 
 =back
 

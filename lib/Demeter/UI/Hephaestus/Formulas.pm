@@ -215,7 +215,7 @@ sub get_formula_data {
       if ($xsec > 0) {
 	if (10000/$xsec > 1500) {
 	  $answer .=
-	    sprintf("\nAbsorbtion length = %.3f cm at %d %s",
+	    sprintf("\nAbsorption length = %.3f cm at %d %s",
 		    1/$xsec, $parent->{energy}->GetValue, $units);
 	  $answer .= ($type eq 'Molarity') ? " for a ".$parent->{density}->GetValue." molar sample.\n" : ".\n";
 	  $answer .=
@@ -223,7 +223,7 @@ sub get_formula_data {
 	  	    1000*$density/$xsec, $parent->{energy}->GetValue, $units) if ($type eq 'Density');
 	} elsif (10000/$xsec > 500) {
 	  $answer .=
-	    sprintf("\nAbsorbtion length = %.3f cm at %d %s",
+	    sprintf("\nAbsorption length = %.3f cm at %d %s",
 		    1/$xsec, $parent->{energy}->GetValue, $units);
 	  $answer .= ($type eq 'Molarity') ? " for a ".$parent->{density}->GetValue." molar sample.\n" : ".\n";
 	  $answer .=
@@ -231,7 +231,7 @@ sub get_formula_data {
 	  	    1000*$density/$xsec, $parent->{energy}->GetValue, $units) if ($type eq 'Density');
 	} else {
 	  $answer .=
-	    sprintf("\nAbsorbtion length = %.1f micron at %d %s",
+	    sprintf("\nAbsorption length = %.1f micron at %d %s",
 		    10000/$xsec, $parent->{energy}->GetValue, $units);
 	  $answer .= ($type eq 'Molarity') ? " for a ".$parent->{density}->GetValue." molar sample.\n" : ".\n";
 	  $answer .=

@@ -34,11 +34,15 @@ my $demeter = $Demeter::UI::Artemis::demeter;
 sub new {
   my ($class, $parent) = @_;
   my ($w, $h) = $parent->GetSizeWH;
+  my ($x, $y) = $parent->GetPositionXY;
   my $pos = $parent->GetScreenPosition;
 
   ## position of upper left corner
-  my $windowsize = sum(wxSYS_BORDER_Y, wxSYS_BORDER_Y, wxSYS_BORDER_Y, wxSYS_FRAMESIZE_Y);
-  my $yy = sum($pos->y, $h, $windowsize, $parent->GetStatusBar->GetSize->GetHeight);
+  my $windowsize = 2*wxSYS_FRAMESIZE_Y; #sum(wxSYS_BORDER_Y, wxSYS_BORDER_Y, wxSYS_BORDER_Y, wxSYS_FRAMESIZE_Y);
+  #print join(" ", wxSYS_MENU_Y, wxSYS_BORDER_Y, wxSYS_FRAMESIZE_Y, $h, $y), $/;
+  my $yy = sum(wxSYS_MENU_Y, wxSYS_BORDER_Y, wxSYS_FRAMESIZE_Y, $h, $y);
+  #print $yy, $/;
+  #my $yy = sum($pos->y, $h, $windowsize, $parent->GetStatusBar->GetSize->GetHeight);
 
   my $this = $class->SUPER::new($parent, -1, "Artemis [Plot]",
 				[0,$yy], wxDefaultSize,
@@ -102,7 +106,7 @@ sub new {
                       : ($utility eq 'VPaths')     ? Demeter::UI::Artemis::Plot::VPaths     -> new($nb)
 	              :                              q{};
     next if not $this->{$utility};
-    $nb->AddPage($this->{$utility}, ($utility eq 'indicators') ? 'indic.' : $utility, 0);#, $count);
+    $nb->AddPage($this->{$utility}, ($utility eq 'indicators') ? 'indic' : $utility, 0);#, $count);
   };
   $left -> Add($nb, 1, wxGROW|wxALL, 5);
   $this->{notebook} = $nb;
@@ -136,8 +140,9 @@ sub new {
   $this->mouseover("clear",  "Clear all items from the plotting list.");
 
   $this -> SetSizerAndFit( $vbox );
-  my $hh = Wx::SystemSettings::GetMetric(wxSYS_SCREEN_Y) - $yy - 2*$windowsize - $this->GetParent->GetSize->GetHeight;
-  $this -> SetSize(Wx::Size->new(-1, $hh));
+  #my $hh = Wx::SystemSettings::GetMetric(wxSYS_SCREEN_Y) - $yy - 2*$windowsize - $y;
+  #print join(" ", $hh, Wx::SystemSettings::GetMetric(wxSYS_SCREEN_Y), $yy, $windowsize, $y), $/;
+  #$this -> SetSize(Wx::Size->new(-1, $hh));
   return $this;
 };
 

@@ -57,11 +57,11 @@ $nset = 0;
 $artemis_base = identify_self();
 
 my %hints = (
-	     gds     => "Display the Guess/Def/Set parameters dialog",
-	     plot    => "Display the plotting controls dialog",
-	     log     => "Display the fit log",
-	     fit     => "Display the fit history dialog",
-	     journal => "Diaply the fit journal",
+	     gds     => "Display/hide the Guess/Def/Set parameters dialog",
+	     plot    => "Display/hide the plotting controls dialog",
+	     log     => "Display/hide the fit log",
+	     fit     => "Display/hide the fit history dialog",
+	     journal => "Display/hide the fit journal",
 	    );
 
 sub OnInit {
@@ -86,7 +86,7 @@ sub OnInit {
   ## -------- create a new frame and set icon
   $frames{main} = Wx::Frame->new(undef, -1, 'Artemis [EXAFS data analysis] - <untitled>',
 				[1,1], # position -- along top of screen
-				[Wx::SystemSettings::GetMetric(wxSYS_SCREEN_X), 165] # size -- entire width of screen
+				[Wx::SystemSettings::GetMetric(wxSYS_SCREEN_X), -1] # size -- entire width of screen
 			       );
   my $iconfile = File::Spec->catfile(dirname($INC{'Demeter/UI/Artemis.pm'}), 'Artemis', 'icons', "artemis.png");
   $icon = Wx::Icon->new( $iconfile, wxBITMAP_TYPE_ANY );
@@ -271,8 +271,9 @@ sub OnInit {
 
 
   $frames{main} -> SetSizer($hbox);
-  #$hbox  -> Fit($toolbar);
-  #$hbox  -> SetSizeHints($toolbar);
+  ##         sum of menu bar, toolbar, and statusbar + the spaceing around the bix containing the toolbar
+  my $h = ($toolbar->GetSizeWH)[1] + ($frames{main}->{statusbar}->GetSizeWH)[1] + ($bar->GetSizeWH)[1] + 10;
+  $frames{main} -> SetSize(Wx::Size->new(Wx::SystemSettings::GetMetric(wxSYS_SCREEN_X), $h));
 
   foreach my $part (qw(GDS Plot Log History Journal Buffer Config)) {
     my $pp = "Demeter::UI::Artemis::".$part;

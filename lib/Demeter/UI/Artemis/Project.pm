@@ -369,6 +369,7 @@ sub close_project {
   foreach my $p (@list) {
     $p->DEMOLISH;
   };
+  $Demeter::UI::Artemis::demeter->mo->reset_path_index;
 
   ## -------- clear all Fits
   @list = @{$Demeter::UI::Artemis::demeter->mo->Fit};

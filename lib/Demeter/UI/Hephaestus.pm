@@ -242,7 +242,7 @@ The edge finder and configure icons are from
 the Kids icon set for KDE by Everaldo Coelho,
 http://www.everaldo.com
 
-The Absorbtion (gold), Formulas (mortar), Data
+The Absorption (gold), Formulas (mortar), Data
 (chemical hazard), Document (book) icons taken
 from Wikimedia http://commons.wikimedia.org
 (search terms)
