@@ -18,6 +18,7 @@ package Demeter::Data::Mu;
 use autodie qw(open close);
 
 use Moose::Role;
+use MooseX::Aliases;
 
 use Carp;
 use File::Basename;
@@ -280,11 +281,7 @@ sub autobk {
   $self->update_bkg(0);
   return $self;
 };
-{
-  no warnings 'once';
-  # alternate names
-  *spline = \ &autobk;
-}
+alias spline => 'autobk';
 
 
 sub plotE {

@@ -173,13 +173,8 @@ sub labelline {
   my ($self) = @_;
   return sprintf("Reff=%6.3f  nleg=%d   degen=%2d", $self->fuzzy, $self->nleg, $self->n);
 };
-
-{
-  no warnings 'once';
-  # alternate names
-  *interplist = \ &intrplist;
-  *interpline = \ &intrpline;
-};
+alias interplist => 'intrplist';
+alias interpline => 'intrpline';
 
 
 ## set halflength and beta list for this path

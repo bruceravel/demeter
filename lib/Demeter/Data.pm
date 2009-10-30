@@ -668,6 +668,7 @@ override 'deserialize' => sub {
   ## load the attributes
   my %args = %{ $stuff[0] };
   delete $args{plottable};
+  delete $args{pathtype};
   my @args = %args;
   $self -> set(@args);
   $self -> group($self->_get_group);
@@ -692,12 +693,7 @@ override 'deserialize' => sub {
 
   return $self;
 };
-{
-  no warnings 'once';
-  # alternate names
-  *thaw   = \ &deserialize;
-  #*Load   = \ &deserialize;
-}
+alias thaw => 'deserialize';
 
 __PACKAGE__->meta->make_immutable;
 1;

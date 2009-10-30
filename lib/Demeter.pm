@@ -53,6 +53,7 @@ Readonly my $NUMBER => $RE{num}{real};
 =cut
 
 use Moose;
+use MooseX::Aliases;
 use MooseX::StrictConstructor;
 use Ifeffit;
 with 'Demeter::Dispose';
@@ -191,12 +192,10 @@ sub mo {
 sub dd {
   return shift->mo->datadefault;
 };
-{
-  no warnings 'once';
-  # alternate names
-  *config = \ &co;
-  *plot_object = \& po;
-}
+alias config       => 'co';
+alias plot_object  => 'po';
+alias mode_object  => 'mo';
+alias data_default => 'dd';
 
 sub finish {
   my ($self) = @_;
@@ -532,14 +531,8 @@ sub deserialize {
   $self->set(@$r_args);
   return $self;
 };
-{
-  no warnings 'once';
-  # alternate names
-  *freeze = \ &serialize;
-  *thaw   = \ &deserialize;
-  #*Dump   = \ &serialize;
-  #*Load   = \ &deserialize;
-}
+alias freeze => 'serialize';
+alias thaw   => 'deserialize';
 
 
 

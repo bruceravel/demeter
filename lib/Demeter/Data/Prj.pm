@@ -20,6 +20,7 @@ use autodie qw(open close);
 use Moose;
 extends 'Demeter';
 use MooseX::AttributeHelpers;
+use MooseX::Aliases;
 use MooseX::StrictConstructor;
 
 #use diagnostics;
@@ -169,11 +170,7 @@ sub slurp {
   my @data = $self->record(1 .. $#groups+1);
   return @data;
 };
-{
-  no warnings 'once';
-  # alternate names
-  *prj = \ &slurp;
-}
+alias prj => 'slurp';
 
 sub record {
   my ($self, @which) = @_;
@@ -198,11 +195,7 @@ sub record {
   };
   return (wantarray) ? @groups : $groups[0];
 };
-{
-  no warnings 'once';
-  # alternate names
-  *records = \ &record;
-}
+alias records => 'record';
 
 ## $index is the line number in the project file, *not* the record number
 sub _record {

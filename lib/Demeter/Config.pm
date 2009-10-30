@@ -22,6 +22,7 @@ use Moose;
 extends 'Demeter';
 use Moose::Util::TypeConstraints;
 use MooseX::AttributeHelpers;
+use MooseX::Aliases;
 #use vars qw($singleton);	# Moose 0.61, MooseX::Singleton 0.12 seem to need this
 
 use Carp;
@@ -330,11 +331,7 @@ sub default {
   };
   return $rhash->{default};
 };
-{
-  no warnings 'once';
-  # alternate names
-  *def = \ &default;
-}
+alias def => 'default';
 
 sub description {
   my ($self, $group, $param) = @_;

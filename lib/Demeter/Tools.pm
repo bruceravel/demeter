@@ -200,11 +200,6 @@ sub simpleGDS {
 			     mathexp => $mathexp,
 			    ),
 };
-# {
-#   no warnings 'once';
-#   # alternate names
-#   *GDS = \ &simpleGDS;
-# }
 
 sub is_windows {
   my ($class) = @_;

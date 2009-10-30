@@ -20,6 +20,7 @@ use autodie qw(open close);
 use Moose;
 extends 'Demeter';
 use MooseX::AttributeHelpers;
+use MooseX::Aliases;
 use MooseX::StrictConstructor;
 use Demeter::StrTypes qw( AtomsEdge FeffCard );
 use Demeter::NumTypes qw( Natural NonNeg PosInt );
@@ -983,12 +984,8 @@ sub read_yaml {
 
   return $self;
 };
-{
-  no warnings 'once';
-  # alternate names
-  *freeze = \ &serialize;
-  *thaw   = \ &deserialize;
-};
+alias freeze => 'serialize';
+alias thaw   => 'deserialize';
 
 
 __PACKAGE__->meta->make_immutable;

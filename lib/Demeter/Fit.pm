@@ -22,6 +22,7 @@ use File::Spec;
 use Moose;
 extends 'Demeter';
 use MooseX::AttributeHelpers;
+use MooseX::Aliases;
 use MooseX::StrictConstructor;
 
 with 'Demeter::Fit::Happiness';
@@ -421,11 +422,7 @@ sub fit {
 
   return $self;
 };
-{
-  no warnings 'once';
-  # alternate names
-  *feffit = \ &fit;
-}
+alias feffit => 'fit';
 
 sub ff2chi {
   my ($self, $data) = @_;
@@ -504,11 +501,7 @@ sub ff2chi {
 
   return $self;
 };
-{
-  no warnings 'once';
-  # alternate names
-  *sum = \ &ff2chi;
-}
+alias sum => 'ff2chi';
 
 
 sub trouble_report {
@@ -1358,14 +1351,8 @@ override 'deserialize' => sub {
   $self->stop_spinner if ($self->mo->ui eq 'screen');
   return $self;
 };
-{
-  no warnings 'once';
-  # alternate names
-  *freeze = \ &serialize;
-  *thaw   = \ &deserialize;
-  #*Dump   = \ &serialize;
-  #*Load   = \ &deserialize;
-}
+alias freeze => 'serialize';
+alias thaw   => 'deserialize';
 
 __PACKAGE__->meta->make_immutable;
 1;

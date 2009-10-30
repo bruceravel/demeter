@@ -18,6 +18,7 @@ package Demeter::Data::E0;
 use autodie qw(open close);
 
 use Moose::Role;
+use MooseX::Aliases;
 use Demeter::StrTypes qw( Element Edge );
 
 use Carp;
@@ -198,11 +199,7 @@ sub align_with_reference {
   $standard->standard if (ref($standard) =~ m{Data});
   return $shift;
 };
-{
-  no warnings 'once';
-  # alternate names
-  *alignwr = \ &align_with_reference;
-};
+alias alignwr => 'align_with_reference';
 
 sub tie_reference {		# extend to more than two...?
   my ($self, $tie) = @_;
