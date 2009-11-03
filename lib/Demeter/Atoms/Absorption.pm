@@ -37,7 +37,8 @@ sub _absorption {
   my $bravais  = $cell->group->bravais;
   my $brav     = ($#{$bravais}+4) / 3;
   my $volume   = $cell->volume;
-  my ($mass, $xsec, $delta_mu) = (0,0,0);
+  my ($mass, $xseca, $xsecb, $delta_mu) = (0,0,0,0);
+  ## above the edge
   my %cache = ();		# memoize and call cross_section less often
   foreach my $position (@{$contents}) {
     my $site    = $position->[0];
@@ -47,17 +48,23 @@ sub _absorption {
     $mass      += $weight*$factor;
     $cache{lc($element)} ||=
       scalar Xray::Absorption -> cross_section($element, $energy+50);
-    $xsec += $cache{lc($element)} * $factor;
-    if ($absorber->element eq $element) {
-      $delta_mu += ($factor/$brav) *
-	( $cache{lc($element)} -
-	  scalar Xray::Absorption -> cross_section($element, $energy-50) );
-    };
+    $xseca += $cache{lc($element)} * $factor;
+  };
+  ## below the edge
+  %cache = ();		# memoize and call cross_section less often
+  foreach my $position (@{$contents}) {
+    my $site    = $position->[0];
+    my $element = $site->element;
+    my $factor  = 1; #$this_occ; # $occ ? $this_occ : 1; # consider site occupancy??
+    $cache{lc($element)} ||=
+      scalar Xray::Absorption -> cross_section($element, $energy-50);
+    $xsecb += $cache{lc($element)} * $factor;
   };
   $mass     *= 1.66053/$volume; ## atomic mass unit = 1.66053e-24 gram
-  $xsec     /= $volume;
-  $delta_mu /= $volume;
-  $self->set(xsec		=> sprintf("%.3f", 10000/$xsec),
+  $xseca    /= $volume;
+  $xsecb    /= $volume;
+  $delta_mu  = $xseca - $xsecb;
+  $self->set(xsec		=> sprintf("%.3f", 10000/$xseca),
 	     deltamu		=> sprintf("%.3f", 10000/$delta_mu),
 	     density		=> sprintf("%.3f", $mass),
 	     absorption_done	=> 1

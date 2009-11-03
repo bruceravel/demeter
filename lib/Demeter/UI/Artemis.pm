@@ -19,7 +19,7 @@ use File::Spec;
 use List::MoreUtils qw(zip);
 use Scalar::Util qw(blessed);
 use String::Random qw(random_string);
-use YAML;
+use YAML::Tiny;
 
 use Wx qw(:everything);
 use Wx::Event qw(EVT_MENU EVT_CLOSE EVT_TOOL_ENTER EVT_CHECKBOX EVT_BUTTON
@@ -299,7 +299,7 @@ sub OnInit {
   my $orderfile = File::Spec->catfile($frames{main}->{project_folder}, "order");
   $frames{main}->{order_file} = $orderfile;
   if (not -e $orderfile) {
-    my $string .= YAML::Dump(%fit_order);
+    my $string .= YAML::Tiny::Dump(%fit_order);
     open(my $ORDER, '>'.$orderfile);
     print $ORDER $string;
     close $ORDER;
@@ -490,7 +490,7 @@ sub fit {
     ++$thisfit;
     $fit_order{order}{$thisfit} = $fit->group;
     $fit_order{order}{current}  = $thisfit;
-    my $string .= YAML::Dump(%fit_order);
+    my $string .= YAML::Tiny::Dump(%fit_order);
     open(my $ORDER, '>'.$frames{main}->{order_file});
     print $ORDER $string;
     close $ORDER;

@@ -51,7 +51,7 @@ use Readonly;
 Readonly my $NUMBER    => $RE{num}{real};
 Readonly my $STAT_TEXT => "n_idp n_varys chi_square chi_reduced r_factor epsilon_k epsilon_r data_total";
 use Text::Wrap;
-use YAML;
+use YAML::Tiny;
 
 use Text::Wrap;
 $Text::Wrap::columns = 65;
@@ -1061,7 +1061,7 @@ override 'serialize' => sub {
   ## -------- save a yaml containing the structure of the fit
   my $structure = File::Spec->catfile($self->folder, "structure.yaml");
   open my $STRUCTURE, ">$structure";
-  print $STRUCTURE YAML::Dump(\@gdsgroups, \@datagroups, \@pathsgroups, \@feffgroups);
+  print $STRUCTURE YAML::Tiny::Dump(\@gdsgroups, \@datagroups, \@pathsgroups, \@feffgroups);
   close $STRUCTURE;
 
   ## -------- save a yaml containing all GDS parameters
@@ -1119,7 +1119,7 @@ override 'serialize' => sub {
   my %props = zip(@properties, @vals);
   my $propsfile =  File::Spec->catfile($self->folder, "fit.yaml");
   open my $PROPS, ">$propsfile";
-  print $PROPS YAML::Dump(\%props);
+  print $PROPS YAML::Tiny::Dump(\%props);
   close $PROPS;
 
   ## -------- write fit and log files to the folder
@@ -1171,14 +1171,14 @@ override 'deserialize' => sub {
 
   my $structure = ($args{file}) ? $zip->contents('structure.yaml')
     : $self->slurp(File::Spec->catfile($args{folder}, 'structure.yaml'));
-  my ($r_gdsnames, $r_data, $r_paths, $r_feff) = YAML::Load($structure);
+  my ($r_gdsnames, $r_data, $r_paths, $r_feff) = YAML::Tiny::Load($structure);
 
   ## -------- import the data
   my @data = ();
   foreach my $d (@$r_data) {
     my $yaml = ($args{file}) ? $zip->contents("$d.yaml")
       : $self->slurp(File::Spec->catfile($args{folder}, "$d.yaml"));
-    my ($r_attributes, $r_x, $r_y) = YAML::Load($yaml);
+    my ($r_attributes, $r_x, $r_y) = YAML::Tiny::Load($yaml);
     my @array = %$r_attributes;
     my $this = Demeter::Data -> new(@array);
     $datae{$this->group} = $this;
@@ -1197,7 +1197,7 @@ override 'deserialize' => sub {
   my @gds = ();
   my $yaml = ($args{file}) ? $zip->contents("gds.yaml")
     : $self->slurp(File::Spec->catfile($args{folder}, "gds.yaml"));
-  my @list = YAML::Load($yaml);
+  my @list = YAML::Tiny::Load($yaml);
   foreach (@list) {
     my @array = %{ $_ };
     my $this = Demeter::GDS->new(@array);
@@ -1225,7 +1225,7 @@ override 'deserialize' => sub {
       my $yaml = ($args{file}) ? $zip->contents("$f.yaml")
 	: $self->slurp(File::Spec->catfile($args{folder}, "$f.yaml"));
       if (defined $yaml) {
-	my @refs = YAML::Load($yaml);
+	my @refs = YAML::Tiny::Load($yaml);
 	$this->read_yaml(\@refs);
 	foreach my $s (@{ $this->pathlist }) {
 	  $sps{$s->group} = $s
@@ -1239,7 +1239,7 @@ override 'deserialize' => sub {
   my @paths = ();
   $yaml = ($args{file}) ? $zip->contents("paths.yaml")
     : $self->slurp(File::Spec->catfile($args{folder}, "paths.yaml"));
-  @list = YAML::Load($yaml);
+  @list = YAML::Tiny::Load($yaml);
   foreach my $plotlike (@list) {
     my $dg = $plotlike->{datagroup};
     $plotlike->{data} = $datae{$dg};
@@ -1284,7 +1284,7 @@ override 'deserialize' => sub {
   ## -------- import the fit properties, statistics, correlations
   $yaml = ($args{file}) ? $zip->contents("fit.yaml")
     : $self->slurp(File::Spec->catfile($args{folder}, "fit.yaml"));
-  my $rhash = YAML::Load($yaml);
+  my $rhash = YAML::Tiny::Load($yaml);
   my @array = %$rhash;
   $self -> set(@array);
   $self -> fit_performed(0);
@@ -1342,7 +1342,7 @@ override 'deserialize' => sub {
   if ($args{plot}) {
     $yaml = ($args{file}) ? $zip->contents("plot.yaml")
       : $self->slurp(File::Spec->catfile($args{folder}, "plot.yaml"));
-    my $rhash = YAML::Load($yaml);
+    my $rhash = YAML::Tiny::Load($yaml);
     my @array = %$rhash;
     $self -> po -> set(@array);
   };

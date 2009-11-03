@@ -21,6 +21,7 @@ use Moose;
 extends 'Demeter';
 
 use MooseX::AttributeHelpers;
+#use MooseX::AlwaysCoerce;   # this might be useful....
 #use Moose::Util::TypeConstraints;
 use Demeter::StrTypes qw( Element
 			  Edge
@@ -59,7 +60,7 @@ use Regexp::Common;
 use Readonly;
 Readonly my $NUMBER => $RE{num}{real};
 use String::Random qw(random_string);
-#use YAML;
+#use YAML::Tiny;
 
 ## why do these not get inherited properly?
 has 'group'     => (is => 'rw', isa => 'Str',  default => sub{shift->_get_group()});
@@ -100,7 +101,7 @@ has 'partstyle' => (is => 'rw', isa =>  PgplotLine, default => sub{ shift->co->d
 has 'pathstyle' => (is => 'rw', isa =>  PgplotLine, default => sub{ shift->co->default("plot", "pathstyle")  || "solid"});
 
 ## -------- default plotting space
-has 'space'	=> (is => 'rw', isa =>  PlotType, default => 'r');
+has 'space'	=> (is => 'rw', isa =>  PlotType, default => 'r', coerce => 1);
 
 ## -------- energy plot parameters
 has 'emin'	=> (is => 'rw', isa =>  'Num',    default => sub{ shift->co->default("plot", "emin")	  || -200});

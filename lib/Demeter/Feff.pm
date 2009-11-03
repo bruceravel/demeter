@@ -105,7 +105,7 @@ has 'absorber' => (
 				}
 		  );
 has 'abs_index'    => (is=>'rw', isa =>  Natural,   default => 0);
-has 'edge'         => (is=>'rw', isa =>  AtomsEdge, default => 'K'); # 1-4 or K-L3
+has 'edge'         => (is=>'rw', isa =>  AtomsEdge, default => 'K', coerce => 1); # 1-4 or K-L3
 has 's02'          => (is=>'rw', isa =>  NonNeg,    default => 1);   # positive float
 has 'rmax'         => (is=>'rw', isa =>  NonNeg,    default => 0);   # positive float
 has 'nlegs'        => (is=>'rw', isa =>  PosInt,    default => 4);   # integer < 7
@@ -904,9 +904,9 @@ sub serialize {
   if ($nozip) {
     open my $Y, ">".$filename;
     ## dump attributes of the Feff object
-    print $Y YAML::Dump(\%cards);
+    print $Y YAML::Tiny::Dump(\%cards);
     foreach my $key (split(" ", $cards{zzz_arrays})) {
-      print $Y YAML::Dump($self->get($key));
+      print $Y YAML::Tiny::Dump($self->get($key));
     };
     ## dump attributes of each ScatteringPath object
     my %pathinfo = ();
@@ -914,16 +914,16 @@ sub serialize {
       foreach my $key ($sp->savelist) {
 	$pathinfo{$key} = $sp->$key;
       };
-      print $Y YAML::Dump(\%pathinfo);
+      print $Y YAML::Tiny::Dump(\%pathinfo);
     };
     close $Y;
 
   } else {
     my $gzout = gzopen($filename, 'wb9');
     ## dump attributes of the Feff object
-    $gzout->gzwrite(YAML::Dump(\%cards));
+    $gzout->gzwrite(YAML::Tiny::Dump(\%cards));
     foreach my $key (split(" ", $cards{zzz_arrays})) {
-      $gzout->gzwrite(YAML::Dump($self->get($key)));
+      $gzout->gzwrite(YAML::Tiny::Dump($self->get($key)));
     };
     ## dump attributes of each ScatteringPath object
     my %pathinfo = ();
@@ -931,7 +931,7 @@ sub serialize {
       foreach my $key ($sp->savelist) {
 	$pathinfo{$key} = $sp->$key;
       };
-      $gzout->gzwrite(YAML::Dump(\%pathinfo));
+      $gzout->gzwrite(YAML::Tiny::Dump(\%pathinfo));
     };
     $gzout->gzclose;
 
@@ -949,7 +949,7 @@ sub deserialize {
   my ($yaml, $buffer);
   my $gz = gzopen($file, 'rb');
   $yaml .= $buffer while $gz->gzreadline($buffer) > 0 ;
-  my @refs = YAML::Load($yaml);
+  my @refs = YAML::Tiny::Load($yaml);
   $gz->gzclose;
   $self->read_yaml(\@refs);
   return $self;

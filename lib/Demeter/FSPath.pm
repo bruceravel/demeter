@@ -47,7 +47,7 @@ has 'scat'	   => (is => 'rw', isa => ElementSymbol, default => q{O},
 				      $self->feff_done(0);
 				    });
 has 'scatterer'    => (is => 'rw', isa => 'Str',    default => q{},);
-has 'edge'	   => (is => 'rw', isa =>  Edge,    default => sub{ shift->co->default("fspath", "edge") },
+has 'edge'	   => (is => 'rw', isa =>  Edge,    coerce => 1, default => sub{ shift->co->default("fspath", "edge") },
 		       trigger => sub{my ($self, $new) = @_;
 				      my $this = (lc($new) eq 'k')  ? 1
 					       : (lc($new) eq 'l1') ? 2

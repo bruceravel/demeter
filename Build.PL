@@ -65,17 +65,13 @@ my $build = Module::Build # $class
 				'MooseX::Singleton'	    => '0.13',
 				'MooseX::Types'		    => '0.07',
 
-				#'Compress::Raw::Zlib'	   => '0',
-				#'Compress::Raw'	   => '0',
 				'Archive::Zip'		   => '0',
 
 				'Chemistry::Elements'	   => '0',
 				'Config::IniFiles'	   => '2.45',
 				'Digest::SHA'		   => '0',
-				#'File::Touch'		   => '0',
 				'Heap'			   => '0',
 				'List::MoreUtils'	   => '0',
-				#'Math::Cephes'		   => '0',
 				'Math::Derivative'	   => '0',
 				'Math::Round'		   => '0',
 				'Math::Spline'		   => '0',
@@ -87,8 +83,13 @@ my $build = Module::Build # $class
 				'Text::Template'	   => '0',
 				'Tree::Simple'		   => '0',
 				'Want'			   => '0',
-				'YAML'			   => '0',
+				'YAML::Tiny'		   => '0',
 
+				## deprecated....
+				#'Compress::Raw::Zlib'	   => '0',
+				#'Compress::Raw'	   => '0',
+				#'File::Touch'		   => '0',
+				#'Math::Cephes'		   => '0',
 			       },
 	 PL_files           => {
 				'lib/Xray/Crystal/share/space_groups.db.PL' => 'lib/Xray/Crystal/share/space_groups.db'

@@ -102,6 +102,7 @@ sub plot {
   my ($n, $data) = @_;
   print "\n" x 2, GREEN, "## ", "=" x 70, "\n", "## ", RESET;
   eval "plot$n(\$data)";
+  print $@, $/;
   spew($n);
   print "\n", UNDERLINE, "Return to continue >", RESET, " ";
   my $how = <STDIN>;

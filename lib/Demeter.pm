@@ -152,6 +152,8 @@ use Demeter::NumTypes qw( Natural
 			  NonNeg
 		       );
 
+#use Demeter::Templates;
+
 sub import {
   my ($class, @pragmata) = @_;
   strict->import;
@@ -515,7 +517,7 @@ sub translate_trouble {
 sub serialization {
   my ($self) = @_;
   my %hash = $self->all;
-  return YAML::Dump(\%hash);
+  return YAML::Tiny::Dump(\%hash);
 };
 
 sub serialize {
@@ -527,7 +529,7 @@ sub serialize {
 };
 sub deserialize {
   my ($self, $fname) = @_;
-  my $r_args = YAML::LoadFile($fname);
+  my $r_args = YAML::Tiny::LoadFile($fname);
   $self->set(@$r_args);
   return $self;
 };

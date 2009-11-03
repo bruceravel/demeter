@@ -109,7 +109,7 @@ my $data4 = Demeter::Data -> new(file=>'t/fe.061',
 				);
 
 $data3->e0('ifeffit'); ## how do I make this happen automatically??
-ok( ($data3->fft_edge eq 'K' and $data3->bkg_z eq 'Fe'),        'find_edge works: '.join(" ", $data3->fft_edge, $data3->bkg_z));
+ok( ($data3->fft_edge eq 'k' and $data3->bkg_z eq 'Fe'),        'find_edge works: '.join(" ", $data3->fft_edge, $data3->bkg_z));
 ok( abs($data3->bkg_e0 - 7105.506) < $fuzz,                     'find e0: ifeffit (' . $data3->bkg_e0 . ')');
 $data3->e0('zero');
 ok( abs($data3->bkg_e0 - 7105.292) < $fuzz,                     'find e0: zero crossing (' . $data3->bkg_e0 . ')');

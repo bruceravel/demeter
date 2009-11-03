@@ -28,7 +28,7 @@ Module::Build
 
 autodie
 
-YAML
+YAML::Tiny
 
 Moose
 

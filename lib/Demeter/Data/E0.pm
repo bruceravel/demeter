@@ -142,7 +142,7 @@ sub calibrate {
     croak("You must specify the absorber element to calibrate to the tabulated edge energy.")
       if (not is_Element($z));
     croak("You must specify the absorber edge to calibrate to the tabulated edge energy.")
-      if (not is_Edge($edge));
+      if (not to_Edge($edge));
     $e0 = Xray::Absorption->get_energy($z, $edge);
   };
   my $delta = $e0 - $ref;

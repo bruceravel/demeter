@@ -17,7 +17,7 @@
 
 =cut
 
-use Test::Simple tests => 301;
+use Test::Simple tests => 324;
 
 use Demeter;
 use Demeter::StrTypes qw( Empty
@@ -28,6 +28,7 @@ use Demeter::StrTypes qw( Empty
 			  PathParam
 			  Element
 			  Edge
+			  AtomsEdge
 			  FeffCard
 			  Clamp
 			  Config
@@ -44,6 +45,9 @@ use Demeter::StrTypes qw( Empty
 			  PlotWeight
 			  Interp
 			  NotReserved
+			  FitSpace
+			  PlotSpace
+			  PlotType
 		       );
 
 use Demeter::NumTypes qw( Natural
@@ -86,7 +90,12 @@ foreach my $f (@Demeter::StrTypes::pathparam_list) {
 
 foreach my $f (@Demeter::StrTypes::edge_list) {
   my $ff = scramble_case($f);
-  ok( is_Edge($ff), "edge symbol $ff recognized" );
+  ok( to_Edge($ff), "edge symbol $ff recognized" );
+};
+
+foreach my $f (@Demeter::StrTypes::atomsedge_list) {
+  my $ff = scramble_case($f);
+  ok( to_AtomsEdge($ff), "atoms edge symbol $ff recognized" );
 };
 
 foreach my $f (@Demeter::StrTypes::feffcard_list) {
@@ -144,6 +153,20 @@ foreach my $f (@Demeter::StrTypes::notreserved_list) {
 foreach my $f (qw(m e r i p)) {
   my $ff = scramble_case($f);
   ok( is_MERIP($ff), "complex function part $ff recognized" );
+};
+
+foreach my $f (@Demeter::StrTypes::fitspace_list) {
+  my $ff = scramble_case($f);
+  ok( to_FitSpace($ff), "fit space $ff recognized" );
+};
+
+foreach my $f (@Demeter::StrTypes::plotspace_list) {
+  my $ff = scramble_case($f);
+  ok( to_PlotSpace($ff), "plot space $ff recognized" );
+};
+foreach my $f (@Demeter::StrTypes::plottype_list) {
+  my $ff = scramble_case($f);
+  ok( to_PlotType($ff), "plot type $ff recognized" );
 };
 
 

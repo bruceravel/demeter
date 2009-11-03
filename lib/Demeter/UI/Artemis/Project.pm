@@ -24,7 +24,7 @@ use File::Basename;
 use File::Path;
 use File::Spec;
 use List::MoreUtils qw(any);
-use YAML;
+use YAML::Tiny;
 use Carp;
 
 use Wx qw(:everything);
@@ -168,7 +168,7 @@ sub read_project {
 
   my $projfolder = $rframes->{main}->{project_folder};
 
-  %Demeter::UI::Artemis::fit_order = YAML::LoadFile(File::Spec->catfile($projfolder, 'order'));
+  %Demeter::UI::Artemis::fit_order = YAML::Tiny::LoadFile(File::Spec->catfile($projfolder, 'order'));
   #use Data::Dumper;
   #print Data::Dumper->Dump([\%Demeter::UI::Artemis::fit_order]);
 
@@ -277,12 +277,12 @@ sub read_project {
 
   my $py = File::Spec->catfile($rframes->{main}->{plot_folder}, 'plot.yaml');
   if (-e $py) {
-    $Demeter::UI::Artemis::demeter->po->set(%{YAML::LoadFile($py)});
+    $Demeter::UI::Artemis::demeter->po->set(%{YAML::Tiny::LoadFile($py)});
     $rframes->{Plot}->populate;
   };
   my $iy = File::Spec->catfile($rframes->{main}->{plot_folder}, 'indicators.yaml');
   if (-e $iy) {
-    my @list = YAML::LoadFile($iy);
+    my @list = YAML::Tiny::LoadFile($iy);
     $rframes->{Plot}->{indicators}->populate(@list);
   };
 

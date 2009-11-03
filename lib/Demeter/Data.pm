@@ -23,7 +23,7 @@ use Readonly;
 Readonly my $NUMBER   => $RE{num}{real};
 Readonly my $PI       => 4*atan2(1,1);
 Readonly my $NULLFILE => '@&^^null^^&@';
-use YAML;
+use YAML::Tiny;
 
 use Moose;
 extends 'Demeter';
@@ -40,6 +40,7 @@ with 'Demeter::Data::Process';
 with 'Demeter::Data::Units';
 
 use MooseX::Aliases;
+#use MooseX::AlwaysCoerce;   # this might be useful....
 use MooseX::StrictConstructor;
 use Moose::Util::TypeConstraints;
 use Demeter::StrTypes qw( Element
@@ -273,7 +274,7 @@ has 'bkg_nclamp'  => (is => 'rw', isa =>  PosInt,   default => sub{ shift->co->d
 		      trigger => sub{ my($self) = @_; $self->update_bkg(1) });
 
 ## -------- foreward Fourier transform parameters
-has 'fft_edge'    => (is => 'rw', isa =>  Edge,    default => 'K');
+has 'fft_edge'    => (is => 'rw', isa =>  Edge,    default => 'K', coerce => 1);
 
 has 'fft_kmin'    => (is => 'rw', isa => 'Num',
 		      trigger => sub{ my($self) = @_; $self->update_fft(1); &_nidp},
@@ -648,14 +649,14 @@ override 'serialization' => sub {
   my ($self) = @_;
   my $string = $self->SUPER::serialization;
   if ($self->datatype eq 'xmu') {
-    $string .= YAML::Dump($self->ref_array("energy"));
-    $string .= YAML::Dump($self->ref_array("xmu"));
+    $string .= YAML::Tiny::Dump($self->ref_array("energy"));
+    $string .= YAML::Tiny::Dump($self->ref_array("xmu"));
     if ($self->is_col) {
-      $string .= YAML::Dump($self->ref_array("i0"));
+      $string .= YAML::Tiny::Dump($self->ref_array("i0"));
     }
   } elsif ($self->datatype eq "chi") {
-    $string .= YAML::Dump($self->get_array("k"));
-    $string .= YAML::Dump($self->get_array("chi"));
+    $string .= YAML::Tiny::Dump($self->get_array("k"));
+    $string .= YAML::Tiny::Dump($self->get_array("chi"));
   };
   return $string;
 };
@@ -664,7 +665,7 @@ override 'serialization' => sub {
 
 override 'deserialize' => sub {
   my ($self, $fname) = @_;
-  my @stuff = YAML::LoadFile($fname);
+  my @stuff = YAML::Tiny::LoadFile($fname);
 
   ## load the attributes
   my %args = %{ $stuff[0] };

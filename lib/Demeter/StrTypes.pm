@@ -145,8 +145,12 @@ use vars qw(@edge_list $edge_regexp);
 $edge_regexp = $opt->list2re(@edge_list);
 subtype Edge,
   as Str,
-  where { lc($_) =~ m{\A$edge_regexp\z} },
+  where { $_ =~ m{\A$edge_regexp\z} },
   message { "That string ($_) is not an edge symbol" };
+
+coerce Edge,
+  from Str,
+  via { lc($_) };
 
 ## -------- Atoms Edge symbols
 use vars qw(@atomsedge_list $atomsedge_regexp);
@@ -154,8 +158,12 @@ use vars qw(@atomsedge_list $atomsedge_regexp);
 $atomsedge_regexp = $opt->list2re(@atomsedge_list);
 subtype AtomsEdge,
   as Str,
-  where { lc($_) =~ m{\A$atomsedge_regexp\z} },
+  where { $_ =~ m{\A$atomsedge_regexp\z} },
   message { "That string ($_) is not an atoms edge symbol" };
+
+coerce AtomsEdge,
+  from Str,
+  via { lc($_) };
 
 ## -------- Feff "cards"
 use vars qw(@feffcard_list $feffcard_regexp);
@@ -298,11 +306,11 @@ coerce PlotSpace,
 
 ## -------- Plotting types
 use vars qw(@plottype_list $plottype_regexp);
-@plottype_list = qw(e k r q rmr kq r123 k123);
+@plottype_list = qw(e k r q rmr kq k123 r123);
 $plottype_regexp = $opt->list2re(@plottype_list);
 subtype PlotType,
   as Str,
-  where { $_ =~ m{\A$plotspace_regexp\z} },
+  where { $_ =~ m{\A$plottype_regexp\z} },
   message { "That string ($_) is not a Demeter plot type" };
 
 coerce PlotType,
