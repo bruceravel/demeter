@@ -39,6 +39,7 @@ with 'Demeter::Data::Plot';
 with 'Demeter::Data::Process';
 with 'Demeter::Data::Units';
 
+use MooseX::Aliases;
 use MooseX::StrictConstructor;
 use Moose::Util::TypeConstraints;
 use Demeter::StrTypes qw( Element

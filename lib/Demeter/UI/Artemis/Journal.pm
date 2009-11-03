@@ -29,7 +29,7 @@ sub new {
   my $this = $class->SUPER::new($parent, -1, "Artemis [Journal]",
 				wxDefaultPosition, wxDefaultSize, wxDEFAULT_FRAME_STYLE);
   EVT_CLOSE($this, \&on_close);
-  _doublewide($this);
+  #_doublewide($this);
 
   my $vbox = Wx::BoxSizer->new( wxVERTICAL );
 
@@ -60,7 +60,7 @@ sub on_close {
 sub _doublewide {
   my ($dialog) = @_;
   my ($w, $h) = $dialog->GetSizeWH;
-  $dialog -> SetSizeWH(2*$w, int(1.5*$h));
+  $dialog -> SetSizeWH(2*$w, $h);
 };
 
 sub on_save {

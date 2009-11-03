@@ -212,7 +212,7 @@ sub OnInit {
 
   ## -------- Fit box
   $vbox = Wx::BoxSizer->new( wxVERTICAL);
-  $hbox -> Add($vbox, 3, wxGROW|wxLEFT|wxRIGHT|wxTOP, 5);
+  $hbox -> Add($vbox, 4, wxGROW|wxLEFT|wxRIGHT|wxTOP, 5);
 
   my $hname = Wx::BoxSizer->new( wxHORIZONTAL);
   $vbox -> Add($hname, 0, wxGROW|wxTOP|wxBOTTOM, 0);
@@ -270,10 +270,11 @@ sub OnInit {
 
 
 
-  $frames{main} -> SetSizer($hbox);
+  $frames{main} -> SetSizerAndFit($hbox);
   ##         sum of menu bar, toolbar, and statusbar + the spaceing around the bix containing the toolbar
-  my $h = ($toolbar->GetSizeWH)[1] + ($frames{main}->{statusbar}->GetSizeWH)[1] + ($bar->GetSizeWH)[1] + 10;
-  $frames{main} -> SetSize(Wx::Size->new(Wx::SystemSettings::GetMetric(wxSYS_SCREEN_X), $h));
+  #my $h = ($toolbar->GetSizeWH)[1] + ($frames{main}->{statusbar}->GetSizeWH)[1] + ($bar->GetSizeWH)[1] + 10;
+  #$frames{main} -> SetSize(Wx::Size->new(Wx::SystemSettings::GetMetric(wxSYS_SCREEN_X), $h));
+  $frames{main} -> SetSize(Wx::Size->new(Wx::SystemSettings::GetMetric(wxSYS_SCREEN_X), -1));
 
   foreach my $part (qw(GDS Plot Log History Journal Buffer Config)) {
     my $pp = "Demeter::UI::Artemis::".$part;
