@@ -375,6 +375,13 @@ EOH
   ;
 };
 
+sub run {
+  my ($self) = @_;
+  $self->potph;
+  $self->pathfinder;
+  return $self;
+};
+
 sub potph {
   my ($self) = @_;
   ##verify_feff_processing_hash($self);
@@ -702,7 +709,7 @@ sub _visit {
 
 =for Explanation
     _parentage
-      Construct the path's string by resursing up its branch in the
+      Construct the path's string by recursing up its branch in the
       tree.  The string is the index (from the site list) of each atom
       in the path concatinated with dots.
 
@@ -1224,6 +1231,11 @@ the list returned by the C<pathlist> method.
 =head2 Feff running methods
 
 =over 4
+
+=item C<run>
+
+This calls C<potph> then C<pathfinder>.  It is proving common to chain
+these two methods, so it seems useful to provide a shortcut.
 
 =item C<make_feffinp>
 

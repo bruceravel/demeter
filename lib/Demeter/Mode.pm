@@ -83,6 +83,17 @@ has 'Feff' => (
 			      'splice'  => 'splice_Feff',
 			     }
 	       );
+has 'External' => (
+		metaclass => 'Collection::Array',
+		is        => 'rw',
+		isa       => 'ArrayRef',
+		default   => sub { [] },
+		provides  => {
+			      'push'    => 'push_External',
+			      'clear'   => 'clear_External',
+			      'splice'  => 'splice_External',
+			     }
+	       );
 has 'Fit' => (
 		metaclass => 'Collection::Array',
 		is        => 'rw',
@@ -218,7 +229,7 @@ has 'Indicator' => (
 	       );
 
 has 'types' => (is => 'ro', isa => 'ArrayRef',
-		default => sub{[qw(Atoms Data Feff Fit GDS Path Plot Indicator ScatteringPath
+		default => sub{[qw(Atoms Data Feff External Fit GDS Path Plot Indicator ScatteringPath
 				   VPath SSPath FSPath StructuralUnit Prj MultiChannel)]},);
 
 ## -------- The Professor and Mary Anne
@@ -289,6 +300,7 @@ sub everything {
   return (@{ $self->Atoms	   },
 	  @{ $self->Data	   },
 	  @{ $self->Feff	   },
+	  @{ $self->External	   },
 	  @{ $self->Fit		   },
 	  @{ $self->GDS		   },
 	  @{ $self->Path	   },
@@ -362,13 +374,14 @@ objects.  Any of these methods can be called by any Demeter object:
     ## and so on ...
 
 This object also monitors the creation and destruction of Demeter
-objects (Atoms, Data, Data::Prj, Feff, Fit, GDS, Path, Plot,
-Scattering_Path, SSPath, and VPath) and provides methods which give a
-way for one object to affect any other objects created during the
-instance of Demeter.  For example, when the kweight value of the Plot
-object is changed, it is necessary to signal all Data objects that
-they will need to update their forward Fourier transforms.  This
-object is the glue that allows things like that to happen.
+objects (Atoms, Data, Data::Prj, Data::MultiChannel, Feff,
+Feff::External, Fit, GDS, Path, Plot, Plot::Indicator, ScatteringPath,
+SSPath, and VPath) and provides methods which give a way for one
+object to affect any other objects created during the instance of
+Demeter.  For example, when the kweight value of the Plot object is
+changed, it is necessary to signal all Data objects that they will
+need to update their forward Fourier transforms.  This object is the
+glue that allows things like that to happen.
 
 =head1 ATTRIBUTES
 
@@ -512,6 +525,10 @@ A list of all Data objects created during this instance of Demeter.
 
 A list of all Feff objects created during this instance of Demeter.
 
+=item C<External>
+
+A list of all Feff::External objects created during this instance of Demeter.
+
 =item C<Fit>
 
 A list of all Fit objects created during this instance of Demeter.
@@ -594,10 +611,10 @@ behind the scenes, during object creation or destruction or at the end
 of a script.  The details are documented here for those times when one
 needs to see under the hood.
 
-Each Demeter object (Atoms, Data, Data::Prj, Feff, Fit, GDS, Path,
-Plot, Scattering_Path, SSPath, and VPath) (Data::Prj is refered to
-just as Prj) has each of the following three function associated with
-it.
+Each Demeter object (Atoms, Data, Data::Prj, Data::MultiChannel, Feff,
+Feff::External, Fit, GDS, Path, Plot, Plot::Indicator, ScatteringPath,
+SSPath, and VPath) (Data::Prj is refered to just as Prj) has each of
+the following three function associated with it.
 
 All of my examples use the Data object.
 

@@ -128,7 +128,7 @@ sub find_path {
       $ok_so_far &&= all {$_} ( pairwise {$a == $b}     @{ $hash{ipots} },    @{ $params{ipot} } )
 	if $params{ipot};
 
-      $ok_so_far &&= all {$_} ( pairwise {$a eq $b}     @{ $hash{elements} }, @{ $params{element} } )
+      $ok_so_far &&= all {$_} ( pairwise {lc($a) eq lc($b)}     @{ $hash{elements} }, @{ $params{element} } )
 	if $params{element};
 
       return $p if $ok_so_far;
