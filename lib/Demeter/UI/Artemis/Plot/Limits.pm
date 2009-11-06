@@ -18,10 +18,10 @@ package  Demeter::UI::Artemis::Plot::Limits;
 
 use Wx qw( :everything );
 use base qw(Wx::Panel);
-use Wx::Event qw(EVT_MENU EVT_CLOSE EVT_TOOL_ENTER EVT_CHECKBOX EVT_CHOICE EVT_ENTER_WINDOW EVT_LEAVE_WINDOW );
+use Wx::Event qw(EVT_MENU EVT_CLOSE EVT_TOOL_ENTER EVT_CHECKBOX EVT_CHOICE EVT_ENTER_WINDOW EVT_LEAVE_WINDOW EVT_RADIOBOX);
 use Wx::Perl::TextValidator;
 
-my $parts = ['Magnitude', 'Real part', 'Imaginary part'];
+my $parts = ['Magnitude', 'Real', 'Imag.'];
 my $demeter = $Demeter::UI::Artemis::demeter;
 
 sub new {
@@ -31,40 +31,32 @@ sub new {
   my $szr = Wx::BoxSizer->new( wxVERTICAL );
 
   ## -------- plotting part for chi(R)
-  my $hh = Wx::BoxSizer->new( wxHORIZONTAL );
-  $szr  -> Add($hh, 0, wxALL, 5);
-  my $label  = Wx::StaticText->new($this, -1, "Plot χ(R): ");
-  $this->{rpart} = Wx::Choice->new($this, -1, wxDefaultPosition, wxDefaultSize, $parts);
+  $this->{rpart} = Wx::RadioBox->new($this, -1, "Plot χ(R)", wxDefaultPosition, wxDefaultSize, $parts, 1, wxRA_SPECIFY_ROWS);
   my $which = 0;
   ($which = 1) if ($demeter->co->default("plot", "r_pl") eq 'r');
   ($which = 2) if ($demeter->co->default("plot", "r_pl") eq 'i');
-  $this->{rpart} -> Select($which);
-  $hh -> Add($label, 0, wxLEFT|wxRIGHT, 5);
-  $hh -> Add($this->{rpart}, 1, wxRIGHT, 5);
+  $this->{rpart} -> SetSelection($which);
+  $szr -> Add($this->{rpart}, 1, wxGROW|wxALL, 5);
 
-  ## -------- plotting part for chi(q)
-  $hh   = Wx::BoxSizer->new( wxHORIZONTAL );
-  $szr -> Add($hh, 0, wxALL, 5);
-  my $label  = Wx::StaticText->new($this, -1, "Plot χ(q): ");
-  $this->{qpart} = Wx::Choice->new($this, -1, wxDefaultPosition, wxDefaultSize, $parts);
+  ## -------- plotting part for chi(R)
+  $this->{qpart} = Wx::RadioBox->new($this, -1, "Plot χ(q)", wxDefaultPosition, wxDefaultSize, $parts, 1, wxRA_SPECIFY_ROWS);
   my $which = 1;
   ($which = 0) if ($demeter->co->default("plot", "q_pl") eq 'm');
   ($which = 2) if ($demeter->co->default("plot", "q_pl") eq 'i');
-  $this->{qpart} -> Select($which);
-  $hh -> Add($label, 0, wxLEFT|wxRIGHT, 5);
-  $hh -> Add($this->{qpart}, 1, wxRIGHT, 5);
+  $this->{qpart} -> SetSelection($which);
+  $szr -> Add($this->{qpart}, 1, wxGROW|wxALL, 5);
 
-  $demeter->po->r_pl('m');
-  $demeter->po->q_pl('r');
-  EVT_CHOICE($this, $this->{rpart}, sub{OnChoice(@_, 'rpart', 'r_pl')});
-  EVT_CHOICE($this, $this->{qpart}, sub{OnChoice(@_, 'qpart', 'q_pl')});
+  $demeter->po->r_pl($demeter->co->default("plot", "r_pl"));
+  $demeter->po->q_pl($demeter->co->default("plot", "q_pl"));
+  EVT_RADIOBOX($this, $this->{rpart}, sub{OnChoice(@_, 'rpart', 'r_pl')});
+  EVT_RADIOBOX($this, $this->{qpart}, sub{OnChoice(@_, 'qpart', 'q_pl')});
   $this->mouseover("rpart", "Choose the part of the complex χ(R) function to display when plotting the contents of the plotting list.");
   $this->mouseover("qpart", "Choose the part of the complex χ(q) function to display when plotting the contents of the plotting list.");
 
   ## -------- toggles for fit, win, bkg, res
   ##    after a fit: turn on fit toggle, bkg toggle is bkg refined
   my $gbs  =  Wx::GridBagSizer->new( 5,5 );
-  $szr -> Add($gbs, 0, wxGROW|wxTOP|wxBOTTOM, 10);
+  $szr -> Add($gbs, 0, wxGROW|wxALL, 5);
 
   $this->{fit} = Wx::CheckBox->new($this, -1, "Plot fit");
   $gbs -> Add($this->{fit}, Wx::GBPosition->new(0,0));
@@ -98,11 +90,11 @@ sub new {
   $this->mouseover("running",    "Include the running R-factor of the most recent fit when plotting a data set from the plotting list.");
 
 
-  $szr -> Add(Wx::StaticLine->new($this, -1, wxDefaultPosition, wxDefaultSize, wxLI_HORIZONTAL), 0, wxGROW|wxLEFT|wxRIGHT, 5);
+  $szr -> Add(Wx::StaticLine->new($this, -1, wxDefaultPosition, wxDefaultSize, wxLI_HORIZONTAL), 0, wxGROW|wxLEFT|wxRIGHT, 10);
 
   ## -------- limits in k, R, and q
   $gbs  =  Wx::GridBagSizer->new( 10,5 );
-  $szr -> Add($gbs, 0, wxGROW|wxTOP, 15);
+  $szr -> Add($gbs, 0, wxGROW|wxALL, 5);
   my %po;
 
   $label    = Wx::StaticText->new($this, -1, "kmin");

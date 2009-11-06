@@ -57,7 +57,7 @@ my $shortest = 100000000;
 
 my $opt  = Regexp::List->new;
 
-
+has 'source'      => (is => 'rw', isa => 'Str', default => 'demeter/feff6');
 has 'file'        => (is => 'rw', isa => 'Str',  default => q{},
 		      trigger => sub{my ($self, $new) = @_; $self->rdinp if $new} );
 has 'sites' => (
@@ -903,7 +903,7 @@ sub serialize {
   my %cards = ();
   foreach my $key (qw(abs_index edge s02 rmax name nlegs npaths rmultiplier pcrit ccrit
 		      workspace screen buffer save fuzz betafuzz eta_suppress miscdat
-		      group hidden)) {
+		      group hidden source)) {
     $cards{$key} = $self->$key;
   };
   $cards{zzz_arrays} = "titles othercards potentials absorber sites";
@@ -968,7 +968,7 @@ sub read_yaml {
   my $rhash = shift @refs;
   foreach my $key (qw(abs_index edge s02 rmax name nlegs npaths rmultiplier pcrit ccrit
 		      workspace screen buffer save fuzz betafuzz eta_suppress miscdat
-		      hidden)) {
+		      hidden source)) {
     $self -> $key($rhash->{$key}) if exists $rhash->{$key};
   };
   $self -> set(titles     => shift(@refs),
@@ -1117,6 +1117,14 @@ intended to be done completely bihind the scenes and the user will
 normally not interact with it directly.  In the contextof Artemis,
 this means that an entry in the Feff toolbar will not be shown for the
 FSPath object.
+
+=item C<source>
+
+This is a string that is used to identify the provenance of the Feff
+calculation.  The default is "demeter/feff6", indicating that the Feff
+calculation was handled entirely by Demeter.  For a
+Demeter::Feff::External object, this is set to "external", indicating
+that the Feff calculation was imported from outside of Demeter.
 
 =item C<screen>
 

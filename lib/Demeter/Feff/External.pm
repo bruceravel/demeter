@@ -33,6 +33,7 @@ use Readonly;
 Readonly my $CTOKEN => '+';
 
 
+has '+source'   => (default => 'external');
 has 'file'      => (is => 'rw', isa => 'Str',  default => q{},
 		    trigger => sub{my ($self, $new) = @_;
 				   $self->rdinp if $new;
@@ -59,17 +60,17 @@ sub read_folder {
   closedir $F;
 
   if (none {$_ eq 'phase.bin'} @files) {
-    carp("$folder does not contain a phase.bin file");
+    carp("Demeter::Feff::External::read_folder: $folder does not contain a phase.bin file");
     return 0;
   };
-  #if (none {$_ eq 'files.dat'} @files) {
-  #  carp("$folder does not contain a files.dat file");
+  if (none {$_ eq 'files.dat'} @files) {
+    carp("Demeter::Feff::External::read_folder: $folder does not contain a files.dat file");
   #  return 0;
-  #};
-  #if (none {$_ eq 'paths.dat'} @files) {
-  #  carp("$folder does not contain a paths.dat file");
+  };
+  if (none {$_ eq 'paths.dat'} @files) {
+    carp("Demeter::Feff::External::read_folder: $folder does not contain a paths.dat file");
   #  return 0;
-  #};
+  };
 
   $self->phasebin (File::Spec->catfile($folder, 'phase.bin'));
   if (-d $self->workspace) {
@@ -84,11 +85,14 @@ sub read_folder {
   $self->pathsfile(File::Spec->catfile($folder, 'paths.dat'));
 
   $self->_preload_distances;
+  my $zcwif_of = $self->parse_zcwif_from_files;
   my @feffNNNN = sort {$a cmp $b} grep {$_ =~ m{\Afeff\d{4}\.dat\z}} @files;
   foreach my $f (@feffNNNN) {	# convert each feffNNNN to a ScatteringPath object
     my $sp = Demeter::ScatteringPath->new(feff=>$self);
     my ($string, $nleg, $degen, $reff) = $self->parse_info_from_nnnn($f);
-    $sp->set(string=>$string, nleg=>$nleg, n=>int($degen), fuzzy=>$reff);
+    $zcwif_of->{$f} ||= 0;	# handle absence of files.dat gracefully
+    $sp->set(string=>$string, nleg=>$nleg, n=>int($degen), fuzzy=>$reff, zcwif=>$zcwif_of->{$f});
+    #print $f, "  ", $zcwif_of->{$f}, $/;
     $sp->evaluate;
     $sp->degeneracies([$sp->string]);
     $self->push_pathlist($sp);
@@ -157,6 +161,20 @@ sub parse_info_from_nnnn {
 };
 
 
+sub parse_zcwif_from_files {
+  my ($self) = @_;
+  my %hash = ();
+  return %hash if (not -e $self->filesdat);
+  open(my $FD, $self->filesdat);
+  while (<$FD>) {
+    next if ($_ !~ m{\A\s*feff\d{4}\.dat});
+    my @fields = split(" ", $_);
+    $hash{$fields[0]} = $fields[2];
+  };
+  close $FD;
+  return \%hash;
+};
+
 override 'pathfinder' => sub {
   1;
 };
@@ -183,8 +201,8 @@ This documentation refers to Demeter version 0.3.
 =head1 DESCRIPTION
 
 This extension of the L<Demeter::Feff> class allows you to import an
-externally calculated Feff calculation and interact with it almost
-exactly the same as a Feff calculation handled in the normal manner in
+externally calculated Feff6 (or Feff7) calculation and interact with
+it very similarly to a Feff calculation handled in the normal manner in
 Demeter.
 
 The assumption is that you have a folder somewhere on disk in which
@@ -193,22 +211,28 @@ should be populated by
 
 =over 4
 
-=item 1.
+=item *
 
 A F<feff.inp>, which can be called something other than F<feff.inp>.
 
-=item 2.
+=item *
 
 The F<phase.bin> file from the calculation.
 
-=item 3.
+=item *
 
 Some number of F<feffNNNN.dat> files from that calculation.
+
+=item *
+
+Possibly a F<files.dat> and C<paths.dat> files as well, although
+neither is currently used.  These are written normally by Feff and
+should be found in any folder containing a Feff calculation.
 
 =back
 
 When you set the C<workspace> and C<file> attributes inherited from
-the normal Demeter::Feff object, the F<feff.inp> file is parse to set
+the normal Demeter::Feff object, the F<feff.inp> file is parsed to set
 the attributes inherited from Demeter::Feff, the F<phase.bin> file is
 copied to the C<workspace>, and the F<feffNNNN.dat> files are parsed
 and made into L<Demeter::ScatteringPath> objects.  The ScatteringPath
@@ -216,10 +240,10 @@ objects are then loaded into the C<pathlist> attribute of this object.
 
 Once all that is done, everything proceeds in the manner of a
 Demeter-handled Feff calculation.  Path objects are created using the
-ScatteringPath objects generated from the F<feffNNNN.dat> files in the
-normal manner.  Most methods of the Feff object are available,
-including C<find_path> and C<find_all_paths> (see
-L<Demeter::Feff::Paths>).
+ScatteringPath objects generated from the F<feffNNNN.dat> files as the
+values of the C<sp> attribute (see L<Demeter::Path>).  Most methods of
+the Feff object are available, including C<find_path> and
+C<find_all_paths> (see L<Demeter::Feff::Paths>).
 
 There are a few differences bewteen a normal Feff calculation and an
 external one.  This object has no C<pathfinder> method at this time,
@@ -233,12 +257,12 @@ two obvious uses for the external Feff object:
 
 =over 4
 
-=item 1.
+=item *
 
 Import old-style Artemis project files, which contain entire Feff
 calculations
 
-=item 2.
+=item *
 
 Consider Feff calculations with more than 4-legged paths, something
 Demeter's pathfinder cannot yet do.
@@ -273,6 +297,9 @@ external Feff calculation.  This is not currently used.
 
 =back
 
+Note that the C<source> attribute is set to "external" for a
+Demeter::Feff::External object.
+
 =head1 METHODS
 
 There are no new methods relevant to the user beyond those inherited
@@ -293,15 +320,15 @@ F<Bundle/DemeterBundle.pm> file.
 
 =item *
 
-Serialization/deserialization is untested
+Import a Feff8 calculation (requires ability to parse a Feff8 input file).
 
 =item *
 
-Parse zcwif values from F<files.dat>
+Serialization/deserialization is scantily tested.
 
 =item *
 
-Let pathfinder method actually run Feff's pathfinder
+Let pathfinder method actually run Feff's pathfinder.
 
 =back
 

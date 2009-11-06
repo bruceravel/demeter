@@ -90,6 +90,7 @@ has 'spgroup'         => (is=>'rw', isa => 'Str', default => q{});
 has 'sp'              => (is=>'rw', isa => 'Any',                  # Empty.'|Demeter::ScatteringPath|Demeter::SSPath'
 			  trigger => sub{ my($self, $new) = @_; 
 					  if ($new) {
+					    $self->zcwif($new->zcwif);
 					    $self->spgroup($new->group);
 					    $self->parent($new->feff) if not $self->parent;
 					    $self->make_name;
@@ -111,7 +112,7 @@ has 'is_ss'           => (is=>'rw', isa=>  'Bool',  default => 1);
 has 'plot_after_fit'  => (is=>'rw', isa=>  'Bool',  default => 0);
 
 ## feff interpretation parameters
-has 'degen'           => (is=>'rw', isa=>  NonNeg, default => 0);
+has 'degen'           => (is=>'rw', isa=>  NonNeg,  default => 0);
 has 'nleg'            => (is=>'rw', isa=>  PosInt,  default => 2);
 has 'reff'            => (is=>'rw', isa=> 'Num',    default => 0);
 has 'zcwif'           => (is=>'rw', isa=> 'Num',    default => 0);
@@ -393,9 +394,9 @@ sub parse_nnnn {
       next if ($_ !~ /(?:$file|$oneoff)/); # $oneoff is matched when working from a ScatteringPath object
       @list = split(" ", $_);
       $n_set = $self->n;
-      $self->set(zcwif => $list[2],
-		 degen => int($list[3]),
-		 n     => $n_set || int($list[3]),
+      $self->zcwif($list[2]) if (not $self->sp); # zcwif is imported from the feffNNNN.dat only when
+      $self->set(degen => int($list[3]),	 # the sp attribute is not set, otherwise zcwif is inherited
+		 n     => $n_set || int($list[3]), # fromthe ScatteringPath object
 		 nleg  => $list[4],
 		 reff  => $list[5]
 		);
