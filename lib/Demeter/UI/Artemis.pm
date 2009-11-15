@@ -104,7 +104,7 @@ sub OnInit {
   my $importmenu = Wx::Menu->new;
   $importmenu->Append($IMPORT_OLD,     "an old-style Artemis project",  "Import the current fitting model from an old-style Artemis project file");
   $importmenu->Append($IMPORT_FEFFIT,  "a feffit.inp file",             "Import a fitting model from a feffit.inp file");
-  $importmenu->Enable($_, 0) foreach ($IMPORT_OLD, $IMPORT_FEFFIT);
+  $importmenu->Enable($IMPORT_FEFFIT, 0);
 
   my $exportmenu = Wx::Menu->new;
   $exportmenu->Append($EXPORT_IFEFFIT,  "to Ifeffit script",  "Export the current fitting model as an Ifeffit script");
@@ -679,6 +679,11 @@ sub OnMenuClick {
       last SWITCH;
     };
 
+    ($id == $IMPORT_OLD) and do {
+      import_old(\%frames);
+      last SWITCH;
+    };
+
     ($id == $EXPORT_IFEFFIT) and do {
       export(\%frames, 'ifeffit');
       last SWITCH;
@@ -969,7 +974,23 @@ sub export {
   $fit -> mo -> set(zip(@modes, @values));
 
   undef $fit;
+};
 
+sub import_old {
+  my ($rframes, $file) = @_;
+
+  if (not -e $file) {
+    my $fd = Wx::FileDialog->new( $rframes->{main}, "Import an old-style Artemis project", cwd, q{},
+				  "old-style Artemis project (*.apj)|*.apj|All files|*.*",
+				  wxFD_OPEN|wxFD_FILE_MUST_EXIST|wxFD_CHANGE_DIR|wxFD_PREVIEW,
+				  wxDefaultPosition);
+    if ($fd->ShowModal == wxID_CANCEL) {
+      $rframes->{main}->{statusbar}->SetStatusText("old-style Artemis import cancelled.");
+      return;
+    };
+    $file = File::Spec->catfile($fd->GetDirectory, $fd->GetFilename);
+  };
+  print $file, $/;
 };
 
 
