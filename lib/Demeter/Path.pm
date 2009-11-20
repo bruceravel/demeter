@@ -34,6 +34,7 @@ with 'Demeter::UI::Screen::Pause' if ($Demeter::mode->ui eq 'screen');
 use Carp;
 use File::Copy;
 use File::Spec;
+use List::Util qw(max);
 use Regexp::List;
 use Regexp::Optimizer;
 
@@ -475,6 +476,10 @@ sub identity {
 sub R {
   my ($self) = @_;
   return $self->reff + $self->delr_value;
+};
+sub longest_leg {
+  my ($self) = @_;
+  return max(@{ $self -> sp -> rleg });
 };
 sub paragraph {
   my ($self) = @_;
