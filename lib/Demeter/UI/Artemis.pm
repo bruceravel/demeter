@@ -10,6 +10,7 @@ use vars qw($demeter $buffer $plotbuffer);
 $demeter = Demeter->new;
 $demeter->set_mode(ifeffit=>1, screen=>0);
 
+use Archive::Zip qw( :ERROR_CODES :CONSTANTS );
 use Cwd;
 use File::Basename;
 use File::Copy;
@@ -976,22 +977,6 @@ sub export {
   undef $fit;
 };
 
-sub import_old {
-  my ($rframes, $file) = @_;
-
-  if (not -e $file) {
-    my $fd = Wx::FileDialog->new( $rframes->{main}, "Import an old-style Artemis project", cwd, q{},
-				  "old-style Artemis project (*.apj)|*.apj|All files|*.*",
-				  wxFD_OPEN|wxFD_FILE_MUST_EXIST|wxFD_CHANGE_DIR|wxFD_PREVIEW,
-				  wxDefaultPosition);
-    if ($fd->ShowModal == wxID_CANCEL) {
-      $rframes->{main}->{statusbar}->SetStatusText("old-style Artemis import cancelled.");
-      return;
-    };
-    $file = File::Spec->catfile($fd->GetDirectory, $fd->GetFilename);
-  };
-  print $file, $/;
-};
 
 
 1;

@@ -17,6 +17,7 @@ package Demeter::UI::Artemis::Project;
 
 use strict;
 use warnings;
+use Carp;
 
 use Archive::Zip qw( :ERROR_CODES :CONSTANTS );
 use Cwd;
@@ -25,7 +26,7 @@ use File::Path;
 use File::Spec;
 use List::MoreUtils qw(any);
 use YAML::Tiny;
-use Carp;
+use Safe;
 
 use Wx qw(:everything);
 use Demeter::UI::Wx::AutoSave;
@@ -35,7 +36,8 @@ require Exporter;
 use vars qw(@ISA @EXPORT);
 @ISA       = qw(Exporter);
 @EXPORT    = qw(save_project read_project modified close_project
-		autosave clear_autosave autosave_exists import_autosave);
+		autosave clear_autosave autosave_exists import_autosave
+		import_old);
 
 use File::Basename;
 use File::Spec;
@@ -382,4 +384,80 @@ sub close_project {
   unlink File::Spec->catfile($rframes->{main}->{project_folder}, 'journal');
 
 };
+
+
+sub import_old {
+  my ($rframes, $file) = @_;
+  $file ||= q{};
+  if (not -e $file) {
+    my $fd = Wx::FileDialog->new( $rframes->{main}, "Import an old-style Artemis project", cwd, q{},
+				  "old-style Artemis project (*.apj)|*.apj|All files|*.*",
+				  wxFD_OPEN|wxFD_FILE_MUST_EXIST|wxFD_CHANGE_DIR|wxFD_PREVIEW,
+				  wxDefaultPosition);
+    if ($fd->ShowModal == wxID_CANCEL) {
+      $rframes->{main}->{statusbar}->SetStatusText("old-style Artemis import cancelled.");
+      return;
+    };
+    $file = File::Spec->catfile($fd->GetDirectory, $fd->GetFilename);
+  };
+
+  my $unzip = File::Spec->catfile($Demeter::UI::Artemis::demeter->stash_folder, '_old_'.basename($file));
+  rmtree $unzip if (-d $unzip);
+  mkpath $unzip;
+
+  my $zip = Archive::Zip->new();
+  carp("Error reading old-style project file $file"), return 1 unless ($zip->read($file) == AZ_OK);
+  $zip->extractTree("", $unzip.'/');
+  undef $zip;
+
+  my $cpt = new Safe;
+  my $description = File::Spec->catfile($unzip, 'descriptions', 'artemis');
+  open(my $D, $description);
+  while (<$D>) {
+    next if (m{\A\s*\z});
+    next if (m{\A\s*\#});
+
+  SWITCH: {
+
+      (m{\A\$old_path}) and do {
+	$ {$cpt->varglob('old_group')} = $cpt->reval( $_ );
+	my $og = $ {$cpt->varglob('old_group')};
+	print $og, $/;
+	## get args line
+	my $line = <$D>;
+	@ {$cpt->varglob('args')} = $cpt->reval( $line );
+	my @args = @ {$cpt->varglob('args')};
+	print join($/, @args), $/;
+
+	## get string line
+	$line = <$D>;
+	chomp $line;
+
+	## [record] line
+	last SWITCH;
+      };
+
+      (m{\A\@parameter}) and do {
+	last SWITCH;
+      };
+
+      (m{\A\%plot_features}) and do {
+	last SWITCH;
+      };
+
+      (m{\A\@extra}) and do {
+	last SWITCH;
+      };
+
+      (m{\A\%props}) and do {
+	last SWITCH;
+      };
+
+    };
+  };
+  close $D;
+
+};
+
+
 1;

@@ -22,13 +22,14 @@
 	        yoffset => $D->y_offset,
 	       );
   $thiskey = $C->get('plot_part') || $P->key;
+  $thiskey =~ s{_}{\\\\_}g;
   if (ref($PT) =~ m{Path}) { $thiskey = $PT->name || 'Path '.$PT->Index };
   q{}
 }
 ## gnuplot script
 unset label
 
-set title "\{/*1.5 {$P->title}\}"
+set title "\{/*1.5 {$P->escapedtitle}\}"
 set xlabel "\{/*1.2 Wavenumber&\{aa\}(\{\305\}^\{-1\})\}"
 set ylabel "\{/*1.2 {$ylabel}\}"
 set xrange [ {$P->qmin} : {$P->qmax} ]

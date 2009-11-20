@@ -19,15 +19,17 @@
 	     scale   => $D->plot_multiplier,
 	     yoffset => $D->y_offset
 	    );
+  $thiskey = $P->key;
+  $thiskey =~ s{_}{\\\\_}g;
   q{}
 }
 ## gnuplot script
 unset label
 
-set title "\{/*1.5 {$P->title}\}"
+set title "\{/*1.5 {$P->escapedtitle}\}"
 set xlabel "\{/*1.2 Energy&\{aa\}(eV)\}"
 set ylabel "\{/*1.2 {$ylabel}\}"
 set xrange [ {$emin} : {$emax} ]
 
 # {$D->name}: ifeffit group = {$D->group}
-plot '{$file}' using 1:2 with {$datastyle} ls {$P->increm+1} title "{$P->key}"
+plot '{$file}' using 1:2 with {$datastyle} ls {$P->increm+1} title "{$thiskey}"
