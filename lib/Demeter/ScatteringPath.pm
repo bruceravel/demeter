@@ -311,6 +311,7 @@ sub compute_beta {
   $atoms[-1]  = $ai;
 
   my (@alpha, @beta, @gamma, @eta, @aleph, @gimel, @rleg);
+  $rleg[0]  = 0;
   $alpha[0] = 0;
   $beta[0]  = 0;
   $gamma[0] = 0;
@@ -763,6 +764,10 @@ path finder.
 This is a integer constructed from the atoms indeces that is used to
 sort the scattering paths in the heap a predictable manner.
 
+=item C<rleg>
+
+This is a reference to a list of path lengths in the path.
+
 =item C<beta>
 
 This is a reference to a list of beta angle in the path.
@@ -928,6 +933,24 @@ This returns a list of text strings.  The list contains the list from
 the C<all_strings> method with each list element passed through the
 C<intrplist> method.
 
+=item C<intrplist>
+
+Compute the interpretation line from the string attribute.  This looks
+something like this:
+
+   [+] O_1    Ti_1   O_1    [+]
+
+With no argument, this returns the interpretation line for the primary
+path:
+
+  print $sp_object -> intrplist;
+
+Alternately, you can provide a string from the list returned by the
+C<all_strings> method to generate the interpretation line for that
+degenerate path:
+
+  print $sp_object -> intrplist($some_string);
+
 =back
 
 =head2 Heap methods
@@ -960,46 +983,6 @@ For example, for the single scattering from the first shell, the
 representative path will always be the one that scatters from the
 first atom from the first coordination shell to appear in the atoms
 list.
-
-=back
-
-=head2 Convenience methods
-
-=over 4
-
-=item C<feff>
-
-Returns the Feff object for this ScatteringPath.
-
-=item C<nleg>
-
-Returns the nleg attribute.
-
-=item C<nkey>
-
-Returns the nkey attribute.
-
-=item C<halflength>
-
-Returns the halflength attribute.
-
-=item C<intrplist>
-
-Compute the interpretation line from the string attribute.  This looks
-something like this:
-
-   [+] O_1    Ti_1   O_1    [+]
-
-With no argument, this returns the interpretation line for the primary
-path:
-
-  print $sp_object -> intrplist;
-
-Alternately, you can provide a string from the list returned by the
-C<all_strings> method to generate the interpretation line for that
-degenerate path:
-
-  print $sp_object -> intrplist($some_string);
 
 =back
 
@@ -1071,7 +1054,7 @@ changing species of an atom in a path
 
 =back
 
-And testing has been extremely limited.
+And testing has been limited.
 
 Please report problems to Bruce Ravel (bravel AT bnl DOT gov)
 

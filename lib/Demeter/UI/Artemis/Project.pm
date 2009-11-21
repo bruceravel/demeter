@@ -416,22 +416,53 @@ sub import_old {
   while (<$D>) {
     next if (m{\A\s*\z});
     next if (m{\A\s*\#});
+    next if (m{\A\s*\[record\]});
 
   SWITCH: {
 
       (m{\A\$old_path}) and do {
 	$ {$cpt->varglob('old_group')} = $cpt->reval( $_ );
 	my $og = $ {$cpt->varglob('old_group')};
-	print $og, $/;
 	## get args line
 	my $line = <$D>;
 	@ {$cpt->varglob('args')} = $cpt->reval( $line );
-	my @args = @ {$cpt->varglob('args')};
-	print join($/, @args), $/;
+	my %args = @ {$cpt->varglob('args')};
 
 	## get string line
 	$line = <$D>;
-	chomp $line;
+	@ {$cpt->varglob('strings')} = $cpt->reval( $line );
+	my @strings = @ {$cpt->varglob('strings')};
+
+	if ($og =~ m{\Adata\d+\z}) {
+	  my $datafile = File::Spec->catfile($unzip, 'chi_data', basename($args{file}));
+	  my $data = Demeter::Data->new(datatype       => 'chi',
+					file	       => $datafile,
+					name	       => $args{lab},
+					bkg_rbkg       => $args{bkg_rbkg},
+					fit_k1	       => $args{k1},
+					fit_k2	       => $args{k2},
+					fit_k3	       => $args{k3},
+					fit_karb       => $args{karb},
+					fit_karb_value => $args{karb_use},
+					fft_kmin       => $args{kmin},
+					fft_kmax       => $args{kmax},
+					fft_dk	       => $args{dk},
+					fft_kwindow    => $args{kwindow},
+					bft_rmin       => $args{rmin},
+					bft_rmax       => $args{rmax},
+					bft_dr	       => $args{dr},
+					bft_rwindow    => $args{rwindow},
+					fit_space      => $args{fit_space},
+					fit_epsilon    => $args{epsilon_k},
+					fit_cormin     => $args{cormin},
+					fit_include    => $args{include},
+				       );
+	  $data -> fit_do_bkg($data->onezero($args{do_bkg}));
+	  $data -> titles(\@strings);
+	  my ($dnum, $idata) = Demeter::UI::Artemis::make_data_frame($rframes->{main}, $data);
+	  $rframes->{$dnum} -> Show(0);
+	  $rframes->{main}->{datatool}->ToggleTool($idata,0);
+	};
 
 	## [record] line
 	last SWITCH;

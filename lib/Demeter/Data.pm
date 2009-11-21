@@ -327,7 +327,7 @@ has 'fit_include'	  => (is => 'rw', isa => 'Bool',     default => 1);
 has 'fit_data'	          => (is => 'rw', isa =>  Natural,   default => 0);
 has 'fit_plot_after_fit'  => (is => 'rw', isa => 'Bool',     default => 0);
 has 'fit_do_bkg'          => (is => 'rw', isa => 'Bool',     default => 0);
-has 'titles'	  => (is => 'rw', isa => 'ArrayRef',      default => sub{ [] });
+has 'titles'	          => (is => 'rw', isa => 'ArrayRef', default => sub{ [] });
 
 ## -------- plotting parameters
 has 'y_offset'	          => (is => 'rw', isa => 'Num',      default => 0);

@@ -653,6 +653,18 @@ sub populate {
   $self->{rmax}->SetValue($data->bft_rmax);
   $self->{dr}->SetValue($data->bft_dr);
 
+  $self->{k1}->SetValue($data->fit_k1);
+  $self->{k2}->SetValue($data->fit_k2);
+  $self->{k3}->SetValue($data->fit_k3);
+  $self->{karb}->SetValue($data->fit_karb);
+  $self->{karb_value}->SetValue($data->fit_karb_value);
+
+  $self->{include}->SetValue($data->fit_include);
+  $self->{fit_bkg}->SetValue($data->fit_do_bkg);
+  $self->{epsilon}->SetValue($data->fit_epsilon);
+
+  $self->{titles}->SetValue(join($/, @{$data->titles}));
+
   EVT_CHECKBOX($self, $self->{include},    sub{$data->fit_include       ($self->{include}   ->GetValue)});
   EVT_CHECKBOX($self, $self->{plot_after}, sub{$data->fit_plot_after_fit($self->{plot_after}->GetValue)});
   EVT_CHECKBOX($self, $self->{fit_bkg},    sub{$data->fit_do_bkg        ($self->{fit_bkg}   ->GetValue)});
