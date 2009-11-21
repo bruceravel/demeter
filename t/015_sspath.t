@@ -51,7 +51,6 @@ ok( ($this->mo->template_plot     eq 'pgplot'  and
 $this->path;
 ok( (($this->degen == 1)      and
      ($this->nleg  == 2)      and
-     ($this->zcwif == 100)    and
      (abs($this->reff - 3.5)) < 0.0001),
                                      "parse_nnnn works");
 
