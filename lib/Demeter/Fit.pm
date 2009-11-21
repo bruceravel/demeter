@@ -508,7 +508,7 @@ sub trouble_report {
   my ($fit) = @_;
   my $text = q{};
   $Text::Wrap::columns = 60;
-  foreach my $obj (@{ $fit->data }, @{ $fit->gds }, @{ $fit->paths }) {
+  foreach my $obj ($fit, @{ $fit->data }, @{ $fit->gds }, @{ $fit->paths }) {
     next if not $obj->trouble;
     my $which = ref($obj);
     $which =~ s{Demeter::}{};

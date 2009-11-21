@@ -981,6 +981,15 @@ is equivalent to (and fewer keystrokes than):
   $R = $reff + $delr;
   print $R, $/;
 
+=item C<longest_leg>
+
+This returns the length in Angstroms of the longest leg of a path.
+
+  print $path_object -> longest_leg, $/;
+
+This is determined by searching the C<rleg> attribute of the
+associated ScatteringPath object and returning the longest value.
+
 =back
 
 =head1 DIAGNOSTICS

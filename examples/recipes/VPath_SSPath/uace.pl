@@ -126,6 +126,8 @@ my $fit = Demeter::Fit->new(gds   => \@gds,
 $fit -> fit;
 ##$fit -> logfile("controlfit.log", "U control", q{});
 
+##$data->save_many("many.out", 'chik3', $paths[0], $paths[1], $carbon);
+
 $data -> po -> set(kweight=>2, rmax=>6, r_pl=>'r', plot_fit=>1);
 my ($step, $jump) = (0,-0.3);
 map {$_->data->y_offset($step);

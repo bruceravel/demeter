@@ -502,6 +502,13 @@ sub translate_trouble {
       my $content = $item->content();
       $content =~ s{\n}{ }g;
       $content =~ s{\s+\z}{};
+      ## write a sensible message when exceeding ifeffit's compiled in
+      ## limits on things
+      if ($content =~ m{\((\&\w+)\)}) {
+	my $var = $1;
+	my $subst = Ifeffit::get_scalar($var);
+	$content =~ s{$var}{$subst};
+      };
       $text = $content;
     };
   };

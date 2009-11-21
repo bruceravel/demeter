@@ -831,27 +831,27 @@ information content of the data.
 =item C<nvarys>
 
 This fitting model uses more than Ifeffit's compiled-in limit of guess
-parameters
+parameters (&max_varys).
 
 =item C<nparams>
 
 This fitting model uses more than Ifeffit's compiled-in limit of
-parameters.
+parameters (&max_scalars).
 
 =item C<nrestraints>
 
 This fitting model uses more than Ifeffit's compiled-in limit of
-restraints.
+restraints (10).
 
 =item C<ndatasets>
 
 This fitting model uses more than Ifeffit's compiled-in limit of
-data sets.
+data sets (&max_data_sets).
 
 =item C<npaths>
 
 This fitting model uses more than Ifeffit's compiled-in limit of
-paths.
+paths (&max_paths).
 
 =back
 

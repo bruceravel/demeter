@@ -214,6 +214,7 @@ sub _save_many_command {
     $self -> co -> set(chik => $w);
   };
   foreach my $g (@groups) {
+    next if ((ref($g) =~ m{VPath}) and ($level !~ m{(?:fft|bft|all)}));
     $g->_update($level);
     if ($which =~ m{\Achik(\d*)\z})  { # make k-weighted chi(k) array
       $command .= $g->template("process", "chikn");

@@ -26,7 +26,7 @@ $many_title_{$i++} = "Demeter multicolumn data file -- Demeter version {$S->vers
 $many_title_{$i++} = "This file contains {$trans{$C->get("many_which")}} data from:"
 {
   foreach $g (@list) {
-    $wherefrom = $g->prjrecord||$g->file;
+    $wherefrom = $g->name; #$g->prjrecord||$g->file;
     $OUT .= "\$many_title_" . $i++ . ' = "_    ' . $g->name . " (" . $wherefrom . ")\"\n";
   }
 }

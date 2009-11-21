@@ -18,6 +18,7 @@ package Demeter::VPath;
 use Moose;
 extends 'Demeter';
 with 'Demeter::Data::Arrays';
+with 'Demeter::Data::IO';
 with 'Demeter::Path::Process';
 use MooseX::AttributeHelpers;
 use MooseX::StrictConstructor;
@@ -107,11 +108,15 @@ sub first {			# see prep_vpath.tmpl
   return $list[0];
 };
 
+## really?!? do I need to bring each consituent up to date in spaces other than k???
 sub _update {
   my ($self, $which) = @_;
   foreach my $p ( @{ $self->paths } ) {  # bring each constituent path up to date
-    $p->_update(lc($which));
+    $p->_update(lc('fft'));
   };
+  $self->dispose($self->sum);
+  $self->fft if ((lc($which) eq 'bft') or (lc($which) eq 'all'));
+  $self->bft if (lc($which) eq 'all');
   return $self;
 };
 
@@ -144,10 +149,10 @@ sub plot {
     $which = "update_bft";
   };
   ## make the sum in k-space
-  $self->dispose($self->sum);
+  #$self->dispose($self->sum);
   ## bring the vpath up to date
-  $self->fft if ((lc($space) eq 'r') or (lc($space) eq 'q'));
-  $self->bft if (lc($space) eq 'q');
+  #$self->fft if ((lc($space) eq 'r') or (lc($space) eq 'q'));
+  #$self->bft if (lc($space) eq 'q');
   ## and plot the vpath
   $self->mode->path($self);
   $self->dispose($self->_plot_command($space), "plotting");
@@ -156,6 +161,35 @@ sub plot {
   $self->$which(0);
   return $self;
 };
+
+sub save {
+  my ($self, $what, $filename) = @_;
+  croak("No filename specified for save") unless $filename;
+  ($what = 'chi') if (lc($what) eq 'k');
+  croak("Valid save types are: chi r q") if ($what !~ m{\A(?:chi|r|q)\z});
+  #$self->dispose($self->sum);
+ WHAT: {
+    (lc($what) eq 'chi') and do {
+      $self->_update("fft");
+      $self->data->_update('bft'); # need window from data object
+      $self->dispose($self->_save_chi_command('k', $filename));
+      last WHAT;
+    };
+    (lc($what) eq 'r') and do {
+      $self->_update("bft");
+      $self->data->_update('all');
+      $self->dispose($self->_save_chi_command('r', $filename));
+      last WHAT;
+    };
+    (lc($what) eq 'q') and do {
+      $self->_update("all");
+      $self->data->_update('bft');
+      $self->dispose($self->_save_chi_command('q', $filename));
+      last WHAT;
+    };
+  };
+};
+
 
 __PACKAGE__->meta->make_immutable;
 1;
@@ -195,6 +229,9 @@ This object carries a sufficiently low-overhead that you can safely
 destroy one and recreate it with a different list of paths.  That will
 usually be easier than managing the content of the C<paths> atrtibute
 (although you can certainly do so, if you prefer).
+
+The VPath can also be saved to a column data file using the normal
+C<save> and C<save_many> methods.
 
 =head1 ATTRIBUTES
 
