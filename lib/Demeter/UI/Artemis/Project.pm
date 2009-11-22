@@ -412,6 +412,7 @@ sub import_old {
 
   my $cpt = new Safe;
   my $description = File::Spec->catfile($unzip, 'descriptions', 'artemis');
+  my %datae = ();
   open(my $D, $description);
   while (<$D>) {
     next if (m{\A\s*\z});
@@ -433,7 +434,7 @@ sub import_old {
 	@ {$cpt->varglob('strings')} = $cpt->reval( $line );
 	my @strings = @ {$cpt->varglob('strings')};
 
-	if ($og =~ m{\Adata\d+\z}) {
+	if ($og =~ m{\Adata\d+\z}) { # this is data
 	  my $datafile = File::Spec->catfile($unzip, 'chi_data', basename($args{file}));
 	  my $data = Demeter::Data->new(datatype       => 'chi',
 					file	       => $datafile,
@@ -457,11 +458,15 @@ sub import_old {
 					fit_cormin     => $args{cormin},
 					fit_include    => $args{include},
 				       );
+	  $datae{$og} = $data;
 	  $data -> fit_do_bkg($data->onezero($args{do_bkg}));
 	  $data -> titles(\@strings);
 	  my ($dnum, $idata) = Demeter::UI::Artemis::make_data_frame($rframes->{main}, $data);
 	  $rframes->{$dnum} -> Show(0);
 	  $rframes->{main}->{datatool}->ToggleTool($idata,0);
+	} elsif ($og =~ m{feff\d+\z}) { # this is Feff
+	  
+	} elsif ($og =~ m{feff\d+\.\d+\z}) { # this is a path
 	};
 
 	## [record] line
@@ -469,6 +474,20 @@ sub import_old {
       };
 
       (m{\A\@parameter}) and do {
+	@ {$cpt->varglob('parameter')} = $cpt->reval( $_ );
+	my @parameter = @ {$cpt->varglob('parameter')};
+	my $grid  = $rframes->{GDS}->{grid};
+	my $start = $rframes->{GDS}->find_next_empty_row;
+	my $thisgds = Demeter::GDS->new(gds     => $parameter[1],
+					name    => $parameter[0],
+					mathexp => $parameter[2],
+				       );
+	$grid -> AppendRows(1,1) if ($start >= $grid->GetNumberRows);
+	$grid -> SetCellValue($start, 0, $thisgds->gds);
+	$grid -> SetCellValue($start, 1, $thisgds->name);
+	$grid -> SetCellValue($start, 2, $thisgds->mathexp);
+	$grid -> {$thisgds->name} = $thisgds;
+	$rframes->{GDS}->set_type($start);
 	last SWITCH;
       };
 
