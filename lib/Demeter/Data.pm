@@ -339,10 +339,10 @@ sub BUILD {
   $self->data($self); # I do not know of a way to set the data attribute to this instance using "has"....
   $self->tag($self->group);
   $self->mo->push_Data($self);
-  my $thiscv = $self->mo->currentfit;
+  my $thiscv = $self->mo->datacount;
   $self->cv($thiscv);
   ++$thiscv;
-  $self->mo->currentfit($thiscv);
+  $self->mo->datacount($thiscv);
 };
 
 #sub DEMOLISH {

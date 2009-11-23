@@ -40,10 +40,10 @@ sub new {
 
   my $hbox = Wx::BoxSizer->new( wxHORIZONTAL );
   $this->{save} = Wx::Button->new($this, wxID_SAVE, q{}, wxDefaultPosition, wxDefaultSize);
-  $hbox -> Add($this->{save}, 1, wxGROW|wxALL, 5);
+  $hbox -> Add($this->{save}, 1, wxGROW|wxLEFT|wxRIGHT|wxBOTTOM, 5);
   EVT_BUTTON($this, $this->{save}, \&on_save);
   $this->{close} = Wx::Button->new($this, wxID_CLOSE, q{}, wxDefaultPosition, wxDefaultSize);
-  $hbox -> Add($this->{close}, 1, wxGROW|wxALL, 5);
+  $hbox -> Add($this->{close}, 1, wxGROW|wxLEFT|wxRIGHT|wxBOTTOM, 5);
   EVT_BUTTON($this, $this->{close}, \&on_close);
   $vbox -> Add($hbox, 0, wxGROW|wxALL, 0);
 

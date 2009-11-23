@@ -135,7 +135,7 @@ sub BUILD {
   my $val = $self->get_mode("datadefault");
   if ((ref($self->data) !~ m{Data}) and (ref($val) !~ m{Data})) {
     $self->mo->datadefault(Demeter::Data->new(group=>'default___',
-					      name=>'default___', cv=>42,
+					      name=>'default___',
 					      fft_kmin=>3, fft_kmax=>15,
 					      bft_rmin=>1, bft_rmax=>6,
 					     ));

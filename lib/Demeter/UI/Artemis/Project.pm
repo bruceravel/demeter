@@ -522,6 +522,9 @@ sub import_old {
   my $journal = File::Spec->catfile($unzip, 'descriptions', 'journal.artemis');
   $rframes->{Journal}->{journal}->SetValue($Demeter::UI::Artemis::demeter->slurp($journal));
 
+  rmtree $unzip if (-d $unzip);
+  $rframes->{main}->{statusbar}->SetStatusText("Imported old-style Artemis project $file");
+
   close $D;
 
 };
