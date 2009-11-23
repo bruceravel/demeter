@@ -472,7 +472,8 @@ sub import_old {
 	  $rframes->{main}->{datatool}->ToggleTool($idata,0);
 	} elsif ($og =~ m{feff\d+\z}) { # this is Feff
 	  my $pathto = File::Spec->catfile($unzip, $og);
-	  print `ls $pathto`;
+	  my $destination = 
+	  my $efeff = Demeter::Feff::External -> new(workspace=>"temp", screen=>0);
 
 	} elsif ($og =~ m{feff\d+\.\d+\z}) { # this is a path
 
