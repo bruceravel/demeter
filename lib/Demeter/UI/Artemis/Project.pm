@@ -413,6 +413,12 @@ sub import_old {
   my $cpt = new Safe;
   my $description = File::Spec->catfile($unzip, 'descriptions', 'artemis');
   my %datae = ();
+
+  my $fit = Demeter::Fit->new(interface=>"Artemis (Wx)");
+  $rframes->{main}->{currentfit} = $fit;
+  $rframes->{Plot}->{limits}->{fit}->SetValue(1);
+  $fit->mo->currentfit(1);
+
   open(my $D, $description);
   while (<$D>) {
     next if (m{\A\s*\z});
@@ -465,8 +471,11 @@ sub import_old {
 	  $rframes->{$dnum} -> Show(0);
 	  $rframes->{main}->{datatool}->ToggleTool($idata,0);
 	} elsif ($og =~ m{feff\d+\z}) { # this is Feff
-	  
+	  my $pathto = File::Spec->catfile($unzip, $og);
+	  print `ls $pathto`;
+
 	} elsif ($og =~ m{feff\d+\.\d+\z}) { # this is a path
+
 	};
 
 	## [record] line
@@ -476,18 +485,12 @@ sub import_old {
       (m{\A\@parameter}) and do {
 	@ {$cpt->varglob('parameter')} = $cpt->reval( $_ );
 	my @parameter = @ {$cpt->varglob('parameter')};
-	my $grid  = $rframes->{GDS}->{grid};
-	my $start = $rframes->{GDS}->find_next_empty_row;
-	my $thisgds = Demeter::GDS->new(gds     => $parameter[1],
-					name    => $parameter[0],
-					mathexp => $parameter[2],
-				       );
-	$grid -> AppendRows(1,1) if ($start >= $grid->GetNumberRows);
-	$grid -> SetCellValue($start, 0, $thisgds->gds);
-	$grid -> SetCellValue($start, 1, $thisgds->name);
-	$grid -> SetCellValue($start, 2, $thisgds->mathexp);
-	$grid -> {$thisgds->name} = $thisgds;
-	$rframes->{GDS}->set_type($start);
+ 	my $thisgds = Demeter::GDS->new(gds     => $parameter[1],
+ 					name    => $parameter[0],
+ 					mathexp => $parameter[2],
+ 				       );
+	$rframes->{GDS}->put_gds($thisgds);
+ 	$rframes->{GDS}->{grid} -> {$thisgds->name} = $thisgds;
 	last SWITCH;
       };
 
@@ -500,11 +503,24 @@ sub import_old {
       };
 
       (m{\A\%props}) and do {
+	% {$cpt->varglob('props')} = $cpt->reval( $_ );
+	my %props = % {$cpt->varglob('props')};
+	$rframes->{main}->{name}->SetValue($props{'Project title'});
+	$rframes->{main}->{description}->SetValue($props{'Comment'});
+	$rframes->{main}->{currentfit}->contact($props{Contact});
+	$rframes->{main}->{currentfit}->prepared_by($props{'Prepared by'});
+	$rframes->{main}->{currentfit}->started($props{Started});
+	$rframes->{main}->{currentfit}->time_of_fit($props{'Last fit'});
 	last SWITCH;
       };
 
     };
   };
+
+  ## finally, import the journal
+  my $journal = File::Spec->catfile($unzip, 'descriptions', 'journal.artemis');
+  $rframes->{Journal}->{journal}->SetValue($Demeter::UI::Artemis::demeter->slurp($journal));
+
   close $D;
 
 };

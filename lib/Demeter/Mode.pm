@@ -238,6 +238,7 @@ has 'cwd' => (is => 'rw', isa => 'Str', default => q{});
 
 has 'pathindex'  => (is => 'rw', isa => 'Int', default => 1);
 has 'currentfit' => (is => 'rw', isa => 'Int', default => 1);
+has 'datacount'  => (is => 'rw', isa => 'Int', default => 1);
 
 has 'echo'		   => (is => 'rw', isa => 'Any');
 has 'datadefault'	   => (is => 'rw', isa => 'Any');

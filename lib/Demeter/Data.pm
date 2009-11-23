@@ -339,6 +339,10 @@ sub BUILD {
   $self->data($self); # I do not know of a way to set the data attribute to this instance using "has"....
   $self->tag($self->group);
   $self->mo->push_Data($self);
+  my $thiscv = $self->mo->currentfit;
+  $self->cv($thiscv);
+  ++$thiscv;
+  $self->mo->currentfit($thiscv);
 };
 
 #sub DEMOLISH {
@@ -791,6 +795,14 @@ This is a text string used to describe this object in a plot ot a user
 interface.  Like the C<group> attribute, this should be short, but it
 can be a bit more verbose.  It should be a single line, unlike the
 C<title> attibute.
+
+=tem C<cv> (number)
+
+The characteristic value is a number associated with the data object.
+The cv is used to generate guess parameteres from lguess parameters
+and is used as the substitution value in math expressions containing
+the string C<[cv]>.  The default value is a number that is incremented
+as Data objects are created.
 
 =item C<datatype> (string)
 
