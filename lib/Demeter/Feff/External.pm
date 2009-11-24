@@ -51,6 +51,18 @@ has 'workspace' => (is=>'rw', isa => 'Str', default => q{}, # valid directory
 has 'phasebin'  => (is => 'rw', isa => 'Str',  default => q{},);
 has 'filesdat'  => (is => 'rw', isa => 'Str',  default => q{},);
 has 'pathsfile' => (is => 'rw', isa => 'Str',  default => q{},);
+has 'nnnn'      => (
+		    metaclass => 'Collection::Hash',
+		    is        => 'rw',
+		    isa       => 'HashRef',
+		    default   => sub { {} },
+		    provides  => {
+				  exists    => 'exists_in_nnnn',
+				  keys      => 'ids_in_nnnn',
+				  get       => 'get_nnnn',
+				  set       => 'set_nnnn',
+				 },
+		   );
 
 
 sub read_folder {
@@ -87,16 +99,24 @@ sub read_folder {
   $self->_preload_distances;
   my $zcwif_of = $self->parse_zcwif_from_files;
   my @feffNNNN = sort {$a cmp $b} grep {$_ =~ m{\Afeff\d{4}\.dat\z}} @files;
+  my %hash;
   foreach my $f (@feffNNNN) {	# convert each feffNNNN to a ScatteringPath object
     my $sp = Demeter::ScatteringPath->new(feff=>$self);
     my ($string, $nleg, $degen, $reff) = $self->parse_info_from_nnnn($f);
     $zcwif_of->{$f} ||= 0;	# handle absence of files.dat gracefully
     $sp->set(string=>$string, nleg=>$nleg, n=>int($degen), fuzzy=>$reff, zcwif=>$zcwif_of->{$f});
+    my $weight = ($zcwif_of->{$f} > 20) ? 2
+               : ($zcwif_of->{$f} > 10) ? 1
+	       :                          0;
+    $sp->weight($weight);
     #print $f, "  ", $zcwif_of->{$f}, $/;
     $sp->evaluate;
     $sp->degeneracies([$sp->string]);
     $self->push_pathlist($sp);
+    #set_nnnn($f, $sp->group);
+    $hash{$f} = $sp->group;
   };
+  $self->nnnn(\%hash);
 };
 
 
@@ -179,6 +199,7 @@ override 'pathfinder' => sub {
   1;
 };
 
+__PACKAGE__->meta->make_immutable;
 1;
 
 =head1 NAME

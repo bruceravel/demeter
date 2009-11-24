@@ -415,12 +415,16 @@ sub import_old {
   my $cpt = new Safe;
   my $description = File::Spec->catfile($unzip, 'descriptions', 'artemis');
   my %datae = ();
+  my %datae_id = ();
+  my %feffs = ();
+  my $mds = 0;
 
   my $fit = Demeter::Fit->new(interface=>"Artemis (Wx)");
   $rframes->{main}->{currentfit} = $fit;
   $rframes->{Plot}->{limits}->{fit}->SetValue(1);
   $fit->mo->currentfit(1);
   my $projfolder = $rframes->{main}->{project_folder};
+  mkpath(File::Spec->catfile($projfolder, 'fits', $fit->group));
 
   open(my $D, $description);
   while (<$D>) {
@@ -466,13 +470,19 @@ sub import_old {
 					fit_epsilon    => $args{epsilon_k},
 					fit_cormin     => $args{cormin},
 					fit_include    => $args{include},
+					provenance     => 'chi(k) data from an old-style artemis project file',
 				       );
 	  $datae{$og} = $data;
 	  $data -> fit_do_bkg($data->onezero($args{do_bkg}));
 	  $data -> titles(\@strings);
 	  my ($dnum, $idata) = Demeter::UI::Artemis::make_data_frame($rframes->{main}, $data);
-	  $rframes->{$dnum} -> Show(0);
-	  $rframes->{main}->{datatool}->ToggleTool($idata,0);
+	  $data->_update('fft');
+	  $rframes->{$dnum} -> populate($data);
+	  my $show = ($mds) ? 0 : 1;
+	  $rframes->{$dnum} -> Show($show);
+	  $datae_id{$og} = $dnum;
+	  $rframes->{main}->{datatool}->ToggleTool($idata,$show);
+	  ++$mds;
 	} elsif ($og =~ m{feff\d+\z}) { # this is Feff
 	  my $pathto = File::Spec->catfile($unzip, $og);
 	  my $efeff = Demeter::Feff::External -> new(screen=>0, name=>$args{lab});
@@ -497,7 +507,7 @@ sub import_old {
 	  $rframes->{$fnum}->{Feff}->{feff}->SetValue($text);
 
 	  ## make Feff frame
-	  #$feffs{$d} = $efeff;
+	  $feffs{$og} = $efeff;
 	  $rframes->{$fnum}->{Feff}->{feffobject} = $efeff;
 	  $rframes->{$fnum}->{Feff}->fill_intrp_page($efeff);
 	  $rframes->{$fnum}->{notebook}->ChangeSelection(2);
@@ -508,8 +518,29 @@ sub import_old {
 	  $rframes->{$fnum} -> Show(0);
 	  $rframes->{main}->{fefftool}->ToggleTool($ifeff,0);
 
-	} elsif ($og =~ m{feff\d+\.\d+\z}) { # this is a path
-
+	} elsif ($og =~ m{feff\d+\.\d+\z}) { # this is a path  dataN.feffM.P
+	  my ($this_data, $this_feff, $pathid) = split(/\./, $og);
+	  my $nnnn = $args{feff};
+	  my $feff_group = join('.', $this_data, $this_feff);
+	  my $path = Demeter::Path->new(data	=> $datae{$this_data},
+					parent	=> $feffs{$feff_group},
+					s02	=> $args{s02},
+					e0	=> $args{e0},
+					delr	=> $args{delr},
+					sigma2	=> $args{'sigma^2'},
+					ei	=> $args{ei},
+					third	=> $args{'3rd'},
+					fourth	=> $args{'4th'},
+					dphase	=> $args{dphase},
+					include => $args{include},
+				       );
+	  $path -> sp($path->mo->fetch("ScatteringPath", $feffs{$feff_group}->get_nnnn($nnnn)));
+	  my $label = $args{lab};
+	  my $book = $rframes->{$datae_id{$this_data}}->{pathlist};
+	  $book->DeletePage(0) if ($rframes->{$datae_id{$this_data}}->{pathlist}->GetPage(0) =~ m{Panel});
+	  my $page = Demeter::UI::Artemis::Path->new($book, $path, $rframes->{$datae_id{$this_data}});
+	  $book->AddPage($page, $label, 1, 0);
+	  $page->include_label;
 	};
 
 	## [record] line
@@ -555,11 +586,12 @@ sub import_old {
   my $journal = File::Spec->catfile($unzip, 'descriptions', 'journal.artemis');
   $rframes->{Journal}->{journal}->SetValue($Demeter::UI::Artemis::demeter->slurp($journal));
 
-  #rmtree $unzip if (-d $unzip);
+  rmtree $unzip if (-d $unzip);
   $rframes->{main}->{statusbar}->SetStatusText("Imported old-style Artemis project $file");
 
   close $D;
   $rframes->{main}->{projectname} = basename($file, qw(.apj));
+  autosave;
   modified(1);
 
 };

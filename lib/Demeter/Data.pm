@@ -68,7 +68,7 @@ has 'is_mc'       => (is => 'ro', isa => 'Bool', default => 0); # is not Demeter
 has 'tag'         => (is => 'rw', isa => 'Str',  default => q{});
 has 'cv'          => (is => 'rw', isa => 'Num',  default => 0);
 has 'file'        => (is => 'rw', isa => 'Str',  default => $NULLFILE,
-		      trigger => sub{my ($self, $new) = @_; $self->update_data(1) if $new} );
+		      trigger => sub{my ($self, $new) = @_; $self->update_data(1) if ($new and ($new ne $NULLFILE))} );
 has 'prjrecord'   => (is => 'rw', isa => 'Str',  default => q{});
 has 'from_athena' => (is => 'rw', isa => 'Bool', default => 0);
 subtype 'FitSum'
@@ -107,7 +107,7 @@ has  $_  => (is => 'rw', isa => 'Str',  default => q{},
   foreach (qw(energy numerator));
 has  denominator  => (is => 'rw', isa => 'Str',  default => q{1},
 		      trigger => sub{ my ($self, $new) = @_;
-				      if ($new) {
+				      if ($new and $self->numerator) {
 					$self->datatype('xmu');
 					$self->update_columns(1);
 					$self->is_col(1)

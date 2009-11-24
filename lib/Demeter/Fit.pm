@@ -50,6 +50,7 @@ use Regexp::Common;
 use Readonly;
 Readonly my $NUMBER    => $RE{num}{real};
 Readonly my $STAT_TEXT => "n_idp n_varys chi_square chi_reduced r_factor epsilon_k epsilon_r data_total";
+Readonly my $NULLFILE  => '@&^^null^^&@';
 use Text::Wrap;
 use YAML::Tiny;
 
@@ -1076,6 +1077,7 @@ override 'serialize' => sub {
   ## -------- save a yaml for each data file
   foreach my $d (@data) {
     my $dd = $d->group;
+    $d -> file($NULLFILE);
     my $datafile =  File::Spec->catfile($self->folder, "$dd.yaml");
     $d -> serialize($datafile);
   };

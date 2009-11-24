@@ -24,8 +24,9 @@ use List::MoreUtils qw(any);
 use Regexp::Optimizer;
 use Regexp::Common;
 use Readonly;
-Readonly my $NUMBER  => $RE{num}{real};
+Readonly my $NUMBER   => $RE{num}{real};
 #Readonly my $INTEGER => $RE{num}{int};
+Readonly my $NULLFILE => '@&^^null^^&@';
 
 use Text::Wrap;
 $Text::Wrap::columns = 65;
@@ -39,6 +40,7 @@ sub S_data_files_exist {
   my @data = @{ $self->data };
   foreach my $d (@data) {
     next if $d->from_athena;
+    return 0 if ($d->file eq $NULLFILE);
     my $file = $d->file;
     if (not -e $file) {
       ++$found;
