@@ -22,6 +22,7 @@ use Carp;
 use Archive::Zip qw( :ERROR_CODES :CONSTANTS );
 use Cwd;
 use File::Basename;
+use File::Copy;
 use File::Path;
 use File::Spec;
 use List::MoreUtils qw(any);
@@ -324,6 +325,7 @@ sub modified {
   my $title = ($is_modified)
     ? 'Artemis [EXAFS data analysis] *' . $main->{projectname} . '*'
       : 'Artemis [EXAFS data analysis] ' . $main->{projectname};
+  $main->{modified} = ($is_modified);
   $main->SetTitle($title);
 };
 
@@ -418,6 +420,7 @@ sub import_old {
   $rframes->{main}->{currentfit} = $fit;
   $rframes->{Plot}->{limits}->{fit}->SetValue(1);
   $fit->mo->currentfit(1);
+  my $projfolder = $rframes->{main}->{project_folder};
 
   open(my $D, $description);
   while (<$D>) {
@@ -472,8 +475,38 @@ sub import_old {
 	  $rframes->{main}->{datatool}->ToggleTool($idata,0);
 	} elsif ($og =~ m{feff\d+\z}) { # this is Feff
 	  my $pathto = File::Spec->catfile($unzip, $og);
-	  my $destination = 
-	  my $efeff = Demeter::Feff::External -> new(workspace=>"temp", screen=>0);
+	  my $efeff = Demeter::Feff::External -> new(screen=>0, name=>$args{lab});
+	  my $destination = File::Spec->catfile($projfolder, 'feff', $efeff->group);
+	  $efeff->workspace($destination);
+
+	  $efeff->file(File::Spec->catfile($pathto, 'feff.inp'));
+	  copy(File::Spec->catfile($pathto, 'atoms.inp'), File::Spec->catfile($destination, 'atoms.inp')) 
+	    if (-e File::Spec->catfile($pathto, 'atoms.inp'));
+	  copy(File::Spec->catfile($pathto, 'feff.inp'), File::Spec->catfile($destination, $efeff->group.'.inp'));
+	  $efeff->freeze(File::Spec->catfile($destination, $efeff->group.'.yaml'));
+
+	  ## import atoms.inp
+	  #if (-e File::Spec->catfile($pathto, 'atoms.inp')) {
+	    my $atoms = File::Spec->catfile($pathto, 'atoms.inp');
+	    my ($fnum, $ifeff) = Demeter::UI::Artemis::make_feff_frame($rframes->{main}, $atoms, $efeff->name, $efeff);
+	  #};
+
+	  ## import feff.inp
+	  my $feff = File::Spec->catfile($pathto, 'feff.inp');
+	  my $text = $efeff->slurp($feff);
+	  $rframes->{$fnum}->{Feff}->{feff}->SetValue($text);
+
+	  ## make Feff frame
+	  #$feffs{$d} = $efeff;
+	  $rframes->{$fnum}->{Feff}->{feffobject} = $efeff;
+	  $rframes->{$fnum}->{Feff}->fill_intrp_page($efeff);
+	  $rframes->{$fnum}->{notebook}->ChangeSelection(2);
+
+	  $rframes->{$fnum}->{Feff} ->{name}->SetValue($efeff->name);
+	  $rframes->{$fnum}->{Paths}->{name}->SetValue($efeff->name);
+
+	  $rframes->{$fnum} -> Show(0);
+	  $rframes->{main}->{fefftool}->ToggleTool($ifeff,0);
 
 	} elsif ($og =~ m{feff\d+\.\d+\z}) { # this is a path
 
@@ -522,10 +555,12 @@ sub import_old {
   my $journal = File::Spec->catfile($unzip, 'descriptions', 'journal.artemis');
   $rframes->{Journal}->{journal}->SetValue($Demeter::UI::Artemis::demeter->slurp($journal));
 
-  rmtree $unzip if (-d $unzip);
+  #rmtree $unzip if (-d $unzip);
   $rframes->{main}->{statusbar}->SetStatusText("Imported old-style Artemis project $file");
 
   close $D;
+  $rframes->{main}->{projectname} = basename($file, qw(.apj));
+  modified(1);
 
 };
 

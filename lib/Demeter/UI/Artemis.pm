@@ -86,7 +86,7 @@ sub OnInit {
 
   ## -------- create a new frame and set icon
   $frames{main} = Wx::Frame->new(undef, -1, 'Artemis [EXAFS data analysis] - <untitled>',
-				[1,1], # position -- along top of screen
+				[0,0], # position -- along top of screen
 				[Wx::SystemSettings::GetMetric(wxSYS_SCREEN_X), -1] # size -- entire width of screen
 			       );
   my $iconfile = File::Spec->catfile(dirname($INC{'Demeter/UI/Artemis.pm'}), 'Artemis', 'icons', "artemis.png");
@@ -207,8 +207,8 @@ sub OnInit {
   #   $fefftool -> AddCheckTool(-1, "Show feff calc 1", icon("pixel"), wxNullBitmap, q{}, q{} );
   $fefftool -> Realize;
   $feffvbox     -> Add($fefftool);
-  $feffboxsizer -> Add($fefflist, 0, wxGROW|wxALL, 0);
-  $hbox         -> Add($feffboxsizer, 2, wxGROW|wxALL, 0);
+  $feffboxsizer -> Add($fefflist, 0, wxALL, 0);
+  $hbox         -> Add($feffboxsizer, 2, wxALL, 0);
   $frames{main}->{fefftool} = $fefftool;
 
   ## -------- Fit box
@@ -338,17 +338,19 @@ sub mouseover {
 sub on_close {
   my ($self, $event) = @_;
 
-  ## offer to save project....
-  my $yesno = Wx::MessageDialog->new($frames{main},
-				     "Save this project before exiting?",
-				     "Save project?",
-				     wxYES_NO|wxCANCEL|wxYES_DEFAULT|wxICON_QUESTION);
-  my $result = $yesno->ShowModal;
-  if ($result == wxID_CANCEL) {
-    $frames{main}->{statusbar}->SetStatusText("Not exiting project.");
-    return 0;
+  if ($frames{main} -> {modified}) {
+    ## offer to save project....
+    my $yesno = Wx::MessageDialog->new($frames{main},
+				       "Save this project before exiting?",
+				       "Save project?",
+				       wxYES_NO|wxCANCEL|wxYES_DEFAULT|wxICON_QUESTION);
+    my $result = $yesno->ShowModal;
+    if ($result == wxID_CANCEL) {
+      $frames{main}->{statusbar}->SetStatusText("Not exiting project.");
+      return 0;
+    };
+    save_project(\%frames) if $result == wxID_YES;
   };
-  save_project(\%frames) if $result == wxID_YES;
   rmtree($self->{project_folder});
   unlink $frames{main}->{autosave_file};
   $demeter->mo->destroy_all;
@@ -867,6 +869,7 @@ sub make_feff_frame {
 
   my $newtool = $feffbar -> AddCheckTool(-1, "Show $name", icon("pixel"), wxNullBitmap, q{}, q{} );
   do_the_size_dance($self);
+  $feffbar->FitInside;
   my $ifeff = $newtool->GetId;
   my $fnum = sprintf("feff%s", $ifeff);
   my $base = File::Spec->catfile($self->{project_folder}, 'feff');
