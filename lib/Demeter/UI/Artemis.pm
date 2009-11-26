@@ -25,7 +25,7 @@ use YAML::Tiny;
 use Wx qw(:everything);
 use Wx::Event qw(EVT_MENU EVT_CLOSE EVT_TOOL_ENTER EVT_CHECKBOX EVT_BUTTON
 		 EVT_TOGGLEBUTTON EVT_ENTER_WINDOW EVT_LEAVE_WINDOW
-		 EVT_TOOL_RCLICKED);
+		 EVT_TOOL_RCLICKED EVT_RIGHT_UP);
 use base 'Wx::App';
 
 use Readonly;
@@ -38,6 +38,7 @@ Readonly my $SHOW_SCALARS   => Wx::NewId();
 Readonly my $SHOW_STRINGS   => Wx::NewId();
 Readonly my $IMPORT_FEFFIT  => Wx::NewId();
 Readonly my $IMPORT_OLD     => Wx::NewId();
+Readonly my $IMPORT_CHI     => Wx::NewId();
 Readonly my $EXPORT_IFEFFIT => Wx::NewId();
 Readonly my $EXPORT_DEMETER => Wx::NewId();
 Readonly my $PLOT_YAML      => Wx::NewId();
@@ -105,15 +106,17 @@ sub OnInit {
   my $importmenu = Wx::Menu->new;
   $importmenu->Append($IMPORT_OLD,     "an old-style Artemis project",  "Import the current fitting model from an old-style Artemis project file");
   $importmenu->Append($IMPORT_FEFFIT,  "a feffit.inp file",             "Import a fitting model from a feffit.inp file");
+  $importmenu->Append($IMPORT_CHI,     "χ(k) data",                     "Import χ(k) data from a column data file");
   $importmenu->Enable($IMPORT_FEFFIT, 0);
+  $importmenu->Enable($IMPORT_CHI,    0);
 
   my $exportmenu = Wx::Menu->new;
   $exportmenu->Append($EXPORT_IFEFFIT,  "to Ifeffit script",  "Export the current fitting model as an Ifeffit script");
   $exportmenu->Append($EXPORT_DEMETER,  "to Demeter script",  "Export the current fitting model as a perl script using Demeter");
 
-  $filemenu->Append(wxID_OPEN, "Open project", "Read from a project file" );
+  $filemenu->Append(wxID_OPEN,   "Open project",       "Read from a project file" );
   $filemenu->AppendSubMenu($mrumenu, "Recent projects", "Open a submenu of recently used files" );
-  $filemenu->Append(wxID_SAVE, "Save project", "Save project" );
+  $filemenu->Append(wxID_SAVE,   "Save project",       "Save project" );
   $filemenu->Append(wxID_SAVEAS, "Save project as...", "Save to a new project file" );
   $filemenu->AppendSeparator;
   $filemenu->AppendSubMenu($importmenu, "Import...", "Export a fitting model from ..." );
@@ -175,20 +178,22 @@ sub OnInit {
   my $databoxsizer  = Wx::StaticBoxSizer->new( $databox, wxVERTICAL );
 
   my $datalist = Wx::ScrolledWindow->new($frames{main}, -1, wxDefaultPosition, wxDefaultSize, wxVSCROLL);
-  # $datalist->SetScrollbars(20, 20, 50, 50);
+  $datalist->SetScrollbars(20, 20, 50, 50);
   my $datavbox = Wx::BoxSizer->new( wxVERTICAL );
   $datalist->SetSizer($datavbox);
-  my $datatool = Wx::ToolBar->new($datalist, -1, wxDefaultPosition, wxDefaultSize, wxTB_VERTICAL|wxTB_HORZ_TEXT|wxTB_LEFT);
-  $datatool -> AddTool(0, "New data           ", icon("add"), wxNullBitmap, wxITEM_NORMAL, q{}, "Import a new data set" );
-  $datatool -> AddSeparator;
-  #   $datatool -> AddCheckTool(-1, "Show data set 1", icon("pixel"), wxNullBitmap, wxITEM_NORMAL, q{}, q{} );
-  $datatool -> Realize;
-  $datavbox     -> Add($datatool);
+
+  $frames{main}->{newdata} = Wx::Button->new($datalist, wxID_ADD, "", wxDefaultPosition, wxDefaultSize, wxNO_BORDER);
+  $datavbox -> Add($frames{main}->{newdata}, 0, wxGROW|wxALL, 0);
+  mouseover($frames{main}->{newdata}, "Import a new data set.");
+  EVT_BUTTON($frames{main}->{newdata}, -1, sub{import_prj("")});
+
+  $datavbox     -> Add(Wx::StaticLine->new($datalist, -1, wxDefaultPosition, wxDefaultSize, wxLI_HORIZONTAL), 0, wxGROW|wxALL, 2);
   $databoxsizer -> Add($datalist, 1, wxGROW|wxALL, 0);
   $hbox         -> Add($databoxsizer, 2, wxGROW|wxALL, 0);
-  $frames{main}->{datatool} = $datatool;
 
-  EVT_TOOL_RCLICKED($frames{main}->{datatool}, -1, \&OnDataRightClick);
+  $frames{main}->{datalist} = $datalist;
+  $frames{main}->{databox}  = $datavbox;
+  EVT_RIGHT_UP($frames{main}->{newdata}, \&OnDataRightClick);
 
 
   ## -------- Feff box
@@ -198,18 +203,22 @@ sub OnInit {
   my $feffboxsizer  = Wx::StaticBoxSizer->new( $feffbox, wxVERTICAL );
 
   my $fefflist = Wx::ScrolledWindow->new($frames{main}, -1, wxDefaultPosition, wxDefaultSize, wxVSCROLL);
-  # $fefflist->SetScrollbars(20, 20, 50, 50);
+  $fefflist->SetScrollbars(20, 20, 50, 50);
   my $feffvbox = Wx::BoxSizer->new( wxVERTICAL);
   $fefflist->SetSizer($feffvbox);
-  my $fefftool = Wx::ToolBar->new($fefflist, -1, wxDefaultPosition, wxDefaultSize, wxTB_VERTICAL|wxTB_HORZ_TEXT|wxTB_LEFT);
-  $fefftool -> AddTool(-1, "New Feff calculation", icon("add"), wxNullBitmap, wxITEM_NORMAL, q{}, "Import a new Feff calculation" );
-  $fefftool -> AddSeparator;
-  #   $fefftool -> AddCheckTool(-1, "Show feff calc 1", icon("pixel"), wxNullBitmap, q{}, q{} );
-  $fefftool -> Realize;
-  $feffvbox     -> Add($fefftool);
-  $feffboxsizer -> Add($fefflist, 0, wxALL, 0);
-  $hbox         -> Add($feffboxsizer, 2, wxALL, 0);
-  $frames{main}->{fefftool} = $fefftool;
+
+  $frames{main}->{newfeff} = Wx::Button->new($fefflist, wxID_ADD, "", wxDefaultPosition, wxDefaultSize, wxNO_BORDER);
+  $feffvbox -> Add($frames{main}->{newfeff}, 0, wxGROW|wxALL, 0);
+  mouseover($frames{main}->{newfeff}, "Start a new Feff calculation.");
+  EVT_BUTTON($frames{main}->{newfeff}, -1, sub{new_feff($frames{main})});
+
+  $feffvbox     -> Add(Wx::StaticLine->new($fefflist, -1, wxDefaultPosition, wxDefaultSize, wxLI_HORIZONTAL), 0, wxGROW|wxALL, 2);
+  $feffboxsizer -> Add($fefflist, 1, wxGROW|wxALL, 0);
+  $hbox         -> Add($feffboxsizer, 2, wxGROW|wxALL, 0);
+
+  $frames{main}->{fefflist} = $fefflist;
+  $frames{main}->{feffbox}  = $feffvbox;
+  EVT_RIGHT_UP($frames{main}->{newfeff}, \&OnFeffRightClick);
 
   ## -------- Fit box
   $vbox = Wx::BoxSizer->new( wxVERTICAL);
@@ -228,12 +237,13 @@ sub OnInit {
 		  Wx::RadioButton->new($frames{main}, -1, 'R', wxDefaultPosition, wxDefaultSize),
 		  Wx::RadioButton->new($frames{main}, -1, 'q', wxDefaultPosition, wxDefaultSize),
 		 );
-
+  $frames{main}->{fitspace} = \@fitspace;
 
   $hname  -> Add($label,   0, wxALL, 3);
   map {$hname  -> Add($_,   0, wxLEFT|wxRIGHT, 2)} @fitspace;
+  $fitspace[0]->SetValue(1) if ($demeter->co->default("fit", "space") eq 'k');
   $fitspace[1]->SetValue(1) if ($demeter->co->default("fit", "space") eq 'r');
-  $fitspace[2]->SetValue(2) if ($demeter->co->default("fit", "space") eq 'q');
+  $fitspace[2]->SetValue(1) if ($demeter->co->default("fit", "space") eq 'q');
 
   mouseover($fitspace[0], "Evaluate the fitting metric in k-space.");
   mouseover($fitspace[1], "Evaluate the fitting metric in R-space.");
@@ -258,14 +268,13 @@ sub OnInit {
 
   $frames{main}->{log_toggle} = Wx::ToggleButton -> new($frames{main}, -1, "Show &log",);
   $vbox->Add($frames{main}->{log_toggle}, 0, wxGROW|wxALL, 2);
+  mouseover($frames{main}->{log_toggle}, $hints{log});
 
 
 
   EVT_MENU	 ($frames{main}, -1,         sub{my ($frame,  $event) = @_; OnMenuClick($frame,  $event)} );
   EVT_CLOSE	 ($frames{main},             \&on_close);
   EVT_MENU	 ($toolbar,      -1,         sub{my ($toolbar,  $event) = @_; OnToolClick($toolbar,  $event, $frames{main})} );
-  EVT_MENU	 ($datatool,     -1,         sub{my ($datatool, $event) = @_; OnDataClick($datatool, $event, $frames{main})} );
-  EVT_MENU	 ($fefftool,     -1,         sub{my ($fefftool, $event) = @_; OnFeffClick($fefftool, $event, $frames{main})} );
   EVT_TOOL_ENTER ($frames{main}, $toolbar,   sub{my ($toolbar,  $event) = @_; OnToolEnter($toolbar,  $event, 'toolbar')} );
   EVT_BUTTON     ($frames{main}->{fitbutton}, -1, sub{fit(@_, \%frames)});
 
@@ -470,7 +479,7 @@ sub fit {
 
 
   ## get name, fom, and description + other properties
-  my $fit = Demeter::Fit->new(data => \@data, paths => \@paths, gds => \@gds);
+  my $fit = Demeter::Fit->new(data => \@data, paths => \@paths, gds => \@gds, interface=>"Artemis (Wx)");
   $fit->interface("Artemis (Wx $Wx::VERSION)");
   my $name = $rframes->{main}->{name}->GetValue || 'Fit '.$fit->mo->currentfit;
   my $startingname = $name;
@@ -687,6 +696,13 @@ sub OnMenuClick {
       last SWITCH;
     };
 
+    ($id == $IMPORT_FEFFIT) and do {
+      last SWITCH;
+    };
+    ($id == $IMPORT_CHI) and do {
+      last SWITCH;
+    };
+
     ($id == $EXPORT_IFEFFIT) and do {
       export(\%frames, 'ifeffit');
       last SWITCH;
@@ -739,8 +755,9 @@ sub OnToolClick {
   $frames{$which}->Show($toolbar->GetToolState($event->GetId));
 };
 sub OnDataRightClick {
-  my ($toolbar, $event) = @_;
-  return if ($event->GetId != 0);
+  my ($self, $event) = @_;
+  #print "$self  $event  ", $event->GetId, $/;
+  #return if ($event->GetId != 0);
 
   #my @mrulist = $demeter->get_mru_list("athena");
   my $dialog = Demeter::UI::Wx::MRU->new($frames{main}, 'athena', "Select a recent Athena project file", "Recent Athena project files");
@@ -797,7 +814,7 @@ sub import_prj {
   $data->plot('k');
   $data->plot_window('k') if $data->po->plot_win;
   $frames{$dnum} -> Show(1);
-  $frames{main}->{datatool}->ToggleTool($idata,1);
+  $frames{main}->{$dnum}->SetValue(1);
   delete $frames{prj};
   $demeter->push_mru("athena", $file);
   autosave();
@@ -806,13 +823,19 @@ sub import_prj {
 };
 sub make_data_frame {
   my ($self, $data) = @_;
-  my $databar = $self->{datatool};
+  my $databox = $self->{databox};
 
-  my $newtool = $databar -> AddCheckTool(-1, "Show ".$data->name, icon("pixel"), wxNullBitmap, q{}, q{} );
+  my $new = Wx::ToggleButton->new($self->{datalist}, -1, "Show ".$data->name);
+  $databox -> Add($new, 0, wxGROW|wxALL, 0);
+  mouseover($new, "Display/hide this data set.");
+
   do_the_size_dance($self);
-  my $idata = $newtool->GetId;
+  my $idata = $new->GetId;
   my $dnum = sprintf("data%s", $idata);
-  $frames{main}  -> {$dnum."_button"} = $newtool;
+  $self->{$dnum} = $new;
+  EVT_TOGGLEBUTTON($new, -1, sub{$frames{$dnum}->Show($_[0]->GetValue)});
+
+
   $frames{$dnum}  = Demeter::UI::Artemis::Data->new($self, $nset++);
   $frames{$dnum} -> SetTitle("Artemis [Data] ".$data->name);
   $frames{$dnum} -> SetIcon($icon);
@@ -821,7 +844,7 @@ sub make_data_frame {
   $frames{$dnum} -> {dnum} = $dnum;
   set_happiness_color();
   $frames{$dnum} -> Show(0);
-  $databar->ToggleTool($idata,0);
+  $new->SetValue(0);
   modified(1);
   return ($dnum, $idata);
 };
@@ -840,38 +863,63 @@ sub OnFeffClick {
   };
 
 };
+sub OnFeffRightClick {
+  my ($self, $event) = @_;
+  #print "$self  $event  ", $event->GetId, $/;
+  #return if ($event->GetId != 0);
+
+  my $dialog = Demeter::UI::Wx::MRU->new($frames{main}, 'atoms', "Select a recent atoms input file or CIF file", "Recent crystal data file");
+  $frames{main}->{statusbar}->SetStatusText("There are no recent crystal files."), return
+    if ($dialog == -1);
+  if( $dialog->ShowModal == wxID_CANCEL ) {
+    $frames{main}->{statusbar}->SetStatusText("Import cancelled.");
+  } else {
+    new_feff($frames{main}, $dialog->GetStringSelection);
+  };
+};
 
 sub new_feff {
-  my ($self) = @_;
-  my $feffbar = $self->{fefftool};
+  my ($self, $fname) = @_;
   ## also yaml data
-  my $fd = Wx::FileDialog->new( $self, "Import crystal or Feff data", cwd, q{},
-				"input and CIF files (*.inp;*.cif)|*.inp;*.cif|input file (*.inp)|*.inp|CIF file (*.cif)|*.cif|All files|*.*",
-				wxFD_OPEN|wxFD_FILE_MUST_EXIST|wxFD_CHANGE_DIR|wxFD_PREVIEW,
-				wxDefaultPosition);
-  if ($fd->ShowModal == wxID_CANCEL) {
-    $self->{statusbar}->SetStatusText("Crystal/Feff data import cancelled.");
+  my $file = $fname;
+  if (not $file) {
+    my $fd = Wx::FileDialog->new( $self, "Import crystal or Feff data", cwd, q{},
+				  "input and CIF files (*.inp;*.cif)|*.inp;*.cif|input file (*.inp)|*.inp|CIF file (*.cif)|*.cif|All files|*.*",
+				  wxFD_OPEN|wxFD_FILE_MUST_EXIST|wxFD_CHANGE_DIR|wxFD_PREVIEW,
+				  wxDefaultPosition);
+    if ($fd->ShowModal == wxID_CANCEL) {
+      $self->{statusbar}->SetStatusText("Crystal/Feff data import cancelled.");
+      return;
+    };
+    $file = File::Spec->catfile($fd->GetDirectory, $fd->GetFilename);
+  };
+  if (not -e $file) {
+    $self->{statusbar}->SetStatusText("$file does not exist.");
     return;
   };
-  my $file = File::Spec->catfile($fd->GetDirectory, $fd->GetFilename);
 
   my ($fnum, $ifeff) = make_feff_frame($self, $file);
   $frames{$fnum} -> Show(1);
   autosave();
   $frames{$fnum}->{statusbar}->SetStatusText("Imported crystal data from " . basename($file));
-  $feffbar->ToggleTool($ifeff,1);
+  $frames{main}->{$fnum}->SetValue(1);
 };
 
 sub make_feff_frame {
   my ($self, $file, $name, $feffobject) = @_;
-  my $feffbar = $self->{fefftool};
+  my $feffbox = $self->{feffbox};
   $name ||= basename($file);	# ok for importing an atoms or CIF file
 
-  my $newtool = $feffbar -> AddCheckTool(-1, "Show $name", icon("pixel"), wxNullBitmap, q{}, q{} );
+  my $new = Wx::ToggleButton->new($self->{fefflist}, -1, "Show $name");
+  $feffbox -> Add($new, 0, wxGROW|wxALL, 0);
+  mouseover($new, "Display/hide this Feff calculation.");
+
   do_the_size_dance($self);
-  $feffbar->FitInside;
-  my $ifeff = $newtool->GetId;
+  my $ifeff = $new->GetId;
   my $fnum = sprintf("feff%s", $ifeff);
+  $self->{$fnum} = $new;
+  EVT_TOGGLEBUTTON($new, -1, sub{$frames{$fnum}->Show($_[0]->GetValue)});
+
   my $base = File::Spec->catfile($self->{project_folder}, 'feff');
   $frames{$fnum} =  Demeter::UI::AtomsApp->new($base, $feffobject, 1);
   $frames{$fnum} -> SetTitle('Artemis [Feff] Atoms and Feff');
@@ -881,13 +929,12 @@ sub make_feff_frame {
   $frames{$fnum} -> {fnum} = $fnum;
 
   EVT_CLOSE($frames{$fnum}, sub{  $frames{$fnum}->Show(0);
-				  $frames{main}->{fefftool}->ToggleTool($ifeff, 0);
+				  $frames{main}->{$fnum}->SetValue(0);
 				});
 
   $frames{$fnum} -> Show(0);
-  $feffbar->ToggleTool($ifeff,0);
+  $new->SetValue(0);
   modified(1);
-
   return ($fnum, $ifeff);
 };
 
@@ -917,8 +964,7 @@ sub discard_feff {
   ## remove the button from the data tool bar
   my $fnum = $frames{$which}->{fnum};
   (my $id = $fnum) =~ s{feff}{};
-  my $fefftool = $frames{main}->{fefftool};
-  $fefftool->DeleteTool($id);
+  $frames{main}->{$fnum}->Destroy;
 
   ## remove the frame with the feff calculation
   $frames{$fnum}->Hide;
@@ -933,7 +979,7 @@ sub discard_feff {
 sub export {
   my ($rframes, $how) = @_;
 
-  ## make a disposable Fit objkect
+  ## make a disposable Fit object
   my ($abort, $rdata, $rpaths) = uptodate($rframes);
   my $rgds = $rframes->{GDS}->reset_all;
   my @data  = @$rdata;

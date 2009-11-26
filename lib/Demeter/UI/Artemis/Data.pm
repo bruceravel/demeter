@@ -81,6 +81,16 @@ Readonly my $PATH_SAVE_K	=> Wx::NewId();
 Readonly my $PATH_SAVE_R	=> Wx::NewId();
 Readonly my $PATH_SAVE_Q	=> Wx::NewId();
 
+Readonly my $PATH_EXP_LABEL     => Wx::NewId();
+Readonly my $PATH_EXP_N         => Wx::NewId();
+Readonly my $PATH_EXP_S02       => Wx::NewId();
+Readonly my $PATH_EXP_E0        => Wx::NewId();
+Readonly my $PATH_EXP_DELR      => Wx::NewId();
+Readonly my $PATH_EXP_SIGMA2    => Wx::NewId();
+Readonly my $PATH_EXP_EI        => Wx::NewId();
+Readonly my $PATH_EXP_THIRD     => Wx::NewId();
+Readonly my $PATH_EXP_FOURTH    => Wx::NewId();
+
 Readonly my $MARK_ALL		=> Wx::NewId();
 Readonly my $MARK_NONE		=> Wx::NewId();
 Readonly my $MARK_INVERT	=> Wx::NewId();
@@ -455,8 +465,7 @@ sub initial_page_panel {
 sub on_close {
   my ($self) = @_;
   $self->Show(0);
-  my $id = substr($self->{dnum}, 4);
-  $self->{PARENT}->{datatool}->ToggleTool($id, 0);
+  $self->{PARENT}->{$self->{dnum}}->SetValue(0);
 };
 
 sub OnUpButton {
@@ -540,6 +549,17 @@ sub make_menubar {
   $save_menu->Append($PATH_SAVE_R, "R-space", "Save the currently displayed path as χ(R) with all path parameters evaluated", wxITEM_NORMAL);
   $save_menu->Append($PATH_SAVE_Q, "q-space", "Save the currently displayed path as χ(q) with all path parameters evaluated", wxITEM_NORMAL);
 
+  my $explain_menu   = Wx::Menu->new;
+  $explain_menu->Append($PATH_EXP_LABEL,  'label',   'Explain the path label');
+  $explain_menu->Append($PATH_EXP_N,      'N',       'Explain the path degeneracy');
+  $explain_menu->Append($PATH_EXP_S02,    'S02',     'Explain the S02 path parameter');
+  $explain_menu->Append($PATH_EXP_E0,     'ΔE0',     'Explain the e0 shift');
+  $explain_menu->Append($PATH_EXP_DELR,   'ΔR',      'Explain the change in path length');
+  $explain_menu->Append($PATH_EXP_SIGMA2, 'σ²',      'Explain the sigma^2 path parameter');
+  $explain_menu->Append($PATH_EXP_EI,     'Ei',      'Explain the imaginary energy correction');
+  $explain_menu->Append($PATH_EXP_THIRD,  '3rd',     'Explain the third cumulant');
+  $explain_menu->Append($PATH_EXP_FOURTH, '4th',     'Explain the fourth cumulant');
+
   $self->{pathsmenu} = Wx::Menu->new;
   $self->{pathsmenu}->Append($PATH_RENAME, "Rename path",            "Rename the path currently on display", wxITEM_NORMAL );
   $self->{pathsmenu}->Append($PATH_SHOW,   "Show path",              "Evaluate and show the path parameters for the path currently on display", wxITEM_NORMAL );
@@ -552,6 +572,8 @@ sub make_menubar {
   $self->{pathsmenu}->AppendSubMenu($save_menu, "Save this path in ..." );
   $self->{pathsmenu}->Append($PATH_CLONE, "Clone this path", "Make a copy of the currently displayed path", wxITEM_NORMAL );
   $self->{pathsmenu}->Append($PATH_HISTO, "Make histogram", "Generate a histogram using the currently displayed path", wxITEM_NORMAL );
+  $self->{pathsmenu}->AppendSeparator;
+  $self->{pathsmenu}->AppendSubMenu($explain_menu, "Explain path parameter ..." );
 
   $self->{debugmenu}  = Wx::Menu->new;
   $self->{debugmenu}->Append($DATA_SHOW, "Show this Ifeffit group",  "Show the arrays associated with this group in Ifeffit",  wxITEM_NORMAL );
@@ -927,6 +949,45 @@ sub OnMenuClick {
       last SWITCH;
     };
 
+
+    ($id == $PATH_EXP_LABEL) and do {
+      $datapage->{statusbar}->SetStatusText($Demeter::UI::Artemis::Pathexplanation{label});
+      last SWITCH;
+    };
+    ($id == $PATH_EXP_N) and do {
+      $datapage->{statusbar}->SetStatusText($Demeter::UI::Artemis::Path::explanation{n});
+      last SWITCH;
+    };
+    ($id == $PATH_EXP_S02) and do {
+      $datapage->{statusbar}->SetStatusText($Demeter::UI::Artemis::Path::explanation{s02});
+      last SWITCH;
+    };
+    ($id == $PATH_EXP_E0) and do {
+      $datapage->{statusbar}->SetStatusText($Demeter::UI::Artemis::Path::explanation{e0});
+      last SWITCH;
+    };
+    ($id == $PATH_EXP_DELR) and do {
+      $datapage->{statusbar}->SetStatusText($Demeter::UI::Artemis::Path::explanation{delr});
+      last SWITCH;
+    };
+    ($id == $PATH_EXP_SIGMA2) and do {
+      $datapage->{statusbar}->SetStatusText($Demeter::UI::Artemis::Path::explanation{sigma2});
+      last SWITCH;
+    };
+    ($id == $PATH_EXP_EI) and do {
+      $datapage->{statusbar}->SetStatusText($Demeter::UI::Artemis::Path::explanation{ei});
+      last SWITCH;
+    };
+    ($id == $PATH_EXP_THIRD) and do {
+      $datapage->{statusbar}->SetStatusText($Demeter::UI::Artemis::Path::explanation{third});
+      last SWITCH;
+    };
+    ($id == $PATH_EXP_FOURTH) and do {
+      $datapage->{statusbar}->SetStatusText($Demeter::UI::Artemis::Path::explanation{fourth});
+      last SWITCH;
+    };
+
+
   };
 };
 
@@ -970,11 +1031,7 @@ sub Rename {
     };
   };
 
-  my $datatool = $Demeter::UI::Artemis::frames{main}->{datatool};
-  $datatool->DeleteTool($id);
-  $datatool->AddCheckTool($id, "Show $newname", Demeter::UI::Artemis::icon("pixel"), wxNullBitmap, q{}, q{} );
-  $datatool->Realize;
-  $datatool->ToggleTool($id,1);
+  $Demeter::UI::Artemis::frames{main}->{$dnum}->SetLabel("Show $newname");
 };
 
 sub set_degens {
@@ -1394,8 +1451,7 @@ sub discard_data {
   ## remove the button from the data tool bar
   my $dnum = $self->{dnum};
   (my $id = $dnum) =~ s{data}{};
-  my $datatool = $Demeter::UI::Artemis::frames{main}->{datatool};
-  $datatool->DeleteTool($id);
+  $Demeter::UI::Artemis::frames{main}->{$dnum}->Destroy;
 
   ## remove the frame with the datapage
   $Demeter::UI::Artemis::frames{$dnum}->Hide;

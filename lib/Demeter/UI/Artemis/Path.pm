@@ -20,7 +20,8 @@ use warnings;
 
 use Wx qw( :everything );
 use base qw(Wx::Panel);
-use Wx::Event qw(EVT_RIGHT_DOWN EVT_ENTER_WINDOW EVT_LEAVE_WINDOW EVT_MENU EVT_CHECKBOX EVT_BUTTON);
+use Wx::Event qw(EVT_RIGHT_DOWN EVT_ENTER_WINDOW EVT_LEAVE_WINDOW EVT_MENU
+		 EVT_CHECKBOX EVT_BUTTON EVT_HYPERLINK);
 
 my %labels = (label  => 'Label',
 	      n      => 'N',
@@ -33,7 +34,8 @@ my %labels = (label  => 'Label',
 	      fourth => '4th',
 	     );
 
-my %explanation =
+use vars qw(%explanation);
+%explanation =
   (
    label  => 'The label is a snippet of user-supplied text identifying or describing the path.',
    n      => 'N is the degeneracy of the path and is multiplied by S02.  For SS paths this can often be interpreted as the coordination number.',
@@ -119,7 +121,7 @@ sub new {
   my $i = 0;
 
   foreach my $k (qw(label n s02 e0 delr sigma2 ei third fourth)) {
-    my $label        = Wx::StaticText->new($this, -1, $labels{$k}, wxDefaultPosition, wxDefaultSize, wxALIGN_RIGHT);
+    my $label = Wx::HyperlinkCtrl -> new($this, -1, $labels{$k}, q{}, wxDefaultPosition, wxDefaultSize );
     $label->{which} = $k;
     my $w = 250;
     $this->{"pp_$k"} = Wx::TextCtrl  ->new($this, -1, q{}, wxDefaultPosition, [$w,-1]);
@@ -128,9 +130,13 @@ sub new {
     ++$i;
     EVT_RIGHT_DOWN($label, sub{DoLabelKeyPress(@_, $this)});
     EVT_MENU($label, -1, sub{ $this->OnLabelMenu(@_)    });
-    $this->mouseover("pp_$k", $explanation{$k});
-    EVT_ENTER_WINDOW($label, sub{print "hi\n"});#$this->DoLabelEnter});
-    #EVT_LEAVE_WINDOW($label, sub{$this->DoLabelLeave});
+    EVT_HYPERLINK($this, $label, sub{DoLabelKeyPress($label, $_[1], $_[0])});
+    $label -> SetFont( Wx::Font->new( 9, wxDEFAULT, wxNORMAL, wxNORMAL, 0, "" ) );
+    my $black = Wx::Colour->new(wxNullColour);
+    $label -> SetNormalColour($black);
+    $label -> SetHoverColour($black);
+    $label -> SetVisitedColour($black);
+    $this  -> mouseover("pp_$k", $explanation{$k});
   };
   $vbox -> Add($gbs, 2, wxGROW|wxTOP|wxBOTTOM, 10);
   $this->{pp_n} -> SetValidator( Wx::Perl::TextValidator->new( qr([0-9.]) ) );
@@ -147,7 +153,11 @@ sub new {
 
 sub mouseover {
   my ($self, $widget, $text) = @_;
-  EVT_ENTER_WINDOW($self->{$widget}, sub{$self->{datapage}->{statusbar}->PushStatusText($text); $_[1]->Skip});
+  EVT_ENTER_WINDOW($self->{$widget},
+		   sub {
+		     $self->{datapage}->{statusbar}->PushStatusText($text);
+		     $_[1]->Skip;
+		   });
   EVT_LEAVE_WINDOW($self->{$widget}, sub{$self->{datapage}->{statusbar}->PopStatusText;         $_[1]->Skip});
 };
 
@@ -227,7 +237,6 @@ sub this_path {
   };
   return $this;
 };
-
 use Readonly;
 Readonly my $CLEAR	 => Wx::NewId();
 Readonly my $THISFEFF	 => Wx::NewId();
@@ -271,7 +280,19 @@ sub DoLabelKeyPress {
   my $this = $page->this_path;
   $menu->Enable($PREV, 0) if ($this == 0);
   $menu->Enable($NEXT, 0) if ($this == $page->{listbook}->GetPageCount-1);
-  $st->PopupMenu($menu, $event->GetPosition);
+  my $here = ($event =~ m{Mouse}) ? $event->GetPosition : $st->GetPosition;
+  $st -> PopupMenu($menu, $here);
+#   if ($event =~ m{Mouse}) {
+#     #print join(" ", "event: ", $st->GetPosition->x, $st->GetPosition->y), $/;
+#     $st->PopupMenu($menu, $event->GetPosition);
+#   } else {
+#     #print join(" ", "mouse: ", Wx::GetMousePosition->x, Wx::GetMousePosition->y), $/;
+#     #print join(" ", "screen: ", $st->GetScreenPosition->x, $st->GetScreenPosition->y), $/;
+#     #print join(" ", "pos: ", $st->GetPosition->x, $st->GetPosition->y), $/;
+#     #$st->PopupMenu($menu, Wx::GetMousePosition);
+#     #$st->PopupMenu($menu, $st->GetScreenPosition);
+#     $st->PopupMenu($menu, $st->GetPosition);
+#   };
 };
 
 sub OnLabelMenu {

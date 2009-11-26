@@ -25,6 +25,8 @@ my $max_mru = 15;
 
 sub push_mru {
   my ($self, $group, $file) = @_;
+  my $stash = $self->stash_folder;
+  return $self if ($file =~ m{$stash});
   my %mru;
   my $mrufile = File::Spec->catfile($self->dot_folder, "demeter.mru");
   tie %mru, 'Config::IniFiles', ( -file => $mrufile );
