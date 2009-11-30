@@ -15,14 +15,16 @@ package  Demeter::UI::Artemis::Prj;
 
 =cut
 
-use Wx qw( :everything );
-use base qw(Wx::Dialog);
-use Wx::Event qw(EVT_CLOSE EVT_LISTBOX EVT_BUTTON EVT_RADIOBOX);
-
 use strict;
 use warnings;
 
+use Wx qw( :everything );
+use base qw(Wx::Dialog);
+use Wx::Event qw(EVT_CLOSE EVT_LISTBOX EVT_BUTTON EVT_RADIOBOX);
+use Demeter::UI::Wx::SpecialCharacters qw(:all);
+
 use List::MoreUtils qw{firstidx};
+
 
 sub new {
   my ($class, $parent, $file, $selref) = @_;
@@ -59,7 +61,7 @@ sub new {
 
 
   $this->{plotas} = Wx::RadioBox->new($this, -1, "Plot as", wxDefaultPosition, wxDefaultSize,
-				      ['χ(k)', '|χ(R)|', 'Re[χ(R)]', 'Im[χ(R)]', '|χ(q)|', 'Re[χ(q)]', 'Im[χ(q)]'],
+				      ["$CHI(k)", "|$CHI(R)|", "Re[$CHI(R)]", "Im[$CHI(R)]", "|$CHI(q)|", "Re[$CHI(q)]", "Im[$CHI(q)]"],
 				      4, wxRA_SPECIFY_ROWS);
   $right -> Add($this->{plotas}, 0, wxGROW|wxALL, 5);
   $this->{plotas}->SetSelection(1);

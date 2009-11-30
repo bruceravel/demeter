@@ -18,6 +18,7 @@ package  Demeter::UI::Artemis::Plot::Stack;
 
 use Wx qw( :everything );
 use base qw(Wx::Panel);
+use Demeter::UI::Wx::SpecialCharacters qw(:all);
 
 sub new {
   my ($class, $parent) = @_;
@@ -55,7 +56,7 @@ sub new {
 
 
   $this->{invert} = Wx::RadioBox->new($this, -1, "Invert paths", wxDefaultPosition, wxDefaultSize,
-				      ['Never', "|χ(R)| + |χ(q)|", 'Only |χ(R)|'],
+				      ['Never', "|$CHI(R)| + |$CHI(q)|", "Only |$CHI(R)|"],
 				      2, wxRA_SPECIFY_ROWS);
   $box -> Add($this->{invert}, 0, wxGROW|wxALL, 3);
 

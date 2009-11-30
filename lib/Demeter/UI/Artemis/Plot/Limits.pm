@@ -20,6 +20,7 @@ use Wx qw( :everything );
 use base qw(Wx::Panel);
 use Wx::Event qw(EVT_MENU EVT_CLOSE EVT_TOOL_ENTER EVT_CHECKBOX EVT_CHOICE EVT_ENTER_WINDOW EVT_LEAVE_WINDOW EVT_RADIOBOX);
 use Wx::Perl::TextValidator;
+use Demeter::UI::Wx::SpecialCharacters qw(:all);
 
 my $parts = ['Magnitude', 'Real', 'Imag.'];
 my $demeter = $Demeter::UI::Artemis::demeter;
@@ -31,7 +32,7 @@ sub new {
   my $szr = Wx::BoxSizer->new( wxVERTICAL );
 
   ## -------- plotting part for chi(R)
-  $this->{rpart} = Wx::RadioBox->new($this, -1, "Plot χ(R)", wxDefaultPosition, wxDefaultSize, $parts, 1, wxRA_SPECIFY_ROWS);
+  $this->{rpart} = Wx::RadioBox->new($this, -1, "Plot $CHI(R)", wxDefaultPosition, wxDefaultSize, $parts, 1, wxRA_SPECIFY_ROWS);
   my $which = 0;
   ($which = 1) if ($demeter->co->default("plot", "r_pl") eq 'r');
   ($which = 2) if ($demeter->co->default("plot", "r_pl") eq 'i');
@@ -39,7 +40,7 @@ sub new {
   $szr -> Add($this->{rpart}, 1, wxGROW|wxALL, 5);
 
   ## -------- plotting part for chi(R)
-  $this->{qpart} = Wx::RadioBox->new($this, -1, "Plot χ(q)", wxDefaultPosition, wxDefaultSize, $parts, 1, wxRA_SPECIFY_ROWS);
+  $this->{qpart} = Wx::RadioBox->new($this, -1, "Plot $CHI(q)", wxDefaultPosition, wxDefaultSize, $parts, 1, wxRA_SPECIFY_ROWS);
   my $which = 1;
   ($which = 0) if ($demeter->co->default("plot", "q_pl") eq 'm');
   ($which = 2) if ($demeter->co->default("plot", "q_pl") eq 'i');
@@ -50,8 +51,8 @@ sub new {
   $demeter->po->q_pl($demeter->co->default("plot", "q_pl"));
   EVT_RADIOBOX($this, $this->{rpart}, sub{OnChoice(@_, 'rpart', 'r_pl')});
   EVT_RADIOBOX($this, $this->{qpart}, sub{OnChoice(@_, 'qpart', 'q_pl')});
-  $this->mouseover("rpart", "Choose the part of the complex χ(R) function to display when plotting the contents of the plotting list.");
-  $this->mouseover("qpart", "Choose the part of the complex χ(q) function to display when plotting the contents of the plotting list.");
+  $this->mouseover("rpart", "Choose the part of the complex $CHI(R) function to display when plotting the contents of the plotting list.");
+  $this->mouseover("qpart", "Choose the part of the complex $CHI(q) function to display when plotting the contents of the plotting list.");
 
   ## -------- toggles for fit, win, bkg, res
   ##    after a fit: turn on fit toggle, bkg toggle is bkg refined
@@ -137,12 +138,12 @@ sub new {
   $this->{qmin} -> SetValidator( Wx::Perl::TextValidator->new( qr([0-9.]) ) );
   $this->{qmax} -> SetValidator( Wx::Perl::TextValidator->new( qr([0-9.]) ) );
 
-  $this->mouseover("kmin", "The lower bound of a plot of χ(k).");
-  $this->mouseover("kmax", "The upper bound of a plot of χ(k).");
-  $this->mouseover("rmin", "The lower bound of a plot of χ(r).");
-  $this->mouseover("rmax", "The upper bound of a plot of χ(r).");
-  $this->mouseover("qmin", "The lower bound of a plot of χ(q).");
-  $this->mouseover("qmax", "The upper bound of a plot of χ(q).");
+  $this->mouseover("kmin", "The lower bound of a plot of $CHI(k).");
+  $this->mouseover("kmax", "The upper bound of a plot of $CHI(k).");
+  $this->mouseover("rmin", "The lower bound of a plot of $CHI(r).");
+  $this->mouseover("rmax", "The upper bound of a plot of $CHI(r).");
+  $this->mouseover("qmin", "The lower bound of a plot of $CHI(q).");
+  $this->mouseover("qmax", "The upper bound of a plot of $CHI(q).");
 
 
   $this -> SetSizer($szr);

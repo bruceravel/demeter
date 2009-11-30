@@ -23,12 +23,14 @@ use base qw(Wx::Panel);
 use Wx::Event qw(EVT_RIGHT_DOWN EVT_ENTER_WINDOW EVT_LEAVE_WINDOW EVT_MENU
 		 EVT_CHECKBOX EVT_BUTTON EVT_HYPERLINK);
 
+use Demeter::UI::Wx::SpecialCharacters qw(:all);
+
 my %labels = (label  => 'Label',
 	      n      => 'N',
 	      s02    => 'S02',
-	      e0     => 'ΔE0',
-	      delr   => 'ΔR',
-	      sigma2 => 'σ²',
+	      e0     => $DELTA.'E0',
+	      delr   => $DELTA.'R',
+	      sigma2 => $SIGSQR,
 	      ei     => 'Ei',
 	      third  => '3rd',
 	      fourth => '4th',
@@ -38,11 +40,11 @@ use vars qw(%explanation);
 %explanation =
   (
    label  => 'The label is a snippet of user-supplied text identifying or describing the path.',
-   n      => 'N is the degeneracy of the path and is multiplied by S02.  For SS paths this can often be interpreted as the coordination number.',
+   n      => 'N, the degeneracy of the path, is multiplied by S02.  For SS paths this can often be interpreted as the coordination number.',
    s02    => 'S02 is the amplitude factor in the EXAFS equation, which includes S02 and possibly other amplitude factors.',
-   e0     => 'ΔE0 is an energy shift typically interpreted as the alignment of the energy grids of the data and theory.',
-   delr   => 'ΔR is an adjustment to the half path length of the path.  For a SS path, this is an adjustment to the interatomic distance.',
-   sigma2 => 'σ² is the mean square displacement about the half path length of the path.',
+   e0     => "${DELTA}E0 is an energy shift typically interpreted as the alignment of the energy grids of the data and theory.",
+   delr   => "${DELTA}R is an adjustment to the half path length.  For a SS path, this is an adjustment to the interatomic distance.",
+   sigma2 => "$SIGSQR is the mean square displacement about the half path length of the path.",
    ei     => 'Ei is a correction to the imaginary energy, which includes the effect of the mean free path and other loss terms from Feff.',
    third  => '3rd is the value of the third cumulant for this path.',
    fourth => '4th is the value of the fourth cumulant for this path.',
@@ -123,6 +125,7 @@ sub new {
   foreach my $k (qw(label n s02 e0 delr sigma2 ei third fourth)) {
     my $label = Wx::HyperlinkCtrl -> new($this, -1, $labels{$k}, q{}, wxDefaultPosition, wxDefaultSize );
     $label->{which} = $k;
+    $this->{"lab_$k"} = $label;
     my $w = 250;
     $this->{"pp_$k"} = Wx::TextCtrl  ->new($this, -1, q{}, wxDefaultPosition, [$w,-1]);
     $gbs     -> Add($label,           Wx::GBPosition->new($i,1));
@@ -136,7 +139,8 @@ sub new {
     $label -> SetNormalColour($black);
     $label -> SetHoverColour($black);
     $label -> SetVisitedColour($black);
-    $this  -> mouseover("pp_$k", $explanation{$k});
+    $this  -> mouseover("lab_$k", "(Click for the " . $labels{$k} . " menu) " . $explanation{$k});
+    $this  -> mouseover("pp_$k",  $explanation{$k});
   };
   $vbox -> Add($gbs, 2, wxGROW|wxTOP|wxBOTTOM, 10);
   $this->{pp_n} -> SetValidator( Wx::Perl::TextValidator->new( qr([0-9.]) ) );
@@ -254,7 +258,6 @@ sub DoLabelKeyPress {
   #print join(" ", @_), $/;
   my ($st, $event, $page) = @_;
   my $param =  $st->{which};
-  #return 0 if (($param eq 'n') or ($param eq 'label'));
   my $label = $labels{$param};
   my $menu = Wx::Menu->new(q{});
   $menu->Append($CLEAR,    "Clear $label");
@@ -273,26 +276,12 @@ sub DoLabelKeyPress {
       $menu->Append($EINS,  "Insert Einstein model");
     };
   };
-  #$menu->AppendSeparator;
-  #$menu->Append($EXPLAIN,  "Explain $label");
-  #$menu->Enable($EACHDATA, 0);
 
   my $this = $page->this_path;
   $menu->Enable($PREV, 0) if ($this == 0);
   $menu->Enable($NEXT, 0) if ($this == $page->{listbook}->GetPageCount-1);
-  my $here = ($event =~ m{Mouse}) ? $event->GetPosition : $st->GetPosition;
+  my $here = ($event =~ m{Mouse}) ? $event->GetPosition : Wx::Point->new(10,10);
   $st -> PopupMenu($menu, $here);
-#   if ($event =~ m{Mouse}) {
-#     #print join(" ", "event: ", $st->GetPosition->x, $st->GetPosition->y), $/;
-#     $st->PopupMenu($menu, $event->GetPosition);
-#   } else {
-#     #print join(" ", "mouse: ", Wx::GetMousePosition->x, Wx::GetMousePosition->y), $/;
-#     #print join(" ", "screen: ", $st->GetScreenPosition->x, $st->GetScreenPosition->y), $/;
-#     #print join(" ", "pos: ", $st->GetPosition->x, $st->GetPosition->y), $/;
-#     #$st->PopupMenu($menu, Wx::GetMousePosition);
-#     #$st->PopupMenu($menu, $st->GetScreenPosition);
-#     $st->PopupMenu($menu, $st->GetPosition);
-#   };
 };
 
 sub OnLabelMenu {

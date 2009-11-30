@@ -21,6 +21,7 @@ use warnings;
 use Wx qw( :everything );
 use base qw(Wx::Dialog);
 use Wx::Event qw(EVT_LISTBOX EVT_BUTTON EVT_RADIOBOX EVT_CHOICE);
+use Demeter::UI::Wx::SpecialCharacters qw(:all);
 
 sub new {
   my ($class, $parent) = @_;
@@ -35,7 +36,7 @@ sub new {
   my $hbox = Wx::BoxSizer->new( wxHORIZONTAL );
   $vbox -> Add($hbox, 0, wxGROW|wxALL, 5);
   $hbox -> Add(Wx::StaticText->new($this, -1, "Parameter"), 0, wxALL, 5);
-  $this->{paramlabel} = Wx::Choice->new($this, -1, wxDefaultPosition, wxDefaultSize, ['S02','ΔE0','ΔR','σ²','Ei','3rd','4th', 'Label']);
+  $this->{paramlabel} = Wx::Choice->new($this, -1, wxDefaultPosition, wxDefaultSize, ['S02',$DELTA.'E0',$DELTA.'R', $SIGSQR,'Ei','3rd','4th', 'Label']);
   $hbox->Add($this->{paramlabel}, 1, wxGROW|wxALL, 2);
   EVT_CHOICE($this, $this->{paramlabel}, \&OnChoice);
   $this->{param} = 's02';

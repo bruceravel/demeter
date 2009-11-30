@@ -5,6 +5,7 @@ use Demeter::UI::Atoms;
 use Demeter::UI::Artemis::Project;
 use Demeter::UI::Artemis::ShowText;
 use Demeter::UI::Wx::MRU;
+use Demeter::UI::Wx::SpecialCharacters qw(:all);
 
 use vars qw($demeter $buffer $plotbuffer);
 $demeter = Demeter->new;
@@ -27,6 +28,7 @@ use Wx::Event qw(EVT_MENU EVT_CLOSE EVT_TOOL_ENTER EVT_CHECKBOX EVT_BUTTON
 		 EVT_TOGGLEBUTTON EVT_ENTER_WINDOW EVT_LEAVE_WINDOW
 		 EVT_TOOL_RCLICKED EVT_RIGHT_UP);
 use base 'Wx::App';
+
 
 use Readonly;
 Readonly my $MRU	    => Wx::NewId();
@@ -106,7 +108,7 @@ sub OnInit {
   my $importmenu = Wx::Menu->new;
   $importmenu->Append($IMPORT_OLD,     "an old-style Artemis project",  "Import the current fitting model from an old-style Artemis project file");
   $importmenu->Append($IMPORT_FEFFIT,  "a feffit.inp file",             "Import a fitting model from a feffit.inp file");
-  $importmenu->Append($IMPORT_CHI,     "χ(k) data",                     "Import χ(k) data from a column data file");
+  $importmenu->Append($IMPORT_CHI,     "$CHI(k) data",                  "Import $CHI(k) data from a column data file");
   $importmenu->Enable($IMPORT_FEFFIT, 0);
   $importmenu->Enable($IMPORT_CHI,    0);
 
@@ -114,10 +116,10 @@ sub OnInit {
   $exportmenu->Append($EXPORT_IFEFFIT,  "to Ifeffit script",  "Export the current fitting model as an Ifeffit script");
   $exportmenu->Append($EXPORT_DEMETER,  "to Demeter script",  "Export the current fitting model as a perl script using Demeter");
 
-  $filemenu->Append(wxID_OPEN,   "Open project",       "Read from a project file" );
-  $filemenu->AppendSubMenu($mrumenu, "Recent projects", "Open a submenu of recently used files" );
-  $filemenu->Append(wxID_SAVE,   "Save project",       "Save project" );
-  $filemenu->Append(wxID_SAVEAS, "Save project as...", "Save to a new project file" );
+  $filemenu->Append(wxID_OPEN,       "Open project",       "Read from a project file" );
+  $filemenu->AppendSubMenu($mrumenu, "Recent projects",    "Open a submenu of recently used files" );
+  $filemenu->Append(wxID_SAVE,       "Save project",       "Save project" );
+  $filemenu->Append(wxID_SAVEAS,     "Save project as...", "Save to a new project file" );
   $filemenu->AppendSeparator;
   $filemenu->AppendSubMenu($importmenu, "Import...", "Export a fitting model from ..." );
   $filemenu->AppendSubMenu($exportmenu, "Export...", "Export the current fitting model as ..." );
@@ -134,14 +136,14 @@ sub OnInit {
   $showmenu->Append($SHOW_STRINGS, "strings", "Show Ifeffit strings");
 
   my $settingsmenu = Wx::Menu->new;
-  $settingsmenu->AppendSubMenu($showmenu, "Show Ifeffit ...", "Show variables from Ifeffit");
-  $settingsmenu->Append($SHOW_BUFFER, "Show command buffer", "Show the Ifeffit and plotting commands buffer");
-  $settingsmenu->Append($CONFIG, "Edit Preferences", "Show the preferences editing dialog");
+  $settingsmenu->AppendSubMenu($showmenu, "Show Ifeffit ...",    "Show variables from Ifeffit");
+  $settingsmenu->Append($SHOW_BUFFER,     "Show command buffer", "Show the Ifeffit and plotting commands buffer");
+  $settingsmenu->Append($CONFIG,          "Edit Preferences",    "Show the preferences editing dialog");
 
   my $debugmenu = Wx::Menu->new;
-  $debugmenu->Append($PLOT_YAML, "Show YAML for Plot object",  "Show YAML for Plot object",  wxITEM_NORMAL );
-  $debugmenu->Append($MODE_STATUS, "Mode status",  "Mode status",  wxITEM_NORMAL );
-  $debugmenu->Append($PERL_MODULES, "Perl modules", "Show perl module versions", wxITEM_NORMAL );
+  $debugmenu->Append($PLOT_YAML,    "Show YAML for Plot object",  "Show YAML for Plot object",  wxITEM_NORMAL );
+  $debugmenu->Append($MODE_STATUS,  "Mode status",                "Mode status",  wxITEM_NORMAL );
+  $debugmenu->Append($PERL_MODULES, "Perl modules",               "Show perl module versions", wxITEM_NORMAL );
 
   my $helpmenu = Wx::Menu->new;
   $helpmenu->Append(wxID_ABOUT, "&About..." );
@@ -183,11 +185,11 @@ sub OnInit {
   $datalist->SetSizer($datavbox);
 
   $frames{main}->{newdata} = Wx::Button->new($datalist, wxID_ADD, "", wxDefaultPosition, wxDefaultSize, wxNO_BORDER);
-  $datavbox -> Add($frames{main}->{newdata}, 0, wxGROW|wxALL, 0);
+  $datavbox -> Add($frames{main}->{newdata}, 0, wxGROW|wxRIGHT, 5);
   mouseover($frames{main}->{newdata}, "Import a new data set.");
   EVT_BUTTON($frames{main}->{newdata}, -1, sub{import_prj("")});
 
-  $datavbox     -> Add(Wx::StaticLine->new($datalist, -1, wxDefaultPosition, wxDefaultSize, wxLI_HORIZONTAL), 0, wxGROW|wxALL, 2);
+  $datavbox     -> Add(Wx::StaticLine->new($datalist, -1, wxDefaultPosition, wxDefaultSize, wxLI_HORIZONTAL), 0, wxGROW|wxALL, 5);
   $databoxsizer -> Add($datalist, 1, wxGROW|wxALL, 0);
   $hbox         -> Add($databoxsizer, 2, wxGROW|wxALL, 0);
 
@@ -208,11 +210,11 @@ sub OnInit {
   $fefflist->SetSizer($feffvbox);
 
   $frames{main}->{newfeff} = Wx::Button->new($fefflist, wxID_ADD, "", wxDefaultPosition, wxDefaultSize, wxNO_BORDER);
-  $feffvbox -> Add($frames{main}->{newfeff}, 0, wxGROW|wxALL, 0);
+  $feffvbox -> Add($frames{main}->{newfeff}, 0, wxGROW|wxRIGHT, 5);
   mouseover($frames{main}->{newfeff}, "Start a new Feff calculation.");
   EVT_BUTTON($frames{main}->{newfeff}, -1, sub{new_feff($frames{main})});
 
-  $feffvbox     -> Add(Wx::StaticLine->new($fefflist, -1, wxDefaultPosition, wxDefaultSize, wxLI_HORIZONTAL), 0, wxGROW|wxALL, 2);
+  $feffvbox     -> Add(Wx::StaticLine->new($fefflist, -1, wxDefaultPosition, wxDefaultSize, wxLI_HORIZONTAL), 0, wxGROW|wxALL, 5);
   $feffboxsizer -> Add($fefflist, 1, wxGROW|wxALL, 0);
   $hbox         -> Add($feffboxsizer, 2, wxGROW|wxALL, 0);
 
@@ -389,7 +391,7 @@ sub on_about {
   $info->SetCopyright( $demeter->identify );
   $info->SetWebSite( 'http://cars9.uchicago.edu/iffwiki/Demeter', 'The Demeter web site' );
   $info->SetDevelopers( ["Bruce Ravel <bravel\@bnl.gov>\n",
-			 "Ifeffit is copyright © 1992-2009 Matt Newville"
+			 "Ifeffit is copyright $COPYRIGHT 1992-2009 Matt Newville"
 			] );
   $info->SetLicense( slurp(File::Spec->catfile($artemis_base, 'Artemis', 'share', "GPL.dem")) );
   my $artwork = <<'EOH'
@@ -770,17 +772,6 @@ sub OnDataRightClick {
   };
 };
 
-sub OnDataClick {
-  my ($databar, $event, $self) = @_;
-  my $which = $databar->GetToolPos($event->GetId);
-  if ($which == 0) {
-    import_prj(0);
-  } else {
-    my $this = sprintf("data%s", $event->GetId);
-    return if not exists($frames{$this});
-    $frames{$this}->Show($databar->GetToolState($event->GetId));
-  };
-};
 sub import_prj {
   my ($fname) = @_;
   my $file = $fname;
@@ -821,11 +812,17 @@ sub import_prj {
   chdir dirname($file);
   $frames{main}->{statusbar}->SetStatusText("Imported data \"" . $data->name . "\" from $file.");
 };
+
+## see Demeter::UI::Wx::SpecialCharacters
+sub emph {
+  return $LAQUO . $_[0] . $RAQUO;
+};
+
 sub make_data_frame {
   my ($self, $data) = @_;
   my $databox = $self->{databox};
 
-  my $new = Wx::ToggleButton->new($self->{datalist}, -1, "Show ".$data->name);
+  my $new = Wx::ToggleButton->new($self->{datalist}, -1, "Hide ".emph($data->name));
   $databox -> Add($new, 0, wxGROW|wxALL, 0);
   mouseover($new, "Display/hide this data set.");
 
@@ -833,7 +830,16 @@ sub make_data_frame {
   my $idata = $new->GetId;
   my $dnum = sprintf("data%s", $idata);
   $self->{$dnum} = $new;
-  EVT_TOGGLEBUTTON($new, -1, sub{$frames{$dnum}->Show($_[0]->GetValue)});
+  EVT_TOGGLEBUTTON($new, -1, sub{
+		     $frames{$dnum}->Show($_[0]->GetValue);
+		     my $label = $_[0]->GetLabel;
+		     if ($_[0]->GetValue) {
+		       $label =~ s{Show}{Hide};
+		     } else {
+		       $label =~ s{Hide}{Show};
+		     };
+		     $_[0]->SetLabel($label);
+		   });
 
 
   $frames{$dnum}  = Demeter::UI::Artemis::Data->new($self, $nset++);
@@ -910,15 +916,24 @@ sub make_feff_frame {
   my $feffbox = $self->{feffbox};
   $name ||= basename($file);	# ok for importing an atoms or CIF file
 
-  my $new = Wx::ToggleButton->new($self->{fefflist}, -1, "Show $name");
-  $feffbox -> Add($new, 0, wxGROW|wxALL, 0);
+  my $new = Wx::ToggleButton->new($self->{fefflist}, -1, "Show ".emph($name));
+  $feffbox -> Add($new, 0, wxGROW|wxRIGHT, 5);
   mouseover($new, "Display/hide this Feff calculation.");
 
   do_the_size_dance($self);
   my $ifeff = $new->GetId;
   my $fnum = sprintf("feff%s", $ifeff);
   $self->{$fnum} = $new;
-  EVT_TOGGLEBUTTON($new, -1, sub{$frames{$fnum}->Show($_[0]->GetValue)});
+  EVT_TOGGLEBUTTON($new, -1, sub{
+		     $frames{$fnum}->Show($_[0]->GetValue);
+		     my $label = $_[0]->GetLabel;
+		     if ($_[0]->GetValue) {
+		       $label =~ s{Show}{Hide};
+		     } else {
+		       $label =~ s{Hide}{Show};
+		     };
+		     $_[0]->SetLabel($label);
+		   });
 
   my $base = File::Spec->catfile($self->{project_folder}, 'feff');
   $frames{$fnum} =  Demeter::UI::AtomsApp->new($base, $feffobject, 1);
@@ -930,6 +945,8 @@ sub make_feff_frame {
 
   EVT_CLOSE($frames{$fnum}, sub{  $frames{$fnum}->Show(0);
 				  $frames{main}->{$fnum}->SetValue(0);
+				  (my $label = $frames{main}->{$fnum}->GetLabel) =~ s{Hide}{Show};
+				  $frames{main}->{$fnum}->SetLabel($label);
 				});
 
   $frames{$fnum} -> Show(0);

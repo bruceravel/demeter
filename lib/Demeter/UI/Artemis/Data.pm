@@ -34,6 +34,7 @@ use Demeter::UI::Artemis::Data::Histogram;
 use Demeter::UI::Artemis::Data::Quickfs;
 use Demeter::UI::Artemis::ShowText;
 use Demeter::UI::Wx::CheckListBook;
+use Demeter::UI::Wx::SpecialCharacters qw(:all);
 
 use Cwd;
 use List::MoreUtils qw(firstidx);
@@ -204,10 +205,10 @@ sub new {
   EVT_BUTTON($this, $this->{plot_r123}, sub{plot(@_, 'r123')});
   EVT_BUTTON($this, $this->{plot_kq},   sub{plot(@_, 'kqfit')});
 
-  $this->mouseover("plot_rmr",  "Plot this data set as |χ(R)| and Re[χ(R)].");
-  $this->mouseover("plot_k123", "Plot this data set as χ(k) with all three k-weights and scaled to the same size.");
-  $this->mouseover("plot_r123", "Plot this data set as χ(R) with all three k-weights and scaled to the same size.");
-  $this->mouseover("plot_kq",   "Plot this data set as both χ(k) and Re[χ(q)].");
+  $this->mouseover("plot_rmr",  "Plot this data set as |$CHI(R)| and Re[$CHI(R)].");
+  $this->mouseover("plot_k123", "Plot this data set as $CHI(k) with all three k-weights and scaled to the same size.");
+  $this->mouseover("plot_r123", "Plot this data set as $CHI(R) with all three k-weights and scaled to the same size.");
+  $this->mouseover("plot_kq",   "Plot this data set as both $CHI(k) and Re[$CHI(q)].");
 
 
   ## -------- title lines
@@ -352,7 +353,7 @@ sub new {
   my $extrabox    = Wx::BoxSizer->new( wxHORIZONTAL );
   $otherboxsizer -> Add($extrabox, 0, wxALL|wxGROW|wxALIGN_CENTER_HORIZONTAL, 0);
 
-  $extrabox -> Add(Wx::StaticText->new($leftpane, -1, "ε(k)"), 0, wxALL, 5);
+  $extrabox -> Add(Wx::StaticText->new($leftpane, -1, "$EPSILON(k)"), 0, wxALL, 5);
   $this->{epsilon} = Wx::TextCtrl->new($leftpane, -1, 0, wxDefaultPosition, [50,-1]);
   $extrabox  -> Add($this->{epsilon}, 0, wxALL, 2);
   $extrabox  -> Add(Wx::StaticText->new($leftpane, -1, q{}), 1, wxALL, 0);
@@ -466,6 +467,8 @@ sub on_close {
   my ($self) = @_;
   $self->Show(0);
   $self->{PARENT}->{$self->{dnum}}->SetValue(0);
+  (my $label = $self->{PARENT}->{$self->{dnum}}->GetLabel) =~ s{Hide}{Show};;
+  $self->{PARENT}->{$self->{dnum}}->SetLabel($label);
 };
 
 sub OnUpButton {
@@ -514,8 +517,8 @@ sub make_menubar {
 
   ## -------- chi(k) menu
   $self->{datamenu}  = Wx::Menu->new;
-  $self->{datamenu}->Append($DATA_RENAME,      "Rename this χ(k)",         "Rename this data set",  wxITEM_NORMAL );
-  $self->{datamenu}->Append($DATA_REPLACE,     "Replace this χ(k)",        "Replace this data set",  wxITEM_NORMAL );
+  $self->{datamenu}->Append($DATA_RENAME,      "Rename this $CHI(k)",         "Rename this data set",  wxITEM_NORMAL );
+  $self->{datamenu}->Append($DATA_REPLACE,     "Replace this $CHI(k)",        "Replace this data set",  wxITEM_NORMAL );
   $self->{datamenu}->Append($DATA_DIFF,        "Make difference spectrum", "Make a difference spectrum using the marked paths", wxITEM_NORMAL );
   #$self->{datamenu}->Append($DATA_TRANSFER,    "Transfer marked paths",    "Transfer marked paths to the plotting list", wxITEM_NORMAL );
   #$self->{datamenu}->Append($DATA_VPATH,       "Make VPath",               "Make a virtual path from the set of marked paths", wxITEM_NORMAL );
@@ -526,10 +529,10 @@ sub make_menubar {
   $self->{datamenu}->Append($DATA_DEGEN_N,     "Set all degens to Feff",   "Set degeneracies for all paths in this data set to values from Feff",  wxITEM_NORMAL );
   $self->{datamenu}->Append($DATA_DEGEN_1,     "Set all degens to one",    "Set degeneracies for all paths in this data set to one (1)",  wxITEM_NORMAL );
   $self->{datamenu}->AppendSeparator;
-  $self->{datamenu}->Append($DATA_DISCARD,     "Discard this χ(k)",        "Discard this data set", wxITEM_NORMAL );
+  $self->{datamenu}->Append($DATA_DISCARD,     "Discard this $CHI(k)",        "Discard this data set", wxITEM_NORMAL );
   $self->{datamenu}->AppendSeparator;
   $self->{datamenu}->Append($DATA_KMAXSUGEST, "Set kmax to Ifeffit's suggestion", "Set kmax to Ifeffit's suggestion, which is computed based on the staistical noise", wxITEM_NORMAL );
-  $self->{datamenu}->Append($DATA_EPSK,       "Show ε",                           "Show statistical noise for these data", wxITEM_NORMAL );
+  $self->{datamenu}->Append($DATA_EPSK,       "Show $EPSILON",                    "Show statistical noise for these data", wxITEM_NORMAL );
   $self->{datamenu}->Append($DATA_NIDP,       "Show Nidp",                        "Show the number of independent points in these data", wxITEM_NORMAL );
 
 
@@ -545,20 +548,20 @@ sub make_menubar {
 		       "Export all path parameters from the currently displayed path to all marked paths", wxITEM_NORMAL );
 
   my $save_menu     = Wx::Menu->new;
-  $save_menu->Append($PATH_SAVE_K, "k-space", "Save the currently displayed path as χ(k) with all path parameters evaluated", wxITEM_NORMAL);
-  $save_menu->Append($PATH_SAVE_R, "R-space", "Save the currently displayed path as χ(R) with all path parameters evaluated", wxITEM_NORMAL);
-  $save_menu->Append($PATH_SAVE_Q, "q-space", "Save the currently displayed path as χ(q) with all path parameters evaluated", wxITEM_NORMAL);
+  $save_menu->Append($PATH_SAVE_K, "k-space", "Save the currently displayed path as $CHI(k) with all path parameters evaluated", wxITEM_NORMAL);
+  $save_menu->Append($PATH_SAVE_R, "R-space", "Save the currently displayed path as $CHI(R) with all path parameters evaluated", wxITEM_NORMAL);
+  $save_menu->Append($PATH_SAVE_Q, "q-space", "Save the currently displayed path as $CHI(q) with all path parameters evaluated", wxITEM_NORMAL);
 
-  my $explain_menu   = Wx::Menu->new;
-  $explain_menu->Append($PATH_EXP_LABEL,  'label',   'Explain the path label');
-  $explain_menu->Append($PATH_EXP_N,      'N',       'Explain the path degeneracy');
-  $explain_menu->Append($PATH_EXP_S02,    'S02',     'Explain the S02 path parameter');
-  $explain_menu->Append($PATH_EXP_E0,     'ΔE0',     'Explain the e0 shift');
-  $explain_menu->Append($PATH_EXP_DELR,   'ΔR',      'Explain the change in path length');
-  $explain_menu->Append($PATH_EXP_SIGMA2, 'σ²',      'Explain the sigma^2 path parameter');
-  $explain_menu->Append($PATH_EXP_EI,     'Ei',      'Explain the imaginary energy correction');
-  $explain_menu->Append($PATH_EXP_THIRD,  '3rd',     'Explain the third cumulant');
-  $explain_menu->Append($PATH_EXP_FOURTH, '4th',     'Explain the fourth cumulant');
+#   my $explain_menu   = Wx::Menu->new;
+#   $explain_menu->Append($PATH_EXP_LABEL,  'label',   'Explain the path label');
+#   $explain_menu->Append($PATH_EXP_N,      'N',       'Explain the path degeneracy');
+#   $explain_menu->Append($PATH_EXP_S02,    'S02',     'Explain the S02 path parameter');
+#   $explain_menu->Append($PATH_EXP_E0,     'ΔE0',     'Explain the e0 shift');
+#   $explain_menu->Append($PATH_EXP_DELR,   'ΔR',      'Explain the change in path length');
+#   $explain_menu->Append($PATH_EXP_SIGMA2, 'σ²',      'Explain the sigma^2 path parameter');
+#   $explain_menu->Append($PATH_EXP_EI,     'Ei',      'Explain the imaginary energy correction');
+#   $explain_menu->Append($PATH_EXP_THIRD,  '3rd',     'Explain the third cumulant');
+#   $explain_menu->Append($PATH_EXP_FOURTH, '4th',     'Explain the fourth cumulant');
 
   $self->{pathsmenu} = Wx::Menu->new;
   $self->{pathsmenu}->Append($PATH_RENAME, "Rename path",            "Rename the path currently on display", wxITEM_NORMAL );
@@ -572,8 +575,8 @@ sub make_menubar {
   $self->{pathsmenu}->AppendSubMenu($save_menu, "Save this path in ..." );
   $self->{pathsmenu}->Append($PATH_CLONE, "Clone this path", "Make a copy of the currently displayed path", wxITEM_NORMAL );
   $self->{pathsmenu}->Append($PATH_HISTO, "Make histogram", "Generate a histogram using the currently displayed path", wxITEM_NORMAL );
-  $self->{pathsmenu}->AppendSeparator;
-  $self->{pathsmenu}->AppendSubMenu($explain_menu, "Explain path parameter ..." );
+#  $self->{pathsmenu}->AppendSeparator;
+#  $self->{pathsmenu}->AppendSubMenu($explain_menu, "Explain path parameter ..." );
 
   $self->{debugmenu}  = Wx::Menu->new;
   $self->{debugmenu}->Append($DATA_SHOW, "Show this Ifeffit group",  "Show the arrays associated with this group in Ifeffit",  wxITEM_NORMAL );
@@ -586,26 +589,26 @@ sub make_menubar {
 
   ## -------- marks menu
   $self->{markmenu}  = Wx::Menu->new;
-  $self->{markmenu}->Append($MARK_ALL,    "Mark all",      "Mark all paths for this χ(k)",             wxITEM_NORMAL );
-  $self->{markmenu}->Append($MARK_NONE,   "Unmark all",    "Unmark all paths for this χ(k)",           wxITEM_NORMAL );
-  $self->{markmenu}->Append($MARK_INVERT, "Invert marks",  "Invert all marks for this χ(k)",           wxITEM_NORMAL );
-  $self->{markmenu}->Append($MARK_REGEXP, "Mark regexp",   "Mark by regular expression for this χ(k)", wxITEM_NORMAL );
+  $self->{markmenu}->Append($MARK_ALL,    "Mark all",      "Mark all paths for this $CHI(k)",             wxITEM_NORMAL );
+  $self->{markmenu}->Append($MARK_NONE,   "Unmark all",    "Unmark all paths for this $CHI(k)",           wxITEM_NORMAL );
+  $self->{markmenu}->Append($MARK_INVERT, "Invert marks",  "Invert all marks for this $CHI(k)",           wxITEM_NORMAL );
+  $self->{markmenu}->Append($MARK_REGEXP, "Mark regexp",   "Mark by regular expression for this $CHI(k)", wxITEM_NORMAL );
   $self->{markmenu}->AppendSeparator;
   $self->{markmenu}->Append($MARK_INC,    "Mark included", "Mark all paths included in the fit",   wxITEM_NORMAL );
   $self->{markmenu}->Append($MARK_EXC,    "Mark excluded", "Mark all paths excluded from the fit", wxITEM_NORMAL );
   $self->{markmenu}->AppendSeparator;
-  $self->{markmenu}->Append($MARK_BEFORE, "Mark before current",   "Mark this path and all paths above it in the path list for this χ(k)", wxITEM_NORMAL );
-  $self->{markmenu}->Append($MARK_AFTER,  "Mark after current",    "Mark all paths after this one in the path list for this χ(k)", wxITEM_NORMAL );
+  $self->{markmenu}->Append($MARK_BEFORE, "Mark before current",   "Mark this path and all paths above it in the path list for this $CHI(k)", wxITEM_NORMAL );
+  $self->{markmenu}->Append($MARK_AFTER,  "Mark after current",    "Mark all paths after this one in the path list for this $CHI(k)", wxITEM_NORMAL );
   $self->{markmenu}->AppendSeparator;
-  $self->{markmenu}->Append($MARK_SS,     "Mark SS paths",         "Mark all single scattering paths for this χ(k)", wxITEM_NORMAL );
-  $self->{markmenu}->Append($MARK_MS,     "Mark MS paths",         "Mark all multiple scattering paths for this χ(k)", wxITEM_NORMAL );
+  $self->{markmenu}->Append($MARK_SS,     "Mark SS paths",         "Mark all single scattering paths for this $CHI(k)", wxITEM_NORMAL );
+  $self->{markmenu}->Append($MARK_MS,     "Mark MS paths",         "Mark all multiple scattering paths for this $CHI(k)", wxITEM_NORMAL );
   $self->{markmenu}->AppendSeparator;
-  $self->{markmenu}->Append($MARK_HIGH,   "Mark high importance",  "Mark all high importance paths for this χ(k)", wxITEM_NORMAL );
-  $self->{markmenu}->Append($MARK_MID,    "Mark mid importance",   "Mark all mid importance paths for this χ(k)", wxITEM_NORMAL );
-  $self->{markmenu}->Append($MARK_LOW,    "Mark low importance",   "Mark all low importance paths for this χ(k)", wxITEM_NORMAL );
+  $self->{markmenu}->Append($MARK_HIGH,   "Mark high importance",  "Mark all high importance paths for this $CHI(k)", wxITEM_NORMAL );
+  $self->{markmenu}->Append($MARK_MID,    "Mark mid importance",   "Mark all mid importance paths for this $CHI(k)", wxITEM_NORMAL );
+  $self->{markmenu}->Append($MARK_LOW,    "Mark low importance",   "Mark all low importance paths for this $CHI(k)", wxITEM_NORMAL );
   $self->{markmenu}->AppendSeparator;
-  $self->{markmenu}->Append($MARK_RBELOW, "Mark all paths < R",    "Mark all paths shorter than a specified path length for this χ(k)", wxITEM_NORMAL );
-  $self->{markmenu}->Append($MARK_RABOVE, "Mark all paths > R",    "Mark all paths longer than a specified path length for this χ(k)", wxITEM_NORMAL );
+  $self->{markmenu}->Append($MARK_RBELOW, "Mark all paths < R",    "Mark all paths shorter than a specified path length for this $CHI(k)", wxITEM_NORMAL );
+  $self->{markmenu}->Append($MARK_RABOVE, "Mark all paths > R",    "Mark all paths longer than a specified path length for this $CHI(k)", wxITEM_NORMAL );
 
 #   ## -------- include menu
 #   $self->{includemenu}  = Wx::Menu->new;
@@ -809,7 +812,7 @@ sub OnMenuClick {
     ($id == $DATA_EPSK) and do {
       $datapage->fetch_parameters;
       $datapage->{data}->chi_noise;
-      my $text = sprintf("Statistical noise: ε(k) = %.2e and ε(R) = %.2e", $datapage->{data}->epsk, $datapage->{data}->epsr);
+      my $text = sprintf("Statistical noise: $EPSILON(k) = %.2e and $EPSILON(R) = %.2e", $datapage->{data}->epsk, $datapage->{data}->epsr);
       $datapage->{statusbar}->SetStatusText($text);
       last SWITCH;
     };
