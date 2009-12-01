@@ -60,7 +60,6 @@ my $build = Module::Build # $class
 				'Moose'			    => '0.63',
 				'MooseX::Aliases'           => '0.05',
 				'MooseX::AttributeHelpers'  => '0.13',
-				'MooseX::Clone'		    => '0.03',
 				'MooseX::StrictConstructor' => '0.08',
 				'MooseX::Singleton'	    => '0.13',
 				'MooseX::Types'		    => '0.07',

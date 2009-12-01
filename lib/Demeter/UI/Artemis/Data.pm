@@ -151,6 +151,7 @@ sub new {
   $this->{statusbar} -> SetStatusText(q{});
   #$this->{statusbar}->SetForegroundColour(Wx::Colour->new("#00ff00")); ??????
   my $hbox  = Wx::BoxSizer->new( wxHORIZONTAL );
+  $this->{mainbox} = $hbox;
   #my $splitter = Wx::SplitterWindow->new($this, -1, wxDefaultPosition, [900,-1], wxSP_3D);
   #$hbox->Add($splitter, 1, wxGROW|wxALL, 1);
 
@@ -518,10 +519,8 @@ sub make_menubar {
   ## -------- chi(k) menu
   $self->{datamenu}  = Wx::Menu->new;
   $self->{datamenu}->Append($DATA_RENAME,      "Rename this $CHI(k)",         "Rename this data set",  wxITEM_NORMAL );
-  $self->{datamenu}->Append($DATA_REPLACE,     "Replace this $CHI(k)",        "Replace this data set",  wxITEM_NORMAL );
-  $self->{datamenu}->Append($DATA_DIFF,        "Make difference spectrum", "Make a difference spectrum using the marked paths", wxITEM_NORMAL );
-  #$self->{datamenu}->Append($DATA_TRANSFER,    "Transfer marked paths",    "Transfer marked paths to the plotting list", wxITEM_NORMAL );
-  #$self->{datamenu}->Append($DATA_VPATH,       "Make VPath",               "Make a virtual path from the set of marked paths", wxITEM_NORMAL );
+  $self->{datamenu}->Append($DATA_REPLACE,     "Replace this $CHI(k)",        "Replace this data set $MDASH that is, apply the current fitting model to a different set of $CHI(k) data.",  wxITEM_NORMAL );
+  #$self->{datamenu}->Append($DATA_DIFF,        "Make difference spectrum", "Make a difference spectrum using the marked paths", wxITEM_NORMAL );
   $self->{datamenu}->AppendSeparator;
   $self->{datamenu}->Append($PATH_FSPATH,      "Quick first shell model", "Generate a quick first shell fitting model", wxITEM_NORMAL );
   $self->{datamenu}->AppendSeparator;
@@ -656,9 +655,9 @@ sub make_menubar {
   #$self->{menubar}->Append( $self->{discardmenu}, "Dis&card" );
   $self->{menubar}->Append( $self->{debugmenu},   "Debu&g" ) if ($demeter->co->default("artemis", "debug_menus"));
 
-  map { $self->{datamenu} ->Enable($_,0) } ($DATA_DIFF, $DATA_REPLACE, $DATA_BALANCE);
+  map { $self->{datamenu} ->Enable($_,0) } ($DATA_BALANCE);
   #map { $self->{summenu}  ->Enable($_,0) } ($SUM_MARKED, $SUM_INCLUDED, $SUM_IM);
-  map { $self->{pathsmenu}->Enable($_,0) } ($PATH_CLONE);
+  #map { $self->{pathsmenu}->Enable($_,0) } ($PATH_CLONE);
 
 };
 
@@ -772,6 +771,11 @@ sub OnMenuClick {
 
     ($id == $DATA_RENAME) and do {
       $datapage->Rename;
+      last SWITCH;
+    };
+
+    ($id == $DATA_REPLACE) and do {
+      $datapage->replace;
       last SWITCH;
     };
 
@@ -941,6 +945,11 @@ sub OnMenuClick {
       last SWITCH;
     };
 
+    ($id == $PATH_CLONE) and do {
+      $datapage->clone;
+      last SWITCH;
+    };
+
     ($id == $PATH_HISTO) and do {
       my $histo_dialog = Demeter::UI::Artemis::Data::Histogram->new($datapage);
       my $result = $histo_dialog -> ShowModal;
@@ -1011,17 +1020,19 @@ sub OnMenuClick {
 # };
 
 sub Rename {
-  my ($datapage) = @_;
+  my ($datapage, $newname) = @_;
   my $dnum = $datapage->{dnum};
   (my $id = $dnum) =~ s{data}{};
 
   my $name = $datapage->{data}->name;
-  my $ted = Wx::TextEntryDialog->new($datapage, "Enter a new name for \"$name\":", "Rename \"$name\"", q{}, wxOK|wxCANCEL, Wx::GetMousePosition);
-  if ($ted->ShowModal == wxID_CANCEL) {
-    $datapage->{statusbar}->SetStatusText("Data renaming cancelled.");
-    return;
+  if (not $newname) {
+    my $ted = Wx::TextEntryDialog->new($datapage, "Enter a new name for \"$name\":", "Rename \"$name\"", q{}, wxOK|wxCANCEL, Wx::GetMousePosition);
+    if ($ted->ShowModal == wxID_CANCEL) {
+      $datapage->{statusbar}->SetStatusText("Data renaming cancelled.");
+      return;
+    };
+    $newname = $ted->GetValue;
   };
-  my $newname = $ted->GetValue;
   $datapage->{data}->name($newname);
   $datapage->{name}->SetLabel($newname);
 
@@ -1034,7 +1045,21 @@ sub Rename {
     };
   };
 
-  $Demeter::UI::Artemis::frames{main}->{$dnum}->SetLabel("Show $newname");
+  $Demeter::UI::Artemis::frames{main}->{$dnum}->SetLabel("Show $LAQUO$newname$RAQUO");
+  Demeter::UI::Artemis::modified(1);
+};
+
+sub replace {
+  my ($datapage) = @_;
+  my ($file, $prj, $record) = Demeter::UI::Artemis::get_prj_and_record();
+  my $data = $prj->record($record);
+  $datapage->{data} = $data;
+  $datapage->{titles}->SetValue(join("\n", @{ $data->titles }));
+  $datapage->{name}->SetLabel($data->name);
+  $datapage->{datasource}->SetValue($data->prjrecord);
+  $datapage->fetch_parameters;
+  $datapage->Rename($data->name);
+  Demeter::UI::Artemis::modified(1);
 };
 
 sub set_degens {
@@ -1619,6 +1644,24 @@ sub transfer {
 };
 
 
+sub clone {
+  my ($datapage) = @_;
+  my $pathpage = $datapage->{pathlist}->GetPage($datapage->{pathlist}->GetSelection);
+  my $path = $pathpage->{path};
+  $path->n($path->n / 2);
+  $pathpage->{pp_n}->SetValue($path->n);
+
+  my $cloned = $path->clone(n => $path->n);
+  $cloned->name($path->name . " (clone)");
+
+  my $newpage = Demeter::UI::Artemis::Path->new($datapage->{pathlist}, $cloned, $datapage);
+  $datapage->{pathlist}->AddPage($newpage, $cloned->name, 1, 0, $datapage->{pathlist}->GetSelection);
+  $newpage->{pp_n}->SetValue($path->n);
+  $newpage->include_label(0,$datapage->{pathlist}->GetSelection);
+
+  $datapage->{statusbar} -> SetStatusText("Cloned $LAQUO" . $path->name . "$RAQUO and set N to half its value for the new and old paths.");
+};
+
 sub process_histogram {
   my ($datapage, $histo_dialog) = @_;
   my $pathpage = $datapage->{pathlist}->GetPage($datapage->{pathlist}->GetSelection);
@@ -1839,10 +1882,6 @@ Demeter's dependencies are in the F<Bundle/DemeterBundle.pm> file.
 =item *
 
 Many things still missing from the menus
-
-=item *
-
-Replace data group without replacing paths.
 
 =back
 

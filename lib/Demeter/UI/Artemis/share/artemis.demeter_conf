@@ -87,3 +87,12 @@ description
   as Rmr.  The k, r, and q options will use the contents of the
   plotting list.  The none options means not to make a plot after the
   fit finishes.
+
+variable=offer_dphase
+type=boolean
+onvalue=1
+offvalue=0
+default=false
+description
+  If true, a space for the dphase path parameter will be displayed on
+  each path page.

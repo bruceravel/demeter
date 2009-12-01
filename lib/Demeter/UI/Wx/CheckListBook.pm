@@ -109,8 +109,8 @@ sub set_initial_page_callback {
 };
 
 sub AddPage {
-  my ($self, $page, $text, $select, $imageid) = @_;
-  my $end = $self->{LIST} -> GetCount;
+  my ($self, $page, $text, $select, $imageid, $position) = @_;
+  my $end = (defined($position)) ? $position+1 : $self->{LIST} -> GetCount;
   $self->{LIST} -> InsertItems([$text], $end);
   $self->{LIST} -> SetClientData($end, $page);
   $self->{LIST} -> Deselect($self->{LIST}->GetSelection);
@@ -124,6 +124,17 @@ sub AddPage {
   $self->{PAGEBOX} -> Layout;
   return $self->{LIST} -> GetCount;
 };
+
+# sub MovePageAfter {
+#   my ($self, $page_or_id, $pos) = @_;
+#   my ($page, $id) = $self->page_and_id($page);
+#   my $saved_page = $self->{LIST}-> GetClientData($id);
+
+#   $self-> RemovePage($page);
+#   $self->{LIST} -> InsertItems([$self->GetPageText($id)], $pos+1);
+#   $self->{LIST} -> SetClientData($pos+1, $saved_page);
+#   return $self->{LIST} -> GetCount;
+# };
 
 sub RemovePage {
   my ($self, $page) = @_;
@@ -161,7 +172,10 @@ sub Clear {
 sub page_and_id {
   my ($self, $arg) = @_;
   my ($id, $obj) = (-1,-1);
-  if (ref($arg) =~ m{Wx}) {
+  if ($arg =~ m{\A$NUMBER\z}) {
+    $id = $arg;
+    $obj = $self->{LIST}->GetClientData($arg)
+  } else {
     foreach my $pos (0 .. $self->{LIST}->GetCount-1) {
       if ($arg eq $self->{LIST}->GetClientData($pos)) {
 	$id = $pos;
@@ -169,9 +183,6 @@ sub page_and_id {
 	last;
       };
     };
-  } else {
-    $id = $arg;
-    $obj = $self->{LIST}->GetClientData($arg)
   };
   return ($obj, $id);
 };

@@ -61,7 +61,6 @@ with 'Demeter::Tools';
 with 'Demeter::Project';
 with 'Demeter::MRU';
 
-with 'MooseX::Clone';
 with 'MooseX::SetGet';		# this is mine....
 
 #use MooseX::Storage;
@@ -225,14 +224,18 @@ sub finish {
 ##
 ## this is a poor example of OO -- there is too much downward
 ## reference to derived objects.  boo!
-around clone => sub {
-  my ($code, $self, @arguments) = @_;
 
-  ## clone using MooseX::Clone
-  my $new = $self -> $code(@arguments);
+sub clone {
+  my ($self, @arguments) = @_;
+
+  my $new = ref($self) -> new();
+  my %hash = $self->all;
+  delete $hash{group};
+  $new -> set(%hash);
+  $new -> set(@arguments);
 
   ## the cloned object needs its own group name
-  $new->group($self->_get_group());
+  #$new->group($self->_get_group());
 
   ## data from Athena
   if ((ref($self) =~ m{Data}) and $self->from_athena) {
@@ -253,12 +256,6 @@ around clone => sub {
     $new -> data($new);
     $new -> provenance("cloned");
 
-  ## Path object
-  } elsif (ref($self) =~ m{::(?:SS|)Path}) {
-    my $i = $new->mo->pathindex;
-    $new->Index($i);
-    $new->mo->pathindex(++$i);
-
   ## any other kind of object
   } else {
     1;
@@ -273,6 +270,54 @@ around clone => sub {
 
   return $new;
 };
+# around clone => sub {
+#   my ($code, $self, @arguments) = @_;
+
+#   ## clone using MooseX::Clone
+#   my $new = $self -> $code(@arguments);
+
+#   ## the cloned object needs its own group name
+#   $new->group($self->_get_group());
+
+#   ## data from Athena
+#   if ((ref($self) =~ m{Data}) and $self->from_athena) {
+#     $new  -> standard;
+#     $self -> dispose($self->template("process", "clone"));
+#     $new  -> unset_standard;
+#     $new  -> from_athena(1);
+#     $new  -> update_data(0);
+#     $new  -> update_columns(0);
+#     $new  -> update_norm($self->datatype eq 'xmu');
+#     $new  -> update_fft(1);
+#     $new  -> data($new);
+#     $new  -> provenance("cloned");
+
+#   ## mu(E) data from a file
+#   } elsif (ref($self) =~ m{Data}) {
+#     $new -> update_data(1);
+#     $new -> data($new);
+#     $new -> provenance("cloned");
+
+#   ## Path object
+#   } elsif (ref($self) =~ m{::(?:SS|)Path}) {
+#     my $i = $new->mo->pathindex;
+#     $new->Index($i);
+#     $new->mo->pathindex(++$i);
+
+#   ## any other kind of object
+#   } else {
+#     1;
+
+#   };
+
+#   if (ref($self) =~ m{Data}) {
+#     if ($new->tag eq $self->tag) {
+#       $new->tag( $new->cv || $new->group );
+#     };
+#   };
+
+#   return $new;
+# };
 
 
 
@@ -437,7 +482,7 @@ sub reset_path_indeces {
 ## -------- introspection methods
 sub all {
   my ($self) = @_;
-  my @keys   = map {$_->name} grep {$_->name !~ m{\A(?:data|plot|plottable|is_mc|mode|parent|sp)\z}} $self->meta->get_all_attributes;
+  my @keys   = map {$_->name} grep {$_->name !~ m{\A(?:data|plot|plottable|pathtype|is_mc|mode|parent|sp)\z}} $self->meta->get_all_attributes;
   #my @keys   = grep {$_ !~ m{\A(?:data|plot|plottable|is_mc|mode|parent|sp)\z}} $self->get_params_of;
   #push @keys, qw(name group mark plottable);
   my @values = map {$self->$_} @keys;

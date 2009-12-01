@@ -255,6 +255,9 @@ sub _verify_fit {
   ## 17. check that there are no unresolved merge parameetrs
   $trouble_found += $self->S_notice_merge;
 
+  ## 18. check that no more than one path is flagged as the default path
+  $trouble_found += $self->S_default_path;
+
   return $trouble_found;
 };
 
@@ -314,6 +317,9 @@ sub fit {
   $self->dispose($prefit);
 
   $self->mo->fit($self);
+  foreach my $p (@{ $self->paths }) {
+    $self->dispose("set path_index = " . $p->Index) if ($p->default_path);
+  };
   my $command = q{};
 
   foreach my $type (qw(guess lguess set def restrain)) {

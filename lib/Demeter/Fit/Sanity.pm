@@ -532,6 +532,17 @@ sub S_notice_merge {
   return $found;
 };
 
+## 18. check that no more than one path is flagged as the default
+sub S_default_path {
+  my ($self) = @_;
+  my $found = 0;
+  my @paths = @{ $self->paths };
+  foreach my $p (@paths) {
+    ++$found if $p->default_path;
+  };
+  $self->add_trouble('defaultpath') if ($found > 1);
+  return $found;
+};
 
 1;
 
@@ -854,6 +865,11 @@ data sets (&max_data_sets).
 
 This fitting model uses more than Ifeffit's compiled-in limit of
 paths (&max_paths).
+
+=item C<defaultpath>
+
+More than one path is flagged as being the default path, making it
+unclear how to evaluate the log file.
 
 =back
 

@@ -772,7 +772,7 @@ sub OnDataRightClick {
   };
 };
 
-sub import_prj {
+sub get_prj_and_record {
   my ($fname) = @_;
   my $file = $fname;
   if (not $fname) {
@@ -796,21 +796,29 @@ sub import_prj {
       ($frames{prj}->{record} == -1)  # import button without selecting a group
      ) {
     $frames{main}->{statusbar}->SetStatusText("Data import cancelled.");
-    return;
+    return (q{}, q{});
   };
 
-  my $data = $frames{prj}->{prj}->record($frames{prj}->{record});
+  return ($file, $frames{prj}->{prj}, $frames{prj}->{record});
+};
+
+sub import_prj {
+  my ($fname) = @_;
+  my ($file, $prj, $record) = get_prj_and_record($fname);
+
+  my $data = $prj->record($record);
   my ($dnum, $idata) = make_data_frame($frames{main}, $data);
   $data->po->start_plot;
   $data->plot('k');
   $data->plot_window('k') if $data->po->plot_win;
   $frames{$dnum} -> Show(1);
   $frames{main}->{$dnum}->SetValue(1);
+  $prj->DESTROY;
   delete $frames{prj};
   $demeter->push_mru("athena", $file);
   autosave();
   chdir dirname($file);
-  $frames{main}->{statusbar}->SetStatusText("Imported data \"" . $data->name . "\" from $file.");
+  $frames{main}->{statusbar}->SetStatusText("Importing data \"" . $data->name . "\" from $file.");
 };
 
 ## see Demeter::UI::Wx::SpecialCharacters

@@ -75,7 +75,6 @@ sub module_environment {
 		     Moose
 		     MooseX::Aliases
 		     MooseX::AttributeHelpers
-		     MooseX::Clone
 		     MooseX::StrictConstructor
 		     MooseX::Singleton
 		     MooseX::Types

@@ -21,7 +21,7 @@ use warnings;
 use Wx qw( :everything );
 use base qw(Wx::Panel);
 use Wx::Event qw(EVT_RIGHT_DOWN EVT_ENTER_WINDOW EVT_LEAVE_WINDOW EVT_MENU
-		 EVT_CHECKBOX EVT_BUTTON EVT_HYPERLINK);
+		 EVT_CHECKBOX EVT_BUTTON EVT_HYPERLINK EVT_COLLAPSIBLEPANE_CHANGED);
 
 use Demeter::UI::Wx::SpecialCharacters qw(:all);
 
@@ -34,6 +34,7 @@ my %labels = (label  => 'Label',
 	      ei     => 'Ei',
 	      third  => '3rd',
 	      fourth => '4th',
+	      dphase => $DELTA.$PHI,
 	     );
 
 use vars qw(%explanation);
@@ -48,6 +49,7 @@ use vars qw(%explanation);
    ei     => 'Ei is a correction to the imaginary energy, which includes the effect of the mean free path and other loss terms from Feff.',
    third  => '3rd is the value of the third cumulant for this path.',
    fourth => '4th is the value of the fourth cumulant for this path.',
+   dphase => "A constant offset to the phase term in the EXAFS equation $MDASH this is mostly useful for DAFS and reflectivity XAFS.",
   );
 
 sub new {
@@ -64,7 +66,7 @@ sub new {
 
   ## -------- identifier string
   my $hbox = Wx::BoxSizer->new( wxHORIZONTAL );
-  $vbox -> Add($hbox, 0, wxGROW|wxALL, 0);
+  $vbox -> Add($hbox, 0, wxGROW|wxBOTTOM, 4);
   $this->{plotgrab} = Wx::BitmapButton->new($this, -1, Demeter::UI::Artemis::icon('plotgrab'));
   $hbox -> Add($this->{plotgrab}, 0, wxLEFT|wxRIGHT|wxTOP, 3);
   $this->{fefflabel}  = Wx::StaticText -> new($this, -1, "[Feff name] ");
@@ -81,21 +83,27 @@ sub new {
   $hbox = Wx::BoxSizer->new( wxHORIZONTAL );
   $vbox -> Add($hbox, 0, wxGROW|wxALL, 0);
 
-  my $gbs = Wx::GridBagSizer->new( 5,5 );
-  $hbox -> Add($gbs, 0, wxGROW|wxALL, 5);
   $this->{include}      = Wx::CheckBox->new($this, -1, "Include path");
   $this->{plotafter}    = Wx::CheckBox->new($this, -1, "Plot after fit");
-  $this->{useasdefault} = Wx::CheckBox->new($this, -1, "Use this path as the default after the fit");
-  $this->{useforpc} = Wx::CheckBox->new($this, -1, "Use this path for phase corrected plotting.");
-  $this->{useasdefault}->Enable(0);
-  $this->{useforpc}->Enable(0);
-  $gbs -> Add($this->{include},      Wx::GBPosition->new(0,0));
-  $gbs -> Add($this->{plotafter},    Wx::GBPosition->new(0,1));
-  $gbs -> Add($this->{useasdefault}, Wx::GBPosition->new(1,0), Wx::GBSpan->new(1,2));
-  $gbs -> Add($this->{useforpc},     Wx::GBPosition->new(2,0), Wx::GBSpan->new(1,2));
+  $hbox -> Add($this->{include},  1, wxALL, 1);
+  $hbox -> Add($this->{plotafter},1, wxALL, 1);
   EVT_CHECKBOX($this, $this->{include},      sub{include_label(@_)});
+
+  my $cpane = Wx::CollapsiblePane->new($this, -1, "Other path options");
+  $vbox -> Add($cpane, 0, wxALL|wxLEFT, 4);
+  my $window = $cpane->GetPane;
+  my $sizer = Wx::BoxSizer->new( wxVERTICAL );
+  $this->{useasdefault} = Wx::CheckBox->new($window, -1, "Use this path as the default after the fit");
+  $this->{useforpc}     = Wx::CheckBox->new($window, -1, "Use this path for phase corrected plotting.");
+  $sizer -> Add($this->{useasdefault}, 0, wxGROW|wxALL, 1);
+  $sizer -> Add($this->{useforpc},     0, wxGROW|wxALL, 1);
   EVT_CHECKBOX($this, $this->{useasdefault}, sub{set_default_path(@_)});
   EVT_CHECKBOX($this, $this->{useforpc},     sub{set_pc_path(@_)});
+  $window->SetSizer($sizer);
+  #$sizer->SetSizeHints($window);
+  EVT_COLLAPSIBLEPANE_CHANGED($this, $cpane, sub{$this -> SetSizerAndFit($vbox);
+						 $this->{datapage} -> SetSizerAndFit($this->{datapage}->{mainbox});
+					       });
 
   $this->mouseover("include",      "Check this button to include this path in the fit, uncheck to exclude it.");
   $this->mouseover("plotafter",    "Check this button to have this path automatically transfered to the plotting list after a fit.");
@@ -125,11 +133,12 @@ sub new {
   $this->mouseover("geometry", "This box contains a succinct description of the geometry of this path.");
 
   ## -------- path parameters
-  $gbs = Wx::GridBagSizer->new( 3, 10 );
+  my $gbs = Wx::GridBagSizer->new( 2, 10 );
 
   my $i = 0;
 
-  foreach my $k (qw(label n s02 e0 delr sigma2 ei third fourth)) {
+  foreach my $k (qw(label n s02 e0 delr sigma2 ei third fourth dphase)) {
+    next if (($k eq 'dphase') and (not $this->{datapage}->{data}->co->default('artemis', 'offer_dphase')));
     my $label = Wx::HyperlinkCtrl -> new($this, -1, $labels{$k}, q{}, wxDefaultPosition, wxDefaultSize );
     $label->{which} = $k;
     $this->{"lab_$k"} = $label;
@@ -196,8 +205,7 @@ sub populate {
   $this->{geometry} -> WriteText($geometry);
   $this->{geometry} -> SetInsertionPoint(0);
 
-  $this->{include} -> SetValue(1);
-
+  $this->{include}   -> SetValue(1);
   $this->{pp_label}  -> SetValue($pathobject->sp->labelline);
   $this->{pp_n}      -> SetValue($pathobject->degen);
   $this->{pp_s02}    -> SetValue($pathobject->s02);
@@ -207,17 +215,24 @@ sub populate {
   $this->{pp_ei}     -> SetValue($pathobject->ei     || q{});
   $this->{pp_third}  -> SetValue($pathobject->third  || q{});
   $this->{pp_fourth} -> SetValue($pathobject->fourth || q{});
+  $this->{pp_dphase} -> SetValue($pathobject->dphase || q{}) if ($pathobject->co->default('artemis', 'offer_dphase'));
 
-  $this->{include}   -> SetValue($pathobject->include);
+  $this->{include}      -> SetValue($pathobject->include);
+  $this->{plotafter}    -> SetValue($pathobject->plot_after_fit);
+  $this->{useasdefault} -> SetValue($pathobject->default_path);
+  $this->{useforpc}     -> SetValue($pathobject->pc);
 };
 
 sub fetch_parameters {
   my ($this) = @_;
-  foreach my $k (qw(n s02 e0 delr sigma2 ei third fourth)) {
+  foreach my $k (qw(n s02 e0 delr sigma2 ei third fourth dphase)) {
+    next if (($k eq 'dphase') and (not $this->{path}->co->default('artemis', 'offer_dphase')));
     $this->{path}->$k($this->{"pp_$k"}->GetValue);
   };
   $this->{path}->include( $this->{include}->GetValue );
   $this->{path}->plot_after_fit($this->{plotafter}->GetValue);
+  $this->{path}->default_path($this->{useasdefault}->GetValue);
+  $this->{path}->pc($this->{useforpc}->GetValue);
   $this->{path}->mark($this->marked);
   ## default path after fit...
 };
@@ -266,7 +281,7 @@ sub DoLabelKeyPress {
   my ($st, $event, $page) = @_;
   my $param =  $st->{which};
   my $label = $labels{$param};
-  my $menu = Wx::Menu->new(q{});
+  my $menu  = Wx::Menu->new(q{});
   $menu->Append($CLEAR,    "Clear $label");
   if (($param ne 'label') and ($param ne 'n')) {
     $menu->AppendSeparator;
@@ -364,19 +379,35 @@ sub include_label {
   my $inc   = $self->{include}->IsChecked;
   $self->{path}->include($inc);
 
-  my $label = $self->{path}->label;
   my $name = $self->{path}->name;
 
   $self->Rename($name);
+  my $label = $self->{path}->label;
   ($label = sprintf("((( %s )))", $label)) if not $inc;
   $self->{datapage}->{pathlist}->SetPageText($which, $label);
   $self->{datapage}->{pathlist}->{LIST}->Check($which, $check_state);
 };
 sub set_default_path {
   my ($self, $event) = @_;
+  foreach my $fr (keys %Demeter::UI::Artemis::frames) {
+    my $datapage = $Demeter::UI::Artemis::frames{$fr};
+    next if ($fr !~ m{data});
+    foreach my $n (0 .. $datapage->{pathlist}->GetPageCount - 1) {
+      next if ($self eq $datapage->{pathlist}->GetPage($n));
+      $datapage->{pathlist}->GetPage($n)->{useasdefault}->SetValue(0);
+    };
+  };
 };
 sub set_pc_path {
   my ($self, $event) = @_;
+  foreach my $fr (keys %Demeter::UI::Artemis::frames) {
+    my $datapage = $Demeter::UI::Artemis::frames{$fr};
+    next if ($fr !~ m{data});
+    foreach my $n (0 .. $datapage->{pathlist}->GetPageCount - 1) {
+      next if ($self eq $datapage->{pathlist}->GetPage($n));
+      $datapage->{pathlist}->GetPage($n)->{useforpc}->SetValue(0);
+    };
+  };
 };
 
 sub Rename {

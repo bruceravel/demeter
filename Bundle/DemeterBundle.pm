@@ -36,8 +36,6 @@ MooseX::Aliases
 
 MooseX::AttributeHelpers
 
-MooseX::Clone
-
 MooseX::StrictConstructor
 
 MooseX::Singleton

@@ -133,7 +133,7 @@ sub do_plot {
   $data -> plot($space);
   $prj->po->r_pl($save[0]);
   $prj->po->q_pl($save[1]);
-  undef $data;
+  $data -> DESTROY;
   undef $busy;
 };
 

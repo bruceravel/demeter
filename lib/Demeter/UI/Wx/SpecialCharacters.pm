@@ -2,9 +2,9 @@ package Demeter::UI::Wx::SpecialCharacters;
 
 use strict;
 use base qw( Exporter );
-our @EXPORT_OK = qw($CHI $EPSILON $DELTA $SIGMA $SIGSQR $COPYRIGHT $LAQUO $RAQUO);
-our %EXPORT_TAGS = (all   => [qw($CHI $EPSILON $DELTA $SIGMA $SIGSQR $COPYRIGHT $LAQUO $RAQUO)],
-		    greek => [qw($CHI $EPSILON $DELTA $SIGMA $SIGSQR)],
+our @EXPORT_OK = qw($CHI $EPSILON $DELTA $SIGMA $SIGSQR $PHI $COPYRIGHT $LAQUO $RAQUO $MDASH);
+our %EXPORT_TAGS = (all   => [qw($CHI $EPSILON $DELTA $SIGMA $SIGSQR $PHI $COPYRIGHT $LAQUO $RAQUO $MDASH)],
+		    greek => [qw($CHI $EPSILON $DELTA $SIGMA $SIGSQR $PHI)],
 		   );
 
 ## -------- greek characters
@@ -13,11 +13,14 @@ our $EPSILON = 'ε';
 our $DELTA   = 'Δ';
 our $SIGMA   = 'σ';
 our $SIGSQR  = 'σ²';
+our $PHI     = 'φ';
+
 
 ## -------- other special characters
 our $COPYRIGHT = '©';
 our $LAQUO     = "«";
 our $RAQUO     = "»";
+our $MDASH     = "—";
 
 1;
 
@@ -66,6 +69,10 @@ lower case sigma
 =item C<$SIGSQR>
 
 lower case sigma followed by a proper subscripted 2
+
+=item C<$PHI>
+
+lower case phi
 
 =back
 

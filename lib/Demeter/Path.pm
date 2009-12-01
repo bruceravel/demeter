@@ -111,6 +111,8 @@ has 'include'         => (is=>'rw', isa=>  'Bool',  default => 1);
 has 'is_col'          => (is=>'rw', isa=>  'Bool',  default => 0);
 has 'is_ss'           => (is=>'rw', isa=>  'Bool',  default => 1);
 has 'plot_after_fit'  => (is=>'rw', isa=>  'Bool',  default => 0);
+has 'default_path'    => (is=>'rw', isa=>  'Bool',  default => 0);
+has 'pc'              => (is=>'rw', isa=>  'Bool',  default => 0);
 
 ## feff interpretation parameters
 has 'degen'           => (is=>'rw', isa=>  NonNeg,  default => 0);
@@ -150,6 +152,21 @@ sub BUILD {
 #  my ($self) = @_;
 #  $self->alldone;
 #};
+
+override clone => sub {
+  my ($self, @arguments) = @_;
+  my $new = $self->SUPER::clone();
+  $new->set(@arguments);
+
+  my $i = $new->mo->pathindex;
+  $new->Index($i);
+  $new->mo->pathindex(++$i);
+  $new->parent($self->parent);
+  $new->data($self->data);
+  $new->sp($self->sp);
+
+  return $new;
+};
 
 sub set_parent {
   my ($self, $feff) = @_;
@@ -672,6 +689,19 @@ When this is true, this Path will be included in the next fit.
 
 This is a flag for use by a user interface to indicate that after a
 fit is finished, this Path should be plotted.
+
+=item C<default_path> (boolean)
+
+This path will be set to the default path after the fit for the
+purpose of evaluating C<def>, C<after>, and other parameters.  This is
+only relevant if any C<def>, C<after> or other parameters depend
+explicitly on path-specific quantites such as C<reff> or the
+evaluation of the Debye or Eins functions.
+
+=item C<pc> (boolean)
+
+This is a flag indicating that the phase of this path should be used
+to perform phase corrected plots.
 
 =back
 
