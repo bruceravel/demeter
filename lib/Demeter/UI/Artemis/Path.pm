@@ -86,14 +86,21 @@ sub new {
   $this->{include}      = Wx::CheckBox->new($this, -1, "Include path");
   $this->{plotafter}    = Wx::CheckBox->new($this, -1, "Plot after fit");
   $this->{useasdefault} = Wx::CheckBox->new($this, -1, "Use this path as the default after the fit");
+  $this->{useforpc} = Wx::CheckBox->new($this, -1, "Use this path for phase corrected plotting.");
+  $this->{useasdefault}->Enable(0);
+  $this->{useforpc}->Enable(0);
   $gbs -> Add($this->{include},      Wx::GBPosition->new(0,0));
   $gbs -> Add($this->{plotafter},    Wx::GBPosition->new(0,1));
   $gbs -> Add($this->{useasdefault}, Wx::GBPosition->new(1,0), Wx::GBSpan->new(1,2));
-  EVT_CHECKBOX($this, $this->{include}, sub{include_label(@_)});
-  $this->{useasdefault}->Enable(0);
+  $gbs -> Add($this->{useforpc},     Wx::GBPosition->new(2,0), Wx::GBSpan->new(1,2));
+  EVT_CHECKBOX($this, $this->{include},      sub{include_label(@_)});
+  EVT_CHECKBOX($this, $this->{useasdefault}, sub{set_default_path(@_)});
+  EVT_CHECKBOX($this, $this->{useforpc},     sub{set_pc_path(@_)});
 
-  $this->mouseover("include", "Check this button to include this path in the fit, uncheck to exclude it.");
-  $this->mouseover("plotafter", "Check this button to have this path automatically transfered to the plotting list after a fit.");
+  $this->mouseover("include",      "Check this button to include this path in the fit, uncheck to exclude it.");
+  $this->mouseover("plotafter",    "Check this button to have this path automatically transfered to the plotting list after a fit.");
+  $this->mouseover("useasdefault", "Check this button to have this path serve as the default path for evaluation of def and after parameters for the log file.");
+  $this->mouseover("useasdefault", "Check this button to use this path for phase corrected plotting for this data set and its paths.");
 
 
   ## -------- geometry
@@ -364,6 +371,12 @@ sub include_label {
   ($label = sprintf("((( %s )))", $label)) if not $inc;
   $self->{datapage}->{pathlist}->SetPageText($which, $label);
   $self->{datapage}->{pathlist}->{LIST}->Check($which, $check_state);
+};
+sub set_default_path {
+  my ($self, $event) = @_;
+};
+sub set_pc_path {
+  my ($self, $event) = @_;
 };
 
 sub Rename {
