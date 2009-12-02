@@ -3,6 +3,11 @@
   #   {$P} returns the current Plot object
   #   {$D->group} returns the ifeffit group name
   #   {$D->parameter} returns the value of that parameter
+  #
+  #  central atom correction: , pc_edge="fe k", pc_caps=1
+  #  path phase correction: , pc_feff_path=1
+  $phacorr = q{};
+  q{};
 }
 @params = (fft_kmin => {$S->fft_kmin}, fft_kmax => {$S->fft_kmax}, fft_dk => {$S->fft_dk}, fft_kwindow => '{$S->fft_kwindow}');
 ${$S->group} -> set(@params);

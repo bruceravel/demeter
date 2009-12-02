@@ -1188,6 +1188,8 @@ override 'deserialize' => sub {
     my $yaml = ($args{file}) ? $zip->contents("$d.yaml")
       : $self->slurp(File::Spec->catfile($args{folder}, "$d.yaml"));
     my ($r_attributes, $r_x, $r_y) = YAML::Tiny::Load($yaml);
+    delete $r_attributes->{fit_pcpath};	   # correct an early
+    delete $r_attributes->{fit_do_pcpath}; # design mistake...
     my @array = %$r_attributes;
     my $this = Demeter::Data -> new(@array);
     $datae{$this->group} = $this;

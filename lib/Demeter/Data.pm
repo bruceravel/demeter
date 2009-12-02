@@ -292,6 +292,12 @@ has 'fft_kwindow' => (is => 'rw', isa =>  Window,  default => sub{ shift->co->de
 
 has 'fft_pc'      => (is => 'rw', isa => 'Any',   default => sub{ shift->co->default("fft", "pc")       ||  0},
 		      trigger => sub{ my($self) = @_; $self->update_fft(1)});
+has 'fft_pctype'  => (is => 'rw', isa => 'Str',   default => "central", # "path"
+		      trigger => sub{ my($self) = @_; $self->update_fft(1)});
+has 'fft_pcpath'  => (is => 'rw', isa => 'Any', # isa => Empty.'|Demeter::Path',
+		      default => q{},
+		      trigger => sub{ my($self, $new) = @_; $self->update_fft(1); $self->fft_pcpathgroup($new->group) if $new;});
+has 'fft_pcpathgroup' => (is => 'rw', isa => 'Str', default => q{},);
 
 has 'rmax_out'    => (is => 'rw', isa =>  PosNum,  default => sub{ shift->co->default("fft", "rmax_out") ||  10},
 		      trigger => sub{ my($self) = @_; $self->update_fft(1)});
@@ -321,8 +327,6 @@ has 'fit_karb_value'	  => (is => 'rw', isa =>  NonNeg,    default => sub{ shift-
 has 'fit_space'	          => (is => 'rw', isa =>  FitSpace,  default => sub{ shift->co->default("fit", "space")      || 'r'}, coerce => 1);
 has 'fit_epsilon'	  => (is => 'rw', isa => 'Num',      default => 0);
 has 'fit_cormin'	  => (is => 'rw', isa =>  PosNum,    default => sub{ shift->co->default("fit", "cormin")     ||  0.4});
-has 'fit_do_pcpath'	  => (is => 'rw', isa => 'Bool',     default => 0); # or Demeter::Path
-has 'fit_pcpath'	  => (is => 'rw', isa => 'Str',      default => 'None'); # or Demeter::Path
 has 'fit_include'	  => (is => 'rw', isa => 'Bool',     default => 1);
 has 'fit_data'	          => (is => 'rw', isa =>  Natural,   default => 0);
 has 'fit_plot_after_fit'  => (is => 'rw', isa => 'Bool',     default => 0);
@@ -462,6 +466,7 @@ sub _update {
       $self->put_data  if ($self->update_columns);
       $self->normalize if ($self->update_norm and ($self->datatype eq 'xmu'));
       $self->autobk    if ($self->update_bkg  and ($self->datatype eq 'xmu'));
+      $self->fft_pcpath->_update('fft') if $self->fft_pcpath;
       last WHICH;
     };
     ($which eq 'bft') and do {
@@ -675,12 +680,17 @@ override 'deserialize' => sub {
   my %args = %{ $stuff[0] };
   delete $args{plottable};
   delete $args{pathtype};
+  delete $args{fit_pcpath};	# correct an early
+  delete $args{fit_do_pcpath};	# design mistake...
   my @args = %args;
   $self -> set(@args);
   $self -> group($self->_get_group);
   $self -> update_data(0);
   $self -> update_columns(0);
   $self -> update_norm(1);
+
+  my $path = $self -> mo -> fetch('Path', $self->fft_pcpathpgroup);
+  $self -> fft_pcpath($path);
 
   my @x  = @{ $stuff[1] };
   my @y  = @{ $stuff[2] };

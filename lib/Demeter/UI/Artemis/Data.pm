@@ -113,6 +113,8 @@ Readonly my $ACTION_EXCLUDE     => Wx::NewId();
 Readonly my $ACTION_DISCARD     => Wx::NewId();
 Readonly my $ACTION_VPATH       => Wx::NewId();
 Readonly my $ACTION_TRANSFER    => Wx::NewId();
+Readonly my $ACTION_AFTER       => Wx::NewId();
+Readonly my $ACTION_NONEAFTER   => Wx::NewId();
 
 Readonly my $INCLUDE_ALL	=> Wx::NewId();
 Readonly my $EXCLUDE_ALL	=> Wx::NewId();
@@ -360,7 +362,7 @@ sub new {
   $extrabox  -> Add(Wx::StaticText->new($leftpane, -1, q{}), 1, wxALL, 0);
   $this->{pcplot}  = Wx::CheckBox->new($leftpane, -1, "Plot with phase correction", wxDefaultPosition, wxDefaultSize);
   $extrabox  -> Add($this->{pcplot}, 0, wxALL, 0);
-  $this->{pcplot}->Enable(0);
+  EVT_CHECKBOX($this, $this->{pcplot}, sub{$this->{data}->fft_pcpath->update_fft(1), $this->{data}->fft_pcpath->_update('bft') if $this->{data}->fft_pcpath});
 
   $this->{epsilon} -> SetValidator( Wx::Perl::TextValidator->new( qr([0-9.]) ) );
   $this->mouseover("epsilon", "A user specified value for the measurement uncertainty.  A value of 0 means to let Ifeffit determine the uncertainty.");
@@ -640,12 +642,15 @@ sub make_menubar {
    ## -------- actions menu
   $self->{actionsmenu} = Wx::Menu->new;
   $self->{actionsmenu}->Append($ACTION_VPATH,     "Make VPath from marked",  "Make a virtual path from all marked paths", wxITEM_NORMAL );
-  $self->{actionsmenu}->Append($ACTION_TRANSFER,  "Transfer marked",  "Transfer all marked paths to the plotting list",   wxITEM_NORMAL );
+  $self->{actionsmenu}->Append($ACTION_TRANSFER,  "Transfer marked",         "Transfer all marked paths to the plotting list",   wxITEM_NORMAL );
   $self->{actionsmenu}->AppendSeparator;
-  $self->{actionsmenu}->Append($ACTION_INCLUDE,   "Include marked",   "Include all marked paths in the fit",   wxITEM_NORMAL );
-  $self->{actionsmenu}->Append($ACTION_EXCLUDE,   "Exclude marked",   "Exclude all marked paths from the fit", wxITEM_NORMAL );
+  $self->{actionsmenu}->Append($ACTION_INCLUDE,   "Include marked",          "Include all marked paths in the fit",   wxITEM_NORMAL );
+  $self->{actionsmenu}->Append($ACTION_EXCLUDE,   "Exclude marked",          "Exclude all marked paths from the fit", wxITEM_NORMAL );
   $self->{actionsmenu}->AppendSeparator;
-  $self->{actionsmenu}->Append($ACTION_DISCARD,   "Discard marked",   "Discard all marked paths",              wxITEM_NORMAL );
+  $self->{actionsmenu}->Append($ACTION_DISCARD,   "Discard marked",          "Discard all marked paths",              wxITEM_NORMAL );
+  $self->{actionsmenu}->AppendSeparator;
+  $self->{actionsmenu}->Append($ACTION_AFTER,     "Plot marked after fit",   "Flag all marked paths for transfer to the plotting list after completion of a fit", wxITEM_NORMAL );
+  $self->{actionsmenu}->Append($ACTION_NONEAFTER, "Plot no paths after fit", "Unflag all paths for transfer to the plotting list after completion of a fit", wxITEM_NORMAL );
 
   $self->{menubar}->Append( $self->{datamenu},    "Da&ta" );
   $self->{menubar}->Append( $self->{pathsmenu},   "&Path" );
@@ -698,7 +703,7 @@ sub populate {
   EVT_CHECKBOX($self, $self->{k3},   sub{$data->fit_k3($self->{k3}->GetValue)});
   EVT_CHECKBOX($self, $self->{karb}, sub{$data->fit_karb($self->{karb}->GetValue)});
 
-  EVT_CHECKBOX($self, $self->{pcplot}, sub{$data->fit_do_pcpath($self->{pcplot}->GetValue)});
+  EVT_CHECKBOX($self, $self->{pcplot}, sub{$data->fft_pc($self->{pcplot}->GetValue)});
 
   EVT_CHOICE($self, $self->{kwindow}, sub{$data->fft_kwindow($self->{kwindow}->GetStringSelection);
 					  $data->bft_rwindow($self->{kwindow}->GetStringSelection);
@@ -734,7 +739,26 @@ sub fetch_parameters {
   $this->{data}->fit_include	    ($this->{include}    ->GetValue         );
   $this->{data}->fit_plot_after_fit ($this->{plot_after} ->GetValue         );
   $this->{data}->fit_do_bkg	    ($this->{fit_bkg}    ->GetValue         );
-  $this->{data}->fit_do_pcpath	    ($this->{pcplot}     ->GetValue         );
+  $this->{data}->fft_pc  	    ($this->{pcplot}     ->GetValue         );
+  if ($this->{data}->fft_pc) {
+    $this->{data}->fft_pctype("path");
+    $this->{data}->fft_pcpath(q{});
+    foreach my $n (0 .. $this->{pathlist}->GetPageCount-1) {
+      next if (not $this->{pathlist}->GetPage($n)->{useforpc}->GetValue);
+      $this->{data}->fft_pcpath($this->{pathlist}->GetPage($n)->{path});
+      last;
+    };
+    ## default to using the first path in the list...
+    if (not $this->{data}->fft_pcpath) {
+      foreach my $n (0 .. $this->{pathlist}->GetPageCount-1) {
+	next if (not $this->{pathlist}->GetPage($n)->{include}->GetValue);
+	$this->{data}->fft_pcpath($this->{pathlist}->GetPage($n)->{path});
+	$this->{pathlist}->GetPage($n)->{path}->pc(1);
+	$this->{pathlist}->GetPage($n)->{useforpc}->SetValue(1);
+	last;
+      };
+    };
+  };
 
   my $cv = $this->{cv}->GetValue;
   # things that are not caught by $RE{num}{real} or the validator
@@ -942,6 +966,14 @@ sub OnMenuClick {
     };
     ($id == $ACTION_DISCARD) and do {
       $datapage->discard('marked');
+      last SWITCH;
+    };
+    ($id == $ACTION_AFTER) and do {
+      $datapage->flag('marked');
+      last SWITCH;
+    };
+    ($id == $ACTION_NONEAFTER) and do {
+      $datapage->flag('none');
       last SWITCH;
     };
 
@@ -1609,6 +1641,28 @@ sub discard {
   };
   $self->{statusbar}->SetStatusText($text);
   $self->{pathlist}->InitialPage if (not $self->{pathlist}->{VIEW});
+};
+
+sub flag {
+  my ($self, $mode) = @_;
+  my $how = ($mode !~ m{$NUMBER})        ? $mode
+          : ($mode == $ACTION_AFTER)     ? 'marked'
+          : ($mode == $ACTION_NONEAFTER) ? 'none'
+          :                                $mode;
+  my $npaths = $self->{pathlist}->GetPageCount-1;
+  my $text = ($how eq 'marked') ? "Flagged marked paths for transfer to plotting list after a fit."
+           :                      "Unflagged all paths for transfer to plotting list.";
+  foreach my $i (0 .. $npaths) {
+    my $pathpage = $self->{pathlist}->{LIST}->GetClientData($i);
+    if ($how eq 'marked') {
+      if (($self->{pathlist}->IsChecked($i)) and ($pathpage->{include}->GetValue)) {
+	$pathpage->{plotafter}->SetValue(1);
+      };
+    } elsif ($how eq 'none') {
+      $pathpage->{plotafter}->SetValue(0);
+    };
+  };
+  $self->{statusbar}->SetStatusText($text);
 };
 
 # sub sum {

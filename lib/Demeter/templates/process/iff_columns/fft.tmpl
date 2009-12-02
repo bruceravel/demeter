@@ -2,6 +2,16 @@
   # Forward transform template
   #   {$D->group} returns the ifeffit group name
   #   {$D->parameter} returns the value of that parameter
+  #
+  #  central atom correction: , pc_edge="fe k", pc_caps=1
+  #  path phase correction: , pc_feff_path=1
+  $phacorr = q{};
+  if ($D->fft_pc) {
+    if (($D->fft_pctype eq 'path') and (ref($D->fft_pcpath) =~ m{Path})) {
+      $phacorr = ",\n     pc_feff_path=" . $D->fft_pcpath->Index;
+    };
+  };
+  q{};
 }
 
 fftf({$D->group}.chi, 
@@ -11,4 +21,4 @@ fftf({$D->group}.chi,
      dk       = {$D->fft_dk},
      kwindow  = {$D->fft_kwindow}, 
      kweight  = {$P->kweight},
-     rmax_out = {$D->rmax_out})
+     rmax_out = {$D->rmax_out}{$phacorr})

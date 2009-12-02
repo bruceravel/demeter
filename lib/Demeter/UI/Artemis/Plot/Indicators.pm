@@ -116,6 +116,7 @@ sub populate {
 
 sub plot {
   my ($self, $ds) = @_;
+  return $self if (not $ds);
   $ds->standard;
   $self->fetch;
   foreach my $j (1..5) {

@@ -20,7 +20,7 @@ package Demeter;
 require 5.8.0;
 #use diagnostics;
 use version;
-our $VERSION = version->new('0.3.0');
+our $VERSION = version->new('0.4.0');
 use vars qw($Gnuplot_exists);
 
 use Carp;
@@ -482,7 +482,7 @@ sub reset_path_indeces {
 ## -------- introspection methods
 sub all {
   my ($self) = @_;
-  my @keys   = map {$_->name} grep {$_->name !~ m{\A(?:data|plot|plottable|pathtype|is_mc|mode|parent|sp)\z}} $self->meta->get_all_attributes;
+  my @keys   = map {$_->name} grep {$_->name !~ m{\A(?:data|plot|plottable|pathtype|is_mc|mode|parent|sp|fft_pcpath)\z}} $self->meta->get_all_attributes;
   #my @keys   = grep {$_ !~ m{\A(?:data|plot|plottable|is_mc|mode|parent|sp)\z}} $self->get_params_of;
   #push @keys, qw(name group mark plottable);
   my @values = map {$self->$_} @keys;

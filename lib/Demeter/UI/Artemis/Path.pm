@@ -108,7 +108,7 @@ sub new {
   $this->mouseover("include",      "Check this button to include this path in the fit, uncheck to exclude it.");
   $this->mouseover("plotafter",    "Check this button to have this path automatically transfered to the plotting list after a fit.");
   $this->mouseover("useasdefault", "Check this button to have this path serve as the default path for evaluation of def and after parameters for the log file.");
-  $this->mouseover("useasdefault", "Check this button to use this path for phase corrected plotting for this data set and its paths.");
+  $this->mouseover("useforpc",     "Check this button to use this path for phase corrected plotting for this data set and its paths.");
 
 
   ## -------- geometry
