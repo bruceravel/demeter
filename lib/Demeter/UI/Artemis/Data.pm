@@ -362,10 +362,21 @@ sub new {
   $extrabox  -> Add(Wx::StaticText->new($leftpane, -1, q{}), 1, wxALL, 0);
   $this->{pcplot}  = Wx::CheckBox->new($leftpane, -1, "Plot with phase correction", wxDefaultPosition, wxDefaultSize);
   $extrabox  -> Add($this->{pcplot}, 0, wxALL, 0);
-  EVT_CHECKBOX($this, $this->{pcplot}, sub{$this->{data}->fft_pcpath->update_fft(1), $this->{data}->fft_pcpath->_update('bft') if $this->{data}->fft_pcpath});
+  EVT_CHECKBOX($this, $this->{pcplot}, sub{
+		 my ($self, $event) = @_;
+		 $self->{data}->fft_pc($self->{pcplot}->GetValue);
+		 if ($self->{data}->fft_pcpath) {
+		   $self->{data}->update_fft(1);
+		   foreach my $n (0 .. $self->{pathlist}->GetPageCount - 1) {
+		     $self->{pathlist}->GetPage($n)->{path}->update_fft(1);
+		   };
+		   $self->{data}->fft_pcpath->_update('fft');
+		 }
+	       });
 
   $this->{epsilon} -> SetValidator( Wx::Perl::TextValidator->new( qr([0-9.]) ) );
   $this->mouseover("epsilon", "A user specified value for the measurement uncertainty.  A value of 0 means to let Ifeffit determine the uncertainty.");
+  $this->mouseover("pcplot",  "Check here to make plots using phase corrected Fourier transforms.  Note that the fit is NOT made using phase corrected transforms.");
 
   $leftpane -> SetSizerAndFit($left);
 
@@ -703,7 +714,7 @@ sub populate {
   EVT_CHECKBOX($self, $self->{k3},   sub{$data->fit_k3($self->{k3}->GetValue)});
   EVT_CHECKBOX($self, $self->{karb}, sub{$data->fit_karb($self->{karb}->GetValue)});
 
-  EVT_CHECKBOX($self, $self->{pcplot}, sub{$data->fft_pc($self->{pcplot}->GetValue)});
+  #EVT_CHECKBOX($self, $self->{pcplot}, sub{$data->fft_pc($self->{pcplot}->GetValue)});
 
   EVT_CHOICE($self, $self->{kwindow}, sub{$data->fft_kwindow($self->{kwindow}->GetStringSelection);
 					  $data->bft_rwindow($self->{kwindow}->GetStringSelection);
@@ -736,10 +747,10 @@ sub fetch_parameters {
   $this->{data}->fit_karb_value	    ($this->{karb_value}->GetValue	    );
   $this->{data}->fit_epsilon	    ($this->{epsilon}   ->GetValue	    );
 
-  $this->{data}->fit_include	    ($this->{include}    ->GetValue         );
-  $this->{data}->fit_plot_after_fit ($this->{plot_after} ->GetValue         );
-  $this->{data}->fit_do_bkg	    ($this->{fit_bkg}    ->GetValue         );
-  $this->{data}->fft_pc  	    ($this->{pcplot}     ->GetValue         );
+  $this->{data}->fit_include	    ($this->{include}   ->GetValue          );
+  $this->{data}->fit_plot_after_fit ($this->{plot_after}->GetValue          );
+  $this->{data}->fit_do_bkg	    ($this->{fit_bkg}   ->GetValue          );
+  $this->{data}->fft_pc  	    ($this->{pcplot}    ->GetValue          );
   if ($this->{data}->fft_pc) {
     $this->{data}->fft_pctype("path");
     $this->{data}->fft_pcpath(q{});

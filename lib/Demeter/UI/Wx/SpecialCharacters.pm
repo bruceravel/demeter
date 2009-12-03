@@ -7,6 +7,8 @@ our %EXPORT_TAGS = (all   => [qw($CHI $EPSILON $DELTA $SIGMA $SIGSQR $PHI $COPYR
 		    greek => [qw($CHI $EPSILON $DELTA $SIGMA $SIGSQR $PHI)],
 		   );
 
+my $is_windows = (($^O eq 'MSWin32') or ($^O eq 'cygwin'));
+
 ## -------- greek characters
 our $CHI     = 'χ';
 our $EPSILON = 'ε';
