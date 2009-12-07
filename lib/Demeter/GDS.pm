@@ -50,6 +50,10 @@ sub BUILD {
   my ($self, @params) = @_;
   $self->mo->push_GDS($self);
 };
+sub DEMOLISH {
+  my ($self) = @_;
+  $self->dispose("erase ".$self->name);
+};
 
 ## return a list of valid GDS attributes
 sub parameter_list {
@@ -78,11 +82,11 @@ sub autoannotate {
     $string = sprintf("%s : %.5f +/- %.5f", $self->name, $self->bestfit, $self->error);
   } elsif ($self->gds =~ m{(?:def|after|penalty|restrain)}) {
     $string = sprintf("%s : %.5f (:= %s)", $self->name, $self->bestfit, $self->mathexp);
-  #} elsif ($self->gds eq 'lguess') {
-  #  $string = $self->expandsto;
+  } elsif ($self->gds eq 'lguess') {
+    $string = $self->expandsto;
+  };
   #
   # do nothing with skip, set, merge
-  };
 };
 
 sub report {

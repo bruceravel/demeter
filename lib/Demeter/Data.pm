@@ -354,6 +354,51 @@ sub BUILD {
 #  $self->alldone;
 #};
 
+override all => sub {
+  my ($self) = @_;
+  my %all = $self->SUPER::all;
+  delete $all{fft_pcpath};
+  delete $all{is_mc};
+  return %all;
+};
+
+
+override clone => sub {
+  my ($self, @arguments) = @_;
+  $self->_update('fft');
+  my $new = $self->SUPER::clone();
+
+  $new  -> standard;
+  $self -> dispose($self->template("process", "clone"));
+  $new  -> unset_standard;
+  $new  -> update_data(0);
+  $new  -> update_columns(0);
+  $new  -> update_norm($self->datatype eq 'xmu');
+  $new  -> update_fft(1);
+
+  my ($old_group, $new_group) = ($self->group, $new->group);
+  foreach my $att (qw(energy_string i0_string signal_string xmu_string)) {
+    my $newval = $self->$att;
+    $newval =~ s{$old_group}{$new_group};
+    $new->$att($newval);
+  };
+
+  ## data from Athena
+  if ((ref($self) =~ m{Data}) and $self->from_athena) {
+    $new -> data($new);
+    $new -> provenance("cloned");
+
+  ## mu(E) data from a file
+  } elsif (ref($self) =~ m{Data}) {
+    $new -> data($new);
+    $new -> provenance("cloned");
+
+  };
+
+  $new->set(@arguments);
+  return $new;
+};
+
 sub about {
   my ($self) = @_;
   $self->_update('bft');

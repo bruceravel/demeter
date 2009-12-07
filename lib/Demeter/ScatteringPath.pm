@@ -115,6 +115,13 @@ sub DEMOLISH {
   $self->alldone;
 };
 
+# override all => sub {
+#   my ($self) = @_;
+#   my %all = $self->SUPER::all;
+#   delete $all{feff};
+#   return %all;
+# };
+
 override 'alldone' => sub {
   my ($self) = @_;
   my $nnnn = File::Spec->catfile($self->folder, $self->file);

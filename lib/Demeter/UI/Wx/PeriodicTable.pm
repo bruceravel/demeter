@@ -145,10 +145,10 @@ my @elements = (['H',  0, 0,  'g'],
 	       );
 
 my %color_of = (
-		m => [ 82, 139, 139, 0],	# metal (Dark Slate Grey)
-		g => [205,   0,   0, 0],	# gas (Red)
-		s => [ 85,  26, 139, 0],	# semi-metal (Purple)
-		n => [  0, 139,   0, 0],	# non-metal (Green)
+		m => [210, 221, 239, 0],	# metal (powder blue)
+		g => [234, 186, 184, 0],	# gas (Red)
+		s => [238, 214, 240, 0],	# semi-metal (light purple)
+		n => [213, 236, 194, 0],	# non-metal (Green)
 	       );
 
 sub new {
@@ -161,15 +161,15 @@ sub new {
 
   foreach my $el (@elements) {
     my $this = Wx::GBPosition->new($el->[ROW], $el->[COL]);
-    my $button = Wx::Button->new( $self, -1, $el->[ELEMENT], [-1,-1], [35,$bheight], wxBU_EXACTFIT );
+    my $button = Wx::Button->new( $self, -1, $el->[ELEMENT], [-1,-1], [35,-1], wxBU_EXACTFIT );
     $self->{$el->[ELEMENT]} = $button;
     my $cell = $tsz -> Add($button, $this);
     EVT_BUTTON( $parent, $button, sub{&$command($el->[ELEMENT])} );
     my $text = sprintf("%s: %s, element #%d", $el->[ELEMENT], get_name($el->[ELEMENT]), get_Z($el->[ELEMENT]));
     EVT_ENTER_WINDOW($button, sub{$statusbar->PushStatusText($text) if $statusbar; $_[1]->Skip});
     EVT_LEAVE_WINDOW($button, sub{$statusbar->PopStatusText         if $statusbar; $_[1]->Skip});
-    $button->SetForegroundColour( Wx::Colour->new(@{ $color_of{$el->[PHASE]} }) );
     $button->SetFont( Wx::Font->new( $font_size, wxDEFAULT, wxNORMAL, wxBOLD, 0, "" ) );
+    $button->SetBackgroundColour( Wx::Colour->new(@{ $color_of{$el->[PHASE]} }) );
   };
   my $label = Wx::StaticText->new($self, -1, 'Lanthanides', [5,-1], [105,23], wxALIGN_RIGHT);
   $label   -> SetFont( Wx::Font->new( 10, wxDEFAULT, wxSLANT, wxNORMAL, 0, "" ) );

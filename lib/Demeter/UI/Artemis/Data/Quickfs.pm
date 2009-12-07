@@ -18,6 +18,8 @@ package  Demeter::UI::Artemis::Data::Quickfs;
 use strict;
 use warnings;
 
+use Chemistry::Elements qw(get_Z);
+
 use Wx qw( :everything );
 use base qw(Wx::Dialog);
 use Wx::Event qw(EVT_LISTBOX EVT_BUTTON EVT_RADIOBOX EVT_CHOICE);
@@ -42,10 +44,14 @@ sub new {
 
   my $abs = $parent->{data}->bkg_z;
   $abs = 'Fe' if ($abs eq 'He');
+  my $z = get_Z( $abs );
+  my $edge = ($z > 57) ? 'L3' : 'K';
+
   $this->{abs}      = Wx::TextCtrl -> new($this, -1, $abs,  wxDefaultPosition, [60, -1]);
   $this->{scat}     = Wx::TextCtrl -> new($this, -1, 'O',   wxDefaultPosition, [60, -1]);
   $this->{distance} = Wx::TextCtrl -> new($this, -1, '2.1', wxDefaultPosition, [60, -1]);
   $this->{edge}     = Wx::Choice   -> new($this, -1,      , wxDefaultPosition, wxDefaultSize, [qw(K L1 L2 L3)]);
+  $this->{edge}    -> SetStringSelection($edge);
 
   $this->{abspt}  = Wx::BitmapButton->new($this, -1, Demeter::UI::Artemis::icon("orbits"), wxDefaultPosition, wxDefaultSize);
   $this->{scatpt} = Wx::BitmapButton->new($this, -1, Demeter::UI::Artemis::icon("orbits"), wxDefaultPosition, wxDefaultSize);

@@ -654,7 +654,7 @@ sub _local_parameters {
       ++$created{$local};
     };
 
-    ## finally rewrite restraints
+    ## next rewrite restraints
     my $restraint_header_written = 0;
     foreach my $lres (@local_list) {
       next if ($lres->gds ne 'restrain');
@@ -675,6 +675,16 @@ sub _local_parameters {
       $string .= $new_gds -> write_gds;
       ++$created{$local};
     };
+  };
+
+  ## finally set expandsto attribute of each lguess
+  foreach my $l (@local_list) {
+    my $this = $l->name;
+    my @these = ();
+    foreach my $c (sort keys %created) {
+      push(@these, $c) if ($c =~ m{\A$this});
+    };
+    $l -> expandsto(join(", ", @these));
   };
   return $string;
 };

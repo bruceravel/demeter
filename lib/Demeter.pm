@@ -237,31 +237,6 @@ sub clone {
   ## the cloned object needs its own group name
   #$new->group($self->_get_group());
 
-  ## data from Athena
-  if ((ref($self) =~ m{Data}) and $self->from_athena) {
-    $new  -> standard;
-    $self -> dispose($self->template("process", "clone"));
-    $new  -> unset_standard;
-    $new  -> from_athena(1);
-    $new  -> update_data(0);
-    $new  -> update_columns(0);
-    $new  -> update_norm($self->datatype eq 'xmu');
-    $new  -> update_fft(1);
-    $new  -> data($new);
-    $new  -> provenance("cloned");
-
-  ## mu(E) data from a file
-  } elsif (ref($self) =~ m{Data}) {
-    $new -> update_data(1);
-    $new -> data($new);
-    $new -> provenance("cloned");
-
-  ## any other kind of object
-  } else {
-    1;
-
-  };
-
   if (ref($self) =~ m{Data}) {
     if ($new->tag eq $self->tag) {
       $new->tag( $new->cv || $new->group );
@@ -480,11 +455,13 @@ sub reset_path_indeces {
 };
 
 ## -------- introspection methods
+
+
+## pushed   Index parent sp    fft_pcpath is_mc
+## down into override methods in extended classes
 sub all {
   my ($self) = @_;
-  my @keys   = map {$_->name} grep {$_->name !~ m{\A(?:data|plot|plottable|pathtype|is_mc|mode|parent|sp|fft_pcpath)\z}} $self->meta->get_all_attributes;
-  #my @keys   = grep {$_ !~ m{\A(?:data|plot|plottable|is_mc|mode|parent|sp)\z}} $self->get_params_of;
-  #push @keys, qw(name group mark plottable);
+  my @keys   = map {$_->name} grep {$_->name !~ m{\A(?:data|plot|plottable|pathtype|mode)\z}} $self->meta->get_all_attributes;
   my @values = map {$self->$_} @keys;
   my %hash   = zip(@keys, @values);
   return %hash;

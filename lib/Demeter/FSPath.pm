@@ -138,11 +138,7 @@ override alldone => sub {
 
 override make_name => sub {
   my ($self) = @_;
-  #my $tag = $self->tag;
-  #my $name = $tag . " FS";
-  #$self->name($name); # if not $self->name;
-  my $elems = join('-', $self->absorber, $self->scatterer);
-  $self->name($elems);
+  $self->name(sprintf("%s(%s)-%s", $self->absorber, uc($self->edge), $self->scatterer));
 };
 
 override set_parent_method => sub {

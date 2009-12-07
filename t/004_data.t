@@ -100,7 +100,6 @@ my $data3 = Demeter::Data -> new(file=>'t/fe.060',
 				 denominator => '$3', # column 3 is It
 				 ln          => 1,    # these are transmission data
 				);
-my $data5 = $data3->clone;
 my $data4 = Demeter::Data -> new(file=>'t/fe.061',
 				 energy      => '$1', # column 1 is energy
 				 numerator   => '$2', # column 2 is I0
@@ -108,7 +107,12 @@ my $data4 = Demeter::Data -> new(file=>'t/fe.061',
 				 ln          => 1,    # these are transmission data
 				);
 
+
+my $data5 = $data3->clone;
+$data5->e0('ifeffit');
+
 $data3->e0('ifeffit'); ## how do I make this happen automatically??
+
 ok( ($data3->fft_edge eq 'k' and $data3->bkg_z eq 'Fe'),        'find_edge works: '.join(" ", $data3->fft_edge, $data3->bkg_z));
 ok( abs($data3->bkg_e0 - 7105.506) < $fuzz,                     'find e0: ifeffit (' . $data3->bkg_e0 . ')');
 $data3->e0('zero');
@@ -116,10 +120,12 @@ ok( abs($data3->bkg_e0 - 7105.292) < $fuzz,                     'find e0: zero c
 $data3->e0(7110);
 ok( abs($data3->bkg_e0 - 7110) < $fuzz,                         'find e0: number (' . $data3->bkg_e0 . ')');
 $data3->e0('fraction');
+
 ok( abs($data3->bkg_e0 - 7112.902) < $fuzz,                     'find e0: fraction (' . $data3->bkg_e0 . ' at ' . $data3->bkg_e0_fraction . ')');
 $data3->e0('atomic');
 ok( abs($data3->bkg_e0 - 7112) < $fuzz,                         'find e0: atomic (' . $data3->bkg_e0 . ')');
-$data5->e0;
+
+
 $data3->e0($data5);
 ok( abs($data3->bkg_e0 - 7105.506) < $fuzz,                     'find e0: other Data object (' . $data3->bkg_e0 . ')');
 

@@ -42,7 +42,6 @@ $data_150k -> set(file       => "cu150k.chi",
 		  name       => '150 K copper data',
 		 );
 
-
 print "--- make GDS objects for an isotropic expansion, correlated Debye model\n";
 my @gdsobjects =  (Demeter::GDS -> new(gds     => 'lguess',
 				       name    => 'alpha',
@@ -122,14 +121,15 @@ $fitobject -> fit;
 
 $data_010k -> plot_with('gnuplot');
 $data_010k->po->set(plot_data => 1,   plot_fit  => 1,
-                      plot_bkg  => 0,   plot_res  => 0,
-                      plot_win  => 0,   plot_run  => 0,
-                      kweight   => 2,
-                      r_pl      => 'r',
-                     );
+		    plot_bkg  => 0,   plot_res  => 0,
+		    plot_win  => 0,   plot_run  => 0,
+		    kweight   => 2,
+		    r_pl      => 'r',
+		   );
 $data_010k -> y_offset(12);
 $_->plot('rmr') foreach ($data_010k, $data_150k);
 $data_010k -> pause;
+
 exit;
 
 #$fitobject -> ff2chi($data_010k);

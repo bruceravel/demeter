@@ -153,18 +153,21 @@ sub BUILD {
 #  $self->alldone;
 #};
 
+override all => sub {
+  my ($self) = @_;
+  my %all = $self->SUPER::all;
+  delete $all{$_} foreach (qw(Index sp parent));
+  return %all;
+};
+
 override clone => sub {
   my ($self, @arguments) = @_;
   my $new = $self->SUPER::clone();
-  $new->set(@arguments);
-
-  my $i = $new->mo->pathindex;
-  $new->Index($i);
-  $new->mo->pathindex(++$i);
   $new->parent($self->parent);
   $new->data($self->data);
   $new->sp($self->sp);
 
+  $new->set(@arguments);
   return $new;
 };
 

@@ -2,11 +2,15 @@
   # clone data by copying ifeffit arrays
   #   {$D->group} returns the ifeffit group name
   #   {$D->parameter"} returns the value of that parameter
-  #   {$DS->group} is the "standard", which here is the newly clones group
+  #   {$DS->group} is the "standard", which here is the newly cloned group
   $xsuff = ($D->datatype eq 'chi') ? 'k'   : 'energy';
-  $ysuff = ($D->datatype(chi) ? 'chi' : 'xmu';
+  $ysuff = ($D->datatype eq 'chi') ? 'chi' : 'xmu';
+  $i0 = q{};
+  if (($xsuff eq 'energy') and ($D->i0_string)) {
+    $i0 = "\n    " . $DS->group . ".i0 = " . $D->group . ".i0";
+  };
   q{};
 }
-##| cloning {$D->group} as group {$D->group}
+##| cloning {$D->group} as group {$DS->group}
 set({$DS->group}.{$xsuff} = {$D->group}.{$xsuff},
-    {$DS->group}.{$ysuff} = {$D->group}.{$ysuff})
+    {$DS->group}.{$ysuff} = {$D->group}.{$ysuff}{$i0})

@@ -1826,7 +1826,7 @@ sub quickfs {
   $firstshell -> save_feff_yaml;
   $datapage->{pathlist}->DeletePage(0) if $datapage->{pathlist}->GetPage(0) =~ m{Panel};
   my $page = Demeter::UI::Artemis::Path->new($datapage->{pathlist}, $firstshell, $datapage);
-  $datapage->{pathlist}->AddPage($page, "$abs - $scat", 1, 0);
+  $datapage->{pathlist}->AddPage($page, "$abs($edge)-$scat", 1, 0);
   $page->{pp_n} -> SetValue(1);
   $page->{pp_label} -> SetValue(sprintf("%s-%s path at %s", $firstshell->absorber, $firstshell->scatterer, $firstshell->reff));
 
