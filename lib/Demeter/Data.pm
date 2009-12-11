@@ -342,17 +342,19 @@ sub BUILD {
   my ($self, @params) = @_;
   $self->data($self); # I do not know of a way to set the data attribute to this instance using "has"....
   $self->tag($self->group);
-  $self->mo->push_Data($self);
-  my $thiscv = $self->mo->datacount;
-  $self->cv($thiscv);
-  ++$thiscv;
-  $self->mo->datacount($thiscv);
+  if (ref($self) =~ m{Data\z}) {
+    $self->mo->push_Data($self);
+    my $thiscv = $self->mo->datacount;
+    $self->cv($thiscv);
+    ++$thiscv;
+    $self->mo->datacount($thiscv);
+  };
 };
 
-#sub DEMOLISH {
-#  my ($self) = @_;
-#  $self->alldone;
-#};
+sub DEMOLISH {
+  my ($self) = @_;
+  $self->alldone;
+};
 
 override all => sub {
   my ($self) = @_;
@@ -851,7 +853,7 @@ interface.  Like the C<group> attribute, this should be short, but it
 can be a bit more verbose.  It should be a single line, unlike the
 C<title> attibute.
 
-=tem C<cv> (number)
+=item C<cv> (number)
 
 The characteristic value is a number associated with the data object.
 The cv is used to generate guess parameteres from lguess parameters

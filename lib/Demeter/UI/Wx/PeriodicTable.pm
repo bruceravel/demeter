@@ -155,7 +155,7 @@ sub new {
   my ($class, $parent, $command, $statusbar) = @_;
   my $self = $class->SUPER::new($parent, -1, wxDefaultPosition, wxDefaultSize, wxMAXIMIZE_BOX );
 
-  my $font_size = 10;
+  my $font_size = 9;
   my $bheight = int(2.5*$font_size+3);
   my $tsz = Wx::GridBagSizer->new( 2, 2 );
 

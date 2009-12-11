@@ -295,7 +295,7 @@ sub _plotE_command {
     my $class = ref $self;
     croak("$class objects are not plottable");
   };
-  if ($self->datatype ne 'xmu') {
+  if (($self->datatype ne 'xmu') and ($self->datatype ne 'xanes')) {
     carp("$self cannot be plotted in energy\n\n");
     return;
   };

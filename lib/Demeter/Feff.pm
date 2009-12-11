@@ -701,7 +701,10 @@ sub _visit {
   my $sp     = Demeter::ScatteringPath->new(feff=>$feff, string=>$string);
   $sp   -> evaluate;
   ## prune branches that involve non-0 eta angles (if desired)
-  return 0 if ($feff->eta_suppress and $sp->etanonzero);
+  if ($feff->eta_suppress and $sp->etanonzero) {
+    $sp->DEMOLISH;
+    return 0;
+  };
   $heap -> add($sp);
   $$rhc += 1;
   return 1;
@@ -770,6 +773,8 @@ sub _collapse_heap {
     if ($new_path) {
       $elem->set(fuzzy=>$elem->halflength, degeneracies=>[$elem->string]);
       push(@list_of_paths, $elem);
+    } else {
+      $elem->DEMOLISH;
     };
   };
 

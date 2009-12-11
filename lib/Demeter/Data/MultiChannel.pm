@@ -48,7 +48,8 @@ sub make_data {
   };
 
   delete $args{$_} foreach (qw(ln energy numerator denominator));
-  my $this = Demeter::Data->new(%args, datatype=>'xmu', energy=>$energy_string, file=>$self->file);
+  ## what about chi(k) MC data?
+  my $this = Demeter::Data->new(energy=>$energy_string, file=>$self->file);
 
   ## resolve column tokens
   my $group = $self->group;
@@ -72,6 +73,7 @@ sub make_data {
   $this->provenance(sprintf("multichannel data file %s", $self->file));
   $this->initialize_e0;
 
+  $this -> set(%args);
   return $this;
 };
 

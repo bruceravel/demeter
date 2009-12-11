@@ -317,8 +317,8 @@ sub _record {
   $groupargs{datatype} = ($args{is_xmu})    ? 'xmu'
                        : ($args{is_chi})    ? 'chi'
                        : ($args{is_xmudat}) ? 'xmudat'
-                       : ($args{is_xanes})  ? 'xanes'
 		       :                      q{};
+  $groupargs{datatype} = 'xanes' if ($args{is_xanes});
   $groupargs{i0_scale}       = $i0_scale;
   $groupargs{is_merge}       = $is_merge;
   $groupargs{update_data}    = 0;

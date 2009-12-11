@@ -365,10 +365,11 @@ sub on_close {
   rmtree($self->{project_folder});
   unlink $frames{main}->{autosave_file};
   $demeter->mo->destroy_all;
-  foreach my $f (values(%frames)) {
-    next if ($f !~ m{Demeter});
+  foreach my $f (keys(%frames)) {
     #print '>', $f, '<', $/;
-    $f->Destroy;
+    #next if ($f !~ m{Demeter});
+    next if ($f eq 'main');
+    $frames{$f}->Destroy;
   };
   $frames{main}->Destroy;
   $event->Skip(1);

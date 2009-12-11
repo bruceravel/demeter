@@ -58,7 +58,7 @@ sub _write_record {
   my ($string, $arraystring) = (q{}, q{});
 
   my @array = ();
-  if ($self->datatype eq "xmu") {
+  if (($self->datatype eq "xmu") or ($self->datatype eq "xanes")) {
     #$self -> _update("background");
     @array        = $self -> get_array("energy");
     $arraystring .= Data::Dumper->Dump([\@array], [qw/*x/]) . "\n";
@@ -98,7 +98,7 @@ sub _write_record {
 
   $hash{is_xmu}    = 1 if ($hash{datatype} eq 'xmu');
   $hash{is_chi}    = 1 if ($hash{datatype} eq 'chi');
-  $hash{is_xanes}  = 1 if ($hash{datatype} eq 'xanes');
+  $hash{is_xmu}    = 1, $hash{is_xanes}  = 1 if ($hash{datatype} eq 'xanes');
   $hash{is_xmudat} = 1 if ($hash{datatype} eq 'xmudat');
   delete $hash{datatype};
 

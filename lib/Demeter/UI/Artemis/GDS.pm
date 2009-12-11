@@ -447,7 +447,8 @@ sub discard {
   $grid -> SetCellValue($row, 1, q{});
   $grid -> SetCellValue($row, 2, q{});
   $grid -> SetCellValue($row, 3, q{});
-  $grid->{$name}->DEMOLISH if exists $grid->{$name};
+  $grid->{$name}->DEMOLISH if ((exists $grid->{$name}) and ($grid->{$name} =~ m{GDS}));
+  #undef $grid->{$name};
 };
 
 sub OnSetType {

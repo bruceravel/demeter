@@ -52,6 +52,7 @@ sub BUILD {
 };
 sub DEMOLISH {
   my ($self) = @_;
+  $self->alldone;
   $self->dispose("erase ".$self->name);
 };
 

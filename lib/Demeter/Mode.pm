@@ -273,8 +273,9 @@ sub fetch {
 sub remove {
   my ($self, $object) = @_;
   my $type = (split(/::/, ref $object))[-1];
+  my $orig = $type;
   if ($type eq 'Gnuplot') {
-    #$self->po->end_plot;
+    $object->end_plot;
     $type = 'Plot';
   } elsif ($type eq 'Demeter') {
     return;
@@ -291,8 +292,8 @@ sub remove {
   };
   return if ($which == -1);
   my $method = "splice_".$type;
-  #local $| = 1;
-  #print join("|", $#{$self->$type}, $method, $type, $which), $/;
+  local $| = 1;
+  #print join("|", $#{$self->$type}, $method, $type, $orig, $which), $/;
   $self->$method($which, 1);
 };
 
@@ -328,6 +329,7 @@ sub destroy_all {
 sub report {
   my ($self, $which) = @_;
   my $text = q{};
+  $which ||= 'all';
   foreach my $this (sort @{$self->types}) {
     my $n = 19 - length($this);
     $text .= sprintf("\n%s %s %d\n", $this, '.' x $n, $#{$self->$this}+1);

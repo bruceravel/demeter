@@ -36,6 +36,8 @@ my $result = GetOptions (
 
 my ($file, @groups) = @ARGV;
 usage() if not $file;
+die "$file does not exist\n" if (not -e $file);
+die "$file cannot be read\n" if (not -r $file);
 
 my $prj = Demeter::Data::Prj->new();
 $prj -> set(file=>$file);
