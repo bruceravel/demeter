@@ -17,27 +17,29 @@
 
 use Cwd;
 use File::Basename;
-use Getopt::Long;
+use Getopt::Long qw(GetOptionsFromString);
 use Term::ReadLine;
 my $term   = new Term::ReadLine 'demeter';
 my $prompt = "Press <Enter> to finish ";
 
 use Demeter;
 
-my ($plot, $inc, $params, $gnuplot, $xanes, $kw) = (q{}, 0.2, q{}, 0, 0, 2);
-my $result = GetOptions (
-			 "plot|p=s"     => \$plot,
-			 "stack=s"      => \$inc,
-			 "params=s"     => \$params,
-			 "g"            => \$gnuplot,
-			 "xanes"        => \$xanes,
-			 "kw|kweight=i" => \$kw,
-			);
+my ($plot, $inc, $params, $gnuplot, $xanes, $edge, $kw) = (q{}, 0.2, q{}, 0, 0, 0, 2);
+my %hash = ("plot|p=s"     => \$plot,
+	    "stack=s"      => \$inc,
+	    "params=s"     => \$params,
+	    "g"            => \$gnuplot,
+	    "xanes"        => \$xanes,
+	    "edge"         => \$edge,
+	    "kw|kweight=i" => \$kw,
+	   );
+my ($env, $args) = GetOptionsFromString($ENV{LSPRJ}, %hash) if (exists $ENV{LSPRJ});
+my $result       = GetOptions(%hash);
 
 my ($file, @groups) = @ARGV;
 usage() if not $file;
-die "$file does not exist\n" if (not -e $file);
-die "$file cannot be read\n" if (not -r $file);
+die "lsprj: $file does not exist\n" if (not -e $file);
+die "lsprj: $file cannot be read\n" if (not -r $file);
 
 my $prj = Demeter::Data::Prj->new();
 $prj -> set(file=>$file);
@@ -58,6 +60,7 @@ if (lc($plot) =~ m{[endkrq]}) {
   $data[0] -> po -> kweight($kw) if (lc($plot) =~ m{[krq]});
   $data[0] -> po -> r_pl('r')    if (lc($plot) eq 'rr');
   $data[0] -> po -> set(emin => -50, emax =>120) if $xanes;
+  $data[0] -> po -> set(emin => -20, emax =>60)  if $edge;
   my $p = $plot;
   ($p = 'e') if (lc($plot) =~ m{[nd]});
   ($p = 'r') if (lc($plot) eq 'rr');
@@ -81,6 +84,7 @@ sub usage {
    --stack=val          specify stacking offset for plots
    --params=param_list  comma separated list of parameters
    --xanes              restrict energy plots to [-50:120]
+   --edge               restrict energy plots to [-20:60]
    --kw=i, --kweight=i  use a kweighting of \"i\"
 
  Optionally, you can list groups numbers to plot a subset of the

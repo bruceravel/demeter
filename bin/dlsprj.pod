@@ -81,6 +81,11 @@ Override the default k-weight (which is 2).
 When plotting mu(E) or normalized mu(E) this flag restricts the plot
 to 50 volts below and 120 volts above the edge.
 
+=item C<--edge>
+
+When plotting mu(E) or normalized mu(E) this flag restricts the plot
+to 20 volts below and 60 volts above the edge.
+
 =item C<--params>
 
 A comma separated list of data processing parameters to include in the
@@ -103,6 +108,21 @@ forward Fourier transform kmin value:
 Use the gnuplot plotting backend.  The default is to use pgplot.
 
 =back
+
+=head1 ENVIRONMENT VARIABLE
+
+Command line switches can be specified via an environment variable
+called C<LSPRJ>.  The contents of that variable will be parsed before
+the specified command line variables.  That is, the flags specified on
+the command line over-ride the contents of the C<LSPRJ> environment
+variable.
+
+   export LSPRJ="--plot=e --edge -g"
+   lsprj my.prj 7,12,17
+
+is equivalent to
+
+   lsprj my.prj --plot=e --edge -g 7,12,17
 
 =head1 DEPENDENCIES
 
