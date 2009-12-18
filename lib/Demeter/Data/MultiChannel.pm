@@ -68,8 +68,9 @@ sub make_data {
   $this->dispose($command);
   $this->i0_scale(Ifeffit::get_scalar('__i0_scale'));
   $this->signal_scale(Ifeffit::get_scalar('__signal_scale'));
-  $this->update_columns(0);
   $this->update_data(0);
+  $this->update_columns(0);
+  $this->update_norm(1);
   $this->provenance(sprintf("multichannel data file %s", $self->file));
   $this->initialize_e0;
 

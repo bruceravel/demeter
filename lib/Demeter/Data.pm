@@ -505,30 +505,30 @@ sub _update {
     ($which eq 'background') and do {
       $self->read_data if ($self->update_data);
       $self->put_data  if ($self->update_columns);
-      $self->normalize if ($self->update_norm and ($self->datatype eq 'xmu'));
+      $self->normalize if ($self->update_norm and ($self->datatype =~ m{xmu|xanes}));
       last WHICH;
     };
     ($which eq 'fft') and do {
       $self->read_data if ($self->update_data);
       $self->put_data  if ($self->update_columns);
-      $self->normalize if ($self->update_norm and ($self->datatype eq 'xmu'));
-      $self->autobk    if ($self->update_bkg  and ($self->datatype eq 'xmu'));
+      $self->normalize if ($self->update_norm and ($self->datatype =~ m{xmu|xanes}));
+      $self->autobk    if ($self->update_bkg  and ($self->datatype =~ m{xmu|xanes}));
       $self->fft_pcpath->_update('fft') if $self->fft_pcpath;
       last WHICH;
     };
     ($which eq 'bft') and do {
       $self->read_data if ($self->update_data);
       $self->put_data  if ($self->update_columns);
-      $self->normalize if ($self->update_norm and ($self->datatype eq 'xmu'));
-      $self->autobk    if ($self->update_bkg  and ($self->datatype eq 'xmu'));
+      $self->normalize if ($self->update_norm and ($self->datatype =~ m{xmu|xanes}));
+      $self->autobk    if ($self->update_bkg  and ($self->datatype =~ m{xmu|xanes}));
       $self->fft       if ($self->update_fft);
       last WHICH;
     };
     ($which eq 'all') and do {
       $self->read_data if ($self->update_data);
       $self->put_data  if ($self->update_columns);
-      $self->normalize if ($self->update_norm and ($self->datatype eq 'xmu'));
-      $self->autobk    if ($self->update_bkg  and ($self->datatype eq 'xmu'));
+      $self->normalize if ($self->update_norm and ($self->datatype =~ m{xmu|xanes}));
+      $self->autobk    if ($self->update_bkg  and ($self->datatype =~ m{xmu|xanes}));
       $self->fft       if ($self->update_fft);
       $self->bft       if ($self->update_bft);
       last WHICH;

@@ -46,6 +46,7 @@ has 'entries' => (
 				'clear' => 'clear_entries',
 			       }
 		 );
+has 'n'       => (is => 'rw', isa => 'Int',  default => 0);
 
 sub BUILD {
   my ($self, @params) = @_;
@@ -68,6 +69,7 @@ sub Read {
   my @entries = ();
   my $athena_fh = gzopen($file, "rb") or die "could not open $file as an Athena project\n";
   my $nline = 0;
+  my $count = 0;
   my $line = q{};
   my $cpt = new Safe;
   while ($athena_fh->gzreadline($line) > 0) {
@@ -78,7 +80,9 @@ sub Read {
     $ {$cpt->varglob('old_group')} = $cpt->reval( $line );
     my $og = $ {$cpt->varglob('old_group')};
     $self -> add_entry([$nline, $og]);
+    ++$count;
   };
+  $self->n($count);
   $athena_fh->gzclose();
 };
 
@@ -176,6 +180,7 @@ sub record {
   my ($self, @which) = @_;
   my @groups = ();
   foreach my $g (@which) {
+    next if ($g > $self->n);
     my $gg = $g-1;
     my $entries_ref = $self -> entries;
     my @this = @{ $entries_ref->[$gg] };
@@ -230,7 +235,7 @@ sub _record {
 				 peak refsame project_marked not_data
 				 bkg_switch bkg_switch2
 				 is_xmu is_chi is_xanes is_xmudat
-				 bkg_stan_lab
+				 bkg_stan_lab bkg_flatten_was
 			      );
   SWITCH: {
       ($k =~ m{\A(?:lcf|peak|lr)}) and do {
@@ -323,6 +328,8 @@ sub _record {
   $groupargs{is_merge}       = $is_merge;
   $groupargs{update_data}    = 0;
   $groupargs{update_columns} = 0;
+  $groupargs{update_norm}    = 1 if (not $args{is_chi});
+  $groupargs{update_fft}     = 1 if ($args{is_chi});
   $data -> set(%groupargs);
   my $command = $data->template("process", "deriv");
   $data->dispose($command);
@@ -435,6 +442,10 @@ C<records> is an alias for C<record>, as in
 
 All imported records will have attributes set to values imported from
 the project file.
+
+Note that is you pass this method an argument whose value is larger
+than the number of records in the associated project file, it will
+silently skip that argument.
 
 =item C<list>
 

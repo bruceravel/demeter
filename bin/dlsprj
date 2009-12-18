@@ -18,13 +18,11 @@
 use Cwd;
 use File::Basename;
 use Getopt::Long qw(GetOptionsFromString);
-use Term::ReadLine;
-my $term   = new Term::ReadLine 'demeter';
-my $prompt = "Press <Enter> to finish ";
 
-use Demeter;
+use Demeter qw(:ui=screen);
 
 my ($plot, $inc, $params, $gnuplot, $xanes, $edge, $kw) = (q{}, 0.2, q{}, 0, 0, 0, 2);
+my ($emin, $emax) = (0,0);
 my %hash = ("plot|p=s"     => \$plot,
 	    "stack=s"      => \$inc,
 	    "params=s"     => \$params,
@@ -32,6 +30,8 @@ my %hash = ("plot|p=s"     => \$plot,
 	    "xanes"        => \$xanes,
 	    "edge"         => \$edge,
 	    "kw|kweight=i" => \$kw,
+	    "emin=i"       => \$emin,
+	    "emax=i"       => \$emax,
 	   );
 my ($env, $args) = GetOptionsFromString($ENV{LSPRJ}, %hash) if (exists $ENV{LSPRJ});
 my $result       = GetOptions(%hash);
@@ -42,6 +42,7 @@ die "lsprj: $file does not exist\n" if (not -e $file);
 die "lsprj: $file cannot be read\n" if (not -r $file);
 
 my $prj = Demeter::Data::Prj->new();
+my ($en, $ex) = ($prj->co->default('plot', 'emin'), $prj->co->default('plot', 'emax'));
 $prj -> set(file=>$file);
 $prj -> plot_with('gnuplot') if $gnuplot;
 #$prj -> set_mode(screen => 1);
@@ -52,40 +53,46 @@ print '===> ', Cwd::abs_path($file), $/ x 2,
 my $stack = 0;
 if (lc($plot) =~ m{[endkrq]}) {
   my @data = (@groups) ? $prj->records(@groups) : $prj -> slurp;
+  exit if ($#data == -1);
   $data[0] -> po -> title(basename($file, '.prj'));
   $data[0] -> po -> e_markers(0);
-  $data[0] -> po -> e_norm(0)    if (lc($plot) eq 'e');
+  $data[0] -> po -> e_norm(0)    if (lc($plot) =~ m{\A[ex]\z});
   $data[0] -> po -> e_norm(1)    if (lc($plot) eq 'n');
   $data[0] -> po -> e_der(1)     if (lc($plot) eq 'd');
   $data[0] -> po -> kweight($kw) if (lc($plot) =~ m{[krq]});
   $data[0] -> po -> r_pl('r')    if (lc($plot) eq 'rr');
-  $data[0] -> po -> set(emin => -50, emax =>120) if $xanes;
-  $data[0] -> po -> set(emin => -20, emax =>60)  if $edge;
+  ($en, $ex) = (-50, 120) if $xanes;
+  ($en, $ex) = (-20, 60)  if $edge;
+
+  $data[0] -> po -> set(emin => $emin||$en, emax =>$emax||$ex);
   my $p = $plot;
-  ($p = 'e') if (lc($plot) =~ m{[nd]});
+  ($p = 'e') if (lc($plot) =~ m{[xnd]});
   ($p = 'r') if (lc($plot) eq 'rr');
   foreach my $d (@data) {
-    $d -> set('y_offset' => $stack);
+    my $yoff = $d->y_offset;
+    $d -> set('y_offset' => $yoff + $stack);
     $d -> plot($p);
     ($stack -= $inc) if (lc($plot) =~ m{[nkrq]});
   };
 
-  $_ = $term->readline($prompt);
+  $data[0] -> prompt("Press <Enter> to finish ");
+  $data[0] -> pause;
   $data[0] -> po -> end_plot;
 };
 
 sub usage {
   print "
- usage : lsprj <projectfile> [options] (group numbers)
+ usage : lsprj [options]  <projectfile> (group numbers)
 
  List the groups from an Athena project file.
 
-   --plot=X, -p=X       plot all data (X = e|n|d|k|r|q)
+   --plot=X, -p=X       plot data (X = e|n|d|k|r|q)
    --stack=val          specify stacking offset for plots
    --params=param_list  comma separated list of parameters
    --xanes              restrict energy plots to [-50:120]
    --edge               restrict energy plots to [-20:60]
-   --kw=i, --kweight=i  use a kweighting of \"i\"
+   --emin, --emax       explicitly set energy plot range
+   --kw=i, --kweight=i  use a k-weighting of \"i\"
 
  Optionally, you can list groups numbers to plot a subset of the
  contents of the project file.

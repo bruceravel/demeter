@@ -17,7 +17,9 @@ Athena project file.  This, then, is a quick way of peering inside a
 project file without actually opening it.
 
 The data from the project file can also be plotted by supplying the
-optinal C<--plot> command line switch.
+optinal C<--plot> command line switch.  This is a quick-and-dirty
+plotting tool intended for taking a peek inside a project file rather
+than providing fine control over the details of the plot.
 
 A short usage message will be printed to the screen if you leave off
 the filename at the command line.
@@ -86,6 +88,12 @@ to 50 volts below and 120 volts above the edge.
 When plotting mu(E) or normalized mu(E) this flag restricts the plot
 to 20 volts below and 60 volts above the edge.
 
+=item C<--emin> and C<--emax>
+
+To fine tune the plotting ranges in energy beyond the setting
+associated with C<--xanes> or C<--edge>, you can use these two
+switches, which take energy vlues relative to the edge.
+
 =item C<--params>
 
 A comma separated list of data processing parameters to include in the
@@ -115,12 +123,12 @@ Command line switches can be specified via an environment variable
 called C<LSPRJ>.  The contents of that variable will be parsed before
 the specified command line variables.  That is, the flags specified on
 the command line over-ride the contents of the C<LSPRJ> environment
-variable.
+variable.  For example:
 
    export LSPRJ="--plot=e --edge -g"
    lsprj my.prj 7,12,17
 
-is equivalent to
+This does the same as
 
    lsprj my.prj --plot=e --edge -g 7,12,17
 
