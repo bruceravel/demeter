@@ -1,6 +1,7 @@
 -*- org -*-
 
-Demeter to do list [2009-12-24 Thu]
+#+TITLE: Demeter to do list
+[2009-12-24 Thu]
 
 * Artemis
 
@@ -9,20 +10,29 @@ Demeter to do list [2009-12-24 Thu]
  - [ ] up
  - [ ] down
 
+
 ** Atoms/Feff
 *** TODO Rename Atoms/Feff calculation
 *** TODO Import external Feff calculation
 *** TODO Balance interstitial energies
 
+
+
 ** Projects
+
 *** TODO Import feffit.inp
-Need to import external feff calc. gracefully in order to do this
+Need to [[Import%20external%20Feff%20calculation][import external]] feff calc. gracefully in order to do this
+
 *** TODO Better *sensitivity* to when a project needs saving
+
+
 
 ** Plotting
 *** TODO autoplot kq after fit does not seem to be working
 *** TODO Use stack data sets offset
 *** TODO reorder plot list
+
+
 
 ** Data
 *** TODO Import chi(k) ascii data directly
@@ -30,6 +40,8 @@ Need to import external feff calc. gracefully in order to do this
 *** TODO Make sure everything works for MDS fitting
 
 
+
+------
 * Demeter
 
 ** [0/7] Special file types
@@ -67,8 +79,14 @@ This might be fixed after recent work on cloning
 
 ** TODO Demeter command backend needs polishing
 
+
+
+
+
+
+------
 * Windows
 ** TODO non-ascii symbols
-** TODO [[file:lib/Demeter/UI/Wx/CheckListBook.pm][CheckListBook]]
+** TODO Fix [[file:lib/Demeter/UI/Wx/CheckListBook.pm][CheckListBook]]
 ** test, test, test ....
 
