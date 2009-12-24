@@ -1,0 +1,74 @@
+-*- org -*-
+
+Demeter to do list [2009-12-24 Thu]
+
+* Artemis
+
+** TODO Cut and paste is wonky in GDS grid
+** TODO Reorganize path list, up, down
+ - [ ] up
+ - [ ] down
+
+** Atoms/Feff
+*** TODO Rename Atoms/Feff calculation
+*** TODO Import external Feff calculation
+*** TODO Balance interstitial energies
+
+** Projects
+*** TODO Import feffit.inp
+Need to import external feff calc. gracefully in order to do this
+*** TODO Better *sensitivity* to when a project needs saving
+
+** Plotting
+*** TODO autoplot kq after fit does not seem to be working
+*** TODO Use stack data sets offset
+*** TODO reorder plot list
+
+** Data
+*** TODO Import chi(k) ascii data directly
+*** TODO Import mutiple data sets from an Athena project file
+*** TODO Make sure everything works for MDS fitting
+
+
+* Demeter
+
+** [0/7] Special file types
+ - [ ] X23A2MED
+ - [ ] X15B
+ - [ ] X10C
+ - [ ] HXMA
+ - [ ] SSRL binary and micro
+ - [ ] CMC, 9BM
+ - [ ] Photon Factory BL12C
+
+
+** TODO Structural Units
+Extension of VPath.  Store GDS, feff, and path objects in a zip file.
+On import, mark GDS parameters as merge if in conflict
+
+** TODO MSPaths
+Much like SSPath, make an arbitrary n-legged path
+
+** TODO Nearly collinear paths
+Define a three body configuration, generate its 4-legged path and a
+sequence of three-legged paths along with a mixing parameter.
+
+It will take a single set of path parameters that are pushed onto the
+generated Path objects, except for the amplitude, which will be
+computed from the mixing parameter.
+
+This is a single object for the user to interact with which expands
+into 2 or 3 3-legged paths and a single 4-legged path
+
+** TODO What's up with cloning Atoms object? See [[file:examples/recipes/MixedShell/abc.pl][MixedShell recipe]]
+This might be fixed after recent work on cloning
+
+** TODO Current plot to column data file
+
+** TODO Demeter command backend needs polishing
+
+* Windows
+** TODO non-ascii symbols
+** TODO [[file:lib/Demeter/UI/Wx/CheckListBook.pm][CheckListBook]]
+** test, test, test ....
+
