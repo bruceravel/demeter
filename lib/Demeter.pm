@@ -178,6 +178,25 @@ sub import {
     ##print "Demeter/$m.pm\n";
     require "Demeter/$m.pm";
   };
+
+  $class -> register_plugins;
+};
+
+sub register_plugins {
+  my ($class) = @_;
+  my $here = dirname($INC{"Demeter.pm"});
+  my @folders = (File::Spec->catfile($here, 'Demeter', 'Plugins', 'File'));
+  foreach my $f (@folders) {
+    opendir(my $FL, $f);
+    foreach my $pm (readdir $FL) {
+      next if ($pm !~ m{\.pm\z});
+      require File::Spec->catfile($f, $pm);
+      my $this = join('::', 'Demeter', 'Plugins', 'File', $pm);
+      $mode->push_Plugins();
+    };
+    closedir $FL;
+  };
+
 };
 
 

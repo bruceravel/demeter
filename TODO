@@ -72,7 +72,8 @@ computed from the mixing parameter.
 This is a single object for the user to interact with which expands
 into 2 or 3 3-legged paths and a single 4-legged path
 
-** TODO What's up with cloning Atoms object? See [[file:examples/recipes/MixedShell/abc.pl][MixedShell recipe]]
+** TODO What's up with cloning Atoms object?
+See [[file:examples/recipes/MixedShell/abc.pl][MixedShell recipe]]
 This might be fixed after recent work on cloning
 
 ** TODO Current plot to column data file

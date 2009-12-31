@@ -232,6 +232,19 @@ has 'types' => (is => 'ro', isa => 'ArrayRef',
 		default => sub{[qw(Atoms Data Feff External Fit GDS Path Plot Indicator ScatteringPath
 				   VPath SSPath FSPath StructuralUnit Prj MultiChannel)]},);
 
+has 'Plugins' => (
+		metaclass => 'Collection::Array',
+		is        => 'rw',
+		isa       => 'ArrayRef',
+		default   => sub { [] },
+		provides  => {
+			      'push'    => 'push_Plugins',
+			      'clear'   => 'clear_Plugins',
+			      'splice'  => 'splice_Plugins',
+			     }
+	       );
+
+
 ## -------- The Professor and Mary Anne
 has 'iwd' => (is => 'rw', isa => 'Str', default => q{});
 has 'cwd' => (is => 'rw', isa => 'Str', default => q{});
