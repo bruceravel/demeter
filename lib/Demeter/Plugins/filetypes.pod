@@ -8,13 +8,13 @@ This documentation refers to Demeter version 0.4.
 
 =head1 SYNOPSIS
 
-      my $filetype  = Demeter::Plugins::X15B->new(file=>$file);
-      if ($filetype->is) {
-        my $converted = $filetype->fix;
-	my $data = Demeter::Data->new(file => $converted,
-	   	   	              $filetype -> suggest("flourescence")
-                                     );
-      };
+   my $filetype  = Demeter::Plugins::X15B->new(file=>$file);
+   if ($filetype->is) {
+     my $converted = $filetype->fix;
+     my $data = Demeter::Data->new(file => $converted,
+    	                           $filetype -> suggest("fluorescence")
+                                  );
+   };
 
 =head1 DESCRIPTION
 
@@ -22,7 +22,7 @@ A file type plugin is used to address the common situation of raw XAS
 data from a beamline which is in a form that cannot be read directly
 by Ifeffit.  Some common reasons for this are data in a binary format,
 data with an ambiguous separation between header and data, and
-ill-formed numbers (e.g. NaN or missing whitespace between columns)
+ill-formed numbers (e.g. NaN or missing white space between columns)
 among the columns of data.
 
 The user of a data analysis program does not much care about the
@@ -41,14 +41,14 @@ dealing with each such case, or
 
 Provide a plugin mechanism with which a small amount of code can be
 dropped in some well-advertised location and which can be used to
-change the troubelsome data into a more easily handled from.
+change the troublesome data into a more easily handled from.
 
 =back
 
 Demeter adopts the second option.  Ifeffit is used for data import.
 All data files must be readable by Ifeffit.  For those kinds of data
 file that are not easily read by Ifeffit, a plugin is used to convert
-the data from the troublesome format into a standrad, well-formatted,
+the data from the troublesome format into a standard, well-formatted,
 column data file.  The normal input mechanism is then used to import
 the data into a L<Demeter::Data> object.
 
@@ -67,9 +67,9 @@ The following plugins come with Demeter:
 =item C<X10C>
 
 Convert files from NSLS beamline X10C.  These files have headers which
-confuse Ifeffit and sometimes fail to have whitespace separating
+confuse Ifeffit and sometimes fail to have white space separating
 numbers among the data columns.  The plugin comments out the headers
-and corrects the problem with whitespace between columns.
+and corrects the problem with white space between columns.
 
 =item C<X15B>
 
@@ -123,18 +123,18 @@ case of zero signal on the transmission detector.
 
 =back 
 
-As you can see, the plugins serve a couple of purposes.  One one hand,
+As you can see, the plugins serve multiple purposes.  On one hand,
 they massage unreadable data (as in the binary formats) into a
 readable form.  They can also be used to do some pre-processing of the
-data, as in the case of plugins which remove unnecessay columns from
+data, as in the case of plugins which remove unnecessary columns from
 the converted data files.
 
-Plugins could be used for other sorts of data preprocessing.  For
+Plugins could be used for other sorts of data pre-processing.  For
 example, it would be possible to apply deadtime corrections using
-columns contained in the original data file.  A plugin could also be
-used to remove a dark current from a data file which records the dark
-current in the header but does not remove that dark signal from the
-recored scalars.
+columns contained in the original data file.  As another example, a
+plugin could also be used to remove a dark current from a data file
+which records the dark current in the header but does not remove that
+dark signal from the recorded scalars.
 
 =head2 Common attributes
 
@@ -144,7 +144,7 @@ Every file type plugin B<must> have the following attributes:
 
 =item C<is_binary>
 
-This is a boolean which indicates whether the original data file was
+This is a Boolean which indicates whether the original data file was
 in a binary format.  The use of this flag is indicate to a GUI program
 whether the original data file can be displayed as text.
 
@@ -212,7 +212,7 @@ file.  This is good practice, but is not required.
 
       my $filetype  = Demeter::Plugins::X15B->new(file=>$file);
       my $converted_file = $filetype->fix;
-       ## this also worked:
+       ## this also works:
        ## my $converted_file = $filetype->fixed;
 
 
@@ -220,24 +220,24 @@ The C<fix> method can be written using virtually any tool, including
 tools provided by Demeter itself.  It can also call Ifeffit directly
 if you C<use Ifeffit;> at the top of the plugin file.  You can even
 use external tools such as L<PDL>, L<Math::Cephes>, or other
-heavy-duty methematic utilities.
+heavy-duty mathematics utilities.
 
 Speed is appreciated, but correctness is essential.
 
-=item <suggest>
+=item C<suggest>
 
 This method returns an array containing values for the C<energy>,
 C<numerator>, C<denominator>, and C<ln> attributes of the
 L<Demeter::Data> object.  If the C<fix> method leaves the data file in
 a format for which correct column selection for transmission or
-fluorescence XAS is predicatable, this method helps lower the barrier
+fluorescence XAS is predictable, this method helps lower the barrier
 of using the plugin.
 
       my $filetype  = Demeter::Plugins::X15B->new(file=>$file);
       if ($filetype->is) {
         my $converted = $filetype->fix;
 	my $data = Demeter::Data->new(file => $converted,
-	   	   	              $filetype -> suggest("flourescence")
+	   	   	              $filetype -> suggest("fluorescence")
                                      );
       };
 
@@ -248,10 +248,10 @@ C<suggest> method for use in defining the L<Demeter::Data> object.
 This method takes a single argument, which should be either
 "transmission" or "fluorescence".  If the argument is missing,
 "transmission" is assumed.  If the argument has a value but is not
-"tranmission", then "fluorescence" is assumed.  (So spell carefully!)
+"transmission", then "fluorescence" is assumed.  (So spell carefully!)
 
-If the columns are not predictable, then this method should return an
-empty array.
+If the proper columns are not predictable, then this method should
+return an empty array.
 
 The return value should be an array and not an array reference.
 
@@ -263,7 +263,7 @@ All plugins B<must> live in the C<Demeter::Plugins::> namespace.  In
 the Demeter distribution, therefore, they live in the
 F<Demeter/Plugins> folder beneath the installation location.
 
-An indiviual user can have additional plugins in user diskspace by
+An individual user can have additional plugins in user diskspace by
 placing them in ...
 
 =over 4
@@ -284,7 +284,7 @@ Bruce Ravel (bravel AT bnl DOT gov)
 
 http://cars9.uchicago.edu/~ravel/software/
 
-=head1 LICENCE AND COPYRIGHT
+=head1 LICENSE AND COPYRIGHT
 
 Copyright (c) 2006-2010 Bruce Ravel (bravel AT bnl DOT gov). All rights reserved.
 
