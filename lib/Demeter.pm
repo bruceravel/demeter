@@ -185,13 +185,13 @@ sub import {
 sub register_plugins {
   my ($class) = @_;
   my $here = dirname($INC{"Demeter.pm"});
-  my @folders = (File::Spec->catfile($here, 'Demeter', 'Plugins', 'File'));
+  my @folders = (File::Spec->catfile($here, 'Demeter', 'Plugins'));
   foreach my $f (@folders) {
     opendir(my $FL, $f);
     foreach my $pm (readdir $FL) {
       next if ($pm !~ m{\.pm\z});
       require File::Spec->catfile($f, $pm);
-      my $this = join('::', 'Demeter', 'Plugins', 'File', $pm);
+      my $this = join('::', 'Demeter', 'Plugins', $pm);
       $mode->push_Plugins();
     };
     closedir $FL;

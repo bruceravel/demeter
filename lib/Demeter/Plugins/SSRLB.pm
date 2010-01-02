@@ -1,4 +1,4 @@
-package Demeter::Plugins::File::SSRLB;
+package Demeter::Plugins::SSRLB;
 
 use Moose;
 use MooseX::Aliases;
@@ -13,9 +13,10 @@ has 'is_binary'   => (is => 'ro', isa => 'Bool', default => 1);
 has 'description' => (is => 'ro', isa => 'Str',
 		      default => "Read Binary files from the SSRL XAFS Data Collector 1.3.");
 
-has 'parent'      => (is => 'ro', isa => 'Any',);
-has 'hash'        => (is => 'ro', isa => 'HashRef', default => sub{{}});
-has 'file'        => (is => 'ro', isa => 'Str', default => q{});
+has 'parent'      => (is => 'rw', isa => 'Any',);
+has 'hash'        => (is => 'rw', isa => 'HashRef', default => sub{{}});
+has 'file'        => (is => 'rw', isa => 'Str', default => q{});
+has 'fixed'       => (is => 'rw', isa => 'Str', default => q{});
 
 sub is {
   my ($self) = @_;
@@ -105,6 +106,7 @@ sub fix {
 
   close N;
   close D;
+  $self->fixed($new);
   return $new;
 }
 
@@ -112,12 +114,12 @@ sub suggest {
   my ($self, $which) = @_;
   $which ||= 'transmission';
   if ($which eq 'transmission') {
-    return (energy      => '$2',
+    return (energy      => '$1',
 	    numerator   => '$4',
 	    denominator => '$5',
 	    ln          =>  1,);
   } else {
-    return (energy      => '$2',
+    return (energy      => '$1',
 	    numerator   => '$6',
 	    denominator => '$4',
 	    ln          =>  0,);
@@ -200,7 +202,7 @@ the bytes in every four-byte word.  That is the purpose of the _ieee
 subroutine.  Without that reordering, the floats will not be
 interpreted correctly.
 
-I should give credit where credit is due.  I swiped this solution from
+I must give credit where credit is due.  I swiped this solution from
 SixPack.  I owe Sam a pitcher of beer for figuring out that bit of
 insanity.
 
@@ -208,7 +210,6 @@ insanity.
 =head1 AUTHOR
 
   Bruce Ravel <bravel@bnl.gov>
-  http://cars9.uchicago.edu.edu/~ravel/software/exafs/
-  Athena copyright (c) 2001-2008
+  http://xafs.org/BruceRavel
 
 =cut

@@ -1,0 +1,152 @@
+package Demeter::Plugins::X15B;  # -*- cperl -*-
+
+use Moose;
+use MooseX::Aliases;
+use MooseX::StrictConstructor;
+with 'Demeter::Tools';
+with 'Demeter::Project';
+
+use File::Basename;
+use File::Copy;
+
+has 'is_binary'   => (is => 'ro', isa => 'Bool', default => 1);
+has 'description' => (is => 'ro', isa => 'Str',
+		      default => "Read binary files from NSLS beamline X15B.");
+
+has 'parent'      => (is => 'rw', isa => 'Any',);
+has 'hash'        => (is => 'rw', isa => 'HashRef', default => sub{{}});
+has 'file'        => (is => 'rw', isa => 'Str', default => q{});
+has 'fixed'       => (is => 'rw', isa => 'Str', default => q{});
+
+use Readonly;
+Readonly my $ENERGY => 0;	# columns containing the
+Readonly my $I0     => 4;	# relevant scalars
+Readonly my $NARROW => 8;
+Readonly my $WIDE   => 9;
+Readonly my $TRANS  => 10;
+
+sub is {
+  my ($self) = @_;
+  my $Ocircumflex = chr(212);
+  my $nulls = chr(0).chr(0).chr(0);
+  open D, $self->file or die "could not open " . $self->file . " as data (X15B)\n";
+  binmode D;
+  my $first = <D>;
+  close D;
+  return 1 if ($first =~ /^$Ocircumflex$nulls/);
+  return 0;
+};
+
+sub fix {
+  my ($self) = @_;
+
+  my ($nme, $pth, $suffix) = fileparse($self->file);
+  my $new = File::Spec->catfile($self->stash_folder, $nme);
+  ($new = File::Spec->catfile($self->stash_folder, "toss")) if (length($new) > 127);
+
+  my @blob = ();
+  my $file = $self->file;
+  ## slurp the entire binary file into an array of 4-byte floats
+  do {
+    local $/ = undef;
+    open D, $file or die "could not read $file as data (fix in X15B)\n";
+    @blob = unpack("f*", <D>);
+    close D
+  };
+  open N, ">".$new or die "could not write to $new (fix in X15B)\n";
+
+  ## the header is mysterious, but the project name from scanedit is
+  ## in there, so pull that out as text (pack and unpack process this
+  ## mysterious header as text)
+  my @header = ();
+  foreach (1..53) {
+    push @header, shift @blob;
+  };
+  my $string = pack("f*", @header);
+  my $project = "??";
+  foreach (unpack("A*", $string)) {
+    $project = "$1 $2" if (/(\w+)\s+(\d+\/\d+\/\d+)/);
+  };
+
+  print N <<EOH
+# X15B  project: $project
+# original file: $file
+# unpacked from original data as a sequence of 4-byte floats
+# --------------------------------------------------------------------
+#   energy           I0          narrow        wide           trans
+EOH
+  ;
+
+  ## just pull out the relevant columns.  we are only reading the
+  ## energy, i0, the narrow and wide windows from the Ge detector, and
+  ## the transmission ion chmaber.  All other scalars are presumed
+  ## uninteresting.  The indeces of these scalars in the line are
+  ## defined as constants (see above).
+  while (@blob) {
+    shift @blob;
+    my @line = ();
+    foreach (1..15) {
+      push @line, shift(@blob);
+    };
+    ## just write out the relevant lines
+    printf N " %12.4f  %12.4f  %12.4f  %12.4f  %12.4f\n",
+      @line[$ENERGY, $I0, $NARROW, $WIDE, $TRANS];
+  }; # loop over rows of data
+
+  close N;
+  $self->fixed($new);
+  return $new;
+}
+
+sub suggest {
+  my ($self, $which) = @_;
+  $which ||= 'transmission';
+  if ($which eq 'transmission') {
+    return (energy      => '$1',
+	    numerator   => '$2',
+	    denominator => '$5',
+	    ln          =>  1,);
+  } else {
+    return (energy      => '$1',
+	    numerator   => '$3',
+	    denominator => '$2',
+	    ln          =>  0,);
+  };
+};
+
+
+1;
+__END__
+
+
+=head1 NAME
+
+Demeter::Plugin::X15B - NSLS X15B filetype plugin
+
+=head1 SYNOPSIS
+
+This plugin directly reads the binary files written by NSLS beamline
+X15B.
+
+=head1 X15B files
+
+At X15b there is a program called x15totxt, written in Turbo Pascal by
+some dude named Tim Darling.  He kindly left behind a short
+explanation the format of the X15b binary data file.  It seems that
+the header is 53 4-byte numbers.  Each line of data is 16 4 byte
+numbers.  Thus this file is easily unpacked and processed in four byte
+bites.
+
+The resulting file is a well-labeled, well-formatted column data file
+in a form that will work well with Athena or virtually any other
+analysis or plotting program.  The columns are: energy, the I0 ion
+chamber, the narrow and wide windows on the germanium detector, and
+the transmission ion chamber.
+
+=head1 AUTHOR
+
+  Bruce Ravel <bravel@anl.gov>
+  http://feff.phys.washington.edu/~ravel/software/exafs/
+  Athena copyright (c) 2001-2006
+
+=cut

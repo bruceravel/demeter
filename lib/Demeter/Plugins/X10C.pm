@@ -1,4 +1,4 @@
-package Demeter::Plugins::File::X10C;  # -*- cperl -*-
+package Demeter::Plugins::X10C;  # -*- cperl -*-
 
 use Moose;
 use MooseX::Aliases;
@@ -13,9 +13,10 @@ has 'is_binary'   => (is => 'ro', isa => 'Bool', default => 0);
 has 'description' => (is => 'ro', isa => 'Str',
 		      default => "Read files from NSLS beamline X10C.");
 
-has 'parent'      => (is => 'ro', isa => 'Any',);
-has 'hash'        => (is => 'ro', isa => 'HashRef', default => sub{{}});
-has 'file'        => (is => 'ro', isa => 'Str', default => q{});
+has 'parent'      => (is => 'rw', isa => 'Any',);
+has 'hash'        => (is => 'rw', isa => 'HashRef', default => sub{{}});
+has 'file'        => (is => 'rw', isa => 'Str', default => q{});
+has 'fixed'       => (is => 'rw', isa => 'Str', default => q{});
 
 sub is {
   my ($self) = @_;
@@ -51,13 +52,21 @@ sub fix {
   };
   close N;
   close D;
+  $self->fixed($new);
   return $new;
 }
 
 sub suggest {
   my ($self, $which) = @_;
   $which ||= 'transmission';
-  return ();
+  if ($which eq 'transmission') {
+    return (energy      => '$1',
+	    numerator   => '$4',
+	    denominator => '$6',
+	    ln          =>  1,);
+  } else {
+    return ();
+  };
 };
 
 
