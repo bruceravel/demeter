@@ -233,6 +233,7 @@ sub start_plot {
   $self -> color($color);
   $self -> xlabel(q{});
   $self -> ylabel(q{});
+  $self -> title(q{});
   $self -> increm(0);
   $self -> lastplot(q{});
   $self -> co -> set(plot_part=>q{});

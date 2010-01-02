@@ -17,7 +17,7 @@
 
 =cut
 
-use Test::More tests => 14;
+use Test::More tests => 24;
 
 use Demeter;
 
@@ -32,12 +32,18 @@ my %athena = (SSRLB	=> [20003.5,   'transmission'],
 	      PFBL12C	=> [12279.296, 'transmission'],
 	      CMC	=> [2473.6,    'fluorescence'],
 	      SSRLmicro	=> [11107.5,   'fluorescence'],
+	      X23A2MED	=> [6554.2,    'fluorescence'],
 	     );
 
 foreach my $type (keys %athena) {
   my $file  = "t/filetypes/" . lc($type) . ".dat";
   my $this  = 'Demeter::Plugins::'.$type;
-  my $obj   = $this->new(file=>$file);
+  my $obj   = $this->new(file=>'t/fe.060');
+  $obj->inifile('t/filetypes/x23a2vortex.ini') if (ref($obj) =~ m{X23A2MED});
+
+  ok( (not $obj->is), "fe.060 is not of type $type");
+  $obj->DESTROY;
+  $obj   = $this->new(file=>$file);
   ok( $obj->is, "File of type $type recognized");
   my $fixed = $obj->fix;
   my $e0    = dotest($obj, $fixed, $athena{$type}->[1]);

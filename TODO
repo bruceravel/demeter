@@ -44,15 +44,17 @@ Need to [[Import%20external%20Feff%20calculation][import external]] feff calc. g
 ------
 * Demeter
 
-** [7/8] Special file types
- - [ ] X23A2MED
+** [8/10] Special file types
+ - [X] X23A2MED
  - [X] X15B
  - [X] X10C
  - [X] HXMA
+ - [ ] SSRL ASCII
  - [X] SSRL binary 
  - [X] SSRL micro
  - [X] CMC, 9BM
  - [X] Photon Factory BL12C
+ - [ ] Lytle database with encoder values
 
 
 ** TODO Structural Units
