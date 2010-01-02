@@ -1,29 +1,16 @@
 package Demeter::Plugins::PFBL12C;  # -*- cperl -*-
 
 use Moose;
-use MooseX::Aliases;
-use MooseX::StrictConstructor;
-with 'Demeter::Tools';
-with 'Demeter::Project';
+extends 'Demeter::Plugins::FileType';
 
-use File::Basename;
-use File::Copy;
+has '+is_binary' => (default => 0);
+has '+description' => (default => "Read files from Photon Factory Beamline 12C.");
 
 use Readonly;
 Readonly my $PI      => 4 * atan2 1, 1;
 Readonly my $HBARC   => 1973.27053324;
 Readonly my $TWODONE => 6.2712;	# Si(111)
 Readonly my $TWODTHR => 3.275;	# Si(311)
-
-has 'is_binary'   => (is => 'ro', isa => 'Bool', default => 0);
-has 'description' => (is => 'ro', isa => 'Str',
-		      default => "Read files from Photon Factory Beamline 12C.");
-
-has 'parent'      => (is => 'rw', isa => 'Any',);
-has 'hash'        => (is => 'rw', isa => 'HashRef', default => sub{{}});
-has 'file'        => (is => 'rw', isa => 'Str', default => q{});
-has 'fixed'       => (is => 'rw', isa => 'Str', default => q{});
-
 
 sub is {
   my ($self) = @_;
@@ -34,15 +21,11 @@ sub is {
   return 0;
 };
 
-
-
-
 sub fix {
   my ($self) = @_;
 
   my $file = $self->file;
-  my ($nme, $pth, $suffix) = fileparse($self->file);
-  my $new = File::Spec->catfile($self->stash_folder, $nme);
+  my $new = File::Spec->catfile($self->stash_folder, $self->filename);
   ($new = File::Spec->catfile($self->stash_folder, "toss")) if (length($new) > 127);
   open my $D, $file or die "could not open $file as data (fix in PFBL12C)\n";
   open my $N, ">".$new or die "could not write to $new (fix in PFBL12C)\n";
@@ -83,7 +66,6 @@ sub fix {
   return $new;
 };
 
-
 sub suggest {
   my ($self, $which) = @_;
   $which ||= 'transmission';
@@ -97,17 +79,17 @@ sub suggest {
   };
 };
 
+__PACKAGE__->meta->make_immutable;
 1;
 
 =head1 NAME
 
-Demeter::Plugin::Lambda - filetype plugin for Photon Factory BL12C
+Demeter::Plugin::PFBL12C - filetype plugin for Photon Factory BL12C
 
 =head1 SYNOPSIS
 
 This plugin converts data recorded as a function of mono angle to data
 as a function of energy.
-
 
 =head1 Methods
 
@@ -117,7 +99,6 @@ as a function of energy.
 
 A PFBL12C file is identified by the string "KEK-PF BL12C" in the first
 line of the file.
-
 
 =item C<fix>
 
@@ -131,10 +112,7 @@ D is the Si(111) plane spacing.
 =head1 AUTHOR
 
   Bruce Ravel <bravel@anl.gov>
-  http://feff.phys.washington.edu/~ravel/software/exafs/
-  Athena copyright (c) 2001-2006
-
-
+  http://xafs.org/BruceRavel
 
 1;
 __END__

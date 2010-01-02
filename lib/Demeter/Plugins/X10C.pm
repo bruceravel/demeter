@@ -1,22 +1,10 @@
 package Demeter::Plugins::X10C;  # -*- cperl -*-
 
 use Moose;
-use MooseX::Aliases;
-use MooseX::StrictConstructor;
-with 'Demeter::Tools';
-with 'Demeter::Project';
+extends 'Demeter::Plugins::FileType';
 
-use File::Basename;
-use File::Copy;
-
-has 'is_binary'   => (is => 'ro', isa => 'Bool', default => 0);
-has 'description' => (is => 'ro', isa => 'Str',
-		      default => "Read files from NSLS beamline X10C.");
-
-has 'parent'      => (is => 'rw', isa => 'Any',);
-has 'hash'        => (is => 'rw', isa => 'HashRef', default => sub{{}});
-has 'file'        => (is => 'rw', isa => 'Str', default => q{});
-has 'fixed'       => (is => 'rw', isa => 'Str', default => q{});
+has '+is_binary' => (default => 0);
+has '+description' => (default => "Read files from NSLS beamline X10C.");
 
 sub is {
   my ($self) = @_;
@@ -35,8 +23,7 @@ sub is {
 
 sub fix {
   my ($self) = @_;
-  my ($nme, $pth, $suffix) = fileparse($self->file);
-  my $new = File::Spec->catfile($self->stash_folder, $nme);
+  my $new = File::Spec->catfile($self->stash_folder, $self->filename);
   ($new = File::Spec->catfile($self->stash_folder, "toss")) if (length($new) > 127);
   open D, $self->file or die "could not open " , $self->file . " as data (fix in X10C)\n";
   open N, ">".$new or die "could not write to $new (fix in X10C)\n";
@@ -70,13 +57,14 @@ sub suggest {
 };
 
 
+__PACKAGE__->meta->make_immutable;
 1;
 __END__
 
 
 =head1 NAME
 
-Demeter::Plugin::File::X10C - NSLS X10C filetype plugin
+Demeter::Plugin::X10C - NSLS X10C filetype plugin
 
 =head1 SYNOPSIS
 
@@ -93,12 +81,6 @@ information contained within the file.  In the case of an NSLS X10C
 data, the file is recognized by the string "EXAFS" on the first line
 and by the string "DATA START" several lines later.
 
-Note that the C<is> method needs to be quick.  There may be many file
-type plugins in the queue.  A file that does not meet any of the
-plugin criteria will still be subjected to each plugin's C<is>
-method. If C<is> is slow, Athena will be slow.
-
-
 =item C<fix>
 
 For an NSLS X10C file, the null characters are stripped from the
@@ -106,12 +88,9 @@ header, the header lines are commented out with hash characters, and
 the situation of the fifth data column not being preceeded by white
 space is corrected.
 
-
 =back
-
 
 =head1 AUTHOR
 
   Bruce Ravel <bravel@anl.gov>
-  http://feff.phys.washington.edu/~ravel/software/exafs/
-  Athena copyright (c) 2001-2006
+  http://xafs.org/BruceRavel

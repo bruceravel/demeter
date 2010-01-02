@@ -1,22 +1,10 @@
 package Demeter::Plugins::HXMA;  # -*- cperl -*-
 
 use Moose;
-use MooseX::Aliases;
-use MooseX::StrictConstructor;
-with 'Demeter::Tools';
-with 'Demeter::Project';
+extends 'Demeter::Plugins::FileType';
 
-use File::Basename;
-use File::Copy;
-
-has 'is_binary'   => (is => 'ro', isa => 'Bool', default => 0);
-has 'description' => (is => 'ro', isa => 'Str',
-		      default => "Demystify files from the HXMA beamline at the CLS.");
-
-has 'parent'      => (is => 'rw', isa => 'Any',);
-has 'hash'        => (is => 'rw', isa => 'HashRef', default => sub{{}});
-has 'file'        => (is => 'rw', isa => 'Str', default => q{});
-has 'fixed'       => (is => 'rw', isa => 'Str', default => q{});
+has '+is_binary' => (default => 0);
+has '+description' => (default => "Demystify files from the HXMA beamline at the CLS.");
 
 sub is {
   my ($self) = @_;
@@ -27,14 +15,11 @@ sub is {
   return 0;
 };
 
-
-
 sub fix {
   my ($self) = @_;
 
   my $file = $self->file;
-  my ($nme, $pth, $suffix) = fileparse($self->file);
-  my $new = File::Spec->catfile($self->stash_folder, $nme);
+  my $new = File::Spec->catfile($self->stash_folder, $self->filename);
   ($new = File::Spec->catfile($self->stash_folder, "toss")) if (length($new) > 127);
   open D, $file or die "could not open $file as data (fix in HXMA)\n";
   open N, ">".$new or die "could not write to $new (fix in HXMA)\n";
@@ -89,7 +74,7 @@ sub suggest {
 
 
 
-
+__PACKAGE__->meta->make_immutable;
 1;
 __END__
 

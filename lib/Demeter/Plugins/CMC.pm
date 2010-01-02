@@ -1,25 +1,10 @@
 package Demeter::Plugins::CMC;  # -*- cperl -*-
 
-
 use Moose;
-use MooseX::Aliases;
-use MooseX::StrictConstructor;
-with 'Demeter::Tools';
-with 'Demeter::Project';
+extends 'Demeter::Plugins::FileType';
 
-use File::Basename;
-use File::Copy;
-
-has 'is_binary'   => (is => 'ro', isa => 'Bool', default => 0);
-has 'description' => (is => 'ro', isa => 'Str',
-		      default => "Import data from APS 9BM (CMC-XOR).");
-
-has 'parent'      => (is => 'rw', isa => 'Any',);
-has 'hash'        => (is => 'rw', isa => 'HashRef', default => sub{{}});
-has 'file'        => (is => 'rw', isa => 'Str', default => q{});
-has 'fixed'       => (is => 'rw', isa => 'Str', default => q{});
-
-
+has '+is_binary' => (default => 0);
+has '+description' => (default => "Import data from APS 9BM (CMC-XOR).");
 
 sub is {
   my ($self) = @_;
@@ -35,8 +20,7 @@ sub is {
 
 sub fix {
   my ($self) = @_;
-  my ($nme, $pth, $suffix) = fileparse($self->file);
-  my $new = File::Spec->catfile($self->stash_folder, $nme);
+  my $new = File::Spec->catfile($self->stash_folder, $self->filename);
   ($new = File::Spec->catfile($self->stash_folder, "toss")) if (length($new) > 127);
   open D, $self->file or die "could not open " . $self->file . " as data (fix in MRMED)\n";
   open N, ">".$new  or die "could not open $new in MRMED\n";
@@ -122,6 +106,7 @@ sub suggest {
   };
 };
 
+__PACKAGE__->meta->make_immutable;
 1;
 __END__
 

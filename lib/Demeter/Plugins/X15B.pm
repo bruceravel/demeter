@@ -1,22 +1,10 @@
 package Demeter::Plugins::X15B;  # -*- cperl -*-
 
 use Moose;
-use MooseX::Aliases;
-use MooseX::StrictConstructor;
-with 'Demeter::Tools';
-with 'Demeter::Project';
+extends 'Demeter::Plugins::FileType';
 
-use File::Basename;
-use File::Copy;
-
-has 'is_binary'   => (is => 'ro', isa => 'Bool', default => 1);
-has 'description' => (is => 'ro', isa => 'Str',
-		      default => "Read binary files from NSLS beamline X15B.");
-
-has 'parent'      => (is => 'rw', isa => 'Any',);
-has 'hash'        => (is => 'rw', isa => 'HashRef', default => sub{{}});
-has 'file'        => (is => 'rw', isa => 'Str', default => q{});
-has 'fixed'       => (is => 'rw', isa => 'Str', default => q{});
+has '+is_binary' => (default => 1);
+has '+description' => (default => "Read binary files from NSLS beamline X15B.");
 
 use Readonly;
 Readonly my $ENERGY => 0;	# columns containing the
@@ -40,8 +28,7 @@ sub is {
 sub fix {
   my ($self) = @_;
 
-  my ($nme, $pth, $suffix) = fileparse($self->file);
-  my $new = File::Spec->catfile($self->stash_folder, $nme);
+  my $new = File::Spec->catfile($self->stash_folder, $self->filename);
   ($new = File::Spec->catfile($self->stash_folder, "toss")) if (length($new) > 127);
 
   my @blob = ();
@@ -115,6 +102,7 @@ sub suggest {
 };
 
 
+__PACKAGE__->meta->make_immutable;
 1;
 __END__
 
@@ -146,7 +134,6 @@ the transmission ion chamber.
 =head1 AUTHOR
 
   Bruce Ravel <bravel@anl.gov>
-  http://feff.phys.washington.edu/~ravel/software/exafs/
-  Athena copyright (c) 2001-2006
+  http://xafs.org/BruceRavel
 
 =cut

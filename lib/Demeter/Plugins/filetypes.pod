@@ -136,9 +136,29 @@ plugin could also be used to remove a dark current from a data file
 which records the dark current in the header but does not remove that
 dark signal from the recorded scalars.
 
+=head2 Boilerplate
+
+A file type plugin should start with the boilerplate like the
+following:
+
+  package Demeter::Plugins::X15B;
+  use Moose;
+  extends 'Demeter::Plugins::FileType';
+  has '+is_binary' => (default => 1);
+  has '+description' => (default => "Read binary files from NSLS beamline X15B.");
+
+This will set up the plugin as a class derived from the
+L<Demeter::Plugins::FileType> base class and set the correct values
+for the C<is_binary> and C<description> attributes.  This boilerplate
+will be followed by the C<is>, C<fix> and C<suggest> methods which
+define the file type plugin interface.
+
 =head2 Common attributes
 
-Every file type plugin B<must> have the following attributes:
+Every file type plugin has the following attributes, all of which are
+inherited from the L<Demeter::Plugin::FileType> base class.  Normally,
+an individual file type plugin will need to override the C<is_binary>
+and C<description>, as shown above.
 
 =over 4
 
@@ -168,6 +188,15 @@ deadtime correction.
 
 This takes the name of the original data file and is the only
 attribute typically supplied by the caller.
+
+=item C<filename>
+
+This is the file name part of the value of the C<file> attribute.
+This is set by a trigger when the C<file> attribute is set.  All the
+file type plugins that ship with Demeter write the output column data
+file to the stash directory with the same name as the input file.  The
+bit of code that does that copying uses this attribute to name the
+output file.  You should rarely need to set this directly.
 
 =item C<fixed>
 

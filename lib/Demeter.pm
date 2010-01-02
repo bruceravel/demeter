@@ -185,7 +185,9 @@ sub import {
 sub register_plugins {
   my ($class) = @_;
   my $here = dirname($INC{"Demeter.pm"});
-  my @folders = (File::Spec->catfile($here, 'Demeter', 'Plugins'));
+  my $standard = File::Spec->catfile($here, 'Demeter', 'Plugins');
+  require File::Spec->catfile($here, 'Demeter', 'Plugins', 'FileType.pm');
+  my @folders = ($standard);
   foreach my $f (@folders) {
     opendir(my $FL, $f);
     foreach my $pm (readdir $FL) {

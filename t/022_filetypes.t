@@ -41,7 +41,7 @@ foreach my $type (keys %athena) {
   ok( $obj->is, "File of type $type recognized");
   my $fixed = $obj->fix;
   my $e0    = dotest($obj, $fixed, $athena{$type}->[1]);
-  ok( abs($e0 - $athena{$type}->[0]) < $EPSILON,  "Plugin for $type data works: $e0" );
+  ok( abs($e0 - $athena{$type}->[0]) < $EPSILON,  $obj->description . ": $e0" );
   unlink $fixed;
   $obj->DESTROY;
 };
