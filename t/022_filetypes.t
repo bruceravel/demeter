@@ -17,7 +17,7 @@
 
 =cut
 
-use Test::More tests => 24;
+use Test::More tests => 30;
 
 use Demeter;
 
@@ -25,7 +25,8 @@ use Readonly;
 Readonly my $EPSILON => 1e-1;
 my $plot = 0;
 
-my %athena = (SSRLB	=> [20003.5,   'transmission'],
+my %athena = (SSRLA	=> [25521.4,   'transmission'],
+	      SSRLB	=> [20003.5,   'transmission'],
 	      X10C	=> [8345.3,    'transmission'],
 	      X15B	=> [2433.5,    'fluorescence'],
 	      HXMA	=> [11866.5,   'transmission'],
@@ -33,23 +34,29 @@ my %athena = (SSRLB	=> [20003.5,   'transmission'],
 	      CMC	=> [2473.6,    'fluorescence'],
 	      SSRLmicro	=> [11107.5,   'fluorescence'],
 	      X23A2MED	=> [6554.2,    'fluorescence'],
+	      Lytle 	=> [8979.15,   'transmission'],
 	     );
 
 foreach my $type (keys %athena) {
+				## the test files are carefully named
   my $file  = "t/filetypes/" . lc($type) . ".dat";
   my $this  = 'Demeter::Plugins::'.$type;
+				## test 1: check against a normal data file
   my $obj   = $this->new(file=>'t/fe.060');
-  $obj->inifile('t/filetypes/x23a2vortex.ini') if (ref($obj) =~ m{X23A2MED});
-
+  $obj     -> inifile('t/filetypes/x23a2vortex.ini') if (ref($obj) =~ m{X23A2MED});
   ok( (not $obj->is), "fe.060 is not of type $type");
-  $obj->DESTROY;
-  $obj   = $this->new(file=>$file);
+  $obj     -> DESTROY;
+				## test 2: check against a file of this type
+  $obj      = $this->new(file=>$file);
+  $obj     -> inifile('t/filetypes/x23a2vortex.ini') if (ref($obj) =~ m{X23A2MED});
   ok( $obj->is, "File of type $type recognized");
+				## test 3: fix the data, import it as a Data object, check the e0 value
   my $fixed = $obj->fix;
   my $e0    = dotest($obj, $fixed, $athena{$type}->[1]);
   ok( abs($e0 - $athena{$type}->[0]) < $EPSILON,  $obj->description . ": $e0" );
+				## clean up
   unlink $fixed;
-  $obj->DESTROY;
+  $obj     -> DESTROY;
 };
 
 
@@ -64,7 +71,7 @@ sub dotest {
   $data->_update('fft');
   if ($plot) {
     $data->po->start_plot;
-    $data->po->set(emin=>-30, emax=>60);
+    $data->po->set(emin=>-30, emax=>150);
     $data->plot('E');
     sleep 1;
   };

@@ -4,13 +4,13 @@ use Moose;
 extends 'Demeter::Plugins::FileType';
 
 has '+is_binary' => (default => 1);
-has '+description' => (default => "Read Binary files from the SSRL XAFS Data Collector 1.3.");
+has '+description' => (default => "Read Binary files from the SSRL XAFS Data Collector");
 
 
 sub is {
   my ($self) = @_;
   my $null = chr(0);
-  open D, $self->file or die "could not open " . $self->file . " as data (SSRL)\n";
+  open D, $self->file or die "could not open " . $self->file . " as data (SSRL Binary)\n";
   my $line;
   read D, $line, 40;
   my $is_ssrl = ($line =~ m{^\s*SSRL\s+\-\s+EXAFS Data Collector});

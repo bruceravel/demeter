@@ -1,7 +1,6 @@
 package Demeter::Plugins::FileType;
 
 use Moose;
-use MooseX::Aliases;
 use MooseX::StrictConstructor;
 with 'Demeter::Tools';
 with 'Demeter::Project';
@@ -16,10 +15,12 @@ has 'parent'      => (is => 'rw', isa => 'Any',);
 has 'hash'        => (is => 'rw', isa => 'HashRef', default => sub{{}});
 has 'file'        => (is => 'rw', isa => 'Str',     default => q{},
 		     trigger => sub{my ($self, $new) = @_;
-				    my ($name, $pth, $suffix) = fileparse($new);
+				    my ($name, $path, $suffix) = fileparse($new);
 				    $self->filename($name);
+				    $self->folder($path);
 				  });
 has 'filename'    => (is => 'rw', isa => 'Str', default => q{});
+has 'folder'      => (is => 'rw', isa => 'Str', default => q{});
 has 'fixed'       => (is => 'rw', isa => 'Str', default => q{});
 
 __PACKAGE__->meta->make_immutable;
@@ -86,9 +87,20 @@ data handling programs (such as Athena) can expect uniformity of
 interface.  The best way to meet these requirements is to modify an
 existing file type plugin.
 
+See the F<022_filetypes.t> test from the Demeter distribution for an
+example of using the methods of a file type plugin and creating
+Demeter::Data objects from the output of the plugins.
+
+Note that this base class uses the L<Demeter::Project> and
+L<Demeter::Tools> roles and so all subclasses have access to the
+methods of those roles.
+
 =head2 Plugins shipped with Demeter
 
-The following plugins come with Demeter:
+The following plugins come with Demeter.  Please note that these were
+written using example data files that Bruce had available to him.  He
+has not himself used all of these beamlines.  Your mileage may vary
+with your own data.
 
 =over 4
 
@@ -120,6 +132,15 @@ contained in the header.
 Convert SSRL binary data file.  Yes, SSRL does provide a program for
 converting these binary files to column ASCII data.  This plugin does
 the same chore, yielding a file easily read by Ifeffit.
+
+=item C<SSRLA>
+
+Convert SSRL ASCII data file.  Presumably, these ASCII files are the
+result of the SSRL conversion program.  These AsCII files are
+unreadable by Ifeffit.  This plugin, comments out the header lines,
+constructs a column label line out of the Data: section, moves the
+first column (real time clock) to the third column, and swaps the
+requested and acheived energy columns.
 
 =item C<SSRLmicro>
 
@@ -157,6 +178,16 @@ algorithm developed and implemented by Joe Woicik and Bruce Ravel.
 The output data file contains columns for each corrected detector
 channel as well as columns for the various ion chambers.  This is an
 example of a file type plugin which uses Ifeffit dirrectly.
+
+=item C<Lytle>
+
+Import files from the Lytle database.  This plugin imports those data
+that are recorded by encoder value and which have headers that start
+with the word C<NPTS> and have the mono d-spacing and steps-per-degree
+in the second line.  There is another common file format in the Lytle
+database (the header begins with C<CUEDGE> and does not record the
+mono parameters) that is not handled by this plugin.  See question 3
+at L<http://cars9.uchicago.edu/ifeffit/FAQ/Data_Handling>.
 
 =back
 
@@ -234,6 +265,12 @@ file type plugins that ship with Demeter write the output column data
 file to the stash directory with the same name as the input file.  The
 bit of code that does that copying uses this attribute to name the
 output file.  You should rarely need to set this directly.
+
+=item C<folder>
+
+This is the folder part of the value of the C<file> attribute.  This
+is set by a trigger when the C<file> attribute is set.  You should
+rarely need to set this directly.
 
 =item C<fixed>
 
@@ -341,6 +378,22 @@ placing them in ...
 =item Windows
 
   %APPDATA%\horae\Demeter\Plugins\
+
+=back
+
+=head1 BUGS AND LIMITATIONS
+
+=over 4
+
+=item *
+
+Do I need the C<parent> and C<hash> attributes?
+
+=item *
+
+None of the plugins have enough error testing.  It is certainly
+possible that C<is> could return true but the rest of the file is
+malformed compared to the expectations of C<fix>.
 
 =back
 
