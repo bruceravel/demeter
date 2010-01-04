@@ -2,7 +2,7 @@ package Demeter;
 
 =for Copyright
  .
- Copyright (c) 2006-2009 Bruce Ravel (bravel AT bnl DOT gov).
+ Copyright (c) 2006-2010 Bruce Ravel (bravel AT bnl DOT gov).
  All rights reserved.
  .
  This file is free software; you can redistribute it and/or
@@ -18,7 +18,8 @@ package Demeter;
 
 ## These are common to all Demeter modules
 require 5.8.0;
-#use diagnostics;
+#use diagnostics;use Demeter::UI::Wx::SpecialCharacters qw(:all);
+
 use version;
 our $VERSION = version->new('0.4.0');
 use vars qw($Gnuplot_exists);
@@ -339,7 +340,7 @@ sub version {
 };
 sub copyright {
   my ($self) = @_;
-  return "copyright © 2006-2009 Bruce Ravel";
+  return "copyright © 2006-2010 Bruce Ravel";
 };
 sub hashes {
   my ($self) = @_;
@@ -1587,7 +1588,7 @@ http://cars9.uchicago.edu/~ravel/software/
 
 =head1 LICENCE AND COPYRIGHT
 
-Copyright (c) 2006-2009 Bruce Ravel (bravel AT bnl DOT gov). All rights reserved.
+Copyright (c) 2006-2010 Bruce Ravel (bravel AT bnl DOT gov). All rights reserved.
 
 This module is free software; you can redistribute it and/or
 modify it under the same terms as Perl itself. See L<perlgpl>.

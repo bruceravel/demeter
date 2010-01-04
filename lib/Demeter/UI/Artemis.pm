@@ -391,7 +391,7 @@ sub on_about {
   $info->SetCopyright( $demeter->identify );
   $info->SetWebSite( 'http://cars9.uchicago.edu/iffwiki/Demeter', 'The Demeter web site' );
   $info->SetDevelopers( ["Bruce Ravel <bravel\@bnl.gov>\n",
-			 "Ifeffit is copyright $COPYRIGHT 1992-2009 Matt Newville"
+			 "Ifeffit is copyright $COPYRIGHT 1992-2010 Matt Newville"
 			] );
   $info->SetLicense( slurp(File::Spec->catfile($artemis_base, 'Artemis', 'share', "GPL.dem")) );
   my $artwork = <<'EOH'
@@ -855,9 +855,10 @@ sub make_data_frame {
   my $databox = $self->{databox};
 
   #print "|", emph($data->name), "|\n";
-  my $new = Wx::ToggleButton->new($self->{datalist}, -1, "Hide ".emph($data->name));
+  #my $new = Wx::ToggleButton->new($self->{datalist}, -1, "Hide ".emph($data->name));
+  my $new = Wx::ToggleButton->new($self->{datalist}, -1, "Hide ".$data->name);
   $databox -> Add($new, 0, wxGROW|wxALL, 0);
-  mouseover($new, "Display/hide this data set.");
+  mouseover($new, "Display/hide " . $data->name . ".");
 
   do_the_size_dance($self);
   my $idata = $new->GetId;
@@ -949,9 +950,9 @@ sub make_feff_frame {
   my $feffbox = $self->{feffbox};
   $name ||= basename($file);	# ok for importing an atoms or CIF file
 
-  my $new = Wx::ToggleButton->new($self->{fefflist}, -1, "Show ".emph($name));
+  my $new = Wx::ToggleButton->new($self->{fefflist}, -1, "Show $name"); #.emph($name));
   $feffbox -> Add($new, 0, wxGROW|wxRIGHT, 5);
-  mouseover($new, "Display/hide this Feff calculation.");
+  mouseover($new, "Display/hide $name.");
 
   do_the_size_dance($self);
   my $ifeff = $new->GetId;
@@ -1139,7 +1140,7 @@ L<http://cars9.uchicago.edu/~ravel/software/>
 
 =head1 LICENCE AND COPYRIGHT
 
-Copyright (c) 2006-2009 Bruce Ravel (bravel AT bnl DOT gov). All rights reserved.
+Copyright (c) 2006-2010 Bruce Ravel (bravel AT bnl DOT gov). All rights reserved.
 
 This module is free software; you can redistribute it and/or
 modify it under the same terms as Perl itself. See L<perlgpl>.
