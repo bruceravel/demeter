@@ -155,7 +155,7 @@ sub resolve_krange_xmu {
 sub resolve_krange_chi {
   my ($self, $rx) = @_;
   my @chi = @$rx;
-  my ($last, $fft_kmin, $fft_kmax) = ($chi[-1]||0, $self->fft_kmin, $self->fft_kmax);
+  my ($last, $fft_kmin, $fft_kmax) = ($chi[$#chi]||0, $self->fft_kmin, $self->fft_kmax);
 
   my $kmin = ($fft_kmin  < 0) ? $last + $fft_kmin : $fft_kmin;
   my $kmax = ($fft_kmax  < 0) ? $last + $fft_kmax

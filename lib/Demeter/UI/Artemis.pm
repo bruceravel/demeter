@@ -110,7 +110,6 @@ sub OnInit {
   $importmenu->Append($IMPORT_FEFFIT,  "a feffit.inp file",             "Import a fitting model from a feffit.inp file");
   $importmenu->Append($IMPORT_CHI,     "$CHI(k) data",                  "Import $CHI(k) data from a column data file");
   $importmenu->Enable($IMPORT_FEFFIT, 0);
-  $importmenu->Enable($IMPORT_CHI,    0);
 
   my $exportmenu = Wx::Menu->new;
   $exportmenu->Append($EXPORT_IFEFFIT,  "to Ifeffit script",  "Export the current fitting model as an Ifeffit script");
@@ -703,6 +702,7 @@ sub OnMenuClick {
       last SWITCH;
     };
     ($id == $IMPORT_CHI) and do {
+      import_chi();
       last SWITCH;
     };
 
@@ -820,6 +820,34 @@ sub import_prj {
   autosave();
   chdir dirname($file);
   $frames{main}->{statusbar}->SetStatusText("Importing data \"" . $data->name . "\" from $file.");
+};
+
+sub import_chi {
+  my ($fname) = @_;
+  my $file = $fname;
+  if (not $fname) {
+    my $fd = Wx::FileDialog->new( $frames{main}, "Import $CHI(k) data", cwd, q{},
+				  "Chi data (*.chi)|*.chi|Data files (*.dat)|*.dat|All files|*.*",
+				  wxFD_OPEN|wxFD_FILE_MUST_EXIST|wxFD_CHANGE_DIR|wxFD_PREVIEW,
+				  wxDefaultPosition);
+    if ($fd->ShowModal == wxID_CANCEL) {
+      $frames{main}->{statusbar}->SetStatusText("$CHI(k) import cancelled.");
+      return;
+    };
+    $file = File::Spec->catfile($fd->GetDirectory, $fd->GetFilename);
+  };
+  my $data = Demeter::Data->new(file=>$file);
+  $data->_update('data');
+  my ($dnum, $idata) = make_data_frame($frames{main}, $data);
+  $data->po->start_plot;
+  $data->plot('k');
+  $data->plot_window('k') if $data->po->plot_win;
+  $frames{$dnum} -> Show(1);
+  $frames{main}->{$dnum}->SetValue(1);
+  $demeter->push_mru("chik", $file);
+  autosave();
+  chdir dirname($file);
+  $frames{main}->{statusbar}->SetStatusText("Imported $file as chi(k) data.");
 };
 
 ## see Demeter::UI::Wx::SpecialCharacters

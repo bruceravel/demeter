@@ -23,7 +23,7 @@ use MooseX::Aliases;
 use Carp;
 use File::Basename;
 use File::Spec;
-use List::MoreUtils qw(any);
+use List::MoreUtils qw(any all);
 use Regexp::Optimizer;
 use Regexp::Common;
 use Readonly;
@@ -31,6 +31,7 @@ Readonly my $NUMBER  => $RE{num}{real};
 Readonly my $INTEGER => $RE{num}{int};
 Readonly my $ETOK    => 0.262468292;
 Readonly my $PI      => 4*atan2(1,1);
+Readonly my $EPSILON => 1e-4;
 
 #use Ifeffit;
 use Text::Template;
@@ -117,6 +118,8 @@ sub put_data {
   if (not $self->is_col) {
     $self->determine_data_type;
     if ($self->datatype eq "chi") {
+      ##$self->plot('k');
+      $self->fix_chik;
       $self->resolve_defaults;
       $self->update_columns(0);
       return 0;
@@ -173,6 +176,16 @@ sub put_data {
   $self->update_data(0);
 
   $self->initialize_e0
+};
+
+sub fix_chik {
+  my ($self) = @_;
+  my @k = $self->get_array('k');
+  return $self if ( ($k[0] == 0) and (all { abs($k[$_] - $k[$_-1] - 0.05) < $EPSILON } (1 .. $#k)) );
+  my $command = $self->template("process", "fix_chik");
+  ##print $command;
+  $self->dispose($command);
+  return $self;
 };
 
 sub initialize_e0 {

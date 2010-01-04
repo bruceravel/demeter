@@ -17,8 +17,9 @@
 
 =cut
 
-use Test::More tests => 57;
+use Test::More tests => 58;
 
+use List::MoreUtils qw(all);
 use Demeter;
 
 my $data  = Demeter::Data -> new;
@@ -174,3 +175,10 @@ $data->bkg_eshift(5);
 ok( $data2->bkg_eshift eq 5, 'tying reference channels works');
 $data2->bkg_eshift(-3);
 ok( $data->bkg_eshift eq -3, 'tying reference channels works both ways');
+
+
+## -------- test importing chi(k) data on the wrong grid
+my $nonu = Demeter::Data->new(file=>'t/nonuniform.chi',);
+$nonu->_update('fft');
+my @k = $nonu->get_array('k');
+ok( ( ($k[0] == 0) and (all { abs($k[$_] - $k[$_-1] - 0.05) < 1e-4 } (1 .. $#k)) ), 'fixing improper chi(k)' );

@@ -1,0 +1,18 @@
+{ # -*- ifm -*-
+  # Fix chi(k) data that is not on the standard array
+  #   {$D->group} returns the ifeffit group name
+  q{};
+}
+##| rebinning non-uniform chi(k) data onto the standard grid
+set(fix___a.k   = range(0, ceil({$D->group}.k), 0.05),
+    fix___floor = floor({$D->group}.k) - 0.05,
+    fix___a.kk  = range(0, fix___floor, 0.05),
+    fix___n     = npts(fix___a.kk),
+    fix___a.cc  = zeros(fix___n),
+    fix___a.x   = join(fix___a.kk, {$D->group}.k),
+    fix___a.y   = join(fix___a.cc, {$D->group}.chi),
+    fix___a.chi = rebin(fix___a.x, fix___a.y, fix___a.k),
+    {$D->group}.k     = fix___a.k,
+    {$D->group}.chi   = fix___a.chi)
+erase \@group fix___a
+erase fix___floor fix___n

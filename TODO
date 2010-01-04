@@ -1,7 +1,7 @@
 -*- org -*-
 
 #+TITLE: Demeter to do list
-[2009-12-24 Thu]
+[2010-01-03 Sun]
 
 * Artemis
 
@@ -35,7 +35,7 @@ Need to [[Import%20external%20Feff%20calculation][import external]] feff calc. g
 
 
 ** Data
-*** TODO Import chi(k) ascii data directly
+*** DONE Import chi(k) ascii data directly
 *** TODO Import mutiple data sets from an Athena project file
 *** TODO Make sure everything works for MDS fitting
 
@@ -56,6 +56,7 @@ Need to [[Import%20external%20Feff%20calculation][import external]] feff calc. g
  - [X] Photon Factory BL12C
  - [X] Lytle database with encoder values
 
+** DONE import chi(k) data on the improper grid
 
 ** TODO Structural Units
 Extension of VPath.  Store GDS, feff, and path objects in a zip file.

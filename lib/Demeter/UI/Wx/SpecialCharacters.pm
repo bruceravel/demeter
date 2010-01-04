@@ -20,9 +20,9 @@ our $PHI     = 'φ';
 
 ## -------- other special characters
 our $COPYRIGHT = '©';
-our $LAQUO     = "«";
-our $RAQUO     = "»";
-our $MDASH     = "—";
+our $LAQUO     = '«';
+our $RAQUO     = '»';
+our $MDASH     = '—';
 
 1;
 

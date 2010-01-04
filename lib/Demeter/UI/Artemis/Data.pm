@@ -682,7 +682,7 @@ sub populate {
   $self->{data} = $data;
   $self->{name}->SetLabel($data->name);
   $self->{cv}->SetValue($data->cv);
-  $self->{datasource}->SetValue($data->prjrecord);
+  $self->{datasource}->SetValue($data->prjrecord || $data->file);
   #$self->{datasource}->ShowPosition($self->{datasource}->GetLastPosition);
   $self->{titles}->SetValue(join("\n", @{ $data->titles }));
   $self->{kmin}->SetValue($data->fft_kmin);
