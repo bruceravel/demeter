@@ -1,28 +1,33 @@
 package Demeter::UI::Wx::SpecialCharacters;
 
 use strict;
+use Encode;
 use base qw( Exporter );
-our @EXPORT_OK = qw($CHI $EPSILON $DELTA $SIGMA $SIGSQR $PHI $COPYRIGHT $LAQUO $RAQUO $MDASH);
-our %EXPORT_TAGS = (all   => [qw($CHI $EPSILON $DELTA $SIGMA $SIGSQR $PHI $COPYRIGHT $LAQUO $RAQUO $MDASH)],
+our @EXPORT_OK = qw(emph $CHI $EPSILON $DELTA $SIGMA $SIGSQR $PHI $COPYRIGHT $LAQUO $RAQUO $MDASH);
+our %EXPORT_TAGS = (all   => [qw(emph $CHI $EPSILON $DELTA $SIGMA $SIGSQR $PHI $COPYRIGHT $LAQUO $RAQUO $MDASH)],
 		    greek => [qw($CHI $EPSILON $DELTA $SIGMA $SIGSQR $PHI)],
 		   );
 
 my $is_windows = (($^O eq 'MSWin32') or ($^O eq 'cygwin'));
 
 ## -------- greek characters
-our $CHI     = 'χ';
-our $EPSILON = 'ε';
-our $DELTA   = 'Δ';
-our $SIGMA   = 'σ';
-our $SIGSQR  = 'σ²';
-our $PHI     = 'φ';
+our $CHI     = chr(967); #"\xCF\x87"; #'χ';
+our $EPSILON = chr(949); #"\xCE\xB5"; #'ε';
+our $DELTA   = chr(916); #"\xCE\x94"; #'Δ';
+our $SIGMA   = chr(963); #"\xCF\x83"; #'σ';
+our $SIGSQR  = chr(963).chr(178); #"\xCF\x83"."\xC2\xB2"; #'σ²';
+our $PHI     = chr(966); #"\xCF\x86"; #'φ';
 
 
 ## -------- other special characters
-our $COPYRIGHT = '©';
-our $LAQUO     = '«';
-our $RAQUO     = '»';
-our $MDASH     = '—';
+our $COPYRIGHT = chr(169); #"\xC2\xA9"; #'©';
+our $LAQUO     = chr(171); #"\xC2\xAB"; #'«';
+our $RAQUO     = chr(187); #"\xC2\xBB"; #'»';
+our $MDASH     = chr(8212); #"\xE2\x80\x94"; #'—';
+
+sub emph {
+  return $LAQUO . $_[0] . $RAQUO;
+};
 
 1;
 

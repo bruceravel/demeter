@@ -566,7 +566,8 @@ sub read_data {
   $self->npts($#x+1);
   $self->xmin($x[0]);
   $self->xmax($x[$#x]);
-  $self->name(basename($self->file, ".dat", ".xmu", ".chi")) if not $self->name;
+  my $filename = fileparse($self->file, qr{\.dat}, qr{\.xmu}, qr{\.chi});
+  $self->name($filename) if not $self->name;
   return $self;
 };
 

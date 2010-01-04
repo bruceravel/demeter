@@ -847,18 +847,14 @@ sub import_chi {
   $demeter->push_mru("chik", $file);
   autosave();
   chdir dirname($file);
-  $frames{main}->{statusbar}->SetStatusText("Imported $file as chi(k) data.");
-};
-
-## see Demeter::UI::Wx::SpecialCharacters
-sub emph {
-  return $LAQUO . $_[0] . $RAQUO;
+  $frames{main}->{statusbar}->SetStatusText("Imported $file as $CHI(k) data.");
 };
 
 sub make_data_frame {
   my ($self, $data) = @_;
   my $databox = $self->{databox};
 
+  #print "|", emph($data->name), "|\n";
   my $new = Wx::ToggleButton->new($self->{datalist}, -1, "Hide ".emph($data->name));
   $databox -> Add($new, 0, wxGROW|wxALL, 0);
   mouseover($new, "Display/hide this data set.");
@@ -1027,7 +1023,7 @@ sub discard_feff {
 
   ## destroy the ScatteringPath object
   ## destroy the feff object
-  $feffobject->DESTROY;
+  $feffobject->DESTROY if (defined($feffobject) and (ref($feffobject) =~ m{Demeter}));
 }
 
 sub export {
