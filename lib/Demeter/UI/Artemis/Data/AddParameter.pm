@@ -100,7 +100,7 @@ Demeter::UI::Artemis::Data::AddParameter - Path parameter editing widget
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.3.
+This documentation refers to Demeter version 0.4.
 
 =head1 SYNOPSIS
 

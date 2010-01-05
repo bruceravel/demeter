@@ -1,7 +1,7 @@
 package Demeter::UI::Wx::SpecialCharacters;
 
 use strict;
-use Encode;
+#use Encode;
 use base qw( Exporter );
 our @EXPORT_OK = qw(emph $CHI $EPSILON $DELTA $SIGMA $SIGSQR $PHI $COPYRIGHT $LAQUO $RAQUO $MDASH);
 our %EXPORT_TAGS = (all   => [qw(emph $CHI $EPSILON $DELTA $SIGMA $SIGSQR $PHI $COPYRIGHT $LAQUO $RAQUO $MDASH)],
@@ -11,22 +11,25 @@ our %EXPORT_TAGS = (all   => [qw(emph $CHI $EPSILON $DELTA $SIGMA $SIGSQR $PHI $
 my $is_windows = (($^O eq 'MSWin32') or ($^O eq 'cygwin'));
 
 ## -------- greek characters
-our $CHI     = chr(967); #"\xCF\x87"; #'χ';
-our $EPSILON = chr(949); #"\xCE\xB5"; #'ε';
-our $DELTA   = chr(916); #"\xCE\x94"; #'Δ';
-our $SIGMA   = chr(963); #"\xCF\x83"; #'σ';
+our $CHI     = chr(967);          #"\xCF\x87";            #'χ';
+our $EPSILON = chr(949);          #"\xCE\xB5";            #'ε';
+our $DELTA   = chr(916);          #"\xCE\x94";            #'Δ';
+our $SIGMA   = chr(963);          #"\xCF\x83";            #'σ';
 our $SIGSQR  = chr(963).chr(178); #"\xCF\x83"."\xC2\xB2"; #'σ²';
-our $PHI     = chr(966); #"\xCF\x86"; #'φ';
+our $PHI     = chr(966);          #"\xCF\x86";            #'φ';
 
 
 ## -------- other special characters
-our $COPYRIGHT = chr(169); #"\xC2\xA9"; #'©';
-our $LAQUO     = chr(171); #"\xC2\xAB"; #'«';
-our $RAQUO     = chr(187); #"\xC2\xBB"; #'»';
+our $COPYRIGHT = chr(169);  #"\xC2\xA9";     #'©';
+our $LAQUO     = chr(171);  #"\xC2\xAB";     #'«';
+our $RAQUO     = chr(187);  #"\xC2\xBB";     #'»';
 our $MDASH     = chr(8212); #"\xE2\x80\x94"; #'—';
 
 sub emph {
-  return $LAQUO . $_[0] . $RAQUO;
+  my ($string) = @_;
+  my ($left, $right) = ('"', '"');
+  #my ($left, $right) = ($LAQUO, $RAQUO);
+  return $left . $string . $right;
 };
 
 1;
@@ -37,7 +40,7 @@ Demeter::UI::Wx::SpecialCharacters - A library of special characters for use in 
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.3.
+This documentation refers to Demeter version 0.4.
 
 =head1 SYNOPSIS
 
@@ -51,7 +54,11 @@ This provides a library of special characters for use in labels on Wx widgets.
 This collects all the various special characters needed in Artemis and
 other Wx-based GUIs into one convenient location.  Please note that
 this exports B<variables> into your module's namespace.  This is a
-against good practice, but is a huge convenience nonetheless.
+against good practice, but is a huge convenience and I am telling you
+about it!
+
+The one exported function is C<emph>, which encloses a string in some
+kind of quotation marks.
 
 The greek letters exported are
 
@@ -75,7 +82,7 @@ lower case sigma
 
 =item C<$SIGSQR>
 
-lower case sigma followed by a proper subscripted 2
+lower case sigma followed by a proper superscripted 2
 
 =item C<$PHI>
 
@@ -107,7 +114,7 @@ The sets exported are
 
 =item C<:all>
 
-As the name implies, all defined characters
+As the name implies, all defined characters plus the C<emph> function
 
 =item C<:greek>
 

@@ -31,21 +31,23 @@ use base 'Wx::App';
 
 
 use Readonly;
-Readonly my $MRU	    => Wx::NewId();
-Readonly my $SHOW_BUFFER    => Wx::NewId();
-Readonly my $CONFIG	    => Wx::NewId();
-Readonly my $SHOW_GROUPS    => Wx::NewId();
-Readonly my $SHOW_ARRAYS    => Wx::NewId();
-Readonly my $SHOW_SCALARS   => Wx::NewId();
-Readonly my $SHOW_STRINGS   => Wx::NewId();
-Readonly my $IMPORT_FEFFIT  => Wx::NewId();
-Readonly my $IMPORT_OLD     => Wx::NewId();
-Readonly my $IMPORT_CHI     => Wx::NewId();
-Readonly my $EXPORT_IFEFFIT => Wx::NewId();
-Readonly my $EXPORT_DEMETER => Wx::NewId();
-Readonly my $PLOT_YAML      => Wx::NewId();
-Readonly my $MODE_STATUS    => Wx::NewId();
-Readonly my $PERL_MODULES   => Wx::NewId();
+Readonly my $MRU	     => Wx::NewId();
+Readonly my $SHOW_BUFFER     => Wx::NewId();
+Readonly my $CONFIG	     => Wx::NewId();
+Readonly my $SHOW_GROUPS     => Wx::NewId();
+Readonly my $SHOW_ARRAYS     => Wx::NewId();
+Readonly my $SHOW_SCALARS    => Wx::NewId();
+Readonly my $SHOW_STRINGS    => Wx::NewId();
+Readonly my $IMPORT_FEFFIT   => Wx::NewId();
+Readonly my $IMPORT_FEFF     => Wx::NewId();
+Readonly my $IMPORT_MOLECULE => Wx::NewId();
+Readonly my $IMPORT_OLD      => Wx::NewId();
+Readonly my $IMPORT_CHI      => Wx::NewId();
+Readonly my $EXPORT_IFEFFIT  => Wx::NewId();
+Readonly my $EXPORT_DEMETER  => Wx::NewId();
+Readonly my $PLOT_YAML       => Wx::NewId();
+Readonly my $MODE_STATUS     => Wx::NewId();
+Readonly my $PERL_MODULES    => Wx::NewId();
 
 use Wx::Perl::Carp;
 $SIG{__WARN__} = sub {Wx::Perl::Carp::warn($_[0])};
@@ -106,10 +108,15 @@ sub OnInit {
   my $mrumenu    = Wx::Menu->new;
 
   my $importmenu = Wx::Menu->new;
-  $importmenu->Append($IMPORT_OLD,     "an old-style Artemis project",  "Import the current fitting model from an old-style Artemis project file");
-  $importmenu->Append($IMPORT_FEFFIT,  "a feffit.inp file",             "Import a fitting model from a feffit.inp file");
-  $importmenu->Append($IMPORT_CHI,     "$CHI(k) data",                  "Import $CHI(k) data from a column data file");
+  $importmenu->Append($IMPORT_CHI,      "$CHI(k) data",                  "Import $CHI(k) data from a column data file");
+  $importmenu->AppendSeparator;
+  $importmenu->Append($IMPORT_FEFF,     "a Feff calculation",            "Import a Feff input file and the results of a calculation made with that file");
+  $importmenu->Append($IMPORT_MOLECULE, "a molecule",                    "Import a molecule using OpenBabel");
+  $importmenu->AppendSeparator;
+  $importmenu->Append($IMPORT_OLD,      "an old-style Artemis project",  "Import the current fitting model from an old-style Artemis project file");
+  $importmenu->Append($IMPORT_FEFFIT,   "a feffit.inp file",             "Import a fitting model from a feffit.inp file");
   $importmenu->Enable($IMPORT_FEFFIT, 0);
+  $importmenu->Enable($IMPORT_MOLECULE, 0);
 
   my $exportmenu = Wx::Menu->new;
   $exportmenu->Append($EXPORT_IFEFFIT,  "to Ifeffit script",  "Export the current fitting model as an Ifeffit script");
@@ -693,11 +700,15 @@ sub OnMenuClick {
       last SWITCH;
     };
 
+    ## -------- import submenu
     ($id == $IMPORT_OLD) and do {
       import_old(\%frames);
       last SWITCH;
     };
-
+    ($id == $IMPORT_FEFF) and do {
+      import_external_feff();
+      last SWITCH;
+    };
     ($id == $IMPORT_FEFFIT) and do {
       last SWITCH;
     };
@@ -706,6 +717,7 @@ sub OnMenuClick {
       last SWITCH;
     };
 
+    ## -------- export submenu
     ($id == $EXPORT_IFEFFIT) and do {
       export(\%frames, 'ifeffit');
       last SWITCH;
@@ -715,19 +727,18 @@ sub OnMenuClick {
       last SWITCH;
     };
 
+    ## -------- debug submenu
     ($id == $PLOT_YAML) and do {
       $frames{Plot}->fetch_parameters;
       my $yaml   = $demeter->po->serialization;
       my $dialog = Demeter::UI::Artemis::ShowText->new($frames{main}, $yaml, 'YAML of Plot object') -> Show;
       last SWITCH;
     };
-
     ($id == $PERL_MODULES) and do {
       my $text   = $demeter->module_environment . $demeter -> wx_environment;
       my $dialog = Demeter::UI::Artemis::ShowText->new($frames{main}, $text, 'Perl module versions') -> Show;
       last SWITCH;
     };
-
     ($id == $MODE_STATUS) and do {
       my $dialog = Demeter::UI::Artemis::ShowText->new($frames{main}, $demeter->mo->report('all'), 'Overview of this instance of Demeter') -> Show;
       last SWITCH;
@@ -822,6 +833,67 @@ sub import_prj {
   $frames{main}->{statusbar}->SetStatusText("Importing data \"" . $data->name . "\" from $file.");
 };
 
+
+
+## need better reaction in case of absent phase.bin file.
+sub import_external_feff {
+  my ($fname) = @_;
+  my $file = $fname;
+  if (not $fname) {
+    my $fd = Wx::FileDialog->new( $frames{main}, "Import an Atoms or Feff input file", cwd, q{},
+				  "Atoms/Feff input (*.inp)|*.inp|All files|*.*",
+				  wxFD_OPEN|wxFD_FILE_MUST_EXIST|wxFD_CHANGE_DIR|wxFD_PREVIEW,
+				  wxDefaultPosition);
+    if ($fd->ShowModal == wxID_CANCEL) {
+      $frames{main}->{statusbar}->SetStatusText("$CHI(k) import cancelled.");
+      return;
+    };
+    $file = File::Spec->catfile($fd->GetDirectory, $fd->GetFilename);
+  };
+
+  my ($atoms_file, $feff_file) = (q{}, q{});
+  ($atoms_file, $feff_file) = ($file, File::Spec->catfile(dirname($file), 'feff.inp')) if ($demeter->is_atoms($file));
+  ($atoms_file, $feff_file) = (q{}, $file)                                             if ($demeter->is_feff($file));
+  ($atoms_file = File::Spec->catfile(dirname($file), 'atoms.inp')) if ((not $atoms_file) and (-e File::Spec->catfile(dirname($file), 'atoms.inp')));
+
+  my ($filename, $pathto, $suffix) = fileparse($file, qr{\.inp});
+  my $efeff = Demeter::Feff::External -> new(screen=>0, name=>$filename);
+  my $destination = File::Spec->catfile($frames{main}->{project_folder}, 'feff', $efeff->group);
+  $efeff->workspace($destination);
+
+  $efeff->file($feff_file);
+  copy($atoms_file, File::Spec->catfile($destination, 'atoms.inp')) if $atoms_file;
+  copy($feff_file, File::Spec->catfile($destination, $efeff->group.'.inp'));
+  $efeff->freeze(File::Spec->catfile($destination, $efeff->group.'.yaml'));
+
+  ## import atoms.inp, create Feff frame
+  my ($fnum, $ifeff) = Demeter::UI::Artemis::make_feff_frame($frames{main}, $atoms_file, $efeff->name, $efeff);
+
+  ## import feff.inp
+  my $text = $efeff->slurp($feff_file);
+  $frames{$fnum}->{Feff}->{feff}->SetValue($text);
+
+  ## fill in Feff frame
+  $frames{$fnum}->{Feff}->{feffobject} = $efeff;
+  $frames{$fnum}->{Feff}->fill_intrp_page($efeff);
+  $frames{$fnum}->{notebook}->ChangeSelection(2);
+
+  $frames{$fnum}->{Feff} ->{name}->SetValue($efeff->name);
+  $frames{$fnum}->{Paths}->{name}->SetValue($efeff->name);
+
+  $frames{$fnum} -> Show(1);
+  $frames{main}->{$fnum}->SetValue(1);
+  $frames{main}->{$fnum}->SetLabel("Hide ".emph($efeff->name));
+
+  ## disable atoms tab is not $atoms_file (how?)
+
+  $demeter->push_mru("externalfeff", $file);
+  autosave();
+  chdir dirname($file);
+  modified(1);
+  $frames{main}->{statusbar}->SetStatusText("Imported $file as a Feff calculation.");
+};
+
 sub import_chi {
   my ($fname) = @_;
   my $file = $fname;
@@ -854,9 +926,9 @@ sub make_data_frame {
   my ($self, $data) = @_;
   my $databox = $self->{databox};
 
-  #print "|", emph($data->name), "|\n";
-  #my $new = Wx::ToggleButton->new($self->{datalist}, -1, "Hide ".emph($data->name));
-  my $new = Wx::ToggleButton->new($self->{datalist}, -1, "Hide ".$data->name);
+  #print join('|', split(//, emph($data->name))), $/;
+  my $new = Wx::ToggleButton->new($self->{datalist}, -1, "Hide ".emph($data->name));
+  #my $new = Wx::ToggleButton->new($self->{datalist}, -1, "Hide ".$data->name);
   $databox -> Add($new, 0, wxGROW|wxALL, 0);
   mouseover($new, "Display/hide " . $data->name . ".");
 
@@ -923,7 +995,7 @@ sub new_feff {
   ## also yaml data
   my $file = $fname;
   if (not $file) {
-    my $fd = Wx::FileDialog->new( $self, "Import crystal or Feff data", cwd, q{},
+    my $fd = Wx::FileDialog->new( $self, "Import crystal data", cwd, q{},
 				  "input and CIF files (*.inp;*.cif)|*.inp;*.cif|input file (*.inp)|*.inp|CIF file (*.cif)|*.cif|All files|*.*",
 				  wxFD_OPEN|wxFD_FILE_MUST_EXIST|wxFD_CHANGE_DIR|wxFD_PREVIEW,
 				  wxDefaultPosition);
@@ -935,6 +1007,10 @@ sub new_feff {
   };
   if (not -e $file) {
     $self->{statusbar}->SetStatusText("$file does not exist.");
+    return;
+  };
+  if (not ($demeter->is_atoms($file) or $demeter->is_cif($file))) {
+    $self->{statusbar}->SetStatusText("$file does not seem to be an Atoms input file or a CIF file");
     return;
   };
 
@@ -950,7 +1026,7 @@ sub make_feff_frame {
   my $feffbox = $self->{feffbox};
   $name ||= basename($file);	# ok for importing an atoms or CIF file
 
-  my $new = Wx::ToggleButton->new($self->{fefflist}, -1, "Show $name"); #.emph($name));
+  my $new = Wx::ToggleButton->new($self->{fefflist}, -1, "Show ".emph($name));
   $feffbox -> Add($new, 0, wxGROW|wxRIGHT, 5);
   mouseover($new, "Display/hide $name.");
 
@@ -973,7 +1049,7 @@ sub make_feff_frame {
   $frames{$fnum} =  Demeter::UI::AtomsApp->new($base, $feffobject, 1);
   $frames{$fnum} -> SetTitle('Artemis [Feff] Atoms and Feff');
   $frames{$fnum} -> SetIcon($icon);
-  $frames{$fnum}->{Atoms}->Demeter::UI::Atoms::Xtal::open_file($file);
+  $frames{$fnum}->{Atoms}->Demeter::UI::Atoms::Xtal::open_file($file) if ($file and (-e $file) and $demeter->is_atoms($file));
   #$newtool -> SetLabel( $frames{$fnum}->{Atoms}->{name}->GetValue );
   $frames{$fnum} -> {fnum} = $fnum;
 
@@ -1088,7 +1164,7 @@ Demeter::UI::Artemis - EXAFS analysis using Feff and Ifeffit
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.3.
+This documentation refers to Demeter version 0.4.
 
 =head1 SYNOPSIS
 

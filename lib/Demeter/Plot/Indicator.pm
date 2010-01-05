@@ -124,7 +124,7 @@ Demeter::Plot::Indicator - Vertical lines marking points on a plot
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.3.
+This documentation refers to Demeter version 0.4.
 
 =head1 SYNOPSIS
 

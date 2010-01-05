@@ -73,14 +73,17 @@ sub read_folder {
 
   if (none {$_ eq 'phase.bin'} @files) {
     carp("Demeter::Feff::External::read_folder: $folder does not contain a phase.bin file");
-    return 0;
+    $self->phasebin('--- missing ---');
+    return $self;
   };
   if (none {$_ eq 'files.dat'} @files) {
     carp("Demeter::Feff::External::read_folder: $folder does not contain a files.dat file");
+    $self->filesdat('--- missing ---');
   #  return 0;
   };
   if (none {$_ eq 'paths.dat'} @files) {
     carp("Demeter::Feff::External::read_folder: $folder does not contain a paths.dat file");
+    $self->pathsfile('--- missing ---');
   #  return 0;
   };
 
@@ -117,6 +120,7 @@ sub read_folder {
     $hash{$f} = $sp->group;
   };
   $self->nnnn(\%hash);
+  return $self;
 };
 
 
@@ -208,7 +212,7 @@ Demeter::Feff::External - Import and manipulate external Feff calculations
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.3.
+This documentation refers to Demeter version 0.4.
 
 =head1 SYNOPSIS
 

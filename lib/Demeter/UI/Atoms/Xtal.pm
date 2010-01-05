@@ -537,16 +537,17 @@ sub get_crystal_data {
   my $problems = q{};
   $atoms->clear;
 
+  my $this = $self->{space}->GetValue || q{};
+  return 0 if (not $this);
+  $atoms->space($this);
+  $atoms->cell->space_group($this); # why is this necessary!!!!!  why is the trigger not being triggered?????
+  $problems .= $atoms->cell->group->warning.$/ if $atoms->cell->group->warning;
+
   $atoms->name($self->{name}->GetValue || "Feff:".$atoms->group);
   $self->{name}->SetValue($atoms->name);
 
   my @titles = split(/\n/, $self->{titles}->GetValue);
   $atoms->titles(\@titles);
-
-  my $this = $self->{space}->GetValue || q{};
-  $atoms->space($this);
-  $atoms->cell->space_group($this); # why is this necessary!!!!!  why is the trigger not being triggered?????
-  $problems .= $atoms->cell->group->warning.$/ if $atoms->cell->group->warning;
 
   foreach my $param (qw(b c)) {
     next if $self->{$param}->GetValue;
@@ -822,7 +823,7 @@ Demeter::UI::Atoms::Xtal - Atoms' crystal utility
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.3.
+This documentation refers to Demeter version 0.4.
 
 =head1 DESCRIPTION
 

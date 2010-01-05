@@ -1,6 +1,11 @@
 -*- org -*-
+#+TITLE:     Demeter to do list
+#+AUTHOR:    Bruce Ravel
+#+EMAIL:     bravel@bnl.gov
+#+LANGUAGE:  en
+#+TEXT:      List of chores for Demeter, Artemis, and port to Windows
+#+OPTIONS:   H:3 num:t toc:t \n:nil @:t ::t |:t ^:t *:t TeX:t LaTeX:t
 
-#+TITLE: Demeter to do list
 [2010-01-03 Sun]
 
 * Artemis
@@ -13,7 +18,13 @@
 
 ** Atoms/Feff
 *** TODO Rename Atoms/Feff calculation
-*** TODO Import external Feff calculation
+*** [0/5] Import external Feff calculation
+ - [ ] import atoms or feff + rest of calculation
+ - [ ] deal with missing phase.bin
+ - [ ] deal with missing feffNNNN.dat (i.e. just importing feff.inp)
+ - [ ] how to disable a tab?  disable Atoms tab is atoms file is missing
+ - [ ] 
+
 *** TODO Balance interstitial energies
 
 ** History
@@ -38,7 +49,6 @@ Need to [[Import%20external%20Feff%20calculation][import external]] feff calc. g
 *** DONE Import chi(k) ascii data directly
 *** TODO Import mutiple data sets from an Athena project file
 *** TODO Make sure everything works for MDS fitting
-
 
 
 ------

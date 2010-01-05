@@ -59,6 +59,7 @@ use MooseX::StrictConstructor;
 use Ifeffit;
 with 'Demeter::Dispose';
 with 'Demeter::Tools';
+with 'Demeter::Files';
 with 'Demeter::Project';
 with 'Demeter::MRU';
 
@@ -739,7 +740,7 @@ Demeter -  An object oriented EXAFS data analysis system using Ifeffit
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.3.0
+This documentation refers to Demeter version 0.4.0
 
 =head1 SYNOPSIS
 

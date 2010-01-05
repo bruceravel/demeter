@@ -43,7 +43,7 @@ MooseX::SetGet - Moose Role to add a quick set and get methods
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.3.
+This documentation refers to Demeter version 0.4.
 
 =head1 SYNOPSIS
 

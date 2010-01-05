@@ -194,7 +194,7 @@ Demeter::Plot::Gnuplot - Using Gnuplot with Demeter
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.3.
+This documentation refers to Demeter version 0.4.
 
 =head1 SYNOPSIS
 
