@@ -6,51 +6,64 @@
 #+TEXT:      List of chores for Demeter, Artemis, and port to Windows
 #+OPTIONS:   H:3 num:t toc:t \n:nil @:t ::t |:t ^:t *:t TeX:t LaTeX:t
 
-[2010-01-03 Sun]
-
-* Artemis
+* Artemis: polishing for beta release
 
 ** TODO Cut and paste is wonky in GDS grid
-** TODO Reorganize path list, up, down
- - [ ] up
- - [ ] down
-
 
 ** Atoms/Feff
 *** TODO Rename Atoms/Feff calculation
-*** [0/5] Import external Feff calculation
- - [ ] import atoms or feff + rest of calculation
+
+*** [1/4] Import external Feff calculation
+ - [X] import atoms or feff + rest of calculation
  - [ ] deal with missing phase.bin
  - [ ] deal with missing feffNNNN.dat (i.e. just importing feff.inp)
- - [ ] how to disable a tab?  disable Atoms tab is atoms file is missing
- - [ ] 
+ - [ ] how to disable a tab?  disable Atoms tab if atoms file is missing
 
-*** TODO Balance interstitial energies
+*** TODO Import a feff.inp file alone via Feff calc add button
 
-** History
 
 ** Projects
-
 *** TODO Import feffit.inp
 Need to [[Import%20external%20Feff%20calculation][import external]] feff calc. gracefully in order to do this
+Demeter::Feff:Feffit currently converts feffit.inp into a Fit object
+using file/folder attributes.  Instead, it needs to import the
+external Feff calculations.  That means that checks for completeness
+of the external Feff calculation must be robust.
 
 *** TODO Better *sensitivity* to when a project needs saving
 
-
+*** TODO Saving incomplete projects
 
 ** Plotting
-*** TODO autoplot kq after fit does not seem to be working
-*** TODO Use stack data sets offset
-*** TODO reorder plot list
-
-
+*** DONE autoplot kq after fit does not seem to be working
+*** DONE window check button sometimes ignored
+*** TODO Use stack data sets offset  :MDS:
 
 ** Data
 *** DONE Import chi(k) ascii data directly
-*** TODO Import mutiple data sets from an Athena project file
-*** TODO Make sure everything works for MDS fitting
+*** TODO Make sure everything works for MDS fitting :MDS:
+*** TODO Click new data button, immediately cancel --> crash!
 
+--------
 
+* Artemis: bigger features
+
+** History
+
+** TODO After beta release
+  1. Balance interstitial energies
+  2. Use structural units
+  3. Use arbitrary MS paths
+  4. Use nearly collinear paths
+  5. Import mutiple data sets from an Athena project file
+  6. Reorganize lists, move individuual items up and down, move blocks
+     up and down
+      - Path list
+      - Plot list
+  
+  
+  
+  
 ------
 * Demeter
 
@@ -86,9 +99,9 @@ computed from the mixing parameter.
 This is a single object for the user to interact with which expands
 into 2 or 3 3-legged paths and a single 4-legged path
 
-** TODO What's up with cloning Atoms object?
-See [[file:examples/recipes/MixedShell/abc.pl][MixedShell recipe]]
-This might be fixed after recent work on cloning
+** DONE What's up with cloning Atoms object?
++See [[file:examples/recipes/MixedShell/abc.pl][MixedShell recipe]]
+This might be fixed after recent work on cloning+  /yessiree/
 
 ** TODO Current plot to column data file
 

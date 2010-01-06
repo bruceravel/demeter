@@ -41,7 +41,7 @@ sub plot {
       return $self;
       last SWITCH;
     };
-    (lc($space) eq 'kqfit') and do {
+    (lc($space) =~ m{\Akq}) and do {
       $self -> plot_kqfit;
       $pf   -> increment;
       return $self;
@@ -93,10 +93,10 @@ sub plot {
       $self->plot_run($space);
       $pf->increment;
     };
-    if ($pf->plot_win) {
-      $self->plot_window($space);
-      $pf->increment;
-    };
+  };
+  if ($pf->plot_win) {
+    $self->plot_window($space);
+    $pf->increment;
   };
 
   return $self;

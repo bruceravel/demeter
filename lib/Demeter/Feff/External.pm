@@ -51,6 +51,7 @@ has 'workspace' => (is=>'rw', isa => 'Str', default => q{}, # valid directory
 has 'phasebin'  => (is => 'rw', isa => 'Str',  default => q{},);
 has 'filesdat'  => (is => 'rw', isa => 'Str',  default => q{},);
 has 'pathsfile' => (is => 'rw', isa => 'Str',  default => q{},);
+has 'npaths'    => (is => 'rw', isa => 'Int',  default => 0,);
 has 'nnnn'      => (
 		    metaclass => 'Collection::Hash',
 		    is        => 'rw',
@@ -72,30 +73,31 @@ sub read_folder {
   closedir $F;
 
   if (none {$_ eq 'phase.bin'} @files) {
-    carp("Demeter::Feff::External::read_folder: $folder does not contain a phase.bin file");
-    $self->phasebin('--- missing ---');
-    return $self;
+    #carp("Demeter::Feff::External::read_folder: $folder does not contain a phase.bin file");
+    $self->phasebin();
+    #return $self;
+  } else {
+    $self->phasebin(File::Spec->catfile($folder, 'phase.bin'));
+    if (-d $self->workspace) {
+      copy($self->phasebin, $self->workspace);
+    } elsif ($self->workspace) {
+      mkpath($self->workspace);
+      copy($self->phasebin, $self->workspace);
+    } else {
+      $self->check_workspace;
+    };
   };
   if (none {$_ eq 'files.dat'} @files) {
-    carp("Demeter::Feff::External::read_folder: $folder does not contain a files.dat file");
-    $self->filesdat('--- missing ---');
-  #  return 0;
+    #carp("Demeter::Feff::External::read_folder: $folder does not contain a files.dat file");
+    $self->filesdat();
+    #return 0;
   };
-  if (none {$_ eq 'paths.dat'} @files) {
-    carp("Demeter::Feff::External::read_folder: $folder does not contain a paths.dat file");
-    $self->pathsfile('--- missing ---');
+  #if (none {$_ eq 'paths.dat'} @files) {
+  #  carp("Demeter::Feff::External::read_folder: $folder does not contain a paths.dat file");
+  #  $self->pathsfile();
   #  return 0;
-  };
+  #};
 
-  $self->phasebin (File::Spec->catfile($folder, 'phase.bin'));
-  if (-d $self->workspace) {
-    copy($self->phasebin, $self->workspace);
-  } elsif ($self->workspace) {
-    mkpath($self->workspace);
-    copy($self->phasebin, $self->workspace);
-  } else {
-    $self->check_workspace;
-  };
   $self->filesdat (File::Spec->catfile($folder, 'files.dat'));
   $self->pathsfile(File::Spec->catfile($folder, 'paths.dat'));
 
@@ -120,6 +122,8 @@ sub read_folder {
     $hash{$f} = $sp->group;
   };
   $self->nnnn(\%hash);
+  my @ids = $self->ids_in_nnnn;
+  $self->npaths($#ids + 1);
   return $self;
 };
 
@@ -197,6 +201,12 @@ sub parse_zcwif_from_files {
   };
   close $FD;
   return \%hash;
+};
+
+sub is_complete {
+  my ($self) = @_;
+  return 0 if (not $self->file);
+  return ( $self->npaths and $self->filesdat and (-e $self->filesdat) and $self->phasebin and (-e $self->phasebin) );
 };
 
 override 'pathfinder' => sub {

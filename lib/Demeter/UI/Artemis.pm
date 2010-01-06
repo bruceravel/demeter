@@ -860,8 +860,23 @@ sub import_external_feff {
   my $efeff = Demeter::Feff::External -> new(screen=>0, name=>$filename);
   my $destination = File::Spec->catfile($frames{main}->{project_folder}, 'feff', $efeff->group);
   $efeff->workspace($destination);
-
   $efeff->file($feff_file);
+  if (not $efeff->is_complete) {
+    my $message = "Error importing external Feff calculation:\n\n";
+    $message .= "That folder has no feffNNNN files.\n" if (not $efeff->npaths);
+    $message .= "That folder has no phase.bin file.\n" if (not $efeff->phasebin);
+    $message .= "That folder has no files.dat file.\n" if (not $efeff->filesdat);
+    $message .= "\nTherefore $file cannot be imported as an external Feff calculation.\n";
+    my $error = Wx::MessageDialog->new($frames{main},
+				       $message,
+				       "Error importing Feff calcualtion",
+				       wxOK|wxICON_ERROR);
+    my $result = $error->ShowModal;
+    $frames{main}->{statusbar}->SetStatusText("Importing external Feff calculation aborted.");
+    return 0;
+  };
+
+
   copy($atoms_file, File::Spec->catfile($destination, 'atoms.inp')) if $atoms_file;
   copy($feff_file, File::Spec->catfile($destination, $efeff->group.'.inp'));
   $efeff->freeze(File::Spec->catfile($destination, $efeff->group.'.yaml'));

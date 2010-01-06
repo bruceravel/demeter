@@ -112,9 +112,8 @@ has 'comment_re'   => (is => 'ro', isa => 'RegexpRef',
 		       default => sub{ $opt->list2re('!', '#', '%') });
 
 
-my @gds;
-my @data;
-$data[0] = ({titles=>[], opparams=>{}, path=>[], feffcalcs=>[]});
+my @gds  = ();
+my @data = ();
 
 sub Read {
   my ($self) = @_;
@@ -131,6 +130,9 @@ sub Read {
   my ($name,$path,$suffix) = fileparse($file);
   $self->cwd($path);
 
+  @gds  = ();
+  @data = ();
+  $data[0] = ({titles=>[], opparams=>{}, path=>[], feffcalcs=>[]});
   open *I, $file;
   $self->parse_file($path, *I);
   close *I;

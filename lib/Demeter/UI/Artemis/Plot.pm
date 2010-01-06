@@ -166,6 +166,13 @@ sub fetch_parameters {
   foreach my $p (qw(kmin kmax rmin rmax qmin qmax)) {
     $demeter->po->$p($self->{limits}->{$p}->GetValue);
   };
+
+  #   $demeter->po->plot_fit($self->{limits}->{fit}       ->GetValue);
+  #   $demeter->po->plot_bkg($self->{limits}->{background}->GetValue);
+  #   $demeter->po->plot_win($self->{limits}->{window}    ->GetValue);
+  #   $demeter->po->plot_res($self->{limits}->{residual}  ->GetValue);
+  #   $demeter->po->plot_run($self->{limits}->{running}   ->GetValue);
+
   $demeter->po->stackdo($self->{stack}->{dostack}->GetValue);
   $demeter->po->stackstart($self->{stack}->{start}->GetValue);
   $demeter->po->stackinc($self->{stack}->{increment}->GetValue);

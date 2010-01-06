@@ -8,18 +8,18 @@ $data -> set_mode(screen=>0);
 ## -------- import atoms.inp files and write feff.inp for AgBr
 my @common = (file=>'AgBr.inp', rpath=>4.1);
 my $atoms_br = Demeter::Atoms->new(@common);
-mkdir 'Br';
+mkdir 'Br' if (not -d 'Br');
 open FBR, '>Br/agbr_feff.inp';
 print FBR $atoms_br -> Write('feff');
 close FBR;
 
-## -------- import atoms.inp files and write feff.inp for AgCl
-my $atoms_cl = Demeter::Atoms->new(@common);
+## -------- Clone AgBr input file to make AgCl
+my $atoms_cl = $atoms_br -> clone(name=>'AgCl');
 my $popped = $atoms_cl -> pop_sites;
 $popped   =~ s{Br}{Cl}g;
 $atoms_cl -> push_sites($popped);
 $atoms_cl -> is_populated(0);
-mkdir 'Cl';
+mkdir 'Cl' if (not -d 'Cl');
 open FCL, '>Cl/agcl_feff.inp';
 print FCL $atoms_cl -> Write('feff');
 close FCL;
