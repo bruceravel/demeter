@@ -103,16 +103,23 @@ on.
 
 Return the list of recently used files from a file group:
 
-  my @list_of_files = $atoms_object->("atoms");
+  my @list_of_files = $atoms_object->get_mru_list("atoms");
+
+or
+
+  my @list_of_files = $atoms_object->get_mru_list(@list_of_goups);
+
+The argument is one or more group names.
 
 This list is actually a list of lists, like so:
 
-  [ [file1, type1],
-    [file2, type2],
-   ...
+  [ [file1, group1],
+    [file2, group2],
+      ...
+    [fileN, groupN],
   ]
 
-where the types are things like "atoms", "feff" -- that is catagories
+where the groups are things like "atoms", "feff" -- that is categories
 of files used to organize the ini file containing the recent files.
 
 =back
