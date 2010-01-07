@@ -13,13 +13,13 @@
 ** Atoms/Feff
 *** TODO Rename Atoms/Feff calculation
 
-*** [1/4] Import external Feff calculation
+*** [4/4] Import external Feff calculation
  - [X] import atoms or feff + rest of calculation
- - [ ] deal with missing phase.bin
- - [ ] deal with missing feffNNNN.dat (i.e. just importing feff.inp)
- - [ ] how to disable a tab?  disable Atoms tab if atoms file is missing
+ - [X] deal with missing phase.bin
+ - [X] deal with missing feffNNNN.dat (i.e. just importing feff.inp)
+ - [X] how to disable a tab?  disable Atoms tab if atoms file is missing
 
-*** TODO Import a feff.inp file alone via Feff calc add button
+*** DONE Import a feff.inp file alone via Feff calc add button
 
 
 ** Projects
@@ -42,7 +42,7 @@ of the external Feff calculation must be robust.
 ** Data
 *** DONE Import chi(k) ascii data directly
 *** TODO Make sure everything works for MDS fitting :MDS:
-*** TODO Click new data button, immediately cancel --> crash!
+*** DONE Click new data button, immediately cancel --> crash!
 
 --------
 

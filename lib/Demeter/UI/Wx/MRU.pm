@@ -22,11 +22,19 @@ use Wx::Event qw(EVT_CLOSE EVT_LISTBOX EVT_BUTTON EVT_RADIOBOX);
 use Demeter;
 
 my $demeter = Demeter->new();
+## type is either a scalar containing a string or an array reference
+## pointing to an array of strings
 sub new {
   my ($class, $parent, $type, $text, $title) = @_;
 
-  my @mrulist = $demeter->get_mru_list($type);
-  return -1 if not @mrulist;
+  my @types = (ref($type) =~ m{ARRAY}) ? @$type : ($type);
+
+  my @list = $demeter->get_mru_list(@types);
+  return -1 if not @list;
+
+  my @mrulist = (ref($type) =~ m{ARRAY})
+    ? map { sprintf "[ %s ]  %s", $_->[1], $_->[0] } @list
+      : map { $_->[0] } @list;
 
   my $dialog = $class->SUPER::new( $parent,
 				   $text  || "Select a recent $type file",
@@ -34,13 +42,33 @@ sub new {
 				   \@mrulist );
   _doublewide($dialog);
 
-  return $dialog;;
+  return $dialog;
 };
 
 sub _doublewide {
   my ($dialog) = @_;
   my ($w, $h) = $dialog->GetSizeWH;
   $dialog -> SetSizeWH(2*$w, $h);
+};
+
+sub _pad {
+  my ($string, $width) = @_;
+  $width ||= 10;
+  my $len = length $string;
+  return $string if ($len >= 10);
+  my $left = int($len/2);
+  my $right = $len - $left;
+  return " " x $left . $string . " " x $right;
+};
+
+1;
+
+package Wx::SingleChoiceDialog;
+sub GetMruSelection {
+  my ($self) = @_;
+  my $file = $self->GetStringSelection;
+  $file =~ s{\A\[.+\]\s+}{}; # this will simply not match if the filename is not preceded by its type
+  return $file;
 };
 
 1;

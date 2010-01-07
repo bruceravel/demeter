@@ -118,6 +118,7 @@ sub autosave {
   unlink $main->{autosave_file};
   my $name = $_[0] || $main->{name}->GetValue;
   $name =~ s{\s+}{_}g;
+  $name ||= "artemis";
   $main->{autosave_file} = File::Spec->catfile($Demeter::UI::Artemis::demeter->stash_folder, $name.'.autosave');
   save_project(\%Demeter::UI::Artemis::frames, $main->{autosave_file});
   $main->{statusbar}->SetStatusText("Performed autosave ... done!");

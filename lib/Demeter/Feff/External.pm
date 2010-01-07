@@ -206,7 +206,21 @@ sub parse_zcwif_from_files {
 sub is_complete {
   my ($self) = @_;
   return 0 if (not $self->file);
-  return ( $self->npaths and $self->filesdat and (-e $self->filesdat) and $self->phasebin and (-e $self->phasebin) );
+  return ( $self->npaths 
+	   and $self->filesdat and (-e $self->filesdat) and (-r $self->filesdat)
+	   and $self->phasebin and (-e $self->phasebin) and (-r $self->phasebin)
+	 );
+};
+
+sub problem {
+  my ($self) = @_;
+  my $message = q{};
+  $message .= "That folder has no feffNNNN files.\n"  if (not $self->npaths);
+  $message .= "That folder has no phase.bin file.\n"  if (not $self->phasebin);
+  $message .= "That phase.bin file cannot be read.\n" if ((-e $self->phasebin) and (not -r $self->phasebin));
+  $message .= "That folder has no files.dat file.\n"  if (not $self->filesdat);
+  $message .= "That files.dat file cannot be read.\n" if ((-e $self->filesdat) and (not -r $self->filesdat));
+  return $message;
 };
 
 override 'pathfinder' => sub {

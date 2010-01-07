@@ -26,7 +26,9 @@ use YAML::Tiny;
 use Wx qw(:everything);
 use Wx::Event qw(EVT_MENU EVT_CLOSE EVT_TOOL_ENTER EVT_CHECKBOX EVT_BUTTON
 		 EVT_TOGGLEBUTTON EVT_ENTER_WINDOW EVT_LEAVE_WINDOW
-		 EVT_TOOL_RCLICKED EVT_RIGHT_UP);
+		 EVT_TOOL_RCLICKED EVT_RIGHT_UP
+		 EVT_NOTEBOOK_PAGE_CHANGING
+	       );
 use base 'Wx::App';
 
 
@@ -644,7 +646,7 @@ sub set_mru {
   my @list = $demeter->get_mru_list('artemis');
   foreach my $f (@list) {
     #print ">> $f\n";
-    $frames{main}->{mrumenu}->Append(-1, $f);
+    $frames{main}->{mrumenu}->Append(-1, $f->[0]);
   };
 };
 
@@ -770,17 +772,12 @@ sub OnToolClick {
 };
 sub OnDataRightClick {
   my ($self, $event) = @_;
-  #print "$self  $event  ", $event->GetId, $/;
-  #return if ($event->GetId != 0);
-
-  #my @mrulist = $demeter->get_mru_list("athena");
   my $dialog = Demeter::UI::Wx::MRU->new($frames{main}, 'athena', "Select a recent Athena project file", "Recent Athena project files");
-  $frames{main}->{statusbar}->SetStatusText("There are no recent Athena project files."), return
-    if ($dialog == -1);
+  $frames{main}->{statusbar}->SetStatusText("There are no recent Athena project files."), return if ($dialog == -1);
   if( $dialog->ShowModal == wxID_CANCEL ) {
     $frames{main}->{statusbar}->SetStatusText("Import cancelled.");
   } else {
-    import_prj($dialog->GetStringSelection);
+    import_prj($dialog->GetMruSelection);
   };
 };
 
@@ -807,7 +804,6 @@ sub get_prj_and_record {
       ($result == wxID_CANCEL) or     # cancel button clicked
       ($frames{prj}->{record} == -1)  # import button without selecting a group
      ) {
-    $frames{main}->{statusbar}->SetStatusText("Data import cancelled.");
     return (q{}, q{});
   };
 
@@ -817,6 +813,11 @@ sub get_prj_and_record {
 sub import_prj {
   my ($fname) = @_;
   my ($file, $prj, $record) = get_prj_and_record($fname);
+
+  if ((not $prj) or (not $record)) {
+    $frames{main}->{statusbar}->SetStatusText("Data import cancelled.");
+    return;
+  };
 
   my $data = $prj->record($record);
   my ($dnum, $idata) = make_data_frame($frames{main}, $data);
@@ -856,20 +857,38 @@ sub import_external_feff {
   ($atoms_file, $feff_file) = (q{}, $file)                                             if ($demeter->is_feff($file));
   ($atoms_file = File::Spec->catfile(dirname($file), 'atoms.inp')) if ((not $atoms_file) and (-e File::Spec->catfile(dirname($file), 'atoms.inp')));
 
+  if (not -e $feff_file) {
+    my $message = <<EOH
+Error importing external Feff calculation.
+
+It is unclear which file is the Feff input file.
+It is likely that you selected the Atoms input
+file in the file selection dialog.  You should
+select the Feff input file instead.
+
+EOH
+      ;
+    my $error = Wx::MessageDialog->new($frames{main},
+				       $message,
+				       "Error importing Feff calculation",
+				       wxOK|wxICON_ERROR);
+    my $result = $error->ShowModal;
+    $frames{main}->{statusbar}->SetStatusText("Importing external Feff calculation aborted.");
+    return 0;
+  };
+
   my ($filename, $pathto, $suffix) = fileparse($file, qr{\.inp});
   my $efeff = Demeter::Feff::External -> new(screen=>0, name=>$filename);
   my $destination = File::Spec->catfile($frames{main}->{project_folder}, 'feff', $efeff->group);
   $efeff->workspace($destination);
   $efeff->file($feff_file);
   if (not $efeff->is_complete) {
-    my $message = "Error importing external Feff calculation:\n\n";
-    $message .= "That folder has no feffNNNN files.\n" if (not $efeff->npaths);
-    $message .= "That folder has no phase.bin file.\n" if (not $efeff->phasebin);
-    $message .= "That folder has no files.dat file.\n" if (not $efeff->filesdat);
-    $message .= "\nTherefore $file cannot be imported as an external Feff calculation.\n";
+    my $message = "Error importing external Feff calculation:\n\n"
+                . $efeff->problem
+		. "\nTherefore $file cannot be imported as an external Feff calculation.\n";
     my $error = Wx::MessageDialog->new($frames{main},
 				       $message,
-				       "Error importing Feff calcualtion",
+				       "Error importing Feff calculation",
 				       wxOK|wxICON_ERROR);
     my $result = $error->ShowModal;
     $frames{main}->{statusbar}->SetStatusText("Importing external Feff calculation aborted.");
@@ -992,16 +1011,12 @@ sub OnFeffClick {
 };
 sub OnFeffRightClick {
   my ($self, $event) = @_;
-  #print "$self  $event  ", $event->GetId, $/;
-  #return if ($event->GetId != 0);
-
-  my $dialog = Demeter::UI::Wx::MRU->new($frames{main}, 'atoms', "Select a recent atoms input file or CIF file", "Recent crystal data file");
-  $frames{main}->{statusbar}->SetStatusText("There are no recent crystal files."), return
-    if ($dialog == -1);
+  my $dialog = Demeter::UI::Wx::MRU->new($frames{main}, ['atoms', 'feff'], "Select a recent Feff input file, Atoms input file, or CIF file", "Recent Feff or crystal data file");
+  $frames{main}->{statusbar}->SetStatusText("There are no recent crystal files."), return if ($dialog == -1);
   if( $dialog->ShowModal == wxID_CANCEL ) {
     $frames{main}->{statusbar}->SetStatusText("Import cancelled.");
   } else {
-    new_feff($frames{main}, $dialog->GetStringSelection);
+    new_feff($frames{main}, $dialog->GetMruSelection);
   };
 };
 
@@ -1024,8 +1039,8 @@ sub new_feff {
     $self->{statusbar}->SetStatusText("$file does not exist.");
     return;
   };
-  if (not ($demeter->is_atoms($file) or $demeter->is_cif($file))) {
-    $self->{statusbar}->SetStatusText("$file does not seem to be an Atoms input file or a CIF file");
+  if (not ($demeter->is_feff($file) or $demeter->is_atoms($file) or $demeter->is_cif($file))) {
+    $self->{statusbar}->SetStatusText("$file does not seem to be a Feff input file, an Atoms input file, or a CIF file");
     return;
   };
 
@@ -1064,7 +1079,24 @@ sub make_feff_frame {
   $frames{$fnum} =  Demeter::UI::AtomsApp->new($base, $feffobject, 1);
   $frames{$fnum} -> SetTitle('Artemis [Feff] Atoms and Feff');
   $frames{$fnum} -> SetIcon($icon);
-  $frames{$fnum}->{Atoms}->Demeter::UI::Atoms::Xtal::open_file($file) if ($file and (-e $file) and $demeter->is_atoms($file));
+  if ($file and (-e $file) and ($demeter->is_atoms($file) or $demeter->is_cif($file))) {
+    $frames{$fnum}->{Atoms}->Demeter::UI::Atoms::Xtal::open_file($file);
+  } else {
+    $frames{$fnum}->{notebook}->SetPageImage(0, 5); # see Demeter::UI::Atoms.pm around line 60
+    $frames{$fnum}->{notebook}->SetPageText(0, '');
+    EVT_NOTEBOOK_PAGE_CHANGING($frames{$fnum}, $frames{$fnum}->{notebook},
+			       sub{ my($self, $event) = @_;
+				    my ($selection) = $event->GetSelection;
+				    $event->Veto() if ($selection == 0); # veto selection of Atoms tab
+				    return;
+				  });
+  };
+  if ($file and (-e $file) and $demeter->is_feff($file)) {
+    my $text = $demeter->slurp($file);
+    $frames{$fnum}->{Feff}->{feff}->SetValue($text);
+    $frames{$fnum}->{notebook}->ChangeSelection(1);
+    $demeter -> push_mru("feff", $file)
+  };
   #$newtool -> SetLabel( $frames{$fnum}->{Atoms}->{name}->GetValue );
   $frames{$fnum} -> {fnum} = $fnum;
 

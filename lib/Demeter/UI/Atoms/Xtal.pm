@@ -75,6 +75,7 @@ use Wx::Grid;
 use Wx::Event qw(EVT_CHOICE EVT_KEY_DOWN EVT_MENU EVT_TOOL_ENTER EVT_ENTER_WINDOW
 		 EVT_LEAVE_WINDOW EVT_TOOL_RCLICKED
 		 EVT_GRID_CELL_LEFT_CLICK EVT_GRID_CELL_RIGHT_CLICK EVT_GRID_LABEL_RIGHT_CLICK);
+use Demeter::UI::Wx::MRU;
 
 my %hints = (
 	     titles    => "Text describing this structure which also be used as title lines in the Feff calculation",
@@ -371,7 +372,7 @@ sub OnToolRightClick {
   if( $dialog->ShowModal == wxID_CANCEL ) {
     $self->{statusbar}->SetStatusText("Import cancelled.");
   } else {
-   $self->open_file( $dialog->GetStringSelection );
+   $self->open_file( $dialog->GetMruSelection );
   };
 };
 

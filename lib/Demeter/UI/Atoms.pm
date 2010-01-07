@@ -56,6 +56,10 @@ sub new {
     my $icon = File::Spec->catfile($Demeter::UI::Atoms::atoms_base, 'Atoms', 'icons', lc($utility).".png");
     $imagelist->Add( Wx::Bitmap->new($icon, wxBITMAP_TYPE_PNG) );
   };
+  if ($component) {		# B&W ball-n-stick image for "disabling" the Atoms page
+    my $icon = File::Spec->catfile($Demeter::UI::Atoms::atoms_base, 'Atoms', 'icons', "atoms_disabled.png");
+    $imagelist->Add(  Wx::Bitmap->new($icon, wxBITMAP_TYPE_PNG));
+  };
   $nb->AssignImageList( $imagelist );
   foreach my $utility (@utilities) {
     my $count = $nb->GetPageCount;

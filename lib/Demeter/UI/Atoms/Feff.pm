@@ -11,6 +11,7 @@ use base 'Wx::Panel';
 
 use Wx::Event qw(EVT_CHOICE EVT_KEY_DOWN EVT_MENU EVT_TOOL_ENTER EVT_TOOL_RCLICKED
 		 EVT_ENTER_WINDOW EVT_LEAVE_WINDOW);
+use Demeter::UI::Wx::MRU;
 
 my %hints = (
 	     open     => "Import an existing feff.inp file -- Hint: Right click for recent files",
@@ -103,7 +104,7 @@ sub OnToolRightClick {
   if( $dialog->ShowModal == wxID_CANCEL ) {
     $self->{statusbar}->SetStatusText("Import cancelled.");
   } else {
-   $self->import( $dialog->GetStringSelection );
+   $self->import( $dialog->GetMruSelection );
   };
 };
 

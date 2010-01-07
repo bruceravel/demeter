@@ -53,13 +53,15 @@ sub push_mru {
 };
 
 sub get_mru_list {
-  my ($self, $group) = @_;
+  my ($self, @groups) = @_;
   my %mru;
   tie %mru, 'Config::IniFiles', ( -file => File::Spec->catfile($self->dot_folder, "demeter.mru") );
-  return () if not $mru{$group};
-
-  my %hash = %{ $mru{$group} };
-  my @list_of_files = map { $hash{$_} } sort keys %hash;
+  my @list_of_files = ();
+  foreach my $g (@groups) {
+    next if not $mru{$g};
+    my %hash = %{ $mru{$g} };
+    push @list_of_files, map { [$hash{$_}, $g] } sort keys %hash;
+  };
   undef %mru;
   return @list_of_files;
 };
@@ -102,6 +104,16 @@ on.
 Return the list of recently used files from a file group:
 
   my @list_of_files = $atoms_object->("atoms");
+
+This list is actually a list of lists, like so:
+
+  [ [file1, type1],
+    [file2, type2],
+   ...
+  ]
+
+where the types are things like "atoms", "feff" -- that is catagories
+of files used to organize the ini file containing the recent files.
 
 =back
 
