@@ -27,8 +27,8 @@ use Demeter::UI::Wx::SpecialCharacters qw(:all);
 
 my %labels = (label  => 'Label',
 	      n      => 'N',
-	      s02    => 'S02',
-	      e0     => $DELTA.'E0',
+	      s02    => $S02,
+	      e0     => $DELTA.$E0,
 	      delr   => $DELTA.'R',
 	      sigma2 => $SIGSQR,
 	      ei     => 'Ei',
@@ -41,9 +41,9 @@ use vars qw(%explanation);
 %explanation =
   (
    label  => 'The label is a snippet of user-supplied text identifying or describing the path.',
-   n      => 'N, the degeneracy of the path, is multiplied by S02.  For SS paths this can often be interpreted as the coordination number.',
-   s02    => 'S02 is the amplitude factor in the EXAFS equation, which includes S02 and possibly other amplitude factors.',
-   e0     => "${DELTA}E0 is an energy shift typically interpreted as the alignment of the energy grids of the data and theory.",
+   n      => "N, the degeneracy of the path, is multiplied by $S02.  For SS paths this can often be interpreted as the coordination number.",
+   s02    => "$S02 is the amplitude factor in the EXAFS equation, which includes $S02 and possibly other amplitude factors.",
+   e0     => "$DELTA$E0 is an energy shift typically interpreted as the alignment of the energy grids of the data and theory.",
    delr   => "${DELTA}R is an adjustment to the half path length.  For a SS path, this is an adjustment to the interatomic distance.",
    sigma2 => "$SIGSQR is the mean square displacement about the half path length of the path.",
    ei     => 'Ei is a correction to the imaginary energy, which includes the effect of the mean free path and other loss terms from Feff.',
@@ -115,7 +115,7 @@ sub new {
   $this->{geombox}  = Wx::StaticBox->new($this, -1, 'Geometry ', wxDefaultPosition, wxDefaultSize);
   my $geomboxsizer  = Wx::StaticBoxSizer->new( $this->{geombox}, wxHORIZONTAL );
   $this->{geometry} = Wx::TextCtrl->new($this, -1, q{}, wxDefaultPosition, [-1,110],
-					wxVSCROLL|wxHSCROLL|wxTE_MULTILINE|wxTE_READONLY|wxNO_BORDER);
+					wxVSCROLL|wxHSCROLL|wxTE_MULTILINE|wxTE_READONLY);
   $this->{geometry} -> SetFont( Wx::Font->new( 9, wxTELETYPE, wxNORMAL, wxNORMAL, 0, "" ) );
   $geomboxsizer -> Add($this->{geometry}, 1, wxGROW|wxALL, 0);
   $vbox         -> Add($geomboxsizer,     1, wxGROW|wxALL, 5);

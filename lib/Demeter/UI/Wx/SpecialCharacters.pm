@@ -3,9 +3,9 @@ package Demeter::UI::Wx::SpecialCharacters;
 use strict;
 #use Encode;
 use base qw( Exporter );
-our @EXPORT_OK = qw(emph $CHI $EPSILON $DELTA $SIGMA $SIGSQR $PHI $COPYRIGHT $LAQUO $RAQUO $MDASH);
-our %EXPORT_TAGS = (all   => [qw(emph $CHI $EPSILON $DELTA $SIGMA $SIGSQR $PHI $COPYRIGHT $LAQUO $RAQUO $MDASH)],
-		    greek => [qw($CHI $EPSILON $DELTA $SIGMA $SIGSQR $PHI)],
+our @EXPORT_OK = qw(emph $CHI $EPSILON $DELTA $SIGMA $SIGSQR $PHI $S02 $E0 $COPYRIGHT $LAQUO $RAQUO $MDASH);
+our %EXPORT_TAGS = (all   => [qw(emph $CHI $EPSILON $DELTA $SIGMA $SIGSQR $PHI $S02 $E0 $COPYRIGHT $LAQUO $RAQUO $MDASH)],
+		    greek => [qw($CHI $EPSILON $DELTA $SIGMA $SIGSQR $PHI $S02 $E0)],
 		   );
 
 my $is_windows = (($^O eq 'MSWin32') or ($^O eq 'cygwin'));
@@ -17,7 +17,8 @@ our $DELTA   = chr(916);          #"\xCE\x94";            #'Δ';
 our $SIGMA   = chr(963);          #"\xCF\x83";            #'σ';
 our $SIGSQR  = chr(963).chr(178); #"\xCF\x83"."\xC2\xB2"; #'σ²';
 our $PHI     = chr(966);          #"\xCF\x86";            #'φ';
-
+our $S02     = 'S'.chr(8320).chr(178);
+our $E0      = 'E'.chr(8320);
 
 ## -------- other special characters
 our $COPYRIGHT = chr(169);  #"\xC2\xA9";     #'©';

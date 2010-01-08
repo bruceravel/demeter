@@ -45,7 +45,7 @@ sub new {
   $this->{normal}     = Wx::TextAttr->new(Wx::Colour->new('#000000'), wxNullColour, Wx::Font->new( @font ) );
   $this->{happiness}  = Wx::TextAttr->new(Wx::Colour->new('#acacac'), wxNullColour, Wx::Font->new( @font ) );
   $this->{parameters} = Wx::TextAttr->new(Wx::Colour->new('#000000'), wxNullColour, Wx::Font->new( @underline ) );
-  $this->{header}     = Wx::TextAttr->new(Wx::Colour->new('#8B4726'), wxNullColour, Wx::Font->new( @bold ) );
+  $this->{header}     = Wx::TextAttr->new(Wx::Colour->new('#000055'), wxNullColour, Wx::Font->new( @bold ) ); # '#8B4726'
   $this->{data}       = Wx::TextAttr->new(Wx::Colour->new('#ffffff'), Wx::Colour->new('#000055'), Wx::Font->new( @bold ) );
 
 
@@ -82,7 +82,7 @@ sub put_log {
     my $is = $self -> {text} -> GetInsertionPoint;
 
     my $color = ($line =~ m{(?:parameters|variables):})                     ? 'parameters'
-              : ($line =~ m{(?:Happiness|semantic|NEVER|a penalty of)})     ? 'happiness'
+              : ($line =~ m{(?:Happiness|semantic|NEVER|a penalty of|Penalty of)})     ? 'happiness'
               : ($line =~ m{\A(?:R-factor|Reduced)})                        ? 'stats'
               : ($line =~ m{\A(?:=+\s+Data set)})                           ? 'data'
               : ($line =~ m{\A (?:Name|Description|Figure|Time|Environment|Interface|Prepared|Contact)}) ? 'header'

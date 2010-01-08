@@ -99,6 +99,7 @@ has 'weight'	   => (is => 'rw', isa => 'Int',      default => 0);
 has 'randstring'   => (is => 'rw', isa => 'Str',      default => q{});
 has 'folder'       => (is => 'rw', isa => 'Str',      default => q{});
 has 'file'         => (is => 'rw', isa => 'Str',      default => q{});
+has 'fromnnnn'     => (is => 'rw', isa => 'Str',      default => q{});
 
 ## set by details method:
 #has 'tags'         => (is => 'rw', isa => 'ArrayRef', default => sub{[]});

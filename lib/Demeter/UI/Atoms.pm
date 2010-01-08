@@ -171,7 +171,7 @@ sub on_about {
   $info->SetWebSite( 'http://cars9.uchicago.edu/iffwiki/Demeter', 'The Demeter web site' );
   $info->SetDevelopers( ["Bruce Ravel <bravel\@bnl.gov>\n",
 			] );
-  $info->SetLicense( slurp(File::Spec->catfile($Demeter::UI::Atoms::atoms_base, 'Atoms', 'data', "GPL.dem")) );
+  $info->SetLicense( $demeter->slurp(File::Spec->catfile($Demeter::UI::Atoms::atoms_base, 'Atoms', 'data', "GPL.dem")) );
   my $artwork = <<'EOH'
 The Atoms logo is a perovskite as rendered by a
 ball-and-stick molecule viewer.
@@ -189,15 +189,6 @@ EOH
   $info -> AddArtist($artwork);
 
   Wx::AboutBox( $info );
-};
-
-sub slurp {
-  my $file = shift;
-  local $/;
-  open(my $FH, $file);
-  my $text = <$FH>;
-  close $FH;
-  return $text;
 };
 
 sub _doublewide {

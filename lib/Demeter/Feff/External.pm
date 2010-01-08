@@ -117,6 +117,7 @@ sub read_folder {
     #print $f, "  ", $zcwif_of->{$f}, $/;
     $sp->evaluate;
     $sp->degeneracies([$sp->string]);
+    $sp->fromnnnn(File::Spec->catfile($folder, $f));
     $self->push_pathlist($sp);
     #set_nnnn($f, $sp->group);
     $hash{$f} = $sp->group;

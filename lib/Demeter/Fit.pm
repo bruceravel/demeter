@@ -1093,7 +1093,7 @@ override 'serialize' => sub {
   ## -------- save a yaml for each data file
   foreach my $d (@data) {
     my $dd = $d->group;
-    $d -> file($NULLFILE);
+    $d -> file($NULLFILE) if $d->prjrecord;
     my $datafile =  File::Spec->catfile($self->folder, "$dd.yaml");
     $d -> serialize($datafile);
   };

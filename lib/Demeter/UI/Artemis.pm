@@ -6,6 +6,7 @@ use Demeter::UI::Artemis::Project;
 use Demeter::UI::Artemis::ShowText;
 use Demeter::UI::Wx::MRU;
 use Demeter::UI::Wx::SpecialCharacters qw(:all);
+use Demeter::UI::Artemis::Import;
 
 use vars qw($demeter $buffer $plotbuffer);
 $demeter = Demeter->new;
@@ -59,10 +60,11 @@ sub identify_self {
   my @caller = caller;
   return dirname($caller[1]);
 };
-use vars qw($artemis_base $icon $nset %frames %fit_order);
+use vars qw($artemis_base $icon $nset $noautosave %frames %fit_order);
 $fit_order{order}{current} = 0;
 $nset = 0;
 $artemis_base = identify_self();
+$noautosave = 0;		# set this to skip autosave, see Demeter::UI::Artemis::Import::_feffit
 
 my %hints = (
 	     gds     => "Display/hide the Guess/Def/Set parameters dialog",
@@ -117,7 +119,6 @@ sub OnInit {
   $importmenu->AppendSeparator;
   $importmenu->Append($IMPORT_OLD,      "an old-style Artemis project",  "Import the current fitting model from an old-style Artemis project file");
   $importmenu->Append($IMPORT_FEFFIT,   "a feffit.inp file",             "Import a fitting model from a feffit.inp file");
-  $importmenu->Enable($IMPORT_FEFFIT, 0);
   $importmenu->Enable($IMPORT_MOLECULE, 0);
 
   my $exportmenu = Wx::Menu->new;
@@ -195,7 +196,7 @@ sub OnInit {
   $frames{main}->{newdata} = Wx::Button->new($datalist, wxID_ADD, "", wxDefaultPosition, wxDefaultSize, wxNO_BORDER);
   $datavbox -> Add($frames{main}->{newdata}, 0, wxGROW|wxRIGHT, 5);
   mouseover($frames{main}->{newdata}, "Import a new data set.  Right click for menu of recently used Athena project files.");
-  EVT_BUTTON($frames{main}->{newdata}, -1, sub{import_prj("")});
+  EVT_BUTTON($frames{main}->{newdata}, -1, sub{Import('prj', q{})});
 
   $datavbox     -> Add(Wx::StaticLine->new($datalist, -1, wxDefaultPosition, wxDefaultSize, wxLI_HORIZONTAL), 0, wxGROW|wxALL, 5);
   $databoxsizer -> Add($datalist, 1, wxGROW|wxALL, 0);
@@ -220,7 +221,7 @@ sub OnInit {
   $frames{main}->{newfeff} = Wx::Button->new($fefflist, wxID_ADD, "", wxDefaultPosition, wxDefaultSize, wxNO_BORDER);
   $feffvbox -> Add($frames{main}->{newfeff}, 0, wxGROW|wxRIGHT, 5);
   mouseover($frames{main}->{newfeff}, "Start a new Feff calculation.  Right click for menu of recently used crystal data files.");
-  EVT_BUTTON($frames{main}->{newfeff}, -1, sub{new_feff($frames{main})});
+  EVT_BUTTON($frames{main}->{newfeff}, -1, sub{Import('feff')});
 
   $feffvbox     -> Add(Wx::StaticLine->new($fefflist, -1, wxDefaultPosition, wxDefaultSize, wxLI_HORIZONTAL), 0, wxGROW|wxALL, 5);
   $feffboxsizer -> Add($fefflist, 1, wxGROW|wxALL, 0);
@@ -402,7 +403,7 @@ sub on_about {
   $info->SetDevelopers( ["Bruce Ravel <bravel\@bnl.gov>\n",
 			 "Ifeffit is copyright $COPYRIGHT 1992-2010 Matt Newville"
 			] );
-  $info->SetLicense( slurp(File::Spec->catfile($artemis_base, 'Artemis', 'share', "GPL.dem")) );
+  $info->SetLicense( $demeter->slurp(File::Spec->catfile($artemis_base, 'Artemis', 'share', "GPL.dem")) );
   my $artwork = <<'EOH'
 Blah blah blah
 
@@ -621,15 +622,6 @@ sub icon {
   return Wx::Bitmap->new($icon, wxBITMAP_TYPE_ANY)
 };
 
-sub slurp {
-  my $file = shift;
-  local $/;
-  open(my $FH, $file);
-  my $text = <$FH>;
-  close $FH;
-  return $text;
-};
-
 sub _doublewide {
   my ($widget) = @_;
   my ($w, $h) = $widget->GetSizeWH;
@@ -704,28 +696,29 @@ sub OnMenuClick {
 
     ## -------- import submenu
     ($id == $IMPORT_OLD) and do {
-      import_old(\%frames);
+      Import('old', q{});
       last SWITCH;
     };
     ($id == $IMPORT_FEFF) and do {
-      import_external_feff();
+      Import('feff', q{});
       last SWITCH;
     };
     ($id == $IMPORT_FEFFIT) and do {
+      Import('feffit', q{});
       last SWITCH;
     };
     ($id == $IMPORT_CHI) and do {
-      import_chi();
+      Import('chi', q{});
       last SWITCH;
     };
 
     ## -------- export submenu
     ($id == $EXPORT_IFEFFIT) and do {
-      export(\%frames, 'ifeffit');
+      export('ifeffit');
       last SWITCH;
     };
     ($id == $EXPORT_DEMETER) and do {
-      export(\%frames, 'demeter');
+      export('demeter');
       last SWITCH;
     };
 
@@ -777,184 +770,13 @@ sub OnDataRightClick {
   if( $dialog->ShowModal == wxID_CANCEL ) {
     $frames{main}->{statusbar}->SetStatusText("Import cancelled.");
   } else {
-    import_prj($dialog->GetMruSelection);
+    Import('prj', $dialog->GetMruSelection);
   };
 };
 
-sub get_prj_and_record {
-  my ($fname) = @_;
-  my $file = $fname;
-  if (not $fname) {
-    my $fd = Wx::FileDialog->new( $frames{main}, "Import an Athena project", cwd, q{},
-				  "Athena project (*.prj)|*.prj|All files|*.*",
-				  wxFD_OPEN|wxFD_FILE_MUST_EXIST|wxFD_CHANGE_DIR|wxFD_PREVIEW,
-				  wxDefaultPosition);
-    if ($fd->ShowModal == wxID_CANCEL) {
-      $frames{main}->{statusbar}->SetStatusText("Data import cancelled.");
-      return;
-    };
-    $file = File::Spec->catfile($fd->GetDirectory, $fd->GetFilename);
-  }
-  ##
-  my $selection = 0;
-  $frames{prj} =  Demeter::UI::Artemis::Prj->new($frames{main}, $file);
-  my $result = $frames{prj} -> ShowModal;
-
-  if (
-      ($result == wxID_CANCEL) or     # cancel button clicked
-      ($frames{prj}->{record} == -1)  # import button without selecting a group
-     ) {
-    return (q{}, q{});
-  };
-
-  return ($file, $frames{prj}->{prj}, $frames{prj}->{record});
-};
-
-sub import_prj {
-  my ($fname) = @_;
-  my ($file, $prj, $record) = get_prj_and_record($fname);
-
-  if ((not $prj) or (not $record)) {
-    $frames{main}->{statusbar}->SetStatusText("Data import cancelled.");
-    return;
-  };
-
-  my $data = $prj->record($record);
-  my ($dnum, $idata) = make_data_frame($frames{main}, $data);
-  $data->po->start_plot;
-  $data->plot('k');
-  $data->plot_window('k') if $data->po->plot_win;
-  $frames{$dnum} -> Show(1);
-  $frames{main}->{$dnum}->SetValue(1);
-  $prj->DESTROY;
-  delete $frames{prj};
-  $demeter->push_mru("athena", $file);
-  autosave();
-  chdir dirname($file);
-  $frames{main}->{statusbar}->SetStatusText("Importing data \"" . $data->name . "\" from $file.");
-};
 
 
 
-## need better reaction in case of absent phase.bin file.
-sub import_external_feff {
-  my ($fname) = @_;
-  my $file = $fname;
-  if (not $fname) {
-    my $fd = Wx::FileDialog->new( $frames{main}, "Import an Atoms or Feff input file", cwd, q{},
-				  "Atoms/Feff input (*.inp)|*.inp|All files|*.*",
-				  wxFD_OPEN|wxFD_FILE_MUST_EXIST|wxFD_CHANGE_DIR|wxFD_PREVIEW,
-				  wxDefaultPosition);
-    if ($fd->ShowModal == wxID_CANCEL) {
-      $frames{main}->{statusbar}->SetStatusText("$CHI(k) import cancelled.");
-      return;
-    };
-    $file = File::Spec->catfile($fd->GetDirectory, $fd->GetFilename);
-  };
-
-  my ($atoms_file, $feff_file) = (q{}, q{});
-  ($atoms_file, $feff_file) = ($file, File::Spec->catfile(dirname($file), 'feff.inp')) if ($demeter->is_atoms($file));
-  ($atoms_file, $feff_file) = (q{}, $file)                                             if ($demeter->is_feff($file));
-  ($atoms_file = File::Spec->catfile(dirname($file), 'atoms.inp')) if ((not $atoms_file) and (-e File::Spec->catfile(dirname($file), 'atoms.inp')));
-
-  if (not -e $feff_file) {
-    my $message = <<EOH
-Error importing external Feff calculation.
-
-It is unclear which file is the Feff input file.
-It is likely that you selected the Atoms input
-file in the file selection dialog.  You should
-select the Feff input file instead.
-
-EOH
-      ;
-    my $error = Wx::MessageDialog->new($frames{main},
-				       $message,
-				       "Error importing Feff calculation",
-				       wxOK|wxICON_ERROR);
-    my $result = $error->ShowModal;
-    $frames{main}->{statusbar}->SetStatusText("Importing external Feff calculation aborted.");
-    return 0;
-  };
-
-  my ($filename, $pathto, $suffix) = fileparse($file, qr{\.inp});
-  my $efeff = Demeter::Feff::External -> new(screen=>0, name=>$filename);
-  my $destination = File::Spec->catfile($frames{main}->{project_folder}, 'feff', $efeff->group);
-  $efeff->workspace($destination);
-  $efeff->file($feff_file);
-  if (not $efeff->is_complete) {
-    my $message = "Error importing external Feff calculation:\n\n"
-                . $efeff->problem
-		. "\nTherefore $file cannot be imported as an external Feff calculation.\n";
-    my $error = Wx::MessageDialog->new($frames{main},
-				       $message,
-				       "Error importing Feff calculation",
-				       wxOK|wxICON_ERROR);
-    my $result = $error->ShowModal;
-    $frames{main}->{statusbar}->SetStatusText("Importing external Feff calculation aborted.");
-    return 0;
-  };
-
-
-  copy($atoms_file, File::Spec->catfile($destination, 'atoms.inp')) if $atoms_file;
-  copy($feff_file, File::Spec->catfile($destination, $efeff->group.'.inp'));
-  $efeff->freeze(File::Spec->catfile($destination, $efeff->group.'.yaml'));
-
-  ## import atoms.inp, create Feff frame
-  my ($fnum, $ifeff) = Demeter::UI::Artemis::make_feff_frame($frames{main}, $atoms_file, $efeff->name, $efeff);
-
-  ## import feff.inp
-  my $text = $efeff->slurp($feff_file);
-  $frames{$fnum}->{Feff}->{feff}->SetValue($text);
-
-  ## fill in Feff frame
-  $frames{$fnum}->{Feff}->{feffobject} = $efeff;
-  $frames{$fnum}->{Feff}->fill_intrp_page($efeff);
-  $frames{$fnum}->{notebook}->ChangeSelection(2);
-
-  $frames{$fnum}->{Feff} ->{name}->SetValue($efeff->name);
-  $frames{$fnum}->{Paths}->{name}->SetValue($efeff->name);
-
-  $frames{$fnum} -> Show(1);
-  $frames{main}->{$fnum}->SetValue(1);
-  $frames{main}->{$fnum}->SetLabel("Hide ".emph($efeff->name));
-
-  ## disable atoms tab is not $atoms_file (how?)
-
-  $demeter->push_mru("externalfeff", $file);
-  autosave();
-  chdir dirname($file);
-  modified(1);
-  $frames{main}->{statusbar}->SetStatusText("Imported $file as a Feff calculation.");
-};
-
-sub import_chi {
-  my ($fname) = @_;
-  my $file = $fname;
-  if (not $fname) {
-    my $fd = Wx::FileDialog->new( $frames{main}, "Import $CHI(k) data", cwd, q{},
-				  "Chi data (*.chi)|*.chi|Data files (*.dat)|*.dat|All files|*.*",
-				  wxFD_OPEN|wxFD_FILE_MUST_EXIST|wxFD_CHANGE_DIR|wxFD_PREVIEW,
-				  wxDefaultPosition);
-    if ($fd->ShowModal == wxID_CANCEL) {
-      $frames{main}->{statusbar}->SetStatusText("$CHI(k) import cancelled.");
-      return;
-    };
-    $file = File::Spec->catfile($fd->GetDirectory, $fd->GetFilename);
-  };
-  my $data = Demeter::Data->new(file=>$file);
-  $data->_update('data');
-  my ($dnum, $idata) = make_data_frame($frames{main}, $data);
-  $data->po->start_plot;
-  $data->plot('k');
-  $data->plot_window('k') if $data->po->plot_win;
-  $frames{$dnum} -> Show(1);
-  $frames{main}->{$dnum}->SetValue(1);
-  $demeter->push_mru("chik", $file);
-  autosave();
-  chdir dirname($file);
-  $frames{main}->{statusbar}->SetStatusText("Imported $file as $CHI(k) data.");
-};
 
 sub make_data_frame {
   my ($self, $data) = @_;
@@ -1001,7 +823,7 @@ sub OnFeffClick {
   my $which = $feffbar->GetToolPos($event->GetId);
 
   if ($which == 0) {
-    new_feff($self);
+    Import('feff', q{});
   } else {
     my $this = sprintf("feff%s", $event->GetId);
     return if not exists($frames{$this});
@@ -1016,40 +838,10 @@ sub OnFeffRightClick {
   if( $dialog->ShowModal == wxID_CANCEL ) {
     $frames{main}->{statusbar}->SetStatusText("Import cancelled.");
   } else {
-    new_feff($frames{main}, $dialog->GetMruSelection);
+    Import('feff', $dialog->GetMruSelection);
   };
 };
 
-sub new_feff {
-  my ($self, $fname) = @_;
-  ## also yaml data
-  my $file = $fname;
-  if (not $file) {
-    my $fd = Wx::FileDialog->new( $self, "Import crystal data", cwd, q{},
-				  "input and CIF files (*.inp;*.cif)|*.inp;*.cif|input file (*.inp)|*.inp|CIF file (*.cif)|*.cif|All files|*.*",
-				  wxFD_OPEN|wxFD_FILE_MUST_EXIST|wxFD_CHANGE_DIR|wxFD_PREVIEW,
-				  wxDefaultPosition);
-    if ($fd->ShowModal == wxID_CANCEL) {
-      $self->{statusbar}->SetStatusText("Crystal/Feff data import cancelled.");
-      return;
-    };
-    $file = File::Spec->catfile($fd->GetDirectory, $fd->GetFilename);
-  };
-  if (not -e $file) {
-    $self->{statusbar}->SetStatusText("$file does not exist.");
-    return;
-  };
-  if (not ($demeter->is_feff($file) or $demeter->is_atoms($file) or $demeter->is_cif($file))) {
-    $self->{statusbar}->SetStatusText("$file does not seem to be a Feff input file, an Atoms input file, or a CIF file");
-    return;
-  };
-
-  my ($fnum, $ifeff) = make_feff_frame($self, $file);
-  $frames{$fnum} -> Show(1);
-  autosave();
-  $frames{$fnum}->{statusbar}->SetStatusText("Imported crystal data from " . basename($file));
-  $frames{main}->{$fnum}->SetValue(1);
-};
 
 sub make_feff_frame {
   my ($self, $file, $name, $feffobject) = @_;
@@ -1151,28 +943,28 @@ sub discard_feff {
 }
 
 sub export {
-  my ($rframes, $how) = @_;
+  my ($how) = @_;
 
   ## make a disposable Fit object
   my ($abort, $rdata, $rpaths) = uptodate($rframes);
-  my $rgds = $rframes->{GDS}->reset_all;
+  my $rgds = $frames{GDS}->reset_all;
   my @data  = @$rdata;
   my @paths = @$rpaths;
   my @gds   = @$rgds;
   if ($abort) {
-    $rframes->{main}->{statusbar}->SetStatusText("There is a problem in your fit.");
+    $frames{main}->{statusbar}->SetStatusText("There is a problem in your fit.");
     return;
   };
   my $fit = Demeter::Fit->new(data => \@data, paths => \@paths, gds => \@gds);
 
   my $suffix = ($how eq 'ifeffit') ? 'iff' : 'pl';
   ## prompt for a filename
-  my $fd = Wx::FileDialog->new( $rframes->{main}, "Export this fitting model", cwd, "artemis.$suffix",
+  my $fd = Wx::FileDialog->new( $frames{main}, "Export this fitting model", cwd, "artemis.$suffix",
 				"fitting scripts (*.$suffix)|*.$suffix|All files|*.*",
 				wxFD_SAVE|wxFD_CHANGE_DIR|wxFD_OVERWRITE_PROMPT,
 				wxDefaultPosition);
   if ($fd->ShowModal == wxID_CANCEL) {
-    $rframes->{main}->{statusbar}->SetStatusText("Exporting fitting model cancelled.");
+    $frames{main}->{statusbar}->SetStatusText("Exporting fitting model cancelled.");
     return;
   };
   my $fname = File::Spec->catfile($fd->GetDirectory, $fd->GetFilename);

@@ -30,7 +30,7 @@ use Wx qw(wxVERSION_STRING);
 require Exporter;
 @ISA       = qw(Exporter);
 #@EXPORT    = qw(e2l);
-@EXPORT_OK = qw(e2l hversion hcopyright hdescription slurp);
+@EXPORT_OK = qw(e2l hversion hcopyright hdescription);
 
 sub hversion {
   return $VERSION;
@@ -49,16 +49,6 @@ sub hdescription {
 sub e2l {
   ($_[0] and ($_[0] > 0)) or return "";
   return 2*$PI*$HBARC / $_[0];
-};
-
-
-sub slurp {
-  my $file = shift;
-  local $/;
-  open(my $FH, $file);
-  my $text = <$FH>;
-  close $FH;
-  return $text;
 };
 
 
@@ -90,12 +80,6 @@ Convert between energy and wavelength.
   $l = e2l($e);
    #  or
   $e = e2l($l);
-
-=item C<slurp>
-
-Slurp an entire file into a scalar.
-
-  $contents = slurp($filename);
 
 =item C<hversion>
 

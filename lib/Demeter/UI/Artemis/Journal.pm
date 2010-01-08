@@ -35,6 +35,7 @@ sub new {
 
   $this->{journal} = Wx::TextCtrl->new($this, -1, q{}, wxDefaultPosition, wxDefaultSize,
 				       wxTE_MULTILINE|wxTE_RICH2|wxTE_WORDWRAP|wxTE_AUTO_URL);
+  $this->{journal} -> SetFont( Wx::Font->new( 9, wxTELETYPE, wxNORMAL, wxNORMAL, 0, "" ) );
   $vbox -> Add($this->{journal}, 1, wxGROW|wxALL, 5);
 
 

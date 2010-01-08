@@ -46,6 +46,7 @@ Readonly my %REPLACEMENT => ( e0     => 'enot',
 			    );
 ## see line 488 and following in src/feffit/fitinp.f from the ifeffit source tree
 Readonly my %SYNONYMS => (path	  => 'path',
+			  file	  => 'path',
 			  feff	  => 'path',
 			  id	  => 'id',
 			  e0	  => 'e0',
@@ -114,6 +115,17 @@ has 'comment_re'   => (is => 'ro', isa => 'RegexpRef',
 
 my @gds  = ();
 my @data = ();
+
+
+sub BUILD {
+  my ($self, @params) = @_;
+  $self->mode->push_Feffit($self);
+};
+
+sub DEMOLISH {
+  my ($self) = @_;
+  $self->alldone;
+};
 
 sub Read {
   my ($self) = @_;
@@ -201,7 +213,7 @@ sub parse_line {
 
     ($line =~ m{^($pp)\s*[ \t=,]\s*(\d+)\s*[ \t=,]\s*(.*)}i) and do {
       ## push this path parameter onto its list
-      $self->parse_pathparam(lc($line));
+      $self->parse_pathparam($line);
       last LINE;
     };
 
@@ -226,7 +238,7 @@ sub parse_pathparam {
     };
     $self->$pp($me);
   } else {
-    $data[$self->ndata]->{path}->[$index]->{$pp} = $me;
+    $data[$self->ndata]->{path}->[$index]->{$pp} = ($pp eq 'path') ? $me : lc($me);
   };
 };
 
@@ -290,7 +302,7 @@ sub convert {
     my $this_data = Demeter::Data->new();
 
     ## -------- set title lines
-    #$this_data->fit_titles(join("\n", @{$d->{titles}}));
+    $this_data->titles($d->{titles});
 
     ## -------- set operational parameters
     my $nodegen = 0;

@@ -150,7 +150,7 @@ use Wx::Event qw(EVT_MENU EVT_CLOSE);
 use base 'Wx::App';
 
 use Demeter;
-use Demeter::UI::Hephaestus::Common qw(hversion hcopyright hdescription slurp);
+use Demeter::UI::Hephaestus::Common qw(hversion hcopyright hdescription);
 
 sub identify_self {
   my @caller = caller;
@@ -232,7 +232,7 @@ sub on_about {
 			 "Much of the data displayed in the Data\nutility was swiped from Kalzium (website...)\n",
 			 "Mossbauer data comes from http://mossbauer.org/",
 			] );
-  $info->SetLicense( slurp(File::Spec->catfile($Demeter::UI::Hephaestus::hephaestus_base, 'Hephaestus', 'data', "GPL.dem")) );
+  $info->SetLicense( $demeter->slurp(File::Spec->catfile($Demeter::UI::Hephaestus::hephaestus_base, 'Hephaestus', 'data', "GPL.dem")) );
   my $artwork = <<'EOH'
 The logo and main icon is "Vulcan Forging 
 Jupiter's Lightning Bolts" by Peter Paul

@@ -8,6 +8,8 @@
 
 * Artemis: polishing for beta release
 
+** TODO Figure out seg fault problem
+
 ** TODO Cut and paste is wonky in GDS grid
 
 ** Atoms/Feff
@@ -23,12 +25,13 @@
 
 
 ** Projects
-*** TODO Import feffit.inp
-Need to [[Import%20external%20Feff%20calculation][import external]] feff calc. gracefully in order to do this
-Demeter::Feff:Feffit currently converts feffit.inp into a Fit object
-using file/folder attributes.  Instead, it needs to import the
-external Feff calculations.  That means that checks for completeness
-of the external Feff calculation must be robust.
+*** [1/6] Import feffit.inp
+ - [X] Basic import
+ - [ ] Exception handling for ambiguous feff.inp file
+ - [ ] Exception handling for incomplete feff calc.
+ - [ ] Trim number of scattering paths
+ - [ ] What about local params?
+ - [ ] Can't find data, can't find feffNNNN ...?
 
 *** TODO Better *sensitivity* to when a project needs saving
 
@@ -50,16 +53,18 @@ of the external Feff calculation must be robust.
 
 ** History
 
-** TODO After beta release
+** After beta release
   1. Balance interstitial energies
   2. Use structural units
   3. Use arbitrary MS paths
   4. Use nearly collinear paths
   5. Import mutiple data sets from an Athena project file
-  6. Reorganize lists, move individuual items up and down, move blocks
+  6. Reorganize lists, move individual items up and down, move blocks
      up and down
       - Path list
       - Plot list
+  7. Clone data sets such that the path list gets replicated
+     efficiently (i.e. for MDS fits)
   
   
   

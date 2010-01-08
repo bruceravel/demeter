@@ -29,6 +29,7 @@ use Wx::Perl::TextValidator;
 use Wx::Perl::Carp;
 
 use Demeter::UI::Artemis::Project;
+use Demeter::UI::Artemis::Import;
 use Demeter::UI::Artemis::Data::AddParameter;
 use Demeter::UI::Artemis::Data::Histogram;
 use Demeter::UI::Artemis::Data::Quickfs;
@@ -218,7 +219,7 @@ sub new {
   my $titlesbox      = Wx::StaticBox->new($leftpane, -1, 'Title lines ', wxDefaultPosition, wxDefaultSize);
   my $titlesboxsizer = Wx::StaticBoxSizer->new( $titlesbox, wxHORIZONTAL );
   $this->{titles}      = Wx::TextCtrl->new($leftpane, -1, q{}, wxDefaultPosition, [300,-1],
-					   wxVSCROLL|wxHSCROLL|wxTE_MULTILINE|wxTE_READONLY|wxNO_BORDER);
+					   wxVSCROLL|wxHSCROLL|wxTE_MULTILINE|wxTE_READONLY);
   $titlesboxsizer -> Add($this->{titles}, 1, wxALL|wxGROW, 0);
   $left           -> Add($titlesboxsizer, 1, wxALL|wxGROW, 5);
   $this->mouseover("titles", "These lines will be written to output files.  Use them to describe this data set.");
@@ -1094,7 +1095,7 @@ sub Rename {
 
 sub replace {
   my ($datapage) = @_;
-  my ($file, $prj, $record) = Demeter::UI::Artemis::get_prj_and_record();
+  my ($file, $prj, $record) = prjrecord();
   my $data = $prj->record($record);
   $datapage->{data} = $data;
   $datapage->{titles}->SetValue(join("\n", @{ $data->titles }));

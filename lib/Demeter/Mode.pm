@@ -105,6 +105,17 @@ has 'Fit' => (
 			      'splice'  => 'splice_Fit',
 			     }
 	       );
+has 'Feffit' => (
+		metaclass => 'Collection::Array',
+		is        => 'rw',
+		isa       => 'ArrayRef',
+		default   => sub { [] },
+		provides  => {
+			      'push'    => 'push_Feffit',
+			      'clear'   => 'clear_Feffit',
+			      'splice'  => 'splice_Feffit',
+			     }
+	       );
 has 'GDS' => (
 		metaclass => 'Collection::Array',
 		is        => 'rw',
@@ -229,7 +240,7 @@ has 'Indicator' => (
 	       );
 
 has 'types' => (is => 'ro', isa => 'ArrayRef',
-		default => sub{[qw(Atoms Data Feff External Fit GDS Path Plot Indicator ScatteringPath
+		default => sub{[qw(Atoms Data Feff External Fit Feffit GDS Path Plot Indicator ScatteringPath
 				   VPath SSPath FSPath StructuralUnit Prj MultiChannel)]},);
 
 has 'Plugins' => (
@@ -317,6 +328,7 @@ sub everything {
 	  @{ $self->Feff	   },
 	  @{ $self->External	   },
 	  @{ $self->Fit		   },
+	  @{ $self->Feffit	   },
 	  @{ $self->GDS		   },
 	  @{ $self->Path	   },
 	  @{ $self->ScatteringPath },
