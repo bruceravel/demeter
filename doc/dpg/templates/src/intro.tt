@@ -6,20 +6,129 @@
 
 
 [% FILTER html_para %]
-Introduction.  Boilerplate is limited...
+[% feff %] and [% ifeffit %] are amazing tools.  Together and over the
+years, they have enabled the analysis and interpretation of many
+thousands of EXAFS experiments spanning an impressive broad range of
+scientific disciplines.
+
+Unfortunately, each of these tools is quite difficult to use to its
+full capabilities.  The lack of readily accissible, flexible,
+highly-capable high-level tools has, for the most part, limited the
+use of [% feff %] and [% ifeffit %] to relatively simple problem.
+Most examples of their use in the literature are restricted to fairly
+simple parameterization of a model structure that is calculated using
+[% feff %] in the most straight-forward manner.
+
+Certainly examples exist of highly sophisticated used of [% feff %]
+and [% ifeffit %].  For instance, we see the clever use of multiple 
+[% feff %] calculations on crystalline materials as analogs for
+metallo-organic environments in
+[% INCLUDE citation
+author = "S. Kelly, et al."
+journal = "Geochem. Cosmo. Acta"
+volume = "66:22"
+pages = 3875-3891
+year = 2002
+%].  As another example, we find a very complete accounting of the
+effects of anti-site disorder in a crystal in 
+[% INCLUDE citation
+author = "S. Calvin, et al."
+journal = "Phys Rev B"
+volume = "66:22"
+pages = 224405
+year = 2002
+%].  Both of these examples, however, are the work of particularly
+dedicated and talented experts in the application of [% feff %] and 
+[% ifeffit %] and both represent many months of painstaking effort to
+develop idiosyncratic analytical methodology.
+
+There [% INCLUDE font/b a="has" %] to be a better way.
+
+[% demeter %] is my attempt to provide a set of tools to enable the
+sort of high-level approach to EXAFS data analysis that has always
+been the province of the dedicated few.  It is also the result of more
+than a decade of writing software specifically intended to enable the
+use of [% feff %] and [% ifeffit %].
+
+Many people reading this wil be familiar with my programs [% athena %]
+and [% artemis %].  They are in wide use throughout the XAS community
+and around the world.  As graphical interfaces to XAS data management
+and the use of [% feff %] and [% ifeffit %], each has proven
+successful to a certain degree.  Each one, however, suffers from one
+major flaw (and any number of minor flaws).  [% INCLUDE font/em
+a="There is no easy way to write a small, personal program that
+replicates the exact behavior of the GUI programs." %]
+
+As convenient as [% athena %] is for processing modest amounts of data
+at the beamline or upon returning home from a beam run, it is not
+really the right tool for managing huge volumes of data.  In several
+days at a beamline with quick-XAS capabilities, it is quite common to
+generate many hundreds, even many thousands, of XAS scans.  The
+interactivity that makes [% athena %] so appealing when handling small
+amounts of data becomes a tedious, repetitive nightmare when
+processing large amounts of data.  Unfortunately, there is no way of
+separating the data processing capabilities of [% athena %] from the
+graphical interface.  (This is not an inherent flaw of any of the tools
+used to create [% athena %] -- it is entirely due to my own
+inexperience when I began writing [% athena %].)
+
+This problem is where [% demeter %] starts.  [% demeter %] is 
+[% INCLUDE font/quote a="middleware" %] -- it is a system of software
+tools that sit between [% feff %] and [% ifeffit %] and the program
+that the user actually interacts with.  [% demeter %] is not, by
+itself, a computer program.  Rather it is the tool from which computer
+programs for XAS data processing and analysis are built.
+
+The package containing the [% demeter %] libraries actually does
+include various kinds of interface tools.  For example, there is a
+version of [% artemis %] written using [% demeter %].  However, this
+version of [% artemis %] does not add any functionality related to XAS
+data management not already present in the [% demeter %] libraries.
+It is merely a graphical shell layered on top of [% demeter %]'s
+capabilities.  As a result, it is possible -- indeed, often quite easy
+-- to write a small program which performs a fit to EXAFS data in
+exactly the same manner as [% artemis %].
+
+Armed with this middleware layer, it is much easier to consider
+implementing tools for automating large quantities of data or writing
+tools for special, one-off data processing chores.  And [% demeter %]
+offers tools for easily passing data between [% athena %] and 
+[% artemis %] and you own [% demeter %]-using programs.
+
+Tools for automation and for easy access to the capabilities available
+in the GUI programs would be benefit enough to merit the creation of a
+software library.  [% demeter %], however, offers quite a bit more
+than that.  It has capabilities already written or under development
+for very sophisticated uses of [% feff %].  Inspired by the articles
+cited above and by other interesting uses of XAS theory, [% demeter %]
+offers easy access to a variety of ways of manipulating the output of
+[% feff %] that had previously required a deep understanding of 
+[% feff %]'s inner workings.
+
+So there you have it.  [% demeter %] is a software tool for making
+easy XAS chores very easy and for making difficult XAS chores
+tractable.  This document is full of code samples which demonstrate the
+[% demeter %] way of solving XAS data management and analysis
+problems.  In many cases, you should be able to cut-and-paste examples
+into your own programs, modifying them slightly to suite your
+particular problem.  Hopefully, [% demeter %] has enough flexibility
+that you can begin working on problems that have not even crossed my
+mind.
 [% END %]
 
-[% WRAPPER codeexample %]
-#!/usr/bin/perl
-## -----------------------------------------------------------
-use Demeter; ## strict and warnings imported automatically with Demeter
-## -----------------------------------------------------------
-[% END %]
+[% PROCESS section label="The technology behind Demeter" %]
 
 [% FILTER html_para %]
+[% demeter %] uses [% INCLUDE html/link
+link="http://search.cpan.org/~flora/Moose/" text="Moose" %].
 
-Exporting these two perl pragmata is accomplished in the same manner
-as for Moose itself.  The magic behind this is
-[% INCLUDE html/link text="explained here"
-                     link="http://hanekomu.at/blog/dev/20080924-1114-dissecting_the_moose_2-pragmatic_goodness.html"  %].
+Explain what this means for the user -- good and bad (slow start-up)
+
+Discuss how an understanding of Moose can inform your program, but
+that it is not necessary.
+
+Explain: method, attribute, accessor, type management, triggering
+
+I will, on occassion throughout point the reader to where more of the
+programming details can be found
 [% END %]

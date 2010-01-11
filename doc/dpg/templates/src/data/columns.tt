@@ -46,8 +46,9 @@ are the text capturing special variables (see
 for details).  It is therefore necessary to single-quote the column
 specifiers to avoid having the [% INCLUDE font/mono a='$' %] symbols
 iterpolated, as they would be with double quotes.  Another useful
-syntax for column speficiation would be to use the non-interpolating
-quote operator, like so:
+syntax for column speficiation would be to use 
+[% INCLUDE html/link link="http://perldoc.perl.org/perlop.html#Quote-and-Quote-like-Operators"
+text="the non-interpolating quote operator" %], like so:
 [% END %]
 
 [% WRAPPER codeexample -%]

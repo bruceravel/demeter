@@ -25,13 +25,13 @@
 
 
 ** Projects
-*** [1/6] Import feffit.inp
+*** [6/6] Import feffit.inp
  - [X] Basic import
- - [ ] Exception handling for ambiguous feff.inp file
- - [ ] Exception handling for incomplete feff calc.
- - [ ] Trim number of scattering paths
- - [ ] What about local params?
- - [ ] Can't find data, can't find feffNNNN ...?
+ - [X] Exception handling for ambiguous feff.inp file
+ - [X] Exception handling for incomplete feff calc.
+ - [X] +Trim number of scattering paths+
+ - [X] +What about local params?+
+ - [X] Can't find data, can't find feffNNNN ...?
 
 *** TODO Better *sensitivity* to when a project needs saving
 

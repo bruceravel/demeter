@@ -525,17 +525,38 @@ sub _feffit {
   foreach my $f (keys %folders_seen) {
     my $inp = File::Spec->catfile($f, 'feff.inp');
     if (not -e $inp) {
-      confess("could not find feff.inp in $f");
       $Demeter::UI::Artemis::noautosave = 0;
-      return;
+      $inp->DESTROY;
+      $fit->DESTROY;
+      my $error = Wx::MessageDialog->new($rframes->{main},
+					 "Cannot import Feff calculation from $f. Could not find the 'feff.inp' file.",
+					 "Error importing feffit file",
+					 wxOK|wxICON_ERROR);
+      my $result = $error->ShowModal;
+      $rframes->{main}->{statusbar}->SetStatusText("Importing feffit.inp file aborted.");
+      return 0;
     };
     my $ef = _external_feff($inp, 1);
+    return 0 if not $ef;
     ## -------- check that external feff is complete
     $feffs{$f} = $ef;
   };
 
   ## -------- import the data and populate data windows
   foreach my $d (@ {$fit->data} ) {
+    if (not -e $d->file) {
+      $Demeter::UI::Artemis::noautosave = 0;
+      $feffs{$_}->DESTROY foreach keys(%feffs);
+      $inp->DESTROY;
+      $fit->DESTROY;
+      my $error = Wx::MessageDialog->new($rframes->{main},
+					 "Cannot find data file ".$d->file,
+					 "Error importing feffit.inp file",
+					 wxOK|wxICON_ERROR);
+      my $result = $error->ShowModal;
+      $rframes->{main}->{statusbar}->SetStatusText("Importing feffit.inp file aborted.");
+      return 0;
+    };
     my ($dnum, $idata) = &$make_data_frame($rframes->{main}, $d);
     $d->_update('fft');
     $rframes->{$dnum} -> populate($d);
@@ -549,6 +570,20 @@ sub _feffit {
   ## -------- reassign theory to each Path, blanking folder and file attributes, setting sp attribute
   foreach my $p (@ {$fit->paths} ) {
     my ($file, $folder) = ($p->file, $p->folder);
+    my $thisnnnn = File::Spec->catfile($folder, $file);
+    if (not -e $thisnnnn) {
+      $Demeter::UI::Artemis::noautosave = 0;
+      $feffs{$_}->DESTROY foreach keys(%feffs);
+      $inp->DESTROY;
+      $fit->DESTROY;
+      my $error = Wx::MessageDialog->new($rframes->{main},
+					 "Cannot find feffNNNN.dat file ".$thisnnnn,
+					 "Error importing feffit.inp calculation file",
+					 wxOK|wxICON_ERROR);
+      my $result = $error->ShowModal;
+      $rframes->{main}->{statusbar}->SetStatusText("Importing feffit.inp file aborted.");
+      return 0;
+    };
     $p -> set(file=>q{}, folder=>q{});
     $p -> parent($feffs{$folder});
     foreach my $sp (@{ $$rdemeter->mo->ScatteringPath }) {
@@ -575,6 +610,7 @@ sub _feffit {
   $rframes->{Journal}->{journal}->SetValue($file . ":\n\n" . $fit->slurp($file));
 
   ## -------- clean up and finish up
+  $inp->DESTROY;
   $fit->DESTROY;
   $Demeter::UI::Artemis::noautosave = 0;
   autosave;
@@ -648,6 +684,19 @@ Post a dialog prompting for a record in an Athena project file.
 Demeter's dependencies are in the F<Bundle/DemeterBundle.pm> file.
 
 =head1 BUGS AND LIMITATIONS
+
+=over 4
+
+=item *
+
+Not handling local parameters
+
+=item *
+
+While single-data-set fits with multiple k-weights does work
+correctly, MDS+MKW fits will not be imported properly.
+
+=back
 
 Please report problems to Bruce Ravel (bravel AT bnl DOT gov)
 

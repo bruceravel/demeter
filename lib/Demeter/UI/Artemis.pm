@@ -946,7 +946,7 @@ sub export {
   my ($how) = @_;
 
   ## make a disposable Fit object
-  my ($abort, $rdata, $rpaths) = uptodate($rframes);
+  my ($abort, $rdata, $rpaths) = uptodate(\%frames);
   my $rgds = $frames{GDS}->reset_all;
   my @data  = @$rdata;
   my @paths = @$rpaths;

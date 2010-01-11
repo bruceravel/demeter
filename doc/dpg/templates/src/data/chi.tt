@@ -44,6 +44,9 @@ $data -> datatype('chi');
 [% FILTER html_para %]
 Note also that data that are imported as [% chik %] cannot be plotted
 in energy.  Attempting to do so will trigger an error and end your
-program.
+program.  Note that you can set attributes related to normalization or
+background removal for a [% chik %].  Data object without consequence.
+Those attribute values will mostly never be used but there is no
+penalty for accessing them.
 [% END %]
 

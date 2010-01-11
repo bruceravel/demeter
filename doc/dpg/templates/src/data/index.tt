@@ -34,4 +34,32 @@ multiple channels of data
 
 [% FILTER html_para -%]
 The final section provides an overview of [% demeter %]'s plotting capabilities.
+
+As you will see in every example to follow, a [% demeter %] program is
+just a perl program which makes extensive use of the capabilities of
+the [% demeter %] library, which is itself written in perl.  A 
+[% demeter %] program requires a small amount of boilerplate at the
+beginning.  Just put the following line at the top of your perl
+program and you are using [% demeter %]:
+[% END %]
+
+[% WRAPPER codeexample -%]
+#!/usr/bin/perl
+use Demeter;
+[% END %]
+
+[% FILTER html_para %]
+Note that the [% INCLUDE html/link link="http://perldoc.perl.org/strict.html"
+text="strict" %] and [% INCLUDE html/link
+link="http://perldoc.perl.org/warnings.html"
+text="warnings" %] pragmas are imported automatically when [% demeter %] is 
+imported.  That is, [% demeter %] requires that your programs conform
+to these two pragmas.  That is such an inherently good idea that if
+you are not already doing so, you would be well-advised to start.
+Exporting these two perl pragmata is accomplished in the same manner
+as for [% INCLUDE html/link
+link="http://search.cpan.org/~flora/Moose/" text="Moose" %]
+itself.  The magic behind this is
+[% INCLUDE html/link text="explained here"
+                     link="http://hanekomu.at/blog/dev/20080924-1114-dissecting_the_moose_2-pragmatic_goodness.html"  %].
 [% END %]

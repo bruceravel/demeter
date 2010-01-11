@@ -27,15 +27,16 @@
 	    index   = { name = 'Home' }
 	    intro   = { name = 'Introduction'}
 	    data    = {
-		    name = 'Basics of data processing'
-		    menu = [ 'mue', 'chi', 'columns', 'athena', 'mc', 'plot' ]
+		    name = 'Importing data'
+		    menu = [ 'mue', 'chi', 'columns', 'athena', 'mc', 'special', 'plot' ]
 		    page = {
-			   mue     = { name = 'Importing mu(E) data files' }
-			   chi     = { name = 'Importing chi(k) data files' }
-			   columns = { name = 'Importing column data files' }
-			   athena  = { name = 'Importing data from Athena project files' }
-			   mc      = { name = 'Importing multichannel data files' }
-			   plot    = { name = 'Plotting and basic data processing' }
+			   mue     = { name = 'mu(E) data files' }
+			   chi     = { name = 'chi(k) data files' }
+			   columns = { name = 'Column data files' }
+			   athena  = { name = 'Athena project files' }
+			   mc      = { name = 'Multichannel data files' }
+			   special = { name = 'Special data types' }
+			   plot    = { name = 'Basic plotting and data processing' }
 			   }
 		    }
 	    mue    = {
@@ -127,10 +128,10 @@
                           name = 'Path-like objects'
 			  menu = ['vpath', 'sspath', 'mspath', 'fspath']
 			  page = {
-				 vpath  = { name = "The VPath object" }
-				 sspath = { name = 'The SSPath object' }
-				 mspath = { name = 'The MSPath object' }
-				 fspath = { name = 'The FSPath object' }
+				 vpath  = { name = "VPath" }
+				 sspath = { name = 'SSPath' }
+				 mspath = { name = 'MSPath' }
+				 fspath = { name = 'FSPath' }
 				 }
 			 }
 	    su   = { name = 'Structural Units'}

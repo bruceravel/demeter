@@ -25,6 +25,8 @@ As always, the program begins by importing the [% demeter %] package.
 At line 4, the Data object is created -- as all [% demeter %] objects
 are created -- by the [% INCLUDE font/mono a="new" %] method.  The
 object is given a name and the file containing the data is specified.
+The name will be used whenever the data needs to be identified, for
+instance in the legend of a plot.
 
 For a data file containing [% mu %] data, it is usually not necessary
 to explicitly identify the data as such.  [% demeter %] will analyze
@@ -34,11 +36,11 @@ explicitly specified like so:
 [% END %]
 
 [% WRAPPER codesample -%]
-$data -> datatype('mu');
+$data -> datatype('xmu');
 [% END %]
 
 [% FILTER html_para %]
-Parameters for normalization, background removal, Fourier transforms
+Parameters for normalization, background removal, and Fourier transforms
 are set as attributes of the Data object.  In this example, several
 basic data processing parameters (discussed in detail in the
 docuemntation for the [% INCLUDE font/module a="Demeter::Data" %]

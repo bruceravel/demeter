@@ -207,7 +207,7 @@ sub parse_zcwif_from_files {
 sub is_complete {
   my ($self) = @_;
   return 0 if (not $self->file);
-  return ( $self->npaths 
+  return ( $self->npaths
 	   and $self->filesdat and (-e $self->filesdat) and (-r $self->filesdat)
 	   and $self->phasebin and (-e $self->phasebin) and (-r $self->phasebin)
 	 );
