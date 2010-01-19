@@ -3,9 +3,9 @@ package Demeter::Plugins::SSRLB;
 use Moose;
 extends 'Demeter::Plugins::FileType';
 
-has '+is_binary' => (default => 1);
+has '+is_binary'   => (default => 1);
 has '+description' => (default => "Read Binary files from the SSRL XAFS Data Collector");
-
+has '+version'     => (default => 0.1);
 
 sub is {
   my ($self) = @_;

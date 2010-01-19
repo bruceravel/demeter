@@ -3,9 +3,9 @@ package Demeter::Plugins::SSRLmicro;  # -*- cperl -*-
 use Moose;
 extends 'Demeter::Plugins::FileType';
 
-has '+is_binary' => (default => 0);
+has '+is_binary'   => (default => 0);
 has '+description' => (default => "Read files from the SSRL microXAFS Data Collector 1.0.");
-
+has '+version'     => (default => 0.1);
 
 sub is {
   my ($self) = @_;
@@ -77,6 +77,7 @@ sub fix {
   };
   close N;
   close D;
+  $self->fixed($new);
   return $new;
 }
 

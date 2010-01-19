@@ -5,6 +5,7 @@ extends 'Demeter::Plugins::FileType';
 
 has '+is_binary'   => (default => 0);
 has '+description' => (default => "Import data and perform dead time correction from the X23A2 Vortex.");
+has '+version'     => (default => 0.1);
 
 use Demeter;
 my $demeter = Demeter->new();
@@ -53,7 +54,6 @@ sub fix {
   #  print V "[elements]\nn=4\n";
   #  close V;
   #};
-  #my $hash = $self->hash;
   my $cfg = new Config::IniFiles( -file => $vortexini );
   my $maxel = $cfg->val('elements','n');
 

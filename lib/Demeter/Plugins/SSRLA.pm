@@ -3,8 +3,9 @@ package Demeter::Plugins::SSRLA;  # -*- cperl -*-
 use Moose;
 extends 'Demeter::Plugins::FileType';
 
-has '+is_binary' => (default => 0);
+has '+is_binary'   => (default => 0);
 has '+description' => (default => "Read ASCII files from the SSRL XAFS Data Collector");
+has '+version'     => (default => 0.1);
 
 sub is {
   my ($self) = @_;

@@ -10,9 +10,9 @@ use File::Spec;
 
 has 'is_binary'   => (is => 'ro', isa => 'Bool', default => 0);
 has 'description' => (is => 'ro', isa => 'Str',  default => "Base class for file type plugins");
+has 'version'     => (is => 'ro', isa => 'Str',  default => 0);
 
 has 'parent'      => (is => 'rw', isa => 'Any',);
-has 'hash'        => (is => 'rw', isa => 'HashRef', default => sub{{}});
 has 'file'        => (is => 'rw', isa => 'Str',     default => q{},
 		     trigger => sub{my ($self, $new) = @_;
 				    my ($name, $path, $suffix) = fileparse($new);
@@ -189,6 +189,13 @@ database (the header begins with C<CUEDGE> and does not record the
 mono parameters) that is not handled by this plugin.  See question 3
 at L<http://cars9.uchicago.edu/ifeffit/FAQ/Data_Handling>.
 
+=item C<DUBBLE>
+
+Import files from the DUBBLE beamline at ESRF.  This plugin converts
+mono position stored as millidegrees into energy.  It also
+disentangles the lines of the data file containing signal recorded
+from a multi-element detector.
+
 =back
 
 As you can see, the plugins serve multiple purposes.  On one hand,
@@ -226,7 +233,8 @@ define the file type plugin interface.
 Every file type plugin has the following attributes, all of which are
 inherited from the L<Demeter::Plugin::FileType> base class.  Normally,
 an individual file type plugin will need to override the C<is_binary>
-and C<description>, as shown above.
+and C<description>, as shown above.  The C<version> attribute should
+also be overriden by any plugin.
 
 =over 4
 
@@ -241,16 +249,13 @@ whether the original data file can be displayed as text.
 A brief textual description of the purpose of the plugin.  This should
 be succinct and should fit on one short line.
 
+=item C<version>
+
+The version number of the plugin.
+
 =item C<parent>
 
 Used by a GUI...
-
-=item C<hash>
-
-This is a hash reference used to pass parameters into and out of the
-plugin.  For example, the X23A2MED plugin uses this attribute to pass
-in deadtime values and the names of the columns used to perform the
-deadtime correction.
 
 =item C<file>
 
@@ -264,13 +269,13 @@ This is set by a trigger when the C<file> attribute is set.  All the
 file type plugins that ship with Demeter write the output column data
 file to the stash directory with the same name as the input file.  The
 bit of code that does that copying uses this attribute to name the
-output file.  You should rarely need to set this directly.
+output file.  You should never need to set this directly.
 
 =item C<folder>
 
 This is the folder part of the value of the C<file> attribute.  This
 is set by a trigger when the C<file> attribute is set.  You should
-rarely need to set this directly.
+never need to set this directly.
 
 =item C<fixed>
 

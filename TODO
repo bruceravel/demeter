@@ -72,7 +72,7 @@
 ------
 * Demeter
 
-** [10/10] Special file types
+** [11/11] Special file types
  - [X] X23A2MED
  - [X] X15B
  - [X] X10C
@@ -83,6 +83,7 @@
  - [X] CMC, 9BM
  - [X] Photon Factory BL12C
  - [X] Lytle database with encoder values
+ - [X] DUBBLE
 
 ** DONE import chi(k) data on the improper grid
 

@@ -3,8 +3,9 @@ package Demeter::Plugins::HXMA;  # -*- cperl -*-
 use Moose;
 extends 'Demeter::Plugins::FileType';
 
-has '+is_binary' => (default => 0);
+has '+is_binary'   => (default => 0);
 has '+description' => (default => "Demystify files from the HXMA beamline at the CLS.");
+has '+version'     => (default => 0.1);
 
 sub is {
   my ($self) = @_;

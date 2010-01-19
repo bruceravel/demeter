@@ -17,13 +17,13 @@
 
 =cut
 
-use Test::More tests => 30;
+use Test::More tests => 33;
 
 use Demeter;
 
 use Readonly;
 Readonly my $EPSILON => 1e-1;
-my $plot = 0;
+Readonly my $PLOT    => 0;
 
 my %athena = (SSRLA	=> [25521.4,   'transmission'],
 	      SSRLB	=> [20003.5,   'transmission'],
@@ -35,6 +35,7 @@ my %athena = (SSRLA	=> [25521.4,   'transmission'],
 	      SSRLmicro	=> [11107.5,   'fluorescence'],
 	      X23A2MED	=> [6554.2,    'fluorescence'],
 	      Lytle 	=> [8979.15,   'transmission'],
+	      DUBBLE    => [12660.9,   'fluorescence'],
 	     );
 
 foreach my $type (keys %athena) {
@@ -52,8 +53,8 @@ foreach my $type (keys %athena) {
   ok( $obj->is, "File of type $type recognized");
 				## test 3: fix the data, import it as a Data object, check the e0 value
   my $fixed = $obj->fix;
-  my $e0    = dotest($obj, $fixed, $athena{$type}->[1]);
-  ok( abs($e0 - $athena{$type}->[0]) < $EPSILON,  $obj->description . ": $e0" );
+  my $e0    = dotest($obj, $athena{$type}->[1]);
+  ok( abs($e0 - $athena{$type}->[0]) < $EPSILON,  $obj->description . ": E0=$e0" );
 				## clean up
   unlink $fixed;
   $obj     -> DESTROY;
@@ -63,13 +64,13 @@ foreach my $type (keys %athena) {
 
 ##'$6+$7+$8+$9+$10+$11+$12+$13+$14+$15+$16+$17+$18+$19+$20+$21+$22+$23+$24+$25+$26+$27+$28+$29+$30+$31+$32+$33+$34+$35+$36+$37'
 sub dotest {
-  my ($obj, $fixed, $mode) = @_;
+  my ($obj, $mode) = @_;
   $mode ||= 'transmission';
-  my $data = Demeter::Data->new(file=>$fixed, $obj->suggest($mode));
+  my $data = Demeter::Data->new(file=>$obj->fixed, $obj->suggest($mode));
   $data->numerator('$6+$7+$8+$9+$10+$11+$12+$13+$14+$15+$16+$17+$18+$19+$20+$21+$22+$23+$24+$25+$26+$27+$28+$29+$30')
     if (ref($obj) =~ m{SSRLmicro});
   $data->_update('fft');
-  if ($plot) {
+  if ($PLOT) {
     $data->po->start_plot;
     $data->po->set(emin=>-30, emax=>150);
     $data->plot('E');

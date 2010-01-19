@@ -3,8 +3,9 @@ package Demeter::Plugins::PFBL12C;  # -*- cperl -*-
 use Moose;
 extends 'Demeter::Plugins::FileType';
 
-has '+is_binary' => (default => 0);
+has '+is_binary'   => (default => 0);
 has '+description' => (default => "Read files from Photon Factory Beamline 12C.");
+has '+version'     => (default => 0.1);
 
 use Readonly;
 Readonly my $PI      => 4 * atan2 1, 1;

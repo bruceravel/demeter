@@ -3,8 +3,9 @@ package Demeter::Plugins::X15B;  # -*- cperl -*-
 use Moose;
 extends 'Demeter::Plugins::FileType';
 
-has '+is_binary' => (default => 1);
+has '+is_binary'   => (default => 1);
 has '+description' => (default => "Read binary files from NSLS beamline X15B.");
+has '+version'     => (default => 0.1);
 
 use Readonly;
 Readonly my $ENERGY => 0;	# columns containing the

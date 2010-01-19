@@ -3,8 +3,9 @@ package Demeter::Plugins::Lytle;
 use Moose;
 extends 'Demeter::Plugins::FileType';
 
-has '+is_binary' => (default => 0);
+has '+is_binary'   => (default => 0);
 has '+description' => (default => "Import files from the Lytle database stored by encoder value");
+has '+version'     => (default => 0.1);
 
 use Readonly;
 Readonly my $HC  => 12398.61;
