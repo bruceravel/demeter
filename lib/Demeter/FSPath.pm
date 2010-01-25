@@ -67,10 +67,10 @@ has 'coordination' => (is => 'rw', isa =>  PosInt,  default => 6,);
 
 has '+parent'      => (default => sub{ Demeter::Feff->new(name=>'qfs', screen=>0, hidden=>1) },);
 has 'workspace'    => (is => 'rw', isa => 'Str',   default => q{},
-		      trigger => sub{ my $this = shift;
+		      trigger => sub{ my ($this, $new) = @_;
 				      $this->parent(Demeter::Feff->new(name=>'qfs', screen=>0)) if not $this->parent;
-				      $this->parent->workspace($this->workspace);
-				      $this->parent->make_workspace($this->workspace);
+				      $this->parent->workspace($new);
+				      $this->parent->make_workspace($new);
 				      $this->set_parent;
 				    });
 

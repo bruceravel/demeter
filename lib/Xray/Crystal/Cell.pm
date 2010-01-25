@@ -491,7 +491,6 @@ sub central {
   my @center = (0,0,0);
   foreach my $item (@{$self->contents}) {
     my $site = $item->[0];
-    print $core, "  ", $site->tag, $/;
     if (lc($core) eq lc($site->tag)) {
       ($is_host, $list) = $site->get(qw(host positions));
       $central = $site;

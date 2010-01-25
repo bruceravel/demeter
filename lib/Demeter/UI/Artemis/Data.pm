@@ -450,15 +450,15 @@ sub initial_page_panel {
 
   my $dndtext = Wx::StaticText    -> new($panel, -1, "Drag paths from a Feff interpretation list and drop them in this space to add paths to this data set", wxDefaultPosition, [300,-1]);
   $dndtext   -> Wrap(280);
-  my $atoms   = Wx::HyperlinkCtrl -> new($panel, -1, 'Import crystal data',           q{}, wxDefaultPosition, wxDefaultSize );
-  my $qfs     = Wx::HyperlinkCtrl -> new($panel, -1, 'Start a quick first shell fit', q{}, wxDefaultPosition, wxDefaultSize );
-  my $su      = Wx::StaticText    -> new($panel, -1, 'Import a structural unit',           wxDefaultPosition, wxDefaultSize );
-  my $feff    = Wx::StaticText    -> new($panel, -1, 'Import a Feff calculation',          wxDefaultPosition, wxDefaultSize );
+  my $atoms   = Wx::HyperlinkCtrl -> new($panel, -1, 'Import crystal data or a Feff calculation', q{}, wxDefaultPosition, wxDefaultSize );
+  my $qfs     = Wx::HyperlinkCtrl -> new($panel, -1, 'Start a quick first shell fit',             q{}, wxDefaultPosition, wxDefaultSize );
+  my $su      = Wx::StaticText    -> new($panel, -1, 'Import a structural unit',                       wxDefaultPosition, wxDefaultSize );
+  ##my $feff    = Wx::HyperlinkCtrl -> new($panel, -1, 'Import a Feff calculation',     q{}, wxDefaultPosition, wxDefaultSize );
 
-  EVT_HYPERLINK($self, $atoms, sub{Demeter::UI::Artemis::new_feff($Demeter::UI::Artemis::frames{main});});
+  EVT_HYPERLINK($self, $atoms, sub{Import('feff', q{});});
   EVT_HYPERLINK($self, $qfs,   sub{$self->quickfs;});
-  $_ -> SetFont( Wx::Font->new( 10, wxDEFAULT, wxITALIC, wxNORMAL, 0, "" ) ) foreach ($dndtext, $qfs, $atoms, $su, $feff);
-  $_ -> Enable(0) foreach ($su, $feff);
+  $_ -> SetFont( Wx::Font->new( 10, wxDEFAULT, wxITALIC, wxNORMAL, 0, "" ) ) foreach ($dndtext, $qfs, $atoms, $su);
+  $su-> Enable(0);
   $_ -> SetVisitedColour($_->GetNormalColour) foreach ($qfs, $atoms); #, $su, $feff);
 
   ##my $or = Wx::StaticText -> new($panel, -1, "\tor");
@@ -470,8 +470,8 @@ sub initial_page_panel {
   $vv -> Add($qfs,                                      0, wxALL, 5 );
   $vv -> Add(Wx::StaticText -> new($panel, -1, "\tor"), 0, wxALL, 10);
   $vv -> Add($su,                                       0, wxALL, 5 );
-  $vv -> Add(Wx::StaticText -> new($panel, -1, "\tor"), 0, wxALL, 10);
-  $vv -> Add($feff,                                     0, wxALL, 5 );
+  ##$vv -> Add(Wx::StaticText -> new($panel, -1, "\tor"), 0, wxALL, 10);
+  ##$vv -> Add($feff,                                     0, wxALL, 5 );
 
   $panel -> SetSizer($vv);
   return $panel;
@@ -1822,7 +1822,8 @@ sub quickfs {
 		     edge      => $edge,
 		     data      => $datapage->{data},
 		    );
-  $firstshell -> workspace(File::Spec->catfile($Demeter::UI::Artemis::frames{main}->{project_folder}, 'feff', $firstshell->parent->group));
+  my $ws = File::Spec->catfile($Demeter::UI::Artemis::frames{main}->{project_folder}, 'feff', $firstshell->parent->group);
+  $firstshell -> workspace($ws);
   $firstshell -> _update('bft');
   $firstshell -> save_feff_yaml;
   $datapage->{pathlist}->DeletePage(0) if $datapage->{pathlist}->GetPage(0) =~ m{Panel};

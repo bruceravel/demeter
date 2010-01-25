@@ -325,11 +325,9 @@ sub everything {
   my ($self) = @_;
   return (@{ $self->Atoms	   },
 	  @{ $self->Data	   },
-	  @{ $self->Feff	   },
 	  @{ $self->External	   },
 	  @{ $self->Fit		   },
 	  @{ $self->Feffit	   },
-	  @{ $self->GDS		   },
 	  @{ $self->Path	   },
 	  @{ $self->ScatteringPath },
 	  @{ $self->VPath	   },
@@ -340,6 +338,8 @@ sub everything {
 	  @{ $self->MultiChannel   },
 	  @{ $self->Plot	   },
 	  @{ $self->Indicator	   },
+	  @{ $self->Feff	   },
+	  @{ $self->GDS		   },
 	 );
 };
 

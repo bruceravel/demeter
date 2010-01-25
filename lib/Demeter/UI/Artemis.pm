@@ -55,6 +55,8 @@ Readonly my $PERL_MODULES    => Wx::NewId();
 use Wx::Perl::Carp;
 $SIG{__WARN__} = sub {Wx::Perl::Carp::warn($_[0])};
 $SIG{__DIE__}  = sub {Wx::Perl::Carp::warn($_[0])};
+##$SIG{PIPE} = 'IGNORE';
+
 
 sub identify_self {
   my @caller = caller;
@@ -366,12 +368,12 @@ sub on_close {
 				       wxYES_NO|wxCANCEL|wxYES_DEFAULT|wxICON_QUESTION);
     my $result = $yesno->ShowModal;
     if ($result == wxID_CANCEL) {
-      $frames{main}->{statusbar}->SetStatusText("Not exiting project.");
+      $frames{main}->{statusbar}->SetStatusText("Not exiting Artemis.");
       return 0;
     };
     save_project(\%frames) if $result == wxID_YES;
   };
-  rmtree($self->{project_folder});
+  rmtree($self->{project_folder}); #, {verbose=>1});
   unlink $frames{main}->{autosave_file};
   $demeter->mo->destroy_all;
   foreach my $f (keys(%frames)) {
