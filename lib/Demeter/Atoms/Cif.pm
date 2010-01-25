@@ -62,7 +62,7 @@ sub read_cif {
   $self->cell->group->group($item[0]);
   if (not $self->cell->group->group) {
     @item = $datablock->get_item_data(-item=>"_symmetry_Int_Tables_number");
-    $self->cell->group->group($item[0]);
+    $self->cell->group->group($item[0]) if (defined $item[0]);
   };
   $self->space($self->cell->group->group);
 
@@ -99,7 +99,6 @@ sub read_cif {
     (my $yy = $y[$i]) =~ s{\(\d+\)}{};
     (my $zz = $z[$i]) =~ s{\(\d+\)}{};
     (my $oo = $occ[$i]||1) =~ s/\(\d+\)//;
-    ##print "$ee, $xx, $yy, $zz, $tag[$i], $oo\n";
     my $this = join("|",$ee, $xx, $yy, $zz, $tag[$i]);
     $self->push_sites($this);
     my $z = get_Z($ee);

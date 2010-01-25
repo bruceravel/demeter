@@ -95,7 +95,7 @@ sub _canonicalize_group {
   my @mono9 = qw(b_unique_1 b_unique_2 b_unique_3 c_unique_1 c_unique_2 c_unique_3 a_unique_1 a_unique_2 a_unique_3);
 				# this is a null value
   $self->warning(q{});
-  if (! $symbol) {
+  if ((! $symbol) or ($symbol =~ m{\?})) {
     $self->group(q{});
     $self->setting(0);
     $self->data( {} );

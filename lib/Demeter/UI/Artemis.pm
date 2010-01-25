@@ -848,7 +848,7 @@ sub make_feff_frame {
   my $feffbox = $self->{feffbox};
   $name ||= basename($file);	# ok for importing an atoms or CIF file
 
-  my $new = Wx::ToggleButton->new($self->{fefflist}, -1, "Show ".emph($name));
+  my $new = Wx::ToggleButton->new($self->{fefflist}, -1, "Hide ".emph($name));
   $feffbox -> Add($new, 0, wxGROW|wxRIGHT, 5);
   mouseover($new, "Display/hide $name.");
 

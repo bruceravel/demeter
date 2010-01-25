@@ -406,6 +406,7 @@ sub populate {
     push @sites, Xray::Crystal::Site->new(element=>$el, x=>_interpret($x), y=>_interpret($y), z=>_interpret($z), tag=>$tag);
   };
   ### creating and populating cell
+  return $self if not $self->space;
   $self -> cell -> space_group($self->space);
   foreach my $key (qw(a b c alpha beta gamma)) {
     my $val = $self->$key;
@@ -418,7 +419,6 @@ sub populate {
     $self->$key($self->cell->$key);
   };
   my ($central, $xcenter, $ycenter, $zcenter) = $self -> cell -> central($self->core);
-  #print join("|", $self->core, $central, $xcenter, $ycenter, $zcenter), $/;
   $self->update_edge;
   $self->set(is_populated => 1,
 	     corel        => ucfirst(lc($central->element)),
@@ -804,8 +804,9 @@ sub update_edge {
   my ($self) = @_;
   return $self if $self->edge;
   my ($central, $xcenter, $ycenter, $zcenter) = $self -> cell -> central($self->core);
-  #print $central, $/;
-  #print join(" ", $central->meta->get_attribute_list), $/;
+  ##print $self->core, $/;
+  ##print $central, $/;
+  ##print join(" ", $central->meta->get_attribute_list), $/;
   my $z = get_Z( $central->element );
   ($z > 57) ? $self->edge('l3') : $self->edge('k');
   return $self;

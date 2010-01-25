@@ -120,6 +120,7 @@ sub new {
   $self->{parent}    = $parent;
   $self->{statusbar} = $parent->{statusbar};
   $self->{buffered_site} = 0;
+  $self->{problems} = q{};
 
   my $vbox = Wx::BoxSizer->new( wxVERTICAL );
 
@@ -535,11 +536,15 @@ sub open_file {
 sub get_crystal_data {
   my ($self) = @_;
 
+  $self->{problems} = q{};
   my $problems = q{};
   $atoms->clear;
 
   my $this = $self->{space}->GetValue || q{};
-  return 0 if (not $this);
+  if (not $this) {
+    $self->{problems} = "You have not specified a space group.";
+    return 0;
+  };
   $atoms->space($this);
   $atoms->cell->space_group($this); # why is this necessary!!!!!  why is the trigger not being triggered?????
   $problems .= $atoms->cell->group->warning.$/ if $atoms->cell->group->warning;
@@ -615,8 +620,8 @@ sub get_crystal_data {
 	       and  ($#{ $atoms->sites } > -1)
 	       and  ($atoms->a)
 	      );
-
   if ($problems) {
+    $self->{problems} = $problems;
     $seems_ok = 0;
     warn($problems);
   };
@@ -702,7 +707,9 @@ sub edge_absorber {
 
 sub unusable_data {
   my ($self) = @_;
-  $self->{statusbar}->SetStatusText("These crystallographic data cannot be processed.");
+  my $message = Wx::MessageDialog->new($self, $self->{problems}, "Trouble", wxOK);
+  $message->ShowModal;
+  $self->{statusbar}->SetStatusText("These crystallographic data cannot be processed");
 };
 
 sub save_file {
