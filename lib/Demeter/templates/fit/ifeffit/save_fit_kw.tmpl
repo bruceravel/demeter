@@ -13,8 +13,8 @@
 }
 {
   ($bkg, $label) = ($D->fit_do_bkg)
-                 ? ($D->group."_bkg.chi, ", "k chi_k$kweight fit residual background window")
-                 : (q{},                    "k chi_k$kweight fit residual win");
+                 ? ($D->group."_bkg.chi, ", "k chi_k$kweight fit residual running background window")
+                 : (q{},                    "k chi_k$kweight fit residual running window");
   $bkgstring = ($D->fit_do_bkg)
              ? $D->group . '_bkg.chik = ' . $D->group . '.k^' . $kweight . '*' . $D->group . '_bkg.chi'
              : q{};
@@ -28,5 +28,5 @@ set({$D->group}.chik     = {$D->group}.k^{$kweight}*{$D->group}.chi,
 write_data(file="{$filename}",
            ${$titles}, ${$D->group}_title_*, "chi(k) weighted by {$kweight}",
            label="{$label}",
-           {$D->group}.k, {$D->group}.chik, {$D->group}_fit.chik, {$D->group}_res.chik, {$bkg}{$D->group}.win)
+           {$D->group}.k, {$D->group}.chik, {$D->group}_fit.chik, {$D->group}_res.chik, {$D->group}.krun, {$bkg}{$D->group}.win)
 erase {$D->group}.chik {$D->group}_fit.chik {$D->group}_res.chik {$D->group}_bkg.chik

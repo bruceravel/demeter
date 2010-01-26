@@ -146,10 +146,12 @@ sub _save_fit_command {
              : ($how eq 'qre')  ? 'chiq_re'
              : ($how eq 'qim')  ? 'chiq_im'
 	     :                    q{};
-  my $kweight = ($how eq 'k1') ? 1
-              : ($how eq 'k2') ? 2
-              : ($how eq 'k3') ? 3
-	      :                  0;
+  my $kweight = ($how eq 'k1')      ? 1
+              : ($how eq 'k2')      ? 2
+              : ($how eq 'k3')      ? 3
+              : ($how eq 'k')       ? 0
+	      : ($how =~ m{\A[rq]}) ? $self->po->kweight
+	      :                       undef;
 
   if ($how =~ m{\A[rq]}) {
     $self->_update('all');
@@ -164,10 +166,12 @@ sub _save_fit_command {
   };
   $self->title_glob("dem_data_", "f", $how);
 
+  $how ||= 'k';
+  $self->running(substr($how, 0, 1), $kweight) if defined($kweight);
   my $command = $self-> template("fit", $template, {filename => $filename,
 						    titles   => "dem_data_*",
 						    suffix   => $suffix,
-						    kweight  => $kweight,
+						    kweight  => $kweight||0,
 						   });
   return $command;
 };

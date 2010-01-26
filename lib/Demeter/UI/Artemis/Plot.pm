@@ -231,9 +231,13 @@ sub plot {
 		  and ($self->{stack}->{invert}->GetStringSelection !~ m{(?:Never|Only)})
 		  and ($self->{limits}->{qpart}->GetStringSelection eq 'Magnitude') );
 
-  ## for data set stacking, determine how many data sets are
-  ## represented in the list, pre-set y_offsets for the data groups,
-  ## process normally, reset y_offsets to their starting values
+  my $mds_offset = $self->{stack}->{offset}->GetValue;
+  my $offset = 0;
+  foreach my $obj (@list) {
+    next unless (ref($obj) =~ m{Data});
+    $obj->y_offset($offset);
+    $offset -= $mds_offset;
+  };
 
   ## stack overrides invert
   if ($self->{stack}->{dostack}->GetValue) {

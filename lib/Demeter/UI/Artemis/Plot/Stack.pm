@@ -64,13 +64,11 @@ sub new {
 
   my $dsbox       = Wx::StaticBox->new($this, -1, 'Stack data sets', wxDefaultPosition, wxDefaultSize);
   my $dsboxsizer  = Wx::StaticBoxSizer->new( $dsbox, wxHORIZONTAL );
-  $label  = Wx::StaticText->new($this, -1, 'Offset');
+  $label  = Wx::StaticText->new($this, -1, 'Downward offset');
   $this->{offset} = Wx::TextCtrl->new($this, -1, 0);
   $dsboxsizer -> Add($label, 0, wxALL, 5);
   $dsboxsizer -> Add($this->{offset}, 1, wxALL, 5);
   $box->Add($dsboxsizer, 0, wxGROW|wxALL, 3);
-
-  $this->{offset}->Enable(0);
 
   $this -> SetSizer($box);
   return $this;

@@ -530,13 +530,13 @@ sub stack {
 
 
 sub running {
-  my ($self, $space) = @_;
+  my ($self, $space, $kw) = @_;
   $space ||= $self->po->space;
+  $kw ||= $self->po->kweight;
   my ($diffsum, $max, $suff) = (0,0,q{});
   my @running = ();
  SWITCH: {
     (lc($space) eq 'k') and do {
-      my $kw   = $self->po->kweight;
       my @x    = $self->get_array('k');
       my @data = $self->get_array('chi');
       my @fit  = $self->get_array('chi', 'fit');
@@ -552,7 +552,6 @@ sub running {
     };
 
     (lc($space) eq 'r') and do {
-      my $kw    = $self->po->kweight;
       my @x     = $self->get_array('r');
       my @datar = $self->get_array('chir_re');
       my @fitr  = $self->get_array('chir_re', 'fit');
@@ -570,7 +569,6 @@ sub running {
     };
 
     (lc($space) eq 'q') and do {
-      my $kw    = $self->po->kweight;
       my @x     = $self->get_array('q');
       my @datar = $self->get_array('chiq_re');
       my @fitr  = $self->get_array('chiq_re', 'fit');

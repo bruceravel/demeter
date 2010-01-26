@@ -3,8 +3,15 @@ package Demeter::UI::Wx::SpecialCharacters;
 use strict;
 #use Encode;
 use base qw( Exporter );
-our @EXPORT_OK = qw(emph $CHI $EPSILON $DELTA $SIGMA $SIGSQR $PHI $S02 $E0 $COPYRIGHT $LAQUO $RAQUO $MDASH);
-our %EXPORT_TAGS = (all   => [qw(emph $CHI $EPSILON $DELTA $SIGMA $SIGSQR $PHI $S02 $E0 $COPYRIGHT $LAQUO $RAQUO $MDASH)],
+our @EXPORT_OK = qw(emph
+		    $CHI $EPSILON $DELTA $SIGMA $SIGSQR $PHI $S02 $E0
+		    $COPYRIGHT $LAQUO $RAQUO $MDASH
+		    $TWO $THR);
+our %EXPORT_TAGS = (all   => [qw(emph
+				 $CHI $EPSILON $DELTA $SIGMA $SIGSQR $PHI $S02 $E0
+				 $COPYRIGHT $LAQUO $RAQUO $MDASH
+				 $TWO $THR)],
+		    super => [qw($TWO $THR)],
 		    greek => [qw($CHI $EPSILON $DELTA $SIGMA $SIGSQR $PHI $S02 $E0)],
 		   );
 
@@ -19,6 +26,10 @@ our $SIGSQR  = chr(963).chr(178); #"\xCF\x83"."\xC2\xB2"; #'σ²';
 our $PHI     = chr(966);          #"\xCF\x86";            #'φ';
 our $S02     = 'S'.chr(8320).chr(178);
 our $E0      = 'E'.chr(8320);
+
+## -------- superscripts
+our $TWO     = chr(178);
+our $THR     = chr(179);
 
 ## -------- other special characters
 our $COPYRIGHT = chr(169);  #"\xC2\xA9";     #'©';
@@ -45,7 +56,8 @@ This documentation refers to Demeter version 0.4.
 
 =head1 SYNOPSIS
 
-This provides a library of special characters for use in labels on Wx widgets.
+This provides a library of special characters for use in labels on Wx
+widgets used in Artemis and Athena.
 
   use Demeter::UI::Wx::SpecialCharacters qw(:all);
   my $button = Wx::Button($parent, -1, "Plot $CHI(k)");
@@ -91,6 +103,20 @@ lower case phi
 
 =back
 
+The superscript charaters exported are
+
+=over 4
+
+=item C<$TWO>
+
+Superscript 2
+
+=item C<$THR>
+
+Superscript 3
+
+=back
+
 The other characters exported are
 
 =over 4
@@ -120,6 +146,10 @@ As the name implies, all defined characters plus the C<emph> function
 =item C<:greek>
 
 Just the greek letters
+
+=item C<:super>
+
+Just the superscript characters
 
 =back
 

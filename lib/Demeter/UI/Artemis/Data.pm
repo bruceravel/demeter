@@ -65,6 +65,18 @@ Readonly my $DATA_NIDP		=> Wx::NewId();
 Readonly my $DATA_SHOW		=> Wx::NewId();
 Readonly my $DATA_YAML		=> Wx::NewId();
 
+Readonly my $FIT_SAVE_K	        => Wx::NewId();
+Readonly my $FIT_SAVE_K1        => Wx::NewId();
+Readonly my $FIT_SAVE_K2        => Wx::NewId();
+Readonly my $FIT_SAVE_K3        => Wx::NewId();
+Readonly my $FIT_SAVE_RM        => Wx::NewId();
+Readonly my $FIT_SAVE_RR        => Wx::NewId();
+Readonly my $FIT_SAVE_RI        => Wx::NewId();
+Readonly my $FIT_SAVE_QM        => Wx::NewId();
+Readonly my $FIT_SAVE_QR        => Wx::NewId();
+Readonly my $FIT_SAVE_QI        => Wx::NewId();
+
+Readonly my $PATH_TRANSFER	=> Wx::NewId();
 Readonly my $PATH_FSPATH	=> Wx::NewId();
 Readonly my $PATH_RENAME	=> Wx::NewId();
 Readonly my $PATH_SHOW		=> Wx::NewId();
@@ -79,6 +91,10 @@ Readonly my $PATH_EXPORT_DATA	=> Wx::NewId();
 Readonly my $PATH_EXPORT_EACH	=> Wx::NewId();
 Readonly my $PATH_EXPORT_MARKED	=> Wx::NewId();
 
+Readonly my $DATA_SAVE_K	=> Wx::NewId();
+Readonly my $DATA_SAVE_R	=> Wx::NewId();
+Readonly my $DATA_SAVE_Q	=> Wx::NewId();
+
 Readonly my $PATH_SAVE_K	=> Wx::NewId();
 Readonly my $PATH_SAVE_R	=> Wx::NewId();
 Readonly my $PATH_SAVE_Q	=> Wx::NewId();
@@ -92,6 +108,17 @@ Readonly my $PATH_EXP_SIGMA2    => Wx::NewId();
 Readonly my $PATH_EXP_EI        => Wx::NewId();
 Readonly my $PATH_EXP_THIRD     => Wx::NewId();
 Readonly my $PATH_EXP_FOURTH    => Wx::NewId();
+
+Readonly my $MARKED_SAVE_K	=> Wx::NewId();
+Readonly my $MARKED_SAVE_K1     => Wx::NewId();
+Readonly my $MARKED_SAVE_K2     => Wx::NewId();
+Readonly my $MARKED_SAVE_K3     => Wx::NewId();
+Readonly my $MARKED_SAVE_RM     => Wx::NewId();
+Readonly my $MARKED_SAVE_RR     => Wx::NewId();
+Readonly my $MARKED_SAVE_RI     => Wx::NewId();
+Readonly my $MARKED_SAVE_QM     => Wx::NewId();
+Readonly my $MARKED_SAVE_QR     => Wx::NewId();
+Readonly my $MARKED_SAVE_QI     => Wx::NewId();
 
 Readonly my $MARK_ALL		=> Wx::NewId();
 Readonly my $MARK_NONE		=> Wx::NewId();
@@ -117,25 +144,12 @@ Readonly my $ACTION_TRANSFER    => Wx::NewId();
 Readonly my $ACTION_AFTER       => Wx::NewId();
 Readonly my $ACTION_NONEAFTER   => Wx::NewId();
 
-Readonly my $INCLUDE_ALL	=> Wx::NewId();
-Readonly my $EXCLUDE_ALL	=> Wx::NewId();
-Readonly my $INCLUDE_INVERT	=> Wx::NewId();
 Readonly my $INCLUDE_MARKED	=> Wx::NewId();
 Readonly my $EXCLUDE_MARKED	=> Wx::NewId();
-Readonly my $EXCLUDE_AFTER	=> Wx::NewId();
-Readonly my $INCLUDE_SS     	=> Wx::NewId();
-Readonly my $INCLUDE_HIGH	=> Wx::NewId();
-Readonly my $INCLUDE_R  	=> Wx::NewId();
 
 Readonly my $DISCARD_THIS	=> Wx::NewId();
-Readonly my $DISCARD_ALL	=> Wx::NewId();
 Readonly my $DISCARD_MARKED	=> Wx::NewId();
 Readonly my $DISCARD_UNMARKED	=> Wx::NewId();
-Readonly my $DISCARD_EXCLUDED	=> Wx::NewId();
-Readonly my $DISCARD_AFTER	=> Wx::NewId();
-Readonly my $DISCARD_MS	        => Wx::NewId();
-Readonly my $DISCARD_LOW	=> Wx::NewId();
-Readonly my $DISCARD_R  	=> Wx::NewId();
 
 
 sub new {
@@ -194,9 +208,9 @@ sub new {
   my $buttonbox  = Wx::StaticBox->new($leftpane, -1, 'Plot this data set as ', wxDefaultPosition, [-1,-1]);
   my $buttonboxsizer = Wx::StaticBoxSizer->new( $buttonbox, wxHORIZONTAL );
   $left -> Add($buttonboxsizer, 0, wxGROW|wxALL, 5);
-  $this->{plot_rmr}  = Wx::Button->new($leftpane, -1, "R&mr",  wxDefaultPosition, [70,-1]);
+  $this->{plot_rmr}  = Wx::Button->new($leftpane, -1, "&Rmr",  wxDefaultPosition, [70,-1]);
   $this->{plot_k123} = Wx::Button->new($leftpane, -1, "&k123", wxDefaultPosition, [70,-1]);
-  $this->{plot_r123} = Wx::Button->new($leftpane, -1, "&R123", wxDefaultPosition, [70,-1]);
+  $this->{plot_r123} = Wx::Button->new($leftpane, -1, "R&123", wxDefaultPosition, [70,-1]);
   $this->{plot_kq}   = Wx::Button->new($leftpane, -1, "k&q",   wxDefaultPosition, [70,-1]);
   foreach my $b (qw(plot_k123 plot_r123 plot_rmr plot_kq)) {
     $buttonboxsizer -> Add($this->{$b}, 1, wxGROW|wxALL, 2);
@@ -530,11 +544,47 @@ sub make_menubar {
   my ($self) = @_;
   $self->{menubar}   = Wx::MenuBar->new;
 
+  my $datasave_menu     = Wx::Menu->new;
+  $datasave_menu->Append($DATA_SAVE_K, "k-space", "Save these data to a file with $CHI(k), $CHI(k)*k, $CHI(k)*k$TWO, $CHI(k)*k$THR, and the k-window", wxITEM_NORMAL);
+  $datasave_menu->Append($DATA_SAVE_R, "R-space", "Save these data to a file with the real, imaginary, magnitude and phase parts of $CHI(R)",          wxITEM_NORMAL);
+  $datasave_menu->Append($DATA_SAVE_Q, "q-space", "Save these data to a file with the real, imaginary, magnitude and phase parts of $CHI(q)",          wxITEM_NORMAL);
+  my $fitsave_menu  = Wx::Menu->new;
+  $fitsave_menu->Append($FIT_SAVE_K,  "$CHI(k)",       "Save the data and fit as $CHI(k)",       wxITEM_NORMAL);
+  $fitsave_menu->Append($FIT_SAVE_K1, "$CHI(k)*k",     "Save the data and fit as $CHI(k)*k",     wxITEM_NORMAL);
+  $fitsave_menu->Append($FIT_SAVE_K2, "$CHI(k)*k$TWO", "Save the data and fit as $CHI(k)*k$TWO", wxITEM_NORMAL);
+  $fitsave_menu->Append($FIT_SAVE_K3, "$CHI(k)*k$THR", "Save the data and fit as $CHI(k)*k$THR", wxITEM_NORMAL);
+  $fitsave_menu->AppendSeparator;
+  $fitsave_menu->Append($FIT_SAVE_RM, "|$CHI(R)|",     "Save the data and fit as the magnitude of $CHI(R) using the plotting k-weight",      wxITEM_NORMAL);
+  $fitsave_menu->Append($FIT_SAVE_RR, "Re[$CHI(R)]",   "Save the data and fit as the real part of $CHI(R) using the plotting k-weight",      wxITEM_NORMAL);
+  $fitsave_menu->Append($FIT_SAVE_RI, "Im[$CHI(R)]",   "Save the data and fit as the imaginary part of $CHI(R) using the plotting k-weight", wxITEM_NORMAL);
+  $fitsave_menu->AppendSeparator;
+  $fitsave_menu->Append($FIT_SAVE_QM, "|$CHI(q)|",     "Save the data and fit as the magnitude of $CHI(q) using the plotting k-weight",      wxITEM_NORMAL);
+  $fitsave_menu->Append($FIT_SAVE_QR, "Re[$CHI(q)]",   "Save the data and fit as the real part of $CHI(q) using the plotting k-weight",      wxITEM_NORMAL);
+  $fitsave_menu->Append($FIT_SAVE_QI, "Im[$CHI(q)]",   "Save the data and fit as the imaginary part of $CHI(q) using the plotting k-weight", wxITEM_NORMAL);
+  my $markedsave_menu = Wx::Menu->new;
+  $markedsave_menu->Append($MARKED_SAVE_K,  "$CHI(k)",       "Save the data and all marked paths as $CHI(k) with all path parameters evaluated",       wxITEM_NORMAL);
+  $markedsave_menu->Append($MARKED_SAVE_K1, "$CHI(k)*k",     "Save the data and all marked paths as $CHI(k)*k with all path parameters evaluated",     wxITEM_NORMAL);
+  $markedsave_menu->Append($MARKED_SAVE_K2, "$CHI(k)*k$TWO", "Save the data and all marked paths as $CHI(k)*k$TWO with all path parameters evaluated", wxITEM_NORMAL);
+  $markedsave_menu->Append($MARKED_SAVE_K3, "$CHI(k)*k$THR", "Save the data and all marked paths as $CHI(k)*k$THR with all path parameters evaluated", wxITEM_NORMAL);
+  $markedsave_menu->AppendSeparator;
+  $markedsave_menu->Append($MARKED_SAVE_RM, "|$CHI(R)|",     "Save the data and all marked paths as the magnitude of $CHI(R) with all path parameters evaluated", wxITEM_NORMAL);
+  $markedsave_menu->Append($MARKED_SAVE_RR, "Re[$CHI(R)]",   "Save the data and all marked paths as the real part of $CHI(R) with all path parameters evaluated", wxITEM_NORMAL);
+  $markedsave_menu->Append($MARKED_SAVE_RI, "Im[$CHI(R)]",   "Save the data and all marked paths as the imaginary part of $CHI(R) with all path parameters evaluated", wxITEM_NORMAL);
+  $markedsave_menu->AppendSeparator;
+  $markedsave_menu->Append($MARKED_SAVE_QM, "|$CHI(q)|",     "Save the data and all marked paths as the magnitude of $CHI(q) with all path parameters evaluated", wxITEM_NORMAL);
+  $markedsave_menu->Append($MARKED_SAVE_QR, "Re[$CHI(q)]",   "Save the data and all marked paths as the real part of $CHI(q) with all path parameters evaluated", wxITEM_NORMAL);
+  $markedsave_menu->Append($MARKED_SAVE_QI, "Im[$CHI(q)]",   "Save the data and all marked paths as the imaginary part of $CHI(q) with all path parameters evaluated", wxITEM_NORMAL);
+
   ## -------- chi(k) menu
   $self->{datamenu}  = Wx::Menu->new;
   $self->{datamenu}->Append($DATA_RENAME,      "Rename this $CHI(k)",         "Rename this data set",  wxITEM_NORMAL );
   $self->{datamenu}->Append($DATA_REPLACE,     "Replace this $CHI(k)",        "Replace this data set $MDASH that is, apply the current fitting model to a different set of $CHI(k) data.",  wxITEM_NORMAL );
+  $self->{datamenu}->Append($DATA_DISCARD,     "Discard this $CHI(k)",        "Discard this data set", wxITEM_NORMAL );
   #$self->{datamenu}->Append($DATA_DIFF,        "Make difference spectrum", "Make a difference spectrum using the marked paths", wxITEM_NORMAL );
+  $self->{datamenu}->AppendSeparator;
+  $self->{datamenu}->AppendSubMenu($datasave_menu,   "Save data in ...",                "Save a column data file containing only the data.");
+  $self->{datamenu}->AppendSubMenu($fitsave_menu,    "Save data and fit as ...",        "Save a column data file containing the data, fit, background, residual, running R-factor, and window.");
+  $self->{datamenu}->AppendSubMenu($markedsave_menu, "Save data + marked paths as ...", "Save a column data file containing the data and all marked paths from this data's path list.");
   $self->{datamenu}->AppendSeparator;
   $self->{datamenu}->Append($PATH_FSPATH,      "Quick first shell model", "Generate a quick first shell fitting model", wxITEM_NORMAL );
   $self->{datamenu}->AppendSeparator;
@@ -542,12 +592,9 @@ sub make_menubar {
   $self->{datamenu}->Append($DATA_DEGEN_N,     "Set all degens to Feff",   "Set degeneracies for all paths in this data set to values from Feff",  wxITEM_NORMAL );
   $self->{datamenu}->Append($DATA_DEGEN_1,     "Set all degens to one",    "Set degeneracies for all paths in this data set to one (1)",  wxITEM_NORMAL );
   $self->{datamenu}->AppendSeparator;
-  $self->{datamenu}->Append($DATA_DISCARD,     "Discard this $CHI(k)",        "Discard this data set", wxITEM_NORMAL );
-  $self->{datamenu}->AppendSeparator;
   $self->{datamenu}->Append($DATA_KMAXSUGEST, "Set kmax to Ifeffit's suggestion", "Set kmax to Ifeffit's suggestion, which is computed based on the staistical noise", wxITEM_NORMAL );
   $self->{datamenu}->Append($DATA_EPSK,       "Show $EPSILON",                    "Show statistical noise for these data", wxITEM_NORMAL );
   $self->{datamenu}->Append($DATA_NIDP,       "Show Nidp",                        "Show the number of independent points in these data", wxITEM_NORMAL );
-
 
   ## -------- paths menu
   my $export_menu   = Wx::Menu->new;
@@ -577,16 +624,17 @@ sub make_menubar {
 #   $explain_menu->Append($PATH_EXP_FOURTH, '4th',     'Explain the fourth cumulant');
 
   $self->{pathsmenu} = Wx::Menu->new;
-  $self->{pathsmenu}->Append($PATH_RENAME, "Rename path",            "Rename the path currently on display", wxITEM_NORMAL );
-  $self->{pathsmenu}->Append($PATH_SHOW,   "Show path",              "Evaluate and show the path parameters for the path currently on display", wxITEM_NORMAL );
+  $self->{pathsmenu}->Append($PATH_TRANSFER, "Transfer displayed path",            "Transfer the path currently on display to the plotting list", wxITEM_NORMAL );
+  $self->{pathsmenu}->Append($PATH_RENAME, "Rename displayed path",            "Rename the path currently on display", wxITEM_NORMAL );
+  $self->{pathsmenu}->Append($PATH_SHOW,   "Show displayed path",              "Evaluate and show the path parameters for the path currently on display", wxITEM_NORMAL );
   $self->{pathsmenu}->AppendSeparator;
-  $self->{pathsmenu}->Append($DISCARD_THIS, "Discard this path",     "Discard the path currently on display", wxITEM_NORMAL );
+  $self->{pathsmenu}->Append($DISCARD_THIS, "Discard displayed path",     "Discard the path currently on display", wxITEM_NORMAL );
   $self->{pathsmenu}->AppendSeparator;
   $self->{pathsmenu}->Append($PATH_ADD,    "Add path parameter",     "Add path parameter to many paths", wxITEM_NORMAL );
-  $self->{pathsmenu}->AppendSubMenu($export_menu, "Export all path parameters to");
+  $self->{pathsmenu}->AppendSubMenu($export_menu, "Export all path parameters to ...", "Export the path parameters from the displayed path to other paths in this fitting model.");
   $self->{pathsmenu}->AppendSeparator;
-  $self->{pathsmenu}->AppendSubMenu($save_menu, "Save this path in ..." );
-  $self->{pathsmenu}->Append($PATH_CLONE, "Clone this path", "Make a copy of the currently displayed path", wxITEM_NORMAL );
+  $self->{pathsmenu}->AppendSubMenu($save_menu, "Save displayed path in ...", "Save a column data file containing only the displayed path." );
+  $self->{pathsmenu}->Append($PATH_CLONE, "Clone displayed path", "Make a copy of the currently displayed path", wxITEM_NORMAL );
   $self->{pathsmenu}->Append($PATH_HISTO, "Make histogram", "Generate a histogram using the currently displayed path", wxITEM_NORMAL );
 #  $self->{pathsmenu}->AppendSeparator;
 #  $self->{pathsmenu}->AppendSubMenu($explain_menu, "Explain path parameter ..." );
@@ -602,80 +650,50 @@ sub make_menubar {
 
   ## -------- marks menu
   $self->{markmenu}  = Wx::Menu->new;
-  $self->{markmenu}->Append($MARK_ALL,    "Mark all",      "Mark all paths for this $CHI(k)",             wxITEM_NORMAL );
-  $self->{markmenu}->Append($MARK_NONE,   "Unmark all",    "Unmark all paths for this $CHI(k)",           wxITEM_NORMAL );
-  $self->{markmenu}->Append($MARK_INVERT, "Invert marks",  "Invert all marks for this $CHI(k)",           wxITEM_NORMAL );
-  $self->{markmenu}->Append($MARK_REGEXP, "Mark regexp",   "Mark by regular expression for this $CHI(k)", wxITEM_NORMAL );
+  $self->{markmenu}->Append($MARK_ALL,    "Mark all\tCTRL+SHIFT+a",      "Mark all paths for this $CHI(k)",             wxITEM_NORMAL );
+  $self->{markmenu}->Append($MARK_NONE,   "Unmark all\tCTRL+SHIFT+u",    "Unmark all paths for this $CHI(k)",           wxITEM_NORMAL );
+  $self->{markmenu}->Append($MARK_INVERT, "Invert marks\tCTRL+SHIFT+i",  "Invert all marks for this $CHI(k)",           wxITEM_NORMAL );
+  $self->{markmenu}->Append($MARK_REGEXP, "Mark regexp\tCTRL+SHIFT+r",   "Mark by regular expression for this $CHI(k)", wxITEM_NORMAL );
   $self->{markmenu}->AppendSeparator;
-  $self->{markmenu}->Append($MARK_INC,    "Mark included", "Mark all paths included in the fit",   wxITEM_NORMAL );
-  $self->{markmenu}->Append($MARK_EXC,    "Mark excluded", "Mark all paths excluded from the fit", wxITEM_NORMAL );
+  $self->{markmenu}->Append($MARK_INC,    "Mark included\tCTRL+SHIFT+c", "Mark all paths included in the fit",   wxITEM_NORMAL );
+  $self->{markmenu}->Append($MARK_EXC,    "Mark excluded\tCTRL+SHIFT+x", "Mark all paths excluded from the fit", wxITEM_NORMAL );
   $self->{markmenu}->AppendSeparator;
-  $self->{markmenu}->Append($MARK_BEFORE, "Mark before current",   "Mark this path and all paths above it in the path list for this $CHI(k)", wxITEM_NORMAL );
-  $self->{markmenu}->Append($MARK_AFTER,  "Mark after current",    "Mark all paths after this one in the path list for this $CHI(k)", wxITEM_NORMAL );
+  $self->{markmenu}->Append($MARK_BEFORE, "Mark before current\tCTRL+SHIFT+b",   "Mark this path and all paths above it in the path list for this $CHI(k)", wxITEM_NORMAL );
+  $self->{markmenu}->Append($MARK_AFTER,  "Mark after current\tCTRL+SHIFT+f",    "Mark all paths after this one in the path list for this $CHI(k)", wxITEM_NORMAL );
   $self->{markmenu}->AppendSeparator;
-  $self->{markmenu}->Append($MARK_SS,     "Mark SS paths",         "Mark all single scattering paths for this $CHI(k)", wxITEM_NORMAL );
-  $self->{markmenu}->Append($MARK_MS,     "Mark MS paths",         "Mark all multiple scattering paths for this $CHI(k)", wxITEM_NORMAL );
+  $self->{markmenu}->Append($MARK_SS,     "Mark SS paths\tCTRL+SHIFT+s",         "Mark all single scattering paths for this $CHI(k)", wxITEM_NORMAL );
+  $self->{markmenu}->Append($MARK_MS,     "Mark MS paths\tCTRL+SHIFT+m",         "Mark all multiple scattering paths for this $CHI(k)", wxITEM_NORMAL );
   $self->{markmenu}->AppendSeparator;
-  $self->{markmenu}->Append($MARK_HIGH,   "Mark high importance",  "Mark all high importance paths for this $CHI(k)", wxITEM_NORMAL );
-  $self->{markmenu}->Append($MARK_MID,    "Mark mid importance",   "Mark all mid importance paths for this $CHI(k)", wxITEM_NORMAL );
-  $self->{markmenu}->Append($MARK_LOW,    "Mark low importance",   "Mark all low importance paths for this $CHI(k)", wxITEM_NORMAL );
+  $self->{markmenu}->Append($MARK_HIGH,   "Mark high importance\tCTRL+SHIFT+h",  "Mark all high importance paths for this $CHI(k)", wxITEM_NORMAL );
+  $self->{markmenu}->Append($MARK_MID,    "Mark mid importance\tCTRL+SHIFT+k",   "Mark all mid importance paths for this $CHI(k)", wxITEM_NORMAL );
+  $self->{markmenu}->Append($MARK_LOW,    "Mark low importance\tCTRL+SHIFT+l",   "Mark all low importance paths for this $CHI(k)", wxITEM_NORMAL );
   $self->{markmenu}->AppendSeparator;
-  $self->{markmenu}->Append($MARK_RBELOW, "Mark all paths < R",    "Mark all paths shorter than a specified path length for this $CHI(k)", wxITEM_NORMAL );
-  $self->{markmenu}->Append($MARK_RABOVE, "Mark all paths > R",    "Mark all paths longer than a specified path length for this $CHI(k)", wxITEM_NORMAL );
-
-#   ## -------- include menu
-#   $self->{includemenu}  = Wx::Menu->new;
-#   $self->{includemenu}->Append($INCLUDE_ALL,    "Include all", "Include all paths in the fit",                     wxITEM_NORMAL );
-#   $self->{includemenu}->Append($EXCLUDE_ALL,    "Exclude all", "Exclude all paths from the fit",                   wxITEM_NORMAL );
-#   $self->{includemenu}->Append($INCLUDE_INVERT, "Invert all",  "Invert whether all paths are included in the fit", wxITEM_NORMAL );
-#   $self->{includemenu}->AppendSeparator;
-#   $self->{includemenu}->Append($INCLUDE_MARKED, "Include marked", "Include all marked paths in the fit",   wxITEM_NORMAL );
-#   $self->{includemenu}->Append($EXCLUDE_MARKED, "Exclude marked", "Exclude all marked paths from the fit", wxITEM_NORMAL );
-#   $self->{includemenu}->AppendSeparator;
-#   $self->{includemenu}->Append($EXCLUDE_AFTER,  "Exclude after current",   "Exclude all paths after the current from the fit", wxITEM_NORMAL );
-#   $self->{includemenu}->Append($INCLUDE_SS,     "Include all SS paths",    "Include all single scattering paths in the fit", wxITEM_NORMAL );
-#   $self->{includemenu}->Append($INCLUDE_HIGH,   "Include high importance", "Include all high importance paths in the fit", wxITEM_NORMAL );
-#   $self->{includemenu}->Append($INCLUDE_R,      "Include all paths < R",   "Include all paths shorter than a specified length in the fit", wxITEM_NORMAL );
-
-#   ## -------- discard menu
-#   $self->{discardmenu}  = Wx::Menu->new;
-#   $self->{discardmenu}->Append($DISCARD_THIS,     "Discard this path", "Discard the currently displayed path", wxITEM_NORMAL );
-#   $self->{discardmenu}->AppendSeparator;
-#   $self->{discardmenu}->Append($DISCARD_ALL,      "Discard all",      "Discard all paths",          wxITEM_NORMAL );
-#   $self->{discardmenu}->Append($DISCARD_MARKED,   "Discard marked",   "Discard all marked paths",   wxITEM_NORMAL );
-#   $self->{discardmenu}->Append($DISCARD_UNMARKED, "Discard unmarked", "Discard all UNmarked paths", wxITEM_NORMAL );
-#   $self->{discardmenu}->Append($DISCARD_EXCLUDED, "Discard excluded", "Discard all excluded paths", wxITEM_NORMAL );
-#   $self->{discardmenu}->AppendSeparator;
-#   $self->{discardmenu}->Append($DISCARD_AFTER,  "Discard after current",  "Discard all paths after the current from the fit", wxITEM_NORMAL );
-#   $self->{discardmenu}->Append($DISCARD_MS,     "Discard all MS paths",   "Discard all multiple scattering paths in the fit", wxITEM_NORMAL );
-#   $self->{discardmenu}->Append($DISCARD_LOW,    "Discard low importance", "Discard all low importance paths in the fit", wxITEM_NORMAL );
-#   $self->{discardmenu}->Append($DISCARD_R,      "Discard all paths > R",  "Discard all paths shorter than a specified length in the fit", wxITEM_NORMAL );
+  $self->{markmenu}->Append($MARK_RBELOW, "Mark all paths < R\tCTRL+SHIFT+<",    "Mark all paths shorter than a specified path length for this $CHI(k)", wxITEM_NORMAL );
+  $self->{markmenu}->Append($MARK_RABOVE, "Mark all paths > R\tCTRL+SHIFT+>",    "Mark all paths longer than a specified path length for this $CHI(k)", wxITEM_NORMAL );
 
    ## -------- actions menu
   $self->{actionsmenu} = Wx::Menu->new;
-  $self->{actionsmenu}->Append($ACTION_VPATH,     "Make VPath from marked",  "Make a virtual path from all marked paths", wxITEM_NORMAL );
-  $self->{actionsmenu}->Append($ACTION_TRANSFER,  "Transfer marked",         "Transfer all marked paths to the plotting list",   wxITEM_NORMAL );
+  $self->{actionsmenu}->Append($ACTION_VPATH,     "Make VPath from marked\tALT+SHIFT+v",  "Make a virtual path from all marked paths", wxITEM_NORMAL );
+  $self->{actionsmenu}->Append($ACTION_TRANSFER,  "Transfer marked\tALT+SHIFT+t",         "Transfer all marked paths to the plotting list",   wxITEM_NORMAL );
   $self->{actionsmenu}->AppendSeparator;
-  $self->{actionsmenu}->Append($ACTION_INCLUDE,   "Include marked",          "Include all marked paths in the fit",   wxITEM_NORMAL );
-  $self->{actionsmenu}->Append($ACTION_EXCLUDE,   "Exclude marked",          "Exclude all marked paths from the fit", wxITEM_NORMAL );
+  $self->{actionsmenu}->Append($ACTION_INCLUDE,   "Include marked\tALT+SHIFT+c",          "Include all marked paths in the fit",   wxITEM_NORMAL );
+  $self->{actionsmenu}->Append($ACTION_EXCLUDE,   "Exclude marked\tALT+SHIFT+x",          "Exclude all marked paths from the fit", wxITEM_NORMAL );
   $self->{actionsmenu}->AppendSeparator;
   $self->{actionsmenu}->Append($ACTION_DISCARD,   "Discard marked",          "Discard all marked paths",              wxITEM_NORMAL );
   $self->{actionsmenu}->AppendSeparator;
-  $self->{actionsmenu}->Append($ACTION_AFTER,     "Plot marked after fit",   "Flag all marked paths for transfer to the plotting list after completion of a fit", wxITEM_NORMAL );
-  $self->{actionsmenu}->Append($ACTION_NONEAFTER, "Plot no paths after fit", "Unflag all paths for transfer to the plotting list after completion of a fit", wxITEM_NORMAL );
+  $self->{actionsmenu}->Append($ACTION_AFTER,     "Plot marked after fit\tALT+SHIFT+p",   "Flag all marked paths for transfer to the plotting list after completion of a fit", wxITEM_NORMAL );
+  $self->{actionsmenu}->Append($ACTION_NONEAFTER, "Plot no paths after fit\tALT+SHIFT+u", "Unflag all paths for transfer to the plotting list after completion of a fit", wxITEM_NORMAL );
 
-  $self->{menubar}->Append( $self->{datamenu},    "Da&ta" );
+
+  $self->{menubar}->Append( $self->{datamenu},    "&Data" );
   $self->{menubar}->Append( $self->{pathsmenu},   "&Path" );
-  $self->{menubar}->Append( $self->{markmenu},    "M&arks" );
-  $self->{menubar}->Append( $self->{actionsmenu}, "Actions" );
-  #$self->{menubar}->Append( $self->{includemenu}, "&Include" );
-  #$self->{menubar}->Append( $self->{discardmenu}, "Dis&card" );
+  $self->{menubar}->Append( $self->{markmenu},    "&Marks" );
+  $self->{menubar}->Append( $self->{actionsmenu}, "&Actions" );
   $self->{menubar}->Append( $self->{debugmenu},   "Debu&g" ) if ($demeter->co->default("artemis", "debug_menus"));
 
   map { $self->{datamenu} ->Enable($_,0) } ($DATA_BALANCE);
-  #map { $self->{summenu}  ->Enable($_,0) } ($SUM_MARKED, $SUM_INCLUDED, $SUM_IM);
-  #map { $self->{pathsmenu}->Enable($_,0) } ($PATH_CLONE);
 
+  $self->{menubar}->SetHelpString(3,    "Blah blah");
 };
 
 sub populate {
@@ -897,6 +915,12 @@ sub OnMenuClick {
       last SWITCH;
     };
 
+    ($id == $PATH_TRANSFER) and do {
+      my $pathpage = $datapage->{pathlist}->GetPage($datapage->{pathlist}->GetSelection);
+      $pathpage->transfer;
+      last SWITCH;
+    };
+
     ($id == $PATH_FSPATH) and do {
       $datapage -> quickfs;
       last SWITCH;
@@ -924,8 +948,26 @@ sub OnMenuClick {
       last SWITCH;
     };
 
+    (($id == $FIT_SAVE_K)  or ($id == $FIT_SAVE_K1) or ($id == $FIT_SAVE_K2) or ($id == $FIT_SAVE_K3) or
+     ($id == $FIT_SAVE_RM) or ($id == $FIT_SAVE_RR) or ($id == $FIT_SAVE_RI) or
+     ($id == $FIT_SAVE_QM) or ($id == $FIT_SAVE_QR) or ($id == $FIT_SAVE_QI)
+    ) and do {
+      $datapage->save_fit($id);
+      last SWITCH;
+    };
     (($id == $PATH_SAVE_K) or ($id == $PATH_SAVE_R) or ($id == $PATH_SAVE_Q)) and do {
       $datapage->save_path($id);
+      last SWITCH;
+    };
+    (($id == $DATA_SAVE_K) or ($id == $DATA_SAVE_R) or ($id == $DATA_SAVE_Q)) and do {
+      $datapage->save_data($id);
+      last SWITCH;
+    };
+    (($id == $MARKED_SAVE_K)  or ($id == $MARKED_SAVE_K1) or ($id == $MARKED_SAVE_K2) or ($id == $MARKED_SAVE_K3) or
+     ($id == $MARKED_SAVE_RM) or ($id == $MARKED_SAVE_RR) or ($id == $MARKED_SAVE_RI) or
+     ($id == $MARKED_SAVE_QM) or ($id == $MARKED_SAVE_QR) or ($id == $MARKED_SAVE_QI)
+    ) and do {
+      $datapage->save_marked_paths($id);
       last SWITCH;
     };
 
@@ -1176,6 +1218,41 @@ sub export_pp {
   $self->{statusbar}->SetStatusText("Exported these path parameters to $which." );
 };
 
+sub save_fit {
+  my ($self, $mode, $filename) = @_;
+  my $how = (lc($mode) =~ m{\A(?:k[123]?|r[imr]|q[imr])\z}) ? lc($mode)
+          : ($mode == $FIT_SAVE_K)      ? 'k'
+          : ($mode == $FIT_SAVE_K1)     ? 'k1'
+          : ($mode == $FIT_SAVE_K2)     ? 'k2'
+          : ($mode == $FIT_SAVE_K3)     ? 'k3'
+          : ($mode == $FIT_SAVE_RM)     ? 'rmag'
+          : ($mode == $FIT_SAVE_RR)     ? 'rre'
+          : ($mode == $FIT_SAVE_RI)     ? 'rim'
+          : ($mode == $FIT_SAVE_QM)     ? 'qmag'
+          : ($mode == $FIT_SAVE_QR)     ? 'qre'
+          : ($mode == $FIT_SAVE_QI)     ? 'qim'
+	  :                               'k';
+
+  my $data = $self->{data};
+  if (not $filename) {
+    my $suggest = $data->name;
+    $suggest =~ s{\A\s+}{};
+    $suggest =~ s{\s+\z}{};
+    $suggest =~ s{\s+}{_}g;
+    $suggest = sprintf("%s.%s", $suggest, $how);
+    my $fd = Wx::FileDialog->new( $self, "Save path", cwd, $suggest,
+				  "Data and fit (*.$how)|*.$how|All files|*.*",
+				  wxFD_SAVE|wxFD_CHANGE_DIR|wxFD_OVERWRITE_PROMPT,
+				  wxDefaultPosition);
+    if ($fd->ShowModal == wxID_CANCEL) {
+      $self->{statusbar}->SetStatusText("Saving data and fit cancelled.");
+      return;
+    };
+    $filename = File::Spec->catfile($fd->GetDirectory, $fd->GetFilename);
+  };
+  $data->save('fit', $filename, $how);
+  $self->{statusbar}->SetStatusText("Saved data and fit as $how to $filename." );
+};
 sub save_path {
   my ($self, $mode, $filename) = @_;
   my $space = (lc($mode) =~ m{\A[kqr]\z}) ? lc($mode)
@@ -1203,9 +1280,85 @@ sub save_path {
     $filename = File::Spec->catfile($fd->GetDirectory, $fd->GetFilename);
   };
   $path->save($space, $filename);
-  $self->{statusbar}->SetStatusText("Saved path \"".$path->name."\"to $space space." );
+  $self->{statusbar}->SetStatusText("Saved path \"".$path->name."\"to $space space as $filename." );
 };
 
+sub save_data {
+  my ($self, $mode, $filename) = @_;
+  my $space = (lc($mode) =~ m{\A[kqr]\z}) ? lc($mode)
+            : ($mode == $DATA_SAVE_K)     ? 'k'
+            : ($mode == $DATA_SAVE_R)     ? 'r'
+            : ($mode == $DATA_SAVE_Q)     ? 'q'
+	    :                               'k';
+  my $data = $self->{data};
+  if (not $filename) {
+    my $suggest = $data->name;
+    $suggest =~ s{\A\s+}{};
+    $suggest =~ s{\s+\z}{};
+    $suggest =~ s{\s+}{_}g;
+    $suggest = sprintf("%s.%s%s", $suggest, $space, 'sp');
+    my $suff = sprintf("%s%s", $space, 'sp');
+    my $fd = Wx::FileDialog->new( $self, "Save data in $space-space", cwd, $suggest,
+				  "Data file (*.$suff)|*.$suff|All files|*.*",
+				  wxFD_SAVE|wxFD_CHANGE_DIR|wxFD_OVERWRITE_PROMPT,
+				  wxDefaultPosition);
+    if ($fd->ShowModal == wxID_CANCEL) {
+      $self->{statusbar}->SetStatusText("Saving data cancelled.");
+      return;
+    };
+    $filename = File::Spec->catfile($fd->GetDirectory, $fd->GetFilename);
+  };
+  $data->save($space, $filename);
+  $self->{statusbar}->SetStatusText("Saved data \"".$data->name."\"to $space space as $filename." );
+};
+
+
+## chi chik chik2 chik3
+## chir_mag chir_re chir_im chir_phas
+## chiq_mag chiq_re chiq_im chiq_pha
+sub save_marked_paths {
+  my ($self, $mode, $filename) = @_;
+  my $how = (lc($mode) =~ m{\A(?:k[123]?|r[imr]|q[imr])\z}) ? lc($mode)
+          : ($mode == $MARKED_SAVE_K)      ? 'chik'
+          : ($mode == $MARKED_SAVE_K1)     ? 'chik1'
+          : ($mode == $MARKED_SAVE_K2)     ? 'chik2'
+          : ($mode == $MARKED_SAVE_K3)     ? 'chik3'
+          : ($mode == $MARKED_SAVE_RM)     ? 'chir_mag'
+          : ($mode == $MARKED_SAVE_RR)     ? 'chir_re'
+          : ($mode == $MARKED_SAVE_RI)     ? 'chir_im'
+          : ($mode == $MARKED_SAVE_QM)     ? 'chiq_mag'
+          : ($mode == $MARKED_SAVE_QR)     ? 'chiq_re'
+          : ($mode == $MARKED_SAVE_QI)     ? 'chiq_im'
+	  :                                  'chik';
+
+  my $data = $self->{data};
+  my @list;
+  foreach my $i (0 .. $self->{pathlist}->GetPageCount-1) {
+    my $pathpage = $self->{pathlist}->{LIST}->GetClientData($i);
+    if (($self->{pathlist}->IsChecked($i)) and ($pathpage->{include}->GetValue)) {
+      push @list, $pathpage->{path};
+    };
+  };
+
+  if (not $filename) {
+    my $suggest = $data->name;
+    $suggest =~ s{\A\s+}{};
+    $suggest =~ s{\s+\z}{};
+    $suggest =~ s{\s+}{_}g;
+    $suggest = sprintf("%s%s.%s", $suggest, '+paths', $how);
+    my $fd = Wx::FileDialog->new( $self, "Save data and marked paths", cwd, $suggest,
+				  "Data and paths (*.$how)|*.$how|All files|*.*",
+				  wxFD_SAVE|wxFD_CHANGE_DIR|wxFD_OVERWRITE_PROMPT,
+				  wxDefaultPosition);
+    if ($fd->ShowModal == wxID_CANCEL) {
+      $self->{statusbar}->SetStatusText("Saving data and fit cancelled.");
+      return;
+    };
+    $filename = File::Spec->catfile($fd->GetDirectory, $fd->GetFilename);
+  };
+  $data->save_many($filename, $how, @list);
+  $self->{statusbar}->SetStatusText("Saved data and marked paths as $how to $filename." );
+};
 
 sub mark {
   my ($self, $mode) = @_;
@@ -1371,15 +1524,8 @@ sub mark {
 sub include {
   my ($self, $mode) = @_;
   my $how = ($mode !~ m{$NUMBER})      ? $mode
-          : ($mode == $INCLUDE_ALL)    ? 'all'
-          : ($mode == $EXCLUDE_ALL)    ? 'none'
-          : ($mode == $INCLUDE_INVERT) ? 'invert'
           : ($mode == $INCLUDE_MARKED) ? 'marked'
           : ($mode == $EXCLUDE_MARKED) ? 'marked_none'
-          : ($mode == $EXCLUDE_AFTER)  ? 'after'
-          : ($mode == $INCLUDE_SS)     ? 'ss'
-          : ($mode == $INCLUDE_HIGH)   ? 'high'
-          : ($mode == $INCLUDE_R)      ? 'r'
           :                              $mode;
 
   my $npaths = $self->{pathlist}->GetPageCount-1;
@@ -1538,14 +1684,8 @@ sub discard {
   my ($self, $mode) = @_;
   my $how = ($mode !~ m{$NUMBER})        ? $mode
           : ($mode == $DISCARD_THIS)     ? 'this'
-          : ($mode == $DISCARD_ALL)      ? 'all'
           : ($mode == $DISCARD_MARKED)   ? 'marked'
           : ($mode == $DISCARD_UNMARKED) ? 'unmarked'
-          : ($mode == $DISCARD_EXCLUDED) ? 'excluded'
-	  : ($mode == $DISCARD_AFTER)    ? 'after'
-	  : ($mode == $DISCARD_MS)       ? 'ms'
-          : ($mode == $DISCARD_LOW)      ? 'low'
-          : ($mode == $DISCARD_R)        ? 'r'
           :                                $mode;
   my $npaths = $self->{pathlist}->GetPageCount-1;
   my $sel    = $self->{pathlist}->GetSelection;

@@ -13,12 +13,12 @@
 }
 {
   ($bkg, $label) = ($D->fit_do_bkg)
-                 ? ($D->group."_bkg.$suffix, ", "q $suffix fit residual background window")
-                 : (q{},                        "q $suffix fit residual win");
+                 ? ($D->group."_bkg.$suffix, ", "q $suffix fit residual running background window")
+                 : (q{},                        "q $suffix fit residual running window");
   q{}
 }
 <<nl>>
 write_data(file="{$filename}",
            ${$titles}, ${$D->group}_title_*,
            label="{$label}",
-           {$D->group}.q, {$D->group}.{$suffix}, {$D->group}_fit.{$suffix}, {$D->group}_res.{$suffix}, {$bkg}{$D->group}.win)
+           {$D->group}.q, {$D->group}.{$suffix}, {$D->group}_fit.{$suffix}, {$D->group}_res.{$suffix}, {$D->group}.qrun, {$bkg}{$D->group}.win)

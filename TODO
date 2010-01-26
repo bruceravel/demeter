@@ -33,19 +33,28 @@
  - [X] +What about local params?+
  - [X] Can't find data, can't find feffNNNN ...?
 
-*** TODO Better *sensitivity* to when a project needs saving
+*** TODO Better *sensitivity* to when a project needs saving  :Project:
 
 *** TODO Saving incomplete projects
 
 ** Plotting
 *** DONE autoplot kq after fit does not seem to be working
 *** DONE window check button sometimes ignored
-*** TODO Use stack data sets offset  :MDS:
+*** DONE Use stack data sets offset		:MDS:
 
 ** Data
 *** DONE Import chi(k) ascii data directly
-*** TODO Make sure everything works for MDS fitting :MDS:
+*** DONE Make sure everything works for MDS fitting :MDS:
 *** DONE Click new data button, immediately cancel --> crash!
+
+** [2/3] Column data export
+  - [X] Save marked paths as k0 k1 k2 k3 rm rr ri qm qr qi
+  - [X] Save this data as + fit, bkg, residual, running, window
+  - [ ] Save plotting list as k r q
+
+** [0/2] Plotting list functionality
+  - [ ] Right click functionality
+  - [ ] Save plot to a file
 
 --------
 
@@ -54,17 +63,19 @@
 ** History
 
 ** After beta release
-  1. Balance interstitial energies
+  1. Balance interstitial energies for MFC fits  :MFC:
   2. Use structural units
-  3. Use arbitrary MS paths
+  3. Use arbitrary MS paths (really?)
   4. Use nearly collinear paths
-  5. Import mutiple data sets from an Athena project file
+  5. Import mutiple data sets from an Athena project file  :MDS:FitSequence:
   6. Reorganize lists, move individual items up and down, move blocks
      up and down
       - Path list
       - Plot list
   7. Clone data sets such that the path list gets replicated
      efficiently (i.e. for MDS fits)
+  8. VPaths to project file  :Project:
+  9. Indicators to project file  :Project:
   
   
   
@@ -113,7 +124,7 @@ This might be fixed after recent work on cloning+  /yessiree/
 
 ** TODO Demeter command backend needs polishing
 
-
+** TODO feffit.inp import: MDS that is not meerely MKW
 
 
 
