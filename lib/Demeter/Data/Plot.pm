@@ -144,12 +144,14 @@ sub _plotk_command {
          :                                        $ylorig;
   (my $title = $self->name||q{}) =~ s{D_E_F_A_U_L_T}{Plot of paths};
   $pf->key($self->name);
-  $pf->title(sprintf("%s in %s space", $title, $space)) if not $pf->title;
+  my $plotspace = ($pf->chie) ? 'E' : $space;
+  $pf->title(sprintf("%s in %s space", $title, $plotspace)) if not $pf->title;
   $pf->xlabel($xl);
   $pf->ylabel($yl);
-  $string = ($pf->New)
-          ? $self->template("plot", "newk")
-          : $self->template("plot", "overk");
+  my $newold = ($pf->New)  ? 'new'  : 'over';
+  my $ke     = ($pf->chie) ? 'chie' : 'k';
+  my $template = $newold . $ke;
+  $string = $self->template("plot", $template);
   ## reinitialize the local plot parameters
   $pf -> reinitialize($xlorig, $ylorig);
   return $string;

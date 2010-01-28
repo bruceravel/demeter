@@ -4,6 +4,9 @@ use Carp;
 use Demeter::StrTypes qw( DataPart FitSpace );
 use List::MoreUtils qw(pairwise minmax);
 
+use Readonly;
+Readonly my $ETOK => 0.262468292;
+
 sub yofx {
   my ($self, $suffix, $part, $x) = @_;
   my $space = ($suffix eq 'chi')   ? 'k'
@@ -118,10 +121,13 @@ sub points {
   $args{add}      ||= q{};
   $args{subtract} ||= q{};
 
-  my @x = ($args{space} eq 'e') ? $self->get_array('energy')
-        : ($args{space} eq 'k') ? $self->get_array('k')
-        : ($args{space} eq 'r') ? $self->get_array('r')
-        :                         $self->get_array('q');
+  my @x = ($args{space} eq 'e')    ? $self->get_array('energy')
+        : ($args{space} eq 'k')    ? $self->get_array('k')
+        : ($args{space} eq 'chie') ? $self->get_array('k')
+        : ($args{space} eq 'r')    ? $self->get_array('r')
+        :                            $self->get_array('q');
+  my @k = @x;
+  @x = map {$_**2/$ETOK + $self->bkg_e0} @x if ($args{space} eq 'chie');
   @x = map {$_ + $args{shift}} @x;
   my @y = ();
   my @z = ();
@@ -143,7 +149,7 @@ sub points {
     @y = $self->get_array($args{suffix});
   };
   if (defined $args{weight}) {
-    @y = pairwise {$args{scale}*$a**$args{weight}*$b + $args{yoffset}} @x, @y;
+    @y = pairwise {$args{scale}*$a**$args{weight}*$b + $args{yoffset}} @k, @y;
   } else {
     @y = map {$args{scale}*$_ + $args{yoffset}} @y;
   };

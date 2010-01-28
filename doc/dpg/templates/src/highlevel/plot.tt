@@ -237,6 +237,17 @@ request a plot in k-space.  Note that the k-weight to use for plotting
 is an attribute of the Plot object.
 [% END %]
 
+[% WRAPPER scriptpic title="Plotting in chi(k) in energy" -%]
+$data -> po -> start_plot;
+$data -> po -> set(kweight=>2, chie=>1);
+$data -> plot('k');
+[% END %]
+
+[% WRAPPER scriptcaption this="plot_chie.png" %]
+Here the x-axis of the [% chik %] plot has been converted to absolute
+energy. 
+[% END %]
+
 [% WRAPPER scriptpic title="k-space with all three k-weights" -%]
 $data -> po -> start_plot;
 $data -> plot('k123');

@@ -75,7 +75,7 @@ query();
 my $prompt = "Choose a way to plot the data [1-9 or q to quit] ";
 while ( defined ($_ = $term->readline($prompt)) ) {
   exit if ($_ =~ m{\Aq});
-  next if ($_ !~ m{\A([1-9])});
+  next if ($_ !~ m{\A([1-9a])});
   plot($_,$dobject);
   $plot->start_plot; # reset the plot for the next go around
   query();
@@ -93,7 +93,8 @@ print $/, $/,
   BOLD, $INDIC, "6.", RESET, " three k-wights, stacked\n",
   BOLD, $INDIC, "7.", RESET, " |chi(R)| + window\n",
   BOLD, $INDIC, "8.", RESET, " envelope, real, imaginary in R\n",
-  BOLD, $INDIC, "9.", RESET, " kq plot: chi(k)*k^2 + Re[chi(q)] + window\n\n",
+  BOLD, $INDIC, "9.", RESET, " kq plot: chi(k)*k^2 + Re[chi(q)] + window\n",
+  BOLD, $INDIC, "a.", RESET, " chi(E)\n\n";
 
   BOLD, $INDIC, "q.", RESET, " quit\n\n";
 }
@@ -251,4 +252,12 @@ sub plot9 {
   state("kq plot: chi(k)*k^2 + Re[chi(q)] + window\n");
   $data -> po -> set(kweight => 2, 'q_pl' => 'r', qmax => 17);
   $data -> plot('kq') -> plot_window;
+};
+
+sub plota {
+  my ($data) = @_;
+  state("chi(E)\n");
+  $data -> po -> set(kweight => 2, space => 'k', chie => 1);
+  $data -> plot;
+  $data -> po -> set(chie => 0);
 };

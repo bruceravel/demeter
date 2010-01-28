@@ -1,0 +1,35 @@
+{ # -*- ifm -*-
+  # template for new plot in k
+  #   {$D->group} returns the ifeffit group name
+  #   {$D->parameter} returns the value of that parameter
+  #   {$P->parameter} returns the value of a Plot parameter
+  #
+  #  color fg bg grid gridcolor
+}
+{
+  $this = $PT || $D;
+  $datastyle = ($P->datastyle eq 'solid') ? 'lines' : 'points';
+  $ylabel = $P->gnuplot_kylabel;
+  $file = $P->tempfile;
+  $this->points(file    => $file,
+                space   => 'chie', 
+	        suffix  => 'chi',
+	        scale   => $D->plot_multiplier,
+	        yoffset => $D->y_offset,
+	        weight  => $P->kweight,
+	       );
+  $thiskey = $C->get('plot_part') || $P->key;
+  $thiskey =~ s{_}{\\\\_}g;
+  if (ref($PT) =~ m{Path}) { $thiskey = $PT->name || 'Path '.$PT->Index };
+  q{}
+}
+## gnuplot script
+unset label
+
+set title "\{/*1.5 {$P->escapedtitle}\}"
+set xlabel "\{/*1.4 Energy&\{aa\}(eV)\}"
+set ylabel "\{/*1.2 {$ylabel}\}"
+set xrange [ {$D->bkg_e0+$P->emin} : {$D->bkg_e0+$P->emax} ]
+
+# {$this->name}: ifeffit group = {$D->group}
+plot '{$file}' using 1:2 with {$datastyle} ls {$P->increm+1} title "{$thiskey}"

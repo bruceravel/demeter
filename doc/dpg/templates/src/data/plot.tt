@@ -120,7 +120,18 @@ $data->plot('variance');
 See [% INCLUDE html/link text="the section on merged data" 
 link="../mue/merge.html" %] for details of those two plot types.
 
+Finally, it is plossible to plot [% chik %] data in energy.  This is
+done by setting the [% INCLUDE font/mono a="chie" %] attribute of the
+Plot object to a true value.  When that attribute is true and the data
+are plotted in k, the x-axis values will instead be absolute energy.
+[% END %]
 
+[% WRAPPER codeexample -%]
+$data -> po -> set(kweight => 2, space => 'k', chie => 1);
+$data -> plot;
+[% END %]
+
+[% FILTER html_para %]
 Note that the argument of the [% INCLUDE font/mono a="plot" %] method
 is case insensitive.  Little attempt is made to glean meaning from
 that argument.  If it is not one of the strings shown above, 

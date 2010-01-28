@@ -123,6 +123,7 @@ has 'e_zero'	=> (is => 'rw', isa =>  'Bool',   default => 0);
 ## -------- k, R, and q plot parameters
 has 'kmin'	=> (is => 'rw', isa =>  'Num',    default => sub{ shift->co->default("plot", "kmin") || 0});
 has 'kmax'	=> (is => 'rw', isa =>  'Num',    default => sub{ shift->co->default("plot", "kmax") || 15});
+has 'chie'	=> (is => 'rw', isa =>  'Bool',   default => 0);
 has 'rmin'	=> (is => 'rw', isa =>  'Num',    default => sub{ shift->co->default("plot", "rmin") || 0});
 has 'rmax'	=> (is => 'rw', isa =>  'Num',    default => sub{ shift->co->default("plot", "rmax") || 6});
 has 'r_pl'	=> (is => 'rw', isa =>  MERIP,    default => sub{ shift->co->default("plot", "r_pl") || "m"});
@@ -676,6 +677,11 @@ actually be any number.  When this gets changed, all Data, Path, and
 VPath objects will be flagged as needing to be brought up-to-date for
 their forward Fourier transform.
 
+=iten C<chie> (boolean) I<[0]>
+
+When this flag is true, plots of chi(k) will be plotted instead as
+chi(E).
+
 =back
 
 =head2 R plots
@@ -741,7 +747,7 @@ plotted when this is true.
 
 This is the scaling factor by which the window is multipled so that it
 plots nicely with the data.  The window will be multiplied by the
-value of the largest point in the plot, then by this number.
+value of the largest point in the plot, then by this number.	        => (is => 'rw', isa =>  'Bool',     default => 0);
 
 =item C<plot_res> (boolean) I<[0]>
 
