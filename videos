@@ -1,0 +1,67 @@
+-*- org -*-
+
+#+TITLE:     videos
+#+AUTHOR:    Bruce Ravel
+#+EMAIL:     bravel@bnl.gov
+#+LANGUAGE:  en
+#+TEXT:      Artemis instructional videos
+#+OPTIONS:   H:3 num:t toc:t \n:nil @:t ::t |:t ^:t *:t TeX:t LaTeX:nil
+
+* Introduction
+** Explain that concepts are largely the same but with imporvements
+** Explain main window and plot window
+** Demonstrate importing data from an Athena project file
+** Demonstrate importing crystal data
+
+* Running Atoms and Feff
+** Import gold crystal data again
+** Cluster size and longest path
+** Style
+** Run atoms
+** Run Feff
+** Plot paths
+
+* Assign a path to a data set and run a simple fit
+** Drag n drop
+** Open GDS window
+** Make some fitting and path parameters
+** Check data/fit parameters
+** Run a one-shell fit
+** plot
+** log file
+
+* Assign many paths to a data set and run a multi-shell fit
+** Drag n drop
+** Open GDS window
+** Make some fitting and path parameters
+** Check data/fit parameters
+** Run a multi-shell fit
+** plot
+** log file
+
+* Plot window
+** Transfer data and paths
+** Tour through limits tab
+** stack tab
+** indic tab
+
+* Virtual paths
+** Transfer all paths from the 4th shell distance and plot them with the data
+** Set up a virtual path of all paths at the fourth shell distance
+** Plot
+
+* Features of the GDS page
+
+* Importing other things
+
+* SSPaths
+
+* Quick first shell
+
+* Histograms
+
+* Exporting iff or pl
+
+* Complex examples
+** More than one feff calculation
+** MDS fit
