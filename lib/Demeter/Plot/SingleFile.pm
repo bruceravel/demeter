@@ -34,6 +34,17 @@ has 'columns' => (
 				  'clear' => 'clear_columns',
 				 }
 		   );
+has 'labels' => (
+		    metaclass => 'Collection::Array',
+		    is        => 'rw',
+		    isa       => 'ArrayRef[Str]',
+		    default   => sub { [] },
+		    provides  => {
+				  'push'  => 'add_labels',
+				  'pop'   => 'remove_labels',
+				  'clear' => 'clear_labels',
+				 }
+		   );
 
 after start_plot => sub {
   my ($self) = @_;
@@ -43,18 +54,31 @@ after start_plot => sub {
     $self->dispose($command, "plotting");
   };
   $self->lastplot(q{});
+  return $self;
 };
 
-override plot_trigger => sub {
+override after_plot_hook => sub {
   my ($self, $data, $part) = @_;
+  $part ||= q{};
   $self->add_columns(Ifeffit::get_string('p___lot_string'));
+  if ($part eq 'win') {
+    $self->add_labels('window');
+  } else {
+    my $label = $data->name || $data->group;
+    $label =~ s{[-,= \t]+}{_}g;
+    $label .= "_fit"        if ($part eq 'fit');
+    $label .= "_residual"   if ($part eq 'res');
+    $label .= "_background" if ($part eq 'bkg');
+    $label .= "_running"    if ($part eq 'run');
+    $self->add_labels($label);
+  };
+  return $self;
 };
 
 sub finish {
   my ($self) = @_;
   my $command = $self->template("plot", "end");
   $self->dispose($command, "plotting");
-  ## write output file
   return $self;
 };
 
@@ -95,11 +119,11 @@ external plotting program.
 	      );
 
   ## set up the plot to output file
-  $data->plot_with('singlefile');
-  $data->standard;
-  $data->po->set(space => 'k');
-  $data->po->start_plot;
-  $data->po->file("foo.dat");
+  $data->plot_with('singlefile');  # 1
+  $data->standard;                 # 2
+  $data->po->space('k');           # 3
+  $data->po->file("foo.dat");      # 4
+  $data->po->start_plot;           # 5
 
   ## make a sequence of plots
   $data->po->set(kweight => 1, kmax => 17, space => 'k');
@@ -115,9 +139,94 @@ external plotting program.
   $data->plot;
 
   ## the finish method of the Demeter::Plot::SingleFile actually writes out the file
-  $data->po->finish;
+  $data->po->finish;               # 6
+
+=head1 DESCRIPTION
+
+This plotting backend does not work quite as transparently as the
+other plotting backends.  In order to get the figure you actually want
+written correctly to an output file, a bit more care is required than
+for this than for other plotting backends.  The following steps
+(marked by their numbers in the example above) must be taken when
+using this plotting backend:
+
+=over 4
+
+=item 1.
+
+You must use the C<plot_with> method to change to this plotting
+backend.  You B<may not> use the C<:plotwith=> pragma at the top of
+your script to generate a column data file -- you must explicitly
+switch to this backend in the run-time part of your script.  If you
+try to use the pragma, your script will fail with a confusing and
+misleading error message.
+
+=item 2.
+
+You B<must> set a data standard.  This is required to correctly set
+the column containing the x-axis and is particularly important in
+energy plots where some data might need to be interpolated onto the
+correct grid.
+
+=item 3.
+
+It is a good idea to explicitly declare the plotting space.
+
+=item 4.
+
+You B<must> set the C<file> attribute to the name of the target output
+file which will contain the data required to replicate the plot in
+another program.  You shouyld set this before starting to actually
+generate the plot.
+
+=item 5.
+
+You B<must> call C<start_plot> again after changing to the
+C<singlefile> backend.
+
+=item 6.
+
+Calling the C<finish> method of the SingleFile backend is what
+actually writes the output file to disk.
+
+=back
+
+In a GUI, of course, all these steps will be handled behind the
+scenes.
 
 =head1 BUGS AND LIMITATIONS
+
+=over 4
+
+=item *
+
+markers and indicators
+
+=item *
+
+Parts in k,R,q untested (fit, bkg, res, run, win)
+
+=item *
+
+Plots in energy not yet implemented
+
+=item *
+
+quadplot -- need to write out an 8 column file (e mu k chik r chir q chiq)
+
+=item *
+
+Rmr, R123, k123 all work but are untested with parts
+
+=item *
+
+kq(fit) does not work (x-axis column does not get written)
+
+=item *
+
+stddev and variance
+
+=back
 
 Please report problems to Bruce Ravel (bravel AT bnl DOT gov)
 

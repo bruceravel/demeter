@@ -45,6 +45,7 @@ sub part_plot {
   $self->part_bft($part) if (lc($space) eq 'q');
   my $command = $self->_part_plot_command($part, $space);
   $self->dispose($command, "plotting");
+  $self->po->after_plot_hook($self, $part);
   return $self;
 };
 sub _part_plot_command {

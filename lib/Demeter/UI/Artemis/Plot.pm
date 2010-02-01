@@ -20,13 +20,16 @@ use warnings;
 
 use Wx qw( :everything );
 use base qw(Wx::Frame);
-use Wx::Event qw(EVT_CLOSE EVT_BUTTON EVT_RADIOBOX EVT_RIGHT_DOWN EVT_MENU EVT_ENTER_WINDOW EVT_LEAVE_WINDOW);
+use Wx::Event qw(EVT_CLOSE EVT_BUTTON EVT_RADIOBOX EVT_RIGHT_DOWN EVT_MENU EVT_ENTER_WINDOW EVT_LEAVE_WINDOW
+		 EVT_TOGGLEBUTTON);
 
 use Demeter::UI::Artemis::Plot::Limits;
 use Demeter::UI::Artemis::Plot::Stack;
 use Demeter::UI::Artemis::Plot::Indicators;
 use Demeter::UI::Artemis::Plot::VPaths;
 
+use Cwd;
+use File::Spec;
 use List::Util qw(first sum);
 
 my $demeter = $Demeter::UI::Artemis::demeter;
@@ -79,7 +82,6 @@ sub new {
   $this->mouseover("r_button", "Plot the contents of the plotting list in R-space.");
   $this->mouseover("q_button", "Plot the contents of the plotting list in back-transform k-space.");
 
-
   $this->{kweight} = Wx::RadioBox->new($this, -1, "k-weight", wxDefaultPosition, wxDefaultSize,
 				       [0, 1, 2, 3, 'kw'],
 				       1, wxRA_SPECIFY_ROWS);
@@ -131,13 +133,16 @@ sub new {
   $hbox = Wx::BoxSizer->new( wxHORIZONTAL );
   $groupboxsizer -> Add($hbox, 0, wxGROW|wxALL, 0);
   $this->{freeze} = Wx::CheckBox->new($this, -1, "&Freeze");
-  $hbox -> Add($this->{freeze}, 1, wxGROW|wxALL, 5);
+  $hbox -> Add($this->{freeze}, 1, wxGROW|wxLEFT|wxRIGHT|wxTOP, 5);
   $this->{clear} = Wx::Button->new($this, wxID_CLEAR, q{}, wxDefaultPosition, wxDefaultSize);
-  $hbox -> Add($this->{clear}, 1, wxGROW|wxALL, 5);
+  $hbox -> Add($this->{clear}, 1, wxGROW|wxLEFT|wxRIGHT|wxTOP, 5);
   EVT_BUTTON($this, $this->{clear}, sub{$_[0]->{plotlist}->Clear; $_[0]->{freeze}->SetValue(0);});
 
   $this->mouseover("freeze", "When this button is checked, the plotting list will NOT be refreshed after a fit finishes.");
   $this->mouseover("clear",  "Clear all items from the plotting list.");
+
+  $this->{fileout} = Wx::ToggleButton->new($this, -1, "Save next plot to a file");
+  $vbox -> Add($this->{fileout}, 0, wxLEFT|wxRIGHT|wxBOTTOM|wxGROW, 5);
 
   $this -> SetSizerAndFit( $vbox );
   #my $hh = Wx::SystemSettings::GetMetric(wxSYS_SCREEN_Y) - $yy - 2*$windowsize - $y;
@@ -214,15 +219,33 @@ sub plot {
   my ($self, $event, $space) = @_;
   return if ($space !~ m{[krq]}i);
   my $busy = Wx::BusyCursor->new();
+  my $saveplot = $demeter->co->default(qw(plot plotwith));
+  my $sb = $Demeter::UI::Artemis::frames{main}->{statusbar};
+  if ($self->{fileout}->GetValue) {
+    ## writing plot to a single file has been selected...
+    my $fd = Wx::FileDialog->new( $self, "Save plot to a file", cwd, "plot.dat",
+				  "Data (*.dat)|*.dat|All files|*.*",
+				  wxFD_SAVE|wxFD_CHANGE_DIR|wxFD_OVERWRITE_PROMPT,
+				  wxDefaultPosition);
+    if ($fd->ShowModal == wxID_CANCEL) {
+      $sb->SetStatusText("Saving plot to a file has been cancelled.");
+      $self->{fileout}->SetValue(0);
+      return;
+    };
+    ## set up for SingleFile backend
+    $demeter->plot_with('singlefile');
+    $demeter->po->file(File::Spec->catfile($fd->GetDirectory, $fd->GetFilename));
+  };
   my ($abort, $rdata, $rpaths) = Demeter::UI::Artemis::uptodate(\%Demeter::UI::Artemis::frames);
   $self->fetch_parameters;
-  $demeter->po->start_plot;
   my @list = ();
   foreach my $i (0 .. $self->{plotlist}->GetCount-1) {
     next if not $self->{plotlist}->IsChecked($i);
     push @list, $self->{plotlist}->GetClientData($i);
   };
-
+  $list[0]->data->standard if $self->{fileout}->GetValue;
+  $demeter->po->space($space);
+  $demeter->po->start_plot;
 
   my $invert_r = (    (lc($space) eq 'r')
 		  and ($self->{stack}->{invert}->GetStringSelection !~ m{Never})
@@ -267,6 +290,13 @@ sub plot {
   my $ds = first {ref($_) =~ m{Data}} @list;
   $self->{indicators}->plot($ds);
 
+  ## restore plotting backend if this was a plot to a file
+  if ($self->{fileout}->GetValue) {
+    $demeter->po->finish;
+    $sb->SetStatusText("Saved plot to file \"" . $demeter->po->file . "\".");
+    $demeter->plot_with($saveplot);
+    $self->{fileout}->SetValue(0);
+  };
   $self->{last} = $space;
   undef $busy;
 };

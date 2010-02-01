@@ -79,7 +79,7 @@ sub plot {
   $self->co->set(plot_part=>q{});
   my $command = $self->_plot_command($space);
   $self->dispose($command, "plotting");
-  $self->po->plot_trigger($self);
+  $self->po->after_plot_hook($self);
   $pf->increment if ($space ne 'e');
   if ((ref($self) =~ m{Data}) and $self->fitting) {
     foreach my $p (qw(fit res bkg)) {
@@ -87,19 +87,17 @@ sub plot {
       next if not $pf->$pp;
       next if (($p eq 'bkg') and (not $self->fit_do_bkg));
       $self->part_plot($p, $space);
-      $self->po->plot_trigger($self, $pp);
       $pf->increment;
     };
     if ($pf->plot_run) {
       $self->running($space);
       $self->plot_run($space);
-      $self->po->plot_trigger($self, 'run');
       $pf->increment;
     };
   };
   if ($pf->plot_win) {
     $self->plot_window($space);
-    $self->po->plot_trigger($self, 'win');
+    $self->po->after_plot_hook($self, 'win');
     $pf->increment;
   };
 
@@ -501,6 +499,7 @@ sub plot_run {
   $self->po->kweight(0) if ($space eq 'k');
   my $string = $self->template("plot", "run");
   $self->dispose($string, "plotting");
+  $self->po->after_plot_hook($self, 'run');
   $self->po->kweight($save);
 return $self;
 }

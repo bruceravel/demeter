@@ -268,7 +268,7 @@ sub end_plot {
   return $self;
 };
 
-sub plot_trigger {
+sub after_plot_hook {
   my ($self, $data, $part) = @_;
   1;
 };

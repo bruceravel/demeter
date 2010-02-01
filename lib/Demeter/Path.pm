@@ -345,6 +345,7 @@ sub plot {
   };
   $self->mo->path($self);
   $self->dispose($self->_plot_command($space), "plotting");
+  $self->po->after_plot_hook($self);
   $self->mo->path(q{});
   $self->po->increment;
   $self->$which(0);

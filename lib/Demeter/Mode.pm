@@ -298,7 +298,7 @@ sub remove {
   my ($self, $object) = @_;
   my $type = (split(/::/, ref $object))[-1];
   my $orig = $type;
-  if ($type eq 'Gnuplot') {
+  if (($type eq 'Gnuplot') or ($type eq 'SingleFile')) {
     $object->end_plot;
     $type = 'Plot';
   } elsif ($type eq 'Demeter') {

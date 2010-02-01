@@ -1,8 +1,10 @@
 {
   $therest = join(", p___lot.", @{$P->columns});
+  $label   = join(" ", $P->space, @{$P->labels});
   q{};
 }
-set $p___lottitle = "single file plotting back end"
-write_data(file="{$P->file}", $p___lottitle, p___lot.{$P->space}, p___lot.{$therest})
+set $p___lottitle1 = "Demeter single file plotting back end"
+set $p___lottitle2 = "Demeter {$S->copyright}"
+write_data(file="{$P->file}", label="{$label}", $p___lottitle*, p___lot.{$P->space}, p___lot.{$therest})
 erase @group p___lot
-erase $p___lottitle
+erase $p___lottitle1 $p___lottitle2 $p___lot_string
