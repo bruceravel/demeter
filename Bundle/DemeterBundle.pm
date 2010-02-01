@@ -44,6 +44,8 @@ MooseX::Types
 
 Archive::Zip
 
+Capture::Tiny
+
 Chemistry::Elements
 
 Config::IniFiles

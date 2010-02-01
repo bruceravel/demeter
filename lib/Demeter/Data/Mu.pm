@@ -246,6 +246,7 @@ sub normalize {
 sub autobk {
   my ($self) = @_;
   my $group = $self->group;
+#      print ">>>", $self->datatype, "  ", $self->update_bkg, $/;
 
   if ($self->datatype eq 'detector') {
     carp($self->name . " is a detector group, which cannot have its background removed\n\n");

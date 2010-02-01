@@ -7,7 +7,7 @@
   $ysuff = ($D->datatype eq 'chi') ? 'chi' : 'xmu';
   $i0 = q{};
   if (($xsuff eq 'energy') and ($D->i0_string)) {
-    $i0 = "\n    " . $DS->group . ".i0 = " . $D->group . ".i0";
+    $i0 = ",\n    " . $DS->group . ".i0 = " . $D->group . ".i0";
   };
   q{};
 }

@@ -1,0 +1,6 @@
+{
+  $which = ($P->space eq 'k') ? 'fft' : 'bft';
+  $DS->_update($which);
+  q{};
+}
+set p___lot.{$P->space} = {$DS->group}.{$P->space}

@@ -35,11 +35,11 @@ sub rebin {
   #$$rhash{group} ||= q{};
   my $standard = $self->mo->standard;
   $self -> _update('fft');
-  $self -> standard;		# make self the standard for rebinning
   foreach my $k (keys %$rhash) {
     $self -> co -> set("rebin_$k" => $$rhash{$k});
   };
   my $rebinned = $self->clone;
+  $self -> standard;		# make self the standard for rebinning
   $rebinned -> generated(1);
   $rebinned -> update_norm(1);
   $rebinned -> name($self->name . " rebinned");
@@ -125,6 +125,7 @@ sub merge {
   };
   $merged -> is_merge($how);
   $merged -> update_fft(1);
+  $merged -> bkg_e0($self->bkg_e0);
   $merged -> bkg_eshift(0);
   $merged -> i0_string(q{});
   $merged -> name("data merged as " . $howstring{$how});

@@ -79,6 +79,7 @@ sub plot {
   $self->co->set(plot_part=>q{});
   my $command = $self->_plot_command($space);
   $self->dispose($command, "plotting");
+  $self->po->plot_trigger($self);
   $pf->increment if ($space ne 'e');
   if ((ref($self) =~ m{Data}) and $self->fitting) {
     foreach my $p (qw(fit res bkg)) {
@@ -86,16 +87,19 @@ sub plot {
       next if not $pf->$pp;
       next if (($p eq 'bkg') and (not $self->fit_do_bkg));
       $self->part_plot($p, $space);
+      $self->po->plot_trigger($self, $pp);
       $pf->increment;
     };
     if ($pf->plot_run) {
       $self->running($space);
       $self->plot_run($space);
+      $self->po->plot_trigger($self, 'run');
       $pf->increment;
     };
   };
   if ($pf->plot_win) {
     $self->plot_window($space);
+    $self->po->plot_trigger($self, 'win');
     $pf->increment;
   };
 
@@ -385,10 +389,13 @@ sub plot_kqfit {
   my $string = $self->template("process", "k123");
   $self->dispose($string);
   my @max = (Ifeffit::get_scalar("__123_max1"), Ifeffit::get_scalar("__123_max2"), Ifeffit::get_scalar("__123_max3"));
-  my $k = int($self->po->kweight);
-  ($k = 3) if ($k > 3);
-  ($k = 1) if ($k < 1);
-  my $down = $max[$k-1];
+  my $down = 0;
+  if ($self->fitting) {
+    my $k = int($self->po->kweight);
+    ($k = 3) if ($k > 3);
+    ($k = 1) if ($k < 1);
+    $down = $max[$k-1];
+  };
 
   $self->po->title($self->name . " at in k and q space");
 

@@ -273,21 +273,50 @@ sub plot {
 
 use Readonly;
 Readonly my $PLOT_REMOVE => Wx::NewId();
+Readonly my $PLOT_ON     => Wx::NewId();
+Readonly my $PLOT_OFF    => Wx::NewId();
 Readonly my $PLOT_TOGGLE => Wx::NewId();
 
 sub OnRightDown {
   my ($self, $event) = @_;
   my @sel  = $self->GetSelections;
-  return if ($#sel == -1);
+  if ($#sel == -1) {
+    $self->SetSelection($self->HitTest($event->GetPosition));
+    @sel  = $self->GetSelections;
+  };
   my $name = ($#sel == 0) ? sprintf("\"%s\"", $self->GetString($sel[0])) : 'selected items';
   my $menu = Wx::Menu->new(q{});
   $menu->Append($PLOT_REMOVE, "Remove $name from plotting list");
-  $menu->Append($PLOT_TOGGLE, "Toggle $name for plotting");
+  if ($#sel) {
+    $menu->AppendSeparator;
+    $menu->Append($PLOT_ON,     "Mark $name for plotting");
+    $menu->Append($PLOT_OFF,    "Unmark $name for plotting");
+    $menu->Append($PLOT_TOGGLE, "Toggle $name for plotting");
+  };
   $self->PopupMenu($menu, $event->GetPosition);
 };
 
 sub OnPlotMenu {
-  print join(" ", @_), $/;
+  my ($self, $list, $event) = @_;
+  if ($event->GetId == $PLOT_REMOVE) {
+    my @sel = $list->GetSelections;
+    while (@sel) {
+      $list->Delete($sel[-1]);
+      @sel = $list->GetSelections;
+    };
+  } elsif ($event->GetId == $PLOT_ON) {
+    foreach my $i ($list->GetSelections) {
+      $list->Check($i, 1);
+    };
+  } elsif ($event->GetId == $PLOT_OFF) {
+    foreach my $i ($list->GetSelections) {
+      $list->Check($i, 0);
+    };
+  } elsif ($event->GetId == $PLOT_TOGGLE) {
+    foreach my $i ($list->GetSelections) {
+      $list->Check($i, not $list->IsChecked($i));
+    };
+  };
 };
 
 1;

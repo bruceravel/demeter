@@ -94,7 +94,7 @@ has 'sp'              => (is=>'rw', isa => 'Any',                  # Empty.'|Dem
 					    $self->zcwif($new->zcwif);
 					    $self->spgroup($new->group);
 					    $self->parent($new->feff) if not $self->parent;
-					    $self->make_name;
+					    $self->make_name if not $self->name;
 					  };
 					});
 has 'datagroup'       => (is=>'rw', isa => 'Str', default => q{});

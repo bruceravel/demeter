@@ -204,6 +204,7 @@ sub plot5 {
 sub plot6 {
   my ($data) = @_;
   state("scale three k-weights to plot together\n");
+
   $data->po->legend(dy=>0.05, x=>0.73);
 
   $data->po->set(kweight => 1, kmax => 17, space => 'k');

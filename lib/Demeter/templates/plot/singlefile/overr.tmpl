@@ -1,0 +1,16 @@
+{ # -*- ifm -*-
+  # template for new plot of chi(R)
+  #   {$D->group} returns the ifeffit group name
+  #   {$D->parameter} returns the value of that parameter
+  #   {$P->parameter} returns the value of a Plot parameter
+}
+{
+ ## this code fragment chooses the correct array
+ %suffixes = ('m'=>"chir_mag", e=>"chir_mag", r=>"chir_re", i=>"chir_im", p=>"chir_pha");
+ $part     = lc($P->r_pl);
+ $suffix   = $suffixes{$part};
+ $string   = $S->randomstring(6);
+ q{}
+}
+set p___lot.{$string} = {$D->plot_multiplier}*{$S->group}.{$suffix}+{$D->y_offset}
+set $p___lot_string = {$string}

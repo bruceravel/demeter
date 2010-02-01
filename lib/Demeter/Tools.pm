@@ -24,6 +24,7 @@ use Carp;
 use Regexp::List;
 use Regexp::Optimizer;
 use List::Util qw(sum);
+use String::Random qw(random_string);
 use Sys::Hostname;
 use POSIX qw(tzset tzname);
 tzset();
@@ -277,7 +278,11 @@ sub fract {
   return $string;
 };
 
-
+sub randomstring {
+  my ($self, $length) = @_;
+  $length ||= 6;
+  return random_string('c' x $length);
+};
 
 1;
 

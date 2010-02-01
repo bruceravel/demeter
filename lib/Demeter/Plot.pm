@@ -268,6 +268,10 @@ sub end_plot {
   return $self;
 };
 
+sub plot_trigger {
+  my ($self, $data, $part) = @_;
+  1;
+};
 
 sub tempfile {
   my ($self) = @_;

@@ -31,6 +31,7 @@ if ($Demeter::mode->ui eq 'screen') {
   with 'Demeter::UI::Screen::Spinner';
 };
 
+use Capture::Tiny qw(capture);
 use Compress::Zlib;
 use Cwd;
 use File::Path;
@@ -850,13 +851,6 @@ sub make_feffinp {
   return $self;
 };
 
-#   sub full_feffinp : STRINGIFY {
-#     my ($self) = @_;
-#     $self->set_mode(theory=>$self);
-#     my $string = $self->template("feff", "full");
-#     $self->set_mode(theory=>q{});
-#     return $string;
-#   };
 sub run_feff {
   my ($self) = @_;
   my $cwd = cwd();
@@ -869,12 +863,22 @@ sub run_feff {
       croak("Could not find the feff6 executable");
     };
   };
-  local $| = 1;		# unbuffer output of fork
-  my $pid = open(my $WRITEME, "$exe |");
-  while (<$WRITEME>) {
-    $self->report($_);
-  };
-  close $WRITEME;
+
+  ## -------- the following commented bit is how I have solved the
+  ##          problem of running Feff since the old Tk/Artemis days
+  # local $| = 1;		# unbuffer output of fork
+  # my $pid = open(my $WRITEME, "$exe |");
+  # while (<$WRITEME>) {
+  #   $self->report($_);
+  # };
+  # close $WRITEME;
+
+  ## -------- the following is a more robust, CPAN-reliant way of
+  ##          running Feff
+  my ($stdout, $stderr) = capture { system $exe };
+  $self->report($stdout);
+  $self->report($stderr, 1);
+
   chdir $cwd;
   return $self;
 };
@@ -885,10 +889,11 @@ sub click {
   print $char if $self->screen;
 }
 sub report {
-  my ($self, $string) = @_;
+  my ($self, $string, $err) = @_;
   local $| = 1;
   ## dispose of feff's output
-  print $string if $self->screen;
+  my $which = ($err) ? 'fefferr' : 'feffout';
+  print $self->_ansify($string, $which) if $self->screen;
   if ($self->buffer) {
     my @list = split("\n", $string);
     $self->push_iobuffer(@list);

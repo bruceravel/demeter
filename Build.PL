@@ -66,6 +66,7 @@ my $build = Module::Build # $class
 
 				'Archive::Zip'		   => '0',
 
+				'Capture::Tiny'	           => '0.07',
 				'Chemistry::Elements'	   => '0',
 				'Config::IniFiles'	   => '2.45',
 				'Digest::SHA'		   => '0',

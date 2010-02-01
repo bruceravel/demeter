@@ -214,6 +214,14 @@ sub mo {
   return $mode;
 };
 sub dd {
+  my ($self) = @_;
+  if (not $self->mo->datadefault) {
+    $self->mo->datadefault(Demeter::Data->new(group=>'default___',
+					      name=>'default___',
+					      fft_kmin=>3, fft_kmax=>15,
+					      bft_rmin=>1, bft_rmax=>6,
+					     ));
+  };
   return shift->mo->datadefault;
 };
 alias config       => 'co';
@@ -422,6 +430,7 @@ sub set_mode {
 
 sub plot_with {
   my ($self, $backend) = @_;
+  $backend = lc($backend);
   if (! is_Plotting($backend)) {
     carp("'$backend' is not a valid plotting backend for Demeter -- reverting to pgplot\n\n");
     $backend = 'pgplot';
@@ -442,6 +451,14 @@ sub plot_with {
     ($backend eq 'pgplot') and do {
       $old_plot_object->DEMOLISHALL if $old_plot_object;
       $self -> mo -> plot(Demeter::Plot->new);
+      last SWITCH;
+    };
+
+    ($backend eq 'singlefile') and do {
+      $old_plot_object->DEMOLISHALL if $old_plot_object;
+      require Demeter::Plot::SingleFile;
+      $self -> mo -> plot(Demeter::Plot::SingleFile->new);
+      $self -> dd -> standard;
       last SWITCH;
     };
 

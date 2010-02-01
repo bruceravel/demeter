@@ -737,7 +737,7 @@ override 'deserialize' => sub {
   $self -> update_columns(0);
   $self -> update_norm(1);
 
-  my $path = $self -> mo -> fetch('Path', $self->fft_pcpathpgroup);
+  my $path = $self -> mo -> fetch('Path', $self->fft_pcpathgroup);
   $self -> fft_pcpath($path);
 
   my @x  = @{ $stuff[1] };

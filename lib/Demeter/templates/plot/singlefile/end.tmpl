@@ -1,0 +1,8 @@
+{
+  $therest = join(", p___lot.", @{$P->columns});
+  q{};
+}
+set $p___lottitle = "single file plotting back end"
+write_data(file="{$P->file}", $p___lottitle, p___lot.{$P->space}, p___lot.{$therest})
+erase @group p___lot
+erase $p___lottitle

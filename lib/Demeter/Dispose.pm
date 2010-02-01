@@ -72,6 +72,12 @@ sub _ansify {
 	print STDOUT $color_of{$self->co->default("screen", "feedback")}, $thisline, RESET;
       };
     };
+    ($kind eq 'fefferr') and do {
+      print STDOUT WHITE, ON_RED, $thisline, RESET;
+    };
+    ($kind eq 'feffout') and do {
+      print $thisline
+    };
   };
 
   return ($start, $end);
@@ -218,6 +224,7 @@ sub dispose {
 
   ## -------- send reprocessed command text to ifeffit
   if ($self->get_mode("ifeffit")) {
+    #print ">-" x 15 . $/ . $reprocessed . $/ . "<-" x 15 . $/ if $plotting;
     ifeffit($reprocessed);
     $self -> po -> copyright_text if ($plotting and ($self->mo->template_plot eq 'pgplot')); ## insert the copyright statement in a plot made with pgplot
 

@@ -52,8 +52,8 @@
   - [X] Save this data as + fit, bkg, residual, running, window
   - [ ] Save plotting list as k r q
 
-** [0/2] Plotting list functionality
-  - [ ] Right click functionality
+** [1/2] Plotting list functionality
+  - [X] Right click functionality
   - [ ] Save plot to a file
 
 --------

@@ -1657,7 +1657,7 @@ sub discard_data {
 
   ## remove data and its paths & VPaths from the plot list
   my $plotlist = $Demeter::UI::Artemis::frames{Plot}->{plotlist};
-  foreach my $i (0 .. $plotlist->GetCount-1) {
+  foreach my $i (reverse (0 .. $plotlist->GetCount-1)) {
     if ($self->{data}->group eq $plotlist->GetClientData($i)->data->group) {
       $plotlist->Delete($i);
     };

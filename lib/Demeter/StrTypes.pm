@@ -253,7 +253,7 @@ subtype SpaceGroup,
 
 ## -------- Plotting backends
 use vars qw(@plotting_list $plotting_regexp);
-@plotting_list = qw(pgplot gnuplot demeter);
+@plotting_list = qw(pgplot gnuplot demeter singlefile);
 $plotting_regexp = $opt->list2re(@plotting_list);
 subtype Plotting,
   as Str,
