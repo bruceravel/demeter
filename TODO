@@ -33,7 +33,7 @@
  - [X] +What about local params?+
  - [X] Can't find data, can't find feffNNNN ...?
 
-*** TODO Better *sensitivity* to when a project needs saving  :Project:
+*** TODO Better sensitivity to when a project needs saving  :Project:
 
 *** TODO Saving incomplete projects
 
@@ -47,14 +47,14 @@
 *** DONE Make sure everything works for MDS fitting :MDS:
 *** DONE Click new data button, immediately cancel --> crash!
 
-** [2/3] Column data export
+** [3/3] Column data export
   - [X] Save marked paths as k0 k1 k2 k3 rm rr ri qm qr qi
   - [X] Save this data as + fit, bkg, residual, running, window
-  - [ ] Save plotting list as k r q
+  - [X] Save plotting list as k r q
 
-** [1/2] Plotting list functionality
+** [2/2] Plotting list functionality
   - [X] Right click functionality
-  - [ ] Save plot to a file
+  - [X] Save plot to a file
 
 --------
 
@@ -120,11 +120,11 @@ into 2 or 3 3-legged paths and a single 4-legged path
 +See [[file:examples/recipes/MixedShell/abc.pl][MixedShell recipe]]
 This might be fixed after recent work on cloning+  /yessiree/
 
-** TODO Current plot to column data file
+** DONE Current plot to column data file
 
 ** TODO Demeter command backend needs polishing
 
-** TODO feffit.inp import: MDS that is not meerely MKW
+** TODO feffit.inp import: MDS that is not merely MKW
 
 
 

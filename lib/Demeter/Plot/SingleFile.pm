@@ -204,6 +204,10 @@ markers and indicators
 
 =item *
 
+chi(E)
+
+=item *
+
 Parts in k,R,q untested (fit, bkg, res, run, win)
 
 =item *
@@ -224,7 +228,7 @@ kq(fit) does not work (x-axis column does not get written)
 
 =item *
 
-stddev and variance
+stddev and variance, filter, f1f2
 
 =back
 

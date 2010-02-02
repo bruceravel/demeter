@@ -804,7 +804,28 @@ sub fetch_parameters {
 sub plot {
   my ($self, $event, $how) = @_;
   $self->fetch_parameters;
-  $Demeter::UI::Artemis::frames{Plot}->fetch_parameters;
+  my $pf = $Demeter::UI::Artemis::frames{Plot};
+  $pf->fetch_parameters;
+  my $saveplot = $demeter->co->default(qw(plot plotwith));
+
+  if ($pf->{fileout}->GetValue) {
+    ## writing plot to a single file has been selected...
+    my $fd = Wx::FileDialog->new( $self, "Save plot to a file", cwd, "plot.dat",
+				  "Data (*.dat)|*.dat|All files|*.*",
+				  wxFD_SAVE|wxFD_CHANGE_DIR|wxFD_OVERWRITE_PROMPT,
+				  wxDefaultPosition);
+    if ($fd->ShowModal == wxID_CANCEL) {
+      $self->{statusbar}->SetStatusText("Saving plot to a file has been cancelled.");
+      $pf->{fileout}->SetValue(0);
+      return;
+    };
+    ## set up for SingleFile backend
+    $self->{data}->plot_with('singlefile');
+    $self->{data}->po->file(File::Spec->catfile($fd->GetDirectory, $fd->GetFilename));
+  };
+
+  $self->{data}->standard if ($pf->{fileout}->GetValue);
+  $self->{data}->po->space(substr($how, 0 , 1));
   $self->{data}->po->start_plot;
   $self->{data}->plot($how);
   my $text = ($how eq 'rmr')   ? "as the magnitude and real part of chi(R)"
@@ -812,6 +833,14 @@ sub plot {
            : ($how eq 'k123')  ? "in k with three k-weights"
            : ($how eq 'kqfit') ? "in k- and q-space"
 	   :                     q{};
+
+  ## restore plotting backend if this was a plot to a file
+  if ($pf->{fileout}->GetValue) {
+    $self->{data}->po->finish;
+    $self->{statusbar}->SetStatusText("Saved plot to file \"" . $demeter->po->file . "\".");
+    $self->{data}->plot_with($saveplot);
+    $pf->{fileout}->SetValue(0);
+  };
   $self->{statusbar}->SetStatusText(sprintf("Plotted \"%s\" %s.",
 					    $self->{data}->name, $text));
   $Demeter::UI::Artemis::frames{Plot}->{indicators}->plot($self->{data});

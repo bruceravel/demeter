@@ -148,14 +148,10 @@ sub plot {
     $self -> _update("all");
     $which = "update_bft";
   };
-  ## make the sum in k-space
-  #$self->dispose($self->sum);
-  ## bring the vpath up to date
-  #$self->fft if ((lc($space) eq 'r') or (lc($space) eq 'q'));
-  #$self->bft if (lc($space) eq 'q');
   ## and plot the vpath
   $self->mode->path($self);
   $self->dispose($self->_plot_command($space), "plotting");
+  $self->po->after_plot_hook($self);
   $self->mode->path(q{});
   $self->po->increment;
   $self->$which(0);

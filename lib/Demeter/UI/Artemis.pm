@@ -472,13 +472,8 @@ sub fit {
   ## containing the responsible data were colored in some way to
   ## indicate that)
 
-  #foreach my $f (keys %$rframes) {
-  #  next if ($f !~ m{data});
-  #  print $rframes->{$f}->{pathlist}->GetPage(0)->{path}->parentgroup;
-  #};
-  #return;
-
   autosave();
+  $rframes->{Plot}->{fileout}->SetValue(0);
 
   my ($abort, $rdata, $rpaths) = uptodate($rframes);
   my $rgds = $rframes->{GDS}->reset_all;
