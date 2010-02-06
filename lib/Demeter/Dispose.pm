@@ -21,6 +21,9 @@ use Moose::Role;
 
 use Ifeffit;
 
+use Readonly;
+Readonly my $ENDOFLINE => $/;
+
 use subs qw(BOLD BLACK RED GREEN YELLOW BLUE MAGENTA CYAN WHITE ON_RED RESET);
 my $ANSIColor_exists = (eval "require Term::ANSIColor");
 if ($ANSIColor_exists) {
@@ -196,7 +199,7 @@ sub dispose {
 		   or $self->get_mode("repfile")
 		  );
 
-  my ($reprocessed, $eol) = (q{}, $/);
+  my ($reprocessed, $eol) = (q{}, $ENDOFLINE);
   foreach my $thisline (split(/\n/, $command)) {
 
     if (($self->get_mode("buffer")) and (ref($self->get_mode("buffer")) eq 'ARRAY')) {
@@ -218,14 +221,18 @@ sub dispose {
     $thisline =~ s{\s+=}{ =};
     my $re = $Demeter::StrTypes::command_regexp;
     $eol = ($thisline =~ m{^$re\s*\(}) ? " " : $eol;
-    $eol = $/ if ($thisline =~ m{\)$});
+    $eol = $ENDOFLINE if ($thisline =~ m{\)$});
     $reprocessed .= $thisline . $eol;
   };
 
   ## -------- send reprocessed command text to ifeffit
   if ($self->get_mode("ifeffit")) {
     #print ">-" x 15 . $/ . $reprocessed . $/ . "<-" x 15 . $/ if $plotting;
-    ifeffit($reprocessed);
+    if ($self->is_windows) {
+      ifeffit($_) foreach (split(/$ENDOFLINE/, $reprocessed));
+    } else {
+      ifeffit($reprocessed);
+    };
     $self -> po -> copyright_text if ($plotting and ($self->mo->template_plot eq 'pgplot')); ## insert the copyright statement in a plot made with pgplot
 
     ## this mess parses Ifeffit's feedback and sends it either to the feedback code ref or to the screen

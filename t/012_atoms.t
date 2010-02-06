@@ -4,7 +4,7 @@
 
 =for Copyright
  .
- Copyright (c) 2008-2009 Bruce Ravel (bravel AT bnl DOT gov).
+ Copyright (c) 2008-2010 Bruce Ravel (bravel AT bnl DOT gov).
  All rights reserved.
  .
  This file is free software; you can redistribute it and/or
@@ -21,6 +21,9 @@ use Test::More tests => 18;
 
 use Demeter;
 
+use File::Basename;
+use File::Spec;
+my $here  = dirname($0);
 my $this = Demeter::Atoms -> new();
 my $OBJ  = 'Atoms';
 
@@ -40,7 +43,7 @@ ok( ($this->mo->template_plot     eq 'pgplot'  and
      $this->mo->template_analysis eq 'ifeffit'),
                                                         "$OBJ object can find template sets");
 
-$this->file('t/PbFe12O19.inp');
+$this->file(File::Spec->catfile($here, 'PbFe12O19.inp'));
 ok( abs($this->a - 5.873) < 0.001,                      "parsed an input file");
 ok( $#{ $this->sites } == 10,                           "number of sites parsed correctly");
 my $string = $this->Write('spacegroup');

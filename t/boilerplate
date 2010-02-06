@@ -1,6 +1,6 @@
 #!/usr/bin/perl
 
-## Test StructuralUnit object functionality of Demeter under Moose
+## Test _____ object functionality of Demeter under Moose
 
 =for Copyright
  .
@@ -20,17 +20,21 @@
 use Test::More tests => 10;
 
 use Demeter;
+use File::Basename;
+use File::Spec;
+my $here  = dirname($0);
 
-my $this = Demeter::Data::MultiChannel -> new();
-my $OBJ  = 'MultiChannel';
+my $this = Demeter::OBJECT -> new();
+my $OBJ  = 'OBJECT';
 
 ok( ref($this) =~ m{$OBJ},           "made a $OBJ object");
-ok( $this->plottable,                "$OBJ object is plottable");
+ok( $this->plottable,                "$OBJ object is plottable"); ## or not
 ok( $this->group =~ m{\A\w{5}\z},    "$OBJ object has a proper group name");
-ok( $this->name =~ m{multichannel data}, "name set to its default (" . $this->name . ")");
+## if needed --v
+ok( $this->name =~ m{whatever}, "name set to its default (" . $this->name . ")");
 $this -> name('this');
 ok( $this->name eq 'this',           "$OBJ object has a settable label");
-ok( $this->data,                     "$OBJ object has an associated Data object");
+ok( $this->data,                     "$OBJ object has an associated Data object"); ## or not
 ok( ref($this->mo) =~ 'Mode',        "$OBJ object can find the Mode object");
 ok( ref($this->co) =~ 'Config',      "$OBJ object can find the Config object");
 ok( ref($this->po) =~ 'Plot',        "$OBJ object can find the Plot object");

@@ -1,5 +1,20 @@
 #!/usr/bin/perl
 
+=for Copyright
+ .
+ Copyright (c) 2008-2010 Bruce Ravel (bravel AT bnl DOT gov).
+ All rights reserved.
+ .
+ This file is free software; you can redistribute it and/or
+ modify it under the same terms as Perl itself. See The Perl
+ Artistic License.
+ .
+ This program is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+
+=cut
+
 use Storable;
 use Xray::Crystal;
 use Test::More tests => 1300;

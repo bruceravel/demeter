@@ -50,6 +50,8 @@ Chemistry::Elements
 
 Config::IniFiles
 
+DateTime
+
 Digest::SHA
 
 Graphics::GnuplotIF

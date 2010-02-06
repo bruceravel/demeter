@@ -207,7 +207,8 @@ ok(!is_NonNeg(-$real),	          "-$real is not non-negative");
 
 
 
-## swiped from Text::Capitalize, which does not install properly out of the box
+## swiped from Text::Capitalize (copyright 2003 Joseph Brenner), which
+## did not install properly out of the box
 sub scramble_case {
    # Function to provide a special effect: sCraMBliNg tHe CaSe
    local $_;

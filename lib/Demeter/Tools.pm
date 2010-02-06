@@ -26,8 +26,7 @@ use Regexp::Optimizer;
 use List::Util qw(sum);
 use String::Random qw(random_string);
 use Sys::Hostname;
-use POSIX qw(tzset tzname);
-tzset();
+use DateTime;
 #use Memoize;
 #memoize('distance');
 
@@ -45,19 +44,19 @@ my %seen = ();
 my $opt  = Regexp::List->new;
 my $type_regexp = $opt->list2re(qw(guess def set restrain after skip merge lguess ldef));
 
-
 sub now {
   my ($self) = @_;
-  my @tz = POSIX::tzname();
-  my @time = localtime;
-  my $month = (qw/January February March April May June July
-	          August September October November December/)[$time[4]];
-  my $year = 1900 + $time[5];
-  my $zone = ($time[8]) ? $tz[1] : $tz[0];
-  return sprintf "%2.2u:%2.2u:%2.2u %s on %s %s, %s",
-    reverse(@time[0..2]), $zone, $time[3], $month, $year;
-  # ^^^ this gives hour:min:sec
+  return sprintf("%s", DateTime->now(time_zone => 'local'));;
 };
+#   my @tz = POSIX::tzname();
+#   my @time = localtime;
+#   my $month = (qw/January February March April May June July
+# 	          August September October November December/)[$time[4]];
+#   my $year = 1900 + $time[5];
+#   my $zone = ($time[8]) ? $tz[1] : $tz[0];
+#   return sprintf "%2.2u:%2.2u:%2.2u %s on %s %s, %s",
+#     reverse(@time[0..2]), $zone, $time[3], $month, $year;
+#   # ^^^ this gives hour:min:sec
 
 sub environment {
   my ($self) = @_;

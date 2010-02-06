@@ -4,7 +4,7 @@
 
 =for Copyright
  .
- Copyright (c) 2008-2009 Bruce Ravel (bravel AT bnl DOT gov).
+ Copyright (c) 2008-2010 Bruce Ravel (bravel AT bnl DOT gov).
  All rights reserved.
  .
  This file is free software; you can redistribute it and/or
@@ -23,10 +23,12 @@ use Demeter;
 my $demeter  = Demeter -> new;
 
 use Cwd;
+use File::Basename;
 use File::Spec;
-my $orig = File::Spec->catfile(cwd, 't', 'orig.inp');
+my $here  = dirname($0);
+my $orig = File::Spec->catfile($here, 'orig.inp');
 
-my $where = ($demeter->is_windows) ? File::Spec->catfile(cwd, 't', 'feff') : './t/feff';
+my $where = File::Spec->catfile($here, 'feff');
 
 my $this = Demeter::Feff -> new(workspace => $where);
 my $OBJ  = 'Feff';
@@ -48,7 +50,7 @@ ok( ($this->mo->template_plot     eq 'pgplot'  and
                                                         "$OBJ object can find template sets");
 
 ## -------- parse a feff.inp file
-my $file = ($demeter->is_windows) ? $orig : 't/orig.inp';
+my $file = $orig;
 $this -> file($file);
 ok( (($this->rmax == 6.0) and
      ($this->edge eq '1') and

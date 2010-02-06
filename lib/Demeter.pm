@@ -15,10 +15,11 @@ package Demeter;
 
 =cut
 
+BEGIN {
+  $ENV{PGPLOT_DEV} = (($^O eq 'MSWin32') or ($^O eq 'cygwin')) ? '/GW' : '/xserve';
+};
 
-## These are common to all Demeter modules
 require 5.8.0;
-#use diagnostics;use Demeter::UI::Wx::SpecialCharacters qw(:all);
 
 use version;
 our $VERSION = version->new('0.4.0');
@@ -113,7 +114,7 @@ use vars qw($plot);
 $plot = Demeter::Plot -> new() if not $mode->plot;
 $plot -> screen_echo(0);
 
-$Gnuplot_exists = (eval "require Graphics::GnuplotIF");
+$Gnuplot_exists = ($plot->is_windows) ? 0 : (eval "require Graphics::GnuplotIF");
 use Demeter::StrTypes qw( Empty
 			  IfeffitCommand
 			  IfeffitFunction

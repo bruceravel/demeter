@@ -4,7 +4,7 @@
 
 =for Copyright
  .
- Copyright (c) 2008-2009 Bruce Ravel (bravel AT bnl DOT gov).
+ Copyright (c) 2008-2010 Bruce Ravel (bravel AT bnl DOT gov).
  All rights reserved.
  .
  This file is free software; you can redistribute it and/or
@@ -20,7 +20,10 @@
 use Test::More tests => 16;
 
 use Demeter;
+use File::Basename;
 use File::Path;
+use File::Spec;
+my $here  = dirname($0);
 
 my $this = Demeter::FSPath -> new();
 my $OBJ  = 'FSPath';
@@ -52,11 +55,11 @@ ok( (    ($list[0]->name eq 'aa_cu_f')
      and ($list[1]->name eq 'ee_cu_f')
      and ($list[2]->name eq 'dr_cu_f')
      and ($list[3]->name eq 'ss_cu_f')),   'GDS parameters named correctly');
-$this->workspace('./fs');
+$this->workspace(File::Spec->catfile($here, 'fs'));
 $this->_update('path');
 ok( $this->parent =~ m{Feff},              'Feff object associated');
 ok( $this->feff_done,                      'Feff calculation was made');
 
 ok($this->parent eq $this->feff,           'feff as alias for parent attribute');
 
-rmtree('./fs');
+rmtree(File::Spec->catfile($here, 'fs'));

@@ -21,10 +21,13 @@ use Test::More tests => 4;
 
 use Demeter;
 
+use File::Basename;
+use File::Spec;
+my $here  = dirname($0);
 my $demeter = Demeter->new;
 
-ok( (not $demeter->is_atoms('t/fe.060')),     'recognize data as not atoms');
-ok( $demeter->is_atoms('t/PbFe12O19.inp'),    'identify atoms input file');
+ok( (not $demeter->is_atoms(File::Spec->catfile($here, 'fe.060'))),     'recognize data as not atoms');
+ok( $demeter->is_atoms(File::Spec->catfile($here, 'PbFe12O19.inp')),    'identify atoms input file');
 
-ok( (not $demeter->is_feff('t/fe.060')),      'recognize data as not feff');
-ok( $demeter->is_feff('t/withHg.inp'),        'identify feff input file');
+ok( (not $demeter->is_feff(File::Spec->catfile($here, 'fe.060'))),      'recognize data as not feff');
+ok( $demeter->is_feff(File::Spec->catfile($here, 'withHg.inp')),        'identify feff input file');

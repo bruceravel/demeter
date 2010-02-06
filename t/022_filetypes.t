@@ -21,6 +21,10 @@ use Test::More tests => 33;
 
 use Demeter;
 
+use File::Basename;
+use File::Spec;
+my $here  = dirname($0);
+
 use Readonly;
 Readonly my $EPSILON => 1e-1;
 Readonly my $PLOT    => 0;
@@ -40,16 +44,16 @@ my %athena = (SSRLA	=> [25521.4,   'transmission'],
 
 foreach my $type (keys %athena) {
 				## the test files are carefully named
-  my $file  = "t/filetypes/" . lc($type) . ".dat";
+  my $file  = File::Spec->catfile($here, "filetypes/", lc($type) . ".dat");
   my $this  = 'Demeter::Plugins::'.$type;
 				## test 1: check against a normal data file
-  my $obj   = $this->new(file=>'t/fe.060');
-  $obj     -> inifile('t/filetypes/x23a2vortex.ini') if (ref($obj) =~ m{X23A2MED});
+  my $obj   = $this->new(file=>File::Spec->catfile($here, 'fe.060'));
+  $obj     -> inifile(File::Spec->catfile($here, "filetypes", "x23a2vortex.ini")) if (ref($obj) =~ m{X23A2MED});
   ok( (not $obj->is), "fe.060 is not of type $type");
   $obj     -> DESTROY;
 				## test 2: check against a file of this type
   $obj      = $this->new(file=>$file);
-  $obj     -> inifile('t/filetypes/x23a2vortex.ini') if (ref($obj) =~ m{X23A2MED});
+  $obj     -> inifile(File::Spec->catfile($here, 'filetypes', 'x23a2vortex.ini')) if (ref($obj) =~ m{X23A2MED});
   ok( $obj->is, "File of type $type recognized");
 				## test 3: fix the data, import it as a Data object, check the e0 value
   my $fixed = $obj->fix;

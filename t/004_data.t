@@ -4,7 +4,7 @@
 
 =for Copyright
  .
- Copyright (c) 2008-2009 Bruce Ravel (bravel AT bnl DOT gov).
+ Copyright (c) 2008-2010 Bruce Ravel (bravel AT bnl DOT gov).
  All rights reserved.
  .
  This file is free software; you can redistribute it and/or
@@ -19,19 +19,22 @@
 
 use Test::More tests => 58;
 
+use File::Basename;
+use File::Spec;
 use List::MoreUtils qw(all);
 use Demeter;
 
+my $here  = dirname($0);
 my $data  = Demeter::Data -> new;
 my $data2 = Demeter::Data -> new;
 
-ok( ref($data) =~ m{Data},            "made a Data object");
-ok( $data->group ne $data2->group,    "made distinct Data objects: " . $data->group . " ne " . $data2->group);
-ok( $data->plottable,                 "Data object is plottable");
-ok( ref($data->mo) =~ 'Mode',       'Data object can find the Mode object');
-ok( ref($data->mo->config) =~ 'Config',   'Data object can find the Config object');
-ok( ref($data->mo->plot) =~ 'Plot', 'Data object can find the Plot object');
-ok( $data->group =~ m{\A\w{5}\z},     'Data object has a proper group name');
+ok( ref($data) =~ m{Data},              "made a Data object");
+ok( $data->group ne $data2->group,      "made distinct Data objects: " . $data->group . " ne " . $data2->group);
+ok( $data->plottable,                   "Data object is plottable");
+ok( ref($data->mo) =~ 'Mode',           'Data object can find the Mode object');
+ok( ref($data->mo->config) =~ 'Config', 'Data object can find the Config object');
+ok( ref($data->mo->plot) =~ 'Plot',     'Data object can find the Plot object');
+ok( $data->group =~ m{\A\w{5}\z},       'Data object has a proper group name');
 $data -> name('this');
 ok( $data->name eq 'this',           'Data object has a settable label');
 ok( ($data->mo->template_plot     eq 'pgplot'  and
@@ -39,7 +42,7 @@ ok( ($data->mo->template_plot     eq 'pgplot'  and
      $data->mo->template_process  eq 'ifeffit' and
      $data->mo->template_fit      eq 'ifeffit' and
      $data->mo->template_analysis eq 'ifeffit'),
-                                       "Data object can find template sets");
+                                        "Data object can find template sets");
 
 
 ok( $data->bkg_kw == 2,              "attribute set from configuration parameters: number");
@@ -83,10 +86,10 @@ foreach (@Demeter::StrTypes::datatype_list) {
 $data -> set_windows('welch');
 ok( ($data->bkg_kwindow eq 'welch' and $data->fft_kwindow eq 'welch' and $data->bft_rwindow eq 'welch'), "set_windows works");
 
-$data->file('t/data.xmu');
+$data->file(File::Spec->catfile($here, 'data.xmu'));
 $data->determine_data_type;
 ok( $data->datatype eq 'xmu',                               "determine_data_type works: xmu");
-$data2->file('t/data.chi');
+$data2->file(File::Spec->catfile($here, 'data.chi'));
 $data2->determine_data_type;
 ok( $data2->datatype eq 'chi',                              "determine_data_type works: chi");
 
@@ -95,13 +98,14 @@ ok( $string =~ $data->group,                                'simple template wor
 
 ## -------- Methods for setting E0
 my $fuzz = 0.002;
-my $data3 = Demeter::Data -> new(file=>'t/fe.060',
+
+my $data3 = Demeter::Data -> new(file=>File::Spec->catfile($here, 'fe.060'),
 				 energy      => '$1', # column 1 is energy
 				 numerator   => '$2', # column 2 is I0
 				 denominator => '$3', # column 3 is It
 				 ln          => 1,    # these are transmission data
 				);
-my $data4 = Demeter::Data -> new(file=>'t/fe.061',
+my $data4 = Demeter::Data -> new(file=>File::Spec->catfile($here, 'fe.061'),
 				 energy      => '$1', # column 1 is energy
 				 numerator   => '$2', # column 2 is I0
 				 denominator => '$3', # column 3 is It
@@ -178,7 +182,7 @@ ok( $data->bkg_eshift eq -3, 'tying reference channels works both ways');
 
 
 ## -------- test importing chi(k) data on the wrong grid
-my $nonu = Demeter::Data->new(file=>'t/nonuniform.chi',);
+my $nonu = Demeter::Data->new(file=>File::Spec->catfile($here, 'nonuniform.chi'),);
 $nonu->_update('fft');
 my @k = $nonu->get_array('k');
 ok( ( ($k[0] == 0) and (all { abs($k[$_] - $k[$_-1] - 0.05) < 1e-4 } (1 .. $#k)) ), 'fixing improper chi(k)' );

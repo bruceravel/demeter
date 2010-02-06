@@ -4,7 +4,7 @@
 
 =for Copyright
  .
- Copyright (c) 2008-2009 Bruce Ravel (bravel AT bnl DOT gov).
+ Copyright (c) 2008-2010 Bruce Ravel (bravel AT bnl DOT gov).
  All rights reserved.
  .
  This file is free software; you can redistribute it and/or
@@ -21,9 +21,12 @@ use Test::More tests => 22;
 
 use Demeter;
 use List::MoreUtils qw(all);
+use File::Basename;
+use File::Spec;
+my $here  = dirname($0);
 
 
-my $this = Demeter::Data::Prj->new(file=>'t/cyanobacteria.prj');
+my $this = Demeter::Data::Prj->new(file=>File::Spec->catfile($here, 'cyanobacteria.prj'));
 my $OBJ  = 'Prj';
 
 ok( ref($this) =~ m{$OBJ},                              "made a $OBJ object");

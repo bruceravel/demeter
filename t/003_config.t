@@ -4,7 +4,7 @@
 
 =for Copyright
  .
- Copyright (c) 2008-2009 Bruce Ravel (bravel AT bnl DOT gov).
+ Copyright (c) 2008-2010 Bruce Ravel (bravel AT bnl DOT gov).
  All rights reserved.
  .
  This file is free software; you can redistribute it and/or
@@ -18,6 +18,10 @@
 =cut
 
 use Test::More tests => 24;
+
+use File::Basename;
+use File::Spec;
+my $here  = dirname($0);
 
 my $number_of_groups = 22;
 
@@ -59,7 +63,7 @@ ok( ($#{$groups} == $number_of_groups),                          'configuration 
 my @parameters = $demeter->co->parameters('happiness');
 ok( ($parameters[0] eq 'average_color' and $#parameters == 11),  'configuration system introspection works: group parameters');
 
-$demeter->co->read_config('t/test.demeter_conf');
+$demeter->co->read_config(File::Spec->catfile($here, 'test.demeter_conf'));
 ok( (not $demeter->co->default(qw(testing boolean))),            'reading boolean from arbitrary config file');
 ok( $demeter->co->default(qw(testing string))  eq 'Hi there!',   'reading string from arbitrary config file');
 ok( $demeter->co->default(qw(testing real))    == 1.0,           'reading real from arbitrary config file');

@@ -4,7 +4,7 @@
 
 =for Copyright
  .
- Copyright (c) 2008-2009 Bruce Ravel (bravel AT bnl DOT gov).
+ Copyright (c) 2008-2010 Bruce Ravel (bravel AT bnl DOT gov).
  All rights reserved.
  .
  This file is free software; you can redistribute it and/or
@@ -21,6 +21,9 @@ use Test::More tests => 25;
 
 use Demeter;
 use Cwd;
+use File::Basename;
+use File::Spec;
+my $here  = dirname($0);
 
 my $this = Demeter::ScatteringPath -> new();
 my $OBJ  = 'ScatteringPath';
@@ -44,9 +47,9 @@ ok( ($this->mo->template_plot     eq 'pgplot'  and
 ## -------- test path description semantics
 
 my $demeter = Demeter -> new;
-my $where   = ($demeter->is_windows) ? File::Spec->catfile(cwd, 't', 'feff') : './t/feff';
-my $orig    = File::Spec->catfile(cwd, 't', 'withHg.inp');
-my $file    = ($demeter->is_windows) ? $orig : 't/withHg.inp';
+my $where   = File::Spec->catfile($here, 'feff');
+my $orig    = File::Spec->catfile($here, 'withHg.inp');
+my $file    = $orig;
 my $feff    = Demeter::Feff -> new(workspace => $where, file => $orig, screen => 0);
 $feff -> rmax(4.5);
 $feff -> pathfinder;

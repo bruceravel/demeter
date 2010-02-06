@@ -4,7 +4,7 @@
 
 =for Copyright
  .
- Copyright (c) 2008-2009 Bruce Ravel (bravel AT bnl DOT gov).
+ Copyright (c) 2008-2010 Bruce Ravel (bravel AT bnl DOT gov).
  All rights reserved.
  .
  This file is free software; you can redistribute it and/or
@@ -21,6 +21,9 @@ use Test::More tests => 23;
 
 use Demeter;
 use List::MoreUtils qw(all);
+use File::Basename;
+use File::Spec;
+my $here  = dirname($0);
 
 
 my $this = Demeter::Fit -> new;
@@ -50,12 +53,12 @@ my @gds  = (
 	    Demeter::GDS -> new(gds=>'guess', name=>'dcu',  mathexp=>0),
 	    Demeter::GDS -> new(gds=>'guess', name=>'ss',   mathexp=>0.003),
 	   );
-my $data = Demeter::Data->new(file     => 't/data.chi',
+my $data = Demeter::Data->new(file     => File::Spec->catfile($here, 'data.chi'),
 			      name     => 'Cu 10K',
 			      fft_kmin => 3,   fft_kmax => 12,
 			      bft_rmin => 1,   bft_rmax => 2.6,
 );
-my $path = Demeter::Path->new(folder => 't',
+my $path = Demeter::Path->new(folder => $here,
 			      file   => 'feff0001.dat',
 			      data   => $data,
 			      name   => 'first shell',

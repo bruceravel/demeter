@@ -4,7 +4,7 @@
 
 =for Copyright
  .
- Copyright (c) 2008-2009 Bruce Ravel (bravel AT bnl DOT gov).
+ Copyright (c) 2008-2010 Bruce Ravel (bravel AT bnl DOT gov).
  All rights reserved.
  .
  This file is free software; you can redistribute it and/or
@@ -21,8 +21,14 @@ use Test::More tests => 17;
 
 use Demeter;
 
+use File::Basename;
+use File::Spec;
+my $here  = dirname($0);
+
 ## an SSPath requires that a Feff object exist
-my $feff = Demeter::Feff -> new(workspace => './t/feff', file => 't/withHg.inp', screen => 0);
+my $feff = Demeter::Feff -> new(workspace => File::Spec->catfile($here, 'feff'),
+				file => File::Spec->catfile($here, 'withHg.inp'),
+				screen => 0);
 $feff -> make_workspace;
 $feff -> potph;
 $feff -> rmax(4.5);
