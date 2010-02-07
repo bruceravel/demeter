@@ -225,6 +225,7 @@ sub populate {
 
 sub fetch_parameters {
   my ($this) = @_;
+  my $rgds = $Demeter::UI::Artemis::frames{GDS}->reset_all;
   foreach my $k (qw(n s02 e0 delr sigma2 ei third fourth dphase)) {
     next if (($k eq 'dphase') and (not $this->{path}->co->default('artemis', 'offer_dphase')));
     $this->{path}->$k($this->{"pp_$k"}->GetValue);

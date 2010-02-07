@@ -347,6 +347,7 @@ sub destroy_all {
   my ($self) = @_;
   foreach my $obj ($self->everything) {
     #print $obj, $/;
+    next if not defined $obj;
     $obj -> DEMOLISH; #DESTROY;
   };
 };

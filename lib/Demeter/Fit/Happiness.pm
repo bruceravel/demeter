@@ -4,7 +4,7 @@ package Demeter::Fit::Happiness;
  .
  Copyright (c) 2006-2010 Bruce Ravel (bravel AT bnl DOT gov).
  All rights reserved.
- .
+ .my 
  This file is free software; you can redistribute it and/or
  modify it under the same terms as Perl itself. See The Perl
  Artistic License.
@@ -153,6 +153,7 @@ sub _penalize_nidp {
 			  $self->co->default("happiness", "nidp_cutoff"),
 			  $self->co->default("happiness", "nidp_scale"),
 			 );
+  return (0, q{}) if ($cutoff >= 1);
   my $nidp  = $self->n_idp;
   my $nvar  = $self->n_varys;
   my $diff  = $nidp-$nvar;
@@ -432,8 +433,9 @@ Other possible penalties:
 =item *
 
 Compare reff of each path to the fitting range.  Penalize paths well
-outside the range (which is not such a bad thing) or a range well
-beyond the longest path (which is certainly a bad thing).
+outside the range (which is probably not such a bad thing) or a range
+well beyond the longest path (which is certainly a bad thing in that
+it indicates an attempt to inflate Nidp).
 
 =item *
 

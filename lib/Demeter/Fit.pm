@@ -807,22 +807,24 @@ sub logtext {
     $text .= $data->fit_parameter_report($#{ $self->data }, $self->fit_performed);
     $text .= $/;
     my @all_paths = @{ $self->paths };
-    ## figure out how wide the column of path labels should be
-    my $length = max( map { length($_->name) if ($_->data eq $data) } @all_paths ) + 1;
-    $text .= $all_paths[0]->row_main_label($length);
-    foreach my $path (@all_paths) {
-      next if not defined($path);
-      next if ($path->data ne $data);
-      next if not $path->include;
-      $text .= $path->row_main($length);
-    };
-    $text .= $/;
-    $text .= $all_paths[0]->row_second_label($length);
-    foreach my $path (@all_paths) {
-      next if not defined($path);
-      next if ($path->data ne $data);
-      next if not $path->include;
-      $text .= $path->row_second($length);
+    if (@all_paths) {
+      ## figure out how wide the column of path labels should be
+      my $length = max( map { length($_->name) if ($_->data eq $data) } @all_paths ) + 1;
+      $text .= $all_paths[0]->row_main_label($length);
+      foreach my $path (@all_paths) {
+	next if not defined($path);
+	next if ($path->data ne $data);
+	next if not $path->include;
+	$text .= $path->row_main($length);
+      };
+      $text .= $/;
+      $text .= $all_paths[0]->row_second_label($length);
+      foreach my $path (@all_paths) {
+	next if not defined($path);
+	next if ($path->data ne $data);
+	next if not $path->include;
+	$text .= $path->row_second($length);
+      };
     };
   };
 

@@ -227,9 +227,8 @@ sub dispose {
 
   ## -------- send reprocessed command text to ifeffit
   if ($self->get_mode("ifeffit")) {
-    #print ">-" x 15 . $/ . $reprocessed . $/ . "<-" x 15 . $/ if $plotting;
     if ($self->is_windows) {
-      ifeffit($_) foreach (split(/$ENDOFLINE/, $reprocessed));
+      ifeffit($_) foreach (split(/$ENDOFLINE/, $reprocessed)); # WTF!
     } else {
       ifeffit($reprocessed);
     };

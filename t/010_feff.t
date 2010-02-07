@@ -33,125 +33,130 @@ my $where = File::Spec->catfile($here, 'feff');
 my $this = Demeter::Feff -> new(workspace => $where);
 my $OBJ  = 'Feff';
 
-ok( ref($this) =~ m{$OBJ},                              "made a $OBJ object");
-ok(!$this->plottable,                                   "$OBJ object is not plottable");
-ok( $this->group =~ m{\A\w{5}\z},                       "$OBJ object has a proper group name");
+ok( ref($this) =~ m{$OBJ},                          "made a $OBJ object");
+ok(!$this->plottable,                               "$OBJ object is not plottable");
+ok( $this->group =~ m{\A\w{5}\z},                   "$OBJ object has a proper group name");
 $this -> name('this');
-ok( $this->name eq 'this',                              "$OBJ object has a settable label");
-ok( !$this->data,                                       "$OBJ object has no associated Data object");
-ok( ref($this->mo) =~ 'Mode',                         "$OBJ object can find the Mode object");
-ok( ref($this->co) =~ 'Config',               "$OBJ object can find the Config object");
-ok( ref($this->po) =~ 'Plot',                   "$OBJ object can find the Plot object");
+ok( $this->name eq 'this',                          "$OBJ object has a settable label");
+ok( !$this->data,                                   "$OBJ object has no associated Data object");
+ok( ref($this->mo) =~ 'Mode',                       "$OBJ object can find the Mode object");
+ok( ref($this->co) =~ 'Config',                     "$OBJ object can find the Config object");
+ok( ref($this->po) =~ 'Plot',                       "$OBJ object can find the Plot object");
 ok( ($this->mo->template_plot     eq 'pgplot'  and
      $this->mo->template_feff     eq 'feff6'   and
      $this->mo->template_process  eq 'ifeffit' and
      $this->mo->template_fit      eq 'ifeffit' and
      $this->mo->template_analysis eq 'ifeffit'),
-                                                        "$OBJ object can find template sets");
+                                                    "$OBJ object can find template sets");
 
 ## -------- parse a feff.inp file
 my $file = $orig;
 $this -> file($file);
 ok( (($this->rmax == 6.0) and
      ($this->edge eq '1') and
-     ($this->s02  == 1.0)),                             'simple Feff cards read');
+     ($this->s02  == 1.0)),                         'simple Feff cards read');
 
 my $ref = $this->potentials;
-ok( $#{$ref} == 1,                                      'potentials list read');
+ok( $#{$ref} == 1,                                  'potentials list read');
 
 $ref = $this->sites;
-ok( $#{$ref} == 86,                                     'atoms list read');
+ok( $#{$ref} == 86,                                 'atoms list read');
 
 $ref = $this->titles;
 my $string = join(' | ', @$ref);
-ok( $string =~ m{example},                              'titles read');
+ok( $string =~ m{example},                          'titles read');
 
 $ref = $this->absorber;
 ok( (($this->abs_index == 0) and
      (abs($ref->[0]) < 0.00001) and
      (abs($ref->[1]) < 0.00001) and
-     (abs($ref->[2]) < 0.00001)),                       'absorber identified');
+     (abs($ref->[2]) < 0.00001)),                   'absorber identified');
 
-ok( $this->site_tag(19) eq 'Cu_3',                      'site_tag method works');
+ok( $this->site_tag(19) eq 'Cu_3',                  'site_tag method works');
 
 
 
 ## -------- write different sorts of feff.inp files
 $this -> make_workspace;
-ok( -d $where,                                          'make workspace works');
+ok( -d $where,                                      'make workspace works');
 
 $this->make_feffinp("potentials");
-open( my $fh, "$where/feff.inp" );
+open( my $fh, File::Spec->catfile($where, "feff.inp") );
 my $text = do { local( $/ ) ; <$fh> } ;
-ok( $text =~ m{CONTROL\s+1\s+0\s+0\s+0},                'CONTROL written for potentials');
+close $fh;
+ok( $text =~ m{CONTROL\s+1\s+0\s+0\s+0},            'CONTROL written for potentials');
 
 $this->make_feffinp("genfmt");
-open( $fh, "$where/feff.inp" );
+open( $fh, File::Spec->catfile($where, "feff.inp") );
 $text = do { local( $/ ) ; <$fh> } ;
-ok( $text =~ m{CONTROL\s+0\s+0\s+1\s+0},                'CONTROL written for genfmt');
+close $fh;
+ok( $text =~ m{CONTROL\s+0\s+0\s+1\s+0},            'CONTROL written for genfmt');
 
-my $new = Demeter::Feff -> new(workspace => $where, file => "$where/feff.inp");
+my $new = Demeter::Feff -> new(workspace => $where, file => File::Spec->catfile($where, "feff.inp"));
 $ref = $new->sites;
-ok( $#{$ref} == 86,                                     'output feff.inp file has the correct number of sites');
+ok( $#{$ref} == 86,                                 'output feff.inp file has the correct number of sites');
 
 ## -------- run potph
 $this -> screen(0);
 $this -> buffer(1);
 $this -> potph;
-ok( ((-s "$where/phase.bin" > 30000) and (-e "$where/misc.dat")), 'feff module potph ran correctly');
+ok( ((-s File::Spec->catfile($where, "phase.bin") > 30000)
+     and (-e File::Spec->catfile($where, "misc.dat"))), 'feff module potph ran correctly');
 
-ok( $#{$this->iobuffer} >= 10,                           'iobuffer works');
+ok( $#{$this->iobuffer} >= 10,                      'iobuffer works');
 
 $this -> screen(0);
 $this -> rmax(4);
 $this -> pathfinder;
-$this -> freeze("$where/feff.yaml");
+$this -> freeze(File::Spec->catfile($where, "feff.yaml"));
 
 
 
-$new = Demeter::Feff -> new(yaml => "$where/feff.yaml");
+$new = Demeter::Feff -> new(yaml => File::Spec->catfile($where, "feff.yaml"));
 
 
 ok( (($new->rmax == 4.0) and
      ($new->edge eq '1') and
-     ($new->s02  == 1.0)),                             'thaw: simple Feff cards read');
+     ($new->s02  == 1.0)),                          'thaw: simple Feff cards read');
 
 $ref = $new->potentials;
-ok( $#{$ref} == 1,                                     'thaw: potentials list read');
+ok( $#{$ref} == 1,                                  'thaw: potentials list read');
 
 $ref = $new->sites;
-ok( $#{$ref} == 86,                                    'thaw: atoms list read');
+ok( $#{$ref} == 86,                                 'thaw: atoms list read');
 
 $ref = $new->titles;
 $string = join(' | ', @$ref);
-ok( $string =~ m{example},                             'thaw: titles read');
+ok( $string =~ m{example},                          'thaw: titles read');
 
 $ref = $new->absorber;
 ok( (($new->abs_index == 0) and
      (abs($ref->[0]) < 0.00001) and
      (abs($ref->[1]) < 0.00001) and
-     (abs($ref->[2]) < 0.00001)),                      'thaw: absorber identified');
+     (abs($ref->[2]) < 0.00001)),                   'thaw: absorber identified');
 
-ok( $new->site_tag(19) eq 'Cu_3',                      'thaw: site_tag method works');
+ok( $new->site_tag(19) eq 'Cu_3',                   'thaw: site_tag method works');
 
 ## -------- write different sorts of feff.inp files
 $new -> make_workspace;
-ok( -d $where,                                         'thaw: make workspace works');
+ok( -d $where,                                      'thaw: make workspace works');
 
 $new->make_feffinp("potentials");
-open( $fh, "$where/feff.inp" );
+open( $fh, File::Spec->catfile($where, "feff.inp") );
 $text = do { local( $/ ) ; <$fh> } ;
-ok( $text =~ m{CONTROL\s+1\s+0\s+0\s+0},                'thaw: CONTROL written for potentials');
+close $fh;
+ok( $text =~ m{CONTROL\s+1\s+0\s+0\s+0},            'thaw: CONTROL written for potentials');
 
 $new->make_feffinp("genfmt");
-open( $fh, "$where/feff.inp" );
+open( $fh, File::Spec->catfile($where, "feff.inp") );
 $text = do { local( $/ ) ; <$fh> } ;
-ok( $text =~ m{CONTROL\s+0\s+0\s+1\s+0},                'thaw: CONTROL written for genfmt');
+close $fh;
+ok( $text =~ m{CONTROL\s+0\s+0\s+1\s+0},            'thaw: CONTROL written for genfmt');
 
-$new = Demeter::Feff -> new(workspace => $where, file => "$where/feff.inp");
+$new = Demeter::Feff -> new(workspace => $where, file => File::Spec->catfile($where, "feff.inp"));
 $ref = $new->sites;
-ok( $#{$ref} == 86,                                     'thaw: output feff.inp file has the correct number of sites');
+ok( $#{$ref} == 86,                                 'thaw: output feff.inp file has the correct number of sites');
 
 $this -> clean_workspace;
-ok( not (-d $where),                                    'clean workspace works');
+ok( not (-d $where),                                'clean workspace works');
 

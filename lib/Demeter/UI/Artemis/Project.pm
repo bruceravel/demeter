@@ -179,9 +179,13 @@ sub read_project {
 
   ## -------- import feff calculations from the project file
   my %feffs;
-  opendir(my $FEFF, File::Spec->catfile($projfolder, 'feff/'));
-  my @dirs = grep { $_ =~ m{\A[a-z]} } readdir($FEFF);
-  closedir $FEFF;
+  my $feffdir = File::Spec->catfile($projfolder, 'feff/');
+  my @dirs = ();
+  if (-d $feffdir) {
+    opendir(my $FEFF, $feffdir);
+    @dirs = grep { $_ =~ m{\A[a-z]} } readdir($FEFF);
+    closedir $FEFF;
+  };
   foreach my $d (@dirs) {
     ## import feff yaml
     my $yaml = File::Spec->catfile($projfolder, 'feff', $d, $d.'.yaml');
@@ -242,12 +246,14 @@ sub read_project {
     $grid -> SetCellValue($start, 2, $g->mathexp);
     $grid -> {$g->name} = $g;
     my $text = q{};
-    if ($g->gds eq 'guess') {
-      $text = sprintf("%.5f +/- %.5f", $g->bestfit, $g->error);
-    } elsif ($g->gds =~ m{(?:after|def|penalty|restrain)}) {
-      $text = sprintf("%.5f", $g->bestfit);
-    } elsif ($g->gds =~ m{(?:lguess|merge|set|skip)}) {
-      1;
+    if ($g->bestfit or $g->error) {
+      if ($g->gds eq 'guess') {
+	$text = sprintf("%.5f +/- %.5f", $g->bestfit, $g->error);
+      } elsif ($g->gds =~ m{(?:after|def|penalty|restrain)}) {
+	$text = sprintf("%.5f", $g->bestfit);
+      } elsif ($g->gds =~ m{(?:lguess|merge|set|skip)}) {
+	1;
+      };
     };
     $grid -> SetCellValue($start, 3, $text);
     $rframes->{GDS}->set_type($start);
@@ -272,7 +278,7 @@ sub read_project {
       $page->include_label;
       $rframes->{$dnum}->{pathlist}->Check($n, $p->mark);
     };
-    $rframes->{$dnum}->{pathlist}->SetSelection(0);
+    $rframes->{$dnum}->{pathlist}->SetSelection(0) if ($#{$fit->paths} > -1);
     $rframes->{$dnum}->Show(0);
     $rframes->{main}->{$dnum}->SetValue(0);
     if (not $count) {
@@ -303,7 +309,11 @@ sub read_project {
   $rframes->{Log}->SetTitle("Artemis [Log] " . $fit->name);
   $rframes->{Log}->Show(0);
   $rframes->{main}->{log_toggle}->SetValue(0);
-  Demeter::UI::Artemis::set_happiness_color($fit->color);
+  if ($fit->happiness) {
+    Demeter::UI::Artemis::set_happiness_color($fit->color);
+  } else {
+    $Demeter::UI::Artemis::frames{main}->{fitbutton} -> SetBackgroundColour(Wx::Colour->new($fit->co->default("happiness", "average_color")));
+  };
 
   $Demeter::UI::Artemis::demeter->push_mru("artemis", $fname);
   &Demeter::UI::Artemis::set_mru;

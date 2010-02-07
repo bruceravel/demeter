@@ -8,12 +8,11 @@
 
 * Artemis: polishing for beta release
 
-** TODO Figure out seg fault problem
+** DONE Figure out seg fault problem
 
-** TODO Cut and paste is wonky in GDS grid
+** DONE Cut and paste is wonky in GDS grid
 
 ** Atoms/Feff
-*** TODO Rename Atoms/Feff calculation
 
 *** [4/4] Import external Feff calculation
  - [X] import atoms or feff + rest of calculation
@@ -33,9 +32,7 @@
  - [X] +What about local params?+
  - [X] Can't find data, can't find feffNNNN ...?
 
-*** TODO Better sensitivity to when a project needs saving  :Project:
-
-*** TODO Saving incomplete projects
+*** DONE Saving incomplete projects
 
 ** Plotting
 *** DONE autoplot kq after fit does not seem to be working
@@ -58,9 +55,13 @@
 
 --------
 
-* Artemis: bigger features
+* Artemis: later features
 
 ** History
+
+** TODO Better sensitivity to when a project needs saving :Project:
+
+** TODO Rename Atoms/Feff calculation
 
 ** After beta release
   1. Balance interstitial energies for MFC fits  :MFC:

@@ -332,7 +332,7 @@ sub put_param {
   my $grid = $parent->{grid};
   $type = 'merge' if $parent->param_present($name);
   my $start = $parent->find_next_empty_row;
-  $grid->AppendRows(1,1) if ($start >= $grid->GetNumberRows);
+  $grid -> AppendRows(1,1) if ($start >= $grid->GetNumberRows);
   $grid -> SetCellValue($start, 0, $type);
   $grid -> SetCellValue($start, 1, $name);
   $grid -> SetCellValue($start, 2, $mathexp);
@@ -577,9 +577,16 @@ sub cut {
       $grid->DeleteRows($r,1,1);
     };
   };
+  while ($grid->GetNumberRows < 12) {
+    $grid->AppendRows(1,1);
+    $parent->initialize_row( $grid->GetNumberRows - 1 );
+    $parent->{grid}->ClearSelection;
+  };
+
   my $s = ($#{$grid->{buffer}} > 0) ? q{s} : q{};
   $parent->{statusbar}->SetStatusText("Cut parameter$s ".join(", ", map {defined($_) and $_->name} @{$grid->{buffer}}));
 };
+
 
 sub paste {
   my ($parent) = @_;

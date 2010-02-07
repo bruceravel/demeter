@@ -4,21 +4,21 @@ use strict;
 #use Encode;
 use base qw( Exporter );
 our @EXPORT_OK = qw(emph
-		    $CHI $EPSILON $DELTA $SIGMA $SIGSQR $PHI $S02 $E0
+		    $CHI $EPSILON $DELTA $SIGMA $SIGSQR $PHI $S02 $E0 $GAMMA
 		    $COPYRIGHT $LAQUO $RAQUO $MDASH
 		    $TWO $THR);
 our %EXPORT_TAGS = (all   => [qw(emph
-				 $CHI $EPSILON $DELTA $SIGMA $SIGSQR $PHI $S02 $E0
+				 $CHI $EPSILON $DELTA $SIGMA $SIGSQR $PHI $S02 $E0 $GAMMA
 				 $COPYRIGHT $LAQUO $RAQUO $MDASH
 				 $TWO $THR)],
 		    super => [qw($TWO $THR)],
-		    greek => [qw($CHI $EPSILON $DELTA $SIGMA $SIGSQR $PHI $S02 $E0)],
+		    greek => [qw($CHI $EPSILON $DELTA $SIGMA $SIGSQR $PHI $S02 $E0 $GAMMA)],
 		   );
 
 my $is_windows = (($^O eq 'MSWin32') or ($^O eq 'cygwin'));
 
 ## -------- greek characters
-our $CHI     = chr(967);          #"\xCF\x87";            #'χ';
+our $CHI     = chr(0x03C7); #967);          #"\xCF\x87";            #'χ';
 our $EPSILON = chr(949);          #"\xCE\xB5";            #'ε';
 our $DELTA   = chr(916);          #"\xCE\x94";            #'Δ';
 our $SIGMA   = chr(963);          #"\xCF\x83";            #'σ';
@@ -26,6 +26,7 @@ our $SIGSQR  = chr(963).chr(178); #"\xCF\x83"."\xC2\xB2"; #'σ²';
 our $PHI     = chr(966);          #"\xCF\x86";            #'φ';
 our $S02     = 'S'.chr(8320).chr(178);
 our $E0      = 'E'.chr(8320);
+our $GAMMA   = chr(0x03B3);
 
 ## -------- superscripts
 our $TWO     = chr(178);
@@ -152,6 +153,9 @@ Just the greek letters
 Just the superscript characters
 
 =back
+
+See L<http://en.wikipedia.org/wiki/List_of_Unicode_characters> for the
+character codes.
 
 =head1 BUGS AND LIMITATIONS
 

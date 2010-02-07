@@ -87,6 +87,7 @@ sub _prj {
   $rframes->{$dnum} -> Show(1);
   $rframes->{main}->{$dnum}->SetValue(1);
   $prj->DESTROY;
+  $rframes->{prj} -> Destroy;
   delete $rframes->{prj};
   $$rdemeter->push_mru("athena", $file);
   autosave();

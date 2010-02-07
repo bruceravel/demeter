@@ -23,6 +23,7 @@ use Xray::Absorption;
 Xray::Absorption->load('elam');
 use Demeter::UI::Wx::PeriodicTable;
 use Demeter::UI::Hephaestus::Common qw(e2l);
+use Demeter::UI::Wx::SpecialCharacters qw($GAMMA);
 
 use Wx qw( :everything );
 use base 'Wx::Panel';
@@ -104,7 +105,7 @@ sub new {
   $self->{edge} = Wx::ListView->new($self, -1, wxDefaultPosition, wxDefaultSize, wxLC_REPORT|wxLC_HRULES|wxLC_SINGLE_SEL);
   $self->{edge}->InsertColumn( 0, "Edge", wxLIST_FORMAT_LEFT, 55 );
   $self->{edge}->InsertColumn( 1, "Energy", wxLIST_FORMAT_RIGHT, 70  );
-  $self->{edge}->InsertColumn( 2, "γ(ch)", wxLIST_FORMAT_RIGHT, 55  );
+  $self->{edge}->InsertColumn( 2, "$GAMMA(ch)", wxLIST_FORMAT_RIGHT, 55  );
   $i = 0;
   foreach my $row (@EDGELIST) {
     my $idx = $self->{edge}->InsertImageStringItem($i, $row, 0);

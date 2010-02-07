@@ -42,9 +42,9 @@ my %athena = (SSRLA	=> [25521.4,   'transmission'],
 	      DUBBLE    => [12660.9,   'fluorescence'],
 	     );
 
-foreach my $type (keys %athena) {
+foreach my $type (sort keys %athena) {
 				## the test files are carefully named
-  my $file  = File::Spec->catfile($here, "filetypes/", lc($type) . ".dat");
+  my $file  = File::Spec->catfile($here, "filetypes", lc($type) . ".dat");
   my $this  = 'Demeter::Plugins::'.$type;
 				## test 1: check against a normal data file
   my $obj   = $this->new(file=>File::Spec->catfile($here, 'fe.060'));

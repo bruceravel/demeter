@@ -12,7 +12,6 @@ my $demeter = Demeter->new();
 has 'inifile' => (is => 'rw', isa => 'Str', default => File::Spec->catfile($demeter->dot_folder, 'x23a2vortex.ini'));
 
 use Config::IniFiles;
-use Ifeffit;
 
 sub is {
   my ($self) = @_;
@@ -38,7 +37,8 @@ sub fix {
 
   ## read the raw data file into Ifeffit
   my $command = "read_data(file=\"$file\", group=v___ortex)\n";
-  Ifeffit::ifeffit($command);
+  $demeter->dispose($command);
+
   my @labels = split(" ", Ifeffit::get_string('$column_label'));
   my @options = ();
   foreach my $l (@labels) {
@@ -88,7 +88,7 @@ sub fix {
   #print $command;
 
   unlink $new if (-e $new);
-  Ifeffit::ifeffit($command);
+  $demeter->dispose($command);
 
   $self->fixed($new);
   return $new;

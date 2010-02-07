@@ -1702,6 +1702,7 @@ sub discard_data {
 
   ## remove the frame with the datapage
   $Demeter::UI::Artemis::frames{$dnum}->Hide;
+  $Demeter::UI::Artemis::frames{$dnum}->Destroy;
   delete $Demeter::UI::Artemis::frames{$dnum};
   ## that's not quite right!
 
