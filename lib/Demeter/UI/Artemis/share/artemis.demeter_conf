@@ -54,6 +54,7 @@ type=boolean
 onvalue=1
 offvalue=0
 default=false
+restart=1
 description
   If true, display debugging menus in Artemis frames.
 
