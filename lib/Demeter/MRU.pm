@@ -26,6 +26,7 @@ my $max_mru = 15;
 sub push_mru {
   my ($self, $group, $file) = @_;
   my $stash = $self->stash_folder;
+  $stash =~ s{\\}{\\\\}g if $self->is_windows;	# it seems like there should be something more elegant...
   return $self if ($file =~ m{$stash});
   my %mru;
   my $mrufile = File::Spec->catfile($self->dot_folder, "demeter.mru");
