@@ -42,7 +42,9 @@ sub fix {
       ##         energy       RTC         I0
       @labels = ($labels[1], $labels[0], @labels[@detectors], @labels[@scalars]);
       print N "# ", "-"x30, $/;
-      print N "# ", join(" ", @labels), $/;
+      my $label_line = "# " . join(" ", @labels);
+      $label_line =~ s{SCA}{S}g;
+      print N $label_line, $/;
       next;
     };
     if ($labels) {

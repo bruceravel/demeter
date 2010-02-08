@@ -73,9 +73,9 @@ $demeter->Reset;
 ok( Ifeffit::get_scalar('a') == 0,                         'simple disposal wrapper works');
 
 SKIP: {
-  skip "Graphics::GnuplotIF not installed", 1 if $@;
-  eval { require Graphics::GnuplotIF };
   skip "This is windows, skipping gnuplot test",1 if $demeter->is_windows;
+  eval { require Graphics::GnuplotIF };
+  skip "Graphics::GnuplotIF not installed", 1 if $@;
   $demeter -> plot_with("gnuplot");
   ok( $demeter->get_mode("template_plot") eq 'gnuplot',             'plot_with works');
 };
