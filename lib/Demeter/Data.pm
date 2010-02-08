@@ -278,11 +278,11 @@ has 'bkg_nclamp'  => (is => 'rw', isa =>  PosInt,   default => sub{ shift->co->d
 has 'fft_edge'    => (is => 'rw', isa =>  Edge,    default => 'K', coerce => 1);
 
 has 'fft_kmin'    => (is => 'rw', isa => 'Num',
-		      trigger => sub{ my($self) = @_; $self->update_fft(1); &_nidp},
+		      trigger => sub{ my($self) = @_; $self->update_fft(1); $self->_nidp},
 		      default => sub{ shift->co->default("fft", "kmin")     ||  3});
 
 has 'fft_kmax'    => (is => 'rw', isa => 'Num',
-		      trigger => sub{ my($self) = @_; $self->update_fft(1); &_nidp},
+		      trigger => sub{ my($self) = @_; $self->update_fft(1); $self->_nidp},
 		      default => sub{ shift->co->default("fft", "kmax")     || -2});
 
 has 'fft_dk'      => (is => 'rw', isa =>  NonNeg,  default => sub{ shift->co->default("fft", "dk")       ||  2},
@@ -308,11 +308,11 @@ has 'bft_rwindow' => (is => 'rw', isa =>  Window,  default => sub{ shift->co->de
 		      trigger => sub{ my($self) = @_; $self->update_bft(1)});
 
 has 'bft_rmin'    => (is => 'rw', isa =>  PosNum,
-		      trigger => sub{ my($self) = @_; $self->update_bft(1); &_nidp},
+		      trigger => sub{ my($self) = @_; $self->update_bft(1); $self->&_nidp},
 		      default => sub{ shift->co->default("bft", "rmin")     ||  1});
 
 has 'bft_rmax'    => (is => 'rw', isa =>  PosNum,
-		      trigger => sub{ my($self) = @_; $self->update_bft(1); &_nidp},
+		      trigger => sub{ my($self) = @_; $self->update_bft(1); $self->_nidp},
 		      default => sub{ shift->co->default("bft", "rmax")     ||  3});
 
 has 'bft_dr'      => (is => 'rw', isa =>  NonNeg,    default => sub{ shift->co->default("bft", "dr")       ||  0.2},
@@ -463,10 +463,10 @@ sub determine_data_type {
   return 0 if is_Empty($file);
   ## figure out how to interpret these data -- need some error checking
   if ((not $self->is_col) and ($self->datatype ne "xmu") and ($self->datatype ne "chi") ) {
-    Ifeffit::ifeffit("read_data(file=\"$file\", group=b___lah)\n");
+    $self->dispose("read_data(file=\"$file\", group=deter___mine)\n");
     my $f = (split(" ", Ifeffit::get_string('$column_label')))[0];
-    my @x = Ifeffit::get_array("b___lah.$f");
-    Ifeffit::ifeffit("erase \@group b___lah\n");
+    my @x = Ifeffit::get_array("deter___mine.$f");
+    $self->dispose("erase \@group deter___mine\n");
     if ($x[0] > 100) {		# seems to be energy data
       $self->datatype('xmu');
       $self->update_columns(0);

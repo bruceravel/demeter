@@ -94,10 +94,10 @@ sub arrays {
     croak("$class objects have no arrays associated with them");
   };
   my $save = Ifeffit::get_scalar("\&screen_echo");
-  Ifeffit::ifeffit("\&screen_echo = 0\nshow \@group ".$self->group);
+  $self->dispose("\&screen_echo = 0\nshow \@group ".$self->group);
   my @arrays = ();
   my $lines = Ifeffit::get_scalar('&echo_lines');
-  Ifeffit::ifeffit("\&screen_echo = $save\n"), return if not $lines;
+  $self->dispose("\&screen_echo = $save\n"), return if not $lines;
   foreach my $l (1 .. $lines) {
     my $response = Ifeffit::get_echo();
     my $group = $self->group;
@@ -105,7 +105,7 @@ sub arrays {
       push @arrays, $1;
     };
   };
-  Ifeffit::ifeffit("\&screen_echo = $save\n") if $save;
+  $self->dispose("\&screen_echo = $save\n") if $save;
   return @arrays;
 };
 

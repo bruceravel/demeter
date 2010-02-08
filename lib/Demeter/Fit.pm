@@ -865,11 +865,11 @@ sub fetch_statistics {
   my ($self) = @_;
 
   my $save = Ifeffit::get_scalar("\&screen_echo");
-  Ifeffit::ifeffit("\&screen_echo = 0\nshow $STAT_TEXT\n");
+  $self->dispose("\&screen_echo = 0\nshow $STAT_TEXT\n");
 
   my $lines = Ifeffit::get_scalar('&echo_lines');
   if (not $lines) {
-    Ifeffit::ifeffit("\&screen_echo = $save\n") if $save;
+    $self->dispose("\&screen_echo = $save\n") if $save;
     return;
   };
 
@@ -912,7 +912,7 @@ sub fetch_statistics {
     $self->epsilon_r($which->epsr);
   };
 
-  Ifeffit::ifeffit("\&screen_echo = $save\n") if $save;
+  $self->dispose("\&screen_echo = $save\n") if $save;
   return 0;
 };
 

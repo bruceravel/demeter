@@ -291,7 +291,7 @@ sub cursor {
 
 sub screen_echo {
   my ($self, $value) = @_;
-  Ifeffit::ifeffit("set \&screen_echo = $value");
+  ifeffit("set \&screen_echo = $value");
   return $self;
 };
 

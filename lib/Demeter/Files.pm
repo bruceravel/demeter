@@ -116,14 +116,14 @@ sub is_feff {
 ## column_label string
 sub is_data {
   my ($self, $a, $verbose) = @_;
-  ifeffit("read_data(file=$a, group=a)\n");
+  $self->dispose("read_data(file=$a, group=a)\n");
   my $col_string = Ifeffit::get_string('$column_label');
   if ($verbose) {
     my $passfail = ($col_string =~ /^(\s*|--undefined--)$/) ?
       'not data' : 'data    ' ;
     printf "\t%s    col_string=%s\n", $passfail, $col_string;
   };
-  ifeffit("erase \@group a\n");
+  $self->dispose("erase \@group a\n");
   return ($col_string =~ /^(\s*|--undefined--)$/) ? 1 : 0;
 };
 
