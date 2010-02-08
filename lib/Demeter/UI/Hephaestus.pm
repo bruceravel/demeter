@@ -19,7 +19,6 @@ use Wx::Perl::Carp;
 use File::Spec;
 
 use Demeter;
-#use Demeter::UI::Wx::EchoArea;
 use Demeter::UI::Hephaestus::Common qw(hversion);
 
 use Wx qw( :everything );
@@ -62,14 +61,13 @@ my @utilities = qw(absorption formulas ion data transitions find line standards 
 sub new {
   my $ref    = shift;
   my $width  = 100;
-  my $height = int(($#utilities+1) * $icon_dimension * 1.73); # + 2*($#utilities+1);
+  my $height = int(($#utilities+1) * $icon_dimension * 1.8); # + 2*($#utilities+1);
   my $self   = $ref->SUPER::new( undef,           # parent window
 				 -1,              # ID -1 means any
 				 'Hephaestus',    # title
 				 wxDefaultPosition, [-1,$height],
 			       );
   my $tb = Wx::Toolbook->new( $self, -1, wxDefaultPosition, wxDefaultSize, wxBK_LEFT );
-  #my $echoarea = Demeter::UI::Wx::EchoArea->new($self);
   my $statusbar = $self->CreateStatusBar;
   $self->{statusbar} = $statusbar;
   my $vbox = Wx::BoxSizer->new( wxVERTICAL);
@@ -112,7 +110,7 @@ sub new {
     if ($self->{$utility}) {
       $hh   = Wx::BoxSizer->new( wxHORIZONTAL );
       $hh  -> Add($self->{$utility}, 1, wxGROW|wxEXPAND|wxALL, 0);
-      $box -> Add($hh, 1, wxGROW|wxEXPAND|wxALL, 0);
+      $box -> Add($hh, 1, wxEXPAND|wxALL, 0);
       my $this_width = ($self->{$utility}->GetSizeWH)[0];
       my $this_height = ($self->{$utility}->GetSizeWH)[1];
       ($height = $this_height) if ($this_height > $height);
@@ -120,26 +118,31 @@ sub new {
       #print $utility, "  ", $this_height, "  ", $height, $/;
     };
     $tb->AddPage($page, $label_of{$utility}, 0, $count);
+    $height = ($tb->GetSizeWH)[1];
   };
 
-  $vbox -> Add($tb, 1, wxEXPAND|wxGROW, 0);
-  #$vbox -> Add($echoarea, 0, wxEXPAND|wxALL, 3);
+  $vbox -> Add($tb, 1, wxEXPAND|wxALL, 0);
   EVT_TOOLBOOK_PAGE_CHANGED( $self, $tb, sub{$statusbar->SetStatusText(q{})} );
 
   ##            largest utility + width of toolbar text + width of icons
   my $framesize = Wx::Size->new(1.05*$width+$icon_dimension+103,
-				$height+42
+				int($height*($#utilities+1.5)/$#utilities)
 			       );
   $self -> SetSize($framesize);
 
 
-  #$echoarea -> echo(q{});
   $self -> SetSizer($vbox);
-  $vbox -> Fit($tb);
-  $vbox -> SetSizeHints($tb);
+  #$vbox -> Fit($tb);
+  #$vbox -> SetSizeHints($tb);
   return $self;
 };
 
+sub do_the_size_dance {
+  my ($top) = @_;
+  my @size = $top->GetSizeWH;
+  $top -> SetSize($size[0], $size[1]+1);
+  $top -> SetSize($size[0], $size[1]);
+};
 
 
 package Demeter::UI::Hephaestus;
@@ -179,6 +182,7 @@ sub OnInit {
 
   ## -------- create a new frame and set icon
   $frame = Demeter::UI::HephaestusApp->new;
+#  $frame -> do_the_size_dance;
   my $iconfile = File::Spec->catfile(dirname($INC{'Demeter/UI/Hephaestus.pm'}), 'Hephaestus', 'icons', "vulcan.xpm");
   my $icon = Wx::Icon->new( $iconfile, wxBITMAP_TYPE_XPM );
   $frame -> SetIcon($icon);
@@ -197,13 +201,6 @@ sub OnInit {
   EVT_MENU( $frame, wxID_ABOUT, \&on_about );
   EVT_MENU( $frame, wxID_EXIT, sub{shift->Close} );
   EVT_CLOSE( $frame,  \&on_close);
-
-  ## -------- final adjustment to frame size
-  my @frameWH = $frame->GetSizeWH;
-  my @barWH = $bar->GetSizeWH;
-  my $framesize = Wx::Size->new($frameWH[0], $frameWH[1]+$barWH[1]);
-  $frame -> SetSize($framesize);
-  $frame -> SetMinSize($framesize);
 
   ## -------- fix up frame contents
   $frame->{find}->adjust_column_width;

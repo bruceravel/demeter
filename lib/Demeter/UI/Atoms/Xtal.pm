@@ -76,18 +76,19 @@ use Wx::Event qw(EVT_CHOICE EVT_KEY_DOWN EVT_MENU EVT_TOOL_ENTER EVT_ENTER_WINDO
 		 EVT_LEAVE_WINDOW EVT_TOOL_RCLICKED
 		 EVT_GRID_CELL_LEFT_CLICK EVT_GRID_CELL_RIGHT_CLICK EVT_GRID_LABEL_RIGHT_CLICK);
 use Demeter::UI::Wx::MRU;
+use Demeter::UI::Wx::SpecialCharacters qw(:all);
 
 my %hints = (
 	     titles    => "Text describing this structure which also be used as title lines in the Feff calculation",
 	     space     => "The space group symbol (Hermann-Maguin, Schoenflies or number)",
-	     a	       => "The value of the A lattice constant in Ångstroms",
-	     b	       => "The value of the B lattice constant in Ångstroms",
-	     c	       => "The value of the C lattice constant in Ångstroms",
-	     alpha     => "The value of the alpha lattice angle (between B and C) in degrees",
-	     beta      => "The value of the beta lattice angle (between A and C) in degrees",
-	     gamma     => "The value of the gamma lattice angle (between A and B) in degrees",
-	     rmax      => "The size of the cluster of atoms in Ångstroms",
-	     rpath     => "The maximum path length in Feff's path expansion, in Ångstroms",
+	     a	       => "The value of the A lattice constant in Angstroms",
+	     b	       => "The value of the B lattice constant in Angstroms",
+	     c	       => "The value of the C lattice constant in Angstroms",
+	     alpha     => "The value of the $ALPHA lattice angle (between B and C) in degrees",
+	     beta      => "The value of the $BETA lattice angle (between A and C) in degrees",
+	     gamma     => "The value of the $GAMMA lattice angle (between A and B) in degrees",
+	     rmax      => "The size of the cluster of atoms in Angstroms",
+	     rpath     => "The maximum path length in Feff's path expansion, in Angstroms",
 	     shift_x   => "The x-coordinate of the vector for recentering this crystal",
 	     shift_y   => "The y-coordinate of the vector for recentering this crystal",
 	     shift_z   => "The z-coordinate of the vector for recentering this crystal",
@@ -229,17 +230,17 @@ sub new {
   $tsz -> Add($label,    Wx::GBPosition->new(0,4));
   $tsz -> Add($self->{c},Wx::GBPosition->new(0,5));
 
-  $label         = Wx::StaticText->new($self, -1, 'α', wxDefaultPosition, [$width,-1]);
+  $label         = Wx::StaticText->new($self, -1, $ALPHA, wxDefaultPosition, [$width,-1]);
   $self->{alpha} = Wx::TextCtrl  ->new($self, -1, q{}, wxDefaultPosition, [$width*7,-1]);
   $tsz -> Add($label,        Wx::GBPosition->new(1,0));
   $tsz -> Add($self->{alpha},Wx::GBPosition->new(1,1));
 
-  $label        = Wx::StaticText->new($self, -1, 'β', wxDefaultPosition, [$width,-1]);
+  $label        = Wx::StaticText->new($self, -1, $BETA,  wxDefaultPosition, [$width,-1]);
   $self->{beta} = Wx::TextCtrl  ->new($self, -1, q{}, wxDefaultPosition, [$width*7,-1]);
   $tsz -> Add($label,        Wx::GBPosition->new(1,2));
   $tsz -> Add($self->{beta}, Wx::GBPosition->new(1,3));
 
-  $label         = Wx::StaticText->new($self, -1, 'γ', wxDefaultPosition, [$width,-1]);
+  $label         = Wx::StaticText->new($self, -1, $GAMMA, wxDefaultPosition, [$width,-1]);
   $self->{gamma} = Wx::TextCtrl  ->new($self, -1, q{}, wxDefaultPosition, [$width*7,-1]);
   $tsz -> Add($label,        Wx::GBPosition->new(1,4));
   $tsz -> Add($self->{gamma},Wx::GBPosition->new(1,5));

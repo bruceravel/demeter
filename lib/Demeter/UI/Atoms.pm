@@ -88,8 +88,8 @@ sub new {
   #EVT_NOTEBOOK_PAGE_CHANGED( $self, $nb, sub{$echoarea->echo(q{})} );
 
   $self -> SetSizer($vbox);
-  $vbox -> Fit($nb);
-  $vbox -> SetSizeHints($nb);
+  #$vbox -> Fit($nb);
+  #$vbox -> SetSizeHints($nb);
   return $self;
 };
 

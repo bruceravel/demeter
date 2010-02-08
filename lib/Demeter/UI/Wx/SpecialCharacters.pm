@@ -4,15 +4,20 @@ use strict;
 #use Encode;
 use base qw( Exporter );
 our @EXPORT_OK = qw(emph
-		    $CHI $EPSILON $DELTA $SIGMA $SIGSQR $PHI $S02 $E0 $GAMMA
+		    $CHI $EPSILON $DELTA $SIGMA $SIGSQR $PHI $S02 $E0
+		    $ALPHA $BETA $GAMMA
 		    $COPYRIGHT $LAQUO $RAQUO $MDASH
-		    $TWO $THR);
+		    $TWO $THR
+		    $ARING
+		  );
 our %EXPORT_TAGS = (all   => [qw(emph
-				 $CHI $EPSILON $DELTA $SIGMA $SIGSQR $PHI $S02 $E0 $GAMMA
-				 $COPYRIGHT $LAQUO $RAQUO $MDASH
+				 $CHI $EPSILON $DELTA $SIGMA $SIGSQR $PHI $S02 $E0
+				 $ALPHA $BETA $GAMMA
+				 $COPYRIGHT $LAQUO $RAQUO $MDASH $ARING
 				 $TWO $THR)],
 		    super => [qw($TWO $THR)],
-		    greek => [qw($CHI $EPSILON $DELTA $SIGMA $SIGSQR $PHI $S02 $E0 $GAMMA)],
+		    greek => [qw($CHI $EPSILON $DELTA $SIGMA $SIGSQR $PHI $S02 $E0
+				 $ALPHA $BETA $GAMMA)],
 		   );
 
 my $is_windows = (($^O eq 'MSWin32') or ($^O eq 'cygwin'));
@@ -26,6 +31,8 @@ our $SIGSQR  = chr(963).chr(178); #"\xCF\x83"."\xC2\xB2"; #'σ²';
 our $PHI     = chr(966);          #"\xCF\x86";            #'φ';
 our $S02     = 'S'.chr(8320).chr(178);
 our $E0      = 'E'.chr(8320);
+our $ALPHA   = chr(0x03B1);
+our $BETA    = chr(0x03B2);
 our $GAMMA   = chr(0x03B3);
 
 ## -------- superscripts
@@ -37,6 +44,7 @@ our $COPYRIGHT = chr(169);  #"\xC2\xA9";     #'©';
 our $LAQUO     = chr(171);  #"\xC2\xAB";     #'«';
 our $RAQUO     = chr(187);  #"\xC2\xBB";     #'»';
 our $MDASH     = chr(8212); #"\xE2\x80\x94"; #'—';
+our $ARING     = chr(197);  # 'Å'
 
 sub emph {
   my ($string) = @_;
@@ -156,6 +164,10 @@ Just the superscript characters
 
 See L<http://en.wikipedia.org/wiki/List_of_Unicode_characters> for the
 character codes.
+
+To convert a hex number in decimal:
+
+  perl -e 'printf "%d\n", 0x00BB'
 
 =head1 BUGS AND LIMITATIONS
 
