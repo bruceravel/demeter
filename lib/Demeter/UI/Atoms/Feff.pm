@@ -259,7 +259,7 @@ sub fill_ss_page {
   my @entries = map {sprintf("%d: %s", $_->[0], $_->[2])} @ipots;
   my $i = 0;
   foreach my $e (@entries) {
-    $self->{parent}->{SS}->{ipot}->SetItemLabel($i, $e);
+    $self->{parent}->{SS}->{ipot}->SetLabel($i, $e);
     $self->{parent}->{SS}->{ipot}->Enable($i, 1);
     ++$i;
   };

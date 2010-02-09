@@ -2,7 +2,7 @@
 
 =for Copyright
  .
- Copyright (c) 2006-2009 Bruce Ravel (bravel AT bnl DOT gov).
+ Copyright (c) 2006-2010 Bruce Ravel (bravel AT bnl DOT gov).
  All rights reserved.
  .
  This file is free software; you can redistribute it and/or
@@ -69,6 +69,7 @@ my $build = Module::Build # $class
 				'Capture::Tiny'	           => '0.07',
 				'Chemistry::Elements'	   => '0',
 				'Config::IniFiles'	   => '2.45',
+				'DataTime'                 => '0',
 				'Digest::SHA'		   => '0',
 				'Heap'			   => '0',
 				'List::MoreUtils'	   => '0',
@@ -91,6 +92,13 @@ my $build = Module::Build # $class
 				#'File::Touch'		   => '0',
 				#'Math::Cephes'		   => '0',
 			       },
+	 #build_requires     => {
+		#		## these are used to build the demeter programming guide
+		#		'Template'            => '2.22',
+		#		'PPI'                 => '0',
+		#		'PPI::HTML'           => '0',
+		#		'Image::Size'         => '0',
+		#	       },
 	 PL_files           => {
 				'lib/Xray/Crystal/share/space_groups.db.PL' => 'lib/Xray/Crystal/share/space_groups.db'
 			       },
@@ -101,11 +109,6 @@ my $build = Module::Build # $class
 
 				## this is required for the gnuplot plotting backend
 				'Graphics::GnuplotIF' => '0',
-
-				## these are used to build the demeter programming guide
-				'Template'            => '2.22',
-				'PPI'                 => '0',
-				'PPI::HTML'           => '0',
 
 				## GUI for Artemis and Hephaestus
 				'Wx'                  => '0.86'
