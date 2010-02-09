@@ -253,6 +253,7 @@ sub fill_intrp_page {
 sub fill_ss_page {
   my ($self, $feff) = @_;
   #$self->{parent}->{SS}->{name}->SetValue($feff->name);
+  return 0 if not exists $self->{parent}->{SS};
 
   my @ipots = @{$feff->potentials};
   shift @ipots;			# get rid of absorber
