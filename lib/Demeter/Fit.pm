@@ -719,16 +719,16 @@ sub _normalize_paths {
 sub evaluate {
   my ($self) = @_;
 
+  ## retrieve bestfit and errors for gds params, handle annotation
+  foreach my $gds (@{ $self->gds }) {
+    $gds->evaluate;
+  };
+
   ## evaluate all path parameter math expressions
   foreach my $path (@{ $self->paths }) {
     next if not defined($path);
     $path->fetch;
     $path->update_path(1);
-  };
-
-  ## retrieve bestfit and errors for gds params, handle annotation
-  foreach my $gds (@{ $self->gds }) {
-    $gds->evaluate;
   };
 
   ## get fit and data set statistics (store in fit and data objects respectively)
@@ -870,7 +870,6 @@ sub fetch_statistics {
   my $lines = Ifeffit::get_scalar('&echo_lines');
   if (not $lines) {
     $self->dispose("\&screen_echo = $save\n") if $save;
-    return;
   };
 
   my $opt  = Regexp::List->new;

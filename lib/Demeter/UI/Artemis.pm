@@ -18,9 +18,8 @@ use File::Basename;
 use File::Copy;
 use File::Path;
 use File::Spec;
-#use File::Touch;
 use List::MoreUtils qw(zip);
-use Scalar::Util qw(blessed);    #print ">-" x 15 . $/ . $reprocessed . $/ . "<-" x 15 . $/ if $plotting;
+use Scalar::Util qw(blessed);
 
 use String::Random qw(random_string);
 use YAML::Tiny;
@@ -495,7 +494,7 @@ sub fit {
   my $startingname = $name;
   $fit->name($name);
   $fit->description($rframes->{main}->{description}->GetValue);
-  $fit -> fom($fit->mo->currentfit);
+  $fit->fom($fit->mo->currentfit);
   #$fit->ignore_errors(1);
   $rframes->{main} -> {currentfit} = $fit;
 

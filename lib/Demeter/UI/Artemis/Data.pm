@@ -419,25 +419,6 @@ sub new {
   my $pathbuttons = Wx::BoxSizer->new( wxHORIZONTAL );
   $right -> Add($pathbuttons, 0, wxGROW|wxALL, 5);
 
-  if (0) {
-    $this->{up}        = Wx::Button->new($rightpane, wxID_UP,   q{},        wxDefaultPosition, wxDefaultSize, wxBU_EXACTFIT);
-    $this->{down}      = Wx::Button->new($rightpane, wxID_DOWN, q{},        wxDefaultPosition, wxDefaultSize, wxBU_EXACTFIT);
-    $this->{makevpath} = Wx::Button->new($rightpane, -1, 'Make &VPath',     wxDefaultPosition, wxDefaultSize, wxBU_EXACTFIT);
-    $this->{transfer}  = Wx::Button->new($rightpane, -1, 'Transfer marked', wxDefaultPosition, wxDefaultSize, wxBU_EXACTFIT);
-    $pathbuttons -> Add($this->{up},        0, wxLEFT|wxRIGHT, 5);
-    $pathbuttons -> Add($this->{down},      0, wxLEFT|wxRIGHT, 5);
-    $pathbuttons -> Add($this->{makevpath}, 0, wxLEFT|wxRIGHT, 5);
-    $pathbuttons -> Add($this->{transfer},  0, wxLEFT|wxRIGHT, 5);
-    $this->mouseover("up",        "Move the current path up in the path list");
-    $this->mouseover("down",      "Move the current path up in the path list");
-    $this->mouseover("makevpath", "Make a VPath out of the marked paths");
-    $this->mouseover("transfer",  "Transfer each of the marked paths to the plotting list");
-    EVT_BUTTON($this, $this->{up},        sub{$this->OnUpButton});
-    EVT_BUTTON($this, $this->{down},      sub{$this->OnDownButton});
-    EVT_BUTTON($this, $this->{makevpath}, sub{$this->OnMakeVPathButton});
-    EVT_BUTTON($this, $this->{transfer},  sub{$this->OnTransferButton});
-  };
-
   $this->{pathlist}->SetDropTarget( Demeter::UI::Artemis::Data::DropTarget->new( $this, $this->{pathlist} ) );
 
   $rightpane -> SetSizerAndFit($right);
@@ -2130,7 +2111,26 @@ Patches are welcome.
 
 Bruce Ravel (bravel AT bnl DOT gov)
 
-L<http://cars9.uchicago.edu/~ravel/software/>
+L<http://cars9.uchicago.edu/~ravel/software/>  if (0) {
+    $this->{up}        = Wx::Button->new($rightpane, wxID_UP,   q{},        wxDefaultPosition, wxDefaultSize, wxBU_EXACTFIT);
+    $this->{down}      = Wx::Button->new($rightpane, wxID_DOWN, q{},        wxDefaultPosition, wxDefaultSize, wxBU_EXACTFIT);
+    $this->{makevpath} = Wx::Button->new($rightpane, -1, 'Make &VPath',     wxDefaultPosition, wxDefaultSize, wxBU_EXACTFIT);
+    $this->{transfer}  = Wx::Button->new($rightpane, -1, 'Transfer marked', wxDefaultPosition, wxDefaultSize, wxBU_EXACTFIT);
+    $pathbuttons -> Add($this->{up},        0, wxLEFT|wxRIGHT, 5);
+    $pathbuttons -> Add($this->{down},      0, wxLEFT|wxRIGHT, 5);
+    $pathbuttons -> Add($this->{makevpath}, 0, wxLEFT|wxRIGHT, 5);
+    $pathbuttons -> Add($this->{transfer},  0, wxLEFT|wxRIGHT, 5);
+    $this->mouseover("up",        "Move the current path up in the path list");
+    $this->mouseover("down",      "Move the current path up in the path list");
+    $this->mouseover("makevpath", "Make a VPath out of the marked paths");
+    $this->mouseover("transfer",  "Transfer each of the marked paths to the plotting list");
+    EVT_BUTTON($this, $this->{up},        sub{$this->OnUpButton});
+    EVT_BUTTON($this, $this->{down},      sub{$this->OnDownButton});
+    EVT_BUTTON($this, $this->{makevpath}, sub{$this->OnMakeVPathButton});
+    EVT_BUTTON($this, $this->{transfer},  sub{$this->OnTransferButton});
+  };
+
+
 
 =head1 LICENCE AND COPYRIGHT
 

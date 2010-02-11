@@ -93,7 +93,7 @@ sub InitialPage {
   $self->{VIEW} = $self->{initial};
   $self->{VIEW} -> Show(1);
 
-  $self->{LIST}-> SetClientData($end, $self->{VIEW});
+  $self->{LIST}-> SetClientData(0, $self->{initial});
   $self->{LIST}-> Show;
 };
 

@@ -84,9 +84,11 @@ $plot_features->set(plot_data => 1,
 		   );
 
 $dobject->plot('r');
-my $end = <STDIN>;
+$dobject->pause;
 
 print "save the results of the fit\n";
+my ($header, $footer) = ("Fit to copper data", q{});
+$fitobject -> logfile("cufit.log", $header, $footer);
 $dobject->save("fit", "cufit.fit");
 $pobjects[0]->save("r", "path0.rsp");
 exit;

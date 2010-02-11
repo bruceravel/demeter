@@ -263,9 +263,11 @@ sub read_project {
   my $count = 0;
   foreach my $d (@{$fit->data}) {
     my ($dnum, $idata) = Demeter::UI::Artemis::make_data_frame($rframes->{main}, $d);
-    $rframes->{$dnum}->{pathlist}->DeletePage(0) if $rframes->{$dnum}->{pathlist}->GetPage(0) =~ m{Panel};
-    my $first = $rframes->{$dnum}->{pathlist}->GetPage(0);
-    ($first->DeletePage(0)) if (ref($first) =~ m{Panel});
+    $rframes->{$dnum}->{pathlist}->DeletePage(0) if (($rframes->{$dnum}->{pathlist}->GetPage(0) =~ m{Panel})
+						     and # take care in case of a project with data but no paths
+						     (@{$fit->paths}));
+    #my $first = $rframes->{$dnum}->{pathlist}->GetPage(0);
+    #($first->DeletePage(0)) if (ref($first) =~ m{Panel});
     foreach my $p (@{$fit->paths}) {
       my $feff = $feffs{$p->{parentgroup}} || $fit -> mo -> fetch('Feff', $p->{parentgroup});
       $p->set(folder=>$feff->workspace, file=>q{}, update_path=>1);
