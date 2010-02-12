@@ -486,9 +486,10 @@ sub OnRowSelect {
   my $row = $event->GetRow;
   my $grid = $parent->{grid};
   my $name = $grid -> GetCellValue($row, 1);
-  return if not $name;
-  return if not defined($grid->{$name});
+  $event->Skip, return if not $name;
+  $event->Skip, return if not defined($grid->{$name});
   $parent->{statusbar}->SetStatusText($grid->{$name}->note);
+  $event->Skip;
 };
 
 ######## Context menu section ############################################################

@@ -865,7 +865,10 @@ sub fetch_statistics {
   my ($self) = @_;
 
   my $save = Ifeffit::get_scalar("\&screen_echo");
-  $self->dispose("\&screen_echo = 0\nshow $STAT_TEXT\n");
+  ## not using dispose so that the get_echo lines gets captured here
+  ## rather than in the dispose method
+  Ifeffit::ifeffit("\&screen_echo = 0\n");
+  Ifeffit::ifeffit("show $STAT_TEXT\n");
 
   my $lines = Ifeffit::get_scalar('&echo_lines');
   if (not $lines) {

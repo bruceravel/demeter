@@ -37,6 +37,7 @@ use File::Spec;
 use List::Util qw(max);
 use Regexp::List;
 use Regexp::Optimizer;
+use Scalar::Util qw(looks_like_number);
 
 has '+plottable'      => (default => 1);
 has '+pathtype'       => (default => 1);
@@ -439,7 +440,7 @@ sub fetch {
 
   ## not using dispose so that the get_echo lines gets captured here
   ## rather than in the dispose method
-  Ifeffit::ifeffit(sprintf("\&screen_echo = 0\n"));
+  Ifeffit::ifeffit("\&screen_echo = 0\n");
   Ifeffit::ifeffit(sprintf("show \@path %d\n", $self->Index));
 
   my $lines = Ifeffit::get_scalar('&echo_lines');
@@ -462,7 +463,7 @@ sub fetch {
       };
 
       ($line[0] =~ m{(?:3rd|4th|d(?:phase|r)|e[0i]|s[0s]2)}) and do {
-	$self -> evaluate($_pp_trans{$line[0]}, $line[1]);
+	$self -> evaluate($_pp_trans{$line[0]}, $line[0]);
 	last SWITCH;
       }
 
@@ -477,6 +478,9 @@ sub fetch {
 sub evaluate {
   my ($self, $key, $value) = @_;
   my $param = $key."_value";
+  if (not looks_like_number($value)) {
+    $value = ($key eq 's02') ? 1 : 0;
+  };
   $self->$param($value);
   return 0;
 };

@@ -764,7 +764,7 @@ The math expression for the C<$pp> path parameter has unmatched parentheses.
 
 =item C<reffrmax>
 
-The R effective for tihs path is well beyond the C<rmax> value of its
+The R effective for this path is well beyond the C<rmax> value of its
 Data object.
 
 =item C<nocalc>
