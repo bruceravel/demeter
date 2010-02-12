@@ -257,7 +257,10 @@ sub plot {
   my $mds_offset = $self->{stack}->{offset}->GetValue;
   my $offset = 0;
   foreach my $obj (@list) {
-    next unless (ref($obj) =~ m{Data});
+    if (ref($obj) !~ m{Data}) {
+      $obj->update_path(1);
+      next;
+    };
     $obj->y_offset($offset);
     $offset -= $mds_offset;
   };

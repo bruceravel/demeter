@@ -437,17 +437,20 @@ sub fetch {
 
   my $save = Ifeffit::get_scalar("\&screen_echo");
 
-  $self->dispose(sprintf("\&screen_echo = 0\nshow \@path %d\n", $self->Index));
+  ## not using dispose so that the get_echo lines gets captured here
+  ## rather than in the dispose method
+  Ifeffit::ifeffit(sprintf("\&screen_echo = 0\n"));
+  Ifeffit::ifeffit(sprintf("show \@path %d\n", $self->Index));
 
   my $lines = Ifeffit::get_scalar('&echo_lines');
   if (not $lines) {
     $self->dispose("\&screen_echo = $save\n") if $save;
-    return;
+    #return;
   };
   my $found = 0;
   foreach my $l (1 .. $lines) {
     my $response = Ifeffit::get_echo()."\n";
-    ($found = 1), next if ($response =~ m{\A PATH}x);
+    ($found = 1), next if ($response =~ m{\A\s*PATH}x);
     next if not $found;
     chomp $response;
     my @line = split(/\s+=\s*/, $response);

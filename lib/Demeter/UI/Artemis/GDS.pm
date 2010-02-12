@@ -41,7 +41,8 @@ use Wx::DND;
 use Wx::Grid;
 use base qw(Wx::Frame);
 use Wx::Event qw(EVT_CLOSE EVT_GRID_CELL_CHANGE EVT_GRID_CELL_RIGHT_CLICK  EVT_MENU
-		 EVT_GRID_LABEL_LEFT_CLICK EVT_GRID_LABEL_RIGHT_CLICK EVT_GRID_RANGE_SELECT);
+		 EVT_GRID_LABEL_LEFT_CLICK EVT_GRID_LABEL_RIGHT_CLICK EVT_GRID_RANGE_SELECT
+		 EVT_GRID_SELECT_CELL);
 
 use Demeter::UI::Artemis::GDS::Restraint;
 use Demeter::UI::Artemis::ShowText;
@@ -124,6 +125,7 @@ sub new {
   EVT_GRID_LABEL_RIGHT_CLICK($grid,     sub{ $this->PostGridMenu(@_)  });
   EVT_MENU                  ($grid, -1, sub{ $this->OnGridMenu(@_)    });
   EVT_GRID_RANGE_SELECT     ($grid,     sub{ $this->OnRangeSelect(@_) });
+  EVT_GRID_SELECT_CELL      ($grid,     sub{ $this->OnRowSelect(@_)   });
 
   $hbox -> Add($grid, 1, wxGROW|wxALL, 5);
 
@@ -247,6 +249,7 @@ sub reset_all {
     $thisgds -> set(name=>$name, gds=>$type, mathexp=>$mathexp);
     $grid->{$name} = $thisgds;
     push @gds, $thisgds;
+    $grid->SetCellValue($row, 3, q{});
     $thisgds->push_ifeffit if (not $no_ifeffit);
   };
   $parent->{statusbar}->SetStatusText("Reset all parameter values in Ifeffit.");
@@ -474,6 +477,19 @@ sub set_type {
   };
 };
 
+## show annotation in the status line. this is particularly useful
+## after the reset all button is pressed, deleting the contents of
+## column 3.  with this the annotation from the last fit is shown, so
+## the previous best fit value can be known even afetr a reset
+sub OnRowSelect {
+  my ($parent, $self, $event) = @_;
+  my $row = $event->GetRow;
+  my $grid = $parent->{grid};
+  my $name = $grid -> GetCellValue($row, 1);
+  return if not $name;
+  return if not defined($grid->{$name});
+  $parent->{statusbar}->SetStatusText($grid->{$name}->note);
+};
 
 ######## Context menu section ############################################################
 
