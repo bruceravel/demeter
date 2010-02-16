@@ -1,0 +1,21 @@
+{ # -*- ifm -*-
+  # template for new plot of chi(k)
+  #   {$D->group} returns the ifeffit group name
+  #   {$D->parameter} returns the value of that parameter
+  #   {$P->parameter} returns the value of a Plot parameter
+  $emin = $D->bkg_e0 + $P->emin;
+  $emax = $D->bkg_e0 + $P->emax;
+  $string  = $S->randomstring(6);
+  q{}
+}
+set p___lot.{$string} = "{$D->plot_multiplier}*{$D->group}.k^{$P->kweight}*{$D->group}.chi+{$D->y_offset}"
+set $p___lot_string = {$string}
+
+
+set {$D->group}.eee = {$D->group}.k^2/etok+{$D->bkg_e0}
+newplot({$D->group}.eee, "{$D->plot_multiplier}*{$D->group}.k^{$P->kweight}*{$D->group}.chi+{$D->y_offset}",
+        xlabel="{$P->xlabel}", ylabel="{$P->ylabel}",
+	grid, gridcolor="{$P->gridcolor}", xmin={$emin}, xmax={$emax},
+	style={$P->datastyle}, color="{$P->color}", key="{$P->key}", 
+	title="{$P->title}", fg="{$P->fg}", bg="{$P->bg}")
+erase {$D->group}.eee
