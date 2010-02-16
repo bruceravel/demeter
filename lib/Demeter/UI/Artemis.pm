@@ -576,7 +576,10 @@ sub plot_buffer {
   my ($text) = @_;
   foreach my $line (split(/\n/, $text)) {
     my ($was, $is) = $frames{Buffer}->insert('plot', $line);
-    my $color = ($line =~ m{\A\#}) ? 'comment' : 'normal';
+    my $color = ($line =~ m{\A\#}) ? 'comment'
+      : ($demeter->mo->template_plot eq 'singlefile') ? 'singlefile'
+	:'normal';
+
     $frames{Buffer}->color('plot', $was, $is, $color);
     $frames{Buffer}->insert('plot', $/)
   };

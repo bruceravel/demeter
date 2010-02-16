@@ -54,10 +54,11 @@ sub new {
   $this->{IFEFFIT} -> SetSizerAndFit($box);
 
   my @font = (9, wxTELETYPE, wxNORMAL, wxNORMAL, 0, "" );
-  $this->{IFEFFIT}->{normal}   = Wx::TextAttr->new(Wx::Colour->new( '#000000' ), wxNullColour, Wx::Font->new( @font ) );
-  $this->{IFEFFIT}->{comment}  = Wx::TextAttr->new(Wx::Colour->new( '#046A15' ), wxNullColour, Wx::Font->new( @font ) );
-  $this->{IFEFFIT}->{feedback} = Wx::TextAttr->new(Wx::Colour->new( '#000099' ), wxNullColour, Wx::Font->new( @font ) );
-  $this->{IFEFFIT}->{warning}  = Wx::TextAttr->new(Wx::Colour->new( '#ff9e1f' ), wxNullColour, Wx::Font->new( @font ) );
+  $this->{IFEFFIT}->{normal}     = Wx::TextAttr->new(Wx::Colour->new( '#000000' ), wxNullColour, Wx::Font->new( @font ) );
+  $this->{IFEFFIT}->{comment}    = Wx::TextAttr->new(Wx::Colour->new( '#046A15' ), wxNullColour, Wx::Font->new( @font ) );
+  $this->{IFEFFIT}->{feedback}   = Wx::TextAttr->new(Wx::Colour->new( '#000099' ), wxNullColour, Wx::Font->new( @font ) );
+  $this->{IFEFFIT}->{warning}    = Wx::TextAttr->new(Wx::Colour->new( '#ff9e1f' ), wxNullColour, Wx::Font->new( @font ) );
+  $this->{IFEFFIT}->{singlefile} = Wx::TextAttr->new(Wx::Colour->new( '#F08557' ), wxNullColour, Wx::Font->new( @font ) );
 
 
   $this->{PLOT} = Wx::Panel->new($splitter, -1, wxDefaultPosition, wxDefaultSize);

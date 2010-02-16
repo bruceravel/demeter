@@ -170,7 +170,9 @@ correct grid.
 
 =item 3.
 
-It is a good idea to explicitly declare the plotting space.
+It is a good idea to explicitly declare the plotting space before
+calling C<start_plot>.  This is particularly true for kq plots, for
+which you should set the space to C<q>.
 
 =item 4.
 
@@ -208,7 +210,7 @@ chi(E)
 
 =item *
 
-Parts in k,R,q untested (fit, bkg, res, run, win)
+bkg Parts in k,R,q untested, run part seems broken
 
 =item *
 

@@ -1,0 +1,14 @@
+{ # -*- ifm -*-
+  # template for overplotting running R-factor function
+  #   {$D->group} returns the ifeffit group name
+  #   {$D->parameter} returns the value of that parameter
+  #   {$P->parameter} returns the value of a Plot parameter
+  $suffix  = ($C->get("run_space") =~ m{\Ak}) ? 'krun' 
+           : ($C->get("run_space") =~ m{\Ar}) ? 'rrun' 
+           :                                    'qrun';
+  $string  = $S->randomstring(6);
+  q{}
+}
+###__ plot running R-factor ___
+set p___lot.{$string} = "{$C->get("run_scale")}*{$S->group}.{$suffix}+{$D->y_offset}"
+set $p___lot_string = {$string}

@@ -807,6 +807,7 @@ sub plot {
 
   $self->{data}->standard if ($pf->{fileout}->GetValue);
   $self->{data}->po->space(substr($how, 0 , 1));
+  $self->{data}->po->space('q') if ($how eq 'kqfit');
   $self->{data}->po->start_plot;
   $self->{data}->plot($how);
   my $text = ($how eq 'rmr')   ? "as the magnitude and real part of chi(R)"
