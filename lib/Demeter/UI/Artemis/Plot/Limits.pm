@@ -154,7 +154,7 @@ sub mouseover {
   my ($self, $widget, $text) = @_;
   my $sb = $Demeter::UI::Artemis::frames{main}->{statusbar};
   EVT_ENTER_WINDOW($self->{$widget}, sub{$sb->PushStatusText($text); $_[1]->Skip});
-  EVT_LEAVE_WINDOW($self->{$widget}, sub{$sb->PopStatusText;         $_[1]->Skip});
+  EVT_LEAVE_WINDOW($self->{$widget}, sub{$sb->PopStatusText if ($sb->GetStatusText eq $text); $_[1]->Skip});
 };
 
 

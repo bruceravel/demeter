@@ -228,10 +228,10 @@ sub use_best_fit {
     ++$count;
   };
   if ($count) {
-    $parent->{statusbar}->SetStatusText("Using best fit values as the new initial guesses.");
+    $parent->status("Using best fit values as the new initial guesses.");
     return 1;
   };
-  $parent->{statusbar}->SetStatusText("Not using best fit values -- have you done a fit yet?");
+  $parent->status("Not using best fit values -- have you done a fit yet?");
   return 0;
 };
 
@@ -252,7 +252,7 @@ sub reset_all {
     $grid->SetCellValue($row, 3, q{});
     $thisgds->push_ifeffit if (not $no_ifeffit);
   };
-  $parent->{statusbar}->SetStatusText("Reset all parameter values in Ifeffit.");
+  $parent->status("Reset all parameter values in Ifeffit.") if (not $no_ifeffit);
   return \@gds;
 };
 
@@ -260,7 +260,7 @@ sub highlight {
   my ($parent) = @_;
   my $is_down = $parent->{toolbar}->GetToolState($HIGHLIGHT);
   ($is_down) ? $parent->set_highlight : $parent->clear_highlight;
-  $parent->{statusbar}->SetStatusText("Cleared all highlights.") if not $is_down;
+  $parent->status("Cleared all highlights.") if not $is_down;
   return $parent;
 };
 
@@ -270,13 +270,13 @@ sub set_highlight {
   if (not $regex) {
     my $ted = Wx::TextEntryDialog->new( $parent, "Enter a regular expression", "Highlight parameters matching", q{}, wxOK|wxCANCEL, Wx::GetMousePosition);
     if ($ted->ShowModal == wxID_CANCEL) {
-      $parent->{statusbar}->SetStatusText("Parameter highlighting cancelled.");
+      $parent->status("Parameter highlighting cancelled.");
       $parent->{toolbar}->ToggleTool($HIGHLIGHT, 0);
       return;
     };
     $regex = $ted->GetValue;
     if ($regex =~ m{\A\s*\z}) {
-      $parent->{statusbar}->SetStatusText("Parameter highlighting cancelled (no regular expression provided).");
+      $parent->status("Parameter highlighting cancelled (no regular expression provided).");
       $parent->{toolbar}->ToggleTool($HIGHLIGHT, 0);
       return;
     };
@@ -284,7 +284,7 @@ sub set_highlight {
   my $re;
   my $is_ok = eval '$re = qr/$regex/i';
   if (not $is_ok) {
-    $parent->{statusbar}->SetStatusText("Oops!  \"$regex\" is not a valid regular expression");
+    $parent->status("Oops!  \"$regex\" is not a valid regular expression");
     $parent->{toolbar}->ToggleTool($HIGHLIGHT, 0);
     return;
   };
@@ -302,7 +302,7 @@ sub set_highlight {
     };
   };
   $grid -> ForceRefresh;
-  $parent->{statusbar}->SetStatusText("Highlighted parameters matching /$regex/.") if $parent;
+  $parent->status("Highlighted parameters matching /$regex/.") if $parent;
 };
 sub clear_highlight {
   my ($parent) = @_;
@@ -359,7 +359,7 @@ sub import {
 				wxFD_OPEN|wxFD_FILE_MUST_EXIST|wxFD_CHANGE_DIR|wxFD_PREVIEW,
 				wxDefaultPosition);
   if ($fd -> ShowModal == wxID_CANCEL) {
-    $parent->{statusbar}->SetStatusText("Parameter import aborted.")
+    $parent->status("Parameter import aborted.")
   } else {
     my $file = File::Spec->catfile($fd->GetDirectory, $fd->GetFilename);
     my $comment = $opt->list2re('!', '#', '%');
@@ -394,7 +394,7 @@ sub export {
 				"Text file|*.txt|All files|*.*", wxFD_SAVE|wxFD_CHANGE_DIR|wxFD_OVERWRITE_PROMPT,
 				wxDefaultPosition);
   if ($fd -> ShowModal == wxID_CANCEL) {
-    $parent->{statusbar}->SetStatusText("Parameter export aborted.");
+    $parent->status("Parameter export aborted.");
     return 0;
   } else {
     my $file = File::Spec->catfile($fd->GetDirectory, $fd->GetFilename);
@@ -405,7 +405,7 @@ sub export {
       print $PARAM $thisgds->template("process", "gds_out");
     };
     close $PARAM;
-    $parent->{statusbar}->SetStatusText("Exported parameters to \"$file\".")
+    $parent->status("Exported parameters to \"$file\".")
   };
 };
 
@@ -432,14 +432,14 @@ sub discard_all {
 				       "Verify action",
 				       wxYES_NO|wxNO_DEFAULT|wxICON_QUESTION);
     if ($yesno->ShowModal == wxID_NO) {
-      $parent->{statusbar}->SetStatusText("Not discarding parameters.");
+      $parent->status("Not discarding parameters.");
       return 0;
     };
   };
   foreach my $row (0 .. $grid->GetNumberRows-1) {
     $parent->discard($row);
   };
-  $parent->{statusbar}->SetStatusText("Discarded all parameters.")
+  $parent->status("Discarded all parameters.")
 };
 sub discard {
   my ($parent, $row) = @_;
@@ -561,7 +561,7 @@ sub OnGridMenu {
     $parent->$cb;
   } elsif ($which > 199) {	# explain submenu
     my $i = $which - 200;
-    $parent->{statusbar} -> SetStatusText($types->[$i] . ": " . $explain{$types->[$i]});
+    $parent->{statusbar} -> PushStatusText($types->[$i] . ": " . $explain{$types->[$i]});
   } else {			# change type submenu
     my $i = $which - 100;
     $parent->change($types->[$i]);
@@ -579,7 +579,7 @@ sub copy {
   $grid->{buffer} = \@list;
   my $s = ($#list > 0) ? q{s} : q{};
   $parent->{grid}->ClearSelection;
-  $parent->{statusbar}->SetStatusText("Copied parameter$s ".join(", ", map {defined($_) and $_->name} @list));
+  $parent->status("Copied parameter$s ".join(", ", map {defined($_) and $_->name} @list));
 };
 sub cut {
   my ($parent) = @_;
@@ -601,7 +601,7 @@ sub cut {
   };
 
   my $s = ($#{$grid->{buffer}} > 0) ? q{s} : q{};
-  $parent->{statusbar}->SetStatusText("Cut parameter$s ".join(", ", map {defined($_) and $_->name} @{$grid->{buffer}}));
+  $parent->status("Cut parameter$s ".join(", ", map {defined($_) and $_->name} @{$grid->{buffer}}));
 };
 
 
@@ -626,7 +626,7 @@ sub paste {
     $parent->set_type($this);
   };
   $parent->{grid}->ClearSelection;
-  $parent->{statusbar}->SetStatusText("perform paste");
+  $parent->status("perform paste");
 };
 
 sub insert_above {
@@ -635,7 +635,7 @@ sub insert_above {
   $parent->{grid}->InsertRows($row,1,1);
   $parent->initialize_row($row);
   $parent->{grid}->ClearSelection;
-  $parent->{statusbar}->SetStatusText("Inserted a row above row $row.");
+  $parent->status("Inserted a row above row $row.");
   return $row;
 };
 sub insert_below {
@@ -644,7 +644,7 @@ sub insert_below {
   $parent->{grid}->InsertRows($row+1,1,1);
   $parent->initialize_row($row+1);
   $parent->{grid}->ClearSelection;
-  $parent->{statusbar}->SetStatusText("Inserted a row below row $row.");
+  $parent->status("Inserted a row below row $row.");
   return $row+1;
 };
 sub grab {
@@ -652,14 +652,14 @@ sub grab {
   my $row = $parent->{clicked_row};
   my $type = $parent->{grid}->GetCellValue($row,0);
   my $name = $parent->{grid}->GetCellValue($row,1);
-  $parent->{statusbar}->SetStatusText("Grab aborted -- $name is not a guess parameter."), return if ($type ne 'guess');
+  $parent->status("Grab aborted -- $name is not a guess parameter."), return if ($type ne 'guess');
   my $bestfit = $parent->{grid}->GetCellValue($row,3);
-  $parent->{statusbar}->SetStatusText("$name does not have a best fit value."), return if ($bestfit =~ m{\A\s*\z});
+  $parent->status("$name does not have a best fit value."), return if ($bestfit =~ m{\A\s*\z});
   $bestfit =~ s{\+/-\s*.*}{};
   $parent->{grid}->SetCellValue($row, 2, $bestfit);
   $parent->{grid}->SetCellValue($row, 3, q{});
   $parent->{grid}->ClearSelection;
-  $parent->{statusbar}->SetStatusText("Using $bestfit as the initial guess for $name.");
+  $parent->status("Using $bestfit as the initial guess for $name.");
 };
 sub build_restraint {
   my ($parent) = @_;
@@ -667,7 +667,7 @@ sub build_restraint {
   my $target = $parent->find_next_empty_row;
   my $name = $parent->{grid}->GetCellValue($row,1);
   if ($name =~ m{\A\s*\z}) {
-    $parent->{statusbar}->SetStatusText("This row does not have a named parameter.");
+    $parent->status("This row does not have a named parameter.");
     return;
   };
 
@@ -679,7 +679,7 @@ sub build_restraint {
 
   my $result = $restraint_builder -> ShowModal;
   if ($result == wxID_CANCEL) {
-    $parent->{statusbar}->SetStatusText("Building restraint cancelled.");
+    $parent->status("Building restraint cancelled.");
     return;
   };
   my $res  = "res_" . $name;
@@ -692,7 +692,7 @@ sub build_restraint {
   my $string = "$scale*penalty($name, $low, $high)";
   $parent->{grid}->SetCellValue($target, 2, $string);
   $parent->set_type($target);
-  $parent->{statusbar}->SetStatusText("Set restraint $res = $string");
+  $parent->status("Set restraint $res = $string");
   $parent->{grid}->ClearSelection;
   return $parent;
 };
@@ -702,17 +702,17 @@ sub annotate {
 
   my $row = $parent->{clicked_row};
   my $thisgds = $parent->tie_GDS_to_grid($row);
-  $parent->{statusbar}->SetStatusText("Annotation aborted -- this row does not contain a named parameter."), return if not $thisgds;
+  $parent->status("Annotation aborted -- this row does not contain a named parameter."), return if not $thisgds;
   my $name = $parent->{grid}->GetCellValue($row,1);
   my $ted = Wx::TextEntryDialog->new( $parent, "Annotate $name", "Annotate $name", q{}, wxOK|wxCANCEL, Wx::GetMousePosition);
   if ($ted->ShowModal == wxID_CANCEL) {
-    $parent->{statusbar}->SetStatusText("Parameter annotation cancelled.");
+    $parent->status("Parameter annotation cancelled.");
     return;
   };
   my $note = $ted->GetValue;
   $thisgds->annotate($note);
   $parent->{grid}->ClearSelection;
-  $parent->{statusbar}->SetStatusText("$name : $note");
+  $parent->{statusbar}->PushStatusText("$name : $note");
 };
 
 sub find {
@@ -752,7 +752,7 @@ sub find {
   };
 
   ## -------- report back
-  $parent->{statusbar}->SetStatusText("$this is not used in this project"), return if ($count == 0);
+  $parent->status("$this is not used in this project"), return if ($count == 0);
   Demeter::UI::Artemis::ShowText->new($Demeter::UI::Artemis::frames{main}, $text, "Found $this") -> Show;
   $parent->{grid}->ClearSelection;
 };
@@ -766,7 +766,7 @@ sub rename_global {
   ## -------- get new name
   my $ted = Wx::TextEntryDialog->new( $parent, "Rename $this", "Rename $this", q{}, wxOK|wxCANCEL, Wx::GetMousePosition);
   if ($ted->ShowModal == wxID_CANCEL) {
-    $parent->{statusbar}->SetStatusText("Parameter renaming cancelled.");
+    $parent->status("Parameter renaming cancelled.");
     return;
   };
   my $newname = $ted->GetValue;
@@ -803,7 +803,7 @@ sub rename_global {
   };
 
   $parent->{grid}->ClearSelection;
-  $parent->{statusbar}->SetStatusText("Replaced $count instances of '$this' with '$newname'");
+  $parent->status("Replaced $count instances of '$this' with '$newname'");
 };
 
 
@@ -898,15 +898,15 @@ sub OnDropText {
 
   ## text with white space
   if ($text =~ m{\s}) {
-    $parent->{statusbar}->SetStatusText("Ifeffit guess/def/set parameters names cannot have white space ($text)");
+    $parent->status("Ifeffit guess/def/set parameters names cannot have white space ($text)");
 
   ## text starting with a number
   } elsif ($text =~ m{\A\d}) {
-    $parent->{statusbar}->SetStatusText("Ifeffit guess/def/set parameters names cannot start with numbers ($text)");
+    $parent->status("Ifeffit guess/def/set parameters names cannot start with numbers ($text)");
 
   ## text with unallowed characters
   } elsif ($text =~ m{[^a-z0-9_?]}i) {
-    $parent->{statusbar}->SetStatusText("Ifeffit guess/def/set parameters names can only use [a-z0-9_?] ($text)");
+    $parent->status("Ifeffit guess/def/set parameters names can only use [a-z0-9_?] ($text)");
 
   ## row already has a parameter in it
   } elsif ($grid -> GetCellValue($drop, 1) !~ m{\A\s*\z}) {
@@ -918,13 +918,13 @@ sub OnDropText {
       return 1;
     } else {
       $grid -> SetCellValue($drop, 1, $text);
-      $parent->{statusbar}->SetStatusText("Dropped \"$text\" into row $rownum");
+      $parent->status("Dropped \"$text\" into row $rownum");
     };
 
   ## just drop it
   } else {
    $grid -> SetCellValue($drop, 1, $text);
-   $parent->{statusbar}->SetStatusText("Dropped \"$text\" into row $rownum");
+   $parent->status("Dropped \"$text\" into row $rownum");
  };
   return 1;
 }

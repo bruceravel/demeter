@@ -433,8 +433,9 @@ sub new {
 
 sub mouseover {
   my ($self, $widget, $text) = @_;                                         # $event --v
+  my $sb = $Demeter::UI::Artemis::frames{main}->{statusbar};
   EVT_ENTER_WINDOW($self->{$widget}, sub{$self->{statusbar}->PushStatusText($text); $_[1]->Skip});
-  EVT_LEAVE_WINDOW($self->{$widget}, sub{$self->{statusbar}->PopStatusText;         $_[1]->Skip});
+  EVT_LEAVE_WINDOW($self->{$widget}, sub{$self->{statusbar}->PopStatusText if ($sb->GetStatusText eq $text); $_[1]->Skip});
 };
 
 sub initial_page_panel {
@@ -503,7 +504,7 @@ sub OnTransferButton {
   foreach my $p (0 .. $self->{pathlist}->GetPageCount - 1) {
     $self->{pathlist}->GetPage($p)->transfer if $self->{pathlist}->IsChecked($p);
   };
-  $self->{statusbar}->SetStatusText("Transfered marked groups to plotting list");
+  $self->status("Transfered marked groups to plotting list");
 };
 
 sub OnMakeVPathButton {
@@ -518,7 +519,7 @@ sub OnMakeVPathButton {
   return if ($#list == -1);
   $Demeter::UI::Artemis::frames{Plot}->{VPaths}->add_vpath(@list);
   autosave();
-  $self->{statusbar}->SetStatusText("Made a VPath from the marked groups");
+  $self->status("Made a VPath from the marked groups");
 };
 
 sub make_menubar {
@@ -796,7 +797,7 @@ sub plot {
 				  wxFD_SAVE|wxFD_CHANGE_DIR|wxFD_OVERWRITE_PROMPT,
 				  wxDefaultPosition);
     if ($fd->ShowModal == wxID_CANCEL) {
-      $self->{statusbar}->SetStatusText("Saving plot to a file has been cancelled.");
+      $self->status("Saving plot to a file has been cancelled.");
       $pf->{fileout}->SetValue(0);
       return;
     };
@@ -819,11 +820,11 @@ sub plot {
   ## restore plotting backend if this was a plot to a file
   if ($pf->{fileout}->GetValue) {
     $self->{data}->po->finish;
-    $self->{statusbar}->SetStatusText("Saved plot to file \"" . $demeter->po->file . "\".");
+    $self->status("Saved plot to file \"" . $demeter->po->file . "\".");
     $self->{data}->plot_with($saveplot);
     $pf->{fileout}->SetValue(0);
   };
-  $self->{statusbar}->SetStatusText(sprintf("Plotted \"%s\" %s.",
+  $self->status(sprintf("Plotted \"%s\" %s.",
 					    $self->{data}->name, $text));
   $Demeter::UI::Artemis::frames{Plot}->{indicators}->plot($self->{data});
 };
@@ -875,20 +876,20 @@ sub OnMenuClick {
       $datapage->{kmax}->SetValue($datapage->{data}->recommended_kmax);
       $datapage->{data}->fft_kmax($datapage->{data}->recommended_kmax);
       my $text = sprintf("The number of independent points in this data set is now %.2f", $datapage->{data}->nidp);
-      $datapage->{statusbar}->SetStatusText($text);
+      $datapage->status($text);
       last SWITCH;
     };
     ($id == $DATA_EPSK) and do {
       $datapage->fetch_parameters;
       $datapage->{data}->chi_noise;
       my $text = sprintf("Statistical noise: $EPSILON(k) = %.2e and $EPSILON(R) = %.2e", $datapage->{data}->epsk, $datapage->{data}->epsr);
-      $datapage->{statusbar}->SetStatusText($text);
+      $datapage->status($text);
       last SWITCH;
     };
     ($id == $DATA_NIDP) and do {
       $datapage->fetch_parameters;
       my $text = sprintf("The number of independent points in this data set is %.2f", $datapage->{data}->nidp);
-      $datapage->{statusbar}->SetStatusText($text);
+      $datapage->status($text);
       last SWITCH;
     };
 
@@ -922,7 +923,7 @@ sub OnMenuClick {
     ($id == $PATH_TYPE) and do {
       my $type = ref($datapage->{pathlist}->GetPage($datapage->{pathlist}->GetSelection)->{path});
       $type =~ s{Demeter::}{};
-      $datapage->{statusbar}->SetStatusText("This path is a $type");
+      $datapage->status("This path is a $type");
       last SWITCH;
     };
 
@@ -946,7 +947,7 @@ sub OnMenuClick {
       my $param_dialog = Demeter::UI::Artemis::Data::AddParameter->new($datapage);
       my $result = $param_dialog -> ShowModal;
       if ($result == wxID_CANCEL) {
-	$datapage->{statusbar}->SetStatusText("Path parameter editing cancelled.");
+	$datapage->status("Path parameter editing cancelled.");
 	return;
       };
       my ($param, $me, $how) = ($param_dialog->{param}, $param_dialog->{me}->GetValue, $param_dialog->{apply}->GetSelection);
@@ -1051,7 +1052,7 @@ sub OnMenuClick {
       my $histo_dialog = Demeter::UI::Artemis::Data::Histogram->new($datapage);
       my $result = $histo_dialog -> ShowModal;
       if ($result == wxID_CANCEL) {
-	$datapage->{statusbar}->SetStatusText("Cancelled histogram creation.");
+	$datapage->status("Cancelled histogram creation.");
 	return;
       };
       $datapage -> process_histogram($histo_dialog);
@@ -1060,39 +1061,39 @@ sub OnMenuClick {
 
 
     ($id == $PATH_EXP_LABEL) and do {
-      $datapage->{statusbar}->SetStatusText($Demeter::UI::Artemis::Pathexplanation{label});
+      $datapage->status($Demeter::UI::Artemis::Pathexplanation{label});
       last SWITCH;
     };
     ($id == $PATH_EXP_N) and do {
-      $datapage->{statusbar}->SetStatusText($Demeter::UI::Artemis::Path::explanation{n});
+      $datapage->status($Demeter::UI::Artemis::Path::explanation{n});
       last SWITCH;
     };
     ($id == $PATH_EXP_S02) and do {
-      $datapage->{statusbar}->SetStatusText($Demeter::UI::Artemis::Path::explanation{s02});
+      $datapage->status($Demeter::UI::Artemis::Path::explanation{s02});
       last SWITCH;
     };
     ($id == $PATH_EXP_E0) and do {
-      $datapage->{statusbar}->SetStatusText($Demeter::UI::Artemis::Path::explanation{e0});
+      $datapage->status($Demeter::UI::Artemis::Path::explanation{e0});
       last SWITCH;
     };
     ($id == $PATH_EXP_DELR) and do {
-      $datapage->{statusbar}->SetStatusText($Demeter::UI::Artemis::Path::explanation{delr});
+      $datapage->status($Demeter::UI::Artemis::Path::explanation{delr});
       last SWITCH;
     };
     ($id == $PATH_EXP_SIGMA2) and do {
-      $datapage->{statusbar}->SetStatusText($Demeter::UI::Artemis::Path::explanation{sigma2});
+      $datapage->status($Demeter::UI::Artemis::Path::explanation{sigma2});
       last SWITCH;
     };
     ($id == $PATH_EXP_EI) and do {
-      $datapage->{statusbar}->SetStatusText($Demeter::UI::Artemis::Path::explanation{ei});
+      $datapage->status($Demeter::UI::Artemis::Path::explanation{ei});
       last SWITCH;
     };
     ($id == $PATH_EXP_THIRD) and do {
-      $datapage->{statusbar}->SetStatusText($Demeter::UI::Artemis::Path::explanation{third});
+      $datapage->status($Demeter::UI::Artemis::Path::explanation{third});
       last SWITCH;
     };
     ($id == $PATH_EXP_FOURTH) and do {
-      $datapage->{statusbar}->SetStatusText($Demeter::UI::Artemis::Path::explanation{fourth});
+      $datapage->status($Demeter::UI::Artemis::Path::explanation{fourth});
       last SWITCH;
     };
 
@@ -1125,7 +1126,7 @@ sub Rename {
   if (not $newname) {
     my $ted = Wx::TextEntryDialog->new($datapage, "Enter a new name for \"$name\":", "Rename \"$name\"", q{}, wxOK|wxCANCEL, Wx::GetMousePosition);
     if ($ted->ShowModal == wxID_CANCEL) {
-      $datapage->{statusbar}->SetStatusText("Data renaming cancelled.");
+      $datapage->status("Data renaming cancelled.");
       return;
     };
     $newname = $ted->GetValue;
@@ -1202,7 +1203,7 @@ sub add_parameters {
     };
     $which = "the marked paths";
   };
-  $self->{statusbar}->SetStatusText("Set $param to \"$me\" for $which." );
+  $self->status("Set $param to \"$me\" for $which." );
 };
 
 sub export_pp {
@@ -1226,7 +1227,7 @@ sub export_pp {
 	       'each path in this data set',
 	       'each path in each data set',
 	       'the marked paths')[$how];
-  $self->{statusbar}->SetStatusText("Exported these path parameters to $which." );
+  $self->status("Exported these path parameters to $which." );
 };
 
 sub save_fit {
@@ -1256,13 +1257,13 @@ sub save_fit {
 				  wxFD_SAVE|wxFD_CHANGE_DIR|wxFD_OVERWRITE_PROMPT,
 				  wxDefaultPosition);
     if ($fd->ShowModal == wxID_CANCEL) {
-      $self->{statusbar}->SetStatusText("Saving data and fit cancelled.");
+      $self->status("Saving data and fit cancelled.");
       return;
     };
     $filename = File::Spec->catfile($fd->GetDirectory, $fd->GetFilename);
   };
   $data->save('fit', $filename, $how);
-  $self->{statusbar}->SetStatusText("Saved data and fit as $how to $filename." );
+  $self->status("Saved data and fit as $how to $filename." );
 };
 sub save_path {
   my ($self, $mode, $filename) = @_;
@@ -1285,13 +1286,13 @@ sub save_path {
 				  wxFD_SAVE|wxFD_CHANGE_DIR|wxFD_OVERWRITE_PROMPT,
 				  wxDefaultPosition);
     if ($fd->ShowModal == wxID_CANCEL) {
-      $self->{statusbar}->SetStatusText("Saving path cancelled.");
+      $self->status("Saving path cancelled.");
       return;
     };
     $filename = File::Spec->catfile($fd->GetDirectory, $fd->GetFilename);
   };
   $path->save($space, $filename);
-  $self->{statusbar}->SetStatusText("Saved path \"".$path->name."\"to $space space as $filename." );
+  $self->status("Saved path \"".$path->name."\"to $space space as $filename." );
 };
 
 sub save_data {
@@ -1314,13 +1315,13 @@ sub save_data {
 				  wxFD_SAVE|wxFD_CHANGE_DIR|wxFD_OVERWRITE_PROMPT,
 				  wxDefaultPosition);
     if ($fd->ShowModal == wxID_CANCEL) {
-      $self->{statusbar}->SetStatusText("Saving data cancelled.");
+      $self->status("Saving data cancelled.");
       return;
     };
     $filename = File::Spec->catfile($fd->GetDirectory, $fd->GetFilename);
   };
   $data->save($space, $filename);
-  $self->{statusbar}->SetStatusText("Saved data \"".$data->name."\"to $space space as $filename." );
+  $self->status("Saved data \"".$data->name."\"to $space space as $filename." );
 };
 
 
@@ -1362,19 +1363,19 @@ sub save_marked_paths {
 				  wxFD_SAVE|wxFD_CHANGE_DIR|wxFD_OVERWRITE_PROMPT,
 				  wxDefaultPosition);
     if ($fd->ShowModal == wxID_CANCEL) {
-      $self->{statusbar}->SetStatusText("Saving data and fit cancelled.");
+      $self->status("Saving data and fit cancelled.");
       return;
     };
     $filename = File::Spec->catfile($fd->GetDirectory, $fd->GetFilename);
   };
   $data->save_many($filename, $how, @list);
-  $self->{statusbar}->SetStatusText("Saved data and marked paths as $how to $filename." );
+  $self->status("Saved data and marked paths as $how to $filename." );
 };
 
 sub mark {
   my ($self, $mode) = @_;
 
-  $self->{statusbar}->SetStatusText("No paths have been assigned to this data yet."),
+  $self->status("No paths have been assigned to this data yet."),
     return if ($self->{pathlist}->GetPage(0) eq $self->{pathlist}->{initial});
 
   my $how = ($mode !~ m{$NUMBER})   ? $mode
@@ -1401,7 +1402,7 @@ sub mark {
 	$self->{pathlist}->Check($i, $onoff);
       };
       my $word = ($how eq 'all') ? 'Marked' : 'Unmarked';
-      $self->{statusbar}->SetStatusText("$word all paths.");
+      $self->status("$word all paths.");
       last SWITCH;
     };
     ($how eq 'invert') and do {
@@ -1409,27 +1410,27 @@ sub mark {
 	my $this = $self->{pathlist}->IsChecked($i);
 	$self->{pathlist}->Check($i, not $this);
       };
-      $self->{statusbar}->SetStatusText("Inverted all marks.");
+      $self->status("Inverted all marks.");
       last SWITCH;
     };
     ($how eq 'regexp') and do {
       my $regex = q{};
       my $ted = Wx::TextEntryDialog->new( $self, "Mark paths matching this regular expression:", "Enter a regular expression", q{}, wxOK|wxCANCEL, Wx::GetMousePosition);
       if ($ted->ShowModal == wxID_CANCEL) {
-	$self->{statusbar}->SetStatusText("Path marking cancelled.");
+	$self->status("Path marking cancelled.");
 	return;
       };
       $regex = $ted->GetValue;
       my $re;
       my $is_ok = eval '$re = qr/$regex/';
       if (not $is_ok) {
-	$self->{PARENT}->{statusbar}->SetStatusText("Oops!  \"$regex\" is not a valid regular expression");
+	$self->{PARENT}->status("Oops!  \"$regex\" is not a valid regular expression");
 	return;
       };
       foreach my $i (0 .. $self->{pathlist}->GetPageCount-1) {
 	$self->{pathlist}->Check($i, 1) if ($self->{pathlist}->GetPageText($i) =~ m{$re});
       };
-      $self->{statusbar}->SetStatusText("Marked all paths matching /$regex/.");
+      $self->status("Marked all paths matching /$regex/.");
       last SWITCH;
     };
 
@@ -1438,7 +1439,7 @@ sub mark {
 	my $path = $self->{pathlist}->GetPage($i)->{path};
 	$self->{pathlist}->Check($i, 1) if ($path->sp->nleg == 2);
       };
-      $self->{statusbar}->SetStatusText("Marked all single scattering paths.");
+      $self->status("Marked all single scattering paths.");
       last SWITCH;
     };
     ($how eq 'ms') and do {
@@ -1446,7 +1447,7 @@ sub mark {
 	my $path = $self->{pathlist}->GetPage($i)->{path};
 	$self->{pathlist}->Check($i, 1) if ($path->sp->nleg > 2);
       };
-      $self->{statusbar}->SetStatusText("Marked all multiple scattering paths.");
+      $self->status("Marked all multiple scattering paths.");
       last SWITCH;
     };
     ($how eq 'high') and do {
@@ -1454,7 +1455,7 @@ sub mark {
 	my $path = $self->{pathlist}->GetPage($i)->{path};
 	$self->{pathlist}->Check($i, 1) if ($path->sp->weight==2);
       };
-      $self->{statusbar}->SetStatusText("Marked all high importance paths.");
+      $self->status("Marked all high importance paths.");
       last SWITCH;
     };
     ($how eq 'mid') and do {
@@ -1462,7 +1463,7 @@ sub mark {
 	my $path = $self->{pathlist}->GetPage($i)->{path};
 	$self->{pathlist}->Check($i, 1) if ($path->sp->weight==1);
       };
-      $self->{statusbar}->SetStatusText("Marked all mid importance paths.");
+      $self->status("Marked all mid importance paths.");
       last SWITCH;
     };
     ($how eq 'low') and do {
@@ -1470,18 +1471,18 @@ sub mark {
 	my $path = $self->{pathlist}->GetPage($i)->{path};
 	$self->{pathlist}->Check($i, 1) if ($path->sp->weight==0);
       };
-      $self->{statusbar}->SetStatusText("Marked all low importance paths.");
+      $self->status("Marked all low importance paths.");
       last SWITCH;
     };
     (($how eq 'longer') or ($how eq 'shorter')) and do {
       my $ted = Wx::TextEntryDialog->new( $self, "Mark paths $how than this path length:", "Enter a path length", q{}, wxOK|wxCANCEL, Wx::GetMousePosition);
       if ($ted->ShowModal == wxID_CANCEL) {
-	$self->{statusbar}->SetStatusText("Path marking cancelled.");
+	$self->status("Path marking cancelled.");
 	return;
       };
       my $r = $ted->GetValue;
       if ($r !~ m{$NUMBER}) {
-	$self->{statusbar}->SetStatusText("Oops!  That wasn't a number.");
+	$self->status("Oops!  That wasn't a number.");
 	return;
       };
       foreach my $i (0 .. $self->{pathlist}->GetPageCount-1) {
@@ -1489,7 +1490,7 @@ sub mark {
 	$self->{pathlist}->Check($i, 1) if (($how eq 'shorter') and ($path->sp->fuzzy < $r));
 	$self->{pathlist}->Check($i, 1) if (($how eq 'longer')  and ($path->sp->fuzzy > $r));
       };
-      $self->{statusbar}->SetStatusText("Marked all paths $how than $r " . chr(197) . '.');
+      $self->status("Marked all paths $how than $r " . chr(197) . '.');
       last SWITCH;
     };
 
@@ -1499,7 +1500,7 @@ sub mark {
 	last if ($i > $sel);
 	$self->{pathlist}->Check($i, 1);
       };
-      $self->{statusbar}->SetStatusText("Marked this path and all paths before this one.");
+      $self->status("Marked this path and all paths before this one.");
       last SWITCH;
     };
     ($how eq 'after') and do {
@@ -1508,7 +1509,7 @@ sub mark {
 	next if ($i <= $sel);
 	$self->{pathlist}->Check($i, 1);
       };
-      $self->{statusbar}->SetStatusText("Marked all paths after this one.");
+      $self->status("Marked all paths after this one.");
       last SWITCH;
     };
 
@@ -1517,7 +1518,7 @@ sub mark {
 	my $path = $self->{pathlist}->GetPage($i)->{path};
 	$self->{pathlist}->Check($i, 1) if $path->include;
       };
-      $self->{statusbar}->SetStatusText("Marked all paths included in the fit.");
+      $self->status("Marked all paths included in the fit.");
       last SWITCH;
     };
 
@@ -1526,7 +1527,7 @@ sub mark {
 	my $path = $self->{pathlist}->GetPage($i)->{path};
 	$self->{pathlist}->Check($i, 1) if not $path->include;
       };
-      $self->{statusbar}->SetStatusText("Marked all paths excluded from the fit.");
+      $self->status("Marked all paths excluded from the fit.");
       last SWITCH;
     };
   };
@@ -1547,7 +1548,7 @@ sub include {
 	$pathpage->{include}->SetValue(1);
 	$pathpage->include_label(0,$i);
       };
-      $self->{statusbar}->SetStatusText("Included all paths in the fit.");
+      $self->status("Included all paths in the fit.");
       last SWITCH;
     };
 
@@ -1557,7 +1558,7 @@ sub include {
 	$pathpage->{include}->SetValue(0);
 	$pathpage->include_label(0,$i);
       };
-      $self->{statusbar}->SetStatusText("Excluded all paths from the fit.");
+      $self->status("Excluded all paths from the fit.");
       last SWITCH;
     };
 
@@ -1568,7 +1569,7 @@ sub include {
 	$pathpage->{include}->SetValue($onoff);
 	$pathpage->include_label(0,$i);
       };
-      $self->{statusbar}->SetStatusText("Inverted which paths are included in the fit.");
+      $self->status("Inverted which paths are included in the fit.");
       last SWITCH;
     };
 
@@ -1579,7 +1580,7 @@ sub include {
 	$pathpage->{include}->SetValue(1);
 	$pathpage->include_label(0,$i);
       };
-      $self->{statusbar}->SetStatusText("Included marked paths in the fit.");
+      $self->status("Included marked paths in the fit.");
       last SWITCH;
     };
 
@@ -1590,7 +1591,7 @@ sub include {
 	$pathpage->{include}->SetValue(0);
 	$pathpage->include_label(0,$i);
       };
-      $self->{statusbar}->SetStatusText("Excluded marked paths from the fit.");
+      $self->status("Excluded marked paths from the fit.");
       last SWITCH;
     };
 
@@ -1602,7 +1603,7 @@ sub include {
 	$pathpage->{include}->SetValue(0);
 	$pathpage->include_label(0,$i);
       };
-      $self->{statusbar}->SetStatusText("Excluded all paths after the one currently displayed from the fit.");
+      $self->status("Excluded all paths after the one currently displayed from the fit.");
       last SWITCH;
     };
 
@@ -1614,7 +1615,7 @@ sub include {
 	$pathpage->{include}->SetValue(1);
 	$pathpage->include_label(0,$i);
       };
-      $self->{statusbar}->SetStatusText("Included all single scattering paths in the fit.");
+      $self->status("Included all single scattering paths in the fit.");
       last SWITCH;
     };
 
@@ -1626,19 +1627,19 @@ sub include {
 	$pathpage->{include}->SetValue(1);
 	$pathpage->include_label(0,$i);
       };
-      $self->{statusbar}->SetStatusText("Included all high importance paths in the fit.");
+      $self->status("Included all high importance paths in the fit.");
       last SWITCH;
     };
 
     ($how eq 'r') and do {
       my $ted = Wx::TextEntryDialog->new( $self, "Include shorter than this path length:", "Enter a path length", q{}, wxOK|wxCANCEL, Wx::GetMousePosition);
       if ($ted->ShowModal == wxID_CANCEL) {
-	$self->{statusbar}->SetStatusText("Path inclusion cancelled.");
+	$self->status("Path inclusion cancelled.");
 	return;
       };
       my $r = $ted->GetValue;
       if ($r !~ m{$NUMBER}) {
-	$self->{statusbar}->SetStatusText("Oops!  That wasn't a number.");
+	$self->status("Oops!  That wasn't a number.");
 	return;
       };
       foreach my $i (0 .. $npaths) {
@@ -1648,7 +1649,7 @@ sub include {
 	$pathpage->{include}->SetValue(1);
 	$pathpage->include_label(0,$i);
       };
-      $self->{statusbar}->SetStatusText("Included all paths shorter than $r " . chr(197) . '.');
+      $self->status("Included all paths shorter than $r " . chr(197) . '.');
       last SWITCH;
     };
 
@@ -1786,12 +1787,12 @@ sub discard {
     ($how eq 'r') and do {
       my $ted = Wx::TextEntryDialog->new( $self, "Discard paths longer than this path length:", "Enter a path length", q{}, wxOK|wxCANCEL, Wx::GetMousePosition);
       if ($ted->ShowModal == wxID_CANCEL) {
-	$self->{statusbar}->SetStatusText("Path discarding cancelled.");
+	$self->status("Path discarding cancelled.");
 	return;
       };
       my $r = $ted->GetValue;
       if ($r !~ m{$NUMBER}) {
-	$self->{statusbar}->SetStatusText("Oops!  That wasn't a number.");
+	$self->status("Oops!  That wasn't a number.");
 	return;
       };
       foreach my $i (@count) {
@@ -1803,7 +1804,7 @@ sub discard {
       $text = "Discarded all paths longer that $r " . chr(197) . '.';
     };
   };
-  $self->{statusbar}->SetStatusText($text);
+  $self->status($text);
   $self->{pathlist}->InitialPage if (not $self->{pathlist}->{VIEW});
 };
 
@@ -1826,7 +1827,7 @@ sub flag {
       $pathpage->{plotafter}->SetValue(0);
     };
   };
-  $self->{statusbar}->SetStatusText($text);
+  $self->status($text);
 };
 
 # sub sum {
@@ -1851,14 +1852,14 @@ sub transfer {
     };
   };
   if ($found) {
-    $self->{statusbar} -> SetStatusText("\"$name\" is already in the plotting list.");
+    $self->{statusbar} -> PushStatusText("\"$name\" is already in the plotting list.");
     return;
   };
   $plotlist->Append("Data: $name");
   my $i = $plotlist->GetCount - 1;
   $plotlist->SetClientData($i, $self->{data});
   $plotlist->Check($i,1);
-  $self->{statusbar} -> SetStatusText("Transfered data set \"$name\" to the plotting list.");
+  $self->{statusbar} -> PushStatusText("Transfered data set \"$name\" to the plotting list.");
 };
 
 
@@ -1877,7 +1878,7 @@ sub clone {
   $newpage->{pp_n}->SetValue($path->n);
   $newpage->include_label(0,$datapage->{pathlist}->GetSelection);
 
-  $datapage->{statusbar} -> SetStatusText("Cloned $LAQUO" . $path->name . "$RAQUO and set N to half its value for the new and old paths.");
+  $datapage->{statusbar} -> PushStatusText("Cloned $LAQUO" . $path->name . "$RAQUO and set N to half its value for the new and old paths.");
 };
 
 sub process_histogram {
@@ -1948,7 +1949,7 @@ sub quickfs {
   my $dialog = Demeter::UI::Artemis::Data::Quickfs->new($datapage);
   my $result = $dialog -> ShowModal;
   if ($result == wxID_CANCEL) {
-    $datapage->{statusbar}->SetStatusText("Cancelled quick first shell model creation.");
+    $datapage->status("Cancelled quick first shell model creation.");
     return;
   };
 
@@ -1959,11 +1960,11 @@ sub quickfs {
 					$dialog->{edge}->GetStringSelection,);
 
   if (lc($abs) !~ m{\A$element_regexp\z}) {
-    $datapage->{statusbar} -> SetStatusText("Absorber $abs is not a valid element symbol.");
+    $datapage->{statusbar} -> PushStatusText("Absorber $abs is not a valid element symbol.");
     return;
   };
   if (lc($scat) !~ m{\A$element_regexp\z}) {
-    $datapage->{statusbar} -> SetStatusText("Scatterer $scat is not a valid element symbol.");
+    $datapage->{statusbar} -> PushStatusText("Scatterer $scat is not a valid element symbol.");
     return;
   };
 
@@ -2034,7 +2035,7 @@ sub OnData {
     my $ipot = $spref->[4];
     if (not looks_like_number($reff)) {
       my $text = "Your distance, $reff, is not a number.  This arbitrary single scattering path cannot be created.";
-      $this->{PARENT}->{statusbar}->SetStatusText($text);
+      $this->{PARENT}->status($text);
       Wx::MessageDialog->new($this->{PARENT}, $text, "Error!", wxOK|wxICON_ERROR) -> ShowModal;
       return $def;
     };

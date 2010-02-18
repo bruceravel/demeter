@@ -320,7 +320,7 @@ sub OnLabelMenu {
  SWITCH: {
     ($id == $CLEAR) and do {		# clear
       $currentpage->{"pp_$param"}->SetValue(q{});
-      $currentpage->{datapage}->{statusbar}->SetStatusText("Cleared $labels{$param} for this path." );
+      $currentpage->{datapage}->status("Cleared $labels{$param} for this path." );
       last SWITCH;
     };
 
@@ -337,7 +337,7 @@ sub OnLabelMenu {
     ($id == $EACHDATA) and do {
       ## from %frames keys, find data pages, loop over all {listpath} pages
       $currentpage->{datapage}->add_parameters($param, $thisme, 2);
-      $currentpage->{datapage}->{statusbar}->SetStatusText("Set $labels{$param} for every path in every data set." );
+      $currentpage->{datapage}->status("Set $labels{$param} for every path in every data set." );
       last SWITCH;
     };
 
@@ -345,7 +345,7 @@ sub OnLabelMenu {
       my $which = ($id == $PREV) ? $this - 1 : $this + 1;
       $currentpage->{"pp_$param"}->SetValue( $listbook->GetPage($which)->{"pp_$param"}->GetValue );
       $which = ($id == $PREV) ? "previous" : "next";
-      $currentpage->{datapage}->{statusbar}->SetStatusText("Grabbed $labels{$param} from the $which path." );
+      $currentpage->{datapage}->status("Grabbed $labels{$param} from the $which path." );
       last SWITCH;
     };
 
@@ -361,12 +361,12 @@ sub OnLabelMenu {
       $Demeter::UI::Artemis::frames{GDS}  -> Show(1);
       $Demeter::UI::Artemis::frames{main} -> {toolbar}->ToggleTool(1,1);
       $Demeter::UI::Artemis::frames{GDS}  -> {toolbar}->ToggleTool(2,1);
-      $currentpage->{datapage}->{statusbar}->SetStatusText("Inserted math expression for $full model and created two GDS parameters." );
+      $currentpage->{datapage}->status("Inserted math expression for $full model and created two GDS parameters." );
       last SWITCH;
     };
 
     ($id == $EXPLAIN) and do {
-      $currentpage->{datapage}->{statusbar}->SetStatusText($explanation{$param});
+      $currentpage->{datapage}->status($explanation{$param});
       last SWITCH;
     };
 
@@ -436,14 +436,14 @@ sub transfer {
     };
   };
   if ($found) {
-    $self->{datapage}->{statusbar} -> SetStatusText("\"$name\" is already in the plotting list.");
+    $self->{datapage}->{statusbar} -> PushStatusText("\"$name\" is already in the plotting list.");
     return;
   };
   $plotlist->Append("Path: $name");
   my $i = $plotlist->GetCount - 1;
   $plotlist->SetClientData($i, $self->{path});
   $plotlist->Check($i,1);
-  $self->{datapage}->{statusbar} -> SetStatusText("Transfered path \"$name\" to the plotting list.");
+  $self->{datapage}->{statusbar} -> PushStatusText("Transfered path \"$name\" to the plotting list.");
 };
 
 

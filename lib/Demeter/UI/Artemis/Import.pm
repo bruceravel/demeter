@@ -47,7 +47,7 @@ sub prjrecord {
 				  wxFD_OPEN|wxFD_FILE_MUST_EXIST|wxFD_CHANGE_DIR|wxFD_PREVIEW,
 				  wxDefaultPosition);
     if ($fd->ShowModal == wxID_CANCEL) {
-      $rframes->{main}->{statusbar}->SetStatusText("Data import cancelled.");
+      $rframes->{main}->status("Data import cancelled.");
       return;
     };
     $file = File::Spec->catfile($fd->GetDirectory, $fd->GetFilename);
@@ -76,7 +76,7 @@ sub _prj {
   my ($file, $prj, $record) = prjrecord($fname);
 
   if ((not $prj) or (not $record)) {
-    $rframes->{main}->{statusbar}->SetStatusText("Data import cancelled.");
+    $rframes->{main}->status("Data import cancelled.");
     return;
   };
 
@@ -92,7 +92,7 @@ sub _prj {
   $$rdemeter->push_mru("athena", $file);
   autosave();
   chdir dirname($file);
-  $rframes->{main}->{statusbar}->SetStatusText("Importing data \"" . $data->name . "\" from $file.");
+  $rframes->{main}->status("Importing data \"" . $data->name . "\" from $file.");
 };
 
 
@@ -106,24 +106,24 @@ sub _feff {
 				  wxFD_OPEN|wxFD_FILE_MUST_EXIST|wxFD_CHANGE_DIR|wxFD_PREVIEW,
 				  wxDefaultPosition);
     if ($fd->ShowModal == wxID_CANCEL) {
-      $rframes->{main}->{statusbar}->SetStatusText("Crystal/Feff data import cancelled.");
+      $rframes->{main}->status("Crystal/Feff data import cancelled.");
       return;
     };
     $file = File::Spec->catfile($fd->GetDirectory, $fd->GetFilename);
   };
   if (not -e $file) {
-    $rframes->{main}->{statusbar}->SetStatusText("$file does not exist.");
+    $rframes->{main}->status("$file does not exist.");
     return;
   };
   if (not ($$rdemeter->is_feff($file) or $$rdemeter->is_atoms($file) or $$rdemeter->is_cif($file))) {
-    $rframes->{main}->{statusbar}->SetStatusText("$file does not seem to be a Feff input file, an Atoms input file, or a CIF file");
+    $rframes->{main}->status("$file does not seem to be a Feff input file, an Atoms input file, or a CIF file");
     return;
   };
 
   my ($fnum, $ifeff) = &$make_feff_frame($rframes->{main}, $file);
   $rframes->{$fnum} -> Show(1);
   autosave();
-  $rframes->{$fnum}->{statusbar}->SetStatusText("Imported crystal data from " . basename($file));
+  $rframes->{$fnum}->status("Imported crystal data from " . basename($file));
   $rframes->{main}->{$fnum}->SetValue(1);
 };
 
@@ -137,7 +137,7 @@ sub _chi {
 				  wxFD_OPEN|wxFD_FILE_MUST_EXIST|wxFD_CHANGE_DIR|wxFD_PREVIEW,
 				  wxDefaultPosition);
     if ($fd->ShowModal == wxID_CANCEL) {
-      $rframes->{main}->{statusbar}->SetStatusText("$CHI(k) import cancelled.");
+      $rframes->{main}->status("$CHI(k) import cancelled.");
       return;
     };
     $file = File::Spec->catfile($fd->GetDirectory, $fd->GetFilename);
@@ -153,7 +153,7 @@ sub _chi {
   $$rdemeter->push_mru("chik", $file);
   autosave();
   chdir dirname($file);
-  $rframes->{main}->{statusbar}->SetStatusText("Imported $file as $CHI(k) data.");
+  $rframes->{main}->status("Imported $file as $CHI(k) data.");
 };
 
 
@@ -168,7 +168,7 @@ sub _external_feff {
 				  wxFD_OPEN|wxFD_FILE_MUST_EXIST|wxFD_CHANGE_DIR|wxFD_PREVIEW,
 				  wxDefaultPosition);
     if ($fd->ShowModal == wxID_CANCEL) {
-      $rframes->{main}->{statusbar}->SetStatusText("$CHI(k) import cancelled.");
+      $rframes->{main}->status("$CHI(k) import cancelled.");
       return;
     };
     $file = File::Spec->catfile($fd->GetDirectory, $fd->GetFilename);
@@ -195,7 +195,7 @@ EOH
 				       "Error importing Feff calculation",
 				       wxOK|wxICON_ERROR);
     my $result = $error->ShowModal;
-    $rframes->{main}->{statusbar}->SetStatusText("Importing external Feff calculation aborted.");
+    $rframes->{main}->status("Importing external Feff calculation aborted.");
     return 0;
   };
 
@@ -218,7 +218,7 @@ EOH
 				       "Error importing Feff calculation",
 				       wxOK|wxICON_ERROR);
     my $result = $error->ShowModal;
-    $rframes->{main}->{statusbar}->SetStatusText("Importing external Feff calculation aborted.");
+    $rframes->{main}->status("Importing external Feff calculation aborted.");
     return 0;
   };
 
@@ -253,7 +253,7 @@ EOH
   autosave();
   chdir dirname($file);
   modified(1);
-  $rframes->{main}->{statusbar}->SetStatusText("Imported $file as a Feff calculation.");
+  $rframes->{main}->status("Imported $file as a Feff calculation.");
   return $efeff;
 };
 
@@ -267,7 +267,7 @@ sub _old {
 				  wxFD_OPEN|wxFD_FILE_MUST_EXIST|wxFD_CHANGE_DIR|wxFD_PREVIEW,
 				  wxDefaultPosition);
     if ($fd->ShowModal == wxID_CANCEL) {
-      $rframes->{main}->{statusbar}->SetStatusText("old-style Artemis import cancelled.");
+      $rframes->{main}->status("old-style Artemis import cancelled.");
       return;
     };
     $file = File::Spec->catfile($fd->GetDirectory, $fd->GetFilename);
@@ -480,7 +480,7 @@ sub _old {
   $$rdemeter->push_mru("old_artemis", $file);
   chdir dirname($file);
   modified(1);
-  $rframes->{main}->{statusbar}->SetStatusText("Imported old-style Artemis project $file");
+  $rframes->{main}->status("Imported old-style Artemis project $file");
 
 };
 
@@ -494,17 +494,17 @@ sub _feffit {
 				  wxFD_OPEN|wxFD_FILE_MUST_EXIST|wxFD_CHANGE_DIR|wxFD_PREVIEW,
 				  wxDefaultPosition);
     if ($fd->ShowModal == wxID_CANCEL) {
-      $rframes->{main}->{statusbar}->SetStatusText("Feffit import cancelled.");
+      $rframes->{main}->status("Feffit import cancelled.");
       return;
     };
     $file = File::Spec->catfile($fd->GetDirectory, $fd->GetFilename);
   };
   if (not -e $file) {
-    $rframes->{main}->{statusbar}->SetStatusText("$file does not exist.");
+    $rframes->{main}->status("$file does not exist.");
     return;
   };
   if (not -r $file) {
-    $rframes->{main}->{statusbar}->SetStatusText("$file cannot be read.");
+    $rframes->{main}->status("$file cannot be read.");
     return;
   };
 
@@ -534,7 +534,7 @@ sub _feffit {
 					 "Error importing feffit file",
 					 wxOK|wxICON_ERROR);
       my $result = $error->ShowModal;
-      $rframes->{main}->{statusbar}->SetStatusText("Importing feffit.inp file aborted.");
+      $rframes->{main}->status("Importing feffit.inp file aborted.");
       return 0;
     };
     my $ef = _external_feff($inp, 1);
@@ -555,7 +555,7 @@ sub _feffit {
 					 "Error importing feffit.inp file",
 					 wxOK|wxICON_ERROR);
       my $result = $error->ShowModal;
-      $rframes->{main}->{statusbar}->SetStatusText("Importing feffit.inp file aborted.");
+      $rframes->{main}->status("Importing feffit.inp file aborted.");
       return 0;
     };
     my ($dnum, $idata) = &$make_data_frame($rframes->{main}, $d);
@@ -582,7 +582,7 @@ sub _feffit {
 					 "Error importing feffit.inp calculation file",
 					 wxOK|wxICON_ERROR);
       my $result = $error->ShowModal;
-      $rframes->{main}->{statusbar}->SetStatusText("Importing feffit.inp file aborted.");
+      $rframes->{main}->status("Importing feffit.inp file aborted.");
       return 0;
     };
     $p -> set(file=>q{}, folder=>q{});
@@ -618,7 +618,7 @@ sub _feffit {
   $$rdemeter->push_mru("feffit", $file);
   chdir dirname($file);
   modified(1);
-  $rframes->{main}->{statusbar}->SetStatusText("Imported old-skool Feffit input: $file");
+  $rframes->{main}->status("Imported old-skool Feffit input: $file");
 };
 
 1;

@@ -45,7 +45,7 @@ sub add_vpath {
 
   my $ted = Wx::TextEntryDialog->new( $self, "Enter a name for this virtual path", "Enter a VPath name", q{}, wxOK|wxCANCEL, Wx::GetMousePosition);
   if ($ted->ShowModal == wxID_CANCEL) {
-    $Demeter::UI::Artemis::frames{main}->{statusbar}->SetStatusText("VPath creation cancelled.");
+    $Demeter::UI::Artemis::frames{main}->status("VPath creation cancelled.");
     return;
   };
   my $name = $ted->GetValue;
@@ -102,7 +102,7 @@ sub OnMenu {
     ($id == $VPATH_DESCRIBE) and do {
       my $vpath = $listbox->GetClientData($sel);
       my $text = "\"" . $vpath->name . "\" contains: " . join(", ", map {$_->label} @{$vpath->paths});
-      $Demeter::UI::Artemis::frames{main}->{statusbar}->SetStatusText($text);
+      $Demeter::UI::Artemis::frames{main}->status($text);
       last SWITCH;
     };
 
@@ -118,7 +118,7 @@ sub OnMenu {
       };
       $listbox->Delete($sel);
       my $text = "Discarded \"" . $vpath->name . "\".";
-      $Demeter::UI::Artemis::frames{main}->{statusbar}->SetStatusText($text);
+      $Demeter::UI::Artemis::frames{main}->status($text);
       last SWITCH;
     };
   };
@@ -138,14 +138,14 @@ sub transfer {
     };
   };
   if ($found) {
-    $Demeter::UI::Artemis::frames{main}->{statusbar} -> SetStatusText("\"$name\" is already in the plotting list.");
+    $Demeter::UI::Artemis::frames{main}->status("\"$name\" is already in the plotting list.");
     return;
   };
   $plotlist->Append("VPath: $name");
   my $i = $plotlist->GetCount - 1;
   $plotlist->SetClientData($i, $vpath);
   $plotlist->Check($i,1);
-  $Demeter::UI::Artemis::frames{main}->{statusbar} -> SetStatusText("Transfered VPath \"$name\" to the plotting list.");
+  $Demeter::UI::Artemis::frames{main}->status("Transfered VPath \"$name\" to the plotting list.");
 };
 
 1;

@@ -350,7 +350,8 @@ sub version {
 };
 sub copyright {
   my ($self) = @_;
-  return "copyright " . chr(169) . " 2006-2010 Bruce Ravel";
+  #return "copyright " . chr(169) . " 2006-2010 Bruce Ravel";
+  return "copyright 2006-2010 Bruce Ravel";
 };
 sub hashes {
   my ($self) = @_;

@@ -51,6 +51,7 @@ Readonly my $EXPORT_DEMETER  => Wx::NewId();
 Readonly my $PLOT_YAML       => Wx::NewId();
 Readonly my $MODE_STATUS     => Wx::NewId();
 Readonly my $PERL_MODULES    => Wx::NewId();
+Readonly my $STATUS          => Wx::NewId();
 
 use Wx::Perl::Carp;
 $SIG{__WARN__} = sub {Wx::Perl::Carp::warn($_[0])};
@@ -89,7 +90,7 @@ sub OnInit {
   $demeter -> plot_with($demeter->co->default(qw(plot plotwith)));
 
   ## -------- import all of Artemis' various parts
-  foreach my $m (qw(GDS Plot History Journal Log Buffer Config Data Prj)) {
+  foreach my $m (qw(GDS Plot History Journal Log Buffer Status Config Data Prj)) {
     next if $INC{"Demeter/UI/Artemis/$m.pm"};
     ##print "Demeter/UI/Artemis/$m.pm\n";
     require "Demeter/UI/Artemis/$m.pm";
@@ -158,6 +159,7 @@ sub OnInit {
 
   my $helpmenu = Wx::Menu->new;
   $helpmenu->Append(wxID_ABOUT, "&About..." );
+  $helpmenu->Append($STATUS, "Show status bar buffer" );
   $helpmenu->AppendSubMenu($debugmenu, 'Debug options', 'Display debugging tools')
     if ($demeter->co->default("artemis", "debug_menus"));
 
@@ -170,7 +172,6 @@ sub OnInit {
 
   ## -------- status bar
   $frames{main}->{statusbar} = $frames{main}->CreateStatusBar;
-  $frames{main}->{statusbar} -> SetStatusText("Welcome to Artemis (" . $demeter->identify . ")");
 
   ## -------- GDS and Plot toolbar
   my $vbox = Wx::BoxSizer->new( wxVERTICAL);
@@ -299,11 +300,12 @@ sub OnInit {
   #$frames{main} -> SetSize(Wx::Size->new(Wx::SystemSettings::GetMetric(wxSYS_SCREEN_X), $h));
   $frames{main} -> SetSize(Wx::Size->new(Wx::SystemSettings::GetMetric(wxSYS_SCREEN_X), -1));
 
-  foreach my $part (qw(GDS Plot Log History Journal Buffer Config)) {
+  foreach my $part (qw(GDS Plot Log History Journal Buffer Status Config)) {
     my $pp = "Demeter::UI::Artemis::".$part;
     $frames{$part} = $pp->new($frames{main});
     $frames{$part} -> SetIcon($icon);
   };
+
   $frames{main} -> Show( 1 );
   $toolbar->ToggleTool($frames{main}->{plot_toggle}->GetId,1);
   $frames{Plot} -> Show( 1 );
@@ -347,14 +349,16 @@ sub OnInit {
     my $file = File::Spec->rel2abs( $ARGV[0] );
     read_project(\%frames, $file);
   };
+  $frames{main}->status("Welcome to Artemis (" . $demeter->identify . ")");
   1;
 }
+
 
 sub mouseover {
   my ($widget, $text) = @_;
   my $sb = $frames{main}->{statusbar};
   EVT_ENTER_WINDOW($widget, sub{$sb->PushStatusText($text); $_[1]->Skip});
-  EVT_LEAVE_WINDOW($widget, sub{$sb->PopStatusText;         $_[1]->Skip});
+  EVT_LEAVE_WINDOW($widget, sub{$sb->PopStatusText if ($sb->GetStatusText eq $text); $_[1]->Skip});
 };
 
 sub on_close {
@@ -368,7 +372,7 @@ sub on_close {
 				       wxYES_NO|wxCANCEL|wxYES_DEFAULT|wxICON_QUESTION);
     my $result = $yesno->ShowModal;
     if ($result == wxID_CANCEL) {
-      $frames{main}->{statusbar}->SetStatusText("Not exiting Artemis.");
+      $frames{main}->status("Not exiting Artemis.");
       return 0;
     };
     save_project(\%frames) if $result == wxID_YES;
@@ -458,13 +462,12 @@ sub uptodate {
   };
   $rframes->{Plot}->fetch_parameters;
 
-  modified(1);
+  #modified(1);
   return ($abort, \@data, \@paths);
 };
 
 sub fit {
   my ($button, $event, $rframes) = @_;
-  $rframes->{main}->{statusbar}->SetStatusText("Fitting (please be patient, it may take a while...)");
   my $busy = Wx::BusyCursor->new();
 
   ## reset all relevant widgets to their initial states (i.e. assume
@@ -472,19 +475,31 @@ sub fit {
   ## containing the responsible data were colored in some way to
   ## indicate that)
 
-  autosave();
   $rframes->{Plot}->{fileout}->SetValue(0);
 
   my ($abort, $rdata, $rpaths) = uptodate($rframes);
-  my $rgds = $rframes->{GDS}->reset_all;
+  my $rgds = $rframes->{GDS}->reset_all(1);
+
+  if (($#{$rdata} == -1) or ($#{$rpaths} == -1) or ($#{$rgds} == -1)) {
+    my $message = q{};
+    $message .= "You have not defined any data sets.\n"          if ($#{$rdata}  == -1);
+    $message .= "You have not defined any paths.\n"              if ($#{$rpaths} == -1);
+    $message .= "You have not defined any fitting parameters.\n" if ($#{$rgds}   == -1);
+    Wx::MessageDialog->new($rframes->{main}, $message, "Fit cannot continue", wxOK|wxICON_ERROR) -> ShowModal;
+    $rframes->{main}->status("Your fit cannot continue.");
+    undef $busy;
+    return;
+  };
+  autosave();
 
   my @data  = @$rdata;
   my @paths = @$rpaths;
   my @gds   = @$rgds;
   if ($abort) {
-    $rframes->{main}->{statusbar}->SetStatusText("There is a problem in your fit.");
+    $rframes->{main}->status("There is a problem in your fit.", "error");
     return;
   };
+  $rframes->{main}->status("Fitting (please be patient, it may take a while...)", "wait");
 
 
   ## get name, fom, and description + other properties
@@ -501,6 +516,7 @@ sub fit {
   $fit->set_mode(ifeffit=>1, screen=>0);
   my $result = $fit->fit;
   my $finishtext = q{};
+  my $code = "normal";
   if ($result eq $fit) {
     $fit -> serialize(tree     => File::Spec->catfile($frames{main}->{project_folder}, 'fits'),
 		      folder   => $fit->group,
@@ -536,7 +552,7 @@ sub fit {
       };
     };
     set_happiness_color($fit->color);
-
+    $_->update_fft(1) foreach @data;
     $fit->po->start_plot;
     $rframes->{Plot}->{limits}->{fit}->SetValue(1);
     $fit->po->plot_fit(1);
@@ -553,13 +569,14 @@ sub fit {
     #$rframes->{main}->{log_toggle}->SetValue(1);
     set_happiness_color($fit->co->default("happiness", "bad_color"));
     $finishtext = "The error report from the fit that just failed are written in the log window.";
+    $code = "error";
   };
 
   my $this_name = $fit->name;
   $rframes->{main}->{name}->SetValue("Fit ". $fit->mo->currentfit) if ($this_name =~ m{\A\s*Fit\s+\d+\z});
   $rframes->{main}->{description}->SetValue($fit->description);
   autosave($name);
-  $rframes->{main}->{statusbar}->SetStatusText($finishtext);
+  $rframes->{main}->status($finishtext, $code);
   undef $busy;
 };
 
@@ -739,6 +756,11 @@ sub OnMenuClick {
       last SWITCH;
     };
 
+    ## -------- help menu
+    ($id == $STATUS) and do {
+      $frames{Status} -> Show(1);
+      last SWITCH;
+    };
   };
 };
 
@@ -766,9 +788,9 @@ sub OnToolClick {
 sub OnDataRightClick {
   my ($self, $event) = @_;
   my $dialog = Demeter::UI::Wx::MRU->new($frames{main}, 'athena', "Select a recent Athena project file", "Recent Athena project files");
-  $frames{main}->{statusbar}->SetStatusText("There are no recent Athena project files."), return if ($dialog == -1);
+  $frames{main}->status("There are no recent Athena project files."), return if ($dialog == -1);
   if( $dialog->ShowModal == wxID_CANCEL ) {
-    $frames{main}->{statusbar}->SetStatusText("Import cancelled.");
+    $frames{main}->status("Import cancelled.");
   } else {
     Import('prj', $dialog->GetMruSelection);
   };
@@ -834,9 +856,9 @@ sub OnFeffClick {
 sub OnFeffRightClick {
   my ($self, $event) = @_;
   my $dialog = Demeter::UI::Wx::MRU->new($frames{main}, ['atoms', 'feff'], "Select a recent Feff input file, Atoms input file, or CIF file", "Recent Feff or crystal data file");
-  $frames{main}->{statusbar}->SetStatusText("There are no recent crystal files."), return if ($dialog == -1);
+  $frames{main}->status("There are no recent crystal files."), return if ($dialog == -1);
   if( $dialog->ShowModal == wxID_CANCEL ) {
-    $frames{main}->{statusbar}->SetStatusText("Import cancelled.");
+    $frames{main}->status("Import cancelled.");
   } else {
     Import('feff', $dialog->GetMruSelection);
   };
@@ -952,7 +974,7 @@ sub export {
   my @paths = @$rpaths;
   my @gds   = @$rgds;
   if ($abort) {
-    $frames{main}->{statusbar}->SetStatusText("There is a problem in your fit.");
+    $frames{main}->status("There is a problem in your fit.");
     return;
   };
   my $fit = Demeter::Fit->new(data => \@data, paths => \@paths, gds => \@gds);
@@ -964,7 +986,7 @@ sub export {
 				wxFD_SAVE|wxFD_CHANGE_DIR|wxFD_OVERWRITE_PROMPT,
 				wxDefaultPosition);
   if ($fd->ShowModal == wxID_CANCEL) {
-    $frames{main}->{statusbar}->SetStatusText("Exporting fitting model cancelled.");
+    $frames{main}->status("Exporting fitting model cancelled.");
     return;
   };
   my $fname = File::Spec->catfile($fd->GetDirectory, $fd->GetFilename);
@@ -992,6 +1014,30 @@ sub export {
   undef $fit;
 };
 
+
+package Wx::Frame;
+use Wx qw(:everything);
+my $normal = wxNullColour; #255,255,255,255);
+my $wait   = Wx::Colour->new("#C5E49A");
+my $error  = Wx::Colour->new("#FD7E6F");
+my $debug  = 0;
+sub status {
+  my ($self, $text, $type) = @_;
+  $type ||= 'normal';
+
+  if ($debug) {
+    local $|=1;
+    print $text, " -- ", join(", ", (caller)[0,2]), $/;
+  };
+
+  my $color = ($type eq 'normal') ? $normal
+            : ($type eq 'wait')   ? $wait
+            : ($type eq 'error')  ? $error
+	    :                       $normal;
+  $self->{statusbar}->SetBackgroundColour($color);
+  $self->{statusbar}->PushStatusText($text);
+  $Demeter::UI::Artemis::frames{Status}->{text}->AppendText(sprintf "[%s] %s\n", DateTime->now, $text);
+};
 
 
 1;

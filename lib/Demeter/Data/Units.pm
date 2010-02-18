@@ -16,10 +16,13 @@ package Demeter::Data::Units;
 =cut
 
 use Moose::Role;
+use MooseX::Aliases;
 
 use Carp;
 use Readonly;
 Readonly my $ETOK    => 0.262468292;
+Readonly my $PI      => 4 * atan2 1, 1;
+Readonly my $HBARC   => 1973.27053324;
 
 sub e2k {
   my ($self, $e, $how) = @_;
@@ -46,6 +49,13 @@ sub k2e {
     return ($k**2 / $ETOK) + $e0;
   };
 };
+
+sub e2l {
+  my ($self, $input);
+  ($input and ($input > 0)) or return 0;
+  return 2*$PI*$HBARC / $input;
+};
+alias l2e => 'e2l';
 
 1;
 
@@ -76,6 +86,12 @@ using the group's value for e0.
 
 This method converts between relative wavenumber and energy values
 using the group's value for e0.
+
+=item C<e2l>
+
+This method converts between absolute energy and wavelength.  C<l2e>
+is an alias for this method -- the formula is the same regardless of
+direction.
 
 =back
 

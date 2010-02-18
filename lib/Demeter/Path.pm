@@ -463,7 +463,7 @@ sub fetch {
       };
 
       ($line[0] =~ m{(?:3rd|4th|d(?:phase|r)|e[0i]|s[0s]2)}) and do {
-	$self -> evaluate($_pp_trans{$line[0]}, $line[0]);
+	$self -> evaluate($_pp_trans{$line[0]}, $line[1]);
 	last SWITCH;
       }
 

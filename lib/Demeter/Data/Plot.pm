@@ -165,7 +165,7 @@ sub _plotR_command {
     my $class = ref $self;
     croak("$class objects are not plottable");
   };
-  my $pf  = $self->mo->plot;
+  my $pf  = $self->po;
   my $string = q{};
   my $group = $self->group;
   my %open   = ('m'=>"|",        e=>"Env[",     r=>"Re[",     i=>"Im[",     p=>"Phase[");

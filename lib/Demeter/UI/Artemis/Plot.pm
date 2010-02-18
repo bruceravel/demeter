@@ -53,7 +53,7 @@ sub new {
   EVT_CLOSE($this, \&on_close);
   $this->{last} = q{};
   #my $statusbar = $this->CreateStatusBar;
-  #$statusbar -> SetStatusText(q{});
+  #$statusbar -> PushStatusText(q{});
 
   my $vbox  = Wx::BoxSizer->new( wxVERTICAL );
 
@@ -162,12 +162,14 @@ sub mouseover {
   my ($self, $widget, $text) = @_;
   my $sb = $Demeter::UI::Artemis::frames{main}->{statusbar};
   EVT_ENTER_WINDOW($self->{$widget}, sub{$sb->PushStatusText($text); $_[1]->Skip});
-  EVT_LEAVE_WINDOW($self->{$widget}, sub{$sb->PopStatusText;         $_[1]->Skip});
+  EVT_LEAVE_WINDOW($self->{$widget}, sub{$sb->PopStatusText if ($sb->GetStatusText eq $text); $_[1]->Skip});
 };
 
 
 sub fetch_parameters {
   my ($self) = @_;
+
+  $demeter->po->kweight($self->{kweight}->GetStringSelection);
   foreach my $p (qw(kmin kmax rmin rmax qmin qmax)) {
     $demeter->po->$p($self->{limits}->{$p}->GetValue);
   };
@@ -228,7 +230,7 @@ sub plot {
 				  wxFD_SAVE|wxFD_CHANGE_DIR|wxFD_OVERWRITE_PROMPT,
 				  wxDefaultPosition);
     if ($fd->ShowModal == wxID_CANCEL) {
-      $sb->SetStatusText("Saving plot to a file has been cancelled.");
+      $Demeter::UI::Artemis::frames{main}->status("Saving plot to a file has been cancelled.");
       $self->{fileout}->SetValue(0);
       return;
     };
@@ -243,6 +245,11 @@ sub plot {
     next if not $self->{plotlist}->IsChecked($i);
     push @list, $self->{plotlist}->GetClientData($i);
   };
+  if ($#list == -1) {
+    $Demeter::UI::Artemis::frames{main}->status("The plotting list is empty.");
+    undef $busy;
+  };
+
   $list[0]->data->standard if $self->{fileout}->GetValue;
   $demeter->po->space($space);
   $demeter->po->start_plot;
@@ -293,10 +300,12 @@ sub plot {
   my $ds = first {ref($_) =~ m{Data}} @list;
   $self->{indicators}->plot($ds);
 
+
+  $Demeter::UI::Artemis::frames{main}->status("Plotted in $space");
   ## restore plotting backend if this was a plot to a file
   if ($self->{fileout}->GetValue) {
     $demeter->po->finish;
-    $sb->SetStatusText("Saved plot to file \"" . $demeter->po->file . "\".");
+    $Demeter::UI::Artemis::frames{main}->status("Saved plot to file \"" . $demeter->po->file . "\".");
     $demeter->plot_with($saveplot);
     $self->{fileout}->SetValue(0);
   };

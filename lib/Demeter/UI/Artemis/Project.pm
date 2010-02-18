@@ -76,7 +76,7 @@ sub save_project {
 				  wxFD_SAVE|wxFD_CHANGE_DIR|wxFD_OVERWRITE_PROMPT,
 				  wxDefaultPosition);
     if ($fd->ShowModal == wxID_CANCEL) {
-      $rframes->{main}->{statusbar}->SetStatusText("Saving project cancelled.");
+      $rframes->{main}->status("Saving project cancelled.");
       return;
     };
     $fname = File::Spec->catfile($fd->GetDirectory, $fd->GetFilename);
@@ -106,7 +106,7 @@ sub save_project {
     &Demeter::UI::Artemis::set_mru;
     $rframes->{main}->{projectname} = basename($fname, '.fpj');
     $rframes->{main}->{projectpath} = File::Spec->rel2abs($fname);
-    $rframes->{main}->{statusbar}->SetStatusText("Saved project as ".$rframes->{main}->{projectpath});
+    $rframes->{main}->status("Saved project as ".$rframes->{main}->{projectpath});
     modified(0);
   };
 };
@@ -115,20 +115,20 @@ sub autosave {
   return if $Demeter::UI::Artemis::noautosave;
   return if not $Demeter::UI::Artemis::demeter->co->default("artemis", "autosave");
   my $main = $Demeter::UI::Artemis::frames{main};
-  $main->{statusbar}->SetStatusText("Performed autosave ...");
+  $main->status("Performing autosave ...", 'wait');
   unlink $main->{autosave_file};
   my $name = $_[0] || $main->{name}->GetValue;
   $name =~ s{\s+}{_}g;
   $name ||= "artemis";
   $main->{autosave_file} = File::Spec->catfile($Demeter::UI::Artemis::demeter->stash_folder, $name.'.autosave');
   save_project(\%Demeter::UI::Artemis::frames, $main->{autosave_file});
-  $main->{statusbar}->SetStatusText("Performed autosave ... done!");
+  $main->status("Autosave done!");
 };
 sub clear_autosave {
   return if not $Demeter::UI::Artemis::demeter->co->default("artemis", "autosave");
   my $main = $Demeter::UI::Artemis::frames{main};
   unlink $main->{autosave_file};
-  $main->{statusbar}->SetStatusText("Removed autosave file.");
+  $main->status("Removed autosave file.");
 };
 sub autosave_exists {
   opendir(my $stash, $Demeter::UI::Artemis::demeter->stash_folder);
@@ -138,11 +138,11 @@ sub autosave_exists {
 };
 sub import_autosave {
   my $dialog = Demeter::UI::Wx::AutoSave->new($Demeter::UI::Artemis::frames{main});
-  $Demeter::UI::Artemis::frames{main}->{statusbar}->SetStatusText("There are no autosave files."), return
+  $Demeter::UI::Artemis::frames{main}->status("There are no autosave files."), return
     if ($dialog == -1);
   $dialog->SetFocus;
   if( $dialog->ShowModal == wxID_CANCEL ) {
-    $Demeter::UI::Artemis::frames{main}->{statusbar}->SetStatusText("Autosave import cancelled.");
+    $Demeter::UI::Artemis::frames{main}->status("Autosave import cancelled.");
   } else {
     my $this = File::Spec->catfile($Demeter::UI::Artemis::demeter->stash_folder, $dialog->GetStringSelection);
     read_project(\%Demeter::UI::Artemis::frames, $this);
@@ -160,7 +160,7 @@ sub read_project {
 				  wxFD_OPEN|wxFD_FILE_MUST_EXIST|wxFD_CHANGE_DIR|wxFD_PREVIEW,
 				  wxDefaultPosition);
     if ($fd->ShowModal == wxID_CANCEL) {
-      $rframes->{main}->{statusbar}->SetStatusText("Project import cancelled.");
+      $rframes->{main}->status("Project import cancelled.");
       return;
     };
     $fname = File::Spec->catfile($fd->GetDirectory, $fd->GetFilename);
@@ -210,7 +210,7 @@ sub read_project {
 
       $rframes->{$fnum}->{Feff} ->{name}->SetValue($feffobject->name);
       $rframes->{$fnum}->{Paths}->{name}->SetValue($feffobject->name);
-      $rframes->{$fnum}->{statusbar}->SetStatusText("Imported crystal and Feff data from ". basename($fname));
+      $rframes->{$fnum}->status("Imported crystal and Feff data from ". basename($fname));
     };
   };
 
@@ -321,6 +321,7 @@ sub read_project {
   &Demeter::UI::Artemis::set_mru;
   $rframes->{main}->{projectpath} = $fname;
   $rframes->{main}->{projectname} = basename($fname, '.fpj');
+  $rframes->{main}->status("Imported project $fname.");
   modified(0);
 };
 
@@ -354,7 +355,7 @@ sub close_project {
 				     wxYES_NO|wxCANCEL|wxYES_DEFAULT|wxICON_QUESTION);
   my $result = $yesno->ShowModal;
   if ($result == wxID_CANCEL) {
-    $rframes->{main}->{statusbar}->SetStatusText("Not closing project.");
+    $rframes->{main}->status("Not closing project.");
     return 0;
   };
   save_project($rframes) if $result == wxID_YES;

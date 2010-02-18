@@ -73,7 +73,7 @@ sub on_save {
 				wxFD_SAVE|wxFD_CHANGE_DIR|wxFD_OVERWRITE_PROMPT,
 				wxDefaultPosition);
   if ($fd->ShowModal == wxID_CANCEL) {
-    $Demeter::UI::Artemis::frames{main}->{statusbar}->SetStatusText("Not saving journal.");
+    $Demeter::UI::Artemis::frames{main}->status("Not saving journal.");
     return;
   };
   my $fname = File::Spec->catfile($fd->GetDirectory, $fd->GetFilename);
@@ -85,7 +85,7 @@ sub save_journal {
   open (my $LOG, '>',$fname);
   print $LOG $self->{text}->GetValue;
   close $LOG;
-  $Demeter::UI::Artemis::frames{main}->{statusbar}->SetStatusText("Wrote journal to '$fname'.");
+  $Demeter::UI::Artemis::frames{main}->status("Wrote journal to '$fname'.");
 };
 
 

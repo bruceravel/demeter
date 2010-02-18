@@ -34,7 +34,7 @@ sub new {
 			       );
   EVT_CLOSE($this, \&on_close);
   my $sb = Wx::StatusBar->new($this, 1);
-  $sb -> SetStatusText(q{});
+  $sb -> PushStatusText(q{});
   my $vbox = Wx::BoxSizer->new( wxVERTICAL );
   my $pt   = Demeter::UI::Wx::PeriodicTable->new($this, $command, $sb);
 

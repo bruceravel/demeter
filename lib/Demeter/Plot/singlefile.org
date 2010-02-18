@@ -1,11 +1,11 @@
 
-* [1/9] SingleFile to do list
- - [ ] markers and indicators
- - [ ] chi(E)
- - [ ] bkg Parts in k,R,q untested
- - [X] run part seems broken
+* [5/9] SingleFile to do list
  - [ ] Plots in energy not yet implemented
- - [ ] quadplot -- need to write out an 8 column file (e mu k chik r chir q chiq)
- - [ ] Rmr, R123, k123 all work but are untested with parts
- - [ ] kq(fit) does not work (x-axis column does not get written)
+ - [ ] markers and indicators
+ - [ ] quadplot -- need to write out an 8 column file (e mu k chik r chir q chiq) (can this even be done?)
  - [ ] stddev and variance, filter, f1f2
+ - [X] chi(E)
+ - [X] bkg Parts in k,R,q untested
+ - [X] run part +seems broken+
+ - [X] Rmr, R123, k123 all work but are untested with parts
+ - [X] kq(fit) does not work +(x-axis column does not get written)+

@@ -206,27 +206,11 @@ markers and indicators
 
 =item *
 
-chi(E)
-
-=item *
-
-bkg Parts in k,R,q untested, run part seems broken
-
-=item *
-
 Plots in energy not yet implemented
 
 =item *
 
 quadplot -- need to write out an 8 column file (e mu k chik r chir q chiq)
-
-=item *
-
-Rmr, R123, k123 all work but are untested with parts
-
-=item *
-
-kq(fit) does not work (x-axis column does not get written)
 
 =item *
 

@@ -53,8 +53,8 @@ sub target {
   };
 
   ($save)
-    ? $Demeter::UI::Artemis::frames{main}->{statusbar}->SetStatusText("Now using $value for $parent-->$param and an ini file was saved")
-      : $Demeter::UI::Artemis::frames{main}->{statusbar}->SetStatusText("Now using $value for $parent-->$param");
+    ? $Demeter::UI::Artemis::frames{main}->status("Now using $value for $parent-->$param and an ini file was saved")
+      : $Demeter::UI::Artemis::frames{main}->status("Now using $value for $parent-->$param");
 
 };
 
