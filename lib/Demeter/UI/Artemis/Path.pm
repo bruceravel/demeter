@@ -173,12 +173,8 @@ sub new {
 
 sub mouseover {
   my ($self, $widget, $text) = @_;
-  EVT_ENTER_WINDOW($self->{$widget},
-		   sub {
-		     $self->{datapage}->{statusbar}->PushStatusText($text);
-		     $_[1]->Skip;
-		   });
-  EVT_LEAVE_WINDOW($self->{$widget}, sub{$self->{datapage}->{statusbar}->PopStatusText;         $_[1]->Skip});
+  EVT_ENTER_WINDOW($self->{$widget}, sub{$self->{datapage}->{statusbar}->PushStatusText($text); $_[1]->Skip;});
+  EVT_LEAVE_WINDOW($self->{$widget}, sub{$self->{datapage}->{statusbar}->PopStatusText;         $_[1]->Skip;});
 };
 
 sub populate {
@@ -436,14 +432,14 @@ sub transfer {
     };
   };
   if ($found) {
-    $self->{datapage}->{statusbar} -> PushStatusText("\"$name\" is already in the plotting list.");
+    $self->{datapage}->status("\"$name\" is already in the plotting list.");
     return;
   };
   $plotlist->Append("Path: $name");
   my $i = $plotlist->GetCount - 1;
   $plotlist->SetClientData($i, $self->{path});
   $plotlist->Check($i,1);
-  $self->{datapage}->{statusbar} -> PushStatusText("Transfered path \"$name\" to the plotting list.");
+  $self->{datapage}->status("Transfered path \"$name\" to the plotting list.");
 };
 
 

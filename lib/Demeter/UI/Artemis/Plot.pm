@@ -52,8 +52,6 @@ sub new {
 				wxMINIMIZE_BOX|wxCAPTION|wxSYSTEM_MENU|wxCLOSE_BOX);
   EVT_CLOSE($this, \&on_close);
   $this->{last} = q{};
-  #my $statusbar = $this->CreateStatusBar;
-  #$statusbar -> PushStatusText(q{});
 
   my $vbox  = Wx::BoxSizer->new( wxVERTICAL );
 
@@ -141,8 +139,10 @@ sub new {
   $this->mouseover("freeze", "When this button is checked, the plotting list will NOT be refreshed after a fit finishes.");
   $this->mouseover("clear",  "Clear all items from the plotting list.");
 
-  $this->{fileout} = Wx::ToggleButton->new($this, -1, "Save next plot to a file");
+  $this->{fileout} = Wx::ToggleButton->new($this, -1, "Save next plot to a file.");
   $vbox -> Add($this->{fileout}, 0, wxLEFT|wxRIGHT|wxBOTTOM|wxGROW, 5);
+  $this->mouseover("fileout",  "When this button is pressed, the next plot will be exported as a column data file in which each column is a trace properly stacked and scaled.");
+  EVT_TOGGLEBUTTON($this, $this->{fileout}, sub{OnFileoutToggle(@_)});
 
   $this -> SetSizerAndFit( $vbox );
   #my $hh = Wx::SystemSettings::GetMetric(wxSYS_SCREEN_Y) - $yy - 2*$windowsize - $y;
@@ -157,6 +157,16 @@ sub on_close {
   $self->GetParent->{toolbar}->ToggleTool(2, 0);
 };
 
+
+sub OnFileoutToggle {
+  my ($self, $event) = @_;
+
+  if ($self->{fileout}->GetValue) {
+    $Demeter::UI::Artemis::frames{main}->status("The next plot will be written to a column data file.");
+  } else {
+    $Demeter::UI::Artemis::frames{main}->status("The next plot will be plotted normally.");
+  };
+};
 
 sub mouseover {
   my ($self, $widget, $text) = @_;

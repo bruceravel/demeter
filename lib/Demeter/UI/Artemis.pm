@@ -110,9 +110,9 @@ sub OnInit {
   $frames{main} -> {modified} = 0;
 
   ## -------- Set up menubar
-  my $bar        = Wx::MenuBar->new;
-  my $filemenu   = Wx::Menu->new;
-  my $mrumenu    = Wx::Menu->new;
+  my $bar      = Wx::MenuBar->new;
+  my $filemenu = Wx::Menu->new;
+  my $mrumenu  = Wx::Menu->new;
 
   my $importmenu = Wx::Menu->new;
   $importmenu->Append($IMPORT_CHI,      "$CHI(k) data",                  "Import $CHI(k) data from a column data file");
@@ -125,8 +125,8 @@ sub OnInit {
   $importmenu->Enable($IMPORT_MOLECULE, 0);
 
   my $exportmenu = Wx::Menu->new;
-  $exportmenu->Append($EXPORT_IFEFFIT,  "to Ifeffit script",  "Export the current fitting model as an Ifeffit script");
-  $exportmenu->Append($EXPORT_DEMETER,  "to Demeter script",  "Export the current fitting model as a perl script using Demeter");
+  $exportmenu->Append($EXPORT_IFEFFIT,  "to an Ifeffit script",  "Export the current fitting model as an Ifeffit script");
+  $exportmenu->Append($EXPORT_DEMETER,  "to a Demeter script",   "Export the current fitting model as a perl script using Demeter");
 
   $filemenu->Append(wxID_OPEN,       "Open project",       "Read from a project file" );
   $filemenu->AppendSubMenu($mrumenu, "Recent projects",    "Open a submenu of recently used files" );
@@ -147,24 +147,27 @@ sub OnInit {
   $showmenu->Append($SHOW_SCALARS, "scalars", "Show Ifeffit scalars");
   $showmenu->Append($SHOW_STRINGS, "strings", "Show Ifeffit strings");
 
-  my $settingsmenu = Wx::Menu->new;
-  $settingsmenu->AppendSubMenu($showmenu, "Show Ifeffit ...",    "Show variables from Ifeffit");
-  $settingsmenu->Append($SHOW_BUFFER,     "Show command buffer", "Show the Ifeffit and plotting commands buffer");
-  $settingsmenu->Append($CONFIG,          "Edit Preferences",    "Show the preferences editing dialog");
-
   my $debugmenu = Wx::Menu->new;
   $debugmenu->Append($PLOT_YAML,    "Show YAML for Plot object",  "Show YAML for Plot object",  wxITEM_NORMAL );
   $debugmenu->Append($MODE_STATUS,  "Mode status",                "Mode status",  wxITEM_NORMAL );
   $debugmenu->Append($PERL_MODULES, "Perl modules",               "Show perl module versions", wxITEM_NORMAL );
 
-  my $helpmenu = Wx::Menu->new;
-  $helpmenu->Append(wxID_ABOUT, "&About..." );
-  $helpmenu->Append($STATUS, "Show status bar buffer" );
-  $helpmenu->AppendSubMenu($debugmenu, 'Debug options', 'Display debugging tools')
+  my $feedbackmenu = Wx::Menu->new;
+  $feedbackmenu->Append($SHOW_BUFFER, "Show command buffer",    'Show the Ifeffit and plotting commands buffer');
+  $feedbackmenu->Append($STATUS,      "Show status bar buffer", 'Show the buffer containing messages written to the status bars');
+  $feedbackmenu->AppendSubMenu($showmenu,  "Show Ifeffit ...",  'Show variables from Ifeffit');
+  $feedbackmenu->AppendSubMenu($debugmenu, 'Debug options',     'Display debugging tools')
     if ($demeter->co->default("artemis", "debug_menus"));
 
+  #my $settingsmenu = Wx::Menu->new;
+
+  my $helpmenu = Wx::Menu->new;
+  $helpmenu->Append(wxID_ABOUT, "&About..." );
+  $helpmenu->Append($CONFIG,          "Edit Preferences",    "Show the preferences editing dialog");
+
   $bar->Append( $filemenu,      "&File" );
-  $bar->Append( $settingsmenu,  "&Settings" );
+  $bar->Append( $feedbackmenu,  "Feed&back" );
+  #$bar->Append( $settingsmenu, "&Settings" );
   $bar->Append( $helpmenu,      "&Help" );
   $frames{main}->SetMenuBar( $bar );
 
@@ -499,6 +502,7 @@ sub fit {
     $rframes->{main}->status("There is a problem in your fit.", "error");
     return;
   };
+  my $start = DateTime->now( time_zone => 'floating' );
   $rframes->{main}->status("Fitting (please be patient, it may take a while...)", "wait");
 
 
@@ -562,13 +566,17 @@ sub fit {
     } elsif ($how =~ m{\A[krq]\z}) {
       $rframes->{Plot}->plot(q{}, $how);
     };
-    $finishtext = "Your fit is finished!";
+    my $finish = DateTime->now( time_zone => 'floating' );
+    my $dur = $finish->delta_ms($start);
+    $finishtext = sprintf "Your fit finished in %d seconds.", $dur->seconds;
+    undef $dur;
+    undef $finish;
   } else {
     $rframes->{Log}->{text}->SetValue($fit->troubletext);
     #$rframes->{Log}->Show(1);
     #$rframes->{main}->{log_toggle}->SetValue(1);
     set_happiness_color($fit->co->default("happiness", "bad_color"));
-    $finishtext = "The error report from the fit that just failed are written in the log window.";
+    $finishtext = "The error report from the fit that just failed is written in the log window.";
     $code = "error";
   };
 
@@ -577,6 +585,7 @@ sub fit {
   $rframes->{main}->{description}->SetValue($fit->description);
   autosave($name);
   $rframes->{main}->status($finishtext, $code);
+  undef $start;
   undef $busy;
 };
 
@@ -980,7 +989,7 @@ sub export {
   my $fit = Demeter::Fit->new(data => \@data, paths => \@paths, gds => \@gds);
 
   my $suffix = ($how eq 'ifeffit') ? 'iff' : 'pl';
-  ## prompt for a filename
+
   my $fd = Wx::FileDialog->new( $frames{main}, "Export this fitting model", cwd, "artemis.$suffix",
 				"fitting scripts (*.$suffix)|*.$suffix|All files|*.*",
 				wxFD_SAVE|wxFD_CHANGE_DIR|wxFD_OVERWRITE_PROMPT,
@@ -1005,7 +1014,7 @@ sub export {
   $fit -> mo -> plotcallback(sub{});
   $fit -> mo -> feedback(sub{});
 
-  ## do the fit, this writing the script file
+  ## do the fit, thus writing the script file
   $fit -> fit;
 
   ## restore mode settings
@@ -1014,10 +1023,26 @@ sub export {
   undef $fit;
 };
 
+=for Explain
+
+Every window in Artemis is a Wx::Frame.  This inserts a method into
+that namespace which serves as a choke point for writing messages to
+the status bar.  The two purposes served are (1) to apply some color
+to the text in the status bar and (2) to log all such messages.  The
+neat thing about doing it this way is that each window will write to
+its own status bar yet all messages get captured to a common log.
+
+  $wxframe->status($text, $type);
+
+where the optional $type is one of "normal", "error", or "wait", each
+of which corresponds to a different text style in both the status bar
+and the log buffer.
+
+=cut
 
 package Wx::Frame;
-use Wx qw(:everything);
-my $normal = wxNullColour; #255,255,255,255);
+use Wx qw(wxNullColour);
+my $normal = wxNullColour;
 my $wait   = Wx::Colour->new("#C5E49A");
 my $error  = Wx::Colour->new("#FD7E6F");
 my $debug  = 0;
@@ -1035,8 +1060,8 @@ sub status {
             : ($type eq 'error')  ? $error
 	    :                       $normal;
   $self->{statusbar}->SetBackgroundColour($color);
-  $self->{statusbar}->PushStatusText($text);
-  $Demeter::UI::Artemis::frames{Status}->{text}->AppendText(sprintf "[%s] %s\n", DateTime->now, $text);
+  $self->{statusbar}->SetStatusText($text);
+  $Demeter::UI::Artemis::frames{Status}->put_text($text, $type);
 };
 
 
@@ -1085,7 +1110,7 @@ F<Bundle/DemeterBundle.pm> file.
 
 =item *
 
-blah blah
+Many, many, many ...
 
 =back
 

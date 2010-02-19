@@ -25,6 +25,8 @@ use base qw(Wx::Frame);
 use Cwd;
 use List::Util qw(max);
 
+my @font = (9, wxTELETYPE, wxNORMAL, wxNORMAL, 0, "" );
+
 sub new {
   my ($class, $parent) = @_;
   my $this = $class->SUPER::new($parent, -1, "Artemis [Status buffer]",
@@ -38,6 +40,11 @@ sub new {
   $this->{text} = Wx::TextCtrl->new($this, -1, $id, wxDefaultPosition, wxDefaultSize,
 				    wxTE_MULTILINE|wxTE_READONLY|wxHSCROLL);
   $this->{text} -> SetFont( Wx::Font->new( 9, wxTELETYPE, wxNORMAL, wxNORMAL, 0, "" ) );
+
+  $this->{normal} = Wx::TextAttr->new(Wx::Colour->new('#000000'), wxNullColour, Wx::Font->new( @font ) );
+  $this->{date}   = Wx::TextAttr->new(Wx::Colour->new('#acacac'), wxNullColour, Wx::Font->new( @font ) );
+  $this->{wait}   = Wx::TextAttr->new(Wx::Colour->new('#008800'), wxNullColour, Wx::Font->new( @font ) );
+  $this->{error}  = Wx::TextAttr->new(Wx::Colour->new("#aa0000"), wxNullColour, Wx::Font->new( @font ) );
 
   $vbox -> Add($this->{text}, 1, wxGROW, 0);
 
@@ -85,6 +92,20 @@ sub save_log {
 sub on_close {
   my ($self) = @_;
   $self->Show(0);
+};
+
+sub put_text {
+  my ($self, $text, $type) = @_;
+
+  my $was = $self -> {text} -> GetInsertionPoint;
+  $self->{text}->AppendText(sprintf "[%s]", DateTime->now);
+  my $is = $self -> {text} -> GetInsertionPoint;
+  $self->{text}->SetStyle($was, $is, $self->{date});
+
+  $was = $self -> {text} -> GetInsertionPoint;
+  $self->{text}->AppendText(sprintf " %s\n", $text);
+  $is = $self -> {text} -> GetInsertionPoint;
+  $self->{text}->SetStyle($was, $is, $self->{$type});
 };
 
 1;

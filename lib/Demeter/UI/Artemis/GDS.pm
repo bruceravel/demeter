@@ -561,7 +561,7 @@ sub OnGridMenu {
     $parent->$cb;
   } elsif ($which > 199) {	# explain submenu
     my $i = $which - 200;
-    $parent->{statusbar} -> PushStatusText($types->[$i] . ": " . $explain{$types->[$i]});
+    $parent->status($types->[$i] . ": " . $explain{$types->[$i]});
   } else {			# change type submenu
     my $i = $which - 100;
     $parent->change($types->[$i]);

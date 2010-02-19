@@ -64,6 +64,7 @@ Readonly my $DATA_EPSK		=> Wx::NewId();
 Readonly my $DATA_NIDP		=> Wx::NewId();
 Readonly my $DATA_SHOW		=> Wx::NewId();
 Readonly my $DATA_YAML		=> Wx::NewId();
+Readonly my $DATA_EXPORT	=> Wx::NewId();
 
 Readonly my $FIT_SAVE_K	        => Wx::NewId();
 Readonly my $FIT_SAVE_K1        => Wx::NewId();
@@ -78,6 +79,7 @@ Readonly my $FIT_SAVE_QI        => Wx::NewId();
 
 Readonly my $PATH_TRANSFER	=> Wx::NewId();
 Readonly my $PATH_FSPATH	=> Wx::NewId();
+Readonly my $PATH_SU	        => Wx::NewId();
 Readonly my $PATH_RENAME	=> Wx::NewId();
 Readonly my $PATH_SHOW		=> Wx::NewId();
 Readonly my $PATH_ADD		=> Wx::NewId();
@@ -432,10 +434,9 @@ sub new {
 };
 
 sub mouseover {
-  my ($self, $widget, $text) = @_;                                         # $event --v
-  my $sb = $Demeter::UI::Artemis::frames{main}->{statusbar};
+  my ($self, $widget, $text) = @_;
   EVT_ENTER_WINDOW($self->{$widget}, sub{$self->{statusbar}->PushStatusText($text); $_[1]->Skip});
-  EVT_LEAVE_WINDOW($self->{$widget}, sub{$self->{statusbar}->PopStatusText if ($sb->GetStatusText eq $text); $_[1]->Skip});
+  EVT_LEAVE_WINDOW($self->{$widget}, sub{$self->{statusbar}->PopStatusText if ($self->{statusbar}->GetStatusText eq $text); $_[1]->Skip});
 };
 
 sub initial_page_panel {
@@ -569,11 +570,13 @@ sub make_menubar {
   $self->{datamenu}->AppendSubMenu($markedsave_menu, "Save data + marked paths as ...", "Save a column data file containing the data and all marked paths from this data's path list.");
   $self->{datamenu}->AppendSeparator;
   $self->{datamenu}->Append($PATH_FSPATH,      "Quick first shell model", "Generate a quick first shell fitting model", wxITEM_NORMAL );
+  $self->{datamenu}->Append($PATH_SU,          "Import structural unit",  "Import a structural unit", wxITEM_NORMAL );
   $self->{datamenu}->AppendSeparator;
   $self->{datamenu}->Append($DATA_BALANCE,     "Balance interstitial energies", "Adjust E0 for every path so that the interstitial energies for each Feff calculation are balanced",  wxITEM_NORMAL );
   $self->{datamenu}->Append($DATA_DEGEN_N,     "Set all degens to Feff",   "Set degeneracies for all paths in this data set to values from Feff",  wxITEM_NORMAL );
   $self->{datamenu}->Append($DATA_DEGEN_1,     "Set all degens to one",    "Set degeneracies for all paths in this data set to one (1)",  wxITEM_NORMAL );
   $self->{datamenu}->AppendSeparator;
+  $self->{datamenu}->Append($DATA_EXPORT,     "Export parameters to other data sets", "Export these FT and fitting parameters to other data sets.");
   $self->{datamenu}->Append($DATA_KMAXSUGEST, "Set kmax to Ifeffit's suggestion", "Set kmax to Ifeffit's suggestion, which is computed based on the staistical noise", wxITEM_NORMAL );
   $self->{datamenu}->Append($DATA_EPSK,       "Show $EPSILON",                    "Show statistical noise for these data", wxITEM_NORMAL );
   $self->{datamenu}->Append($DATA_NIDP,       "Show Nidp",                        "Show the number of independent points in these data", wxITEM_NORMAL );
@@ -673,7 +676,7 @@ sub make_menubar {
   $self->{menubar}->Append( $self->{actionsmenu}, "&Actions" );
   $self->{menubar}->Append( $self->{debugmenu},   "Debu&g" ) if ($demeter->co->default("artemis", "debug_menus"));
 
-  map { $self->{datamenu} ->Enable($_,0) } ($DATA_BALANCE);
+  map { $self->{datamenu} ->Enable($_,0) } ($DATA_BALANCE, $PATH_SU, $DATA_EXPORT);
 
   $self->{menubar}->SetHelpString(3,    "Blah blah");
 };
@@ -1852,14 +1855,14 @@ sub transfer {
     };
   };
   if ($found) {
-    $self->{statusbar} -> PushStatusText("\"$name\" is already in the plotting list.");
+    $self->status("\"$name\" is already in the plotting list.");
     return;
   };
   $plotlist->Append("Data: $name");
   my $i = $plotlist->GetCount - 1;
   $plotlist->SetClientData($i, $self->{data});
   $plotlist->Check($i,1);
-  $self->{statusbar} -> PushStatusText("Transfered data set \"$name\" to the plotting list.");
+  $self->status("Transfered data set \"$name\" to the plotting list.");
 };
 
 
@@ -1878,7 +1881,7 @@ sub clone {
   $newpage->{pp_n}->SetValue($path->n);
   $newpage->include_label(0,$datapage->{pathlist}->GetSelection);
 
-  $datapage->{statusbar} -> PushStatusText("Cloned $LAQUO" . $path->name . "$RAQUO and set N to half its value for the new and old paths.");
+  $datapage->status("Cloned $LAQUO" . $path->name . "$RAQUO and set N to half its value for the new and old paths.");
 };
 
 sub process_histogram {
@@ -1960,11 +1963,11 @@ sub quickfs {
 					$dialog->{edge}->GetStringSelection,);
 
   if (lc($abs) !~ m{\A$element_regexp\z}) {
-    $datapage->{statusbar} -> PushStatusText("Absorber $abs is not a valid element symbol.");
+    $datapage->status("Absorber $abs is not a valid element symbol.");
     return;
   };
   if (lc($scat) !~ m{\A$element_regexp\z}) {
-    $datapage->{statusbar} -> PushStatusText("Scatterer $scat is not a valid element symbol.");
+    $datapage->status("Scatterer $scat is not a valid element symbol.");
     return;
   };
 

@@ -48,15 +48,6 @@ sub now {
   my ($self) = @_;
   return sprintf("%s", DateTime->now(time_zone => 'local'));;
 };
-#   my @tz = POSIX::tzname();
-#   my @time = localtime;
-#   my $month = (qw/January February March April May June July
-# 	          August September October November December/)[$time[4]];
-#   my $year = 1900 + $time[5];
-#   my $zone = ($time[8]) ? $tz[1] : $tz[0];
-#   return sprintf "%2.2u:%2.2u:%2.2u %s on %s %s, %s",
-#     reverse(@time[0..2]), $zone, $time[3], $month, $year;
-#   # ^^^ this gives hour:min:sec
 
 sub environment {
   my ($self) = @_;
@@ -78,18 +69,22 @@ sub module_environment {
 		     MooseX::StrictConstructor
 		     MooseX::Singleton
 		     MooseX::Types
-		     String::Random
-		     Text::Template
 		     Archive::Zip
+		     Capture::Tiny
 		     Chemistry::Elements
 		     Config::IniFiles
+		     DateTime
 		     Graphics::GnuplotIF
 		     Math::Round
+		     Pod::POM
 		     Readonly
 		     Regexp::Common
 		     Regexp::Optimizer
 		     Heap::Fibonacci
+		     String::Random
+		     Text::Template
 		     Tree::Simple
+		     YAML::Tiny
 		  )) {
     my $v = '$' . $p . '::VERSION';
     my $l = 30 - length($p);
