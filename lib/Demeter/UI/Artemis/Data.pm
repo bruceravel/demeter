@@ -613,14 +613,14 @@ sub make_menubar {
   $self->{pathsmenu}->Append($PATH_RENAME, "Rename displayed path",            "Rename the path currently on display", wxITEM_NORMAL );
   $self->{pathsmenu}->Append($PATH_SHOW,   "Show displayed path",              "Evaluate and show the path parameters for the path currently on display", wxITEM_NORMAL );
   $self->{pathsmenu}->AppendSeparator;
-  $self->{pathsmenu}->Append($DISCARD_THIS, "Discard displayed path",     "Discard the path currently on display", wxITEM_NORMAL );
+  $self->{pathsmenu}->AppendSubMenu($save_menu, "Save displayed path in ...", "Save a column data file containing only the displayed path." );
+  $self->{pathsmenu}->Append($PATH_CLONE, "Clone displayed path", "Make a copy of the currently displayed path", wxITEM_NORMAL );
   $self->{pathsmenu}->AppendSeparator;
   $self->{pathsmenu}->Append($PATH_ADD,    "Add path parameter",     "Add path parameter to many paths", wxITEM_NORMAL );
   $self->{pathsmenu}->AppendSubMenu($export_menu, "Export all path parameters to ...", "Export the path parameters from the displayed path to other paths in this fitting model.");
-  $self->{pathsmenu}->AppendSeparator;
-  $self->{pathsmenu}->AppendSubMenu($save_menu, "Save displayed path in ...", "Save a column data file containing only the displayed path." );
-  $self->{pathsmenu}->Append($PATH_CLONE, "Clone displayed path", "Make a copy of the currently displayed path", wxITEM_NORMAL );
   $self->{pathsmenu}->Append($PATH_HISTO, "Make histogram", "Generate a histogram using the currently displayed path", wxITEM_NORMAL );
+  $self->{pathsmenu}->AppendSeparator;
+  $self->{pathsmenu}->Append($DISCARD_THIS, "Discard displayed path",     "Discard the path currently on display", wxITEM_NORMAL );
 #  $self->{pathsmenu}->AppendSeparator;
 #  $self->{pathsmenu}->AppendSubMenu($explain_menu, "Explain path parameter ..." );
 
@@ -635,16 +635,16 @@ sub make_menubar {
 
   ## -------- marks menu
   $self->{markmenu}  = Wx::Menu->new;
-  $self->{markmenu}->Append($MARK_ALL,    "Mark all\tCTRL+SHIFT+a",      "Mark all paths for this $CHI(k)",             wxITEM_NORMAL );
-  $self->{markmenu}->Append($MARK_NONE,   "Unmark all\tCTRL+SHIFT+u",    "Unmark all paths for this $CHI(k)",           wxITEM_NORMAL );
-  $self->{markmenu}->Append($MARK_INVERT, "Invert marks\tCTRL+SHIFT+i",  "Invert all marks for this $CHI(k)",           wxITEM_NORMAL );
-  $self->{markmenu}->Append($MARK_REGEXP, "Mark regexp\tCTRL+SHIFT+r",   "Mark by regular expression for this $CHI(k)", wxITEM_NORMAL );
-  $self->{markmenu}->AppendSeparator;
-  $self->{markmenu}->Append($MARK_INC,    "Mark included\tCTRL+SHIFT+c", "Mark all paths included in the fit",   wxITEM_NORMAL );
-  $self->{markmenu}->Append($MARK_EXC,    "Mark excluded\tCTRL+SHIFT+x", "Mark all paths excluded from the fit", wxITEM_NORMAL );
+  $self->{markmenu}->Append($MARK_ALL,    "Mark all\tCTRL+SHIFT+a",              "Mark all paths for this $CHI(k)",             wxITEM_NORMAL );
+  $self->{markmenu}->Append($MARK_NONE,   "Unmark all\tCTRL+SHIFT+u",            "Unmark all paths for this $CHI(k)",           wxITEM_NORMAL );
+  $self->{markmenu}->Append($MARK_INVERT, "Invert marks\tCTRL+SHIFT+i",          "Invert all marks for this $CHI(k)",           wxITEM_NORMAL );
+  $self->{markmenu}->Append($MARK_REGEXP, "Mark regexp\tCTRL+SHIFT+r",           "Mark by regular expression for this $CHI(k)", wxITEM_NORMAL );
   $self->{markmenu}->AppendSeparator;
   $self->{markmenu}->Append($MARK_BEFORE, "Mark before current\tCTRL+SHIFT+b",   "Mark this path and all paths above it in the path list for this $CHI(k)", wxITEM_NORMAL );
-  $self->{markmenu}->Append($MARK_AFTER,  "Mark after current\tCTRL+SHIFT+f",    "Mark all paths after this one in the path list for this $CHI(k)", wxITEM_NORMAL );
+  $self->{markmenu}->Append($MARK_AFTER,  "Mark after current\tCTRL+SHIFT+f",    "Mark all paths after this one in the path list for this $CHI(k)",         wxITEM_NORMAL );
+  $self->{markmenu}->AppendSeparator;
+  $self->{markmenu}->Append($MARK_INC,    "Mark included\tCTRL+SHIFT+c",         "Mark all paths included in the fit",   wxITEM_NORMAL );
+  $self->{markmenu}->Append($MARK_EXC,    "Mark excluded\tCTRL+SHIFT+x",         "Mark all paths excluded from the fit", wxITEM_NORMAL );
   $self->{markmenu}->AppendSeparator;
   $self->{markmenu}->Append($MARK_SS,     "Mark SS paths\tCTRL+SHIFT+s",         "Mark all single scattering paths for this $CHI(k)", wxITEM_NORMAL );
   $self->{markmenu}->Append($MARK_MS,     "Mark MS paths\tCTRL+SHIFT+m",         "Mark all multiple scattering paths for this $CHI(k)", wxITEM_NORMAL );

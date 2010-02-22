@@ -1,11 +1,11 @@
 [% META title = 'Importing column data files' %]
 
 [% FILTER html_para %]
-A common situation for data import involves raw data from a beamline.
-In this case, [% demeter %] assumes that your data are in columns,
-that one of the columns represents energy, and that two or more of the
-remaining columns represent signals on the various detectors.  In this
-case, you must explicitly specify which column is which when you
+The most common situation for data import involves raw data from a
+beamline.  In this case, [% demeter %] assumes that your data are in
+columns, that one of the columns represents energy, and that two or
+more of the remaining columns represent signals on the various
+detectors.  You must explicitly specify which column is which when you
 define the Data object.
 [% END %]
 
@@ -32,10 +32,10 @@ $data -> plot('E');
 
 [% FILTER html_para %]
 The details of how to turn the columns into [% mu %] data are given at
-lines 12 to 15.  The energy column is identified as the first column
+lines 7 to 10.  The energy column is identified as the first column
 in the data file.  The manner in which the columns are identified,
 i.e. the use of the dollar sign ([% INCLUDE font/mono a='$' %]) is
-borrowed from the Gnuplot plotting program.  This introduced a
+borrowed from the Gnuplot plotting program.  This introduces a
 potential stumbling block in a perl script.  The
 [% INCLUDE font/mono a='$' %] symbol is, of course, the sigil denoting
 a scalar in perl and things like 
@@ -73,10 +73,10 @@ later sections of the document.
 
 That these are transmission data is indicated by the value of the
 [% INCLUDE font/mono a='ln' %] attribute.  Set to 1, the columns will
-be processed as tranmission data, i.e. 
+be processed as transmission data, i.e. 
 [% mu %]=ln([% i0 %]/[% it %]) .  Set to 0 (or unspecified as
 zero is the default), the columns will be processed as fluorescence
-data, i.e. [% mu %]=[% if %]/[% i0 %].
+data, i.e. [% mu %]=[% if %]/[% i0 -%].
 
 In this example, the [% i0 %] detector is in column 2 of the data file
 and the [% it %] detector is in column 3.
@@ -141,8 +141,8 @@ This will add up the contents of columns 4 through 7 then divide by
 column 2.
 
 You may also wish to import each channel of the MED into individual
-Data groups so each channel they may be examined, processed, and
-plotted individually.  An efficient way of doing so is explained in
+Data groups so each channel may be examined, processed, and plotted
+individually.  An efficient way of doing so is explained in
 [% INCLUDE html/link text="the section on multichannel data"
                      link="mc.html" %].
 [% END %]

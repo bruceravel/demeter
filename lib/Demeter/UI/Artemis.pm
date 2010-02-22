@@ -52,6 +52,7 @@ Readonly my $PLOT_YAML       => Wx::NewId();
 Readonly my $MODE_STATUS     => Wx::NewId();
 Readonly my $PERL_MODULES    => Wx::NewId();
 Readonly my $STATUS          => Wx::NewId();
+Readonly my $DOCUMENT        => Wx::NewId();
 
 use Wx::Perl::Carp;
 $SIG{__WARN__} = sub {Wx::Perl::Carp::warn($_[0])};
@@ -136,6 +137,8 @@ sub OnInit {
   $filemenu->AppendSubMenu($importmenu, "Import...", "Export a fitting model from ..." );
   $filemenu->AppendSubMenu($exportmenu, "Export...", "Export the current fitting model as ..." );
   $filemenu->AppendSeparator;
+  $filemenu->Append(wxID_PREFERENCES , "Edit Preferences",   "Show the preferences editing dialog");
+  $filemenu->AppendSeparator;
   $filemenu->Append(wxID_CLOSE, "&Close" );
   $filemenu->Append(wxID_EXIT, "E&xit" );
   $frames{main}->{filemenu} = $filemenu;
@@ -162,11 +165,12 @@ sub OnInit {
   #my $settingsmenu = Wx::Menu->new;
 
   my $helpmenu = Wx::Menu->new;
+  $helpmenu->Append($DOCUMENT,  "Read user manual" );
   $helpmenu->Append(wxID_ABOUT, "&About..." );
-  $helpmenu->Append($CONFIG,          "Edit Preferences",    "Show the preferences editing dialog");
+  $helpmenu->Enable($DOCUMENT,0);
 
   $bar->Append( $filemenu,      "&File" );
-  $bar->Append( $feedbackmenu,  "Feed&back" );
+  $bar->Append( $feedbackmenu,  "&Monitor" );
   #$bar->Append( $settingsmenu, "&Settings" );
   $bar->Append( $helpmenu,      "&Help" );
   $frames{main}->SetMenuBar( $bar );
@@ -705,7 +709,7 @@ sub OnMenuClick {
       $frames{Buffer}->Show(1);
       last SWITCH;
     };
-    ($id == $CONFIG) and do {
+    ($id == wxID_PREFERENCES) and do {
       $frames{Config}->Show(1);
       last SWITCH;
     };

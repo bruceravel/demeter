@@ -6,14 +6,14 @@ On occassion, you will need to import a data file containing
 have the background removed and to be properly normalized.  This is
 allowed in [% demeter %] but is strongly discouraged.  Many features
 of [% demeter %] that are nominally related to the [% chik %] data
-still make use of earlier aspects of the data processing.  And example
+still make use of earlier aspects of the data processing.  An example
 of this is explained in
 [% INCLUDE html/link text="the section on sanity checking of fitting models"
                      link="../fit/sanity.html" %].
-One of the errors checked for in a fitting model is to have the
-beginning of the fitting range in R-space come before the [% rbkg %]
-value used in the background removal.  That check cannot possibly
-happen for a Data object that begins as imported [% chik %] data.
+One of those sanity checks is to have the beginning of the fitting
+range in R-space come before the [% rbkg %] value used in the
+background removal.  That check cannot possibly happen for a Data
+object that begins as imported [% chik %] data.
 
 Importing [% chik %] data is done like so:
 [% END %]

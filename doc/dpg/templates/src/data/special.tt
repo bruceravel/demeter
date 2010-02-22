@@ -59,7 +59,7 @@ writes the transformed data to a transitional file.  This
 transitional file is usually placed in the stash directory (link to section
 explaining the stash directory), but that is not a strict requirement.
 The fully resolved name of the transitional file is returned.  This
-method can use any tools available, ranging from simple perl to
+method can use any tools available, ranging from straight perl to
 [% ifeffit %] to serious math packages such as 
 [% INCLUDE html/link
 link="http://search.cpan.org/~chm/PDL/" text="the perl data language"%]
@@ -147,6 +147,12 @@ algorithm developed and implemented by Joe Woicik and Bruce Ravel. The
 output data file contains columns for each corrected detector channel
 as well as columns for the various ion chambers.  This is an example of
 a file type plugin which uses [% ifeffit %] dirrectly. 
+[% END %]
+[% WRAPPER html/dt dt="DUBBLE" %]
+Files from the DUBBLE beamline (BM26) at ESRF.  This plugin converts
+monochromator angle into from millidegrees to energy and (as needed)
+disentanlges the confusing layout of data from the multi-element
+detector, writing out a file that can easily be imported by Athena.
 [% END %]
 [% WRAPPER html/dt dt="Lytle" %]
 Import files from the Lytle database. This plugin imports those data

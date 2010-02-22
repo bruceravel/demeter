@@ -9,7 +9,7 @@ data from a variety of sources and make attractive plots of one or
 more data sets in any of energy, k-space, R-space, or back-transform
 k-space.
 
-The sections of thiose chapter deal with importing data from each of
+The sections of this chapter deal with importing data from each of
 the following kinds of files.
 [% END %]
 
@@ -29,6 +29,9 @@ ASCII data file containing columns of energy and detector readings
 [% WRAPPER html/li %]
 ASCII data file containing columns of energy and detector readings for
 multiple channels of data
+[% END %]
+[% WRAPPER html/li %]
+Data files from beamlines that cannot be imported using any of the above.
 [% END %]
 [% END %]
 
@@ -54,8 +57,8 @@ text="strict" %] and [% INCLUDE html/link
 link="http://perldoc.perl.org/warnings.html"
 text="warnings" %] pragmas are imported automatically when [% demeter %] is 
 imported.  That is, [% demeter %] requires that your programs conform
-to these two pragmas.  That is such an inherently good idea that if
-you are not already doing so, you would be well-advised to start.
+to these two pragmas.  That is such an inherently good idea that [% demeter %]
+insists upon it.
 Exporting these two perl pragmata is accomplished in the same manner
 as for [% INCLUDE html/link
 link="http://search.cpan.org/~flora/Moose/" text="Moose" %]

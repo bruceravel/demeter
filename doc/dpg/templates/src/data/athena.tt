@@ -32,6 +32,19 @@ $data -> plot('E');
 [% END %]
 
 [% FILTER html_para %]
+The [% INCLUDE font/mono a='$data' %] scalar contains a Data object.
+Internally, the [% INCLUDE font/mono a='record' %] method 
+does the following
+[% END %]
+
+[% WRAPPER codesample -%]
+$data = Demeter::Data->new();
+[% END %]
+
+[% FILTER html_para %]
+setting attributes appropriately and pushing the associated data
+arrays into [% ifeffit %].
+
 You can import several records at a time by specifying a list of
 record identifiers:
 [% END %]

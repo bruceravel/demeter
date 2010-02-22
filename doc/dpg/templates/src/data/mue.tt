@@ -1,10 +1,10 @@
 [% META title = 'Importing mu(E) data files' %]
 
 [% FILTER html_para %]
-The most basic form of data import is from a column data file with
-columns including energy and [% mu %].  In that case, the data has
-already been processed from its raw form and saved in an immediately
-useful form.
+The most basic form of data import is from a column data file with the
+first and second columns including energy and [% mu %].  In that case,
+the data has already been processed from its raw form and saved in this
+immediately useful form.
 
 Importing a data file of this sort is very simple, as shown in this
 example: 
@@ -43,7 +43,7 @@ $data -> datatype('xmu');
 Parameters for normalization, background removal, and Fourier transforms
 are set as attributes of the Data object.  In this example, several
 basic data processing parameters (discussed in detail in the
-docuemntation for the [% INCLUDE font/module a="Demeter::Data" %]
+documentation for the [% INCLUDE font/module a="Demeter::Data" %]
 module) are set using the [% INCLUDE font/mono a="set" %] method.
 [% END %]
 
@@ -88,9 +88,13 @@ $data -> bkg_rbkg(1.2);
 [% END %]
 
 [% FILTER html_para %]
+Each attribute has an accessor method for getting and setting the
+value of the attribute that has the same name as the attribute itself.
+
 To get and set several parameters at a time, you can use the 
 [% INCLUDE font/mono a="get" %] and
-[% INCLUDE font/mono a="set" %] methods:
+[% INCLUDE font/mono a="set" %] methods, which are thin wrappers around
+the normal accessors:
 [% END %]
 
 [% WRAPPER codesample -%]
@@ -113,4 +117,9 @@ my $data = Demeter::Data -> new(file => "data/fe.060.xmu",
                                 bkg_nor1 => 100,  bkg_nor2 => 1800,
                                 fft_kmax => 3,    fft_kmin => 17,
                                );
+[% END %]
+
+[% FILTER html_para %]
+All the arguments of [% INCLUDE font/mono a="new" %] are passed to the
+[% INCLUDE font/mono a="set" %] method.
 [% END %]
