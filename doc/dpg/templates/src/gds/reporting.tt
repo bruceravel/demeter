@@ -9,7 +9,9 @@ object and its parameter.  This example shows three of these:
 [% END %]
 
 [% WRAPPER codeexample -%]
-my $amp_param = Demeter::GDS -> new(gds => 'guess', name => 'amp', mathexp => 1);
+my $amp_param = Demeter::GDS -> new(gds     => 'guess', 
+                                    name    => 'amp',
+                                    mathexp => 1);
 ## ... some time later, after a fit ...
 print $amp_param -> note, $/;
 print $amp_param -> report, $/;

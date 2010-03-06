@@ -1,6 +1,6 @@
 [% dots  = template.nosubpages ? ".." : "../.." -%]
 <div class=copyright>
-  [% demeter %] is copyright &copy; 2007-[% crdate %] Bruce Ravel
+  [% demeter %] is copyright &copy; 2009-[% crdate %] Bruce Ravel
   <br />
   This document is copyright &copy; [% crdate %] Bruce Ravel
   <br />

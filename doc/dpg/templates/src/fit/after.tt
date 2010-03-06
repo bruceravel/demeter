@@ -1,5 +1,107 @@
 [% META title = 'After a fit' %]
 
 [% FILTER html_para %]
-After a fit
+After a fit finishes, each of the following tasks happens:
+[% END %]
+
+[% WRAPPER html/list type="ol" %]
+[% WRAPPER html/li %]
+Best fit values and error bars are stored for each GDS object defining
+a guess parameter.
+[% END %]
+[% WRAPPER html/li %]
+Final values are stored for each GDS object defining
+a def parameter.
+[% END %]
+[% WRAPPER html/li %]
+All after parameters are evaluated.
+[% END %]
+[% WRAPPER html/li %]
+The residual of the fit is calculated.
+[% END %]
+[% WRAPPER html/li %]
+The statistics of the fit, including [% chisqr %], reduced [% chisqr %], 
+R-factor, and all correlations between guess parameters are stored in
+the Fit object.
+[% END %]
+[% WRAPPER html/li %]
+All path parameters are evaluated and stored in the Path objects.
+[% END %]
+[% WRAPPER html/li %]
+The fit's [% INCLUDE font/quote a='happiness' %] (see the next section
+for details) is evaluated.
+[% END %]
+[% WRAPPER html/li %]
+All GDS parameters flagged for automatoic annotation are annotated.
+[% END %]
+[% END %]
+
+[% FILTER html_para %]
+All of that is a detailed way of saying that every object involved in
+the fit is ready to be used for useful and interesting chores after
+the fit.  All Data and Path objects are ready to be plotted.  The fit
+can be saved a Fit serialization.  Column data files can be exported.
+A log file can be written.  Any of the chores can happen with
+confidence that every thing is completely up-t0-date with the results
+of the fit.
+
+Picking up from the example of 
+[% INCLUDE html/link text="the multiple data set fit" link="collection.html" %],
+the following example demonstrates how to perform several of the
+common after-fit chores that might be part of a fitting script.  The
+previous example demonstrated how to make an interesting plot using
+the two data sets and their fits.
+[% END %]
+
+[% WRAPPER codeexample -%]
+### ... picking up at line 61 of the previous example ...
+
+## do the fit
+$fit -> fit;
+
+## write a log file
+my ($header, $footer) = ('', '');
+$fit -> logfile("cufit.log", $header, $footer);
+
+$fit -> freeze(file=>"cu_temperature.dpj");
+
+$data[0]->save("fit", "cu_10K.fit");
+$data[0]->save("fit", "cu_150K.fit");
+
+$fit -> interview;
+[% END %]
+
+[% FILTER html_para %]
+At line 8 a log file is written.  The first argument of the 
+[% INCLUDE font/mono a='logfile' %] method is the name of the output
+log file.  The other two arguments, both set to empty strings in this
+example, contain user-specified text that is written to the beginning
+and end of log file. 
+
+At line 10 the fit is serialized.  This serialization file is simply a
+normal zip file containing the serializations of all the objects used
+in the fit along with a log file and a few other results of the fit.
+The convention is for this zip file to have the extension
+[% INCLUDE font/mono a='.dpj' %] (i.e. [% demeter %] project).
+
+At lines 12 and 13, the results of the fit to each data set are saved
+as column data files.  These files contain columns with the k, data,
+the fit, the window, the residual, and the background function is it
+was corefined.  See the
+[% INCLUDE html/link text="chapter on output formats" link="../output.html" %]
+for more details on this and other column output formats.
+
+At line 15, the [% INCLUDE font/mono a='interview' %] method is
+called.  This is a simple terminal application for examining the
+results of the fit.  The log file and statistical parameters of the
+fit can be examined using this application and simple plots can be
+made.  The interview is a bare-bones tool.  But it is a nice
+compromise between using a GUI and writing your own tools to examine
+the results of the fit.
+
+[% demeter %] ships with a command line program called 
+[% INCLUDE font/mono a='rdfit' %] which is a wrapper around the 
+[% INCLUDE font/mono a='interview' %] method.  It reads a dpj file
+specified at the command line, imports it into a Fit object, then runs
+the [% INCLUDE font/mono a='interview' %] method.
 [% END %]

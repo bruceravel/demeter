@@ -30,6 +30,12 @@ my @common = (fft_kmin   => 3,        fft_kmax   => 14,
              );
 $_ -> set(@common) foreach @data;
 
+## run a Feff calculation on copper metal
+my $feff = Demeter::Feff -> new(file => "cu_metal.inp");
+$feff -> set(workspace => "cu_workspace/", screen => 0,);
+$feff -> potph -> pathfinder;
+my @list_of_paths = @{ $feff-> pathlist };
+
 ## make GDS objects for an isotropic expansion, correlated Debye model fit to copper
 my @gds =  (Demeter::GDS -> new(gds => 'guess', name => 'alpha10',  mathexp => 0),
             Demeter::GDS -> new(gds => 'guess', name => 'alpha150', mathexp => 0),
@@ -38,12 +44,6 @@ my @gds =  (Demeter::GDS -> new(gds => 'guess', name => 'alpha10',  mathexp => 0
             Demeter::GDS -> new(gds => 'guess', name => 'theta',    mathexp => 500),
             Demeter::GDS -> new(gds => 'set',   name => 'sigmm',    mathexp => 0.00052),
            );
-
-## run a Feff calculation on copper metal
-my $feff = Demeter::Feff -> new(file => "cu_metal.inp");
-$feff -> set(workspace => "cu_workspace/", screen => 0,);
-$feff -> potph -> pathfinder;
-my @list_of_paths = @{ $feff-> pathlist };
 
 ## make Path objects for the first 5 paths in copper (3 shell fit)
 my @paths = ();
@@ -88,27 +88,27 @@ $data[0] -> pause;
 [% END %]
 
 [% FILTER html_para %]
-This script bears a strog resemblance to the one in the previous
+This script bears a strong resemblance to the one in the previous
 section.  There are a couple of small differences.  At lines 8-16, two
 records are imported from the [% athena %] project file.  They both
 have parameters set appropriately.  One fewer GDS ojects at lines
-19-25 is defined compared to theprevious script.  This is because the
+19-25 is defined compared to the previous script.  This is because the
 temperature parameter of [% ifeffit %]'s
 [% INCLUDE font/mono a='debye' %] function is explicitly set to the
 correct value at lines 43 and 51.
 
-One major difference of this multiple data set fitting model is at
+The major difference of this multiple data set fitting model is at
 line 57.  Both Data objects are supplied to the Fit object.  This is
 the fundamental difference between a single and multiple data set fit
 -- the number of items in the Fit object's 
 [% INCLUDE font/mono a='data' %] attribute.  Very cool!
 
-The other major difference is shown at lines 47-52.  In those lines a
+Another major difference is shown at lines 47-52.  In those lines a
 set of Path objects is set up and associated with the second Data
 object.  At lines 37-44, Path objects are set up for the 10 K data in
 identical manner to the script in the previous section.  At line 48,
-each Path object is cloned, returning a new Path object which is
-an identical copy.  These copies are added to the
+each Path object is cloned, returning a new Path object with all the same
+attributes.  These copies are added to the
 [% INCLUDE font/mono a='@paths' %] list, with care taken at line 47
 to do the counting correctly.  In lines 49-52, only those parameters
 that need to be changed to be appropriate for the 150 K data set are
@@ -121,8 +121,8 @@ Note that the [% INCLUDE font/mono a='sp' %] atrtibute is
 central to [% demeter %]'s efficient use of [% feff %].  The same
 ScatteringPath object is used for the Path object associated with the
 10 K Data object [% INCLUDE font/b a='and' %] for the Path object
-associated with the 150 K Data object.  This is comewhat equivalent,
-conceptually, with using the same 
+associated with the 150 K Data object.  This is conceptually equivalent
+to using the same 
 [% INCLUDE font/file a='feffNNNN.dat' %] file in two different path
 paragraphs in a [% feffit %] input file.
 [% END %]

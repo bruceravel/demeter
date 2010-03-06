@@ -36,12 +36,12 @@ sub get_happiness {
   $cheer     -= $c;
   $summary   .= $s;
 
-  ## path parameter values
+  ## restraints
   ($c, $s)    = $self->_penalize_restraints;
   $cheer     -= $c;
   $summary   .= $s;
 
-  ## path parameter values
+  ## Nidp
   ($c, $s)    = $self->_penalize_nidp;
   $cheer     -= $c;
   $summary   .= $s;
@@ -247,7 +247,7 @@ independent points.
 
 The S02 and sigma2 path parameters should not be negative.
 
-=item
+=item *
 
 The e0, deltaR and sigma2 path parameters should not be too big.
 

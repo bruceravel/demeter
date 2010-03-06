@@ -1,10 +1,143 @@
 [% META title = "Local guess parameters and the characteristic value"
         about = ''
-	chapter = 1
-	nosubpages = 1
+        chapter = 1
+        nosubpages = 1
 %]
 
 
 [% FILTER html_para %]
-Local guess parameters and the characteristic value
+[% demeter %] offers two very high level tools for efficiently
+parametrizing fits, particularly multiple data set fits.  These are
+called
+[% INCLUDE font/quote a='local guess parameters' %] and the
+[% INCLUDE font/quote a='characteristic value' %].  Here is the 
+the multile data set fit to copper metal
+[% INCLUDE html/link text="that we saw before" link="fit/collection.html" %],
+but modified to use these two tools.
+[% END %]
+
+[% WRAPPER codeexample -%]
+#!/usr/bin/perl
+use Demeter qw(:ui=screen);
+
+my @common = (fft_kmin   => 3,    fft_kmax   => 14,
+              bft_rmax   => 1.0,  bft_rmax   => 4.3,
+              fit_k1     => 1,    fit_k3     => 1,);
+
+my $data_010k = Demeter::Data -> new(group => 'data0');
+$data_010k -> set(@common);
+$data_010k -> set(file       => "cu10k.chi",
+                  cv         => 10,
+                  name       => '10 K copper data',
+                 );
+my $data_150k = Demeter::Data -> new(group => 'data1');
+$data_150k -> set(@common);
+$data_150k -> set(file       => "cu150k.chi",
+                  cv         => 150,
+                  name       => '150 K copper data',
+                 );
+
+my @gdsobjects =  (Demeter::GDS -> new(gds     => 'lguess',
+                                       name    => 'alpha',
+                                       mathexp => 0,
+                                      ),
+                   Demeter::GDS -> new(gds     => 'guess',
+                                       name    => 'amp',
+                                       mathexp => 1),
+
+                   Demeter::GDS -> new(gds     => 'guess',
+                                       name    => 'enot',
+                                       mathexp => 0,
+                                      ),
+                   Demeter::GDS -> new(gds     => 'guess',
+                                       name    => 'theta',
+                                       mathexp => 500,
+                                      ),
+                   Demeter::GDS -> new(gds     => 'set',
+                                       name    => 'sigmm',
+                                       mathexp => 0.0005,
+                                      ),
+                  );
+
+my @paths_010k = ();
+foreach my $i (0 .. 4) {
+  my $j = $i+1;
+  $paths_010k[$i] = Demeter::Path -> new();
+  $paths_010k[$i]->set(data     => $data_010k,
+                       folder   => './',
+                       file     => "feff000$j.dat",
+                       name     => "10K, path $j",
+                       s02      => 'amp',
+                       e0       => 'enot',
+                       delr     => 'alpha*reff',
+                       sigma2   => 'debye([cv], theta) + sigmm',
+                      );
+};
+
+my @paths_150k = ();
+foreach my $i (0 .. 4) {
+  my $j = $i+1;
+  $paths_150k[$i] = $paths_010k[$i] -> clone(data => $data_150k,
+                                             name => "150K, path $j",
+                                            );
+};
+
+my $fitobject = Demeter::Fit -> new(gds   => \@gdsobjects,
+                                    data  => [$data_010k, $data_150k],
+                                    paths => [@paths_010k, @paths_150k],
+                                   );
+
+$fitobject -> fit;
+## after-fit chores follow ...
+[% END %]
+
+[% FILTER html_para %]
+At lines 11 and 17, the [% INCLUDE font/mono a='cv' %] attribute is
+set for each Data object.  This is the 
+[% INCLUDE font/quote a='characteristic value' %] for each data set.
+This is a user-defined number that somehow relates to the data
+contained in the Data object.  In this case, it is the temperature at
+which each data were measured.
+
+The [% INCLUDE font/mono a='cv' %] is then used at line 54 as the
+temperature argument to the [% INCLUDE font/mono a='debye' %]
+function.  As [% demeter %] digs through the collection of Paths in
+the Fit object, it will notice the use of the characteristic value and
+substitute in the correct value of [% INCLUDE font/mono a='cv' %].
+
+This is not only useful for multile data set fits, it is also useful
+when applying a specific fitting model to a sequence of data sets.
+Each data set can have a characteristic value that will then be used
+correctly by the fitting model for each fit in the sequence.
+
+At lines 21-24, a new kind of GDS parameter is defined.  An lguess, or
+local guess, is a token that tells [% demeter %] to create a quess
+parameter for every Data object which has a Path which uses the lguess
+parameter.  In this example, [% INCLUDE font/mono a='alpha' %] is
+intended to represent the volumetric expansion coefficient of the
+copper lattice at each temperature.  We want to allow this volumetric
+coefficient to float freely for each data set.
+
+As [% demeter %] digs through the Fit object, a uniquely named guess
+parameter will be created for each data set and any path parameter
+math expressions will be rewritten to use that guess parameter.  in
+this example, the lguess [% INCLUDE font/mono a='alpha' %] will be
+expaneded into two guess parameters called 
+[% INCLUDE font/mono a='alpha_10' %] and 
+[% INCLUDE font/mono a='alpha_150' %].  (The [% INCLUDE font/mono a='cv' %]
+is used if it is defined, otherwise the [% INCLUDE font/mono a='group' %]
+attribute is used after the underscore.)
+
+In the 
+[% INCLUDE html/link text="earlier multiple data set example" link="fit/collection.html" %],
+it was necessary to redefine
+the [% INCLUDE font/mono a='delr' %] and [% INCLUDE font/mono a='sigma2' %]
+path parameters after cloning Paths for use with the data set at 150
+K.  Using these two tools, those redefinitions were not necessary.
+
+Obviously, both the lguess and the characteristic value are efficiency
+tools.  They are intended to make fitting models easier to write and
+more flexile to reuse.  Neither adds new functionality that would be
+unavailable in other ways, but both should make the use of 
+[% demeter %] easier and less error-prone.
 [% END %]

@@ -3,7 +3,7 @@
 	   name      = 'Demeter Programming Guide'
 	   server    = 'http://cars9.uchicago.edu' 
 	   admin     = 'bravel@bnl.gov'
-	   copyright = '2007-2009 Bruce Ravel'
+	   copyright = '2007-2010 Bruce Ravel'
 	   floatdir  = "smfigureright"
 	  };
 -%]

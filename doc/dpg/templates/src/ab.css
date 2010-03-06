@@ -170,10 +170,10 @@ pre {
 
 .caution {
   background: #fff0f5;
-  border-top: solid 3px #560094;
-  border-left: solid 20px #560094;
-  border-bottom: solid 3px #560094;
-  border-right: solid 3px #560094;
+  border-top: solid 3px #aa0000;
+  border-left: solid 20px #aa0000;
+  border-bottom: solid 3px #aa0000;
+  border-right: solid 3px #aa0000;
   padding: 8px;
   margin-left: 4%;
   margin-right: 10%;

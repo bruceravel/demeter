@@ -31,6 +31,7 @@
 [% MACRO chisqr  BLOCK -%] &chi;<sup>2</sup> [%- END -%]
 [% MACRO fp      BLOCK -%] [% PROCESS font/mono a="f'(E)" | trim %] [%- END -%]
 [% MACRO fpp     BLOCK -%] [% PROCESS font/mono a='f"(E)' | trim %] [%- END -%]
+[% MACRO s02     BLOCK -%] S<sub>0</sub><sup>2</sup> [%- END -%]
 [% MACRO e0      BLOCK -%] E<sub>0</sub> [%- END -%]
 [% MACRO delr    BLOCK -%] &Delta;R [%- END -%]
 
