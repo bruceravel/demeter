@@ -12,7 +12,7 @@ thousands of EXAFS experiments spanning an impressive broad range of
 scientific disciplines.
 
 Unfortunately, each of these tools is quite difficult to use to its
-full capabilities.  The lack of readily accissible, flexible,
+full capabilities.  The lack of readily accessible, flexible,
 highly-capable high-level tools has, for the most part, limited the
 use of [% feff %] and [% ifeffit %] to relatively simple problem.
 Most examples of their use in the literature are restricted to fairly
@@ -93,7 +93,7 @@ Armed with this middleware layer, it is much easier to consider
 implementing tools for automating large quantities of data or writing
 tools for special, one-off data processing chores.  And [% demeter %]
 offers tools for easily passing data between [% athena %] and 
-[% artemis %] and you own [% demeter %]-using programs.
+[% artemis %] and your own [% demeter %]-using programs.
 
 Tools for automation and for easy access to the capabilities available
 in the GUI programs would be benefit enough to merit the creation of a
@@ -120,15 +120,136 @@ mind.
 
 [% FILTER html_para %]
 [% demeter %] uses [% INCLUDE html/link
-link="http://search.cpan.org/~flora/Moose/" text="Moose" %].
+link="http://perl.org" text="perl" %].  This is, I suppose, an unsexy
+choice these days.  All the cool kids are, after all, using python or
+ruby.  I like perl.  I can think in perl.  And I can code quickly and
+fluently in perl.  What's more, perl has [% INCLUDE html/link
+link="http://www.cpan.org/" text="CPAN" %], the worlds largest
+repository of language extensions.  CPAN means that I have far fewer
+wheels to recreate (and probably get wrong).  Virtually any language
+extension I need in pursuit of making [% demeter %] awesome probably
+already exists.
 
-Explain what this means for the user -- good and bad (slow start-up)
+[% demeter %] uses [% INCLUDE html/link
+link="http://search.cpan.org/~flora/Moose/" text="Moose" %].  This is,
+on the balance, a very good thing, indeed.  Moose brings many powerful
+capabilities to the programming table.  When I was about halfway
+through writing [% demeter %], I paused for a bit less than a month to
+rewrite everything I had thus far created to use Moose.  This left me
+with about 2/3 as many lines of code and a code base that was more
+robust and more featureful.  Neat-o!
+
+For the nerdly, Moose is an implementation of a [% INCLUDE html/link
+text="meta-object protocol"
+link="http://en.wikipedia.com/wiki/Metaobject" %].  This interesting
+and powerful tool allows for the semantics of the object system to be
+modified at either compile or run time.  The problem of adding
+features and functionality to the object system is therefore pushed
+downstream from the developers of the language to the users of the
+language.  In good CPAN fashion, a healthy and robust ecosystem has
+evolved around Moose producing a whole host of useful extensions.
+
+Moose offers lots of great features, including an extremely powerful
+attribute system, a type attribute system, method modifiers, an
+ability to mix object and aspect orientation, and a wonderfully deep
+set of automated tests.  I am confident that simply by using Moose, my
+code is better code and, because Moose testing is so deep, I am
+confident that any bugs in [% demeter %] are my fault and not the
+fault of the people whose work I depend on.
+
+For all the wonderfulness of Moose, it does have one big wart that I
+need to be up-front about.  Moose is slow at start-up.  Since 
+[% demeter %] is big and Moose starts slowly, any program using 
+[% demeter %] will take about 2 extra second to start.  For a
+long-running program like a complicated fitting script or a GUI, an
+additional couple of seconds at start-up is no big deal.  For
+quick-n-dirty or one-off application, that may a bit annoying.  The
+Moose folk claim to be working on start-up issues.  I am keeping my
+fingers crossed.  Until then, I live with the slow start-up, confident
+that the rest of [% demeter %] is worth the wait.
 
 Discuss how an understanding of Moose can inform your program, but
 that it is not necessary.
 
-Explain: method, attribute, accessor, type management, triggering
+[% PROCESS subsection label="Some vocabulary" %]
 
-I will, on occassion throughout point the reader to where more of the
-programming details can be found
+Throughout this document, I use the language of object systems to
+describe [% demeter %].  I don't expect than everyone using 
+[% demeter %] should know much about object oriented programming.
+indeed, my hope is that the examples in this document can be followed
+and adapted by anyone with a basic grounding in the use of perl.  To
+helpintroduce that person to the prospect of coding with 
+[% demeter %], I'll define a few terms.  (More specifically, I'll
+relate my understanding of those terms.  I have no formal training in
+computer science and am probably wrong a lot about this stuff.  
+[% demeter %] seems to work nonetheless.)
+
+[% WRAPPER html/list type="dl" %]
+[% WRAPPER html/dt dt='Object' %]
+Think of an object as a box containing data.  This box comes with a
+set of instructions for how to manipulate the stuff in the box.  The
+data are called the attributes of the object and tend to be things
+like numbers, strings, booleans, or other data structures.  The set of
+instructions are called methods and are very similar to a subroutine
+in a non-object-oriented perl script with the caveat that there is an
+important syntax relation between an object and a method.
+[% END %]
+[% WRAPPER html/dt dt='Attribute' %]
+An attribute is a piece of information about the method that is either
+set by the user or computed as a result of some interaction with the
+object.  You can always query an object about an attribute value.
+Some attributes are read-write, which means that they can be set in
+your program.  Others are read-only, which means they have a value
+that is set when the object is created and cannot be further modified
+in your program.
+[% END %]
+[% WRAPPER html/dt dt='Accessor' %]
+An accessor is a kind of method whose specific job is to query an
+object for an attribute value or to set the attribute to a new value.
+[% demeter %] uses a feature of Moose whereby an attribute is given a
+name and this name is used as the name of the accessor method.  When
+the accessor is called without an argument, it gets the value of the
+attribute.  When it is called with a value, it attempts to set the
+attribute to that value.  [% demeter %] defines two additional
+accessor functions, [% INCLUDE font/mono a="set" %] and
+[% INCLUDE font/mono a="get" %] which are used to access multiple
+attributes with a single method call.
+[% END %]
+[% WRAPPER html/dt dt='Type attributes and type checking' %]
+Moose offers a flexible type attribute system, which means that an
+attribute can be restricted to have a value that meets a defined
+criterion.  For example, the value for the 
+[% INCLUDE font/mono a="kmin" %] parameter of the Fourier transform
+can be defined to be a non-negative number.  Attempting to set it to a
+negative value triggers an error.  In this way, sanity checking of
+parameters is built deeply into [% demeter %].
+[% END %]
+[% WRAPPER html/dt dt='Method' %]
+A method is a thing that can be done to an object.  For example, there
+is an object type in [% demeter %] that is used to contain an XAS
+spectrum.  That object has a method called 
+[% INCLUDE font/mono a="plot" %] whose purpose is to prepare and
+display a plot of the data.  Another object type is used to define an
+EXAFS fitting model.  That object has a method called
+[% INCLUDE font/mono a="fit" %] which is used to actually perform the
+fit and store the resulting statistical parameters.  Many other
+methods serve rather more mundane chores.  In every case, though, the
+method is something that is done to or with a particular object.  Each
+object has a set of methods that can be called.  This set of methods
+defines the complete behavior of the object.
+[% END %]
+[% WRAPPER html/dt dt='Trigger' %]
+A trigger is something that happens what an accessor is used to set an
+attribute value.  It is an action that takes place as a result of
+changing an attribute value.  For example, when the value of 
+[% rbkg %] is changed for an object associated with XAS data, the
+trigger performs a series of chores that will assure that the
+background removal is performed anew the next time it is necessary to
+do a Fourier transform of those data.  Triggers are used to control
+much of the high-level functionality in [% demeter %].
+[% END %]
+[% END %]
+
+I will, on occassion in this document, point the reader to where more
+of the programming details can be found.
 [% END %]

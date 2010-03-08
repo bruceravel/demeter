@@ -93,7 +93,7 @@ link="../fit/after.tt" %].
 [% PROCESS section label="Other methods" %]
 
 
-[% PROCESS subsection label="The R methods" %]
+[% PROCESS subsection label="The R method" %]
 
 [% FILTER html_para %]
 The [% INCLUDE font/mono a="R" %] method is used to return the fitted
@@ -106,7 +106,7 @@ printf "half path length is %.5d\n", $path->R;
 [% END %]
 
 
-[% PROCESS subsection label="The paragraph methods" %]
+[% PROCESS subsection label="The paragraph method" %]
 
 [% FILTER html_para %]
 This method returns a multiline text string reporting on the
@@ -120,7 +120,7 @@ like the text that [% ifeffit %] returns when you use [% ifeffit %]'s
 
 
 
-[% PROCESS subsection label="The make_name methods" %]
+[% PROCESS subsection label="The make_name method" %]
 
 [% FILTER html_para %]
 This method is used to construct a descriptive label for the path and
@@ -128,7 +128,7 @@ is called when the [% INCLUDE font/file a="feffNNNN.dat" %] file is
 imported.  Since that usually happens behind the scenes, it is very
 rarely necessry to call this method.  However, it is important to
 understand how this method works as it can be used to configure how
-the Path oject gets labeled.  This is determined using the
+the Path object gets labeled.  This is determined using the
 [% INCLUDE preference group="pathfinder" option="label" %]
 configuration parameter.  The default value of this parameter is 
 [% INCLUDE font/mono a="%P" %], which means that the default

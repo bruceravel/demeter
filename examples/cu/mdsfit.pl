@@ -76,7 +76,7 @@ foreach my $i (0 .. 4) {
   $paths_010k[$i]->set(data     => $data_010k,
 		       folder   => './',
 		       file     => "feff000$j.dat",
-		       name     => "10K, path $j",
+		       name     => "[cv]K, path $j",
 		       s02      => 'amp',
 		       e0       => 'enot',
 		       delr     => 'alpha*reff',
@@ -100,9 +100,7 @@ foreach my $i (0 .. 4) {
 my @paths_150k = ();
 foreach my $i (0 .. 4) {
   my $j = $i+1;
-  $paths_150k[$i] = $paths_010k[$i] -> clone(data => $data_150k,
-					     name => "150K, path $j",
-					    );
+  $paths_150k[$i] = $paths_010k[$i] -> clone(data => $data_150k);
 };
 
 print "--- make a Fit object (a collection of GDS, Data, and Path objects)\n";

@@ -1,10 +1,10 @@
-[% META title = 'The non-statistical happiness parameter' %]
+[% META title = 'The non-statistical happiness metric' %]
 
 [% FILTER html_para %]
 One of the new fitting features introduced by [% demeter %] that was
 not available in earlier version of [% artemis %] is the fit 
 [% INCLUDE font/quote a='happiness' %].  This is a non-statistical
-parameter that evaluates the fit in a semantic sense.  As explained
+metric that evaluates the fit in a semantic sense.  As explained
 elsewhere, [% ifeffit %] uses a Levenberg-Marquardt fitting algorithm
 and applies Gaussian statistics to the EXAFS analysis problem.  For a
 host of reasons, the application of Gaussian statistics is troublesome
@@ -38,7 +38,7 @@ therefore, a tool to help you evaluate the result of your fit.
 
 [% WRAPPER html/caution %]
 The word "happiness" was chosen for this paremeter because it is silly.
-This is an ad-hoc, semantic parameter.  It has no
+This is an ad-hoc, semantic metric.  It has no
 basis in formal statistics.  It is, therefore, meaningless and should
 never be published.
 [% END %]
@@ -54,21 +54,23 @@ given in the following descriptions can be set using the configuration system.
 [% WRAPPER html/list type="ol" %]
 [% WRAPPER html/li %]
 It should have a small R-factor.  An R-factor below 0.2 gives no
-penalty.  An R-factor above 0.6 gives a panelty of 40.  R-factors
+penalty.  An R-factor above 0.6 gives a penalty of 40.  R-factors
 between those values scale linearly between 0 and 40.
 [% END %]
 [% WRAPPER html/li %]
-If the number of guess parameters is fewer than 1/3 of independent
-points, no penalty is given.  As the number of guess parameters
-approaches the number of independent points, the penalty grows.
+If the number of guess parameters is fewer than 2/3 of the number of
+independent points, no penalty is given.  As the number of guess
+parameters approaches the number of independent points, the penalty
+grows.
 [% END %]
 [% WRAPPER html/li %]
 A penalty of 2 is given for each Path with a negative [% s02 %] or 
 [% sigsqr %] value.
 [% END %]
 [% WRAPPER html/li %]
-A penalty of 2 is given for each Path with a 
-[% e0 %], [% delr %], or [% sigma2 %] path parameters that is too big.
+A penalty of 2 is given for each
+[% e0 %], [% delr %], or [% sigsqr %] path parameter of each Path that
+is too big.
 [% END %]
 [% WRAPPER html/li %]
 For each restraint that evaluates to something non-zero, a penalty is
@@ -79,9 +81,9 @@ the value of [% chisqr %].
 
 [% FILTER html_para %]
 The Fit object's [% INCLUDE font/mono a='happiness' %] attribute is
-set to the evaluation of the happiness parameter.  A color is also
+set to the evaluation of the happiness metric.  A color is also
 computed based on this value for use as a semantic indicator in a GUI
-program. 
+or web program. 
 
 The default values of the configuration parameters related to the
 happiness calculation seems to be reasonable, but you are certainly
@@ -94,9 +96,9 @@ penalty parameter, which is a special kind of GDS object.  It will be
 like an after parameter in the sense that it is evaluated at the end
 of the fit.  Its evaluation will be used as an additional,
 user-defined penalty to the happiness.  This will give a dynamic,
-fitting model specific aspect to the happiness evaluation.
+fitting-model-specific aspect to the happiness evaluation.
 
-One final note about the happiness parameter.  Use it to evaluate you
+One final note about the happiness metric.  Use it to evaluate your
 progress through a fitting project, but don't publish it.
 Really.  If you do publish it, we will both look like twits.
 [% END %]

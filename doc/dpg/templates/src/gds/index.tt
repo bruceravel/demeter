@@ -29,7 +29,7 @@ and evaluated by [% ifeffit %].
 
 [% INCLUDE font/mono a='gds' %],
 [% INCLUDE font/mono a='name' %], and
-[% INCLUDE font/mono a='mathexp' %] are normal attrinutes of the GDS
+[% INCLUDE font/mono a='mathexp' %] are normal attributes of the GDS
 object and can be treated like attributes of any object.  So, for
 instance, if you wish to change the starting valule of the 
 [% INCLUDE font/mono a='deltar' %] parameter, you can do like so:

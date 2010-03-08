@@ -66,7 +66,7 @@ foreach my $i (0 .. 4) {
   $paths_010k[$i]->set(data     => $data_010k,
                        folder   => './',
                        file     => "feff000$j.dat",
-                       name     => "10K, path $j",
+                       name     => "[cv]K, path $j",
                        s02      => 'amp',
                        e0       => 'enot',
                        delr     => 'alpha*reff',
@@ -77,9 +77,7 @@ foreach my $i (0 .. 4) {
 my @paths_150k = ();
 foreach my $i (0 .. 4) {
   my $j = $i+1;
-  $paths_150k[$i] = $paths_010k[$i] -> clone(data => $data_150k,
-                                             name => "150K, path $j",
-                                            );
+  $paths_150k[$i] = $paths_010k[$i] -> clone(data => $data_150k);
 };
 
 my $fitobject = Demeter::Fit -> new(gds   => \@gdsobjects,
@@ -93,17 +91,18 @@ $fitobject -> fit;
 
 [% FILTER html_para %]
 At lines 11 and 17, the [% INCLUDE font/mono a='cv' %] attribute is
-set for each Data object.  This is the 
-[% INCLUDE font/quote a='characteristic value' %] for each data set.
-This is a user-defined number that somehow relates to the data
+set for each Data object.  This is the
+[% INCLUDE font/quote a='characteristic value' %] for each data set,
+a user-defined number that somehow relates to the XAS data
 contained in the Data object.  In this case, it is the temperature at
 which each data were measured.
 
-The [% INCLUDE font/mono a='cv' %] is then used at line 54 as the
-temperature argument to the [% INCLUDE font/mono a='debye' %]
-function.  As [% demeter %] digs through the collection of Paths in
-the Fit object, it will notice the use of the characteristic value and
-substitute in the correct value of [% INCLUDE font/mono a='cv' %].
+The [% INCLUDE font/mono a='cv' %] is then used at line 50 as part of
+each Path's name and at line 54 as the temperature argument to the 
+[% INCLUDE font/mono a='debye' %] function.  As [% demeter %] digs
+through the collection of Paths in the Fit object, it will notice the
+use of the characteristic value and substitute in the correct value of
+[% INCLUDE font/mono a='cv' %] of the associated Data object.
 
 This is not only useful for multile data set fits, it is also useful
 when applying a specific fitting model to a sequence of data sets.
@@ -111,7 +110,7 @@ Each data set can have a characteristic value that will then be used
 correctly by the fitting model for each fit in the sequence.
 
 At lines 21-24, a new kind of GDS parameter is defined.  An lguess, or
-local guess, is a token that tells [% demeter %] to create a quess
+local guess, is a token that tells [% demeter %] to create a guess
 parameter for every Data object which has a Path which uses the lguess
 parameter.  In this example, [% INCLUDE font/mono a='alpha' %] is
 intended to represent the volumetric expansion coefficient of the

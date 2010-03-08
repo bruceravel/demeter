@@ -12,7 +12,7 @@
 		'highlevel',
 		'atoms',
 		'feff',
-		'path'
+		'paths'
 		'gds',
                 'fit',
                 'perl',
@@ -45,7 +45,7 @@
 		      	       'convolve', 'deconvolve', 'difference', 'rebin']
 		      page = {
 			     align      = { name = 'Data alignment' }
-			     merge      = { name = 'Merging data' }
+			     merge      = { name = 'Merging data' } 
 			     deglitch   = { name = 'Deglitching data' }
 			     truncate   = { name = 'Truncating data' }
 			     noise      = { name = 'Adding artificial noise to data' }
@@ -86,7 +86,7 @@
 			      intrp      = { name = 'Path interpretation' }
 			      }
 		       }
-	    path   = {
+	    paths   = {
 		       name = 'Scattering paths'
 		       menu = [ 'paths', 'semantic', 'pathparams', 'plot', 'existing' ]
 		       page = {
@@ -126,12 +126,13 @@
 	    lgcv   = { name = 'Local guess parameters and the characteristic value'}
 	    pathlike   = {
                           name = 'Path-like objects'
-			  menu = ['vpath', 'sspath', 'mspath', 'fspath']
+			  menu = ['vpath', 'fspath', 'sspath', 'mspath', 'threebody']
 			  page = {
 				 vpath  = { name = "VPath" }
+				 fspath = { name = 'FSPath' }
 				 sspath = { name = 'SSPath' }
 				 mspath = { name = 'MSPath' }
-				 fspath = { name = 'FSPath' }
+				 threebody = { name = 'ThreeBody' }
 				 }
 			 }
 	    su   = { name = 'Structural Units'}

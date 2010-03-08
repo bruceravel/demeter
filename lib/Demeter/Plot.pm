@@ -681,7 +681,7 @@ actually be any number.  When this gets changed, all Data, Path, and
 VPath objects will be flagged as needing to be brought up-to-date for
 their forward Fourier transform.
 
-=iten C<chie> (boolean) I<[0]>
+=item C<chie> (boolean) I<[0]>
 
 When this flag is true, plots of chi(k) will be plotted instead as
 chi(E).

@@ -101,7 +101,7 @@ associated with it.
 [% END %]
 [% WRAPPER html/li %]
 Test that every Path object is associated with a Data object.  This
-hsould be a warning, not an error.  The unassociated Path can simply
+should be a warning, not an error.  The unassociated Path can simply
 be ignored.
 [% END %]
 [% WRAPPER html/li %]
@@ -112,12 +112,27 @@ Test that every Path points either to a ScatteringPath object or to a
 real path file.
 [% END %]
 [% WRAPPER html/li %]
-Test that no def parameters are [% INCLUDE font/quote a='recursive' %],
+Test that no def parameters are [% INCLUDE font/quote a='self-referential' %],
 i.e. something like 
 [% WRAPPER html/pre %]
-  def a = 5*a
+def a = 5*a
 [% END %]
-Testing for circularity is also necessary, albeit more challenging.
+Here's a quiz: in [% ifeffit %] what get printed to the screen if you
+do this?
+[% WRAPPER html/pre %]
+def a = 1
+def a = 5*a
+print a
+[% END %]
+Try it.  The answer may surprise you.  The reason for the value it
+takes is that [% ifeffit %] re-evaluates def parameters 3 times to
+deal with ordering problems in the parameter definitions.  This works
+well for non-circular definitions, but oddly for examples like that one.
+Testing for circularity among two or more parameters is  also necessary,
+albeit more challenging.
 [% END %]
 [% END %]
 
+[% WRAPPER html/todo %]
+Implement missing sanity checks.
+[% END %]

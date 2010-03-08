@@ -328,6 +328,11 @@ sub rewrite_cv {
     $me =~ s{\[?cv\]?}{$cv}g;
     $self->$pp($me);
   };
+  foreach my $pp (qw(name label)) {
+    my $this = $self->$pp;
+    $this =~ s{\[cv\]}{$cv}g;
+    $self->$pp($this);
+  };
 };
 
 sub plot {

@@ -2,10 +2,11 @@
 
 [% FILTER html_para %]
 You can import [% INCLUDE font/file a="feffNNNN.dat" %] files from a 
-[% feff %] calculation run outside of [% demeter %].  The trick is to
-explicitly specify the [% INCLUDE font/mono a="folder" %] and
-[% INCLUDE font/mono a="file" %]
+[% feff %] calculation run outside of [% demeter %].  
+Explicitly specify the [% INCLUDE font/mono a="folder" %] and
+[% INCLUDE font/mono a="file" %].  Or use Demeter::Feff::External.
 [% END %]
+
 
 [% WRAPPER codesample -%]
 $path -> new(data     => $data,
@@ -19,6 +20,5 @@ $path -> new(data     => $data,
 [% END %]
 
 [% WRAPPER html/todo %]
-Implement interpretation functionality for external [% feff %] calculations.
-Implement semantic path descriptions for  external [% feff %] calculations.
+Document Demeter::Feff::External
 [% END %]

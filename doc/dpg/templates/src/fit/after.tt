@@ -97,11 +97,14 @@ results of the fit.  The log file and statistical parameters of the
 fit can be examined using this application and simple plots can be
 made.  The interview is a bare-bones tool.  But it is a nice
 compromise between using a GUI and writing your own tools to examine
-the results of the fit.
-
+the results of the fit.  
 [% demeter %] ships with a command line program called 
 [% INCLUDE font/mono a='rdfit' %] which is a wrapper around the 
 [% INCLUDE font/mono a='interview' %] method.  It reads a dpj file
 specified at the command line, imports it into a Fit object, then runs
 the [% INCLUDE font/mono a='interview' %] method.
+The [% INCLUDE font/mono a='interview' %] method and 
+[% INCLUDE font/mono a='rdfit' %] are described in more detail in
+[% INCLUDE html/link text="chapter on user interfaces"
+link="../ui.html" %].
 [% END %]

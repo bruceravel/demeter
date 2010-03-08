@@ -1,6 +1,5 @@
 #!/bin/sh
 
-cp ../install_prereqs ../bin/install_prereqs.pl
 cp ../bin/denv        ../bin/denv.pl
 cp ../bin/dhephaestus  ../bin/dhephaestus.pl
 pod2projdocs -l ../lib \
@@ -13,4 +12,4 @@ pod2projdocs -l ../lib \
              -o pods \
              -t Demeter \
              -d "Perl tools for X-ray Absorption Spectroscopy" 1
-rm ../bin/install_prereqs.pl ../bin/denv.pl ../bin/dhephaestus.pl
+rm ../bin/denv.pl ../bin/dhephaestus.pl

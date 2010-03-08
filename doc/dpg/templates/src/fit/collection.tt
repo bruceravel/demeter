@@ -91,7 +91,7 @@ $data[0] -> pause;
 This script bears a strong resemblance to the one in the previous
 section.  There are a couple of small differences.  At lines 8-16, two
 records are imported from the [% athena %] project file.  They both
-have parameters set appropriately.  One fewer GDS ojects at lines
+have parameters set appropriately.  One fewer GDS object at lines
 19-25 is defined compared to the previous script.  This is because the
 temperature parameter of [% ifeffit %]'s
 [% INCLUDE font/mono a='debye' %] function is explicitly set to the
