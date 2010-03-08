@@ -71,6 +71,7 @@ my $build = Module::Build # $class
 				'Config::IniFiles'	   => '2.45',
 				'DateTime'                 => '0',
 				'Digest::SHA'		   => '0',
+				'Graph'                    => '0',
 				'Heap'			   => '0',
 				'List::MoreUtils'	   => '0',
 				'Math::Derivative'	   => '0',

@@ -74,6 +74,7 @@ sub module_environment {
 		     Chemistry::Elements
 		     Config::IniFiles
 		     DateTime
+		     Graph
 		     Graphics::GnuplotIF
 		     Math::Round
 		     Pod::POM

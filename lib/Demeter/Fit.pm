@@ -258,6 +258,9 @@ sub _verify_fit {
   ## 18. check that no more than one path is flagged as the default path
   $trouble_found += $self->S_default_path;
 
+  ## 18. check that GDS math expressions do not have loops or cycles
+  $trouble_found += $self->S_cycle_loop;
+
   return $trouble_found;
 };
 

@@ -21,6 +21,7 @@ use Demeter::StrTypes qw( IfeffitFunction IfeffitProgramVar );
 use Carp;
 use File::Spec;
 use List::MoreUtils qw(any);
+use Graph;
 use Regexp::Optimizer;
 use Regexp::Common;
 use Readonly;
@@ -179,7 +180,7 @@ sub S_binary_ops {
       ++$found;
       #	   "The math expression for \"" . $g->name . "\" uses an invalid binary operation: $which"
       #	  );
-      $g->add_trouble("binary_$which");
+      $g->add_trouble("binary_x_$which");
     };
   };
   foreach my $p (@paths) {
@@ -544,6 +545,48 @@ sub S_default_path {
   return $found;
 };
 
+## 19. check for loops and cycles among the GDS math expressions
+sub S_cycle_loop {
+  my ($self) = @_;
+  my $found = 0;
+  my @gds   = @{ $self->gds };
+  my @all_params = ();
+  foreach my $g (@gds) {
+    next if ($g->gds =~ m{(?:merge|skip)});
+    push @all_params, $g->name;
+  };
+  my $tokenizer_regexp = $opt->list2re('-', '+', '*', '^', '/', '(', ')', ',', " ", "\t");
+  my $graph = Graph->new;
+
+  foreach my $g (@gds) {
+    next if ($g->gds =~ m{(?:merge|skip)});
+    my $mathexp = $g->mathexp;
+    my @list = split(/$tokenizer_regexp+/, $mathexp);
+    foreach my $token (@list) {
+      next if ($token =~ m{\A\s*\z});		  # space, ok
+      next if ($token =~ m{\A$NUMBER\z});	  # number, ok
+      next if (is_IfeffitFunction($token));       # function, ok
+      next if ($token =~ m{\A(?:etok|pi)\z});     # Ifeffit's defined constants, ok
+      next if (lc($token) eq 'reff');             # reff, ok
+
+      $graph -> add_edge($g->name, $token);
+    };
+  };
+
+  foreach my $loop ($graph->self_loop_vertices) {
+    $self->add_trouble(join('_', 'loop', 'x', $loop));
+    ++$found;
+  };
+  if ($graph->has_a_cycle) {
+    my @cycle = $graph->find_a_cycle;
+    if ($#cycle) {		# we have already reported on loops
+      $self->add_trouble(join('_', 'cycle', 'x', join(" --> ", @cycle)));
+      ++$found;
+    };
+  };
+
+  return $found;
+};
 1;
 
 
@@ -871,6 +914,15 @@ paths (&max_paths).
 More than one path is flagged as being the default path, making it
 unclear how to evaluate the log file.
 
+=item C<loop> + C<$token>
+
+The parameter C<$token> refers to itself in its math expression.
+
+=item C<cycle> + C<$token>
+
+There is a cyclical dependence among a set of parameter math
+expressions. This cycle is C<$token>.
+
 =back
 
 =head1 CONFIGURATION AND ENVIRONMENT
@@ -898,14 +950,6 @@ Test that each data in the data array is properly defined.
 =item *
 
 Test that every Path points to a real path file
-
-=item *
-
-Test that no def parameters are "recursive", i.e. something like
-
-  def a = 5*a
-
-Testing for circularity could be more challenging...
 
 =back
 

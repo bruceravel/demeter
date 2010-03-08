@@ -54,6 +54,8 @@ DateTime
 
 Digest::SHA
 
+Graph
+
 Graphics::GnuplotIF
 
 Heap

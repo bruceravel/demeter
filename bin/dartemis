@@ -1,8 +1,11 @@
 #!/usr/bin/perl
 use Wx;
 use Demeter::UI::Artemis;
+#  use Devel::ebug::Wx;
 Wx::InitAllImageHandlers();
 my $window = Demeter::UI::Artemis->new;
+#  my $wx = Devel::ebug::Wx->new( { argv => \@ARGV } );
+#  $wx->Show;
 $window   -> MainLoop;
 
 =head1 NAME

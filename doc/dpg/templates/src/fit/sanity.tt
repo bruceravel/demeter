@@ -80,6 +80,16 @@ parameters that are in naming conflict in a project that involves
 importing structural units or otherwise merging together elements of a
 fitting model. As of version 0.4, this is an unimplemented feature. 
 [% END %]
+[% WRAPPER html/li %]
+GDS parameter math expressions are checked to verify that they are
+neither self-referential nor part of a cycle of references, e.g. 
+[% WRAPPER html/pre %]
+def a = b
+def b = c
+def c = d
+def d = a
+[% END %]
+[% END %]
 [% END %]
 
 [% FILTER html_para %]
@@ -110,26 +120,6 @@ Test that each Data in the data array is properly defined.
 [% WRAPPER html/li %]
 Test that every Path points either to a ScatteringPath object or to a
 real path file.
-[% END %]
-[% WRAPPER html/li %]
-Test that no def parameters are [% INCLUDE font/quote a='self-referential' %],
-i.e. something like 
-[% WRAPPER html/pre %]
-def a = 5*a
-[% END %]
-Here's a quiz: in [% ifeffit %] what get printed to the screen if you
-do this?
-[% WRAPPER html/pre %]
-def a = 1
-def a = 5*a
-print a
-[% END %]
-Try it.  The answer may surprise you.  The reason for the value it
-takes is that [% ifeffit %] re-evaluates def parameters 3 times to
-deal with ordering problems in the parameter definitions.  This works
-well for non-circular definitions, but oddly for examples like that one.
-Testing for circularity among two or more parameters is  also necessary,
-albeit more challenging.
 [% END %]
 [% END %]
 
