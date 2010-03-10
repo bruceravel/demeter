@@ -363,18 +363,17 @@ sub clean_workspace {
 sub check_workspace {
   my ($self) = @_;
   return 0 if ($self->workspace and (-d $self->workspace));
-  croak <<EOH
-
-Feff is sort of an old-fashioned program.  It reads from a fixed input
-file and writes fixed output files.  All this needs to happen in a
-specified directory.
-
-You must explicitly establish a workspace for this Feff calculation:
-  \$feff->make_workspace("/path/to/workspace/")
-
-EOH
-  ;
+  my $string =
+  'Feff is sort of an old-fashioned program.  It reads from a fixed input'
+    . 'file and writes fixed output files.  All this needs to happen in a'
+      . 'specified directory.'
+	. $/ x 2
+	  . 'You must explicitly establish a workspace for this Feff calculation:'
+	    . $/;
+  croak $string;
 };
+#  $feff->make_workspace("/path/to/workspace/")
+
 
 sub run {
   my ($self) = @_;

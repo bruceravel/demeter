@@ -133,6 +133,9 @@ $build->add_build_element('prj');
 $build->add_build_element('stan');
 $build->add_build_element('tmpl');
 $build->add_build_element('xpm');
+## make sure pgplot will work seamlessly on windows
+$build->add_build_element('dat');
+$build->add_build_element('txt');
 
 $build->create_build_script;
 
