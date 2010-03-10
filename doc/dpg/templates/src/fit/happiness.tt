@@ -26,6 +26,10 @@ a fit.  When one or more of those things does not hold for a fit, we
 are unhappy and thus wary of the fit.  If, however, all of them hold
 true, then we might have confidence in the fit, thus making us happy.
 
+[% PROCESS subsection label="A semantic parameter" %]
+
+Discuss cognitive load here....
+
 [% demeter %] has a simple mechanism for parameterizing the results of
 the fit to evaluate a semantic assessment of the fit.  Each fit starts
 with a score of 100.  Each of those semantic evaluations of the fit
@@ -42,6 +46,8 @@ This is an ad-hoc, semantic metric.  It has no
 basis in formal statistics.  It is, therefore, meaningless and should
 never be published.
 [% END %]
+
+[% PROCESS subsection label="How the happiness is calculated" %]
 
 [% FILTER html_para %]
 The fit's happiness is computed using a bunch of

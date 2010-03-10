@@ -105,11 +105,13 @@ my $build = Module::Build # $class
 			       },
 	 recommends         => {
 				## these two add functionality when using demeter at the command line
-				'IO::Prompt'	      => '0',
-				'Term::Twiddle'	      => '0',
+				(($^O eq 'MSWin32') or ($^O eq 'cygwin')) ? () :
+				('IO::Prompt'	      => '0',
+				 'Term::Twiddle'      => '0',),
 
 				## this is required for the gnuplot plotting backend
-				'Graphics::GnuplotIF' => '0',
+				(($^O eq 'MSWin32') or ($^O eq 'cygwin')) ? () :
+				('Graphics::GnuplotIF' => '0'),
 
 				## GUI for Artemis and Hephaestus
 				'Wx'                  => '0.86'
