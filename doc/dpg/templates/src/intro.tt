@@ -131,7 +131,7 @@ extension I need in pursuit of making [% demeter %] awesome probably
 already exists.
 
 [% demeter %] uses [% INCLUDE html/link
-link="http://search.cpan.org/~flora/Moose/" text="Moose" %].  This is,
+link="http://search.cpan.org/~flora/Moose/lib/Moose/Manual.pod" text="Moose" %].  This is,
 on the balance, a very good thing, indeed.  Moose brings many powerful
 capabilities to the programming table.  When I was about halfway
 through writing [% demeter %], I paused for a bit less than a month to
@@ -182,7 +182,10 @@ helpintroduce that person to the prospect of coding with
 [% demeter %], I'll define a few terms.  (More specifically, I'll
 relate my understanding of those terms.  I have no formal training in
 computer science and am probably wrong a lot about this stuff.  
-[% demeter %] seems to work nonetheless.)
+[% demeter %] seems to work nonetheless.)  For a bit more
+Moose-specific information, 
+see [% INCLUDE html/link text="the concepts page from the Moose manual"
+link="http://search.cpan.org/~flora/Moose/lib/Moose/Manual/Concepts.pod" %].
 
 [% WRAPPER html/list type="dl" %]
 [% WRAPPER html/dt dt='Object' %]
@@ -202,6 +205,9 @@ Some attributes are read-write, which means that they can be set in
 your program.  Others are read-only, which means they have a value
 that is set when the object is created and cannot be further modified
 in your program.
+See [% INCLUDE html/link text="the attributes page from the Moose manual"
+link="http://search.cpan.org/~flora/Moose/lib/Moose/Manual/Attributes.pod" %]
+for more details.
 [% END %]
 [% WRAPPER html/dt dt='Accessor' %]
 An accessor is a kind of method whose specific job is to query an
@@ -215,14 +221,17 @@ accessor functions, [% INCLUDE font/mono a="set" %] and
 [% INCLUDE font/mono a="get" %] which are used to access multiple
 attributes with a single method call.
 [% END %]
-[% WRAPPER html/dt dt='Type attributes and type checking' %]
-Moose offers a flexible type attribute system, which means that an
+[% WRAPPER html/dt dt='Type constraints' %]
+Moose offers a flexible type constraint system, which means that an
 attribute can be restricted to have a value that meets a defined
 criterion.  For example, the value for the 
 [% INCLUDE font/mono a="kmin" %] parameter of the Fourier transform
 can be defined to be a non-negative number.  Attempting to set it to a
 negative value triggers an error.  In this way, sanity checking of
 parameters is built deeply into [% demeter %].
+See [% INCLUDE html/link text="the types page from the Moose manual"
+link="http://search.cpan.org/~flora/Moose/lib/Moose/Manual/Types.pod" %]
+for more details.
 [% END %]
 [% WRAPPER html/dt dt='Method' %]
 A method is a thing that can be done to an object.  For example, there

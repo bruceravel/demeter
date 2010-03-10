@@ -52,7 +52,7 @@ $data ->set(name       => 'My copper data',
 my $feff = Demeter::Feff -> new(file => "cu_metal.inp");
 $feff -> set(workspace => "cu_workspace/", screen => 0,);
 $feff -> potph -> pathfinder;
-my @list_of_paths = @{ $feff-> pathlist };
+my @list_of_paths = $feff-> list_of_paths;
 
 ## make GDS objects for an isotropic expansion, correlated Debye model fit to copper
 my @gds =  (Demeter::GDS -> new(gds => 'guess', name => 'alpha', mathexp => 0),
@@ -127,11 +127,16 @@ the Fourier transform before the plot.
 [% END %]
 
 [% FILTER html_para -%]
-In the next section, we'll see how to do multiple data set fitting and
+In the 
+[% INCLUDE html/link link="collection.html" text="next section" %], 
+we'll see how to do multiple data set fitting and
 how to incorporate more than one [% feff %] calculation in a fit.  In
 later sections we will explore other features of the Fit object,
-including its extensive sanity checking, all the interesting things
-that can be done with the Fit object after a fit finishes, and a
-discussion of [% demeter %]'s [% INCLUDE font/quote a="happiness" %]
+including its [% INCLUDE html/link link="sanity.html" 
+text="extensive sanity checking" %], all the interesting things
+that can be done with the Fit object 
+[% INCLUDE html/link link="after.html" text="after a fit finishes" %], and a
+discussion of [% demeter %]'s 
+[% INCLUDE html/link link="happiness.html" text="happiness" %]
 parameter.
 [% END %]

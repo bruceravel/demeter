@@ -788,6 +788,10 @@ sub _collapse_heap {
   return @list_of_paths;
 };
 
+sub list_of_paths {
+  my ($self) = @_;
+  return @{ $self->pathlist };
+};
 
 
 sub intrp_header {
@@ -1426,9 +1430,11 @@ These are simple wrappers around the C<get> accessor.
 
 Returns a list of the x, y, and z coordinates of the central atom.
 
-=item C<pathlist>
+=item C<list_of_paths>
 
 Returns a list of ScatteringPath objects found by the path finder.
+This simply dereferences the anonymous array contained in the
+C<pathlist> attribute and returns the list.
 
 =item C<nsites>
 

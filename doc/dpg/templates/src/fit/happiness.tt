@@ -83,7 +83,14 @@ the value of [% chisqr %].
 The Fit object's [% INCLUDE font/mono a='happiness' %] attribute is
 set to the evaluation of the happiness metric.  A color is also
 computed based on this value for use as a semantic indicator in a GUI
-or web program. 
+or web program.  The idea behind the color is to serve as a sort of 
+[% INCLUDE font/quote a='environmental indicator' %] providing
+immediate feedback as to the state of the most recent fit.  For
+instance, a fit that looks good in the sense that the red line plots
+nicely over the blue line but which displays the unhappy color will
+induce the user to explore the problem making the fit unhappy.
+Without that environmental indication, one might see a nice plot and
+assume that the fit is, in fact, a good one.
 
 The default values of the configuration parameters related to the
 happiness calculation seems to be reasonable, but you are certainly

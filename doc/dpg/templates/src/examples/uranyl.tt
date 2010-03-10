@@ -248,8 +248,7 @@ map {$_->data->y_offset($step);
      $step+=$jump;
    } ($data, $paths[0], $paths[1], $carbon, $axialms, $ss);
 
-print "return to continue ";
-my $foo = <STDIN>;
+$data -> pause;
 [% END %]
 
 [% FILTER html_para %] 
@@ -303,7 +302,7 @@ accomplished by looping over all the objects that I want to display in
 the plot.
 [% END %]
 [% WRAPPER html/li %]
-The last two lines are there to pause the script before terminating so
+The last line pauses the script before terminating so
 that you have time to examine the plot.  The Gnuplot process ends when
 the script ends, making the plot window go away.
 [% END %]
@@ -316,7 +315,7 @@ $data -> po -> set(kweight=>2, plot_fit=>1);
 my ($step, $jump) = (0,-0.5);
 map {$_->data->y_offset($step);
      $_->plot('k');
-     $step+=$jump;} 
+     $step+=$jump;}
   ($data, $paths[0], $paths[1],
    $carbon, $axialms, $ss);
 $data -> plot_window('k');
@@ -330,7 +329,7 @@ $data -> po -> set(r_pl => 'm');
 my ($step, $jump) = (0,-0.25);
 map {$_->data->y_offset($step);
      $_->plot('r');
-     $step+=$jump; } 
+     $step+=$jump;}
   ($data, $paths[0], $paths[1],
    $carbon, $axialms, $ss);
 $data -> plot_window('r');

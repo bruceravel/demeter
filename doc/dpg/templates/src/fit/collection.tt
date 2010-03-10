@@ -1,5 +1,25 @@
 [% META title = 'Setting up an EXAFS fit' %]
 
+In this section, the examples will reinforce the idea that the Fit
+object is simply a collection of Data, Path, and GDS objects.  We have
+already seen some of this.  To make a fit, a number of GDS object are
+created and the [% INCLUDE font/mono a='gds' %] attribute of the Fit
+object is set to an anonymous array containing those GDS objects.
+Similarly, the [% INCLUDE font/mono a='paths' %] attribute is set to
+an anonymous array containing all the Path objects to be used in the
+fit.
+
+This idea of a Fit object containing a collection of other objects
+extends to its use for more advanced fitting concepts.  A Fit object
+for a multiple data set fit has its [% INCLUDE font/mono a='data' %]
+attribute set to an anonymous list of Data objects.  This is shown in
+the first example below.
+
+A Fit object involving multiple [% feff %] calculations is made by
+creating some number of Path objects from each [% feff %] calculation,
+then collecting all those Path objects into the 
+[% INCLUDE font/mono a='paths' %] attribute of the Fit object.  This
+is shown in the second example below.
 
 [% PROCESS section label="Multiple data set fitting" %]
 
@@ -34,7 +54,7 @@ $_ -> set(@common) foreach @data;
 my $feff = Demeter::Feff -> new(file => "cu_metal.inp");
 $feff -> set(workspace => "cu_workspace/", screen => 0,);
 $feff -> potph -> pathfinder;
-my @list_of_paths = @{ $feff-> pathlist };
+my @list_of_paths = $feff-> list_of_paths;
 
 ## make GDS objects for an isotropic expansion, correlated Debye model fit to copper
 my @gds =  (Demeter::GDS -> new(gds => 'guess', name => 'alpha10',  mathexp => 0),
