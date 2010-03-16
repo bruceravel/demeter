@@ -49,14 +49,39 @@
 ** Transfer all paths from the 4th shell distance and plot them with the data
 ** Set up a virtual path of all paths at the fourth shell distance
 ** Plot
+** Show right click in VPath space
+** Discuss freeze button
 
 * Features of the GDS page
+** For start, prep a page with one of each
+** Show explain
+** Show change, change selected
+** Highlight
+** Discard all, then import uranyl project
+** Where used
+** Rename globally
+** One best fit, all best fit
+** Annotate
+** Click reset all, explain what happened
+** Explain import/export in words
 
 * Importing other things
+  1. chi column data
+  2. CIF files
+  3. old Artemis projects
+  4. feffit input file
+  5. an external Feff calculation
 
 * SSPaths
+  1. Use uranyl example again.
+  2. Show fit w/out SSPath.
+  3. Make SSSPath
+  4. rerun fit, discuss issues with Nidp
 
 * Quick first shell
+  1. Use FeO data
+  2. Do QFS
+  3. Discuss limitations and relation to SSPath
 
 * Histograms
 
