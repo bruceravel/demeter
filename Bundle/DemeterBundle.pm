@@ -24,8 +24,6 @@ will certainly ask several, as will Tree::Simple.
 
 =head1 CONTENTS
 
-Module::Build
-
 autodie
 
 YAML::Tiny
@@ -96,7 +94,7 @@ Want
 
 I am not yet ready to make wxWidgets a dependence.
 
-I am using Wx 2.8.7 and WxPerl 0.86.  I cannot comment on whether
+I am using Wx 2.8.9 and WxPerl 0.91.  I cannot comment on whether
 earlier versions of either will work.
 
 =head1 DOCUMENT
