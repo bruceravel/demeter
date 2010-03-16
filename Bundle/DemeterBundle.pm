@@ -78,9 +78,9 @@ Regexp::Common
 
 Regexp::Optimizer
 
-String::Random
+Statistics::Descriptive
 
-Term::Twiddle
+String::Random
 
 Test::More
 
@@ -89,6 +89,8 @@ Text::Template
 Tree::Simple
 
 Want
+
+Term::Twiddle
 
 =head1 GUI
 

@@ -83,6 +83,8 @@ my $result = GetOptions(
 pod2usage(0) if $help;
 
 my $target = Cwd::realpath(File::Spec->catdir($basedir,$affix));
+my $bundle = Cwd::realpath('Bundle/DemeterBundle.pm');
+print $bundle, $/;
 
 print "Deploying local::lib to $target\n";
 &install_locallib($target, $whichperl);
@@ -93,7 +95,7 @@ print "Deploying core developer modules...\n";
 print "Done!\n";
 
 print "Deploying demeter's dependency modules...\n";
-&install_demeter_modules($target,$whichperl);
+&install_demeter_modules($bundle, $target,$whichperl);
 print "Done!\n";
 
 print "Creating localenv script...\n";
@@ -136,14 +138,14 @@ sub install_core_modules {
 }
 
 sub install_demeter_modules {
-  my ($target, $whichperl) = @_;
+  my ($bundle, $target, $whichperl) = @_;
 
   my @libs = ();
 
   my $parser = Pod::Select->new();
   $parser->select("CONTENTS");
   my ($fh, $fname) = tempfile();
-  $parser->parse_from_file('Bundle/DemeterBundle.pm', $fh);
+  $parser->parse_from_file($bundle, $fh);
 
   open $fh, $fname;
   foreach (<$fh>) {
@@ -151,7 +153,6 @@ sub install_demeter_modules {
     next if m{\A\s*\z};
     next if m{\A\s*=};
     push @libs, $_;
-    print $_, $/;
   };
   close $fh;
   unlink $fname;
