@@ -185,6 +185,13 @@ sub labelline {
 alias interplist => 'intrplist';
 alias interpline => 'intrpline';
 
+sub ssipot {
+  my ($self) = @_;
+  my @hits = split(/\./, $self->string);
+  my $this_site = $hits[1];
+  my $ipot = $self->feff->sites->[$this_site]->[3];
+  return $ipot;
+};
 
 ## set halflength and beta list for this path
 sub evaluate {

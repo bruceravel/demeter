@@ -21,15 +21,17 @@ sub make_histogram {
       $amp = sprintf("%.6f", $ry->[$i] / $total);
       next if ($amp < $self->co->default(qw(histogram epsilon)));
     };
-    $deltar = ($scale) ? sprintf("%s*reff + %.5f*(1+%s)", $scale, $deltar, $scale) : sprintf("%.5f", $deltar);
-    my $this = Demeter::Path->new(sp     => $self,
-				  delr   => $deltar,
-				  degen  => 1,
-				  n      => 1,
-				  s02    => $s02 . ' * ' . $amp,
-				  parent => $self->feff,
-				  @$common,
-				 );
+    my $reff = $self->fuzzy + $deltar;
+    my $delr = ($scale) ? sprintf("%s*%.5f", $scale, $reff) : 0;
+    my $this = Demeter::SSPath->new(parent => $self->feff,
+				    ipot   => $self->ssipot,
+				    reff   => $reff,
+				    delr   => $delr,
+				    degen  => 1,
+				    n      => 1,
+				    s02    => $s02 . ' * ' . $amp,
+				    @$common,
+				   );
     $this -> make_name;
     (my $oldname = $this->name) =~ s{\s*\z}{};
     $this -> name($oldname . '@ ' . sprintf("%.3f",$rx->[$i]));
@@ -235,6 +237,12 @@ attributes of the Plot object.
 =head1 BUGS AND LIMITATIONS
 
 =over 4
+
+=item *
+
+C<make_histogram> only makes sense right now using a single scattering
+path as the basis.  Need to throw an error if the ScatteringPath is
+not a ss path.
 
 =item *
 

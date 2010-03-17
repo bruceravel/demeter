@@ -52,8 +52,6 @@ sub new {
   $self->{data}->InsertColumn( 1, "Value", wxLIST_FORMAT_LEFT, 160);
   $self->{data}->InsertColumn( 2, "Chemical Properties", wxLIST_FORMAT_LEFT, 140 );
   $self->{data}->InsertColumn( 3, "Value", wxLIST_FORMAT_LEFT, 160 );
-  $self->{data}->InsertColumn( 2, "Chemical Properties", wxLIST_FORMAT_LEFT, 140 );
-  $self->{data}->InsertColumn( 3, "Value", wxLIST_FORMAT_LEFT, 160 );
   my $i = 0;
   foreach my $row ('Name', 'Number', 'Symbol', 'Atomic Weight',
 		   'Atomic Radius', 'Mossbauer', q{}) {

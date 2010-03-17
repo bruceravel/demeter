@@ -61,7 +61,7 @@ my @utilities = qw(absorption formulas ion data transitions find line standards 
 sub new {
   my $ref    = shift;
   my $width  = 100;
-  my $height = int(($#utilities+1) * $icon_dimension * 1.8); # + 2*($#utilities+1);
+  my $height = int(($#utilities) * $icon_dimension * 1.8); # + 2*($#utilities+1);
   my $self   = $ref->SUPER::new( undef,           # parent window
 				 -1,              # ID -1 means any
 				 'Hephaestus',    # title
@@ -69,6 +69,7 @@ sub new {
 			       );
   my $tb = Wx::Toolbook->new( $self, -1, wxDefaultPosition, wxDefaultSize, wxBK_LEFT );
   my $statusbar = $self->CreateStatusBar;
+  $self->{book}      = $tb;
   $self->{statusbar} = $statusbar;
   my $vbox = Wx::BoxSizer->new( wxVERTICAL);
 
@@ -155,6 +156,10 @@ use base 'Wx::App';
 use Demeter;
 use Demeter::UI::Hephaestus::Common qw(hversion hcopyright hdescription);
 
+use Readonly;
+Readonly my $CONFIG   => Wx::NewId();
+Readonly my $DOCUMENT => Wx::NewId();
+
 sub identify_self {
   my @caller = caller;
   return dirname($caller[1]);
@@ -193,11 +198,15 @@ sub OnInit {
   $file->Append( wxID_EXIT, "E&xit" );
 
   my $help = Wx::Menu->new;
+  $help->Append( $CONFIG,    "&Configure" );
+  $help->Append( $DOCUMENT,  "&Document" );
   $help->Append( wxID_ABOUT, "&About..." );
 
   $bar->Append( $file, "&File" );
   $bar->Append( $help, "&Help" );
   $frame->SetMenuBar( $bar );
+  EVT_MENU( $frame, $CONFIG,   sub{shift->{book}->SetSelection(9)});
+  EVT_MENU( $frame, $DOCUMENT, sub{shift->{book}->SetSelection(10)});
   EVT_MENU( $frame, wxID_ABOUT, \&on_about );
   EVT_MENU( $frame, wxID_EXIT, sub{shift->Close} );
   EVT_CLOSE( $frame,  \&on_close);
