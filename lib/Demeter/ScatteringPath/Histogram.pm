@@ -1,5 +1,8 @@
 package Demeter::ScatteringPath::Histogram;
 use Moose::Role;
+if ($Demeter::mode->ui eq 'screen') {
+  with 'Demeter::UI::Screen::Spinner';
+};
 
 use Carp;
 use List::Util qw(sum);
@@ -10,8 +13,13 @@ Readonly my $EPSILON  => 0.00001;
 sub make_histogram {
   my ($self, $rx, $ry, $s02, $scale, $common) = @_;
   my @paths = ();
+  if ($self->nleg != 2) {
+    my $text = "You can only call make_histogram on single scattering paths.\n(MS histograms will be available in a later version of Demeter.)\n";
+    croak($text), return [];
+  };
 
   my $total = (looks_like_number($ry->[0])) ? sum(@$ry) : 1; # not quite right...
+  $self->start_spinner("Generating SSPaths for histogram") if ($self->mo->ui eq 'screen');
   #print $total, $/;
   my $rnot = $self->fuzzy;
   foreach my $i (0 .. $#{$rx}) {
@@ -38,6 +46,7 @@ sub make_histogram {
     $this -> update_path(1);
     push @paths, $this;
   };
+  $self->stop_spinner if ($self->mo->ui eq 'screen');
 
   return \@paths;
 };

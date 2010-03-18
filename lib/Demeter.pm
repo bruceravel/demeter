@@ -89,6 +89,10 @@ $mode = Demeter::Mode -> instance;
 has 'mode' => (is => 'rw', isa => 'Demeter::Mode', default => sub{$mode});
 $mode -> iwd(&Cwd::cwd);
 
+###$SIG{__WARN__} = sub {die(Demeter->_ansify($_[0], 'warn'))};
+###$SIG{__DIE__}  = sub {die(Demeter->_ansify($_[0], 'die' ))};
+
+
 use Demeter::Config;
 use vars qw($config);
 $config = Demeter::Config -> new;
@@ -165,7 +169,11 @@ sub import {
   ##print join(" ", $class, caller), $/;
  PRAG: foreach my $p (@pragmata) {
     $plot -> plot_with($1),        next PRAG if ($p =~ m{:plotwith=(\w+)});
-    $mode -> ui($1),               next PRAG if ($p =~ m{:ui=(\w+)});
+    if ($p =~ m{:ui=(\w+)}) {
+      $mode -> ui($1);
+      #import Demeter::Carp if ($1 eq 'screen');
+      next PRAG;
+    };
     if ($p =~ m{:template=(\w+)}) {
       my $which = $1;
       $mode -> template_process($which);

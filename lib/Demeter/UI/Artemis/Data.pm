@@ -777,7 +777,7 @@ sub fetch_parameters {
 
   my $cv = $this->{cv}->GetValue;
   # things that are not caught by $RE{num}{real} or the validator
-  if (($cv =~ m{\-.*\-}) or ($cv =~ m{\..*\.}) or ($cv =~ m{[^-]+-})) {
+  if (($cv =~ m{\-.*\-}) or ($cv =~ m{\..*\.}) or ($cv =~ m{[^-]+-}) or 1) {
     carp(sprintf("Oops. The CV for data set \"%s\" is not a number ($cv).\n\n", $this->{data}->name));
     return 0;
   } else {
@@ -1052,6 +1052,14 @@ sub OnMenuClick {
     };
 
     ($id == $PATH_HISTO) and do {
+      my $pathpage = $datapage->{pathlist}->GetPage($datapage->{pathlist}->GetSelection);
+      my $sp = $pathpage->{path}->sp;
+      if ($sp->nleg != 2) {
+	my $text = "You can currently only build histograms from single scattering paths.  (MS histograms will be in a later version of Demeter.)";
+	$datapage->status($text);
+	Wx::MessageDialog->new($datapage, $text, "Error!", wxOK|wxICON_ERROR) -> ShowModal;
+	return;
+      };
       my $histo_dialog = Demeter::UI::Artemis::Data::Histogram->new($datapage);
       my $result = $histo_dialog -> ShowModal;
       if ($result == wxID_CANCEL) {

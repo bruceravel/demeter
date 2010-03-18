@@ -81,6 +81,12 @@ sub _ansify {
     ($kind eq 'feffout') and do {
       print $thisline
     };
+    ($kind eq 'warn') and do {
+      return YELLOW . $thisline . RESET;
+    };
+    ($kind eq 'die') and do {
+      return BOLD . RED . $thisline . RESET;
+    };
   };
 
   return ($start, $end);
