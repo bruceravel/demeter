@@ -26,7 +26,7 @@ my $feff = Demeter::Feff->new(yaml=>'Au_feff.yaml');
 $feff->set(workspace=>"./", screen=>0,);
 my @list_of_paths = @{ $feff->pathlist };
 
-
+$feff->pause;
 ## -------- Import some data
 my $data  = Demeter::Data::Prj->new(file=>'Aunano.prj') -> record(5);
 $data -> set(fft_kmin=>3,   fft_kmax=>13,

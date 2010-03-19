@@ -25,7 +25,7 @@ use version;
 our $VERSION = version->new('0.4.0');
 use vars qw($Gnuplot_exists);
 
-use Carp;
+use Demeter::Carp;
 use Cwd;
 use File::Basename qw(dirname);
 use File::Spec;

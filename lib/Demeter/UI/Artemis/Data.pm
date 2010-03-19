@@ -777,7 +777,7 @@ sub fetch_parameters {
 
   my $cv = $this->{cv}->GetValue;
   # things that are not caught by $RE{num}{real} or the validator
-  if (($cv =~ m{\-.*\-}) or ($cv =~ m{\..*\.}) or ($cv =~ m{[^-]+-}) or 1) {
+  if (($cv =~ m{\-.*\-}) or ($cv =~ m{\..*\.}) or ($cv =~ m{[^-]+-})) {
     carp(sprintf("Oops. The CV for data set \"%s\" is not a number ($cv).\n\n", $this->{data}->name));
     return 0;
   } else {
