@@ -19,7 +19,7 @@ if ($ANSIColor_exists) {
 
 our $VERSION = '0.01';
 
-use Carp qw(verbose); # makes carp() cluck and croak() confess
+use Carp;# qw(verbose); # makes carp() cluck and croak() confess
 
 sub _warn {
   if ($_[-1] =~ /\n$/s) {
@@ -28,7 +28,7 @@ sub _warn {
     $arg = BOLD . YELLOW . $arg . RESET if (Demeter::Mode->ui eq 'screen');
     push @_, $arg;
   };
-  warn &Carp::longmess;
+  warn &Carp::shortmess;
 }
 
 sub _die {

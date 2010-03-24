@@ -68,7 +68,7 @@ sub save_project {
     next if (ref($rframes->{$k}->{Feff}->{feffobject}) !~ m{Feff});
     my $file = File::Spec->catfile($rframes->{$k}->{Feff}->{feffobject}->workspace, 'atoms.inp');
     mkpath $rframes->{$k}->{Feff}->{feffobject}->workspace if (! -d $rframes->{$k}->{Feff}->{feffobject}->workspace);
-    $rframes->{$k}->{Atoms}->save_file($file);
+    $rframes->{$k}->{Atoms}->save_file($file) if $rframes->{$k}->{Atoms}->{used};
   };
   if ((not $fname) or ($fname =~ m{\<untitled\>})) {
     my $fd = Wx::FileDialog->new( $rframes->{main}, "Save project file", cwd, q{artemis.fpj},

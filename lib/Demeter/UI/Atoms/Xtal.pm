@@ -121,7 +121,8 @@ sub new {
   $self->{parent}    = $parent;
   $self->{statusbar} = $parent->{statusbar};
   $self->{buffered_site} = 0;
-  $self->{problems} = q{};
+  $self->{problems}  = q{};
+  $self->{used}      = 1;
 
   my $vbox = Wx::BoxSizer->new( wxVERTICAL );
 
@@ -536,6 +537,7 @@ sub open_file {
 
 sub get_crystal_data {
   my ($self) = @_;
+  return 1 if not $self->{used};
 
   $self->{problems} = q{};
   my $problems = q{};

@@ -54,7 +54,7 @@ Readonly my $PERL_MODULES    => Wx::NewId();
 Readonly my $STATUS          => Wx::NewId();
 Readonly my $DOCUMENT        => Wx::NewId();
 
-use Wx::Perl::Carp;
+use Wx::Perl::Carp qw(verbose);
 $SIG{__WARN__} = sub {Wx::Perl::Carp::warn($_[0])};
 $SIG{__DIE__}  = sub {Wx::Perl::Carp::warn($_[0])};
 ##$SIG{PIPE} = 'IGNORE';
@@ -909,6 +909,7 @@ sub make_feff_frame {
   if ($file and (-e $file) and ($demeter->is_atoms($file) or $demeter->is_cif($file))) {
     $frames{$fnum}->{Atoms}->Demeter::UI::Atoms::Xtal::open_file($file);
   } else {
+    $frames{$fnum}->{Atoms}->{used} = 0;
     $frames{$fnum}->{notebook}->SetPageImage(0, 5); # see Demeter::UI::Atoms.pm around line 60
     $frames{$fnum}->{notebook}->SetPageText(0, '');
     EVT_NOTEBOOK_PAGE_CHANGING($frames{$fnum}, $frames{$fnum}->{notebook},
@@ -921,6 +922,7 @@ sub make_feff_frame {
   if ($file and (-e $file) and $demeter->is_feff($file)) {
     my $text = $demeter->slurp($file);
     $frames{$fnum}->{Feff}->{feff}->SetValue($text);
+    $frames{$fnum}->{Feff}->{name}->SetValue(basename($file, '.inp'));
     $frames{$fnum}->{notebook}->ChangeSelection(1);
     $demeter -> push_mru("feff", $file)
   };

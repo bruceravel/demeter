@@ -1,0 +1,49 @@
+
+ TITLE dimethyltin dichloride
+
+ HOLE 1   1.0   *  Sn K edge  (29200.0 eV), second number is S0^2
+
+ *         mphase,mpath,mfeff,mchi
+ CONTROL   1      1     1     1
+ PRINT     1      0     0     0
+
+ RMAX        5.0
+
+ *CRITERIA     curved   plane
+ *DEBYE        temp     debye-temp
+ NLEG         4
+
+ POTENTIALS
+ *    ipot   Z  element
+        0   50   Sn        
+        1   17   Cl
+        2    6   C
+        3    1   H
+
+ ATOMS
+ *   x          y          z      ipot  tag              distance
+   -0.027   2.146   0.014  2
+    0.002  -0.004   0.002  0
+    1.042  -0.716   1.744  2
+   -2.212  -0.821   0.019  1
+    1.107  -0.765  -1.940  1
+    0.996   2.523   0.006  3
+   -0.554   2.507  -0.869  3
+   -0.537   2.497   0.911  3
+    0.532  -0.365   2.641  3
+    1.057  -1.806   1.738  3
+    2.065  -0.339   1.736  3
+ 
+*%# Input-mode Time-stamp: <2006/10/12 17:29:50 bruce>
+*!!&& Local Variables:
+*!!&& input-program-name: "feff"
+*!!&& End:
+
+
+
+
+
+
+
+
+

@@ -32,6 +32,7 @@ if ($Demeter::mode->ui eq 'screen') {
 };
 
 use Capture::Tiny qw(capture);
+use Carp;
 use Compress::Zlib;
 use Cwd;
 use File::Path;
