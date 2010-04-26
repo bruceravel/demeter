@@ -141,7 +141,7 @@ subtype ElementSymbol,
 
 ## -------- Edge symbols
 use vars qw(@edge_list $edge_regexp);
-@edge_list = qw(k l1 l2 l3);
+@edge_list = qw(k l1 l2 l3 m1 m2 m3 m4 m5);
 $edge_regexp = $opt->list2re(@edge_list);
 subtype Edge,
   as Str,
@@ -154,7 +154,7 @@ coerce Edge,
 
 ## -------- Atoms Edge symbols
 use vars qw(@atomsedge_list $atomsedge_regexp);
-@atomsedge_list = qw(1 2 3 4 k l1 l2 l3);
+@atomsedge_list = qw(1 2 3 4 5 6 7 8 9 k l1 l2 l3 m1 m2 m3 m4 m5);
 $atomsedge_regexp = $opt->list2re(@atomsedge_list);
 subtype AtomsEdge,
   as Str,

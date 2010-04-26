@@ -81,19 +81,17 @@ sub merge {
   $self->standard;		# make self the standard for merging
 
   my $merged = $self->clone;
-  $merged -> generated(1);	# should this trigger the next three lines?
-  $merged -> file(q{});
-  $merged -> update_data(0);
-  $merged -> update_columns(0);
+  $merged -> generated(1);
+
 
   if ($how =~ m{^k}) {
     $merged->datatype('chi');
     $self->mergek(@data);
   } elsif ($how =~ m{^e}) {
-    $merged->datatype('xmu');
+    ($self->datatype eq 'xanes') ? $merged->datatype('xanes') : $merged->datatype('xmu');
     $self->mergeE('x', @data);
   } elsif ($how =~ m{^n}) {
-    $merged->datatype('xmu');
+    ($self->datatype eq 'xanes') ? $merged->datatype('xanes') : $merged->datatype('xmu');
     $self->mergeE('n', @data);
   };
 
@@ -213,7 +211,7 @@ sub mergek {
 
 sub Truncate {
   my ($self, $beforeafter, $value) = @_;
-  if ($self->datatype eq "xmu") {
+  if ($self->datatype =~ m{(?:xmu|xanes)}) {
     $self -> _update("normalize");
     $self -> mo -> config -> set(trun_x => 'energy', 'trun_y' => 'xmu');
   } elsif ($self->datatype eq "chi") {
@@ -225,15 +223,15 @@ sub Truncate {
   my $string = q{};
   if (lc($beforeafter) =~ m{\Ab}) { # truncate preceding values
     $string  = $self->template("process", "truncate_before");
-    $string .= $self->template("process", "trun_signal_before") if ($self->datatype eq "xmu");
+    $string .= $self->template("process", "trun_signal_before") if ($self->datatype =~ m{(?:xmu|xanes)});
   } else {			    # truncate following values
     $string  = $self->template("process", "truncate_after");
-    $string .= $self->template("process", "trun_signal_after")  if ($self->datatype eq "xmu");
+    $string .= $self->template("process", "trun_signal_after")  if ($self->datatype =~ m{(?:xmu|xanes)});
   };
   $self->dispose($string);
 
   ## flag data for reprocessing
-  if ($self->datatype eq "xmu") {
+  if ($self->datatype =~ m{(?:xmu|xanes)}) {
     $self->update_norm(1);
   } elsif ($self->datatype eq "chi") {
     $self->update_fft(1);
@@ -279,7 +277,7 @@ sub deglitch {
 sub smooth {
   my ($self, $n) = @_;
   ($n = 1) if ($n < 1);
-  if ($self->datatype eq "xmu") {
+  if ($self->datatype =~ m{(?:xmu|xanes)}) {
     $self -> _update("normalize");
     $self -> mo -> config -> set(smooth_suffix => 'xmu');
   } elsif ($self->datatype eq "chi") {
@@ -290,7 +288,7 @@ sub smooth {
     $self->dispose($string);
   };
   # flag for reprocessing
-  if ($self->datatype eq "xmu") {
+  if ($self->datatype =~ m{(?:xmu|xanes)}) {
     $self->update_norm(1);
   } elsif ($self->datatype eq "chi") {
     $self->update_fft(1);

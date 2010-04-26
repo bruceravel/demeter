@@ -4,7 +4,7 @@ package Demeter::Data;
  .
  Copyright (c) 2006-2010 Bruce Ravel (bravel AT bnl DOT gov).
  All rights reserved.
- .
+ .transmission
  This file is free software; you can redistribute it and/or
  modify it under the same terms as Perl itself. See The Perl
  Artistic License.
@@ -142,8 +142,10 @@ has 'generated'  => (is => 'rw', isa => 'Bool',  default => 0,
 				    $self->ln(0);
 				    $self->energy_string(q{});
 				    $self->xmu_string(q{});
+				    $self->signal_string(q{});
+				    $self->i0_string(q{});
+				    $self->file(q{});
 				  });
-
 
 ## -------- stuff for about dialog
 has 'recordtype'       => (is => 'rw', isa => 'Str',  default => q{});
@@ -368,7 +370,8 @@ override all => sub {
 
 override clone => sub {
   my ($self, @arguments) = @_;
-  $self->_update('fft');
+  $self->_update('background');
+  $self->_update('fft') if ($self->datatype =~ m{(?:xmu|chi)});
   my $new = $self->SUPER::clone();
 
   $new  -> standard;
@@ -376,8 +379,8 @@ override clone => sub {
   $new  -> unset_standard;
   $new  -> update_data(0);
   $new  -> update_columns(0);
-  $new  -> update_norm($self->datatype eq 'xmu');
-  $new  -> update_fft(1);
+  $new  -> update_norm($self->datatype =~ m{(?:xmu|xanes)});
+  $new  -> update_fft($self->datatype =~ m{(?:xmu|chi)});
 
   my ($old_group, $new_group) = ($self->group, $new->group);
   foreach my $att (qw(energy_string i0_string signal_string xmu_string)) {
@@ -513,7 +516,7 @@ sub _update {
       $self->read_data if ($self->update_data);
       $self->put_data  if ($self->update_columns);
       $self->normalize if ($self->update_norm and ($self->datatype =~ m{xmu|xanes}));
-      $self->autobk    if ($self->update_bkg  and ($self->datatype =~ m{xmu|xanes}));
+      $self->autobk    if ($self->update_bkg  and ($self->datatype =~ m{xmu}));
       $self->fft_pcpath->_update('fft') if $self->fft_pcpath;
       last WHICH;
     };
@@ -521,17 +524,17 @@ sub _update {
       $self->read_data if ($self->update_data);
       $self->put_data  if ($self->update_columns);
       $self->normalize if ($self->update_norm and ($self->datatype =~ m{xmu|xanes}));
-      $self->autobk    if ($self->update_bkg  and ($self->datatype =~ m{xmu|xanes}));
-      $self->fft       if ($self->update_fft);
+      $self->autobk    if ($self->update_bkg  and ($self->datatype =~ m{xmu}));
+      $self->fft       if ($self->update_fft  and ($self->datatype =~ m{xmu|chi}));
       last WHICH;
     };
     ($which eq 'all') and do {
       $self->read_data if ($self->update_data);
       $self->put_data  if ($self->update_columns);
       $self->normalize if ($self->update_norm and ($self->datatype =~ m{xmu|xanes}));
-      $self->autobk    if ($self->update_bkg  and ($self->datatype =~ m{xmu|xanes}));
-      $self->fft       if ($self->update_fft);
-      $self->bft       if ($self->update_bft);
+      $self->autobk    if ($self->update_bkg  and ($self->datatype =~ m{xmu}));
+      $self->fft       if ($self->update_fft  and ($self->datatype =~ m{xmu|chi}));
+      $self->bft       if ($self->update_bft  and ($self->datatype =~ m{xmu|chi}));
       last WHICH;
     };
 
@@ -574,6 +577,7 @@ sub read_data {
 sub explain_recordtype {
   my ($self) = @_;
   my $string = ($self->datatype eq 'xmu')        ? 'mu(E)'
+             : ($self->datatype eq 'xanes')      ? 'xanes(E)'
              : ($self->datatype eq 'chi')        ? 'chi(k)'
              : ($self->datatype eq 'xmudat')     ? 'Feff mu(E)'
              : ($self->datatype eq 'background') ? 'background'
@@ -584,6 +588,7 @@ sub explain_recordtype {
   $self->recordtype($string);
 
   $string = ($self->datatype eq 'xmu')        ? 'any'
+          : ($self->datatype eq 'xanes')      ? 'energy'
           : ($self->datatype eq 'chi')        ? 'k, R, or q'
           : ($self->datatype eq 'xmudat')     ? 'any'
           : ($self->datatype eq 'background') ? 'any'
@@ -614,6 +619,7 @@ sub sort_data {
     my $ecol = $self->energy;
     $ecol =~ s{^\$}{};
     my @array = $self->get_array($cols[$ecol]);
+    # print join(" ", @array), $/, $/;
     foreach (0 .. $#array) {push @{$lol[$_]}, $array[$_]};
     foreach my $c (@cols) {
       next unless $c;
@@ -638,6 +644,8 @@ sub sort_data {
       foreach (@lol) {push @array, $_->[$c]};
       Ifeffit::put_array("$group.$cols[$c]", \@array);
     };
+    # @array = $self->get_array($cols[$ecol]);
+    # print join(" ", @array), $/, $/, $/;
   };
   return $self;
 };
@@ -705,7 +713,7 @@ sub rfactor {
 override 'serialization' => sub {
   my ($self) = @_;
   my $string = $self->SUPER::serialization;
-  if ($self->datatype eq 'xmu') {
+  if ($self->datatype =~ m{(?:xmu|xanes)}) {
     $string .= YAML::Tiny::Dump($self->ref_array("energy"));
     $string .= YAML::Tiny::Dump($self->ref_array("xmu"));
     if ($self->is_col) {
@@ -744,7 +752,7 @@ override 'deserialize' => sub {
   my @y  = @{ $stuff[2] };
   my @i0 = @{ $stuff[3] };
 
-  if ($self->datatype eq 'xmu') {
+  if ($self->datatype =~ m{(?:xmu|xanes)}) {
     Ifeffit::put_array($self->group.".energy",    \@x);
     Ifeffit::put_array($self->group.".xmu", \@y);
     if ($self->is_col) {
@@ -870,7 +878,7 @@ This identifies the record type.  It is one of
 
 Earlier versions of Demeter had attributes like C<is_xmu> and
 C<is_chi>.  Those are now obsolete and there use will return an error
-about beoing unknown attributes.
+about being unknown attributes.
 
 =item C<is_col> (boolean)
 

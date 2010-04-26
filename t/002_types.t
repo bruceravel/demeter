@@ -17,7 +17,7 @@
 
 =cut
 
-use Test::Simple tests => 325;
+use Test::Simple tests => 340;
 
 use Demeter;
 use Demeter::StrTypes qw( Empty

@@ -32,7 +32,7 @@ use Xray::Absorption;
 
 sub resolve_defaults {
   my ($self) = @_;
-  if ($self->datatype eq 'xmu') {
+  if ($self->datatype =~ m{(?:xmu|xanes)}) {
     my @x = $self->get_array("energy");
     #my @y = $self->get_array("xmu");
     $self->resolve_pre(\@x);
@@ -94,10 +94,11 @@ sub resolve_nor {
 
   ## does this appear to be XANES data?
   my $cutoff = $self->co->default("xanes", "cutoff");
-  if ($cutoff and ($last < $cutoff)) {
+  if (($cutoff and ($last < $cutoff)) or ($self->datatype eq 'xanes')){
     ##carp "these are xanes data!\n\n";
-    ($bkg_nor1, $bkg_nor2) = ($self->co->default("xanes", "nor1"),
-			      $self->co->default("xanes", "nor2"));
+    $bkg_nor1 = $self->co->default("xanes", "nor1") if ($bkg_nor1 == $self->co->default("bkg", "nor1"));
+    $bkg_nor2 = $self->co->default("xanes", "nor2") if ($bkg_nor2 == $self->co->default("bkg", "nor2"));
+    $self->datatype('xanes');
   };
 
   ($bkg_nor1 *= 1000) if (abs($bkg_nor1) < 1);

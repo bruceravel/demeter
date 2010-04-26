@@ -194,7 +194,7 @@ sub initialize_e0 {
   #my $command = $self->template("process", "find_e0");
   #$self->dispose($command);
   #$self->bkg_e0(Ifeffit::get_scalar("e0"));
-  $self->e0('ifeffit');
+  $self->e0('ifeffit') if not $self->bkg_e0;
   $self->resolve_defaults;
 };
 

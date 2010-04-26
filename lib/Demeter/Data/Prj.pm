@@ -190,9 +190,9 @@ sub record {
     #$rec->provenance($rec->template("process", "read_prj", {file=>$self->file, record=>$g}));
     $rec->provenance(sprintf("Athena project file %s, record %d", $self->file, $g));
 
-    my $array = ($rec->datatype eq 'xmu') ? 'energy'
-              : ($rec->datatype eq 'chi') ? 'k'
-	      :                            'energy';
+    my $array = ($rec->datatype =~ m{(?:xmu|xanes)}) ? 'energy'
+              : ($rec->datatype eq 'chi')            ? 'k'
+	      :                                        'energy';
     my @x = $rec->get_array($array); # set things for about dialog
     $rec->npts($#x+1);
     $rec->xmin($x[0]);
