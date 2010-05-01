@@ -180,7 +180,10 @@ sub mouseover {
 sub populate {
   my ($this, $parent, $pathobject) = @_;
   $this->{path} = $pathobject;
-  return if not ($pathobject->sp);
+  return if not ($pathobject->sp); # it is kind of a disaster for a pth not to have an sp associated with it
+				   # this is non-ideal as it will leave a blank path page, but it
+				   # is better than crashing.  even better would be to figure out how
+                                   # gets here....
 
   $this->{fefflabel} -> SetLabel('[' . $pathobject->parent->name . '] ');
   my $name = $pathobject->name;
