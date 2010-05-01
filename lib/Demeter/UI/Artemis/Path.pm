@@ -180,13 +180,14 @@ sub mouseover {
 sub populate {
   my ($this, $parent, $pathobject) = @_;
   $this->{path} = $pathobject;
+  return if not ($pathobject->sp);
 
   $this->{fefflabel} -> SetLabel('[' . $pathobject->parent->name . '] ');
   my $name = $pathobject->name;
   $name =~ s{\A\s+}{};
   $name =~ s{\s+\z}{};
   $this->{idlabel} -> SetLabel($name);
-  $this->{idlabel} -> SetForegroundColour($this->{"color" . $pathobject->sp->weight});
+  $this->{idlabel} -> SetForegroundColour($this->{sprintf("color%d", $pathobject->sp->weight)});
 
   $this->{geombox} -> SetLabel(" " . $pathobject->sp->intrplist . " ");
 

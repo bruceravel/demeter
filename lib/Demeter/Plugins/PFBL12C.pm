@@ -4,8 +4,8 @@ use Moose;
 extends 'Demeter::Plugins::FileType';
 
 has '+is_binary'   => (default => 0);
-has '+description' => (default => "Read files from Photon Factory Beamline 12C.");
-has '+version'     => (default => 0.1);
+has '+description' => (default => "Read files from Photon Factory XAS Beamlines.");
+has '+version'     => (default => 0.2);
 
 use Readonly;
 Readonly my $PI      => 4 * atan2 1, 1;
@@ -15,10 +15,10 @@ Readonly my $TWODTHR => 3.275;	# Si(311)
 
 sub is {
   my ($self) = @_;
-  open D, $self->file or die "could not open " . $self->file . " as data (PFBL12C)\n";
+  open D, $self->file or die "could not open " . $self->file . " as data (Photon Factory)\n";
   my $line = <D>;
   close D;
-  return 1 if ($line =~ m{KEK-PF\s+BL12C});
+  return 1 if ($line =~ m{9809\s+KEK-PF\s+(?:BL|NW)\d+});
   return 0;
 };
 
@@ -34,6 +34,7 @@ sub fix {
   my ($header, $twod) = (1,$TWODONE);
   my @offsets;
   while (<$D>) {
+    next if ($_ =~ m{\A\s*\z});
     last if ($_ =~ m{});
     chomp;
     if ($header and ($_ =~ m{\A\s+offset}i)) {
@@ -85,21 +86,21 @@ __PACKAGE__->meta->make_immutable;
 
 =head1 NAME
 
-Demeter::Plugin::PFBL12C - filetype plugin for Photon Factory BL12C
+Demeter::Plugin::PFBL12C - filetype plugin for Photon Factory
 
 =head1 SYNOPSIS
 
 This plugin converts data recorded as a function of mono angle to data
 as a function of energy.
 
-=head1 Methods
+=head1 METHODS
 
 =over 4
 
 =item C<is>
 
-A PFBL12C file is identified by the string "KEK-PF BL12C" in the first
-line of the file.
+A PFBL12C file is identified by the string "KEK-PF" followed by the
+beamline number in the first line of the file.
 
 =item C<fix>
 
@@ -110,11 +111,21 @@ Convert the wavelength array to energy using the formula
 where C<hbarc=1973.27053324> is the the value in eV*angstrom units and
 D is the Si(111) plane spacing.
 
+=back
+
+=head1 REVISIONS
+
+=over 4
+
+=item 0.2
+
+Thanks to 上村洋平 (Yohéi Uemura) from the Photon Factory for helping
+me to refine the C<is> method to work with multiple PF XAS beamlines.
+
+=back
+
 =head1 AUTHOR
 
   Bruce Ravel <bravel@anl.gov>
   http://xafs.org/BruceRavel
-
-1;
-__END__
 
