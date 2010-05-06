@@ -167,7 +167,7 @@ sub install_modules {
   $ENV{PERL_AUTOINSTALL_PREFER_CPAN} = '1';
 
   foreach my $module(@list) {
-    my $cmd = qq["$whichperl" -I$lib -Mlocal::lib="--self-contained","$target" -e "use CPAN; CPAN::force('install',$module)"];
+    my $cmd = qq["$whichperl" -I$lib -Mlocal::lib="$target" -e "use CPAN; CPAN::force('install',$module)"];
     print "doing $cmd;\n";
     system($cmd);
   };
