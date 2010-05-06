@@ -2,11 +2,11 @@
 
 =head1 NAME
 
-bootstrap-locallib.pl, version 0.01
+bootstrap, version 0.01
 
 =head1 SYNOPSIS
 
-  perl [PATH]/bootstrap-locallib.pl OPTIONS
+  perl [PATH]/bootstrap OPTIONS
 
   Option Summary
 
