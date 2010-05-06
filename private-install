@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/sh -x
 ######################################################################
 ## This simple shell script is a replacement for the `./Build install'
 ## stage of the standard perl module installation sequence.  If you
@@ -25,10 +25,10 @@
 
 if [ $PERL5LIB ]
 then
-  PLIB=$PERL5LIB
+  PLIB=`echo $PERL5LIB | sed ' s/\([^:]*\):.*/\1/'`
 elif [ $PERLLIB ]
 then
-  PLIB=$PERLLIB
+  PLIB=`echo $PERLLIB | sed ' s/\([^:]*\):.*/\1/'`
 else
   echo "Neither PERL5LIB nor PERLLIB are set.  Private installation halting."
   exit

@@ -68,7 +68,7 @@ use Pod::Usage;
 use File::Temp qw(tempfile);
 use Pod::Select;
 
-our $VERSION = "0.01";
+our $VERSION = "0.02";
 
 my $help;
 my $basedir = $ENV{LOCALLIB_BASEDIR} || $ENV{HOME};
@@ -102,9 +102,18 @@ print "Creating localenv script...\n";
 &install_locallib_env($target, $whichperl);
 print "Done!\n";
 
+print "Using cpanminus to install Star::Parser and libperlxray ...\n";
+system(q(cpanm http://pdb.sdsc.edu/STAR/STAR-Parser-0.59.tar.gz));
+system(q(cpanm http://cars9.uchicago.edu/~ravel/software/packages/Xray-Absorption-v3.0.1.tar.gz));
+system(q(cpanm http://cars9.uchicago.edu/~ravel/software/packages/Xray-Scattering-v3.0.1.tar.gz));
+system(q(cpanm http://cars9.uchicago.edu/~ravel/software/packages/Chemistry-Formula-v3.0.1.tar.gz));
+system(q(cpanm http://cars9.uchicago.edu/~ravel/software/packages/Ifeffit-3.0.1.tar.gz));
+print "Done!\n";
+
 print "Modifying .bachrc file...\n";
 system( q(echo 'eval $(perl -I$HOME/perl5/lib/perl5 -Mlocal::lib)' >>~/.bashrc));
 print "\nDone! (Log out and log back in for this to take effect.)\n";
+
 
 
 
