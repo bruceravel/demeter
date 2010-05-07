@@ -22,7 +22,7 @@ BEGIN {
 require 5.8.0;
 
 use version;
-our $VERSION = version->new('0.4.0');
+our $VERSION = version->new('0.4.1');
 use vars qw($Gnuplot_exists);
 
 use Demeter::Carp;
@@ -286,55 +286,6 @@ sub clone {
 
   return $new;
 };
-# around clone => sub {
-#   my ($code, $self, @arguments) = @_;
-
-#   ## clone using MooseX::Clone
-#   my $new = $self -> $code(@arguments);
-
-#   ## the cloned object needs its own group name
-#   $new->group($self->_get_group());
-
-#   ## data from Athena
-#   if ((ref($self) =~ m{Data}) and $self->from_athena) {
-#     $new  -> standard;
-#     $self -> dispose($self->template("process", "clone"));
-#     $new  -> unset_standard;
-#     $new  -> from_athena(1);
-#     $new  -> update_data(0);
-#     $new  -> update_columns(0);
-#     $new  -> update_norm($self->datatype eq 'xmu');
-#     $new  -> update_fft(1);
-#     $new  -> data($new);
-#     $new  -> provenance("cloned");
-
-#   ## mu(E) data from a file
-#   } elsif (ref($self) =~ m{Data}) {
-#     $new -> update_data(1);
-#     $new -> data($new);
-#     $new -> provenance("cloned");
-
-#   ## Path object
-#   } elsif (ref($self) =~ m{::(?:SS|)Path}) {
-#     my $i = $new->mo->pathindex;
-#     $new->Index($i);
-#     $new->mo->pathindex(++$i);
-
-#   ## any other kind of object
-#   } else {
-#     1;
-
-#   };
-
-#   if (ref($self) =~ m{Data}) {
-#     if ($new->tag eq $self->tag) {
-#       $new->tag( $new->cv || $new->group );
-#     };
-#   };
-
-#   return $new;
-# };
-
 
 
 sub identify_self {
@@ -779,8 +730,7 @@ Import Demeter components into your program:
 This will import all Demeter components into your program.  The
 components are:
 
-   Atoms Data Data::Prj Path VPath SSPath Plot Config GDS
-   Fit Feff ScatteringPath
+   Atoms Data Path VPath Fit Feff  and so on...
 
 Using Demeter automatically turns on L<strict> and L<warnings>.
 
@@ -1607,6 +1557,21 @@ get reset to their defaults.
 Please report problems to Bruce Ravel (bravel AT bnl DOT gov)
 
 Patches are welcome.
+
+=head1 VERSIONS
+
+=over 4
+
+=item 0.4.1
+
+Now supplying the C<bootstrap> script in an attempt to ease initial
+installation.  Also building the DPG with a PL_file at build time.
+
+Fixed a bug setting the Plot object space attribute in quad, stddev,
+and variance plots.  Added stddev and variance plots to the merge
+example in C<harness>.
+
+=back
 
 =head1 AUTHOR
 

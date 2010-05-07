@@ -17,7 +17,7 @@ sub plot {
   $space ||= $pf->space;
   ($space  = 'kq') if (lc($space) eq 'qk');
   $space   = lc($space);
-  $self->po->space(substr($space, 0, 1));
+  $self->po->space(substr($space, 0, 1)) if ($space !~ m{(?:quad|stddev|variance)});;
 
   if (($self->datatype eq 'detector') and ($space ne 'e')) {
     carp($self->name . " is a detector group, which cannot be plotted in $space\n\n");

@@ -98,6 +98,10 @@ PPI::HTML
 
 Image::Size
 
+Alien::wxWidgets
+
+Wx
+
 Term::Twiddle
 
 =head1 GUI

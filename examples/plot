@@ -14,7 +14,7 @@
 
 =for Copyright
  .
- Copyright (c) 2006-2009 Bruce Ravel (bravel AT bnl DOT gov).
+ Copyright (c) 2006-2010 Bruce Ravel (bravel AT bnl DOT gov).
  All rights reserved.
  .
  This file is free software; you can redistribute it and/or
@@ -111,6 +111,7 @@ sub plot {
 
 sub state {
   print GREEN, $_[0], BOLD, RED;
+  $demeter->po->title($_[0]);
 };
 
 sub spew {
@@ -129,7 +130,7 @@ sub spew {
 
 sub plot1 {
   my ($data) = @_;
-  state("plotting mu + background + pre-edge + post-edge\n");
+  state("mu + background + pre-edge + post-edge\n");
   $data->po->set(e_mu      => 1,    e_bkg     => 1,
 		 e_norm    => 0,    e_der     => 0,
 		 e_pre     => 1,    e_post    => 1,
@@ -258,7 +259,7 @@ sub plot9 {
 sub plota {
   my ($data) = @_;
   state("chi(E)\n");
-  $data -> po -> set(kweight => 2, space => 'k', chie => 1);
+  $data -> po -> set(kweight => 2, space => 'k', chie => 1, emax => 1000);
   $data -> plot;
   $data -> po -> set(chie => 0);
 };

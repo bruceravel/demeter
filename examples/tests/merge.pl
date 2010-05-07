@@ -8,7 +8,7 @@
 
 =for Copyright
  .
- Copyright (c) 2006-2009 Bruce Ravel (bravel AT bnl DOT gov).
+ Copyright (c) 2006-2010 Bruce Ravel (bravel AT bnl DOT gov).
  All rights reserved.
  .
  This file is free software; you can redistribute it and/or
@@ -62,4 +62,15 @@ foreach ($d0, $d1, $d2, $merge) {
   $_->plot('e');
 };
 
+print "sleeping 3 seconds\n";
+sleep 3;
+
+print "plotting merge + standard deviation\n";
+$merge -> plot('stddev');
+
+print "sleeping 3 seconds\n";
+sleep 3;
+
+print "plotting merge + variance\n";
+$merge -> plot('variance');
 1;
