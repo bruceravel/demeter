@@ -30,14 +30,14 @@ sub ACTION_ddocs {
     my $self = shift;
 
     chdir File::Spec->catfile('lib', 'Demeter', 'doc', 'dpg');
-    #$self->do_system(q(./makedoc));
-    #chdir 'dpg';
     $self->do_system(q(./configure));
     $self->do_system(q(./bin/build));
 
 };
 },
 );
+    #$self->do_system(q(./makedoc));
+    #chdir 'dpg';
 
 my $build = $class
   -> new(
