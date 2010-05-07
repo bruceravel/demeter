@@ -10,7 +10,7 @@
 
 id=`pwd`
 
-echo "Configuring the Athena User's Guide build system for your machine"
+echo "Configuring the Demeter Programming Guide build system for your machine"
 
 echo "  configuring bin directory"
 files="build" # tex texbw pod mobile"
