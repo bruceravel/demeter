@@ -1,125 +1,118 @@
 NAME
-    Ifeffit::Demeter - An object oriented EXAFS data analysis system
+    Demeter - An object oriented EXAFS data analysis system using Ifeffit
 
 VERSION
-    This documentation refers to Ifeffit::Demeter version 0.0.1
+    This documentation refers to Demeter version 0.4.0
 
 SYNOPSIS
     Import Demeter components into your program:
 
-      use Ifeffit::Demeter;
+      use Demeter;
 
     This will import all Demeter components into your program. The
     components are:
 
-       Atoms Data Path Plot Config GDS Fit Feff ScatteringPath
+       Atoms Data Path VPath Fit Feff  and so on...
 
-    Importing the Fit component forces the import of the Data, Path, and GDS
-    components.
-
-    You can also specify subsets of the Demeter system for import.
-
-      use Ifeffit::Demeter qw(Data);
-
-    Typically, the third form is
+    Using Demeter automatically turns on strict and warnings.
 
 EXAMPLE
     Here is a complete script for analyzing copper data:
 
-      #!/usr/bin/perl -I/home/bruce/codes/demeter
-      use warnings;
-      use strict;
-      use Ifeffit::Demeter;
+      #!/usr/bin/perl
+      use Demeter;  # automatically turn on L<strict> and L<warnings>
       #
-      print "Sample fit to copper data using Demeter $Ifeffit::Demeter::VERSION\n";
-      Ifeffit::Demeter->set_mode({screen=>1, ifeffit=>1});
-      my $plot_features = Ifeffit::Demeter::Plot -> new();
+      ## make a Data object
+      my $dobject = Demeter::Data -> new({group => 'data0',});
       #
-      ## Data object: set the processing and fit parameters
-      my $dobject = Ifeffit::Demeter::Data -> new({group => 'data0',});
-      $dobject ->set({file      => "example/cu/cu10k.chi",
-                      is_chi    => 1,
-                      fft_kmax  => 3, # \ note that this gets
-                      fft_kmin  => 14,# / fixed automagically
-                      bft_rmax  => "4.3",
-                      fit_space => 'K',
-                      fit_k1    => 1,
-                      fit_k3    => 1,
-                      label     => 'My copper data',
-                     });
+      print "Sample fit to copper data using Demeter " . $dobject->version . "\n";
+      $dobject->set_mode(screen=>1, ifeffit=>1);
+      #
+      ## set the processing and fit parameters
+      $dobject ->set(file      => "example/cu/cu10k.chi",
+                     name      => 'My copper data',
+                     is_chi    => 1,
+                     fft_kmin  => 3,    fft_kmax  => 14,
+                     bft_rmin  => 1,    bft_rmax  => "4.3",
+                     fit_space => 'K',
+                     fit_k1    => 1,    fit_k3    => 1,
+                    );
       #
       ## GDS objects for isotropic expansion + correlated Debye model
       my @gdsobjects =
-        (Ifeffit::Demeter::GDS ->
-            new({type => 'guess', name => 'alpha', mathexp => 0}),
-         Ifeffit::Demeter::GDS ->
-            new({type => 'guess', name => 'amp',   mathexp => 1}),
-         Ifeffit::Demeter::GDS ->
-            new({type => 'guess', name => 'enot',  mathexp => 0}),
-         Ifeffit::Demeter::GDS ->
-            new({type => 'guess', name => 'theta', mathexp => 500}),
-         Ifeffit::Demeter::GDS ->
-            new({type => 'set',   name => 'temp',  mathexp => 300}),
-         Ifeffit::Demeter::GDS ->
-            new({type => 'set',   name => 'sigmm', mathexp => 0.00052}),
+        (Demeter::GDS ->
+            new(type => 'guess', name => 'alpha', mathexp => 0),
+         Demeter::GDS ->
+            new(type => 'guess', name => 'amp',   mathexp => 1),
+         Demeter::GDS ->
+            new(type => 'guess', name => 'enot',  mathexp => 0),
+         Demeter::GDS ->
+            new(type => 'guess', name => 'theta', mathexp => 500),
+         Demeter::GDS ->
+            new(type => 'set',   name => 'temp',  mathexp => 300),
+         Demeter::GDS ->
+            new(type => 'set',   name => 'sigmm', mathexp => 0.00052),
         );
       #
       ## Path objects for the first 5 paths in copper (3 shell fit)
       my @pobjects = ();
       foreach my $i (0 .. 4) {
-        my $j = $i+1;
-        $pobjects[$i] = Ifeffit::Demeter::Path -> new();
-        $pobjects[$i]->set({data     => $dobject,
+        $pobjects[$i] = Demeter::Path -> new();
+        $pobjects[$i ]->set(data     => $dobject,
                             folder   => 'example/cu/',
-                            file     => "feff000$j.dat",
+                            file     => sprintf("feff%4.4d.dat", $i+1),
                             s02      => 'amp',
                             e0       => 'enot',
                             delr     => 'alpha*reff',
                             sigma2   => 'debye(temp, theta) + sigmm',
-                           });
+                           );
       };
       #
       ## Fit object: collection of GDS, Data, and Path objects
-      my $fitobject = Ifeffit::Demeter::Fit -> new({gds   => \@gdsobjects,
-                                                    data  => [$dobject],
-                                                    paths => \@pobjects,
-                                                   });
+      my $fitobject = Demeter::Fit -> new(gds   => \@gdsobjects,
+                                          data  => [$dobject],
+                                          paths => \@pobjects,
+                                         );
       ## do the fit (or the sum of paths)
       $fitobject -> fit;
       #
       ## plot the data + fit + paths in a space
-      $plot_features->set({plot_data => 1, plot_fit  => 1,
-                           plot_res  => 0, plot_win  => 1,});
+      $dobject -> po -> set(plot_data => 1, plot_fit  => 1,
+                            plot_res  => 0, plot_win  => 1,);
       foreach my $obj ($dobject, @pobjects,) {
         $obj -> plot("r");
       };
       #
       ## save the results of the fit and write a log file
-      $dobject->save_fit("cufit.fit");
-      my ($header, $footer) = ("Fit to copper data\n", q{});
+      $dobject -> save("fit", "cufit.fit");
+      my ($header, $footer) = ("Simple fit to copper data\n", q{});
       $fitobject -> logfile("cufit.log", $header, $footer);
 
     This example starts by defining each of the data objects. There is one
-    plot object, one data object, 5 path objects, 5 GDS objects, and one fit
-    object. The "set_mode" method defines how the Ifeffit command generated
-    will be dispatched. After the fit is defined by calling the "fit" method
-    on the Fit object, a number of chores can be done. First, the results of
-    the fit are evaluated. This retrieves best fit values for all GDS
-    parameters from Ifeffit, evaluates all path parameters for all the Path
-    objects, and retrieves the correlations between guess parameters from
-    Ifeffit. Then plots are made, theresults of the fit are saved as an
-    ascii data file, and a log file is written.
+    data object, 5 path objects, and 6 GDS objects and these are gathered
+    into one fit object. The "set_mode" method defines how the Ifeffit
+    commands generated will be dispatched -- in this case, to the screen and
+    to the Ifeffit process. After the fit is defined by creating the Fit
+    object, the fit is preformed calling the "fit" method. This performs the
+    fit; retrieves the best fit values, error bars, and correlations; and
+    evaluates all path parameters. Then plots are made, the results of the
+    fit are saved as an ASCII data file, and a log file is written.
+
+    When a Demeter script exits, care is taken to clean up all temporary
+    file that may have been generated during the run.
 
 DESCRIPTION
     This module provides an object oriented interface to the EXAFS data
     analysis capabilities of the popular and powerful Ifeffit package.
     Mindful that the Ifeffit API involves streams of text commands, this
-    package is, at heart, a code generator. Most methods of this package
+    package is, at heart, a code generator. Many methods of this package
     return text. All actual interaction with Ifeffit is handled through a
-    single method, "dispose", which is described below. The typical use of
-    this package is to accumulate text in a scalar variable through
-    successive calls to the various code generating methods. This text is
-    then disposed to Ifeffit, to a file, or elsewhere.
+    single method, "dispose", which is described below. The internal
+    structure of this package involves accumulating text in a scalar
+    variable through successive calls to the various code generating
+    methods. This text is then disposed to Ifeffit, to a file, or elsewhere.
+    The outward looking methods, as shown in the example above, organize all
+    of the complicated interactions of your data with Ifeffit.
 
     This package is aimed at many targets. It can be the back-end of a
     graphical data analysis program, providing the glue between the
@@ -127,70 +120,156 @@ DESCRIPTION
     Ifeffit. It can be used for one-off data analysis chores -- indeed most
     of the examples that come with the package can be reworked into useful
     one-off scripts. It can also be the back-end to sophisticated data
-    analysis chores such as high-throughout data fitting or complex physical
-    modeling.
+    analysis chores such as high-throughout data processing and analysis or
+    complex physical modeling.
 
-    Ifeffit::Demeter is actually a parent class for the objects that are
-    directly manipulated in any real program using Ifeffit::Demeter. These
-    are the major subclasses:
+    Demeter is a parent class for the objects that are directly manipulated
+    in any real program using Demeter. These are several subclasses:
 
-    Ifeffit::Demeter::Data
-        The data object used to import chi(k) data from a file and set
-        parameters for Fourier transforms, fitting range, and other aspects
-        of the fit. This, in turn, has several major subclasses devoted to
-        specific data processing chores.
+    Demeter::Data
+        The Data object used to import mu(E) or chi(k) data from a column
+        data file or an Athena project file. It organizes parameters for
+        Fourier transforms, fitting range, and other aspects of the fit.
 
-    Ifeffit::Demeter::Path
-        The path object used to define a path in a fit and to set math
-        expressions for its path parameters.
+    Demeter::Data::Prj
+        This object is used to interact with the records of an Athena
+        project file.
 
-    Ifeffit::Demeter::GDS
+    Demeter::Path
+        The Path object used to define a path for use a fit and to set math
+        expressions for its path parameters. This object is typically
+        associated with a feffNNNN.dat file from a Feff calculation. That
+        feffNNNN.dat may have been generated by Feff in the normal manner or
+        via the methods of Demeter's Feff object.
+
+    Demeter::VPath
+        A virtual path object is a collection of Path objects which can be
+        summed and plotted as a summation.
+
+    Demeter::SSPath
+        This is a way of generating an arbitrary sungle scattering path at
+        an arbitrary distance using the potentials of a Feff object.
+
+    Demeter::GDS
         The object used to define a guess, def or set parameter for use in
         the fit. This is also used to define restraints and a few other
         kinds of parameters.
 
-    Ifeffit::Demeter::Fit
+    Demeter::Fit
         This object is the collection of Data, Path, and GDS objects which
-        compromises a fit. This, in turn, has several subclasses devoted to
-        particular aspects of the fitting problem.
+        compromises a fit.
 
-    Ifeffit::Demeter::Plot
-        The object which controls how plots are made from the other
-        Ifeffit::Demeter objects
-
-    Ifeffit::Demeter::Atoms
+    Demeter::Atoms
         A crystallography object which is used to generate the structure
         data for a Feff object.
 
-    Ifeffit::Demeter::Feff
+    Demeter::Feff
         A object defining the contents of a Feff calculation and providing
-        methods for running parts of Feff.
+        methods for running parts of Feff. This object provide a flexible
+        interface to Feff which is intended to address many of Feff's
+        shortcomings and obviate the need to interact directly with Feff via
+        its input file.
 
-    Ifeffit::Demeter::ScatteringPath
-        On object defining a scattering path from a Feff object. This may be
+    Demeter::ScatteringPath
+        An object defining a scattering path from a Feff object. This may be
         linked to a Path object used in a fit.
 
-    Each of these objects is implemented as an inside-out object, as
-    described in "Perl Best Practices" by Damian Conway
-    (<http://www.oreilly.com/catalog/perlbp/>) and in the Class::Std and
-    Class::Std::Utils module. Inside-out objects provide complete data
-    encapsolation. This means that the only way to access the data
-    associated with the various objects is to use the methods described
-    below and in the documentation pages for the various subclasses.
+    Demeter::Plot
+        The object which controls how plots are made from the other Demeter
+        objects. As described in its document, access to this object is
+        provided in a consistent manner and is available to all other
+        Demeter objects.
 
-    Additionally, there is an Ifeffit::Demeter::Tools module which provides
-    a variety of useful class methods.
+    Demeter::Config
+        The object which controls configuraton of the the Demeter system and
+        its components. This is a singleton object (i.e. only one exists in
+        any instance of Demeter). As described in its document, access to
+        this object is provided in a consistent manner and is available to
+        all other Demeter objects.
+
+    Each of these objects is implemented using Moose, the amazing
+    meta-object system for Perl. Although Moose adds some overhead at
+    start-up for any application using Demeter, its benefits are legion. See
+    Moose and <http://www.iinteractive.com/moose> for more information.
+
+PRAGMATA
+    Demeter pragmata are ways of affecting the run-time behavior of a
+    Demeter program by specfying that behavior at compile-time.
+
+         use Demeter qw(:plotwith=gnuplot)
+       or
+         use Demeter qw(:ui=screen)
+       or
+         use Demeter qw(:plotwith=gnuplot :ui=screen)
+
+    ":plotwith=XX"
+        Specify the plotting backend. The default is "pgplot". The other
+        option is "gnuplot". A "demeter" option will be available soon for
+        generating perl scripts which plot.
+
+        This can also be set during run-time using the "plot_with" method
+        during run-time.
+
+    ":ui=XX"
+        Specify the user interface. Currently the only option is "screen".
+        Setting the UI to screen does two things:
+
+        1.  Uses Demeter::UI::Screen::Interview as a role for the Fit
+            object. This imports the "interview" method for use with the Fit
+            object, allowing you to interact with the results of a fit in a
+            simple manner at the console.
+
+        2.  Uses Term::Twiddle to provide some visual feedback on the screen
+            while the fit or summation is happening. This adds no real
+            functionality, but serves to make it clear that *something* is
+            happening during the potentially lengthy fit.
+
+        The interview method uses Term::ReadLine. This is made into a
+        pragmatic interaction in Demeter in case you want to use
+        Term::ReadLine in some other way in your program. Not importing the
+        interview method by default allows you to avoid this error message
+        from Term::ReadLine when you are using it in some other capacity:
+        "Cannot create second readline interface, falling back to dumb."
+
+        Also Term::Twiddle is not imported until it is needed, allowing this
+        dependeny to be relaxed from a requirement to a suggestion.
+
+        Future UI options might include "tk", "wx", or "rpc".
+
+    ":template=XX"
+        Specify the template set to use for data processing and fitting
+        chores. The options are
+
+        "ifeffit"
+            The default -- a concise set of command tempates for Ifeffit
+            1.2.10.
+
+        "iff_columns"
+            An alternate set of command teampates for Ifeffit 1.2.10 which
+            attempt to line everything up in easy-to-read columnar
+            formatting.
+
+        "feffit"
+            Generate text suitable for the old Feffit program
+
+        "demeter"
+            Generate text in the form of valid perl using Demeter. This is
+            intended to allow a GUI to export a valid demeter script. Note:
+            this template set has not been written yet.
+
+        In the future, a template set will be written when Ifeffit 2 becomes
+        available.
+
+        These can also be set during run-time using the "set_mode" method --
+        see Demeter::Mode.
 
 METHODS
-    An object of this class represents a part of the problem of interacting
-    with the EXAFS data analysis part of Ifeffit. That component might be
-    data, a path from Feff, a parameter, a fit, or a plot. Because all
-    objects of this class are inside-out objects, complete encapsolation is
-    implemented. The only way to interact with the data associated with each
-    object is through the methods described here and in the documents for
-    each of the sub classes.
+    An object of this class represents a part of the problem of EXAFS data
+    processing and analysis. That component might be data, a path from Feff,
+    a parameter, a fit, or a plot. Moose provides a sane, solid, and
+    consistent way of interacting with these objects.
 
-    Not every method shown in the example above is described here. you need
+    Not every method shown in the example above is described here. You need
     to see the subclass documentation for methods specific to those
     subclasses.
 
@@ -201,21 +280,20 @@ METHODS
     "new"
         This the constructor method. It builds and initializes new objects.
 
-          use Ifeffit::Demeter;
-          $data_object -> Ifeffit::Demeter::Data -> new;
-          $path_object -> Ifeffit::Demeter::Path -> new;
-          $gds_object  -> Ifeffit::Demeter::GDS  -> new;
+          use Demeter;
+          my $data_object = Demeter::Data -> new;
+          my $path_object = Demeter::Path -> new;
+          my $gds_object  = Demeter::GDS  -> new;
+            ## and so on ...
 
-        New can optionally take an argument which is a reference to a hash
-        of attributes and values for the object. See the "set" method for a
-        discussion of why you may not want to pass that hash reference to
-        "new".
+        New can optionally take an array of attributes and values with the
+        same syntax as the "set" method.
 
     "clone"
         This method clones an object, returning the reference to the new
         object.
 
-          $newobject = $oldobject->clone(\%new_arguments);
+          $newobject = $oldobject->clone(@new_arguments);
 
         Cloning returns the reference and sets all attributes of the new
         object to the values for the old object. The optional argument is a
@@ -225,110 +303,71 @@ METHODS
         that hash reference.
 
     "set"
-        This method sets object attributes.
+        This method sets object attributes. This is a convenience wrapper
+        around the accessors provided by Moose.
 
-          $data_object -> set({kmin=>3.1, kmax=>12.7});
-          $path_object -> set({file=>'feff0123.dat'});
-          $gds_object  -> set({type=>'set'});
+          $data_object -> set(fft_kmin=>3.1, fft_kmax=>12.7);
+          $path_object -> set(file=>'feff0123.dat', s0=>'amp');
+          $gds_object  -> set(Type=>'set', name=>'foo', mathexp=>7);
 
         The set method of each subclass behaves slightly differently for
-        each subclass. The differences are discussed in the subclass
-        documentation, but they are small. Each subclass takes a hash
+        each subclass in the sense that error checking is performed
+        appropriately for each subclass. Each subclass takes a hash
         reference as its argument, as shown above. An exception is thrown is
-        you attempt to "set" an undefined attribute.
+        you attempt to "set" an undefined attribute for every subclass
+        except for the Config subclass.
 
-        The argument can be an anonymous hash or a reference to a names
-        hash. The following are equivalent:
+        The argument are simply a list (remember that the => symbol is
+        sytactically equivalent to a comma). The following are equivalent:
 
-          $data_object -> set({file  => "my.data",
-                               kmin  => 2.5
-                              });
+            $data_object -> set(file => "my.data", kmin => 2.5);
+          and
+            @atts = (file => "my.data", kmin => 2.5);
+            $data_object -> set(@atts);
 
-        and
+        The sense in which this is a convenience wrapper is in that the
+        following are equivalent:
 
-          %hash = {file  => "my.data", kmin  => 2.5};
-          $data_object -> set(\%hash);
+            $data_object -> set(fft_kmin=>3.1, fft_kmax=>12.7);
+          and
+            $data_object -> fft_kmin(3.1);
+            $data_object -> fft_kmax(12.7);
 
-        I recommend that you construct and set new objects in separate
-        steps. That is, do this:
-
-          $data_object = Ifeffit::Demeter::Data -> new;
-          $data_object -> set({group => "data",
-                               file  => "my.data",
-                               kmin  => 2.5
-                              });
-
-        rather than this:
-
-          $data_object = Ifeffit::Demeter::Data ->
-                new({group => "data",
-                     file  => "my.data",
-                     kmin  => 2.5
-                    });
-
-        Both work and both result in the same thing. However, the various
-        objects have considerable amounts of code to validate attribute
-        values. The exceptions that are thrown for invalid code are more
-        useful if you set attributes using the accessor ("set") than if you
-        use the constructor ("new"). Try running these two little snippets:
-
-           use Ifeffit::Demeter qw(Data);
-           $data_object = Ifeffit::Demeter::Data -> new({kmin=>"x"});
-
-        and
-
-           use Ifeffit::Demeter qw(Data);
-           $data_object = Ifeffit::Demeter::Data -> new;
-           $data_object -> set({kmin=>"x"});
-
-        You will see that the error message for the second is much more
-        indicative of where the mistake was made. If you are interested in
-        what loopy, perl-ish thing is going on there, it has to do with the
-        interactions of the Carp and Class::Std modules, both of which are
-        used by Ifeffit::Demeter. On the other hand, you might appreciate
-        the economy of lines of code that come with passing the arguments
-        hash reference directly to the constructor....
-
-    "Push"
-        This is used for pushing a value onto the array of an array-valued
-        attribute. In that sense, it is much like perl's push.
-
-           $atoms_object -> Push({titles=>"another title line"});
-
-        This is similar to
-
-           $atoms_object -> set({titles=>["another title line"]});
-
-        but perhaps more convenient.
+        The latter two lines use the accessors auto-generated by Moose. With
+        Moose, accessors to attributes have names that are the same as the
+        attributes. The "set" method simply loops over its arguments,
+        calling the appropriate accessor.
 
     "get"
-        This is the accessor method. It works in scalar or array context.
+        This is the accessor method. It "does the right thing" in both
+        scalar and list context.
 
-          $kmin = $data_object -> get('kmin');
-          @window_parameters = $data_object -> get(qw(kmin kmax dk kwindow));
+          $kmin = $data_object -> get('fft_kmin');
+          @window_params = $data_object -> get(qw(fft_kmin fft_kmax fft_dk fft_kwindow));
 
         See the documentation for each subclass for complete lists of what
         attributes are available for each subclass. An exception is thrown
-        if you attempt to "get" an undefined attribute.
-
-    "label" or "name"
-        This is a shortcut accessor for the object label. These are
-        equivalent:
-
-          $object -> label;
-          $object -> get('label');
-
-        for Data, Path (and Feff (and Fit)) objects, as are
-
-          $gds -> name;
-          $gds -> get('name');
-
-        for GDS objects. "name" is an alias for "label".
+        if you attempt to "get" an undefined attribute for all subclasses
+        except for the Config subclass, which is specifically intended to
+        store user-defined parameters.
 
     "serialize"
         Returns the YAML serialization string for the object. See the Fit
         objects serialize method for complete details of serialization of a
         fitting model.
+
+    "matches"
+        This is a gneeralized way of testing to see if an attribute value
+        matches a regular expression. By default it tries to match the
+        supplied regular expression again the "name" attribute.
+
+          $is_match = $object->matches($regexp);
+
+        You can supply a second argument to match against some other
+        attribute. For instance, to match the "group" attribute against a
+        regular expression:
+
+          $group_matches = $object->matches($regexp, 'group');
 
   Data processing methods
     A system is built into Demeter for keeping track of the state of your
@@ -340,9 +379,13 @@ METHODS
     be redone. Consequently, the "plot" method may be the only data
     processing method you ever need to call.
 
+    This section, then, is included in the documentation for the sake of
+    completeness and to give you a sense of what Demeter is doing behind the
+    scenes when you ask it to make a plot.
+
     These methods call the corersponding code generating methods then
-    dispose of that code. The code generators are documented below, but
-    should rarely be necessary to call directly.
+    dispose of that code. The code generators are not explicitly documented
+    and should rarely be necessary to call directly.
 
     "read_data"
         This method returns the Ifeffit command for importing data into
@@ -354,6 +397,9 @@ METHODS
         method on a Path object will import the raw "feffNNNN.dat" file. See
         the "write_path" method of the Path subclass for importing a
         "feffNNNN.dat" file and turning it into chi(k) data.
+
+    normalization and background removal
+        See Demeter::Data::Mu.
 
     "fft"
         This method performs a forward Fourier transform on your chi(k) data
@@ -373,6 +419,7 @@ METHODS
         If the data need to be imported or forward transformed, they will be
         automatically.
 
+  I/O methods
     "plot"
         This method plots your data in the indicated space, where the space
         is one of E, k, R, or q. The details of how that plot is made are
@@ -382,6 +429,9 @@ METHODS
 
         If the data need to be imported, forward transformed, or backward
         transformed, they will be automatically.
+
+        Only Data and Path objects can be plotted. Attempting to plot other
+        object types will throw and exception.
 
     "save"
         This saves data or a path as a column data file.
@@ -414,19 +464,21 @@ METHODS
 
   "dispose"
     This method is used to dispatch Ifeffit commands by hand. It is used
-    internally by many of the methods typically used in a program.
+    internally by many of the methods typically invoked in your programs.
 
       $object -> dispose($ifeffit_command);
 
-    See the document page for Ifeffit::Demeter::Dispose for complete
-    details.
+    See the document page for Demeter::Dispose for complete details.
 
   Operation modes
-    There are a few attributes of a Demeter application that are set within
-    the base class and so apply to all Demeter objects in use in that
-    application. Most of these attributes have to do with how the command
-    generated by the various Demeter methods get disposed of by the
-    "dispose" method. Here is a list of all these global attributes:
+    There are a few attributes of a Demeter application that apply to all
+    Demeter objects in use in that application. Most of these attributes
+    have to do with how the command generated by the various Demeter methods
+    get disposed of by the "dispose" method. The special Mode subclass keeps
+    track of these global attributes. The Mode methods described below are
+    the way you will typically intract with the Mode object.
+
+    Here is a list of all these global attributes:
 
     ifeffit
         This is a boolean attribute. When true, the "dispose" method sends
@@ -435,7 +487,10 @@ METHODS
     screen
         This is a boolean attribute. When true, the "dispose" method sends
         commands to STDOUT, which is probably displayed of the screen in a
-        terminal emulator. By default this is false.
+        terminal emulator. This is very handy for examining the details of
+        how Demeter is interacting with Ifeffit, either for understanding
+        Ifeffit's behavior or for debugging Demeter. By default this is
+        false.
 
     file
         When true, the "dispose" method sends commands to a file. The true
@@ -446,26 +501,37 @@ METHODS
         commands being appended to the end of t he named file. Note also
         that you will need to unlink the file at the beginning of your
         script if you do not want your commands appended to the end of an
-        existing file. By default this is false.
+        existing file. (That is, indeed, awkward behavior wich needs to be
+        improved in future versions of Demeter.) By default this is false.
 
     buffer
         When true, the "dispose" method stores commands in a memory buffer.
         The true value of this attribute can either be a reference to a
         scalar or a reference to an array. If the value is a scalar
-        reference, the commands will be appended to the end of the scalar.
-        If the value is an array reference, each command line (where a line
-        is terminated with a carriage return) will become an entry in the
-        array. By default this is false.
+        reference, the commands will be concatinated to the end of the
+        scalar. If the value is an array reference, each command line (where
+        a line is terminated with a carriage return) will become an entry in
+        the array. (A future improvement would be to allow this to take a
+        reference to an arbitrary object so that the commands can
+        beprocessed in some domain-specific manner. By default this is
+        false.
 
     plot
-        This attribute is the reference to the current Plot object. When a
-        plot object is created using the normal constructor method, it
-        becomes the value of this attribute. Then the attributes of that
-        Plot object are used whenever plots are made from other kinds of
-        objects. If you create and use a single Plot object in your script,
-        you never really need to be concerned with this attribute. However,
-        if you maintain two or more Plot objects, this attribute is the
-        mechanism for controlling which gets used when plots are made.
+        This attribute is the reference to the current Plot object. A plot
+        object is created as the Demeter package is loaded into your
+        program, so it is rarely necessary to set this attribute or to
+        create a Plot object by hand. However, if you need to maintain two
+        or more Plot objects, this attribute is the mechanism for
+        controlling which gets used when plots are made.
+
+    config
+        This attribute is the reference to the singletoin Config object,
+        which serves two puproses. It is Demeter's mechanism for handling
+        system-wide and user configuration. It is also the tool provided for
+        user-defined parameters. This latter capacity is used extensively in
+        many of the data processing chores for transmitting particular
+        parameters to the template files used to generate Ifeffit and
+        plotting commands.
 
     template_process
         Set the template set for data processing. Currently in the
@@ -476,8 +542,8 @@ METHODS
         distribution are "feffit", "ifeffit" and "iff_columns".
 
     template_plot
-        Set the template set for plotting. Currently in the distribution is
-        "pgplot".
+        Set the template set for plotting. Currently in the distribution are
+        "pgplot" and "gnuplot".
 
     template_feff
         Set the template set for generating feff files. Currently in the
@@ -489,9 +555,12 @@ METHODS
         This is the method used to set the attributes described above. Any
         Demeter object can call this method.
 
-           Ifeffit::Demeter -> set_mode({ifeffit=>1, screen=>1, buffer=>\@buffer_array});
+           $object -> set_mode(ifeffit => 1,
+                               screen  => 1,
+                               buffer  => \@buffer_array
+                              );
 
-        See Ifeffit::Demeter:Dispose for more details.
+        See <Demeter:Dispose> for more details.
 
     "get_mode"
         When called with no arguments, this method returns a hash of all
@@ -499,154 +568,57 @@ METHODS
         one of the attributes), it returns the value of that attribute. Any
         Demeter object can call this method.
 
-           %hash = Ifeffit::Demeter -> get_mode;
-           $value = Ifeffit::Demeter -> get_mode("screen");
+           %hash = $object -> get_mode;
+           $value = $object -> get_mode("screen");
 
-        See Ifeffit::Demeter:Dispose for more details.
-
-        The first time you attempt to access the Plot object contained in
-        the mode hash, a Plot object will be created if one is needed.
+        See <Demeter:Dispose> for more details.
 
   Convenience methods
-    "config"
-        This returns the Config object. This is a wrapper around "get_mode".
-        The following are equivalent:
+    "co"
+        This returns the Config object. This is a wrapper around "get_mode"
+        and is intended to be used in a method call chain with any Demeter
+        object. The following are equivalent:
 
           my $config = $data->get_mode("params");
           $config -> set_default("clamp", "medium", 20);
 
         and
 
-          $data -> config -> set_default("clamp", "medium", 20);
+          $data -> co -> set_default("clamp", "medium", 20);
+
+        The latter involves much less typing!
 
     "po"
-        This returns the Plot object. This is a wrapper around "get_mode".
-        The following are equivalent:
-
-          my $plot = $data->get_mode("plot");
-          $plot -> set("c9", 'yellowchiffon3');
-
-        and
+        This returns the Plot object. Like the "co" method, this is a
+        wrapper around "get_mode" and is intended to be used in a method
+        call chain with any Demeter object.
 
           $data -> po -> set("c9", 'yellowchiffon3');
+
+    "mo"
+        This returns the Mode object. This is intended to be used in a
+        method call chain with any Demeter object.
+
+          print "on screen!" if ($data -> mo -> ui eq 'screen');
+
+    "dd"
+        This returns the default Data object. When a Path object is created,
+        if it is created without having its "data" attribute set to an
+        existing Data object, a new Data object with sensible default values
+        for all of its attributs is created and stored as the "datadefault"
+        attribute of the Mode object.
+
+        Path objects always rely on their associated Data objects for
+        plotting and processing parameters. So every Path object must have
+        an associated Data object. If the "data" attribute is not specified
+        by the user, the default Data object will be used.
+
+          print ref($object->dd);
+               ===prints===> Demeter::Data
 
   Utility methods
     Here are a number of methods used internally, but which are available
     for your use.
-
-    "title_glob"
-        This pushes the title generated by the "data_parameter_report" or
-        "fit_parameter_report" methods into Ifeffit scalars which can then
-        be accessed by an Ifeffit title glob.
-
-           $object -> title_glob($name, $which)
-
-        $name is the base of the name of the string scalars in Ifeffit and
-        $which is one of "e", "n", "k", "r", "q", or "f" depending on
-        whether you wish to generate title lines for mu(E), normalized
-        mu(E), chi(k), chi(R), chi(q), or a fit.
-
-    "default_k_weight"
-        This returns the value of the default k-weight for a Data or Path
-        object. A Data object can have up to four k-weights associated with
-        it: 1, 2, 3, and an arbitrary value. This method returns the
-        arbitrary value (if it is defined) or the lowest of the three
-        remaining values (if they are defined). If none of the four are
-        defined, this returns 1. For a Path object, the associated Data
-        object is used to determine the return value. An exception is thrown
-        using Carp::carp for other objects and 1 is returned.
-
-            $kw = $data_object -> default_k_weight;
-
-    "regexp"
-        This returns an appropriate regular expression.
-
-            $regexp1 = $object->regexp;
-            $regexp2 = $object->regexp($arg, $bare);
-
-        When called without an argument, the regular expression returned
-        matches all valid attributes of the object. This regular expression
-        is terminated by the \A and \z metacharacters.
-
-        When called with an argument, it returns a regular expression
-        (terminated with \A and \z) appropriate to the argument. When called
-        with the second argument, the terminators, \A and \z, are
-        suppressed. The current crop of arguments includes:
-
-        *commands*
-            All Ifeffit commands.
-
-        *function*
-            All Ifeffit math functions.
-
-        *program*
-            All Ifeffit program variables.
-
-        *window*
-            All Ifeffit window types.
-
-        *pathparams*
-            All Ifeffit path parameters.
-
-        *element*
-            All element symbols.
-
-        *edge*
-            All absorption edges.
-
-        *feffcards*
-            All feff input file keywords.
-
-        *separator*
-            The regex matching word separators in atoms or feff input files.
-
-        *clamp*
-            All descriptive clamp values.
-
-        *config*
-            All configuration parameter types.
-
-        *stats*
-            All fitting statistic types.
-
-        *atoms_lattice*
-            All Atoms keywords related to specifying the lattice.
-
-        *atoms_gas*
-            All Atoms keywords related to specifying gases in ion chambers.
-
-        *atoms_obsolete*
-            All deprecated Atoms keywords from earlier versions.
-
-        *spacegroup*
-            All keys from the space groups database.
-
-    "get_array"
-        Read an array from Ifeffit. The argument is the Ifeffit array suffix
-        of the array to import.
-
-          @array = $data->get_array("xmu");
-
-    "floor_ceil"
-        Return a two element list containingthe smallest and largest values
-        of an array in Ifeffit.
-
-          ($min, $max) = $data->floor_ceil("xmu");
-
-    "yofx"
-        Return the y value corresponding to an given x-value. This is found
-        by interpolation from the specified array.
-
-          $y = $data->yofx("xmu", q{}, $x);
-
-        The second argument ("q{}") in this example, is used to specify a
-        part of a fit, i.e. "bkg" or "res".
-
-    "parameter_list"
-        This method returns a list of all attributes of the object. The list
-        is sorted asciibetically.
-
-           @list = $object->parameter_list;
 
     "hashes"
         This returns a string which can be used as a comment character in
@@ -656,33 +628,82 @@ METHODS
         class from other comment lines sent to Ifeffit. This is a user
         interface convenience.
 
-               $string = $object->hashes;
-               print "$string\n";
-           ==> ###___
+           print $object->hashes, "\n";
+               ===prints===> ###___
+
+    "group"
+        This returns a unique five-character string for the object. For Data
+        and Path objects, this is used as the Ifeffit group name for this
+        object.
+
+    "name"
+        This returns a short, user-supplied, string identifying the object.
+        For a GDS object, this is the parameter name. For Path and Data
+        objects, this is the string that will be put in a plot legend.
+
+    "data"
+        Path objects (also VPath and SSPath) are associated with Data
+        objects. This method returns the reference to the associated Data
+        object. For Data objects, this returns a reference to itself. For
+        other object types this returns a false value.
 
     "plottable"
         This returns a true value if the object is one that can be plotted.
-        Currently, Data and Path objects return a true value. All others
-        return false.
+        Currently, Data, Path, VPath, and SSPath objects return a true
+        value. All others return false.
 
            $can_plot = $object -> plottable;
 
+  Utility methods
+    Demeter provides a generic mechanism for reporting on errors in a
+    fitting model. When using Demeter non-interactively, useful messages
+    about problems in the fitting model will be written to standard output.
+    Critical problems in a non-interactive mode will be cause the script to
+    croak (see Carp).
+
+    In an interactive mode (such as with the Wx interface), the
+    "add_trouble" method is used to fill the "trouble" attribute, which is
+    inherited by all Demeter objects. In the default, untroubled state, an
+    object will have the "trouble" attribute set to an empty string (i.e.
+    something logically false). As problems are found in the fitting model
+    (see Demeter::Fit::Sanity), the "trouble" attribute gets short text
+    strings appended to it. The list of problems an object has are separated
+    by pipe characters ("|").
+
+    See Demeter::Fit::Sanity for a complete description of these problem
+    codes. The Fit, Data, Path, and GDS objects each have their own set of
+    problem codes.
+
 DIAGNOSTICS
 CONFIGURATION AND ENVIRONMENT
-    See Ifeffit::Demeter::Config for details about the configuration system.
+    See Demeter::Config for details about the configuration system.
 
 DEPENDENCIES
-    The dependencies of the Ifeffit::Demeter system are in the
+    The dependencies of the Demeter system are in the
     Bundle/DemeterBundle.pm file.
 
 BUGS AND LIMITATIONS
-    *   Templates need their own pod document.
+    *   Template evaluation is a potential security hole in the sense that
+        someone could put something like "system 'rm -rf *'" in one of the
+        templates. Text::Template supports using a Safe compartment.
 
-    *   Serialization is only partly implemented at this time.
+    *   Serialization is incompletely implemented at this time.
+
+    *   You can switch plotting backends on the fly, but all parameter
+        values get reset to their defaults.
 
     Please report problems to Bruce Ravel (bravel AT bnl DOT gov)
 
     Patches are welcome.
+
+VERSIONS
+    0.4.1
+        Now supplying the "bootstrap" script in an attempt to ease initial
+        installation. Also building the DPG with a PL_file at build time.
+
+        Fixed a bug setting the Plot object space attribute in quad, stddev,
+        and variance plots. Added stddev and variance plots to the merge
+        example in "harness".
 
 AUTHOR
     Bruce Ravel (bravel AT bnl DOT gov)
@@ -690,11 +711,11 @@ AUTHOR
     http://cars9.uchicago.edu/~ravel/software/
 
 LICENCE AND COPYRIGHT
-    Copyright (c) 2006-2008 Bruce Ravel (bravel AT bnl DOT gov). All rights
+    Copyright (c) 2006-2010 Bruce Ravel (bravel AT bnl DOT gov). All rights
     reserved.
 
     This module is free software; you can redistribute it and/or modify it
-    under the same terms as Perl itself. See perlartistic.
+    under the same terms as Perl itself. See perlgpl.
 
     This program is distributed in the hope that it will be useful, but
     WITHOUT ANY WARRANTY; without even the implied warranty of
