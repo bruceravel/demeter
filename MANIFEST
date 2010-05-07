@@ -332,7 +332,7 @@ lib/Demeter/doc/dpg/templates/src/perl/index.tt
 lib/Demeter/doc/dpg/templates/src/ppi.css
 lib/Demeter/doc/dpg/templates/src/su.tt
 lib/Demeter/doc/dpg/templates/src/ui.tt
-lib/Demeter/doc/makedoc
+#lib/Demeter/doc/makedoc
 lib/Demeter/Feff.pm
 lib/Demeter/Feff/External.pm
 lib/Demeter/Feff/Paths.pm

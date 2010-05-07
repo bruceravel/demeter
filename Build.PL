@@ -22,24 +22,8 @@ use Cwd;
 use File::Spec;
 use Module::Build;
 
-my $class = Module::Build->subclass(
-      class => "Module::Build::Custom",
-      code => q{
 
-sub ACTION_ddocs {
-    my $self = shift;
-
-    chdir File::Spec->catfile('lib', 'Demeter', 'doc', 'dpg');
-    $self->do_system(q(./configure));
-    $self->do_system(q(./bin/build));
-
-};
-},
-);
-    #$self->do_system(q(./makedoc));
-    #chdir 'dpg';
-
-my $build = $class
+my $build = Module::Build #$class
   -> new(
 	 module_name        => 'Demeter',
 	 create_readme      => 0,
@@ -86,15 +70,16 @@ my $build = $class
 				#'File::Touch'		   => '0',
 				#'Math::Cephes'		   => '0',
 			       },
-	 #build_requires     => {
-		#		## these are used to build the demeter programming guide
-		#		'Template'            => '2.22',
-		#		'PPI'                 => '0',
-		#		'PPI::HTML'           => '0',
-		#		'Image::Size'         => '0',
-		#	       },
+	 build_requires     => {
+				## these are used to build the demeter programming guide
+				'Template'            => '2.22',
+				'PPI'                 => '0',
+				'PPI::HTML'           => '0',
+				'Image::Size'         => '0',
+			       },
 	 PL_files           => {
-				'lib/Xray/Crystal/share/space_groups.db.PL' => 'lib/Xray/Crystal/share/space_groups.db'
+				'lib/Xray/Crystal/share/space_groups.db.PL' => 'lib/Xray/Crystal/share/space_groups.db',
+				'lib/Demeter/doc/dpg/build_dpg.PL' => [],
 			       },
 	 recommends         => {
 				## these two add functionality when using demeter at the command line

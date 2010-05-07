@@ -75,11 +75,11 @@ my $basedir = $ENV{LOCALLIB_BASEDIR} || $ENV{HOME};
 my $affix = $ENV{LOCALLIB_AFFIX} || 'perl5';
 my $whichperl = $ENV{LOCALLIB_WHICHPERL} || $^X;
 my $result = GetOptions(
-    "b|basedir=s" => \$basedir,
-    "a|affix=s" => \$affix,
-    "w|whichperl=s" => \$whichperl,
-    'h|help'       => \$help
-)or die pod2usage;
+			"b|basedir=s"   => \$basedir,
+			"a|affix=s"     => \$affix,
+			"w|whichperl=s" => \$whichperl,
+			'h|help'        => \$help
+		       ) or die pod2usage;
 pod2usage(0) if $help;
 
 my $target = Cwd::realpath(File::Spec->catdir($basedir,$affix));
@@ -110,7 +110,7 @@ system(q(cpanm http://cars9.uchicago.edu/~ravel/software/packages/Chemistry-Form
 system(q(cpanm http://cars9.uchicago.edu/~ravel/software/packages/Ifeffit-3.0.1.tar.gz));
 print "Done!\n";
 
-print "Modifying .bachrc file...\n";
+print "Modifying .bashrc file...\n";
 system( q(echo 'eval $(perl -I$HOME/perl5/lib/perl5 -Mlocal::lib)' >>~/.bashrc));
 print "\nDone! (Log out and log back in for this to take effect.)\n";
 
