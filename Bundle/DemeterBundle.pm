@@ -90,6 +90,16 @@ Tree::Simple
 
 Want
 
+Template
+
+PPI
+
+PPI::HTML
+
+Image::Size
+
+Pod::ProjectDocs
+
 Term::Twiddle
 
 =head1 GUI
@@ -101,9 +111,14 @@ earlier versions of either will work.
 
 =head1 DOCUMENT
 
-Building the Demeter Programming Guide (./doc/dpg/) requires the following:
+Building the Demeter Programming Guide (lib/demeter/doc/dpg/) requires
+the following:
 
   Template  PPI  PPI::HTML  Image::Size
+
+This is used to assemble the pod documentation into a CPAN-like collection
+
+  Pod::ProjectDocs
 
 =head1 COMMENTED OUT
 

@@ -18,35 +18,28 @@
 
 use strict;
 use warnings;
+use Cwd;
 use Module::Build;
 
-# Text::Wrap is in core -- this is not necessary
-#
-# ## deal with the fact that Text::Wrap does not live in a package
-# ## called Text-Wrap.  This confuses ppm, so post-process the ppd file
-# ## to point at the requirement that ppm will resolve.
-# my $class = Module::Build->subclass(
-# 				    class => "My::Builder",
-# 				    code => q{
-#
-# sub ACTION_ppd {
-#    my $self = shift;
-#    $self->SUPER::ACTION_ppd;
-#
-#    open O, '>__temp__';
-#    open I, 'Demeter.ppd';
-#    while (<I>) {
-#      $_ =~ s{Text-Wrap}{Text-Tabs+Wrap};
-#      print O $_;
-#    };
-#    close I;
-#    close O;
-#    rename '__temp__', 'Demeter.ppd';
-# };
-# },
-# 				   );
+my $class = Module::Build->subclass(
+      class => "Module::Build::Custom",
+      code => q{
 
-my $build = Module::Build # $class
+sub ACTION_ddocs {
+    my $self = shift;
+
+    chdir 'doc';
+    $self->do_system(q(./makedoc));
+
+    chdir 'dpg';
+    $self->do_system(q(./configure));
+    $self->do_system(q(./bin/build));
+
+};
+},
+);
+
+my $build = $class
   -> new(
 	 module_name        => 'Demeter',
 	 create_readme      => 0,
