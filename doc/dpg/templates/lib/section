@@ -1,5 +1,0 @@
-[% dots  = template.nosubpages ? ".." : "../.." -%]
-<a name="[% label | remove(" ") | lower %]">
-[% USE image "${site.url.images}/LightningBolt.png" %]
-<h3> [%- IF expert -%][% image.tag(align="bottom") | replace("$rooturl", "$dots") -%][%- END -%] [% label %]</h3>
-</a>

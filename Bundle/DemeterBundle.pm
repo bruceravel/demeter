@@ -98,8 +98,6 @@ PPI::HTML
 
 Image::Size
 
-Pod::ProjectDocs
-
 Term::Twiddle
 
 =head1 GUI
@@ -116,7 +114,8 @@ the following:
 
   Template  PPI  PPI::HTML  Image::Size
 
-This is used to assemble the pod documentation into a CPAN-like collection
+This is used to assemble the pod documentation into a CPAN-like
+collection, but is not a requisite
 
   Pod::ProjectDocs
 

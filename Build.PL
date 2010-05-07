@@ -19,6 +19,7 @@
 use strict;
 use warnings;
 use Cwd;
+use File::Spec;
 use Module::Build;
 
 my $class = Module::Build->subclass(
@@ -28,10 +29,9 @@ my $class = Module::Build->subclass(
 sub ACTION_ddocs {
     my $self = shift;
 
-    chdir 'doc';
-    $self->do_system(q(./makedoc));
-
-    chdir 'dpg';
+    chdir File::Spec->catfile('lib', 'Demeter', 'doc', 'dpg');
+    #$self->do_system(q(./makedoc));
+    #chdir 'dpg';
     $self->do_system(q(./configure));
     $self->do_system(q(./bin/build));
 
@@ -122,6 +122,8 @@ $build->add_build_element('dem');
 $build->add_build_element('demeter_conf');
 $build->add_build_element('fit_serialization');
 $build->add_build_element('htm');
+$build->add_build_element('html');
+$build->add_build_element('css');
 $build->add_build_element('ini');
 $build->add_build_element('png');
 $build->add_build_element('prj');

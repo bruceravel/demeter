@@ -1,5 +1,0 @@
-[% META title = "Using perl's control structures" %]
-
-[% FILTER html_para %]
-Using perl
-[% END %]

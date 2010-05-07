@@ -1,5 +1,0 @@
-[% META title = 'Convolving data' %]
-
-[% FILTER html_para %]
-Convolving data
-[% END %]

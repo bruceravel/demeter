@@ -1,8 +1,0 @@
-<dt>
-  [% dt %]
-</dt>
-<dd>
-    [%- content -%]
-  <br />
-  <br />
-</dd>

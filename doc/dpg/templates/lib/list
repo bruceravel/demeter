@@ -1,5 +1,0 @@
-[% IF type=="enum" %] <ol> [% ELSE %] <ul> [% END %]
-[% FOREACH f IN features -%]
-  <li> [% f | collapse %] </li>
-[% END %]
-[% IF type=="enum" %] </ol> [% ELSE %] </ul> [% END %]

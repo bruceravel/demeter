@@ -1,6 +1,0 @@
-[% META title = 'Atoms'
-	chapter = 1 %]
-
-[% FILTER html_para -%]
-Atoms
-[% END %]

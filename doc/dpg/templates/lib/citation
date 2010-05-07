@@ -1,2 +1,0 @@
-[% author %], [% INCLUDE font/em a=journal %], [% INCLUDE font/b a=volume %][% ", " IF volume %]
-([% year %])[% " p. $pages" IF pages %][% " $publisher, pub." IF publisher %]

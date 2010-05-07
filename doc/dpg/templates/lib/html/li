@@ -1,3 +1,0 @@
-<li>
-  [%- "<p>" IF break -%][%- content -%][%- "</p>" IF break -%]
-</li>

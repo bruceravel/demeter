@@ -1,5 +1,0 @@
-[% META title = 'Truncating data' %]
-
-[% FILTER html_para %]
-Truncating data
-[% END %]

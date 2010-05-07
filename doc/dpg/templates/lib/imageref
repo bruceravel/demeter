@@ -1,8 +1,0 @@
-[%# imageref: this allows reference to an image that is sensible for
-  #           both html and latex
-  # ARGS:
-  #     text  : plain text to insert into the html (ignored in latex)
-  #     label : label of figure (ignored in html)
-  #     in    : flag to insert the word "in" in latex (ignored in html)
--%]
-[% text | trim %]
