@@ -1,4 +1,5 @@
 attic/CPAN/MyConfig.pm
+attic/demeter.kdi
 attic/install_prereqs
 bin/argus
 bin/argus.pod
@@ -165,7 +166,6 @@ lib/Demeter/Data/Prj.pm
 lib/Demeter/Data/Process.pm
 lib/Demeter/Data/Units.pm
 lib/Demeter/Dispose.pm
-lib/Demeter/doc/demeter.kdi
 lib/Demeter/doc/dpg/bin/build.tt
 lib/Demeter/doc/dpg/configure
 lib/Demeter/doc/dpg/etc/map
