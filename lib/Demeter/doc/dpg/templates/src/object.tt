@@ -1,0 +1,10 @@
+[% META title = "Demeter's object model"
+        about = ''
+	chapter = 1
+	nosubpages = 1
+%]
+
+
+[% FILTER html_para %]
+Demeter's object model.
+[% END %]

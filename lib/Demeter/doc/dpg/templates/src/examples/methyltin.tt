@@ -1,0 +1,11 @@
+[% META title = 'Methyltin chloride' 
+   	about = 'Using object cloning, multiple data sets, and multiple k-weights'
+%]
+
+[% FILTER html_para %]
+Methyltin
+[% END %]
+
+[% WRAPPER codesample -%]
+## foo
+[% END %]

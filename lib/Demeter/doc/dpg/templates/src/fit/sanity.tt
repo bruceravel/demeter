@@ -1,0 +1,128 @@
+[% META title = 'Sanity checking the fitting model' %]
+
+[% FILTER html_para %]
+A lot happens under the hood when the [% INCLUDE font/mono a='fit' %]
+method is called by a Fit object.  One of the first things that
+happens is an extensive series of sanity checks on the objects that
+make up the fitting model.
+
+Here is the complete list of tests that are made on a fitting model:
+[% END %]
+
+[% WRAPPER html/list type="ol" %]
+[% WRAPPER html/li %]
+If Data objects read directly from a column data file (rather than
+from, say, an [% athena %] project file, all such  data files included
+in the fit must exist. 
+[% END %]
+[% WRAPPER html/li %]
+If Path objects read directly from  [% INCLUDE font/file
+a="feffNNNN.dat" %] files, all such files used in the fit must exist.
+[% END %]
+[% WRAPPER html/li %]
+All guess parameters are used in at least one def parameter or path
+parameter.
+[% END %]
+[% WRAPPER html/li %]
+No def or path parameters use parameters which have not been defined.
+[% END %]
+[% WRAPPER html/li %]
+Binary operators are used correctly.  This test specifically checks
+that none of these strings appear in a math expression:
+[% WRAPPER html/pre %]
+   ++    --   //   ***   ^^
+[% END %]
+[% END %]
+[% WRAPPER html/li %]
+All [% ifeffit %] function names (i.e. strings that are followed by an
+open paren) are valid [% ifeffit %] functions.
+[% END %]
+[% WRAPPER html/li %]
+All data and path objects have unique [% INCLUDE font/mono a='group' %]
+attributes.  (It is possible for a user to reset this attribute, although
+this is considered very bad practice.) 
+[% END %]
+[% WRAPPER html/li %]
+All GDS parameters have unique names.
+[% END %]
+[% WRAPPER html/li %]
+All opening parens are matched by closing parens.
+[% END %]
+[% WRAPPER html/li %]
+Data attribute related to fitting make sense, for example that 
+[% INCLUDE font/mono a='fft_kmin' %] is
+smaller than [% INCLUDE font/mono a='fft_kmax' %].
+[% END %]
+[% WRAPPER html/li %]
+The number of guess parameters does not exceed the number of
+independent points.
+[% END %]
+[% WRAPPER html/li %]
+The [% INCLUDE font/mono a='bft_rmin' %] value is not greater than 
+[% INCLUDE font/mono a='bkg_rbkg' %].
+[% END %]
+[% WRAPPER html/li %]
+The [% reff %] of any path is not very far beyond
+[% INCLUDE font/mono a='bft_rmax' %].
+[% END %]
+[% WRAPPER html/li %]
+[% ifeffit %]'s hardwired limits on things like the maximum number of guess
+parameters and the maximum number of data sets are not exceeded by the
+fitting model.
+[% END %]
+[% WRAPPER html/li %]
+No GDS parameters have the names of [% ifeffit %] program variables or other
+reserved words.
+[% END %]
+[% WRAPPER html/li %]
+No merge parameters remain unresolved.  Merge parameters are GDS
+parameters that are in naming conflict in a project that involves
+importing structural units or otherwise merging together elements of a
+fitting model. As of version 0.4, this is an unimplemented feature. 
+[% END %]
+[% WRAPPER html/li %]
+GDS parameter math expressions are checked to verify that they are
+neither self-referential nor part of a cycle of references, e.g. 
+[% WRAPPER html/pre %]
+def a = b
+def b = c
+def c = d
+def d = a
+[% END %]
+[% END %]
+[% END %]
+
+[% FILTER html_para %]
+If any of these sanity checks fail for your fitting model, the fit
+will not continue and a (hopefully) useful error message will be
+issued via [% demeter %]'s error reporting system.  For a script run
+at the command line, this error message is typically (and by default)
+issued to STDERR.  For a Wx application, the warning text will
+normally be displayed in a dialog box or elsewhere.  Disposal of the
+error text is left as a chore for the end-user application.
+
+There are, as of version 0.4, several missing tests, including:
+[% END %]
+
+[% WRAPPER html/list type="ol" %]
+[% WRAPPER html/li %]
+Test that every included Data object has at least 1 Path object
+associated with it. 
+[% END %]
+[% WRAPPER html/li %]
+Test that every Path object is associated with a Data object.  This
+should be a warning, not an error.  The unassociated Path can simply
+be ignored.
+[% END %]
+[% WRAPPER html/li %]
+Test that each Data in the data array is properly defined.
+[% END %]
+[% WRAPPER html/li %]
+Test that every Path points either to a ScatteringPath object or to a
+real path file.
+[% END %]
+[% END %]
+
+[% WRAPPER html/todo %]
+Implement missing sanity checks.
+[% END %]

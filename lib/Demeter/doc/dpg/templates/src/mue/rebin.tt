@@ -1,0 +1,5 @@
+[% META title = 'Rebinning data' %]
+
+[% FILTER html_para %]
+Rebinning data
+[% END %]

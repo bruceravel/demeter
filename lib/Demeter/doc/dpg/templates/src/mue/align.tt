@@ -1,0 +1,5 @@
+[% META title = 'Aligning data' %]
+
+[% FILTER html_para %]
+Aligning data
+[% END %]

@@ -1,0 +1,143 @@
+[% META title = 'Output' %]
+
+[% FILTER html_para %]
+Output from the Atoms object is handled by the 
+[% INCLUDE font/mono a="Write" %] method.  Note that this is
+capitalized to avoid any possible confusion (by perl or by a syntax
+highlighting text editor) with perl's 
+[% INCLUDE html/link text="write function"
+link="http://perldoc.perl.org/functions/write.html" %], as shown in
+this example:
+[% END %]
+
+[% WRAPPER codeexample -%]
+#!/usr/bin/perl
+use Demeter;
+
+my $atoms = Demeter::Atoms->new(file => "ybco.inp");
+print $atoms->Write("feff6");
+[% END %]
+
+[% FILTER html_para %]
+There are several output targets, which are formatted using
+[% INCLUDE html/link text="templates" link="../highlevel/dispose.html" %]
+from the Atoms template set.  The output targets, i.e. the arguments
+of the  [% INCLUDE font/mono a="Write" %] method, that come with 
+[% demeter %] are:
+[% END %]
+
+[% WRAPPER html/list type="dl" %]
+[% WRAPPER html/dt dt="feff6" %]
+Input file for [% feff6 %].
+[% END %]
+[% WRAPPER html/dt dt="feff7" %]
+Input file for [% feff7 %] (which is not really very different from
+the [% feff6 %] input file).
+[% END %]
+[% WRAPPER html/dt dt="feff8" %]
+Input file for [% feff8 %].
+[% END %]
+[% WRAPPER html/dt dt="atoms" %]
+Input file for [% atoms %].  This used as the save-file target for a
+GUI.
+[% END %]
+[% WRAPPER html/dt dt="p1" %]
+Input file for [% atoms %] using the [% INCLUDE font/mono a="P 1" %]
+spacegroup and the fully populated unit cell.  Here's an example:
+[% WRAPPER html/pre %]
+title = YBCO: Y Ba2 Cu3 O7
+space = P M M M
+a     =   3.82300    b    =   3.88600    c     =  11.68100
+alpha =  90.00000    beta =  90.00000    gamma =  90.00000
+rmax  =   5.20000    core  = cu2
+shift =
+atoms
+# el.     x           y           z        tag
+  Y      0.50000     0.50000     0.50000   Y
+  Ba     0.50000     0.50000     0.18400   Ba
+  Ba     0.50000     0.50000     0.81600   Ba
+  Cu     0.00000     0.00000     0.00000   cu1
+  Cu     0.00000     0.00000     0.35600   cu2
+  Cu     0.00000     0.00000     0.64400   cu2
+  O      0.00000     0.50000     0.00000   o1
+  O      0.00000     0.00000     0.15800   o2
+  O      0.00000     0.00000     0.84200   o2
+  O      0.00000     0.50000     0.37900   o3
+  O      0.00000     0.50000     0.62100   o3
+  O      0.50000     0.00000     0.37700   o4
+  O      0.50000     0.00000     0.62300   o4
+[% END %]
+[% END %]
+[% WRAPPER html/dt dt="absorption" %]
+A file containing several interesting calculations using tables of
+absorption coefficients.  Here's an example:
+[% WRAPPER html/pre %]
+## --*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--
+##  total mu*x=1:  8.160 microns,  unit edge step:  23.243 microns
+##  specific gravity:  6.375
+## --*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--
+##  normalization correction:     0.00046 ang^2
+## --*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--
+[% END %]
+[% END %]
+[% WRAPPER html/dt dt="spacegroup" %]
+A file containing a description of the space group.  Here's an example:
+[% WRAPPER html/pre %]
+# title = YBCO: Y Ba2 Cu3 O7
+# space = P M M M
+# a     =   3.82300    b    =   3.88600    c     =  11.68100
+# alpha =  90.00000    beta =  90.00000    gamma =  90.00000
+# rmax  =   5.20000    core  = cu2
+# shift =
+# atoms
+# # el.     x           y           z        tag
+#   Y      0.50000     0.50000     0.50000   Y
+#   Ba     0.50000     0.50000     0.18400   Ba
+#   Cu     0.00000     0.00000     0.00000   cu1
+#   Cu     0.00000     0.00000     0.35600   cu2
+#   O      0.00000     0.50000     0.00000   o1
+#   O      0.00000     0.00000     0.15800   o2
+#   O      0.00000     0.50000     0.37900   o3
+#   O      0.50000     0.00000     0.37700   o4
+
+Spacegroup P M M M (#47)
+
+  Schoenflies: D_2h^1
+  Full symbol: p 2/m 2/m 2/m
+  New symbol : <none>
+  Thirtyfive : <none>
+  Nicknames  : <none>
+
+  Common shift vector:
+      <none>
+
+  Bravais translations:
+
+  8 positions:
+       x         y         z
+      -x        -y         z
+      -x         y        -z
+       x        -y        -z
+      -x        -y        -z
+       x         y        -z
+       x        -y         z
+      -x         y         z
+[% END %]
+[% END %]
+[% END %]
+
+
+[% FILTER html_para %]
+It is certainly possible to make output templates for other cluster
+formats, such as alchemy or xyz.  Indeed, this was a stadard part of
+[% atoms %] before [% demeter %].  I eventually intend to integrate
+[% INCLUDE html/link text="OpenBabel" link="http://openbabel.org/" %]
+with [% demeter %]'s [% feff %] capabilities, which will obviate the
+need to write [% atoms %] templates for other cluster formats.
+[% END %]
+
+[% WRAPPER html/todo %] 
+A method of the Feff
+object to directly import an Atoms object without needing to write
+and read a [% INCLUDE font/file a="feff.inp" %] file.
+[% END %]

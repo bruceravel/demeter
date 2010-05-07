@@ -1,0 +1,5 @@
+[% META title = 'Smoothing data' %]
+
+[% FILTER html_para %]
+Smoothing data
+[% END %]

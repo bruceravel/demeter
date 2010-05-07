@@ -1,0 +1,5 @@
+[% META title = 'Deglitching data' %]
+
+[% FILTER html_para %]
+Deglitching data
+[% END %]

@@ -1,0 +1,44 @@
+[% META title = 'High level actions of the object model'
+	chapter = 1 %]
+
+[% FILTER html_para -%]
+All [% demeter %] objects inherit from the base 
+[% INCLUDE font/module a="Demeter" %] class.  This class defines a
+variety of methods that are then inherited by all other objects.  At
+the end of this chapter, you will understand how [% demeter %] command
+and template system works to generate command for [% ifeffit %] and
+for plotting.  This chapter also covers the three special object
+types,
+[% INCLUDE font/module a="Demeter::Mode" %],
+[% INCLUDE font/module a="Demeter::Plot" %], and
+[% INCLUDE font/module a="Demeter::Config" %], which together provide
+fine grained control over virtually all aspects of what [% demeter %]
+programs can accomplish.
+
+Both the Mode and Config objects are singletons, which means that any
+instance of a [% demeter %] program can have one and only instance of
+Mode or Config object.  The Plot object is not a singleton, but it is
+unusual to need or want a second instance of a Plot object.
+
+Each of these special objects has an associated method of the base
+class used for accessing the object.   They are demonstrated here:
+[% END %]
+
+[% WRAPPER codesample -%]
+my $mode_object   = $object -> mo;
+my $plot_object   = $object -> po;
+my $config_object = $object -> co;
+[% END %]
+
+[% FILTER html_para -%]
+In this example, [% INCLUDE font/mono a="\$object" %] can be any 
+[% demeter %] object.  Every object type inherits these three methods,
+each of which returns its object.  That is, [% INCLUDE font/mono a="mo" %]
+returns the singleton Mode object, [% INCLUDE font/mono a="co" %]
+returns the singleton Config object, and [% INCLUDE font/mono a="po" %]
+returns the currently active Plot object.
+
+Thus you can access the attributes and methods of these three special
+objects at any time using any [% demeter %] object that is handy at
+that point in your program.
+[% END %]
