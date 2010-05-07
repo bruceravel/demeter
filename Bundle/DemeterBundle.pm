@@ -106,10 +106,8 @@ Term::Twiddle
 
 =head1 GUI
 
-I am not yet ready to make wxWidgets a dependence.
-
-I am using Wx 2.8.9 and WxPerl 0.91.  I cannot comment on whether
-earlier versions of either will work.
+I am confident with Wx 2.8.9 and WxPerl 0.91 and later.  I cannot
+comment on whether earlier versions of either will work.
 
 =head1 DOCUMENT
 
@@ -125,11 +123,11 @@ collection, but is not a requisite
 
 =head1 COMMENTED OUT
 
-The following modules are ones I might be including at some point:
+The following modules are ones I have included at some point:
 
   ExtUtils::F77  PGPLOT  File::Touch   Math::Cephes
 
-The following are in core:
+The following are in core and need not be specified:
 
   Text::Wrap   Term::ANSIColor   version   Scalar::Util
 
@@ -138,7 +136,7 @@ The following are in core:
 These are modules that were used in Demeter prior to revision 303.
 Soon after that revision, I merged the Moose branch back into the main
 trunk.  I am now using Moose as my object model rather than the
-Calss:Std inside-out model.
+Class:Std inside-out model.
 
 I am also being mindful of suggestions at
 L<http://www.perlfoundation.org/perl5/index.cgi?pbp_module_recommendation_commentary>.
