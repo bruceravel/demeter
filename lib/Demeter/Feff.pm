@@ -20,6 +20,7 @@ use autodie qw(open close);
 use Moose;
 extends 'Demeter';
 use MooseX::AttributeHelpers;
+
 use MooseX::Aliases;
 use MooseX::StrictConstructor;
 use Demeter::StrTypes qw( AtomsEdge FeffCard );
@@ -177,6 +178,27 @@ sub DEMOLISH {
   $self->alldone;
 };
 
+override 'clone' => sub {
+  my ($self, @arguments) = @_;
+  my $new = Demeter::Feff -> new();
+
+  my %hash = $self->all;
+  delete $hash{group};
+
+  ## deeply copy the Collection::Array attributes
+  foreach my $ca (qw(sites potentials titles absorber othercards pathlist)) {
+    delete $hash{$ca};
+    my @list = @{ $self -> $ca };
+    $new -> $ca(\@list);
+  };
+
+  $new -> set(%hash);
+  $new -> iobuffer([]);
+  $new -> problems({});
+  $new -> set(@arguments);
+  return $new;
+};
+
 sub clear {
   my ($self) = @_;
   $self->clear_sites;
@@ -204,6 +226,7 @@ override 'alldone' => sub {
 
 sub central {
   my ($self) = @_;
+  #print join("|", $self->group, @{ $self->absorber }), $/;
   return @{ $self->absorber };
 };
 

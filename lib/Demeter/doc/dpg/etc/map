@@ -141,9 +141,10 @@
 
 	    examples   = {
                           name = 'Full examples'
-			  menu = ['methyltin', 'uranyl']
-			  page = {
+			  menu = ['methyltin', 'agau', 'uranyl']
+			  page = {	  
 				 methyltin = { name = "Methyltin chloride" }
+			         agau      = { name = "Silver/gold alloy" }
 				 uranyl    = { name = "Uranyl complex in solution" }
 				 }
 			 }

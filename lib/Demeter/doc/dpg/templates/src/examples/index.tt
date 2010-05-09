@@ -10,6 +10,9 @@ Full examples
 Multiple data set fit with an explanation of multiple k-weighting and 
 cloning of [% demeter %] objects.
 [% END %]
+[% WRAPPER html/dt dt="Silver/Gold alloy" %]
+Multiple data set fit to several silver/gold alloys of varying ratios.
+[% END %]
 [% WRAPPER html/dt dt="Uranyl ion" %]
 Uranyl ion in solution
 [% END %]

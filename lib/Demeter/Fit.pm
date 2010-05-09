@@ -715,6 +715,7 @@ sub _normalize_paths {
     $prev = $this;
   };
   ($concat eq "-") and $string .= $concat . $this;
+  $string =~ s{(\d+)-(\1)}{$1}g;
   return $string || q{};
 };
 

@@ -32,9 +32,6 @@ print "Multiple data set fit to several AgAu samples using Demeter $Demeter::VER
 
 unlink("ag-au.iff") if (-e "ag-au.iff");
 
-## make a 2 Data objects and set the FT and fit parameters
-#my $data_100 = Demeter::Data -> new(group => 'ag100');
-
 ### -------- import five sets of Ag and Ag/Au data from an Athena project file
 my $prj = Demeter::Data::Prj->new(file => 'AgAu_merged.prj');
 $prj -> set_mode(screen=>0, ifeffit=>1);
@@ -55,27 +52,6 @@ $data_50 -> set(@common, cv => 0.5, name => '50% silver');
 
 my $data_40 = $prj->record(7);
 $data_40 -> set(@common, cv => 0.4, name => '40% silver');
-
-# $data_100 -> set(file      => "ag.chi",
-# 		 cv        => 1,
-# 		 name      => 'pure silver data',
-# 		);
-# my $data_80 = $data_100->clone(cv    => 0.8,
-# 			       file  => "20-80.chi",
-# 			       name  => '80% silver',
-# 			      );
-# my $data_60 = $data_100->clone(cv    => 0.6,
-# 			       file  => "40-60.chi",
-# 			       name => '60% silver',
-# 			      );
-# my $data_50 = $data_100->clone(cv    => 0.5,
-# 			       file  => "50-50.chi",
-# 			       name => '50% silver',
-# 			      );
-# my $data_40 = $data_100->clone(cv    => 0.4,
-# 			       file  => "60-40.chi",
-# 			       name  => '40% silver',
-# 			      );
 
 ## -------- make GDS objects for an isotropic expansion, correlated
 ##          Debye, mixed first shell fit to silver and silver/gold

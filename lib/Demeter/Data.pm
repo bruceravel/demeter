@@ -402,6 +402,8 @@ override clone => sub {
   };
 
   $new->set(@arguments);
+  my $newtag = $new->cv || $new->group;
+  $new->tag( $newtag );
   return $new;
 };
 

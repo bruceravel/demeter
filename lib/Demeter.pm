@@ -25,8 +25,8 @@ use version;
 our $VERSION = version->new('0.4.1');
 use vars qw($Gnuplot_exists);
 
-use Demeter::Carp;
-#use Carp;
+#use Demeter::Carp;
+use Carp;
 use Cwd;
 use File::Basename qw(dirname);
 use File::Spec;
@@ -277,12 +277,6 @@ sub clone {
 
   ## the cloned object needs its own group name
   #$new->group($self->_get_group());
-
-  if (ref($self) =~ m{Data}) {
-    if ($new->tag eq $self->tag) {
-      $new->tag( $new->cv || $new->group );
-    };
-  };
 
   return $new;
 };
@@ -1522,7 +1516,7 @@ own set of problem codes.
 
 =head1 DIAGNOSTICS
 
-
+ zip
 =head1 CONFIGURATION AND ENVIRONMENT
 
 See L<Demeter::Config> for details about the configuration
@@ -1561,6 +1555,11 @@ Patches are welcome.
 =head1 VERSIONS
 
 =over 4
+
+=item 0.4.2
+
+Cloning a Feff object now deeply copies the array references in an
+overridden clone method.
 
 =item 0.4.1
 
