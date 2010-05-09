@@ -1,0 +1,15 @@
+title name:     silver
+title formula:  Ag
+title sites:    Ag1
+title refer1:   Kittel, ISSP
+title refer2:
+title schoen:
+title notes1:   metal, fcc
+space  f m 3 m
+a    = 4.09
+alpha= 90
+rmax = 6.00
+core = Ag1
+atom
+Ag     0.00000   0.00000   0.00000  Ag1
+------
