@@ -50,6 +50,7 @@
 [% MACRO n6     BLOCK -%] N<sub>6</sub>       [%- END -%]
 [% MACRO n7     BLOCK -%] N<sub>7</sub>       [%- END -%]
 [% MACRO l3n67  BLOCK -%] L<sub>III</sub>N<sub>6,7</sub> [%- END -%]
+[% MACRO ch3    BLOCK -%] CH<sub>3</sub>      [%- END -%]
 [% MACRO batio3 BLOCK -%] BaTiO<sub>3</sub>   [%- END -%]
 [% MACRO pbtio3 BLOCK -%] PbTiO<sub>3</sub>   [%- END -%]
 [% MACRO eutio3 BLOCK -%] EuTiO<sub>3</sub>   [%- END -%]

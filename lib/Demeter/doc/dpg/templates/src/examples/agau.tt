@@ -182,7 +182,7 @@ the amount of silver in each sample.  When the
 will have its amplitude set properly.
 
 At lines 90-101, more paths are cloned, then modified to use the
-ScatteringPath objecy which corresponds to the gold scatterer from the
+ScatteringPath object which corresponds to the gold scatterer from the
 second [% feff %] calculation.  Again, care is taken to make sure that
 the correct Path object, with the correct [% INCLUDE font/mono a="cv" %]
 value, is associated with the correct Data object.  Note the use of
@@ -199,7 +199,7 @@ be examined interactively from a command line script.
 [% END %]
 
 [% WRAPPER scriptcaption this="agau_fit.png" %]
-The lines bleow replaced the [% INCLUDE font/mono a="interview" %] method 
+The lines below replaced the [% INCLUDE font/mono a="interview" %] method 
 to produce this plot of the result of the fit.
 [% WRAPPER codesample -%]
 $fitobject -> po -> set(plot_fit =>  1,

@@ -2,19 +2,24 @@
 	chapter = 1 %]
 
 [% FILTER html_para -%]
-Full examples
+In this chapter, several full example fitting scripts are shown and
+annotated.  Hopefully, these examples will give you good ideas for
+your own fits and demonstrate some [% demeter %] idioms that you can
+apply to your own scripts.
 [% END %]
 
 [% WRAPPER html/list type="dl" %]
 [% WRAPPER html/dt dt="Methyltin" %]
-Multiple data set fit with an explanation of multiple k-weighting and 
+Multiple data set fit with an demonstration of multiple k-weighting and 
 cloning of [% demeter %] objects.
 [% END %]
 [% WRAPPER html/dt dt="Silver/Gold alloy" %]
-Multiple data set fit to several silver/gold alloys of varying ratios.
+Multiple data set fit to several silver/gold alloys of varying ratios
+making effective use of cloning and of the characteristic value.
 [% END %]
 [% WRAPPER html/dt dt="Uranyl ion" %]
-Uranyl ion in solution
+Uranyl ion in solution, demonstrating the use of the SSPath and VPath
+pathlike objects.
 [% END %]
 [% WRAPPER html/dt dt="Hg bound to synthetic DNA" %]
 Blah blah
