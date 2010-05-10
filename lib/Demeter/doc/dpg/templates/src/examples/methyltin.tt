@@ -168,9 +168,9 @@ assigned to the monomethyl tin data.  The [% INCLUDE font/mono a="n" %]
 attributes of the two cloned paths are set to 1 and 4 -- appropriate
 for the monomethyl tin trichloride.
 
-This is a fairly simple fitting model that presumes that the
+This is a fairly simple fitting model that assumes that the
 tin-carbon and tin-chlorine bonds behave identically for each
-molecule.  This simple assumption is made by changing on the 
+molecule.  This simple assumption is made by changing the 
 [% INCLUDE font/mono a="n" %] attributes of the cloned paths, but not
 any of the other path parameters.  Of course, new GDS parameters could
 be introduced to the fit to lift this constraint and explore that

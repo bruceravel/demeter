@@ -110,9 +110,11 @@ system(q(eval $(perl -I$HOME/perl5/lib/perl5 -Mlocal::lib) && cpanm http://cars9
 system(q(eval $(perl -I$HOME/perl5/lib/perl5 -Mlocal::lib) && cpanm http://cars9.uchicago.edu/~ravel/software/packages/Ifeffit-3.0.1.tar.gz));
 print "Done!\n";
 
-print "Modifying .bashrc file...\n";
+print "Modifying .bashrc file to use locally installed perl modules...\n";
 system( q(echo 'eval $(perl -I$HOME/perl5/lib/perl5 -Mlocal::lib)' >>~/.bashrc));
-print "\nDone! (Log out and log back in for this to take effect.)\n";
+print "\nDone!\nLog out and log back in for these changes to take effect ... or ... \n";
+print "cut and past this command to start immediately:\n";
+print q(               eval $(perl -I$HOME/perl5/lib/perl5 -Mlocal::lib) . $/;
 
 
 

@@ -101,7 +101,19 @@ $feff -> freeze('UAce/uace.yaml');
 
 [% FILTER html_para -%]
 The state of the [% feff %] calculation is frozen to disk at line 15
-and will be used in the following example to import the paths.
+and will be used in the following example to import the paths.  This
+is a handy trick that was not used in the previous examples.  By
+freezing the [% feff %] calculation, you do not have to run [% feff %]
+on the fly before your fit.  This will save a bit of time and,
+perhaps, make development of a fitting model a bit less tedious.
+
+Looking at the interpretation of the [% feff %] calculation is
+useful before launching into the fit.  This can be done with the
+[% INCLUDE font/mono a='intrp' %] command line tool (which has some
+nice output options, including html, TeX, and ASCII-colored screen
+text) or by using the 
+[% INCLUDE html/link text="intrp method" link="../feff/intrp.html" %]
+in your script.
 
 Note that, in sodium uranyl triacetate, the two dioxo scattering
 paths differ in path length by about 0.006 [% AA %] and the equatorial
@@ -109,12 +121,13 @@ oxygens are split into two groups of three that differ in distance
 also by about 0.006 [% AA %].  In this case, the 
 [% INCLUDE html/link text="fuzzy degeneracy"
                      link="../feff/pathfinder.html" %]
-is quite helpful.  The fit will not be sensitive to such a small
-difference in scattering length.  Because the degeneracy fuzz is set
-by default to 0.01 [% AA %], the two dioxo scatterers are made into a
-single scattering path of degeneracy 2 and the 6 equatorial oxygens
-are made into a single scattering path of degeneracy 6.  This
-simplifies the bookkeeping aspects of creating the fitting model.
+is quite helpful.  The fit is probably not so sensitive to such a
+small difference in scattering length, which may not even exist in the
+solution sample.  Because the degeneracy fuzz is set by default to
+0.01 [% AA %], the two dioxo scatterers are made into a single
+scattering path of degeneracy 2 and the 6 equatorial oxygens are made
+into a single scattering path of degeneracy 6.  This simplifies the
+bookkeeping aspects of creating the fitting model.
 
 Here is the script that sets up the fitting model.
 [% END %]
@@ -274,7 +287,7 @@ sugar. I could just as well have written have use the
 [% END %]
 [% WRAPPER html/li %]
 At lines 33-35, I import the results of a Feff calculation that I had
-previously made using Demeter.  More about this below. 
+previously made using the first [% demeter %] script on this page.
 [% END %]
 [% WRAPPER html/li %]
 At line 37 and 38, I create two [% INCLUDE html/link text="VPaths"
@@ -288,18 +301,24 @@ for all Path objects defined.
 [% WRAPPER html/li %]
 At lines 105-113, I create an arbitrary single scatering path from the
 oxygen using the 
-[% INCLUDE html/link text="SSPath object"
-                     link="../pathlike/sspath.html" %]
-at a distance where I consider it
-reasonable to see scattering from the hydration sphere. This SSPath
-then gets included in the fit like a normal Path. 
+[% INCLUDE html/link text="SSPath object" link="../pathlike/sspath.html" %]
+at a distance where I consider it reasonable to see scattering from
+the hydration sphere. This SSPath then gets included in the fit like a
+normal Path.
 [% END %]
 [% WRAPPER html/li %]
 At lines 122-127, I do a bit of trickery to make the spiffy stacked
 plot shown below.  Note that the VPath and SSPath objects get plotted
 in the same way as the Data and Paths.  Indeed, the plot is
 accomplished by looping over all the objects that I want to display in
-the plot.
+the plot.  Note the use of the [% INCLUDE font/mono a='data' %]
+attribute at line 124.  The [% INCLUDE font/mono a='y_offset' %] is an
+attribute of the Data object.  A path-like object gets its value of
+[% INCLUDE font/mono a='y_offset' %] from its associated Data object.
+A Data object is its own [% INCLUDE font/mono a='data' %] attribute.
+This little idiom is the way of always setting something like
+[% INCLUDE font/mono a='y_offset' %] to what it needs to be to plot
+the current object in a loop.
 [% END %]
 [% WRAPPER html/li %]
 The last line pauses the script before terminating so
@@ -321,6 +340,7 @@ map {$_->data->y_offset($step);
 $data -> plot_window('k');
 [% END %]
 [% END %]
+
 [% WRAPPER scriptcaption this="uranyl_rmag.png" %]
 The fit as the magnitude of [% chir -%].  This was made by substituting lines 122-127 with:
 [% WRAPPER codesample -%]
@@ -335,6 +355,7 @@ map {$_->data->y_offset($step);
 $data -> plot_window('r');
 [% END %]
 [% END %]
+
 [% WRAPPER scriptcaption this="uranyl_rre.png" %]
 The fit as the real part of [% chir %].  This is the plot that is made
 by lines 122-127.
