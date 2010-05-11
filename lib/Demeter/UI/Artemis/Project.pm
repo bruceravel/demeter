@@ -172,6 +172,7 @@ sub read_project {
   undef $zip;
 
   my $projfolder = $rframes->{main}->{project_folder};
+  my $import_problems = q{};
 
   %Demeter::UI::Artemis::fit_order = YAML::Tiny::LoadFile(File::Spec->catfile($projfolder, 'order'));
   #use Data::Dumper;
@@ -240,7 +241,7 @@ sub read_project {
   my $grid  = $rframes->{GDS}->{grid};
   my $start = $rframes->{GDS}->find_next_empty_row;
   foreach my $g (@{$fit->gds}) {
-    $grid->AppendRows(1,1) if ($start >= $grid->GetNumberRows);
+    $grid -> AppendRows(1,1) if ($start >= $grid->GetNumberRows);
     $grid -> SetCellValue($start, 0, $g->gds);
     $grid -> SetCellValue($start, 1, $g->name);
     $grid -> SetCellValue($start, 2, $g->mathexp);
@@ -269,6 +270,10 @@ sub read_project {
     #my $first = $rframes->{$dnum}->{pathlist}->GetPage(0);
     #($first->DeletePage(0)) if (ref($first) =~ m{Panel});
     foreach my $p (@{$fit->paths}) {
+      if (not $p->sp) {
+	$import_problems .= sprintf("The path named \"%s\" from data set \"%s\" was malformed.  It was discarded.\n", $p->name, $d->name);
+	next;
+      };
       my $feff = $feffs{$p->{parentgroup}} || $fit -> mo -> fetch('Feff', $p->{parentgroup});
       $p->set(folder=>$feff->workspace, file=>q{}, update_path=>1);
       next if ($p->data ne $d);
@@ -315,6 +320,10 @@ sub read_project {
     Demeter::UI::Artemis::set_happiness_color($fit->color);
   } else {
     $Demeter::UI::Artemis::frames{main}->{fitbutton} -> SetBackgroundColour(Wx::Colour->new($fit->co->default("happiness", "average_color")));
+  };
+
+  if ($import_problems) {
+    Wx::MessageDialog->new($Demeter::UI::Artemis::frames{main}, $import_problems, "Warning!", wxOK|wxICON_WARNING) -> ShowModal;
   };
 
   $Demeter::UI::Artemis::demeter->push_mru("artemis", $fname);

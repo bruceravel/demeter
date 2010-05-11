@@ -228,7 +228,11 @@ sub fetch_parameters {
   #my $rgds = $Demeter::UI::Artemis::frames{GDS}->reset_all;
   foreach my $k (qw(n s02 e0 delr sigma2 ei third fourth dphase)) {
     next if (($k eq 'dphase') and (not $this->{path}->co->default('artemis', 'offer_dphase')));
-    $this->{path}->$k($this->{"pp_$k"}->GetValue);
+    my $val = $this->{"pp_$k"}->GetValue;
+    if ($val =~ m{\A\s*\z}) {
+      $val = ($k =~ m{\A(?:n|s02)\z}) ? 1 : 0;
+    };
+    $this->{path}->$k($val);
   };
   $this->{path}->include( $this->{include}->GetValue );
   $this->{path}->plot_after_fit($this->{plotafter}->GetValue);
