@@ -114,7 +114,7 @@ print "Modifying .bashrc file to use locally installed perl modules...\n";
 system( q(echo 'eval $(perl -I$HOME/perl5/lib/perl5 -Mlocal::lib)' >>~/.bashrc));
 print "\nDone!\nLog out and log back in for these changes to take effect ... or ... \n";
 print "cut and past this command to start immediately:\n";
-print q(               eval $(perl -I$HOME/perl5/lib/perl5 -Mlocal::lib) . $/;
+print q(               eval $(perl -I$HOME/perl5/lib/perl5 -Mlocal::lib)) . $/;
 
 
 
