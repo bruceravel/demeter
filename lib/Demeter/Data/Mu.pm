@@ -404,7 +404,7 @@ sub _plotE_command {
 	: ($pf->e_norm)                 ? 'normalized x\gm(E)'
 	:                                 'x\gm(E)';
   };
-  $pf->key($self->name);
+  ($pf->showlegend) ? $pf->key($self->name) : $pf->key(q{});
   my $title = $self->name||q{Data};
   $pf->title(sprintf("%s in energy", $title)) if not $pf->title;
   #$pf->title(sprintf("%s", $self->name||q{}));
@@ -415,7 +415,7 @@ sub _plotE_command {
   my $counter = 0;
   foreach my $suff (@suffix_list) {  # loop through list of parts to plot
     $pf->color(shift(@color_list));  # color is used by pgplot, not gnuplot
-    $pf->key(shift(@key_list));
+    ($pf->showlegend) ? $pf->key(shift(@key_list)) : $pf->key(q{});
     $pf->e_part($suff);
     $string .= $self->_plotE_string;
     $pf->increment;

@@ -21,10 +21,11 @@
 	    );
   $thiskey = $P->key;
   $thiskey =~ s{_}{\\\\_}g;
+  $legend  = ($P->showlegend) ? '' : "\nunset key" ;
   q{}
 }
 ## gnuplot script
-unset label
+unset label{$legend}
 
 set title "\{/*1.6 {$P->escapedtitle}\}"
 set xlabel "\{/*1.4 Energy&\{aa\}(eV)\}"

@@ -24,10 +24,11 @@
   $thiskey = $C->get('plot_part') || $P->key;
   $thiskey =~ s{_}{\\\\_}g;
   if (ref($PT) =~ m{Path}) { $thiskey = $PT->name || 'Path '.$PT->Index };
+  $legend  = ($P->showlegend) ? '' : "\nunset key" ;
   q{}
 }
 ## gnuplot script
-unset label
+unset label{$legend}
 
 set title "\{/*1.5 {$P->escapedtitle}\}"
 set xlabel "\{/*1.2 Wavenumber&\{aa\}(\{\305\}^\{-1\})\}"

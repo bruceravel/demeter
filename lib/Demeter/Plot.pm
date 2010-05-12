@@ -75,6 +75,7 @@ has 'charfont'  => (is => 'rw', isa =>  OneToFour, default => sub{ shift->co->de
 has 'key_x'     => (is => 'rw', isa =>  PosNum,    default => sub{ shift->co->default("plot", "key_x")    || 0.8});
 has 'key_y'     => (is => 'rw', isa =>  PosNum,    default => sub{ shift->co->default("plot", "key_y")    || 0.9});
 has 'key_dy'    => (is => 'rw', isa =>  PosNum,    default => sub{ shift->co->default("plot", "key_dy")   || 0.075});
+has 'showlegend'=> (is => 'rw', isa =>  'Bool',    default => 1);
 
 ## -------- colors
 ## I need a Color type
@@ -538,6 +539,10 @@ The plot background color.
 =item C<fg> (color) I<[black]>
 
 The plot foreground color, used for text and the plot frame.
+
+=item C<showlegend> (boolean) I<[1]>
+
+When true, a legend will be shown on the plot.
 
 =item C<showgrid> (boolean) I<[1]>
 

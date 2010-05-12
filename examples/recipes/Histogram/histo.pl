@@ -54,14 +54,17 @@ my @gds = (
 	   Demeter::GDS->new(gds=>'guess',   name=>'sigsqr', mathexp=>0.0),
 	  );
 $data->po->kweight(2);
+$data->po->title("without sigma2");
 
 ## -------- Do the fit
 my $fit = Demeter::Fit->new(gds=>\@gds, data=>[$data], paths=>$paths);
 $fit->fit;
 
-#$_->push_ifeffit foreach @gds;
-#$data -> po -> r_pl('r');
-#$_->plot('r') foreach ($data, $vpath);
-#$data -> pause;
-$fit->interview;
-$data->po->end_plot;
+$demeter -> set_mode(plotscreen=>0);
+$data->po->r_pl('r');
+$data->po->plot_fit(1);
+$data->po->showlegend(0);
+$data->po->title("with sigma2");
+$_->plot('r') foreach ($data,@$paths);
+$data -> pause;
+#$fit->interview;

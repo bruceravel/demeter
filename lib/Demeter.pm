@@ -1561,6 +1561,8 @@ Patches are welcome.
 Cloning a Feff object now deeply copies the array references in an
 overridden clone method.
 
+Added showlegend attribute to Plot object
+
 =item 0.4.1
 
 Now supplying the C<bootstrap> script in an attempt to ease initial

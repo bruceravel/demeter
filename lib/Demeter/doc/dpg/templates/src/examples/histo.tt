@@ -125,3 +125,100 @@ my $fit = Demeter::Fit->new(gds=>\@gds, data=>[$data], paths=>$paths);
 $fit->fit;
 $fit->interview;
 [% END %]
+
+
+[% FILTER html_para %]
+At line 5-7 a [% feff %] calculation on gold metal is imported.  This
+calculation was made and frozen to the 
+[% INCLUDE font/file a='Au_feff.yaml' %] file ahead of time.
+(See [% INCLUDE html/link text="here" link="../feff/pathfinder.html" %] 
+for details.)  We will only be using the first ScatteringPath object
+from the path list.  That is the contribution from the first
+coordination shell and will be used as the basis for the historgram.
+
+At lines 10-13, data are imported from an [% athena %] project file.
+At line 19, a reference to the ScatteringPath object for the first
+coordination shell is stored in the [% INCLUDE font/mono a='$firstshell' %]
+variable.
+
+All the interesting stuff in this example happens between lines 21 and
+26.  First, the locations and populations of the histogram are read
+from a column data file at line 21.  The 
+[% INCLUDE font/mono a='histogram_from_file' %] method (which is a
+method of the ScatteringPath object) takes 5 arguments -- the file
+name, the column numbers of the bin positions and bin populations, and
+the range in R-space.  Bins in the histogram that lie outside the
+R-range will not be considered.  An example of a histogram file is
+shown above.  This method returns two scalars which are references to
+the arrays containing the bin positions and populations, i.e. the x
+and y arrays of the histogram.  To examine these arrays, you would
+have to dereference these scalars:
+[% END %]
+
+[% WRAPPER codesample -%]
+my @bin_positions = @$rx
+[% END %]
+
+
+[% FILTER html_para %]
+At line 22, an anonymous array of path parameters values is created.
+These values will be used for every Path object created by histogram
+generating method.  Note that I am using this anonymous array to pass
+various attributes to the Path objects in the histogram.  Passing
+these in this way is just a convenience -- they could be set after the
+fact instead.
+
+At line 24, the set of Path objects representing the contribution from
+each bin of the histogram is actually generated using the 
+[% INCLUDE font/mono a='make_histogram' %] method (also a method of
+the ScatteringPath object).  This method takes 4 arguments.  The first
+two are the array references returned by the
+[% INCLUDE font/mono a='histogram_from_file' %] method.  The last
+argument is the array reference created at line 22.  Each item in the
+array will be passed on to each of the Path objects that gets
+generated. 
+
+The third argument of the [% INCLUDE font/mono a='make_histogram' %]
+method is very important!  It is the name of the amplitude parameter
+that will be varied in the fit. Each path parameter for every
+generated path will be given a math expression that is this amplitude
+parameter multiplied by the unit-normalized bin population.  Since the
+histogram is unit normalized, this parameter represents the total
+coordination number multiplied by the [% s02 %] value.
+
+At lines 25 and 26, a 
+[% INCLUDE html/link text="VPath" link="../pathlike/vpath.html" %]
+object is created to hold the contribution from the entire histogram.
+This is particularly handy as a visualization tool if the histogram is
+just one part of the fit. 
+
+Finally a set of GDS object are defined and the fit is run.  Note that
+an overall [% sigsqr %] parameter has been defined but set to 0.  An
+isotropic expansion parameter has also been defined but set to zero.
+[% END %]
+
+[% WRAPPER scriptcaption this="histo_fit_noss.png" %]
+Here is the result of the fit varying on [% s02 %] and [% e0 %].  The
+[% sigsqr %] parameter has been fixed to 0.  This fit isn't great, but
+it is not horrible either.  It seems safe to say that the distribution
+used here is not an adequate representation of the complete structural
+and thermal disorder in this particular system.
+[% END %]
+
+[% WRAPPER scriptcaption this="histo_fit_withss.png" %]
+In this fit, the  [% sigsqr %] parameter has been set to be a guess
+parameter.  It returns a non-zero value and substantially improves the
+fit.  Whatever disorder was not considered in the input configuration
+was accounted for to some extent by the addition of this parameter.
+[% END %]
+
+[% WRAPPER quadplot files=["histo_fit_wpaths.png", "histo_fit_wpaths_zoom.png"] %]
+To fully understand how the histogram concept works, it is useful to
+see the contribution from each bin in the histogram along with the
+data and the fit.  (Left) The fit with [% sigsqr %] floated showing
+the contributions from each bin of the histogram.  Each individual bin
+contributes only a small amount of the spectral weight, but together
+they add up to the result.  (Right) Zooming in on the contributions
+from each bin.  Note the complicated phase relationship of these paths
+which contributes to the overall fit.
+[% END %]

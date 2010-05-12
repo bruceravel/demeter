@@ -25,9 +25,16 @@ pathlike objects.
 Blah blah
 [% END %]
 [% WRAPPER html/dt dt="Complex partial pair distributions as histograms" %]
-Blah blah
+Modeling arbitrary pair distribution functions using 
+[% INCLUDE html/link text="SSPath" link="../pathlike/sspath.html" %]
+objects to represent bins in a histogram.
 [% END %]
-[% WRAPPER html/dt dt="Demeter scripts writing demeter scripts" %]
+[% WRAPPER html/dt dt="Plot adornments" %]
+Adding eye candy to your plots.  While [% demeter %] is certainly not
+a full-featured plotting solution, it is capable of
+generating very complex plots with a relatively small amount of code.
+[% END %]
+[% WRAPPER html/dt dt="Using Demeter to write Ifeffit and Demeter scripts" %]
 Blah blah
 [% END %]
 [% END %]

@@ -145,7 +145,7 @@ sub _plotk_command {
          : ((not $kw) and ($ylorig =~ /^\s*$/)) ? "\\gx(k)" # special y label for kw=0
          :                                        $ylorig;
   (my $title = $self->name||q{}) =~ s{D_E_F_A_U_L_T}{Plot of paths};
-  $pf->key($self->name);
+  ($pf->showlegend) ? $pf->key($self->name) : $pf->key(q{});
   my $plotspace = ($pf->chie) ? 'E' : $space;
   $pf->title(sprintf("%s in %s space", $title, $plotspace)) if not $pf->title;
   $pf->xlabel($xl);
@@ -178,7 +178,7 @@ sub _plotR_command {
   $pf->ylabel(sprintf("%s\\gx(R)%s (\\A\\u-%.3g\\d)", $open{$part}, $close{$part}, $kw+1))
     if ($yl =~ /^\s*$/);
   (my $title = $self->name||q{}) =~ s{D_E_F_A_U_L_T}{Plot of paths};
-  $pf->key($self->name);
+  ($pf->showlegend) ? $pf->key($self->name) : $pf->key(q{});
   $pf->title(sprintf("%s in R space", $title)) if not $pf->title;
 
   $string = ($pf->New)
@@ -217,7 +217,7 @@ sub _plotq_command {
   $pf->ylabel(sprintf("%s\\gx(q)%s (\\A\\u-%.3g\\d)", $open{$part}, $close{$part}, $kw))
     if ($yl =~ /^\s*$/);
   (my $title = $self->name) =~ s{D_E_F_A_U_L_T}{Plot of paths};
-  $pf->key($self->name);
+  ($pf->showlegend) ? $pf->key($self->name) : $pf->key(q{});
   $pf->title(sprintf("%s in q space", $title)) if not $pf->title;
 
   $string = ($pf->New)
