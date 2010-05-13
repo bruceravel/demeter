@@ -13,19 +13,19 @@
 <div class=figure style="max-width: 100%; min-width: 7em;">
 <a name=[% label %]>&nbsp;</a><br>
 [%- fl = files.shift; this = "${dots}/${fl}" -%] 
-<a href=[% this %]><img src="[% this %]" width=[%- IF ww < 250 -%][%- ww -%][%- ELSE -%]49%[%- END -%]></a>
+<a href=[% this %]><img src="[% this %]" width=[%- IF ww < 700 -%][%- ww -%][%- ELSE -%]49%[%- END -%]></a>
 &nbsp;&nbsp;
 [%- fl = files.shift; this = "${dots}/${fl}" -%] 
-<a href=[% this %]><img src="[% this %]" width=49%></a>
+<a href=[% this %]><img src="[% this %]" width=[%- IF ww < 700 -%][%- ww -%][%- ELSE -%]49%[%- END -%]></a>
 <br>
 [%- fl = files.shift; this = "${dots}/${fl}" -%] 
 [%- IF fl -%]
-<a href=[% this %]><img src="[% this %]" width=49%></a>
+<a href=[% this %]><img src="[% this %]" width=[%- IF ww < 700 -%][%- ww -%][%- ELSE -%]49%[%- END -%]></a>
 &nbsp;&nbsp;
 [%- END -%]
 [%- fl = files.shift; this = "${dots}/${fl}" -%] 
 [%- IF fl -%]
-<a href=[% this %]><img src="[% this %]" width=49%></a>
+<a href=[% this %]><img src="[% this %]" width=[%- IF ww < 700 -%][%- ww -%][%- ELSE -%]49%[%- END -%]></a>
 [%- END -%]
 </a>
 <p align=center>

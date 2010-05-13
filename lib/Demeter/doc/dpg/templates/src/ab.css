@@ -92,7 +92,13 @@ h4 {
   border:2px dotted #8c4112;
 }
 
+sub {
+  font-size: 70%;
+}
 
+sup {
+  font-size: 70%;
+}
 
 dt {
   font-weight: bold;

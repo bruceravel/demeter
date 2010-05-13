@@ -187,8 +187,8 @@ second [% feff %] calculation.  Again, care is taken to make sure that
 the correct Path object, with the correct [% INCLUDE font/mono a="cv" %]
 value, is associated with the correct Data object.  Note the use of
 the [% INCLUDE font/mono a="find_path" %] method at line 93.  This
-identifies the ScatteringPath object using
-[% INCLUDE html/link link="../paths/semantic.html" text="semantic path descriptions" %].
+identifies the ScatteringPath object using a
+[% INCLUDE html/link link="../paths/semantic.html" text="semantic path description" %].
 This simplifies the chore of finding the correct ScatteringPath
 without needing to keep track of the order of scattering paths in the
 [% feff %] calculation.

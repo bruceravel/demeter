@@ -11,7 +11,7 @@ compounds consist of a tin atom surrounded tetrahedrally by chlorine
 atoms and methyl ([% ch3 %]) groups.
 
 Obviously, this is not a crystal.  To start, I found structural
-information for the dimethyltin molecule in the form a Protein
+information for the dimethyltin molecule in the form of a Protein
 Databank File.  This is shown here:
 [% END %]
 
@@ -192,12 +192,43 @@ Path objects use the [% INCLUDE font/mono a="y_offset" %] attribute of
 the associated Data object.  This is one of the reasons why every Path
 must have an associated Data object.
 [% WRAPPER codesample -%]
-$fit -> po -> set(plot_fit =>  1,
-                  r_pl     => 'm',
-                  kweight  =>  2);
-$mmt -> y_offset(1.0);
-$_   -> plot('r') foreach ($dmt, @paths[0,1],
-                           $mmt, @paths[2,3]);
-$mmt -> pause;
+$fit-> po -> set(plot_fit =>  1,
+                 r_pl     => 'm',
+                 kweight  =>  2);
+$mmt-> y_offset(1.0);
+$_  -> plot('r') foreach ($dmt, @paths[0,1],
+                          $mmt, @paths[2,3]);
+$mmt-> pause;
 [% END %]
+[% END %]
+
+[% FILTER html_para %]
+As a final note, I want to comment on lines 32 and 41 where the 
+[% INCLUDE font/mono a="sp" %] attribute of the Path objects is set to
+the proper ScatteringPath objects from the [% feff %] calculation.
+Choosing the correct ScatteringPaths from [% INCLUDE font/mono a="@list" %]
+requires having specific knowledge of the order of the paths from the
+[% feff %]'s pathfinder.  That is not difficult to obtain using the 
+[% INCLUDE html/link text="intrp method" link="../feff/intrp.html" %]
+of the Feff object, however it is something that is difficult to put
+in-line in a script like this.  Of course, in this case, it is fairly
+obvious that the first two paths are the C and Cl single scattering
+paths.  In general, though, it is hard to know a priori the order of
+paths that come from the pathfinder.
+
+[% INCLUDE html/link link="../paths/semantic.html" text="Semantic path descriptions" %]
+are the solution to this problem.  In this case, the 
+[% INCLUDE font/mono a="find_path" %] method of the Feff object could
+be used like so:
+[% END %]
+
+[% WRAPPER codesample -%]
+$paths[0] -> set(sp => $feff->find_path(tag=>['C']);
+$paths[1] -> set(sp => $feff->find_path(tag=>['Cl']);
+[% END %]
+
+[% FILTER html_para %]
+The [% INCLUDE font/mono a="find_path" %] method can be relied upon to
+find the correct path regardless of the order of things after the
+pathfinder has done its work.
 [% END %]
