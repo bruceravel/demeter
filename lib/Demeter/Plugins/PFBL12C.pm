@@ -4,21 +4,22 @@ use Moose;
 extends 'Demeter::Plugins::FileType';
 
 has '+is_binary'   => (default => 0);
-has '+description' => (default => "Read files from Photon Factory XAS Beamlines.");
-has '+version'     => (default => 0.2);
+has '+description' => (default => 'Read files from Photon Factory & SPring8 XAS Beamlines.');
+has '+version'     => (default => 0.3);
 
 use Readonly;
 Readonly my $PI      => 4 * atan2 1, 1;
-Readonly my $HBARC   => 1973.27053324;
-Readonly my $TWODONE => 6.2712;	# Si(111)
-Readonly my $TWODTHR => 3.275;	# Si(311)
+Readonly my $HC      => 12398.52;
+#Readonly my $HBARC   => 1973.27053324;
+#Readonly my $TWODONE => 6.2712;	# Si(111)
+#Readonly my $TWODTHR => 3.275;	# Si(311)
 
 sub is {
   my ($self) = @_;
-  open D, $self->file or die "could not open " . $self->file . " as data (Photon Factory)\n";
+  open D, $self->file or die "could not open " . $self->file . " as data (Photon Factory/SPring8)\n";
   my $line = <D>;
   close D;
-  return 1 if ($line =~ m{9809\s+KEK-PF\s+(?:BL|NW)\d+});
+  return 1 if ($line =~ m{9809\s+(?:KEK-PF|SPring-8)\s+(?:(BL\d+)|(NW\d+)|(\d+\w+\d*))});
   return 0;
 };
 
@@ -31,7 +32,8 @@ sub fix {
   open my $D, $file or die "could not open $file as data (fix in PFBL12C)\n";
   open my $N, ">".$new or die "could not write to $new (fix in PFBL12C)\n";
 
-  my ($header, $twod) = (1,$TWODONE);
+  my $header = 1;
+  my $ddistance = 1;
   my @offsets;
   while (<$D>) {
     next if ($_ =~ m{\A\s*\z});
@@ -46,14 +48,14 @@ sub fix {
       $header = 0;
     } elsif ($header) {
       my $this = $_;
-      if ($this =~ m{mono.+\( (\d+) \)}ix) {
-	$twod = ($1 == 111) ? $TWODONE : $TWODTHR;
+      if ($this =~ m{d=\s+(\d\.\d+)\s+A}i) {
+	$ddistance = $1*2;
       };
       print $N '# ', $_, $/;
     } else {
       my @list = split(" ", $_);
-      $list[0] = (2*$PI*$HBARC) / ($twod * sin($list[0] * $PI / 180));
-      $list[1] = (2*$PI*$HBARC) / ($twod * sin($list[1] * $PI / 180));
+      $list[0] = ($HC) / ($ddistance * sin($list[0] * $PI / 180));
+      $list[1] = ($HC) / ($ddistance * sin($list[1] * $PI / 180));
       my $ndet = $#list-2;
       foreach my $i (1..$ndet) {
 	$list[2+$i] = $list[2+$i] - $offsets[2+$i];
@@ -86,7 +88,7 @@ __PACKAGE__->meta->make_immutable;
 
 =head1 NAME
 
-Demeter::Plugin::PFBL12C - filetype plugin for Photon Factory
+Demeter::Plugin::PFBL12C - filetype plugin for Photon Factory and SPring8
 
 =head1 SYNOPSIS
 
@@ -99,8 +101,8 @@ as a function of energy.
 
 =item C<is>
 
-A PFBL12C file is identified by the string "KEK-PF" followed by the
-beamline number in the first line of the file.
+This file is identified by the string "KEK-PF" or "SPring-8" followed
+by the beamline number in the first line of the file.
 
 =item C<fix>
 
@@ -116,6 +118,10 @@ D is the Si(111) plane spacing.
 =head1 REVISIONS
 
 =over 4
+
+=item 0.3
+
+Yohéi added support for data from SPring8.
 
 =item 0.2
 

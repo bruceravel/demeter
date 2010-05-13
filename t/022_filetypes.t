@@ -34,7 +34,7 @@ my %athena = (SSRLA	=> [25521.4,   'transmission'],
 	      X10C	=> [8345.3,    'transmission'],
 	      X15B	=> [2433.5,    'fluorescence'],
 	      HXMA	=> [11866.5,   'transmission'],
-	      PFBL12C	=> [12279.296, 'transmission'],
+	      PFBL12C	=> [12279.743, 'transmission'],
 	      CMC	=> [2473.6,    'fluorescence'],
 	      SSRLmicro	=> [11107.5,   'fluorescence'],
 	      X23A2MED	=> [6554.2,    'fluorescence'],
@@ -78,7 +78,7 @@ sub dotest {
     $data->po->start_plot;
     $data->po->set(emin=>-30, emax=>150);
     $data->plot('E');
-    sleep 1;
+    sleep 3;
   };
   return $data->bkg_e0;
 };
