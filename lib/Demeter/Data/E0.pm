@@ -162,6 +162,7 @@ sub align {
   $self -> _update("background");
   foreach my $d (@data) {
     next if (ref($d) !~ m{Data});
+    next if ($d->group eq $self->group);
     $d -> _update("background");
     $d -> dispose( $d-> template("process", "align") );
     $shift = Ifeffit::get_scalar("aa___esh");

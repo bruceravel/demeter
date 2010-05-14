@@ -2,5 +2,12 @@
 	chapter = 1 %]
 
 [% FILTER html_para -%]
-Data in energy...
+In this chapter, much of the functionality associated with 
+[% athena %] is exaplained.  In the 
+[% INCLUDE font/file a='examples' %] folder of the [% demeter %]
+source tree, there is a program called 
+[% INCLUDE font/file a='harness' %] which deomnstrates all of the
+things explained in this chapter.  The scripts that program uses are
+all located in the [% INCLUDE font/file a='examples/tests/' %]
+folder. 
 [% END %]
