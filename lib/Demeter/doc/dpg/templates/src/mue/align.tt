@@ -32,7 +32,7 @@ my @data = $prj -> records(1, 2, 3, 4);
 
 ## align to the standard
 $data[0]->align(@data);
-## make all the E0 valuies the same
+## make all the E0 values the same
 $_->e0($data[0]) foreach @data[1..3];
 [% END %]
 
@@ -51,7 +51,22 @@ There is also an [% INCLUDE font/mono a='align_with_reference' %]
 method (which has an alias of [% INCLUDE font/mono a='alignwr' %]).
 This will use the Data objects specified in the 
 [% INCLUDE font/mono a='reference' %] attribute of the standard and
-the data to perform the alignment.
+the data to perform the alignment.  Here is how that works:
+[% END %]
+
+[% WRAPPER codeexample -%]
+#!/usr/bin/perl
+
+my $prj = Demeter::Data::Prj -> new(file=>'U_DNA.prj');
+my @data = $prj -> records(1, 2, 3, 4);
+
+$data[0]->reference($data[1]);
+$data[2]->reference($data[3]);
+
+## align to the standard using the reference
+$data[0]->alignwr($data[2]);
+## make the E0 values the same
+$data[2]->e0($data[0]);
 [% END %]
 
 [% WRAPPER html/todo %]

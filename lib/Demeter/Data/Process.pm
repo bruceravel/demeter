@@ -73,6 +73,8 @@ sub rebin {
 sub merge {
   my ($self, $how, @data) = @_;
   $how = lc($how);
+  ($how = 'k') if ($how eq 'c');
+  ($how = 'e') if ($how eq 'x');
   croak("Demeter::Data::Process: \$data->merge(\$how, \@data) where \$how = e|k|n") if ($how !~ m{^[ekn]});
 
   my %howstring = (e => 'mu(E)', n => 'normalized mu(E)', k => 'chi(k)');

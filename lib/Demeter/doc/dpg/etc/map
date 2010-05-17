@@ -44,7 +44,7 @@
 		      menu = [ 'align',  'merge', 'deglitch', 'truncate', 'noise', 'smooth',
 		      	       'convolve', 'deconvolve', 'difference', 'rebin']
 		      page = {
-			     align      = { name = 'Data alignment' }
+			     align      = { name = 'Aligning data' }
 			     merge      = { name = 'Merging data' } 
 			     deglitch   = { name = 'Deglitching data' }
 			     truncate   = { name = 'Truncating data' }
