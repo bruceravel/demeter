@@ -25,6 +25,7 @@
 [% MACRO sigma2  BLOCK -%] &sigma;&sup2; [%- END -%]
 [% MACRO epsilon BLOCK -%] &epsilon;  [%- END -%]
 [% MACRO mu      BLOCK -%] &mu;(E)    [%- END -%]
+[% MACRO mue     BLOCK -%] &mu;(E)    [%- END -%]
 [% MACRO mu0     BLOCK -%] &mu;&#8320;(E) [%- END -%]
 [% MACRO mu0e0   BLOCK -%] &mu;&#8320;(E&#8320;) [%- END -%]
 [% MACRO chie    BLOCK -%] &chi;(E)   [%- END -%]
@@ -64,6 +65,9 @@
 [% MACRO k1     BLOCK -%] k&sup1;     [%- END -%]
 [% MACRO k2     BLOCK -%] k&sup2;     [%- END -%]
 [% MACRO k3     BLOCK -%] k&sup3;     [%- END -%]
+[% MACRO chik1  BLOCK -%] k&sdot;&chi;(k) [%- END -%]
+[% MACRO chik2  BLOCK -%] k&sup2;&sdot;&chi;(k) [%- END -%]
+[% MACRO chik3  BLOCK -%] k&sup3;&sdot;&chi;(k) [%- END -%]
 
 [% MACRO latex  BLOCK -%] L<sup><span class=smallcap>A</span></sup>T<sub>E</sub>X [%- END -%]
 [% MACRO pm  BLOCK -%] +/- [%- END -%]

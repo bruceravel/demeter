@@ -145,5 +145,7 @@ The
 [% INCLUDE html/link text="example of Hg absorbed to DNA" 
 link="../examples/hgdna.tt" %]
 demonstrates extensive use of the 
-[% INCLUDE font/mono a="find_path" %] method.
+[% INCLUDE font/mono a="find_path" %] method.  The 
+[% INCLUDE html/link text="silver/gold alloy example" 
+link="../examples/agau.tt" %] also makes strategic use of this tool.
 [% END %]

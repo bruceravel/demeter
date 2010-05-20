@@ -2,7 +2,7 @@
 
 =for Copyright
  .
- Copyright (c) 2006-2009 Bruce Ravel (bravel AT bnl DOT gov).
+ Copyright (c) 2006-2010 Bruce Ravel (bravel AT bnl DOT gov).
  All rights reserved.
  .
  This file is free software; you can redistribute it and/or
@@ -128,6 +128,6 @@ $dobject->save("fit", "rim.fit", 'rim');
 #$pobjects[0]->save("r", "path0.r");
 
 print "write log and serialization files\n";
-my ($header, $footer) = ("Fit to copper data", q{});
+($header, $footer) = ("Fit to copper data", q{});
 $fitobject -> logfile("cufit.log", $header, $footer);
 $fitobject -> freeze(file=>"cufit.dpj");

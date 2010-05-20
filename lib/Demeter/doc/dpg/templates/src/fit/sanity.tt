@@ -100,10 +100,10 @@ at the command line, this error message is typically (and by default)
 issued to STDERR.  For a Wx application, the warning text will
 normally be displayed in a dialog box or elsewhere.  Disposal of the
 error text is left as a chore for the end-user application.
-
-There are, as of version 0.4, several missing tests, including:
 [% END %]
 
+[% WRAPPER html/todo %]
+There are, as of version 0.4, several missing tests, including:
 [% WRAPPER html/list type="ol" %]
 [% WRAPPER html/li %]
 Test that every included Data object has at least 1 Path object
@@ -122,7 +122,4 @@ Test that every Path points either to a ScatteringPath object or to a
 real path file.
 [% END %]
 [% END %]
-
-[% WRAPPER html/todo %]
-Implement missing sanity checks.
 [% END %]

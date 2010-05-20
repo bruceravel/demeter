@@ -1,10 +1,12 @@
 [% META title = 'Running Feff outside of Demeter' %]
 
+[% PROCESS section label="Using a single feffNNNN.dat file" %]
+
 [% FILTER html_para %]
 You can import [% INCLUDE font/file a="feffNNNN.dat" %] files from a 
 [% feff %] calculation run outside of [% demeter %].  
 Explicitly specify the [% INCLUDE font/mono a="folder" %] and
-[% INCLUDE font/mono a="file" %].  Or use Demeter::Feff::External.
+[% INCLUDE font/mono a="file" %].
 [% END %]
 
 
@@ -18,6 +20,8 @@ $path -> new(data     => $data,
              sigma2   => 'debye(temp, theta) + sigmm',
             );
 [% END %]
+
+[% PROCESS section label="Importing an external Feff calculation" %]
 
 [% WRAPPER html/todo %]
 Document Demeter::Feff::External

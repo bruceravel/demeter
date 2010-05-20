@@ -116,13 +116,13 @@ looks like this:
 [% END %]
 
 [% WRAPPER codesample -%] 
-my %formatting = ('comment' => $comment_start_tag,
+my $formatting = {'comment' => $comment_start_tag,
                   'close'   => $closing_tag,
                   '1'       => $mid_start_tag,
                   '2'       => $high_start_tag,
                   '0'       => $low_start_tag,
-                 );
-$feff -> intrp(\%formatting);
+                 };
+$feff -> intrp($formatting);
 [% END %]
 
 [% FILTER html_para %]

@@ -87,7 +87,7 @@ printf "deltaR evaluated to =%.5d\n", $path->delr_value;
 [% FILTER html_para %]
 In fact, this is done repeatedly during the construction of 
 [% INCLUDE html/link text="the logfile" 
-link="../fit/after.tt" %].
+link="../fit/after.html" %].
 [% END %]
 
 [% PROCESS section label="Other methods" %]
@@ -129,7 +129,7 @@ imported.  Since that usually happens behind the scenes, it is very
 rarely necessry to call this method.  However, it is important to
 understand how this method works as it can be used to configure how
 the Path object gets labeled.  This is determined using the
-[% INCLUDE preference group="pathfinder" option="label" %]
+[% INCLUDE preference group="pathfinder" option="name" %]
 configuration parameter.  The default value of this parameter is 
 [% INCLUDE font/mono a="%P" %], which means that the default
 label is the the interpretation list of the associated ScatteringPath
@@ -191,8 +191,10 @@ half path length and the path degeneracy
 [% END %]
 
 [% WRAPPER codesample -%]
-  $path_object -> co -> set_default("pathfinder", "name", '%r (%d)';
+  $path_object -> co -> set_default("pathfinder", "label", '%r (%d)';
 [% END %]
+
+[% PROCESS section label="Uncertainties in path parameters" %]
 
 [% WRAPPER html/todo -%]
 Propagation of uncertainties into path parameter math expressions is a

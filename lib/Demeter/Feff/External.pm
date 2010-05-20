@@ -242,10 +242,10 @@ This documentation refers to Demeter version 0.4.
 =head1 SYNOPSIS
 
   my $feff = Demeter::Feff::External -> new();
-  $feff->set(workspace=>"temp", screen=>0);
-  $feff->file('/path/to/feff.inp');
+  $feff   -> set(workspace=>"temp", screen=>0);
+  $feff   -> file('/path/to/feff.inp');
   foreach my $sp (@{$feff->pathlist}) {
-    Demeter::Path->new(sp=>$sp)->plot('r');
+    Demeter::Path -> new(sp=>$sp) -> plot('r');
   };
 
 =head1 DESCRIPTION

@@ -26,7 +26,7 @@ a fit.  When one or more of those things does not hold for a fit, we
 are unhappy and thus wary of the fit.  If, however, all of them hold
 true, then we might have confidence in the fit, thus making us happy.
 
-[% PROCESS subsection label="A semantic parameter" %]
+[% PROCESS section label="A semantic parameter" %]
 
 Discuss cognitive load here....
 
@@ -47,7 +47,7 @@ basis in formal statistics.  It is, therefore, meaningless and should
 never be published.
 [% END %]
 
-[% PROCESS subsection label="How the happiness is calculated" %]
+[% PROCESS section label="How the happiness is calculated" %]
 
 [% FILTER html_para %]
 The fit's happiness is computed using a bunch of
@@ -103,14 +103,21 @@ happiness calculation seems to be reasonable, but you are certainly
 encouraged to tune those values to give you results that are more
 useful for your experience.  If you do so, please share your work with
 Bruce so that your experience can be folded back into [% demeter %].
+[% END %]
 
+[% WRAPPER html/todo %]
 In a future version of [% demeter %] it will be possible to define a
 penalty parameter, which is a special kind of GDS object.  It will be
 like an after parameter in the sense that it is evaluated at the end
 of the fit.  Its evaluation will be used as an additional,
 user-defined penalty to the happiness.  This will give a dynamic,
-fitting-model-specific aspect to the happiness evaluation.
+aspect to the happiness evaluation which is specific to the fitting
+model.
+[% END %]
 
+[% PROCESS section label="Happiness is not a real statistical parameter" %]
+
+[% FILTER html_para %]
 One final note about the happiness metric.  Use it to evaluate your
 progress through a fitting project, but don't publish it.
 Really.  If you do publish it, we will both look like twits.
