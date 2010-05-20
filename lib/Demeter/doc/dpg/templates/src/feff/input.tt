@@ -1,5 +1,7 @@
 [% META title = 'Input data for Feff' %]
 
+[% PROCESS section label="Starting from a conventional feff.inp file" %]
+
 [% FILTER html_para %]
 [% feff %] is, let's face it, a bit long in the tooth.  It requires
 that its instructions be contained is a rather rigidly structured
@@ -9,14 +11,14 @@ a word whose etymology probably escapes [% feff %]'s younger users.
 
 [% demeter %] goes through some serious gymnastics in an attempt to
 hide [% feff %]'s clunky interface.  The need for an input file is
-unavoidable and [% demeter %] does, in fact, read in and write out [%
-INCLUDE font/file a="feff.inp" %] files repeatedly.  It does so,
+unavoidable and [% demeter %] does, in fact, read in and write out 
+[% INCLUDE font/file a="feff.inp" %] files repeatedly.  It does so,
 however, in a stealthy way that should require the attention of the
 programmer using [% demeter %] only at the very beginning of the
 process.
 
-Creating a Feff object and populating with the contents of a
-[% INCLUDE font/file a="feff.inp" %] file are done in a way that
+Creating a Feff object and populating it with the contents of a
+[% INCLUDE font/file a="feff.inp" %] file is done in a way that
 should be quite familiar at this point:
 [% END %]
 
@@ -25,7 +27,7 @@ should be quite familiar at this point:
 use Demeter;
 
 my $feff = Demeter::Feff -> new(file => "feff/feff.inp");
-$feff->set(workspace=>"feff/", screen=>0,);
+$feff->set(workspace=>"feff/", screen=>0);
 [% END %]
 
 [% FILTER html_para %]
@@ -46,12 +48,44 @@ object.  At this point, the new Feff object is fully instrumented and
 ready to start being used for interesting work.
 [% END %]
 
+[% PROCESS section label="Starting from an Atoms object" %]
 
-[% WRAPPER html/todo %] 
-A method of the Feff
-object to directly import an Atoms object without needing to write
-and read a [% INCLUDE font/file a="feff.inp" %] file.
+[% FILTER html_para %]
+If you are running [% feff %] on a crystalline material for which you
+have an [% INCLUDE font/file a="atoms.inp" %] or CIF file, then
+[% demeter %] also allows you to skip the step fo explicitly writing
+the [% INCLUDE font/file a="feff.inp" %] file.  Insetad of setting the 
+[% INCLUDE font/mono a="file" %] attribute of the Feff object, you can
+set the [% INCLUDE font/mono a="atoms" %] attribute to an Atoms
+object.  The [% INCLUDE font/file a="feff.inp" %] still gets
+generated, but it is done behind the scenes using a temporary file
+that is quickly discarded.
 [% END %]
+
+[% WRAPPER codeexample -%] 
+#!/usr/bin/perl
+use Demeter;
+
+my $atoms = Demeter::Atoms -> new(file => 'atoms.inp');
+my $feff = Demeter::Feff -> new(atoms => $atoms);
+$feff->set(workspace=>"feff/", screen=>0);
+[% END %]
+
+[% FILTER html_para %]
+When the [% INCLUDE font/mono a="atoms" %] attribute is set, the 
+[% INCLUDE font/file a="feff.inp" %] file is created, parsed, then
+deleted.  Its contents are stored as attributes of the Feff object.  At
+this point, the new Feff object is fully instrumented and ready to
+start being used for interesting work.
+
+This approach is convenient in any situation for which you do not need
+to modify [% feff %] input data in any way from the form that the 
+[% atoms %] calculation generates.  In that situation, this approach
+to [% feff %] is identical in every way to starting from a 
+[% INCLUDE font/file a="feff.inp" %] file.
+[% END %]
+
+[% PROCESS section label="Starting from a molecular structure file" %]
 
 [% WRAPPER html/todo %] 
 Integration with 

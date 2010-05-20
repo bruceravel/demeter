@@ -17,7 +17,7 @@
 
 =cut
 
-use Test::More tests => 32;
+use Test::More tests => 34;
 
 use Demeter;
 my $demeter  = Demeter -> new;
@@ -160,3 +160,10 @@ ok( $#{$ref} == 86,                                 'thaw: output feff.inp file 
 $this -> clean_workspace;
 ok( not (-d $where),                                'clean workspace works');
 
+## -------- test direct link between Atoms and Feff objects
+my $feff = Demeter::Feff->new;
+$feff -> atoms(Demeter::Atoms->new(file=>File::Spec->catfile($here, 'diamond.inp')));
+$ref = $feff->sites;
+ok( $#{$ref} == 148,                                'Atoms direct: atoms list read');
+$ref = $feff->potentials;
+ok( $#{$ref} == 3,                                  'Atoms direct: potentials list read');

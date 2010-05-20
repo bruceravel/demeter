@@ -23,7 +23,8 @@ use MooseX::AttributeHelpers;
 
 use MooseX::Aliases;
 use MooseX::StrictConstructor;
-use Demeter::StrTypes qw( AtomsEdge FeffCard );
+use Moose::Util::TypeConstraints;
+use Demeter::StrTypes qw( AtomsEdge FeffCard Empty);
 use Demeter::NumTypes qw( Natural NonNeg PosInt );
 with 'Demeter::Feff::Paths';
 with 'Demeter::Feff::Sanity';
@@ -38,7 +39,7 @@ use Compress::Zlib;
 use Cwd;
 use File::Path;
 use File::Spec;
-#use File::Temp qw(tempdir);
+use File::Temp qw(tempfile);
 use List::Util qw(sum);
 use List::MoreUtils qw(any false notall);
 use Regexp::Common;
@@ -63,6 +64,12 @@ my $opt  = Regexp::List->new;
 has 'source'      => (is => 'rw', isa => 'Str', default => 'demeter/feff6');
 has 'file'        => (is => 'rw', isa => 'Str',  default => q{},
 		      trigger => sub{my ($self, $new) = @_; $self->rdinp if $new} );
+has 'yaml'        => (is=>'rw', isa => 'Str', default => q{},
+		      trigger => sub{my ($self, $new) = @_; $self->deserialize if $new} );
+has 'atoms'       => (is=>'rw', isa => Empty|'Demeter::Atoms',
+		      trigger => sub{my ($self, $new) = @_; $self->run_atoms if $new});
+has 'molecule'    => (is=>'rw', isa => 'Str', default => q{},);
+
 has 'sites' => (
 		metaclass => 'Collection::Array',
 		is        => 'rw',
@@ -129,8 +136,6 @@ has 'othercards' => (
 has 'workspace'    => (is=>'rw', isa => 'Str', default => q{}); # valid directory
 has 'miscdat'      => (is=>'rw', isa => 'Str', default => q{});
 has 'vint'         => (is=>'rw', isa => 'Num', default => 0);
-has 'yaml'         => (is=>'rw', isa => 'Str', default => q{},
-		       trigger => sub{my ($self, $new) = @_; $self->deserialize if $new} );
 has 'hidden'       => (is=>'rw', isa => 'Bool',     default => 0);
 
 has 'fuzz'         => (is=>'rw', isa =>  NonNeg,    default => 0);
@@ -165,7 +170,7 @@ has 'iobuffer' => (
 				 'clear' => 'clear_iobuffer',
 				}
 		  );
-has 'save' => (is=>'rw', isa => 'Bool', default => 1);
+has 'save'     => (is=>'rw', isa => 'Bool',    default => 1);
 has 'problems' => (is=>'rw', isa => 'HashRef', default => sub{ {} });
 
 sub BUILD {
@@ -387,6 +392,10 @@ sub clean_workspace {
 sub check_workspace {
   my ($self) = @_;
   return 0 if ($self->workspace and (-d $self->workspace));
+  if ($self->co->default('feff','autoworkspace')) {
+    $self->make_workspace;
+    return 1;
+  };
   my $string =
   'Feff is sort of an old-fashioned program.  It reads from a fixed input'
     . 'file and writes fixed output files.  All this needs to happen in a'
@@ -396,7 +405,6 @@ sub check_workspace {
 	    . $/;
   croak $string;
 };
-#  $feff->make_workspace("/path/to/workspace/")
 
 
 sub run {
@@ -1031,6 +1039,15 @@ sub read_yaml {
 alias freeze => 'serialize';
 alias thaw   => 'deserialize';
 
+sub run_atoms {
+  my ($self) = @_;
+  my ($fh, $fname) = tempfile(q{feff.inp.XXXXXX}, DIR=>$self->stash_folder);
+  print $fh $self->atoms->Write;
+  close $fh;
+  $self->file($fname);
+  unlink $fh;
+};
+
 
 __PACKAGE__->meta->make_immutable;
 1;
@@ -1048,12 +1065,10 @@ This documentation refers to Demeter version 0.4.
 
 =head1 SYNOPSIS
 
-  my $feff = Demeter::Feff -> new();
-  $feff->set(workspace=>"temp", screen=>1, buffer=>q{});
-  $feff->rdinp("feff.inp")
-    -> potph
-      -> pathfinder
-        -> genfmt;
+  my $feff = Demeter::Feff -> new(file => 'feff.inp');
+  $feff->set(workspace=>"temp", screen=>1);
+  $feff->run;
+  $feff->intrp;
 
 
 =head1 DESCRIPTION
@@ -1067,6 +1082,19 @@ been implemented as methods of this object.
 =head1 ATTRIBUTES
 
 =over 4
+
+=item C<file>
+
+The name of a F<feff.inp> file.
+
+=item C<yaml>
+
+The name of a file containing a serialization of a Feff calculation.
+
+=item C<atoms>
+
+A L<Demeter::Atoms> object from which a F<feff.inp> file will be
+generated automatically.
 
 =item C<sites>
 
@@ -1138,7 +1166,7 @@ potentials, running the pathfinder, or running genfmt.
 =item C<miscdat>
 
 The contents of the F<misc.dat> file, slurped up after the
-F<phase.bin> file file is generated.
+F<phase.bin> file is generated.
 
 =item C<pathlist>
 
@@ -1199,6 +1227,8 @@ an arbitrarily named file, which is an improvement over Feff itself..
 
 If called without an argument, it will look for F<feff.inp> in the
 current working directory.
+
+This is triggered when the C<file> attribute is set.
 
 =item C<pathfinder>
 
