@@ -1,7 +1,7 @@
 package Demeter::Data::MultiChannel;
 
 use Moose;
-use MooseX::StrictConstructor;
+#use MooseX::StrictConstructor;
 extends 'Demeter::Data';
 
 has '+is_mc'     => (default => 1);

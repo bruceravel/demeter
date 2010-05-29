@@ -21,7 +21,7 @@ use Moose;
 extends 'Demeter::Feff';
 use MooseX::AttributeHelpers;
 use MooseX::Aliases;
-use MooseX::StrictConstructor;
+#use MooseX::StrictConstructor;
 
 use List::MoreUtils qw(none firstidx);
 use File::Basename;

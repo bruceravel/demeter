@@ -19,7 +19,7 @@ use autodie qw(open close);
 
 use Moose;
 use MooseX::Aliases;
-use MooseX::StrictConstructor;
+#use MooseX::StrictConstructor;
 extends 'Demeter';
 use Demeter::StrTypes qw( Empty PathParam );
 use Demeter::NumTypes qw( Natural PosInt NonNeg );

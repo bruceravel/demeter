@@ -1,7 +1,7 @@
 package Demeter::Plugins::FileType;
 
 use Moose;
-use MooseX::StrictConstructor;
+#use MooseX::StrictConstructor;
 with 'Demeter::Tools';
 with 'Demeter::Project';
 

@@ -22,7 +22,7 @@ extends 'Demeter';
 use MooseX::AttributeHelpers;
 
 use MooseX::Aliases;
-use MooseX::StrictConstructor;
+#use MooseX::StrictConstructor;
 use Moose::Util::TypeConstraints;
 use Demeter::StrTypes qw( AtomsEdge FeffCard Empty);
 use Demeter::NumTypes qw( Natural NonNeg PosInt );

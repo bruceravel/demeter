@@ -21,7 +21,7 @@ use Moose;
 extends 'Demeter';
 use MooseX::AttributeHelpers;
 use MooseX::Aliases;
-use MooseX::StrictConstructor;
+#use MooseX::StrictConstructor;
 
 #use diagnostics;
 use Carp;

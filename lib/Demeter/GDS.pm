@@ -18,7 +18,7 @@ package Demeter::GDS;
 use autodie qw(open close);
 
 use Moose;
-use MooseX::StrictConstructor;
+#use MooseX::StrictConstructor;
 extends 'Demeter';
 use Demeter::StrTypes qw( GDS NotReserved );
 

@@ -42,7 +42,7 @@ with 'Demeter::Data::Units';
 
 use MooseX::Aliases;
 #use MooseX::AlwaysCoerce;   # this might be useful....
-use MooseX::StrictConstructor;
+#use MooseX::StrictConstructor;
 use Moose::Util::TypeConstraints;
 use Demeter::StrTypes qw( Element
 			  Edge
