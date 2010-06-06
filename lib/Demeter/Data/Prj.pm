@@ -177,8 +177,9 @@ sub slurp {
 alias prj => 'slurp';
 
 sub record {
-  my ($self, @which) = @_;
+  my ($self, @entries) = @_;
   my @groups = ();
+  my @which = map { ($_ =~ m{(\d+)\-(\d+)}) ? ($1 .. $2) : $_ } @entries;
   foreach my $g (@which) {
     next if ($g > $self->n);
     my $gg = $g-1;

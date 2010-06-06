@@ -21,7 +21,8 @@ use Getopt::Long qw(GetOptionsFromString);
 
 use Demeter qw(:ui=screen);
 
-my ($plot, $inc, $params, $gnuplot, $xanes, $edge, $kw) = (q{}, 0.2, q{}, 0, 0, 0, 2);
+my ($plot, $inc, $params, $gnuplot, $xanes, $edge, $kw, $nokey) =
+  (q{}, 0.2, q{}, 0, 0, 0, 2);
 my ($emin, $emax) = (0,0);
 my %hash = ("plot|p=s"     => \$plot,
 	    "stack=s"      => \$inc,
@@ -32,6 +33,7 @@ my %hash = ("plot|p=s"     => \$plot,
 	    "kw|kweight=i" => \$kw,
 	    "emin=i"       => \$emin,
 	    "emax=i"       => \$emax,
+	    "nokey"        => \$nokey,
 	   );
 my ($env, $args) = GetOptionsFromString($ENV{LSPRJ}, %hash) if (exists $ENV{LSPRJ});
 my $result       = GetOptions(%hash);
@@ -56,11 +58,12 @@ if (lc($plot) =~ m{[endkrq]}) {
   exit if ($#data == -1);
   $data[0] -> po -> title(basename($file, '.prj'));
   $data[0] -> po -> e_markers(0);
-  $data[0] -> po -> e_norm(0)    if (lc($plot) =~ m{\A[ex]\z});
-  $data[0] -> po -> e_norm(1)    if (lc($plot) eq 'n');
-  $data[0] -> po -> e_der(1)     if (lc($plot) eq 'd');
-  $data[0] -> po -> kweight($kw) if (lc($plot) =~ m{[krq]});
-  $data[0] -> po -> r_pl('r')    if (lc($plot) eq 'rr');
+  $data[0] -> po -> e_norm(0)     if (lc($plot) =~ m{\A[ex]\z});
+  $data[0] -> po -> e_norm(1)     if (lc($plot) eq 'n');
+  $data[0] -> po -> e_der(1)      if (lc($plot) eq 'd');
+  $data[0] -> po -> kweight($kw)  if (lc($plot) =~ m{[krq]});
+  $data[0] -> po -> r_pl('r')     if (lc($plot) eq 'rr');
+  $data[0] -> po -> showlegend(0) if $nokey;
   ($en, $ex) = (-50, 120) if $xanes;
   ($en, $ex) = (-20, 60)  if $edge;
 
