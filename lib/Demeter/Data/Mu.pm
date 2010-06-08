@@ -239,6 +239,15 @@ sub normalize {
   $self->bkg_fitted_step($self->bkg_step) if not ($self->bkg_fixstep);
   $self->bkg_fitted_step(1) if ($self->is_nor);
 
+  my $command = q{};
+  $command .= $self->template("process", "post_autobk");
+  if ($self->bkg_fixstep or $self->is_nor or ($self->datatype eq 'xanes')) {
+    $command .= $self->template("process", "flatten_fit");
+  } else {
+    $command .= $self->template("process", "flatten_set");
+  };
+  $self->dispose($command);
+
   $self->update_norm(0);
   return $self;
 };
@@ -266,6 +275,9 @@ sub autobk {
   };
   #$self->dispose($command);
 
+## is it necessary to do post_autobk and flatten templates here?  they
+## *were* done in the normalize method...
+
   ## begin setting up all the generated arrays from the background removal
   $self->update_bkg(0);
   $self->update_fft(1);
@@ -277,7 +289,7 @@ sub autobk {
 # 			$self->get(qw(bkg_fitted_step bkg_step)))
 #       if not $self->get('is_xanes');
 
-  if ($self->bkg_fixstep or $self->is_nor or $self->datatype eq 'xanes') {
+  if ($self->bkg_fixstep or $self->is_nor or ($self->datatype eq 'xanes')) {
     $command .= $self->template("process", "flatten_fit");
   } else {
     $command .= $self->template("process", "flatten_set");

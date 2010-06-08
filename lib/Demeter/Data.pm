@@ -517,7 +517,7 @@ sub _update {
     ($which eq 'fft') and do {
       $self->read_data if ($self->update_data);
       $self->put_data  if ($self->update_columns);
-      $self->normalize if ($self->update_norm and ($self->datatype =~ m{xmu|xanes}));
+      $self->normalize if ($self->update_norm and ($self->datatype =~ m{(?:xmu|xanes)}));
       $self->autobk    if ($self->update_bkg  and ($self->datatype =~ m{xmu}));
       $self->fft_pcpath->_update('fft') if $self->fft_pcpath;
       last WHICH;
