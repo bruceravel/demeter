@@ -1,0 +1,11 @@
+{
+  $e0_set_guess = ($DS->float_e0($S)) ? 'set' : 'guess';
+  ($weight, $error) = $DS->weight($S);
+  $defaa = ($DS->inclusive) ? sprintf("def aa_%s = max(0,min(a_%s,1))", $S->group, $S->group) : sprintf("def aa_%s = a_%s", $S->group, $S->group);
+  q{}
+}
+##| prepare {$S->name} ({$S->group}) as an LCF standard
+guess a_{$S->group} = {$weight}
+{$defaa}
+{$e0_set_guess} e_{$S->group} = 0.0
+def {$DS->group}.{$S->group} = aa_{$S->group} * splint({$S->group}.energy+e_{$S->group}+{$S->bkg_eshift}, {$S->group}.flat, {$DS->group}.x)

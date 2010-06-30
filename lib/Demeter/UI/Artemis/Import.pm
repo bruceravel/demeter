@@ -321,7 +321,14 @@ sub _old {
 
 	## -------- this is data
 	if ($og =~ m{\Adata\d+\z}) {
-	  my $datafile = File::Spec->catfile($unzip, 'chi_data', basename($args{file}));
+	  my $original_file = $args{file};
+	  if ($original_file =~ m{\\}) { # crude test for windows file path ...
+	    my @list = split(/\\/, $original_file);
+	    $original_file = $list[-1];
+	  } else {
+	    $original_file = basename($original_file);
+	  };
+	  my $datafile = File::Spec->catfile($unzip, 'chi_data', $original_file);
 	  my $data = Demeter::Data->new(datatype       => 'chi',
 					file	       => $datafile,
 					name	       => $args{lab},

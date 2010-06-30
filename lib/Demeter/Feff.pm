@@ -11,7 +11,7 @@ package Demeter::Feff;
  .
  This program is distributed in the hope that it will be useful,
  but WITHOUT ANY WARRANTY; without even the implied warranty of
- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.split
 
 =cut
 
@@ -297,7 +297,7 @@ sub rdinp {
       ##print $thiscard, $/;
       ## dispatch the card values
       $mode = $thiscard                                if ($thiscard =~ m{(?:atoms|potentials)});
-      $self->$thiscard($line[1])                       if ($thiscard =~ m{(?:edge|nlegs|r(?:max|multiplier)|s02)});
+      $self->$thiscard($line[1])                       if ($thiscard =~ m{(?:edge|r(?:max|multiplier)|s02)});
       $self->set(edge  => $line[1], s02   => $line[2]) if ($thiscard eq 'hole');
       $self->set(pcrit => $line[1], ccrit => $line[2]) if ($thiscard eq 'criteria');
       $self->_title($_)                                if ($thiscard eq 'titles');
