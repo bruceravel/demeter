@@ -172,7 +172,7 @@ sub standards_list {
   return map {$_->group} (@{$self->standards});
 };
 
-sub sanity {
+sub _sanity {
   my ($self) = @_;
   if (ref($self->data) !~ m{Data}) {
     croak("** LCF: You have not set the data for your LCF fit");
@@ -190,7 +190,7 @@ sub sanity {
 
 sub fit {
   my ($self) = @_;
-  $self->sanity;
+  $self->_sanity;
 
   $self->start_spinner("Demeter is performing an LCF fit") if ($self->mo->ui eq 'screen');
   #my ($how) = ($self->suffix eq 'chi') ? 'fft' : 'background';
@@ -226,13 +226,13 @@ sub fit {
     my ($w, $dw) = $self->weight($all[-1]);
     $self->weight($all[-1], $w, sqrt($sumsqr));
   };
-  $self->statistics;
+  $self->_statistics;
 
   $self->stop_spinner if ($self->mo->ui eq 'screen');
   return $self;
 };
 
-sub statistics {
+sub _statistics {
   my ($self) = @_;
   my @x     = $self->get_array('x');
   my @func  = $self->get_array('func');
@@ -509,6 +509,8 @@ This is Ifeffit's reduced chi-square for the fit.
 =item C<report>
 
 =item C<plot>
+
+=item C<clean>
 
 =back
 
