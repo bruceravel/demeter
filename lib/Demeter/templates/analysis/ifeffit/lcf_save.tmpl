@@ -1,0 +1,15 @@
+{
+  $components = join(" ", grep {$_ =~ s{ +}{_}g} map {$_->name} (@{$S->standards}));
+  @list = map {$_->group} (@{$S->standards});
+  $standards = $S->group . '.' . join(', '.$S->group.'.', @list);
+  $x = ($S->space =~ m{\Achi}) ? 'k' : 'energy';
+  q{}
+}
+write_data(file="{$filename}", $lcf_title_*, {$S->group}.x, {$S->group}.func, {$S->group}.lcf, {$S->group}.resid,
+           {$standards},
+           label="{$x} data fit residual {$components}")
+{
+  foreach $t (1 .. $S->ntitles) {
+    $OUT .= "erase \$lcf_title_" . $t . "\n";
+  }
+}

@@ -1,0 +1,16 @@
+LCF fit of {$S->data->name} as {$S->space_description} from {$S->xmin} to {$S->xmax}
+
+Fit included {$S->npoints} data points and {$S->nvarys} variables
+Weights sum to 1: {$S->yesno($S->unity)}
+Weights forced between 0 and 1: {$S->yesno($S->inclusive)}
+Overall e0 shift used: {$S->yesno($S->one_e0)}
+Linear term added: {$S->yesno($S->linear)}
+
+R-factor = {$S->rfactor}
+Chi-square = {$S->chisqr}
+Reduced chi-square = {$S->chinu}
+
+.    standard             weight           e0
+========================================================
+{foreach $st (@{ $S->standards }) {$OUT .= sprintf(".   %-20s  %.3f (%.3f)    %.3f (%.3f)\n", $st->name, $S->weight($st), $S->e0($st)) }}
+.         sum ........... {$S->scaleby}

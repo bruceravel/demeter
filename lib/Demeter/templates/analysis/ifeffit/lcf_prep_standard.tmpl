@@ -8,4 +8,4 @@
 guess a_{$S->group} = {$weight}
 {$defaa}
 {$e0_set_guess} e_{$S->group} = 0.0
-def {$DS->group}.{$S->group} = aa_{$S->group} * splint({$S->group}.energy+e_{$S->group}+{$S->bkg_eshift}, {$S->group}.flat, {$DS->group}.x)
+def {$DS->group}.{$S->group} = aa_{$S->group} * splint({$S->group}.energy+e_{$S->group}+{$S->bkg_eshift}, {$S->group}.{$DS->suffix}, {$DS->group}.x)

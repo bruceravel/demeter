@@ -133,7 +133,7 @@ sub points {
   my @y = ();
   my @z = ();
   if ($args{space} eq 'lcf') {
-    @y = $self->get_array('lcf');
+    @y = $self->get_array($args{suffix});
   } elsif ((ref($self) =~ m{Data}) and is_DataPart($args{part})) {
     my $suff = ($args{part} eq 'run') ? substr($args{suffix}, 0, 4) : $args{suffix};
     @y = $self->get_array($suff, $args{part});

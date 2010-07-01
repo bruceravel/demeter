@@ -705,10 +705,18 @@ sub suffix {
   my ($self) = @_;
   my $suff = 'xmu';
   my $po = $self->po;
-  if (($po->space eq 'e') and $po->e_norm) {
-    $suff = 'norm';
+  if (($po->space eq 'e') and $po->e_norm and $po->e_der) {
+    $suff = 'nder';
+  } elsif (($po->space eq 'e') and $po->e_der) {
+    $suff = 'der';
+  } elsif (($po->space eq 'e') and $po->e_norm and $po->e_sec) {
+    $suff = 'nsec';
+  } elsif (($po->space eq 'e') and $po->e_sec) {
+    $suff = 'sec';
   } elsif (($po->space eq 'e') and $po->e_norm and $self->bkg_flatten) {
     $suff = 'flat';
+  } elsif (($po->space eq 'e') and $po->e_norm) {
+    $suff = 'norm';
   } elsif  ($po->space eq 'k') {
     $suff = 'chi';
   } elsif (($po->space eq 'r') and ($po->r_pl eq 'm')) {

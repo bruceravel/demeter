@@ -10,3 +10,12 @@
 def {$S->group}.lcf = {$mix}
 def {$S->group}.resid = {$S->group}.lcf - {$S->group}.func
 minimize({$S->group}.resid, x={$S->group}.x, xmin={$S->xmin}, xmax={$S->xmax})
+
+##| undef all of the arrays
+set {$S->group}.lcf = {$S->group}.lcf
+set {$S->group}.resid = {$S->group}.resid
+{
+  foreach $st (@{$S->standards}) {
+    $OUT .= sprintf("set %s.%s = %s. %s\n", $S->group, $st->group, $S->group, $st->group)
+  }
+}

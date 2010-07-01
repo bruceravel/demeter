@@ -9,6 +9,7 @@
 		'intro',
 		'data',
 		'mue',
+		'xanes',
 		'highlevel',
 		'atoms',
 		'feff',
@@ -42,7 +43,7 @@
 	    mue    = {
 		      name = 'Processing mu(E) data'
 		      menu = [ 'align',  'merge', 'deglitch', 'truncate', 'noise', 'smooth',
-		      	       'convolve', 'deconvolve', 'difference', 'rebin']
+		      	       'convolve', 'deconvolve', 'rebin', 'dispersive']
 		      page = {
 			     align      = { name = 'Aligning data' }
 			     merge      = { name = 'Merging data' } 
@@ -52,10 +53,20 @@
 			     smooth     = { name = 'Smoothing data' }
 			     convolve   = { name = 'Convolving data' }
 			     deconvolve = { name = 'Deconvolving data' }
-			     difference = { name = 'Diference spectra' }
 			     rebin      = { name = 'Rebinning data' }
+			     dispersive = { name = 'Processing dispersive XAS data' }
                       }
 		    }
+            xanes = {
+	    	  name = 'Analysis of XANES data'
+		  menu = [ 'lcf', 'peak', 'pca', 'diff' ]
+		  page = {
+		       	 lcf  = { name = 'Linear Combination Fitting' }
+		       	 peak = { name = 'Peak Fitting' }
+		       	 pca  = { name = 'Principle Components Analysis' }
+		       	 diff = { name = 'Difference Spectra' }
+			 }
+                     }
 	    highlevel   = {
 		       name = 'High level actions for Demeter objects'
 		       menu = [ 'dispose', 'mode', 'plot', 'config', 'methods' ]

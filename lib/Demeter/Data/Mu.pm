@@ -297,6 +297,7 @@ sub autobk {
   #$self->dispose($command);
 
   ## first and second derivative
+  #$command .= $self->template("process", "deriv");
   $command .= $self->template("process", "nderiv");
   $self->dispose($command);
 

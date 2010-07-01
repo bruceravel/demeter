@@ -1,0 +1,5 @@
+[% META title = 'Principle Components Analysis' %]
+
+[% FILTER html_para %]
+PCA
+[% END %]

@@ -5,12 +5,15 @@
   #   {$P->parameter} returns the value of a Plot parameter
 }
 {
+  $suffix ||= 'lcf';
   $file = $P->tempfile;
   $S->points(file    => $file,
              space   => 'lcf', 
-	     suffix  => 'func', 
+	     suffix  => $suffix, 
 	    );
-  $thiskey = 'LCF fit';
+  $thiskey = ($suffix eq 'resid') ? 'residual' 
+           : ($suffix eq 'lcf')   ? 'LCF fit'
+	   :                        $S->mo->fetch('Data', $suffix)->name;
   q{}
 }
 # LCF fit: {$S->name}: ifeffit group = {$S->group}

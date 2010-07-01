@@ -1,0 +1,6 @@
+[% META title = 'Analysis of XANES data and other analysis not using Feff'
+	chapter = 1 %]
+
+[% FILTER html_para -%]
+Analysis
+[% END %]

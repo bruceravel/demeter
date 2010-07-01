@@ -28,7 +28,7 @@ sub _warn {
     $arg = BOLD . YELLOW . $arg . RESET if (Demeter::Mode->ui eq 'screen');
     push @_, $arg;
   };
-  warn &Carp::shortmess;
+  warn &Carp::longmess;
 }
 
 sub _die {

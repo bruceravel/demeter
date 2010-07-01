@@ -1,0 +1,11 @@
+{
+  @titles = split(/\n/, $S->template("analysis", "lcf_report"));
+  $i=0;
+  q{}
+}
+$lcf_title_{++$i} = "Demeter LCF output file - Demeter version {$S->version}"
+{
+  foreach $t (@titles) {
+    $OUT .= "\$lcf_title_" . ++$i . ' = "' . $t . "\"\n";
+  }
+}
