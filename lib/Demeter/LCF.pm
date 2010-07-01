@@ -25,7 +25,10 @@ use MooseX::Aliases;
 use Moose::Util::TypeConstraints;
 use Demeter::StrTypes qw( Empty );
 
-with 'Demeter::UI::Screen::Pause' if ($Demeter::mode->ui eq 'screen');
+if ($Demeter::mode->ui eq 'screen') {
+  with 'Demeter::UI::Screen::Pause';
+  with 'Demeter::UI::Screen::Spinner';
+};
 
 has '+plottable'  => (default => 1);
 has '+data'       => (isa => Empty.'|Demeter::Data');
@@ -51,6 +54,7 @@ has 'one_e0'    => (is => 'rw', isa => 'Bool',    default => 0);
 
 has 'plot_components' => (is => 'rw', isa => 'Bool',    default => 0);
 has 'plot_difference' => (is => 'rw', isa => 'Bool',    default => 0);
+has 'plot_indicators' => (is => 'rw', isa => 'Bool',    default => 1);
 
 has 'nstan' => (is => 'rw', isa => 'Int', default => 0);
 has 'standards' => (
@@ -77,6 +81,10 @@ has 'options' => (
 				keys  => 'get_option_list'
 			       }
 		 );
+has 'rfactor' => (is => 'rw', isa => 'Num', default => 0);
+has 'chisqr'  => (is => 'rw', isa => 'Num', default => 0);
+has 'chinu'   => (is => 'rw', isa => 'Num', default => 0);
+
 
 sub BUILD {
   my ($self, @params) = @_;
@@ -155,6 +163,7 @@ sub standards_list {
 sub fit {
   ## check that data is set, check that 2 or more standards are set
   my ($self) = @_;
+  $self->start_spinner("Demeter is performing an LCF fit") if ($self->mo->ui eq 'screen');
   #my ($how) = ($self->suffix eq 'chi') ? 'fft' : 'background';
   $self->data->_update('fft');
   $_ -> _update('fft') foreach (@{ $self->standards });
@@ -183,26 +192,60 @@ sub fit {
   foreach my $st (@all) {
     my ($w, $dw) = $self->weight($st, Ifeffit::get_scalar("aa_".$st->group), Ifeffit::get_scalar("delta_a_".$st->group));
     $sumsqr += $dw**2;
-    print join("  ", $st->group, $self->weight($st)), $/;
+    #print join("  ", $st->group, $self->weight($st)), $/;
   };
   if ($self->unity) {		# propagate uncertainty for last amplitude
     my ($w, $dw) = $self->weight($all[-1]);
     $self->weight($all[-1], $w, sqrt($sumsqr));
   };
-  print join("  ", $all[-1]->group, $self->weight($all[-1])), $/;
+  #print join("  ", $all[-1]->group, $self->weight($all[-1])), $/;
+  $self->rfactor(0);
+  $self->chisqr(Ifeffit::get_scalar('chi_square'));
+  $self->chinu(Ifeffit::get_scalar('chi_reduced'));
 
+  $self->stop_spinner if ($self->mo->ui eq 'screen');
+  return $self;
+};
 
+sub report {
+  my ($self) = @_;
+  my $text = q{};
+  $text .= sprintf("Fitting %s as %s from %.3f to %.3f\n\n",
+		   $self->data->name, $self->space, $self->xmin, $self->xmax);
+  $text .= sprintf("Fit included %d data points and %d variables\n",
+		   0, Ifeffit::get_scalar('n_varys'));
+  $text .= sprintf("R-factor = %.5f\n", $self->rfactor);
+  $text .= sprintf("Chi-square = %.5f\n", $self->chisqr);
+  $text .= sprintf("Reduced chi-square = %.7f\n\n", $self->chinu);
+  $text .= "   group                weight\n";
+  $text .= '=' x 30 . "\n";
+  foreach my $stan (@{ $self->standards }) {
+    $text .= sprintf("  %-20s  %.3f(%.3f)\n", $stan->name, $self->weight($stan));
+  };
+  $text .= "\n   group                e0\n";
+  $text .= '=' x 30 . "\n";
+  foreach my $stan (@{ $self->standards }) {
+    $text .= sprintf("  %-20s  %.3f(%.3f)\n", $stan->name, $self->e0($stan));
+  };
+  return $text;
+};
+
+sub plot {
+  my ($self) = @_;
   $self->po->start_plot;
   $self->po->set(e_norm=>1, e_markers=>0);
   $self->data->plot('E');
-  $self->dispose($self->template("plot", "overlcf"));
+  $self->dispose($self->template("plot", "overlcf"), 'plotting');
   $self->po->increment;
 
-  #my @indic = (Demeter::Plot::Indicator->new(space=>'E', x=>$self->xmin-$self->data->bkg_e0),
- #	       Demeter::Plot::Indicator->new(space=>'E', x=>$self->xmax-$self->data->bkg_e0));
- # $self->data->standard;
- # $_->plot('E') foreach (@indic);
+  if ($self->plot_indicators) {
+    my @indic = (Demeter::Plot::Indicator->new(space=>'E', x=>$self->xmin-$self->data->bkg_e0),
+		 Demeter::Plot::Indicator->new(space=>'E', x=>$self->xmax-$self->data->bkg_e0));
+    $self->data->standard;
+    $_->plot('E') foreach (@indic);
+  };
 
+  return $self;
 };
 
 
@@ -244,7 +287,7 @@ Demeter's dependencies are in the F<Bundle/DemeterBundle.pm> file.
 
 =item *
 
-gnuplot plotting not working
+compute R factor
 
 =item *
 
