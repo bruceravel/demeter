@@ -33,16 +33,10 @@ $lcf->xmin($data->bkg_e0-20);
 $lcf->xmax($data->bkg_e0+60);
 $lcf->po->set(emin=>-30, emax=>80);
 
-my $n = 10;
-$lcf->start_counter("Fitting $n times", $n);
-foreach my $i (1 .. $n) {
-  $lcf -> fit(1)
-    -> plot
-      -> save('foo.dat');
-  #print $lcf->report;
-  $lcf->clean;
-  $lcf->count;
-};
-$lcf->stop_counter;
+$lcf -> fit
+  -> plot
+  -> save('foo.dat');
+#print $lcf->report;
+$lcf->clean;
 
 $lcf->pause;

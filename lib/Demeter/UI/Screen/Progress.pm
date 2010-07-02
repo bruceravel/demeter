@@ -33,7 +33,7 @@ has 'thingy' => (is => 'rw', isa => 'ArrayRef[Str]', default => sub{[
 								     '   [ ]  ',
 								     '   -+-   ',
 								    ]});
-has 'progress' => (is => 'rw', isa => 'Str', default => 'Elapsed: %8t %30b (%c of %m)');
+has 'progress' => (is => 'rw', isa => 'Str', default => 'Time elapsed: %8t %30b (%c of %m)');
 
 
 my $spinner = new Term::Twiddle;
@@ -108,15 +108,16 @@ A counter indicating an operation of known length:
 
 This role for a Demeter object provides some on-screen feedback for
 lengthy procedures.  This role is imported when the UI mode is set to
-"screen".  See L<Demeter/PRAGMATA>.  The idea is to provide a
+"screen".  See L<Demeter/PRAGMATA>.  The idea is to provide either a
 spinny thing for the user to look at when running something time
-consuming from the command line.
+consuming from the command line or a counter for when the number of
+steps to the time consuming operation is known.
 
 =head1 ATTRIBUTES
 
-The attributes of this role take their names from parameters for
-L<Term::Twiddle>.  Like all Moose attributes, their accessors take the
-same names.
+The spinner attributes of this role take their names from parameters
+for L<Term::Twiddle>.  Like all Moose attributes, their accessors take
+the same names.
 
 =over 4
 
@@ -184,7 +185,7 @@ Update the counter.
 Stop the counter.  This is typically called after the last step is
 completed.
 
-   $object->stop_spinner;
+   $object->stop_counter;
 
 =back
 
@@ -201,6 +202,10 @@ L<Term::Sk> for the counter.
 =item *
 
 Configuring the form and rate of the twiddler would be nice.
+
+=item *
+
+A way to access the Term::Sk whisper method would be helpful.
 
 =back
 

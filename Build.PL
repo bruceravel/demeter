@@ -83,7 +83,7 @@ my $build = Module::Build #$class
 				'lib/Demeter/doc/dpg/build_dpg.PL' => [],
 			       },
 	 recommends         => {
-				## these two add functionality when using demeter at the command line
+				## these add functionality when using demeter at the command line
 				(($^O eq 'MSWin32') or ($^O eq 'cygwin')) ? () :
 				('IO::Prompt'	      => '0',
 				 'Term::Twiddle'      => '0',

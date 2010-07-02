@@ -3,7 +3,12 @@ package Demeter::LCF;
 =for Copyright
  .resid
  Copyright (c) 2006-2010 Bruce Ravel (bravel AT bnl DOT gov).
- All rights reserved.
+ All rights reserved.), $/;
+};
+
+
+
+__PACKAGE
  .transmission
  This file is free software; you can redistribute it and/or
  modify it under the same terms as Perl itself. See The Perl
@@ -24,6 +29,9 @@ with 'Demeter::Data::Arrays';
 use MooseX::Aliases;
 use Moose::Util::TypeConstraints;
 use Demeter::StrTypes qw( Empty );
+
+use List::MoreUtils qw(any none);
+use Math::Combinatorics;
 
 if ($Demeter::mode->ui eq 'screen') {
   with 'Demeter::UI::Screen::Pause';
@@ -75,6 +83,9 @@ has 'standards' => (
 				  'clear'   => 'clear_standards',
 				 },
 		   );
+has 'doing_combi' => (is => 'rw', isa => 'Bool', default => 0);
+
+
 has 'options' => (
 		  metaclass => 'Collection::Hash',
 		  is        => 'rw',
@@ -84,13 +95,27 @@ has 'options' => (
 				set   => 'set_option',
 				get   => 'get_option',
 				keys  => 'get_option_list'
-			       }
+			       },
 		 );
 has 'rfactor' => (is => 'rw', isa => 'Num', default => 0);
 has 'chisqr'  => (is => 'rw', isa => 'Num', default => 0);
 has 'chinu'   => (is => 'rw', isa => 'Num', default => 0);
 has 'scaleby' => (is => 'rw', isa => 'Num', default => 0);
 
+has 'datagroup'       => (is=>'rw', isa => 'Str', default => q{});
+has 'standardsgroups' => (
+			  metaclass => 'Collection::Array',
+			  is        => 'rw',
+			  isa       => 'ArrayRef[Str]',
+			  default   => sub { [] },
+			  provides  => {
+					'push'    => 'push_standardsgroups',
+					'pop'     => 'pop_standardsgroups',
+					'shift'   => 'shift_standardsgroups',
+					'unshift' => 'unshift_standardsgroups',
+					'clear'   => 'clear_standardsgroups',
+				       },
+			 );
 
 sub BUILD {
   my ($self, @params) = @_;
@@ -145,6 +170,14 @@ sub required {
   return $self;
 };
 
+## take reference or group (reference not working....)
+sub is_required {
+  my ($self, $stan) = @_;
+  $stan = $stan->group if (ref($stan =~ m{Data}));
+  my $rlist = $self->get_option($stan);
+  return $rlist->[1];
+};
+
 sub weight {
   my ($self, $stan, $value, $error) = @_;
   my $rlist = $self->get_option($stan->group);
@@ -195,7 +228,8 @@ sub fit {
   $self->start_spinner("Demeter is performing an LCF fit") if (($self->mo->ui eq 'screen') and (not $quiet));
   #my ($how) = ($self->suffix eq 'chi') ? 'fft' : 'background';
   $self->data->_update('fft');
-  $_ -> _update('fft') foreach (@{ $self->standards });
+  my @all = @{ $self->standards };
+  $_ -> _update('fft') foreach (@all);
 
   ## prepare the data for LCF fitting
   my $n1 = $self->data->iofx('energy', $self->xmin);
@@ -204,7 +238,6 @@ sub fit {
 
   ## interpolate all the standards onto the grid of the data
   $self->mo->standard($self);
-  my @all = @{ $self->standards };
   foreach my $stan (@all[0..$#all-1]) {
     $stan -> dispose($stan->template("analysis", "lcf_prep_standard"));
   };
@@ -326,6 +359,70 @@ sub clean {
 };
 
 
+
+sub combi {
+  my ($self) = @_;
+  my @biglist = ();
+  #my ($save_standards, $save_options) = ($self->standards, $self->options);  # use MooseX::Clone?
+  my @all_required = grep {$self->is_required($_)} $self->standards_list;
+  foreach my $n (2 .. $self->max_standards) {
+    my $combinat = Math::Combinatorics->new(count => $n,
+					    data => [$self->standards_list],
+					   );
+    while (my @combo = $combinat->next_combination) {
+      my $requirements_present = 1;
+      foreach my $req (@all_required) {
+	$requirements_present &&= any {$_ eq $req} @combo;
+      };
+      next if not $requirements_present;
+      #my $stringified = join(",", @combo);
+      push @biglist, \@combo;
+    };
+  };
+
+  my $nfits = $#biglist+1;
+  $self->doing_combi(1);
+  $self->start_counter("Performing combinatoric LCF fitting", $nfits) if ($self->mo->ui eq 'screen');
+  my @results = ();
+  foreach my $this (@biglist) {
+    $self->clear_standards;
+    my @list = map {$self->mo->fetch('Data', $_)} @$this;
+    $self->add_many(@list);
+    $self->count if ($self->mo->ui eq 'screen');
+    $self->fit(1);
+    $self->plot;
+    #$self->clean;
+
+    my %fit = (
+	       rfactor => $self->rfactor,
+	       chinu   => $self->chinu,
+	       chisqr  => $self->chisqr,
+	       nvarys  => $self->nvarys,
+	       scaleby => $self->scaleby,
+	      );
+    foreach my $st (@list) {
+      $fit{$st->group} = [$self->weight($st), $self->e0($st)];
+    };
+    push @results, \%fit;
+    ## store results of fit in some kind of data structure
+
+  };
+  $self->stop_counter if ($self->mo->ui eq 'screen');
+  $self->doing_combi(0);
+  @results = sort {$a->{rfactor} <=> $b->{rfactor}} @results;
+
+  ## save sorted results as an attribute of the object
+
+  ## restore best fit
+
+  ## need to restore original options
+  #$self->standards($save_standards);
+  #$self->options($save_options);
+  #print "yes!\n" if $self->is_required('hqlr');
+};
+
+
+
 __PACKAGE__->meta->make_immutable;
 1;
 
@@ -433,6 +530,14 @@ fit in a plot.
 
 =item C<standards>
 
+explain provided methods...
+
+ 'push'    => 'push_standards',
+ 'pop'     => 'pop_standards',
+ 'shift'   => 'shift_standards',
+ 'unshift' => 'unshift_standards',
+ 'clear'   => 'clear_standards',
+
 =back
 
 =head2 Statistics
@@ -473,7 +578,6 @@ make it somewhat closer to 10^-2.
 
 where <data> is the geometric mean of the data in the fitting range.
 
-
 =item C<chisqr>
 
 This is Ifeffit's chi-square for the fit.
@@ -490,29 +594,157 @@ This is Ifeffit's reduced chi-square for the fit.
 
 =item C<add>
 
+Add a Data object to the LCF object for use one of the fitting
+standards.  In it's simplest form, the sole argument is a Data objectL
+
+  $lcf -> add($data_object);
+
+You can also set certain parameters of the standard by supplying an
+optional anonymous hash:
+
+  $lcf -> add($data_object, { required => 0,
+                              float_e0 => 0,
+                              weight   => 1/3,
+                              e0       => 1/3,});
+
+The C<required> parameter flags this standard as one that is required
+to be in a combinatorial fit.  C<float_e0> is true when you wish to
+float an energy shift for this standard.  The other two are used to
+specify the weight and e0.
+
+There are methods (described) below for setting each of these
+parameters.
+
 =item C<add_many>
+
+This method provides a way of setting a group of Data objects as
+standard in one shot.  It is equivalent to repeated calls to the
+C<add> method without the anonymous hash.
+
+  $lcf -> add_many(@data);
 
 =item C<float_e0>
 
+This method is used to turn a floating e0 value on or off for a given
+standard.
+
+  $lcf->float_e0($standard, $onoff);
+
+The first argument is the standard in question, the second is a
+boolean toggling the floating e0 on or off.
+
 =item C<required>
+
+This method is used to require a given standard in a combinatorial
+fit.
+
+  $lcf->required($standard, $onoff);
+
+The first argument is the standard in question, the second is a
+boolean toggling the requirement on or off.
 
 =item C<weight>
 
+This method is both a setter and getter of the weight for a given
+standard.  As a getter:
+
+  my ($weight, $dweight) = $lcf->weight($standard);
+
+The weight and the uncertainty in the weight are returned as an array.
+
+The weight can be set to an explicit value:
+
+  my ($weight, $dweight) = $lcf->weight($standard, $value);
+
+Again weight and the uncertainty in the weight are returned as an
+array.  The uncertainty is zeroed when the weight is explicitly set.
+
 =item C<e0>
 
-=item C<standards_list>
+This method is both a setter and getter of the e0 shift for a given
+standard.  As a getter:
+
+  my ($e0, $e0) = $lcf->e0($standard);
+
+The e0 and the uncertainty in the e0 are returned as an array.
+
+The e0 can be set to an explicit value:
+
+  my ($e0, $de0) = $lcf->e0($standard, $value);
+
+Again e0 and the uncertainty in the e0 are returned as an array.  The
+uncertainty is zeroed when the e0 is explicitly set.
 
 =item C<fit>
 
-=item C<save>
+Perform the fit.
+
+  $lcf->fit;
+
+This will perform some sanity checks, including verifying that the
+data has been set and that at least two standards have been defined.
+It will also make sure C<xmin> and X<max> are in the correct order.
+
+An optional boolean argument turns the spinner off when in screen UI
+mode.  This allows use of a counter for combinatorial fits.
+
+  $lcf->fit(1);  # true value means to turn spinner off
+
+=item C<combi>
+
+Perform a combinatorial sequence of fits.
+
+  $lcf->combi;
+
+max_standards,
 
 =item C<report>
 
+This returns a summary of the fitting results.
+
+  print $lcf->report;
+
+=item C<save>
+
+This method saves the results of a fit to a column data file
+containing columns for the x-axis (energy or wavenumber), the data,
+the fit, and each of the weighted components.
+
+  $lcf -> save("file.dat");
+
 =item C<plot>
+
+This method will generate a plot showing the data and the fit.
+
+  $lcf -> plot;
+
+The C<plot_difference>, C<plot_components>, and C<plot_indicators>
+attributes determine whether the residual, the weighted components,
+and indicators marking the fitting range are included in the plot.
 
 =item C<clean>
 
+This method clears all scalars and arrays our of Ifeffit's memory.
+
+  $lcf->clean;
+
 =back
+
+Note that there is not a C<remove> method, which does the opposite of
+C<add>.  This seems unnecessarily difficult to use.  I suggest
+explicitly clearing the standards list and then C<add>ing a new set of
+standards.  This is how the combinatorial fitting loop works.
+
+  $lcf->add(@data);
+   ... do stuff, then
+  $lcf->clear_standards;
+  $lcf->add(@new_data);
+				  'push'    => 'push_standards',
+				  'pop'     => 'pop_standards',
+				  'shift'   => 'shift_standards',
+				  'unshift' => 'unshift_standards',
+				  'clear'   => 'clear_standards',
+
 
 =head1 SERIALIZATION AND DESERIALIZATION
 
@@ -532,7 +764,7 @@ Demeter's dependencies are in the F<Bundle/DemeterBundle.pm> file.
 
 =item *
 
-combinatorial fitting + combinatorial report
+combi: restore orginal options, write a report
 
 =item *
 
