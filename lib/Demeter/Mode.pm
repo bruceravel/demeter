@@ -639,7 +639,7 @@ L<Graphics::GnuplotIF> object.
 This is a string identifying the user interface backend.  At this
 time, its only use is to tell the Fit object to import the
 curses-based methods in L<Demeter::UI::Screen::Interview> and
-L<Demeter::UI::Screen::Spinner> when it is set to C<screen>.  Future
+L<Demeter::UI::Screen::Progress> when it is set to C<screen>.  Future
 possibilities might include C<wx> or C<rpc>.
 
 =back

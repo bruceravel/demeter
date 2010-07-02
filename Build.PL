@@ -51,6 +51,7 @@ my $build = Module::Build #$class
 				'Graph'                    => '0',
 				'Heap'			   => '0',
 				'List::MoreUtils'	   => '0',
+				'Math::Combinatorics '	   => '0',
 				'Math::Derivative'	   => '0',
 				'Math::Round'		   => '0',
 				'Math::Spline'		   => '0',
@@ -85,7 +86,9 @@ my $build = Module::Build #$class
 				## these two add functionality when using demeter at the command line
 				(($^O eq 'MSWin32') or ($^O eq 'cygwin')) ? () :
 				('IO::Prompt'	      => '0',
-				 'Term::Twiddle'      => '0',),
+				 'Term::Twiddle'      => '0',
+				 'Term::Sk '          => '0',
+				),
 
 				## this is required for the gnuplot plotting backend
 				(($^O eq 'MSWin32') or ($^O eq 'cygwin')) ? () :

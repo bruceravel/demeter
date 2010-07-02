@@ -18,7 +18,7 @@ use Demeter qw(:ui=screen :plotwith=gnuplot);
 my $prj = Demeter::Data::Prj -> new(file=>'../../cyanobacteria.prj');
 my $lcf = Demeter::LCF -> new(space=>'nor', unity=>0, inclusive=>1, plot_difference=>1, plot_components=>1);
 
-$prj -> set_mode('screen' => 1);
+$prj -> set_mode('screen' => 0);
 
 my $data     = $prj->record(4);
 my ($metal, $chloride, $sulfide) = $prj->records(9, 11, 15);
@@ -33,10 +33,16 @@ $lcf->xmin($data->bkg_e0-20);
 $lcf->xmax($data->bkg_e0+60);
 $lcf->po->set(emin=>-30, emax=>80);
 
-$lcf -> fit
-  -> plot
-  -> save('foo.dat');
-#print $lcf->report;
-$lcf->clean;
+my $n = 10;
+$lcf->start_counter("Fitting $n times", $n);
+foreach my $i (1 .. $n) {
+  $lcf -> fit(1)
+    -> plot
+      -> save('foo.dat');
+  #print $lcf->report;
+  $lcf->clean;
+  $lcf->count;
+};
+$lcf->stop_counter;
 
 $lcf->pause;

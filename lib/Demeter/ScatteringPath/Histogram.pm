@@ -1,7 +1,7 @@
 package Demeter::ScatteringPath::Histogram;
 use Moose::Role;
 if ($Demeter::mode->ui eq 'screen') {
-  with 'Demeter::UI::Screen::Spinner';
+  with 'Demeter::UI::Screen::Progress';
 };
 
 use Carp;

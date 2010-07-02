@@ -64,6 +64,8 @@ IO::Scalar
 
 List::MoreUtils
 
+Math::Combinatorics
+
 Math::Derivative
 
 Math::Round
@@ -103,6 +105,8 @@ Alien::wxWidgets
 Wx
 
 Term::Twiddle
+
+Term::Sk
 
 =head1 GUI
 

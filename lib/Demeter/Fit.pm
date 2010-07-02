@@ -30,7 +30,7 @@ with 'Demeter::Fit::Sanity';
 
 if ($Demeter::mode->ui eq 'screen') {
   with 'Demeter::UI::Screen::Interview';
-  with 'Demeter::UI::Screen::Spinner';
+  with 'Demeter::UI::Screen::Progress';
 };
 
 

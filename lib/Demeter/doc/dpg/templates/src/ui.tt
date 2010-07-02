@@ -58,10 +58,9 @@ The features that get turned on by screen mode include:
 [% END %]
 
 [% WRAPPER html/list type="dl" %]
-[% WRAPPER html/dt dt="Spinner" %]
-A spinner feature will be displayed during time consuming operations.
-This takes the form of a sort of pulsing thing on the cursor line in
-the terminal window.  The time consuming operations include
+[% WRAPPER html/dt dt="Progress" %]
+A spinner or counter feature will be displayed during time consuming operations.
+The time consuming operations include
 fitting, deserializing a fit, running the pathfinder, and building a
 histogram.  In screen mode, your objects will have a
 [% INCLUDE font/mono a='thingy' %] attribute which is set to an

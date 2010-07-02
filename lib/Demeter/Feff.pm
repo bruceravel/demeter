@@ -30,7 +30,7 @@ with 'Demeter::Feff::Paths';
 with 'Demeter::Feff::Sanity';
 with 'Demeter::UI::Screen::Pause' if ($Demeter::mode->ui eq 'screen');
 if ($Demeter::mode->ui eq 'screen') {
-  with 'Demeter::UI::Screen::Spinner';
+  with 'Demeter::UI::Screen::Progress';
 };
 
 use Capture::Tiny qw(capture);

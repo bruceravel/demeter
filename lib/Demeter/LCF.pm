@@ -27,7 +27,7 @@ use Demeter::StrTypes qw( Empty );
 
 if ($Demeter::mode->ui eq 'screen') {
   with 'Demeter::UI::Screen::Pause';
-  with 'Demeter::UI::Screen::Spinner';
+  with 'Demeter::UI::Screen::Progress';
 };
 
 has '+plottable'  => (default => 1);
@@ -189,10 +189,10 @@ sub _sanity {
 };
 
 sub fit {
-  my ($self) = @_;
+  my ($self, $quiet) = @_;
   $self->_sanity;
 
-  $self->start_spinner("Demeter is performing an LCF fit") if ($self->mo->ui eq 'screen');
+  $self->start_spinner("Demeter is performing an LCF fit") if (($self->mo->ui eq 'screen') and (not $quiet));
   #my ($how) = ($self->suffix eq 'chi') ? 'fft' : 'background';
   $self->data->_update('fft');
   $_ -> _update('fft') foreach (@{ $self->standards });
@@ -228,7 +228,7 @@ sub fit {
   };
   $self->_statistics;
 
-  $self->stop_spinner if ($self->mo->ui eq 'screen');
+  $self->stop_spinner if (($self->mo->ui eq 'screen') and (not $quiet));
   return $self;
 };
 
