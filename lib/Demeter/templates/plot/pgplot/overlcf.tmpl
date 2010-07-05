@@ -3,7 +3,10 @@
   #   {$D->group} returns the ifeffit group name
   #   {$D->parameter} returns the value of that parameter
   #   {$P->parameter} returns the value of a Plot parameter
-  q{};
+  $thiskey = ($suffix eq 'resid') ? 'residual' 
+           : ($suffix eq 'lcf')   ? 'LCF fit'
+	   :                        $S->mo->fetch('Data', $suffix)->name;
+  q{}
 }
-plot("{$S->group}.x", "{$S->group}.lcf",
-     style={$P->datastyle}, color="{$P->color}", key="LCF fit")
+plot("{$S->group}.x", "{$S->group}.{$suffix}+{$yoffset}",
+     style={$P->datastyle}, color="{$P->color}", key="{$thiskey}")

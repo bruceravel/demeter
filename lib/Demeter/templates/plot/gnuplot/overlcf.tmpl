@@ -9,12 +9,14 @@
   $file = $P->tempfile;
   $S->points(file    => $file,
              space   => 'lcf', 
-	     suffix  => $suffix, 
+	     suffix  => $suffix,
+	     yoffset => $yoffset,
 	    );
   $thiskey = ($suffix eq 'resid') ? 'residual' 
            : ($suffix eq 'lcf')   ? 'LCF fit'
+           : ($suffix eq 'func')  ? $S->data->name
 	   :                        $S->mo->fetch('Data', $suffix)->name;
   q{}
 }
-# LCF fit: {$S->name}: ifeffit group = {$S->group}
+# LCF fit: plot {$thiskey}
 replot '{$file}' using 1:2 with {$C->default("gnuplot", "datastyle")} ls {$P->increm+1} title "{$thiskey}"

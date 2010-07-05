@@ -1,5 +1,6 @@
 ##| completely clean up an LCF fit
 erase @group {$S->group}
+erase e_{$S->group}
 {
   foreach $st (@{$S->standards}) {
     $g = $st->group;

@@ -1,0 +1,41 @@
+{ # -*- ifm -*-
+  # template for overplotting an LCF fit in energy
+  #   {$D->group} returns the ifeffit group name
+  #   {$D->parameter} returns the value of that parameter
+  #   {$P->parameter} returns the value of a Plot parameter
+}
+{
+  $emin = $S->data->bkg_e0 + $P->emin;
+  $emax = $S->data->bkg_e0 + $P->emax;
+  if ($S->space =~ m{\Achi}) {
+    $emin = $P->kmin;
+    $emax = $P->kmax;
+  };
+  $datastyle = ($P->datastyle eq 'solid') ? 'lines' : 'points';
+  $xlabel = ($S->space =~ m{\Achi}) ? "Wavenumber&\{aa\}(\{\305\}^\{-1\})" : "Energy&\{aa\}(eV)";
+  ($ylabel = "Normalized absorption") if ($S->space =~ m{\Anor});
+  ($ylabel = "Derivative of normalized absorption") if ($S->space =~ m{\An?der});
+  ($ylabel = $P->plot_kylabel) if ($S->space =~ m{\Achi});
+
+  $suffix ||= 'lcf';
+  $file = $P->tempfile;
+  $S->points(file    => $file,
+             space   => 'lcf', 
+	     suffix  => $suffix,
+	     yoffset => $yoffset,
+	    );
+  $thiskey = ($suffix eq 'resid') ? 'residual' 
+           : ($suffix eq 'lcf')   ? 'LCF fit'
+           : ($suffix eq 'func')  ? $S->data->name
+	   :                        $S->mo->fetch('Data', $suffix)->name;
+  q{}
+}
+## gnuplot script
+unset label{$legend}
+
+set title "\{/*1.6 {$P->escapedtitle}\}"
+set xlabel "\{/*1.4 {$xlabel}\}"
+set ylabel "\{/*1.4 {$ylabel}\}"
+set xrange [ {$emin} : {$emax} ]
+
+plot '{$file}' using 1:2 with {$C->default("gnuplot", "datastyle")} ls {$P->increm+1} title "{$thiskey}"

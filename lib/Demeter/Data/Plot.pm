@@ -141,9 +141,7 @@ sub _plotk_command {
 
   my ($xlorig, $ylorig) = ($pf->xlabel, $pf->ylabel);
   my $xl = "k (\\A\\u-1\\d)" if ((not defined($xlorig)) or ($xlorig =~ /^\s*$/));
-  my $yl = ($kw and ($ylorig =~ /^\s*$/))       ? sprintf("k\\u%d\\d\\gx(k) (\\A\\u-%d\\d)", $kw, $kw)
-         : ((not $kw) and ($ylorig =~ /^\s*$/)) ? "\\gx(k)" # special y label for kw=0
-         :                                        $ylorig;
+  my $yl = $pf->plot_kylabel;
   (my $title = $self->name||q{}) =~ s{D_E_F_A_U_L_T}{Plot of paths};
   ($pf->showlegend) ? $pf->key($self->name) : $pf->key(q{});
   my $plotspace = ($pf->chie) ? 'E' : $space;
@@ -158,6 +156,7 @@ sub _plotk_command {
   $pf -> reinitialize($xlorig, $ylorig);
   return $string;
 };
+
 
 sub _plotR_command {
   my ($self) = @_;
@@ -718,6 +717,8 @@ sub suffix {
   } elsif (($po->space eq 'e') and $po->e_norm) {
     $suff = 'norm';
   } elsif  ($po->space eq 'k') {
+    $suff = 'chi';
+  } elsif  ($po->space eq 'chi') {
     $suff = 'chi';
   } elsif (($po->space eq 'r') and ($po->r_pl eq 'm')) {
     $suff = 'chir_mag';

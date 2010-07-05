@@ -22,7 +22,7 @@ BEGIN {
 require 5.8.0;
 
 use version;
-our $VERSION = version->new('0.4.1');
+our $VERSION = version->new('0.4.3');
 use vars qw($Gnuplot_exists);
 
 #use Demeter::Carp;
@@ -714,7 +714,7 @@ Demeter -  An object oriented EXAFS data analysis system using Ifeffit
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.4.0
+This documentation refers to Demeter version 0.4
 
 =head1 SYNOPSIS
 
@@ -1556,6 +1556,10 @@ Patches are welcome.
 =head1 VERSIONS
 
 =over 4
+
+=item 0.4.2
+
+Added LCF fitting
 
 =item 0.4.2
 

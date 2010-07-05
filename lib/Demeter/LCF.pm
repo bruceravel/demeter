@@ -1,19 +1,14 @@
 package Demeter::LCF;
 
 =for Copyright
- .resid
+ .
  Copyright (c) 2006-2010 Bruce Ravel (bravel AT bnl DOT gov).
- All rights reserved.), $/;
-};
-
-
-
-__PACKAGE
- .transmission
+ All rights reserved.
+ .
  This file is free software; you can redistribute it and/or
  modify it under the same terms as Perl itself. See The Perl
  Artistic License.
- .-$self->data->bkg_e0
+ .
  This program is distributed in the hope that it will be useful,
  but WITHOUT ANY WARRANTY; without even the implied warranty of
  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
@@ -21,6 +16,7 @@ __PACKAGE
 =cut
 
 use Carp;
+use autodie qw(open close);
 
 use Moose;
 extends 'Demeter';
@@ -30,6 +26,7 @@ use MooseX::Aliases;
 use Moose::Util::TypeConstraints;
 use Demeter::StrTypes qw( Empty );
 
+use List::Util qw(min);
 use List::MoreUtils qw(any none);
 use Math::Combinatorics;
 
@@ -40,7 +37,7 @@ if ($Demeter::mode->ui eq 'screen') {
 
 has '+plottable'  => (default => 1);
 has '+data'       => (isa => Empty.'|Demeter::Data');
-has '+name'       => (default => 'LCF',);
+has '+name'       => (default => 'LCF' );
 
 has 'xmin'  => (is => 'rw', isa => 'Num',    default => 0);
 has 'xmax'  => (is => 'rw', isa => 'Num',    default => 0);
@@ -55,16 +52,16 @@ has 'suffix' => (is => 'rw', isa => 'Str',    default => q{flat});
 has 'space_description' => (is => 'rw', isa => 'Str',    default => q{flattened mu(E)});
 has 'noise'  => (is => 'rw', isa => 'Num',    default => 0);
 
-has 'max_standards' => (is => 'rw', isa => 'Int', default => 4);
+has 'max_standards' => (is => 'rw', isa => 'Int', default => sub{ shift->co->default("lcf", "max_standards")  || 4});
 
 has 'linear'    => (is => 'rw', isa => 'Bool',    default => 0);
-has 'inclusive' => (is => 'rw', isa => 'Bool',    default => 0);
-has 'unity'     => (is => 'rw', isa => 'Bool',    default => 1);
+has 'inclusive' => (is => 'rw', isa => 'Bool',    default => sub{ shift->co->default("lcf", "inclusive")  || 0});
+has 'unity'     => (is => 'rw', isa => 'Bool',    default => sub{ shift->co->default("lcf", "unity")      || 1});
 has 'one_e0'    => (is => 'rw', isa => 'Bool',    default => 0);
 
-has 'plot_components' => (is => 'rw', isa => 'Bool',    default => 0);
-has 'plot_difference' => (is => 'rw', isa => 'Bool',    default => 0);
-has 'plot_indicators' => (is => 'rw', isa => 'Bool',    default => 1);
+has 'plot_components' => (is => 'rw', isa => 'Bool',    default => sub{ shift->co->default("lcf", "components")  || 0});
+has 'plot_difference' => (is => 'rw', isa => 'Bool',    default => sub{ shift->co->default("lcf", "difference")  || 0});
+has 'plot_indicators' => (is => 'rw', isa => 'Bool',    default => sub{ shift->co->default("lcf", "indicators")  || 1});
 
 has 'nstan'     => (is => 'rw', isa => 'Int', default => 0);
 has 'npoints'   => (is => 'rw', isa => 'Int', default => 0);
@@ -84,7 +81,19 @@ has 'standards' => (
 				 },
 		   );
 has 'doing_combi' => (is => 'rw', isa => 'Bool', default => 0);
-
+has 'combi_results'=> (
+		       metaclass => 'Collection::Array',
+		       is        => 'rw',
+		       isa       => 'ArrayRef',
+		       default   => sub { [] },
+		       provides  => {
+				     'push'    => 'push_combi_results',
+				     'pop'     => 'pop_combi_results',
+				     'shift'   => 'shift_combi_results',
+				     'unshift' => 'unshift_combi_results',
+				     'clear'   => 'clear_combi_results',
+				    },
+		      );
 
 has 'options' => (
 		  metaclass => 'Collection::Hash',
@@ -157,6 +166,7 @@ sub float_e0 {
   my $rlist = $self->get_option($stan->group);
   my @params = @$rlist;
   $params[0] = $onoff;
+  $self->set_option($stan->group, \@params);
   return $self;
 };
 
@@ -166,14 +176,20 @@ sub required {
   my $rlist = $self->get_option($stan->group);
   my @params = @$rlist;
   $params[1] = $onoff;
-  $self->set_option(\@params);
+  $self->set_option($stan->group, \@params);
   return $self;
 };
 
 ## take reference or group (reference not working....)
+sub is_e0_floated {
+  my ($self, $stan) = @_;
+  ($stan = $stan->group) if (ref($stan) =~ m{Data});
+  my $rlist = $self->get_option($stan);
+  return $rlist->[0];
+};
 sub is_required {
   my ($self, $stan) = @_;
-  $stan = $stan->group if (ref($stan =~ m{Data}));
+  ($stan = $stan->group) if (ref($stan) =~ m{Data});
   my $rlist = $self->get_option($stan);
   return $rlist->[1];
 };
@@ -182,22 +198,26 @@ sub weight {
   my ($self, $stan, $value, $error) = @_;
   my $rlist = $self->get_option($stan->group);
   my @params = @$rlist;
-  return ($params[2], $params[3]) if (not defined($value));
+  if (not defined($value)) {
+    return wantarray ? ($params[2], $params[3]) : $params[2];
+  };
   $params[2] = $value;
   $params[3] = $error || 0;
   $self->set_option($stan->group, \@params);
-  return ($params[2], $params[3]);
+  return wantarray ? ($params[2], $params[3]) : $params[2];
 };
 
 sub e0 {
   my ($self, $stan, $value, $error) = @_;
   my $rlist = $self->get_option($stan->group);
   my @params = @$rlist;
-  return ($params[4], $params[5]) if (not defined($value));
+  if (not defined($value)) {
+    return wantarray ? ($params[4], $params[5]) : $params[4];
+  };
   $params[4] = $value;
   $params[5] = $error || 0;
   $self->set_option($stan->group, \@params);
-  return ($params[4], $params[5]);
+  return wantarray ? ($params[4], $params[5]) : $params[4];
 };
 
 sub standards_list {
@@ -212,6 +232,9 @@ sub _sanity {
   };
   if ($#{$self->standards} < 1) {
     croak("** LCF: You have not set 2 or more standards for your LCF fit");
+  };
+  if ($self->xmin == $self->xmax) {
+    croak("** LCF: zero data range: xmin = xmax = " . $self->xmin);
   };
   if ($self->xmin > $self->xmax) {
     my ($xn, $xx) = $self->get(qw(xmin xmax));
@@ -234,17 +257,21 @@ sub fit {
   ## prepare the data for LCF fitting
   my $n1 = $self->data->iofx('energy', $self->xmin);
   my $n2 = $self->data->iofx('energy', $self->xmax);
-  $self -> dispose($self->template("analysis", "lcf_prep", {n1=>$n1, n2=>$n2}));
+  my $which = ($self->space =~ m{\Achi}) ? "lcf_prep_k" : "lcf_prep";
+  $self -> dispose($self->template("analysis", $which));
 
   ## interpolate all the standards onto the grid of the data
   $self->mo->standard($self);
   foreach my $stan (@all[0..$#all-1]) {
-    $stan -> dispose($stan->template("analysis", "lcf_prep_standard"));
+    $which = ($self->space =~ m{\Achi}) ? "lcf_prep_standard_k" : "lcf_prep_standard";
+    $stan -> dispose($stan->template("analysis", $which));
   };
   if ($self->unity) {
-    $all[-1] -> dispose($all[-1]->template("analysis", "lcf_prep_last"));
+    $which = ($self->space =~ m{\Achi}) ? "lcf_prep_last_k" : "lcf_prep_last";
+    $all[-1] -> dispose($all[-1]->template("analysis", $which));
   } else {
-    $all[-1] -> dispose($all[-1]->template("analysis", "lcf_prep_standard"));
+    $which = ($self->space =~ m{\Achi}) ? "lcf_prep_standard_k" : "lcf_prep_standard";
+    $all[-1] -> dispose($all[-1]->template("analysis", $which));
   };
 
   ## create the array to minimize and perform the fit
@@ -254,6 +281,7 @@ sub fit {
   foreach my $st (@all) {
     my ($w, $dw) = $self->weight($st, Ifeffit::get_scalar("aa_".$st->group), Ifeffit::get_scalar("delta_a_".$st->group));
     $sumsqr += $dw**2;
+    $self->e0($st, Ifeffit::get_scalar("e_".$st->group),  Ifeffit::get_scalar("delta_e_".$st->group));
   };
   if ($self->unity) {		# propagate uncertainty for last amplitude
     my ($w, $dw) = $self->weight($all[-1]);
@@ -271,18 +299,20 @@ sub _statistics {
   my @func  = $self->get_array('func');
   my @resid = $self->get_array('resid');
   my ($avg, $count, $rfact, $sumsqr) = (0,0,0,0);
-  foreach my $i (0 .. $#x) {
-    next if ($x[$i] < $self->xmin);
-    next if ($x[$i] > $self->xmax);
-    ++$count;
-    $avg += $func[$i];
+  if ($self->space =~ m{\Anor}) {
+    foreach my $i (0 .. $#x) {
+      next if ($x[$i] < $self->xmin);
+      next if ($x[$i] > $self->xmax);
+      ++$count;
+      $avg += $func[$i];
+    };
+    $avg /= $count;
   };
-  $avg /= $count;
   foreach my $i (0 .. $#x) {
     next if ($x[$i] < $self->xmin);
     next if ($x[$i] > $self->xmax);
     $rfact  += $resid[$i]**2;
-    if ($self->space eq 'nor') {
+    if ($self->space =~ m{\Anor}) {
       $sumsqr += ($func[$i]-$avg)**2;
     } else {
       $sumsqr += $func[$i]**2;
@@ -313,30 +343,77 @@ sub report {
   return $text;
 };
 
-sub plot {
+sub plot_fit {
   my ($self) = @_;
   $self->po->start_plot;
-  $self->po->set(e_norm=>1, e_markers=>0, e_der=>0);
-  $self->po->e_der(1) if ($self->space =~ m{\An?der});
-  $self->data->plot('E');
-  $self->dispose($self->template("plot", "overlcf"), 'plotting');
+  my $step = 0;
+  if ($self->space =~ m{\Achi}) {
+    #$self->data->plot('k');
+    $self->dispose($self->template("plot", "newlcf", {suffix=>'func', yoffset=>$self->data->y_offset}), 'plotting');
+    $self->po->increment;
+    my ($floor, $ceil) = $self->data->floor_ceil('chi');
+    $step = min(abs($floor), abs($ceil));
+  } else {
+    $self->po->set(e_norm=>1, e_markers=>0, e_der=>0);
+    $self->po->e_der(1) if ($self->space =~ m{\An?der});
+    #self->data->plot('E');
+    $self->dispose($self->template("plot", "newlcf", {suffix=>'func', yoffset=>$self->data->y_offset}), 'plotting');
+    $self->po->increment;
+    if ($self->space =~ m{\An?der}) {
+      my ($floor, $ceil) = $self->data->floor_ceil('nder');
+      $step = min(abs($floor), abs($ceil));
+    };
+  };
+  $self->dispose($self->template("plot", "overlcf", {suffix=>'lcf', yoffset=>$self->data->y_offset}), 'plotting');
   $self->po->increment;
   if ($self->plot_difference) {
-    $self->dispose($self->template("plot", "overlcf", {suffix=>'resid'}), 'plotting');
+    $self->dispose($self->template("plot", "overlcf", {suffix=>'resid', yoffset=>$self->data->y_offset}), 'plotting');
     $self->po->increment;
   };
   if ($self->plot_components) {
+    my $save_yoff = $self->data->y_offset;
     foreach my $stan (@{ $self->standards }) {
-      my ($w, $dw) = $self->weight($stan);
-      $self->dispose($self->template("plot", "overlcf", {suffix=>$stan->group}), 'plotting');
+      if ($self->space =~ m{\A(?:chi|der)}) {
+	my $yoff = $self->data->y_offset;
+	$self->data->y_offset($yoff - $step);
+	#print join(" ", $step, $self->data->y_offset), $/;
+      };
+      $self->dispose($self->template("plot", "overlcf", {suffix=>$stan->group, yoffset=>$self->data->y_offset}), 'plotting');
       $self->po->increment;
     };
+    $self->data->y_offset($save_yoff);
   };
   if ($self->plot_indicators) {
-    my @indic = (Demeter::Plot::Indicator->new(space=>'E', x=>$self->xmin-$self->data->bkg_e0),
-		 Demeter::Plot::Indicator->new(space=>'E', x=>$self->xmax-$self->data->bkg_e0));
+    my @indic;
     $self->data->standard;
-    $_->plot('E') foreach (@indic);
+    if ($self->space =~ m{\Achi}) {
+      @indic = (Demeter::Plot::Indicator->new(space=>'k', x=>$self->xmin),
+		Demeter::Plot::Indicator->new(space=>'k', x=>$self->xmax));
+      $_->plot('k') foreach (@indic);
+    } else {
+      @indic = (Demeter::Plot::Indicator->new(space=>'E', x=>$self->xmin-$self->data->bkg_e0),
+		Demeter::Plot::Indicator->new(space=>'E', x=>$self->xmax-$self->data->bkg_e0));
+      $_->plot('E') foreach (@indic);
+    };
+  };
+
+  return $self;
+};
+
+sub plot {
+  my ($self) = @_;
+  my $do_plot = 0;
+  ## only make a plot if the LCF meets all the conditions of the current plot
+  ($do_plot = 1) if (($self->po->space eq 'k') and ($self->space =~ m{\Achi}));
+
+  ($do_plot = 1) if (($self->po->space eq 'e') and ($self->space =~ m{\Anor}) and
+		     $self->po->e_norm and (not $self->po->e_der));
+
+  ($do_plot = 1) if (($self->po->space eq 'e') and ($self->space =~ m{\An?der}) and
+		     $self->po->e_norm and $self->po->e_der);
+
+  if ($do_plot) {
+    $self->dispose($self->template("plot", "overlcf", {suffix=>'lcf', yoffset=>$self->data->y_offset}), 'plotting');
   };
 
   return $self;
@@ -358,12 +435,9 @@ sub clean {
   return $self;
 };
 
-
-
-sub combi {
+sub combi_size {
   my ($self) = @_;
   my @biglist = ();
-  #my ($save_standards, $save_options) = ($self->standards, $self->options);  # use MooseX::Clone?
   my @all_required = grep {$self->is_required($_)} $self->standards_list;
   foreach my $n (2 .. $self->max_standards) {
     my $combinat = Math::Combinatorics->new(count => $n,
@@ -379,7 +453,15 @@ sub combi {
       push @biglist, \@combo;
     };
   };
+  return wantarray ? @biglist : $#biglist+1;
+};
 
+sub combi {
+  my ($self, @params) = @_;
+  my %options = @params;
+  $options{plot} ||= 1;
+
+  my @biglist = $self->combi_size;
   my $nfits = $#biglist+1;
   $self->doing_combi(1);
   $self->start_counter("Performing combinatoric LCF fitting", $nfits) if ($self->mo->ui eq 'screen');
@@ -387,20 +469,23 @@ sub combi {
   foreach my $this (@biglist) {
     $self->clear_standards;
     my @list = map {$self->mo->fetch('Data', $_)} @$this;
-    $self->add_many(@list);
+    foreach my $st (@list) {	# take care not to change contents of options attribute
+      $self->push_standards($st);
+      $self->weight($st, 1/($#list+1));
+    };
     $self->count if ($self->mo->ui eq 'screen');
     $self->fit(1);
-    $self->plot;
+    $self->plot_fit if $options{plot};
     #$self->clean;
 
     my %fit = (
-	       rfactor => $self->rfactor,
-	       chinu   => $self->chinu,
-	       chisqr  => $self->chisqr,
-	       nvarys  => $self->nvarys,
-	       scaleby => $self->scaleby,
+	       Rfactor => $self->rfactor,
+	       Chinu   => $self->chinu,
+	       Chisqr  => $self->chisqr,
+	       Nvarys  => $self->nvarys,
+	       Scaleby => $self->scaleby,
 	      );
-    foreach my $st (@list) {
+    foreach my $st (@list) {	# use of cpaitalized keys above avoid key collision
       $fit{$st->group} = [$self->weight($st), $self->e0($st)];
     };
     push @results, \%fit;
@@ -409,16 +494,55 @@ sub combi {
   };
   $self->stop_counter if ($self->mo->ui eq 'screen');
   $self->doing_combi(0);
-  @results = sort {$a->{rfactor} <=> $b->{rfactor}} @results;
-
-  ## save sorted results as an attribute of the object
+  @results = sort {$a->{Rfactor} <=> $b->{Rfactor}} @results;
+  $self->combi_results(\@results);
 
   ## restore best fit
-
-  ## need to restore original options
-  #$self->standards($save_standards);
-  #$self->options($save_options);
+  $self->restore($results[0]);
   #print "yes!\n" if $self->is_required('hqlr');
+  return $self;
+};
+
+sub restore {
+  my ($self, $rhash) = @_;
+  my @stats = qw(rfactor chinu chisqr nvarys scaleby);
+  foreach my $p (@stats) {
+    $self->$p($rhash->{ucfirst($p)});
+  };
+  my $stats_regex = join('|', map {ucfirst $_} @stats);
+  foreach my $k (keys %$rhash) {
+    next if ($k =~ m{\A(?:$stats_regex)});
+    my $rlist = $rhash->{$k};
+    my $this_data = $self->mo->fetch('Data', $k);
+    my ($w, $dw, $e0, $de0) = @$rlist;
+    $self->weight($this_data, $w, $dw);
+    $self->e0($this_data, $e0, $de0);
+  };
+  return $self;
+};
+
+
+sub combi_report {
+  my ($self, $fname) = @_;
+  my @stats = qw(rfactor chinu chisqr nvarys scaleby);
+  my @stand = keys %{ $self->options };
+  my @names = map {$self->mo->fetch('Data', $_)->name} @stand;
+  @names = map { $_ =~ s{,}{ }g; $_ } @names;
+  open(my $FH, '>', $fname);
+  print $FH join(',', @stats), ',';
+  print $FH join(',,,,', @names), ",,,,\n";
+  foreach my $res (@{ $self->combi_results }) {
+    print $FH ($res->{ucfirst($_)},',') foreach @stats;
+    foreach my $st (@stand) {
+      if (exists $res->{$st}) {
+	print $FH join(',', @{ $res->{$st} } ), ',';
+      } else {
+	print $FH ',,,,';
+      }
+    };
+    print $FH $/;
+  };
+  close $FH;
 };
 
 
@@ -442,7 +566,6 @@ This documentation refers to Demeter version 0.4.
 
    my $prj  = Demeter::Data::Prj -> new(file=>'examples/cyanobacteria.prj');
    my $lcf  = Demeter::LCF -> new;
-
    my $data = $prj->record(4);
    my ($metal, $chloride, $sulfide) = $prj->records(9, 11, 15);
 
@@ -455,12 +578,36 @@ This documentation refers to Demeter version 0.4.
    $lcf -> xmax($data->bkg_e0+60);
    $lcf -> po -> set(emin=>-30, emax=>80);
    $lcf -> fit;
-   $lcf -> plot;
+   $lcf -> plot_fit;
    $lcf -> save('lcf_fit_result.dat');
 
 =head1 DESCRIPTION
 
-LCF ...
+Linear combination fitting (LCF) is an analysis method for
+interpreting XANES or EXAFS data using standards.  The assumption is
+that the data from an unknown sample can be understood as a linear
+superposition of the data from two or more known, well-understood
+standards.  The LCF analysis, therefore, tells us what fraction of the
+unknown sample is explained by one of the known standards.
+
+For example, imagine mixing together quantities of iron oxide and iron
+sulfide such that there are equal numbers of iron atoms surrounded by
+oxygen and by sulfur.  You would then expect to be able to describe
+the data from the mixure by adding together equal parts of the data
+from the two pure materials.
+
+This object provides a framework for performing this sort of analysis.
+In the example shown above, data and standards are imported from an
+Athena project file.  The data are fit as a linear combination of
+three standards.  The result of the fit is the fraction of each
+standard present in the data as well as uncertainties in those
+fractions.
+
+This object also provides methods for "combinatorial fitting".  In
+this approach an ensemble of standards are compared to the data in all
+possible combinations (with certain constraints).  The results are
+sorted by increasing R-factor of the fit.  The first result, then, is
+the combination of standards giving the closest fit to the data.
 
 =head1 ATTRIBUTES
 
@@ -483,15 +630,17 @@ edge energy.
 =item C<space>
 
 The fitting space.  This can be one of C<nor>, C<der>, or C<chi>.
+When fitting in C<chi>, e0 cannot be varied.
 
 =item C<max_standards>
 
-The maximum numer of standards to use in each fit of a combinatorial
+The maximum number of standards to use in each fit of a combinatorial
 sequence.
 
 =item C<linear>
 
-A boolean.  When true, add a linear term to the fit.
+A boolean.  When true, add a linear term to the fit.  (Not implemented
+yet.)
 
 =item C<inclusive>
 
@@ -505,7 +654,17 @@ A boolean.  When true, the weights are forced to sum to 1.
 =item C<one_e0>
 
 A boolean.  When true, one over-all e0 parameter is used in the fit
-rather than one for each standard.
+rather than one for each standard.  In practice, the standards are
+shifted by the same floated e0 value.  That is, one parameter is
+floated and an e0 for each standard is def-ed to that value.
+
+=item C<noise>
+
+If non-zero, add artifical noise to the data.  The value is used as
+the sigma of the normally distributed artifical noise.  You may need
+to play around to find an appropriate value for your data.  Note that
+for a fit in chi(k), the noise is added to the un-k-weighted chi(k)
+data.
 
 =item C<plot_components>
 
@@ -530,13 +689,40 @@ fit in a plot.
 
 =item C<standards>
 
-explain provided methods...
+This attribute contains the list of standards added to this LCF problem.
+The accessor returns a list reference:
 
- 'push'    => 'push_standards',
- 'pop'     => 'pop_standards',
- 'shift'   => 'shift_standards',
- 'unshift' => 'unshift_standards',
- 'clear'   => 'clear_standards',
+  $ref_to_standards = $lcf->standards;
+
+It is strongly recommended that you do not assign standards directly
+to this.  Instead use the C<add> or C<add_many> methods.  Those
+methods take care of some other chores required to keep the LCF
+organized.
+
+A number of methods are provided by Moose for interacting with the
+list stored in this attribute:
+
+=over 4
+
+=item C<push_standards>
+
+Push a value to the list.
+
+=item C<pop_standards>
+
+Pop a value from the list.
+
+=item C<shift_standards>
+
+Shift a value from the list.
+
+=item C<unshift_standards>
+
+Unshift a value to the list.
+
+=item C<clear_standards>
+
+Assign an empty list.
 
 =back
 
@@ -633,6 +819,15 @@ standard.
 The first argument is the standard in question, the second is a
 boolean toggling the floating e0 on or off.
 
+These are the same:
+
+  $lcf->add($data);
+  $lcf->float_e0($data, 1);
+
+and
+
+  $lcf->add($add, float_e0=>1);
+
 =item C<required>
 
 This method is used to require a given standard in a combinatorial
@@ -642,6 +837,15 @@ fit.
 
 The first argument is the standard in question, the second is a
 boolean toggling the requirement on or off.
+
+These are the same:
+
+  $lcf->add($data);
+  $lcf->required($data, 1);
+
+and
+
+  $lcf->add($add, required=>1);
 
 =item C<weight>
 
@@ -659,6 +863,8 @@ The weight can be set to an explicit value:
 Again weight and the uncertainty in the weight are returned as an
 array.  The uncertainty is zeroed when the weight is explicitly set.
 
+In scalar context, this just returns the weight.
+
 =item C<e0>
 
 This method is both a setter and getter of the e0 shift for a given
@@ -675,6 +881,8 @@ The e0 can be set to an explicit value:
 Again e0 and the uncertainty in the e0 are returned as an array.  The
 uncertainty is zeroed when the e0 is explicitly set.
 
+In scalar context, this just returns the e0.
+
 =item C<fit>
 
 Perform the fit.
@@ -690,14 +898,6 @@ mode.  This allows use of a counter for combinatorial fits.
 
   $lcf->fit(1);  # true value means to turn spinner off
 
-=item C<combi>
-
-Perform a combinatorial sequence of fits.
-
-  $lcf->combi;
-
-max_standards,
-
 =item C<report>
 
 This returns a summary of the fitting results.
@@ -712,15 +912,34 @@ the fit, and each of the weighted components.
 
   $lcf -> save("file.dat");
 
-=item C<plot>
+=item C<plot_fit>
 
 This method will generate a plot showing the data and the fit.
 
-  $lcf -> plot;
+  $lcf -> plot_fit;
 
 The C<plot_difference>, C<plot_components>, and C<plot_indicators>
 attributes determine whether the residual, the weighted components,
 and indicators marking the fitting range are included in the plot.
+
+By default, the chi(k) and derivative components are stacked
+automatically.
+
+=item C<plot>
+
+This is the generic plotting method for use when overplotting a large
+number of objects.  In this example, the data, the standards, and the
+result of the LCF fit are plotted together with the standards plotted
+normally rather than as the weighted components of the fit.
+
+   $lcf->po->start_plot;
+   $lcf->po->set(e_norm=>1, e_der=>1, emin=>-30, emax=>70);
+   $_->plot('e') foreach ($data, @standards, $lcf);
+
+This method does nothing (i.e. it does not attempt to plot the LCF fit
+at all) if the plot conditions do not match the fitting space of the
+fit.  E.g., an LCF fit to normalized data will only be plotted if the
+fit is in energy and the C<e_norm> Plot attribute is true.
 
 =item C<clean>
 
@@ -746,6 +965,114 @@ standards.  This is how the combinatorial fitting loop works.
 				  'clear'   => 'clear_standards',
 
 
+=head1 COMBINATORIAL FITTING
+
+These attributes and methods are specifically related to combinatorial
+fitting.  A combinatorial fit is one in which all possible
+combinations (within certain constraints) are compared to the data.
+
+=head2 Attributes for combinatorial fitting
+
+=over 4
+
+=item C<max_standards>
+
+The maximum number of standards to use in each fit of a combinatorial
+sequence.  Note that the size of the combinatorial problem grows
+geometrically in the value of this parameter and in the number of
+possible standards.
+
+If, for example, this is set to 4, then in a combinatorial fit, all
+possible combinations of 2, 3, or 4 standards will be fit to the data.
+
+Note that the size of the combinatorial problem gets very large as
+this number grows.
+
+=item C<combi_results>
+
+This is an array of hashes, sorted by rfactor, containing all the
+results of fitting sequence.
+
+Each hash in the array looks like this:
+
+  {
+   Rfactor => Num,
+   Chinu   => Num,
+   Chisqr  => Num,
+   Nvarys  => Num,
+   Scaleby => Num,
+   aaaaa   => [weight, dweight, e0, de0],
+   bbbbb   => [weight, dweight, e0, de0],
+   ....
+  }
+
+A key like "aaaaa" is the group attribute of a Data object used in the
+fit.  From this, the final state of each fit can be recovered using
+the C<restore> method.
+
+=back
+
+=head2 Methods of combinatorial fitting
+
+=over 4
+
+=item C<combi>
+
+Perform a combinatorial sequence of fits, that is, perform all fits
+using all combinations of standards up to the number in
+C<max_standards>.  If C<max_standards> is 4, then all combinations of
+2, 3, or 4 of all the standards added to the object will considered.
+
+  $lcf->combi;
+
+At the end of the fit, the C<combi_results> attribute is filled with
+an array of hashes containing the sorted results of the fit.  The
+first item in the array contains th results from the fit with the
+lowest R-factor (that is, the combinationof standards that most
+closely describes the data).
+
+One or more standards can be flagged as being required in a fit.  That
+is, each fit will include the flagged standards.  This will
+significantly reduce the size of the combinatorial problem.  See the
+discussion of the C<add>, C<required>, and C<is_required> methods
+above.
+
+At the end of the combinatorial sequence of fits, the fit with the
+lowest R-factor will be restored.  Calling C<plot_fit>, C<report>, or
+C<save> will act on that fit.  To examine other fits from the
+sequence, the C<restore> must be called using one of the results from
+the C<combi_results> attribute.
+
+=item C<combi_size>
+
+This is used by the C<combi> method to determine the entire list of
+combinations.  When called in scalar context, it gives the number of
+fit in the combinatorial problem.  It is probably best to call it in
+explicit scalar context:
+
+  printf("There will be %d fits.\n", scalar($lcf->combi_size));
+
+This can be used, for example, to query the user as to whether to
+continue in the case of a very large number of fits.
+
+=item C<combi_report>
+
+Write a CSV (comma separated value) file that can be imported into a
+spreadsheet with the results of the combinatorial fit.
+
+  $lcf->combi_report("results.csv");
+
+The argument is the name of the output file (which you probably want
+to give a ".csv" extension so your spreadsheet will know to import it
+as such.
+
+Note that care is taken to strip any commas from the names of the
+standards before writing the CSV file.  Also note that this does not
+make the most elegant spreadsheet, but it is certainly functional and
+it certainly allows you to examine all of your results.
+
+=back
+
 =head1 SERIALIZATION AND DESERIALIZATION
 
 Good question ...
@@ -753,6 +1080,7 @@ Good question ...
 =head1 CONFIGURATION AND ENVIRONMENT
 
 See L<Demeter::Config> for a description of the configuration system.
+See the lcf configuration group for the relevant parameters.
 
 =head1 DEPENDENCIES
 
@@ -764,19 +1092,24 @@ Demeter's dependencies are in the F<Bundle/DemeterBundle.pm> file.
 
 =item *
 
-combi: restore orginal options, write a report
+Serialization and deserialization
 
 =item *
 
-chi(k) completely undone
+linear term
 
 =item *
 
-better sanity method
+better sanity method that provides usable feedback for a GUI
 
 =item *
 
-make a normal Data group
+singlefile plot
+
+=item *
+
+further processing of LCF result (i.e. bkg removal, FTs).  This seems
+better than converting the fit into a normal Data object
 
 =back
 

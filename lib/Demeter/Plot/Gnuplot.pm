@@ -121,7 +121,7 @@ sub replot {
   return $self;
 };
 
-sub gnuplot_kylabel {
+override 'plot_kylabel' => sub {
   my ($self) = @_;
   my $w = $self->kweight;
   if ($w == 1) {
@@ -133,7 +133,7 @@ sub gnuplot_kylabel {
   };
 };
 
-sub gnuplot_rylabel {
+sub plot_rylabel {
   my ($self) = @_;
   my $w = $self->kweight;
   my $part = $self->r_pl;
@@ -144,7 +144,7 @@ sub gnuplot_rylabel {
 		     :                  ('{/*1.25 Env[}', '{/*1.25 ]}');
   return sprintf('%s{/Symbol c}(R)%s&{aa}({\305}^{-%s})', $open, $close, $w+1);
 };
-sub gnuplot_qylabel {
+sub plot_qylabel {
   my ($self) = @_;
   my $w = $self->kweight;
     my $part = $self->q_pl;
@@ -217,11 +217,11 @@ interacting with Gnuplot via L<Graphics::GnuplotIF>.
 
 =item C<gnuplot_start>
 
-=item C<gnuplot_kylabel>
+=item C<plot_kylabel>
 
-=item C<gnuplot_rylabel>
+=item C<plot_rylabel>
 
-=item C<gnuplot_qylabel>
+=item C<plot_qylabel>
 
 =back
 

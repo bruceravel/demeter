@@ -1,10 +1,19 @@
-##| prepare for linear combination fit of {$S->space} data (LCF group is {$S->group})
-unguess
-set {$S->group}.x     = {$D->group}.energy + {$D->bkg_eshift}
-set {$S->group}.func  = {$D->group}.{$S->suffix}
-{#
-#set {$S->group}.x     = slice({$D->group}.energy, {$n1}, {$n2}) + {$D->bkg_eshift}
-#set {$S->group}.func  = splint({$D->group}.energy+{$D->bkg_eshift}, {$D->group}.{$S->suffix}, {$S->group}.x)
-#
-q{}
+{
+  $e0_set_guess = ($S->one_e0) ? 'guess' : 'set';
+  ($e0_set_guess = 'set') if ($S->space =~ m{\Achi});
+
+  $makenoise = q{};
+  $noise = q{};
+  if ($S->noise) {
+    $makenoise = sprintf("\nrandom(output=%s.noise, npts=npts(%s.energy), dist=normal, sigma=%.7f)", 
+                         $S->group, $S->data->group, $S->noise);
+    $noise = sprintf(" + %s.noise", $S->group);
+  };
+
+  q{}
 }
+##| prepare for linear combination fit of {$S->space} data (LCF group is {$S->group})
+unguess{$makenoise}
+set {$S->group}.x     = {$D->group}.energy + {$D->bkg_eshift}
+set {$S->group}.func  = {$D->group}.{$S->suffix}{$noise}
+{$e0_set_guess} e_{$S->group} = 0

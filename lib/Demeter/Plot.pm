@@ -20,6 +20,7 @@ use autodie qw(open close);
 use Moose;
 extends 'Demeter';
 
+use MooseX::Aliases;
 use MooseX::AttributeHelpers;
 #use MooseX::AlwaysCoerce;   # this might be useful....
 #use Moose::Util::TypeConstraints;
@@ -111,12 +112,12 @@ has 'e_mu'	=> (is => 'rw', isa =>  'Bool',   default => sub{ shift->co->default(
 has 'e_bkg'	=> (is => 'rw', isa =>  'Bool',   default => sub{ shift->co->default("plot", "e_bkg")	  || 0});
 has 'e_pre'	=> (is => 'rw', isa =>  'Bool',   default => sub{ shift->co->default("plot", "e_pre")	  || 0});
 has 'e_post'	=> (is => 'rw', isa =>  'Bool',   default => sub{ shift->co->default("plot", "e_post")    || 0});
-has 'e_norm'	=> (is => 'rw', isa =>  'Bool',   default => sub{ shift->co->default("plot", "e_norm")    || 0});
+has 'e_norm'	=> (is => 'rw', isa =>  'Bool',   alias => 'e_nor', default => sub{ shift->co->default("plot", "e_norm")    || 0});
 has 'e_der'	=> (is => 'rw', isa =>  'Bool',   default => sub{ shift->co->default("plot", "e_der")	  || 0});
 has 'e_sec'	=> (is => 'rw', isa =>  'Bool',   default => sub{ shift->co->default("plot", "e_sec")	  || 0});
 has 'e_i0'	=> (is => 'rw', isa =>  'Bool',   default => sub{ shift->co->default("plot", "e_i0")	  || 0});
 has 'e_signal'	=> (is => 'rw', isa =>  'Bool',   default => sub{ shift->co->default("plot", "e_signal")  || 0});
-has 'e_markers'	=> (is => 'rw', isa =>  'Bool',   default => sub{ shift->co->default("plot", "e_markers") || 0});
+has 'e_markers'	=> (is => 'rw', isa =>  'Bool',   alias => 'e_marker', default => sub{ shift->co->default("plot", "e_markers") || 0});
 has 'e_part'	=> (is => 'rw', isa =>  'Str',    default => q{});
 has 'e_smooth'	=> (is => 'rw', isa =>  'Int',    default => sub{ shift->co->default("plot", "e_smooth")  || 0});
 has 'e_zero'	=> (is => 'rw', isa =>  'Bool',   default => 0);
@@ -341,6 +342,17 @@ sub textlabel {
   $self -> dispose($command, "plotting");
   #};
   return $self;
+};
+
+## also need r and q, then override in D::P::Gnuplot
+sub plot_kylabel {
+  my ($self) = @_;
+  my $kw = $self->kweight;
+  my $ylorig = $self->ylabel;
+  my $yl = ($kw and ($ylorig =~ m{\A\s*\z}))       ? sprintf("k\\u%d\\d\\gx(k) (\\A\\u-%d\\d)", $kw, $kw)
+         : ((not $kw) and ($ylorig =~ m{\A\s*\z})) ? "\\gx(k)" # special y label for kw=0
+         :                                           $ylorig;
+  return $yl;
 };
 
 sub outfile {

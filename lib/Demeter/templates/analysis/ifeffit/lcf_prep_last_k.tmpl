@@ -1,0 +1,9 @@
+{
+  @list = $DS->standards_list;
+  pop(@list);
+  $sum = join(' + ', map {join('_', 'aa', $_)} @list); ## makes a_w + a_x + a_y, i.e. sum of other amplitudes
+  q{}
+}
+##| prepare {$S->name} ({$S->group}) as an LCF standard
+def aa_{$S->group} = 1 - ({$sum})
+def {$DS->group}.{$S->group} = aa_{$S->group} * {$S->group}.chi*{$S->group}.k**{$P->kweight}

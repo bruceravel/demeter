@@ -1,5 +1,7 @@
 {
-  $e0_set_guess = ($DS->float_e0($S)) ? 'set' : 'guess';
+  $e0_set_guess = ($DS->is_e0_floated($S)) ? 'guess' : 'set';
+  ($e0, $de0) = $DS->e0($S);
+  ($e0_set_guess, $e0) = ('def', "e_".$DS->group) if ($DS->one_e0);
   @list = $DS->standards_list;
   pop(@list);
   $sum = join(' + ', map {join('_', 'aa', $_)} @list); ## makes a_w + a_x + a_y, i.e. sum of other amplitudes
@@ -7,5 +9,5 @@
 }
 ##| prepare {$S->name} ({$S->group}) as an LCF standard
 def aa_{$S->group} = 1 - ({$sum})
-{$e0_set_guess} e_{$S->group} = 0.0
+{$e0_set_guess} e_{$S->group} = {$e0}
 def {$DS->group}.{$S->group} = aa_{$S->group} * splint({$S->group}.energy+e_{$S->group}+{$S->bkg_eshift}, {$S->group}.{$DS->suffix}, {$DS->group}.x)

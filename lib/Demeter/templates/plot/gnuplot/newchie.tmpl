@@ -9,7 +9,7 @@
 {
   $this = $PT || $D;
   $datastyle = ($P->datastyle eq 'solid') ? 'lines' : 'points';
-  $ylabel = $P->gnuplot_kylabel;
+  $ylabel = $P->plot_kylabel;
   $file = $P->tempfile;
   $this->points(file    => $file,
                 space   => 'chie', 

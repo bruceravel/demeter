@@ -158,7 +158,7 @@ sub points {
   };
 
   my $message = q{};
-  pairwise { $message .= join(" ", $a, $b, $/) } @x, @y;
+  pairwise { $message .= join(" ", $a, $b, $/) if (defined($a) and defined($b))} @x, @y;
   if ($args{file}) {
     open my $T, '>'.$args{file};
     print $T $message;

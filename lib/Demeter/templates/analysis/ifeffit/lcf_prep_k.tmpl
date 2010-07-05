@@ -1,0 +1,14 @@
+{
+  $makenoise = q{};
+  $noise = q{};
+  if ($S->noise) {
+    $makenoise = sprintf("\nrandom(output=%s.noise, npts=npts(%s.k), dist=normal, sigma=%.7f)", 
+                         $S->group, $S->data->group, $S->noise);
+    $noise = sprintf(" + %s.noise", $S->group);
+  };
+  q{}
+}
+##| prepare for linear combination fit of {$S->space} data (LCF group is {$S->group})
+unguess{$makenoise}
+set {$S->group}.x     = {$D->group}.k
+set {$S->group}.func  = {$D->group}.{$S->suffix}*{$S->group}.x**{$P->kweight}{$noise}
