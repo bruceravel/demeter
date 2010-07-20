@@ -1,9 +1,10 @@
 
-* [5/9] SingleFile to do list
+* [5/10] SingleFile to do list
  - [ ] Plots in energy not yet implemented
  - [ ] markers and indicators
  - [ ] quadplot -- need to write out an 8 column file (e mu k chik r chir q chiq) (can this even be done?)
  - [ ] stddev and variance, filter, f1f2
+ - [ ] LCF plot
  - [X] chi(E)
  - [X] bkg Parts in k,R,q untested
  - [X] run part +seems broken+

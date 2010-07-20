@@ -111,7 +111,6 @@ has 'chisqr'  => (is => 'rw', isa => 'Num', default => 0);
 has 'chinu'   => (is => 'rw', isa => 'Num', default => 0);
 has 'scaleby' => (is => 'rw', isa => 'Num', default => 0);
 
-has 'datagroup'       => (is=>'rw', isa => 'Str', default => q{});
 has 'standardsgroups' => (
 			  metaclass => 'Collection::Array',
 			  is        => 'rw',

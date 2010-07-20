@@ -23,7 +23,7 @@ use File::Basename;
 use File::Spec;
 my $here  = dirname($0);
 
-my $number_of_groups = 22;
+my $number_of_groups = 23;
 
 use Demeter;
 

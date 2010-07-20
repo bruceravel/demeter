@@ -39,6 +39,24 @@ sub iofx {
   return $i;
 };
 
+
+sub put {
+  my ($self, $eref, $xref, @args) = @_;
+  my $data = Demeter::Data->new();
+  $data -> put_energy($eref);
+  $data -> put_xmu($xref);
+  $data -> set(datatype=>'xmu', update_data=>0, update_columns=>0, update_norm=>1);
+  $data -> set(@args);
+  $data -> set(update_morm=>0, update_bkg=>0, update_fft=>1) if ($data->datatype eq 'chi');
+  return $data;
+};
+
+sub put_energy {
+  my ($self, $arrayref) = @_;
+  Ifeffit::put_array($self->group.'.energy', $arrayref);
+  $self -> update_norm(1);
+  return $self;
+};
 sub put_xmu {
   my ($self, $arrayref) = @_;
   Ifeffit::put_array($self->group.'.xmu', $arrayref);
@@ -183,6 +201,30 @@ This documentation refers to Demeter version 0.4.
 =head1 METHODS
 
 =over 4
+
+=item C<put>
+
+This method is used to make a new Data object from two arrays
+containing the energy and xmu data.
+
+  $new_data = Demeter::Data -> put(\@energy, \@xmu);
+
+The new Data object if returned.  In every way, this is like any Data
+object that comes from a file.  The use would be for converting some
+complex dtaa format, e.g. a spreadsheet, into one or more Data
+objects.  This method could also be used in a filetype plugin.
+
+You can specify additional arguments like the C<new> or C<set> methods
+of the Data object:
+
+  $new_data = Demeter::Data -> put(\@energy, \@xmu, @args);
+
+This second form must be used to make chi(k) data from arrays:
+
+  $new_data = Demeter::Data -> put(\@energy, \@xmu, datatype=>'chi');
+
+The C<put> method sets the datatype to 'xmu', so to make chi(k) data
+you must explicitly specify it.
 
 =item C<get_array>
 

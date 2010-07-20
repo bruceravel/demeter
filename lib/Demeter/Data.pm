@@ -126,7 +126,7 @@ has 'datatype' => (is => 'rw', isa => Empty.'|'.DataType, default => q{},
 		   trigger => sub{shift->explain_recordtype},
 		  );
 has  $_  => (is => 'rw', isa => 'Bool',  default => 0, trigger => sub{shift->explain_recordtype},)
-  foreach (qw(is_col is_nor));
+  foreach (qw(is_col is_nor is_kev is_special));
 has 'is_merge' => (is => 'rw', isa => 'Str',  default => q{});
 #foreach (qw(is_col is_xmu is_xmudat is_chi is_nor is_xanes is_merge));
 
@@ -476,8 +476,9 @@ sub determine_data_type {
       $self->datatype('xmu');
       $self->update_columns(0);
       $self->update_norm(1);
-    } elsif ($x[-1] > 35) {	# seems to be relative energy data
+    } elsif (($x[0] > 3) and ($x[-1] < 35)) {	# seems to be relative energy data
       $self->datatype('xmu');
+      $self->is_kev(1);
       $self->update_columns(0);
       $self->update_norm(1);
     } else {			# it's chi(k) data

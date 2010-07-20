@@ -123,8 +123,14 @@ sub put_data {
       $self->resolve_defaults;
       $self->update_columns(0);
       return 0;
+    } elsif ($self->is_kev) {
+      $self->dispose($self->template('process', 'kev'));
+      $self->dispose($self->template("process", "deriv"));
+      return 0;
     } elsif ($self->from_athena) {
       $self->update_columns(0);
+      return 0;
+    } elsif ($self->is_special) {
       return 0;
     } else {
       $self->update_columns(0);
@@ -139,7 +145,7 @@ sub put_data {
   my @cols = split(" ", $self->columns);
   unshift @cols, q{};
 
-  my $energy_string = $self->energy;
+  my $energy_string = ($self->is_kev) ? '1000*'.$self->energy : $self->energy;
   my ($xmu_string, $i0_string, $signal_string) = (q{}, q{}, q{});
   if ($self->ln) {
     $xmu_string    =   "ln(abs(  ("

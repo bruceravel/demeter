@@ -1,0 +1,4 @@
+guess(pixel___b = {$S->linear}, pixel___a = {$S->offset})
+guess pixel___c = {$S->quadratic}
+def({$S->group}.ec = pixel___a + pixel___b*{$S->group}.energy + abs(pixel___c)*{$S->group}.energy**2,
+    {$S->group}.xc = qinterp({$S->group}.ec, {$S->group}.flat, {$S->standard->group}.energy))

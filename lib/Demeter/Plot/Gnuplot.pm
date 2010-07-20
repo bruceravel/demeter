@@ -133,7 +133,7 @@ override 'plot_kylabel' => sub {
   };
 };
 
-sub plot_rylabel {
+override 'plot_rylabel' => sub {
   my ($self) = @_;
   my $w = $self->kweight;
   my $part = $self->r_pl;
@@ -144,7 +144,7 @@ sub plot_rylabel {
 		     :                  ('{/*1.25 Env[}', '{/*1.25 ]}');
   return sprintf('%s{/Symbol c}(R)%s&{aa}({\305}^{-%s})', $open, $close, $w+1);
 };
-sub plot_qylabel {
+override 'plot_qylabel' => sub {
   my ($self) = @_;
   my $w = $self->kweight;
     my $part = $self->q_pl;
@@ -215,13 +215,14 @@ interacting with Gnuplot via L<Graphics::GnuplotIF>.
 
 =over 4
 
-=item C<gnuplot_start>
-
 =item C<plot_kylabel>
 
 =item C<plot_rylabel>
 
 =item C<plot_qylabel>
+
+Overridden methods generating y-axis labels using the current value of
+C<kweight>.
 
 =back
 

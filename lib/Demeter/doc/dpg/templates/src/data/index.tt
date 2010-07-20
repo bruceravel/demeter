@@ -36,7 +36,13 @@ Data files from beamlines that cannot be imported using any of the above.
 [% END %]
 
 [% FILTER html_para -%]
-The final section provides an overview of [% demeter %]'s plotting capabilities.
+These is also a section explaining how to deal with data coming from a
+source that is not addressed by any of the above, for instance, data
+conatined in a spreadsheet file or data being genereated
+algorithmically by a program.
+
+The final section provides an overview of [% demeter %]'s plotting
+capabilities.
 
 As you will see in every example to follow, a [% demeter %] program is
 just a perl program which makes extensive use of the capabilities of

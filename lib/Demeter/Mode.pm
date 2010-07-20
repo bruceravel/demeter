@@ -216,6 +216,17 @@ has 'MultiChannel' => (
 			      'splice'  => 'splice_MultiChannel',
 			     }
 	       );
+has 'Pixel' => (
+		metaclass => 'Collection::Array',
+		is        => 'rw',
+		isa       => 'ArrayRef',
+		default   => sub { [] },
+		provides  => {
+			      'push'    => 'push_Pixel',
+			      'clear'   => 'clear_Pixel',
+			      'splice'  => 'splice_Pixel',
+			     }
+	       );
 has 'Plot' => (
 		metaclass => 'Collection::Array',
 		is        => 'rw',
@@ -252,7 +263,7 @@ has 'LCF' => (
 
 has 'types' => (is => 'ro', isa => 'ArrayRef',
 		default => sub{[qw(Atoms Data Feff External Fit Feffit GDS Path Plot Indicator LCF ScatteringPath
-				   VPath SSPath FSPath StructuralUnit Prj MultiChannel)]},);
+				   VPath SSPath FSPath StructuralUnit Prj Pixel MultiChannel)]},);
 
 has 'Plugins' => (
 		metaclass => 'Collection::Array',
@@ -346,6 +357,7 @@ sub everything {
 	  @{ $self->FSPath	   },
 	  @{ $self->StructuralUnit },
 	  @{ $self->Prj		   },
+	  @{ $self->Pixel          },
 	  @{ $self->MultiChannel   },
 	  @{ $self->Plot	   },
 	  @{ $self->Indicator	   },
@@ -417,7 +429,7 @@ objects.  Any of these methods can be called by any Demeter object:
 This object also monitors the creation and destruction of Demeter
 objects (Atoms, Data, Data::Prj, Data::MultiChannel, Feff,
 Feff::External, Fit, GDS, Path, Plot, Plot::Indicator, ScatteringPath,
-SSPath, and VPath) and provides methods which give a way for one
+SSPath, VPath, etc.) and provides methods which give a way for one
 object to affect any other objects created during the instance of
 Demeter.  For example, when the kweight value of the Plot object is
 changed, it is necessary to signal all Data objects that they will
@@ -654,8 +666,9 @@ needs to see under the hood.
 
 Each Demeter object (Atoms, Data, Data::Prj, Data::MultiChannel, Feff,
 Feff::External, Fit, GDS, Path, Plot, Plot::Indicator, ScatteringPath,
-SSPath, and VPath) (Data::Prj is refered to just as Prj) has each of
-the following three function associated with it.
+SSPath, VPath, etc.) (Data::Prj is refered to just as Prj, other
+Data::* classes are the same) has each of the following three function
+associated with it.
 
 All of my examples use the Data object.
 

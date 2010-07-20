@@ -1,4 +1,4 @@
-[% META title = 'Importing special data type' %]
+[% META title = 'Importing special data types' %]
 
 [% FILTER html_para %]
 Some beamlines write out data in a form that [% ifeffit %] is not

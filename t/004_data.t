@@ -17,7 +17,7 @@
 
 =cut
 
-use Test::More tests => 58;
+use Test::More tests => 59;
 
 use File::Basename;
 use File::Spec;
@@ -186,3 +186,10 @@ my $nonu = Demeter::Data->new(file=>File::Spec->catfile($here, 'nonuniform.chi')
 $nonu->_update('fft');
 my @k = $nonu->get_array('k');
 ok( ( ($k[0] == 0) and (all { abs($k[$_] - $k[$_-1] - 0.05) < 1e-4 } (1 .. $#k)) ), 'fixing improper chi(k)' );
+
+## -------- Data from arrays
+my @x = $data3->get_array('energy');
+my @y = $data3->get_array('xmu');
+my $fa = Demeter::Data->put(\@x, \@y);
+$fa->_update('fft');
+ok( abs($fa->bkg_e0 - 7105.506) < $fuzz,                     'Data from arrays works (' . $fa->bkg_e0 . ')');

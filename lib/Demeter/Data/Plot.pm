@@ -167,15 +167,11 @@ sub _plotR_command {
   my $pf  = $self->po;
   my $string = q{};
   my $group = $self->group;
-  my %open   = ('m'=>"|",        e=>"Env[",     r=>"Re[",     i=>"Im[",     p=>"Phase[");
-  my %close  = ('m'=>"|",        e=>"]",        r=>"]",       i=>"]",       p=>"]");
   my %suffix = ('m'=>"chir_mag", e=>"chir_mag", r=>"chir_re", i=>"chir_im", p=>"chir_pha");
-  my $part   = lc($pf->r_pl);
   my $kw = $pf->kweight;
-  my ($xl, $yl) = ($pf->xlabel, $pf->ylabel);
+  my $xl = $pf->xlabel;
   $pf->xlabel("R (\\A)") if ((not defined($xl)) or ($xl =~ /^\s*$/));
-  $pf->ylabel(sprintf("%s\\gx(R)%s (\\A\\u-%.3g\\d)", $open{$part}, $close{$part}, $kw+1))
-    if ($yl =~ /^\s*$/);
+  $pf->ylabel($pf->plot_rylabel);
   (my $title = $self->name||q{}) =~ s{D_E_F_A_U_L_T}{Plot of paths};
   ($pf->showlegend) ? $pf->key($self->name) : $pf->key(q{});
   $pf->title(sprintf("%s in R space", $title)) if not $pf->title;
@@ -183,7 +179,7 @@ sub _plotR_command {
   $string = ($pf->New)
           ? $self->template("plot", "newr")
           : $self->template("plot", "overr");
-  if ($part eq 'e') {		# envelope
+  if (lc($pf->r_pl) eq 'e') {		# envelope
     my $pm = $self->plot_multiplier;
     $self->plot_multiplier(-1*$pm);
     my $this = $self->template("plot", "overr");
@@ -207,14 +203,10 @@ sub _plotq_command {
   my $pf  = $self->mo->plot;
   my $string = q{};
   my $group = $self->group;
-  my %open   = ('m'=>"|",        e=>"Env[",     r=>"Re[",     i=>"Im[",     p=>"Phase["   );
-  my %close  = ('m'=>"|",        e=>"]",        r=>"]",       i=>"]",       p=>"]"        );
-  my $part   = lc($pf->q_pl);
   my $kw = $pf->kweight;
-  my ($xl, $yl) = ($pf->xlabel, $pf->ylabel);
-  $pf->xlabel("k (\\A\\u-1\\d)") if ($xl =~ /^\s*$/);
-  $pf->ylabel(sprintf("%s\\gx(q)%s (\\A\\u-%.3g\\d)", $open{$part}, $close{$part}, $kw))
-    if ($yl =~ /^\s*$/);
+  my $xl = $pf->xlabel;
+  $pf->xlabel("k (\\A\\u-1\\d)") if ($xl =~ m{\A\s*\z});
+  $pf->ylabel($pf->plot_qylabel);
   (my $title = $self->name) =~ s{D_E_F_A_U_L_T}{Plot of paths};
   ($pf->showlegend) ? $pf->key($self->name) : $pf->key(q{});
   $pf->title(sprintf("%s in q space", $title)) if not $pf->title;
@@ -222,7 +214,7 @@ sub _plotq_command {
   $string = ($pf->New)
           ? $self->template("plot", "newq")
           : $self->template("plot", "overq");
-  if ($part eq 'e') {		# envelope
+  if (lc($pf->q_pl) eq 'e') {		# envelope
     my $pm = $self->plot_multiplier;
     $self->plot_multiplier(-1*$pm);
     my $this = $self->template("plot", "overr");

@@ -355,6 +355,24 @@ sub plot_kylabel {
   return $yl;
 };
 
+sub plot_rylabel {
+  my ($self) = @_;
+  return $self->ylabel if ($self->ylabel !~ m{\A\s*\z});
+  my %open   = ('m'=>"|", e=>"Env[", r=>"Re[", i=>"Im[", p=>"Phase[");
+  my %close  = ('m'=>"|", e=>"]",    r=>"]",   i=>"]",   p=>"]");
+  my $part   = lc($self->r_pl);
+  return sprintf("%s\\gx(R)%s (\\A\\u-%.3g\\d)", $open{$part}, $close{$part}, $self->kweight+1);
+};
+
+sub plot_qylabel {
+  my ($self) = @_;
+  return $self->ylabel if ($self->ylabel !~ m{\A\s*\z});
+  my %open   = ('m'=>"|", e=>"Env[", r=>"Re[", i=>"Im[", p=>"Phase[");
+  my %close  = ('m'=>"|", e=>"]",    r=>"]",   i=>"]",   p=>"]");
+  my $part   = lc($self->q_pl);
+  return sprintf("%s\\gx(q)%s (\\A\\u-%.3g\\d)", $open{$part}, $close{$part}, $self->kweight);
+};
+
 sub outfile {
   my ($self, $type, $file) = @_;
   my %devices = (png => '/png', ps => '/cps');
@@ -478,6 +496,24 @@ allowed, but are probably a poor idea.
 Place a textual label on the plot at a specified point.
 
   $object -> po -> label($x, $y, $text);
+
+=item C<plot_kylabel>
+
+Construct the label for the y-axis of a plot in k using the correct
+value of k-weighting according to the current value of the C<kweight>
+attribute.
+
+=item C<plot_rylabel>
+
+Construct the label for the y-axis of a plot in R using the correct
+value of k-weighting according to the current value of the C<kweight>
+attribute.
+
+=item C<plot_qylabel>
+
+Construct the label for the y-axis of a plot in q using the correct
+value of k-weighting according to the current value of the C<kweight>
+attribute.
 
 =back
 
