@@ -42,7 +42,7 @@ sub iofx {
 
 sub put {
   my ($self, $eref, $xref, @args) = @_;
-  my $data = Demeter::Data->new();
+  my $data = $self->new();	# return a Data is called by Data, return a Data::Pixel if called by D::P
   $data -> put_energy($eref);
   $data -> put_xmu($xref);
   $data -> set(datatype=>'xmu', update_data=>0, update_columns=>0, update_norm=>1);

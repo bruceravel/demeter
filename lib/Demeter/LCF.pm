@@ -698,6 +698,8 @@ to this.  Instead use the C<add> or C<add_many> methods.  Those
 methods take care of some other chores required to keep the LCF
 organized.
 
+=back
+
 A number of methods are provided by Moose for interacting with the
 list stored in this attribute:
 
@@ -890,7 +892,7 @@ Perform the fit.
 
 This will perform some sanity checks, including verifying that the
 data has been set and that at least two standards have been defined.
-It will also make sure C<xmin> and X<max> are in the correct order.
+It will also make sure C<xmin> and C<xmax> are in the correct order.
 
 An optional boolean argument turns the spinner off when in screen UI
 mode.  This allows use of a counter for combinatorial fits.
@@ -948,8 +950,8 @@ This method clears all scalars and arrays our of Ifeffit's memory.
 
 =back
 
-Note that there is not a C<remove> method, which does the opposite of
-C<add>.  This seems unnecessarily difficult to use.  I suggest
+Note that there is not a C<remove> method to do the opposite of
+C<add>.  This seems to me unnecessarily difficult to use.  I suggest
 explicitly clearing the standards list and then C<add>ing a new set of
 standards.  This is how the combinatorial fitting loop works.
 
@@ -957,12 +959,14 @@ standards.  This is how the combinatorial fitting loop works.
    ... do stuff, then
   $lcf->clear_standards;
   $lcf->add(@new_data);
+
+Explain these:
+
 				  'push'    => 'push_standards',
 				  'pop'     => 'pop_standards',
 				  'shift'   => 'shift_standards',
 				  'unshift' => 'unshift_standards',
 				  'clear'   => 'clear_standards',
-
 
 =head1 COMBINATORIAL FITTING
 

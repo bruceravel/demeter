@@ -119,4 +119,60 @@ sub apply {
   return $new;
 };
 
+sub report {
+  my ($self) = @_;
+  return sprintf("offset = %.3f, linear = %.3f, quadratic = %.3g\n", $self->get(qw(offset linear quadratic)))
+};
+
 1;
+
+
+=head1 NAME
+
+Demeter::Data::Pixel - Handle dispersive XAS data
+
+=head1 VERSION
+
+This documentation refers to Demeter version 0.4.
+
+=head1 SYNOPSIS
+
+=head1 DESCRIPTION
+
+=head1 ATTRIBUTES
+
+=head1 METHODS
+
+=head1 SERIALIZATION AND DESERIALIZATION
+
+Good question ...
+
+=head1 CONFIGURATION AND ENVIRONMENT
+
+See L<Demeter::Config> for a description of the configuration system.
+See the lcf configuration group for the relevant parameters.
+
+=head1 DEPENDENCIES
+
+Demeter's dependencies are in the F<Bundle/DemeterBundle.pm> file.
+
+=head1 BUGS AND LIMITATIONS
+
+=head1 AUTHOR
+
+Bruce Ravel (bravel AT bnl DOT gov)
+
+L<http://cars9.uchicago.edu/~ravel/software/>
+
+=head1 LICENCE AND COPYRIGHT
+
+Copyright (c) 2006-2010 Bruce Ravel (bravel AT bnl DOT gov). All rights reserved.
+
+This module is free software; you can redistribute it and/or
+modify it under the same terms as Perl itself. See L<perlgpl>.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+
+=cut
