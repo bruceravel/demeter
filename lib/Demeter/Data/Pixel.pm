@@ -114,6 +114,7 @@ sub apply {
   $new    -> mo -> standard($convert);
   $new    -> dispose($new->template('process', 'pixel_set'));
   $new    -> set(update_data=>0, update_columns=>0, update_norm=>1, datatype=>'xmu');
+  $new    -> e0;
   $new    -> resolve_defaults;
   $new    -> unset_standard;
   return $new;

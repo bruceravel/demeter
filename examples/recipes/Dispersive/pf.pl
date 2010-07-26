@@ -2,6 +2,7 @@
 
 use Demeter qw(:ui=screen :plotwith=gnuplot);
 use autodie qw(open close);
+use Compress::Zlib;
 
 ## -------- import the standard data as measured by a conventional XAS experiment
 my $stan = Demeter::Data->new(file=>'PhotonFactory/Pd_foil_ref.txt');
@@ -56,17 +57,17 @@ $stan -> pause;
 ##          file representes an array of these arrays.  this 2D array
 ##          needs to be transposed into arrays of data at each time
 ##          point.  the "push @{$dxas[$i]}, $data[$i];" line does this.
-open(my $DXAS, '<', 'PhotonFactory/PdZnO02_mt.CSV');
-my $times = <$DXAS>;		# first line is times
-chomp $times;
-my @times = split(/\s*,\s*/, $times);
+my $line   = q{};
+my $csv_fh = gzopen('PhotonFactory/PdZnO02_mt.CSV.gz', "rb") or die "could not open PhotonFactory/PdZnO02_mt.CSV.gz as a zipped CSV file\n";
+$csv_fh->gzreadline($line);		# first line contains times
+my @times = split(/\s*,\s*/, $line);
 @pixel = ();
 my @dxas = ();
 $dxas[$_] = [] foreach (0..$#times);
-while (<$DXAS>) {
-  chomp;
-  next if m{\A\s*\z};
-  my @data = split(/\s*,\s*/, $_);
+while ($csv_fh->gzreadline($line) > 0) {
+  #chomp $line;
+  next if ($line =~ m{\A\s*\z});
+  my @data = split(/\s*,\s*/, $line);
   push @pixel, $data[0];
   foreach my $i (1..$#data) {
     push @{$dxas[$i]}, $data[$i];
@@ -74,14 +75,44 @@ while (<$DXAS>) {
 };
 
 
-## -------- apply the calibration parameters to several time points.
-$data -> po -> e_norm(0);
-$data -> po -> e_markers(0);
+## -------- apply the calibration parameters to several time points nad make a pretty picture
+$data -> po -> set(e_norm=>1, e_markers=>0, emin=>-50, emax=>100);
+$data -> co -> set_default("gnuplot", "keyparams", "bottom right width 1 height 1 box");
 $data -> po -> start_plot;
+$data -> po -> title('time sequence');
 foreach my $j (1..15, 20, 60, 100) {
   my @this = reverse @{$dxas[$j]};		# PF DXAS data has high energy at pixel #1
   my $pzo = Demeter::Data::Pixel->put(\@pixel, \@this, name=>"time = " . $times[$j]);
   my $pzo_cal = $data -> apply($pzo);
+  $pzo_cal -> set(bkg_pre1=>-410, bkg_pre2=>-120, bkg_nor1=>150, bkg_nor2=>600);
   $pzo_cal -> plot('e');
+  # undef $pzo;
 };
 $data->pause;
+
+exit;
+
+## -------- apply the calibration parameters to each time point and
+##          write out Athena project files containing 30 data groups
+$data->start_counter("Converting DXAS from each time point", $#dxas+1);
+my $athena = sprintf("athena_%d.prj", 1);
+my $maxgroups = 30;
+my @list = ();
+foreach my $j (1..$#dxas) {
+
+  if ($j % $maxgroups == 0) {
+    $list[0]->write_athena($athena, @list);
+    $athena = sprintf("athena_%d.prj", $j/$maxgroups+1);
+    @list = ();
+  };
+
+  my @this = reverse @{$dxas[$j]};		# PF DXAS data has high energy at pixel #1
+  my $pzo = Demeter::Data::Pixel->put(\@pixel, \@this, name=>"time = " . $times[$j]||'?');
+  my $pzo_cal = $data -> apply($pzo);
+  $pzo_cal -> set(bkg_pre1=>-410, bkg_pre2=>-120, bkg_nor1=>150, bkg_nor2=>600);
+  #$pzo_cal -> _update('fft');
+  push @list, $pzo_cal;
+  $data->count;
+};
+$list[0]->write_athena($athena, @list);
+$data->stop_counter;
