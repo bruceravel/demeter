@@ -1,5 +1,15 @@
 #!/usr/bin/perl
 
+## This example demonstrates how to use the Demeter::Data::Pixel
+## object to convert Photon Factory DXAS data into a plot or a set of
+## Athena project files.
+##
+## The thing that distinguishes this from the ESRF examples is that
+## the data are contained in a big comma-separated value file.  The
+## whole chunk from lines 70-85 slurps the data into perl data
+## structures, which are then doled out to Demeter::Data::Pixel
+## objects at line 95 (or 122).
+
 use Demeter qw(:ui=screen :plotwith=gnuplot);
 use autodie qw(open close);
 use Compress::Zlib;
@@ -75,7 +85,7 @@ while ($csv_fh->gzreadline($line) > 0) {
 };
 
 
-## -------- apply the calibration parameters to several time points nad make a pretty picture
+## -------- apply the calibration parameters to several time points and make a pretty picture
 $data -> po -> set(e_norm=>1, e_markers=>0, emin=>-50, emax=>100);
 $data -> co -> set_default("gnuplot", "keyparams", "bottom right width 1 height 1 box");
 $data -> po -> start_plot;
@@ -94,6 +104,7 @@ exit;
 
 ## -------- apply the calibration parameters to each time point and
 ##          write out Athena project files containing 30 data groups
+##          each
 $data->start_counter("Converting DXAS from each time point", $#dxas+1);
 my $athena = sprintf("athena_%d.prj", 1);
 my $maxgroups = 30;
@@ -110,7 +121,6 @@ foreach my $j (1..$#dxas) {
   my $pzo = Demeter::Data::Pixel->put(\@pixel, \@this, name=>"time = " . $times[$j]||'?');
   my $pzo_cal = $data -> apply($pzo);
   $pzo_cal -> set(bkg_pre1=>-410, bkg_pre2=>-120, bkg_nor1=>150, bkg_nor2=>600);
-  #$pzo_cal -> _update('fft');
   push @list, $pzo_cal;
   $data->count;
 };

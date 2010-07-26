@@ -138,11 +138,107 @@ This documentation refers to Demeter version 0.4.
 
 =head1 SYNOPSIS
 
+   use Demeter;
+
+   my $stan = Demeter::Data->new(file=>'ESRF_ID24/cus2/cufoil_rt.txt', bkg_nor2=>1000);
+   $stan->set_mode(screen=>0);
+
+   my $data = Demeter::Data::Pixel->new(file=>'ESRF_ID24/cus2/cu_08', bkg_nor2=>1000);
+
+   $data->standard($stan);
+   $data->guess;
+   $data->pixel;
+
+   my $cus2 = Demeter::Data::Pixel->new(file=>$file, name=>basename($file));
+   $dispersive_data = $data->apply($cus2);
+
 =head1 DESCRIPTION
+
+The standard way of implementing a dispersive XAS measurement is to
+measure a known sample such as a foil in the same dispersive geometry
+as the real experiment.  The function for converting from pixel
+position to energy is determined by comparing the dispersively
+measured sample to a conventionally measurement on the same sample.
+This determines as set of conversion parameters that can then be used
+on each scan in  the subsequent measurement.
+
+In the synopsis above, the conventional scan on a Cu foil is imported
+as a normal Data object.  The foil measured dispersively is then
+imported as a Data::Pixel object.  The conventional scan is
+established as the standard and the conversion parameters are
+determined by fitting a quadratic function relating pixels to energy.
+
+  energy = A + B*pixel + C*pixel^2
+
+In fact, a slightly more complex function is used as the fitting
+function in an attempt to to give some weight to the high energy data
+where the variations in the data and thus the sensitivity to the fit
+is somewhat less than near the edge where the data is changing quickly.
+
+Once the parameters for the conversion are known, they can be applied
+to the real data.  Each dispersive scan is imported as a Data::Pixel
+object and a normal Data object is generated from that.
 
 =head1 ATTRIBUTES
 
+This is inherited from the Data object, so all of the Data attributes
+are inherited.  Additionally, there are these attributes:
+
+=over 4
+
+=item C<standard>
+
+This takes the refernece to the Data object containing the
+conventionally measured standard.
+
+=item C<offset>
+
+The value of the offset conversion parameter, C<A> in the formula above.
+
+=item C<linear>
+
+The value of the linear conversion parameter, C<B> in the formula above.
+
+=item C<quadratic>
+
+The value of the quadratic conversion parameter, C<C> in the formula above.
+
+=back
+
 =head1 METHODS
+
+=over 4
+
+=item C<guess>
+
+Make an initial guesss for the conversion parameters.  This is done by
+finding e0 values for the conventional and dispersive standard data
+(normally a foil or some such) using the fraction-of-an-edge step
+method described in L<Demeter::Data::E0>.  The e0 position is found
+for fractions of 0.1 and 0.9 in each measurement and offset and linear
+terms are determined from those values.  The initial quadratic value
+is 0.  This fills the C<offset>, C<linear>, and C<quadratic>
+attributes.
+
+=item C<pixel>
+
+Perform the fit between the flattened, normalized conventionald and
+dispersive standards to determine values for the conversion
+parameters.  This fills the C<offset>, C<linear>, and C<quadratic>
+attributes.
+
+=item C<apply>
+
+This method applies the C<offset>, C<linear>, and C<quadratic>
+attributes to convert a pixel data groups, returning a normal Data
+object.
+
+=item C<report>
+
+This generates a bit of text documenting the values of the conversion
+parameters.
+
+=back
 
 =head1 SERIALIZATION AND DESERIALIZATION
 
@@ -158,6 +254,14 @@ See the lcf configuration group for the relevant parameters.
 Demeter's dependencies are in the F<Bundle/DemeterBundle.pm> file.
 
 =head1 BUGS AND LIMITATIONS
+
+=over 4
+
+=item *
+
+The fitting algorithm is not so robust.
+
+=back
 
 =head1 AUTHOR
 
