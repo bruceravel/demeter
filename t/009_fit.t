@@ -17,7 +17,7 @@
 
 =cut
 
-use Test::More tests => 23;
+use Test::More tests => 25;
 
 use Demeter;
 use List::MoreUtils qw(all);
@@ -103,9 +103,12 @@ ok( $#lines == 2,                             'happiness_report seems to run cor
 ok( $this->color(0.623) eq '#FD7E6F',         'color computed correctly (0.632 should = #FD7E6F) -- '.$this->color(0.623));
 
 
+## -------- utilities
+ok( (not $this->fetch_gds('foobar')),         'fetch_gds, nonexistant parameter');
+my $ggg = $this->fetch_gds('dcu');
+ok( $ggg->gds eq 'guess',                     'fetch_gds, existing parameter');
 
-
-
+print $this->summary;
 #$this->po->plot_fit(1);
 #$_ -> plot('r') foreach ($data, $path);
 

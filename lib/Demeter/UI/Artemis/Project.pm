@@ -216,17 +216,25 @@ sub read_project {
   };
 
   ## -------- import fit history from project file (currently only importing most recent)
-  opendir(my $FITS, File::Spec->catfile($projfolder, 'fits/'));
-  @dirs = grep { $_ =~ m{\A[a-z]} } readdir($FITS);
-  closedir $FITS;
+  #opendir(my $FITS, File::Spec->catfile($projfolder, 'fits/'));
+  #@dirs = grep { $_ =~ m{\A[a-z]} } readdir($FITS);
+  #closedir $FITS;
+  @dirs = ();			# need to retrieve in historical order for fit history
+  foreach my $d (sort {$a<=>$b} grep {$_ =~ m{\A\d+\z}} keys(%{$Demeter::UI::Artemis::fit_order{order}})) {
+    next if $d eq 'current';
+    push @dirs, $Demeter::UI::Artemis::fit_order{order}{$d};
+  };
   my $current = $Demeter::UI::Artemis::fit_order{order}{current};
   $current = $Demeter::UI::Artemis::fit_order{order}{$current};
   $current ||= $dirs[0];
   my $fit;
   foreach my $d (@dirs) {
-    next unless ($d eq $current);
     $fit = Demeter::Fit->new(group=>$d, interface=>"Artemis (Wx)");
     $fit->deserialize(folder=> File::Spec->catfile($projfolder, 'fits', $d));
+    $rframes->{History}->{list}->Append($fit->name, $fit) if $fit->fitted;
+    next unless ($d eq $current);
+    $rframes->{History}->{list}->SetSelection($rframes->{History}->{list}->GetCount-1);
+    $rframes->{History}->OnSelect;
     $rframes->{main}->{currentfit} = $fit;
     $rframes->{Plot}->{limits}->{fit}->SetValue(1);
     my $current = $fit->number || 1;

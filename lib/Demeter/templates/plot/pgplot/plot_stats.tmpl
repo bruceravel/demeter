@@ -1,0 +1,16 @@
+{
+  $tic = int(log($xmax-$xmin)/log(10));
+  @which = (q{}, q{}, 'chi_nu', 'rfactor', 'happiness');
+  $ymin = ($showy) ? "\nymin   = 0," : q{};
+  q{}
+}
+read_data(file="{$file}", group=r___eport)
+newplot(r___eport.fom, r___eport.{$which[$col]},
+        title  = "Fitting parameter",
+        xlabel = "fit",
+        ylabel = "{$which[$col]}",
+        key    = "{$which[$col]}",
+	xmin   = {$xmin},
+        xmax   = {$xmax},{$ymin}
+        style  = points3,
+        markersize = 4,)

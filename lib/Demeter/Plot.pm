@@ -231,6 +231,7 @@ sub clonable {
 
 sub start_plot {
   my ($self) = @_;
+  $self->cleantemp;
   my $color = $self->col0;
   $self -> New(1);
   $self -> color($color);
@@ -267,6 +268,7 @@ sub reinitialize {
 };
 sub end_plot {
   my ($self) = @_;
+  $self->cleantemp;
   return $self;
 };
 

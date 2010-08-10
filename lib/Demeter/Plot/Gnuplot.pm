@@ -35,7 +35,6 @@ has '+backend'  => (default => q{gnuplot});
 
 before start_plot => sub {
   my ($self) = @_;
-  $self->cleantemp;
   my $command = $self->template("plot", "start");
   $command .= $self->copyright_text;
   $self->dispose($command, "plotting");

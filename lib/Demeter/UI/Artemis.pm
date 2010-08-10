@@ -573,12 +573,13 @@ sub fit {
     my $finish = DateTime->now( time_zone => 'floating' );
     my $dur = $finish->delta_ms($start);
     $finishtext = sprintf "Your fit finished in %d seconds.", $dur->seconds;
+    $rframes->{History}->{list}->Append($fit->name, $fit);
     undef $dur;
     undef $finish;
   } else {
     $rframes->{Log}->{text}->SetValue($fit->troubletext);
-    #$rframes->{Log}->Show(1);
-    #$rframes->{main}->{log_toggle}->SetValue(1);
+    $rframes->{Log}->Show(1);
+    $rframes->{main}->{log_toggle}->SetValue(1);
     set_happiness_color($fit->co->default("happiness", "bad_color"));
     $finishtext = "The error report from the fit that just failed is written in the log window.";
     $code = "error";

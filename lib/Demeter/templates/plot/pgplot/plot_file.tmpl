@@ -1,0 +1,14 @@
+{
+  $ymin = ($showy) ? "\nymin   = 0," : q{};
+  q{}
+}
+read_data(file="{$file}", group=r___eport)
+newplot(r___eport.fom, r___eport.value, dy=r___eport.uncertainty,
+        title  = "Fitting parameter",
+        xlabel = "fit",
+        ylabel = "{$param}",
+        key    = "{$param}",
+	xmin   = {$xmin},
+        xmax   = {$xmax},{$ymin}
+        style  = points3,
+        markersize = 4,)

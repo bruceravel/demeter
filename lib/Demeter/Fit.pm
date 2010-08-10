@@ -141,6 +141,7 @@ has 'epsilon_r'         => (is => 'rw', isa =>  NonNeg,   default => 0);
 has 'r_factor'          => (is => 'rw', isa =>  NonNeg,   default => 0);
 has 'chi_square'        => (is => 'rw', isa =>  NonNeg,   default => 0);
 has 'chi_reduced'       => (is => 'rw', isa =>  NonNeg,   default => 0);
+has 'fancyline'         => (is => 'rw', isa => 'Str',     default => "\n" . "=*" x 38 . "=\n\n");
 
 has 'correlations' => (
 		       metaclass => 'Collection::Hash',
@@ -751,9 +752,10 @@ my @vals = ('Name', 'Description', 'Figure of merit', 'Time of fit', 'Environmen
 my %properties = zip(@keys, @vals);
 
 sub properties_header {
-  my ($self) = @_;
+  my ($self, $is_summary) = @_;
   my $string = "\n";
   foreach my $k (@keys) {
+    next if ($is_summary and ($k !~ m{name|description|fom}));
     if ($k eq 'description') {
       my @lines = ($self->$k) ? split($/, $self->$k) : (q{});
       $string .= sprintf " %-15s : %s\n", $properties{$k}, shift @lines;
@@ -763,6 +765,18 @@ sub properties_header {
     };
   };
   return $string;
+};
+
+sub summary {
+  my ($self) = @_;
+  my $text = q{};
+  $text .= $self->properties_header(1);
+  $text .= $/;
+  $text .= $self->statistics_report;
+  $text .= $/;
+  $text .= $self->gds_report;
+  $text .= $self->fancyline;
+  return $text;
 };
 
 sub logfile {
@@ -784,8 +798,7 @@ sub logtext {
 
   $text .= $header;
   $text .= $self->properties_header;
-  $text .= "\n";
-  $text .= "=*" x 38 . "=\n\n";
+  $text .= $self->fancyline;
 
   $text .= $self->statistics_report;
   $text .= $/;
@@ -832,8 +845,7 @@ sub logtext {
     };
   };
 
-  $text .= "\n";
-  $text .= "=*" x 38 . "=\n\n";
+  $text .= $self->fancyline;
   ($footer .= "\n") if ($footer !~ m{\n\z});
   $text .= $footer;
 
@@ -843,10 +855,11 @@ sub logtext {
 
 sub gds_report {
   my ($self) = @_;
-  my $string = q{};
+  my $text = q{};
   foreach my $type (qw(guess lguess set def restrain after)) {
     my $tt = $type;
-    $string .= "$type parameters:\n";
+    my $head = "$type parameters:\n";
+    my $string = q{};
     foreach my $gds (@{ $self->gds} ) {
 ## 	## need to not lose guesses that get flagged as local by
 ## 	## virtue of a math expression dependence
@@ -858,9 +871,11 @@ sub gds_report {
       next if (not $gds->Use);
       $string .= "  " . $gds->report(0);
     };
-    $string .= "\n";
+    if ($string) {
+      $text.= $head . $string . "\n";
+    };
   };
-  return $string;
+  return $text;
 };
 
 
@@ -1053,6 +1068,23 @@ sub correl_report {
   };
   $string .= "All other correlations below $cormin\n" if $cormin;
   return $string;
+};
+
+sub fetch_gds {
+  my ($self, $which) = @_;
+  $which = lc($which);
+  foreach my $g (@{$self->gds}) {
+    return $g if ($which eq $g->name);
+  };
+  return 0;
+};
+
+sub has_data {
+  my ($self, $which) = @_;
+  foreach my $g (@{$self->data}) {
+    return 1 if ($which->group eq $g->group);
+  };
+  return 0;
 };
 
 
