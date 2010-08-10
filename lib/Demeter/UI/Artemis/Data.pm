@@ -167,7 +167,7 @@ sub new {
   EVT_CLOSE($this, \&on_close);
 
   $this->{statusbar} = $this->CreateStatusBar;
-  $this->{statusbar} -> SetStatusText(q{});
+  $this->{statusbar} -> SetStatusText(q{ });
   #$this->{statusbar}->SetForegroundColour(Wx::Colour->new("#00ff00")); ??????
   my $hbox  = Wx::BoxSizer->new( wxHORIZONTAL );
   $this->{mainbox} = $hbox;

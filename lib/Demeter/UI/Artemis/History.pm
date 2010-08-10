@@ -23,7 +23,7 @@ use List::MoreUtils qw(minmax);
 
 use Wx qw( :everything );
 use Wx::Event qw(EVT_CLOSE EVT_LISTBOX EVT_CHECKLISTBOX EVT_BUTTON EVT_RADIOBOX
-		 EVT_ENTER_WINDOW EVT_LEAVE_WINDOW EVT_CHOICE);
+		 EVT_ENTER_WINDOW EVT_LEAVE_WINDOW EVT_CHOICE EVT_RIGHT_DOWN EVT_MENU);
 use base qw(Wx::Frame);
 
 my @font      = (9, wxTELETYPE, wxNORMAL, wxNORMAL, 0, "" );
@@ -37,7 +37,7 @@ sub new {
 				wxMINIMIZE_BOX|wxCAPTION|wxSYSTEM_MENU|wxCLOSE_BOX);
   EVT_CLOSE($this, \&on_close);
   $this->{statusbar} = $this->CreateStatusBar;
-  $this->{statusbar} -> SetStatusText(q{});
+  $this->{statusbar} -> SetStatusText(q{ });
 
   my $box = Wx::BoxSizer->new( wxHORIZONTAL );
 
@@ -53,6 +53,9 @@ sub new {
   $left -> Add($listboxsizer, 0, wxALL, 5);
   EVT_LISTBOX($this, $this->{list}, sub{OnSelect(@_)} );
   EVT_CHECKLISTBOX($this, $this->{list}, sub{OnCheck(@_), $_[1]->Skip} );
+  EVT_RIGHT_DOWN($this->{list}, sub{OnRightDown(@_)} );
+  EVT_MENU($this->{list}, -1, sub{ $this->OnPlotMenu(@_)    });
+  $this-> mouseover('list', "Right click on the fit list for a menu of additional actions.");
 
   $this->{all} = Wx::Button->new($this, -1, 'Select all');
   $left -> Add($this->{all}, 0, wxGROW|wxALL, 1);
@@ -82,10 +85,6 @@ sub new {
   my $reportbox  = Wx::BoxSizer->new( wxVERTICAL );
   $reportpage->SetSizer($reportbox);
 
-  my $actionspage = Wx::Panel->new($nb, -1);
-  my $actionsbox  = Wx::BoxSizer->new( wxHORIZONTAL );
-  $actionspage->SetSizer($actionsbox);
-
   ## -------- text box for log file
   $this->{log} = Wx::TextCtrl->new($logpage, -1, q{}, wxDefaultPosition, [550, -1],
 				   wxTE_MULTILINE|wxTE_READONLY|wxHSCROLL);
@@ -113,7 +112,7 @@ sub new {
   $controls = Wx::BoxSizer->new( wxHORIZONTAL );
   $repboxsizer -> Add($controls, 0, wxGROW|wxALL, 5);
   my $label = Wx::StaticText->new($reportpage, -1, "Select parameter: ");
-  $controls->Add($label, 0, wxALL, 7);
+  $controls->Add($label, 0, wxTOP, 9);
   $this->{params} = Wx::Choice->new($reportpage, -1, wxDefaultPosition, wxDefaultSize, ["Statistcal parameters"]);
   $controls->Add($this->{params}, 0, wxALL, 5);
   EVT_CHOICE($this, $this->{params}, sub{write_report(@_)});
@@ -133,7 +132,7 @@ sub new {
   $this-> mouseover('plotas', "Specify which column will be plotted after generating a statistics report.");
 
   $controls = Wx::BoxSizer->new( wxHORIZONTAL );
-  $repboxsizer -> Add($controls, 0, wxGROW|wxALL, 5);
+  $repboxsizer -> Add($controls, 0, wxGROW|wxLEFT, 5);
   $this->{showy} = Wx::CheckBox->new($reportpage, -1, "Show y=0");
   $controls->Add($this->{showy}, 0, wxALL, 0);
   $this-> mouseover('showy', "Check this button to force the report plot to scale the plot such that the y axis starts at 0");
@@ -150,47 +149,8 @@ sub new {
   EVT_BUTTON($this, $this->{savereport}, sub{savereport(@_)});
   $this-> mouseover('savereport', "Save the report contents to a file.");
 
-
-  ## -------- actions on selected fit
-  my $actionsleft = Wx::BoxSizer->new( wxVERTICAL );
-  my $actionsright = Wx::BoxSizer->new( wxVERTICAL );
-  $actionsbox->Add($actionsleft,  1, wxGROW|wxALL, 10);
-  $actionsbox->Add($actionsright, 1, wxGROW|wxALL, 10);
-
-  $label = Wx::StaticText->new($actionspage, -1, "Actions on the selected fit");
-  $label -> SetFont( Wx::Font->new( 12, wxDEFAULT, wxNORMAL, wxBOLD, 0, "" ) );
-  $actionsleft->Add($label, 0, wxGROW|wxALL, 10);
-  $this->{restore} = Wx::Button->new($actionspage, -1, "Restore selected fit");
-  $actionsleft->Add($this->{restore}, 0, wxGROW|wxALL, 5);
-  $this->{savelog} = Wx::Button->new($actionspage, -1, "Save log file from selected fit");
-  $actionsleft->Add($this->{savelog}, 0, wxGROW|wxALL, 5);
-  $this->{export} = Wx::Button->new($actionspage, -1, "Export selected fit");
-  $actionsleft->Add($this->{export}, 0, wxGROW|wxALL, 5);
-  $this->{discard} = Wx::Button->new($actionspage, -1, "Discard selected fit");
-  $actionsleft->Add($this->{discard}, 0, wxGROW|wxALL, 5);
-
-  EVT_BUTTON($this, $this->{restore}, sub{restore(@_)});
-  $this-> mouseover('restore', "Restore the fitting model from the selected fit as the active fitting model.");
-  EVT_BUTTON($this, $this->{savelog}, sub{savelog(@_)});
-  $this-> mouseover('savelog', "Save the log file from the selected fit.");
-  EVT_BUTTON($this, $this->{export},  sub{export(@_)});
-  $this-> mouseover('export', "Save a project file containing only this fit and no history.");
-  EVT_BUTTON($this, $this->{discard}, sub{discard(@_, 'selected')});
-  $this-> mouseover('discard', "Discard the selected fit from this project.");
-
-  $label = Wx::StaticText->new($actionspage, -1, "Actions on the marked fits");
-  $label -> SetFont( Wx::Font->new( 12, wxDEFAULT, wxNORMAL, wxBOLD, 0, "" ) );
-  $actionsright->Add($label, 0, wxGROW|wxALL, 10);
-  $this->{discardm} = Wx::Button->new($actionspage, -1, "Discard marked fits");
-  $actionsright->Add($this->{discardm}, 0, wxGROW|wxALL, 5);
-
-  EVT_BUTTON($this, $this->{discardm},  sub{discard(@_, 'marked')});
-  $this->mouseover('discardm', "Discard all marked fits from this project.");
-
-
   $nb -> AddPage($logpage,     "Log file", 1);
   $nb -> AddPage($reportpage,  "Reports", 0);
-  $nb -> AddPage($actionspage, "Actions", 0);
 
   $this->SetSizerAndFit($box);
   return $this;
@@ -212,6 +172,62 @@ sub OnCheck {
   #print "check: ", join(" ", @_), $/;
   1;
 };
+
+
+use Readonly;
+Readonly my $FIT_RESTORE => Wx::NewId();
+Readonly my $FIT_SAVE    => Wx::NewId();
+Readonly my $FIT_EXPORT  => Wx::NewId();
+Readonly my $FIT_DISCARD => Wx::NewId();
+Readonly my $FIT_DISCARD_MANY => Wx::NewId();
+
+sub OnRightDown {
+  my ($self, $event) = @_;
+  return if $self->IsEmpty;
+  #$self->Deselect($self->GetSelection);
+  #$self->SetSelection($self->HitTest($event->GetPosition));
+  #$self->GetParent->OnSelect($event);
+  #my $name = $self->GetStringSelection;
+  my $position  = $self->HitTest($event->GetPosition);
+  ($position = $self->GetCount - 1) if ($position == -1);
+  my $name = $self->GetString($position);
+  my $menu = Wx::Menu->new(q{});
+  $menu->Append($FIT_RESTORE, "Restore fitting model from \"$name\"");
+  $menu->Append($FIT_SAVE,    "Save log file for \"$name\"");
+  $menu->Append($FIT_EXPORT,  "Export \"$name\"");
+  $menu->Append($FIT_DISCARD, "Discard \"$name\"");
+  $menu->AppendSeparator;
+  $menu->Append($FIT_DISCARD_MANY, "Discard marked fits");
+  $self->PopupMenu($menu, $event->GetPosition);
+};
+
+sub OnPlotMenu {
+  my ($self, $list, $event) = @_;
+  my $id = $event->GetId;
+ SWITCH: {
+    ($id == $FIT_RESTORE) and do {
+      $self->restore;
+      last SWITCH;
+    };
+    ($id == $FIT_SAVE)    and do {
+      $self->savelog;
+      last SWITCH;
+    };
+    ($id == $FIT_EXPORT)  and do {
+      $self->export;
+      last SWITCH;
+    };
+    ($id == $FIT_DISCARD) and do {
+      $self->discard('selected');
+      last SWITCH;
+    };
+    ($id == $FIT_DISCARD_MANY) and do {
+      $self->discard('all');
+      last SWITCH;
+    };
+  };
+};
+
 
 sub mark {
   my ($self, $event, $how) = @_;
@@ -281,15 +297,17 @@ sub mark_all_if_none {
 
 sub write_report {
   my ($self, $event) = @_;
+  return if $self->{list}->IsEmpty;
   $self->mark_all_if_none;
 
   ## -------- generate report and enter it into text box
   $self->{report}->Clear;
   my $param = $self->{params}->GetStringSelection;
+  (my $pp = $param) =~ s{_}{\\_}g;
   if ($param eq 'Statistcal parameters') {
     $self->{report}->AppendText($Demeter::UI::Artemis::demeter->template('fit', 'report_head_stats'));
   } else {
-    $self->{report}->AppendText($Demeter::UI::Artemis::demeter->template('fit', 'report_head_param'));
+    $self->{report}->AppendText($Demeter::UI::Artemis::demeter->template('fit', 'report_head_param', {param=>$param}));
   };
   my @x = ();
   foreach my $i (0 .. $self->{list}->GetCount-1) {
@@ -302,7 +320,7 @@ sub write_report {
       my $g = $fit->fetch_gds($param);
       next if not $g;
       $fit->mo->fit($fit);
-      $self->{report}->AppendText($g->template('fit', 'report_param', {param=>$param}));
+      $self->{report}->AppendText($g->template('fit', 'report_param'));
       $fit->mo->fit(q{});
     };
   };
@@ -320,13 +338,14 @@ sub write_report {
     my $col = $self->{plotas}->GetSelection + 2;
     $Demeter::UI::Artemis::demeter->dispose($Demeter::UI::Artemis::demeter->template('plot', 'plot_stats', {file=>$tempfile, xmin=>$xmin, xmax=>$xmax, col=>$col, showy=>$self->{showy}->GetValue}), 'plotting');
   } else {
-    $Demeter::UI::Artemis::demeter->dispose($Demeter::UI::Artemis::demeter->template('plot', 'plot_file', {file=>$tempfile, xmin=>$xmin, xmax=>$xmax, param=>$param, showy=>$self->{showy}->GetValue}), 'plotting');
+    $Demeter::UI::Artemis::demeter->dispose($Demeter::UI::Artemis::demeter->template('plot', 'plot_file', {file=>$tempfile, xmin=>$xmin, xmax=>$xmax, param=>$pp, showy=>$self->{showy}->GetValue}), 'plotting');
   };
   $self->status("Reported on $param");
 };
 
 sub summarize {
   my ($self, $event) = @_;
+  return if $self->{list}->IsEmpty;
   $self->mark_all_if_none;
   my $text = q{};
   foreach my $i (0 .. $self->{list}->GetCount-1) {
@@ -356,17 +375,17 @@ sub savereport {
 };
 
 sub restore {
-  my ($self, $event) = @_;
-  $self->status("restore this fit...");
+  my ($self) = @_;
+  $self->status("restore ".$self->{list}->GetStringSelection."... ");
 };
 
 sub discard {
-  my ($self, $event, $how) = @_;
+  my ($self, $how) = @_;
   $self->status("discard $how fit(s)...");
 };
 
 sub savelog {
-  my ($self, $event) = @_;
+  my ($self) = @_;
   my $fit = $self->{list}->GetClientData($self->{list}->GetSelection);
 
   (my $pref = $fit->name) =~ s{\s+}{_}g;
@@ -384,8 +403,8 @@ sub savelog {
 };
 
 sub export {
-  my ($self, $event) = @_;
-  $self->status("export this fit...");
+  my ($self) = @_;
+  $self->status("export ".$self->{list}->GetStringSelection."... ");
 };
 
 

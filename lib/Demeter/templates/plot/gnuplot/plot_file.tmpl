@@ -1,6 +1,7 @@
 {
   $tic = int(log($xmax-$xmin)/log(10));
   $yrange = ($showy) ? "[0:]" : "[*:*]";
+  ($pp = $param) =~ s{\\_}{\\\\_}g;
   q{}
 }
 set title "\{/*1.6 Fitting parameter\}"
@@ -8,5 +9,5 @@ set xrange [{$xmin}:{$xmax}]
 set yrange {$yrange}
 set xlabel "\{/*1.4 fit\}"
 set xtics {10**$tic}
-set ylabel "\{/*1.4 {$param}\}"
+set ylabel "\{/*1.4 {$pp}\}"
 plot '{$file}' using 1:2:3 with errorbars ls {$P->increm+1} title '{$param}'
