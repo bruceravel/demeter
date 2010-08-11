@@ -47,24 +47,33 @@ sub new {
   my $listbox       = Wx::StaticBox->new($this, -1, 'Fit history', wxDefaultPosition, wxDefaultSize);
   my $listboxsizer  = Wx::StaticBoxSizer->new( $listbox, wxVERTICAL );
 
-  $this->{list} = Wx::CheckListBox->new($this, -1, wxDefaultPosition, [125,500],
+  $this->{list} = Wx::CheckListBox->new($this, -1, wxDefaultPosition, [-1,500],
 				   [], wxLB_SINGLE);
-  $listboxsizer -> Add($this->{list}, 0, wxALL, 0);
-  $left -> Add($listboxsizer, 0, wxALL, 5);
+  $listboxsizer -> Add($this->{list}, 1, wxGROW|wxALL, 0);
+  $left -> Add($listboxsizer, 0, wxGROW|wxALL, 5);
   EVT_LISTBOX($this, $this->{list}, sub{OnSelect(@_)} );
   EVT_CHECKLISTBOX($this, $this->{list}, sub{OnCheck(@_), $_[1]->Skip} );
   EVT_RIGHT_DOWN($this->{list}, sub{OnRightDown(@_)} );
   EVT_MENU($this->{list}, -1, sub{ $this->OnPlotMenu(@_)    });
   $this-> mouseover('list', "Right click on the fit list for a menu of additional actions.");
 
-  $this->{all} = Wx::Button->new($this, -1, 'Select all');
-  $left -> Add($this->{all}, 0, wxGROW|wxALL, 1);
-  $this->{none} = Wx::Button->new($this, -1, 'Select none');
-  $left -> Add($this->{none}, 0, wxGROW|wxALL, 1);
+  my $markbox      = Wx::StaticBox->new($this, -1, 'Mark fits', wxDefaultPosition, wxDefaultSize);
+  my $markboxsizer = Wx::StaticBoxSizer->new( $markbox, wxHORIZONTAL );
+  $left -> Add($markboxsizer, 0, wxGROW|wxALL, 0);
+
+
+  $this->{all} = Wx::Button->new($this, -1, 'All', wxDefaultPosition, wxDefaultSize, wxBU_EXACTFIT);
+  $markboxsizer -> Add($this->{all}, 1, wxALL, 0);
+  $this->{none} = Wx::Button->new($this, -1, 'None', wxDefaultPosition, wxDefaultSize, wxBU_EXACTFIT);
+  $markboxsizer -> Add($this->{none}, 1, wxLEFT|wxRIGHT, 2);
+  $this->{regexp} = Wx::Button->new($this, -1, 'Regexp', wxDefaultPosition, wxDefaultSize, wxBU_EXACTFIT);
+  $markboxsizer -> Add($this->{regexp}, 1, wxALL, 0);
   EVT_BUTTON($this, $this->{all},  sub{mark(@_, 'all')});
   $this-> mouseover('all', "Mark all fits.");
   EVT_BUTTON($this, $this->{none}, sub{mark(@_, 'none')});
   $this-> mouseover('none', "Unmark all fits.");
+  EVT_BUTTON($this, $this->{regexp}, sub{mark(@_, 'regexp')});
+  $this-> mouseover('regexp', "Mark by regular expression.");
 
   $this->{close} = Wx::Button->new($this, wxID_CLOSE, q{}, wxDefaultPosition, wxDefaultSize);
   $left -> Add($this->{close}, 0, wxGROW|wxLEFT, 1);
@@ -84,6 +93,13 @@ sub new {
   my $reportpage = Wx::Panel->new($nb, -1);
   my $reportbox  = Wx::BoxSizer->new( wxVERTICAL );
   $reportpage->SetSizer($reportbox);
+
+  my $plottoolpage = Wx::ScrolledWindow->new($nb, -1);
+  my $plottoolbox  = Wx::BoxSizer->new( wxVERTICAL );
+  $plottoolpage -> SetSizer($plottoolbox);
+  $plottoolpage -> SetScrollbars(20, 20, 50, 50);
+  $this->{plottool} = $plottoolpage;
+  $this->{scrollbox} = $plottoolbox;
 
   ## -------- text box for log file
   $this->{log} = Wx::TextCtrl->new($logpage, -1, q{}, wxDefaultPosition, [550, -1],
@@ -149,8 +165,10 @@ sub new {
   EVT_BUTTON($this, $this->{savereport}, sub{savereport(@_)});
   $this-> mouseover('savereport', "Save the report contents to a file.");
 
-  $nb -> AddPage($logpage,     "Log file", 1);
-  $nb -> AddPage($reportpage,  "Reports", 0);
+
+  $nb -> AddPage($logpage,      "Log file", 1);
+  $nb -> AddPage($reportpage,   "Reports", 0);
+  $nb -> AddPage($plottoolpage, "Plot tool", 0);
 
   $this->SetSizerAndFit($box);
   return $this;
@@ -175,10 +193,10 @@ sub OnCheck {
 
 
 use Readonly;
-Readonly my $FIT_RESTORE => Wx::NewId();
-Readonly my $FIT_SAVE    => Wx::NewId();
-Readonly my $FIT_EXPORT  => Wx::NewId();
-Readonly my $FIT_DISCARD => Wx::NewId();
+Readonly my $FIT_RESTORE      => Wx::NewId();
+Readonly my $FIT_SAVE	      => Wx::NewId();
+Readonly my $FIT_EXPORT	      => Wx::NewId();
+Readonly my $FIT_DISCARD      => Wx::NewId();
 Readonly my $FIT_DISCARD_MANY => Wx::NewId();
 
 sub OnRightDown {
@@ -189,6 +207,7 @@ sub OnRightDown {
   #$self->GetParent->OnSelect($event);
   #my $name = $self->GetStringSelection;
   my $position  = $self->HitTest($event->GetPosition);
+  $self->GetParent->{_position} = $position; # need a way to remember where the click happened in methods are called from OnPlotMenu
   ($position = $self->GetCount - 1) if ($position == -1);
   my $name = $self->GetString($position);
   my $menu = Wx::Menu->new(q{});
@@ -206,19 +225,19 @@ sub OnPlotMenu {
   my $id = $event->GetId;
  SWITCH: {
     ($id == $FIT_RESTORE) and do {
-      $self->restore;
+      $self->restore($self->{_position});
       last SWITCH;
     };
     ($id == $FIT_SAVE)    and do {
-      $self->savelog;
+      $self->savelog($self->{_position});
       last SWITCH;
     };
     ($id == $FIT_EXPORT)  and do {
-      $self->export;
+      $self->export($self->{_position});
       last SWITCH;
     };
     ($id == $FIT_DISCARD) and do {
-      $self->discard('selected');
+      $self->discard('selected', $self->{_position});
       last SWITCH;
     };
     ($id == $FIT_DISCARD_MANY) and do {
@@ -228,21 +247,39 @@ sub OnPlotMenu {
   };
 };
 
-
 sub mark {
-  my ($self, $event, $how) = @_;
+  my ($self, $event, $how) = @_; # how = all|none|marked
+  my $re;
+  if ($how eq 'regexp') {
+    my $ted = Wx::TextEntryDialog->new( $self, "Mark fits matching this regular expression:", "Enter a regular expression", q{}, wxOK|wxCANCEL, Wx::GetMousePosition);
+    if ($ted->ShowModal == wxID_CANCEL) {
+      $self->status("Fit marking cancelled.");
+      return;
+    };
+    my $regex = $ted->GetValue;
+    my $is_ok = eval '$re = qr/$regex/';
+    if (not $is_ok) {
+      $self->{PARENT}->status("Oops!  \"$regex\" is not a valid regular expression");
+      return;
+    };
+  };
   foreach my $i (0 .. $self->{list}->GetCount-1) {
-    my $onoff = ($how eq 'all') ? 1 : 0;
+    my $onoff = 0;
+    if ($how eq 'regexp') {
+      $onoff = ($self->{list}->GetClientData($i)->name =~ m{$re}) ? 1 : $self->{list}->IsChecked($i);
+    } else {
+      $onoff = ($how eq 'all') ? 1 : 0;
+    };
     $self->{list}->Check($i, $onoff);
   };
 };
+
 
 sub on_close {
   my ($self) = @_;
   $self->Show(0);
   $self->GetParent->{toolbar}->ToggleTool(3, 0);
 };
-
 
 sub put_log {
   my ($self, $text, $color) = @_;
@@ -375,18 +412,21 @@ sub savereport {
 };
 
 sub restore {
-  my ($self) = @_;
-  $self->status("restore ".$self->{list}->GetStringSelection."... ");
+  my ($self, $position) = @_;
+  ($position = $self->{list}->GetSelection) if not defined ($position);
+  $self->status("restore ".$self->{list}->GetString($position)."... ");
 };
 
 sub discard {
-  my ($self, $how) = @_;
+  my ($self, $how, $position) = @_;
+  ($position = $self->{list}->GetSelection) if not defined ($position);
   $self->status("discard $how fit(s)...");
 };
 
 sub savelog {
-  my ($self) = @_;
-  my $fit = $self->{list}->GetClientData($self->{list}->GetSelection);
+  my ($self, $position) = @_;
+  ($position = $self->{list}->GetSelection) if not defined ($position);
+  my $fit = $self->{list}->GetClientData($position);
 
   (my $pref = $fit->name) =~ s{\s+}{_}g;
   my $fd = Wx::FileDialog->new( $self, "Save log file", cwd, $pref.q{.log},
@@ -403,9 +443,43 @@ sub savelog {
 };
 
 sub export {
-  my ($self) = @_;
-  $self->status("export ".$self->{list}->GetStringSelection."... ");
+  my ($self, $position) = @_;
+  ($position = $self->{list}->GetSelection) if not defined ($position);
+  $self->status("export ".$self->{list}->GetString($position)."... ");
 };
+
+
+sub add_plottool {
+  my ($self, $fit) = @_;
+
+  my $box      = Wx::StaticBox->new($self->{plottool}, -1, $fit->name, wxDefaultPosition, wxDefaultSize);
+  my $boxsizer = Wx::StaticBoxSizer->new( $box, wxHORIZONTAL );
+
+  foreach my $d (@{$fit->data}) {
+    my $key = join('.', $fit->group, $d->group);
+    $self->{$key} = Wx::Button->new($self->{plottool}, -1, $d->name);
+    $boxsizer -> Add($self->{$key}, 0, wxALL, 5);
+    EVT_BUTTON($self, $self->{$key},  sub{$self->transfer($fit, $d)});
+    $self-> mouseover($key, "Put the fit to \"" . $d->name . "\" from \"" . $fit->name . "\" in the plotting list.");
+  };
+
+  $self->{scrollbox} -> Add($boxsizer, 0, wxGROW|wxALL, 5);
+  $self->{plottool} -> SetSizerAndFit($self->{scrollbox});
+};
+
+## need to check if it is already in the plot list...
+sub transfer {
+  my ($self, $fit, $data) = @_;
+  my $plotlist  = $Demeter::UI::Artemis::frames{Plot}->{plotlist};
+  my $name      = $data->name;
+  $plotlist->Append("Fit: fit to $name from ".$fit->name);
+  my $i = $plotlist->GetCount - 1;
+  $plotlist->SetClientData($i, $data);
+  $plotlist->Check($i,1);
+  $self->status("\"" . $data->name . "\" from \"" . $fit->name . "\" was added to the plotting list.")
+};
+
+
 
 
 1;

@@ -484,8 +484,8 @@ sub fit {
 
   $rframes->{Plot}->{fileout}->SetValue(0);
 
+  my $rgds = $rframes->{GDS}->reset_all(1, 1);
   my ($abort, $rdata, $rpaths) = uptodate($rframes);
-  my $rgds = $rframes->{GDS}->reset_all(1);
 
   if (($#{$rdata} == -1) or ($#{$rpaths} == -1) or ($#{$rgds} == -1)) {
     my $message = q{};
@@ -497,7 +497,6 @@ sub fit {
     undef $busy;
     return;
   };
-  autosave();
 
   my @data  = @$rdata;
   my @paths = @$rpaths;
@@ -511,8 +510,8 @@ sub fit {
 
 
   ## get name, fom, and description + other properties
-  my $fit = Demeter::Fit->new(data => \@data, paths => \@paths, gds => \@gds, interface=>"Artemis (Wx)");
-  $fit->interface("Artemis (Wx $Wx::VERSION)");
+  my $fit = $rframes->{main} -> {currentfit};
+  $fit -> set(data => \@data, paths => \@paths, gds => \@gds);
   my $name = $rframes->{main}->{name}->GetValue || 'Fit '.$fit->mo->currentfit;
   my $startingname = $name;
   $fit->name($name);
@@ -521,7 +520,9 @@ sub fit {
   #$fit->ignore_errors(1);
   $rframes->{main} -> {currentfit} = $fit;
 
+
   $fit->set_mode(ifeffit=>1, screen=>0);
+  ##autosave($name);
   my $result = $fit->fit;
   my $finishtext = q{};
   my $code = "normal";
@@ -531,8 +532,7 @@ sub fit {
 		      nozip    => 1,
 		      copyfeff => 0,
 		     );
-    my $thisfit = $fit_order{order}{current} || 0;
-    ++$thisfit;
+    my $thisfit = $fit_order{order}{current} || 1;
     $fit_order{order}{$thisfit} = $fit->group;
     $fit_order{order}{current}  = $thisfit;
     my $string .= YAML::Tiny::Dump(%fit_order);
@@ -574,6 +574,7 @@ sub fit {
     my $dur = $finish->delta_ms($start);
     $finishtext = sprintf "Your fit finished in %d seconds.", $dur->seconds;
     $rframes->{History}->{list}->Append($fit->name, $fit);
+    $rframes->{History}->add_plottool($fit);
     undef $dur;
     undef $finish;
   } else {
@@ -590,6 +591,11 @@ sub fit {
   $rframes->{main}->{description}->SetValue($fit->description);
   autosave($name);
   $rframes->{main}->status($finishtext, $code);
+
+  my $newfit = Demeter::Fit->new(interface=>"Artemis (Wx $Wx::VERSION)");
+  $rframes->{main} -> {currentfit} = $newfit;
+  ++$fit_order{order}{current};
+
   undef $start;
   undef $busy;
 };
@@ -985,7 +991,7 @@ sub export {
 
   ## make a disposable Fit object
   my ($abort, $rdata, $rpaths) = uptodate(\%frames);
-  my $rgds = $frames{GDS}->reset_all;
+  my $rgds = $frames{GDS}->reset_all(0,0);
   my @data  = @$rdata;
   my @paths = @$rpaths;
   my @gds   = @$rgds;

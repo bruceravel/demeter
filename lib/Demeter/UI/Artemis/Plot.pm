@@ -274,6 +274,7 @@ sub plot {
   my $mds_offset = $self->{stack}->{offset}->GetValue;
   my $offset = 0;
   foreach my $obj (@list) {
+    #print $obj, "  ", $obj->name, "  ", $obj->group, $/;
     if (ref($obj) !~ m{Data}) {
       $obj->update_path(1);
       next;

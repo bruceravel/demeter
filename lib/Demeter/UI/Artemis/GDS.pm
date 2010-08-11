@@ -236,8 +236,9 @@ sub use_best_fit {
 };
 
 sub reset_all {
-  my ($parent, $no_ifeffit) = @_;
+  my ($parent, $no_ifeffit, $renew) = @_;
   $no_ifeffit ||= 0;
+  $renew      ||= 0;
   my $grid = $parent->{grid};
   my @gds = ();
   foreach my $row (0 .. $grid->GetNumberRows) {
@@ -245,7 +246,12 @@ sub reset_all {
     next if ($name =~ m{\A\s*\z});
     my $type = $grid -> GetCellValue($row, 0);
     my $mathexp = $grid -> GetCellValue($row, 2);
-    my $thisgds = $grid->{$name} || Demeter::GDS->new(); # take care to reuse GDS objects whenever possible
+    my $thisgds;
+    if ($renew or (not defined $grid->{$name})) {
+      $thisgds = Demeter::GDS->new();
+    } else {
+      $thisgds = $grid->{$name};
+    };
     $thisgds -> set(name=>$name, gds=>$type, mathexp=>$mathexp);
     $grid->{$name} = $thisgds;
     push @gds, $thisgds;
@@ -255,6 +261,7 @@ sub reset_all {
   $parent->status("Reset all parameter values in Ifeffit.") if (not $no_ifeffit);
   return \@gds;
 };
+
 
 sub highlight {
   my ($parent) = @_;

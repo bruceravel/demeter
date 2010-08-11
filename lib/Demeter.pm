@@ -72,7 +72,8 @@ with 'MooseX::SetGet';		# this is mine....
 
 
 my %seen_group;
-has 'group'     => (is => 'rw', isa => 'Str',  default => sub{shift->_get_group()});
+has 'group'     => (is => 'rw', isa => 'Str',  default => sub{shift->_get_group()},
+		    trigger => sub{ my($self, $new); ++$seen_group{$new} if defined($new)});
 has 'name'      => (is => 'rw', isa => 'Str',  default => q{});
 has 'plottable' => (is => 'ro', isa => 'Bool', default => 0);
 has 'pathtype'  => (is => 'ro', isa => 'Bool', default => 0);
@@ -263,9 +264,6 @@ sub finish {
 
 ## return a new object initialized to the values of $self.  @arguments
 ## is a list of attributes for the new object
-##
-## this is a poor example of OO -- there is too much downward
-## reference to derived objects.  boo!
 
 sub clone {
   my ($self, @arguments) = @_;
@@ -347,6 +345,7 @@ sub is_true {
 };
 
 ## organize obtaining a unique group name
+## surely this could be more efficient than a plunder search!
 sub _get_group {
   my ($self) = @_;
   my $propose = random_string('ccccc');

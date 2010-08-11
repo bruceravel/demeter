@@ -387,6 +387,7 @@ sub report {
       my $att = ($this eq 'ScatteringPath') ? 'intrpline'
 	      : ($this eq 'Plot')           ? 'backend'
 	      : ($this eq 'Indicator')      ? 'report'
+	      : ($this eq 'GDS')            ? 'write_gds'
 	      :                               'name';
       my $i = 0;
       foreach my $obj (@{$self->$this}) {

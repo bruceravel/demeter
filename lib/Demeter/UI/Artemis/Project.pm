@@ -48,13 +48,13 @@ sub save_project {
 
   ## make sure we are fully up to date and serialised
   my ($abort, $rdata, $rpaths) = Demeter::UI::Artemis::uptodate($rframes);
-  my $rgds = $rframes->{GDS}->reset_all(1);
+  my $rgds = $rframes->{GDS}->reset_all(1,0);
   my @data  = @$rdata;
   my @paths = @$rpaths;
   my @gds   = @$rgds;
   ## get name, fom, and description + other properties
 
-  $rframes->{main} -> {currentfit}  = Demeter::Fit->new(interface=>"Artemis (Wx)")
+  $rframes->{main} -> {currentfit}  = Demeter::Fit->new(interface=>"Artemis (Wx $Wx::VERSION)")
     if (not $rframes->{main} -> {currentfit});
   $rframes->{main} -> {currentfit} -> set(data => \@data, paths => \@paths, gds => \@gds);
   $rframes->{main} -> {currentfit} -> serialize(tree     => File::Spec->catfile($rframes->{main}->{project_folder}, 'fits'),
@@ -229,9 +229,11 @@ sub read_project {
   $current ||= $dirs[0];
   my $fit;
   foreach my $d (@dirs) {
-    $fit = Demeter::Fit->new(group=>$d, interface=>"Artemis (Wx)");
-    $fit->deserialize(folder=> File::Spec->catfile($projfolder, 'fits', $d));
+    $fit = Demeter::Fit->new(group=>$d, interface=>"Artemis (Wx $Wx::VERSION)");
+    my $regen = ($d eq $current) ? 0 : 1;
+    $fit->deserialize(folder=> File::Spec->catfile($projfolder, 'fits', $d), regenerate=>$regen);
     $rframes->{History}->{list}->Append($fit->name, $fit) if $fit->fitted;
+    $rframes->{History}->add_plottool($fit);
     next unless ($d eq $current);
     $rframes->{History}->{list}->SetSelection($rframes->{History}->{list}->GetCount-1);
     $rframes->{History}->OnSelect;
@@ -339,6 +341,12 @@ sub read_project {
   $rframes->{main}->{projectpath} = $fname;
   $rframes->{main}->{projectname} = basename($fname, '.fpj');
   $rframes->{main}->status("Imported project $fname.");
+
+  my $newfit = Demeter::Fit->new(interface=>"Artemis (Wx $Wx::VERSION)");
+  $rframes->{main} -> {currentfit} = $newfit;
+  ++$Demeter::UI::Artemis::fit_order{order}{current};
+
+
   modified(0);
 };
 

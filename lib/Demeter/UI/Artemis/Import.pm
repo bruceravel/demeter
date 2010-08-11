@@ -290,7 +290,7 @@ sub _old {
   my $mds = 0;
 
   ## -------- make a new Fit object
-  my $fit = Demeter::Fit->new(interface=>"Artemis (Wx)");
+  my $fit = Demeter::Fit->new(interface=>"Artemis (Wx $Wx::VERSION)");
   $rframes->{main}->{currentfit} = $fit;
   $rframes->{Plot}->{limits}->{fit}->SetValue(1);
   $fit->mo->currentfit(1);
@@ -486,6 +486,11 @@ sub _old {
   autosave;
   $$rdemeter->push_mru("old_artemis", $file);
   chdir dirname($file);
+
+  my $newfit = Demeter::Fit->new(interface=>"Artemis (Wx $Wx::VERSION)");
+  $rframes->{main} -> {currentfit} = $newfit;
+  ++$Demeter::UI::Artemis::fit_order{order}{current};
+
   modified(1);
   $rframes->{main}->status("Imported old-style Artemis project $file");
 
@@ -624,6 +629,9 @@ sub _feffit {
   autosave;
   $$rdemeter->push_mru("feffit", $file);
   chdir dirname($file);
+  my $newfit = Demeter::Fit->new(interface=>"Artemis (Wx $Wx::VERSION)");
+  $rframes->{main} -> {currentfit} = $newfit;
+  ++$Demeter::UI::Artemis::fit_order{order}{current};
   modified(1);
   $rframes->{main}->status("Imported old-skool Feffit input: $file");
 };

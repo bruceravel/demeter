@@ -1212,12 +1212,12 @@ override 'serialize' => sub {
 override 'deserialize' => sub {
   my ($self, @args) = @_;
   my %args = @args;
-  $args{plot}   ||= 0;
-  $args{file}   ||= 0;
-  $args{folder} ||= 0;
+  $args{plot}       ||= 0;
+  $args{file}       ||= 0;
+  $args{folder}     ||= 0;
+  $args{regenerate} ||= 0;
 
   my (%datae, %sps,  %parents, $dpj, $zip, $project_folder);
-
 
   if ($args{file}) {
     $dpj = File::Spec->rel2abs($args{file});
@@ -1334,6 +1334,21 @@ override 'deserialize' => sub {
     $this -> parent($parents{$this->parentgroup});
     $this -> data($datae{$this->datagroup});
     push @paths, $this;
+  };
+
+  if ($args{regenerate}) {
+    my %mapping = ();
+    foreach my $o (@gds, @data, @paths) {
+      my $old = $o->group;
+      my $new = $o->_get_group;
+      $o->group($new);
+      $mapping{$old} = $new;
+    };
+    foreach my $p (@paths) {
+      my $olddatagroup = $p->datagroup;
+      $p->datagroup($mapping{$olddatagroup});
+      $p->data($p->mo->fetch('Data', $p->datagroup));
+    };
   };
 
   ## -------- make the fit object
