@@ -17,6 +17,7 @@ package Demeter::Fit;
 
 #use diagnostics;
 use autodie qw( open close );
+use File::Copy;
 use File::Spec;
 
 use Moose;
@@ -1343,6 +1344,11 @@ override 'deserialize' => sub {
       my $new = $o->_get_group;
       $o->group($new);
       $mapping{$old} = $new;
+      $mapping{$new} = $old;
+    };
+    foreach my $d (@data) {
+      move(File::Spec->catfile($args{folder}, $mapping{$d->group}.".fit" ), File::Spec->catfile($args{folder}, $d->group.".fit" ));
+      move(File::Spec->catfile($args{folder}, $mapping{$d->group}.".yaml"), File::Spec->catfile($args{folder}, $d->group.".yaml"));
     };
     foreach my $p (@paths) {
       my $olddatagroup = $p->datagroup;
@@ -1411,7 +1417,7 @@ override 'deserialize' => sub {
     };
     $d->read_fit($file) if (-e $file);
     $d->fitting(1);
-    unlink $file;
+    #unlink $file;
   };
 
   ## -------- import the Plot object, if requested

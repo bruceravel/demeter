@@ -287,13 +287,16 @@ sub plot {
   if ($self->{stack}->{dostack}->GetValue) {
     my $save = $list[0]->data->y_offset;
     $list[0] -> data -> y_offset($self->{stack}->{start}->GetValue);
-    $list[0] -> po -> stackjump($self->{stack}->{increment}->GetValue);
+    $list[0] -> po -> stackjump($self->{stack}->{increment}->GetValue); ###### Fits?
     $list[0] -> po -> space($space);
     $list[0] -> stack(@list);
     $list[0] -> data -> y_offset($save);
   } elsif ($invert_r or $invert_q) {
+    my $count = 0;
     foreach my $obj (@list) {
-      if (ref($obj) =~ m{Data}) {       # Data plotted normally
+      if ($self->{plotlist}->GetString($count) =~ m{\AFit}) {
+	## do the thing below
+      } elsif (ref($obj) =~ m{Data}) {       # Data plotted normally
 	$obj->plot($space);
       } elsif (ref($obj) =~ m{VPath}) { # VPath plotted normally
 	$obj->plot($space);
@@ -303,9 +306,25 @@ sub plot {
 	$obj->plot($space);
 	$obj->data->plot_multiplier($save);
       };
+      ++$count;
     };
   } else {			# plot normally
-    $_->plot($space) foreach @list;
+    my $count = 0;
+    foreach (@list) {
+      if ($self->{plotlist}->GetString($count) =~ m{\AFit}) {
+	my $tempname = $self->{plotlist}->GetString($count);
+	$tempname = (split(/ from /, $tempname))[1];
+	$_->plotkey($tempname);
+	$_->co->set(plot_part=>'fit');
+	$_->part_plot('fit', $space);
+	$_->co->set(plot_part=>q{});
+	$_->plotkey(q{});
+	$_->po->increment;
+      } else {
+	$_->plot($space);
+      };
+      ++$count;
+    };
   };
 
   my $ds = first {ref($_) =~ m{Data}} @list;

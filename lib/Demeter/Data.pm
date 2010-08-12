@@ -78,6 +78,7 @@ subtype 'FitSum'
       => message { "This is either a fit or a sum." };
 has 'fitsum'      => (is => 'rw', isa => 'FitSum', default => q{});
 has 'fitting'     => (is => 'rw', isa => 'Bool',   default => 0);
+has 'plotkey'     => (is => 'rw', isa => 'Str',    default => q{});
 
 has 'provenance'  => (is => 'rw', isa => 'Str',    default => q{});
 
@@ -864,6 +865,12 @@ This is a text string used to describe this object in a plot ot a user
 interface.  Like the C<group> attribute, this should be short, but it
 can be a bit more verbose.  It should be a single line, unlike the
 C<title> attibute.
+
+=item C<plotkey> (string)
+
+This is a text string used as a temporary override to the name of Data
+object for use in a plot.  It should be reset to an empty string as
+soon as the plot requiring the name override is finished.
 
 =item C<cv> (number)
 

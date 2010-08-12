@@ -471,11 +471,12 @@ sub add_plottool {
 sub transfer {
   my ($self, $fit, $data) = @_;
   my $plotlist  = $Demeter::UI::Artemis::frames{Plot}->{plotlist};
-  my $name      = $data->name;
-  $plotlist->Append("Fit: fit to $name from ".$fit->name);
+  $plotlist->Append("Fit to " . $data->name . " from ".$fit->name);
   my $i = $plotlist->GetCount - 1;
   $plotlist->SetClientData($i, $data);
   $plotlist->Check($i,1);
+  #my $fitfile = File::Spec->catfile($Demeter::UI::Artemis::frames{main}->{project_folder}, 'fits', $fit->group, $data->group.'.fit');
+  #$data->read_fit($fitfile);
   $self->status("\"" . $data->name . "\" from \"" . $fit->name . "\" was added to the plotting list.")
 };
 

@@ -140,11 +140,11 @@ sub points {
   $args{subtract} ||= q{};
 
   my @x = ($args{space} eq 'e')    ? $self->get_array('energy')
-        : ($args{space} eq 'k')    ? $self->get_array('k')
+        : ($args{space} eq 'k')    ? $self->get_array('k', $args{part})
         : ($args{space} eq 'chie') ? $self->get_array('k')
-        : ($args{space} eq 'r')    ? $self->get_array('r')
+        : ($args{space} eq 'r')    ? $self->get_array('r', $args{part})
         : ($args{space} eq 'lcf')  ? $self->get_array('x')
-        :                            $self->get_array('q');
+        :                            $self->get_array('q', $args{part});
   my @k = @x;
   @x = map {$_**2/$ETOK + $self->bkg_e0} @x if ($args{space} eq 'chie');
   @x = map {$_ + $args{shift}} @x;

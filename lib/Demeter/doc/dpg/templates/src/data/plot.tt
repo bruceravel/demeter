@@ -165,5 +165,7 @@ The details of the funny syntax using the
 [% INCLUDE font/mono a="po" %] method is explained in
 [% INCLUDE html/link text="the section on the Plot object"
                      link="../highlevel/plot.html" %].
+
+Discuss the why and how of the plotkey attribute of Data ....
 [% END %]
 

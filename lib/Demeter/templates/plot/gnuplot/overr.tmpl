@@ -18,7 +18,7 @@
 	        scale   => $D->plot_multiplier,
 	        yoffset => $D->y_offset,
 	     );
-  $thiskey = $C->get('plot_part') || $P->key;
+  $thiskey = $D->plotkey || $C->get('plot_part') || $P->key;
   $thiskey =~ s{_}{\\\\_}g;
   if (ref($PT) =~ m{Path}) { $thiskey = $PT->name || 'Path '.$PT->Index };
   q{}
