@@ -542,7 +542,7 @@ sub fit {
 
     $rframes->{GDS}->fill_results(@gds);
     $rframes->{Log}->{name} = $fit->name;
-    $rframes->{Log}->put_log($fit->logtext, $fit->color);
+    $rframes->{Log}->put_log($fit);
     $rframes->{Log}->SetTitle("Artemis [Log] " . $rframes->{main}->{name}->GetValue);
     $rframes->{Log}->Show(1);
     $rframes->{main}->{log_toggle}->SetValue(1);

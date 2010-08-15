@@ -21,9 +21,9 @@ use warnings;
 use Wx qw( :everything );
 use Wx::Event qw(EVT_CLOSE EVT_BUTTON);
 use base qw(Wx::Frame);
+use Demeter::UI::Artemis::LogText;
 
 use Cwd;
-use List::Util qw(max);
 
 my @font      = (9, wxTELETYPE, wxNORMAL, wxNORMAL, 0, "" );
 my @bold      = (9, wxTELETYPE, wxNORMAL,   wxBOLD, 0, "" );
@@ -41,13 +41,6 @@ sub new {
   $this->{text} = Wx::TextCtrl->new($this, -1, q{}, wxDefaultPosition, wxDefaultSize,
 				    wxTE_MULTILINE|wxTE_READONLY|wxHSCROLL);
   $this->{text} -> SetFont( Wx::Font->new( 9, wxTELETYPE, wxNORMAL, wxNORMAL, 0, "" ) );
-
-  $this->{normal}     = Wx::TextAttr->new(Wx::Colour->new('#000000'), wxNullColour, Wx::Font->new( @font ) );
-  $this->{happiness}  = Wx::TextAttr->new(Wx::Colour->new('#acacac'), wxNullColour, Wx::Font->new( @font ) );
-  $this->{parameters} = Wx::TextAttr->new(Wx::Colour->new('#000000'), wxNullColour, Wx::Font->new( @underline ) );
-  $this->{header}     = Wx::TextAttr->new(Wx::Colour->new('#000055'), wxNullColour, Wx::Font->new( @bold ) ); # '#8B4726'
-  $this->{data}       = Wx::TextAttr->new(Wx::Colour->new('#ffffff'), Wx::Colour->new('#000055'), Wx::Font->new( @bold ) );
-
 
   $vbox -> Add($this->{text}, 1, wxGROW, 0);
 
@@ -67,32 +60,8 @@ sub new {
 };
 
 sub put_log {
-  my ($self, $text, $color) = @_;
-  $self -> {text} -> SetValue(q{});
-  my $max = 0;
-  foreach my $line (split(/\n/, $text)) {
-    $max = max($max, length($line));
-  };
-  my $pattern = '%-' . $max . 's';
-  $self->{stats} = Wx::TextAttr->new(Wx::Colour->new('#000000'), Wx::Colour->new($color), Wx::Font->new( @font ) );
-
-  foreach my $line (split(/\n/, $text)) {
-    my $was = $self -> {text} -> GetInsertionPoint;
-    $self -> {text} -> AppendText(sprintf($pattern, $line) . $/);
-    my $is = $self -> {text} -> GetInsertionPoint;
-
-    my $color = ($line =~ m{(?:parameters|variables):})                     ? 'parameters'
-              : ($line =~ m{(?:Happiness|semantic|NEVER|a penalty of|Penalty of)})     ? 'happiness'
-              : ($line =~ m{\A(?:R-factor|Reduced)})                        ? 'stats'
-              : ($line =~ m{\A(?:=+\s+Data set)})                           ? 'data'
-              : ($line =~ m{\A (?:Name|Description|Figure|Time|Environment|Interface|Prepared|Contact)}) ? 'header'
-              : ($line =~ m{\A\s+\.\.\.})                                   ? 'header'
-	      :                                                               'normal';
-    $color = 'normal' if ((not $Demeter::UI::Artemis::demeter->co->default("artemis", "happiness"))
-			  and ($color eq 'stats'));
-    $self->{text}->SetStyle($was, $is, $self->{$color});
-  };
-  $self->{text}->ShowPosition(0);
+  my ($self, $fit) = @_;
+  Demeter::UI::Artemis::LogText -> make_text($self->{text}, $fit);
   $self->{save}->Enable(1);
 };
 
@@ -128,3 +97,41 @@ sub on_close {
 };
 
 1;
+
+=head1 NAME
+
+Demeter::UI::Artemis::Log - A log file display interface for Artemis
+
+=head1 VERSION
+
+This documentation refers to Demeter version 0.4.
+
+=head1 SYNOPSIS
+
+Examine the log file from the most current fit.
+
+=head1 CONFIGURATION
+
+
+=head1 DEPENDENCIES
+
+Demeter's dependencies are in the F<Bundle/DemeterBundle.pm> file.
+
+=head1 BUGS AND LIMITATIONS
+
+Bruce Ravel (bravel AT bnl DOT gov)
+
+L<http://cars9.uchicago.edu/~ravel/software/>
+
+=head1 LICENCE AND COPYRIGHT
+
+Copyright (c) 2006-2010 Bruce Ravel (bravel AT bnl DOT gov). All rights reserved.
+
+This module is free software; you can redistribute it and/or
+modify it under the same terms as Perl itself. See L<perlgpl>.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+
+=cut

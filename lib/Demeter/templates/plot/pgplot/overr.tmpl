@@ -12,4 +12,4 @@
  q{}
 }
 plot({$D->group}.r, "{$D->plot_multiplier}*{$D->group}.{$suffix}+{$D->y_offset}",
-     style={$P->datastyle}, color="{$P->color}", key="{$P->key}")
+     style={$P->datastyle}, color="{$P->color}", key="{$D->plotkey || $P->key}")

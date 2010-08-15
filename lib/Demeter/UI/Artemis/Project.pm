@@ -227,14 +227,15 @@ sub read_project {
   my $current = $Demeter::UI::Artemis::fit_order{order}{current};
   $current = $Demeter::UI::Artemis::fit_order{order}{$current};
   $current ||= $dirs[0];
-  my $fit;
+  my $currentfit;
   foreach my $d (@dirs) {
-    $fit = Demeter::Fit->new(group=>$d, interface=>"Artemis (Wx $Wx::VERSION)");
+    my $fit = Demeter::Fit->new(group=>$d, interface=>"Artemis (Wx $Wx::VERSION)");
     my $regen = ($d eq $current) ? 0 : 1;
     $fit->deserialize(folder=> File::Spec->catfile($projfolder, 'fits', $d), regenerate=>$regen);
     $rframes->{History}->{list}->Append($fit->name, $fit) if $fit->fitted;
     $rframes->{History}->add_plottool($fit);
     next unless ($d eq $current);
+    $currentfit = $fit;
     $rframes->{History}->{list}->SetSelection($rframes->{History}->{list}->GetCount-1);
     $rframes->{History}->OnSelect;
     $rframes->{main}->{currentfit} = $fit;
@@ -246,6 +247,45 @@ sub read_project {
     $rframes->{main}->{name}->SetValue($name);
     $rframes->{main}->{description}->SetValue($fit->description);
   };
+
+  ## -------- plot and indicator yamls, journal
+  my $py = File::Spec->catfile($rframes->{main}->{plot_folder}, 'plot.yaml');
+  if (-e $py) {
+    $Demeter::UI::Artemis::demeter->po->set(%{YAML::Tiny::LoadFile($py)});
+    $rframes->{Plot}->populate;
+  };
+  my $iy = File::Spec->catfile($rframes->{main}->{plot_folder}, 'indicators.yaml');
+  if (-e $iy) {
+    my @list = YAML::Tiny::LoadFile($iy);
+    $rframes->{Plot}->{indicators}->populate(@list);
+  };
+  my $journal = File::Spec->catfile($rframes->{main}->{project_folder}, 'journal');
+  if (-e $journal) {
+    $rframes->{Journal}->{journal}->SetValue($currentfit->slurp($journal));
+  };
+
+  $import_problems .= restore_fit($rframes, $currentfit);
+
+  if ($import_problems) {
+    Wx::MessageDialog->new($Demeter::UI::Artemis::frames{main}, $import_problems, "Warning!", wxOK|wxICON_WARNING) -> ShowModal;
+  };
+
+  $Demeter::UI::Artemis::demeter->push_mru("artemis", $fname);
+  &Demeter::UI::Artemis::set_mru;
+  $rframes->{main}->{projectpath} = $fname;
+  $rframes->{main}->{projectname} = basename($fname, '.fpj');
+  $rframes->{main}->status("Imported project $fname.");
+
+  my $newfit = Demeter::Fit->new(interface=>"Artemis (Wx $Wx::VERSION)");
+  $rframes->{main} -> {currentfit} = $newfit;
+  ++$Demeter::UI::Artemis::fit_order{order}{current};
+
+  modified(0);
+};
+
+sub restore_fit {
+  my ($rframes, $fit) = @_;
+  my $import_problems = q{};
 
   ## -------- load up the GDS parameters
   my $grid  = $rframes->{GDS}->{grid};
@@ -271,6 +311,7 @@ sub read_project {
     ++$start;
   };
 
+  ## -------- Data and Paths
   my $count = 0;
   foreach my $d (@{$fit->data}) {
     my ($dnum, $idata) = Demeter::UI::Artemis::make_data_frame($rframes->{main}, $d);
@@ -284,7 +325,8 @@ sub read_project {
 	$import_problems .= sprintf("The path named \"%s\" from data set \"%s\" was malformed.  It was discarded.\n", $p->name, $d->name);
 	next;
       };
-      my $feff = $feffs{$p->{parentgroup}} || $fit -> mo -> fetch('Feff', $p->{parentgroup});
+      #my $feff = $feffs{$p->{parentgroup}} || $fit -> mo -> fetch('Feff', $p->{parentgroup});
+      my $feff = $fit -> mo -> fetch('Feff', $p->{parentgroup});
       $p->set(folder=>$feff->workspace, file=>q{}, update_path=>1);
       next if ($p->data ne $d);
       $p->parent($feff);
@@ -305,49 +347,29 @@ sub read_project {
     ++$count;
   };
 
-  my $py = File::Spec->catfile($rframes->{main}->{plot_folder}, 'plot.yaml');
-  if (-e $py) {
-    $Demeter::UI::Artemis::demeter->po->set(%{YAML::Tiny::LoadFile($py)});
-    $rframes->{Plot}->populate;
-  };
-  my $iy = File::Spec->catfile($rframes->{main}->{plot_folder}, 'indicators.yaml');
-  if (-e $iy) {
-    my @list = YAML::Tiny::LoadFile($iy);
-    $rframes->{Plot}->{indicators}->populate(@list);
-  };
-
-  my $journal = File::Spec->catfile($rframes->{main}->{project_folder}, 'journal');
-  if (-e $journal) {
-    $rframes->{Journal}->{journal}->SetValue($fit->slurp($journal));
-  };
-
+  ## -------- labels and suchlike
   $rframes->{Log}->{name} = $fit->name;
-  $rframes->{Log}->put_log($fit->logtext, $fit->color);
+  $rframes->{Log}->put_log($fit);
   $rframes->{Log}->SetTitle("Artemis [Log] " . $fit->name);
   $rframes->{Log}->Show(0);
   $rframes->{main}->{log_toggle}->SetValue(0);
   if ($fit->happiness) {
     Demeter::UI::Artemis::set_happiness_color($fit->color);
   } else {
-    $Demeter::UI::Artemis::frames{main}->{fitbutton} -> SetBackgroundColour(Wx::Colour->new($fit->co->default("happiness", "average_color")));
+    $rframes->{main}->{fitbutton} -> SetBackgroundColour(Wx::Colour->new($fit->co->default("happiness", "average_color")));
   };
 
-  if ($import_problems) {
-    Wx::MessageDialog->new($Demeter::UI::Artemis::frames{main}, $import_problems, "Warning!", wxOK|wxICON_WARNING) -> ShowModal;
+  return $import_problems;
+};
+
+
+sub discard_fit {
+  my ($rframes) = @_;
+  $rframes->{GDS}->discard_all(1);
+  foreach my $d (keys %$rframes) {
+    next if $d !~ m{data};
+    $rframes->{$d}->discard_data(1);
   };
-
-  $Demeter::UI::Artemis::demeter->push_mru("artemis", $fname);
-  &Demeter::UI::Artemis::set_mru;
-  $rframes->{main}->{projectpath} = $fname;
-  $rframes->{main}->{projectname} = basename($fname, '.fpj');
-  $rframes->{main}->status("Imported project $fname.");
-
-  my $newfit = Demeter::Fit->new(interface=>"Artemis (Wx $Wx::VERSION)");
-  $rframes->{main} -> {currentfit} = $newfit;
-  ++$Demeter::UI::Artemis::fit_order{order}{current};
-
-
-  modified(0);
 };
 
 sub find_sp {
@@ -434,7 +456,48 @@ sub close_project {
 
 };
 
-
-
-
 1;
+
+=head1 NAME
+
+Demeter::UI::Artemis::Project - Import and export Artemis project files
+
+=head1 VERSION
+
+This documentation refers to Demeter version 0.4.
+
+=head1 SYNOPSIS
+
+Import and export Artemis project files.
+
+=head1 CONFIGURATION
+
+
+=head1 DEPENDENCIES
+
+Demeter's dependencies are in the F<Bundle/DemeterBundle.pm> file.
+
+=head1 BUGS AND LIMITATIONS
+
+Please report problems to Bruce Ravel (bravel AT bnl DOT gov)
+
+Patches are welcome.
+
+=head1 AUTHOR
+
+Bruce Ravel (bravel AT bnl DOT gov)
+
+L<http://cars9.uchicago.edu/~ravel/software/>
+
+=head1 LICENCE AND COPYRIGHT
+
+Copyright (c) 2006-2010 Bruce Ravel (bravel AT bnl DOT gov). All rights reserved.
+
+This module is free software; you can redistribute it and/or
+modify it under the same terms as Perl itself. See L<perlgpl>.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+
+=cut

@@ -19,7 +19,7 @@
 	     scale   => $D->plot_multiplier,
 	     yoffset => $D->y_offset
 	    );
-  $thiskey = $P->key;
+  $thiskey = $D->plotkey || $P->key;
   $thiskey =~ s{_}{\\\\_}g;
   $legend  = ($P->showlegend) ? '' : "\nunset key" ;
   q{}

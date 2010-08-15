@@ -22,7 +22,7 @@ BEGIN {
 require 5.8.0;
 
 use version;
-our $VERSION = version->new('0.4.3');
+our $VERSION = version->new('0.4.4');
 use vars qw($Gnuplot_exists);
 
 #use Demeter::Carp;
@@ -1556,7 +1556,11 @@ Patches are welcome.
 
 =over 4
 
-=item 0.4.2
+=item 0.4.4
+
+Added fit history to Artemis
+
+=item 0.4.3
 
 Added LCF fitting
 

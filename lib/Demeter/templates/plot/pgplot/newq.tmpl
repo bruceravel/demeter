@@ -14,5 +14,5 @@
 newplot({$D->group}.q, "{$D->plot_multiplier}*{$D->group}.{$suffix}+{$D->y_offset}",
         xlabel="{$P->xlabel}", ylabel="{$P->ylabel}",
 	grid, gridcolor="{$P->gridcolor}", xmin={$P->qmin}, xmax={$P->qmax},
-	style={$P->datastyle}, color="{$P->color}", key="{$P->key}", 
+	style={$P->datastyle}, color="{$P->color}", key="{$D->plotkey || $P->key}", 
 	title="{$P->title}", fg="{$P->fg}", bg="{$P->bg}")

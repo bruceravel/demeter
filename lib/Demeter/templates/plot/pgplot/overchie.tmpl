@@ -6,5 +6,5 @@
 }
 set {$D->group}.eee = {$D->group}.k^2/etok+{$D->bkg_e0}
 plot({$D->group}.eee, "{$D->plot_multiplier}*{$D->group}.k^{$P->kweight}*{$D->group}.chi+{$D->y_offset}",
-     style={$P->datastyle}, color="{$P->color}", key="{$P->key}")
+     style={$P->datastyle}, color="{$P->color}", key="{$D->plotkey || $P->key}")
 erase {$D->group}.eee

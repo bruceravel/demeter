@@ -18,7 +18,7 @@
 	        yoffset => $D->y_offset,
 	        weight  => $P->kweight,
 	       );
-  $thiskey = $C->get('plot_part') || $P->key;
+  $thiskey = $D->plotkey || $C->get('plot_part') || $P->key;
   $thiskey =~ s{_}{\\\\_}g;
   if (ref($PT) =~ m{Path}) { $thiskey = $PT->name || 'Path '.$PT->Index };
   $legend  = ($P->showlegend) ? '' : "\nunset key" ;

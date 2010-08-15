@@ -11,6 +11,6 @@ set {$D->group}.eee = {$D->group}.k^2/etok+{$D->bkg_e0}
 newplot({$D->group}.eee, "{$D->plot_multiplier}*{$D->group}.k^{$P->kweight}*{$D->group}.chi+{$D->y_offset}",
         xlabel="{$P->xlabel}", ylabel="{$P->ylabel}",
 	grid, gridcolor="{$P->gridcolor}", xmin={$emin}, xmax={$emax},
-	style={$P->datastyle}, color="{$P->color}", key="{$P->key}", 
+	style={$P->datastyle}, color="{$P->color}", key="{$D->plotkey || $P->key}", 
 	title="{$P->title}", fg="{$P->fg}", bg="{$P->bg}")
 erase {$D->group}.eee

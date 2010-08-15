@@ -18,17 +18,12 @@ package  Demeter::UI::Artemis::History;
 use strict;
 use warnings;
 use Cwd;
-use List::Util qw(max);
 use List::MoreUtils qw(minmax);
 
 use Wx qw( :everything );
 use Wx::Event qw(EVT_CLOSE EVT_LISTBOX EVT_CHECKLISTBOX EVT_BUTTON EVT_RADIOBOX
 		 EVT_ENTER_WINDOW EVT_LEAVE_WINDOW EVT_CHOICE EVT_RIGHT_DOWN EVT_MENU);
 use base qw(Wx::Frame);
-
-my @font      = (9, wxTELETYPE, wxNORMAL, wxNORMAL, 0, "" );
-my @bold      = (9, wxTELETYPE, wxNORMAL,   wxBOLD, 0, "" );
-my @underline = (9, wxTELETYPE, wxNORMAL, wxNORMAL, 1, "" );
 
 sub new {
   my ($class, $parent) = @_;
@@ -107,12 +102,6 @@ sub new {
   $this->{log} -> SetFont( Wx::Font->new( 9, wxTELETYPE, wxNORMAL, wxNORMAL, 0, "" ) );
   $logbox -> Add($this->{log}, 1, wxGROW|wxALL, 5);
 
-  $this->{normal}     = Wx::TextAttr->new(Wx::Colour->new('#000000'), wxNullColour, Wx::Font->new( @font ) );
-  $this->{happiness}  = Wx::TextAttr->new(Wx::Colour->new('#acacac'), wxNullColour, Wx::Font->new( @font ) );
-  $this->{parameters} = Wx::TextAttr->new(Wx::Colour->new('#000000'), wxNullColour, Wx::Font->new( @underline ) );
-  $this->{header}     = Wx::TextAttr->new(Wx::Colour->new('#000055'), wxNullColour, Wx::Font->new( @bold ) ); # '#8B4726'
-  $this->{data}       = Wx::TextAttr->new(Wx::Colour->new('#ffffff'), Wx::Colour->new('#000055'), Wx::Font->new( @bold ) );
-
   ## -------- controls for writing reports on fits
   my $controls = Wx::BoxSizer->new( wxHORIZONTAL );
   $reportbox -> Add($controls, 0, wxGROW|wxALL, 0);
@@ -183,14 +172,13 @@ sub mouseover {
 sub OnSelect {
   my ($self, $event) = @_;
   my $fit = $self->{list}->GetClientData($self->{list}->GetSelection);
-  $self->put_log($fit->logtext, $fit->color);
+  $self->put_log($fit);
   $self->set_params($fit);
 };
 sub OnCheck {
   #print "check: ", join(" ", @_), $/;
   1;
 };
-
 
 use Readonly;
 Readonly my $FIT_RESTORE      => Wx::NewId();
@@ -207,7 +195,7 @@ sub OnRightDown {
   #$self->GetParent->OnSelect($event);
   #my $name = $self->GetStringSelection;
   my $position  = $self->HitTest($event->GetPosition);
-  $self->GetParent->{_position} = $position; # need a way to remember where the click happened in methods are called from OnPlotMenu
+  $self->GetParent->{_position} = $position; # need a way to remember where the click happened in methods called from OnPlotMenu
   ($position = $self->GetCount - 1) if ($position == -1);
   my $name = $self->GetString($position);
   my $menu = Wx::Menu->new(q{});
@@ -282,34 +270,9 @@ sub on_close {
 };
 
 sub put_log {
-  my ($self, $text, $color) = @_;
-  my $busy = Wx::BusyCursor->new();
-  $self -> {log} -> SetValue(q{});
-  my $max = 0;
-  foreach my $line (split(/\n/, $text)) {
-    $max = max($max, length($line));
-  };
-  my $pattern = '%-' . $max . 's';
-  $self->{stats} = Wx::TextAttr->new(Wx::Colour->new('#000000'), Wx::Colour->new($color), Wx::Font->new( @font ) );
-
-  foreach my $line (split(/\n/, $text)) {
-    my $was = $self -> {log} -> GetInsertionPoint;
-    $self -> {log} -> AppendText(sprintf($pattern, $line) . $/);
-    my $is = $self -> {log} -> GetInsertionPoint;
-
-    my $color = ($line =~ m{(?:parameters|variables):})                     ? 'parameters'
-              : ($line =~ m{(?:Happiness|semantic|NEVER|a penalty of|Penalty of)}) ? 'happiness'
-              : ($line =~ m{\A(?:R-factor|Reduced)})                        ? 'stats'
-              : ($line =~ m{\A(?:=+\s+Data set)})                           ? 'data'
-              : ($line =~ m{\A (?:Name|Description|Figure|Time|Environment|Interface|Prepared|Contact)}) ? 'header'
-              : ($line =~ m{\A\s+\.\.\.})                                   ? 'header'
-	      :                                                               'normal';
-    $color = 'normal' if ((not $Demeter::UI::Artemis::demeter->co->default("artemis", "happiness"))
-			  and ($color eq 'stats'));
-    $self->{log}->SetStyle($was, $is, $self->{$color});
-  };
-  $self->{log}->ShowPosition(0);
-  #$self->{save}->Enable(1);
+  my ($self, $fit) = @_;
+  my $busy = Wx::BusyCursor -> new();
+  Demeter::UI::Artemis::LogText -> make_text($self->{log}, $fit);
   undef $busy;
 };
 
@@ -414,12 +377,18 @@ sub savereport {
 sub restore {
   my ($self, $position) = @_;
   ($position = $self->{list}->GetSelection) if not defined ($position);
-  $self->status("restore ".$self->{list}->GetString($position)."... ");
+  my $busy = Wx::BusyCursor -> new();
+  Demeter::UI::Artemis::Project::discard_fit(\%Demeter::UI::Artemis::frames);
+  my $fit = $self->{list}->GetClientData($position);
+  Demeter::UI::Artemis::Project::restore_fit(\%Demeter::UI::Artemis::frames, $fit);
+  undef $busy;
+  $self->status("Restored ".$self->{list}->GetString($position));
 };
 
 sub discard {
   my ($self, $how, $position) = @_;
   ($position = $self->{list}->GetSelection) if not defined ($position);
+
   $self->status("discard $how fit(s)...");
 };
 
@@ -445,6 +414,7 @@ sub savelog {
 sub export {
   my ($self, $position) = @_;
   ($position = $self->{list}->GetSelection) if not defined ($position);
+
   $self->status("export ".$self->{list}->GetString($position)."... ");
 };
 
@@ -475,8 +445,6 @@ sub transfer {
   my $i = $plotlist->GetCount - 1;
   $plotlist->SetClientData($i, $data);
   $plotlist->Check($i,1);
-  #my $fitfile = File::Spec->catfile($Demeter::UI::Artemis::frames{main}->{project_folder}, 'fits', $fit->group, $data->group.'.fit');
-  #$data->read_fit($fitfile);
   $self->status("\"" . $data->name . "\" from \"" . $fit->name . "\" was added to the plotting list.")
 };
 
@@ -511,17 +479,8 @@ Demeter's dependencies are in the F<Bundle/DemeterBundle.pm> file.
 
 =item *
 
-Move fits into the plotting list for overplotting data with multiple
-fits
-
-=item *
-
-Restore a fitting model
-
-=item *
-
 Discard one or more fits, completely removing them from the project
-and the order file.
+and the order file.  Delete folder, remove from order file/hash
 
 =item *
 

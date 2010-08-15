@@ -10,4 +10,4 @@
   q{};
 }
 plot("{$D->group}.energy+{$D->bkg_eshift}", "{$mult}*{$D->group}.{$P->e_part}+{$D->y_offset}",
-     style={$P->datastyle}, color="{$P->color}", key="{$P->key}")
+     style={$P->datastyle}, color="{$P->color}", key="{$D->plotkey || $P->key}")

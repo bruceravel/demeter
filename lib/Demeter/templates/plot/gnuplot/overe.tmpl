@@ -16,7 +16,7 @@
 	     scale   => $scale,
 	     yoffset => $D->y_offset
 	    );
-  $thiskey = $P->key;
+  $thiskey = $D->plotkey || $P->key;
   $thiskey =~ s{_}{\\\\_}g;
   q{}
 }
