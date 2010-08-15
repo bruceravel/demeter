@@ -96,7 +96,7 @@ ok( $#lines == 3,                             'correl_report returns the correct
 ok( (($#lines == 7) and ($this->statistics_report =~ m{Number of variables})), 'statistics_report seems to run correctly');
 
 @lines  = split(/\n/, $this->gds_report);
-ok( $#lines == 14,                            'gds_report seems to run correctly');
+ok( $#lines == 4,                            'gds_report seems to run correctly');
 
 @lines  = split(/\n/, $this->happiness_report);
 ok( $#lines == 2,                             'happiness_report seems to run correctly');
@@ -108,7 +108,7 @@ ok( (not $this->fetch_gds('foobar')),         'fetch_gds, nonexistant parameter'
 my $ggg = $this->fetch_gds('dcu');
 ok( $ggg->gds eq 'guess',                     'fetch_gds, existing parameter');
 
-print $this->summary;
+#print $this->summary;
 #$this->po->plot_fit(1);
 #$_ -> plot('r') foreach ($data, $path);
 

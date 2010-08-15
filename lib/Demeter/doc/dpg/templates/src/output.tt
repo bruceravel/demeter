@@ -311,10 +311,20 @@ space, [% demeter %] compresses the files using the same algorithm as the
 [% INCLUDE html/link text="gzip program" link="http://www.gzip.org/"%].
 This kind of compressed file can be read by most compression or
 archiving programs on all platforms.
+
+An object is written to a yaml file using the 
+[% INCLUDE font/mono a="freeze" %] method.  It's argument is the name
+of the output file. 
 [% END %]
 
 [% WRAPPER codesample -%] 
 $data->freeze("data.yaml");
+[% END %]
+
+[% FILTER html_para %]
+You can import one of these serialization using the 
+[% INCLUDE font/mono a="thaw" %] method.  It's argument is the name
+of the file to import.  It returns the object. 
 [% END %]
 
 [% WRAPPER codesample -%] 
@@ -324,12 +334,17 @@ $data->thaw("data.yaml");
 
 [% PROCESS section label="Log files" %]
 [% FILTER html_para %]
-Log files
+The Fit object has a [% INCLUDE font/mono a="logfile" %] method.
 [% END %]
+
+[% WRAPPER codesample -%] 
+$fitobject->logfile("myfit.log", $header, $footer);
+[% END %]
+
 
 [% PROCESS section label="Project files" %]
 [% FILTER html_para %]
-Project files
+Project files are zip files filled with YAML files and other things.
 [% END %]
 
 [% PROCESS section label="Atoms and feff I/O" %]
