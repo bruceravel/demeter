@@ -395,6 +395,7 @@ sub plot_with {
     carp("The gnuplot backend is not available -- reverting to pgplot\n\n");
     $backend = 'pgplot';
   };
+  return if ($backend eq $self->mo->plot->backend);
   $self->po->alldone;
   $self->mo->template_plot($backend);
 
@@ -427,6 +428,7 @@ sub plot_with {
       last SWITCH;
     };
   };
+  $self -> po -> start_plot;
   $self -> po -> set(@to_set);
 };
 

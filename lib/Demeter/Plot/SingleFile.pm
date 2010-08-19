@@ -57,6 +57,22 @@ after start_plot => sub {
   return $self;
 };
 
+sub prep {
+  my ($self, @rest) = @_;
+  my %args = @rest;
+  $args{standard} = $args{data} if not $args{standard};
+  die "Missing filename in Demeter::Plot::SingleFile setup"               if (not $args{file});
+#  die "Cannot write to filename in Demeter::Plot::SingleFile setup"       if (not -w $args{file});
+  die "Missing standard in Demeter::Plot::SingleFile setup"               if (not $args{standard});
+  die "Standard must be Demeter::Data in Demeter::Plot::SingleFile setup" if (ref($args{standard}) ne 'Demeter::Data');
+
+  $self->space($args{space}) if $args{space};
+  $args{standard}->standard;
+  $self->file($args{file});
+  $self->start_plot;
+  return $self;
+};
+
 override after_plot_hook => sub {
   my ($self, $data, $part) = @_;
   $part ||= q{};
@@ -79,6 +95,7 @@ sub finish {
   my ($self) = @_;
   my $command = $self->template("plot", "end");
   $self->dispose($command, "plotting");
+  print "Wrote plot to \"".$self->file."\"\n" if ($self->mo->ui eq 'screen');
   return $self;
 };
 
@@ -120,10 +137,15 @@ external plotting program.
 
   ## set up the plot to output file
   $data->plot_with('singlefile');  # 1
-  $data->standard;                 # 2
-  $data->po->space('k');           # 3
-  $data->po->file("foo.dat");      # 4
-  $data->po->start_plot;           # 5
+
+  ## prep for the singlefile plot
+  $data->po->prep(file=>"foo.dat", standard=>$data, space=>'k');
+
+  ## prep is the same as doing the following
+  #$data->standard;                 # 2
+  #$data->po->space('k');           # 3
+  #$data->po->file("foo.dat");      # 4
+  #$data->po->start_plot;
 
   ## make a sequence of plots
   $data->po->set(kweight => 1, kmax => 17, space => 'k');
@@ -139,7 +161,7 @@ external plotting program.
   $data->plot;
 
   ## the finish method of the Demeter::Plot::SingleFile actually writes out the file
-  $data->po->finish;               # 6
+  $data->po->finish;               # 5
 
 =head1 DESCRIPTION
 
@@ -161,6 +183,9 @@ switch to this backend in the run-time part of your script.  If you
 try to use the pragma, your script will fail with a confusing and
 misleading error message.
 
+Note that the C<start_plot> method gets called automatically when you
+change plotting backends.
+
 =item 2.
 
 You B<must> set a data standard.  This is required to correctly set
@@ -178,15 +203,15 @@ which you should set the space to C<q>.
 
 You B<must> set the C<file> attribute to the name of the target output
 file which will contain the data required to replicate the plot in
-another program.  You shouyld set this before starting to actually
+another program.  You should set this before starting to actually
 generate the plot.
 
+=item 2-4.
+
+Alternately, you can use the C<prep> method of the SingleFile object
+to do steps 2 through 4 in one swoop.
+
 =item 5.
-
-You B<must> call C<start_plot> again after changing to the
-C<singlefile> backend.
-
-=item 6.
 
 Calling the C<finish> method of the SingleFile backend is what
 actually writes the output file to disk.

@@ -82,6 +82,7 @@ sub _part_plot_command {
   };
 
   $self->co->set(plot_part=>q{});
+  $self->co->set(plot_part=>q{});
   return $string if (not is_DataPart($part));
 
   ## (?! ) is the negative zero-width look ahead -- it does not
