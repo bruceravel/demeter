@@ -1,0 +1,32 @@
+{
+  $labels = Ifeffit::get_string("column_label");
+  $string = q{};
+  foreach $s (split(" ", $labels)) {
+    $string .= " " . $S->group . "." . $s;
+  };
+  q{}
+}
+set (e1 = nofx({$S->group}.energy, {$S->e1}),
+     e2 = nofx({$S->group}.energy, {$S->e2}),
+     e3 = nofx({$S->group}.energy, {$S->e3}),
+     e4 = nofx({$S->group}.energy, {$S->e4}))
+set ({$S->group}.x1 = slice({$S->group}.energy, e1, e2),
+     {$S->group}.y1 = slice({$S->group}.raw, e1, e2),
+     {$S->group}.x2 = slice({$S->group}.energy, e3, e4),
+     {$S->group}.y2 = slice({$S->group}.raw, e3, e4))
+set ({$S->group}.x = join({$S->group}.x1, {$S->group}.x2),
+     {$S->group}.y = join({$S->group}.y1, {$S->group}.y2))
+
+guess (xes___slope = 0,
+       xes___yoff  = 0)
+def {$S->group}.bkg = {$S->group}.x * xes___slope + xes___yoff
+def {$S->group}.resid = {$S->group}.y - {$S->group}.bkg
+minimize({$S->group}.resid)
+set {$S->group}.line = xes___slope * {$S->group}.energy + xes___yoff
+
+set {$S->group}.sub = {$S->group}.raw - {$S->group}.line
+set xes___norm = ceil({$S->group}.sub)
+set {$S->group}.norm = {$S->group}.sub / xes___norm
+
+erase  {$S->group}.bkg {$S->group}.resid {$S->group}.x {$S->group}.x1 {$S->group}.x2 {$S->group}.y {$S->group}.y1 {$S->group}.y2
+erase {$string}

@@ -260,9 +260,20 @@ has 'LCF' => (
 			      'splice'  => 'splice_LCF',
 			     }
 	       );
+has 'XES' => (
+		metaclass => 'Collection::Array',
+		is        => 'rw',
+		isa       => 'ArrayRef',
+		default   => sub { [] },
+		provides  => {
+			      'push'    => 'push_XES',
+			      'clear'   => 'clear_XES',
+			      'splice'  => 'splice_XES',
+			     }
+	       );
 
 has 'types' => (is => 'ro', isa => 'ArrayRef',
-		default => sub{[qw(Atoms Data Feff External Fit Feffit GDS Path Plot Indicator LCF ScatteringPath
+		default => sub{[qw(Atoms Data Feff External Fit Feffit GDS Path Plot Indicator LCF XES ScatteringPath
 				   VPath SSPath FSPath StructuralUnit Prj Pixel MultiChannel)]},);
 
 has 'Plugins' => (
@@ -363,6 +374,7 @@ sub everything {
 	  @{ $self->Indicator	   },
 	  @{ $self->Feff	   },
 	  @{ $self->LCF		   },
+	  @{ $self->XES		   },
 	  @{ $self->GDS		   },
 	 );
 };

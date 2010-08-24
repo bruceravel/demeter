@@ -1,0 +1,11 @@
+{
+  $ylabel = ($suffix eq 'norm') ? "Normalized emission" 
+          : ($suffix eq 'sub')  ? "Baseline subtracted emission" 
+          : "Emission";
+  q{}
+}
+newplot("{$D->group}.energy+{$D->eshift}", "{$D->plot_multiplier}*{$D->group}.{$suffix}+{$D->y_offset}",
+        xlabel="Emission energy (eV)", ylabel="{$ylabel}",
+        grid, gridcolor="{$P->gridcolor}", xmin={$P->emin}, xmax={$P->emax},
+        style={$P->datastyle}, color="{$P->color}", key="{$D->name}", 
+        title="{$P->title}", fg="{$P->fg}", bg="{$P->bg}")
