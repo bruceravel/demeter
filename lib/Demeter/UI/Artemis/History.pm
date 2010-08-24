@@ -18,6 +18,7 @@ package  Demeter::UI::Artemis::History;
 use strict;
 use warnings;
 use Cwd;
+use File::Path qw(remove_tree);
 use List::MoreUtils qw(minmax);
 
 use Wx qw( :everything );
@@ -205,6 +206,8 @@ sub OnRightDown {
   $menu->Append($FIT_DISCARD, "Discard \"$name\"");
   $menu->AppendSeparator;
   $menu->Append($FIT_DISCARD_MANY, "Discard marked fits");
+  $menu->Enable($FIT_EXPORT,0);
+  $menu->Enable($FIT_DISCARD_MANY,0);
   $self->PopupMenu($menu, $event->GetPosition);
 };
 
@@ -388,8 +391,34 @@ sub restore {
 sub discard {
   my ($self, $how, $position) = @_;
   ($position = $self->{list}->GetSelection) if not defined ($position);
+  my $thisfit = $self->{list}->GetClientData($position);
+  my $name = $thisfit->name;
 
-  $self->status("discard $how fit(s)...");
+  ## -------- remove this fit from the fit_order hash and rewrite the order file
+  delete $Demeter::UI::Artemis::fit_order{order}{$thisfit->group};
+  my $string .= YAML::Tiny::Dump(%Demeter::UI::Artemis::fit_order);
+  open(my $ORDER, '>'.$Demeter::UI::Artemis::frames{main}->{order_file});
+  print $ORDER $string;
+  close $ORDER;
+
+  ## -------- remove this fit from the fit list
+  if ($position == $self->{list}->GetCount-1) { # last position
+    $self->{list}->SetSelection($position-1);
+    $self->OnSelect;
+  } elsif ($self->{list}->GetCount == 1) {      # only position
+    $self->{list}->SetSelection(wxNOT_FOUND);
+  } else {			                # all others
+    $self->{list}->SetSelection($position+1);
+    $self->OnSelect;
+  };
+  $self->{list}->Delete($position);
+
+  ## -------- destroy the Fit object and delete its folder in stash space
+  $thisfit->DEMOLISH;
+  my $folder = File::Spec->catfile($Demeter::UI::Artemis::frames{main}->{project_folder}, 'fits', $thisfit->group);
+  remove_tree($folder);
+
+  $self->status("discarded $name");
 };
 
 sub savelog {
