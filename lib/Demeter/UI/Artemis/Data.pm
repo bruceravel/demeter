@@ -625,8 +625,8 @@ sub make_menubar {
 #  $self->{pathsmenu}->AppendSubMenu($explain_menu, "Explain path parameter ..." );
 
   $self->{debugmenu}  = Wx::Menu->new;
-  $self->{debugmenu}->Append($DATA_SHOW, "Show Ifeffit group for this Data",  "Show the arrays associated with this group in Ifeffit",  wxITEM_NORMAL );
-  $self->{debugmenu}->Append($PATH_SHOW, "Show path",                "Evaluate and show the path parameters for the currently display path", wxITEM_NORMAL );
+  $self->{debugmenu}->Append($DATA_SHOW, "Show Ifeffit group for this Data", "Show the arrays associated with this group in Ifeffit",  wxITEM_NORMAL );
+  $self->{debugmenu}->Append($PATH_SHOW, "Show displayed path",              "Evaluate and show the path parameters for the currently display path", wxITEM_NORMAL );
   $self->{debugmenu}->AppendSeparator;
   $self->{debugmenu}->Append($DATA_YAML, "Show YAML for this data set",  "Show YAML for this data set",  wxITEM_NORMAL );
   $self->{debugmenu}->Append($PATH_YAML, "Show YAML for displayed path", "Show YAML for displayed path", wxITEM_NORMAL );
