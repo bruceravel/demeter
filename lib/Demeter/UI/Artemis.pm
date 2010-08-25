@@ -596,6 +596,8 @@ sub fit {
   $rframes->{main} -> {currentfit} = $newfit;
   ++$fit_order{order}{current};
 
+  modified(1);
+
   undef $start;
   undef $busy;
 };

@@ -45,14 +45,16 @@ use Demeter::NumTypes qw( Natural
 
 with 'Demeter::UI::Screen::Pause' if ($Demeter::mode->ui eq 'screen');
 
-has '+plottable'  => (default => 1);
-has '+data'       => (isa => Empty.'|Demeter::XES');
+has '+plottable' => (default => 1);
+has '+data'      => (isa => Empty.'|Demeter::XES');
+has '+name'      => (default => 'XES' );
 
-has 'file'        => (is => 'rw', isa => 'Str',  default => q{},
-		      trigger=>sub{my ($self, $new) = @_;
-				   $self->update_file(1);
-				   $self->name($new) if not $self->name;
-				 });
+has 'file'       => (is => 'rw', isa => 'Str',  default => q{},
+		     trigger=>sub{my ($self, $new) = @_;
+				  $self->update_file(1);
+				  $self->name($new) if ((not $self->name) or ($self->name eq 'XES'));
+				});
+has 'plotkey'     => (is => 'rw', isa => 'Str',    default => q{});
 
 has 'energy'   => (is => 'rw', isa => PosInt, default => 2,);
 has 'emission' => (is => 'rw', isa => PosInt, default => 3,);
@@ -142,8 +144,10 @@ sub plot {
   $self->po->increment;
 
   if (($how eq 'raw') and ($self->po->e_bkg)) {
+    $self->plotkey('baseline');
     my $text = $self->template('plot', 'overxes', {suffix=>'line'});
     $self->dispose($text, 'plotting');
+    $self->plotkey(q{});
     $self->po->increment;
   };
 
@@ -153,3 +157,181 @@ sub plot {
 
 
 1;
+
+=head1 NAME
+
+Demeter::Data - Rudimentary processing of XES data
+
+
+=head1 VERSION
+
+This documentation refers to Demeter version 0.4.
+
+
+=head1 SYNOPSIS
+
+  my @common = (energy => 2,
+                emission => 3,
+                e1=>7610, e2=>7620, e3=>7660, e4=>7691
+               );
+
+  my $xes = Demeter::XES->new(file=>"xes.dat", @common, name => 'My XES data');
+  $xes -> plot('norm');
+
+=head1 DESCRIPTION
+
+This subclass of the L<Demeter> class is used to perform simple
+processing of XES data, i.e. data that contains emission as function
+of energy at a specific indicent energy.
+
+=head1 ATTRIBUTES
+
+=over 4
+
+=item C<file> (string)
+
+This contains the name of the file containing the XES data.
+
+=item C<plotkey>
+
+Like in the Data object, this is used to temperarily override the
+string used in a plot legend.
+
+=item C<energy> (integer) I<[2]>
+
+The column in the data file containing the energy axis.
+
+=item C<emission> (integer) I<[3]>
+
+The column in the data file containing the emmission intensity.
+
+=item C<sigma> (intensity) I<[4]>
+
+The column in the data file containing the uncertainty in the emmission intensity.
+
+=item C<e1> (number) I<[0]>
+
+The first boundary of the energy range used to determine the baseline.
+
+=item C<e2> (number) I<[0]>
+
+The second boundary of the energy range used to determine the baseline.
+
+=item C<e3> (number) I<[0]>
+
+The third boundary of the energy range used to determine the baseline.
+
+=item C<e4> (number) I<[0]>
+
+The fourth boundary of the energy range used to determine the baseline.
+
+=item C<slope> (number)
+
+The slope of the fitted baseline.
+
+=item C<yoff> (number)
+
+The y-offset value of the fitted baseline.
+
+=item C<norm> (number)
+
+The normalization value, i.e. the maximum value of the baseline subtracted data.
+
+=item C<peak> (number)
+
+The position of the largest peak in the meission data.
+
+=item C<eshift> (number) I<[0]>
+
+An energy shift used for plotting.
+
+=item C<plot_multiplier> (number) I<[1]>
+
+A plot multiplier used for plotting.
+
+=item C<y_offset> (number) I<[0]>
+
+A y-axis offset used from plotting.
+
+=item C<update_file> (boolean)
+
+A boolean that is true when the file needs to be reimported.
+
+=item C<update_background> (boolean)
+
+A boolean that is true when the data needs to be renormalized.
+
+=back
+
+=head1 METHODS
+
+=over 4
+
+=item C<plot>
+
+Make a plot of the data.  The data willbe imported and normalized as
+needed.  Plots my be made as C<raw>, C<sub>, or C<norm>:
+
+  $xes -> plot($how);
+
+C<raw> means to plot the raw data.  If the C<e_bkg> attribute of the
+Plot object is true, then the fitted baseline will also be plotted.
+
+C<sub> means to plot the baseline subtracted data.  C<norm> means to
+plot the normalized data.  C<norm> is the default kind of plot,
+i.e. the plot that is made when no argument is given.
+
+In most ways, plotting XES data works like any other plotting in
+Demeter.
+
+=back
+
+=head1 CONFIGURATION
+
+See L<Demeter::Config> for a description of the configuration system.
+Many attributes of a Data object can be configured via the
+configuration system.  See, among others, the C<bkg>, C<fft>, C<bft>,
+and C<fit> configuration groups.
+
+=head1 DEPENDENCIES
+
+Demeter's dependencies are in the F<Bundle/DemeterBundle.pm> file.
+
+=head1 SERIALIZATION AND DESERIALIZATION
+
+=head1 BUGS AND LIMITATIONS
+
+=over 4
+
+=item *
+
+Some peak fitting, perhaps with fityk, would be dandy.
+
+=back
+
+Please report problems to Bruce Ravel (bravel AT bnl DOT gov)
+
+Patches are welcome.
+
+=head1 AUTHOR
+
+Bruce Ravel (bravel AT bnl DOT gov)
+
+L<http://cars9.uchicago.edu/~ravel/software/>
+
+
+=head1 LICENCE AND COPYRIGHT
+
+Copyright (c) 2006-2010 Bruce Ravel (bravel AT bnl DOT gov). All rights reserved.
+
+This module is free software; you can redistribute it and/or
+modify it under the same terms as Perl itself. See L<perlgpl>.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+
+=cut
+
+
+

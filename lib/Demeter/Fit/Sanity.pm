@@ -417,6 +417,7 @@ sub S_reff_rmax {
     next if (not $d->fit_include);
     foreach my $p (@paths) {
       next if not defined($p);
+      next if (not $p->include);
       next if ($p->data ne $d);
       if ($p->reff > ($d->bft_rmax+1)) {
 	my $identify = $p->name || $p->Index;

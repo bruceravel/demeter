@@ -417,6 +417,7 @@ sub discard {
   $thisfit->DEMOLISH;
   my $folder = File::Spec->catfile($Demeter::UI::Artemis::frames{main}->{project_folder}, 'fits', $thisfit->group);
   remove_tree($folder);
+  Demeter::UI::Artemis::modified(1);
 
   $self->status("discarded $name");
 };

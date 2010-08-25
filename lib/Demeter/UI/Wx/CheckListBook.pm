@@ -326,12 +326,12 @@ sub RenameSelection {
 
 sub OnRightDown {
   my ($self, $event) = @_;
-  print "right clicking\n";
+  #print "right clicking\n";
   ##$event->Skip;
 }
 sub OnMiddleDown {
   my ($self, $event) = @_;
-  print "middle clicking\n";
+  #print "middle clicking\n";
   ##$event->Skip;
 }
 

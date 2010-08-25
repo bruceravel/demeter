@@ -22,7 +22,7 @@ BEGIN {
 require 5.8.0;
 
 use version;
-our $VERSION = version->new('0.4.4');
+our $VERSION = version->new('0.4.5');
 use vars qw($Gnuplot_exists);
 
 #use Demeter::Carp;
@@ -711,7 +711,7 @@ __PACKAGE__->meta->make_immutable;
 
 =head1 NAME
 
-Demeter -  An object oriented EXAFS data analysis system using Ifeffit
+Demeter -  An object oriented EXAFS data analysis system using Ifeffit and Feff
 
 =head1 VERSION
 
@@ -1557,6 +1557,11 @@ Patches are welcome.
 =head1 VERSIONS
 
 =over 4
+
+=item 0.4.5
+
+Fit history in Artemis is mostly functional.  Reordering of Plot list
+in Artemis now possible by mouse.  Added rudimentary XES support.
 
 =item 0.4.4
 

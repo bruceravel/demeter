@@ -19,14 +19,16 @@ use strict;
 use warnings;
 
 use Wx qw( :everything );
+use Wx::DND;
 use base qw(Wx::Frame);
 use Wx::Event qw(EVT_CLOSE EVT_BUTTON EVT_RADIOBOX EVT_RIGHT_DOWN EVT_MENU EVT_ENTER_WINDOW EVT_LEAVE_WINDOW
-		 EVT_TOGGLEBUTTON);
+		 EVT_TOGGLEBUTTON EVT_LEFT_DOWN);
 
 use Demeter::UI::Artemis::Plot::Limits;
 use Demeter::UI::Artemis::Plot::Stack;
 use Demeter::UI::Artemis::Plot::Indicators;
 use Demeter::UI::Artemis::Plot::VPaths;
+use Demeter::UI::Artemis::DND::PlotListDrag;
 
 use Cwd;
 use File::Spec;
@@ -127,6 +129,9 @@ sub new {
   $hbox          -> Add($groupboxsizer, 1, wxGROW|wxALL, 0);
   EVT_RIGHT_DOWN($this->{plotlist}, sub{OnRightDown(@_)});
   EVT_MENU($this->{plotlist}, -1, sub{ $this->OnPlotMenu(@_)    });
+  EVT_LEFT_DOWN($this->{plotlist}, \&OnDrag);
+  $this->{plotlist}->SetDropTarget( Demeter::UI::Artemis::Plot::DropTarget->new( $this, $this->{pathlist} ) );
+
 
   $hbox = Wx::BoxSizer->new( wxHORIZONTAL );
   $groupboxsizer -> Add($hbox, 0, wxGROW|wxALL, 0);
@@ -155,6 +160,16 @@ sub on_close {
   my ($self) = @_;
   $self->Show(0);
   $self->GetParent->{toolbar}->ToggleTool(2, 0);
+};
+
+sub OnDrag {
+  my ($list, $event) = @_;
+  my $which = $list->HitTest($event->GetPosition);
+  my $source = Wx::DropSource->new( $list );
+  my $dragdata = Demeter::UI::Artemis::DND::PlotListDrag->new(\$which);
+  $source->SetData( $dragdata );
+  $source->DoDragDrop(1);
+  $event->Skip(1);
 };
 
 
@@ -252,12 +267,13 @@ sub plot {
   $self->fetch_parameters;
   my @list = ();
   foreach my $i (0 .. $self->{plotlist}->GetCount-1) {
-    next if not $self->{plotlist}->IsChecked($i);
+    next if (not $self->{plotlist}->IsChecked($i));
     push @list, $self->{plotlist}->GetClientData($i);
   };
   if ($#list == -1) {
     $Demeter::UI::Artemis::frames{main}->status("The plotting list is empty.");
     undef $busy;
+    return;
   };
 
   $list[0]->data->standard if $self->{fileout}->GetValue;
@@ -273,7 +289,9 @@ sub plot {
 
   my $mds_offset = $self->{stack}->{offset}->GetValue;
   my $offset = 0;
-  foreach my $obj (@list) {
+  foreach my $i (0 .. $self->{plotlist}->GetCount-1) {
+    next if (not $self->{plotlist}->IsChecked($i));
+    my $obj = $self->{plotlist}->GetClientData($i);
     #print $obj, "  ", $obj->name, "  ", $obj->group, $/;
     if (ref($obj) !~ m{Data}) {
       $obj->update_path(1);
@@ -285,25 +303,26 @@ sub plot {
 
   ## stack overrides invert
   if ($self->{stack}->{dostack}->GetValue) {
-    my $count = 0;
     my $jump = $self->{stack}->{start}->GetValue;
-    foreach my $obj (@list) {
-      my $save = $list[0]->data->y_offset;
+    foreach my $i (0 .. $self->{plotlist}->GetCount-1) {
+      next if (not $self->{plotlist}->IsChecked($i));
+      my $obj = $self->{plotlist}->GetClientData($i);
+      my $save = $obj->data->y_offset;
       $obj -> data -> y_offset($jump);
-      if ($self->{plotlist}->GetString($count) =~ m{\AFit}) {
-	$self->plot_fit($space, $count);
+      if ($self->{plotlist}->GetString($i) =~ m{\AFit}) {
+	$self->plot_fit($space, $i);
       } else {
 	$obj->plot($space);
       }
       $obj -> data -> y_offset($save);
       $jump -= $self->{stack}->{increment}->GetValue;
-      ++$count;
     };
   } elsif ($invert_r or $invert_q) {
-    my $count = 0;
-    foreach my $obj (@list) {
-      if ($self->{plotlist}->GetString($count) =~ m{\AFit}) {
-	$self->plot_fit($space, $count);
+    foreach my $i (0 .. $self->{plotlist}->GetCount-1) {
+      next if (not $self->{plotlist}->IsChecked($i));
+      my $obj = $self->{plotlist}->GetClientData($i);
+      if ($self->{plotlist}->GetString($i) =~ m{\AFit}) {
+	$self->plot_fit($space, $i);
       } elsif (ref($obj) =~ m{Data}) {  # Data and fits plotted normally
 	$obj->plot($space);
       } elsif (ref($obj) =~ m{VPath}) { # VPath plotted normally
@@ -314,17 +333,16 @@ sub plot {
 	$obj->plot($space);
 	$obj->data->plot_multiplier($save);
       };
-      ++$count;
     };
   } else {			# plot normally
-    my $count = 0;
-    foreach (@list) {
-      if ($self->{plotlist}->GetString($count) =~ m{\AFit}) {
-	$self->plot_fit($space, $count);
+    foreach my $i (0 .. $self->{plotlist}->GetCount-1) {
+      next if (not $self->{plotlist}->IsChecked($i));
+      my $obj = $self->{plotlist}->GetClientData($i);
+      if ($self->{plotlist}->GetString($i) =~ m{\AFit}) {
+	$self->plot_fit($space, $i);
       } else {
-	$_->plot($space);
+	$obj->plot($space);
       };
-      ++$count;
     };
   };
 
@@ -405,4 +423,62 @@ sub OnPlotMenu {
   };
 };
 
+
+package Demeter::UI::Artemis::Plot::DropTarget;
+
+use Wx qw( :everything);
+use base qw(Wx::DropTarget);
+use Demeter::UI::Artemis::DND::PathDrag;
+
+use Scalar::Util qw(looks_like_number);
+use Regexp::List;
+my $opt  = Regexp::List->new;
+
+sub new {
+  my $class = shift;
+  my $this = $class->SUPER::new;
+
+  my $data = Demeter::UI::Artemis::DND::PlotListDrag->new();
+  $this->SetDataObject( $data );
+  $this->{DATA} = $data;
+  return $this;
+};
+
+sub OnData {
+  my ($this, $x, $y, $def) = @_;
+
+  my $list = $Demeter::UI::Artemis::frames{Plot}->{plotlist};
+  return 0 if not $list->GetCount;
+  $this->GetData;		# this line is what transfers the data from the Source to the Target
+
+  my $from = ${ $this->{DATA}->{Data} };
+  my $from_object  = $list->GetClientData($from);
+  my $from_label   = $list->GetString($from);
+  my $from_checked = $list->IsChecked($from);
+  my $point = Wx::Point->new($x, $y);
+  my $to = $list->HitTest($point);
+
+  return 0 if ($to == $from);	# either of these two would leave the list in the same state
+  return 0 if ($to == $from+1);
+
+  my $message;
+  $list -> Delete($from);
+  if ($to == -1) {
+    $list -> Append($from_label, $from_object);
+    $list -> Check($list->GetCount-1, $from_checked);
+    $message = sprintf("Moved '%s' to the last position.", $from_label);
+  } else {
+    $message = sprintf("Moved '%s' from position %d to position %d.", $from_label, $from+1, $to+1);
+    --$to if ($from < $to);
+    $list -> Insert($from_label, $to);
+    $list -> SetClientData($to, $from_object);
+    $list -> Check($to, $from_checked);
+  };
+  $Demeter::UI::Artemis::frames{main}->status($message);
+
+  return $def;
+};
+
 1;
+
+

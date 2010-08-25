@@ -13,7 +13,7 @@
 	     scale   => $D->plot_multiplier,
 	     yoffset => $D->y_offset
 	    );
-  $thiskey = $D->name;
+  $thiskey = $D->plotkey || $D->name;
   $thiskey =~ s{_}{\\\\_}g;
   q{}
 }

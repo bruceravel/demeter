@@ -443,7 +443,7 @@ sub transfer {
     $self->{datapage}->status("\"$name\" is already in the plotting list.");
     return;
   };
-  $plotlist->Append("Path: $name");
+  $plotlist->Append("Path: $name from " . $self->{path}->data->name);
   my $i = $plotlist->GetCount - 1;
   $plotlist->SetClientData($i, $self->{path});
   $plotlist->Check($i,1);
