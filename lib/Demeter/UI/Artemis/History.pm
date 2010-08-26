@@ -396,10 +396,11 @@ sub discard {
 
   ## -------- remove this fit from the fit_order hash and rewrite the order file
   delete $Demeter::UI::Artemis::fit_order{order}{$thisfit->group};
-  my $string .= YAML::Tiny::Dump(%Demeter::UI::Artemis::fit_order);
-  open(my $ORDER, '>'.$Demeter::UI::Artemis::frames{main}->{order_file});
-  print $ORDER $string;
-  close $ORDER;
+  update_order_file(1);
+  #my $string .= YAML::Tiny::Dump(%Demeter::UI::Artemis::fit_order);
+  #open(my $ORDER, '>'.$Demeter::UI::Artemis::frames{main}->{order_file});
+  #print $ORDER $string;
+  #close $ORDER;
 
   ## -------- remove this fit from the fit list
   if ($position == $self->{list}->GetCount-1) { # last position

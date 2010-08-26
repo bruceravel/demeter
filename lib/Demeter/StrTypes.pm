@@ -125,7 +125,8 @@ use vars qw(@element_list $element_regexp);
 		   sr y zr nb mo tc ru rh pd ag cd in sn sb te i xe cs
 		   ba la ce pr nd pm sm eu gd tb dy ho er tm yb lu hf
 		   ta w re os ir pt au hg tl pb bi po at rn fr ra ac
-		   th pa u np pu);
+		   th pa u np pu
+		   nu);
 $element_regexp = $opt->list2re(@element_list);
 subtype Element,
   as Str,

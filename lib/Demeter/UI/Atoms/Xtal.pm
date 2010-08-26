@@ -187,6 +187,7 @@ sub new {
   $self->{edge} = Wx::Choice    ->new($self, -1, [-1, -1], [-1, -1], ['K', 'L1', 'L2', 'L3'], );
   $hh->Add($label,        0, wxEXPAND|wxALL, 5);
   $hh->Add($self->{edge}, 0, wxEXPAND|wxALL, 5);
+  $self->{edge}->SetSelection(0);
   EVT_CHOICE($self, $self->{edge}, \&OnWidgetLeave);
 
   $hh = Wx::BoxSizer->new( wxHORIZONTAL );
@@ -195,6 +196,7 @@ sub new {
   $self->{template} = Wx::Choice    ->new($self, -1, [-1, -1], [-1, -1], $self->templates, );
   $hh->Add($label,            0, wxEXPAND|wxALL, 5);
   $hh->Add($self->{template}, 0, wxEXPAND|wxALL, 5);
+  $self->{template}->SetSelection(2);
   EVT_CHOICE($self, $self->{template}, \&OnWidgetLeave);
 
   my $initial = "Feff" . $atoms->co->default("atoms", "feff_version") . " - " . $atoms->co->default("atoms", "ipot_style");
@@ -488,7 +490,6 @@ sub open_file {
   $atoms -> name($name) if not $atoms->name;
   $self->{name}->SetValue($name);
   $Demeter::UI::Atoms::frame->SetTitle("Atoms: ".$name) if defined($Demeter::UI::Atoms::frame);
-  $atoms->populate;
 
   ## load values into their widgets
   my $titles = join($/, (@{ $atoms->titles }));
@@ -513,26 +514,33 @@ sub open_file {
 
   my $i= 0;
   my $cell = $atoms->cell;
+  my $message = "Imported crystal data from $file.";
   foreach my $s (@{ $atoms->sites }) {
     $self->AddSite(0, $self) if ($i >= $self->{sitesgrid}->GetNumberRows);
     my @this = split(/\|/, $s);
-    $self->{sitesgrid}->SetCellValue($i, 1, ucfirst(lc($this[0])));
+    my $sym = ($atoms->element_check($this[0])) ? ucfirst(lc($this[0])) : "Nu (".$this[0].")";
+    $message = sprintf("Ambiguous symbol at site %d.", $i+1) if ($sym =~ m{\ANu});
+    $self->{sitesgrid}->SetCellValue($i, 1, $sym);
     $self->{sitesgrid}->SetCellValue($i, 2, $this[1]);
     $self->{sitesgrid}->SetCellValue($i, 3, $this[2]);
     $self->{sitesgrid}->SetCellValue($i, 4, $this[3]);
     $self->{sitesgrid}->SetCellValue($i, 5, $this[4]);
     if (lc($this[4]) eq lc($atoms->core)) {
       $self->{sitesgrid}->SetCellValue($i, 0, 1);
+      if (not $atoms->edge) {
+	my $z = ($sym =~ m{\ANu}) ? 0 : get_Z( $sym );
+	($z > 57) ? $atoms->edge('l3') : $atoms->edge('k');
+      };
     };
     ++$i;
   };
-
   my $ie = firstidx {lc($_) eq lc($atoms->edge)} qw(K L1 L2 L3);
+  $ie = 0 if ($ie == -1);
   $self->{edge}->SetSelection($ie);
 
   $atoms -> push_mru("atoms", $file) if ($file !~ m{_dem_});
 
-  $self->{statusbar}->SetStatusText("Imported crystal data from $file.");
+  $self->{statusbar}->SetStatusText($message);
 };
 
 sub get_crystal_data {
@@ -593,7 +601,8 @@ sub get_crystal_data {
     next if ($el =~ m{\A\s*\z});
     ++$count_valid_row;
     my $rr = $row+1;
-    warn("$el is not an element symbol at site $rr\n"), return 0 if not is_Element($el);
+    $problems .= "\"$el\" is not an element symbol at site $rr\n" if not is_Element($el);;
+    #warn("$el is not an element symbol at site $rr\n"), return 0 if not is_Element($el);
     ($first_valid_row = $row) if ($first_valid_row == -1);
     if ($self->{sitesgrid}->GetCellValue($row, 0)) {
       $atoms->core($self->{sitesgrid}->GetCellValue($row, 5));
@@ -626,7 +635,7 @@ sub get_crystal_data {
   if ($problems) {
     $self->{problems} = $problems;
     $seems_ok = 0;
-    warn($problems);
+    #warn($problems);
   };
   return 0 if not $seems_ok;
 

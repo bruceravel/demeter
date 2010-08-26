@@ -166,18 +166,21 @@ has 'shift' => (
 	       );
 has 'file'   => (is => 'rw', isa =>'Str', default=> q{},
 		 trigger => sub{ my ($self, $new) = @_;
-				 $self->read_inp if $new;
-				 #$self->is_imported(0) if $new
+				 if ($new) {
+				   $self->read_inp;
+				   #$self->update_edge;
+				 };
 			       });
 has 'cif'    => (is => 'rw', isa =>'Str', default=> q{},
 		 trigger => sub{ my ($self, $new) = @_;
-				 $self->read_cif if $new;
-				 #$self->is_imported(0) if $new
+				 if ($new) {
+				   $self->read_cif;
+				   #$self->update_edge;
+				 };
 			       });
 has 'record' => (is => 'rw', isa => NonNeg,    default=> 0,
 		 trigger => sub{ my ($self, $new) = @_;
 				 $self->read_cif if ($new and $self->cif);
-				 #$self->is_imported(0) if $new
 			       });
 has 'titles' => (
 		 metaclass => 'Collection::Array',
@@ -282,6 +285,7 @@ sub clear {
   $self->$_(0)  foreach (qw(a b c rmax nitrogen argon xenon helium krypton gases_set));
   $self->$_(90) foreach (qw(alpha beta gamma));
   $self->space(q{});
+  $self->edge(q{});
   $self->clear_sites;
   $self->clear_cluster;
   $self->clear_shift;
@@ -403,6 +407,7 @@ sub populate {
   foreach my $s (@$ra) {
     my ($el, $x, $y, $z, $tag) = split(/\|/, $s);
     croak("$el is not a valid element symbol\n") if not is_Element($el);
+    next if (lc($el) =~ m{\Anu});
     push @sites, Xray::Crystal::Site->new(element=>$el, x=>_interpret($x), y=>_interpret($y), z=>_interpret($z), tag=>$tag);
   };
   ### creating and populating cell
@@ -426,6 +431,11 @@ sub populate {
   return $self;
 };
 
+
+sub element_check {
+  my ($self, $sym) = @_;
+  return is_Element($sym);
+};
 
 sub _interpret {
   my ($str) = @_;

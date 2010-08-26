@@ -189,12 +189,15 @@ sub _canonicalize_group {
 	  ++$i;
 	  my $s = ($field eq "settings") ? $i : 0;
 	  if ($symbol eq $setting) {
+	    #print join("|", $sym, $symbol, $setting,$i), $/;
 	    $self->group($sym);
 	    if (any {$field eq $_} qw(settings short)) {
 	      if (any {$r_sg->{$sym}->{number} eq $_} (3..6, 10..12) ) {
 		$self->setting($mono3[$count]);
 	      } elsif (any {$r_sg->{$sym}->{number} eq $_} (7..9, 13..15) ) {
 		$self->setting($mono9[$count]);
+	      } else {
+		$self->setting($i);
 	      };
 	    };
 	    $self->data($rhash);

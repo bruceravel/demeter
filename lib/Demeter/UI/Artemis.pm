@@ -532,13 +532,7 @@ sub fit {
 		      nozip    => 1,
 		      copyfeff => 0,
 		     );
-    my $thisfit = $fit_order{order}{current} || 1;
-    $fit_order{order}{$thisfit} = $fit->group;
-    $fit_order{order}{current}  = $thisfit;
-    my $string .= YAML::Tiny::Dump(%fit_order);
-    open(my $ORDER, '>'.$frames{main}->{order_file});
-    print $ORDER $string;
-    close $ORDER;
+    update_order_file();
 
     $rframes->{GDS}->fill_results(@gds);
     $rframes->{Log}->{name} = $fit->name;
@@ -592,7 +586,14 @@ sub fit {
   autosave($name);
   $rframes->{main}->status($finishtext, $code);
 
+  my @saved = $rframes->{main} -> {currentfit}->get(qw(happiness fom name description));
   my $newfit = Demeter::Fit->new(interface=>"Artemis (Wx $Wx::VERSION)");
+  $newfit->set(happiness=>$saved[0], fom=>$saved[1], description=>$saved[3]);
+  if ($saved[2] =~ m{\AFit\s+\d+\n}) {
+    $newfit->name("Fit " . $saved[1]);
+  } else {
+    $newfit->name($saved[2]);
+  };
   $rframes->{main} -> {currentfit} = $newfit;
   ++$fit_order{order}{current};
 
@@ -600,6 +601,21 @@ sub fit {
 
   undef $start;
   undef $busy;
+};
+
+sub update_order_file {
+  my ($just_write) = @_;
+  $just_write || 0;
+  my $thisfit = $fit_order{order}{current} || 1;
+  if (not $just_write) {
+    $fit_order{order}{$thisfit} = $frames{main}->{currentfit}->group;
+    $fit_order{order}{current}  = $thisfit;
+  };
+  my $string .= YAML::Tiny::Dump(%fit_order);
+  open(my $ORDER, '>'.$frames{main}->{order_file});
+  print $ORDER $string;
+  close $ORDER;
+  return $thisfit;
 };
 
 sub ifeffit_buffer {

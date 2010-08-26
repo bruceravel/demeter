@@ -108,7 +108,7 @@ use base 'Wx::App';
 
 use Wx::Perl::Carp;
 $SIG{__WARN__} = sub {Wx::Perl::Carp::warn($_[0])};
-#$SIG{__DIE__}  = sub {Wx::Perl::Carp::croak($_[0])};
+$SIG{__DIE__}  = sub {Wx::Perl::Carp::warn($_[0])};
 
 sub identify_self {
   my @caller = caller;

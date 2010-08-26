@@ -56,6 +56,8 @@ sub save_project {
 
   $rframes->{main} -> {currentfit}  = Demeter::Fit->new(interface=>"Artemis (Wx $Wx::VERSION)")
     if (not $rframes->{main} -> {currentfit});
+  Demeter::UI::Artemis::update_order_file();
+
   $rframes->{main} -> {currentfit} -> set(data => \@data, paths => \@paths, gds => \@gds);
   $rframes->{main} -> {currentfit} -> serialize(tree     => File::Spec->catfile($rframes->{main}->{project_folder}, 'fits'),
 						folder   => $rframes->{main}->{currentfit}->group,
@@ -241,7 +243,7 @@ sub read_project {
     $rframes->{main}->{currentfit} = $fit;
     $rframes->{Plot}->{limits}->{fit}->SetValue(1);
     my $current = $fit->number || 1;
-    ++$current;
+    #++$current;
     $fit->mo->currentfit($current);
     my $name = ($fit->name =~ m{\A\s*Fit\s+\d+\z}) ? 'Fit '.$fit->mo->currentfit : $fit->name;
     $rframes->{main}->{name}->SetValue($name);
@@ -278,7 +280,7 @@ sub read_project {
 
   my $newfit = Demeter::Fit->new(interface=>"Artemis (Wx $Wx::VERSION)");
   $rframes->{main} -> {currentfit} = $newfit;
-  ++$Demeter::UI::Artemis::fit_order{order}{current};
+  #++$Demeter::UI::Artemis::fit_order{order}{current};
 
   modified(0);
 };
