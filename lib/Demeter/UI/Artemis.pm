@@ -230,7 +230,7 @@ sub OnInit {
 
   $frames{main}->{newfeff} = Wx::Button->new($fefflist, wxID_ADD, "", wxDefaultPosition, wxDefaultSize, wxNO_BORDER);
   $feffvbox -> Add($frames{main}->{newfeff}, 0, wxGROW|wxRIGHT, 5);
-  mouseover($frames{main}->{newfeff}, "Start a new Feff calculation.  Right click for menu of recently used crystal data files.");
+  mouseover($frames{main}->{newfeff}, "Start a new Feff calculation.  Right click for menu of recently used crystal data files.  Also right click to start a brand new Atoms input file.");
   EVT_BUTTON($frames{main}->{newfeff}, -1, sub{Import('feff')});
 
   $feffvbox     -> Add(Wx::StaticLine->new($fefflist, -1, wxDefaultPosition, wxDefaultSize, wxLI_HORIZONTAL), 0, wxGROW|wxALL, 5);
@@ -893,12 +893,23 @@ sub OnFeffClick {
 };
 sub OnFeffRightClick {
   my ($self, $event) = @_;
-  my $dialog = Demeter::UI::Wx::MRU->new($frames{main}, ['atoms', 'feff'], "Select a recent Feff input file, Atoms input file, or CIF file", "Recent Feff or crystal data file");
+  my $dialog = Demeter::UI::Wx::MRU->new($frames{main}, ['atoms', 'feff'], "Start a new Atoms input or select a recent Feff input file, Atoms input file, or CIF file", "Recent Feff or crystal data file");
   $frames{main}->status("There are no recent crystal files."), return if ($dialog == -1);
   if( $dialog->ShowModal == wxID_CANCEL ) {
     $frames{main}->status("Import cancelled.");
   } else {
-    Import('feff', $dialog->GetMruSelection);
+    my $which = $dialog->GetMruSelection;
+    if ($which eq 'Open a blank Atoms window') {
+      my ($fnum, $ifeff) = make_feff_frame($frames{main}, q{});
+      $frames{$fnum} -> Show(1);
+      $frames{main}->{$fnum}->SetValue(1);
+    } elsif (not -e $which) {
+      $frames{main}->status("\"$which\" does not exist.");
+    } elsif (not -r $which) {
+      $frames{main}->status("\"$which\" cannot be read.");
+    } else {
+      Import('feff', $which);
+    };
   };
 };
 
@@ -907,6 +918,7 @@ sub make_feff_frame {
   my ($self, $file, $name, $feffobject) = @_;
   my $feffbox = $self->{feffbox};
   $name ||= basename($file);	# ok for importing an atoms or CIF file
+  ($name = 'new') if not $file;
 
   my $new = Wx::ToggleButton->new($self->{fefflist}, -1, "Hide ".emph($name));
   $feffbox -> Add($new, 0, wxGROW|wxRIGHT, 5);
@@ -934,7 +946,8 @@ sub make_feff_frame {
   if ($file and (-e $file) and ($demeter->is_atoms($file) or $demeter->is_cif($file))) {
     $frames{$fnum}->{Atoms}->Demeter::UI::Atoms::Xtal::open_file($file);
   } else {
-    $frames{$fnum}->{Atoms}->{used} = 0;
+    #$frames{$fnum}->{Atoms}->{used} = 0;
+    $frames{$fnum}->{Atoms}->{name}->SetValue('new');
     $frames{$fnum}->{notebook}->SetPageImage(0, 5); # see Demeter::UI::Atoms.pm around line 60
     $frames{$fnum}->{notebook}->SetPageText(0, '');
     EVT_NOTEBOOK_PAGE_CHANGING($frames{$fnum}, $frames{$fnum}->{notebook},
@@ -962,7 +975,7 @@ sub make_feff_frame {
 
   $frames{$fnum} -> Show(0);
   $new->SetValue(0);
-  modified(1);
+  modified(1) if ($file);
   return ($fnum, $ifeff);
 };
 

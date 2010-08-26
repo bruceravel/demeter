@@ -618,6 +618,7 @@ sub get_crystal_data {
     my $this = join("|", $el, $x, $y, $z, $tag);
     $atoms->push_sites($this);
   };
+  $problems .= "There are no valid atom positions.\n\n" if (not $count_valid_row);
   if ($count_valid_row and not $core_selected) {	# set first site as core if core not chosen
     $atoms->core(
 		 $self->{sitesgrid}->GetCellValue($first_valid_row, 5)
