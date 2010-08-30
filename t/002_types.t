@@ -17,7 +17,9 @@
 
 =cut
 
-use Test::Simple tests => 340;
+use Test::Simple tests => 418;
+
+use Xray::Absorption;
 
 use Demeter;
 use Demeter::StrTypes qw( Empty
@@ -28,6 +30,7 @@ use Demeter::StrTypes qw( Empty
 			  PathParam
 			  Element
 			  Edge
+			  Line
 			  AtomsEdge
 			  FeffCard
 			  Clamp
@@ -91,6 +94,15 @@ foreach my $f (@Demeter::StrTypes::pathparam_list) {
 foreach my $f (@Demeter::StrTypes::edge_list) {
   my $ff = scramble_case($f);
   ok( to_Edge($ff), "edge symbol $ff recognized" );
+};
+
+foreach my $f (@Demeter::StrTypes::line_list) {
+  my $ff = scramble_case($f);
+  ok( to_Line($ff), "line symbol $ff recognized" );
+  $ff = scramble_case(Xray::Absorption->get_IUPAC($f));
+  ok( to_Line($ff), "line symbol $ff recognized" );
+  $ff = scramble_case(Xray::Absorption->get_Siegbahn_full($f));
+  ok( to_Line($ff), "line symbol $ff recognized" );
 };
 
 foreach my $f (@Demeter::StrTypes::atomsedge_list) {

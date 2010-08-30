@@ -17,7 +17,7 @@
 
 =cut
 
-use Test::More tests => 9;
+use Test::More tests => 11;
 
 use Demeter;
 use File::Basename;
@@ -44,3 +44,11 @@ ok( ($this->mo->template_plot     eq 'pgplot'  and
      $this->mo->template_analysis eq 'ifeffit'),
                                      "$OBJ object can find template sets");
 
+
+my $xes = Demeter::XES->new(file=>File::Spec->catfile($here,'7725.11'),
+			    energy => 2, emission => 3,
+			    e1 => 7610, e2 => 7624, e3 => 7664, e4 => 7690,
+			   );
+$xes -> _background;
+ok( lc($xes->z)    eq 'co',  'found element');
+ok( lc($xes->line) eq 'kb1', 'found emission line');

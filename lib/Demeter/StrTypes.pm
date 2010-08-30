@@ -10,6 +10,7 @@ use MooseX::Types -declare => [qw( Empty
 				   Element
 				   ElementSymbol
 				   Edge
+				   Line
 				   AtomsEdge
 				   FeffCard
 				   Clamp
@@ -44,6 +45,7 @@ use MooseX::Types -declare => [qw( Empty
 use MooseX::Types::Moose 'Str';
 
 use Chemistry::Elements qw(get_symbol);
+use Xray::Absorption;
 use Regexp::List;
 use Regexp::Optimizer;
 my $opt  = Regexp::List->new;
@@ -152,6 +154,21 @@ subtype Edge,
 coerce Edge,
   from Str,
   via { lc($_) };
+
+## -------- Line symbols
+use vars qw(@line_list $line_regexp);
+@line_list = qw(ka1 ka2 ka3 kb1 kb2 kb3 kb4 kb5 lb3 lb4
+		lg2 lg3 lb1 ln lg1 lg6 la1 lb2 la2 lb5 lb6
+		ll ma mb mg mz); ##'lb2,15');
+$line_regexp = $opt->list2re(@line_list);
+subtype Line,
+  as Str,
+  where { lc(Xray::Absorption->get_Siegbahn($_)) =~ m{\A$line_regexp\z} },
+  message { "That string ($_) is not an line symbol" };
+
+coerce Line,
+  from Str,
+  via { lc(Xray::Absorption->get_Siegbahn($_)) };
 
 ## -------- Atoms Edge symbols
 use vars qw(@atomsedge_list $atomsedge_regexp);

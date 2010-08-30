@@ -130,7 +130,8 @@ This method returns whatever string is entered before return is hit.
 So this method could be used, for example, to prompt for the answer
 with a question.
 
-   my $answer = $object->prompt("What is 2+2? ");
+   $object->prompt("What is 2+2? ");
+   my $answer = $object->pause;
    chomp $answer;
    if ($answer eq '4') {
       print "You're a math genius!\n";

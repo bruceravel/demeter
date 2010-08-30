@@ -17,6 +17,7 @@ package Demeter::XES;
 
 use Carp;
 
+use Chemistry::Elements qw(get_symbol get_Z);
 use File::Basename;
 use List::MoreUtils qw(minmax);
 use List::Util qw(max);
@@ -24,18 +25,15 @@ use List::Util qw(max);
 use Moose;
 extends 'Demeter';
 with 'Demeter::Data::Arrays';
+#with 'Demeter::Data::Athena';
 
 use MooseX::Aliases;
 #use MooseX::AlwaysCoerce;   # this might be useful....
 #use MooseX::StrictConstructor;
 use Moose::Util::TypeConstraints;
 use Demeter::StrTypes qw( Element
-			  Edge
-			  Clamp
-			  FitSpace
-			  Window
+			  Line
 			  Empty
-			  DataType
 		       );
 use Demeter::NumTypes qw( Natural
 			  PosInt
@@ -56,18 +54,20 @@ has 'file'       => (is => 'rw', isa => 'Str',  default => q{},
 				});
 has 'plotkey'     => (is => 'rw', isa => 'Str',    default => q{});
 
-has 'energy'   => (is => 'rw', isa => PosInt, default => 2,);
-has 'emission' => (is => 'rw', isa => PosInt, default => 3,);
-has 'sigma'    => (is => 'rw', isa => PosInt, default => 4,);
-has 'e1'       => (is => 'rw', isa => 'Num',  default => 0, trigger=>sub{my ($self, $new) = @_; $self->update_background(1)});
-has 'e2'       => (is => 'rw', isa => 'Num',  default => 0, trigger=>sub{my ($self, $new) = @_; $self->update_background(1)});
-has 'e3'       => (is => 'rw', isa => 'Num',  default => 0, trigger=>sub{my ($self, $new) = @_; $self->update_background(1)});
-has 'e4'       => (is => 'rw', isa => 'Num',  default => 0, trigger=>sub{my ($self, $new) = @_; $self->update_background(1)});
-has 'slope'    => (is => 'rw', isa => 'Num',  default => 0,);
-has 'yoff'     => (is => 'rw', isa => 'Num',  default => 0,);
-has 'norm'     => (is => 'rw', isa => 'Num',  default => 0,);
-has 'peak'     => (is => 'rw', isa => 'Num',  default => 0,);
+has 'energy'   => (is => 'rw', isa => PosInt,   default => 2,);
+has 'emission' => (is => 'rw', isa => PosInt,   default => 3,);
+has 'sigma'    => (is => 'rw', isa => PosInt,   default => 4,);
+has 'e1'       => (is => 'rw', isa => 'Num',    default => 0, trigger=>sub{my ($self, $new) = @_; $self->update_background(1)});
+has 'e2'       => (is => 'rw', isa => 'Num',    default => 0, trigger=>sub{my ($self, $new) = @_; $self->update_background(1)});
+has 'e3'       => (is => 'rw', isa => 'Num',    default => 0, trigger=>sub{my ($self, $new) = @_; $self->update_background(1)});
+has 'e4'       => (is => 'rw', isa => 'Num',    default => 0, trigger=>sub{my ($self, $new) = @_; $self->update_background(1)});
+has 'slope'    => (is => 'rw', isa => 'Num',    default => 0,);
+has 'yint'     => (is => 'rw', isa => 'Num',    default => 0,);
+has 'norm'     => (is => 'rw', isa => 'Num',    default => 0,);
+has 'peak'     => (is => 'rw', isa => 'Num',    default => 0,);
 
+has 'z'        => (is => 'rw', isa =>  Element, default => 'H');
+has 'line'     => (is => 'rw', isa =>  Line,    default => 'Ka1');
 
 has 'eshift'            => (is => 'rw', isa => 'Num',  default => 0, alias => 'bkg_eshift');
 has 'plot_multiplier'   => (is => 'rw', isa => 'Num',  default => 1,);
@@ -107,9 +107,10 @@ sub _background {
   my $text = $self->template('analysis', 'xes_background');
   $self->dispose($text);
   $self->slope(Ifeffit::get_scalar('xes___slope'));
-  $self->yoff(Ifeffit::get_scalar('xes___yoff'));
+  $self->yint(Ifeffit::get_scalar('xes___yoff'));
   $self->norm(Ifeffit::get_scalar('xes___norm'));
   $self->peak_position;
+  $self->find_line;
   $self->update_background(0);
   return $self;
 };
@@ -154,6 +155,81 @@ sub plot {
   return $self;
 };
 
+sub find_line {
+  my ($self, $energy) = @_;
+  ##return ('H', 'K') unless ($absorption_exists);
+  my $input = $energy || $self->peak;
+  my ($line, $answer, $this) = ("K", 1, 0);
+  my $diff = 100000;
+  foreach my $li (sort @Demeter::StrTypes::line_list) {
+  Z: foreach (1..104) {
+      last Z unless (Xray::Absorption->in_resource($_));
+      my $e = Xray::Absorption -> get_energy($_, $li);
+      next Z unless $e;
+      $this = abs($e - $input);
+      last Z if (($this > $diff) and ($e > $input));
+      if ($this < $diff) {
+	$diff = $this;
+	$answer = $_;
+	$line = $li;
+	#print "$answer  $line\n";
+      };
+    };
+  };
+  $self->z(get_symbol($answer));
+  ($line = 'kb1') if ($line eq 'kb3');
+  $self->line($line);
+  return ($answer, $line);;
+};
+
+## this appends the actual data to the base class serialization
+override 'serialization' => sub {
+  my ($self) = @_;
+  my $string = $self->SUPER::serialization;
+  $string .= YAML::Tiny::Dump($self->ref_array("energy"));
+  $string .= YAML::Tiny::Dump($self->ref_array("raw"));
+  if ($self->sigma) {
+    $string .= YAML::Tiny::Dump($self->ref_array("sigma"));
+  }
+  return $string;
+};
+
+override 'deserialize' => sub {
+  my ($self, $fname) = @_;
+  my @stuff = YAML::Tiny::LoadFile($fname);
+
+  ## load the attributes
+  my %args = %{ $stuff[0] };
+  delete $args{plottable};
+  my @args = %args;
+  $self -> set(@args);
+  $self -> group($self->_get_group);
+  $self -> update_file(0);
+
+  my @x  = @{ $stuff[1] };
+  my @y  = @{ $stuff[2] };
+  my @i0 = @{ $stuff[3] };
+
+  Ifeffit::put_array($self->group.".energy",    \@x);
+  Ifeffit::put_array($self->group.".raw", \@y);
+  if ($self->sigma) {
+    Ifeffit::put_array($self->group.".sigma",   \@i0);
+  };
+
+  $self->update_background(1);
+  return $self;
+};
+alias thaw => 'deserialize';
+
+
+# override '_write_record' => sub {
+#   my ($self) = @_;
+#   local $Data::Dumper::Indent = 0;
+#   my ($string, $arraystring) = (q{}, q{});
+#
+#   my @array = ();
+#
+# }
 
 
 1;
@@ -284,6 +360,25 @@ i.e. the plot that is made when no argument is given.
 In most ways, plotting XES data works like any other plotting in
 Demeter.
 
+=item C<peak_position>
+
+Find the location of the peak of the main fluorescence line in the XES
+data.
+
+  $xes -> peak_position;
+
+=item C<find_line>
+
+Determine the element and emission line from the peak position and a
+look-up table of emission lines.
+
+  my ($element, $line) = $xes -> find_line;
+
+In this form, it uses the value of the C<peak> attribute.  You can
+also explicitly specify an energy:
+
+  my ($element, $line) = $xes -> find_line($energy);
+
 =back
 
 =head1 CONFIGURATION
@@ -298,6 +393,10 @@ and C<fit> configuration groups.
 Demeter's dependencies are in the F<Bundle/DemeterBundle.pm> file.
 
 =head1 SERIALIZATION AND DESERIALIZATION
+
+An XES object and be frozen to and thawed from a YAML file in the same
+manner as a Data object.  The attributes and data arrays are read to
+and from YAMLs with a single object perl YAML.
 
 =head1 BUGS AND LIMITATIONS
 
