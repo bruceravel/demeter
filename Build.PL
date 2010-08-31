@@ -22,8 +22,24 @@ use Cwd;
 use File::Spec;
 use Module::Build;
 
+my $class = Module::Build->subclass(
+      class => "Module::Build::Custom",
+      code => <<'SUBCLASS' );
 
-my $build = Module::Build #$class
+  sub ACTION_update {
+      my $self = shift;
+      my $ret = $self->do_system(qw(svn update));
+      die "failed to update Demeter from svn\n" if not $ret;
+  };
+  sub ACTION_full_update {
+      my $self = shift;
+      $self->depends_on("update");
+      $self->depends_on("test");
+      $self->depends_on("install");
+  };
+SUBCLASS
+
+my $build = $class
   -> new(
 	 module_name        => 'Demeter',
 	 create_readme      => 0,

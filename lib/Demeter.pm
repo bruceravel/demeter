@@ -711,7 +711,7 @@ __PACKAGE__->meta->make_immutable;
 
 =head1 NAME
 
-Demeter -  An object oriented EXAFS data analysis system using Ifeffit and Feff
+Demeter - An object oriented EXAFS data analysis system using Ifeffit and Feff
 
 =head1 VERSION
 
