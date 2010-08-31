@@ -244,7 +244,7 @@ sub read_project {
     $rframes->{Plot}->{limits}->{fit}->SetValue(1);
     my $current = $fit->number || 1;
     #++$current;
-    $fit->mo->currentfit($current);
+    $fit->mo->currentfit($current+1);
     my $name = ($fit->name =~ m{\A\s*Fit\s+\d+\z}) ? 'Fit '.$fit->mo->currentfit : $fit->name;
     $rframes->{main}->{name}->SetValue($name);
     $rframes->{main}->{description}->SetValue($fit->description);
@@ -446,6 +446,21 @@ sub close_project {
   foreach my $f (@list) {
     $f->DEMOLISH;
   };
+
+  ## -------- clear history
+  $rframes->{History}->{list}->Clear;
+  $rframes->{History}->{log}->Clear;
+  $rframes->{History}->{params}->Clear;
+  $rframes->{History}->{params}->Append("Statistcal parameters");
+  $rframes->{History}->{params}->Select(0);
+  $rframes->{History}->{report}->Clear;
+
+  my $plottoolbox  = Wx::BoxSizer->new( wxVERTICAL );
+  $rframes->{History}->{plottool} -> DestroyChildren;
+  $rframes->{History}->{plottool} -> SetSizer($plottoolbox, 1);
+  $rframes->{History}->{plottool} -> SetScrollbars(20, 20, 50, 50);
+  $rframes->{History}->{scrollbox} = $plottoolbox;
+
 
   ## -------- clear Journal
   $rframes->{Journal}->{journal}->SetValue(q{});

@@ -36,6 +36,7 @@ my %attr = (
 
 sub make_text {
   my ($self, $location, $fit) = @_;
+  return if not defined $fit;
   my $text = $fit->logtext;
   $location -> SetValue(q{});
   my $max = 0;

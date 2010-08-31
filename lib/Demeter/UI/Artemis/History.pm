@@ -173,6 +173,7 @@ sub mouseover {
 sub OnSelect {
   my ($self, $event) = @_;
   my $fit = $self->{list}->GetClientData($self->{list}->GetSelection);
+  return if not defined $fit;
   $self->put_log($fit);
   $self->set_params($fit);
 };
