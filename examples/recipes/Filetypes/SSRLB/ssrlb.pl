@@ -15,7 +15,8 @@ my $data = Demeter::Data->new(file=>$obj->fixed,
 			      #bkg_flatten => 0,
 			     );
 $data -> set_mode(screen=>0);
-$data -> po -> set(emin=>-30, emax=>150, e_norm=>1);
+$data -> po -> set(emin=>-200, emax=>600, e_norm=>0);
 $data -> plot('e');
+print $data->bkg_z, " ", uc $data->fft_edge, $/;
 $data -> pause;
 unlink $obj->fix;

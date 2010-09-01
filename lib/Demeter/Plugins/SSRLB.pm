@@ -88,7 +88,8 @@ sub fix {
     foreach my $i (1..$ncol) {
       my $j = $i-1;
       my $this = ($self->ssrlb_version < 2.0) ? _ieee(substr($var,$j*4,4)) : substr($var,$j*4,4);
-      push @line, unpack('f', $this)/4;
+      my $factor = ($self->ssrlb_version < 2.0) ? 4 : 1;
+      push @line, unpack('f', $this)/$factor;
     };
     $pattern = 'f'.$ncol;
     print N '    ', join('  ', map {sprintf "%.3f", $_} @line[2,1,0,3..$#line]), $/;
