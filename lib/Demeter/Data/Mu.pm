@@ -247,7 +247,7 @@ sub normalize {
 
   my $command = q{};
   $command .= $self->template("process", "post_autobk");
-  if ($self->bkg_fixstep or $self->is_nor or ($self->datatype eq 'xanes')) {
+  if ($self->bkg_fixstep or $self->is_nor) { # or ($self->datatype eq 'xanes')) {
     $command .= $self->template("process", "flatten_fit");
   } else {
     $command .= $self->template("process", "flatten_set");

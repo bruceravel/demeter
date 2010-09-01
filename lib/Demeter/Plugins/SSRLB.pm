@@ -3,9 +3,10 @@ package Demeter::Plugins::SSRLB;
 use Moose;
 extends 'Demeter::Plugins::FileType';
 
-has '+is_binary'   => (default => 1);
-has '+description' => (default => "Read Binary files from the SSRL XAFS Data Collector");
-has '+version'     => (default => 0.1);
+has '+is_binary'    => (default => 1);
+has '+description'  => (default => "Read Binary files from the SSRL XAFS Data Collector");
+has '+version'      => (default => 0.2);
+has 'ssrlb_version' => (is => 'rw', isa => 'Num', default => 1.1);
 
 sub is {
   my ($self) = @_;
@@ -13,7 +14,8 @@ sub is {
   open D, $self->file or die "could not open " . $self->file . " as data (SSRL Binary)\n";
   my $line;
   read D, $line, 40;
-  my $is_ssrl = ($line =~ m{^\s*SSRL\s+\-\s+EXAFS Data Collector});
+  my $is_ssrl = ($line =~ m{^\s*SSRL\s+\-\s+EXAFS Data Collector\s+(\d+\.\d+)});
+  $self->ssrlb_version($1);
   read D, $line, 40;
   my $is_bin  = ($line =~ m{$null});
   close D;
@@ -85,7 +87,7 @@ sub fix {
     my @line;
     foreach my $i (1..$ncol) {
       my $j = $i-1;
-      my $this = _ieee(substr($var,$j*4,4));
+      my $this = ($self->ssrlb_version < 2.0) ? _ieee(substr($var,$j*4,4)) : substr($var,$j*4,4);
       push @line, unpack('f', $this)/4;
     };
     $pattern = 'f'.$ncol;
@@ -149,7 +151,7 @@ __END__
 
 =head1 NAME
 
-Demeter::Plugins::SSRLB - SSRL XAFS Data Collector 1.3 Binary filetype plugin
+Demeter::Plugins::SSRLB - SSRL XAFS Data Collector Binary filetype plugin
 
 =head1 SYNOPSIS
 
@@ -194,6 +196,21 @@ I must give credit where credit is due.  I swiped this solution from
 SixPack.  I owe Sam a pitcher of beer for figuring out that bit of
 insanity.
 
+=head1 VERSIONS
+
+=over 4
+
+=item 0.2
+
+Add support for version 2.0 of the SSRL XAS Data Collector, which no
+longer uses the crazy byte ordering.  Again, the solution was swiped
+from SixPack.  The bar tab grows.
+
+=item 0.1
+
+initial version, replicating functionality of the original Athena plugin
+
+=back
 
 =head1 AUTHOR
 
