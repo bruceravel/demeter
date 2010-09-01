@@ -18,7 +18,7 @@ package  Demeter::UI::Artemis::History;
 use strict;
 use warnings;
 use Cwd;
-use File::Path qw(remove_tree);
+use File::Path qw(rmtree);
 use List::MoreUtils qw(minmax);
 
 use Wx qw( :everything );
@@ -397,7 +397,7 @@ sub discard {
 
   ## -------- remove this fit from the fit_order hash and rewrite the order file
   delete $Demeter::UI::Artemis::fit_order{order}{$thisfit->group};
-  update_order_file(1);
+  Demeter::UI::Artemis::update_order_file(1);
   #my $string .= YAML::Tiny::Dump(%Demeter::UI::Artemis::fit_order);
   #open(my $ORDER, '>'.$Demeter::UI::Artemis::frames{main}->{order_file});
   #print $ORDER $string;
@@ -418,7 +418,7 @@ sub discard {
   ## -------- destroy the Fit object and delete its folder in stash space
   $thisfit->DEMOLISH;
   my $folder = File::Spec->catfile($Demeter::UI::Artemis::frames{main}->{project_folder}, 'fits', $thisfit->group);
-  remove_tree($folder);
+  rmtree($folder);
   Demeter::UI::Artemis::modified(1);
 
   $self->status("discarded $name");
