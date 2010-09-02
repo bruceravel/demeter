@@ -37,6 +37,7 @@ use MooseX::Types -declare => [qw( Empty
 				   Interp
 				   GDS
 				   NotReserved
+                                   FitykFunction
 				)];
 
 ## to do: modes
@@ -408,6 +409,22 @@ subtype NotReserved,
   as Str,
   where { lc($_) !~ m{\A$notreserved_regexp\z} },
   message { "reff, pi, etok, and cv are reserved words in Ifeffit or Demeter" };
+
+
+## -------- Fityk defined functions
+use vars qw(@fitykfunction_list $fitykfunction_regexp);
+@fitykfunction_list = qw(Constant Linear Quadratic Cubic Polynomial4 Polynomial5 Polynomial6
+			 Gaussian SplitGaussian Lorentzian Pearson7 SplitPearson7 PseudoVoigt
+			 Voigt VoigtA EMG DoniachSunjic PielaszekCube LogNormal Spline Polyline
+			 ExpDecay GaussianA LogNormalA LorentzianA Pearson7A PseudoVoigtA
+			 SplitLorentzian SplitPseudoVoigt SplitVoigt);
+$fitykfunction_regexp = $opt->list2re(map {lc($_)} @fitykfunction_list);
+subtype FitykFunction,
+  as Str,
+  where { lc($_) =~ m{\A$fitykfunction_regexp\z} },
+  message { "$_ is not a defined function in Fityk" };
+
+
 
 
 

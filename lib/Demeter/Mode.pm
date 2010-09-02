@@ -271,10 +271,32 @@ has 'XES' => (
 			      'splice'  => 'splice_XES',
 			     }
 	       );
+has 'PeakFit' => (
+		metaclass => 'Collection::Array',
+		is        => 'rw',
+		isa       => 'ArrayRef',
+		default   => sub { [] },
+		provides  => {
+			      'push'    => 'push_PeakFit',
+			      'clear'   => 'clear_PeakFit',
+			      'splice'  => 'splice_PeakFit',
+			     }
+	       );
+has 'LineShape' => (
+		metaclass => 'Collection::Array',
+		is        => 'rw',
+		isa       => 'ArrayRef',
+		default   => sub { [] },
+		provides  => {
+			      'push'    => 'push_LineShape',
+			      'clear'   => 'clear_LineShape',
+			      'splice'  => 'splice_LineShape',
+			     }
+	       );
 
 has 'types' => (is => 'ro', isa => 'ArrayRef',
-		default => sub{[qw(Atoms Data Feff External Fit Feffit GDS Path Plot Indicator LCF XES ScatteringPath
-				   VPath SSPath FSPath StructuralUnit Prj Pixel MultiChannel)]},);
+		default => sub{[qw(Atoms Data Feff External Fit Feffit GDS Path Plot Indicator LCF XES PeakFit LineShape
+				   ScatteringPath VPath SSPath FSPath StructuralUnit Prj Pixel MultiChannel)]},);
 
 has 'Plugins' => (
 		metaclass => 'Collection::Array',
@@ -375,6 +397,8 @@ sub everything {
 	  @{ $self->Feff	   },
 	  @{ $self->LCF		   },
 	  @{ $self->XES		   },
+	  @{ $self->PeakFit	   },
+	  @{ $self->LineShape      },
 	  @{ $self->GDS		   },
 	 );
 };
