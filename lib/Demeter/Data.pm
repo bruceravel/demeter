@@ -189,6 +189,7 @@ has 'bkg_e0_fraction' => (is => 'rw', isa =>  PosNum, default => sub{ shift->co-
 			  trigger => sub{ my($self) = @_; $self->update_bkg(1); $self->update_norm(1) });
 
 has 'bkg_eshift'      => (is => 'rw', isa => 'Num',   default => 0,
+			  alias => 'eshift',
 			  trigger => sub{ my($self) = @_; 
 					  $self->update_bkg(1);
 					  $self->update_norm(1);
@@ -712,6 +713,11 @@ sub rfactor {
 };
 
 
+sub prep_peakfit {
+  my ($self, $xmin, $xmax) = @_;
+  $self->_update('background');
+  return ($self->bkg_e0+$xmin, $self->bkg_e0+$xmax);
+};
 
 ## this appends the actual data to the base class serialization
 override 'serialization' => sub {

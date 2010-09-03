@@ -37,6 +37,8 @@ if ($Demeter::mode->ui eq 'screen') {
 };
 
 my $FITYK = Fityk::Fityk->new;
+$FITYK->execute('define Atan(step=1, e0=0, width=1) = step*(atan((x-e0)/width)/pi + 0.5)');
+$FITYK->execute('define Erf(step=0.5, e0=0, width=1) = step*(erf((x-e0)/width) + 1)');
 
 has '+plottable'   => (default => 1);
 has '+data'        => (isa => Empty.'|Demeter::Data|Demeter::XES');
@@ -48,8 +50,8 @@ has 'xaxis'        => (is => 'rw', isa => 'Str',    default => q{energy});
 has 'yaxis'        => (is => 'rw', isa => 'Str',    default => q{flat});
 has 'sigma'        => (is => 'rw', isa => 'Str',    default => q{});
 
-has 'xmin'         => (is => 'rw', isa => 'Num',    default => -20);
-has 'xmax'         => (is => 'rw', isa => 'Num',    default =>  30);
+has 'xmin'         => (is => 'rw', isa => 'Num',    default => 0);
+has 'xmax'         => (is => 'rw', isa => 'Num',    default => 0);
 
 has 'lineshapes'   => (
 		       metaclass => 'Collection::Array',
@@ -62,6 +64,19 @@ has 'lineshapes'   => (
 				     'shift'   => 'shift_lineshapes',
 				     'unshift' => 'unshift_lineshapes',
 				     'clear'   => 'clear_lineshapes',
+				    },
+		      );
+has 'linegroups'   => (
+		       metaclass => 'Collection::Array',
+		       is        => 'rw',
+		       isa       => 'ArrayRef[Str]',
+		       default   => sub { [] },
+		       provides  => {
+				     'push'    => 'push_linegroups',
+				     'pop'     => 'pop_linegroups',
+				     'shift'   => 'shift_linegroups',
+				     'unshift' => 'unshift_linegroups',
+				     'clear'   => 'clear_linegroups',
 				    },
 		      );
 
@@ -102,16 +117,19 @@ sub normalize_function {
 
 sub fit {
   my ($self) = @_;
+  $self->start_spinner("Demeter is performing a peak fit") if ($self->mo->ui eq 'screen');
 
-  ## need to do the following for each data type correctly ###
-  #$self->data->_update('background');
-  #my $emin = $self->data->bkg_e0 + $self->xmin;
-  #my $emax = $self->data->bkg_e0 + $self->xmax;
-  $self->data->_update('plot');
-  my $emin = $self->xmin;
-  my $emax = $self->xmax;
-  ############################################################
+  ## this does the right stuff for XES/Data
+  my ($emin, $emax) = $self->data->prep_peakfit($self->xmin, $self->xmax);
+  $self->xmin($emin);
+  $self->xmax($emax);
 
+  ## import data into Fityk
+  #$FITYK->load_data(0, \@x, \@y, \@s, $self->name);
+  if (@{$self->linegroups}) {    # clean up from previous fit
+    my $string = 'delete ' . join(', ', @{$self->linegroups});
+    $self->dispose_to_fityk($string);
+  };
   my $file = $self->po->tempfile;
   $self->data->points(file    => $file,
 		      space   => 'E',
@@ -120,19 +138,20 @@ sub fit {
 		      scale   => $self->data->plot_multiplier,
 		      yoffset => $self->data->y_offset
 		     );
-  my @all = ();
-
-  ## import data into Fityk
-  #$FITYK->load_data(0, \@x, \@y, \@s, $self->name);
   $self->dispose_to_fityk('@0 < '.$file);
-  print $FITYK->get_data(0)->size, $/;
+  $self->dispose_to_fityk("A = ($emin < x and x < $emax)");
+  $self->dispose_to_fityk('@0.F=0');
+
+  #print $FITYK->get_data(0)->size, $/;
   ## define each lineshape
+  my @all = ();
   foreach my $ls (@{$self->lineshapes}) {
     $ls->set(xmin=>$emin, xmax=>$emax);
     $self->dispose_to_fityk($ls->define);
     #print $FITYK->get_info('%'.$ls->group, 1), $/;
     push @all, '%'.$ls->group;
   };
+  $self -> linegroups(\@all);
 
   $self->dispose_to_fityk('fit in @0');
   my @data_x = $self->fetch_data_x;
@@ -145,11 +164,35 @@ sub fit {
     $ls->put_arrays(\@data_x);
   };
   $self->dispose_to_fityk('@0.F=0');
-  $self->dispose_to_fityk('@0.F=' . join('+', @all));
+  $self->dispose_to_fityk('@0.F=' . join(' + ', @all));
 
-  print $FITYK->get_info('errors'), $/;
+  $self->fetch_statistics;
 
+  $self->stop_spinner if ($self->mo->ui eq 'screen');
   return $self;
+};
+
+sub fetch_statistics {
+  my ($self) = @_;
+  ## convert the error text into a list of lists
+  my $text = $FITYK->get_info('errors');
+  my @results = ();
+  foreach my $line (split("\n", $text)) {
+    next if ($line =~ m{\AStandard});
+    my @fields = split(/\s+[=+-]+\s+/, $line);
+    push @results, \@fields;
+  };
+  foreach my $ls (@{$self->lineshapes}) {
+    my $count = 0;
+    foreach (1..$ls->np) {
+      my $r = shift @results;
+      my $att = 'a'.$count;
+      $ls->$att($r->[1]);
+      $att = 'e'.$count;
+      $ls->$att($r->[2]);
+      ++$count;
+    };
+  };
 };
 
 sub fetch_data_x {
@@ -177,9 +220,21 @@ sub plot {
 sub dispose_to_fityk {
   my ($self, $string) = @_;
   local $| = 1;
-  print $string,$/         if $self->screen;
+  if ($self->screen) {
+    my ($start, $end) = ($self->mo->ui eq 'screen') ? $self->_ansify(q{}, 'fityk') : (q{}, q{});
+    print $start, $string, $end, $/;
+  };
   $FITYK->execute($string) if $self->fityk;
   return $self;
+};
+
+sub report {
+  my ($self) = @_;
+  my $string = q{};
+  foreach my $ls (@{$self->lineshapes}) {
+    $string .= $ls->report;
+  };
+  return $string;
 };
 
 1;

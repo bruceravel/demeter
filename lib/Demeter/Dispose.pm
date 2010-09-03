@@ -75,6 +75,9 @@ sub _ansify {
 	print STDOUT $color_of{$self->co->default("screen", "feedback")}, $thisline, RESET;
       };
     };
+    ($kind eq 'fityk') and do {
+      ($start, $end) = (BOLD.GREEN, RESET);
+    };
     ($kind eq 'fefferr') and do {
       print STDOUT WHITE, ON_RED, $thisline, RESET;
     };

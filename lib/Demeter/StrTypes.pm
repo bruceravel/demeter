@@ -417,7 +417,8 @@ use vars qw(@fitykfunction_list $fitykfunction_regexp);
 			 Gaussian SplitGaussian Lorentzian Pearson7 SplitPearson7 PseudoVoigt
 			 Voigt VoigtA EMG DoniachSunjic PielaszekCube LogNormal Spline Polyline
 			 ExpDecay GaussianA LogNormalA LorentzianA Pearson7A PseudoVoigtA
-			 SplitLorentzian SplitPseudoVoigt SplitVoigt);
+			 SplitLorentzian SplitPseudoVoigt SplitVoigt
+			 Atan Erf);
 $fitykfunction_regexp = $opt->list2re(map {lc($_)} @fitykfunction_list);
 subtype FitykFunction,
   as Str,

@@ -22,6 +22,9 @@ use File::Basename;
 use List::MoreUtils qw(minmax);
 use List::Util qw(max);
 
+use Readonly;
+Readonly my $EPSILON => 1e-3;
+
 use Moose;
 extends 'Demeter';
 with 'Demeter::Data::Arrays';
@@ -180,6 +183,19 @@ sub find_line {
   ($line = 'kb1') if ($line eq 'kb3');
   $self->line($line);
   return ($answer, $line);;
+};
+
+sub prep_peakfit {
+  my ($self, $xmin, $xmax) = @_;
+  $self->_update('plot');
+  my @e = $self->get_array("energy");
+  if (abs($xmin) < $EPSILON) {
+    $xmin = $e[0];
+  };
+  if (abs($xmax) < $EPSILON) {
+    $xmax = $e[$#e];
+  };
+  return ($xmin, $xmax);
 };
 
 ## this appends the actual data to the base class serialization

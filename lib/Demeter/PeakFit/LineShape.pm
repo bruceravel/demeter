@@ -103,6 +103,9 @@ sub nparams {
 	      SplitLorentzian  => 4,
 	      SplitPseudoVoigt => 6,
 	      SplitVoigt       => 6,
+
+	      Atan             => 3,
+	      Erf              => 3,
 	    );
   return $hash{$function};
 };
@@ -122,7 +125,7 @@ sub define {
 
 sub put_arrays {
   my ($self, $rx) = @_;
-  $self->parent->dispose_to_fityk('fit in @0');
+  $self->parent->dispose_to_fityk('@0.F=0');
   $self->parent->dispose_to_fityk('@0.F=%' . $self->group);
   my @model_y = @{ $self->parent->fityk_object->get_model_vector($rx, 0) };
   Ifeffit::put_array($self->group.".energy", $rx);
@@ -144,8 +147,56 @@ sub isfixed {
   return q{~};
 };
 
-sub describe {
+sub parameter_names {
   my ($self, $function) = @_;
+  $function ||= $self->function;
+  return ('intercept', 'slope')  if lc($function) eq 'linear';
+  return ('step', 'e0', 'width') if lc($function) =~ m{Atan|Erf};
+
+  my $parser = Pod::POM->new();
+  my $pom = $parser->parse($INC{'Demeter/PeakFit/LineShape.pm'});
+
+  my $sections = $pom->head1();
+  my $functions_section;
+  foreach my $s (@$sections) {
+    next unless ($s->title() eq 'LINESHAPES FROM FITYK');
+    $functions_section = $s;
+    last;
+  };
+
+  my $titleline = q{};
+  foreach my $item ($functions_section->over->[0]->item) { # ick! Pod::POM is confusing!
+    $titleline = $item->title;
+    last if ($titleline =~ m{\b$function\b});
+  };
+  chop $titleline;
+  my $params = substr($titleline, length($function)+1);
+  my @names = map {$_ =~ m{(\w+)\s*=\s*(?:.+)} ? $1 : $_} split(/,\s+/, $params);
+  return @names;
+};
+
+sub report {
+  my ($self) = @_;
+  my @names = $self->parameter_names;
+  my $string = sprintf("%s (%s) :", $self->name, $self->function);
+  my $count = 0;
+  foreach my $n (@names) {
+    my $a = 'a'.$count;
+    my $e = 'e'.$count;
+    if ($n eq 'center') {
+      $string .= sprintf(" %s = %.2f(%.2f),", $n, $self->$a, $self->$e);
+    } else {
+      $string .= sprintf(" %s = %.3g(%.3g),", $n, $self->$a, $self->$e);
+    };
+    ++$count;
+  };
+  chop $string;
+  $string .= $/;
+  return $string;
+};
+
+sub describe {
+  my ($self, $function, $description_only) = @_;
   $function ||= $self->function;
   my $parser = Pod::POM->new();
   my $pom = $parser->parse($INC{'Demeter/PeakFit/LineShape.pm'});
@@ -154,22 +205,25 @@ sub describe {
   my $sections = $pom->head1();
   my $functions_section;
   foreach my $s (@$sections) {
-    next unless ($s->title() eq 'LINESHAPES');
+    next unless ($s->title() eq 'LINESHAPES FROM FITYK');
     $functions_section = $s;
     last;
   };
   foreach my $item ($functions_section->over->[0]->item) { # ick! Pod::POM is confusing!
     my $this = $item->title;
-    if ($this =~ m{$function}) {
+    if ($this =~ m{\b$function\b}) {
       my $content = $item->content();
       $content =~ s{\n}{ }g;
+      $content =~ s{\A\s+}{};
       $content =~ s{\s+\z}{};
       $text = $content;
     };
   };
   undef $parser;
   undef $pom;
-  return $text || $self->trouble;
+  return $text if $description_only;
+  $text = sprintf("The functional form of %s is %s%s%s\n", $function, q{}, $text, q{});
+  return $text;
 };
 
 1;
@@ -186,7 +240,7 @@ This documentation refers to Demeter version 0.4.
 
 =head1 DESCRIPTION
 
-=head1 LINESHAPES
+=head1 LINESHAPES FROM FITYK
 
 These are Fityk's built in lineshapes:
 
@@ -311,6 +365,22 @@ These are Fityk's built in lineshapes:
 =item SplitVoigt(height, center, hwhm1, hwhm2, shape1, shape2)
 
  x < center ? Voigt(height, center, hwhm1, shape1) : Voigt(height, center, hwhm2, shape2)
+
+=back
+
+=head1 LINESHAPES DEFINE BY DEMETER
+
+These are lineshapes defined by Demeter
+
+=over 4
+
+=item Atan(step=1, e0=0, width=0)
+
+  step*[atan((x-E0)/width)/pi + 0.5]
+
+=item Erf(step=0.5, e0=0, width=0)
+
+  step*(erf((x-e0)/width) + 1)
 
 =back
 
