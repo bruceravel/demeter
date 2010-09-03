@@ -9,15 +9,16 @@ my $data = Demeter::Data->new(file        => 'tipb.305',
 			      ln          =>  1,
 			     );
 
-my $peak = Demeter::PeakFit->new(xmin=>-20, xmax=>3, screen => 1);
+my $peak = Demeter::PeakFit->new(xmin=>-15, xmax=>5, screen => 1);
 
 $peak -> data($data);
 
 $data->set_mode(screen=>0);
 
 $peak -> add('atan', center=>4976, name=>'arctangent');
-$peak -> add('gaussian', center=>4966.2, name=>'Peak2');
-$peak -> add('gaussian', center=>4969.4, name=>'Peak1');
+$peak -> add('gaussian', center=>4969.7, name=>'Peak1');
+my $ls = $peak -> add('gaussian', center=>4966.2, name=>'Peak2');
+$ls->fix1(0);
 
 $peak -> fit;
 print $peak -> report;

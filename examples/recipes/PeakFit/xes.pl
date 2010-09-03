@@ -7,31 +7,23 @@ my $xes = Demeter::XES->new(file=>'../XES/7725.11',
 			    e1 => 7610, e2 => 7624, e3 => 7664, e4 => 7690,
 			   );
 
-my $peak = Demeter::PeakFit->new(screen => 0, yaxis=> 'raw',);
+my $peak = Demeter::PeakFit->new(screen => 1, yaxis=> 'norm',);
 
 $peak -> data($xes);
 
-$peak -> add('linear', name=>'baseline');
+#$peak -> add('linear', name=>'baseline');
 $peak -> add('gaussian', center=>7649.5, name=>'peak 1');
 $peak -> add('gaussian', center=>7647.7, name=>'peak 2');
-$peak -> add('gaussian', center=>7641.8, name=>'peak 3');
+my $ls = $peak -> add('lorentzian', center=>7636.8, name=>'peak 3');
+$ls -> fix1(0);
 
 $peak -> fit;
 print $peak -> report;
 
-$_  -> plot('raw') foreach ($xes, $peak, @{$peak->lineshapes});
+$peak->po->plot_res(1);
+$_  -> plot('norm') foreach ($xes, $peak, @{$peak->lineshapes});
 $peak -> pause;
 
-
-## to do:
-## X 1. pgplot plotting tmpl files
-## X 2. snarf in best fit values and uncertainties
-## X 3. reporting methods
-##  4. test with xanes data
-##  5. fixing parameters
-##  6. test more functions
-## X 7. deal with fityk param names
-##  8. step-like functions
 
 
 # print join("|", $peak->lineshapes->[1]->parameter_names('PielaszekCube')), $/;

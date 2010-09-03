@@ -25,48 +25,53 @@ extends 'Demeter';
 with 'Demeter::Data::Arrays';
 use MooseX::Aliases;
 
-has '+plottable'   => (default => 1);
-has '+data'        => (isa => Empty.'|Demeter::Data|Demeter::XES');
-has '+name'        => (default => 'Lineshape' );
+has '+plottable' => (default => 1);
+has '+data'    => (isa => Empty.'|Demeter::Data|Demeter::XES');
+has '+name'    => (default => 'Lineshape' );
 has 'parent'   => (is => 'rw', isa => Empty.'|Demeter::PeakFit', default => q{},
 		   trigger => sub{ my ($self, $new) = @_; $self->data($new->data)});
 has 'function' => (is => 'rw', isa => FitykFunction, default => q{},
-		   trigger => sub{ my ($self, $new) = @_; $self->np($self->nparams)});
-has 'np'       => (is => 'rw', isa => 'Int',    default => 0);
-has 'start'    => (is => 'rw', isa => 'Int',    default => 0);
+		   trigger => sub{ my ($self, $new) = @_;
+				   $self->np($self->nparams);
+				   $self->peaked(0) if (lc($new) =~ m{linear|atan|erf|const|cubic|quadratic|polynomial|spline|polyline|expdecay});
+				 });
+has 'peaked'   => (is => 'rw', isa => 'Bool', default => 1, alias => 'is_peak');
+has 'np'       => (is => 'rw', isa => 'Int',  default => 0);
+has 'start'    => (is => 'rw', isa => 'Int',  default => 0);
 
-has 'xaxis'    => (is => 'rw', isa => 'Str',    default => q{energy});
-has 'yaxis'    => (is => 'rw', isa => 'Str',    default => q{func});
-has 'xmin'     => (is => 'rw', isa => 'Num',    default => 0);
-has 'xmax'     => (is => 'rw', isa => 'Num',    default => 0);
+has 'xaxis'    => (is => 'rw', isa => 'Str',  default => q{energy});
+has 'yaxis'    => (is => 'rw', isa => 'Str',  default => q{func});
+has 'xmin'     => (is => 'rw', isa => 'Num',  default => 0);
+has 'xmax'     => (is => 'rw', isa => 'Num',  default => 0);
 
-has 'a0' => (is => 'rw', isa => 'Num', default => 0, alias => 'height');
-has 'a1' => (is => 'rw', isa => 'Num', default => 0, alias => 'center');
-has 'a2' => (is => 'rw', isa => 'Num', default => 0, alias => 'hwhm');
-has 'a3' => (is => 'rw', isa => 'Num', default => 0);
-has 'a4' => (is => 'rw', isa => 'Num', default => 0);
-has 'a5' => (is => 'rw', isa => 'Num', default => 0);
-has 'a6' => (is => 'rw', isa => 'Num', default => 0);
-has 'a7' => (is => 'rw', isa => 'Num', default => 0);
+has 'a0'       => (is => 'rw', isa => 'Num',  default => 0, alias => 'height');
+has 'a1'       => (is => 'rw', isa => 'Num',  default => 0, alias => 'center');
+has 'a2'       => (is => 'rw', isa => 'Num',  default => 0, alias => 'hwhm');
+has 'a3'       => (is => 'rw', isa => 'Num',  default => 0);
+has 'a4'       => (is => 'rw', isa => 'Num',  default => 0);
+has 'a5'       => (is => 'rw', isa => 'Num',  default => 0);
+has 'a6'       => (is => 'rw', isa => 'Num',  default => 0);
+has 'a7'       => (is => 'rw', isa => 'Num',  default => 0);
 
-has 'e0' => (is => 'rw', isa => 'Num', default => 0, alias => 'eheight');
-has 'e1' => (is => 'rw', isa => 'Num', default => 0, alias => 'ecenter');
-has 'e2' => (is => 'rw', isa => 'Num', default => 0, alias => 'ehwhm');
-has 'e3' => (is => 'rw', isa => 'Num', default => 0);
-has 'e4' => (is => 'rw', isa => 'Num', default => 0);
-has 'e5' => (is => 'rw', isa => 'Num', default => 0);
-has 'e6' => (is => 'rw', isa => 'Num', default => 0);
-has 'e7' => (is => 'rw', isa => 'Num', default => 0);
+has 'e0'       => (is => 'rw', isa => 'Num',  default => 0, alias => 'eheight');
+has 'e1'       => (is => 'rw', isa => 'Num',  default => 0, alias => 'ecenter');
+has 'e2'       => (is => 'rw', isa => 'Num',  default => 0, alias => 'ehwhm');
+has 'e3'       => (is => 'rw', isa => 'Num',  default => 0);
+has 'e4'       => (is => 'rw', isa => 'Num',  default => 0);
+has 'e5'       => (is => 'rw', isa => 'Num',  default => 0);
+has 'e6'       => (is => 'rw', isa => 'Num',  default => 0);
+has 'e7'       => (is => 'rw', isa => 'Num',  default => 0);
 
-has 'fix0' => (is => 'rw', isa => 'Bool', default => 0, alias => 'fixheight');
-has 'fix1' => (is => 'rw', isa => 'Bool', default => 0, alias => 'fixcenter');
-has 'fix2' => (is => 'rw', isa => 'Bool', default => 0, alias => 'fixhwhm');
-has 'fix3' => (is => 'rw', isa => 'Bool', default => 0);
-has 'fix4' => (is => 'rw', isa => 'Bool', default => 0);
-has 'fix5' => (is => 'rw', isa => 'Bool', default => 0);
-has 'fix6' => (is => 'rw', isa => 'Bool', default => 0);
-has 'fix7' => (is => 'rw', isa => 'Bool', default => 0);
+has 'fix0'     => (is => 'rw', isa => 'Bool', default => 0, alias => 'fixheight');
+has 'fix1'     => (is => 'rw', isa => 'Bool', default => 0, alias => 'fixcenter');
+has 'fix2'     => (is => 'rw', isa => 'Bool', default => 0, alias => 'fixhwhm');
+has 'fix3'     => (is => 'rw', isa => 'Bool', default => 0);
+has 'fix4'     => (is => 'rw', isa => 'Bool', default => 0);
+has 'fix5'     => (is => 'rw', isa => 'Bool', default => 0);
+has 'fix6'     => (is => 'rw', isa => 'Bool', default => 0);
+has 'fix7'     => (is => 'rw', isa => 'Bool', default => 0);
 
+has 'area'     => (is => 'rw', isa => 'Num',  default => 0);
 
 sub nparams {
   my ($self, $function) = @_;
@@ -113,7 +118,8 @@ sub nparams {
 
 sub define {
   my ($self) = @_;
-  my $string = sprintf("%%%s = guess %s [%.3f:%.3f]", $self->group, $self->function, $self->xmin, $self->xmax);
+  my $string = sprintf("%%%s = guess %s [%.2f:%.2f]", $self->group, $self->function, $self->xmin, $self->xmax);
+  #my $string = sprintf("%%%s = guess %s", $self->group, $self->function);
   my @args = ();
   push(@args, sprintf(" height=%s%.5f", $self->isfixed(0), $self->a0)) if $self->a0;
   push(@args, sprintf(" center=%s%.5f", $self->isfixed(1), $self->a1)) if $self->a1;
@@ -151,7 +157,7 @@ sub parameter_names {
   my ($self, $function) = @_;
   $function ||= $self->function;
   return ('intercept', 'slope')  if lc($function) eq 'linear';
-  return ('step', 'e0', 'width') if lc($function) =~ m{Atan|Erf};
+  return ('step', 'e0', 'width') if lc($function) =~ m{atan|erf};
 
   my $parser = Pod::POM->new();
   my $pom = $parser->parse($INC{'Demeter/PeakFit/LineShape.pm'});
@@ -191,6 +197,14 @@ sub report {
     ++$count;
   };
   chop $string;
+  $string .= sprintf(", area = %.2f", $self->area) if $self->peaked;
+  $string .= $/;
+  return $string;
+};
+
+sub fityk_report {
+  my ($self) = @_;
+  my $string = $self->parent->fityk_object->get_info('%'.$self->group, 1);
   $string .= $/;
   return $string;
 };
@@ -226,6 +240,7 @@ sub describe {
   return $text;
 };
 
+__PACKAGE__->meta->make_immutable;
 1;
 
 =head1 NAME
@@ -240,9 +255,88 @@ This documentation refers to Demeter version 0.4.
 
 =head1 DESCRIPTION
 
+=head1 ATTRIBUTES
+
+=over 4
+
+=item C<name>
+
+The string used in a plot lagend.
+
+=item C<parent>
+
+The PeakFit function to which this LineShape belongs.
+
+=item C<function>
+
+The form of the function, like Linear or Gaussian.  See below for the
+complete list of possibilities.
+
+=item C<peaked>
+
+A flag that is true if the function associated with this object is a
+peak-like function.
+
+Linear, Atan, Erf, Const, Cubic, Quadratic, Spline, PolyLine,
+ExpDecay, and the Polynomial functions are the ones for which this is
+set to 0.  All others are set to 1.
+
+=item C<np>
+
+The number of parameters used by the specified functional form.
+
+=item C<xaxis>
+
+This is usually set to "energy" and is used by the plotting templates.
+
+=item C<yaxis>
+
+This is usually set to "func" and is used by the plotting templates.
+
+=item C<xmin>
+
+This is set to the lower bound fitting range when the C<fit> method of
+the PeakFit object is called.
+
+=item C<xmax>
+
+This is set to the lower bound fitting range when the C<fit> method of
+the PeakFit object is called.
+
+=item C<a0> through C<a7>
+
+The guessed (before the fit) and best-fit (after) values of the
+parameters of the function.  Note that C<height> is an alias for
+C<a0>, C<center> for C<a1>, and C<hwhm> for C<a2> -- all of which is
+convenient for peak-like function.  Not all of these are used for any
+given function.  For instance, a Voigt only uses C<a0> through C<a3>.
+
+=item C<e0> through C<e7>
+
+The uncertainties (0 before the fit) of the parameters of the
+function.  Note that C<eheight> is an alias for C<e0>, C<ecenter> for
+C<e1>, and C<ehwhm> for C<e2> -- all of which is convenient for
+peak-like function.
+
+=item C<fix0> through C<fix7>
+
+Flags indicating whether to fix the associated value in a fit.  Note
+that C<fixheight> is an alias for C<fix0>, C<fixcenter> for C<fix1>,
+and C<fixhwhm> for C<fix2> -- all of which is convenient for peak-like
+function.
+
+=item C<area>
+
+After the fit, this is filled with Fityk's measure of the peak area
+for a Peak-like function.
+
+=back
+
 =head1 LINESHAPES FROM FITYK
 
-These are Fityk's built in lineshapes:
+These are Fityk's built in lineshapes.  Note that the format of this
+document section is parsed by thereporting methods of this object.  It
+may not be as pretty as can be, but plese don't "fix" it.
 
 =over 4
 
@@ -387,7 +481,6 @@ These are lineshapes defined by Demeter
 =head1 CONFIGURATION AND ENVIRONMENT
 
 See L<Demeter::Config> for a description of the configuration system.
-See the lcf configuration group for the relevant parameters.
 
 =head1 DEPENDENCIES
 
@@ -395,10 +488,17 @@ Demeter's dependencies are in the F<Bundle/DemeterBundle.pm> file.
 
 =head1 BUGS AND LIMITATIONS
 
+=over 4
+
+=item *
+
+Need better aliasing of parameter names for add and reporting.
+
+=back
+
 Please report problems to Bruce Ravel (bravel AT bnl DOT gov)
 
 Patches are welcome.
-
 
 =head1 AUTHOR
 

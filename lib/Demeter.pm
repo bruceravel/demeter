@@ -23,7 +23,7 @@ require 5.8.0;
 
 use version;
 our $VERSION = version->new('0.4.5');
-use vars qw($Gnuplot_exists);
+use vars qw($Gnuplot_exists $Fityk_exists);
 
 #use Demeter::Carp;
 use Carp;
@@ -121,6 +121,8 @@ $plot = Demeter::Plot -> new() if not $mode->plot;
 $plot -> screen_echo(0);
 
 $Gnuplot_exists = ($plot->is_windows) ? 0 : (eval "require Graphics::GnuplotIF");
+$Fityk_exists = eval "require Fityk";
+
 use Demeter::StrTypes qw( Empty
 			  IfeffitCommand
 			  IfeffitFunction
@@ -185,12 +187,18 @@ sub import {
     };
   };
 
-# 
   foreach my $m (qw(Data Plot Plot/Indicator Config Data/Prj Data/Pixel Data/MultiChannel GDS Path VPath SSPath FSPath
-		    Fit Fit/Feffit Atoms Feff Feff/External ScatteringPath StructuralUnit LCF XES PeakFit PeakFit/LineShape)) {
+		    Fit Fit/Feffit Atoms Feff Feff/External ScatteringPath StructuralUnit LCF XES)) {
     next if $INC{"Demeter/$m.pm"};
     ##print "Demeter/$m.pm\n";
     require "Demeter/$m.pm";
+  };
+  if ($Fityk_exists) {
+    foreach my $m (qw(PeakFit PeakFit/LineShape)) {
+      next if $INC{"Demeter/$m.pm"};
+      ##print "Demeter/$m.pm\n";
+      require "Demeter/$m.pm";
+    };
   };
 
   $class -> register_plugins;
@@ -200,8 +208,9 @@ sub register_plugins {
   my ($class) = @_;
   my $here = dirname($INC{"Demeter.pm"});
   my $standard = File::Spec->catfile($here, 'Demeter', 'Plugins');
+  my $private =  File::Spec->catfile($ENV{HOME}, '.horae', 'Demeter', 'Plugins');
   require File::Spec->catfile($here, 'Demeter', 'Plugins', 'FileType.pm');
-  my @folders = ($standard);
+  my @folders = ($standard); #, $private);
   foreach my $f (@folders) {
     opendir(my $FL, $f);
     foreach my $pm (readdir $FL) {

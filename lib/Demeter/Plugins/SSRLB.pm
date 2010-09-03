@@ -3,6 +3,8 @@ package Demeter::Plugins::SSRLB;
 use Moose;
 extends 'Demeter::Plugins::FileType';
 
+use Scalar::Util qw(looks_like_number);
+
 has '+is_binary'    => (default => 1);
 has '+description'  => (default => "Read Binary files from the SSRL XAFS Data Collector");
 has '+version'      => (default => 0.2);
@@ -15,7 +17,7 @@ sub is {
   my $line;
   read D, $line, 40;
   my $is_ssrl = ($line =~ m{^\s*SSRL\s+\-\s+EXAFS Data Collector\s+(\d+\.\d+)});
-  $self->ssrlb_version($1);
+  $self->ssrlb_version($1) if looks_like_number($1);
   read D, $line, 40;
   my $is_bin  = ($line =~ m{$null});
   close D;
