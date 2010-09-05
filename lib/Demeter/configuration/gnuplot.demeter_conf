@@ -59,9 +59,10 @@ description
 
 variable=terminal
 type=string
-default=wxt
+default=x11
 description
-  This is the terminal type to use when plotting with gnuplot.
+  This is the terminal type to use when plotting with gnuplot.  While
+  X11 is a safe default, the wxt terminal is highly recommended.
 
 variable=termparams
 type=string

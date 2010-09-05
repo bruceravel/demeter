@@ -1,0 +1,100 @@
+#!/usr/bin/perl
+
+# Usage: fixin [-s] [files]
+
+# Configuration constants.
+
+$does_shbang = 1;       # Does kernel recognize #! hack?
+$verbose = 1;           # Default to verbose
+
+# Construct list of directories to search.
+
+@absdirs = reverse grep(m!^/!, split(/:/, $ENV{'PATH'}, 999));
+
+# Process command line arguments.
+
+if ($ARGV[0] eq '-s') {
+    shift;
+    $verbose = 0;
+}
+
+die "Usage: fixin [-s] [files]\n" unless @ARGV || !-t;
+
+@ARGV = '-' unless @ARGV;
+
+# Now do each file.
+
+FILE: foreach $filename (@ARGV) {
+    open(IN, $filename) ||
+	((warn "Can't process $filename: $!\n"), next);
+    $_ = <IN>;
+    next FILE unless /^#!/;     # Not a shbang file.
+
+    # Now figure out the interpreter name.
+
+    chop($cmd = $_);
+    $cmd =~ s/^#! *//;
+    ($cmd,$arg) = split(' ', $cmd, 2);
+    $cmd =~ s!^.*/!!;
+
+    # Now look (in reverse) for interpreter in absolute PATH.
+
+    $found = '';
+    foreach $dir (@absdirs) {
+	if (-x "$dir/$cmd") {
+	    warn "  Ignoring $found\n" if $verbose && $found;
+	    $found = "$dir/$cmd";
+	}
+    }
+
+    # Figure out how to invoke interpreter on this machine.
+
+    if ($found) {
+	warn "  Changing $filename to $found\n" if $verbose;
+	if ($does_shbang) {
+	    $_ = "#!$found";
+	    $_ .= ' ' . $arg if $arg ne '';
+	    $_ .= "\n";
+	}
+	else {
+	    $_ = <<EOF;
+:
+eval 'exec $found $arg -S \$0 \${1+"\$@"}'
+    if \$running_under_some_shell;
+EOF
+	}
+    }
+    else {
+	warn "Can't find $cmd in PATH, $filename unchanged\n"
+	    if $verbose;
+	next FILE;
+    }
+
+    # Make new file if necessary.
+
+    if ($filename eq '-') {
+	select(STDOUT);
+    }
+    else {
+	rename($filename, "$filename.bak")
+	    || ((warn "Can't modify $filename"), next FILE);
+	open(OUT,">$filename")
+	    || die "Can't create new $filename: $!\n";
+	($dev,$ino,$mode) = stat IN;
+	$mode = 0755 unless $dev;
+	chmod $mode, $filename;
+	select(OUT);
+    }
+
+    # Print out the new #! line (or equivalent).
+
+    print;
+
+    # Copy the rest of the file.
+
+    while (<IN>) {
+	print;
+    }
+    close IN;
+    close OUT;
+}
