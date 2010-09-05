@@ -824,7 +824,7 @@ sub update_edge {
 
 sub Write {
   my ($self, $type) = @_;
-  #$type ||= "feff6";
+  $type ||= "feff6";
   $type = lc($type);
   ($type = 'feff6') if ($type eq'feff');
   $self->update_absorption;

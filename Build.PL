@@ -66,6 +66,7 @@ my $build = $class
 				'Digest::SHA'		   => '0',
 				'Graph'                    => '0',
 				'Heap'			   => '0',
+                                'HTML::Entities'           => '0',
 				'List::MoreUtils'	   => '0',
 				'Math::Combinatorics'	   => '0',
 				'Math::Derivative'	   => '0',

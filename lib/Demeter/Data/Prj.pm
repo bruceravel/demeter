@@ -168,8 +168,7 @@ sub plot_as_chi {
 };
 
 sub slurp {
-  my ($self, $which) = @_;
-  ($which = q{}) if (lc($which) eq 'all');
+  my ($self) = @_;
   my @groups = @{ $self->entries };
   my @data = $self->record(1 .. $#groups+1);
   return @data;
