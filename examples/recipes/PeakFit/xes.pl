@@ -7,7 +7,7 @@ my $xes = Demeter::XES->new(file=>'../XES/7725.11',
 			    e1 => 7610, e2 => 7624, e3 => 7664, e4 => 7690,
 			   );
 
-my $peak = Demeter::PeakFit->new(screen => 1, yaxis=> 'norm',);
+my $peak = Demeter::PeakFit->new(screen => 0, yaxis=> 'norm',);
 
 $peak -> data($xes);
 
@@ -23,10 +23,3 @@ print $peak -> report;
 $peak->po->plot_res(1);
 $_  -> plot('norm') foreach ($xes, $peak, @{$peak->lineshapes});
 $peak -> pause;
-
-
-
-# print join("|", $peak->lineshapes->[1]->parameter_names('PielaszekCube')), $/;
-# print join("|", $peak->lineshapes->[1]->parameter_names('Polynomial5')), $/;
-# print join("|", $peak->lineshapes->[1]->parameter_names('SplitGaussian')), $/;
-# print join("|", $peak->lineshapes->[1]->parameter_names('LogNormal')), $/;

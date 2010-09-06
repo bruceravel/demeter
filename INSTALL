@@ -1,3 +1,68 @@
 
-See http://cars9.uchicago.edu/ifeffit/Demeter/InstallDemeterOnUnix
+Installing prerequisites
+========================
 
+1. Ifeffit:
+
+   Download Ifeffit from http://cars9.uchicago.edu/ifeffit/Downloads
+   Unpack the tarball, cd into the new directory, then
+
+    a. Install PGPLOT:
+
+         sudo ./PGPLOT_install
+
+    b. Install Ifeffit:
+
+         ./configure
+         make
+         sudo make install
+
+2. Libperlxray:
+
+   Next, you need to install several of Bruce's perl projects that are
+   not packaged with Demeter:
+
+   Download libperlxray using subversion
+
+     svn co http://cars9.uchicago.edu/svn/libperlxray/ libperlxray
+
+     a. cd into libperlxray/Ifeffit and do
+
+         perl Makefile.PL
+	 make
+	 sudo make install
+	 
+     b. cd into libperlxray/Absorption and do
+
+         perl Build.PL
+	 sudo ./Build installdeps
+	 ./Build
+	 sudo ./Build install
+
+     c. cd into libperlxray/Formula and do
+
+         perl Build.PL
+	 sudo ./Build installdeps
+	 ./Build
+	 sudo ./Build install
+
+Installing Demeter
+==================
+
+Download libperlxray using subversion
+
+   svn co http://cars9.uchicago.edu/svn/demeter/trunk demeter
+
+cd into the demeter directory and do
+
+   perl Build.PL
+   sudo ./Build installdeps
+   sudo cpanp -i Regexp::Optimizer --force
+   ./Build
+   sudo ./Build install
+
+The "installdeps" step will be *very* time consuming as it installs
+several large packages that are required by Demeter.  the following
+step is necessary because, for some reason, the Regexp::Optimizer
+module always fails to install correctly.  That step will force its
+installation.

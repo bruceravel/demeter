@@ -335,8 +335,7 @@ for a Peak-like function.
 =head1 LINESHAPES FROM FITYK
 
 These are Fityk's built in lineshapes.  Note that the format of this
-document section is parsed by thereporting methods of this object.  It
-may not be as pretty as can be, but plese don't "fix" it.
+document section is parsed by the reporting methods of this object.
 
 =over 4
 
