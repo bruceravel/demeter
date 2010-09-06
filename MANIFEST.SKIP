@@ -36,4 +36,7 @@
 #   Mac OSX SMB mount metadata files
 \B\._
 # Avoid archives of this distribution
-\bIfeffit-Demeter-[\d\.\_]+
+\bDemeter-[\d\.\_]+
+
+# Avoid the attic
+\battic
