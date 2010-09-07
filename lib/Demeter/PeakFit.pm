@@ -26,20 +26,20 @@ use MooseX::Aliases;
 use Moose::Util::TypeConstraints;
 use Demeter::StrTypes qw( Empty FitykFunction );
 
-use Fityk;
+use fityk;
 
+use File::Spec;
 use List::Util qw(min max);
 use List::MoreUtils qw(any none);
 use Scalar::Util qw(looks_like_number);
+use String::Random qw(random_string);
 
 if ($Demeter::mode->ui eq 'screen') {
   with 'Demeter::UI::Screen::Pause';
   with 'Demeter::UI::Screen::Progress';
 };
 
-my $FITYK = Fityk::Fityk->new;
-$FITYK->execute('define Atan(step=1, e0=0, width=1) = step*(atan((x-e0)/width)/pi + 0.5)');
-$FITYK->execute('define Erf(step=0.5, e0=0, width=1) = step*(erf((x-e0)/width) + 1)');
+use vars qw($FITYK $RESPONSE);
 
 has '+plottable'   => (default => 1);
 has '+data'        => (isa => Empty.'|Demeter::Data|Demeter::XES');
@@ -81,6 +81,49 @@ has 'linegroups'   => (
 				     'clear'   => 'clear_linegroups',
 				    },
 		      );
+
+has 'feedback'  => (is => 'rw', isa => 'Str',    default => q{});
+has 'tempfiles' => (
+		    metaclass => 'Collection::Array',
+		    is        => 'rw',
+		    isa       => 'ArrayRef[Str]',
+		    default   => sub { [] },
+		    provides  => {
+				  'push'  => 'add_tempfile',
+				  'pop'   => 'remove_tempfile',
+				  'clear' => 'clear_tempfiles',
+				 }
+		   );
+
+sub BUILD {
+  my ($self, @params) = @_;
+  $self->mo->push_PeakFit($self);
+
+  $FITYK = fityk::Fityk->new;
+  my $file = File::Spec->catfile($self->stash_folder, 'fityk_'.random_string('cccccccc'));
+  $self->feedback($file);
+  open $RESPONSE, '>', $file;
+  $FITYK->redir_messages($RESPONSE);
+  $self->dispose_to_fityk('define Atan(step=1, e0=0, width=1) = step*(atan((x-e0)/width)/pi + 0.5)');
+  $self->dispose_to_fityk('define Erf(step=0.5, e0=0, width=1) = step*(erf((x-e0)/width) + 1)');
+  return $self;
+};
+
+sub DEMOLISH {
+  my ($self) = @_;
+  close $RESPONSE;
+  unlink $self->feedback;
+  $self->cleantemp;
+};
+
+sub cleantemp {
+  my ($self) = @_;
+  foreach my $f (@{ $self->tempfiles }) {
+    unlink $f;
+  };
+  $self -> clear_tempfiles;
+  return $self;
+};
 
 sub add {
   my ($self, $function, @args) = @_;
@@ -127,13 +170,15 @@ sub fit {
   $self->xmin($emin);
   $self->xmax($emax);
 
+  $self->cleantemp;
+
   ## import data into Fityk
   #$FITYK->load_data(0, \@x, \@y, \@s, $self->name);
   if (@{$self->linegroups}) {    # clean up from previous fit
     my $string = 'delete ' . join(', ', @{$self->linegroups});
     $self->dispose_to_fityk($string);
   };
-  my $file = $self->po->tempfile;
+  my $file = File::Spec->catfile($self->stash_folder, 'data_'.random_string('cccccccc'));
   $self->data->points(file    => $file,
 		      space   => 'E',
 		      suffix  => $self->yaxis,
@@ -142,7 +187,7 @@ sub fit {
 		      yoffset => $self->data->y_offset
 		     );
   $self->dispose_to_fityk('@0 < '.$file);
-#  $self->dispose_to_fityk('bleh');
+  $self->add_tempfile($file);
   $self->dispose_to_fityk("A = a and ($emin < x and x < $emax)");
   $self->dispose_to_fityk('@0.F=0');
 
@@ -260,7 +305,24 @@ sub dispose_to_fityk {
     my ($start, $end) = ($self->mo->ui eq 'screen') ? $self->_ansify(q{}, 'fityk') : (q{}, q{});
     print $start, $string, $end, $/;
   };
-  $FITYK->execute($string) if $self->fityk;
+  if ($self->fityk) {
+    $FITYK->execute($string);
+    if ($self->screen) {
+      local $| = 1;
+      close $RESPONSE;
+      my $response = $self->slurp($self->feedback);
+      if ($response !~ m{\A\s+\z}) {
+	my ($start, $end) = ($self->mo->ui eq 'screen') ? $self->_ansify(q{}, 'comment') : (q{}, q{});
+	my $start_tag = '# --> ';
+	foreach my $line (split(/\n/, $response)) {
+	  print $start, $start_tag, $line, $end, $/;
+	  $start_tag = '      ';
+	};
+      };
+      open $RESPONSE, '>', $self->feedback;;
+      $FITYK->redir_messages($RESPONSE); # redirect fityk messages to the new file handle
+    };
+  };
   return $self;
 };
 
@@ -419,12 +481,26 @@ This plots the data along with the fitting model and each function:
   $_ -> plot('E') foreach ($xanes_data, $peak, @{$peak->lineshapes});
 
 Note that the C('E') argument and the setting of C<e_norm> are ignored
-by the PeakFit and LineShape objects, but they are required to plot
-the data in the manner in which it was fit.
+by the PeakFit and LineShape objects, but they are required to plot a
+fit to XANES data as the fit is made to the normalized data.  In fact,
+the fit is made to the flattened data if the Data's C<bkg_flatten>
+attribute is true.
+
+For a fit to raw XES data, you might make the plot like so:
+
+  $_ -> plot('raw') foreach ($xanes_data, $peak, @{$peak->lineshapes});
+
+Specifically, you want to plot the data in the manner indicated by the
+C<yaxis> attribute of the PeakFit object, which indicates the form of
+the data used in the fit.
+
+When the PeakFit object is plotted, the residual from the fit will
+also be plotted if the C<plot_res> attribute of the Plot object is
+true.
 
 =item C<dispose_to_fityk>
 
-This is the chokepoint for sending instructions to Fityk, much like
+This is the choke point for sending instructions to Fityk, much like
 the normal C<dispose> method handles text intended for Ifeffit or
 Gnuplot.  See the descriptions of the C<fityk> and C<screen>
 attributes.
@@ -451,8 +527,7 @@ Demeter's dependencies are in the F<Bundle/DemeterBundle.pm> file.
 
 =item *
 
-STABILITY!!!  What's up with the Atan?  How to capture errors without
-bailing?
+How to capture errors without bailing?
 
 =item *
 

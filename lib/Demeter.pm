@@ -121,7 +121,7 @@ $plot = Demeter::Plot -> new() if not $mode->plot;
 $plot -> screen_echo(0);
 
 $Gnuplot_exists = ($plot->is_windows) ? 0 : (eval "require Graphics::GnuplotIF");
-$Fityk_exists = eval "require Fityk";
+$Fityk_exists = eval "require fityk";
 
 use Demeter::StrTypes qw( Empty
 			  IfeffitCommand

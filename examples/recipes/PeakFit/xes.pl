@@ -7,7 +7,7 @@ my $xes = Demeter::XES->new(file=>'../XES/7725.11',
 			    e1 => 7610, e2 => 7624, e3 => 7664, e4 => 7690,
 			   );
 
-my $peak = Demeter::PeakFit->new(screen => 0, yaxis=> 'raw',);
+my $peak = Demeter::PeakFit->new(screen => 1, yaxis=> 'raw',);
 
 $peak -> data($xes);
 

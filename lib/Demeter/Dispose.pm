@@ -65,6 +65,8 @@ sub _ansify {
 	($start, $end) = (BOLD.$color_of{$self->co->default("screen", "hashes" )}, RESET);
       } elsif ($thisline =~ m{\A\#}) {
 	($start, $end) = (BOLD.$color_of{$self->co->default("screen", "other"  )}, RESET);
+      } else {
+	($start, $end) = (BOLD.$color_of{$self->co->default("screen", "comment")}, RESET);
       };
       last COLOR;
     };
