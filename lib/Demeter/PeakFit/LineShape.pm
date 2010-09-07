@@ -119,11 +119,12 @@ sub nparams {
 sub define {
   my ($self) = @_;
   my $string = sprintf("%%%s = guess %s [%.2f:%.2f]", $self->group, $self->function, $self->xmin, $self->xmax);
-  #my $string = sprintf("%%%s = guess %s", $self->group, $self->function);
   my @args = ();
-  push(@args, sprintf(" height=%s%.5f", $self->isfixed(0), $self->a0)) if $self->a0;
-  push(@args, sprintf(" center=%s%.5f", $self->isfixed(1), $self->a1)) if $self->a1;
-  push(@args, sprintf(" hwhm=%s%.5f",   $self->isfixed(2), $self->a2)) if $self->a2;
+  my @names = $self->parameter_names;
+  foreach my $i (0 .. $self->np-1) {
+    my $att = 'a'.$i;
+    push(@args, sprintf(" %s=%s%.5f", $names[$i], $self->isfixed($i), $self->$att)) if $self->$att;
+  };
   $string .= join(", ", @args);
   $string .= ' in @0';
   return $string;
@@ -189,7 +190,7 @@ sub report {
   foreach my $n (@names) {
     my $a = 'a'.$count;
     my $e = 'e'.$count;
-    if ($n eq 'center') {
+    if ($n =~ m{center|e0}) {
       $string .= sprintf(" %s = %.2f(%.2f),", $n, $self->$a, $self->$e);
     } else {
       $string .= sprintf(" %s = %.3g(%.3g),", $n, $self->$a, $self->$e);

@@ -651,9 +651,8 @@ __PACKAGE__->meta->make_immutable;
 1;
 
 
-#   my $opt  = Regexp::List->new;
 #   my %regexp = (
-# 		commands   => $opt->list2re(qw{ f1f2 bkg_cl chi_noise color comment correl cursor
+# 		commands   => (qw{ f1f2 bkg_cl chi_noise color comment correl cursor
 #                                                 def echo erase exit feffit ff2chi fftf fftr
 #                                                 get_path guess history linestyle load
 #                                                 log macro minimize newplot path pause plot
@@ -661,14 +660,14 @@ __PACKAGE__->meta->make_immutable;
 #                                                 quit random read_data rename reset restore
 #                                                 save set show spline sync unguess window
 #                                                 write_data zoom } ), # }),
-# 		function   => $opt->list2re(qw{abs min max sign sqrt exp log
+# 		function   => (qw{abs min max sign sqrt exp log
 #    		                               ln log10 sin cos tan asin acos
 #    		                               atan sinh tanh coth gamma loggamma
 #    		                               erf erfc gauss loren pvoight debye
 #    		                               eins npts ceil floor vsum vprod
 #    		                               indarr ones zeros range deriv penalty
 #   		                               smooth interp qinterp splint eins debye } ), # }),
-# 		program    => $opt->list2re(qw(chi_reduced chi_square core_width correl_min
+# 		program    => (qw(chi_reduced chi_square core_width correl_min
 #                                                cursor_x cursor_y dk dr data_set data_total
 #                                                dk1 dk2 dk1_spl dk2_spl dr1 dr2 e0 edge_step
 #                                                epsilon_k epsilon_r etok kmax kmin kmax_spl
@@ -677,17 +676,17 @@ __PACKAGE__->meta->make_immutable;
 #                                                norm_c0 norm_c1 norm_c2 path_index pi pre1 pre2
 #                                                pre_offset pre_slope qmax_out qsp r_factor rbkg
 #                                                rmax rmax_out rmin rsp rweight rwin rwindow toler)),
-# 		window     => $opt->list2re(qw(kaiser-bessel hanning welch parzen sine gaussian)),
-# 		pathparams => $opt->list2re(qw(e0 ei sigma2 s02 delr third fourth dphase)),
-# 		element    => $opt->list2re(qw(h he li be b c n o f ne na mg al si p s cl ar
+# 		window     => (qw(kaiser-bessel hanning welch parzen sine gaussian)),
+# 		pathparams => (qw(e0 ei sigma2 s02 delr third fourth dphase)),
+# 		element    => (qw(h he li be b c n o f ne na mg al si p s cl ar
 #                                                k ca sc ti v cr mn fe co ni cu zn ga ge as se
 #                                                br kr rb sr y zr nb mo tc ru rh pd ag cd in sn
 #                                                sb te i xe cs ba la ce pr nd pm sm eu gd tb dy
 #                                                ho er tm yb lu hf ta w re os ir pt au hg tl pb
 #                                                bi po at rn fr ra ac th pa u np pu)),
-# 		edge      => $opt->list2re(qw(k l1 l2 l3)),
-# 		modes     => $opt->list2re(keys %mode),
-# 		feffcards => $opt->list2re(qw(atoms control print title end rmultiplier
+# 		edge      => (qw(k l1 l2 l3)),
+# 		modes     => (keys %mode),
+# 		feffcards => (qw(atoms control print title end rmultiplier
 #                                               cfaverage overlap afolp edge hole potentials
 #                                               s02 exchange folp nohole rgrid scf unfreezef
 #                                               interstitial ion spin exafs xanes ellipticity ldos
@@ -695,26 +694,26 @@ __PACKAGE__->meta->make_immutable;
 #                                               tdlda xes xmcd xncd fms debye rpath rmax nleg pcriteria
 #                                               ss criteria iorder nstar debye corrections sig2)),
 # 		separator => '[ \t]*[ \t=,][ \t]*',
-# 		clamp     => $opt->list2re(qw(none slight weak medium strong rigid)),
-# 		config    => $opt->list2re(qw(type default minint maxint options
+# 		clamp     => (qw(none slight weak medium strong rigid)),
+# 		config    => (qw(type default minint maxint options
 # 					      units onvalue offvalue)),
-# 		stats     => $opt->list2re(qw(n_idp n_varys chi_square chi_reduced 
+# 		stats     => (qw(n_idp n_varys chi_square chi_reduced 
 # 					      r_factor epsilon_k epsilon_r data_total
 # 					      happiness)),
-# 		atoms_lattice  => $opt->list2re(qw(a b c alpha beta gamma space shift)),
-# 		atoms_gas      => $opt->list2re(qw(nitrogen argon helium krypton xenon)),
-# 		atoms_obsolete => $opt->list2re(qw(output geom
+# 		atoms_lattice  => (qw(a b c alpha beta gamma space shift)),
+# 		atoms_gas      => (qw(nitrogen argon helium krypton xenon)),
+# 		atoms_obsolete => (qw(output geom
 # 						   fdat nepoints xanes modules
 # 						   message noanomalous self i0
 # 						   mcmaster dwarf reflections refile
 # 						   egrid index corrections
 # 						   emin emax estep egrid qvec dafs
 # 						  )),
-# 		spacegroup     => $opt->list2re(qw(number full new_symbol thirtyfive
+# 		spacegroup     => (qw(number full new_symbol thirtyfive
 # 						   schoenflies bravais shorthand positions
 # 						   shiftvec npos)),
-# 		plotting_backends => $opt->list2re(qw(pgplot gnuplot)),
-# 		data_parts => $opt->list2re(qw(fit bkg res)),
+# 		plotting_backends => (qw(pgplot gnuplot)),
+# 		data_parts => (qw(fit bkg res)),
 # 	       );
 
 

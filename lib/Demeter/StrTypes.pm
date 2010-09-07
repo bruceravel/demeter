@@ -48,7 +48,6 @@ use MooseX::Types::Moose 'Str';
 use Chemistry::Elements qw(get_symbol);
 use Xray::Absorption;
 use Regexp::List;
-use Regexp::Optimizer;
 my $opt  = Regexp::List->new;
 
 

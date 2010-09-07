@@ -40,3 +40,6 @@
 
 # Avoid the attic
 \battic
+
+# Avoid Dolphin crap
+\b\.directory

@@ -15,14 +15,14 @@ $peak -> data($data);
 
 $data->set_mode(screen=>0);
 
-$peak -> add('atan', center=>4976, name=>'arctangent');
-$peak -> add('gaussian', center=>4969.7, name=>'Peak1');
-my $ls = $peak -> add('gaussian', center=>4966.2, name=>'Peak2');
+my $ls = $peak -> add('atan', center=>4976.5, name=>'arctangent');
+$peak -> add('gaussian', center=>4969.8, name=>'Peak1');
+$peak -> add('lorentzian', center=>4966.2, name=>'Peak2');
 $ls->fix1(0);
 
 $peak -> fit;
 print $peak -> report;
 
-$data -> po -> set(e_norm=>1, emin=>-20, emax=>30);
+$data -> po -> set(e_norm=>1, emin=>-20, emax=>30, plot_res=>0);
 $_  -> plot('e') foreach ($data, $peak, @{$peak->lineshapes});
 $peak -> pause;

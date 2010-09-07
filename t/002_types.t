@@ -17,7 +17,7 @@
 
 =cut
 
-use Test::Simple tests => 418;
+use Test::Simple tests => 450;
 
 use Xray::Absorption;
 
@@ -51,6 +51,7 @@ use Demeter::StrTypes qw( Empty
 			  FitSpace
 			  PlotSpace
 			  PlotType
+			  FitykFunction
 		       );
 
 use Demeter::NumTypes qw( Natural
@@ -81,7 +82,7 @@ foreach my $f (@Demeter::StrTypes::program_list) {
 
 foreach my $f (@Demeter::StrTypes::window_list) {
   my $ff = scramble_case($f);
-  ok( is_Window($ff), "program variable $ff recognized" );
+  ok( is_Window($ff), "window type $ff recognized" );
 };
 
 foreach my $f (@Demeter::StrTypes::pathparam_list) {
@@ -179,6 +180,10 @@ foreach my $f (@Demeter::StrTypes::plotspace_list) {
 foreach my $f (@Demeter::StrTypes::plottype_list) {
   my $ff = scramble_case($f);
   ok( to_PlotType($ff), "plot type $ff recognized" );
+};
+foreach my $f (@Demeter::StrTypes::fitykfunction_list) {
+  my $ff = scramble_case($f);
+  ok( is_FitykFunction($ff), "fityk function $ff recognized" );
 };
 
 

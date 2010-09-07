@@ -142,6 +142,7 @@ sub fit {
 		      yoffset => $self->data->y_offset
 		     );
   $self->dispose_to_fityk('@0 < '.$file);
+#  $self->dispose_to_fityk('bleh');
   $self->dispose_to_fityk("A = a and ($emin < x and x < $emax)");
   $self->dispose_to_fityk('@0.F=0');
 
