@@ -20,18 +20,16 @@ use autodie qw(open close);
 
 use Moose;
 extends 'Demeter';
+with 'Demeter::PeakFit::Fityk';
 with 'Demeter::Data::Arrays';
 
 use MooseX::Aliases;
 use Moose::Util::TypeConstraints;
-use Demeter::StrTypes qw( Empty FitykFunction );
-
-use fityk;
+use Demeter::StrTypes qw( Empty );
 
 use File::Spec;
 use List::Util qw(min max);
 use List::MoreUtils qw(any none);
-use Scalar::Util qw(looks_like_number);
 use String::Random qw(random_string);
 
 if ($Demeter::mode->ui eq 'screen') {
@@ -39,12 +37,10 @@ if ($Demeter::mode->ui eq 'screen') {
   with 'Demeter::UI::Screen::Progress';
 };
 
-use vars qw($FITYK $RESPONSE);
-
 has '+plottable'   => (default => 1);
 has '+data'        => (isa => Empty.'|Demeter::Data|Demeter::XES');
 has '+name'        => (default => 'PeakFit' );
-has 'fityk'        => (is => 'rw', isa => 'Bool',   default => 1);
+has 'engine'       => (is => 'rw', isa => 'Bool',   default => 1);
 has 'screen'       => (is => 'rw', isa => 'Bool',   default => 0);
 has 'buffer'       => (is => 'rw', isa => 'ArrayRef | ScalarRef');
 
@@ -99,19 +95,13 @@ sub BUILD {
   my ($self, @params) = @_;
   $self->mo->push_PeakFit($self);
 
-  $FITYK = fityk::Fityk->new;
-  my $file = File::Spec->catfile($self->stash_folder, 'fityk_'.random_string('cccccccc'));
-  $self->feedback($file);
-  open $RESPONSE, '>', $file;
-  $FITYK->redir_messages($RESPONSE);
-  $self->dispose_to_fityk('define Atan(step=1, e0=0, width=1) = step*(atan((x-e0)/width)/pi + 0.5)');
-  $self->dispose_to_fityk('define Erf(step=0.5, e0=0, width=1) = step*(erf((x-e0)/width) + 1)');
+  $self->initialize;
   return $self;
 };
 
 sub DEMOLISH {
   my ($self) = @_;
-  close $RESPONSE;
+  $self->close_file;
   unlink $self->feedback;
   $self->cleantemp;
 };
@@ -128,7 +118,7 @@ sub cleantemp {
 sub add {
   my ($self, $function, @args) = @_;
   $function = $self->normalize_function($function);
-  croak("$function is not a valid Fityk lineshape") if not is_FitykFunction($function);
+  croak("$function is not a valid lineshape") if not $self->valid($function);
 
   my %args = @args;
   $args{a0} = $args{height} || 0;
@@ -153,13 +143,6 @@ sub add {
   return $this;
 };
 
-sub normalize_function {
-  my ($self, $function) = @_;
-  foreach my $f (@Demeter::StrTypes::fitykfunction_list) {
-    return $f if (lc($function) eq lc($f));
-  };
-  return 0;
-};
 
 sub fit {
   my ($self) = @_;
@@ -175,8 +158,7 @@ sub fit {
   ## import data into Fityk
   #$FITYK->load_data(0, \@x, \@y, \@s, $self->name);
   if (@{$self->linegroups}) {    # clean up from previous fit
-    my $string = 'delete ' . join(', ', @{$self->linegroups});
-    $self->dispose_to_fityk($string);
+    $self->dispose_to_fit_engine($self->cleanup(join(', ', @{$self->linegroups})));
   };
   my $file = File::Spec->catfile($self->stash_folder, 'data_'.random_string('cccccccc'));
   $self->data->points(file    => $file,
@@ -186,25 +168,23 @@ sub fit {
 		      scale   => $self->data->plot_multiplier,
 		      yoffset => $self->data->y_offset
 		     );
-  $self->dispose_to_fityk('@0 < '.$file);
+  $self->dispose_to_fit_engine($self->read_command($file));
   $self->add_tempfile($file);
-  $self->dispose_to_fityk("A = a and ($emin < x and x < $emax)");
-  $self->dispose_to_fityk('@0.F=0');
+  $self->dispose_to_fit_engine($self->range_command($emin, $emax));
+  $self->dispose_to_fit_engine($self->init_data);
 
-  #print $FITYK->get_data(0)->size, $/;
   ## define each lineshape
   my @all = ();
   foreach my $ls (@{$self->lineshapes}) {
     $ls->set(xmin=>$emin, xmax=>$emax);
-    $self->dispose_to_fityk($ls->define);
-    #print $FITYK->get_info('%'.$ls->group, 1), $/;
-    push @all, '%'.$ls->group;
+    $self->dispose_to_fit_engine($ls->define);
+    push @all, $self->sigil.$ls->group;
   };
   $self -> linegroups(\@all);
 
-  $self->dispose_to_fityk('fit in @0');
+  $self->dispose_to_fit_engine($self->fit_command);
   my @data_x = $self->fetch_data_x;
-  my @model_y = @{ $FITYK->get_model_vector(\@data_x, 0) };
+  my @model_y = $self->fetch_model_y(\@data_x);
   Ifeffit::put_array($self->group.".energy", \@data_x);
   Ifeffit::put_array($self->group.".".$self->yaxis, \@model_y);
   $self -> dispose(sprintf("set %s.res = %s.%s - %s.%s", $self->group, $self->data->group, $self->yaxis, $self->group, $self->yaxis));
@@ -213,8 +193,8 @@ sub fit {
   foreach my $ls (@{$self->lineshapes}) {
     $ls->put_arrays(\@data_x);
   };
-  $self->dispose_to_fityk('@0.F=0');
-  $self->dispose_to_fityk('@0.F=' . join(' + ', @all));
+  $self->dispose_to_fit_engine($self->init_data);
+  $self->dispose_to_fit_engine($self->set_model(join(' + ', @all)));
 
   $self->fetch_statistics;
 
@@ -222,57 +202,7 @@ sub fit {
   return $self;
 };
 
-sub fetch_statistics {
-  my ($self) = @_;
-  ## convert the error text into a list of lists
-  my $text = $FITYK->get_info('errors');
-  #print $text;
-  my @results = ();
-  foreach my $line (split("\n", $text)) {
-    next if ($line =~ m{\AStandard});
-    my @fields = split(/\s+[=+-]+\s+/, $line);
-    push @results, \@fields;
-  };
-  foreach my $ls (@{$self->lineshapes}) {
-    my $count = 0;
-    foreach (1..$ls->np) {
-      my $att = 'fix'.$count;
-      if (not $ls->$att) {
-	my $r = shift @results;
-	$att = 'a'.$count;
-	$r->[1] = 0 if not looks_like_number($r->[1]);
-	$ls->$att($r->[1]);
-	$att = 'e'.$count;
-	$r->[2] = -1 if not looks_like_number($r->[2]);
-	$ls->$att($r->[2]);
-      };
-      ++$count;
-    };
-    my $text = $FITYK->get_info('%'.$ls->group, 1);
-    foreach my $line (split(/\n/, $text)) {
-      next if $line !~ m{\AArea};
-      my $area = (split(/:\s+/, $line))[1];
-      $ls->area($area);
-      last;
-    };
 
-  };
-};
-
-sub fetch_data_x {
-  my ($self) = @_;
-  my $size = $FITYK->get_data(0)->size;
-  my @array = ();
-  foreach my $i (0 .. $size-1) {
-    push @array, $FITYK->get_data(0)->get($i)->swig_x_get;
-  };
-  return @array;
-};
-
-sub fityk_object {
-  my ($self) = @_;
-  return $FITYK;
-};
 
 sub plot {
   my ($self) = @_;
@@ -283,7 +213,7 @@ sub plot {
     my $save = $self->yaxis;
     my $yoff = $self->data->y_offset;
     $self->yaxis('res');
-    $self->data->plotkey('Residual');
+    $self->data->plotkey('residual');
     my @y = $self->data->get_array($save);
     $self->data->y_offset($self->data->y_offset - 0.1*max(@y));
 
@@ -298,18 +228,20 @@ sub plot {
   return $self;
 };
 
-sub dispose_to_fityk {
+sub dispose_to_fit_engine {
   my ($self, $string) = @_;
   local $| = 1;
+
   if ($self->screen) {
-    my ($start, $end) = ($self->mo->ui eq 'screen') ? $self->_ansify(q{}, 'fityk') : (q{}, q{});
+    my ($start, $end) = ($self->mo->ui eq 'screen') ? $self->_ansify(q{}, 'peakfit') : (q{}, q{});
     print $start, $string, $end, $/;
   };
-  if ($self->fityk) {
-    $FITYK->execute($string);
+
+  if ($self->engine) {
+    $self->process($string);
     if ($self->screen) {
       local $| = 1;
-      close $RESPONSE;
+      $self->close_file;
       my $response = $self->slurp($self->feedback);
       if ($response !~ m{\A\s+\z}) {
 	my ($start, $end) = ($self->mo->ui eq 'screen') ? $self->_ansify(q{}, 'comment') : (q{}, q{});
@@ -319,10 +251,22 @@ sub dispose_to_fityk {
 	  $start_tag = '      ';
 	};
       };
-      open $RESPONSE, '>', $self->feedback;;
-      $FITYK->redir_messages($RESPONSE); # redirect fityk messages to the new file handle
+      $self->refresh_file;
     };
   };
+
+  if ($self->buffer) {
+    if (ref($self->buffer eq 'SCALAR')) {
+      my $contents = ${$self->buffer};
+      $contents .= $string . $/;
+      $self->buffer(\$contents);
+    } elsif (ref($self->buffer eq 'ARRAY')) {
+      my @contents = @{$self->buffer};
+      push @contents, $string;
+      $self->buffer(\@contents);
+    };
+  };
+
   return $self;
 };
 
@@ -358,7 +302,7 @@ Here is a simple fit of three peak shapes to normalized XES data.
                               energy => 2, emission => 3,
                               e1 => 7610, e2 => 7624, e3 => 7664, e4 => 7690,
                              );
-  my $peak = Demeter::PeakFit->new(screen => 0, yaxis=> 'norm',);
+  my $peak = Demeter::PeakFit->new(screen => 0, yaxis=> 'norm', name=>'fit');
   $peak -> data($xes);
 
   $peak -> add('gaussian',   center=>7649.5, name=>'peak 1');
@@ -372,11 +316,12 @@ Here is a simple fit of three peak shapes to normalized XES data.
 
 =head1 DESCRIPTION
 
-This object is a sort of conatiner for holding Data (either XANES data
+This object is a sort of container for holding Data (either XANES data
 in a normal Data object or XES data in an XES object) along with some
 number of lineshapes.  It organizes the parameterization of the
-lineshapes and shuffles all of this off to the Fityk program for
-fitting.
+lineshapes and shuffles all of this off to the fitting engine for
+fitting, all wihtout having to master whatever quirky syntax it might
+have.
 
 =head1 ATTRIBUTES
 
@@ -384,17 +329,19 @@ fitting.
 
 =item C<screen> (boolean) [0]
 
-This is a flag telling Demeter to echo fityk instructions to the screen.
+This is a flag telling Demeter to echo instructions to the screen.
 
-=item C<fityk> (boolean) [1]
+=item C<engine> (boolean) [1]
 
-This is a flag telling Demeter to echo fityk instructions to the fityk
+This is a flag telling Demeter to echo instructions to the fitting engine
 process.
 
 =item C<buffer>
 
 Dispose commands to a string or array when given a reference to a
-string or array.
+string or array.  This allows you to accumulate instructions in a
+string or an array an save them for future use, e.g. writing a script
+or displaying a text widget in a GUI.
 
 =item C<xaxis> (string) [energy]
 
@@ -431,11 +378,11 @@ This contains a reference to the array of LineShape objects included
 in the fit.  This array can be manipulated with the standard Moose-y
 sort of automatically generated methods:
 
-  push_linegroups
-  pop_linegroups
-  shift_linegroups
-  unshift_linegroups
-  clear_linegroups
+  push_lineshapes
+  pop_lineshapes
+  shift_lineshapes
+  unshift_lineshapes
+  clear_lineshapes
 
 =back
 
@@ -461,12 +408,13 @@ Perform the fit after adding one or more LineShapes.
   $peak -> fit;
 
 After the fit finishes, the statistics of the fit will be accumulated
-from Fityk and store in this and all the LineShape objects.
+from the fitting engine and stored in this and all the LineShape
+objects.
 
-=item C<fityk_object>
+=item C<engine_objectt>
 
-This returns the Fityk object, that is, the object that talks directly
-to the running Fityk process.  This is used extensively by
+This returns the object for interacting with the fitting engine (if
+there is one).  This is used extensively by
 F<Demeter::PeakFit::LineShape>.
 
 =item C<plot>
@@ -498,12 +446,12 @@ When the PeakFit object is plotted, the residual from the fit will
 also be plotted if the C<plot_res> attribute of the Plot object is
 true.
 
-=item C<dispose_to_fityk>
+=item C<dispose_to_fit_engine>
 
-This is the choke point for sending instructions to Fityk, much like
-the normal C<dispose> method handles text intended for Ifeffit or
-Gnuplot.  See the descriptions of the C<fityk> and C<screen>
-attributes.
+This is the choke point for sending instructions to the fitting
+engine, much like the normal C<dispose> method handles text intended
+for Ifeffit or Gnuplot.  See the descriptions of the C<engine> and
+C<screen> attributes.
 
 =item C<report>
 
@@ -528,10 +476,6 @@ Demeter's dependencies are in the F<Bundle/DemeterBundle.pm> file.
 =item *
 
 How to capture errors without bailing?
-
-=item *
-
-Dispose to a buffer
 
 =item *
 

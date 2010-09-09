@@ -66,7 +66,7 @@ sub _ansify {
       } elsif ($thisline =~ m{\A\#}) {
 	($start, $end) = (BOLD.$color_of{$self->co->default("screen", "other"  )}, RESET);
       } else {
-	($start, $end) = (BOLD.$color_of{$self->co->default("screen", "comment")}, RESET);
+	($start, $end) = (BOLD.$color_of{$self->co->default("screen", "other"  )}, RESET);
       };
       last COLOR;
     };
@@ -77,7 +77,7 @@ sub _ansify {
 	print STDOUT $color_of{$self->co->default("screen", "feedback")}, $thisline, RESET;
       };
     };
-    ($kind eq 'fityk') and do {
+    ($kind eq 'peakfit') and do {
       ($start, $end) = (BOLD.GREEN, RESET);
     };
     ($kind eq 'fefferr') and do {

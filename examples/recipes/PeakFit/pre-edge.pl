@@ -25,4 +25,4 @@ print $peak -> report;
 
 $data -> po -> set(e_norm=>1, emin=>-20, emax=>30, plot_res=>0);
 $_  -> plot('e') foreach ($data, $peak, @{$peak->lineshapes});
-#$peak -> pause;
+$peak -> pause;
