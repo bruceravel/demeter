@@ -1,0 +1,38 @@
+#!/usr/bin/perl
+use Wx;
+use Demeter::UI::Athena;
+Wx::InitAllImageHandlers();
+my $window = Demeter::UI::Athena->new;
+$window   -> MainLoop;
+
+=head1 NAME
+
+athena - XAS data processing
+
+=head1 VERSION
+
+This documentation refers to Demeter version 0.4.
+
+=head1 DESCRIPTION
+
+Athena is a graphical interface to Ifeffit.
+
+=head1 AUTHOR
+
+Bruce Ravel (bravel AT bnl DOT gov)
+
+http://cars9.uchicago.edu/~ravel/software/
+
+
+=head1 LICENCE AND COPYRIGHT
+
+Copyright (c) 2008-2010 Bruce Ravel (bravel AT bnl DOT gov). All rights reserved.
+
+This module is free software; you can redistribute it and/or
+modify it under the same terms as Perl itself. See L<perlgpl>.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+
+=cut
