@@ -40,17 +40,11 @@ sub OnInit {
   $demeter -> mo -> ui('Wx');
   $demeter -> mo -> identity('Athena');
 
-  #my $conffile = File::Spec->catfile(dirname($INC{'Demeter/UI/Artemis.pm'}), 'Artemis', 'share', "artemis.demeter_conf");
-  #$demeter -> co -> read_config($conffile);
-  #$demeter -> co -> read_ini('artemis');
-  #$demeter -> plot_with($demeter->co->default(qw(plot plotwith)));
+  my $conffile = File::Spec->catfile(dirname($INC{'Demeter/UI/Athena.pm'}), 'Athena', 'share', "athena.demeter_conf");
+  $demeter -> co -> read_config($conffile);
+  $demeter -> co -> read_ini('athena');
+  $demeter -> plot_with($demeter->co->default(qw(plot plotwith)));
 
-  ## -------- import all of Artemis' various parts
-  #foreach my $m (qw(GDS Plot History Journal Log Buffer Status Config Data Prj)) {
-  #  next if $INC{"Demeter/UI/Artemis/$m.pm"};
-  #  ##print "Demeter/UI/Artemis/$m.pm\n";
-  #  require "Demeter/UI/Artemis/$m.pm";
-  #};
 
   ## -------- create a new frame and set icon
   $frames{main} = Wx::Frame->new(undef, -1, 'Athena [XAS data processing] - <untitled>',
@@ -63,57 +57,102 @@ sub OnInit {
   $frames{main} -> SetIcon($icon);
 
   ## -------- Set up menubar
-  my $bar      = Wx::MenuBar->new;
-  my $filemenu = Wx::Menu->new;
-  my $helpmenu = Wx::Menu->new;
+  my $bar        = Wx::MenuBar->new;
+  my $filemenu   = Wx::Menu->new;
+  my $groupmenu  = Wx::Menu->new;
+  my $valuesmenu = Wx::Menu->new;
+  my $markmenu   = Wx::Menu->new;
+  my $mergemenu  = Wx::Menu->new;
+  my $helpmenu   = Wx::Menu->new;
 
-  $bar->Append( $filemenu, "&File" );
-  $bar->Append( $helpmenu, "&Help" );
+  $bar->Append( $filemenu,   "&File" );
+  $bar->Append( $groupmenu,  "&Group" );
+  $bar->Append( $valuesmenu, "&Values" );
+  $bar->Append( $markmenu,   "&Mark" );
+  $bar->Append( $mergemenu,  "Merge" );
+  $bar->Append( $helpmenu,   "&Help" );
   $frames{main}->SetMenuBar( $bar );
 
-  my $box = Wx::BoxSizer->new( wxVERTICAL );
-
   my $hbox = Wx::BoxSizer->new( wxHORIZONTAL );
-  $box -> Add($hbox, 0, wxGROW|wxRIGHT, 5);
 
+
+
+  my $viewpanel = Wx::Panel->new($frames{main}, -1);
   my $viewbox = Wx::BoxSizer->new( wxVERTICAL );
-  $hbox -> Add($viewbox, 0, wxRIGHT, 5);
+  $hbox -> Add($viewpanel, 0, wxGROW|wxALL, 5);
 
+  $frames{main}->{project} = Wx::StaticText->new($viewpanel, -1, q{<Project name>},);
+  my $size = Wx::SystemSettings::GetFont(wxSYS_DEFAULT_GUI_FONT)->GetPointSize + 2;
+  $frames{main}->{project}->SetFont( Wx::Font->new( $size, wxDEFAULT, wxNORMAL, wxBOLD, 0, "" ) );
+  $viewbox -> Add($frames{main}->{project}, 0, wxGROW|wxALL, 5);
+
+  $frames{main}->{views} = Wx::Choicebook->new($viewpanel, -1);
+  $viewbox -> Add($frames{main}->{views}, 0, wxALL, 5);
+
+  foreach my $which (qw(Main Calibrate Prefs)) {
+    next if $INC{"Demeter/UI/Athena/$which.pm"};
+    require "Demeter/UI/Athena/$which.pm";
+    $frames{main}->{$which} = "Demeter::UI::Athena::$which"->new($frames{main}->{views});
+    my $label = eval '$'.'Demeter::UI::Athena::'.$which.'::label';
+    $frames{main}->{views} -> AddPage($frames{main}->{$which}, $label, 0);
+  };
+  $frames{main}->{views}->SetSelection(0);
+  $viewpanel -> SetSizerAndFit($viewbox);
+
+
+
+
+
+  my $toolpanel = Wx::Panel->new($frames{main}, -1);
   my $toolbox = Wx::BoxSizer->new( wxVERTICAL );
-  $hbox -> Add($toolbox, 0, wxRIGHT, 5);
-
-  my $views = Wx::Choice->new($frames{main}, -1, wxDefaultPosition, wxDefaultSize, ['Data processing', 'Calibrate', 'Alignment', 'Preferences']);
-  $toolbox -> Add($views, 0, wxGROW|wxALL, 5);
+  $hbox -> Add($toolpanel, 1, wxGROW|wxALL, 5);
 
 
-  my $redbox = Wx::BoxSizer->new( wxHORIZONTAL );
-  $toolbox -> Add($redbox, 0, wxGROW|wxALL, 5);
+  $frames{main}->{list} = Wx::CheckListBox->new($toolpanel, -1,);
+  $toolbox -> Add($frames{main}->{list}, 1, wxGROW|wxALL, 0);
+
+  my $singlebox = Wx::BoxSizer->new( wxHORIZONTAL );
+  $toolbox  -> Add($singlebox, 0, wxGROW|wxALL, 0);
   foreach my $which (qw(E k R q kq)) {
-    my $key = 'plot_red_'.$which;
-    $frames{main}->{$key} = Wx::Button -> new($frames{main}, -1, $which, wxDefaultPosition, wxDefaultSize, wxBU_EXACTFIT);
-    $frames{main}->{$key}->SetBackgroundColour( Wx::Colour->new(139, 0, 0, 0) );
-    $frames{main}->{$key}->SetOwnForegroundColour( Wx::Colour->new(255, 255, 255, 0) );
-    $redbox -> Add($frames{main}->{$key}, 1, wxALL, 2);
+    my $key = 'plot_single_'.$which;
+    $frames{main}->{$key} = Wx::Button -> new($toolpanel, -1, $which, wxDefaultPosition, wxDefaultSize, wxBU_EXACTFIT);
+    $frames{main}->{$key}->SetBackgroundColour( Wx::Colour->new($demeter->co->default("athena", "single")) );
+    $singlebox   -> Add($frames{main}->{$key}, 1, wxALL, 1);
   };
 
-  my $purplebox = Wx::BoxSizer->new( wxHORIZONTAL );
-  $toolbox -> Add($purplebox, 0, wxGROW|wxALL, 5);
+  my $markedbox = Wx::BoxSizer->new( wxHORIZONTAL );
+  $toolbox -> Add($markedbox, 0, wxGROW|wxALL, 0);
   foreach my $which (qw(E k R q)) {
-    my $key = 'plot_purple_'.$which;
-    $frames{main}->{$key} = Wx::Button -> new($frames{main}, -1, $which, wxDefaultPosition, wxDefaultSize, wxBU_EXACTFIT);
-    $frames{main}->{$key}->SetForegroundColour( Wx::Colour->new(255, 255, 255, 0) );
-    $frames{main}->{$key}->SetBackgroundColour( Wx::Colour->new(148, 0, 211, 0) );
-    $purplebox -> Add($frames{main}->{$key}, 1, wxALL, 2);
+    my $key = 'plot_marked_'.$which;
+    $frames{main}->{$key} = Wx::Button -> new($toolpanel, -1, $which, wxDefaultPosition, wxDefaultSize, wxBU_EXACTFIT);
+    $frames{main}->{$key}->SetBackgroundColour( Wx::Colour->new($demeter->co->default("athena", "marked")) );
+    $markedbox   -> Add($frames{main}->{$key}, 1, wxALL, 1);
   };
-  
+
+  $frames{main}->{kweights} = Wx::RadioBox->new($toolpanel, -1, 'Plotting k-weights', wxDefaultPosition, wxDefaultSize,
+						[qw(0 1 2 3 kw)], 1, wxRA_SPECIFY_ROWS);
+  $toolbox     -> Add($frames{main}->{kweights}, 0, wxGROW|wxALL, 0);
+
+  ## -------- fill the plotting options tabs
+  $frames{main}->{plottabs}  = Wx::Notebook->new($toolpanel, -1, wxDefaultPosition, wxDefaultSize, wxNB_TOP);
+  foreach my $m (qw(PlotE PlotK PlotR PlotQ)) {
+    next if $INC{"Demeter/UI/Athena/$m.pm"};
+    require "Demeter/UI/Athena/$m.pm";
+    $frames{main}->{$m} = "Demeter::UI::Athena::$m"->new($frames{main}->{plottabs});
+    $frames{main}->{plottabs} -> AddPage($frames{main}->{$m}, substr($m, -1), ($m eq 'PlotE'));
+  };
+  $toolbox     -> Add($frames{main}->{plottabs}, 0, wxGROW|wxALL, 0);
+
+  $toolpanel -> SetSizerAndFit($toolbox);
+
 
   ## -------- status bar
   $frames{main}->{statusbar} = $frames{main}->CreateStatusBar;
 
-  $frames{main} -> SetSizerAndFit($box);
-  $frames{main} -> SetSize(600,800);
+  $frames{main} -> SetSizerAndFit($hbox);
+  #$frames{main} -> SetSize(600,800);
   $frames{main} -> Show( 1 );
-  $frames{main}->status("Welcome to Athena (" . $demeter->identify . ")");
+  $frames{main} -> status("Welcome to Athena (" . $demeter->identify . ")");
   1;
 }
 
@@ -136,7 +175,7 @@ sub OnInit {
 
 =for Explain
 
-Every window in Artemis is a Wx::Frame.  This inserts a method into
+Every window in Athena is a Wx::Frame.  This inserts a method into
 that namespace which serves as a choke point for writing messages to
 the status bar.  The two purposes served are (1) to apply some color
 to the text in the status bar and (2) to log all such messages.  The

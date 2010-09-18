@@ -4,25 +4,26 @@ use strict;
 #use Encode;
 use base qw( Exporter );
 our @EXPORT_OK = qw(emph
-		    $CHI $EPSILON $DELTA $SIGMA $SIGSQR $PHI $S02 $E0
+		    $MU $CHI $EPSILON $DELTA $SIGMA $SIGSQR $PHI $S02 $E0
 		    $ALPHA $BETA $GAMMA
 		    $COPYRIGHT $LAQUO $RAQUO $MDASH
 		    $TWO $THR
 		    $ARING
 		  );
 our %EXPORT_TAGS = (all   => [qw(emph
-				 $CHI $EPSILON $DELTA $SIGMA $SIGSQR $PHI $S02 $E0
+				 $MU $CHI $EPSILON $DELTA $SIGMA $SIGSQR $PHI $S02 $E0
 				 $ALPHA $BETA $GAMMA
 				 $COPYRIGHT $LAQUO $RAQUO $MDASH $ARING
 				 $TWO $THR)],
 		    super => [qw($TWO $THR)],
-		    greek => [qw($CHI $EPSILON $DELTA $SIGMA $SIGSQR $PHI $S02 $E0
+		    greek => [qw($MU $CHI $EPSILON $DELTA $SIGMA $SIGSQR $PHI $S02 $E0
 				 $ALPHA $BETA $GAMMA)],
 		   );
 
 my $is_windows = (($^O eq 'MSWin32') or ($^O eq 'cygwin'));
 
 ## -------- greek characters
+our $MU      = chr(0x03BC); #'μ';
 our $CHI     = chr(0x03C7); #967);          #"\xCF\x87";            #'χ';
 our $EPSILON = chr(949);          #"\xCE\xB5";            #'ε';
 our $DELTA   = chr(916);          #"\xCE\x94";            #'Δ';
@@ -85,6 +86,10 @@ kind of quotation marks.
 The greek letters exported are
 
 =over 4
+
+=item C<$MU>
+
+lower case mu
 
 =item C<$CHI>
 
