@@ -446,6 +446,8 @@ sub _plotE_command {
     my $this = 'xmu';
     if  ($pf->e_der) {
       $this = ($pf->e_norm) ? 'nder' : 'der';
+    } elsif  ($pf->e_sec) {
+      $this = ($pf->e_norm) ? 'nsec' : 'sec';
     } elsif ($pf->e_norm) {
       $this = 'norm';
     } elsif ($pf->e_norm and $self->bkg_flatten) {

@@ -57,6 +57,19 @@ sub e2l {
 };
 alias l2e => 'e2l';
 
+sub number2clamp {
+  my ($self, $input) = @_;
+  my @strings = qw(none slight weak medium strong rigid);
+  my @values  = map {$self->co->default("clamp", $_)} @strings;
+  my $return = 100000;
+  my $found = -1;
+  foreach my $i (0 .. $#values) {
+    $found = $i if (abs($input-$values[$i]) < $return);
+    $return = abs($input-$values[$i]);
+  };
+  return $strings[$found];
+};
+
 1;
 
 =head1 NAME

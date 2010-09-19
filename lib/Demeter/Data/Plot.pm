@@ -386,7 +386,7 @@ sub plot_kqfit {
     $down = $max[$k-1];
   };
 
-  $self->po->title($self->name . " at in k and q space");
+  $self->po->title($self->name . " in k and q space");
 
   ## plot magnitude part
   $self -> name('k space');

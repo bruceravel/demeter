@@ -221,9 +221,11 @@ sub _e0_marker_command {
   my ($self, $requested) = @_;
   my $pf = $self->po;
   my $suffix = ($pf->e_norm and $pf->e_der)         ? "nder" :
+               ($pf->e_norm and $pf->e_sec)         ? "nsec" :
                ($pf->e_norm and $self->bkg_flatten) ? "flat" :
                ($pf->e_norm)                        ? "norm" :
                ($pf->e_der)                         ? "der"  :
+               ($pf->e_sec)                         ? "sec"  :
 		                                      "xmu";
   my $y = $self->yofx($suffix, "", $self->bkg_e0);
   my $command = $self->template("plot", "marker", { x => $self->bkg_e0,

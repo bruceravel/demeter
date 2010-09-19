@@ -316,7 +316,7 @@ description
 variable=e_bkg
 type=boolean
 onvalue=1
-default=false
+default=true
 description
   This sets the plotting mode at startup for single data set plots in
   energy.  If true, the background spline is plotted by default.  This

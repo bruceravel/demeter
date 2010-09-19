@@ -2,8 +2,9 @@
 use Wx;
 use Demeter::UI::Athena;
 Wx::InitAllImageHandlers();
-my $window = Demeter::UI::Athena->new;
-$window   -> MainLoop;
+use vars qw($app);
+$app  = Demeter::UI::Athena->new;
+$app -> MainLoop;
 
 =head1 NAME
 

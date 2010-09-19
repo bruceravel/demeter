@@ -8,10 +8,12 @@ use vars qw($label);
 $label = "Calibrate data";
 
 sub new {
-  my ($class, $parent) = @_;
+  my ($class, $parent, $app) = @_;
   my $this = $class->SUPER::new($parent, -1, wxDefaultPosition, wxDefaultSize, wxMAXIMIZE_BOX );
 
   my $box = Wx::BoxSizer->new( wxVERTICAL);
+  $this->{sizer}  = $box;
+  $this->{parent} = $parent;
 
 
 

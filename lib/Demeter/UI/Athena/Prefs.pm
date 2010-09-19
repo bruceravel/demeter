@@ -9,10 +9,12 @@ use vars qw($label);
 $label = "Preferences";
 
 sub new {
-  my ($class, $parent) = @_;
+  my ($class, $parent, $app) = @_;
   my $this = $class->SUPER::new($parent, -1, wxDefaultPosition, wxDefaultSize, wxMAXIMIZE_BOX );
 
   my $box = Wx::BoxSizer->new( wxVERTICAL);
+  $this->{sizer}  = $box;
+  $this->{parent} = $parent;
 
   my $config = Demeter::UI::Wx::Config->new($this, \&target);
   $config->populate([qw(athena bft bkg clamp convolution fft fit gnuplot indicator
@@ -28,7 +30,7 @@ sub target {
 
  SWITCH: {
     ($param eq 'plotwith') and do {
-      $Demeter::UI::Artemis::demeter->plot_with($value);
+      $Demeter::UI::Athena::demeter->plot_with($value);
       last SWITCH;
     };
   };

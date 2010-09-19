@@ -49,6 +49,16 @@ section_description
 # description
 #   This tells Artemis which plotting backend to use (not in use..)
 
+variable=hints
+type=boolean
+onvalue=1
+offvalue=0
+default=true
+restart=1
+description
+  If true, show hints in the status bar when passing the mouse over 
+  widgets.
+
 variable=debug_menus
 type=boolean
 onvalue=1

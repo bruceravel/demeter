@@ -2,11 +2,12 @@ package Demeter::UI::Athena::PlotR;
 
 use Wx qw( :everything );
 use base 'Wx::Panel';
-use Wx::Event qw(EVT_LIST_ITEM_ACTIVATED EVT_LIST_ITEM_SELECTED EVT_BUTTON  EVT_KEY_DOWN);
-
+use Wx::Event qw(EVT_LIST_ITEM_ACTIVATED EVT_LIST_ITEM_SELECTED EVT_BUTTON  EVT_KEY_DOWN
+		 EVT_CHECKBOX);
+use Demeter::UI::Athena::Replot;
 
 sub new {
-  my ($class, $parent) = @_;
+  my ($class, $parent, $app) = @_;
   my $this = $class->SUPER::new($parent, -1, wxDefaultPosition, wxDefaultSize, wxMAXIMIZE_BOX );
 
   my $box = Wx::BoxSizer->new( wxVERTICAL );
@@ -20,11 +21,29 @@ sub new {
   $slot -> Add($this->{mag}, 1, wxALL, 1);
   $this->{mmag} = Wx::RadioButton->new($this, -1, '', , wxDefaultPosition, wxDefaultSize, wxRB_GROUP);
   $slot -> Add($this->{mmag}, 0, wxALL, 1);
+  EVT_CHECKBOX($this, $this->{mag},
+	       sub{my ($this, $event) = @_;
+		   if ($this->{mag}->GetValue) {
+		     $this->{env}->SetValue(0);
+		   };
+		   $this->replot(qw(r single));
+		 });
+  EVT_CHECKBOX($this, $this->{mmag}, sub{$_[0]->replot(qw(r marked))});
+  $app->mouseover($this->{mag},  "Plot the magnitude of $CHI(R) when ploting the current group in R-space.");
+  $app->mouseover($this->{mmag}, "Plot the magnitude of $CHI(R) when ploting the marked groups in R-space.");
 
   $slot = Wx::BoxSizer->new( wxHORIZONTAL );
   $hbox -> Add($slot, 1, wxGROW|wxALL, 0);
   $this->{env} = Wx::CheckBox->new($this, -1, 'Envelope');
   $slot -> Add($this->{env}, 0, wxALL, 1);
+  EVT_CHECKBOX($this, $this->{env},
+	       sub{my ($this, $event) = @_;
+		   if ($this->{env}->GetValue) {
+		     $this->{mag}->SetValue(0);
+		   };
+		   $this->replot(qw(r single));
+		 });
+  $app->mouseover($this->{mag},  "Plot the envelope of $CHI(R) when ploting the current group in R-space.");
 
   $slot = Wx::BoxSizer->new( wxHORIZONTAL );
   $hbox -> Add($slot, 1, wxGROW|wxALL, 0);
@@ -32,6 +51,10 @@ sub new {
   $slot -> Add($this->{re}, 1, wxALL, 1);
   $this->{mre} = Wx::RadioButton->new($this, -1, '');
   $slot -> Add($this->{mre}, 0, wxALL, 1);
+  EVT_CHECKBOX($this, $this->{re}, sub{$_[0]->replot(qw(r single))});
+  EVT_CHECKBOX($this, $this->{mre}, sub{$_[0]->replot(qw(r marked))});
+  $app->mouseover($this->{re},  "Plot the real part of $CHI(R) when ploting the current group in R-space.");
+  $app->mouseover($this->{mre}, "Plot the real part of $CHI(R) when ploting the marked groups in R-space.");
 
   $slot = Wx::BoxSizer->new( wxHORIZONTAL );
   $hbox -> Add($slot, 1, wxGROW|wxALL, 0);
@@ -39,6 +62,10 @@ sub new {
   $slot -> Add($this->{im}, 1, wxALL, 1);
   $this->{mim} = Wx::RadioButton->new($this, -1, '');
   $slot -> Add($this->{mim}, 0, wxALL, 1);
+  EVT_CHECKBOX($this, $this->{im}, sub{$_[0]->replot(qw(r single))});
+  EVT_CHECKBOX($this, $this->{mim}, sub{$_[0]->replot(qw(r marked))});
+  $app->mouseover($this->{im},  "Plot the imaginary part of $CHI(R) when ploting the current group in R-space.");
+  $app->mouseover($this->{mim}, "Plot the imaginary part of $CHI(R) when ploting the marked groups in R-space.");
 
   $slot = Wx::BoxSizer->new( wxHORIZONTAL );
   $hbox -> Add($slot, 1, wxGROW|wxALL, 0);
@@ -46,11 +73,17 @@ sub new {
   $slot -> Add($this->{pha}, 1, wxALL, 1);
   $this->{mpha} = Wx::RadioButton->new($this, -1, '');
   $slot -> Add($this->{mpha}, 0, wxALL, 1);
+  EVT_CHECKBOX($this, $this->{pha}, sub{$_[0]->replot(qw(r single))});
+  EVT_CHECKBOX($this, $this->{mpha}, sub{$_[0]->replot(qw(r marked))});
+  $app->mouseover($this->{pha},  "Plot the phase of $CHI(R) when ploting the current group in R-space.");
+  $app->mouseover($this->{mpha}, "Plot the phase of $CHI(R) when ploting the marked groups in R-space.");
 
   $slot = Wx::BoxSizer->new( wxHORIZONTAL );
   $hbox -> Add($slot, 1, wxGROW|wxALL, 0);
   $this->{win} = Wx::CheckBox->new($this, -1, 'Window');
   $slot -> Add($this->{win}, 0, wxALL, 1);
+  EVT_CHECKBOX($this, $this->{win}, sub{$_[0]->replot(qw(r single))});
+  $app->mouseover($this->{win}, "Plot the window function when ploting the current group in R-space.");
 
   SWITCH: {
       ($Demeter::UI::Athena::demeter->co->default("plot", "r_pl") eq 'm') and do {
@@ -79,11 +112,6 @@ sub new {
       };
     };
 
-  $this->{$_}->SetBackgroundColour( Wx::Colour->new($Demeter::UI::Athena::demeter->co->default("athena", "single")) )
-    foreach (qw(mag env re im pha win));
-  $this->{$_}->SetBackgroundColour( Wx::Colour->new($Demeter::UI::Athena::demeter->co->default("athena", "marked")) )
-    foreach (qw(mmag mre mim mpha));
-
   $hbox -> Add(0, 0, 1);
 
   my $right = Wx::BoxSizer->new( wxVERTICAL );
@@ -102,9 +130,34 @@ sub new {
   $range -> Add($label,        0, wxALL, 5);
   $range -> Add($this->{rmax}, 0, wxRIGHT, 10);
 
+  $this->{$_}->SetBackgroundColour( Wx::Colour->new($Demeter::UI::Athena::demeter->co->default("athena", "single")) )
+    foreach (qw(mag env re im pha win));
+  $this->{$_}->SetBackgroundColour( Wx::Colour->new($Demeter::UI::Athena::demeter->co->default("athena", "marked")) )
+    foreach (qw(mmag mre mim mpha));
+
 
   $this->SetSizerAndFit($box);
   return $this;
+};
+
+sub pull_single_values {
+  my ($this) = @_;
+  my $po = $Demeter::UI::Athena::demeter->po;
+  $po->rmin($this->{rmin} -> GetValue);
+  $po->rmax($this->{rmax} -> GetValue);
+};
+
+sub pull_marked_values {
+  my ($this) = @_;
+  my $po = $Demeter::UI::Athena::demeter->po;
+  my $val = ($this->{mmag} -> GetValue) ? 'm'
+          : ($this->{mre}  -> GetValue) ? 'r'
+          : ($this->{mim}  -> GetValue) ? 'i'
+          : ($this->{mpha} -> GetValue) ? 'p'
+	  :                               'm';
+  $po->r_pl($val);
+  $po->rmin($this->{rmin} -> GetValue);
+  $po->rmax($this->{rmax} -> GetValue);
 };
 
 1;

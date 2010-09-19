@@ -2,11 +2,13 @@ package Demeter::UI::Athena::PlotQ;
 
 use Wx qw( :everything );
 use base 'Wx::Panel';
-use Wx::Event qw(EVT_LIST_ITEM_ACTIVATED EVT_LIST_ITEM_SELECTED EVT_BUTTON  EVT_KEY_DOWN);
+use Wx::Event qw(EVT_LIST_ITEM_ACTIVATED EVT_LIST_ITEM_SELECTED EVT_BUTTON  EVT_KEY_DOWN
+		 EVT_CHECKBOX);
 
+use Demeter::UI::Athena::Replot;
 
 sub new {
-  my ($class, $parent) = @_;
+  my ($class, $parent, $app) = @_;
   my $this = $class->SUPER::new($parent, -1, wxDefaultPosition, wxDefaultSize, wxMAXIMIZE_BOX );
 
   my $box = Wx::BoxSizer->new( wxVERTICAL );
@@ -20,11 +22,29 @@ sub new {
   $slot -> Add($this->{mag}, 1,  wxALL, 1);
   $this->{mmag} = Wx::RadioButton->new($this, -1, '', wxDefaultPosition, wxDefaultSize, wxRB_GROUP);
   $slot -> Add($this->{mmag}, 0, wxALL, 1);
+  EVT_CHECKBOX($this, $this->{mag},
+	       sub{my ($this, $event) = @_;
+		   if ($this->{mag}->GetValue) {
+		     $this->{env}->SetValue(0);
+		   };
+		   $this->replot(qw(q single));
+		 });
+  EVT_CHECKBOX($this, $this->{mmag}, sub{$_[0]->replot(qw(q marked))});
+  $app->mouseover($this->{mag},  "Plot the magnitude of $CHI(q) when ploting the current group in filtered k-space.");
+  $app->mouseover($this->{mmag}, "Plot the magnitude of $CHI(q) when ploting the marked groups in filtered k-space.");
 
   $slot = Wx::BoxSizer->new( wxHORIZONTAL );
   $hbox -> Add($slot, 1, wxGROW|wxALL, 0);
   $this->{env} = Wx::CheckBox->new($this, -1, 'Envelope');
   $slot -> Add($this->{env}, 0, wxALL, 1);
+  EVT_CHECKBOX($this, $this->{env},
+	       sub{my ($this, $event) = @_;
+		   if ($this->{env}->GetValue) {
+		     $this->{mag}->SetValue(0);
+		   };
+		   $this->replot(qw(q single));
+		 });
+  $app->mouseover($this->{mag},  "Plot the envelope of $CHI(q) when ploting the current group in filtered k-space.");
 
   $slot = Wx::BoxSizer->new( wxHORIZONTAL );
   $hbox -> Add($slot, 1, wxGROW|wxALL, 0);
@@ -32,6 +52,10 @@ sub new {
   $slot -> Add($this->{re}, 1, wxALL, 1);
   $this->{mre} = Wx::RadioButton->new($this, -1, '');
   $slot -> Add($this->{mre}, 0, wxALL, 1);
+  EVT_CHECKBOX($this, $this->{re}, sub{$_[0]->replot(qw(q single))});
+  EVT_CHECKBOX($this, $this->{mre}, sub{$_[0]->replot(qw(q marked))});
+  $app->mouseover($this->{re},  "Plot the real part of $CHI(q) when ploting the current group in filtered k-space.");
+  $app->mouseover($this->{mre}, "Plot the real part of $CHI(q) when ploting the marked groups in filtered k-space.");
 
   $slot = Wx::BoxSizer->new( wxHORIZONTAL );
   $hbox -> Add($slot, 1, wxGROW|wxALL, 0);
@@ -39,6 +63,10 @@ sub new {
   $slot -> Add($this->{im}, 1, wxALL, 1);
   $this->{mim} = Wx::RadioButton->new($this, -1, '');
   $slot -> Add($this->{mim}, 0, wxALL, 1);
+  EVT_CHECKBOX($this, $this->{im}, sub{$_[0]->replot(qw(q single))});
+  EVT_CHECKBOX($this, $this->{mim}, sub{$_[0]->replot(qw(q marked))});
+  $app->mouseover($this->{im},  "Plot the imaginary part of $CHI(q) when ploting the current group in filtered k-space.");
+  $app->mouseover($this->{mim}, "Plot the imaginary part of $CHI(q) when ploting the marked groups in filtered k-space.");
 
   $slot = Wx::BoxSizer->new( wxHORIZONTAL );
   $hbox -> Add($slot, 1, wxGROW|wxALL, 0);
@@ -46,11 +74,17 @@ sub new {
   $slot -> Add($this->{pha}, 1, wxALL, 1);
   $this->{mpha} = Wx::RadioButton->new($this, -1, '');
   $slot -> Add($this->{mpha}, 0, wxALL, 1);
+  EVT_CHECKBOX($this, $this->{pha}, sub{$_[0]->replot(qw(q single))});
+  EVT_CHECKBOX($this, $this->{mpha}, sub{$_[0]->replot(qw(q marked))});
+  $app->mouseover($this->{pha},  "Plot the phase of $CHI(q) when ploting the current group in filtered k-space.");
+  $app->mouseover($this->{mpha}, "Plot the phase of $CHI(q) when ploting the marked groups in filtered k-space.");
 
   $slot = Wx::BoxSizer->new( wxHORIZONTAL );
   $hbox -> Add($slot, 1, wxGROW|wxALL, 0);
   $this->{win} = Wx::CheckBox->new($this, -1, 'Window');
   $slot -> Add($this->{win}, 0, wxALL, 1);
+  EVT_CHECKBOX($this, $this->{win}, sub{$_[0]->replot(qw(q single))});
+  $app->mouseover($this->{win}, "Plot the k-space window function when ploting the current group in filtered k-space.");
 
   SWITCH: {
       ($Demeter::UI::Athena::demeter->co->default("plot", "q_pl") eq 'm') and do {
@@ -105,6 +139,28 @@ sub new {
 
   $this->SetSizerAndFit($box);
   return $this;
+
+};
+
+
+sub pull_single_values {
+  my ($this) = @_;
+  my $po = $Demeter::UI::Athena::demeter->po;
+  $po->qmin($this->{qmin} -> GetValue);
+  $po->qmax($this->{qmax} -> GetValue);
+};
+
+sub pull_marked_values {
+  my ($this) = @_;
+  my $po = $Demeter::UI::Athena::demeter->po;
+  my $val = ($this->{mmag} -> GetValue) ? 'm'
+          : ($this->{mre}  -> GetValue) ? 'r'
+          : ($this->{mim}  -> GetValue) ? 'i'
+          : ($this->{mpha} -> GetValue) ? 'p'
+	  :                               'm';
+  $po->q_pl($val);
+  $po->qmin($this->{qmin} -> GetValue);
+  $po->qmax($this->{qmax} -> GetValue);
 };
 
 1;
