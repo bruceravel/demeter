@@ -125,12 +125,12 @@ sub menubar {
   my $plotmenu   = Wx::Menu->new;
   my $currentplotmenu = Wx::Menu->new;
   my $markedplotmenu  = Wx::Menu->new;
-  $currentplotmenu->Append($PLOT_QUAD,   "Quad plot", "Make a quad plot from the current group" );
-  $currentplotmenu->Append($PLOT_IOSIG,  "Data+I0+Signal", "Plot data, I0, and signal from the current group" );
-  $currentplotmenu->Append($PLOT_K123,   "k123 plot", "Make a k123 plot from the current group" );
-  $currentplotmenu->Append($PLOT_R123,   "R123 plot", "Make an R123 plot from the current group" );
-  $plotmenu->AppendSubMenu($currentplotmenu, "Current group", "Special plots for the current group");
-  $plotmenu->AppendSubMenu($markedplotmenu,  "Marked groups", "Special plots for the marked groups");
+  $currentplotmenu->Append($PLOT_QUAD,       "Quad plot",      "Make a quad plot from the current group" );
+  $currentplotmenu->Append($PLOT_IOSIG,      "Data+I0+Signal", "Plot data, I0, and signal from the current group" );
+  $currentplotmenu->Append($PLOT_K123,       "k123 plot",      "Make a k123 plot from the current group" );
+  $currentplotmenu->Append($PLOT_R123,       "R123 plot",      "Make an R123 plot from the current group" );
+  $plotmenu->AppendSubMenu($currentplotmenu, "Current group",  "Additional plot types for the current group");
+  $plotmenu->AppendSubMenu($markedplotmenu,  "Marked groups",  "Additional plot types for the marked groups");
 
   my $markmenu   = Wx::Menu->new;
   my $mergemenu  = Wx::Menu->new;
@@ -340,13 +340,7 @@ sub plot {
   my $busy = Wx::BusyCursor->new();
   my $data = $app->{main}->{list}->GetClientData($app->{main}->{list}->GetSelection);
   $app->{main}->{Main}->pull_values($data);
-
-  my $kw = $app->{main}->{kweights}->GetStringSelection;
-  if ($kw eq 'kw') {
-    $data->po->kweight($data->fit_karb_value);
-  } else {
-    $data->po->kweight($kw);
-  };
+  $app->pull_kweight($data);
 
   $data->po->start_plot;
   if ($how eq 'single') {
@@ -398,12 +392,30 @@ sub quadplot {
     my ($showkey, $fontsize) = ($data->po->showlegend, $data->co->default("gnuplot", "fontsize"));
     $data->po->showlegend(0);
     $data->co->set_default("gnuplot", "fontsize", 8);
+
+    $app->{main}->{PlotE}->pull_single_values;
+    $app->{main}->{PlotK}->pull_single_values;
+    $app->{main}->{PlotR}->pull_marked_values;
+    $app->{main}->{PlotQ}->pull_marked_values;
+    $app->pull_kweight($data);
     $data->plot('quad');
+
     $data->po->showlegend($showkey);
     $data->co->set_default("gnuplot", "fontsize", $fontsize);
   } else {
     $app->plot(q{}, q{}, 'E', 'single')
   };
+};
+
+sub pull_kweight {
+  my ($app, $data) = @_;
+  my $kw = $app->{main}->{kweights}->GetStringSelection;
+  if ($kw eq 'kw') {
+    $data->po->kweight($data->fit_karb_value);
+  } else {
+    $data->po->kweight($kw);
+  };
+  return $data->po->kweight;
 };
 
 =for Explain

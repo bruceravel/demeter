@@ -3,6 +3,7 @@ package Demeter::UI::Athena::Main;
 use Wx qw( :everything );
 use base 'Wx::Panel';
 use Wx::Event qw(EVT_LIST_ITEM_ACTIVATED EVT_LIST_ITEM_SELECTED EVT_BUTTON  EVT_KEY_DOWN);
+use Wx::Perl::TextValidator;
 
 use Chemistry::Elements qw(get_name get_Z get_symbol);
 use File::Basename;
@@ -15,6 +16,8 @@ my $icon          = File::Spec->catfile(dirname($INC{"Demeter/UI/Athena.pm"}), '
 my $bullseye      = Wx::Bitmap->new($icon, wxBITMAP_TYPE_PNG);
 $icon             = File::Spec->catfile(dirname($INC{"Demeter/UI/Athena.pm"}), 'Athena', , 'icons', "chainlink.png");
 my $chainlink     = Wx::Bitmap->new($icon, wxBITMAP_TYPE_PNG);
+
+my $tcsize = [60,-1];
 
 sub new {
   my ($class, $parent, $app) = @_;
@@ -48,7 +51,7 @@ sub group {
   my $groupbox       = Wx::StaticBox->new($this, -1, 'Current group', wxDefaultPosition, wxDefaultSize);
   my $groupboxsizer  = Wx::StaticBoxSizer->new( $groupbox, wxVERTICAL );
   $groupbox         -> SetFont( Wx::Font->new( $box_font_size, wxDEFAULT, wxNORMAL, wxBOLD, 0, "" ) );
-  $this->{sizer}    -> Add($groupboxsizer, 0, wxALL, 5);
+  $this->{sizer}    -> Add($groupboxsizer, 0, wxALL, 0);
 
   my $gbs = Wx::GridBagSizer->new( 5, 5 );
 
@@ -78,6 +81,10 @@ sub group {
 
   push @group_params, qw(file bkg_z fft_edge bkg_eshift importance);
 
+  $this->{$_} -> SetValidator( Wx::Perl::TextValidator->new( qr([-0-9.]) ) )
+    foreach (qw(bkg_eshift importance));
+
+
   $groupboxsizer -> Add($gbs, 0, wxALL, 5);
   return $this;
 };
@@ -89,38 +96,50 @@ sub bkg {
   my $backgroundbox       = Wx::StaticBox->new($this, -1, 'Background removal', wxDefaultPosition, wxDefaultSize);
   my $backgroundboxsizer  = Wx::StaticBoxSizer->new( $backgroundbox, wxVERTICAL );
   $backgroundbox         -> SetFont( Wx::Font->new( $box_font_size, wxDEFAULT, wxNORMAL, wxBOLD, 0, "" ) );
-  $this->{sizer}         -> Add($backgroundboxsizer, 0, wxALL|wxGROW, 5);
+  $this->{sizer}         -> Add($backgroundboxsizer, 0, wxALL|wxGROW, 0);
 
   $gbs = Wx::GridBagSizer->new( 5, 5 );
 
   ## E0, Rbkg, flatten
   $this->{bkg_e0_label}   = Wx::StaticText   -> new($this, -1, "E0");
-  $this->{bkg_e0}         = Wx::TextCtrl     -> new($this, -1, q{}, wxDefaultPosition, [80,-1]);
+  $this->{bkg_e0}         = Wx::TextCtrl     -> new($this, -1, q{}, wxDefaultPosition, $tcsize);
   $this->{bkg_e0_pluck}   = Wx::BitmapButton -> new($this, -1, $bullseye);
   $this->{bkg_rbkg_label} = Wx::StaticText   -> new($this, -1, "Rbkg");
-  $this->{bkg_rbkg}       = Wx::TextCtrl     -> new($this, -1, q{}, wxDefaultPosition, [80,-1]);
+  $this->{bkg_rbkg}       = Wx::TextCtrl     -> new($this, -1, q{}, wxDefaultPosition, $tcsize);
   $this->{bkg_flatten}    = Wx::CheckBox     -> new($this, -1, q{Flatten normalized data});
   $gbs -> Add($this->{bkg_e0_label},   Wx::GBPosition->new(0,0));
   $gbs -> Add($this->{bkg_e0},         Wx::GBPosition->new(0,1));
   $gbs -> Add($this->{bkg_e0_pluck},   Wx::GBPosition->new(0,2));
   $gbs -> Add($this->{bkg_rbkg_label}, Wx::GBPosition->new(0,3));
   $gbs -> Add($this->{bkg_rbkg},       Wx::GBPosition->new(0,4));
-  $gbs -> Add($this->{bkg_flatten},    Wx::GBPosition->new(0,5));
+  $gbs -> Add($this->{bkg_flatten},    Wx::GBPosition->new(0,5), Wx::GBSpan->new(1,4));
   $this->{bkg_flatten}->SetValue(1);
   push @bkg_parameters, qw(bkg_e0 bkg_rbkg bkg_flatten);
 
   ## kweight, step, fix step
   $this->{bkg_kw_label}   = Wx::StaticText -> new($this, -1, "k-weight");
-  $this->{bkg_kw}         = Wx::TextCtrl   -> new($this, -1, q{}, wxDefaultPosition, [80,-1]);
-  $this->{bkg_step_label} = Wx::StaticText -> new($this, -1, "Edge step");
-  $this->{bkg_step}       = Wx::TextCtrl   -> new($this, -1, q{}, wxDefaultPosition, [80,-1]);
-  $this->{bkg_fixstep}    = Wx::CheckBox   -> new($this, -1, q{fix step});
-  $gbs -> Add($this->{bkg_kw_label},   Wx::GBPosition->new(1,0));
-  $gbs -> Add($this->{bkg_kw},         Wx::GBPosition->new(1,1));
-  $gbs -> Add($this->{bkg_step_label}, Wx::GBPosition->new(1,2), Wx::GBSpan->new(1,2));
-  $gbs -> Add($this->{bkg_step},       Wx::GBPosition->new(1,4));
-  $gbs -> Add($this->{bkg_fixstep},    Wx::GBPosition->new(1,5));
+  $this->{bkg_kw}         = Wx::SpinCtrl   -> new($this, -1, q{}, wxDefaultPosition, $tcsize, wxSP_ARROW_KEYS, 0, 3);
+  $gbs -> Add($this->{bkg_kw_label},   Wx::GBPosition->new(1,3));
+  $gbs -> Add($this->{bkg_kw},         Wx::GBPosition->new(1,4));
   push @bkg_parameters, qw(bkg_kw bkg_step bkg_fixstep);
+
+  ## algorithm and normalization order
+  $this->{bkg_algorithm_label} = Wx::StaticText  -> new($this, -1, "Algorithm");
+  $this->{bkg_algorithm}       = Wx::Choice      -> new($this, -1, wxDefaultPosition, wxDefaultSize,
+							['Autobk', 'CLnorm']);
+  $this->{bkg_nnorm_label}     = Wx::StaticText  -> new($this, -1, "Normalization order");
+  $this->{bkg_nnorm_1}         = Wx::RadioButton -> new($this, -1, '1', wxDefaultPosition, wxDefaultSize, wxRB_GROUP);
+  $this->{bkg_nnorm_2}         = Wx::RadioButton -> new($this, -1, '2');
+  $this->{bkg_nnorm_3}         = Wx::RadioButton -> new($this, -1, '3');
+  $gbs -> Add($this->{bkg_algorithm_label}, Wx::GBPosition->new(1,0));
+  $gbs -> Add($this->{bkg_algorithm},       Wx::GBPosition->new(1,1), Wx::GBSpan->new(1,2));
+  $gbs -> Add($this->{bkg_nnorm_label},     Wx::GBPosition->new(1,5));
+  $gbs -> Add($this->{bkg_nnorm_1},         Wx::GBPosition->new(1,6));
+  $gbs -> Add($this->{bkg_nnorm_2},         Wx::GBPosition->new(1,7));
+  $gbs -> Add($this->{bkg_nnorm_3},         Wx::GBPosition->new(1,8));
+  $this->{bkg_algorithm} -> SetSelection(0);
+  $this->{bkg_nnorm_3}   -> SetValue(1);
+  push @bkg_parameters, qw(bkg_algorithm bkg_nnorm bkg_nnorm_1 bkg_nnorm_2 bkg_nnorm_3);
 
   $backgroundboxsizer -> Add($gbs, 0, wxALL, 5);
 
@@ -128,9 +147,9 @@ sub bkg {
 
   ## pre edge line
   $this->{bkg_pre1_label} = Wx::StaticText   -> new($this, -1, "Pre-edge range");
-  $this->{bkg_pre1}       = Wx::TextCtrl     -> new($this, -1, q{}, wxDefaultPosition, [80,-1]);
+  $this->{bkg_pre1}       = Wx::TextCtrl     -> new($this, -1, q{}, wxDefaultPosition, $tcsize);
   $this->{bkg_pre2_label} = Wx::StaticText   -> new($this, -1, "to");
-  $this->{bkg_pre2}       = Wx::TextCtrl     -> new($this, -1, q{}, wxDefaultPosition, [80,-1]);
+  $this->{bkg_pre2}       = Wx::TextCtrl     -> new($this, -1, q{}, wxDefaultPosition, $tcsize);
   $this->{bkg_pre1_pluck} = Wx::BitmapButton -> new($this, -1, $bullseye);
   $this->{bkg_pre2_pluck} = Wx::BitmapButton -> new($this, -1, $bullseye);
   $gbs -> Add($this->{bkg_pre1_label}, Wx::GBPosition->new(0,0));
@@ -143,9 +162,9 @@ sub bkg {
 
   ## noirmalization line
   $this->{bkg_nor1_label} = Wx::StaticText   -> new($this, -1, "Normalization range");
-  $this->{bkg_nor1}       = Wx::TextCtrl     -> new($this, -1, q{}, wxDefaultPosition, [80,-1]);
+  $this->{bkg_nor1}       = Wx::TextCtrl     -> new($this, -1, q{}, wxDefaultPosition, $tcsize);
   $this->{bkg_nor2_label} = Wx::StaticText   -> new($this, -1, "to");
-  $this->{bkg_nor2}       = Wx::TextCtrl     -> new($this, -1, q{}, wxDefaultPosition, [80,-1]);
+  $this->{bkg_nor2}       = Wx::TextCtrl     -> new($this, -1, q{}, wxDefaultPosition, $tcsize);
   $this->{bkg_nor1_pluck} = Wx::BitmapButton -> new($this, -1, $bullseye);
   $this->{bkg_nor2_pluck} = Wx::BitmapButton -> new($this, -1, $bullseye);
   $gbs -> Add($this->{bkg_nor1_label}, Wx::GBPosition->new(1,0));
@@ -156,11 +175,19 @@ sub bkg {
   $gbs -> Add($this->{bkg_nor2_pluck}, Wx::GBPosition->new(1,5));
   push @bkg_parameters, qw(bkg_nor1 bkg_nor2);
 
+  $this->{bkg_step_label} = Wx::StaticText -> new($this, -1, "Edge step");
+  $this->{bkg_step}       = Wx::TextCtrl   -> new($this, -1, q{}, wxDefaultPosition, $tcsize);
+  $this->{bkg_fixstep}    = Wx::CheckBox   -> new($this, -1, q{fix step});
+  $gbs -> Add($this->{bkg_step_label}, Wx::GBPosition->new(0,7));
+  $gbs -> Add($this->{bkg_step},       Wx::GBPosition->new(0,8));
+  $gbs -> Add($this->{bkg_fixstep},    Wx::GBPosition->new(1,8));
+
+
   ## spline range in k
   $this->{bkg_spl1_label} = Wx::StaticText   -> new($this, -1, "Spline range in k");
-  $this->{bkg_spl1}       = Wx::TextCtrl     -> new($this, -1, q{}, wxDefaultPosition, [80,-1]);
+  $this->{bkg_spl1}       = Wx::TextCtrl     -> new($this, -1, q{}, wxDefaultPosition, $tcsize);
   $this->{bkg_spl2_label} = Wx::StaticText   -> new($this, -1, "to");
-  $this->{bkg_spl2}       = Wx::TextCtrl     -> new($this, -1, q{}, wxDefaultPosition, [80,-1]);
+  $this->{bkg_spl2}       = Wx::TextCtrl     -> new($this, -1, q{}, wxDefaultPosition, $tcsize);
   $this->{bkg_spl1_pluck} = Wx::BitmapButton -> new($this, -1, $bullseye);
   $this->{bkg_spl2_pluck} = Wx::BitmapButton -> new($this, -1, $bullseye);
   $gbs -> Add($this->{bkg_spl1_label}, Wx::GBPosition->new(2,0));
@@ -177,9 +204,9 @@ sub bkg {
 
   ## spline range in E
   $this->{bkg_spl1e_label} = Wx::StaticText   -> new($this, -1, "Spline range in E");
-  $this->{bkg_spl1e}       = Wx::TextCtrl     -> new($this, -1, q{}, wxDefaultPosition, [80,-1]);
+  $this->{bkg_spl1e}       = Wx::TextCtrl     -> new($this, -1, q{}, wxDefaultPosition, $tcsize);
   $this->{bkg_spl2e_label} = Wx::StaticText   -> new($this, -1, "to");
-  $this->{bkg_spl2e}       = Wx::TextCtrl     -> new($this, -1, q{}, wxDefaultPosition, [80,-1]);
+  $this->{bkg_spl2e}       = Wx::TextCtrl     -> new($this, -1, q{}, wxDefaultPosition, $tcsize);
   $this->{bkg_spl1e_pluck} = Wx::BitmapButton -> new($this, -1, $bullseye);
   $this->{bkg_spl2e_pluck} = Wx::BitmapButton -> new($this, -1, $bullseye);
   $gbs -> Add($this->{bkg_spl1e_label}, Wx::GBPosition->new(3,0));
@@ -191,27 +218,6 @@ sub bkg {
   push @bkg_parameters, qw(bkg_spl1e bkg_spl2e chainlink);
 
   $backgroundboxsizer -> Add($gbs, 0, wxALL, 5);
-
-  ## algorithm and normalization order
-  my $abox = Wx::BoxSizer->new( wxHORIZONTAL );
-  $this->{bkg_algorithm_label} = Wx::StaticText  -> new($this, -1, "Algorithm");
-  $this->{bkg_algorithm}       = Wx::Choice      -> new($this, -1, wxDefaultPosition, wxDefaultSize,
-							['Autobk', 'CLnorm']);
-  $this->{bkg_nnorm_label}     = Wx::StaticText  -> new($this, -1, "Normalization order");
-  $this->{bkg_nnorm_1}         = Wx::RadioButton -> new($this, -1, '1', wxDefaultPosition, wxDefaultSize, wxRB_GROUP);
-  $this->{bkg_nnorm_2}         = Wx::RadioButton -> new($this, -1, '2');
-  $this->{bkg_nnorm_3}         = Wx::RadioButton -> new($this, -1, '3');
-  $abox -> Add($this->{bkg_algorithm_label}, 0, wxALL,          5);
-  $abox -> Add($this->{bkg_algorithm},       0, wxRIGHT,       15);
-  $abox -> Add($this->{bkg_nnorm_label},     0, wxTOP|wxRIGHT,  3);
-  $abox -> Add($this->{bkg_nnorm_1},         0, wxRIGHT,        6);
-  $abox -> Add($this->{bkg_nnorm_2},         0, wxRIGHT,        6);
-  $abox -> Add($this->{bkg_nnorm_3},         0, wxRIGHT,        6);
-  $this->{bkg_algorithm} -> SetSelection(0);
-  $this->{bkg_nnorm_3}   -> SetValue(1);
-  push @bkg_parameters, qw(bkg_algorithm bkg_nnorm bkg_nnorm_1 bkg_nnorm_2 bkg_nnorm_3);
-
-  $backgroundboxsizer -> Add($abox, 0, wxALL, 5);
 
   ## standard and clamps
   my $clamps = [qw(None Slight Weak Medium Strong Rigid)];
@@ -232,7 +238,11 @@ sub bkg {
   $this->{bkg_clamp2} -> SetSelection(0);
   push @bkg_parameters, qw(bkg_stan bkg_clamp1 bkg_clamp2);
 
-  $backgroundboxsizer -> Add($abox, 0, wxALL, 5);
+  $backgroundboxsizer -> Add($abox, 0, wxTOP|wxBOTTOM, 5);
+
+  $this->{$_} -> SetValidator( Wx::Perl::TextValidator->new( qr([-0-9.]) ) )
+    foreach (qw(bkg_pre1 bkg_pre2 bkg_nor1 bkg_nor2 bkg_spl1 bkg_spl2 bkg_spl1e bkg_spl2e
+		bkg_e0 bkg_rbkg bkg_kw bkg_stan));
 
   return $this;
 };
@@ -245,22 +255,22 @@ sub fft {
   my $fftbox       = Wx::StaticBox->new($this, -1, 'Forward Fourier transform', wxDefaultPosition, wxDefaultSize);
   my $fftboxsizer  = Wx::StaticBoxSizer->new( $fftbox, wxHORIZONTAL );
   $fftbox         -> SetFont( Wx::Font->new( $box_font_size, wxDEFAULT, wxNORMAL, wxBOLD, 0, "" ) );
-  $this->{sizer}  -> Add($fftboxsizer, 0, wxALL|wxGROW, 5);
+  $this->{sizer}  -> Add($fftboxsizer, 0, wxALL|wxGROW, 0);
 
   $gbs = Wx::GridBagSizer->new( 5, 5 );
 
   $this->{fft_kmin_label} = Wx::StaticText   -> new($this, -1, "k-range");
-  $this->{fft_kmin}       = Wx::TextCtrl     -> new($this, -1, q{}, wxDefaultPosition, [80,-1]);
+  $this->{fft_kmin}       = Wx::TextCtrl     -> new($this, -1, q{}, wxDefaultPosition, $tcsize);
   $this->{fft_kmin_pluck} = Wx::BitmapButton -> new($this, -1, $bullseye);
   $gbs -> Add($this->{fft_kmin_label}, Wx::GBPosition->new(0,0));
   $gbs -> Add($this->{fft_kmin},       Wx::GBPosition->new(0,1));
   $gbs -> Add($this->{fft_kmin_pluck}, Wx::GBPosition->new(0,2));
 
   $this->{fft_kmax_label} = Wx::StaticText   -> new($this, -1, "to");
-  $this->{fft_kmax}       = Wx::TextCtrl     -> new($this, -1, q{}, wxDefaultPosition, [80,-1]);
+  $this->{fft_kmax}       = Wx::TextCtrl     -> new($this, -1, q{}, wxDefaultPosition, $tcsize);
   $this->{fft_kmax_pluck} = Wx::BitmapButton -> new($this, -1, $bullseye);
   $this->{fft_dk_label}   = Wx::StaticText   -> new($this, -1, "dk");
-  $this->{fft_dk}         = Wx::TextCtrl     -> new($this, -1, q{}, wxDefaultPosition, [80,-1]);
+  $this->{fft_dk}         = Wx::TextCtrl     -> new($this, -1, q{}, wxDefaultPosition, $tcsize);
   $gbs -> Add($this->{fft_kmax_label}, Wx::GBPosition->new(0,3));
   $gbs -> Add($this->{fft_kmax},       Wx::GBPosition->new(0,4));
   $gbs -> Add($this->{fft_kmax_pluck}, Wx::GBPosition->new(0,5));
@@ -271,7 +281,7 @@ sub fft {
   $this->{fft_kwindow}          = Wx::Choice     -> new($this, -1, wxDefaultPosition, wxDefaultSize,
 							[qw(Kaiser-Bessel Hanning Welch Parzen Sine Gaussian)]);
   $this->{fit_karb_value_label} = Wx::StaticText -> new($this, -1, q{arbitrary k-weight});
-  $this->{fit_karb_value}       = Wx::TextCtrl   -> new($this, -1, q{}, wxDefaultPosition, [80,-1]);
+  $this->{fit_karb_value}       = Wx::TextCtrl   -> new($this, -1, q{}, wxDefaultPosition, $tcsize);
   $this->{fft_pc}               = Wx::CheckBox   -> new($this, -1, q{phase correction});
   $gbs -> Add($this->{fft_kwindow_label},    Wx::GBPosition->new(1,0));
   $gbs -> Add($this->{fft_kwindow},          Wx::GBPosition->new(1,1), Wx::GBSpan->new(1,3));
@@ -282,6 +292,10 @@ sub fft {
   push @fft_parameters, qw(fft_kmin fft_kmax fft_dk fft_kwindow fit_karb_value fft_pc);
 
   $fftboxsizer -> Add($gbs, 0, wxALL, 5);
+
+  $this->{$_} -> SetValidator( Wx::Perl::TextValidator->new( qr([0-9.]) ) )
+    foreach (qw(fft_kmin fft_kmax fft_dk fit_karb_value));
+
   return $this;
 };
 
@@ -292,18 +306,18 @@ sub bft {
   my $bftbox       = Wx::StaticBox->new($this, -1, 'Backward Fourier transform', wxDefaultPosition, wxDefaultSize);
   my $bftboxsizer  = Wx::StaticBoxSizer->new( $bftbox, wxHORIZONTAL );
   $bftbox         -> SetFont( Wx::Font->new( $box_font_size, wxDEFAULT, wxNORMAL, wxBOLD, 0, "" ) );
-  $this->{sizer}  -> Add($bftboxsizer, 0, wxALL|wxGROW, 5);
+  $this->{sizer}  -> Add($bftboxsizer, 0, wxALL|wxGROW, 0);
 
   $gbs = Wx::GridBagSizer->new( 5, 5 );
 
   $this->{bft_rmin_label} = Wx::StaticText   -> new($this, -1, "R-range");
-  $this->{bft_rmin}       = Wx::TextCtrl     -> new($this, -1, q{}, wxDefaultPosition, [80,-1]);
+  $this->{bft_rmin}       = Wx::TextCtrl     -> new($this, -1, q{}, wxDefaultPosition, $tcsize);
   $this->{bft_rmin_pluck} = Wx::BitmapButton -> new($this, -1, $bullseye);
   $this->{bft_rmax_label} = Wx::StaticText   -> new($this, -1, "to");
-  $this->{bft_rmax}       = Wx::TextCtrl     -> new($this, -1, q{}, wxDefaultPosition, [80,-1]);
+  $this->{bft_rmax}       = Wx::TextCtrl     -> new($this, -1, q{}, wxDefaultPosition, $tcsize);
   $this->{bft_rmax_pluck} = Wx::BitmapButton -> new($this, -1, $bullseye);
   $this->{bft_dr_label}   = Wx::StaticText -> new($this, -1, "dR");
-  $this->{bft_dr}         = Wx::TextCtrl   -> new($this, -1, q{}, wxDefaultPosition, [80,-1]);
+  $this->{bft_dr}         = Wx::TextCtrl   -> new($this, -1, q{}, wxDefaultPosition, $tcsize);
   $gbs -> Add($this->{bft_rmin_label}, Wx::GBPosition->new(0,0));
   $gbs -> Add($this->{bft_rmin},       Wx::GBPosition->new(0,1));
   $gbs -> Add($this->{bft_rmin_pluck}, Wx::GBPosition->new(0,2));
@@ -314,14 +328,18 @@ sub bft {
   $gbs -> Add($this->{bft_dr},         Wx::GBPosition->new(0,7));
   push @bft_parameters, qw(bft_rmin bft_rmax bft_dr bft_rwindow);
 
-  $this->{bft_rwindow_label} = Wx::StaticText -> new($this, -1, "window");
-  $this->{bft_rwindow}       = Wx::Choice     -> new($this, -1, wxDefaultPosition, wxDefaultSize,
-						  [qw(Kaiser-Bessel Hanning Welch Parzen Sine Gaussian)]);
-  $gbs -> Add($this->{bft_rwindow_label}, Wx::GBPosition->new(1,0));
-  $gbs -> Add($this->{bft_rwindow},       Wx::GBPosition->new(1,1), Wx::GBSpan->new(1,3));
-  $this->{bft_rwindow}->SetStringSelection($this->window_name($Demeter::UI::Athena::demeter->co->default("bft", "rwindow")));
+  # $this->{bft_rwindow_label} = Wx::StaticText -> new($this, -1, "window");
+  # $this->{bft_rwindow}       = Wx::Choice     -> new($this, -1, wxDefaultPosition, wxDefaultSize,
+  # 						  [qw(Kaiser-Bessel Hanning Welch Parzen Sine Gaussian)]);
+  # $gbs -> Add($this->{bft_rwindow_label}, Wx::GBPosition->new(1,0));
+  # $gbs -> Add($this->{bft_rwindow},       Wx::GBPosition->new(1,1), Wx::GBSpan->new(1,3));
+  # $this->{bft_rwindow}->SetStringSelection($this->window_name($Demeter::UI::Athena::demeter->co->default("bft", "rwindow")));
 
   $bftboxsizer -> Add($gbs, 0, wxALL, 5);
+
+  $this->{$_} -> SetValidator( Wx::Perl::TextValidator->new( qr([0-9.]) ) )
+    foreach (qw(bft_rmin bft_rmax bft_dr));
+
   return $this;
 };
 
@@ -332,20 +350,23 @@ sub plot {
   my $plotbox       = Wx::StaticBox->new($this, -1, 'Plotting parameters', wxDefaultPosition, wxDefaultSize);
   my $plotboxsizer  = Wx::StaticBoxSizer->new( $plotbox, wxHORIZONTAL );
   $plotbox         -> SetFont( Wx::Font->new( $box_font_size, wxDEFAULT, wxNORMAL, wxBOLD, 0, "" ) );
-  $this->{sizer}   -> Add($plotboxsizer, 0, wxALL|wxGROW, 5);
+  $this->{sizer}   -> Add($plotboxsizer, 0, wxALL|wxGROW, 0);
 
   my $pbox = Wx::BoxSizer->new( wxHORIZONTAL );
   $this->{plot_multiplier_label} = Wx::StaticText->new($this, -1, "Plot multiplier");
-  $this->{plot_multiplier}       = Wx::TextCtrl  ->new($this, -1, q{}, wxDefaultPosition, [80,-1]);
+  $this->{plot_multiplier}       = Wx::TextCtrl  ->new($this, -1, q{}, wxDefaultPosition, $tcsize);
   $this->{y_offset_label}        = Wx::StaticText->new($this, -1, "y-axis offset");
-  $this->{y_offset}              = Wx::TextCtrl  ->new($this, -1, q{}, wxDefaultPosition, [80,-1]);
+  $this->{y_offset}              = Wx::TextCtrl  ->new($this, -1, q{}, wxDefaultPosition, $tcsize);
   $pbox -> Add($this->{plot_multiplier_label}, 0, wxALL,    5);
   $pbox -> Add($this->{plot_multiplier},       0, wxRIGHT, 10);
   $pbox -> Add($this->{y_offset_label},        0, wxALL,    5);
   $pbox -> Add($this->{y_offset},              0, wxRIGHT, 10);
   push @plot_parameters, qw(plot_multiplier y_offset);
 
-  $plotboxsizer -> Add($pbox, 0, wxALL, 5);
+  $this->{$_} -> SetValidator( Wx::Perl::TextValidator->new( qr([-0-9.]) ) )
+    foreach (qw(plot_multiplier y_offset));
+
+  $plotboxsizer -> Add($pbox, 0, wxTOP|wxBOTTOM, 5);
   return $this;
 };
 
@@ -407,6 +428,7 @@ sub push_values {
     next if ($w =~ m{(?:label|pluck)\z});
     #print($w.$/), 
     next if not $data->meta->find_attribute_by_name($w);
+    $this->{$w}->SetValue($data->$w) if (ref($this->{$w}) =~ m{SpinCtrl});
     $this->{$w}->SetValue($data->$w) if (ref($this->{$w}) =~ m{TextCtrl});
     $this->{$w}->SetValue($data->$w) if (ref($this->{$w}) =~ m{CheckBox});
   };
@@ -415,7 +437,7 @@ sub push_values {
   $this->{bkg_clamp1} -> SetStringSelection($data->number2clamp($data->bkg_clamp1));
   $this->{bkg_clamp2} -> SetStringSelection($data->number2clamp($data->bkg_clamp2));
   $this->{fft_kwindow}-> SetStringSelection($this->window_name($data->fft_kwindow));
-  $this->{bft_rwindow}-> SetStringSelection($this->window_name($data->bft_rwindow));
+  #$this->{bft_rwindow}-> SetStringSelection($this->window_name($data->bft_rwindow));
   my $nnorm = $data->bkg_nnorm;
   $this->{'bkg_nnorm_'.$nnorm}->SetValue(1);
   ## standard
@@ -429,6 +451,7 @@ sub pull_values {
   foreach my $w (@group_params, @plot_parameters, @bkg_parameters, @fft_parameters, @bft_parameters) {
     next if ($w =~ m{(?:label|pluck)\z});
     next if not $data->meta->find_attribute_by_name($w);
+    $data->$w($this->{$w}->GetValue) if ((ref($this->{$w}) =~ m{SpinCtrl}) and ($this->{$w}->GetValue != $data->$w));
     $data->$w($this->{$w}->GetValue) if ((ref($this->{$w}) =~ m{TextCtrl}) and ($this->{$w}->GetValue != $data->$w));
     $data->$w($this->{$w}->GetValue) if ((ref($this->{$w}) =~ m{CheckBox}) and ($this->{$w}->GetValue != $data->$w));
   };
@@ -439,7 +462,7 @@ sub pull_values {
   $data->bkg_clamp1($data->co->default("clamp", $this->{bkg_clamp1}->GetStringSelection));
   $data->bkg_clamp2($data->co->default("clamp", $this->{bkg_clamp2}->GetStringSelection));
   $data->fft_kwindow(lc($this->{fft_kwindow} -> GetStringSelection));
-  $data->bft_rwindow(lc($this->{bft_rwindow} -> GetStringSelection));
+  $data->bft_rwindow(lc($this->{fft_kwindow} -> GetStringSelection));
 
   my $nnorm = ($this->{'bkg_nnorm_1'}->GetValue) ? 1
             : ($this->{'bkg_nnorm_2'}->GetValue) ? 2

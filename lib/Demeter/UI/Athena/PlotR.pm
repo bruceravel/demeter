@@ -4,6 +4,8 @@ use Wx qw( :everything );
 use base 'Wx::Panel';
 use Wx::Event qw(EVT_LIST_ITEM_ACTIVATED EVT_LIST_ITEM_SELECTED EVT_BUTTON  EVT_KEY_DOWN
 		 EVT_CHECKBOX);
+use Wx::Perl::TextValidator;
+
 use Demeter::UI::Athena::Replot;
 
 sub new {
@@ -135,6 +137,8 @@ sub new {
   $this->{$_}->SetBackgroundColour( Wx::Colour->new($Demeter::UI::Athena::demeter->co->default("athena", "marked")) )
     foreach (qw(mmag mre mim mpha));
 
+  $this->{$_} -> SetValidator( Wx::Perl::TextValidator->new( qr([0-9.]) ) )
+    foreach (qw(rmin rmax));
 
   $this->SetSizerAndFit($box);
   return $this;

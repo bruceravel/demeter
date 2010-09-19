@@ -4,6 +4,7 @@ use Wx qw( :everything );
 use base 'Wx::Panel';
 use Wx::Event qw(EVT_LIST_ITEM_ACTIVATED EVT_LIST_ITEM_SELECTED EVT_BUTTON  EVT_KEY_DOWN
 		 EVT_CHECKBOX);
+use Wx::Perl::TextValidator;
 
 use Demeter::UI::Wx::SpecialCharacters qw(:all);
 use Demeter::UI::Athena::Replot;
@@ -72,6 +73,8 @@ sub new {
   $range -> Add($label,        0, wxALL, 5);
   $range -> Add($this->{kmax}, 0, wxRIGHT, 10);
 
+  $this->{$_} -> SetValidator( Wx::Perl::TextValidator->new( qr([0-9.]) ) )
+    foreach (qw(kmin kmax));
 
   $this->SetSizerAndFit($box);
   return $this;
