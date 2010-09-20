@@ -6,6 +6,10 @@ use Demeter::UI::Wx::SpecialCharacters qw(:all);
 use Demeter::UI::Athena::Import;
 use Demeter::UI::Athena::Replot;
 
+use Demeter::UI::Artemis::Buffer;
+use Demeter::UI::Artemis::ShowText;
+use Demeter::UI::Athena::Status;
+
 use vars qw($demeter $buffer $plotbuffer);
 $demeter = Demeter->new;
 $demeter->set_mode(ifeffit=>1, screen=>0);
@@ -20,7 +24,7 @@ use Readonly;
 use Wx qw(:everything);
 use Wx::Event qw(EVT_MENU EVT_CLOSE EVT_TOOL_ENTER EVT_CHECKBOX EVT_BUTTON
 		 EVT_ENTER_WINDOW EVT_LEAVE_WINDOW
-		 EVT_RIGHT_UP
+		 EVT_RIGHT_UP EVT_LISTBOX
 		 EVT_CHOICEBOOK_PAGE_CHANGING EVT_RADIOBOX
 	       );
 use base 'Wx::App';
@@ -36,7 +40,6 @@ sub identify_self {
 use vars qw($athena_base $icon $noautosave %frames);
 $athena_base = identify_self();
 $noautosave = 0;		# set this to skip autosave, see Demeter::UI::Artemis::Import::_feffit
-
 
 sub OnInit {
   my ($app) = @_;
@@ -56,6 +59,7 @@ sub OnInit {
 
   ## -------- Set up menubar
   $app -> menubar;
+  $app -> set_mru();
 
   ## -------- status bar
   $app->{main}->{statusbar} = $app->{main}->CreateStatusBar;
@@ -67,13 +71,55 @@ sub OnInit {
 
   ## -------- other "globals"
   $app->{lastplot} = [q{}, q{}];
+  $app->{selected} = -1;
+  $app->{main}->{Status} = Demeter::UI::Athena::Status->new($app->{main});
+  $app->{Buffer} = Demeter::UI::Artemis::Buffer->new($app->{main});
+  $app->{Buffer}->SetTitle("Athena [Ifeffit \& Plot Buffer]");
+  ## this needs to be fixed...
+  $app->{Buffer}->{ifeffitprompt}->Enable(0);
+  $app->{Buffer}->{commandline}->SetValue('## broken ...');
+  $app->{Buffer}->{commandline}->Enable(0);
+
+  $demeter->set_mode(callback     => \&ifeffit_buffer,
+		     plotcallback => ($demeter->mo->template_plot eq 'pgplot') ? \&ifeffit_buffer : \&plot_buffer,
+		     feedback     => \&feedback,
+		    );
 
   $app->{main} -> SetSizerAndFit($hbox);
   #$app->{main} -> SetSize(600,800);
   $app->{main} -> Show( 1 );
-  $app->{main} -> status("Welcome to Athena (" . $demeter->identify . ") (Ifeffit " . Ifeffit::get_string('&build') . ')');
+  $app->{main} -> status("Welcome to Athena (" . $demeter->identify . ")");
   1;
 };
+
+sub ifeffit_buffer {
+  my ($text) = @_;
+  foreach my $line (split(/\n/, $text)) {
+    my ($was, $is) = $::app->{Buffer}->insert('ifeffit', $line);
+    my $color = ($line =~ m{\A\#}) ? 'comment' : 'normal';
+    $::app->{Buffer}->color('ifeffit', $was, $is, $color);
+    $::app->{Buffer}->insert('ifeffit', $/)
+  };
+};
+sub plot_buffer {
+  my ($text) = @_;
+  foreach my $line (split(/\n/, $text)) {
+    my ($was, $is) = $::app->{Buffer}->insert('plot', $line);
+    my $color = ($line =~ m{\A\#}) ? 'comment'
+      : ($demeter->mo->template_plot eq 'singlefile') ? 'singlefile'
+	:'normal';
+
+    $::app->{Buffer}->color('plot', $was, $is, $color);
+    $::app->{Buffer}->insert('plot', $/)
+  };
+};
+sub feedback {
+  my ($text) = @_;
+  my ($was, $is) = $::app->{Buffer}->insert('ifeffit', $text);
+  my $color = ($text =~ m{\A\s*\*}) ? 'warning' : 'feedback';
+  $::app->{Buffer}->color('ifeffit', $was, $is, $color);
+};
+
 
 sub mouseover {
   my ($app, $widget, $text) = @_;
@@ -106,23 +152,46 @@ sub on_close {
 };
 
 
-Readonly my $PLOT_QUAD  => Wx::NewId();
-Readonly my $PLOT_IOSIG => Wx::NewId();
-Readonly my $PLOT_K123  => Wx::NewId();
-Readonly my $PLOT_R123  => Wx::NewId();
+Readonly my $SAVE_MARKED  => Wx::NewId();
+Readonly my $PLOT_QUAD	  => Wx::NewId();
+Readonly my $PLOT_IOSIG	  => Wx::NewId();
+Readonly my $PLOT_K123	  => Wx::NewId();
+Readonly my $PLOT_R123	  => Wx::NewId();
+Readonly my $SHOW_BUFFER  => Wx::NewId();
+Readonly my $PLOT_YAML	  => Wx::NewId();
+Readonly my $MODE_STATUS  => Wx::NewId();
+Readonly my $PERL_MODULES => Wx::NewId();
+Readonly my $STATUS	  => Wx::NewId();
 
 sub menubar {
   my ($app) = @_;
   my $bar        = Wx::MenuBar->new;
+  $app->{main}->{mrumenu} = Wx::Menu->new;
   my $filemenu   = Wx::Menu->new;
   $filemenu->Append(wxID_OPEN,  "Import data", "Import data from a data or project file" );
+  $filemenu->AppendSubMenu($app->{main}->{mrumenu}, "Recent files",    "This submenu contains a list of recently used files" );
+  $filemenu->AppendSeparator;
+  $filemenu->Append(wxID_SAVE,    "Save project", "Save an Athena project file" );
+  $filemenu->Append(wxID_SAVEAS,  "Save project as...", "Save an Athena project file as..." );
+  $filemenu->Append($SAVE_MARKED, "Save marked groups as...", "Save marked groups as an Athena project file as..." );
   $filemenu->AppendSeparator;
   $filemenu->Append(wxID_CLOSE, "&Close" );
   $filemenu->Append(wxID_EXIT,  "E&xit" );
 
-  my $groupmenu  = Wx::Menu->new;
-  my $valuesmenu = Wx::Menu->new;
-  my $plotmenu   = Wx::Menu->new;
+  my $monitormenu = Wx::Menu->new;
+  my $debugmenu = Wx::Menu->new;
+  $debugmenu->Append($PLOT_YAML,    "Show YAML for Plot object",  "Show YAML for Plot object",  wxITEM_NORMAL );
+  $debugmenu->Append($MODE_STATUS,  "Mode status",                "Mode status",  wxITEM_NORMAL );
+  $debugmenu->Append($PERL_MODULES, "Perl modules",               "Show perl module versions", wxITEM_NORMAL );
+  $monitormenu->Append($SHOW_BUFFER, "Show command buffer", 'Show the Ifeffit and plotting commands buffer' );
+  $monitormenu->Append($STATUS,      "Show status bar buffer", 'Show the buffer containing messages written to the status bars');
+  $monitormenu->AppendSubMenu($debugmenu, 'Debug options',     'Display debugging tools')
+    if ($demeter->co->default("athena", "debug_menus"));
+
+
+  my $groupmenu   = Wx::Menu->new;
+  my $valuesmenu  = Wx::Menu->new;
+  my $plotmenu    = Wx::Menu->new;
   my $currentplotmenu = Wx::Menu->new;
   my $markedplotmenu  = Wx::Menu->new;
   $currentplotmenu->Append($PLOT_QUAD,       "Quad plot",      "Make a quad plot from the current group" );
@@ -136,13 +205,14 @@ sub menubar {
   my $mergemenu  = Wx::Menu->new;
   my $helpmenu   = Wx::Menu->new;
 
-  $bar->Append( $filemenu,   "&File" );
-  $bar->Append( $groupmenu,  "&Group" );
-  $bar->Append( $valuesmenu, "&Values" );
-  $bar->Append( $plotmenu,   "&Plot" );
-  $bar->Append( $markmenu,   "&Mark" );
-  $bar->Append( $mergemenu,  "Merge" );
-  $bar->Append( $helpmenu,   "&Help" );
+  $bar->Append( $filemenu,    "&File" );
+  $bar->Append( $groupmenu,   "&Group" );
+  $bar->Append( $valuesmenu,  "&Values" );
+  $bar->Append( $plotmenu,    "&Plot" );
+  $bar->Append( $markmenu,    "&Mark" );
+  $bar->Append( $mergemenu,   "Merge" );
+  $bar->Append( $monitormenu, "M&onitor" );
+  $bar->Append( $helpmenu,    "&Help" );
   $app->{main}->SetMenuBar( $bar );
 
   EVT_MENU	 ($app->{main}, -1, sub{my ($frame,  $event) = @_; OnMenuClick($frame,  $event, $app)} );
@@ -150,11 +220,31 @@ sub menubar {
   return $app;
 };
 
+sub set_mru {
+  my ($app) = @_;
+
+  foreach my $i (0 .. $app->{main}->{mrumenu}->GetMenuItemCount-1) {
+    $app->{main}->{mrumenu}->Delete($app->{main}->{mrumenu}->FindItemByPosition(0));
+  };
+
+  my @list = $demeter->get_mru_list('xasdata');
+  foreach my $f (@list) {
+    ##print ">> ", join("|", @$f),  "  \n";
+    $app->{main}->{mrumenu}->Append(-1, $f->[0]);
+  };
+};
+
+
 sub OnMenuClick {
   my ($self, $event, $app) = @_;
   my $id = $event->GetId;
+  my $mru = $app->{main}->{mrumenu}->GetLabel($id);
 
  SWITCH: {
+    ($mru) and do {
+      $app -> Import('data', $mru);
+      last SWITCH;
+    };
     ($id == wxID_ABOUT) and do {
       &on_about;
       return;
@@ -170,6 +260,35 @@ sub OnMenuClick {
     };
     ($id == wxID_OPEN) and do {
       $app -> Import('data');
+      last SWITCH;
+    };
+
+    ## -------- monitor menu
+    ($id == $SHOW_BUFFER) and do {
+      $app->{Buffer}->Show(1);
+      last SWITCH;
+    };
+    ($id == $STATUS) and do {
+      $app->{main}->{Status} -> Show(1);
+      last SWITCH;
+    };
+    ## -------- debug submenu
+    ($id == $PLOT_YAML) and do {
+      $app->{main}->{PlotE}->pull_single_values;
+      $app->{main}->{PlotK}->pull_single_values;
+      $app->{main}->{PlotR}->pull_marked_values;
+      $app->{main}->{PlotQ}->pull_marked_values;
+      my $yaml   = $demeter->po->serialization;
+      my $dialog = Demeter::UI::Artemis::ShowText->new($app->{main}, $yaml, 'YAML of Plot object') -> Show;
+      last SWITCH;
+    };
+    ($id == $PERL_MODULES) and do {
+      my $text   = $demeter->module_environment . $demeter -> wx_environment;
+      my $dialog = Demeter::UI::Artemis::ShowText->new($app->{main}, $text, 'Perl module versions') -> Show;
+      last SWITCH;
+    };
+    ($id == $MODE_STATUS) and do {
+      my $dialog = Demeter::UI::Artemis::ShowText->new($app->{main}, $demeter->mo->report('all'), 'Overview of this instance of Demeter') -> Show;
       last SWITCH;
     };
 
@@ -219,7 +338,7 @@ sub main_window {
   my $viewbox   = Wx::BoxSizer -> new( wxVERTICAL );
   $hbox        -> Add($viewpanel, 0, wxGROW|wxALL, 5);
 
-  $app->{main}->{project} = Wx::StaticText->new($viewpanel, -1, q{<Project name>},);
+  $app->{main}->{project} = Wx::StaticText->new($viewpanel, -1, q{<untitled>},);
   my $size = Wx::SystemSettings::GetFont(wxSYS_DEFAULT_GUI_FONT)->GetPointSize + 2;
   $app->{main}->{project}->SetFont( Wx::Font->new( $size, wxDEFAULT, wxNORMAL, wxBOLD, 0, "" ) );
   $viewbox -> Add($app->{main}->{project}, 0, wxGROW|wxALL, 5);
@@ -255,6 +374,7 @@ sub side_bar {
 
   $app->{main}->{list} = Wx::CheckListBox->new($toolpanel, -1, wxDefaultPosition, wxDefaultSize, [], wxLB_SINGLE|wxLB_NEEDED_SB);
   $toolbox            -> Add($app->{main}->{list}, 1, wxGROW|wxALL, 0);
+  EVT_LISTBOX($toolpanel, $app->{main}->{list}, sub{$app->OnGroupSelect(@_)});
 
   my $singlebox = Wx::BoxSizer->new( wxHORIZONTAL );
   $toolbox     -> Add($singlebox, 0, wxGROW|wxALL, 0);
@@ -309,6 +429,22 @@ sub side_bar {
   return $app;
 };
 
+
+sub OnGroupSelect {
+  my ($app, $parent, $event) = @_;
+  my $is_index = (ref($event) =~ m{Event}) ? $event->GetSelection : $app->{main}->{list}->GetSelection;
+
+  my $was = ($app->{selected} == -1) ? 0 : $app->{main}->{list}->GetClientData($app->{selected});
+  my $is  = $app->{main}->{list}->GetClientData($is_index);
+
+  if ($was) {
+    $app->{main}->{Main}->pull_values($was);
+  };
+  $app->{main}->{Main}->push_values($is);
+  $app->{selected} = $app->{main}->{list}->GetSelection;
+
+};
+
 sub view_changing {
   my ($app, $frame, $event) = @_;
   my $ngroups = $app->{main}->{list}->GetCount;
@@ -328,6 +464,15 @@ sub view_changing {
   };
 };
 
+sub marked_groups {
+  my ($app) = @_;
+  my @list = ();
+  foreach my $i (0 .. $app->{main}->{list}->GetCount-1) {
+    push(@list, $app->{main}->{list}->GetClientData($i)) if $app->{main}->{list}->IsChecked($i);
+  };
+  return @list;
+};
+
 sub plot {
   my ($app, $frame, $event, $space, $how) = @_;
   if (not $app->{main}->{list}->GetCount) {
@@ -338,49 +483,64 @@ sub plot {
   return if not ($how);
 
   my $busy = Wx::BusyCursor->new();
-  my $data = $app->{main}->{list}->GetClientData($app->{main}->{list}->GetSelection);
-  $app->{main}->{Main}->pull_values($data);
-  $app->pull_kweight($data);
 
-  $data->po->start_plot;
-  if ($how eq 'single') {
-    my $sp = (lc($space) eq 'kq') ? 'K' : uc($space);
-    $app->{main}->{'Plot'.$sp}->pull_single_values;
-    $data->po->chie(0) if (lc($space) eq 'kq');
+  my @data = ($how eq 'single')
+    ? ( $app->{main}->{list}->GetClientData($app->{main}->{list}->GetSelection) )
+      : $app->marked_groups;
 
-    ## energy k and kq
-    if (lc($space) =~ m{(?:e|k|kq)}) {
-      $data->plot($space);
-      $data->plot_window('k') if ($app->{main}->{PlotK}->{win}->GetValue and (lc($space) ne 'e'));
-      if (lc($space) eq 'e') {
-	$app->{main}->{plottabs}->SetSelection(0);
-      } else {
-	$app->{main}->{plottabs}->SetSelection(1);
-      };
+  $app->{main}->{Main}->pull_values($app->{main}->{list}->GetClientData($app->{main}->{list}->GetSelection));
+  $app->pull_kweight($data[0]);
 
-    ## R
-    } elsif (lc($space) eq 'r') {
+  $data[0]->po->start_plot;
+
+  my $sp = (lc($space) eq 'kq') ? 'K' : uc($space);
+  $app->{main}->{'Plot'.$sp}->pull_single_values if ($how eq 'single');
+  $app->{main}->{'Plot'.$sp}->pull_marked_values if ($how eq 'marked');
+  $data[0]->po->chie(0) if (lc($space) eq 'kq');
+
+
+  ## energy k and kq
+  if (lc($space) =~ m{(?:e|k|kq)}) {
+    $_->plot($space) foreach @data;
+    $data[0]->plot_window('k') if (($how eq 'single') and
+				   $app->{main}->{PlotK}->{win}->GetValue and
+				   (lc($space) ne 'e'));
+    if (lc($space) eq 'e') {
+      $app->{main}->{plottabs}->SetSelection(0);
+    } else {
+      $app->{main}->{plottabs}->SetSelection(1);
+    };
+
+  ## R
+  } elsif (lc($space) eq 'r') {
+    if ($how eq 'single') {
       foreach my $which (qw(mag env re im pha)) {
 	if ($app->{main}->{PlotR}->{$which}->GetValue) {
-	  $data->po->r_pl(substr($which, 0, 1));
-	  $data->plot('r');
+	  $data[0]->po->r_pl(substr($which, 0, 1));
+	  $data[0]->plot('r');
 	};
       };
-      $data->plot_window('r') if $app->{main}->{PlotR}->{win}->GetValue;
-      $app->{main}->{plottabs}->SetSelection(2);
+      $data[0]->plot_window('r') if $app->{main}->{PlotR}->{win}->GetValue;
+    } else {
+      $_->plot($space) foreach @data;
+    };
+    $app->{main}->{plottabs}->SetSelection(2);
 
-    ## q
-    } elsif (lc($space) eq 'q') {
+  ## q
+  } elsif (lc($space) eq 'q') {
+    if ($how eq 'single') {
       foreach my $which (qw(mag env re im pha)) {
 	if ($app->{main}->{PlotQ}->{$which}->GetValue) {
-	  $data->po->q_pl(substr($which, 0, 1));
-	  $data->plot('q');
+	  $data[0]->po->q_pl(substr($which, 0, 1));
+	  $data[0]->plot('q');
 	};
       };
-      $data->plot_window('q') if $app->{main}->{PlotQ}->{win}->GetValue;
-      $app->{main}->{plottabs}->SetSelection(3);
+      $data[0]->plot_window('q') if $app->{main}->{PlotQ}->{win}->GetValue;
+    } else {
+      $_->plot($space) foreach @data;
     };
-  }; # else marked...
+    $app->{main}->{plottabs}->SetSelection(3);
+  };
 
   $app->{lastplot} = [$space, $how];
   undef $busy;
@@ -456,7 +616,7 @@ sub status {
 	    :                       $normal;
   $self->{statusbar}->SetBackgroundColour($color);
   $self->{statusbar}->SetStatusText($text);
-#  $Demeter::UI::Artemis::frames{Status}->put_text($text, $type);
+  $self->{Status}->put_text($text, $type);
 };
 
 

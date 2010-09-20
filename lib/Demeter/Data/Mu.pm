@@ -173,6 +173,11 @@ sub put_data {
   $self->xmu_string($xmu_string);
   $self->energy_string($energy_string);
 
+  if ($self->display) {
+    $self->dispose($self->template("process", "display"));
+    return;
+  };
+
   my $command = $self->template("process", "columns");
   $command   .= $self->template("process", "deriv");
   $self->dispose($command);

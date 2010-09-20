@@ -181,7 +181,6 @@ sub pull_marked_values {
   my ($this) = @_;
   my $po = $Demeter::UI::Athena::demeter->po;
   $po->e_mu  ($this->{mmu}  -> GetValue);
-  $po->e_bkg ($this->{mbkg} -> GetValue);
   $po->e_norm($this->{mnorm}-> GetValue);
   $po->e_der ($this->{mder} -> GetValue);
   $po->e_sec ($this->{msec} -> GetValue);

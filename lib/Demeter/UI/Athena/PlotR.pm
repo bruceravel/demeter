@@ -3,7 +3,7 @@ package Demeter::UI::Athena::PlotR;
 use Wx qw( :everything );
 use base 'Wx::Panel';
 use Wx::Event qw(EVT_LIST_ITEM_ACTIVATED EVT_LIST_ITEM_SELECTED EVT_BUTTON  EVT_KEY_DOWN
-		 EVT_CHECKBOX);
+		 EVT_CHECKBOX EVT_RADIOBUTTON);
 use Wx::Perl::TextValidator;
 
 use Demeter::UI::Athena::Replot;
@@ -30,7 +30,7 @@ sub new {
 		   };
 		   $this->replot(qw(r single));
 		 });
-  EVT_CHECKBOX($this, $this->{mmag}, sub{$_[0]->replot(qw(r marked))});
+  EVT_RADIOBUTTON($this, $this->{mmag}, sub{$_[0]->replot(qw(r marked))});
   $app->mouseover($this->{mag},  "Plot the magnitude of $CHI(R) when ploting the current group in R-space.");
   $app->mouseover($this->{mmag}, "Plot the magnitude of $CHI(R) when ploting the marked groups in R-space.");
 
@@ -54,7 +54,7 @@ sub new {
   $this->{mre} = Wx::RadioButton->new($this, -1, '');
   $slot -> Add($this->{mre}, 0, wxALL, 1);
   EVT_CHECKBOX($this, $this->{re}, sub{$_[0]->replot(qw(r single))});
-  EVT_CHECKBOX($this, $this->{mre}, sub{$_[0]->replot(qw(r marked))});
+  EVT_RADIOBUTTON($this, $this->{mre}, sub{$_[0]->replot(qw(r marked))});
   $app->mouseover($this->{re},  "Plot the real part of $CHI(R) when ploting the current group in R-space.");
   $app->mouseover($this->{mre}, "Plot the real part of $CHI(R) when ploting the marked groups in R-space.");
 
@@ -65,7 +65,7 @@ sub new {
   $this->{mim} = Wx::RadioButton->new($this, -1, '');
   $slot -> Add($this->{mim}, 0, wxALL, 1);
   EVT_CHECKBOX($this, $this->{im}, sub{$_[0]->replot(qw(r single))});
-  EVT_CHECKBOX($this, $this->{mim}, sub{$_[0]->replot(qw(r marked))});
+  EVT_RADIOBUTTON($this, $this->{mim}, sub{$_[0]->replot(qw(r marked))});
   $app->mouseover($this->{im},  "Plot the imaginary part of $CHI(R) when ploting the current group in R-space.");
   $app->mouseover($this->{mim}, "Plot the imaginary part of $CHI(R) when ploting the marked groups in R-space.");
 
@@ -76,7 +76,7 @@ sub new {
   $this->{mpha} = Wx::RadioButton->new($this, -1, '');
   $slot -> Add($this->{mpha}, 0, wxALL, 1);
   EVT_CHECKBOX($this, $this->{pha}, sub{$_[0]->replot(qw(r single))});
-  EVT_CHECKBOX($this, $this->{mpha}, sub{$_[0]->replot(qw(r marked))});
+  EVT_RADIOBUTTON($this, $this->{mpha}, sub{$_[0]->replot(qw(r marked))});
   $app->mouseover($this->{pha},  "Plot the phase of $CHI(R) when ploting the current group in R-space.");
   $app->mouseover($this->{mpha}, "Plot the phase of $CHI(R) when ploting the marked groups in R-space.");
 

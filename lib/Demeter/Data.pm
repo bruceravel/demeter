@@ -122,6 +122,7 @@ has  $_  => (is => 'rw', isa => 'Str',  default => q{})
   foreach (qw(columns energy_string xmu_string i0_string signal_string));
 has 'ln' => (is => 'rw', isa => 'Bool', default => 0,
 	     trigger => sub{ my ($self, $new) = @_; $self->update_columns(1), $self->is_col(1) if $new});
+has 'display' => (is => 'rw', isa => 'Bool', default => 0,);
 
 ## -------- data type flags
 has 'datatype' => (is => 'rw', isa => Empty.'|'.DataType, default => q{},
@@ -509,6 +510,9 @@ sub _update {
       $self->put_data  if ($self->update_columns);
       last WHICH;
     };
+    ($self->display) and do {	# bail if the display flag is set
+      return $self;		# this effectively disables most Data object
+    };				# functionality while doing column selection.
     ($self->is_mc) and do {	# bail if this is a Data::MultiChannel object
       return $self;		# this effectively disables most Data object
     };				# functionality for D:MC.
@@ -947,6 +951,13 @@ This is true for transmission data, i.e. if conversion from columns to
 mu(E) requires that the natural log be taken.  In fact, the natural
 log of the absolute value of the ratio of the numerator and
 denominator is computed to avoid numerical error in certain situations.
+
+=item C<ln> (boolean)
+
+This flag severely restricts data processing to just what is necessary
+to make a plot of unnormalized mu(E).  It is for use in a GUI's column
+selection dialog so that swift plot updates can be made while columns
+are being selected.
 
 =back
 

@@ -2,6 +2,7 @@ package Demeter::UI::Athena::Import;
 
 use Demeter;
 use Demeter::UI::Wx::SpecialCharacters qw(:all);
+use Demeter::UI::Athena::ColumnSelection;
 
 use Archive::Zip qw( :ERROR_CODES :CONSTANTS );
 use Cwd;
@@ -41,17 +42,32 @@ sub _data {
 
   my $busy = Wx::BusyCursor->new();
   my $data = Demeter::Data->new(file=>$file);
-  $data -> set(energy => '$1',
-	       numerator => '$2',
+  $data -> set(energy	   => '$1',
+	       numerator   => '$2',
 	       denominator => '$3',
-	       ln => 1,
-	       name => basename($file),);
+	       ln	   => 1,
+	       name	   => basename($file),
+	       display	   => 1);
+
+  my $colsel = Demeter::UI::Athena::ColumnSelection->new($app->{main}, $app, $data);
+  my $result = $colsel -> ShowModal;
+  if ($result == wxID_CANCEL) {
+    $app->{main}->status("Cancelled column selection.");
+    $data->DEMOLISH;
+    return;
+  };
+
+  $data -> display(0);
+  $data -> po -> e_markers(1);
   $data -> _update('all');
   $app->{main}->{list}->Append($data->name, $data);
   $app->{main}->{list}->SetSelection($app->{main}->{list}->GetCount - 1);
+  #$app->{selected} = $app->{main}->{list}->GetSelection;
   $app->{main}->{Main}->mode($data, 1, 0) if ($app->{main}->{list}->GetCount == 1);
-  $app->{main}->{Main}->push_values($data);
+  $app->OnGroupSelect(q{}, $app->{main}->{list}->GetSelection);
   $app->quadplot($data);
+  $data->push_mru("xasdata", $file);
+  $app->set_mru;
 
   ##$data->po->start_plot;
   ##$data->plot('k');
@@ -60,5 +76,5 @@ sub _data {
   ##autosave();
   chdir dirname($file);
   undef $busy;
-  $app->{main}->status("Imported data from $file.");
+  $app->{main}->status("Imported data from $file");
 }
