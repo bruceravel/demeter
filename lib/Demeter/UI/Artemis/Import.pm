@@ -54,7 +54,7 @@ sub prjrecord {
   }
   ##
   my $selection = 0;
-  $rframes->{prj} =  Demeter::UI::Artemis::Prj->new($rframes->{main}, $file);
+  $rframes->{prj} =  Demeter::UI::Artemis::Prj->new($rframes->{main}, $file, 'single');
   my $result = $rframes->{prj} -> ShowModal;
 
   if (

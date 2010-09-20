@@ -27,7 +27,7 @@ use List::MoreUtils qw{firstidx};
 
 
 sub new {
-  my ($class, $parent, $file, $selref) = @_;
+  my ($class, $parent, $file, $style) = @_;
 
   my $this = $class->SUPER::new($parent, -1, "Artemis: Import from Athena project file",
 				wxDefaultPosition, wxDefaultSize,
@@ -44,8 +44,8 @@ sub new {
   my $left = Wx::BoxSizer->new( wxVERTICAL );
   $hbox -> Add($left, 1, wxGROW|wxALL, 0);
 
-  $this->{grouplist} = Wx::ListBox->new($this, -1, wxDefaultPosition, [125,500],
-					$names, wxLB_SINGLE);
+  my $sty = ($style eq 'single') ? wxLB_SINGLE : wxLB_EXTENDED;
+  $this->{grouplist} = Wx::ListBox->new($this, -1, wxDefaultPosition, [125,500], $names, $sty);
   $left -> Add($this->{grouplist}, 1, wxGROW|wxALL, 5);
   EVT_LISTBOX( $this, $this->{grouplist}, sub{plot_selection(@_, $prj, $names)} );
 
@@ -72,8 +72,21 @@ sub new {
 				      3, wxRA_SPECIFY_ROWS);
   $right -> Add($this->{params}, 0, wxGROW|wxALL, 5);
 
-  $this->{import} = Wx::Button->new($this, wxID_OK, "Import selected data", wxDefaultPosition, wxDefaultSize, 0,
- 				   );
+  if ($style ne 'single') {
+    my $selectionbox  = Wx::BoxSizer->new( wxHORIZONTAL );
+    $this->{all}    = Wx::Button->new($this, -1, "Select all", wxDefaultPosition, wxDefaultSize, 0,);
+    $this->{none}   = Wx::Button->new($this, -1, "Select none", wxDefaultPosition, wxDefaultSize, 0,);
+    $this->{invert} = Wx::Button->new($this, -1, "Invert", wxDefaultPosition, wxDefaultSize, 0,);
+    $selectionbox  -> Add($this->{all},    0, wxGROW|wxLEFT|wxRIGHT, 2);
+    $selectionbox  -> Add($this->{none},   0, wxGROW|wxLEFT|wxRIGHT, 2);
+    $selectionbox  -> Add($this->{invert}, 0, wxGROW|wxLEFT|wxRIGHT, 2);
+    EVT_BUTTON($this, $this->{all},    sub{set_selection(@_, 'all')});
+    EVT_BUTTON($this, $this->{none},   sub{set_selection(@_, 'none')});
+    EVT_BUTTON($this, $this->{invert}, sub{set_selection(@_, 'invert')});
+    $right->Add($selectionbox, 0, wxGROW|wxALL, 5);
+  };
+
+  $this->{import} = Wx::Button->new($this, wxID_OK, "Import selected data", wxDefaultPosition, wxDefaultSize, 0,);
   $right -> Add($this->{import}, 0, wxGROW|wxALL, 5);
   #$this -> SetAffirmativeId($this->{import}->GetId);
 
@@ -83,7 +96,10 @@ sub new {
 
   $this -> SetSizerAndFit( $hbox );
 
-  $this->{grouplist}->SetSelection(0), $this->do_plot($prj,1);
+  if ($style eq 'single') {
+    $this->{grouplist}->SetSelection(0);
+    $this->do_plot($prj,1);
+  };
   return $this;
 };
 
@@ -136,5 +152,17 @@ sub do_plot {
   $data -> DESTROY;
   undef $busy;
 };
+
+sub set_selection {
+  my ($this, $event, $how) = @_;
+  foreach my $i (0 .. $this->{grouplist}->GetCount-1) {
+    my $val = ($how eq 'all')    ? 1
+            : ($how eq 'none')   ? 0
+            : ($how eq 'invert') ? (not $this->{grouplist}->IsSelected($i))
+	    :                      $this->{grouplist}->IsSelected($i);
+    $this->{grouplist}->SetSelection($i, $val);
+  };
+};
+
 
 1;

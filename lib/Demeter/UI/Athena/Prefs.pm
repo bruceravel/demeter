@@ -17,7 +17,7 @@ sub new {
   $this->{parent} = $parent;
 
   my $config = Demeter::UI::Wx::Config->new($this, \&target);
-  $config->populate([qw(athena bft bkg clamp convolution fft fit gnuplot indicator
+  $config->populate([qw(athena bft bkg clamp convolution fft file fit gnuplot indicator
 			interpolation marker operations plot rebin xanes)]);
   $box->Add($config, 1, wxGROW|wxALL, 5);
 

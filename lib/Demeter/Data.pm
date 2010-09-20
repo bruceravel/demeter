@@ -626,7 +626,7 @@ sub sort_data {
     my @lol;
     ## energy value is zeroth in each anon list
     unshift @cols, q{};
-    my $ecol = $self->energy;
+    my $ecol = $self->energy || '$1';
     $ecol =~ s{^\$}{};
     my @array = $self->get_array($cols[$ecol]);
     # print join(" ", @array), $/, $/;

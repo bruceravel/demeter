@@ -2,8 +2,7 @@ package Demeter::UI::Athena::PlotE;
 
 use Wx qw( :everything );
 use base 'Wx::Panel';
-use Wx::Event qw(EVT_LIST_ITEM_ACTIVATED EVT_LIST_ITEM_SELECTED EVT_BUTTON  EVT_KEY_DOWN
-		 EVT_CHECKBOX);
+use Wx::Event qw(EVT_CHECKBOX EVT_RADIOBUTTON);
 use Wx::Perl::TextValidator;
 
 use Demeter::UI::Wx::SpecialCharacters qw(:all);
@@ -23,11 +22,11 @@ sub new {
   $this->{mu} = Wx::CheckBox->new($this, -1, $MU.'(E)');
   $this->{mu} -> SetValue($Demeter::UI::Athena::demeter->co->default("plot", "e_mu"));
   $slot -> Add($this->{mu}, 1, wxALL, 1);
-  $this->{mmu} = Wx::CheckBox->new($this, -1, '');
+  $this->{mmu} = Wx::RadioButton->new($this, -1, '', wxDefaultPosition, wxDefaultSize, wxRB_GROUP);
   $this->{mmu} -> SetValue($Demeter::UI::Athena::demeter->co->default("plot", "e_mu"));
   $slot -> Add($this->{mmu}, 0, wxALL, 1);
   EVT_CHECKBOX($this, $this->{mu}, sub{$_[0]->replot(qw(E single))});
-  EVT_CHECKBOX($this, $this->{mmu}, sub{$_[0]->replot(qw(E marked))});
+  EVT_RADIOBUTTON($this, $this->{mmu}, sub{$_[0]->replot(qw(E marked))});
   $app->mouseover($this->{mu},  "Plot $MU(E) when ploting the current group in energy.");
   $app->mouseover($this->{mmu}, "Plot $MU(E) when ploting the marked groups in energy.");
 
@@ -80,7 +79,7 @@ sub new {
   $this->{norm} = Wx::CheckBox->new($this, -1, 'Normalized');
   $this->{norm} -> SetValue($Demeter::UI::Athena::demeter->co->default("plot", "e_norm"));
   $slot -> Add($this->{norm}, 1, wxALL, 1);
-  $this->{mnorm} = Wx::CheckBox->new($this, -1, '');
+  $this->{mnorm} = Wx::RadioButton->new($this, -1, '');
   $this->{mnorm} -> SetValue($Demeter::UI::Athena::demeter->co->default("plot", "e_norm"));
   $slot -> Add($this->{mnorm}, 0, wxALL, 1);
   EVT_CHECKBOX($this, $this->{norm},
@@ -91,7 +90,7 @@ sub new {
 		   };
 		   $this->replot(qw(E single));
 		 });
-  EVT_CHECKBOX($this, $this->{mnorm}, sub{$_[0]->replot(qw(E marked))});
+  EVT_RADIOBUTTON($this, $this->{mnorm}, sub{$_[0]->replot(qw(E marked))});
   $app->mouseover($this->{norm},  "Plot normalized data when ploting the current group in energy.");
   $app->mouseover($this->{mnorm}, "Plot normalized data when ploting the marked groups in energy.");
 
@@ -175,17 +174,23 @@ sub pull_single_values {
   $po->e_sec ($this->{sec} -> GetValue);
   $po->emin  ($this->{emin}-> GetValue);
   $po->emax  ($this->{emax}-> GetValue);
+  $po->e_markers(1);
 };
 
 sub pull_marked_values {
   my ($this) = @_;
   my $po = $Demeter::UI::Athena::demeter->po;
   $po->e_mu  ($this->{mmu}  -> GetValue);
+  $po->e_bkg (0);
+  $po->e_pre (0);
+  $po->e_post(0);
   $po->e_norm($this->{mnorm}-> GetValue);
   $po->e_der ($this->{mder} -> GetValue);
   $po->e_sec ($this->{msec} -> GetValue);
   $po->emin  ($this->{emin} -> GetValue);
   $po->emax  ($this->{emax} -> GetValue);
+  $po->e_mu(1) if $po->e_norm;
+  $po->e_markers(0);
 };
 
 1;

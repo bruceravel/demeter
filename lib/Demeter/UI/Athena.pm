@@ -72,7 +72,9 @@ sub OnInit {
   ## -------- other "globals"
   $app->{lastplot} = [q{}, q{}];
   $app->{selected} = -1;
+  $app->{main}->{currentproject} = q{};
   $app->{main}->{Status} = Demeter::UI::Athena::Status->new($app->{main});
+  $app->{main}->{Status}->SetTitle("Athena [Status Buffer]");
   $app->{Buffer} = Demeter::UI::Artemis::Buffer->new($app->{main});
   $app->{Buffer}->SetTitle("Athena [Ifeffit \& Plot Buffer]");
   ## this needs to be fixed...
@@ -163,6 +165,13 @@ Readonly my $MODE_STATUS  => Wx::NewId();
 Readonly my $PERL_MODULES => Wx::NewId();
 Readonly my $STATUS	  => Wx::NewId();
 
+Readonly my $MARK_ALL      => Wx::NewId();
+Readonly my $MARK_NONE     => Wx::NewId();
+Readonly my $MARK_INVERT   => Wx::NewId();
+Readonly my $MARK_TOGGLE   => Wx::NewId();
+Readonly my $MARK_REGEXP   => Wx::NewId();
+Readonly my $UNMARK_REGEXP => Wx::NewId();
+
 sub menubar {
   my ($app) = @_;
   my $bar        = Wx::MenuBar->new;
@@ -202,6 +211,13 @@ sub menubar {
   $plotmenu->AppendSubMenu($markedplotmenu,  "Marked groups",  "Additional plot types for the marked groups");
 
   my $markmenu   = Wx::Menu->new;
+  $markmenu->Append($MARK_ALL,      "Mark all\tCTRL+SHIFT+a",            "Mark all groups" );
+  $markmenu->Append($MARK_NONE,     "Clear all marks\tCTRL+SHIFT+u",     "Clear all marks" );
+  $markmenu->Append($MARK_INVERT,   "Invert marks\tCTRL+SHIFT+i",        "Invert all mark" );
+  $markmenu->Append($MARK_TOGGLE,   "Toggle current mark\tCTRL+SHIFT+t", "Toggle mark of current group" );
+  $markmenu->Append($MARK_REGEXP,   "Mark by regexp\tCTRL+SHIFT+r",      "Mark all groups matching a regular expression" );
+  $markmenu->Append($UNMARK_REGEXP, "Unmark by all\tCTRL+SHIFT+x",       "Unmark all groups matching a regular expression" );
+
   my $mergemenu  = Wx::Menu->new;
   my $helpmenu   = Wx::Menu->new;
 
@@ -242,7 +258,7 @@ sub OnMenuClick {
 
  SWITCH: {
     ($mru) and do {
-      $app -> Import('data', $mru);
+      $app -> Import($mru);
       last SWITCH;
     };
     ($id == wxID_ABOUT) and do {
@@ -259,7 +275,19 @@ sub OnMenuClick {
       return;
     };
     ($id == wxID_OPEN) and do {
-      $app -> Import('data');
+      $app -> Import();
+      last SWITCH;
+    };
+    ($id == wxID_SAVE) and do {
+      $app -> Export('all', $app->{main}->{currentproject});
+      last SWITCH;
+    };
+    ($id == wxID_SAVEAS) and do {
+      $app -> Export('all');
+      last SWITCH;
+    };
+    ($id == $SAVE_MARKED) and do {
+      $app -> Export('marked');
       last SWITCH;
     };
 
@@ -308,6 +336,7 @@ sub OnMenuClick {
       $data->po->start_plot;
       $data->plot('E');
       $data->po->set(e_i0=>0, e_signal=>0);
+      $app->{main}->{plottabs}->SetSelection(0);
       last SWITCH;
     };
     ($id == $PLOT_K123) and do {
@@ -316,6 +345,7 @@ sub OnMenuClick {
       $app->{main}->{PlotK}->pull_single_values;
       $data->po->start_plot;
       $data->plot('k123');
+      $app->{main}->{plottabs}->SetSelection(1);
       last SWITCH;
     };
     ($id == $PLOT_R123) and do {
@@ -324,8 +354,36 @@ sub OnMenuClick {
       $app->{main}->{PlotR}->pull_marked_values;
       $data->po->start_plot;
       $data->plot('R123');
+      $app->{main}->{plottabs}->SetSelection(2);
       last SWITCH;
     };
+
+    ($id == $MARK_ALL) and do {
+      $app->mark('all');
+      last SWITCH;
+    };
+    ($id == $MARK_NONE) and do {
+      $app->mark('none');
+      last SWITCH;
+    };
+    ($id == $MARK_INVERT) and do {
+      $app->mark('invert');
+      last SWITCH;
+    };
+    ($id == $MARK_TOGGLE) and do {
+      $app->mark('toggle');
+      last SWITCH;
+    };
+    ($id == $MARK_REGEXP) and do {
+      $app->mark('regexp');
+      last SWITCH;
+    };
+    ($id == $UNMARK_REGEXP) and do {
+      $app->mark('unmark_regexp');
+      last SWITCH;
+    };
+
+
 
   };
 };
@@ -338,10 +396,35 @@ sub main_window {
   my $viewbox   = Wx::BoxSizer -> new( wxVERTICAL );
   $hbox        -> Add($viewpanel, 0, wxGROW|wxALL, 5);
 
+
+  my $topbar = Wx::BoxSizer->new( wxHORIZONTAL );
+  $viewbox -> Add($topbar, 0, wxGROW|wxALL, 0);
+
   $app->{main}->{project} = Wx::StaticText->new($viewpanel, -1, q{<untitled>},);
   my $size = Wx::SystemSettings::GetFont(wxSYS_DEFAULT_GUI_FONT)->GetPointSize + 2;
   $app->{main}->{project}->SetFont( Wx::Font->new( $size, wxDEFAULT, wxNORMAL, wxBOLD, 0, "" ) );
-  $viewbox -> Add($app->{main}->{project}, 0, wxGROW|wxALL, 5);
+  $topbar -> Add($app->{main}->{project}, 0, wxGROW|wxALL, 5);
+
+  $topbar -> Add(1,1,1);
+
+  $app->{main}->{save}   = Wx::Button->new($viewpanel, wxID_SAVE, q{},  wxDefaultPosition, wxDefaultSize, wxBU_EXACTFIT);
+  $app->{main}->{all}    = Wx::Button->new($viewpanel, -1,        q{A}, wxDefaultPosition, wxDefaultSize, wxBU_EXACTFIT);
+  $app->{main}->{none}   = Wx::Button->new($viewpanel, -1,        q{U}, wxDefaultPosition, wxDefaultSize, wxBU_EXACTFIT);
+  $app->{main}->{invert} = Wx::Button->new($viewpanel, -1,        q{I}, wxDefaultPosition, wxDefaultSize, wxBU_EXACTFIT);
+  $topbar -> Add($app->{main}->{save},   0, wxGROW|wxTOP|wxBOTTOM, 5);
+  $topbar -> Add($app->{main}->{all},    0, wxGROW|wxTOP|wxBOTTOM, 5);
+  $topbar -> Add($app->{main}->{none},   0, wxGROW|wxTOP|wxBOTTOM, 5);
+  $topbar -> Add($app->{main}->{invert}, 0, wxGROW|wxTOP|wxBOTTOM, 5);
+  $app->{main}->{save} -> Enable(0);
+  $app->EVT_BUTTON($app->{main}->{all},    sub{$app->mark('all')});
+  $app->EVT_BUTTON($app->{main}->{none},   sub{$app->mark('none')});
+  $app->EVT_BUTTON($app->{main}->{invert}, sub{$app->mark('invert')});
+  $app->mouseover($app->{main}->{save},   "Save project");
+  $app->mouseover($app->{main}->{all},    "Mark all groups");
+  $app->mouseover($app->{main}->{none},   "Clear all marks");
+  $app->mouseover($app->{main}->{invert}, "Invert all marks");
+
+
 
   $app->{main}->{views} = Wx::Choicebook->new($viewpanel, -1);
   $viewbox -> Add($app->{main}->{views}, 0, wxALL, 5);
@@ -436,6 +519,8 @@ sub OnGroupSelect {
 
   my $was = ($app->{selected} == -1) ? 0 : $app->{main}->{list}->GetClientData($app->{selected});
   my $is  = $app->{main}->{list}->GetClientData($is_index);
+  print("same!\n"), return if ($was eq $is);
+
 
   if ($was) {
     $app->{main}->{Main}->pull_values($was);
@@ -487,6 +572,11 @@ sub plot {
   my @data = ($how eq 'single')
     ? ( $app->{main}->{list}->GetClientData($app->{main}->{list}->GetSelection) )
       : $app->marked_groups;
+
+  if (not @data and ($how eq 'marked')) {
+    $app->{main}->status("No groups are marked.  Marked plot cancelled.");
+    return;
+  };
 
   $app->{main}->{Main}->pull_values($app->{main}->{list}->GetClientData($app->{main}->{list}->GetSelection));
   $app->pull_kweight($data[0]);
@@ -576,6 +666,55 @@ sub pull_kweight {
     $data->po->kweight($kw);
   };
   return $data->po->kweight;
+};
+
+
+my %mark_feeedback = (all	    => "Marked all groups.",
+		      none	    => "Cleared all marks",
+		      invert	    => "Inverted all marks",
+		      toggle	    => "Toggled mark for current data group",
+		      regexp	    => "Marked all groups matching ",
+		      unmark_regexp => "Unmarked all groups matching ",);
+sub mark {
+  my ($app, $how) = @_;
+  my $clb = $app->{main}->{list};
+  return if not $clb->GetCount;
+
+  my $regex = q{};
+  if ($how eq 'toggle') {
+    $clb->Check($clb->GetSelection, not $clb->IsChecked($clb->GetSelection));
+    return;
+
+  } elsif ($how =~ m{all|none|invert}) {
+    foreach my $i (0 .. $clb->GetCount-1) {
+      my $val = ($how eq 'all')    ? 1
+	      : ($how eq 'none')   ? 0
+	      : ($how eq 'invert') ? not $clb->IsChecked($i)
+	      :                     $clb->IsChecked($i);
+      $clb->Check($i, $val);
+    };
+
+  } else {			# regexp mark or unmark
+    my $word = ($how eq 'regexp') ? 'Mark' : 'Unmark';
+    my $ted = Wx::TextEntryDialog->new( $app->{main}, "$word data groups matching this regular expression:", "Enter a regular expression", q{}, wxOK|wxCANCEL, Wx::GetMousePosition);
+    if ($ted->ShowModal == wxID_CANCEL) {
+      $app->{main}->status($word."ing by regular expression cancelled.");
+      return;
+    };
+    $regex = $ted->GetValue;
+    my $re;
+    my $is_ok = eval '$re = qr/$regex/';
+    if (not $is_ok) {
+      $app->{main}->status("Oops!  \"$regex\" is not a valid regular expression");
+      return;
+    };
+    foreach my $i (0 .. $clb->GetCount-1) {
+      next if ($clb->GetClientData($i)->name !~ m{$re});
+      my $val = ($how eq 'regexp') ? 1 : 0;
+      $clb->Check($i, $val);
+    };
+  };
+  $app->{main}->status($mark_feeedback{$how}.$regex);
 };
 
 =for Explain

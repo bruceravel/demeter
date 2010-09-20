@@ -59,6 +59,7 @@ sub module_environment {
   my ($self) = @_;
   my $os = ($self->is_windows) ? windows_version() : $^O;
   my $string = "Demeter " . $Demeter::VERSION . " with perl $] on $os\n";
+  $string .= "using Ifeffit " . (split(" ", Ifeffit::get_string('&build')))[0] . "\n";
   $string .= "\n Major modules                   version\n";
   $string .= '=' x 50 . "\n";
   foreach my $p (qw(

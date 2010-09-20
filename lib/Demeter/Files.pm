@@ -18,7 +18,9 @@ package Demeter::Files;
 use autodie qw(open close);
 
 use Moose::Role;
+use MooseX::Aliases;
 
+use Compress::Zlib;
 use File::Basename;
 use Ifeffit;
 use Xray::Crystal;
@@ -121,11 +123,28 @@ sub is_data {
   if ($verbose) {
     my $passfail = ($col_string =~ /^(\s*|--undefined--)$/) ?
       'not data' : 'data    ' ;
-    printf "\t%s    col_string=%s\n", $passfail, $col_string;
+    printf "%s\n\t%s    col_string=%s\n", $a, $passfail, $col_string;
   };
   $self->dispose("erase \@group a\n");
-  return ($col_string =~ /^(\s*|--undefined--)$/) ? 1 : 0;
+  return ($col_string =~ /^(\s*|--undefined--)$/) ? 0 : 1;
 };
+
+sub is_prj {
+  my ($self, $file, $verbose) = @_;
+  $verbose ||= 0;
+  my $gz = gzopen($file, "rb") or die "could not open $file as a record\n";
+  my $first;
+  $gz->gzreadline($first);
+  $gz->gzclose();
+  my $is_proj = ($first =~ /Athena (record|project) file/) ? $1 : 0;
+  if ($verbose) {
+    my $passfail = ($is_proj) ? 'athena    ' : 'not athena';
+    printf "%s\n\t%s  is_project=%s\n", $file, $passfail, $is_proj;
+  };
+  return $is_proj;
+};
+alias is_athena => 'is_prj';
+
 
 1;
 

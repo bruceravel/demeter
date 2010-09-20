@@ -1,0 +1,89 @@
+-*- org -*-
+
+* column selection persistance
+
+* right click pop up menus on parameter StaticText-s
+
+* stacking
+
+* indicators
+
+* plotting styles
+
+* file menu
+
+** save column data [0/5]
+  - [ ] mu(E)
+  - [ ] norm(E)
+  - [ ] chi(k)
+  - [ ] chi(R)
+  - [ ] chi(q)
+
+** save marked [0/4]
+  - [ ] mu, norm, deriv mu/norm, second mu/norm
+  - [ ] chi, chik, chik2, chik3
+  - [ ] chir: magnitude, real imaginary
+  - [ ] chiq: magnitude, real imaginary
+
+** save each [0/4]
+  - [ ] mu, norm, deriv mu/norm, second mu/norm
+  - [ ] chi, chik, chik2, chik3
+  - [ ] chir: magnitude, real imaginary
+  - [ ] chiq: magnitude, real imaginary
+
+** clear project name
+
+* old Athena's edit menu
+
+** titles
+** data as text
+** Ifeffit show (strings, groups, arrays)
+** journal
+** reports [0/3]
+ - [ ] csv
+ - [ ] excel
+ - [ ] xfit
+
+* Group menu
+
+** copy group, copy series
+** about group, about marked
+** rename
+** move up and down
+** remove group, removed marked, close project
+
+* Values
+
+** parameter constraint
+*** all groups to current, individual, group, all
+*** all marked to current, individual, group, all
+
+** frozen groups
+
+** set E0 for this, all, marked
+
+** tie reference channel
+
+* Plot
+
+** zoom, unzoom, cursor
+
+** plot I0 marked
+
+** stddev and varience plots
+
+** group selection replot
+
+* Merge
+
+* Plugin registry
+
+* Help
+
+** about
+
+** demos
+
+** document
+
+** memory usage

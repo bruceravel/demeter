@@ -32,7 +32,7 @@ sub new {
   my ($class, $parent, $app, $data) = @_;
 
   my $this = $class->SUPER::new($parent, -1, "Athena: Column selection",
-				wxDefaultPosition, [750,-1],
+				wxDefaultPosition, [805,-1],
 				wxMINIMIZE_BOX|wxCAPTION|wxSYSTEM_MENU|wxSTAY_ON_TOP);
 
   $data->po->set(e_mu=>1, e_bkg=>0, e_pre=>0, e_post=>0,
@@ -41,20 +41,25 @@ sub new {
 
   my $hbox  = Wx::BoxSizer->new( wxHORIZONTAL );
 
-  my $leftpane = Wx::Panel->new($this, -1, wxDefaultPosition, wxDefaultSize);
+  my $leftpane = Wx::Panel->new($this, -1, wxDefaultPosition, [350,-1],); #wxDefaultSize);
   my $left = Wx::BoxSizer->new( wxVERTICAL );
-  $hbox->Add($leftpane, 0, wxGROW|wxALL, 0);
+  $hbox->Add($leftpane, 1, wxGROW|wxALL, 0);
 
   $this->{left} = $left;
   ## the ln checkbox goes below the column selection widget, but if
   ## refered to in the columns method, so I need to define it here.
   ## it will be placed in the other_parameters method
   $this->{ln}     = Wx::CheckBox->new($leftpane, -1, 'Natural log');
-  $this->{energy} = Wx::TextCtrl->new($leftpane, -1, q{}, wxDefaultPosition, [250,-1], wxTE_READONLY);
-  $this->{mue}    = Wx::TextCtrl->new($leftpane, -1, q{}, wxDefaultPosition, [250,-1], wxTE_READONLY);
+  $this->{energy} = Wx::TextCtrl->new($leftpane, -1, q{}, wxDefaultPosition, [350,-1], wxTE_READONLY);
+  $this->{mue}    = Wx::TextCtrl->new($leftpane, -1, q{}, wxDefaultPosition, [350,-1], wxTE_READONLY);
   $this->columns($leftpane, $data);
+  #$this->do_the_size_dance;
   $this->other_parameters($leftpane, $data);
   $this->strings($leftpane, $data);
+
+
+  ## add Notebook with Reference, Bin, Preprocess
+  ##$app->{main}->{plottabs}  = Wx::Notebook->new($toolpanel, -1, wxDefaultPosition, wxDefaultSize, wxNB_TOP);
 
 
 
@@ -71,7 +76,7 @@ sub new {
   my $right = Wx::BoxSizer->new( wxVERTICAL );
   $hbox->Add($rightpane, 1, wxGROW|wxALL, 0);
 
-  $this->{contents} = Wx::TextCtrl->new($rightpane, -1, q{}, wxDefaultPosition, [550,450],
+  $this->{contents} = Wx::TextCtrl->new($rightpane, -1, q{}, wxDefaultPosition, [450,550],
   					wxTE_MULTILINE|wxTE_RICH2|wxTE_DONTWRAP|wxALWAYS_SHOW_SB);
   $this->{contents} -> SetFont( Wx::Font->new( $contents_font_size, wxTELETYPE, wxNORMAL, wxNORMAL, 0, "" ) );
   $right -> Add($this->{contents}, 1, wxGROW|wxALL, 5);
@@ -83,27 +88,38 @@ sub new {
   return $this;
 };
 
+sub do_the_size_dance {
+  my ($top) = @_;
+  my @size = $top->GetSizeWH;
+  $top -> SetSize($size[0], $size[1]+1);
+  $top -> SetSize($size[0], $size[1]);
+};
+
 sub columns {
   my ($this, $parent, $data) = @_;
   $data -> _update('data');
   $this->{ln}->SetValue($data->ln);
   my $numerator_string   = ($data->ln) ? $data->i0_string     : $data->signal_string;
-  my $denominator_string = ($data->ln) ? $data->signal_string : $data->io_string;
+  my $denominator_string = ($data->ln) ? $data->signal_string : $data->i0_string;
 
-  my $column_string = Ifeffit::get_string('column_label');
-  my @cols = split(" ", $column_string);
+  #my $column_string = Ifeffit::get_string('column_label');
+  my @cols = split(" ", $data->columns);
 
-  my $columnbox      = Wx::StaticBox->new($parent, -1, 'Columns', wxDefaultPosition, wxDefaultSize);
-  my $columnboxsizer = Wx::StaticBoxSizer->new( $columnbox, wxVERTICAL );
-  $this->{left}     -> Add($columnboxsizer, 0, wxALL|wxGROW, 0);
+  my $columnbox = Wx::ScrolledWindow->new($parent, -1, wxDefaultPosition, [350, -1], wxHSCROLL);
+  $columnbox->SetScrollbars(30, 0, 50, 0);
+  $this->{left}     -> Add($columnbox, 0, wxGROW|wxALL, 10);
+
+  #my $columnbox      = Wx::StaticBox->new($parent, -1, 'Columns', wxDefaultPosition, wxDefaultSize);
+  #my $columnboxsizer = Wx::StaticBoxSizer->new( $columnbox, wxVERTICAL );
+  #$this->{left}     -> Add($columnboxsizer, 0, wxALL|wxGROW, 0);
 
   my $gbs = Wx::GridBagSizer->new( 3, 3 );
 
-  my $label = Wx::StaticText->new($parent, -1, 'Energy');
+  my $label = Wx::StaticText->new($columnbox, -1, 'Energy');
   $gbs -> Add($label, Wx::GBPosition->new(1,0));
-  $label    = Wx::StaticText->new($parent, -1, 'Numerator');
+  $label    = Wx::StaticText->new($columnbox, -1, 'Numerator');
   $gbs -> Add($label, Wx::GBPosition->new(2,0));
-  $label    = Wx::StaticText->new($parent, -1, 'Denominator');
+  $label    = Wx::StaticText->new($columnbox, -1, 'Denominator');
   $gbs -> Add($label, Wx::GBPosition->new(3,0));
 
   my @energy; $#energy = $#cols+1;
@@ -114,25 +130,25 @@ sub columns {
   my @args = (wxDefaultPosition, wxDefaultSize, wxRB_GROUP);
   foreach my $c (@cols) {
     my $i = $count;
-    $label    = Wx::StaticText->new($parent, -1, $c);
+    $label    = Wx::StaticText->new($columnbox, -1, $c);
     $gbs -> Add($label, Wx::GBPosition->new(0,$count));
 
-    my $radio = Wx::RadioButton->new($parent, -1, q{}, @args);
+    my $radio = Wx::RadioButton->new($columnbox, -1, q{}, @args);
     $gbs -> Add($radio, Wx::GBPosition->new(1,$count));
     EVT_RADIOBUTTON($parent, $radio, sub{OnEnergyClick(@_, $data, $i)});
 
-    my $ncheck = Wx::CheckBox->new($parent, -1, q{});
+    my $ncheck = Wx::CheckBox->new($columnbox, -1, q{});
     $gbs -> Add($ncheck, Wx::GBPosition->new(2,$count));
     EVT_CHECKBOX($parent, $ncheck, sub{OnNumerClick(@_, $this, $data, $i, \@numer)});
-    if ($numerator_string =~ m{\b$c\b}) {
+    if ($data->numerator =~ m{(?<=\$)$count\b}) {
       $numer[$i] = 1;
       $ncheck->SetValue(1);
     };
 
-    my $dcheck = Wx::CheckBox->new($parent, -1, q{});
+    my $dcheck = Wx::CheckBox->new($columnbox, -1, q{});
     $gbs -> Add($dcheck, Wx::GBPosition->new(3,$count));
     EVT_CHECKBOX($parent, $dcheck, sub{OnDenomClick(@_, $this, $data, $i, \@denom)});
-    if ($denominator_string =~ m{\b$c\b}) {
+    if ($data->denominator =~ m{(?<=\$)$count\b}) {
       $denom[$i] = 1;
       $dcheck->SetValue(1);
     };
@@ -141,10 +157,15 @@ sub columns {
     ++$count;
   };
 
-  $this->display_plot($data) if $data->xmu_string;
-  $columnboxsizer -> Add($gbs, 0, wxALL, 5);
+  $this->display_plot($data) if (($data->numerator ne '1') and ($data->denominator ne '1'));
+  #$columnbox->SetVirtualSize([200,300]);
+  $columnbox->SetSizer($gbs);
+  #$columnbox->SetMaxSize(Wx::Size->new(350,-1));
   return $this;
 };
+## note: (?<=\$) is a zero-width positive look-behind assertion to
+## match a number ($count) following a doller sign.  see "perldoc
+## perlre" for details.
 
 
 sub other_parameters {
@@ -153,12 +174,23 @@ sub other_parameters {
   my $others = Wx::BoxSizer->new( wxHORIZONTAL );
   $others -> Add($this->{ln}, 0, wxGROW|wxALL, 5);
   EVT_CHECKBOX($parent, $this->{ln}, sub{OnLnClick(@_, $this, $data)});
-
+  $others->Add(1,1,1);
   $this->{each} = Wx::CheckBox->new($parent, -1, 'Save each channel as a group');
   $others -> Add($this->{each}, 0, wxGROW|wxALL, 5);
   $this->{each}->Enable(0);
-
   $this->{left}->Add($others, 0, wxGROW|wxALL, 0);
+
+  $others = Wx::BoxSizer->new( wxHORIZONTAL );
+  $this->{datatype} = Wx::Choice->new($parent,-1, wxDefaultPosition, wxDefaultSize,
+				     ["$MU(E)", 'xanes', 'norm(E)', 'chi(k)', 'xmu.dat']);
+  $this->{units}    = Wx::Choice->new($parent,-1, wxDefaultPosition, wxDefaultSize, ['eV', 'keV']);
+  $others -> Add(Wx::StaticText->new($parent,-1, "Data type"), 0, wxGROW|wxALL, 7);
+  $others -> Add($this->{datatype}, 0, wxGROW|wxRIGHT, 25);
+  $others -> Add(Wx::StaticText->new($parent,-1, "Energy units"), 0, wxGROW|wxTOP|wxRIGHT, 7);
+  $others -> Add($this->{units}, 0, wxGROW|wxALL, 0);
+  $this->{$_}->SetSelection(0) foreach (qw(datatype units));
+  $this->{left}->Add($others, 0, wxGROW|wxALL, 0);
+
   return $this;
 };
 

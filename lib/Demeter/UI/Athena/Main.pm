@@ -432,6 +432,7 @@ sub push_values {
     $this->{$w}->SetValue($data->$w) if (ref($this->{$w}) =~ m{TextCtrl});
     $this->{$w}->SetValue($data->$w) if (ref($this->{$w}) =~ m{CheckBox});
   };
+  $this->{file}->SetValue($data->prjrecord) if ($this->{file}->GetValue eq '@&^^null^^&@');
   $this->{bkg_z}      -> SetValue(sprintf "%-2d: %s", get_Z($data->bkg_z), get_name($data->bkg_z));
   $this->{fft_edge}   -> SetValue(ucfirst($data->fft_edge));
   $this->{bkg_clamp1} -> SetStringSelection($data->number2clamp($data->bkg_clamp1));
@@ -451,6 +452,7 @@ sub pull_values {
   foreach my $w (@group_params, @plot_parameters, @bkg_parameters, @fft_parameters, @bft_parameters) {
     next if ($w =~ m{(?:label|pluck)\z});
     next if not $data->meta->find_attribute_by_name($w);
+    next if ($w eq 'file');
     $data->$w($this->{$w}->GetValue) if ((ref($this->{$w}) =~ m{SpinCtrl}) and ($this->{$w}->GetValue != $data->$w));
     $data->$w($this->{$w}->GetValue) if ((ref($this->{$w}) =~ m{TextCtrl}) and ($this->{$w}->GetValue != $data->$w));
     $data->$w($this->{$w}->GetValue) if ((ref($this->{$w}) =~ m{CheckBox}) and ($this->{$w}->GetValue != $data->$w));

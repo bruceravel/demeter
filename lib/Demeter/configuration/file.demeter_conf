@@ -1,0 +1,78 @@
+## -*- config -*-
+###########################################################################
+##                     Demeter is copyright (c) 2007-2010 Bruce Ravel
+##                                                     bravel@bnl.gov
+##                                        http://xafs.org/BruceRavel/
+##
+##                   Ifeffit is copyright (c) 1992-2010 Matt Newville
+##                                         newville@cars.uchicago.edu
+##                       http://cars9.uchicago.edu/~newville/ifeffit/
+##
+##	  The latest version of Demeter can always be found at
+##          http://cars9.uchicago.edu/~ravel/software/exafs/
+##
+## -------------------------------------------------------------------
+##     All rights reserved. This program is free software; you can
+##     redistribute it and/or modify it provided that the above notice
+##     of copyright, these terms of use, and the disclaimer of
+##     warranty below appear in the source code and documentation, and
+##     that none of the names of Argonne National Laboratory, The
+##     University of Chicago, University of Washington, or the authors
+##     appear in advertising or endorsement of works derived from this
+##     software without specific prior written permission from all
+##     parties.
+##
+##     THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+##     EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
+##     OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+##     NONINFRINGEMENT.  IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
+##     HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
+##     WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+##     FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
+##     OTHER DEALINGS IN THIS SOFTWARE.
+## -------------------------------------------------------------------
+###########################################################################
+
+
+## This file contains the file import configuration group for Demeter
+
+
+######################################################################
+section=file
+section_description
+  These parameters influence how data are imported.
+
+
+variable=i0_regex
+type=regex
+default=i(0$|o)
+description
+  A perl regular expression used to recognize which column in a column
+  data file contains the data from the normalization (I0) detector.
+  The default value "i(0$|o)" matches any of i0, I0, io, Io, and IO.
+  Note that the interpretation of this parameter depends on the value
+  of the match_as preference.  "i{0,o}" is the glob expression that is
+  pretty close to the default regular expression.
+
+variable=transmission_regex
+type=regex
+default=^i($|1$|t)
+description
+  A perl regular expression used to recognize which column in a column
+  data file contains the data from the transmission detector.  The
+  default value "^i($|1$|t)" matches any of i, I, it, It, IT, i1, and
+  I1.  Note that the interpretation of this parameter depends on the
+  value of the match_as preference.  "i{1,t}" is the glob expression
+  that is pretty close to the default regular expression.
+
+variable=fluorescence_regex
+type=regex
+default=i[fy]
+description
+  A perl regular expression used to recognize which column in a column
+  data file contains the data from the fluorescence detector or the
+  electron yield detector.  The default value "i[fy]" matches any of
+  if, If, IF, iy, Iy, and IY.  Note that the interpretation of this
+  parameter depends on the value of the match_as preference.  "i{f,y}"
+  is the glob expression that is pretty close to the default regular
+  expression.

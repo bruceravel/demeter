@@ -102,6 +102,53 @@ sub set_nknots {
   return $self;
 };
 
+sub guess_columns {
+  my ($self) = @_;
+  my $i0_regexp = $self->co->default("file", 'i0_regex');
+  my $tr_regexp = $self->co->default("file", 'transmission_regex');
+  my $fl_regexp = $self->co->default("file", 'fluorescence_regex');
+  my ($i0, $tr, $fl) = (q{}, q{}, q{});
+
+  $self->_update('data');
+
+  my $count = 1;
+  foreach my $c (split(" ", $self->columns)) {
+    if ($c =~ m{$i0_regexp}) {
+      $i0 = '$'.$count;
+      last;
+    };
+    ++$count;
+  };
+
+  $count = 1;
+  foreach my $c (split(" ", $self->columns)) {
+    if ($c =~ m{$tr_regexp}) {
+      $tr = '$'.$count;
+      last;
+    };
+    ++$count;
+  };
+
+  if (not $tr) {
+    $count = 1;
+    foreach my $c (split(" ", $self->columns)) {
+      if ($c =~ m{$fl_regexp}) {
+	$fl = '$'.$count;
+	last;
+      };
+      ++$count;
+    };
+  };
+
+  $i0 ||= '1';
+  if ($tr) {
+    $self->set(ln=>1, numerator=>$i0, denominator=>$tr);
+  } else {
+    $fl ||= '1';
+    $self->set(ln=>0, numerator=>$fl, denominator=>$i0);
+  };
+};
+
 # sub xmu_string {
 #   my ($self) = @_;
 #   carp("Demeter::Data::Mu: cannot put data unless the object contains mu(E) data\n\n"),
@@ -621,6 +668,22 @@ object.
 
 This method is not typically called directly.  Instead it is called as
 one of the options of the more generic C<plot> method.
+
+=item C<guess_columns>
+
+This method uses regular expressions in the file configuration group
+to attempt to guess which columns are which in an input column data
+file.  This is most useful in a GUI where a bad or undesirable guess
+can be overridden interactively, but it still might be useful even in
+a script.
+
+  $data_object -> guess_columns;
+
+This will set the C<ln>, C<numerator>, and C<denominator> attributes
+of the Data object.  It will return attribute values suitable for
+transmission in preference to fluorescence.  In the event that no
+columns match, C<numerator> or C<denominator> (or possibly both) will
+be set to the string C<"1">.
 
 =back
 
