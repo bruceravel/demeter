@@ -38,10 +38,10 @@
 ** clear project name
  - [X] 
 
-* old Athena's edit menu [0/8]
+* old Athena's edit menu [1/8]
  - [ ] titles
  - [ ] data as text
- - [ ] Ifeffit show (strings, groups, arrays)
+ - [X] Ifeffit show (strings, groups, arrays)
  - [ ] journal
  - [ ] reports
  - [ ] csv
