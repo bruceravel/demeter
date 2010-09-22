@@ -293,10 +293,21 @@ has 'LineShape' => (
 			      'splice'  => 'splice_LineShape',
 			     }
 	       );
+has 'Journal' => (
+		metaclass => 'Collection::Array',
+		is        => 'rw',
+		isa       => 'ArrayRef',
+		default   => sub { [] },
+		provides  => {
+			      'push'    => 'push_Journal',
+			      'clear'   => 'clear_Journal',
+			      'splice'  => 'splice_Journal',
+			     }
+	       );
 
 has 'types' => (is => 'ro', isa => 'ArrayRef',
 		default => sub{[qw(Atoms Data Feff External Fit Feffit GDS Path Plot Indicator LCF XES PeakFit LineShape
-				   ScatteringPath VPath SSPath FSPath StructuralUnit Prj Pixel MultiChannel)]},);
+				   ScatteringPath VPath SSPath FSPath StructuralUnit Prj Pixel MultiChannel Journal)]},);
 
 has 'Plugins' => (
 		metaclass => 'Collection::Array',
@@ -325,6 +336,7 @@ has 'external_plot_object' => (is => 'rw', isa => 'Any');
 has 'plotting_initialized' => (is => 'rw', isa => 'Bool', default => 0);
 has 'identity'             => (is => 'rw', isa => 'Str',  default => 'Demeter',);
 has 'ui'                   => (is => 'rw', isa => 'Str',  default => 'none',);
+has 'silently_ignore_unplottable' => (is => 'rw', isa => 'Bool', default => 0);
 
 sub increment_fit {
   my ($self) = @_;
@@ -399,6 +411,7 @@ sub everything {
 	  @{ $self->XES		   },
 	  @{ $self->PeakFit	   },
 	  @{ $self->LineShape      },
+	  @{ $self->Journal        },
 	  @{ $self->GDS		   },
 	 );
 };
@@ -690,6 +703,14 @@ time, its only use is to tell the Fit object to import the
 curses-based methods in L<Demeter::UI::Screen::Interview> and
 L<Demeter::UI::Screen::Progress> when it is set to C<screen>.  Future
 possibilities might include C<wx> or C<rpc>.
+
+=item C<silently_ignore_unplottable>
+
+When true, this averts croaking in certain situations where an attempt
+is made to plot an object in a way that it cannot be plotted (for
+example, attempting to plot in energy a Data object of datatype chi).
+This is useful in the context of a GUI, but is stringly discouraged in
+a command line script.
 
 =back
 

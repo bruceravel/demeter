@@ -48,6 +48,8 @@ has 'entries' => (
 		 );
 has 'n'       => (is => 'rw', isa => 'Int',  default => 0);
 
+has 'journal'       => (is => 'rw', isa => 'Str',  default => q{},);
+
 sub BUILD {
   my ($self, @params) = @_;
   $self->mo->push_Prj($self);
@@ -74,6 +76,11 @@ sub Read {
   my $cpt = new Safe;
   while ($athena_fh->gzreadline($line) > 0) {
     ++$nline;
+    if ($line =~ m{\A\@journal}) {
+      @ {$cpt->varglob('journal')} = $cpt->reval( $line );
+      my @journal = @ {$cpt->varglob('journal')};
+      $self->journal(join($/, @journal));
+    };
     next unless ($line =~ /^\$old_group/);
     ## need to make a map to the groups by old group name so that
     ## background removal with a standard can be performed correctly

@@ -33,9 +33,19 @@ sub write_athena {
 		  "# Using " . $self->environment . "\n\n");
 
   $gzout->gzwrite($self->_write_record);
+  my $journal = q{};
   foreach my $d (@list) {
     next if ($d eq $self);
+    if (ref($d) =~ m{Journal}) {
+      $journal ||= $d;
+      next;
+    };
     $gzout->gzwrite($d->_write_record);
+  };
+  if ($journal) {
+    my @journal = split(/\n/, $journal->text);
+    local $Data::Dumper::Indent = 0;
+    $gzout->gzwrite(Data::Dumper->Dump([\@journal], [qw/*journal/]));
   };
   $gzout->gzwrite('
 
@@ -181,17 +191,12 @@ project file.
 
 =item *
 
-xmudat and detector array types are not currently written to t he
+xmudat and detector array types are not currently written to the
 project file.
 
 =item *
 
 The merge array is not currently written by C<write_record>.
-
-=item *
-
-The journal is not currently written by C<write_record>.  (Need a
-Journal object.)
 
 =back
 

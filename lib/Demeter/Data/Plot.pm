@@ -113,7 +113,7 @@ sub _plot_command {
   };
   if ((lc($space) eq 'e') and (not ref($self) =~ m{Data})) {
     my $class = ref $self;
-    croak("$class objects are not plottable in energy");
+    croak("$class objects are not plottable in energy") if not $self->mo->silently_ignore_unplottable;
   };
   my $string = ($space eq 'e')    ? $self->_plotE_command
             #: ($space eq 'k123') ? $self->_plotk123_command
@@ -133,6 +133,10 @@ sub _plotk_command {
     my $class = ref $self;
     croak("$class objects are not plottable");
   };
+  if ((ref($self) =~ m{Data}) and ($self->datatype eq 'xanes')) {
+    croak("XANES data are not plottable in k") if not $self->mo->silently_ignore_unplottable;
+  };
+
   $space ||= 'k';
   my $pf  = $self->mo->plot;
   my $string = q{};
@@ -163,6 +167,9 @@ sub _plotR_command {
   if (not $self->plottable) {
     my $class = ref $self;
     croak("$class objects are not plottable");
+  };
+  if ((ref($self) =~ m{Data}) and ($self->datatype eq 'xanes')) {
+    croak("XANES data are not plottable in R") if not $self->mo->silently_ignore_unplottable;
   };
   my $pf  = $self->po;
   my $string = q{};
@@ -200,6 +207,9 @@ sub _plotq_command {
     my $class = ref $self;
     croak("$class objects are not plottable");
   };
+  if ((ref($self) =~ m{Data}) and ($self->datatype eq 'xanes')) {
+    croak("XANES data are not plottable in q") if not $self->mo->silently_ignore_unplottable;
+  };
   my $pf  = $self->mo->plot;
   my $string = q{};
   my $group = $self->group;
@@ -236,6 +246,9 @@ sub _plotkq_command {
     my $class = ref $self;
     croak("$class objects are not plottable");
   };
+  if ((ref($self) =~ m{Data}) and ($self->datatype eq 'xanes')) {
+    croak("XANES data are not plottable as kq") if not $self->mo->silently_ignore_unplottable;
+  };
   my $string = q{};
   my $save = $self->name;
   $self->name($save . " in k space");
@@ -250,6 +263,9 @@ sub _plotkq_command {
 
 sub plotk123 {
   my ($self) = @_;
+  if ((ref($self) =~ m{Data}) and ($self->datatype eq 'xanes')) {
+    croak("XANES data are not plottable as k123") if not $self->mo->silently_ignore_unplottable;
+  };
 
   my @save = ($self->name, $self->plot_multiplier, $self->y_offset, $self->po->kweight);
   my $string .= $self->template("process", "k123");
@@ -288,6 +304,9 @@ sub plotk123 {
 
 sub plotR123 {
   my ($self) = @_;
+  if ((ref($self) =~ m{Data}) and ($self->datatype eq 'xanes')) {
+    croak("XANES data are not plottable as R123") if not $self->mo->silently_ignore_unplottable;
+  };
 
   my @save = ($self->name, $self->plot_multiplier, $self->y_offset, $self->po->kweight);
 
@@ -339,6 +358,9 @@ sub plotR123 {
 sub plotRmr {
   my ($self) = @_;
   croak(ref $self . " objects are not plottable") if not $self->plottable;
+  if ((ref($self) =~ m{Data}) and ($self->datatype eq 'xanes')) {
+    croak("XANES data are not plottable as Rmr") if not $self->mo->silently_ignore_unplottable;
+  };
   my $string = q{};
   my ($lab, $yoff, $down) = ( $self->name, $self->y_offset, $self->rmr_offset );
   my $winsave = $self->po->plot_win;
@@ -370,6 +392,9 @@ sub plotRmr {
 sub plot_kqfit {
   my ($self) = @_;
   croak(ref $self . " objects are not plottable") if not $self->plottable;
+  if ((ref($self) =~ m{Data}) and ($self->datatype eq 'xanes')) {
+    croak("XANES data are not plottable as kq") if not $self->mo->silently_ignore_unplottable;
+  };
   my ($lab, $yoff) = ( $self->name, $self->y_offset );
   my $winsave = $self->po->plot_win;
   my $qpart = $self->po->q_pl;
@@ -592,7 +617,7 @@ sub running {
 sub stddevplot {
   my ($self) = @_;
   if (not $self->is_merge) {
-    carp("Sorry, the stddevplot is only for merged data.");
+    carp("Sorry, the stddevplot is only for merged data.") if not $self->mo->silently_ignore_unplottable;
     return $self;
   };
   my @e = qw(e_bkg e_pre e_post e_markers e_i0 e_signal);
@@ -623,7 +648,7 @@ sub stddevplot {
 sub varianceplot {
   my ($self) = @_;
   if (not $self->is_merge) {
-    carp("Sorry, the stddevplot is only for merged data.");
+    carp("Sorry, the stddevplot is only for merged data.") if not $self->mo->silently_ignore_unplottable;
     return $self;
   };
   my @e = qw(e_bkg e_pre e_post e_markers e_i0 e_signal);

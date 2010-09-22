@@ -2,12 +2,13 @@ package Demeter::UI::Athena::Main;
 
 use Wx qw( :everything );
 use base 'Wx::Panel';
-use Wx::Event qw(EVT_LIST_ITEM_ACTIVATED EVT_LIST_ITEM_SELECTED EVT_BUTTON  EVT_KEY_DOWN);
+use Wx::Event qw(EVT_LIST_ITEM_ACTIVATED EVT_LIST_ITEM_SELECTED EVT_BUTTON EVT_KEY_DOWN EVT_TEXT EVT_CHOICE EVT_COMBOBOX);
 use Wx::Perl::TextValidator;
 
 use Chemistry::Elements qw(get_name get_Z get_symbol);
 use File::Basename;
 use File::Spec;
+use Scalar::Util qw(looks_like_number);
 
 use vars qw($label $tag);
 $label = "Main window";
@@ -88,6 +89,9 @@ sub group {
   $gbs -> Add($this->{importance},       Wx::GBPosition->new(1,7));
 
   push @group_params, qw(file bkg_z fft_edge bkg_eshift importance);
+  EVT_TEXT($this, $this->{$_}, sub{OnParameter(@_, $app)}) foreach (qw(bkg_eshift importance));
+  EVT_COMBOBOX($this, $this->{$_}, sub{OnParameter(@_, $app)}) foreach (qw(bkg_z fft_edge));
+
 
   $this->{$_} -> SetValidator( Wx::Perl::TextValidator->new( qr([-0-9.]) ) )
     foreach (qw(bkg_eshift importance));
@@ -204,6 +208,8 @@ sub bkg {
   $gbs -> Add($this->{bkg_spl2},       Wx::GBPosition->new(2,4));
   $gbs -> Add($this->{bkg_spl2_pluck}, Wx::GBPosition->new(2,5));
   push @bkg_parameters, qw(bkg_spl1 bkg_spl2);
+  EVT_TEXT($this, $this->{bkg_spl1}, sub{OnSpl(@_, $app, 'spl1')});
+  EVT_TEXT($this, $this->{bkg_spl2}, sub{OnSpl(@_, $app, 'spl2')});
 
   $this->{chainlink} = Wx::StaticBitmap->new($this, -1, $chainlink);
   $gbs -> Add($this->{chainlink}, Wx::GBPosition->new(2,6), Wx::GBSpan->new(2,1));
@@ -223,6 +229,8 @@ sub bkg {
   $gbs -> Add($this->{bkg_spl2e},       Wx::GBPosition->new(3,4));
   $gbs -> Add($this->{bkg_spl2e_pluck}, Wx::GBPosition->new(3,5));
   push @bkg_parameters, qw(bkg_spl1e bkg_spl2e chainlink);
+  EVT_TEXT($this, $this->{bkg_spl1e}, sub{OnSpl(@_, $app, 'spl1e')});
+  EVT_TEXT($this, $this->{bkg_spl2e}, sub{OnSpl(@_, $app, 'spl2e')});
 
   $backgroundboxsizer -> Add($gbs, 0, wxALL, 5);
 
@@ -250,6 +258,9 @@ sub bkg {
   $this->{$_} -> SetValidator( Wx::Perl::TextValidator->new( qr([-0-9.]) ) )
     foreach (qw(bkg_pre1 bkg_pre2 bkg_nor1 bkg_nor2 bkg_spl1 bkg_spl2 bkg_spl1e bkg_spl2e
 		bkg_e0 bkg_rbkg bkg_kw bkg_stan));
+  EVT_TEXT($this, $this->{$_}, sub{OnParameter(@_, $app)}) foreach (qw(bkg_e0 bkg_rbkg bkg_kw bkg_pre1 bkg_pre2
+								       bkg_nor1 bkg_nor2 bkg_step));
+  EVT_CHOICE($this, $this->{$_}, sub{OnParameter(@_, $app)}) foreach (qw(bkg_clamp1 bkg_clamp2 bkg_algorithm));
 
   return $this;
 };
@@ -301,6 +312,8 @@ sub fft {
 
   $this->{$_} -> SetValidator( Wx::Perl::TextValidator->new( qr([0-9.]) ) )
     foreach (qw(fft_kmin fft_kmax fft_dk fit_karb_value));
+  EVT_TEXT($this, $this->{$_}, sub{OnParameter(@_, $app)}) foreach (qw(fft_kmin fft_kmax fft_dk fit_karb_value));
+  EVT_CHOICE($this, $this->{fft_kwindow}, sub{OnParameter(@_, $app)});
 
   return $this;
 };
@@ -344,6 +357,7 @@ sub bft {
 
   $this->{$_} -> SetValidator( Wx::Perl::TextValidator->new( qr([0-9.]) ) )
     foreach (qw(bft_rmin bft_rmax bft_dr));
+  EVT_TEXT($this, $this->{$_}, sub{OnParameter(@_, $app)}) foreach (qw(bft_rmin bft_rmax bft_dr));
 
   return $this;
 };
@@ -369,6 +383,7 @@ sub plot {
 
   $this->{$_} -> SetValidator( Wx::Perl::TextValidator->new( qr([-0-9.]) ) )
     foreach (qw(plot_multiplier y_offset));
+  EVT_TEXT($this, $this->{$_}, sub{OnParameter(@_, $app)}) foreach (qw(plot_multiplier y_offset));
 
   $plotboxsizer -> Add($pbox, 0, wxTOP|wxBOTTOM, 5);
   return $this;
@@ -510,6 +525,39 @@ sub window_name {
   my ($this, $string) = @_;
   return 'Kaiser-Bessel' if (lc($string) eq 'kaiser-bessel');
   return ucfirst(lc($string));
+};
+
+sub OnParameter {
+  my ($main, $event, $app) = @_;
+  return if $app->{selecting_data_group};
+  $app->modified(1);
+};
+
+sub OnSpl {
+  my ($main, $event, $app, $which) = @_;
+  my $value = $event->GetString || 0;
+  ## this slight of hand keeps this from regressing infinately as the
+  ## connected k- and E-spline parameters are modified.  basically,
+  ## this prevents the scond round of recurssion, thus stopping things
+  if ($app->{constraining_spline_parameters}) {
+    $app->{constraining_spline_parameters}=0;
+    return;
+  };
+  $app->{constraining_spline_parameters}=1;
+  return if not looks_like_number($value);
+  return if not defined $data;
+  my $data = $app->current_data;
+  if ($which eq 'spl1') {
+    $app->{main}->{Main}->{bkg_spl1e}->SetValue($data->k2e($value));
+  } elsif ($which eq 'spl2') {
+    $app->{main}->{Main}->{bkg_spl2e}->SetValue($data->k2e($value));
+  } elsif ($which eq 'spl1e') {
+    $app->{main}->{Main}->{bkg_spl1}->SetValue($data->e2k($value));
+  } elsif ($which eq 'spl2e') {
+    $app->{main}->{Main}->{bkg_spl2}->SetValue($data->e2k($value));
+  };
+  return if $app->{selecting_data_group};
+  $app->modified(1);
 };
 
 

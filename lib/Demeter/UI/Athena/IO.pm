@@ -40,11 +40,14 @@ sub Export {
     $fname = File::Spec->catfile($fd->GetDirectory, $fd->GetFilename);
   };
 
-  $data[0]->write_athena($fname, @data);
+  $app->{main}->{Main}->pull_values($app->current_data);
+  $app->{main}->{Journal}->{object}->text($app->{main}->{Journal}->{journal}->GetValue);
+  $data[0]->write_athena($fname, @data, $app->{main}->{Journal}->{object});
   $data[0]->push_mru("xasdata", $fname);
   $app->set_mru;
   $app->{main}->{project}->SetLabel(basename($fname, '.prj'));
   $app->{main}->{currentproject} = $fname;
+  $app->modified(0);
   my $extra = ($how eq 'marked') ? " with marked groups" : q{};
   $app->{main}->status("Saved project file $fname".$extra);
   return $fname;
@@ -181,6 +184,7 @@ sub _data {
 
 
   chdir dirname($file);
+  $app->modified(1);
   undef $busy;
   $app->{main}->status("Imported data from $file");
 }
@@ -217,12 +221,16 @@ sub _prj {
     };
     ++$count;
   };
+  $app->{main}->{Journal}->{object}->text($prj->journal);
+  $app->{main}->{Journal}->{journal}->SetValue($app->{main}->{Journal}->{object}->text);
+
   $data->push_mru("xasdata", $file);
   $app->set_mru;
   $app->{main}->{project}->SetLabel(basename($file, '.prj'));
   $app->{main}->{currentproject} = $file;
 
   chdir dirname($file);
+  $app->modified(0);
   undef $busy;
   $app->{main}->status("Imported data from project $file");
 };

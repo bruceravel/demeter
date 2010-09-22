@@ -14,6 +14,7 @@ use Demeter::UI::Athena::Status;
 use vars qw($demeter $buffer $plotbuffer);
 $demeter = Demeter->new;
 $demeter->set_mode(ifeffit=>1, screen=>0);
+$demeter->mo->silently_ignore_unplottable(1);
 
 use Cwd;
 use File::Basename;
@@ -48,6 +49,7 @@ sub OnInit {
   my ($app) = @_;
   $demeter -> mo -> ui('Wx');
   $demeter -> mo -> identity('Athena');
+  $demeter -> mo -> iwd(cwd);
 
   my $conffile = File::Spec->catfile(dirname($INC{'Demeter/UI/Athena.pm'}), 'Athena', 'share', "athena.demeter_conf");
   $demeter -> co -> read_config($conffile);
@@ -64,6 +66,7 @@ sub OnInit {
   my $iconfile = File::Spec->catfile(dirname($INC{'Demeter/UI/Athena.pm'}), 'Athena', 'icons', "athena.png");
   $icon = Wx::Icon->new( $iconfile, wxBITMAP_TYPE_ANY );
   $app->{main} -> SetIcon($icon);
+  EVT_CLOSE($app->{main}, sub{$app->on_close($_[1])});
 
   ## -------- Set up menubar
   $app -> menubar;
@@ -80,9 +83,11 @@ sub OnInit {
   ## -------- "global" parameters
   $app->{lastplot} = [q{}, q{}];
   $app->{selected} = -1;
-  $app->{modified} = -1;
+  $app->{modified} = 0;
   $app->{main}->{currentproject} = q{};
   $app->{main}->{showing} = q{};
+  $app->{constraining_spline_parameters}=0;
+  $app->{selecting_data_group}=0;
 
   ## -------- a few more top-level widget-y things
   $app->{main}->{Status} = Demeter::UI::Athena::Status->new($app->{main});
@@ -98,8 +103,21 @@ sub OnInit {
   $app->{main} -> SetSizerAndFit($hbox);
   #$app->{main} -> SetSize(600,800);
   $app->{main} -> Show( 1 );
+  $app->process_argv(@ARGV);
   $app->{main} -> status("Welcome to Athena (" . $demeter->identify . ")");
   1;
+};
+
+sub process_argv {
+  my ($app, @args) = @_;
+  foreach my $a (@args) {
+    if ($a =~ m{\A-\d+\z}) {
+      ## take the i^th item from the mru list
+    } elsif (-r File::Spec->catfile($demeter->mo->iwd, $a)) {
+      print File::Spec->catfile($demeter->mo->iwd, $a), "\n";
+      ##$app->Import(File::Spec->catfile($demeter->mo->iwd, $a));
+    };
+  };
 };
 
 sub ifeffit_buffer {
@@ -151,6 +169,7 @@ sub on_close {
     my $result = $yesno->ShowModal;
     if ($result == wxID_CANCEL) {
       $app->{main}->status("Not exiting Athena after all.");
+      $event->Veto  if defined $event;
       return 0;
     };
     $app -> Export('all', $app->{main}->{currentproject}) if $result == wxID_YES;
@@ -160,7 +179,8 @@ sub on_close {
   my $persist = File::Spec->catfile($demeter->dot_folder, "athena.cwd");
   YAML::Tiny::DumpFile($persist, {cwd=>cwd});
   $demeter->mo->destroy_all;
-  $event->Skip(1);
+  $event->Skip(1) if defined $event;
+  return 1;
 };
 sub on_about {
   my ($app) = @_;
@@ -397,7 +417,6 @@ sub menubar {
   $app->{main}->SetMenuBar( $bar );
 
   EVT_MENU	 ($app->{main}, -1, sub{my ($frame,  $event) = @_; OnMenuClick($frame,  $event, $app)} );
-  EVT_CLOSE	 ($app->{main},     \&on_close);
   return $app;
 };
 
@@ -440,6 +459,8 @@ sub OnMenuClick {
       last SWITCH;
     };
     ($id == wxID_EXIT) and do {
+      my $ok = $app->on_close;
+      return if not $ok;
       $self->Close;
       return;
     };
@@ -709,10 +730,11 @@ sub main_window {
   $topbar -> Add($app->{main}->{none},   0, wxGROW|wxTOP|wxBOTTOM, 5);
   $topbar -> Add($app->{main}->{invert}, 0, wxGROW|wxTOP|wxBOTTOM, 5);
   $app->{main}->{save} -> Enable(0);
+  $app->EVT_BUTTON($app->{main}->{save},   sub{$app -> Export('all', $app->{main}->{currentproject})});
   $app->EVT_BUTTON($app->{main}->{all},    sub{$app->mark('all')});
   $app->EVT_BUTTON($app->{main}->{none},   sub{$app->mark('none')});
   $app->EVT_BUTTON($app->{main}->{invert}, sub{$app->mark('invert')});
-  $app->mouseover($app->{main}->{save},   "Save project");
+  $app->mouseover($app->{main}->{save},   "One-click-save your project");
   $app->mouseover($app->{main}->{all},    "Mark all groups");
   $app->mouseover($app->{main}->{none},   "Clear all marks");
   $app->mouseover($app->{main}->{invert}, "Invert all marks");
@@ -814,6 +836,7 @@ sub OnGroupSelect {
   my $is  = $app->{main}->{list}->GetClientData($is_index);
   #print("same!\n"), return if ($was eq $is);
   #  print join("|", $parent, $event, $is_index, $is, $was), $/;
+  $app->{selecting_data_group}=1;
 
   if ($was) {
     $app->{main}->{Main}->pull_values($was);
@@ -823,6 +846,7 @@ sub OnGroupSelect {
     $app->{main}->{Main}->mode($is, 1, 0);
     $app->{selected} = $app->{main}->{list}->GetSelection;
   };
+  $app->{selecting_data_group}=0;
 };
 
 sub view_changing {
@@ -1036,6 +1060,7 @@ sub merge {
   $app->OnGroupSelect(q{}, $app->{main}->{list}->GetSelection);
   $app->{main}->{Main}->mode($merged, 1, 0);
   $app->{main}->{list}->Check($app->{main}->{list}->GetCount-1, 1);
+  $app->modified(1);
 
   ## handle plotting, respecting the choice in the athena->merge_plot config parameter
   my $plot = $merged->co->default('athena', 'merge_plot');
@@ -1060,17 +1085,19 @@ sub merge {
   $app->{main}->status("Made merged data group");
 };
 
+sub modified {
+  my ($app, $is_modified) = @_;
+  $app->{modified} = $is_modified;
+  $app->{main}->{save}->Enable($is_modified);
+  my $projname = $app->{main}->{project}->GetLabel;
+  return if ($projname eq '<untitled>');
+  $projname = substr($projname, 1) if ($projname =~ m{\A\*});
+  $projname = '*'.$projname if ($is_modified);
+  $app->{main}->{project}->SetLabel($projname);
+};
+
 sub Clear {
   my ($app) = @_;
-  if ($app->{modified}) {
-    ## offer to save project....
-    my $yesno = Wx::MessageDialog->new($app->{main},
-				       "Save this project first?",
-				       "Save project?",
-				       wxYES_NO|wxYES_DEFAULT|wxICON_QUESTION);
-    my $result = $yesno->ShowModal;
-    $app -> Export('all', $app->{main}->{currentproject}) if $result == wxID_YES;
-  };
   $app->{main}->{currentproject} = q{};
   $app->{main}->{project}->SetLabel('<untitled>');
   $app->{main}->status(sprintf("Unamed the current project."));

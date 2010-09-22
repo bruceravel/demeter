@@ -381,7 +381,7 @@ sub _plotE_command {
     croak("$class objects are not plottable");
   };
   if (($self->datatype ne 'xmu') and ($self->datatype ne 'xanes')) {
-    carp("$self cannot be plotted in energy\n\n");
+    carp("$self cannot be plotted in energy\n\n") if not $self->mo->silently_ignore_unplottable;
     return;
   };
 

@@ -1,25 +1,26 @@
 -*- org -*-
 
-* bugs discovered  [0/3]
+* Demeter bugs and shortcomings discovered  [0/5]
  - [ ] save_many fails to bring things up to date
  - [ ] save_many fails to use flat/norm correctly
  - [ ] it is annoying that the background trace is blue and the data is red
  - [ ] weighting by noise or importance?
+ - [ ] merge array in write_athena
 
-* other features [0/11]
+* other features [3/12]
  - [ ] column selection persistance
  - [ ] right click pop up menus on parameter StaticText-s
  - [ ] stacking
  - [ ] indicators
  - [ ] plotting styles
- - [ ] tie spline values in k and E
+ - [X] tie spline values in k and E
  - [ ] recommended fft_kmax
  - [ ] need to call mode after push_values
- - [ ] modified indication
  - [ ] merged group needs a "file" exaplining what it is
- - [ ] y/n to save when closing or exiting
- - [ ] plot in E for a group that is of datatype chi(k) -- need
+ - [X] plot in E for a group that is of datatype chi(k) -- need
        something better than the wxperl carp
+ - [X] modified indication and y/n to save when closing or exiting
+ - [ ] command line arguments
 
 * file menu
 ** save column data [5/5]
@@ -38,15 +39,14 @@
 ** clear project name
  - [X] 
 
-* old Athena's edit menu [1/8]
+* old Athena's edit menu [2/7]
  - [ ] titles
  - [ ] data as text
  - [X] Ifeffit show (strings, groups, arrays)
- - [ ] journal
- - [ ] reports
- - [ ] csv
- - [ ] excel
- - [ ] xfit
+ - [X] journal
+ - [ ] csv report
+ - [ ] excel report
+ - [ ] xfit output
 
 * Group menu [5/8]
  - [X]  copy group
