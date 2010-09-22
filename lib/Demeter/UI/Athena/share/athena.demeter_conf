@@ -91,3 +91,23 @@ default=#F1DDF3
 description
   The color used to indicate widgets involved with plotting marked
   groups. 
+
+variable=import_plot
+type=list
+options=none E k R q quad k123 R123
+default=quad
+description 
+  This determines the type of plot to be made after importing data.
+
+variable=merge_plot
+type=list
+options=stddev variance marked
+default=stddev 
+description 
+  This determines the type of plot to be made after making a merge.
+  The default is to plot along data along with the data +/- the value
+  of standard deviation.  The variance plot plots the data along with
+  the variance in the data included in the merge. The variance is
+  scaled by some amount so it plots nicely along with the data.  The
+  final option is to plot the marge along with all the data that went
+  into the merge in the same space as the merge.

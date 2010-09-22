@@ -5,8 +5,9 @@ use Demeter::UI::Wx::Config;
 use Wx qw( :everything );
 use base 'Wx::Panel';
 
-use vars qw($label);
+use vars qw($label $tag);
 $label = "Preferences";
+$tag = 'Prefs';
 
 sub new {
   my ($class, $parent, $app) = @_;
@@ -35,9 +36,9 @@ sub target {
     };
   };
 
-#  ($save)
-#    ? $Demeter::UI::Artemis::frames{main}->status("Now using $value for $parent-->$param and an ini file was saved")
-#      : $Demeter::UI::Artemis::frames{main}->status("Now using $value for $parent-->$param");
+  ($save)
+    ? $::app->{main}->status("Now using $value for $parent-->$param and an ini file was saved")
+      : $::app->{main}->status("Now using $value for $parent-->$param");
 
 };
 

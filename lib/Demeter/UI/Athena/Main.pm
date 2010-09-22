@@ -9,13 +9,21 @@ use Chemistry::Elements qw(get_name get_Z get_symbol);
 use File::Basename;
 use File::Spec;
 
-use vars qw($label);
+use vars qw($label $tag);
 $label = "Main window";
+$tag = 'Main';
+
 my $box_font_size = Wx::SystemSettings::GetFont(wxSYS_DEFAULT_GUI_FONT)->GetPointSize + 1;
 my $icon          = File::Spec->catfile(dirname($INC{"Demeter/UI/Athena.pm"}), 'Athena', , 'icons', "bullseye.png");
 my $bullseye      = Wx::Bitmap->new($icon, wxBITMAP_TYPE_PNG);
 $icon             = File::Spec->catfile(dirname($INC{"Demeter/UI/Athena.pm"}), 'Athena', , 'icons', "chainlink.png");
 my $chainlink     = Wx::Bitmap->new($icon, wxBITMAP_TYPE_PNG);
+
+my @group_params;
+my @bkg_parameters;
+my @fft_parameters;
+my @bft_parameters;
+my @plot_parameters;
 
 my $tcsize = [60,-1];
 
@@ -44,7 +52,6 @@ sub new {
   return $this;
 };
 
-my @group_params;
 sub group {
   my ($this, $app) = @_;
 
@@ -52,6 +59,7 @@ sub group {
   my $groupboxsizer  = Wx::StaticBoxSizer->new( $groupbox, wxVERTICAL );
   $groupbox         -> SetFont( Wx::Font->new( $box_font_size, wxDEFAULT, wxNORMAL, wxBOLD, 0, "" ) );
   $this->{sizer}    -> Add($groupboxsizer, 0, wxALL, 0);
+  $this->{groupbox}  = $groupbox;
 
   my $gbs = Wx::GridBagSizer->new( 5, 5 );
 
@@ -89,7 +97,6 @@ sub group {
   return $this;
 };
 
-my @bkg_parameters;
 sub bkg {
   my ($this, $app) = @_;
 
@@ -248,7 +255,6 @@ sub bkg {
 };
 
 
-my @bft_parameters;
 sub fft {
   my ($this, $app) = @_;
 
@@ -299,7 +305,6 @@ sub fft {
   return $this;
 };
 
-my @bft_parameters;
 sub bft {
   my ($this, $app) = @_;
 
@@ -343,7 +348,6 @@ sub bft {
   return $this;
 };
 
-my @plot_parameters;
 sub plot {
   my ($this, $app) = @_;
 
@@ -400,7 +404,7 @@ sub mode {
       $this->set_widget_state($w, 0);
     };
     foreach my $w (@fft_parameters, @bft_parameters) {
-      $this->set_widget_state($w, $bool);
+      $this->set_widget_state($w, $enabled);
     };
   } else {
     foreach my $w (@bkg_parameters, @fft_parameters, @bft_parameters) {
@@ -442,6 +446,12 @@ sub push_values {
   my $nnorm = $data->bkg_nnorm;
   $this->{'bkg_nnorm_'.$nnorm}->SetValue(1);
   ## standard
+  my $truncated_name = $data->name;
+  my $n = length($truncated_name);
+  if ($n > 40) {
+    $truncated_name = substr($data->name, 0, 17) . '...' . substr($data->name, $n-17);
+  };
+  $this->{groupbox}->SetLabel('Current group:  '.$truncated_name);
   return $data;
 };
 
@@ -473,6 +483,27 @@ sub pull_values {
   $data->bkg_nnorm($nnorm);
   ## standard
   return $data;
+};
+
+sub zero_values {
+  my ($this) = @_;
+  foreach my $w (@group_params, @plot_parameters, @bkg_parameters, @fft_parameters, @bft_parameters) {
+    next if ($w =~ m{(?:label|pluck)\z});
+    next if ($w eq 'file');
+    $this->{$w}->SetValue(0)   if (ref($this->{$w}) =~ m{SpinCtrl});
+    $this->{$w}->SetValue(q{}) if (ref($this->{$w}) =~ m{TextCtrl});
+    $this->{$w}->SetValue(0)   if (ref($this->{$w}) =~ m{CheckBox});
+  };
+  $this->{bkg_z}         -> SetValue(sprintf "%-2d: %s", 1, 'Hydrogen');
+  $this->{fft_edge}      -> SetValue('K');
+  $this->{file}          -> SetValue(q{});
+  $this->{bkg_clamp1}    -> SetSelection(0);
+  $this->{bkg_clamp2}    -> SetSelection(0);
+  $this->{fft_kwindow}   -> SetSelection(1);
+  $this->{'bkg_nnorm_1'} -> SetValue(0);
+  $this->{'bkg_nnorm_2'} -> SetValue(0);
+  $this->{'bkg_nnorm_3'} -> SetValue(1);
+  $this->{groupbox}      -> SetLabel('Current group');
 };
 
 sub window_name {

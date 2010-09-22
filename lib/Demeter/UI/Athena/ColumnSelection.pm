@@ -64,7 +64,7 @@ sub new {
 
 
   my $buttons = Wx::BoxSizer->new( wxHORIZONTAL );
-  $this->{ok} = Wx::Button->new($leftpane, wxID_OK, "Import", wxDefaultPosition, wxDefaultSize, 0, );
+  $this->{ok} = Wx::Button->new($leftpane, wxID_OK, "&Import", wxDefaultPosition, wxDefaultSize, 0, );
   $buttons -> Add($this->{ok}, 1, wxGROW|wxALL, 5);
   $this->{cancel} = Wx::Button->new($leftpane, wxID_CANCEL, "Cancel", wxDefaultPosition, wxDefaultSize);
   $buttons -> Add($this->{cancel}, 1, wxGROW|wxALL, 5);

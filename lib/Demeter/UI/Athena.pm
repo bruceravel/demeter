@@ -3,7 +3,8 @@ package Demeter::UI::Athena;
 use Demeter; # qw(:plotwith=gnuplot);
 use Demeter::UI::Wx::MRU;
 use Demeter::UI::Wx::SpecialCharacters qw(:all);
-use Demeter::UI::Athena::Import;
+use Demeter::UI::Athena::IO;
+use Demeter::UI::Athena::Group;
 use Demeter::UI::Athena::Replot;
 
 use Demeter::UI::Artemis::Buffer;
@@ -19,6 +20,7 @@ use File::Basename;
 use File::Copy;
 use File::Path;
 use File::Spec;
+use List::MoreUtils qw(any);
 use Readonly;
 
 use Wx qw(:everything);
@@ -50,6 +52,8 @@ sub OnInit {
   $demeter -> co -> read_config($conffile);
   $demeter -> co -> read_ini('athena');
   $demeter -> plot_with($demeter->co->default(qw(plot plotwith)));
+  my $old_cwd = File::Spec->catfile($demeter->dot_folder, "athena.cwd");
+  chdir($demeter -> slurp($old_cwd)) if -r $old_cwd;
 
   ## -------- create a new frame and set icon
   $app->{main} = Wx::Frame->new(undef, -1, 'Athena [XAS data processing] - <untitled>', wxDefaultPosition, wxDefaultSize,);
@@ -73,6 +77,7 @@ sub OnInit {
   $app->{lastplot} = [q{}, q{}];
   $app->{selected} = -1;
   $app->{main}->{currentproject} = q{};
+  $app->{main}->{showing} = q{};
   $app->{main}->{Status} = Demeter::UI::Athena::Status->new($app->{main});
   $app->{main}->{Status}->SetTitle("Athena [Status Buffer]");
   $app->{Buffer} = Demeter::UI::Artemis::Buffer->new($app->{main});
@@ -149,16 +154,93 @@ sub on_close {
 #  };
 
 #  unlink $app->{main}->{autosave_file};
+  my $persist = File::Spec->catfile($demeter->dot_folder, "athena.cwd");
+  open(my $P, '>'.$persist);
+  print $P cwd;
+  close $P;
   $demeter->mo->destroy_all;
   $event->Skip(1);
 };
+sub on_about {
+  my ($app) = @_;
 
+  my $info = Wx::AboutDialogInfo->new;
+
+  $info->SetName( 'Athena' );
+  #$info->SetVersion( $demeter->version );
+  $info->SetDescription( "XAS Data Processing" );
+  $info->SetCopyright( $demeter->identify . "\nusing Ifeffit " . Ifeffit::get_string('&build'));
+  $info->SetWebSite( 'http://cars9.uchicago.edu/iffwiki/Demeter', 'The Demeter web site' );
+  #$info->SetDevelopers( ["Bruce Ravel <bravel\@bnl.gov>\n",
+  #			 "Ifeffit is copyright $COPYRIGHT 1992-2010 Matt Newville"
+  #			] );
+  $info->SetLicense( $demeter->slurp(File::Spec->catfile($athena_base, 'Athena', 'share', "GPL.dem")) );
+
+  Wx::AboutBox( $info );
+}
+
+sub is_empty {
+  my ($app) = @_;
+  return not $app->{main}->{list}->GetCount;
+};
+
+sub current_index {
+  my ($app) = @_;
+  return $app->{main}->{list}->GetSelection;
+};
+sub current_data {
+  my ($app) = @_;
+  return $app->{main}->{list}->GetClientData($app->{main}->{list}->GetSelection);
+};
 
 Readonly my $SAVE_MARKED  => Wx::NewId();
+Readonly my $SAVE_MUE     => Wx::NewId();
+Readonly my $SAVE_NORM    => Wx::NewId();
+Readonly my $SAVE_CHIK    => Wx::NewId();
+Readonly my $SAVE_CHIR    => Wx::NewId();
+Readonly my $SAVE_CHIQ    => Wx::NewId();
+
+Readonly my $EACH_MUE     => Wx::NewId();
+Readonly my $EACH_NORM    => Wx::NewId();
+Readonly my $EACH_CHIK    => Wx::NewId();
+Readonly my $EACH_CHIR    => Wx::NewId();
+Readonly my $EACH_CHIQ    => Wx::NewId();
+
+Readonly my $MARKED_XMU	  => Wx::NewId();
+Readonly my $MARKED_NORM  => Wx::NewId();
+Readonly my $MARKED_DER	  => Wx::NewId();
+Readonly my $MARKED_NDER  => Wx::NewId();
+Readonly my $MARKED_SEC	  => Wx::NewId();
+Readonly my $MARKED_NSEC  => Wx::NewId();
+Readonly my $MARKED_CHI	  => Wx::NewId();
+Readonly my $MARKED_CHIK  => Wx::NewId();
+Readonly my $MARKED_CHIK2 => Wx::NewId();
+Readonly my $MARKED_CHIK3 => Wx::NewId();
+Readonly my $MARKED_RMAG  => Wx::NewId();
+Readonly my $MARKED_RRE	  => Wx::NewId();
+Readonly my $MARKED_RIM	  => Wx::NewId();
+Readonly my $MARKED_RPHA  => Wx::NewId();
+Readonly my $MARKED_QMAG  => Wx::NewId();
+Readonly my $MARKED_QRE	  => Wx::NewId();
+Readonly my $MARKED_QIM	  => Wx::NewId();
+Readonly my $MARKED_QPHA  => Wx::NewId();
+
+Readonly my $CLEAR_PROJECT => Wx::NewId();
+
+Readonly my $RENAME	   => Wx::NewId();
+Readonly my $COPY	   => Wx::NewId();
+Readonly my $REMOVE	   => Wx::NewId();
+Readonly my $REMOVE_MARKED => Wx::NewId();
+Readonly my $DATA_YAML	   => Wx::NewId();
+
 Readonly my $PLOT_QUAD	  => Wx::NewId();
 Readonly my $PLOT_IOSIG	  => Wx::NewId();
 Readonly my $PLOT_K123	  => Wx::NewId();
 Readonly my $PLOT_R123	  => Wx::NewId();
+Readonly my $PLOT_I0MARKED=> Wx::NewId();
+Readonly my $PLOT_STDDEV  => Wx::NewId();
+Readonly my $PLOT_VARIENCE=> Wx::NewId();
+
 Readonly my $SHOW_BUFFER  => Wx::NewId();
 Readonly my $PLOT_YAML	  => Wx::NewId();
 Readonly my $MODE_STATUS  => Wx::NewId();
@@ -172,6 +254,12 @@ Readonly my $MARK_TOGGLE   => Wx::NewId();
 Readonly my $MARK_REGEXP   => Wx::NewId();
 Readonly my $UNMARK_REGEXP => Wx::NewId();
 
+Readonly my $MERGE_MUE     => Wx::NewId();
+Readonly my $MERGE_NORM    => Wx::NewId();
+Readonly my $MERGE_CHI     => Wx::NewId();
+Readonly my $MERGE_IMP     => Wx::NewId();
+Readonly my $MERGE_NOISE   => Wx::NewId();
+
 sub menubar {
   my ($app) = @_;
   my $bar        = Wx::MenuBar->new;
@@ -183,6 +271,50 @@ sub menubar {
   $filemenu->Append(wxID_SAVE,    "Save project", "Save an Athena project file" );
   $filemenu->Append(wxID_SAVEAS,  "Save project as...", "Save an Athena project file as..." );
   $filemenu->Append($SAVE_MARKED, "Save marked groups as...", "Save marked groups as an Athena project file as..." );
+  $filemenu->AppendSeparator;
+
+  my $savecurrentmenu = Wx::Menu->new;
+  $savecurrentmenu->Append($SAVE_MUE,    "$MU(E)",  "Save $MU(E) from the current group" );
+  $savecurrentmenu->Append($SAVE_NORM,   "norm(E)", "Save normalized $MU(E) from the current group" );
+  $savecurrentmenu->Append($SAVE_CHIK,   "$CHI(k)", "Save $CHI(k) from the current group" );
+  $savecurrentmenu->Append($SAVE_CHIR,   "$CHI(R)", "Save $CHI(R) from the current group" );
+  $savecurrentmenu->Append($SAVE_CHIQ,   "$CHI(q)", "Save $CHI(q) from the current group" );
+
+  my $savemarkedmenu = Wx::Menu->new;
+  $savemarkedmenu->Append($MARKED_XMU,   "$MU(E)",          "Save marked groups as $MU(E) to a column data file");
+  $savemarkedmenu->Append($MARKED_NORM,  "norm(E)",         "Save marked groups as norm(E) to a column data file");
+  $savemarkedmenu->Append($MARKED_DER,   "deriv($MU(E))",   "Save marked groups as deriv($MU(E)) to a column data file");
+  $savemarkedmenu->Append($MARKED_NDER,  "deriv(norm(E))",  "Save marked groups as deriv(norm(E)) to a column data file");
+  $savemarkedmenu->Append($MARKED_SEC,   "second($MU(E))",  "Save marked groups as second($MU(E)) to a column data file");
+  $savemarkedmenu->Append($MARKED_NSEC,  "second(norm(E))", "Save marked groups as second(norm(E)) to a column data file");
+  $savemarkedmenu->AppendSeparator;
+  $savemarkedmenu->Append($MARKED_CHI,   "$CHI(k)",         "Save marked groups as $CHI(k) to a column data file");
+  $savemarkedmenu->Append($MARKED_CHIK,  "k$CHI(k)",        "Save marked groups as k$CHI(k) to a column data file");
+  $savemarkedmenu->Append($MARKED_CHIK2, "k$TWO$CHI(k)",    "Save marked groups as k$TWO$CHI(k) to a column data file");
+  $savemarkedmenu->Append($MARKED_CHIK3, "k$THR$CHI(k)",    "Save marked groups as k$THR$CHI(k) to a column data file");
+  $savemarkedmenu->AppendSeparator;
+  $savemarkedmenu->Append($MARKED_RMAG,  "|$CHI(R)|",       "Save marked groups as |$CHI(R)| to a column data file");
+  $savemarkedmenu->Append($MARKED_RRE,   "Re[$CHI(R)]",     "Save marked groups as Re[$CHI(R)] to a column data file");
+  $savemarkedmenu->Append($MARKED_RIM,   "Im[$CHI(R)]",     "Save marked groups as Im[$CHI(R)] to a column data file");
+  $savemarkedmenu->Append($MARKED_RPHA,  "Pha[$CHI(R)]",    "Save marked groups as Pha[$CHI(R)] to a column data file");
+  $savemarkedmenu->AppendSeparator;
+  $savemarkedmenu->Append($MARKED_QMAG,  "|$CHI(q)|",       "Save marked groups as |$CHI(q)| to a column data file");
+  $savemarkedmenu->Append($MARKED_QRE,   "Re[$CHI(q)]",     "Save marked groups as Re[$CHI(q)] to a column data file");
+  $savemarkedmenu->Append($MARKED_QIM,   "Im[$CHI(q)]",     "Save marked groups as Im[$CHI(q)] to a column data file");
+  $savemarkedmenu->Append($MARKED_QPHA,  "Pha[$CHI(q)]",    "Save marked groups as Pha[$CHI(q)] to a column data file");
+
+  my $saveeachmenu   = Wx::Menu->new;
+  $saveeachmenu->Append($EACH_MUE,    "$MU(E)",  "Save $MU(E) for each marked group" );
+  $saveeachmenu->Append($EACH_NORM,   "norm(E)", "Save normalized $MU(E) for each marked group" );
+  $saveeachmenu->Append($EACH_CHIK,   "$CHI(k)", "Save $CHI(k) for each marked group" );
+  $saveeachmenu->Append($EACH_CHIR,   "$CHI(R)", "Save $CHI(R) for each marked group" );
+  $saveeachmenu->Append($EACH_CHIQ,   "$CHI(q)", "Save $CHI(q) for each marked group" );
+
+  $filemenu->AppendSubMenu($savecurrentmenu, "Save current group as ...",     "Save the data in the current group as a column data file" );
+  $filemenu->AppendSubMenu($savemarkedmenu,  "Save marked groups as ...",     "Save the data from the marked group as a column data file" );
+  $filemenu->AppendSubMenu($saveeachmenu,    "Save each marked group as ...", "Save the data in the marked group as column data files" );
+  $filemenu->AppendSeparator;
+  $filemenu->Append($CLEAR_PROJECT, 'Clear project name', 'Clear project name');
   $filemenu->AppendSeparator;
   $filemenu->Append(wxID_CLOSE, "&Close" );
   $filemenu->Append(wxID_EXIT,  "E&xit" );
@@ -199,16 +331,31 @@ sub menubar {
 
 
   my $groupmenu   = Wx::Menu->new;
+  $groupmenu->Append($RENAME, "Rename current group\tALT+SHIFT+l", "Rename the current group");
+  $groupmenu->Append($COPY,   "Copy current group\tALT+SHIFT+y",   "Copy the current group");
+  $groupmenu->AppendSeparator;
+  $groupmenu->Append($DATA_YAML, "Show structure of current group",  "Show detailed contents of the current data group");
+  $groupmenu->AppendSeparator;
+  $groupmenu->Append($REMOVE, "Remove current group",   "Remove the current group from this project");
+  $groupmenu->Append($REMOVE_MARKED, "Remove marked groups",   "Remove marked groups from this project");
+  $groupmenu->Append(wxID_CLOSE, "&Close" );
+
   my $valuesmenu  = Wx::Menu->new;
   my $plotmenu    = Wx::Menu->new;
   my $currentplotmenu = Wx::Menu->new;
   my $markedplotmenu  = Wx::Menu->new;
+  my $mergedplotmenu  = Wx::Menu->new;
   $currentplotmenu->Append($PLOT_QUAD,       "Quad plot",      "Make a quad plot from the current group" );
   $currentplotmenu->Append($PLOT_IOSIG,      "Data+I0+Signal", "Plot data, I0, and signal from the current group" );
   $currentplotmenu->Append($PLOT_K123,       "k123 plot",      "Make a k123 plot from the current group" );
   $currentplotmenu->Append($PLOT_R123,       "R123 plot",      "Make an R123 plot from the current group" );
+  $markedplotmenu ->Append($PLOT_I0MARKED,   "Plot I0",        "Plot I0 for each of the marked groups" );
+  $mergedplotmenu ->Append($PLOT_STDDEV,     "Plot data + std. dev.", "Plot the merged data along with its standard deviation" );
+  $mergedplotmenu ->Append($PLOT_VARIENCE,   "Plot data + variance",  "Plot the merged data along with its scaled variance" );
   $plotmenu->AppendSubMenu($currentplotmenu, "Current group",  "Additional plot types for the current group");
   $plotmenu->AppendSubMenu($markedplotmenu,  "Marked groups",  "Additional plot types for the marked groups");
+  $plotmenu->AppendSubMenu($mergedplotmenu,  "Merged groups",  "Additional plot types for the merged data");
+  ##$mergedplotmenu->Enable(0,0);
 
   my $markmenu   = Wx::Menu->new;
   $markmenu->Append($MARK_ALL,      "Mark all\tCTRL+SHIFT+a",            "Mark all groups" );
@@ -219,7 +366,16 @@ sub menubar {
   $markmenu->Append($UNMARK_REGEXP, "Unmark by all\tCTRL+SHIFT+x",       "Unmark all groups matching a regular expression" );
 
   my $mergemenu  = Wx::Menu->new;
+  $mergemenu->Append($MERGE_MUE,  "Merge $MU(E)",  "Merge marked data at $MU(E)" );
+  $mergemenu->Append($MERGE_NORM, "Merge norm(E)", "Merge marked data at normalized $MU(E)" );
+  $mergemenu->Append($MERGE_CHI,  "Merge $CHI(k)", "Merge marked data at $CHI(k)" );
+  $mergemenu->AppendSeparator;
+  $mergemenu->AppendRadioItem($MERGE_IMP,   "Weight by importance",       "Weight the marked groups by their importance values when merging" );
+  $mergemenu->AppendRadioItem($MERGE_NOISE, "Weight by noise in $CHI(k)", "Weight the marked groups by their $CHI(k) noise values when merging" );
+
+
   my $helpmenu   = Wx::Menu->new;
+  $helpmenu->Append(wxID_ABOUT, "&About..." );
 
   $bar->Append( $filemenu,    "&File" );
   $bar->Append( $groupmenu,   "&Group" );
@@ -263,12 +419,16 @@ sub OnMenuClick {
     };
     ($id == wxID_ABOUT) and do {
       &on_about;
-      return;
+      last SWITCH;
     };
+    ($id == $CLEAR_PROJECT) and do {
+      $app->Clear;
+      last SWITCH;
+    };
+
     ($id == wxID_CLOSE) and do {
-      #close_project(\%frames);
-      print "close\n";
-      return;
+      $app->Remove('all');
+      last SWITCH;
     };
     ($id == wxID_EXIT) and do {
       $self->Close;
@@ -291,6 +451,95 @@ sub OnMenuClick {
       last SWITCH;
     };
 
+    (any {$id == $_} ($SAVE_MUE, $SAVE_NORM, $SAVE_CHIK, $SAVE_CHIR, $SAVE_CHIQ)) and do {
+      my $how = ($id == $SAVE_MUE)  ? 'mue'
+	      : ($id == $SAVE_NORM) ? 'norm'
+	      : ($id == $SAVE_CHIK) ? 'chik'
+	      : ($id == $SAVE_CHIR) ? 'chir'
+	      : ($id == $SAVE_CHIQ) ? 'chiq'
+	      :                       '???';
+      $app->save_column($how);
+      last SWITCH;
+    };
+
+    (any {$id == $_} ($MARKED_XMU,  $MARKED_NORM, $MARKED_DER,  $MARKED_NDER,  $MARKED_SEC,
+		      $MARKED_NSEC, $MARKED_CHI,  $MARKED_CHIK, $MARKED_CHIK2, $MARKED_CHIK3,
+		      $MARKED_RMAG, $MARKED_RRE,  $MARKED_RIM,  $MARKED_RPHA,  $MARKED_QMAG,
+		      $MARKED_QRE,  $MARKED_QIM,  $MARKED_QPHA))
+      and do {
+	my $how = ($id == $MARKED_XMU)   ? "xmu"
+	        : ($id == $MARKED_NORM)  ? "norm"
+ 	        : ($id == $MARKED_DER)   ? "der"
+	        : ($id == $MARKED_NDER)  ? "nder"
+	        : ($id == $MARKED_SEC)   ? "sec"
+	        : ($id == $MARKED_NSEC)  ? "nsec"
+	        : ($id == $MARKED_CHI)   ? "chi"
+	        : ($id == $MARKED_CHIK)  ? "chik"
+	        : ($id == $MARKED_CHIK2) ? "chik2"
+	        : ($id == $MARKED_CHIK3) ? "chik3"
+	        : ($id == $MARKED_RMAG)  ? "chir_mag"
+	        : ($id == $MARKED_RRE)   ? "chir_re"
+	        : ($id == $MARKED_RIM)   ? "chir_im"
+	        : ($id == $MARKED_RPHA)  ? "chir_pha"
+	        : ($id == $MARKED_QMAG)  ? "chiq_mag"
+	        : ($id == $MARKED_QRE)   ? "chiq_re"
+	        : ($id == $MARKED_QIM)   ? "chiq_im"
+	        : ($id == $MARKED_QPHA)  ? "chiq_pha"
+		:                          '???';
+	$app->save_marked($how);
+	last SWITCH;
+      };
+
+    (any {$id == $_} ($EACH_MUE, $EACH_NORM, $EACH_CHIK, $EACH_CHIR, $EACH_CHIQ)) and do {
+      my $how = ($id == $EACH_MUE)  ? 'mue'
+	      : ($id == $EACH_NORM) ? 'norm'
+	      : ($id == $EACH_CHIK) ? 'chik'
+	      : ($id == $EACH_CHIR) ? 'chir'
+	      : ($id == $EACH_CHIQ) ? 'chiq'
+	      :                       '???';
+      $app->save_each($how);
+      last SWITCH;
+    };
+
+    ## -------- group menu
+    ($id == $RENAME) and do {
+      $app->Rename;
+      last SWITCH;
+    };
+    ($id == $COPY) and do {
+      $app->Copy;
+      last SWITCH;
+    };
+    ($id == $REMOVE) and do {
+      $app->Remove('current');
+      last SWITCH;
+    };
+    ($id == $REMOVE_MARKED) and do {
+      $app->Remove('marked');
+      last SWITCH;
+    };
+    ($id == $DATA_YAML) and do {
+      last SWITCH if $app->is_empty;
+      my $dialog = Demeter::UI::Artemis::ShowText
+	-> new($app->{main}, $app->current_data->serialization, 'Structure of Data object')
+	  -> Show;
+      last SWITCH;
+    };
+
+    ## -------- merge menu
+    ($id == $MERGE_MUE) and do {
+      $app->merge('e');
+      last SWITCH;
+    };
+    ($id == $MERGE_NORM) and do {
+      $app->merge('n');
+      last SWITCH;
+    };
+    ($id == $MERGE_CHI) and do {
+      $app->merge('k');
+      last SWITCH;
+    };
+
     ## -------- monitor menu
     ($id == $SHOW_BUFFER) and do {
       $app->{Buffer}->Show(1);
@@ -306,8 +555,9 @@ sub OnMenuClick {
       $app->{main}->{PlotK}->pull_single_values;
       $app->{main}->{PlotR}->pull_marked_values;
       $app->{main}->{PlotQ}->pull_marked_values;
-      my $yaml   = $demeter->po->serialization;
-      my $dialog = Demeter::UI::Artemis::ShowText->new($app->{main}, $yaml, 'YAML of Plot object') -> Show;
+      my $dialog = Demeter::UI::Artemis::ShowText
+	-> new($app->{main}, $demeter->po->serialization, 'YAML of Plot object')
+	  -> Show;
       last SWITCH;
     };
     ($id == $PERL_MODULES) and do {
@@ -321,14 +571,14 @@ sub OnMenuClick {
     };
 
     ($id == $PLOT_QUAD) and do {
-      my $data = $app->{main}->{list}->GetClientData($app->{main}->{list}->GetSelection);
+      my $data = $app->current_data;
       $app->{main}->{Main}->pull_values($data);
       $data->po->start_plot;
       $app->quadplot($data);
       last SWITCH;
     };
     ($id == $PLOT_IOSIG) and do {
-      my $data = $app->{main}->{list}->GetClientData($app->{main}->{list}->GetSelection);
+      my $data = $app->current_data;
       $app->{main}->{Main}->pull_values($data);
       $app->{main}->{PlotE}->pull_single_values;
       $data->po->set(e_bkg=>0, e_pre=>0, e_post=>0, e_norm=>0, e_der=>0, e_sec=>0);
@@ -340,7 +590,7 @@ sub OnMenuClick {
       last SWITCH;
     };
     ($id == $PLOT_K123) and do {
-      my $data = $app->{main}->{list}->GetClientData($app->{main}->{list}->GetSelection);
+      my $data = $app->current_data;
       $app->{main}->{Main}->pull_values($data);
       $app->{main}->{PlotK}->pull_single_values;
       $data->po->start_plot;
@@ -349,12 +599,24 @@ sub OnMenuClick {
       last SWITCH;
     };
     ($id == $PLOT_R123) and do {
-      my $data = $app->{main}->{list}->GetClientData($app->{main}->{list}->GetSelection);
+      my $data = $app->current_data;
       $app->{main}->{Main}->pull_values($data);
       $app->{main}->{PlotR}->pull_marked_values;
       $data->po->start_plot;
       $data->plot('R123');
       $app->{main}->{plottabs}->SetSelection(2);
+      last SWITCH;
+    };
+    ($id == $PLOT_STDDEV) and do {
+      my $data = $app->current_data;
+      last SWITCH if not $data->is_merge;
+      $data->plot('stddev');
+      last SWITCH;
+    };
+    ($id == $PLOT_VARIENCE) and do {
+      my $data = $app->current_data;
+      last SWITCH if not $data->is_merge;
+      $data->plot('variance');
       last SWITCH;
     };
 
@@ -384,6 +646,10 @@ sub OnMenuClick {
     };
 
 
+    ($id == wxID_ABOUT) and do {
+      $app->on_about;
+      return;
+    };
 
   };
 };
@@ -519,15 +785,17 @@ sub OnGroupSelect {
 
   my $was = ($app->{selected} == -1) ? 0 : $app->{main}->{list}->GetClientData($app->{selected});
   my $is  = $app->{main}->{list}->GetClientData($is_index);
-  print("same!\n"), return if ($was eq $is);
-
+  #print("same!\n"), return if ($was eq $is);
+  #  print join("|", $parent, $event, $is_index, $is, $was), $/;
 
   if ($was) {
     $app->{main}->{Main}->pull_values($was);
   };
-  $app->{main}->{Main}->push_values($is);
-  $app->{selected} = $app->{main}->{list}->GetSelection;
-
+  if ($is_index != -1) {
+    $app->{main}->{Main}->push_values($is);
+    $app->{main}->{Main}->mode($is, 1, 0);
+    $app->{selected} = $app->{main}->{list}->GetSelection;
+  };
 };
 
 sub view_changing {
@@ -545,7 +813,7 @@ sub view_changing {
   } else {
     $app->{main}->status(sprintf("Displaying the %s tool.",
 				 lc($app->{main}->{views}->GetPageText($event->GetSelection))));
-
+    #$app->{main}->{showing}=
   };
 };
 
@@ -560,25 +828,20 @@ sub marked_groups {
 
 sub plot {
   my ($app, $frame, $event, $space, $how) = @_;
-  if (not $app->{main}->{list}->GetCount) {
-    #$app->{main}->status("Cannot plot -- no data.");
-    return;
-  };
+  return if $app->is_empty;
   return if not ($space);
   return if not ($how);
 
   my $busy = Wx::BusyCursor->new();
 
-  my @data = ($how eq 'single')
-    ? ( $app->{main}->{list}->GetClientData($app->{main}->{list}->GetSelection) )
-      : $app->marked_groups;
+  my @data = ($how eq 'single') ? ( $app->current_data ) : $app->marked_groups;
 
   if (not @data and ($how eq 'marked')) {
     $app->{main}->status("No groups are marked.  Marked plot cancelled.");
     return;
   };
 
-  $app->{main}->{Main}->pull_values($app->{main}->{list}->GetClientData($app->{main}->{list}->GetSelection));
+  $app->{main}->{Main}->pull_values($app->current_data);
   $app->pull_kweight($data[0]);
 
   $data[0]->po->start_plot;
@@ -715,6 +978,64 @@ sub mark {
     };
   };
   $app->{main}->status($mark_feeedback{$how}.$regex);
+};
+
+
+sub merge {
+  my ($app, $how) = @_;
+  return if $app->is_empty;
+  my $busy = Wx::BusyCursor->new();
+  my @data = ();
+  my $max = q{};
+  foreach my $i (0 .. $app->{main}->{list}->GetCount-1) {
+    ($max = $1||1) if ($app->{main}->{list}->GetClientData($i)->name =~ m{\A\s*merge\s+(\d*)\s\z});
+    push(@data, $app->{main}->{list}->GetClientData($i)) if $app->{main}->{list}->IsChecked($i);
+  };
+  if (not @data) {
+    $app->{main}->status("No groups are marked.  Merge cancelled.");
+    return;
+  };
+
+  my $merged = $data[0]->merge($how, @data);
+  $max = sprintf(" %d", $max+1) if $max;
+  $merged->name('merge'.$max);
+  $app->{main}->{list}->Append($merged->name, $merged);
+  $app->{main}->{list}->SetSelection($app->{main}->{list}->GetCount-1);
+  $app->{main}->{Main}->mode($merged, 1, 0);
+  $app->{main}->{list}->Check($app->{main}->{list}->GetCount-1, 1);
+  my $plot = $merged->co->default('athena', 'merge_plot');
+
+  if ($plot =~ m{stddev|variance}) {
+    $app->{main}->{PlotE}->pull_single_values;
+    $app->{main}->{PlotK}->pull_single_values;
+    $merged->plot($plot);
+  } elsif (($plot eq 'marked') and ($how eq 'e')) {
+    $app->{main}->{PlotE}->pull_single_values;
+    $merged->po->set(e_bkg=>0, e_pre=>0, e_post=>0, e_norm=>0, e_der=>0, e_sec=>0, e_markers=>0,e_i0=>0, e_signal=>0);
+    $merged->po->set(e_mu=>1);
+    $merged->po->start_plot;
+    $_->plot('e') foreach (@data, $merged);
+  } elsif (($plot eq 'marked') and ($how eq 'n')) {
+    $app->{main}->{PlotE}->pull_marked_values;
+    $merged->po->set(e_bkg=>0, e_pre=>0, e_post=>0, e_norm=>0, e_der=>0, e_sec=>0, e_markers=>0,e_i0=>0, e_signal=>0);
+    $merged->po->set(e_mu=>1, e_norm=>1);
+    $merged->po->start_plot;
+    $_->plot('e') foreach (@data, $merged);
+  } elsif (($plot eq 'marked') and ($how eq 'k')) {
+    $merged->po->chie(0);
+    $merged->po->start_plot;
+    $_->plot('k') foreach (@data, $merged);
+  };
+  $merged->po->e_markers(1);
+  undef $busy;
+  $app->{main}->status("Made merged data group");
+};
+
+sub Clear {
+  my ($app) = @_;
+  $app->{main}->{currentproject} = q{};
+  $app->{main}->{project}->SetLabel('<untitled>');
+  $app->{main}->status(sprintf("Unamed the current project."));
 };
 
 =for Explain

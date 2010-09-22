@@ -1,89 +1,101 @@
 -*- org -*-
 
-* column selection persistance
+* bugs discovered  [0/3]
+ - [ ] save_many fails to bring things up to date
+ - [ ] save_many fails to use flat/norm correctly
+ - [ ] it is annoying that the background trace is blue and the data is red
+ - [ ] weighting by noise or importance?
 
-* right click pop up menus on parameter StaticText-s
-
-* stacking
-
-* indicators
-
-* plotting styles
+* other features [0/8]
+ - [ ]  column selection persistance
+ - [ ]  right click pop up menus on parameter StaticText-s
+ - [ ]  stacking
+ - [ ]  indicators
+ - [ ]  plotting styles
+ - [ ]  tie spline values in k and E
+ - [ ]  recommended fft_kmax
+ - [ ]  need to call mode after push_values
+ - [ ]  modified indication
+ - [ ]  merged group needs a "file" exaplining what it is
 
 * file menu
-
-** save column data [0/5]
-  - [ ] mu(E)
-  - [ ] norm(E)
-  - [ ] chi(k)
-  - [ ] chi(R)
-  - [ ] chi(q)
-
-** save marked [0/4]
-  - [ ] mu, norm, deriv mu/norm, second mu/norm
-  - [ ] chi, chik, chik2, chik3
-  - [ ] chir: magnitude, real imaginary
-  - [ ] chiq: magnitude, real imaginary
-
-** save each [0/4]
-  - [ ] mu, norm, deriv mu/norm, second mu/norm
-  - [ ] chi, chik, chik2, chik3
-  - [ ] chir: magnitude, real imaginary
-  - [ ] chiq: magnitude, real imaginary
-
+** save column data [5/5]
+ - [X] mu(E)
+ - [X] norm(E)
+ - [X] chi(k)
+ - [X] chi(R)
+ - [X] chi(q)
+** save marked [4/4]
+ - [X] mu, norm, deriv mu/norm, second mu/norm
+ - [X] chi, chik, chik2, chik3
+ - [X] chir: magnitude, real imaginary
+ - [X] chiq: magnitude, real imaginary
+** save each
+ - [X] mu, norm, chik chir chiq
 ** clear project name
+ - [X] 
 
-* old Athena's edit menu
-
-** titles
-** data as text
-** Ifeffit show (strings, groups, arrays)
-** journal
-** reports [0/3]
+* old Athena's edit menu [0/8]
+ - [ ] titles
+ - [ ] data as text
+ - [ ] Ifeffit show (strings, groups, arrays)
+ - [ ] journal
+ - [ ] reports
  - [ ] csv
  - [ ] excel
  - [ ] xfit
 
-* Group menu
-
-** copy group, copy series
-** about group, about marked
-** rename
-** move up and down
-** remove group, removed marked, close project
+* Group menu [5/8]
+ - [X]  copy group
+ - [ ]  copy series
+ - [X]  about group
+ - [ ]  about marked
+ - [X]  rename
+ - [ ]  move up and down
+ - [X]  remove group, removed marked
+ - [X]  close project
 
 * Values
 
 ** parameter constraint
-*** all groups to current, individual, group, all
-*** all marked to current, individual, group, all
+*** all groups to current [0/3]
+ - [ ]  individual
+ - [ ]  group
+ - [ ]  all
+*** all marked to current [0/3]
+ - [ ]  individual
+ - [ ]  group
+ - [ ]  all
 
 ** frozen groups
+ - [ ] implement it
 
-** set E0 for this, all, marked
+** set E0 [0/3]
+ - [ ]  for this
+ - [ ]  all
+ - [ ]  marked
 
 ** tie reference channel
+ - [ ] 
 
-* Plot
+* Plot [0/4]
+ - [ ]  zoom, unzoom, cursor
+ - [ ]  plot I0 marked
+ - [ ]  stddev and varience plots
+ - [ ]  group selection replot
 
-** zoom, unzoom, cursor
+* Merge [0/4]
+ - [ ] mue
+ - [ ] norm
+ - [ ] chi
+ - [ ] weight by noise/importance
 
-** plot I0 marked
+* Plugin registry [0/2]
+ - [ ] GUI tool
+ - [ ] test data against plugins
 
-** stddev and varience plots
-
-** group selection replot
-
-* Merge
-
-* Plugin registry
-
-* Help
-
-** about
-
-** demos
-
-** document
-
-** memory usage
+* Help [1/4]
+ - [X]  about
+ - [ ]  demos
+ - [ ]  document
+ - [ ]  memory usage

@@ -4,8 +4,9 @@ use Wx qw( :everything );
 use base 'Wx::Panel';
 use Wx::Event qw(EVT_LIST_ITEM_ACTIVATED EVT_LIST_ITEM_SELECTED EVT_BUTTON  EVT_KEY_DOWN);
 
-use vars qw($label);
+use vars qw($label $tag);
 $label = "Calibrate data";
+$tag = 'Calibrate';
 
 sub new {
   my ($class, $parent, $app) = @_;
