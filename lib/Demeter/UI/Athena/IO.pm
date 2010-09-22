@@ -17,7 +17,7 @@ our @EXPORT = qw(Import Export save_column save_marked save_each);
 
 sub Export {
   my ($app, $how, $fname) = @_;
-  return if not $app->{main}->{list}->GetCount;
+  return if $app->is_empty;
 
   my @data;
   foreach my $i (0 .. $app->{main}->{list}->GetCount-1) {
@@ -43,6 +43,8 @@ sub Export {
   $data[0]->write_athena($fname, @data);
   $data[0]->push_mru("xasdata", $fname);
   $app->set_mru;
+  $app->{main}->{project}->SetLabel(basename($fname, '.prj'));
+  $app->{main}->{currentproject} = $fname;
   my $extra = ($how eq 'marked') ? " with marked groups" : q{};
   $app->{main}->status("Saved project file $fname".$extra);
   return $fname;
@@ -228,7 +230,7 @@ sub _prj {
 
 sub save_column {
   my ($app, $how) = @_;
-  return if not $app->{main}->{list}->GetCount;
+  return if $app->is_empty;
 
   my $data = $app->{main}->{list}->GetClientData($app->{main}->{list}->GetSelection);
   (my $base = $data->name) =~ s{[^-a-zA-Z0-9.+]+}{_}g;
@@ -255,7 +257,7 @@ sub save_column {
 
 sub save_marked {
   my ($app, $how) = @_;
-  return if not $app->{main}->{list}->GetCount;
+  return if $app->is_empty;
 
   my @data = ();
   foreach my $i (0 .. $app->{main}->{list}->GetCount-1) {

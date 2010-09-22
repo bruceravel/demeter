@@ -6,17 +6,20 @@
  - [ ] it is annoying that the background trace is blue and the data is red
  - [ ] weighting by noise or importance?
 
-* other features [0/8]
- - [ ]  column selection persistance
- - [ ]  right click pop up menus on parameter StaticText-s
- - [ ]  stacking
- - [ ]  indicators
- - [ ]  plotting styles
- - [ ]  tie spline values in k and E
- - [ ]  recommended fft_kmax
- - [ ]  need to call mode after push_values
- - [ ]  modified indication
- - [ ]  merged group needs a "file" exaplining what it is
+* other features [0/11]
+ - [ ] column selection persistance
+ - [ ] right click pop up menus on parameter StaticText-s
+ - [ ] stacking
+ - [ ] indicators
+ - [ ] plotting styles
+ - [ ] tie spline values in k and E
+ - [ ] recommended fft_kmax
+ - [ ] need to call mode after push_values
+ - [ ] modified indication
+ - [ ] merged group needs a "file" exaplining what it is
+ - [ ] y/n to save when closing or exiting
+ - [ ] plot in E for a group that is of datatype chi(k) -- need
+       something better than the wxperl carp
 
 * file menu
 ** save column data [5/5]

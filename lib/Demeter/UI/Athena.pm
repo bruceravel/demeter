@@ -22,6 +22,7 @@ use File::Path;
 use File::Spec;
 use List::MoreUtils qw(any);
 use Readonly;
+use Scalar::Util qw{looks_like_number};
 
 use Wx qw(:everything);
 use Wx::Event qw(EVT_MENU EVT_CLOSE EVT_TOOL_ENTER EVT_CHECKBOX EVT_BUTTON
@@ -53,7 +54,10 @@ sub OnInit {
   $demeter -> co -> read_ini('athena');
   $demeter -> plot_with($demeter->co->default(qw(plot plotwith)));
   my $old_cwd = File::Spec->catfile($demeter->dot_folder, "athena.cwd");
-  chdir($demeter -> slurp($old_cwd)) if -r $old_cwd;
+  if (-r $old_cwd) {
+    my $yaml = YAML::Tiny::LoadFile($old_cwd);
+    chdir($yaml->{cwd});
+  };
 
   ## -------- create a new frame and set icon
   $app->{main} = Wx::Frame->new(undef, -1, 'Athena [XAS data processing] - <untitled>', wxDefaultPosition, wxDefaultSize,);
@@ -73,19 +77,18 @@ sub OnInit {
   $app -> main_window($hbox);
   $app -> side_bar($hbox);
 
-  ## -------- other "globals"
+  ## -------- "global" parameters
   $app->{lastplot} = [q{}, q{}];
   $app->{selected} = -1;
+  $app->{modified} = -1;
   $app->{main}->{currentproject} = q{};
   $app->{main}->{showing} = q{};
+
+  ## -------- a few more top-level widget-y things
   $app->{main}->{Status} = Demeter::UI::Athena::Status->new($app->{main});
   $app->{main}->{Status}->SetTitle("Athena [Status Buffer]");
   $app->{Buffer} = Demeter::UI::Artemis::Buffer->new($app->{main});
   $app->{Buffer}->SetTitle("Athena [Ifeffit \& Plot Buffer]");
-  ## this needs to be fixed...
-  $app->{Buffer}->{ifeffitprompt}->Enable(0);
-  $app->{Buffer}->{commandline}->SetValue('## broken ...');
-  $app->{Buffer}->{commandline}->Enable(0);
 
   $demeter->set_mode(callback     => \&ifeffit_buffer,
 		     plotcallback => ($demeter->mo->template_plot eq 'pgplot') ? \&ifeffit_buffer : \&plot_buffer,
@@ -138,26 +141,24 @@ sub mouseover {
 
 
 sub on_close {
-  my ($self, $event) = @_;
-#  if ($app->{main} -> {modified}) {
-#    ## offer to save project....
-#    my $yesno = Wx::MessageDialog->new($app->{main},
-#				       "Save this project before exiting?",
-#				       "Save project?",
-#				       wxYES_NO|wxCANCEL|wxYES_DEFAULT|wxICON_QUESTION);
-#    my $result = $yesno->ShowModal;
-#    if ($result == wxID_CANCEL) {
-#      $app->{main}->status("Not exiting Artemis.");
-#      return 0;
-#    };
-#    save_project(\%frames) if $result == wxID_YES;
-#  };
+  my ($app, $event) = @_;
+  if ($app->{modified}) {
+    ## offer to save project....
+    my $yesno = Wx::MessageDialog->new($app->{main},
+				       "Save this project before exiting?",
+				       "Save project?",
+				       wxYES_NO|wxCANCEL|wxYES_DEFAULT|wxICON_QUESTION);
+    my $result = $yesno->ShowModal;
+    if ($result == wxID_CANCEL) {
+      $app->{main}->status("Not exiting Athena after all.");
+      return 0;
+    };
+    $app -> Export('all', $app->{main}->{currentproject}) if $result == wxID_YES;
+  };
 
 #  unlink $app->{main}->{autosave_file};
   my $persist = File::Spec->catfile($demeter->dot_folder, "athena.cwd");
-  open(my $P, '>'.$persist);
-  print $P cwd;
-  close $P;
+  YAML::Tiny::DumpFile($persist, {cwd=>cwd});
   $demeter->mo->destroy_all;
   $event->Skip(1);
 };
@@ -246,6 +247,9 @@ Readonly my $PLOT_YAML	  => Wx::NewId();
 Readonly my $MODE_STATUS  => Wx::NewId();
 Readonly my $PERL_MODULES => Wx::NewId();
 Readonly my $STATUS	  => Wx::NewId();
+Readonly my $IFEFFIT_STRINGS => Wx::NewId();
+Readonly my $IFEFFIT_GROUPS  => Wx::NewId();
+Readonly my $IFEFFIT_ARRAYS  => Wx::NewId();
 
 Readonly my $MARK_ALL      => Wx::NewId();
 Readonly my $MARK_NONE     => Wx::NewId();
@@ -326,6 +330,11 @@ sub menubar {
   $debugmenu->Append($PERL_MODULES, "Perl modules",               "Show perl module versions", wxITEM_NORMAL );
   $monitormenu->Append($SHOW_BUFFER, "Show command buffer", 'Show the Ifeffit and plotting commands buffer' );
   $monitormenu->Append($STATUS,      "Show status bar buffer", 'Show the buffer containing messages written to the status bars');
+  $monitormenu->AppendSeparator;
+  $monitormenu->Append($IFEFFIT_STRINGS, "Show Ifeffit strings", "Examine all the strings currently defined in Ifeffit");
+  $monitormenu->Append($IFEFFIT_GROUPS,  "Show Ifeffit groups",  "Examine all the data groups currently defined in Ifeffit");
+  $monitormenu->Append($IFEFFIT_ARRAYS,  "Show Ifeffit arrays",  "Examine all the arrays currently defined in Ifeffit");
+  $monitormenu->AppendSeparator;
   $monitormenu->AppendSubMenu($debugmenu, 'Debug options',     'Display debugging tools')
     if ($demeter->co->default("athena", "debug_menus"));
 
@@ -549,6 +558,24 @@ sub OnMenuClick {
       $app->{main}->{Status} -> Show(1);
       last SWITCH;
     };
+    ($id == $IFEFFIT_STRINGS) and do {
+      $demeter->dispose('show @strings');
+      $app->{Buffer}->{iffcommands}->ShowPosition($app->{Buffer}->{iffcommands}->GetLastPosition);
+      $app->{Buffer}->Show(1);
+      last SWITCH;
+    };
+    ($id == $IFEFFIT_GROUPS) and do {
+      $demeter->dispose('show @groups');
+      $app->{Buffer}->{iffcommands}->ShowPosition($app->{Buffer}->{iffcommands}->GetLastPosition);
+      $app->{Buffer}->Show(1);
+      last SWITCH;
+    };
+    ($id == $IFEFFIT_ARRAYS) and do {
+      $demeter->dispose('show @arrays');
+      $app->{Buffer}->{iffcommands}->ShowPosition($app->{Buffer}->{iffcommands}->GetLastPosition);
+      $app->{Buffer}->Show(1);
+      last SWITCH;
+    };
     ## -------- debug submenu
     ($id == $PLOT_YAML) and do {
       $app->{main}->{PlotE}->pull_single_values;
@@ -697,7 +724,7 @@ sub main_window {
   #print join("|", $app->{main}->{views}->GetChildren), $/;
   $app->mouseover($app->{main}->{views}->GetChildren, "Change data processing and analysis tools using this menu.");
 
-  foreach my $which (qw(Main Calibrate Prefs)) {
+  foreach my $which (qw(Main Calibrate Journal Prefs)) {
     next if $INC{"Demeter/UI/Athena/$which.pm"};
     require "Demeter/UI/Athena/$which.pm";
     $app->{main}->{$which} = "Demeter::UI::Athena::$which"->new($app->{main}->{views}, $app);
@@ -804,7 +831,7 @@ sub view_changing {
   my $nviews  = $app->{main}->{views}->GetPageCount;
   #print join("|", $app, $event, $ngroups, $event->GetSelection), $/;
 
-  if (($event->GetSelection != 0) and ($event->GetSelection != $nviews-1)) {
+  if (($event->GetSelection != 0) and ($event->GetSelection < $nviews-2)) {
     if (not $ngroups) {
       $app->{main}->status(sprintf("You have no data imported in Athena, thus you cannot use the %s tool.",
 				   lc($app->{main}->{views}->GetPageText($event->GetSelection))));
@@ -986,10 +1013,14 @@ sub merge {
   return if $app->is_empty;
   my $busy = Wx::BusyCursor->new();
   my @data = ();
-  my $max = q{};
+  my $max = 0;
   foreach my $i (0 .. $app->{main}->{list}->GetCount-1) {
-    ($max = $1||1) if ($app->{main}->{list}->GetClientData($i)->name =~ m{\A\s*merge\s+(\d*)\s\z});
-    push(@data, $app->{main}->{list}->GetClientData($i)) if $app->{main}->{list}->IsChecked($i);
+    my $this = $app->{main}->{list}->GetClientData($i);
+    if ($this->name =~ m{\A\s*merge\s*(\d*)\s*\z}) {
+      $max = $1 if (looks_like_number($1) and ($1 > $max));
+      $max ||= 1;
+    };
+    push(@data, $this) if $app->{main}->{list}->IsChecked($i);
   };
   if (not @data) {
     $app->{main}->status("No groups are marked.  Merge cancelled.");
@@ -997,31 +1028,29 @@ sub merge {
   };
 
   my $merged = $data[0]->merge($how, @data);
+  $max = q{} if not $max;
   $max = sprintf(" %d", $max+1) if $max;
   $merged->name('merge'.$max);
   $app->{main}->{list}->Append($merged->name, $merged);
   $app->{main}->{list}->SetSelection($app->{main}->{list}->GetCount-1);
+  $app->OnGroupSelect(q{}, $app->{main}->{list}->GetSelection);
   $app->{main}->{Main}->mode($merged, 1, 0);
   $app->{main}->{list}->Check($app->{main}->{list}->GetCount-1, 1);
-  my $plot = $merged->co->default('athena', 'merge_plot');
 
+  ## handle plotting, respecting the choice in the athena->merge_plot config parameter
+  my $plot = $merged->co->default('athena', 'merge_plot');
   if ($plot =~ m{stddev|variance}) {
     $app->{main}->{PlotE}->pull_single_values;
     $app->{main}->{PlotK}->pull_single_values;
     $merged->plot($plot);
-  } elsif (($plot eq 'marked') and ($how eq 'e')) {
+  } elsif (($plot eq 'marked') and ($how =~ m{\A[en]\z})) {
     $app->{main}->{PlotE}->pull_single_values;
-    $merged->po->set(e_bkg=>0, e_pre=>0, e_post=>0, e_norm=>0, e_der=>0, e_sec=>0, e_markers=>0,e_i0=>0, e_signal=>0);
-    $merged->po->set(e_mu=>1);
-    $merged->po->start_plot;
-    $_->plot('e') foreach (@data, $merged);
-  } elsif (($plot eq 'marked') and ($how eq 'n')) {
-    $app->{main}->{PlotE}->pull_marked_values;
-    $merged->po->set(e_bkg=>0, e_pre=>0, e_post=>0, e_norm=>0, e_der=>0, e_sec=>0, e_markers=>0,e_i0=>0, e_signal=>0);
-    $merged->po->set(e_mu=>1, e_norm=>1);
+    $merged->po->set(e_mu=>1, e_bkg=>0, e_pre=>0, e_post=>0, e_norm=>0, e_der=>0, e_sec=>0, e_markers=>0, e_i0=>0, e_signal=>0);
+    $merged->po->set(e_norm=>1) if ($how eq 'n');
     $merged->po->start_plot;
     $_->plot('e') foreach (@data, $merged);
   } elsif (($plot eq 'marked') and ($how eq 'k')) {
+    $app->{main}->{PlotK}->pull_single_values;
     $merged->po->chie(0);
     $merged->po->start_plot;
     $_->plot('k') foreach (@data, $merged);
@@ -1033,6 +1062,15 @@ sub merge {
 
 sub Clear {
   my ($app) = @_;
+  if ($app->{modified}) {
+    ## offer to save project....
+    my $yesno = Wx::MessageDialog->new($app->{main},
+				       "Save this project first?",
+				       "Save project?",
+				       wxYES_NO|wxYES_DEFAULT|wxICON_QUESTION);
+    my $result = $yesno->ShowModal;
+    $app -> Export('all', $app->{main}->{currentproject}) if $result == wxID_YES;
+  };
   $app->{main}->{currentproject} = q{};
   $app->{main}->{project}->SetLabel('<untitled>');
   $app->{main}->status(sprintf("Unamed the current project."));

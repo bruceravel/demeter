@@ -124,7 +124,7 @@ sub OnChar {
     my $command = $textctrl->GetValue;
     if ($command !~ m{\A\s*\z}) {
       ## turn off all disposal modes other than ifeffit
-      $Demeter::UI::Artemis::demeter->dispose($command);
+      Demeter->dispose($command);
       push @ifeffit_buffer, $command;
       @ifeffit_buffer = reverse( uniq( reverse(@ifeffit_buffer)));
       $pointer = $#ifeffit_buffer+1;
