@@ -895,9 +895,9 @@ sub side_bar {
   ## -------- fill the plotting options tabs
   $app->{main}->{plottabs}  = Wx::Notebook->new($toolpanel, -1, wxDefaultPosition, wxDefaultSize, wxNB_TOP);
   foreach my $m (qw(PlotE PlotK PlotR PlotQ Stack Indicators)) {
-    next if $INC{"Demeter/UI/Athena/$m.pm"};
-    require "Demeter/UI/Athena/$m.pm";
-    $app->{main}->{$m} = "Demeter::UI::Athena::$m"->new($app->{main}->{plottabs}, $app);
+    next if $INC{"Demeter/UI/Athena/Plot/$m.pm"};
+    require "Demeter/UI/Athena/Plot/$m.pm";
+    $app->{main}->{$m} = "Demeter::UI::Athena::Plot::$m"->new($app->{main}->{plottabs}, $app);
     if ($m =~ m{[KQ]\z}) {
       $app->{main}->{plottabs} -> AddPage($app->{main}->{$m}, lc(substr($m, -1)), 0);
     } elsif ($m eq 'Stack') {

@@ -1,4 +1,4 @@
-package Demeter::UI::Athena::Rebin;
+package Demeter::UI::Athena::ColumnSelection::Preprocess;
 
 use Wx qw( :everything );
 use base 'Wx::Panel';

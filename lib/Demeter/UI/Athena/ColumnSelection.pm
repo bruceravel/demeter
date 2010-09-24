@@ -24,9 +24,9 @@ use Wx::Event qw(EVT_RADIOBUTTON EVT_CHECKBOX EVT_CHOICE EVT_BUTTON);
 use Wx::Perl::Carp;
 use Demeter::UI::Wx::SpecialCharacters qw(:all);
 
-use Demeter::UI::Athena::Preprocess;
-use Demeter::UI::Athena::Rebin;
-use Demeter::UI::Athena::Reference;
+use Demeter::UI::Athena::ColumnSelection::Preprocess;
+use Demeter::UI::Athena::ColumnSelection::Rebin;
+use Demeter::UI::Athena::ColumnSelection::Reference;
 
 use List::MoreUtils qw(minmax);
 
@@ -211,7 +211,7 @@ sub tabs {
 
   $this->{tabs} = Wx::Notebook->new($parent, -1, wxDefaultPosition, wxDefaultSize, wxNB_TOP);
   foreach my $m (qw(Preprocess Rebin Reference)) {
-    $this->{$m} = "Demeter::UI::Athena::$m"->new($this->{tabs}, $data);
+    $this->{$m} = "Demeter::UI::Athena::ColumnSelection::$m"->new($this->{tabs}, $data);
     $this->{tabs} -> AddPage($this->{$m}, $m, ($m eq 'Reference'));
   };
 

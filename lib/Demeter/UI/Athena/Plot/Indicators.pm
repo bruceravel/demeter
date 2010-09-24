@@ -1,4 +1,4 @@
-package Demeter::UI::Athena::Indicators;
+package Demeter::UI::Athena::Plot::Indicators;
 
 use Wx qw( :everything );
 use base 'Wx::Panel';

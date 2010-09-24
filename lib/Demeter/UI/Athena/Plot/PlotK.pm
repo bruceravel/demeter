@@ -1,4 +1,4 @@
-package Demeter::UI::Athena::PlotK;
+package Demeter::UI::Athena::Plot::PlotK;
 
 use Wx qw( :everything );
 use base 'Wx::Panel';

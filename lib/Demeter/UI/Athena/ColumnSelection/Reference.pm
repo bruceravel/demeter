@@ -1,4 +1,4 @@
-package Demeter::UI::Athena::Reference;
+package Demeter::UI::Athena::ColumnSelection::Reference;
 
 use Wx qw( :everything );
 use base 'Wx::Panel';
