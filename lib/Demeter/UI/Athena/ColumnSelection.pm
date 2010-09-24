@@ -20,9 +20,13 @@ use warnings;
 
 use Wx qw( :everything);
 use base qw(Wx::Dialog);
-use Wx::Event qw(EVT_RADIOBUTTON EVT_CHECKBOX EVT_CHOICE);
+use Wx::Event qw(EVT_RADIOBUTTON EVT_CHECKBOX EVT_CHOICE EVT_BUTTON);
 use Wx::Perl::Carp;
 use Demeter::UI::Wx::SpecialCharacters qw(:all);
+
+use Demeter::UI::Athena::Preprocess;
+use Demeter::UI::Athena::Rebin;
+use Demeter::UI::Athena::Reference;
 
 use List::MoreUtils qw(minmax);
 
@@ -56,11 +60,7 @@ sub new {
   #$this->do_the_size_dance;
   $this->other_parameters($leftpane, $data);
   $this->strings($leftpane, $data);
-
-
-  ## add Notebook with Reference, Bin, Preprocess
-  ##$app->{main}->{plottabs}  = Wx::Notebook->new($toolpanel, -1, wxDefaultPosition, wxDefaultSize, wxNB_TOP);
-
+  $this->tabs($leftpane, $data);
 
 
   my $buttons = Wx::BoxSizer->new( wxHORIZONTAL );
@@ -69,8 +69,6 @@ sub new {
   $this->{cancel} = Wx::Button->new($leftpane, wxID_CANCEL, "Cancel", wxDefaultPosition, wxDefaultSize);
   $buttons -> Add($this->{cancel}, 1, wxGROW|wxALL, 5);
   $left -> Add($buttons, 0, wxGROW|wxALL, 5);
-
-
 
   my $rightpane = Wx::Panel->new($this, -1, wxDefaultPosition, [-1,-1]);
   my $right = Wx::BoxSizer->new( wxVERTICAL );
@@ -86,13 +84,6 @@ sub new {
   $rightpane -> SetSizerAndFit($right);
   $this      -> SetSizerAndFit($hbox);
   return $this;
-};
-
-sub do_the_size_dance {
-  my ($top) = @_;
-  my @size = $top->GetSizeWH;
-  $top -> SetSize($size[0], $size[1]+1);
-  $top -> SetSize($size[0], $size[1]);
 };
 
 sub columns {
@@ -177,8 +168,11 @@ sub other_parameters {
   $others->Add(1,1,1);
   $this->{each} = Wx::CheckBox->new($parent, -1, 'Save each channel as a group');
   $others -> Add($this->{each}, 0, wxGROW|wxALL, 5);
+  $this->{replot} = Wx::Button->new($parent, -1, 'Replot');
+  $others -> Add($this->{replot}, 0, wxGROW|wxALL, 5);
   $this->{each}->Enable(0);
   $this->{left}->Add($others, 0, wxGROW|wxALL, 0);
+  EVT_BUTTON($this, $this->{replot}, sub{  $this->display_plot($data) });
 
   $others = Wx::BoxSizer->new( wxHORIZONTAL );
   $this->{datatype} = Wx::Choice->new($parent,-1, wxDefaultPosition, wxDefaultSize,
@@ -210,6 +204,19 @@ sub strings {
   $this->{left}->Add($gbs, 0, wxGROW|wxALL, 5);
 
   return $this;
+};
+
+sub tabs {
+  my ($this, $parent, $data) = @_;
+
+  $this->{tabs} = Wx::Notebook->new($parent, -1, wxDefaultPosition, wxDefaultSize, wxNB_TOP);
+  foreach my $m (qw(Preprocess Rebin Reference)) {
+    $this->{$m} = "Demeter::UI::Athena::$m"->new($this->{tabs}, $data);
+    $this->{tabs} -> AddPage($this->{$m}, $m, ($m eq 'Reference'));
+  };
+
+  $this->{left}->Add($this->{tabs}, 0, wxGROW|wxALL, 5);
+
 };
 
 sub OnLnClick {

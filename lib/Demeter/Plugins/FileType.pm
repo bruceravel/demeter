@@ -23,6 +23,8 @@ has 'filename'    => (is => 'rw', isa => 'Str', default => q{});
 has 'folder'      => (is => 'rw', isa => 'Str', default => q{});
 has 'fixed'       => (is => 'rw', isa => 'Str', default => q{});
 
+has 'output'      => (is => 'ro', isa => 'Str', default => q{data});
+
 __PACKAGE__->meta->make_immutable;
 1;
 
@@ -281,6 +283,14 @@ never need to set this directly.
 
 This contains the fully resolved file name of the converted file.
 The converted file typically sits in Demeter's stash folder.
+
+=item C<output>
+
+This string is either "data" or "project" to indicate what kind of
+file is written to the stash area by the plugin.  Most plugins filter
+an input data file into a stash file that Ifeffit can read.  A plugin
+can also make an Athena project file, in which case this attribute
+tells Demeter to interpret it that way.
 
 =back
 

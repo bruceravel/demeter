@@ -116,6 +116,8 @@ sub _data {
 
   my $busy = Wx::BusyCursor->new();
   my $data = Demeter::Data->new(file=>$file);
+
+  ## -------- import persistance file
   my $persist = File::Spec->catfile($data->dot_folder, "athena.column_selection");
   $data -> set(name	   => basename($file),
 	       is_col      => 1,
@@ -139,10 +141,30 @@ sub _data {
     };
   };
 
+  ## -------- display column selection dialog
   my $repeated = 1;
+  my $colsel;
   if ($first or ($data->columns ne $yaml->{columns})) {
-    my $colsel = Demeter::UI::Athena::ColumnSelection->new($app->{main}, $app, $data);
+    $colsel = Demeter::UI::Athena::ColumnSelection->new($app->{main}, $app, $data);
     $colsel->{ok}->SetFocus;
+    ## set Reference controls from yaml
+    if ($data->columns eq $yaml->{columns}) {
+      $colsel->{Reference}->{do_ref}->SetValue($yaml->{do_ref});
+      $colsel->{Reference}->{ln}    ->SetValue($yaml->{ref_ln});
+      $colsel->{Reference}->{same}  ->SetValue($yaml->{ref_same});
+      if ($yaml->{ref_numer}) {
+	$colsel->{Reference}->{'n'.$yaml->{ref_numer}}->SetValue(1);
+	$colsel->{Reference}->{numerator}   = $yaml->{ref_numer};
+      };
+      if ($yaml->{ref_denom}) {
+	$colsel->{Reference}->{'d'.$yaml->{ref_denom}}->SetValue(1);
+	$colsel->{Reference}->{denominator} = $yaml->{ref_denom};
+      };
+      $colsel->{Reference}->EnableReference(0, $data);
+    };
+    ## set Rebinning controls from yaml
+    ## set Preprocessing controls from yaml
+
     my $result = $colsel -> ShowModal;
     if ($result == wxID_CANCEL) {
       $app->{main}->status("Cancelled column selection.");
@@ -153,6 +175,7 @@ sub _data {
   };
   undef $yaml;
 
+  ## -------- import data group
   $data -> display(0);
   $data -> po -> e_markers(1);
   $data -> _update('all');
@@ -167,6 +190,19 @@ sub _data {
   $data->push_mru("xasdata", $file);
   $app->set_mru;
 
+  ## -------- import reference if reference channel is set
+  if ($colsel->{Reference}->{do_ref}->GetValue) {
+    my $ref = $colsel->{Reference}->{reference};
+    $app->{main}->{list}->Append($ref->name, $ref);
+    $ref->reference($data);
+    if ($colsel->{Reference}->{same}) {
+      $ref->bkg_z($data->bkg_z);
+      $ref->fft_edge($data->fft_edge);
+    };
+    $ref->display(0);
+  };
+
+  ## -------- save persistance file
   my %persistence = (
 		     columns	 => $data->columns,
 		     energy	 => $data->energy,
@@ -176,17 +212,23 @@ sub _data {
 		     each        => 0,
 		     datatype    => $data->datatype,
 		     units       => $data->is_kev,
+		     ## reference
+		     do_ref      => $colsel->{Reference}->{do_ref}->GetValue,
+		     ref_ln      => $colsel->{Reference}->{ln}->GetValue,
+		     ref_same    => $colsel->{Reference}->{same}->GetValue,
+		     ref_numer   => $colsel->{Reference}->{numerator},
+		     ref_denom   => $colsel->{Reference}->{denominator},
 		    );
-
   my $string .= YAML::Tiny::Dump(\%persistence);
   open(my $ORDER, '>'.$persist);
   print $ORDER $string;
   close $ORDER;
 
-
+  ## -------- last chores before finishing
   chdir dirname($file);
   $app->modified(1);
   undef $busy;
+  undef $colsel;
   $app->{main}->status("Imported data from $file");
 }
 
