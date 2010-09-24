@@ -128,6 +128,7 @@ sub merge {
   $merged -> bkg_e0($self->bkg_e0);
   $merged -> bkg_eshift(0);
   $merged -> i0_string(q{});
+  $merged -> provenance("Merge of  " . join(', ', map {$_->name} (uniq($self, @data)))   );
   $merged -> name("data merged as " . $howstring{$how});
   ($how =~ m{^k}) ? $merged -> datatype('chi') : $merged -> datatype('xmu');
 

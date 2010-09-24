@@ -1,26 +1,30 @@
 -*- org -*-
 
-* Demeter bugs and shortcomings discovered  [0/5]
+* Demeter bugs and shortcomings discovered  [0/8]
  - [ ] save_many fails to bring things up to date
  - [ ] save_many fails to use flat/norm correctly
  - [ ] it is annoying that the background trace is blue and the data is red
  - [ ] weighting by noise or importance?
  - [ ] merge array in write_athena
+ - [ ] phase corrected FTs
+ - [ ] bkg_fix_step does not work
+ - [ ] clnorm
 
-* other features [3/12]
- - [ ] column selection persistance
- - [ ] right click pop up menus on parameter StaticText-s
- - [ ] stacking
+* other features [10/13]
+ - [X] column selection persistance
+ - [X] right click pop up menus on parameter StaticText-s
+ - [X] stacking
  - [ ] indicators
  - [ ] plotting styles
  - [X] tie spline values in k and E
- - [ ] recommended fft_kmax
- - [ ] need to call mode after push_values
- - [ ] merged group needs a "file" exaplining what it is
+ - [X] recommended fft_kmax
+ - [X] need to call mode after push_values
+ - [X] merged group needs a "file" exaplaining what it is
  - [X] plot in E for a group that is of datatype chi(k) -- need
        something better than the wxperl carp
  - [X] modified indication and y/n to save when closing or exiting
- - [ ] command line arguments
+ - [X] command line arguments
+ - [ ] implement bkg_stan
 
 * file menu
 ** save column data [5/5]
@@ -48,27 +52,28 @@
  - [ ] excel report
  - [ ] xfit output
 
-* Group menu [5/8]
- - [X]  copy group
- - [ ]  copy series
- - [X]  about group
- - [ ]  about marked
- - [X]  rename
- - [ ]  move up and down
- - [X]  remove group, removed marked
- - [X]  close project
+* Group menu [5/9]
+ - [X] copy group
+ - [ ] copy series
+ - [X] about group
+ - [ ] about marked
+ - [X] rename
+ - [ ] move up and down
+ - [X] remove group, removed marked
+ - [X] close project
+ - [ ] change datatype
 
 * Values
 
 ** parameter constraint
-*** all groups to current [0/3]
- - [ ]  individual
- - [ ]  group
- - [ ]  all
-*** all marked to current [0/3]
- - [ ]  individual
- - [ ]  group
- - [ ]  all
+*** all groups to current [3/3]
+ - [X]  individual
+ - [X]  group
+ - [X]  all
+*** all marked to current [3/3]
+ - [X]  individual
+ - [X]  group
+ - [X]  all
 
 ** frozen groups
  - [ ] implement it
@@ -81,16 +86,16 @@
 ** tie reference channel
  - [ ] 
 
-* Plot [0/4]
+* Plot [1/4]
  - [ ]  zoom, unzoom, cursor
  - [ ]  plot I0 marked
- - [ ]  stddev and varience plots
+ - [X]  stddev and varience plots
  - [ ]  group selection replot
 
-* Merge [0/4]
- - [ ] mue
- - [ ] norm
- - [ ] chi
+* Merge [3/4]
+ - [X] mue
+ - [X] norm
+ - [X] chi
  - [ ] weight by noise/importance
 
 * Plugin registry [0/2]

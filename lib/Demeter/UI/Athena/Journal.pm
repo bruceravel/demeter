@@ -25,4 +25,17 @@ sub new {
   return $this;
 };
 
+sub pull_values {
+  my ($this, $data) = @_;
+  1;
+};
+sub push_values {
+  my ($this, $data) = @_;
+  1;
+};
+sub mode {
+  my ($this, $data, $enabled, $frozen) = @_;
+  1;
+};
+
 1;

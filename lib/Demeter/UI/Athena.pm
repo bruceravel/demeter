@@ -28,8 +28,8 @@ use Scalar::Util qw{looks_like_number};
 use Wx qw(:everything);
 use Wx::Event qw(EVT_MENU EVT_CLOSE EVT_TOOL_ENTER EVT_CHECKBOX EVT_BUTTON
 		 EVT_ENTER_WINDOW EVT_LEAVE_WINDOW
-		 EVT_RIGHT_UP EVT_LISTBOX
-		 EVT_CHOICEBOOK_PAGE_CHANGING EVT_RADIOBOX
+		 EVT_RIGHT_UP EVT_LISTBOX EVT_RADIOBOX
+		 EVT_CHOICEBOOK_PAGE_CHANGED EVT_CHOICEBOOK_PAGE_CHANGING
 	       );
 use base 'Wx::App';
 
@@ -103,7 +103,8 @@ sub OnInit {
   $app->{main} -> SetSizerAndFit($hbox);
   #$app->{main} -> SetSize(600,800);
   $app->{main} -> Show( 1 );
-  $app->process_argv(@ARGV);
+  $app->{main}->Refresh;
+  $app->{main}->Update;
   $app->{main} -> status("Welcome to Athena (" . $demeter->identify . ")");
   1;
 };
@@ -111,12 +112,14 @@ sub OnInit {
 sub process_argv {
   my ($app, @args) = @_;
   foreach my $a (@args) {
-    if ($a =~ m{\A-\d+\z}) {
-      ## take the i^th item from the mru list
+    if ($a =~ m{\A-(\d+)\z}) {
+      my @list = $demeter->get_mru_list('xasdata');
+      my $i = $1-1;
+      #print $list[$i]->[0], $/;
+      $app->Import($list[$i]->[0]);
     } elsif (-r File::Spec->catfile($demeter->mo->iwd, $a)) {
-      print File::Spec->catfile($demeter->mo->iwd, $a), "\n";
-      ##$app->Import(File::Spec->catfile($demeter->mo->iwd, $a));
-    };
+      $app->Import(File::Spec->catfile($demeter->mo->iwd, $a));
+    }; # switches?
   };
 };
 
@@ -214,75 +217,95 @@ sub current_data {
   return $app->{main}->{list}->GetClientData($app->{main}->{list}->GetSelection);
 };
 
-Readonly my $SAVE_MARKED  => Wx::NewId();
-Readonly my $SAVE_MUE     => Wx::NewId();
-Readonly my $SAVE_NORM    => Wx::NewId();
-Readonly my $SAVE_CHIK    => Wx::NewId();
-Readonly my $SAVE_CHIR    => Wx::NewId();
-Readonly my $SAVE_CHIQ    => Wx::NewId();
+Readonly my $SAVE_MARKED       => Wx::NewId();
+Readonly my $SAVE_MUE	       => Wx::NewId();
+Readonly my $SAVE_NORM	       => Wx::NewId();
+Readonly my $SAVE_CHIK	       => Wx::NewId();
+Readonly my $SAVE_CHIR	       => Wx::NewId();
+Readonly my $SAVE_CHIQ	       => Wx::NewId();
 
-Readonly my $EACH_MUE     => Wx::NewId();
-Readonly my $EACH_NORM    => Wx::NewId();
-Readonly my $EACH_CHIK    => Wx::NewId();
-Readonly my $EACH_CHIR    => Wx::NewId();
-Readonly my $EACH_CHIQ    => Wx::NewId();
+Readonly my $EACH_MUE	       => Wx::NewId();
+Readonly my $EACH_NORM	       => Wx::NewId();
+Readonly my $EACH_CHIK	       => Wx::NewId();
+Readonly my $EACH_CHIR	       => Wx::NewId();
+Readonly my $EACH_CHIQ	       => Wx::NewId();
 
-Readonly my $MARKED_XMU	  => Wx::NewId();
-Readonly my $MARKED_NORM  => Wx::NewId();
-Readonly my $MARKED_DER	  => Wx::NewId();
-Readonly my $MARKED_NDER  => Wx::NewId();
-Readonly my $MARKED_SEC	  => Wx::NewId();
-Readonly my $MARKED_NSEC  => Wx::NewId();
-Readonly my $MARKED_CHI	  => Wx::NewId();
-Readonly my $MARKED_CHIK  => Wx::NewId();
-Readonly my $MARKED_CHIK2 => Wx::NewId();
-Readonly my $MARKED_CHIK3 => Wx::NewId();
-Readonly my $MARKED_RMAG  => Wx::NewId();
-Readonly my $MARKED_RRE	  => Wx::NewId();
-Readonly my $MARKED_RIM	  => Wx::NewId();
-Readonly my $MARKED_RPHA  => Wx::NewId();
-Readonly my $MARKED_QMAG  => Wx::NewId();
-Readonly my $MARKED_QRE	  => Wx::NewId();
-Readonly my $MARKED_QIM	  => Wx::NewId();
-Readonly my $MARKED_QPHA  => Wx::NewId();
+Readonly my $MARKED_XMU	       => Wx::NewId();
+Readonly my $MARKED_NORM       => Wx::NewId();
+Readonly my $MARKED_DER	       => Wx::NewId();
+Readonly my $MARKED_NDER       => Wx::NewId();
+Readonly my $MARKED_SEC	       => Wx::NewId();
+Readonly my $MARKED_NSEC       => Wx::NewId();
+Readonly my $MARKED_CHI	       => Wx::NewId();
+Readonly my $MARKED_CHIK       => Wx::NewId();
+Readonly my $MARKED_CHIK2      => Wx::NewId();
+Readonly my $MARKED_CHIK3      => Wx::NewId();
+Readonly my $MARKED_RMAG       => Wx::NewId();
+Readonly my $MARKED_RRE	       => Wx::NewId();
+Readonly my $MARKED_RIM	       => Wx::NewId();
+Readonly my $MARKED_RPHA       => Wx::NewId();
+Readonly my $MARKED_QMAG       => Wx::NewId();
+Readonly my $MARKED_QRE	       => Wx::NewId();
+Readonly my $MARKED_QIM	       => Wx::NewId();
+Readonly my $MARKED_QPHA       => Wx::NewId();
 
-Readonly my $CLEAR_PROJECT => Wx::NewId();
+Readonly my $CLEAR_PROJECT     => Wx::NewId();
 
-Readonly my $RENAME	   => Wx::NewId();
-Readonly my $COPY	   => Wx::NewId();
-Readonly my $REMOVE	   => Wx::NewId();
-Readonly my $REMOVE_MARKED => Wx::NewId();
-Readonly my $DATA_YAML	   => Wx::NewId();
+Readonly my $RENAME	       => Wx::NewId();
+Readonly my $COPY	       => Wx::NewId();
+Readonly my $COPY_SERIES       => Wx::NewId();
+Readonly my $REMOVE	       => Wx::NewId();
+Readonly my $REMOVE_MARKED     => Wx::NewId();
+Readonly my $DATA_YAML	       => Wx::NewId();
 
-Readonly my $PLOT_QUAD	  => Wx::NewId();
-Readonly my $PLOT_IOSIG	  => Wx::NewId();
-Readonly my $PLOT_K123	  => Wx::NewId();
-Readonly my $PLOT_R123	  => Wx::NewId();
-Readonly my $PLOT_I0MARKED=> Wx::NewId();
-Readonly my $PLOT_STDDEV  => Wx::NewId();
-Readonly my $PLOT_VARIENCE=> Wx::NewId();
+Readonly my $VALUES_ALL	       => Wx::NewId();
+Readonly my $VALUES_MARKED     => Wx::NewId();
+Readonly my $TIE_REFERENCE     => Wx::NewId();
 
-Readonly my $SHOW_BUFFER  => Wx::NewId();
-Readonly my $PLOT_YAML	  => Wx::NewId();
-Readonly my $MODE_STATUS  => Wx::NewId();
-Readonly my $PERL_MODULES => Wx::NewId();
-Readonly my $STATUS	  => Wx::NewId();
-Readonly my $IFEFFIT_STRINGS => Wx::NewId();
-Readonly my $IFEFFIT_GROUPS  => Wx::NewId();
-Readonly my $IFEFFIT_ARRAYS  => Wx::NewId();
+Readonly my $FREEZE_TOGGLE     => Wx::NewId();
+Readonly my $FREEZE_ALL	       => Wx::NewId();
+Readonly my $UNFREEZE_ALL      => Wx::NewId();
+Readonly my $FREEZE_MARKED     => Wx::NewId();
+Readonly my $UNFREEZE_MARKED   => Wx::NewId();
+Readonly my $FREEZE_REGEX      => Wx::NewId();
+Readonly my $UNFREEZE_REGEX    => Wx::NewId();
+Readonly my $FREEZE_TOGGLE_ALL => Wx::NewId();
 
-Readonly my $MARK_ALL      => Wx::NewId();
-Readonly my $MARK_NONE     => Wx::NewId();
-Readonly my $MARK_INVERT   => Wx::NewId();
-Readonly my $MARK_TOGGLE   => Wx::NewId();
-Readonly my $MARK_REGEXP   => Wx::NewId();
-Readonly my $UNMARK_REGEXP => Wx::NewId();
+Readonly my $ZOOM	       => Wx::NewId();
+Readonly my $UNZOOM	       => Wx::NewId();
+Readonly my $CURSOR	       => Wx::NewId();
+Readonly my $PLOT_QUAD	       => Wx::NewId();
+Readonly my $PLOT_IOSIG	       => Wx::NewId();
+Readonly my $PLOT_K123	       => Wx::NewId();
+Readonly my $PLOT_R123	       => Wx::NewId();
+Readonly my $PLOT_I0MARKED     => Wx::NewId();
+Readonly my $PLOT_STDDEV       => Wx::NewId();
+Readonly my $PLOT_VARIENCE     => Wx::NewId();
 
-Readonly my $MERGE_MUE     => Wx::NewId();
-Readonly my $MERGE_NORM    => Wx::NewId();
-Readonly my $MERGE_CHI     => Wx::NewId();
-Readonly my $MERGE_IMP     => Wx::NewId();
-Readonly my $MERGE_NOISE   => Wx::NewId();
+Readonly my $SHOW_BUFFER       => Wx::NewId();
+Readonly my $PLOT_YAML	       => Wx::NewId();
+Readonly my $MODE_STATUS       => Wx::NewId();
+Readonly my $PERL_MODULES      => Wx::NewId();
+Readonly my $STATUS	       => Wx::NewId();
+Readonly my $IFEFFIT_STRINGS   => Wx::NewId();
+Readonly my $IFEFFIT_GROUPS    => Wx::NewId();
+Readonly my $IFEFFIT_ARRAYS    => Wx::NewId();
+Readonly my $IFEFFIT_MEMORY    => Wx::NewId();
+
+Readonly my $MARK_ALL	       => Wx::NewId();
+Readonly my $MARK_NONE	       => Wx::NewId();
+Readonly my $MARK_INVERT       => Wx::NewId();
+Readonly my $MARK_TOGGLE       => Wx::NewId();
+Readonly my $MARK_REGEXP       => Wx::NewId();
+Readonly my $UNMARK_REGEXP     => Wx::NewId();
+
+Readonly my $MERGE_MUE	       => Wx::NewId();
+Readonly my $MERGE_NORM	       => Wx::NewId();
+Readonly my $MERGE_CHI	       => Wx::NewId();
+Readonly my $MERGE_IMP	       => Wx::NewId();
+Readonly my $MERGE_NOISE       => Wx::NewId();
+
+Readonly my $DOCUMENT	       => Wx::NewId();
 
 sub menubar {
   my ($app) = @_;
@@ -290,7 +313,7 @@ sub menubar {
   $app->{main}->{mrumenu} = Wx::Menu->new;
   my $filemenu   = Wx::Menu->new;
   $filemenu->Append(wxID_OPEN,  "Import data", "Import data from a data or project file" );
-  $filemenu->AppendSubMenu($app->{main}->{mrumenu}, "Recent files",    "This submenu contains a list of recently used files" );
+  $filemenu->AppendSubMenu($app->{main}->{mrumenu}, "Recent files", "This submenu contains a list of recently used files" );
   $filemenu->AppendSeparator;
   $filemenu->Append(wxID_SAVE,    "Save project", "Save an Athena project file" );
   $filemenu->Append(wxID_SAVEAS,  "Save project as...", "Save an Athena project file as..." );
@@ -345,15 +368,16 @@ sub menubar {
 
   my $monitormenu = Wx::Menu->new;
   my $debugmenu = Wx::Menu->new;
-  $debugmenu->Append($PLOT_YAML,    "Show YAML for Plot object",  "Show YAML for Plot object",  wxITEM_NORMAL );
-  $debugmenu->Append($MODE_STATUS,  "Mode status",                "Mode status",  wxITEM_NORMAL );
-  $debugmenu->Append($PERL_MODULES, "Perl modules",               "Show perl module versions", wxITEM_NORMAL );
-  $monitormenu->Append($SHOW_BUFFER, "Show command buffer", 'Show the Ifeffit and plotting commands buffer' );
-  $monitormenu->Append($STATUS,      "Show status bar buffer", 'Show the buffer containing messages written to the status bars');
+  $debugmenu->Append($PLOT_YAML,     "Show YAML for Plot object",  "Show YAML for Plot object" );
+  $debugmenu->Append($MODE_STATUS,   "Mode status",                "Mode status" );
+  $debugmenu->Append($PERL_MODULES,  "Perl modules",               "Show perl module versions" );
+  $monitormenu->Append($SHOW_BUFFER, "Show command buffer",        'Show the Ifeffit and plotting commands buffer' );
+  $monitormenu->Append($STATUS,      "Show status bar buffer",     'Show the buffer containing messages written to the status bars');
   $monitormenu->AppendSeparator;
   $monitormenu->Append($IFEFFIT_STRINGS, "Show Ifeffit strings", "Examine all the strings currently defined in Ifeffit");
   $monitormenu->Append($IFEFFIT_GROUPS,  "Show Ifeffit groups",  "Examine all the data groups currently defined in Ifeffit");
   $monitormenu->Append($IFEFFIT_ARRAYS,  "Show Ifeffit arrays",  "Examine all the arrays currently defined in Ifeffit");
+  $monitormenu->Append($IFEFFIT_MEMORY,  "Show Ifeffit's memory use",  "Show Ifeffit's memory use and remaining capacity");
   $monitormenu->AppendSeparator;
   $monitormenu->AppendSubMenu($debugmenu, 'Debug options',     'Display debugging tools')
     if ($demeter->co->default("athena", "debug_menus"));
@@ -362,18 +386,37 @@ sub menubar {
   my $groupmenu   = Wx::Menu->new;
   $groupmenu->Append($RENAME, "Rename current group\tALT+SHIFT+l", "Rename the current group");
   $groupmenu->Append($COPY,   "Copy current group\tALT+SHIFT+y",   "Copy the current group");
+  $groupmenu->Append($COPY_SERIES, "Copy series",   "Maek a sequence of copies of the current group by incremented a parameter value");
+
+  #my $valuesmenu  = Wx::Menu->new;
   $groupmenu->AppendSeparator;
+  $groupmenu->Append($VALUES_ALL,    "Set all groups' values to the current",    "Push this groups parameter values onto all other groups.");
+  $groupmenu->Append($VALUES_MARKED, "Set marked groups' values to the current", "Push this groups parameter values onto all marked groups.");
+  $groupmenu->AppendSeparator;
+  #$groupmenu->AppendSubMenu($freezemenu, 'Freeze groups', 'Freeze groups, that is disable their controls such that their parameter values cannot be changed.');
   $groupmenu->Append($DATA_YAML, "Show structure of current group",  "Show detailed contents of the current data group");
+  $groupmenu->Append($TIE_REFERENCE, "Tie reference channle",  "Tie together two marked groups as data and reference channel.");
   $groupmenu->AppendSeparator;
   $groupmenu->Append($REMOVE, "Remove current group",   "Remove the current group from this project");
   $groupmenu->Append($REMOVE_MARKED, "Remove marked groups",   "Remove marked groups from this project");
   $groupmenu->Append(wxID_CLOSE, "&Close" );
 
-  my $valuesmenu  = Wx::Menu->new;
+  my $freezemenu  = Wx::Menu->new;
+  $freezemenu->Append($FREEZE_TOGGLE,     "Toggle this group", "Toggle the frozen state of this group");
+  $freezemenu->Append($FREEZE_ALL,        "Freeze all groups", "Freeze all groups");
+  $freezemenu->Append($UNFREEZE_ALL,      "Unfreeze all groups", "Unfreeze all groups" );
+  $freezemenu->Append($FREEZE_MARKED,     "Freeze marked groups", "Freeze marked groups");
+  $freezemenu->Append($UNFREEZE_MARKED,   "Unfreeze marked groups", "Unfreeze marked groups");
+  $freezemenu->Append($FREEZE_REGEX,      "Freeze by regex", "Freeze by regex");
+  $freezemenu->Append($UNFREEZE_REGEX,    "Unfreeze by regex", "Unfreeze by regex");
+  $freezemenu->Append($FREEZE_TOGGLE_ALL, "Toggle frozen state of all groups", "Toggle frozen state of all groups");
+
+
   my $plotmenu    = Wx::Menu->new;
   my $currentplotmenu = Wx::Menu->new;
   my $markedplotmenu  = Wx::Menu->new;
   my $mergedplotmenu  = Wx::Menu->new;
+  $app->{main}->{mergedplotmenu} = $mergedplotmenu;
   $currentplotmenu->Append($PLOT_QUAD,       "Quad plot",      "Make a quad plot from the current group" );
   $currentplotmenu->Append($PLOT_IOSIG,      "Data+I0+Signal", "Plot data, I0, and signal from the current group" );
   $currentplotmenu->Append($PLOT_K123,       "k123 plot",      "Make a k123 plot from the current group" );
@@ -381,6 +424,10 @@ sub menubar {
   $markedplotmenu ->Append($PLOT_I0MARKED,   "Plot I0",        "Plot I0 for each of the marked groups" );
   $mergedplotmenu ->Append($PLOT_STDDEV,     "Plot data + std. dev.", "Plot the merged data along with its standard deviation" );
   $mergedplotmenu ->Append($PLOT_VARIENCE,   "Plot data + variance",  "Plot the merged data along with its scaled variance" );
+
+  $plotmenu->Append($ZOOM, 'Zoom', 'Zoom in on the latest plot');
+  $plotmenu->Append($UNZOOM, 'Unzoom', 'Unzoom');
+  $plotmenu->Append($CURSOR, 'Cursor', 'SHow the coordinates of a point on the plot');
   $plotmenu->AppendSubMenu($currentplotmenu, "Current group",  "Additional plot types for the current group");
   $plotmenu->AppendSubMenu($markedplotmenu,  "Marked groups",  "Additional plot types for the marked groups");
   $plotmenu->AppendSubMenu($mergedplotmenu,  "Merged groups",  "Additional plot types for the merged data");
@@ -392,7 +439,7 @@ sub menubar {
   $markmenu->Append($MARK_INVERT,   "Invert marks\tCTRL+SHIFT+i",        "Invert all mark" );
   $markmenu->Append($MARK_TOGGLE,   "Toggle current mark\tCTRL+SHIFT+t", "Toggle mark of current group" );
   $markmenu->Append($MARK_REGEXP,   "Mark by regexp\tCTRL+SHIFT+r",      "Mark all groups matching a regular expression" );
-  $markmenu->Append($UNMARK_REGEXP, "Unmark by all\tCTRL+SHIFT+x",       "Unmark all groups matching a regular expression" );
+  $markmenu->Append($UNMARK_REGEXP, "Unmark by regex\tCTRL+SHIFT+x",     "Unmark all groups matching a regular expression" );
 
   my $mergemenu  = Wx::Menu->new;
   $mergemenu->Append($MERGE_MUE,  "Merge $MU(E)",  "Merge marked data at $MU(E)" );
@@ -404,17 +451,30 @@ sub menubar {
 
 
   my $helpmenu   = Wx::Menu->new;
-  $helpmenu->Append(wxID_ABOUT, "&About..." );
+  $helpmenu->Append($DOCUMENT,  "&Document", "Open the Athena document" );
+  $helpmenu->Append(wxID_ABOUT, "&About Athena" );
 
   $bar->Append( $filemenu,    "&File" );
   $bar->Append( $groupmenu,   "&Group" );
-  $bar->Append( $valuesmenu,  "&Values" );
-  $bar->Append( $plotmenu,    "&Plot" );
   $bar->Append( $markmenu,    "&Mark" );
+  #$bar->Append( $valuesmenu,  "&Values" );
+  $bar->Append( $plotmenu,    "&Plot" );
+  $bar->Append( $freezemenu,  "Free&ze" );
   $bar->Append( $mergemenu,   "Merge" );
   $bar->Append( $monitormenu, "M&onitor" );
   $bar->Append( $helpmenu,    "&Help" );
   $app->{main}->SetMenuBar( $bar );
+
+
+  $plotmenu       -> Enable($_,0) foreach ($ZOOM, $UNZOOM, $CURSOR);
+  $mergedplotmenu -> Enable($_,0) foreach ($PLOT_STDDEV, $PLOT_VARIENCE);
+  $freezemenu     -> Enable($_,0) foreach ($FREEZE_TOGGLE, $FREEZE_ALL, $UNFREEZE_ALL,
+					   $FREEZE_MARKED, $UNFREEZE_MARKED,
+					   $FREEZE_REGEX, $UNFREEZE_REGEX,
+					   $FREEZE_TOGGLE_ALL);
+  $groupmenu      -> Enable($_,0) foreach ($COPY_SERIES, $TIE_REFERENCE);
+  $monitormenu    -> Enable($_,0) foreach ($IFEFFIT_MEMORY);
+  $helpmenu       -> Enable($_,0) foreach ($DOCUMENT);
 
   EVT_MENU	 ($app->{main}, -1, sub{my ($frame,  $event) = @_; OnMenuClick($frame,  $event, $app)} );
   return $app;
@@ -434,6 +494,10 @@ sub set_mru {
   };
 };
 
+sub set_mergedplot {
+  my ($app, $bool) = @_;
+  $app->{main}->{mergedplotmenu} ->Enable($_,$bool) foreach ($PLOT_STDDEV, $PLOT_VARIENCE);
+};
 
 sub OnMenuClick {
   my ($self, $event, $app) = @_;
@@ -459,8 +523,8 @@ sub OnMenuClick {
       last SWITCH;
     };
     ($id == wxID_EXIT) and do {
-      my $ok = $app->on_close;
-      return if not $ok;
+      #my $ok = $app->on_close;
+      #return if not $ok;
       $self->Close;
       return;
     };
@@ -556,6 +620,16 @@ sub OnMenuClick {
       last SWITCH;
     };
 
+    ## -------- values menu
+    ($id == $VALUES_ALL) and do {
+      $app->{main}->{Main}->constrain($app, 'all', 'all');
+      last SWITCH;
+    };
+    ($id == $VALUES_MARKED) and do {
+      $app->{main}->{Main}->constrain($app, 'all', 'marked');
+      last SWITCH;
+    };
+
     ## -------- merge menu
     ($id == $MERGE_MUE) and do {
       $app->merge('e');
@@ -620,14 +694,14 @@ sub OnMenuClick {
 
     ($id == $PLOT_QUAD) and do {
       my $data = $app->current_data;
-      $app->{main}->{Main}->pull_values($data);
+      #$app->{main}->{Main}->pull_values($data);
       $data->po->start_plot;
       $app->quadplot($data);
       last SWITCH;
     };
     ($id == $PLOT_IOSIG) and do {
       my $data = $app->current_data;
-      $app->{main}->{Main}->pull_values($data);
+      #$app->{main}->{Main}->pull_values($data);
       $app->{main}->{PlotE}->pull_single_values;
       $data->po->set(e_bkg=>0, e_pre=>0, e_post=>0, e_norm=>0, e_der=>0, e_sec=>0);
       $data->po->set(e_mu=>1, e_i0=>1, e_signal=>1);
@@ -635,36 +709,45 @@ sub OnMenuClick {
       $data->plot('E');
       $data->po->set(e_i0=>0, e_signal=>0);
       $app->{main}->{plottabs}->SetSelection(0);
+      $app->{lastplot} = ['E', 'single'];
       last SWITCH;
     };
     ($id == $PLOT_K123) and do {
       my $data = $app->current_data;
-      $app->{main}->{Main}->pull_values($data);
+      #$app->{main}->{Main}->pull_values($data);
       $app->{main}->{PlotK}->pull_single_values;
       $data->po->start_plot;
       $data->plot('k123');
       $app->{main}->{plottabs}->SetSelection(1);
+      $app->{lastplot} = ['k', 'single'];
       last SWITCH;
     };
     ($id == $PLOT_R123) and do {
       my $data = $app->current_data;
-      $app->{main}->{Main}->pull_values($data);
+      #$app->{main}->{Main}->pull_values($data);
       $app->{main}->{PlotR}->pull_marked_values;
       $data->po->start_plot;
       $data->plot('R123');
       $app->{main}->{plottabs}->SetSelection(2);
+      $app->{lastplot} = ['R', 'single'];
       last SWITCH;
     };
     ($id == $PLOT_STDDEV) and do {
       my $data = $app->current_data;
       last SWITCH if not $data->is_merge;
       $data->plot('stddev');
+      my $sp = $data->is_merge;
+      $sp = 'E' if ($sp eq 'n');
+      $app->{lastplot} = [$sp, 'single'];
       last SWITCH;
     };
     ($id == $PLOT_VARIENCE) and do {
       my $data = $app->current_data;
       last SWITCH if not $data->is_merge;
       $data->plot('variance');
+      my $sp = $data->is_merge;
+      $sp = 'E' if ($sp eq 'n');
+      $app->{lastplot} = [$sp, 'single'];
       last SWITCH;
     };
 
@@ -757,6 +840,7 @@ sub main_window {
   ##$app->{main}->{views}->Enable($_,0) foreach (1 .. $app->{main}->{views}->GetPageCount-2);
   $viewpanel -> SetSizerAndFit($viewbox);
 
+  EVT_CHOICEBOOK_PAGE_CHANGED($app->{main}, $app->{main}->{views}, sub{$app->OnGroupSelect(0,0)});
   EVT_CHOICEBOOK_PAGE_CHANGING($app->{main}, $app->{main}->{views}, sub{$app->view_changing(@_)});
 
 
@@ -810,14 +894,18 @@ sub side_bar {
 
   ## -------- fill the plotting options tabs
   $app->{main}->{plottabs}  = Wx::Notebook->new($toolpanel, -1, wxDefaultPosition, wxDefaultSize, wxNB_TOP);
-  foreach my $m (qw(PlotE PlotK PlotR PlotQ)) {
+  foreach my $m (qw(PlotE PlotK PlotR PlotQ Stack Indicators)) {
     next if $INC{"Demeter/UI/Athena/$m.pm"};
     require "Demeter/UI/Athena/$m.pm";
     $app->{main}->{$m} = "Demeter::UI::Athena::$m"->new($app->{main}->{plottabs}, $app);
     if ($m =~ m{[KQ]\z}) {
       $app->{main}->{plottabs} -> AddPage($app->{main}->{$m}, lc(substr($m, -1)), 0);
+    } elsif ($m eq 'Stack') {
+      $app->{main}->{plottabs} -> AddPage($app->{main}->{$m}, $m, 0);
+    } elsif ($m eq 'Indicators') {
+      $app->{main}->{plottabs} -> AddPage($app->{main}->{$m}, 'Ind', 0);
     } else {
-      $app->{main}->{plottabs} -> AddPage($app->{main}->{$m},    substr($m, -1),  ($m eq 'PlotE'));
+      $app->{main}->{plottabs} -> AddPage($app->{main}->{$m}, substr($m, -1),  ($m eq 'PlotE'));
     };
   };
   $toolbox   -> Add($app->{main}->{plottabs}, 0, wxGROW|wxALL, 0);
@@ -838,12 +926,14 @@ sub OnGroupSelect {
   #  print join("|", $parent, $event, $is_index, $is, $was), $/;
   $app->{selecting_data_group}=1;
 
-  if ($was) {
-    $app->{main}->{Main}->pull_values($was);
-  };
+  my $showing = $app->{main}->{views}->GetPage($app->{main}->{views}->GetSelection);
+
+  #if ($was) {
+  #  $app->{main}->{Main}->pull_values($was);
+  #};
   if ($is_index != -1) {
-    $app->{main}->{Main}->push_values($is);
-    $app->{main}->{Main}->mode($is, 1, 0);
+    $showing->push_values($is);
+    $showing->mode($is, 1, 0);
     $app->{selected} = $app->{main}->{list}->GetSelection;
   };
   $app->{selecting_data_group}=0;
@@ -892,7 +982,7 @@ sub plot {
     return;
   };
 
-  $app->{main}->{Main}->pull_values($app->current_data);
+  #$app->{main}->{Main}->pull_values($app->current_data);
   $app->pull_kweight($data[0]);
 
   $data[0]->po->start_plot;
@@ -966,6 +1056,7 @@ sub quadplot {
 
     $data->po->showlegend($showkey);
     $data->co->set_default("gnuplot", "fontsize", $fontsize);
+    $app->{lastplot} = ['quad', 'single'];
   } else {
     $app->plot(q{}, q{}, 'E', 'single')
   };

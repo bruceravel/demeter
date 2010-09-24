@@ -40,7 +40,7 @@ sub Export {
     $fname = File::Spec->catfile($fd->GetDirectory, $fd->GetFilename);
   };
 
-  $app->{main}->{Main}->pull_values($app->current_data);
+  #$app->{main}->{Main}->pull_values($app->current_data);
   $app->{main}->{Journal}->{object}->text($app->{main}->{Journal}->{journal}->GetValue);
   $data[0]->write_athena($fname, @data, $app->{main}->{Journal}->{object});
   $data[0]->push_mru("xasdata", $fname);
@@ -142,6 +142,7 @@ sub _data {
   my $repeated = 1;
   if ($first or ($data->columns ne $yaml->{columns})) {
     my $colsel = Demeter::UI::Athena::ColumnSelection->new($app->{main}, $app, $data);
+    $colsel->{ok}->SetFocus;
     my $result = $colsel -> ShowModal;
     if ($result == wxID_CANCEL) {
       $app->{main}->status("Cancelled column selection.");
@@ -194,6 +195,7 @@ sub _prj {
   my $busy = Wx::BusyCursor->new();
 
   $app->{main}->{prj} =  Demeter::UI::Artemis::Prj->new($app->{main}, $file, 'Multiple');
+  $app->{main}->{prj}->{import}->SetFocus;
   my $result = $app->{main}->{prj} -> ShowModal;
 
   if ($result == wxID_CANCEL)  {

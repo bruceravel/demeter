@@ -4,6 +4,7 @@ use Demeter::UI::Athena;
 Wx::InitAllImageHandlers();
 use vars qw($app);
 $app  = Demeter::UI::Athena->new;
+$app -> process_argv(@ARGV);
 $app -> MainLoop;
 
 =head1 NAME
