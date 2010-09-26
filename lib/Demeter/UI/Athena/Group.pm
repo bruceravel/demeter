@@ -96,7 +96,9 @@ sub Remove {
       $app -> Export('all', $app->{main}->{currentproject}) if $result == wxID_YES;
     };
     foreach my $i (0 .. $app->{main}->{list}->GetCount-1) {
-      $app->{main}->{list}->GetClientData($i)->DEMOLISH;
+      my $this = $app->{main}->{list}->GetClientData($i);
+      $this->dispose("erase \@group ".$this->group);
+      $this->DEMOLISH;
     };
     $app->{main}->{list}->Clear;
     $app->Clear;
@@ -113,7 +115,9 @@ sub Remove {
 
 sub remove_one {
   my ($app, $i) = @_;
-  $app->{main}->{list}->GetClientData($i)->DEMOLISH;
+  my $data = $app->{main}->{list}->GetClientData($i);
+  $data->dispose("erase \@group ".$data->group);
+  $data->DEMOLISH;
   $app->{main}->{list}->Delete($i); # this calls the selection event on the new item
 };
 

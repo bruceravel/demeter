@@ -189,18 +189,6 @@ Demeter's dependencies are in the F<Bundle/DemeterBundle.pm> file.
 
 =head1 BUGS AND LIMITATIONS
 
-=over 4
-
-=item *
-
-Need an Ifeffit command line
-
-=item *
-
-Need a close button.
-
-=back
-
 Please report problems to Bruce Ravel (bravel AT bnl DOT gov)
 
 Patches are welcome.

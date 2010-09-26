@@ -18,8 +18,8 @@ sub new {
 
   $this->{do_ref} = Wx::CheckBox->new($this, -1, "Import reference channel");
   $box -> Add($this->{do_ref}, 0, wxALL, 10);
-  $this->{controls} = ();
-  EVT_CHECKBOX($this, $this->{do_ref}, sub{EnableReference(@_, $this, $data)});
+  $this->{controls} = [];
+  EVT_CHECKBOX($this, $this->{do_ref}, sub{EnableReference(@_, $data)});
 
   my $columnbox = Wx::ScrolledWindow->new($this, -1, wxDefaultPosition, [300, -1], wxHSCROLL);
   $columnbox->SetScrollbars(30, 0, 50, 0);
@@ -87,13 +87,14 @@ sub new {
 
   $box -> Add($hbox, 0, wxALL, 10);
 
-  EnableReference($this, 0);
+  EnableReference($this, 0, $data);
 
   $this->SetSizerAndFit($box);
   return $this;
 };
 
 sub EnableReference {
+  #print join("|", caller), $/;
   my ($this, $event, $data) = @_;
   my $onoff = $this->{do_ref}->GetValue;
   $_->Enable($onoff) foreach @{$this->{controls}};
@@ -104,9 +105,8 @@ sub EnableReference {
 			      numerator	  => '$'.$this->{numerator},
 			      denominator => '$'.$this->{denominator},
 			      ln          => $this->{ln}->GetValue,
-			      is_col	  => 1,
-			      display	  => 1);
-    $this->{reference} -> _update('data');
+			      is_col	  => 1,);
+    $this->{reference} -> display(1);
   };
 };
 

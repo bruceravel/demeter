@@ -7,15 +7,15 @@ our @EXPORT_OK = qw(emph
 		    $MU $CHI $EPSILON $DELTA $SIGMA $SIGSQR $PHI $S02 $E0
 		    $ALPHA $BETA $GAMMA
 		    $COPYRIGHT $LAQUO $RAQUO $MDASH
-		    $TWO $THR
-		    $ARING
+		    $ONE $TWO $THR
+		    $ARING $MACRON
 		  );
 our %EXPORT_TAGS = (all   => [qw(emph
 				 $MU $CHI $EPSILON $DELTA $SIGMA $SIGSQR $PHI $S02 $E0
 				 $ALPHA $BETA $GAMMA
 				 $COPYRIGHT $LAQUO $RAQUO $MDASH $ARING
-				 $TWO $THR)],
-		    super => [qw($TWO $THR)],
+				 $ONE $TWO $THR $MACRON)],
+		    super => [qw($ONE $TWO $THR $MACRON)],
 		    greek => [qw($MU $CHI $EPSILON $DELTA $SIGMA $SIGSQR $PHI $S02 $E0
 				 $ALPHA $BETA $GAMMA)],
 		   );
@@ -37,6 +37,7 @@ our $BETA    = chr(0x03B2);
 our $GAMMA   = chr(0x03B3);
 
 ## -------- superscripts
+our $ONE     = chr(185);
 our $TWO     = chr(178);
 our $THR     = chr(179);
 
@@ -46,6 +47,7 @@ our $LAQUO     = chr(171);  #"\xC2\xAB";     #'«';
 our $RAQUO     = chr(187);  #"\xC2\xBB";     #'»';
 our $MDASH     = chr(8212); #"\xE2\x80\x94"; #'—';
 our $ARING     = chr(197);  # 'Å'
+our $MACRON    = chr(175);  # 'Å'
 
 sub emph {
   my ($string) = @_;

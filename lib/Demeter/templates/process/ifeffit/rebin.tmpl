@@ -24,7 +24,7 @@ set({$D->group}.energy  = join(re___bin.pre, re___bin.xanes),
     {$D->group}.energy  = join({$D->group}.energy, re___bin.exafs),
     re___bin.eee = {$DS->group}.energy + {$DS->bkg_eshift},
     {$D->group}.xmu     = rebin(re___bin.eee, {$DS->group}.xmu, {$D->group}.energy) )
-{ if ({$DS->datatype eq "col"}) {
+{ if ($DS->is_col) {
      "set " . $D->group . ".i0      = rebin(re___bin.eee, " . $DS->group . ".i0, " . $D->group . ".energy)\n" .
      "set " . $D->group . ".signal  = rebin(re___bin.eee, " . $DS->group . ".signal, " . $D->group . ".energy)\n";
   }

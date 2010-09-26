@@ -39,8 +39,10 @@ sub rebin {
     $self -> co -> set("rebin_$k" => $$rhash{$k});
   };
   my $rebinned = $self->clone;
+
   $self -> standard;		# make self the standard for rebinning
-  $rebinned -> generated(1);
+  ##$rebinned -> generated(1);
+  $rebinned -> rebinned(1);
   $rebinned -> update_norm(1);
   $rebinned -> name($self->name . " rebinned");
 
@@ -49,6 +51,7 @@ sub rebin {
 
   $string = $rebinned->template("process", "deriv");
   $rebinned->dispose($string);
+  $rebinned->resolve_defaults;
 
   (ref($standard) =~ m{Data}) ? $standard->standard : $self->unset_standard;
   return $rebinned;

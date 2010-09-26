@@ -42,13 +42,6 @@ section=athena
 section_description
   These variables determine the behavior of Athena.
 
-# variable=plotwith
-# type=list
-# options=pgplot gnuplot
-# default=pgplot
-# description
-#   This tells Artemis which plotting backend to use (not in use..)
-
 variable=hints
 type=boolean
 onvalue=1
@@ -76,7 +69,7 @@ default=true
 description
   If true, perform an autosave (i.e. write the project to a temporary
   project file to guard against unexpectedly exiting the program) at
-  certain key moments.
+  certain key moments.  (Not currently in use.)
 
 variable=single
 type=color
@@ -91,6 +84,13 @@ default=#F1DDF3
 description
   The color used to indicate widgets involved with plotting marked
   groups. 
+
+variable=tied
+type=color
+default=#E5FEFC
+description
+  The color used as the text color in the Eshift box to indicate that
+  a group is tied to a reference channel.
 
 variable=import_plot
 type=list

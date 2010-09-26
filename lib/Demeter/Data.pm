@@ -150,6 +150,7 @@ has 'generated'  => (is => 'rw', isa => 'Bool',  default => 0,
 				    $self->i0_string(q{});
 				    $self->file(q{});
 				  });
+has 'rebinned'  => (is => 'rw', isa => 'Bool',  default => 0,);
 
 ## -------- stuff for about dialog
 has 'recordtype'       => (is => 'rw', isa => 'Str',  default => q{});
@@ -361,7 +362,19 @@ sub BUILD {
 
 sub DEMOLISH {
   my ($self) = @_;
+  ##$self->dispose("erase \@group ".$self->group);
   $self->alldone;
+};
+
+override alldone => sub {
+  my ($self) = @_;
+  if ($self->reference) {
+    my $ref = $self->reference;
+    $ref->reference(q{});
+    $self->reference(q{});
+  };
+  $self->remove;
+  return $self;
 };
 
 override all => sub {
@@ -390,7 +403,7 @@ override clone => sub {
   my ($old_group, $new_group) = ($self->group, $new->group);
   foreach my $att (qw(energy_string i0_string signal_string xmu_string)) {
     my $newval = $self->$att;
-    $newval =~ s{$old_group}{$new_group};
+    $newval =~ s{$old_group}{$new_group}g;
     $new->$att($newval);
   };
 
@@ -959,6 +972,13 @@ This flag severely restricts data processing to just what is necessary
 to make a plot of unnormalized mu(E).  It is for use in a GUI's column
 selection dialog so that swift plot updates can be made while columns
 are being selected.
+
+=item C<display> (boolean)
+
+This is a flag used by a GUI while selecting columns.  It severely
+limits the amount of data processing done so that the display updates
+quickly in the GUI.  This should be set back to 0 B<as soon as
+possible> so t hat subsequent data processing proceeds properly.
 
 =back
 

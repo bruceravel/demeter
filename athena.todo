@@ -1,6 +1,6 @@
 -*- org -*-
 
-* Demeter bugs and shortcomings discovered  [0/8]
+* Demeter bugs and shortcomings discovered  [1/11]
  - [ ] save_many fails to bring things up to date
  - [ ] save_many fails to use flat/norm correctly
  - [ ] it is annoying that the background trace is blue and the data is red
@@ -9,6 +9,10 @@
  - [ ] phase corrected FTs
  - [ ] bkg_fix_step does not work
  - [ ] clnorm
+ - [X] erage ifeffit group when DEMOLISHing Data object
+ - [ ] align as smoothed derivative
+ - [ ] plotting smoothed derivative
+ - [ ] deglitch many points
 
 * needs testing [/]
  - [ ] reference of another edge
@@ -18,7 +22,7 @@
  - [ ] units in column selection
  - [ ] save each channel as its own group (really must use D::D::MC)
 
-* other features [11/16]
+* other features [12/16]
  - [X] column selection persistance
  - [X] right click pop up menus on parameter StaticText-s
  - [X] stacking
@@ -34,7 +38,7 @@
  - [X] command line arguments
  - [ ] implement bkg_stan
  - [X] reference channel on import (use Demeter::Data::MultiChannel?)
- - [ ] rebin on import (need to get rebin page working)
+ - [X] rebin on import (need to get rebin page working)
  - [ ] preprocessing (need to get the various tool pages working)
 
 * file menu
@@ -118,3 +122,25 @@
  - [ ]  demos
  - [ ]  document
  - [ ]  memory usage
+
+* Tools [6/20]
+ - [X] main
+ - [X] calibrate
+ - [X] align
+ - [ ] deglitch and truncate
+ - [ ] dispersive
+ - [X] rebin
+ - [ ] smooth
+ - [ ] convolute
+ - [ ] decovolute
+ - [ ] self absorption
+ - [ ] multi-electron removal
+ - [ ] LCA
+ - [ ] PCA
+ - [ ] Peak fit
+ - [ ] log ratio
+ - [ ] difference
+ - [ ] explain FT
+ - [X] journal
+ - [ ] plugins
+ - [X] preference 

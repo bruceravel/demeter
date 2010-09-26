@@ -28,7 +28,7 @@ use Scalar::Util qw{looks_like_number};
 use Wx qw(:everything);
 use Wx::Event qw(EVT_MENU EVT_CLOSE EVT_TOOL_ENTER EVT_CHECKBOX EVT_BUTTON
 		 EVT_ENTER_WINDOW EVT_LEAVE_WINDOW
-		 EVT_RIGHT_UP EVT_LISTBOX EVT_RADIOBOX
+		 EVT_RIGHT_UP EVT_LISTBOX EVT_RADIOBOX EVT_LISTBOX_DCLICK
 		 EVT_CHOICEBOOK_PAGE_CHANGED EVT_CHOICEBOOK_PAGE_CHANGING
 	       );
 use base 'Wx::App';
@@ -829,7 +829,7 @@ sub main_window {
   #print join("|", $app->{main}->{views}->GetChildren), $/;
   $app->mouseover($app->{main}->{views}->GetChildren, "Change data processing and analysis tools using this menu.");
 
-  foreach my $which (qw(Main Calibrate Journal Prefs)) {
+  foreach my $which (qw(Main Calibrate Align Rebin Journal Prefs)) {
     next if $INC{"Demeter/UI/Athena/$which.pm"};
     require "Demeter/UI/Athena/$which.pm";
     $app->{main}->{$which} = "Demeter::UI::Athena::$which"->new($app->{main}->{views}, $app);
@@ -857,6 +857,7 @@ sub side_bar {
   $app->{main}->{list} = Wx::CheckListBox->new($toolpanel, -1, wxDefaultPosition, wxDefaultSize, [], wxLB_SINGLE|wxLB_NEEDED_SB);
   $toolbox            -> Add($app->{main}->{list}, 1, wxGROW|wxALL, 0);
   EVT_LISTBOX($toolpanel, $app->{main}->{list}, sub{$app->OnGroupSelect(@_)});
+  EVT_LISTBOX_DCLICK($toolpanel, $app->{main}->{list}, sub{$app->Rename});
 
   my $singlebox = Wx::BoxSizer->new( wxHORIZONTAL );
   $toolbox     -> Add($singlebox, 0, wxGROW|wxALL, 0);
@@ -1207,7 +1208,8 @@ its own status bar yet all messages get captured to a common log.
 
 where the optional $type is one of "normal", "error", or "wait", each
 of which corresponds to a different text style in both the status bar
-and the log buffer.
+and the log buffer.  $type of "nobuffer" will display the status
+message, but not push it into the buffer.
 
 =cut
 
@@ -1232,6 +1234,7 @@ sub status {
 	    :                       $normal;
   $self->{statusbar}->SetBackgroundColour($color);
   $self->{statusbar}->SetStatusText($text);
+  return if ($type eq 'nobuffer');
   $self->{Status}->put_text($text, $type);
 };
 

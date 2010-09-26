@@ -10,6 +10,7 @@ use File::Basename;
 use File::Copy;
 use File::Path;
 use File::Spec;
+use List::MoreUtils qw(any);
 
 use Wx qw(:everything);
 use base qw( Exporter );
@@ -56,6 +57,8 @@ sub Export {
 sub Import {
   my ($app, $fname) = @_;
   my $retval = q{};
+
+  $app->{main}->{views}->SetSelection(0);
 
   my @files = ($fname);
   if (not $fname) {
@@ -131,9 +134,9 @@ sub _data {
   if (-e $persist) {
     $yaml = YAML::Tiny::Load($data->slurp($persist));
     if ($data->columns eq $yaml->{columns}) {
-      $data -> set(energy      => $yaml->{energy},
-		   numerator   => $yaml->{numerator},
-		   denominator => $yaml->{denominator},
+      $data -> set(energy      => $yaml->{energy}||'$1',
+		   numerator   => $yaml->{numerator}||'1',
+		   denominator => $yaml->{denominator}||'1',
 		   ln          => $yaml->{ln},
 		   ##is_kev      => $yaml->{units},
 		   ##datatype
@@ -152,31 +155,53 @@ sub _data {
       $colsel->{Reference}->{do_ref}->SetValue($yaml->{do_ref});
       $colsel->{Reference}->{ln}    ->SetValue($yaml->{ref_ln});
       $colsel->{Reference}->{same}  ->SetValue($yaml->{ref_same});
-      if ($yaml->{ref_numer}) {
+      if (($yaml->{ref_numer}) and exists($colsel->{Reference}->{'n'.$yaml->{ref_numer}}))  {
 	$colsel->{Reference}->{'n'.$yaml->{ref_numer}}->SetValue(1);
 	$colsel->{Reference}->{numerator}   = $yaml->{ref_numer};
       };
-      if ($yaml->{ref_denom}) {
+      if (($yaml->{ref_denom}) and exists($colsel->{Reference}->{'d'.$yaml->{ref_denom}})) {
 	$colsel->{Reference}->{'d'.$yaml->{ref_denom}}->SetValue(1);
 	$colsel->{Reference}->{denominator} = $yaml->{ref_denom};
       };
       $colsel->{Reference}->EnableReference(0, $data);
     };
     ## set Rebinning controls from yaml
+    foreach my $w (qw(do_rebin abs emin emax pre xanes exafs)) {
+      my $key = ($w eq 'do_rebin') ? $w : 'rebin_'.$w;
+      $colsel->{Rebin}->{$w}->SetValue($yaml->{$key});
+      last if (any {$w eq $_} qw(do_rebin abs));
+      $data->co->set_default('rebin', $w);
+    };
+    if ($data->columns ne $yaml->{columns}) {
+      $colsel->{Rebin}->{do_rebin}->SetValue(0)
+    };
+    $colsel->{Rebin}->EnableRebin(0, $data);
     ## set Preprocessing controls from yaml
 
     my $result = $colsel -> ShowModal;
     if ($result == wxID_CANCEL) {
       $app->{main}->status("Cancelled column selection.");
+      $data->dispose("erase \@group ".$data->group);
       $data->DEMOLISH;
       return;
     };
     $repeated = 0;
   };
-  undef $yaml;
 
   ## -------- import data group
+  $app->{main}->status("Importing ". $data->name . " from $file");
+  $app->{main}->Update;
   $data -> display(0);
+  my $do_rebin = (defined $colsel) ? ($colsel->{Rebin}->{do_rebin}->GetValue) : $yaml->{do_rebin};
+  if ($yaml->{do_rebin}) {
+    my $rebin  = $data->rebin;
+    foreach my $att (qw(energy numerator denominator ln )) {
+      $rebin->$att($data->$att);
+    };
+    $data->dispose("erase \@group ".$data->group);
+    $data->DEMOLISH;
+    $data = $rebin;
+  };
   $data -> po -> e_markers(1);
   $data -> _update('all');
   $app->{main}->{list}->Append($data->name, $data);
@@ -191,15 +216,29 @@ sub _data {
   $app->set_mru;
 
   ## -------- import reference if reference channel is set
-  if ($colsel->{Reference}->{do_ref}->GetValue) {
+  my $do_ref = (defined $colsel) ? ($colsel->{Reference}->{do_ref}->GetValue) : $yaml->{do_ref};
+  if ($do_ref) {
+    $app->{main}->status("Importing reference for ". $data->name);
+    $app->{main}->Update;
     my $ref = $colsel->{Reference}->{reference};
+    $ref->display(0);
+    if ($colsel->{Rebin}->{do_rebin}->GetValue) {
+      my $rebin  = $ref->rebin;
+      foreach my $att (qw(energy numerator denominator ln )) {
+	$rebin->$att($ref->$att);
+      };
+      $ref->dispose("erase \@group ".$ref->group);
+      $ref->DEMOLISH;
+      $ref = $rebin;
+    };
+    $ref -> _update('fft');
     $app->{main}->{list}->Append($ref->name, $ref);
+    $app->{main}->{Main}->{bkg_eshift}-> SetBackgroundColour( Wx::Colour->new($ref->co->default("athena", "tied")) );
     $ref->reference($data);
     if ($colsel->{Reference}->{same}) {
       $ref->bkg_z($data->bkg_z);
       $ref->fft_edge($data->fft_edge);
     };
-    $ref->display(0);
   };
 
   ## -------- save persistance file
@@ -211,14 +250,22 @@ sub _data {
 		     ln		 => $data->ln,
 		     each        => 0,
 		     datatype    => $data->datatype,
-		     units       => $data->is_kev,
-		     ## reference
-		     do_ref      => $colsel->{Reference}->{do_ref}->GetValue,
-		     ref_ln      => $colsel->{Reference}->{ln}->GetValue,
-		     ref_same    => $colsel->{Reference}->{same}->GetValue,
-		     ref_numer   => $colsel->{Reference}->{numerator},
-		     ref_denom   => $colsel->{Reference}->{denominator},
-		    );
+		     units       => $data->is_kev,);
+  ## reference
+  $persistence{do_ref}      = (defined($colsel)) ? $colsel->{Reference}->{do_ref}->GetValue : $yaml->{do_ref};
+  $persistence{ref_ln}      = (defined($colsel)) ? $colsel->{Reference}->{ln}->GetValue     : $yaml->{ref_ln};
+  $persistence{ref_same}    = (defined($colsel)) ? $colsel->{Reference}->{same}->GetValue   : $yaml->{ref_same};
+  $persistence{ref_numer}   = (defined($colsel)) ? $colsel->{Reference}->{numerator}        : $yaml->{ref_numer};
+  $persistence{ref_denom}   = (defined($colsel)) ? $colsel->{Reference}->{denominator}      : $yaml->{ref_denom};
+  ## rebin
+  $persistence{do_rebin}    = (defined($colsel)) ? $colsel->{Rebin}->{do_rebin}->GetValue   : $yaml->{do_rebin};
+  $persistence{rebin_abs}   = (defined($colsel)) ? $colsel->{Rebin}->{abs}->GetValue        : $yaml->{rebin_abs};
+  $persistence{rebin_emin}  = (defined($colsel)) ? $colsel->{Rebin}->{emin}->GetValue       : $yaml->{rebin_emin};
+  $persistence{rebin_emax}  = (defined($colsel)) ? $colsel->{Rebin}->{emax}->GetValue       : $yaml->{rebin_emax};
+  $persistence{rebin_pre}   = (defined($colsel)) ? $colsel->{Rebin}->{pre}->GetValue        : $yaml->{rebin_pre};
+  $persistence{rebin_xanes} = (defined($colsel)) ? $colsel->{Rebin}->{xanes}->GetValue      : $yaml->{rebin_xanes};
+  $persistence{rebin_exafs} = (defined($colsel)) ? $colsel->{Rebin}->{exafs}->GetValue      : $yaml->{rebin_exafs};
+
   my $string .= YAML::Tiny::Dump(\%persistence);
   open(my $ORDER, '>'.$persist);
   print $ORDER $string;
@@ -229,7 +276,7 @@ sub _data {
   $app->modified(1);
   undef $busy;
   undef $colsel;
-  $app->{main}->status("Imported data from $file");
+  undef $yaml;
 }
 
 sub _prj {
@@ -255,6 +302,8 @@ sub _prj {
   my $data;
   foreach my $rec (@records) {
     $data = $prj->record($rec);
+    $app->{main}->status("Importing ". $data->prjrecord, "nobuffer");
+    $app->{main}->Update;
     $app->{main}->{list}->Append($data->name, $data);
     if ($count == 1) {
       $app->{main}->{list}->SetSelection($app->{main}->{list}->GetCount - 1);
