@@ -278,6 +278,7 @@ Readonly my $PLOT_QUAD	       => Wx::NewId();
 Readonly my $PLOT_IOSIG	       => Wx::NewId();
 Readonly my $PLOT_K123	       => Wx::NewId();
 Readonly my $PLOT_R123	       => Wx::NewId();
+Readonly my $PLOT_E00          => Wx::NewId();
 Readonly my $PLOT_I0MARKED     => Wx::NewId();
 Readonly my $PLOT_STDDEV       => Wx::NewId();
 Readonly my $PLOT_VARIENCE     => Wx::NewId();
@@ -417,11 +418,12 @@ sub menubar {
   my $markedplotmenu  = Wx::Menu->new;
   my $mergedplotmenu  = Wx::Menu->new;
   $app->{main}->{mergedplotmenu} = $mergedplotmenu;
-  $currentplotmenu->Append($PLOT_QUAD,       "Quad plot",      "Make a quad plot from the current group" );
-  $currentplotmenu->Append($PLOT_IOSIG,      "Data+I0+Signal", "Plot data, I0, and signal from the current group" );
-  $currentplotmenu->Append($PLOT_K123,       "k123 plot",      "Make a k123 plot from the current group" );
-  $currentplotmenu->Append($PLOT_R123,       "R123 plot",      "Make an R123 plot from the current group" );
-  $markedplotmenu ->Append($PLOT_I0MARKED,   "Plot I0",        "Plot I0 for each of the marked groups" );
+  $currentplotmenu->Append($PLOT_QUAD,       "Quad plot",             "Make a quad plot from the current group" );
+  $currentplotmenu->Append($PLOT_IOSIG,      "Data+I0+Signal",        "Plot data, I0, and signal from the current group" );
+  $currentplotmenu->Append($PLOT_K123,       "k123 plot",             "Make a k123 plot from the current group" );
+  $currentplotmenu->Append($PLOT_R123,       "R123 plot",             "Make an R123 plot from the current group" );
+  $markedplotmenu ->Append($PLOT_E00,        "Plot with E0 at E=0",   "Plot each of the marked groups with its edge energy at E=0" );
+  $markedplotmenu ->Append($PLOT_I0MARKED,   "Plot I0",               "Plot I0 for each of the marked groups" );
   $mergedplotmenu ->Append($PLOT_STDDEV,     "Plot data + std. dev.", "Plot the merged data along with its standard deviation" );
   $mergedplotmenu ->Append($PLOT_VARIENCE,   "Plot data + variance",  "Plot the merged data along with its scaled variance" );
 
@@ -750,6 +752,14 @@ sub OnMenuClick {
       $app->{lastplot} = [$sp, 'single'];
       last SWITCH;
     };
+    ($id == $PLOT_E00) and do {
+      $app->plot_e00;
+      last SWITCH;
+    };
+    ($id == $PLOT_I0MARKED) and do {
+      $app->plot_i0_marked;
+      last SWITCH;
+    };
 
     ($id == $MARK_ALL) and do {
       $app->mark('all');
@@ -1061,6 +1071,33 @@ sub quadplot {
   } else {
     $app->plot(q{}, q{}, 'E', 'single')
   };
+};
+
+sub plot_e00 {
+  my ($app) = @_;
+
+  $app->{main}->{PlotE}->pull_single_values;
+  $app->current_data->po->set(e_mu=>1, e_markers=>0, e_zero=>1, e_bkg=>0, e_pre=>0, e_post=>0,
+			      e_norm=>1, e_der=>0, e_sec=>0, e_i0=>0, e_signal=>0);
+  $app->current_data->po->start_plot;
+  foreach my $i (0 .. $app->{main}->{list}->GetCount-1) {
+    $app->{main}->{list}->GetClientData($i)->plot('e')
+      if $app->{main}->{list}->IsChecked($i);
+  };
+  $app->current_data->po->set(e_zero=>0, e_markers=>1);
+};
+sub plot_i0_marked {
+  my ($app) = @_;
+
+  $app->{main}->{PlotE}->pull_single_values;
+  $app->current_data->po->set(e_mu=>0, e_markers=>0, e_zero=>0, e_bkg=>0, e_pre=>0, e_post=>0,
+			      e_norm=>0, e_der=>0, e_sec=>0, e_i0=>1, e_signal=>0);
+  $app->current_data->po->start_plot;
+  foreach my $i (0 .. $app->{main}->{list}->GetCount-1) {
+    $app->{main}->{list}->GetClientData($i)->plot('e')
+      if $app->{main}->{list}->IsChecked($i);
+  };
+  $app->current_data->po->set(e_i0=>0, e_markers=>1);
 };
 
 sub pull_kweight {

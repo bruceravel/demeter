@@ -17,12 +17,10 @@
 * needs testing [/]
  - [ ] reference of another edge
 
-* not working yet [0/3]
- - [ ] datatype in column selection
- - [ ] units in column selection
- - [ ] save each channel as its own group (really must use D::D::MC)
+* Athena bugs [0/1]
+ - [ ] bare negative sign in a TextCtrl failed attribute type checking and crashes
 
-* other features [12/16]
+* other features [10/13]
  - [X] column selection persistance
  - [X] right click pop up menus on parameter StaticText-s
  - [X] stacking
@@ -37,9 +35,14 @@
  - [X] modified indication and y/n to save when closing or exiting
  - [X] command line arguments
  - [ ] implement bkg_stan
+
+* data import [2/6]
  - [X] reference channel on import (use Demeter::Data::MultiChannel?)
  - [X] rebin on import (need to get rebin page working)
  - [ ] preprocessing (need to get the various tool pages working)
+ - [ ] datatype in column selection
+ - [ ] units in column selection
+ - [ ] save each channel as its own group (really must use D::D::MC)
 
 * file menu
 ** save column data [5/5]
@@ -101,9 +104,10 @@
  - [ ]  all
  - [ ]  marked
 
-* Plot [1/4]
+* Plot [3/5]
  - [ ]  zoom, unzoom, cursor
- - [ ]  plot I0 marked
+ - [X]  plot I0 marked
+ - [X]  E0 at E=0 for marked
  - [X]  stddev and varience plots
  - [ ]  group selection replot
 
