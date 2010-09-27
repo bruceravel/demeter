@@ -1,6 +1,6 @@
 ## -*- config -*-
 ###########################################################################
-##                     Demeter is copyright (c) 2007-2009 Bruce Ravel
+##                     Demeter is copyright (c) 2007-2010 Bruce Ravel
 ##                                                     bravel@bnl.gov
 ##                                        http://xafs.org/BruceRavel/
 ##
@@ -42,6 +42,13 @@ section=xanes
 section_description
   These variables set parameters related to Demeter's special treatment
   of XANES data.
+
+variable=nnorm
+type=list
+options=1 2 3
+default=2
+description
+  This is the default value for normalization order for XANES data.
 
 variable=nor1
 type=real

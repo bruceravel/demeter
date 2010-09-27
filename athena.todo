@@ -1,10 +1,10 @@
 -*- org -*-
 
-* Demeter bugs and shortcomings discovered  [1/11]
+* Demeter bugs and shortcomings discovered  [2/12]
  - [ ] save_many fails to bring things up to date
  - [ ] save_many fails to use flat/norm correctly
  - [ ] it is annoying that the background trace is blue and the data is red
- - [ ] weighting by noise or importance?
+ - [X] weighting by noise or importance?
  - [ ] merge array in write_athena
  - [ ] phase corrected FTs
  - [ ] bkg_fix_step does not work
@@ -16,9 +16,11 @@
 
 * needs testing [/]
  - [ ] reference of another edge
+ - [ ] keV data
 
-* Athena bugs [0/1]
- - [ ] bare negative sign in a TextCtrl failed attribute type checking and crashes
+* Athena bugs [1/2]
+ - [X] bare negative sign in a TextCtrl failed attribute type checking and crashes
+ - [ ] importing stddev array from an Athena project file, then making a merge plot works oddly
 
 * other features [10/13]
  - [X] column selection persistance
@@ -36,12 +38,12 @@
  - [X] command line arguments
  - [ ] implement bkg_stan
 
-* data import [2/6]
+* data import [4/6]
  - [X] reference channel on import (use Demeter::Data::MultiChannel?)
  - [X] rebin on import (need to get rebin page working)
  - [ ] preprocessing (need to get the various tool pages working)
- - [ ] datatype in column selection
- - [ ] units in column selection
+ - [X] datatype in column selection
+ - [X] units in column selection
  - [ ] save each channel as its own group (really must use D::D::MC)
 
 * file menu
@@ -111,11 +113,12 @@
  - [X]  stddev and varience plots
  - [ ]  group selection replot
 
-* Merge [3/4]
+* Merge [4/5]
  - [X] mue
  - [X] norm
  - [X] chi
- - [ ] weight by noise/importance
+ - [X] weight by importance/noise/step
+ - [ ] datatype of merged group (xanes merge should be a xanes and so on)
 
 * Plugin registry [0/2]
  - [ ] GUI tool

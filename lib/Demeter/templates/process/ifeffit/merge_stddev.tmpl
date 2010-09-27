@@ -9,5 +9,5 @@
   q{};
 }
 ##| add {$D->group} to the merge
-set m___erge.stddev = m___erge.stddev + (m___erge.{$D->group} - {$DS->group}.{$suff})^2
+set m___erge.stddev = m___erge.stddev + {$D->merge_weight}*(m___erge.{$D->group} - {$DS->group}.{$suff})^2
 

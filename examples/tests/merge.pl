@@ -45,6 +45,7 @@ my $d2 = Demeter::Data -> new(@attributes);
 $d2 -> set(file=>"$where/data/fe.062", name=>'scan 3');
 
 my $plot = $d0->po;
+$plot->just_mu;
 $plot->set_mode(screen=>0, repscreen=>0);
 $plot->set(emin=>-30, emax=>70, e_norm=>1, e_markers=>1);
 

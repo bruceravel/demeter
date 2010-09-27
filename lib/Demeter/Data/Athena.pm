@@ -82,6 +82,10 @@ sub _write_record {
       @array        = $self -> get_array("signal");
       $arraystring .= Data::Dumper->Dump([\@array], [qw/*signal/]) . "\n";
     };
+    if ($self->get_array("stddev")) {
+      @array        = $self -> get_array("stddev");
+      $arraystring .= Data::Dumper->Dump([\@array], [qw/*stddev/]) . "\n";
+    };
     ## merge array?
   } elsif ($self->datatype eq "chi") {
     $self->read_data if ($self->update_data);

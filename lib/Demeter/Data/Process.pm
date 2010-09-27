@@ -88,6 +88,21 @@ sub merge {
   my $merged = $self->clone;
   $merged -> generated(1);
 
+  my $sum = 0;
+  foreach my $d (uniq($self, @data)) {
+    $d->_update('bft')        if ($d->mo->merge eq 'noise');
+    $d->_update('background') if ($d->mo->merge eq 'step');
+    my $weight = ($d->mo->merge eq 'importance') ? $d->importance
+               : ($d->mo->merge eq 'noise')      ? $d->epsk
+               : ($d->mo->merge eq 'step')       ? $d->bkg_step
+	       :                                   $d->importance;
+    ##print join("|", $d->name, $weight, $d->mo->merge), $/;
+    $sum += $weight;
+    $d->merge_weight($weight);
+  };
+  foreach my $d (uniq($self, @data)) {
+    $d->merge_weight($d->merge_weight / $sum);
+  };
 
   if ($how =~ m{^k}) {
     $merged->datatype('chi');
@@ -102,7 +117,7 @@ sub merge {
 
   my @uniq = uniq($self, @data);
   my $ndata = $#uniq + 1;
-  $self -> co -> set(ndata=>$ndata);
+  $self -> co -> set(ndata=>$ndata, weight=>1);
 
   my $string = $merged->template("process", "merge_norm"); #, {ndata=>$ndata});
   $self->dispose($string);

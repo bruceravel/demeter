@@ -22,7 +22,7 @@ sub Export {
 
   my @data;
   foreach my $i (0 .. $app->{main}->{list}->GetCount-1) {
-    next if (($how eq 'marked') and not $app->{main}->{list}->IsSelected($i));
+    next if (($how eq 'marked') and not $app->{main}->{list}->IsChecked($i));
     push @data, $app->{main}->{list}->GetClientData($i);
   };
   if (not @data) {
@@ -134,12 +134,14 @@ sub _data {
   if (-e $persist) {
     $yaml = YAML::Tiny::Load($data->slurp($persist));
     if ($data->columns eq $yaml->{columns}) {
+      my $nnorm = ($yaml->{datatype} eq 'xanes') ? 2 : 3;
       $data -> set(energy      => $yaml->{energy}||'$1',
 		   numerator   => $yaml->{numerator}||'1',
 		   denominator => $yaml->{denominator}||'1',
 		   ln          => $yaml->{ln},
 		   ##is_kev      => $yaml->{units},
-		   ##datatype
+		   datatype    => $yaml->{datatype}||'xmu',
+		   bkg_nnorm   => $nnorm,
 		  );
     };
   };
@@ -283,7 +285,7 @@ sub _prj {
   my ($app, $file, $first) = @_;
   my $busy = Wx::BusyCursor->new();
 
-  $app->{main}->{prj} =  Demeter::UI::Artemis::Prj->new($app->{main}, $file, 'Multiple');
+  $app->{main}->{prj} =  Demeter::UI::Artemis::Prj->new($app->{main}, $file, 'multiple');
   $app->{main}->{prj}->{import}->SetFocus;
   my $result = $app->{main}->{prj} -> ShowModal;
 

@@ -11,4 +11,4 @@
   q{};
 }
 ##| setting up arrays for merge
-set({$D->group}.stddev = sqrt( (m___erge.stddev*{$n}) / ({$sum}*{$n-1}) ))
+set({$D->group}.stddev = sqrt( (m___erge.stddev*{$n}) / ({$C->get("weight")}*{$n-1}) ))

@@ -83,6 +83,7 @@ has 'frozen'      => (is => 'rw', isa => 'Bool',   default => 0);
 
 has 'provenance'  => (is => 'rw', isa => 'Str',    default => q{});
 has 'importance'  => (is => 'rw', isa => 'Num',    default => 1);
+has 'merge_weight'=> (is => 'rw', isa => 'Num',    default => 1);
 
 
 has 'tying' => (is=>'rw', isa => 'Bool', default => 0);

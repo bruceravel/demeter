@@ -20,6 +20,7 @@ use autodie qw(open close);
 use Moose::Role;
 use MooseX::Aliases;
 
+use Carp;
 use Compress::Zlib;
 use File::Basename;
 use Ifeffit;
@@ -132,7 +133,7 @@ sub is_data {
 sub is_prj {
   my ($self, $file, $verbose) = @_;
   $verbose ||= 0;
-  my $gz = gzopen($file, "rb") or die "could not open $file as a record\n";
+  my $gz = gzopen($file, "rb") or croak "could not open $file as a record\n";
   my $first;
   $gz->gzreadline($first);
   $gz->gzclose();

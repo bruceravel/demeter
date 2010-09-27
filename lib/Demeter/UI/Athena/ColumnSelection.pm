@@ -148,7 +148,7 @@ sub columns {
     ++$count;
   };
 
-  $this->display_plot($data) if (($data->numerator ne '1') and ($data->denominator ne '1'));
+  $this->display_plot($data) if (($data->numerator ne '1') or ($data->denominator ne '1'));
   #$columnbox->SetVirtualSize([200,300]);
   $columnbox->SetSizer($gbs);
   #$columnbox->SetMaxSize(Wx::Size->new(350,-1));
@@ -184,6 +184,16 @@ sub other_parameters {
   $others -> Add($this->{units}, 0, wxGROW|wxALL, 0);
   $this->{$_}->SetSelection(0) foreach (qw(datatype units));
   $this->{left}->Add($others, 0, wxGROW|wxALL, 0);
+
+  EVT_CHOICE($parent, $this->{datatype}, sub{OnDatatype(@_, $this, $data)});
+  EVT_CHOICE($parent, $this->{units},    sub{OnUnits(@_, $this, $data)});
+
+  $this->{datatype}->SetSelection(0);
+  $this->{datatype}->SetSelection(1) if ($data->datatype eq 'xanes');
+  $this->{datatype}->SetSelection(2) if (($data->datatype eq 'xanes') and $data->is_nor);
+  $this->{datatype}->SetSelection(3) if ($data->datatype eq 'chi');
+  $this->{datatype}->SetSelection(4) if ($data->datatype eq 'xmudat');
+
 
   return $this;
 };
@@ -256,6 +266,21 @@ sub OnDenomClick {
   $string = "1" if not $string;
   $data -> denominator($string);
   $this -> display_plot($data);
+};
+
+sub OnDatatype {
+  my ($parent, $event, $this, $data) = @_;
+  $data->datatype('xmu')                      if ($this->{datatype}->GetSelection == 0);
+  $data->set(datatype=>'xanes', bkg_nnorm=>$data->co->default('xanes', 'nnorm')) if ($this->{datatype}->GetSelection == 1);
+  $data->set(datatype=>'xmu', is_nor=>1)      if ($this->{datatype}->GetSelection == 2);
+  $data->datatype('chi')                      if ($this->{datatype}->GetSelection == 3);
+  $data->datatype('xmudat')                   if ($this->{datatype}->GetSelection == 4);
+};
+
+sub OnUnits {
+  my ($parent, $event, $this, $data) = @_;
+  $data->kev(0) if ($this->{units}->GetSelection == 0);
+  $data->kev(1) if ($this->{units}->GetSelection == 1);
 };
 
 sub display_plot {

@@ -305,6 +305,7 @@ Readonly my $MERGE_NORM	       => Wx::NewId();
 Readonly my $MERGE_CHI	       => Wx::NewId();
 Readonly my $MERGE_IMP	       => Wx::NewId();
 Readonly my $MERGE_NOISE       => Wx::NewId();
+Readonly my $MERGE_STEP        => Wx::NewId();
 
 Readonly my $DOCUMENT	       => Wx::NewId();
 
@@ -430,6 +431,7 @@ sub menubar {
   $plotmenu->Append($ZOOM, 'Zoom', 'Zoom in on the latest plot');
   $plotmenu->Append($UNZOOM, 'Unzoom', 'Unzoom');
   $plotmenu->Append($CURSOR, 'Cursor', 'SHow the coordinates of a point on the plot');
+  $plotmenu->AppendSeparator;
   $plotmenu->AppendSubMenu($currentplotmenu, "Current group",  "Additional plot types for the current group");
   $plotmenu->AppendSubMenu($markedplotmenu,  "Marked groups",  "Additional plot types for the marked groups");
   $plotmenu->AppendSubMenu($mergedplotmenu,  "Merged groups",  "Additional plot types for the merged data");
@@ -450,6 +452,7 @@ sub menubar {
   $mergemenu->AppendSeparator;
   $mergemenu->AppendRadioItem($MERGE_IMP,   "Weight by importance",       "Weight the marked groups by their importance values when merging" );
   $mergemenu->AppendRadioItem($MERGE_NOISE, "Weight by noise in $CHI(k)", "Weight the marked groups by their $CHI(k) noise values when merging" );
+  $mergemenu->AppendRadioItem($MERGE_STEP,  "Weight by $MU(E) edge step", "Weight the marked groups the size of the edge step in $MU(E) when merging" );
 
 
   my $helpmenu   = Wx::Menu->new;
@@ -505,9 +508,12 @@ sub OnMenuClick {
   my ($self, $event, $app) = @_;
   my $id = $event->GetId;
   my $mru = $app->{main}->{mrumenu}->GetLabel($id);
+  $mru =~ s{__}{_}g; 		# wtf!?!?!?
 
  SWITCH: {
     ($mru) and do {
+      $app->{main}->status("$mru does not exist"), return if (not -e $mru);
+      $app->{main}->status("cannot read $mru"),    return if (not -r $mru);
       $app -> Import($mru);
       last SWITCH;
     };
@@ -643,6 +649,21 @@ sub OnMenuClick {
     };
     ($id == $MERGE_CHI) and do {
       $app->merge('k');
+      last SWITCH;
+    };
+    ($id == $MERGE_IMP) and do {
+      $demeter->mo->merge('importance');
+      $app->{main}->status("Weighting merges by " . $demeter->mo->merge);
+      last SWITCH;
+    };
+    ($id == $MERGE_NOISE) and do {
+      $demeter->mo->merge('noise');
+      $app->{main}->status("Weighting merges by " . $demeter->mo->merge);
+      last SWITCH;
+    };
+    ($id == $MERGE_STEP) and do {
+      $demeter->mo->merge('step');
+      $app->{main}->status("Weighting merges by " . $demeter->mo->merge);
       last SWITCH;
     };
 
@@ -1002,13 +1023,14 @@ sub plot {
   $app->{main}->{'Plot'.$sp}->pull_single_values if ($how eq 'single');
   $app->{main}->{'Plot'.$sp}->pull_marked_values if ($how eq 'marked');
   $data[0]->po->chie(0) if (lc($space) eq 'kq');
-
+  $data[0]->po->set(e_bkg=>0) if (($data[0]->datatype eq 'xanes') and (($how eq 'single')));
 
   ## energy k and kq
   if (lc($space) =~ m{(?:e|k|kq)}) {
     $_->plot($space) foreach @data;
     $data[0]->plot_window('k') if (($how eq 'single') and
 				   $app->{main}->{PlotK}->{win}->GetValue and
+				   ($data[0]->datatype ne 'xanes') and
 				   (lc($space) ne 'e'));
     if (lc($space) eq 'e') {
       $app->{main}->{plottabs}->SetSelection(0);
@@ -1053,7 +1075,11 @@ sub plot {
 
 sub quadplot {
   my ($app, $data) = @_;
-  if ($data->mo->template_plot eq 'gnuplot') {
+  if ($data->datatype eq 'xanes') {
+    $app->plot(q{}, q{}, 'E', 'single')
+  } elsif ($data->datatype eq 'chi') {
+    $app->plot(q{}, q{}, 'k', 'single')
+  } elsif ($data->mo->template_plot eq 'gnuplot') {
     my ($showkey, $fontsize) = ($data->po->showlegend, $data->co->default("gnuplot", "fontsize"));
     $data->po->showlegend(0);
     $data->co->set_default("gnuplot", "fontsize", 8);

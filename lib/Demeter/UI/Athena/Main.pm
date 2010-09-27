@@ -635,7 +635,7 @@ sub OnParameter {
             : ($which eq 'bkg_z')         ? interpret_bkg_z($widget->GetValue)
             : ($which =~ m{nnorm})        ? interpret_nnorm($app)
 	    :                               $widget->GetValue;
-  $value ||= 0;
+  $value = 0 if not looks_like_number($value);
   $data->$which($value) if not ($which =~ m{nnorm});
   $app->modified(1);
 };

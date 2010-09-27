@@ -7,5 +7,5 @@
   #   {$P->parameter} returns the value of a Plot parameter
 }
 ##| add {$D->group} to the merge
-set m___erge.sum = m___erge.sum + m___erge.{$D->group}
+set m___erge.sum = m___erge.sum + {$D->merge_weight}*m___erge.{$D->group}
 

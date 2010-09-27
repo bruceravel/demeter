@@ -36,6 +36,10 @@ sub new {
 
   my $prj = Demeter::Data::Prj->new(file=>$file);
   my ($names, $entries) = $prj -> plot_as_chi;
+  if ($style ne 'single') {
+    $names = [$prj->allnames];
+    $entries = $prj->entries;
+  };
   $this->{prj}    = $prj;
   $this->{record} = -1;
 

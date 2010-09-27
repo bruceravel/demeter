@@ -8,6 +8,8 @@ use Wx::Perl::TextValidator;
 use Demeter::UI::Wx::SpecialCharacters qw(:all);
 use Demeter::UI::Athena::Replot;
 
+use Scalar::Util qw(looks_like_number);
+
 sub new {
   my ($class, $parent, $app) = @_;
   my $this = $class->SUPER::new($parent, -1, wxDefaultPosition, wxDefaultSize, wxMAXIMIZE_BOX );
@@ -172,8 +174,12 @@ sub pull_single_values {
   $po->e_norm($this->{norm}-> GetValue);
   $po->e_der ($this->{der} -> GetValue);
   $po->e_sec ($this->{sec} -> GetValue);
-  $po->emin  ($this->{emin}-> GetValue);
-  $po->emax  ($this->{emax}-> GetValue);
+  my $emin = $this->{emin}-> GetValue;
+  my $emax = $this->{emax}-> GetValue;
+  $emin = 0 if not looks_like_number($emin);
+  $emax = 0 if not looks_like_number($emax);
+  $po->emin($emin);
+  $po->emax($emax);
   $po->e_markers(1);
 };
 
@@ -187,8 +193,12 @@ sub pull_marked_values {
   $po->e_norm($this->{mnorm}-> GetValue);
   $po->e_der ($this->{mder} -> GetValue);
   $po->e_sec ($this->{msec} -> GetValue);
-  $po->emin  ($this->{emin} -> GetValue);
-  $po->emax  ($this->{emax} -> GetValue);
+  my $emin = $this->{emin}-> GetValue;
+  my $emax = $this->{emax}-> GetValue;
+  $emin = 0 if not looks_like_number($emin);
+  $emax = 0 if not looks_like_number($emax);
+  $po->emin($emin);
+  $po->emax($emax);
   $po->e_mu(1) if $po->e_norm;
   $po->e_markers(0);
 };
