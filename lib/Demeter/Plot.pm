@@ -272,6 +272,16 @@ sub end_plot {
   return $self;
 };
 
+sub just_mu {
+  my ($self) = @_;
+  $self -> set(e_mu=>1, e_bkg=>0, e_pre=>0, e_post=>0,
+	       e_norm=>0, e_der=>0, e_sec=>0,  e_markers=>0,
+	       e_i0=>0, e_signal=>0, e_zero=>0);
+  return $self;
+};
+alias just_mue => 'just_mu';
+alias just_xmu => 'just_mu';
+
 sub after_plot_hook {
   my ($self, $data, $part) = @_;
   1;

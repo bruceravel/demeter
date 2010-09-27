@@ -49,18 +49,18 @@ $prj -> set(file=>$file);
 $prj -> plot_with('gnuplot') if $gnuplot;
 #$prj -> set_mode(screen => 1);
 
-print '===> ', Cwd::abs_path($file), $/ x 2,
-  $prj -> list(split(/,/,$params)), $/;
+print '===> ', Cwd::abs_path($file), $/ x 2, $prj -> list(split(/,/,$params)), $/;
 
 my $stack = 0;
 if (lc($plot) =~ m{[endkrq]}) {
   my @data = (@groups) ? $prj->records(@groups) : $prj -> slurp;
   exit if ($#data == -1);
   $data[0] -> po -> title(basename($file, '.prj'));
-  $data[0] -> po -> e_markers(0);
+  $data[0] -> po -> just_mu;
   $data[0] -> po -> e_norm(0)     if (lc($plot) =~ m{\A[ex]\z});
   $data[0] -> po -> e_norm(1)     if (lc($plot) eq 'n');
   $data[0] -> po -> e_der(1)      if (lc($plot) eq 'd');
+  $data[0] -> po -> e_sec(1)      if (lc($plot) eq 's');
   $data[0] -> po -> kweight($kw)  if (lc($plot) =~ m{[krq]});
   $data[0] -> po -> r_pl('r')     if (lc($plot) eq 'rr');
   $data[0] -> po -> showlegend(0) if $nokey;
@@ -89,7 +89,7 @@ sub usage {
 
  List the groups from an Athena project file.
 
-   --plot=X, -p=X       plot data (X = e|n|d|k|r|q)
+   --plot=X, -p=X       plot data (X = e|n|d|s|k|r|q)
    --stack=val          specify stacking offset for plots
    --params=param_list  comma separated list of parameters
    --xanes              restrict energy plots to [-50:120]
