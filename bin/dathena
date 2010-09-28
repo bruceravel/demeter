@@ -1,4 +1,8 @@
 #!/usr/bin/perl
+#sub BEGIN {
+#  use Wx::Perl::SplashFast;
+#  my $splash = Wx::Perl::SplashFast->new('/home/bruce/codes/demeter/lib/Demeter/UI/Athena/share/logo.jpg',4000);
+#}
 use Wx;
 use Demeter::UI::Athena;
 Wx::InitAllImageHandlers();
@@ -17,7 +21,7 @@ This documentation refers to Demeter version 0.4.
 
 =head1 DESCRIPTION
 
-Athena is a graphical interface to Ifeffit.
+Athena is a graphical interface to Ifeffit for XAS data processing.
 
 =head1 AUTHOR
 

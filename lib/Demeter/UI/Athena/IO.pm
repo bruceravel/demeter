@@ -41,6 +41,7 @@ sub Export {
     $fname = File::Spec->catfile($fd->GetDirectory, $fd->GetFilename);
   };
 
+  my $busy = Wx::BusyCursor->new();
   #$app->{main}->{Main}->pull_values($app->current_data);
   $app->{main}->{Journal}->{object}->text($app->{main}->{Journal}->{journal}->GetValue);
   $data[0]->write_athena($fname, @data, $app->{main}->{Journal}->{object});
@@ -51,6 +52,7 @@ sub Export {
   $app->modified(0);
   my $extra = ($how eq 'marked') ? " with marked groups" : q{};
   $app->{main}->status("Saved project file $fname".$extra);
+  undef $busy;
   return $fname;
 };
 
@@ -63,7 +65,7 @@ sub Import {
   my @files = ($fname);
   if (not $fname) {
     my $fd = Wx::FileDialog->new( $app->{main}, "Import data", cwd, q{},
-				  "All files|*.*",
+				  "All files|*.*|Athena projects (*.prj)|*.prj|Data (*.dat)|*.dat",
 				  wxFD_OPEN|wxFD_FILE_MUST_EXIST|wxFD_CHANGE_DIR|wxFD_PREVIEW|wxFD_MULTIPLE,
 				  wxDefaultPosition);
     if ($fd->ShowModal == wxID_CANCEL) {

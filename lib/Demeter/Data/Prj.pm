@@ -212,12 +212,13 @@ alias records => 'record';
 ## $index is the line number in the project file, *not* the record number
 sub _record {
   my ($self, $index, $groupname) = @_;
-  my %args = $self->_array($index, 'args');
-  my @x    = $self->_array($index, 'x');
-  my @y    = $self->_array($index, 'y');
-  my @i0   = $self->_array($index, 'i0');
-  my @std  = $self->_array($index, 'stddev');
-  my ($i0_scale, $is_merge) = (0,0);
+  my %args   = $self->_array($index, 'args');
+  my @x      = $self->_array($index, 'x');
+  my @y      = $self->_array($index, 'y');
+  my @i0     = $self->_array($index, 'i0');
+  my @signal = $self->_array($index, 'signal');
+  my @std    = $self->_array($index, 'stddev');
+  my ($i0_scale, $signal_scale, $is_merge) = (0,0,0);
 
   my $data = Demeter::Data->new(group	    => $groupname,
 				from_athena => 1,
@@ -228,6 +229,10 @@ sub _record {
   if (@i0) {
     Ifeffit::put_array(join('.', $groupname, 'i0'), \@i0);
     $i0_scale = max(@y) / max(@i0);
+  };
+  if (@signal) {
+    Ifeffit::put_array(join('.', $groupname, 'signal'), \@signal);
+    $signal_scale = max(@y) / max(@signal);
   };
   if (@std) {
     Ifeffit::put_array(join('.', $groupname, 'stddev'), \@std);
@@ -332,6 +337,7 @@ sub _record {
 		       :                      q{};
   $groupargs{datatype} = 'xanes' if ($args{is_xanes});
   $groupargs{i0_scale}       = $i0_scale;
+  $groupargs{signal_scale}   = $signal_scale;
   $groupargs{is_merge}       = $is_merge;
   $groupargs{update_data}    = 0;
   $groupargs{update_columns} = 0;

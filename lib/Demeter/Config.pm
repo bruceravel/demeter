@@ -97,6 +97,7 @@ sub BUILD {
   $self -> read_config;
   $self -> read_ini;
   $self -> mo -> config($self);
+  $self -> mo -> merge($self->default("merge", "weightby"));
   my @groups = $self->groups;
   $self->main_groups(\@groups);
   return $self;

@@ -102,8 +102,9 @@ sub group {
     EVT_RIGHT_DOWN($this->{$x.'_label'}, sub{ContextMenu(@_, $app, $x)});
     EVT_MENU($this->{$x.'_label'}, -1, sub{ $this->DoContextMenu(@_, $app, $x)    });
   };
+  EVT_COMBOBOX($this, $this->{bkg_z},    sub{OnAbsorber(@_, $app)});
+  EVT_COMBOBOX($this, $this->{fft_edge}, sub{OnEdge(@_, $app)});
   foreach my $x (qw(bkg_z fft_edge)) {
-    EVT_COMBOBOX($this, $this->{$x}, sub{OnParameter(@_, $app, $x)});
     EVT_RIGHT_DOWN($this->{$x.'_label'}, sub{ContextMenu(@_, $app, $x)});
     EVT_MENU($this->{$x.'_label'}, -1, sub{ $this->DoContextMenu(@_, $app, $x)    });
   };
@@ -638,6 +639,17 @@ sub OnParameter {
   $value = 0 if not looks_like_number($value);
   $data->$which($value) if not ($which =~ m{nnorm});
   $app->modified(1);
+};
+
+sub OnAbsorber {
+  my ($main, $event, $app) = @_;
+  my $abs = interpret_bkg_z($app->{main}->{Main}->{bkg_z}->GetValue);
+  $app->current_data->bkg_z(get_symbol($abs));
+};
+sub OnEdge {
+  my ($main, $event, $app) = @_;
+  my $edge = $app->{main}->{Main}->{fft_edge}->GetValue;
+  $app->current_data->fft_edge($edge);
 };
 
 sub interpret_bkg_z {

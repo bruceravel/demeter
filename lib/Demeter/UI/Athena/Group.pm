@@ -2,12 +2,13 @@ package Demeter::UI::Athena::Group;
 
 use Demeter;
 use Demeter::UI::Wx::SpecialCharacters qw(:all);
+use Demeter::UI::Athena::ChangeDatatype;
 
 use List::Util qw(min);
 
 use Wx qw(:everything);
 use base qw( Exporter );
-our @EXPORT = qw(Rename Copy Remove);
+our @EXPORT = qw(Rename Copy Remove change_datatype);
 
 sub Rename {
   my ($app, $newname) = @_;
@@ -18,6 +19,7 @@ sub Rename {
 
   if (not $newname) {
     my $ted = Wx::TextEntryDialog->new($app->{main}, "Enter a new name for \"$name\":", "Rename \"$name\"", q{}, wxOK|wxCANCEL, Wx::GetMousePosition);
+    $ted->SetValue($name);
     if ($ted->ShowModal == wxID_CANCEL) {
       $app->{main}->status("Renaming cancelled.");
       return;
@@ -119,6 +121,36 @@ sub remove_one {
   $data->dispose("erase \@group ".$data->group);
   $data->DEMOLISH;
   $app->{main}->{list}->Delete($i); # this calls the selection event on the new item
+};
+
+
+sub change_datatype {
+  my ($app) = @_;
+  my $cdt = Demeter::UI::Athena::ChangeDatatype->new($app->{main}, $app);
+  my $result = $cdt -> ShowModal;
+  if ($result == wxID_CANCEL) {
+    $app->{main}->status("Not changing datatype.");
+    return;
+  };
+
+  my $newtype = ($cdt->{to}->GetSelection == 0) ? 'xmu'
+              : ($cdt->{to}->GetSelection == 1) ? 'xanes'
+              : ($cdt->{to}->GetSelection == 2) ? 'norm'
+              : ($cdt->{to}->GetSelection == 3) ? 'chi'
+              : ($cdt->{to}->GetSelection == 4) ? 'xmudat'
+	      :                                   'xmu';
+  if ($cdt->{how}->GetSelection == 0) {
+    $app->current_data->datatype($newtype);
+    $app->{main}->status("Changed current group's data type to $newtype");
+  } else {
+    foreach my $j (0 .. $app->{main}->{list}->GetCount-1) {
+      if ($app->{main}->{list}->IsChecked($j)) {
+	$app->{main}->{list}->GetClientData($j)->datatype($newtype);
+      };
+    };
+    $app->{main}->status("Changed all marked groups to data type $newtype");
+  };
+  $app->{main}->{Main}->mode($app->current_data, 1, 0);
 };
 
 1;

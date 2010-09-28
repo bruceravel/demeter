@@ -12,9 +12,6 @@ use Demeter::UI::Artemis::ShowText;
 use Demeter::UI::Athena::Status;
 
 use vars qw($demeter $buffer $plotbuffer);
-$demeter = Demeter->new;
-$demeter->set_mode(ifeffit=>1, screen=>0);
-$demeter->mo->silently_ignore_unplottable(1);
 
 use Cwd;
 use File::Basename;
@@ -47,10 +44,16 @@ $noautosave = 0;		# set this to skip autosave, see Demeter::UI::Artemis::Import:
 
 sub OnInit {
   my ($app) = @_;
+  local $|=1;
+  #print DateTime->now, "  Initializing Demeter ...\n";
+  $demeter = Demeter->new;
+  $demeter->set_mode(ifeffit=>1, screen=>0);
+  $demeter->mo->silently_ignore_unplottable(1);
   $demeter -> mo -> ui('Wx');
   $demeter -> mo -> identity('Athena');
   $demeter -> mo -> iwd(cwd);
 
+  #print DateTime->now,  "  Reading configuration files ...\n";
   my $conffile = File::Spec->catfile(dirname($INC{'Demeter/UI/Athena.pm'}), 'Athena', 'share', "athena.demeter_conf");
   $demeter -> co -> read_config($conffile);
   $demeter -> co -> read_ini('athena');
@@ -62,6 +65,7 @@ sub OnInit {
   };
 
   ## -------- create a new frame and set icon
+  #print DateTime->now,  "  Making main frame ...\n";
   $app->{main} = Wx::Frame->new(undef, -1, 'Athena [XAS data processing] - <untitled>', wxDefaultPosition, wxDefaultSize,);
   my $iconfile = File::Spec->catfile(dirname($INC{'Demeter/UI/Athena.pm'}), 'Athena', 'icons', "athena.png");
   $icon = Wx::Icon->new( $iconfile, wxBITMAP_TYPE_ANY );
@@ -69,6 +73,7 @@ sub OnInit {
   EVT_CLOSE($app->{main}, sub{$app->on_close($_[1])});
 
   ## -------- Set up menubar
+  #print DateTime->now,  "  Making menubar and status bar...\n";
   $app -> menubar;
   $app -> set_mru();
 
@@ -77,10 +82,13 @@ sub OnInit {
 
   ## -------- the business part of the window
   my $hbox = Wx::BoxSizer->new( wxHORIZONTAL );
+  #print DateTime->now,  "  Making main window ...\n";
   $app -> main_window($hbox);
+  #print DateTime->now,  "  Making side bar ...\n";
   $app -> side_bar($hbox);
 
   ## -------- "global" parameters
+  #print DateTime->now,  "  Finishing ...\n";
   $app->{lastplot} = [q{}, q{}];
   $app->{selected} = -1;
   $app->{modified} = 0;
@@ -115,7 +123,7 @@ sub process_argv {
     if ($a =~ m{\A-(\d+)\z}) {
       my @list = $demeter->get_mru_list('xasdata');
       my $i = $1-1;
-      #print $list[$i]->[0], $/;
+      #print  $list[$i]->[0], $/;
       $app->Import($list[$i]->[0]);
     } elsif (-r File::Spec->catfile($demeter->mo->iwd, $a)) {
       $app->Import(File::Spec->catfile($demeter->mo->iwd, $a));
@@ -257,6 +265,7 @@ Readonly my $COPY_SERIES       => Wx::NewId();
 Readonly my $REMOVE	       => Wx::NewId();
 Readonly my $REMOVE_MARKED     => Wx::NewId();
 Readonly my $DATA_YAML	       => Wx::NewId();
+Readonly my $CHANGE_DATATYPE   => Wx::NewId();
 
 Readonly my $VALUES_ALL	       => Wx::NewId();
 Readonly my $VALUES_MARKED     => Wx::NewId();
@@ -389,6 +398,7 @@ sub menubar {
   $groupmenu->Append($RENAME, "Rename current group\tALT+SHIFT+l", "Rename the current group");
   $groupmenu->Append($COPY,   "Copy current group\tALT+SHIFT+y",   "Copy the current group");
   $groupmenu->Append($COPY_SERIES, "Copy series",   "Maek a sequence of copies of the current group by incremented a parameter value");
+  $groupmenu->Append($CHANGE_DATATYPE, "Change data type", "Change the data type for the current group or the marked groups");
 
   #my $valuesmenu  = Wx::Menu->new;
   $groupmenu->AppendSeparator;
@@ -453,6 +463,9 @@ sub menubar {
   $mergemenu->AppendRadioItem($MERGE_IMP,   "Weight by importance",       "Weight the marked groups by their importance values when merging" );
   $mergemenu->AppendRadioItem($MERGE_NOISE, "Weight by noise in $CHI(k)", "Weight the marked groups by their $CHI(k) noise values when merging" );
   $mergemenu->AppendRadioItem($MERGE_STEP,  "Weight by $MU(E) edge step", "Weight the marked groups the size of the edge step in $MU(E) when merging" );
+  $mergemenu->Check($MERGE_IMP,   1) if ($demeter->co->default('merge', 'weightby') eq 'importance');
+  $mergemenu->Check($MERGE_NOISE, 1) if ($demeter->co->default('merge', 'weightby') eq 'noise');
+  $mergemenu->Check($MERGE_STEP,  1) if ($demeter->co->default('merge', 'weightby') eq 'step');
 
 
   my $helpmenu   = Wx::Menu->new;
@@ -610,6 +623,10 @@ sub OnMenuClick {
     };
     ($id == $COPY) and do {
       $app->Copy;
+      last SWITCH;
+    };
+    ($id == $CHANGE_DATATYPE) and do {
+      $app->change_datatype;
       last SWITCH;
     };
     ($id == $REMOVE) and do {
@@ -888,7 +905,7 @@ sub side_bar {
   $app->{main}->{list} = Wx::CheckListBox->new($toolpanel, -1, wxDefaultPosition, wxDefaultSize, [], wxLB_SINGLE|wxLB_NEEDED_SB);
   $toolbox            -> Add($app->{main}->{list}, 1, wxGROW|wxALL, 0);
   EVT_LISTBOX($toolpanel, $app->{main}->{list}, sub{$app->OnGroupSelect(@_)});
-  EVT_LISTBOX_DCLICK($toolpanel, $app->{main}->{list}, sub{$app->Rename});
+  EVT_LISTBOX_DCLICK($toolpanel, $app->{main}->{list}, sub{$app->Rename;});
 
   my $singlebox = Wx::BoxSizer->new( wxHORIZONTAL );
   $toolbox     -> Add($singlebox, 0, wxGROW|wxALL, 0);

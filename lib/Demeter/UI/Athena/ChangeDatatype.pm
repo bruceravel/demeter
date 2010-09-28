@@ -1,0 +1,56 @@
+package  Demeter::UI::Athena::ChangeDatatype;
+
+=for Copyright
+ .
+ Copyright (c) 2006-2010 Bruce Ravel (bravel AT bnl DOT gov).
+ All rights reserved.
+ .
+ This file is free software; you can redistribute it and/or
+ modify it under the same terms as Perl itself. See The Perl
+ Artistic License.
+ .
+ This program is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+
+=cut
+
+use strict;
+use warnings;
+
+use Wx qw( :everything);
+use base qw(Wx::Dialog);
+use Wx::Event qw(EVT_RADIOBUTTON EVT_CHECKBOX EVT_CHOICE EVT_BUTTON);
+use Wx::Perl::Carp;
+use Demeter::UI::Wx::SpecialCharacters qw(:all);
+
+sub new {
+  my ($class, $parent, $app) = @_;
+
+  my $this = $class->SUPER::new($parent, -1, "Athena: Change datatype",
+				wxDefaultPosition, [-1,-1],
+				wxMINIMIZE_BOX|wxCAPTION|wxSYSTEM_MENU|wxSTAY_ON_TOP);
+
+  my $box  = Wx::BoxSizer->new( wxVERTICAL );
+
+  $this->{how} = Wx::RadioBox->new($this, -1, "Change datatype for...", wxDefaultPosition, wxDefaultSize,
+				   ["current group", "all marked groups"], 1, wxRA_SPECIFY_ROWS);
+  $box -> Add($this->{how}, 0, wxALL, 5);
+
+
+  $this->{to} = Wx::RadioBox->new($this, -1, "Change datatype to...", wxDefaultPosition, wxDefaultSize,
+				   ["$MU(E)", "xanes", "norm(E)", "$CHI(k)", "Feff's xmu.dat"], 1, wxRA_SPECIFY_ROWS);
+  $box->Add($this->{to},  0, wxALL, 5);
+
+  my $hbox  = Wx::BoxSizer->new( wxHORIZONTAL );
+  $box -> Add($hbox, 0, wxGROW|wxALL, 5);
+  $this->{ok}     = Wx::Button->new($this, wxID_OK, "OK", wxDefaultPosition, wxDefaultSize, 0, );
+  $this->{close}  = Wx::Button->new($this, wxID_CANCEL, "Cancel", wxDefaultPosition, wxDefaultSize);
+  $hbox->Add($this->{ok},    1, wxGROW|wxALL, 5);
+  $hbox->Add($this->{close}, 1, wxGROW|wxALL, 5);
+
+  $this -> SetSizerAndFit($box);
+  return $this;
+};
+
+1;
