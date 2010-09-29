@@ -85,13 +85,16 @@ sub Import {
 	     : ($Demeter::UI::Athena::demeter->is_data($file,$verbose)) ? 'raw'
 	     :                                                            '???';
     if ($type eq '???') {
-      $app->{main}->status("Could not read \"$file\" as either data or a project file.");
+      $app->{main}->status("Could not read \"$file\" as either data or as a project file.");
       return;
     };
 
   SWITCH: {
       $retval = _prj($app, $file, $first),  last SWITCH if ($type eq 'prj');
       $retval = _data($app, $file, $first), last SWITCH if ($type eq 'raw');
+    };
+    if ($retval == 0) {		# bail on a file sequence if one gets canceled
+      return;
     };
     $first = 0;
   };
@@ -187,7 +190,7 @@ sub _data {
       $app->{main}->status("Cancelled column selection.");
       $data->dispose("erase \@group ".$data->group);
       $data->DEMOLISH;
-      return;
+      return 0;
     };
     $repeated = 0;
   };
@@ -281,6 +284,7 @@ sub _data {
   undef $busy;
   undef $colsel;
   undef $yaml;
+  return 1;
 }
 
 sub _prj {
@@ -293,7 +297,7 @@ sub _prj {
 
   if ($result == wxID_CANCEL)  {
     $app->{main}->status("Canceled import from project file.");
-    return;
+    return 0;
   };
 
   my @selected = $app->{main}->{prj}->{grouplist}->GetSelections;
@@ -330,6 +334,7 @@ sub _prj {
   $app->modified(0);
   undef $busy;
   $app->{main}->status("Imported data from project $file");
+  return 1;
 };
 
 

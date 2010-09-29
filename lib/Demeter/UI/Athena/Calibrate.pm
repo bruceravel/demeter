@@ -58,6 +58,14 @@ sub new {
   EVT_BUTTON($this, $this->{select},    sub{Pluck(@_, $app)});
   EVT_BUTTON($this, $this->{calibrate}, sub{OnCalibrate(@_, $app)});
 
+  $box->Add(1,1,1);
+
+  $this->{document} = Wx::Button->new($this, -1, 'Document section: calibrate');
+  $this->{return}   = Wx::Button->new($this, -1, 'Return to main window');
+  $box -> Add($this->{$_}, 0, wxGROW|wxALL, 2) foreach (qw(document return));
+  EVT_BUTTON($this, $this->{document}, sub{  $app->document("calibrate")});
+  EVT_BUTTON($this, $this->{return},   sub{  $app->{main}->{views}->SetSelection(0); $app->OnGroupSelect});
+
   $this->{display}->SetSelection(2);
   $this->{zero}->Enable(0);
 
@@ -77,6 +85,11 @@ sub push_values {
   $this->{e0}->SetValue($data->bkg_e0);
   $this->{save} = $data->bkg_e0;
   $this->{cal}->SetValue(Xray::Absorption->get_energy($data->bkg_z, $data->fft_edge));
+  $this->Enable(1);
+  if ($data->datatype eq 'chi') {
+    $this->Enable(0);
+    return;
+  };
   $this->plot($data);
   1;
 };

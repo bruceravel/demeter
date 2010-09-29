@@ -2,12 +2,12 @@ package Demeter::UI::Athena::____;
 
 use Wx qw( :everything );
 use base 'Wx::Panel';
-use Wx::Event qw(EVT_BUTTON EVT_CHOICE);
+use Wx::Event qw(EVT_BUTTON);
 
-use Demeter::UI::Wx::SpecialCharacters qw(:all);
+#use Demeter::UI::Wx::SpecialCharacters qw(:all);
 
 use vars qw($label);
-$label = "Calibrate data";
+$label = "Calibrate data";	# used in the Choicebox and in status bar messages to identify this tool
 
 my $tcsize = [60,-1];
 
@@ -18,22 +18,40 @@ sub new {
   my $box = Wx::BoxSizer->new( wxVERTICAL);
   $this->{sizer}  = $box;
 
+
+  $box->Add(1,1,1);		# this spacer may not be needed, Journal.pm, for example
+
+  $this->{document} = Wx::Button->new($this, -1, 'Document section: _____');
+  $this->{return}   = Wx::Button->new($this, -1, 'Return to main window');
+  $box -> Add($this->{$_}, 0, wxGROW|wxALL, 2) foreach (qw(document return));
+  EVT_BUTTON($this, $this->{document}, sub{  $app->document("____")});
+  EVT_BUTTON($this, $this->{return},   sub{  $app->{main}->{views}->SetSelection(0); $app->OnGroupSelect});
+
   $this->SetSizerAndFit($box);
   return $this;
 };
 
+## deprecated?
 sub pull_values {
   my ($this, $data) = @_;
   1;
 };
+
+## this subroutine fills the controls when an item is selected from the Group list
 sub push_values {
   my ($this, $data) = @_;
   1;
 };
+
+## this subroutine sets the enabled/frozen state of the controls
 sub mode {
   my ($this, $data, $enabled, $frozen) = @_;
   1;
 };
+
+## yes, there is some overlap between what push_values and mode do.
+## This separation was useful in Main.pm.  Some of the other tools
+## make mode a null op.
 
 1;
 

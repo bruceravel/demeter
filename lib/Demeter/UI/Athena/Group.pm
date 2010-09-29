@@ -16,6 +16,8 @@ sub Rename {
 
   my $data = $app->current_data;
   my $name = $data->name;
+  (my $realname = $name) =~ s{\A\s*(Ref\s+)}{};
+  my $is_ref = $1;
 
   if (not $newname) {
     my $ted = Wx::TextEntryDialog->new($app->{main}, "Enter a new name for \"$name\":", "Rename \"$name\"", q{}, wxOK|wxCANCEL, Wx::GetMousePosition);
@@ -27,8 +29,18 @@ sub Rename {
     $newname = $ted->GetValue;
   };
 
-  $data->name($newname);
-  $app->{main}->{list}->SetString($app->current_index, $newname);
+  my $prefix = ($is_ref) ? "  Ref " : q{};
+  $data->name($prefix.$newname);
+  $app->{main}->{list}->SetString($app->current_index, $prefix.$newname);
+  if (($data->reference) and ($data->reference->name =~ m{\A\s*(?:Ref\s+)?$realname\s*\z})) {
+    my $prefix = ($is_ref) ? q{} : "  Ref ";
+    $data->reference->name($prefix.$newname);
+    foreach my $i (0 .. $app->{main}->{list}->GetCount-1) {
+      next if ($app->{main}->{list}->GetClientData($i) ne $data->reference);
+      $app->{main}->{list}->SetString($i, $prefix.$newname);
+    };
+  };
+  $app->OnGroupSelect;
   $app->modified(1);
   $app->{main}->status("Renamed $name to $newname");
 };
@@ -150,6 +162,7 @@ sub change_datatype {
     };
     $app->{main}->status("Changed all marked groups to data type $newtype");
   };
+  $app->modified(1);
   $app->{main}->{Main}->mode($app->current_data, 1, 0);
 };
 

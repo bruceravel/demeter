@@ -14,7 +14,7 @@
  - [ ] plotting smoothed derivative
  - [ ] deglitch many points
 
-* needs testing [/]
+* needs testing [0/2]
  - [ ] reference of another edge
  - [ ] keV data
 
@@ -28,7 +28,7 @@
  - [X] right click pop up menus on parameter StaticText-s
  - [X] stacking
  - [ ] indicators
- - [ ] plotting styles
+ - [ ] plotting styles (need to make an object)
  - [X] tie spline values in k and E
  - [X] recommended fft_kmax
  - [X] need to call mode after push_values
@@ -64,24 +64,22 @@
 ** clear project name
  - [X] 
 
-* old Athena's edit menu [2/7]
+* old Athena's edit menu [2/5]
  - [ ] titles
  - [ ] data as text
  - [X] Ifeffit show (strings, groups, arrays)
  - [X] journal
- - [ ] csv report
  - [ ] excel report
- - [ ] xfit output
 
-* Group menu [6/12]
+* Group menu [8/12]
  - [X] copy group
  - [ ] copy series
  - [X] about group
  - [ ] about marked
  - [X] rename
  - [ ] tie reference channel by hand
- - [ ] propagate rename through reference
- - [ ] untie reference when discarding a tied group
+ - [X] propagate rename through reference
+ - [X] untie reference when discarding a tied group
  - [ ] move up and down
  - [X] remove group, removed marked
  - [X] close project
@@ -91,36 +89,36 @@
 
 ** parameter constraint
 *** all groups to current [3/3]
- - [X]  individual
- - [X]  group
- - [X]  all
+ - [X] individual
+ - [X] group
+ - [X] all
 *** all marked to current [3/3]
- - [X]  individual
- - [X]  group
- - [X]  all
+ - [X] individual
+ - [X] group
+ - [X] all
 
 ** frozen groups
  - [ ] implement it
 
 ** set E0 [0/3]
- - [ ]  for this
- - [ ]  all
- - [ ]  marked
+ - [ ] for this
+ - [ ] all
+ - [ ] marked
 
-* Plot [3/6]
- - [ ]  zoom, unzoom, cursor
- - [X]  plot I0 marked
- - [X]  E0 at E=0 for marked
- - [X]  stddev and varience plots
- - [ ]  group selection replot
- - [ ]  project name as title in a marked plot
+* Plot [4/6]
+ - [ ] zoom, unzoom, cursor, but only for pgplot
+ - [X] plot I0 marked
+ - [X] E0 at E=0 for marked
+ - [X] stddev and varience plots
+ - [X] project name as title in a marked plot
+ - [ ] next plot to a file
 
 * Merge [4/5]
  - [X] mue
  - [X] norm
  - [X] chi
  - [X] weight by importance/noise/step
- - [ ] datatype of merged group (xanes merge should be a xanes and so on)
+ - [ ] datatype of merged group (xanes merge should be a xanes and so on) (this appears to be so, see [[file:lib/Demeter/Data/Process.pm][Demeter::Data::Process]]
 
 * Plugin registry [0/2]
  - [ ] GUI tool
@@ -132,24 +130,38 @@
  - [ ]  document
  - [ ]  memory usage
 
-* Tools [6/20]
+* Weird stuff I'd prefer not to implement unless demanded [0/6]
+ - [ ] xfit output
+ - [ ] csv and text report
+ - [ ] group selection replot
+ - [ ] point finder
+ - [ ] session defaults
+ - [ ] set to standard (i.e. the one t hat is marked)
+
+* Tools, immediately implementable [6/19]
  - [X] main
  - [X] calibrate
  - [X] align
- - [ ] deglitch and truncate
- - [ ] dispersive
+ - [ ] deglitch
+ - [ ] truncate
  - [X] rebin
  - [ ] smooth
- - [ ] convolute
- - [ ] decovolute
+ - [ ] convolution and noise
  - [ ] self absorption
+
+ - [ ] dispersive
  - [ ] multi-electron removal
+
  - [ ] LCA
- - [ ] PCA
  - [ ] Peak fit
  - [ ] log ratio
  - [ ] difference
+
  - [ ] explain FT
  - [X] journal
  - [ ] plugins
  - [X] preference 
+
+* Tools, needs work [0/2]
+ - [ ] decovolute
+ - [ ] PCA

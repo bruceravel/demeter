@@ -21,6 +21,12 @@ sub new {
 				       wxTE_MULTILINE|wxTE_WORDWRAP|wxTE_AUTO_URL);
   $box->Add($this->{journal}, 1, wxGROW|wxADD, 5);
 
+  $this->{document} = Wx::Button->new($this, -1, 'Document section: journal');
+  $this->{return}   = Wx::Button->new($this, -1, 'Return to main window');
+  $box -> Add($this->{$_}, 0, wxGROW|wxALL, 2) foreach (qw(document return));
+  EVT_BUTTON($this, $this->{document}, sub{  $app->document("journal")});
+  EVT_BUTTON($this, $this->{return},   sub{  $app->{main}->{views}->SetSelection(0); $app->OnGroupSelect});
+
   $this->SetSizerAndFit($box);
   return $this;
 };

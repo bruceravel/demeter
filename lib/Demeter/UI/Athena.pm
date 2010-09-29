@@ -883,6 +883,8 @@ sub main_window {
     $app->{main}->{$which} = "Demeter::UI::Athena::$which"->new($app->{main}->{views}, $app);
     my $label = eval '$'.'Demeter::UI::Athena::'.$which.'::label';
     $app->{main}->{views} -> AddPage($app->{main}->{$which}, $label, 0);
+    next if (not exists $app->{main}->{$which}->{document});
+    $app->{main}->{$which}->{document} -> Enable(0);
   };
   $app->{main}->{views}->SetSelection(0);
   ##$app->{main}->{views}->Enable($_,0) foreach (1 .. $app->{main}->{views}->GetPageCount-2);
@@ -1035,6 +1037,7 @@ sub plot {
   $app->pull_kweight($data[0]);
 
   $data[0]->po->start_plot;
+  ($how eq 'single') ? $data[0]->po->title(q()) : $data[0]->po->title($app->{main}->{project}->GetLabel);
 
   my $sp = (lc($space) eq 'kq') ? 'K' : uc($space);
   $app->{main}->{'Plot'.$sp}->pull_single_values if ($how eq 'single');
@@ -1273,6 +1276,11 @@ sub Clear {
   $app->{main}->{currentproject} = q{};
   $app->{main}->{project}->SetLabel('<untitled>');
   $app->{main}->status(sprintf("Unamed the current project."));
+};
+
+sub document {
+  my ($app, $which) = @_;
+  print "show document for $which\n";
 };
 
 =for Explain

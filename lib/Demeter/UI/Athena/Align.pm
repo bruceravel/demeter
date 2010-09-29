@@ -106,6 +106,13 @@ sub new {
 
   $box -> Add($gbs, 0, wxALIGN_CENTER_HORIZONTAL|wxALL, 10);
 
+  $box->Add(1,1,1);
+
+  $this->{document} = Wx::Button->new($this, -1, 'Document section: alignment');
+  $this->{return}   = Wx::Button->new($this, -1, 'Return to main window');
+  $box -> Add($this->{$_}, 0, wxGROW|wxALL, 2) foreach (qw(document return));
+  EVT_BUTTON($this, $this->{document}, sub{  $app->document("align")});
+  EVT_BUTTON($this, $this->{return},   sub{  $app->{main}->{views}->SetSelection(0); $app->OnGroupSelect});
 
   $this->SetSizerAndFit($box);
   return $this;
@@ -129,7 +136,15 @@ sub push_values {
       ++$count;
     };
   };
-  ($count < 2) ? $this->Enable(0) : $this->Enable(1);
+  $this->Enable(1);
+  if ($count < 2) {
+    $this->Enable(0);
+    return;
+  };
+  if ($data->datatype eq 'chi') {
+    $this->Enable(0);
+    return;
+  };
   $this->{standard}->Clear;
   $this->{standard}->Append(\@list);
   $this->{standard}-> SetValue(sprintf("%d: %s", 1, $::app->{main}->{list}->GetClientData(0)->name));

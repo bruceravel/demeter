@@ -491,7 +491,11 @@ sub mode {
   ## XANES data
   } elsif ($group->datatype eq 'xanes') {
     foreach my $w (@bkg_parameters, 'backgroundbox') {
-      $this->set_widget_state($w, $enabled);
+      if ($w =~ m{spl|chain|bkg_(rbkg|kw)}) {
+	$this->set_widget_state($w, 0);
+      } else {
+	$this->set_widget_state($w, $enabled);
+      };
     };
     foreach my $w (@fft_parameters, @bft_parameters, qw(fftbox bftbox)) {
       $this->set_widget_state($w, 0);
@@ -556,6 +560,11 @@ sub push_values {
   my $nnorm = $data->bkg_nnorm;
   $this->{'bkg_nnorm_'.$nnorm}->SetValue(1);
   ## standard
+  if ($data->reference) {
+    $this->{bkg_eshift}-> SetBackgroundColour( Wx::Colour->new($data->co->default("athena", "tied")) );
+  } else {
+    $this->{bkg_eshift}-> SetBackgroundColour( wxNullColour );
+  };
   my $truncated_name = $data->name;
   my $n = length($truncated_name);
   if ($n > 40) {

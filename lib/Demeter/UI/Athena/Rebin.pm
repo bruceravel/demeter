@@ -81,6 +81,14 @@ sub new {
   EVT_BUTTON($this, $this->{make},   sub{$this->make($app)});
   EVT_BUTTON($this, $this->{marked}, sub{$this->make_marked($app)});
 
+  $box->Add(1,1,1);
+
+  $this->{document} = Wx::Button->new($this, -1, 'Document section: rebinning');
+  $this->{return}   = Wx::Button->new($this, -1, 'Return to main window');
+  $box -> Add($this->{$_}, 0, wxGROW|wxALL, 2) foreach (qw(document return));
+  EVT_BUTTON($this, $this->{document}, sub{  $app->document("rebin")});
+  EVT_BUTTON($this, $this->{return},   sub{  $app->{main}->{views}->SetSelection(0); $app->OnGroupSelect});
+
   $this->SetSizerAndFit($box);
   return $this;
 };
@@ -104,6 +112,7 @@ sub push_values {
   if ($data->rebinned) {
     $this->Enable(0);
   } elsif ($data->datatype eq 'chi') {
+    $this->Enable(0);
   } else {
     $this->{rebinned} = $data->rebin;
     $this->plot($data);
