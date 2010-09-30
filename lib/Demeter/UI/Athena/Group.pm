@@ -185,90 +185,128 @@ sub Report {
     $fname = File::Spec->catfile($fd->GetDirectory, $fd->GetFilename);
   };
 
-  my $workbook = Spreadsheet::WriteExcel->new($fname);
+  my $workbook;
+  {
+    ## The evals in Spreadsheet::WriteExcel::Workbook::_get_checksum_method
+    ## will set the eval error variable ($@) if any of Digest::XXX
+    ## (XXX = MD4 | PERL::MD4 | MD5) are installed on the machine.
+    ## This is not a problem -- crypto is not needed in the exported
+    ## Excel file.  However, setting $@ will post a warning given that
+    ## $SIG{__DIE__} is defined to use Wx::Perl::Carp.  So I need to
+    ## locally undefine $SIG{__DIE__} to avoid having a completely
+    ## pointless error message posted to the screen when the S::WE
+    ## object is instantiated
+    local $SIG{__DIE__} = undef;
+    $workbook = Spreadsheet::WriteExcel->new($fname);
+  };
   my $worksheet = $workbook->add_worksheet();
 
-  header($worksheet, 7);
+  header($workbook, $worksheet, 6);
   my $r = 8;
   foreach my $i (0 .. $app->{main}->{list}->GetCount-1) {
     next if (($how eq 'marked') and (not $app->{main}->{list}->IsChecked($i)));
-    row($worksheet, $r, $app->{main}->{list}->GetClientData($i));
+    row($workbook, $worksheet, $r, $app->{main}->{list}->GetClientData($i));
     ++$r;
   };
-#  $workbook->close;
-  $app->{main}->status("Wrote report to ".$fname);
+  $workbook->close;
+  $app->{main}->status("Wrote spreadsheet report to ".$fname);
 };
 
 
 sub header {
-  my ($worksheet, $i) = @_;
-  $worksheet->write($i, 0, "Group");
-  $worksheet->write($i, 1, "Element");
-  $worksheet->write($i, 2, "Edge");
-  $worksheet->write($i, 3, "Importance");
-  $worksheet->write($i, 4, "Edge shift");
+  my ($workbook, $worksheet, $i) = @_;
 
-  $worksheet->write($i, 6, "E0");
-  $worksheet->write($i, 7, "Algorithm");
-  $worksheet->write($i, 8, "Rbkg");
-  $worksheet->write($i, 9, "k-weight");
-  $worksheet->write($i,10, "Normalization order");
-  $worksheet->write($i,11, "Pre-edge range");
-  $worksheet->write($i,12, "Normalization range");
-  $worksheet->write($i,13, "Spline range (k)");
-  $worksheet->write($i,14, "Spline range (E)");
-  $worksheet->write($i,15, "Edge step");
-  $worksheet->write($i,16, "Standard");
-  $worksheet->write($i,17, "Lower clamp");
-  $worksheet->write($i,18, "Upper clamp");
+  my $grouphead = $workbook->add_format();
+  $grouphead -> set_bold;
+  $grouphead -> set_bg_color('grey');
+  $grouphead -> set_align('left');
 
-  $worksheet->write($i,20, "k-range");
-  $worksheet->write($i,21, "dk");
-  $worksheet->write($i,22, "Window");
-  $worksheet->write($i,23, "Arb. kw");
-  $worksheet->write($i,24, "Phase correction");
+  $worksheet->merge_range($i,  6, $i, 18, "Background removal parameters",         $grouphead);
+  $worksheet->merge_range($i, 20, $i, 24, "Forward Fourier transform parameters",  $grouphead);
+  $worksheet->merge_range($i, 26, $i, 27, "Backward Fourier transform parameters", $grouphead);
+  $worksheet->merge_range($i, 29, $i, 30, "Plotting  parameters",                  $grouphead);
 
-  $worksheet->write($i,26, "R-range");
-  $worksheet->write($i,27, "dR");
+  my $colhead = $workbook->add_format();
+  $colhead -> set_bold;
+  $colhead -> set_bg_color('grey');
+  $colhead -> set_align('center');
 
-  $worksheet->write($i,29, "Plot multiplier");
-  $worksheet->write($i,30, "y offset");
+  $worksheet->write($i+1, 0, "Group",               $colhead);
+  $worksheet->write($i+1, 1, "Element",             $colhead);
+  $worksheet->write($i+1, 2, "Edge",                $colhead);
+  $worksheet->write($i+1, 3, "Importance",          $colhead);
+  $worksheet->write($i+1, 4, "Edge shift",          $colhead);
+
+  $worksheet->write($i+1, 6, "E0", $colhead);
+  $worksheet->write($i+1, 7, "Algorithm",           $colhead);
+  $worksheet->write($i+1, 8, "Rbkg",                $colhead);
+  $worksheet->write($i+1, 9, "k-weight",            $colhead);
+  $worksheet->write($i+1,10, "Normalization order", $colhead);
+  $worksheet->write($i+1,11, "Pre-edge range",      $colhead);
+  $worksheet->write($i+1,12, "Normalization range", $colhead);
+  $worksheet->write($i+1,13, "Spline range (k)",    $colhead);
+  $worksheet->write($i+1,14, "Spline range (E)",    $colhead);
+  $worksheet->write($i+1,15, "Edge step",           $colhead);
+  $worksheet->write($i+1,16, "Standard",            $colhead);
+  $worksheet->write($i+1,17, "Lower clamp",         $colhead);
+  $worksheet->write($i+1,18, "Upper clamp",         $colhead);
+
+  $worksheet->write($i+1,20, "k-range",             $colhead);
+  $worksheet->write($i+1,21, "dk",                  $colhead);
+  $worksheet->write($i+1,22, "Window",              $colhead);
+  $worksheet->write($i+1,23, "Arb. kw",             $colhead);
+  $worksheet->write($i+1,24, "Phase correction",    $colhead);
+
+  $worksheet->write($i+1,26, "R-range",             $colhead);
+  $worksheet->write($i+1,27, "dR",                  $colhead);
+
+  $worksheet->write($i+1,29, "Plot multiplier",     $colhead);
+  $worksheet->write($i+1,30, "y offset",            $colhead);
 };
 sub row {
-  my ($worksheet, $i, $data) = @_;
+  my ($workbook, $worksheet, $i, $data) = @_;
 
-  $worksheet->write($i, 0, $data->name);
-  $worksheet->write($i, 1, get_name($data->bkg_z));
-  $worksheet->write($i, 2, $data->fft_edge);
-  $worksheet->write($i, 3, $data->importance);
-  $worksheet->write($i, 4, $data->bkg_eshift);
+  my $center = $workbook->add_format();
+  $center -> set_align('center');
+  my $number = $workbook->add_format();
+  $number -> set_align('center');
+  $number -> set_num_format('0.000');
+  my $exponent = $workbook->add_format();
+  $exponent -> set_align('center');
+  $exponent -> set_num_format(0x0b);
 
-  $worksheet->write($i, 6, $data->bkg_e0);
-  $worksheet->write($i, 7, $data->bkg_algorithm);
-  $worksheet->write($i, 8, $data->bkg_rbkg);
-  $worksheet->write($i, 9, $data->bkg_kw);
-  $worksheet->write($i,10, $data->bkg_nnorm);
-  $worksheet->write($i,11, sprintf("[%.3f:%.3f]", $data->bkg_pre1,  $data->bkg_pre2 ));
-  $worksheet->write($i,12, sprintf("[%.3f:%.3f]", $data->bkg_nor1,  $data->bkg_nor2 ));
-  $worksheet->write($i,13, sprintf("[%.3f:%.3f]", $data->bkg_spl1,  $data->bkg_spl2 ));
-  $worksheet->write($i,14, sprintf("[%.3f:%.3f]", $data->bkg_spl1e, $data->bkg_spl2e));
-  $worksheet->write($i,15, $data->bkg_step);
-  my $stan = ($data->bkg_stan ne 'None') ? $data->bkg_stan->name : 'none';
-  $worksheet->write($i,16, $stan);
-  $worksheet->write($i,17, $data->number2clamp($data->bkg_clamp1));
-  $worksheet->write($i,18, $data->number2clamp($data->bkg_clamp2));
+  $worksheet->write($i, 0, sprintf(" %s", $data->name));
+  $worksheet->write($i, 1, get_name($data->bkg_z),      $center);
+  $worksheet->write($i, 2, ucfirst($data->fft_edge),    $center);
+  $worksheet->write($i, 3, $data->importance,           $center);
+  $worksheet->write($i, 4, $data->bkg_eshift,           $number);
 
-  $worksheet->write($i,20, sprintf("[%.3f:%.3f]", $data->fft_kmin,  $data->fft_kmax ));
-  $worksheet->write($i,21, $data->fft_dk);
-  $worksheet->write($i,22, $data->fft_kwindow);
-  $worksheet->write($i,23, $data->fit_karb_value);
-  $worksheet->write($i,24, $data->yesno($data->fft_pc));
+  $worksheet->write($i, 6, $data->bkg_e0,               $number);
+  $worksheet->write($i, 7, $data->bkg_algorithm,        $center);
+  $worksheet->write($i, 8, $data->bkg_rbkg,             $number);
+  $worksheet->write($i, 9, $data->bkg_kw,               $center);
+  $worksheet->write($i,10, $data->bkg_nnorm,            $center);
+  $worksheet->write($i,11, sprintf("[ %.3f : %.3f ]", $data->bkg_pre1,  $data->bkg_pre2 ), $center);
+  $worksheet->write($i,12, sprintf("[ %.3f : %.3f ]", $data->bkg_nor1,  $data->bkg_nor2 ), $center);
+  $worksheet->write($i,13, sprintf("[ %.3f : %.3f ]", $data->bkg_spl1,  $data->bkg_spl2 ), $center);
+  $worksheet->write($i,14, sprintf("[ %.3f : %.3f ]", $data->bkg_spl1e, $data->bkg_spl2e), $center);
+  $worksheet->write($i,15, $data->bkg_step,             $exponent);
+  my $stan = ($data->bkg_stan ne 'None') ? $data->bkg_stan->name : 'None';
+  $worksheet->write($i,16, $stan,                       $center);
+  $worksheet->write($i,17, ucfirst($data->number2clamp($data->bkg_clamp1)), $center);
+  $worksheet->write($i,18, ucfirst($data->number2clamp($data->bkg_clamp2)), $center);
 
-  $worksheet->write($i,26, sprintf("[%.3f:%.3f]", $data->bft_rmin,  $data->bft_rmax ));
-  $worksheet->write($i,27, $data->bft_dr);
+  $worksheet->write($i,20, sprintf("[ %.3f : %.3f ]", $data->fft_kmin,  $data->fft_kmax ), $center);
+  $worksheet->write($i,21, $data->fft_dk,               $number);
+  $worksheet->write($i,22, $data->fft_kwindow,          $center);
+  $worksheet->write($i,23, $data->fit_karb_value,       $center);
+  $worksheet->write($i,24, $data->yesno($data->fft_pc), $center);
 
-  $worksheet->write($i,29, $data->plot_multiplier);
-  $worksheet->write($i,30, $data->y_offset);
+  $worksheet->write($i,26, sprintf("[ %.3f : %.3f ]", $data->bft_rmin,  $data->bft_rmax ), $center);
+  $worksheet->write($i,27, $data->bft_dr,               $number);
+
+  $worksheet->write($i,29, $data->plot_multiplier,      $exponent);
+  $worksheet->write($i,30, $data->y_offset,             $number);
 };
 
 1;

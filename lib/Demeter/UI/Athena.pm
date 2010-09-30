@@ -9,6 +9,7 @@ use Demeter::UI::Athena::Replot;
 
 use Demeter::UI::Artemis::Buffer;
 use Demeter::UI::Artemis::ShowText;
+use Demeter::UI::Athena::Cursor;
 use Demeter::UI::Athena::Status;
 
 use vars qw($demeter $buffer $plotbuffer);
@@ -66,7 +67,7 @@ sub OnInit {
 
   ## -------- create a new frame and set icon
   #print DateTime->now,  "  Making main frame ...\n";
-  $app->{main} = Wx::Frame->new(undef, -1, 'Athena [XAS data processing] - <untitled>', wxDefaultPosition, wxDefaultSize,);
+  $app->{main} = Wx::Frame->new(undef, -1, 'Athena [XAS data processing]', wxDefaultPosition, wxDefaultSize,);
   my $iconfile = File::Spec->catfile(dirname($INC{'Demeter/UI/Athena.pm'}), 'Athena', 'icons', "athena.png");
   $icon = Wx::Icon->new( $iconfile, wxBITMAP_TYPE_ANY );
   $app->{main} -> SetIcon($icon);
@@ -862,9 +863,11 @@ sub main_window {
   my $topbar = Wx::BoxSizer->new( wxHORIZONTAL );
   $viewbox -> Add($topbar, 0, wxGROW|wxALL, 0);
 
+  $app->{main}->{token}   = Wx::StaticText->new($viewpanel, -1, q{ }, wxDefaultPosition, [10,-1]);
   $app->{main}->{project} = Wx::StaticText->new($viewpanel, -1, q{<untitled>},);
   my $size = Wx::SystemSettings::GetFont(wxSYS_DEFAULT_GUI_FONT)->GetPointSize + 2;
   $app->{main}->{project}->SetFont( Wx::Font->new( $size, wxDEFAULT, wxNORMAL, wxBOLD, 0, "" ) );
+  $topbar -> Add($app->{main}->{token},   0, wxGROW|wxTOP|wxBOTTOM|wxLEFT, 5);
   $topbar -> Add($app->{main}->{project}, 0, wxGROW|wxALL, 5);
 
   $topbar -> Add(1,1,1);
@@ -873,10 +876,10 @@ sub main_window {
   $app->{main}->{all}    = Wx::Button->new($viewpanel, -1,        q{A}, wxDefaultPosition, wxDefaultSize, wxBU_EXACTFIT);
   $app->{main}->{none}   = Wx::Button->new($viewpanel, -1,        q{U}, wxDefaultPosition, wxDefaultSize, wxBU_EXACTFIT);
   $app->{main}->{invert} = Wx::Button->new($viewpanel, -1,        q{I}, wxDefaultPosition, wxDefaultSize, wxBU_EXACTFIT);
-  $topbar -> Add($app->{main}->{save},   0, wxGROW|wxTOP|wxBOTTOM, 5);
-  $topbar -> Add($app->{main}->{all},    0, wxGROW|wxTOP|wxBOTTOM, 5);
-  $topbar -> Add($app->{main}->{none},   0, wxGROW|wxTOP|wxBOTTOM, 5);
-  $topbar -> Add($app->{main}->{invert}, 0, wxGROW|wxTOP|wxBOTTOM, 5);
+  $topbar -> Add($app->{main}->{save},   0, wxGROW|wxTOP|wxBOTTOM, 2);
+  $topbar -> Add($app->{main}->{all},    0, wxGROW|wxTOP|wxBOTTOM, 2);
+  $topbar -> Add($app->{main}->{none},   0, wxGROW|wxTOP|wxBOTTOM, 2);
+  $topbar -> Add($app->{main}->{invert}, 0, wxGROW|wxTOP|wxBOTTOM, 2);
   $app->{main}->{save} -> Enable(0);
   $app->EVT_BUTTON($app->{main}->{save},   sub{$app -> Export('all', $app->{main}->{currentproject})});
   $app->EVT_BUTTON($app->{main}->{all},    sub{$app->mark('all')});
@@ -1281,11 +1284,13 @@ sub modified {
   my ($app, $is_modified) = @_;
   $app->{modified} = $is_modified;
   $app->{main}->{save}->Enable($is_modified);
-  my $projname = $app->{main}->{project}->GetLabel;
-  return if ($projname eq '<untitled>');
-  $projname = substr($projname, 1) if ($projname =~ m{\A\*});
-  $projname = '*'.$projname if ($is_modified);
-  $app->{main}->{project}->SetLabel($projname);
+  my $token = ($is_modified) ? q{*} : q{ };
+  $app->{main}->{token}->SetLabel($token);
+  #   my $projname = $app->{main}->{project}->GetLabel;
+  #   return if ($projname eq '<untitled>');
+  #   $projname = substr($projname, 1) if ($projname =~ m{\A\*});
+  #   $projname = '*'.$projname if ($is_modified);
+  #   $app->{main}->{project}->SetLabel($projname);
 };
 
 sub Clear {

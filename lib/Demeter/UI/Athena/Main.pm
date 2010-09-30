@@ -1,7 +1,6 @@
 package Demeter::UI::Athena::Main;
 
 use Wx qw( :everything );
-use Wx::DND;
 use base 'Wx::Panel';
 use Wx::Event qw(EVT_LIST_ITEM_ACTIVATED EVT_LIST_ITEM_SELECTED EVT_BUTTON EVT_KEY_DOWN
 		 EVT_TEXT EVT_CHOICE EVT_COMBOBOX EVT_CHECKBOX EVT_RADIOBUTTON
@@ -728,27 +727,12 @@ sub Pluck {
     return;
   };
 
-  $app->{main}->status("Double click on a point to pluck its value.", "wait");
-  my $busy = Wx::BusyCursor->new();
-  my $tdo = Wx::TextDataObject->new;
-  wxTheClipboard->Open;
-  wxTheClipboard->GetData( $tdo );
-  wxTheClipboard->Close;
-  my $top_of_clipboard = $tdo->GetText;
-  my $new = $top_of_clipboard;
-  while ($new eq $top_of_clipboard) {
-    wxTheClipboard->Open;
-    wxTheClipboard->GetData( $tdo );
-    wxTheClipboard->Close;
-    $new = $tdo->GetText;
-    sleep 1;
-  };
+  my ($ok, $x, $y) = $app->cursor;
+  return if not $ok;
+  my $plucked = -999;
 
   $on_screen = 'k' if ($on_screen eq 'q');
   my $data = $app->current_data;
-  my ($x, $y) = split(/,\s+/, $new);
-
-  my $plucked = -999;
   if ($on_screen eq 'r') {
     $plucked = $x;
   } elsif (($on_screen eq 'e') and ($which eq "bkg_e0")) {
@@ -764,7 +748,8 @@ sub Pluck {
   } elsif (($on_screen eq 'k') and ($which =~ m{bkg})) {
     $plucked = $data->k2e($x, 'relative');
   };
-  $app->{main}->{Main}->{$which}->SetValue(sprintf("%.3f", $plucked));
+  $plucked = sprintf("%.3f", $plucked);
+  $app->{main}->{Main}->{$which}->SetValue($plucked);
 
   $app->{main}->status("Plucked $plucked for $which");
   undef $busy;
