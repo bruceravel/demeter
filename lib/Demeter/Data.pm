@@ -187,6 +187,7 @@ has 'update_bft'     => (is => 'rw', isa => 'Bool',  default => 1);
 has 'nidp'           => (is => 'rw', isa => 'Num', default => 0);
 
 ## -------- background removal parameters
+has 'bkg_algorithm'   => (is => 'rw', isa => 'Str',   default => 'autobk',);
 has 'bkg_e0'          => (is => 'rw', isa => 'Num',   default => 0,
 			  trigger => sub{ my($self) = @_; $self->update_bkg(1), $self->update_norm(1) });
 

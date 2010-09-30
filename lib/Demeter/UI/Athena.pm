@@ -225,6 +225,9 @@ sub current_data {
   return $app->{main}->{list}->GetClientData($app->{main}->{list}->GetSelection);
 };
 
+Readonly my $REPORT_ALL        => Wx::NewId();
+Readonly my $REPORT_MARKED     => Wx::NewId();
+
 Readonly my $SAVE_MARKED       => Wx::NewId();
 Readonly my $SAVE_MUE	       => Wx::NewId();
 Readonly my $SAVE_NORM	       => Wx::NewId();
@@ -331,6 +334,10 @@ sub menubar {
   $filemenu->Append($SAVE_MARKED, "Save marked groups as...", "Save marked groups as an Athena project file as..." );
   $filemenu->AppendSeparator;
 
+  my $exportmenu   = Wx::Menu->new;
+  $exportmenu->Append($REPORT_ALL,    "Write a report on all groups",    "Write a report on the parameter values of all data groups" );
+  $exportmenu->Append($REPORT_MARKED, "Write a report on marked groups", "Write a report on the parameter values of the marked data groups" );
+
   my $savecurrentmenu = Wx::Menu->new;
   $savecurrentmenu->Append($SAVE_MUE,    "$MU(E)",  "Save $MU(E) from the current group" );
   $savecurrentmenu->Append($SAVE_NORM,   "norm(E)", "Save normalized $MU(E) from the current group" );
@@ -368,6 +375,7 @@ sub menubar {
   $saveeachmenu->Append($EACH_CHIR,   "$CHI(R)", "Save $CHI(R) for each marked group" );
   $saveeachmenu->Append($EACH_CHIQ,   "$CHI(q)", "Save $CHI(q) for each marked group" );
 
+  $filemenu->AppendSubMenu($exportmenu,      "Export ...",                    "Export" );
   $filemenu->AppendSubMenu($savecurrentmenu, "Save current group as ...",     "Save the data in the current group as a column data file" );
   $filemenu->AppendSubMenu($savemarkedmenu,  "Save marked groups as ...",     "Save the data from the marked group as a column data file" );
   $filemenu->AppendSubMenu($saveeachmenu,    "Save each marked group as ...", "Save the data in the marked group as column data files" );
@@ -563,6 +571,15 @@ sub OnMenuClick {
     };
     ($id == $SAVE_MARKED) and do {
       $app -> Export('marked');
+      last SWITCH;
+    };
+
+    ($id == $REPORT_ALL) and do {
+      $app -> Report('all');
+      last SWITCH;
+    };
+    ($id == $REPORT_MARKED) and do {
+      $app -> Report('marked');
       last SWITCH;
     };
 

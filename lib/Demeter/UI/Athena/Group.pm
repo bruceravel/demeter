@@ -4,11 +4,14 @@ use Demeter;
 use Demeter::UI::Wx::SpecialCharacters qw(:all);
 use Demeter::UI::Athena::ChangeDatatype;
 
+use Cwd;
+use Chemistry::Elements qw(get_name);
 use List::Util qw(min);
+use Spreadsheet::WriteExcel;
 
 use Wx qw(:everything);
 use base qw( Exporter );
-our @EXPORT = qw(Rename Copy Remove change_datatype);
+our @EXPORT = qw(Rename Copy Remove change_datatype Report);
 
 sub Rename {
   my ($app, $newname) = @_;
@@ -164,6 +167,108 @@ sub change_datatype {
   };
   $app->modified(1);
   $app->{main}->{Main}->mode($app->current_data, 1, 0);
+};
+
+sub Report {
+  my ($app, $how, $fname) = @_;
+  $how ||= 'all';
+
+  if (not $fname) {
+    my $fd = Wx::FileDialog->new( $app->{main}, "Save spreadsheet report", cwd, q{athena.xls},
+				  "Athena project (*.xls)|*.xls|All files|*.*",
+				  wxFD_SAVE|wxFD_CHANGE_DIR|wxFD_OVERWRITE_PROMPT,
+				  wxDefaultPosition);
+    if ($fd->ShowModal == wxID_CANCEL) {
+      $app->{main}->status("Saving report cancelled.");
+      return;
+    };
+    $fname = File::Spec->catfile($fd->GetDirectory, $fd->GetFilename);
+  };
+
+  my $workbook = Spreadsheet::WriteExcel->new($fname);
+  my $worksheet = $workbook->add_worksheet();
+
+  header($worksheet, 7);
+  my $r = 8;
+  foreach my $i (0 .. $app->{main}->{list}->GetCount-1) {
+    next if (($how eq 'marked') and (not $app->{main}->{list}->IsChecked($i)));
+    row($worksheet, $r, $app->{main}->{list}->GetClientData($i));
+    ++$r;
+  };
+#  $workbook->close;
+  $app->{main}->status("Wrote report to ".$fname);
+};
+
+
+sub header {
+  my ($worksheet, $i) = @_;
+  $worksheet->write($i, 0, "Group");
+  $worksheet->write($i, 1, "Element");
+  $worksheet->write($i, 2, "Edge");
+  $worksheet->write($i, 3, "Importance");
+  $worksheet->write($i, 4, "Edge shift");
+
+  $worksheet->write($i, 6, "E0");
+  $worksheet->write($i, 7, "Algorithm");
+  $worksheet->write($i, 8, "Rbkg");
+  $worksheet->write($i, 9, "k-weight");
+  $worksheet->write($i,10, "Normalization order");
+  $worksheet->write($i,11, "Pre-edge range");
+  $worksheet->write($i,12, "Normalization range");
+  $worksheet->write($i,13, "Spline range (k)");
+  $worksheet->write($i,14, "Spline range (E)");
+  $worksheet->write($i,15, "Edge step");
+  $worksheet->write($i,16, "Standard");
+  $worksheet->write($i,17, "Lower clamp");
+  $worksheet->write($i,18, "Upper clamp");
+
+  $worksheet->write($i,20, "k-range");
+  $worksheet->write($i,21, "dk");
+  $worksheet->write($i,22, "Window");
+  $worksheet->write($i,23, "Arb. kw");
+  $worksheet->write($i,24, "Phase correction");
+
+  $worksheet->write($i,26, "R-range");
+  $worksheet->write($i,27, "dR");
+
+  $worksheet->write($i,29, "Plot multiplier");
+  $worksheet->write($i,30, "y offset");
+};
+sub row {
+  my ($worksheet, $i, $data) = @_;
+
+  $worksheet->write($i, 0, $data->name);
+  $worksheet->write($i, 1, get_name($data->bkg_z));
+  $worksheet->write($i, 2, $data->fft_edge);
+  $worksheet->write($i, 3, $data->importance);
+  $worksheet->write($i, 4, $data->bkg_eshift);
+
+  $worksheet->write($i, 6, $data->bkg_e0);
+  $worksheet->write($i, 7, $data->bkg_algorithm);
+  $worksheet->write($i, 8, $data->bkg_rbkg);
+  $worksheet->write($i, 9, $data->bkg_kw);
+  $worksheet->write($i,10, $data->bkg_nnorm);
+  $worksheet->write($i,11, sprintf("[%.3f:%.3f]", $data->bkg_pre1,  $data->bkg_pre2 ));
+  $worksheet->write($i,12, sprintf("[%.3f:%.3f]", $data->bkg_nor1,  $data->bkg_nor2 ));
+  $worksheet->write($i,13, sprintf("[%.3f:%.3f]", $data->bkg_spl1,  $data->bkg_spl2 ));
+  $worksheet->write($i,14, sprintf("[%.3f:%.3f]", $data->bkg_spl1e, $data->bkg_spl2e));
+  $worksheet->write($i,15, $data->bkg_step);
+  my $stan = ($data->bkg_stan ne 'None') ? $data->bkg_stan->name : 'none';
+  $worksheet->write($i,16, $stan);
+  $worksheet->write($i,17, $data->number2clamp($data->bkg_clamp1));
+  $worksheet->write($i,18, $data->number2clamp($data->bkg_clamp2));
+
+  $worksheet->write($i,20, sprintf("[%.3f:%.3f]", $data->fft_kmin,  $data->fft_kmax ));
+  $worksheet->write($i,21, $data->fft_dk);
+  $worksheet->write($i,22, $data->fft_kwindow);
+  $worksheet->write($i,23, $data->fit_karb_value);
+  $worksheet->write($i,24, $data->yesno($data->fft_pc));
+
+  $worksheet->write($i,26, sprintf("[%.3f:%.3f]", $data->bft_rmin,  $data->bft_rmax ));
+  $worksheet->write($i,27, $data->bft_dr);
+
+  $worksheet->write($i,29, $data->plot_multiplier);
+  $worksheet->write($i,30, $data->y_offset);
 };
 
 1;
