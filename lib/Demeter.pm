@@ -239,6 +239,11 @@ sub dd {
   if (not $self->mo->datadefault) {
     $self->mo->datadefault(Demeter::Data->new(group=>'default___',
 					      name=>'default___',
+					      update_data=>0,
+					      update_columns=>0,
+					      update_bkg=>0,
+					      update_bft=>0,
+					      update_fft=>0,
 					      fft_kmin=>3, fft_kmax=>15,
 					      bft_rmin=>1, bft_rmax=>6,
 					     ));
@@ -424,7 +429,7 @@ sub plot_with {
       $old_plot_object->DEMOLISHALL if $old_plot_object;
       require Demeter::Plot::SingleFile;
       $self -> mo -> plot(Demeter::Plot::SingleFile->new);
-      $self -> dd -> standard;
+      #$self -> dd -> standard;
       last SWITCH;
     };
 

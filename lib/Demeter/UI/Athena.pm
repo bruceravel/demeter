@@ -223,6 +223,7 @@ sub current_index {
 };
 sub current_data {
   my ($app) = @_;
+  return $demeter->dd if not $app->{main}->{list}->GetCount;
   return $app->{main}->{list}->GetClientData($app->{main}->{list}->GetSelection);
 };
 
@@ -766,37 +767,45 @@ sub OnMenuClick {
       $app->{main}->{PlotE}->pull_single_values;
       $data->po->set(e_bkg=>0, e_pre=>0, e_post=>0, e_norm=>0, e_der=>0, e_sec=>0);
       $data->po->set(e_mu=>1, e_i0=>1, e_signal=>1);
+      return if not $app->preplot($data);
       $data->po->start_plot;
       $data->plot('E');
       $data->po->set(e_i0=>0, e_signal=>0);
-      $app->{main}->{plottabs}->SetSelection(0);
+      $app->{main}->{plottabs}->SetSelection(1);
       $app->{lastplot} = ['E', 'single'];
+      $app->postplot;
       last SWITCH;
     };
     ($id == $PLOT_K123) and do {
       my $data = $app->current_data;
       #$app->{main}->{Main}->pull_values($data);
       $app->{main}->{PlotK}->pull_single_values;
+      return if not $app->preplot($data);
       $data->po->start_plot;
       $data->plot('k123');
-      $app->{main}->{plottabs}->SetSelection(1);
+      $app->{main}->{plottabs}->SetSelection(2);
       $app->{lastplot} = ['k', 'single'];
+      $app->postplot;
       last SWITCH;
     };
     ($id == $PLOT_R123) and do {
       my $data = $app->current_data;
       #$app->{main}->{Main}->pull_values($data);
       $app->{main}->{PlotR}->pull_marked_values;
+      return if not $app->preplot($data);
       $data->po->start_plot;
       $data->plot('R123');
-      $app->{main}->{plottabs}->SetSelection(2);
+      $app->postplot;
+      $app->{main}->{plottabs}->SetSelection(3);
       $app->{lastplot} = ['R', 'single'];
       last SWITCH;
     };
     ($id == $PLOT_STDDEV) and do {
       my $data = $app->current_data;
       last SWITCH if not $data->is_merge;
+      return if not $app->preplot($data);
       $data->plot('stddev');
+      $app->postplot;
       my $sp = $data->is_merge;
       $sp = 'E' if ($sp eq 'n');
       $app->{lastplot} = [$sp, 'single'];
@@ -805,7 +814,9 @@ sub OnMenuClick {
     ($id == $PLOT_VARIENCE) and do {
       my $data = $app->current_data;
       last SWITCH if not $data->is_merge;
+      return if not $app->postplot($data);
       $data->plot('variance');
+      $app->postplot;
       my $sp = $data->is_merge;
       $sp = 'E' if ($sp eq 'n');
       $app->{lastplot} = [$sp, 'single'];
@@ -968,7 +979,7 @@ sub side_bar {
 
   ## -------- fill the plotting options tabs
   $app->{main}->{plottabs}  = Wx::Choicebook->new($toolpanel, -1, wxDefaultPosition, wxDefaultSize, wxNB_TOP);
-  foreach my $m (qw(PlotE PlotK PlotR PlotQ Stack Indicators)) {
+  foreach my $m (qw(Other PlotE PlotK PlotR PlotQ Stack Indicators)) {
     next if $INC{"Demeter/UI/Athena/Plot/$m.pm"};
     require "Demeter/UI/Athena/Plot/$m.pm";
     $app->{main}->{$m} = "Demeter::UI::Athena::Plot::$m"->new($app->{main}->{plottabs}, $app);
@@ -979,6 +990,8 @@ sub side_bar {
       $label = 'Stack plots';
     } elsif ($m eq 'Indicators') {
       $label = 'Indicators';
+    } elsif ($m eq 'Other') {
+      $label = 'Other plot features';
     } elsif ($m eq 'PlotR') {
       $label = 'Plot in R-space';
     } else {
@@ -1060,11 +1073,16 @@ sub plot {
     return;
   };
 
+  $data[0]->po->space($space);
+  my $ok = $app->preplot($data[0]);
+  return if not $ok;
+
   #$app->{main}->{Main}->pull_values($app->current_data);
   $app->pull_kweight($data[0]);
 
   $data[0]->po->start_plot;
   my $title = ($how eq 'single')                                  ? q{}
+            : ($app->{main}->{Other}->{title}->GetValue)          ? $app->{main}->{Other}->{title}->GetValue
             : ($app->{main}->{project}->GetLabel eq '<untitled>') ? 'marked groups'
 	    :                                                       $app->{main}->{project}->GetLabel;
   $data[0]->po->title($title);
@@ -1083,9 +1101,9 @@ sub plot {
 				   ($data[0]->datatype ne 'xanes') and
 				   (lc($space) ne 'e'));
     if (lc($space) eq 'e') {
-      $app->{main}->{plottabs}->SetSelection(0);
-    } else {
       $app->{main}->{plottabs}->SetSelection(1);
+    } else {
+      $app->{main}->{plottabs}->SetSelection(2);
     };
 
   ## R
@@ -1101,7 +1119,7 @@ sub plot {
     } else {
       $_->plot($space) foreach @data;
     };
-    $app->{main}->{plottabs}->SetSelection(2);
+    $app->{main}->{plottabs}->SetSelection(3);
 
   ## q
   } elsif (lc($space) eq 'q') {
@@ -1116,11 +1134,53 @@ sub plot {
     } else {
       $_->plot($space) foreach @data;
     };
-    $app->{main}->{plottabs}->SetSelection(3);
+    $app->{main}->{plottabs}->SetSelection(4);
   };
 
+  $app->postplot;
   $app->{lastplot} = [$space, $how];
   undef $busy;
+};
+
+sub preplot {
+  my ($app, $data) = @_;
+  if ($app->{main}->{Other}->{singlefile}->GetValue) {
+    ## writing plot to a single file has been selected...
+    my $fd = Wx::FileDialog->new( $app->{main}, "Save plot to a file", cwd, "plot.dat",
+				  "Data (*.dat)|*.dat|All files|*.*",
+				  wxFD_SAVE|wxFD_CHANGE_DIR|wxFD_OVERWRITE_PROMPT,
+				  wxDefaultPosition);
+    if ($fd->ShowModal == wxID_CANCEL) {
+      $app->{main}->status("Saving plot to a file has been cancelled.");
+      $app->{main}->{Other}->{singlefile}->SetValue(0);
+      return 0;
+    };
+    ## set up for SingleFile backend
+    if (not $data) {
+      foreach my $i (0 .. $app->{main}->{list}->GetCount-1) {
+	if ($app->{main}->{list}->IsChecked($i)) {
+	  $data = $app->{main}->{list}->GetClientData($i);
+	  last;
+	};
+      };
+    };
+    $data->standard;
+    $demeter->plot_with('singlefile');
+    $demeter->po->file(File::Spec->catfile($fd->GetDirectory, $fd->GetFilename));
+  };
+  return 1;
+};
+sub postplot {
+  my ($app) = @_;
+  if ($demeter->mo->template_plot eq 'singlefile') {
+    $demeter->po->finish;
+    $demeter->po->file(q{});
+    $app->{main}->status("Wrote plot data to ".$demeter->po->file);
+    #$demeter->plot_with($demeter->co->default(qw(plot plotwith)));
+    $demeter->plot_with('gnuplot');
+  };
+  $app->{main}->{Other}->{singlefile}->SetValue(0);
+  return;
 };
 
 sub quadplot {
@@ -1152,6 +1212,7 @@ sub quadplot {
 sub plot_e00 {
   my ($app) = @_;
 
+  $app->preplot;
   $app->{main}->{PlotE}->pull_single_values;
   $app->current_data->po->set(e_mu=>1, e_markers=>0, e_zero=>1, e_bkg=>0, e_pre=>0, e_post=>0,
 			      e_norm=>1, e_der=>0, e_sec=>0, e_i0=>0, e_signal=>0);
@@ -1161,10 +1222,12 @@ sub plot_e00 {
       if $app->{main}->{list}->IsChecked($i);
   };
   $app->current_data->po->set(e_zero=>0, e_markers=>1);
+  $app->postplot;
 };
 sub plot_i0_marked {
   my ($app) = @_;
 
+  $app->preplot;
   $app->{main}->{PlotE}->pull_single_values;
   $app->current_data->po->set(e_mu=>0, e_markers=>0, e_zero=>0, e_bkg=>0, e_pre=>0, e_post=>0,
 			      e_norm=>0, e_der=>0, e_sec=>0, e_i0=>1, e_signal=>0);
@@ -1174,6 +1237,7 @@ sub plot_i0_marked {
       if $app->{main}->{list}->IsChecked($i);
   };
   $app->current_data->po->set(e_i0=>0, e_markers=>1);
+  $app->postplot;
 };
 
 sub pull_kweight {
@@ -1217,7 +1281,7 @@ sub mark {
     my $word = ($how eq 'regexp') ? 'Mark' : 'Unmark';
     my $ted = Wx::TextEntryDialog->new( $app->{main}, "$word data groups matching this regular expression:", "Enter a regular expression", q{}, wxOK|wxCANCEL, Wx::GetMousePosition);
     if ($ted->ShowModal == wxID_CANCEL) {
-      $app->{main}->status($word."ing by regular expression cancelled.");
+       $app->{main}->status($word."ing by regular expression cancelled.");
       return;
     };
     $regex = $ted->GetValue;

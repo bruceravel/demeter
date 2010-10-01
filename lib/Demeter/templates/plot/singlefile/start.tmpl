@@ -1,12 +1,13 @@
 {
-  $which = ($P->space eq 'k') ? 'fft' : 'bft';
+  $which = (lc($P->space) =~ m{[ek]}) ? 'fft' : 'bft';
+  $space = (lc($P->space) eq 'e') ? 'energy' : lc($P->space);
   $DS->_update($which);
   q{};
 }
 {if (($P->space eq 'k') and $P->chie) {
   $OUT .= "set p___lot.eee = " . $DS->group . ".k^2/etok+" . $DS->bkg_e0;
 } else {
-  $OUT .= "set p___lot." . $P->space . " = " . $DS->group . "." . $P->space;
+  $OUT .= "set p___lot." . $P->space . " = " . $DS->group . "." . $space;
 };
 }
 

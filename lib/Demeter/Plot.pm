@@ -244,6 +244,10 @@ sub start_plot {
   return $self;
 };
 
+sub finish {
+  1;
+};
+
 sub increment {
   my ($self) = @_;
   my $incr = $self->increm;

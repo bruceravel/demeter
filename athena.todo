@@ -39,6 +39,11 @@
  - [X] command line arguments
  - [ ] implement bkg_stan
 
+* miscellaneous plot tab [0/3]
+ - [ ] specify title
+ - [ ] singlfile toggle
+ - [ ] suppress legend
+
 * data import [4/6]
  - [X] reference channel on import (use Demeter::Data::MultiChannel?)
  - [X] rebin on import (need to get rebin page working)

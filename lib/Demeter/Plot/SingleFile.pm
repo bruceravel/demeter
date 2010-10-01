@@ -91,7 +91,7 @@ override after_plot_hook => sub {
   return $self;
 };
 
-sub finish {
+override finish => sub {
   my ($self) = @_;
   my $command = $self->template("plot", "end");
   $self->dispose($command, "plotting");
