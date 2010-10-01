@@ -141,8 +141,8 @@ sub new {
   $this->{$_}->SetBackgroundColour( Wx::Colour->new($Demeter::UI::Athena::demeter->co->default("athena", "marked")) )
     foreach (qw(mmu mnorm mder msec));
 
-  my $right = Wx::BoxSizer->new( wxVERTICAL );
-  $hbox -> Add($right, 0, wxALL, 4);
+#  my $right = Wx::BoxSizer->new( wxVERTICAL );
+#  $hbox -> Add($right, 0, wxALL, 4);
 
   my $range = Wx::BoxSizer->new( wxHORIZONTAL );
   $box -> Add($range, 0, wxALL, 0);

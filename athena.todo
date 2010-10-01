@@ -64,12 +64,12 @@
 ** clear project name
  - [X] 
 
-* old Athena's edit menu [2/5]
+* old Athena's edit menu [3/5]
  - [ ] titles
  - [ ] data as text
  - [X] Ifeffit show (strings, groups, arrays)
  - [X] journal
- - [ ] excel report
+ - [X] excel report
 
 * Group menu [8/12]
  - [X] copy group

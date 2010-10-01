@@ -201,8 +201,8 @@ sub Report {
   };
   my $worksheet = $workbook->add_worksheet();
 
-  header($workbook, $worksheet, 6);
-  my $r = 8;
+  header($workbook, $worksheet, 5);
+  my $r = 7;
   foreach my $i (0 .. $app->{main}->{list}->GetCount-1) {
     next if (($how eq 'marked') and (not $app->{main}->{list}->IsChecked($i)));
     row($workbook, $worksheet, $r, $app->{main}->{list}->GetClientData($i));
@@ -220,6 +220,16 @@ sub header {
   $grouphead -> set_bold;
   $grouphead -> set_bg_color('grey');
   $grouphead -> set_align('left');
+
+  $worksheet->merge_range(1,  0, 1, 30, "Athena report -- ".$::app->current_data->identify, $grouphead);
+  $worksheet->merge_range(2,  0, 2, 30, "This file created at ".$::app->current_data->now,  $grouphead);
+  $worksheet->merge_range(3,  0, 3, 30, join(", ",
+					     $::app->current_data->environment,
+					     "Wx ".$Wx::VERSION,
+					     "Spreadsheet::WriteExcel ".$Spreadsheet::WriteExcel::VERSION,
+					    ),
+			  $grouphead);
+
 
   $worksheet->merge_range($i,  6, $i, 18, "Background removal parameters",         $grouphead);
   $worksheet->merge_range($i, 20, $i, 24, "Forward Fourier transform parameters",  $grouphead);

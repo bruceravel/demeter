@@ -228,6 +228,7 @@ sub current_data {
 
 Readonly my $REPORT_ALL        => Wx::NewId();
 Readonly my $REPORT_MARKED     => Wx::NewId();
+Readonly my $XFIT              => Wx::NewId();
 
 Readonly my $SAVE_MARKED       => Wx::NewId();
 Readonly my $SAVE_MUE	       => Wx::NewId();
@@ -336,8 +337,9 @@ sub menubar {
   $filemenu->AppendSeparator;
 
   my $exportmenu   = Wx::Menu->new;
-  $exportmenu->Append($REPORT_ALL,    "Write a report on all groups",    "Write a report on the parameter values of all data groups" );
-  $exportmenu->Append($REPORT_MARKED, "Write a report on marked groups", "Write a report on the parameter values of the marked data groups" );
+  $exportmenu->Append($REPORT_ALL,    "Excel report on all groups",    "Write an Excel report on the parameter values of all data groups" );
+  $exportmenu->Append($REPORT_MARKED, "Excel report on marked groups", "Write an Excel report on the parameter values of the marked data groups" );
+  $exportmenu->Append($XFIT,          "XFit file for current group",   "Write a file for the XFit XAS analysis program for the current group" );
 
   my $savecurrentmenu = Wx::Menu->new;
   $savecurrentmenu->Append($SAVE_MUE,    "$MU(E)",  "Save $MU(E) from the current group" );
@@ -376,10 +378,10 @@ sub menubar {
   $saveeachmenu->Append($EACH_CHIR,   "$CHI(R)", "Save $CHI(R) for each marked group" );
   $saveeachmenu->Append($EACH_CHIQ,   "$CHI(q)", "Save $CHI(q) for each marked group" );
 
-  $filemenu->AppendSubMenu($exportmenu,      "Export ...",                    "Export" );
   $filemenu->AppendSubMenu($savecurrentmenu, "Save current group as ...",     "Save the data in the current group as a column data file" );
   $filemenu->AppendSubMenu($savemarkedmenu,  "Save marked groups as ...",     "Save the data from the marked group as a column data file" );
   $filemenu->AppendSubMenu($saveeachmenu,    "Save each marked group as ...", "Save the data in the marked group as column data files" );
+  $filemenu->AppendSubMenu($exportmenu,      "Export ...",                    "Export" );
   $filemenu->AppendSeparator;
   $filemenu->Append($CLEAR_PROJECT, 'Clear project name', 'Clear project name');
   $filemenu->AppendSeparator;
@@ -493,6 +495,7 @@ sub menubar {
   $app->{main}->SetMenuBar( $bar );
 
 
+  $exportmenu     -> Enable($_,0) foreach ($XFIT);
   $plotmenu       -> Enable($_,0) foreach ($ZOOM, $UNZOOM, $CURSOR);
   $mergedplotmenu -> Enable($_,0) foreach ($PLOT_STDDEV, $PLOT_VARIENCE);
   $freezemenu     -> Enable($_,0) foreach ($FREEZE_TOGGLE, $FREEZE_ALL, $UNFREEZE_ALL,
@@ -964,20 +967,24 @@ sub side_bar {
   $app->mouseover($app->{main}->{kweights}, "Select the value of k-weighting to be used in plots in k, R, and q-space.");
 
   ## -------- fill the plotting options tabs
-  $app->{main}->{plottabs}  = Wx::Notebook->new($toolpanel, -1, wxDefaultPosition, wxDefaultSize, wxNB_TOP);
+  $app->{main}->{plottabs}  = Wx::Choicebook->new($toolpanel, -1, wxDefaultPosition, wxDefaultSize, wxNB_TOP);
   foreach my $m (qw(PlotE PlotK PlotR PlotQ Stack Indicators)) {
     next if $INC{"Demeter/UI/Athena/Plot/$m.pm"};
     require "Demeter/UI/Athena/Plot/$m.pm";
     $app->{main}->{$m} = "Demeter::UI::Athena::Plot::$m"->new($app->{main}->{plottabs}, $app);
+    my $label = q{};
     if ($m =~ m{[KQ]\z}) {
-      $app->{main}->{plottabs} -> AddPage($app->{main}->{$m}, lc(substr($m, -1)), 0);
+      $label = 'Plot in '.lc(substr($m, -1)).'-space';
     } elsif ($m eq 'Stack') {
-      $app->{main}->{plottabs} -> AddPage($app->{main}->{$m}, $m, 0);
+      $label = 'Stack plots';
     } elsif ($m eq 'Indicators') {
-      $app->{main}->{plottabs} -> AddPage($app->{main}->{$m}, 'Ind', 0);
+      $label = 'Indicators';
+    } elsif ($m eq 'PlotR') {
+      $label = 'Plot in R-space';
     } else {
-      $app->{main}->{plottabs} -> AddPage($app->{main}->{$m}, substr($m, -1),  ($m eq 'PlotE'));
+      $label = 'Plot in energy';
     };
+    $app->{main}->{plottabs} -> AddPage($app->{main}->{$m}, $label,  ($m eq 'PlotE'));
   };
   $toolbox   -> Add($app->{main}->{plottabs}, 0, wxGROW|wxALL, 0);
 
@@ -1057,7 +1064,10 @@ sub plot {
   $app->pull_kweight($data[0]);
 
   $data[0]->po->start_plot;
-  ($how eq 'single') ? $data[0]->po->title(q()) : $data[0]->po->title($app->{main}->{project}->GetLabel);
+  my $title = ($how eq 'single')                                  ? q{}
+            : ($app->{main}->{project}->GetLabel eq '<untitled>') ? 'marked groups'
+	    :                                                       $app->{main}->{project}->GetLabel;
+  $data[0]->po->title($title);
 
   my $sp = (lc($space) eq 'kq') ? 'K' : uc($space);
   $app->{main}->{'Plot'.$sp}->pull_single_values if ($how eq 'single');
@@ -1297,6 +1307,7 @@ sub Clear {
   my ($app) = @_;
   $app->{main}->{currentproject} = q{};
   $app->{main}->{project}->SetLabel('<untitled>');
+  $app->modified(1);
   $app->{main}->status(sprintf("Unamed the current project."));
 };
 
