@@ -25,6 +25,9 @@ sub new {
   $box               -> Add($this->{nokey},      0, wxGROW|wxALL, 5);
   $box               -> Add($this->{singlefile}, 0, wxGROW|wxALL, 5);
   EVT_CHECKBOX($this, $this->{nokey}, sub{$app->current_data->po->showlegend(not $_[0]->{nokey}->IsChecked)});
+  $app->mouseover($this->{title},      "Specify a title for a marked group plot.");
+  $app->mouseover($this->{nokey},      "Turn off the legend in subsequent plots.");
+  $app->mouseover($this->{singlefile}, "Write the next plot to a column data file.  (Does not yet work for quad, stddev, or variance plots.)");
 
   $this->SetSizerAndFit($box);
   return $this;

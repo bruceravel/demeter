@@ -767,7 +767,7 @@ sub OnMenuClick {
       $app->{main}->{PlotE}->pull_single_values;
       $data->po->set(e_bkg=>0, e_pre=>0, e_post=>0, e_norm=>0, e_der=>0, e_sec=>0);
       $data->po->set(e_mu=>1, e_i0=>1, e_signal=>1);
-      return if not $app->preplot($data);
+      return if not $app->preplot('e', $data);
       $data->po->start_plot;
       $data->plot('E');
       $data->po->set(e_i0=>0, e_signal=>0);
@@ -780,7 +780,7 @@ sub OnMenuClick {
       my $data = $app->current_data;
       #$app->{main}->{Main}->pull_values($data);
       $app->{main}->{PlotK}->pull_single_values;
-      return if not $app->preplot($data);
+      return if not $app->preplot('k', $data);
       $data->po->start_plot;
       $data->plot('k123');
       $app->{main}->{plottabs}->SetSelection(2);
@@ -792,7 +792,7 @@ sub OnMenuClick {
       my $data = $app->current_data;
       #$app->{main}->{Main}->pull_values($data);
       $app->{main}->{PlotR}->pull_marked_values;
-      return if not $app->preplot($data);
+      return if not $app->preplot('r', $data);
       $data->po->start_plot;
       $data->plot('R123');
       $app->postplot;
@@ -803,20 +803,20 @@ sub OnMenuClick {
     ($id == $PLOT_STDDEV) and do {
       my $data = $app->current_data;
       last SWITCH if not $data->is_merge;
-      return if not $app->preplot($data);
-      $data->plot('stddev');
-      $app->postplot;
       my $sp = $data->is_merge;
-      $sp = 'E' if ($sp eq 'n');
+      $sp = 'e' if ($sp eq 'n');
+      #return if not $app->preplot($sp, $data);
+      $data->plot('stddev');
+      #$app->postplot;
       $app->{lastplot} = [$sp, 'single'];
       last SWITCH;
     };
     ($id == $PLOT_VARIENCE) and do {
       my $data = $app->current_data;
       last SWITCH if not $data->is_merge;
-      return if not $app->postplot($data);
+      #return if not $app->postplot($data);
       $data->plot('variance');
-      $app->postplot;
+      #$app->postplot;
       my $sp = $data->is_merge;
       $sp = 'E' if ($sp eq 'n');
       $app->{lastplot} = [$sp, 'single'];
@@ -911,7 +911,7 @@ sub main_window {
   #print join("|", $app->{main}->{views}->GetChildren), $/;
   $app->mouseover($app->{main}->{views}->GetChildren, "Change data processing and analysis tools using this menu.");
 
-  foreach my $which (qw(Main Calibrate Align Rebin Journal Prefs)) {
+  foreach my $which (qw(Main Calibrate Align Rebin Deglitch Journal Prefs)) {
     next if $INC{"Demeter/UI/Athena/$which.pm"};
     require "Demeter/UI/Athena/$which.pm";
     $app->{main}->{$which} = "Demeter::UI::Athena::$which"->new($app->{main}->{views}, $app);
@@ -991,7 +991,7 @@ sub side_bar {
     } elsif ($m eq 'Indicators') {
       $label = 'Indicators';
     } elsif ($m eq 'Other') {
-      $label = 'Other plot features';
+      $label = 'Title, legend, single file';
     } elsif ($m eq 'PlotR') {
       $label = 'Plot in R-space';
     } else {
@@ -1000,6 +1000,7 @@ sub side_bar {
     $app->{main}->{plottabs} -> AddPage($app->{main}->{$m}, $label,  ($m eq 'PlotE'));
   };
   $toolbox   -> Add($app->{main}->{plottabs}, 0, wxGROW|wxALL, 0);
+  $app->mouseover($app->{main}->{plottabs}->GetChildren, "Set various plotting parameters.");
 
   $toolpanel -> SetSizerAndFit($toolbox);
 
@@ -1073,8 +1074,7 @@ sub plot {
     return;
   };
 
-  $data[0]->po->space($space);
-  my $ok = $app->preplot($data[0]);
+  my $ok = $app->preplot($space, $data[0]);
   return if not $ok;
 
   #$app->{main}->{Main}->pull_values($app->current_data);
@@ -1143,7 +1143,7 @@ sub plot {
 };
 
 sub preplot {
-  my ($app, $data) = @_;
+  my ($app, $space, $data) = @_;
   if ($app->{main}->{Other}->{singlefile}->GetValue) {
     ## writing plot to a single file has been selected...
     my $fd = Wx::FileDialog->new( $app->{main}, "Save plot to a file", cwd, "plot.dat",
@@ -1164,20 +1164,23 @@ sub preplot {
 	};
       };
     };
-    $data->standard;
     $demeter->plot_with('singlefile');
-    $demeter->po->file(File::Spec->catfile($fd->GetDirectory, $fd->GetFilename));
+    $data->po->prep(file     => File::Spec->catfile($fd->GetDirectory, $fd->GetFilename),
+		    standard => $data,
+		    space    => $space);
+    #$data->standard;
+    #$data->po->space($space);
+    #$demeter->po->file(File::Spec->catfile($fd->GetDirectory, $fd->GetFilename));
   };
   return 1;
 };
 sub postplot {
   my ($app) = @_;
-  if ($demeter->mo->template_plot eq 'singlefile') {
+  ##if ($demeter->mo->template_plot eq 'singlefile') {
+  if ($app->{main}->{Other}->{singlefile}->GetValue) {
     $demeter->po->finish;
-    $demeter->po->file(q{});
     $app->{main}->status("Wrote plot data to ".$demeter->po->file);
-    #$demeter->plot_with($demeter->co->default(qw(plot plotwith)));
-    $demeter->plot_with('gnuplot');
+    $demeter->plot_with($demeter->co->default(qw(plot plotwith)));
   };
   $app->{main}->{Other}->{singlefile}->SetValue(0);
   return;
@@ -1212,7 +1215,7 @@ sub quadplot {
 sub plot_e00 {
   my ($app) = @_;
 
-  $app->preplot;
+  $app->preplot('e');
   $app->{main}->{PlotE}->pull_single_values;
   $app->current_data->po->set(e_mu=>1, e_markers=>0, e_zero=>1, e_bkg=>0, e_pre=>0, e_post=>0,
 			      e_norm=>1, e_der=>0, e_sec=>0, e_i0=>0, e_signal=>0);
@@ -1227,7 +1230,7 @@ sub plot_e00 {
 sub plot_i0_marked {
   my ($app) = @_;
 
-  $app->preplot;
+  $app->preplot('e');
   $app->{main}->{PlotE}->pull_single_values;
   $app->current_data->po->set(e_mu=>0, e_markers=>0, e_zero=>0, e_bkg=>0, e_pre=>0, e_post=>0,
 			      e_norm=>0, e_der=>0, e_sec=>0, e_i0=>1, e_signal=>0);

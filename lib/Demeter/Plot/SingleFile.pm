@@ -21,7 +21,7 @@ use Moose;
 extends 'Demeter::Plot';
 
 has 'file'     => (is => 'rw', isa => 'Str',  default => q{});
-has '+backend' => (default => q{gnuplot});
+has '+backend' => (default => q{singleplot});
 
 has 'columns' => (
 		    metaclass => 'Collection::Array',
@@ -66,6 +66,7 @@ sub prep {
   die "Missing standard in Demeter::Plot::SingleFile setup"               if (not $args{standard});
   die "Standard must be Demeter::Data in Demeter::Plot::SingleFile setup" if (ref($args{standard}) ne 'Demeter::Data');
 
+  $args{space} = 'q' if (lc($args{space}) eq 'kq');
   $self->space($args{space}) if $args{space};
   $args{standard}->standard;
   $self->file($args{file});
@@ -228,10 +229,6 @@ scenes.
 =item *
 
 markers and indicators
-
-=item *
-
-Plots in energy not yet implemented
 
 =item *
 

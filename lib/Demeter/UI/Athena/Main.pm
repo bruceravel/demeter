@@ -607,15 +607,17 @@ sub pull_values {
 # };
 
 sub zero_values {
-  my ($this) = @_;
+  my ($this, $app) = @_;
   foreach my $w (@group_params, @plot_parameters, @bkg_parameters, @fft_parameters, @bft_parameters) {
     next if ($w =~ m{(?:label|pluck)\z});
     next if ($w eq 'file');
+    next if ($w eq 'bkg_rbkg');
     $this->{$w}->SetValue(0)   if (ref($this->{$w}) =~ m{SpinCtrl});
-    $this->{$w}->SetValue(q{}) if (ref($this->{$w}) =~ m{TextCtrl});
+    $this->{$w}->SetValue($Demeter::UI::Athena::demeter->dd->$w) if (ref($this->{$w}) =~ m{TextCtrl});
     $this->{$w}->SetValue(0)   if (ref($this->{$w}) =~ m{CheckBox});
   };
   $this->{bkg_z}         -> SetValue(sprintf "%-2d: %s", 1, 'Hydrogen');
+  #$this->{bkg_rbkg}      -> SetValue(1);
   $this->{fft_edge}      -> SetValue('K');
   $this->{file}          -> SetValue(q{});
   $this->{bkg_clamp1}    -> SetSelection(0);

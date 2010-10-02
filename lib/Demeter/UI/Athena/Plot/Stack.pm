@@ -27,6 +27,8 @@ sub new {
   $this->{apply}     = Wx::Button  ->new($this, -1, "Apply");
   $gbs -> Add($this->{initial},   Wx::GBPosition->new(0,1));
   $gbs -> Add($this->{increment}, Wx::GBPosition->new(1,1));
+  $app->mouseover($this->{initial},   "The y_offset value of the first marked group.");
+  $app->mouseover($this->{increment}, "The step of each subsequent marked group.  (I recommend using a negative value.)");
 
   $box -> Add($gbs, 0, wxALIGN_CENTER_HORIZONTAL|wxALL, 5);
   $box -> Add($this->{apply}, 0, wxALIGN_CENTER_HORIZONTAL|wxALL, 5);

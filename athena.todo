@@ -1,6 +1,6 @@
 -*- org -*-
 
-* Demeter bugs and shortcomings discovered  [3/12]
+* Demeter bugs and shortcomings discovered  [3/13]
  - [ ] save_many fails to bring things up to date
  - [ ] save_many fails to use flat/norm correctly
  - [ ] it is annoying that the background trace is blue and the data is red
@@ -12,6 +12,7 @@
  - [X] erage ifeffit group when DEMOLISHing Data object
  - [ ] align as smoothed derivative
  - [ ] plotting smoothed derivative
+ - [ ] plot margin lines for deglitching
  - [ ] deglitch many points
 
 * needs testing [0/2]
@@ -39,10 +40,10 @@
  - [X] command line arguments
  - [ ] implement bkg_stan
 
-* miscellaneous plot tab [0/3]
- - [ ] specify title
- - [ ] singlfile toggle
- - [ ] suppress legend
+* miscellaneous plot tab [3/3]
+ - [X] specify title
+ - [X] singlefile toggle
+ - [X] suppress legend
 
 * data import [4/6]
  - [X] reference channel on import (use Demeter::Data::MultiChannel?)

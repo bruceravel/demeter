@@ -176,7 +176,7 @@ description
 
 variable=markercolor
 type=color
-default=#008b8b
+default=#EE9A00
 description
   The color of a marker.
 

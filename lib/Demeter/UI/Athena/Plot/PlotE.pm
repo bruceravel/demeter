@@ -57,6 +57,8 @@ sub new {
 	       sub{my ($this, $event) = @_;
 		   if ($this->{pre}->GetValue) {
 		     $this->{norm}->SetValue(0);
+		     $this->{der}->SetValue(0);
+		     $this->{sec}->SetValue(0);
 		   };
 		   $this->replot(qw(E single));
 		 });
@@ -71,6 +73,8 @@ sub new {
 	       sub{my ($this, $event) = @_;
 		   if ($this->{post}->GetValue) {
 		     $this->{norm}->SetValue(0);
+		     $this->{der}->SetValue(0);
+		     $this->{sec}->SetValue(0);
 		   };
 		   $this->replot(qw(E single));
 		 });
@@ -108,6 +112,8 @@ sub new {
 	       sub{my ($this, $event) = @_;
 		   if ($this->{der}->GetValue) {
 		     $this->{bkg}->SetValue(0);
+		     $this->{pre}->SetValue(0);
+		     $this->{post}->SetValue(0);
 		     $this->{sec}->SetValue(0);
 		   };
 		   $this->replot(qw(E single));
@@ -128,6 +134,8 @@ sub new {
 	       sub{my ($this, $event) = @_;
 		   if ($this->{sec}->GetValue) {
 		     $this->{bkg}->SetValue(0);
+		     $this->{pre}->SetValue(0);
+		     $this->{post}->SetValue(0);
 		     $this->{der}->SetValue(0);
 		   };
 		   $this->replot(qw(E single));
