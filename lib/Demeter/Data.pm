@@ -38,6 +38,7 @@ with 'Demeter::Data::Mu';
 with 'Demeter::Data::Parts';
 with 'Demeter::Data::Plot';
 with 'Demeter::Data::Process';
+with 'Demeter::Data::SelfAbsorption';
 with 'Demeter::Data::Units';
 
 use MooseX::Aliases;

@@ -66,7 +66,8 @@ sub _ansify {
       } elsif ($thisline =~ m{\A\#}) {
 	($start, $end) = (BOLD.$color_of{$self->co->default("screen", "other"  )}, RESET);
       } else {
-	($start, $end) = (BOLD.$color_of{$self->co->default("screen", "other"  )}, RESET);
+	#($start, $end) = (BOLD.$color_of{$self->co->default("screen", "other"  )}, RESET);
+	($start, $end) = (q{}, q{});
       };
       last COLOR;
     };

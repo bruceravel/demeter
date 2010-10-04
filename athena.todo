@@ -1,6 +1,6 @@
 -*- org -*-
 
-* Demeter bugs and shortcomings discovered  [3/13]
+* Demeter bugs and shortcomings discovered  [3/16]
  - [ ] save_many fails to bring things up to date
  - [ ] save_many fails to use flat/norm correctly
  - [ ] it is annoying that the background trace is blue and the data is red
@@ -14,6 +14,14 @@
  - [ ] plotting smoothed derivative
  - [ ] plot margin lines for deglitching
  - [ ] deglitch many points
+ - [ ] self absorption algorithms [[file:~/codes/horae/athena_parts/sa_fluo.pl][from horae]]
+ - [ ] templates for LR/PD
+ - [ ] templates for difference spectra
+
+* Uses of PDL [0/3]
+ - [ ] Savitsky-Golay filter  [[file:notes/sgolay.m][Matlab routine for SG filter]]
+ - [ ] PCA  [[http://mailman.jach.hawaii.edu/pipermail/perldl/2006-August/000588.html][PCA from PDL mail archives]]
+ - [ ] deconvolution
 
 * needs testing [0/2]
  - [ ] reference of another edge
@@ -142,14 +150,14 @@
  - [ ] group selection replot
  - [ ] point finder
  - [ ] session defaults
- - [ ] set to standard (i.e. the one t hat is marked)
+ - [ ] set to standard (i.e. the one that is marked)
 
-* Tools, immediately implementable [6/19]
+* Tools, immediately implementable [8/19]
  - [X] main
  - [X] calibrate
  - [X] align
- - [ ] deglitch
- - [ ] truncate
+ - [X] deglitch
+ - [X] truncate
  - [X] rebin
  - [ ] smooth
  - [ ] convolution and noise
@@ -170,4 +178,4 @@
 
 * Tools, needs work [0/2]
  - [ ] decovolute
- - [ ] PCA
+ - [ ] PCA [[http://mailman.jach.hawaii.edu/pipermail/perldl/2006-August/000588.html][PCA from PDL mail archives]]

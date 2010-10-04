@@ -911,7 +911,25 @@ sub main_window {
   #print join("|", $app->{main}->{views}->GetChildren), $/;
   $app->mouseover($app->{main}->{views}->GetChildren, "Change data processing and analysis tools using this menu.");
 
-  foreach my $which (qw(Main Calibrate Align Rebin Deglitch Journal Prefs)) {
+  foreach my $which ('Main',		  # 0
+		     'Calibrate',	  # 1
+		     'Align',		  # 2
+		     'Rebin',		  # 3
+		     'DeglitchTruncate',  # 4
+		     'Smooth',		  # 5
+		     'ConvoluteNoise',	  # 6
+		     'SelfAbsorption',	  # 7
+		     # -----------------------
+		     'LCF',		  # 9
+		     'PCA',		  # 10
+		     'PeakFit',		  # 11
+		     'LogRatio',	  # 12
+		     'Difference',	  # 13
+		     # -----------------------
+		     'Journal',		  # 15
+		     'PluginRegistry',    # 16
+		     'Prefs',		  # 17
+		    ) {
     next if $INC{"Demeter/UI/Athena/$which.pm"};
     require "Demeter/UI/Athena/$which.pm";
     $app->{main}->{$which} = "Demeter::UI::Athena::$which"->new($app->{main}->{views}, $app);
@@ -921,8 +939,13 @@ sub main_window {
     $app->{main}->{$which}->{document} -> Enable(0);
   };
   $app->{main}->{views}->SetSelection(0);
-  ##$app->{main}->{views}->Enable($_,0) foreach (1 .. $app->{main}->{views}->GetPageCount-2);
   $viewpanel -> SetSizerAndFit($viewbox);
+
+  require Demeter::UI::Athena::Null;
+  my $null = Demeter::UI::Athena::Null->new($app->{main}->{views});
+  $app->{main}->{views}->InsertPage( 8, $null, $Demeter::UI::Athena::Null::label, 0);
+  $app->{main}->{views}->InsertPage(14, $null, $Demeter::UI::Athena::Null::label, 0);
+
 
   EVT_CHOICEBOOK_PAGE_CHANGED($app->{main}, $app->{main}->{views}, sub{$app->OnGroupSelect(0,0)});
   EVT_CHOICEBOOK_PAGE_CHANGING($app->{main}, $app->{main}->{views}, sub{$app->view_changing(@_)});
@@ -1037,10 +1060,12 @@ sub view_changing {
   my $nviews  = $app->{main}->{views}->GetPageCount;
   #print join("|", $app, $event, $ngroups, $event->GetSelection), $/;
 
-  if (($event->GetSelection != 0) and ($event->GetSelection < $nviews-2)) {
+  my $string = $app->{main}->{views}->GetPageText($event->GetSelection);
+  if ($string =~ m{\A-*\z}) {
+    $event -> Veto();
+  } elsif (($event->GetSelection != 0) and ($event->GetSelection < $nviews-3)) {
     if (not $ngroups) {
-      $app->{main}->status(sprintf("You have no data imported in Athena, thus you cannot use the %s tool.",
-				   lc($app->{main}->{views}->GetPageText($event->GetSelection))));
+      $app->{main}->status(sprintf("You have no data imported in Athena, thus you cannot use the %s tool.", lc($string)));
       $event -> Veto();
     };
   } else {

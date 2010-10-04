@@ -1,4 +1,4 @@
-package Demeter::UI::Athena::Deglitch;
+package Demeter::UI::Athena::DeglitchTruncate;
 
 use strict;
 use warnings;
@@ -13,7 +13,7 @@ use File::Basename;
 use List::MoreUtils qw(minmax);
 
 use vars qw($label);
-$label = "Deglitch data";	# used in the Choicebox and in status bar messages to identify this tool
+$label = "Deglitch and truncate data";	# used in the Choicebox and in status bar messages to identify this tool
 
 my $tcsize = [60,-1];
 
@@ -85,9 +85,42 @@ sub new {
 				     emax emax_label emax_pluck emax_pluck
 				     replot_many remove_many));
 
+
+  my $truncatebox       = Wx::StaticBox->new($this, -1, 'Truncate data', wxDefaultPosition, wxDefaultSize);
+  my $truncateboxsizer  = Wx::StaticBoxSizer->new( $truncatebox, wxVERTICAL );
+  $box                 -> Add($truncateboxsizer, 0, wxGROW|wxALL, 5);
+
+  $hbox = Wx::BoxSizer->new( wxHORIZONTAL );
+  $truncateboxsizer -> Add($hbox, 0, wxALL|wxALIGN_CENTER, 0);
+
+  $this->{beforeafter} = Wx::RadioBox->new($this, -1, q{Drop points}, wxDefaultPosition, wxDefaultSize,
+					   ["before", "after"], 1, wxRA_SPECIFY_ROWS);
+  $this->{etrun} = Wx::TextCtrl->new($this, -1, q{});
+  $hbox -> Add($this->{beforeafter}, 0, wxALL|wxALIGN_CENTER, 5);
+  $hbox -> Add($this->{etrun},       0, wxALL|wxALIGN_CENTER, 5);
+  $this->{etrun_pluck}   = Wx::BitmapButton -> new($this, -1, $bullseye);
+  $hbox -> Add($this->{etrun_pluck}, 0, wxALL|wxALIGN_CENTER, 5);
+  EVT_BUTTON($this, $this->{etrun_pluck}, sub{OnPluckTruncate(@_, $app)});
+
+  $hbox = Wx::BoxSizer->new( wxHORIZONTAL );
+  $truncateboxsizer -> Add($hbox, 0, wxGROW|wxALL, 0);
+  $this->{replot_truncate}   = Wx::Button->new($this, -1, 'Replot');
+  $this->{truncate}          = Wx::Button->new($this, -1, 'Truncate data');
+  $this->{truncate_marked}   = Wx::Button->new($this, -1, 'Truncate all marked groups');
+  $hbox -> Add($this->{replot_truncate}, 1, wxALL, 5);
+  $hbox -> Add($this->{truncate},        1, wxALL, 5);
+  $hbox -> Add($this->{truncate_marked}, 1, wxALL, 5);
+  EVT_BUTTON($this, $this->{replot_truncate}, sub{$this->plot_truncate($app->current_data)});
+  EVT_BUTTON($this, $this->{truncate},        sub{Truncate(@_, $app, 'current')});
+  EVT_BUTTON($this, $this->{truncate_marked}, sub{Truncate(@_, $app, 'marked' )});
+
+  $this->{indicator} = Demeter::Plot::Indicator->new(space=>'E');
+
+  $this->{beforeafter}->SetSelection(1);
+
   $box->Add(1,1,1);		# this spacer may not be needed, Journal.pm, for example
 
-  $this->{document} = Wx::Button->new($this, -1, 'Document section: deglitching');
+  $this->{document} = Wx::Button->new($this, -1, 'Document section: deglitching and truncating');
   $this->{return}   = Wx::Button->new($this, -1, 'Return to main window');
   $box -> Add($this->{$_}, 0, wxGROW|wxALL, 2) foreach (qw(document return));
   EVT_BUTTON($this, $this->{document}, sub{  $app->document("deglitch")});
@@ -106,14 +139,19 @@ sub pull_values {
 ## this subroutine fills the controls when an item is selected from the Group list
 sub push_values {
   my ($this, $data) = @_;
-  $data->_update('background');
-  $this->{margin}->SetValue(0.1 * $data->bkg_step);
-  $this->{emin}->SetValue($data->bkg_nor1);
-  $this->{emax}->SetValue($data->bkg_nor2);
   if ($data->datatype eq 'chi') {
     $this->Enable(0);
     return;
   };
+
+  $data->_update('background');
+  $this->{margin}->SetValue(0.1 * $data->bkg_step);
+  $this->{emin}->SetValue($data->bkg_nor1);
+  $this->{emax}->SetValue($data->bkg_nor2);
+
+  my @y = $data->get_array('energy');
+  $this->{etrun}->SetValue($y[-1]);
+
   $this->plot($data);
 };
 
@@ -180,6 +218,44 @@ sub OnRemove {
   $data->deglitch($this->{point});
   $this->plot($data);
   $app->{main}->status(sprintf("Removed point at %.3f", $this->{point}));
+};
+
+
+sub plot_truncate {
+  my ($this, $data) = @_;
+
+  $::app->{main}->{PlotE}->pull_single_values;
+  $data->po->set(e_mu=>1, e_markers=>0, e_bkg=>0, e_pre=>0, e_post=>0, e_norm=>0, e_der=>0, e_sec=>0, e_i0=>0, e_signal=>0);
+  $data->po->start_plot;
+
+  $data->plot('e');
+  my $e = $this->{etrun}->GetValue - $data->bkg_e0;
+  $this->{indicator}->x($e);
+  $data->standard;
+  $this->{indicator}->plot('e');
+  $data->unset_standard;
+};
+
+sub OnPluckTruncate {
+  my ($this, $event, $app) = @_;
+  my $data    = $app->current_data;
+  $this->plot_truncate($data);
+  my ($ok, $xx, $yy) = $app->cursor;
+  return if not $ok;
+  $this->{etrun}->SetValue($xx);
+  $this->plot_truncate($data);
+  $app->{main}->status(sprintf("Set indicator at %.3f", $xx));
+};
+
+sub Truncate {
+  my ($this, $event, $app, $how) = @_;
+  my @data = ($how eq 'marked') ? $app->marked_groups : ($app->current_data);
+  my $beforeafter = ($this->{beforeafter}->GetSelection) ? 'after' : 'before' ;
+  my $text = ($how eq 'marked') ? 'all marked groups' : 'current group' ;
+  my $e = $this->{etrun}->GetValue;
+  $_->Truncate($beforeafter, $e) foreach (@data);
+  $this->plot_truncate($data[0]);
+  $app->{main}->status(sprintf("Removed data %s %.3f for %s", $beforeafter, $e, $text));
 };
 
 1;

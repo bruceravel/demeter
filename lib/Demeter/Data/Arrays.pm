@@ -43,11 +43,16 @@ sub iofx {
 sub put {
   my ($self, $eref, $xref, @args) = @_;
   my $data = $self->new();	# return a Data is called by Data, return a Data::Pixel if called by D::P
-  $data -> put_energy($eref);
-  $data -> put_xmu($xref);
-  $data -> set(datatype=>'xmu', update_data=>0, update_columns=>0, update_norm=>1);
   $data -> set(@args);
-  $data -> set(update_morm=>0, update_bkg=>0, update_fft=>1) if ($data->datatype eq 'chi');
+  if ($data->datatype eq 'chi') {
+    $data -> put_k($eref);
+    $data -> put_chi($xref);
+  } else {
+    $data -> put_energy($eref);
+    $data -> put_xmu($xref);
+  };
+  $data -> set(update_data=>0, update_columns=>0, update_norm=>1);
+  $data -> set(update_norm=>0, update_bkg=>0, update_fft=>1) if ($data->datatype eq 'chi');
   return $data;
 };
 
@@ -61,6 +66,19 @@ sub put_xmu {
   my ($self, $arrayref) = @_;
   Ifeffit::put_array($self->group.'.xmu', $arrayref);
   $self -> update_norm(1);
+  return $self;
+};
+
+sub put_k {
+  my ($self, $arrayref) = @_;
+  Ifeffit::put_array($self->group.'.k', $arrayref);
+  $self -> update_bft(1);
+  return $self;
+};
+sub put_chi {
+  my ($self, $arrayref) = @_;
+  Ifeffit::put_array($self->group.'.chi', $arrayref);
+  $self -> update_bft(1);
   return $self;
 };
 

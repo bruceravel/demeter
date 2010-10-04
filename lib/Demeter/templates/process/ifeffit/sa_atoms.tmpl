@@ -1,0 +1,4 @@
+##|
+##| Self absorption correction: atoms algorithm
+set s___a.k = {$D->group}.k
+set s___a.chi = {$amp} * {$D->group}.chi * exp({$ss}*s___a.k^2)
