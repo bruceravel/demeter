@@ -34,14 +34,14 @@ sub fix {
 
   my $header = 1;
   my $ddistance = 1;
-  my @offsets;
+  #my @offsets;
   while (<$D>) {
     next if ($_ =~ m{\A\s*\z});
     last if ($_ =~ m{});
     chomp;
     if ($header and ($_ =~ m{\A\s+offset}i)) {
       my $this = $_;
-      @offsets = split(" ", $this);
+      #@offsets = split(" ", $this);
       print $N '# ', $_, $/;
       print $N '# --------------------------------------------------', $/;
       print $N '# energy_requested   energy_attained  time  i0  i1  ', $/;
@@ -58,7 +58,7 @@ sub fix {
       $list[1] = ($HC) / ($ddistance * sin($list[1] * $PI / 180));
       my $ndet = $#list-2;
       foreach my $i (1..$ndet) {
-	$list[2+$i] = $list[2+$i] - $offsets[2+$i];
+	$list[2+$i] = $list[2+$i]; # - $offsets[2+$i];
       };
       my $pattern = "  %9.3f  %9.3f  %6.2f" . "  %12.3f" x $ndet . $/;
       printf $N $pattern, @list;
