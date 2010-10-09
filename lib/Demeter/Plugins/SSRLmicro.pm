@@ -4,7 +4,7 @@ use Moose;
 extends 'Demeter::Plugins::FileType';
 
 has '+is_binary'   => (default => 0);
-has '+description' => (default => "Read files from the SSRL microXAFS Data Collector 1.0.");
+has '+description' => (default => "the SSRL microXAFS Data Collector 1.0");
 has '+version'     => (default => 0.1);
 
 sub is {

@@ -1,6 +1,6 @@
 -*- org -*-
 
-* Demeter bugs and shortcomings discovered  [3/16]
+* Demeter bugs and shortcomings discovered  [4/17]
  - [ ] save_many fails to bring things up to date
  - [ ] save_many fails to use flat/norm correctly
  - [ ] it is annoying that the background trace is blue and the data is red
@@ -17,6 +17,7 @@
  - [ ] self absorption algorithms [[file:~/codes/horae/athena_parts/sa_fluo.pl][from horae]]
  - [ ] templates for LR/PD
  - [ ] templates for difference spectra
+ - [X] X23A2 multichannel filetype plugin
 
 * Uses of PDL [0/3]
  - [ ] Savitsky-Golay filter  [[file:notes/sgolay.m][Matlab routine for SG filter]]
@@ -134,9 +135,9 @@
  - [X] weight by importance/noise/step
  - [ ] datatype of merged group (xanes merge should be a xanes and so on) (this appears to be so, see [[file:lib/Demeter/Data/Process.pm][Demeter::Data::Process]]
 
-* Plugin registry [0/2]
- - [ ] GUI tool
- - [ ] test data against plugins
+* Plugin registry [2/2]
+ - [X] GUI tool
+ - [X] test data against plugins
 
 * Help [1/4]
  - [X]  about
@@ -152,14 +153,13 @@
  - [ ] session defaults
  - [ ] set to standard (i.e. the one that is marked)
 
-* Tools, immediately implementable [8/19]
+* Tools [9/18]
  - [X] main
  - [X] calibrate
  - [X] align
  - [X] deglitch
  - [X] truncate
  - [X] rebin
- - [ ] smooth
  - [ ] convolution and noise
  - [ ] self absorption
 
@@ -173,9 +173,10 @@
 
  - [ ] explain FT
  - [X] journal
- - [ ] plugins
+ - [X] plugins
  - [X] preference 
 
-* Tools, needs work [0/2]
+* Tools, needs PDL [0/3]
+ - [ ] smooth
  - [ ] decovolute
  - [ ] PCA [[http://mailman.jach.hawaii.edu/pipermail/perldl/2006-August/000588.html][PCA from PDL mail archives]]

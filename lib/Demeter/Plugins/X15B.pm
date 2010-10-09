@@ -4,7 +4,7 @@ use Moose;
 extends 'Demeter::Plugins::FileType';
 
 has '+is_binary'   => (default => 1);
-has '+description' => (default => "Read binary files from NSLS beamline X15B.");
+has '+description' => (default => "NSLS beamline X15B");
 has '+version'     => (default => 0.1);
 
 use Readonly;

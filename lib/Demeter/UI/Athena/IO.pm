@@ -1,6 +1,6 @@
 package Demeter::UI::Athena::IO;
 
-use Demeter;
+#use Demeter;
 use Demeter::UI::Wx::SpecialCharacters qw(:all);
 use Demeter::UI::Athena::ColumnSelection;
 use Demeter::UI::Artemis::Prj;
@@ -76,22 +76,33 @@ sub Import {
   };
 
   my $verbose = 0;
-  ## check for registerd filetypes here
   ## also xmu.dat
   ## evkev?
   my $first = 1;
   foreach my $file (sort {$a cmp $b} @files) {
-    my $type = ($Demeter::UI::Athena::demeter->is_prj($file,$verbose))  ? 'prj'
+    my $plugin = test_plugins($app, $file);
+    my $stashfile = ($plugin) ? $plugin->fixed : $file;
+    my @suggest = ($plugin) ? $plugin->suggest('transmission') : ();
+    my $type = ($plugin and ($plugin->output eq 'data'))                ? 'raw'
+             : ($plugin and ($plugin->output eq 'project'))             ? 'prj'
+             : ($Demeter::UI::Athena::demeter->is_prj($file,$verbose))  ? 'prj'
 	     : ($Demeter::UI::Athena::demeter->is_data($file,$verbose)) ? 'raw'
 	     :                                                            '???';
     if ($type eq '???') {
-      $app->{main}->status("Could not read \"$file\" as either data or as a project file.");
+      $app->{main}->status("Could not read \"$file\" as either data or as a project file. (Do you need to enable a plugin?)");
       return;
+    };
+    if ($plugin) {
+      $app->{main}->status("$file appears to be from " . $plugin->description);
     };
 
   SWITCH: {
-      $retval = _prj($app, $file, $first),  last SWITCH if ($type eq 'prj');
-      $retval = _data($app, $file, $first), last SWITCH if ($type eq 'raw');
+      $retval = _prj($app, $stashfile, $file, $first),             last SWITCH if ($type eq 'prj');
+      $retval = _data($app, $stashfile, $file, $first, \@suggest), last SWITCH if ($type eq 'raw');
+    };
+    if ($plugin) {
+      unlink $plugin->fixed;
+      undef $plugin;
     };
     if ($retval == 0) {		# bail on a file sequence if one gets canceled
       return;
@@ -99,6 +110,23 @@ sub Import {
     $first = 0;
   };
   return;
+};
+
+
+sub test_plugins {
+  my ($app, $file) = @_;
+  foreach my $pl (@{$Demeter::UI::Athena::demeter->mo->Plugins}) {
+    next if ($pl =~ m{FileType});
+    next if (not $app->{main}->{PluginRegistry}->{$pl}->GetValue);
+    my $this = $pl->new(file=>$file);
+    if (not $this->is) {
+      undef $this;
+      next;
+    };
+    $this->fix;
+    return $this;
+  };
+  return 0;
 };
 
 sub Import_plot {
@@ -120,18 +148,20 @@ sub Import_plot {
 };
 
 sub _data {
-  my ($app, $file, $first) = @_;
+  my ($app, $file, $orig, $first, $suggest) = @_;
 
   my $busy = Wx::BusyCursor->new();
   my $data = Demeter::Data->new(file=>$file);
+  my %suggest = @$suggest;	# suggested columns from a plugin
 
   ## -------- import persistance file
   my $persist = File::Spec->catfile($data->dot_folder, "athena.column_selection");
-  $data -> set(name	   => basename($file),
+  $data -> set(name	   => basename($orig),
 	       is_col      => 1,
-	       energy      => '$1',
-	       numerator   => 1,
-	       denominator => 1,
+	       energy      => $suggest{energy}||'$1',
+	       numerator   => $suggest{numerator}||1,
+	       denominator => $suggest{denominator}||1,
+	       ln          => $suggest{ln}||0,
 	       display	   => 1);
   $data->guess_columns;
   my $yaml;
@@ -196,9 +226,10 @@ sub _data {
   };
 
   ## -------- import data group
-  $app->{main}->status("Importing ". $data->name . " from $file");
+  $app->{main}->status("Importing ". $data->name . " from $orig");
   $app->{main}->Update;
   $data -> display(0);
+  $data->source($orig);
   my $do_rebin = (defined $colsel) ? ($colsel->{Rebin}->{do_rebin}->GetValue) : $yaml->{do_rebin};
   if ($yaml->{do_rebin}) {
     my $rebin  = $data->rebin;
@@ -219,7 +250,7 @@ sub _data {
     $app->OnGroupSelect(q{}, $app->{main}->{list}->GetSelection);
     Import_plot($app, $data);
   };
-  $data->push_mru("xasdata", $file);
+  $data->push_mru("xasdata", $orig);
   $app->set_mru;
 
   ## -------- import reference if reference channel is set
@@ -279,7 +310,7 @@ sub _data {
   close $ORDER;
 
   ## -------- last chores before finishing
-  chdir dirname($file);
+  chdir dirname($orig);
   $app->modified(1);
   undef $busy;
   undef $colsel;
@@ -288,7 +319,7 @@ sub _data {
 }
 
 sub _prj {
-  my ($app, $file, $first) = @_;
+  my ($app, $file, $orig, $first) = @_;
   my $busy = Wx::BusyCursor->new();
 
   $app->{main}->{prj} =  Demeter::UI::Artemis::Prj->new($app->{main}, $file, 'multiple');
@@ -310,6 +341,9 @@ sub _prj {
   my $data;
   foreach my $rec (@records) {
     $data = $prj->record($rec);
+    if ($data->prjrecord =~ m{,\s+(\d+)}) {
+      $data->prjrecord($orig . ", $1");
+    };
     $app->{main}->status("Importing ". $data->prjrecord, "nobuffer");
     $app->{main}->Update;
     $app->{main}->{list}->Append($data->name, $data);
@@ -325,15 +359,15 @@ sub _prj {
   $app->{main}->{Journal}->{object}->text($prj->journal);
   $app->{main}->{Journal}->{journal}->SetValue($app->{main}->{Journal}->{object}->text);
 
-  $data->push_mru("xasdata", $file);
+  $data->push_mru("xasdata", $orig);
   $app->set_mru;
   $app->{main}->{project}->SetLabel(basename($file, '.prj'));
   $app->{main}->{currentproject} = $file;
 
-  chdir dirname($file);
+  chdir dirname($orig);
   $app->modified(0);
   undef $busy;
-  $app->{main}->status("Imported data from project $file");
+  $app->{main}->status("Imported data from project $orig");
   return 1;
 };
 

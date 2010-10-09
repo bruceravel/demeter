@@ -170,7 +170,7 @@ sub import {
   warnings->import;
   #Ifeffit->import;
 
-  ##print join(" ", $class, caller), $/;
+  #print join(" ", $class, caller), $/;
  PRAG: foreach my $p (@pragmata) {
     $plot -> plot_with($1),        next PRAG if ($p =~ m{:plotwith=(\w+)});
     if ($p =~ m{:ui=(\w+)}) {
@@ -213,13 +213,14 @@ sub register_plugins {
   my @folders = ($standard); #, $private);
   foreach my $f (@folders) {
     opendir(my $FL, $f);
-    foreach my $pm (readdir $FL) {
-      next if ($pm !~ m{\.pm\z});
-      require File::Spec->catfile($f, $pm);
-      my $this = join('::', 'Demeter', 'Plugins', $pm);
-      $mode->push_Plugins();
-    };
+    my @pm = grep {m{.pm\z}} readdir $FL;
     closedir $FL;
+    foreach my $pm (@pm) {
+      require File::Spec->catfile($f, $pm);
+      $pm =~ s{\.pm\z}{};
+      my $this = join('::', 'Demeter', 'Plugins', $pm);
+      $mode->push_Plugins($this);
+    };
   };
 
 };

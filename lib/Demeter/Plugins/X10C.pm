@@ -4,7 +4,7 @@ use Moose;
 extends 'Demeter::Plugins::FileType';
 
 has '+is_binary'   => (default => 0);
-has '+description' => (default => "Read files from NSLS beamline X10C.");
+has '+description' => (default => "NSLS beamline X10C");
 has '+version'     => (default => 0.1);
 
 sub is {

@@ -23,7 +23,7 @@ use List::MoreUtils qw(firstidx uniq);
 use Wx qw( :everything );
 use Wx::Event qw(EVT_BUTTON EVT_TREE_SEL_CHANGED);
 
-use Demeter;
+#use Demeter;
 my $demeter = Demeter->new;
 
 use Demeter::UI::Wx::ColourDatabase;

@@ -4,10 +4,10 @@ use Moose;
 extends 'Demeter::Plugins::FileType';
 
 has '+is_binary'   => (default => 0);
-has '+description' => (default => "Import data and perform dead time correction from the X23A2 Vortex.");
+has '+description' => (default => "the NSLS X23A2 Vortex");
 has '+version'     => (default => 0.1);
 
-use Demeter;
+#use Demeter;
 my $demeter = Demeter->new();
 has 'inifile' => (is => 'rw', isa => 'Str', default => File::Spec->catfile($demeter->dot_folder, 'x23a2vortex.ini'));
 
@@ -22,7 +22,7 @@ sub is {
   while (<$D>) {
     last if ($_ =~ m{------+});
   };
-  $line = <$D>;
+  $line = <$D> || q{};
   my @headers = split(" ", $line);
   my $is_med = ($#headers > 6);
   close $D;

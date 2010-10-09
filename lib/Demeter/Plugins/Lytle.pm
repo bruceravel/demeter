@@ -4,7 +4,7 @@ use Moose;
 extends 'Demeter::Plugins::FileType';
 
 has '+is_binary'   => (default => 0);
-has '+description' => (default => "Import files from the Lytle database stored by encoder value");
+has '+description' => (default => "the Lytle database file stored by encoder value");
 has '+version'     => (default => 0.1);
 
 use Readonly;

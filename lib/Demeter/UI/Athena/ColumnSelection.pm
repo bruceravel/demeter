@@ -127,6 +127,10 @@ sub columns {
     my $radio = Wx::RadioButton->new($columnbox, -1, q{}, @args);
     $gbs -> Add($radio, Wx::GBPosition->new(1,$count));
     EVT_RADIOBUTTON($parent, $radio, sub{OnEnergyClick(@_, $data, $i)});
+    if ($data->energy =~ m{(?<=\$)$count\b}) {
+      $energy[$i] = 1;
+      $radio->SetValue(1);
+    };
 
     my $ncheck = Wx::CheckBox->new($columnbox, -1, q{});
     $gbs -> Add($ncheck, Wx::GBPosition->new(2,$count));

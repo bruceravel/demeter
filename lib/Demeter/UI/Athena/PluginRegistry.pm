@@ -2,14 +2,15 @@ package Demeter::UI::Athena::PluginRegistry;
 
 use Wx qw( :everything );
 use base 'Wx::Panel';
-use Wx::Event qw(EVT_BUTTON);
+use Wx::Event qw(EVT_CHECKBOX EVT_BUTTON);
+use autodie qw(open close);
 
 #use Demeter::UI::Wx::SpecialCharacters qw(:all);
 
 use vars qw($label);
 $label = "Plugin registry";	# used in the Choicebox and in status bar messages to identify this tool
 
-my $tcsize = [60,-1];
+## right click to post plugin POD
 
 sub new {
   my ($class, $parent, $app) = @_;
@@ -17,9 +18,25 @@ sub new {
 
   my $box = Wx::BoxSizer->new( wxVERTICAL);
   $this->{sizer}  = $box;
+  $this->{window} = Wx::ScrolledWindow->new($this, -1, wxDefaultPosition, wxDefaultSize, wxVSCROLL);
+  my $winbox  = Wx::BoxSizer->new( wxVERTICAL );
+  $this->{window} -> SetSizer($winbox);
+  $this->{window} -> SetScrollbars(0, 20, 0, 50);
 
+  my $persist = File::Spec->catfile($Demeter::UI::Athena::demeter->dot_folder, "athena.plugin_registry");
+  my $state = (-e $persis) ? YAML::Tiny::Load($Demeter::UI::Athena::demeter->slurp($persist)) : {};
 
-  $box->Add(1,1,1);		# this spacer may not be needed, Journal.pm, for example
+  foreach my $pl (sort @{$Demeter::UI::Athena::demeter->mo->Plugins}) {
+    next if ($pl =~ m{FileType});
+    my $obj = $pl->new;
+    my $label = sprintf("%s :  %s", (split(/::/, $pl))[2], $obj->description);
+    $this->{$pl} = Wx::CheckBox->new($this->{window}, -1, $label);
+    $winbox->Add($this->{$pl}, 0, wxALL|wxGrow, 3);
+    undef $obj;
+    $this->{$pl}->SetValue($state->{$pl}||0);
+    EVT_CHECKBOX($this, $this->{$pl}, sub{OnCheck(@_, $app)});
+  };
+  $box->Add($this->{window}, 1, wxALL|wxGROW, 5);
 
   $this->{document} = Wx::Button->new($this, -1, 'Document section: plugin registry');
   $this->{return}   = Wx::Button->new($this, -1, 'Return to main window');
@@ -49,9 +66,20 @@ sub mode {
   1;
 };
 
-## yes, there is some overlap between what push_values and mode do.
-## This separation was useful in Main.pm.  Some of the other tools
-## make mode a null op.
+sub OnCheck {
+  my ($this, $event, $app) = @_;
+  my $persist = File::Spec->catfile($Demeter::UI::Athena::demeter->dot_folder, "athena.plugin_registry");
+  my %state = ();
+  foreach my $pl (sort @{$Demeter::UI::Athena::demeter->mo->Plugins}) {
+    next if ($pl =~ m{FileType});
+    $state{$pl} = $this->{$pl}->GetValue;
+  };
+  my $string .= YAML::Tiny::Dump(\%state);
+  open(my $STATE, '>'.$persist);
+  print $STATE $string;
+  close $STATE;
+};
+
 
 1;
 

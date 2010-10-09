@@ -21,7 +21,7 @@ use Wx::Event qw(EVT_CLOSE EVT_LISTBOX EVT_BUTTON EVT_RADIOBOX);
 
 use List::MoreUtils qw(any);
 
-use Demeter;
+#use Demeter;
 
 my $demeter = Demeter->new();
 ## type is either a scalar containing a string or an array reference

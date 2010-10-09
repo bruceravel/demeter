@@ -22,7 +22,7 @@ use warnings;
 use File::Spec;
 use Wx qw(wxNullColour);
 
-use Demeter;
+#use Demeter;
 my $demeter = Demeter->new;
 
 ################# The stuff from here to the next row of hashes is taken from Mark Dootson

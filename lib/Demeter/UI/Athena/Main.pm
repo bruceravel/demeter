@@ -63,7 +63,7 @@ sub group {
   my $groupbox       = Wx::StaticBox->new($this, -1, 'Current group', wxDefaultPosition, wxDefaultSize);
   my $groupboxsizer  = Wx::StaticBoxSizer->new( $groupbox, wxVERTICAL );
   $groupbox         -> SetFont( Wx::Font->new( $box_font_size, wxDEFAULT, wxNORMAL, wxBOLD, 0, "" ) );
-  $this->{sizer}    -> Add($groupboxsizer, 0, wxBottom, 5);
+  $this->{sizer}    -> Add($groupboxsizer, 0, wxBOTTOM|wxGROW, 5);
   $this->{groupbox}  = $groupbox;
 
   EVT_RIGHT_DOWN($groupbox, sub{ContextMenu(@_, $app, 'group')});
@@ -541,13 +541,14 @@ sub set_widget_state {
 sub push_values {
   my ($this, $data) = @_;
   foreach my $w (@group_params, @plot_parameters, @bkg_parameters, @fft_parameters, @bft_parameters) {
-    next if ($w =~ m{(?:label|pluck)\z});
+    next if ($w =~ m{(?:label|pluck|file)\z});
     #print($w.$/), 
     next if not $data->meta->find_attribute_by_name($w);
     $this->{$w}->SetValue($data->$w) if (ref($this->{$w}) =~ m{SpinCtrl});
     $this->{$w}->SetValue($data->$w) if (ref($this->{$w}) =~ m{TextCtrl});
     $this->{$w}->SetValue($data->$w) if (ref($this->{$w}) =~ m{CheckBox});
   };
+  $this->{file}->SetValue($data->source);
   $this->{file}->SetValue($data->prjrecord)  if ($this->{file}->GetValue eq '@&^^null^^&@');
   $this->{file}->SetValue($data->provenance) if ($data->is_merge);
   $this->{bkg_z}      -> SetValue(sprintf "%-2d: %s", get_Z($data->bkg_z), get_name($data->bkg_z));

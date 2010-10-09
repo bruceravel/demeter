@@ -6,7 +6,7 @@ extends 'Demeter::Plugins::FileType';
 use Scalar::Util qw(looks_like_number);
 
 has '+is_binary'    => (default => 1);
-has '+description'  => (default => "Read Binary files from the SSRL XAFS Data Collector");
+has '+description'  => (default => "binary data from the SSRL XAFS Data Collector");
 has '+version'      => (default => 0.2);
 has 'ssrlb_version' => (is => 'rw', isa => 'Num', default => 1.1);
 

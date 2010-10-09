@@ -4,7 +4,7 @@ use Moose;
 extends 'Demeter::Plugins::FileType';
 
 has '+is_binary'   => (default => 0);
-has '+description' => (default => "Import files from the DUBBLE beamline at the ESRF.");
+has '+description' => (default => "the DUBBLE beamline at the ESRF");
 has '+version'     => (default => 0.1);
 
 use Scalar::Util qw(looks_like_number);

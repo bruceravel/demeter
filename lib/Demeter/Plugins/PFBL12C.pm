@@ -4,7 +4,7 @@ use Moose;
 extends 'Demeter::Plugins::FileType';
 
 has '+is_binary'   => (default => 0);
-has '+description' => (default => 'Read files from Photon Factory & SPring8 XAS Beamlines.');
+has '+description' => (default => 'Photon Factory and SPring8 XAS Beamlines');
 has '+version'     => (default => 0.3);
 
 use Readonly;
@@ -132,6 +132,6 @@ me to refine the C<is> method to work with multiple PF XAS beamlines.
 
 =head1 AUTHOR
 
-  Bruce Ravel <bravel@anl.gov>
+  Bruce Ravel <bravel@bnl.gov>
   http://xafs.org/BruceRavel
 

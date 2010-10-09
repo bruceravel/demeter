@@ -70,7 +70,13 @@ has 'is_mc'       => (is => 'ro', isa => 'Bool', default => 0); # is not Demeter
 has 'tag'         => (is => 'rw', isa => 'Str',  default => q{});
 has 'cv'          => (is => 'rw', isa => 'Num',  default => 0);
 has 'file'        => (is => 'rw', isa => 'Str',  default => $NULLFILE,
-		      trigger => sub{my ($self, $new) = @_; $self->update_data(1) if ($new and ($new ne $NULLFILE))} );
+		      trigger => sub{my ($self, $new) = @_;
+				     if ($new and ($new ne $NULLFILE)) {
+				       $self->update_data(1);
+				       $self->source($new);
+				     };
+				   });
+has 'source'      => (is => 'rw', isa => 'Str',  default => $NULLFILE,);
 has 'prjrecord'   => (is => 'rw', isa => 'Str',  default => q{});
 has 'from_athena' => (is => 'rw', isa => 'Bool', default => 0);
 subtype 'FitSum'

@@ -181,6 +181,12 @@ The output data file contains columns for each corrected detector
 channel as well as columns for the various ion chambers.  This is an
 example of a file type plugin which uses Ifeffit dirrectly.
 
+=item C<X23A2MultiChannel>
+
+Data measured using the multi-channel ion chambers at NSLS X23A2 are
+converted into an Athena project file.  This is an example of filetype
+plugin which sets the C<output> attribute to "project".
+
 =item C<Lytle>
 
 Import files from the Lytle database.  This plugin imports those data
@@ -249,7 +255,8 @@ whether the original data file can be displayed as text.
 =item C<description>
 
 A brief textual description of the purpose of the plugin.  This should
-be succinct and should fit on one short line.
+be succinct and finish a sentence that begins "This file appears to be
+from ".
 
 =item C<version>
 

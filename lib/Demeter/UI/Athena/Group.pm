@@ -1,6 +1,6 @@
 package Demeter::UI::Athena::Group;
 
-use Demeter;
+#use Demeter;
 use Demeter::UI::Wx::SpecialCharacters qw(:all);
 use Demeter::UI::Athena::ChangeDatatype;
 

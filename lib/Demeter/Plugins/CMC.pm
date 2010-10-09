@@ -4,7 +4,7 @@ use Moose;
 extends 'Demeter::Plugins::FileType';
 
 has '+is_binary'   => (default => 0);
-has '+description' => (default => "Import data from APS 9BM (CMC-XOR).");
+has '+description' => (default => "APS 9BM (CMC-XOR)");
 has '+version'     => (default => 0.1);
 
 sub is {
