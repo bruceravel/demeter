@@ -43,3 +43,4 @@
 
 # Avoid Dolphin crap
 \b\.directory
+^MYMETA.yml$

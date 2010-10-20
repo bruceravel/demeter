@@ -29,6 +29,10 @@ sub sa {
     carp("Available self absorption algorithms are Fluo, Booth, Troger, and Atoms");
     return (0, q{});
   };
+  if ((lc($how) eq 'fluo') and ($self->datatype eq 'chi')) {
+    carp("The fluo algorithm is applied to mu(E) data and cannot be applied to a Data object of data type chi");
+    return (0, q{});
+  };
   $hash{thickness} ||= 100000;
   $hash{in}        ||= 45;
   $hash{out}       ||= 45;
@@ -49,7 +53,7 @@ sub sa_troger {
   };
   $self->_update('bft');
 
-  my ($efluo, $line) = $self->efluo;
+  my ($efluo, $line) = $self->_efluo;
   my ($barns, $amu) = (0,0);
   foreach my $el (keys(%count)) {
     $barns += Xray::Absorption -> cross_section($el, $efluo) * $count{$el};
@@ -69,6 +73,11 @@ sub sa_troger {
   my $amuabs = Xray::Absorption -> get_atomic_weight($abs);
   foreach my $kk (@k) {
     my ($barns, $amu) = (0,0);
+    ## note that care is taken to avoid a mismatch between the edge
+    ## value of the tabulation of cross sections and the measured edge
+    ## energyof the data.  using $self->bkg_e0 instead would result in
+    ## a kink in the corrected data at a k value corresponding to that
+    ## difference
     my $e = $self->k2e($kk, 'relative') + Xray::Absorption -> get_energy($self->bkg_z, $self->fft_edge) + 0.1;
     foreach my $el (keys(%count)) {
       $barns += Xray::Absorption -> cross_section($el, $e) * $count{$el};
@@ -87,11 +96,10 @@ sub sa_troger {
 							 }));
 
   my $text = "Troger algorithm\n";
-  $text .= sprintf "Fluorescence line is %s (%s), energy = %.2f\n",
-    Xray::Absorption->get_Siegbahn_full($line), Xray::Absorption->get_IUPAC($line), $efluo;
+  $text .= $self->_summary($efluo, $line, \%count);
   @k   = Ifeffit::get_array('s___a.k');
   my @chi = Ifeffit::get_array('s___a.chi');
-  my $sadata = $self->sa_group(\@k, \@chi);
+  my $sadata = $self->sa_group(\@k, \@chi, 'chi');
   return ($sadata, $text);
 
 };
@@ -111,7 +119,7 @@ sub sa_booth {
   };
   $self->_update('bft');
 
-  my ($efluo, $line) = $self->efluo;
+  my ($efluo, $line) = $self->_efluo;
   my ($barns, $amu) = (0,0);
   foreach my $el (keys(%count)) {
     $barns += Xray::Absorption -> cross_section($el, $efluo) * $count{$el};
@@ -131,6 +139,7 @@ sub sa_booth {
   my $amuabs = Xray::Absorption -> get_atomic_weight($abs);
   foreach my $kk (@k) {
     my ($barns, $amu) = (0,0);
+    ## see the note in sa_troger about energy values
     my $e = $self->k2e($kk, 'relative') + Xray::Absorption -> get_energy($self->bkg_z, $self->fft_edge) + 10.1;
     foreach my $el (keys(%count)) {
       $barns += Xray::Absorption -> cross_section($el, $e) * $count{$el};
@@ -161,27 +170,13 @@ sub sa_booth {
     $self->dispose($self->template("process", "sa_booth_thin"));
     $text .= "thin sample limit\n";
   };
-  $text .= sprintf "Fluorescence line is %s (%s), energy = %.2f\n",
-    Xray::Absorption->get_Siegbahn_full($line), Xray::Absorption->get_IUPAC($line), $efluo;
+  $text .= $self->_summary($efluo, $line, \%count);
 
   @k   = Ifeffit::get_array('s___a.k');
   my @chi = Ifeffit::get_array('s___a.chi');
-  my $sadata = $self->sa_group(\@k, \@chi);
+  my $sadata = $self->sa_group(\@k, \@chi, 'chi');
   return ($sadata, $text);
 
-};
-
-sub efluo {
-  my ($self) = @_;
-  my $line = 'Ka1';
- SWITCH: {
-    $line = 'Ka1', last SWITCH if (lc($self->fft_edge) eq 'k');
-    $line = 'La1', last SWITCH if (lc($self->fft_edge) eq 'l3');
-    $line = 'Lb1', last SWITCH if (lc($self->fft_edge) eq 'l2');
-    $line = 'Lb3', last SWITCH if (lc($self->fft_edge) eq 'l1');
-    $line = 'Ma',  last SWITCH if (lc($self->fft_edge) =~ /^m/);
-  };
-  return (Xray::Absorption -> get_energy($self->bkg_z, $line), $line);
 };
 
 sub sa_atoms {
@@ -201,30 +196,157 @@ sub sa_atoms {
   my ($self_amp, $self_sigsqr) = Xray::FluorescenceEXAFS->self($self->bkg_z, $self->fft_edge, \%count);
   my $net_sigsqr = $self_sigsqr+$i0_sigsqr+$i0_sigsqr;
 
-  my $answer = $self->template("process", "sa_atoms_text",
-			       {amp  => sprintf("%.2f", $self_amp),
-				ss   => sprintf("%.6f", $net_sigsqr),
-				self => sprintf("%.6f", $self_sigsqr),
-				norm => sprintf("%.6f", $mm_sigsqr),
-				i0   => sprintf("%.6f", $i0_sigsqr)});
+  my $text = "Atoms algorithm\n";
+  $text .= $self->_summary($self->_efluo, \%count);
+  $text .= $self->template("process", "sa_atoms_text",
+			   {amp  => sprintf("%.2f", $self_amp),
+			    ss   => sprintf("%.6f", $net_sigsqr),
+			    self => sprintf("%.6f", $self_sigsqr),
+			    norm => sprintf("%.6f", $mm_sigsqr),
+			    i0   => sprintf("%.6f", $i0_sigsqr)});
 
   $self->dispose($self->template("process", "sa_atoms", {amp=>$self_amp, ss=>$net_sigsqr}));
   my @k   = Ifeffit::get_array('s___a.k');
   my @chi = Ifeffit::get_array('s___a.chi');
-  my $sadata = $self->sa_group(\@k, \@chi);
-  return ($sadata, $answer);
+  my $sadata = $self->sa_group(\@k, \@chi, 'chi');
+  return ($sadata, $text);
 };
 
 
+sub sa_fluo {
+  my ($self, $formula, $angle_in, $angle_out) = @_;
+  $angle_in  ||= 45;
+  $angle_out ||= 45;
+
+  my %count;
+  my $ok = parse_formula($formula, \%count);
+  if (not $ok) {
+    carp("Could not interpret formula \"$formula\".");
+    return (0, q{});
+  };
+  $self->_update('bft');
+
+  my ($efluo, $line) = $self->_efluo;
+
+  my $eplus = $self->bkg_e0 + $self->bkg_nor1 + $self->bkg_eshift;
+  my $enominal = Xray::Absorption -> get_energy($self->bkg_z, $self->fft_edge);
+  ($eplus = $enominal + 10) if ($eplus < $enominal);
+  my ($barns_fluo, $barns_plus) = (0,0);
+  my $mue_plus = 0;
+
+  foreach my $k (keys %count) {
+
+    ## compute contribution to mu_total at the fluo energy
+    $barns_fluo += $count{$k} * Xray::Absorption -> cross_section($k, $efluo);
+
+    if (lc($k) eq lc(get_symbol($self->bkg_z))) {
+      ## compute contribution to mu_abs at the above edge energy
+      $mue_plus = $count{$k} * Xray::Absorption -> cross_section($k, $eplus);
+    } else {
+      ## compute contribution to mu_back at the above edge energy
+      $barns_plus += $count{$k} * Xray::Absorption -> cross_section($k, $eplus);
+    };
+  };
+
+  if ($mue_plus <= 0) {
+    carp("Unable to compute cross section of absorber above the edge");
+    return (0, q{});
+  };
+
+  my @energy = Ifeffit::get_array($self->group.".energy");
+  my @mub = ();
+  foreach my $e (@energy) {
+    my $barns = 0;
+    foreach my $k (keys %count) {
+      next if (lc($k) eq lc(get_symbol($self->bkg_z)));
+      $barns += Xray::Absorption -> cross_section($k, $e+$self->bkg_eshift) * $count{$k};
+    };
+    push @mub, $barns;
+  };
+  Ifeffit::put_array("s___a.mub", \@mub);
+
+  $self->dispose($self->template("process", "sa_fluo", {angle_in  => $angle_in,
+							angle_out => $angle_out,
+						        mut_fluo  => $barns_fluo,
+						        mub_plus  => $barns_plus,
+						        mue_plus  => $mue_plus,
+						       }));
+  my $maxval = Ifeffit::get_scalar("s___a_x");
+
+  my $text = "Fluo algorithm\n";
+  $text .= $self->_summary($efluo, $line, \%count);
+  if ($maxval > 30) {
+    $text .= "
+
+Yikes!  This correction seems to be numerically unstable.
+Among the common reasons for this are:
+
+  1. Providing the wrong chemical formula
+
+  2. Having data from a sample that is not in the infinitely thick
+     limit (the Fluo algorithm is not valid in the thin sample limit)
+
+  3. Not including the matrix containing the sample in the formula for
+     the stoichiometry (for instance, the formula for an aqueous solution
+     must include the amount of H2O relative to the sample)
+";
+  };
+  my @e   = Ifeffit::get_array('s___a.energy');
+  my @xmu = Ifeffit::get_array('s___a.sacorr');
+  my $sadata = $self->sa_group(\@e, \@xmu, 'xmu');
+  return ($sadata, $text);
+
+};
+
 sub sa_group {
-  my ($self, $k, $chi) = @_;
-  my $sadata = Demeter::Data -> put($k, $chi, datatype=>'chi');
+  my ($self, $k, $chi, $datatype) = @_;
+  my $sadata = Demeter::Data -> put($k, $chi, datatype=>$datatype);
   foreach my $att (qw(fft_kmin fft_kmax fft_dk fft_kwindow bkg_z fft_edge fft_pc
 		      bft_rmin bft_rmax bft_dr bft_rwindow)) {
     $sadata->$att($self->$att);
   };
+  if ($datatype eq 'xmu') {
+    foreach my $att (qw(bkg_pre1 bkg_pre2 bkg_nor1 bkg_nor2 bkg_spl1 bkg_spl2 bkg_rbkg bkg_kw
+			bkg_clamp1 bkg_clamp2 bkg_nnorm)) {
+      $sadata->$att($self->$att);
+    };
+  };
   return $sadata;
 };
+
+sub info_depth {
+  my ($self, $formula, $angle_in, $angle_out) = @_;
+  my @x;
+  my @y;
+  return (\@x, \@y);
+};
+
+sub _efluo {
+  my ($self) = @_;
+  my $line = 'Ka1';
+ SWITCH: {
+    $line = 'Ka1', last SWITCH if (lc($self->fft_edge) eq 'k');
+    $line = 'La1', last SWITCH if (lc($self->fft_edge) eq 'l3');
+    $line = 'Lb1', last SWITCH if (lc($self->fft_edge) eq 'l2');
+    $line = 'Lb3', last SWITCH if (lc($self->fft_edge) eq 'l1');
+    $line = 'Ma',  last SWITCH if (lc($self->fft_edge) =~ /^m/);
+  };
+  return (Xray::Absorption -> get_energy($self->bkg_z, $line), $line);
+};
+
+sub _summary {
+  my ($self, $efluo, $line, $rcount) = @_;
+  my $text = sprintf "%s %s edge, edge energy = %.1f\n", ucfirst($self->bkg_z), ucfirst($self->fft_edge), $self->bkg_e0;
+  $text .= sprintf "Dominent fluorescence line is %s (%s), energy = %.2f\n\n",
+    Xray::Absorption->get_Siegbahn_full($line), Xray::Absorption->get_IUPAC($line), $efluo;
+  $text .= "  Element   number\n";
+  $text .= " ---------------------\n";
+  foreach my $el (sort(keys(%$rcount))) {
+    $text .= sprintf("    %2s      %.3f\n", $el, $rcount->{$el});
+  };
+  return $text;
+};
+
 
 
 1;
@@ -254,9 +376,10 @@ Compute the correction using one of the following methods:
 
 =item B<fluo>
 
-This corrects mu(E) data using an algorithm first developed by Bruce
-and implemented by Dani Haskel.  It is the only correction that is applied
-to mu(E) data,
+This corrects mu(E) data using an algorithm developed by Bruce along
+with Ed Stern and Dani Haskel.  This was first implemented by Dani
+Haskel and then reimplemented into the original Athena.  It is the
+only correction method here that is applied to mu(E) data.
 
 =item B<Troger>
 
@@ -264,9 +387,9 @@ This is a correction to chi(k) that applies only in the thick sample limit.
 
 =item B<Booth>
 
-This improvement on the Troger algorithm was developed by Booth and
-Bridges and can applied to a sample of any thickness.  in the thick
-sample limit, it is identical to the Troger correction.
+This improvement on the Troger algorithm was developed by Corwin Booth
+and Bud Bridges and can applied to a sample of any thickness.  In the
+thick sample limit, it is identical to the Troger correction.
 
 =item B<atoms>
 
@@ -277,8 +400,16 @@ also does not consider the effect of incident or exit angle.
 
 =back
 
- $data->sa($method, formula=>$formula, in=>$angle_in
-           out=>$angle_out, thickness=>$thickness);
+  $data -> po -> strt_plot;
+  $data -> plot('k');
+  my ($sadata, $text) = $data->sa($method, formula=>$formula, in=>$angle_in
+                                  out=>$angle_out, thickness=>$thickness);
+  $sadata -> plot('k');
+  print $text;
+
+The method returns a reference to a Data object containing the
+corrected data and a scalar containing the textual response from the
+selected correction method.
 
 The formula must be provided and must be specified using the syntax of
 L<Chemistry::Formula>.  Defaults for in and out are 45 degrees an the
@@ -305,18 +436,22 @@ L<http://www.aps.anl.gov/xfd/people/haskel/fluo.html>.
 
 =item B<Booth Algorithm>
 
-C. H. Booth and F. Bridges, Physica Scripta, T115, (2005) p. 202. See
-also Corwin's web site: L<http://lise.lbl.gov/RSXAP/>
+C. H. Booth and F. Bridges, Physica Scripta, T115, (2005) p. 202.
+DOI:10.1238/Physica.Topical.115a00202 See also Corwin's web site:
+L<http://lise.lbl.gov/RSXAP/>
 
 =item B<Troger Algorithm>
 
 L. Troger, et al., Phys. Rev., B46:6, (1992) p. 3283
+DOI: 10.1103/PhysRevB.46.3283
 
 =item B<Pfalzer Algorithm>
 
 Another interesting approach to correcting self-absorption is
 presented in P. Pfalzer et al., Phys. Rev., B60:13, (1999)
-p. 9335. This is not implemented in ATHENA because the main result
+p. 9335. DOI: 10.1103/PhysRevB.60.9335
+
+This is not implemented in Demeter because the main result
 requires an integral over the solid angle subtended by the
 detector. This could be implemented, but the amount of solid angle
 subtended it is not something one typically writes in the lab
@@ -325,14 +460,16 @@ implemented, contact Bruce.
 
 =item B<Atoms Algorithm>
 
-B. Ravel, J. Synchrotron Radiat., 8:2, (2001) p. 314. See also the
-documentation for Atoms at Bruce's website for more details about it's
-fluorescence correction calculations.
+B. Ravel, J. Synchrotron Radiat., 8:2, (2001) p. 314. DOI:
+10.1107/S090904950001493X
+
+See also the documentation for Atoms at Bruce's website for more
+details about it's fluorescence correction calculations.
 
 =item B<Elam tables of absorption coefficients>
 
 W.T. Elam, B.Ravel, and J.R. Sieber, Radiat. Phys. Chem., 63, (2002)
-p. 121-128
+p. 121-128, DOI: 10.1016/S0969-806X(01)00227-4
 
 =back
 

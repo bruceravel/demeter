@@ -190,6 +190,6 @@ ok( ( ($k[0] == 0) and (all { abs($k[$_] - $k[$_-1] - 0.05) < 1e-4 } (1 .. $#k))
 ## -------- Data from arrays
 my @x = $data3->get_array('energy');
 my @y = $data3->get_array('xmu');
-my $fa = Demeter::Data->put(\@x, \@y);
+my $fa = Demeter::Data->put(\@x, \@y, datatype=>'xmu');
 $fa->_update('fft');
 ok( abs($fa->bkg_e0 - 7105.506) < $fuzz,                     'Data from arrays works (' . $fa->bkg_e0 . ')');
