@@ -469,6 +469,11 @@ sub reset_path_indeces {
 
 ## -------- introspection methods
 
+sub what_isa {
+  my ($self, $att) = @_;
+  return $self->meta->get_attribute($att)->{isa};
+};
+
 
 ## pushed   Index parent sp    fft_pcpath is_mc
 ## down into override methods in extended classes
@@ -484,6 +489,7 @@ sub get_params_of {
   my ($self) = @_;
   return $self->meta->get_attribute_list;
 };
+alias get_attributes => 'get_params_of';
 
 sub matches {
   my ($self, $regexp, $attribute) = @_;

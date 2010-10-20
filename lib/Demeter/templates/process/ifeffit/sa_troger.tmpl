@@ -1,0 +1,9 @@
+##|
+##| Self absorption correction: Troger algorithm
+##| (s___a.mut and s___a.mua were computed and inserted into ifeffit's memory)
+set s___a_ratio = sin(pi*{$angle_in}/180) / sin(pi*{$angle_out}/180)
+set s___a.k = {$D->group}.k
+set(s___a.alpha = s___a.mut + s___a_ratio*{$muf},
+    s___a.s     = s___a.mua / s___a.alpha,
+    s___a.chi   = {$D->group}.chi / (1 - s___a.s) )
+

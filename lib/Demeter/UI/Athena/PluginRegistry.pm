@@ -24,7 +24,7 @@ sub new {
   $this->{window} -> SetScrollbars(0, 20, 0, 50);
 
   my $persist = File::Spec->catfile($Demeter::UI::Athena::demeter->dot_folder, "athena.plugin_registry");
-  my $state = (-e $persis) ? YAML::Tiny::Load($Demeter::UI::Athena::demeter->slurp($persist)) : {};
+  my $state = (-e $persist) ? YAML::Tiny::Load($Demeter::UI::Athena::demeter->slurp($persist)) : {};
 
   foreach my $pl (sort @{$Demeter::UI::Athena::demeter->mo->Plugins}) {
     next if ($pl =~ m{FileType});
@@ -33,7 +33,7 @@ sub new {
     $this->{$pl} = Wx::CheckBox->new($this->{window}, -1, $label);
     $winbox->Add($this->{$pl}, 0, wxALL|wxGrow, 3);
     undef $obj;
-    $this->{$pl}->SetValue($state->{$pl}||0);
+    $this->{$pl}->SetValue($state->{$pl});
     EVT_CHECKBOX($this, $this->{$pl}, sub{OnCheck(@_, $app)});
   };
   $box->Add($this->{window}, 1, wxALL|wxGROW, 5);

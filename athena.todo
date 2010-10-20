@@ -18,6 +18,7 @@
  - [ ] templates for LR/PD
  - [ ] templates for difference spectra
  - [X] X23A2 multichannel filetype plugin
+ - [ ] add a record to an existing Athena project file
 
 * Uses of PDL [0/3]
  - [ ] Savitsky-Golay filter  [[file:notes/sgolay.m][Matlab routine for SG filter]]
@@ -32,6 +33,7 @@
  - [X] bare negative sign in a TextCtrl failed attribute type checking and crashes
  - [ ] importing stddev array from an Athena project file, then making a merge plot works oddly
  - [ ] renaming a group unchecks it
+ - [ ] add noise to chi data
 
 * other features [10/13]
  - [X] column selection persistance
@@ -139,6 +141,16 @@
  - [X] GUI tool
  - [X] test data against plugins
 
+* Histograms
+ - [ ] sum histogram bins into a single chi(k) file
+ - [ ] convert chi(k) data to a mock feffNNNN.dat file
+ - [ ] Triangle object
+   - yields a DS path and a TS path
+   - by R and theta
+   - by a trio of Cartesian coordinates
+ - [ ] bin triangle configurations by R and theta
+ - [ ] sum Triangle objects into a single chi(k)
+
 * Help [1/4]
  - [X]  about
  - [ ]  demos
@@ -153,14 +165,14 @@
  - [ ] session defaults
  - [ ] set to standard (i.e. the one that is marked)
 
-* Tools [9/18]
+* Tools [10/18]
  - [X] main
  - [X] calibrate
  - [X] align
  - [X] deglitch
  - [X] truncate
  - [X] rebin
- - [ ] convolution and noise
+ - [X] convolution and noise
  - [ ] self absorption
 
  - [ ] dispersive

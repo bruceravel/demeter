@@ -9,9 +9,9 @@ my $data = Demeter::Data->new(file        => 'fe73ga27.010',
 			      ln          =>  0
 			      );
 
-$data->set_mode(screen=>1);
-#my ($sadata, $text) = $data->sa_atoms("Fe72.74Ga27.26");
-my ($sadata, $text) = $data->sa_booth("Fe72.74Ga27.26");
+$data->set_mode(screen=>0);
+my $how = $ARGV[0] || 'booth';
+my ($sadata, $text) = $data->sa($how, formula=>"Fe72.74Ga27.26");
 
 $data->plot('k');
 $sadata->plot('k');

@@ -3,6 +3,7 @@ package Demeter::UI::Athena::ConvoluteNoise;
 use Wx qw( :everything );
 use base 'Wx::Panel';
 use Wx::Event qw(EVT_BUTTON);
+use Wx::Perl::TextValidator;
 
 #use Demeter::UI::Wx::SpecialCharacters qw(:all);
 
@@ -18,6 +19,35 @@ sub new {
   my $box = Wx::BoxSizer->new( wxVERTICAL);
   $this->{sizer}  = $box;
 
+  my $gbs = Wx::GridBagSizer->new( 5, 5 );
+
+  $gbs->Add(Wx::StaticText->new($this, -1, 'Group'),                         Wx::GBPosition->new(0,0));
+  $gbs->Add(Wx::StaticText->new($this, -1, 'Convolution function'),          Wx::GBPosition->new(1,0));
+  $gbs->Add(Wx::StaticText->new($this, -1, 'Convolution width'),             Wx::GBPosition->new(2,0));
+  $gbs->Add(Wx::StaticText->new($this, -1, 'Noise (fraction of edge step)'), Wx::GBPosition->new(3,0));
+
+  $this->{group}    = Wx::StaticText->new($this, -1, q{});
+  $this->{function} = Wx::Choice->new($this, -1, wxDefaultPosition, wxDefaultSize,
+				      ["Gaussian", 'Lorentzian']);
+  $this->{width}    = Wx::TextCtrl->new($this, -1, 0,  wxDefaultPosition, $tcsize);
+  $this->{noise}    = Wx::TextCtrl->new($this, -1, 0,  wxDefaultPosition, $tcsize);
+
+  $gbs->Add($this->{group},    Wx::GBPosition->new(0,1));
+  $gbs->Add($this->{function}, Wx::GBPosition->new(1,1));
+  $gbs->Add($this->{width},    Wx::GBPosition->new(2,1));
+  $gbs->Add($this->{noise},    Wx::GBPosition->new(3,1));
+  $this->{width} -> SetValidator( Wx::Perl::TextValidator->new( qr([0-9.]) ) );
+  $this->{noise} -> SetValidator( Wx::Perl::TextValidator->new( qr([0-9.]) ) );
+
+  $box -> Add($gbs, 0, wxALIGN_CENTER_HORIZONTAL|wxALL, 5);
+
+  $this->{convolute} = Wx::Button->new($this, -1, 'Plot data and data with convolution and/or noise');
+  $this->{make}      = Wx::Button->new($this, -1, 'Make data group');
+  $box->Add($this->{convolute}, 0, wxALL|wxGROW, 5);
+  $box->Add($this->{make},      0, wxALL|wxGROW, 5);
+  EVT_BUTTON($this, $this->{convolute}, sub{$this->plot($app->current_data)});
+  EVT_BUTTON($this, $this->{make},      sub{$this->make($app)});
+  $this->{make}->Enable(0);
 
   $box->Add(1,1,1);		# this spacer may not be needed, Journal.pm, for example
 
@@ -26,6 +56,8 @@ sub new {
   $box -> Add($this->{$_}, 0, wxGROW|wxALL, 2) foreach (qw(document return));
   EVT_BUTTON($this, $this->{document}, sub{  $app->document("convolute")});
   EVT_BUTTON($this, $this->{return},   sub{  $app->{main}->{views}->SetSelection(0); $app->OnGroupSelect});
+
+  $this->{processed} = q{};
 
   $this->SetSizerAndFit($box);
   return $this;
@@ -40,7 +72,14 @@ sub pull_values {
 ## this subroutine fills the controls when an item is selected from the Group list
 sub push_values {
   my ($this, $data) = @_;
-  1;
+  $this->{group}->SetLabel($data->name);
+  $this->Enable(1);
+  $this->{make}->Enable(0);
+  if ($data->datatype eq 'chi') {
+    $this->{function}->Enable(0);
+    $this->{width}->Enable(0);
+    return;
+  };
 };
 
 ## this subroutine sets the enabled/frozen state of the controls
@@ -49,9 +88,45 @@ sub mode {
   1;
 };
 
-## yes, there is some overlap between what push_values and mode do.
-## This separation was useful in Main.pm.  Some of the other tools
-## make mode a null op.
+sub plot {
+  my ($this, $data) = @_;
+  my $busy = Wx::BusyCursor->new();
+  $::app->{main}->{PlotE}->pull_single_values;
+  $data->po->set(e_mu=>1, e_markers=>1, e_bkg=>0, e_pre=>0, e_post=>0, e_norm=>0, e_der=>0, e_sec=>0, e_i0=>0, e_signal=>0);
+  my $width    = $this->{width}->GetValue || 0;
+  if ($width < 0) {
+    $this->{width}->SetValue(0);
+    $width = 0;
+  };
+  my $function = ($this->{function}->GetSelection) ? 'lorentzian' : 'gaussian';
+  my $noise    = $this->{noise}->GetValue || 0;
+  if ($noise < 0) {
+    $this->{noise}->SetValue(0);
+    $noise = 0;
+  };
+
+  $data->po->start_plot;
+  $data -> plot('E');
+  $this->{processed}  = $data -> clone(name=>sprintf("%s: %.2f eV, %s", $data->name, $width, ucfirst($function)));
+  $this->{processed} -> convolve(width=>$width, type=>$function) if ($width > 0);
+  $this->{processed} -> noise(noise=>$noise, which=>'xmu') if ($noise > 0);
+  $this->{processed} -> plot('E');
+  $this->{make}->Enable(1);
+  undef $busy;
+};
+
+sub make {
+  my ($this, $app) = @_;
+
+  my $index = $app->current_index;
+  if ($index == $app->{main}->{list}->GetCount-1) {
+    $app->{main}->{list}->Append($this->{processed}->name, $this->{processed});
+  } else {
+    $app->{main}->{list}->Insert($this->{processed}->name, $index+1, $this->{processed});
+  };
+  $app->{main}->status("Convolved and/or added noise to " . $app->current_data->name);
+  $app->modified(1);
+};
 
 1;
 
@@ -66,7 +141,8 @@ This documentation refers to Demeter version 0.4.
 
 =head1 SYNOPSIS
 
-This module provides a
+This module provides a tool for convolving mu(E) data and adding
+artifical noise to mu(E) or chi(k) data.
 
 =head1 CONFIGURATION
 

@@ -323,6 +323,17 @@ lineshapes and shuffles all of this off to the fitting engine for
 fitting, all wihtout having to master whatever quirky syntax it might
 have.
 
+=head1 FITTING ENGINES
+
+This module provides an abstract framework for enabling peak fitting
+in Demeter.  This abstraction allows (well ... in principle) the use
+of various backends for performing the actual fit.  Currently the only
+one available is Fityk (http://www.unipress.waw.pl/fityk/), which is
+implemented as L<Demeter::PeakFit::Fityk>.  I plan to implement an
+Ifeffit backend in te future.
+
+Any suggestions?
+
 =head1 ATTRIBUTES
 
 =over 4
