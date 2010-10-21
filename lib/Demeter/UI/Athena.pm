@@ -419,7 +419,7 @@ sub menubar {
   $groupmenu->AppendSeparator;
   #$groupmenu->AppendSubMenu($freezemenu, 'Freeze groups', 'Freeze groups, that is disable their controls such that their parameter values cannot be changed.');
   $groupmenu->Append($DATA_YAML, "Show structure of current group",  "Show detailed contents of the current data group");
-  $groupmenu->Append($TIE_REFERENCE, "Tie reference channle",  "Tie together two marked groups as data and reference channel.");
+  $groupmenu->Append($TIE_REFERENCE, "Tie reference channel",  "Tie together two marked groups as data and reference channel.");
   $groupmenu->AppendSeparator;
   $groupmenu->Append($REMOVE, "Remove current group",   "Remove the current group from this project");
   $groupmenu->Append($REMOVE_MARKED, "Remove marked groups",   "Remove marked groups from this project");
@@ -1002,6 +1002,7 @@ sub side_bar {
 
   ## -------- fill the plotting options tabs
   $app->{main}->{plottabs}  = Wx::Choicebook->new($toolpanel, -1, wxDefaultPosition, wxDefaultSize, wxNB_TOP);
+  $app->mouseover($app->{main}->{plottabs}->GetChildren, "Set various plotting parameters.");
   foreach my $m (qw(Other PlotE PlotK PlotR PlotQ Stack Indicators)) {
     next if $INC{"Demeter/UI/Athena/Plot/$m.pm"};
     require "Demeter/UI/Athena/Plot/$m.pm";
@@ -1023,7 +1024,6 @@ sub side_bar {
     $app->{main}->{plottabs} -> AddPage($app->{main}->{$m}, $label,  ($m eq 'PlotE'));
   };
   $toolbox   -> Add($app->{main}->{plottabs}, 0, wxGROW|wxALL, 0);
-  $app->mouseover($app->{main}->{plottabs}->GetChildren, "Set various plotting parameters.");
 
   $toolpanel -> SetSizerAndFit($toolbox);
 

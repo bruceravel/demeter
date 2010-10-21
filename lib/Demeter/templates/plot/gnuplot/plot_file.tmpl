@@ -2,6 +2,8 @@
   $tic = int(log($xmax-$xmin)/log(10));
   $yrange = ($showy) ? "[0:]" : "[*:*]";
   ($pp = $param) =~ s{\\_}{\\\\_}g;
+  $linetype ||= 'errorbars';
+  $columns = ($linetype eq 'errorbars') ? '1:2:3' : '1:2';
   q{}
 }
 set title "\{/*1.6 Fitting parameter\}"

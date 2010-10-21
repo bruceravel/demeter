@@ -1,0 +1,8 @@
+read_data(file="{$file}", group=i___nfo)
+newplot(i___nfo.1, i___nfo.2,
+        title  = "Information depth above the absorption edge",
+        xlabel = "Wavenumber (\A\u-1\d)",
+        ylabel = "Information depth (\gmm)",
+	xmin   = {$P->kmin},
+        xmax   = {$P->kmax},
+        style  = line,)

@@ -1,0 +1,6 @@
+set title "\{/*1.5 Information depth above the absorption edge\}"
+set xrange [{$P->kmin}:{$P->kmax}]
+set xlabel "\{/*1.2 Wavenumber&\{aa\}(\{\305\}^\{-1\})\}"
+set ylabel "\{/*1.2 Information depth&\{a\}(\{/Symbol m\}m)\}"
+unset key
+plot '{$file}' using 1:2 with lines ls {$P->increm+1} title ''

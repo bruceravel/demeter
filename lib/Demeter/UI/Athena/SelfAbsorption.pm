@@ -66,9 +66,9 @@ sub new {
   $this->{info} = Wx::Button->new($this, -1, 'Plot information depth',    wxDefaultPosition, $tcsize);
   $this->{make} = Wx::Button->new($this, -1, 'Make corrected data group', wxDefaultPosition, $tcsize);
   $box -> Add($this->{$_}, 0, wxGROW|wxALL, 2) foreach (qw(plot info make));
-  $this->{info}->Enable(0);
   $this->{make}->Enable(0);
   EVT_BUTTON($this, $this->{plot},    sub{$this->plot($app->current_data)});
+  EVT_BUTTON($this, $this->{info},    sub{$this->info($app->current_data)});
   EVT_BUTTON($this, $this->{make},    sub{$this->make($app)});
 
   my $textbox        = Wx::StaticBox->new($this, -1, 'Feedback', wxDefaultPosition, wxDefaultSize);
@@ -178,6 +178,38 @@ sub make {
   $app->modified(1);
 };
 
+sub info {
+  my ($this, $data) = @_;
+  my $formula   = $this->{formula}   -> GetValue;
+  my $in        = $this->{in}        -> GetValue;
+  my $out       = $this->{out}       -> GetValue;
+  if ($formula =~ m{\A\s*\z}) {
+    $this->{feedback}->SetValue("You did not provide a formula.");
+    $::app->{main}->status("You did not provide a formula.");
+    return;
+  };
+  my $ok = parse_formula($formula, \%count);
+  if (not $ok) {
+    $this->{feedback}->SetValue($count{error});
+    $::app->{main}->status("The formula \"$formula\" could not be parsed.");
+    return;
+  };
+
+  $::app->{main}->{PlotK}->pull_single_values;
+
+  $data->po->start_plot;
+  my ($x, $y) = $data->info_depth($formula, $in, $out);
+  my $tempfile = $data->po->tempfile;
+  open my $T, '>'.$tempfile;
+  foreach my $i (0 .. $#{$x}) {
+    print $T $x->[$i], "  ", $y->[$i], 0, $/;
+  };
+  close $T;
+
+  my $text = $data->template('plot', 'plot_info_depth', {file  => $tempfile});
+  $data -> dispose($text, 'plotting');
+};
+
 
 1;
 
@@ -192,7 +224,8 @@ This documentation refers to Demeter version 0.4.
 
 =head1 SYNOPSIS
 
-This module provides a
+This module provides a tool for computing self absorption corrections using
+L<Data::Demeter::SelfAbsorption>.
 
 =head1 CONFIGURATION
 
@@ -202,14 +235,6 @@ This module provides a
 Demeter's dependencies are in the F<Bundle/DemeterBundle.pm> file.
 
 =head1 BUGS AND LIMITATIONS
-
-=over 4
-
-=item *
-
-This 'n' that
-
-=back
 
 Please report problems to Bruce Ravel (bravel AT bnl DOT gov)
 

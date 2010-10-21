@@ -767,6 +767,11 @@ Readonly my $IDENTIFY_REFERENCE => Wx::NewId();
 Readonly my $EXPLAIN_ESHIFT     => Wx::NewId();
 Readonly my $ALL_TO_1           => Wx::NewId();
 Readonly my $MARKED_TO_1        => Wx::NewId();
+Readonly my $E0_IFEFFIT         => Wx::NewId();
+Readonly my $E0_TABULATED       => Wx::NewId();
+Readonly my $E0_FRACTION        => Wx::NewId();
+Readonly my $E0_ZERO            => Wx::NewId();
+Readonly my $E0_PEAK            => Wx::NewId();
 
 
 sub ContextMenu {
@@ -795,6 +800,11 @@ sub ContextMenu {
     $menu->Append($EXPLAIN_ESHIFT,     "Explain energy shift");
   } elsif ($which eq 'bkg_e0') {
     $menu->AppendSeparator;
+    $menu->Append($E0_IFEFFIT,   "Set E0 to Ifeffit's default");
+    $menu->Append($E0_TABULATED, "Set E0 to the tabulated value");
+    $menu->Append($E0_FRACTION,  "Set E0 to a fraction of the edge step");
+    $menu->Append($E0_ZERO,      "Set E0 to the zero crossing of the second derivative");
+    #$menu->Append($E0_PEAK,      "Set E0 to the peak of the white line");
   };
 
   ## set to session default
@@ -833,8 +843,22 @@ sub DoContextMenu {
       $data->_update('bft');
       $data->fft_kmax($data->recommended_kmax);
       $app->{main}->{Main}->{fft_kmax}->SetValue($data->fft_kmax);
+      $app->modified(1);
       last SWITCH;
     };
+    (($id == $E0_IFEFFIT) or ($id == $E0_TABULATED) or ($id == $E0_FRACTION) or ($id == $E0_ZERO) or ($id == $E0_PEAK))
+      and do {
+	my $how = ($id == $E0_IFEFFIT)   ? 'ifeffit'
+                : ($id == $E0_TABULATED) ? 'atomic'
+                : ($id == $E0_FRACTION)  ? 'fraction'
+                : ($id == $E0_ZERO)      ? 'zero'
+                : ($id == $E0_PEAK)      ? 'peak'
+		:                          'ifeffit';
+	$data->e0($how);
+	$app->{main}->{Main}->{bkg_e0}->SetValue($data->bkg_e0);
+	$app->modified(1);
+	last SWITCH;
+      };
   };
 };
 

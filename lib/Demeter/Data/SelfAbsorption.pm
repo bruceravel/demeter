@@ -20,6 +20,7 @@ use Moose::Role;
 
 use Chemistry::Elements qw(get_symbol);
 use Chemistry::Formula qw(parse_formula);
+use List::Util qw(min);
 use Xray::Absorption;
 
 sub sa {
@@ -140,7 +141,7 @@ sub sa_booth {
   foreach my $kk (@k) {
     my ($barns, $amu) = (0,0);
     ## see the note in sa_troger about energy values
-    my $e = $self->k2e($kk, 'relative') + Xray::Absorption -> get_energy($self->bkg_z, $self->fft_edge) + 10.1;
+    my $e = $self->k2e($kk, 'relative') + Xray::Absorption -> get_energy($self->bkg_z, $self->fft_edge) + 0.1;
     foreach my $el (keys(%count)) {
       $barns += Xray::Absorption -> cross_section($el, $e) * $count{$el};
       $amu   += Xray::Absorption -> get_atomic_weight($el) * $count{$el};
@@ -317,8 +318,42 @@ sub sa_group {
 
 sub info_depth {
   my ($self, $formula, $angle_in, $angle_out) = @_;
-  my @x;
-  my @y;
+
+  my %count;
+  my $ok = parse_formula($formula, \%count);
+  if (not $ok) {
+    carp("Could not interpret formula \"$formula\".");
+    return (0, q{});
+  };
+  my ($efluo, $line) = $self->_efluo;
+  my ($barns, $amu) = (0,0);
+  foreach my $el (keys %count) {
+    $barns += Xray::Absorption -> cross_section($el, $efluo) * $count{$el};
+    $amu   += Xray::Absorption -> get_atomic_weight($el) * $count{$el};
+  };
+  my $muf = sprintf("%.6f", $barns / $amu / 1.6607143);
+
+  my @k = Ifeffit::get_array($self->group.".k");
+  my $kmax = min($k[-1], $self->po->kmax);
+  my @mut = ();
+  foreach my $kk (@k) {
+    my ($barns, $amu) = (0,0);
+    my $e = $self->k2e($kk, 'relative') + Xray::Absorption -> get_energy($self->bkg_z, $self->fft_edge) + 0.1;
+    foreach my $el (keys %count) {
+      $barns += Xray::Absorption -> cross_section($el, $e) * $count{$el};
+      $amu   += Xray::Absorption -> get_atomic_weight($el) * $count{$el};
+    };
+    ## 1 amu = 1.6607143 x 10^-24 gm
+    push @mut, $barns / $amu / 1.6607143;
+  };
+  Ifeffit::put_array("s___a.mut", \@mut);
+
+  $self->dispose($self->template("process", "sa_info_depth", {in  => $angle_in,
+							      out => $angle_out,
+							      muf => $muf,
+							     }));
+  my @x = $self->get_array('k');
+  my @y = Ifeffit::get_array('s___a.info');
   return (\@x, \@y);
 };
 
@@ -418,6 +453,19 @@ default for thickness is to compute in the thick sample limit.
 
 The named arguments can appear in any order, but the first item in the
 argument list must be the correction method.
+
+=item C<info_depth>
+
+Return arrays of wavenumber and information depth where the
+information depth represents the depth from which signal is retrieved
+from the sample.  Essentially, this plots the energy dependence of the
+absorption length over the k-range of the data.
+
+  my ($ref_k, $ref_info) = $data->info_depth(formula=>$formula,
+                                             in=>$angle_in
+                                             out=>$angle_out);
+
+The returned values are array references.
 
 =back
 
