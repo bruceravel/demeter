@@ -311,6 +311,7 @@ sub sa_group {
       $sadata->$att($self->$att);
     };
   };
+  $sadata->name('SA  ' . $self->name);
   return $sadata;
 };
 

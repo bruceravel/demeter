@@ -2,9 +2,10 @@ package Demeter::UI::Athena::SelfAbsorption;
 
 use Wx qw( :everything );
 use base 'Wx::Panel';
-use Wx::Event qw(EVT_BUTTON);
+use Wx::Event qw(EVT_BUTTON EVT_RADIOBOX);
 
-#use Demeter::UI::Wx::SpecialCharacters qw(:all);
+use Demeter::UI::Wx::SpecialCharacters qw(:all);
+use Chemistry::Formula qw(parse_formula);
 
 use vars qw($label);
 $label = "Self-absorption correction";	# used in the Choicebox and in status bar messages to identify this tool
@@ -18,8 +19,65 @@ sub new {
   my $box = Wx::BoxSizer->new( wxVERTICAL);
   $this->{sizer}  = $box;
 
+  my $top = Wx::BoxSizer->new( wxHORIZONTAL );
+  $box -> Add($top, 0, wxALIGN_CENTER_HORIZONTAL|wxTOP|wxBOTTOM, 10);
 
-  $box->Add(1,1,1);		# this spacer may not be needed, Journal.pm, for example
+  $this->{algorithm} = Wx::RadioBox->new($this, -1, 'Algorithm', wxDefaultPosition, wxDefaultSize,
+					 ["Fluo $MDASH $MU(E)", "Booth $MDASH $CHI(k)", "Troger $MDASH $CHI(k)", "Atoms $MDASH $CHI(k)"],
+					 1, wxRA_SPECIFY_COLS);
+  $top -> Add($this->{algorithm}, 0, wxLEFT|wxRIGHT, 5);
+  $this->{algorithm}->SetSelection(0);
+  EVT_RADIOBOX($this, $this->{algorithm}, sub{OnAlgorithm(@_, $app)});
+
+  my $gbs = Wx::GridBagSizer->new( 5, 5 );
+  $gbs->Add(Wx::StaticText->new($this, -1, 'Group'),        Wx::GBPosition->new(0,0));
+  $gbs->Add(Wx::StaticText->new($this, -1, 'Element'),      Wx::GBPosition->new(1,0));
+  $gbs->Add(Wx::StaticText->new($this, -1, 'Edge'),         Wx::GBPosition->new(1,2));
+  $gbs->Add(Wx::StaticText->new($this, -1, 'Formula'),      Wx::GBPosition->new(2,0));
+  $this->{in_label}        = Wx::StaticText->new($this, -1, 'Angle in');
+  $this->{out_label}       = Wx::StaticText->new($this, -1, 'Angle out');
+  $this->{thickness_label} = Wx::StaticText->new($this, -1, 'Thickness');
+  $gbs->Add($this->{in_label},        Wx::GBPosition->new(3,0));
+  $gbs->Add($this->{out_label},       Wx::GBPosition->new(3,2));
+  $gbs->Add($this->{thickness_label}, Wx::GBPosition->new(4,0));
+
+  $this->{group}     = Wx::StaticText->new($this, -1, q{});
+  $this->{element}   = Wx::StaticText->new($this, -1, q{});
+  $this->{edge}      = Wx::StaticText->new($this, -1, q{});
+  $this->{formula}   = Wx::TextCtrl->new($this, -1, q{},  wxDefaultPosition, [180, -1]);
+  $this->{in}        = Wx::SpinCtrl->new($this, -1, 45,   wxDefaultPosition, $tcsize, wxSP_ARROW_KEYS, 0, 90);
+  $this->{out}       = Wx::SpinCtrl->new($this, -1, 45,   wxDefaultPosition, $tcsize, wxSP_ARROW_KEYS, 0, 90);
+  $this->{thickness} = Wx::TextCtrl->new($this, -1, 1000, wxDefaultPosition, $tcsize);
+
+  $this->{thickness_label}->Enable(0);
+  $this->{thickness}->Enable(0);
+
+  $gbs->Add($this->{group},     Wx::GBPosition->new(0,1));
+  $gbs->Add($this->{element},   Wx::GBPosition->new(1,1));
+  $gbs->Add($this->{edge},      Wx::GBPosition->new(1,3));
+  $gbs->Add($this->{formula},   Wx::GBPosition->new(2,1), Wx::GBSpan->new(1,3));
+  $gbs->Add($this->{in},        Wx::GBPosition->new(3,1));
+  $gbs->Add($this->{out},       Wx::GBPosition->new(3,3));
+  $gbs->Add($this->{thickness}, Wx::GBPosition->new(4,1));
+  $top -> Add($gbs, 0, wxLEFT|wxRIGHT, 25);
+
+
+  $this->{plot} = Wx::Button->new($this, -1, 'Plot data and correction',  wxDefaultPosition, $tcsize);
+  $this->{info} = Wx::Button->new($this, -1, 'Plot information depth',    wxDefaultPosition, $tcsize);
+  $this->{make} = Wx::Button->new($this, -1, 'Make corrected data group', wxDefaultPosition, $tcsize);
+  $box -> Add($this->{$_}, 0, wxGROW|wxALL, 2) foreach (qw(plot info make));
+  $this->{info}->Enable(0);
+  $this->{make}->Enable(0);
+  EVT_BUTTON($this, $this->{plot},    sub{$this->plot($app->current_data)});
+  EVT_BUTTON($this, $this->{make},    sub{$this->make($app)});
+
+  my $textbox        = Wx::StaticBox->new($this, -1, 'Feedback', wxDefaultPosition, wxDefaultSize);
+  my $textboxsizer   = Wx::StaticBoxSizer->new( $textbox, wxVERTICAL );
+  $box              -> Add($textboxsizer, 1, wxBOTTOM|wxGROW, 5);
+  $this->{feedback}  = Wx::TextCtrl->new($this, -1, q{}, wxDefaultPosition, wxDefaultSize,
+					 wxTE_MULTILINE|wxTE_READONLY);
+  $this->{feedback} -> SetFont( Wx::Font->new( 9, wxTELETYPE, wxNORMAL, wxNORMAL, 0, "" ) );
+  $textboxsizer     -> Add($this->{feedback}, 1, wxGROW|wxALL, 5);
 
   $this->{document} = Wx::Button->new($this, -1, 'Document section: self absorption');
   $this->{return}   = Wx::Button->new($this, -1, 'Return to main window');
@@ -40,6 +98,10 @@ sub pull_values {
 ## this subroutine fills the controls when an item is selected from the Group list
 sub push_values {
   my ($this, $data) = @_;
+  $this->{group}  ->SetLabel($data->name);
+  $this->{element}->SetLabel(ucfirst($data->bkg_z));
+  $this->{edge}   ->SetLabel(ucfirst($data->fft_edge));
+  $this->{make}   ->Enable(0);
   1;
 };
 
@@ -49,9 +111,73 @@ sub mode {
   1;
 };
 
-## yes, there is some overlap between what push_values and mode do.
-## This separation was useful in Main.pm.  Some of the other tools
-## make mode a null op.
+sub OnAlgorithm {
+  my ($this, $event, $app) = @_;
+  if ($this->{algorithm}->GetSelection == 1) {
+    $this->{$_}->Enable(1) foreach (qw(thickness thickness_label));
+  } else {
+    $this->{$_}->Enable(0) foreach (qw(thickness thickness_label));
+  };
+  if ($this->{algorithm}->GetSelection == 3) {
+    $this->{$_}->Enable(0) foreach (qw(in in_label out out_label));
+  } else {
+    $this->{$_}->Enable(1) foreach (qw(in in_label out out_label));
+  };
+};
+
+sub plot {
+  my ($this, $data) = @_;
+  my $busy = Wx::BusyCursor->new();
+  my @algs = (qw(fluo booth troger atoms));
+  my $algorithm = $algs[$this->{algorithm}->GetSelection];
+  my $space = ($algorithm eq 'fluo') ? 'E' : 'k';
+  my $formula   = $this->{formula}   -> GetValue;
+  my $in        = $this->{in}        -> GetValue;
+  my $out       = $this->{out}       -> GetValue;
+  my $thickness = $this->{thickness} -> GetValue;
+
+  if ($formula =~ m{\A\s*\z}) {
+    $this->{feedback}->SetValue("You did not provide a formula.");
+    $::app->{main}->status("You did not provide a formula.");
+    return;
+  };
+  my $ok = parse_formula($formula, \%count);
+  if (not $ok) {
+    $this->{feedback}->SetValue($count{error});
+    $::app->{main}->status("The formula \"$formula\" could not be parsed.");
+    return;
+  };
+
+  $::app->{main}->{PlotE}->pull_single_values;
+  $data->po->set(e_mu=>1, e_markers=>1, e_bkg=>0, e_pre=>0, e_post=>0, e_norm=>1, e_der=>0, e_sec=>0, e_i0=>0, e_signal=>0) if $space eq 'E';
+  $data->po->start_plot;
+  $data->plot($space);
+
+  my $text = q{};
+  ($this->{sadata}, $text) = $data->sa($algorithm, formula=>$formula, in=>$in, out=>$out, thickness=>$thickness);
+  $this->{feedback}->Clear;
+  $this->{feedback}->SetValue($text);
+  $this->{sadata}->plot($space);
+
+  $this->{make}->Enable(1);
+  $::app->{main}->status("Plotted data using " . ucfirst($algorithm) . " algorithm.");
+
+  undef $busy;
+};
+
+sub make {
+  my ($this, $app) = @_;
+
+  my $index = $app->current_index;
+  if ($index == $app->{main}->{list}->GetCount-1) {
+    $app->{main}->{list}->Append($this->{sadata}->name, $this->{sadata});
+  } else {
+    $app->{main}->{list}->Insert($this->{sadata}->name, $index+1, $this->{sadata});
+  };
+  $app->{main}->status("Made self-absorption corrected group from " . $app->current_data->name);
+  $app->modified(1);
+};
+
 
 1;
 
