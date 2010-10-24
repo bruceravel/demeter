@@ -358,6 +358,7 @@ sub _prj {
   };
   $app->{main}->{Journal}->{object}->text($prj->journal);
   $app->{main}->{Journal}->{journal}->SetValue($app->{main}->{Journal}->{object}->text);
+  $app->{main}->{Main}->{bkg_stan}->fill($app, 1);
 
   $data->push_mru("xasdata", $orig);
   $app->set_mru;

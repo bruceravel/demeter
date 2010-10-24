@@ -39,5 +39,5 @@ $lcf->combi;
 print "Best fit:\n";
 print $lcf->report;
 $lcf->plot_fit;
-$lcf->combi_report('combinatorial.csv');
+$lcf->combi_report('combinatorial.xls');
 $lcf->pause;

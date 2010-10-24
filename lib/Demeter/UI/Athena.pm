@@ -6,6 +6,7 @@ use Demeter::UI::Wx::SpecialCharacters qw(:all);
 use Demeter::UI::Athena::IO;
 use Demeter::UI::Athena::Group;
 use Demeter::UI::Athena::Replot;
+use Demeter::UI::Athena::GroupList;
 
 use Demeter::UI::Artemis::Buffer;
 use Demeter::UI::Artemis::ShowText;
@@ -881,7 +882,7 @@ sub main_window {
   $app->{main}->{project} = Wx::StaticText->new($viewpanel, -1, q{<untitled>},);
   my $size = Wx::SystemSettings::GetFont(wxSYS_DEFAULT_GUI_FONT)->GetPointSize + 2;
   $app->{main}->{project}->SetFont( Wx::Font->new( $size, wxDEFAULT, wxNORMAL, wxBOLD, 0, "" ) );
-  $topbar -> Add($app->{main}->{token},   0, wxGROW|wxTOP|wxBOTTOM|wxLEFT, 5);
+  $topbar -> Add($app->{main}->{token},   0, wxTOP|wxBOTTOM|wxLEFT, 5);
   $topbar -> Add($app->{main}->{project}, 0, wxGROW|wxALL, 5);
 
   $topbar -> Add(1,1,1);

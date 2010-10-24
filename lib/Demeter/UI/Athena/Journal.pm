@@ -1,4 +1,6 @@
 package Demeter::UI::Athena::Journal;
+use strict;
+use warnings;
 
 use Wx qw( :everything );
 use base 'Wx::Panel';
@@ -19,7 +21,7 @@ sub new {
   $this->{object} = Demeter::Journal->new;
   $this->{journal} = Wx::TextCtrl->new($this, -1, q{}, wxDefaultPosition, wxDefaultSize,
 				       wxTE_MULTILINE|wxTE_WORDWRAP|wxTE_AUTO_URL);
-  $box->Add($this->{journal}, 1, wxGROW|wxADD, 5);
+  $box->Add($this->{journal}, 1, wxGROW|wxALL, 5);
 
   $this->{document} = Wx::Button->new($this, -1, 'Document section: journal');
   $this->{return}   = Wx::Button->new($this, -1, 'Return to main window');

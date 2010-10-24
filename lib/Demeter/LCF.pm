@@ -29,6 +29,7 @@ use Demeter::StrTypes qw( Empty );
 use List::Util qw(min);
 use List::MoreUtils qw(any none);
 use Math::Combinatorics;
+use Spreadsheet::WriteExcel;
 
 if ($Demeter::mode->ui eq 'screen') {
   with 'Demeter::UI::Screen::Pause';
@@ -522,6 +523,86 @@ sub restore {
 
 
 sub combi_report {
+  my ($self, $fname) = @_;
+  if ($self->co->default("lcf", "combi_output") eq 'excel') {
+    $self->combi_report_excel($fname);
+  } else {
+    $self->combi_report_csv($fname);
+  };
+};
+
+
+sub combi_report_excel {
+  my ($self, $fname) = @_;
+  my @stats = qw(rfactor chinu chisqr nvarys scaleby);
+  my @stand = keys %{ $self->options };
+  my @names = map {$self->mo->fetch('Data', $_)->name} @stand;
+  #@names = map { $_ =~ s{,}{ }g; $_ } @names;
+
+  my $workbook;
+  {
+    ## The evals in Spreadsheet::WriteExcel::Workbook::_get_checksum_method
+    ## will set the eval error variable ($@) if any of Digest::XXX
+    ## (XXX = MD4 | PERL::MD4 | MD5) are installed on the machine.
+    ## This is not a problem -- crypto is not needed in the exported
+    ## Excel file.  However, setting $@ will post a warning given that
+    ## $SIG{__DIE__} is defined to use Wx::Perl::Carp.  So I need to
+    ## locally undefine $SIG{__DIE__} to avoid having a completely
+    ## pointless error message posted to the screen when the S::WE
+    ## object is instantiated
+    local $SIG{__DIE__} = undef;
+    $workbook = Spreadsheet::WriteExcel->new($fname);
+  };
+  my $worksheet = $workbook->add_worksheet();
+
+  my $head = $workbook->add_format();
+  $head -> set_bold;
+  $head -> set_bg_color('grey');
+  $head -> set_align('left');
+  my $group = $workbook->add_format();
+  $group -> set_bold;
+  $group -> set_bg_color('grey');
+  $group -> set_align('left');
+
+  my $col = 0;
+  foreach my $s (@stats) {
+    $worksheet->write(1, $col, $s, $head);
+    ++$col;
+  };
+  foreach my $n (@names) {
+    $worksheet->merge_range(0,  $col, 0, $col+3, $n, $group);
+    $worksheet->write(1, $col,   'weight', $head);
+    $worksheet->write(1, $col+1, 'error',  $head);
+    $worksheet->write(1, $col+2, 'e0',     $head);
+    $worksheet->write(1, $col+3, 'error',  $head);
+    $col+=4;
+  };
+
+  my $row = 2;
+  $col = 0;
+  foreach my $res (@{ $self->combi_results }) {
+    foreach my $s (@stats) {
+      $worksheet->write($row, $col, $res->{ucfirst($s)});
+      ++$col;
+    };
+    foreach my $st (@stand) {
+      if (exists $res->{$st}) {
+	foreach my $c (@{ $res->{$st} }) {
+	  $worksheet->write($row, $col, $c);
+	  ++$col;
+	};
+      } else {
+	$worksheet->write($row, $col, q{}) foreach (1..4);
+	$col+=4;
+      }
+    };
+    ++$row;
+    $col=0;
+  };
+  $workbook->close;
+};
+
+sub combi_report_csv {
   my ($self, $fname) = @_;
   my @stats = qw(rfactor chinu chisqr nvarys scaleby);
   my @stand = keys %{ $self->options };
@@ -1092,6 +1173,10 @@ Demeter's dependencies are in the F<Bundle/DemeterBundle.pm> file.
 =head1 BUGS AND LIMITATIONS
 
 =over 4
+
+=item *
+
+noise
 
 =item *
 

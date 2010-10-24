@@ -1,4 +1,6 @@
 package Demeter::UI::Athena::Align;
+use strict;
+use warnings;
 
 use Wx qw( :everything );
 use base 'Wx::Panel';
@@ -31,7 +33,8 @@ sub new {
   $gbs->Add($label, Wx::GBPosition->new(3,0));
 
   $this->{this}     = Wx::StaticText->new($this, -1, q{Group});
-  $this->{standard} = Wx::ComboBox->new($this, -1, q{}, wxDefaultPosition, [165,-1], [], wxCB_READONLY);
+  $this->{standard} = Demeter::UI::Athena::GroupList -> new($this, $app, 1);
+  #$this->{standard} = Wx::ComboBox->new($this, -1, q{}, wxDefaultPosition, [165,-1], [], wxCB_READONLY);
   $this->{plotas}   = Wx::Choice->new($this, -1, wxDefaultPosition, [165,-1],
 				      ["$MU(E)", 'norm(E)', 'deriv(E)', 'smoothed deriv(E)']);
   $this->{fitas}    = Wx::Choice->new($this, -1, wxDefaultPosition, [165,-1],
@@ -50,6 +53,8 @@ sub new {
 
   $box -> Add($gbs, 0, wxALIGN_CENTER_HORIZONTAL|wxALL, 10);
 
+  my @ps  = (wxDefaultPosition, [80, -1]);
+  my @ps2 = (wxDefaultPosition, [165,-1]);
 
   my $hbox = Wx::BoxSizer->new( wxHORIZONTAL );
   $box -> Add($hbox, 0, wxALIGN_CENTER_HORIZONTAL|wxALL, 10);
@@ -67,9 +72,6 @@ sub new {
   EVT_BUTTON($this, $this->{replot}, sub{$this->plot($app->current_data)});
 
   $gbs = Wx::GridBagSizer->new( 5, 5 );
-
-  my @ps  = (wxDefaultPosition, [80, -1]);
-  my @ps2 = (wxDefaultPosition, [165,-1]);
 
   $this->{auto}   = Wx::Button->new($this, -1, "Auto align", @ps2);
   $this->{marked} = Wx::Button->new($this, -1, "Align marked groups", @ps2);
@@ -128,13 +130,9 @@ sub push_values {
   ##$this->{shiftlabel} -> SetLabel("Shift " . $data->name . " by");
   $this->{shift} -> SetValue($data->bkg_eshift);
   my $count = 0;
-  my @list;
   foreach my $i (0 .. $::app->{main}->{list}->GetCount - 1) {
     my $data = $::app->{main}->{list}->GetClientData($i);
-    if ($data->datatype ne 'chi') {
-      push @list, sprintf("%d: %s", $i+1, $data->name);
-      ++$count;
-    };
+    ++$count if $data->datatype ne 'chi';
   };
   $this->Enable(1);
   if ($count < 2) {
@@ -145,13 +143,8 @@ sub push_values {
     $this->Enable(0);
     return;
   };
-  $this->{standard}->Clear;
-  $this->{standard}->Append(\@list);
-  $this->{standard}-> SetValue(sprintf("%d: %s", 1, $::app->{main}->{list}->GetClientData(0)->name));
-
-  #($::app->current_index == 0)
-  #  ? $this->{standard}-> SetValue(sprintf("%d: %s", 2, $::app->{main}->{list}->GetClientData(1)->name))
-  #    : $this->{standard}-> SetValue(sprintf("%d: %s", 1, $::app->{main}->{list}->GetClientData(0)->name));
+  $this->{standard}->fill($::app, 1, 1);
+  $this->{standard}->SetSelection(0);
   $this->plot($data);
 };
 sub mode {
@@ -173,11 +166,10 @@ sub add {
 sub autoalign {
   my ($this, $data, $how) = @_;
   my $busy = Wx::BusyCursor->new();
-  ($this->{standard}->GetValue =~ m{\A(\d+):}) and ($stan_index = $1-1);
-  $stan = $::app->{main}->{list}->GetClientData($stan_index);
+  my $stan = $this->{standard}->GetClientData($this->{standard}->GetSelection);
 
   if (($how eq 'this') and ($data eq $stan)) {
-    $app->{main}->status("Not aligning -- the data and standard are the same!");
+    $::app->{main}->status("Not aligning -- the data and standard are the same!");
     return;
   };
 
@@ -199,9 +191,7 @@ sub autoalign {
 sub plot {
   my ($this, $data) = @_;
   my $busy = Wx::BusyCursor->new();
-  #$data -> bkg_eshift($this->{shift}->GetValue);
-  ($this->{standard}->GetValue =~ m{\A(\d+):}) and ($stan_index = $1-1);
-  $stan = $::app->{main}->{list}->GetClientData($stan_index);
+  my $stan = $this->{standard}->GetClientData($this->{standard}->GetSelection);
   $data->po->set(emin=>-30, emax=>50);
   $data->po->set(e_mu=>1, e_markers=>1, e_bkg=>0, e_pre=>0, e_post=>0, e_norm=>0, e_der=>0, e_sec=>0, e_i0=>0, e_signal=>0);
   $data->po->e_norm(1) if ($this->{plotas}->GetSelection == 1);

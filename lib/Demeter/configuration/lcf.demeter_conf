@@ -97,3 +97,12 @@ default=4
 description
   The initialization default for the maximum number of standards to
   use in a combinatorial fit.
+
+variable=combi_output
+type=list
+options=excel csv
+default=excel
+description
+  The output format of the report on the reuslts of a combinatorial
+  sequence of fits.  The default is an Excel spreadsheet.  The other
+  option is an text file of comma-spearated values.

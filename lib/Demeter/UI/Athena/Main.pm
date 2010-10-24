@@ -209,11 +209,24 @@ sub bkg {
 
   $this->{bkg_step_label} = Wx::StaticText -> new($this, -1, "Edge step");
   $this->{bkg_step}       = Wx::TextCtrl   -> new($this, -1, q{}, wxDefaultPosition, $tcsize);
-  $this->{bkg_fixstep}    = Wx::CheckBox   -> new($this, -1, q{fix step});
+  $this->{bkg_fixstep}    = Wx::CheckBox   -> new($this, -1, q{fix});
   $gbs -> Add($this->{bkg_step_label}, Wx::GBPosition->new(0,7));
   $gbs -> Add($this->{bkg_step},       Wx::GBPosition->new(0,8));
-  $gbs -> Add($this->{bkg_fixstep},    Wx::GBPosition->new(1,8));
+  $gbs -> Add($this->{bkg_fixstep},    Wx::GBPosition->new(0,9));
 
+  my $clamps = [qw(None Slight Weak Medium Strong Rigid)];
+  $this->{clamp_label}      = Wx::StaticText -> new($this, -1, "Spline clamps");
+  $this->{bkg_clamp1_label} = Wx::StaticText -> new($this, -1, "low");
+  $this->{bkg_clamp1}       = Wx::Choice     -> new($this, -1, wxDefaultPosition, wxDefaultSize, $clamps);
+  $this->{bkg_clamp2_label} = Wx::StaticText -> new($this, -1, "high");
+  $this->{bkg_clamp2}       = Wx::Choice     -> new($this, -1, wxDefaultPosition, wxDefaultSize, $clamps);
+  $this->{bkg_clamp1} -> SetSelection(0);
+  $this->{bkg_clamp2} -> SetSelection(0);
+  $gbs -> Add($this->{clamp_label}, Wx::GBPosition->new(1,7), Wx::GBSpan->new(1,2));
+  $gbs -> Add($this->{bkg_clamp1_label}, Wx::GBPosition->new(2,7));
+  $gbs -> Add($this->{bkg_clamp1},       Wx::GBPosition->new(2,8), Wx::GBSpan->new(1,2));
+  $gbs -> Add($this->{bkg_clamp2_label}, Wx::GBPosition->new(3,7));
+  $gbs -> Add($this->{bkg_clamp2},       Wx::GBPosition->new(3,8), Wx::GBSpan->new(1,2));
 
   ## spline range in k
   $this->{bkg_spl1_label} = Wx::StaticText   -> new($this, -1, "Spline range in k");
@@ -256,29 +269,21 @@ sub bkg {
   $backgroundboxsizer -> Add($gbs, 0, wxALL, 5);
 
   ## standard and clamps
-  my $clamps = [qw(None Slight Weak Medium Strong Rigid)];
   $abox = Wx::BoxSizer->new( wxHORIZONTAL );
+  $this->{box_with_standard} = $abox;
   $this->{bkg_stan_label}   = Wx::StaticText -> new($this, -1, "Standard");
-  $this->{bkg_stan}         = Wx::ComboBox   -> new($this, -1, '', wxDefaultPosition, [50,-1], [], wxCB_READONLY);
-  $this->{bkg_clamp1_label} = Wx::StaticText -> new($this, -1, "Spline clamps:  low");
-  $this->{bkg_clamp1}       = Wx::Choice     -> new($this, -1, wxDefaultPosition, wxDefaultSize, $clamps);
-  $this->{bkg_clamp2_label} = Wx::StaticText -> new($this, -1, "high");
-  $this->{bkg_clamp2}       = Wx::Choice     -> new($this, -1, wxDefaultPosition, wxDefaultSize, $clamps);
+  #$this->{bkg_stan}         = Wx::ComboBox   -> new($this, -1, '', wxDefaultPosition, [50,-1], [], wxCB_READONLY);
+  $this->{bkg_stan}         = Demeter::UI::Athena::GroupList -> new($this, $app, 1);
   $abox -> Add($this->{bkg_stan_label},   0, wxALL,    5);
   $abox -> Add($this->{bkg_stan},         0, wxRIGHT, 15);
-  $abox -> Add($this->{bkg_clamp1_label}, 0, wxALL,    5);
-  $abox -> Add($this->{bkg_clamp1},       0, wxRIGHT, 15);
-  $abox -> Add($this->{bkg_clamp2_label}, 0, wxALL,    5);
-  $abox -> Add($this->{bkg_clamp2},       0, wxRIGHT, 15);
-  $this->{bkg_clamp1} -> SetSelection(0);
-  $this->{bkg_clamp2} -> SetSelection(0);
-  push @bkg_parameters, qw(bkg_stan bkg_clamp1 bkg_clamp2);
+  push @bkg_parameters, qw(bkg_stan bkg_clamp1 bkg_clamp2 clamp);
+  $app -> mouseover($this->{bkg_stan}, "Background removal with a standard is not working yet.  Sorry.");
 
-  $backgroundboxsizer -> Add($abox, 0, wxTOP|wxBOTTOM, 5);
+  $backgroundboxsizer -> Add($abox, 0, wxTOP|wxBOTTOM, 0);
 
   $this->{$_} -> SetValidator( Wx::Perl::TextValidator->new( qr([-0-9.]) ) )
     foreach (qw(bkg_pre1 bkg_pre2 bkg_nor1 bkg_nor2 bkg_spl1 bkg_spl2 bkg_spl1e bkg_spl2e
-		bkg_e0 bkg_rbkg bkg_kw bkg_stan));
+		bkg_e0 bkg_rbkg bkg_kw));
   foreach my $x (qw(bkg_e0 bkg_rbkg bkg_kw bkg_pre1 bkg_pre2 bkg_nor1 bkg_nor2 bkg_step)) {
     EVT_TEXT($this, $this->{$x}, sub{OnParameter(@_, $app, $x)});
     next if (any {$x eq $_} qw(bkg_pre2 bkg_nor2 bkg_spl2 bkg_spl2e));
@@ -514,7 +519,7 @@ sub mode {
     };
   };
 
-  foreach my $w (qw(bkg_algorithm bkg_stan fft_pc bkg_fixstep)) {
+  foreach my $w (qw(bkg_algorithm fft_pc bkg_fixstep)) {
     $this->set_widget_state($w, 0);
   };
 
@@ -559,7 +564,10 @@ sub push_values {
   #$this->{bft_rwindow}-> SetStringSelection($this->window_name($data->bft_rwindow));
   my $nnorm = $data->bkg_nnorm;
   $this->{'bkg_nnorm_'.$nnorm}->SetValue(1);
+
   ## standard
+  $this->{bkg_stan}->fill($::app, 1, 0);
+
   if ($data->reference) {
     $this->{bkg_eshift}-> SetBackgroundColour( Wx::Colour->new($data->co->default("athena", "tied")) );
   } else {
