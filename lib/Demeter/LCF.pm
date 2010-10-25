@@ -55,14 +55,14 @@ has 'noise'  => (is => 'rw', isa => 'Num',    default => 0);
 
 has 'max_standards' => (is => 'rw', isa => 'Int', default => sub{ shift->co->default("lcf", "max_standards")  || 4});
 
-has 'linear'    => (is => 'rw', isa => 'Bool',    default => 0);
-has 'inclusive' => (is => 'rw', isa => 'Bool',    default => sub{ shift->co->default("lcf", "inclusive")  || 0});
-has 'unity'     => (is => 'rw', isa => 'Bool',    default => sub{ shift->co->default("lcf", "unity")      || 1});
-has 'one_e0'    => (is => 'rw', isa => 'Bool',    default => 0);
+has 'linear'    => (is => 'rw', isa => 'Bool', default => 0);
+has 'inclusive' => (is => 'rw', isa => 'Bool', default => sub{ shift->co->default("lcf", "inclusive")  || 0});
+has 'unity'     => (is => 'rw', isa => 'Bool', default => sub{ shift->co->default("lcf", "unity")      || 1});
+has 'one_e0'    => (is => 'rw', isa => 'Bool', default => 0);
 
-has 'plot_components' => (is => 'rw', isa => 'Bool',    default => sub{ shift->co->default("lcf", "components")  || 0});
-has 'plot_difference' => (is => 'rw', isa => 'Bool',    default => sub{ shift->co->default("lcf", "difference")  || 0});
-has 'plot_indicators' => (is => 'rw', isa => 'Bool',    default => sub{ shift->co->default("lcf", "indicators")  || 1});
+has 'plot_components' => (is => 'rw', isa => 'Bool', default => sub{ shift->co->default("lcf", "components")  || 0});
+has 'plot_difference' => (is => 'rw', isa => 'Bool', default => sub{ shift->co->default("lcf", "difference")  || 0});
+has 'plot_indicators' => (is => 'rw', isa => 'Bool', default => sub{ shift->co->default("lcf", "indicators")  || 1});
 
 has 'nstan'     => (is => 'rw', isa => 'Int', default => 0);
 has 'npoints'   => (is => 'rw', isa => 'Int', default => 0);

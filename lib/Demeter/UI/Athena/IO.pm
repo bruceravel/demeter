@@ -367,6 +367,7 @@ sub _prj {
 
   chdir dirname($orig);
   $app->modified(0);
+  $prj->DEMOLISH;
   undef $busy;
   $app->{main}->status("Imported data from project $orig");
   return 1;

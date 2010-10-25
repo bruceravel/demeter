@@ -20,7 +20,7 @@ sub new {
 
   my $config = Demeter::UI::Wx::Config->new($this, \&target);
   $config->populate([qw(athena bft bkg clamp convolution fft file fit gnuplot indicator
-			interpolation marker merge operations plot rebin xanes)]);
+			interpolation lcf marker merge operations plot rebin xanes)]);
   $box->Add($config, 1, wxGROW|wxALL, 5);
 
   $this->{document} = Wx::Button->new($this, -1, 'Document section: preferences');

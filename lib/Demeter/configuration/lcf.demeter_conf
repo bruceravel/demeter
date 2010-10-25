@@ -47,7 +47,7 @@ variable=inclusive
 type=boolean
 onvalue=1
 offvalue=0
-default=false
+default=true
 description
   When true, the default will be to perform the fit with all weights
   forced to be between 0 and 1.

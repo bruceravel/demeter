@@ -12,11 +12,11 @@ use vars qw($label);
 $label = "Linear combination fitting";	# used in the Choicebox and in status bar messages to identify this tool
 
 my $tcsize = [60,-1];
+my $demeter = $Demeter::UI::Athena::demeter;
 
 sub new {
   my ($class, $parent, $app) = @_;
   my $this = $class->SUPER::new($parent, -1, wxDefaultPosition, wxDefaultSize, wxMAXIMIZE_BOX );
-  my $demeter = $Demeter::UI::Athena::demeter;
 
   my $box = Wx::BoxSizer->new( wxVERTICAL);
   $this->{sizer}  = $box;
@@ -101,8 +101,12 @@ sub main_page {
   $this->{usemarked}  = Wx::Button->new($panel, -1, 'Use marked groups');
   $optionsboxsizer->Add($this->{$_}, 0, wxGROW|wxALL, 1)
     foreach (qw(components residual linear inclusive unity one_e0 usemarked));
-  $this->{$_} -> SetValue(0) foreach (qw(components residual linear one_e0));
-  $this->{$_} -> SetValue(1) foreach (qw(inclusive unity));
+
+  $this->{components} -> SetValue($demeter->co->default('lcf', 'components'));
+  $this->{residual}   -> SetValue($demeter->co->default('lcf', 'difference'));
+  $this->{$_} -> SetValue(0) foreach (qw(linear one_e0));
+  $this->{$_} -> SetValue($demeter->co->default('lcf', $_)) foreach (qw(inclusive unity));
+
   my $noisebox = Wx::BoxSizer->new( wxHORIZONTAL );
   $optionsboxsizer->Add($noisebox, 0, wxGROW|wxALL, 1);
   $noisebox->Add(Wx::StaticText->new($panel, -1, 'Add noise'), 0, wxRIGHT|wxALIGN_CENTRE, 5);
@@ -116,11 +120,13 @@ sub main_page {
   $maxbox->Add($this->{max}, 0, wxLEFT|wxRIGHT|wxALIGN_CENTRE, 5);
   $maxbox->Add(Wx::StaticText->new($panel, -1, 'standards'), 0, wxRIGHT|wxALIGN_CENTRE, 5);
 
-  EVT_CHECKBOX($this, $this->{linear},    sub{$this->{LCF}->linear   ($this->{linear}   ->GetValue)});
-  EVT_CHECKBOX($this, $this->{inclusive}, sub{$this->{LCF}->inclusive($this->{inclusive}->GetValue)});
-  EVT_CHECKBOX($this, $this->{unity},     sub{$this->{LCF}->unity    ($this->{unity}    ->GetValue)});
-  EVT_CHECKBOX($this, $this->{one_e0},    sub{$this->{LCF}->one_e0   ($this->{one_e0}   ->GetValue)});
-  EVT_BUTTON($this, $this->{usemarked}, sub{use_marked(@_)});
+  EVT_CHECKBOX($this, $this->{components}, sub{$this->{LCF}->plot_components($this->{components}->GetValue)});
+  EVT_CHECKBOX($this, $this->{residual},   sub{$this->{LCF}->plot_difference($this->{residual}  ->GetValue)});
+  EVT_CHECKBOX($this, $this->{linear},     sub{$this->{LCF}->linear   ($this->{linear}          ->GetValue)});
+  EVT_CHECKBOX($this, $this->{inclusive},  sub{$this->{LCF}->inclusive($this->{inclusive}       ->GetValue)});
+  EVT_CHECKBOX($this, $this->{unity},      sub{$this->{LCF}->unity    ($this->{unity}           ->GetValue)});
+  EVT_CHECKBOX($this, $this->{one_e0},     sub{$this->{LCF}->one_e0   ($this->{one_e0}          ->GetValue)});
+  EVT_BUTTON($this, $this->{usemarked},    sub{use_marked(@_)});
 
   my $actionsbox       = Wx::StaticBox->new($panel, -1, 'Actions', wxDefaultPosition, wxDefaultSize);
   my $actionsboxsizer  = Wx::StaticBoxSizer->new( $actionsbox, wxVERTICAL );
@@ -249,6 +255,7 @@ sub OnSpace {
       $this->{xmax}->SetValue($this->{kmax});
     };
     $this->{plotr} -> Enable(1);
+    $this->{LCF}->po->space('k');
   } else {
     if ($this->{pastspace} == 2) {
       $this->{kmin} = $this->{xmin}->GetValue;
@@ -257,8 +264,22 @@ sub OnSpace {
       $this->{xmax}->SetValue($this->{emax});
     };
     $this->{plotr} -> Enable(0);
+    $this->{LCF}->po->space('E');
   };
   $this->{pastspace} = $this->{space}->GetSelection;
+  $this->{LCF}->space('norm')  if $this->{space}->GetSelection == 0;
+  $this->{LCF}->space('deriv') if $this->{space}->GetSelection == 1;
+  $this->{LCF}->space('chi')   if $this->{space}->GetSelection == 2;
+};
+
+sub fetch {
+  my ($this) = @_;
+
+  $this->{LCF}->max_standards($this->{max}->GetValue);
+
+  my $noise = $this->{noise}->GetValue;
+  $noise = 0 if ($noise < 0);
+  $this->{LCF}->noise($noise);
 };
 
 1;
