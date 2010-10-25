@@ -4,7 +4,7 @@ use warnings;
 
 use Wx qw( :everything );
 use base 'Wx::Panel';
-use Wx::Event qw(EVT_BUTTON EVT_CHECKBOX EVT_COMBOBOX);
+use Wx::Event qw(EVT_BUTTON EVT_CHECKBOX EVT_COMBOBOX EVT_RADIOBOX);
 
 use Demeter::UI::Wx::SpecialCharacters qw(:all);
 
@@ -16,23 +16,32 @@ my $tcsize = [60,-1];
 sub new {
   my ($class, $parent, $app) = @_;
   my $this = $class->SUPER::new($parent, -1, wxDefaultPosition, wxDefaultSize, wxMAXIMIZE_BOX );
+  my $demeter = $Demeter::UI::Athena::demeter;
 
   my $box = Wx::BoxSizer->new( wxVERTICAL);
   $this->{sizer}  = $box;
 
+  $this->{LCF} = Demeter::LCF->new;
+  $this->{emin} = $demeter->co->default('lcf', 'emin');
+  $this->{emax} = $demeter->co->default('lcf', 'emax');
+  $this->{kmin} = $demeter->co->default('lcf', 'kmin');
+  $this->{kmax} = $demeter->co->default('lcf', 'kmax');
+  $this->{pastspace} = 0;
+
   my $hbox = Wx::BoxSizer->new( wxHORIZONTAL );
   $box->Add($hbox, 0, wxGROW|wxLEFT|wxRIGHT, 5);
   $hbox->Add(Wx::StaticText->new($this, -1, 'Fit range:'), 0, wxRIGHT|wxALIGN_CENTRE, 5);
-  $this->{xmin} = Wx::TextCtrl->new($this, -1, -20, wxDefaultPosition, $tcsize);
+  $this->{xmin} = Wx::TextCtrl->new($this, -1, $this->{emin}, wxDefaultPosition, $tcsize);
   $hbox->Add($this->{xmin}, 0, wxLEFT|wxRIGHT|wxALIGN_CENTRE, 5);
   $hbox->Add(Wx::StaticText->new($this, -1, 'to'), 0, wxRIGHT|wxALIGN_CENTRE, 5);
-  $this->{xmax} = Wx::TextCtrl->new($this, -1, 30, wxDefaultPosition, $tcsize);
+  $this->{xmax} = Wx::TextCtrl->new($this, -1, $this->{emax}, wxDefaultPosition, $tcsize);
   $hbox->Add($this->{xmax}, 0, wxLEFT|wxRIGHT|wxALIGN_CENTRE, 5);
   $this->{space} = Wx::RadioBox->new($this, -1, 'Fitting space', wxDefaultPosition, wxDefaultSize,
 				     ["norm $MU(E)", "deriv $MU(E)", "$CHI(k)"],
 				     1, wxRA_SPECIFY_ROWS);
   $hbox->Add($this->{space}, 0, wxLEFT|wxRIGHT|wxALIGN_CENTRE, 5);
   $this->{space}->SetSelection(0);
+  EVT_RADIOBOX($this, $this->{space}, sub{OnSpace(@_)});
 
   $this->{notebook} = Wx::Notebook->new($this, -1, wxDefaultPosition, wxDefaultSize, wxNB_TOP);
   $box -> Add($this->{notebook}, 1, wxGROW|wxALL, 2);
@@ -107,6 +116,12 @@ sub main_page {
   $maxbox->Add($this->{max}, 0, wxLEFT|wxRIGHT|wxALIGN_CENTRE, 5);
   $maxbox->Add(Wx::StaticText->new($panel, -1, 'standards'), 0, wxRIGHT|wxALIGN_CENTRE, 5);
 
+  EVT_CHECKBOX($this, $this->{linear},    sub{$this->{LCF}->linear   ($this->{linear}   ->GetValue)});
+  EVT_CHECKBOX($this, $this->{inclusive}, sub{$this->{LCF}->inclusive($this->{inclusive}->GetValue)});
+  EVT_CHECKBOX($this, $this->{unity},     sub{$this->{LCF}->unity    ($this->{unity}    ->GetValue)});
+  EVT_CHECKBOX($this, $this->{one_e0},    sub{$this->{LCF}->one_e0   ($this->{one_e0}   ->GetValue)});
+  EVT_BUTTON($this, $this->{usemarked}, sub{use_marked(@_)});
+
   my $actionsbox       = Wx::StaticBox->new($panel, -1, 'Actions', wxDefaultPosition, wxDefaultSize);
   my $actionsboxsizer  = Wx::StaticBoxSizer->new( $actionsbox, wxVERTICAL );
   $hbox -> Add($actionsboxsizer, 1, wxGROW|wxALL, 5);
@@ -169,6 +184,8 @@ sub add_standard {
   $gbs -> Add($this->{'e0'.$i},       Wx::GBPosition->new($i,3));
   $gbs -> Add($this->{'fite0'.$i},    Wx::GBPosition->new($i,4));
   $gbs -> Add($this->{'require'.$i},  Wx::GBPosition->new($i,5));
+  $this->{'standard'.$i}->SetSelection(0);
+  EVT_COMBOBOX($this, $this->{'standard'.$i}, sub{OnSelect(@_)});
 };
 
 ## deprecated?
@@ -192,9 +209,57 @@ sub mode {
   1;
 };
 
-## yes, there is some overlap between what push_values and mode do.
-## This separation was useful in Main.pm.  Some of the other tools
-## make mode a null op.
+sub OnSelect {
+  my ($this, $event) = @_;
+  my $count = 0;
+  foreach my $i (0 .. $this->{nstan}-1) {
+    ++$count if ($this->{'standard'.$i}->GetSelection > 0);
+  };
+  foreach my $i (0 .. $this->{nstan}-1) {
+    if ($this->{'standard'.$i}->GetSelection > 0) {
+      $this->{'weight'.$i}->SetValue(sprintf("%.3f", 1/$count));
+    } else {
+      $this->{'weight'.$i}->SetValue(0);
+    };
+  };
+  $this->{fit}   -> Enable($count > 1);
+  $this->{combi} -> Enable($count > 2);
+  $this->{plot}  -> Enable($count > 0);
+  $this->{plotr} -> Enable($count > 0) if ($this->{space}->GetSelection == 2);
+};
+
+sub use_marked {
+  my ($this, $event) = @_;
+  my $count = 0;
+  foreach my $i (0 .. $::app->{main}->{list}->GetCount-1) {
+    next if not $::app->{main}->{list}->IsChecked($i);
+    $this->{'standard'.$count}->SetStringSelection($::app->{main}->{list}->GetClientData($i)->name);
+    ++$count;
+  };
+  $this->OnSelect($event);
+};
+
+sub OnSpace {
+  my ($this, $event) = @_;
+  if ($this->{space}->GetSelection == 2) {
+    if ($this->{pastspace} != 2) {
+      $this->{emin} = $this->{xmin}->GetValue;
+      $this->{emax} = $this->{xmax}->GetValue;
+      $this->{xmin}->SetValue($this->{kmin});
+      $this->{xmax}->SetValue($this->{kmax});
+    };
+    $this->{plotr} -> Enable(1);
+  } else {
+    if ($this->{pastspace} == 2) {
+      $this->{kmin} = $this->{xmin}->GetValue;
+      $this->{kmax} = $this->{xmax}->GetValue;
+      $this->{xmin}->SetValue($this->{emin});
+      $this->{xmax}->SetValue($this->{emax});
+    };
+    $this->{plotr} -> Enable(0);
+  };
+  $this->{pastspace} = $this->{space}->GetSelection;
+};
 
 1;
 

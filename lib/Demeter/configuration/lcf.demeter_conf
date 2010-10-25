@@ -106,3 +106,27 @@ description
   The output format of the report on the reuslts of a combinatorial
   sequence of fits.  The default is an Excel spreadsheet.  The other
   option is an text file of comma-spearated values.
+
+variable=emin
+type=real
+default=-20
+description
+  The default lower bound of a fit in energy.
+
+variable=emax
+type=real
+default=30
+description
+  The default lower bound of a fit in energy.
+
+variable=kmin
+type=real
+default=3
+description
+  The default lower bound of a fit in k.
+
+variable=kmax
+type=real
+default=12
+description
+  The default lower bound of a fit in k.

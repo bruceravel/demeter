@@ -301,6 +301,7 @@ Readonly my $PLOT_VARIENCE     => Wx::NewId();
 
 Readonly my $SHOW_BUFFER       => Wx::NewId();
 Readonly my $PLOT_YAML	       => Wx::NewId();
+Readonly my $LCF_YAML	       => Wx::NewId();
 Readonly my $MODE_STATUS       => Wx::NewId();
 Readonly my $PERL_MODULES      => Wx::NewId();
 Readonly my $STATUS	       => Wx::NewId();
@@ -393,6 +394,7 @@ sub menubar {
   my $monitormenu = Wx::Menu->new;
   my $debugmenu = Wx::Menu->new;
   $debugmenu->Append($PLOT_YAML,     "Show YAML for Plot object",  "Show YAML for Plot object" );
+  $debugmenu->Append($LCF_YAML,      "Show YAML for LCF object",   "Show YAML for LCF object" );
   $debugmenu->Append($MODE_STATUS,   "Mode status",                "Mode status" );
   $debugmenu->Append($PERL_MODULES,  "Perl modules",               "Show perl module versions" );
   $monitormenu->Append($SHOW_BUFFER, "Show command buffer",        'Show the Ifeffit and plotting commands buffer' );
@@ -742,6 +744,12 @@ sub OnMenuClick {
       $app->{main}->{PlotQ}->pull_marked_values;
       my $dialog = Demeter::UI::Artemis::ShowText
 	-> new($app->{main}, $demeter->po->serialization, 'YAML of Plot object')
+	  -> Show;
+      last SWITCH;
+    };
+    ($id == $LCF_YAML) and do {
+      my $dialog = Demeter::UI::Artemis::ShowText
+	-> new($app->{main}, $app->{main}->{LCF}->{LCF}->serialization, 'YAML of Plot object')
 	  -> Show;
       last SWITCH;
     };
