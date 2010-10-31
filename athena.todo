@@ -1,8 +1,11 @@
 -*- org -*-
 
-* Demeter bugs and shortcomings discovered  [6/20]
- - [ ] save_many fails to bring things up to date
- - [ ] save_many fails to use flat/norm correctly
+* Demeter bugs and shortcomings discovered  [8/21]
+ - [X] save_many fails to bring things up to date
+ - [X] save_many fails to use flat/norm correctly
+ - [ ] in D::Data::IO::save_many, why doesn't updating in n specifying
+   "background" not work to bring data up to date?  (fft, i.e. doing
+   aitobk, does work)
  - [ ] it is annoying that the background trace is blue and the data is red
  - [X] weighting by noise or importance?
  - [X] merge array in write_athena

@@ -203,7 +203,7 @@ sub _save_many_command {
   my $e_regexp = $opt->list2re(qw(xmu norm der nder sec nsec));
   my $n_regexp = $opt->list2re(qw(norm nder nsec));
   my $k_regexp = $opt->list2re(qw(chi chik chik2 chik3));
-  my ($level, $space) = ($which =~ m{\A$n_regexp\z}) ? ('normalize', 'energy')
+  my ($level, $space) = ($which =~ m{\A$n_regexp\z}) ? ('fft', 'energy')
                       : ($which =~ m{\Achir})        ? ('bft', 'r')
                       : ($which =~ m{\Achiq})        ? ('all', 'q')
                       : ($which =~ m{\Achi})         ? ('fft', 'k')
@@ -223,9 +223,11 @@ sub _save_many_command {
     if ($which =~ m{\Achik(\d*)\z})  { # make k-weighted chi(k) array
       $command .= $g->template("process", "chikn");
     } elsif ($which =~ m{$e_regexp}) { # interpolate energy data onto $self's grid
+      my $this = $which;
+      $this = 'flat' if (($which eq 'norm') and $g->bkg_flatten);
       $command .= ($g->group eq $self->group)
-	        ? $g->template("process", "replicate",   {a=>$which, b=>"int"})
-	        : $g->template("process", "interpolate", {suffix=>$which});
+	        ? $g->template("process", "replicate",   {a=>$this, b=>"int"})
+	        : $g->template("process", "interpolate", {suffix=>$this});
     };
   };
   $self -> co -> set(many_which  => $which,
