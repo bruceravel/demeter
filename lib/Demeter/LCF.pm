@@ -45,7 +45,7 @@ has 'xmax'  => (is => 'rw', isa => 'Num',    default => 0);
 has 'space' => (is => 'rw', isa => 'Str',    default => q{norm},  # deriv chi
 		trigger => sub{my ($self, $new) = @_;
 			       $self->suffix(q{norm}), $self->space_description('normalized mu(E)') if ((lc($new) =~ m{\Anor}) and $self->data and (not $self->data->bkg_flatten));
-			       $self->suffix(q{flat}), $self->space_description('flatteneed mu(E)') if ((lc($new) =~ m{\Anor}) and $self->data and ($self->data->bkg_flatten));
+			       $self->suffix(q{flat}), $self->space_description('flattened mu(E)')  if ((lc($new) =~ m{\Anor}) and $self->data and ($self->data->bkg_flatten));
 			       $self->suffix(q{nder}), $self->space_description('derivative mu(E)') if  (lc($new) =~ m{\An?der});
 			       $self->suffix(q{chi}),  $self->space_description('chi(k)')           if  (lc($new) =~ m{\Achi});
 			      });
@@ -129,6 +129,13 @@ has 'standardsgroups' => (
 sub BUILD {
   my ($self, @params) = @_;
   $self->mo->push_LCF($self);
+};
+
+override all => sub {
+  my ($self) = @_;
+  my %all = $self->SUPER::all;
+  delete $all{$_} foreach (qw(standards));
+  return %all;
 };
 
 ## float_e0  require
@@ -249,10 +256,10 @@ sub fit {
   $self->_sanity;
 
   $self->start_spinner("Demeter is performing an LCF fit") if (($self->mo->ui eq 'screen') and (not $quiet));
-  #my ($how) = ($self->suffix eq 'chi') ? 'fft' : 'background';
-  $self->data->_update('fft');
+  my ($how) = ($self->suffix eq 'chi') ? 'bft' : 'fft';
+  $self->data->_update($how);
   my @all = @{ $self->standards };
-  $_ -> _update('fft') foreach (@all);
+  $_ -> _update($how) foreach (@all);
 
   ## prepare the data for LCF fitting
   my $n1 = $self->data->iofx('energy', $self->xmin);

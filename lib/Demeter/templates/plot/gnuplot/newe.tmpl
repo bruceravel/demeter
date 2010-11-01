@@ -33,4 +33,4 @@ set ylabel "\{/*1.4 {$ylabel}\}"
 set xrange [ {$emin} : {$emax} ]
 
 # {$D->name}: ifeffit group = {$D->group}
-plot '{$file}' using 1:2 with {$datastyle} ls {$P->increm+1} title "{$thiskey}"
+plot '{$file}' using 1:2 with {$datastyle} ls {$P->color} title "{$thiskey}"

@@ -10,6 +10,8 @@
   if ($D->fft_pc) {
     if (($D->fft_pctype eq 'path') and (ref($D->fft_pcpath) =~ m{Path})) {
       $phacorr = ", pc_feff_path=" . $D->fft_pcpath->Index;
+    } else {
+      $phacorr = ", pc_edge=\"" . $D->bkg_z . " " . $D->fft_edge . "\", pc_caps=1"
     };
   };
   q{};

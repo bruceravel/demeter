@@ -33,6 +33,18 @@ has 'error_log' => (is => 'ro', isa => 'Str',  default => File::Spec->catfile($D
 									      $Demeter::mode->external_plot_object->{__error_log}));
 has '+backend'  => (default => q{gnuplot});
 
+has '+col0'	=> (default => '1');
+has '+col1'	=> (default => '2');
+has '+col2'	=> (default => '3');
+has '+col3'	=> (default => '4');
+has '+col4'	=> (default => '5');
+has '+col5'	=> (default => '6');
+has '+col6'	=> (default => '7');
+has '+col7'	=> (default => '8');
+has '+col8'	=> (default => '9');
+has '+col9'	=> (default => '10');
+
+
 before start_plot => sub {
   my ($self) = @_;
   my $command = $self->template("plot", "start");

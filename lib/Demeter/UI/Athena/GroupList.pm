@@ -24,7 +24,8 @@ sub fill {
     my $data = $app->{main}->{list}->GetClientData($i);
     next if ($exclude_self and ($current->group eq $data->group));
     my $index = $self->Append($data->name);
-    $self->SetClientData($index, $data);
+    $self->SetClientData($self->GetCount-1, $data);
+    #print join("|", $self->GetCount-1, $data), $/;
   };
 };
 

@@ -177,7 +177,7 @@ sub autoalign {
   if ($how eq 'marked') {
     @all = ();
     foreach my $i (0 .. $::app->{main}->{list}->GetCount - 1) {
-      next if ($::app->{main}->{list}->GetClientData($i)eq $stan);
+      next if ($::app->{main}->{list}->GetClientData($i) eq $stan);
       push(@all, $::app->{main}->{list}->GetClientData($i))
 	if $::app->{main}->{list}->IsChecked($i);
     };

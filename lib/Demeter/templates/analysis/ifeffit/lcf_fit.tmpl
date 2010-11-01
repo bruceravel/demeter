@@ -16,6 +16,6 @@ set {$S->group}.lcf = {$S->group}.lcf
 set {$S->group}.resid = {$S->group}.resid
 {
   foreach $st (@{$S->standards}) {
-    $OUT .= sprintf("set %s.%s = %s. %s\n", $S->group, $st->group, $S->group, $st->group)
+    $OUT .= sprintf("set %s.%s = %s.%s\n", $S->group, $st->group, $S->group, $st->group)
   }
 }

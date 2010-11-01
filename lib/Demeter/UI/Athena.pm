@@ -782,7 +782,7 @@ sub OnMenuClick {
       $data->po->set(e_i0=>0, e_signal=>0);
       $app->{main}->{plottabs}->SetSelection(1);
       $app->{lastplot} = ['E', 'single'];
-      $app->postplot;
+      $app->postplot($data);
       last SWITCH;
     };
     ($id == $PLOT_K123) and do {
@@ -794,7 +794,7 @@ sub OnMenuClick {
       $data->plot('k123');
       $app->{main}->{plottabs}->SetSelection(2);
       $app->{lastplot} = ['k', 'single'];
-      $app->postplot;
+      $app->postplot($data);
       last SWITCH;
     };
     ($id == $PLOT_R123) and do {
@@ -804,7 +804,7 @@ sub OnMenuClick {
       return if not $app->preplot('r', $data);
       $data->po->start_plot;
       $data->plot('R123');
-      $app->postplot;
+      $app->postplot($data);
       $app->{main}->{plottabs}->SetSelection(3);
       $app->{lastplot} = ['R', 'single'];
       last SWITCH;
@@ -816,7 +816,7 @@ sub OnMenuClick {
       $sp = 'e' if ($sp eq 'n');
       #return if not $app->preplot($sp, $data);
       $data->plot('stddev');
-      #$app->postplot;
+      #$app->postplot($data);
       $app->{lastplot} = [$sp, 'single'];
       last SWITCH;
     };
@@ -825,7 +825,7 @@ sub OnMenuClick {
       last SWITCH if not $data->is_merge;
       #return if not $app->postplot($data);
       $data->plot('variance');
-      #$app->postplot;
+      #$app->postplot($data);
       my $sp = $data->is_merge;
       $sp = 'E' if ($sp eq 'n');
       $app->{lastplot} = [$sp, 'single'];
@@ -1171,7 +1171,7 @@ sub plot {
     $app->{main}->{plottabs}->SetSelection(4);
   };
 
-  $app->postplot;
+  $app->postplot($data[0]);
   $app->{lastplot} = [$space, $how];
   undef $busy;
 };
@@ -1209,12 +1209,16 @@ sub preplot {
   return 1;
 };
 sub postplot {
-  my ($app) = @_;
+  my ($app, $data) = @_;
   ##if ($demeter->mo->template_plot eq 'singlefile') {
   if ($app->{main}->{Other}->{singlefile}->GetValue) {
     $demeter->po->finish;
     $app->{main}->status("Wrote plot data to ".$demeter->po->file);
     $demeter->plot_with($demeter->co->default(qw(plot plotwith)));
+  } else {
+    $data->standard;
+    $app->{main}->{Indicators}->plot;
+    $data->unset_standard;
   };
   $app->{main}->{Other}->{singlefile}->SetValue(0);
   return;
@@ -1259,7 +1263,7 @@ sub plot_e00 {
       if $app->{main}->{list}->IsChecked($i);
   };
   $app->current_data->po->set(e_zero=>0, e_markers=>1);
-  $app->postplot;
+  $app->postplot($app->current_data);
 };
 sub plot_i0_marked {
   my ($app) = @_;
@@ -1274,7 +1278,7 @@ sub plot_i0_marked {
       if $app->{main}->{list}->IsChecked($i);
   };
   $app->current_data->po->set(e_i0=>0, e_markers=>1);
-  $app->postplot;
+  $app->postplot($app->current_data);
 };
 
 sub pull_kweight {

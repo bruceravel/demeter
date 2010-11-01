@@ -143,6 +143,8 @@ sub main_page {
     $actionsboxsizer->Add($this->{$w}, 0, wxGROW|wxALL, 0);
     $this->{$w}->Enable(0);
   };
+  EVT_BUTTON($this, $this->{fit},  sub{fit(@_, 0)});
+  EVT_BUTTON($this, $this->{plot}, sub{fit(@_, 1)});
 
 
   $panel->SetSizerAndFit($box);
@@ -156,12 +158,14 @@ sub fit_page {
 
   $this->{result} = Wx::TextCtrl->new($panel, -1, q{}, wxDefaultPosition, wxDefaultSize,
 				       wxTE_MULTILINE|wxTE_WORDWRAP|wxTE_AUTO_URL);
+  my $size = Wx::SystemSettings::GetFont(wxSYS_DEFAULT_GUI_FONT)->GetPointSize - 1;
+  $this->{result}->SetFont( Wx::Font->new( $size, wxTELETYPE, wxNORMAL, wxNORMAL, 0, "" ) );
   $box->Add($this->{result}, 1, wxGROW|wxALL, 5);
 
   $this->{resultplot} = Wx::Button->new($panel, -1, 'Plot data and fit');
-  $box->Add($this->{resultplot}, 0, wxGROW|wxALL, 5);
+  $box->Add($this->{resultplot}, 0, wxGROW|wxALL, 2);
   $this->{resultreport} = Wx::Button->new($panel, -1, 'Write report for this fit');
-  $box->Add($this->{resultreport}, 0, wxGROW|wxALL, 5);
+  $box->Add($this->{resultreport}, 0, wxGROW|wxALL, 2);
 
   $panel->SetSizerAndFit($box);
   return $panel;
@@ -204,8 +208,11 @@ sub pull_values {
 sub push_values {
   my ($this, $data) = @_;
   foreach my $i (0 .. $this->{nstan}-1) {
-    $this->{'standard'.$i}->fill($::app, 0, 0)
+    my $str = $this->{'standard'.$i}->GetStringSelection;
+    $this->{'standard'.$i}->fill($::app, 0, 0);
+    $this->{'standard'.$i}->SetStringSelection($str);
   };
+  $this->{$_} -> Enable(0) foreach (qw(make report fitmarked markedreport));
   1;
 };
 
@@ -232,6 +239,10 @@ sub OnSelect {
   $this->{combi} -> Enable($count > 2);
   $this->{plot}  -> Enable($count > 0);
   $this->{plotr} -> Enable($count > 0) if ($this->{space}->GetSelection == 2);
+
+  $this->{make}      -> Enable(0);
+  $this->{report}    -> Enable(0);
+  $this->{fitmarked} -> Enable(0);
 };
 
 sub use_marked {
@@ -276,10 +287,63 @@ sub fetch {
   my ($this) = @_;
 
   $this->{LCF}->max_standards($this->{max}->GetValue);
-
   my $noise = $this->{noise}->GetValue;
   $noise = 0 if ($noise < 0);
   $this->{LCF}->noise($noise);
+};
+
+sub fit {
+  my ($this, $event, $nofit) = @_;
+
+  my $busy = Wx::BusyCursor->new();
+
+  $this->fetch;
+  $this->{LCF}->clear_standards;
+  $this->{LCF}->data($::app->current_data);
+  foreach my $i (0 .. $this->{nstan}-1) {
+    my $n = $this->{'standard'.$i}->GetSelection;
+    my $stan = $this->{'standard'.$i}->GetClientData($n);
+    next if not defined($stan);
+    #print join("|", $i, $n, $stan), $/;
+    $this->{LCF} -> add($stan,
+			required => $this->{'require'.$i}->GetValue,
+			float_e0 => $this->{'fite0'.$i}->GetValue,
+			weight   => $this->{'weight'.$i}->GetValue,
+			e0       => $this->{'e0'.$i}->GetValue,
+		       );
+  };
+  $this->{LCF}->space('norm')  if $this->{space}->GetSelection == 0;
+  $this->{LCF}->space('deriv') if $this->{space}->GetSelection == 1;
+  $this->{LCF}->space('chi')   if $this->{space}->GetSelection == 2;
+  my $e0 = ($this->{LCF}->space eq 'chi') ? 0 : $this->{LCF}->data->bkg_e0;
+  $this->{LCF}->xmin($this->{xmin}->GetValue + $e0);
+  $this->{LCF}->xmax($this->{xmax}->GetValue + $e0);
+  $this->{LCF}->po->set(emin=>$this->{xmin}->GetValue-10, emax=>$this->{xmax}->GetValue+10)
+    if ($this->{LCF}->space ne 'chi');
+
+  $this->{LCF} -> fit if not $nofit;
+  $this->{LCF} -> plot_fit;
+
+  if (not $nofit) {
+    foreach my $i (0 .. $this->{nstan}-1) {
+      my $n = $this->{'standard'.$i}->GetSelection;
+      my $stan = $this->{'standard'.$i}->GetClientData($n);
+      next if not defined($stan);
+      my $w = sprintf("%.3f", $this->{LCF}->weight($stan));
+      my $e = sprintf("%.3f", $this->{LCF}->e0($stan));
+      $this->{'weight'.$i}->SetValue($w);
+      $this->{'e0'.$i}    ->SetValue($e);
+    };
+    $this->{result}->Clear;
+    $this->{result}->SetValue($this->{LCF}->report);
+  };
+
+  $this->{make}      -> Enable(1);
+  $this->{report}    -> Enable(1);
+  $this->{fitmarked} -> Enable(1);
+  $this->{markedreport} -> Enable(1);
+
+  undef $busy;
 };
 
 1;

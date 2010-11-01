@@ -740,19 +740,19 @@ sub suffix {
   } elsif (($po->space eq 'r') and ($po->r_pl eq 'm')) {
     $suff = 'chir_mag';
   } elsif (($po->space eq 'r') and ($po->r_pl eq 'r')) {
-    $suff = 'chir_im';
-  } elsif (($po->space eq 'r') and ($po->r_pl eq 'i')) {
     $suff = 'chir_re';
+  } elsif (($po->space eq 'r') and ($po->r_pl eq 'i')) {
+    $suff = 'chir_im';
   } elsif (($po->space eq 'q') and ($po->r_pl eq 'p')) {
     $suff = 'chir_pha';
   } elsif (($po->space eq 'q') and ($po->q_pl eq 'm')) {
-    $suff = 'chir_mag';
+    $suff = 'chiq_mag';
   } elsif (($po->space eq 'q') and ($po->q_pl eq 'r')) {
-    $suff = 'chir_im';
+    $suff = 'chiq_re';
   } elsif (($po->space eq 'q') and ($po->q_pl eq 'i')) {
-    $suff = 'chir_re';
+    $suff = 'chiq_im';
   } elsif (($po->space eq 'q') and ($po->q_pl eq 'p')) {
-    $suff = 'chir_pha';
+    $suff = 'chiq_pha';
   };
   return $suff;
 };

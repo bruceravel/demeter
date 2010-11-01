@@ -375,7 +375,6 @@ sub plotE {
 };
 sub _plotE_command {
   my ($self) = @_;
-  my $pf  = $self->mo->plot;
   if (not ref($self) =~ m{Data}) {
     my $class = ref $self;
     croak("$class objects are not plottable");
@@ -388,7 +387,7 @@ sub _plotE_command {
   ## need to handle single or multiple data set plots.  presumably for a
   ## multiple plot you want to increment colors and just plot data.  presumably
   ## for a single, you want to increment internally and plot several traces
-  my $incr = $pf->increm;
+  my $incr = $self->po->increm;
 
   ## walk through the attributes of the plot object to figure out what parts
   ## off the data should be plotted
@@ -400,121 +399,121 @@ sub _plotE_command {
     $self->bkg_eshift($save[0] - $self->bkg_e0);
     $self->bkg_e0(0);
   };
-  if ($pf->e_bkg) { # show the background
+  if ($self->po->e_bkg) { # show the background
     my $this = 'bkg';
-    ($this = 'nbkg') if ($pf->e_norm);
-    ($this = 'fbkg') if ($pf->e_norm and $self->bkg_flatten);
+    ($this = 'nbkg') if ($self->po->e_norm);
+    ($this = 'fbkg') if ($self->po->e_norm and $self->bkg_flatten);
     push @suffix_list, $this;
     my $n = $incr+1;
     my $cn = "col$n";
-    push @color_list,  $pf->$cn;
+    push @color_list,  $self->po->$cn;
     push @key_list,    "background";
   };
-  if ($pf->e_mu) { # show the data
+  if ($self->po->e_mu) { # show the data
     my $this = 'xmu';
-    if  ($pf->e_der) {
-      $this = ($pf->e_norm) ? 'nder' : 'der';
-    } elsif  ($pf->e_sec) {
-      $this = ($pf->e_norm) ? 'nsec' : 'sec';
-    } elsif ($pf->e_norm and $self->bkg_flatten) {
+    if  ($self->po->e_der) {
+      $this = ($self->po->e_norm) ? 'nder' : 'der';
+    } elsif  ($self->po->e_sec) {
+      $this = ($self->po->e_norm) ? 'nsec' : 'sec';
+    } elsif ($self->po->e_norm and $self->bkg_flatten) {
       $this = 'flat';
-    } elsif ($pf->e_norm) {
+    } elsif ($self->po->e_norm) {
       $this = 'norm';
     };
     push @suffix_list, $this;
     my $n = $incr;
     my $cn = "col$n";
-    push @color_list,  $pf->$cn;
+    push @color_list,  $self->po->$cn;
     push @key_list,    $self->name;
   };
-  if ($pf->e_pre)  { # show the preline
+  if ($self->po->e_pre)  { # show the preline
     push @suffix_list, 'preline';
     my $n = $incr+2;
     my $cn = "col$n";
-    push @color_list,  $pf->$cn;
+    push @color_list,  $self->po->$cn;
     push @key_list,    "pre-edge";
   };
-  if ($pf->e_post) { # show the postline
+  if ($self->po->e_post) { # show the postline
     push @suffix_list, 'postline';
     my $n = $incr+3;
     my $cn = "col$n";
-    push @color_list,  $pf->$cn;
+    push @color_list,  $self->po->$cn;
     push @key_list,    "post-edge";
   };
-  if ($pf->e_i0) { # show i0
+  if ($self->po->e_i0) { # show i0
     if ($self->i0_string) {
       push @suffix_list, 'i0';
       my $n = $incr+4;
       my $cn = "col$n";
-      push @color_list,  $pf->$cn;
+      push @color_list,  $self->po->$cn;
       push @key_list,    ($self->po->e_mu) ? $self->po->i0_text : $self->name . ": " . $self->po->i0_text;
     };
   };
-  if ($pf->e_signal) { # show signal
+  if ($self->po->e_signal) { # show signal
     if ($self->signal_string) {
       push @suffix_list, 'signal';
       my $n = $incr+5;
       my $cn = "col$n";
-      push @color_list,  $pf->$cn;
+      push @color_list,  $self->po->$cn;
       push @key_list,    ($self->po->e_mu) ? 'signal' : $self->name . ": signal";
     };
   };
 
   ## convert plot ranges from relative to absolute energies
-  my ($emin, $emax) = map {$_ + $self->bkg_e0} ($pf->emin, $pf->emax);
+  my ($emin, $emax) = map {$_ + $self->bkg_e0} ($self->po->emin, $self->po->emax);
 
   my $string = q{};
-  my ($xlorig, $ylorig) = ($pf->xlabel, $pf->ylabel);
+  my ($xlorig, $ylorig) = ($self->po->xlabel, $self->po->ylabel);
   my $xl = "E (eV)" if (defined($xlorig) and ($xlorig =~ /^\s*$/));
   my $yl = q{};
   if ($ylorig =~ /^\s*$/) {
-    $yl = ($pf->e_der and $pf->e_norm)  ? 'deriv normalized x\gm(E)'
-        : ($pf->e_der)                  ? 'deriv x\gm(E)'
-        : ($pf->e_sec and $pf->e_norm)  ? 'second deriv normalized x\gm(E)'
-        : ($pf->e_sec)                  ? 'second deriv x\gm(E)'
-	: ($pf->e_norm)                 ? 'normalized x\gm(E)'
-	:                                 'x\gm(E)';
+    $yl = ($self->po->e_der and $self->po->e_norm)  ? 'deriv normalized x\gm(E)'
+        : ($self->po->e_der)                        ? 'deriv x\gm(E)'
+        : ($self->po->e_sec and $self->po->e_norm)  ? 'second deriv normalized x\gm(E)'
+        : ($self->po->e_sec)                        ? 'second deriv x\gm(E)'
+	: ($self->po->e_norm)                       ? 'normalized x\gm(E)'
+	:                                             'x\gm(E)';
   };
-  ($pf->showlegend) ? $pf->key($self->name) : $pf->key(q{});
+  ($self->po->showlegend) ? $self->po->key($self->name) : $self->po->key(q{});
   my $title = $self->name||q{Data};
-  $pf->title(sprintf("%s in energy", $title)) if not $pf->title;
-  #$pf->title(sprintf("%s", $self->name||q{}));
-  $pf->xlabel($xl);
-  $pf->ylabel($yl);
+  $self->po->title(sprintf("%s in energy", $title)) if not $self->po->title;
+  #$self->po->title(sprintf("%s", $self->name||q{}));
+  $self->po->xlabel($xl);
+  $self->po->ylabel($yl);
 
   my ($plot, $cont);
   my $counter = 0;
   foreach my $suff (@suffix_list) {  # loop through list of parts to plot
-    $pf->color(shift(@color_list));  # color is used by pgplot, not gnuplot
-    ($pf->showlegend) ? $pf->key(shift(@key_list)) : $pf->key(q{});
-    $pf->e_part($suff);
+    $self->po->color(shift(@color_list));
+    ($self->po->showlegend) ? $self->po->key(shift(@key_list)) : $self->po->key(q{});
+    $self->po->e_part($suff);
     $string .= $self->_plotE_string;
-    $pf->increment;
-    $pf->New(0) if ($self->get_mode("template_plot") eq 'pgplot');;
+    $self->po->increment;
+    $self->po->New(0) if ($self->get_mode("template_plot") eq 'pgplot');;
     ++$counter;
   };
   my $markers = q{};
-  if ($pf->e_markers) {
+  if ($self->po->e_markers) {
     my $this = 'xmu';
-    if  ($pf->e_der) {
-      $this = ($pf->e_norm) ? 'nder' : 'der';
-    } elsif  ($pf->e_sec) {
-      $this = ($pf->e_norm) ? 'nsec' : 'sec';
-    } elsif ($pf->e_norm) {
+    if  ($self->po->e_der) {
+      $this = ($self->po->e_norm) ? 'nder' : 'der';
+    } elsif  ($self->po->e_sec) {
+      $this = ($self->po->e_norm) ? 'nsec' : 'sec';
+    } elsif ($self->po->e_norm) {
       $this = 'norm';
-    } elsif ($pf->e_norm and $self->bkg_flatten) {
+    } elsif ($self->po->e_norm and $self->bkg_flatten) {
       $this = 'flat';
     };
 #      my $this = 'xmu';
-#      ($this = 'norm') if  ($pf->get('e_norm'));
-#      ($this = 'flat') if (($pf->get('e_norm')) and $self->get('bkg_flatten'));
-#      ($this = 'der')  if  ($pf->get('e_der'));
+#      ($this = 'norm') if  ($self->po->get('e_norm'));
+#      ($this = 'flat') if (($self->po->get('e_norm')) and $self->get('bkg_flatten'));
+#      ($this = 'der')  if  ($self->po->get('e_der'));
     $markers .= $self->_e0_marker_command($this);
-    $markers .= $self->_preline_marker_command($this)  if $pf->e_pre;
-    $markers .= $self->_postline_marker_command($this) if $pf->e_post;
+    $markers .= $self->_preline_marker_command($this)  if $self->po->e_pre;
+    $markers .= $self->_postline_marker_command($this) if $self->po->e_post;
   };
   ## reinitialize the local plot parameters
-  #$pf -> reinitialize($xlorig, $ylorig);
+  #$self->po -> reinitialize($xlorig, $ylorig);
   #return ($self->get_mode("template_plot") eq 'gnuplot') ? $markers.$string : $string.$markers;
   if ($self->po->e_zero) {
     $self->bkg_eshift($save[0]);

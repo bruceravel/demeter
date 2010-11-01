@@ -84,7 +84,7 @@ has 'bg'        => (is => 'rw', isa =>  'Str',    default => sub{ shift->co->def
 has 'fg'        => (is => 'rw', isa =>  'Str',    default => sub{ shift->co->default("plot", "fg")        || "black"});
 has 'showgrid'  => (is => 'rw', isa =>  'Bool',   default => sub{ shift->co->default("plot", "showgrid")  || 1});
 has 'gridcolor' => (is => 'rw', isa =>  'Str',    default => sub{ shift->co->default("plot", "gridcolor") || "grey82"});
-has 'increm'    => (is => 'rw', isa =>  Natural,    default => 0);
+has 'increm'    => (is => 'rw', isa =>  Natural,  default => 0);
 has 'col0'	=> (is => 'rw', isa =>  'Str',    default => sub{ shift->co->default("plot", "col0") || "blue"});
 has 'col1'	=> (is => 'rw', isa =>  'Str',    default => sub{ shift->co->default("plot", "col1") || "red"});
 has 'col2'	=> (is => 'rw', isa =>  'Str',    default => sub{ shift->co->default("plot", "col2") || "green4"});
@@ -221,7 +221,6 @@ sub all {
 sub clonable {
   return qw(
 	     charsize charfont key_x key_y key_dy bg fg showgrid gridcolor
-	     col0 col1 col2 col3 col4 col5 col6 col7 col8 col9
 	     datastyle fitstyle partstyle pathstyle
 	     space emin emax e_mu e_norm e_bkg e_pre e_post e_der e_sec e_i0 e_signal e_markers e_smooth e_zero
 	     kmin kmax rmin rmax r_pl qmin qmax q_pl kweight window_multiplier

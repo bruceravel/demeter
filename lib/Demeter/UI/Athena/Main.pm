@@ -284,7 +284,7 @@ sub bkg {
   $this->{$_} -> SetValidator( Wx::Perl::TextValidator->new( qr([-0-9.]) ) )
     foreach (qw(bkg_pre1 bkg_pre2 bkg_nor1 bkg_nor2 bkg_spl1 bkg_spl2 bkg_spl1e bkg_spl2e
 		bkg_e0 bkg_rbkg bkg_kw));
-  foreach my $x (qw(bkg_e0 bkg_rbkg bkg_kw bkg_pre1 bkg_pre2 bkg_nor1 bkg_nor2 bkg_step)) {
+  foreach my $x (qw(bkg_e0 bkg_rbkg bkg_kw bkg_pre1 bkg_pre2 bkg_nor1 bkg_nor2 bkg_step bkg_stan)) {
     EVT_TEXT($this, $this->{$x}, sub{OnParameter(@_, $app, $x)});
     next if (any {$x eq $_} qw(bkg_pre2 bkg_nor2 bkg_spl2 bkg_spl2e));
     EVT_RIGHT_DOWN($this->{$x.'_label'}, sub{ContextMenu(@_, $app, $x)});
@@ -519,7 +519,7 @@ sub mode {
     };
   };
 
-  foreach my $w (qw(bkg_algorithm fft_pc bkg_fixstep)) {
+  foreach my $w (qw(bkg_algorithm bkg_fixstep)) {
     $this->set_widget_state($w, 0);
   };
 
@@ -567,6 +567,13 @@ sub push_values {
 
   ## standard
   $this->{bkg_stan}->fill($::app, 1, 0);
+  if ($data->bkg_stan eq 'None') {
+    $this->{bkg_stan}->SetStringSelection('None');
+  } else {
+    my $stan = $data->mo->fetch("Data", $data->bkg_stan);
+    $this->{bkg_stan}->SetStringSelection($stan->name);
+  };
+
 
   if ($data->reference) {
     $this->{bkg_eshift}-> SetBackgroundColour( Wx::Colour->new($data->co->default("athena", "tied")) );
@@ -658,7 +665,12 @@ sub OnParameter {
   $value = 0     if not looks_like_number($value);
   $value = 0.001 if (($data->what_isa($which) =~ m{PosNum}) and ($value<=0));
   $value = 0     if (($data->what_isa($which) =~ m{NonNeg}) and ($value<0));
-  $data->$which($value) if not ($which =~ m{nnorm});
+  if ($which eq 'bkg_stan') {
+    my $stan = $app->{main}->{Main}->{bkg_stan}->GetClientData($value);
+    $data->bkg_stan($stan->group);
+  } elsif ($which !~ m{nnorm}) {
+    $data->$which($value)
+  };
   $app->modified(1);
 };
 

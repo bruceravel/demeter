@@ -21,5 +21,5 @@
   q{}
 }
 # {$D->name}: ifeffit group = {$D->group}
-replot '{$file}' using 1:2 with {$C->default("gnuplot", "datastyle")} ls {$P->increm+1} title "{$thiskey}"
+replot '{$file}' using 1:2 with {$C->default("gnuplot", "datastyle")} ls {$P->color} title "{$thiskey}"
 
