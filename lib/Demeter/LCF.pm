@@ -104,7 +104,8 @@ has 'options' => (
 		  provides  => {
 				set   => 'set_option',
 				get   => 'get_option',
-				keys  => 'get_option_list'
+				keys  => 'get_option_list',
+				clear => 'clear_option',
 			       },
 		 );
 has 'rfactor' => (is => 'rw', isa => 'Num', default => 0);
@@ -288,7 +289,11 @@ sub fit {
   foreach my $st (@all) {
     my ($w, $dw) = $self->weight($st, Ifeffit::get_scalar("aa_".$st->group), Ifeffit::get_scalar("delta_a_".$st->group));
     $sumsqr += $dw**2;
-    $self->e0($st, Ifeffit::get_scalar("e_".$st->group),  Ifeffit::get_scalar("delta_e_".$st->group));
+    if ($self->one_e0) {
+      $self->e0($st, Ifeffit::get_scalar("e_".$st->group),  Ifeffit::get_scalar("delta_e_".$self->group));
+    } else {
+      $self->e0($st, Ifeffit::get_scalar("e_".$st->group),  Ifeffit::get_scalar("delta_e_".$st->group));
+    };
   };
   if ($self->unity) {		# propagate uncertainty for last amplitude
     my ($w, $dw) = $self->weight($all[-1]);
@@ -436,6 +441,13 @@ sub save {
   return $self;
 };
 
+sub clear {
+  my ($self) = @_;
+  $self->clear_standards;
+  $self->clear_option;
+  return $self;
+};
+
 sub clean {
   my ($self) = @_;
   $self->dispose($self->template('analysis', 'lcf_clean'));
@@ -465,8 +477,8 @@ sub combi_size {
 
 sub combi {
   my ($self, @params) = @_;
-  my %options = @params;
-  $options{plot} ||= 1;
+  #my %options = @params;
+  #$options{plot} ||= $self->co->default('lcf', 'combi_plot_during');
 
   my @biglist = $self->combi_size;
   my $nfits = $#biglist+1;
@@ -482,7 +494,7 @@ sub combi {
     };
     $self->count if ($self->mo->ui eq 'screen');
     $self->fit(1);
-    $self->plot_fit if $options{plot};
+    $self->plot_fit if $self->co->default('lcf', 'combi_plot_during');
     #$self->clean;
 
     my %fit = (
@@ -492,7 +504,7 @@ sub combi {
 	       Nvarys  => $self->nvarys,
 	       Scaleby => $self->scaleby,
 	      );
-    foreach my $st (@list) {	# use of cpaitalized keys above avoid key collision
+    foreach my $st (@list) {	# use of capitalized keys above avoid key collision
       $fit{$st->group} = [$self->weight($st), $self->e0($st)];
     };
     push @results, \%fit;

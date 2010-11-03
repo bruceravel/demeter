@@ -650,7 +650,7 @@ sub _local_parameters {
       my $me = $ldef->mathexp;
       $me =~ s{\b($local_regex)\b}{$1_$tag}g;
       next if ($created{$local});
-      my $new_gds = Demeter::GDS->new(gds     => $ldef->type,
+      my $new_gds = Demeter::GDS->new(gds     => $ldef->gds,
 				      name    => $local,
 				      mathexp => $me);
       $self->push_gds($new_gds);

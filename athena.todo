@@ -50,12 +50,21 @@
  - [X] tie spline values in k and E
  - [X] recommended fft_kmax
  - [X] need to call mode after push_values
- - [X] merged group needs a "file" exaplaining what it is
+ - [X] merged group needs a "file" explaining what it is
  - [X] plot in E for a group that is of datatype chi(k) -- need
        something better than the wxperl carp
  - [X] modified indication and y/n to save when closing or exiting
  - [X] command line arguments
  - [X] implement bkg_stan
+
+* LCF needs doing [4/7]
+ - [X] share e0
+ - [X] test floating e0  
+ - [ ] implement combi
+ - [ ] implement marked groups fit
+ - [X] test deriv fit
+ - [X] test in k
+ - [ ] implement plotting in R for a fit in k
 
 * miscellaneous plot tab [3/3]
  - [X] specify title

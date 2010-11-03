@@ -7,6 +7,7 @@ use base 'Wx::Panel';
 use Wx::Event qw(EVT_BUTTON EVT_CHECKBOX EVT_COMBOBOX EVT_RADIOBOX);
 
 use Demeter::UI::Wx::SpecialCharacters qw(:all);
+use Cwd;
 
 use vars qw($label);
 $label = "Linear combination fitting";	# used in the Choicebox and in status bar messages to identify this tool
@@ -98,9 +99,10 @@ sub main_page {
   $this->{inclusive}  = Wx::CheckBox->new($panel, -1, 'All weights between 0 and 1');
   $this->{unity}      = Wx::CheckBox->new($panel, -1, 'Force weights to sum to 1');
   $this->{one_e0}     = Wx::CheckBox->new($panel, -1, 'All standards share an e0');
-  $this->{usemarked}  = Wx::Button->new($panel, -1, 'Use marked groups');
-  $optionsboxsizer->Add($this->{$_}, 0, wxGROW|wxALL, 1)
-    foreach (qw(components residual linear inclusive unity one_e0 usemarked));
+  $this->{usemarked}  = Wx::Button->new($panel, -1, 'Use marked groups', wxDefaultPosition, wxDefaultSize, wxBU_EXACTFIT);
+  $this->{reset}      = Wx::Button->new($panel, -1, 'Reset', wxDefaultPosition, wxDefaultSize, wxBU_EXACTFIT);
+  $optionsboxsizer->Add($this->{$_}, 0, wxGROW|wxALL, 0)
+    foreach (qw(components residual linear inclusive unity one_e0 usemarked reset));
 
   $this->{components} -> SetValue($demeter->co->default('lcf', 'components'));
   $this->{residual}   -> SetValue($demeter->co->default('lcf', 'difference'));
@@ -127,6 +129,7 @@ sub main_page {
   EVT_CHECKBOX($this, $this->{unity},      sub{$this->{LCF}->unity    ($this->{unity}           ->GetValue)});
   EVT_CHECKBOX($this, $this->{one_e0},     sub{$this->{LCF}->one_e0   ($this->{one_e0}          ->GetValue)});
   EVT_BUTTON($this, $this->{usemarked},    sub{use_marked(@_)});
+  EVT_BUTTON($this, $this->{reset},        sub{Reset(@_)});
 
   my $actionsbox       = Wx::StaticBox->new($panel, -1, 'Actions', wxDefaultPosition, wxDefaultSize);
   my $actionsboxsizer  = Wx::StaticBoxSizer->new( $actionsbox, wxVERTICAL );
@@ -134,7 +137,7 @@ sub main_page {
   $this->{fit}		 = Wx::Button->new($panel, -1, 'Fit this group');
   $this->{combi}	 = Wx::Button->new($panel, -1, 'Fit all combinations');
   $this->{fitmarked}	 = Wx::Button->new($panel, -1, 'Fit marked groups');
-  $this->{report}	 = Wx::Button->new($panel, -1, 'Report for this group');
+  $this->{report}	 = Wx::Button->new($panel, -1, 'Save fit as column data');
   $this->{markedreport}	 = Wx::Button->new($panel, -1, 'Marked fits report');
   $this->{plot}		 = Wx::Button->new($panel, -1, 'Plot data and sum');
   $this->{plotr}	 = Wx::Button->new($panel, -1, 'Plot data and sum in R');
@@ -143,8 +146,10 @@ sub main_page {
     $actionsboxsizer->Add($this->{$w}, 0, wxGROW|wxALL, 0);
     $this->{$w}->Enable(0);
   };
-  EVT_BUTTON($this, $this->{fit},  sub{fit(@_, 0)});
-  EVT_BUTTON($this, $this->{plot}, sub{fit(@_, 1)});
+  EVT_BUTTON($this, $this->{fit},    sub{fit(@_, 0)});
+  EVT_BUTTON($this, $this->{plot},   sub{fit(@_, 1)});
+  EVT_BUTTON($this, $this->{report}, sub{save(@_)});
+  EVT_BUTTON($this, $this->{combi},  sub{combi(@_)});
 
 
   $panel->SetSizerAndFit($box);
@@ -164,8 +169,10 @@ sub fit_page {
 
   $this->{resultplot} = Wx::Button->new($panel, -1, 'Plot data and fit');
   $box->Add($this->{resultplot}, 0, wxGROW|wxALL, 2);
-  $this->{resultreport} = Wx::Button->new($panel, -1, 'Write report for this fit');
+  $this->{resultreport} = Wx::Button->new($panel, -1, 'Save fit as column data');
   $box->Add($this->{resultreport}, 0, wxGROW|wxALL, 2);
+  EVT_BUTTON($this, $this->{resultplot},   sub{fit(@_, 1)});
+  EVT_BUTTON($this, $this->{resultreport}, sub{save(@_)});
 
   $panel->SetSizerAndFit($box);
   return $panel;
@@ -175,6 +182,21 @@ sub combi_page {
   my ($this, $nb) = @_;
   my $panel = Wx::Panel->new($nb, -1, wxDefaultPosition, wxDefaultSize, wxMAXIMIZE_BOX );
   my $box = Wx::BoxSizer->new( wxVERTICAL);
+
+  $this->{stats} = Wx::ListCtrl->new($panel, -1, wxDefaultPosition, wxDefaultSize, wxLC_REPORT|wxLC_HRULES||wxLC_SINGLE_SEL);
+  $this->{stats}->InsertColumn( 0, "Standards", wxLIST_FORMAT_LEFT, 100 );
+  $this->{stats}->InsertColumn( 1, "R-factor",  wxLIST_FORMAT_LEFT, 100 );
+  $this->{stats}->InsertColumn( 2, "Reduced chi-square" , wxLIST_FORMAT_LEFT, 150 );
+  $box->Add($this->{stats}, 1, wxALL|wxGROW, 3);
+
+  $this->{fitresults} = Wx::ListCtrl->new($panel, -1, wxDefaultPosition, wxDefaultSize, wxLC_REPORT|wxLC_HRULES||wxLC_SINGLE_SEL);
+  $this->{fitresults}->InsertColumn( 0, "#",        wxLIST_FORMAT_LEFT, 20 );
+  $this->{fitresults}->InsertColumn( 1, "Standard", wxLIST_FORMAT_LEFT, 100 );
+  $this->{fitresults}->InsertColumn( 2, "Weight",   wxLIST_FORMAT_LEFT, 100 );
+  $this->{fitresults}->InsertColumn( 3, "E0",       wxLIST_FORMAT_LEFT, 100 );
+  $box->Add($this->{fitresults}, 1, wxALL|wxGROW, 3);
+
+
   $panel->SetSizerAndFit($box);
   return $panel;
 };
@@ -256,6 +278,18 @@ sub use_marked {
   $this->OnSelect($event);
 };
 
+sub Reset {
+  my ($this, $event) = @_;
+  $this->OnSelect;
+  foreach my $i (0 .. $this->{nstan}-1) {
+    $this->{'e0'.$i}->SetValue(0);
+    $this->{'fite0'.$i}->SetValue(0);
+    $this->{'require'.$i}->SetValue(0);
+  };
+  $this->{$_} -> SetValue(0) foreach (qw(linear one_e0));
+  $this->{$_} -> SetValue($demeter->co->default('lcf', $_)) foreach (qw(inclusive unity));
+};
+
 sub OnSpace {
   my ($this, $event) = @_;
   if ($this->{space}->GetSelection == 2) {
@@ -265,7 +299,7 @@ sub OnSpace {
       $this->{xmin}->SetValue($this->{kmin});
       $this->{xmax}->SetValue($this->{kmax});
     };
-    $this->{plotr} -> Enable(1);
+    #$this->{plotr} -> Enable(1);
     $this->{LCF}->po->space('k');
   } else {
     if ($this->{pastspace} == 2) {
@@ -292,13 +326,12 @@ sub fetch {
   $this->{LCF}->noise($noise);
 };
 
-sub fit {
-  my ($this, $event, $nofit) = @_;
-
-  my $busy = Wx::BusyCursor->new();
-
+sub _prep {
+  my ($this, $nofit) = @_;
+  $nofit ||= 0;
   $this->fetch;
-  $this->{LCF}->clear_standards;
+  $this->{LCF}->clear;
+  $this->{LCF}->clean if not $nofit;
   $this->{LCF}->data($::app->current_data);
   foreach my $i (0 .. $this->{nstan}-1) {
     my $n = $this->{'standard'.$i}->GetSelection;
@@ -318,32 +351,98 @@ sub fit {
   my $e0 = ($this->{LCF}->space eq 'chi') ? 0 : $this->{LCF}->data->bkg_e0;
   $this->{LCF}->xmin($this->{xmin}->GetValue + $e0);
   $this->{LCF}->xmax($this->{xmax}->GetValue + $e0);
-  $this->{LCF}->po->set(emin=>$this->{xmin}->GetValue-10, emax=>$this->{xmax}->GetValue+10)
-    if ($this->{LCF}->space ne 'chi');
+  if ($this->{LCF}->space eq 'chi') {
+    $this->{LCF}->po->set(kmin=>0, kmax=>$this->{xmax}->GetValue+1);
+  } else {
+    $this->{LCF}->po->set(emin=>$this->{xmin}->GetValue-10, emax=>$this->{xmax}->GetValue+10);
+  };
+};
 
+sub _results {
+  my ($this) = @_;
+  foreach my $i (0 .. $this->{nstan}-1) {
+    my $n = $this->{'standard'.$i}->GetSelection;
+    my $stan = $this->{'standard'.$i}->GetClientData($n);
+    next if not defined($stan);
+    my $w = sprintf("%.3f", $this->{LCF}->weight($stan));
+    my $e = sprintf("%.3f", $this->{LCF}->e0($stan));
+    $this->{'weight'.$i}->SetValue($w);
+    $this->{'e0'.$i}    ->SetValue($e);
+  };
+  $this->{result}->Clear;
+  $this->{result}->SetValue($this->{LCF}->report);
+};
+
+sub fit {
+  my ($this, $event, $nofit) = @_;
+  my $busy = Wx::BusyCursor->new();
+  $this->_prep($nofit);
   $this->{LCF} -> fit if not $nofit;
   $this->{LCF} -> plot_fit;
+  $this->_results if not $nofit;
+  $this->{make}         -> Enable(1);
+  $this->{report}       -> Enable(1);
+  $this->{fitmarked}    -> Enable(1);
+  $this->{markedreport} -> Enable(1);
+  undef $busy;
+};
 
-  if (not $nofit) {
-    foreach my $i (0 .. $this->{nstan}-1) {
-      my $n = $this->{'standard'.$i}->GetSelection;
-      my $stan = $this->{'standard'.$i}->GetClientData($n);
-      next if not defined($stan);
-      my $w = sprintf("%.3f", $this->{LCF}->weight($stan));
-      my $e = sprintf("%.3f", $this->{LCF}->e0($stan));
-      $this->{'weight'.$i}->SetValue($w);
-      $this->{'e0'.$i}    ->SetValue($e);
-    };
-    $this->{result}->Clear;
-    $this->{result}->SetValue($this->{LCF}->report);
+sub combi {
+  my ($this, $event) = @_;
+  my $busy = Wx::BusyCursor->new();
+  $this->_prep(0);
+  my $size = $this->{LCF}->combi_size;
+  $::app->{main}->status("Doing $size combinatorial fits ... this may take a while", 'wait');
+  my $start = DateTime->now( time_zone => 'floating' );
+  $this->{LCF} -> combi;
+  my $finish = DateTime->now( time_zone => 'floating' );
+  my $dur = $finish->subtract_datetime($start);
+  my $finishtext = sprintf "Did %d combinatorial fits in %d minutes, %d seconds.", $size, $dur->minutes, $dur->seconds;
+  $::app->{main}->status($finishtext);
+  $this->{LCF}->plot_fit;
+
+  $this->{result}->Clear;
+  $this->{result}->SetValue($this->{LCF}->report);
+
+  $this->_remove_all;
+  my $i = 0;
+  foreach my $st (@{ $this->{LCF}->standards }) {
+    $this->{'standard'.$i}->SetStringSelection($st->name);
+    my $w = sprintf("%.3f", $this->{LCF}->weight($st));
+    my $e = sprintf("%.3f", $this->{LCF}->e0($st));
+    $this->{'weight'.$i}->SetValue($w);
+    $this->{'e0'.$i}    ->SetValue($e);
+    ++$i;
   };
 
-  $this->{make}      -> Enable(1);
-  $this->{report}    -> Enable(1);
-  $this->{fitmarked} -> Enable(1);
-  $this->{markedreport} -> Enable(1);
-
   undef $busy;
+};
+
+sub _remove_all {
+  my ($this) = @_;
+  foreach my $i (0 .. $this->{nstan}-1) {
+    $this->{'standard'.$i}->SetSelection(0);
+    $this->{'weight'.$i}->SetValue(0);
+    $this->{'e0'.$i}->SetValue(0);
+  };
+};
+
+sub save {
+  my ($this, $event) = @_;
+
+  my $data = $::app->current_data;
+  (my $name = $data->name) =~ s{\s+}{_}g;
+  my $fd = Wx::FileDialog->new( $::app->{main}, "Save LCF fit to a file", cwd, $name.".lcf",
+				"LCF (*.lcf)|*.lcf|All files|*.*",
+				wxFD_SAVE|wxFD_CHANGE_DIR|wxFD_OVERWRITE_PROMPT,
+				wxDefaultPosition);
+  if ($fd->ShowModal == wxID_CANCEL) {
+    $::app->{main}->status("Saving LCF results to a file has been cancelled.");
+    return 0;
+  };
+  my $fname = File::Spec->catfile($fd->GetDirectory, $fd->GetFilename);
+  $this->{LCF}->save($fname);
+  $::app->{main}->status("Saved LCF results to $fname");
 };
 
 1;

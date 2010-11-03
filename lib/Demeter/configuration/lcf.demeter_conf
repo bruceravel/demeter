@@ -107,6 +107,15 @@ description
   sequence of fits.  The default is an Excel spreadsheet.  The other
   option is an text file of comma-spearated values.
 
+variable=combi_plot_during
+type=boolean
+onvalue=1
+offvalue=0
+default=false
+description
+  When true, a plot will be made at every step during a combinatorial
+  plot.
+
 variable=emin
 type=real
 default=-20
