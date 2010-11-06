@@ -35,18 +35,24 @@
  - [ ] reference of another edge
  - [ ] keV data
 
-* Athena bugs [1/3]
+* Athena bugs [2/5]
  - [X] bare negative sign in a TextCtrl failed attribute type checking and crashes
  - [ ] importing stddev array from an Athena project file, then making a merge plot works oddly
  - [ ] renaming a group unchecks it
  - [ ] add noise to chi data
+ - [X] labels in plot tabs should come from .pm files
 
-* other features [12/13]
+* other features [13/13]
  - [X] column selection persistance
  - [X] right click pop up menus on parameter StaticText-s
  - [X] stacking
  - [X] indicators
- - [ ] plotting styles (need to make an object)
+ - [X] plotting styles
+        - need to make Demeter::Plot::Style object
+        - new tab
+        - button for saving current plot style
+        - ListBox for styles, single selection, on select push style
+        - right click to post menu with delete option
  - [X] tie spline values in k and E
  - [X] recommended fft_kmax
  - [X] need to call mode after push_values

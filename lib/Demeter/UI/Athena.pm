@@ -780,7 +780,7 @@ sub OnMenuClick {
       $data->po->start_plot;
       $data->plot('E');
       $data->po->set(e_i0=>0, e_signal=>0);
-      $app->{main}->{plottabs}->SetSelection(1);
+      $app->{main}->{plottabs}->SetSelection(1) if $app->spacetab;
       $app->{lastplot} = ['E', 'single'];
       $app->postplot($data);
       last SWITCH;
@@ -792,7 +792,7 @@ sub OnMenuClick {
       return if not $app->preplot('k', $data);
       $data->po->start_plot;
       $data->plot('k123');
-      $app->{main}->{plottabs}->SetSelection(2);
+      $app->{main}->{plottabs}->SetSelection(2) if $app->spacetab;
       $app->{lastplot} = ['k', 'single'];
       $app->postplot($data);
       last SWITCH;
@@ -805,7 +805,7 @@ sub OnMenuClick {
       $data->po->start_plot;
       $data->plot('R123');
       $app->postplot($data);
-      $app->{main}->{plottabs}->SetSelection(3);
+      $app->{main}->{plottabs}->SetSelection(3) if $app->spacetab;
       $app->{lastplot} = ['R', 'single'];
       last SWITCH;
     };
@@ -1012,27 +1012,17 @@ sub side_bar {
   ## -------- fill the plotting options tabs
   $app->{main}->{plottabs}  = Wx::Choicebook->new($toolpanel, -1, wxDefaultPosition, wxDefaultSize, wxNB_TOP);
   $app->mouseover($app->{main}->{plottabs}->GetChildren, "Set various plotting parameters.");
-  foreach my $m (qw(Other PlotE PlotK PlotR PlotQ Stack Indicators)) {
+  foreach my $m (qw(Other PlotE PlotK PlotR PlotQ Stack Indicators Style)) {
     next if $INC{"Demeter/UI/Athena/Plot/$m.pm"};
     require "Demeter/UI/Athena/Plot/$m.pm";
     $app->{main}->{$m} = "Demeter::UI::Athena::Plot::$m"->new($app->{main}->{plottabs}, $app);
-    my $label = q{};
-    if ($m =~ m{[KQ]\z}) {
-      $label = 'Plot in '.lc(substr($m, -1)).'-space';
-    } elsif ($m eq 'Stack') {
-      $label = 'Stack plots';
-    } elsif ($m eq 'Indicators') {
-      $label = 'Indicators';
-    } elsif ($m eq 'Other') {
-      $label = 'Title, legend, single file';
-    } elsif ($m eq 'PlotR') {
-      $label = 'Plot in R-space';
-    } else {
-      $label = 'Plot in energy';
-    };
-    $app->{main}->{plottabs} -> AddPage($app->{main}->{$m}, $label,  ($m eq 'PlotE'));
+    $app->{main}->{plottabs} -> AddPage($app->{main}->{$m},
+					"Demeter::UI::Athena::Plot::$m"->label,
+					($m eq 'PlotE'));
   };
   $toolbox   -> Add($app->{main}->{plottabs}, 0, wxGROW|wxALL, 0);
+  $app->{main}->{Style}->{list}->Append('exafs', Demeter::Plot::Style->new(emin=>-200, emax=>800));
+  $app->{main}->{Style}->{list}->Append('xanes', Demeter::Plot::Style->new(emin=>-50,  emax=>80));
 
   $toolpanel -> SetSizerAndFit($toolbox);
 
@@ -1135,9 +1125,9 @@ sub plot {
 				   ($data[0]->datatype ne 'xanes') and
 				   (lc($space) ne 'e'));
     if (lc($space) eq 'e') {
-      $app->{main}->{plottabs}->SetSelection(1);
+      $app->{main}->{plottabs}->SetSelection(1) if $app->spacetab;
     } else {
-      $app->{main}->{plottabs}->SetSelection(2);
+      $app->{main}->{plottabs}->SetSelection(2) if $app->spacetab;
     };
 
   ## R
@@ -1153,7 +1143,7 @@ sub plot {
     } else {
       $_->plot($space) foreach @data;
     };
-    $app->{main}->{plottabs}->SetSelection(3);
+    $app->{main}->{plottabs}->SetSelection(3) if $app->spacetab;
 
   ## q
   } elsif (lc($space) eq 'q') {
@@ -1168,12 +1158,18 @@ sub plot {
     } else {
       $_->plot($space) foreach @data;
     };
-    $app->{main}->{plottabs}->SetSelection(4);
+    $app->{main}->{plottabs}->SetSelection(4) if $app->spacetab;
   };
 
   $app->postplot($data[0]);
   $app->{lastplot} = [$space, $how];
   undef $busy;
+};
+
+sub spacetab {
+  my ($app) = @_;
+  my $n = $app->{main}->{plottabs}->GetSelection;
+  return (($n > 0) and ($n < 5));
 };
 
 sub preplot {

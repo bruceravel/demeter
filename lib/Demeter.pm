@@ -187,8 +187,9 @@ sub import {
     };
   };
 
-  foreach my $m (qw(Data Plot Plot/Indicator Config Data/Prj Data/Pixel Data/MultiChannel GDS Path VPath SSPath FSPath
-		    Fit Fit/Feffit Atoms Feff Feff/External ScatteringPath StructuralUnit LCF XES Journal)) {
+  foreach my $m (qw(Data Plot Plot/Indicator Plot/Style Config Data/Prj Data/Pixel Data/MultiChannel
+		    GDS Path VPath SSPath FSPath Fit Fit/Feffit Atoms Feff Feff/External
+		    ScatteringPath StructuralUnit LCF XES Journal)) {
     next if $INC{"Demeter/$m.pm"};
     ##print "Demeter/$m.pm\n";
     require "Demeter/$m.pm";

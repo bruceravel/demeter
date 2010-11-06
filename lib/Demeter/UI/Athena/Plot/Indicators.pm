@@ -15,6 +15,7 @@ use File::Basename;
 
 use vars qw($nind);
 $nind = 4;
+
 my $icon     = File::Spec->catfile(dirname($INC{"Demeter/UI/Athena.pm"}), 'Athena', , 'icons', "bullseye.png");
 my $bullseye = Wx::Bitmap->new($icon, wxBITMAP_TYPE_PNG);
 
@@ -69,6 +70,10 @@ sub new {
 
   $this -> SetSizer($outerbox);
   return $this;
+};
+
+sub label {
+  return 'Indicators';
 };
 
 sub fetch {

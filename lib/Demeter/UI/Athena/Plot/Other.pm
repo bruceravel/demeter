@@ -33,5 +33,9 @@ sub new {
   return $this;
 };
 
+sub label {
+  return 'Title, legend, single file';
+};
+
 1;
 

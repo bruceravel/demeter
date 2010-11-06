@@ -145,6 +145,10 @@ sub new {
 
 };
 
+sub label {
+  return 'Plot in q-space';
+};
+
 
 sub pull_single_values {
   my ($this) = @_;

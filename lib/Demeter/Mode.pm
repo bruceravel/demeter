@@ -249,6 +249,17 @@ has 'Indicator' => (
 			      'splice'  => 'splice_Indicator',
 			     }
 	       );
+has 'Style' => (
+		metaclass => 'Collection::Array',
+		is        => 'rw',
+		isa       => 'ArrayRef',
+		default   => sub { [] },
+		provides  => {
+			      'push'    => 'push_Style',
+			      'clear'   => 'clear_Style',
+			      'splice'  => 'splice_Style',
+			     }
+	       );
 has 'LCF' => (
 		metaclass => 'Collection::Array',
 		is        => 'rw',
@@ -306,7 +317,7 @@ has 'Journal' => (
 	       );
 
 has 'types' => (is => 'ro', isa => 'ArrayRef',
-		default => sub{[qw(Atoms Data Feff External Fit Feffit GDS Path Plot Indicator LCF XES PeakFit LineShape
+		default => sub{[qw(Atoms Data Feff External Fit Feffit GDS Path Plot Indicator Style LCF XES PeakFit LineShape
 				   ScatteringPath VPath SSPath FSPath StructuralUnit Prj Pixel MultiChannel Journal)]},);
 
 has 'Plugins' => (
@@ -407,6 +418,7 @@ sub everything {
 	  @{ $self->MultiChannel   },
 	  @{ $self->Plot	   },
 	  @{ $self->Indicator	   },
+	  @{ $self->Style	   },
 	  @{ $self->Feff	   },
 	  @{ $self->LCF		   },
 	  @{ $self->XES		   },

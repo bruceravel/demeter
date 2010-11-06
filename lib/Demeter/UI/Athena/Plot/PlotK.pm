@@ -80,6 +80,11 @@ sub new {
   return $this;
 };
 
+
+sub label {
+  return 'Plot in k-space';
+};
+
 sub pull_single_values {
   my ($this) = @_;
   my $po = $Demeter::UI::Athena::demeter->po;

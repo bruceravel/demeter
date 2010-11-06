@@ -41,6 +41,10 @@ sub new {
   return $this;
 };
 
+sub label {
+  return 'Stack plots';
+};
+
 sub apply {
   my ($this, $event, $app) = @_;
   my $offset = $this->{initial}->GetValue;
