@@ -1,6 +1,6 @@
 -*- org -*-
 
-* Demeter bugs and shortcomings discovered  [11/22]
+* Demeter bugs and shortcomings discovered  [11/23]
  - [X] save_many fails to bring things up to date
  - [X] save_many fails to use flat/norm correctly
  - [ ] in D::Data::IO::save_many, why doesn't updating in n specifying
@@ -15,16 +15,19 @@
  - [X] erage ifeffit group when DEMOLISHing Data object
  - [ ] align as smoothed derivative
  - [ ] plotting smoothed derivative
+       - need a template for applying the 3-pt smoothing N times, then taking second
+       - need a hook before any deriv/second plot to call that template
  - [ ] plot margin lines for deglitching
  - [ ] deglitch many points
  - [X] self absorption algorithms [[file:~/codes/horae/athena_parts/sa_fluo.pl][from horae]]
  - [X] self absorption information depth not yet implemented
- - [ ] templates for LR/PD
+ - [ ] templates for LR/PD [[file:~/codes/horae/athena_parts/macro.pl][old athena macros]]
  - [ ] templates for difference spectra
  - [X] X23A2 multichannel filetype plugin
  - [ ] add a record to an existing Athena project file
  - [ ] tie multiple groups together
  - [ ] set E0 to peak of white line
+ - [ ] serialize VPath, put into dpj and fpj files
 
 * Uses of PDL [0/3]
  - [ ] Savitsky-Golay filter  [[file:notes/sgolay.m][Matlab routine for SG filter]]
@@ -63,7 +66,7 @@
  - [X] command line arguments
  - [X] implement bkg_stan
 
-* LCF needs doing [4/7]
+* LCF needs doing [4/9]
  - [X] share e0
  - [X] test floating e0  
  - [ ] implement combi
@@ -71,6 +74,8 @@
  - [X] test deriv fit
  - [X] test in k
  - [ ] implement plotting in R for a fit in k
+ - [ ] enable main page buttons correctly after combi fit
+ - [ ] enable result page buttons correctly after fit or combi fit
 
 * miscellaneous plot tab [3/3]
  - [X] specify title
@@ -199,7 +204,7 @@
  - [ ] dispersive
  - [ ] multi-electron removal
 
- - [ ] LCA
+ - [ ] LCF
  - [ ] Peak fit
  - [ ] log ratio
  - [ ] difference

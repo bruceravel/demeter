@@ -392,13 +392,20 @@ sub combi {
   my $busy = Wx::BusyCursor->new();
   $this->_prep(0);
   my $size = $this->{LCF}->combi_size;
+  if ($size > 70) {
+    my $yesno = Wx::MessageDialog->new($::app->{main},
+				       "Really perform $size fits?",
+				       "Perform $size fits?",
+				       wxYES_NO|wxYES_DEFAULT|wxICON_QUESTION);
+    my $result = $yesno->ShowModal;
+    if ($result == wxID_NO) {
+      $::app->{main}->status("Not doing combinatorial sequence of $size fits.");
+      return 0;
+    };
+  };
   $::app->{main}->status("Doing $size combinatorial fits ... this may take a while", 'wait');
   my $start = DateTime->now( time_zone => 'floating' );
   $this->{LCF} -> combi;
-  my $finish = DateTime->now( time_zone => 'floating' );
-  my $dur = $finish->subtract_datetime($start);
-  my $finishtext = sprintf "Did %d combinatorial fits in %d minutes, %d seconds.", $size, $dur->minutes, $dur->seconds;
-  $::app->{main}->status($finishtext);
   $this->{LCF}->plot_fit;
 
   $this->{result}->Clear;
@@ -414,6 +421,11 @@ sub combi {
     $this->{'e0'.$i}    ->SetValue($e);
     ++$i;
   };
+
+  my $finish = DateTime->now( time_zone => 'floating' );
+  my $dur = $finish->subtract_datetime($start);
+  my $finishtext = sprintf "Did %d combinatorial fits in %d minutes, %d seconds.", $size, $dur->minutes, $dur->seconds;
+  $::app->{main}->status($finishtext);
 
   undef $busy;
 };

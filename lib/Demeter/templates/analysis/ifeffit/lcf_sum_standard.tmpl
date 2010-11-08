@@ -1,0 +1,8 @@
+{
+  ($e0, $de0) = $DS->e0($S);
+  ($weight, $error) = $DS->weight($S);
+  q{}
+}
+set aa_{$S->group} = {$weight}
+set e_{$S->group}  = {$e0}
+set {$DS->group}.{$S->group} = aa_{$S->group} * splint({$S->group}.energy+e_{$S->group}+{$S->bkg_eshift}, {$S->group}.{$DS->suffix}, {$DS->group}.x)

@@ -927,17 +927,18 @@ sub main_window {
 		     'DeglitchTruncate',  # 4
 		     'Smooth',		  # 5
 		     'ConvoluteNoise',	  # 6
-		     'SelfAbsorption',	  # 7
+		     'Deconvolute',	  # 7
+		     'SelfAbsorption',	  # 8
 		     # -----------------------
-		     'LCF',		  # 9
-		     'PCA',		  # 10
-		     'PeakFit',		  # 11
-		     'LogRatio',	  # 12
-		     'Difference',	  # 13
+		     'LCF',		  # 10
+		     'PCA',		  # 11
+		     'PeakFit',		  # 12
+		     'LogRatio',	  # 13
+		     'Difference',	  # 14
 		     # -----------------------
-		     'Journal',		  # 15
-		     'PluginRegistry',    # 16
-		     'Prefs',		  # 17
+		     'Journal',		  # 16
+		     'PluginRegistry',    # 17
+		     'Prefs',		  # 18
 		    ) {
     next if $INC{"Demeter/UI/Athena/$which.pm"};
     require "Demeter/UI/Athena/$which.pm";
@@ -952,8 +953,8 @@ sub main_window {
 
   require Demeter::UI::Athena::Null;
   my $null = Demeter::UI::Athena::Null->new($app->{main}->{views});
-  $app->{main}->{views}->InsertPage( 8, $null, $Demeter::UI::Athena::Null::label, 0);
-  $app->{main}->{views}->InsertPage(14, $null, $Demeter::UI::Athena::Null::label, 0);
+  $app->{main}->{views}->InsertPage( 9, $null, $Demeter::UI::Athena::Null::label, 0);
+  $app->{main}->{views}->InsertPage(15, $null, $Demeter::UI::Athena::Null::label, 0);
 
 
   EVT_CHOICEBOOK_PAGE_CHANGED($app->{main}, $app->{main}->{views}, sub{$app->OnGroupSelect(0,0)});

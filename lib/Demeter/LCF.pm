@@ -301,6 +301,7 @@ sub fit {
   };
   $self->_statistics;
 
+  $self->mo->standard(q{});
   $self->stop_spinner if (($self->mo->ui eq 'screen') and (not $quiet));
   return $self;
 };
@@ -529,14 +530,20 @@ sub restore {
     $self->$p($rhash->{ucfirst($p)});
   };
   my $stats_regex = join('|', map {ucfirst $_} @stats);
+  $self->mo->standard($self);
+  $self->clear_standards;
   foreach my $k (keys %$rhash) {
     next if ($k =~ m{\A(?:$stats_regex)});
     my $rlist = $rhash->{$k};
     my $this_data = $self->mo->fetch('Data', $k);
+    $self->push_standards($this_data);
     my ($w, $dw, $e0, $de0) = @$rlist;
     $self->weight($this_data, $w, $dw);
     $self->e0($this_data, $e0, $de0);
+    $self->dispose($this_data->template('analysis', 'lcf_sum_standard'));
   };
+  $self->dispose($self->template('analysis', 'lcf_sum'));
+  $self->mo->standard(q{});
   return $self;
 };
 
@@ -562,7 +569,7 @@ sub combi_report_excel {
   {
     ## The evals in Spreadsheet::WriteExcel::Workbook::_get_checksum_method
     ## will set the eval error variable ($@) if any of Digest::XXX
-    ## (XXX = MD4 | PERL::MD4 | MD5) are installed on the machine.
+    ## (XXX = MD4 | PERL::MD4 | MD5) are not installed on the machine.
     ## This is not a problem -- crypto is not needed in the exported
     ## Excel file.  However, setting $@ will post a warning given that
     ## $SIG{__DIE__} is defined to use Wx::Perl::Carp.  So I need to
