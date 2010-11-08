@@ -268,7 +268,7 @@ Readonly my $CLEAR_PROJECT     => Wx::NewId();
 
 Readonly my $RENAME	       => Wx::NewId();
 Readonly my $COPY	       => Wx::NewId();
-Readonly my $COPY_SERIES       => Wx::NewId();
+#Readonly my $COPY_SERIES       => Wx::NewId();
 Readonly my $REMOVE	       => Wx::NewId();
 Readonly my $REMOVE_MARKED     => Wx::NewId();
 Readonly my $DATA_YAML	       => Wx::NewId();
@@ -325,6 +325,7 @@ Readonly my $MERGE_NOISE       => Wx::NewId();
 Readonly my $MERGE_STEP        => Wx::NewId();
 
 Readonly my $DOCUMENT	       => Wx::NewId();
+Readonly my $DEMO	       => Wx::NewId();
 
 sub menubar {
   my ($app) = @_;
@@ -412,7 +413,6 @@ sub menubar {
   my $groupmenu   = Wx::Menu->new;
   $groupmenu->Append($RENAME, "Rename current group\tALT+SHIFT+l", "Rename the current group");
   $groupmenu->Append($COPY,   "Copy current group\tALT+SHIFT+y",   "Copy the current group");
-  $groupmenu->Append($COPY_SERIES, "Copy series",   "Maek a sequence of copies of the current group by incremented a parameter value");
   $groupmenu->Append($CHANGE_DATATYPE, "Change data type", "Change the data type for the current group or the marked groups");
 
   #my $valuesmenu  = Wx::Menu->new;
@@ -484,7 +484,9 @@ sub menubar {
 
 
   my $helpmenu   = Wx::Menu->new;
-  $helpmenu->Append($DOCUMENT,  "&Document", "Open the Athena document" );
+  $helpmenu->Append($DOCUMENT,  "Document",     "Open the Athena document" );
+  $helpmenu->Append($DEMO,      "Demo project", "Open a demo project" );
+  $helpmenu->AppendSeparator;
   $helpmenu->Append(wxID_ABOUT, "&About Athena" );
 
   $bar->Append( $filemenu,    "&File" );
@@ -506,9 +508,9 @@ sub menubar {
 					   $FREEZE_MARKED, $UNFREEZE_MARKED,
 					   $FREEZE_REGEX, $UNFREEZE_REGEX,
 					   $FREEZE_TOGGLE_ALL);
-  $groupmenu      -> Enable($_,0) foreach ($COPY_SERIES, $TIE_REFERENCE);
+  $groupmenu      -> Enable($_,0) foreach ($TIE_REFERENCE);
   $monitormenu    -> Enable($_,0) foreach ($IFEFFIT_MEMORY);
-  $helpmenu       -> Enable($_,0) foreach ($DOCUMENT);
+  $helpmenu       -> Enable($_,0) foreach ($DOCUMENT, $DEMO);
 
   EVT_MENU	 ($app->{main}, -1, sub{my ($frame,  $event) = @_; OnMenuClick($frame,  $event, $app)} );
   return $app;
@@ -929,16 +931,17 @@ sub main_window {
 		     'ConvoluteNoise',	  # 6
 		     'Deconvolute',	  # 7
 		     'SelfAbsorption',	  # 8
+		     'Series',            # 9
 		     # -----------------------
-		     'LCF',		  # 10
-		     'PCA',		  # 11
-		     'PeakFit',		  # 12
-		     'LogRatio',	  # 13
-		     'Difference',	  # 14
+		     'LCF',		  # 11
+		     'PCA',		  # 12
+		     'PeakFit',		  # 13
+		     'LogRatio',	  # 14
+		     'Difference',	  # 15
 		     # -----------------------
-		     'Journal',		  # 16
-		     'PluginRegistry',    # 17
-		     'Prefs',		  # 18
+		     'Journal',		  # 17
+		     'PluginRegistry',    # 18
+		     'Prefs',		  # 19
 		    ) {
     next if $INC{"Demeter/UI/Athena/$which.pm"};
     require "Demeter/UI/Athena/$which.pm";
@@ -953,8 +956,8 @@ sub main_window {
 
   require Demeter::UI::Athena::Null;
   my $null = Demeter::UI::Athena::Null->new($app->{main}->{views});
-  $app->{main}->{views}->InsertPage( 9, $null, $Demeter::UI::Athena::Null::label, 0);
-  $app->{main}->{views}->InsertPage(15, $null, $Demeter::UI::Athena::Null::label, 0);
+  $app->{main}->{views}->InsertPage(10, $null, $Demeter::UI::Athena::Null::label, 0);
+  $app->{main}->{views}->InsertPage(16, $null, $Demeter::UI::Athena::Null::label, 0);
 
 
   EVT_CHOICEBOOK_PAGE_CHANGED($app->{main}, $app->{main}->{views}, sub{$app->OnGroupSelect(0,0)});

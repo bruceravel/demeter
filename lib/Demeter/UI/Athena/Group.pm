@@ -54,7 +54,8 @@ sub Copy {
 
   my $data = $app->current_data;
   my $clone = $data->clone;
-  $clone->name("Copy of ".$data->name);
+  $newname ||= "Copy of ".$data->name;
+  $clone->name($newname);
   my $index = $app->current_index;
   if ($index == $app->{main}->{list}->GetCount-1) {
     $app->{main}->{list}->Append($clone->name, $clone);
@@ -63,6 +64,7 @@ sub Copy {
   };
   $app->modified(1);
   $app->{main}->status("Copied ".$data->name);
+  return $clone;
 };
 
 sub Remove {

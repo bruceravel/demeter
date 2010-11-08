@@ -4,7 +4,7 @@ use warnings;
 
 use Wx qw( :everything );
 use base 'Wx::Panel';
-use Wx::Event qw(EVT_BUTTON EVT_CHECKBOX EVT_COMBOBOX EVT_RADIOBOX);
+use Wx::Event qw(EVT_BUTTON EVT_CHECKBOX EVT_COMBOBOX EVT_RADIOBOX EVT_LIST_ITEM_SELECTED);
 
 use Demeter::UI::Wx::SpecialCharacters qw(:all);
 use Cwd;
@@ -46,12 +46,14 @@ sub new {
 
   $this->{notebook} = Wx::Notebook->new($this, -1, wxDefaultPosition, wxDefaultSize, wxNB_TOP);
   $box -> Add($this->{notebook}, 1, wxGROW|wxALL, 2);
-  my $main  = $this->main_page($this->{notebook});
-  my $fits  = $this->fit_page($this->{notebook});
-  my $combi = $this->combi_page($this->{notebook});
-  $this->{notebook} ->AddPage($main,  'Standards',     1);
-  $this->{notebook} ->AddPage($fits,  'Fit results',   0);
-  $this->{notebook} ->AddPage($combi, 'Combinatorics', 0);
+  my $main   = $this->main_page($this->{notebook});
+  my $fits   = $this->fit_page($this->{notebook});
+  my $combi  = $this->combi_page($this->{notebook});
+  my $marked = $this->marked_page($this->{notebook});
+  $this->{notebook} ->AddPage($main,   'Standards',     1);
+  $this->{notebook} ->AddPage($fits,   'Fit results',   0);
+  $this->{notebook} ->AddPage($combi,  'Combinatorics', 0);
+  $this->{notebook} ->AddPage($marked, 'Marked',        0);
 
   $this->{document} = Wx::Button->new($this, -1, 'Document section: linear combination fitting');
   $this->{return}   = Wx::Button->new($this, -1, 'Return to main window');
@@ -138,16 +140,15 @@ sub main_page {
   $this->{combi}	 = Wx::Button->new($panel, -1, 'Fit all combinations');
   $this->{fitmarked}	 = Wx::Button->new($panel, -1, 'Fit marked groups');
   $this->{report}	 = Wx::Button->new($panel, -1, 'Save fit as column data');
-  $this->{markedreport}	 = Wx::Button->new($panel, -1, 'Marked fits report');
   $this->{plot}		 = Wx::Button->new($panel, -1, 'Plot data and sum');
   $this->{plotr}	 = Wx::Button->new($panel, -1, 'Plot data and sum in R');
   $this->{make}		 = Wx::Button->new($panel, -1, 'Make group from fit');
-  foreach my $w (qw(fit combi fitmarked report markedreport plot plotr make)) {
+  foreach my $w (qw(fit combi fitmarked report plot plotr make)) {
     $actionsboxsizer->Add($this->{$w}, 0, wxGROW|wxALL, 0);
     $this->{$w}->Enable(0);
   };
   EVT_BUTTON($this, $this->{fit},    sub{fit(@_, 0)});
-  EVT_BUTTON($this, $this->{plot},   sub{fit(@_, 1)});
+  EVT_BUTTON($this, $this->{plot},   sub{$this->{LCF}->plot_fit}); #fit(@_, 1)});
   EVT_BUTTON($this, $this->{report}, sub{save(@_)});
   EVT_BUTTON($this, $this->{combi},  sub{combi(@_)});
 
@@ -173,6 +174,8 @@ sub fit_page {
   $box->Add($this->{resultreport}, 0, wxGROW|wxALL, 2);
   EVT_BUTTON($this, $this->{resultplot},   sub{fit(@_, 1)});
   EVT_BUTTON($this, $this->{resultreport}, sub{save(@_)});
+  $this->{resultplot}->Enable(0);
+  $this->{resultreport}->Enable(0);
 
   $panel->SetSizerAndFit($box);
   return $panel;
@@ -188,14 +191,42 @@ sub combi_page {
   $this->{stats}->InsertColumn( 1, "R-factor",  wxLIST_FORMAT_LEFT, 100 );
   $this->{stats}->InsertColumn( 2, "Reduced chi-square" , wxLIST_FORMAT_LEFT, 150 );
   $box->Add($this->{stats}, 1, wxALL|wxGROW, 3);
+  EVT_LIST_ITEM_SELECTED($this, $this->{stats}, sub{combi_select(@_)});
 
   $this->{fitresults} = Wx::ListCtrl->new($panel, -1, wxDefaultPosition, wxDefaultSize, wxLC_REPORT|wxLC_HRULES||wxLC_SINGLE_SEL);
   $this->{fitresults}->InsertColumn( 0, "#",        wxLIST_FORMAT_LEFT, 20 );
   $this->{fitresults}->InsertColumn( 1, "Standard", wxLIST_FORMAT_LEFT, 100 );
-  $this->{fitresults}->InsertColumn( 2, "Weight",   wxLIST_FORMAT_LEFT, 100 );
-  $this->{fitresults}->InsertColumn( 3, "E0",       wxLIST_FORMAT_LEFT, 100 );
+  $this->{fitresults}->InsertColumn( 2, "Weight",   wxLIST_FORMAT_LEFT, 130 );
+  $this->{fitresults}->InsertColumn( 3, "E0",       wxLIST_FORMAT_LEFT, 130 );
   $box->Add($this->{fitresults}, 1, wxALL|wxGROW, 3);
 
+  $this->{combireport} = Wx::Button->new($panel, -1, 'Save combinatorial results as an Excel file');
+  $box->Add($this->{combireport}, 0, wxGROW|wxALL, 2);
+  EVT_BUTTON($this, $this->{combireport}, sub{combi_report(@_)});
+  $this->{combireport}->Enable(0);
+
+  $panel->SetSizerAndFit($box);
+  return $panel;
+};
+
+sub marked_page {
+  my ($this, $nb) = @_;
+  my $panel = Wx::Panel->new($nb, -1, wxDefaultPosition, wxDefaultSize, wxMAXIMIZE_BOX );
+  my $box = Wx::BoxSizer->new( wxVERTICAL);
+
+  $this->{markedresults} = Wx::ListCtrl->new($panel, -1, wxDefaultPosition, wxDefaultSize, wxLC_REPORT|wxLC_HRULES||wxLC_SINGLE_SEL);
+  $this->{markedresults}->InsertColumn( 0, "Data",            wxLIST_FORMAT_LEFT, 100 );
+  $this->{markedresults}->InsertColumn( 1, "R-factor",        wxLIST_FORMAT_LEFT, 80 );
+  $this->{markedresults}->InsertColumn( 2, "Red. chi-square", wxLIST_FORMAT_LEFT, 80 );
+  $box->Add($this->{markedresults}, 1, wxALL|wxGROW, 3);
+
+  $this->{plotmarked}	 = Wx::Button->new($panel, -1, 'Plot results of fits to marked groups');
+  $this->{markedreport}	 = Wx::Button->new($panel, -1, 'Save marked fits report as an Excel file');
+  $box->Add($this->{plotmarked},   0, wxGROW|wxALL, 2);
+  $box->Add($this->{markedreport}, 0, wxGROW|wxALL, 2);
+  #EVT_BUTTON($this, $this->{markedreport}, sub{combi_report(@_)});
+  $this->{plotmarked}->Enable(0);
+  $this->{markedreport}->Enable(0);
 
   $panel->SetSizerAndFit($box);
   return $panel;
@@ -234,7 +265,17 @@ sub push_values {
     $this->{'standard'.$i}->fill($::app, 0, 0);
     $this->{'standard'.$i}->SetStringSelection($str);
   };
-  $this->{$_} -> Enable(0) foreach (qw(make report fitmarked markedreport));
+  $this->{result}->Clear;
+  $this->{$_} -> Enable(0) foreach (qw(make report fitmarked markedreport resultplot resultreport));
+  my $count = 0;
+  foreach my $i (0 .. $this->{nstan}-1) {
+    ++$count if ($this->{'standard'.$i}->GetSelection > 0);
+  };
+  $this->{fit}   -> Enable($count > 1);
+  $this->{combi} -> Enable($count > 2);
+  $this->{plot}  -> Enable($count > 0);
+  $this->{plotr} -> Enable($count > 0) if ($this->{space}->GetSelection == 2);
+
   1;
 };
 
@@ -262,17 +303,22 @@ sub OnSelect {
   $this->{plot}  -> Enable($count > 0);
   $this->{plotr} -> Enable($count > 0) if ($this->{space}->GetSelection == 2);
 
-  $this->{make}      -> Enable(0);
-  $this->{report}    -> Enable(0);
-  $this->{fitmarked} -> Enable(0);
+  $this->{make}         -> Enable(0);
+  $this->{report}       -> Enable(0);
+  $this->{fitmarked}    -> Enable(0);
+  $this->{resultplot}   -> Enable(0);
+  $this->{resultreport} -> Enable(0);
 };
 
 sub use_marked {
   my ($this, $event) = @_;
   my $count = 0;
+  $this->_remove_all;
   foreach my $i (0 .. $::app->{main}->{list}->GetCount-1) {
     next if not $::app->{main}->{list}->IsChecked($i);
     $this->{'standard'.$count}->SetStringSelection($::app->{main}->{list}->GetClientData($i)->name);
+    $this->{'fite0'.$count}->SetValue(0);
+    $this->{'require'.$count}->SetValue(0);
     ++$count;
   };
   $this->OnSelect($event);
@@ -382,8 +428,10 @@ sub fit {
   $this->_results if not $nofit;
   $this->{make}         -> Enable(1);
   $this->{report}       -> Enable(1);
-  $this->{fitmarked}    -> Enable(1);
-  $this->{markedreport} -> Enable(1);
+  #$this->{fitmarked}    -> Enable(1);
+  #$this->{markedreport} -> Enable(1);
+  $this->{resultplot}   -> Enable(1);
+  $this->{resultreport} -> Enable(1);
   undef $busy;
 };
 
@@ -406,7 +454,7 @@ sub combi {
   $::app->{main}->status("Doing $size combinatorial fits ... this may take a while", 'wait');
   my $start = DateTime->now( time_zone => 'floating' );
   $this->{LCF} -> combi;
-  $this->{LCF}->plot_fit;
+  $this->{LCF} -> plot_fit;
 
   $this->{result}->Clear;
   $this->{result}->SetValue($this->{LCF}->report);
@@ -417,10 +465,22 @@ sub combi {
     $this->{'standard'.$i}->SetStringSelection($st->name);
     my $w = sprintf("%.3f", $this->{LCF}->weight($st));
     my $e = sprintf("%.3f", $this->{LCF}->e0($st));
-    $this->{'weight'.$i}->SetValue($w);
-    $this->{'e0'.$i}    ->SetValue($e);
+    $this->{'weight'.$i}  -> SetValue($w);
+    $this->{'e0'.$i}      -> SetValue($e);
+    $this->{'fite0'.$i}   -> SetValue($this->{LCF}->is_e0_floated($st));
+    $this->{'require'.$i} -> SetValue($this->{LCF}->is_required($st));
     ++$i;
   };
+  $this->combi_results;
+  $this->{make}         -> Enable(1);
+  $this->{report}       -> Enable(1);
+  #$this->{fitmarked}    -> Enable(1);
+  #$this->{markedreport} -> Enable(1);
+  $this->{resultplot}   -> Enable(1);
+  $this->{resultreport} -> Enable(1);
+  $this->{combireport}  -> Enable(1);
+
+  $this->{stats}->SetItemState(0, wxLIST_STATE_SELECTED, wxLIST_STATE_SELECTED );
 
   my $finish = DateTime->now( time_zone => 'floating' );
   my $dur = $finish->subtract_datetime($start);
@@ -428,6 +488,100 @@ sub combi {
   $::app->{main}->status($finishtext);
 
   undef $busy;
+};
+
+sub combi_results {
+  my ($this) = @_;
+
+  $this->{stats}->DeleteAllItems;
+  $this->{fitresults}->DeleteAllItems;
+
+  my @stand = keys %{ $this->{LCF}->options };
+  my %map = ();
+  my %idx = ();
+  my $i = 0;
+  my $row = 0;
+  foreach my $s (@stand) {
+    $map{$s} = chr($row+65);	# A B C ...
+    $idx{$s} = $this->{fitresults}->InsertStringItem($i, $row);
+    $this->{fitresults}->SetItemData($idx{$s}, $i++);
+    $this->{fitresults}->SetItem( $idx{$s}, 0, $map{$s} );
+    $this->{fitresults}->SetItem( $idx{$s}, 1, $this->{LCF}->mo->fetch('Data', $s)->name );
+    ++$row;
+  };
+  $this->{index_map} = \%idx;
+
+  $row = 0;
+  $i = 0;
+  foreach my $res (@{ $this->{LCF}->combi_results }) {
+    my $rfact = $res->{Rfactor};
+    my $chinu = $res->{Chinu};
+    my @included = ();
+    foreach my $s (@stand) {
+      if (exists $res->{$s}) {
+	push @included, $map{$s};
+      };
+    };
+
+    my $idx = $this->{stats}->InsertStringItem($i, $row);
+    $this->{stats}->SetItemData($idx, $i++);
+    $this->{stats}->SetItem( $idx, 0, join(',', @included) );
+    $this->{stats}->SetItem( $idx, 1, sprintf("%.5g", $rfact) );
+    $this->{stats}->SetItem( $idx, 2, sprintf("%.5g", $chinu) );
+    ++$row;
+  };
+};
+
+sub combi_select {
+  my ($this, $event) = @_;
+  my @stand = keys %{ $this->{LCF}->options };
+  my @all = @{ $this->{LCF}->combi_results };
+  my $result = $all[$event->GetIndex];
+
+  my %idx = %{ $this->{index_map} };
+  foreach my $s (@stand) {
+    if (exists $result->{$s}) {
+      my @here = @{ $result->{$s} };
+      $this->{fitresults}->SetItem( $idx{$s}, 2, sprintf("%.3f (%.3f)", @here[0,1]) );
+      $this->{fitresults}->SetItem( $idx{$s}, 3, sprintf("%.3f (%.3f)", @here[2,3]) );
+    } else {
+      $this->{fitresults}->SetItem( $idx{$s}, 2, q{} );
+      $this->{fitresults}->SetItem( $idx{$s}, 3, q{} );
+    };
+  };
+
+  $this->{LCF} -> restore($result);
+  $this->{LCF} -> plot_fit;
+  $this->{result}->Clear;
+  $this->{result}->SetValue($this->{LCF}->report);
+  $this->_remove_all;
+  my $i = 0;
+  foreach my $st (@{ $this->{LCF}->standards }) {
+    $this->{'standard'.$i}->SetStringSelection($st->name);
+    my $w = sprintf("%.3f", $this->{LCF}->weight($st));
+    my $e = sprintf("%.3f", $this->{LCF}->e0($st));
+    $this->{'weight'.$i}  -> SetValue($w);
+    $this->{'e0'.$i}      -> SetValue($e);
+    $this->{'fite0'.$i}   -> SetValue($this->{LCF}->is_e0_floated($st));
+    $this->{'require'.$i} -> SetValue($this->{LCF}->is_required($st));
+    ++$i;
+  };
+
+};
+
+sub combi_report {
+  my ($this, $event) = @_;
+  my $fd = Wx::FileDialog->new( $::app->{main}, "Save combinatorial results", cwd, "combinatorial.xls",
+				"Excel (*.xls)|*.xls|All files|*.*",
+				wxFD_SAVE|wxFD_CHANGE_DIR|wxFD_OVERWRITE_PROMPT,
+				wxDefaultPosition);
+  if ($fd->ShowModal == wxID_CANCEL) {
+    $::app->{main}->status("Saving combinatorial results has been cancelled.");
+    return 0;
+  };
+  my $fname = File::Spec->catfile($fd->GetDirectory, $fd->GetFilename);
+  $this->{LCF}->combi_report($fname);
+  $::app->{main}->status("Saved combinatorial results to $fname");
 };
 
 sub _remove_all {

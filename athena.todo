@@ -1,6 +1,6 @@
 -*- org -*-
 
-* Demeter bugs and shortcomings discovered  [11/23]
+* Demeter bugs and shortcomings discovered  [11/24]
  - [X] save_many fails to bring things up to date
  - [X] save_many fails to use flat/norm correctly
  - [ ] in D::Data::IO::save_many, why doesn't updating in n specifying
@@ -12,7 +12,7 @@
  - [X] phase corrected FTs
  - [X] bkg_fix_step does not work
  - [ ] clnorm
- - [X] erage ifeffit group when DEMOLISHing Data object
+ - [X] erase ifeffit group when DEMOLISHing Data object
  - [ ] align as smoothed derivative
  - [ ] plotting smoothed derivative
        - need a template for applying the 3-pt smoothing N times, then taking second
@@ -28,6 +28,7 @@
  - [ ] tie multiple groups together
  - [ ] set E0 to peak of white line
  - [ ] serialize VPath, put into dpj and fpj files
+ - [ ] key top/left/bottom/right config params + controls in plottabs in Athena
 
 * Uses of PDL [0/3]
  - [ ] Savitsky-Golay filter  [[file:notes/sgolay.m][Matlab routine for SG filter]]
@@ -44,6 +45,7 @@
  - [ ] renaming a group unchecks it
  - [ ] add noise to chi data
  - [X] labels in plot tabs should come from .pm files
+ - [ ] persistance for plotting styles
 
 * other features [13/13]
  - [X] column selection persistance
@@ -66,16 +68,17 @@
  - [X] command line arguments
  - [X] implement bkg_stan
 
-* LCF needs doing [4/9]
+* LCF needs doing [8/10]
  - [X] share e0
  - [X] test floating e0  
- - [ ] implement combi
+ - [X] implement combi
  - [ ] implement marked groups fit
  - [X] test deriv fit
  - [X] test in k
  - [ ] implement plotting in R for a fit in k
- - [ ] enable main page buttons correctly after combi fit
- - [ ] enable result page buttons correctly after fit or combi fit
+ - [X] enable main page buttons correctly after combi fit
+ - [X] enable result page buttons correctly after fit or combi fit
+ - [X] flags for required and fit_e0 don't get restored correctly when using combi page
 
 * miscellaneous plot tab [3/3]
  - [X] specify title
@@ -190,7 +193,7 @@
  - [ ] tie relative energy value to changes in E0
  - [ ] set e0 for all and marked
 
-* Tools [11/20]
+* Tools [13/20]
  - [X] main
  - [X] calibrate
  - [X] align
@@ -199,12 +202,12 @@
  - [X] rebin
  - [X] convolution and noise
  - [X] self absorption
- - [ ] copy series
+ - [X] copy series
 
  - [ ] dispersive
  - [ ] multi-electron removal
 
- - [ ] LCF
+ - [X] LCF
  - [ ] Peak fit
  - [ ] log ratio
  - [ ] difference
