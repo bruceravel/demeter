@@ -154,7 +154,7 @@ sub make {
     $app->{main}->status("Cannot copy a series -- beginning value \"$start\" is not a number");
     return;
   };
-  if ($number =~ m{\A\s*\z}) {
+  if ($n =~ m{\A\s*\z}) {
     $app->{main}->status("Cannot copy a series -- number of copies not specified");
     return;
   };
