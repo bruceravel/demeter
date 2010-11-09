@@ -41,8 +41,8 @@ $feff -> set(workspace=>"UAce", screen=>0, buffer=>q{}, save=>1);
 $feff -> potph -> pathfinder;
 my @list_of_paths = @{ $feff->pathlist };
 my @paths = ();
-my $carbon  = Demeter::VPath->new(name=>"carbon SS + MS");
-my $axialms = Demeter::VPath->new(name=>"axial MS");
+my $carbon  = Demeter::VPath->new(name=>"carbon SS + MS", data=>$data);
+my $axialms = Demeter::VPath->new(name=>"axial MS",       data=>$data);
 my $index = 0;
 my @common = (parent => $feff, data => $data, s02 => "amp", e0 => "enot");
 
@@ -126,13 +126,18 @@ my $fit = Demeter::Fit->new(gds   => \@gds,
 $fit -> fit;
 ##$fit -> logfile("controlfit.log", "U control", q{});
 
+$fit -> vpaths([$carbon, $axialms]);
+$fit -> freeze(file=>"uace.dpj", copyfeff=>1);
 ##$data->save_many("many.out", 'chik3', $paths[0], $paths[1], $carbon);
 
 $data -> po -> set(kweight=>2, rmax=>6, r_pl=>'r', plot_fit=>1);
 my ($step, $jump) = (0,-0.3);
-map {$_->data->y_offset($step);
-     $_->plot('r');
-     $step+=$jump;
-   } ($data, $paths[0], $paths[1], $carbon, $axialms, $ss);
+foreach my $o ($data, $paths[0], $paths[1], $carbon, $axialms, $ss) {
+  $o->data->y_offset($step);
+  $o->plot('r');
+  $step+=$jump;
+};
 
 $data->pause;
+
+print $carbon->serialization, $/;

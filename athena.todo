@@ -29,6 +29,7 @@
  - [ ] set E0 to peak of white line
  - [ ] serialize VPath, put into dpj and fpj files
  - [ ] key top/left/bottom/right config params + controls in plottabs in Athena
+ - [ ] deserializing SSPath fails
 
 * Uses of PDL [0/3]
  - [ ] Savitsky-Golay filter  [[file:notes/sgolay.m][Matlab routine for SG filter]]

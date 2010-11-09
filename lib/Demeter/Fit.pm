@@ -131,6 +131,20 @@ has 'paths' => (
 			     }
 	       );
 
+has 'vpaths' => (
+		metaclass => 'Collection::Array',
+		is        => 'rw',
+		isa       => 'ArrayRef',
+		default   => sub { [] },
+		provides  => {
+			      'push'    => 'push_vpaths',
+			      'pop'     => 'pop_vpaths',
+			      'shift'   => 'shift_vpaths',
+			      'unshift' => 'unshift_vpaths',
+			      'clear'   => 'clear_vpaths',
+			     }
+	       );
+
 ## -------- statistics
 has 'happiness'         => (is => 'rw', isa =>  NonNeg,   default => 0);
 has 'happiness_summary' => (is => 'rw', isa => 'Str',     default => q{});
@@ -1102,14 +1116,16 @@ override 'serialize' => sub {
   ($args{nozip} = 1) if not $args{file};
   $args{copyfeff} ||= 0;
 
-  my @gds   = @{ $self->gds   };
-  my @data  = @{ $self->data  };
-  my @paths = @{ $self->paths };
+  my @gds    = @{ $self->gds   };
+  my @data   = @{ $self->data  };
+  my @paths  = @{ $self->paths };
+  my @vpaths = @{ $self->vpaths };
 
-  my @gdsgroups   = map { $_->group } @gds;
-  my @datagroups  = map { $_->group } @data;
-  my @pathsgroups = map { $_->group } grep {defined $_} @paths;
-  my @feffgroups  = map { $_ ?  $_->group : q{} } map {$_ -> parent} grep {defined $_} @paths;
+  my @gdsgroups    = map { $_->group } @gds;
+  my @datagroups   = map { $_->group } @data;
+  my @pathsgroups  = map { $_->group } grep {defined $_} @paths;
+  my @feffgroups   = map { $_ ?  $_->group : q{} } map {$_ -> parent} grep {defined $_} @paths;
+  my @vpathsgroups = map { $_->group } grep {defined $_} @vpaths;
   @feffgroups = uniq @feffgroups;
 
   unlink ($args{file}) if ($args{file} and (-e $args{file}));
@@ -1120,7 +1136,7 @@ override 'serialize' => sub {
   ## -------- save a yaml containing the structure of the fit
   my $structure = File::Spec->catfile($self->folder, "structure.yaml");
   open my $STRUCTURE, ">$structure";
-  print $STRUCTURE YAML::Tiny::Dump(\@gdsgroups, \@datagroups, \@pathsgroups, \@feffgroups);
+  print $STRUCTURE YAML::Tiny::Dump(\@gdsgroups, \@datagroups, \@pathsgroups, \@feffgroups, \@vpathsgroups);
   close $STRUCTURE;
 
   ## -------- save a yaml containing all GDS parameters
@@ -1155,6 +1171,15 @@ override 'serialize' => sub {
   };
   close $PATHS;
 
+  ## -------- save a yaml containing the vpaths
+  my $vpathsfile =  File::Spec->catfile($self->folder, "vpaths.yaml");
+  open my $VPATHS, ">$vpathsfile";
+  foreach my $vp (@vpaths) {
+    next if not defined($vp);
+    print $VPATHS $vp->serialization;
+  };
+  close $VPATHS;
+
   ## -------- save yamls and phase.bin for the feff calculations (turn
   ##          this off in Artemis, where interaction with feff files
   ##          is handled somewhat differently)
@@ -1173,7 +1198,7 @@ override 'serialize' => sub {
   };
 
   ## -------- save a yaml containing the fit properties
-  my @properties = grep {$_ !~ m{\A(?:gds|data|paths|project|folder|rate|thingy)\z}} $self->meta->get_attribute_list;
+  my @properties = grep {$_ !~ m{\A(?:gds|data|paths|vpaths|project|folder|rate|thingy)\z}} $self->meta->get_attribute_list;
   push @properties, 'name';
   my @vals = $self->get(@properties);
   my %props = zip(@properties, @vals);

@@ -71,6 +71,13 @@ sub BUILD {
   $self->mo->push_VPath($self);
 };
 
+override all => sub {
+  my ($self) = @_;
+  my %all = $self->SUPER::all;
+  delete $all{paths};
+  return %all;
+};
+
 sub label {
   my ($self) = @_;
   return $self->name;

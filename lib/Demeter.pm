@@ -480,7 +480,7 @@ sub what_isa {
 ## down into override methods in extended classes
 sub all {
   my ($self) = @_;
-  my @keys   = map {$_->name} grep {$_->name !~ m{\A(?:data|plot|plottable|pathtype|mode)\z}} $self->meta->get_all_attributes;
+  my @keys   = map {$_->name} grep {$_->name !~ m{\A(?:data|plot|plottable|pathtype|mode|highlight|hl|prompt)\z}} $self->meta->get_all_attributes;
   my @values = map {$self->$_} @keys;
   my %hash   = zip(@keys, @values);
   return %hash;

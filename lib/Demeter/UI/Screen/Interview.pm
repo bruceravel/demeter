@@ -403,6 +403,15 @@ also uses L<Term::Twiddle>.
 
 =head1 BUGS AND LIMITATIONS
 
+=over 4
+
+=item *
+
+Plotting rmr and turning on plotting of paths results in a crash.
+Should disable plotting paths when plotting rmr.
+
+=back
+
 Please report problems to Bruce Ravel (bravel AT bnl DOT gov)
 
 Patches are welcome.
