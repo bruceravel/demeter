@@ -111,6 +111,7 @@ sub OnInit {
 		    );
 
   $app->{main} -> SetSizerAndFit($hbox);
+  $app->{main}->{return}->Hide;
   #$app->{main} -> SetSize(600,800);
   $app->{main} -> Show( 1 );
   $app->{main}->Refresh;
@@ -952,6 +953,11 @@ sub main_window {
     $app->{main}->{$which}->{document} -> Enable(0);
   };
   $app->{main}->{views}->SetSelection(0);
+
+  $app->{main}->{return}   = Wx::Button->new($viewpanel, -1, 'Return to main window', wxDefaultPosition, wxDefaultSize, wxBU_EXACTFIT);
+  $app->EVT_BUTTON($app->{main}->{return},   sub{  $app->{main}->{views}->SetSelection(0); $app->OnGroupSelect});
+  $viewbox -> Add($app->{main}->{return}, 0, wxGROW|wxLEFT|wxRIGHT, 5);
+
   $viewpanel -> SetSizerAndFit($viewbox);
 
   require Demeter::UI::Athena::Null;
@@ -960,7 +966,8 @@ sub main_window {
   $app->{main}->{views}->InsertPage(16, $null, $Demeter::UI::Athena::Null::label, 0);
 
 
-  EVT_CHOICEBOOK_PAGE_CHANGED($app->{main}, $app->{main}->{views}, sub{$app->OnGroupSelect(0,0)});
+  EVT_CHOICEBOOK_PAGE_CHANGED($app->{main}, $app->{main}->{views}, sub{$app->OnGroupSelect(0,0);
+								       $app->{main}->{return}->Show($app->{main}->{views}->GetSelection)});
   EVT_CHOICEBOOK_PAGE_CHANGING($app->{main}, $app->{main}->{views}, sub{$app->view_changing(@_)});
 
 

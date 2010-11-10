@@ -56,10 +56,8 @@ sub new {
   $this->{notebook} ->AddPage($marked, 'Marked',        0);
 
   $this->{document} = Wx::Button->new($this, -1, 'Document section: linear combination fitting');
-  $this->{return}   = Wx::Button->new($this, -1, 'Return to main window');
-  $box -> Add($this->{$_}, 0, wxGROW|wxALL, 2) foreach (qw(document return));
+  $box -> Add($this->{document}, 0, wxGROW|wxALL, 2);
   EVT_BUTTON($this, $this->{document}, sub{  $app->document("lcf")});
-  EVT_BUTTON($this, $this->{return},   sub{  $app->{main}->{views}->SetSelection(0); $app->OnGroupSelect});
 
   $this->SetSizerAndFit($box);
   return $this;

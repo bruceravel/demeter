@@ -1,10 +1,14 @@
 package Demeter::UI::Athena::LogRatio;
 
+use strict;
+use warnings;
+
 use Wx qw( :everything );
 use base 'Wx::Panel';
 use Wx::Event qw(EVT_BUTTON);
+use Wx::Perl::TextValidator;
 
-#use Demeter::UI::Wx::SpecialCharacters qw(:all);
+use Demeter::UI::Wx::SpecialCharacters qw(:all);
 
 use vars qw($label);
 $label = "Log-ratio/phase-difference analysis";	# used in the Choicebox and in status bar messages to identify this tool
@@ -18,14 +22,67 @@ sub new {
   my $box = Wx::BoxSizer->new( wxVERTICAL);
   $this->{sizer}  = $box;
 
+  my $gbs = Wx::GridBagSizer->new( 5, 5 );
+
+  my $label = Wx::StaticText->new($this, -1, "Standard");
+  $gbs->Add($label, Wx::GBPosition->new(0,0));
+  $label = Wx::StaticText->new($this, -1, "Unknown");
+  $gbs->Add($label, Wx::GBPosition->new(1,0));
+
+
+  $this->{standard} = Demeter::UI::Athena::GroupList -> new($this, $app, 1);
+  $this->{this}     = Wx::StaticText->new($this, -1, q{Group});
+  $gbs->Add($this->{standard}, Wx::GBPosition->new(0,1));
+  $gbs->Add($this->{this},     Wx::GBPosition->new(1,1));
+
+  $box -> Add($gbs, 0, wxALIGN_CENTER_HORIZONTAL|wxALL, 10);
+
+  my $fitbox       = Wx::StaticBox->new($this, -1, 'Fitting range', wxDefaultPosition, wxDefaultSize);
+  my $fitboxsizer  = Wx::StaticBoxSizer->new( $fitbox, wxHORIZONTAL );
+  $box            -> Add($fitboxsizer, 0, wxALIGN_CENTER_HORIZONTAL|wxALL, 5);
+
+  $fitboxsizer->Add(Wx::StaticText->new($this, -1, q{q-range}), 0, wxALL, 5);
+  $this->{qmin} = Wx::TextCtrl->new($this, -1, 3);
+  $fitboxsizer->Add($this->{qmin}, 0, wxALL, 5);
+  $fitboxsizer->Add(Wx::StaticText->new($this, -1, q{to}), 0, wxALL, 5);
+  $this->{qmax} = Wx::TextCtrl->new($this, -1, 12);
+  $fitboxsizer->Add($this->{qmax}, 0, wxALL, 5);
+  $this->{$_} -> SetValidator( Wx::Perl::TextValidator->new( qr([0-9.]) ) ) foreach (qw(qmin qmax));
+  $fitboxsizer->Add(Wx::StaticText->new($this, -1, "2$PI jumps"), 0, wxALL, 5);
+  $this->{twopi} = Wx::SpinCtrl->new($this, -1, 0, wxDefaultPosition, $tcsize, wxSP_ARROW_KEYS, 0, 10);
+  $fitboxsizer->Add($this->{twopi}, 0, wxALL, 5);
+
+  $this->{fit} = Wx::Button->new($this, -1, 'Fit');
+  $box -> Add($this->{fit}, 0, wxGROW|wxALL, 2);
+
+  $this->{result} = Wx::TextCtrl->new($this, -1, q{}, wxDefaultPosition, wxDefaultSize,
+				      wxTE_MULTILINE|wxTE_WORDWRAP|wxTE_AUTO_URL);
+  my $size = Wx::SystemSettings::GetFont(wxSYS_DEFAULT_GUI_FONT)->GetPointSize - 1;
+  $this->{result}->SetFont( Wx::Font->new( $size, wxTELETYPE, wxNORMAL, wxNORMAL, 0, "" ) );
+  $box->Add($this->{result}, 1, wxGROW|wxALL, 5);
+
+  $this->{lr}   = Wx::Button->new($this, -1, 'Plot log-ratio + fit');
+  $this->{pd}   = Wx::Button->new($this, -1, 'Plot phase-difference + fit');
+  $box -> Add($this->{lr}, 0, wxGROW|wxALL, 2);
+  $box -> Add($this->{pd}, 0, wxGROW|wxALL, 2);
+
+  my $plotbox       = Wx::StaticBox->new($this, -1, 'Plot standard and unkown in', wxDefaultPosition, wxDefaultSize);
+  my $plotboxsizer  = Wx::StaticBoxSizer->new( $plotbox, wxHORIZONTAL );
+  $box            -> Add($plotboxsizer, 0, wxGROW|wxALL, 2);
+  $this->{k}   = Wx::Button->new($this, -1, 'k');
+  $this->{r}   = Wx::Button->new($this, -1, 'R');
+  $this->{q}   = Wx::Button->new($this, -1, 'q');
+  $plotboxsizer -> Add($this->{$_}, 1, wxGROW|wxALL, 2) foreach (qw(k r q));
+
+  $this->{save} = Wx::Button->new($this, -1, 'Save results of fit');
+  $box -> Add($this->{save}, 0, wxGROW|wxALL, 2);
+
 
   $box->Add(1,1,1);		# this spacer may not be needed, Journal.pm, for example
 
   $this->{document} = Wx::Button->new($this, -1, 'Document section: log-ratio/phase-difference');
-  $this->{return}   = Wx::Button->new($this, -1, 'Return to main window');
-  $box -> Add($this->{$_}, 0, wxGROW|wxALL, 2) foreach (qw(document return));
+  $box -> Add($this->{document}, 0, wxGROW|wxLEFT|wxRIGHT, 2);
   EVT_BUTTON($this, $this->{document}, sub{  $app->document("lograt")});
-  EVT_BUTTON($this, $this->{return},   sub{  $app->{main}->{views}->SetSelection(0); $app->OnGroupSelect});
 
   $this->SetSizerAndFit($box);
   return $this;
@@ -40,7 +97,22 @@ sub pull_values {
 ## this subroutine fills the controls when an item is selected from the Group list
 sub push_values {
   my ($this, $data) = @_;
-  1;
+  $this->{this}  -> SetLabel($data->name);
+  $this->{standard}->fill($::app, 1, 1);
+  $this->{standard}->SetSelection(0);
+
+  $this->Enable(0);
+
+#   my $count = 0;
+#   foreach my $i (0 .. $::app->{main}->{list}->GetCount - 1) {
+#     my $data = $::app->{main}->{list}->GetClientData($i);
+#     ++$count if $data->datatype ne 'chi';
+#   };
+#   $this->Enable(1);
+#   if ($count < 2) {
+#     $this->Enable(0);
+#     return;
+#   };
 };
 
 ## this subroutine sets the enabled/frozen state of the controls

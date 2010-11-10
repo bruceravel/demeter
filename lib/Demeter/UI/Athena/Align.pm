@@ -111,10 +111,8 @@ sub new {
   $box->Add(1,1,1);
 
   $this->{document} = Wx::Button->new($this, -1, 'Document section: alignment');
-  $this->{return}   = Wx::Button->new($this, -1, 'Return to main window');
-  $box -> Add($this->{$_}, 0, wxGROW|wxALL, 2) foreach (qw(document return));
+  $box -> Add($this->{document}, 0, wxGROW|wxALL, 2);
   EVT_BUTTON($this, $this->{document}, sub{  $app->document("align")});
-  EVT_BUTTON($this, $this->{return},   sub{  $app->{main}->{views}->SetSelection(0); $app->OnGroupSelect});
 
   $this->SetSizerAndFit($box);
   return $this;

@@ -1,5 +1,8 @@
 package Demeter::UI::Athena::____;
 
+use strict;
+use warnings;
+
 use Wx qw( :everything );
 use base 'Wx::Panel';
 use Wx::Event qw(EVT_BUTTON);
@@ -22,10 +25,8 @@ sub new {
   $box->Add(1,1,1);		# this spacer may not be needed, Journal.pm, for example
 
   $this->{document} = Wx::Button->new($this, -1, 'Document section: _____');
-  $this->{return}   = Wx::Button->new($this, -1, 'Return to main window');
-  $box -> Add($this->{$_}, 0, wxGROW|wxALL, 2) foreach (qw(document return));
+  $box -> Add($this->{document}, 0, wxGROW|wxALL, 2);
   EVT_BUTTON($this, $this->{document}, sub{  $app->document("____")});
-  EVT_BUTTON($this, $this->{return},   sub{  $app->{main}->{views}->SetSelection(0); $app->OnGroupSelect});
 
   $this->SetSizerAndFit($box);
   return $this;

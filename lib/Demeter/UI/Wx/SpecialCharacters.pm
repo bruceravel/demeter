@@ -4,19 +4,19 @@ use strict;
 #use Encode;
 use base qw( Exporter );
 our @EXPORT_OK = qw(emph
-		    $MU $CHI $EPSILON $DELTA $SIGMA $SIGSQR $PHI $S02 $E0
+		    $MU $CHI $EPSILON $DELTA $SIGMA $SIGSQR $PHI $PI $S02 $E0
 		    $ALPHA $BETA $GAMMA
 		    $COPYRIGHT $LAQUO $RAQUO $MDASH
 		    $ONE $TWO $THR
 		    $ARING $MACRON
 		  );
 our %EXPORT_TAGS = (all   => [qw(emph
-				 $MU $CHI $EPSILON $DELTA $SIGMA $SIGSQR $PHI $S02 $E0
+				 $MU $CHI $EPSILON $DELTA $SIGMA $SIGSQR $PHI $PI $S02 $E0
 				 $ALPHA $BETA $GAMMA
 				 $COPYRIGHT $LAQUO $RAQUO $MDASH $ARING
 				 $ONE $TWO $THR $MACRON)],
 		    super => [qw($ONE $TWO $THR $MACRON)],
-		    greek => [qw($MU $CHI $EPSILON $DELTA $SIGMA $SIGSQR $PHI $S02 $E0
+		    greek => [qw($MU $CHI $EPSILON $DELTA $SIGMA $SIGSQR $PHI $PI $S02 $E0
 				 $ALPHA $BETA $GAMMA)],
 		   );
 
@@ -30,6 +30,7 @@ our $DELTA   = chr(916);          #"\xCE\x94";            #'Δ';
 our $SIGMA   = chr(963);          #"\xCF\x83";            #'σ';
 our $SIGSQR  = chr(963).chr(178); #"\xCF\x83"."\xC2\xB2"; #'σ²';
 our $PHI     = chr(966);          #"\xCF\x86";            #'φ';
+our $PI      = chr(960);
 our $S02     = 'S'.chr(8320).chr(178);
 our $E0      = 'E'.chr(8320);
 our $ALPHA   = chr(0x03B1);
