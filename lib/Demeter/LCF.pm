@@ -82,6 +82,7 @@ has 'standards' => (
 				 },
 		   );
 has 'doing_combi' => (is => 'rw', isa => 'Bool', default => 0);
+has 'combi_count' => (is => 'rw', isa => 'Int',  default => 0);
 has 'combi_results'=> (
 		       metaclass => 'Collection::Array',
 		       is        => 'rw',
@@ -486,7 +487,9 @@ sub combi {
   $self->doing_combi(1);
   $self->start_counter("Performing combinatoric LCF fitting", $nfits) if ($self->mo->ui eq 'screen');
   my @results = ();
+  my $count = 1;
   foreach my $this (@biglist) {
+    $self->combi_count($count);
     $self->clear_standards;
     my @list = map {$self->mo->fetch('Data', $_)} @$this;
     foreach my $st (@list) {	# take care not to change contents of options attribute
@@ -494,6 +497,7 @@ sub combi {
       $self->weight($st, 1/($#list+1));
     };
     $self->count if ($self->mo->ui eq 'screen');
+    $self->call_sentinal;
     $self->fit(1);
     $self->plot_fit if $self->co->default('lcf', 'combi_plot_during');
     #$self->clean;
@@ -509,8 +513,7 @@ sub combi {
       $fit{$st->group} = [$self->weight($st), $self->e0($st)];
     };
     push @results, \%fit;
-    ## store results of fit in some kind of data structure
-
+    ++$count;
   };
   $self->stop_counter if ($self->mo->ui eq 'screen');
   $self->doing_combi(0);

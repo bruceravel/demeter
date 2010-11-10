@@ -1338,7 +1338,7 @@ sub mark {
       $clb->Check($i, $val);
     };
   };
-  $app->{main}->status($mark_feeedback{$how}.$regex);
+  $app->{main}->status($mark_feeedback{$how}.'/'.$regex.'/');
 };
 
 
@@ -1454,13 +1454,13 @@ sub status {
     print $text, " -- ", join(", ", (caller)[0,2]), $/;
   };
 
-  my $color = ($type eq 'normal') ? $normal
-            : ($type eq 'wait')   ? $wait
-            : ($type eq 'error')  ? $error
+  my $color = ($type =~ m{normal}) ? $normal
+            : ($type =~ m{wait})   ? $wait
+            : ($type =~ m{error})  ? $error
 	    :                       $normal;
   $self->{statusbar}->SetBackgroundColour($color);
   $self->{statusbar}->SetStatusText($text);
-  return if ($type eq 'nobuffer');
+  return if ($type =~ m{nobuffer});
   $self->{Status}->put_text($text, $type);
 };
 

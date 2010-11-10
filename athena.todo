@@ -1,6 +1,6 @@
 -*- org -*-
 
-* Demeter bugs and shortcomings discovered  [11/24]
+* Demeter bugs and shortcomings discovered  [12/25]
  - [X] save_many fails to bring things up to date
  - [X] save_many fails to use flat/norm correctly
  - [ ] in D::Data::IO::save_many, why doesn't updating in n specifying
@@ -27,9 +27,9 @@
  - [ ] add a record to an existing Athena project file
  - [ ] tie multiple groups together
  - [ ] set E0 to peak of white line
- - [ ] serialize VPath, put into dpj and fpj files
+ - [ ] +serialize VPath+, put VPath into +dpj and+ fpj files
  - [ ] key top/left/bottom/right config params + controls in plottabs in Athena
- - [ ] deserializing SSPath fails
+ - [X] deserializing SSPath fails
 
 * Uses of PDL [0/3]
  - [ ] Savitsky-Golay filter  [[file:notes/sgolay.m][Matlab routine for SG filter]]

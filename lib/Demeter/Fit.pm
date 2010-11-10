@@ -1106,7 +1106,6 @@ sub has_data {
 ## ------------------------------------------------------------
 ## Serialization and deserialization of the Fit object
 
-## need to serialize/deserialize correlations and statistics
 override 'serialize' => sub {
   my ($self, @args) = @_;
   my %args = @args;		# coerce args into a hash
@@ -1362,6 +1361,28 @@ override 'deserialize' => sub {
     push @paths, $this;
   };
 
+  ## -------- import the vpaths
+  my @vpaths = ();
+  $yaml = ($args{file}) ? $zip->contents("vpaths.yaml")
+    : $self->slurp(File::Spec->catfile($args{folder}, "vpaths.yaml"));
+  @list = YAML::Tiny::Load($yaml);
+  foreach my $vp (@list) {
+    delete $vp->{$_} foreach qw(id update_path update_fft update_bft);
+    my $dg = $vp->{datagroup};
+    $vp->{data} = $datae{$dg};
+
+    my @pathgroups = @{ $vp->{pathgroups} };
+
+    my @array = %{ $vp };
+    my $this = Demeter::VPath->new();
+    $this -> set(@array);
+    $this -> update_path(1);
+    foreach my $pg (@pathgroups) {
+      $this->push_paths($this -> mo -> fetch('Path', $pg));
+    };
+    push @vpaths, $this;
+  };
+
   if ($args{regenerate}) {
     my %mapping = ();
     foreach my $o (@gds, @data, @paths) {
@@ -1383,9 +1404,10 @@ override 'deserialize' => sub {
   };
 
   ## -------- make the fit object
-  $self -> set(gds   => \@gds,
-	       data  => \@data,
-	       paths => \@paths,
+  $self -> set(gds    => \@gds,
+	       data   => \@data,
+	       paths  => \@paths,
+	       vpaths => \@vpaths,
 	      );
 
   ## -------- import the fit properties, statistics, correlations
@@ -1510,6 +1532,16 @@ Here is a list of the scalar valued attributes.  Many of these get set
 automatically when the fit is performed.  All of them are optional.
 
 =over 4
+
+=item C<vpaths>
+
+Like the C<gds>, C<data>, and C<paths> attributes, this takes a
+reference to an array.  This array contains all the
+L<VPath|Demeter::VPath> objects defined with the fit.  Note that,
+unlike the other three, this is not required and is not a part of the
+definition of the fit.  In fact, the only use for this attribute is to
+have a collection of VPaths saved to a serialization file and
+recovered when the fit is deserialized.
 
 =item C<label>
 
@@ -1735,6 +1767,14 @@ tool.
 
 C<freeze> and C<thaw> are aliases for the C<serialize> and
 C<deserialize> methods.
+
+The constituents of the deserialized fit can be recovered by
+dereferencing the arrays stored in the C<gds>, C<data>, and C<paths>
+attributes.
+
+  my @gds   = @{ $newfitobject->gds };
+  my @data  = @{ $newfitobject->data };
+  my @paths = @{ $newfitobject->paths };
 
 =head1 DIAGNOSTICS
 

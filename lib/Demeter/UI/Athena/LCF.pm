@@ -451,8 +451,9 @@ sub combi {
       return 0;
     };
   };
-  $::app->{main}->status("Doing $size combinatorial fits ... this may take a while", 'wait');
+  $::app->{main}->status("Doing $size combinatorial fits", 'wait');
   my $start = DateTime->now( time_zone => 'floating' );
+  $this->{LCF} -> sentinal(sub{$this->combi_sentinal($size)});
   $this->{LCF} -> combi;
   $this->{LCF} -> plot_fit;
 
@@ -488,6 +489,11 @@ sub combi {
   $::app->{main}->status($finishtext);
 
   undef $busy;
+};
+
+sub combi_sentinal {
+  my ($this, $size) = @_;
+  $::app->{main}->status($this->{LCF}->combi_count." of $size combinatorial fits", 'wait|nobuffer');
 };
 
 sub combi_results {

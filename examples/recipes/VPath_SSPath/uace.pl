@@ -2,6 +2,7 @@
 
 ## strict and warnings imported automatically with Demeter
 use Demeter qw(:plotwith=gnuplot :ui=screen);
+#use diagnostics;
 
 unlink("controlfit.iff") if (-e "controlfit.iff");
 
@@ -139,5 +140,3 @@ foreach my $o ($data, $paths[0], $paths[1], $carbon, $axialms, $ss) {
 };
 
 $data->pause;
-
-print $carbon->serialization, $/;

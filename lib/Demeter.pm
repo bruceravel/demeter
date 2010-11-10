@@ -22,7 +22,7 @@ BEGIN {
 require 5.8.0;
 
 use version;
-our $VERSION = version->new('0.4.5');
+our $VERSION = version->new('0.4.6');
 use vars qw($Gnuplot_exists $Fityk_exists);
 
 #use Demeter::Carp;
@@ -72,17 +72,19 @@ with 'MooseX::SetGet';		# this is mine....
 
 
 my %seen_group;
-has 'group'     => (is => 'rw', isa => 'Str',  default => sub{shift->_get_group()},
+has 'group'     => (is => 'rw', isa => 'Str',     default => sub{shift->_get_group()},
 		    trigger => sub{ my($self, $new); ++$seen_group{$new} if defined($new)});
-has 'name'      => (is => 'rw', isa => 'Str',  default => q{});
-has 'plottable' => (is => 'ro', isa => 'Bool', default => 0);
-has 'pathtype'  => (is => 'ro', isa => 'Bool', default => 0);
-has 'mark'      => (is => 'rw', isa => 'Bool', default => 0);
-has 'frozen'    => (is => 'rw', isa => 'Bool', default => 0);
-has 'data'      => (is => 'rw', isa => 'Any',  default => q{},
+has 'name'      => (is => 'rw', isa => 'Str',     default => q{});
+has 'plottable' => (is => 'ro', isa => 'Bool',    default => 0);
+has 'pathtype'  => (is => 'ro', isa => 'Bool',    default => 0);
+has 'mark'      => (is => 'rw', isa => 'Bool',    default => 0);
+has 'frozen'    => (is => 'rw', isa => 'Bool',    default => 0);
+has 'data'      => (is => 'rw', isa => 'Any',     default => q{},
 		    trigger => sub{ my($self, $new) = @_; $self->datagroup($new->group) if $new});
-has 'datagroup' => (is => 'rw', isa => 'Str',  default => q{});
-has 'trouble'   => (is => 'rw', isa => 'Str',  default => q{});
+has 'datagroup' => (is => 'rw', isa => 'Str',     default => q{});
+has 'trouble'   => (is => 'rw', isa => 'Str',     default => q{});
+has 'sentinal'  => (traits  => ['Code'],
+		    is => 'rw', isa => 'CodeRef', default => sub{sub{1}}, handles => {call_sentinal => 'execute',});
 
 
 use Demeter::Mode;
@@ -480,7 +482,7 @@ sub what_isa {
 ## down into override methods in extended classes
 sub all {
   my ($self) = @_;
-  my @keys   = map {$_->name} grep {$_->name !~ m{\A(?:data|plot|plottable|pathtype|mode|highlight|hl|prompt)\z}} $self->meta->get_all_attributes;
+  my @keys   = map {$_->name} grep {$_->name !~ m{\A(?:data|plot|plottable|pathtype|mode|highlight|hl|prompt|sentinal)\z}} $self->meta->get_all_attributes;
   my @values = map {$self->$_} @keys;
   my %hash   = zip(@keys, @values);
   return %hash;
@@ -1513,9 +1515,23 @@ All others return false.
 
    $can_plot = $object -> plottable;
 
+=item C<sentinal>
+
+This attribute is inherited by all Demeter objects and provides a
+completely generic way for interactivity to be built into any process
+that a Demeter program undertakes.  At the moment, the only use is in
+the L<Demeter::LCF> C<combi> method.  This attribute takes a code
+reference.  At the beginning of each fit in the combinatorial
+sequence, this is dereference and called.  This allows Athena to
+provide status bar updates during this potentially long-running
+process.
+
+The dereferencing and calling of the sentinal is handled by C<call>
+
+  $object -> call_sentinal;
+
 =back
 
-=head2 Utility methods
 
 Demeter provides a generic mechanism for reporting on errors in a
 fitting model.  When using Demeter non-interactively, useful messages
@@ -1539,7 +1555,6 @@ own set of problem codes.
 
 =head1 DIAGNOSTICS
 
- zip
 =head1 CONFIGURATION AND ENVIRONMENT
 
 See L<Demeter::Config> for details about the configuration
@@ -1564,11 +1579,6 @@ templates.  L<Text::Template> supports using a L<Safe> compartment.
 
 Serialization is incompletely implemented at this time.
 
-=item *
-
-You can switch plotting backends on the fly, but all parameter values
-get reset to their defaults.
-
 =back
 
 Please report problems to Bruce Ravel (bravel AT bnl DOT gov)
@@ -1578,6 +1588,10 @@ Patches are welcome.
 =head1 VERSIONS
 
 =over 4
+
+=item 0.4.6
+
+We now have a mostly functional Athena.
 
 =item 0.4.5
 
