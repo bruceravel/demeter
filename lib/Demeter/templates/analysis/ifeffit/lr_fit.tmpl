@@ -1,0 +1,22 @@
+## do log-ratio fit
+guess(lr___pd0 = 1, lr___pd2 = 0, lr___pd4 = 0)
+def({$S->data->group}.ratio = ln( {$S->data->group}.chiq_mag / {$S->standard->group}.chiq_mag ),
+    {$S->data->group}.even  = lr___pd0 - 2*lr___pd2*{$S->standard->group}.q^2 + (2/3)*lr___pd4*{$S->standard->group}.q^4,
+    {$S->data->group}.resev = {$S->data->group}.ratio - {$S->data->group}.even)
+minimize({$S->data->group}.resev, x={$S->standard->group}.q, xmin={$S->qmin}, xmax={$S->qmax})
+set(lr___pd0 = lr___pd0, lr___pd2 = lr___pd2, lr___pd4 = lr___pd4)
+
+## do phase difference fit
+guess(lr___pd1 = 0, lr___pd3 = 0)
+def({$S->data->group}.diff = {$S->data->group}.chiq_pha - {$S->standard->group}.chiq_pha,
+    {$S->data->group}.odd = 2*lr___pd1*{$S->standard->group}.q - (4/3) * lr___pd3*{$S->standard->group}.q^3 + {$S->twopi}*2*pi,
+    {$S->data->group}.resod = {$S->data->group}.diff - {$S->data->group}.odd)
+minimize({$S->data->group}.resod, x={$S->standard->group}.q, xmin={$S->qmin}, xmax={$S->qmax})
+set(lr___pd1 = lr___pd1, lr___pd3 = lr___pd3)
+
+set ({$S->data->group}.ratio = {$S->data->group}.ratio,
+     {$S->data->group}.even  = {$S->data->group}.even,
+     {$S->data->group}.resev = {$S->data->group}.resev,
+     {$S->data->group}.diff  = {$S->data->group}.diff,
+     {$S->data->group}.odd   = {$S->data->group}.odd,
+     {$S->data->group}.resod = {$S->data->group}.resod)

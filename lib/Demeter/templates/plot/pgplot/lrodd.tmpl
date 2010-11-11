@@ -1,0 +1,3 @@
+newplot({$S->data->group}.q, {$S->data->group}.diff, xmax={$S->qmax}, title="phase-difference",
+        xlabel="k (\A\u-1\d)", ylabel="phase-difference (radians)", key=data)
+plot({$S->data->group}.q, {$S->data->group}.odd, key=fit)

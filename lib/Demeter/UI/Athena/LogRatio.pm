@@ -2,6 +2,7 @@ package Demeter::UI::Athena::LogRatio;
 
 use strict;
 use warnings;
+use Cwd;
 
 use Wx qw( :everything );
 use base 'Wx::Panel';
@@ -18,6 +19,8 @@ my $tcsize = [60,-1];
 sub new {
   my ($class, $parent, $app) = @_;
   my $this = $class->SUPER::new($parent, -1, wxDefaultPosition, wxDefaultSize, wxMAXIMIZE_BOX );
+
+  $this->{LR} = Demeter::LogRatio->new;
 
   my $box = Wx::BoxSizer->new( wxVERTICAL);
   $this->{sizer}  = $box;
@@ -49,7 +52,7 @@ sub new {
   $fitboxsizer->Add($this->{qmax}, 0, wxALL, 5);
   $this->{$_} -> SetValidator( Wx::Perl::TextValidator->new( qr([0-9.]) ) ) foreach (qw(qmin qmax));
   $fitboxsizer->Add(Wx::StaticText->new($this, -1, "2$PI jumps"), 0, wxALL, 5);
-  $this->{twopi} = Wx::SpinCtrl->new($this, -1, 0, wxDefaultPosition, $tcsize, wxSP_ARROW_KEYS, 0, 10);
+  $this->{twopi} = Wx::SpinCtrl->new($this, -1, 0, wxDefaultPosition, $tcsize, wxSP_ARROW_KEYS, -5, 5);
   $fitboxsizer->Add($this->{twopi}, 0, wxALL, 5);
 
   $this->{fit} = Wx::Button->new($this, -1, 'Fit');
@@ -65,6 +68,8 @@ sub new {
   $this->{pd}   = Wx::Button->new($this, -1, 'Plot phase-difference + fit');
   $box -> Add($this->{lr}, 0, wxGROW|wxALL, 2);
   $box -> Add($this->{pd}, 0, wxGROW|wxALL, 2);
+  $this->{lr}->Enable(0);
+  $this->{pd}->Enable(0);
 
   my $plotbox       = Wx::StaticBox->new($this, -1, 'Plot standard and unkown in', wxDefaultPosition, wxDefaultSize);
   my $plotboxsizer  = Wx::StaticBoxSizer->new( $plotbox, wxHORIZONTAL );
@@ -76,6 +81,15 @@ sub new {
 
   $this->{save} = Wx::Button->new($this, -1, 'Save results of fit');
   $box -> Add($this->{save}, 0, wxGROW|wxALL, 2);
+  $this->{save}->Enable(0);
+
+  EVT_BUTTON($this, $this->{fit},  sub{fit(@_)});
+  EVT_BUTTON($this, $this->{lr},   sub{plot(@_, 'even')});
+  EVT_BUTTON($this, $this->{pd},   sub{plot(@_, 'odd')});
+  EVT_BUTTON($this, $this->{k},    sub{plot(@_, 'k')});
+  EVT_BUTTON($this, $this->{r},    sub{plot(@_, 'r')});
+  EVT_BUTTON($this, $this->{q},    sub{plot(@_, 'q')});
+  EVT_BUTTON($this, $this->{save}, sub{save(@_, 'save')});
 
 
   $box->Add(1,1,1);		# this spacer may not be needed, Journal.pm, for example
@@ -101,18 +115,16 @@ sub push_values {
   $this->{standard}->fill($::app, 1, 1);
   $this->{standard}->SetSelection(0);
 
-  $this->Enable(0);
-
-#   my $count = 0;
-#   foreach my $i (0 .. $::app->{main}->{list}->GetCount - 1) {
-#     my $data = $::app->{main}->{list}->GetClientData($i);
-#     ++$count if $data->datatype ne 'chi';
-#   };
-#   $this->Enable(1);
-#   if ($count < 2) {
-#     $this->Enable(0);
-#     return;
-#   };
+  my $count = 0;
+  foreach my $i (0 .. $::app->{main}->{list}->GetCount - 1) {
+    my $data = $::app->{main}->{list}->GetClientData($i);
+    ++$count if $data->datatype ne 'chi';
+  };
+  $this->Enable(1);
+  if ($count < 2) {
+    $this->Enable(0);
+    return;
+  };
 };
 
 ## this subroutine sets the enabled/frozen state of the controls
@@ -121,9 +133,55 @@ sub mode {
   1;
 };
 
-## yes, there is some overlap between what push_values and mode do.
-## This separation was useful in Main.pm.  Some of the other tools
-## make mode a null op.
+sub fit {
+  my ($this, $event) = @_;
+  $this->{LR}->data($::app->current_data);
+  $this->{LR}->standard($this->{standard}->GetClientData($this->{standard}->GetSelection));
+  $this->{LR}->twopi($this->{twopi}->GetValue);
+  $this->{LR}->qmin($this->{qmin}->GetValue);
+  $this->{LR}->qmax($this->{qmax}->GetValue);
+  $this->{LR}->fit;
+  $this->{result}->SetValue($this->{LR}->report);
+  $this->{LR}->po->start_plot;
+  $this->{LR}->plot_even;
+  $this->{lr}->Enable(1);
+  $this->{pd}->Enable(1);
+  $this->{save}->Enable(1);
+  $::app->{main}->status(sprintf("Made a log-ratio/phase-difference fit of %s to %s",
+				 $this->{LR}->data->name,
+				 $this->{LR}->standard->name));
+};
+
+sub plot {
+  my ($this, $event, $how) = @_;
+  $this->{LR}->po->start_plot;
+  if ($how eq 'even') {
+    $this->{LR}->plot_even;
+  } elsif ($how eq 'odd') {
+    $this->{LR}->plot_odd;
+  } elsif ($how =~ m{\A[kqr]\z}i) {
+    $this->{LR}->data($::app->current_data);
+    $this->{LR}->standard($this->{standard}->GetClientData($this->{standard}->GetSelection));
+    $this->{LR}->standard->plot($how);
+    $this->{LR}->data->plot($how);
+  };
+};
+
+sub save {
+  my ($this, $event) = @_;
+  (my $name = $this->{LR}->data->name) =~ s{\s+}{_}g;
+  my $fd = Wx::FileDialog->new( $::app->{main}, "Save log-ratio fit to a file", cwd, $name.".lrpd",
+				"Log-ratio/phase-difference (*.lrpd)|*.lrpd|All files|*.*",
+				wxFD_SAVE|wxFD_CHANGE_DIR|wxFD_OVERWRITE_PROMPT,
+				wxDefaultPosition);
+  if ($fd->ShowModal == wxID_CANCEL) {
+    $::app->{main}->status("Saving log-ratio results to a file has been cancelled.");
+    return 0;
+  };
+  my $fname = File::Spec->catfile($fd->GetDirectory, $fd->GetFilename);
+  $this->{LR}->save($fname);
+  $::app->{main}->status("Saved log-ratio/phase-difference results to $fname");
+};
 
 1;
 

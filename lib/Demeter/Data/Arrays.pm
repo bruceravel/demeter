@@ -162,6 +162,7 @@ sub points {
         : ($args{space} eq 'chie') ? $self->get_array('k')
         : ($args{space} eq 'r')    ? $self->get_array('r', $args{part})
         : ($args{space} eq 'lcf')  ? $self->get_array('x')
+        : ($args{space} eq 'lr')   ? $self->get_array('q')
         :                            $self->get_array('q', $args{part});
   my @k = @x;
   @x = map {$_**2/$ETOK + $self->bkg_e0} @x if ($args{space} eq 'chie');
@@ -169,6 +170,8 @@ sub points {
   my @y = ();
   my @z = ();
   if ($args{space} eq 'lcf') {
+    @y = $self->get_array($args{suffix});
+  } elsif ($args{space} eq 'lr') {
     @y = $self->get_array($args{suffix});
   } elsif ((ref($self) =~ m{Data}) and is_DataPart($args{part})) {
     my $suff = ($args{part} eq 'run') ? substr($args{suffix}, 0, 4) : $args{suffix};

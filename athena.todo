@@ -1,6 +1,6 @@
 -*- org -*-
 
-* Demeter bugs and shortcomings discovered  [12/25]
+* Demeter bugs and shortcomings discovered  [13/25]
  - [X] save_many fails to bring things up to date
  - [X] save_many fails to use flat/norm correctly
  - [ ] in D::Data::IO::save_many, why doesn't updating in n specifying
@@ -21,7 +21,7 @@
  - [ ] deglitch many points
  - [X] self absorption algorithms [[file:~/codes/horae/athena_parts/sa_fluo.pl][from horae]]
  - [X] self absorption information depth not yet implemented
- - [ ] templates for LR/PD [[file:~/codes/horae/athena_parts/macro.pl][old athena macros]]
+ - [X] templates for LR/PD [[file:~/codes/horae/athena_parts/macro.pl][old athena macros]]
  - [ ] templates for difference spectra
  - [X] X23A2 multichannel filetype plugin
  - [ ] add a record to an existing Athena project file
@@ -194,7 +194,7 @@
  - [ ] tie relative energy value to changes in E0
  - [ ] set e0 for all and marked
 
-* Tools [13/20]
+* Tools [14/20]
  - [X] main
  - [X] calibrate
  - [X] align
@@ -210,7 +210,7 @@
 
  - [X] LCF
  - [ ] Peak fit
- - [ ] log ratio
+ - [X] log ratio
  - [ ] difference
 
  - [ ] explain FT

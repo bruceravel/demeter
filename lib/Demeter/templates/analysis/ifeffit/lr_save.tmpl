@@ -1,0 +1,13 @@
+{
+  @lr___pd = split(/\n/, $S->report);
+  q{}
+}
+$lr___pd_title_1 = "Log-ratio/phase difference fit of {$S->data->name} to {$S->standard->name}"
+$lr___pd_title_2 = "{$lr___pd[0]}"
+$lr___pd_title_3 = "{$lr___pd[1]}"
+$lr___pd_title_4 = "{$lr___pd[2]}"
+$lr___pd_title_5 = "{$lr___pd[3]}"
+$lr___pd_title_6 = "{$lr___pd[4]}"
+write_data(file="{$file}", $lr___pd_title_*, npts={($S->qmax+1)/0.05},
+           {$S->data->group}.q, {$S->data->group}.ratio, {$S->data->group}.even, {$S->data->group}.diff, {$S->data->group}.odd)
+erase $lr___pd_title_1 $lr___pd_title_2 $lr___pd_title_3 $lr___pd_title_4 $lr___pd_title_5 $lr___pd_title_6
