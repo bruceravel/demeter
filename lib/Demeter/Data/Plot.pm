@@ -227,7 +227,7 @@ sub _plotq_command {
   if (lc($pf->q_pl) eq 'e') {		# envelope
     my $pm = $self->plot_multiplier;
     $self->plot_multiplier(-1*$pm);
-    my $this = $self->template("plot", "overr");
+    my $this = $self->template("plot", "overq");
     my $datalabel = $self->name;
     $this = $self->po->fix_envelope($this, $datalabel);
     $string .= $this;

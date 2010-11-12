@@ -30,6 +30,7 @@
  - [ ] +serialize VPath+, put VPath into +dpj and+ fpj files
  - [ ] key top/left/bottom/right config params + controls in plottabs in Athena
  - [X] deserializing SSPath fails
+ - [ ] envelope is q is plotted absurdly wrongly (it seems to plot something in R)
 
 * Uses of PDL [0/3]
  - [ ] Savitsky-Golay filter  [[file:notes/sgolay.m][Matlab routine for SG filter]]
