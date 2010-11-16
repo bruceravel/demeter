@@ -121,13 +121,13 @@ my $ss = Demeter::SSPath -> new(@common,
 push @paths, $ss;
 
 
-my $fit = Demeter::Fit->new(gds   => \@gds,
-                            data  => [$data],
-                            paths => \@paths, );
+my $fit = Demeter::Fit->new(gds    => \@gds,
+                            data   => [$data],
+                            paths  => \@paths,
+			    vpaths => [$carbon, $axialms]);
 $fit -> fit;
 ##$fit -> logfile("controlfit.log", "U control", q{});
 
-$fit -> vpaths([$carbon, $axialms]);
 $fit -> freeze(file=>"uace.dpj", copyfeff=>1);
 ##$data->save_many("many.out", 'chik3', $paths[0], $paths[1], $carbon);
 
