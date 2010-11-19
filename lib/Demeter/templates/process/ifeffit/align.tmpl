@@ -12,13 +12,15 @@
 {
   $emin = $DS->bkg_e0 -  50;
   $emax = $DS->bkg_e0 + 100;
+  $start = 'smooth(' x $P->e_smooth;
+  $end = ')' x $P->e_smooth;
   q()
 }
 ##| auto-aligning {$D->group} to {$DS->group}
 guess(aa___esh   = 0,
       aa___scale = 1)
 def {$D->group}.xmui    = {$P->interp}({$D->group}.energy+aa___esh, {$D->group}.xmu, {$DS->group}.energy+{$DS->bkg_eshift})
-def aa___.res    = deriv({$DS->group}.xmu) - aa___scale*deriv({$D->group}.xmui)
+def aa___.res    = {$start}deriv({$DS->group}.xmu){$end} - aa___scale*{$start}deriv({$D->group}.xmui){$end}
 minimize(aa___.res, x={$DS->group}.energy, xmin={$emin}, xmax={$emax})
 set(aa___.res    = aa___.res,
     {$D->group}.xmui    = {$D->group}.xmui)

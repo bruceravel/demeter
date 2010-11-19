@@ -296,12 +296,13 @@ sub deglitch {
 
 
 sub smooth {
-  my ($self, $n) = @_;
+  my ($self, $n, $how) = @_;
   ($n = 1) if ($n < 1);
-  if ($self->datatype =~ m{(?:xmu|xanes)}) {
+  $how ||= $self->datatype;
+  if ($how =~ m{(?:xmu|xanes)}) {
     $self -> _update("normalize");
     $self -> mo -> config -> set(smooth_suffix => 'xmu');
-  } elsif ($self->datatype eq "chi") {
+  } elsif ($how eq "chi") {
     $self -> mo -> config -> set(smooth_suffix => 'chi');
   };
   foreach (1 .. int($n)) {
@@ -309,9 +310,9 @@ sub smooth {
     $self->dispose($string);
   };
   # flag for reprocessing
-  if ($self->datatype =~ m{(?:xmu|xanes)}) {
+  if ($how =~ m{(?:xmu|xanes)}) {
     $self->update_norm(1);
-  } elsif ($self->datatype eq "chi") {
+  } elsif ($how eq "chi") {
     $self->update_fft(1);
   };
 };

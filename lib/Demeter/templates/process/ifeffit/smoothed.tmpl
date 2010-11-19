@@ -1,0 +1,13 @@
+{ # -*- ifm -*-
+  # prep data for a smoothed plot
+  #   {$D->group}  returns the ifeffit group name
+  #   {$D->parameter} returns the value of that parameter
+  #   {$C->get("parameter")} returns the generic parameter
+}
+##|
+##| smoothing {$D->name}
+set {$D->group}.smooth = {$D->group}.{$C->get("smooth_suffix")}
+{ foreach (1 .. $P->e_smooth) {
+     $OUT .= "set " . $D->group . ".smooth = smooth(" . $D->group . ".smooth" . ")\n";
+  }
+}

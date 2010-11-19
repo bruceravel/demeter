@@ -1,6 +1,6 @@
 -*- org -*-
 
-* Demeter bugs and shortcomings discovered  [13/25]
+* Demeter bugs and shortcomings discovered  [16/24]
  - [X] save_many fails to bring things up to date
  - [X] save_many fails to use flat/norm correctly
  - [ ] in D::Data::IO::save_many, why doesn't updating in n specifying
@@ -13,12 +13,10 @@
  - [X] bkg_fix_step does not work
  - [ ] clnorm
  - [X] erase ifeffit group when DEMOLISHing Data object
- - [ ] align as smoothed derivative
- - [ ] plotting smoothed derivative
+ - [X] align as smoothed derivative
+ - [X] plotting smoothed derivative
        - need a template for applying the 3-pt smoothing N times, then taking second
        - need a hook before any deriv/second plot to call that template
- - [ ] plot margin lines for deglitching
- - [ ] deglitch many points
  - [X] self absorption algorithms [[file:~/codes/horae/athena_parts/sa_fluo.pl][from horae]]
  - [X] self absorption information depth not yet implemented
  - [X] templates for LR/PD [[file:~/codes/horae/athena_parts/macro.pl][old athena macros]]
@@ -30,7 +28,7 @@
  - [ ] +serialize VPath+, put VPath into +dpj and+ fpj files
  - [ ] key top/left/bottom/right config params + controls in plottabs in Athena
  - [X] deserializing SSPath fails
- - [ ] envelope is q is plotted absurdly wrongly (it seems to plot something in R)
+ - [X] envelope is q is plotted absurdly wrongly (it seems to plot something in R)
 
 * Uses of PDL [0/3]
  - [ ] Savitsky-Golay filter  [[file:notes/sgolay.m][Matlab routine for SG filter]]
@@ -185,7 +183,7 @@
  - [ ]  document
  - [ ]  memory usage
 
-* Weird stuff I'd prefer not to implement unless demanded [0/8]
+* Weird stuff I'd prefer not to implement unless demanded [0/9]
  - [ ] xfit output
  - [ ] csv and text report
  - [ ] group selection replot
@@ -194,6 +192,7 @@
  - [ ] set to standard (i.e. the one that is marked)
  - [ ] tie relative energy value to changes in E0
  - [ ] set e0 for all and marked
+ - [ ] plot margin lines for deglitching, deglitch many points
 
 * Tools [14/20]
  - [X] main

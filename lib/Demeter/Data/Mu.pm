@@ -420,6 +420,11 @@ sub _plotE_command {
     } elsif ($self->po->e_norm) {
       $this = 'norm';
     };
+    if ($self->po->e_smooth) {
+      $self -> co -> set(smooth_suffix => $this);
+      $self->dispose($self->template('process', 'smoothed'));
+      $this = 'smooth';
+    };
     push @suffix_list, $this;
     my $n = $incr;
     my $cn = "col$n";
@@ -495,7 +500,9 @@ sub _plotE_command {
   my $markers = q{};
   if ($self->po->e_markers) {
     my $this = 'xmu';
-    if  ($self->po->e_der) {
+    if  ($self->po->e_smooth) {
+      $this = 'smooth';
+    } elsif  ($self->po->e_der) {
       $this = ($self->po->e_norm) ? 'nder' : 'der';
     } elsif  ($self->po->e_sec) {
       $this = ($self->po->e_norm) ? 'nsec' : 'sec';
