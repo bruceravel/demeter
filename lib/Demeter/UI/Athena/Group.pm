@@ -121,6 +121,7 @@ sub Remove {
     };
     $app->{main}->{list}->Clear;
     $app->Clear;
+    $app->{main}->{views}->SetSelection(0);
   };
 
   if ($app->is_empty) {

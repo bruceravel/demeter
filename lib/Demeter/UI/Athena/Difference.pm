@@ -75,7 +75,7 @@ sub new {
   $this->{markedareas} = Wx::Button->new($this, -1, 'Plot integrated areas from all marked groups', wxDefaultPosition, $tcsize);
   $this->{markedmake}  = Wx::Button->new($this, -1, 'Make difference groups from all marked groups', wxDefaultPosition, $tcsize);
   $box -> Add($this->{$_}, 0, wxGROW|wxALL, 2) foreach (qw(plot make marked markedareas markedmake));
-  $this->{$_}->Enable(0) foreach (qw(make marked markedareas markedmake))
+  $this->{$_}->Enable(0) foreach (qw(make marked markedareas markedmake));
   EVT_BUTTON($this, $this->{plot},    sub{$this->plot});
 
   $box->Add(1,1,1);		# this spacer may not be needed, Journal.pm, for example
