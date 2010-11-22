@@ -141,8 +141,9 @@ sub push_values {
     $this->Enable(0);
     return;
   };
+  my $was = $this->{standard}->GetStringSelection;
   $this->{standard}->fill($::app, 1, 1);
-  $this->{standard}->SetSelection(0);
+  ($was eq 'None') ? $this->{standard}->SetSelection(0) : $this->{standard}->SetStringSelection($was);
   $this->plot($data);
 };
 sub mode {

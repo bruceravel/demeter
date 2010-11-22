@@ -162,6 +162,7 @@ sub points {
         : ($args{space} eq 'chie') ? $self->get_array('k')
         : ($args{space} eq 'r')    ? $self->get_array('r', $args{part})
         : ($args{space} eq 'lcf')  ? $self->get_array('x')
+        : ($args{space} eq 'diff') ? $self->get_array('energy')
         : ($args{space} eq 'lr')   ? $self->get_array('q')
         :                            $self->get_array('q', $args{part});
   my @k = @x;
@@ -172,6 +173,8 @@ sub points {
   if ($args{space} eq 'lcf') {
     @y = $self->get_array($args{suffix});
   } elsif ($args{space} eq 'lr') {
+    @y = $self->get_array($args{suffix});
+  } elsif ($args{space} eq 'diff') {
     @y = $self->get_array($args{suffix});
   } elsif ((ref($self) =~ m{Data}) and is_DataPart($args{part})) {
     my $suff = ($args{part} eq 'run') ? substr($args{suffix}, 0, 4) : $args{suffix};

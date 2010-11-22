@@ -118,7 +118,13 @@ sub new {
 		   };
 		   $this->replot(qw(E single));
 		 });
-  EVT_CHECKBOX($this, $this->{mder}, sub{$_[0]->replot(qw(E marked))});
+  EVT_CHECKBOX($this, $this->{mder},
+	       sub{my ($this, $event) = @_;
+		   if ($this->{mder}->GetValue) {
+		     $this->{msec}->SetValue(0);
+		   };
+		   $this->replot(qw(E marked))
+		 });
   $app->mouseover($this->{der},  "Plot first derivative data when ploting the current group in energy.");
   $app->mouseover($this->{mder}, "Plot first derivative data when ploting the marked groups in energy.");
 
@@ -140,7 +146,13 @@ sub new {
 		   };
 		   $this->replot(qw(E single));
 		 });
-  EVT_CHECKBOX($this, $this->{msec}, sub{$_[0]->replot(qw(E marked))});
+  EVT_CHECKBOX($this, $this->{msec},
+	       sub{my ($this, $event) = @_;
+		   if ($this->{msec}->GetValue) {
+		     $this->{mder}->SetValue(0);
+		   };
+		   $this->replot(qw(E marked))
+		 });
   $app->mouseover($this->{sec},  "Plot second derivative data when ploting the current group in energy.");
   $app->mouseover($this->{msec}, "Plot second derivative data when ploting the marked groups in energy.");
 

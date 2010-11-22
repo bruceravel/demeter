@@ -663,8 +663,10 @@ sub OnParameter {
             : ($which =~ m{nnorm})        ? interpret_nnorm($app)
 	    :                               $widget->GetValue;
   $value = 0     if not looks_like_number($value);
-  $value = 0.001 if (($data->what_isa($which) =~ m{PosNum}) and ($value<=0));
-  $value = 0     if (($data->what_isa($which) =~ m{NonNeg}) and ($value<0));
+  if ($which !~ m{nnorm}) {
+    $value = 0.001 if (($data->what_isa($which) =~ m{PosNum}) and ($value<=0));
+    $value = 0     if (($data->what_isa($which) =~ m{NonNeg}) and ($value<0));
+  };
   if ($which eq 'bkg_stan') {
     my $stan = $app->{main}->{Main}->{bkg_stan}->GetClientData($value);
     $data->bkg_stan($stan->group);

@@ -304,6 +304,17 @@ has 'LogRatio' => (
 			      'splice'  => 'splice_LogRatio',
 			     }
 	       );
+has 'Diff' => (
+		metaclass => 'Collection::Array',
+		is        => 'rw',
+		isa       => 'ArrayRef',
+		default   => sub { [] },
+		provides  => {
+			      'push'    => 'push_Diff',
+			      'clear'   => 'clear_Diff',
+			      'splice'  => 'splice_Diff',
+			     }
+	       );
 has 'LineShape' => (
 		metaclass => 'Collection::Array',
 		is        => 'rw',
@@ -329,7 +340,7 @@ has 'Journal' => (
 
 has 'types' => (is => 'ro', isa => 'ArrayRef',
 		default => sub{[qw(Atoms Data Feff External Fit Feffit GDS Path Plot Indicator Style
-				   LCF XES PeakFit LogRatio LineShape
+				   LCF XES PeakFit LogRatio Diff LineShape
 				   ScatteringPath VPath SSPath FSPath StructuralUnit Prj Pixel MultiChannel Journal)]},);
 
 has 'Plugins' => (
@@ -436,6 +447,7 @@ sub everything {
 	  @{ $self->XES		   },
 	  @{ $self->PeakFit	   },
 	  @{ $self->LogRatio	   },
+	  @{ $self->Diff	   },
 	  @{ $self->LineShape      },
 	  @{ $self->Journal        },
 	  @{ $self->GDS		   },
