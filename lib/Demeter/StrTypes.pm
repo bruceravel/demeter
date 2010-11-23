@@ -140,6 +140,9 @@ subtype ElementSymbol,
   where { lc(get_symbol($_)) =~ m{\A$element_regexp\z} },
   message { "That string ($_) is not an element symbol" };
 
+coerce ElementSymbol,
+  from Str,
+  via { lc(get_symbol($_)) };
 
 
 ## -------- Edge symbols

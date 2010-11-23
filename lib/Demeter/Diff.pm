@@ -65,10 +65,10 @@ sub BUILD {
 
 sub diff {
   my ($self) = @_;
-  return 0 if not $standard;
-  return 0 if not $data;
-  return 0 if (ref($standard) !~ m{Data});
-  return 0 if (ref($data)     !~ m{Data});
+  return 0 if not $self->standard;
+  return 0 if not $self->data;
+  return 0 if (ref($self->standard) !~ m{Data});
+  return 0 if (ref($self->data)     !~ m{Data});
   $self->standard->_update('fft');
   $self->data->_update('fft');
 

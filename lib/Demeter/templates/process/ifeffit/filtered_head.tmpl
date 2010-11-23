@@ -1,0 +1,12 @@
+ dummy feffNNNN.dat file, Demeter FPath                     Feff XX 6.10
+
+ ALL FAKE: r = {sprintf "%7.4f", $S->reff},  kw = {$P->kweight}
+ Gam_ch=1.761E+00 H-L exch
+ Mu=-5.000+00 kf=2.000E+00 Vint=-0.000E+01 Rs_int= 2.000
+ Path    1      icalc       2
+ -----------------------------------------------------------------------
+   2  1.000  {sprintf "%7.4f", $S->reff}   2.000   -5.0 nleg, deg, reff, rnrmav(bohr), edge
+      x         y         z   pot at#
+    .0000     .0000     .0000  0  {$S->abs}  {$S->abs_z} {$S->absorber}     absorbing atom
+    .0000     .0000   {sprintf "%7.4f", $S->reff}  1  {$S->scat_z} {$S->scatterer} 
+  k   real[2*phc]   mag[feff]  phase[feff] red factor   lambda     real[p]@#
