@@ -324,7 +324,7 @@ has 'rmax_out'    => (is => 'rw', isa =>  PosNum,  default => sub{ shift->co->de
 has 'bft_rwindow' => (is => 'rw', isa =>  Window,  default => sub{ shift->co->default("bft", "rwindow")  || 'hanning'},
 		      trigger => sub{ my($self) = @_; $self->update_bft(1)});
 
-has 'bft_rmin'    => (is => 'rw', isa =>  PosNum,
+has 'bft_rmin'    => (is => 'rw', isa =>  NonNeg,
 		      trigger => sub{ my($self) = @_; $self->update_bft(1); $self->_nidp},
 		      default => sub{ shift->co->default("bft", "rmin")     ||  1});
 

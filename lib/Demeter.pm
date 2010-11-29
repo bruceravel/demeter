@@ -80,7 +80,7 @@ has 'pathtype'  => (is => 'ro', isa => 'Bool',    default => 0);
 has 'mark'      => (is => 'rw', isa => 'Bool',    default => 0);
 has 'frozen'    => (is => 'rw', isa => 'Bool',    default => 0);
 has 'data'      => (is => 'rw', isa => 'Any',     default => q{},
-		    trigger => sub{ my($self, $new) = @_; $self->datagroup($new->group) if $new});
+		    trigger => sub{ my($self, $new) = @_; $self->set_datagroup($new->group) if $new});
 has 'datagroup' => (is => 'rw', isa => 'Str',     default => q{});
 has 'trouble'   => (is => 'rw', isa => 'Str',     default => q{});
 has 'sentinal'  => (traits  => ['Code'],
@@ -115,6 +115,11 @@ sub remove {
   my ($self) = @_;
   $self->mo->remove($self) if (defined($self) and ref($self) =~ m{Demeter});;
   return $self;
+};
+
+sub set_datagroup {
+  my ($self, $group) = @_;
+  $self->datagroup($group);
 };
 
 use Demeter::Plot;
@@ -254,10 +259,20 @@ sub dd {
   };
   return shift->mo->datadefault;
 };
+sub fd {
+  my ($self) = @_;
+  if (not $self->mo->feffdefault) {
+    $self->mo->feffdefault(Demeter::Feff->new(group=>'default___',
+					      name=>'default___',
+					     ));
+  };
+  return shift->mo->feffdefault;
+};
 alias config       => 'co';
 alias plot_object  => 'po';
 alias mode_object  => 'mo';
 alias data_default => 'dd';
+alias feff_default => 'fd';
 
 sub finish {
   my ($self) = @_;

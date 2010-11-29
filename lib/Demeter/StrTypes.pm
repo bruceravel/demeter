@@ -135,6 +135,8 @@ subtype Element,
   where { lc($_) =~ m{\A$element_regexp\z} },
   message { "That string ($_) is not an element symbol" };
 
+#enum 'AllElements' => [ map {ucfirst $_} @element_list];
+
 subtype ElementSymbol,
   as Str,
   where { lc(get_symbol($_)) =~ m{\A$element_regexp\z} },

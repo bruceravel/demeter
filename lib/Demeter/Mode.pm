@@ -377,7 +377,8 @@ has 'datacount'  => (is => 'rw', isa => 'Int', default => 0);
 has 'merge'      => (is => 'rw', isa => 'Str', default => 'importance');
 
 has 'echo'		   => (is => 'rw', isa => 'Any');
-has 'datadefault'	   => (is => 'rw', isa => 'Any');
+has 'datadefault'	   => (is => 'rw', isa => 'Any', default => q{});
+has 'feffdefault'	   => (is => 'rw', isa => 'Any', default => q{});
 has 'external_plot_object' => (is => 'rw', isa => 'Any');
 has 'plotting_initialized' => (is => 'rw', isa => 'Bool', default => 0);
 has 'identity'             => (is => 'rw', isa => 'Str',  default => 'Demeter',);
@@ -738,6 +739,10 @@ This is a Data object used as a fallback.  For instance, one might
 want to process and plot Path objects without having imported a Data
 object.  This global attribute will be used in that case to properly
 process and plot the Path.
+
+=item C<feffdefault>
+
+This is a Feff object used as a fallback in some Path-like objects.
 
 =item C<external_plot_object>
 

@@ -18,6 +18,7 @@ package Demeter::FPath;
 use Moose;
 #use MooseX::StrictConstructor;
 extends 'Demeter::Path';
+use Moose::Util::TypeConstraints;
 use Demeter::NumTypes qw( Ipot PosNum PosInt );
 use Demeter::StrTypes qw( Empty ElementSymbol );
 
@@ -36,26 +37,33 @@ has 'string'	 => (is => 'ro', isa => 'Str',    default => q{});
 has 'tag'	 => (is => 'rw', isa => 'Str',    default => q{});
 has 'randstring' => (is => 'rw', isa => 'Str',    default => sub{random_string('ccccccccc').'.sp'});
 
-has 'kgrid'      => (is => 'rw', isa => 'ArrayRef',
+has 'ngrid'	 => (is => 'ro', isa => 'Int',    default => 59);
+has 'kgrid'      => (is => 'ro', isa => 'ArrayRef',
 		     default => sub{
-		       [.000 , .100 , .200 , .300 , .400 , .500 , .600 , .700 , .800 , .900 ,
-			1.000 , 1.100 , 1.200 , 1.300 , 1.400 , 1.500 , 1.600 , 1.700 , 1.800 ,
-			1.900 , 2.000 , 2.200 , 2.400 , 2.600 , 2.800 , 3.000 , 3.200 , 3.400 ,
-			3.600 , 3.800 , 4.000 , 4.200 , 4.400 , 4.600 , 4.800 , 5.000 , 5.200 ,
-			5.400 , 5.600 , 5.800 , 6.000 , 6.500 , 7.000 , 7.500 , 8.000 , 8.500 ,
-			9.000 , 9.500 , 10.000 , 11.000 , 12.000 , 13.000 , 14.000 , 15.000 ,
-			16.000 , 17.000 , 18.000 , 19.000 , 20.000 ]
+		       [ 0.000,  0.100,  0.200,  0.300,  0.400,  0.500,  0.600,  0.700, 0.800, 0.900,
+			 1.000,  1.100,  1.200,  1.300,  1.400,  1.500,  1.600,  1.700, 1.800,
+			 1.900,  2.000,  2.200,  2.400,  2.600,  2.800,  3.000,  3.200, 3.400,
+			 3.600,  3.800,  4.000,  4.200,  4.400,  4.600,  4.800,  5.000, 5.200,
+			 5.400,  5.600,  5.800,  6.000,  6.500,  7.000,  7.500,  8.000, 8.500,
+			 9.000,  9.500, 10.000, 11.000, 12.000, 13.000, 14.000, 15.000,
+			16.000, 17.000, 18.000, 19.000, 20.000 ]
 		     });
 has 'chi'        => (is => 'rw', isa => 'ArrayRef', default => sub{ [] });
 
-has 'absorber'	   => (is => 'rw', isa => ElementSymbol, default => q{Fe},
+enum('AllElements', [map {ucfirst $_} @Demeter::StrTypes::element_list]);
+coerce 'AllElements',
+  from 'Str',
+  via { get_symbol($_) };
+has 'absorber'	   => (is => 'rw', isa => 'AllElements',
+		       coerce => 1, default => q{Fe},
 		       trigger => sub{ my ($self, $new) = @_;
 				       $self->abs_z(get_Z($new));
 				     } );
-has 'scattering'   => (is => 'rw', isa => ElementSymbol, default => q{O},
-		       trigger => sub{ my ($self, $new) = @_;
-				       $self->scat_z(get_Z($new));
-				     } );
+has 'scatterer'   => (is => 'rw', isa => 'AllElements',
+		      coerce => 1, default => q{O},
+		      trigger => sub{ my ($self, $new) = @_;
+				      $self->scat_z(get_Z($new));
+				    } );
 has 'abs_z'	 => (is => 'rw', isa => 'Int',    default => 0);
 has 'scat_z'	 => (is => 'rw', isa => 'Int',    default => 0);
 
@@ -69,6 +77,7 @@ has 'rmax'	 => (is => 'rw', isa => 'Num',    default => 31.0);
 ## feffNNNN.dat file.  an ugly but functional bit of voodoo
 sub BUILD {
   my ($self, @params) = @_;
+  $self->parent($self->fd);
   $self->sp($self);
   $self->mo->push_FPath($self);
 };
@@ -81,9 +90,29 @@ override alldone => sub {
   return $self;
 };
 
-## construct the intrp line by disentangling the SP string
+override set_parent_method => sub {
+  my ($self, $feff) = @_;
+  $feff ||= $self->parent;
+  return if not $feff;
+  $self->parentgroup($feff->group);
+};
+
+after set_datagroup => sub {
+  my ($self) = @_;
+  if ($self->data->name ne 'default___') {
+    $self->kmin($self->data->fft_kmin);
+    $self->kmax($self->data->fft_kmax);
+    $self->rmin($self->data->bft_rmin);
+    $self->rmax($self->data->bft_rmax);
+  };
+};
+
 sub intrplist {
   q{};
+};
+
+sub _params {
+  print join("|", @_), $/;
 };
 
 1;
