@@ -1,0 +1,16 @@
+##| creating a filtered path from {$D->name}
+set({$S->group}.k   = {$D->group}.k,
+    {$S->group}.chi = {$D->group}.chi)
+
+fftf({$S->group}.chi, k={$S->group}.k, kmin={$S->kmin}, kmax={$S->kmax}, dk={$D->fft_dk},
+     kwindow={$D->fft_kwindow}, kweight={$P->kweight}, rmax_out=31)
+fftr(real={$S->group}.chir_re, imag={$S->group}.chir_im, r={$S->group}.r, rmin={$S->rmin},
+     rmax={$S->rmax}, dr={$D->bft_dr}, rwindow={$D->bft_rwindow})
+
+set t___iny = 1.e-8
+set {$S->group}.filtered = 0.5*{$S->group}.chiq_mag/({$S->group}.q+t___iny)**({$P->kweight}-1)
+set {$S->group}.filtered = splint({$S->group}.q, {$S->group}.filtered, {$S->group}.grid)
+set {$S->group}.phase    = {$S->group}.chiq_pha - 2*{$S->reff}*{$S->group}.q + {$S->pi/2}
+set {$S->group}.phase    = splint({$S->group}.q, {$S->group}.phase, {$S->group}.grid)
+
+erase {$S->group}.k, {$S->group}.chi

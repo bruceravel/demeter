@@ -22,6 +22,7 @@ use Moose::Util::TypeConstraints;
 use Demeter::NumTypes qw( Ipot PosNum PosInt );
 use Demeter::StrTypes qw( Empty ElementSymbol );
 
+with 'Demeter::Data::Arrays';
 with 'Demeter::UI::Screen::Pause' if ($Demeter::mode->ui eq 'screen');
 
 use Chemistry::Elements qw(get_symbol get_Z);
@@ -78,23 +79,31 @@ has 'rmax'	 => (is => 'rw', isa => 'Num',    default => 31.0);
 sub BUILD {
   my ($self, @params) = @_;
   $self->parent($self->fd);
+  $self->parent->workspace($self->stash_folder);
   $self->sp($self);
   $self->mo->push_FPath($self);
+  $self->put_array('grid', $self->kgrid);
 };
 
 override alldone => sub {
   my ($self) = @_;
-  my $nnnn = File::Spec->catfile($self->folder, $self->randstring);
+  my $nnnn = File::Spec->catfile($self->stash_folder, $self->randstring);
   unlink $nnnn if (-e $nnnn);
   $self->remove;
   return $self;
 };
 
+override make_name => sub {
+  my ($self) = @_;
+  $self->name(sprintf("Filtered %s-%s", $self->absorber, $self->scatterer));
+};
+
 override set_parent_method => sub {
-  my ($self, $feff) = @_;
-  $feff ||= $self->parent;
-  return if not $feff;
-  $self->parentgroup($feff->group);
+  1;
+  #my ($self, $feff) = @_;
+  #$feff ||= $self->parent;
+  #return if not $feff;
+  #$self->parentgroup($feff->group);
 };
 
 after set_datagroup => sub {
@@ -114,5 +123,43 @@ sub intrplist {
 sub _params {
   print join("|", @_), $/;
 };
+
+sub filter {
+  my ($self) = @_;
+  $self->data->_update('fft');
+  $self->dispose($self->template('process', 'filter_filter'));
+  return $self;
+};
+
+sub nnnn {
+  my ($self) = @_;
+  open(my $NNNN, '>', File::Spec->catfile($self->stash_folder, $self->randstring));
+  print $NNNN $self->template('process', 'filtered_head');
+  my @k   = @{$self->kgrid};
+  my @mag = $self->get_array('filtered');
+  my @pha = $self->get_array('phase');
+  foreach my $i (0 .. $#k) {
+    my $mm = ($i==0) ? 0 : $mag[$i];
+    printf $NNNN "%7.3f %11.4e %11.4e %11.4e %10.3e %11.4e %11.4e\n", $k[$i], 0.0, $mm, $pha[$i], 1.0, 1e8, $k[$i];
+  };
+  close $NNNN;
+};
+
+
+override path => sub {
+  my ($self) = @_;
+  $self->filter;
+  $self->nnnn;
+  $self->_update_from_ScatteringPath;
+  $self->label(sprintf("%s-%s path at %s", $self->absorber, $self->scatterer, $self->reff));
+  $self->dispose($self->_path_command(1));
+  $self->update_path(0);
+  return $self;
+};
+
+sub pathsdat {
+  return q{};
+};
+
 
 1;

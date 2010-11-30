@@ -82,6 +82,13 @@ sub put_chi {
   return $self;
 };
 
+sub put_array {
+  my ($self, $suffix, $arrayref) = @_;
+  $suffix ||= '___';
+  Ifeffit::put_array(join('.', $self->group, $suffix), $arrayref);
+  return $self;
+};
+
 sub get_array {
   my ($self, $suffix, $part) = @_;
   $part ||= q{};
@@ -235,7 +242,7 @@ containing the energy and xmu data.
 
 The new Data object if returned.  In every way, this is like any Data
 object that comes from a file.  The use would be for converting some
-complex dtaa format, e.g. a spreadsheet, into one or more Data
+complex data format, e.g. a spreadsheet, into one or more Data
 objects.  This method could also be used in a filetype plugin.
 
 You can specify additional arguments like the C<new> or C<set> methods
@@ -245,10 +252,10 @@ of the Data object:
 
 This second form must be used to make chi(k) data from arrays:
 
-  $new_data = Demeter::Data -> put(\@energy, \@xmu, datatype=>'chi');
+  $new_data = Demeter::Data -> put(\@energy, \@chi, datatype=>'chi');
 
-The C<put> method sets the datatype to 'xmu', so to make chi(k) data
-you must explicitly specify it.
+Note that the C<put> method sets the datatype to 'xmu', so to make
+chi(k) data you must explicitly specify it.
 
 =item C<get_array>
 

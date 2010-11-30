@@ -44,6 +44,7 @@ use Regexp::Optimizer;
 my $opt  = Regexp::List->new;
 use Readonly;
 Readonly my $NUMBER => $RE{num}{real};
+Readonly my $PI     => 4*atan2(1,1);
 
 =for LiteratureReference
   Then, spent as they were from all their toil,
@@ -375,6 +376,10 @@ sub is_true {
   return 0 if (($value =~ m{$NUMBER}) and ($value == 0));
   return 1 if ($value =~ m{$NUMBER});
   return 0;
+};
+
+sub pi {
+  return $PI;
 };
 
 ## organize obtaining a unique group name
