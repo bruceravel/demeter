@@ -1,6 +1,6 @@
 #!/usr/bin/perl
 use Demeter qw(:ui=screen :plotwith=gnuplot);
-my $data = Demeter::Data->new(file=>'examples/data/cu010k.dat', name=>'copper metal', datatype=>'xmu');
+my $data = Demeter::Data->new(file=>'data/cu010k.dat', name=>'copper metal', datatype=>'xmu');
 $data->set(fft_kmin=>3, fft_kmax=>16, bft_rmin=>1, bft_rmax=>3);
 $data->po->kweight(1);
 my $fp = Demeter::FPath->new(absorber  => 'cOppEr',
