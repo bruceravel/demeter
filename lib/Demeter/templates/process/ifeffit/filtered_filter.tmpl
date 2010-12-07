@@ -1,11 +1,11 @@
-##| creating a filtered path from {$D->name}
-set({$S->group}.k   = {$D->group}.k,
-    {$S->group}.chi = {$D->group}.chi)
+##| creating a filtered path from {$S->source->name}
+set({$S->group}.k   = {$S->source->group}.k,
+    {$S->group}.chi = {$S->source->group}.chi)
 
-fftf({$S->group}.chi, k={$S->group}.k, kmin={$S->kmin}, kmax={$S->kmax}, dk={$D->fft_dk},
-     kwindow={$D->fft_kwindow}, kweight={$P->kweight}, rmax_out=31)
+fftf({$S->group}.chi, k={$S->group}.k, kmin={$S->kmin}, kmax={$S->kmax}, dk={$S->source->fft_dk},
+     kwindow={$S->source->fft_kwindow}, kweight={$P->kweight}, rmax_out=31)
 fftr(real={$S->group}.chir_re, imag={$S->group}.chir_im, r={$S->group}.r, rmin={$S->rmin},
-     rmax={$S->rmax}, dr={$D->bft_dr}, rwindow={$D->bft_rwindow})
+     rmax={$S->rmax}, dr={$S->source->bft_dr}, rwindow={$S->source->bft_rwindow})
 
 set {$S->group}.filtered = 0.5*{$S->group}.chiq_mag/({$S->group}.q+1e-6)**({$P->kweight}-1)
 set {$S->group}.filtered = splint({$S->group}.q, {$S->group}.filtered, {$S->group}.grid)

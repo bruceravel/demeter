@@ -511,7 +511,7 @@ sub S_path_calculation_exists {
   my $found = 0;
   my @paths = @{ $self->paths };
   foreach my $p (@paths) {
-    next if (ref($p->sp) =~ m{(?:ScatteringPath|SSPath)});
+    next if (ref($p->sp) =~ m{(?:ScatteringPath|SSPath|FPath)});
     my $nnnn = File::Spec->catfile($p->folder, $p->file);
     next if ((-e $nnnn) and $p->file);
     ++$found;

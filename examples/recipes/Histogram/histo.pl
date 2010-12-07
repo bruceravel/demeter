@@ -2,7 +2,7 @@
 
 use Demeter qw(:plotwith=gnuplot :ui=screen);
 my $demeter = Demeter->new;
-$demeter -> set_mode(screen=>0);
+$demeter -> set_mode(screen=>1);
 
 ## -------- These commented out lines were used to generate a feff.inp
 ##          file from crystal data and then to calculate potentials with
@@ -40,24 +40,34 @@ $data -> set(fft_kmin=>3,   fft_kmax=>13,
 my $firstshell = $list_of_paths[1];
 
 my ($rx, $ry) = $firstshell->histogram_from_file('RDFDAT20K', 1, 2, 2.5, 3.1);
-my $common = [sigma2 => 'sigsqr', e0 => 'enot', data=>$data];
 
-my $paths = $firstshell -> make_histogram($rx, $ry, 'amp', q{}, $common);
-my $vpath = Demeter::VPath->new(name=>'histo');
-$vpath->include(@$paths);
+#my $common = [sigma2 => 'sigsqr', e0 => 'enot', data=>$data];
+#my $paths = $firstshell -> make_histogram($rx, $ry, 'amp', q{}, $common);
+
+my $common = [s02 => 'amp', sigma2 => 'sigsqr', e0 => 'enot', data=>$data];
+my $paths = $firstshell -> make_histogram($rx, $ry, q{}, q{});
+my $composite = $firstshell -> chi_from_histogram($paths, $common);
+
+#$data->plot('k');
+#$composite->plot('k');
+#$data->pause;
+#exit;
+
+#my $vpath = Demeter::VPath->new(name=>'histo');
+#$vpath->include(@$paths);
 
 ## -------- Some parameters
 my @gds = (
-	   Demeter::GDS->new(gds=>'guess', name=>'amp',    mathexp=>6),
-	   Demeter::GDS->new(gds=>'guess', name=>'enot',   mathexp=>0),
+	   Demeter::GDS->new(gds=>'set', name=>'amp',    mathexp=>18),
+	   Demeter::GDS->new(gds=>'set', name=>'enot',   mathexp=>0),
 	   #Demeter::GDS->new(gds=>'set',   name=>'alpha',  mathexp=>0),
-	   Demeter::GDS->new(gds=>'guess',   name=>'sigsqr', mathexp=>0.0),
+	   Demeter::GDS->new(gds=>'set',   name=>'sigsqr', mathexp=>0.0),
 	  );
 $data->po->kweight(2);
 $data->po->title("without sigma2");
 
 ## -------- Do the fit
-my $fit = Demeter::Fit->new(gds=>\@gds, data=>[$data], paths=>$paths);
+my $fit = Demeter::Fit->new(gds=>\@gds, data=>[$data], paths=>[$composite]);
 $fit->fit;
 
 $demeter -> set_mode(plotscreen=>0);
@@ -65,6 +75,7 @@ $data->po->r_pl('r');
 $data->po->plot_fit(1);
 $data->po->showlegend(0);
 $data->po->title("with sigma2");
-$_->plot('r') foreach ($data,@$paths);
+$_->plot('r') foreach ($data); #,@$paths);
+print $paths->[18]->degen, $/;
 $data -> pause;
 #$fit->interview;

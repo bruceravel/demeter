@@ -31,7 +31,9 @@ use String::Random qw(random_string);
 has 'reff'	 => (is => 'rw', isa => 'Num',    default => 0.1,
 		     trigger  => sub{ my ($self, $new) = @_; $self->fuzzy($new);} );
 has 'fuzzy'	 => (is => 'rw', isa => 'Num',    default => 0.1);
+has '+data'      => (isa => Empty.'|Demeter::Data');
 has '+n'	 => (default => 1);
+has 'source'     => (is => 'rw', isa => Empty.'|Demeter::Data', default => q{});
 has 'weight'	 => (is => 'ro', isa => 'Int',    default => 2);
 has 'Type'	 => (is => 'ro', isa => 'Str',    default => 'filtered scattering path');
 has 'string'	 => (is => 'ro', isa => 'Str',    default => q{});
@@ -108,11 +110,11 @@ override set_parent_method => sub {
 
 after set_datagroup => sub {
   my ($self) = @_;
-  if ($self->data->name ne 'default___') {
-    $self->kmin($self->data->fft_kmin);
-    $self->kmax($self->data->fft_kmax);
-    $self->rmin($self->data->bft_rmin);
-    $self->rmax($self->data->bft_rmax);
+  if ($self->source->name ne 'default___') {
+    $self->kmin($self->source->fft_kmin);
+    $self->kmax($self->source->fft_kmax);
+    $self->rmin($self->source->bft_rmin);
+    $self->rmax($self->source->bft_rmax);
   };
 };
 
@@ -122,7 +124,7 @@ sub intrplist {
 
 sub _filter {
   my ($self) = @_;
-  $self->data->_update('fft');
+  $self->source->_update('fft');
   $self->dispose($self->template('process', 'filtered_filter'));
   return $self;
 };
@@ -139,6 +141,12 @@ sub _nnnn {
     printf $NNNN "%7.3f %11.4e %11.4e %11.4e %10.3e %11.4e %11.4e\n", $k[$i], 0.0, $mm, $pha[$i], 1.0, 1e8, $k[$i];
   };
   close $NNNN;
+};
+
+before _update_from_ScatteringPath => sub {
+  my ($self) = @_;
+  $self->_filter;
+  $self->_nnnn;
 };
 
 override path => sub {
@@ -172,7 +180,7 @@ This documentation refers to Demeter version 0.4.
 
 Build a single scattering path by Fourier filtering  chi(k) data:
 
-  my $fpath = Demeter::FPath->new(data      => $data_object,
+  my $fpath = Demeter::FPath->new(source    => $data_object,
                                   name      => "my filtered path",
                                   absorber  => 'Cu',
                                   scatterer => 'O',
@@ -196,7 +204,7 @@ the  C<sp>  attribute  or  you  must set  the  C<folder>  and  C<file>
 attributes to point at the location of a F<feffNNNN.dat> file.
 
 For an FPath object, you set none of those attributes yourself (they
-all get set, but not by you).  Instead, you specify the C<data> from
+all get set, but not by you).  Instead, you specify the C<source> from
 which the filterted path will be extracted, the C<absorber>,
 C<scatterer>, C<reff>, and C<n> attributes, which describe the basic
 features of the path being generated.  Demeter will then generate a
@@ -217,12 +225,12 @@ As with any Moose object, the attribute names are the name of the
 accessor methods.
 
 This extends L<Demeter::Path>.  Along with the standard attributes of
-any Demeter object (C<name>, C<plottable>, C<data>, and so on), and of
+any Demeter object (C<name>, C<plottable>, C<source>, and so on), and of
 the Path object, an SSPath has the following:
 
 =over 4
 
-=item C<data>
+=item C<source>
 
 This takes the reference to the Data object from which the path will
 be extracted.

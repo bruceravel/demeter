@@ -6,7 +6,7 @@ $data->po->kweight(1);
 my $fp = Demeter::FPath->new(absorber  => 'cOppEr',
 			     scatterer => 'Cu',
 			     reff      => 2.55266,
-			     data      => $data,
+			     source    => $data,
 			     n         => 12,
 			     delr      => 0.0,
 			     s02       => 1.09,
@@ -17,6 +17,7 @@ print $fp->absorber, "  ", $fp->abs_z, "  ", $fp->kmin, $/;
 
 $fp->set_mode(screen=>1);
 $fp->po->q_pl('r');
+$data->po->kweight(1);
 $data->plot('q');
-$fp->plot('q');
+$fp->plot('k');
 $fp->pause;

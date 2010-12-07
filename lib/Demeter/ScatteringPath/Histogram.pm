@@ -17,6 +17,7 @@ sub make_histogram {
     my $text = "You can only call make_histogram on single scattering paths.\n(MS histograms will be available in a later version of Demeter.)\n";
     croak($text), return [];
   };
+  $s02 ||= '1';
 
   my $total = (looks_like_number($ry->[0])) ? sum(@$ry) : 1; # not quite right...
   $self->start_spinner("Generating SSPaths for histogram") if ($self->mo->ui eq 'screen');
@@ -38,17 +39,48 @@ sub make_histogram {
 				    degen  => 1,
 				    n      => 1,
 				    s02    => $s02 . ' * ' . $amp,
+				    zcwif  => $amp,
 				    @$common,
 				   );
     $this -> make_name;
     (my $oldname = $this->name) =~ s{\s*\z}{};
     $this -> name($oldname . '@ ' . sprintf("%.3f",$rx->[$i]));
-    $this -> update_path(1);
+    #$this -> update_path(1);
     push @paths, $this;
   };
   $self->stop_spinner if ($self->mo->ui eq 'screen');
 
   return \@paths;
+};
+
+sub chi_from_histogram {
+  my ($self, $paths, $common) = @_;
+  my $first = $paths->[0];
+  $first->_update('fft');
+  $first->dispose($first->template('process', 'histogram_first'));
+  my $running_r = $first->zcwif * $first->R;
+  my $sum = $first->zcwif;
+  foreach my $i (1 .. $#{ $paths }) {
+    $paths->[$i]->_update('fft');
+    $paths->[$i]->dispose($paths->[$i]->template('process', 'histogram_add'));
+    $running_r += $paths->[$i]->zcwif * $paths->[$i]->R;
+    $sum       += $paths->[$i]->zcwif;
+  }
+  $running_r /= $sum;
+  my @k   = Ifeffit::get_array('h___isto.k');
+  my @chi = Ifeffit::get_array('h___isto.chi');
+  my $data = Demeter::Data -> put(\@k, \@chi, datatype=>'chi', fft_kmin=>2, fft_kmax=>20, bft_rmin=>0.5, bft_rmax=>10);
+  my $path = Demeter::FPath -> new(absorber  => $self->feff->abs_species,
+				   scatterer => $self->feff->potentials->[$self->ssipot]->[2],
+				   reff      => $running_r,
+				   source    => $data,
+				   n         => $sum,
+				   @$common
+				  );
+  #$path->plot('k');
+  #$path->pause;
+  #exit;
+  return $path;
 };
 
 sub histogram_from_file {

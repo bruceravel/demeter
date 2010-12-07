@@ -24,7 +24,7 @@ use MooseX::AttributeHelpers;
 use MooseX::Aliases;
 #use MooseX::StrictConstructor;
 use Moose::Util::TypeConstraints;
-use Demeter::StrTypes qw( AtomsEdge FeffCard Empty);
+use Demeter::StrTypes qw( AtomsEdge FeffCard Empty ElementSymbol);
 use Demeter::NumTypes qw( Natural NonNeg PosInt );
 with 'Demeter::Feff::Paths';
 with 'Demeter::Feff::Sanity';
@@ -114,7 +114,12 @@ has 'absorber' => (
 				 'clear' => 'clear_absorber',
 				}
 		  );
-has 'abs_index'    => (is=>'rw', isa =>  Natural,   default => 0);
+has 'abs_index'    => (is=>'rw', isa =>  Natural,   default => 0,
+		       trigger => sub{ my ($self, $new) = @_; 
+				       my $elem = $self->potentials->[$new]->[2];
+				       $self->abs_species($elem);
+				     });
+has 'abs_species'  => (is=>'rw', isa =>  ElementSymbol, default => 'He', coerce => 1);
 has 'edge'         => (is=>'rw', isa =>  AtomsEdge, default => 'K', coerce => 1); # 1-4 or K-L3
 has 's02'          => (is=>'rw', isa =>  NonNeg,    default => 1);   # positive float
 has 'rmax'         => (is=>'rw', isa =>  NonNeg,    default => 0);   # positive float
@@ -1011,16 +1016,16 @@ sub read_yaml {
   my @refs = @$refs;
   ## snarf attributes of Feff object
   my $rhash = shift @refs;
-  foreach my $key (qw(abs_index edge s02 rmax name nlegs npaths rmultiplier pcrit ccrit
-		      workspace screen buffer save fuzz betafuzz eta_suppress miscdat
-		      hidden source)) {
-    $self -> $key($rhash->{$key}) if exists $rhash->{$key};
-  };
   $self -> set(titles     => shift(@refs),
 	       othercards => shift(@refs),
 	       potentials => shift(@refs),
 	       absorber   => shift(@refs),
 	       sites	  => shift(@refs));
+  foreach my $key (qw(abs_index edge s02 rmax name nlegs npaths rmultiplier pcrit ccrit
+		      workspace screen buffer save fuzz betafuzz eta_suppress miscdat
+		      hidden source)) {
+    $self -> $key($rhash->{$key}) if exists $rhash->{$key};
+  };
   #$self -> prep_fuzz;
   ## snarf attributes of each ScatteringPath object
   my @paths;
