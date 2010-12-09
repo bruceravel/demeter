@@ -116,10 +116,12 @@ has 'absorber' => (
 		  );
 has 'abs_index'    => (is=>'rw', isa =>  Natural,   default => 0,
 		       trigger => sub{ my ($self, $new) = @_; 
-				       my $elem = $self->potentials->[$new]->[2];
+				       return if not exists $self->potentials->[$new];
+				       return if not exists $self->potentials->[$new]->[2];
+				       my $elem = $self->potentials->[$new]->[2] || 'He';
 				       $self->abs_species($elem);
 				     });
-has 'abs_species'  => (is=>'rw', isa =>  ElementSymbol, default => 'He', coerce => 1);
+has 'abs_species'  => (is=>'rw', isa =>  ElementSymbol, default => 'He', coerce => 1, alias=>'abs_element');
 has 'edge'         => (is=>'rw', isa =>  AtomsEdge, default => 'K', coerce => 1); # 1-4 or K-L3
 has 's02'          => (is=>'rw', isa =>  NonNeg,    default => 1);   # positive float
 has 'rmax'         => (is=>'rw', isa =>  NonNeg,    default => 0);   # positive float
@@ -372,6 +374,7 @@ sub _ipot {
   my @entries = (q{}, q{}, q{});
   @entries = split(/$SEPARATOR/, $line);
   shift @entries if ($entries[0] =~ m{^\s*$}); # $
+  #print join("|", @entries[0..2]), $/;
   $self->push_potentials([@entries[0..2]]);
   return @entries[0..2];
 };
@@ -1050,7 +1053,8 @@ sub run_atoms {
   print $fh $self->atoms->Write;
   close $fh;
   $self->file($fname);
-  unlink $fh;
+  unlink $fname;
+  return $self;
 };
 
 

@@ -33,14 +33,15 @@ has 'reff'	 => (is => 'rw', isa => 'Num',    default => 0.1,
 has 'fuzzy'	 => (is => 'rw', isa => 'Num',    default => 0.1);
 has '+data'      => (isa => Empty.'|Demeter::Data');
 has '+n'	 => (default => 1);
-has 'source'     => (is => 'rw', isa => Empty.'|Demeter::Data', default => q{});
+has 'source'     => (is => 'rw', isa => Empty.'|Demeter::Data', default => q{},
+		     trigger => sub{ my($self, $new) = @_; $self->set_sourcegroup($new->group) if $new});
+has 'sourcegroup'=> (is => 'rw', isa => 'Str',    default => q{});
 has 'weight'	 => (is => 'ro', isa => 'Int',    default => 2);
 has 'Type'	 => (is => 'ro', isa => 'Str',    default => 'filtered scattering path');
 has 'string'	 => (is => 'ro', isa => 'Str',    default => q{});
 has 'tag'	 => (is => 'rw', isa => 'Str',    default => q{});
 has 'randstring' => (is => 'rw', isa => 'Str',    default => sub{random_string('ccccccccc').'.sp'});
 
-#has 'ngrid'	 => (is => 'ro', isa => 'Int',    default => 59);
 has 'kgrid'      => (is => 'ro', isa => 'ArrayRef',
 		     default => sub{
 		       [ 0.000,  0.100,  0.200,  0.300,  0.400,  0.500,  0.600,  0.700, 0.800, 0.900,
@@ -51,7 +52,6 @@ has 'kgrid'      => (is => 'ro', isa => 'ArrayRef',
 			 9.000,  9.500, 10.000, 11.000, 12.000, 13.000, 14.000, 15.000,
 			16.000, 17.000, 18.000, 19.000, 20.000 ]
 		     });
-#has 'chi'        => (is => 'rw', isa => 'ArrayRef', default => sub{ [] });
 
 enum('AllElements', [map {ucfirst $_} @Demeter::StrTypes::element_list]);
 coerce 'AllElements',
@@ -70,10 +70,13 @@ has 'scatterer'   => (is => 'rw', isa => 'AllElements',
 has 'abs_z'	 => (is => 'rw', isa => 'Int',    default => 0);
 has 'scat_z'	 => (is => 'rw', isa => 'Int',    default => 0);
 
+has 'nofilter'	 => (is => 'rw', isa => 'Bool',   default =>  0);
 has 'kmin'	 => (is => 'rw', isa => 'Num',    default =>  0.0);
 has 'kmax'	 => (is => 'rw', isa => 'Num',    default => 20.0);
 has 'rmin'	 => (is => 'rw', isa => 'Num',    default =>  0.0);
 has 'rmax'	 => (is => 'rw', isa => 'Num',    default => 31.0);
+
+has 'nnnntext'   => (is => 'rw', isa => 'Str',    default => q{});
 
 ## the sp attribute must be set to this FPath object so that the Path
 ## _update_from_ScatteringPath method can be used to generate the
@@ -108,8 +111,9 @@ override set_parent_method => sub {
   #$self->parentgroup($feff->group);
 };
 
-after set_datagroup => sub {
-  my ($self) = @_;
+sub set_sourcegroup {
+  my ($self, $gp) = @_;
+  $self->sourcegroup($gp);
   if ($self->source->name ne 'default___') {
     $self->kmin($self->source->fft_kmin);
     $self->kmax($self->source->fft_kmax);
@@ -131,28 +135,33 @@ sub _filter {
 
 sub _nnnn {
   my ($self) = @_;
-  open(my $NNNN, '>', File::Spec->catfile($self->stash_folder, $self->randstring));
-  print $NNNN $self->template('process', 'filtered_head');
+  my $text = $self->template('process', 'filtered_head');
   my @k   = @{$self->kgrid};
   my @mag = $self->get_array('filtered');
+  $mag[0] = 0;
   my @pha = $self->get_array('phase');
   foreach my $i (0 .. $#k) {
-    my $mm = ($i==0) ? 0 : $mag[$i];
-    printf $NNNN "%7.3f %11.4e %11.4e %11.4e %10.3e %11.4e %11.4e\n", $k[$i], 0.0, $mm, $pha[$i], 1.0, 1e8, $k[$i];
+    $text .= sprintf "%7.3f %11.4e %11.4e %11.4e %10.3e %11.4e %11.4e\n", $k[$i], 0.0, $mag[$i], $pha[$i], 1.0, 1e8, $k[$i];
   };
+  return $text;
+};
+
+sub _nnnnfile {
+  my ($self, $text) = @_;
+  $text ||= $self->_nnnn;
+  open(my $NNNN, '>', File::Spec->catfile($self->stash_folder, $self->randstring));
+  print $NNNN $text;
   close $NNNN;
 };
 
 before _update_from_ScatteringPath => sub {
   my ($self) = @_;
-  $self->_filter;
-  $self->_nnnn;
+  $self->_filter if not $self->nnnntext;
+  $self->_nnnnfile($self->nnnntext);
 };
 
 override path => sub {
   my ($self) = @_;
-  $self->_filter;
-  $self->_nnnn;
   $self->_update_from_ScatteringPath;
   $self->label(sprintf("%s-%s path at %s", $self->absorber, $self->scatterer, $self->reff));
   $self->dispose($self->_path_command(1));
@@ -164,6 +173,34 @@ sub pathsdat {
   return q{};
 };
 
+
+override all => sub {
+  my ($self) = @_;
+  my %all = $self->SUPER::all;
+  delete $all{$_} foreach (qw(data source weight Type string kgrid));
+  return %all;
+};
+
+before serialization => sub {
+  my ($self) = @_;
+  return if $self->nnnntext;
+  $self->_update('path');
+  #$self->_filter;
+  $self->nnnntext($self->_nnnn);
+};
+
+override deserialize => sub {
+  my ($self, $fname) = @_;
+  my $r_args = YAML::Tiny::LoadFile($fname);
+  my @args = %$r_args;
+  $self->set(@args);
+  my $source = $self->mo->fetch('Data', $self->sourcegroup);
+  $self->source($source);
+  my $data = $self->mo->fetch('Data', $self->datagroup);
+  $self->data($data);
+  $self->update_path(1);
+  return $self;
+};
 
 1;
 

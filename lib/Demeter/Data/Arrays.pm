@@ -171,6 +171,7 @@ sub points {
         : ($args{space} eq 'lcf')  ? $self->get_array('x')
         : ($args{space} eq 'diff') ? $self->get_array('energy')
         : ($args{space} eq 'lr')   ? $self->get_array('q')
+        : ($args{space} eq 'x')    ? $self->get_array('x')
         :                            $self->get_array('q', $args{part});
   my @k = @x;
   @x = map {$_**2/$ETOK + $self->bkg_e0} @x if ($args{space} eq 'chie');

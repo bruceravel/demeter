@@ -119,7 +119,7 @@ sub first {			# see prep_vpath.tmpl
 sub _update {
   my ($self, $which) = @_;
   foreach my $p ( @{ $self->paths } ) {  # bring each constituent path up to date
-    $p->_update(lc('fft'));
+    $p->_update('fft');
   };
   $self->dispose($self->sum);
   $self->fft if ((lc($which) eq 'bft') or (lc($which) eq 'all'));

@@ -118,7 +118,7 @@ has 'pc'              => (is=>'rw', isa=>  'Bool',  default => 0);
 has 'degen'           => (is=>'rw', isa=>  NonNeg,  default => 0);
 has 'nleg'            => (is=>'rw', isa=>  PosInt,  default => 2);
 has 'reff'            => (is=>'rw', isa=> 'Num',    default => 0);
-has 'zcwif'           => (is=>'rw', isa=> 'Num',    default => 0);
+has 'zcwif'           => (is=>'rw', isa=> 'Num',    default => 0, alias => 'population');
 has 'intrpline'       => (is=>'rw', isa=> 'Str',    default => q{});
 has 'geometry'        => (is=>'rw', isa=> 'Str',    default => q{});
 

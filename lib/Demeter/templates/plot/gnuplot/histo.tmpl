@@ -1,0 +1,19 @@
+{
+  $file = $P->tempfile;
+  $S->points(file    => $file,
+             space   => 'x', 
+	     suffix  => 'y', 
+	    );
+  $legend  = ($P->showlegend) ? '' : "\nunset key" ;
+  q{}
+}
+## gnuplot script
+unset label{$legend}
+
+set title "\{/*1.6 histogram\}"
+set xlabel "\{/*1.2 Radial distance&\{aa\}(\{\305\})\}"
+set ylabel "\{/*1.2 Bin populations\}"
+#set xrange [ : {$S->rmax+0.2} ]
+
+# {$S->name}: ifeffit group = {$S->group}
+plot '{$file}' using 1:2 with impulses ls {$P->increm+1} title "histogram"

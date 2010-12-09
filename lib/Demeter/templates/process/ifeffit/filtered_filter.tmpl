@@ -1,4 +1,5 @@
 ##| creating a filtered path from {$S->source->name}
+##| {$S->source->group}.k and {$S->source->group}.chi were set to h___isto.k and h___isto.chi by Demeter
 set({$S->group}.k   = {$S->source->group}.k,
     {$S->group}.chi = {$S->source->group}.chi)
 
@@ -7,11 +8,12 @@ fftf({$S->group}.chi, k={$S->group}.k, kmin={$S->kmin}, kmax={$S->kmax}, dk={$S-
 fftr(real={$S->group}.chir_re, imag={$S->group}.chir_im, r={$S->group}.r, rmin={$S->rmin},
      rmax={$S->rmax}, dr={$S->source->bft_dr}, rwindow={$S->source->bft_rwindow})
 
-set {$S->group}.filtered = 0.5*{$S->group}.chiq_mag/({$S->group}.q+1e-6)**({$P->kweight}-1)
+set {$S->group}.filtered = ( ({sprintf "%7.4f", $S->reff}**2)*{$S->group}.chiq_mag ) / ( ({$S->group}.q+1e-6)**({$P->kweight}-1) )
 set {$S->group}.filtered = splint({$S->group}.q, {$S->group}.filtered, {$S->group}.grid)
-set {$S->group}.phase    = {$S->group}.chiq_pha - 2*{$S->reff}*{$S->group}.q + pi/2
+set {$S->group}.phase    = {$S->group}.chiq_pha - 2*{sprintf "%7.4f", $S->reff}*{$S->group}.q + pi/2
 set {$S->group}.phase    = splint({$S->group}.q, {$S->group}.phase, {$S->group}.grid)
 
 erase {$S->group}.k, {$S->group}.chi {$S->group}.win {$S->group}.rwin
 erase {$S->group}.r, {$S->group}.chir_mag {$S->group}.chir_re {$S->group}.chir_im {$S->group}.chir_phas
 erase {$S->group}.q, {$S->group}.chiq_mag {$S->group}.chiq_re {$S->group}.chiq_im {$S->group}.chiq_phas
+erase @group h___isto

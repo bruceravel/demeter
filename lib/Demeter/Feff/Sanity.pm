@@ -58,8 +58,9 @@ sub S_check_ipots {
       ++$ipot_used[$this_ipot];
     };
   };
-  my @pots = @$r_pots;
-  foreach my $rp (@pots) {
+  #my @pots = @$r_pots;
+  #foreach my $rp (@pots) {
+  foreach my $rp (@{$self->potentials}) {
     my $ipot = $rp->[0];
     if ($ipot > 7) {
       $$r_problems{defined_ipot_gt_7} = 1;

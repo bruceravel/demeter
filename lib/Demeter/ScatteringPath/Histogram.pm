@@ -1,8 +1,6 @@
 package Demeter::ScatteringPath::Histogram;
 use Moose::Role;
-if ($Demeter::mode->ui eq 'screen') {
-  with 'Demeter::UI::Screen::Progress';
-};
+with 'Demeter::UI::Screen::Progress' if $Demeter::mode->ui eq 'screen';
 
 use Carp;
 use List::Util qw(sum);
@@ -27,21 +25,21 @@ sub make_histogram {
     my $deltar = $rx->[$i] - $rnot;
     my $amp = $ry->[$i];
     if (looks_like_number($amp)) {
-      $amp = sprintf("%.6f", $ry->[$i] / $total);
+      $amp = sprintf("%.7f", $ry->[$i] / $total);
       next if ($amp < $self->co->default(qw(histogram epsilon)));
     };
     my $reff = $self->fuzzy + $deltar;
     my $delr = ($scale) ? sprintf("%s*%.5f", $scale, $reff) : 0;
-    my $this = Demeter::SSPath->new(parent => $self->feff,
-				    ipot   => $self->ssipot,
-				    reff   => $reff,
-				    delr   => $delr,
-				    degen  => 1,
-				    n      => 1,
-				    s02    => $s02 . ' * ' . $amp,
-				    zcwif  => $amp,
+    my $this = Demeter::SSPath->new(parent     => $self->feff,
+				    ipot       => $self->ssipot,
+				    reff       => $reff,
+				    delr       => $delr,
+				    degen      => 1,
+				    n	       => 1,
+				    s02	       => $s02 . ' * ' . $amp,
 				    @$common,
 				   );
+    $this -> population($amp);
     $this -> make_name;
     (my $oldname = $this->name) =~ s{\s*\z}{};
     $this -> name($oldname . '@ ' . sprintf("%.3f",$rx->[$i]));
@@ -55,31 +53,34 @@ sub make_histogram {
 
 sub chi_from_histogram {
   my ($self, $paths, $common) = @_;
+  $self->start_spinner("Making FSPath from histogram") if ($self->mo->ui eq 'screen');
   my $first = $paths->[0];
+  #$first->update_path(1);
   $first->_update('fft');
   $first->dispose($first->template('process', 'histogram_first'));
-  my $running_r = $first->zcwif * $first->R;
-  my $sum = $first->zcwif;
+  my $ravg = $first->population * $first->R;
+  my $sum  = $first->population;
   foreach my $i (1 .. $#{ $paths }) {
+    #$paths->[$i]->update_path(1);
     $paths->[$i]->_update('fft');
     $paths->[$i]->dispose($paths->[$i]->template('process', 'histogram_add'));
-    $running_r += $paths->[$i]->zcwif * $paths->[$i]->R;
-    $sum       += $paths->[$i]->zcwif;
+    $ravg += $paths->[$i]->population * $paths->[$i]->R;
+    $sum  += $paths->[$i]->population;
   }
-  $running_r /= $sum;
-  my @k   = Ifeffit::get_array('h___isto.k');
-  my @chi = Ifeffit::get_array('h___isto.chi');
-  my $data = Demeter::Data -> put(\@k, \@chi, datatype=>'chi', fft_kmin=>2, fft_kmax=>20, bft_rmin=>0.5, bft_rmax=>10);
+  $ravg   /= $sum;
+  my @k    = Ifeffit::get_array('h___isto.k');
+  my @chi  = Ifeffit::get_array('h___isto.chi');
+  my $data = Demeter::Data  -> put(\@k, \@chi, datatype=>'chi', name=>'sum of histogram',
+				   fft_kmin=>0, fft_kmax=>20, bft_rmin=>0, bft_rmax=>31);
   my $path = Demeter::FPath -> new(absorber  => $self->feff->abs_species,
 				   scatterer => $self->feff->potentials->[$self->ssipot]->[2],
-				   reff      => $running_r,
+				   reff      => $ravg,
 				   source    => $data,
-				   n         => $sum,
+				   n         => 1,
+				   degen     => 1,
 				   @$common
 				  );
-  #$path->plot('k');
-  #$path->pause;
-  #exit;
+  $self->stop_spinner if ($self->mo->ui eq 'screen');
   return $path;
 };
 
