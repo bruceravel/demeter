@@ -1,4 +1,4 @@
-package Demeter::ScatteringPath::Histogram::Southampton;
+package Demeter::ScatteringPath::Histogram::DL_POLY;
 
 =for Copyright
  .
@@ -20,7 +20,7 @@ use MooseX::Aliases;
 #use MooseX::StrictConstructor;
 extends 'Demeter';
 use Demeter::StrTypes qw( Empty );
-#use Demeter::NumTypes qw( Natural PosInt NonNeg );
+use Demeter::NumTypes qw( Natural PosInt NonNeg );
 
 with 'Demeter::Data::Arrays';
 with 'Demeter::UI::Screen::Pause' if ($Demeter::mode->ui eq 'screen');
@@ -29,8 +29,8 @@ use List::Util qw{sum};
 
 has '+plottable'      => (default => 1);
 
-has 'nsteps'    => (is => 'rw', isa => 'Int', default => 0);
-has 'timestep'  => (is => 'rw', isa => 'Int', default => 0);
+has 'nsteps'    => (is => 'rw', isa => NonNeg, default => 0);
+has 'timestep'  => (is => 'rw', isa => NonNeg, default => 0);
 has 'rmin'      => (is => 'rw', isa => 'Num', default => 0.0,
 		    trigger => sub{ my($self, $new) = @_; $self->fetch_rdf; $self->fetch_bins;} );
 has 'rmax'      => (is => 'rw', isa => 'Num', default => 5.8,
@@ -53,6 +53,7 @@ has 'positions'   => (is => 'rw', isa => 'ArrayRef', default => sub{[]});
 has 'populations' => (is => 'rw', isa => 'ArrayRef', default => sub{[]});
 
 has 'feff'        => (is => 'rw', isa => Empty.'|Demeter::Feff', default => q{},);
+has 'sp'          => (is => 'rw', isa => Empty.'|Demeter::ScatteringPath', default => q{},);
 
 ## need a pgplot plotting template
 
@@ -165,3 +166,142 @@ sub fpath {
 };
 
 1;
+
+=head1 NAME
+
+Demeter::ScatteringPath::Histogram::DL_POLY - Support for DL_POLY HISTORY file
+
+=head1 VERSION
+
+This documentation refers to Demeter version 0.4.
+
+=head1 SYNOPSIS
+
+=head1 DESCRIPTION
+
+This provides support for importing data from the DL_POLY HISTORY
+file, which is a format for providing the trajectory of a cluster
+during a molecular dynamics simulation.  The DL_POLY website is
+L<http://www.cse.scitech.ac.uk/ccg/software/DL_POLY/> and a
+description of the HISTORY format is in section 5.2.1 of the User
+Guide, a link to which can be found at the DL_POLY website.
+
+The main purpose of this module is to extract the coordinates for a
+given timestep from the history file and use those coordinates to
+construct a histogram representation of that cluster for use in a fit
+to EXAFS data using Demeter.
+
+=head1 ATTRIBUTES
+
+=over 4
+
+=item C<file> (string)
+
+The path to and name of the HISTORY file.  Setting this will trigger
+reading of the file and construction of a histogram using the values
+of the other attributes.
+
+=item C<nsteps> (integer)
+
+When the HISTORY file is first read, it will be parsed to obtain the
+number of time steps contained in the file.  This number will be
+stored in this attribute.
+
+=item C<timestep> (integer)
+
+The timestep from which to extract a cluster.  If zero, the final
+timestep will be used.
+
+=item C<rmin> and C<rmax> (numbers)
+
+The lower and upper bounds of the radial distribution function to
+extract from the cluster.  These are set to values that include a
+single coordination shell when constructing input for an EXAFS fit.
+However, for constructing a plot of the RDF, it may be helpful to set
+these to cover a larger range of distances.
+
+=item C<bin> (number)
+
+The width of the histogram bin to be extracted from the RDF.
+
+=item C<feff> (number)
+
+This is set to the ScatteringPath object used to construct the bins of
+the histogram.
+
+=back
+
+=head1 METHODS
+
+=over 4
+
+=item C<fpath>
+
+Return an FPath object representing the sum of the bins of the
+histogram extracted from the cluster.
+
+=item C<histogram>
+
+Return a reference to an array of SSPath objects representing the bins
+of the histogram extracted from the cluster.
+
+=item C<plot>
+
+Make a plot of the the RDF.
+
+=back
+
+=head1 CONFIGURATION
+
+See L<Demeter::Config> for a description of the configuration system.
+Many attributes of a Data object can be configured via the
+configuration system.  See, among others, the C<bkg>, C<fft>, C<bft>,
+and C<fit> configuration groups.
+
+=head1 DEPENDENCIES
+
+Demeter's dependencies are in the F<Bundle/DemeterBundle.pm> file.
+
+=head1 SERIALIZATION AND DESERIALIZATION
+
+An XES object and be frozen to and thawed from a YAML file in the same
+manner as a Data object.  The attributes and data arrays are read to
+and from YAMLs with a single object perl YAML.
+
+=head1 BUGS AND LIMITATIONS
+
+=over 4
+
+=item *
+
+Feff interaction is a bit unclear
+
+=item *
+
+Triangles and nearly colinear paths
+
+=back
+
+Please report problems to Bruce Ravel (bravel AT bnl DOT gov)
+
+Patches are welcome.
+
+=head1 AUTHOR
+
+Bruce Ravel (bravel AT bnl DOT gov)
+
+L<http://cars9.uchicago.edu/~ravel/software/>
+
+
+=head1 LICENCE AND COPYRIGHT
+
+Copyright (c) 2006-2010 Bruce Ravel (bravel AT bnl DOT gov). All rights reserved.
+
+This module is free software; you can redistribute it and/or
+modify it under the same terms as Perl itself. See L<perlgpl>.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+
+=cut
