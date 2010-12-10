@@ -255,11 +255,9 @@ __PACKAGE__->meta->make_immutable;
 
 Demeter::Data - Rudimentary processing of XES data
 
-
 =head1 VERSION
 
 This documentation refers to Demeter version 0.4.
-
 
 =head1 SYNOPSIS
 

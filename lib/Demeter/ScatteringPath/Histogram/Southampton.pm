@@ -147,13 +147,19 @@ sub plot {
   return $self;
 };
 
-sub fpath {
+sub histogram {
   my ($self) = @_;
   return if not $self->feff;
   $self->feff->run;
   my @list_of_paths = @{ $self->feff->pathlist };
   my $firstshell = $list_of_paths[0];
   my $histo = $firstshell -> make_histogram($self->positions, $self->populations, q{}, q{});
+  return $hosto;
+};
+
+sub fpath {
+  my ($self) = @_;
+  my $histo = $self->histogram;
   my $composite = $firstshell -> chi_from_histogram($histo);
   return $composite;
 };
