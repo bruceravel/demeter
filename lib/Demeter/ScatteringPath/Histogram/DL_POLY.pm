@@ -32,19 +32,19 @@ has '+plottable'      => (default => 1);
 has 'nsteps'    => (is => 'rw', isa => NonNeg, default => 0);
 has 'timestep'  => (is => 'rw', isa => NonNeg, default => 0);
 has 'rmin'      => (is => 'rw', isa => 'Num', default => 0.0,
-		    trigger => sub{ my($self, $new) = @_; $self->fetch_rdf; $self->fetch_bins;} );
+		    trigger => sub{ my($self, $new) = @_; $self->_rdf; $self->_bins;} );
 has 'rmax'      => (is => 'rw', isa => 'Num', default => 5.8,
-		    trigger => sub{ my($self, $new) = @_; $self->fetch_rdf; $self->fetch_bins;} );
+		    trigger => sub{ my($self, $new) = @_; $self->_rdf; $self->_bins;} );
 has 'bin'       => (is => 'rw', isa => 'Num', default => 0.005,
-		    trigger => sub{ my($self, $new) = @_; $self->fetch_bins;} );
+		    trigger => sub{ my($self, $new) = @_; $self->_bins;} );
 
 has 'file'      => (is => 'rw', isa => 'Str', default => q{},
 		    trigger => sub{ my($self, $new) = @_;
 				    if ($new and (-e $new)) {
 				      $self->number_of_steps;
-				      $self->fetch_cluster;
-				      $self->fetch_rdf;
-				      $self->fetch_bins;
+				      $self->_cluster;
+				      $self->_rdf;
+				      $self->_bins;
 				    }});
 
 has 'cluster'     => (is => 'rw', isa => 'ArrayRef', default => sub{[]});
@@ -52,7 +52,6 @@ has 'rdf'         => (is => 'rw', isa => 'ArrayRef', default => sub{[]});
 has 'positions'   => (is => 'rw', isa => 'ArrayRef', default => sub{[]});
 has 'populations' => (is => 'rw', isa => 'ArrayRef', default => sub{[]});
 
-has 'feff'        => (is => 'rw', isa => Empty.'|Demeter::Feff', default => q{},);
 has 'sp'          => (is => 'rw', isa => Empty.'|Demeter::ScatteringPath', default => q{},);
 
 ## need a pgplot plotting template
@@ -71,7 +70,7 @@ sub number_of_steps {
   return $self;
 };
 
-sub fetch_cluster {
+sub _cluster {
   my ($self) = @_;
   open(my $H, '<', $self->file);
   my $count = 0;
@@ -98,12 +97,12 @@ sub fetch_cluster {
   return $self;
 };
 
-sub fetch_rdf {
+sub _rdf {
   my ($self) = @_;
   my @rdf = ();
   my $size = $#{$self->cluster};
   foreach my $i (0 .. $size) {
-    foreach my $j ($i+1 .. $size) { # all pairs are doubly degenerate
+    foreach my $j ($i+1 .. $size) { # remember that all pairs are doubly degenerate
       my $r = sqrt sum  map { ($self->cluster->[$i]->[$_] - $self->cluster->[$j]->[$_])**2 } (0..2) ; # this may be too cute
       next if ($r < $self->rmin);
       next if ($r > $self->rmax);
@@ -115,7 +114,7 @@ sub fetch_rdf {
   return $self;
 };
 
-sub fetch_bins {
+sub _bins {
   my ($self) = @_;
   my (@x, @y);
   my $bin_start = $self->rdf->[0]->[2];
@@ -150,18 +149,18 @@ sub plot {
 
 sub histogram {
   my ($self) = @_;
-  return if not $self->feff;
-  $self->feff->run;
-  my @list_of_paths = @{ $self->feff->pathlist };
-  my $firstshell = $list_of_paths[0];
-  my $histo = $firstshell -> make_histogram($self->positions, $self->populations, q{}, q{});
-  return $hosto;
+  return if not $self->sp;
+  #$self->feff->run;
+  #my @list_of_paths = @{ $self->feff->pathlist };
+  #my $firstshell = $list_of_paths[0];
+  my $histo = $self -> sp -> make_histogram($self->positions, $self->populations, q{}, q{});
+  return $histo;
 };
 
 sub fpath {
   my ($self) = @_;
   my $histo = $self->histogram;
-  my $composite = $firstshell -> chi_from_histogram($histo);
+  my $composite = $self -> sp -> chi_from_histogram($histo);
   return $composite;
 };
 
@@ -224,10 +223,12 @@ these to cover a larger range of distances.
 
 The width of the histogram bin to be extracted from the RDF.
 
-=item C<feff> (number)
+=item C<sp> (number)
 
-This is set to the ScatteringPath object used to construct the bins of
-the histogram.
+This is set to the L<Demeter::ScatteringPath> object used to construct
+the bins of the histogram.  A good choice would be the similar path
+from a Feff calculation on the bulk, crystalline analog to your
+cluster.
 
 =back
 
@@ -237,13 +238,13 @@ the histogram.
 
 =item C<fpath>
 
-Return an FPath object representing the sum of the bins of the
-histogram extracted from the cluster.
+Return a L<Demeter::FPath> object representing the sum of the bins of
+the histogram extracted from the cluster.
 
 =item C<histogram>
 
-Return a reference to an array of SSPath objects representing the bins
-of the histogram extracted from the cluster.
+Return a reference to an array of L<Demeter::SSPath> objects
+representing the bins of the histogram extracted from the cluster.
 
 =item C<plot>
 
@@ -271,6 +272,10 @@ and from YAMLs with a single object perl YAML.
 =head1 BUGS AND LIMITATIONS
 
 =over 4
+
+=item *
+
+This currently only works for a monoatomic cluster.
 
 =item *
 
