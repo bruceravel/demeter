@@ -24,30 +24,29 @@ use Demeter::NumTypes qw( Natural PosInt NonNeg );
 
 with 'Demeter::Data::Arrays';
 with 'Demeter::UI::Screen::Pause' if ($Demeter::mode->ui eq 'screen');
+if ($Demeter::mode->ui eq 'screen') {
+  with 'Demeter::UI::Screen::Pause';
+  with 'Demeter::UI::Screen::Progress';
+};
 
 use List::Util qw{sum};
 
 has '+plottable'      => (default => 1);
 
 has 'nsteps'    => (is => 'rw', isa => NonNeg, default => 0);
-has 'timestep'  => (is => 'rw', isa => NonNeg, default => 0);
-has 'rmin'      => (is => 'rw', isa => 'Num', default => 0.0,
-		    trigger => sub{ my($self, $new) = @_; $self->_rdf; $self->_bins;} );
-has 'rmax'      => (is => 'rw', isa => 'Num', default => 5.8,
-		    trigger => sub{ my($self, $new) = @_; $self->_rdf; $self->_bins;} );
-has 'bin'       => (is => 'rw', isa => 'Num', default => 0.005,
-		    trigger => sub{ my($self, $new) = @_; $self->_bins;} );
+has 'rmin'      => (is => 'rw', isa => 'Num', default => 0.0,);
+has 'rmax'      => (is => 'rw', isa => 'Num', default => 5.8,);
+has 'bin'       => (is => 'rw', isa => 'Num', default => 0.005,);
 
 has 'file'      => (is => 'rw', isa => 'Str', default => q{},
 		    trigger => sub{ my($self, $new) = @_;
 				    if ($new and (-e $new)) {
-				      $self->number_of_steps;
 				      $self->_cluster;
-				      $self->_rdf;
-				      $self->_bins;
-				    }});
+				      $self->rdf;
+				    };
+				  });
 
-has 'cluster'     => (is => 'rw', isa => 'ArrayRef', default => sub{[]});
+has 'clusters'    => (is => 'rw', isa => 'ArrayRef', default => sub{[]});
 has 'rdf'         => (is => 'rw', isa => 'ArrayRef', default => sub{[]});
 has 'positions'   => (is => 'rw', isa => 'ArrayRef', default => sub{[]});
 has 'populations' => (is => 'rw', isa => 'ArrayRef', default => sub{[]});
@@ -56,8 +55,13 @@ has 'sp'          => (is => 'rw', isa => Empty.'|Demeter::ScatteringPath', defau
 
 ## need a pgplot plotting template
 
+sub rebin {
+  my($self, $new) = @_;
+  $self->_bin;
+  return $self;
+};
 
-sub number_of_steps {
+sub _number_of_steps {
   my ($self) = @_;
   open(my $H, '<', $self->file);
   my $count = 0;
@@ -72,69 +76,85 @@ sub number_of_steps {
 
 sub _cluster {
   my ($self) = @_;
+  $self->_number_of_steps;
   open(my $H, '<', $self->file);
-  my $count = 0;
-  my $use_this = 0;
-  my $target = $self->timestep || $self->nsteps;
   my @cluster = ();
+  my @all = ();
   while (<$H>) {
     if (m{\Atimestep}) {
-      ++$count;
-      last if $use_this;
+      push @all, \@cluster;
+      @cluster = ();
       next;
     };
-    $use_this=1 if ($count == $target);
-    next if not $use_this;
     next if not m{\APt}; # skip the three lines trailing the timestamp
     my $position = <$H>;
-    my $velocity = <$H>;
-    my $force    = <$H>;
-    chomp $position;
     my @vec = split(" ", $position);
     push @cluster, \@vec;
+    <$H>;
+    <$H>;
+    #my $velocity = <$H>;
+    #my $force    = <$H>;
+    #chomp $position;
   };
-  $self->cluster(\@cluster);
+  $self->clusters(\@all);
   return $self;
 };
 
-sub _rdf {
+sub rdf {
   my ($self) = @_;
   my @rdf = ();
-  my $size = $#{$self->cluster};
-  foreach my $i (0 .. $size) {
-    foreach my $j ($i+1 .. $size) { # remember that all pairs are doubly degenerate
-      my $r = sqrt sum  map { ($self->cluster->[$i]->[$_] - $self->cluster->[$j]->[$_])**2 } (0..2) ; # this may be too cute
-      next if ($r < $self->rmin);
-      next if ($r > $self->rmax);
-      push @rdf, [$i, $j, $r];
+  my $i=0;
+  my $rminsqr = $self->rmin*$self->rmin;
+  my $rmaxsqr = $self->rmax*$self->rmax;
+  $self->start_counter("Making RDF from each timestep", $#{$self->clusters}+1) if ($self->mo->ui eq 'screen');
+  foreach my $step (@{$self->clusters}) {
+    $self->count if ($self->mo->ui eq 'screen');
+    $self->call_sentinal;
+    my $size = $#{$step};
+    foreach my $i (0 .. $size) {
+      foreach my $j ($i+1 .. $size) { # remember that all pairs are doubly degenerate
+	#my $rsqr = sum  map { ($step->[$i]->[$_] - $step->[$j]->[$_])**2 } (0..2) ; # this may be too cute
+	my $rsqr = ($step->[$i]->[0] - $step->[$j]->[0])**2
+	         + ($step->[$i]->[1] - $step->[$j]->[1])**2
+	         + ($step->[$i]->[2] - $step->[$j]->[2])**2;
+	push @rdf, $rsqr if (($rsqr > $rminsqr) and ($rsqr < $rmaxsqr));
+      };
     };
   };
-  @rdf = sort { $a->[2] <=> $b->[2] } @rdf;
+  if ($self->mo->ui eq 'screen') {
+    $self->stop_counter;
+    $self->start_spinner("Sorting RDF");
+  };
+  @rdf = sort { $a <=> $b } @rdf;
+  $self->stop_spinner if ($self->mo->ui eq 'screen');
   $self->rdf(\@rdf);
   return $self;
 };
 
-sub _bins {
+sub _bin {
   my ($self) = @_;
   my (@x, @y);
-  my $bin_start = $self->rdf->[0]->[2];
+  my $bin_start = sqrt($self->rdf->[0]);
   my ($population, $average) = (0,0);
+  $self->start_spinner("Binning RDF") if ($self->mo->ui eq 'screen');
   foreach my $pair (@{$self->rdf}) {
-    if (($pair->[2] - $bin_start) > $self->bin) {
+    my $rr = sqrt($pair);
+    if (($rr - $bin_start) > $self->bin) {
       $average = $average/$population;
       push @x, sprintf("%.5f", $average);
       push @y, $population*2;
       #print join(" ", sprintf("%.5f", $average), $population*2), $/;
-      $bin_start = $pair->[2];
-      $average = $pair->[2];
+      $bin_start = $rr;
+      $average = $rr;
       $population = 1;
     } else {
-      $average += $pair->[2];
+      $average += $rr;
       ++$population;
     };
   };
   $self->positions(\@x);
   $self->populations(\@y);
+  $self->stop_spinner if ($self->mo->ui eq 'screen');
   return $self;
 };
 
@@ -150,9 +170,6 @@ sub plot {
 sub histogram {
   my ($self) = @_;
   return if not $self->sp;
-  #$self->feff->run;
-  #my @list_of_paths = @{ $self->feff->pathlist };
-  #my $firstshell = $list_of_paths[0];
   my $histo = $self -> sp -> make_histogram($self->positions, $self->populations, q{}, q{});
   return $histo;
 };
@@ -205,11 +222,6 @@ of the other attributes.
 When the HISTORY file is first read, it will be parsed to obtain the
 number of time steps contained in the file.  This number will be
 stored in this attribute.
-
-=item C<timestep> (integer)
-
-The timestep from which to extract a cluster.  If zero, the final
-timestep will be used.
 
 =item C<rmin> and C<rmax> (numbers)
 
