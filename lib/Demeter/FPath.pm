@@ -126,6 +126,11 @@ sub intrplist {
   q{};
 };
 
+sub labelline {
+  my ($self) = @_;
+  return sprintf("Reff=%6.3f  nleg=%d   degen=%2d", $self->fuzzy, 2, 1);
+};
+
 sub _filter {
   my ($self) = @_;
   $self->source->_update('fft');

@@ -45,9 +45,10 @@ has 'file'      => (is => 'rw', isa => 'Str', default => q{},
 				      $self->rdf;
 				    };
 				  });
+has 'timestep_count' => (is => 'rw', isa => 'Int',  default => 0);
 
 has 'clusters'    => (is => 'rw', isa => 'ArrayRef', default => sub{[]});
-has 'rdf'         => (is => 'rw', isa => 'ArrayRef', default => sub{[]});
+has 'ssrdf'       => (is => 'rw', isa => 'ArrayRef', default => sub{[]});
 has 'positions'   => (is => 'rw', isa => 'ArrayRef', default => sub{[]});
 has 'populations' => (is => 'rw', isa => 'ArrayRef', default => sub{[]});
 
@@ -103,12 +104,13 @@ sub _cluster {
 sub rdf {
   my ($self) = @_;
   my @rdf = ();
-  my $i=0;
+  my $count = 0;
   my $rminsqr = $self->rmin*$self->rmin;
   my $rmaxsqr = $self->rmax*$self->rmax;
   $self->start_counter("Making RDF from each timestep", $#{$self->clusters}+1) if ($self->mo->ui eq 'screen');
   foreach my $step (@{$self->clusters}) {
     $self->count if ($self->mo->ui eq 'screen');
+    $self->timestep_count(++$count);
     $self->call_sentinal;
     my $size = $#{$step};
     foreach my $i (0 .. $size) {
@@ -127,17 +129,17 @@ sub rdf {
   };
   @rdf = sort { $a <=> $b } @rdf;
   $self->stop_spinner if ($self->mo->ui eq 'screen');
-  $self->rdf(\@rdf);
+  $self->ssrdf(\@rdf);
   return $self;
 };
 
 sub _bin {
   my ($self) = @_;
   my (@x, @y);
-  my $bin_start = sqrt($self->rdf->[0]);
+  my $bin_start = sqrt($self->ssrdf->[0]);
   my ($population, $average) = (0,0);
   $self->start_spinner("Binning RDF") if ($self->mo->ui eq 'screen');
-  foreach my $pair (@{$self->rdf}) {
+  foreach my $pair (@{$self->ssrdf}) {
     my $rr = sqrt($pair);
     if (($rr - $bin_start) > $self->bin) {
       $average = $average/$population;

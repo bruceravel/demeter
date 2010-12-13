@@ -53,17 +53,23 @@ sub make_histogram {
 
 sub chi_from_histogram {
   my ($self, $paths, $common) = @_;
-  $self->start_spinner("Making FSPath from histogram") if ($self->mo->ui eq 'screen');
+  $self->start_spinner("Making FPath from histogram") if ($self->mo->ui eq 'screen');
   my $first = $paths->[0];
   #$first->update_path(1);
+  my $save = $first->group;
+  $first->group("h_i_s_t_o");
   $first->_update('fft');
   $first->dispose($first->template('process', 'histogram_first'));
+  $first->group($save);
   my $ravg = $first->population * $first->R;
   my $sum  = $first->population;
   foreach my $i (1 .. $#{ $paths }) {
     #$paths->[$i]->update_path(1);
+    my $save = $paths->[$i]->group;
+    $paths->[$i]->group("h_i_s_t_o");
     $paths->[$i]->_update('fft');
     $paths->[$i]->dispose($paths->[$i]->template('process', 'histogram_add'));
+    $paths->[$i]->group($save);
     $ravg += $paths->[$i]->population * $paths->[$i]->R;
     $sum  += $paths->[$i]->population;
   }

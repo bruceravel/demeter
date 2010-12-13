@@ -38,7 +38,7 @@ use Demeter::UI::Wx::CheckListBook;
 use Demeter::UI::Wx::SpecialCharacters qw(:all);
 
 use Cwd;
-use List::MoreUtils qw(firstidx);
+use List::MoreUtils qw(firstidx any);
 
 my $windows = [qw(hanning kaiser-bessel welch parzen sine)];
 my $demeter = $Demeter::UI::Artemis::demeter;
@@ -86,7 +86,9 @@ Readonly my $PATH_ADD		=> Wx::NewId();
 Readonly my $PATH_CLONE		=> Wx::NewId();
 Readonly my $PATH_YAML		=> Wx::NewId();
 Readonly my $PATH_TYPE		=> Wx::NewId();
-Readonly my $PATH_HISTO		=> Wx::NewId();
+Readonly my $PATH_HISTO_FILE    => Wx::NewId();
+Readonly my $PATH_HISTO_GAMMA	=> Wx::NewId();
+Readonly my $PATH_HISTO_DLPOLY	=> Wx::NewId();
 
 Readonly my $PATH_EXPORT_FEFF	=> Wx::NewId();
 Readonly my $PATH_EXPORT_DATA	=> Wx::NewId();
@@ -608,6 +610,12 @@ sub make_menubar {
 #   $explain_menu->Append($PATH_EXP_THIRD,  '3rd',     'Explain the third cumulant');
 #   $explain_menu->Append($PATH_EXP_FOURTH, '4th',     'Explain the fourth cumulant');
 
+  my $histo_menu    = Wx::Menu->new;
+  $histo_menu->Append($PATH_HISTO_DLPOLY, "a DL_POLY history",     "Generate a histogram using the currently displayed path", wxITEM_NORMAL );
+  $histo_menu->Append($PATH_HISTO_FILE,   "a column data file",    "Generate a histogram using the currently displayed path", wxITEM_NORMAL );
+  $histo_menu->Append($PATH_HISTO_GAMMA,  "a Gamma-like function", "Generate a histogram using the currently displayed path", wxITEM_NORMAL );
+
+
   $self->{pathsmenu} = Wx::Menu->new;
   $self->{pathsmenu}->Append($PATH_TRANSFER, "Transfer displayed path",            "Transfer the path currently on display to the plotting list", wxITEM_NORMAL );
   $self->{pathsmenu}->Append($PATH_RENAME, "Rename displayed path",            "Rename the path currently on display", wxITEM_NORMAL );
@@ -618,7 +626,7 @@ sub make_menubar {
   $self->{pathsmenu}->AppendSeparator;
   $self->{pathsmenu}->Append($PATH_ADD,    "Add path parameter",     "Add path parameter to many paths", wxITEM_NORMAL );
   $self->{pathsmenu}->AppendSubMenu($export_menu, "Export all path parameters to ...", "Export the path parameters from the displayed path to other paths in this fitting model.");
-  $self->{pathsmenu}->Append($PATH_HISTO, "Make histogram", "Generate a histogram using the currently displayed path", wxITEM_NORMAL );
+  $self->{pathsmenu}->AppendSubMenu($histo_menu,  "Make a histogram from ...", "Generate a histogram using the currently displayed path");
   $self->{pathsmenu}->AppendSeparator;
   $self->{pathsmenu}->Append($DISCARD_THIS, "Discard displayed path",     "Discard the path currently on display", wxITEM_NORMAL );
 #  $self->{pathsmenu}->AppendSeparator;
@@ -1051,7 +1059,7 @@ sub OnMenuClick {
       last SWITCH;
     };
 
-    ($id == $PATH_HISTO) and do {
+    (any {$id == $_} ($PATH_HISTO_FILE, $PATH_HISTO_GAMMA, $PATH_HISTO_DLPOLY))  and do {
       my $pathpage = $datapage->{pathlist}->GetPage($datapage->{pathlist}->GetSelection);
       my $sp = $pathpage->{path}->sp;
       if ($sp->nleg != 2) {
@@ -1060,13 +1068,17 @@ sub OnMenuClick {
 	Wx::MessageDialog->new($datapage, $text, "Error!", wxOK|wxICON_ERROR) -> ShowModal;
 	return;
       };
-      my $histo_dialog = Demeter::UI::Artemis::Data::Histogram->new($datapage);
+      my $how = ($id == $PATH_HISTO_FILE)   ? 'column'
+	      : ($id == $PATH_HISTO_GAMMA)  ? 'gamma'
+	      : ($id == $PATH_HISTO_DLPOLY) ? 'dlpoly'
+	      :                               'column';
+      my $histo_dialog = Demeter::UI::Artemis::Data::Histogram->new($datapage, $how);
       my $result = $histo_dialog -> ShowModal;
       if ($result == wxID_CANCEL) {
 	$datapage->status("Cancelled histogram creation.");
 	return;
       };
-      $datapage -> process_histogram($histo_dialog);
+      $datapage -> process_histogram($histo_dialog, $how);
       last SWITCH;
     };
 
@@ -1893,14 +1905,14 @@ sub clone {
 };
 
 sub process_histogram {
-  my ($datapage, $histo_dialog) = @_;
+  my ($datapage, $histo_dialog, $how) = @_;
   my $pathpage = $datapage->{pathlist}->GetPage($datapage->{pathlist}->GetSelection);
   my $pathname = $pathpage->{path}->name;
   my $sp = $pathpage->{path}->sp;
   my $common = [data=>$datapage->{data}];
 
   ## -------- from file:
-  if ($histo_dialog->{filesel}) {
+  if ($how =~ m{column}) {
     my ($file, $rmin, $rmax, $xcol, $ycol, $amp, $scale) = 
       ($histo_dialog->{filepicker} -> GetTextCtrl -> GetValue,
        $histo_dialog->{filermin}   -> GetValue,
@@ -1936,7 +1948,36 @@ sub process_histogram {
     $Demeter::UI::Artemis::frames{main} -> {toolbar}->ToggleTool(1,1);
     $gdsframe  -> {toolbar}->ToggleTool(2,1);
 
-  } elsif ($histo_dialog->{filesel}) {
+  } elsif ($how =~ m{dl_?poly}) {
+    my $file = $histo_dialog->{dlfile}->GetTextCtrl->GetValue;
+    my $rmin = $histo_dialog->{dlrmin}->GetValue;
+    my $rmax = $histo_dialog->{dlrmax}->GetValue;
+    my $bin  = $histo_dialog->{dlbin}->GetValue;
+    my $dlp  = $histo_dialog->{DLPOLY};
+    if (not $dlp) {
+      $dlp = Demeter::ScatteringPath::Histogram::DL_POLY->new(rmin=>$rmin, rmax=>$rmax, bin=>$bin);
+      $histo_dialog->{DLPOLY}=$dlp;
+      $dlp->sentinal(sub{$histo_dialog->dlpoly_sentinal});
+      my $busy = Wx::BusyCursor->new();
+      my $start = DateTime->now( time_zone => 'floating' );
+      $dlp->file($file);
+      my $finish = DateTime->now( time_zone => 'floating' );
+      my $dur = $finish->subtract_datetime($start);
+      my $finishtext = sprintf("Making histogram from %d timesteps (%d minutes, %d seconds)", $dlp->nsteps, $dur->minutes, $dur->seconds);
+      $datapage->status($finishtext);
+    };
+    $dlp->set(rmin=>$rmin, rmax=>$rmax, bin=>$bin);
+    $datapage->status("Rebinning histogram into $bin $ARING bins");
+    $dlp->rebin;
+    $dlp->set(sp=>$sp, data=>$datapage->{data});
+    my $composite = $dlp->fpath;
+    my $id = $datapage->{pathlist}->GetSelection;
+    $datapage->{pathlist}->DeletePage($id);
+    my $page = Demeter::UI::Artemis::Path->new($datapage->{pathlist}, $composite, $datapage);
+    $datapage->{pathlist}->AddPage($page, $composite->name, 1, 0);
+    $composite->po->start_plot;
+    $composite->plot('r');
+  } elsif ($how =~ m{gamma}) {
     printf("%s  %s  %s  %s\n",
 	   $sp,
 	   $histo_dialog->{gammargrid}->GetValue,

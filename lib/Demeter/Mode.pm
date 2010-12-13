@@ -417,6 +417,8 @@ sub remove {
     $type = 'Plot';
   } elsif ($type eq 'Demeter') {
     return;
+  } elsif ($type eq 'DL_POLY') {
+    return;
   };
   my $group = $object->group;
   my ($i, $which) = (0, -1);

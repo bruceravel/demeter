@@ -1099,12 +1099,13 @@ sub status {
     print $text, " -- ", join(", ", (caller)[0,2]), $/;
   };
 
-  my $color = ($type eq 'normal') ? $normal
-            : ($type eq 'wait')   ? $wait
-            : ($type eq 'error')  ? $error
-	    :                       $normal;
+  my $color = ($type =~ m{normal}) ? $normal
+            : ($type =~ m{wait})   ? $wait
+            : ($type =~ m{error})  ? $error
+	    :                        $normal;
   $self->{statusbar}->SetBackgroundColour($color);
   $self->{statusbar}->SetStatusText($text);
+  return if ($type =~ m{nobuffer});
   $Demeter::UI::Artemis::frames{Status}->put_text($text, $type);
 };
 
