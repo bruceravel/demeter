@@ -50,12 +50,12 @@ my $build = $class
 				'autodie'                   => '0',
 				'Module::Build'	            => '0',
 
-				'Moose'			    => '1.05',
+				'Moose'			    => '1.21',
 				'MooseX::Aliases'           => '0.08',
 				'MooseX::AttributeHelpers'  => '0.23',
-				'MooseX::StrictConstructor' => '0.08',
-				'MooseX::Singleton'	    => '0.22',
-				'MooseX::Types'		    => '0.21',
+				'MooseX::StrictConstructor' => '0.12',
+				'MooseX::Singleton'	    => '0.25',
+				'MooseX::Types'		    => '0.25',
 
 				'Archive::Zip'		   => '0',
 
