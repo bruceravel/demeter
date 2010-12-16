@@ -109,7 +109,6 @@ sub suggest {
 
 __PACKAGE__->meta->make_immutable;
 1;
-__END__
 
 =head1 NAME
 
@@ -143,6 +142,3 @@ ill-conceived logi0i1 column, but...) and strip out any blank lines.
 
   Bruce Ravel <bravel@bnl.gov>
   http://xafs.org/BruceRavel/
-
-
-

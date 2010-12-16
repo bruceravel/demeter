@@ -51,11 +51,11 @@ my $build = $class
 				'Module::Build'	            => '0',
 
 				'Moose'			    => '1.05',
-				'MooseX::Aliases'           => '0.05',
+				'MooseX::Aliases'           => '0.08',
 				'MooseX::AttributeHelpers'  => '0.23',
 				'MooseX::StrictConstructor' => '0.08',
-				'MooseX::Singleton'	    => '0.13',
-				'MooseX::Types'		    => '0.07',
+				'MooseX::Singleton'	    => '0.22',
+				'MooseX::Types'		    => '0.21',
 
 				'Archive::Zip'		   => '0',
 
