@@ -183,6 +183,7 @@ sub fpath {
   return $composite;
 };
 
+__PACKAGE__->meta->make_immutable;
 1;
 
 =head1 NAME

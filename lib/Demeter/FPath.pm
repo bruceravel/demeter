@@ -77,6 +77,7 @@ has 'rmin'	 => (is => 'rw', isa => 'Num',    default =>  0.0);
 has 'rmax'	 => (is => 'rw', isa => 'Num',    default => 31.0);
 
 has 'nnnntext'   => (is => 'rw', isa => 'Str',    default => q{});
+has 'workspace'  => (is => 'rw', isa => 'Str',    default => q{}); # valid directory
 
 ## the sp attribute must be set to this FPath object so that the Path
 ## _update_from_ScatteringPath method can be used to generate the

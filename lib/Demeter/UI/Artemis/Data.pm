@@ -1965,18 +1965,22 @@ sub process_histogram {
       my $dur = $finish->subtract_datetime($start);
       my $finishtext = sprintf("Making histogram from %d timesteps (%d minutes, %d seconds)", $dlp->nsteps, $dur->minutes, $dur->seconds);
       $datapage->status($finishtext);
+      undef $busy;
     };
+    my $busy = Wx::BusyCursor->new();
     $dlp->set(rmin=>$rmin, rmax=>$rmax, bin=>$bin);
     $datapage->status("Rebinning histogram into $bin $ARING bins");
     $dlp->rebin;
-    $dlp->set(sp=>$sp, data=>$datapage->{data});
+    $dlp->set(sp=>$sp);
     my $composite = $dlp->fpath;
+    $composite->data($datapage->{data});
     my $id = $datapage->{pathlist}->GetSelection;
     $datapage->{pathlist}->DeletePage($id);
     my $page = Demeter::UI::Artemis::Path->new($datapage->{pathlist}, $composite, $datapage);
     $datapage->{pathlist}->AddPage($page, $composite->name, 1, 0);
     $composite->po->start_plot;
     $composite->plot('r');
+    undef $busy;
   } elsif ($how =~ m{gamma}) {
     printf("%s  %s  %s  %s\n",
 	   $sp,

@@ -1333,6 +1333,8 @@ override 'deserialize' => sub {
       delete $plotlike->{$_} foreach qw(workspace Type weight string pathtype plottable);
     } elsif (exists $plotlike->{ipot}) { # this is an SSPath
       delete $plotlike->{$_} foreach qw(Type weight string pathtype plottable);
+    } elsif (exists $plotlike->{nnnntext}) { # this is an FPath
+      1;
     };
     my @array = %{ $plotlike };
     my $this;
@@ -1342,6 +1344,13 @@ override 'deserialize' => sub {
       $this -> set(@array);
       $this -> sp($this);
       #print $this, "  ", $this->sp, $/;
+    } elsif (exists $plotlike->{nnnntext}) { # this is an FPath
+      $this = Demeter::FPath->new();
+      $this -> set(@array);
+      $this -> sp($this);
+      $this -> parentgroup($this->group);
+      $this -> parent($this);
+      $this -> workspace($this->stash_folder);
     } elsif (exists $plotlike->{absorber}) { # this is an FSPath
       my $feff = $parents{$plotlike->{parentgroup}} || $data[0] -> mo -> fetch('Feff', $plotlike->{parentgroup});
       $this = Demeter::FSPath->new(workspace=>$feff->workspace);
@@ -1356,7 +1365,7 @@ override 'deserialize' => sub {
     };
     $this -> datagroup($dg);
     ## reconnect object relationships
-    $this -> parent($parents{$this->parentgroup});
+    $this -> parent($parents{$this->parentgroup}) if (ref($this) !~ m{FPath});
     $this -> data($datae{$this->datagroup});
     push @paths, $this;
   };

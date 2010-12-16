@@ -185,7 +185,8 @@ sub populate {
 				   # is better than crashing.  even better would be to figure out how
                                    # gets here....
 
-  $this->{fefflabel} -> SetLabel('[' . $pathobject->parent->name . '] ');
+  $this->{fefflabel} -> SetLabel('[' . $pathobject->parent->name . '] ') if $pathobject->parent;
+  $this->{fefflabel} -> SetLabel(q{}) if ref($pathobject) =~ m{FPath};
   my $name = $pathobject->name;
   $name =~ s{\A\s+}{};
   $name =~ s{\s+\z}{};
@@ -419,7 +420,7 @@ sub Rename {
   my ($self, $newname) = @_;
   my $included = $self->{path}->include;
   $self->{path}->name($newname);
-  $self->{path}->label(sprintf("[%s] %s", $self->{path}->parent->name, $newname));
+  $self->{path}->label(sprintf("[%s] %s", ($self->{path}->parent) ? $self->{path}->parent->name : q{}, $newname));
   my $label = $newname;
   ($label = sprintf("((( %s )))", $label)) if not $included;
   $self->{idlabel} -> SetLabel($label);

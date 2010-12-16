@@ -328,8 +328,9 @@ sub restore_fit {
 	next;
       };
       #my $feff = $feffs{$p->{parentgroup}} || $fit -> mo -> fetch('Feff', $p->{parentgroup});
-      my $feff = $fit -> mo -> fetch('Feff', $p->{parentgroup});
-      $p->set(folder=>$feff->workspace, file=>q{}, update_path=>1);
+      my $feff = (ref($p) =~ m{FPath}) ? $p : $fit -> mo -> fetch('Feff', $p->{parentgroup});
+      $p->set(file=>q{}, update_path=>1);
+      $p->set(folder=>$feff->workspace) if (ref($p) !~ m{FPath});
       next if ($p->data ne $d);
       $p->parent($feff);
       #my $this_sp = find_sp($p, \%feffs) || $fit->mo->fetch('ScatteringPath', $p->spgroup);
