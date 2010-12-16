@@ -53,7 +53,7 @@ has 'kgrid'      => (is => 'ro', isa => 'ArrayRef',
 			16.000, 17.000, 18.000, 19.000, 20.000 ]
 		     });
 
-enum('AllElements', [map {ucfirst $_} @Demeter::StrTypes::element_list]);
+enum 'AllElements' => [map {ucfirst $_} @Demeter::StrTypes::element_list];
 coerce 'AllElements',
   from 'Str',
   via { get_symbol($_) };
