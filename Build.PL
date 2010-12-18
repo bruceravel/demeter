@@ -106,6 +106,7 @@ my $build = $class
 				('IO::Prompt'	      => '0',
 				 'Term::Twiddle'      => '0',
 				 'Term::Sk'           => '0',
+                                 'Getopt::Long'       => '2.38',
 				),
 
 				## this is required for the gnuplot plotting backend

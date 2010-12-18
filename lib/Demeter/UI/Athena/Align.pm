@@ -143,8 +143,14 @@ sub push_values {
   };
   my $was = $this->{standard}->GetStringSelection;
   $this->{standard}->fill($::app, 1, 1);
-  ($was eq 'None') ? $this->{standard}->SetSelection(0) : $this->{standard}->SetStringSelection($was);
-  $this->plot($data);
+  ((not $was) or ($was eq 'None')) ? $this->{standard}->SetSelection(0) : $this->{standard}->SetStringSelection($was);
+  my $stan = $this->{standard}->GetClientData($this->{standard}->GetSelection);
+  if (not defined($stan) or ($stan->group eq $data->group)) {
+    $::app->{main}->status("Not plotting -- the data and standard are the same!", 'error|nobuffer');
+    return;
+  } else {
+    $this->plot($data);
+  };
 };
 sub mode {
   my ($this, $data, $enabled, $frozen) = @_;
@@ -168,7 +174,7 @@ sub autoalign {
   my $stan = $this->{standard}->GetClientData($this->{standard}->GetSelection);
 
   if (($how eq 'this') and ($data eq $stan)) {
-    $::app->{main}->status("Not aligning -- the data and standard are the same!");
+    $::app->{main}->status("Not aligning -- the data and standard are the same!", 'error|nobuffer');
     return;
   };
 
@@ -193,6 +199,10 @@ sub plot {
   my ($this, $data) = @_;
   my $busy = Wx::BusyCursor->new();
   my $stan = $this->{standard}->GetClientData($this->{standard}->GetSelection);
+  if (not defined($stan) or ($stan->group eq $data->group)) {
+    $::app->{main}->status("Not plotting -- the data and standard are the same!", 'error|nobuffer');
+    return;
+  };
   $data->po->set(emin=>-30, emax=>50);
   $data->po->set(e_mu=>1, e_markers=>1, e_bkg=>0, e_pre=>0, e_post=>0, e_norm=>0, e_der=>0, e_sec=>0, e_i0=>0, e_signal=>0, e_smooth=>0);
   $data->po->e_norm(1) if ($this->{plotas}->GetSelection == 1);
@@ -200,6 +210,7 @@ sub plot {
   $data->po->set(e_der=>1, e_smooth=>3)  if ($this->{plotas}->GetSelection == 3);
   $data->po->start_plot;
   $_->plot('e') foreach ($stan, $data);
+  $::app->{main}->status("Plotted ".$stan->name." and ".$data->name, 'nobuffer');
   undef $busy;
 };
 

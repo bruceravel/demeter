@@ -591,6 +591,8 @@ sub find_edge {
     #($elem, $edge) = ("Np", "L3")  if (($elem eq "At") and ($edge eq "L1"));
     ## prefer Cr K to Ba L1
     ($elem, $edge) = ("Cr", "K")  if (($elem eq "Ba") and ($edge eq "L1"));
+    ## prefer Ni K to Er L3
+    ($elem, $edge) = ("Ni", "K")  if (($elem eq "Er") and ($edge eq "L3"));
   };
   return ($elem, $edge);
 };

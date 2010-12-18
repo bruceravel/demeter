@@ -538,7 +538,7 @@ sub make_one_path {
 
 
 ##----------------------------------------------------------------------------
-## pathfinder
+## pathfinder http://xkcd.com/835/
 
 sub pathfinder {
   my ($self) = @_;

@@ -97,7 +97,7 @@ sub Import {
     };
 
   SWITCH: {
-      $retval = _prj($app, $stashfile, $file, $first),             last SWITCH if ($type eq 'prj');
+      $retval = _prj ($app, $stashfile, $file, $first, $plugin),   last SWITCH if ($type eq 'prj');
       $retval = _data($app, $stashfile, $file, $first, \@suggest), last SWITCH if ($type eq 'raw');
     };
     if ($plugin) {
@@ -319,7 +319,7 @@ sub _data {
 }
 
 sub _prj {
-  my ($app, $file, $orig, $first) = @_;
+  my ($app, $file, $orig, $first, $is_plugin) = @_;
   my $busy = Wx::BusyCursor->new();
 
   $app->{main}->{prj} =  Demeter::UI::Artemis::Prj->new($app->{main}, $file, 'multiple');
@@ -362,11 +362,13 @@ sub _prj {
 
   $data->push_mru("xasdata", $orig);
   $app->set_mru;
-  $app->{main}->{project}->SetLabel(basename($file, '.prj'));
-  $app->{main}->{currentproject} = $file;
+  if (not $is_plugin) {
+    $app->{main}->{project}->SetLabel(basename($file, '.prj'));
+    $app->{main}->{currentproject} = $file;
+  };
 
   chdir dirname($orig);
-  $app->modified(0);
+  $app->modified($is_plugin);
   $prj->DEMOLISH;
   undef $busy;
   $app->{main}->status("Imported data from project $orig");
