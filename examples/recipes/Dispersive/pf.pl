@@ -87,7 +87,7 @@ while ($csv_fh->gzreadline($line) > 0) {
 
 ## -------- apply the calibration parameters to several time points and make a pretty picture
 $data -> po -> set(e_norm=>1, e_markers=>0, emin=>-50, emax=>100);
-$data -> co -> set_default("gnuplot", "keyparams", "bottom right width 1 height 1 box");
+$data -> co -> set_default("gnuplot", "keylocation", "bottom right");
 $data -> po -> start_plot;
 $data -> po -> title('time sequence');
 foreach my $j (1..15, 20, 60, 100) {

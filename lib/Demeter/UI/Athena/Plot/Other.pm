@@ -2,7 +2,7 @@ package Demeter::UI::Athena::Plot::Other;
 
 use Wx qw( :everything );
 use base 'Wx::Panel';
-use Wx::Event qw(EVT_TOGGLEBUTTON EVT_CHECKBOX);
+use Wx::Event qw(EVT_TOGGLEBUTTON EVT_CHECKBOX EVT_RADIOBOX);
 use Wx::Perl::TextValidator;
 
 use Demeter::UI::Wx::SpecialCharacters qw(:all);
@@ -20,6 +20,12 @@ sub new {
   $this->{title}     = Wx::TextCtrl->new($this, -1, q{});
   $titleboxsizer    -> Add($this->{title}, 1, wxALL|wxGROW, 0);
 
+  $this->{location}  = Wx::RadioBox->new($this, -1, 'Legend location', wxDefaultPosition, wxDefaultSize,
+					 ["top left", "top right", "bottom left", "bottom right"], 2, wxRA_SPECIFY_COLS);
+  $this->{location}  -> SetStringSelection($app->current_data->co->default('gnuplot', 'keylocation'));
+  EVT_RADIOBOX($this, $this->{location}, sub{location(@_,$app)});
+  $box               -> Add($this->{location},   0, wxGROW|wxALL, 5);
+
   $this->{nokey}      = Wx::CheckBox->new($this, -1, "Suppress plot legend");
   $this->{singlefile} = Wx::ToggleButton->new($this, -1, "Save next plot to a file");
   $box               -> Add($this->{nokey},      0, wxGROW|wxALL, 5);
@@ -31,6 +37,11 @@ sub new {
 
   $this->SetSizerAndFit($box);
   return $this;
+};
+
+sub location {
+  my ($this, $event, $app) = @_;
+  $app->current_data->co->set_default('gnuplot', 'keylocation', $this->{location}->GetStringSelection);
 };
 
 sub label {

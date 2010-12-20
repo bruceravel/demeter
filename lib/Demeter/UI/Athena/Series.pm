@@ -177,6 +177,7 @@ sub make {
     my $new = $app->Copy($name);
     $new->$att($val);
   };
+  $::app->modified(1);
 };
 
 sub clear {

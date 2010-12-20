@@ -1,10 +1,10 @@
 ## -*- config -*-
 ###########################################################################
-##                     Demeter is copyright (c) 2007-2009 Bruce Ravel
+##                     Demeter is copyright (c) 2007-2010 Bruce Ravel
 ##                                                     bravel@bnl.gov
 ##                                        http://xafs.org/BruceRavel/
 ##
-##                   Ifeffit is copyright (c) 1992-2007 Matt Newville
+##                   Ifeffit is copyright (c) 1992-2010 Matt Newville
 ##                                         newville@cars.uchicago.edu
 ##                       http://cars9.uchicago.edu/~newville/ifeffit/
 ##
@@ -86,9 +86,18 @@ maxint=100
 description
   This is the font size to use by default in gnuplot plots.
 
+variable=keylocation
+type=string
+default=top right
+description
+  Use this to set the location of the legend.  Be sure to follow
+  gnuplot's syntax -- Demeter does no error checking on the value of
+  this parameter. This should be one of "top right", "top left",
+  "bottom right", or "bottom left".
+
 variable=keyparams
 type=string
-default=top right width 1 height 1 box
+default=width 1 height 1 box
 description
   Use this to set the parameters of the legend.  Be sure to follow
   gnuplot's syntax -- Demeter does no error checking on the value of

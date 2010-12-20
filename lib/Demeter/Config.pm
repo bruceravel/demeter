@@ -96,6 +96,7 @@ sub BUILD {
   $self -> dot_folder;
   $self -> read_config;
   $self -> read_ini;
+  $self -> fix;
   $self -> mo -> config($self);
   $self -> mo -> merge($self->default("merge", "weightby"));
   my @groups = $self->groups;
@@ -424,6 +425,16 @@ sub read_ini {
       $self->set_default($g, $p, $personal_ini{$g}{$p});
     };
   };
+  return $self;
+};
+
+## this method is used to fix parameters in a way that is backwards compatable
+sub fix {
+  my ($self) = @_;
+  my $keyparams = $self->default("gnuplot", "keyparams");
+  $keyparams =~ s{left|right|top|bottom|center}{}g;
+  $keyparams =~ s{\A\s+}{};
+  $self->set_default("gnuplot", "keyparams", $keyparams);
   return $self;
 };
 

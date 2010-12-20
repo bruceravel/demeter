@@ -36,6 +36,7 @@ sub fix {
 
   while (<D>) {
     chomp;
+    next if (m{\A\s*\z});
     my @list = split(" ", $_);
 
     if ($_ =~ m{\A\s*NPTS}) {	# first two lines, snarf mono parameters

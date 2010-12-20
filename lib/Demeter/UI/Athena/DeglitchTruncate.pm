@@ -216,6 +216,7 @@ sub OnRemove {
   $data->deglitch($this->{point});
   $this->plot($data);
   $app->{main}->status(sprintf("Removed point at %.3f", $this->{point}));
+  $::app->modified(1);
 };
 
 
@@ -254,6 +255,7 @@ sub Truncate {
   $_->Truncate($beforeafter, $e) foreach (@data);
   $this->plot_truncate($data[0]);
   $app->{main}->status(sprintf("Removed data %s %.3f for %s", $beforeafter, $e, $text));
+  $::app->modified(1);
 };
 
 1;

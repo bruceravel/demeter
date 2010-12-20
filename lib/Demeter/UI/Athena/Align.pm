@@ -166,6 +166,7 @@ sub add {
   my $shift = $this->{shift}->GetValue;
   $this->{shift}->SetValue($shift+$amount);
   $this->plot($data);
+  $::app->modified(1);
 };
 
 sub autoalign {
@@ -193,6 +194,7 @@ sub autoalign {
   undef $busy;
   $this->{shift}->SetValue($data->bkg_eshift);
   $this->plot($data);
+  $::app->modified(1);
 };
 
 sub plot {

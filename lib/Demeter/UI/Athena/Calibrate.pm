@@ -111,6 +111,7 @@ sub OnCalibrate {
   $data->bkg_eshift($shift);
   $data->bkg_e0($this->{cal}->GetValue);
   $this->{e0}->SetValue($data->bkg_e0);
+  $::app->modified(1);
 };
 
 sub plot {

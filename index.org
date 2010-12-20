@@ -1,6 +1,7 @@
 -*- org -*-
 
-* Demeter bugs and shortcomings discovered  [17/24]
+* Demeter bugs and shortcomings discovered  [19/25]
+ - [X] failed test 022 after upgrading office computer to 10.04
  - [X] save_many fails to bring things up to date
  - [X] save_many fails to use flat/norm correctly
  - [ ] in D::Data::IO::save_many, why doesn't updating in n specifying
@@ -26,7 +27,7 @@
  - [ ] tie multiple groups together
  - [ ] set E0 to peak of white line
  - [ ] +serialize VPath+, put VPath into +dpj and+ fpj files
- - [ ] key top/left/bottom/right config params + controls in plottabs in Athena
+ - [X] key top/left/bottom/right config params + controls in plottabs in Athena
  - [X] deserializing SSPath fails
  - [X] envelope is q is plotted absurdly wrongly (it seems to plot something in R)
 
@@ -39,7 +40,8 @@
  - [ ] reference of another edge
  - [ ] keV data
 
-* Athena bugs [4/10]
+* Athena bugs [6/11]
+ - [ ] deglitching crashes with gnuplot
  - [X] bare negative sign in a TextCtrl failed attribute type checking and crashes
  - [ ] importing stddev array from an Athena project file, then making a merge plot works oddly
  - [ ] renaming a group unchecks it
@@ -51,9 +53,9 @@
         /home/bruce/codes/demeter/lib/Demeter/UI/Athena/Align.pm line
         202, <F> line 35.
        when clicking on group selected as standard while align is displayed
- - [ ] using tools (e.g. align) needs to toggle save flag
- - [ ] no status message after saving project...
- - [X] plot in energy, need to update edeg step box in case it changed
+ - [X] using tools (e.g. align) needs to toggle save flag
+ - [X] no status message after saving project...
+ - [X] plot in energy, need to update edge step box in case it changed
 
 * other features [13/13]
  - [X] column selection persistance
@@ -175,15 +177,15 @@
  - [X] GUI tool
  - [X] test data against plugins
 
-* Histograms
- - [ ] sum histogram bins into a single chi(k) file
- - [ ] convert chi(k) data to a mock feffNNNN.dat file
+* Histograms [2/5]
+ - [X] sum histogram bins into a single chi(k) file
+ - [X] convert chi(k) data to a mock feffNNNN.dat file
  - [ ] Triangle object
    - yields a DS path and a TS path
    - by R and theta
    - by a trio of Cartesian coordinates
- - [ ] bin triangle configurations by R and theta
- - [ ] sum Triangle objects into a single chi(k)
+ - [ ] bin triangle configurations by R and theta and sum into a single chi(k)
+ - [ ] bin nealy colinear configurations by R and theta and sum into a single chi(k)
 
 * Help [1/4]
  - [X]  about

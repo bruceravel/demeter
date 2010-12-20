@@ -1,4 +1,3 @@
-athena.todo
 bin/argus
 bin/argus.pod
 bin/dartemis
@@ -57,6 +56,7 @@ examples/data/mn3o4.202
 examples/data/uhup.003
 examples/data/uhup.101
 examples/fe.060
+examples/filter.pl
 examples/harness
 examples/nonuniform.chi
 examples/PbFe12O19.inp
@@ -70,6 +70,8 @@ examples/recipes/ComplexFit/HgDNA_data.prj
 examples/recipes/ComplexFit/intrp.html
 examples/recipes/ComplexFit/thymidine.pdb
 examples/recipes/ComplexFit/withHg.inp
+examples/recipes/Difference/diff.pl
+examples/recipes/Difference/diff.prj
 examples/recipes/Dispersive/cus2.pl
 examples/recipes/Dispersive/ESRF_ID24/cus2/cu_08
 examples/recipes/Dispersive/ESRF_ID24/cus2/cu_08.calib
@@ -109,6 +111,7 @@ examples/recipes/Histogram/Au_feff.yaml
 examples/recipes/Histogram/Aunano.prj
 examples/recipes/Histogram/firstshell
 examples/recipes/Histogram/gamma.pl
+examples/recipes/Histogram/hist2hist.pl
 examples/recipes/Histogram/histo.pl
 examples/recipes/Histogram/pbaq.prj
 examples/recipes/Histogram/phase.bin
@@ -118,6 +121,7 @@ examples/recipes/Histogram/RDFDAT20K
 examples/recipes/Indicators/indic.pl
 examples/recipes/LCF/combi.pl
 examples/recipes/LCF/lcf.pl
+examples/recipes/LogRatio/lrpd.pl
 examples/recipes/Methyltin/DMT.fpj
 examples/recipes/Methyltin/fit.pl
 examples/recipes/Methyltin/MDS.fpj
@@ -149,6 +153,7 @@ examples/recipes/SingleFile/feff.inp
 examples/recipes/StandardDeviation/merge.pl
 examples/recipes/StandardDeviation/README
 examples/recipes/VPath_SSPath/gds.txt
+examples/recipes/VPath_SSPath/plot.pl
 examples/recipes/VPath_SSPath/U.prj
 examples/recipes/VPath_SSPath/uace.pl
 examples/recipes/VPath_SSPath/uranyl_acetate.inp
@@ -169,6 +174,7 @@ examples/tests/serialize.pl
 examples/tests/smooth.pl
 examples/tests/truncate.pl
 fixin
+index.org
 INSTALL
 lib/Demeter.pm
 lib/Demeter/Atoms.pm
@@ -217,6 +223,7 @@ lib/Demeter/Data/Prj.pm
 lib/Demeter/Data/Process.pm
 lib/Demeter/Data/SelfAbsorption.pm
 lib/Demeter/Data/Units.pm
+lib/Demeter/Diff.pm
 lib/Demeter/Dispose.pm
 lib/Demeter/doc/doctree
 lib/Demeter/doc/dpg/bin/build.tt
@@ -417,10 +424,12 @@ lib/Demeter/Fit.pm
 lib/Demeter/Fit/Feffit.pm
 lib/Demeter/Fit/Happiness.pm
 lib/Demeter/Fit/Sanity.pm
+lib/Demeter/FPath.pm
 lib/Demeter/FSPath.pm
 lib/Demeter/GDS.pm
 lib/Demeter/Journal.pm
 lib/Demeter/LCF.pm
+lib/Demeter/LogRatio.pm
 lib/Demeter/Mode.pm
 lib/Demeter/MRU.pm
 lib/Demeter/NumTypes.pm
@@ -435,6 +444,8 @@ lib/Demeter/Plot/Gnuplot.pm
 lib/Demeter/Plot/Indicator.pm
 lib/Demeter/Plot/singlefile.org
 lib/Demeter/Plot/SingleFile.pm
+lib/Demeter/Plot/Style.pm
+lib/Demeter/Plugins/10BMMultiChannel.pm
 lib/Demeter/Plugins/CMC.pm
 lib/Demeter/Plugins/DUBBLE.pm
 lib/Demeter/Plugins/FileType.pm
@@ -451,10 +462,12 @@ lib/Demeter/Plugins/X23A2MultiChannel.pm
 lib/Demeter/Project.pm
 lib/Demeter/ScatteringPath.pm
 lib/Demeter/ScatteringPath/Histogram.pm
+lib/Demeter/ScatteringPath/Histogram/DL_POLY.pm
 lib/Demeter/share/Demeter.png
 lib/Demeter/share/Demeter_icon.png
 lib/Demeter/share/Demeter_large.png
 lib/Demeter/share/gnuplot_colors.dem
+lib/Demeter/share/ini/10bmmultichannel.ini
 lib/Demeter/share/peacock.jpg
 lib/Demeter/share/pgplot/grfont.dat
 lib/Demeter/share/pgplot/rgb.txt
@@ -496,6 +509,7 @@ lib/Demeter/SSPath.pm
 lib/Demeter/StrTypes.pm
 lib/Demeter/StructuralUnit.pm
 lib/Demeter/templates.pod
+lib/Demeter/templates/analysis/ifeffit/diff_diff.tmpl
 lib/Demeter/templates/analysis/ifeffit/lcf_clean.tmpl
 lib/Demeter/templates/analysis/ifeffit/lcf_fit.tmpl
 lib/Demeter/templates/analysis/ifeffit/lcf_header.tmpl
@@ -507,6 +521,11 @@ lib/Demeter/templates/analysis/ifeffit/lcf_prep_standard.tmpl
 lib/Demeter/templates/analysis/ifeffit/lcf_prep_standard_k.tmpl
 lib/Demeter/templates/analysis/ifeffit/lcf_report.tmpl
 lib/Demeter/templates/analysis/ifeffit/lcf_save.tmpl
+lib/Demeter/templates/analysis/ifeffit/lcf_sum.tmpl
+lib/Demeter/templates/analysis/ifeffit/lcf_sum_standard.tmpl
+lib/Demeter/templates/analysis/ifeffit/lr_fit.tmpl
+lib/Demeter/templates/analysis/ifeffit/lr_results.tmpl
+lib/Demeter/templates/analysis/ifeffit/lr_save.tmpl
 lib/Demeter/templates/analysis/ifeffit/xes_background.tmpl
 lib/Demeter/templates/analysis/ifeffit/xes_read.tmpl
 lib/Demeter/templates/atoms/absorption.tmpl
@@ -590,10 +609,14 @@ lib/Demeter/templates/plot/gnuplot/f1f2.tmpl
 lib/Demeter/templates/plot/gnuplot/f2.tmpl
 lib/Demeter/templates/plot/gnuplot/file.tmpl
 lib/Demeter/templates/plot/gnuplot/filter.tmpl
+lib/Demeter/templates/plot/gnuplot/histo.tmpl
 lib/Demeter/templates/plot/gnuplot/indicator.tmpl
 lib/Demeter/templates/plot/gnuplot/label.tmpl
+lib/Demeter/templates/plot/gnuplot/lreven.tmpl
+lib/Demeter/templates/plot/gnuplot/lrodd.tmpl
 lib/Demeter/templates/plot/gnuplot/marker.tmpl
 lib/Demeter/templates/plot/gnuplot/newchie.tmpl
+lib/Demeter/templates/plot/gnuplot/newdiff.tmpl
 lib/Demeter/templates/plot/gnuplot/newe.tmpl
 lib/Demeter/templates/plot/gnuplot/newk.tmpl
 lib/Demeter/templates/plot/gnuplot/newlcf.tmpl
@@ -602,6 +625,7 @@ lib/Demeter/templates/plot/gnuplot/newq.tmpl
 lib/Demeter/templates/plot/gnuplot/newr.tmpl
 lib/Demeter/templates/plot/gnuplot/newxes.tmpl
 lib/Demeter/templates/plot/gnuplot/overchie.tmpl
+lib/Demeter/templates/plot/gnuplot/overdiff.tmpl
 lib/Demeter/templates/plot/gnuplot/overe.tmpl
 lib/Demeter/templates/plot/gnuplot/overk.tmpl
 lib/Demeter/templates/plot/gnuplot/overlcf.tmpl
@@ -610,6 +634,7 @@ lib/Demeter/templates/plot/gnuplot/overq.tmpl
 lib/Demeter/templates/plot/gnuplot/overr.tmpl
 lib/Demeter/templates/plot/gnuplot/overxes.tmpl
 lib/Demeter/templates/plot/gnuplot/plot_file.tmpl
+lib/Demeter/templates/plot/gnuplot/plot_info_depth.tmpl
 lib/Demeter/templates/plot/gnuplot/plot_stats.tmpl
 lib/Demeter/templates/plot/gnuplot/prep_f1f2.tmpl
 lib/Demeter/templates/plot/gnuplot/prep_filter.tmpl
@@ -632,6 +657,8 @@ lib/Demeter/templates/plot/pgplot/file.tmpl
 lib/Demeter/templates/plot/pgplot/filter.tmpl
 lib/Demeter/templates/plot/pgplot/indicator.tmpl
 lib/Demeter/templates/plot/pgplot/label.tmpl
+lib/Demeter/templates/plot/pgplot/lreven.tmpl
+lib/Demeter/templates/plot/pgplot/lrodd.tmpl
 lib/Demeter/templates/plot/pgplot/marker.tmpl
 lib/Demeter/templates/plot/pgplot/newchie.tmpl
 lib/Demeter/templates/plot/pgplot/newe.tmpl
@@ -650,6 +677,7 @@ lib/Demeter/templates/plot/pgplot/overq.tmpl
 lib/Demeter/templates/plot/pgplot/overr.tmpl
 lib/Demeter/templates/plot/pgplot/overxes.tmpl
 lib/Demeter/templates/plot/pgplot/plot_file.tmpl
+lib/Demeter/templates/plot/pgplot/plot_info_depth.tmpl
 lib/Demeter/templates/plot/pgplot/plot_stats.tmpl
 lib/Demeter/templates/plot/pgplot/prep_f1f2.tmpl
 lib/Demeter/templates/plot/pgplot/prep_filter.tmpl
@@ -708,11 +736,15 @@ lib/Demeter/templates/process/ifeffit/display.tmpl
 lib/Demeter/templates/process/ifeffit/erase_chikn.tmpl
 lib/Demeter/templates/process/ifeffit/erase_group.tmpl
 lib/Demeter/templates/process/ifeffit/fft.tmpl
+lib/Demeter/templates/process/ifeffit/filtered_filter.tmpl
+lib/Demeter/templates/process/ifeffit/filtered_head.tmpl
 lib/Demeter/templates/process/ifeffit/find_e0.tmpl
 lib/Demeter/templates/process/ifeffit/fix_chik.tmpl
 lib/Demeter/templates/process/ifeffit/flatten_fit.tmpl
 lib/Demeter/templates/process/ifeffit/flatten_set.tmpl
 lib/Demeter/templates/process/ifeffit/gds_out.tmpl
+lib/Demeter/templates/process/ifeffit/histogram_add.tmpl
+lib/Demeter/templates/process/ifeffit/histogram_first.tmpl
 lib/Demeter/templates/process/ifeffit/interpolate.tmpl
 lib/Demeter/templates/process/ifeffit/k123.tmpl
 lib/Demeter/templates/process/ifeffit/kev.tmpl
@@ -746,6 +778,7 @@ lib/Demeter/templates/process/ifeffit/sa_booth_pre.tmpl
 lib/Demeter/templates/process/ifeffit/sa_booth_thick.tmpl
 lib/Demeter/templates/process/ifeffit/sa_booth_thin.tmpl
 lib/Demeter/templates/process/ifeffit/sa_fluo.tmpl
+lib/Demeter/templates/process/ifeffit/sa_info_depth.tmpl
 lib/Demeter/templates/process/ifeffit/sa_troger.tmpl
 lib/Demeter/templates/process/ifeffit/save_chik.tmpl
 lib/Demeter/templates/process/ifeffit/save_chiq.tmpl
@@ -755,6 +788,7 @@ lib/Demeter/templates/process/ifeffit/save_many_header.tmpl
 lib/Demeter/templates/process/ifeffit/save_norm.tmpl
 lib/Demeter/templates/process/ifeffit/save_xmu.tmpl
 lib/Demeter/templates/process/ifeffit/smooth.tmpl
+lib/Demeter/templates/process/ifeffit/smoothed.tmpl
 lib/Demeter/templates/process/ifeffit/trun_signal_after.tmpl
 lib/Demeter/templates/process/ifeffit/trun_signal_before.tmpl
 lib/Demeter/templates/process/ifeffit/truncate_after.tmpl
@@ -847,9 +881,11 @@ lib/Demeter/UI/Athena/ColumnSelection/Rebin.pm
 lib/Demeter/UI/Athena/ColumnSelection/Reference.pm
 lib/Demeter/UI/Athena/ConvoluteNoise.pm
 lib/Demeter/UI/Athena/Cursor.pm
+lib/Demeter/UI/Athena/Deconvolute.pm
 lib/Demeter/UI/Athena/DeglitchTruncate.pm
 lib/Demeter/UI/Athena/Difference.pm
 lib/Demeter/UI/Athena/Group.pm
+lib/Demeter/UI/Athena/GroupList.pm
 lib/Demeter/UI/Athena/icons/athena.png
 lib/Demeter/UI/Athena/icons/bullseye.png
 lib/Demeter/UI/Athena/icons/chainlink.png
@@ -868,11 +904,13 @@ lib/Demeter/UI/Athena/Plot/PlotK.pm
 lib/Demeter/UI/Athena/Plot/PlotQ.pm
 lib/Demeter/UI/Athena/Plot/PlotR.pm
 lib/Demeter/UI/Athena/Plot/Stack.pm
+lib/Demeter/UI/Athena/Plot/Style.pm
 lib/Demeter/UI/Athena/PluginRegistry.pm
 lib/Demeter/UI/Athena/Prefs.pm
 lib/Demeter/UI/Athena/Rebin.pm
 lib/Demeter/UI/Athena/Replot.pm
 lib/Demeter/UI/Athena/SelfAbsorption.pm
+lib/Demeter/UI/Athena/Series.pm
 lib/Demeter/UI/Athena/share/athena.demeter_conf
 lib/Demeter/UI/Athena/share/Brygos_Painter_lekythos_Athena_holding_spear_MET.jpg
 lib/Demeter/UI/Athena/share/GPL.dem
@@ -1027,8 +1065,10 @@ t/024_graph.t
 t/025_lcf.t
 t/026_xes.t
 t/027.peakfit.pl
+t/028_fpath.t
 t/7725.11
 t/boilerplate
+t/cu010k.dat
 t/cyanobacteria.prj
 t/data.chi
 t/data.xmu
