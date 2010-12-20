@@ -58,6 +58,15 @@ sub make_data {
   $xmu_string    =~ s{\$(\d+)}{$group.$cols[$1]}g;
   $energy_string =~ s{\$(\d+)}{$group.$cols[$1]}g;
 
+  ## this next bit removes the energy shift from the new group's
+  ## energy column.  this was implemented in support of data files for
+  ## multichannel ion chambers.  See the 10BMMultiChannel plugin for
+  ## an example.
+  if (exists $args{bkg_eshift}) {
+    $energy_string .= "+" . $args{bkg_eshift};
+    delete $args{bkg_eshift};
+  };
+
   $this->i0_string($i0_string);
   $this->signal_string($signal_string);
   $this->xmu_string($xmu_string);

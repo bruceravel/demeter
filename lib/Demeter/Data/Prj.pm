@@ -267,6 +267,18 @@ sub _record {
 	$groupargs{i0_string} = $args{i0};
 	last SWITCH;
       };
+      ($k eq 'signal') and do {
+	$groupargs{signal_string} = $args{signal_string};
+	last SWITCH;
+      };
+      (any {$k eq $_} qw(i0_string signal_string numerator denominator)) and do {
+	$groupargs{$k} = $args{$k};
+	last SWITCH;
+      };
+      ($k eq 'signal') and do {
+	$groupargs{signal_string} = $args{signal_string};
+	last SWITCH;
+      };
       ($k eq 'label') and do {
 	$groupargs{$k} = $args{$k};
 	last SWITCH;

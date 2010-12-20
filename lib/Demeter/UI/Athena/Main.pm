@@ -457,12 +457,12 @@ sub plot {
   my $pbox = Wx::BoxSizer->new( wxHORIZONTAL );
   $this->{plot_multiplier_label} = Wx::StaticText->new($this, -1, "Plot multiplier");
   $this->{plot_multiplier}       = Wx::TextCtrl  ->new($this, -1, q{}, wxDefaultPosition, $tcsize);
-  $this->{y_offset_label}        = Wx::StaticText->new($this, -1, "y-axis offset");
-  $this->{y_offset}              = Wx::TextCtrl  ->new($this, -1, q{}, wxDefaultPosition, $tcsize);
+  $this->{'y_offset_label'}        = Wx::StaticText->new($this, -1, "y-axis offset");
+  $this->{'y_offset'}              = Wx::TextCtrl  ->new($this, -1, q{}, wxDefaultPosition, $tcsize);
   $pbox -> Add($this->{plot_multiplier_label}, 0, wxALL,    5);
   $pbox -> Add($this->{plot_multiplier},       0, wxRIGHT, 10);
-  $pbox -> Add($this->{y_offset_label},        0, wxALL,    5);
-  $pbox -> Add($this->{y_offset},              0, wxRIGHT, 10);
+  $pbox -> Add($this->{'y_offset_label'},      0, wxALL,    5);
+  $pbox -> Add($this->{'y_offset'},            0, wxRIGHT, 10);
   push @plot_parameters, qw(plot_multiplier y_offset);
 
   $this->{$_} -> SetValidator( Wx::Perl::TextValidator->new( qr([-0-9.]) ) )

@@ -39,20 +39,21 @@
  - [ ] reference of another edge
  - [ ] keV data
 
-* Athena bugs [2/5]
+* Athena bugs [4/10]
  - [X] bare negative sign in a TextCtrl failed attribute type checking and crashes
  - [ ] importing stddev array from an Athena project file, then making a merge plot works oddly
  - [ ] renaming a group unchecks it
  - [ ] add noise to chi data
  - [X] labels in plot tabs should come from .pm files
  - [ ] persistance for plotting styles
- - [ ] align problem 
+ - [X] align problem 
         Can't call method "plot" on an undefined value at
         /home/bruce/codes/demeter/lib/Demeter/UI/Athena/Align.pm line
         202, <F> line 35.
        when clicking on group selected as standard while align is displayed
  - [ ] using tools (e.g. align) needs to toggle save flag
  - [ ] no status message after saving project...
+ - [X] plot in energy, need to update edeg step box in case it changed
 
 * other features [13/13]
  - [X] column selection persistance

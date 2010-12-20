@@ -1227,6 +1227,7 @@ sub postplot {
     $app->{main}->{Indicators}->plot;
     $data->unset_standard;
   };
+  $app->{main}->{Main}->{bkg_step}->SetValue($app->current_data->bkg_step);
   $app->{main}->{Other}->{singlefile}->SetValue(0);
   return;
 };
