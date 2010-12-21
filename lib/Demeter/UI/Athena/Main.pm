@@ -658,11 +658,12 @@ sub OnParameter {
   return if not $data;
   my $widget = $app->{main}->{Main}->{$which};
   ## TextCtrl SpinCtrl ComboBox CheckBox RadioButton all have GetValue
-  my $value = (ref($widget) =~ m{Choice}) ? $data->co->default("clamp", $widget->GetStringSelection)
+  my $value = ((ref($widget) =~ m{Choice}) and ($which =~ m{clamp})) ? $data->co->default("clamp", $widget->GetStringSelection)
+            : (ref($widget) =~ m{Choice}) ? $widget->GetStringSelection
             : ($which eq 'bkg_z')         ? interpret_bkg_z($widget->GetValue)
             : ($which =~ m{nnorm})        ? interpret_nnorm($app)
 	    :                               $widget->GetValue;
-  $value = 0     if not looks_like_number($value);
+  $value = 0 if ((not looks_like_number($value)) and ($which !~ m{window}));
   if ($which !~ m{nnorm}) {
     $value = 0.001 if (($data->what_isa($which) =~ m{PosNum}) and ($value<=0));
     $value = 0     if (($data->what_isa($which) =~ m{NonNeg}) and ($value<0));
