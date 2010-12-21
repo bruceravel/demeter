@@ -271,7 +271,7 @@ sub _record {
 	$groupargs{signal_string} = $args{signal_string};
 	last SWITCH;
       };
-      (any {$k eq $_} qw(i0_string signal_string numerator denominator)) and do {
+      (any {$k eq $_} qw(i0_string signal_string numerator denominator referencegroup)) and do {
 	$groupargs{$k} = $args{$k};
 	last SWITCH;
       };
@@ -355,6 +355,10 @@ sub _record {
   $groupargs{update_columns} = 0;
   $groupargs{update_norm}    = 1 if (not $args{is_chi});
   $groupargs{update_fft}     = 1 if ($args{is_chi});
+  if ($groupargs{referencegroup}) {
+    my $ref = $data->mo->fetch('Data', $groupargs{referencegroup});
+    $data->reference($ref);
+  };
   $data -> set(%groupargs);
   my $command = $data->template("process", "deriv");
   $data->dispose($command);

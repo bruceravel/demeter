@@ -400,12 +400,12 @@ sub reset_path_index {
 sub fetch {
   my ($self, $type, $group) = @_;
   my $re = join("|", @{$self->types});
-  return 0 if ($type !~ m{(?:$re)});
+  return q{} if ($type !~ m{(?:$re)});
   my $list = $self->$type;
   foreach my $o (@$list) {
     return $o if ($o->group eq $group);
   };
-  return 0;
+  return q{};
 };
 
 sub remove {

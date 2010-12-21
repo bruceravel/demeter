@@ -98,8 +98,10 @@ has 'reference'   => (is => 'rw', isa => Empty.'|Demeter::Data', default => q{},
 		      trigger => sub{ my ($self, $new) = @_;
 				      $self->tie_reference($new) if not $self->tying;
 				      $self->tying(0);
+				      $self->referencegroup($new->group) if (ref($new) =~ m{Demeter});
 				    },
 		     );
+has 'referencegroup' => (is => 'rw', isa => 'Str',     default => q{});
 
 # subtype 'DemeterInt',
 #   => as 'Int'

@@ -458,6 +458,7 @@ sub _prj {
   chdir dirname($orig);
   $app->modified($is_plugin);
   $prj->DEMOLISH;
+  $app->OnGroupSelect(0,0);
   undef $busy;
   $app->{main}->status("Imported data from project $orig");
   return 1;
