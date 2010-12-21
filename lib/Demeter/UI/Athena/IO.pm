@@ -214,7 +214,9 @@ sub _data {
     };
     $colsel->{Rebin}->EnableRebin(0, $data);
     ## set Preprocessing controls from yaml
-
+    foreach my $w (qw(mark align set)) {
+      $colsel->{Preprocess}->{$w}->SetValue($yaml->{'preproc_'.$w});
+    };
     my $result = $colsel -> ShowModal;
     if ($result == wxID_CANCEL) {
       $app->{main}->status("Cancelled column selection.");
@@ -231,6 +233,7 @@ sub _data {
   $data -> display(0);
   $data->source($orig);
   my $do_rebin = (defined $colsel) ? ($colsel->{Rebin}->{do_rebin}->GetValue) : $yaml->{do_rebin};
+
   if ($yaml->{do_rebin}) {
     my $rebin  = $data->rebin;
     foreach my $att (qw(energy numerator denominator ln )) {
@@ -240,15 +243,20 @@ sub _data {
     $data->DEMOLISH;
     $data = $rebin;
   };
+
   $data -> po -> e_markers(1);
   $data -> _update('all');
   $app->{main}->{list}->Append($data->name, $data);
+
   if (not $repeated) {
     $app->{main}->{list}->SetSelection($app->{main}->{list}->GetCount - 1);
     #$app->{selected} = $app->{main}->{list}->GetSelection;
     $app->{main}->{Main}->mode($data, 1, 0) if ($app->{main}->{list}->GetCount == 1);
     $app->OnGroupSelect(q{}, $app->{main}->{list}->GetSelection);
     Import_plot($app, $data);
+  };
+  if ($yaml->{preproc_mark}) {
+    $app->mark($data);
   };
   $data->push_mru("xasdata", $orig);
   $app->set_mru;
@@ -303,6 +311,11 @@ sub _data {
   $persistence{rebin_pre}   = (defined($colsel)) ? $colsel->{Rebin}->{pre}->GetValue        : $yaml->{rebin_pre};
   $persistence{rebin_xanes} = (defined($colsel)) ? $colsel->{Rebin}->{xanes}->GetValue      : $yaml->{rebin_xanes};
   $persistence{rebin_exafs} = (defined($colsel)) ? $colsel->{Rebin}->{exafs}->GetValue      : $yaml->{rebin_exafs};
+  ## preprocess
+  $persistence{preproc_standard} = (defined($colsel)) ? $colsel->{Preprocess}->{standard}->GetStringSelection : $yaml->{preproc_standard};
+  $persistence{preproc_mark}     = (defined($colsel)) ? $colsel->{Preprocess}->{mark} ->GetValue : $yaml->{preproc_mark};
+  $persistence{preproc_align}    = (defined($colsel)) ? $colsel->{Preprocess}->{align}->GetValue : $yaml->{preproc_align};
+  $persistence{preproc_set}      = (defined($colsel)) ? $colsel->{Preprocess}->{set}  ->GetValue : $yaml->{preproc_set};
 
   my $string .= YAML::Tiny::Dump(\%persistence);
   open(my $ORDER, '>'.$persist);

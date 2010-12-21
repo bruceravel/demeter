@@ -6,6 +6,8 @@ use Wx qw( :everything );
 use base 'Wx::Panel';
 use Wx::Event qw(EVT_BUTTON EVT_CHOICE EVT_COMBOBOX EVT_TEXT);
 use Wx::Perl::TextValidator;
+use Scalar::Util qw(looks_like_number);
+
 
 use Demeter::UI::Wx::SpecialCharacters qw(:all);
 
@@ -159,6 +161,7 @@ sub mode {
 
 sub OnShift {
   my ($this, $event, $data) = @_;
+  return if not looks_like_number($this->{shift}->GetValue);
   $data->bkg_eshift($this->{shift}->GetValue);
 };
 sub add {
@@ -176,6 +179,11 @@ sub autoalign {
 
   if (($how eq 'this') and ($data eq $stan)) {
     $::app->{main}->status("Not aligning -- the data and standard are the same!", 'error|nobuffer');
+    return;
+  };
+
+  if (not looks_like_number($this->{shift}->GetValue)) {
+    $::app->{main}->status("Not aligning -- your shift value cannot be interpreted as a number", 'error|nobuffer');
     return;
   };
 
@@ -205,6 +213,12 @@ sub plot {
     $::app->{main}->status("Not plotting -- the data and standard are the same!", 'error|nobuffer');
     return;
   };
+
+  if (not looks_like_number($this->{shift}->GetValue)) {
+    $::app->{main}->status("Not plotting -- your shift value cannot be interpreted as a number", 'error|nobuffer');
+    return;
+  };
+
   $data->po->set(emin=>-30, emax=>50);
   $data->po->set(e_mu=>1, e_markers=>1, e_bkg=>0, e_pre=>0, e_post=>0, e_norm=>0, e_der=>0, e_sec=>0, e_i0=>0, e_signal=>0, e_smooth=>0);
   $data->po->e_norm(1) if ($this->{plotas}->GetSelection == 1);

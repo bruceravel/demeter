@@ -56,6 +56,8 @@
  - [X] using tools (e.g. align) needs to toggle save flag
  - [X] no status message after saving project...
  - [X] plot in energy, need to update edge step box in case it changed
+ - [ ] in align tool (and others?) verify that standard selection still exists in the project
+ - [ ] cannot specify title for stddev and variance plots
 
 * other features [13/13]
  - [X] column selection persistance
@@ -193,7 +195,7 @@
  - [ ]  document
  - [ ]  memory usage
 
-* Weird stuff I'd prefer not to implement unless demanded [0/9]
+* Weird stuff I'd prefer not to implement unless demanded [0/10]
  - [ ] xfit output
  - [ ] csv and text report
  - [ ] group selection replot
@@ -203,6 +205,7 @@
  - [ ] tie relative energy value to changes in E0
  - [ ] set e0 for all and marked
  - [ ] plot margin lines for deglitching, deglitch many points
+ - [ ] preprocessing truncation and deglitching
 
 * Tools [15/20]
  - [X] main

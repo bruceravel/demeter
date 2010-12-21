@@ -274,7 +274,7 @@ sub plotk123 {
   my $winsave = $self->po->plot_win;
 
   $self->po->kweight(1);
-  $self->po->title($self->name . " at kweight = 1, 2, and 3");
+  $self->po->title($self->name . " at kweight = 1, 2, and 3") if not $self->po->title;
   my $scale = sprintf("%.3f", $max[1]/$max[0]);
   $self->set(plot_multiplier => $scale, 'y_offset'=>1.2*$max[1],  name=>"$save[0]: kw=1, scaled by $scale");
   $self->plot('k');
@@ -683,6 +683,8 @@ sub quadplot {
     carp(sprintf("Sorry, the quadplot is not possible with the %s backend.", $self->mo->template_plot));
     return $self;
   };
+  my $save = $self->co->default("plot", "showcopyright");
+  $self->co->set_default("plot", "showcopyright", 0);
   $self -> po -> start_plot;
   my $string = $self->template("plot", "quadstart");
   $self -> dispose($string, 'plotting');
@@ -714,6 +716,7 @@ sub quadplot {
   $self -> dispose($string, 'plotting');
 
   $self -> po -> set(zip(@e, @vals));
+  $self->co->set_default("plot", "showcopyright", $save);
 };
 
 

@@ -781,6 +781,7 @@ sub OnMenuClick {
       $data->po->set(e_mu=>1, e_i0=>1, e_signal=>1);
       return if not $app->preplot('e', $data);
       $data->po->start_plot;
+      $data->po->title($app->{main}->{Other}->{title}->GetValue);
       $data->plot('E');
       $data->po->set(e_i0=>0, e_signal=>0);
       $app->{main}->{plottabs}->SetSelection(1) if $app->spacetab;
@@ -794,6 +795,7 @@ sub OnMenuClick {
       $app->{main}->{PlotK}->pull_single_values;
       return if not $app->preplot('k', $data);
       $data->po->start_plot;
+      $data->po->title($app->{main}->{Other}->{title}->GetValue);
       $data->plot('k123');
       $app->{main}->{plottabs}->SetSelection(2) if $app->spacetab;
       $app->{lastplot} = ['k', 'single'];
@@ -806,6 +808,7 @@ sub OnMenuClick {
       $app->{main}->{PlotR}->pull_marked_values;
       return if not $app->preplot('r', $data);
       $data->po->start_plot;
+      $data->po->title($app->{main}->{Other}->{title}->GetValue);
       $data->plot('R123');
       $app->postplot($data);
       $app->{main}->{plottabs}->SetSelection(3) if $app->spacetab;
@@ -818,6 +821,7 @@ sub OnMenuClick {
       my $sp = $data->is_merge;
       $sp = 'e' if ($sp eq 'n');
       #return if not $app->preplot($sp, $data);
+      $data->po->title($app->{main}->{Other}->{title}->GetValue);
       $data->plot('stddev');
       #$app->postplot($data);
       $app->{lastplot} = [$sp, 'single'];
@@ -827,6 +831,7 @@ sub OnMenuClick {
       my $data = $app->current_data;
       last SWITCH if not $data->is_merge;
       #return if not $app->postplot($data);
+      $data->po->title($app->{main}->{Other}->{title}->GetValue);
       $data->plot('variance');
       #$app->postplot($data);
       my $sp = $data->is_merge;
@@ -1266,6 +1271,7 @@ sub plot_e00 {
   $app->current_data->po->set(e_mu=>1, e_markers=>0, e_zero=>1, e_bkg=>0, e_pre=>0, e_post=>0,
 			      e_norm=>1, e_der=>0, e_sec=>0, e_i0=>0, e_signal=>0);
   $app->current_data->po->start_plot;
+  $app->current_data->po->title($app->{main}->{Other}->{title}->GetValue);
   foreach my $i (0 .. $app->{main}->{list}->GetCount-1) {
     $app->{main}->{list}->GetClientData($i)->plot('e')
       if $app->{main}->{list}->IsChecked($i);
@@ -1281,6 +1287,7 @@ sub plot_i0_marked {
   $app->current_data->po->set(e_mu=>0, e_markers=>0, e_zero=>0, e_bkg=>0, e_pre=>0, e_post=>0,
 			      e_norm=>0, e_der=>0, e_sec=>0, e_i0=>1, e_signal=>0);
   $app->current_data->po->start_plot;
+  $app->current_data->po->title($app->{main}->{Other}->{title}->GetValue);
   foreach my $i (0 .. $app->{main}->{list}->GetCount-1) {
     $app->{main}->{list}->GetClientData($i)->plot('e')
       if $app->{main}->{list}->IsChecked($i);
@@ -1313,7 +1320,14 @@ sub mark {
   return if not $clb->GetCount;
 
   my $regex = q{};
-  if ($how eq 'toggle') {
+  if (ref($how) =~ m{Demeter}) {
+    foreach my $i (0 .. $clb->GetCount-1) {
+      if ($clb->GetClientData($i)->group eq $how->group) {
+	$clb->Check($i,1);
+	last;
+      };
+    };
+  } elsif ($how eq 'toggle') {
     $clb->Check($clb->GetSelection, not $clb->IsChecked($clb->GetSelection));
     return;
 
@@ -1346,7 +1360,7 @@ sub mark {
       $clb->Check($i, $val);
     };
   };
-  $app->{main}->status($mark_feeedback{$how}.'/'.$regex.'/');
+  $app->{main}->status($mark_feeedback{$how}.'/'.$regex.'/') if (ref($how) !~ m{Demeter}) ;
 };
 
 
