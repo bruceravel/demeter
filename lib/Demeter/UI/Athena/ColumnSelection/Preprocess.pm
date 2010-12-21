@@ -16,7 +16,7 @@ sub new {
 
   my $hbox = Wx::BoxSizer->new( wxHORIZONTAL );
   $hbox -> Add(Wx::StaticText->new($this, -1, "Standard"), 0, wxLEFT|wxRIGHT|wxALIGN_CENTRE, 5);
-  $this->{standard} = Demeter::UI::Athena::GroupList -> new($this, $app, 1, 1);
+  $this->{standard} = Demeter::UI::Athena::GroupList -> new($this, $app, 1, 0);
   $hbox -> Add($this->{standard}, 0, wxLEFT|wxRIGHT|wxALIGN_CENTRE, 5);
 
   $box -> Add($hbox, 0, wxALL, 5);

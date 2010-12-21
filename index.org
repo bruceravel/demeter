@@ -101,10 +101,10 @@
  - [X] singlefile toggle
  - [X] suppress legend
 
-* data import [4/6]
+* data import [5/6]
  - [X] reference channel on import (use Demeter::Data::MultiChannel?)
  - [X] rebin on import (need to get rebin page working)
- - [ ] preprocessing (need to get the various tool pages working)
+ - [X] preprocessing (need to get the various tool pages working)
  - [X] datatype in column selection
  - [X] units in column selection
  - [ ] save each channel as its own group (really must use D::D::MC)

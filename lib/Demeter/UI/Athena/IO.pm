@@ -11,6 +11,7 @@ use File::Copy;
 use File::Path;
 use File::Spec;
 use List::MoreUtils qw(any);
+use Readonly;
 
 use Wx qw(:everything);
 use base qw( Exporter );
@@ -187,6 +188,7 @@ sub _data {
   if ($first or ($data->columns ne $yaml->{columns})) {
     $colsel = Demeter::UI::Athena::ColumnSelection->new($app->{main}, $app, $data);
     $colsel->{ok}->SetFocus;
+
     ## set Reference controls from yaml
     if ($data->columns eq $yaml->{columns}) {
       $colsel->{Reference}->{do_ref}->SetValue($yaml->{do_ref});
@@ -202,6 +204,7 @@ sub _data {
       };
       $colsel->{Reference}->EnableReference(0, $data);
     };
+
     ## set Rebinning controls from yaml
     foreach my $w (qw(do_rebin abs emin emax pre xanes exafs)) {
       my $key = ($w eq 'do_rebin') ? $w : 'rebin_'.$w;
@@ -213,10 +216,27 @@ sub _data {
       $colsel->{Rebin}->{do_rebin}->SetValue(0)
     };
     $colsel->{Rebin}->EnableRebin(0, $data);
+
     ## set Preprocessing controls from yaml
+    $colsel->{Preprocess}->{standard}->fill($app, 0, 0);
+    my $found = -1;
+    foreach my $i (0 .. $app->{main}->{list}->GetCount-1) { # make sure the persistance value is still in the list
+      if ($app->{main}->{list}->GetClientData($i)->name eq $yaml->{preproc_standard}) {
+	$found = $i;
+	last;
+      };
+    };
+    ($yaml->{preproc_standard} eq 'None') ? $colsel->{Preprocess}->{standard}->SetSelection(0)
+      : $colsel->{Preprocess}->{standard}->SetSelection($found+1);
+    if ($colsel->{Preprocess}->{standard}->GetStringSelection =~ m{\A(?:None|)\z}) {
+      $yaml->{preproc_align} = 0;
+      $yaml->{preproc_set}   = 0;
+    };
     foreach my $w (qw(mark align set)) {
       $colsel->{Preprocess}->{$w}->SetValue($yaml->{'preproc_'.$w});
     };
+
+
     my $result = $colsel -> ShowModal;
     if ($result == wxID_CANCEL) {
       $app->{main}->status("Cancelled column selection.");
@@ -234,9 +254,10 @@ sub _data {
   $data->source($orig);
   my $do_rebin = (defined $colsel) ? ($colsel->{Rebin}->{do_rebin}->GetValue) : $yaml->{do_rebin};
 
-  if ($yaml->{do_rebin}) {
+  if ($do_rebin) {
+    $app->{main}->status("Rebinning ". $data->name);
     my $rebin  = $data->rebin;
-    foreach my $att (qw(energy numerator denominator ln )) {
+    foreach my $att (qw(energy numerator denominator ln name)) {
       $rebin->$att($data->$att);
     };
     $data->dispose("erase \@group ".$data->group);
@@ -255,9 +276,20 @@ sub _data {
     $app->OnGroupSelect(q{}, $app->{main}->{list}->GetSelection);
     Import_plot($app, $data);
   };
-  if ($yaml->{preproc_mark}) {
+
+  ## preprocessing
+  my $do_mark = (defined $colsel) ? ($colsel->{Preprocess}->{mark}->GetValue) : $yaml->{preproc_mark};
+  if ($do_mark) {
     $app->mark($data);
   };
+  my $do_set  = (defined $colsel) ? ($colsel->{Preprocess}->{set}->GetValue)  : $yaml->{preproc_set};
+  if ($do_set) {
+    my $stan = $colsel->{Preprocess}->{standard}->GetClientData($colsel->{Preprocess}->{standard}->GetSelection);
+    $app->{main}->status("Constraining parameters for ". $data->name . " to " . $stan->name);
+    constrain($app, $colsel, $data);
+    $app->OnGroupSelect(0,0);
+  };
+
   $data->push_mru("xasdata", $orig);
   $app->set_mru;
 
@@ -269,8 +301,9 @@ sub _data {
     my $ref = $colsel->{Reference}->{reference};
     $ref->display(0);
     if ($colsel->{Rebin}->{do_rebin}->GetValue) {
+      $app->{main}->status("Rebinning reference for ". $data->name);
       my $rebin  = $ref->rebin;
-      foreach my $att (qw(energy numerator denominator ln )) {
+      foreach my $att (qw(energy numerator denominator ln name)) {
 	$rebin->$att($ref->$att);
       };
       $ref->dispose("erase \@group ".$ref->group);
@@ -286,6 +319,21 @@ sub _data {
       $ref->fft_edge($data->fft_edge);
     };
   };
+
+  my $do_align  = (defined $colsel) ? ($colsel->{Preprocess}->{align}->GetValue)  : $yaml->{preproc_align};
+  if ($do_align) {
+    my $stan = $colsel->{Preprocess}->{standard}->GetClientData($colsel->{Preprocess}->{standard}->GetSelection);
+    if ($data->reference and $stan->reference) {
+      $app->{main}->status("Aligning ". $data->name . " to " . $stan->name . " using references");
+      $stan->align_with_reference($data);
+    } else {
+      $app->{main}->status("Aligning ". $data->name . " to " . $stan->name);
+      $stan->align($data);
+    };
+    $app->OnGroupSelect(0,0);
+  };
+
+  $app->{main}->status("Imported ". $data->name . " from $orig");
 
   ## -------- save persistance file
   my %persistence = (
@@ -329,7 +377,34 @@ sub _data {
   undef $colsel;
   undef $yaml;
   return 1;
-}
+};
+
+Readonly my @all_group  => (qw(bkg_z fft_edge bkg_eshift importance));
+Readonly my @all_bkg    => (qw(bkg_e0 bkg_rbkg bkg_flatten bkg_kw
+			       bkg_fixstep bkg_nnorm bkg_pre1 bkg_pre2
+			       bkg_nor1 bkg_nor2 bkg_spl1 bkg_spl2
+			       bkg_spl1e bkg_spl2e bkg_stan bkg_clamp1
+			       bkg_clamp2)); # bkg_algorithm bkg_step
+Readonly my @all_fft    => (qw(fft_kmin fft_kmax fft_dk fft_kwindow fit_karb_value fft_pc));
+Readonly my @all_bft    => (qw(bft_rmin bft_rmax bft_dr bft_rwindow));
+Readonly my @all_plot   => (qw(plot_multiplier y_offset));
+
+sub constrain {
+  my ($app, $colsel, $data) = @_;
+  return if ($colsel->{Preprocess}->{standard}->GetStringSelection eq 'None');
+  my $data = $app->current_data;
+  my $stan = $colsel->{Preprocess}->{standard}->GetClientData($colsel->{Preprocess}->{standard}->GetSelection);
+
+  foreach my $i (0 .. $app->{main}->{list}->GetCount-1) {
+    my $this = $app->{main}->{list}->GetClientData($i);
+    foreach my $p (@all_group, @all_bkg, @all_fft, @all_bft, @all_plot) {
+      #print join("|", '>>>', $data->name, $this->name, $p, $this->$p), $/;
+      $data->$p($stan->$p);
+      #print join("|", '<<<', $data->name, $this->name, $p, $this->$p), $/;
+    };
+  };
+};
+
 
 sub _prj {
   my ($app, $file, $orig, $first, $is_plugin) = @_;

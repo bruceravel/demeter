@@ -707,9 +707,9 @@ sub interpret_nnorm {
 sub OnSpl {
   my ($main, $event, $app, $which) = @_;
   my $value = $event->GetString || 0;
-  ## this slight of hand keeps this from regressing infinately as the
+  ## this slight of hand keeps this from regressing infinitely as the
   ## connected k- and E-spline parameters are modified.  basically,
-  ## this prevents the scond round of recurssion, thus stopping things
+  ## this prevents the second round of recursion, thus stopping things
   if ($app->{constraining_spline_parameters}) {
     $app->{constraining_spline_parameters}=0;
     return;
@@ -886,12 +886,12 @@ sub DoContextMenu {
 };
 
 
-Readonly my @all_group => (qw(bkg_z fft_edge bkg_eshift importance));
-Readonly my @all_bkg   => (qw(bkg_e0 bkg_rbkg bkg_flatten bkg_kw
-			      bkg_fixstep bkg_nnorm bkg_pre1 bkg_pre2
-			      bkg_nor1 bkg_nor2 bkg_spl1 bkg_spl2
-			      bkg_spl1e bkg_spl2e bkg_stan bkg_clamp1
-			      bkg_clamp2)); # bkg_algorithm bkg_step
+Readonly my @all_group  => (qw(bkg_z fft_edge bkg_eshift importance));
+Readonly my @all_bkg    => (qw(bkg_e0 bkg_rbkg bkg_flatten bkg_kw
+			       bkg_fixstep bkg_nnorm bkg_pre1 bkg_pre2
+			       bkg_nor1 bkg_nor2 bkg_spl1 bkg_spl2
+			       bkg_spl1e bkg_spl2e bkg_stan bkg_clamp1
+			       bkg_clamp2)); # bkg_algorithm bkg_step
 Readonly my @all_fft    => (qw(fft_kmin fft_kmax fft_dk fft_kwindow fit_karb_value fft_pc));
 Readonly my @all_bft    => (qw(bft_rmin bft_rmax bft_dr bft_rwindow));
 Readonly my @all_plot   => (qw(plot_multiplier y_offset));

@@ -1375,7 +1375,11 @@ sub mark {
       $clb->Check($i, $val);
     };
   };
-  $app->{main}->status($mark_feeedback{$how}.'/'.$regex.'/') if (ref($how) !~ m{Demeter}) ;
+  if (ref($how) !~ m{Demeter}) {
+    my $text = $mark_feeedback{$how};
+    $text .= '/'.$regex.'/' if ($how =~ m{regexp});
+    $app->{main}->status($text);
+  };
 };
 
 
