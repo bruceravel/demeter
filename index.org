@@ -40,7 +40,7 @@
  - [ ] reference of another edge
  - [ ] keV data
 
-* Athena bugs [6/11]
+* Athena bugs [7/14]
  - [ ] deglitching crashes with gnuplot
  - [X] bare negative sign in a TextCtrl failed attribute type checking and crashes
  - [ ] importing stddev array from an Athena project file, then making a merge plot works oddly
@@ -58,6 +58,10 @@
  - [X] plot in energy, need to update edge step box in case it changed
  - [ ] in align tool (and others?) verify that standard selection still exists in the project
  - [ ] cannot specify title for stddev and variance plots
+ - [X] rename and mark_regexp need to keep a buffer of previous entries
+
+* Artemis bugs [0/1]
+ - [ ] use text buffers as in Athena for TextEntryDialogs
 
 * other features [13/13]
  - [X] column selection persistance

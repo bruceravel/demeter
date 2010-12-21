@@ -55,6 +55,11 @@ Readonly my $PI     => 4*atan2(1,1);
                                 Virgil, The Aeneid, 1:209-213
 
 =cut
+# Metaclass definition must come before Moose is used.
+    use metaclass (
+        metaclass => 'Moose::Meta::Class',
+        error_class => 'Moose::Error::Confess',
+    );
 
 use Moose;
 use MooseX::Aliases;
@@ -682,7 +687,7 @@ sub template {
 sub pause {};
 alias sleep => 'pause';
 
-__PACKAGE__->meta->make_immutable;
+#__PACKAGE__->meta->make_immutable;
 1;
 
 

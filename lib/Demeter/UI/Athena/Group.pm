@@ -10,8 +10,9 @@ use List::Util qw(min);
 use Spreadsheet::WriteExcel;
 
 use Wx qw(:everything);
+use Wx::Event qw(EVT_CHAR);
 use base qw( Exporter );
-our @EXPORT = qw(Rename Copy Remove change_datatype Report);
+our @EXPORT = qw(Rename Copy Remove change_datatype Report set_text_buffer OnChar);
 
 sub Rename {
   my ($app, $newname) = @_;
@@ -24,6 +25,7 @@ sub Rename {
 
   if (not $newname) {
     my $ted = Wx::TextEntryDialog->new($app->{main}, "Enter a new name for \"$name\":", "Rename \"$name\"", q{}, wxOK|wxCANCEL, Wx::GetMousePosition);
+    $app->set_text_buffer($ted, "rename");
     $ted->SetValue($name);
     if ($ted->ShowModal == wxID_CANCEL) {
       $app->{main}->status("Renaming cancelled.");
@@ -31,6 +33,7 @@ sub Rename {
     };
     $newname = $ted->GetValue;
   };
+  $app->update_text_buffer("rename", $newname, 0);
 
   my $prefix = ($is_ref) ? "  Ref " : q{};
   $data->name($prefix.$newname);

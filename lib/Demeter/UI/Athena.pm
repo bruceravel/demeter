@@ -5,6 +5,7 @@ use Demeter::UI::Wx::MRU;
 use Demeter::UI::Wx::SpecialCharacters qw(:all);
 use Demeter::UI::Athena::IO;
 use Demeter::UI::Athena::Group;
+use Demeter::UI::Athena::TextBuffer;
 use Demeter::UI::Athena::Replot;
 use Demeter::UI::Athena::GroupList;
 
@@ -35,6 +36,9 @@ use base 'Wx::App';
 use Wx::Perl::Carp qw(verbose);
 $SIG{__WARN__} = sub {Wx::Perl::Carp::warn($_[0])};
 $SIG{__DIE__}  = sub {Wx::Perl::Carp::warn($_[0])};
+Demeter->meta->add_method( 'confess' => \&Wx::Perl::Carp::warn );
+Demeter->meta->add_method( 'croak'   => \&Wx::Perl::Carp::warn );
+
 
 sub identify_self {
   my @caller = caller;
@@ -98,6 +102,14 @@ sub OnInit {
   $app->{main}->{showing} = q{};
   $app->{constraining_spline_parameters}=0;
   $app->{selecting_data_group}=0;
+
+  ## -------- text buffers for various TextEntryDialogs
+  $app->{rename_buffer}  = [];
+  $app->{rename_pointer} = -1;
+  $app->{regexp_buffer}  = [];
+  $app->{regexp_pointer} = -1;
+  $app->{style_buffer}   = [];
+  $app->{style_pointer}  = -1;
 
   ## -------- a few more top-level widget-y things
   $app->{main}->{Status} = Demeter::UI::Athena::Status->new($app->{main});
@@ -1343,6 +1355,7 @@ sub mark {
   } else {			# regexp mark or unmark
     my $word = ($how eq 'regexp') ? 'Mark' : 'Unmark';
     my $ted = Wx::TextEntryDialog->new( $app->{main}, "$word data groups matching this regular expression:", "Enter a regular expression", q{}, wxOK|wxCANCEL, Wx::GetMousePosition);
+    $app->set_text_buffer($ted, "regexp");
     if ($ted->ShowModal == wxID_CANCEL) {
        $app->{main}->status($word."ing by regular expression cancelled.");
       return;
@@ -1354,6 +1367,8 @@ sub mark {
       $app->{main}->status("Oops!  \"$regex\" is not a valid regular expression");
       return;
     };
+    $app->update_text_buffer("regexp", $regex, 1);
+
     foreach my $i (0 .. $clb->GetCount-1) {
       next if ($clb->GetClientData($i)->name !~ m{$re});
       my $val = ($how eq 'regexp') ? 1 : 0;

@@ -35,11 +35,13 @@ sub make_style {
   my ($this, $event, $app) = @_;
 
   my $ted = Wx::TextEntryDialog->new($app->{main}, "Enter a name for this style", "Name this style", q{}, wxOK|wxCANCEL, Wx::GetMousePosition);
+  $app->set_text_buffer($ted, "style");
   if ($ted->ShowModal == wxID_CANCEL) {
     $app->{main}->status("Making new style cancelled.");
     return;
   };
   my $name = $ted->GetValue;
+  $app->update_text_buffer("style", $name, 1);
   if ($name =~ m{\A\s*\z}) {
     $app->{main}->status("No name provided.  Making new style cancelled.");
     return;
