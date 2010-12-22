@@ -21,59 +21,59 @@ sub new {
 
   my $gbs = Wx::GridBagSizer->new( 3, 3 );
 
-  my $label = Wx::StaticText->new($this, -1, 'Absorber');
+  #my $label = Wx::StaticText->new($this, -1, 'Absorber');
+  #$gbs->Add($label, Wx::GBPosition->new(0,0));
+  #push @{$this->{controls}}, $label;
+
+  my $label = Wx::StaticText->new($this, -1, 'Edge region');
   $gbs->Add($label, Wx::GBPosition->new(0,0));
   push @{$this->{controls}}, $label;
 
-  $label = Wx::StaticText->new($this, -1, 'Edge region');
+  $label = Wx::StaticText->new($this, -1, 'Pre-edge grid');
   $gbs->Add($label, Wx::GBPosition->new(1,0));
   push @{$this->{controls}}, $label;
 
-  $label = Wx::StaticText->new($this, -1, 'Pre-edge grid');
+  $label = Wx::StaticText->new($this, -1, 'XANES grid');
   $gbs->Add($label, Wx::GBPosition->new(2,0));
   push @{$this->{controls}}, $label;
 
-  $label = Wx::StaticText->new($this, -1, 'XANES grid');
+  $label = Wx::StaticText->new($this, -1, 'EXAFS grid');
   $gbs->Add($label, Wx::GBPosition->new(3,0));
   push @{$this->{controls}}, $label;
 
-  $label = Wx::StaticText->new($this, -1, 'EXAFS grid');
-  $gbs->Add($label, Wx::GBPosition->new(4,0));
-  push @{$this->{controls}}, $label;
 
 
-
-  $label = Wx::StaticText->new($this, -1, ',');
-  $gbs->Add($label, Wx::GBPosition->new(1,3));
+  $label = Wx::StaticText->new($this, -1, 'to');
+  $gbs->Add($label, Wx::GBPosition->new(0,3));
   push @{$this->{controls}}, $label;
 
   $label = Wx::StaticText->new($this, -1, 'eV');
-  $gbs->Add($label, Wx::GBPosition->new(1,5));
+  $gbs->Add($label, Wx::GBPosition->new(0,5));
+  push @{$this->{controls}}, $label;
+
+  $label = Wx::StaticText->new($this, -1, 'eV');
+  $gbs->Add($label, Wx::GBPosition->new(1,3), Wx::GBSpan->new(1,2));
   push @{$this->{controls}}, $label;
 
   $label = Wx::StaticText->new($this, -1, 'eV');
   $gbs->Add($label, Wx::GBPosition->new(2,3), Wx::GBSpan->new(1,2));
   push @{$this->{controls}}, $label;
 
-  $label = Wx::StaticText->new($this, -1, 'eV');
+  $label = Wx::StaticText->new($this, -1, "$ARING$MACRON$ONE");
   $gbs->Add($label, Wx::GBPosition->new(3,3), Wx::GBSpan->new(1,2));
   push @{$this->{controls}}, $label;
 
-  $label = Wx::StaticText->new($this, -1, "$ARING$MACRON$ONE");
-  $gbs->Add($label, Wx::GBPosition->new(4,3), Wx::GBSpan->new(1,2));
-  push @{$this->{controls}}, $label;
-
-  $this->{abs}   = Wx::TextCtrl->new($this, -1, q{}, wxDefaultPosition, [60,-1]);
+  #$this->{abs}   = Wx::TextCtrl->new($this, -1, q{}, wxDefaultPosition, [60,-1]);
   foreach my $w (qw(emin emax pre xanes exafs)) {
     $this->{$w}  = Wx::TextCtrl->new($this, -1, $data->co->default('rebin', $w), wxDefaultPosition, [60,-1]);
     push @{$this->{controls}}, $this->{$w};
   };
-  $gbs->Add($this->{abs},   Wx::GBPosition->new(0,2));
-  $gbs->Add($this->{emin},  Wx::GBPosition->new(1,2));
-  $gbs->Add($this->{emax},  Wx::GBPosition->new(1,4));
-  $gbs->Add($this->{pre},   Wx::GBPosition->new(2,2));
-  $gbs->Add($this->{xanes}, Wx::GBPosition->new(3,2));
-  $gbs->Add($this->{exafs}, Wx::GBPosition->new(4,2));
+  #$gbs->Add($this->{abs},   Wx::GBPosition->new(0,2));
+  $gbs->Add($this->{emin},  Wx::GBPosition->new(0,2));
+  $gbs->Add($this->{emax},  Wx::GBPosition->new(0,4));
+  $gbs->Add($this->{pre},   Wx::GBPosition->new(1,2));
+  $gbs->Add($this->{xanes}, Wx::GBPosition->new(2,2));
+  $gbs->Add($this->{exafs}, Wx::GBPosition->new(3,2));
 
   $box->Add($gbs, 0, wxALL|wxALIGN_CENTER_HORIZONTAL, 5);
 
