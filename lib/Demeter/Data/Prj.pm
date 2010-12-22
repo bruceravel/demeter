@@ -350,7 +350,7 @@ sub _record {
   $groupargs{datatype} = 'xanes' if ($args{is_xanes});
   $groupargs{i0_scale}       = $i0_scale;
   $groupargs{signal_scale}   = $signal_scale;
-  $groupargs{is_merge}       = $is_merge;
+  $groupargs{is_merge}       = $args{is_merge};
   $groupargs{update_data}    = 0;
   $groupargs{update_columns} = 0;
   $groupargs{update_norm}    = 1 if (not $args{is_chi});

@@ -1,11 +1,16 @@
 package Demeter::UI::Athena::Calibrate;
 
+use strict;
+use warnings;
+
 use Wx qw( :everything );
 use base 'Wx::Panel';
 use Wx::Event qw(EVT_BUTTON EVT_CHOICE);
+use Wx::Perl::TextValidator;
 
 use Demeter::UI::Wx::SpecialCharacters qw(:all);
 
+use Scalar::Util qw(looks_like_number);
 use Xray::Absorption;
 
 use vars qw($label $tag);
@@ -58,6 +63,9 @@ sub new {
   EVT_BUTTON($this, $this->{select},    sub{Pluck(@_, $app)});
   EVT_BUTTON($this, $this->{calibrate}, sub{OnCalibrate(@_, $app)});
 
+  $this->{e0}  -> SetValidator( Wx::Perl::TextValidator->new( qr([-0-9.]) ) );
+  $this->{cal} -> SetValidator( Wx::Perl::TextValidator->new( qr([-0-9.]) ) );
+
   $box->Add(1,1,1);
 
   $this->{document} = Wx::Button->new($this, -1, 'Document section: calibrate');
@@ -106,16 +114,25 @@ sub OnFindZeroCrossing {
 
 sub OnCalibrate {
   my ($this, $event, $app) = @_;
+  if (not looks_like_number($this->{cal}->GetValue)) {
+    $::app->{main}->status("Not calibrating -- your calibration value is not a number!", 'error|nobuffer');
+    return;
+  };
   my $data = $app->current_data;
-  my $shift = $this->{cal}->GetValue - $data->bkg_e0;
+  my $shift = sprintf("%.3f", $this->{cal}->GetValue - $data->bkg_e0);
   $data->bkg_eshift($shift);
   $data->bkg_e0($this->{cal}->GetValue);
   $this->{e0}->SetValue($data->bkg_e0);
+  $app->{main}->status("Calbrated, setting e0 to ".$data->bkg_e0." and the energy shift to ".$data->bkg_eshift);
   $::app->modified(1);
 };
 
 sub plot {
   my ($this, $data) = @_;
+  if (not looks_like_number($this->{e0}->GetValue)) {
+    $::app->{main}->status("Not plotting -- your e0 value is not a number!", 'error|nobuffer');
+    return;
+  };
   $data->bkg_e0($this->{e0}->GetValue);
   $data->po->set(emin=>-30, emax=>50);
   $data->po->set(e_mu=>1, e_markers=>1, e_bkg=>0, e_pre=>0, e_post=>0, e_norm=>0, e_der=>0, e_sec=>0, e_i0=>0, e_signal=>0);

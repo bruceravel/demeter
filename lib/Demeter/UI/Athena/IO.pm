@@ -1,21 +1,26 @@
 package Demeter::UI::Athena::IO;
 
+use strict;
+use warnings;
+
 #use Demeter;
 use Demeter::UI::Wx::SpecialCharacters qw(:all);
 use Demeter::UI::Athena::ColumnSelection;
 use Demeter::UI::Artemis::Prj;
+use Demeter::UI::Wx::PeriodicTableDialog;
 
 use Cwd;
 use File::Basename;
 use File::Copy;
 use File::Path;
 use File::Spec;
-use List::MoreUtils qw(any);
+use List::Util qw(max);
+use List::MoreUtils qw(any none);
 use Readonly;
 
 use Wx qw(:everything);
 use base qw( Exporter );
-our @EXPORT = qw(Import Export save_column save_marked save_each);
+our @EXPORT = qw(Import Export save_column save_marked save_each FPath);
 
 sub Export {
   my ($app, $how, $fname) = @_;
@@ -392,7 +397,7 @@ Readonly my @all_plot   => (qw(plot_multiplier y_offset));
 sub constrain {
   my ($app, $colsel, $data) = @_;
   return if ($colsel->{Preprocess}->{standard}->GetStringSelection eq 'None');
-  my $data = $app->current_data;
+  #my $data = $app->current_data;
   my $stan = $colsel->{Preprocess}->{standard}->GetClientData($colsel->{Preprocess}->{standard}->GetSelection);
 
   foreach my $i (0 .. $app->{main}->{list}->GetCount-1) {
@@ -571,6 +576,59 @@ sub save_each {
   };
   undef $busy;
   $app->{main}->status("Saved $desc data for each marked group to $dir");
+};
+
+sub FPath {
+  my ($app) = @_;
+  return if $app->is_empty;
+
+  if (none {$app->current_data->datatype eq $_} qw(xmu xanes)) {
+    $app->{main}->status("You cannot make an empirical standard from this group.");
+    return;
+  };
+
+  (my $base = $app->current_data->name) =~ s{[^-a-zA-Z0-9.+]+}{_}g;
+  my $fd = Wx::FileDialog->new( $app->{main}, "Save current group as an empirical standard", cwd, $base.'.yaml',
+				"epirical standards (*.yaml)|*.yaml|All files|*.*",
+				wxFD_SAVE|wxFD_CHANGE_DIR|wxFD_OVERWRITE_PROMPT,
+				wxDefaultPosition);
+  if ($fd->ShowModal == wxID_CANCEL) {
+    $app->{main}->status("Saving empirical standard from current group cancelled.");
+    return;
+  };
+  my $fname = File::Spec->catfile($fd->GetDirectory, $fd->GetFilename);
+
+  my $scatterer = q{};
+  $app->{main}->{popup}  = Demeter::UI::Wx::PeriodicTableDialog->new($app->{main}, -1, "Select scattering element", sub{$scatterer = $_[0]; $app->{main}->{popup}->Destroy;});
+  $app->{main}->{popup} -> ShowModal;
+
+  my $reff = 2.5;
+  my $save = $app->current_data->fft_pc;
+  $app->current_data->fft_pc(1);
+  $app->current_data->_update('bft');
+  my @r   = $app->current_data->get_array('r');
+  my @mag = $app->current_data->get_array('chir_mag');
+  my ($maxval, $imax) = (-1000, 0);
+  foreach my $i (0 .. $#mag) {
+    if ($mag[$i] > $maxval) {
+      $maxval = $mag[$i];
+      $imax   = $i;
+    };
+  };
+  $reff = $r[$imax];
+  $app->current_data->fft_pc($save);
+
+  my $fp = Demeter::FPath->new(absorber  => $app->current_data->bkg_z,
+			       scatterer => $scatterer,
+			       reff      => $reff,
+			       source    => $app->current_data,
+			       n         => 1,
+			       delr      => 0.0,
+			       s02       => 1,
+			      );
+  $fp->freeze($fname);
+  $app->{main}->status(sprintf("Wrote a %s-%s empirical standard of length %.5f to %s",
+			       $app->current_data->bkg_z, $scatterer, $reff, $fname));
 };
 
 1;

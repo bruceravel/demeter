@@ -6,6 +6,8 @@ use Wx::Event qw(EVT_LIST_ITEM_ACTIVATED EVT_LIST_ITEM_SELECTED EVT_BUTTON  EVT_
 		 EVT_CHECKBOX EVT_RADIOBUTTON);
 use Wx::Perl::TextValidator;
 
+use Scalar::Util qw(looks_like_number);
+
 use Demeter::UI::Athena::Replot;
 
 sub new {
@@ -119,18 +121,20 @@ sub new {
   my $right = Wx::BoxSizer->new( wxVERTICAL );
   $hbox -> Add($right, 0, wxALL, 4);
 
+  $box -> Add(1, 1, 1);
+
   my $range = Wx::BoxSizer->new( wxHORIZONTAL );
-  $box -> Add($range, 0, wxALL, 0);
-  my $label = Wx::StaticText->new($this, -1, "Rmin");
+  $box -> Add($range, 0, wxALL|wxGROW, 0);
+  my $label = Wx::StaticText->new($this, -1, "Rmin", wxDefaultPosition, [30,-1]);
   $this->{rmin} = Wx::TextCtrl ->new($this, -1, $Demeter::UI::Athena::demeter->co->default("plot", "rmin"),
 				     wxDefaultPosition, [50,-1]);
   $range -> Add($label,        0, wxALL, 5);
-  $range -> Add($this->{rmin}, 0, wxRIGHT, 10);
-  $label = Wx::StaticText->new($this, -1, "Rmax");
+  $range -> Add($this->{rmin}, 1, wxRIGHT, 10);
+  $label = Wx::StaticText->new($this, -1, "Rmax", wxDefaultPosition, [30,-1]);
   $this->{rmax} = Wx::TextCtrl ->new($this, -1, $Demeter::UI::Athena::demeter->co->default("plot", "rmax"),
 				     wxDefaultPosition, [50,-1]);
   $range -> Add($label,        0, wxALL, 5);
-  $range -> Add($this->{rmax}, 0, wxRIGHT, 10);
+  $range -> Add($this->{rmax}, 1, wxRIGHT, 10);
 
   $this->{$_}->SetBackgroundColour( Wx::Colour->new($Demeter::UI::Athena::demeter->co->default("athena", "single")) )
     foreach (qw(mag env re im pha win));
@@ -151,8 +155,13 @@ sub label {
 sub pull_single_values {
   my ($this) = @_;
   my $po = $Demeter::UI::Athena::demeter->po;
-  $po->rmin($this->{rmin} -> GetValue);
-  $po->rmax($this->{rmax} -> GetValue);
+  my $rmin = $this->{rmin}-> GetValue;
+  my $rmax = $this->{rmax}-> GetValue;
+  $::app->{main}->status(q{}, 'nobuffer');
+  $rmin = 0, $::app->{main}->status("Rmin is not a number", 'error|nobuffer') if not looks_like_number($rmin);
+  $rmax = 6, $::app->{main}->status("Rmax is not a number", 'error|nobuffer') if not looks_like_number($rmax);
+  $po->rmin($rmin);
+  $po->rmax($rmax);
 };
 
 sub pull_marked_values {
@@ -164,8 +173,13 @@ sub pull_marked_values {
           : ($this->{mpha} -> GetValue) ? 'p'
 	  :                               'm';
   $po->r_pl($val);
-  $po->rmin($this->{rmin} -> GetValue);
-  $po->rmax($this->{rmax} -> GetValue);
+  $::app->{main}->status(q{}, 'nobuffer');
+  my $rmin = $this->{rmin}-> GetValue;
+  my $rmax = $this->{rmax}-> GetValue;
+  $rmin = 0, $::app->{main}->status("Rmin is not a number", 'error|nobuffer') if not looks_like_number($rmin);
+  $rmax = 6, $::app->{main}->status("Rmax is not a number", 'error|nobuffer') if not looks_like_number($rmax);
+  $po->rmin($rmin);
+  $po->rmax($rmax);
 };
 
 1;

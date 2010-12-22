@@ -9,6 +9,8 @@ use Wx::Perl::TextValidator;
 use Demeter::UI::Wx::SpecialCharacters qw(:all);
 use Demeter::UI::Athena::Replot;
 
+use Scalar::Util qw(looks_like_number);
+
 sub new {
   my ($class, $parent, $app) = @_;
   my $this = $class->SUPER::new($parent, -1, wxDefaultPosition, wxDefaultSize, wxMAXIMIZE_BOX );
@@ -60,18 +62,21 @@ sub new {
   my $right = Wx::BoxSizer->new( wxVERTICAL );
   $hbox -> Add($right, 0, wxALL, 4);
 
+  $box -> Add(1, 1, 1);
+
   my $range = Wx::BoxSizer->new( wxHORIZONTAL );
-  $box -> Add($range, 0, wxBOTTOM, 7);
-  my $label = Wx::StaticText->new($this, -1, "kmin");
+  $box -> Add($range, 0, wxALL|wxGROW, 0);
+  #$box -> Add($range, 0, wxBOTTOM, 7);
+  my $label = Wx::StaticText->new($this, -1, "kmin", wxDefaultPosition, [30,-1]);
   $this->{kmin} = Wx::TextCtrl ->new($this, -1, $Demeter::UI::Athena::demeter->co->default("plot", "kmin"),
 				     wxDefaultPosition, [50,-1]);
   $range -> Add($label,        0, wxALL, 5);
-  $range -> Add($this->{kmin}, 0, wxRIGHT, 10);
-  $label = Wx::StaticText->new($this, -1, "kmax");
+  $range -> Add($this->{kmin}, 1, wxRIGHT, 10);
+  $label = Wx::StaticText->new($this, -1, "kmax", wxDefaultPosition, [30,-1]);
   $this->{kmax} = Wx::TextCtrl ->new($this, -1, $Demeter::UI::Athena::demeter->co->default("plot", "kmax"),
 				     wxDefaultPosition, [50,-1]);
   $range -> Add($label,        0, wxALL, 5);
-  $range -> Add($this->{kmax}, 0, wxRIGHT, 10);
+  $range -> Add($this->{kmax}, 1, wxRIGHT, 10);
 
   $this->{$_} -> SetValidator( Wx::Perl::TextValidator->new( qr([0-9.]) ) )
     foreach (qw(kmin kmax));
@@ -89,16 +94,28 @@ sub pull_single_values {
   my ($this) = @_;
   my $po = $Demeter::UI::Athena::demeter->po;
   $po->chie($this->{chie} -> GetValue);
-  $po->kmin($this->{kmin} -> GetValue);
-  $po->kmax($this->{kmax} -> GetValue);
+
+  my $kmin = $this->{kmin}-> GetValue;
+  my $kmax = $this->{kmax}-> GetValue;
+  $::app->{main}->status(q{}, 'nobuffer');
+  $kmin = 0,  $::app->{main}->status("kmin is not a number", 'error|nobuffer') if not looks_like_number($kmin);
+  $kmax = 15, $::app->{main}->status("kmax is not a number", 'error|nobuffer') if not looks_like_number($kmax);
+  $po->kmin($kmin);
+  $po->kmax($kmax);
 };
 
 sub pull_marked_values {
   my ($this) = @_;
   my $po = $Demeter::UI::Athena::demeter->po;
   $po->chie($this->{mchie}-> GetValue);
-  $po->kmin($this->{kmin} -> GetValue);
-  $po->kmax($this->{kmax} -> GetValue);
+
+  my $kmin = $this->{kmin}-> GetValue;
+  my $kmax = $this->{kmax}-> GetValue;
+  $::app->{main}->status(q{}, 'nobuffer');
+  $kmin = 0,  $::app->{main}->status("kmin is not a number", 'error|nobuffer') if not looks_like_number($kmin);
+  $kmax = 15, $::app->{main}->status("kmax is not a number", 'error|nobuffer') if not looks_like_number($kmax);
+  $po->kmin($kmin);
+  $po->kmax($kmax);
 };
 
 1;

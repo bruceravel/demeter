@@ -52,6 +52,7 @@ sub rebin {
   $string = $rebinned->template("process", "deriv");
   $rebinned->dispose($string);
   $rebinned->resolve_defaults;
+  $rebinned->bkg_eshift(0);	# the e0shift of the original data was removed by the rebinning procedure
 
   (ref($standard) =~ m{Data}) ? $standard->standard : $self->unset_standard;
   return $rebinned;

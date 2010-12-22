@@ -8,6 +8,8 @@ use Wx::Perl::TextValidator;
 
 use Demeter::UI::Athena::Replot;
 
+use Scalar::Util qw(looks_like_number);
+
 sub new {
   my ($class, $parent, $app) = @_;
   my $this = $class->SUPER::new($parent, -1, wxDefaultPosition, wxDefaultSize, wxMAXIMIZE_BOX );
@@ -124,18 +126,20 @@ sub new {
   my $right = Wx::BoxSizer->new( wxVERTICAL );
   $hbox -> Add($right, 0, wxALL, 4);
 
+  $box -> Add(1, 1, 1);
+
   my $range = Wx::BoxSizer->new( wxHORIZONTAL );
-  $box -> Add($range, 0, wxALL, 0);
-  my $label = Wx::StaticText->new($this, -1, "qmin");
+  $box -> Add($range, 0, wxALL|wxGROW, 0);
+  my $label = Wx::StaticText->new($this, -1, "qmin", wxDefaultPosition, [30,-1]);
   $this->{qmin} = Wx::TextCtrl ->new($this, -1, $Demeter::UI::Athena::demeter->co->default("plot", "qmin"),
 				     wxDefaultPosition, [50,-1]);
   $range -> Add($label,        0, wxALL, 5);
-  $range -> Add($this->{qmin}, 0, wxRIGHT, 10);
-  $label = Wx::StaticText->new($this, -1, "qmax");
+  $range -> Add($this->{qmin}, 1, wxRIGHT, 10);
+  $label = Wx::StaticText->new($this, -1, "qmax", wxDefaultPosition, [30,-1]);
   $this->{qmax} = Wx::TextCtrl ->new($this, -1, $Demeter::UI::Athena::demeter->co->default("plot", "qmax"),
 				     wxDefaultPosition, [50,-1]);
   $range -> Add($label,        0, wxALL, 5);
-  $range -> Add($this->{qmax}, 0, wxRIGHT, 10);
+  $range -> Add($this->{qmax}, 1, wxRIGHT, 10);
 
   $this->{$_} -> SetValidator( Wx::Perl::TextValidator->new( qr([0-9.]) ) )
     foreach (qw(qmin qmax));
@@ -153,8 +157,14 @@ sub label {
 sub pull_single_values {
   my ($this) = @_;
   my $po = $Demeter::UI::Athena::demeter->po;
-  $po->qmin($this->{qmin} -> GetValue);
-  $po->qmax($this->{qmax} -> GetValue);
+
+  my $qmin = $this->{qmin}-> GetValue;
+  my $qmax = $this->{qmax}-> GetValue;
+  $::app->{main}->status(q{}, 'nobuffer');
+  $qmin = 0,  $::app->{main}->status("qmin is not a number", 'error|nobuffer') if not looks_like_number($qmin);
+  $qmax = 15, $::app->{main}->status("qmax is not a number", 'error|nobuffer') if not looks_like_number($qmax);
+  $po->qmin($qmin);
+  $po->qmax($qmax);
 };
 
 sub pull_marked_values {
@@ -166,8 +176,14 @@ sub pull_marked_values {
           : ($this->{mpha} -> GetValue) ? 'p'
 	  :                               'm';
   $po->q_pl($val);
-  $po->qmin($this->{qmin} -> GetValue);
-  $po->qmax($this->{qmax} -> GetValue);
+
+  my $qmin = $this->{qmin}-> GetValue;
+  my $qmax = $this->{qmax}-> GetValue;
+  $::app->{main}->status(q{}, 'nobuffer');
+  $qmin = 0,  $::app->{main}->status("qmin is not a number", 'error|nobuffer') if not looks_like_number($qmin);
+  $qmax = 15, $::app->{main}->status("qmax is not a number", 'error|nobuffer') if not looks_like_number($qmax);
+  $po->qmin($qmin);
+  $po->qmax($qmax);
 };
 
 1;

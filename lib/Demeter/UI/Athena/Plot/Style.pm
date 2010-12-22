@@ -1,9 +1,17 @@
 package Demeter::UI::Athena::Plot::Style;
 
+use strict;
+use warnings;
+
 use Wx qw( :everything );
 use base 'Wx::Panel';
 use Wx::Event qw(EVT_BUTTON EVT_LISTBOX EVT_LISTBOX_DCLICK);
 use Wx::Perl::TextValidator;
+
+use File::Basename;
+use File::Copy;
+use File::Spec;
+use YAML::Tiny;
 
 #use Demeter::UI::Wx::SpecialCharacters qw(:all);
 
@@ -23,6 +31,20 @@ sub new {
   EVT_LISTBOX_DCLICK($this, $this->{list}, sub{discard_style(@_, $app)});
 
   $this->SetSizerAndFit($box);
+
+  my $yaml = File::Spec->catfile($Demeter::UI::Athena::demeter->dot_folder, 'athena.styles');
+  if (not -e $yaml) {
+    copy(File::Spec->catfile(dirname($INC{'Demeter.pm'}), 'Demeter', 'share', 'ini', 'athena.styles'), $yaml);
+  };
+  my @list = YAML::Tiny::LoadFile($yaml);
+  foreach my $sty (@list) {
+    my $style = Demeter::Plot::Style->new();
+    foreach my $att (keys %$sty) {
+      next if ($att eq 'group');
+      $style->$att($sty->{$att});
+    };
+    $this->{list}->Append($style->name, $style);
+  };
   return $this;
 };
 
@@ -79,6 +101,7 @@ sub make_style {
   # foreach my $i (0 .. $this->{list}->GetCount-1) {
   #   print $this->{list}->GetClientData($i)->serialization;
   # };
+  $this->persist;
   $app->{main}->status("Saved plotting style ".$style->name);
 };
 
@@ -101,7 +124,7 @@ sub discard_style {
   my ($this, $event, $app) = @_;
   my $i = $this->{list}->GetSelection;
   my $style = $this->{list}->GetClientData($i);
-  my $yesno = Wx::MessageDialog->new($self, "Really discard ".$style->name."?", "Really discard?", wxYES_NO);
+  my $yesno = Wx::MessageDialog->new($this, "Really discard ".$style->name."?", "Really discard?", wxYES_NO);
   if ($yesno->ShowModal == wxID_NO) {
     $app->{main}->status("Not discarding ".$style->name);
     return;
@@ -118,8 +141,20 @@ sub discard_style {
   # };
   $this->{list}->Delete($i);
   $style->DEMOLISH;
+  $this->persist;
   $app->{main}->status("Discarded plotting style ".$style->name);
   $event->Skip();
+};
+
+sub persist {
+  my ($this) = @_;
+  my $text = q{};
+  foreach my $i (0 .. $this->{list}->GetCount-1) {
+    $text .= $this->{list}->GetClientData($i)->serialization;
+  };
+  open(my $YAML, '>', File::Spec->catfile($Demeter::UI::Athena::demeter->dot_folder, 'athena.styles'));
+  print $YAML $text;
+  close $YAML;
 };
 
 1;

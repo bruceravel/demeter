@@ -59,7 +59,7 @@ sub new {
   $box -> Add($this->{fit}, 0, wxGROW|wxALL, 2);
 
   $this->{result} = Wx::TextCtrl->new($this, -1, q{}, wxDefaultPosition, wxDefaultSize,
-				      wxTE_MULTILINE|wxTE_WORDWRAP|wxTE_AUTO_URL);
+				      wxTE_MULTILINE|wxTE_WORDWRAP|wxTE_AUTO_URL|wxTE_READONLY);
   my $size = Wx::SystemSettings::GetFont(wxSYS_DEFAULT_GUI_FONT)->GetPointSize - 1;
   $this->{result}->SetFont( Wx::Font->new( $size, wxTELETYPE, wxNORMAL, wxNORMAL, 0, "" ) );
   $box->Add($this->{result}, 1, wxGROW|wxALL, 5);
@@ -139,8 +139,9 @@ sub fit {
   $this->{LR}->data($::app->current_data);
   $this->{LR}->standard($this->{standard}->GetClientData($this->{standard}->GetSelection));
   $this->{LR}->twopi($this->{twopi}->GetValue);
-  $this->{LR}->qmin($this->{qmin}->GetValue);
-  $this->{LR}->qmax($this->{qmax}->GetValue);
+  my ($qmin, $qmax) = sort {$a <=> $b} ($this->{qmin}->GetValue, $this->{qmax}->GetValue);
+  $this->{LR}->qmin($qmin);
+  $this->{LR}->qmax($qmax);
   $this->{LR}->fit;
   $this->{result}->SetValue($this->{LR}->report);
   $this->{LR}->po->start_plot;

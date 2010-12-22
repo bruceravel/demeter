@@ -23,25 +23,37 @@ has 'emax'      => (is => 'rw', isa =>  'Num',    default => sub{ shift->co->def
 
 has 'kmin'  => (is => 'rw', isa =>  'Num',    default => sub{ shift->co->default("plot", "kmin") || 0});
 has 'kmax'  => (is => 'rw', isa =>  'Num',    default => sub{ shift->co->default("plot", "kmax") || 15});
+
 has 'rmin'  => (is => 'rw', isa =>  'Num',    default => sub{ shift->co->default("plot", "rmin") || 0});
 has 'rmax'  => (is => 'rw', isa =>  'Num',    default => sub{ shift->co->default("plot", "rmax") || 6});
 #has 'r_pl'  => (is => 'rw', isa =>  MERIP,    default => sub{ shift->co->default("plot", "r_pl") || "m"});
+
 has 'qmin'  => (is => 'rw', isa =>  'Num',    default => sub{ shift->co->default("plot", "qmin") || 0});
 has 'qmax'  => (is => 'rw', isa =>  'Num',    default => sub{ shift->co->default("plot", "qmax") || 15});
 #has 'q_pl'  => (is => 'rw', isa =>  MERIP,    default => sub{ shift->co->default("plot", "q_pl") || "r"});
 
+my @limits = qw(emin emax kmin kmax rmin rmax qmin qmax);
+my @parts  = qw(r_pl q_pl e_mu e_bkg e_pre e_post e_norm e_der e_sec);
 
 sub BUILD {
   my ($self, @params) = @_;
   $self->mo->push_Style($self);
 };
 
+sub pull {
+  my ($self) = @_;
+  foreach my $att (@limits) {
+    $self->$att($self->po->$att);
+  };
+  return $self;
+};
+
 sub apply {
   my ($self) = @_;
-  foreach my $att (qw(emin emax e_mu e_bkg e_pre e_post e_norm e_der e_sec
-		      kmin kmax rmin rmax qmin qmax r_pl q_pl)) {
+  foreach my $att (@limits) {
     $self->po->$att($self->$att);
   };
+  return $self;
 };
 
 __PACKAGE__->meta->make_immutable;

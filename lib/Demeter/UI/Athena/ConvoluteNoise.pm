@@ -1,9 +1,13 @@
 package Demeter::UI::Athena::ConvoluteNoise;
 
+use strict;
+use warnings;
+
 use Wx qw( :everything );
 use base 'Wx::Panel';
-use Wx::Event qw(EVT_BUTTON);
+use Wx::Event qw(EVT_BUTTON EVT_CHAR EVT_CHOICE);
 use Wx::Perl::TextValidator;
+use Scalar::Util qw(looks_like_number);
 
 #use Demeter::UI::Wx::SpecialCharacters qw(:all);
 
@@ -38,6 +42,9 @@ sub new {
   $gbs->Add($this->{noise},    Wx::GBPosition->new(3,1));
   $this->{width} -> SetValidator( Wx::Perl::TextValidator->new( qr([0-9.]) ) );
   $this->{noise} -> SetValidator( Wx::Perl::TextValidator->new( qr([0-9.]) ) );
+  EVT_CHOICE($this, $this->{function}, sub{ $this->{make}->Enable(0) });
+  EVT_CHAR($this->{width}, sub{ $this->{make}->Enable(0); $_[1]->Skip(1) });
+  EVT_CHAR($this->{noise}, sub{ $this->{make}->Enable(0); $_[1]->Skip(1) });
 
   $box -> Add($gbs, 0, wxALIGN_CENTER_HORIZONTAL|wxALL, 5);
 
@@ -86,23 +93,38 @@ sub mode {
   1;
 };
 
+sub get_values {
+  my ($this) = @_;
+  my $function = ($this->{function}->GetSelection) ? 'lorentzian' : 'gaussian';
+  my $width    = $this->{width}->GetValue || 0;
+  my $noise    = $this->{noise}->GetValue || 0;
+
+  if (not looks_like_number($width)) {
+    $::app->{main}->status("Not plotting -- your value for the width is not a number!", 'error|nobuffer');
+    return ($function, $width, $noise, 0);
+  };
+  if ($width < 0) {
+    $this->{width}->SetValue(0);
+    $width = 0;
+  };
+  if (not looks_like_number($noise)) {
+    $::app->{main}->status("Not plotting -- your value for the noise is not a number!", 'error|nobuffer');
+    return ($function, $width, $noise, 0);
+  };
+  if ($noise < 0) {
+    $this->{noise}->SetValue(0);
+    $noise = 0;
+  };
+  return ($function, $width, $noise, 1);
+};
+
 sub plot {
   my ($this, $data) = @_;
   my $busy = Wx::BusyCursor->new();
   $::app->{main}->{PlotE}->pull_single_values;
   $data->po->set(e_mu=>1, e_markers=>1, e_bkg=>0, e_pre=>0, e_post=>0, e_norm=>0, e_der=>0, e_sec=>0, e_i0=>0, e_signal=>0);
-  my $width    = $this->{width}->GetValue || 0;
-  if ($width < 0) {
-    $this->{width}->SetValue(0);
-    $width = 0;
-  };
-  my $function = ($this->{function}->GetSelection) ? 'lorentzian' : 'gaussian';
-  my $noise    = $this->{noise}->GetValue || 0;
-  if ($noise < 0) {
-    $this->{noise}->SetValue(0);
-    $noise = 0;
-  };
-
+  my ($function, $width, $noise, $ok) = $this->get_values($data);
+  return if not $ok;
   $data->po->start_plot;
   $data -> plot('E');
   $this->{processed}  = $data -> clone(name=>sprintf("%s: %.2f eV, %s", $data->name, $width, ucfirst($function)));
@@ -110,6 +132,7 @@ sub plot {
   $this->{processed} -> noise(noise=>$noise, which=>'xmu') if ($noise > 0);
   $this->{processed} -> plot('E');
   $this->{make}->Enable(1);
+  $::app->{main}->status(sprintf("Plotted %s with convolution and/or added noise", $data->name));
   undef $busy;
 };
 
@@ -122,7 +145,7 @@ sub make {
   } else {
     $app->{main}->{list}->Insert($this->{processed}->name, $index+1, $this->{processed});
   };
-  $app->{main}->status("Convolved and/or added noise to " . $app->current_data->name);
+  $app->{main}->status(sprintf("Convolved and/or added noise to %s and made a new data group", $app->current_data->name));
   $app->modified(1);
 };
 

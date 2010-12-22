@@ -1,0 +1,28 @@
+---
+datagroup: ''
+emax: 800
+emin: '-200'
+frozen: 0
+kmax: 15
+kmin: 0
+mark: 0
+name: exafs
+qmax: 15
+qmin: 0
+rmax: 6
+rmin: 0
+trouble: ''
+---
+datagroup: ''
+emax: 80
+emin: '-20'
+frozen: 0
+kmax: 15
+kmin: 0
+mark: 0
+name: xanes
+qmax: 15
+qmin: 0
+rmax: 6
+rmin: 0
+trouble: ''

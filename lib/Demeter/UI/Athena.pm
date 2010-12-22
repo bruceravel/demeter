@@ -36,8 +36,8 @@ use base 'Wx::App';
 use Wx::Perl::Carp qw(verbose);
 $SIG{__WARN__} = sub {Wx::Perl::Carp::warn($_[0])};
 $SIG{__DIE__}  = sub {Wx::Perl::Carp::warn($_[0])};
-Demeter->meta->add_method( 'confess' => \&Wx::Perl::Carp::warn );
-Demeter->meta->add_method( 'croak'   => \&Wx::Perl::Carp::warn );
+#Demeter->meta->add_method( 'confess' => \&Wx::Perl::Carp::warn );
+#Demeter->meta->add_method( 'croak'   => \&Wx::Perl::Carp::warn );
 
 
 sub identify_self {
@@ -95,7 +95,7 @@ sub OnInit {
 
   ## -------- "global" parameters
   #print DateTime->now,  "  Finishing ...\n";
-  $app->{lastplot} = [q{}, q{}];
+  $app->{lastplot} = [q{}, q{single}];
   $app->{selected} = -1;
   $app->{modified} = 0;
   $app->{main}->{currentproject} = q{};
@@ -244,6 +244,7 @@ sub current_data {
 Readonly my $REPORT_ALL        => Wx::NewId();
 Readonly my $REPORT_MARKED     => Wx::NewId();
 Readonly my $XFIT              => Wx::NewId();
+Readonly my $FPATH             => Wx::NewId();
 
 Readonly my $SAVE_MARKED       => Wx::NewId();
 Readonly my $SAVE_MUE	       => Wx::NewId();
@@ -356,6 +357,8 @@ sub menubar {
   my $exportmenu   = Wx::Menu->new;
   $exportmenu->Append($REPORT_ALL,    "Excel report on all groups",    "Write an Excel report on the parameter values of all data groups" );
   $exportmenu->Append($REPORT_MARKED, "Excel report on marked groups", "Write an Excel report on the parameter values of the marked data groups" );
+  $exportmenu->AppendSeparator;
+  $exportmenu->Append($FPATH,         "Empirical standard",            "Write a file containing an empirical standard derived from this group which Artemis can import as a fitting standard" );
   $exportmenu->Append($XFIT,          "XFit file for current group",   "Write a file for the XFit XAS analysis program for the current group" );
 
   my $savecurrentmenu = Wx::Menu->new;
@@ -508,7 +511,7 @@ sub menubar {
   #$bar->Append( $valuesmenu,  "&Values" );
   $bar->Append( $plotmenu,    "&Plot" );
   $bar->Append( $freezemenu,  "Free&ze" );
-  $bar->Append( $mergemenu,   "Merge" );
+  $bar->Append( $mergemenu,   "Me&rge" );
   $bar->Append( $monitormenu, "M&onitor" );
   $bar->Append( $helpmenu,    "&Help" );
   $app->{main}->SetMenuBar( $bar );
@@ -603,6 +606,10 @@ sub OnMenuClick {
     };
     ($id == $REPORT_MARKED) and do {
       $app -> Report('marked');
+      last SWITCH;
+    };
+    ($id == $FPATH) and do {
+      $app -> FPath;
       last SWITCH;
     };
 
@@ -1002,6 +1009,8 @@ sub side_bar {
   $toolbox            -> Add($app->{main}->{list}, 1, wxGROW|wxALL, 0);
   EVT_LISTBOX($toolpanel, $app->{main}->{list}, sub{$app->OnGroupSelect(@_)});
   EVT_LISTBOX_DCLICK($toolpanel, $app->{main}->{list}, sub{$app->Rename;});
+  #print Wx::SystemSettings::GetColour(wxSYS_COLOUR_HIGHLIGHT), $/;
+  #$app->{main}->{list}->SetBackgroundColour(Wx::Colour->new($demeter->co->default("athena", "single")));
 
   my $singlebox = Wx::BoxSizer->new( wxHORIZONTAL );
   $toolbox     -> Add($singlebox, 0, wxGROW|wxALL, 0);
@@ -1049,8 +1058,11 @@ sub side_bar {
 					($m eq 'PlotE'));
   };
   $toolbox   -> Add($app->{main}->{plottabs}, 0, wxGROW|wxALL, 0);
-  $app->{main}->{Style}->{list}->Append('exafs', Demeter::Plot::Style->new(emin=>-200, emax=>800));
-  $app->{main}->{Style}->{list}->Append('xanes', Demeter::Plot::Style->new(emin=>-50,  emax=>80));
+#   my $exafs = Demeter::Plot::Style->new(name=>'exafs', emin=>-200, emax=>800);
+#   my $xanes = Demeter::Plot::Style->new(name=>'xanes', emin=>-20,  emax=>80);
+#   $app->{main}->{Style}->{list}->Append('exafs', $exafs);
+#   $app->{main}->{Style}->{list}->Append('xanes', $xanes);
+#   print $exafs->serialization, $xanes->serialization;
 
   $toolpanel -> SetSizerAndFit($toolbox);
 
@@ -1140,6 +1152,7 @@ sub plot {
   $data[0]->po->title($title);
 
   my $sp = (lc($space) eq 'kq') ? 'K' : uc($space);
+  $sp = 'E' if ($sp =~ m{\A(?:quad|)\z}i);
   $app->{main}->{'Plot'.$sp}->pull_single_values if ($how eq 'single');
   $app->{main}->{'Plot'.$sp}->pull_marked_values if ($how eq 'marked');
   $data[0]->po->chie(0) if (lc($space) eq 'kq');

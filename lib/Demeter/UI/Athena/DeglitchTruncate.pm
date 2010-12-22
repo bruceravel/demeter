@@ -6,11 +6,13 @@ use warnings;
 use Wx qw( :everything );
 use base 'Wx::Panel';
 use Wx::Event qw(EVT_BUTTON EVT_RADIOBOX);
+use Wx::Perl::TextValidator;
 
 use Demeter::UI::Wx::SpecialCharacters qw(:all);
 
 use File::Basename;
 use List::MoreUtils qw(minmax);
+use Scalar::Util qw(looks_like_number);
 
 use vars qw($label);
 $label = "Deglitch and truncate data";	# used in the Choicebox and in status bar messages to identify this tool
@@ -101,6 +103,7 @@ sub new {
   $this->{etrun_pluck}   = Wx::BitmapButton -> new($this, -1, $bullseye);
   $hbox -> Add($this->{etrun_pluck}, 0, wxALL|wxALIGN_CENTER, 5);
   EVT_BUTTON($this, $this->{etrun_pluck}, sub{OnPluckTruncate(@_, $app)});
+  $this->{etrun} -> SetValidator( Wx::Perl::TextValidator->new( qr([-0-9.]) ) );
 
   $hbox = Wx::BoxSizer->new( wxHORIZONTAL );
   $truncateboxsizer -> Add($hbox, 0, wxGROW|wxALL, 0);
@@ -172,6 +175,7 @@ sub plot {
   $data->po->chie(1) if ($space eq 'k');
   $data->plot($space);
   $this->{remove}->Enable(0);
+  $::app->{main}->status(sprintf("Plotted %s as points for deglitching", $data->name));
 
   $data->po->datastyle($save);
 };
@@ -207,7 +211,7 @@ sub OnChoose {
   $data->plot_marker('xmu', $x[$ii]);
   $this->{point} = $x[$ii];
   $this->{remove}->Enable(1);
-  $app->{main}->status(sprintf("Plucked point at %.3f", $x[$ii]));
+  $app->{main}->status(sprintf("Plucked point at %.3f from %s", $x[$ii], $data->name));
 };
 
 sub OnRemove {
@@ -215,7 +219,7 @@ sub OnRemove {
   my $data = $app->current_data;
   $data->deglitch($this->{point});
   $this->plot($data);
-  $app->{main}->status(sprintf("Removed point at %.3f", $this->{point}));
+  $app->{main}->status(sprintf("Removed point at %.3f from %s", $this->{point}, $data->name));
   $::app->modified(1);
 };
 
@@ -229,6 +233,10 @@ sub plot_truncate {
 
   $data->plot('e');
   my $e = $this->{etrun}->GetValue - $data->bkg_e0;
+  if (not looks_like_number($e)) {
+    $::app->{main}->status("Not plotting for truncation -- your value for the cutoff energy is not a number!", 'error|nobuffer');
+    return;
+  };
   $this->{indicator}->x($e);
   $data->standard;
   $this->{indicator}->plot('e');
@@ -252,6 +260,10 @@ sub Truncate {
   my $beforeafter = ($this->{beforeafter}->GetSelection) ? 'after' : 'before' ;
   my $text = ($how eq 'marked') ? 'all marked groups' : 'current group' ;
   my $e = $this->{etrun}->GetValue;
+  if (not looks_like_number($e)) {
+    $::app->{main}->status("Not truncating -- your value for the cutoff energy is not a number!", 'error|nobuffer');
+    return;
+  };
   $_->Truncate($beforeafter, $e) foreach (@data);
   $this->plot_truncate($data[0]);
   $app->{main}->status(sprintf("Removed data %s %.3f for %s", $beforeafter, $e, $text));

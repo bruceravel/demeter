@@ -5,9 +5,11 @@ use warnings;
 use Wx qw( :everything );
 use base 'Wx::Panel';
 use Wx::Event qw(EVT_BUTTON EVT_CHECKBOX EVT_COMBOBOX EVT_RADIOBOX EVT_LIST_ITEM_SELECTED);
+use Wx::Perl::TextValidator;
 
 use Demeter::UI::Wx::SpecialCharacters qw(:all);
 use Cwd;
+use Scalar::Util qw(looks_like_number);
 
 use vars qw($label);
 $label = "Linear combination fitting";	# used in the Choicebox and in status bar messages to identify this tool
@@ -43,6 +45,8 @@ sub new {
   $hbox->Add($this->{space}, 0, wxLEFT|wxRIGHT|wxALIGN_CENTRE, 5);
   $this->{space}->SetSelection(0);
   EVT_RADIOBOX($this, $this->{space}, sub{OnSpace(@_)});
+  $this->{xmin} -> SetValidator( Wx::Perl::TextValidator->new( qr([-0-9.]) ) );
+  $this->{xmax} -> SetValidator( Wx::Perl::TextValidator->new( qr([-0-9.]) ) );
 
   $this->{notebook} = Wx::Notebook->new($this, -1, wxDefaultPosition, wxDefaultSize, wxNB_TOP);
   $box -> Add($this->{notebook}, 1, wxGROW|wxALL, 2);
@@ -113,6 +117,7 @@ sub main_page {
   $optionsboxsizer->Add($noisebox, 0, wxGROW|wxALL, 1);
   $noisebox->Add(Wx::StaticText->new($panel, -1, 'Add noise'), 0, wxRIGHT|wxALIGN_CENTRE, 5);
   $this->{noise} = Wx::TextCtrl->new($panel, -1, 0, wxDefaultPosition, $tcsize);
+  $this->{noise} -> SetValidator( Wx::Perl::TextValidator->new( qr([0-9.]) ) );
   $noisebox->Add($this->{noise}, 0, wxLEFT|wxRIGHT|wxALIGN_CENTRE, 5);
   $noisebox->Add(Wx::StaticText->new($panel, -1, 'to data'), 0, wxRIGHT|wxALIGN_CENTRE, 5);
   my $maxbox = Wx::BoxSizer->new( wxHORIZONTAL );
@@ -146,7 +151,8 @@ sub main_page {
     $this->{$w}->Enable(0);
   };
   EVT_BUTTON($this, $this->{fit},    sub{fit(@_, 0)});
-  EVT_BUTTON($this, $this->{plot},   sub{$this->{LCF}->plot_fit}); #fit(@_, 1)});
+  EVT_BUTTON($this, $this->{plot},   sub{$this->{LCF}->plot_fit;   $::app->{main}->status(sprintf("Plotted %s and LCF fit", $this->{LCF}->data->name));
+});
   EVT_BUTTON($this, $this->{report}, sub{save(@_)});
   EVT_BUTTON($this, $this->{combi},  sub{combi(@_)});
 
@@ -161,7 +167,7 @@ sub fit_page {
   my $box = Wx::BoxSizer->new( wxVERTICAL);
 
   $this->{result} = Wx::TextCtrl->new($panel, -1, q{}, wxDefaultPosition, wxDefaultSize,
-				       wxTE_MULTILINE|wxTE_WORDWRAP|wxTE_AUTO_URL);
+				       wxTE_MULTILINE|wxTE_WORDWRAP|wxTE_AUTO_URL|wxTE_READONLY);
   my $size = Wx::SystemSettings::GetFont(wxSYS_DEFAULT_GUI_FONT)->GetPointSize - 1;
   $this->{result}->SetFont( Wx::Font->new( $size, wxTELETYPE, wxNORMAL, wxNORMAL, 0, "" ) );
   $box->Add($this->{result}, 1, wxGROW|wxALL, 5);
@@ -247,6 +253,9 @@ sub add_standard {
   $gbs -> Add($this->{'require'.$i},  Wx::GBPosition->new($i,5));
   $this->{'standard'.$i}->SetSelection(0);
   EVT_COMBOBOX($this, $this->{'standard'.$i}, sub{OnSelect(@_)});
+  $this->{'weight'.$i} -> SetValidator( Wx::Perl::TextValidator->new( qr([0-9.]) ) );
+  $this->{'e0'.$i}     -> SetValidator( Wx::Perl::TextValidator->new( qr([-0-9.]) ) );
+
 };
 
 ## deprecated?
@@ -364,8 +373,11 @@ sub OnSpace {
 sub fetch {
   my ($this) = @_;
 
-  $this->{LCF}->max_standards($this->{max}->GetValue);
+  my $max = $this->{max}->GetValue;
+  $max = 2 if ($max < 2);
+  $this->{LCF}->max_standards($max);
   my $noise = $this->{noise}->GetValue;
+  $noise = 0 if (not looks_like_number($noise));
   $noise = 0 if ($noise < 0);
   $this->{LCF}->noise($noise);
 };
@@ -373,6 +385,7 @@ sub fetch {
 sub _prep {
   my ($this, $nofit) = @_;
   $nofit ||= 0;
+  my $trouble = 0;
   $this->fetch;
   $this->{LCF}->clear;
   $this->{LCF}->clean if not $nofit;
@@ -382,6 +395,10 @@ sub _prep {
     my $stan = $this->{'standard'.$i}->GetClientData($n);
     next if not defined($stan);
     #print join("|", $i, $n, $stan), $/;
+
+     return sprintf("weight #%d", $i+1) if (not looks_like_number($this->{'weight'.$i}->GetValue));
+     return sprintf("e0 #%d"    , $i+1) if (not looks_like_number($this->{'e0'.$i}->GetValue));
+
     $this->{LCF} -> add($stan,
 			required => $this->{'require'.$i}->GetValue,
 			float_e0 => $this->{'fite0'.$i}->GetValue,
@@ -393,6 +410,10 @@ sub _prep {
   $this->{LCF}->space('deriv') if $this->{space}->GetSelection == 1;
   $this->{LCF}->space('chi')   if $this->{space}->GetSelection == 2;
   my $e0 = ($this->{LCF}->space eq 'chi') ? 0 : $this->{LCF}->data->bkg_e0;
+
+  return 'xmin' if (not looks_like_number($this->{xmin}->GetValue));
+  return 'xmax' if (not looks_like_number($this->{xmax}->GetValue));
+
   $this->{LCF}->xmin($this->{xmin}->GetValue + $e0);
   $this->{LCF}->xmax($this->{xmax}->GetValue + $e0);
   if ($this->{LCF}->space eq 'chi') {
@@ -400,6 +421,7 @@ sub _prep {
   } else {
     $this->{LCF}->po->set(emin=>$this->{xmin}->GetValue-10, emax=>$this->{xmax}->GetValue+10);
   };
+  return $trouble;
 };
 
 sub _results {
@@ -420,7 +442,11 @@ sub _results {
 sub fit {
   my ($this, $event, $nofit) = @_;
   my $busy = Wx::BusyCursor->new();
-  $this->_prep($nofit);
+  my $trouble = $this->_prep($nofit);
+  if ($trouble) {
+    $::app->{main}->status("Not doing LCF -- the $trouble parameter value is not a number!", 'error|nobuffer');
+    return;
+  };
   $this->{LCF} -> fit if not $nofit;
   $this->{LCF} -> plot_fit;
   $this->_results if not $nofit;
@@ -430,13 +456,18 @@ sub fit {
   #$this->{markedreport} -> Enable(1);
   $this->{resultplot}   -> Enable(1);
   $this->{resultreport} -> Enable(1);
+  $::app->{main}->status(sprintf("Finished LCF fit to %s", $this->{LCF}->data->name));
   undef $busy;
 };
 
 sub combi {
   my ($this, $event) = @_;
   my $busy = Wx::BusyCursor->new();
-  $this->_prep(0);
+  my $trouble = $this->_prep(0);
+  if ($trouble) {
+    $::app->{main}->status("Not doing LCF -- the $trouble parameter value is not a number!", 'error|nobuffer');
+    return;
+  };
   my $size = $this->{LCF}->combi_size;
   if ($size > 70) {
     my $yesno = Wx::MessageDialog->new($::app->{main},
@@ -585,7 +616,7 @@ sub combi_report {
   };
   my $fname = File::Spec->catfile($fd->GetDirectory, $fd->GetFilename);
   $this->{LCF}->combi_report($fname);
-  $::app->{main}->status("Saved combinatorial results to $fname");
+  $::app->{main}->status("Wrote combinatorial report as an Excel spreadsheet to $fname");
 };
 
 sub _remove_all {

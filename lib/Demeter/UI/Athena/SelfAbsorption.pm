@@ -1,11 +1,17 @@
 package Demeter::UI::Athena::SelfAbsorption;
 
+use strict;
+use warnings;
+
 use Wx qw( :everything );
 use base 'Wx::Panel';
 use Wx::Event qw(EVT_BUTTON EVT_RADIOBOX);
+use Wx::Perl::TextValidator;
 
 use Demeter::UI::Wx::SpecialCharacters qw(:all);
+
 use Chemistry::Formula qw(parse_formula);
+use Scalar::Util qw(looks_like_number);
 
 use vars qw($label);
 $label = "Self-absorption correction";	# used in the Choicebox and in status bar messages to identify this tool
@@ -49,6 +55,7 @@ sub new {
   $this->{out}       = Wx::SpinCtrl->new($this, -1, 45,   wxDefaultPosition, $tcsize, wxSP_ARROW_KEYS, 0, 90);
   $this->{thickness} = Wx::TextCtrl->new($this, -1, 1000, wxDefaultPosition, $tcsize);
 
+  $this->{thickness} -> SetValidator( Wx::Perl::TextValidator->new( qr([0-9.]) ) );
   $this->{thickness_label}->Enable(0);
   $this->{thickness}->Enable(0);
 
@@ -133,12 +140,17 @@ sub plot {
   my $in        = $this->{in}        -> GetValue;
   my $out       = $this->{out}       -> GetValue;
   my $thickness = $this->{thickness} -> GetValue;
+  if (not looks_like_number($thickness)) {
+    $::app->{main}->status("Not doing self absorption correction -- your value for thickness is not a number!", 'error|nobuffer');
+    return;
+  };
 
   if ($formula =~ m{\A\s*\z}) {
     $this->{feedback}->SetValue("You did not provide a formula.");
     $::app->{main}->status("You did not provide a formula.");
     return;
   };
+  my %count = ();
   my $ok = parse_formula($formula, \%count);
   if (not $ok) {
     $this->{feedback}->SetValue($count{error});
@@ -186,6 +198,7 @@ sub info {
     $::app->{main}->status("You did not provide a formula.");
     return;
   };
+  my %count = ();
   my $ok = parse_formula($formula, \%count);
   if (not $ok) {
     $this->{feedback}->SetValue($count{error});

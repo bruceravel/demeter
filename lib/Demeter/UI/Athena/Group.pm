@@ -34,6 +34,8 @@ sub Rename {
     $newname = $ted->GetValue;
   };
   $app->update_text_buffer("rename", $newname, 0);
+  my $sel = $app->{main}->{list}->GetSelection;
+  my $is_checked = $app->{main}->{list}->IsChecked($sel);
 
   my $prefix = ($is_ref) ? "  Ref " : q{};
   $data->name($prefix.$newname);
@@ -47,6 +49,7 @@ sub Rename {
     };
   };
   $app->OnGroupSelect;
+  $app->{main}->{list}->Check($sel, $is_checked);
   $app->modified(1);
   $app->{main}->status("Renamed $name to $newname");
 };

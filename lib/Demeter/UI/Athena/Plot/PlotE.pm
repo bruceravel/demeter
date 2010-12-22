@@ -164,18 +164,20 @@ sub new {
 #  my $right = Wx::BoxSizer->new( wxVERTICAL );
 #  $hbox -> Add($right, 0, wxALL, 4);
 
+  $box -> Add(1, 1, 1);
+
   my $range = Wx::BoxSizer->new( wxHORIZONTAL );
-  $box -> Add($range, 0, wxALL, 0);
-  my $label = Wx::StaticText->new($this, -1, "Emin");
+  $box -> Add($range, 0, wxALL|wxGROW, 0);
+  my $label = Wx::StaticText->new($this, -1, "Emin", wxDefaultPosition, [30,-1]);
   $this->{emin} = Wx::TextCtrl ->new($this, -1, $Demeter::UI::Athena::demeter->co->default("plot", "emin"),
 				     wxDefaultPosition, [50,-1]);
   $range -> Add($label,        0, wxALL, 5);
-  $range -> Add($this->{emin}, 0, wxRIGHT, 10);
-  $label = Wx::StaticText->new($this, -1, "Emax");
+  $range -> Add($this->{emin}, 1, wxRIGHT, 10);
+  $label = Wx::StaticText->new($this, -1, "Emax", wxDefaultPosition, [30,-1]);
   $this->{emax} = Wx::TextCtrl ->new($this, -1, $Demeter::UI::Athena::demeter->co->default("plot", "emax"),
 				     wxDefaultPosition, [50,-1]);
   $range -> Add($label,        0, wxALL, 5);
-  $range -> Add($this->{emax}, 0, wxRIGHT, 10);
+  $range -> Add($this->{emax}, 1, wxRIGHT, 10);
 
   $this->{$_} -> SetValidator( Wx::Perl::TextValidator->new( qr([-0-9.]) ) )
     foreach (qw(emin emax));
@@ -199,12 +201,15 @@ sub pull_single_values {
   $po->e_norm($this->{norm}-> GetValue);
   $po->e_der ($this->{der} -> GetValue);
   $po->e_sec ($this->{sec} -> GetValue);
+
   my $emin = $this->{emin}-> GetValue;
   my $emax = $this->{emax}-> GetValue;
-  $emin = 0 if not looks_like_number($emin);
-  $emax = 0 if not looks_like_number($emax);
+  $::app->{main}->status(q{}, 'nobuffer');
+  $emin = 0, $::app->{main}->status("Emin is not a number", 'error|nobuffer') if not looks_like_number($emin);
+  $emax = 0, $::app->{main}->status("Emax is not a number", 'error|nobuffer') if not looks_like_number($emax);
   $po->emin($emin);
   $po->emax($emax);
+
   $po->e_markers(1);
 };
 
@@ -218,12 +223,15 @@ sub pull_marked_values {
   $po->e_norm($this->{mnorm}-> GetValue);
   $po->e_der ($this->{mder} -> GetValue);
   $po->e_sec ($this->{msec} -> GetValue);
+
   my $emin = $this->{emin}-> GetValue;
   my $emax = $this->{emax}-> GetValue;
-  $emin = 0 if not looks_like_number($emin);
-  $emax = 0 if not looks_like_number($emax);
+  $::app->{main}->status(q{}, 'nobuffer');
+  $emin = 0, $::app->{main}->status("Emin is not a number", 'error|nobuffer') if not looks_like_number($emin);
+  $emax = 0, $::app->{main}->status("Emax is not a number", 'error|nobuffer') if not looks_like_number($emax);
   $po->emin($emin);
   $po->emax($emax);
+
   $po->e_mu(1) if $po->e_norm;
   $po->e_markers(0);
 };

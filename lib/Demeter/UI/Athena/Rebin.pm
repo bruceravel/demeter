@@ -1,10 +1,16 @@
 package Demeter::UI::Athena::Rebin;
 
+use strict;
+use warnings;
+
 use Wx qw( :everything );
 use base 'Wx::Panel';
 use Wx::Event qw(EVT_BUTTON EVT_CHOICE);
+use Wx::Perl::TextValidator;
 
 use Demeter::UI::Wx::SpecialCharacters qw(:all);
+
+use Scalar::Util qw(looks_like_number);
 
 use vars qw($label);
 $label = "Rebin data";
@@ -42,7 +48,7 @@ sub new {
 
 
 
-  $label = Wx::StaticText->new($this, -1, ',');
+  $label = Wx::StaticText->new($this, -1, 'to');
   $gbs->Add($label, Wx::GBPosition->new(2,3));
 
   $label = Wx::StaticText->new($this, -1, 'eV');
@@ -61,6 +67,8 @@ sub new {
   $this->{edge}   = Wx::StaticText->new($this, -1, q{}, wxDefaultPosition, [60,-1]);
   foreach my $w (qw(emin emax pre xanes exafs)) {
     $this->{$w}  = Wx::TextCtrl->new($this, -1, $demeter->co->default('rebin', $w), wxDefaultPosition, [120,-1]);
+    my $re = ($w eq 'emin') ? qr([-0-9.]) : qr([0-9.]);
+    $this->{$w} -> SetValidator( Wx::Perl::TextValidator->new( $re ) );
   };
   $gbs->Add($this->{abs},   Wx::GBPosition->new(0,2), Wx::GBSpan->new(1,3));
   $gbs->Add($this->{edge},  Wx::GBPosition->new(1,2));
@@ -100,7 +108,6 @@ sub push_values {
   $this->Enable(1);
   $this->{abs}  -> SetLabel($data->name);
   $this->{edge} -> SetLabel($data->bkg_e0);
-  delete $this->{rebinned};
   foreach my $w (qw(emin emax pre xanes exafs)) {
     my $key = 'rebin_'.$w;
     my $value = $this->{$w}->GetValue;
@@ -123,14 +130,36 @@ sub mode {
 
 sub plot {
   my ($this, $data) = @_;
+  foreach my $w (qw(emin emax pre xanes exafs)) {
+    my $key = 'rebin_'.$w;
+    my $value = $this->{$w}->GetValue;
+    if (not looks_like_number($value)) {
+      $::app->{main}->status("Not rebinning -- your value for $w is not a number!", 'error|nobuffer');
+      return;
+    };
+    $data->co->set_default('rebin', $w, $value);
+  };
+  $this->{rebinned} = $data->rebin;
   $::app->{main}->{PlotE}->pull_single_values;
   $data->po->set(e_mu=>1, e_markers=>1, e_bkg=>0, e_pre=>0, e_post=>0, e_norm=>0, e_der=>0, e_sec=>0, e_i0=>0, e_signal=>0);
   $data->po->start_plot;
   $_->plot('e') foreach ($data, $this->{rebinned});
+  $::app->{main}->status("Plotted ".$data->name." with its rebinned data");
 };
 
 sub make {
   my ($this, $app) = @_;
+
+  foreach my $w (qw(emin emax pre xanes exafs)) {
+    my $key = 'rebin_'.$w;
+    my $value = $this->{$w}->GetValue;
+    if (not looks_like_number($value)) {
+      $app->{main}->status("Not rebinning -- your value for $w is not a number!", 'error|nobuffer');
+      return;
+    };
+    $app->current_data->co->set_default('rebin', $w, $value);
+  };
+  $this->{rebinned} = $app->current_data->rebin;
 
   my $index = $app->current_index;
   if ($index == $app->{main}->{list}->GetCount-1) {
@@ -138,13 +167,25 @@ sub make {
   } else {
     $app->{main}->{list}->Insert($this->{rebinned}->name, $index+1, $this->{rebinned});
   };
-  $app->{main}->status("Rebinned " . $app->current_data->name);
+  $app->{main}->status("Rebinned " . $app->current_data->name." and made a new data group");
   $app->modified(1);
 };
 sub marked {
   my ($this, $app) = @_;
   my $busy = Wx::BusyCursor->new();
+
+  foreach my $w (qw(emin emax pre xanes exafs)) {
+    my $key = 'rebin_'.$w;
+    my $value = $this->{$w}->GetValue;
+    if (not looks_like_number($value)) {
+      $app->{main}->status("Not rebinning marked groups -- your value for $w is not a number!", 'error|nobuffer');
+      return;
+    };
+    $app->current_data->co->set_default('rebin', $w, $value);
+  };
+
   my $count = 0;
+  my $index = $app->current_index;
   foreach my $j (reverse (0 .. $app->{main}->{list}->GetCount-1)) {
     if ($app->{main}->{list}->IsChecked($j)) {
       if ($index == $app->{main}->{list}->GetCount-1) {

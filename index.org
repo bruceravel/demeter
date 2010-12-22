@@ -1,204 +1,241 @@
 -*- org -*-
 
-* Demeter bugs and shortcomings discovered  [19/25]
- - [X] failed test 022 after upgrading office computer to 10.04
- - [X] save_many fails to bring things up to date
- - [X] save_many fails to use flat/norm correctly
- - [ ] in D::Data::IO::save_many, why doesn't updating in n specifying
-   "background" not work to bring data up to date?  (fft, i.e. doing
-   autobk, does work)
- - [X] it is annoying that the background trace is blue and the data is red
- - [X] weighting by noise or importance?
- - [X] merge array in write_athena
- - [X] phase corrected FTs
- - [X] bkg_fix_step does not work
- - [ ] clnorm
- - [X] erase ifeffit group when DEMOLISHing Data object
- - [X] align as smoothed derivative
- - [X] plotting smoothed derivative
-       - need a template for applying the 3-pt smoothing N times, then taking second
-       - need a hook before any deriv/second plot to call that template
- - [X] self absorption algorithms [[file:~/codes/horae/athena_parts/sa_fluo.pl][from horae]]
- - [X] self absorption information depth not yet implemented
- - [X] templates for LR/PD [[file:~/codes/horae/athena_parts/macro.pl][old athena macros]]
- - [X] templates for difference spectra
- - [X] X23A2 multichannel filetype plugin
- - [ ] add a record to an existing Athena project file
- - [ ] tie multiple groups together
- - [ ] set E0 to peak of white line
- - [ ] +serialize VPath+, put VPath into +dpj and+ fpj files
- - [X] key top/left/bottom/right config params + controls in plottabs in Athena
- - [X] deserializing SSPath fails
- - [X] envelope is q is plotted absurdly wrongly (it seems to plot something in R)
+* things that need doing
 
-* Uses of PDL [0/3]
- - [ ] Savitsky-Golay filter  [[file:notes/sgolay.m][Matlab routine for SG filter]]
- - [ ] PCA  [[http://mailman.jach.hawaii.edu/pipermail/perldl/2006-August/000588.html][PCA from PDL mail archives]]
- - [ ] deconvolution
+** Demeter bugs and shortcomings  [0/3]
+  - [ ] in D::Data::IO::save_many, why doesn't updating in n specifying
+       	"background" not work to bring data up to date?  (fft, i.e. doing
+       	autobk, does work)
+  - [ ] +serialize VPath+, put VPath into +dpj and+ fpj files
+  - [ ] tie multiple groups together
 
-* needs testing [0/2]
- - [ ] reference of another edge
- - [ ] keV data
+** Athena, needs testing [0/2]
+  - [ ] reference of another edge
+  - [ ] keV data
 
-* Athena bugs [7/14]
- - [ ] deglitching crashes with gnuplot
- - [X] bare negative sign in a TextCtrl failed attribute type checking and crashes
- - [ ] importing stddev array from an Athena project file, then making a merge plot works oddly
- - [ ] renaming a group unchecks it
- - [ ] add noise to chi data
- - [X] labels in plot tabs should come from .pm files
- - [ ] persistance for plotting styles
- - [X] align problem 
-        Can't call method "plot" on an undefined value at
-        /home/bruce/codes/demeter/lib/Demeter/UI/Athena/Align.pm line
-        202, <F> line 35.
-       when clicking on group selected as standard while align is displayed
- - [X] using tools (e.g. align) needs to toggle save flag
- - [X] no status message after saving project...
- - [X] plot in energy, need to update edge step box in case it changed
- - [ ] in align tool (and others?) verify that standard selection still exists in the project
- - [ ] cannot specify title for stddev and variance plots
- - [X] rename and mark_regexp need to keep a buffer of previous entries
+** Athena bugs [3/11]
+  - [ ] add a record to an existing Athena project file
+  - [ ] set E0 to peak of white line
+  - [ ] deglitching crashes with gnuplot							:HUH:
+  - [X] importing stddev array from an Athena project file, then making a merge plot works oddly
+  - [X] renaming a group unchecks it
+  - [ ] add noise to chi data
+  - [X] persistance for plotting styles
+  - [ ] show yaml for style objects in monitor menu
+  - [ ] in align tool (and others?) verify that standard selection still exists in the project
+  - [ ] cannot specify title for stddev and variance plots
+  - [ ] clnorm
+  - [ ] implement frozen groups
 
-* Artemis bugs [0/1]
- - [ ] use text buffers as in Athena for TextEntryDialogs
+** Artemis bugs and missing features [0/2]
+  - [ ] use text buffers as in Athena for TextEntryDialogs
+  - [ ] import an FPath from a yaml or from a project file, pathlist start page link for doing so
 
-* other features [13/13]
- - [X] column selection persistance
- - [X] right click pop up menus on parameter StaticText-s
- - [X] stacking
- - [X] indicators
- - [X] plotting styles
-        - need to make Demeter::Plot::Style object
-        - new tab
-        - button for saving current plot style
-        - ListBox for styles, single selection, on select push style
-        - right click to post menu with delete option
- - [X] tie spline values in k and E
- - [X] recommended fft_kmax
- - [X] need to call mode after push_values
- - [X] merged group needs a "file" explaining what it is
- - [X] plot in E for a group that is of datatype chi(k) -- need
-       something better than the wxperl carp
- - [X] modified indication and y/n to save when closing or exiting
- - [X] command line arguments
- - [X] implement bkg_stan
+** Histograms [2/5]
+  - [X] sum histogram bins into a single chi(k) file
+  - [X] convert chi(k) data to a mock feffNNNN.dat file
+  - [ ] Triangle object
+    - yields a DS path and a TS path
+    - by R and theta
+    - by a trio of Cartesian coordinates
+  - [ ] bin triangle configurations by R and theta and sum into a single chi(k)
+  - [ ] bin nealy colinear configurations by R and theta and sum into a single chi(k)
 
-* LCF needs doing [8/10]
- - [X] share e0
- - [X] test floating e0  
- - [X] implement combi
- - [ ] implement marked groups fit
- - [X] test deriv fit
- - [X] test in k
- - [ ] implement plotting in R for a fit in k
- - [X] enable main page buttons correctly after combi fit
- - [X] enable result page buttons correctly after fit or combi fit
- - [X] flags for required and fit_e0 don't get restored correctly when using combi page
+** Help [1/4]
+  - [X]  about
+  - [ ]  demos
+  - [ ]  document
+  - [ ]  memory usage
 
-* miscellaneous plot tab [3/3]
- - [X] specify title
- - [X] singlefile toggle
- - [X] suppress legend
+** LCF needs doing [8/10]
+  - [X] share e0
+  - [X] test floating e0  
+  - [X] implement combi
+  - [ ] implement marked groups fit
+  - [X] test deriv fit
+  - [X] test in k
+  - [ ] implement plotting in R for a fit in k
+  - [X] enable main page buttons correctly after combi fit
+  - [X] enable result page buttons correctly after fit or combi fit
+  - [X] flags for required and fit_e0 don't get restored correctly when using combi page
 
-* data import [5/6]
- - [X] reference channel on import (use Demeter::Data::MultiChannel?)
- - [X] rebin on import (need to get rebin page working)
- - [X] preprocessing (need to get the various tool pages working)
- - [X] datatype in column selection
- - [X] units in column selection
- - [ ] save each channel as its own group (really must use D::D::MC)
+** data import [5/6]
+  - [X] reference channel on import (use Demeter::Data::MultiChannel?)
+  - [X] rebin on import (need to get rebin page working)
+  - [X] preprocessing (need to get the various tool pages working)
+  - [X] datatype in column selection
+  - [X] units in column selection
+  - [ ] save each channel as its own group (really must use D::D::MC)
 
-* file menu
-** save column data [5/5]
- - [X] mu(E)
- - [X] norm(E)
- - [X] chi(k)
- - [X] chi(R)
- - [X] chi(q)
-** save marked [4/4]
- - [X] mu, norm, deriv mu/norm, second mu/norm
- - [X] chi, chik, chik2, chik3
- - [X] chir: magnitude, real imaginary
- - [X] chiq: magnitude, real imaginary
-** save each
- - [X] mu, norm, chik chir chiq
-** clear project name
- - [X] 
+** old Athena's edit menu [3/5]
+  - [ ] titles
+  - [ ] data as text
+  - [X] Ifeffit show (strings, groups, arrays)
+  - [X] journal
+  - [X] excel report
 
-* old Athena's edit menu [3/5]
+** Group menu [8/11]
+  - [X] copy group
+  - [X] about group
+  - [ ] about marked
+  - [X] rename
+  - [ ] tie reference channel by hand
+  - [X] propagate rename through reference
+  - [X] untie reference when discarding a tied group
+  - [ ] move up and down
+  - [X] remove group, removed marked
+  - [X] close project
+  - [X] change datatype
+
+
+** Plot [5/6]
+  - [ ] zoom, unzoom, cursor, but only for pgplot
+  - [X] plot I0 marked
+  - [X] E0 at E=0 for marked
+  - [X] stddev and varience plots
+  - [X] project name as title in a marked plot
+  - [X] next plot to a file
+
+** Merge [4/5]
+  - [X] mue
+  - [X] norm
+  - [X] chi
+  - [X] weight by importance/noise/step
+  - [ ] datatype of merged group (xanes merge should be a xanes and so on) (this appears to be so, see [[file:lib/Demeter/Data/Process.pm][Demeter::Data::Process]]
+
+
+
+* thing that have been fixed
+** Demeter bugs and shortcomings fixed  [19/19]
+  - [X] failed test 022 after upgrading office computer to 10.04
+  - [X] save_many fails to bring things up to date
+  - [X] save_many fails to use flat/norm correctly
+  - [X] it is annoying that the background trace is blue and the data is red
+  - [X] weighting by noise or importance?
+  - [X] merge array in write_athena
+  - [X] phase corrected FTs
+  - [X] bkg_fix_step does not work
+  - [X] erase ifeffit group when DEMOLISHing Data object
+  - [X] align as smoothed derivative
+  - [X] plotting smoothed derivative
+       	- need a template for applying the 3-pt smoothing N times, then taking second
+       	- need a hook before any deriv/second plot to call that template
+  - [X] self absorption algorithms [[file:~/codes/horae/athena_parts/sa_fluo.pl][from horae]]
+  - [X] self absorption information depth not yet implemented
+  - [X] templates for LR/PD [[file:~/codes/horae/athena_parts/macro.pl][old athena macros]]
+  - [X] templates for difference spectra
+  - [X] X23A2 multichannel filetype plugin
+  - [X] key top/left/bottom/right config params + controls in plottabs in Athena
+  - [X] deserializing SSPath fails
+  - [X] envelope is q is plotted absurdly wrongly (it seems to plot something in R)
+
+** Athena bugs fixed [7/7]
+  - [X] bare negative sign in a TextCtrl failed attribute type checking and crashes
+  - [X] labels in plot tabs should come from .pm files
+  - [X] align problem 
+         Can't call method "plot" on an undefined value at
+         /home/bruce/codes/demeter/lib/Demeter/UI/Athena/Align.pm line
+         202, <F> line 35.
+       	when clicking on group selected as standard while align is displayed
+  - [X] using tools (e.g. align) needs to toggle save flag
+  - [X] no status message after saving project...
+  - [X] plot in energy, need to update edge step box in case it changed
+  - [X] rename and mark_regexp need to keep a buffer of previous entries
+
+** other features [13/13]
+  - [X] column selection persistance
+  - [X] right click pop up menus on parameter StaticText-s
+  - [X] stacking
+  - [X] indicators
+  - [X] plotting styles
+         - need to make Demeter::Plot::Style object
+         - new tab
+         - button for saving current plot style
+         - ListBox for styles, single selection, on select push style
+         - right click to post menu with delete option
+  - [X] tie spline values in k and E
+  - [X] recommended fft_kmax
+  - [X] need to call mode after push_values
+  - [X] merged group needs a "file" explaining what it is
+  - [X] plot in E for a group that is of datatype chi(k) -- need
+       	something better than the wxperl carp
+  - [X] modified indication and y/n to save when closing or exiting
+  - [X] command line arguments
+  - [X] implement bkg_stan
+
+** miscellaneous plot tab [3/3]
+  - [X] specify title
+  - [X] singlefile toggle
+  - [X] suppress legend
+
+** Plugin registry [2/2]
+  - [X] GUI tool
+  - [X] test data against plugins
+
+** Values
+*** parameter constraint
+**** all groups to current [3/3]
+  - [X] individual
+  - [X] group
+  - [X] all
+**** all marked to current [3/3]
+  - [X] individual
+  - [X] group
+  - [X] all
+*** set E0 [1/1]
+  - [X] for this, five methods
+
+** file menu
+*** save column data [5/5]
+  - [X] mu(E)
+  - [X] norm(E)
+  - [X] chi(k)
+  - [X] chi(R)
+  - [X] chi(q)
+*** save marked [4/4]
+  - [X] mu, norm, deriv mu/norm, second mu/norm
+  - [X] chi, chik, chik2, chik3
+  - [X] chir: magnitude, real imaginary
+  - [X] chiq: magnitude, real imaginary
+*** save each
+  - [X] mu, norm, chik chir chiq
+*** clear project name
+  - [X] 
+
+
+
+
+
+* Tools [15/23]
+ - [X] main
+ - [X] calibrate
+ - [X] align
+ - [X] deglitch
+ - [ ] smooth with Savitsky-Golay filter							:PDL:
+        [[file:notes/sgolay.m][Matlab routine for SG filter]] 
+ - [X] truncate
+ - [X] rebin
+ - [X] convolution and noise
+ - [ ] deconvolution										:PDL:
+ - [X] self absorption
+ - [X] copy series
+
+ - [ ] dispersive
+ - [ ] multi-electron removal
+
+ - [X] LCF
+ - [ ] PCA											:PDL:
+        [[http://mailman.jach.hawaii.edu/pipermail/perldl/2006-August/000588.html][PCA from PDL mail archives]]
+ - [ ] Peak fit
+ - [X] log ratio
+ - [X] difference
+
+ - [ ] explain FT
  - [ ] titles
- - [ ] data as text
- - [X] Ifeffit show (strings, groups, arrays)
  - [X] journal
- - [X] excel report
-
-* Group menu [8/11]
- - [X] copy group
- - [X] about group
- - [ ] about marked
- - [X] rename
- - [ ] tie reference channel by hand
- - [X] propagate rename through reference
- - [X] untie reference when discarding a tied group
- - [ ] move up and down
- - [X] remove group, removed marked
- - [X] close project
- - [X] change datatype
-
-* Values
-
-** parameter constraint
-*** all groups to current [3/3]
- - [X] individual
- - [X] group
- - [X] all
-*** all marked to current [3/3]
- - [X] individual
- - [X] group
- - [X] all
-
-** frozen groups
- - [ ] implement it
-
-** set E0 [1/1]
- - [X] for this, five methods
-
-* Plot [5/6]
- - [ ] zoom, unzoom, cursor, but only for pgplot
- - [X] plot I0 marked
- - [X] E0 at E=0 for marked
- - [X] stddev and varience plots
- - [X] project name as title in a marked plot
- - [X] next plot to a file
-
-* Merge [4/5]
- - [X] mue
- - [X] norm
- - [X] chi
- - [X] weight by importance/noise/step
- - [ ] datatype of merged group (xanes merge should be a xanes and so on) (this appears to be so, see [[file:lib/Demeter/Data/Process.pm][Demeter::Data::Process]]
-
-* Plugin registry [2/2]
- - [X] GUI tool
- - [X] test data against plugins
-
-* Histograms [2/5]
- - [X] sum histogram bins into a single chi(k) file
- - [X] convert chi(k) data to a mock feffNNNN.dat file
- - [ ] Triangle object
-   - yields a DS path and a TS path
-   - by R and theta
-   - by a trio of Cartesian coordinates
- - [ ] bin triangle configurations by R and theta and sum into a single chi(k)
- - [ ] bin nealy colinear configurations by R and theta and sum into a single chi(k)
-
-* Help [1/4]
- - [X]  about
- - [ ]  demos
- - [ ]  document
- - [ ]  memory usage
-
+ - [X] plugins
+ - [X] preference 
+ 
 * Weird stuff I'd prefer not to implement unless demanded [0/10]
  - [ ] xfit output
  - [ ] csv and text report
@@ -211,32 +248,3 @@
  - [ ] plot margin lines for deglitching, deglitch many points
  - [ ] preprocessing truncation and deglitching
 
-* Tools [15/20]
- - [X] main
- - [X] calibrate
- - [X] align
- - [X] deglitch
- - [X] truncate
- - [X] rebin
- - [X] convolution and noise
- - [X] self absorption
- - [X] copy series
-
- - [ ] dispersive
- - [ ] multi-electron removal
-
- - [X] LCF
- - [ ] Peak fit
- - [X] log ratio
- - [X] difference
-
- - [ ] explain FT
- - [ ] titles
- - [X] journal
- - [X] plugins
- - [X] preference 
-
-* Tools, needs PDL [0/3]
- - [ ] smooth
- - [ ] decovolute
- - [ ] PCA [[http://mailman.jach.hawaii.edu/pipermail/perldl/2006-August/000588.html][PCA from PDL mail archives]]
