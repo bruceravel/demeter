@@ -2,30 +2,31 @@
 
 * things that need doing
 
-** Demeter bugs and shortcomings  [0/3]
+** Demeter bugs and shortcomings  [0/5]
   - [ ] in D::Data::IO::save_many, why doesn't updating in n specifying
        	"background" not work to bring data up to date?  (fft, i.e. doing
        	autobk, does work)
   - [ ] +serialize VPath+, put VPath into +dpj and+ fpj files
   - [ ] tie multiple groups together
+  - [ ] add a record to an existing Athena project file
+  - [ ] set E0 to peak of white line
 
 ** Athena, needs testing [0/2]
   - [ ] reference of another edge
   - [ ] keV data
 
-** Athena bugs [3/11]
-  - [ ] add a record to an existing Athena project file
-  - [ ] set E0 to peak of white line
+** Athena bugs [4/11]
   - [ ] deglitching crashes with gnuplot							:HUH:
   - [X] importing stddev array from an Athena project file, then making a merge plot works oddly
   - [X] renaming a group unchecks it
   - [ ] add noise to chi data
   - [X] persistance for plotting styles
-  - [ ] show yaml for style objects in monitor menu
+  - [X] show yaml for style and indicator objects in monitor menu
   - [ ] in align tool (and others?) verify that standard selection still exists in the project
   - [ ] cannot specify title for stddev and variance plots
   - [ ] clnorm
   - [ ] implement frozen groups
+  - [ ] handle preproc alignment correctly when MED data is made into separate groups
 
 ** Artemis bugs and missing features [0/2]
   - [ ] use text buffers as in Athena for TextEntryDialogs
@@ -59,14 +60,6 @@
   - [X] enable result page buttons correctly after fit or combi fit
   - [X] flags for required and fit_e0 don't get restored correctly when using combi page
 
-** data import [5/6]
-  - [X] reference channel on import (use Demeter::Data::MultiChannel?)
-  - [X] rebin on import (need to get rebin page working)
-  - [X] preprocessing (need to get the various tool pages working)
-  - [X] datatype in column selection
-  - [X] units in column selection
-  - [ ] save each channel as its own group (really must use D::D::MC)
-
 ** old Athena's edit menu [3/5]
   - [ ] titles
   - [ ] data as text
@@ -86,7 +79,6 @@
   - [X] remove group, removed marked
   - [X] close project
   - [X] change datatype
-
 
 ** Plot [5/6]
   - [ ] zoom, unzoom, cursor, but only for pgplot
@@ -171,6 +163,14 @@
 ** Plugin registry [2/2]
   - [X] GUI tool
   - [X] test data against plugins
+
+** data import [6/6]
+  - [X] reference channel on import (use Demeter::Data::MultiChannel?)
+  - [X] rebin on import (need to get rebin page working)
+  - [X] preprocessing (need to get the various tool pages working)
+  - [X] datatype in column selection
+  - [X] units in column selection
+  - [X] save each channel as its own group (really must use D::D::MC)
 
 ** Values
 *** parameter constraint

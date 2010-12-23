@@ -52,10 +52,13 @@ sub new {
   $this->{left} = $left;
   ## the ln checkbox goes below the column selection widget, but if
   ## refered to in the columns method, so I need to define it here.
-  ## it will be placed in the other_parameters method
+  ## it will be placed in the other_parameters method.
   $this->{ln}     = Wx::CheckBox->new($leftpane, -1, 'Natural log');
   $this->{energy} = Wx::TextCtrl->new($leftpane, -1, q{}, wxDefaultPosition, [350,-1], wxTE_READONLY);
   $this->{mue}    = Wx::TextCtrl->new($leftpane, -1, q{}, wxDefaultPosition, [350,-1], wxTE_READONLY);
+
+  $this->{each} = Wx::CheckBox->new($leftpane, -1, 'Save each channel as its own group');
+
   $this->columns($leftpane, $data);
   #$this->do_the_size_dance;
   $this->other_parameters($leftpane, $data);
@@ -64,7 +67,7 @@ sub new {
 
 
   my $buttons = Wx::BoxSizer->new( wxHORIZONTAL );
-  $this->{ok} = Wx::Button->new($leftpane, wxID_OK, "&Import", wxDefaultPosition, wxDefaultSize, 0, );
+  $this->{ok} = Wx::Button->new($leftpane, wxID_OK, "OK", wxDefaultPosition, wxDefaultSize, 0, );
   $buttons -> Add($this->{ok}, 1, wxGROW|wxALL, 5);
   $this->{cancel} = Wx::Button->new($leftpane, wxID_CANCEL, "Cancel", wxDefaultPosition, wxDefaultSize);
   $buttons -> Add($this->{cancel}, 1, wxGROW|wxALL, 5);
@@ -118,6 +121,7 @@ sub columns {
   my @denom;  $#denom  = $#cols+1;
 
   my $count = 1;
+  my $med = 0;
   my @args = (wxDefaultPosition, wxDefaultSize, wxRB_GROUP);
   foreach my $c (@cols) {
     my $i = $count;
@@ -138,6 +142,7 @@ sub columns {
     if ($data->numerator =~ m{(?<=\$)$count\b}) {
       $numer[$i] = 1;
       $ncheck->SetValue(1);
+      ++$med;
     };
 
     my $dcheck = Wx::CheckBox->new($columnbox, -1, q{});
@@ -151,6 +156,7 @@ sub columns {
     @args = ();
     ++$count;
   };
+  $this->{each}->Enable($med>1);
 
   $this->display_plot($data) if (($data->numerator ne '1') or ($data->denominator ne '1'));
   #$columnbox->SetVirtualSize([200,300]);
@@ -170,11 +176,9 @@ sub other_parameters {
   $others -> Add($this->{ln}, 0, wxGROW|wxALL, 5);
   EVT_CHECKBOX($parent, $this->{ln}, sub{OnLnClick(@_, $this, $data)});
   $others->Add(1,1,1);
-  $this->{each} = Wx::CheckBox->new($parent, -1, 'Save each channel as a group');
-  $others -> Add($this->{each}, 0, wxGROW|wxALL, 5);
+  $others -> Add($this->{each}, 0, wxGROW|wxALL, 5); # defined in new
   $this->{replot} = Wx::Button->new($parent, -1, 'Replot');
   $others -> Add($this->{replot}, 0, wxGROW|wxALL, 5);
-  $this->{each}->Enable(0);
   $this->{left}->Add($others, 0, wxGROW|wxALL, 0);
   EVT_BUTTON($this, $this->{replot}, sub{  $this->display_plot($data) });
 
@@ -248,9 +252,14 @@ sub OnNumerClick {
   my ($parent, $event, $this, $data, $i, $aref) = @_;
   $aref->[$i] = $event->IsChecked;
   my $string = q{};
+  my $n = 0;
   foreach my $count (1 .. $#$aref) {
-    $string .= '$'.$count.'+' if $aref->[$count];
+    if ($aref->[$count]) {
+      $string .= '$'.$count.'+';
+      ++$n;
+    };
   };
+  $this->{each}->Enable($n>1);
   chop $string;
   #print "numerator is ", $string, $/;
   $string = "1" if not $string;

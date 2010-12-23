@@ -184,15 +184,20 @@ sub _data {
 		   datatype    => $yaml->{datatype}||'xmu',
 		   bkg_nnorm   => $nnorm,
 		  );
+    } else {
+      $yaml->{each} = 0;
     };
   };
 
   ## -------- display column selection dialog
   my $repeated = 1;
   my $colsel;
+  my $med = 0;			# this will be true is each channel of MED data is to be its own group
   if ($first or ($data->columns ne $yaml->{columns})) {
     $colsel = Demeter::UI::Athena::ColumnSelection->new($app->{main}, $app, $data);
     $colsel->{ok}->SetFocus;
+
+    $colsel->{each}->SetValue($yaml->{each});
 
     ## set Reference controls from yaml
     if ($data->columns eq $yaml->{columns}) {
@@ -249,8 +254,86 @@ sub _data {
       $data->DEMOLISH;
       return 0;
     };
+    $med = 1 if ($colsel->{each}->IsEnabled and $colsel->{each}->GetValue);
+    $yaml->{each} = $colsel->{each}->GetValue;
     $repeated = 0;
   };
+
+  ## to write each MED channel to a group, loop over channels, calling
+  ## this.  Set all eshifts the same and don't redo alignment
+  my $message = q{};
+  if ($med) {
+    my $mc = Demeter::Data::MultiChannel->new(file=>$file, energy=>$data->energy);
+    my $align = $yaml->{preproc_align};
+    my @cols = (q{}, split(" ", $data->columns));
+    foreach my $ch (split(/\+/, $data->numerator)) {
+      (my $cc = $ch) =~ s{\$}{};
+      my $this = $mc->make_data(numerator   => $ch,
+				denominator => $data->denominator,
+				ln          => $data->ln,
+				name        => join(" - ", basename($file), $cols[$cc]),
+			       );
+      _group($app, $colsel, $this, $yaml, $orig, $repeated, $align);
+      $align = 0;
+    };
+    $mc->DEMOLISH;
+  } else {
+    $message = $data->name;
+    _group($app, $colsel, $data, $yaml, $orig, $repeated, 0);
+  };
+
+  $data->push_mru("xasdata", $orig);
+  $app->set_mru;
+
+  $app->{main}->status("Imported $message from $orig");
+
+  ## -------- save persistance file
+  my %persistence = (
+		     columns	 => $data->columns,
+		     energy	 => $data->energy,
+		     numerator	 => $data->numerator,
+		     denominator => $data->denominator,
+		     ln		 => $data->ln,
+		     each        => $yaml->{each},
+		     datatype    => $data->datatype,
+		     units       => $data->is_kev,);
+  ## reference
+  $persistence{do_ref}      = (defined($colsel)) ? $colsel->{Reference}->{do_ref}->GetValue : $yaml->{do_ref};
+  $persistence{ref_ln}      = (defined($colsel)) ? $colsel->{Reference}->{ln}->GetValue     : $yaml->{ref_ln};
+  $persistence{ref_same}    = (defined($colsel)) ? $colsel->{Reference}->{same}->GetValue   : $yaml->{ref_same};
+  $persistence{ref_numer}   = (defined($colsel)) ? $colsel->{Reference}->{numerator}        : $yaml->{ref_numer};
+  $persistence{ref_denom}   = (defined($colsel)) ? $colsel->{Reference}->{denominator}      : $yaml->{ref_denom};
+  ## rebin
+  $persistence{do_rebin}    = (defined($colsel)) ? $colsel->{Rebin}->{do_rebin}->GetValue   : $yaml->{do_rebin};
+  #$persistence{rebin_abs}   = (defined($colsel)) ? $colsel->{Rebin}->{abs}->GetValue        : $yaml->{rebin_abs};
+  $persistence{rebin_emin}  = (defined($colsel)) ? $colsel->{Rebin}->{emin}->GetValue       : $yaml->{rebin_emin};
+  $persistence{rebin_emax}  = (defined($colsel)) ? $colsel->{Rebin}->{emax}->GetValue       : $yaml->{rebin_emax};
+  $persistence{rebin_pre}   = (defined($colsel)) ? $colsel->{Rebin}->{pre}->GetValue        : $yaml->{rebin_pre};
+  $persistence{rebin_xanes} = (defined($colsel)) ? $colsel->{Rebin}->{xanes}->GetValue      : $yaml->{rebin_xanes};
+  $persistence{rebin_exafs} = (defined($colsel)) ? $colsel->{Rebin}->{exafs}->GetValue      : $yaml->{rebin_exafs};
+  ## preprocess
+  $persistence{preproc_standard} = (defined($colsel)) ? $colsel->{Preprocess}->{standard}->GetStringSelection : $yaml->{preproc_standard};
+  $persistence{preproc_mark}     = (defined($colsel)) ? $colsel->{Preprocess}->{mark} ->GetValue : $yaml->{preproc_mark};
+  $persistence{preproc_align}    = (defined($colsel)) ? $colsel->{Preprocess}->{align}->GetValue : $yaml->{preproc_align};
+  $persistence{preproc_set}      = (defined($colsel)) ? $colsel->{Preprocess}->{set}  ->GetValue : $yaml->{preproc_set};
+
+  my $string .= YAML::Tiny::Dump(\%persistence);
+  open(my $ORDER, '>'.$persist);
+  print $ORDER $string;
+  close $ORDER;
+
+  ## -------- last chores before finishing
+  $data->DEMOLISH if $med;
+  chdir dirname($orig);
+  $app->modified(1);
+  undef $busy;
+  undef $colsel;
+  undef $yaml;
+  return 1;
+};
+
+sub _group {
+  my ($app, $colsel, $data, $yaml, $orig, $repeated, $noalign) = @_;
 
   ## -------- import data group
   $app->{main}->status("Importing ". $data->name . " from $orig");
@@ -295,9 +378,6 @@ sub _data {
     $app->OnGroupSelect(0,0);
   };
 
-  $data->push_mru("xasdata", $orig);
-  $app->set_mru;
-
   ## -------- import reference if reference channel is set
   my $do_ref = (defined $colsel) ? ($colsel->{Reference}->{do_ref}->GetValue) : $yaml->{do_ref};
   if ($do_ref) {
@@ -338,50 +418,6 @@ sub _data {
     $app->OnGroupSelect(0,0);
   };
 
-  $app->{main}->status("Imported ". $data->name . " from $orig");
-
-  ## -------- save persistance file
-  my %persistence = (
-		     columns	 => $data->columns,
-		     energy	 => $data->energy,
-		     numerator	 => $data->numerator,
-		     denominator => $data->denominator,
-		     ln		 => $data->ln,
-		     each        => 0,
-		     datatype    => $data->datatype,
-		     units       => $data->is_kev,);
-  ## reference
-  $persistence{do_ref}      = (defined($colsel)) ? $colsel->{Reference}->{do_ref}->GetValue : $yaml->{do_ref};
-  $persistence{ref_ln}      = (defined($colsel)) ? $colsel->{Reference}->{ln}->GetValue     : $yaml->{ref_ln};
-  $persistence{ref_same}    = (defined($colsel)) ? $colsel->{Reference}->{same}->GetValue   : $yaml->{ref_same};
-  $persistence{ref_numer}   = (defined($colsel)) ? $colsel->{Reference}->{numerator}        : $yaml->{ref_numer};
-  $persistence{ref_denom}   = (defined($colsel)) ? $colsel->{Reference}->{denominator}      : $yaml->{ref_denom};
-  ## rebin
-  $persistence{do_rebin}    = (defined($colsel)) ? $colsel->{Rebin}->{do_rebin}->GetValue   : $yaml->{do_rebin};
-  #$persistence{rebin_abs}   = (defined($colsel)) ? $colsel->{Rebin}->{abs}->GetValue        : $yaml->{rebin_abs};
-  $persistence{rebin_emin}  = (defined($colsel)) ? $colsel->{Rebin}->{emin}->GetValue       : $yaml->{rebin_emin};
-  $persistence{rebin_emax}  = (defined($colsel)) ? $colsel->{Rebin}->{emax}->GetValue       : $yaml->{rebin_emax};
-  $persistence{rebin_pre}   = (defined($colsel)) ? $colsel->{Rebin}->{pre}->GetValue        : $yaml->{rebin_pre};
-  $persistence{rebin_xanes} = (defined($colsel)) ? $colsel->{Rebin}->{xanes}->GetValue      : $yaml->{rebin_xanes};
-  $persistence{rebin_exafs} = (defined($colsel)) ? $colsel->{Rebin}->{exafs}->GetValue      : $yaml->{rebin_exafs};
-  ## preprocess
-  $persistence{preproc_standard} = (defined($colsel)) ? $colsel->{Preprocess}->{standard}->GetStringSelection : $yaml->{preproc_standard};
-  $persistence{preproc_mark}     = (defined($colsel)) ? $colsel->{Preprocess}->{mark} ->GetValue : $yaml->{preproc_mark};
-  $persistence{preproc_align}    = (defined($colsel)) ? $colsel->{Preprocess}->{align}->GetValue : $yaml->{preproc_align};
-  $persistence{preproc_set}      = (defined($colsel)) ? $colsel->{Preprocess}->{set}  ->GetValue : $yaml->{preproc_set};
-
-  my $string .= YAML::Tiny::Dump(\%persistence);
-  open(my $ORDER, '>'.$persist);
-  print $ORDER $string;
-  close $ORDER;
-
-  ## -------- last chores before finishing
-  chdir dirname($orig);
-  $app->modified(1);
-  undef $busy;
-  undef $colsel;
-  undef $yaml;
-  return 1;
 };
 
 Readonly my @all_group  => (qw(bkg_z fft_edge bkg_eshift importance));

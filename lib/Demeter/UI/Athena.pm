@@ -316,10 +316,13 @@ Readonly my $PLOT_VARIENCE     => Wx::NewId();
 Readonly my $SHOW_BUFFER       => Wx::NewId();
 Readonly my $PLOT_YAML	       => Wx::NewId();
 Readonly my $LCF_YAML	       => Wx::NewId();
+Readonly my $STYLE_YAML	       => Wx::NewId();
+Readonly my $INDIC_YAML	       => Wx::NewId();
 Readonly my $MODE_STATUS       => Wx::NewId();
 Readonly my $PERL_MODULES      => Wx::NewId();
 Readonly my $STATUS	       => Wx::NewId();
 Readonly my $IFEFFIT_STRINGS   => Wx::NewId();
+Readonly my $IFEFFIT_SCALARS   => Wx::NewId();
 Readonly my $IFEFFIT_GROUPS    => Wx::NewId();
 Readonly my $IFEFFIT_ARRAYS    => Wx::NewId();
 Readonly my $IFEFFIT_MEMORY    => Wx::NewId();
@@ -409,21 +412,29 @@ sub menubar {
   $filemenu->Append(wxID_EXIT,  "E&xit" );
 
   my $monitormenu = Wx::Menu->new;
-  my $debugmenu = Wx::Menu->new;
-  $debugmenu->Append($PLOT_YAML,     "Show YAML for Plot object",  "Show YAML for Plot object" );
-  $debugmenu->Append($LCF_YAML,      "Show YAML for LCF object",   "Show YAML for LCF object" );
-  $debugmenu->Append($MODE_STATUS,   "Mode status",                "Mode status" );
-  $debugmenu->Append($PERL_MODULES,  "Perl modules",               "Show perl module versions" );
-  $monitormenu->Append($SHOW_BUFFER, "Show command buffer",        'Show the Ifeffit and plotting commands buffer' );
-  $monitormenu->Append($STATUS,      "Show status bar buffer",     'Show the buffer containing messages written to the status bars');
+  my $ifeffitmenu = Wx::Menu->new;
+  my $yamlmenu    = Wx::Menu->new;
+  my $debugmenu   = Wx::Menu->new;
+  $yamlmenu->Append($PLOT_YAML,      "Plot object",            "Show YAML for Plot object" );
+  $yamlmenu->Append($STYLE_YAML,     "plot style objects",     "Show YAML for plot style objects" );
+  $yamlmenu->Append($INDIC_YAML,     "Indicator objects",      "Show YAML for Indicator objects" );
+  $yamlmenu->Append($LCF_YAML,       "LCF object",             "Show YAML for LCF object" );
+  $debugmenu->Append($MODE_STATUS,   "Mode status",            "Mode status" );
+  $debugmenu->Append($PERL_MODULES,  "Perl modules",           "Show perl module versions" );
+  $monitormenu->Append($SHOW_BUFFER, "Show command buffer",    'Show the Ifeffit and plotting commands buffer' );
+  $monitormenu->Append($STATUS,      "Show status bar buffer", 'Show the buffer containing messages written to the status bars');
   $monitormenu->AppendSeparator;
-  $monitormenu->Append($IFEFFIT_STRINGS, "Show Ifeffit strings", "Examine all the strings currently defined in Ifeffit");
-  $monitormenu->Append($IFEFFIT_GROUPS,  "Show Ifeffit groups",  "Examine all the data groups currently defined in Ifeffit");
-  $monitormenu->Append($IFEFFIT_ARRAYS,  "Show Ifeffit arrays",  "Examine all the arrays currently defined in Ifeffit");
-  $monitormenu->Append($IFEFFIT_MEMORY,  "Show Ifeffit's memory use",  "Show Ifeffit's memory use and remaining capacity");
-  $monitormenu->AppendSeparator;
-  $monitormenu->AppendSubMenu($debugmenu, 'Debug options',     'Display debugging tools')
-    if ($demeter->co->default("athena", "debug_menus"));
+  $ifeffitmenu->Append($IFEFFIT_STRINGS, "strings",      "Examine all the strings currently defined in Ifeffit");
+  $ifeffitmenu->Append($IFEFFIT_SCALARS, "scalars",      "Examine all the scalars currently defined in Ifeffit");
+  $ifeffitmenu->Append($IFEFFIT_GROUPS,  "groups",       "Examine all the data groups currently defined in Ifeffit");
+  $ifeffitmenu->Append($IFEFFIT_ARRAYS,  "arrays",       "Examine all the arrays currently defined in Ifeffit");
+  $monitormenu->AppendSubMenu($ifeffitmenu,  'Query Ifeffit for ...',    'Obtain information from Ifeffit about variables and arrays');
+  $monitormenu->Append($IFEFFIT_MEMORY,  "Show Ifeffit's memory use", "Show Ifeffit's memory use and remaining capacity");
+  if ($demeter->co->default("athena", "debug_menus")) {
+    $monitormenu->AppendSeparator;
+    $monitormenu->AppendSubMenu($yamlmenu,  'Show YAML for ...',    'Display YAMLs of Demeter objects');
+    $monitormenu->AppendSubMenu($debugmenu, 'Debug options', 'Display debugging tools');
+  };
 
 
   my $groupmenu   = Wx::Menu->new;
@@ -741,21 +752,19 @@ sub OnMenuClick {
       last SWITCH;
     };
     ($id == $IFEFFIT_STRINGS) and do {
-      $demeter->dispose('show @strings');
-      $app->{Buffer}->{iffcommands}->ShowPosition($app->{Buffer}->{iffcommands}->GetLastPosition);
-      $app->{Buffer}->Show(1);
+      $app->show_ifeffit('strings');
+      last SWITCH;
+    };
+    ($id == $IFEFFIT_SCALARS) and do {
+      $app->show_ifeffit('scalars');
       last SWITCH;
     };
     ($id == $IFEFFIT_GROUPS) and do {
-      $demeter->dispose('show @groups');
-      $app->{Buffer}->{iffcommands}->ShowPosition($app->{Buffer}->{iffcommands}->GetLastPosition);
-      $app->{Buffer}->Show(1);
+      $app->show_ifeffit('groups');
       last SWITCH;
     };
     ($id == $IFEFFIT_ARRAYS) and do {
-      $demeter->dispose('show @arrays');
-      $app->{Buffer}->{iffcommands}->ShowPosition($app->{Buffer}->{iffcommands}->GetLastPosition);
-      $app->{Buffer}->Show(1);
+      $app->show_ifeffit('arrays');
       last SWITCH;
     };
     ## -------- debug submenu
@@ -769,12 +778,34 @@ sub OnMenuClick {
 	  -> Show;
       last SWITCH;
     };
+
     ($id == $LCF_YAML) and do {
       my $dialog = Demeter::UI::Artemis::ShowText
 	-> new($app->{main}, $app->{main}->{LCF}->{LCF}->serialization, 'YAML of Plot object')
 	  -> Show;
       last SWITCH;
     };
+    ($id == $STYLE_YAML) and do {
+      my $text = q{};
+      foreach my $i (0 .. $app->{main}->{Style}->{list}->GetCount-1) {
+	$text .= $app->{main}->{Style}->{list}->GetClientData($i)->serialization;
+      };
+      my $dialog = Demeter::UI::Artemis::ShowText
+	-> new($app->{main}, $text, 'YAML of Style objects')
+	  -> Show;
+      last SWITCH;
+    };
+    ($id == $INDIC_YAML) and do {
+      my $text = q{};
+      foreach my $i (1 .. $Demeter::UI::Athena::Plot::Indicators::nind) {
+	$text .= $app->{main}->{Indicators}->{'group'.$i}->serialization if (ref($app->{main}->{Indicators}->{'group'.$i}) =~ m{Indicator});
+      };
+      my $dialog = Demeter::UI::Artemis::ShowText
+	-> new($app->{main}, $text, 'YAML of Indicator objects')
+	  -> Show;
+      last SWITCH;
+    };
+
     ($id == $PERL_MODULES) and do {
       my $text   = $demeter->module_environment . $demeter -> wx_environment;
       my $dialog = Demeter::UI::Artemis::ShowText->new($app->{main}, $text, 'Perl module versions') -> Show;
@@ -901,6 +932,13 @@ sub OnMenuClick {
   };
 };
 
+
+sub show_ifeffit {
+  my ($app, $which) = @_;
+  $demeter->dispose('show @'.$which);
+  $app->{Buffer}->{iffcommands}->ShowPosition($app->{Buffer}->{iffcommands}->GetLastPosition);
+  $app->{Buffer}->Show(1);
+};
 
 sub main_window {
   my ($app, $hbox) = @_;
