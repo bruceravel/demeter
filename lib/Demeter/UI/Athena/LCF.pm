@@ -272,7 +272,7 @@ sub push_values {
     $this->{'standard'.$i}->fill($::app, 0, 0);
     $this->{'standard'.$i}->SetStringSelection($str);
     $this->{'standard'.$i}->SetSelection(0)
-      if not defined($this->{'standard'.$i}->GetClientData($this->{standard}->GetSelection));
+      if not defined($this->{'standard'.$i}->GetClientData($this->{'standard'.$i}->GetSelection));
   };
   $this->{result}->Clear;
   $this->{$_} -> Enable(0) foreach (qw(make report fitmarked markedreport resultplot resultreport));

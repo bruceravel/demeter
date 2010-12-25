@@ -469,6 +469,11 @@ sub open_file {
   my $is_cif = 0;
   $is_cif = 1 if ($file =~ m{\.cif\z});
   if ($is_cif) {
+    if (not $Demeter::STAR_Parser_exists) {
+      warn "STAR::Parser is not available, so CIF files cannot be imported";
+      return;
+    };
+
     $atoms->cif($file);
     my @records = $atoms->open_cif;
     if ($#records) {  ## post a selection dialog for a cif file with more than one record

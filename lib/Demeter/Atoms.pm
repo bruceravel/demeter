@@ -21,7 +21,7 @@ use Moose;
 extends 'Demeter';
 with 'Demeter::Tools';
 with 'Demeter::Atoms::Absorption';
-with 'Demeter::Atoms::Cif';
+with 'Demeter::Atoms::Cif' if $Demeter::STAR_Parser_exists;
 use MooseX::AttributeHelpers;
 use Demeter::StrTypes qw( Element
 			  Edge
@@ -174,12 +174,20 @@ has 'file'   => (is => 'rw', isa =>'Str', default=> q{},
 has 'cif'    => (is => 'rw', isa =>'Str', default=> q{},
 		 trigger => sub{ my ($self, $new) = @_;
 				 if ($new) {
+				   if (not $Demeter::STAR_Parser_exists) {
+				     warn "STAR::Parser is not available, so CIF files cannot be imported";
+				     return;
+				   };
 				   $self->read_cif;
 				   #$self->update_edge;
 				 };
 			       });
 has 'record' => (is => 'rw', isa => NonNeg,    default=> 0,
 		 trigger => sub{ my ($self, $new) = @_;
+				 if (not $Demeter::STAR_Parser_exists) {
+				   warn "STAR::Parser is not available, so CIF files cannot be imported";
+				   return;
+				 };
 				 $self->read_cif if ($new and $self->cif);
 			       });
 has 'titles' => (
