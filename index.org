@@ -2,7 +2,7 @@
 
 * things that need doing
 
-** Demeter bugs and shortcomings  [0/5]
+** Demeter bugs and shortcomings  [0/6]
   - [ ] in D::Data::IO::save_many, why doesn't updating in n specifying
        	"background" not work to bring data up to date?  (fft, i.e. doing
        	autobk, does work)
@@ -10,90 +10,92 @@
   - [ ] tie multiple groups together
   - [ ] add a record to an existing Athena project file
   - [ ] set E0 to peak of white line
-
-** Athena, needs testing [0/2]
-  - [ ] reference of another edge
-  - [ ] keV data
-
-** Athena bugs [4/11]
-  - [ ] deglitching crashes with gnuplot							:HUH:
-  - [X] importing stddev array from an Athena project file, then making a merge plot works oddly
-  - [X] renaming a group unchecks it
-  - [ ] add noise to chi data
-  - [X] persistance for plotting styles
-  - [X] show yaml for style and indicator objects in monitor menu
-  - [ ] in align tool (and others?) verify that standard selection still exists in the project
-  - [ ] cannot specify title for stddev and variance plots
   - [ ] clnorm
-  - [ ] implement frozen groups
-  - [ ] handle preproc alignment correctly when MED data is made into separate groups
 
-** Artemis bugs and missing features [0/2]
-  - [ ] use text buffers as in Athena for TextEntryDialogs
-  - [ ] import an FPath from a yaml or from a project file, pathlist start page link for doing so
+** Athena
 
-** Histograms [2/5]
-  - [X] sum histogram bins into a single chi(k) file
-  - [X] convert chi(k) data to a mock feffNNNN.dat file
-  - [ ] Triangle object
-    - yields a DS path and a TS path
-    - by R and theta
-    - by a trio of Cartesian coordinates
-  - [ ] bin triangle configurations by R and theta and sum into a single chi(k)
-  - [ ] bin nealy colinear configurations by R and theta and sum into a single chi(k)
+*** Athena, needs testing [0/2]
+   - [ ] reference of another edge
+   - [ ] keV data
 
-** Help [1/4]
-  - [X]  about
-  - [ ]  demos
-  - [ ]  document
-  - [ ]  memory usage
+*** Athena bugs [6/10]
+   - [X] importing stddev array from an Athena project file, then making a merge plot works oddly
+   - [X] renaming a group unchecks it
+   - [X] persistance for plotting styles
+   - [X] show yaml for style and indicator objects in monitor menu
+   - [X] handle preproc alignment correctly when MED data is made into separate groups
+   - [X] in align tool (and others?) verify that standard selection still exists in the project
+   - [ ] add noise to chi data
+   - [ ] cannot specify title for stddev and variance plots
+   - [ ] implement frozen groups
+   - [ ] deglitching crashes with gnuplot						:HUH:
 
-** LCF needs doing [8/10]
-  - [X] share e0
-  - [X] test floating e0  
-  - [X] implement combi
-  - [ ] implement marked groups fit
-  - [X] test deriv fit
-  - [X] test in k
-  - [ ] implement plotting in R for a fit in k
-  - [X] enable main page buttons correctly after combi fit
-  - [X] enable result page buttons correctly after fit or combi fit
-  - [X] flags for required and fit_e0 don't get restored correctly when using combi page
+*** Help [1/4]
+   - [X]  about
+   - [ ]  demos
+   - [ ]  document
+   - [ ]  memory usage
 
-** old Athena's edit menu [3/5]
-  - [ ] titles
-  - [ ] data as text
-  - [X] Ifeffit show (strings, groups, arrays)
-  - [X] journal
-  - [X] excel report
+*** LCF needs doing [8/10]
+   - [X] share e0
+   - [X] test floating e0  
+   - [X] implement combi
+   - [ ] implement marked groups fit
+   - [X] test deriv fit
+   - [X] test in k
+   - [ ] implement plotting in R for a fit in k
+   - [X] enable main page buttons correctly after combi fit
+   - [X] enable result page buttons correctly after fit or combi fit
+   - [X] flags for required and fit_e0 don't get restored correctly when using combi page
 
-** Group menu [8/11]
-  - [X] copy group
-  - [X] about group
-  - [ ] about marked
-  - [X] rename
-  - [ ] tie reference channel by hand
-  - [X] propagate rename through reference
-  - [X] untie reference when discarding a tied group
-  - [ ] move up and down
-  - [X] remove group, removed marked
-  - [X] close project
-  - [X] change datatype
+*** old Athena's edit menu [3/5]
+   - [ ] titles
+   - [ ] data as text
+   - [X] Ifeffit show (strings, groups, arrays)
+   - [X] journal
+   - [X] excel report
 
-** Plot [5/6]
-  - [ ] zoom, unzoom, cursor, but only for pgplot
-  - [X] plot I0 marked
-  - [X] E0 at E=0 for marked
-  - [X] stddev and varience plots
-  - [X] project name as title in a marked plot
-  - [X] next plot to a file
+*** Group menu [9/10]
+   - [X] copy group
+   - [X] about group
+   - [X] rename
+   - [X] tie reference channel by hand
+   - [X] propagate rename through reference
+   - [X] untie reference when discarding a tied group
+   - [X] remove group, removed marked
+   - [X] close project
+   - [X] change datatype
+   - [ ] move up and down
 
-** Merge [4/5]
-  - [X] mue
-  - [X] norm
-  - [X] chi
-  - [X] weight by importance/noise/step
-  - [ ] datatype of merged group (xanes merge should be a xanes and so on) (this appears to be so, see [[file:lib/Demeter/Data/Process.pm][Demeter::Data::Process]]
+*** Plot [5/6]
+   - [ ] zoom, unzoom, cursor, but only for pgplot
+   - [X] plot I0 marked
+   - [X] E0 at E=0 for marked
+   - [X] stddev and varience plots
+   - [X] project name as title in a marked plot
+   - [X] next plot to a file
+
+*** Merge [4/5]
+   - [X] mue
+   - [X] norm
+   - [X] chi
+   - [X] weight by importance/noise/step
+   - [ ] datatype of merged group (xanes merge should be a xanes and so on) (this appears to be so, see [[file:lib/Demeter/Data/Process.pm][Demeter::Data::Process]]
+
+** Artemis
+*** Artemis bugs and missing features [0/2]
+   - [ ] use text buffers as in Athena for TextEntryDialogs
+   - [ ] import an FPath from a yaml or from a project file, pathlist start page link for doing so
+
+*** Histograms [2/5]
+   - [X] sum histogram bins into a single chi(k) file
+   - [X] convert chi(k) data to a mock feffNNNN.dat file
+   - [ ] Triangle object
+     - yields a DS path and a TS path
+     - by R and theta
+     - by a trio of Cartesian coordinates
+   - [ ] bin triangle configurations by R and theta and sum into a single chi(k)
+   - [ ] bin nealy colinear configurations by R and theta and sum into a single chi(k)
 
 
 

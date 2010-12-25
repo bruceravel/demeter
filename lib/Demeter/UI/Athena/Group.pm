@@ -1,5 +1,8 @@
 package Demeter::UI::Athena::Group;
 
+use strict;
+use warnings;
+
 #use Demeter;
 use Demeter::UI::Wx::SpecialCharacters qw(:all);
 use Demeter::UI::Athena::ChangeDatatype;
@@ -12,7 +15,7 @@ use Spreadsheet::WriteExcel;
 use Wx qw(:everything);
 use Wx::Event qw(EVT_CHAR);
 use base qw( Exporter );
-our @EXPORT = qw(Rename Copy Remove change_datatype Report set_text_buffer OnChar);
+our @EXPORT = qw(Rename Copy Remove change_datatype tie_reference Report set_text_buffer OnChar);
 
 sub Rename {
   my ($app, $newname) = @_;
@@ -176,6 +179,31 @@ sub change_datatype {
   };
   $app->modified(1);
   $app->{main}->{Main}->mode($app->current_data, 1, 0);
+};
+
+sub tie_reference {
+  my ($app) = @_;
+  my @marked = ();
+  foreach my $j (0 .. $app->{main}->{list}->GetCount-1) {
+    push(@marked, $app->{main}->{list}->GetClientData($j))
+      if $app->{main}->{list}->IsChecked($j);
+  };
+  if ($#marked != 1) {
+    $app->{main}->status("You must mark two and only two datagroups to tie as data and reference.");
+    return;
+  };
+  if ($marked[0]->datatype !~ m{xanes|xmu}) {
+    $app->{main}->status($marked[0]->name . " is not a $MU(E) datagroup");
+    return;
+  };
+  if ($marked[1]->datatype !~ m{xanes|xmu}) {
+    $app->{main}->status($marked[1]->name . " is not a $MU(E) datagroup");
+    return;
+  };
+  $_->untie_reference foreach @marked;
+  $marked[0]->reference($marked[1]);
+  $app->OnGroupSelect(0,0);
+  $app->{main}->status(sprintf("Tied %s and %s as data and reference", $marked[0]->name, $marked[1]->name));
 };
 
 sub Report {

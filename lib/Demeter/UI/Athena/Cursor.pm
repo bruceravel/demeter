@@ -30,6 +30,7 @@ sub cursor {
   my ($app) = @_;
   my ($ok, $x, $y) = (1, -100000, -100000);
 
+  my $busy;
   if ($app->current_data->mo->template_plot eq 'pgplot') {
     $app->{main}->status("Click on a point to pluck its value...", "wait");
     $app->current_data->dispose("cursor(crosshair=true)");
@@ -37,7 +38,7 @@ sub cursor {
 
   } elsif ($app->current_data->mo->template_plot eq 'gnuplot') {
     $app->{main}->status("Double click on a point to pluck its value...", "wait");
-    my $busy = Wx::BusyCursor->new();
+    $busy = Wx::BusyCursor->new();
     my $tdo = Wx::TextDataObject->new;
     wxTheClipboard->Open;
     wxTheClipboard->GetData( $tdo );
@@ -59,6 +60,7 @@ sub cursor {
 
   };
 
+  undef $busy;
   return ($ok, $x, $y);
 };
 

@@ -1,5 +1,8 @@
 package Demeter::UI::Athena::GroupList;
 
+use strict;
+use warnings;
+
 use Wx qw(:everything);
 use base 'Wx::ComboBox';
 

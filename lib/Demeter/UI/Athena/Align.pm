@@ -146,6 +146,8 @@ sub push_values {
   my $was = $this->{standard}->GetStringSelection;
   $this->{standard}->fill($::app, 1, 1);
   ((not $was) or ($was eq 'None')) ? $this->{standard}->SetSelection(0) : $this->{standard}->SetStringSelection($was);
+  $this->{standard}->SetSelection(0) if not defined($this->{standard}->GetClientData($this->{standard}->GetSelection));
+  return if ($this->{standard}->GetStringSelection eq 'None');
   my $stan = $this->{standard}->GetClientData($this->{standard}->GetSelection);
   if (not defined($stan) or ($stan->group eq $data->group)) {
     $::app->{main}->status("Not plotting -- the data and standard are the same!", 'error|nobuffer');

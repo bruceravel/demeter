@@ -1,5 +1,8 @@
 package Demeter::UI::Athena::Plot::PlotQ;
 
+use strict;
+use warnings;
+
 use Wx qw( :everything );
 use base 'Wx::Panel';
 use Wx::Event qw(EVT_LIST_ITEM_ACTIVATED EVT_LIST_ITEM_SELECTED EVT_BUTTON  EVT_KEY_DOWN
@@ -7,6 +10,7 @@ use Wx::Event qw(EVT_LIST_ITEM_ACTIVATED EVT_LIST_ITEM_SELECTED EVT_BUTTON  EVT_
 use Wx::Perl::TextValidator;
 
 use Demeter::UI::Athena::Replot;
+use Demeter::UI::Wx::SpecialCharacters qw(:all);
 
 use Scalar::Util qw(looks_like_number);
 

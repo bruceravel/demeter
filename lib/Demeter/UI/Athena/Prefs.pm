@@ -1,5 +1,8 @@
 package Demeter::UI::Athena::Prefs;
 
+use strict;
+use warnings;
+
 use Demeter::UI::Wx::Config;
 
 use Wx qw( :everything );

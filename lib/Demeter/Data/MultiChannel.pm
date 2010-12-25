@@ -88,7 +88,7 @@ sub make_data {
 };
 
 
-sub discard {
+override 'discard' => sub {
   my ($self) = @_;
   $self->dispose("erase \@group " . $self->group);
   $self->alldone;

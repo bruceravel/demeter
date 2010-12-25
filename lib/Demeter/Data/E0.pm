@@ -216,6 +216,15 @@ sub shift_reference {		# extend to more than two...?
   $self->reference->bkg_eshift($this);
   return $self;
 };
+sub untie_reference {
+  my ($self) = @_;
+  if ($self->reference) {
+    my $ref = $self->reference;
+    $ref->reference(q{});
+    $self->reference(q{});
+  };
+  return $self;
+};
 
 sub _e0_marker_command {
   my ($self, $requested) = @_;

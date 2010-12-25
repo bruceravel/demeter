@@ -15,6 +15,9 @@ package Demeter::UI::Wx::AutoSave;
 
 =cut
 
+use strict;
+use warnings;
+
 use Wx qw( :everything );
 use base qw(Wx::SingleChoiceDialog);
 

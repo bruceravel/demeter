@@ -1,5 +1,8 @@
 package Demeter::UI::Athena::PluginRegistry;
 
+use strict;
+use warnings;
+
 use Wx qw( :everything );
 use base 'Wx::Panel';
 use Wx::Event qw(EVT_CHECKBOX EVT_BUTTON);
@@ -31,7 +34,7 @@ sub new {
     my $obj = $pl->new;
     my $label = sprintf("%s :  %s", (split(/::/, $pl))[2], $obj->description);
     $this->{$pl} = Wx::CheckBox->new($this->{window}, -1, $label);
-    $winbox->Add($this->{$pl}, 0, wxALL|wxGrow, 3);
+    $winbox->Add($this->{$pl}, 0, wxALL|wxGROW, 3);
     undef $obj;
     $this->{$pl}->SetValue($state->{$pl});
     EVT_CHECKBOX($this, $this->{$pl}, sub{OnCheck(@_, $app)});

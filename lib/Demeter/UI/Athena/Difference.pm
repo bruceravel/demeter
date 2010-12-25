@@ -115,6 +115,7 @@ sub push_values {
   my $was = $this->{standard}->GetStringSelection;
   $this->{standard}->fill($::app, 1, 1);
   ($was eq 'None') ? $this->{standard}->SetSelection(0) : $this->{standard}->SetStringSelection($was);
+  $this->{standard}->SetSelection(0) if not defined($this->{standard}->GetClientData($this->{standard}->GetSelection));
   $data->po->start_plot;
   $data->po->set(emin=>$this->{Diff}->xmin-10, emax=>$this->{Diff}->xmax+20);
   $data->po->set(e_mu=>1, e_markers=>0, e_bkg=>0, e_pre=>0, e_post=>0, e_norm=>1, e_der=>0, e_sec=>0, e_i0=>0, e_signal=>0, e_smooth=>0);

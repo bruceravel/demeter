@@ -1,5 +1,8 @@
 package Demeter::UI::Athena::Null;
 
+use strict;
+use warnings;
+
 use Wx qw( :everything );
 use base 'Wx::Panel';
 

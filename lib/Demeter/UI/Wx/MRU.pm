@@ -15,6 +15,9 @@ package  Demeter::UI::Wx::MRU;
 
 =cut
 
+use strict;
+use warnings;
+
 use Wx qw( :everything );
 use base qw(Wx::SingleChoiceDialog);
 use Wx::Event qw(EVT_CLOSE EVT_LISTBOX EVT_BUTTON EVT_RADIOBOX);

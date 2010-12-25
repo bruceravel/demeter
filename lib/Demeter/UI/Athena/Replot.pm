@@ -1,6 +1,7 @@
 package Demeter::UI::Athena::Replot;
 
 use strict;
+use warnings;
 use base qw( Exporter );
 our @EXPORT = qw(replot $APP);
 

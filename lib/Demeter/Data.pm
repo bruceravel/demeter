@@ -377,6 +377,13 @@ sub DEMOLISH {
   $self->alldone;
 };
 
+sub discard {
+  my ($self) = @_;
+  $self->dispose("erase \@group " . $self->group);
+  $self->DEMOLISH;
+};
+
+
 override alldone => sub {
   my ($self) = @_;
   if ($self->reference) {

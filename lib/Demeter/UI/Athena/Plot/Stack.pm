@@ -1,5 +1,8 @@
 package Demeter::UI::Athena::Plot::Stack;
 
+use strict;
+use warnings;
+
 use Wx qw( :everything );
 use base 'Wx::Panel';
 use Wx::Event qw(EVT_BUTTON);

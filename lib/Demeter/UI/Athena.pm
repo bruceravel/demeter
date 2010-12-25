@@ -535,7 +535,6 @@ sub menubar {
 					   $FREEZE_MARKED, $UNFREEZE_MARKED,
 					   $FREEZE_REGEX, $UNFREEZE_REGEX,
 					   $FREEZE_TOGGLE_ALL);
-  $groupmenu      -> Enable($_,0) foreach ($TIE_REFERENCE);
   $monitormenu    -> Enable($_,0) foreach ($IFEFFIT_MEMORY);
   $helpmenu       -> Enable($_,0) foreach ($DOCUMENT, $DEMO);
 
@@ -685,6 +684,10 @@ sub OnMenuClick {
     };
     ($id == $CHANGE_DATATYPE) and do {
       $app->change_datatype;
+      last SWITCH;
+    };
+    ($id == $TIE_REFERENCE) and do {
+      $app->tie_reference;
       last SWITCH;
     };
     ($id == $REMOVE) and do {

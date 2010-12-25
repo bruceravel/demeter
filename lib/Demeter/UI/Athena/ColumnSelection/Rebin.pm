@@ -1,5 +1,8 @@
 package Demeter::UI::Athena::ColumnSelection::Rebin;
 
+use strict;
+use warnings;
+
 use Wx qw( :everything );
 use base 'Wx::Panel';
 use Wx::Event qw(EVT_CHECKBOX EVT_RADIOBUTTON);

@@ -1,5 +1,8 @@
 package Demeter::UI::Athena::Main;
 
+use strict;
+use warnings;
+
 use Wx qw( :everything );
 use base 'Wx::Panel';
 use Wx::Event qw(EVT_LIST_ITEM_ACTIVATED EVT_LIST_ITEM_SELECTED EVT_BUTTON EVT_KEY_DOWN
@@ -122,13 +125,13 @@ sub bkg {
   my $backgroundbox       = Wx::StaticBox->new($this, -1, 'Background removal parameters', wxDefaultPosition, wxDefaultSize);
   my $backgroundboxsizer  = Wx::StaticBoxSizer->new( $backgroundbox, wxVERTICAL );
   $backgroundbox         -> SetFont( Wx::Font->new( $box_font_size, wxDEFAULT, wxNORMAL, wxBOLD, 0, "" ) );
-  $this->{sizer}         -> Add($backgroundboxsizer, 0, wxBOTOM|wxGROW, 5);
+  $this->{sizer}         -> Add($backgroundboxsizer, 0, wxBOTTOM|wxGROW, 5);
   $this->{backgroundbox}  = $backgroundbox;
 
   EVT_RIGHT_DOWN($backgroundbox, sub{ContextMenu(@_, $app, 'bkg')});
   EVT_MENU($backgroundbox, -1, sub{ $this->DoContextMenu(@_, $app, 'bkg') });
 
-  $gbs = Wx::GridBagSizer->new( 5, 5 );
+  my $gbs = Wx::GridBagSizer->new( 5, 5 );
 
   ## E0, Rbkg, flatten
   $this->{bkg_e0_label}   = Wx::StaticText   -> new($this, -1, "E0");
@@ -214,19 +217,27 @@ sub bkg {
   $gbs -> Add($this->{bkg_step},       Wx::GBPosition->new(0,8));
   $gbs -> Add($this->{bkg_fixstep},    Wx::GBPosition->new(0,9));
 
+  my $clampbox       = Wx::StaticBox->new($this, -1, 'Spline clamps', wxDefaultPosition, wxDefaultSize);
+  my $clampboxsizer  = Wx::StaticBoxSizer->new( $clampbox, wxVERTICAL );
+  $clampbox         -> SetFont( Wx::Font->new( Wx::SystemSettings::GetFont(wxSYS_DEFAULT_GUI_FONT)->GetPointSize, wxDEFAULT, wxNORMAL, wxNORMAL, 0, "" ) );
+  $gbs -> Add($clampboxsizer, Wx::GBPosition->new(1,7), Wx::GBSpan->new(3,3));
+  my $cgbs = Wx::GridBagSizer->new( 5, 5 );
+  $clampboxsizer -> Add($cgbs, 0, wxALL, 5);
+  $this->{clampbox}  = $clampbox;
+
   my $clamps = [qw(None Slight Weak Medium Strong Rigid)];
-  $this->{clamp_label}      = Wx::StaticText -> new($this, -1, "Spline clamps");
+  #$this->{clamp_label}      = Wx::StaticText -> new($this, -1, "Spline clamps");
   $this->{bkg_clamp1_label} = Wx::StaticText -> new($this, -1, "low");
   $this->{bkg_clamp1}       = Wx::Choice     -> new($this, -1, wxDefaultPosition, wxDefaultSize, $clamps);
   $this->{bkg_clamp2_label} = Wx::StaticText -> new($this, -1, "high");
   $this->{bkg_clamp2}       = Wx::Choice     -> new($this, -1, wxDefaultPosition, wxDefaultSize, $clamps);
   $this->{bkg_clamp1} -> SetSelection(0);
   $this->{bkg_clamp2} -> SetSelection(0);
-  $gbs -> Add($this->{clamp_label}, Wx::GBPosition->new(1,7), Wx::GBSpan->new(1,2));
-  $gbs -> Add($this->{bkg_clamp1_label}, Wx::GBPosition->new(2,7));
-  $gbs -> Add($this->{bkg_clamp1},       Wx::GBPosition->new(2,8), Wx::GBSpan->new(1,2));
-  $gbs -> Add($this->{bkg_clamp2_label}, Wx::GBPosition->new(3,7));
-  $gbs -> Add($this->{bkg_clamp2},       Wx::GBPosition->new(3,8), Wx::GBSpan->new(1,2));
+  #$gbs -> Add($this->{clamp_label}, Wx::GBPosition->new(1,7), Wx::GBSpan->new(1,2));
+  $cgbs -> Add($this->{bkg_clamp1_label}, Wx::GBPosition->new(0,0));
+  $cgbs -> Add($this->{bkg_clamp1},       Wx::GBPosition->new(0,1));
+  $cgbs -> Add($this->{bkg_clamp2_label}, Wx::GBPosition->new(1,0));
+  $cgbs -> Add($this->{bkg_clamp2},       Wx::GBPosition->new(1,1));
 
   ## spline range in k
   $this->{bkg_spl1_label} = Wx::StaticText   -> new($this, -1, "Spline range in k");
@@ -245,8 +256,8 @@ sub bkg {
   EVT_TEXT($this, $this->{bkg_spl1}, sub{OnSpl(@_, $app, 'bkg_spl1')});
   EVT_TEXT($this, $this->{bkg_spl2}, sub{OnSpl(@_, $app, 'bkg_spl2')});
 
-  $this->{chainlink} = Wx::StaticBitmap->new($this, -1, $chainlink);
-  $gbs -> Add($this->{chainlink}, Wx::GBPosition->new(2,6), Wx::GBSpan->new(2,1));
+  #$this->{chainlink} = Wx::StaticBitmap->new($this, -1, $chainlink);
+  #$gbs -> Add($this->{chainlink}, Wx::GBPosition->new(2,6), Wx::GBSpan->new(2,1));
   #$app -> mouseover($this->{chainlink}, "The spline ranges in k and E are not independent parameters, but both are displayed as a service to the user.");
 
   ## spline range in E
@@ -262,14 +273,14 @@ sub bkg {
   $gbs -> Add($this->{bkg_spl2e_label}, Wx::GBPosition->new(3,3));
   $gbs -> Add($this->{bkg_spl2e},       Wx::GBPosition->new(3,4));
   $gbs -> Add($this->{bkg_spl2e_pluck}, Wx::GBPosition->new(3,5));
-  push @bkg_parameters, qw(bkg_spl1e bkg_spl2e chainlink);
+  push @bkg_parameters, qw(bkg_spl1e bkg_spl2e); # chainlink);
   EVT_TEXT($this, $this->{bkg_spl1e}, sub{OnSpl(@_, $app, 'bkg_spl1e')});
   EVT_TEXT($this, $this->{bkg_spl2e}, sub{OnSpl(@_, $app, 'bkg_spl2e')});
 
   $backgroundboxsizer -> Add($gbs, 0, wxALL, 5);
 
   ## standard and clamps
-  $abox = Wx::BoxSizer->new( wxHORIZONTAL );
+  my $abox = Wx::BoxSizer->new( wxHORIZONTAL );
   $this->{box_with_standard} = $abox;
   $this->{bkg_stan_label}   = Wx::StaticText -> new($this, -1, "Standard");
   #$this->{bkg_stan}         = Wx::ComboBox   -> new($this, -1, '', wxDefaultPosition, [50,-1], [], wxCB_READONLY);
@@ -330,7 +341,7 @@ sub fft {
   EVT_RIGHT_DOWN($fftbox, sub{ContextMenu(@_, $app, 'fft')});
   EVT_MENU($fftbox, -1, sub{ $this->DoContextMenu(@_, $app, 'fft') });
 
-  $gbs = Wx::GridBagSizer->new( 5, 5 );
+  my $gbs = Wx::GridBagSizer->new( 5, 5 );
 
   $this->{fft_kmin_label} = Wx::StaticText   -> new($this, -1, "k-range");
   $this->{fft_kmin}       = Wx::TextCtrl     -> new($this, -1, q{}, wxDefaultPosition, $tcsize);
@@ -397,7 +408,7 @@ sub bft {
   EVT_RIGHT_DOWN($bftbox, sub{ContextMenu(@_, $app, 'bft')});
   EVT_MENU($bftbox, -1, sub{ $this->DoContextMenu(@_, $app, 'bft') });
 
-  $gbs = Wx::GridBagSizer->new( 5, 5 );
+  my $gbs = Wx::GridBagSizer->new( 5, 5 );
 
   $this->{bft_rmin_label} = Wx::StaticText   -> new($this, -1, "R-range");
   $this->{bft_rmin}       = Wx::TextCtrl     -> new($this, -1, q{}, wxDefaultPosition, $tcsize);
@@ -488,14 +499,14 @@ sub mode {
 
   ## no data specified, possibly no data imported
   if (not $group) {
-    foreach my $w (@bkg_parameters, @fft_parameters, @bft_parameters, qw(backgroundbox fftbox bftbox)) {
+    foreach my $w (@bkg_parameters, @fft_parameters, @bft_parameters, qw(backgroundbox fftbox bftbox clampbox)) {
       $this->set_widget_state($w, $enabled);
     };
 
   ## XANES data
   } elsif ($group->datatype eq 'xanes') {
     foreach my $w (@bkg_parameters, 'backgroundbox') {
-      if ($w =~ m{spl|chain|bkg_(rbkg|kw)}) {
+      if ($w =~ m{spl|chain|clampbox|bkg_(rbkg|kw)}) {
 	$this->set_widget_state($w, 0);
       } else {
 	$this->set_widget_state($w, $enabled);
@@ -514,7 +525,7 @@ sub mode {
       $this->set_widget_state($w, $enabled);
     };
   } else {
-    foreach my $w (@bkg_parameters, @fft_parameters, @bft_parameters, qw(backgroundbox fftbox bftbox)) {
+    foreach my $w (@bkg_parameters, @fft_parameters, @bft_parameters, qw(backgroundbox fftbox bftbox clampbox)) {
       $this->set_widget_state($w, $enabled);
     };
   };
@@ -568,6 +579,8 @@ sub push_values {
   ## standard
   $this->{bkg_stan}->fill($::app, 1, 0);
   if ($data->bkg_stan eq 'None') {
+    $this->{bkg_stan}->SetStringSelection('None');
+  } elsif (not defined($this->{bkg_stan}->GetClientData($this->{bkg_stan}->GetSelection))) {
     $this->{bkg_stan}->SetStringSelection('None');
   } else {
     my $stan = $data->mo->fetch("Data", $data->bkg_stan);
@@ -780,13 +793,14 @@ sub Pluck {
   $app->{main}->{Main}->{$which}->SetValue($plucked);
 
   $app->{main}->status("Plucked $plucked for $which");
-  undef $busy;
 };
 
 Readonly my $SET_ALL	        => Wx::NewId();
 Readonly my $SET_MARKED	        => Wx::NewId();
+Readonly my $TO_DEFAULT	        => Wx::NewId();
 Readonly my $KMAX_RECOMMENDED   => Wx::NewId();
 Readonly my $IDENTIFY_REFERENCE => Wx::NewId();
+Readonly my $UNTIE_REFERENCE    => Wx::NewId();
 Readonly my $EXPLAIN_ESHIFT     => Wx::NewId();
 Readonly my $ALL_TO_1           => Wx::NewId();
 Readonly my $MARKED_TO_1        => Wx::NewId();
@@ -810,6 +824,10 @@ sub ContextMenu {
   ($text = "group parameters")  if ($text =~ m{group});
   $menu->Append($SET_ALL,    "Set all groups to $this of $text");
   $menu->Append($SET_MARKED, "Set marked groups to $this of $text");
+  if ($text ne 'Edge step') {
+    $menu->AppendSeparator;
+    $menu->Append($TO_DEFAULT, "Set $text to its default value");
+  };
   if ($text eq 'k-range') {
     $menu->AppendSeparator;
     $menu->Append($KMAX_RECOMMENDED, "Set kmax to Ifeffit's suggestion");
@@ -819,7 +837,8 @@ sub ContextMenu {
     $menu->Append($MARKED_TO_1, "Set importance to 1 for marked groups");
   } elsif ($which eq 'bkg_eshift') {
     $menu->AppendSeparator;
-    $menu->Append($IDENTIFY_REFERENCE, "Identify this groups reference channel");
+    $menu->Append($IDENTIFY_REFERENCE, "Identify this groups reference");
+    $menu->Append($UNTIE_REFERENCE,    "Untie this group from its reference");
     $menu->Append($EXPLAIN_ESHIFT,     "Explain energy shift");
   } elsif ($which eq 'bkg_e0') {
     $menu->AppendSeparator;
@@ -862,6 +881,12 @@ sub DoContextMenu {
       $main->constrain($app, \@list, 'marked');
       last SWITCH;
     };
+    ($id == $TO_DEFAULT) and do {
+      $main->to_default($app, \@list, 'marked');
+      last SWITCH;
+    };
+
+    ## -------- k-range context menu
     ($id == $KMAX_RECOMMENDED) and do {
       $data->_update('bft');
       $data->fft_kmax($data->recommended_kmax);
@@ -869,6 +894,8 @@ sub DoContextMenu {
       $app->modified(1);
       last SWITCH;
     };
+
+    ## -------- bkg_e0 context menu
     (($id == $E0_IFEFFIT) or ($id == $E0_TABULATED) or ($id == $E0_FRACTION) or ($id == $E0_ZERO) or ($id == $E0_PEAK))
       and do {
 	my $how = ($id == $E0_IFEFFIT)   ? 'ifeffit'
@@ -882,6 +909,33 @@ sub DoContextMenu {
 	$app->modified(1);
 	last SWITCH;
       };
+
+    ## -------- bkg_eshift context menu
+    ($id == $IDENTIFY_REFERENCE) and do {
+      $app->{main}->status(sprintf("%s is the reference for %s", $data->reference->name, $data->name));
+      last SWITCH;
+    };
+    ($id == $UNTIE_REFERENCE) and do {
+      $data->untie_reference;
+      $app->modified(1);
+      $app->OnGroupSelect(0,0);
+      $app->{main}->status(sprintf("Untied reference from %s", $data->name));
+      last SWITCH;
+    };
+    ($id == $EXPLAIN_ESHIFT) and do {
+      $app->{main}->status("The value for energy shift is subtracted from the energy axis of these data before any other actions are taken.");
+      last SWITCH;
+    };
+
+    ## -------- importance context menu
+    ($id == $ALL_TO_1) and do {
+      $main->importance_to_1($app, 'all');
+      last SWITCH;
+    };
+    ($id == $MARKED_TO_1) and do {
+      $main->importance_to_1($app, 'marked');
+      last SWITCH;
+    };
   };
 };
 
@@ -919,6 +973,32 @@ sub constrain {
   };
   $app->modified(1);
   $app->{main}->status("Set parameters for $how groups");
+};
+
+sub to_default {
+  my ($main, $app, $which, $how) = @_;
+  my $data = $app->current_data;
+  my @params = ($which->[0] eq 'all')  ? (@all_group, @all_bkg, @all_fft, @all_bft, @all_plot)
+             : ($which->[0] eq 'file') ?  @all_group
+             : ($which->[0] eq 'bkg')  ?  @all_bkg
+             : ($which->[0] eq 'fft')  ?  @all_fft
+             : ($which->[0] eq 'bft')  ?  @all_bft
+             : ($which->[0] eq 'plot') ?  @all_plot
+	     :                            @$which;
+  foreach my $p (@params) {
+    $data->to_default($p);
+  };
+  $app->OnGroupSelect(0,0);
+};
+
+sub importance_to_1 {
+  my ($main, $app, $how) = @_;
+  foreach my $i (0 .. $app->{main}->{list}->GetCount-1) {
+    next if (($how eq 'marked') and (not $app->{main}->{list}->IsChecked($i)));
+    $app->{main}->{list}->GetClientData($i)->importance(1);
+  };
+  $app->modified(1);
+  $app->OnGroupSelect(0,0);
 };
 
 1;

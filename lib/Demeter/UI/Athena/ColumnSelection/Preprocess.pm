@@ -5,6 +5,9 @@ use base 'Wx::Panel';
 use Wx::Event qw(EVT_CHECKBOX EVT_RADIOBUTTON);
 use Wx::Perl::TextValidator;
 
+use strict;
+use warnings;
+
 use Demeter::UI::Wx::SpecialCharacters qw(:all);
 #use Demeter::UI::Athena::Replot;
 

@@ -35,17 +35,151 @@ sub resolve_defaults {
   if ($self->datatype =~ m{(?:xmu|xanes)}) {
     my @x = $self->get_array("energy");
     #my @y = $self->get_array("xmu");
-    $self->resolve_pre(\@x);
-    $self->resolve_nor(\@x);
-    $self->resolve_spl(\@x);
-    $self->resolve_krange_xmu(\@x);
-    $self->resolve_e0_fraction;
-    $self->resolve_clamps;
+
+    my ($pre1, $pre2) = $self->resolve_pre(\@x);
+    $self->bkg_pre1(sprintf("%.3f",$pre1));
+    $self->bkg_pre2(sprintf("%.3f",$pre2));
+
+    my ($nor1, $nor2) = $self->resolve_nor(\@x);
+    $self->bkg_nor1(sprintf("%.3f",$nor1));
+    $self->bkg_nor2(sprintf("%.3f",$nor2));
+
+    my ($spl1, $spl2) = $self->resolve_spl(\@x);
+    $self->bkg_spl1(sprintf("%.3f",$spl1));
+    $self->bkg_spl2(sprintf("%.3f",$spl2));
+
+    my ($kmin, $kmax) = $self->resolve_krange_xmu(\@x);
+    $self->fft_kmin(sprintf("%.3f",$kmin));
+    $self->fft_kmax(sprintf("%.3f",$kmax));
+
+    my $fraction = $self->resolve_e0_fraction;
+    $self->bkg_e0_fraction($fraction);
+
+    my ($clamp1, $clamp2) = $self->resolve_clamps;
+    $self->bkg_clamp1($clamp1);
+    $self->bkg_clamp2($clamp2);
   } else {
     my @x = $self->get_array("k");
     #my @y = $self->get_array("chi");
-    $self->resolve_krange_chi(\@x);
+    my ($kmin, $kmax) = $self->resolve_krange_chi(\@x);
+    $self->fft_kmin(sprintf("%.3f",$kmin));
+    $self->fft_kmax(sprintf("%.3f",$kmax));
   };
+};
+
+## edge   Z   e0   (CheckBoxen: flatten and pc)
+sub to_default {
+  my ($self, $param) = @_;
+  #print $param, $/;
+ SWITCH: {
+    ($param eq 'bkg_pre1') and do {
+      $self->bkg_pre1($self->co->default("bkg", "pre1"));
+      $self->bkg_pre2($self->co->default("bkg", "pre2"));
+      my @x = $self->get_array("energy");
+      my ($pre1, $pre2) = $self->resolve_pre(\@x);
+      $self->bkg_pre1(sprintf("%.3f",$pre1));
+      $self->bkg_pre2(sprintf("%.3f",$pre2));
+      last SWITCH;
+    };
+    ($param eq 'bkg_nor1') and do {
+      $self->bkg_nor1($self->co->default("bkg", "nor1"));
+      $self->bkg_nor2($self->co->default("bkg", "nor2"));
+      my @x = $self->get_array("energy");
+      my ($nor1, $nor2) = $self->resolve_nor(\@x);
+      $self->bkg_nor1(sprintf("%.3f",$nor1));
+      $self->bkg_nor2(sprintf("%.3f",$nor2));
+      last SWITCH;
+    };
+    ($param =~ m{bkg_spl1e?}) and do {
+      $self->bkg_spl1($self->co->default("bkg", "spl1"));
+      $self->bkg_spl2($self->co->default("bkg", "spl2"));
+      my @x = $self->get_array("energy");
+      my ($spl1, $spl2) = $self->resolve_spl(\@x);
+      $self->bkg_spl1(sprintf("%.3f",$spl1));
+      $self->bkg_spl2(sprintf("%.3f",$spl2));
+      last SWITCH;
+    };
+    ($param eq 'bkg_eshift') and do {
+      $self->bkg_eshift(0);
+      last SWITCH;
+    };
+    ($param eq 'importance') and do {
+      $self->importance(1);
+      last SWITCH;
+    };
+    ($param eq 'bkg_rbkg') and do {
+      $self->bkg_rbkg($self->co->default('bkg', 'rbkg'));
+      last SWITCH;
+    };
+    ($param eq 'bkg_kw') and do {
+      $self->bkg_kw($self->co->default('bkg', 'kw'));
+      last SWITCH;
+    };
+    ($param eq 'bkg_nnorm') and do {
+      ($self->datatype eq 'xanes') ? $self->bkg_nnorm($self->co->default('xanes', 'nnorm'))
+	: $self->bkg_nnorm($self->co->default('bkg', 'nnorm'));
+      last SWITCH;
+    };
+    ($param eq 'bkg_clamp1') and do {
+      $self->bkg_clamp1($self->co->default("bkg", "clamp1"));
+      my ($clamp1, $clamp2) = $self->resolve_clamps;
+      $self->bkg_clamp1($clamp1);
+      last SWITCH;
+    };
+    ($param eq 'bkg_clamp2') and do {
+      $self->bkg_clamp2($self->co->default("bkg", "clamp2"));
+      my ($clamp1, $clamp2) = $self->resolve_clamps;
+      $self->bkg_clamp2($clamp2);
+      last SWITCH;
+    };
+    ($param eq 'bkg_stan') and do {
+      last SWITCH;
+      $self->bkg_stan(q{});
+    };
+
+    ($param eq 'fft_kmin') and do {
+      $self->fft_kmin($self->co->default("fft", "kmin"));
+      $self->fft_kmax($self->co->default("fft", "kmax"));
+      my @x = ($self->datatype eq 'chi') ? $self->get_array("k") : $self->get_array("energy");
+      my ($kmin, $kmax) = ($self->datatype eq 'chi') ? $self->resolve_krange_chi(\@x) : $self->resolve_krange_xmu(\@x);
+      $self->fft_kmin(sprintf("%.3f",$kmin));
+      $self->fft_kmax(sprintf("%.3f",$kmax));
+      last SWITCH;
+    };
+    ($param eq 'fft_dk') and do {
+      $self->fft_dk($self->co->default('fft', 'dk'));
+      last SWITCH;
+    };
+    ($param eq 'fft_kwindow') and do {
+      $self->fft_kwindow($self->co->default('fft', 'kwindow'));
+      $self->bft_rwindow($self->co->default('fft', 'kwindow'));
+      last SWITCH;
+    };
+    ($param eq 'fft_karb_value') and do {
+      $self->fft_karb_value(0.5);
+      last SWITCH;
+    };
+
+    ($param eq 'bft_rmin') and do {
+      $self->bft_rmin($self->co->default('bft', 'rmin'));
+      $self->bft_rmax($self->co->default('bft', 'rmax'));
+      last SWITCH;
+    };
+    ($param eq 'bft_dr') and do {
+      $self->bft_dr($self->co->default('bft', 'dr'));
+      last SWITCH;
+    };
+
+    ($param eq 'plot_multiplier') and do {
+      $self->plot_multiplier(1);
+      last SWITCH;
+    };
+    ($param eq 'y_offset') and do {
+      $self->y_offset(0);
+      last SWITCH;
+    };
+  };
+  return $self;
 };
 
 sub resolve_e0_fraction {
@@ -53,7 +187,7 @@ sub resolve_e0_fraction {
   my $fraction = $self->bkg_e0_fraction;
   ($fraction = 1)   if ($fraction  > 1);
   ($fraction = 0.5) if ($fraction <= 0);
-  $self->bkg_e0_fraction($fraction);
+  return $fraction;
 };
 
 sub resolve_clamps {
@@ -61,8 +195,7 @@ sub resolve_clamps {
   my ($clamp1, $clamp2) = ($self->bkg_clamp1, $self->bkg_clamp2);
   $clamp1 = $self->config->default("clamp", $clamp1) if $self->is_Clamp($clamp1);
   $clamp2 = $self->config->default("clamp", $clamp2) if $self->is_Clamp($clamp2);
-  $self->bkg_clamp1($clamp1);
-  $self->bkg_clamp2($clamp2);
+  return ($clamp1, $clamp2);
 };
 
 sub resolve_pre {
@@ -81,9 +214,7 @@ sub resolve_pre {
   my $pre2 = ($bkg_pre2  > 0) ? $first + $bkg_pre2 : $bkg_pre2;
 
   ($pre1, $pre2) = sort {$a <=> $b} ($pre1, $pre2);
-
-  $self->bkg_pre1(sprintf("%.3f",$pre1));
-  $self->bkg_pre2(sprintf("%.3f",$pre2));
+  return ($pre1, $pre2);
 };
 
 sub resolve_nor {
@@ -108,9 +239,7 @@ sub resolve_nor {
   my $nor2 = ($bkg_nor2  <= 0) ? $last + $bkg_nor2 : $bkg_nor2;
 
   ($nor1, $nor2) = sort {$a <=> $b} ($nor1, $nor2);
-
-  $self->bkg_nor1(sprintf("%.3f",$nor1));
-  $self->bkg_nor2(sprintf("%.3f",$nor2));
+  return ($nor1, $nor2);
 };
 
 ## should I worry about energy values, say value>30 means it is energy?
@@ -129,9 +258,7 @@ sub resolve_spl {
 
   ($spl1, $spl2) = sort {$a <=> $b} ($spl1, $spl2);
   ($spl2 = $lastk) if ($spl2 > $lastk);
-
-  $self->bkg_spl1(sprintf("%.3f",$spl1));
-  $self->bkg_spl2(sprintf("%.3f",$spl2));
+  return ($spl1, $spl2);
 };
 
 sub resolve_krange_xmu {
@@ -148,9 +275,7 @@ sub resolve_krange_xmu {
 
   ($kmin, $kmax) = sort {$a <=> $b} ($kmin, $kmax);
   ($kmax = $lastk) if ($kmax > $lastk);
-
-  $self->fft_kmin(sprintf("%.3f",$kmin));
-  $self->fft_kmax(sprintf("%.3f",$kmax));
+  return ($kmin, $kmax);
 };
 
 sub resolve_krange_chi {
@@ -165,9 +290,7 @@ sub resolve_krange_chi {
 
   ($kmin, $kmax) = sort {$a <=> $b} ($kmin, $kmax);
   ($kmax = $last) if ($kmax > $last);
-
-  $self->fft_kmin(sprintf("%.3f",$kmin));
-  $self->fft_kmax(sprintf("%.3f",$kmax));
+  return ($kmin, $kmax);
 };
 
 1;

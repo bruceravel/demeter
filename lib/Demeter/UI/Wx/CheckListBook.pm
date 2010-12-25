@@ -15,6 +15,9 @@ package Demeter::UI::Wx::CheckListBook;
 
 =cut
 
+use strict;
+use warnings;
+
 use Regexp::Common;
 use Readonly;
 Readonly my $NUMBER => $RE{num}{real};

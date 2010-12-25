@@ -265,6 +265,7 @@ sub _data {
   if ($med) {
     my $mc = Demeter::Data::MultiChannel->new(file=>$file, energy=>$data->energy);
     my $align = $yaml->{preproc_align};
+    my $eshift = 0;
     my @cols = (q{}, split(" ", $data->columns));
     foreach my $ch (split(/\+/, $data->numerator)) {
       (my $cc = $ch) =~ s{\$}{};
@@ -274,9 +275,11 @@ sub _data {
 				name        => join(" - ", basename($file), $cols[$cc]),
 			       );
       _group($app, $colsel, $this, $yaml, $orig, $repeated, $align);
+      $eshift = $this->bkg_eshift if $align;
+      $this->bkg_eshift($eshift)  if not $align;
       $align = 0;
     };
-    $mc->DEMOLISH;
+    $mc->discard;
   } else {
     $message = $data->name;
     _group($app, $colsel, $data, $yaml, $orig, $repeated, 0);
@@ -323,7 +326,7 @@ sub _data {
   close $ORDER;
 
   ## -------- last chores before finishing
-  $data->DEMOLISH if $med;
+  $data->discard if $med;
   chdir dirname($orig);
   $app->modified(1);
   undef $busy;
@@ -366,6 +369,11 @@ sub _group {
   };
 
   ## preprocessing
+
+  ## the next line needs some explanation.  if this is the first in a
+  ## sequence of data files being imported, then the value is taken
+  ## from the widget.  when that one is done, its value is pushed into
+  ## $yaml. for subsequent files, the value is taken from $yaml
   my $do_mark = (defined $colsel) ? ($colsel->{Preprocess}->{mark}->GetValue) : $yaml->{preproc_mark};
   if ($do_mark) {
     $app->mark($data);
@@ -377,15 +385,24 @@ sub _group {
     constrain($app, $colsel, $data);
     $app->OnGroupSelect(0,0);
   };
-
   ## -------- import reference if reference channel is set
   my $do_ref = (defined $colsel) ? ($colsel->{Reference}->{do_ref}->GetValue) : $yaml->{do_ref};
   if ($do_ref) {
     $app->{main}->status("Importing reference for ". $data->name);
     $app->{main}->Update;
-    my $ref = $colsel->{Reference}->{reference};
+    my $ref = (defined $colsel) ? $colsel->{Reference}->{reference} : q{};
+    if (not $ref) {
+      $ref = Demeter::Data->new(file => $orig,
+				name => "  Ref " . $data->name);
+      $ref -> set(energy      => $yaml->{energy},
+		  numerator   => '$'.$yaml->{ref_numer},
+		  denominator => '$'.$yaml->{ref_denom},
+		  ln          => $yaml->{ref_ln},
+		  is_col      => 1,
+		  display     => 1);
+    };
     $ref->display(0);
-    if ($colsel->{Rebin}->{do_rebin}->GetValue) {
+    if ($do_rebin) {
       $app->{main}->status("Rebinning reference for ". $data->name);
       my $rebin  = $ref->rebin;
       foreach my $att (qw(energy numerator denominator ln name)) {
@@ -399,13 +416,14 @@ sub _group {
     $app->{main}->{list}->Append($ref->name, $ref);
     $app->{main}->{Main}->{bkg_eshift}-> SetBackgroundColour( Wx::Colour->new($ref->co->default("athena", "tied")) );
     $ref->reference($data);
-    if ($colsel->{Reference}->{same}) {
+    my $same_edge = (defined $colsel) ? $colsel->{Reference}->{same}->GetValue : $yaml->{ref_same};
+    if ($same_edge) {
       $ref->bkg_z($data->bkg_z);
       $ref->fft_edge($data->fft_edge);
     };
   };
 
-  my $do_align  = (defined $colsel) ? ($colsel->{Preprocess}->{align}->GetValue)  : $yaml->{preproc_align};
+  my $do_align = (defined $colsel) ? ($colsel->{Preprocess}->{align}->GetValue) : $yaml->{preproc_align};
   if ($do_align) {
     my $stan = $colsel->{Preprocess}->{standard}->GetClientData($colsel->{Preprocess}->{standard}->GetSelection);
     if ($data->reference and $stan->reference) {
