@@ -178,7 +178,7 @@ sub save_f1f2_data {
 
   my $default = join('.', get_name($parent->{element}), 'f1f2');
   my $fd = Wx::FileDialog->new( $self, "Output File", cwd, $default,
-				"f1f2 files (*.f1f2)|*.f1f2|All files|*.*",
+				"f1f2 files (*.f1f2)|*.f1f2|All files|*",
 				wxFD_SAVE|wxFD_OVERWRITE_PROMPT, wxDefaultPosition);
   $fd -> ShowModal;
   my $file = File::Spec->catfile($fd->GetDirectory, $fd->GetFilename);

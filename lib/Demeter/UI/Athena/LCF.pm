@@ -609,7 +609,7 @@ sub combi_select {
 sub combi_report {
   my ($this, $event) = @_;
   my $fd = Wx::FileDialog->new( $::app->{main}, "Save combinatorial results", cwd, "combinatorial.xls",
-				"Excel (*.xls)|*.xls|All files|*.*",
+				"Excel (*.xls)|*.xls|All files|*",
 				wxFD_SAVE|wxFD_CHANGE_DIR|wxFD_OVERWRITE_PROMPT,
 				wxDefaultPosition);
   if ($fd->ShowModal == wxID_CANCEL) {
@@ -636,7 +636,7 @@ sub save {
   my $data = $::app->current_data;
   (my $name = $data->name) =~ s{\s+}{_}g;
   my $fd = Wx::FileDialog->new( $::app->{main}, "Save LCF fit to a file", cwd, $name.".lcf",
-				"LCF (*.lcf)|*.lcf|All files|*.*",
+				"LCF (*.lcf)|*.lcf|All files|*",
 				wxFD_SAVE|wxFD_CHANGE_DIR|wxFD_OVERWRITE_PROMPT,
 				wxDefaultPosition);
   if ($fd->ShowModal == wxID_CANCEL) {

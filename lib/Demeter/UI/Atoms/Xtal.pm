@@ -455,7 +455,7 @@ sub open_file {
   my ($self, $file) = @_;
   if ((not $file) or (not -e $file)) {
     my $fd = Wx::FileDialog->new( $self, "Import crystal data", cwd, q{},
-				  "input and CIF files (*.inp;*.cif)|*.inp;*.cif|input file (*.inp)|*.inp|CIF file (*.cif)|*.cif|All files|*.*",
+				  "input and CIF files (*.inp;*.cif)|*.inp;*.cif|input file (*.inp)|*.inp|CIF file (*.cif)|*.cif|All files|*",
 				  wxFD_OPEN|wxFD_FILE_MUST_EXIST|wxFD_CHANGE_DIR|wxFD_PREVIEW,
 				  wxDefaultPosition);
     if ($fd->ShowModal == wxID_CANCEL) {
@@ -736,7 +736,7 @@ sub save_file {
   if ($seems_ok) {
     if (not $file) {
       my $fd = Wx::FileDialog->new( $self, "Export crystal data", cwd, q{atoms.inp},
-				    "input file (*.inp)|*.inp|All files|*.*",
+				    "input file (*.inp)|*.inp|All files|*",
 				    wxFD_SAVE|wxFD_CHANGE_DIR|wxFD_OVERWRITE_PROMPT,
 				    wxDefaultPosition);
       if ($fd -> ShowModal == wxID_CANCEL) {

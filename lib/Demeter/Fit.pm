@@ -1151,6 +1151,7 @@ override 'serialize' => sub {
     my $dd = $d->group;
     $d -> file($NULLFILE) if $d->prjrecord;
     my $datafile =  File::Spec->catfile($self->folder, "$dd.yaml");
+    ##print ">>> $datafile\n";
     $d -> serialize($datafile);
   };
 
@@ -1401,6 +1402,7 @@ override 'deserialize' => sub {
       $mapping{$old} = $new;
       $mapping{$new} = $old;
     };
+    ## need to fix group values inside yaml files also!!
     foreach my $d (@data) {
       move(File::Spec->catfile($args{folder}, $mapping{$d->group}.".fit" ), File::Spec->catfile($args{folder}, $d->group.".fit" ));
       move(File::Spec->catfile($args{folder}, $mapping{$d->group}.".yaml"), File::Spec->catfile($args{folder}, $d->group.".yaml"));

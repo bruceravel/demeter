@@ -2,6 +2,9 @@
 
 * things that need doing
 
+** wx issues
+  - [ ] why does Wx::FileDialog with wxFD_OVERWRITE_PROMPT style not work correctly?
+
 ** Demeter bugs and shortcomings  [0/6]
   - [ ] in D::Data::IO::save_many, why doesn't updating in n specifying
        	"background" not work to bring data up to date?  (fft, i.e. doing
@@ -83,9 +86,12 @@
    - [ ] datatype of merged group (xanes merge should be a xanes and so on) (this appears to be so, see [[file:lib/Demeter/Data/Process.pm][Demeter::Data::Process]]
 
 ** Artemis
-*** Artemis bugs and missing features [0/2]
+*** Artemis bugs and missing features [0/5]
    - [ ] use text buffers as in Athena for TextEntryDialogs
    - [ ] import an FPath from a yaml or from a project file, pathlist start page link for doing so
+   - [ ] what is the prupose of regenerate in fit deserialization?  in any case, need to fix group values *inside* yaml files
+   - [ ] fit numbering is wrong,should not increment if previous fit has fitted=0
+   - [ ] should I clear out unfitted fit folders from project upon import?
 
 *** Histograms [2/5]
    - [X] sum histogram bins into a single chi(k) file
@@ -98,7 +104,7 @@
    - [ ] bin nealy colinear configurations by R and theta and sum into a single chi(k)
 
 
-
+   
 * thing that have been fixed
 ** Demeter bugs and shortcomings fixed  [19/19]
   - [X] failed test 022 after upgrading office computer to 10.04

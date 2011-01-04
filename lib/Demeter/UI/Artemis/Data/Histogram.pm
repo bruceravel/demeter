@@ -79,7 +79,7 @@ sub from_file {
 
   $this->{filepicker} = Wx::FilePickerCtrl->new( $this, -1, "", "Choose a File", "All files|*",
 						 wxDefaultPosition, wxDefaultSize,
-						 wxFLP_DEFAULT_STYLE|wxFLP_USE_TEXTCTRL|wxFLP_CHANGE_DIRwx|FLP_FILE_MUST_EXIST );
+						 wxFLP_DEFAULT_STYLE|wxFLP_USE_TEXTCTRL|wxFLP_CHANGE_DIR|wxFLP_FILE_MUST_EXIST );
   $this->{box} -> Add($this->{filepicker}, 0, wxGROW|wxLEFT|wxRIGHT, 25);
 
   my $vbox = Wx::BoxSizer->new( wxHORIZONTAL );
@@ -158,7 +158,7 @@ sub dlpoly {
 
   $this->{dlfile} = Wx::FilePickerCtrl->new( $this, -1, "", "Choose a HISTORY File", "All files|*",
 						 wxDefaultPosition, wxDefaultSize,
-						 wxFLP_DEFAULT_STYLE|wxFLP_USE_TEXTCTRL|wxFLP_CHANGE_DIRwx|FLP_FILE_MUST_EXIST );
+						 wxFLP_DEFAULT_STYLE|wxFLP_USE_TEXTCTRL|wxFLP_CHANGE_DIR|wxFLP_FILE_MUST_EXIST );
   $this->{box} -> Add($this->{dlfile}, 0, wxGROW|wxLEFT|wxRIGHT, 25);
 
   my $vbox = Wx::BoxSizer->new( wxHORIZONTAL );

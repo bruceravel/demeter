@@ -74,15 +74,25 @@ sub save_project {
   };
   if ((not $fname) or ($fname =~ m{\<untitled\>})) {
     my $fd = Wx::FileDialog->new( $rframes->{main}, "Save project file", cwd, q{artemis.fpj},
-				  "Demeter fitting project (*.fpj)|*.fpj|All files|*.*",
-				  wxFD_SAVE|wxFD_CHANGE_DIR|wxFD_OVERWRITE_PROMPT,
-				  wxDefaultPosition);
+				  "Artemis project (*.fpj)|*.fpj|All files|*",
+				  wxFD_SAVE|wxFD_CHANGE_DIR); #|wxFD_OVERWRITE_PROMPT
     if ($fd->ShowModal == wxID_CANCEL) {
       $rframes->{main}->status("Saving project cancelled.");
       return;
     };
-    print join("|", $fd->GetDirectory, $fd->GetFilename), $/;
-    $fname = File::Spec->catfile($fd->GetDirectory, $fd->GetFilename);
+    ##print join("|", $fd->GetPath, $fd->GetDirectory, $fd->GetFilename), $/;
+    $fname = $fd->GetPath; # File::Spec->catfile($fd->GetDirectory, $fd->GetFilename);
+    if (-e $fname) {
+      my $yesno = Wx::MessageDialog->new($rframes->{main},
+					 "Overwrite existing file $fname?",
+					 "Overwrite file?",
+					 wxYES_NO|wxYES_DEFAULT|wxICON_QUESTION);
+      my $ok = $yesno->ShowModal;
+      if ($ok == wxID_NO) {
+	$rframes->{main}->status("Not overwriting $fname.");
+	return;
+      };
+    }
   };
 
   my $po = $rframes->{main} -> {currentfit}->po;
@@ -159,7 +169,7 @@ sub read_project {
   my ($rframes, $fname) = @_;
   if (not $fname) {
     my $fd = Wx::FileDialog->new( $rframes->{main}, "Import an Artemis project", cwd, q{},
-				  "Artemis project (*.fpj)|*.fpj|All files|*.*",
+				  "Artemis project (*.fpj)|*.fpj|All files|*",
 				  wxFD_OPEN|wxFD_FILE_MUST_EXIST|wxFD_CHANGE_DIR|wxFD_PREVIEW,
 				  wxDefaultPosition);
     if ($fd->ShowModal == wxID_CANCEL) {
@@ -230,11 +240,12 @@ sub read_project {
   my $current = $Demeter::UI::Artemis::fit_order{order}{current};
   $current = $Demeter::UI::Artemis::fit_order{order}{$current};
   $current ||= $dirs[0];
+  ##print join("|", $current, @dirs), $/;
   my $currentfit;
   foreach my $d (@dirs) {
     my $fit = Demeter::Fit->new(group=>$d, interface=>"Artemis (Wx $Wx::VERSION)");
     my $regen = ($d eq $current) ? 0 : 1;
-    $fit->deserialize(folder=> File::Spec->catfile($projfolder, 'fits', $d), regenerate=>$regen);
+    $fit->deserialize(folder=> File::Spec->catfile($projfolder, 'fits', $d), regenerate=>0); #$regen);
     $rframes->{History}->{list}->Append($fit->name, $fit) if $fit->fitted;
     $rframes->{History}->add_plottool($fit);
     next unless ($d eq $current);

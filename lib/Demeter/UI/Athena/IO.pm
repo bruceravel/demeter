@@ -37,14 +37,25 @@ sub Export {
   };
   if (not $fname) {
     my $fd = Wx::FileDialog->new( $app->{main}, "Save project file", cwd, q{athena.prj},
-				  "Athena project (*.prj)|*.prj|All files|*.*",
-				  wxFD_SAVE|wxFD_CHANGE_DIR|wxFD_OVERWRITE_PROMPT,
+				  "Athena project (*.prj)|*.prj|All files|*",
+				  wxFD_SAVE|wxFD_CHANGE_DIR, # wxFD_OVERWRITE_PROMPT|
 				  wxDefaultPosition);
     if ($fd->ShowModal == wxID_CANCEL) {
       $app->{main}->status("Saving project cancelled.");
       return;
     };
-    $fname = File::Spec->catfile($fd->GetDirectory, $fd->GetFilename);
+    $fname = $fd->GetPath; #File::Spec->catfile($fd->GetDirectory, $fd->GetFilename);
+    if (-e $fname) {
+      my $yesno = Wx::MessageDialog->new($app->{main},
+					 "Overwrite existing file $fname?",
+					 "Overwrite file?",
+					 wxYES_NO|wxYES_DEFAULT|wxICON_QUESTION);
+      my $ok = $yesno->ShowModal;
+      if ($ok == wxID_NO) {
+	$app->{main}->status("Not overwriting $fname.");
+	return;
+      };
+    };
   };
 
   my $busy = Wx::BusyCursor->new();
@@ -71,7 +82,7 @@ sub Import {
   my @files = ($fname);
   if (not $fname) {
     my $fd = Wx::FileDialog->new( $app->{main}, "Import data", cwd, q{},
-				  "All files|*.*|Athena projects (*.prj)|*.prj|Data (*.dat)|*.dat",
+				  "All files|*|Athena projects (*.prj)|*.prj|Data (*.dat)|*.dat",
 				  wxFD_OPEN|wxFD_FILE_MUST_EXIST|wxFD_CHANGE_DIR|wxFD_PREVIEW|wxFD_MULTIPLE,
 				  wxDefaultPosition);
     if ($fd->ShowModal == wxID_CANCEL) {
@@ -539,7 +550,7 @@ sub save_column {
 		          :                    ('???',     '.???',  '???');
 
   my $fd = Wx::FileDialog->new( $app->{main}, "Save $desc data", cwd, $base.$suff,
-				"$desc data (*$suff)|*$suff|All files|*.*",
+				"$desc data (*$suff)|*$suff|All files|*",
 				wxFD_SAVE|wxFD_CHANGE_DIR|wxFD_OVERWRITE_PROMPT,
 				wxDefaultPosition);
   if ($fd->ShowModal == wxID_CANCEL) {
@@ -585,7 +596,7 @@ sub save_marked {
 		    :                        ('???',             '.???');
 
   my $fd = Wx::FileDialog->new( $app->{main}, "Save $desc data for marked groups", cwd, 'marked'.$suff,
-				"$desc data (*$suff)|*$suff|All files|*.*",
+				"$desc data (*$suff)|*$suff|All files|*",
 				wxFD_SAVE|wxFD_CHANGE_DIR|wxFD_OVERWRITE_PROMPT,
 				wxDefaultPosition);
   if ($fd->ShowModal == wxID_CANCEL) {
@@ -643,7 +654,7 @@ sub FPath {
 
   (my $base = $app->current_data->name) =~ s{[^-a-zA-Z0-9.+]+}{_}g;
   my $fd = Wx::FileDialog->new( $app->{main}, "Save current group as an empirical standard", cwd, $base.'.yaml',
-				"epirical standards (*.yaml)|*.yaml|All files|*.*",
+				"epirical standards (*.yaml)|*.yaml|All files|*",
 				wxFD_SAVE|wxFD_CHANGE_DIR|wxFD_OVERWRITE_PROMPT,
 				wxDefaultPosition);
   if ($fd->ShowModal == wxID_CANCEL) {
