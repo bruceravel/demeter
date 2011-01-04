@@ -3,11 +3,11 @@
 use Demeter qw(:ui=screen :plotwith=gnuplot);
 use Demeter::ScatteringPath::Histogram::DL_POLY;
 
-my $prj = Demeter::Data::Prj->new(file=>"/home/bruce/play/MD/PtData.prj");
+my $prj = Demeter::Data::Prj->new(file=>"/home/bruce/PtData.prj");
 my $data = $prj->record(1);
 $data->bft_rmin(1.6);
 
-my $dlp = Demeter::ScatteringPath::Histogram::DL_POLY->new( rmax=>3.5, file=>'HISTORY',);
+my $dlp = Demeter::ScatteringPath::Histogram::DL_POLY->new( rmin=>1.5, rmax=>3.5, file=>'HISTORY',);
 $dlp->rebin;
 $dlp->plot;
 $dlp->pause;
@@ -30,6 +30,8 @@ $dlp->sp($feff->pathlist->[0]);
 my $composite = $dlp->fpath;
 $composite->plot('r');
 $composite->pause;
+
+exit;
 
 my @gds = (Demeter::GDS->new(gds=>'guess', name=>'amp',  mathexp=>1),
 	   Demeter::GDS->new(gds=>'guess', name=>'enot', mathexp=>0),

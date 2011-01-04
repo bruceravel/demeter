@@ -189,4 +189,4 @@ true value be the number of subsequent lines which contain MED data.
 
   Bruce Ravel <bravel AT bnl DOTgov>
   http://xafs.org/BruceRavel/
-  Athena copyright (c) 2001-2010
+  Athena copyright (c) 2001-2011

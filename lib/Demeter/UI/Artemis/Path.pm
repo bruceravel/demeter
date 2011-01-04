@@ -2,7 +2,7 @@ package  Demeter::UI::Artemis::Path;
 
 =for Copyright
  .
- Copyright (c) 2006-2010 Bruce Ravel (bravel AT bnl DOT gov).
+ Copyright (c) 2006-2011 Bruce Ravel (bravel AT bnl DOT gov).
  All rights reserved.
  .
  This file is free software; you can redistribute it and/or
@@ -431,7 +431,7 @@ sub Rename {
 sub transfer {
   my ($self, $event) = @_;
   my $plotlist  = $Demeter::UI::Artemis::frames{Plot}->{plotlist};
-  my $name      = $self->{path}->label;
+  my $name      = $self->{path}->name;
   my $found     = 0;
   my $thisgroup = $self->{path}->group;
   foreach my $i (0 .. $plotlist->GetCount - 1) {

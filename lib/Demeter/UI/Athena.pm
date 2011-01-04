@@ -219,7 +219,7 @@ sub on_about {
   $info->SetCopyright( $demeter->identify . "\nusing Ifeffit " . Ifeffit::get_string('&build'));
   $info->SetWebSite( 'http://cars9.uchicago.edu/iffwiki/Demeter', 'The Demeter web site' );
   #$info->SetDevelopers( ["Bruce Ravel <bravel\@bnl.gov>\n",
-  #			 "Ifeffit is copyright $COPYRIGHT 1992-2010 Matt Newville"
+  #			 "Ifeffit is copyright $COPYRIGHT 1992-2011 Matt Newville"
   #			] );
   $info->SetLicense( $demeter->slurp(File::Spec->catfile($athena_base, 'Athena', 'share', "GPL.dem")) );
 

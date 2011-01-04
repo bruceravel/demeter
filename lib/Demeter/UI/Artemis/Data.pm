@@ -2,7 +2,7 @@ package  Demeter::UI::Artemis::Data;
 
 =for Copyright
  .
- Copyright (c) 2006-2010 Bruce Ravel (bravel AT bnl DOT gov).
+ Copyright (c) 2006-2011 Bruce Ravel (bravel AT bnl DOT gov).
  All rights reserved.
  .
  This file is free software; you can redistribute it and/or
@@ -1977,9 +1977,13 @@ sub process_histogram {
     my $id = $datapage->{pathlist}->GetSelection;
     $datapage->{pathlist}->DeletePage($id);
     my $page = Demeter::UI::Artemis::Path->new($datapage->{pathlist}, $composite, $datapage);
-    $datapage->{pathlist}->AddPage($page, $composite->name, 1, 0);
-    $composite->po->start_plot;
-    $composite->plot('r');
+    $datapage->{pathlist}->AddPage($page, $composite->name, 1, 0, $id);
+    #$composite->po->start_plot;
+    #$composite->plot('r');
+    $page->transfer;
+    $Demeter::UI::Artemis::frames{Plot}->plot(0, 'r');
+    $histo_dialog->{DLPOLY} = q{};
+    $dlp->DEMOLISH;
     undef $busy;
   } elsif ($how =~ m{gamma}) {
     printf("%s  %s  %s  %s\n",
@@ -2192,7 +2196,7 @@ L<http://cars9.uchicago.edu/~ravel/software/>  if (0) {
 
 =head1 LICENCE AND COPYRIGHT
 
-Copyright (c) 2006-2010 Bruce Ravel (bravel AT bnl DOT gov). All rights reserved.
+Copyright (c) 2006-2011 Bruce Ravel (bravel AT bnl DOT gov). All rights reserved.
 
 This module is free software; you can redistribute it and/or
 modify it under the same terms as Perl itself. See L<perlgpl>.

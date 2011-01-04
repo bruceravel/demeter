@@ -2,7 +2,7 @@ package Demeter::ScatteringPath::Histogram::DL_POLY;
 
 =for Copyright
  .
- Copyright (c) 2006-2010 Bruce Ravel (bravel AT bnl DOT gov).
+ Copyright (c) 2006-2011 Bruce Ravel (bravel AT bnl DOT gov).
  All rights reserved.
  .
  This file is free software; you can redistribute it and/or
@@ -34,8 +34,11 @@ use List::Util qw{sum};
 has '+plottable'      => (default => 1);
 
 has 'nsteps'    => (is => 'rw', isa => NonNeg, default => 0);
-has 'rmin'      => (is => 'rw', isa => 'Num', default => 0.0,);
-has 'rmax'      => (is => 'rw', isa => 'Num', default => 5.8,);
+has 'update_bins' => (is => 'rw', isa => 'Bool', default => 1);
+has 'rmin'      => (is => 'rw', isa => 'Num', default => 0.0,
+		    trigger => sub{ my($self, $new) = @_; $self->update_bins(1) if $new});
+has 'rmax'      => (is => 'rw', isa => 'Num', default => 5.8,
+		    trigger => sub{ my($self, $new) = @_; $self->update_bins(1) if $new});
 has 'bin'       => (is => 'rw', isa => 'Num', default => 0.005,);
 
 has 'file'      => (is => 'rw', isa => 'Str', default => q{},
@@ -58,7 +61,7 @@ has 'sp'          => (is => 'rw', isa => Empty.'|Demeter::ScatteringPath', defau
 
 sub rebin {
   my($self, $new) = @_;
-  $self->_bin;
+  $self->_bin if $self->update_bins;
   return $self;
 };
 
@@ -156,6 +159,7 @@ sub _bin {
   };
   $self->positions(\@x);
   $self->populations(\@y);
+  $self->update_bins(0);
   $self->stop_spinner if ($self->mo->ui eq 'screen');
   return $self;
 };
@@ -315,7 +319,7 @@ L<http://cars9.uchicago.edu/~ravel/software/>
 
 =head1 LICENCE AND COPYRIGHT
 
-Copyright (c) 2006-2010 Bruce Ravel (bravel AT bnl DOT gov). All rights reserved.
+Copyright (c) 2006-2011 Bruce Ravel (bravel AT bnl DOT gov). All rights reserved.
 
 This module is free software; you can redistribute it and/or
 modify it under the same terms as Perl itself. See L<perlgpl>.

@@ -2,7 +2,7 @@ package  Demeter::UI::Artemis::Data::Histogram;
 
 =for Copyright
  .
- Copyright (c) 2006-2010 Bruce Ravel (bravel AT bnl DOT gov).
+ Copyright (c) 2006-2011 Bruce Ravel (bravel AT bnl DOT gov).
  All rights reserved.
  .
  This file is free software; you can redistribute it and/or
@@ -78,7 +78,8 @@ sub from_file {
   #EVT_RADIOBUTTON($this, $this->{filesel}, \&OnChoice);
 
   $this->{filepicker} = Wx::FilePickerCtrl->new( $this, -1, "", "Choose a File", "All files|*",
-				    [-1, -1], [-1, -1], wxFLP_DEFAULT_STYLE|wxFLP_USE_TEXTCTRL );
+						 wxDefaultPosition, wxDefaultSize,
+						 wxFLP_DEFAULT_STYLE|wxFLP_USE_TEXTCTRL|wxFLP_CHANGE_DIRwx|FLP_FILE_MUST_EXIST );
   $this->{box} -> Add($this->{filepicker}, 0, wxGROW|wxLEFT|wxRIGHT, 25);
 
   my $vbox = Wx::BoxSizer->new( wxHORIZONTAL );
@@ -156,7 +157,8 @@ sub dlpoly {
   $this->{label}->SetLabel("Build histogram from a DL_POLY history file");
 
   $this->{dlfile} = Wx::FilePickerCtrl->new( $this, -1, "", "Choose a HISTORY File", "All files|*",
-					     [-1, -1], [-1, -1], wxFLP_DEFAULT_STYLE|wxFLP_USE_TEXTCTRL );
+						 wxDefaultPosition, wxDefaultSize,
+						 wxFLP_DEFAULT_STYLE|wxFLP_USE_TEXTCTRL|wxFLP_CHANGE_DIRwx|FLP_FILE_MUST_EXIST );
   $this->{box} -> Add($this->{dlfile}, 0, wxGROW|wxLEFT|wxRIGHT, 25);
 
   my $vbox = Wx::BoxSizer->new( wxHORIZONTAL );
@@ -285,7 +287,7 @@ L<http://cars9.uchicago.edu/~ravel/software/>
 
 =head1 LICENCE AND COPYRIGHT
 
-Copyright (c) 2006-2010 Bruce Ravel (bravel AT bnl DOT gov). All rights reserved.
+Copyright (c) 2006-2011 Bruce Ravel (bravel AT bnl DOT gov). All rights reserved.
 
 This module is free software; you can redistribute it and/or
 modify it under the same terms as Perl itself. See L<perlgpl>.

@@ -2,7 +2,7 @@ package Demeter;
 
 =for Copyright
  .
- Copyright (c) 2006-2010 Bruce Ravel (bravel AT bnl DOT gov).
+ Copyright (c) 2006-2011 Bruce Ravel (bravel AT bnl DOT gov).
  All rights reserved.
  .
  This file is free software; you can redistribute it and/or
@@ -343,8 +343,8 @@ sub version {
 };
 sub copyright {
   my ($self) = @_;
-  #return "copyright " . chr(169) . " 2006-2010 Bruce Ravel";
-  return "copyright 2006-2010 Bruce Ravel";
+  #return "copyright " . chr(169) . " 2006-2011 Bruce Ravel";
+  return "copyright 2006-2011 Bruce Ravel";
 };
 sub hashes {
   my ($self) = @_;
@@ -1659,7 +1659,7 @@ http://cars9.uchicago.edu/~ravel/software/
 
 =head1 LICENCE AND COPYRIGHT
 
-Copyright (c) 2006-2010 Bruce Ravel (bravel AT bnl DOT gov). All rights reserved.
+Copyright (c) 2006-2011 Bruce Ravel (bravel AT bnl DOT gov). All rights reserved.
 
 This module is free software; you can redistribute it and/or
 modify it under the same terms as Perl itself. See L<perlgpl>.

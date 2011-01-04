@@ -2,7 +2,7 @@ package Demeter::UI::Wx::CheckListBook;
 
 =for Copyright
  .
- Copyright (c) 2006-2010 Bruce Ravel (bravel AT bnl DOT gov).
+ Copyright (c) 2006-2011 Bruce Ravel (bravel AT bnl DOT gov).
  All rights reserved.
  .
  This file is free software; you can redistribute it and/or
@@ -113,7 +113,7 @@ sub set_initial_page_callback {
 
 sub AddPage {
   my ($self, $page, $text, $select, $imageid, $position) = @_;
-  my $end = (defined($position)) ? $position+1 : $self->{LIST} -> GetCount;
+  my $end = (defined($position)) ? $position : $self->{LIST} -> GetCount;
   $self->{LIST} -> InsertItems([$text], $end);
   $self->{LIST} -> SetClientData($end, $page);
   $self->{LIST} -> Deselect($self->{LIST}->GetSelection);
@@ -546,7 +546,7 @@ L<http://cars9.uchicago.edu/~ravel/software/>
 
 =head1 LICENCE AND COPYRIGHT
 
-Copyright (c) 2006-2010 Bruce Ravel (bravel AT bnl DOT gov). All rights reserved.
+Copyright (c) 2006-2011 Bruce Ravel (bravel AT bnl DOT gov). All rights reserved.
 
 This module is free software; you can redistribute it and/or
 modify it under the same terms as Perl itself. See L<perlgpl>.
