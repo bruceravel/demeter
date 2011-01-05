@@ -398,13 +398,14 @@ sub export {
   my $grid = $parent->{grid};
 
   my $fd = Wx::FileDialog->new( $parent, "Export parameters to a text file", cwd, q{},
-				"Text file|*.txt|All files|*", wxFD_SAVE|wxFD_CHANGE_DIR|wxFD_OVERWRITE_PROMPT,
+				"Text file|*.txt|All files|*", wxFD_SAVE|wxFD_CHANGE_DIR, #|wxFD_OVERWRITE_PROMPT,
 				wxDefaultPosition);
   if ($fd -> ShowModal == wxID_CANCEL) {
     $parent->status("Parameter export aborted.");
     return 0;
   } else {
-    my $file = File::Spec->catfile($fd->GetDirectory, $fd->GetFilename);
+    my $file = $fd->GetPath;
+    return if $parent->overwrite_prompt($file); # work-around gtk's wxFD_OVERWRITE_PROMPT bug (5 Jan 2011)
     open(my $PARAM, '>'.$file);
     foreach my $row (0 .. $grid->GetNumberRows-1) {
       my $thisgds = $parent->tie_GDS_to_grid($row);

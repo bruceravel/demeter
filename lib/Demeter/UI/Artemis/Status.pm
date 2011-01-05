@@ -70,13 +70,14 @@ sub on_save {
   (my $pref = $self->{name}) =~ s{\s+}{_}g;
   my $fd = Wx::FileDialog->new( $self, "Save status buffer", cwd, q{echo.log},
 				"Log files (*.log)|*.log",
-				wxFD_SAVE|wxFD_CHANGE_DIR|wxFD_OVERWRITE_PROMPT,
+				wxFD_SAVE|wxFD_CHANGE_DIR, #|wxFD_OVERWRITE_PROMPT,
 				wxDefaultPosition);
   if ($fd->ShowModal == wxID_CANCEL) {
-    $Demeter::UI::Artemis::frames{main}->status("Not saving status buffer to log file.");
+    $::app->{main}->status("Not saving status buffer to log file.");
     return;
   };
   my $fname = File::Spec->catfile($fd->GetDirectory, $fd->GetFilename);
+  return if $self->overwrite_prompt($fname, $::app->{main});
   $self->save_log($fname);
 };
 

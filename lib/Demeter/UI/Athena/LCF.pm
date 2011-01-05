@@ -610,13 +610,14 @@ sub combi_report {
   my ($this, $event) = @_;
   my $fd = Wx::FileDialog->new( $::app->{main}, "Save combinatorial results", cwd, "combinatorial.xls",
 				"Excel (*.xls)|*.xls|All files|*",
-				wxFD_SAVE|wxFD_CHANGE_DIR|wxFD_OVERWRITE_PROMPT,
+				wxFD_SAVE|wxFD_CHANGE_DIR, #|wxFD_OVERWRITE_PROMPT,
 				wxDefaultPosition);
   if ($fd->ShowModal == wxID_CANCEL) {
     $::app->{main}->status("Saving combinatorial results has been cancelled.");
     return 0;
   };
   my $fname = File::Spec->catfile($fd->GetDirectory, $fd->GetFilename);
+  return if $::app->{main}->overwrite_prompt($fname); # work-around gtk's wxFD_OVERWRITE_PROMPT bug (5 Jan 2011)
   $this->{LCF}->combi_report($fname);
   $::app->{main}->status("Wrote combinatorial report as an Excel spreadsheet to $fname");
 };
@@ -637,13 +638,14 @@ sub save {
   (my $name = $data->name) =~ s{\s+}{_}g;
   my $fd = Wx::FileDialog->new( $::app->{main}, "Save LCF fit to a file", cwd, $name.".lcf",
 				"LCF (*.lcf)|*.lcf|All files|*",
-				wxFD_SAVE|wxFD_CHANGE_DIR|wxFD_OVERWRITE_PROMPT,
+				wxFD_SAVE|wxFD_CHANGE_DIR, #|wxFD_OVERWRITE_PROMPT,
 				wxDefaultPosition);
   if ($fd->ShowModal == wxID_CANCEL) {
     $::app->{main}->status("Saving LCF results to a file has been cancelled.");
     return 0;
   };
   my $fname = File::Spec->catfile($fd->GetDirectory, $fd->GetFilename);
+  return if $::app->{main}->overwrite_prompt($fname); # work-around gtk's wxFD_OVERWRITE_PROMPT bug (5 Jan 2011)
   $this->{LCF}->save($fname);
   $::app->{main}->status("Saved LCF results to $fname");
 };

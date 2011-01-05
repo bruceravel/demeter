@@ -1260,7 +1260,7 @@ sub preplot {
     ## writing plot to a single file has been selected...
     my $fd = Wx::FileDialog->new( $app->{main}, "Save plot to a file", cwd, "plot.dat",
 				  "Data (*.dat)|*.dat|All files|*",
-				  wxFD_SAVE|wxFD_CHANGE_DIR|wxFD_OVERWRITE_PROMPT,
+				  wxFD_SAVE|wxFD_CHANGE_DIR, #|wxFD_OVERWRITE_PROMPT,
 				  wxDefaultPosition);
     if ($fd->ShowModal == wxID_CANCEL) {
       $app->{main}->status("Saving plot to a file has been cancelled.");
@@ -1268,6 +1268,10 @@ sub preplot {
       return 0;
     };
     ## set up for SingleFile backend
+    my $file = $fd->GetPath;
+    $app->{main}->{Other}->{singlefile}->SetValue(0), return
+      if $app->{main}->overwrite_prompt($file); # work-around gtk's wxFD_OVERWRITE_PROMPT bug (5 Jan 2011)
+
     if (not $data) {
       foreach my $i (0 .. $app->{main}->{list}->GetCount-1) {
 	if ($app->{main}->{list}->IsChecked($i)) {
@@ -1277,7 +1281,7 @@ sub preplot {
       };
     };
     $demeter->plot_with('singlefile');
-    $data->po->prep(file     => File::Spec->catfile($fd->GetDirectory, $fd->GetFilename),
+    $data->po->prep(file     => $file,
 		    standard => $data,
 		    space    => $space);
     #$data->standard;
@@ -1536,6 +1540,7 @@ message, but not push it into the buffer.
 
 package Wx::Frame;
 use Wx qw(wxNullColour);
+use Demeter::UI::Wx::OverwritePrompt;
 my $normal = wxNullColour;
 my $wait   = Wx::Colour->new("#C5E49A");
 my $error  = Wx::Colour->new("#FD7E6F");

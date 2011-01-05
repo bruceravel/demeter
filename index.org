@@ -4,6 +4,9 @@
 
 ** wx issues
   - [ ] why does Wx::FileDialog with wxFD_OVERWRITE_PROMPT style not work correctly?
+        see https://bugzilla.gnome.org/show_bug.cgi?id=631908 and 
+	https://bugs.launchpad.net/ubuntu/+source/gtk+2.0/+bug/558674 for more info
+        Turns out this is a gtk problem -- I can make the same thing happen with Firefox!
 
 ** Demeter bugs and shortcomings  [0/6]
   - [ ] in D::Data::IO::save_many, why doesn't updating in n specifying

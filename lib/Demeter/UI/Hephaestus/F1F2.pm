@@ -179,9 +179,20 @@ sub save_f1f2_data {
   my $default = join('.', get_name($parent->{element}), 'f1f2');
   my $fd = Wx::FileDialog->new( $self, "Output File", cwd, $default,
 				"f1f2 files (*.f1f2)|*.f1f2|All files|*",
-				wxFD_SAVE|wxFD_OVERWRITE_PROMPT, wxDefaultPosition);
-  $fd -> ShowModal;
-  my $file = File::Spec->catfile($fd->GetDirectory, $fd->GetFilename);
+				wxFD_SAVE|wxFD_CHANGE_DIR, #|wxFD_OVERWRITE_PROMPT,
+				wxDefaultPosition);
+  return if ($fd->ShowModal == wxID_CANCEL);
+  my $file = $fd->GetPath;
+  if (-e $file) {
+    my $yesno = Wx::MessageDialog->new($self,
+				       "Overwrite existing file \"$file\"?",
+				       "Overwrite file?",
+				       wxYES_NO|wxYES_DEFAULT|wxICON_QUESTION,
+				      );
+                                      ##Wx::GetMousePosition  how is this done?
+    my $ok = $yesno->ShowModal;
+    return if $ok == wxID_NO;
+  };
   $demeter -> co -> set(
 			f1f2_save => $file,
 		       );

@@ -2,11 +2,11 @@ package Demeter::UI::Artemis;
 
 use Demeter; # qw(:plotwith=gnuplot);
 use Demeter::UI::Atoms;
+use Demeter::UI::Artemis::Import;
 use Demeter::UI::Artemis::Project;
 use Demeter::UI::Artemis::ShowText;
 use Demeter::UI::Wx::MRU;
 use Demeter::UI::Wx::SpecialCharacters qw(:all);
-use Demeter::UI::Artemis::Import;
 
 use vars qw($demeter $buffer $plotbuffer);
 $demeter = Demeter->new;
@@ -109,6 +109,7 @@ sub OnInit {
   $frames{main} -> {projectname} = '<untitled>';
   $frames{main} -> {projectpath} = q{};
   $frames{main} -> {modified} = 0;
+  $app->{main} = $frames{main};
 
   ## -------- Set up menubar
   my $bar      = Wx::MenuBar->new;
@@ -309,7 +310,8 @@ sub OnInit {
 
   foreach my $part (qw(GDS Plot Log History Journal Buffer Status Config)) {
     my $pp = "Demeter::UI::Artemis::".$part;
-    $frames{$part} = $pp->new($frames{main});
+    $app->{$part}   = $pp->new($frames{main});
+    $frames{$part}  = $app->{$part};
     $frames{$part} -> SetIcon($icon);
   };
 
@@ -1034,15 +1036,16 @@ sub export {
 
   my $suffix = ($how eq 'ifeffit') ? 'iff' : 'pl';
 
-  my $fd = Wx::FileDialog->new( $frames{main}, "Export this fitting model", cwd, "artemis.$suffix",
+  my $fd = Wx::FileDialog->new( $::app->{main}, "Export this fitting model", cwd, "artemis.$suffix",
 				"fitting scripts (*.$suffix)|*.$suffix|All files|*",
-				wxFD_SAVE|wxFD_CHANGE_DIR|wxFD_OVERWRITE_PROMPT,
+				wxFD_SAVE|wxFD_CHANGE_DIR, #|wxFD_OVERWRITE_PROMPT,
 				wxDefaultPosition);
   if ($fd->ShowModal == wxID_CANCEL) {
-    $frames{main}->status("Exporting fitting model cancelled.");
+    $::app->{main}->status("Exporting fitting model cancelled.");
     return;
   };
   my $fname = File::Spec->catfile($fd->GetDirectory, $fd->GetFilename);
+  return if $::app->{main}->overwrite_prompt($fname); # work-around gtk's wxFD_OVERWRITE_PROMPT bug (5 Jan 2011)
   unlink $fname;
 
   ## save mode settings
@@ -1086,6 +1089,7 @@ and the log buffer.
 
 package Wx::Frame;
 use Wx qw(wxNullColour);
+use Demeter::UI::Wx::OverwritePrompt;
 my $normal = wxNullColour;
 my $wait   = Wx::Colour->new("#C5E49A");
 my $error  = Wx::Colour->new("#FD7E6F");

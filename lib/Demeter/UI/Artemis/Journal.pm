@@ -68,24 +68,25 @@ sub on_save {
   my ($self) = @_;
 
   my $fd = Wx::FileDialog->new( $self, "Save journal", cwd,
-				$Demeter::UI::Artemis::frames{main}->{projectname}.q{.txt},
+				$::app->{main}->{projectname}.q{.txt},
 				"Text files (*.txt)|*.txt",
-				wxFD_SAVE|wxFD_CHANGE_DIR|wxFD_OVERWRITE_PROMPT,
+				wxFD_SAVE|wxFD_CHANGE_DIR, #|wxFD_OVERWRITE_PROMPT,
 				wxDefaultPosition);
   if ($fd->ShowModal == wxID_CANCEL) {
-    $Demeter::UI::Artemis::frames{main}->status("Not saving journal.");
+    $::app->{main}->status("Not saving journal.");
     return;
   };
   my $fname = File::Spec->catfile($fd->GetDirectory, $fd->GetFilename);
+  return if $self->overwrite_prompt($fname, $::app->{main}); # work-around gtk's wxFD_OVERWRITE_PROMPT bug (5 Jan 2011)
   $self->save_journal($fname);
 };
 
 sub save_journal {
   my ($self, $fname) = @_;
   open (my $LOG, '>',$fname);
-  print $LOG $self->{text}->GetValue;
+  print $LOG $self->{journal}->GetValue;
   close $LOG;
-  $Demeter::UI::Artemis::frames{main}->status("Wrote journal to '$fname'.");
+  $::app->{main}->status("Wrote journal to '$fname'.");
 };
 
 

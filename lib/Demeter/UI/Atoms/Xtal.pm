@@ -737,13 +737,26 @@ sub save_file {
     if (not $file) {
       my $fd = Wx::FileDialog->new( $self, "Export crystal data", cwd, q{atoms.inp},
 				    "input file (*.inp)|*.inp|All files|*",
-				    wxFD_SAVE|wxFD_CHANGE_DIR|wxFD_OVERWRITE_PROMPT,
+				    wxFD_SAVE|wxFD_CHANGE_DIR, #|wxFD_OVERWRITE_PROMPT,
 				    wxDefaultPosition);
       if ($fd -> ShowModal == wxID_CANCEL) {
 	$self->{statusbar}->SetStatusText("Saving crystal data aborted.");
 	return 0;
       } else {
-	$file = File::Spec->catfile($fd->GetDirectory, $fd->GetFilename);
+	$file = $fd->GetPath;
+	if (-e $file) {
+	  my $yesno = Wx::MessageDialog->new($self,
+					     "Overwrite existing file \"$file\"?",
+					     "Overwrite file?",
+					     wxYES_NO|wxYES_DEFAULT|wxICON_QUESTION,
+					    );
+                                            ##Wx::GetMousePosition  how is this done?
+	  my $ok = $yesno->ShowModal;
+	  if ($ok == wxID_NO) {
+	    $self->{statusbar}->SetStatusText("Not overwriting \"$file\"");
+	    return 0;
+	  };
+	};
       };
     };
   } else {

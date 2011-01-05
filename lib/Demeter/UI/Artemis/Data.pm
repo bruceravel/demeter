@@ -805,7 +805,7 @@ sub plot {
     ## writing plot to a single file has been selected...
     my $fd = Wx::FileDialog->new( $self, "Save plot to a file", cwd, "plot.dat",
 				  "Data (*.dat)|*.dat|All files|*",
-				  wxFD_SAVE|wxFD_CHANGE_DIR|wxFD_OVERWRITE_PROMPT,
+				  wxFD_SAVE|wxFD_CHANGE_DIR, #|wxFD_OVERWRITE_PROMPT,
 				  wxDefaultPosition);
     if ($fd->ShowModal == wxID_CANCEL) {
       $self->status("Saving plot to a file has been cancelled.");
@@ -813,8 +813,10 @@ sub plot {
       return;
     };
     ## set up for SingleFile backend
+    my $file = $fd->GetPath;
+    $pf->{fileout}->SetValue(0), return if $self->overwrite_prompt($file); # work-around gtk's wxFD_OVERWRITE_PROMPT bug (5 Jan 2011)
     $self->{data}->plot_with('singlefile');
-    $self->{data}->po->file(File::Spec->catfile($fd->GetDirectory, $fd->GetFilename));
+    $self->{data}->po->file($file);
   };
 
   $self->{data}->standard if ($pf->{fileout}->GetValue);
@@ -1277,13 +1279,14 @@ sub save_fit {
     $suggest = sprintf("%s.%s", $suggest, $how);
     my $fd = Wx::FileDialog->new( $self, "Save path", cwd, $suggest,
 				  "Data and fit (*.$how)|*.$how|All files|*",
-				  wxFD_SAVE|wxFD_CHANGE_DIR|wxFD_OVERWRITE_PROMPT,
+				  wxFD_SAVE|wxFD_CHANGE_DIR, #|wxFD_OVERWRITE_PROMPT,
 				  wxDefaultPosition);
     if ($fd->ShowModal == wxID_CANCEL) {
       $self->status("Saving data and fit cancelled.");
       return;
     };
-    $filename = File::Spec->catfile($fd->GetDirectory, $fd->GetFilename);
+    $filename = $fd->GetPath;
+    return if $self->overwrite_prompt($filename); # work-around gtk's wxFD_OVERWRITE_PROMPT bug (5 Jan 2011)
   };
   $data->save('fit', $filename, $how);
   $self->status("Saved data and fit as $how to $filename." );
@@ -1306,13 +1309,14 @@ sub save_path {
     my $suff = sprintf("%s%s", $space, 'sp');
     my $fd = Wx::FileDialog->new( $self, "Save path", cwd, $suggest,
 				  "Demeter fitting project (*.$suff)|*.$suff|All files|*",
-				  wxFD_SAVE|wxFD_CHANGE_DIR|wxFD_OVERWRITE_PROMPT,
+				  wxFD_SAVE|wxFD_CHANGE_DIR, #|wxFD_OVERWRITE_PROMPT,
 				  wxDefaultPosition);
     if ($fd->ShowModal == wxID_CANCEL) {
       $self->status("Saving path cancelled.");
       return;
     };
-    $filename = File::Spec->catfile($fd->GetDirectory, $fd->GetFilename);
+    $filename = $fd->GetPath;
+    return if $self->overwrite_prompt($filename); # work-around gtk's wxFD_OVERWRITE_PROMPT bug (5 Jan 2011)
   };
   $path->save($space, $filename);
   $self->status("Saved path \"".$path->name."\"to $space space as $filename." );
@@ -1335,13 +1339,14 @@ sub save_data {
     my $suff = sprintf("%s%s", $space, 'sp');
     my $fd = Wx::FileDialog->new( $self, "Save data in $space-space", cwd, $suggest,
 				  "Data file (*.$suff)|*.$suff|All files|*",
-				  wxFD_SAVE|wxFD_CHANGE_DIR|wxFD_OVERWRITE_PROMPT,
+				  wxFD_SAVE|wxFD_CHANGE_DIR, #|wxFD_OVERWRITE_PROMPT,
 				  wxDefaultPosition);
     if ($fd->ShowModal == wxID_CANCEL) {
       $self->status("Saving data cancelled.");
       return;
     };
-    $filename = File::Spec->catfile($fd->GetDirectory, $fd->GetFilename);
+    $filename = $fd->GetPath;
+    return if $self->overwrite_prompt($filename); # work-around gtk's wxFD_OVERWRITE_PROMPT bug (5 Jan 2011)
   };
   $data->save($space, $filename);
   $self->status("Saved data \"".$data->name."\"to $space space as $filename." );
@@ -1383,13 +1388,14 @@ sub save_marked_paths {
     $suggest = sprintf("%s%s.%s", $suggest, '+paths', $how);
     my $fd = Wx::FileDialog->new( $self, "Save data and marked paths", cwd, $suggest,
 				  "Data and paths (*.$how)|*.$how|All files|*",
-				  wxFD_SAVE|wxFD_CHANGE_DIR|wxFD_OVERWRITE_PROMPT,
+				  wxFD_SAVE|wxFD_CHANGE_DIR, #|wxFD_OVERWRITE_PROMPT,
 				  wxDefaultPosition);
     if ($fd->ShowModal == wxID_CANCEL) {
       $self->status("Saving data and fit cancelled.");
       return;
     };
-    $filename = File::Spec->catfile($fd->GetDirectory, $fd->GetFilename);
+    $filename = $fd->GetPath;
+    return if $self->overwrite_prompt($filename); # work-around gtk's wxFD_OVERWRITE_PROMPT bug (5 Jan 2011)
   };
   $data->save_many($filename, $how, @list);
   $self->status("Saved data and marked paths as $how to $filename." );

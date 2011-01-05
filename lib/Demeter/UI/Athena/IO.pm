@@ -45,17 +45,7 @@ sub Export {
       return;
     };
     $fname = $fd->GetPath; #File::Spec->catfile($fd->GetDirectory, $fd->GetFilename);
-    if (-e $fname) {
-      my $yesno = Wx::MessageDialog->new($app->{main},
-					 "Overwrite existing file $fname?",
-					 "Overwrite file?",
-					 wxYES_NO|wxYES_DEFAULT|wxICON_QUESTION);
-      my $ok = $yesno->ShowModal;
-      if ($ok == wxID_NO) {
-	$app->{main}->status("Not overwriting $fname.");
-	return;
-      };
-    };
+    return if $app->{main}->overwrite_prompt($fname); # work-around gtk's wxFD_OVERWRITE_PROMPT bug (5 Jan 2011)
   };
 
   my $busy = Wx::BusyCursor->new();
@@ -551,13 +541,14 @@ sub save_column {
 
   my $fd = Wx::FileDialog->new( $app->{main}, "Save $desc data", cwd, $base.$suff,
 				"$desc data (*$suff)|*$suff|All files|*",
-				wxFD_SAVE|wxFD_CHANGE_DIR|wxFD_OVERWRITE_PROMPT,
+				wxFD_SAVE|wxFD_CHANGE_DIR, #|wxFD_OVERWRITE_PROMPT,
 				wxDefaultPosition);
   if ($fd->ShowModal == wxID_CANCEL) {
     $app->{main}->status("Saving column data cancelled.");
     return;
   };
   my $fname = File::Spec->catfile($fd->GetDirectory, $fd->GetFilename);
+  return if $app->{main}->overwrite_prompt($fname); # work-around gtk's wxFD_OVERWRITE_PROMPT bug (5 Jan 2011)
   $data->save($out, $fname);
   $app->{main}->status("Saved $desc data to $fname");
 };
@@ -597,13 +588,14 @@ sub save_marked {
 
   my $fd = Wx::FileDialog->new( $app->{main}, "Save $desc data for marked groups", cwd, 'marked'.$suff,
 				"$desc data (*$suff)|*$suff|All files|*",
-				wxFD_SAVE|wxFD_CHANGE_DIR|wxFD_OVERWRITE_PROMPT,
+				wxFD_SAVE|wxFD_CHANGE_DIR, #|wxFD_OVERWRITE_PROMPT,
 				wxDefaultPosition);
   if ($fd->ShowModal == wxID_CANCEL) {
     $app->{main}->status("Saving column data for marked groups cancelled.");
     return;
   };
   my $fname = File::Spec->catfile($fd->GetDirectory, $fd->GetFilename);
+  return if $app->{main}->overwrite_prompt($fname); # work-around gtk's wxFD_OVERWRITE_PROMPT bug (5 Jan 2011)
   $data[0]->save_many($fname, $how, @data);
   $app->{main}->status("Saved $desc data for marked groups to $fname");
 };
@@ -655,13 +647,14 @@ sub FPath {
   (my $base = $app->current_data->name) =~ s{[^-a-zA-Z0-9.+]+}{_}g;
   my $fd = Wx::FileDialog->new( $app->{main}, "Save current group as an empirical standard", cwd, $base.'.yaml',
 				"epirical standards (*.yaml)|*.yaml|All files|*",
-				wxFD_SAVE|wxFD_CHANGE_DIR|wxFD_OVERWRITE_PROMPT,
+				wxFD_SAVE|wxFD_CHANGE_DIR, #|wxFD_OVERWRITE_PROMPT,
 				wxDefaultPosition);
   if ($fd->ShowModal == wxID_CANCEL) {
     $app->{main}->status("Saving empirical standard from current group cancelled.");
     return;
   };
   my $fname = File::Spec->catfile($fd->GetDirectory, $fd->GetFilename);
+  return if $app->{main}->overwrite_prompt($fname); # work-around gtk's wxFD_OVERWRITE_PROMPT bug (5 Jan 2011)
 
   my $scatterer = q{};
   $app->{main}->{popup}  = Demeter::UI::Wx::PeriodicTableDialog->new($app->{main}, -1, "Select scattering element", sub{$scatterer = $_[0]; $app->{main}->{popup}->Destroy;});

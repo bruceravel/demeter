@@ -247,21 +247,23 @@ sub plot {
   return if ($space !~ m{[krq]}i);
   my $busy = Wx::BusyCursor->new();
   my $saveplot = $demeter->co->default(qw(plot plotwith));
-  my $sb = $Demeter::UI::Artemis::frames{main}->{statusbar};
   if ($self->{fileout}->GetValue) {
     ## writing plot to a single file has been selected...
     my $fd = Wx::FileDialog->new( $self, "Save plot to a file", cwd, "plot.dat",
 				  "Data (*.dat)|*.dat|All files|*",
-				  wxFD_SAVE|wxFD_CHANGE_DIR|wxFD_OVERWRITE_PROMPT,
+				  wxFD_SAVE|wxFD_CHANGE_DIR, #|wxFD_OVERWRITE_PROMPT,
 				  wxDefaultPosition);
     if ($fd->ShowModal == wxID_CANCEL) {
-      $Demeter::UI::Artemis::frames{main}->status("Saving plot to a file has been cancelled.");
+      $::app->{main}->status("Saving plot to a file has been cancelled.");
       $self->{fileout}->SetValue(0);
       return;
     };
     ## set up for SingleFile backend
+    my $file = $fd->GetPath;
+    $self->{fileout}->SetValue(0), return
+      if $self->overwrite_prompt($file, $::app->{main}); # work-around gtk's wxFD_OVERWRITE_PROMPT bug (5 Jan 2011)
     $demeter->plot_with('singlefile');
-    $demeter->po->file(File::Spec->catfile($fd->GetDirectory, $fd->GetFilename));
+    $demeter->po->file($file);
   };
   my ($abort, $rdata, $rpaths) = Demeter::UI::Artemis::uptodate(\%Demeter::UI::Artemis::frames);
   $self->fetch_parameters;

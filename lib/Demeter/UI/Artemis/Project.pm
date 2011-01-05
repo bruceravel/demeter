@@ -80,19 +80,8 @@ sub save_project {
       $rframes->{main}->status("Saving project cancelled.");
       return;
     };
-    ##print join("|", $fd->GetPath, $fd->GetDirectory, $fd->GetFilename), $/;
-    $fname = $fd->GetPath; # File::Spec->catfile($fd->GetDirectory, $fd->GetFilename);
-    if (-e $fname) {
-      my $yesno = Wx::MessageDialog->new($rframes->{main},
-					 "Overwrite existing file $fname?",
-					 "Overwrite file?",
-					 wxYES_NO|wxYES_DEFAULT|wxICON_QUESTION);
-      my $ok = $yesno->ShowModal;
-      if ($ok == wxID_NO) {
-	$rframes->{main}->status("Not overwriting $fname.");
-	return;
-      };
-    }
+    $fname = $fd->GetPath;
+    return if $::app->{main}->overwrite_prompt($fname); # work-around gtk's wxFD_OVERWRITE_PROMPT bug (5 Jan 2011)
   };
 
   my $po = $rframes->{main} -> {currentfit}->po;

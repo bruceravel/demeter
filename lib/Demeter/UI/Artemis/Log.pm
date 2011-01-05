@@ -72,13 +72,14 @@ sub on_save {
   (my $pref = $self->{name}) =~ s{\s+}{_}g;
   my $fd = Wx::FileDialog->new( $self, "Save log file", cwd, $pref.q{.log},
 				"Log files (*.log)|*.log",
-				wxFD_SAVE|wxFD_CHANGE_DIR|wxFD_OVERWRITE_PROMPT,
+				wxFD_SAVE|wxFD_CHANGE_DIR, #|wxFD_OVERWRITE_PROMPT,
 				wxDefaultPosition);
   if ($fd->ShowModal == wxID_CANCEL) {
-    $Demeter::UI::Artemis::frames{main}->status("Not saving log file.");
+    $::app->{main}->status("Not saving log file.");
     return;
   };
   my $fname = File::Spec->catfile($fd->GetDirectory, $fd->GetFilename);
+  return if $self->overwrite_prompt($fname, $::app->{main}); # work-around gtk's wxFD_OVERWRITE_PROMPT bug (5 Jan 2011)
   $self->save_log($fname);
 };
 
@@ -87,7 +88,7 @@ sub save_log {
   open (my $LOG, '>',$fname);
   print $LOG $self->{text}->GetValue;
   close $LOG;
-  $Demeter::UI::Artemis::frames{main}->status("Wrote log file to '$fname'.");
+  $::app->{main}->status("Wrote log file to '$fname'.");
 };
 
 sub on_close {

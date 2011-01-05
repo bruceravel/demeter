@@ -213,13 +213,14 @@ sub Report {
   if (not $fname) {
     my $fd = Wx::FileDialog->new( $app->{main}, "Save spreadsheet report", cwd, q{athena.xls},
 				  "Athena project (*.xls)|*.xls|All files|*",
-				  wxFD_SAVE|wxFD_CHANGE_DIR|wxFD_OVERWRITE_PROMPT,
+				  wxFD_SAVE|wxFD_CHANGE_DIR, #|wxFD_OVERWRITE_PROMPT,
 				  wxDefaultPosition);
     if ($fd->ShowModal == wxID_CANCEL) {
       $app->{main}->status("Saving report cancelled.");
       return;
     };
-    $fname = File::Spec->catfile($fd->GetDirectory, $fd->GetFilename);
+    $fname = $fd->GetPath;
+    return if $::app->{main}->overwrite_prompt($fname); # work-around gtk's wxFD_OVERWRITE_PROMPT bug (5 Jan 2011)
   };
 
   my $workbook;
