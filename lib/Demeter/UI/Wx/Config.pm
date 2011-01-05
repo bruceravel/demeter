@@ -19,6 +19,7 @@ use strict;
 use warnings;
 use Carp;
 use List::MoreUtils qw(firstidx uniq);
+use Text::Wrap;
 
 use Wx qw( :everything );
 use Wx::Event qw(EVT_BUTTON EVT_TREE_SEL_CHANGED);
@@ -28,6 +29,8 @@ my $demeter = Demeter->new;
 
 use Demeter::UI::Wx::ColourDatabase;
 my $cdb = Demeter::UI::Wx::ColourDatabase->new;
+my $aleft = Wx::TextAttr->new();
+$aleft->SetAlignment(wxTEXT_ALIGNMENT_LEFT);
 
 use base 'Wx::Panel';
 
@@ -108,9 +111,10 @@ sub new {
   $self->{descbox} = Wx::StaticBox->new($self, -1, 'Description', wxDefaultPosition, wxDefaultSize);
   $self->{descboxsizer} = Wx::StaticBoxSizer->new( $self->{descbox}, wxVERTICAL );
   $self->{desc} = Wx::TextCtrl->new($self, -1, q{}, wxDefaultPosition, wxDefaultSize,
-				    wxVSCROLL|wxTE_MULTILINE|wxTE_READONLY|wxNO_BORDER);
+				    wxVSCROLL|wxTE_WORDWRAP|wxTE_MULTILINE|wxTE_READONLY|wxNO_BORDER);
   $self->{descboxsizer} -> Add($self->{desc}, 1, wxEXPAND|wxALL, 2);
-  $self->{desc}->SetFont( Wx::Font->new( 10, wxTELETYPE, wxNORMAL, wxNORMAL, 0, "" ) );
+  $self->{desc}->SetFont( Wx::Font->new( Wx::SystemSettings::GetFont(wxSYS_DEFAULT_GUI_FONT)->GetPointSize, wxTELETYPE, wxNORMAL, wxNORMAL, 0, "" ) );
+  $self->{desc}->SetDefaultStyle($aleft);
   $right -> Add($self->{descboxsizer}, 1, wxEXPAND|wxALL, 5);
 
   ## -------- Button box
@@ -192,7 +196,10 @@ sub tree_select {
     if ($demeter->co->restart($parent, $param)) {
       $description .= $/ x 3 . "A change in this parameter will take effect the next time you start this application.";
     };
-    $self->{desc}  -> WriteText($description);
+    {				# this shouldnot be necessary, why doesn't wrapping work in TextCtrl?
+      local $Text::Wrap::columns = 47;
+      $self->{desc}  -> WriteText(wrap(q{}, q{}, $description));
+    };
     $self->{Name}  -> SetLabel(join(' --> ', $parent, $param));
     $self->{Type}  -> SetLabel($demeter->co->Type($parent, $param));
     my $type = $demeter->co->Type($parent, $param);

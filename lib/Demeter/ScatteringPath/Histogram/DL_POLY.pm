@@ -22,6 +22,10 @@ extends 'Demeter';
 use Demeter::StrTypes qw( Empty );
 use Demeter::NumTypes qw( Natural PosInt NonNeg );
 
+use POSIX qw(acos);
+use Readonly;
+Readonly my $PI => 4*atan2(1,1);
+
 with 'Demeter::Data::Arrays';
 with 'Demeter::UI::Screen::Pause' if ($Demeter::mode->ui eq 'screen');
 if ($Demeter::mode->ui eq 'screen') {
@@ -37,21 +41,32 @@ has 'nsteps'    => (is => 'rw', isa => NonNeg, default => 0);
 has 'update_bins' => (is => 'rw', isa => 'Bool', default => 1);
 has 'rmin'      => (is => 'rw', isa => 'Num', default => 0.0,
 		    trigger => sub{ my($self, $new) = @_; $self->update_bins(1) if $new});
-has 'rmax'      => (is => 'rw', isa => 'Num', default => 5.8,
+has 'rmax'      => (is => 'rw', isa => 'Num', default => 5.6,
 		    trigger => sub{ my($self, $new) = @_; $self->update_bins(1) if $new});
 has 'bin'       => (is => 'rw', isa => 'Num', default => 0.005,);
+
+has 'r1'        => (is => 'rw', isa => 'Num', default => 0.0,);
+has 'r2'        => (is => 'rw', isa => 'Num', default => 3.5,);
+has 'r3'        => (is => 'rw', isa => 'Num', default => 5.2,);
+has 'r4'        => (is => 'rw', isa => 'Num', default => 5.6,);
+has 'beta'      => (is => 'rw', isa => 'Num', default => 20,);
+
+has 'ss'        => (is => 'rw', isa => 'Bool', default => 0, trigger=>sub{my($self, $new) = @_; $self->ncl(0) if $new});
+has 'ncl'       => (is => 'rw', isa => 'Bool', default => 0, trigger=>sub{my($self, $new) = @_; $self->ss(0)  if $new});
 
 has 'file'      => (is => 'rw', isa => 'Str', default => q{},
 		    trigger => sub{ my($self, $new) = @_;
 				    if ($new and (-e $new)) {
 				      $self->_cluster;
-				      $self->rdf;
+				      $self->rdf if $self->ss;
+				      $self->nearly_collinear if $self->ncl;
 				    };
 				  });
 has 'timestep_count' => (is => 'rw', isa => 'Int',  default => 0);
 
 has 'clusters'    => (is => 'rw', isa => 'ArrayRef', default => sub{[]});
 has 'ssrdf'       => (is => 'rw', isa => 'ArrayRef', default => sub{[]});
+has 'nearcl'      => (is => 'rw', isa => 'ArrayRef', default => sub{[]});
 has 'positions'   => (is => 'rw', isa => 'ArrayRef', default => sub{[]});
 has 'populations' => (is => 'rw', isa => 'ArrayRef', default => sub{[]});
 
@@ -111,17 +126,18 @@ sub rdf {
   my $rminsqr = $self->rmin*$self->rmin;
   my $rmaxsqr = $self->rmax*$self->rmax;
   $self->start_counter("Making RDF from each timestep", $#{$self->clusters}+1) if ($self->mo->ui eq 'screen');
+  my ($x0, $x1, $x2) = (0,0,0);
   foreach my $step (@{$self->clusters}) {
+    my @this = @$step;
     $self->count if ($self->mo->ui eq 'screen');
     $self->timestep_count(++$count);
     $self->call_sentinal;
-    my $size = $#{$step};
-    foreach my $i (0 .. $size) {
-      foreach my $j ($i+1 .. $size) { # remember that all pairs are doubly degenerate
-	#my $rsqr = sum  map { ($step->[$i]->[$_] - $step->[$j]->[$_])**2 } (0..2) ; # this may be too cute
-	my $rsqr = ($step->[$i]->[0] - $step->[$j]->[0])**2
-	         + ($step->[$i]->[1] - $step->[$j]->[1])**2
-	         + ($step->[$i]->[2] - $step->[$j]->[2])**2;
+    foreach my $i (0 .. $#this) {
+      ($x0, $x1, $x2) = @{$this[$i]};
+      foreach my $j ($i+1 .. $#this) { # remember that all pairs are doubly degenerate
+	my $rsqr = ($x0 - $this[$j]->[0])**2
+	         + ($x1 - $this[$j]->[1])**2
+	         + ($x2 - $this[$j]->[2])**2; # this loop has been optimized for speed, hence the weird syntax
 	push @rdf, $rsqr if (($rsqr > $rminsqr) and ($rsqr < $rmaxsqr));
       };
     };
@@ -136,12 +152,74 @@ sub rdf {
   return $self;
 };
 
+sub nearly_collinear {
+  my ($self) = @_;
+  my $count = 0;
+  my $r1sqr = $self->r1**2;
+  my $r2sqr = $self->r2**2;
+  my $r3sqr = $self->r3**2;
+  my $r4sqr = $self->r4**2;
+
+  $self->start_counter("Making RDF from each timestep", ($#{$self->clusters}+1)/50) if ($self->mo->ui eq 'screen');
+  my ($x0, $x1, $x2) = (0,0,0);
+  my ($a0, $a1, $a2) = (0,0,0);
+  my @three = ();
+  my $costh;
+  my $cosbetamax = cos($PI*$self->beta/180);
+  foreach my $step (@{$self->clusters}) {
+    #my $step = $self->clusters->[400];
+    my @rdf1 = ();
+    my @rdf4 = ();
+
+    my @this = @$step;
+    $self->timestep_count(++$count);
+    next if $count % 50;
+    $self->count if ($self->mo->ui eq 'screen');
+    #$self->call_sentinal;
+    foreach my $i (0 .. $#this) {
+      ($x0, $x1, $x2) = @{$this[$i]};
+      foreach my $j (0 .. $#this) {
+	my $rsqr = ($x0 - $this[$j]->[0])**2
+	         + ($x1 - $this[$j]->[1])**2
+	         + ($x2 - $this[$j]->[2])**2; # this loop has been optimized for speed, hence the weird syntax
+	push @rdf1, [sqrt($rsqr), $i, $j] if (($rsqr > $r1sqr) and ($rsqr < $r2sqr));
+	push @rdf4, [sqrt($rsqr), $i, $j] if (($rsqr > $r3sqr) and ($rsqr < $r4sqr));
+      };
+    };
+
+    #use Data::Dumper;
+    #print Data::Dumper->Dump([\@rdf1, \@rdf4], [qw/*rdf1 *rdf4/]), $/;
+    #printf("number of 1st neighbors = %d, number of 4th neighbors = %d\n", $#rdf1, $#rdf4);
+
+    foreach my $fth (@rdf4) {
+      my $n4 = $fth->[1];
+      foreach my $fst (@rdf1) {
+	next if ($n4 ne $fst->[1]);
+	($a0, $a1, $a2) = ($this[ $fth->[1] ]->[0], $this[ $fth->[1] ]->[1], $this[ $fth->[1] ]->[2]);
+	$costh =
+ 	  (($this[ $fst->[2] ]->[0] - $a0) * ($this[ $fth->[2] ]->[0] - $a0) +
+	   ($this[ $fst->[2] ]->[1] - $a1) * ($this[ $fth->[2] ]->[1] - $a1) +
+	   ($this[ $fst->[2] ]->[2] - $a2) * ($this[ $fth->[2] ]->[2] - $a2))  / ($fth->[0] * $fst->[0]);
+
+	#my $costh = ($vec1[0]*$vec4[0] + $vec1[1]*$vec4[1] + $vec1[2]*$vec4[2]) / ($fth->[0] * $fst->[0]);
+	#print $costh, "  ", $cosbetamax, $/;
+	next if ($costh < $cosbetamax);
+	push @three, [$fst->[0], $fth->[0], $costh];
+	#printf("%d  %d  %d %.5f  %.5f  %.5f  %.5f\n",
+	#     $fst->[1], $fst->[2], $fth->[2], $fst->[0], $fth->[0], $costh, 180*acos($costh)/$PI);
+      };
+    };
+  };
+  $self->stop_counter if ($self->mo->ui eq 'screen');
+  $self->nearcl(\@three);
+};
+
 sub _bin {
   my ($self) = @_;
   my (@x, @y);
   my $bin_start = sqrt($self->ssrdf->[0]);
   my ($population, $average) = (0,0);
-  $self->start_spinner("Binning RDF") if ($self->mo->ui eq 'screen');
+  $self->start_counter("Making RDF from each timestep", $#{$self->clusters}+1) if ($self->mo->ui eq 'screen');
   foreach my $pair (@{$self->ssrdf}) {
     my $rr = sqrt($pair);
     if (($rr - $bin_start) > $self->bin) {

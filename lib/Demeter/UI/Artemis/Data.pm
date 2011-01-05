@@ -39,6 +39,7 @@ use Demeter::UI::Wx::SpecialCharacters qw(:all);
 
 use Cwd;
 use List::MoreUtils qw(firstidx any);
+use YAML::Tiny;
 
 my $windows = [qw(hanning kaiser-bessel welch parzen sine)];
 my $demeter = $Demeter::UI::Artemis::demeter;
@@ -1960,8 +1961,15 @@ sub process_histogram {
     my $rmax = $histo_dialog->{dlrmax}->GetValue;
     my $bin  = $histo_dialog->{dlbin}->GetValue;
     my $dlp  = $histo_dialog->{DLPOLY};
+    $histo_dialog->{yaml}->{file} = $file;
+    $histo_dialog->{yaml}->{rmin} = $rmin;
+    $histo_dialog->{yaml}->{rmax} = $rmax;
+    $histo_dialog->{yaml}->{bin}  = $bin;
+    my $persist = File::Spec->catfile($Demeter::UI::Artemis::demeter->dot_folder, 'demeter.dlpoly');
+    YAML::Tiny::DumpFile($persist, $histo_dialog->{yaml});
+
     if (not $dlp) {
-      $dlp = Demeter::ScatteringPath::Histogram::DL_POLY->new(rmin=>$rmin, rmax=>$rmax, bin=>$bin);
+      $dlp = Demeter::ScatteringPath::Histogram::DL_POLY->new(rmin=>$rmin, rmax=>$rmax, bin=>$bin, ss=>1, ncl=>0);
       $histo_dialog->{DLPOLY}=$dlp;
       $dlp->sentinal(sub{$histo_dialog->dlpoly_sentinal});
       my $busy = Wx::BusyCursor->new();

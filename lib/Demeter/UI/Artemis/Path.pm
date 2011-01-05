@@ -37,6 +37,9 @@ my %labels = (label  => 'Label',
 	      dphase => $DELTA.$PHI,
 	     );
 
+my $aleft = Wx::TextAttr->new();
+$aleft->SetAlignment(wxTEXT_ALIGNMENT_LEFT);
+
 use vars qw(%explanation);
 %explanation =
   (
@@ -117,6 +120,7 @@ sub new {
   $this->{geometry} = Wx::TextCtrl->new($this, -1, q{}, wxDefaultPosition, [-1,110],
 					wxVSCROLL|wxHSCROLL|wxTE_MULTILINE|wxTE_READONLY);
   $this->{geometry} -> SetFont( Wx::Font->new( 9, wxTELETYPE, wxNORMAL, wxNORMAL, 0, "" ) );
+  $this->{geometry} -> SetDefaultStyle($aleft);
   $geomboxsizer -> Add($this->{geometry}, 1, wxGROW|wxALL, 0);
   $vbox         -> Add($geomboxsizer,     1, wxGROW|wxALL, 5);
 

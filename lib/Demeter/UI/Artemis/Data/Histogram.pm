@@ -24,20 +24,26 @@ use Wx qw( :everything );
 use base qw(Wx::Dialog);
 use Wx::Event qw(EVT_BUTTON);
 
+use YAML::Tiny;
+
 my @PosSize = (wxDefaultPosition, [60,-1]);
 
 sub new {
   my ($class, $parent, $how) = @_;
 
   my $data = $parent->{data};
-  my $sp = $parent->{pathlist}->GetPageText($parent->{pathlist}->GetSelection);
+  my $lab = $parent->{pathlist}->GetPageText($parent->{pathlist}->GetSelection);
+
+  my $pathpage = $parent->{pathlist}->GetPage($parent->{pathlist}->GetSelection);
+  my $sp = $pathpage->{path}->sp;
+
   my $this = $class->SUPER::new($parent, -1, "Artemis: Make histogram",
 				Wx::GetMousePosition, [600, -1],
 				wxMINIMIZE_BOX|wxCAPTION|wxSYSTEM_MENU|wxSTAY_ON_TOP
 			       );
   my $outerbox  = Wx::BoxSizer->new( wxVERTICAL );
 
-  my $label = Wx::StaticText->new($this, -1, "Make a histogram using \"$sp\"");
+  my $label = Wx::StaticText->new($this, -1, "Make a histogram using \"$lab\"");
   $outerbox -> Add($label, 0, wxGROW|wxALL, 5);
   $label->SetFont( Wx::Font->new( 12, wxDEFAULT, wxNORMAL, wxBOLD, 0, "" ) );
   $this->{label} = Wx::StaticText->new($this, -1, " ");
@@ -52,7 +58,7 @@ sub new {
   } elsif ($how =~ m{gamma}i) {
     $this->gamma($data);
   } elsif ($how =~ m{dl_?poly}i) {
-    $this->dlpoly($data);
+    $this->dlpoly($sp);
   };
 
   ## -------- controls
@@ -153,24 +159,22 @@ sub gamma {
 
 
 sub dlpoly {
-  my ($this, $data) = @_;
+  my ($this, $sp) = @_;
   $this->{label}->SetLabel("Build histogram from a DL_POLY history file");
 
   $this->{dlfile} = Wx::FilePickerCtrl->new( $this, -1, "", "Choose a HISTORY File", "All files|*",
-						 wxDefaultPosition, wxDefaultSize,
-						 wxFLP_DEFAULT_STYLE|wxFLP_USE_TEXTCTRL|wxFLP_CHANGE_DIR|wxFLP_FILE_MUST_EXIST );
+					     wxDefaultPosition, wxDefaultSize,
+					     wxFLP_DEFAULT_STYLE|wxFLP_USE_TEXTCTRL|wxFLP_CHANGE_DIR|wxFLP_FILE_MUST_EXIST );
   $this->{box} -> Add($this->{dlfile}, 0, wxGROW|wxLEFT|wxRIGHT, 25);
 
   my $vbox = Wx::BoxSizer->new( wxHORIZONTAL );
   $this->{box} -> Add($vbox, 0, wxGROW|wxLEFT|wxRIGHT, 25);
 
-  ##$data->co->default(qw(histogram rmin))
   $this -> {dlrminlab} = Wx::StaticText -> new($this, -1, "Rmin");
   $this -> {dlrmin}    = Wx::TextCtrl   -> new($this, -1, 1.0, @PosSize,);
   $vbox -> Add($this->{dlrminlab}, 0, wxGROW|wxALL, 5);
   $vbox -> Add($this->{dlrmin},    0, wxGROW|wxALL, 5);
 
-  ## $data->co->default(qw(histogram rmax))
   $this -> {dlrmaxlab} = Wx::StaticText -> new($this, -1, "Rmax");
   $this -> {dlrmax}    = Wx::TextCtrl   -> new($this, -1, 3.5, @PosSize,);
   $vbox -> Add($this->{dlrmaxlab}, 0, wxGROW|wxALL, 5);
@@ -187,7 +191,8 @@ sub dlpoly {
   $this -> {dltypelab} = Wx::StaticText -> new($this, -1, "Path type:");
   $this -> {dltype}    = Wx::TextCtrl -> new($this, -1, q{}, wxDefaultPosition, wxDefaultSize, wxTE_READONLY);
   $vbox -> Add($this->{dltypelab}, 0, wxGROW|wxALL, 5);
-  $vbox -> Add($this->{dltype},    0, wxGROW|wxALL, 5);
+  $vbox -> Add($this->{dltype},    1, wxGROW|wxALL, 5);
+  $this -> {dltype} -> SetValue($sp->Type);
 
   $vbox = Wx::BoxSizer->new( wxHORIZONTAL );
   $this->{box} -> Add($vbox, 0, wxGROW|wxLEFT|wxRIGHT, 25);
@@ -195,6 +200,17 @@ sub dlpoly {
   $this -> {dlplot} = Wx::Button -> new($this, -1, "Plot RDF");
   $vbox -> Add($this->{dlplot},    1, wxGROW|wxALL, 5);
   $this->EVT_BUTTON($this->{dlplot}, sub{ dlplot(@_) });
+
+  $this->{yaml} = ();
+  my $persist = File::Spec->catfile($Demeter::UI::Artemis::demeter->dot_folder, 'demeter.dlpoly');
+  if (-e $persist) {
+    my $yaml = YAML::Tiny::LoadFile($persist);
+    $this->{dlfile} -> SetPath ($yaml->{file});
+    $this->{dlrmin} -> SetValue($yaml->{rmin});
+    $this->{dlrmax} -> SetValue($yaml->{rmax});
+    $this->{dlbin}  -> SetValue($yaml->{bin} );
+    $this->{yaml}    = $yaml;
+  };
 
   return $this;
 };
@@ -205,13 +221,19 @@ sub dlplot {
   my $rmin = $this->{dlrmin}->GetValue;
   my $rmax = $this->{dlrmax}->GetValue;
   my $bin  = $this->{dlbin}->GetValue;
+  $this->{yaml}->{file} = $file;
+  $this->{yaml}->{rmin} = $rmin;
+  $this->{yaml}->{rmax} = $rmax;
+  $this->{yaml}->{bin}  = $bin;
+  my $persist = File::Spec->catfile($Demeter::UI::Artemis::demeter->dot_folder, 'demeter.dlpoly');
+  YAML::Tiny::DumpFile($persist, $this->{yaml});
 
   if ((not $file) or (not -e $file) or (not -r $file)) {
     $this->GetParent->status("You did not specify a file or your file cannot be read.");
     return;
   };
 
-  my $dlp = Demeter::ScatteringPath::Histogram::DL_POLY->new(rmin=>$rmin, rmax=>$rmax, bin=>$bin);
+  my $dlp = Demeter::ScatteringPath::Histogram::DL_POLY->new(rmin=>$rmin, rmax=>$rmax, bin=>$bin, ss=>1, ncl=>0);
   $this->{DLPOLY} = $dlp;
   $dlp->sentinal(sub{$this->dlpoly_sentinal});
 
@@ -231,7 +253,7 @@ sub dlpoly_sentinal {
   my ($this) = @_;
   my $text = $this->{DLPOLY}->timestep_count . " of " . $this->{DLPOLY}->{nsteps} . " timesteps";
   #print $text, $/;
-  $this->GetParent->status($text, 'wait|nobuffer') if not $this->{DLPOLY}->timestep_count % 5;
+  $this->GetParent->status($text, 'wait|nobuffer') if not $this->{DLPOLY}->timestep_count % 10;
 };
 
 

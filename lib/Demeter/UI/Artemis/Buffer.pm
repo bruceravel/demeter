@@ -28,6 +28,8 @@ use List::MoreUtils qw(uniq);
 my @ifeffit_buffer = ();
 my $pointer = -1;
 my $prompttext = "  Ifeffit [%4d]> ";
+my $aleft = Wx::TextAttr->new();
+$aleft->SetAlignment(wxTEXT_ALIGNMENT_LEFT);
 
 sub new {
   my ($class, $parent) = @_;
@@ -49,6 +51,7 @@ sub new {
   my $iffboxsizer  = Wx::StaticBoxSizer->new( $iffbox, wxHORIZONTAL );
   $this->{iffcommands} = Wx::TextCtrl->new($this->{IFEFFIT}, -1, q{}, wxDefaultPosition, wxDefaultSize,
 					   wxVSCROLL|wxHSCROLL|wxTE_MULTILINE|wxTE_READONLY|wxNO_BORDER);
+  $this->{iffcommands}->SetDefaultStyle($aleft);
   $iffboxsizer -> Add($this->{iffcommands}, 1, wxALL|wxGROW, 5);
   $box -> Add($iffboxsizer, 1, wxGROW|wxALL, 5);
   $this->{IFEFFIT} -> SetSizerAndFit($box);
@@ -68,6 +71,7 @@ sub new {
   my $pltboxsizer  = Wx::StaticBoxSizer->new( $pltbox, wxHORIZONTAL );
   $this->{pltcommands} = Wx::TextCtrl->new($this->{PLOT}, -1, q{}, wxDefaultPosition, wxDefaultSize,
 					   wxVSCROLL|wxHSCROLL|wxTE_MULTILINE|wxTE_READONLY|wxNO_BORDER);
+  $this->{pltcommands}->SetDefaultStyle($aleft);
   $pltboxsizer -> Add($this->{pltcommands}, 1, wxALL|wxGROW, 5);
   $box -> Add($pltboxsizer, 1, wxGROW|wxALL, 5);
   $this->{PLOT} -> SetSizerAndFit($box);

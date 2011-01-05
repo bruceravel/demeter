@@ -547,7 +547,7 @@ sub save_column {
     $app->{main}->status("Saving column data cancelled.");
     return;
   };
-  my $fname = File::Spec->catfile($fd->GetDirectory, $fd->GetFilename);
+  my $fname = $fd->GetPath;
   return if $app->{main}->overwrite_prompt($fname); # work-around gtk's wxFD_OVERWRITE_PROMPT bug (5 Jan 2011)
   $data->save($out, $fname);
   $app->{main}->status("Saved $desc data to $fname");

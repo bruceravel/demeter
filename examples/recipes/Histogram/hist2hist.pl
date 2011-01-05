@@ -3,14 +3,38 @@
 use Demeter qw(:ui=screen :plotwith=gnuplot);
 use Demeter::ScatteringPath::Histogram::DL_POLY;
 
+use DateTime;
+
 my $prj = Demeter::Data::Prj->new(file=>"/home/bruce/PtData.prj");
 my $data = $prj->record(1);
 $data->bft_rmin(1.6);
 
-my $dlp = Demeter::ScatteringPath::Histogram::DL_POLY->new( rmin=>1.5, rmax=>3.5, file=>'HISTORY',);
+
+      my $start = DateTime->now( time_zone => 'floating' );
+my $dlp = Demeter::ScatteringPath::Histogram::DL_POLY->new( rmin=>1.5, rmax=>3.5, ss=>1, file=>'HISTORY',);
+#my $dlp = Demeter::ScatteringPath::Histogram::DL_POLY->new( r1=>1.5, r2=>3.5, r3=>5.2, r4=>5.6, ncl=>1, file=>'HISTORY',);
+      my $lap = DateTime->now( time_zone => 'floating' );
+      my $dur = $lap->subtract_datetime($start);
+      printf("%d minutes, %d seconds\n", $dur->minutes, $dur->seconds);
+
+#$dlp->nearly_collinear;
+#      my $finish = DateTime->now( time_zone => 'floating' );
+#      $dur = $finish->subtract_datetime($lap);
+#      printf("%d minutes, %d seconds\n", $dur->minutes, $dur->seconds);
+
+# open(my $twod, '>', 'twod');
+# foreach my $p (@{$dlp->nearcl}) {
+#   printf $twod "  %.5f  %.5f  %.9f\n", @$p;
+# };
+# close $twod;
+
+#exit;
+
 $dlp->rebin;
 $dlp->plot;
 $dlp->pause;
+
+exit;
 
 # $dlp->bin(0.02);
 # $dlp->rebin;
