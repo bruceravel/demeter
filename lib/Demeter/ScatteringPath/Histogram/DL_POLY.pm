@@ -37,23 +37,8 @@ use List::Util qw{sum};
 
 has '+plottable'      => (default => 1);
 
+## HISTORY file attributes
 has 'nsteps'    => (is => 'rw', isa => NonNeg, default => 0);
-has 'update_bins' => (is => 'rw', isa => 'Bool', default => 1);
-has 'rmin'      => (is => 'rw', isa => 'Num', default => 0.0,
-		    trigger => sub{ my($self, $new) = @_; $self->update_bins(1) if $new});
-has 'rmax'      => (is => 'rw', isa => 'Num', default => 5.6,
-		    trigger => sub{ my($self, $new) = @_; $self->update_bins(1) if $new});
-has 'bin'       => (is => 'rw', isa => 'Num', default => 0.005,);
-
-has 'r1'        => (is => 'rw', isa => 'Num', default => 0.0,);
-has 'r2'        => (is => 'rw', isa => 'Num', default => 3.5,);
-has 'r3'        => (is => 'rw', isa => 'Num', default => 5.2,);
-has 'r4'        => (is => 'rw', isa => 'Num', default => 5.6,);
-has 'beta'      => (is => 'rw', isa => 'Num', default => 20,);
-
-has 'ss'        => (is => 'rw', isa => 'Bool', default => 0, trigger=>sub{my($self, $new) = @_; $self->ncl(0) if $new});
-has 'ncl'       => (is => 'rw', isa => 'Bool', default => 0, trigger=>sub{my($self, $new) = @_; $self->ss(0)  if $new});
-
 has 'file'      => (is => 'rw', isa => 'Str', default => q{},
 		    trigger => sub{ my($self, $new) = @_;
 				    if ($new and (-e $new)) {
@@ -62,13 +47,61 @@ has 'file'      => (is => 'rw', isa => 'Str', default => q{},
 				      $self->nearly_collinear if $self->ncl;
 				    };
 				  });
-has 'timestep_count' => (is => 'rw', isa => 'Int',  default => 0);
-
 has 'clusters'    => (is => 'rw', isa => 'ArrayRef', default => sub{[]});
-has 'ssrdf'       => (is => 'rw', isa => 'ArrayRef', default => sub{[]});
+
+## SS histogram attributes
+has 'update_bins' => (is            => 'rw',
+		      isa           => 'Bool',
+		      default       => 1);
+has 'rmin'        => (is	    => 'rw',
+		      isa	    => 'Num',
+		      default	    => 0.0,
+		      trigger	    => sub{ my($self, $new) = @_; $self->update_bins(1) if $new},
+		      documentation => "The lower bound of the SS histogram to be extracted from the cluster");
+has 'rmax'        => (is	    => 'rw',
+		      isa	    => 'Num',
+		      default	    => 5.6,
+		      trigger	    => sub{ my($self, $new) = @_; $self->update_bins(1) if $new},
+		      documentation => "The upper bound of the SS histogram to be extracted from the cluster");
+has 'bin'         => (is            => 'rw',
+		      isa           => 'Num',
+		      default       => 0.005,);
+has 'ssrdf'       => (is	    => 'rw',
+		      isa	    => 'ArrayRef',
+		      default	    => sub{[]},
+		      documentation => "unbinned distribution extracted from the cluster");
+has 'npairs'      => (is            => 'rw',
+		      isa           => NonNeg,
+		      default       => 0);
+has 'positions'   => (is            => 'rw',
+		      isa           => 'ArrayRef',
+		      default       => sub{[]},
+		      documentation => "array of bin positions of the extracted histogram");
+has 'populations' => (is	    => 'rw',
+		      isa	    => 'ArrayRef',
+		      default	    => sub{[]},
+		      documentation => "array of bin populations of the extracted histogram");
+
+## nearly collinear DS and TS historgram attributes
+has 'skip'      => (is => 'rw', isa => 'Int', default => 50,);
+has 'r1'        => (is => 'rw', isa => 'Num', default => 0.0,);
+has 'r2'        => (is => 'rw', isa => 'Num', default => 3.5,);
+has 'r3'        => (is => 'rw', isa => 'Num', default => 5.2,);
+has 'r4'        => (is => 'rw', isa => 'Num', default => 5.6,);
+has 'beta'      => (is => 'rw', isa => 'Num', default => 20,);
+has 'rbin'      => (is            => 'rw',
+		    isa           => 'Num',
+		    default       => 0.01,);
+has 'betabin'   => (is            => 'rw',
+		    isa           => 'Num',
+		    default       => 0.5,);
+
+has 'ss'        => (is => 'rw', isa => 'Bool', default => 0, trigger=>sub{my($self, $new) = @_; $self->ncl(0) if $new});
+has 'ncl'       => (is => 'rw', isa => 'Bool', default => 0, trigger=>sub{my($self, $new) = @_; $self->ss(0)  if $new});
+
+has 'timestep_count' => (is => 'rw', isa => 'Int',  default => 0);
 has 'nearcl'      => (is => 'rw', isa => 'ArrayRef', default => sub{[]});
-has 'positions'   => (is => 'rw', isa => 'ArrayRef', default => sub{[]});
-has 'populations' => (is => 'rw', isa => 'ArrayRef', default => sub{[]});
+
 
 has 'sp'          => (is => 'rw', isa => Empty.'|Demeter::ScatteringPath', default => q{},);
 
@@ -76,7 +109,8 @@ has 'sp'          => (is => 'rw', isa => Empty.'|Demeter::ScatteringPath', defau
 
 sub rebin {
   my($self, $new) = @_;
-  $self->_bin if $self->update_bins;
+  $self->_bin   if ($self->ss  and $self->update_bins);
+  $self->_bin2d if ($self->ncl and $self->update_bins);
   return $self;
 };
 
@@ -101,13 +135,13 @@ sub _cluster {
   my @all = ();
   while (<$H>) {
     if (m{\Atimestep}) {
-      push @all, \@cluster;
-      @cluster = ();
+      push @all, [@cluster] if $#cluster>0;
+      $#cluster = -1;
       next;
     };
     next if not m{\APt}; # skip the three lines trailing the timestamp
     my $position = <$H>;
-    my @vec = split(" ", $position);
+    my @vec = split(' ', $position);
     push @cluster, \@vec;
     <$H>;
     <$H>;
@@ -115,7 +149,9 @@ sub _cluster {
     #my $force    = <$H>;
     #chomp $position;
   };
+  push @all, [@cluster];
   $self->clusters(\@all);
+  close $H;
   return $self;
 };
 
@@ -127,8 +163,9 @@ sub rdf {
   my $rmaxsqr = $self->rmax*$self->rmax;
   $self->start_counter("Making RDF from each timestep", $#{$self->clusters}+1) if ($self->mo->ui eq 'screen');
   my ($x0, $x1, $x2) = (0,0,0);
+  my @this;
   foreach my $step (@{$self->clusters}) {
-    my @this = @$step;
+    @this = @$step;
     $self->count if ($self->mo->ui eq 'screen');
     $self->timestep_count(++$count);
     $self->call_sentinal;
@@ -139,6 +176,9 @@ sub rdf {
 	         + ($x1 - $this[$j]->[1])**2
 	         + ($x2 - $this[$j]->[2])**2; # this loop has been optimized for speed, hence the weird syntax
 	push @rdf, $rsqr if (($rsqr > $rminsqr) and ($rsqr < $rmaxsqr));
+	#if (($i==1) and ($j==2)) {
+	#  print join("|", @{$this[$i]}, @{$this[$j]}, $rsqr), $/;
+	#};
       };
     };
   };
@@ -149,6 +189,7 @@ sub rdf {
   @rdf = sort { $a <=> $b } @rdf;
   $self->stop_spinner if ($self->mo->ui eq 'screen');
   $self->ssrdf(\@rdf);
+  $self->npairs(($#rdf+1)/$self->nsteps);
   return $self;
 };
 
@@ -160,25 +201,31 @@ sub nearly_collinear {
   my $r3sqr = $self->r3**2;
   my $r4sqr = $self->r4**2;
 
-  $self->start_counter("Making RDF from each timestep", ($#{$self->clusters}+1)/50) if ($self->mo->ui eq 'screen');
+  $self->start_counter(sprintf("Making radial/angle distribution from every %d-th timestep", $self->skip), ($#{$self->clusters}+1)/$self->skip) if ($self->mo->ui eq 'screen');
   my ($x0, $x1, $x2) = (0,0,0);
   my ($a0, $a1, $a2) = (0,0,0);
+  my @rdf1  = ();
+  my @rdf4  = ();
   my @three = ();
   my $costh;
+  my $i4;
+  my $halfpath;
   my $cosbetamax = cos($PI*$self->beta/180);
   foreach my $step (@{$self->clusters}) {
-    #my $step = $self->clusters->[400];
-    my @rdf1 = ();
-    my @rdf4 = ();
+    @rdf1 = ();
+    @rdf4 = ();
 
     my @this = @$step;
     $self->timestep_count(++$count);
-    next if $count % 50;
+    next if ($count % $self->skip); # only process every Nth timestep
     $self->count if ($self->mo->ui eq 'screen');
-    #$self->call_sentinal;
+    $self->call_sentinal;
+
+    ## dig out the first and fourth coordination shells
     foreach my $i (0 .. $#this) {
       ($x0, $x1, $x2) = @{$this[$i]};
       foreach my $j (0 .. $#this) {
+	next if ($i == $j);
 	my $rsqr = ($x0 - $this[$j]->[0])**2
 	         + ($x1 - $this[$j]->[1])**2
 	         + ($x2 - $this[$j]->[2])**2; # this loop has been optimized for speed, hence the weird syntax
@@ -187,30 +234,28 @@ sub nearly_collinear {
       };
     };
 
-    #use Data::Dumper;
-    #print Data::Dumper->Dump([\@rdf1, \@rdf4], [qw/*rdf1 *rdf4/]), $/;
-    #printf("number of 1st neighbors = %d, number of 4th neighbors = %d\n", $#rdf1, $#rdf4);
-
-    foreach my $fth (@rdf4) {
-      my $n4 = $fth->[1];
-      foreach my $fst (@rdf1) {
-	next if ($n4 ne $fst->[1]);
-	($a0, $a1, $a2) = ($this[ $fth->[1] ]->[0], $this[ $fth->[1] ]->[1], $this[ $fth->[1] ]->[2]);
+    ## find those 1st/4th pairs that share an absorber and have a small angle between them
+    foreach my $fourth (@rdf4) {
+      $i4 = $fourth->[1];
+      foreach my $first (@rdf1) {
+	next if ($i4 != $first->[1]);
+	($a0, $a1, $a2) = ($this[ $i4 ]->[0], $this[ $i4 ]->[1], $this[ $i4 ]->[2]);
 	$costh =
- 	  (($this[ $fst->[2] ]->[0] - $a0) * ($this[ $fth->[2] ]->[0] - $a0) +
-	   ($this[ $fst->[2] ]->[1] - $a1) * ($this[ $fth->[2] ]->[1] - $a1) +
-	   ($this[ $fst->[2] ]->[2] - $a2) * ($this[ $fth->[2] ]->[2] - $a2))  / ($fth->[0] * $fst->[0]);
-
-	#my $costh = ($vec1[0]*$vec4[0] + $vec1[1]*$vec4[1] + $vec1[2]*$vec4[2]) / ($fth->[0] * $fst->[0]);
-	#print $costh, "  ", $cosbetamax, $/;
+ 	  (($this[ $first->[2] ]->[0] - $a0) * ($this[ $fourth->[2] ]->[0] - $a0) +
+	   ($this[ $first->[2] ]->[1] - $a1) * ($this[ $fourth->[2] ]->[1] - $a1) +
+	   ($this[ $first->[2] ]->[2] - $a2) * ($this[ $fourth->[2] ]->[2] - $a2))  / ($fourth->[0] * $first->[0]);
 	next if ($costh < $cosbetamax);
-	push @three, [$fst->[0], $fth->[0], $costh];
-	#printf("%d  %d  %d %.5f  %.5f  %.5f  %.5f\n",
-	#     $fst->[1], $fst->[2], $fth->[2], $fst->[0], $fth->[0], $costh, 180*acos($costh)/$PI);
+	$halfpath = sqrt(($first->[0]*sin(acos($costh)))**2 + ($fourth->[0]-$first->[0]*$costh)**2);
+	push @three, [$halfpath, $first->[0], $fourth->[0], acos($costh)*180/$PI];
       };
     };
   };
-  $self->stop_counter if ($self->mo->ui eq 'screen');
+  if ($self->mo->ui eq 'screen') {
+    $self->stop_counter;
+    $self->start_spinner("Sorting RDF");
+  };
+  @three = sort { $a->[0] <=> $b->[0] } @three;
+  $self->stop_spinner if ($self->mo->ui eq 'screen');
   $self->nearcl(\@three);
 };
 
@@ -219,7 +264,7 @@ sub _bin {
   my (@x, @y);
   my $bin_start = sqrt($self->ssrdf->[0]);
   my ($population, $average) = (0,0);
-  $self->start_counter("Making RDF from each timestep", $#{$self->clusters}+1) if ($self->mo->ui eq 'screen');
+  $self->start_spinner(sprintf("Rebinning RDF into %.4f A bins", $self->bin)) if ($self->mo->ui eq 'screen');
   foreach my $pair (@{$self->ssrdf}) {
     my $rr = sqrt($pair);
     if (($rr - $bin_start) > $self->bin) {
@@ -227,7 +272,7 @@ sub _bin {
       push @x, sprintf("%.5f", $average);
       push @y, $population*2;
       #print join(" ", sprintf("%.5f", $average), $population*2), $/;
-      $bin_start = $rr;
+      $bin_start += $self->bin;
       $average = $rr;
       $population = 1;
     } else {
@@ -235,10 +280,84 @@ sub _bin {
       ++$population;
     };
   };
+  push @x, sprintf("%.5f", $average);
+  push @y, $population*2;
   $self->positions(\@x);
   $self->populations(\@y);
   $self->update_bins(0);
   $self->stop_spinner if ($self->mo->ui eq 'screen');
+  return $self;
+};
+
+sub _bin2d {
+  my ($self) = @_;
+
+  $self->start_spinner(sprintf("Rebinning three-body configurations into %.3f A x %.2f deg bins", $self->rbin, $self->betabin)) if ($self->mo->ui eq 'screen');
+
+  ## slice the configurations in R
+  my @slices = ();
+  my @this   = ();
+  my $r_start = $self->nearcl->[0]->[0];
+  my $aa = 0;
+  foreach my $tb (@{$self->nearcl}) {
+    my $rr = $tb->[0];
+    if (($rr - $r_start) > $self->rbin) {
+      push @slices, [@this];
+      $r_start += $self->rbin;
+      $#this=-1;
+      push @this, $tb;
+    } else {
+      push @this, $tb;
+    };
+    ++$aa;
+  };
+  push @slices, [@this];
+  ##print $#slices+1, $/;
+
+  ## pixelate each slice in angle
+  my @plane = ();
+  my @pixel = ();
+  my $bb = 0;
+  foreach my $sl (@slices) {
+    my @slice = sort {$a->[3] <=> $b->[3]} @$sl; # sort by angle within this slice in R
+    my $beta_start = 0;
+    @pixel = ();
+    foreach my $tb (@slice) {
+      my $beta = $tb->[3];
+      if (($beta - $beta_start) > $self->betabin) {
+	push @plane, [@pixel];
+	$beta_start += $self->betabin;
+	@pixel = ();
+	push @pixel, $tb;
+      } else {
+	push @pixel, $tb;
+      };
+      ++$bb;
+    };
+    push @plane, [@pixel];
+  };
+
+  ## compute the population and average distance and angle of each pixel
+  my @binned_plane = ();
+  my ($r, $b, $count, $total) = (0, 0, 0, 0);
+  my $cc = 0;
+  foreach my $pix (@plane) {
+    ($r, $b, $count) = (0, 0, 0);
+    foreach my $tb (@{$pix}) {
+      $r += $tb->[0];
+      $b += $tb->[3];
+      ++$count;
+      ++$total;
+    };
+    $cc += $count;
+    push @binned_plane, [$r/$count, $b/$count, $count];
+  };
+  $self->populations(\@binned_plane);
+  $self->update_bins(0);
+  $self->stop_spinner if ($self->mo->ui eq 'screen');
+  ##printf "number of pixels = %d  %d\n", $#plane+1, $#binned_plane+1;
+  ##printf "stripe pass = %d   pixel pass = %d    last pass = %d\n", $aa, $bb, $cc;
+  ##printf "binned = %d  unbinned = %d\n", $total, $#{$self->nearcl}+1;
   return $self;
 };
 
@@ -262,6 +381,11 @@ sub fpath {
   my ($self) = @_;
   my $histo = $self->histogram;
   my $composite = $self -> sp -> chi_from_histogram($histo);
+  if ($self->ss) {
+    my $text = sprintf("\n\ntaken from %d samples between %.3f and %.3f A\nbinned into %.4f A bins",
+		       $self->get(qw{npairs rmin rmax bin}));
+    $composite->pdtext($text);
+  };
   return $composite;
 };
 

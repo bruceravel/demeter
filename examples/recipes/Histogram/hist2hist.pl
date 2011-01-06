@@ -11,28 +11,34 @@ $data->bft_rmin(1.6);
 
 
       my $start = DateTime->now( time_zone => 'floating' );
-my $dlp = Demeter::ScatteringPath::Histogram::DL_POLY->new( rmin=>1.5, rmax=>3.5, ss=>1, file=>'HISTORY',);
-#my $dlp = Demeter::ScatteringPath::Histogram::DL_POLY->new( r1=>1.5, r2=>3.5, r3=>5.2, r4=>5.6, ncl=>1, file=>'HISTORY',);
+my $dlp = Demeter::ScatteringPath::Histogram::DL_POLY->new( rmin=>1.5, rmax=>7, ss=>1, file=>'HISTORY',);
+#my $dlp = Demeter::ScatteringPath::Histogram::DL_POLY->new( r1=>1.5, r2=>3.5, r3=>5.2, r4=>5.6, ncl=>1, skip=>20, file=>'HISTORY',);
       my $lap = DateTime->now( time_zone => 'floating' );
       my $dur = $lap->subtract_datetime($start);
       printf("%d minutes, %d seconds\n", $dur->minutes, $dur->seconds);
 
-#$dlp->nearly_collinear;
-#      my $finish = DateTime->now( time_zone => 'floating' );
-#      $dur = $finish->subtract_datetime($lap);
-#      printf("%d minutes, %d seconds\n", $dur->minutes, $dur->seconds);
-
 # open(my $twod, '>', 'twod');
 # foreach my $p (@{$dlp->nearcl}) {
-#   printf $twod "  %.5f  %.5f  %.9f\n", @$p;
+#   printf $twod "  %.9f  %.9f  %.9f  %.15f\n", @$p;
 # };
 # close $twod;
+# print $#{$dlp->nearcl}, $/;
 
-#exit;
+# exit;
+
+#print $dlp->npairs, $/;
 
 $dlp->rebin;
 $dlp->plot;
 $dlp->pause;
+
+exit;
+
+open(my $bin2d, '>', 'bin2d');
+foreach my $p (@{$dlp->populations}) {
+  printf $bin2d "  %.9f  %.9f  %.d\n", @$p;
+};
+close $bin2d;
 
 exit;
 

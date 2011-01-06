@@ -65,7 +65,7 @@ sub chi_from_histogram {
   my $sum  = $first->population;
   foreach my $i (1 .. $#{ $paths }) {
     #$paths->[$i]->update_path(1);
-    my $save = $paths->[$i]->group;
+    my $save = $paths->[$i]->group; # add up the SSPaths without requiring an Ifeffit group for each one
     $paths->[$i]->group("h_i_s_t_o");
     $paths->[$i]->_update('fft');
     $paths->[$i]->dispose($paths->[$i]->template('process', 'histogram_add'));
@@ -221,7 +221,7 @@ minimum and maximum r-values to read from the file.
 =item C<make_histogram>
 
 Given the array references from C<histogram_from_file> or
-C<histogram_gamma>, return a reference to a list of Path objects
+C<histogram_gamma>, return a reference to a list of SSPath objects
 defining the histogram.
 
   $ref_paths = $firstshell -> make_histogram($rx, $ry, $scale, \@common);

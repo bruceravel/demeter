@@ -38,6 +38,7 @@ has 'source'     => (is => 'rw', isa => Empty.'|Demeter::Data', default => q{},
 has 'sourcegroup'=> (is => 'rw', isa => 'Str',    default => q{});
 has 'weight'	 => (is => 'ro', isa => 'Int',    default => 2);
 has 'Type'	 => (is => 'ro', isa => 'Str',    default => 'filtered scattering path');
+has 'pdtext'	 => (is => 'rw', isa => 'Str',    default => q{});
 has 'string'	 => (is => 'ro', isa => 'Str',    default => q{});
 has 'tag'	 => (is => 'rw', isa => 'Str',    default => q{});
 has 'randstring' => (is => 'rw', isa => 'Str',    default => sub{random_string('ccccccccc').'.sp'});
@@ -176,7 +177,8 @@ override path => sub {
 };
 
 sub pathsdat {
-  return q{};
+  my ($self) = @_;
+  return $self->pdtext;
 };
 
 

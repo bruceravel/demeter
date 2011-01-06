@@ -415,17 +415,18 @@ sub on_about {
   $info->SetDescription( "EXAFS analysis using Feff and Ifeffit" );
   $info->SetCopyright( $demeter->identify );
   $info->SetWebSite( 'http://cars9.uchicago.edu/iffwiki/Demeter', 'The Demeter web site' );
-  $info->SetDevelopers( ["Bruce Ravel <bravel\@bnl.gov>\n",
-			 "Ifeffit is copyright $COPYRIGHT 1992-2011 Matt Newville"
-			] );
+  $info->SetDevelopers( ["Bruce Ravel <bravel\@bnl.gov>\n" .
+			 "Ifeffit is copyright $COPYRIGHT 1992-2011 Matt Newville\n" .
+			 "Artemis is powered using Wx $Wx::VERSION with $Wx::wxVERSION_STRING\n" .
+			 "and Moose $Moose::VERSION"]
+		      );
   $info->SetLicense( $demeter->slurp(File::Spec->catfile($artemis_base, 'Artemis', 'share', "GPL.dem")) );
   my $artwork = <<'EOH'
-Blah blah blah
+Design and layout of Artemis is the work of Bruce Ravel
 
-Some icons taken from the Fairytale icon set at Wikimedia commons,
-http://commons.wikimedia.org/ and others from the Gartoon Redux icon
-set from http:://www.gnome-look.org
-
+Some icons taken from the Fairytale icon set at Wikimedia
+Commons (http://commons.wikimedia.org/) and others from
+the Gartoon Redux icon set from http://www.gnome-look.org
 All other icons icons are from the Kids icon set for
 KDE by Everaldo Coelho, http://www.everaldo.com
 EOH

@@ -22,6 +22,8 @@ use Wx qw( :everything );
 use base qw(Wx::Dialog);
 use Wx::Event qw(EVT_LISTBOX EVT_BUTTON EVT_RADIOBOX EVT_CHOICE);
 
+my $aleft = Wx::TextAttr->new();
+$aleft->SetAlignment(wxTEXT_ALIGNMENT_LEFT);
 
 sub new {
   my ($class, $parent, $content, $title) = @_;
@@ -34,9 +36,10 @@ sub new {
 
   my $text = Wx::TextCtrl->new($this, -1, q{}, wxDefaultPosition, wxDefaultSize,
 			       wxVSCROLL|wxHSCROLL|wxTE_MULTILINE|wxTE_READONLY|wxNO_BORDER);
-  $text -> SetFont(Wx::Font->new( 10, wxTELETYPE, wxNORMAL, wxNORMAL, 0, "" ) );
-  $text -> SetValue($content);
-  $vbox  -> Add($text, 1, wxGROW|wxALL, 5);
+  $text -> SetDefaultStyle($aleft);
+  $text -> SetFont(Wx::Font->new( Wx::SystemSettings::GetFont(wxSYS_DEFAULT_GUI_FONT)->GetPointSize, wxTELETYPE, wxNORMAL, wxNORMAL, 0, "" ) );
+  $text -> AppendText($content);
+  $vbox -> Add($text, 1, wxGROW|wxALL, 5);
   my $button = Wx::Button->new($this, wxID_OK, q{}, wxDefaultPosition, wxDefaultSize, 0,);
   $vbox -> Add($button, 0, wxGROW|wxALL, 5);
 
