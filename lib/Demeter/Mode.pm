@@ -171,6 +171,17 @@ has 'SSPath' => (
 			      'splice'  => 'splice_SSPath',
 			     }
 	       );
+has 'ThreeBody' => (
+		metaclass => 'Collection::Array',
+		is        => 'rw',
+		isa       => 'ArrayRef',
+		default   => sub { [] },
+		provides  => {
+			      'push'    => 'push_ThreeBody',
+			      'clear'   => 'clear_ThreeBody',
+			      'splice'  => 'splice_ThreeBody',
+			     }
+	       );
 has 'FPath' => (
 		metaclass => 'Collection::Array',
 		is        => 'rw',
@@ -352,7 +363,8 @@ has 'Journal' => (
 has 'types' => (is => 'ro', isa => 'ArrayRef',
 		default => sub{[qw(Atoms Data Feff External Fit Feffit GDS Path Plot Indicator Style
 				   LCF XES PeakFit LogRatio Diff LineShape
-				   ScatteringPath VPath SSPath FPath FSPath StructuralUnit Prj Pixel MultiChannel Journal)]},);
+				   ScatteringPath VPath SSPath ThreeBody FPath FSPath
+				   StructuralUnit Prj Pixel MultiChannel Journal)]},);
 
 has 'Plugins' => (
 		metaclass => 'Collection::Array',
@@ -448,6 +460,7 @@ sub everything {
 	  @{ $self->ScatteringPath },
 	  @{ $self->VPath	   },
 	  @{ $self->SSPath	   },
+	  @{ $self->ThreeBody	   },
 	  @{ $self->FPath	   },
 	  @{ $self->FSPath	   },
 	  @{ $self->StructuralUnit },

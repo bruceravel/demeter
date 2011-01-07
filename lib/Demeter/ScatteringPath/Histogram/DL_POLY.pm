@@ -15,6 +15,9 @@ package Demeter::ScatteringPath::Histogram::DL_POLY;
 
 =cut
 
+use strict;
+use warnings;
+
 use Moose;
 use MooseX::Aliases;
 #use MooseX::StrictConstructor;
@@ -84,10 +87,11 @@ has 'populations' => (is	    => 'rw',
 
 ## nearly collinear DS and TS historgram attributes
 has 'skip'      => (is => 'rw', isa => 'Int', default => 50,);
+has 'nconfig'   => (is => 'rw', isa => 'Int', default => 0, documentation => "the number of configurations found at each time step");
 has 'r1'        => (is => 'rw', isa => 'Num', default => 0.0,);
 has 'r2'        => (is => 'rw', isa => 'Num', default => 3.5,);
 has 'r3'        => (is => 'rw', isa => 'Num', default => 5.2,);
-has 'r4'        => (is => 'rw', isa => 'Num', default => 5.6,);
+has 'r4'        => (is => 'rw', isa => 'Num', default => 5.7,);
 has 'beta'      => (is => 'rw', isa => 'Num', default => 20,);
 has 'rbin'      => (is            => 'rw',
 		    isa           => 'Num',
@@ -203,7 +207,9 @@ sub nearly_collinear {
 
   $self->start_counter(sprintf("Making radial/angle distribution from every %d-th timestep", $self->skip), ($#{$self->clusters}+1)/$self->skip) if ($self->mo->ui eq 'screen');
   my ($x0, $x1, $x2) = (0,0,0);
-  my ($a0, $a1, $a2) = (0,0,0);
+  my ($ax, $ay, $az) = (0,0,0);
+  my ($bx, $by, $bz) = (0,0,0);
+  my ($cx, $cy, $cz) = (0,0,0);
   my @rdf1  = ();
   my @rdf4  = ();
   my @three = ();
@@ -239,24 +245,69 @@ sub nearly_collinear {
       $i4 = $fourth->[1];
       foreach my $first (@rdf1) {
 	next if ($i4 != $first->[1]);
-	($a0, $a1, $a2) = ($this[ $i4 ]->[0], $this[ $i4 ]->[1], $this[ $i4 ]->[2]);
-	$costh =
- 	  (($this[ $first->[2] ]->[0] - $a0) * ($this[ $fourth->[2] ]->[0] - $a0) +
-	   ($this[ $first->[2] ]->[1] - $a1) * ($this[ $fourth->[2] ]->[1] - $a1) +
-	   ($this[ $first->[2] ]->[2] - $a2) * ($this[ $fourth->[2] ]->[2] - $a2))  / ($fourth->[0] * $first->[0]);
-	next if ($costh < $cosbetamax);
-	$halfpath = sqrt(($first->[0]*sin(acos($costh)))**2 + ($fourth->[0]-$first->[0]*$costh)**2);
-	push @three, [$halfpath, $first->[0], $fourth->[0], acos($costh)*180/$PI];
+
+
+	($ax, $ay, $az) = ($this[ $i4          ]->[0], $this[ $i4          ]->[1], $this[ $i4          ]->[2]);
+	($bx, $by, $bz) = ($this[ $first->[2]  ]->[0], $this[ $first->[2]  ]->[1], $this[ $first->[2]  ]->[2]);
+	($cx, $cy, $cz) = ($this[ $fourth->[2] ]->[0], $this[ $fourth->[2] ]->[1], $this[ $fourth->[2] ]->[2]);
+
+
+	#my @vector = ( $cx-$bx, $cy-$by, $cz-$bz);
+	my ($ct, $st, $cp, $sp)     = _trig( $cx-$bx, $cy-$by, $cz-$bz );
+	#@vector    = ( $bx-$ax, $by-$ay, $bz-$az);
+	my ($ctp, $stp, $cpp, $spp) = _trig( $bx-$ax, $by-$ay, $bz-$az);
+
+	my $cppp = $cp*$cpp + $sp*$spp;
+	my $sppp = $spp*$cp - $cpp*$sp;
+
+	my $beta = $ct*$ctp + $st*$stp*$cppp;
+	if ($beta < -1) {
+	  $beta = "180.0000";
+	} elsif ($beta >  1) {
+	  $beta = "0.0000";
+	} else {
+	  $beta = sprintf("%.4f", 180 * acos($beta)  / $PI);
+	};
+	next if ($beta > $self->beta);
+
+	my $leg2 = sqrt( ($this[ $first->[2] ]->[0] - $this[ $fourth->[2] ]->[0])**2 +
+			 ($this[ $first->[2] ]->[1] - $this[ $fourth->[2] ]->[1])**2 +
+			 ($this[ $first->[2] ]->[2] - $this[ $fourth->[2] ]->[2])**2 );
+	$halfpath = ($leg2 + $first->[0] + $fourth->[0]) / 2;
+	push @three, [$halfpath, $first->[0], $fourth->[0], $beta];
+
+	#($a0, $a1, $a2) = ($this[ $i4 ]->[0], $this[ $i4 ]->[1], $this[ $i4 ]->[2]);
+	#$costh =
+ 	#  (($this[ $first->[2] ]->[0] - $a0) * ($this[ $fourth->[2] ]->[0] - $a0) +
+	#   ($this[ $first->[2] ]->[1] - $a1) * ($this[ $fourth->[2] ]->[1] - $a1) +
+	#   ($this[ $first->[2] ]->[2] - $a2) * ($this[ $fourth->[2] ]->[2] - $a2))  / ($fourth->[0] * $first->[0]);
+	#next if ($costh < $cosbetamax);
+	#$halfpath = sqrt(($first->[0]*sin(acos($costh)))**2 + ($fourth->[0]-$first->[0]*$costh)**2);
+	#push @three, [$halfpath, $first->[0], $fourth->[0], acos($costh)*180/$PI];
       };
     };
   };
   if ($self->mo->ui eq 'screen') {
     $self->stop_counter;
-    $self->start_spinner("Sorting RDF");
+    $self->start_spinner("Sorting path length/angle distribution by path length");
   };
   @three = sort { $a->[0] <=> $b->[0] } @three;
   $self->stop_spinner if ($self->mo->ui eq 'screen');
+  $self->nconfig( int( ($#three+1) / (($#{$self->clusters}+1) / $self->skip) + 0.5 ) );
   $self->nearcl(\@three);
+};
+
+sub _trig {
+  my $TRIGEPS = 1e-6;
+  my $rxysqr = $_[0]*$_[0] + $_[1]*$_[1];
+  my $r   = sqrt($rxysqr + $_[2]*$_[2]);
+  my $rxy = sqrt($rxysqr);
+  my ($ct, $st, $cp, $sp) = (1, 0, 1, 0);
+
+  ($ct, $st) = ($_[2]/$r,   $rxy/$r)    if ($r   > $TRIGEPS);
+  ($cp, $sp) = ($_[0]/$rxy, $_[1]/$rxy) if ($rxy > $TRIGEPS);
+
+  return ($ct, $st, $cp, $sp);
 };
 
 sub _bin {
@@ -312,7 +363,7 @@ sub _bin2d {
     ++$aa;
   };
   push @slices, [@this];
-  ##print $#slices+1, $/;
+  #print ">>>>>>>>", $#slices+1, $/;
 
   ## pixelate each slice in angle
   my @plane = ();
@@ -336,28 +387,32 @@ sub _bin2d {
     };
     push @plane, [@pixel];
   };
+  ##print ">>>>>>>>", $#plane+1, $/;
 
   ## compute the population and average distance and angle of each pixel
   my @binned_plane = ();
-  my ($r, $b, $count, $total) = (0, 0, 0, 0);
+  my ($r, $b, $l1, $l2, $count, $total) = (0, 0, 0, 0);
   my $cc = 0;
   foreach my $pix (@plane) {
-    ($r, $b, $count) = (0, 0, 0);
+    next if ($#{$pix} == -1);
+    ($r, $b, $l1, $l2, $count) = (0, 0, 0);
     foreach my $tb (@{$pix}) {
-      $r += $tb->[0];
-      $b += $tb->[3];
+      $r  += $tb->[0];
+      $l1 += $tb->[1];
+      #$l2 += $tb->[2];
+      $b  += $tb->[3];
       ++$count;
       ++$total;
     };
     $cc += $count;
-    push @binned_plane, [$r/$count, $b/$count, $count];
+    push @binned_plane, [$r/$count, $b/$count, $l1/$count, $count];
   };
   $self->populations(\@binned_plane);
   $self->update_bins(0);
   $self->stop_spinner if ($self->mo->ui eq 'screen');
-  ##printf "number of pixels = %d  %d\n", $#plane+1, $#binned_plane+1;
-  ##printf "stripe pass = %d   pixel pass = %d    last pass = %d\n", $aa, $bb, $cc;
-  ##printf "binned = %d  unbinned = %d\n", $total, $#{$self->nearcl}+1;
+  printf "number of pixels: unbinned = %d    binned = %d\n", $#plane+1, $#binned_plane+1;
+  printf "stripe pass = %d   pixel pass = %d    last pass = %d\n", $aa, $bb, $cc;
+  printf "binned = %d  unbinned = %d\n", $total, $#{$self->nearcl}+1;
   return $self;
 };
 

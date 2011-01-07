@@ -403,6 +403,8 @@ sub propagate_kweight {
 			     @{ $self->mo->Data   },
 			     @{ $self->mo->Path   },
 			     @{ $self->mo->SSPath },
+			     @{ $self->mo->ThreeBody },
+			     @{ $self->mo->FPath  },
 			     @{ $self->mo->VPath  },
 			    );
 };

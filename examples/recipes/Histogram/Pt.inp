@@ -1,0 +1,15 @@
+title name:     platinum
+title formula:  Pt
+title sites:    Pt1
+title refer1:   Kittel, ISSP
+title refer2:
+title schoen:
+title notes1:   metal, fcc
+space  f m 3 m
+a    = 3.92
+alpha= 90
+rmax = 6.00
+core = Pt1
+atom
+Pt     0.00000   0.00000   0.00000  Pt1
+------

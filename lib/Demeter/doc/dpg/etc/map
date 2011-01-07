@@ -139,13 +139,15 @@
 	    lgcv   = { name = 'Local guess parameters and the characteristic value'}
 	    pathlike   = {
                           name = 'Path-like objects'
-			  menu = ['vpath', 'fspath', 'sspath', 'mspath', 'threebody']
+			  menu = ['vpath', 'fspath', 'fpath', 'sspath', 'mspath', 'threebody', 'forward']
 			  page = {
 				 vpath  = { name = "VPath" }
 				 fspath = { name = 'FSPath' }
+				 fpath  = { name = 'FPath' }
 				 sspath = { name = 'SSPath' }
 				 mspath = { name = 'MSPath' }
 				 threebody = { name = 'ThreeBody' }
+				 forward = { name = 'Forward' }
 				 }
 			 }
 	    su   = { name = 'Structural Units'}

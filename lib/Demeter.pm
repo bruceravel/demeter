@@ -1,4 +1,4 @@
-package Demeter;
+package Demeter;  # http://xkcd.com/844/
 
 =for Copyright
  .
@@ -201,9 +201,12 @@ sub import {
     };
   };
 
-  foreach my $m (qw(Data Plot Plot/Indicator Plot/Style Config Data/Prj Data/Pixel Data/MultiChannel
-		    GDS Path VPath SSPath FPath FSPath Fit Fit/Feffit Atoms Feff Feff/External
-		    ScatteringPath StructuralUnit LCF LogRatio Diff XES Journal)) {
+  foreach my $m (qw(Data Plot Plot/Indicator Plot/Style Config
+		    Data/Prj Data/Pixel Data/MultiChannel
+		    GDS Path VPath SSPath ThreeBody FPath FSPath
+		    Fit Fit/Feffit Atoms Feff Feff/External
+		    ScatteringPath StructuralUnit
+		    LCF LogRatio Diff XES Journal)) {
     next if $INC{"Demeter/$m.pm"};
     ##print "Demeter/$m.pm\n";
     require "Demeter/$m.pm";

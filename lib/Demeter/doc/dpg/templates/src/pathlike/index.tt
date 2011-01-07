@@ -23,6 +23,13 @@ visualisation tool and cannot be part of a fit.
 A [% INCLUDE font/quote a='first shell path' %] is a tool for modeling
 first shell data with one single scattering path.
 [% END %]
+[% WRAPPER html/dt dt="FPath" %]
+A [% INCLUDE font/quote a='filtered path' %] is created from [% chik %]
+data and can be used as fitting standard.  This can be used to make an
+empirical fitting standard from measured [% chik %] data.  It has also
+been used to condense the contributions from a histogram representing
+structural disorder into a single path-like object.
+[% END %]
 [% WRAPPER html/dt dt="SSPath" %]
 A [% INCLUDE font/quote a='single scattering path' %] uses one scattering
 potential from an existing [% feff %] calculation to make a single
@@ -30,19 +37,25 @@ scattering path at an arbitrary distance.
 [% END %]
 [% WRAPPER html/dt dt="MSPath" %]
 A [% INCLUDE font/quote a='multiple scattering path' %] uses one or more
-scattering potential from an existing [% feff %] calculation to make a 
+scattering potentials from an existing [% feff %] calculation to make a 
 multiple scattering path from an arbitrary collection of atoms.
 [% END %]
 [% WRAPPER html/dt dt="ThreeBody" %]
-A three-body path is a tool for modeling the effect of changing
-scattering angle on a collection of three atoms.  This includes the
-contribution for the triple scattering path and a set of double
-scattering paths which are used to do a interpolative approximation of
-the effect of changing scattering angle on the double scattering path.
+A [% INCLUDE font/quote a='three-body path' %] uses one or more
+scattering potentials from an existing [% feff %] calculation to make
+a double and a triple scattering path from an arrangement of three atoms.
+[% END %]
+[% WRAPPER html/dt dt="Forward" %]
+A forward path is a tool for modeling the effect of changing
+scattering angle on a collection of three atoms in a nearly collinear
+arrangement.  This includes the contribution for the triple scattering
+path and a set of double scattering paths which are used to do a
+interpolative approximation of the effect of changing scattering angle
+on the double scattering path.
 [% END %]
 [% END %]
 
 [% FILTER html_para -%]
-Note that, as of version 0.4, the MSPath and ThreeBody objects have
+Note that, as of version 0.4, the MSPath and Forward objects have
 not yet been implemented.
 [% END %]
