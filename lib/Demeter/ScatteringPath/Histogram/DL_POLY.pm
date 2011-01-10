@@ -28,6 +28,7 @@ use Demeter::NumTypes qw( Natural PosInt NonNeg );
 use POSIX qw(acos);
 use Readonly;
 Readonly my $PI => 4*atan2(1,1);
+Readonly my $TRIGEPS => 1e-6;
 
 with 'Demeter::Data::Arrays';
 with 'Demeter::UI::Screen::Pause' if ($Demeter::mode->ui eq 'screen');
@@ -107,6 +108,7 @@ has 'timestep_count' => (is => 'rw', isa => 'Int',  default => 0);
 has 'nearcl'      => (is => 'rw', isa => 'ArrayRef', default => sub{[]});
 
 
+has 'feff'        => (is => 'rw', isa => Empty.'|Demeter::Feff', default => q{},);
 has 'sp'          => (is => 'rw', isa => Empty.'|Demeter::ScatteringPath', default => q{},);
 
 ## need a pgplot plotting template
@@ -207,21 +209,23 @@ sub nearly_collinear {
 
   $self->start_counter(sprintf("Making radial/angle distribution from every %d-th timestep", $self->skip), ($#{$self->clusters}+1)/$self->skip) if ($self->mo->ui eq 'screen');
   my ($x0, $x1, $x2) = (0,0,0);
-  my ($ax, $ay, $az) = (0,0,0);
+  #my ($ax, $ay, $az) = (0,0,0);
   my ($bx, $by, $bz) = (0,0,0);
-  my ($cx, $cy, $cz) = (0,0,0);
+  #my ($cx, $cy, $cz) = (0,0,0);
   my @rdf1  = ();
   my @rdf4  = ();
   my @three = ();
+  my @this  = ();
   my $costh;
   my $i4;
   my $halfpath;
-  my $cosbetamax = cos($PI*$self->beta/180);
+  my ($ct, $st, $cp, $sp, $ctp, $stp, $cpp, $spp, $cppp, $sppp, $beta, $leg2);
+  #my $cosbetamax = cos($PI*$self->beta/180);
   foreach my $step (@{$self->clusters}) {
     @rdf1 = ();
     @rdf4 = ();
 
-    my @this = @$step;
+    @this = @$step;
     $self->timestep_count(++$count);
     next if ($count % $self->skip); # only process every Nth timestep
     $self->count if ($self->mo->ui eq 'screen');
@@ -246,35 +250,33 @@ sub nearly_collinear {
       foreach my $first (@rdf1) {
 	next if ($i4 != $first->[1]);
 
-
-	($ax, $ay, $az) = ($this[ $i4          ]->[0], $this[ $i4          ]->[1], $this[ $i4          ]->[2]);
+	#($ax, $ay, $az) = ($this[ $i4          ]->[0], $this[ $i4          ]->[1], $this[ $i4          ]->[2]);
 	($bx, $by, $bz) = ($this[ $first->[2]  ]->[0], $this[ $first->[2]  ]->[1], $this[ $first->[2]  ]->[2]);
-	($cx, $cy, $cz) = ($this[ $fourth->[2] ]->[0], $this[ $fourth->[2] ]->[1], $this[ $fourth->[2] ]->[2]);
-
+	#($cx, $cy, $cz) = ($this[ $fourth->[2] ]->[0], $this[ $fourth->[2] ]->[1], $this[ $fourth->[2] ]->[2]);
 
 	#my @vector = ( $cx-$bx, $cy-$by, $cz-$bz);
-	my ($ct, $st, $cp, $sp)     = _trig( $cx-$bx, $cy-$by, $cz-$bz );
+	($ct, $st, $cp, $sp)     = _trig( $this[ $fourth->[2] ]->[0]-$bx, $this[ $fourth->[2] ]->[1]-$by, $this[ $fourth->[2] ]->[2]-$bz );
 	#@vector    = ( $bx-$ax, $by-$ay, $bz-$az);
-	my ($ctp, $stp, $cpp, $spp) = _trig( $bx-$ax, $by-$ay, $bz-$az);
+	($ctp, $stp, $cpp, $spp) = _trig( $bx-$this[ $i4 ]->[0], $by-$this[ $i4 ]->[1], $bz-$this[ $i4 ]->[2]);
 
-	my $cppp = $cp*$cpp + $sp*$spp;
-	my $sppp = $spp*$cp - $cpp*$sp;
+	$cppp = $cp*$cpp + $sp*$spp;
+	$sppp = $spp*$cp - $cpp*$sp;
 
-	my $beta = $ct*$ctp + $st*$stp*$cppp;
+	$beta = $ct*$ctp + $st*$stp*$cppp;
 	if ($beta < -1) {
-	  $beta = "180.0000";
+	  $beta = 180;
 	} elsif ($beta >  1) {
-	  $beta = "0.0000";
+	  $beta = 0;
 	} else {
-	  $beta = sprintf("%.4f", 180 * acos($beta)  / $PI);
+	  $beta = 180 * acos($beta)  / $PI;
 	};
 	next if ($beta > $self->beta);
 
-	my $leg2 = sqrt( ($this[ $first->[2] ]->[0] - $this[ $fourth->[2] ]->[0])**2 +
-			 ($this[ $first->[2] ]->[1] - $this[ $fourth->[2] ]->[1])**2 +
-			 ($this[ $first->[2] ]->[2] - $this[ $fourth->[2] ]->[2])**2 );
-	$halfpath = ($leg2 + $first->[0] + $fourth->[0]) / 2;
-	push @three, [$halfpath, $first->[0], $fourth->[0], $beta];
+	$leg2 = sqrt( ($bx - $this[ $fourth->[2] ]->[0])**2 +
+		      ($by - $this[ $fourth->[2] ]->[1])**2 +
+		      ($bz - $this[ $fourth->[2] ]->[2])**2 );
+	$halfpath = $leg2 + $first->[0]; # + $fourth->[0]) / 2;
+	push @three, [$halfpath, $first->[0], $leg2, $fourth->[0], $beta];
 
 	#($a0, $a1, $a2) = ($this[ $i4 ]->[0], $this[ $i4 ]->[1], $this[ $i4 ]->[2]);
 	#$costh =
@@ -298,7 +300,6 @@ sub nearly_collinear {
 };
 
 sub _trig {
-  my $TRIGEPS = 1e-6;
   my $rxysqr = $_[0]*$_[0] + $_[1]*$_[1];
   my $r   = sqrt($rxysqr + $_[2]*$_[2]);
   my $rxy = sqrt($rxysqr);
@@ -370,11 +371,11 @@ sub _bin2d {
   my @pixel = ();
   my $bb = 0;
   foreach my $sl (@slices) {
-    my @slice = sort {$a->[3] <=> $b->[3]} @$sl; # sort by angle within this slice in R
+    my @slice = sort {$a->[4] <=> $b->[4]} @$sl; # sort by angle within this slice in R
     my $beta_start = 0;
     @pixel = ();
     foreach my $tb (@slice) {
-      my $beta = $tb->[3];
+      my $beta = $tb->[4];
       if (($beta - $beta_start) > $self->betabin) {
 	push @plane, [@pixel];
 	$beta_start += $self->betabin;
@@ -399,13 +400,13 @@ sub _bin2d {
     foreach my $tb (@{$pix}) {
       $r  += $tb->[0];
       $l1 += $tb->[1];
-      #$l2 += $tb->[2];
-      $b  += $tb->[3];
+      $l2 += $tb->[2];
+      $b  += $tb->[4];
       ++$count;
       ++$total;
     };
     $cc += $count;
-    push @binned_plane, [$r/$count, $b/$count, $l1/$count, $count];
+    push @binned_plane, [$r/$count, $b/$count, $l1/$count, $l2/$count, $count];
   };
   $self->populations(\@binned_plane);
   $self->update_bins(0);
@@ -434,15 +435,92 @@ sub histogram {
 
 sub fpath {
   my ($self) = @_;
-  my $histo = $self->histogram;
-  my $composite = $self -> sp -> chi_from_histogram($histo);
+  my $composite;
   if ($self->ss) {
+    my $histo = $self->histogram;
+    $composite = $self -> sp -> chi_from_histogram($histo);
     my $text = sprintf("\n\ntaken from %d samples between %.3f and %.3f A\nbinned into %.4f A bins",
 		       $self->get(qw{npairs rmin rmax bin}));
     $composite->pdtext($text);
+  } elsif ($self->ncl) {
+    $composite = $self->chi_nearly_colinear;
   };
   return $composite;
 };
+
+
+sub chi_nearly_colinear {
+  my ($self, $paths, $common) = @_;
+  $self->start_counter("Making FPath from radial/angle distribution", $#{$self->populations}+1) if ($self->mo->ui eq 'screen');
+  #$self->start_spinner("Making FPath from path length/angle distribution") if ($self->mo->ui eq 'screen');
+
+  my @paths = ();
+  foreach my $c (@{$self->populations}) {
+    push @paths, Demeter::ThreeBody->new(r1    => $c->[2], r2    => $c->[3],
+					 ipot1 => 1,       ipot2 => 1,
+					 beta  => $c->[1], s02   => $c->[4]/$self->nconfig,
+					 parent=> $self->feff,
+					 update_path => 1,
+					 @$common);
+  };
+
+  my $index = $self->mo->pathindex;
+
+  my $first = $paths[0];
+  my $save = $first->group;
+  $first->_update('fft');
+
+  $self->count if ($self->mo->ui eq 'screen');
+  $first->dspath->Index(100);
+  $first->dspath->group("h_i_s_t_o"); # add up the SSPaths without requiring an Ifeffit group for each one
+  $first->dspath->path(1);
+  $first->dspath->dispose($first->dspath->template('process', 'histogram_first'));
+  $first->dspath->group($save);
+
+  $first->tspath->Index(100);
+  $first->tspath->group("h_i_s_t_o");
+  $first->dspath->path(1);
+  $first->tspath->dispose($first->tspath->template('process', 'histogram_add'));
+  $first->tspath->group($save);
+
+  my $ravg = $first->s02 * ($first->r1+$first->r2);
+  foreach my $i (1 .. $#paths) {
+    $paths[$i]->update_path(1);
+    $paths[$i]->_update('fft');
+    my $save = $paths[$i]->group;
+
+    $self->count if ($self->mo->ui eq 'screen');
+    $paths[$i]->dspath->Index(100);
+    $paths[$i]->dspath->group("h_i_s_t_o");
+    $paths[$i]->dspath->path(1);
+    $paths[$i]->dispose($paths[$i]->dspath->template('process', 'histogram_add'));
+    $paths[$i]->dspath->group($save);
+
+    $paths[$i]->tspath->Index(100);
+    $paths[$i]->tspath->group("h_i_s_t_o");
+    $paths[$i]->tspath->path(1);
+    $paths[$i]->dispose($paths[$i]->tspath->template('process', 'histogram_add'));
+    $paths[$i]->tspath->group($save);
+
+    $ravg += $paths[$i]->s02 * ($paths[$i]->r1+$paths[$i]->r2);
+  }
+  $self->mo->pathindex($index);
+  my @k    = Ifeffit::get_array('h___isto.k');
+  my @chi  = Ifeffit::get_array('h___isto.chi');
+  my $data = Demeter::Data  -> put(\@k, \@chi, datatype=>'chi', name=>'sum of histogram',
+				   fft_kmin=>0, fft_kmax=>20, bft_rmin=>0, bft_rmax=>31);
+  my $path = Demeter::FPath -> new(absorber  => $self->feff->abs_species,
+				   scatterer => $self->feff->potentials->[$paths[0]->ipot2]->[2],
+				   reff      => $ravg,
+				   source    => $data,
+				   n         => 1,
+				   degen     => 1,
+				   @$common
+				  );
+  $self->stop_counter if ($self->mo->ui eq 'screen');
+  return $path;
+};
+
 
 __PACKAGE__->meta->make_immutable;
 1;

@@ -17,11 +17,11 @@ my $dlp = Demeter::ScatteringPath::Histogram::DL_POLY->new( r1=>1.5, r2=>3.5, r3
       my $dur = $lap->subtract_datetime($start);
       printf("%d minutes, %d seconds\n", $dur->minutes, $dur->seconds);
 
-open(my $twod, '>', 'twod');
-foreach my $p (@{$dlp->nearcl}) {
-  printf $twod "  %.9f  %.9f  %.9f  %.15f\n", @$p;
-};
-close $twod;
+# open(my $twod, '>', 'twod');
+# foreach my $p (@{$dlp->nearcl}) {
+#   printf $twod "  %.9f  %.9f  %.9f  %.9f  %.15f\n", @$p;
+# };
+# close $twod;
 #print $#{$dlp->nearcl}+1, $/;
 
 #exit;
@@ -31,16 +31,15 @@ close $twod;
 $dlp->rebin;
 #$dlp->plot;
 #$dlp->pause;
-print $dlp->nconfig, $/;
+#print $dlp->nconfig, $/;
 #exit;
 
-open(my $bin2d, '>', 'bin2d');
-foreach my $p (@{$dlp->populations}) {
-  printf $bin2d "  %.9f  %.9f  %.9f  %d\n", @$p;
-};
-close $bin2d;
+# open(my $bin2d, '>', 'bin2d');
+# foreach my $p (@{$dlp->populations}) {
+#   printf $bin2d "  %.9f  %.9f  %.9f  %.9f  %d\n", @$p;
+# };
+# close $bin2d;
 
-exit;
 
 # $dlp->bin(0.02);
 # $dlp->rebin;
@@ -55,7 +54,9 @@ $atoms -> core('Pt');
 $atoms -> set(rpath=>5.2, rmax => 8);
 my $feff = Demeter::Feff->new(workspace=>"feff/", screen=>0, atoms=>$atoms);
 $feff->run;
-$dlp->sp($feff->pathlist->[0]);
+#$dlp->sp($feff->pathlist->[0]);
+$dlp->feff($feff);
+$dlp->set_mode(screen=>0, file=>'>histo.iff');
 
 my $composite = $dlp->fpath;
 $composite->plot('r');

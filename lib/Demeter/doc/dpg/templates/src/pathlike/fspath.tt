@@ -40,14 +40,14 @@ When the object if created, [% demeter %] will construct a
 containing the absorber and scatterer.  The lattice constant of this
 notional crystal is such that the first neighbor distance is as
 specified.  The edge can be asserted explicitly, but it can usually be
-guessed from the atomic specis of the absorber -- the K edge is
+guessed from the atomic species of the absorber -- the K edge is
 assumed for elements lighter than La, otherwise the [% l3 %] edge is
 assumed.
 
 Like a normal Path, the FSPath must be associated with a Data object
 via its [% INCLUDE font/mono a='data' %] attribute.  Because, a 
 [% feff %] calculation is done behind the scenes, a 
-[% INCLUDE font/mono a='workspace' %] attribute must be sepcified so
+[% INCLUDE font/mono a='workspace' %] attribute must be specified so
 that [% demeter %] has a place to perform the calculation.
 
 All the details of the [% feff %] calculation are handled

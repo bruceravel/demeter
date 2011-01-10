@@ -11,10 +11,14 @@ use Demeter qw(:ui=screen :plotwith=gnuplot);
 
 my $feff = Demeter::Feff->new(workspace=>'./feff');
 $feff->thaw('feff/feff.yaml');
+$feff->screen(0);
 
-my $tb = Demeter::ThreeBody->new(parent=>$feff, name=>'Pt 3 body');
-$tb->set(halflength=>5.278396951, beta=>0.694400000, ipot1=>1, ipot2=>1);
+my $tb = Demeter::ThreeBody->new(parent=>$feff, name=>'Pt 3 body', s02=>2);
+$tb->set(r1=>2.639222692, r2=>2.639222692, beta=>0.694400000, ipot1=>1, ipot2=>1);
 
 print $tb->pathsdat;
-$tb->plot('k');
+$tb->po->r_pl('m');
+my $sp = 'r';
+$tb->plot($sp);
+$tb->vpath->plot($sp);
 $tb->pause;

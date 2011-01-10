@@ -162,7 +162,7 @@ sub dlpoly {
   my ($this, $sp) = @_;
   $this->{label}->SetLabel("Build histogram from a DL_POLY history file");
 
-  $this->{dlfile} = Wx::FilePickerCtrl->new( $this, -1, "", "Choose a HISTORY File", "All files|*",
+  $this->{dlfile} = Wx::FilePickerCtrl->new( $this, -1, "", "Choose a HISTORY File", "HISTORY files|HISTORY|All files|*",
 					     wxDefaultPosition, wxDefaultSize,
 					     wxFLP_DEFAULT_STYLE|wxFLP_USE_TEXTCTRL|wxFLP_CHANGE_DIR|wxFLP_FILE_MUST_EXIST );
   $this->{box} -> Add($this->{dlfile}, 0, wxGROW|wxLEFT|wxRIGHT, 25);

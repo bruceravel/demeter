@@ -24,17 +24,15 @@
    - [ ] reference of another edge
    - [ ] keV data
 
-*** Athena bugs [6/10]
-   - [X] importing stddev array from an Athena project file, then making a merge plot works oddly
-   - [X] renaming a group unchecks it
-   - [X] persistance for plotting styles
-   - [X] show yaml for style and indicator objects in monitor menu
-   - [X] handle preproc alignment correctly when MED data is made into separate groups
-   - [X] in align tool (and others?) verify that standard selection still exists in the project
+*** Athena bugs [0/5]
    - [ ] add noise to chi data
    - [ ] cannot specify title for stddev and variance plots
    - [ ] implement frozen groups
-   - [ ] deglitching crashes with gnuplot						:HUH:
+   - [ ] deglitching crashes with gnuplot					:HUH:
+   - [ ] in project selection dialog, controls for entering a periodic
+         subset (i.e. every Nth record starting with the Jth record)
+         this would be useful for QXAS or dispersive data files with
+         many measurements
 
 *** Help [1/4]
    - [X]  about
@@ -54,14 +52,7 @@
    - [X] enable result page buttons correctly after fit or combi fit
    - [X] flags for required and fit_e0 don't get restored correctly when using combi page
 
-*** old Athena's edit menu [3/5]
-   - [ ] titles
-   - [ ] data as text
-   - [X] Ifeffit show (strings, groups, arrays)
-   - [X] journal
-   - [X] excel report
-
-*** Group menu [9/10]
+*** Groups [9/10]
    - [X] copy group
    - [X] about group
    - [X] rename
@@ -72,6 +63,8 @@
    - [X] close project
    - [X] change datatype
    - [ ] move up and down
+   - [ ] titles
+   - [ ] data as text
 
 *** Plot [5/6]
    - [ ] zoom, unzoom, cursor, but only for pgplot
@@ -132,7 +125,7 @@
   - [X] deserializing SSPath fails
   - [X] envelope is q is plotted absurdly wrongly (it seems to plot something in R)
 
-** Athena bugs fixed [7/7]
+** Athena bugs fixed [16/16]
   - [X] bare negative sign in a TextCtrl failed attribute type checking and crashes
   - [X] labels in plot tabs should come from .pm files
   - [X] align problem 
@@ -144,6 +137,18 @@
   - [X] no status message after saving project...
   - [X] plot in energy, need to update edge step box in case it changed
   - [X] rename and mark_regexp need to keep a buffer of previous entries
+  - [X] importing stddev array from an Athena project file, then
+	 making a merge plot works oddly
+  - [X] renaming a group unchecks it
+  - [X] persistance for plotting styles
+  - [X] show yaml for style and indicator objects in monitor menu
+  - [X] handle preproc alignment correctly when MED data is made into
+	separate groups
+  - [X] in align tool (and others?) verify that standard selection
+	still exists in the project
+  - [X] Ifeffit show (strings, groups, arrays)
+  - [X] journal
+  - [X] excel report
 
 ** other features [13/13]
   - [X] column selection persistance
@@ -222,12 +227,12 @@
  - [X] calibrate
  - [X] align
  - [X] deglitch
- - [ ] smooth with Savitsky-Golay filter							:PDL:
+ - [ ] smooth with Savitsky-Golay filter				:PDL:
         [[file:notes/sgolay.m][Matlab routine for SG filter]] 
  - [X] truncate
  - [X] rebin
  - [X] convolution and noise
- - [ ] deconvolution										:PDL:
+ - [ ] deconvolution							:PDL:
  - [X] self absorption
  - [X] copy series
 
@@ -235,7 +240,7 @@
  - [ ] multi-electron removal
 
  - [X] LCF
- - [ ] PCA											:PDL:
+ - [ ] PCA								:PDL:
         [[http://mailman.jach.hawaii.edu/pipermail/perldl/2006-August/000588.html][PCA from PDL mail archives]]
  - [ ] Peak fit
  - [X] log ratio
