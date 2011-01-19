@@ -9,6 +9,9 @@ set title  "{/*1.3 Distribution of nearly collinear triple scattering paths}"
 set xlabel "{/*1.2 Half path length &{aa}({\305})}"
 set ylabel "{/*1.2 angle (degrees)}"
 
+unset arrow 1
+set arrow 1 from 5.5437,0 to 5.5437,7 nohead
+
 plot 'twod' using 1:5 with points ps 0.1 pt 7 lc rgbcolor 'brown',\
      'bin2d' using 1:2:(($5/m)<n?n:($5/m)) with points ps variable pt 7 lc rgbcolor "blue"
 #     ,\

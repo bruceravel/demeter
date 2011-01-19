@@ -96,7 +96,7 @@ has 'r4'        => (is => 'rw', isa => 'Num', default => 5.7,);
 has 'beta'      => (is => 'rw', isa => 'Num', default => 20,);
 has 'rbin'      => (is            => 'rw',
 		    isa           => 'Num',
-		    default       => 0.01,);
+		    default       => 0.02,);
 has 'betabin'   => (is            => 'rw',
 		    isa           => 'Num',
 		    default       => 0.5,);
@@ -295,7 +295,9 @@ sub nearly_collinear {
   };
   @three = sort { $a->[0] <=> $b->[0] } @three;
   $self->stop_spinner if ($self->mo->ui eq 'screen');
-  $self->nconfig( int( ($#three+1) / (($#{$self->clusters}+1) / $self->skip) + 0.5 ) );
+  $self->nconfig( $#three+1 );
+  #$self->nconfig( int( ($#three+1) / (($#{$self->clusters}+1) / $self->skip) + 0.5 ) );
+  #print "||||||| ", $self->nconfig, $/;
   $self->nearcl(\@three);
 };
 
@@ -467,8 +469,8 @@ sub chi_nearly_colinear {
   my $index = $self->mo->pathindex;
 
   my $first = $paths[0];
-  my $save = $first->group;
   $first->_update('fft');
+  my $save = $first->group;
 
   $self->count if ($self->mo->ui eq 'screen');
   $first->dspath->Index(100);
@@ -479,13 +481,13 @@ sub chi_nearly_colinear {
 
   $first->tspath->Index(100);
   $first->tspath->group("h_i_s_t_o");
-  $first->dspath->path(1);
+  $first->tspath->path(1);
   $first->tspath->dispose($first->tspath->template('process', 'histogram_add'));
   $first->tspath->group($save);
 
   my $ravg = $first->s02 * ($first->r1+$first->r2);
+  my $n    = $first->s02;
   foreach my $i (1 .. $#paths) {
-    $paths[$i]->update_path(1);
     $paths[$i]->_update('fft');
     my $save = $paths[$i]->group;
 
@@ -503,6 +505,7 @@ sub chi_nearly_colinear {
     $paths[$i]->tspath->group($save);
 
     $ravg += $paths[$i]->s02 * ($paths[$i]->r1+$paths[$i]->r2);
+    $n += $paths[$i]->s02;
   }
   $self->mo->pathindex($index);
   my @k    = Ifeffit::get_array('h___isto.k');

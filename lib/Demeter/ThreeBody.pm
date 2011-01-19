@@ -27,6 +27,8 @@ with 'Demeter::UI::Screen::Pause' if ($Demeter::mode->ui eq 'screen');
 use File::Copy;
 use File::Spec;
 use String::Random qw(random_string);
+use Readonly;
+Readonly my $PI => 4*atan2(1,1);
 
 has 'Type'	 => (is => 'ro', isa => 'Str',    default => 'three body scattering');
 has 'string'	 => (is => 'ro', isa => 'Str',    default => q{});
@@ -37,9 +39,17 @@ has 'fuzzy'	 => (is => 'rw', isa => 'Num',    default => 0.1);
 has 'weight'	 => (is => 'ro', isa => 'Int',    default => 2);
 
 #has 'halflength' => (is => 'rw', isa => 'Num',    default => 0, documentation => 'the half path length of the double scattering path');
-has 'r1'         => (is => 'rw', isa => 'Num',    default => 0, documentation => 'the length of the leg between the absorber and the nearer atom');
-has 'r2'         => (is => 'rw', isa => 'Num',    default => 0, documentation => 'the length of the leg between the nearer amd more distant atom');
-has 'beta'       => (is => 'rw', isa => 'Num',    default => 0, documentation => 'the scattering angle through the intervening atom', alias => 'angle');
+has 'r1'         => (is => 'rw', isa => 'Num',    default => 0,
+		     trigger => sub{my($self, $new) = @_; $self->calc_r3},
+		     documentation => 'the length of the leg between the absorber and the nearer atom');
+has 'r2'         => (is => 'rw', isa => 'Num',    default => 0,
+		     trigger => sub{my($self, $new) = @_; $self->calc_r3},
+		     documentation => 'the length of the leg between the nearer amd more distant atom');
+has 'beta'       => (is => 'rw', isa => 'Num',    default => 0,
+		     trigger => sub{my($self, $new) = @_; $self->calc_r3},
+		     documentation => 'the scattering angle through the intervening atom', alias => 'angle');
+has 'r3'         => (is => 'rw', isa => 'Num',    default => 0,
+		     documentation => 'the length of the leg between the absorber and the distant atom in DS path');
 has 'ipot1'      => (is => 'rw', isa =>  Ipot,    default => 0, documentation => 'the ipot of the intervening atom');
 has 'ipot2'      => (is => 'rw', isa =>  Ipot,    default => 0, documentation => 'the ipot of the more distant atom');
 
@@ -110,6 +120,13 @@ override halflength => sub {
   return $self->r1+$self->r2;
 };
 
+sub calc_r3 {
+  my ($self) = @_;
+  my $c = sqrt( $self->r1**2 + $self->r2**2 + 2*$self->r1*$self->r2*cos($PI*$self->beta/180) );
+  $self->r3($c);
+};
+
+
 after _update_from_ScatteringPath => sub {
   my ($self) = @_;
   ## DS path gets handled by the parent class
@@ -117,10 +134,10 @@ after _update_from_ScatteringPath => sub {
   move(File::Spec->catfile($self->parent->workspace, $tempfile),
        File::Spec->catfile($self->parent->workspace, $self->tsstring));
 
-  my $c = sqrt( ($self->r1+$self->r2*cos($self->beta))**2 + ($self->r2*sin($self->beta))**2 );
+  #my $c = sqrt( $self->r1**2 + $self->r2**2 + 2*$self->r1*$self->r2*cos($PI*$self->beta/180) );
   my $ds = Demeter::Path->new(folder => $self->parent->workspace,
 			      file   => $self->dsstring,
-			      name   => sprintf("DS at R=%.5f, beta=%.3f", ($self->r1+$self->r2+$c)/2, $self->beta),
+			      name   => sprintf("DS at R=%.5f, beta=%.3f", ($self->r1+$self->r2+$self->r3)/2, $self->beta),
 			     );
   my $ts = Demeter::Path->new(folder => $self->parent->workspace,
 			      file   => $self->tsstring,
@@ -160,19 +177,17 @@ override plot => sub {
 sub pathsdat {
   my ($self) = @_;
 
-  #my $a = $self->halflength / (1+cos($self->beta / 2));
-  #my $c = 2 * $a * cos($self->beta / 2);
-  my $c = sqrt( ($self->r1+$self->r2*cos($self->beta))**2 + ($self->r2*sin($self->beta))**2 );
+#  my $c = sqrt( $self->r1**2 + $self->r2**2 + 2*$self->r1*$self->r2*cos($PI*$self->beta/180) );
 
   my $tag1 = $self->parent->potentials->[$self->ipot1]->[2];
   my $tag2 = $self->parent->potentials->[$self->ipot2]->[2];
 
   my $pd = q{};
   $pd .= sprintf("  %4d    %d  %6.3f  index, nleg, degeneracy, r= %.4f\n",
-		 $self->co->default('pathfinder', 'one_off_index'), 3, 2, ($self->r1+$self->r2+$c)/2);
+		 $self->co->default('pathfinder', 'one_off_index'), 3, 2, ($self->r1+$self->r2+$self->r3)/2);
   $pd .= "      x           y           z     ipot  label      rleg      beta        eta";
   $pd .= "\n";
-  $pd .= sprintf(" %11.6f %11.6f %11.6f   %d '%-6s' %9.4f %9.4f %9.4f\n", $self->r1+$self->r2*cos($self->beta), $self->r2*sin($self->beta / 2), 0, $self->ipot2, $tag2, $c, 180-$self->beta/2, 0);
+  $pd .= sprintf(" %11.6f %11.6f %11.6f   %d '%-6s' %9.4f %9.4f %9.4f\n", $self->r1+$self->r2*cos($self->beta), $self->r2*sin($self->beta / 2), 0, $self->ipot2, $tag2, $self->r3, 180-$self->beta/2, 0);
   $pd .= sprintf(" %11.6f %11.6f %11.6f   %d '%-6s' %9.4f %9.4f %9.4f\n", $self->r1, 0, 0, $self->ipot1, $tag1, $self->r2, $self->beta, 0);
   $pd .= sprintf(" %11.6f %11.6f %11.6f   %d '%-6s' %9.4f %9.4f %9.4f\n", 0, 0, 0, 0, 'abs', $self->r1, 180-$self->beta/2, 0);
 
