@@ -212,6 +212,7 @@ sub plot {
 		       y => $self->config('key_y'),
 		      );
   $ddd -> po -> set(e_der  => ($which =~ m{deriv}) ? 1 : 0,
+		    e_bkg  => 0,
 		    e_sec  => 0,
 		    e_norm => ($which =~ m{mu})    ? 1 : 0,
 		    e_pre  => 0,

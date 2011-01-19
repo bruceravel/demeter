@@ -61,13 +61,13 @@ my @utilities = qw(absorption formulas ion data transitions find line standards 
 sub new {
   my $ref    = shift;
   my $width  = 100;
-  my $height = int(($#utilities) * $icon_dimension * 1.8); # + 2*($#utilities+1);
+  my $height = int(($#utilities+1) * $icon_dimension * 1.8); # + 2*($#utilities+1);
   my $self   = $ref->SUPER::new( undef,           # parent window
 				 -1,              # ID -1 means any
 				 'Hephaestus',    # title
 				 wxDefaultPosition, [-1,$height],
 			       );
-  my $tb = Wx::Toolbook->new( $self, -1, wxDefaultPosition, wxDefaultSize, wxBK_LEFT );
+  my $tb = Wx::Notebook->new( $self, -1, wxDefaultPosition, wxDefaultSize, wxBK_LEFT );
   my $statusbar = $self->CreateStatusBar;
   $self->{book}      = $tb;
   $self->{statusbar} = $statusbar;

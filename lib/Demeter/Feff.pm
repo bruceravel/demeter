@@ -26,6 +26,7 @@ use MooseX::Aliases;
 use Moose::Util::TypeConstraints;
 use Demeter::StrTypes qw( AtomsEdge FeffCard Empty ElementSymbol);
 use Demeter::NumTypes qw( Natural NonNeg PosInt );
+with 'Demeter::Feff::Histogram';
 with 'Demeter::Feff::Paths';
 with 'Demeter::Feff::Sanity';
 with 'Demeter::UI::Screen::Pause' if ($Demeter::mode->ui eq 'screen');

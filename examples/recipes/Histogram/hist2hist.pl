@@ -1,7 +1,7 @@
 #!/usr/bin/perl
 
 use Demeter qw(:ui=screen :plotwith=gnuplot);
-use Demeter::ScatteringPath::Histogram::DL_POLY;
+use Demeter::Feff::DL_POLY;
 
 use DateTime;
 
@@ -15,8 +15,8 @@ $data->fft_kmax(12);
 $data->po->rmax(8);
 
       my $start = DateTime->now( time_zone => 'floating' );
-#my $dlp = Demeter::ScatteringPath::Histogram::DL_POLY->new( rmin=>1.5, rmax=>7, ss=>1, file=>'HISTORY',);
-my $dlp = Demeter::ScatteringPath::Histogram::DL_POLY->new( r1=>1.5, r2=>3.5, r3=>5.2, r4=>5.7, ncl=>1, skip=>20, file=>'HISTORY',);
+my $dlp = Demeter::Feff::DL_POLY->new( rmin=>1.5, rmax=>3.5, ss=>1, file=>'HISTORY',);
+#my $dlp = Demeter::ScatteringPath::Histogram::DL_POLY->new( r1=>1.5, r2=>3.5, r3=>5.2, r4=>5.7, ncl=>1, skip=>20, file=>'HISTORY',);
       my $lap = DateTime->now( time_zone => 'floating' );
       my $dur = $lap->subtract_datetime($start);
       printf("%d minutes, %d seconds\n", $dur->minutes, $dur->seconds);
@@ -33,8 +33,8 @@ my $dlp = Demeter::ScatteringPath::Histogram::DL_POLY->new( r1=>1.5, r2=>3.5, r3
 #print $dlp->npairs, $/;
 
 $dlp->rebin;
-#$dlp->plot;
-#$dlp->pause;
+$dlp->plot;
+$dlp->pause;
 #print $dlp->nconfig, $/;
 #exit;
 
@@ -63,6 +63,11 @@ $feff->freeze('feff/feff.yaml');
 $dlp->feff($feff);
 
 my $composite = $dlp->fpath;
+$composite->plot('k');
+$dlp->pause;
+exit;
+
+
 
 my $pds = Demeter::Path->new(name   => 'DS',
 			     parent => $feff,

@@ -81,7 +81,8 @@ sub new {
     $hh  -> Add($self->{$utility}, 1, wxEXPAND|wxALL, 0);
     $box -> Add($hh, 1, wxEXPAND|wxALL, 0);
 
-    $nb  -> AddPage($page, $utility, 0, $count);
+    my $label = ($utility eq 'SS') ? 'Path-like' : $utility;
+    $nb  -> AddPage($page, $label, 0, $count);
   };
 
   $vbox -> Add($nb, 1, wxEXPAND|wxGROW, 0);

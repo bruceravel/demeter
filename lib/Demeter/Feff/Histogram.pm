@@ -1,4 +1,4 @@
-package Demeter::ScatteringPath::Histogram;
+package Demeter::Feff::Histogram;
 use Moose::Role;
 with 'Demeter::UI::Screen::Progress' if $Demeter::mode->ui eq 'screen';
 
@@ -9,29 +9,23 @@ use Readonly;
 Readonly my $EPSILON  => 0.00001;
 
 sub make_histogram {
-  my ($self, $rx, $ry, $s02, $scale, $common) = @_;
+  my ($self, $rx, $ry, $ipot, $s02, $scale, $common) = @_;
   my @paths = ();
-  if ($self->nleg != 2) {
-    my $text = "You can only call make_histogram on single scattering paths.\n(MS histograms will be available in a later version of Demeter.)\n";
-    croak($text), return [];
-  };
   $s02 ||= '1';
 
   my $total = (looks_like_number($ry->[0])) ? sum(@$ry) : 1; # not quite right...
   $self->start_spinner("Generating SSPaths for histogram") if ($self->mo->ui eq 'screen');
   #print $total, $/;
-  my $rnot = $self->fuzzy;
   foreach my $i (0 .. $#{$rx}) {
-    my $deltar = $rx->[$i] - $rnot;
     my $amp = $ry->[$i];
     if (looks_like_number($amp)) {
       $amp = sprintf("%.7f", $ry->[$i] / $total);
       next if ($amp < $self->co->default(qw(histogram epsilon)));
     };
-    my $reff = $self->fuzzy + $deltar;
+    my $reff = $rx->[$i];
     my $delr = ($scale) ? sprintf("%s*%.5f", $scale, $reff) : 0;
-    my $this = Demeter::SSPath->new(parent     => $self->feff,
-				    ipot       => $self->ssipot,
+    my $this = Demeter::SSPath->new(parent     => $self,
+				    ipot       => $ipot,
 				    reff       => $reff,
 				    delr       => $delr,
 				    degen      => 1,
@@ -69,6 +63,7 @@ sub chi_from_histogram {
   my @r     = ($first->R);
   foreach my $i (1 .. $#{ $paths }) {
     #$paths->[$i]->update_path(1);
+    $self->call_sentinal;
     my $save = $paths->[$i]->group; # add up the SSPaths without requiring an Ifeffit group for each one
     $paths->[$i]->Index(255);
     $paths->[$i]->group("h_i_s_t_o");
@@ -107,8 +102,8 @@ sub chi_from_histogram {
   my @chi  = Ifeffit::get_array('h___isto.chi');
   my $data = Demeter::Data  -> put(\@k, \@chi, datatype=>'chi', name=>'sum of histogram',
 				   fft_kmin=>0, fft_kmax=>20, bft_rmin=>0, bft_rmax=>31);
-  my $path = Demeter::FPath -> new(absorber  => $self->feff->abs_species,
-				   scatterer => $self->feff->potentials->[$self->ssipot]->[2],
+  my $path = Demeter::FPath -> new(absorber  => $self->abs_species,
+				   scatterer => $self->potentials->[$first->ipot]->[2],
 				   reff      => $rave,
 				   source    => $data,
 				   n         => 1,

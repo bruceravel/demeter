@@ -260,12 +260,19 @@ sub fill_ss_page {
   my @entries = map {sprintf("%d: %s", $_->[0], $_->[2])} @ipots;
   my $i = 0;
   foreach my $e (@entries) {
-    $self->{parent}->{SS}->{ipot}->SetLabel($i, $e);
-    $self->{parent}->{SS}->{ipot}->Enable($i, 1);
+    $self->{parent}->{SS}->{ss_ipot}->SetLabel($i, $e);
+    $self->{parent}->{SS}->{ss_ipot}->Enable($i, 1);
+    $self->{parent}->{SS}->{dlp_ss_ipot}->SetLabel($i, $e);
+    $self->{parent}->{SS}->{dlp_ss_ipot}->Enable($i, 1);
+    $self->{parent}->{SS}->{dlp_ncl_ipot1}->SetLabel($i, $e);
+    $self->{parent}->{SS}->{dlp_ncl_ipot1}->Enable($i, 1);
+    $self->{parent}->{SS}->{dlp_ncl_ipot2}->SetLabel($i, $e);
+    $self->{parent}->{SS}->{dlp_ncl_ipot2}->Enable($i, 1);
     ++$i;
   };
-  $self->{parent}->{SS}->{name}->SetValue($feff->potentials->[0]->[2] . ' SS');
-  $self->{parent}->{SS}->{drag}->Enable(1);
+  $self->{parent}->{SS}->{ss_name}->SetValue($feff->potentials->[0]->[2] . ' SS');
+  $self->{parent}->{SS}->{ss_drag}->Enable(1);
+  $self->{parent}->{SS}->{dlp_ss_drag}->Enable(1);
 };
 
 sub now {

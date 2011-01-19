@@ -21,6 +21,7 @@ use Carp;
 use Chemistry::Elements qw(get_name);
 use Chemistry::Formula qw(formula_data parse_formula);
 use Scalar::Util qw(looks_like_number);
+use Text::Wrap;
 use Xray::Absorption;
 
 use Wx qw( :everything );
@@ -28,7 +29,8 @@ use Wx::Event qw(EVT_LISTBOX EVT_BUTTON EVT_KEY_DOWN);
 use base 'Wx::Panel';
 use Demeter::UI::Wx::PeriodicTableDialog;
 
-
+my $aleft = Wx::TextAttr->new();
+$aleft->SetAlignment(wxTEXT_ALIGNMENT_LEFT);
 my (%formula_of, %density_of);
 formula_data(\%formula_of, \%density_of);
 
@@ -106,10 +108,11 @@ sub new {
   $self->{resultsbox} = Wx::StaticBox->new($self, -1, 'Results', wxDefaultPosition, wxDefaultSize);
   $self->{resultsboxsizer} = Wx::StaticBoxSizer->new( $self->{resultsbox}, wxVERTICAL );
   $self->{results} = Wx::TextCtrl->new($self, -1, q{}, wxDefaultPosition, wxDefaultSize,
-				       wxVSCROLL|wxTE_MULTILINE|wxTE_READONLY|wxNO_BORDER);
+				       wxVSCROLL|wxHSCROLL|wxTE_MULTILINE|wxTE_READONLY|wxNO_BORDER);
   $self->{resultsboxsizer} -> Add($self->{results}, 1, wxEXPAND|wxALL, 2);
   $vbox -> Add($self->{resultsboxsizer}, 1, wxEXPAND|wxALL, 5);
   $self->{results}->SetFont( Wx::Font->new( 10, wxTELETYPE, wxNORMAL, wxNORMAL, 0, "" ) );
+  $self->{results}->SetDefaultStyle($aleft);
 
   $self->SetSizerAndFit($hbox);
 
@@ -292,8 +295,11 @@ sub get_formula_data {
   } else {
     $answer .= "\nInput error:\n\t".$count{error};
   };
-  $parent->{results} -> SetValue($answer);
-
+  $parent->{results} -> Clear;
+  {
+    local $Text::Wrap::columns = 55;
+    $parent->{results} -> AppendText(wrap(q{}, q{}, $answer));
+  };
 };
 
 sub use_element {

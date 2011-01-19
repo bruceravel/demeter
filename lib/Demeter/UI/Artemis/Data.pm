@@ -2068,12 +2068,34 @@ sub quickfs {
 };
 
 
+sub dlpoly_sentinal_rdf {
+  my ($datapage) = @_;
+  my $text = $datapage->{DLPOLY}->timestep_count . " of " . $datapage->{DLPOLY}->{nsteps} . " timesteps";
+  #print $text, $/;
+  $datapage->status($text, 'wait|nobuffer') if not $datapage->{DLPOLY}->timestep_count % 10;
+  $::app->Yield();
+};
+
+my $dlcount = 0;
+sub dlpoly_sentinal_fpath {
+  my ($datapage) = @_;
+  ++$dlcount;
+  my $text = "Making FPath from bins: " . $dlcount . " of " . $datapage->{DLPOLY}->{nbins} . " bins processed";
+  #print $text, $/;
+  $datapage->status($text, 'wait|nobuffer'); # if not $datapage->{DLPOLY}->bin_count % 10;
+  $::app->Yield();
+};
+
+
+
 package Demeter::UI::Artemis::Data::DropTarget;
 
 use Wx qw( :everything);
 use base qw(Wx::DropTarget);
 use Demeter::UI::Artemis::DND::PathDrag;
 use Demeter::UI::Artemis::Path;
+use Demeter::UI::Wx::SpecialCharacters qw(:all);
+use Demeter::Feff::DL_POLY;
 
 use Scalar::Util qw(looks_like_number);
 use Regexp::List;
@@ -2102,7 +2124,7 @@ sub OnData {
   $book->DeletePage(0) if ($book->GetPage(0) =~ m{Panel});
   my $spref = $this->{DATA}->{Data};
   my $is_sspath = ($spref->[0] eq 'SSPath') ? 1 : 0;
-  if ($is_sspath) {
+  if ($spref->[0] eq 'SSPath') {
     my $feff = $demeter->mo->fetch("Feff", $spref->[1]);
     my $name = $spref->[2];
     my $reff = $spref->[3];
@@ -2125,6 +2147,54 @@ sub OnData {
     $sspath->make_name;
     $sspath->set(name=>$name, label=>$name) if ($name);
     $page->include_label;
+
+  } elsif ($spref->[0] eq 'DLPSS') {
+    my $feff = $demeter->mo->fetch("Feff", $spref->[1]);
+    my $ipot = $spref->[6];
+    my $persist = File::Spec->catfile(Demeter->dot_folder, 'demeter.dlpoly');
+    YAML::Tiny::DumpFile($persist, {file=>$spref->[2], rmin=>$spref->[3], rmax=>$spref->[4], bin=>$spref->[5]});
+    my $dlp = Demeter::Feff::DL_POLY->new(rmin=>$spref->[3], rmax=>$spref->[4], bin=>$spref->[5],
+					  feff=>$feff, ipot=>$ipot, ss=>1, ncl=>0);
+    $this->{PARENT}->{DLPOLY} = $dlp;
+
+    $dlp->sentinal(sub{$this->{PARENT}->dlpoly_sentinal_rdf});
+    my $busy = Wx::BusyCursor->new();
+    my $start = DateTime->now( time_zone => 'floating' );
+    $dlp->file($spref->[2]);
+    my $finish = DateTime->now( time_zone => 'floating' );
+    my $dur = $finish->subtract_datetime($start);
+    my $finishtext = sprintf("Making histogram from %d timesteps (%d minutes, %d seconds)", $dlp->nsteps, $dur->minutes, $dur->seconds);
+    $this->{PARENT}->status($finishtext);
+    undef $busy;
+
+
+    $busy = Wx::BusyCursor->new();
+    $this->{PARENT}->status("Rebinning histogram into $spref->[5] $ARING bins");
+    $start = DateTime->now( time_zone => 'floating' );
+    $dlp->rebin;
+    #$dlp->set(sp=>$sp);
+    $dlcount = 0;
+    $dlp->feff->sentinal(sub{$this->{PARENT}->dlpoly_sentinal_fpath});
+    my $composite = $dlp->fpath;
+    $finish = DateTime->now( time_zone => 'floating' );
+    $dur = $finish->subtract_datetime($start);
+    $finishtext = sprintf("Rebined and made FPath in %d minutes, %d seconds", $dur->minutes, $dur->seconds);
+    $this->{PARENT}->status($finishtext);
+
+    $composite->data($this->{PARENT}->{data});
+    my $page = Demeter::UI::Artemis::Path->new($book, $composite, $this->{PARENT});
+    $book->AddPage($page, $composite->name, 1, 0);
+    #$composite->po->start_plot;
+    #$composite->plot('r');
+    $page->transfer;
+    $Demeter::UI::Artemis::frames{Plot}->plot(0, 'r');
+#    $histo_dialog->{DLPOLY} = q{};
+    $dlp->DEMOLISH;
+    undef $busy;
+
+  } elsif ($spref->[0] eq 'DLPNCL') {
+    print join("|",@$spref), $/;
+
   } else {			#  this is a normal path
     my @sparray = map { $demeter->mo->fetch("ScatteringPath", $_) } @$spref;
     foreach my $sp ( @sparray ) {

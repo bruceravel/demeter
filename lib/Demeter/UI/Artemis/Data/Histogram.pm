@@ -249,13 +249,6 @@ sub dlplot {
   undef $busy;
 };
 
-sub dlpoly_sentinal {
-  my ($this) = @_;
-  my $text = $this->{DLPOLY}->timestep_count . " of " . $this->{DLPOLY}->{nsteps} . " timesteps";
-  #print $text, $/;
-  $this->GetParent->status($text, 'wait|nobuffer') if not $this->{DLPOLY}->timestep_count % 10;
-};
-
 
 # sub OnChoice {
 #   my ($parent, $event) = @_;

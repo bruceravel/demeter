@@ -1,4 +1,4 @@
-package Demeter::ScatteringPath::Histogram::DL_POLY;
+package Demeter::Feff::DL_POLY;
 
 =for Copyright
  .
@@ -23,7 +23,7 @@ use MooseX::Aliases;
 #use MooseX::StrictConstructor;
 extends 'Demeter';
 use Demeter::StrTypes qw( Empty );
-use Demeter::NumTypes qw( Natural PosInt NonNeg );
+use Demeter::NumTypes qw( Natural PosInt NonNeg Ipot );
 
 use POSIX qw(acos);
 use Readonly;
@@ -43,6 +43,7 @@ has '+plottable'      => (default => 1);
 
 ## HISTORY file attributes
 has 'nsteps'    => (is => 'rw', isa => NonNeg, default => 0);
+has 'nbins'     => (is => 'rw', isa => NonNeg, default => 0);
 has 'file'      => (is => 'rw', isa => 'Str', default => q{},
 		    trigger => sub{ my($self, $new) = @_;
 				    if ($new and (-e $new)) {
@@ -104,12 +105,16 @@ has 'betabin'   => (is            => 'rw',
 has 'ss'        => (is => 'rw', isa => 'Bool', default => 0, trigger=>sub{my($self, $new) = @_; $self->ncl(0) if $new});
 has 'ncl'       => (is => 'rw', isa => 'Bool', default => 0, trigger=>sub{my($self, $new) = @_; $self->ss(0)  if $new});
 
+has 'bin_count'   => (is => 'rw', isa => 'Int',  default => 0);
 has 'timestep_count' => (is => 'rw', isa => 'Int',  default => 0);
 has 'nearcl'      => (is => 'rw', isa => 'ArrayRef', default => sub{[]});
 
 
 has 'feff'        => (is => 'rw', isa => Empty.'|Demeter::Feff', default => q{},);
 has 'sp'          => (is => 'rw', isa => Empty.'|Demeter::ScatteringPath', default => q{},);
+
+has 'ipot'        => (is => 'rw', isa => Ipot, default => 1, alias => 'ipot1');
+has 'ipot2'       => (is => 'rw', isa => Ipot, default => 1, );
 
 ## need a pgplot plotting template
 
@@ -430,8 +435,9 @@ sub plot {
 
 sub histogram {
   my ($self) = @_;
-  return if not $self->sp;
-  my $histo = $self -> sp -> make_histogram($self->positions, $self->populations, q{}, q{});
+  return if not $self->feff;
+  my $histo = $self -> feff -> make_histogram($self->positions, $self->populations, $self->ipot, q{}, q{});
+  $self->nbins($#{$histo}+1);
   return $histo;
 };
 
@@ -440,7 +446,7 @@ sub fpath {
   my $composite;
   if ($self->ss) {
     my $histo = $self->histogram;
-    $composite = $self -> sp -> chi_from_histogram($histo);
+    $composite = $self -> feff -> chi_from_histogram($histo);
     my $text = sprintf("\n\ntaken from %d samples between %.3f and %.3f A\nbinned into %.4f A bins",
 		       $self->get(qw{npairs rmin rmax bin}));
     $text .= "\n\nThe structural contributions to the first four cumulants are \n";
@@ -463,9 +469,9 @@ sub chi_nearly_colinear {
 
   my @paths = ();
   foreach my $c (@{$self->populations}) {
-    push @paths, Demeter::ThreeBody->new(r1    => $c->[2], r2    => $c->[3],
-					 ipot1 => 1,       ipot2 => 1,
-					 beta  => $c->[1], s02   => $c->[4]/$self->nconfig,
+    push @paths, Demeter::ThreeBody->new(r1    => $c->[2],      r2    => $c->[3],
+					 ipot1 => $self->ipot1, ipot2 => $self->ipot2,
+					 beta  => $c->[1],      s02   => $c->[4]/$self->nconfig,
 					 parent=> $self->feff,
 					 update_path => 1,
 					 @$common);
