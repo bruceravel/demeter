@@ -89,7 +89,7 @@ has 'populations' => (is	    => 'rw',
 
 ## nearly collinear DS and TS historgram attributes
 has 'skip'      => (is => 'rw', isa => 'Int', default => 50,);
-has 'nconfig'   => (is => 'rw', isa => 'Int', default => 0, documentation => "the number of configurations found at each time step");
+has 'nconfig'   => (is => 'rw', isa => 'Int', default => 0, documentation => "the number of 3-body configurations found at each time step");
 has 'r1'        => (is => 'rw', isa => 'Num', default => 0.0,);
 has 'r2'        => (is => 'rw', isa => 'Num', default => 3.5,);
 has 'r3'        => (is => 'rw', isa => 'Num', default => 5.2,);
@@ -416,11 +416,12 @@ sub _bin2d {
     push @binned_plane, [$r/$count, $b/$count, $l1/$count, $l2/$count, $count];
   };
   $self->populations(\@binned_plane);
+  $self->nbins($#binned_plane+1);
   $self->update_bins(0);
   $self->stop_spinner if ($self->mo->ui eq 'screen');
-  printf "number of pixels: unbinned = %d    binned = %d\n", $#plane+1, $#binned_plane+1;
-  printf "stripe pass = %d   pixel pass = %d    last pass = %d\n", $aa, $bb, $cc;
-  printf "binned = %d  unbinned = %d\n", $total, $#{$self->nearcl}+1;
+  #printf "number of pixels: unbinned = %d    binned = %d\n", $#plane+1, $#binned_plane+1;
+  #printf "stripe pass = %d   pixel pass = %d    last pass = %d\n", $aa, $bb, $cc;
+  #printf "binned = %d  unbinned = %d\n", $total, $#{$self->nearcl}+1;
   return $self;
 };
 
@@ -444,6 +445,7 @@ sub histogram {
 sub fpath {
   my ($self) = @_;
   my $composite;
+  my $index = $self->mo->pathindex;
   if ($self->ss) {
     my $histo = $self->histogram;
     $composite = $self -> feff -> chi_from_histogram($histo);
@@ -457,7 +459,12 @@ sub fpath {
     $composite->pdtext($text);
   } elsif ($self->ncl) {
     $composite = $self->chi_nearly_colinear;
+    my $text = sprintf("\n\nthree body configurations with the near atom between %.3f and %.3f A\nthe distant atom between %.3f and %.3f A\nbinned into %.4f A x %.4f deg bins",
+		       $self->get(qw{r1 r2 r3 r4 rbin betabin}));
+    $composite->pdtext($text);
   };
+  $composite->Index($index);
+  $self->mo->pathindex($index+1);
   return $composite;
 };
 
@@ -535,6 +542,12 @@ sub chi_nearly_colinear {
 				   degen     => 1,
 				   @$common
 				  );
+  my $name = sprintf("Histo 3-Body %s-%s-%s (%.5f)",
+		     $self->feff->potentials->[0]->[2],
+		     $self->feff->potentials->[$self->ipot1]->[2],
+		     $self->feff->potentials->[$self->ipot2]->[2],
+		     $path->reff);
+  $path->name($name);
   $self->stop_counter if ($self->mo->ui eq 'screen');
   return $path;
 };
@@ -545,7 +558,7 @@ __PACKAGE__->meta->make_immutable;
 
 =head1 NAME
 
-Demeter::ScatteringPath::Histogram::DL_POLY - Support for DL_POLY HISTORY file
+Demeter::Feff::DL_POLY - Support for DL_POLY HISTORY file
 
 =head1 VERSION
 

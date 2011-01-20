@@ -41,6 +41,8 @@ Readonly my $SHOW_GROUPS     => Wx::NewId();
 Readonly my $SHOW_ARRAYS     => Wx::NewId();
 Readonly my $SHOW_SCALARS    => Wx::NewId();
 Readonly my $SHOW_STRINGS    => Wx::NewId();
+Readonly my $SHOW_FEFFPATHS  => Wx::NewId();
+Readonly my $SHOW_PATHS      => Wx::NewId();
 Readonly my $IMPORT_FEFFIT   => Wx::NewId();
 Readonly my $IMPORT_FEFF     => Wx::NewId();
 Readonly my $IMPORT_MOLECULE => Wx::NewId();
@@ -146,10 +148,12 @@ sub OnInit {
   $frames{main}->{mrumenu}  = $mrumenu;
 
   my $showmenu = Wx::Menu->new;
-  $showmenu->Append($SHOW_GROUPS,  "groups",  "Show Ifeffit groups");
-  $showmenu->Append($SHOW_ARRAYS,  "arrays",  "Show Ifeffit arrays");
-  $showmenu->Append($SHOW_SCALARS, "scalars", "Show Ifeffit scalars");
-  $showmenu->Append($SHOW_STRINGS, "strings", "Show Ifeffit strings");
+  $showmenu->Append($SHOW_GROUPS,    "groups",    "Show Ifeffit groups");
+  $showmenu->Append($SHOW_ARRAYS,    "arrays",    "Show Ifeffit arrays");
+  $showmenu->Append($SHOW_SCALARS,   "scalars",   "Show Ifeffit scalars");
+  $showmenu->Append($SHOW_STRINGS,   "strings",   "Show Ifeffit strings");
+  $showmenu->Append($SHOW_PATHS,     "paths",     "Show Ifeffit paths");
+  $showmenu->Append($SHOW_FEFFPATHS, "feffpaths", "Show Ifeffit feffpaths");
 
   my $debugmenu = Wx::Menu->new;
   $debugmenu->Append($PLOT_YAML,    "Show YAML for Plot object",  "Show YAML for Plot object",  wxITEM_NORMAL );
@@ -747,7 +751,8 @@ sub OnMenuClick {
     };
 
     (($id == $SHOW_GROUPS)  or ($id == $SHOW_ARRAYS) or
-     ($id == $SHOW_SCALARS) or ($id == $SHOW_STRINGS)) and do {
+     ($id == $SHOW_SCALARS) or ($id == $SHOW_STRINGS) or
+     ($id == $SHOW_PATHS)   or ($id == $SHOW_FEFFPATHS)) and do {
        show_ifeffit($id);
       last SWITCH;
     };
@@ -807,12 +812,14 @@ sub OnMenuClick {
 
 sub show_ifeffit {
   my ($id) = @_;
-  my $text = ($id =~ m{\A[a-z]+\z}) ? "\@group $id"
-           : ($id == $SHOW_GROUPS)  ? "\@groups"
-           : ($id == $SHOW_ARRAYS)  ? "\@arrays"
-           : ($id == $SHOW_SCALARS) ? "\@scalars"
-           : ($id == $SHOW_STRINGS) ? "\@strings"
-           :                          q{};
+  my $text = ($id =~ m{\A[a-z]+\z})   ? "\@group $id"
+           : ($id == $SHOW_GROUPS)    ? "\@groups"
+           : ($id == $SHOW_ARRAYS)    ? "\@arrays"
+           : ($id == $SHOW_SCALARS)   ? "\@scalars"
+           : ($id == $SHOW_STRINGS)   ? "\@strings"
+           : ($id == $SHOW_PATHS)     ? "\@paths"
+           : ($id == $SHOW_FEFFPATHS) ? "\@feffpaths"
+           :                            q{};
   return if not $text;
   $demeter->dispose("show $text");
   $frames{Buffer}->Show(1);

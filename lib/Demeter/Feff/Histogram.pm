@@ -48,9 +48,12 @@ sub make_histogram {
 sub chi_from_histogram {
   my ($self, $paths, $common) = @_;
   $self->start_spinner("Making FPath from histogram") if ($self->mo->ui eq 'screen');
+
+  my $index = $self->mo->pathindex;
   my $first = $paths->[0];
   #$first->update_path(1);
   my $save = $first->group;
+  $first->Index(255);
   $first->group("h_i_s_t_o");
   $first->_update('fft');
   $first->dispose($first->template('process', 'histogram_first'));
@@ -98,6 +101,7 @@ sub chi_from_histogram {
   $fourth /= $rnorm;
   $fourth -= 3*$sigsqr**2;
 
+  $self->mo->pathindex($index);
   my @k    = Ifeffit::get_array('h___isto.k');
   my @chi  = Ifeffit::get_array('h___isto.chi');
   my $data = Demeter::Data  -> put(\@k, \@chi, datatype=>'chi', name=>'sum of histogram',
@@ -114,6 +118,8 @@ sub chi_from_histogram {
 				   c4        => $fourth,
 				   @$common
 				  );
+  my $name = sprintf("Histo SS %s-%s (%.5f)", $path->absorber, $path->scatterer, $rave);
+  $path->name($name);
   $self->stop_spinner if ($self->mo->ui eq 'screen');
   return $path;
 };
@@ -209,7 +215,7 @@ sub make_gamma_histogram {
 
 =head1 NAME
 
-Demeter::ScatteringPath::Histogram - Arbitrary distribution functions
+Demeter::Feff::Histogram - Arbitrary distribution functions
 
 =head1 VERSION
 

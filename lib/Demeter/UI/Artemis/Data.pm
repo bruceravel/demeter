@@ -31,7 +31,7 @@ use Wx::Perl::Carp;
 use Demeter::UI::Artemis::Project;
 use Demeter::UI::Artemis::Import;
 use Demeter::UI::Artemis::Data::AddParameter;
-use Demeter::UI::Artemis::Data::Histogram;
+#use Demeter::UI::Artemis::Data::Histogram;
 use Demeter::UI::Artemis::Data::Quickfs;
 use Demeter::UI::Artemis::ShowText;
 use Demeter::UI::Wx::CheckListBook;
@@ -611,10 +611,10 @@ sub make_menubar {
 #   $explain_menu->Append($PATH_EXP_THIRD,  '3rd',     'Explain the third cumulant');
 #   $explain_menu->Append($PATH_EXP_FOURTH, '4th',     'Explain the fourth cumulant');
 
-  my $histo_menu    = Wx::Menu->new;
-  $histo_menu->Append($PATH_HISTO_DLPOLY, "a DL_POLY history",     "Generate a histogram using the currently displayed path", wxITEM_NORMAL );
-  $histo_menu->Append($PATH_HISTO_FILE,   "a column data file",    "Generate a histogram using the currently displayed path", wxITEM_NORMAL );
-  $histo_menu->Append($PATH_HISTO_GAMMA,  "a Gamma-like function", "Generate a histogram using the currently displayed path", wxITEM_NORMAL );
+#   my $histo_menu    = Wx::Menu->new;
+#   $histo_menu->Append($PATH_HISTO_DLPOLY, "a DL_POLY history",     "Generate a histogram using the currently displayed path", wxITEM_NORMAL );
+#   $histo_menu->Append($PATH_HISTO_FILE,   "a column data file",    "Generate a histogram using the currently displayed path", wxITEM_NORMAL );
+#   $histo_menu->Append($PATH_HISTO_GAMMA,  "a Gamma-like function", "Generate a histogram using the currently displayed path", wxITEM_NORMAL );
 
 
   $self->{pathsmenu} = Wx::Menu->new;
@@ -627,11 +627,11 @@ sub make_menubar {
   $self->{pathsmenu}->AppendSeparator;
   $self->{pathsmenu}->Append($PATH_ADD,    "Add path parameter",     "Add path parameter to many paths", wxITEM_NORMAL );
   $self->{pathsmenu}->AppendSubMenu($export_menu, "Export all path parameters to ...", "Export the path parameters from the displayed path to other paths in this fitting model.");
-  $self->{pathsmenu}->AppendSubMenu($histo_menu,  "Make a histogram from ...", "Generate a histogram using the currently displayed path");
+  #  $self->{pathsmenu}->AppendSubMenu($histo_menu,  "Make a histogram from ...", "Generate a histogram using the currently displayed path");
   $self->{pathsmenu}->AppendSeparator;
   $self->{pathsmenu}->Append($DISCARD_THIS, "Discard displayed path",     "Discard the path currently on display", wxITEM_NORMAL );
-#  $self->{pathsmenu}->AppendSeparator;
-#  $self->{pathsmenu}->AppendSubMenu($explain_menu, "Explain path parameter ..." );
+  #  $self->{pathsmenu}->AppendSeparator;
+  #  $self->{pathsmenu}->AppendSubMenu($explain_menu, "Explain path parameter ..." );
 
   $self->{debugmenu}  = Wx::Menu->new;
   $self->{debugmenu}->Append($DATA_SHOW, "Show Ifeffit group for this Data", "Show the arrays associated with this group in Ifeffit",  wxITEM_NORMAL );
@@ -2070,7 +2070,12 @@ sub quickfs {
 
 sub dlpoly_sentinal_rdf {
   my ($datapage) = @_;
-  my $text = $datapage->{DLPOLY}->timestep_count . " of " . $datapage->{DLPOLY}->{nsteps} . " timesteps";
+  my $text = ($datapage->{DLPOLY}->ss)
+    ? $datapage->{DLPOLY}->timestep_count . " of " . $datapage->{DLPOLY}->{nsteps} . " timesteps"
+      : sprintf("%d of %d timesteps (every %d-th step)",
+		$datapage->{DLPOLY}->timestep_count/$datapage->{DLPOLY}->skip,
+		($#{$datapage->{DLPOLY}->clusters}+1)/$datapage->{DLPOLY}->skip,
+		$datapage->{DLPOLY}->skip );
   #print $text, $/;
   $datapage->status($text, 'wait|nobuffer') if not $datapage->{DLPOLY}->timestep_count % 10;
   $::app->Yield();
@@ -2151,8 +2156,6 @@ sub OnData {
   } elsif ($spref->[0] eq 'DLPSS') {
     my $feff = $demeter->mo->fetch("Feff", $spref->[1]);
     my $ipot = $spref->[6];
-    my $persist = File::Spec->catfile(Demeter->dot_folder, 'demeter.dlpoly');
-    YAML::Tiny::DumpFile($persist, {file=>$spref->[2], rmin=>$spref->[3], rmax=>$spref->[4], bin=>$spref->[5]});
     my $dlp = Demeter::Feff::DL_POLY->new(rmin=>$spref->[3], rmax=>$spref->[4], bin=>$spref->[5],
 					  feff=>$feff, ipot=>$ipot, ss=>1, ncl=>0);
     $this->{PARENT}->{DLPOLY} = $dlp;
@@ -2193,7 +2196,47 @@ sub OnData {
     undef $busy;
 
   } elsif ($spref->[0] eq 'DLPNCL') {
-    print join("|",@$spref), $/;
+    #print join("|",@$spref), $/;
+
+    my $feff = $demeter->mo->fetch("Feff", $spref->[1]);
+    my $dlp = Demeter::Feff::DL_POLY->new( r1=>$spref->[3], r2=>$spref->[4], r3=>$spref->[5], r4=>$spref->[6],
+					   rbin => $spref->[7], betabin => $spref->[8],
+					   feff=>$feff, ipot1 => $spref->[9], ipot2 => $spref->[10],
+					   ncl=>1, ss=>0, skip=>20,);
+    $this->{PARENT}->{DLPOLY} = $dlp;
+
+    $dlp->sentinal(sub{$this->{PARENT}->dlpoly_sentinal_rdf});
+    my $busy = Wx::BusyCursor->new();
+    my $start = DateTime->now( time_zone => 'floating' );
+    $dlp->file($spref->[2]);
+    my $finish = DateTime->now( time_zone => 'floating' );
+    my $dur = $finish->subtract_datetime($start);
+    my $finishtext = sprintf("Making histogram from %d timesteps (%d minutes, %d seconds)", $dlp->nsteps/$dlp->skip, $dur->minutes, $dur->seconds);
+    $this->{PARENT}->status($finishtext);
+    undef $busy;
+
+    $busy = Wx::BusyCursor->new();
+    $this->{PARENT}->status("Rebinning histogram into $spref->[7] $ARING x $spref->[8] degree bins");
+    $start = DateTime->now( time_zone => 'floating' );
+    $dlp->rebin;
+    $dlcount = 0;
+    $dlp->sentinal(sub{$this->{PARENT}->dlpoly_sentinal_fpath});
+    my $composite = $dlp->fpath;
+    $finish = DateTime->now( time_zone => 'floating' );
+    $dur = $finish->subtract_datetime($start);
+    $finishtext = sprintf("Rebined and made FPath in %d minutes, %d seconds", $dur->minutes, $dur->seconds);
+    $this->{PARENT}->status($finishtext);
+
+    $composite->data($this->{PARENT}->{data});
+    my $page = Demeter::UI::Artemis::Path->new($book, $composite, $this->{PARENT});
+    $book->AddPage($page, $composite->name, 1, 0);
+    #$composite->po->start_plot;
+    #$composite->plot('r');
+    $page->transfer;
+    $Demeter::UI::Artemis::frames{Plot}->plot(0, 'r');
+#    $histo_dialog->{DLPOLY} = q{};
+    $dlp->DEMOLISH;
+    undef $busy;
 
   } else {			#  this is a normal path
     my @sparray = map { $demeter->mo->fetch("ScatteringPath", $_) } @$spref;

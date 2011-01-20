@@ -82,22 +82,24 @@
    - [ ] datatype of merged group (xanes merge should be a xanes and so on) (this appears to be so, see [[file:lib/Demeter/Data/Process.pm][Demeter::Data::Process]]
 
 ** Artemis
-*** Artemis bugs and missing features [0/5]
-   - [ ] use text buffers as in Athena for TextEntryDialogs
+*** Artemis bugs and missing features [1/5]
+   - [X] use text buffers as in Athena for TextEntryDialogs
    - [ ] import an FPath from a yaml or from a project file, pathlist start page link for doing so
-   - [ ] what is the prupose of regenerate in fit deserialization?  in any case, need to fix group values *inside* yaml files
+   - [ ] what is the purpose of regenerate in fit deserialization?  in any case, need to fix group values *inside* yaml files
    - [ ] fit numbering is wrong,should not increment if previous fit has fitted=0
    - [ ] should I clear out unfitted fit folders from project upon import?
+   - [ ] update pods for D::Feff::Histogram and D::Feff:DL_POLY
 
-*** Histograms [2/5]
+*** Histograms [4/6]
    - [X] sum histogram bins into a single chi(k) file
    - [X] convert chi(k) data to a mock feffNNNN.dat file
-   - [ ] Triangle object
+   - [X] Triangle object
      - yields a DS path and a TS path
      - by R and theta
-     - by a trio of Cartesian coordinates
-   - [ ] bin triangle configurations by R and theta and sum into a single chi(k)
-   - [ ] bin nealy colinear configurations by R and theta and sum into a single chi(k)
+     - +by a trio of Cartesian coordinates+
+   - [X] bin nealy colinear configurations by R and theta and sum into a single chi(k)
+   - [ ] turn SS histogram into a rattle TS histogram
+   - [ ] three-body histogram from X -- [+] -- X configurations
 
 
    

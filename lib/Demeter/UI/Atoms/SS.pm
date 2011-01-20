@@ -30,6 +30,8 @@ sub new {
   #($cb->GetChildren)[0]->SetFont( Wx::Font->new($size, wxDEFAULT, wxNORMAL, wxNORMAL, 0, "" ) );
   $vbox->Add($cb, 1, wxALL|wxGROW, 5);
 
+  $self->{dlyaml} = {};
+
   $self->{ss} = $self->_ss($parent);
   $cb  -> AddPage($self->{ss}, "Make a Single Scattering path of arbitrary length", 1);
 
@@ -152,15 +154,14 @@ sub _dlp_ss {
   $self->{dlp_ss_drag}->Enable(0);
 
 
-  $self->{dlp_ss_yaml} = ();
   my $persist = File::Spec->catfile(Demeter->dot_folder, 'demeter.dlpoly');
   if (-e $persist) {
     my $yaml = YAML::Tiny::LoadFile($persist);
+    $self->{dlyaml} = $yaml;
     $self->{dlp_ss_dlfile} -> SetPath ($yaml->{file});
-    $self->{dlp_ss_dlrmin} -> SetValue($yaml->{rmin});
-    $self->{dlp_ss_dlrmax} -> SetValue($yaml->{rmax});
-    $self->{dlp_ss_dlbin}  -> SetValue($yaml->{bin} );
-    $self->{dlp_ss_yaml}    = $yaml;
+    $self->{dlp_ss_dlrmin} -> SetValue($yaml->{rmin} || 1.5);
+    $self->{dlp_ss_dlrmax} -> SetValue($yaml->{rmax} || 3.5);
+    $self->{dlp_ss_dlbin}  -> SetValue($yaml->{bin}  || 0.5);
   };
 
   return $page;
@@ -232,6 +233,18 @@ sub _dlp_ncl {
   $self->{dlp_ncl_drag}->SetFont( Wx::Font->new( 10, wxDEFAULT, wxNORMAL, wxNORMAL, 1, "" ) );
   $self->{dlp_ncl_drag}->Enable(0);
 
+  my $persist = File::Spec->catfile(Demeter->dot_folder, 'demeter.dlpoly');
+  if (-e $persist) {
+    my $yaml = YAML::Tiny::LoadFile($persist);
+    $self->{dlyaml} = $yaml;
+    $self->{dlp_ncl_dlfile} -> SetPath ($yaml->{file});
+    $self->{dlp_ncl_dlr1}   -> SetValue($yaml->{r1} || 1);
+    $self->{dlp_ncl_dlr2}   -> SetValue($yaml->{r2} || 3);
+    $self->{dlp_ncl_dlr3}   -> SetValue($yaml->{r3} || 4);
+    $self->{dlp_ncl_dlr4}   -> SetValue($yaml->{r4} || 5);
+    $self->{dlp_ncl_rbin}   -> SetValue($yaml->{rbin} || 0.01);
+    $self->{dlp_ncl_betabin}-> SetValue($yaml->{betabin} || 0.5);
+  };
 
   $vbox -> Add($self->{toolbar}, 0, wxALL, 20);
   return $page;
@@ -243,19 +256,19 @@ sub dlplot {
   my $rmin = $this->{dlp_ss_dlrmin}->GetValue;
   my $rmax = $this->{dlp_ss_dlrmax}->GetValue;
   my $bin  = $this->{dlp_ss_dlbin}->GetValue;
-  $this->{yaml}->{file} = $file;
-  $this->{yaml}->{rmin} = $rmin;
-  $this->{yaml}->{rmax} = $rmax;
-  $this->{yaml}->{bin}  = $bin;
+  $this->{dlyaml}->{file} = $file;
+  $this->{dlyaml}->{rmin} = $rmin;
+  $this->{dlyaml}->{rmax} = $rmax;
+  $this->{dlyaml}->{bin}  = $bin;
 
   if ((not $file) or (not -e $file) or (not -r $file)) {
     $this->GetParent->status("You did not specify a file or your file cannot be read.");
     return;
   };
 
-  my $dlp = Demeter::ScatteringPath::Histogram::DL_POLY->new(rmin=>$rmin, rmax=>$rmax, bin=>$bin, ss=>1, ncl=>0);
+  my $dlp = Demeter::Feff::DL_POLY->new(rmin=>$rmin, rmax=>$rmax, bin=>$bin, ss=>1, ncl=>0);
   my $persist = File::Spec->catfile($dlp->dot_folder, 'demeter.dlpoly');
-  YAML::Tiny::DumpFile($persist, $this->{yaml});
+  YAML::Tiny::DumpFile($persist, $this->{dlyaml});
 
 
   $this->{DLPOLY} = $dlp;
@@ -268,16 +281,20 @@ sub dlplot {
   my $finish = DateTime->now( time_zone => 'floating' );
   my $dur = $finish->subtract_datetime($start);
   my $finishtext = sprintf("Plotting histogram from %d timesteps (%d minutes, %d seconds)", $dlp->nsteps, $dur->minutes, $dur->seconds);
-  $this->GetParent->status($finishtext);
+  $this->{statusbar}->SetStatusText($finishtext);
   $dlp->plot;
   undef $busy;
 };
 
 sub dlpoly_sentinal {
   my ($this) = @_;
-  my $text = $this->{DLPOLY}->timestep_count . " of " . $this->{DLPOLY}->{nsteps} . " timesteps";
-  #print $text, $/;
-  #$this->GetParent->status($text, 'wait|nobuffer') if not $this->{DLPOLY}->timestep_count % 10;
+  if (not $this->{DLPOLY}->timestep_count % 10) {
+    my $text = $this->{DLPOLY}->timestep_count . " of " . $this->{DLPOLY}->{nsteps} . " timesteps";
+    #print $text, $/;
+    $this->{statusbar}->SetStatusText($text);
+    #$this->GetParent->status($text, 'wait|nobuffer') if not $this->{DLPOLY}->timestep_count % 10;
+    $::app->Yield();
+  };
 };
 
 
@@ -426,6 +443,7 @@ sub OnPaint {
 sub OnDrag {
   my( $this, $event, $parent ) = @_;
 
+
   my $dragdata = ['DLPSS',						  # id
 		  $parent->{Feff}->{feffobject}->group,			  # feff object group
 		  $parent->{SS}->{dlp_ss_dlfile}->GetTextCtrl->GetValue,  # HISTORY file
@@ -434,6 +452,15 @@ sub OnDrag {
 		  $parent->{SS}->{dlp_ss_dlbin} ->GetValue,		  # bin size
 		  $parent->{SS}->{dlp_ss_ipot}->GetSelection+1,		  # ipot
 		 ];
+
+  ## handle persistence file
+  $parent->{SS}->{dlyaml}->{file} = $dragdata->[2];
+  $parent->{SS}->{dlyaml}->{rmin} = $dragdata->[3];
+  $parent->{SS}->{dlyaml}->{rmax} = $dragdata->[4];
+  $parent->{SS}->{dlyaml}->{bin}  = $dragdata->[5];
+  my $persist = File::Spec->catfile(Demeter->dot_folder, 'demeter.dlpoly');
+  YAML::Tiny::DumpFile($persist, $parent->{SS}->{dlyaml});
+
   my $data = Demeter::UI::Artemis::DND::PathDrag->new($dragdata);
   my $source = Wx::DropSource->new( $this );
   $source->SetData( $data );
@@ -470,18 +497,30 @@ sub OnPaint {
 sub OnDrag {
   my( $this, $event, $parent ) = @_;
 
-  my $dragdata = ['DLPNCL',						      # id
-		  $parent->{Feff}->{feffobject}    -> group,		      # feff object group
-		  $parent->{SS}->{dlp_ncl_dlfile}  -> GetTextCtrl->GetValue,  # HISTORY file
-		  $parent->{SS}->{dlp_ncl_dlr1}    -> GetValue,		      # r ranges
-		  $parent->{SS}->{dlp_ncl_dlr2}    -> GetValue,		      #
-		  $parent->{SS}->{dlp_ncl_dlr3}    -> GetValue,		      #
-		  $parent->{SS}->{dlp_ncl_dlr4}    -> GetValue,		      #
-		  $parent->{SS}->{dlp_ncl_rbin}    -> GetValue,		      # bin size
-		  $parent->{SS}->{dlp_ncl_betabin} -> GetValue,		      # bin size
-		  $parent->{SS}->{dlp_ncl_ipot1}   -> GetSelection+1,	      # ipot
-		  $parent->{SS}->{dlp_ncl_ipot2}   -> GetSelection+1,	      # ipot
+  my $dragdata = ['DLPNCL',						      # 0  id
+		  $parent->{Feff}->{feffobject}    -> group,		      # 1  feff object group
+		  $parent->{SS}->{dlp_ncl_dlfile}  -> GetTextCtrl->GetValue,  # 2  HISTORY file
+		  $parent->{SS}->{dlp_ncl_dlr1}    -> GetValue,		      # 3  r ranges
+		  $parent->{SS}->{dlp_ncl_dlr2}    -> GetValue,		      # 4
+		  $parent->{SS}->{dlp_ncl_dlr3}    -> GetValue,		      # 5
+		  $parent->{SS}->{dlp_ncl_dlr4}    -> GetValue,		      # 6
+		  $parent->{SS}->{dlp_ncl_rbin}    -> GetValue,		      # 7  bin size
+		  $parent->{SS}->{dlp_ncl_betabin} -> GetValue,		      # 8  bin size
+		  $parent->{SS}->{dlp_ncl_ipot1}   -> GetSelection+1,	      # 9  ipot
+		  $parent->{SS}->{dlp_ncl_ipot2}   -> GetSelection+1,	      # 10 ipot
 		 ];
+
+  ## handle persistence file
+  $parent->{SS}->{dlyaml}->{file}    = $dragdata->[2];
+  $parent->{SS}->{dlyaml}->{r1}	     = $dragdata->[3];
+  $parent->{SS}->{dlyaml}->{r2}	     = $dragdata->[4];
+  $parent->{SS}->{dlyaml}->{r3}	     = $dragdata->[5];
+  $parent->{SS}->{dlyaml}->{r4}	     = $dragdata->[6];
+  $parent->{SS}->{dlyaml}->{rbin}    = $dragdata->[7];
+  $parent->{SS}->{dlyaml}->{betabin} = $dragdata->[8];
+  my $persist = File::Spec->catfile(Demeter->dot_folder, 'demeter.dlpoly');
+  YAML::Tiny::DumpFile($persist, $parent->{SS}->{dlyaml});
+
   my $data = Demeter::UI::Artemis::DND::PathDrag->new($dragdata);
   my $source = Wx::DropSource->new( $this );
   $source->SetData( $data );

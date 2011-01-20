@@ -273,6 +273,7 @@ sub fill_ss_page {
   $self->{parent}->{SS}->{ss_name}->SetValue($feff->potentials->[0]->[2] . ' SS');
   $self->{parent}->{SS}->{ss_drag}->Enable(1);
   $self->{parent}->{SS}->{dlp_ss_drag}->Enable(1);
+  $self->{parent}->{SS}->{dlp_ncl_drag}->Enable(1);
 };
 
 sub now {
