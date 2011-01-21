@@ -2070,14 +2070,15 @@ sub quickfs {
 
 sub dlpoly_sentinal_rdf {
   my ($datapage) = @_;
-  my $text = ($datapage->{DLPOLY}->ss)
-    ? $datapage->{DLPOLY}->timestep_count . " of " . $datapage->{DLPOLY}->{nsteps} . " timesteps"
-      : sprintf("%d of %d timesteps (every %d-th step)",
-		$datapage->{DLPOLY}->timestep_count/$datapage->{DLPOLY}->skip,
-		($#{$datapage->{DLPOLY}->clusters}+1)/$datapage->{DLPOLY}->skip,
-		$datapage->{DLPOLY}->skip );
-  #print $text, $/;
-  $datapage->status($text, 'wait|nobuffer') if not $datapage->{DLPOLY}->timestep_count % 10;
+  if (not $datapage->{DLPOLY}->timestep_count % 10) {
+    my $text = ($datapage->{DLPOLY}->ss)
+      ? $datapage->{DLPOLY}->timestep_count . " of " . $datapage->{DLPOLY}->{nsteps} . " timesteps"
+	: sprintf("%d of %d timesteps (every %d-th step)",
+		  $datapage->{DLPOLY}->timestep_count/$datapage->{DLPOLY}->skip,
+		  ($#{$datapage->{DLPOLY}->clusters}+1)/$datapage->{DLPOLY}->skip,
+		  $datapage->{DLPOLY}->skip );
+    $datapage->status($text, 'wait|nobuffer');
+  };
   $::app->Yield();
 };
 
@@ -2085,9 +2086,10 @@ my $dlcount = 0;
 sub dlpoly_sentinal_fpath {
   my ($datapage) = @_;
   ++$dlcount;
-  my $text = "Making FPath from bins: " . $dlcount . " of " . $datapage->{DLPOLY}->{nbins} . " bins processed";
-  #print $text, $/;
-  $datapage->status($text, 'wait|nobuffer'); # if not $datapage->{DLPOLY}->bin_count % 10;
+  if (not $dlcount % 5) {
+    my $text = "Making FPath from bins: " . $dlcount . " of " . $datapage->{DLPOLY}->{nbins} . " bins processed";
+    $datapage->status($text, 'wait|nobuffer');
+  };
   $::app->Yield();
 };
 
@@ -2156,6 +2158,12 @@ sub OnData {
   } elsif ($spref->[0] eq 'DLPSS') {
     my $feff = $demeter->mo->fetch("Feff", $spref->[1]);
     my $ipot = $spref->[6];
+    #if (not looks_like_number($reff)) {
+    #  my $text = "Your distance, $reff, is not a number.  This arbitrary single scattering path cannot be created.";
+    #  $this->{PARENT}->status($text);
+    #  Wx::MessageDialog->new($this->{PARENT}, $text, "Error!", wxOK|wxICON_ERROR) -> ShowModal;
+    #  return $def;
+    #};
     my $dlp = Demeter::Feff::DL_POLY->new(rmin=>$spref->[3], rmax=>$spref->[4], bin=>$spref->[5],
 					  feff=>$feff, ipot=>$ipot, ss=>1, ncl=>0);
     $this->{PARENT}->{DLPOLY} = $dlp;

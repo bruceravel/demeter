@@ -90,7 +90,7 @@
    - [ ] should I clear out unfitted fit folders from project upon import?
    - [ ] update pods for D::Feff::Histogram and D::Feff:DL_POLY
 
-*** Histograms [4/6]
+*** Histograms [4/7]
    - [X] sum histogram bins into a single chi(k) file
    - [X] convert chi(k) data to a mock feffNNNN.dat file
    - [X] Triangle object
@@ -100,6 +100,10 @@
    - [X] bin nealy colinear configurations by R and theta and sum into a single chi(k)
    - [ ] turn SS histogram into a rattle TS histogram
    - [ ] three-body histogram from X -- [+] -- X configurations
+   - [ ] error check numbers before making histograms in Artemis.  it is possible to have value like "3.3."
+   - [ ] check that there is at least one bin in the supplied range(s)
+   - [ ] ipot=1 is hardwired in many places -- generalize....
+   - [ ] scatter plot of ncl distribution
 
 
    

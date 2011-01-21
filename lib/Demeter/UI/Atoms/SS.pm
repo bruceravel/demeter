@@ -10,11 +10,12 @@ use base 'Wx::Panel';
 use Wx::Event qw(EVT_CHOICE EVT_KEY_DOWN EVT_MENU EVT_TOOL_ENTER EVT_BUTTON
 		 EVT_ENTER_WINDOW EVT_LEAVE_WINDOW EVT_RADIOBOX
 		 EVT_LEFT_DOWN EVT_LIST_BEGIN_DRAG);
+use Wx::Perl::TextValidator;
 
 use List::MoreUtils qw(uniq);
 use YAML::Tiny;
 
-my @PosSize = (wxDefaultPosition, [60,-1]);
+my @PosSize = (wxDefaultPosition, [40,-1]);
 
 sub new {
   my ($class, $page, $parent) = @_;
@@ -28,18 +29,15 @@ sub new {
   $self->{book} = $cb;
   #my $size = Wx::SystemSettings::GetFont(wxSYS_DEFAULT_GUI_FONT)->GetPointSize + 2;
   #($cb->GetChildren)[0]->SetFont( Wx::Font->new($size, wxDEFAULT, wxNORMAL, wxNORMAL, 0, "" ) );
-  $vbox->Add($cb, 1, wxALL|wxGROW, 5);
+  $vbox->Add($cb, 1, wxALL, 5);
 
   $self->{dlyaml} = {};
 
   $self->{ss} = $self->_ss($parent);
   $cb  -> AddPage($self->{ss}, "Make a Single Scattering path of arbitrary length", 1);
 
-  $self->{dlp_ss} = $self->_dlp_ss($parent);
-  $cb  -> AddPage($self->{dlp_ss}, "Make a SS histogram from a DL_POLY history", 0);
-
-  $self->{dlp_ncl} = $self->_dlp_ncl($parent);
-  $cb  -> AddPage($self->{dlp_ncl}, "Make a nearly collinear histogram from a DL_POLY history", 0);
+  $self->{dlp_ss} = $self->_dlpoly($parent);
+  $cb  -> AddPage($self->{dlp_ss}, "Make histograms from a DL_POLY history", 0);
 
   $self -> SetSizerAndFit( $vbox );
   return $self;
@@ -68,7 +66,7 @@ sub _ss {
   $self->{ss_ipot} = Wx::RadioBox->new($page, -1, ' ipot of scatterer ', wxDefaultPosition, wxDefaultSize,
 				       [q{     },q{     },q{     },q{     },q{     },q{     },q{     }], 7, wxRA_SPECIFY_COLS);
   $self->{ss_ipot}->Enable($_,0) foreach (0..6);
-  EVT_RADIOBOX($self, $self->{ss_ipot}, \&set_name);
+  EVT_RADIOBOX($self, $self->{ss_ipot}, sub{set_name(@_,'spath')});
 
   $vbox -> Add( $self->{ss_ipot}, 0, wxLEFT|wxRIGHT, 25 );
 
@@ -100,144 +98,148 @@ sub _ss {
 };
 
 
-sub _dlp_ss {
+sub _dlpoly {
   my ($self, $parent) = @_;
   my $page = Wx::Panel->new($self->{book}, -1, wxDefaultPosition, wxDefaultSize);
-  my $vbox = Wx::BoxSizer->new( wxVERTICAL );
-  $page->SetSizerAndFit($vbox);
 
-  $self->{dlp_ss_dlfile} = Wx::FilePickerCtrl->new( $page, -1, "", "Choose a HISTORY File", "HISTORY files|HISTORY|All files|*",
+  my $vbox = Wx::BoxSizer->new( wxVERTICAL );
+
+  $self->{dlp_dlfile} = Wx::FilePickerCtrl->new( $page, -1, "", "Choose a HISTORY File", "HISTORY files|HISTORY|All files|*",
 						    wxDefaultPosition, wxDefaultSize,
 						    wxFLP_DEFAULT_STYLE|wxFLP_USE_TEXTCTRL|wxFLP_CHANGE_DIR|wxFLP_FILE_MUST_EXIST );
-  $vbox -> Add($self->{dlp_ss_dlfile}, 0, wxGROW|wxLEFT|wxRIGHT, 25);
+  $vbox -> Add($self->{dlp_dlfile}, 0, wxGROW|wxALL, 10);
 
+
+  my $scrl = Wx::ScrolledWindow->new($page, -1, wxDefaultPosition, wxDefaultSize, wxVSCROLL);
+  my $svbox = Wx::BoxSizer->new( wxVERTICAL );
+  $scrl -> SetSizer($svbox);
+  $scrl -> SetScrollbars(0, 20, 0, 50);
+
+
+  my $ssbox       = Wx::StaticBox->new($scrl, -1, 'Make a single scattering histogram', wxDefaultPosition, wxDefaultSize);
+  my $ssboxsizer  = Wx::StaticBoxSizer->new( $ssbox, wxVERTICAL );
+  $svbox         -> Add($ssboxsizer, 0, wxALL|wxGROW, 5);
 
   my $hbox = Wx::BoxSizer->new( wxHORIZONTAL );
-  $vbox -> Add($hbox, 0, wxGROW|wxLEFT|wxRIGHT, 25);
-  $self->{dlp_ss_ipot} = Wx::RadioBox->new($page, -1, ' ipot of scatterer ', wxDefaultPosition, wxDefaultSize,
-				       [q{     },q{     },q{     },q{     },q{     },q{     },q{     }], 7, wxRA_SPECIFY_COLS);
-  $self->{dlp_ss_ipot}->Enable($_,0) foreach (0..6);
-  EVT_RADIOBOX($self, $self->{dlp_ss_ipot}, \&set_name);
+  $ssboxsizer -> Add($hbox, 0, wxGROW|wxLEFT|wxRIGHT, 10);
+  $self -> {dlp_ss_rminlab} = Wx::StaticText -> new($scrl, -1, "Rmin");
+  $self -> {dlp_ss_rmin}    = Wx::TextCtrl   -> new($scrl, -1, 1.0, @PosSize,);
+  $hbox -> Add($self->{dlp_ss_rminlab}, 0, wxALL|wxALIGN_CENTRE_VERTICAL, 5);
+  $hbox -> Add($self->{dlp_ss_rmin},    0, wxALL|wxALIGN_CENTRE_VERTICAL, 5);
 
-  $vbox -> Add( $self->{dlp_ss_ipot}, 0, wxLEFT|wxRIGHT, 25 );
+  $self -> {dlp_ss_rmaxlab} = Wx::StaticText -> new($scrl, -1, "Rmax");
+  $self -> {dlp_ss_rmax}    = Wx::TextCtrl   -> new($scrl, -1, 3.5, @PosSize,);
+  $hbox -> Add($self->{dlp_ss_rmaxlab}, 0, wxALL|wxALIGN_CENTRE_VERTICAL, 5);
+  $hbox -> Add($self->{dlp_ss_rmax},    0, wxALL|wxALIGN_CENTRE_VERTICAL, 5);
 
-  $hbox = Wx::BoxSizer->new( wxHORIZONTAL );
-  $vbox -> Add($hbox, 0, wxGROW|wxLEFT|wxRIGHT, 25);
-  $self -> {dlp_ss_dlrminlab} = Wx::StaticText -> new($page, -1, "Rmin");
-  $self -> {dlp_ss_dlrmin}    = Wx::TextCtrl   -> new($page, -1, 1.0, @PosSize,);
-  $hbox -> Add($self->{dlp_ss_dlrminlab}, 0, wxGROW|wxALL|wxALIGN_CENTRE, 5);
-  $hbox -> Add($self->{dlp_ss_dlrmin},    0, wxGROW|wxALL|wxALIGN_CENTRE, 5);
+  $self -> {dlp_ss_binlab} = Wx::StaticText -> new($scrl, -1, "Bin size");
+  $self -> {dlp_ss_bin}    = Wx::TextCtrl   -> new($scrl, -1, 0.005, @PosSize,);
+  $hbox -> Add($self->{dlp_ss_binlab},  0, wxALL|wxALIGN_CENTRE_VERTICAL, 5);
+  $hbox -> Add($self->{dlp_ss_bin},     0, wxALL|wxALIGN_CENTRE_VERTICAL, 5);
 
-  $self -> {dlp_ss_dlrmaxlab} = Wx::StaticText -> new($page, -1, "Rmax");
-  $self -> {dlp_ss_dlrmax}    = Wx::TextCtrl   -> new($page, -1, 3.5, @PosSize,);
-  $hbox -> Add($self->{dlp_ss_dlrmaxlab}, 0, wxGROW|wxALL|wxALIGN_CENTRE, 5);
-  $hbox -> Add($self->{dlp_ss_dlrmax},    0, wxGROW|wxALL|wxALIGN_CENTRE, 5);
-
-  $self -> {dlp_ss_dlbinlab} = Wx::StaticText -> new($page, -1, "Bin size");
-  $self -> {dlp_ss_dlbin}    = Wx::TextCtrl   -> new($page, -1, 0.005, @PosSize,);
-  $hbox -> Add($self->{dlp_ss_dlbinlab},  0, wxGROW|wxALL|wxALIGN_CENTRE, 5);
-  $hbox -> Add($self->{dlp_ss_dlbin},     0, wxGROW|wxALL|wxALIGN_CENTRE, 5);
-
-  $hbox = Wx::BoxSizer->new( wxHORIZONTAL );
-  $vbox -> Add($hbox, 0, wxGROW|wxLEFT|wxRIGHT, 25);
-
-  $self -> {dlp_ss_dlplot} = Wx::Button -> new($page, -1, "Plot RDF");
-  $hbox -> Add($self->{dlp_ss_dlplot},    1, wxGROW|wxALL, 5);
+  $self -> {dlp_ss_dlplot} = Wx::Button -> new($scrl, -1, "Plot RDF");
+  $hbox -> Add($self->{dlp_ss_dlplot},    1, wxALL|wxALIGN_CENTRE_VERTICAL, 5);
   EVT_BUTTON($self, $self->{dlp_ss_dlplot}, sub{ dlplot(@_) });
 
+
+  $self->{dlp_ss_ipot} = Wx::RadioBox->new($scrl, -1, ' ipot of scatterer ', wxDefaultPosition, wxDefaultSize,
+				       [q{     },q{     },q{     },q{     },q{     },q{     },q{     }], 7, wxRA_SPECIFY_COLS);
+  $self->{dlp_ss_ipot}->Enable($_,0) foreach (0..6);
+  EVT_RADIOBOX($self, $self->{dlp_ss_ipot}, sub{set_name(@_,'dlp_ss')});
+
+  $ssboxsizer -> Add( $self->{dlp_ss_ipot}, 0, wxLEFT|wxRIGHT, 10 );
+
+  $self->{dlp_ss_rattle} = Wx::CheckBox->new($scrl, -1, "Also create triple scattering path from this histogram");
+  $ssboxsizer -> Add( $self->{dlp_ss_rattle}, 0, wxLEFT|wxRIGHT, 10 );
+  $self->{dlp_ss_rattle}->Enable(0);
+
   $hbox = Wx::BoxSizer->new( wxHORIZONTAL );
-  $vbox -> Add( $hbox, 0, wxGROW|wxALL, 20 );
-  $self->{dlp_ss_drag} = Demeter::UI::Atoms::SS::DLPSSDragSource->new($page, -1, wxDefaultPosition, wxDefaultSize, $parent);
-  $hbox  -> Add( $self->{dlp_ss_drag}, 0, wxALL, 20);
+  $ssboxsizer -> Add( $hbox, 0, wxGROW|wxALL, 10 );
+  $self->{dlp_ss_drag} = Demeter::UI::Atoms::SS::DLPSSDragSource->new($scrl, -1, wxDefaultPosition, wxDefaultSize, $parent);
+  $hbox  -> Add( $self->{dlp_ss_drag}, 0, wxALL, 0);
   $self->{dlp_ss_drag}->SetCursor(Wx::Cursor->new(wxCURSOR_HAND));
   $self->{dlp_ss_drag}->SetFont( Wx::Font->new( 10, wxDEFAULT, wxNORMAL, wxNORMAL, 1, "" ) );
   $self->{dlp_ss_drag}->Enable(0);
 
 
-  my $persist = File::Spec->catfile(Demeter->dot_folder, 'demeter.dlpoly');
-  if (-e $persist) {
-    my $yaml = YAML::Tiny::LoadFile($persist);
-    $self->{dlyaml} = $yaml;
-    $self->{dlp_ss_dlfile} -> SetPath ($yaml->{file});
-    $self->{dlp_ss_dlrmin} -> SetValue($yaml->{rmin} || 1.5);
-    $self->{dlp_ss_dlrmax} -> SetValue($yaml->{rmax} || 3.5);
-    $self->{dlp_ss_dlbin}  -> SetValue($yaml->{bin}  || 0.5);
-  };
+  my $nclbox       = Wx::StaticBox->new($scrl, -1, 'Make a nearly collinear three-body histogram', wxDefaultPosition, wxDefaultSize);
+  my $nclboxsizer  = Wx::StaticBoxSizer->new( $nclbox, wxVERTICAL );
+  $svbox           -> Add($nclboxsizer, 0, wxALL|wxGROW, 5);
 
-  return $page;
-};
-
-sub _dlp_ncl {
-  my ($self, $parent) = @_;
-  my $page = Wx::Panel->new($self->{book}, -1, wxDefaultPosition, wxDefaultSize);
-  my $vbox = Wx::BoxSizer->new( wxVERTICAL );
-  $page->SetSizerAndFit($vbox);
-
-  $self->{dlp_ncl_dlfile} = Wx::FilePickerCtrl->new( $page, -1, "", "Choose a HISTORY File", "HISTORY files|HISTORY|All files|*",
-						     wxDefaultPosition, wxDefaultSize,
-						     wxFLP_DEFAULT_STYLE|wxFLP_USE_TEXTCTRL|wxFLP_CHANGE_DIR|wxFLP_FILE_MUST_EXIST );
-  $vbox -> Add($self->{dlp_ncl_dlfile}, 0, wxGROW|wxLEFT|wxRIGHT, 25);
-
-  my $hbox = Wx::BoxSizer->new( wxHORIZONTAL );
-  $vbox -> Add($hbox, 0, wxGROW|wxLEFT|wxRIGHT, 25);
-  $self -> {dlp_ncl_rbinlab} = Wx::StaticText -> new($page, -1, "Radial bin size");
-  $self -> {dlp_ncl_rbin}    = Wx::TextCtrl   -> new($page, -1, 1.0, @PosSize,);
-  $self -> {dlp_ncl_betabinlab} = Wx::StaticText -> new($page, -1, "Angular bin size");
-  $self -> {dlp_ncl_betabin}    = Wx::TextCtrl   -> new($page, -1, 1.0, @PosSize,);
-  $hbox -> Add($self->{dlp_ncl_rbinlab},    0, wxGROW|wxALL|wxALIGN_CENTRE, 5);
-  $hbox -> Add($self->{dlp_ncl_rbin},       0, wxGROW|wxALL|wxALIGN_CENTRE, 5);
-  $hbox -> Add($self->{dlp_ncl_betabinlab}, 0, wxGROW|wxALL|wxALIGN_CENTRE, 5);
-  $hbox -> Add($self->{dlp_ncl_betabin},    0, wxGROW|wxALL|wxALIGN_CENTRE, 5);
 
   $hbox = Wx::BoxSizer->new( wxHORIZONTAL );
-  $vbox -> Add($hbox, 0, wxGROW|wxLEFT|wxRIGHT, 0);
-  $self->{dlp_ncl_ipot1} = Wx::RadioBox->new($page, -1, ' ipot of near neighbor scatterer ', wxDefaultPosition, wxDefaultSize,
+  $nclboxsizer -> Add($hbox, 0, wxGROW|wxLEFT|wxRIGHT, 10);
+  $self -> {dlp_ncl_rbinlab} = Wx::StaticText -> new($scrl, -1, "Radial bin size");
+  $self -> {dlp_ncl_rbin}    = Wx::TextCtrl   -> new($scrl, -1, 1.0, @PosSize,);
+  $self -> {dlp_ncl_betabinlab} = Wx::StaticText -> new($scrl, -1, "Angular bin size");
+  $self -> {dlp_ncl_betabin}    = Wx::TextCtrl   -> new($scrl, -1, 1.0, @PosSize,);
+  $hbox -> Add($self->{dlp_ncl_rbinlab},    0, wxALL|wxALIGN_CENTRE_VERTICAL, 5);
+  $hbox -> Add($self->{dlp_ncl_rbin},       0, wxALL|wxALIGN_CENTRE_VERTICAL, 5);
+  $hbox -> Add($self->{dlp_ncl_betabinlab}, 0, wxALL|wxALIGN_CENTRE_VERTICAL, 5);
+  $hbox -> Add($self->{dlp_ncl_betabin},    0, wxALL|wxALIGN_CENTRE_VERTICAL, 5);
+
+  $self -> {dlp_ncl_plot} = Wx::Button -> new($scrl, -1, "Scatter plot");
+  $hbox -> Add($self->{dlp_ncl_plot},    1, wxALL|wxALIGN_CENTRE_VERTICAL, 5);
+  #EVT_BUTTON($self, $self->{dlp_ncl_plot}, sub{ scatterplot(@_) });
+  $self -> {dlp_ncl_plot} -> Enable(0);
+
+  $hbox = Wx::BoxSizer->new( wxHORIZONTAL );
+  $nclboxsizer -> Add($hbox, 0, wxGROW|wxLEFT|wxRIGHT, 10);
+  $self->{dlp_ncl_ipot1} = Wx::RadioBox->new($scrl, -1, ' ipot of near neighbor scatterer ', wxDefaultPosition, wxDefaultSize,
 					     [q{     },q{     },q{     },q{     },q{     },q{     },q{     }], 7, wxRA_SPECIFY_COLS);
   $self->{dlp_ncl_ipot1}->Enable($_,0) foreach (0..6);
-  EVT_RADIOBOX($self, $self->{dlp_ncl_ipot1}, \&set_name);
-  $hbox -> Add( $self->{dlp_ncl_ipot1}, 0, wxLEFT|wxRIGHT, 25 );
+  EVT_RADIOBOX($self, $self->{dlp_ncl_ipot1}, sub{set_name(@_,'dlp_ncl1')});
+  $hbox -> Add( $self->{dlp_ncl_ipot1}, 0, wxALL|wxALIGN_CENTRE_VERTICAL, 5 );
+
+  $self -> {dlp_ncl_dlr1}    = Wx::TextCtrl   -> new($scrl, -1, 1.0, @PosSize,);
+  $self -> {dlp_ncl_dlr2}    = Wx::TextCtrl   -> new($scrl, -1, 1.0, @PosSize,);
+  $hbox -> Add(Wx::StaticText -> new($scrl, -1, "R1:"), 0, wxALL|wxALIGN_CENTRE_VERTICAL, 5);
+  $hbox -> Add($self->{dlp_ncl_dlr1},      0, wxALL|wxALIGN_CENTRE_VERTICAL, 5);
+  $hbox -> Add(Wx::StaticText -> new($scrl, -1, "R2:"), 0, wxALL|wxALIGN_CENTRE_VERTICAL, 5);
+  $hbox -> Add($self->{dlp_ncl_dlr2},      0, wxALL|wxALIGN_CENTRE_VERTICAL, 5);
 
   $hbox = Wx::BoxSizer->new( wxHORIZONTAL );
-  $vbox -> Add($hbox, 0, wxGROW|wxLEFT|wxRIGHT, 25);
-  $self -> {dlp_ncl_dlnearlab} = Wx::StaticText -> new($page, -1, "R range of near neighbor");
-  $self -> {dlp_ncl_dlr1}    = Wx::TextCtrl   -> new($page, -1, 1.0, @PosSize,);
-  $self -> {dlp_ncl_dlr2}    = Wx::TextCtrl   -> new($page, -1, 1.0, @PosSize,);
-  $hbox -> Add($self->{dlp_ncl_dlnearlab}, 0, wxGROW|wxALL|wxALIGN_CENTRE, 5);
-  $hbox -> Add($self->{dlp_ncl_dlr1},      0, wxGROW|wxALL|wxALIGN_CENTRE, 5);
-  $hbox -> Add(Wx::StaticText -> new($page, -1, " to "), 0, wxGROW|wxALL|wxALIGN_CENTRE, 5);
-  $hbox -> Add($self->{dlp_ncl_dlr2},      0, wxGROW|wxALL|wxALIGN_CENTRE, 5);
-
-  $hbox = Wx::BoxSizer->new( wxHORIZONTAL );
-  $vbox -> Add($hbox, 0, wxGROW|wxLEFT|wxRIGHT, 0);
-  $self->{dlp_ncl_ipot2} = Wx::RadioBox->new($page, -1, ' ipot of distant scatterer ', wxDefaultPosition, wxDefaultSize,
+  $nclboxsizer -> Add($hbox, 0, wxGROW|wxLEFT|wxRIGHT, 10);
+  $self->{dlp_ncl_ipot2} = Wx::RadioBox->new($scrl, -1, ' ipot of distant scatterer ', wxDefaultPosition, wxDefaultSize,
 					     [q{     },q{     },q{     },q{     },q{     },q{     },q{     }], 7, wxRA_SPECIFY_COLS);
   $self->{dlp_ncl_ipot2}->Enable($_,0) foreach (0..6);
-  EVT_RADIOBOX($self, $self->{dlp_ncl_ipot2}, \&set_name);
-  $hbox -> Add( $self->{dlp_ncl_ipot2}, 0, wxLEFT|wxRIGHT, 25 );
+  EVT_RADIOBOX($self, $self->{dlp_ncl_ipot2}, sub{set_name(@_,'dlp_ncl2')});
+  $hbox -> Add( $self->{dlp_ncl_ipot2}, 0, wxALL|wxALIGN_CENTRE_VERTICAL, 5 );
+
+  $self -> {dlp_ncl_dlr3}    = Wx::TextCtrl   -> new($scrl, -1, 1.0, @PosSize,);
+  $self -> {dlp_ncl_dlr4}    = Wx::TextCtrl   -> new($scrl, -1, 1.0, @PosSize,);
+  $hbox -> Add(Wx::StaticText -> new($scrl, -1, "R3:"), 0, wxALL|wxALIGN_CENTRE_VERTICAL, 5);
+  $hbox -> Add($self->{dlp_ncl_dlr3},      0, wxALL|wxALIGN_CENTRE|wxALIGN_CENTRE_VERTICAL, 5);
+  $hbox -> Add(Wx::StaticText -> new($scrl, -1, "R4:"), 0, wxALL|wxALIGN_CENTRE_VERTICAL, 5);
+  $hbox -> Add($self->{dlp_ncl_dlr4},      0, wxALL|wxALIGN_CENTRE|wxALIGN_CENTRE_VERTICAL, 5);
 
   $hbox = Wx::BoxSizer->new( wxHORIZONTAL );
-  $vbox -> Add($hbox, 0, wxGROW|wxLEFT|wxRIGHT, 25);
-  $self -> {dlp_ncl_dldistlab} = Wx::StaticText -> new($page, -1, "R range of distant neighbor");
-  $self -> {dlp_ncl_dlr3}    = Wx::TextCtrl   -> new($page, -1, 1.0, @PosSize,);
-  $self -> {dlp_ncl_dlr4}    = Wx::TextCtrl   -> new($page, -1, 1.0, @PosSize,);
-  $hbox -> Add($self->{dlp_ncl_dldistlab}, 0, wxGROW|wxALL|wxALIGN_CENTRE, 5);
-  $hbox -> Add($self->{dlp_ncl_dlr3},      0, wxGROW|wxALL|wxALIGN_CENTRE, 5);
-  $hbox -> Add(Wx::StaticText -> new($page, -1, " to "), 0, wxGROW|wxALL|wxALIGN_CENTRE, 5);
-  $hbox -> Add($self->{dlp_ncl_dlr4},      0, wxGROW|wxALL|wxALIGN_CENTRE, 5);
-
-  $hbox = Wx::BoxSizer->new( wxHORIZONTAL );
-  $vbox -> Add( $hbox, 0, wxGROW|wxALL, 20 );
-  $self->{dlp_ncl_drag} = Demeter::UI::Atoms::SS::DLPNCLDragSource->new($page, -1, wxDefaultPosition, wxDefaultSize, $parent);
-  $hbox  -> Add( $self->{dlp_ncl_drag}, 0, wxALL, 20);
+  $nclboxsizer -> Add( $hbox, 0, wxGROW|wxALL, 10 );
+  $self->{dlp_ncl_drag} = Demeter::UI::Atoms::SS::DLPNCLDragSource->new($scrl, -1, wxDefaultPosition, wxDefaultSize, $parent);
+  $hbox  -> Add( $self->{dlp_ncl_drag}, 0, wxALL, 0);
   $self->{dlp_ncl_drag}->SetCursor(Wx::Cursor->new(wxCURSOR_HAND));
   $self->{dlp_ncl_drag}->SetFont( Wx::Font->new( 10, wxDEFAULT, wxNORMAL, wxNORMAL, 1, "" ) );
   $self->{dlp_ncl_drag}->Enable(0);
 
+  my $thrubox       = Wx::StaticBox->new($scrl, -1, 'Make a three-body histogram through the absorber', wxDefaultPosition, wxDefaultSize);
+  my $thruboxsizer  = Wx::StaticBoxSizer->new( $thrubox, wxVERTICAL );
+  $svbox           -> Add($thruboxsizer, 0, wxALL|wxGROW, 5);
+
+
+  $self->{$_} -> SetValidator( Wx::Perl::TextValidator->new( qr([0-9.]) ) )
+    foreach (qw(dlp_ss_rmin dlp_ss_rmax dlp_ss_bin
+		dlp_ncl_dlr1 dlp_ncl_dlr2 dlp_ncl_dlr3 dlp_ncl_dlr4
+		dlp_ncl_rbin dlp_ncl_betabin));
+
   my $persist = File::Spec->catfile(Demeter->dot_folder, 'demeter.dlpoly');
   if (-e $persist) {
     my $yaml = YAML::Tiny::LoadFile($persist);
     $self->{dlyaml} = $yaml;
-    $self->{dlp_ncl_dlfile} -> SetPath ($yaml->{file});
+    $self->{dlp_dlfile} -> SetPath ($yaml->{file});
+    $self->{dlp_ss_rmin} -> SetValue($yaml->{rmin} || 1.5);
+    $self->{dlp_ss_rmax} -> SetValue($yaml->{rmax} || 3.5);
+    $self->{dlp_ss_bin}  -> SetValue($yaml->{bin}  || 0.5);
+
     $self->{dlp_ncl_dlr1}   -> SetValue($yaml->{r1} || 1);
     $self->{dlp_ncl_dlr2}   -> SetValue($yaml->{r2} || 3);
     $self->{dlp_ncl_dlr3}   -> SetValue($yaml->{r3} || 4);
@@ -246,16 +248,17 @@ sub _dlp_ncl {
     $self->{dlp_ncl_betabin}-> SetValue($yaml->{betabin} || 0.5);
   };
 
-  $vbox -> Add($self->{toolbar}, 0, wxALL, 20);
+  $vbox -> Add($scrl, 1, wxGROW|wxALL, 2);
+  $page -> SetSizerAndFit($vbox);
   return $page;
 };
 
 sub dlplot {
   my ($this, $event) = @_;
-  my $file = $this->{dlp_ss_dlfile}->GetTextCtrl->GetValue;
-  my $rmin = $this->{dlp_ss_dlrmin}->GetValue;
-  my $rmax = $this->{dlp_ss_dlrmax}->GetValue;
-  my $bin  = $this->{dlp_ss_dlbin}->GetValue;
+  my $file = $this->{dlp_dlfile}->GetTextCtrl->GetValue;
+  my $rmin = $this->{dlp_ss_rmin}->GetValue;
+  my $rmax = $this->{dlp_ss_rmax}->GetValue;
+  my $bin  = $this->{dlp_ss_bin}->GetValue;
   $this->{dlyaml}->{file} = $file;
   $this->{dlyaml}->{rmin} = $rmin;
   $this->{dlyaml}->{rmax} = $rmax;
@@ -306,19 +309,21 @@ sub icon {
 };
 
 sub set_name {
-  my ($self, $event) = @_;
+  my ($self, $event, $which) = @_;
 
-  ## need to make a regular expression out of all elements in the potentials list ...
-  my @pots = @{ $self->{parent}->{Feff}->{feffobject}->potentials };
-  shift @pots;
-  my @all_elems = uniq( map { $_ -> [2] } @pots );
-  my $re = join("|", @all_elems);
+  if ($which eq 'spath') {
+    ## need to make a regular expression out of all elements in the potentials list ...
+    my @pots = @{ $self->{parent}->{Feff}->{feffobject}->potentials };
+    shift @pots;
+    my @all_elems = uniq( map { $_ -> [2] } @pots );
+    my $re = join("|", @all_elems);
 
-  ## ... so I can reset the name if it has been left to its default.
-  if ($self->{name}->GetValue =~ m{\A\s*$re\s+SS\z}) {
-    my $label = $self->{ipot}->GetStringSelection;
-    my $elem  = (split(/: /, $label))[1];
-    $self->{name}->SetValue($elem.' SS');
+    ## ... so I can reset the name if it has been left to its default.
+    if ($self->{ss_name}->GetValue =~ m{\A\s*$re\s+SS\z}) {
+      my $label = $self->{ss_ipot}->GetStringSelection;
+      my $elem  = (split(/: /, $label))[1];
+      $self->{ss_name}->SetValue($elem.' SS');
+    };
   };
 };
 
@@ -437,7 +442,7 @@ sub OnPaint {
   my( $this, $event ) = @_;
   my $dc = Wx::PaintDC->new( $this );
 
-  $dc->DrawText( "Drag DL_POLY histogram SS path from here ", 2, 2 );
+  $dc->DrawText( "Drag SS path from here ", 2, 2 );
 };
 
 sub OnDrag {
@@ -446,10 +451,10 @@ sub OnDrag {
 
   my $dragdata = ['DLPSS',						  # id
 		  $parent->{Feff}->{feffobject}->group,			  # feff object group
-		  $parent->{SS}->{dlp_ss_dlfile}->GetTextCtrl->GetValue,  # HISTORY file
-		  $parent->{SS}->{dlp_ss_dlrmin}->GetValue,		  # rmin
-		  $parent->{SS}->{dlp_ss_dlrmax}->GetValue,		  # rmax
-		  $parent->{SS}->{dlp_ss_dlbin} ->GetValue,		  # bin size
+		  $parent->{SS}->{dlp_dlfile}->GetTextCtrl->GetValue,  # HISTORY file
+		  $parent->{SS}->{dlp_ss_rmin}->GetValue,		  # rmin
+		  $parent->{SS}->{dlp_ss_rmax}->GetValue,		  # rmax
+		  $parent->{SS}->{dlp_ss_bin} ->GetValue,		  # bin size
 		  $parent->{SS}->{dlp_ss_ipot}->GetSelection+1,		  # ipot
 		 ];
 
@@ -491,7 +496,7 @@ sub OnPaint {
   my( $this, $event ) = @_;
   my $dc = Wx::PaintDC->new( $this );
 
-  $dc->DrawText( "Drag DL_POLY histogram nearly collinear path from here ", 2, 2 );
+  $dc->DrawText( "Drag nearly collinear path from here ", 2, 2 );
 };
 
 sub OnDrag {
@@ -499,7 +504,7 @@ sub OnDrag {
 
   my $dragdata = ['DLPNCL',						      # 0  id
 		  $parent->{Feff}->{feffobject}    -> group,		      # 1  feff object group
-		  $parent->{SS}->{dlp_ncl_dlfile}  -> GetTextCtrl->GetValue,  # 2  HISTORY file
+		  $parent->{SS}->{dlp_dlfile}      -> GetTextCtrl->GetValue,  # 2  HISTORY file
 		  $parent->{SS}->{dlp_ncl_dlr1}    -> GetValue,		      # 3  r ranges
 		  $parent->{SS}->{dlp_ncl_dlr2}    -> GetValue,		      # 4
 		  $parent->{SS}->{dlp_ncl_dlr3}    -> GetValue,		      # 5

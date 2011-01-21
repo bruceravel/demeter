@@ -270,6 +270,16 @@ sub fill_ss_page {
     $self->{parent}->{SS}->{dlp_ncl_ipot2}->Enable($i, 1);
     ++$i;
   };
+  foreach my $ii ($i .. 6) {
+    $self->{parent}->{SS}->{ss_ipot}->SetLabel($ii, q{     });
+    $self->{parent}->{SS}->{ss_ipot}->Enable($ii, 0);
+    $self->{parent}->{SS}->{dlp_ss_ipot}->SetLabel($ii, q{     });
+    $self->{parent}->{SS}->{dlp_ss_ipot}->Enable($ii, 0);
+    $self->{parent}->{SS}->{dlp_ncl_ipot1}->SetLabel($ii, q{     });
+    $self->{parent}->{SS}->{dlp_ncl_ipot1}->Enable($ii, 0);
+    $self->{parent}->{SS}->{dlp_ncl_ipot2}->SetLabel($ii, q{     });
+    $self->{parent}->{SS}->{dlp_ncl_ipot2}->Enable($ii, 0);
+  };
   $self->{parent}->{SS}->{ss_name}->SetValue($feff->potentials->[0]->[2] . ' SS');
   $self->{parent}->{SS}->{ss_drag}->Enable(1);
   $self->{parent}->{SS}->{dlp_ss_drag}->Enable(1);
