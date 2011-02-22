@@ -1005,9 +1005,10 @@ sub main_window {
 		     'LogRatio',	  # 14
 		     'Difference',	  # 15
 		     # -----------------------
-		     'Journal',		  # 17
-		     'PluginRegistry',    # 18
-		     'Prefs',		  # 19
+		     'XDI',               # 17
+		     'Journal',		  # 18
+		     'PluginRegistry',    # 19
+		     'Prefs',		  # 20
 		    ) {
     next if $INC{"Demeter/UI/Athena/$which.pm"};
     require "Demeter/UI/Athena/$which.pm";

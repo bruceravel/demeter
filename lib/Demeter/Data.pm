@@ -40,6 +40,7 @@ with 'Demeter::Data::Plot';
 with 'Demeter::Data::Process';
 with 'Demeter::Data::SelfAbsorption';
 with 'Demeter::Data::Units';
+with 'Demeter::Data::XDI';
 
 use MooseX::Aliases;
 #use MooseX::AlwaysCoerce;   # this might be useful....
