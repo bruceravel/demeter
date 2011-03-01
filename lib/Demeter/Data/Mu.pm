@@ -227,6 +227,7 @@ sub put_data {
 
   my $command = $self->template("process", "columns");
   $command   .= $self->template("process", "deriv");
+
   $self->dispose($command);
   $self->i0_scale(Ifeffit::get_scalar('__i0_scale'));
   $self->signal_scale(Ifeffit::get_scalar('__signal_scale'));

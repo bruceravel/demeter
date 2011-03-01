@@ -8,6 +8,7 @@ use Demeter::UI::Wx::SpecialCharacters qw(:all);
 use Demeter::UI::Athena::ColumnSelection;
 use Demeter::UI::Artemis::Prj;
 use Demeter::UI::Wx::PeriodicTableDialog;
+use Xray::XDI;
 
 use Cwd;
 use File::Basename;
@@ -87,14 +88,21 @@ sub Import {
   ## evkev?
   my $first = 1;
   foreach my $file (sort {$a cmp $b} @files) {
-    my $plugin = test_plugins($app, $file);
-    my $stashfile = ($plugin) ? $plugin->fixed : $file;
-    my @suggest = ($plugin) ? $plugin->suggest('transmission') : ();
-    my $type = ($plugin and ($plugin->output eq 'data'))                ? 'raw'
-             : ($plugin and ($plugin->output eq 'project'))             ? 'prj'
-             : ($Demeter::UI::Athena::demeter->is_prj($file,$verbose))  ? 'prj'
-	     : ($Demeter::UI::Athena::demeter->is_data($file,$verbose)) ? 'raw'
-	     :                                                            '???';
+    my $xdi = Xray::XDI->new;
+    $xdi->file($file);
+    my ($plugin, $stashfile, @suggest, $type);
+    if ($xdi->is_xdi) {
+      $type = 'xdi';
+    } else {
+      $plugin = test_plugins($app, $file);
+      $stashfile = ($plugin) ? $plugin->fixed : $file;
+      @suggest = ($plugin) ? $plugin->suggest('transmission') : ();
+      $type = ($plugin and ($plugin->output eq 'data'))                ? 'raw'
+            : ($plugin and ($plugin->output eq 'project'))             ? 'prj'
+            : ($Demeter::UI::Athena::demeter->is_prj($file,$verbose))  ? 'prj'
+            : ($Demeter::UI::Athena::demeter->is_data($file,$verbose)) ? 'raw'
+            :                                                            '???';
+    }
     if ($type eq '???') {
       $app->{main}->status("Could not read \"$file\" as either data or as a project file. (Do you need to enable a plugin?)");
       return;
@@ -104,9 +112,11 @@ sub Import {
     };
 
   SWITCH: {
+      $retval = _data($app, $stashfile, $xdi,  $first, []),        last SWITCH if ($type eq 'xdi');
       $retval = _prj ($app, $stashfile, $file, $first, $plugin),   last SWITCH if ($type eq 'prj');
       $retval = _data($app, $stashfile, $file, $first, \@suggest), last SWITCH if ($type eq 'raw');
     };
+    undef $xdi;
     if ($plugin) {
       unlink $plugin->fixed;
       undef $plugin;
@@ -158,12 +168,20 @@ sub _data {
   my ($app, $file, $orig, $first, $suggest) = @_;
 
   my $busy = Wx::BusyCursor->new();
-  my $data = Demeter::Data->new(file=>$file);
+  my ($data, $displayfile);
+  if (ref($orig) =~ m{Class::MOP}) {
+    $displayfile = $orig->file;
+    $data = Demeter::Data->new;
+    $data->xdi($orig);
+  } else {
+    $displayfile = $orig;
+    $data = Demeter::Data->new(file=>$file);
+  };
   my %suggest = @$suggest;	# suggested columns from a plugin
 
   ## -------- import persistance file
   my $persist = File::Spec->catfile($data->dot_folder, "athena.column_selection");
-  $data -> set(name	   => basename($orig),
+  $data -> set(name	   => basename($displayfile),
 	       is_col      => 1,
 	       energy      => $suggest{energy}||'$1',
 	       numerator   => $suggest{numerator}||1,
@@ -286,10 +304,10 @@ sub _data {
     _group($app, $colsel, $data, $yaml, $orig, $repeated, 0);
   };
 
-  $data->push_mru("xasdata", $orig);
+  $data->push_mru("xasdata", $displayfile);
   $app->set_mru;
 
-  $app->{main}->status("Imported $message from $orig");
+  $app->{main}->status("Imported $message from $displayfile");
 
   ## -------- save persistance file
   my %persistence = (
@@ -338,12 +356,13 @@ sub _data {
 
 sub _group {
   my ($app, $colsel, $data, $yaml, $orig, $repeated, $noalign) = @_;
+  my $displayfile = (ref($orig) =~ m{Class::MOP}) ? $orig->file : $orig;
 
   ## -------- import data group
-  $app->{main}->status("Importing ". $data->name . " from $orig");
+  $app->{main}->status("Importing ". $data->name . " from $displayfile");
   $app->{main}->Update;
   $data -> display(0);
-  $data->source($orig);
+  $data->source($displayfile);
   my $do_rebin = (defined $colsel) ? ($colsel->{Rebin}->{do_rebin}->GetValue) : $yaml->{do_rebin};
 
   if ($do_rebin) {
@@ -393,7 +412,7 @@ sub _group {
     $app->{main}->Update;
     my $ref = (defined $colsel) ? $colsel->{Reference}->{reference} : q{};
     if (not $ref) {
-      $ref = Demeter::Data->new(file => $orig,
+      $ref = Demeter::Data->new(file => $displayfile,
 				name => "  Ref " . $data->name);
       $ref -> set(energy      => $yaml->{energy},
 		  numerator   => '$'.$yaml->{ref_numer},

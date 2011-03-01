@@ -24,7 +24,7 @@ sub new {
   ## versioning information
   my $versionbox       = Wx::StaticBox->new($this, -1, 'Versions', wxDefaultPosition, wxDefaultSize);
   my $versionboxsizer  = Wx::StaticBoxSizer->new( $versionbox, wxHORIZONTAL );
-  $this->{sizer}      -> Add($versionboxsizer, 0, wxALL|wxGROW, 5);
+  $this->{sizer}      -> Add($versionboxsizer, 0, wxALL|wxGROW, 0);
 
   $this->{xdi}  = Wx::TextCtrl->new($this, -1, q{}, wxDefaultPosition, [ 60,-1], wxTE_READONLY);
   $this->{apps} = Wx::TextCtrl->new($this, -1, q{}, wxDefaultPosition, [200,-1], wxTE_READONLY);
@@ -36,41 +36,45 @@ sub new {
   ## Defined fields
   my $definedbox      = Wx::StaticBox->new($this, -1, 'Defined fields', wxDefaultPosition, wxDefaultSize);
   my $definedboxsizer = Wx::StaticBoxSizer->new( $definedbox, wxVERTICAL );
-  $this->{sizer}     -> Add($definedboxsizer, 1, wxALL|wxGROW, 5);
+  $this->{sizer}     -> Add($definedboxsizer, 1, wxALL|wxGROW, 0);
   $this->{defined}    = Wx::ScrolledWindow->new($this, -1, wxDefaultPosition, wxDefaultSize, wxVSCROLL);
   $definedboxsizer->Add($this->{defined}, 1, wxALL|wxGROW, 5);
   my $defbox  = Wx::BoxSizer->new( wxVERTICAL );
   $this->{defined} -> SetSizer($defbox);
   $this->{defined} -> SetScrollbars(0, 20, 0, 50);
 
-  my $gbs = Wx::GridBagSizer->new( 5, 5 );
+  my $gbs = Wx::GridBagSizer->new( 1, 5 );
   my $i = 0;
-  foreach my $df ('applications', 'beamline', 'source', 'undulator_harmonic',
+  my $size = Wx::SystemSettings::GetFont(wxSYS_DEFAULT_GUI_FONT)->GetPointSize;
+  foreach my $df ('beamline', 'source', 'undulator_harmonic',
 		  'ring_energy', 'ring_current', 'collimation', 'crystal',
 		  'd_spacing', 'focusing', 'harmonic_rejection', 'edge_energy',
 		  'start_time', 'end_time', 'abscissa', 'mu_transmission',
 		  'mu_fluorescence', 'mu_reference',) {
     $gbs->Add(Wx::StaticText->new($this->{defined}, -1, ucfirst($df)), Wx::GBPosition->new($i,0));
     $this->{$df} = Wx::TextCtrl->new($this->{defined}, -1, q{}, wxDefaultPosition, [300,-1], wxTE_READONLY);
+    $this->{$df}-> SetFont( Wx::Font->new( $size, wxTELETYPE, wxNORMAL, wxNORMAL, 0, "" ) );
     $gbs->Add($this->{$df}, Wx::GBPosition->new($i,1));
     ++$i;
   };
-  $defbox->Add($gbs, 0, wxALL, 0);
+  $defbox->Add($gbs, 0, wxALL, 5);
 
   ## extension fields
   my $extensionbox      = Wx::StaticBox->new($this, -1, 'Extension fields', wxDefaultPosition, wxDefaultSize);
   my $extensionboxsizer = Wx::StaticBoxSizer->new( $extensionbox, wxVERTICAL );
-  $this->{sizer}       -> Add($extensionboxsizer, 1, wxALL|wxGROW, 5);
+  $this->{sizer}       -> Add($extensionboxsizer, 1, wxALL|wxGROW, 0);
   $this->{extensions}   = Wx::TextCtrl->new($this, -1, q{}, wxDefaultPosition, wxDefaultSize,
 					     wxTE_MULTILINE|wxHSCROLL|wxTE_AUTO_URL|wxTE_READONLY);
+  $this->{extensions}  -> SetFont( Wx::Font->new( $size, wxTELETYPE, wxNORMAL, wxNORMAL, 0, "" ) );
   $extensionboxsizer->Add($this->{extensions}, 1, wxALL|wxGROW, 5);
 
   ## comments
   my $commentsbox      = Wx::StaticBox->new($this, -1, 'Comments', wxDefaultPosition, wxDefaultSize);
   my $commentsboxsizer = Wx::StaticBoxSizer->new( $commentsbox, wxVERTICAL );
-  $this->{sizer}      -> Add($commentsboxsizer, 1, wxALL|wxGROW, 5);
+  $this->{sizer}      -> Add($commentsboxsizer, 1, wxALL|wxGROW, 0);
   $this->{comments}    = Wx::TextCtrl->new($this, -1, q{}, wxDefaultPosition, wxDefaultSize,
 					    wxTE_MULTILINE|wxHSCROLL|wxTE_AUTO_URL);
+  $this->{comments}   -> SetFont( Wx::Font->new( $size, wxTELETYPE, wxNORMAL, wxNORMAL, 0, "" ) );
   $commentsboxsizer->Add($this->{comments}, 1, wxALL|wxGROW, 5);
 
   #$box->Add(1,1,1);		# this spacer may not be needed, Journal.pm, for example
@@ -92,6 +96,18 @@ sub pull_values {
 ## this subroutine fills the controls when an item is selected from the Group list
 sub push_values {
   my ($this, $data) = @_;
+  foreach my $df ('beamline', 'source', 'undulator_harmonic',
+		  'ring_energy', 'ring_current', 'collimation', 'crystal',
+		  'd_spacing', 'focusing', 'harmonic_rejection', 'edge_energy',
+		  'start_time', 'end_time', 'abscissa', 'mu_transmission',
+		  'mu_fluorescence', 'mu_reference',) {
+    my $att = 'xdi_'.$df;
+    $this->{$df}->SetValue($data->$att);
+  };
+  $this->{xdi}->SetValue($data->xdi->xdi_version);
+  $this->{apps}->SetValue($data->xdi_applications);
+  $this->{extensions}->SetValue(join($/, @{$data->xdi_extensions}));
+  $this->{comments}  ->SetValue(join($/, @{$data->xdi_comments  }));
   1;
 };
 

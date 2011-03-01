@@ -1,5 +1,9 @@
 package Demeter::Data::XDI;
 use Moose::Role;
+use File::Basename;
+
+has 'xdi'                     => (is => 'rw', isa => 'Xray::XDI',
+				  trigger => sub{my ($self, $new) = @_; $self->import_xdi($new);});
 
 has 'xdi_applications'	      => (is => 'rw', isa => 'Str', default => q{});
 
@@ -42,6 +46,17 @@ has 'xdi_comments'     => (
 					 'clear' => 'clear_comments',
 					}
 			  );
+has 'xdi_labels'     => (
+			   metaclass => 'Collection::Array',
+			   is        => 'rw',
+			   isa       => 'ArrayRef',
+			   default   => sub { [] },
+			   provides  => {
+					 'push'  => 'push_label',
+					 'pop'   => 'pop_label',
+					 'clear' => 'clear_labels',
+					}
+			  );
 
 sub import_xdi {
   my ($self, $xdi) = @_;
@@ -49,11 +64,45 @@ sub import_xdi {
 		    d_spacing edge_energy end_time focusing harmonic_rejection
 		    mu_fluorescence mu_reference mu_transmission ring_current
 		    ring_energy start_time source undulator_harmonic extensions
-		    comments)) {
+		    comments labels)) {
     my $att = 'xdi_' . $f;
     $self->$att($xdi->$f);
   };
   ## move data into Ifeffit arrays
+  my $ncol = $#{$xdi->labels};
+  my $npts = $#{$xdi->data};
+  my $data = $xdi->data;
+  my $transposed = [];
+  foreach my $i (0 .. $npts) {
+    foreach my $j (0 .. $ncol) {
+      $transposed->[$j]->[$i] = $data->[$i]->[$j]
+    };
+  };
+  #use Data::Dumper;
+  #print Data::Dumper->Dump([$transposed], [qw(*transposed)]);
+  foreach my $i (0 .. $ncol) {
+    $self->put_array($xdi->labels->[$i], $transposed->[$i]);
+  };
+
+  ## process the data in the manner of Demeter::Data::read_data
+  my $string = lc( join(" ", @{$xdi->labels}) );
+  Ifeffit::put_string("column_label", $string);
+  $self->columns(join(" ", $string));
+  $self->provenance("XDI file ".$self->file);
+  $self->datatype('xmu');
+  $self->is_col(1);
+  $self->file($xdi->file);
+  $self->update_data(0);
+  $self->sort_data;
+  $self->put_data;
+
+  my @x = $self->get_array('energy'); # set things for about dialog
+  $self->npts($#x+1);
+  $self->xmin($x[0]);
+  $self->xmax($x[$#x]);
+  $self->name(basename($self->file));
+  return $self;
+
   ## use math expressions for making spectra
 };
 
