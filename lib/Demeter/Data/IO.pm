@@ -281,11 +281,12 @@ sub title_glob {
              ($space eq 'q') ? " chi(q)"  :
              ($space eq 'f') ? " fit"     :
 	                       q{}        ;
-  my @titles = split(/\n/, $data->data_parameter_report);
-  @titles = split(/\n/, $data->fit_parameter_report) if ($space eq 'f');
+
+  my @titles = split(/\n/, $self->data->template("process", "xdi_report"));
+  ($space eq 'f') ? push @titles, split(/\n/, $data->fit_parameter_report) : push @titles, split(/\n/, $data->data_parameter_report);
   my $i = 0;
   $self->dispose("erase \$$globname\*");
-  foreach my $line ("Demeter$type file -- Demeter $Demeter::VERSION", @titles, "--") {
+  foreach my $line ("XDI/1.0 Demeter/$Demeter::VERSION", @titles, "///", @{$self->xdi_comments}) {
     ++$i;
     my $t = sprintf("%s%2.2d", $globname, $i);
     Ifeffit::put_string($t, $line);

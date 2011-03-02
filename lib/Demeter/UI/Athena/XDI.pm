@@ -5,7 +5,7 @@ use warnings;
 
 use Wx qw( :everything );
 use base 'Wx::Panel';
-use Wx::Event qw(EVT_BUTTON);
+use Wx::Event qw(EVT_BUTTON EVT_CHECKBOX EVT_TEXT);
 
 #use Demeter::UI::Wx::SpecialCharacters qw(:all);
 
@@ -33,15 +33,21 @@ sub new {
   $versionboxsizer -> Add(Wx::StaticText->new($this, -1, "Applications"), 0, wxALL, 5);
   $versionboxsizer -> Add($this->{apps}, 1, wxALL|wxALIGN_CENTER, 5);
 
+
   ## Defined fields
   my $definedbox      = Wx::StaticBox->new($this, -1, 'Defined fields', wxDefaultPosition, wxDefaultSize);
-  my $definedboxsizer = Wx::StaticBoxSizer->new( $definedbox, wxVERTICAL );
+  my $definedboxsizer = Wx::StaticBoxSizer->new( $definedbox, wxHORIZONTAL );
   $this->{sizer}     -> Add($definedboxsizer, 1, wxALL|wxGROW, 0);
   $this->{defined}    = Wx::ScrolledWindow->new($this, -1, wxDefaultPosition, wxDefaultSize, wxVSCROLL);
   $definedboxsizer->Add($this->{defined}, 1, wxALL|wxGROW, 5);
   my $defbox  = Wx::BoxSizer->new( wxVERTICAL );
   $this->{defined} -> SetSizer($defbox);
   $this->{defined} -> SetScrollbars(0, 20, 0, 50);
+  ## edit toggle
+  $this->{edit} = Wx::CheckBox->new($this, -1, "Edit fields");
+  $definedboxsizer -> Add($this->{edit}, 0, wxALL|wxALIGN_RIGHT, 0);
+  EVT_CHECKBOX($this, $this->{edit}, sub{ $this->ToggleEdit });
+
 
   my $gbs = Wx::GridBagSizer->new( 1, 5 );
   my $i = 0;
@@ -52,9 +58,10 @@ sub new {
 		  'start_time', 'end_time', 'abscissa', 'mu_transmission',
 		  'mu_fluorescence', 'mu_reference',) {
     $gbs->Add(Wx::StaticText->new($this->{defined}, -1, ucfirst($df)), Wx::GBPosition->new($i,0));
-    $this->{$df} = Wx::TextCtrl->new($this->{defined}, -1, q{}, wxDefaultPosition, [300,-1], wxTE_READONLY);
+    $this->{$df} = Wx::TextCtrl->new($this->{defined}, -1, q{}, wxDefaultPosition, [280,-1], wxTE_READONLY);
     $this->{$df}-> SetFont( Wx::Font->new( $size, wxTELETYPE, wxNORMAL, wxNORMAL, 0, "" ) );
     $gbs->Add($this->{$df}, Wx::GBPosition->new($i,1));
+    EVT_TEXT($this, $this->{$df}, sub{ $this->OnParameter($df) });
     ++$i;
   };
   $defbox->Add($gbs, 0, wxALL, 5);
@@ -79,7 +86,7 @@ sub new {
 
   #$box->Add(1,1,1);		# this spacer may not be needed, Journal.pm, for example
 
-  $this->{document} = Wx::Button->new($this, -1, 'Document section: XDI/file metadata');
+  $this->{document} = Wx::Button->new($this, -1, 'Document section: XAS Data Interchange');
   $box -> Add($this->{document}, 0, wxGROW|wxALL, 2);
   EVT_BUTTON($this, $this->{document}, sub{  $app->document("xdi")});
 
@@ -87,10 +94,13 @@ sub new {
   return $this;
 };
 
-## deprecated?
 sub pull_values {
   my ($this, $data) = @_;
-  1;
+  my @exttext  = split(/\n/, $this->{extensions}->GetValue);
+  my @commtext = split(/\n/, $this->{comments}  ->GetValue);
+  $data->xdi_extensions(\@exttext);
+  $data->xdi_comments(\@commtext);
+  return $this;
 };
 
 ## this subroutine fills the controls when an item is selected from the Group list
@@ -104,7 +114,7 @@ sub push_values {
     my $att = 'xdi_'.$df;
     $this->{$df}->SetValue($data->$att);
   };
-  $this->{xdi}->SetValue($data->xdi->xdi_version);
+  $this->{xdi}->SetValue($data->xdi_version);
   $this->{apps}->SetValue($data->xdi_applications);
   $this->{extensions}->SetValue(join($/, @{$data->xdi_extensions}));
   $this->{comments}  ->SetValue(join($/, @{$data->xdi_comments  }));
@@ -115,6 +125,27 @@ sub push_values {
 sub mode {
   my ($this, $data, $enabled, $frozen) = @_;
   1;
+};
+
+sub ToggleEdit {
+  my ($this) = @_;
+  my $onoff = $this->{edit}->GetValue;
+  foreach my $w ('beamline', 'source', 'undulator_harmonic',
+		 'ring_energy', 'ring_current', 'collimation', 'crystal',
+		 'd_spacing', 'focusing', 'harmonic_rejection', 'edge_energy',
+		 'start_time', 'end_time', 'abscissa', 'mu_transmission',
+		 'mu_fluorescence', 'mu_reference', 'extensions') {
+    $this->{$w}->SetEditable($onoff);
+  };
+  my $which = ($onoff) ? "editable" : "readonly";
+  $::app->{main}->status("Made defined and extension field text controls $which.");
+};
+
+sub OnParameter {
+  my ($this, $param) = @_;
+  my $data = $::app->current_data;
+  my $att = 'xdi_'.$param;
+  $data->$att($this->{$param}->GetValue)
 };
 
 ## yes, there is some overlap between what push_values and mode do.

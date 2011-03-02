@@ -58,7 +58,7 @@ sub resolve_defaults {
     my ($clamp1, $clamp2) = $self->resolve_clamps;
     $self->bkg_clamp1($clamp1);
     $self->bkg_clamp2($clamp2);
-  } else {
+  } elsif ($self->datatype eq 'chi') {
     my @x = $self->get_array("k");
     #my @y = $self->get_array("chi");
     my ($kmin, $kmax) = $self->resolve_krange_chi(\@x);

@@ -400,7 +400,7 @@ sub _plotE_command {
     $self->bkg_eshift($save[0] - $self->bkg_e0);
     $self->bkg_e0(0);
   };
-  if ($self->po->e_bkg) { # show the background
+  if ($self->po->e_bkg and not ($self->datatype eq 'xanes')) { # show the background
     my $this = 'bkg';
     ($this = 'nbkg') if ($self->po->e_norm);
     ($this = 'fbkg') if ($self->po->e_norm and $self->bkg_flatten);

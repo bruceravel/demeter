@@ -1,0 +1,13 @@
+{
+  foreach my $df ('beamline', 'source', 'undulator_harmonic',
+		  'ring_energy', 'ring_current', 'collimation', 'crystal',
+		  'd_spacing', 'focusing', 'harmonic_rejection', 'edge_energy',
+		  'start_time', 'end_time', 'abscissa', 'mu_transmission',
+		  'mu_fluorescence', 'mu_reference',) {
+     $att = 'xdi_'.$df;
+     $OUT .= ucfirst($df) . ': ' . $D->$att . "\n" if $D->$att;
+ };
+ foreach my $ef (@{$D->xdi_extensions}) {
+     $OUT .= $ef . "\n";
+ };
+}

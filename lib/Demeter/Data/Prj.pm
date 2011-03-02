@@ -337,6 +337,12 @@ sub _record {
 	last SWITCH;
       };
 
+      ## xdi_ parameters
+      ($k =~ m{\Axdi_(.*)\z}) and do {
+	$groupargs{$k} = $args{$k};
+	last SWITCH;
+      };
+
     };
   };
 

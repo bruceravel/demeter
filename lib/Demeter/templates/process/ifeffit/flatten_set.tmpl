@@ -22,6 +22,6 @@ set(flat_c0 = {$D->bkg_nc0} - {$D->bkg_int},
     flat_c1 = {$D->bkg_nc1} - {$D->bkg_slope},
     flat_c2 = {($D->bkg_nnorm==2) ? 0 : $D->bkg_nc2} )
 set({$D->group}.line = (flat_c0 + flat_c1*({$D->group}.energy+{$D->bkg_eshift}) + flat_c2*({$D->group}.energy+{$D->bkg_eshift})**2),
-    {$D->group}.flat = (({$D->bkg_fitted_step} - {$D->group}.line)*{$D->group}.theta + {$D->group}.prex) / {$D->bkg_step},
-    {$D->group}.fbkg = ({$D->group}.bkg-{$D->group}.preline+({$D->bkg_fitted_step}-{$D->group}.line)*{$D->group}.theta)/{$D->bkg_step} )
+    {$D->group}.flat = (({$D->bkg_fitted_step} - {$D->group}.line)*{$D->group}.theta + {$D->group}.prex) / {$D->bkg_step} )
+set({$D->group}.fbkg = ({$D->group}.bkg-{$D->group}.preline+({$D->bkg_fitted_step}-{$D->group}.line)*{$D->group}.theta)/{$D->bkg_step} )
 {#      if not $self->get('is_xanes');}

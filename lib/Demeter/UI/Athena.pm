@@ -1123,10 +1123,10 @@ sub OnGroupSelect {
   $app->{selecting_data_group}=1;
 
   my $showing = $app->{main}->{views}->GetPage($app->{main}->{views}->GetSelection);
+  if ($showing =~ m{XDI}) {
+    $app->{main}->{XDI}->pull_values($was) if ($was and ($was ne $is));
+  };
 
-  #if ($was) {
-  #  $app->{main}->{Main}->pull_values($was);
-  #};
   if ($is_index != -1) {
     $showing->push_values($is);
     $showing->mode($is, 1, 0);
@@ -1141,6 +1141,8 @@ sub view_changing {
   my $nviews  = $app->{main}->{views}->GetPageCount;
   #print join("|", $app, $event, $ngroups, $event->GetSelection), $/;
 
+  my $prior = $app->{main}->{views}->GetPageText($app->{main}->{views}->GetSelection);
+
   my $string = $app->{main}->{views}->GetPageText($event->GetSelection);
   if ($string =~ m{\A-*\z}) {
     $event -> Veto();
@@ -1150,6 +1152,7 @@ sub view_changing {
       $event -> Veto();
     };
   } else {
+    $app->{main}->{XDI}->pull_values($app->current_data) if $prior =~ m{XDI};
     $app->{main}->status(sprintf("Displaying the %s tool.",
 				 lc($app->{main}->{views}->GetPageText($event->GetSelection))));
     #$app->{main}->{showing}=

@@ -172,12 +172,12 @@ sub _data {
   if (ref($orig) =~ m{Class::MOP}) {
     $displayfile = $orig->file;
     $data = Demeter::Data->new;
-    $data->xdi($orig);
   } else {
     $displayfile = $orig;
     $data = Demeter::Data->new(file=>$file);
   };
   my %suggest = @$suggest;	# suggested columns from a plugin
+  ## build suggestions from XDI attributes
 
   ## -------- import persistance file
   my $persist = File::Spec->catfile($data->dot_folder, "athena.column_selection");
@@ -188,7 +188,6 @@ sub _data {
 	       denominator => $suggest{denominator}||1,
 	       ln          => $suggest{ln}||0,
 	       display	   => 1);
-  $data->guess_columns;
   my $yaml;
   $yaml->{columns} = q{};
   if (-e $persist) {
@@ -207,6 +206,13 @@ sub _data {
       $yaml->{each} = 0;
     };
   };
+
+  ## for an XDI file, setting the xdi attribute has to be delayed
+  ## until *after* the energy/numerator/denominator attributes are
+  ## set.  then guess_columns can be called.
+  $data->xdi($orig) if (ref($orig) =~ m{Class::MOP});
+  $data->guess_columns;
+
 
   ## -------- display column selection dialog
   my $repeated = 1;

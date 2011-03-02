@@ -401,6 +401,7 @@ override all => sub {
   my %all = $self->SUPER::all;
   delete $all{fft_pcpath};
   delete $all{is_mc};
+  delete $all{xdi};
   return %all;
 };
 

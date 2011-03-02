@@ -8,7 +8,7 @@
 	https://bugs.launchpad.net/ubuntu/+source/gtk+2.0/+bug/558674 for more info
         Turns out this is a gtk problem -- I can make the same thing happen with Firefox!
 
-** Demeter bugs and shortcomings  [0/6]
+** Demeter bugs and shortcomings  [0/7]
   - [ ] in D::Data::IO::save_many, why doesn't updating in n specifying
        	"background" not work to bring data up to date?  (fft, i.e. doing
        	autobk, does work)
@@ -17,6 +17,8 @@
   - [ ] add a record to an existing Athena project file
   - [ ] set E0 to peak of white line
   - [ ] clnorm
+  - [ ] Data object should note that datatype is xanes and not
+        compute fbkg the bkg array does not exist
 
 ** Athena
 

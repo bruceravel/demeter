@@ -5,6 +5,7 @@ use File::Basename;
 has 'xdi'                     => (is => 'rw', isa => 'Xray::XDI',
 				  trigger => sub{my ($self, $new) = @_; $self->import_xdi($new);});
 
+has 'xdi_version'	      => (is => 'rw', isa => 'Str', default => q{});
 has 'xdi_applications'	      => (is => 'rw', isa => 'Str', default => q{});
 
 has 'xdi_abscissa'	      => (is => 'rw', isa => 'Str', default => q{});
@@ -60,7 +61,7 @@ has 'xdi_labels'     => (
 
 sub import_xdi {
   my ($self, $xdi) = @_;
-  foreach my $f (qw(applications abscissa beamline collimation crystal
+  foreach my $f (qw(version applications abscissa beamline collimation crystal
 		    d_spacing edge_energy end_time focusing harmonic_rejection
 		    mu_fluorescence mu_reference mu_transmission ring_current
 		    ring_energy start_time source undulator_harmonic extensions
@@ -89,12 +90,14 @@ sub import_xdi {
   Ifeffit::put_string("column_label", $string);
   $self->columns(join(" ", $string));
   $self->provenance("XDI file ".$self->file);
-  $self->datatype('xmu');
   $self->is_col(1);
   $self->file($xdi->file);
   $self->update_data(0);
+  $self->update_columns(0);
+  $self->update_norm(1);
   $self->sort_data;
   $self->put_data;
+  $self->resolve_defaults;
 
   my @x = $self->get_array('energy'); # set things for about dialog
   $self->npts($#x+1);
