@@ -1,0 +1,52 @@
+
+					Jun 15 1999
+					Bruce Ravel
+					<ravel@phys.washington.edu>
+
+This file and the files in this directory are distributed as part of
+the Absorption.pm package.  Absorption.pm is a perl module providing
+access to a variety of tables of x-ray absorption data for the
+elements.
+
+This directory contains calculations of atomic scattering factors as
+calculated by Chris Chantler.
+
+This data was taken from the interactive web page in the NIST Standard 
+Data Reference Database (URL below) and saved as html files.  The html 
+files were converted to the flat text files found in this directory
+using the lynx (http://lynx.browser.org/) web browser.  The command
+	lynx -dump -width=120 ??.html > ??.dat
+was used for each ?? between 01 and 92.
+
+Each data file contains scattering data as functions of energy as well 
+as several other atomic properties of interest.  Edge energies but not 
+fluorescence line energies are found in each file.  The file `lines'
+contains the fluorescence line data from the McMaster tables -- a
+minimal set of data sufficient for use with Absorption.pm.
+
+The literature reference for this data is given among the URLs below.
+
+No physical value has been added to the tables of Chris Chantler by
+Bruce Ravel, the author of Absorption.pm.  All copyright on the data
+in the tables belongs to Chris Chantler.  Absorption.pm is a synthesis
+of several existing tables coded in an object oriented manner.
+
+-----------------------------------------------------------------------
+Useful URLs:
+
+Chris Chantler's homepage:
+	http://optics.ph.unimelb.edu.au/~chantler/home.html
+
+NIST Standard Reference Database 66 
+NIST Form Factor, Attenuation, and Scattering Tables
+  "Theoretical Form Factor, Attenuation, and Scattering Tabulation
+   for Z = 1 - 92 from E = 1 - 10 eV to E = 0.4 - 1.0 MeV"
+  C. T. Chantler, J. Phys. Chem. Ref. Data 24, 71 (1995) 
+	http://physics.nist.gov/PhysRefData/FFast/Text/cover.html
+
+Interactive access to the results of Chantler's calculations:
+	http://physics.nist.gov/PhysRefData/FFast/html/form.html
+
+Absorption.pm can be found at Bruce Ravel's "Perl Modules for X-ray
+Absorption" web page:
+	http://feff.phys.washington.edu/~ravel/Xray/
