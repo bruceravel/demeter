@@ -1,6 +1,6 @@
 #!/usr/bin/perl -w
 ######################################################################
-##  This program is copyright (c) 1999 Bruce Ravel
+##  This program is copyright (c) 1999, 2011 Bruce Ravel
 ##  <ravel@phys.washington.edu>
 ##  http://feff.phys.washington.edu/~ravel/software/atoms/
 ##
@@ -203,7 +203,7 @@ my %elam = ();
 print "Elam data conversion tool $version for Absorption 0.10$/";
 
 my $thisdir = &identify_self;
-my $infile = File::Spec -> catfile($thisdir, "elam.dat");
+my $infile = File::Spec -> catfile($thisdir, "elam.data");
 open ELAM, $infile or die $!;
 
 print "  Parsing element";
@@ -403,7 +403,7 @@ while (@line_list) {
   };
 };
 
-my $outfile = File::Spec -> catfile($thisdir, "elam.db");
+my $outfile = File::Spec -> catfile($thisdir, '..', 'Absorption', "elam.db");
 if (-e $outfile) {
   print "  Removing stale database, $outfile.$/";
   unlink $outfile or die "could not remove old database $!";

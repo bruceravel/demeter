@@ -1,6 +1,6 @@
 #!/usr/bin/perl -w
 ######################################################################
-##  This program is copyright (c) 1999 Bruce Ravel
+##  This program is copyright (c) 1999, 2011 Bruce Ravel
 ##  <ravel@phys.washington.edu>
 ##  http://feff.phys.washington.edu/~ravel/software/atoms/
 ##
@@ -60,7 +60,7 @@ $mcmaster{'nu'} = {'number'	    => '0',
 		   'coherent'	    => [ '0', '0', '0', '0' ],
                    };
 
-my $infile = File::Spec -> catfile($thisdir, "mcmaster.dat");
+my $infile = File::Spec -> catfile($thisdir, "mcmaster.data");
 open MCM, $infile or die $!;
 my $firstline = <MCM>;
 $mcmaster{'version'} = (split(' ', $firstline))[5] ?
@@ -141,7 +141,7 @@ while (<MCM>) {
 
 };
 print $/;
-my $outfile = File::Spec -> catfile($thisdir, "mcmaster.db");
+my $outfile = File::Spec -> catfile($thisdir, '..', 'Absorption', "mcmaster.db");
 if (-e $outfile) {
   print "  Removing stale database, $outfile.$/";
   unlink $outfile;

@@ -1,8 +1,8 @@
 #!/usr/bin/perl -w
 ######################################################################
-## Time-stamp: <06/01/02 11:46:09 bruce>
+## Time-stamp: <2011-03-03 17:24:37 bruce>
 ######################################################################
-##  This program is copyright (c) 1999-2006 Bruce Ravel
+##  This program is copyright (c) 1999-2006, 2011 Bruce Ravel
 ##  <bravel@anl.gov>
 ##  http://cars9.uchicago.edu/~ravel/software/exfas/
 ##
@@ -84,7 +84,7 @@ print "Cromer-Mann data conversion tool $version$/";
 
 $| = 1;
 my $thisdir = &identify_self;
-my $infile = File::Spec -> catfile($thisdir, "cromann.dat");
+my $infile = File::Spec -> catfile($thisdir, "cromann.data");
 open CM, $infile or die $!;
 
 my %cromann = ();
@@ -105,7 +105,7 @@ while (<CM>) {
 print "\n";
 
 
-my $outfile = File::Spec -> catfile($thisdir, "cromann.db");
+my $outfile = File::Spec -> catfile($thisdir, '..', 'Scattering', "cromann.db");
 if (-e $outfile) {
   print "  Removing old cromann.db.\n";
   unlink($outfile);

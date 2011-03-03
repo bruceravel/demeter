@@ -77,6 +77,7 @@ my $build = $class
 				'Regexp::Common'	   => '0',
 				'Regexp::Optimizer'	   => '0',
                                 'Spreadsheet::WriteExcel'  => '0',
+                                'Statistics::Descriptive'  => '0',
 				'String::Random'           => '0',
 				'Text::Template'	   => '0',
 				'Tree::Simple'		   => '0',
@@ -99,6 +100,19 @@ my $build = $class
 	 PL_files           => {
 				'lib/Xray/Crystal/share/space_groups.db.PL' => 'lib/Xray/Crystal/share/space_groups.db',
 				'lib/Demeter/doc/dpg/build_dpg.PL' => [],
+
+                                ## from Xray::Absorption
+				'lib/Xray/data/chantler2st.PL'  => 'lib/Xray/Absorption/chantler.db',
+				'lib/Xray/data/dat2st.PL'       => 'lib/Xray/Absorption/mcmaster.db',
+				'lib/Xray/data/henke2st.PL'     => 'lib/Xray/Absorption/henke.db',
+				'lib/Xray/data/shalt2st.PL'     => 'lib/Xray/Absorption/shaltout.db',
+				'lib/Xray/data/cl2st.PL'        => 'lib/Xray/Absorption/cl.db',
+				'lib/Xray/data/elam2st.PL'      => 'lib/Xray/Absorption/elam.db',
+				'lib/Xray/data/hubbell_g2st.PL' => 'lib/Xray/Absorption/hubbell_g.db',
+
+                                ## from Xray::Scattering
+				'lib/Xray/data/cromann.PL'  => 'lib/Xray/Scattering/cromann.db',
+				'lib/Xray/data/waaskirf.PL' => 'lib/Xray/Scattering/waaskirf.db',
 			       },
 	 recommends         => {
 				## these add functionality when using demeter at the command line

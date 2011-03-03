@@ -1,6 +1,6 @@
 #!/usr/bin/perl -w
 ######################################################################
-##  This program is copyright (c) 2007 Bruce Ravel
+##  This program is copyright (c) 2007, 2011 Bruce Ravel
 ##  <ravel@phys.washington.edu>
 ##  http://feff.phys.washington.edu/~ravel/software/atoms/
 ##
@@ -52,7 +52,7 @@ $shaltout{'nu'} = {'number'	    => '0',
 		   'coherent'	    => [ '0', '0', '0', '0' ],
                    };
 
-my $infile = File::Spec -> catfile($thisdir, "shaltout.dat");
+my $infile = File::Spec -> catfile($thisdir, "shaltout.data");
 open my $SHALT, $infile or die $!;
 my $firstline = <$SHALT>;
 $shaltout{'version'} = (split(' ', $firstline))[5] ?
@@ -151,7 +151,7 @@ close $LINES;
 #print Data::Dumper->Dump([\%shaltout],[qw(*shaltout)]);
 
 print $/;
-my $outfile = File::Spec -> catfile($thisdir, "shaltout.db");
+my $outfile = File::Spec -> catfile($thisdir, '..', 'Absorption', "shaltout.db");
 if (-e $outfile) {
   print "  Removing stale database, $outfile.$/";
   unlink $outfile;

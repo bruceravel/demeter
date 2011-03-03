@@ -1,8 +1,8 @@
 #!/usr/bin/perl -w
 ######################################################################
-## Time-stamp: <06/01/02 11:46:41 bruce>
+## Time-stamp: <2011-03-03 17:24:43 bruce>
 ######################################################################
-##  This program is copyright (c) 2005-2006 Bruce Ravel
+##  This program is copyright (c) 2005-2006, 2011 Bruce Ravel
 ##  <bravel@anl.gov>
 ##  http://cars9.uchicago.edu/~ravel/software/exafs/
 ##
@@ -70,7 +70,7 @@ print "Waasmaier-Kirfel data conversion tool $version$/";
 
 $| = 1;
 my $thisdir = &identify_self;
-my $infile = File::Spec -> catfile($thisdir, "f0_WaasKirf.dat");
+my $infile = File::Spec -> catfile($thisdir, "f0_WaasKirf.data");
 open CM, $infile or die $!;
 
 my %cromann = ();
@@ -93,7 +93,7 @@ while (<CM>) {
 print "\n";
 
 
-my $outfile = File::Spec -> catfile($thisdir, "waaskirf.db");
+my $outfile = File::Spec -> catfile($thisdir, '..', 'Scattering', "waaskirf.db");
 if (-e $outfile) {
   print "  Removing old waaskirf.db.\n";
   unlink($outfile);

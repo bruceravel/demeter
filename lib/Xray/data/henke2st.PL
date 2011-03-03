@@ -1,6 +1,6 @@
 #!/usr/bin/perl -w
 ######################################################################
-##  This program is copyright (c) 1999 Bruce Ravel
+##  This program is copyright (c) 1999, 2011 Bruce Ravel
 ##  <ravel@phys.washington.edu>
 ##  http://feff.phys.washington.edu/~ravel/software/atoms/
 ##
@@ -148,7 +148,7 @@ while (@energy_list) {
 
 
 
-my $outfile = File::Spec -> catfile($thisdir, "henke.db");
+my $outfile = File::Spec -> catfile($thisdir, '..', 'Absorption', "henke.db");
 if (-e $outfile) {
   print "  Removing stale database, $outfile.$/";
   unlink $outfile or die "could not remove old database $!";

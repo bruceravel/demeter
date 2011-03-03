@@ -1,6 +1,6 @@
 #!/usr/bin/perl -w
 ######################################################################
-##  This program is copyright (c) 1999 Bruce Ravel
+##  This program is copyright (c) 1999, 2011 Bruce Ravel
 ##  <ravel@phys.washington.edu>
 ##  http://feff.phys.washington.edu/~ravel/software/atoms/
 ##
@@ -53,7 +53,7 @@ my $thisdir = &identify_self;
 my $chantlerdir = File::Spec -> catfile($thisdir, "chantler");
 
 print "  Parsing lines ... ";
-my $infile =  File::Spec -> catfile($chantlerdir, "lines");
+my $infile =  File::Spec -> catfile($chantlerdir, "lines.elem");
 open CHANTLER, $infile or die $!;
 while (<CHANTLER>) {
   next if /^\s*\#/;
@@ -72,7 +72,7 @@ foreach my $z (1 .. 92) {
   ($z % 5) or print " $z";
   my $el = lc( get_symbol($z) );
   my $frel = 0;
-  my $infile = sprintf "%2.2d.dat", $z;
+  my $infile = sprintf "%2.2d.dat.elem", $z;
   $infile =  File::Spec -> catfile($chantlerdir, $infile);
   open CHANTLER, $infile or die $!;
   $_ = <CHANTLER>;			# pop off first line;
@@ -173,7 +173,7 @@ while (@energy_list) {
 
 
 
-my $outfile = File::Spec -> catfile($thisdir, "chantler.db");
+my $outfile = File::Spec -> catfile($thisdir, '..', 'Absorption', "chantler.db");
 if (-e $outfile) {
   print "  Removing stale database, $outfile.$/";
   unlink $outfile or die "could not remove old database $!";

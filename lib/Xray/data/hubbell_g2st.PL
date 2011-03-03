@@ -29,7 +29,7 @@ print "  Parsing element";
 foreach my $i (1 .. 92) {
 
   my $z = get_symbol($i);
-  my $fname = sprintf("z%2.2d.html", $i);
+  my $fname = sprintf("z%2.2d.html.elem", $i);
 
   #unless (-e File::Spec->catfile($thisdir, "hubbell", $fname)) {
   #  print "\nwgetting $fname ... \n";
@@ -67,7 +67,7 @@ print $/;
 #print Data::Dumper->Dump([\@one_minus_g], [qw(one_minus_g)]);
 
 
-my $outfile = File::Spec -> catfile($thisdir, "hubbell_g.db");
+my $outfile = File::Spec -> catfile($thisdir, '..', 'Absorption', "hubbell_g.db");
 if (-e $outfile) {
   print "  Removing stale database, $outfile.$/";
   unlink $outfile or die "could not remove old database $!";
