@@ -23,7 +23,6 @@ require 5.8.0;
 
 use version;
 our $VERSION = version->new('0.4.6');
-use vars qw($Gnuplot_exists $Fityk_exists $STAR_Parser_exists);
 
 #use Demeter::Carp;
 use Carp;
@@ -133,9 +132,11 @@ use vars qw($plot);
 $plot = Demeter::Plot -> new() if not $mode->plot;
 $plot -> screen_echo(0);
 
+use vars qw($Gnuplot_exists $Fityk_exists $STAR_Parser_exists $XDI_exists);
 $Gnuplot_exists     = ($plot->is_windows) ? 0 : (eval "require Graphics::GnuplotIF");
 $Fityk_exists       = eval "require fityk";
 $STAR_Parser_exists = eval "require Star::Parser";
+$XDI_exists         = eval "require Xray::XDI";
 
 use Demeter::StrTypes qw( Empty
 			  IfeffitCommand

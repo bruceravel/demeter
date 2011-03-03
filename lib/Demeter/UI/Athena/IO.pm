@@ -8,7 +8,8 @@ use Demeter::UI::Wx::SpecialCharacters qw(:all);
 use Demeter::UI::Athena::ColumnSelection;
 use Demeter::UI::Artemis::Prj;
 use Demeter::UI::Wx::PeriodicTableDialog;
-use Xray::XDI;
+my $XDI_exists         = eval "require Xray::XDI";
+#use Xray::XDI;
 
 use Cwd;
 use File::Basename;
@@ -88,10 +89,13 @@ sub Import {
   ## evkev?
   my $first = 1;
   foreach my $file (sort {$a cmp $b} @files) {
-    my $xdi = Xray::XDI->new;
-    $xdi->file($file);
+    my $xdi = q{};
+    if ($XDI_exists) {
+      $xdi = Xray::XDI->new;
+      $xdi->file($file);
+    };
     my ($plugin, $stashfile, @suggest, $type);
-    if ($xdi->is_xdi) {
+    if ($xdi and $xdi->is_xdi) {
       $type = 'xdi';
     } else {
       $plugin = test_plugins($app, $file);

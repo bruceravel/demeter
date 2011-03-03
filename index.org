@@ -34,7 +34,8 @@
    - [ ] in project selection dialog, controls for entering a periodic
          subset (i.e. every Nth record starting with the Jth record)
          this would be useful for QXAS or dispersive data files with
-         many measurements
+         many measurements.  regexp matching against names would also
+         be nice
 
 *** Help [1/4]
    - [X]  about
@@ -92,7 +93,7 @@
    - [ ] should I clear out unfitted fit folders from project upon import?
    - [ ] update pods for D::Feff::Histogram and D::Feff:DL_POLY
 
-*** Histograms [4/7]
+*** Histograms [4/11]
    - [X] sum histogram bins into a single chi(k) file
    - [X] convert chi(k) data to a mock feffNNNN.dat file
    - [X] Triangle object
@@ -106,6 +107,7 @@
    - [ ] check that there is at least one bin in the supplied range(s)
    - [ ] ipot=1 is hardwired in many places -- generalize....
    - [ ] scatter plot of ncl distribution
+   - [ ] factor out DLPOLY dependence into a role so that other MD packages can be added more easily
 
 
    

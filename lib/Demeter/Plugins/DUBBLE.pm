@@ -151,7 +151,7 @@ by the fact that the first number on each line is not monotonically
 decreasing.  This filter examines the first forty lines of data.  When
 it finds the situation of the first number not being monotonically
 decreasing (which it should be as data are stored as a function of
-mono angle in millidegrees), the file is assumed to conmtain MED data
+mono angle in millidegrees), the file is assumed to contain MED data
 and is processed accordingly.
 
 Note that this filter assumes that the MED data is spread out over
