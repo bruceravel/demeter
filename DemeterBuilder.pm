@@ -64,17 +64,14 @@ sub ACTION_compile_ifeffit_wrapper {
 
 sub ACTION_post_build {
   my $self = shift;
-  mkpath(File::Spec->catfile('blib', 'arch', 'auto', 'Ifeffit'));
-  copy(File::Spec->catfile('src', 'Ifeffit.so'), File::Spec->catfile('blib', 'arch', 'auto', 'Ifeffit'));
-  copy(File::Spec->catfile('src', 'Ifeffit.bs'), File::Spec->catfile('blib', 'arch', 'auto', 'Ifeffit'));
-  chmod 0755, File::Spec->catfile('blib', 'arch', 'auto', 'Ifeffit', 'Ifeffit.so');
+  $self->copy_if_modified( from    => File::Spec->catfile('src','Ifeffit.so'),
+			   to_dir  => File::Spec->catdir('blib','arch','auto','Ifeffit'),
+			   flatten => 1);
+  $self->copy_if_modified( from    => File::Spec->catfile('src','Ifeffit.bs'),
+			   to_dir  => File::Spec->catdir('blib','arch','auto','Ifeffit'),
+			   flatten => 1);
 };
 
-#sub ACTION_install {
-#  my $self = shift;
-#  $self->dispatch("pre_install");
-#  $self->SUPER::ACTION_install;
-#};
 
 sub ACTION_update {
   my $self = shift;

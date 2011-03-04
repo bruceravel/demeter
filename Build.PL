@@ -23,7 +23,7 @@ use File::Spec;
 use Module::Build;
 use DemeterBuilder; # subclass of Module::Build defining some Demeter specific installation instructions
 
-my $build = DemeterBuilder #Module::Build #$class
+my $build = DemeterBuilder
   -> new(
 	 module_name        => 'Demeter',
 	 create_readme      => 0,
@@ -81,6 +81,7 @@ my $build = DemeterBuilder #Module::Build #$class
 				'PPI'                 => '0',
 				'PPI::HTML'           => '0',
 				'Image::Size'         => '0',
+				## this is used to build the Ifeffit wrapper
                                 'ExtUtils::CBuilder'  => '0',
 			       },
 	 PL_files           => {
@@ -126,6 +127,15 @@ my $build = DemeterBuilder #Module::Build #$class
 				'src/*.so',
 				'src/*.dylib',
 				'src/*.dll',
+				'lib/Xray/Absorption/*.db',
+				'lib/Xray/Scattering/*.db',
+				'lib/Xray/Crystal/share/*.db',
+				'lib/Demeter/doc/dpg/bin/build',
+				'lib/Demeter/doc/dpg/etc/ttree.cfg',
+				'lib/Demeter/doc/dpg/html',
+				'lib/Demeter/doc/dpg/templates/lib/config/map',
+				'lib/Demeter/doc/dpg/templates/lib/config/version',
+				't/feff',
 			       ],
 	);
 
