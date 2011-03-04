@@ -21,31 +21,16 @@ use warnings;
 use Cwd;
 use File::Spec;
 use Module::Build;
+use DemeterBuilder; # subclass of Module::Build defining some Demeter specific installation instructions
 
-my $class = Module::Build->subclass(
-      class => "Module::Build::Custom",
-      code => <<'SUBCLASS' );
-
-  sub ACTION_update {
-      my $self = shift;
-      my $ret = $self->do_system(qw(svn update));
-      die "failed to update Demeter from svn\n" if not $ret;
-  };
-  sub ACTION_full_update {
-      my $self = shift;
-      $self->depends_on("update");
-      $self->depends_on("test");
-      $self->depends_on("install");
-  };
-SUBCLASS
-
-my $build = $class
+my $build = DemeterBuilder #Module::Build #$class
   -> new(
 	 module_name        => 'Demeter',
 	 create_readme      => 0,
 	 ##create_makefile_pl => 'traditional',
 	 license            => 'gpl',
 	 dist_author        => 'Bruce Ravel <bravel AT bnl DOT gov>',
+	 needs_compiler     => 1,
 	 requires           => {
 				'autodie'                   => '0',
 				'Module::Build'	            => '0',
@@ -96,6 +81,7 @@ my $build = $class
 				'PPI'                 => '0',
 				'PPI::HTML'           => '0',
 				'Image::Size'         => '0',
+                                'ExtUtils::CBuilder'  => '0',
 			       },
 	 PL_files           => {
 				'lib/Xray/Crystal/share/space_groups.db.PL' => 'lib/Xray/Crystal/share/space_groups.db',
@@ -135,6 +121,12 @@ my $build = $class
 				#'PGPLOT'              => '0',
 			       },
 	 sign               => 0,
+	 add_to_cleanup     => [
+				'src/*.o',
+				'src/*.so',
+				'src/*.dylib',
+				'src/*.dll',
+			       ],
 	);
 
 ## include all required non-perl files in the installation
