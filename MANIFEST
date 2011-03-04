@@ -1471,7 +1471,6 @@ lib/Xray/Scattering/None.pm
 lib/Xray/Scattering/WaasKirf.pm
 LICENSE
 MANIFEST			This list of files
-META.yml
 notes/copyright.block
 notes/how_to_freeze
 notes/how_to_tie

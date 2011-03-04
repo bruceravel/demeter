@@ -93,6 +93,10 @@ sub Import {
     if ($XDI_exists) {
       $xdi = Xray::XDI->new;
       $xdi->file($file);
+      ## at this point, run a test against $xdi->applications and
+      ## $xdi->labels to determine is this is a multichannel detector
+      ## file from X23A2 or 10BM , if so, set is_xdi to false and let
+      ## this fall through to the plugin
     };
     my ($plugin, $stashfile, @suggest, $type);
     if ($xdi and $xdi->is_xdi) {
