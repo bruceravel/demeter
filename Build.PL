@@ -30,6 +30,7 @@ my $build = DemeterBuilder
 	 ##create_makefile_pl => 'traditional',
 	 license            => 'gpl',
 	 dist_author        => 'Bruce Ravel <bravel AT bnl DOT gov>',
+	 auto_configure_requires => 1,
 	 needs_compiler     => 1,
 	 requires           => {
 				'autodie'                   => '0',

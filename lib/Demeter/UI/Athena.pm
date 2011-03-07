@@ -1,6 +1,6 @@
 package Demeter::UI::Athena;
 
-use Demeter; # qw(:plotwith=gnuplot);
+use Demeter qw(::analysis);
 use Demeter::UI::Wx::MRU;
 use Demeter::UI::Wx::SpecialCharacters qw(:all);
 use Demeter::UI::Athena::IO;

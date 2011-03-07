@@ -20,6 +20,10 @@
   - [ ] Data object should note that datatype is xanes and not
         compute fbkg the bkg array does not exist
 
+*** TODO Demeter command backend needs polishing
+
+
+
 ** Athena
 
 *** Athena, needs testing [0/2]
@@ -85,13 +89,22 @@
    - [ ] datatype of merged group (xanes merge should be a xanes and so on) (this appears to be so, see [[file:lib/Demeter/Data/Process.pm][Demeter::Data::Process]]
 
 ** Artemis
-*** Artemis bugs and missing features [1/5]
+*** Artemis bugs and missing features [1/15]
    - [X] use text buffers as in Athena for TextEntryDialogs
    - [ ] import an FPath from a yaml or from a project file, pathlist start page link for doing so
    - [ ] what is the purpose of regenerate in fit deserialization?  in any case, need to fix group values *inside* yaml files
    - [ ] fit numbering is wrong,should not increment if previous fit has fitted=0
    - [ ] should I clear out unfitted fit folders from project upon import?
    - [ ] update pods for D::Feff::Histogram and D::Feff:DL_POLY
+   - [ ] feffit.inp import: needs testing; MDS that is not merely MKW
+   - [ ] rename Atoms/Feff
+   - [ ] Balance interstitial energies for MFC fits  :MFC:
+   - [ ] Import mutiple data sets from an Athena project file  :MDS:FitSequence:
+   - [ ] Reorganize lists, move individual items up and down, move blocks up and down,  Path list, Plot list
+   - [ ] Clone data sets such that the path list gets replicated efficiently (i.e. for MDS fits)
+   - [ ] VPaths to project file  :Project:
+   - [ ] Indicators to project file  :Project:
+   - [ ] Rename VPaths in VPath right click menu
 
 *** Histograms [4/11]
    - [X] sum histogram bins into a single chi(k) file
@@ -109,8 +122,26 @@
    - [ ] scatter plot of ncl distribution
    - [ ] factor out DLPOLY dependence into a role so that other MD packages can be added more easily
 
+*** Other object types [0/3]
+   - [ ] Structural Units
+	 Extension of VPath.  Store GDS, feff, and path objects in a zip file.
+	 On import, mark GDS parameters as merge if in conflict
+   - [ ] MSPaths
+	 Much like SSPath, make an arbitrary n-legged path
+   - [ ] Nearly collinear paths
+	 Define a three body configuration, generate its 4-legged path and a
+	 sequence of three-legged paths along with a mixing parameter.
+	 It will take a single set of path parameters that are pushed onto the
+	 generated Path objects, except for the amplitude, which will be
+	 computed from the mixing parameter.
+	 This is a single object for the user to interact with which expands
+	 into 2 or 3 3-legged paths and a single 4-legged path
 
-   
+
+** Windows
+*** TODO non-ascii symbols
+*** TODO Fix [[file:lib/Demeter/UI/Wx/CheckListBook.pm][CheckListBook]]
+
 * thing that have been fixed
 ** Demeter bugs and shortcomings fixed  [19/19]
   - [X] failed test 022 after upgrading office computer to 10.04

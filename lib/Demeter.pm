@@ -186,6 +186,17 @@ sub import {
   #Ifeffit->import;
 
   #print join(" ", $class, caller), $/;
+
+  my @load = ();
+  my @data = (qw(Data Plot/Indicator Plot/Style Journal
+		 Data/Prj Data/Pixel Data/MultiChannel));
+  my @fit  = (qw(Atoms Feff Feff/External ScatteringPath
+		 Path VPath SSPath ThreeBody FPath FSPath
+		 GDS Fit Fit/Feffit StructuralUnit));
+  my @anal = (qw(LCF LogRatio Diff));
+  my @xes  = ('XES');
+  my $colonanalysis = 0;
+
  PRAG: foreach my $p (@pragmata) {
     $plot -> plot_with($1),        next PRAG if ($p =~ m{:plotwith=(\w+)});
     if ($p =~ m{:ui=(\w+)}) {
@@ -200,19 +211,32 @@ sub import {
       #$mode -> template_analysis($which);
       next PRAG;
     };
+    if ($p eq ':data') {
+      @load = @data;
+      next PRAG;
+    };
+    if ($p eq ':fit') {
+      @load = (@data, @fit);
+      next PRAG;
+    };
+    if ($p eq ':analysis') {
+      @load = (@data, @anal);
+      $colonanalysis = 1;	# need to load peakfit separately while using fityk, see below
+      next PRAG;
+    };
+    if ($p eq ':all') {
+      @load = (@data, @fit, @anal);
+      next PRAG;
+    };
   };
+  @load = (@data, @fit, @anal, @xes) if not @load;
 
-  foreach my $m (qw(Data Plot Plot/Indicator Plot/Style Config
-		    Data/Prj Data/Pixel Data/MultiChannel
-		    GDS Path VPath SSPath ThreeBody FPath FSPath
-		    Fit Fit/Feffit Atoms Feff Feff/External
-		    ScatteringPath StructuralUnit
-		    LCF LogRatio Diff XES Journal)) {
+  foreach my $m (@load) {
     next if $INC{"Demeter/$m.pm"};
     ##print "Demeter/$m.pm\n";
     require "Demeter/$m.pm";
   };
-  if ($Fityk_exists) {
+  if ($colonanalysis and $Fityk_exists) {
     foreach my $m (qw(PeakFit PeakFit/LineShape)) {
       next if $INC{"Demeter/$m.pm"};
       ##print "Demeter/$m.pm\n";
@@ -245,14 +269,14 @@ sub register_plugins {
 };
 
 
+sub mo {
+  return $mode;
+};
 sub co {
   return shift->mo->config;
 };
 sub po {
   return shift->mo->plot;
-};
-sub mo {
-  return $mode;
 };
 sub dd {
   my ($self) = @_;

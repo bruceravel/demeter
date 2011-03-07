@@ -1556,7 +1556,6 @@ t/re4chan.000
 t/test.demeter_conf
 t/withHg.inp
 t/ybco.inp
-TODO
 tools/config-mode.el
 tools/ifeffit-mode.el
 videos
