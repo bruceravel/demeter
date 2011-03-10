@@ -19,8 +19,6 @@ use autodie qw(open close);
 
 use Moose::Role;
 
-use Ifeffit;
-
 use Readonly;
 Readonly my $ENDOFLINE => $/;
 
@@ -234,9 +232,9 @@ sub dispose {
   ## -------- send reprocessed command text to ifeffit
   if ($self->get_mode("ifeffit")) {
     if ($self->is_windows) {
-      ifeffit($_) foreach (split(/$ENDOFLINE/, $reprocessed)); # WTF!
+      Ifeffit::ifeffit($_) foreach (split(/$ENDOFLINE/, $reprocessed)); # WTF!
     } else {
-      ifeffit($reprocessed);
+      Ifeffit::ifeffit($reprocessed);
     };
     $self -> po -> copyright_text if ($plotting and ($self->mo->template_plot eq 'pgplot')); ## insert the copyright statement in a plot made with pgplot
 
@@ -297,7 +295,7 @@ sub cursor {
 
 sub screen_echo {
   my ($self, $value) = @_;
-  ifeffit("set \&screen_echo = $value");
+  Ifeffit::ifeffit("set \&screen_echo = $value");
   return $self;
 };
 

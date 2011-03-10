@@ -1,6 +1,6 @@
-## Time-stamp: <2010-05-06 16:39:19 bruce>
+## Time-stamp: <2011-03-10 17:24:36 bruce>
 ######################################################################
-##  This module is copyright (c) 1999-2010 Bruce Ravel
+##  This module is copyright (c) 1999-2011 Bruce Ravel
 ##  <bravel AT bnl DOT gov>
 ##  http://cars9.uchicago.edu/~ravel/software/
 ##  http://cars9.uchicago.edu/svn/libperlxray/
@@ -192,7 +192,6 @@ use version;
 
 use Carp;
 use Chemistry::Elements qw(get_Z get_symbol);
-##use Ifeffit::FindFile;
 use File::Spec;
 use Storable;
 use Math::Spline qw(spline);

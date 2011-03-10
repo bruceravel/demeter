@@ -22,7 +22,6 @@ use Wx qw( :everything );
 use Wx::Event qw(EVT_CLOSE EVT_CHAR EVT_BUTTON);
 use base qw(Wx::Frame);
 
-use Ifeffit;
 use List::MoreUtils qw(uniq);
 
 my @ifeffit_buffer = ();

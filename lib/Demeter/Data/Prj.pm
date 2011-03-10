@@ -26,7 +26,6 @@ use MooseX::Aliases;
 #use diagnostics;
 use Carp;
 use Compress::Zlib;
-#use Ifeffit;
 use List::Util qw(max);
 use List::MoreUtils qw(any none);
 use Safe;

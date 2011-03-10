@@ -33,7 +33,6 @@ Readonly my $ETOK    => 0.262468292;
 Readonly my $PI      => 4*atan2(1,1);
 Readonly my $EPSILON => 1e-4;
 
-#use Ifeffit;
 use Text::Template;
 use Text::Wrap;
 $Text::Wrap::columns = 65;

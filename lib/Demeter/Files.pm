@@ -23,7 +23,6 @@ use MooseX::Aliases;
 use Carp;
 use Compress::Zlib;
 use File::Basename;
-use Ifeffit;
 use Xray::Crystal;
 
 use Readonly;

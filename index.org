@@ -263,7 +263,7 @@
 
 
 
-* Tools [15/23]
+* Tools [16/23]
  - [X] main
  - [X] calibrate
  - [X] align
@@ -288,7 +288,7 @@
  - [X] difference
 
  - [ ] explain FT
- - [ ] titles
+ - [X] XDI
  - [X] journal
  - [X] plugins
  - [X] preference 

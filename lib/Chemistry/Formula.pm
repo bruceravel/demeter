@@ -1,5 +1,5 @@
 ######################################################################
-##  This module is copyright (c) 2001-2010 Bruce Ravel
+##  This module is copyright (c) 2001-2011 Bruce Ravel
 ##  <bravel AT bnl DOT gov>
 ##  http://cars9.uchicago.edu/~ravel/software
 ##  http://cars9.uchicago.edu/svn/libperlxray
@@ -32,7 +32,6 @@ use version;
 use Regexp::Common;
 use Readonly;
 use File::Spec;
-#use Ifeffit::FindFile;
 use vars qw(@ISA $VERSION $install_dir);
 $VERSION  = version->new("3.0.1");
 $install_dir = &identify_self;
