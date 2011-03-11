@@ -1,4 +1,6 @@
 package Ifeffit;
+## This is the Ifeffit.pm for use with swig 1.3.1
+
 
 ## BEGIN {
 ##   push @INC, $ENV{IFEFFIT_DIR} if $ENV{IFEFFIT_DIR};
