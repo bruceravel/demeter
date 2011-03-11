@@ -286,6 +286,7 @@ Readonly my $COPY	       => Wx::NewId();
 Readonly my $REMOVE	       => Wx::NewId();
 Readonly my $REMOVE_MARKED     => Wx::NewId();
 Readonly my $DATA_YAML	       => Wx::NewId();
+Readonly my $DATA_TEXT	       => Wx::NewId();
 Readonly my $CHANGE_DATATYPE   => Wx::NewId();
 
 Readonly my $VALUES_ALL	       => Wx::NewId();
@@ -449,11 +450,13 @@ sub menubar {
   $groupmenu->AppendSeparator;
   #$groupmenu->AppendSubMenu($freezemenu, 'Freeze groups', 'Freeze groups, that is disable their controls such that their parameter values cannot be changed.');
   $groupmenu->Append($DATA_YAML, "Show structure of current group",  "Show detailed contents of the current data group");
+  $groupmenu->Append($DATA_TEXT, "Show the text of the current group's data file",  "Show the text of the current data group's data file");
   $groupmenu->Append($TIE_REFERENCE, "Tie reference channel",  "Tie together two marked groups as data and reference channel.");
   $groupmenu->AppendSeparator;
   $groupmenu->Append($REMOVE, "Remove current group",   "Remove the current group from this project");
   $groupmenu->Append($REMOVE_MARKED, "Remove marked groups",   "Remove marked groups from this project");
   $groupmenu->Append(wxID_CLOSE, "&Close" );
+  $app->{main}->{groupmenu} = $groupmenu;
 
   my $freezemenu  = Wx::Menu->new;
   $freezemenu->Append($FREEZE_TOGGLE,     "Toggle this group", "Toggle the frozen state of this group");
@@ -703,6 +706,17 @@ sub OnMenuClick {
       my $dialog = Demeter::UI::Artemis::ShowText
 	-> new($app->{main}, $app->current_data->serialization, 'Structure of Data object')
 	  -> Show;
+      last SWITCH;
+    };
+    ($id == $DATA_TEXT) and do {
+      last SWITCH if $app->is_empty;
+      if (-e $app->current_data->file) {
+	my $dialog = Demeter::UI::Artemis::ShowText
+	  -> new($app->{main}, $demeter->slurp($app->current_data->file), 'Text of data file')
+	    -> Show;
+      } else {
+	$app->{main}->status("The current group's data file cannot be found.");
+      };
       last SWITCH;
     };
 
@@ -1132,6 +1146,7 @@ sub OnGroupSelect {
     $showing->mode($is, 1, 0);
     $app->{selected} = $app->{main}->{list}->GetSelection;
   };
+  $app->{main}->{groupmenu} -> Enable($DATA_TEXT,(-e $app->current_data->file));
   $app->{selecting_data_group}=0;
 };
 

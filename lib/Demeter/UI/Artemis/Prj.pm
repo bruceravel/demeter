@@ -88,6 +88,26 @@ sub new {
     EVT_BUTTON($this, $this->{none},   sub{set_selection(@_, 'none')});
     EVT_BUTTON($this, $this->{invert}, sub{set_selection(@_, 'invert')});
     $right->Add($selectionbox, 0, wxGROW|wxALL, 5);
+
+    my $skipbox    = Wx::BoxSizer->new( wxHORIZONTAL );
+    $this->{skip}  = Wx::Button->new($this, -1, "Select every", wxDefaultPosition, wxDefaultSize, 0,);
+    $this->{every} = Wx::TextCtrl->new($this, -1, "2", wxDefaultPosition, [30,-1]);
+    $this->{start} = Wx::TextCtrl->new($this, -1, "1", wxDefaultPosition, [30,-1]);
+
+    $skipbox     -> Add($this->{skip}, 0, wxLEFT|wxRIGHT, 2);
+    $skipbox     -> Add($this->{every}, 0, wxLEFT|wxRIGHT, 2);
+    $skipbox     -> Add(Wx::StaticText->new($this, -1, "th starting at #"), 0, wxALL, 2);
+    $skipbox     -> Add($this->{start}, 0, wxLEFT|wxRIGHT, 2);
+    EVT_BUTTON($this, $this->{skip}, sub{set_selection(@_, 'skip')});
+    $right->Add($skipbox, 0, wxGROW|wxALL, 5);
+
+    my $matchbox   = Wx::BoxSizer->new( wxHORIZONTAL );
+    $this->{match} = Wx::Button->new($this, -1, "Select matching", wxDefaultPosition, wxDefaultSize, 0,);
+    $this->{regex} = Wx::TextCtrl->new($this, -1, q{});
+    $matchbox     -> Add($this->{match}, 0, wxGROW|wxLEFT|wxRIGHT, 2);
+    $matchbox     -> Add($this->{regex}, 0, wxGROW|wxLEFT|wxRIGHT, 2);
+    EVT_BUTTON($this, $this->{match}, sub{set_selection(@_, 'match')});
+    $right->Add($matchbox, 0, wxGROW|wxALL, 5);
   };
 
   $this->{import} = Wx::Button->new($this, wxID_OK, "Import selected data", wxDefaultPosition, wxDefaultSize, 0,);
@@ -164,11 +184,27 @@ sub do_plot {
 sub set_selection {
   my ($this, $event, $how) = @_;
   foreach my $i (0 .. $this->{grouplist}->GetCount-1) {
-    my $val = ($how eq 'all')    ? 1
-            : ($how eq 'none')   ? 0
-            : ($how eq 'invert') ? (not $this->{grouplist}->IsSelected($i))
-	    :                      $this->{grouplist}->IsSelected($i);
-    $this->{grouplist}->SetSelection($i, $val);
+    if ($how eq 'skip') {
+      my $j = $i - ($this->{start}->GetValue - 1);
+      my $n = $this->{every}->GetValue;
+      my $select = not ($j % $n);
+      ($select = 0) if ($j < 0);
+      $this->{grouplist}->SetSelection($i, $select);
+    } elsif ($how eq 'match') {
+      my $regex = $this->{regex}->GetValue;
+      next if ($this->{regex}->GetValue =~ m{\A\s*\z});
+      my $re;
+      my $is_ok = eval '$re = qr/$regex/';
+      next if not $is_ok;
+      my $matches = $this->{grouplist}->GetString($i) =~ m{$re};
+      $this->{grouplist}->SetSelection($i, $matches);
+    } else {
+      my $val = ($how eq 'all')    ? 1
+	      : ($how eq 'none')   ? 0
+	      : ($how eq 'invert') ? (not $this->{grouplist}->IsSelected($i))
+	      :                      $this->{grouplist}->IsSelected($i);
+      $this->{grouplist}->SetSelection($i, $val);
+    };
   };
 };
 

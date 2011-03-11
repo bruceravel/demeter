@@ -39,6 +39,7 @@ sub new {
   $text -> SetDefaultStyle($aleft);
   $text -> SetFont(Wx::Font->new( Wx::SystemSettings::GetFont(wxSYS_DEFAULT_GUI_FONT)->GetPointSize, wxTELETYPE, wxNORMAL, wxNORMAL, 0, "" ) );
   $text -> AppendText($content);
+  $text -> ShowPosition(0);
   $vbox -> Add($text, 1, wxGROW|wxALL, 5);
   my $button = Wx::Button->new($this, wxID_OK, q{}, wxDefaultPosition, wxDefaultSize, 0,);
   $vbox -> Add($button, 0, wxGROW|wxALL, 5);

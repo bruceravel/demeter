@@ -30,12 +30,12 @@
    - [ ] reference of another edge
    - [ ] keV data
 
-*** Athena bugs [0/5]
+*** Athena bugs [1/5]
    - [ ] add noise to chi data
    - [ ] cannot specify title for stddev and variance plots
    - [ ] implement frozen groups
    - [ ] deglitching crashes with gnuplot					:HUH:
-   - [ ] in project selection dialog, controls for entering a periodic
+   - [X] in project selection dialog, controls for entering a periodic
          subset (i.e. every Nth record starting with the Jth record)
          this would be useful for QXAS or dispersive data files with
          many measurements.  regexp matching against names would also
@@ -59,7 +59,7 @@
    - [X] enable result page buttons correctly after fit or combi fit
    - [X] flags for required and fit_e0 don't get restored correctly when using combi page
 
-*** Groups [9/10]
+*** Groups [11/12]
    - [X] copy group
    - [X] about group
    - [X] rename
@@ -70,8 +70,8 @@
    - [X] close project
    - [X] change datatype
    - [ ] move up and down
-   - [ ] titles
-   - [ ] data as text
+   - [X] +titles+ using XDI instead
+   - [X] data as text
 
 *** Plot [5/6]
    - [ ] zoom, unzoom, cursor, but only for pgplot
@@ -122,25 +122,26 @@
    - [ ] scatter plot of ncl distribution
    - [ ] factor out DLPOLY dependence into a role so that other MD packages can be added more easily
 
-*** Other object types [0/3]
-   - [ ] Structural Units
-	 Extension of VPath.  Store GDS, feff, and path objects in a zip file.
-	 On import, mark GDS parameters as merge if in conflict
-   - [ ] MSPaths
-	 Much like SSPath, make an arbitrary n-legged path
-   - [ ] Nearly collinear paths
-	 Define a three body configuration, generate its 4-legged path and a
-	 sequence of three-legged paths along with a mixing parameter.
-	 It will take a single set of path parameters that are pushed onto the
-	 generated Path objects, except for the amplitude, which will be
-	 computed from the mixing parameter.
-	 This is a single object for the user to interact with which expands
-	 into 2 or 3 3-legged paths and a single 4-legged path
+** Other object types [0/3]
+  - [ ] Structural Units
+	Extension of VPath.  Store GDS, feff, and path objects in a zip file.
+	On import, mark GDS parameters as merge if in conflict
+  - [ ] MSPaths
+	Much like SSPath, make an arbitrary n-legged path
+  - [ ] Nearly collinear paths
+	Define a three body configuration, generate its 4-legged path and a
+	sequence of three-legged paths along with a mixing parameter.
+	It will take a single set of path parameters that are pushed onto the
+	generated Path objects, except for the amplitude, which will be
+	computed from the mixing parameter.
+	This is a single object for the user to interact with which expands
+	into 2 or 3 3-legged paths and a single 4-legged path
 
 
 ** Windows
 *** TODO non-ascii symbols
 *** TODO Fix [[file:lib/Demeter/UI/Wx/CheckListBook.pm][CheckListBook]]
+
 
 * thing that have been fixed
 ** Demeter bugs and shortcomings fixed  [19/19]
@@ -293,15 +294,15 @@
  - [X] plugins
  - [X] preference 
  
-* Weird stuff I'd prefer not to implement unless demanded [0/10]
- - [ ] xfit output
- - [ ] csv and text report
- - [ ] group selection replot
- - [ ] point finder
- - [ ] session defaults
- - [ ] set to standard (i.e. the one that is marked)
- - [ ] tie relative energy value to changes in E0
- - [ ] set e0 for all and marked
- - [ ] plot margin lines for deglitching, deglitch many points
- - [ ] preprocessing truncation and deglitching
+* Weird stuff I'd prefer not to implement unless demanded
+ 1. xfit output
+ 2. csv and text report
+ 3. group selection replot
+ 4. point finder
+ 5. session defaults
+ 6. set to standard (i.e. the one that is marked)
+ 7. tie relative energy value to changes in E0
+ 8. set e0 for all and marked
+ 9. plot margin lines for deglitching, deglitch many points
+ 10. preprocessing truncation and deglitching
 
