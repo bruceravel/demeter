@@ -8,7 +8,7 @@
 	https://bugs.launchpad.net/ubuntu/+source/gtk+2.0/+bug/558674 for more info
         Turns out this is a gtk problem -- I can make the same thing happen with Firefox!
 
-** Demeter bugs and shortcomings  [0/7]
+** Demeter bugs and shortcomings  [0/9]
   - [ ] in D::Data::IO::save_many, why doesn't updating in n specifying
        	"background" not work to bring data up to date?  (fft, i.e. doing
        	autobk, does work)
@@ -18,30 +18,29 @@
   - [ ] set E0 to peak of white line
   - [ ] clnorm
   - [ ] Data object should note that datatype is xanes and not
-        compute fbkg the bkg array does not exist
-
-*** TODO Demeter command backend needs polishing
-
+        compute fbkg since the bkg array does not exist
+  - [ ] cannot specify title for stddev and variance plots
+  - [ ] Demeter command backend needs polishing
 
 
 ** Athena
 
-*** Athena, needs testing [0/2]
+*** needs testing [0/2]
    - [ ] reference of another edge
    - [ ] keV data
 
-*** Athena bugs [1/5]
+*** needs doing [2/4]
    - [ ] add noise to chi data
-   - [ ] cannot specify title for stddev and variance plots
    - [ ] implement frozen groups
-   - [ ] deglitching crashes with gnuplot					:HUH:
+   - [X] deglitching crashes with gnuplot					:HUH:
    - [X] in project selection dialog, controls for entering a periodic
          subset (i.e. every Nth record starting with the Jth record)
          this would be useful for QXAS or dispersive data files with
          many measurements.  regexp matching against names would also
          be nice
+   - [ ] replot upon group selection, space is configurable (E, k, R, q, specialty, none)
 
-*** Help [1/4]
+*** Help menu [1/4]
    - [X]  about
    - [ ]  demos
    - [ ]  document
@@ -60,6 +59,7 @@
    - [X] flags for required and fit_e0 don't get restored correctly when using combi page
 
 *** Groups [11/12]
+   - [ ] move up and down
    - [X] copy group
    - [X] about group
    - [X] rename
@@ -69,7 +69,6 @@
    - [X] remove group, removed marked
    - [X] close project
    - [X] change datatype
-   - [ ] move up and down
    - [X] +titles+ using XDI instead
    - [X] data as text
 
@@ -81,12 +80,12 @@
    - [X] project name as title in a marked plot
    - [X] next plot to a file
 
-*** Merge [4/5]
+*** Merge [5/5]
    - [X] mue
    - [X] norm
    - [X] chi
    - [X] weight by importance/noise/step
-   - [ ] datatype of merged group (xanes merge should be a xanes and so on) (this appears to be so, see [[file:lib/Demeter/Data/Process.pm][Demeter::Data::Process]]
+   - [X] datatype of merged group (xanes merge should be a xanes and so on) (this appears to be so, see [[file:lib/Demeter/Data/Process.pm][Demeter::Data::Process]]
 
 ** Artemis
 *** Artemis bugs and missing features [1/15]
@@ -295,14 +294,19 @@
  - [X] preference 
  
 * Weird stuff I'd prefer not to implement unless demanded
- 1. xfit output
- 2. csv and text report
- 3. group selection replot
- 4. point finder
- 5. session defaults
- 6. set to standard (i.e. the one that is marked)
- 7. tie relative energy value to changes in E0
- 8. set e0 for all and marked
- 9. plot margin lines for deglitching, deglitch many points
- 10. preprocessing truncation and deglitching
+ 1. xfit output (only used by women who glow and men who plunder)
+ 2. csv and text report (excel *is* implemented)
+ 3. point finder (this was Shelly's request)
+ 4. session defaults (did anyone but me actually use these?)
+ 5. set to standard (i.e. the one that is marked) -- confusing and
+    little used
+ 6. tie relative energy value to changes in E0 (this was something
+    Jeremy requested originally)
+ 7. set e0 by algorithm for all and marked -- also confusing and
+    little used
+ 8. plot margin lines for deglitching, deglitch many points (this was
+    something that was most useful for a timeing problem at 10ID that
+    no longer exists)
+ 9. preprocessing truncation and deglitching (truncation might be
+    worth implementing)
 

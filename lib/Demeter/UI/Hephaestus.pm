@@ -18,7 +18,7 @@ package Demeter::UI::HephaestusApp;
 use Wx::Perl::Carp;
 use File::Spec;
 
-use Demeter;
+use Demeter qw(:hephaestus);
 use Demeter::UI::Hephaestus::Common qw(hversion);
 
 use Wx qw( :everything );
@@ -55,8 +55,9 @@ my %label_of = (absorption   => 'Absorption',
 	       );
 my $icon_dimension = 30;
 
+use vars qw($periodic_table);
 
-my @utilities = qw(absorption formulas ion data transitions find line standards f1f2 configure help);
+my @utilities = qw(absorption formulas ion data transitions find line standards f1f2 configure); # help);
 
 sub new {
   my $ref    = shift;
@@ -82,10 +83,11 @@ sub new {
   foreach my $utility (@utilities) {
     my $count = $tb->GetPageCount;
     #my $select = ($count) ? 0 : 1;
-
     my $page = Wx::Panel->new($tb, -1);
     my $box = Wx::BoxSizer->new( wxVERTICAL );
     $page -> SetSizer($box);
+
+    ##$periodic_table = Demeter::UI::Wx::PeriodicTable->new($page, sub{$self->multiplex($_[0])}, $statusbar);
 
     my $label = $label_of{$utility}.': '.$note_of{$utility};
     my $hh = Wx::BoxSizer->new( wxHORIZONTAL );
@@ -153,7 +155,7 @@ use Wx qw(wxBITMAP_TYPE_XPM wxID_EXIT wxID_ABOUT);
 use Wx::Event qw(EVT_MENU EVT_CLOSE);
 use base 'Wx::App';
 
-use Demeter;
+use Demeter qw(:hephaestus);
 use Demeter::UI::Hephaestus::Common qw(hversion hcopyright hdescription);
 
 use Readonly;
@@ -179,7 +181,7 @@ sub OnInit {
   $demeter -> plot_with($demeter->co->default(qw(plot plotwith)));
 
   foreach my $m (qw(Absorption Formulas Ion Data Transitions EdgeFinder LineFinder
-		    Standards F1F2 Config Help)) {
+		    Standards F1F2 Config)) { # Help
     next if $INC{"Demeter/UI/Hephaestus/$m.pm"};
     ##print "Demeter/UI/Hephaestus/$m.pm\n";
     require "Demeter/UI/Hephaestus/$m.pm";
@@ -216,6 +218,10 @@ sub OnInit {
   $frame->{line}->adjust_column_width;
 
   $frame -> Show( 1 );
+};
+
+sub multiplex {
+  print join(" ", @_), $/;
 };
 
 sub on_close {

@@ -22,9 +22,10 @@ use Wx qw( :everything );
 use base qw(Wx::Dialog);
 use Wx::Event qw(EVT_CLOSE EVT_LISTBOX EVT_BUTTON EVT_RADIOBOX);
 use Demeter::UI::Wx::SpecialCharacters qw(:all);
+use Wx::Perl::TextValidator;
 
 use List::MoreUtils qw{firstidx minmax};
-
+use Scalar::Util qw(looks_like_number);
 
 sub new {
   my ($class, $parent, $file, $style) = @_;
@@ -71,12 +72,12 @@ sub new {
   ($style eq 'single') ? $this->{plotas}->SetSelection(2) : $this->{plotas}->SetSelection(0);
   EVT_RADIOBOX($this, $this->{plotas}, sub{OnPlotAs(@_, $prj, $names)});
 
-  $this->{params} = Wx::RadioBox->new($this, -1, "Take parameters from", wxDefaultPosition, wxDefaultSize,
-				      ['Project file', 'Artemis defaults', 'Current values'],
-				      3, wxRA_SPECIFY_ROWS);
-  $right -> Add($this->{params}, 0, wxGROW|wxALL, 5);
-
-  if ($style ne 'single') {
+  if ($style eq 'single') {	# importing into Artemis
+    $this->{params} = Wx::RadioBox->new($this, -1, "Take parameters from", wxDefaultPosition, wxDefaultSize,
+					['Project file', 'Artemis defaults', 'Current values'],
+					3, wxRA_SPECIFY_ROWS);
+    $right -> Add($this->{params}, 0, wxGROW|wxALL, 5);
+  } else {			# importing into Athena
     my $selectionbox  = Wx::BoxSizer->new( wxHORIZONTAL );
     $this->{all}    = Wx::Button->new($this, -1, "Select all", wxDefaultPosition, wxDefaultSize, 0,);
     $this->{none}   = Wx::Button->new($this, -1, "Select none", wxDefaultPosition, wxDefaultSize, 0,);
@@ -89,34 +90,36 @@ sub new {
     EVT_BUTTON($this, $this->{invert}, sub{set_selection(@_, 'invert')});
     $right->Add($selectionbox, 0, wxGROW|wxALL, 5);
 
-    my $skipbox    = Wx::BoxSizer->new( wxHORIZONTAL );
-    $this->{skip}  = Wx::Button->new($this, -1, "Select every", wxDefaultPosition, wxDefaultSize, 0,);
-    $this->{every} = Wx::TextCtrl->new($this, -1, "2", wxDefaultPosition, [30,-1]);
-    $this->{start} = Wx::TextCtrl->new($this, -1, "1", wxDefaultPosition, [30,-1]);
-
-    $skipbox     -> Add($this->{skip}, 0, wxLEFT|wxRIGHT, 2);
-    $skipbox     -> Add($this->{every}, 0, wxLEFT|wxRIGHT, 2);
-    $skipbox     -> Add(Wx::StaticText->new($this, -1, "th starting at #"), 0, wxALL, 2);
-    $skipbox     -> Add($this->{start}, 0, wxLEFT|wxRIGHT, 2);
+    my $skipbox     = Wx::BoxSizer->new( wxHORIZONTAL );
+    $this->{skip}   = Wx::Button->new($this, -1, "Select every", wxDefaultPosition, wxDefaultSize, 0,);
+    $this->{every}  = Wx::TextCtrl->new($this, -1, "2", wxDefaultPosition, [30,-1]);
+    $this->{start}  = Wx::TextCtrl->new($this, -1, "1", wxDefaultPosition, [30,-1]);
+    $skipbox       -> Add($this->{skip}, 0, wxLEFT|wxRIGHT, 2);
+    $skipbox       -> Add($this->{every}, 0, wxLEFT|wxRIGHT, 2);
+    $skipbox       -> Add(Wx::StaticText->new($this, -1, "th starting at #"), 0, wxALL, 2);
+    $skipbox       -> Add($this->{start}, 0, wxLEFT|wxRIGHT, 2);
     EVT_BUTTON($this, $this->{skip}, sub{set_selection(@_, 'skip')});
+    $this->{every} -> SetValidator( Wx::Perl::TextValidator->new( qr([0-9]) ) );
+    $this->{start} -> SetValidator( Wx::Perl::TextValidator->new( qr([0-9]) ) );
     $right->Add($skipbox, 0, wxGROW|wxALL, 5);
 
-    my $matchbox   = Wx::BoxSizer->new( wxHORIZONTAL );
-    $this->{match} = Wx::Button->new($this, -1, "Select matching", wxDefaultPosition, wxDefaultSize, 0,);
-    $this->{regex} = Wx::TextCtrl->new($this, -1, q{});
-    $matchbox     -> Add($this->{match}, 0, wxGROW|wxLEFT|wxRIGHT, 2);
-    $matchbox     -> Add($this->{regex}, 0, wxGROW|wxLEFT|wxRIGHT, 2);
+    my $matchbox    = Wx::BoxSizer->new( wxHORIZONTAL );
+    $this->{match}  = Wx::Button->new($this, -1, "Select matching", wxDefaultPosition, wxDefaultSize, 0,);
+    $this->{regex}  = Wx::TextCtrl->new($this, -1, q{});
+    $this->{case}   = Wx::CheckBox->new($this, -1, q{Match case});
+    $matchbox      -> Add($this->{match}, 0, wxGROW|wxLEFT|wxRIGHT, 2);
+    $matchbox      -> Add($this->{regex}, 0, wxGROW|wxLEFT|wxRIGHT, 2);
+    $matchbox      -> Add($this->{case},  0, wxGROW|wxLEFT|wxRIGHT, 2);
     EVT_BUTTON($this, $this->{match}, sub{set_selection(@_, 'match')});
+    $this->{case}  -> SetValue(1);
     $right->Add($matchbox, 0, wxGROW|wxALL, 5);
   };
 
   $this->{import} = Wx::Button->new($this, wxID_OK, "Import selected data", wxDefaultPosition, wxDefaultSize, 0,);
   $right -> Add($this->{import}, 0, wxGROW|wxALL, 5);
-  #$this -> SetAffirmativeId($this->{import}->GetId);
 
   $this->{cancel} = Wx::Button->new($this, wxID_CANCEL, "Cancel", wxDefaultPosition, wxDefaultSize);
   $right -> Add($this->{cancel}, 0, wxGROW|wxALL, 5);
-  #$this -> SetAffirmativeId($this->{cancel}->GetId);
 
   $this -> SetSizerAndFit( $hbox );
 
@@ -184,21 +187,24 @@ sub do_plot {
 sub set_selection {
   my ($this, $event, $how) = @_;
   foreach my $i (0 .. $this->{grouplist}->GetCount-1) {
-    if ($how eq 'skip') {
-      my $j = $i - ($this->{start}->GetValue - 1);
+    if ($how eq 'skip') {	# select every Nth record starting at record J
+      my $start = $this->{start}->GetValue - 1;
+      ($start = 0) if ($start < 0);
+      my $j = $i - $start;
       my $n = $this->{every}->GetValue;
       my $select = not ($j % $n);
-      ($select = 0) if ($j < 0);
+      ($select = 0) if ($i < $start);
       $this->{grouplist}->SetSelection($i, $select);
-    } elsif ($how eq 'match') {
+    } elsif ($how eq 'match') {	# select records with names matching ...
       my $regex = $this->{regex}->GetValue;
-      next if ($this->{regex}->GetValue =~ m{\A\s*\z});
+      return if ($regex =~ m{\A\s*\z});
       my $re;
-      my $is_ok = eval '$re = qr/$regex/';
-      next if not $is_ok;
+      my $is_ok = ($this->{case}->GetValue) ? eval {local $SIG{__DIE__} = q{}; $re = qr/$regex/} :
+	eval {local $SIG{__DIE__} = q{}; $re = qr/$regex/i};
+      return if not $is_ok;
       my $matches = $this->{grouplist}->GetString($i) =~ m{$re};
       $this->{grouplist}->SetSelection($i, $matches);
-    } else {
+    } else {			# select all, select none, or invert selection
       my $val = ($how eq 'all')    ? 1
 	      : ($how eq 'none')   ? 0
 	      : ($how eq 'invert') ? (not $this->{grouplist}->IsSelected($i))

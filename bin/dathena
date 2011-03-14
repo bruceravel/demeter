@@ -1,8 +1,8 @@
 #!/usr/bin/perl
-#sub BEGIN {
-#  use Wx::Perl::SplashFast;
-#  my $splash = Wx::Perl::SplashFast->new('/home/bruce/codes/demeter/lib/Demeter/UI/Athena/share/logo.jpg',4000);
-#}
+sub BEGIN {
+  use Wx::Perl::SplashFast;
+  my $splash = Wx::Perl::SplashFast->new('/home/bruce/codes/demeter/lib/Demeter/UI/Athena/share/logo.jpg',4000);
+}
 use Wx;
 use Demeter::UI::Athena;
 Wx::InitAllImageHandlers();

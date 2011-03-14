@@ -1146,7 +1146,7 @@ sub OnGroupSelect {
     $showing->mode($is, 1, 0);
     $app->{selected} = $app->{main}->{list}->GetSelection;
   };
-  $app->{main}->{groupmenu} -> Enable($DATA_TEXT,(-e $app->current_data->file));
+  $app->{main}->{groupmenu} -> Enable($DATA_TEXT,($app->current_data and (-e $app->current_data->file)));
   $app->{selecting_data_group}=0;
 };
 

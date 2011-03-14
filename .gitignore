@@ -1,0 +1,15 @@
+lib/Xray/Absorption/*.db
+lib/Xray/Scattering/*.db
+lib/Xray/Crystal/share/space_groups.db
+src/*.so
+src/*.o
+t/feff
+_build
+blib
+Build
+MYMETA.yml
+lib/Demeter/doc/dpg/bin/build
+lib/Demeter/doc/dpg/etc/ttree.cfg
+lib/Demeter/doc/dpg/html/
+lib/Demeter/doc/dpg/templates/lib/config/map
+lib/Demeter/doc/dpg/templates/lib/config/version

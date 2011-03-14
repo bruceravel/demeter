@@ -190,6 +190,7 @@ sub import {
   my @load = ();
   my @data = (qw(Data Plot/Indicator Plot/Style Journal
 		 Data/Prj Data/Pixel Data/MultiChannel));
+  my @heph = (qw(Data));
   my @fit  = (qw(Atoms Feff Feff/External ScatteringPath
 		 Path VPath SSPath ThreeBody FPath FSPath
 		 GDS Fit Fit/Feffit StructuralUnit));
@@ -213,6 +214,10 @@ sub import {
     };
     if ($p eq ':data') {
       @load = @data;
+      next PRAG;
+    };
+    if ($p eq ':hephaestus') {
+      @load = @heph;
       next PRAG;
     };
     if ($p eq ':fit') {

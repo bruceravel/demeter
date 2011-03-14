@@ -44,7 +44,7 @@ use File::Spec;
 use Term::ReadLine;
 use Text::Template;
 
-use Demeter;
+use Demeter qw{:hephaestus};
 use Demeter::UI::Standards;
 my $demeter = Demeter->new;
 $demeter->set_mode(screen=>0, repscreen=>0);

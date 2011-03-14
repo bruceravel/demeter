@@ -160,12 +160,12 @@ sub new {
   my $tsz = Wx::GridBagSizer->new( 2, 2 );
 
   foreach my $el (@elements) {
-    my $this = Wx::GBPosition->new($el->[ROW], $el->[COL]);
-    my $button = Wx::Button->new( $self, -1, $el->[ELEMENT], [-1,-1], [35,-1], wxBU_EXACTFIT );
-    $self->{$el->[ELEMENT]} = $button;
-    my $cell = $tsz -> Add($button, $this);
-    EVT_BUTTON( $parent, $button, sub{&$command($el->[ELEMENT])} );
-    my $text = sprintf("%s: %s, element #%d", $el->[ELEMENT], get_name($el->[ELEMENT]), get_Z($el->[ELEMENT]));
+    my $element = $el->[ELEMENT];
+    my $button = Wx::Button->new( $self, -1, $element, [-1,-1], [35,-1], wxBU_EXACTFIT );
+    $self->{$element} = $button;
+    my $cell = $tsz -> Add($button, Wx::GBPosition->new($el->[ROW], $el->[COL]));
+    EVT_BUTTON( $parent, $button, sub{&$command($element)} );
+    my $text = sprintf("%s: %s, element #%d", $element, get_name($element), get_Z($element));
     EVT_ENTER_WINDOW($button, sub{$statusbar->PushStatusText($text) if $statusbar; $_[1]->Skip});
     EVT_LEAVE_WINDOW($button, sub{$statusbar->PopStatusText         if $statusbar; $_[1]->Skip});
     $button->SetFont( Wx::Font->new( $font_size, wxDEFAULT, wxNORMAL, wxBOLD, 0, "" ) );

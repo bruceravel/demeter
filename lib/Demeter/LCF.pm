@@ -420,6 +420,8 @@ sub plot {
   ## only make a plot if the LCF meets all the conditions of the current plot
   ($do_plot = 1) if (($self->po->space eq 'k') and ($self->space =~ m{\Achi}));
 
+  #($do_plot = 1) if (($self->po->space eq 'r') and ($self->space =~ m{\Achi}));
+
   ($do_plot = 1) if (($self->po->space eq 'e') and ($self->space =~ m{\Anor}) and
 		     $self->po->e_norm and (not $self->po->e_der));
 
@@ -427,6 +429,7 @@ sub plot {
 		     $self->po->e_norm and $self->po->e_der);
 
   if ($do_plot) {
+    ## if space is chi and plot ir R, do FFTs and plot those...
     $self->dispose($self->template("plot", "overlcf", {suffix=>'lcf', yoffset=>$self->data->y_offset}), 'plotting');
   };
 
