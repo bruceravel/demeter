@@ -34,6 +34,7 @@ use List::MoreUtils qw(any minmax zip);
 use Pod::POM;
 use String::Random qw(random_string);
 use Text::Template;
+use Ifeffit;
 use Xray::Absorption;
 Xray::Absorption->load('elam');
 
@@ -63,7 +64,6 @@ Readonly my $PI     => 4*atan2(1,1);
 use Moose;
 use MooseX::Aliases;
 use MooseX::StrictConstructor;
-use Ifeffit;
 with 'Demeter::Dispose';
 with 'Demeter::Tools';
 with 'Demeter::Files';
@@ -135,7 +135,8 @@ $plot -> screen_echo(0);
 use vars qw($Gnuplot_exists $Fityk_exists $STAR_Parser_exists $XDI_exists);
 $Gnuplot_exists     = ($plot->is_windows) ? 0 : (eval "require Graphics::GnuplotIF");
 $Fityk_exists       = eval "require fityk";
-$STAR_Parser_exists = eval "require Star::Parser";
+$STAR_Parser_exists = 1;
+use STAR::Parser;
 $XDI_exists         = eval "require Xray::XDI";
 
 use Demeter::StrTypes qw( Empty

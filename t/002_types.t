@@ -19,8 +19,6 @@
 
 use Test::Simple tests => 450;
 
-use Xray::Absorption;
-
 use Demeter;
 use Demeter::StrTypes qw( Empty
 			  IfeffitCommand
@@ -63,6 +61,8 @@ use Demeter::NumTypes qw( Natural
 			  NegNum
 			  NonNeg
 		       );
+use Xray::Absorption;
+
 my $demeter = Demeter->new;
 
 foreach my $f (@Demeter::StrTypes::command_list) {

@@ -90,6 +90,7 @@ sub get_echo () {
 # and get compiled-in parameters for max array size.
 &ifeffit(" \n");
 $MAX_ARRAY_PTS = get_scalar("&maxpts");
+&ifeffit("\$pgplot_device=/gw");
 
 #
 

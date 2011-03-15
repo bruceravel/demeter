@@ -34,7 +34,7 @@ sub new {
 
   my $yaml = File::Spec->catfile($Demeter::UI::Athena::demeter->dot_folder, 'athena.styles');
   if (not -e $yaml) {
-    copy(File::Spec->catfile(dirname($INC{'Demeter.pm'}), 'Demeter', 'share', 'ini', 'athena.styles'), $yaml);
+    copy(File::Spec->catfile(dirname($INC{'Demeter.pm'}), 'Demeter', 'share', 'ini', 'athena.styles.ini'), $yaml);
   };
   my @list = YAML::Tiny::LoadFile($yaml);
   foreach my $sty (@list) {

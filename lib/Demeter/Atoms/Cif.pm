@@ -19,7 +19,9 @@ use Moose::Role;
 use Demeter::StrTypes qw( Element );
 
 use Chemistry::Elements qw(get_Z);
-use STAR::Parser;
+#use STAR::Parser; ## this is not needed since (1) all references
+                   ## below use the STAR::Parser-> syntax and (2)
+                   ## it got require-d in Demeter.pm
 
 sub read_cif {
   my ($self) = @_;

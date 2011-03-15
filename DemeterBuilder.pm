@@ -30,15 +30,40 @@ sub ACTION_compile_ifeffit_wrapper {
     $platform = 'unix';
   };
 
-  my ($compile_flags, $pgplot_location, $iffdir);
+  my ($compile_flags, $linker_flags, $pgplot_location, $iffdir, $suffix);
   if ($platform eq 'windows') {
-    1;
+    $suffix = 'dll';
+    ($compile_flags, $linker_flags) = (q{}, q{});
+    ($pgplot_location, $iffdir) = (q{}, q{});
 
+    $linker_flags = [
+		     q{-L"C:\strawberry\perl\lib\CORE"},
+		     q{-L"C:\strawberry\c\lib"},
+		     q{-L"C:\strawberry\c\lib\gcc\i686-w64-mingw32\4.4.3"},
+
+		     q{-L"C:\source\ifeffit-1.2.11d\src\lib"},
+		     q{-lifeffit -lxafs},
+
+		     #q{-L"C:\MinGW\bin"},
+		     q{-L"C:\MinGW\lib\gcc\mingw32\4.5.2"},
+		     q{-L"C:\MinGW\lib"},
+		     q(-lgfortran -lmingw32 -lgcc_s -lmoldname -lmingwex -lmsvcrt -luser32 -lkernel32 -ladvapi32 -lshell32),
+
+		     q{-L"C:\GnuWin32\lib"},
+		     q{-lcurses -lreadline},
+
+		     q{-L"C:\MinGW\lib\pgplot"},
+		     qw{-lcpgplot -lpgplot -lGrWin -lgdi32 -lg2c},
+		    ];
+#    $compile_flags = $linker_flags;
   } elsif ($platform eq 'darwin') {
+    $suffix = 'dylib';
     1;
 
   } else {
-    ($compile_flags, $pgplot_location, $iffdir) = ("", "", `ifeffit -i`);
+    $suffix = 'so';
+    ($compile_flags, $linker_flags) = (q{}, q{});
+    ($pgplot_location, $iffdir) = ("", `ifeffit -i`);
     $iffdir =~ s/\s*$//;
     print STDOUT
       "Ifeffit's installations directory is $iffdir\n\t(found by capturing \`ifeffit -i\`)\n";
@@ -50,6 +75,7 @@ sub ACTION_compile_ifeffit_wrapper {
       ($compile_flags   .= (split(/=/, $_))[1]) if (/^LIB/);
       $compile_flags    .= " ";
       ($pgplot_location .= (split(" ", $_))[2]) if (/^LIB_PLT/);
+      $linker_flags = $compile_flags;
     };
     print STDOUT "Compilation flags (from $iffdir/config/Config.mak):\n\t$compile_flags\n";
   };
@@ -57,14 +83,25 @@ sub ACTION_compile_ifeffit_wrapper {
 
 
   my $cbuilder = $self->cbuilder;
-  my $obj_file = $cbuilder->compile(source => 'src/ifeffit_wrap.c');
-  my $lib_file = $cbuilder->link(objects => $obj_file, extra_linker_flags=>$compile_flags, lib_file=>'src/Ifeffit.so');
+  my $obj_file = $cbuilder->compile(source => 'src/ifeffit_wrap.c',
+				    extra_compiler_flags => $compile_flags);
+  my $lib_file = $cbuilder->link(objects => $obj_file,
+				 module_name => 'Ifeffit',
+				 extra_linker_flags=>$linker_flags,
+				 lib_file=>"src/Ifeffit.$suffix");
 
 };
 
 sub ACTION_post_build {
   my $self = shift;
-  $self->copy_if_modified( from    => File::Spec->catfile('src','Ifeffit.so'),
+  my $suffix = 'so';
+ SWITCH: {
+    ($suffix = 'dll'),   last SWITCH if (($^O eq 'MSWin32') or ($^O eq 'cygwin'));
+    ($suffix = 'dylib'), last SWITCH if (lc($^O) eq 'darwin');
+    $suffix = 'so';
+  };
+
+  $self->copy_if_modified( from    => File::Spec->catfile('src',"Ifeffit.$suffix"),
 			   to_dir  => File::Spec->catdir('blib','arch','auto','Ifeffit'),
 			   flatten => 1);
   $self->copy_if_modified( from    => File::Spec->catfile('src','Ifeffit.bs'),

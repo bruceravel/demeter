@@ -274,7 +274,7 @@ Returns a list of all available data resource.
 
 #my @cl_ok = ('linux', 'irix');
 #my $cl_match = join('|', @cl_ok);
-my $ifeffit_exists    = (eval "require Ifeffit");
+my $ifeffit_exists = ($INC{'Ifeffit.pm'} or (eval "require Ifeffit"));
 my $make_cl = $ifeffit_exists; #($^O =~ /$cl_match/);
 
 sub available {

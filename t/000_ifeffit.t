@@ -4,6 +4,8 @@ use warnings;
 
 use Test::More tests => 6;
 
+use File::Basename;
+use File::Spec;
 use Ifeffit qw(ifeffit
 	       get_scalar get_string get_array
 	       put_scalar put_string put_array
@@ -12,11 +14,10 @@ use Ifeffit qw(ifeffit
 my $i = ifeffit( "x = 1.234500");
 ok( ($i eq 0), "show");
 
-my ($file, $type, $kweight)  = ("a.xmu", "xmu", 1);
-my $read_data =<<"END";
-              set (kmin = 0., kweight = $kweight, rbkg = 1.2)
-              read_data(file = $file,  prefix = my, type = $type)
-END
+my ($file, $type, $kweight)  = (File::Spec->catfile(dirname($0),"a.xmu"), "xmu", 1);
+my $read_data = "set(kmin = 0., kweight = $kweight, rbkg = 1.2)
+read_data(file = $file,  prefix = my, type = $type)
+";
 
 $i = ifeffit($read_data);
 ok( ($i eq 0), "show arrays: ");
@@ -28,13 +29,13 @@ ok( ($i eq 0), "show arrays: ");
 #ok( (($str =~ m{my\.energy}) and ($str =~ m{my\.xmu})), "get_echo");
 
 my $x = get_scalar("x");
-ok( ($x == 1.2345), "get_scalar");
+ok( ($x == 1.2345), "get_scalar $x");
 
 my $phi = put_scalar("phi", 1.605);
 ok( (get_scalar("phi") == 1.605), 'put scalar');
 
 put_string("\$filename", "my.xmu");
-ok( get_string("filename") eq "my.xmu", "put/get_string: ");
+ok( get_string("filename") eq "my.xmu", "put/get_string: ".get_string("filename"));
 
 my @z;
 for ($i = 0; $i< 5; $i++ ) { $z[$i] = sin($i * 799 + 99.111);}

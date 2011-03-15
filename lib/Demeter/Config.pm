@@ -44,7 +44,6 @@ has 'name'      => (is => 'rw', isa => 'Str',  default => q{});
 has 'plottable' => (is => 'ro', isa => 'Bool', default => 0);
 has 'data'      => (is => 'rw', isa => 'Any',  default => q{});
 
-
 has 'config_file' => (is => 'ro', isa => 'Str',
 		      default => File::Spec->catfile(dirname($INC{"Demeter.pm"}),
 						     "Demeter",
@@ -80,8 +79,8 @@ has 'is_configured' => (is => 'rw', isa => 'Bool', default => 0);
 my $where = (($^O eq 'MSWin32') or ($^O eq 'cygwin')) ? "APPDATA" : "HOME";
 my $stem  = (($^O eq 'MSWin32') or ($^O eq 'cygwin')) ? "demeter" : ".horae";
 #my $where = ($Demeter::mode->is_windows) ? "USERPROFILE" : "HOME";
-has 'ini_file' => (is => 'ro', isa => 'Str',
-		   default => File::Spec->catfile($ENV{$where}, $stem, "demeter.ini"));
+our $fname = File::Spec->catfile($ENV{$where}, $stem, "demeter.ini");
+has 'ini_file' => (is => 'ro', isa => 'Str', default => $fname);
 
 
 my %ini;
@@ -417,6 +416,11 @@ sub read_ini {
   my %personal_ini;
   my $ini_ref = tied %ini;
   tie %personal_ini, 'Config::IniFiles', (-file=>$inifile, -import=>$ini_ref );
+  {				# this is to encourage a spurious warning
+    no strict qw{refs};		# related to Config::IniFiles to shut up
+    my $toss = *{"Config::IniFiles::$inifile"}; # under windows
+    undef $toss;
+  };
   foreach my $g (keys %personal_ini) {
     next if ($group and ($g ne $group));
     my $hash = $personal_ini{$g};
