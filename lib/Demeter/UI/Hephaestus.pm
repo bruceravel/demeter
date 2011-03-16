@@ -68,7 +68,7 @@ sub new {
 				 'Hephaestus',    # title
 				 wxDefaultPosition, [-1,$height],
 			       );
-  my $tb = Wx::Notebook->new( $self, -1, wxDefaultPosition, wxDefaultSize, wxBK_LEFT );
+  my $tb = Wx::Toolbook->new( $self, -1, wxDefaultPosition, wxDefaultSize, wxBK_LEFT );
   my $statusbar = $self->CreateStatusBar;
   $self->{book}      = $tb;
   $self->{statusbar} = $statusbar;

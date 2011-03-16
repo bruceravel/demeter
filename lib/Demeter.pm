@@ -500,6 +500,8 @@ sub plot_with {
     ($backend eq 'gnuplot') and do {
       $old_plot_object->remove;
       $old_plot_object->DEMOLISHALL if $old_plot_object;
+      #print $self->co->default('gnuplot', 'program'), $/;
+      #print $self->co->default('gnuplot', 'terminal'), $/;
       $self -> mo -> external_plot_object( Graphics::GnuplotIF->new(program => $self->co->default('gnuplot', 'program')) );
       require Demeter::Plot::Gnuplot;
       $self -> mo -> plot( Demeter::Plot::Gnuplot->new() );

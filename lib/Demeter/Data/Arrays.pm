@@ -105,7 +105,8 @@ sub get_array {
     my $group_regexp = $opt->list2re(@list);
     my $grp = $self->group;
     if ($suffix !~ m{\b$group_regexp\b}) {
-      croak("The group $grp does not have an array $grp.$suffix (" . join(" ", @list) . ")");
+      #carp("The group $grp does not have an array $grp.$suffix (" . join(" ", @list) . ")");
+      return ();
     };
     #$self->running if ($part eq 'run');
   };

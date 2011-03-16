@@ -45,14 +45,7 @@ my $result = GetOptions (
 ($use_pgplot = 1) if (not $use_gnuplot);
 $demeter->plot_with('gnuplot') if $use_gnuplot;
 
-## ---------------------------------------------------------------
-## prompt using IO::Prompt if available, otherwise read from STDIN
-my $IOPrompt_exists = (eval "require IO::Prompt");
-if ($IOPrompt_exists) {
-  import IO::Prompt;
-} else {
-  eval 'sub prompt { print $_[0]; my $x = <STDIN>; print $/; return $x; }';
-};
+use Term::ReadLine;
 
 ## ---------------------------------------------------------------
 ## color with Term::ANSIColor if available, otherwise normal text
@@ -68,6 +61,7 @@ if ($ANSIColor_exists) {
 my $INDIC = ($light_background) ? BLUE : YELLOW;
 
 
+my $term = new Term::ReadLine 'Demeter plotting tests';
 my $plot = $demeter->po;
 
 my $dobject = Demeter::Data -> new(group => 'data0');
@@ -82,11 +76,11 @@ $dobject -> set(file        => "data/fe.060",
 	       );
 
 &query;
-my $prompt = "Choose a test by number, d# for description, h for help, or q to quit > ";
-while ( my $prompt = prompt($prompt)) {
-  exit if ($prompt =~ m{\Aq});
-  next if ($prompt !~ m{\A([1-9a])});
-  plot($prompt,$dobject);
+my $prompt = "Choose a test by number, h for help, or q to quit > ";
+while ( defined ($_ = $term->readline($prompt)) ) {
+  exit if ($_ =~ m{\Aq});
+  next if ($_ !~ m{\A([1-9a])});
+  plot($_,$dobject);
   &query;
   $plot->start_plot; # reset the plot for the next go around
 };

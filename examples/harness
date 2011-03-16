@@ -11,7 +11,7 @@
 =cut
 
 =begin Copyright
- Copyright (c) 2006-2009 Bruce Ravel (bravel AT bnl DOT gov). All rights reserved.
+ Copyright (c) 2006-2011 Bruce Ravel (bravel AT bnl DOT gov). All rights reserved.
  .
  This example is free software; you can redistribute it and/or
  modify it under the same terms as Perl itself. See L<perlgpl>.
@@ -24,7 +24,7 @@
 
 use Cwd;
 use File::Spec;
-use Demeter;
+use Demeter qw(:data);
 my $demeter = Demeter->new;
 $demeter->set_mode(ifeffit=>1, screen=>0);
 #$demeter->set_mode(template_process=>"iff_columns");
@@ -43,14 +43,7 @@ my $result = GetOptions (
 ($use_pgplot = 1) if (not $use_gnuplot);
 $demeter->plot_with('gnuplot') if $use_gnuplot;
 
-## ---------------------------------------------------------------
-## prompt using IO::Prompt if available, otherwise read from STDIN
-my $IOPrompt_exists = (eval "require IO::Prompt");
-if ($IOPrompt_exists) {
-  import IO::Prompt;
-} else {
-  eval 'sub prompt { print $_[0]; my $x = <STDIN>; print $/; return $x; }';
-};
+use Term::ReadLine;
 
 ## ---------------------------------------------------------------
 ## color with Term::ANSIColor if available, otherwise normal text
@@ -66,6 +59,7 @@ if ($ANSIColor_exists) {
 my $INDIC = ($light_background) ? BLUE : YELLOW;
 
 
+my $term = new Term::ReadLine 'Demeter plotting tests';
 my $plot = $demeter->po;
 my @tests = (q{},
 	     'align',
@@ -84,21 +78,23 @@ my @tests = (q{},
 	    );
 $ENV{DEMETER_TEST_DIR} = cwd;
 my $clear = `clear`;
-my $toggle_message = "turn " . REVERSE . "on" . RESET ." screen dump of Ifeffit script\n";
+use vars qw($toggle_message);
+$toggle_message = "turn " . REVERSE . "on" . RESET ." screen dump of Ifeffit script\n";
 
 &query;
-while ( my $prompt = prompt("Choose a test by number, d# for description, h for help, or q to quit > ")) {
+my $prompt = "Choose a test by number, d# for description, h for help, or q to quit > ";
+while ( defined ($_ = $term->readline($prompt)) ) {
  DISPATCH: {
-    exit                          if ($prompt =~ m{\Aq});
-    &help,          last DISPATCH if ($prompt =~ m{\Ah});
-    &version,       last DISPATCH if ($prompt =~ m{\Av});
-    &toggle_screen, last DISPATCH if ($prompt =~ m{\At});
-    show($1),       last DISPATCH if ($prompt =~ m{\As(\d+)});
-    describe($1),   last DISPATCH if ($prompt =~ m{\Ad(\d+)});
-    dotest($1),     last DISPATCH if ($prompt =~ m{\Ar?(\d+)});
+    exit                          if ($_ =~ m{\Aq});
+    &help,          last DISPATCH if ($_ =~ m{\Ah});
+    &version,       last DISPATCH if ($_ =~ m{\Av});
+    &toggle_screen, last DISPATCH if ($_ =~ m{\At});
+    show($1),       last DISPATCH if ($_ =~ m{\As(\d+)});
+    describe($1),   last DISPATCH if ($_ =~ m{\Ad(\d+)});
+    dotest($1),     last DISPATCH if ($_ =~ m{\Ar?(\d+)});
   };
-  &query;
   $plot->start_plot; # reset the plot for the next go around
+  &query;
 };
 
 sub query {

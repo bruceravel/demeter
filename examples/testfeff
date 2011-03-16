@@ -13,7 +13,7 @@
 
 =for Copyright
  .
- Copyright (c) 2006-2009 Bruce Ravel (bravel AT bnl DOT gov).
+ Copyright (c) 2006-2011 Bruce Ravel (bravel AT bnl DOT gov).
  All rights reserved.
  .
  This file is free software; you can redistribute it and/or
@@ -63,7 +63,7 @@ if ($ANSIColor_exists) {
 };
 my $INDIC = ($light_background) ? BLUE : YELLOW;
 
-my $term = new Term::ReadLine 'Demeter test harness';
+my $term = new Term::ReadLine 'Demeter Feff tests';
 my $plot = $demeter->po;
 
 my $feff = Demeter::Feff->new(file=>'cu/orig.inp', workspace=>'feff');

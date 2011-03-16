@@ -105,8 +105,7 @@ my $build = DemeterBuilder
 	 recommends         => {
 				## these add functionality when using demeter at the command line
 				(($^O eq 'MSWin32') or ($^O eq 'cygwin')) ? () :
-				('IO::Prompt'	      => '0',
-				 'Term::Twiddle'      => '0',
+				('Term::Twiddle'      => '0',
 				 'Term::Sk'           => '0',
 				),
 				'Getopt::Long'       => '2.38',
@@ -115,7 +114,7 @@ my $build = DemeterBuilder
 				(($^O eq 'MSWin32') or ($^O eq 'cygwin')) ? () :
 				('Graphics::GnuplotIF' => '0'),
 
-				## GUI for Artemis and Hephaestus
+				## GUI for Atehna, Artemis, and Hephaestus
 				'Wx'                  => '0.86'
 
 				## these are used for direct access to the pgplot terminal

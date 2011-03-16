@@ -8,7 +8,7 @@
 
 =for Copyright
  .
- Copyright (c) 2006-2009 Bruce Ravel (bravel AT bnl DOT gov).
+ Copyright (c) 2006-2011 Bruce Ravel (bravel AT bnl DOT gov).
  All rights reserved.
  .
  This file is free software; you can redistribute it and/or
@@ -42,7 +42,14 @@ $d1 -> set(file => "$where/data/fe.300.xmu", name => '300K',);
 
 my $plot = $d0->po;
 $plot->set_mode(screen=>0, repscreen=>0);
-$plot->set(emin=>-30, emax=>70, e_norm=>1, e_markers=>1);
+$plot->set(e_mu      => 1,    e_bkg     => 0,
+	   e_norm    => 1,    e_der     => 0,
+	   e_pre     => 0,    e_post    => 0,
+	   e_i0      => 0,    e_signal  => 0,
+	   e_markers => 1,
+	   emin      => -30, emax      => 70,
+	   space     => 'E',
+	  );
 
 print "plotting unaligned data\n";
 foreach ($d0, $d1) {

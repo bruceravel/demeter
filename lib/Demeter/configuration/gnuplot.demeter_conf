@@ -50,11 +50,12 @@ section_description
 variable=program
 type=string
 default=gnuplot
+windows=C:\gnuplot\binary\gnuplot.exe
 description
   This is the name of the gnuplot executable.  On windows this is
-  something like C:\gnuplot\bin\pgnuplot.exe.  The installation
-  location might not be C:\gnuplot\bin, but the pgnuplot executable
-  is certainly the one that you want to use.
+  something like C:\gnuplot\binary\gnuplot.exe.  The installation
+  location might not be C:\gnuplot\binary, but a gnuplot executable
+  with pipes support is certainly the one that you want to use.
 
 variable=persist
 type=boolean
@@ -68,9 +69,12 @@ description
 variable=terminal
 type=string
 default=x11
+windows=wxt
 description
   This is the terminal type to use when plotting with gnuplot.  While
-  X11 is a safe default, the wxt terminal is highly recommended.
+  X11 is a safe default, the wxt terminal is highly recommended and
+  is the default on Windows.  Installing the latest version of Gnuplot
+  is recommended on any platform.
 
 variable=termparams
 type=string
