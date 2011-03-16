@@ -9,7 +9,7 @@
 
 =for Copyright
  .
- Copyright (c) 2006-2009 Bruce Ravel (bravel AT bnl DOT gov).
+ Copyright (c) 2006-2011 Bruce Ravel (bravel AT bnl DOT gov).
  All rights reserved.
  .
  This file is free software; you can redistribute it and/or
@@ -41,7 +41,14 @@ $d0 -> set(file=>"$where/data/fe.060", name=>'60K',
 
 my $plot = $d0->po;
 $plot->set_mode(screen=>0, repscreen=>0);
-$plot->set(emin=>-100, emax=>700, e_norm=>0, e_markers=>1,);
+$plot->set(e_mu      => 1,    e_bkg     => 0,
+	   e_norm    => 0,    e_der     => 0,
+	   e_pre     => 0,    e_post    => 0,
+	   e_i0      => 0,    e_signal  => 0,
+	   e_markers => 1,
+	   emin      => -100, emax      => 700,
+	   space     => 'E',
+	  );
 
 print "plotting original data\n";
 $d0 -> plot('E');

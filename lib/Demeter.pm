@@ -133,7 +133,7 @@ $plot = Demeter::Plot -> new() if not $mode->plot;
 $plot -> screen_echo(0);
 
 use vars qw($Gnuplot_exists $Fityk_exists $STAR_Parser_exists $XDI_exists);
-$Gnuplot_exists     = ($plot->is_windows) ? 0 : (eval "require Graphics::GnuplotIF");
+$Gnuplot_exists     = eval "require Graphics::GnuplotIF";
 $Fityk_exists       = eval "require fityk";
 $STAR_Parser_exists = 1;
 use STAR::Parser;
@@ -500,7 +500,7 @@ sub plot_with {
     ($backend eq 'gnuplot') and do {
       $old_plot_object->remove;
       $old_plot_object->DEMOLISHALL if $old_plot_object;
-      $self -> mo -> external_plot_object( Graphics::GnuplotIF->new );
+      $self -> mo -> external_plot_object( Graphics::GnuplotIF->new(program => $self->co->default('gnuplot', 'program')) );
       require Demeter::Plot::Gnuplot;
       $self -> mo -> plot( Demeter::Plot::Gnuplot->new() );
       last SWITCH;

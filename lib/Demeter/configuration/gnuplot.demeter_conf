@@ -47,6 +47,14 @@ section_description
   so on).  For details about gnuplot syntax, see
   http://gnuplot.info/docs/gnuplot.html
 
+variable=program
+type=string
+default=gnuplot
+description
+  This is the name of the gnuplot executable.  On windows this is
+  something like C:\gnuplot\bin\pgnuplot.exe.  The installation
+  location might not be C:\gnuplot\bin, but the pgnuplot executable
+  is certainly the one that you want to use.
 
 variable=persist
 type=boolean

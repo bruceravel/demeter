@@ -27,10 +27,37 @@
 
 =cut
 
-use IO::Prompt;
+use Demeter qw(:data);
+my $demeter = Demeter->new;
+$demeter->set_mode(ifeffit=>1, screen=>0, repscreen=>0, plotscreen=>0);
+$demeter->set_mode(template_process=>"iff_columns");
 
+use Getopt::Long;
+my ($light_background, $dark_background, $use_pgplot, $use_gnuplot, $is_dos_shell) = (0, 1, 1, 0, 0);
+my $result = GetOptions (
+			 "d" => \$dark_background,
+			 "l" => \$light_background,
+			 "p" => \$use_pgplot,
+			 "g" => \$use_gnuplot,
+			 "w" => \$is_dos_shell,
+			);
+($light_background = 1) if (not $dark_background);
+($use_pgplot = 1) if (not $use_gnuplot);
+$demeter->plot_with('gnuplot') if $use_gnuplot;
+
+## ---------------------------------------------------------------
+## prompt using IO::Prompt if available, otherwise read from STDIN
+my $IOPrompt_exists = (eval "require IO::Prompt");
+if ($IOPrompt_exists) {
+  import IO::Prompt;
+} else {
+  eval 'sub prompt { print $_[0]; my $x = <STDIN>; print $/; return $x; }';
+};
+
+## ---------------------------------------------------------------
+## color with Term::ANSIColor if available, otherwise normal text
 use subs qw(BOLD RED RESET YELLOW GREEN BLUE UNDERLINE);
-my $ANSIColor_exists = (eval "require Term::ANSIColor");
+my $ANSIColor_exists = ((not $is_dos_shell) and (eval "require Term::ANSIColor"));
 if ($ANSIColor_exists) {
   import Term::ANSIColor qw(:constants);
 } else {
@@ -38,24 +65,8 @@ if ($ANSIColor_exists) {
     eval "sub $s {q{}}";
   };
 };
-
-use Demeter;
-my $demeter = Demeter->new;
-$demeter->set_mode(ifeffit=>1, screen=>0, repscreen=>0, plotscreen=>0);
-$demeter->set_mode(template_process=>"iff_columns");
-
-use Getopt::Long;
-my ($light_background, $dark_background, $use_pgplot, $use_gnuplot) = (0, 1, 1, 0);
-my $result = GetOptions (
-			 "d" => \$dark_background,
-			 "l" => \$light_background,
-			 "p" => \$use_pgplot,
-			 "g" => \$use_gnuplot,
-			);
-($light_background = 1) if (not $dark_background);
 my $INDIC = ($light_background) ? BLUE : YELLOW;
-($use_pgplot = 1) if (not $use_gnuplot);
-$demeter->plot_with('gnuplot') if $use_gnuplot;
+
 
 my $plot = $demeter->po;
 
@@ -72,7 +83,7 @@ $dobject -> set(file        => "data/fe.060",
 
 &query;
 my $prompt = "Choose a test by number, d# for description, h for help, or q to quit > ";
-while ( my $prompt = prompt $prompt) {
+while ( my $prompt = prompt($prompt)) {
   exit if ($prompt =~ m{\Aq});
   next if ($prompt !~ m{\A([1-9a])});
   plot($prompt,$dobject);
@@ -84,18 +95,17 @@ sub query {
   print $/, $/,
     BOLD, RED, "This example shows several basic plots of these iron foil data\n\n", RESET,
 
-    BOLD, $INDIC, "1.", RESET, " mu + background + pre-edge + post-edge\n",
-    BOLD, $INDIC, "2.", RESET, " normalized mu + normalized background\n",
-    BOLD, $INDIC, "3.", RESET, " flattened mu + flattened background\n",
-    BOLD, $INDIC, "4.", RESET, " derivative of mu\n",
-    BOLD, $INDIC, "5.", RESET, " mu + I0 + signal\n",
-    BOLD, $INDIC, "6.", RESET, " three k-wights, stacked\n",
-    BOLD, $INDIC, "7.", RESET, " |chi(R)| + window\n",
-    BOLD, $INDIC, "8.", RESET, " envelope, real, imaginary in R\n",
-    BOLD, $INDIC, "9.", RESET, " kq plot: chi(k)*k^2 + Re[chi(q)] + window\n",
-    BOLD, $INDIC, "a.", RESET, " chi(E)\n\n",
-
-    BOLD, $INDIC, "q.", RESET, " quit\n\n";
+    BOLD, $INDIC, " 1.", RESET, " mu + background + pre-edge + post-edge\n",
+    BOLD, $INDIC, " 2.", RESET, " normalized mu + normalized background\n",
+    BOLD, $INDIC, " 3.", RESET, " flattened mu + flattened background\n",
+    BOLD, $INDIC, " 4.", RESET, " derivative of mu\n",
+    BOLD, $INDIC, " 5.", RESET, " mu + I0 + signal\n",
+    BOLD, $INDIC, " 6.", RESET, " three k-wights, stacked\n",
+    BOLD, $INDIC, " 7.", RESET, " |chi(R)| + window\n",
+    BOLD, $INDIC, " 8.", RESET, " envelope, real, imaginary in R\n",
+    BOLD, $INDIC, " 9.", RESET, " kq plot: chi(k)*k^2 + Re[chi(q)] + window\n",
+    BOLD, $INDIC, " a.", RESET, " chi(E)\n\n",
+    BOLD, $INDIC, " q.", RESET, " quit\n\n";
   return 0;
 }
 
@@ -120,9 +130,10 @@ sub spew {
   my $flag = 0;
   print RESET, $/;
   while (<F>) {
-    last if (m{sub\s+plot} and $flag);
-    $flag = 1 if (m{sub\s+plot$n});
-    print $_ if $flag and ($_ !~ m{\A\s*state});
+    my $line = $_;
+    last if (($line =~ m{sub\s+plot}) and $flag);
+    $flag = 1 if (($line =~ m{sub\s+plot(\d)}) and ($1 == $n));
+    print $line if ($flag and ($line !~ m{\A\s*state}));
   };
   close F;
 };

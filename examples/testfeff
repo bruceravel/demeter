@@ -28,9 +28,26 @@
 
 use Term::ReadLine;
 
+use Demeter;
+my $demeter = Demeter->new;
+$demeter->set_mode(ifeffit=>1, screen=>0);
+
+use Getopt::Long;
+my ($light_background, $dark_background, $use_pgplot, $use_gnuplot, $is_dos_shell) = (0, 1, 1, 0, 0);
+my $result = GetOptions (
+			 "d" => \$dark_background,
+			 "l" => \$light_background,
+			 "p" => \$use_pgplot,
+			 "g" => \$use_gnuplot,
+			 "w" => \$is_dos_shell,
+			);
+($light_background = 1) if (not $dark_background);
+($use_pgplot = 1) if (not $use_gnuplot);
+$demeter->plot_with('gnuplot') if $use_gnuplot;
+
 use subs qw(BOLD RED RESET YELLOW GREEN BLUE WHITE REVERSE DARK UNDERLINE);
 my $intrp_style = q{};
-my $ANSIColor_exists = (eval "require Term::ANSIColor");
+my $ANSIColor_exists = ((not $is_dos_shell) and (eval "require Term::ANSIColor"));
 if ($ANSIColor_exists) {
   import Term::ANSIColor qw(:constants);
   $intrp_style = {comment => DARK.WHITE,
@@ -44,24 +61,7 @@ if ($ANSIColor_exists) {
     eval "sub $s {q{}}";
   };
 };
-
-use Demeter;
-my $demeter = Demeter->new;
-$demeter->set_mode(ifeffit=>1, screen=>0);
-
-use Getopt::Long;
-my ($light_background, $dark_background, $use_pgplot, $use_gnuplot) = (0, 1, 1, 0);
-my $result = GetOptions (
-			 "d" => \$dark_background,
-			 "l" => \$light_background,
-			 "p" => \$use_pgplot,
-			 "g" => \$use_gnuplot,
-			);
-($light_background = 1) if (not $dark_background);
 my $INDIC = ($light_background) ? BLUE : YELLOW;
-($use_pgplot = 1) if (not $use_gnuplot);
-$demeter->plot_with('gnuplot') if $use_gnuplot;
-
 
 my $term = new Term::ReadLine 'Demeter test harness';
 my $plot = $demeter->po;
@@ -93,12 +93,11 @@ sub query {
 print $/, $/,
   BOLD, RED, "This example demonstrates several basic chores for a Feff calculation\n\n", RESET,
 
-  BOLD, $INDIC, "1.", RESET, " Write an interpretation\n",
-  BOLD, $INDIC, "2.", RESET, " Write a paths.dat file\n",
-  BOLD, $INDIC, "3.", RESET, " Plot all paths\n",
-  BOLD, $INDIC, "4.", RESET, " Serialize the Feff calculation\n",
-
-  BOLD, $INDIC, "q.", RESET, " quit\n\n";
+  BOLD, $INDIC, " 1.", RESET, " Write an interpretation\n",
+  BOLD, $INDIC, " 2.", RESET, " Write a paths.dat file\n",
+  BOLD, $INDIC, " 3.", RESET, " Plot all paths\n",
+  BOLD, $INDIC, " 4.", RESET, " Serialize the Feff calculation\n",
+  BOLD, $INDIC, " q.", RESET, " quit\n\n";
 }
 
 
