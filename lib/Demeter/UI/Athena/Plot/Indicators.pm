@@ -81,7 +81,7 @@ sub fetch {
   foreach my $j (1..$nind) {
     my $indic = $self->{'group'.$j} || Demeter::Plot::Indicator->new;
     $self->{'group'.$j} = $indic;
-    $indic->space ($self->{'space'.$j}->GetStringSelection);
+    $indic->space ($self->{'space'.$j}->GetStringSelection || $indic->po->space);
     $indic->x     ($self->{'value'.$j}->GetValue || 0);
     $indic->active($self->{'check'.$j}->GetValue);
     $indic->active(0) if ($self->{'value'.$j}->GetValue =~ m{\A\s*\z});

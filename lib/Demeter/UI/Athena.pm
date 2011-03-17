@@ -962,11 +962,11 @@ sub main_window {
 
   my $viewpanel = Wx::Panel    -> new($app->{main}, -1);
   my $viewbox   = Wx::BoxSizer -> new( wxVERTICAL );
-  $hbox        -> Add($viewpanel, 0, wxGROW|wxALL, 5);
+  $hbox        -> Add($viewpanel, 0, wxGROW|wxALL, 0);
 
 
   my $topbar = Wx::BoxSizer->new( wxHORIZONTAL );
-  $viewbox -> Add($topbar, 0, wxGROW|wxALL, 0);
+  $viewbox -> Add($topbar, 0, wxGROW|wxRIGHT, 5);
 
   $app->{main}->{token}   = Wx::StaticText->new($viewpanel, -1, q{ }, wxDefaultPosition, [10,-1]);
   $app->{main}->{project} = Wx::StaticText->new($viewpanel, -1, q{<untitled>},);
@@ -1059,7 +1059,7 @@ sub side_bar {
 
   my $toolpanel = Wx::Panel    -> new($app->{main}, -1);
   my $toolbox   = Wx::BoxSizer -> new( wxVERTICAL );
-  $hbox        -> Add($toolpanel, 1, wxGROW|wxALL, 5);
+  $hbox        -> Add($toolpanel, 1, wxGROW|wxALL, 0);
 
   $app->{main}->{list} = Wx::CheckListBox->new($toolpanel, -1, wxDefaultPosition, wxDefaultSize, [], wxLB_SINGLE|wxLB_NEEDED_SB);
   $app->{main}->{list}->{datalist} = []; # see modifications to CheckBookList at end of this file....
@@ -1484,7 +1484,7 @@ sub merge {
   $max = q{} if not $max;
   $max = sprintf(" %d", $max+1) if $max;
   $merged->name('merge'.$max);
-  $app->{main}->{list}->Append($merged->name, $merged);
+  $app->{main}->{list}->AddData($merged->name, $merged);
   $app->{main}->{list}->SetSelection($app->{main}->{list}->GetCount-1);
   $app->OnGroupSelect(q{}, $app->{main}->{list}->GetSelection);
   $app->{main}->{Main}->mode($merged, 1, 0);
