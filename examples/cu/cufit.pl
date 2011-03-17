@@ -85,25 +85,25 @@ $fit -> fit;
 ##############################################################################################
 ## ======== post-fit option #1
 ##          make a plot in R then save a log file and some column data files
-$data->po->set(plot_data => 1,
-	       plot_fit  => 1,
-	       plot_bkg  => 0,
-	       plot_res  => 0,
-	       plot_win  => 1,
-	       plot_run  => 1,
-	       kweight   => 2,
-	       r_pl      => 'r',
-	       'q_pl'    => 'r',
-	      );
-$data->plot('r');
-$data->pause;
+# $data->po->set(plot_data => 1,
+# 	       plot_fit  => 1,
+# 	       plot_bkg  => 0,
+# 	       plot_res  => 0,
+# 	       plot_win  => 1,
+# 	       plot_run  => 1,
+# 	       kweight   => 2,
+# 	       r_pl      => 'r',
+# 	       'q_pl'    => 'r',
+# 	      );
+# $data->plot('r');
+# $data->pause;
 
-print "save the results of the fit\n";
+# print "save the results of the fit\n";
 my ($header, $footer) = ("Fit to copper data", q{});
-$fit -> logfile("cufit.log", $header, $footer);
-$data->save("fit", "cufit.fit");
-$paths[0]->save("r", "path0.rsp");
-exit;
+# $fit -> logfile("cufit.log", $header, $footer);
+# $data->save("fit", "cufit.fit");
+# $paths[0]->save("r", "path0.rsp");
+# exit;
 ##############################################################################################
 
 
@@ -118,7 +118,7 @@ exit;
 
 
 ##############################################################################################
-## ======== post-fit option #2
+## ======== post-fit option #3
 ##          make an interesting stacked plot and serialize the fit
 print "set nice legend parameters for the plot\n";
 $data->po->legend(dy=>0.05, x=>0.8);

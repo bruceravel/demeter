@@ -17,8 +17,18 @@ package Demeter::UI::Screen::Interview;
 
 use Moose::Role;
 
-use Term::ANSIColor qw(:constants);
 use Term::ReadLine;
+## ---------------------------------------------------------------
+## color with Term::ANSIColor if available, otherwise normal text
+use subs qw(BOLD RED RESET YELLOW GREEN BLUE UNDERLINE);
+my $ANSIColor_exists = ((not Demeter->is_windows) and (eval "require Term::ANSIColor"));
+if ($ANSIColor_exists) {
+  import Term::ANSIColor qw(:constants);
+} else {
+  foreach my $s (qw(BOLD RED RESET YELLOW GREEN BLUE UNDERLINE)) {
+    eval "sub $s {q{}}";
+  };
+};
 
 my $clear   = `clear`;
 my $term    = new Term::ReadLine 'demeter';
@@ -95,7 +105,7 @@ sub I_query {
 
   print BOLD, GREEN, "c#", RESET, ") change plotting parameter:\n";
   print BOLD, GREEN, " 1", RESET, ") k-weight        = ", $plot->kweight,    "\t\t\t";
-  print BOLD, GREEN, " g", RESET ") show guess, def, set parameters\n";
+  print BOLD, GREEN, " g", RESET, ") show guess, def, set parameters\n";
 
   print BOLD, GREEN, " 2", RESET, ") plot space      = ", $space,            "\t\t\t";
   print BOLD, GREEN, " s", RESET, ") show fit statistics\n";
