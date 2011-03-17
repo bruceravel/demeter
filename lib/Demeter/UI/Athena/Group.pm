@@ -47,7 +47,7 @@ sub Rename {
     my $prefix = ($is_ref) ? q{} : "  Ref ";
     $data->reference->name($prefix.$newname);
     foreach my $i (0 .. $app->{main}->{list}->GetCount-1) {
-      next if ($app->{main}->{list}->GetClientData($i) ne $data->reference);
+      next if ($app->{main}->{list}->GetIndexedData($i) ne $data->reference);
       $app->{main}->{list}->SetString($i, $prefix.$newname);
     };
   };
@@ -124,11 +124,12 @@ sub Remove {
       $app -> Export('all', $app->{main}->{currentproject}) if $result == wxID_YES;
     };
     foreach my $i (0 .. $app->{main}->{list}->GetCount-1) {
-      my $this = $app->{main}->{list}->GetClientData($i);
+      my $this = $app->{main}->{list}->GetIndexedData($i);
       $this->dispose("erase \@group ".$this->group);
       $this->DEMOLISH;
     };
     $app->{main}->{list}->Clear;
+    $app->{main}->{list}->{datalist} = [];
     $app->Clear;
     $app->{main}->{views}->SetSelection(0);
   };
@@ -144,10 +145,10 @@ sub Remove {
 
 sub remove_one {
   my ($app, $i) = @_;
-  my $data = $app->{main}->{list}->GetClientData($i);
+  my $data = $app->{main}->{list}->GetIndexedData($i);
   $data->dispose("erase \@group ".$data->group);
   $data->DEMOLISH;
-  $app->{main}->{list}->Delete($i); # this calls the selection event on the new item
+  $app->{main}->{list}->DeleteData($i); # this calls the selection event on the new item
 };
 
 
@@ -172,7 +173,7 @@ sub change_datatype {
   } else {
     foreach my $j (0 .. $app->{main}->{list}->GetCount-1) {
       if ($app->{main}->{list}->IsChecked($j)) {
-	$app->{main}->{list}->GetClientData($j)->datatype($newtype);
+	$app->{main}->{list}->GetIndexedData($j)->datatype($newtype);
       };
     };
     $app->{main}->status("Changed all marked groups to data type $newtype");
@@ -185,7 +186,7 @@ sub tie_reference {
   my ($app) = @_;
   my @marked = ();
   foreach my $j (0 .. $app->{main}->{list}->GetCount-1) {
-    push(@marked, $app->{main}->{list}->GetClientData($j))
+    push(@marked, $app->{main}->{list}->GetIndexedData($j))
       if $app->{main}->{list}->IsChecked($j);
   };
   if ($#marked != 1) {
@@ -243,7 +244,7 @@ sub Report {
   my $r = 7;
   foreach my $i (0 .. $app->{main}->{list}->GetCount-1) {
     next if (($how eq 'marked') and (not $app->{main}->{list}->IsChecked($i)));
-    row($workbook, $worksheet, $r, $app->{main}->{list}->GetClientData($i));
+    row($workbook, $worksheet, $r, $app->{main}->{list}->GetIndexedData($i));
     ++$r;
   };
   $workbook->close;

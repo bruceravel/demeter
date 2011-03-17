@@ -238,7 +238,7 @@ sub current_index {
 sub current_data {
   my ($app) = @_;
   return $demeter->dd if not $app->{main}->{list}->GetCount;
-  return $app->{main}->{list}->GetClientData($app->{main}->{list}->GetSelection);
+  return $app->{main}->{list}->GetIndexedData($app->{main}->{list}->GetSelection);
 };
 
 Readonly my $REPORT_ALL        => Wx::NewId();
@@ -805,7 +805,7 @@ sub OnMenuClick {
     ($id == $STYLE_YAML) and do {
       my $text = q{};
       foreach my $i (0 .. $app->{main}->{Style}->{list}->GetCount-1) {
-	$text .= $app->{main}->{Style}->{list}->GetClientData($i)->serialization;
+	$text .= $app->{main}->{Style}->{list}->GetIndexedData($i)->serialization;
       };
       my $dialog = Demeter::UI::Artemis::ShowText
 	-> new($app->{main}, $text, 'YAML of Style objects')
@@ -1062,6 +1062,7 @@ sub side_bar {
   $hbox        -> Add($toolpanel, 1, wxGROW|wxALL, 5);
 
   $app->{main}->{list} = Wx::CheckListBox->new($toolpanel, -1, wxDefaultPosition, wxDefaultSize, [], wxLB_SINGLE|wxLB_NEEDED_SB);
+  $app->{main}->{list}->{datalist} = []; # see modifications to CheckBookList at end of this file....
   $toolbox            -> Add($app->{main}->{list}, 1, wxGROW|wxALL, 0);
   EVT_LISTBOX($toolpanel, $app->{main}->{list}, sub{$app->OnGroupSelect(@_)});
   EVT_LISTBOX_DCLICK($toolpanel, $app->{main}->{list}, sub{$app->Rename;});
@@ -1130,8 +1131,8 @@ sub OnGroupSelect {
   my ($app, $parent, $event) = @_;
   my $is_index = (ref($event) =~ m{Event}) ? $event->GetSelection : $app->{main}->{list}->GetSelection;
 
-  my $was = ($app->{selected} == -1) ? 0 : $app->{main}->{list}->GetClientData($app->{selected});
-  my $is  = $app->{main}->{list}->GetClientData($is_index);
+  my $was = ($app->{selected} == -1) ? 0 : $app->{main}->{list}->GetIndexedData($app->{selected});
+  my $is  = $app->{main}->{list}->GetIndexedData($is_index);
   #print("same!\n"), return if ($was eq $is);
   #  print join("|", $parent, $event, $is_index, $is, $was), $/;
   $app->{selecting_data_group}=1;
@@ -1178,7 +1179,7 @@ sub marked_groups {
   my ($app) = @_;
   my @list = ();
   foreach my $i (0 .. $app->{main}->{list}->GetCount-1) {
-    push(@list, $app->{main}->{list}->GetClientData($i)) if $app->{main}->{list}->IsChecked($i);
+    push(@list, $app->{main}->{list}->GetIndexedData($i)) if $app->{main}->{list}->IsChecked($i);
   };
   return @list;
 };
@@ -1294,7 +1295,7 @@ sub preplot {
     if (not $data) {
       foreach my $i (0 .. $app->{main}->{list}->GetCount-1) {
 	if ($app->{main}->{list}->IsChecked($i)) {
-	  $data = $app->{main}->{list}->GetClientData($i);
+	  $data = $app->{main}->{list}->GetIndexedData($i);
 	  last;
 	};
       };
@@ -1362,7 +1363,7 @@ sub plot_e00 {
   $app->current_data->po->start_plot;
   $app->current_data->po->title($app->{main}->{Other}->{title}->GetValue);
   foreach my $i (0 .. $app->{main}->{list}->GetCount-1) {
-    $app->{main}->{list}->GetClientData($i)->plot('e')
+    $app->{main}->{list}->GetIndexedData($i)->plot('e')
       if $app->{main}->{list}->IsChecked($i);
   };
   $app->current_data->po->set(e_zero=>0, e_markers=>1);
@@ -1378,7 +1379,7 @@ sub plot_i0_marked {
   $app->current_data->po->start_plot;
   $app->current_data->po->title($app->{main}->{Other}->{title}->GetValue);
   foreach my $i (0 .. $app->{main}->{list}->GetCount-1) {
-    $app->{main}->{list}->GetClientData($i)->plot('e')
+    $app->{main}->{list}->GetIndexedData($i)->plot('e')
       if $app->{main}->{list}->IsChecked($i);
   };
   $app->current_data->po->set(e_i0=>0, e_markers=>1);
@@ -1411,7 +1412,7 @@ sub mark {
   my $regex = q{};
   if (ref($how) =~ m{Demeter}) {
     foreach my $i (0 .. $clb->GetCount-1) {
-      if ($clb->GetClientData($i)->group eq $how->group) {
+      if ($clb->GetIndexedData($i)->group eq $how->group) {
 	$clb->Check($i,1);
 	last;
       };
@@ -1447,7 +1448,7 @@ sub mark {
     $app->update_text_buffer("regexp", $regex, 1);
 
     foreach my $i (0 .. $clb->GetCount-1) {
-      next if ($clb->GetClientData($i)->name !~ m{$re});
+      next if ($clb->GetIndexedData($i)->name !~ m{$re});
       my $val = ($how eq 'regexp') ? 1 : 0;
       $clb->Check($i, $val);
     };
@@ -1467,7 +1468,7 @@ sub merge {
   my @data = ();
   my $max = 0;
   foreach my $i (0 .. $app->{main}->{list}->GetCount-1) {
-    my $this = $app->{main}->{list}->GetClientData($i);
+    my $this = $app->{main}->{list}->GetIndexedData($i);
     if ($this->name =~ m{\A\s*merge\s*(\d*)\s*\z}) {
       $max = $1 if (looks_like_number($1) and ($1 > $max));
       $max ||= 1;
@@ -1583,5 +1584,51 @@ sub status {
   $self->{Status}->put_text($text, $type);
 };
 
+=for Explain
+
+According to the wxWidgets documentation, "Please note that
+wxCheckListBox uses client data in its implementation, and therefore
+this is not available to the application."  This appears either not to
+be true on Linux or, perhaps, that the client data is overwritable
+with no ill effect.  On Windows, however, attempting to set client
+data crashes the application.
+
+Sigh....
+
+These methods are an attempt to replicate the effect of client data by
+maintaining a list of pointers to data that is indexed to the
+CheckListBox.  The trick is to keep this in sync with the content of the
+CheckListBox at all times.
+
+Yes, this *is* much to complicated.
+
+=cut
+
+package Wx::CheckListBox;
+use Wx qw(:everything);
+sub AddData {
+  my ($clb, $name, $data) = @_;
+  $clb->Append($data->name);
+  push @{$clb->{datalist}}, $data;
+};
+
+sub GetIndexedData {
+  my ($clb, $n) = @_;
+  return $clb->{datalist}->[$n];
+};
+
+sub DeleteData {
+  my ($clb, $n) = @_;
+
+  ## remove from the Indexed array
+  my @list = @{$clb->{datalist}};
+  my $gone = splice(@list, $n, 1);
+  #print $gone, "  ", $gone->name, $/;
+  $clb->{datalist} = \@list;
+
+  $clb->Delete($n); # this calls the selection event on the new item
+};
+
+## also need a method for reordering items on the list...
 
 1;

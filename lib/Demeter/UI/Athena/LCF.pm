@@ -272,7 +272,7 @@ sub push_values {
     $this->{'standard'.$i}->fill($::app, 0, 0);
     $this->{'standard'.$i}->SetStringSelection($str);
     $this->{'standard'.$i}->SetSelection(0)
-      if not defined($this->{'standard'.$i}->GetClientData($this->{'standard'.$i}->GetSelection));
+      if not defined($this->{'standard'.$i}->GetIndexedData($this->{'standard'.$i}->GetSelection));
   };
   $this->{result}->Clear;
   $this->{$_} -> Enable(0) foreach (qw(make report fitmarked markedreport resultplot resultreport));
@@ -325,7 +325,7 @@ sub use_marked {
   $this->_remove_all;
   foreach my $i (0 .. $::app->{main}->{list}->GetCount-1) {
     next if not $::app->{main}->{list}->IsChecked($i);
-    $this->{'standard'.$count}->SetStringSelection($::app->{main}->{list}->GetClientData($i)->name);
+    $this->{'standard'.$count}->SetStringSelection($::app->{main}->{list}->GetIndexedData($i)->name);
     $this->{'fite0'.$count}->SetValue(0);
     $this->{'require'.$count}->SetValue(0);
     ++$count;
@@ -394,7 +394,7 @@ sub _prep {
   $this->{LCF}->data($::app->current_data);
   foreach my $i (0 .. $this->{nstan}-1) {
     my $n = $this->{'standard'.$i}->GetSelection;
-    my $stan = $this->{'standard'.$i}->GetClientData($n);
+    my $stan = $this->{'standard'.$i}->GetIndexedData($n);
     next if not defined($stan);
     #print join("|", $i, $n, $stan), $/;
 
@@ -430,7 +430,7 @@ sub _results {
   my ($this) = @_;
   foreach my $i (0 .. $this->{nstan}-1) {
     my $n = $this->{'standard'.$i}->GetSelection;
-    my $stan = $this->{'standard'.$i}->GetClientData($n);
+    my $stan = $this->{'standard'.$i}->GetIndexedData($n);
     next if not defined($stan);
     my $w = sprintf("%.3f", $this->{LCF}->weight($stan));
     my $e = sprintf("%.3f", $this->{LCF}->e0($stan));

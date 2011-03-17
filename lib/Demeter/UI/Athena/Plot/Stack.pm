@@ -54,7 +54,7 @@ sub apply {
   my $step   = $this->{increment}->GetValue;
   foreach my $i (0 .. $app->{main}->{list}->GetCount-1) {
     next if not $app->{main}->{list}->IsChecked($i);
-    $app->{main}->{list}->GetClientData($i)->y_offset($offset);
+    $app->{main}->{list}->GetIndexedData($i)->y_offset($offset);
     $offset += $step;
   };
   $app->{main}->{Main}->{y_offset}->SetValue($app->current_data->y_offset)

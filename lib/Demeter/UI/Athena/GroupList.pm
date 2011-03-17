@@ -24,7 +24,7 @@ sub fill {
   my $current = $app->current_data;
   my @groups = ();
   foreach my $i (0 .. $app->{main}->{list}->GetCount-1) {
-    my $data = $app->{main}->{list}->GetClientData($i);
+    my $data = $app->{main}->{list}->GetIndexedData($i);
     next if ($exclude_self and ($current->group eq $data->group));
     my $index = $self->Append($data->name);
     $self->SetClientData($self->GetCount-1, $data);

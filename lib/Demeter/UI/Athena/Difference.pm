@@ -100,7 +100,7 @@ sub push_values {
   $this->{data}  -> SetLabel($data->name);
   my $count = 0;
   foreach my $i (0 .. $::app->{main}->{list}->GetCount - 1) {
-    my $data = $::app->{main}->{list}->GetClientData($i);
+    my $data = $::app->{main}->{list}->GetIndexedData($i);
     ++$count if $data->datatype ne 'chi';
   };
   $this->Enable(1);
@@ -115,7 +115,7 @@ sub push_values {
   my $was = $this->{standard}->GetStringSelection;
   $this->{standard}->fill($::app, 1, 1);
   ($was eq 'None') ? $this->{standard}->SetSelection(0) : $this->{standard}->SetStringSelection($was);
-  $this->{standard}->SetSelection(0) if not defined($this->{standard}->GetClientData($this->{standard}->GetSelection));
+  $this->{standard}->SetSelection(0) if not defined($this->{standard}->GetIndexedData($this->{standard}->GetSelection));
   $data->po->start_plot;
   $data->po->set(emin=>$this->{Diff}->xmin-10, emax=>$this->{Diff}->xmax+20);
   $data->po->set(e_mu=>1, e_markers=>0, e_bkg=>0, e_pre=>0, e_post=>0, e_norm=>1, e_der=>0, e_sec=>0, e_i0=>0, e_signal=>0, e_smooth=>0);
@@ -139,7 +139,7 @@ sub plot {
     $this->{Diff}->$att($this->{$att}->GetValue);
   };
   $this->{Diff}->data($::app->current_data);
-  $this->{Diff}->standard($this->{standard}->GetClientData($this->{standard}->GetSelection));
+  $this->{Diff}->standard($this->{standard}->GetIndexedData($this->{standard}->GetSelection));
   $this->{Diff}->diff;
   $this->{area}->SetValue(sprintf("%.5f",$this->{Diff}->area));
   $this->{Diff}->po->set(emin=>$this->{Diff}->xmin-10, emax=>$this->{Diff}->xmax+20, space=>'E');

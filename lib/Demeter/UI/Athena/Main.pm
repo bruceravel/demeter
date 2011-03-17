@@ -580,7 +580,7 @@ sub push_values {
   $this->{bkg_stan}->fill($::app, 1, 0);
   if ($data->bkg_stan eq 'None') {
     $this->{bkg_stan}->SetStringSelection('None');
-  } elsif (not defined($this->{bkg_stan}->GetClientData($this->{bkg_stan}->GetSelection))) {
+  } elsif (not defined($this->{bkg_stan}->GetIndexedData($this->{bkg_stan}->GetSelection))) {
     $this->{bkg_stan}->SetStringSelection('None');
   } else {
     my $stan = $data->mo->fetch("Data", $data->bkg_stan);
@@ -682,7 +682,7 @@ sub OnParameter {
     $value = 0     if (($data->what_isa($which) =~ m{NonNeg}) and ($value<0));
   };
   if ($which eq 'bkg_stan') {
-    my $stan = $app->{main}->{Main}->{bkg_stan}->GetClientData($value);
+    my $stan = $app->{main}->{Main}->{bkg_stan}->GetIndexedData($value);
     $data->bkg_stan($stan->group);
   } elsif ($which !~ m{nnorm}) {
     $data->$which($value)
@@ -962,7 +962,7 @@ sub constrain {
 	     :                            @$which;
   foreach my $i (0 .. $app->{main}->{list}->GetCount-1) {
     next if (($how eq 'marked') and (not $app->{main}->{list}->IsChecked($i)));
-    my $this = $app->{main}->{list}->GetClientData($i);
+    my $this = $app->{main}->{list}->GetIndexedData($i);
     next if ($data eq $this);
     next if $this->frozen;
     foreach my $p (@params) {
@@ -995,7 +995,7 @@ sub importance_to_1 {
   my ($main, $app, $how) = @_;
   foreach my $i (0 .. $app->{main}->{list}->GetCount-1) {
     next if (($how eq 'marked') and (not $app->{main}->{list}->IsChecked($i)));
-    $app->{main}->{list}->GetClientData($i)->importance(1);
+    $app->{main}->{list}->GetIndexedData($i)->importance(1);
   };
   $app->modified(1);
   $app->OnGroupSelect(0,0);

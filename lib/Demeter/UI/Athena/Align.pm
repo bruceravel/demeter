@@ -131,7 +131,7 @@ sub push_values {
   $this->{shift} -> SetValue($data->bkg_eshift);
   my $count = 0;
   foreach my $i (0 .. $::app->{main}->{list}->GetCount - 1) {
-    my $data = $::app->{main}->{list}->GetClientData($i);
+    my $data = $::app->{main}->{list}->GetIndexedData($i);
     ++$count if $data->datatype ne 'chi';
   };
   $this->Enable(1);
@@ -193,8 +193,8 @@ sub autoalign {
   if ($how eq 'marked') {
     @all = ();
     foreach my $i (0 .. $::app->{main}->{list}->GetCount - 1) {
-      next if ($::app->{main}->{list}->GetClientData($i) eq $stan);
-      push(@all, $::app->{main}->{list}->GetClientData($i))
+      next if ($::app->{main}->{list}->GetIndexedData($i) eq $stan);
+      push(@all, $::app->{main}->{list}->GetIndexedData($i))
 	if $::app->{main}->{list}->IsChecked($i);
     };
   };

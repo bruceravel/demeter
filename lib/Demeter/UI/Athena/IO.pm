@@ -31,7 +31,7 @@ sub Export {
   my @data;
   foreach my $i (0 .. $app->{main}->{list}->GetCount-1) {
     next if (($how eq 'marked') and not $app->{main}->{list}->IsChecked($i));
-    push @data, $app->{main}->{list}->GetClientData($i);
+    push @data, $app->{main}->{list}->GetIndexedData($i);
   };
   if (not @data) {
     $app->{main}->status("Saving marked groups to a project cancelled -- no marked groups.");
@@ -264,7 +264,7 @@ sub _data {
     $colsel->{Preprocess}->{standard}->fill($app, 0, 0);
     my $found = -1;
     foreach my $i (0 .. $app->{main}->{list}->GetCount-1) { # make sure the persistance value is still in the list
-      if ($app->{main}->{list}->GetClientData($i)->name eq $yaml->{preproc_standard}) {
+      if ($app->{main}->{list}->GetIndexedData($i)->name eq $yaml->{preproc_standard}) {
 	$found = $i;
 	last;
       };
@@ -392,7 +392,7 @@ sub _group {
 
   $data -> po -> e_markers(1);
   $data -> _update('all');
-  $app->{main}->{list}->Append($data->name, $data);
+  $app->{main}->{list}->AddData($data->name, $data);
 
   if (not $repeated) {
     $app->{main}->{list}->SetSelection($app->{main}->{list}->GetCount - 1);
@@ -447,7 +447,7 @@ sub _group {
       $ref = $rebin;
     };
     $ref -> _update('fft');
-    $app->{main}->{list}->Append($ref->name, $ref);
+    $app->{main}->{list}->AddData($ref->name, $ref);
     $app->{main}->{Main}->{bkg_eshift}-> SetBackgroundColour( Wx::Colour->new($ref->co->default("athena", "tied")) );
     $ref->reference($data);
     my $same_edge = (defined $colsel) ? $colsel->{Reference}->{same}->GetValue : $yaml->{ref_same};
@@ -489,7 +489,7 @@ sub constrain {
   my $stan = $colsel->{Preprocess}->{standard}->GetClientData($colsel->{Preprocess}->{standard}->GetSelection);
 
   foreach my $i (0 .. $app->{main}->{list}->GetCount-1) {
-    my $this = $app->{main}->{list}->GetClientData($i);
+    my $this = $app->{main}->{list}->GetIndexedData($i);
     foreach my $p (@all_group, @all_bkg, @all_fft, @all_bft, @all_plot) {
       #print join("|", '>>>', $data->name, $this->name, $p, $this->$p), $/;
       $data->$p($stan->$p);
@@ -527,7 +527,8 @@ sub _prj {
     };
     $app->{main}->status("Importing ". $data->prjrecord, "nobuffer");
     $app->{main}->Update;
-    $app->{main}->{list}->Append($data->name, $data);
+    #$app->{main}->{list}->Append($data->name, $data);
+    $app->{main}->{list}->AddData($data->name, $data);
     if ($count == 1) {
       $app->{main}->{list}->SetSelection($app->{main}->{list}->GetCount - 1);
       #$app->{selected} = $app->{main}->{list}->GetSelection;
@@ -562,7 +563,7 @@ sub save_column {
   my ($app, $how) = @_;
   return if $app->is_empty;
 
-  my $data = $app->{main}->{list}->GetClientData($app->{main}->{list}->GetSelection);
+  my $data = $app->{main}->{list}->GetIndexedData($app->{main}->{list}->GetSelection);
   (my $base = $data->name) =~ s{[^-a-zA-Z0-9.+]+}{_}g;
 
   my ($desc, $suff, $out) = ($how eq 'mue')  ? ("$MU(E)",  '.xmu',  'xmu')
@@ -592,7 +593,7 @@ sub save_marked {
 
   my @data = ();
   foreach my $i (0 .. $app->{main}->{list}->GetCount-1) {
-    push(@data, $app->{main}->{list}->GetClientData($i)) if $app->{main}->{list}->IsChecked($i);
+    push(@data, $app->{main}->{list}->GetIndexedData($i)) if $app->{main}->{list}->IsChecked($i);
   };
   if (not @data) {
     $app->{main}->status("Saving marked cancelled. There are no marked groups.");
@@ -638,7 +639,7 @@ sub save_each {
   return if not $app->{main}->{list}->GetCount;
   my @data = ();
   foreach my $i (0 .. $app->{main}->{list}->GetCount-1) {
-    push(@data, $app->{main}->{list}->GetClientData($i)) if $app->{main}->{list}->IsChecked($i);
+    push(@data, $app->{main}->{list}->GetIndexedData($i)) if $app->{main}->{list}->IsChecked($i);
   };
   if (not @data) {
     $app->{main}->status("Saving each cancelled. There are no marked groups.");
