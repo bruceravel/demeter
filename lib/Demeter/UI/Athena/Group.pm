@@ -67,9 +67,9 @@ sub Copy {
   $clone->name($newname);
   my $index = $app->current_index;
   if ($index == $app->{main}->{list}->GetCount-1) {
-    $app->{main}->{list}->Append($clone->name, $clone);
+    $app->{main}->{list}->AddData($clone->name, $clone);
   } else {
-    $app->{main}->{list}->Insert($clone->name, $index+1, $clone);
+    $app->{main}->{list}->InsertData($clone->name, $index+1, $clone);
   };
   $app->modified(1);
   $app->{main}->status("Copied ".$data->name);

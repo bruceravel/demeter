@@ -1612,6 +1612,14 @@ sub AddData {
   push @{$clb->{datalist}}, $data;
 };
 
+sub InsertData {
+  my ($clb, $name, $n, $data) = @_;
+  $clb->Insert($name, $n);
+  my @list = @{$clb->{datalist}};
+  splice(@list, $n, 0, $data);
+  $clb->{datalist} = \@list;
+};
+
 sub GetIndexedData {
   my ($clb, $n) = @_;
   return $clb->{datalist}->[$n];

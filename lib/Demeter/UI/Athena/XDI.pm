@@ -71,7 +71,7 @@ sub new {
   my $extensionboxsizer = Wx::StaticBoxSizer->new( $extensionbox, wxVERTICAL );
   $this->{sizer}       -> Add($extensionboxsizer, 1, wxALL|wxGROW, 0);
   $this->{extensions}   = Wx::TextCtrl->new($this, -1, q{}, wxDefaultPosition, wxDefaultSize,
-					     wxTE_MULTILINE|wxHSCROLL|wxTE_AUTO_URL|wxTE_READONLY);
+					     wxTE_MULTILINE|wxHSCROLL|wxTE_AUTO_URL|wxTE_RICH2);
   $this->{extensions}  -> SetFont( Wx::Font->new( $size, wxTELETYPE, wxNORMAL, wxNORMAL, 0, "" ) );
   $extensionboxsizer->Add($this->{extensions}, 1, wxALL|wxGROW, 5);
 
@@ -80,7 +80,7 @@ sub new {
   my $commentsboxsizer = Wx::StaticBoxSizer->new( $commentsbox, wxVERTICAL );
   $this->{sizer}      -> Add($commentsboxsizer, 1, wxALL|wxGROW, 0);
   $this->{comments}    = Wx::TextCtrl->new($this, -1, q{}, wxDefaultPosition, wxDefaultSize,
-					    wxTE_MULTILINE|wxHSCROLL|wxTE_AUTO_URL);
+					    wxTE_MULTILINE|wxHSCROLL|wxTE_AUTO_URL|wxTE_RICH2);
   $this->{comments}   -> SetFont( Wx::Font->new( $size, wxTELETYPE, wxNORMAL, wxNORMAL, 0, "" ) );
   $commentsboxsizer->Add($this->{comments}, 1, wxALL|wxGROW, 5);
 

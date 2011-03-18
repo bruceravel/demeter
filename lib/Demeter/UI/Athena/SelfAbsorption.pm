@@ -82,7 +82,7 @@ sub new {
   my $textboxsizer   = Wx::StaticBoxSizer->new( $textbox, wxVERTICAL );
   $box              -> Add($textboxsizer, 1, wxBOTTOM|wxGROW, 5);
   $this->{feedback}  = Wx::TextCtrl->new($this, -1, q{}, wxDefaultPosition, wxDefaultSize,
-					 wxTE_MULTILINE|wxTE_READONLY);
+					 wxTE_MULTILINE|wxTE_READONLY|wxTE_RICH2);
   $this->{feedback} -> SetFont( Wx::Font->new( 9, wxTELETYPE, wxNORMAL, wxNORMAL, 0, "" ) );
   $textboxsizer     -> Add($this->{feedback}, 1, wxGROW|wxALL, 5);
 
@@ -180,9 +180,9 @@ sub make {
 
   my $index = $app->current_index;
   if ($index == $app->{main}->{list}->GetCount-1) {
-    $app->{main}->{list}->Append($this->{sadata}->name, $this->{sadata});
+    $app->{main}->{list}->AddData($this->{sadata}->name, $this->{sadata});
   } else {
-    $app->{main}->{list}->Insert($this->{sadata}->name, $index+1, $this->{sadata});
+    $app->{main}->{list}->InsertData($this->{sadata}->name, $index+1, $this->{sadata});
   };
   $app->{main}->status("Made self-absorption corrected group from " . $app->current_data->name);
   $app->modified(1);

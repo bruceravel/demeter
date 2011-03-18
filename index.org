@@ -39,6 +39,7 @@
          many measurements.  regexp matching against names would also
          be nice
    - [ ] replot upon group selection, space is configurable (E, k, R, q, specialty, none)
+   - [ ] buttons on difference tool are not working
 
 *** Help menu [1/4]
    - [X]  about
@@ -57,6 +58,7 @@
    - [X] enable main page buttons correctly after combi fit
    - [X] enable result page buttons correctly after fit or combi fit
    - [X] flags for required and fit_e0 don't get restored correctly when using combi page
+   - [ ] make group from fit button does nothing (use InsertData method)
 
 *** Groups [11/12]
    - [ ] move up and down

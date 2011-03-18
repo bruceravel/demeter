@@ -580,7 +580,7 @@ sub push_values {
   $this->{bkg_stan}->fill($::app, 1, 0);
   if ($data->bkg_stan eq 'None') {
     $this->{bkg_stan}->SetStringSelection('None');
-  } elsif (not defined($this->{bkg_stan}->GetIndexedData($this->{bkg_stan}->GetSelection))) {
+  } elsif (not defined($this->{bkg_stan}->GetClientData($this->{bkg_stan}->GetSelection))) {
     $this->{bkg_stan}->SetStringSelection('None');
   } else {
     my $stan = $data->mo->fetch("Data", $data->bkg_stan);
@@ -682,7 +682,7 @@ sub OnParameter {
     $value = 0     if (($data->what_isa($which) =~ m{NonNeg}) and ($value<0));
   };
   if ($which eq 'bkg_stan') {
-    my $stan = $app->{main}->{Main}->{bkg_stan}->GetIndexedData($value);
+    my $stan = $app->{main}->{Main}->{bkg_stan}->GetClientData($value);
     $data->bkg_stan($stan->group);
   } elsif ($which !~ m{nnorm}) {
     $data->$which($value)

@@ -141,9 +141,9 @@ sub make {
 
   my $index = $app->current_index;
   if ($index == $app->{main}->{list}->GetCount-1) {
-    $app->{main}->{list}->Append($this->{processed}->name, $this->{processed});
+    $app->{main}->{list}->AddData($this->{processed}->name, $this->{processed});
   } else {
-    $app->{main}->{list}->Insert($this->{processed}->name, $index+1, $this->{processed});
+    $app->{main}->{list}->InsertData($this->{processed}->name, $index+1, $this->{processed});
   };
   $app->{main}->status(sprintf("Convolved and/or added noise to %s and made a new data group", $app->current_data->name));
   $app->modified(1);
