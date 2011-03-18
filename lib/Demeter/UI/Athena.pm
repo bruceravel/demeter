@@ -129,6 +129,7 @@ sub OnInit {
   $app->{main}->Refresh;
   $app->{main}->Update;
   $app->{main} -> status("Welcome to Athena (" . $demeter->identify . ")");
+  $app->OnGroupSelect(q{}, $app->{main}->{list}->GetSelection);
   1;
 };
 
@@ -291,6 +292,7 @@ Readonly my $CHANGE_DATATYPE   => Wx::NewId();
 
 Readonly my $VALUES_ALL	       => Wx::NewId();
 Readonly my $VALUES_MARKED     => Wx::NewId();
+Readonly my $SHOW_REFERENCE    => Wx::NewId();
 Readonly my $TIE_REFERENCE     => Wx::NewId();
 
 Readonly my $FREEZE_TOGGLE     => Wx::NewId();
@@ -449,13 +451,15 @@ sub menubar {
   $groupmenu->Append($VALUES_MARKED, "Set marked groups' values to the current", "Push this groups parameter values onto all marked groups.");
   $groupmenu->AppendSeparator;
   #$groupmenu->AppendSubMenu($freezemenu, 'Freeze groups', 'Freeze groups, that is disable their controls such that their parameter values cannot be changed.');
-  $groupmenu->Append($DATA_YAML, "Show structure of current group",  "Show detailed contents of the current data group");
-  $groupmenu->Append($DATA_TEXT, "Show the text of the current group's data file",  "Show the text of the current data group's data file");
-  $groupmenu->Append($TIE_REFERENCE, "Tie reference channel",  "Tie together two marked groups as data and reference channel.");
+  $groupmenu->Append($DATA_YAML,      "Show structure of current group",                 "Show detailed contents of the current data group");
+  $groupmenu->Append($DATA_TEXT,      "Show the text of the current group's data file",  "Show the text of the current data group's data file");
   $groupmenu->AppendSeparator;
-  $groupmenu->Append($REMOVE, "Remove current group",   "Remove the current group from this project");
-  $groupmenu->Append($REMOVE_MARKED, "Remove marked groups",   "Remove marked groups from this project");
-  $groupmenu->Append(wxID_CLOSE, "&Close" );
+  $groupmenu->Append($SHOW_REFERENCE, "Show reference channel", "Identify the group that shares the data/reference relationship with this group.");
+  $groupmenu->Append($TIE_REFERENCE,  "Tie reference channel",  "Tie together two marked groups as data and reference channel.");
+  $groupmenu->AppendSeparator;
+  $groupmenu->Append($REMOVE,         "Remove current group",   "Remove the current group from this project");
+  $groupmenu->Append($REMOVE_MARKED,  "Remove marked groups",   "Remove marked groups from this project");
+  $groupmenu->Append(wxID_CLOSE,       "&Close" );
   $app->{main}->{groupmenu} = $groupmenu;
 
   my $freezemenu  = Wx::Menu->new;
@@ -473,7 +477,9 @@ sub menubar {
   my $currentplotmenu = Wx::Menu->new;
   my $markedplotmenu  = Wx::Menu->new;
   my $mergedplotmenu  = Wx::Menu->new;
-  $app->{main}->{mergedplotmenu} = $mergedplotmenu;
+  $app->{main}->{currentplotmenu} = $currentplotmenu;
+  $app->{main}->{markedplotmenu}  = $markedplotmenu;
+  $app->{main}->{mergedplotmenu}  = $mergedplotmenu;
   $currentplotmenu->Append($PLOT_QUAD,       "Quad plot",             "Make a quad plot from the current group" );
   $currentplotmenu->Append($PLOT_IOSIG,      "Data+I0+Signal",        "Plot data, I0, and signal from the current group" );
   $currentplotmenu->Append($PLOT_K123,       "k123 plot",             "Make a k123 plot from the current group" );
@@ -614,10 +620,12 @@ sub OnMenuClick {
     };
 
     ($id == $REPORT_ALL) and do {
+      last SWITCH if $app->is_empty;
       $app -> Report('all');
       last SWITCH;
     };
     ($id == $REPORT_MARKED) and do {
+      last SWITCH if $app->is_empty;
       $app -> Report('marked');
       last SWITCH;
     };
@@ -689,7 +697,13 @@ sub OnMenuClick {
       $app->change_datatype;
       last SWITCH;
     };
+    ($id == $SHOW_REFERENCE) and do {
+      last SWITCH if $app->is_empty;
+      $app->{main}->status("The current group is tied to \"" . $app->current_data->reference->name . "\".");
+      last SWITCH;
+    };
     ($id == $TIE_REFERENCE) and do {
+      last SWITCH if $app->is_empty;
       $app->tie_reference;
       last SWITCH;
     };
@@ -1070,14 +1084,14 @@ sub side_bar {
   #$app->{main}->{list}->SetBackgroundColour(Wx::Colour->new($demeter->co->default("athena", "single")));
 
   my $singlebox = Wx::BoxSizer->new( wxHORIZONTAL );
-  $toolbox     -> Add($singlebox, 0, wxGROW|wxALL, 0);
   my $markedbox = Wx::BoxSizer->new( wxHORIZONTAL );
-  $toolbox     -> Add($markedbox, 0, wxGROW|wxALL, 0);
+  $toolbox -> Add($singlebox, 0, wxGROW|wxALL, 0);
+  $toolbox -> Add($markedbox, 0, wxGROW|wxALL, 0);
   foreach my $which (qw(E k R q kq)) {
 
     ## single plot button
     my $key = 'plot_single_'.$which;
-    $app->{main}->{$key} = Wx::Button -> new($toolpanel, -1, $which, wxDefaultPosition, wxDefaultSize, wxBU_EXACTFIT);
+    $app->{main}->{$key} = Wx::Button -> new($toolpanel, -1, sprintf("%2.2s",$which), wxDefaultPosition, wxDefaultSize, wxBU_EXACTFIT);
     $app->{main}->{$key}-> SetBackgroundColour( Wx::Colour->new($demeter->co->default("athena", "single")) );
     $singlebox          -> Add($app->{main}->{$key}, 1, wxALL, 1);
     EVT_BUTTON($app->{main}, $app->{main}->{$key}, sub{$app->plot(@_, $which, 'single')});
@@ -1114,7 +1128,8 @@ sub side_bar {
 					"Demeter::UI::Athena::Plot::$m"->label,
 					($m eq 'PlotE'));
   };
-  $toolbox   -> Add($app->{main}->{plottabs}, 0, wxGROW|wxALL, 0);
+  $toolbox -> Add($app->{main}->{plottabs}, 0, wxGROW|wxALL, 0);
+
 #   my $exafs = Demeter::Plot::Style->new(name=>'exafs', emin=>-200, emax=>800);
 #   my $xanes = Demeter::Plot::Style->new(name=>'xanes', emin=>-20,  emax=>80);
 #   $app->{main}->{Style}->{list}->Append('exafs', $exafs);
@@ -1148,6 +1163,13 @@ sub OnGroupSelect {
     $app->{selected} = $app->{main}->{list}->GetSelection;
   };
   $app->{main}->{groupmenu} -> Enable($DATA_TEXT,($app->current_data and (-e $app->current_data->file)));
+  $app->{main}->{groupmenu} -> Enable($SHOW_REFERENCE,($app->current_data and $app->current_data->reference));
+  $app->{main}->{groupmenu} -> Enable($TIE_REFERENCE,($app->current_data and not $app->current_data->reference));
+  if ($app->is_empty) {
+    my $n = $app->{main}->{list}->GetCount;
+    foreach my $x ($PLOT_QUAD, $PLOT_IOSIG, $PLOT_K123, $PLOT_R123) {$app->{main}->{currentplotmenu} -> Enable($x, $n)};
+    foreach my $x ($PLOT_E00, $PLOT_I0MARKED                      ) {$app->{main}->{markedplotmenu}  -> Enable($x, $n)};
+  };
   $app->{selecting_data_group}=0;
 };
 
@@ -1531,7 +1553,7 @@ sub Clear {
   my ($app) = @_;
   $app->{main}->{currentproject} = q{};
   $app->{main}->{project}->SetLabel('<untitled>');
-  $app->modified(1);
+  $app->modified(not $app->is_empty);
   $app->{main}->status(sprintf("Unamed the current project."));
 };
 
@@ -1593,12 +1615,18 @@ be true on Linux or, perhaps, that the client data is overwritable
 with no ill effect.  On Windows, however, attempting to set client
 data crashes the application.
 
+On the wxperl-users mailing list Mattia Barbon said: "It's a wxWidgets
+limitation: it uses the same Win32 client data slot in wxListBox to
+store client data, in wxCheckListBox to store the boolean state of the
+item."
+
 Sigh....
 
 These methods are an attempt to replicate the effect of client data by
 maintaining a list of pointers to data that is indexed to the
-CheckListBox.  The trick is to keep this in sync with the content of the
-CheckListBox at all times.
+CheckListBox.  This list is stored in the underlying hash of the
+CheckListBox object.  The trick is to keep the list in sync with the
+displayed content of the CheckListBox at all times.
 
 Yes, this *is* much to complicated.
 

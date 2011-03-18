@@ -8,7 +8,7 @@ use Demeter::UI::Wx::SpecialCharacters qw(:all);
 use Demeter::UI::Athena::ColumnSelection;
 use Demeter::UI::Artemis::Prj;
 use Demeter::UI::Wx::PeriodicTableDialog;
-my $XDI_exists         = eval "require Xray::XDI";
+my $XDI_exists = 0;#        = eval "require Xray::XDI";
 #use Xray::XDI;
 
 use Cwd;
@@ -134,6 +134,7 @@ sub Import {
     };
     $first = 0;
   };
+  $app->OnGroupSelect(q{}, $app->{main}->{list}->GetSelection);
   return;
 };
 
@@ -635,7 +636,7 @@ sub save_marked {
 
 sub save_each {
   my ($app, $how) = @_;
-  return if not $app->{main}->{list}->GetCount;
+  return if $app->is_empty;
   my @data = ();
   foreach my $i (0 .. $app->{main}->{list}->GetCount-1) {
     push(@data, $app->{main}->{list}->GetIndexedData($i)) if $app->{main}->{list}->IsChecked($i);

@@ -23,11 +23,13 @@ sub new {
   my $hbox = Wx::BoxSizer->new( wxVERTICAL );
   $box -> Add($hbox, 0, wxALL|wxALIGN_CENTER_HORIZONTAL, 4);
 
+  my $size = [100, -1];
+
   my $slot = Wx::BoxSizer->new( wxHORIZONTAL );
   $hbox -> Add($slot, 1, wxGROW|wxALL, 0);
-  $this->{mag} = Wx::CheckBox->new($this, -1, 'Magnitude');
+  $this->{mag} = Wx::CheckBox->new($this, -1, 'Magnitude', wxDefaultPosition, $size);
   $slot -> Add($this->{mag}, 1,  wxALL, 1);
-  $this->{mmag} = Wx::RadioButton->new($this, -1, '', wxDefaultPosition, wxDefaultSize, wxRB_GROUP);
+  $this->{mmag} = Wx::RadioButton->new($this, -1, 'Magnitude', wxDefaultPosition, $size, wxRB_GROUP);
   $slot -> Add($this->{mmag}, 0, wxALL, 1);
   EVT_CHECKBOX($this, $this->{mag},
 	       sub{my ($this, $event) = @_;
@@ -42,7 +44,7 @@ sub new {
 
   $slot = Wx::BoxSizer->new( wxHORIZONTAL );
   $hbox -> Add($slot, 1, wxGROW|wxALL, 0);
-  $this->{env} = Wx::CheckBox->new($this, -1, 'Envelope');
+  $this->{env} = Wx::CheckBox->new($this, -1, 'Envelope', wxDefaultPosition, $size);
   $slot -> Add($this->{env}, 0, wxALL, 1);
   EVT_CHECKBOX($this, $this->{env},
 	       sub{my ($this, $event) = @_;
@@ -55,9 +57,9 @@ sub new {
 
   $slot = Wx::BoxSizer->new( wxHORIZONTAL );
   $hbox -> Add($slot, 1, wxGROW|wxALL, 0);
-  $this->{re} = Wx::CheckBox->new($this, -1, 'Real part');
+  $this->{re} = Wx::CheckBox->new($this, -1, 'Real part', wxDefaultPosition, $size);
   $slot -> Add($this->{re}, 1, wxALL, 1);
-  $this->{mre} = Wx::RadioButton->new($this, -1, '');
+  $this->{mre} = Wx::RadioButton->new($this, -1, 'Real part', wxDefaultPosition, $size);
   $slot -> Add($this->{mre}, 0, wxALL, 1);
   EVT_CHECKBOX($this, $this->{re}, sub{$_[0]->replot(qw(q single))});
   EVT_RADIOBUTTON($this, $this->{mre}, sub{$_[0]->replot(qw(q marked))});
@@ -66,9 +68,9 @@ sub new {
 
   $slot = Wx::BoxSizer->new( wxHORIZONTAL );
   $hbox -> Add($slot, 1, wxGROW|wxALL, 0);
-  $this->{im} = Wx::CheckBox->new($this, -1, 'Imaginary part');
+  $this->{im} = Wx::CheckBox->new($this, -1, 'Imag. part', wxDefaultPosition, $size);
   $slot -> Add($this->{im}, 1, wxALL, 1);
-  $this->{mim} = Wx::RadioButton->new($this, -1, '');
+  $this->{mim} = Wx::RadioButton->new($this, -1, 'Imag. part', wxDefaultPosition, $size);
   $slot -> Add($this->{mim}, 0, wxALL, 1);
   EVT_CHECKBOX($this, $this->{im}, sub{$_[0]->replot(qw(q single))});
   EVT_RADIOBUTTON($this, $this->{mim}, sub{$_[0]->replot(qw(q marked))});
@@ -77,9 +79,9 @@ sub new {
 
   $slot = Wx::BoxSizer->new( wxHORIZONTAL );
   $hbox -> Add($slot, 1, wxGROW|wxALL, 0);
-  $this->{pha} = Wx::CheckBox->new($this, -1, 'Phase');
+  $this->{pha} = Wx::CheckBox->new($this, -1, 'Phase', wxDefaultPosition, $size);
   $slot -> Add($this->{pha}, 1, wxALL, 1);
-  $this->{mpha} = Wx::RadioButton->new($this, -1, '');
+  $this->{mpha} = Wx::RadioButton->new($this, -1, 'Phase', wxDefaultPosition, $size);
   $slot -> Add($this->{mpha}, 0, wxALL, 1);
   EVT_CHECKBOX($this, $this->{pha}, sub{$_[0]->replot(qw(q single))});
   EVT_RADIOBUTTON($this, $this->{mpha}, sub{$_[0]->replot(qw(q marked))});
@@ -88,7 +90,7 @@ sub new {
 
   $slot = Wx::BoxSizer->new( wxHORIZONTAL );
   $hbox -> Add($slot, 1, wxGROW|wxALL, 0);
-  $this->{win} = Wx::CheckBox->new($this, -1, 'Window');
+  $this->{win} = Wx::CheckBox->new($this, -1, 'Window', wxDefaultPosition, $size);
   $slot -> Add($this->{win}, 0, wxALL, 1);
   EVT_CHECKBOX($this, $this->{win}, sub{$_[0]->replot(qw(q single))});
   $app->mouseover($this->{win}, "Plot the k-space window function when ploting the current group in filtered k-space.");

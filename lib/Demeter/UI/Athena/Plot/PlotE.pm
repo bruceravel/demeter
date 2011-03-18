@@ -22,12 +22,14 @@ sub new {
   my $hbox = Wx::BoxSizer->new( wxVERTICAL );
   $box -> Add($hbox, 0, wxALL|wxALIGN_CENTER_HORIZONTAL, 4);
 
+  my $size = [100, -1];
+
   my $slot = Wx::BoxSizer->new( wxHORIZONTAL );
   $hbox -> Add($slot, 1, wxGROW|wxALL, 0);
-  $this->{mu} = Wx::CheckBox->new($this, -1, $MU.'(E)');
+  $this->{mu} = Wx::CheckBox->new($this, -1, $MU.'(E)', wxDefaultPosition, $size);
   $this->{mu} -> SetValue($Demeter::UI::Athena::demeter->co->default("plot", "e_mu"));
   $slot -> Add($this->{mu}, 1, wxALL, 1);
-  $this->{mmu} = Wx::RadioButton->new($this, -1, '', wxDefaultPosition, wxDefaultSize, wxRB_GROUP);
+  $this->{mmu} = Wx::RadioButton->new($this, -1, $MU.'(E)', wxDefaultPosition, $size, wxRB_GROUP);
   $this->{mmu} -> SetValue($Demeter::UI::Athena::demeter->co->default("plot", "e_mu"));
   $slot -> Add($this->{mmu}, 0, wxALL, 1);
   EVT_CHECKBOX($this, $this->{mu}, sub{$_[0]->replot(qw(E single))});
@@ -37,7 +39,7 @@ sub new {
 
   $slot = Wx::BoxSizer->new( wxHORIZONTAL );
   $hbox -> Add($slot, 1, wxGROW|wxALL, 0);
-  $this->{bkg} = Wx::CheckBox->new($this, -1, 'Background');
+  $this->{bkg} = Wx::CheckBox->new($this, -1, 'Background', wxDefaultPosition, $size);
   $this->{bkg} -> SetValue($Demeter::UI::Athena::demeter->co->default("plot", "e_bkg"));
   $slot -> Add($this->{bkg}, 0, wxALL, 1);
   EVT_CHECKBOX($this, $this->{bkg},
@@ -53,7 +55,7 @@ sub new {
 
   $slot = Wx::BoxSizer->new( wxHORIZONTAL );
   $hbox -> Add($slot, 1, wxGROW|wxALL, 0);
-  $this->{pre} = Wx::CheckBox->new($this, -1, 'pre-edge line');
+  $this->{pre} = Wx::CheckBox->new($this, -1, 'pre-edge line', wxDefaultPosition, $size);
   $this->{pre} -> SetValue($Demeter::UI::Athena::demeter->co->default("plot", "e_pre"));
   $slot -> Add($this->{pre}, 0, wxALL, 1);
   EVT_CHECKBOX($this, $this->{pre},
@@ -69,7 +71,7 @@ sub new {
 
   $slot = Wx::BoxSizer->new( wxHORIZONTAL );
   $hbox -> Add($slot, 1, wxGROW|wxALL, 0);
-  $this->{post} = Wx::CheckBox->new($this, -1, 'post-edge line');
+  $this->{post} = Wx::CheckBox->new($this, -1, 'post-edge line', wxDefaultPosition, $size);
   $this->{post} -> SetValue($Demeter::UI::Athena::demeter->co->default("plot", "e_post"));
   $slot -> Add($this->{post}, 0, wxALL, 1);
   EVT_CHECKBOX($this, $this->{post},
@@ -85,10 +87,10 @@ sub new {
 
   $slot = Wx::BoxSizer->new( wxHORIZONTAL );
   $hbox -> Add($slot, 1, wxGROW|wxALL, 0);
-  $this->{norm} = Wx::CheckBox->new($this, -1, 'Normalized');
+  $this->{norm} = Wx::CheckBox->new($this, -1, 'Normalized', wxDefaultPosition, $size);
   $this->{norm} -> SetValue($Demeter::UI::Athena::demeter->co->default("plot", "e_norm"));
   $slot -> Add($this->{norm}, 1, wxALL, 1);
-  $this->{mnorm} = Wx::RadioButton->new($this, -1, '');
+  $this->{mnorm} = Wx::RadioButton->new($this, -1, 'Normalized', wxDefaultPosition, $size);
   $this->{mnorm} -> SetValue($Demeter::UI::Athena::demeter->co->default("plot", "e_norm"));
   $slot -> Add($this->{mnorm}, 0, wxALL, 1);
   EVT_CHECKBOX($this, $this->{norm},
@@ -105,10 +107,10 @@ sub new {
 
   $slot = Wx::BoxSizer->new( wxHORIZONTAL );
   $hbox -> Add($slot, 1, wxGROW|wxALL, 0);
-  $this->{der} = Wx::CheckBox->new($this, -1, 'Derivative');
+  $this->{der} = Wx::CheckBox->new($this, -1, 'Derivative', wxDefaultPosition, $size);
   $this->{der} -> SetValue($Demeter::UI::Athena::demeter->co->default("plot", "e_der"));
   $slot -> Add($this->{der}, 1, wxALL, 1);
-  $this->{mder} = Wx::CheckBox->new($this, -1, '');
+  $this->{mder} = Wx::CheckBox->new($this, -1, 'Derivative', wxDefaultPosition, $size);
   $this->{mder} -> SetValue($Demeter::UI::Athena::demeter->co->default("plot", "e_der"));
   $slot -> Add($this->{mder}, 0, wxALL, 1);
   EVT_CHECKBOX($this, $this->{der},
@@ -133,10 +135,10 @@ sub new {
 
   $slot = Wx::BoxSizer->new( wxHORIZONTAL );
   $hbox -> Add($slot, 1, wxGROW|wxALL, 0);
-  $this->{sec} = Wx::CheckBox->new($this, -1, 'Second derivative');
+  $this->{sec} = Wx::CheckBox->new($this, -1, '2nd derivative', wxDefaultPosition, $size);
   $this->{sec} -> SetValue($Demeter::UI::Athena::demeter->co->default("plot", "e_sec"));
   $slot -> Add($this->{sec}, 1, wxALL, 1);
-  $this->{msec} = Wx::CheckBox->new($this, -1, '');
+  $this->{msec} = Wx::CheckBox->new($this, -1, '2nd derivative', wxDefaultPosition, $size);
   $this->{msec} -> SetValue($Demeter::UI::Athena::demeter->co->default("plot", "e_sec"));
   $slot -> Add($this->{msec}, 0, wxALL, 1);
   EVT_CHECKBOX($this, $this->{sec},

@@ -30,13 +30,13 @@ use Demeter::UI::Athena::ColumnSelection::Reference;
 
 use List::MoreUtils qw(minmax);
 
-my $contents_font_size = Wx::SystemSettings::GetFont(wxSYS_DEFAULT_GUI_FONT)->GetPointSize - 1;
+my $contents_font_size = Wx::SystemSettings::GetFont(wxSYS_DEFAULT_GUI_FONT)->GetPointSize; # - 1;
 
 sub new {
   my ($class, $parent, $app, $data) = @_;
 
   my $this = $class->SUPER::new($parent, -1, "Athena: Column selection",
-				wxDefaultPosition, [805,-1],
+				wxDefaultPosition, [-1,-1],
 				wxMINIMIZE_BOX|wxCAPTION|wxSYSTEM_MENU|wxSTAY_ON_TOP);
 
   $data->po->set(e_mu=>1, e_bkg=>0, e_pre=>0, e_post=>0,
@@ -77,7 +77,7 @@ sub new {
   my $right = Wx::BoxSizer->new( wxVERTICAL );
   $hbox->Add($rightpane, 1, wxGROW|wxALL, 0);
 
-  $this->{contents} = Wx::TextCtrl->new($rightpane, -1, q{}, wxDefaultPosition, [450,550],
+  $this->{contents} = Wx::TextCtrl->new($rightpane, -1, q{}, wxDefaultPosition, [-1,-1],
   					wxTE_MULTILINE|wxTE_RICH2|wxTE_DONTWRAP|wxALWAYS_SHOW_SB);
   $this->{contents} -> SetFont( Wx::Font->new( $contents_font_size, wxTELETYPE, wxNORMAL, wxNORMAL, 0, "" ) );
   $right -> Add($this->{contents}, 1, wxGROW|wxALL, 5);

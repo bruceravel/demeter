@@ -23,11 +23,13 @@ sub new {
   my $hbox = Wx::BoxSizer->new( wxVERTICAL );
   $box -> Add($hbox, 1, wxALL|wxALIGN_CENTER_HORIZONTAL, 4);
 
+  my $size = [100, -1];
+
   my $slot = Wx::BoxSizer->new( wxHORIZONTAL );
   $hbox -> Add($slot, 0, wxGROW|wxALL, 0);
-  $this->{chie} = Wx::CheckBox->new($this, -1, $CHI.'(E)          ');
+  $this->{chie} = Wx::CheckBox->new($this, -1, $CHI.'(E)', wxDefaultPosition, $size);
   $slot -> Add($this->{chie}, 1, wxALL, 1);
-  $this->{mchie} = Wx::CheckBox->new($this, -1, '');
+  $this->{mchie} = Wx::CheckBox->new($this, -1, $CHI.'(E)', wxDefaultPosition, $size);
   $slot -> Add($this->{mchie}, 0, wxALL, 1);
   EVT_CHECKBOX($this, $this->{chie},
 	       sub{my ($this, $event) = @_;
@@ -42,7 +44,7 @@ sub new {
 
   $slot = Wx::BoxSizer->new( wxHORIZONTAL );
   $hbox -> Add($slot, 0, wxGROW|wxALL, 0);
-  $this->{win} = Wx::CheckBox->new($this, -1, 'Window');
+  $this->{win} = Wx::CheckBox->new($this, -1, 'Window', wxDefaultPosition, $size);
   $slot -> Add($this->{win}, 0, wxALL, 1);
   EVT_CHECKBOX($this, $this->{win},
 	       sub{my ($this, $event) = @_;

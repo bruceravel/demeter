@@ -24,7 +24,7 @@ sub new {
   $titleboxsizer    -> Add($this->{title}, 1, wxALL|wxGROW, 0);
 
   $this->{location}  = Wx::RadioBox->new($this, -1, 'Legend location', wxDefaultPosition, wxDefaultSize,
-					 ["top left", "top right", "bottom left", "bottom right"], 2, wxRA_SPECIFY_COLS);
+					 ["top left", "top right", "bot. left", "bot. right"], 2, wxRA_SPECIFY_COLS);
   $this->{location}  -> SetStringSelection($app->current_data->co->default('gnuplot', 'keylocation'));
   EVT_RADIOBOX($this, $this->{location}, sub{location(@_,$app)});
   $box               -> Add($this->{location},   0, wxGROW|wxALL, 5);

@@ -285,7 +285,7 @@ sub bkg {
   $this->{bkg_stan_label}   = Wx::StaticText -> new($this, -1, "Standard");
   #$this->{bkg_stan}         = Wx::ComboBox   -> new($this, -1, '', wxDefaultPosition, [50,-1], [], wxCB_READONLY);
   $this->{bkg_stan}         = Demeter::UI::Athena::GroupList -> new($this, $app, 1);
-  $abox -> Add($this->{bkg_stan_label},   0, wxALL,    5);
+  $abox -> Add($this->{bkg_stan_label},   0, wxALL,   5);
   $abox -> Add($this->{bkg_stan},         0, wxRIGHT, 15);
   push @bkg_parameters, qw(bkg_stan bkg_clamp1 bkg_clamp2 clamp);
   $app -> mouseover($this->{bkg_stan}, "Background removal with a standard is not working yet.  Sorry.");
@@ -952,6 +952,10 @@ Readonly my @all_plot   => (qw(plot_multiplier y_offset));
 
 sub constrain {
   my ($main, $app, $which, $how) = @_;
+  if ($app->is_empty) {
+    $app->{main}->status("No data!");
+    return;
+  };
   my $data = $app->current_data;
   my @params = ($which->[0] eq 'all')  ? (@all_group, @all_bkg, @all_fft, @all_bft, @all_plot)
              : ($which->[0] eq 'file') ?  @all_group

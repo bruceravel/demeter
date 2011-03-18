@@ -154,6 +154,10 @@ sub remove_one {
 
 sub change_datatype {
   my ($app) = @_;
+  if ($app->is_empty) {
+    $app->{main}->status("No data!");
+    return;
+  };
   my $cdt = Demeter::UI::Athena::ChangeDatatype->new($app->{main}, $app);
   my $result = $cdt -> ShowModal;
   if ($result == wxID_CANCEL) {
