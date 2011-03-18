@@ -25,6 +25,7 @@ sub new {
   $config->populate([qw(athena bft bkg clamp convolution fft file fit gnuplot indicator
 			interpolation lcf marker merge operations plot rebin xanes)]);
   $box->Add($config, 1, wxGROW|wxALL, 5);
+  $config->{params}->Expand($config->{params}->GetRootItem);
 
   $this->{document} = Wx::Button->new($this, -1, 'Document section: preferences');
   $box -> Add($this->{document}, 0, wxGROW|wxALL, 2);

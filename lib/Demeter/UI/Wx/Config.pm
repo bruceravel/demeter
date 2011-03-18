@@ -47,8 +47,8 @@ sub new {
   ## -------- list of parameters
   $self->{paramsbox} = Wx::StaticBox->new($self, -1, 'Parameters', wxDefaultPosition, wxDefaultSize);
   $self->{paramsboxsizer} = Wx::StaticBoxSizer->new( $self->{paramsbox}, wxVERTICAL );
-  $self->{params} = Wx::TreeCtrl->new($self, -1, wxDefaultPosition, wxDefaultSize,
-				      wxTR_SINGLE|wxTR_HAS_BUTTONS|wxTR_HIDE_ROOT);
+  my $style = ($demeter->is_windows) ? wxTR_SINGLE|wxTR_HAS_BUTTONS : wxTR_SINGLE|wxTR_HAS_BUTTONS|wxTR_HIDE_ROOT;
+  $self->{params} = Wx::TreeCtrl->new($self, -1, wxDefaultPosition, wxDefaultSize, $style);
   $self->{paramsboxsizer} -> Add($self->{params}, 1, wxEXPAND|wxALL, 0);
   $mainsizer -> Add($self->{paramsboxsizer}, 1, wxEXPAND|wxALL, 5);
   EVT_TREE_SEL_CHANGED( $self, $self->{params}, \&tree_select );
@@ -111,7 +111,7 @@ sub new {
   $self->{descbox} = Wx::StaticBox->new($self, -1, 'Description', wxDefaultPosition, wxDefaultSize);
   $self->{descboxsizer} = Wx::StaticBoxSizer->new( $self->{descbox}, wxVERTICAL );
   $self->{desc} = Wx::TextCtrl->new($self, -1, q{}, wxDefaultPosition, wxDefaultSize,
-				    wxHSCROLL|wxTE_READONLY|wxTE_MULTILINE|wxTE_RICH);
+				    wxHSCROLL|wxTE_WORDWRAP|wxTE_READONLY|wxTE_MULTILINE|wxTE_RICH);
 ##				    wxVSCROLL|wxTE_WORDWRAP|wxTE_MULTILINE|wxTE_READONLY|wxNO_BORDER);
   $self->{descboxsizer} -> Add($self->{desc}, 1, wxEXPAND|wxALL, 2);
   $self->{desc}->SetFont( Wx::Font->new( Wx::SystemSettings::GetFont(wxSYS_DEFAULT_GUI_FONT)->GetPointSize, wxTELETYPE, wxNORMAL, wxNORMAL, 0, "" ) );
@@ -241,7 +241,10 @@ sub tree_select {
     $self->{Default} -> SetLabel(q{});
     $self->{Default} -> SetOwnBackgroundColour(wxNullColour);
     $self->{Default} -> Disable;
-    $self->{desc}    -> WriteText($demeter->co->description($param));
+    { # this shouldnot be necessary, why doesn't wrapping work in TextCtrl?
+      local $Text::Wrap::columns = 47;
+      $self->{desc}  -> WriteText(wrap(q{}, q{}, $demeter->co->description($param)));
+    };
     $self->{apply}   -> Disable;
     $self->{save}    -> Disable;
   };

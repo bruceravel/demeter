@@ -58,9 +58,9 @@ sub new {
   $hbox -> Add($right, 2, wxALL, 0);
 
   my $journalbox      = Wx::StaticBox->new($this, -1, 'Data group title lines', wxDefaultPosition, wxDefaultSize);
-  my $journalboxsizer = Wx::StaticBoxSizer->new( $journalbox, wxHORIZONTAL );
+  my $journalboxsizer = Wx::StaticBoxSizer->new( $journalbox, wxVERTICAL );
   $this->{journal}      = Wx::TextCtrl->new($this, -1, q{}, wxDefaultPosition, wxDefaultSize,
-					    wxVSCROLL|wxHSCROLL|wxTE_MULTILINE|wxTE_READONLY|wxNO_BORDER);
+					    wxHSCROLL|wxTE_READONLY|wxTE_MULTILINE|wxTE_RICH);
   $journalboxsizer -> Add($this->{journal}, 1, wxGROW|wxALL, 0);
   $right           -> Add($journalboxsizer, 1, wxGROW|wxALL, 5);
 

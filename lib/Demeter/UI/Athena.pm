@@ -819,7 +819,7 @@ sub OnMenuClick {
     ($id == $STYLE_YAML) and do {
       my $text = q{};
       foreach my $i (0 .. $app->{main}->{Style}->{list}->GetCount-1) {
-	$text .= $app->{main}->{Style}->{list}->GetIndexedData($i)->serialization;
+	$text .= $app->{main}->{Style}->{list}->GetClientData($i)->serialization;
       };
       my $dialog = Demeter::UI::Artemis::ShowText
 	-> new($app->{main}, $text, 'YAML of Style objects')
@@ -1165,11 +1165,11 @@ sub OnGroupSelect {
   $app->{main}->{groupmenu} -> Enable($DATA_TEXT,($app->current_data and (-e $app->current_data->file)));
   $app->{main}->{groupmenu} -> Enable($SHOW_REFERENCE,($app->current_data and $app->current_data->reference));
   $app->{main}->{groupmenu} -> Enable($TIE_REFERENCE,($app->current_data and not $app->current_data->reference));
-  if ($app->is_empty) {
-    my $n = $app->{main}->{list}->GetCount;
-    foreach my $x ($PLOT_QUAD, $PLOT_IOSIG, $PLOT_K123, $PLOT_R123) {$app->{main}->{currentplotmenu} -> Enable($x, $n)};
-    foreach my $x ($PLOT_E00, $PLOT_I0MARKED                      ) {$app->{main}->{markedplotmenu}  -> Enable($x, $n)};
-  };
+
+  my $n = $app->{main}->{list}->GetCount;
+  foreach my $x ($PLOT_QUAD, $PLOT_IOSIG, $PLOT_K123, $PLOT_R123) {$app->{main}->{currentplotmenu} -> Enable($x, $n)};
+  foreach my $x ($PLOT_E00, $PLOT_I0MARKED                      ) {$app->{main}->{markedplotmenu}  -> Enable($x, $n)};
+
   $app->{selecting_data_group}=0;
 };
 
