@@ -527,7 +527,6 @@ sub _prj {
     };
     $app->{main}->status("Importing ". $data->prjrecord, "nobuffer");
     $app->{main}->Update;
-    #$app->{main}->{list}->Append($data->name, $data);
     $app->{main}->{list}->AddData($data->name, $data);
     if ($count == 1) {
       $app->{main}->{list}->SetSelection($app->{main}->{list}->GetCount - 1);

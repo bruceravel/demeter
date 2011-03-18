@@ -167,7 +167,7 @@ sub fit_page {
   my $box = Wx::BoxSizer->new( wxVERTICAL);
 
   $this->{result} = Wx::TextCtrl->new($panel, -1, q{}, wxDefaultPosition, wxDefaultSize,
-				       wxTE_MULTILINE|wxTE_WORDWRAP|wxTE_AUTO_URL|wxTE_READONLY);
+				       wxTE_MULTILINE|wxTE_WORDWRAP|wxTE_AUTO_URL|wxTE_READONLY|wxTE_RICH2);
   my $size = Wx::SystemSettings::GetFont(wxSYS_DEFAULT_GUI_FONT)->GetPointSize - 1;
   $this->{result}->SetFont( Wx::Font->new( $size, wxTELETYPE, wxNORMAL, wxNORMAL, 0, "" ) );
   $box->Add($this->{result}, 1, wxGROW|wxALL, 5);
@@ -272,7 +272,7 @@ sub push_values {
     $this->{'standard'.$i}->fill($::app, 0, 0);
     $this->{'standard'.$i}->SetStringSelection($str);
     $this->{'standard'.$i}->SetSelection(0)
-      if not defined($this->{'standard'.$i}->GetIndexedData($this->{'standard'.$i}->GetSelection));
+      if not defined($this->{'standard'.$i}->GetClientData($this->{'standard'.$i}->GetSelection));
   };
   $this->{result}->Clear;
   $this->{$_} -> Enable(0) foreach (qw(make report fitmarked markedreport resultplot resultreport));
@@ -394,7 +394,7 @@ sub _prep {
   $this->{LCF}->data($::app->current_data);
   foreach my $i (0 .. $this->{nstan}-1) {
     my $n = $this->{'standard'.$i}->GetSelection;
-    my $stan = $this->{'standard'.$i}->GetIndexedData($n);
+    my $stan = $this->{'standard'.$i}->GetClientData($n);
     next if not defined($stan);
     #print join("|", $i, $n, $stan), $/;
 
@@ -430,7 +430,7 @@ sub _results {
   my ($this) = @_;
   foreach my $i (0 .. $this->{nstan}-1) {
     my $n = $this->{'standard'.$i}->GetSelection;
-    my $stan = $this->{'standard'.$i}->GetIndexedData($n);
+    my $stan = $this->{'standard'.$i}->GetClientData($n);
     next if not defined($stan);
     my $w = sprintf("%.3f", $this->{LCF}->weight($stan));
     my $e = sprintf("%.3f", $this->{LCF}->e0($stan));

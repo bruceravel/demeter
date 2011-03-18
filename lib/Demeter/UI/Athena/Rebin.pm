@@ -163,9 +163,9 @@ sub make {
 
   my $index = $app->current_index;
   if ($index == $app->{main}->{list}->GetCount-1) {
-    $app->{main}->{list}->Append($this->{rebinned}->name, $this->{rebinned});
+    $app->{main}->{list}->AddData($this->{rebinned}->name, $this->{rebinned});
   } else {
-    $app->{main}->{list}->Insert($this->{rebinned}->name, $index+1, $this->{rebinned});
+    $app->{main}->{list}->InsertData($this->{rebinned}->name, $index+1, $this->{rebinned});
   };
   $app->{main}->status("Rebinned " . $app->current_data->name." and made a new data group");
   $app->modified(1);
@@ -189,9 +189,9 @@ sub marked {
   foreach my $j (reverse (0 .. $app->{main}->{list}->GetCount-1)) {
     if ($app->{main}->{list}->IsChecked($j)) {
       if ($index == $app->{main}->{list}->GetCount-1) {
-	$app->{main}->{list}->Append($this->{rebinned}->name, $this->{rebinned});
+	$app->{main}->{list}->AddData($this->{rebinned}->name, $this->{rebinned});
       } else {
-	$app->{main}->{list}->Insert($this->{rebinned}->name, $index+1, $this->{rebinned});
+	$app->{main}->{list}->InsertData($this->{rebinned}->name, $index+1, $this->{rebinned});
       };
       ++$count;
     };

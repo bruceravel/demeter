@@ -20,7 +20,7 @@ sub new {
 
   $this->{object} = Demeter::Journal->new;
   $this->{journal} = Wx::TextCtrl->new($this, -1, q{}, wxDefaultPosition, wxDefaultSize,
-				       wxTE_MULTILINE|wxTE_WORDWRAP|wxTE_AUTO_URL);
+				       wxTE_MULTILINE|wxTE_WORDWRAP|wxTE_AUTO_URL|wxTE_RICH2);
   $box->Add($this->{journal}, 1, wxGROW|wxALL, 5);
 
   $this->{document} = Wx::Button->new($this, -1, 'Document section: journal');

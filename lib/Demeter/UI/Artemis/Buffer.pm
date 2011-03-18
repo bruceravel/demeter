@@ -50,7 +50,6 @@ sub new {
   my $iffboxsizer  = Wx::StaticBoxSizer->new( $iffbox, wxHORIZONTAL );
   $this->{iffcommands} = Wx::TextCtrl->new($this->{IFEFFIT}, -1, q{}, wxDefaultPosition, wxDefaultSize,
 					   wxHSCROLL|wxTE_READONLY|wxTE_MULTILINE|wxTE_RICH);
-##					   wxVSCROLL|wxHSCROLL|wxTE_MULTILINE|wxTE_READONLY|wxNO_BORDER|wxTE_RICH2);
   $this->{iffcommands}->SetDefaultStyle($aleft);
   $iffboxsizer -> Add($this->{iffcommands}, 1, wxALL|wxGROW, 5);
   $box -> Add($iffboxsizer, 1, wxGROW|wxALL, 5);
@@ -70,8 +69,7 @@ sub new {
   my $pltbox = Wx::StaticBox->new($this->{PLOT}, -1, ' Plot buffer ', wxDefaultPosition, wxDefaultSize);
   my $pltboxsizer  = Wx::StaticBoxSizer->new( $pltbox, wxHORIZONTAL );
   $this->{pltcommands} = Wx::TextCtrl->new($this->{PLOT}, -1, q{}, wxDefaultPosition, wxDefaultSize,
-					   wxHSCROLL|wxTE_READONLY|wxTE_MULTILINE|wxTE_RICH);
-##					   wxVSCROLL|wxHSCROLL|wxTE_MULTILINE|wxTE_READONLY|wxNO_BORDER);
+					   wxHSCROLL|wxTE_MULTILINE|wxTE_READONLY|wxTE_RICH);
   $this->{pltcommands}->SetDefaultStyle($aleft);
   $pltboxsizer -> Add($this->{pltcommands}, 1, wxALL|wxGROW, 5);
   $box -> Add($pltboxsizer, 1, wxGROW|wxALL, 5);

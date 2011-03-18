@@ -59,7 +59,7 @@ sub new {
   $box -> Add($this->{fit}, 0, wxGROW|wxALL, 2);
 
   $this->{result} = Wx::TextCtrl->new($this, -1, q{}, wxDefaultPosition, wxDefaultSize,
-				      wxTE_MULTILINE|wxTE_WORDWRAP|wxTE_AUTO_URL|wxTE_READONLY);
+				      wxTE_MULTILINE|wxTE_WORDWRAP|wxTE_AUTO_URL|wxTE_RICH2);
   my $size = Wx::SystemSettings::GetFont(wxSYS_DEFAULT_GUI_FONT)->GetPointSize - 1;
   $this->{result}->SetFont( Wx::Font->new( $size, wxTELETYPE, wxNORMAL, wxNORMAL, 0, "" ) );
   $box->Add($this->{result}, 1, wxGROW|wxALL, 5);
@@ -115,7 +115,7 @@ sub push_values {
   my $was = $this->{standard}->GetStringSelection;
   $this->{standard}->fill($::app, 1, 1);
   ($was eq 'None') ? $this->{standard}->SetSelection(0) : $this->{standard}->SetStringSelection($was);
-  $this->{standard}->SetSelection(0) if not defined($this->{standard}->GetIndexedData($this->{standard}->GetSelection));
+  $this->{standard}->SetSelection(0) if not defined($this->{standard}->GetClientData($this->{standard}->GetSelection));
 
   my $count = 0;
   foreach my $i (0 .. $::app->{main}->{list}->GetCount - 1) {
@@ -138,7 +138,7 @@ sub mode {
 sub fit {
   my ($this, $event) = @_;
   $this->{LR}->data($::app->current_data);
-  $this->{LR}->standard($this->{standard}->GetIndexedData($this->{standard}->GetSelection));
+  $this->{LR}->standard($this->{standard}->GetClientData($this->{standard}->GetSelection));
   $this->{LR}->twopi($this->{twopi}->GetValue);
   my ($qmin, $qmax) = sort {$a <=> $b} ($this->{qmin}->GetValue, $this->{qmax}->GetValue);
   $this->{LR}->qmin($qmin);
@@ -164,7 +164,7 @@ sub plot {
     $this->{LR}->plot_odd;
   } elsif ($how =~ m{\A[kqr]\z}i) {
     $this->{LR}->data($::app->current_data);
-    $this->{LR}->standard($this->{standard}->GetIndexedData($this->{standard}->GetSelection));
+    $this->{LR}->standard($this->{standard}->GetClientData($this->{standard}->GetSelection));
     $this->{LR}->standard->plot($how);
     $this->{LR}->data->plot($how);
   };
