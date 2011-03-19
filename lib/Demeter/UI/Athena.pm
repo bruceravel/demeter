@@ -996,10 +996,12 @@ sub main_window {
   $app->{main}->{none}   = Wx::Button->new($viewpanel, -1,        q{U}, wxDefaultPosition, wxDefaultSize, wxBU_EXACTFIT);
   $app->{main}->{invert} = Wx::Button->new($viewpanel, -1,        q{I}, wxDefaultPosition, wxDefaultSize, wxBU_EXACTFIT);
   $topbar -> Add($app->{main}->{save},   0, wxGROW|wxTOP|wxBOTTOM, 2);
+  $topbar -> Add(Wx::StaticText->new($viewpanel, -1, q{    }), 0, wxGROW|wxTOP|wxBOTTOM, 2);
   $topbar -> Add($app->{main}->{all},    0, wxGROW|wxTOP|wxBOTTOM, 2);
   $topbar -> Add($app->{main}->{none},   0, wxGROW|wxTOP|wxBOTTOM, 2);
   $topbar -> Add($app->{main}->{invert}, 0, wxGROW|wxTOP|wxBOTTOM, 2);
   $app->{main}->{save} -> Enable(0);
+  $app->{main}->{save_start_color} = $app->{main}->{save}->GetBackgroundColour;
   $app->EVT_BUTTON($app->{main}->{save},   sub{$app -> Export('all', $app->{main}->{currentproject})});
   $app->EVT_BUTTON($app->{main}->{all},    sub{$app->mark('all')});
   $app->EVT_BUTTON($app->{main}->{none},   sub{$app->mark('none')});
@@ -1538,7 +1540,8 @@ sub merge {
 
 sub modified {
   my ($app, $is_modified) = @_;
-  $app->{modified} = $is_modified;
+  $app->{modified} += $is_modified;
+  $app->{modified} = 0 if not $is_modified;
   $app->{main}->{save}->Enable($is_modified);
   my $token = ($is_modified) ? q{*} : q{ };
   $app->{main}->{token}->SetLabel($token);
@@ -1547,6 +1550,22 @@ sub modified {
   #   $projname = substr($projname, 1) if ($projname =~ m{\A\*});
   #   $projname = '*'.$projname if ($is_modified);
   #   $app->{main}->{project}->SetLabel($projname);
+
+  my $c = $app->{main}->{save_start_color};
+  $app->{main}->{save}->SetBackgroundColour($c) if not $is_modified;
+  my $j = $demeter->co->default('athena', 'save_alert');
+  return if ($j <= 0);
+  my $n = ($app->{modified} > $j) ? 1 : $app->{modified}/$j;
+  if ($app->{modified}) {
+    my ($r, $g, $b) = ($c->Red, $c->Green, $c->Blue);
+    $r = int($r + (255 - $r) * 2 * $n);
+    $g = int($g * (1-$n));
+    $b = int($b * (1-$n));
+    ##print join(" ", $r, $g, $b), $/;
+    $app->{main}->{save}->SetBackgroundColour(Wx::Colour->new($r, $g, $b));
+  } else {
+    $app->{main}->{save}->SetBackgroundColour($c);
+  };
 };
 
 sub Clear {

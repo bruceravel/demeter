@@ -73,14 +73,16 @@ description
 
 variable=single
 type=color
-default=#EABAB9
+default=#FCDD9F
+restart=1
 description
   The color used to indicate widgets involved with plotting individual
   groups. 
 
 variable=marked
 type=color
-default=#F1DDF3
+default=#EEC3FF
+restart=1
 description
   The color used to indicate widgets involved with plotting marked
   groups. 
@@ -91,6 +93,18 @@ default=#E5FEFC
 description
   The color used as the text color in the Eshift box to indicate that
   a group is tied to a reference channel.
+
+variable=save_alert
+type=positive integer
+minint=0
+maxint=10000
+default=400
+description
+  This integer sets the pace at which the "save" button turns from its
+  starting color to bright red.  This is intended as a reminder to SAVE
+  YOUR PROJECT FILE!  If you want the bright red color to appear faster,
+  make this a lower number.  A higher number slows the pace down.  A
+  value of zero or less turns off the color changing.
 
 variable=import_plot
 type=list
