@@ -593,6 +593,7 @@ sub push_values {
   } else {
     $this->{bkg_eshift}-> SetBackgroundColour( wxNullColour );
   };
+  $this->{bkg_eshift}->Refresh;
   my $truncated_name = $data->name;
   my $n = length($truncated_name);
   if ($n > 40) {

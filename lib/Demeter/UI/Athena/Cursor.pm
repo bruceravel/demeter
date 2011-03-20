@@ -3,6 +3,8 @@ package Demeter::UI::Athena::Cursor;
 use strict;
 use warnings;
 
+use Scalar::Util qw(looks_like_number);
+
 use Wx qw( :everything );
 use Wx::DND;
 use base qw( Exporter );
@@ -37,22 +39,24 @@ sub cursor {
     ($x, $y) = (Ifeffit::get_scalar("cursor_x"), Ifeffit::get_scalar("cursor_y"));
 
   } elsif ($app->current_data->mo->template_plot eq 'gnuplot') {
-    $app->{main}->status("Double click on a point to pluck its value...", "wait");
-    $busy = Wx::BusyCursor->new();
-    my $tdo = Wx::TextDataObject->new;
-    wxTheClipboard->Open;
-    wxTheClipboard->GetData( $tdo );
-    wxTheClipboard->Close;
-    my $top_of_clipboard = $tdo->GetText;
-    my $new = $top_of_clipboard;
-    while ($new eq $top_of_clipboard) {
-      wxTheClipboard->Open;
+    if (wxTheClipboard->Open) {
+      $app->{main}->status("Double click on a point to pluck its value...", "wait");
+      $busy = Wx::BusyCursor->new();
+      my $tdo = Wx::TextDataObject->new;
+      $tdo->SetText(q{});
       wxTheClipboard->GetData( $tdo );
       wxTheClipboard->Close;
-      $new = $tdo->GetText;
-      sleep 0.5;
+      my $top_of_clipboard = $tdo->GetText;
+      my $new = $top_of_clipboard;
+      while ($new eq $top_of_clipboard) {
+	wxTheClipboard->Open if not wxTheClipboard->IsOpened;
+	wxTheClipboard->GetData( $tdo );
+	wxTheClipboard->Close;
+	$new = $tdo->GetText;
+	sleep 0.5;
+      };
+      ($x, $y) = split(/,\s+/, $new);
     };
-    ($x, $y) = split(/,\s+/, $new);
 
   } else {
     $app->{main}->status("Unknown plotting backend.  Pluck canceled.");
@@ -61,6 +65,9 @@ sub cursor {
   };
 
   undef $busy;
+  return (0, -100000, -100000) if ((not looks_like_number($x)) and (not looks_like_number($y)));
+  return (0, $x, -100000) if not looks_like_number($y);
+  return (0, -100000, $y) if not looks_like_number($x);
   return ($ok, $x, $y);
 };
 

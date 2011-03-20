@@ -21,6 +21,7 @@ use File::Basename;
 use File::Copy;
 use File::Path;
 use File::Spec;
+use List::Util qw(min);
 use List::MoreUtils qw(any);
 use Readonly;
 use Scalar::Util qw{looks_like_number};
@@ -1555,10 +1556,10 @@ sub modified {
   $app->{main}->{save}->SetBackgroundColour($c) if not $is_modified;
   my $j = $demeter->co->default('athena', 'save_alert');
   return if ($j <= 0);
-  my $n = ($app->{modified} > $j) ? 1 : $app->{modified}/$j;
+  my $n = min( 1, $app->{modified}/$j );
   if ($app->{modified}) {
     my ($r, $g, $b) = ($c->Red, $c->Green, $c->Blue);
-    $r = int($r + (255 - $r) * 2 * $n);
+    $r = int( min ( 255, $r + (255 - $r) * 2 * $n ) );
     $g = int($g * (1-$n));
     $b = int($b * (1-$n));
     ##print join(" ", $r, $g, $b), $/;
