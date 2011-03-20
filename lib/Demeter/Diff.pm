@@ -112,7 +112,16 @@ sub plot {
   return $self;
 };
 
-
+sub make_group {
+  my ($self) = @_;
+  my @x = $self->data->get_array('energy');
+  my @y = $self->data->get_array('diff');
+  my $name = ($self->invert) ?
+    sprintf("diff %s - %s", $self->standard->name, $self->data->name):
+      sprintf("diff %s - %s", $self->data->name, $self->standard->name);
+  my $data = $self->data->put(\@x, \@y, datatype=>'xanes', is_nor=>1, name=>$name);
+  return $data;
+};
 
 # adapted from Mastering Algorithms with Perl by Orwant, Hietaniemi,
 # and Macdonald Chapter 16, p 632

@@ -479,7 +479,7 @@ lib/Demeter/share/Demeter_icon.png
 lib/Demeter/share/Demeter_large.png
 lib/Demeter/share/gnuplot_colors.dem
 lib/Demeter/share/ini/10bmmultichannel.ini
-lib/Demeter/share/ini/athena.styles
+lib/Demeter/share/ini/athena.styles.ini
 lib/Demeter/share/peacock.jpg
 lib/Demeter/share/pgplot/grfont.dat
 lib/Demeter/share/pgplot/rgb.txt

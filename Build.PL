@@ -87,7 +87,6 @@ my $build = DemeterBuilder
 			       },
 	 PL_files           => {
 				'lib/Xray/Crystal/share/space_groups.db.PL' => 'lib/Xray/Crystal/share/space_groups.db',
-				'lib/Demeter/doc/dpg/build_dpg.PL' => [],
 
                                 ## from Xray::Absorption
 				'lib/Xray/data/chantler2st.PL'  => 'lib/Xray/Absorption/chantler.db',

@@ -42,6 +42,7 @@ sub new {
   $this->{plotspectra} = Wx::CheckBox->new($this, -1, 'Plot data and standard with difference');
   $gbs->Add($this->{invert},  Wx::GBPosition->new(2,0), Wx::GBSpan->new(1,2));
   $gbs->Add($this->{plotspectra}, Wx::GBPosition->new(3,0), Wx::GBSpan->new(1,2));
+  $this->{plotspectra}->SetValue(1);
 
   $box -> Add($gbs, 0, wxALIGN_CENTER_HORIZONTAL|wxALL, 10);
 
@@ -60,6 +61,9 @@ sub new {
 
   $this->{xmin} -> SetValidator( Wx::Perl::TextValidator->new( qr([-0-9.]) ) );
   $this->{xmax} -> SetValidator( Wx::Perl::TextValidator->new( qr([-0-9.]) ) );
+  EVT_BUTTON($this, $this->{xmin_pluck}, sub{Pluck(@_, $app, 'xmin')});
+  EVT_BUTTON($this, $this->{xmax_pluck}, sub{Pluck(@_, $app, 'xmax')});
+
 
   $box -> Add($hbox, 0, wxALIGN_CENTER_HORIZONTAL|wxALL, 5);
 
@@ -77,6 +81,7 @@ sub new {
   $box -> Add($this->{$_}, 0, wxGROW|wxALL, 2) foreach (qw(plot make marked markedareas markedmake));
   $this->{$_}->Enable(0) foreach (qw(make marked markedareas markedmake));
   EVT_BUTTON($this, $this->{plot},    sub{$this->plot});
+  EVT_BUTTON($this, $this->{make},    sub{$this->make});
 
   $box->Add(1,1,1);		# this spacer may not be needed, Journal.pm, for example
 
@@ -142,11 +147,39 @@ sub plot {
   $this->{Diff}->standard($this->{standard}->GetClientData($this->{standard}->GetSelection));
   $this->{Diff}->diff;
   $this->{area}->SetValue(sprintf("%.5f",$this->{Diff}->area));
-  $this->{Diff}->po->set(emin=>$this->{Diff}->xmin-10, emax=>$this->{Diff}->xmax+20, space=>'E');
+  $this->{Diff}->po->set(emin=>$this->{Diff}->xmin-20, emax=>$this->{Diff}->xmax+30, space=>'E');
   $this->{Diff}->po->set(e_mu=>1, e_markers=>1, e_bkg=>0, e_pre=>0, e_post=>0, e_norm=>1, e_der=>0, e_sec=>0, e_i0=>0, e_signal=>0, e_smooth=>0);
   $this->{Diff}->po->start_plot;
   $this->{Diff}->plot;
   $this->{make}->Enable(1);
+};
+
+sub make {
+  my ($this) = @_;
+  my $data = $this->{Diff}->make_group;
+  my $index = $::app->current_index;
+  if ($index == $::app->{main}->{list}->GetCount-1) {
+    $::app->{main}->{list}->AddData($data->name, $data);
+  } else {
+    $::app->{main}->{list}->InsertData($data->name, $index+1, $data);
+  };
+  $::app->{main}->status("Made a new difference group");
+  $::app->modified(1);
+};
+
+sub Pluck {
+  my ($this, $event, $app, $which) = @_;
+  my $on_screen = lc($app->{lastplot}->[0]);
+  if ($on_screen ne 'e') {
+    $app->{main}->status("Cannot pluck for energy from a $on_screen plot.");
+    return;
+  };
+  my ($ok, $x, $y) = $app->cursor;
+  $app->{main}->status("Failed to pluck cursor value."), return if not $ok;
+  my $data = $app->current_data;
+  my $plucked = sprintf("%.3f", $x - $data->bkg_e0);
+  $this->{$which}->SetValue($plucked);
+  $app->{main}->status("Plucked $plucked for $which");
 };
 
 1;

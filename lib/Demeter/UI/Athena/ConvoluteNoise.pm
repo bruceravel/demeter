@@ -127,7 +127,7 @@ sub plot {
   return if not $ok;
   $data->po->start_plot;
   $data -> plot('E');
-  $this->{processed}  = $data -> clone(name=>sprintf("%s: %.2f eV, %s", $data->name, $width, ucfirst($function)));
+  $this->{processed}  = $data -> clone(name=>sprintf("%s: %.2f eV %s, %.3f noise", $data->name, $width, ucfirst($function), $noise));
   $this->{processed} -> convolve(width=>$width, type=>$function) if ($width > 0);
   $this->{processed} -> noise(noise=>$noise, which=>'xmu') if ($noise > 0);
   $this->{processed} -> plot('E');

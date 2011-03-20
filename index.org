@@ -8,7 +8,7 @@
 	https://bugs.launchpad.net/ubuntu/+source/gtk+2.0/+bug/558674 for more info
         Turns out this is a gtk problem -- I can make the same thing happen with Firefox!
 
-** Demeter bugs and shortcomings  [0/9]
+** Demeter bugs and shortcomings  [0/11]
   - [ ] in D::Data::IO::save_many, why doesn't updating in n specifying
        	"background" not work to bring data up to date?  (fft, i.e. doing
        	autobk, does work)
@@ -21,90 +21,110 @@
         compute fbkg since the bkg array does not exist
   - [ ] cannot specify title for stddev and variance plots
   - [ ] Demeter command backend needs polishing
+  - [ ] we seem not to have a normalized group (i.e. plot the same asmu and norm)
+  - [ ] 3rd derivative
 
 
 ** Athena
+
+*** Tools [16/23]
+   - [X] main
+   - [X] calibrate
+   - [X] align
+   - [X] deglitch
+   - [ ] /smooth/ with Savitsky-Golay filter				:PDL:
+          [[file:notes/sgolay.m][Matlab routine for SG filter]] 
+   - [X] truncate
+   - [X] rebin
+   - [X] convolution and noise
+   - [ ] /deconvolution/						:PDL:
+   - [X] self absorption
+   - [X] copy series
+
+   - [ ] dispersive
+   - [ ] multi-electron removal
+
+   - [X] LCF
+   - [ ] /PCA/								:PDL:
+          [[http://mailman.jach.hawaii.edu/pipermail/perldl/2006-August/000588.html][PCA from PDL mail archives]]
+   - [ ] Peak fit
+   - [X] log ratio
+   - [X] difference
+
+   - [ ] explain FT
+   - [X] XDI
+   - [X] journal
+   - [X] plugins
+   - [X] preference 
 
 *** needs testing [0/2]
    - [ ] reference of another edge
    - [ ] keV data
 
-*** needs doing [2/4]
-   - [ ] add noise to chi data
-   - [ ] implement frozen groups
+*** needs doing [2/13]
    - [X] deglitching crashes with gnuplot					:HUH:
    - [X] in project selection dialog, controls for entering a periodic
          subset (i.e. every Nth record starting with the Jth record)
          this would be useful for QXAS or dispersive data files with
          many measurements.  regexp matching against names would also
          be nice
-   - [ ] replot upon group selection, space is configurable (E, k, R, q, specialty, none)
-   - [ ] buttons on difference tool are not working
+   - [ ] implement frozen groups
+   - [ ] replot upon group selection, space is configurable
+	 (E, k, R, q, quad, k123, r123, i0/signal, none)
+   - [ ] links to documentation on each tool
+   - [ ] column selection dialog is not remembering data numerator and
+         denominator selection
+   - [ ] *Pluck buttons*
+     + implement everywhere needed
+     + figure out cause of spurious error on Windows "failed to get
+       data from the clipboard error -2147221040 openClipboard failed"
+   - [ ] *Convolve/noise tool*
+     + add noise to chi data
+   - [ ] *Difference tool*
+     + plot diff for marked groups
+     + plot areas from marked groups
+     + make difference groups from marked groups
+   - [ ] *LCF tool*
+     + make data group from fit (use InsertData method)
+     + marked groups automation, display in fourth tab, excel output
+     + plot in R for fit in k
+   - [ ] *Group list*
+     + move groups up and down, keystroke | DnD
+   - [ ] *Plot menu*
+     + zoom/unzoom/cursor for pgplot
+   - [ ] *Help menu*
+     + demos
+     + document
+     + memory usage
 
-*** Help menu [1/4]
-   - [X]  about
-   - [ ]  demos
-   - [ ]  document
-   - [ ]  memory usage
+*** Windows issues [0/3]
+   - [ ] spurious message from clipboard
+   - [ ] parameter group context menus don't get posted
+   - [ ] the frickin' Gnuplot error logs seem to remain locked on Windows
+	 when a crash happens
 
-*** LCF needs doing [8/10]
-   - [X] share e0
-   - [X] test floating e0  
-   - [X] implement combi
-   - [ ] implement marked groups fit
-   - [X] test deriv fit
-   - [X] test in k
-   - [ ] implement plotting in R for a fit in k
-   - [X] enable main page buttons correctly after combi fit
-   - [X] enable result page buttons correctly after fit or combi fit
-   - [X] flags for required and fit_e0 don't get restored correctly when using combi page
-   - [ ] make group from fit button does nothing (use InsertData method)
-
-*** Groups [11/12]
-   - [ ] move up and down
-   - [X] copy group
-   - [X] about group
-   - [X] rename
-   - [X] tie reference channel by hand
-   - [X] propagate rename through reference
-   - [X] untie reference when discarding a tied group
-   - [X] remove group, removed marked
-   - [X] close project
-   - [X] change datatype
-   - [X] +titles+ using XDI instead
-   - [X] data as text
-
-*** Plot [5/6]
-   - [ ] zoom, unzoom, cursor, but only for pgplot
-   - [X] plot I0 marked
-   - [X] E0 at E=0 for marked
-   - [X] stddev and varience plots
-   - [X] project name as title in a marked plot
-   - [X] next plot to a file
-
-*** Merge [5/5]
-   - [X] mue
-   - [X] norm
-   - [X] chi
-   - [X] weight by importance/noise/step
-   - [X] datatype of merged group (xanes merge should be a xanes and so on) (this appears to be so, see [[file:lib/Demeter/Data/Process.pm][Demeter::Data::Process]]
 
 ** Artemis
 *** Artemis bugs and missing features [1/15]
    - [X] use text buffers as in Athena for TextEntryDialogs
-   - [ ] import an FPath from a yaml or from a project file, pathlist start page link for doing so
-   - [ ] what is the purpose of regenerate in fit deserialization?  in any case, need to fix group values *inside* yaml files
+   - [ ] import an FPath from a yaml or from a project file, pathlist
+	 start page link for doing so
+   - [ ] what is the purpose of regenerate in fit deserialization?  in
+	 any case, need to fix group values *inside* yaml files
    - [ ] fit numbering is wrong,should not increment if previous fit has fitted=0
    - [ ] should I clear out unfitted fit folders from project upon import?
    - [ ] update pods for D::Feff::Histogram and D::Feff:DL_POLY
    - [ ] feffit.inp import: needs testing; MDS that is not merely MKW
    - [ ] rename Atoms/Feff
-   - [ ] Balance interstitial energies for MFC fits  :MFC:
-   - [ ] Import mutiple data sets from an Athena project file  :MDS:FitSequence:
-   - [ ] Reorganize lists, move individual items up and down, move blocks up and down,  Path list, Plot list
-   - [ ] Clone data sets such that the path list gets replicated efficiently (i.e. for MDS fits)
-   - [ ] VPaths to project file  :Project:
-   - [ ] Indicators to project file  :Project:
+   - [ ] Balance interstitial energies for MFC fits		:MFC:
+   - [ ] Import mutiple data sets from an Athena project	:MDS:FitSequence:
+	 file 
+   - [ ] Reorganize lists, move individual items up and down, move
+	 blocks up and down, Path list, Plot list
+   - [ ] Clone data sets such that the path list gets replicated
+	 efficiently (i.e. for MDS fits)
+   - [ ] VPaths to project file  				:Project:
+   - [ ] Indicators to project file  				:Project:
    - [ ] Rename VPaths in VPath right click menu
 
 *** Histograms [4/11]
@@ -117,11 +137,13 @@
    - [X] bin nealy colinear configurations by R and theta and sum into a single chi(k)
    - [ ] turn SS histogram into a rattle TS histogram
    - [ ] three-body histogram from X -- [+] -- X configurations
-   - [ ] error check numbers before making histograms in Artemis.  it is possible to have value like "3.3."
+   - [ ] error check numbers before making histograms in Artemis.  it
+	 is possible to have value like "3.3."
    - [ ] check that there is at least one bin in the supplied range(s)
    - [ ] ipot=1 is hardwired in many places -- generalize....
    - [ ] scatter plot of ncl distribution
-   - [ ] factor out DLPOLY dependence into a role so that other MD packages can be added more easily
+   - [ ] factor out DLPOLY dependence into a role so that other MD
+	 packages can be added more easily
 
 ** Other object types [0/3]
   - [ ] Structural Units
@@ -139,9 +161,8 @@
 	into 2 or 3 3-legged paths and a single 4-legged path
 
 
-** Windows
-*** TODO non-ascii symbols
-*** TODO Fix [[file:lib/Demeter/UI/Wx/CheckListBook.pm][CheckListBook]]
+
+ 
 
 
 * thing that have been fixed
@@ -261,40 +282,42 @@
 *** clear project name
   - [X] 
 
+** Groups [11/11]
+  - [X] copy group
+  - [X] about group
+  - [X] rename
+  - [X] tie reference channel by hand
+  - [X] propagate rename through reference
+  - [X] untie reference when discarding a tied group
+  - [X] remove group, removed marked
+  - [X] close project
+  - [X] change datatype
+  - [X] +titles+ using XDI instead
+  - [X] data as text
 
 
+** Plot [5/5]
+  - [X] plot I0 marked
+  - [X] E0 at E=0 for marked
+  - [X] stddev and varience plots
+  - [X] project name as title in a marked plot
+  - [X] next plot to a file
+
+** Merge [5/5]
+  - [X] mue
+  - [X] norm
+  - [X] chi
+  - [X] weight by importance/noise/step
+  - [X] datatype of merged group (xanes merge should be a xanes and so on) (this appears to be so, see [[file:lib/Demeter/Data/Process.pm][Demeter::Data::Process]]
+
+** Windows
+*** DONE non-ascii symbols
+*** DONE Fix [[file:lib/Demeter/UI/Wx/CheckListBook.pm][CheckListBook]]
+      The solution is shown at the end of Athena.pm.  Define new methods for
+      CheckBoxList which maintain an indexed list of groups rather than relying
+      upon client data, which simply doesn't work on Windows.
 
 
-* Tools [16/23]
- - [X] main
- - [X] calibrate
- - [X] align
- - [X] deglitch
- - [ ] smooth with Savitsky-Golay filter				:PDL:
-        [[file:notes/sgolay.m][Matlab routine for SG filter]] 
- - [X] truncate
- - [X] rebin
- - [X] convolution and noise
- - [ ] deconvolution							:PDL:
- - [X] self absorption
- - [X] copy series
-
- - [ ] dispersive
- - [ ] multi-electron removal
-
- - [X] LCF
- - [ ] PCA								:PDL:
-        [[http://mailman.jach.hawaii.edu/pipermail/perldl/2006-August/000588.html][PCA from PDL mail archives]]
- - [ ] Peak fit
- - [X] log ratio
- - [X] difference
-
- - [ ] explain FT
- - [X] XDI
- - [X] journal
- - [X] plugins
- - [X] preference 
- 
 * Weird stuff I'd prefer not to implement unless demanded
  1. xfit output (only used by women who glow and men who plunder)
  2. csv and text report (excel *is* implemented)
@@ -307,7 +330,7 @@
  7. set e0 by algorithm for all and marked -- also confusing and
     little used
  8. plot margin lines for deglitching, deglitch many points (this was
-    something that was most useful for a timeing problem at 10ID that
+    something that was most useful for a timing problem at 10ID that
     no longer exists)
  9. preprocessing truncation and deglitching (truncation might be
     worth implementing)
