@@ -5,20 +5,17 @@
 ** wx issues
   - [ ] why does Wx::FileDialog with wxFD_OVERWRITE_PROMPT style not work correctly?
         see https://bugzilla.gnome.org/show_bug.cgi?id=631908 and 
-	https://bugs.launchpad.net/ubuntu/+source/gtk+2.0/+bug/558674 for more info
+        https://bugs.launchpad.net/ubuntu/+source/gtk+2.0/+bug/558674 for more info
         Turns out this is a gtk problem -- I can make the same thing happen with Firefox!
 
 ** Demeter bugs and shortcomings  [0/11]
-  - [ ] in D::Data::IO::save_many, why doesn't updating in n specifying
-       	"background" not work to bring data up to date?  (fft, i.e. doing
-       	autobk, does work)
+  - [ ] in D::Data::IO::save_many, why doesn't updating in n specifying "background" not work to bring data up to date?  (fft, i.e. doing autobk, does work)
   - [ ] +serialize VPath+, put VPath into +dpj and+ fpj files
   - [ ] tie multiple groups together
   - [ ] add a record to an existing Athena project file
   - [ ] set E0 to peak of white line
   - [ ] clnorm
-  - [ ] Data object should note that datatype is xanes and not
-        compute fbkg since the bkg array does not exist
+  - [ ] Data object should note that datatype is xanes and not compute fbkg since the bkg array does not exist
   - [ ] cannot specify title for stddev and variance plots
   - [ ] Demeter command backend needs polishing
   - [ ] we seem not to have a normalized group (i.e. plot the same asmu and norm)
@@ -68,8 +65,7 @@
          this would be useful for QXAS or dispersive data files with
          many measurements.  regexp matching against names would also
          be nice
-   - [X] replot upon group selection, space is configurable
-	 (E, k, R, q, quad, k123, r123, i0/signal, none)
+   - [X] replot upon group selection, space is configurable (E, k, R, q, quad, k123, r123, i0/signal, none)
    - [ ] implement frozen groups
    - [ ] links to documentation on each tool
    - [ ] column selection dialog is not remembering data numerator and
@@ -102,29 +98,23 @@
 *** Windows issues [0/3]
    - [ ] spurious message from clipboard
    - [ ] parameter group context menus don't get posted
-   - [ ] the frickin' Gnuplot error logs seem to remain locked on Windows
-	 when a crash happens
+   - [ ] the frickin' Gnuplot error logs seem to remain locked on Windows when a crash happens
 
 
 ** Artemis
 *** Artemis bugs and missing features [1/15]
    - [X] use text buffers as in Athena for TextEntryDialogs
-   - [ ] import an FPath from a yaml or from a project file, pathlist
-	 start page link for doing so
-   - [ ] what is the purpose of regenerate in fit deserialization?  in
-	 any case, need to fix group values *inside* yaml files
+   - [ ] import an FPath from a yaml or from a project file, pathlist start page link for doing so
+   - [ ] what is the purpose of regenerate in fit deserialization?  in any case, need to fix group values *inside* yaml files
    - [ ] fit numbering is wrong,should not increment if previous fit has fitted=0
    - [ ] should I clear out unfitted fit folders from project upon import?
    - [ ] update pods for D::Feff::Histogram and D::Feff:DL_POLY
    - [ ] feffit.inp import: needs testing; MDS that is not merely MKW
    - [ ] rename Atoms/Feff
    - [ ] Balance interstitial energies for MFC fits		:MFC:
-   - [ ] Import mutiple data sets from an Athena project	:MDS:FitSequence:
-	 file 
-   - [ ] Reorganize lists, move individual items up and down, move
-	 blocks up and down, Path list, Plot list
-   - [ ] Clone data sets such that the path list gets replicated
-	 efficiently (i.e. for MDS fits)
+   - [ ] Import mutiple data sets from an Athena project file	:MDS:FitSequence:
+   - [ ] Reorganize lists, move individual items up and down, move blocks up and down, Path list, Plot list
+   - [ ] Clone data sets such that the path list gets replicated efficiently (i.e. for MDS fits)
    - [ ] VPaths to project file  				:Project:
    - [ ] Indicators to project file  				:Project:
    - [ ] Rename VPaths in VPath right click menu
@@ -139,178 +129,25 @@
    - [X] bin nealy colinear configurations by R and theta and sum into a single chi(k)
    - [ ] turn SS histogram into a rattle TS histogram
    - [ ] three-body histogram from X -- [+] -- X configurations
-   - [ ] error check numbers before making histograms in Artemis.  it
-	 is possible to have value like "3.3."
+   - [ ] error check numbers before making histograms in Artemis.  it is possible to have value like "3.3."
    - [ ] check that there is at least one bin in the supplied range(s)
    - [ ] ipot=1 is hardwired in many places -- generalize....
    - [ ] scatter plot of ncl distribution
-   - [ ] factor out DLPOLY dependence into a role so that other MD
-	 packages can be added more easily
+   - [ ] factor out DLPOLY dependence into a role so that other MD packages can be added more easily
 
 ** Other object types [0/3]
   - [ ] Structural Units
-	Extension of VPath.  Store GDS, feff, and path objects in a zip file.
-	On import, mark GDS parameters as merge if in conflict
+      + Extension of VPath.  
+      + Store GDS, feff, and path objects in a zip file.
+      + On import, mark GDS parameters as merge if in conflict
   - [ ] MSPaths
-	Much like SSPath, make an arbitrary n-legged path
+      + Much like SSPath, make an arbitrary n-legged path
   - [ ] Nearly collinear paths
-	Define a three body configuration, generate its 4-legged path and a
-	sequence of three-legged paths along with a mixing parameter.
-	It will take a single set of path parameters that are pushed onto the
-	generated Path objects, except for the amplitude, which will be
-	computed from the mixing parameter.
-	This is a single object for the user to interact with which expands
-	into 2 or 3 3-legged paths and a single 4-legged path
+      + Define a three body configuration, generate its 4-legged path and a sequence of three-legged paths along with a mixing parameter.
+      + It will take a single set of path parameters that are pushed onto the generated Path objects, except for the amplitude, which will be computed from the mixing parameter.
+      + This is a single object for the user to interact with which expands into 2 or 3 3-legged paths and a single 4-legged path
 
 
-
- 
-
-
-* thing that have been fixed
-** Demeter bugs and shortcomings fixed  [19/19]
-  - [X] failed test 022 after upgrading office computer to 10.04
-  - [X] save_many fails to bring things up to date
-  - [X] save_many fails to use flat/norm correctly
-  - [X] it is annoying that the background trace is blue and the data is red
-  - [X] weighting by noise or importance?
-  - [X] merge array in write_athena
-  - [X] phase corrected FTs
-  - [X] bkg_fix_step does not work
-  - [X] erase ifeffit group when DEMOLISHing Data object
-  - [X] align as smoothed derivative
-  - [X] plotting smoothed derivative
-       	- need a template for applying the 3-pt smoothing N times, then taking second
-       	- need a hook before any deriv/second plot to call that template
-  - [X] self absorption algorithms [[file:~/codes/horae/athena_parts/sa_fluo.pl][from horae]]
-  - [X] self absorption information depth not yet implemented
-  - [X] templates for LR/PD [[file:~/codes/horae/athena_parts/macro.pl][old athena macros]]
-  - [X] templates for difference spectra
-  - [X] X23A2 multichannel filetype plugin
-  - [X] key top/left/bottom/right config params + controls in plottabs in Athena
-  - [X] deserializing SSPath fails
-  - [X] envelope is q is plotted absurdly wrongly (it seems to plot something in R)
-
-** Athena bugs fixed [16/16]
-  - [X] bare negative sign in a TextCtrl failed attribute type checking and crashes
-  - [X] labels in plot tabs should come from .pm files
-  - [X] align problem 
-         Can't call method "plot" on an undefined value at
-         /home/bruce/codes/demeter/lib/Demeter/UI/Athena/Align.pm line
-         202, <F> line 35.
-       	when clicking on group selected as standard while align is displayed
-  - [X] using tools (e.g. align) needs to toggle save flag
-  - [X] no status message after saving project...
-  - [X] plot in energy, need to update edge step box in case it changed
-  - [X] rename and mark_regexp need to keep a buffer of previous entries
-  - [X] importing stddev array from an Athena project file, then
-	 making a merge plot works oddly
-  - [X] renaming a group unchecks it
-  - [X] persistance for plotting styles
-  - [X] show yaml for style and indicator objects in monitor menu
-  - [X] handle preproc alignment correctly when MED data is made into
-	separate groups
-  - [X] in align tool (and others?) verify that standard selection
-	still exists in the project
-  - [X] Ifeffit show (strings, groups, arrays)
-  - [X] journal
-  - [X] excel report
-
-** other features [13/13]
-  - [X] column selection persistance
-  - [X] right click pop up menus on parameter StaticText-s
-  - [X] stacking
-  - [X] indicators
-  - [X] plotting styles
-         - need to make Demeter::Plot::Style object
-         - new tab
-         - button for saving current plot style
-         - ListBox for styles, single selection, on select push style
-         - right click to post menu with delete option
-  - [X] tie spline values in k and E
-  - [X] recommended fft_kmax
-  - [X] need to call mode after push_values
-  - [X] merged group needs a "file" explaining what it is
-  - [X] plot in E for a group that is of datatype chi(k) -- need
-       	something better than the wxperl carp
-  - [X] modified indication and y/n to save when closing or exiting
-  - [X] command line arguments
-  - [X] implement bkg_stan
-
-** miscellaneous plot tab [3/3]
-  - [X] specify title
-  - [X] singlefile toggle
-  - [X] suppress legend
-
-** Plugin registry [2/2]
-  - [X] GUI tool
-  - [X] test data against plugins
-
-** data import [6/6]
-  - [X] reference channel on import (use Demeter::Data::MultiChannel?)
-  - [X] rebin on import (need to get rebin page working)
-  - [X] preprocessing (need to get the various tool pages working)
-  - [X] datatype in column selection
-  - [X] units in column selection
-  - [X] save each channel as its own group (really must use D::D::MC)
-
-** Values
-*** parameter constraint
-**** all groups to current [3/3]
-  - [X] individual
-  - [X] group
-  - [X] all
-**** all marked to current [3/3]
-  - [X] individual
-  - [X] group
-  - [X] all
-*** set E0 [1/1]
-  - [X] for this, five methods
-
-** file menu
-*** save column data [5/5]
-  - [X] mu(E)
-  - [X] norm(E)
-  - [X] chi(k)
-  - [X] chi(R)
-  - [X] chi(q)
-*** save marked [4/4]
-  - [X] mu, norm, deriv mu/norm, second mu/norm
-  - [X] chi, chik, chik2, chik3
-  - [X] chir: magnitude, real imaginary
-  - [X] chiq: magnitude, real imaginary
-*** save each
-  - [X] mu, norm, chik chir chiq
-*** clear project name
-  - [X] 
-
-** Groups [11/11]
-  - [X] copy group
-  - [X] about group
-  - [X] rename
-  - [X] tie reference channel by hand
-  - [X] propagate rename through reference
-  - [X] untie reference when discarding a tied group
-  - [X] remove group, removed marked
-  - [X] close project
-  - [X] change datatype
-  - [X] +titles+ using XDI instead
-  - [X] data as text
-
-
-** Plot [5/5]
-  - [X] plot I0 marked
-  - [X] E0 at E=0 for marked
-  - [X] stddev and varience plots
-  - [X] project name as title in a marked plot
-  - [X] next plot to a file
-
-** Merge [5/5]
-  - [X] mue
-  - [X] norm
-  - [X] chi
-  - [X] weight by importance/noise/step
-  - [X] datatype of merged group (xanes merge should be a xanes and so on) (this appears to be so, see [[file:lib/Demeter/Data/Process.pm][Demeter::Data::Process]]
 
 ** Windows
 *** DONE non-ascii symbols
@@ -318,6 +155,8 @@
       The solution is shown at the end of Athena.pm.  Define new methods for
       CheckBoxList which maintain an indexed list of groups rather than relying
       upon client data, which simply doesn't work on Windows.
+
+ 
 
 
 * Weird stuff I'd prefer not to implement unless demanded
