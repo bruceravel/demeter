@@ -1,0 +1,1115 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+               "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+lang="en" xml:lang="en">
+<head>
+<title>-*- org -*-</title>
+<meta http-equiv="Content-Type" content="text/html;charset=iso-8859-1"/>
+<meta name="generator" content="Org-mode"/>
+<meta name="generated" content="2011-03-21 16:09:25 EDT"/>
+<meta name="author" content="Bruce Ravel"/>
+<style type="text/css">
+ <!--/*--><![CDATA[/*><!--*/
+  html { font-family: Times, serif; font-size: 12pt; }
+  .title  { text-align: center; }
+  .todo   { color: red; }
+  .done   { color: green; }
+  .tag    { background-color:lightblue; font-weight:normal }
+  .target { }
+  .timestamp { color: grey }
+  .timestamp-kwd { color: CadetBlue }
+  p.verse { margin-left: 3% }
+  pre {
+	border: 1pt solid #AEBDCC;
+	background-color: #F3F5F7;
+	padding: 5pt;
+	font-family: courier, monospace;
+        font-size: 90%;
+        overflow:auto;
+  }
+  table { border-collapse: collapse; }
+  td, th { vertical-align: top; }
+  dt { font-weight: bold; }
+  div.figure { padding: 0.5em; }
+  div.figure p { text-align: center; }
+  .linenr { font-size:smaller }
+  .code-highlighted {background-color:#ffff00;}
+  .org-info-js_info-navigation { border-style:none; }
+  #org-info-js_console-label { font-size:10px; font-weight:bold;
+                               white-space:nowrap; }
+  .org-info-js_search-highlight {background-color:#ffff00; color:#000000;
+                                 font-weight:bold; }
+  /*]]>*/-->
+</style>
+<script type="text/javascript">
+<!--/*--><![CDATA[/*><!--*/
+ function CodeHighlightOn(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(null != target) {
+     elem.cacheClassElem = elem.className;
+     elem.cacheClassTarget = target.className;
+     target.className = "code-highlighted";
+     elem.className   = "code-highlighted";
+   }
+ }
+ function CodeHighlightOff(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(elem.cacheClassElem)
+     elem.className = elem.cacheClassElem;
+   if(elem.cacheClassTarget)
+     target.className = elem.cacheClassTarget;
+ }
+/*]]>*/-->
+</script>
+</head><body>
+<h1 class="title">-*- org -*-</h1>
+
+
+<div id="table-of-contents">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#sec-1">1 things that need doing </a>
+<ul>
+<li><a href="#sec-1.1">1.1 wx issues </a></li>
+<li><a href="#sec-1.2">1.2 Demeter bugs and shortcomings  [0/11] </a></li>
+<li><a href="#sec-1.3">1.3 Athena </a></li>
+<li><a href="#sec-1.4">1.4 Artemis </a></li>
+<li><a href="#sec-1.5">1.5 Other object types [0/3] </a></li>
+</ul>
+</li>
+<li><a href="#sec-2">2 thing that have been fixed </a>
+<ul>
+<li><a href="#sec-2.1">2.1 Demeter bugs and shortcomings fixed  [19/19] </a></li>
+<li><a href="#sec-2.2">2.2 Athena bugs fixed [16/16] </a></li>
+<li><a href="#sec-2.3">2.3 other features [13/13] </a></li>
+<li><a href="#sec-2.4">2.4 miscellaneous plot tab [3/3] </a></li>
+<li><a href="#sec-2.5">2.5 Plugin registry [2/2] </a></li>
+<li><a href="#sec-2.6">2.6 data import [6/6] </a></li>
+<li><a href="#sec-2.7">2.7 Values </a></li>
+<li><a href="#sec-2.8">2.8 file menu </a></li>
+<li><a href="#sec-2.9">2.9 Groups [11/11] </a></li>
+<li><a href="#sec-2.10">2.10 Plot [5/5] </a></li>
+<li><a href="#sec-2.11">2.11 Merge [5/5] </a></li>
+<li><a href="#sec-2.12">2.12 Windows </a></li>
+</ul>
+</li>
+<li><a href="#sec-3">3 Weird stuff I'd prefer not to implement unless demanded </a></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-1" class="outline-2">
+<h2 id="sec-1">1 things that need doing </h2>
+<div id="text-1">
+
+
+
+</div>
+
+<div id="outline-container-1.1" class="outline-3">
+<h3 id="sec-1.1">1.1 wx issues </h3>
+<div id="text-1.1">
+
+<ul>
+<li>
+<b>[<span style="visibility:hidden;">X</span>]</b> why does Wx::FileDialog with wxFD<sub>OVERWRITE</sub><sub>PROMPT</sub> style not work correctly?
+see <a href="https://bugzilla.gnome.org/show_bug.cgi?id=631908">https://bugzilla.gnome.org/show_bug.cgi?id=631908</a> and 
+<a href="https://bugs.launchpad.net/ubuntu/+source/gtk+2.0/+bug/558674">https://bugs.launchpad.net/ubuntu/+source/gtk+2.0/+bug/558674</a> for more info
+Turns out this is a gtk problem &ndash; I can make the same thing happen with Firefox!
+
+</li>
+</ul>
+</div>
+
+</div>
+
+<div id="outline-container-1.2" class="outline-3">
+<h3 id="sec-1.2">1.2 Demeter bugs and shortcomings  [0/11] </h3>
+<div id="text-1.2">
+
+<ul>
+<li>
+<b>[<span style="visibility:hidden;">X</span>]</b> in D::Data::IO::save<sub>many</sub>, why doesn't updating in n specifying
+"background" not work to bring data up to date?  (fft, i.e. doing
+autobk, does work)
+</li>
+<li>
+<b>[<span style="visibility:hidden;">X</span>]</b> <del>serialize VPath</del>, put VPath into <del>dpj and</del> fpj files
+</li>
+<li>
+<b>[<span style="visibility:hidden;">X</span>]</b> tie multiple groups together
+</li>
+<li>
+<b>[<span style="visibility:hidden;">X</span>]</b> add a record to an existing Athena project file
+</li>
+<li>
+<b>[<span style="visibility:hidden;">X</span>]</b> set E0 to peak of white line
+</li>
+<li>
+<b>[<span style="visibility:hidden;">X</span>]</b> clnorm
+</li>
+<li>
+<b>[<span style="visibility:hidden;">X</span>]</b> Data object should note that datatype is xanes and not
+compute fbkg since the bkg array does not exist
+</li>
+<li>
+<b>[<span style="visibility:hidden;">X</span>]</b> cannot specify title for stddev and variance plots
+</li>
+<li>
+<b>[<span style="visibility:hidden;">X</span>]</b> Demeter command backend needs polishing
+</li>
+<li>
+<b>[<span style="visibility:hidden;">X</span>]</b> we seem not to have a normalized group (i.e. plot the same asmu and norm)
+</li>
+<li>
+<b>[<span style="visibility:hidden;">X</span>]</b> 3rd derivative
+
+
+</li>
+</ul>
+</div>
+
+</div>
+
+<div id="outline-container-1.3" class="outline-3">
+<h3 id="sec-1.3">1.3 Athena </h3>
+<div id="text-1.3">
+
+
+<ul>
+<li id="sec-1.3.1">Tools [16/23] <br/>
+<ul>
+<li>
+<b>[X]</b> main
+</li>
+<li>
+<b>[X]</b> calibrate
+</li>
+<li>
+<b>[X]</b> align
+</li>
+<li>
+<b>[X]</b> deglitch
+</li>
+<li>
+<b>[<span style="visibility:hidden;">X</span>]</b> <i>smooth with Savitsky-Golay filter</i>                            :PDL:
+<a href="notes/sgolay.m">Matlab routine for SG filter</a> 
+</li>
+<li>
+<b>[X]</b> truncate
+</li>
+<li>
+<b>[X]</b> rebin
+</li>
+<li>
+<b>[X]</b> convolution and noise
+</li>
+<li>
+<b>[<span style="visibility:hidden;">X</span>]</b> <i>deconvolution</i>                                                :PDL:
+</li>
+<li>
+<b>[X]</b> self absorption
+</li>
+<li>
+<b>[X]</b> copy series
+
+</li>
+<li>
+<b>[<span style="visibility:hidden;">X</span>]</b> dispersive
+</li>
+<li>
+<b>[<span style="visibility:hidden;">X</span>]</b> multi-electron removal
+
+</li>
+<li>
+<b>[X]</b> LCF
+</li>
+<li>
+<b>[<span style="visibility:hidden;">X</span>]</b> <i>PCA</i>                                                          :PDL:
+<a href="http://mailman.jach.hawaii.edu/pipermail/perldl/2006-August/000588.html">PCA from PDL mail archives</a>
+</li>
+<li>
+<b>[<span style="visibility:hidden;">X</span>]</b> Peak fit
+</li>
+<li>
+<b>[X]</b> log ratio
+</li>
+<li>
+<b>[X]</b> difference
+
+</li>
+<li>
+<b>[<span style="visibility:hidden;">X</span>]</b> explain FT
+</li>
+<li>
+<b>[X]</b> XDI
+</li>
+<li>
+<b>[X]</b> journal
+</li>
+<li>
+<b>[X]</b> plugins
+</li>
+<li>
+<b>[X]</b> preference 
+
+</li>
+</ul>
+</li>
+<li id="sec-1.3.2">needs testing [0/2] <br/>
+<ul>
+<li>
+<b>[<span style="visibility:hidden;">X</span>]</b> reference of another edge
+</li>
+<li>
+<b>[<span style="visibility:hidden;">X</span>]</b> keV data
+
+</li>
+</ul>
+</li>
+<li id="sec-1.3.3">needs doing [3/13] <br/>
+<ul>
+<li>
+<b>[X]</b> deglitching crashes with gnuplot                                       :HUH:
+</li>
+<li>
+<b>[X]</b> in project selection dialog, controls for entering a periodic
+subset (i.e. every Nth record starting with the Jth record)
+this would be useful for QXAS or dispersive data files with
+many measurements.  regexp matching against names would also
+be nice
+</li>
+<li>
+<b>[X]</b> replot upon group selection, space is configurable
+(E, k, R, q, quad, k123, r123, i0/signal, none)
+</li>
+<li>
+<b>[<span style="visibility:hidden;">X</span>]</b> implement frozen groups
+</li>
+<li>
+<b>[<span style="visibility:hidden;">X</span>]</b> links to documentation on each tool
+</li>
+<li>
+<b>[<span style="visibility:hidden;">X</span>]</b> column selection dialog is not remembering data numerator and
+denominator selection
+</li>
+<li>
+<b>[<span style="visibility:hidden;">X</span>]</b> left click on groups list should post group menu (others?)
+</li>
+<li>
+<b>[<span style="visibility:hidden;">X</span>]</b> <b>Pluck buttons</b>
+<ul>
+<li>
+implement everywhere needed
+</li>
+<li>
+figure out cause of spurious error on Windows "failed to get
+data from the clipboard error -2147221040 openClipboard failed"
+</li>
+</ul>
+</li>
+<li>
+<b>[<span style="visibility:hidden;">X</span>]</b> <b>Convolve/noise tool</b>
+<ul>
+<li>
+add noise to chi data
+</li>
+</ul>
+</li>
+<li>
+<b>[<span style="visibility:hidden;">X</span>]</b> <b>Difference tool</b>
+<ul>
+<li>
+plot diff for marked groups
+</li>
+<li>
+plot areas from marked groups
+</li>
+<li>
+make difference groups from marked groups
+</li>
+</ul>
+</li>
+<li>
+<b>[<span style="visibility:hidden;">X</span>]</b> <b>LCF tool</b>
+<ul>
+<li>
+make data group from fit (use InsertData method)
+</li>
+<li>
+marked groups automation, display in fourth tab, excel output
+</li>
+<li>
+plot in R for fit in k
+</li>
+<li>
+persistance of LCF results
+</li>
+</ul>
+</li>
+<li>
+<b>[<span style="visibility:hidden;">X</span>]</b> <b>Group list</b>
+<ul>
+<li>
+move groups up and down, keystroke | DnD
+</li>
+</ul>
+</li>
+<li>
+<b>[<span style="visibility:hidden;">X</span>]</b> <b>Plot menu</b>
+<ul>
+<li>
+zoom/unzoom/cursor for pgplot
+</li>
+</ul>
+</li>
+<li>
+<b>[<span style="visibility:hidden;">X</span>]</b> <b>Help menu</b>
+<ul>
+<li>
+demos
+</li>
+<li>
+document
+</li>
+<li>
+memory usage
+
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li id="sec-1.3.4">Windows issues [0/3] <br/>
+<ul>
+<li>
+<b>[<span style="visibility:hidden;">X</span>]</b> spurious message from clipboard
+</li>
+<li>
+<b>[<span style="visibility:hidden;">X</span>]</b> parameter group context menus don't get posted
+</li>
+<li>
+<b>[<span style="visibility:hidden;">X</span>]</b> the frickin' Gnuplot error logs seem to remain locked on Windows
+when a crash happens
+
+
+</li>
+</ul>
+</li>
+</ul>
+</div>
+
+</div>
+
+<div id="outline-container-1.4" class="outline-3">
+<h3 id="sec-1.4">1.4 Artemis </h3>
+<div id="text-1.4">
+
+<ul>
+<li id="sec-1.4.1">Artemis bugs and missing features [1/15] <br/>
+<ul>
+<li>
+<b>[X]</b> use text buffers as in Athena for TextEntryDialogs
+</li>
+<li>
+<b>[<span style="visibility:hidden;">X</span>]</b> import an FPath from a yaml or from a project file, pathlist
+start page link for doing so
+</li>
+<li>
+<b>[<span style="visibility:hidden;">X</span>]</b> what is the purpose of regenerate in fit deserialization?  in
+any case, need to fix group values <b>inside</b> yaml files
+</li>
+<li>
+<b>[<span style="visibility:hidden;">X</span>]</b> fit numbering is wrong,should not increment if previous fit has fitted=0
+</li>
+<li>
+<b>[<span style="visibility:hidden;">X</span>]</b> should I clear out unfitted fit folders from project upon import?
+</li>
+<li>
+<b>[<span style="visibility:hidden;">X</span>]</b> update pods for D::Feff::Histogram and D::Feff:DL<sub>POLY</sub>
+</li>
+<li>
+<b>[<span style="visibility:hidden;">X</span>]</b> feffit.inp import: needs testing; MDS that is not merely MKW
+</li>
+<li>
+<b>[<span style="visibility:hidden;">X</span>]</b> rename Atoms/Feff
+</li>
+<li>
+<b>[<span style="visibility:hidden;">X</span>]</b> Balance interstitial energies for MFC fits             :MFC:
+</li>
+<li>
+<b>[<span style="visibility:hidden;">X</span>]</b> Import mutiple data sets from an Athena project        :MDS:FitSequence:
+file 
+</li>
+<li>
+<b>[<span style="visibility:hidden;">X</span>]</b> Reorganize lists, move individual items up and down, move
+blocks up and down, Path list, Plot list
+</li>
+<li>
+<b>[<span style="visibility:hidden;">X</span>]</b> Clone data sets such that the path list gets replicated
+efficiently (i.e. for MDS fits)
+</li>
+<li>
+<b>[<span style="visibility:hidden;">X</span>]</b> VPaths to project file                                 :Project:
+</li>
+<li>
+<b>[<span style="visibility:hidden;">X</span>]</b> Indicators to project file                             :Project:
+</li>
+<li>
+<b>[<span style="visibility:hidden;">X</span>]</b> Rename VPaths in VPath right click menu
+
+</li>
+</ul>
+</li>
+<li id="sec-1.4.2">Histograms [4/11] <br/>
+<ul>
+<li>
+<b>[X]</b> sum histogram bins into a single chi(k) file
+</li>
+<li>
+<b>[X]</b> convert chi(k) data to a mock feffNNNN.dat file
+</li>
+<li>
+<b>[X]</b> Triangle object
+<ul>
+<li>
+yields a DS path and a TS path
+</li>
+<li>
+by R and theta
+</li>
+<li>
+<del>by a trio of Cartesian coordinates</del>
+</li>
+</ul>
+</li>
+<li>
+<b>[X]</b> bin nealy colinear configurations by R and theta and sum into a single chi(k)
+</li>
+<li>
+<b>[<span style="visibility:hidden;">X</span>]</b> turn SS histogram into a rattle TS histogram
+</li>
+<li>
+<b>[<span style="visibility:hidden;">X</span>]</b> three-body histogram from X &ndash; [+] &ndash; X configurations
+</li>
+<li>
+<b>[<span style="visibility:hidden;">X</span>]</b> error check numbers before making histograms in Artemis.  it
+is possible to have value like "3.3."
+</li>
+<li>
+<b>[<span style="visibility:hidden;">X</span>]</b> check that there is at least one bin in the supplied range(s)
+</li>
+<li>
+<b>[<span style="visibility:hidden;">X</span>]</b> ipot=1 is hardwired in many places &ndash; generalize&hellip;.
+</li>
+<li>
+<b>[<span style="visibility:hidden;">X</span>]</b> scatter plot of ncl distribution
+</li>
+<li>
+<b>[<span style="visibility:hidden;">X</span>]</b> factor out DLPOLY dependence into a role so that other MD
+packages can be added more easily
+
+</li>
+</ul>
+</li>
+</ul>
+</div>
+
+</div>
+
+<div id="outline-container-1.5" class="outline-3">
+<h3 id="sec-1.5">1.5 Other object types [0/3] </h3>
+<div id="text-1.5">
+
+<ul>
+<li>
+<b>[<span style="visibility:hidden;">X</span>]</b> Structural Units
+Extension of VPath.  Store GDS, feff, and path objects in a zip file.
+On import, mark GDS parameters as merge if in conflict
+</li>
+<li>
+<b>[<span style="visibility:hidden;">X</span>]</b> MSPaths
+Much like SSPath, make an arbitrary n-legged path
+</li>
+<li>
+<b>[<span style="visibility:hidden;">X</span>]</b> Nearly collinear paths
+Define a three body configuration, generate its 4-legged path and a
+sequence of three-legged paths along with a mixing parameter.
+It will take a single set of path parameters that are pushed onto the
+generated Path objects, except for the amplitude, which will be
+computed from the mixing parameter.
+This is a single object for the user to interact with which expands
+into 2 or 3 3-legged paths and a single 4-legged path
+
+
+
+
+
+
+</li>
+</ul>
+</div>
+</div>
+
+</div>
+
+<div id="outline-container-2" class="outline-2">
+<h2 id="sec-2">2 thing that have been fixed </h2>
+<div id="text-2">
+
+
+</div>
+
+<div id="outline-container-2.1" class="outline-3">
+<h3 id="sec-2.1">2.1 Demeter bugs and shortcomings fixed  [19/19] </h3>
+<div id="text-2.1">
+
+<ul>
+<li>
+<b>[X]</b> failed test 022 after upgrading office computer to 10.04
+</li>
+<li>
+<b>[X]</b> save<sub>many</sub> fails to bring things up to date
+</li>
+<li>
+<b>[X]</b> save<sub>many</sub> fails to use flat/norm correctly
+</li>
+<li>
+<b>[X]</b> it is annoying that the background trace is blue and the data is red
+</li>
+<li>
+<b>[X]</b> weighting by noise or importance?
+</li>
+<li>
+<b>[X]</b> merge array in write<sub>athena</sub>
+</li>
+<li>
+<b>[X]</b> phase corrected FTs
+</li>
+<li>
+<b>[X]</b> bkg<sub>fix</sub><sub>step</sub> does not work
+</li>
+<li>
+<b>[X]</b> erase ifeffit group when DEMOLISHing Data object
+</li>
+<li>
+<b>[X]</b> align as smoothed derivative
+</li>
+<li>
+<b>[X]</b> plotting smoothed derivative
+<ul>
+<li>
+need a template for applying the 3-pt smoothing N times, then taking second
+</li>
+<li>
+need a hook before any deriv/second plot to call that template
+</li>
+</ul>
+</li>
+<li>
+<b>[X]</b> self absorption algorithms <a href="/home/bruce/codes/horae/athena_parts/sa_fluo.pl">from horae</a>
+</li>
+<li>
+<b>[X]</b> self absorption information depth not yet implemented
+</li>
+<li>
+<b>[X]</b> templates for LR/PD <a href="/home/bruce/codes/horae/athena_parts/macro.pl">old athena macros</a>
+</li>
+<li>
+<b>[X]</b> templates for difference spectra
+</li>
+<li>
+<b>[X]</b> X23A2 multichannel filetype plugin
+</li>
+<li>
+<b>[X]</b> key top/left/bottom/right config params + controls in plottabs in Athena
+</li>
+<li>
+<b>[X]</b> deserializing SSPath fails
+</li>
+<li>
+<b>[X]</b> envelope is q is plotted absurdly wrongly (it seems to plot something in R)
+
+</li>
+</ul>
+</div>
+
+</div>
+
+<div id="outline-container-2.2" class="outline-3">
+<h3 id="sec-2.2">2.2 Athena bugs fixed [16/16] </h3>
+<div id="text-2.2">
+
+<ul>
+<li>
+<b>[X]</b> bare negative sign in a TextCtrl failed attribute type checking and crashes
+</li>
+<li>
+<b>[X]</b> labels in plot tabs should come from .pm files
+</li>
+<li>
+<b>[X]</b> align problem 
+Can't call method "plot" on an undefined value at
+/home/bruce/codes/demeter/lib/Demeter/UI/Athena/Align.pm line
+202, &lt;F&gt; line 35.
+when clicking on group selected as standard while align is displayed
+</li>
+<li>
+<b>[X]</b> using tools (e.g. align) needs to toggle save flag
+</li>
+<li>
+<b>[X]</b> no status message after saving project&hellip;
+</li>
+<li>
+<b>[X]</b> plot in energy, need to update edge step box in case it changed
+</li>
+<li>
+<b>[X]</b> rename and mark<sub>regexp</sub> need to keep a buffer of previous entries
+</li>
+<li>
+<b>[X]</b> importing stddev array from an Athena project file, then
+making a merge plot works oddly
+</li>
+<li>
+<b>[X]</b> renaming a group unchecks it
+</li>
+<li>
+<b>[X]</b> persistance for plotting styles
+</li>
+<li>
+<b>[X]</b> show yaml for style and indicator objects in monitor menu
+</li>
+<li>
+<b>[X]</b> handle preproc alignment correctly when MED data is made into
+separate groups
+</li>
+<li>
+<b>[X]</b> in align tool (and others?) verify that standard selection
+still exists in the project
+</li>
+<li>
+<b>[X]</b> Ifeffit show (strings, groups, arrays)
+</li>
+<li>
+<b>[X]</b> journal
+</li>
+<li>
+<b>[X]</b> excel report
+
+</li>
+</ul>
+</div>
+
+</div>
+
+<div id="outline-container-2.3" class="outline-3">
+<h3 id="sec-2.3">2.3 other features [13/13] </h3>
+<div id="text-2.3">
+
+<ul>
+<li>
+<b>[X]</b> column selection persistance
+</li>
+<li>
+<b>[X]</b> right click pop up menus on parameter StaticText-s
+</li>
+<li>
+<b>[X]</b> stacking
+</li>
+<li>
+<b>[X]</b> indicators
+</li>
+<li>
+<b>[X]</b> plotting styles
+<ul>
+<li>
+need to make Demeter::Plot::Style object
+</li>
+<li>
+new tab
+</li>
+<li>
+button for saving current plot style
+</li>
+<li>
+ListBox for styles, single selection, on select push style
+</li>
+<li>
+right click to post menu with delete option
+</li>
+</ul>
+</li>
+<li>
+<b>[X]</b> tie spline values in k and E
+</li>
+<li>
+<b>[X]</b> recommended fft<sub>kmax</sub>
+</li>
+<li>
+<b>[X]</b> need to call mode after push<sub>values</sub>
+</li>
+<li>
+<b>[X]</b> merged group needs a "file" explaining what it is
+</li>
+<li>
+<b>[X]</b> plot in E for a group that is of datatype chi(k) &ndash; need
+something better than the wxperl carp
+</li>
+<li>
+<b>[X]</b> modified indication and y/n to save when closing or exiting
+</li>
+<li>
+<b>[X]</b> command line arguments
+</li>
+<li>
+<b>[X]</b> implement bkg<sub>stan</sub>
+
+</li>
+</ul>
+</div>
+
+</div>
+
+<div id="outline-container-2.4" class="outline-3">
+<h3 id="sec-2.4">2.4 miscellaneous plot tab [3/3] </h3>
+<div id="text-2.4">
+
+<ul>
+<li>
+<b>[X]</b> specify title
+</li>
+<li>
+<b>[X]</b> singlefile toggle
+</li>
+<li>
+<b>[X]</b> suppress legend
+
+</li>
+</ul>
+</div>
+
+</div>
+
+<div id="outline-container-2.5" class="outline-3">
+<h3 id="sec-2.5">2.5 Plugin registry [2/2] </h3>
+<div id="text-2.5">
+
+<ul>
+<li>
+<b>[X]</b> GUI tool
+</li>
+<li>
+<b>[X]</b> test data against plugins
+
+</li>
+</ul>
+</div>
+
+</div>
+
+<div id="outline-container-2.6" class="outline-3">
+<h3 id="sec-2.6">2.6 data import [6/6] </h3>
+<div id="text-2.6">
+
+<ul>
+<li>
+<b>[X]</b> reference channel on import (use Demeter::Data::MultiChannel?)
+</li>
+<li>
+<b>[X]</b> rebin on import (need to get rebin page working)
+</li>
+<li>
+<b>[X]</b> preprocessing (need to get the various tool pages working)
+</li>
+<li>
+<b>[X]</b> datatype in column selection
+</li>
+<li>
+<b>[X]</b> units in column selection
+</li>
+<li>
+<b>[X]</b> save each channel as its own group (really must use D::D::MC)
+
+</li>
+</ul>
+</div>
+
+</div>
+
+<div id="outline-container-2.7" class="outline-3">
+<h3 id="sec-2.7">2.7 Values </h3>
+<div id="text-2.7">
+
+<ul>
+<li id="sec-2.7.1">parameter constraint <br/>
+<ul>
+<li id="sec-2.7.1.1">all groups to current [3/3] <br/>
+<ul>
+<li>
+<b>[X]</b> individual
+</li>
+<li>
+<b>[X]</b> group
+</li>
+<li>
+<b>[X]</b> all
+</li>
+</ul>
+</li>
+<li id="sec-2.7.1.2">all marked to current [3/3] <br/>
+<ul>
+<li>
+<b>[X]</b> individual
+</li>
+<li>
+<b>[X]</b> group
+</li>
+<li>
+<b>[X]</b> all
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li id="sec-2.7.2">set E0 [1/1] <br/>
+<ul>
+<li>
+<b>[X]</b> for this, five methods
+
+</li>
+</ul>
+</li>
+</ul>
+</div>
+
+</div>
+
+<div id="outline-container-2.8" class="outline-3">
+<h3 id="sec-2.8">2.8 file menu </h3>
+<div id="text-2.8">
+
+<ul>
+<li id="sec-2.8.1">save column data [5/5] <br/>
+<ul>
+<li>
+<b>[X]</b> mu(E)
+</li>
+<li>
+<b>[X]</b> norm(E)
+</li>
+<li>
+<b>[X]</b> chi(k)
+</li>
+<li>
+<b>[X]</b> chi(R)
+</li>
+<li>
+<b>[X]</b> chi(q)
+</li>
+</ul>
+</li>
+<li id="sec-2.8.2">save marked [4/4] <br/>
+<ul>
+<li>
+<b>[X]</b> mu, norm, deriv mu/norm, second mu/norm
+</li>
+<li>
+<b>[X]</b> chi, chik, chik2, chik3
+</li>
+<li>
+<b>[X]</b> chir: magnitude, real imaginary
+</li>
+<li>
+<b>[X]</b> chiq: magnitude, real imaginary
+</li>
+</ul>
+</li>
+<li id="sec-2.8.3">save each <br/>
+<ul>
+<li>
+<b>[X]</b> mu, norm, chik chir chiq
+</li>
+</ul>
+</li>
+<li id="sec-2.8.4">clear project name <br/>
+<ul>
+<li>
+<b>[X]</b> 
+
+</li>
+</ul>
+</li>
+</ul>
+</div>
+
+</div>
+
+<div id="outline-container-2.9" class="outline-3">
+<h3 id="sec-2.9">2.9 Groups [11/11] </h3>
+<div id="text-2.9">
+
+<ul>
+<li>
+<b>[X]</b> copy group
+</li>
+<li>
+<b>[X]</b> about group
+</li>
+<li>
+<b>[X]</b> rename
+</li>
+<li>
+<b>[X]</b> tie reference channel by hand
+</li>
+<li>
+<b>[X]</b> propagate rename through reference
+</li>
+<li>
+<b>[X]</b> untie reference when discarding a tied group
+</li>
+<li>
+<b>[X]</b> remove group, removed marked
+</li>
+<li>
+<b>[X]</b> close project
+</li>
+<li>
+<b>[X]</b> change datatype
+</li>
+<li>
+<b>[X]</b> <del>titles</del> using XDI instead
+</li>
+<li>
+<b>[X]</b> data as text
+
+
+</li>
+</ul>
+</div>
+
+</div>
+
+<div id="outline-container-2.10" class="outline-3">
+<h3 id="sec-2.10">2.10 Plot [5/5] </h3>
+<div id="text-2.10">
+
+<ul>
+<li>
+<b>[X]</b> plot I0 marked
+</li>
+<li>
+<b>[X]</b> E0 at E=0 for marked
+</li>
+<li>
+<b>[X]</b> stddev and varience plots
+</li>
+<li>
+<b>[X]</b> project name as title in a marked plot
+</li>
+<li>
+<b>[X]</b> next plot to a file
+
+</li>
+</ul>
+</div>
+
+</div>
+
+<div id="outline-container-2.11" class="outline-3">
+<h3 id="sec-2.11">2.11 Merge [5/5] </h3>
+<div id="text-2.11">
+
+<ul>
+<li>
+<b>[X]</b> mue
+</li>
+<li>
+<b>[X]</b> norm
+</li>
+<li>
+<b>[X]</b> chi
+</li>
+<li>
+<b>[X]</b> weight by importance/noise/step
+</li>
+<li>
+<b>[X]</b> datatype of merged group (xanes merge should be a xanes and so on) (this appears to be so, see <a href="lib/Demeter/Data/Process.pm">Demeter::Data::Process</a>
+
+</li>
+</ul>
+</div>
+
+</div>
+
+<div id="outline-container-2.12" class="outline-3">
+<h3 id="sec-2.12">2.12 Windows </h3>
+<div id="text-2.12">
+
+<ul>
+<li id="sec-2.12.1"><span class="done">DONE</span> non-ascii symbols <br/>
+</li>
+<li id="sec-2.12.2"><span class="done">DONE</span> Fix <a href="lib/Demeter/UI/Wx/CheckListBook.pm">CheckListBook</a> <br/>
+The solution is shown at the end of Athena.pm.  Define new methods for
+CheckBoxList which maintain an indexed list of groups rather than relying
+upon client data, which simply doesn't work on Windows.
+
+
+</li>
+</ul>
+</div>
+</div>
+
+</div>
+
+<div id="outline-container-3" class="outline-2">
+<h2 id="sec-3">3 Weird stuff I'd prefer not to implement unless demanded </h2>
+<div id="text-3">
+
+<ol>
+<li>
+xfit output (only used by women who glow and men who plunder)
+</li>
+<li>
+csv and text report (excel <b>is</b> implemented)
+</li>
+<li>
+point finder (this was Shelly's request)
+</li>
+<li>
+session defaults (did anyone but me actually use these?)
+</li>
+<li>
+set to standard (i.e. the one that is marked) &ndash; confusing and
+little used
+</li>
+<li>
+tie relative energy value to changes in E0 (this was something
+Jeremy requested originally)
+</li>
+<li>
+set e0 by algorithm for all and marked &ndash; also confusing and
+little used
+</li>
+<li>
+plot margin lines for deglitching, deglitch many points (this was
+something that was most useful for a timing problem at 10ID that
+no longer exists)
+</li>
+<li>
+preprocessing truncation and deglitching (truncation might be
+worth implementing)
+
+</li>
+</ol>
+</div>
+</div>
+<div id="postamble"><p class="author"> Author: Bruce Ravel
+<a href="mailto:bruce@dh10">&lt;bruce@dh10&gt;</a>
+</p>
+<p class="date"> Date: 2011-03-21 16:09:25 EDT</p>
+<p>HTML generated by org-mode 6.21b in emacs 23</p>
+</div></body>
+</html>

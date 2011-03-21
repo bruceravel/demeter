@@ -130,7 +130,7 @@ sub OnInit {
   $app->{main}->Refresh;
   $app->{main}->Update;
   $app->{main} -> status("Welcome to Athena (" . $demeter->identify . ")");
-  $app->OnGroupSelect(q{}, $app->{main}->{list}->GetSelection);
+  $app->OnGroupSelect(q{}, $app->{main}->{list}->GetSelection, 0);
   1;
 };
 
@@ -1052,7 +1052,7 @@ sub main_window {
   $app->{main}->{views}->SetSelection(0);
 
   $app->{main}->{return}   = Wx::Button->new($viewpanel, -1, 'Return to main window', wxDefaultPosition, wxDefaultSize, wxBU_EXACTFIT);
-  $app->EVT_BUTTON($app->{main}->{return},   sub{  $app->{main}->{views}->SetSelection(0); $app->OnGroupSelect});
+  $app->EVT_BUTTON($app->{main}->{return},   sub{  $app->{main}->{views}->SetSelection(0); $app->OnGroupSelect(0)});
   $viewbox -> Add($app->{main}->{return}, 0, wxGROW|wxLEFT|wxRIGHT, 5);
 
   $viewpanel -> SetSizerAndFit($viewbox);
@@ -1063,7 +1063,7 @@ sub main_window {
   $app->{main}->{views}->InsertPage(16, $null, $Demeter::UI::Athena::Null::label, 0);
 
 
-  EVT_CHOICEBOOK_PAGE_CHANGED($app->{main}, $app->{main}->{views}, sub{$app->OnGroupSelect(0,0);
+  EVT_CHOICEBOOK_PAGE_CHANGED($app->{main}, $app->{main}->{views}, sub{$app->OnGroupSelect(0,0,0);
 								       $app->{main}->{return}->Show($app->{main}->{views}->GetSelection)});
   EVT_CHOICEBOOK_PAGE_CHANGING($app->{main}, $app->{main}->{views}, sub{$app->view_changing(@_)});
 
@@ -1081,7 +1081,7 @@ sub side_bar {
   $app->{main}->{list} = Wx::CheckListBox->new($toolpanel, -1, wxDefaultPosition, wxDefaultSize, [], wxLB_SINGLE|wxLB_NEEDED_SB);
   $app->{main}->{list}->{datalist} = []; # see modifications to CheckBookList at end of this file....
   $toolbox            -> Add($app->{main}->{list}, 1, wxGROW|wxALL, 0);
-  EVT_LISTBOX($toolpanel, $app->{main}->{list}, sub{$app->OnGroupSelect(@_)});
+  EVT_LISTBOX($toolpanel, $app->{main}->{list}, sub{$app->OnGroupSelect(@_,1)});
   EVT_LISTBOX_DCLICK($toolpanel, $app->{main}->{list}, sub{$app->Rename;});
   #print Wx::SystemSettings::GetColour(wxSYS_COLOUR_HIGHLIGHT), $/;
   #$app->{main}->{list}->SetBackgroundColour(Wx::Colour->new($demeter->co->default("athena", "single")));
@@ -1146,7 +1146,7 @@ sub side_bar {
 
 
 sub OnGroupSelect {
-  my ($app, $parent, $event) = @_;
+  my ($app, $parent, $event, $plot) = @_;
   my $is_index = (ref($event) =~ m{Event}) ? $event->GetSelection : $app->{main}->{list}->GetSelection;
 
   my $was = ($app->{selected} == -1) ? 0 : $app->{main}->{list}->GetIndexedData($app->{selected});
@@ -1173,8 +1173,30 @@ sub OnGroupSelect {
   foreach my $x ($PLOT_QUAD, $PLOT_IOSIG, $PLOT_K123, $PLOT_R123) {$app->{main}->{currentplotmenu} -> Enable($x, $n)};
   foreach my $x ($PLOT_E00, $PLOT_I0MARKED                      ) {$app->{main}->{markedplotmenu}  -> Enable($x, $n)};
 
+  $app->select_plot($app->current_data) if $plot;
   $app->{selecting_data_group}=0;
 };
+
+sub select_plot {
+  my ($app, $data) = @_;
+  return if $app->is_empty;
+  return if $app->{main}->{views}->GetSelection; # only on main window
+  my $how = lc($data->co->default('athena', 'select_plot'));
+  $data->po->start_plot;
+  if ($how eq 'quad') {
+    $app->quadplot($data);
+  } elsif ($how eq 'k123') {
+    $app->{main}->{PlotK}->pull_single_values;
+    $data->plot('k123');
+  } elsif ($how eq 'r123') {
+    $app->{main}->{PlotR}->pull_single_values;
+    $data->plot('k123');
+  } elsif ($how =~ m{\A[ekrq]\z}) {
+    $app->plot(0, 0, $how, 'single');
+  }; # else $how is none
+  return;
+};
+
 
 sub view_changing {
   my ($app, $frame, $event) = @_;
@@ -1511,7 +1533,7 @@ sub merge {
   $merged->name('merge'.$max);
   $app->{main}->{list}->AddData($merged->name, $merged);
   $app->{main}->{list}->SetSelection($app->{main}->{list}->GetCount-1);
-  $app->OnGroupSelect(q{}, $app->{main}->{list}->GetSelection);
+  $app->OnGroupSelect(q{}, $app->{main}->{list}->GetSelection, 0);
   $app->{main}->{Main}->mode($merged, 1, 0);
   $app->{main}->{list}->Check($app->{main}->{list}->GetCount-1, 1);
   $app->modified(1);

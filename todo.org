@@ -32,7 +32,7 @@
    - [X] calibrate
    - [X] align
    - [X] deglitch
-   - [ ] /smooth/ with Savitsky-Golay filter				:PDL:
+   - [ ] /smooth with Savitsky-Golay filter/				:PDL:
           [[file:notes/sgolay.m][Matlab routine for SG filter]] 
    - [X] truncate
    - [X] rebin
@@ -61,19 +61,20 @@
    - [ ] reference of another edge
    - [ ] keV data
 
-*** needs doing [2/13]
+*** needs doing [3/13]
    - [X] deglitching crashes with gnuplot					:HUH:
    - [X] in project selection dialog, controls for entering a periodic
          subset (i.e. every Nth record starting with the Jth record)
          this would be useful for QXAS or dispersive data files with
          many measurements.  regexp matching against names would also
          be nice
-   - [ ] implement frozen groups
-   - [ ] replot upon group selection, space is configurable
+   - [X] replot upon group selection, space is configurable
 	 (E, k, R, q, quad, k123, r123, i0/signal, none)
+   - [ ] implement frozen groups
    - [ ] links to documentation on each tool
    - [ ] column selection dialog is not remembering data numerator and
          denominator selection
+   - [ ] left click on groups list should post group menu (others?)
    - [ ] *Pluck buttons*
      + implement everywhere needed
      + figure out cause of spurious error on Windows "failed to get
@@ -88,6 +89,7 @@
      + make data group from fit (use InsertData method)
      + marked groups automation, display in fourth tab, excel output
      + plot in R for fit in k
+     + persistance of LCF results
    - [ ] *Group list*
      + move groups up and down, keystroke | DnD
    - [ ] *Plot menu*

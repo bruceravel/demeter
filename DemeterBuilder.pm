@@ -16,6 +16,7 @@ use File::Spec;
 sub ACTION_build {
   my $self = shift;
   $self->dispatch("build_document");
+  $self->dispatch("make_todo_html");
   $self->dispatch("compile_ifeffit_wrapper");
   $self->SUPER::ACTION_build;
   $self->dispatch("post_build");
@@ -118,6 +119,11 @@ sub ACTION_build_document {
   system(q(./configure));
   system(q(./bin/build));
   chdir $here;
+};
+
+sub ACTION_make_todo_html {
+  return if ((stat("todo.html"))[9] > (stat("todo.org"))[9]);
+  system('emacs --batch --eval "(setq org-export-headline-levels 2)" --visit=todo.org --funcall org-export-as-html-batch');
 };
 
 sub ACTION_update {

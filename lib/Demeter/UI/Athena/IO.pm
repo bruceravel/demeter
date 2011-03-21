@@ -134,7 +134,7 @@ sub Import {
     };
     $first = 0;
   };
-  $app->OnGroupSelect(q{}, $app->{main}->{list}->GetSelection);
+  $app->OnGroupSelect(q{}, $app->{main}->{list}->GetSelection, 0);
   return;
 };
 
@@ -399,7 +399,7 @@ sub _group {
     $app->{main}->{list}->SetSelection($app->{main}->{list}->GetCount - 1);
     #$app->{selected} = $app->{main}->{list}->GetSelection;
     $app->{main}->{Main}->mode($data, 1, 0) if ($app->{main}->{list}->GetCount == 1);
-    $app->OnGroupSelect(q{}, $app->{main}->{list}->GetSelection);
+    $app->OnGroupSelect(q{}, $app->{main}->{list}->GetSelection, 0);
     Import_plot($app, $data);
   };
 
@@ -418,7 +418,7 @@ sub _group {
     my $stan = $colsel->{Preprocess}->{standard}->GetClientData($colsel->{Preprocess}->{standard}->GetSelection);
     $app->{main}->status("Constraining parameters for ". $data->name . " to " . $stan->name);
     constrain($app, $colsel, $data);
-    $app->OnGroupSelect(0,0);
+    $app->OnGroupSelect(0,0,0);
   };
   ## -------- import reference if reference channel is set
   my $do_ref = (defined $colsel) ? ($colsel->{Reference}->{do_ref}->GetValue) : $yaml->{do_ref};
@@ -468,7 +468,7 @@ sub _group {
       $app->{main}->status("Aligning ". $data->name . " to " . $stan->name);
       $stan->align($data);
     };
-    $app->OnGroupSelect(0,0);
+    $app->OnGroupSelect(0,0,0);
   };
 
 };
@@ -533,7 +533,7 @@ sub _prj {
       $app->{main}->{list}->SetSelection($app->{main}->{list}->GetCount - 1);
       #$app->{selected} = $app->{main}->{list}->GetSelection;
       $app->{main}->{Main}->mode($data, 1, 0) if ($app->{main}->{list}->GetCount == 1);
-      $app->OnGroupSelect(q{}, $app->{main}->{list}->GetSelection);
+      $app->OnGroupSelect(q{}, $app->{main}->{list}->GetSelection, 0);
       Import_plot($app, $data);
     };
     ++$count;
@@ -552,7 +552,7 @@ sub _prj {
   chdir dirname($orig);
   ($is_plugin) ? $app->modified(1) : $app->modified(0);
   $prj->DEMOLISH;
-  $app->OnGroupSelect(0,0);
+  $app->OnGroupSelect(0,0,0);
   undef $busy;
   $app->{main}->status("Imported data from project $orig");
   return 1;

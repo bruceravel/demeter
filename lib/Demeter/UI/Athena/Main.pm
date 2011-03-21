@@ -564,9 +564,10 @@ sub push_values {
     $this->{$w}->SetValue($data->$w) if (ref($this->{$w}) =~ m{TextCtrl});
     $this->{$w}->SetValue($data->$w) if (ref($this->{$w}) =~ m{CheckBox});
   };
-  $this->{file}->SetValue($data->source);
-  $this->{file}->SetValue($data->prjrecord)  if ($this->{file}->GetValue eq '@&^^null^^&@');
-  $this->{file}->SetValue($data->provenance) if ($data->is_merge);
+  ($this->{file}->GetValue eq '@&^^null^^&@') ? $this->{file}->SetValue($data->prjrecord)  :
+  ($data->from_athena)                        ? $this->{file}->SetValue($data->prjrecord)  :
+  ($data->is_merge)                           ? $this->{file}->SetValue($data->provenance) :
+                                                $this->{file}->SetValue($data->source);
   $this->{bkg_z}      -> SetValue(sprintf "%-2d: %s", get_Z($data->bkg_z), get_name($data->bkg_z));
   $this->{fft_edge}   -> SetValue(ucfirst($data->fft_edge));
   $this->{bkg_clamp1} -> SetStringSelection($data->number2clamp($data->bkg_clamp1));
@@ -919,7 +920,7 @@ sub DoContextMenu {
     ($id == $UNTIE_REFERENCE) and do {
       $data->untie_reference;
       $app->modified(1);
-      $app->OnGroupSelect(0,0);
+      $app->OnGroupSelect(0,0,0);
       $app->{main}->status(sprintf("Untied reference from %s", $data->name));
       last SWITCH;
     };
@@ -993,7 +994,7 @@ sub to_default {
   foreach my $p (@params) {
     $data->to_default($p);
   };
-  $app->OnGroupSelect(0,0);
+  $app->OnGroupSelect(0,0,0);
 };
 
 sub importance_to_1 {
@@ -1003,7 +1004,7 @@ sub importance_to_1 {
     $app->{main}->{list}->GetIndexedData($i)->importance(1);
   };
   $app->modified(1);
-  $app->OnGroupSelect(0,0);
+  $app->OnGroupSelect(0,0,0);
 };
 
 1;

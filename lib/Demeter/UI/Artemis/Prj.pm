@@ -66,7 +66,7 @@ sub new {
 
 
   $this->{plotas} = Wx::RadioBox->new($this, -1, "Plot as", wxDefaultPosition, wxDefaultSize,
-				      ["$MU(E)", "$CHI(k)", "|$CHI(R)|", "Re[$CHI(R)]", "Im[$CHI(R)]", "|$CHI(q)|", "Re[$CHI(q)]", "Im[$CHI(q)]"],
+				      ["$MU(E)", "|$CHI(R)|", "Re[$CHI(R)]", "Im[$CHI(R)]", "$CHI(k)", "|$CHI(q)|", "Re[$CHI(q)]", "Im[$CHI(q)]"],
 				      4, wxRA_SPECIFY_ROWS);
   $right -> Add($this->{plotas}, 0, wxGROW|wxALL, 5);
   ($style eq 'single') ? $this->{plotas}->SetSelection(2) : $this->{plotas}->SetSelection(0);
@@ -164,15 +164,15 @@ sub do_plot {
   $prj->po->start_plot;
   my $plotas = $this->{plotas}->GetSelection;
   my $space = ($plotas == 0) ? 'E'
-            : ($plotas == 1) ? 'k'
-            : ($plotas <  5) ? 'r'
+            : ($plotas == 4) ? 'k'
+            : ($plotas <  4) ? 'r'
 	    :                  'q';
   if ($plotas == 0) {
     $data->po->set(e_mu=>1, e_markers=>1, e_bkg=>0, e_pre=>0, e_post=>0, e_norm=>0, e_der=>0, e_sec=>0, e_i0=>0, e_signal=>0);
   };
-  $prj->po->r_pl('m') if ($plotas == 2);
-  $prj->po->r_pl('r') if ($plotas == 3);
-  $prj->po->r_pl('i') if ($plotas == 4);
+  $prj->po->r_pl('m') if ($plotas == 1);
+  $prj->po->r_pl('r') if ($plotas == 2);
+  $prj->po->r_pl('i') if ($plotas == 3);
   $prj->po->q_pl('m') if ($plotas == 5);
   $prj->po->q_pl('r') if ($plotas == 6);
   $prj->po->q_pl('i') if ($plotas == 7);

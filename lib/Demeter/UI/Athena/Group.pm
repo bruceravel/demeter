@@ -51,7 +51,7 @@ sub Rename {
       $app->{main}->{list}->SetString($i, $prefix.$newname);
     };
   };
-  $app->OnGroupSelect;
+  $app->OnGroupSelect(0,0,0);
   $app->{main}->{list}->Check($sel, $is_checked);
   $app->modified(1);
   $app->{main}->status("Renamed $name to $newname");
@@ -90,7 +90,7 @@ sub Remove {
     if ($app->{main}->{list}->GetCount > 0) {
       $i = min($i, $app->{main}->{list}->GetCount-1);
       $app->{main}->{list}->SetSelection($i);
-      $app->OnGroupSelect(0,0);
+      $app->OnGroupSelect(0,0,0);
     };
     $app->modified(1);
   } elsif ($how eq 'marked') {
@@ -105,7 +105,7 @@ sub Remove {
     if ($app->{main}->{list}->GetCount > 0) {
       $i = min($i, $app->{main}->{list}->GetCount-1);
       $app->{main}->{list}->SetSelection($i);
-      $app->OnGroupSelect(0,0);
+      $app->OnGroupSelect(0,0,0);
     };
     $app->modified(1);
   } elsif ($how eq 'all') {
@@ -207,7 +207,7 @@ sub tie_reference {
   };
   $_->untie_reference foreach @marked;
   $marked[0]->reference($marked[1]);
-  $app->OnGroupSelect(0,0);
+  $app->OnGroupSelect(0,0,0);
   $app->{main}->status(sprintf("Tied %s and %s as data and reference", $marked[0]->name, $marked[1]->name));
 };
 

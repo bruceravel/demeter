@@ -1,6 +1,6 @@
 ## -*- config -*-
 ###########################################################################
-##         Demeter and Artemis is copyright (c) 2006-2009 Bruce Ravel
+##         Demeter and Artemis is copyright (c) 2006-2011 Bruce Ravel
 ##                                                     bravel@bnl.gov
 ##                                        http://xafs.org/BruceRavel/
 ##
@@ -112,6 +112,14 @@ options=none E k R q quad k123 R123
 default=quad
 description 
   This determines the type of plot to be made after importing data.
+
+variable=select_plot
+type=list
+options=none E k R q quad k123 R123
+default=none
+description 
+  This determines the type of plot to be made when selecting a data
+  group from the group list.
 
 variable=merge_plot
 type=list
