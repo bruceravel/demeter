@@ -204,7 +204,6 @@ This documentation refers to Demeter version 0.4.
    ## after a fit....
    $gds_object -> evaluate;
 
-
 =head1 DESCRIPTION
 
 This subclass of the Demeter class is inteded to hold information

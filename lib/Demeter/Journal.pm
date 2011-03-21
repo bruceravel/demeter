@@ -43,7 +43,7 @@ sub append {
 
 =head1 NAME
 
-Demeter::GDS - Guess, Set, Def, and other parameters for EXAFS fitting
+Demeter::Journal - A journal object for Demeter
 
 =head1 VERSION
 
@@ -52,13 +52,12 @@ This documentation refers to Demeter version 0.4.
 =head1 SYNOPSIS
 
    $journal_object = Demeter::Journal -> new();
-   $jorunal_object -> append("Something interesting");
-
+   $journal_object -> append("Something interesting");
 
 =head1 DESCRIPTION
 
 This very simple Demeter object carries a bit of text that intended
-foruse as the journal entry in an Athena or Artemis project, but
+for use as the journal entry in an Athena or Artemis project, but
 could, I suppose, be used as a text buffer in some other context.
 
 =head1 ATTRIBUTES
