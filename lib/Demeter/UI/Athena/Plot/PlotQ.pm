@@ -21,16 +21,15 @@ sub new {
   my $box = Wx::BoxSizer->new( wxVERTICAL );
 
   my $hbox = Wx::BoxSizer->new( wxVERTICAL );
-  $box -> Add($hbox, 0, wxALL|wxALIGN_CENTER_HORIZONTAL, 4);
+  $box -> Add($hbox, 0, wxGROW|wxALL|wxALIGN_CENTER_HORIZONTAL, 4);
 
-  my $size = [100, -1];
+  my $slots = Wx::GridSizer->new( 6, 2, 0, 1 );
+  $hbox -> Add($slots, 1, wxGROW|wxALL, 0);
 
-  my $slot = Wx::BoxSizer->new( wxHORIZONTAL );
-  $hbox -> Add($slot, 1, wxGROW|wxALL, 0);
-  $this->{mag} = Wx::CheckBox->new($this, -1, 'Magnitude', wxDefaultPosition, $size);
-  $slot -> Add($this->{mag}, 1,  wxALL, 1);
-  $this->{mmag} = Wx::RadioButton->new($this, -1, 'Magnitude', wxDefaultPosition, $size, wxRB_GROUP);
-  $slot -> Add($this->{mmag}, 0, wxALL, 1);
+  $this->{mag} = Wx::CheckBox->new($this, -1, 'Magnitude', wxDefaultPosition, wxDefaultSize);
+  $slots -> Add($this->{mag}, 1,  wxGROW|wxALL, 1);
+  $this->{mmag} = Wx::RadioButton->new($this, -1, 'Magnitude', wxDefaultPosition, wxDefaultSize, wxRB_GROUP);
+  $slots -> Add($this->{mmag}, 1, wxGROW|wxALL, 1);
   EVT_CHECKBOX($this, $this->{mag},
 	       sub{my ($this, $event) = @_;
 		   if ($this->{mag}->GetValue) {
@@ -42,10 +41,8 @@ sub new {
   $app->mouseover($this->{mag},  "Plot the magnitude of $CHI(q) when ploting the current group in filtered k-space.");
   $app->mouseover($this->{mmag}, "Plot the magnitude of $CHI(q) when ploting the marked groups in filtered k-space.");
 
-  $slot = Wx::BoxSizer->new( wxHORIZONTAL );
-  $hbox -> Add($slot, 1, wxGROW|wxALL, 0);
-  $this->{env} = Wx::CheckBox->new($this, -1, 'Envelope', wxDefaultPosition, $size);
-  $slot -> Add($this->{env}, 0, wxALL, 1);
+  $this->{env} = Wx::CheckBox->new($this, -1, 'Envelope', wxDefaultPosition, wxDefaultSize);
+  $slots -> Add($this->{env}, 1, wxGROW|wxALL, 1);
   EVT_CHECKBOX($this, $this->{env},
 	       sub{my ($this, $event) = @_;
 		   if ($this->{env}->GetValue) {
@@ -54,44 +51,37 @@ sub new {
 		   $this->replot(qw(q single));
 		 });
   $app->mouseover($this->{mag},  "Plot the envelope of $CHI(q) when ploting the current group in filtered k-space.");
+  $slots -> Add(Wx::StaticText->new($this, -1, q{}), 0, wxGROW|wxALL, 1);
 
-  $slot = Wx::BoxSizer->new( wxHORIZONTAL );
-  $hbox -> Add($slot, 1, wxGROW|wxALL, 0);
-  $this->{re} = Wx::CheckBox->new($this, -1, 'Real part', wxDefaultPosition, $size);
-  $slot -> Add($this->{re}, 1, wxALL, 1);
-  $this->{mre} = Wx::RadioButton->new($this, -1, 'Real part', wxDefaultPosition, $size);
-  $slot -> Add($this->{mre}, 0, wxALL, 1);
+  $this->{re} = Wx::CheckBox->new($this, -1, 'Real part', wxDefaultPosition, wxDefaultSize);
+  $slots -> Add($this->{re}, 1, wxGROW|wxALL, 1);
+  $this->{mre} = Wx::RadioButton->new($this, -1, 'Real part', wxDefaultPosition, wxDefaultSize);
+  $slots -> Add($this->{mre}, 1, wxGROW|wxALL, 1);
   EVT_CHECKBOX($this, $this->{re}, sub{$_[0]->replot(qw(q single))});
   EVT_RADIOBUTTON($this, $this->{mre}, sub{$_[0]->replot(qw(q marked))});
   $app->mouseover($this->{re},  "Plot the real part of $CHI(q) when ploting the current group in filtered k-space.");
   $app->mouseover($this->{mre}, "Plot the real part of $CHI(q) when ploting the marked groups in filtered k-space.");
 
-  $slot = Wx::BoxSizer->new( wxHORIZONTAL );
-  $hbox -> Add($slot, 1, wxGROW|wxALL, 0);
-  $this->{im} = Wx::CheckBox->new($this, -1, 'Imag. part', wxDefaultPosition, $size);
-  $slot -> Add($this->{im}, 1, wxALL, 1);
-  $this->{mim} = Wx::RadioButton->new($this, -1, 'Imag. part', wxDefaultPosition, $size);
-  $slot -> Add($this->{mim}, 0, wxALL, 1);
+  $this->{im} = Wx::CheckBox->new($this, -1, 'Imag. part', wxDefaultPosition, wxDefaultSize);
+  $slots -> Add($this->{im}, 1, wxGROW|wxALL, 1);
+  $this->{mim} = Wx::RadioButton->new($this, -1, 'Imag. part', wxDefaultPosition, wxDefaultSize);
+  $slots -> Add($this->{mim}, 1, wxGROW|wxALL, 1);
   EVT_CHECKBOX($this, $this->{im}, sub{$_[0]->replot(qw(q single))});
   EVT_RADIOBUTTON($this, $this->{mim}, sub{$_[0]->replot(qw(q marked))});
   $app->mouseover($this->{im},  "Plot the imaginary part of $CHI(q) when ploting the current group in filtered k-space.");
   $app->mouseover($this->{mim}, "Plot the imaginary part of $CHI(q) when ploting the marked groups in filtered k-space.");
 
-  $slot = Wx::BoxSizer->new( wxHORIZONTAL );
-  $hbox -> Add($slot, 1, wxGROW|wxALL, 0);
-  $this->{pha} = Wx::CheckBox->new($this, -1, 'Phase', wxDefaultPosition, $size);
-  $slot -> Add($this->{pha}, 1, wxALL, 1);
-  $this->{mpha} = Wx::RadioButton->new($this, -1, 'Phase', wxDefaultPosition, $size);
-  $slot -> Add($this->{mpha}, 0, wxALL, 1);
+  $this->{pha} = Wx::CheckBox->new($this, -1, 'Phase', wxDefaultPosition, wxDefaultSize);
+  $slots -> Add($this->{pha}, 1, wxGROW|wxALL, 1);
+  $this->{mpha} = Wx::RadioButton->new($this, -1, 'Phase', wxDefaultPosition, wxDefaultSize);
+  $slots -> Add($this->{mpha}, 1, wxGROW|wxALL, 1);
   EVT_CHECKBOX($this, $this->{pha}, sub{$_[0]->replot(qw(q single))});
   EVT_RADIOBUTTON($this, $this->{mpha}, sub{$_[0]->replot(qw(q marked))});
   $app->mouseover($this->{pha},  "Plot the phase of $CHI(q) when ploting the current group in filtered k-space.");
   $app->mouseover($this->{mpha}, "Plot the phase of $CHI(q) when ploting the marked groups in filtered k-space.");
 
-  $slot = Wx::BoxSizer->new( wxHORIZONTAL );
-  $hbox -> Add($slot, 1, wxGROW|wxALL, 0);
-  $this->{win} = Wx::CheckBox->new($this, -1, 'Window', wxDefaultPosition, $size);
-  $slot -> Add($this->{win}, 0, wxALL, 1);
+  $this->{win} = Wx::CheckBox->new($this, -1, 'Window', wxDefaultPosition, wxDefaultSize);
+  $slots -> Add($this->{win}, 1, wxGROW|wxALL, 1);
   EVT_CHECKBOX($this, $this->{win}, sub{$_[0]->replot(qw(q single))});
   $app->mouseover($this->{win}, "Plot the k-space window function when ploting the current group in filtered k-space.");
 
@@ -127,21 +117,21 @@ sub new {
   $this->{$_}->SetBackgroundColour( Wx::Colour->new($Demeter::UI::Athena::demeter->co->default("athena", "marked")) )
     foreach (qw(mmag mre mim mpha));
 
-  $hbox -> Add(0, 0, 1);
+  #$hbox -> Add(0, 0, 1);
 
-  my $right = Wx::BoxSizer->new( wxVERTICAL );
-  $hbox -> Add($right, 0, wxALL, 4);
+  #my $right = Wx::BoxSizer->new( wxVERTICAL );
+  #$hbox -> Add($right, 0, wxALL, 4);
 
   $box -> Add(1, 1, 1);
 
   my $range = Wx::BoxSizer->new( wxHORIZONTAL );
   $box -> Add($range, 0, wxALL|wxGROW, 0);
-  my $label = Wx::StaticText->new($this, -1, "qmin", wxDefaultPosition, [30,-1]);
+  my $label = Wx::StaticText->new($this, -1, "qmin", wxDefaultPosition, [35,-1]);
   $this->{qmin} = Wx::TextCtrl ->new($this, -1, $Demeter::UI::Athena::demeter->co->default("plot", "qmin"),
 				     wxDefaultPosition, [50,-1]);
   $range -> Add($label,        0, wxALL, 5);
   $range -> Add($this->{qmin}, 1, wxRIGHT, 10);
-  $label = Wx::StaticText->new($this, -1, "qmax", wxDefaultPosition, [30,-1]);
+  $label = Wx::StaticText->new($this, -1, "qmax", wxDefaultPosition, [35,-1]);
   $this->{qmax} = Wx::TextCtrl ->new($this, -1, $Demeter::UI::Athena::demeter->co->default("plot", "qmax"),
 				     wxDefaultPosition, [50,-1]);
   $range -> Add($label,        0, wxALL, 5);

@@ -808,99 +808,8 @@ Import Demeter components into your program:
 
   use Demeter;
 
-This will import all Demeter components into your program.  The
-components are:
-
-   Atoms Data Path VPath Fit Feff  and so on...
-
+This will import all Demeter components into your program.
 Using Demeter automatically turns on L<strict> and L<warnings>.
-
-=head1 EXAMPLE
-
-Here is a complete script for analyzing copper data:
-
-  #!/usr/bin/perl
-  use Demeter;  # automatically turn on L<strict> and L<warnings>
-  #
-  ## make a Data object
-  my $dobject = Demeter::Data -> new({group => 'data0',});
-  #
-  print "Sample fit to copper data using Demeter " . $dobject->version . "\n";
-  $dobject->set_mode(screen=>1, ifeffit=>1);
-  #
-  ## set the processing and fit parameters
-  $dobject ->set(file      => "example/cu/cu10k.chi",
-		 name      => 'My copper data',
-                 is_chi    => 1,
-		 fft_kmin  => 3,    fft_kmax  => 14,
-		 bft_rmin  => 1,    bft_rmax  => "4.3",
-		 fit_space => 'K',
-		 fit_k1    => 1,    fit_k3    => 1,
-	        );
-  #
-  ## GDS objects for isotropic expansion + correlated Debye model
-  my @gdsobjects =
-    (Demeter::GDS ->
-        new(type => 'guess', name => 'alpha', mathexp => 0),
-     Demeter::GDS ->
-        new(type => 'guess', name => 'amp',   mathexp => 1),
-     Demeter::GDS ->
-        new(type => 'guess', name => 'enot',  mathexp => 0),
-     Demeter::GDS ->
-        new(type => 'guess', name => 'theta', mathexp => 500),
-     Demeter::GDS ->
-        new(type => 'set',   name => 'temp',  mathexp => 300),
-     Demeter::GDS ->
-        new(type => 'set',   name => 'sigmm', mathexp => 0.00052),
-    );
-  #
-  ## Path objects for the first 5 paths in copper (3 shell fit)
-  my @pobjects = ();
-  foreach my $i (0 .. 4) {
-    $pobjects[$i] = Demeter::Path -> new();
-    $pobjects[$i ]->set(data     => $dobject,
-		        folder   => 'example/cu/',
-		        file     => sprintf("feff%4.4d.dat", $i+1),
-		        s02      => 'amp',
-		        e0       => 'enot',
-		        delr     => 'alpha*reff',
-		        sigma2   => 'debye(temp, theta) + sigmm',
-		       );
-  };
-  #
-  ## Fit object: collection of GDS, Data, and Path objects
-  my $fitobject = Demeter::Fit -> new(gds   => \@gdsobjects,
-				      data  => [$dobject],
-				      paths => \@pobjects,
-				     );
-  ## do the fit (or the sum of paths)
-  $fitobject -> fit;
-  #
-  ## plot the data + fit + paths in a space
-  $dobject -> po -> set(plot_data => 1, plot_fit  => 1,
-                        plot_res  => 0, plot_win  => 1,);
-  foreach my $obj ($dobject, @pobjects,) {
-    $obj -> plot("r");
-  };
-  #
-  ## save the results of the fit and write a log file
-  $dobject -> save("fit", "cufit.fit");
-  my ($header, $footer) = ("Simple fit to copper data\n", q{});
-  $fitobject -> logfile("cufit.log", $header, $footer);
-
-This example starts by defining each of the data objects.  There is
-one data object, 5 path objects, and 6 GDS objects and these are
-gathered into one fit object.  The C<set_mode> method defines how the
-Ifeffit commands generated will be dispatched -- in this case, to the
-screen and to the Ifeffit process.  After the fit is defined by
-creating the Fit object, the fit is preformed calling the C<fit>
-method.  This performs the fit; retrieves the best fit values, error
-bars, and correlations; and evaluates all path parameters.  Then plots
-are made, the results of the fit are saved as an ASCII data file, and
-a log file is written.
-
-When a Demeter script exits, care is taken to clean up all temporary
-file that may have been generated during the run.
 
 =head1 DESCRIPTION
 
@@ -927,91 +836,53 @@ data analysis chores such as high-throughout data processing and
 analysis or complex physical modeling.
 
 Demeter is a parent class for the objects that are directly
-manipulated in any real program using Demeter.  These are
-several subclasses:
+manipulated in any real program using Demeter.  Each of these objects
+is implemented using Moose, the amazing meta-object system for Perl.
+Although Moose adds some overhead at start-up for any application
+using Demeter, its benefits are legion.  See L<Moose> and
+L<http://www.iinteractive.com/moose> for more information.
+
+=head1 IMPORT
+
+Subsets of Demeter can be imported to shorted loading time.
 
 =over 4
 
-=item L<Demeter::Data>
+=item C<:data>
 
-The Data object used to import mu(E) or chi(k) data from a column data
-file or an Athena project file.  It organizes parameters for Fourier
-transforms, fitting range, and other aspects of the fit.
+Import just enough of Demeter to perform data processing chores like
+those of Athena.
 
-=item L<Demeter::Data::Prj>
+  use Demeter qw(:data)
 
-This object is used to interact with the records of an Athena project
-file.
+=item C<:analysis>
 
-=item L<Demeter::Path>
+Import all the data processing chores as well as non-Feff data
+analysis modules for things like linear combination fitting and peak
+fitting.
 
-The Path object used to define a path for use a fit and to set math
-expressions for its path parameters.  This object is typically
-associated with a F<feffNNNN.dat> file from a Feff calculation.  That
-F<feffNNNN.dat> may have been generated by Feff in the normal manner
-or via the methods of Demeter's Feff object.
+  use Demeter qw(:analysis)
 
-=item L<Demeter::VPath>
+=item C<:hephaestus>
 
-A virtual path object is a collection of Path objects which can be
-summed and plotted as a summation.
+Import a bare bones set of data processing modules. This will not
+allow much more than the plotting of mu(E) data.
 
-=item L<Demeter::SSPath>
+  use Demeter qw(:hephaestus)
 
-This is a way of generating an arbitrary sungle scattering path at an
-arbitrary distance using the potentials of a Feff object.
+=item C<:xes>
 
-=item L<Demeter::GDS>
+Import the XES processing and peak fitting modules.
 
-The object used to define a guess, def or set parameter for use in the
-fit.  This is also used to define restraints and a few other kinds of
-parameters.
+  use Demeter qw(:xes)
 
-=item L<Demeter::Fit>
+=item C<:fit>
 
-This object is the collection of Data, Path, and GDS objects which
-compromises a fit.
+Import everything needed to do data analysis with Feff.
 
-=item L<Demeter::Atoms>
-
-A crystallography object which is used to generate the structure data
-for a Feff object.
-
-=item L<Demeter::Feff>
-
-A object defining the contents of a Feff calculation and providing
-methods for running parts of Feff.  This object provide a flexible
-interface to Feff which is intended to address many of Feff's
-shortcomings and obviate the need to interact directly with Feff via
-its input file.
-
-=item L<Demeter::ScatteringPath>
-
-An object defining a scattering path from a Feff object.  This may be
-linked to a Path object used in a fit.
-
-=item L<Demeter::Plot>
-
-The object which controls how plots are made from the other Demeter
-objects.  As described in its document, access to this object is
-provided in a consistent manner and is available to all other Demeter
-objects.
-
-=item L<Demeter::Config>
-
-The object which controls configuraton of the the Demeter system and
-its components.  This is a singleton object (i.e. only one exists in
-any instance of Demeter).  As described in its document, access to
-this object is provided in a consistent manner and is available to all
-other Demeter objects.
+  use Demeter qw(:fit)
 
 =back
-
-Each of these objects is implemented using Moose, the amazing
-meta-object system for Perl.  Although Moose adds some overhead at
-start-up for any application using Demeter, its benefits are legion.
-See L<Moose> and L<http://www.iinteractive.com/moose> for more
-information.
 
 =head1 PRAGMATA
 
@@ -1038,23 +909,29 @@ during run-time.
 =item C<:ui=XX>
 
 Specify the user interface.  Currently the only option is C<screen>.
-Setting the UI to screen does two things:
+Setting the UI to screen does four things:
 
 =over 4
 
 =item 1.
 
-Uses L<Demeter::UI::Screen::Interview> as a role for the Fit
+Provides L<Demeter::UI::Screen::Interview> as a role for the Fit
 object.  This imports the C<interview> method for use with the Fit
-object, allowing you to interact with the results of a fit in a simple
-manner at the console.
+object, offering a CLI interface to the results of a fit.
 
 =item 2.
 
-Uses L<Term::Twiddle> to provide some visual feedback on the screen
-while the fit or summation is happening.  This adds no real
-functionality, but serves to make it clear that I<something> is
-happening during the potentially lengthy fit.
+Uses L<Term::Twiddle> or C<Term::Sk> to provide some visual feedback
+on the screen while something time consuming is happening.
+
+=item 3.
+
+Makes the CLI prompting tool from L<Demeter::UI::Screen::Pause>
+available.
+
+=item 4.
+
+Turns on colorization of output using L<Term::ASCIIColor>.
 
 =back
 
@@ -1073,33 +950,10 @@ Future UI options might include C<tk>, C<wx>, or C<rpc>.
 =item C<:template=XX>
 
 Specify the template set to use for data processing and fitting
-chores.  The options are
+chores.  See L<Demeter::templates>.
 
-=over 4
-
-=item C<ifeffit>
-
-The default -- a concise set of command tempates for Ifeffit 1.2.10.
-
-=item C<iff_columns>
-
-An alternate set of command teampates for Ifeffit 1.2.10 which attempt
-to line everything up in easy-to-read columnar formatting.
-
-=item C<feffit>
-
-Generate text suitable for the old Feffit program
-
-=item C<demeter>
-
-Generate text in the form of valid perl using Demeter.  This is
-intended to allow a GUI to export a valid demeter script.  Note: this
-template set has not been written yet.
-
-=back
-
-In the future, a template set will be written when Ifeffit 2 becomes
-available.
+In the future, a template set will be written for L<Ifeffit
+2|http://cars9.uchicago.edu/ifeffit/tdl> when it becomes available.
 
 These can also be set during run-time using the C<set_mode> method -- see
 L<Demeter::Mode>.
@@ -1118,7 +972,7 @@ Not every method shown in the example above is described here.  You
 need to see the subclass documentation for methods specific to those
 subclasses.
 
-=head2 Constructor and accessor methods
+=head2 Main methods
 
 These are the basic methods for constructing objects and accessing
 their attributes.
@@ -1223,247 +1077,21 @@ regular expression:
 
   $group_matches = $object->matches($regexp, 'group');
 
-=back
-
-=head2 Data processing methods
-
-A system is built into Demeter for keeping track of the state of your
-objects.  It is, therefore, rarely necessary to explicitly invoke the
-data processing methods.  If you call the C<plot>, Demeter will call
-the C<read_data>, C<normalize>, C<fft>, and C<bft> methods as needed
-to correctly make the plot.  As you change the attributes of the Data
-object, Demeter will keep track of which data processing stages need
-to be redone.  Consequently, the C<plot> method may be the only data
-processing method you ever need to call.
-
-This section, then, is included in the documentation for the sake of
-completeness and to give you a sense of what Demeter is doing behind
-the scenes when you ask it to make a plot.
-
-These methods call the corersponding code generating methods then
-dispose of that code.  The code generators are not explicitly
-documented and should rarely be necessary to call directly.
-
-=over 4
-
-=item C<read_data>
-
-This method returns the Ifeffit command for importing data into
-Ifeffit
-
-  $command = $data_object->read_data;
-
-This method is more commonly used for Data objects.  Calling this
-method on a Path object will import the raw C<feffNNNN.dat> file.  See
-the C<write_path> method of the Path subclass for importing a
-C<feffNNNN.dat> file and turning it into chi(k) data.
-
-=item normalization and background removal
-
-See L<Demeter::Data::Mu>.
-
-=item C<fft>
-
-This method performs a forward Fourier transform on your chi(k) data
-using parameters that have been established using the C<set> method.
-
-  $object -> fft;
-
-If the data need to be imported, they will be automatically.
-
-=item C<bft>
-
-This method performs a backward Fourier transform on your chi(R) data
-using parameters that have been established using the C<set> method.
-
-  $object -> bft;
-
-If the data need to be imported or forward transformed, they will be
-automatically.
-
-=back
-
-=head2 I/O methods
-
-=over 4
-
-=item C<plot>
-
-This method plots your data in the indicated space, where the space is
-one of E, k, R, or q.  The details of how that plot is made are
-determined by the Plot object.
-
-  $object -> plot($space);
-
-If the data need to be imported, forward transformed, or backward
-transformed, they will be automatically.
-
-Only Data and Path objects can be plotted.  Attempting to plot other
-object types will throw and exception.
-
-=item C<save>
-
-This saves data or a path as a column data file.
-
-   $command = $object -> save($argument);
-
-The types of saved file, indicated by the argument, are
-
-=over 4
-
-=item xmu
-
-7 columns: energy, mu(E), bkg(E), pre-edge line, post-edge line,
-derivative of mu(E), second derivative of mu(E).
-
-=item norm
-
-7 columns: energy, norm(E), bkg(E), flattened mu(E), flattened
-background, derivative of norm(E), second derivative of norm(E).
-
-=item chi
-
-6 or 7 columns: k, chi(k), window, k*chi(k), k^2*chi(k), k^3*chi(k).
-If an arbitrary k-weighting is used, an additional column with that
-k-weighting will be written.
-
-=item R
-
-6 columns: R, real part, imaginary part, magnitude, phase, R window
-
-=item q
-
-7 columns: q, real part, imaginary part, magnitude, phase, k window,
-k-weighted chi(k) using the k-weighting of the Fourier transform.
-This last column can be plotted with the real part to make a kq plot.
-
-=item fit
-
-6 or 7 columns: k, chi(k), fit(k), residual, background (if fitted),
-window.
-
-=back
-
-=back
-
-=head2 C<dispose>
-
-This method is used to dispatch Ifeffit commands by hand.  It is used
-internally by many of the methods typically invoked in your programs.
-
-  $object -> dispose($ifeffit_command);
-
-See the document page for L<Demeter::Dispose> for complete details.
-
-=head2 Operation modes
-
-There are a few attributes of a Demeter application that apply to all
-Demeter objects in use in that application.  Most of these attributes
-have to do with how the command generated by the various Demeter
-methods get disposed of by the C<dispose> method.  The special Mode
-subclass keeps track of these global attributes.  The Mode methods
-described below are the way you will typically intract with the Mode
-object.
-
-Here is a list of all these global attributes:
-
-=over 4
-
-=item ifeffit
-
-This is a boolean attribute.  When true, the C<dispose> method sends commands
-to the Ifeffit process.  By default this is true.
-
-=item screen
-
-This is a boolean attribute.  When true, the C<dispose> method sends
-commands to STDOUT, which is probably displayed of the screen in a
-terminal emulator.  This is very handy for examining the details of
-how Demeter is interacting with Ifeffit, either for understanding
-Ifeffit's behavior or for debugging Demeter.  By default this is
-false.
-
-=item file
-
-When true, the C<dispose> method sends commands to a file.  The true
-value of this attribute is interpreted as the file name.  The file is
-opened and closed each time C<dispose> is called.  Therefore it is
-probably prudent to give this attribute a value starting with an open
-angle bracket, such as ">filename".  This will result in commands
-being appended to the end of t he named file.  Note also that you will
-need to unlink the file at the beginning of your script if you do not
-want your commands appended to the end of an existing file.  (That is,
-indeed, awkward behavior wich needs to be improved in future versions
-of Demeter.) By default this is false.
-
-=item buffer
-
-When true, the C<dispose> method stores commands in a memory buffer.
-The true value of this attribute can either be a reference to a scalar
-or a reference to an array.  If the value is a scalar reference, the
-commands will be concatinated to the end of the scalar.  If the value
-is an array reference, each command line (where a line is terminated
-with a carriage return) will become an entry in the array.  (A future
-improvement would be to allow this to take a reference to an arbitrary
-object so that the commands can beprocessed in some domain-specific
-manner.  By default this is false.
-
-=item plot
-
-This attribute is the reference to the current Plot object.  A plot
-object is created as the Demeter package is loaded into your program,
-so it is rarely necessary to set this attribute or to create a Plot
-object by hand.  However, if you need to maintain two or more Plot
-objects, this attribute is the mechanism for controlling which gets
-used when plots are made.
-
-=item config
-
-This attribute is the reference to the singletoin Config object, which
-serves two puproses.  It is Demeter's mechanism for handling
-system-wide and user configuration.  It is also the tool provided for
-user-defined parameters.  This latter capacity is used extensively in
-many of the data processing chores for transmitting particular
-parameters to the template files used to generate Ifeffit and plotting
-commands.
-
-=item template_process
-
-Set the template set for data processing.  Currently in the
-distribution are C<feffit>, C<ifeffit> and C<iff_columns>.
-
-=item template_fit
-
-Set the template set for data analysis.  Currently in the
-distribution are C<feffit>, C<ifeffit> and C<iff_columns>.
-
-=item template_plot
-
-Set the template set for plotting.  Currently in the distribution are
-C<pgplot> and C<gnuplot>.
-
-=item template_feff
-
-Set the template set for generating feff files.  Currently in the
-distribution are C<feff6>, C<feff7>, and C<feff8>.
-
-=back
-
-The methods for accessing the operation modes are:
-
-=over 4
+=item C<dispose>
+
+This method sends data processing and plotting commands off to their
+eventual destinations.  See the document page for L<Demeter::Dispose>
+for complete details.
 
 =item C<set_mode>
 
-This is the method used to set the attributes described above.  Any Demeter
-object can call this method.
+This is the method used to set the attributes described in
+L<Demeter::Dispose>.  Any Demeter object can call this method.
 
    $object -> set_mode(ifeffit => 1,
                        screen  => 1,
                        buffer  => \@buffer_array
                       );
-
-See L<Demeter:Dispose> for more details.
 
 =item C<get_mode>
 
@@ -1614,9 +1242,6 @@ See L<Demeter::Fit::Sanity> for a complete description of these
 problem codes.  The Fit, Data, Path, and GDS objects each have their
 own set of problem codes.
 
-
-=head1 DIAGNOSTICS
-
 =head1 CONFIGURATION AND ENVIRONMENT
 
 See L<Demeter::Config> for details about the configuration
@@ -1634,7 +1259,7 @@ F<Bundle/DemeterBundle.pm> file.
 =item *
 
 Template evaluation is a potential security hole in the sense that
-someone could put something like C<system 'rm -rf *'> in one of the
+someone could put something like C<{system 'rm -rf *'}> in one of the
 templates.  L<Text::Template> supports using a L<Safe> compartment.
 
 =item *

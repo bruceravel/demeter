@@ -550,7 +550,7 @@ sub _prj {
   };
 
   chdir dirname($orig);
-  $app->modified($is_plugin);
+  ($is_plugin) ? $app->modified(1) : $app->modified(0);
   $prj->DEMOLISH;
   $app->OnGroupSelect(0,0);
   undef $busy;
