@@ -179,7 +179,6 @@ examples/tests/serialize.pl
 examples/tests/smooth.pl
 examples/tests/truncate.pl
 fixin
-index.org
 INSTALL
 lib/Chemistry/Formula.pm
 lib/Demeter.pm
@@ -1556,6 +1555,8 @@ t/re4chan.000
 t/test.demeter_conf
 t/withHg.inp
 t/ybco.inp
+todo.org
+todo.html
 tools/config-mode.el
 tools/ifeffit-mode.el
 videos

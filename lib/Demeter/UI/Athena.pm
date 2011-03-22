@@ -31,6 +31,7 @@ use Wx::Event qw(EVT_MENU EVT_CLOSE EVT_TOOL_ENTER EVT_CHECKBOX EVT_BUTTON
 		 EVT_ENTER_WINDOW EVT_LEAVE_WINDOW
 		 EVT_RIGHT_UP EVT_LISTBOX EVT_RADIOBOX EVT_LISTBOX_DCLICK
 		 EVT_CHOICEBOOK_PAGE_CHANGED EVT_CHOICEBOOK_PAGE_CHANGING
+		 EVT_RIGHT_DOWN
 	       );
 use base 'Wx::App';
 
@@ -472,6 +473,7 @@ sub menubar {
   $freezemenu->Append($FREEZE_REGEX,      "Freeze by regex", "Freeze by regex");
   $freezemenu->Append($UNFREEZE_REGEX,    "Unfreeze by regex", "Unfreeze by regex");
   $freezemenu->Append($FREEZE_TOGGLE_ALL, "Toggle frozen state of all groups", "Toggle frozen state of all groups");
+  $app->{main}->{freezemenu} = $freezemenu;
 
 
   my $plotmenu    = Wx::Menu->new;
@@ -498,6 +500,7 @@ sub menubar {
   $plotmenu->AppendSubMenu($markedplotmenu,  "Marked groups",  "Additional plot types for the marked groups");
   $plotmenu->AppendSubMenu($mergedplotmenu,  "Merged groups",  "Additional plot types for the merged data");
   ##$mergedplotmenu->Enable(0,0);
+  $app->{main}->{plotmenu} = $plotmenu;
 
   my $markmenu   = Wx::Menu->new;
   $markmenu->Append($MARK_ALL,      "Mark all\tCTRL+SHIFT+a",            "Mark all groups" );
@@ -506,6 +509,7 @@ sub menubar {
   $markmenu->Append($MARK_TOGGLE,   "Toggle current mark\tCTRL+SHIFT+t", "Toggle mark of current group" );
   $markmenu->Append($MARK_REGEXP,   "Mark by regexp\tCTRL+SHIFT+r",      "Mark all groups matching a regular expression" );
   $markmenu->Append($UNMARK_REGEXP, "Unmark by regex\tCTRL+SHIFT+x",     "Unmark all groups matching a regular expression" );
+  $app->{main}->{markmenu} = $markmenu;
 
   my $mergemenu  = Wx::Menu->new;
   $mergemenu->Append($MERGE_MUE,  "Merge $MU(E)",  "Merge marked data at $MU(E)" );
@@ -537,7 +541,6 @@ sub menubar {
   $bar->Append( $helpmenu,    "&Help" );
   $app->{main}->SetMenuBar( $bar );
 
-
   $exportmenu     -> Enable($_,0) foreach ($XFIT);
   $plotmenu       -> Enable($_,0) foreach ($ZOOM, $UNZOOM, $CURSOR);
   $mergedplotmenu -> Enable($_,0) foreach ($PLOT_STDDEV, $PLOT_VARIENCE);
@@ -548,7 +551,7 @@ sub menubar {
   $monitormenu    -> Enable($_,0) foreach ($IFEFFIT_MEMORY);
   $helpmenu       -> Enable($_,0) foreach ($DOCUMENT, $DEMO);
 
-  EVT_MENU	 ($app->{main}, -1, sub{my ($frame,  $event) = @_; OnMenuClick($frame,  $event, $app)} );
+  EVT_MENU($app->{main}, -1, sub{my ($frame,  $event) = @_; OnMenuClick($frame,  $event, $app)} );
   return $app;
 };
 
@@ -1083,6 +1086,7 @@ sub side_bar {
   $toolbox            -> Add($app->{main}->{list}, 1, wxGROW|wxALL, 0);
   EVT_LISTBOX($toolpanel, $app->{main}->{list}, sub{$app->OnGroupSelect(@_,1)});
   EVT_LISTBOX_DCLICK($toolpanel, $app->{main}->{list}, sub{$app->Rename;});
+  EVT_RIGHT_DOWN($app->{main}->{list}, sub{OnRightDown(@_)});
   #print Wx::SystemSettings::GetColour(wxSYS_COLOUR_HIGHLIGHT), $/;
   #$app->{main}->{list}->SetBackgroundColour(Wx::Colour->new($demeter->co->default("athena", "single")));
 
@@ -1144,6 +1148,18 @@ sub side_bar {
   return $app;
 };
 
+sub OnRightDown {
+  my ($this, $event) = @_;
+  return if $::app->is_empty;
+  my $menu = Wx::Menu->new(q{});
+  $menu->AppendSubMenu($::app->{main}->{groupmenu},  "Group" );
+  $menu->AppendSubMenu($::app->{main}->{markmenu},   "Mark"  );
+  $menu->AppendSubMenu($::app->{main}->{plotmenu},   "Plot"  );
+  $menu->AppendSubMenu($::app->{main}->{freezemenu}, "Freeze");
+  $this->PopupMenu($menu, $event->GetPosition);
+  ## $this->PopupMenu($::app->{main}->{groupmenu}, $event->GetPosition);
+  $event->Skip(0);
+};
 
 sub OnGroupSelect {
   my ($app, $parent, $event, $plot) = @_;

@@ -13,10 +13,17 @@ use File::Copy;
 use File::Path qw(mkpath);
 use File::Spec;
 
+my %windows = (strawberry => 'C:\strawberry',                     # base of Strawberry perl
+	       gnuwin     => 'C:\GnuWin32',                       # base of GnuWin32, readline, ncurses
+	       mingw      => 'C:\MinGW',                          # base of the MinGW compiler suite
+	       pgplot     => 'C:\MinGW\lib\pgplot',               # install location of GRwin and PGPLOT
+	       ifeffit    => 'C:\source\ifeffit-1.2.11d\src\lib', # install location of libifeffit.a
+	       gnuplot    => 'C:\gnuplot\binaries',		  # install location of gnuplot.exe
+	      );
+
 sub ACTION_build {
   my $self = shift;
   $self->dispatch("build_document");
-  $self->dispatch("make_todo_html");
   $self->dispatch("compile_ifeffit_wrapper");
   $self->SUPER::ACTION_build;
   $self->dispatch("post_build");
@@ -33,29 +40,29 @@ sub ACTION_compile_ifeffit_wrapper {
      ($platform, $suffix) = ('unix',    'so');
   };
 
-  if (not -e "src/Ifeffit.$suffix") {
+  if (is_older("src/Ifeffit.$suffix", "src/ifeffit_wrap.c")) {
     my ($compile_flags, $linker_flags, $pgplot_location, $iffdir);
     if ($platform eq 'windows') {
       ($compile_flags, $linker_flags) = (q{}, q{});
       ($pgplot_location, $iffdir) = (q{}, q{});
 
       $linker_flags = [
-		       q{-L"C:\strawberry\perl\lib\CORE"},
-		       q{-L"C:\strawberry\c\lib"},
-		       q{-L"C:\strawberry\c\lib\gcc\i686-w64-mingw32\4.4.3"},
+		       q{-L}.$windows{strawberry}.q{\perl\lib\CORE"},
+		       q{-L}.$windows{strawberry}.q{\c\lib"},
+		       q{-L}.$windows{strawberry}.q{\c\lib\gcc\i686-w64-mingw32\4.4.3"},
 
-		       q{-L"C:\source\ifeffit-1.2.11d\src\lib"},
+		       q{-L}.$windows{ifeffit},
 		       q{-lifeffit -lxafs},
 
 		       #q{-L"C:\MinGW\bin"},
-		       q{-L"C:\MinGW\lib\gcc\mingw32\4.5.2"},
-		       q{-L"C:\MinGW\lib"},
+		       q{-L}.$windows{mingw}.q{\lib\gcc\mingw32\4.5.2"},
+		       q{-L}.$windows{mingw}.q{\lib"},
 		       q(-lgfortran -lmingw32 -lgcc_s -lmoldname -lmingwex -lmsvcrt -luser32 -lkernel32 -ladvapi32 -lshell32),
 
-		       q{-L"C:\GnuWin32\lib"},
+		       q{-L}.$windows{gnuwin}.q{\lib"},
 		       q{-lcurses -lreadline},
 
-		       q{-L"C:\MinGW\lib\pgplot"},
+		       q{-L}.$windows{pgplot},
 		       qw{-lcpgplot -lpgplot -lGrWin -lgdi32 -lg2c},
 		      ];
       #    $compile_flags = $linker_flags;
@@ -121,8 +128,8 @@ sub ACTION_build_document {
   chdir $here;
 };
 
-sub ACTION_make_todo_html {
-  return if ((stat("todo.html"))[9] > (stat("todo.org"))[9]);
+sub ACTION_org2html {
+  return if is_older("todo.org", "todo.html");
   system('emacs --batch --eval "(setq org-export-headline-levels 2)" --visit=todo.org --funcall org-export-as-html-batch');
 };
 
@@ -130,6 +137,12 @@ sub ACTION_update {
   my $self = shift;
   my $ret = $self->do_system(qw(git fetch));
   die "failed to update Demeter from github\n" if not $ret;
+};
+
+
+sub is_older {
+  my ($file1, $file2) = @_;
+  return (stat($file1))[9] < (stat($file2))[9]
 };
 
 
