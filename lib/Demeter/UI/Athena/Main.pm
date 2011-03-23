@@ -63,14 +63,21 @@ sub new {
 sub group {
   my ($this, $app) = @_;
 
-  my $groupbox       = Wx::StaticBox->new($this, -1, 'Current group', wxDefaultPosition, wxDefaultSize);
-  my $groupboxsizer  = Wx::StaticBoxSizer->new( $groupbox, wxVERTICAL );
-  $groupbox         -> SetFont( Wx::Font->new( $box_font_size, wxDEFAULT, wxNORMAL, wxBOLD, 0, "" ) );
-  $this->{sizer}    -> Add($groupboxsizer, 0, wxBOTTOM|wxGROW, 5);
-  $this->{groupbox}  = $groupbox;
+  #my $groupbox       = Wx::StaticBox->new($this, -1, 'Current group', wxDefaultPosition, wxDefaultSize);
+  #my $groupboxsizer  = Wx::StaticBoxSizer->new( $groupbox, wxVERTICAL );
+  #$groupbox         -> SetFont( Wx::Font->new( $box_font_size, wxDEFAULT, wxNORMAL, wxBOLD, 0, "" ) );
+  #$this->{sizer}    -> Add($groupboxsizer, 0, wxBOTTOM|wxGROW, 5);
+  #$this->{groupbox}  = $groupbox;
 
-  EVT_RIGHT_DOWN($groupbox, sub{ContextMenu(@_, $app, 'group')});
-  EVT_MENU($groupbox, -1, sub{ $this->DoContextMenu(@_, $app, 'group') });
+  my $groupboxsizer  = Wx::BoxSizer->new( wxVERTICAL );
+  $groupboxsizer -> Add(Wx::StaticLine->new($this, -1, wxDefaultPosition, wxDefaultSize, wxLI_HORIZONTAL), 0, wxGROW|wxBOTTOM, 2);
+  $this->{sizer}  -> Add($groupboxsizer, 0, wxTOP|wxBOTTOM|wxGROW, 10);
+  $this->{group_group_label} = Wx::StaticText->new($this, -1, 'Current group');
+  $this->{group_group_label} -> SetFont( Wx::Font->new( $box_font_size, wxDEFAULT, wxNORMAL, wxBOLD, 0, "" ) );
+  $groupboxsizer -> Add($this->{group_group_label}, 0, wxBOTTOM|wxALIGN_LEFT, 5);
+
+  EVT_RIGHT_DOWN($this->{group_group_label}, sub{ContextMenu(@_, $app, 'group')});
+  EVT_MENU($this->{group_group_label}, -1, sub{ $this->DoContextMenu(@_, $app, 'group') });
 
   my $gbs = Wx::GridBagSizer->new( 5, 5 );
 
@@ -114,7 +121,7 @@ sub group {
   $this->{$_} -> SetValidator( Wx::Perl::TextValidator->new( qr([-0-9.]) ) )
     foreach (qw(bkg_eshift importance));
 
-  $groupboxsizer -> Add($gbs, 0, wxALL, 5);
+  $groupboxsizer -> Add($gbs, 0, wxLEFT, 10);
   return $this;
 };
 
@@ -122,14 +129,21 @@ sub group {
 sub bkg {
   my ($this, $app) = @_;
 
-  my $backgroundbox       = Wx::StaticBox->new($this, -1, 'Background removal parameters', wxDefaultPosition, wxDefaultSize);
-  my $backgroundboxsizer  = Wx::StaticBoxSizer->new( $backgroundbox, wxVERTICAL );
-  $backgroundbox         -> SetFont( Wx::Font->new( $box_font_size, wxDEFAULT, wxNORMAL, wxBOLD, 0, "" ) );
-  $this->{sizer}         -> Add($backgroundboxsizer, 0, wxBOTTOM|wxGROW, 5);
-  $this->{backgroundbox}  = $backgroundbox;
+  #my $backgroundbox       = Wx::StaticBox->new($this, -1, 'Background removal parameters', wxDefaultPosition, wxDefaultSize);
+  #my $backgroundboxsizer  = Wx::StaticBoxSizer->new( $backgroundbox, wxVERTICAL );
+  #$backgroundbox         -> SetFont( Wx::Font->new( $box_font_size, wxDEFAULT, wxNORMAL, wxBOLD, 0, "" ) );
+  #$this->{sizer}         -> Add($backgroundboxsizer, 0, wxBOTTOM|wxGROW, 5);
+  #$this->{backgroundbox}  = $backgroundbox;
 
-  EVT_RIGHT_DOWN($backgroundbox, sub{ContextMenu(@_, $app, 'bkg')});
-  EVT_MENU($backgroundbox, -1, sub{ $this->DoContextMenu(@_, $app, 'bkg') });
+  my $backgroundboxsizer  = Wx::BoxSizer->new( wxVERTICAL );
+  $backgroundboxsizer -> Add(Wx::StaticLine->new($this, -1, wxDefaultPosition, wxDefaultSize, wxLI_HORIZONTAL), 0, wxGROW|wxBOTTOM, 2);
+  $this->{sizer}  -> Add($backgroundboxsizer, 0, wxTOP|wxBOTTOM|wxGROW, 10);
+  $this->{background_group_label} = Wx::StaticText->new($this, -1, 'Forward Fourier transform parameters');
+  $this->{background_group_label} -> SetFont( Wx::Font->new( $box_font_size, wxDEFAULT, wxNORMAL, wxBOLD, 0, "" ) );
+  $backgroundboxsizer -> Add($this->{background_group_label}, 0, wxBOTTOM|wxALIGN_LEFT, 5);
+
+  EVT_RIGHT_DOWN($this->{background_group_label}, sub{ContextMenu(@_, $app, 'bkg')});
+  EVT_MENU($this->{background_group_label}, -1, sub{ $this->DoContextMenu(@_, $app, 'bkg') });
 
   my $gbs = Wx::GridBagSizer->new( 5, 5 );
 
@@ -176,7 +190,7 @@ sub bkg {
   $this->{bkg_nnorm_3}   -> SetValue(1);
   push @bkg_parameters, qw(bkg_algorithm bkg_nnorm bkg_nnorm_1 bkg_nnorm_2 bkg_nnorm_3);
 
-  $backgroundboxsizer -> Add($gbs, 0, wxALL, 5);
+  $backgroundboxsizer -> Add($gbs, 0, wxLEFT, 10);
 
   $gbs = Wx::GridBagSizer->new( 5, 5 );
 
@@ -277,7 +291,7 @@ sub bkg {
   EVT_TEXT($this, $this->{bkg_spl1e}, sub{OnSpl(@_, $app, 'bkg_spl1e')});
   EVT_TEXT($this, $this->{bkg_spl2e}, sub{OnSpl(@_, $app, 'bkg_spl2e')});
 
-  $backgroundboxsizer -> Add($gbs, 0, wxALL, 5);
+  $backgroundboxsizer -> Add($gbs, 0, wxLEFT|wxTOP, 10);
 
   ## standard and clamps
   my $abox = Wx::BoxSizer->new( wxHORIZONTAL );
@@ -285,12 +299,12 @@ sub bkg {
   $this->{bkg_stan_label}   = Wx::StaticText -> new($this, -1, "Standard");
   #$this->{bkg_stan}         = Wx::ComboBox   -> new($this, -1, '', wxDefaultPosition, [50,-1], [], wxCB_READONLY);
   $this->{bkg_stan}         = Demeter::UI::Athena::GroupList -> new($this, $app, 1);
-  $abox -> Add($this->{bkg_stan_label},   0, wxALL,   5);
-  $abox -> Add($this->{bkg_stan},         0, wxRIGHT, 15);
+  $abox -> Add($this->{bkg_stan_label},   0, wxBOTTOM|wxRIGHT,   5);
+  $abox -> Add($this->{bkg_stan},         0, wxRIGHT, 10);
   push @bkg_parameters, qw(bkg_stan bkg_clamp1 bkg_clamp2 clamp);
   $app -> mouseover($this->{bkg_stan}, "Background removal with a standard is not working yet.  Sorry.");
 
-  $backgroundboxsizer -> Add($abox, 0, wxTOP|wxBOTTOM, 0);
+  $backgroundboxsizer -> Add($abox, 0, wxLEFT, 10);
 
   $this->{$_} -> SetValidator( Wx::Perl::TextValidator->new( qr([-0-9.]) ) )
     foreach (qw(bkg_pre1 bkg_pre2 bkg_nor1 bkg_nor2 bkg_spl1 bkg_spl2 bkg_spl1e bkg_spl2e
@@ -332,14 +346,21 @@ sub bkg {
 sub fft {
   my ($this, $app) = @_;
 
-  my $fftbox       = Wx::StaticBox->new($this, -1, 'Forward Fourier transform parameters', wxDefaultPosition, wxDefaultSize);
-  my $fftboxsizer  = Wx::StaticBoxSizer->new( $fftbox, wxHORIZONTAL );
-  $fftbox         -> SetFont( Wx::Font->new( $box_font_size, wxDEFAULT, wxNORMAL, wxBOLD, 0, "" ) );
-  $this->{sizer}  -> Add($fftboxsizer, 0, wxBOTTOM|wxGROW, 5);
-  $this->{fftbox}  = $fftbox;
+  #my $fftbox       = Wx::StaticBox->new($this, -1, 'Forward Fourier transform parameters', wxDefaultPosition, wxDefaultSize);
+  #my $fftboxsizer  = Wx::StaticBoxSizer->new( $fftbox, wxHORIZONTAL );
+  #$fftbox         -> SetFont( Wx::Font->new( $box_font_size, wxDEFAULT, wxNORMAL, wxBOLD, 0, "" ) );
+  #$this->{sizer}  -> Add($fftboxsizer, 0, wxBOTTOM|wxGROW, 5);
+  #$this->{fftbox}  = $fftbox;
 
-  EVT_RIGHT_DOWN($fftbox, sub{ContextMenu(@_, $app, 'fft')});
-  EVT_MENU($fftbox, -1, sub{ $this->DoContextMenu(@_, $app, 'fft') });
+  my $fftboxsizer  = Wx::BoxSizer->new( wxVERTICAL );
+  $fftboxsizer -> Add(Wx::StaticLine->new($this, -1, wxDefaultPosition, wxDefaultSize, wxLI_HORIZONTAL), 0, wxGROW|wxBOTTOM, 2);
+  $this->{sizer}  -> Add($fftboxsizer, 0, wxTOP|wxBOTTOM|wxGROW, 10);
+  $this->{fft_group_label} = Wx::StaticText->new($this, -1, 'Forward Fourier transform parameters');
+  $this->{fft_group_label} -> SetFont( Wx::Font->new( $box_font_size, wxDEFAULT, wxNORMAL, wxBOLD, 0, "" ) );
+  $fftboxsizer -> Add($this->{fft_group_label}, 0, wxBOTTOM|wxALIGN_LEFT, 5);
+
+  EVT_RIGHT_DOWN($this->{fft_group_label}, sub{ContextMenu(@_, $app, 'fft')});
+  EVT_MENU($this->{fft_group_label}, -1, sub{ $this->DoContextMenu(@_, $app, 'fft') });
 
   my $gbs = Wx::GridBagSizer->new( 5, 5 );
 
@@ -375,7 +396,7 @@ sub fft {
   $this->{fft_kwindow}->SetStringSelection($this->window_name($Demeter::UI::Athena::demeter->co->default("fft", "kwindow")));
   push @fft_parameters, qw(fft_kmin fft_kmax fft_dk fft_kwindow fit_karb_value fft_pc);
 
-  $fftboxsizer -> Add($gbs, 0, wxALL, 5);
+  $fftboxsizer -> Add($gbs, 0, wxLEFT, 10);
 
   $this->{$_} -> SetValidator( Wx::Perl::TextValidator->new( qr([0-9.]) ) )
     foreach (qw(fft_kmin fft_kmax fft_dk fit_karb_value));
@@ -399,14 +420,21 @@ sub fft {
 sub bft {
   my ($this, $app) = @_;
 
-  my $bftbox       = Wx::StaticBox->new($this, -1, 'Backward Fourier transform parameters', wxDefaultPosition, wxDefaultSize);
-  my $bftboxsizer  = Wx::StaticBoxSizer->new( $bftbox, wxHORIZONTAL );
-  $bftbox         -> SetFont( Wx::Font->new( $box_font_size, wxDEFAULT, wxNORMAL, wxBOLD, 0, "" ) );
-  $this->{sizer}  -> Add($bftboxsizer, 0, wxBOTTOM|wxGROW, 0);
-  $this->{bftbox}  = $bftbox;
+  #my $bftbox       = Wx::StaticBox->new($this, -1, 'Backward Fourier transform parameters', wxDefaultPosition, wxDefaultSize);
+  #my $bftboxsizer  = Wx::StaticBoxSizer->new( $bftbox, wxHORIZONTAL );
+  #$bftbox         -> SetFont( Wx::Font->new( $box_font_size, wxDEFAULT, wxNORMAL, wxBOLD, 0, "" ) );
+  #$this->{sizer}  -> Add($bftboxsizer, 0, wxBOTTOM|wxGROW, 0);
+  #$this->{bftbox}  = $bftbox;
 
-  EVT_RIGHT_DOWN($bftbox, sub{ContextMenu(@_, $app, 'bft')});
-  EVT_MENU($bftbox, -1, sub{ $this->DoContextMenu(@_, $app, 'bft') });
+  my $bftboxsizer  = Wx::BoxSizer->new( wxVERTICAL );
+  $bftboxsizer -> Add(Wx::StaticLine->new($this, -1, wxDefaultPosition, wxDefaultSize, wxLI_HORIZONTAL), 0, wxGROW|wxBOTTOM, 2);
+  $this->{sizer}  -> Add($bftboxsizer, 0, wxTOP|wxBOTTOM|wxGROW, 10);
+  $this->{bft_group_label} = Wx::StaticText->new($this, -1, 'Backward Fourier transform parameters');
+  $this->{bft_group_label} -> SetFont( Wx::Font->new( $box_font_size, wxDEFAULT, wxNORMAL, wxBOLD, 0, "" ) );
+  $bftboxsizer -> Add($this->{bft_group_label}, 0, wxBOTTOM|wxALIGN_LEFT, 5);
+
+  EVT_RIGHT_DOWN($this->{bft_group_label}, sub{ContextMenu(@_, $app, 'bft')});
+  EVT_MENU($this->{bft_group_label}, -1, sub{ $this->DoContextMenu(@_, $app, 'bft') });
 
   my $gbs = Wx::GridBagSizer->new( 5, 5 );
 
@@ -435,7 +463,7 @@ sub bft {
   # $gbs -> Add($this->{bft_rwindow},       Wx::GBPosition->new(1,1), Wx::GBSpan->new(1,3));
   # $this->{bft_rwindow}->SetStringSelection($this->window_name($Demeter::UI::Athena::demeter->co->default("bft", "rwindow")));
 
-  $bftboxsizer -> Add($gbs, 0, wxALL, 5);
+  $bftboxsizer -> Add($gbs, 0, wxLEFT, 10);
 
   $this->{$_} -> SetValidator( Wx::Perl::TextValidator->new( qr([0-9.]) ) )
     foreach (qw(bft_rmin bft_rmax bft_dr));
@@ -456,14 +484,21 @@ sub bft {
 sub plot {
   my ($this, $app) = @_;
 
-  my $plotbox       = Wx::StaticBox->new($this, -1, 'Plotting parameters', wxDefaultPosition, wxDefaultSize);
-  my $plotboxsizer  = Wx::StaticBoxSizer->new( $plotbox, wxHORIZONTAL );
-  $plotbox         -> SetFont( Wx::Font->new( $box_font_size, wxDEFAULT, wxNORMAL, wxBOLD, 0, "" ) );
-  $this->{sizer}   -> Add($plotboxsizer, 0, wxALL|wxGROW, 0);
-  $this->{plotbox}  = $plotbox;
+  #my $plotbox       = Wx::StaticBox->new($this, -1, 'Plotting parameters', wxDefaultPosition, wxDefaultSize);
+  #my $plotboxsizer  = Wx::StaticBoxSizer->new( $plotbox, wxHORIZONTAL );
+  #$plotbox         -> SetFont( Wx::Font->new( $box_font_size, wxDEFAULT, wxNORMAL, wxBOLD, 0, "" ) );
+  #$this->{sizer}   -> Add($plotboxsizer, 0, wxALL|wxGROW, 0);
+  #$this->{plotbox}  = $plotbox;
 
-  EVT_RIGHT_DOWN($plotbox, sub{ContextMenu(@_, $app, 'plot')});
-  EVT_MENU($plotbox, -1, sub{ $this->DoContextMenu(@_, $app, 'plot') });
+  my $plotboxsizer  = Wx::BoxSizer->new( wxVERTICAL );
+  $plotboxsizer -> Add(Wx::StaticLine->new($this, -1, wxDefaultPosition, wxDefaultSize, wxLI_HORIZONTAL), 0, wxGROW|wxBOTTOM, 2);
+  $this->{sizer}  -> Add($plotboxsizer, 0, wxTOP|wxBOTTOM|wxGROW, 10);
+  $this->{plot_group_label} = Wx::StaticText->new($this, -1, 'Plotting parameters');
+  $this->{plot_group_label} -> SetFont( Wx::Font->new( $box_font_size, wxDEFAULT, wxNORMAL, wxBOLD, 0, "" ) );
+  $plotboxsizer -> Add($this->{plot_group_label}, 0, wxBOTTOM|wxALIGN_LEFT, 5);
+
+  EVT_RIGHT_DOWN($this->{plot_group_label}, sub{ContextMenu(@_, $app, 'plot')});
+  EVT_MENU($this->{plot_group_label}, -1, sub{ $this->DoContextMenu(@_, $app, 'plot') });
 
   my $pbox = Wx::BoxSizer->new( wxHORIZONTAL );
   $this->{plot_multiplier_label} = Wx::StaticText->new($this, -1, "Plot multiplier");
@@ -484,7 +519,7 @@ sub plot {
     EVT_MENU($this->{$x.'_label'}, -1, sub{ $this->DoContextMenu(@_, $app, $x) });
   };
 
-  $plotboxsizer -> Add($pbox, 0, wxTOP|wxBOTTOM, 5);
+  $plotboxsizer -> Add($pbox, 0, wxLEFT, 10);
   return $this;
 };
 
@@ -493,39 +528,40 @@ sub plot {
 sub mode {
   my ($this, $group, $enabled, $frozen) = @_;
 
-  foreach my $w (@group_params, @plot_parameters, 'groupbox', 'plotbox') {
+  foreach my $w (@group_params, @plot_parameters, 'group_group_label', 'plot_group_label') {
     $this->set_widget_state($w, $enabled);
   };
 
   ## no data specified, possibly no data imported
   if (not $group) {
-    foreach my $w (@bkg_parameters, @fft_parameters, @bft_parameters, qw(backgroundbox fftbox bftbox clampbox)) {
+    foreach my $w (@bkg_parameters, @fft_parameters, @bft_parameters,
+		   qw(background_group_label fft_group_label bft_group_label clampbox)) {
       $this->set_widget_state($w, $enabled);
     };
 
   ## XANES data
   } elsif ($group->datatype eq 'xanes') {
-    foreach my $w (@bkg_parameters, 'backgroundbox') {
+    foreach my $w (@bkg_parameters, 'background_group_label') {
       if ($w =~ m{spl|chain|clampbox|bkg_(rbkg|kw)}) {
 	$this->set_widget_state($w, 0);
       } else {
 	$this->set_widget_state($w, $enabled);
       };
     };
-    foreach my $w (@fft_parameters, @bft_parameters, qw(fftbox bftbox)) {
+    foreach my $w (@fft_parameters, @bft_parameters, qw(fft_group_label bft_group_label)) {
       $this->set_widget_state($w, 0);
     };
 
   ## chi(k) data
   } elsif ($group->datatype eq 'chi') {
-    foreach my $w (@bkg_parameters, 'backgroundbox') {
+    foreach my $w (@bkg_parameters, 'background_group_label') {
       $this->set_widget_state($w, 0);
     };
-    foreach my $w (@fft_parameters, @bft_parameters, qw(fftbox bftbox)) {
+    foreach my $w (@fft_parameters, @bft_parameters, qw(fft_group_label bft_group_label)) {
       $this->set_widget_state($w, $enabled);
     };
   } else {
-    foreach my $w (@bkg_parameters, @fft_parameters, @bft_parameters, qw(backgroundbox fftbox bftbox clampbox)) {
+    foreach my $w (@bkg_parameters, @fft_parameters, @bft_parameters, qw(background_group_label fft_group_label bft_group_label clampbox)) {
       $this->set_widget_state($w, $enabled);
     };
   };
@@ -600,7 +636,7 @@ sub push_values {
   if ($n > 40) {
     $truncated_name = substr($data->name, 0, 17) . '...' . substr($data->name, $n-17);
   };
-  $this->{groupbox}->SetLabel('Current group:  '.$truncated_name);
+  $this->{group_group_label}->SetLabel('Current group:  '.$truncated_name);
   return $data;
 };
 
@@ -657,7 +693,7 @@ sub zero_values {
   $this->{'bkg_nnorm_1'} -> SetValue(0);
   $this->{'bkg_nnorm_2'} -> SetValue(0);
   $this->{'bkg_nnorm_3'} -> SetValue(1);
-  $this->{groupbox}      -> SetLabel('Current group');
+  $this->{group_group_label} -> SetLabel('Current group');
 };
 
 sub window_name {

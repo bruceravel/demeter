@@ -18,7 +18,7 @@
   - [ ] Data object should note that datatype is xanes and not compute fbkg since the bkg array does not exist
   - [ ] cannot specify title for stddev and variance plots
   - [ ] Demeter command backend needs polishing
-  - [ ] we seem not to have a normalized group (i.e. plot the same asmu and norm)
+  - [ ] we seem not to have a normalized group (i.e. plot the same as mu or norm)
   - [ ] 3rd derivative
 
 
