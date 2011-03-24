@@ -20,8 +20,7 @@ use Moose::Role;
 use Carp;
 use List::MoreUtils qw(none);
 use Regexp::Common;
-use Regexp::Optimizer;
-my $opt  = Regexp::List->new;
+use Regexp::Assemble;
 
 use Readonly;
 Readonly my $NUMBER   => $RE{num}{real};
@@ -200,9 +199,9 @@ sub save_many {
 sub _save_many_command {
   my ($self, $outfile, $which, @groups) = @_;
   ($which = "chik1") if ($which eq 'chik');
-  my $e_regexp = $opt->list2re(qw(xmu norm der nder sec nsec));
-  my $n_regexp = $opt->list2re(qw(norm nder nsec));
-  my $k_regexp = $opt->list2re(qw(chi chik chik2 chik3));
+  my $e_regexp = Regexp::Assemble->new()->add(qw(xmu norm der nder sec nsec))->re;
+  my $n_regexp = Regexp::Assemble->new()->add(qw(norm nder nsec))->re;
+  my $k_regexp = Regexp::Assemble->new()->add(qw(chi chik chik2 chik3))->re;
   my ($level, $space) = ($which =~ m{\A$n_regexp\z}) ? ('fft', 'energy')
                       : ($which =~ m{\Achir})        ? ('bft', 'r')
                       : ($which =~ m{\Achiq})        ? ('all', 'q')

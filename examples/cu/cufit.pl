@@ -16,7 +16,7 @@
 =cut
 
 
-use Demeter; # qw(:ui=screen);
+use Demeter qw(:ui=screen);
 print "Sample fit to copper data using Demeter ", $Demeter::VERSION, $/;
 unlink "cufit.iff" if (-e "cufit.iff");
 
@@ -97,7 +97,6 @@ $data->po->set(plot_data => 1,
 	      );
 $data->plot('r');
 $data->pause;
-sleep 5;
 
 print "save the results of the fit\n";
 my ($header, $footer) = ("Fit to copper data", q{});

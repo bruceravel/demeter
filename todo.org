@@ -73,12 +73,13 @@
    - [ ] links to documentation on each tool
    - [ ] column selection dialog is not remembering data numerator and
          denominator selection
+   - [ ] fix edge step button is not working
    - [ ] *Pluck buttons* [0/2]
        + [ ] implement everywhere needed
        + [ ] figure out cause of spurious error on Windows "failed to get
 	     data from the clipboard error -2147221040 openClipboard failed"
    - [ ] *Convolve/noise tool*
-     + add noise to chi data
+       + add noise to chi data
    - [ ] *Difference tool* [0/3]
        + [ ] plot diff for marked groups
        + [ ] plot areas from marked groups
@@ -88,10 +89,10 @@
        + [ ] marked groups automation, display in fourth tab, excel output
        + [ ] plot in R for fit in k
        + [ ] persistance of LCF results
-   - [-] *Group list* [1/3]
+   - [-] *Group list* [2/3]
        + [ ] move groups up and down, keystroke | DnD
        + [X] left click on groups list should post group menu (others?)
-       + [ ] it needs to be impossible to select nothing in the group list
+       + [X] it needs to be impossible to select nothing in the group list
    - [ ] *Plot menu*
        + zoom/unzoom/cursor for pgplot
    - [ ] *Help menu* [0/3]
@@ -99,15 +100,18 @@
        + [ ] document
        + [ ] memory usage
 
-*** Windows issues [1/4]
+*** Windows issues [1/6]
    - [ ] spurious message from clipboard
    - [X] parameter group context menus don't get posted (see http://www.nntp.perl.org/group/perl.wxperl.users/2011/03/msg7929.html)
    - [ ] the frickin' Gnuplot error logs seem to remain locked on Windows when a crash happens
    - [ ] status bar does not get color for wait or error messages
+   - [ ] ugly background colors on command and status buffer frames (particularly at bottom, also a problem in Artemis)
+   - [ ] ifeffit is currently compiled not knowing where to find the feff tables, so PC transforms are not possible.
+	 in general, the compilation of Ifeffit needs to be better integrated into Strawberry.
 
 
 ** Artemis
-*** Artemis bugs and missing features [1/15]
+*** Artemis bugs and missing features [1/16]
    - [X] use text buffers as in Athena for TextEntryDialogs
    - [ ] import an FPath from a yaml or from a project file, pathlist start page link for doing so
    - [ ] what is the purpose of regenerate in fit deserialization?  in any case, need to fix group values *inside* yaml files
@@ -123,6 +127,9 @@
    - [ ] VPaths to project file  				:Project:
    - [ ] Indicators to project file  				:Project:
    - [ ] Rename VPaths in VPath right click menu
+   - [ ] sending Ifeffit feedback to the buffer makes it unavailable for other purposes.  the big problem
+	 is that correlations don't get written to the log file in Artemis (or in a script with set_mode(screen=>1),
+	 for that matter...)
 
 *** Histograms [4/11]
    - [X] sum histogram bins into a single chi(k) file

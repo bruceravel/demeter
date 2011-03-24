@@ -21,7 +21,6 @@ use Moose::Role;
 
 use Carp;
 use List::MoreUtils qw(any);
-use Regexp::Optimizer;
 use Regexp::Common;
 use Readonly;
 Readonly my $NUMBER  => $RE{num}{real};
@@ -31,7 +30,6 @@ use Text::Wrap;
 $Text::Wrap::columns = 65;
 
 
-my $opt  = Regexp::List->new;
 #my $functions = Demeter->regexp('functions');
 
 ## verify 1. all ipots are used

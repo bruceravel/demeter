@@ -11,10 +11,6 @@ use Demeter::StrTypes qw( Empty
 			  TemplateFeff
 			  TemplateAnalysis
 		       );
-use Regexp::List;
-use Regexp::Optimizer;
-my $opt = Regexp::List->new;
-
 #use vars qw($singleton);	# Moose 0.61, MooseX::Singleton 0.12 seem to need this
 
 ## -------- disposal modes

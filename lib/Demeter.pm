@@ -39,9 +39,7 @@ use Xray::Absorption;
 Xray::Absorption->load('elam');
 
 use Regexp::Common;
-#use Regexp::List;
-use Regexp::Optimizer;
-my $opt  = Regexp::List->new;
+use Regexp::Assemble;
 use Readonly;
 Readonly my $NUMBER => $RE{num}{real};
 Readonly my $PI     => 4*atan2(1,1);
@@ -515,7 +513,7 @@ sub plot_with {
 ## the type constraints aren't working as I expect...?
 sub template_set {
   my ($self, $which) = @_;
-  my $template_regexp = $opt->list2re(qw(demeter ifeffit iff_columns feffit));
+  my $template_regexp = Regexp::Assemble->new()->add(qw(demeter ifeffit iff_columns feffit))->re;
   if ($which !~ m{$template_regexp}) {
     carp("$which is not a valid template set, using ifeffit.\n\n");
     return $self;

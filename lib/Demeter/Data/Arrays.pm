@@ -3,6 +3,7 @@ use Moose::Role;
 use Carp;
 use Demeter::StrTypes qw( DataPart FitSpace );
 use List::MoreUtils qw(pairwise minmax);
+use Regexp::Assemble;
 
 use Readonly;
 Readonly my $ETOK => 0.262468292;
@@ -100,9 +101,8 @@ sub get_array {
   my $text = ($part =~ m{(?:bkg|fit|res|run)}) ? "${group}_$part.$suffix" : "$group.$suffix";
   my @array = Ifeffit::get_array($text);
   if (not @array) {		# only do this error check if the specified array is not returned
-    my $opt  = Regexp::List->new;
     my @list = $self->arrays;	# this is the slow line -- it requires calls to ifeffit, get_scalar, and get_echo
-    my $group_regexp = $opt->list2re(@list);
+    my $group_regexp = Regexp::Assemble->new()->add(@list)->re;
     my $grp = $self->group;
     if ($suffix !~ m{\b$group_regexp\b}) {
       #carp("The group $grp does not have an array $grp.$suffix (" . join(" ", @list) . ")");

@@ -31,10 +31,9 @@ $Text::Wrap::columns = 75;
 use Xray::Absorption;
 use Demeter;
 my $demeter = Demeter->new;
-#use Regexp::List;
 
 use Config::IniFiles;
-
+use Regexp::Assemble;
 
 
 has 'ini' => (is => 'rw', isa => 'Str',  default => q{},
@@ -43,12 +42,11 @@ has 'ini' => (is => 'rw', isa => 'Str',  default => q{},
 my %materials_of;
 my %elements_of;
 
-my $opt  = Regexp::List->new;
-my $attribute_regex = $opt->list2re(qw(tag comment crystal file element record
-				       energy numerator denominator ln xmu from_web
-				       rebin calibrate xanes deriv
-				     ));
-my $config_regex = $opt->list2re(qw(emin emax key_x key_y));
+my $attribute_regex = Regexp::Assemble->new()->add(qw(tag comment crystal file element record
+						      energy numerator denominator ln xmu from_web
+						      rebin calibrate xanes deriv
+						    ))->re;
+my $config_regex = Regexp::Assemble->new()->add(qw(emin emax key_x key_y))->re;
 
 
 
@@ -100,14 +98,6 @@ sub element_exists {
   return 1 if exists $elements_of{ lc($el) };
   return 0;
 };
-
-#sub regex {
-#  my ($self) = @_;
-#  my $opt  = Regexp::List->new;
-#  my $regex = $opt->list2re(keys(% {$materials_of} ),
-#			      keys(% {$elements_of} ));
-#  return $regex;
-#};
 
 sub get {
   my ($self, $material, $attribute) = @_;

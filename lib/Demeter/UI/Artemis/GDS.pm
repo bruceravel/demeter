@@ -21,8 +21,6 @@ use warnings;
 use Cwd;
 use File::Spec;
 use List::MoreUtils qw(uniq);
-use Regexp::Optimizer;
-my $opt = Regexp::List->new;
 
 use Readonly;
 ## 0:grab all  1:reset all  2:toggle highlight  4:import   5:export  6:discard all  8:add one
@@ -369,7 +367,7 @@ sub import {
     $parent->status("Parameter import aborted.")
   } else {
     my $file = File::Spec->catfile($fd->GetDirectory, $fd->GetFilename);
-    my $comment = $opt->list2re('!', '#', '%');
+    my $comment = qr([!#%]);
 
     my $start = $parent->find_next_empty_row;
 

@@ -44,9 +44,7 @@ use YAML::Tiny;
 my $windows = [qw(hanning kaiser-bessel welch parzen sine)];
 my $demeter = $Demeter::UI::Artemis::demeter;
 
-use Regexp::List;
-use Regexp::Optimizer;
-my $reopt  = Regexp::List->new;
+use Regexp::Assemble;
 use Regexp::Common;
 use Readonly;
 Readonly my $NUMBER		=> $RE{num}{real};
@@ -2015,7 +2013,7 @@ my @element_list = qw(h he li be b c n o f ne na mg al si p s cl ar k ca
 		      ba la ce pr nd pm sm eu gd tb dy ho er tm yb lu hf
 		      ta w re os ir pt au hg tl pb bi po at rn fr ra ac
 		      th pa u np pu);
-my $element_regexp = $reopt->list2re(@element_list);
+my $element_regexp = Regexp::Assemble->new()->add(@element_list)->re;
 
 sub quickfs {
   my ($datapage) = @_;
@@ -2105,8 +2103,6 @@ use Demeter::UI::Wx::SpecialCharacters qw(:all);
 use Demeter::Feff::DL_POLY;
 
 use Scalar::Util qw(looks_like_number);
-use Regexp::List;
-my $opt  = Regexp::List->new;
 
 sub new {
   my $class = shift;

@@ -491,14 +491,15 @@ sub menubar {
   $mergedplotmenu ->Append($PLOT_STDDEV,     "Plot data + std. dev.", "Plot the merged data along with its standard deviation" );
   $mergedplotmenu ->Append($PLOT_VARIENCE,   "Plot data + variance",  "Plot the merged data along with its scaled variance" );
 
-  $plotmenu->Append($ZOOM, 'Zoom', 'Zoom in on the latest plot');
-  $plotmenu->Append($UNZOOM, 'Unzoom', 'Unzoom');
-  $plotmenu->Append($CURSOR, 'Cursor', 'SHow the coordinates of a point on the plot');
-  $plotmenu->AppendSeparator;
-  $plotmenu->AppendSubMenu($currentplotmenu, "Current group",  "Additional plot types for the current group");
-  $plotmenu->AppendSubMenu($markedplotmenu,  "Marked groups",  "Additional plot types for the marked groups");
-  $plotmenu->AppendSubMenu($mergedplotmenu,  "Merged groups",  "Additional plot types for the merged data");
-  ##$mergedplotmenu->Enable(0,0);
+  if ($demeter->co->default('plot', 'plotwith') eq 'pgplot') {
+    $plotmenu->Append($ZOOM,   'Zoom\tCtrl++',   'Zoom in on the latest plot');
+    $plotmenu->Append($UNZOOM, 'Unzoom\tCtrl+-', 'Unzoom');
+    $plotmenu->Append($CURSOR, 'Cursor\tCtrl+.', 'Show the coordinates of a point on the plot');
+    $plotmenu->AppendSeparator;
+  };
+  $plotmenu->AppendSubMenu($currentplotmenu, "Current group", "Special plot types for the current group");
+  $plotmenu->AppendSubMenu($markedplotmenu,  "Marked groups", "Special plot types for the marked groups");
+  $plotmenu->AppendSubMenu($mergedplotmenu,  "Merge groups",  "Special plot types for merge data");
   $app->{main}->{plotmenu} = $plotmenu;
 
   my $markmenu   = Wx::Menu->new;
@@ -1179,12 +1180,15 @@ sub OnRightDown {
 
 sub OnGroupSelect {
   my ($app, $parent, $event, $plot) = @_;
+  if ((ref($event) =~ m{Event}) and (not $event->IsSelection)) { # capture a control click which would otherwise deselect
+    $app->{main}->{list}->SetSelection($app->{selected});
+    $event->Skip(0);
+    return;
+  };
   my $is_index = (ref($event) =~ m{Event}) ? $event->GetSelection : $app->{main}->{list}->GetSelection;
 
   my $was = ($app->{selected} == -1) ? 0 : $app->{main}->{list}->GetIndexedData($app->{selected});
   my $is  = $app->{main}->{list}->GetIndexedData($is_index);
-  #print("same!\n"), return if ($was eq $is);
-  #  print join("|", $parent, $event, $is_index, $is, $was), $/;
   $app->{selecting_data_group}=1;
 
   my $showing = $app->{main}->{views}->GetPage($app->{main}->{views}->GetSelection);

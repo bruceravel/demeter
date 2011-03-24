@@ -55,8 +55,6 @@ eval "PGPLOT->import" if $PGPLOT_exists;
   my $foo = *PGPLOT::HANDLE;
 }
 use List::MoreUtils qw(zip);
-use Regexp::List;
-use Regexp::Optimizer;
 use Regexp::Common;
 use Readonly;
 Readonly my $NUMBER => $RE{num}{real};

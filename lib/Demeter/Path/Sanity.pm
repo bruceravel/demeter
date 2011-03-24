@@ -21,7 +21,6 @@ use Moose::Role;
 
 use Carp;
 use List::MoreUtils qw(any);
-use Regexp::Optimizer;
 use Regexp::Common;
 use Readonly;
 Readonly my $EPSILON => 0.00001;

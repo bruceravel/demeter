@@ -46,7 +46,7 @@ use File::Path;
 use File::Spec;
 use List::Util qw(max);
 use List::MoreUtils qw(any none zip uniq);
-use Regexp::Optimizer;
+use Regexp::Assemble;
 use Regexp::Common;
 use Readonly;
 Readonly my $NUMBER    => $RE{num}{real};
@@ -909,8 +909,7 @@ sub fetch_statistics {
     $self->dispose("\&screen_echo = $save\n") if $save;
   };
 
-  my $opt  = Regexp::List->new;
-  my $fit_stats_regexp = $opt->list2re(@Demeter::StrTypes::stat_list);
+  my $fit_stats_regexp = Regexp::Assemble->new()->add(@Demeter::StrTypes::stat_list)->re;
   foreach (1 .. $lines) {
     my $response = Ifeffit::get_echo()."\n";
     if ($response =~ m{($fit_stats_regexp)
@@ -988,6 +987,11 @@ sub happiness_report {
 ## object.  provide a variety of convenience functions for accessing
 ## this information as relatively flat data
 
+######## FIX ME!!! ####################################################################
+## ack!! the echo_lines are not available if something else captures Ifeffit's feedback
+## this happens if set_mode(screen=>1) is turned on or in Artemis's buffer
+######## FIX ME!!! ####################################################################
+
 sub fetch_correlations {
   my ($self) = @_;
 
@@ -1005,8 +1009,7 @@ sub fetch_correlations {
   };
 
   my @gds = map {$_->name} @{ $self->gds };
-  my $opt  = Regexp::List->new;
-  my $regex = $opt->list2re(@gds);
+  my $regex = Regexp::Assemble->new()->add(@gds)->re;
 
   foreach my $line (@correl_text) {
     if ($line =~ m{correl_

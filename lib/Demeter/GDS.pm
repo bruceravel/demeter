@@ -23,8 +23,6 @@ extends 'Demeter';
 use Demeter::StrTypes qw( GDS NotReserved );
 
 use Carp;
-use Regexp::List;
-use Regexp::Optimizer;
 use Regexp::Common;
 use Readonly;
 Readonly my $NUMBER => $RE{num}{real};

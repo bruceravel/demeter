@@ -34,8 +34,7 @@ use Carp;
 use File::Copy;
 use File::Spec;
 use List::Util qw(max);
-use Regexp::List;
-use Regexp::Optimizer;
+use Regexp::Assemble;
 use Scalar::Util qw(looks_like_number);
 
 has '+plottable'      => (default => 1);
@@ -139,8 +138,7 @@ has 'update_fft'      => (is=>'rw', isa=>  'Bool',  default => 1,
 			  trigger => sub{ my($self, $new) = @_; $self->update_bft(1) if $new});
 has 'update_bft'      => (is=>'rw', isa=>  'Bool',  default => 1);
 
-my $opt  = Regexp::List->new;
-my $pp_regex = $opt->list2re(qw(s02 e0 delr e0 sigma2 ei third fourth dphase));
+my $pp_regex = Regexp::Assemble->new()->add(qw(s02 e0 delr e0 sigma2 ei third fourth dphase))->re;
 
 sub BUILD {
   my ($self, @arguments) = @_;
@@ -239,7 +237,7 @@ sub make_name {
   my $pattern = $self->co->default("pathfinder", "label");
   my $token = $self->co->default("pathfinder", "token");
   my $noends = $sp->intrplist;
-  my $re = $opt -> list2re($token);
+  my $re = qr($token);
   $noends =~ s{\A$re}{};
   $noends =~ s{$re\z}{};
   my %table = (i   => $self->Index,

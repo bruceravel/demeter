@@ -433,8 +433,6 @@ use base qw(Wx::DropTarget);
 use Demeter::UI::Artemis::DND::PathDrag;
 
 use Scalar::Util qw(looks_like_number);
-use Regexp::List;
-my $opt  = Regexp::List->new;
 
 sub new {
   my $class = shift;

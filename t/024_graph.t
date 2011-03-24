@@ -22,11 +22,9 @@ use Test::More tests => 4;
 use Demeter;
 use Demeter::StrTypes qw( IfeffitFunction IfeffitProgramVar );
 use Graph;
-use Regexp::Optimizer;
 use Regexp::Common;
 use Readonly;
 Readonly my $NUMBER   => $RE{num}{real};
-my $opt  = Regexp::List->new;
 
 my @params = (
 	      Demeter::GDS->new(gds=>'guess', name=>'a', mathexp=>5),
@@ -36,7 +34,8 @@ my @params = (
 	      Demeter::GDS->new(gds=>'def',   name=>'e', mathexp=>"exp(-1*d)"),
 	     );
 
-my $tokenizer_regexp = $opt->list2re('-', '+', '*', '^', '/', '(', ')', ',', " ", "\t");
+my $tokenizer_regexp = '(?-xism:(?=[\t\ \(\)\*\+\,\-\/\^])[\-\+\*\^\/\(\)\,\ \t])';
+#my $tokenizer_regexp = $opt->list2re('-', '+', '*', '^', '/', '(', ')', ',', " ", "\t");
 
 my $graph = make_graph(@params);
 ok( (not $graph->has_a_cycle),   "recognize acyclic graph");

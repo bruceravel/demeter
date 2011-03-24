@@ -25,10 +25,9 @@ use File::Spec;
 use List::MoreUtils qw(any true);
 use Storable;
 
-use Regexp::List;
-my $opt   = Regexp::List->new;
-my $sh_re = $opt->list2re(qw(hex hcp zincblende zns cubic salt perov perovskite
-			     gra graphite fcc salt nacl diamond bcc cscl));
+use Regexp::Assemble;
+my $sh_re = Regexp::Assemble->new()->add(qw(hex hcp zincblende zns cubic salt perov perovskite
+					    gra graphite fcc salt nacl diamond bcc cscl))->re;
 
 use Readonly;
 Readonly my $EPSILON  => 0.00001;
@@ -704,7 +703,7 @@ L<List::MoreUtils>
 
 =item *
 
-L<Regexp::List>
+L<Regexp::Assemble>
 
 =item *
 

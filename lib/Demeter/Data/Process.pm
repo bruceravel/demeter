@@ -22,10 +22,7 @@ use Moose::Role;
 use Carp;
 use List::Util qw(reduce);
 use List::MoreUtils qw(minmax firstval uniq);
-# use Regexp::Optimizer;
-# use Regexp::Common;
 use Readonly;
-# Readonly my $NUMBER  => $RE{num}{real};
 Readonly my $EPSILON => 1e-5;
 
 

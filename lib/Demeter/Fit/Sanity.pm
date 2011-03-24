@@ -22,7 +22,7 @@ use Carp;
 use File::Spec;
 use List::MoreUtils qw(any);
 use Graph;
-use Regexp::Optimizer;
+use Regexp::Assemble;
 use Regexp::Common;
 use Readonly;
 Readonly my $NUMBER   => $RE{num}{real};
@@ -33,7 +33,6 @@ use Text::Wrap;
 $Text::Wrap::columns = 65;
 
 
-my $opt  = Regexp::List->new;
 
 sub S_data_files_exist {
   my ($self) = @_;
@@ -116,8 +115,12 @@ sub S_used_not_defined {
     next if ($g->gds =~ m{(?:merge|skip)});
     push @all_params, $g->name;
   };
-  my $params_regexp = $opt->list2re(@all_params);
-  my $tokenizer_regexp = $opt->list2re('-', '+', '*', '^', '/', '(', ')', ',', " ", "\t");
+  my $params_regexp = Regexp::Assemble->new()->add(@all_params)->re;
+  my $tokenizer_regexp = '(?-xism:(?=[\t\ \(\)\*\+\,\-\/\^])[\-\+\*\^\/\(\)\,\ \t])';
+  ## this came from:
+  # use Regexp::List;
+  # my $opt = Regexp::List->new;
+  # print $opt->list2re('-', '+', '*', '^', '/', '(', ')', ',', " ", "\t"), $/;
 
   foreach my $g (@gds) {
     next if ($g->gds =~ m{(?:guess|merge|skip)});
@@ -171,7 +174,8 @@ sub S_binary_ops {
   my $found = 0;
   my @gds   = @{ $self->gds };
   my @paths = @{ $self->paths };
-  my $bad_binary_op_regexp = $opt -> list2re('++', '--', '***', '//', '^^');
+  my $bad_binary_op_regexp = '(?-xism:(?=[\*\+\-\/\^])(?:\+\+|\-\-|\*\*\*|\/\/|\^\^))';
+  ##Regexp::Assemble->new()->add('++', '--', '***', '//', '^^')->re;
   foreach my $g (@gds) {
     next if ($g->gds =~ m{(?:merge|skip)});
     my $mathexp = $g->mathexp;
@@ -556,7 +560,8 @@ sub S_cycle_loop {
     next if ($g->gds =~ m{(?:merge|skip)});
     push @all_params, $g->name;
   };
-  my $tokenizer_regexp = $opt->list2re('-', '+', '*', '^', '/', '(', ')', ',', " ", "\t");
+  my $tokenizer_regexp = '(?-xism:(?=[\t\ \(\)\*\+\,\-\/\^])[\-\+\*\^\/\(\)\,\ \t])';
+  #my $tokenizer_regexp = Regexp::Assemble->new()->add('-', '+', '*', '^', '/', '(', ')', ',', " ", "\t")->re;
   my $graph = Graph->new;
 
   foreach my $g (@gds) {

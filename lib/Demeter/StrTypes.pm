@@ -47,9 +47,7 @@ use MooseX::Types::Moose 'Str';
 
 use Chemistry::Elements qw(get_symbol);
 use Xray::Absorption;
-use Regexp::List;
-my $opt  = Regexp::List->new;
-
+use Regexp::Assemble;
 
 subtype Empty,
   as Str,
@@ -66,7 +64,7 @@ use vars qw(@command_list $command_regexp);
 		     quit random read_data rename reset restore
 		     save set show spline sync unguess window
 		     write_data zoom } );
-$command_regexp = $opt->list2re( @command_list );
+$command_regexp = Regexp::Assemble->new()->add( @command_list )->re;
 subtype IfeffitCommand,
   as Str,
   where { lc($_) =~ m{\A$command_regexp\z} },
@@ -79,7 +77,7 @@ use vars qw(@function_list $function_regexp);
 		    atan sinh tanh coth gamma loggamma erf erfc gauss loren pvoight debye
 		    eins npts ceil floor vsum vprod indarr ones zeros range deriv penalty
 		    smooth interp qinterp splint eins debye };
-$function_regexp = $opt->list2re( @function_list );
+$function_regexp = Regexp::Assemble->new()->add( @function_list )->re;
 subtype IfeffitFunction,
   as Str,
   where { lc($_) =~ m{\A$function_regexp\z} },
@@ -96,7 +94,7 @@ use vars qw(@program_list $program_regexp);
 		   norm_c0 norm_c1 norm_c2 path_index pi pre1 pre2
 		   pre_offset pre_slope qmax_out qsp r_factor rbkg
 		   rmax rmax_out rmin rsp rweight rwin rwindow toler);
-$program_regexp = $opt->list2re(@program_list);
+$program_regexp = Regexp::Assemble->new()->add(@program_list)->re;
 subtype IfeffitProgramVar,
   as Str,
   where { lc($_) =~ m{\A$program_regexp\z} },
@@ -105,7 +103,7 @@ subtype IfeffitProgramVar,
 ## -------- Window types
 use vars qw(@window_list $window_regexp);
 @window_list = qw(kaiser-bessel hanning welch parzen sine gaussian);
-$window_regexp = $opt->list2re(@window_list);
+$window_regexp = Regexp::Assemble->new()->add(@window_list)->re;
 subtype Window,
   as Str,
   where { lc($_) =~ m{\A$window_regexp\z} },
@@ -114,7 +112,7 @@ subtype Window,
 ## -------- Path Parameters
 use vars qw(@pathparam_list $pathparam_regexp);
 @pathparam_list = qw(e0 ei sigma2 s02 delr third fourth dphase);
-$pathparam_regexp = $opt->list2re(@pathparam_list);
+$pathparam_regexp = Regexp::Assemble->new()->add(@pathparam_list)->re;
 subtype PathParam,
   as Str,
   where { lc($_) =~ m{\A$pathparam_regexp\z} },
@@ -129,7 +127,7 @@ use vars qw(@element_list $element_regexp);
 		   ta w re os ir pt au hg tl pb bi po at rn fr ra ac
 		   th pa u np pu
 		   nu);
-$element_regexp = $opt->list2re(@element_list);
+$element_regexp = Regexp::Assemble->new()->add(@element_list)->re;
 subtype Element,
   as Str,
   where { lc($_) =~ m{\A$element_regexp\z} },
@@ -150,7 +148,7 @@ coerce ElementSymbol,
 ## -------- Edge symbols
 use vars qw(@edge_list $edge_regexp);
 @edge_list = qw(k l1 l2 l3 m1 m2 m3 m4 m5);
-$edge_regexp = $opt->list2re(@edge_list);
+$edge_regexp = Regexp::Assemble->new()->add(@edge_list)->re;
 subtype Edge,
   as Str,
   where { $_ =~ m{\A$edge_regexp\z} },
@@ -165,7 +163,7 @@ use vars qw(@line_list $line_regexp);
 @line_list = qw(ka1 ka2 ka3 kb1 kb2 kb3 kb4 kb5 lb3 lb4
 		lg2 lg3 lb1 ln lg1 lg6 la1 lb2 la2 lb5 lb6
 		ll ma mb mg mz); ##'lb2,15');
-$line_regexp = $opt->list2re(@line_list);
+$line_regexp = Regexp::Assemble->new()->add(@line_list)->re;
 subtype Line,
   as Str,
   where { lc(Xray::Absorption->get_Siegbahn($_)) =~ m{\A$line_regexp\z} },
@@ -178,7 +176,7 @@ coerce Line,
 ## -------- Atoms Edge symbols
 use vars qw(@atomsedge_list $atomsedge_regexp);
 @atomsedge_list = qw(1 2 3 4 5 6 7 8 9 k l1 l2 l3 m1 m2 m3 m4 m5);
-$atomsedge_regexp = $opt->list2re(@atomsedge_list);
+$atomsedge_regexp = Regexp::Assemble->new()->add(@atomsedge_list)->re;
 subtype AtomsEdge,
   as Str,
   where { $_ =~ m{\A$atomsedge_regexp\z} },
@@ -198,7 +196,7 @@ use vars qw(@feffcard_list $feffcard_regexp);
 		    tdlda xes xmcd xncd fms debye rpath rmax nleg
 		    pcriteria ss criteria iorder nstar debye
 		    corrections sig2);
-$feffcard_regexp = $opt->list2re(@feffcard_list);
+$feffcard_regexp = Regexp::Assemble->new()->add(@feffcard_list)->re;
 subtype FeffCard,
   as Str,
   where { lc($_) =~ m{\A$feffcard_regexp\z} },
@@ -207,7 +205,7 @@ subtype FeffCard,
 ## -------- Clamp words
 use vars qw(@clamp_list $clamp_regexp);
 @clamp_list = qw(none slight weak medium strong rigid);
-$clamp_regexp = $opt->list2re(@clamp_list);
+$clamp_regexp = Regexp::Assemble->new()->add(@clamp_list)->re;
 subtype Clamp,
   as Str,
   where { lc($_) =~ m{\A$clamp_regexp\z} },
@@ -217,7 +215,7 @@ subtype Clamp,
 ## -------- Configuration keywords
 use vars qw(@config_list $config_regexp);
 @config_list = qw(type default minint maxint options units onvalue offvalue);
-$config_regexp = $opt->list2re(@config_list);
+$config_regexp = Regexp::Assemble->new()->add(@config_list)->re;
 subtype Config,
   as Str,
   where { lc($_) =~ m{\A$config_regexp\z} },
@@ -227,7 +225,7 @@ subtype Config,
 use vars qw(@stat_list $stat_regexp);
 @stat_list = qw(n_idp n_varys chi_square chi_reduced r_factor epsilon_k
 		epsilon_r data_total happiness);
-$stat_regexp = $opt->list2re(@stat_list);
+$stat_regexp = Regexp::Assemble->new()->add(@stat_list)->re;
 subtype Statistic,
   as Str,
   where { lc($_) =~ m{\A$stat_regexp\z} },
@@ -237,7 +235,7 @@ subtype Statistic,
 ## -------- Atoms lattice keywords
 use vars qw(@lattice_list $lattice_regexp);
 @lattice_list = qw(a b c alpha beta gamma space shift);
-$lattice_regexp = $opt->list2re(@lattice_list);
+$lattice_regexp = Regexp::Assemble->new()->add(@lattice_list)->re;
 subtype AtomsLattice,
   as Str,
   where { lc($_) =~ m{\A$lattice_regexp\z} },
@@ -246,7 +244,7 @@ subtype AtomsLattice,
 ## -------- Atoms gas keywords
 use vars qw(@gas_list $gas_regexp);
 @gas_list = qw(nitrogen argon helium krypton xenon);
-$gas_regexp = $opt->list2re(@gas_list);
+$gas_regexp = Regexp::Assemble->new()->add(@gas_list)->re;
 subtype AtomsGas,
   as Str,
   where { lc($_) =~ m{\A$gas_regexp\z} },
@@ -258,7 +256,7 @@ use vars qw(@obsolete_list $obsolete_regexp);
 		    noanomalous self i0 mcmaster dwarf reflections
 		    refile egrid index corrections emin emax estep
 		    egrid qvec dafs );
-$obsolete_regexp = $opt->list2re(@obsolete_list);
+$obsolete_regexp = Regexp::Assemble->new()->add(@obsolete_list)->re;
 subtype AtomsObsolete,
   as Str,
   where { lc($_) =~ m{\A$obsolete_regexp\z} },
@@ -268,7 +266,7 @@ subtype AtomsObsolete,
 use vars qw(@sg_list $sg_regexp);
 @sg_list = qw(number full new_symbol thirtyfive schoenflies bravais
 	      shorthand positions shiftvec npos);
-$sg_regexp = $opt->list2re(@sg_list);
+$sg_regexp = Regexp::Assemble->new()->add(@sg_list)->re;
 subtype SpaceGroup,
   as Str,
   where { lc($_) =~ m{\A$sg_regexp\z} },
@@ -277,7 +275,7 @@ subtype SpaceGroup,
 ## -------- Plotting backends
 use vars qw(@plotting_list $plotting_regexp);
 @plotting_list = qw(pgplot gnuplot demeter singlefile);
-$plotting_regexp = $opt->list2re(@plotting_list);
+$plotting_regexp = Regexp::Assemble->new()->add(@plotting_list)->re;
 subtype Plotting,
   as Str,
   where { lc($_) =~ m{\A$plotting_regexp\z} },
@@ -286,7 +284,7 @@ subtype Plotting,
 ## -------- Data parts
 use vars qw(@dataparts_list $dataparts_regexp);
 @dataparts_list = qw(fit bkg res);
-$dataparts_regexp = $opt->list2re(@dataparts_list);
+$dataparts_regexp = Regexp::Assemble->new()->add(@dataparts_list)->re;
 subtype DataPart,
   as Str,
   where { lc($_) =~ m{\A$dataparts_regexp\z} },
@@ -295,7 +293,7 @@ subtype DataPart,
 ## -------- Data types
 use vars qw(@datatype_list $datatype_regexp);
 @datatype_list = qw(xmu chi xmudat xanes);
-$datatype_regexp = $opt->list2re(@datatype_list);
+$datatype_regexp = Regexp::Assemble->new()->add(@datatype_list)->re;
 subtype DataType,
   as Str,
   where { lc($_) =~ m{\A$datatype_regexp\z} },
@@ -304,7 +302,7 @@ subtype DataType,
 ## -------- Fitting spaces
 use vars qw(@fitspace_list $fitspace_regexp);
 @fitspace_list = qw(k r q);
-$fitspace_regexp = $opt->list2re(@fitspace_list);
+$fitspace_regexp = Regexp::Assemble->new()->add(@fitspace_list)->re;
 subtype FitSpace,
   as Str,
   where { $_ =~ m{\A$fitspace_regexp\z} },
@@ -317,7 +315,7 @@ coerce FitSpace,
 ## -------- Plotting spaces
 use vars qw(@plotspace_list $plotspace_regexp);
 @plotspace_list = qw(e k r q);
-$plotspace_regexp = $opt->list2re(@plotspace_list);
+$plotspace_regexp = Regexp::Assemble->new()->add(@plotspace_list)->re;
 subtype PlotSpace,
   as Str,
   where { $_ =~ m{\A$plotspace_regexp\z} },
@@ -330,7 +328,7 @@ coerce PlotSpace,
 ## -------- Plotting types
 use vars qw(@plottype_list $plottype_regexp);
 @plottype_list = qw(e k r q rmr kq k123 r123);
-$plottype_regexp = $opt->list2re(@plottype_list);
+$plottype_regexp = Regexp::Assemble->new()->add(@plottype_list)->re;
 subtype PlotType,
   as Str,
   where { $_ =~ m{\A$plottype_regexp\z} },
@@ -371,7 +369,7 @@ subtype TemplateAnalysis,
 ## -------- Line types in PGPLOT
 use vars qw(@pgplotlines_list $pgplotlines_regexp);
 @pgplotlines_list = qw(solid dashed dotted dot-dash points linespoints);
-$pgplotlines_regexp = $opt->list2re(@pgplotlines_list);
+$pgplotlines_regexp = Regexp::Assemble->new()->add(@pgplotlines_list)->re;
 subtype PgplotLine,
   as Str,
   where { lc($_) =~ m{\A$pgplotlines_regexp\z} },
@@ -390,7 +388,7 @@ subtype PlotWeight,
 ## -------- Ifeffit interpolation functions
 use vars qw(@interp_list $interp_regexp);
 @interp_list = qw(linterp qinterp splint);
-$interp_regexp = $opt->list2re(@interp_list);
+$interp_regexp = Regexp::Assemble->new()->add(@interp_list)->re;
 subtype Interp,
   as Str,
   where { lc($_) =~ m{\A$interp_regexp\z} },
@@ -399,7 +397,7 @@ subtype Interp,
 ## -------- Parameter types
 use vars qw(@gds_list $gds_regexp);
 @gds_list = qw(guess def set lguess restrain after skip penalty merge);
-$gds_regexp = $opt->list2re(@gds_list);
+$gds_regexp = Regexp::Assemble->new()->add(@gds_list)->re;
 subtype GDS,
   as Str,
   where { lc($_) =~ m{\A$gds_regexp\z} },
@@ -408,7 +406,7 @@ subtype GDS,
 ## -------- Reserved words cannot be parameter names
 use vars qw(@notreserved_list $notreserved_regexp);
 @notreserved_list = qw(reff pi etok cv);
-$notreserved_regexp = $opt->list2re(@notreserved_list);
+$notreserved_regexp = Regexp::Assemble->new()->add(@notreserved_list)->re;
 subtype NotReserved,
   as Str,
   where { lc($_) !~ m{\A$notreserved_regexp\z} },
@@ -423,7 +421,7 @@ use vars qw(@fitykfunction_list $fitykfunction_regexp);
 			 ExpDecay GaussianA LogNormalA LorentzianA Pearson7A PseudoVoigtA
 			 SplitLorentzian SplitPseudoVoigt SplitVoigt
 			 Atan Erf);
-$fitykfunction_regexp = $opt->list2re(map {lc($_)} @fitykfunction_list);
+$fitykfunction_regexp = Regexp::Assemble->new()->add(map {lc($_)} @fitykfunction_list)->re;
 subtype FitykFunction,
   as Str,
   where { lc($_) =~ m{\A$fitykfunction_regexp\z} },

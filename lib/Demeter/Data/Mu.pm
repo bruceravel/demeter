@@ -24,7 +24,6 @@ use Carp;
 use File::Basename;
 use File::Spec;
 use List::MoreUtils qw(any all);
-use Regexp::Optimizer;
 use Regexp::Common;
 use Readonly;
 Readonly my $NUMBER  => $RE{num}{real};

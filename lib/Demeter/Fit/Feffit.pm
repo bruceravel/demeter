@@ -25,7 +25,7 @@ use Cwd qw(realpath);
 use File::Basename;
 use File::Spec;
 use List::MoreUtils qw(any);
-use Regexp::Optimizer;
+use Regexp::Assemble;
 use Regexp::Common;
 use Readonly;
 Readonly my $NUMBER      => $RE{num}{real};
@@ -69,8 +69,6 @@ Readonly my %SYNONYMS => (path	  => 'path',
 			  quartic => 'fourth',
 			 );
 
-my $opt  = Regexp::List->new;
-
 has 'file'    => (is => 'rw', isa => 'Str',  default => q{},
 		  trigger => sub{shift -> Read} );
 has 'cwd'     => (is => 'rw', isa => 'Str', default => q{});
@@ -83,34 +81,36 @@ has 'sigma2' => (is => 'rw', isa => 'Str', default => q{});
 
 ## feffit keywords
 has 'all_re'       => (is => 'ro', isa => 'RegexpRef',
-		       default => sub{ $opt->list2re(qw(format formin formout rspout kspout qspout allout bkgfile out output
-							bkg data kmin kmax rmin rmax dk dk1 dk2 dr dr1 dr2 rlast kw kweight
-							nodegen noout nofit norun kspfit rspfit qspfit fit_space
-						      )) });
+		       default => sub{ Regexp::Assemble->new()->add(qw(format formin formout rspout kspout qspout allout bkgfile out output
+								       bkg data kmin kmax rmin rmax dk dk1 dk2 dr dr1 dr2 rlast kw kweight
+								       nodegen noout nofit norun kspfit rspfit qspfit fit_space
+								     ))->re });
 has 'flag_re'      => (is => 'ro', isa => 'RegexpRef',
-		       default => sub{ $opt->list2re(qw(nodegen noout nofit norun kspfit rspfit qspfit)) });
+		       default => sub{ Regexp::Assemble->new()->add(qw(nodegen noout nofit norun kspfit rspfit qspfit))->re });
 has 'kop_re'       => (is => 'ro', isa => 'RegexpRef',
-		       default => sub{ $opt->list2re(qw(kmin kmax dk dk1 dk2 kw kweight qmin qmax dq dq1 dq2 qw qweight)) });
+		       default => sub{ Regexp::Assemble->new()->add(qw(kmin kmax dk dk1 dk2 kw kweight qmin qmax
+								       dq dq1 dq2 qw qweight))->re });
 has 'rop_re'       => (is => 'ro', isa => 'RegexpRef',
-		       default => sub{ $opt->list2re(qw(rmin rmax dr dr1 dr2 rlast)) });
+		       default => sub{ Regexp::Assemble->new()->add(qw(rmin rmax dr dr1 dr2 rlast))->re });
 has 'ignore_re'    => (is => 'ro', isa => 'RegexpRef',
-		       default => sub{ $opt->list2re(qw(form format formin formout rspout kspout qspout allout
-							prmout pcout kfull fullk nerstp
-							bkgfile out output mftwrt mftfit mdocxx comment asccmt)) });
+		       default => sub{ Regexp::Assemble->new()->add(qw(form format formin formout rspout kspout qspout allout
+								       prmout pcout kfull fullk nerstp
+								       bkgfile out output mftwrt mftfit mdocxx comment asccmt))->re });
 has 'opparam_re'   => (is => 'ro', isa => 'RegexpRef',
-		       default => sub{ $opt->list2re(qw(bkg data kmin kmax rmin rmax dk dk1 dk2 dr dr1 dr2 kw kweight nodegen fit_space)) });
+		       default => sub{ Regexp::Assemble->new()->add(qw(bkg data kmin kmax rmin rmax dk dk1 dk2 dr dr1 dr2
+								       kw kweight nodegen fit_space))->re });
 has 'pathparam_re' => (is => 'ro', isa => 'RegexpRef',
-		       default => sub{ $opt->list2re(qw(path feff
-							id
-							e0 esh ee e0s
-							s02 so2 amp
-							sigma2 ss2
-							delr deltar
-							ei
-							third 3rd cubic
-							fourth 4th quartic)) });
+		       default => sub{ Regexp::Assemble->new()->add(qw(path feff
+								       id
+								       e0 esh ee e0s
+								       s02 so2 amp
+								       sigma2 ss2
+								       delr deltar
+								       ei
+								       third 3rd cubic
+								       fourth 4th quartic))->re });
 has 'comment_re'   => (is => 'ro', isa => 'RegexpRef',
-		       default => sub{ $opt->list2re('!', '#', '%') });
+		       default => sub{ qr([!#%]) });
 
 
 my @gds  = ();

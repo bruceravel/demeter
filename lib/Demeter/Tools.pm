@@ -21,8 +21,7 @@ use Moose::Role;
 
 use Carp;
 #use Demeter::GDS;
-use Regexp::List;
-use Regexp::Optimizer;
+use Regexp::Assemble;
 use List::Util qw(sum);
 use String::Random qw(random_string);
 use Sys::Hostname;
@@ -41,8 +40,8 @@ Readonly my $FRAC => 100000;
 # @EXPORT_OK = qw();
 
 my %seen = ();
-my $opt  = Regexp::List->new;
-my $type_regexp = $opt->list2re(qw(guess def set restrain after skip merge lguess ldef));
+my $ra  = Regexp::Assemble->new;
+my $type_regexp = $ra->add(qw(guess def set restrain after skip merge lguess ldef))->re;
 
 sub now {
   my ($self) = @_;
@@ -80,8 +79,8 @@ sub module_environment {
 		     Math::Round
 		     Pod::POM
 		     Readonly
+		     Regexp::Assemble
 		     Regexp::Common
-		     Regexp::Optimizer
 		     Heap::Fibonacci
 		     String::Random
 		     Text::Template

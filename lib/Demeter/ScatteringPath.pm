@@ -44,8 +44,6 @@ use List::MoreUtils qw(pairwise notall all any);
 use Math::Round qw(round);
 #use Math::Trig qw(acos atan);
 use POSIX qw(acos);
-use Regexp::List;
-use Regexp::Optimizer;
 use Readonly;
 #Readonly my $PI           => 2*atan2(1,0);
 #Readonly my $EPSI         => 0.00001;
@@ -53,8 +51,6 @@ use Readonly;
 use String::Random qw(random_string);
 
 
-
-my $opt  = Regexp::List->new;
 
 # used in compute_beta and identify_path; made global as a speed
 # optimization I am trying to avoid directly calling variables of

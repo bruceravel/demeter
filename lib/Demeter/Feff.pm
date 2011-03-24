@@ -44,8 +44,6 @@ use File::Temp qw(tempfile);
 use List::Util qw(sum);
 use List::MoreUtils qw(any false notall);
 use Regexp::Common;
-use Regexp::List;
-use Regexp::Optimizer;
 use Tree::Simple;
 use Heap::Fibonacci;
 use Readonly;
@@ -60,7 +58,6 @@ Readonly my $NUMBER       => $RE{num}{real};
 my @leglength = ();
 my $shortest = 100000000;
 
-my $opt  = Regexp::List->new;
 
 has 'source'      => (is => 'rw', isa => 'Str', default => 'demeter/feff6');
 has 'file'        => (is => 'rw', isa => 'Str',  default => q{},

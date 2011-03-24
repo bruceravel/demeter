@@ -22,8 +22,6 @@ extends 'Demeter::Plot';
 
 use Carp;
 use File::Spec;
-use Regexp::List;
-use Regexp::Optimizer;
 use Regexp::Common;
 use Readonly;
 Readonly my $NUMBER => $RE{num}{real};
@@ -255,9 +253,7 @@ Also
 
 =item L<File::Spec>
 
-=item L<Regexp::List>
-
-=item L<Regexp::Optimizer>
+=item L<Regexp::Assemble>
 
 =item L<Regexp::Common>
 

@@ -348,7 +348,7 @@ has 'fit_karb'		  => (is => 'rw', isa => 'Bool',     default => sub{ shift->co->
 has 'fit_karb_value'	  => (is => 'rw', isa =>  NonNeg,    default => sub{ shift->co->default("fit", "karb_value") ||  0});
 has 'fit_space'	          => (is => 'rw', isa =>  FitSpace,  default => sub{ shift->co->default("fit", "space")      || 'r'}, coerce => 1);
 has 'fit_epsilon'	  => (is => 'rw', isa => 'Num',      default => 0);
-has 'fit_cormin'	  => (is => 'rw', isa =>  PosNum,    default => sub{ shift->co->default("fit", "cormin")     ||  0.4});
+has 'fit_cormin'	  => (is => 'rw', isa =>  NonNeg,    default => sub{ shift->co->default("fit", "cormin")     ||  0.4});
 has 'fit_include'	  => (is => 'rw', isa => 'Bool',     default => 1);
 has 'fit_data'	          => (is => 'rw', isa =>  Natural,   default => 0);
 has 'fit_plot_after_fit'  => (is => 'rw', isa => 'Bool',     default => 0);

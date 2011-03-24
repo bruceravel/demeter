@@ -47,8 +47,6 @@ use List::Util qw(min max reduce);
 #use Math::Cephes::Fraction qw(fract);
 use POSIX qw(ceil);
 use Regexp::Common;
-use Regexp::List;
-use Regexp::Optimizer;
 use Readonly;
 use Safe;
 use Text::Template;

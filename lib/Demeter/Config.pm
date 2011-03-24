@@ -29,8 +29,7 @@ use Carp;
 #use diagnostics;
 use Config::IniFiles;
 use File::Basename;
-use Regexp::List;
-use Regexp::Optimizer;
+use Regexp::Assemble;
 use Regexp::Common;
 use Readonly;
 Readonly my $NUMBER => $RE{num}{real};
@@ -181,9 +180,8 @@ sub _read_config_file {
   #$self -> Push(___groups => $base);
   $self -> push_all_config_files(File::Spec->rel2abs($file));
 
-  my $opt  = Regexp::List->new;
-  my $key_regex = $opt->list2re(qw(type default minint maxint options windows
-				   units onvalue offvalue restart));
+  my $key_regex = Regexp::Assemble->new()->add(qw(type default minint maxint options windows
+						  units onvalue offvalue restart))->re;
 
   my (%hash, $description, $group, $param, $value);
   my $line;

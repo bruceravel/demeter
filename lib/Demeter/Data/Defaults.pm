@@ -21,7 +21,6 @@ use Moose::Role;
 
 use Carp;
 
-use Regexp::Optimizer;
 use Regexp::Common;
 use Readonly;
 Readonly my $NUMBER  => $RE{num}{real};
