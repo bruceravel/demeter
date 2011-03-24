@@ -3,10 +3,10 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
 lang="en" xml:lang="en">
 <head>
-<title>-*- org -*-</title>
+<title>Demeter To Do List (also Athena and Artemis)</title>
 <meta http-equiv="Content-Type" content="text/html;charset=iso-8859-1"/>
 <meta name="generator" content="Org-mode"/>
-<meta name="generated" content="2011-03-22 13:08:22 EDT"/>
+<meta name="generated" content="2011-03-24 11:08:59 EDT"/>
 <meta name="author" content="Bruce Ravel"/>
 <style type="text/css">
  <!--/*--><![CDATA[/*><!--*/
@@ -64,7 +64,7 @@ lang="en" xml:lang="en">
 /*]]>*/-->
 </script>
 </head><body>
-<h1 class="title">-*- org -*-</h1>
+<h1 class="title">Demeter To Do List (also Athena and Artemis)</h1>
 
 
 <div id="table-of-contents">
@@ -132,7 +132,7 @@ Turns out this is a gtk problem &ndash; I can make the same thing happen with Fi
 <b>[<span style="visibility:hidden;">X</span>]</b> set E0 to peak of white line
 </li>
 <li>
-<b>[<span style="visibility:hidden;">X</span>]</b> clnorm
+<b>[<span style="visibility:hidden;">X</span>]</b> clnorm + Julia and Jingen's MXAN replacement
 </li>
 <li>
 <b>[<span style="visibility:hidden;">X</span>]</b> Data object should note that datatype is xanes and not compute fbkg since the bkg array does not exist
@@ -144,7 +144,7 @@ Turns out this is a gtk problem &ndash; I can make the same thing happen with Fi
 <b>[<span style="visibility:hidden;">X</span>]</b> Demeter command backend needs polishing
 </li>
 <li>
-<b>[<span style="visibility:hidden;">X</span>]</b> we seem not to have a normalized group (i.e. plot the same asmu and norm)
+<b>[<span style="visibility:hidden;">X</span>]</b> we seem not to have a normalized group (i.e. plot the same as mu or norm)
 </li>
 <li>
 <b>[<span style="visibility:hidden;">X</span>]</b> 3rd derivative
@@ -278,16 +278,13 @@ be nice
 denominator selection
 </li>
 <li>
-<b>[<span style="visibility:hidden;">X</span>]</b> left click on groups list should post group menu (others?)
-</li>
-<li>
-<b>[<span style="visibility:hidden;">X</span>]</b> <b>Pluck buttons</b>
+<b>[<span style="visibility:hidden;">X</span>]</b> <b>Pluck buttons</b> [0/2]
 <ul>
 <li>
-implement everywhere needed
+<b>[<span style="visibility:hidden;">X</span>]</b> implement everywhere needed
 </li>
 <li>
-figure out cause of spurious error on Windows "failed to get
+<b>[<span style="visibility:hidden;">X</span>]</b> figure out cause of spurious error on Windows "failed to get
 data from the clipboard error -2147221040 openClipboard failed"
 </li>
 </ul>
@@ -301,41 +298,47 @@ add noise to chi data
 </ul>
 </li>
 <li>
-<b>[<span style="visibility:hidden;">X</span>]</b> <b>Difference tool</b>
+<b>[<span style="visibility:hidden;">X</span>]</b> <b>Difference tool</b> [0/3]
 <ul>
 <li>
-plot diff for marked groups
+<b>[<span style="visibility:hidden;">X</span>]</b> plot diff for marked groups
 </li>
 <li>
-plot areas from marked groups
+<b>[<span style="visibility:hidden;">X</span>]</b> plot areas from marked groups
 </li>
 <li>
-make difference groups from marked groups
+<b>[<span style="visibility:hidden;">X</span>]</b> make difference groups from marked groups
 </li>
 </ul>
 </li>
 <li>
-<b>[<span style="visibility:hidden;">X</span>]</b> <b>LCF tool</b>
+<b>[<span style="visibility:hidden;">X</span>]</b> <b>LCF tool</b> [0/4]
 <ul>
 <li>
-make data group from fit (use InsertData method)
+<b>[<span style="visibility:hidden;">X</span>]</b> make data group from fit (use InsertData method)
 </li>
 <li>
-marked groups automation, display in fourth tab, excel output
+<b>[<span style="visibility:hidden;">X</span>]</b> marked groups automation, display in fourth tab, excel output
 </li>
 <li>
-plot in R for fit in k
+<b>[<span style="visibility:hidden;">X</span>]</b> plot in R for fit in k
 </li>
 <li>
-persistance of LCF results
+<b>[<span style="visibility:hidden;">X</span>]</b> persistance of LCF results
 </li>
 </ul>
 </li>
 <li>
-<b>[<span style="visibility:hidden;">X</span>]</b> <b>Group list</b>
+[-] <b>Group list</b> [1/3]
 <ul>
 <li>
-move groups up and down, keystroke | DnD
+<b>[<span style="visibility:hidden;">X</span>]</b> move groups up and down, keystroke | DnD
+</li>
+<li>
+<b>[X]</b> left click on groups list should post group menu (others?)
+</li>
+<li>
+<b>[<span style="visibility:hidden;">X</span>]</b> it needs to be impossible to select nothing in the group list
 </li>
 </ul>
 </li>
@@ -348,32 +351,35 @@ zoom/unzoom/cursor for pgplot
 </ul>
 </li>
 <li>
-<b>[<span style="visibility:hidden;">X</span>]</b> <b>Help menu</b>
+<b>[<span style="visibility:hidden;">X</span>]</b> <b>Help menu</b> [0/3]
 <ul>
 <li>
-demos
+<b>[<span style="visibility:hidden;">X</span>]</b> demos
 </li>
 <li>
-document
+<b>[<span style="visibility:hidden;">X</span>]</b> document
 </li>
 <li>
-memory usage
+<b>[<span style="visibility:hidden;">X</span>]</b> memory usage
 
 </li>
 </ul>
 </li>
 </ul>
 </li>
-<li id="sec-1.3.4">Windows issues [0/3] <br/>
+<li id="sec-1.3.4">Windows issues [1/4] <br/>
 <ul>
 <li>
 <b>[<span style="visibility:hidden;">X</span>]</b> spurious message from clipboard
 </li>
 <li>
-<b>[<span style="visibility:hidden;">X</span>]</b> parameter group context menus don't get posted
+<b>[X]</b> parameter group context menus don't get posted (see <a href="http://www.nntp.perl.org/group/perl.wxperl.users/2011/03/msg7929.html">http://www.nntp.perl.org/group/perl.wxperl.users/2011/03/msg7929.html</a>)
 </li>
 <li>
 <b>[<span style="visibility:hidden;">X</span>]</b> the frickin' Gnuplot error logs seem to remain locked on Windows when a crash happens
+</li>
+<li>
+<b>[<span style="visibility:hidden;">X</span>]</b> status bar does not get color for wait or error messages
 
 
 </li>
@@ -407,7 +413,7 @@ memory usage
 <b>[<span style="visibility:hidden;">X</span>]</b> should I clear out unfitted fit folders from project upon import?
 </li>
 <li>
-<b>[<span style="visibility:hidden;">X</span>]</b> update pods for D::Feff::Histogram and D::Feff:DL<sub>POLY</sub>
+<b>[<span style="visibility:hidden;">X</span>]</b> update pods for D::Feff::Histogram and D::Feff::DL<sub>POLY</sub>
 </li>
 <li>
 <b>[<span style="visibility:hidden;">X</span>]</b> feffit.inp import: needs testing; MDS that is not merely MKW
@@ -607,9 +613,9 @@ worth implementing)
 </div>
 </div>
 <div id="postamble"><p class="author"> Author: Bruce Ravel
-<a href="mailto:bruce@dh10">&lt;bruce@dh10&gt;</a>
+<a href="mailto:bravel AT bnl DOT gov">&lt;bravel AT bnl DOT gov&gt;</a>
 </p>
-<p class="date"> Date: 2011-03-22 13:08:22 EDT</p>
+<p class="date"> Date: 2011-03-24 11:08:59 EDT</p>
 <p>HTML generated by org-mode 6.21b in emacs 23</p>
 </div></body>
 </html>

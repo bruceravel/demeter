@@ -354,10 +354,10 @@ sub menubar {
   my $bar        = Wx::MenuBar->new;
   $app->{main}->{mrumenu} = Wx::Menu->new;
   my $filemenu   = Wx::Menu->new;
-  $filemenu->Append(wxID_OPEN,  "Import data", "Import data from a data or project file" );
+  $filemenu->Append(wxID_OPEN,  "Import data\tCtrl+o", "Import data from a data or project file" );
   $filemenu->AppendSubMenu($app->{main}->{mrumenu}, "Recent files", "This submenu contains a list of recently used files" );
   $filemenu->AppendSeparator;
-  $filemenu->Append(wxID_SAVE,    "Save project", "Save an Athena project file" );
+  $filemenu->Append(wxID_SAVE,    "Save project\tCtrl+s", "Save an Athena project file" );
   $filemenu->Append(wxID_SAVEAS,  "Save project as...", "Save an Athena project file as..." );
   $filemenu->Append($SAVE_MARKED, "Save marked groups as...", "Save marked groups as an Athena project file as..." );
   $filemenu->AppendSeparator;
@@ -413,8 +413,8 @@ sub menubar {
   $filemenu->AppendSeparator;
   $filemenu->Append($CLEAR_PROJECT, 'Clear project name', 'Clear project name');
   $filemenu->AppendSeparator;
-  $filemenu->Append(wxID_CLOSE, "&Close" );
-  $filemenu->Append(wxID_EXIT,  "E&xit" );
+  $filemenu->Append(wxID_CLOSE, "&Close\tCtrl+w" );
+  $filemenu->Append(wxID_EXIT,  "E&xit\tCtrl+q" );
 
   my $monitormenu = Wx::Menu->new;
   my $ifeffitmenu = Wx::Menu->new;
@@ -443,8 +443,8 @@ sub menubar {
 
 
   my $groupmenu   = Wx::Menu->new;
-  $groupmenu->Append($RENAME, "Rename current group\tCTRL+l", "Rename the current group");
-  $groupmenu->Append($COPY,   "Copy current group\tCTRL+y",   "Copy the current group");
+  $groupmenu->Append($RENAME, "Rename current group\tShift+Ctrl+l", "Rename the current group");
+  $groupmenu->Append($COPY,   "Copy current group\tShift+Ctrl+y",   "Copy the current group");
   $groupmenu->Append($CHANGE_DATATYPE, "Change data type", "Change the data type for the current group or the marked groups");
 
   $groupmenu->AppendSeparator;
@@ -460,7 +460,7 @@ sub menubar {
   $groupmenu->AppendSeparator;
   $groupmenu->Append($REMOVE,         "Remove current group",   "Remove the current group from this project");
   $groupmenu->Append($REMOVE_MARKED,  "Remove marked groups",   "Remove marked groups from this project");
-  $groupmenu->Append(wxID_CLOSE,       "&Close" );
+  $groupmenu->Append(wxID_CLOSE,       "&Close\tCtrl+w" );
   $app->{main}->{groupmenu} = $groupmenu;
 
   my $freezemenu  = Wx::Menu->new;
@@ -502,12 +502,12 @@ sub menubar {
   $app->{main}->{plotmenu} = $plotmenu;
 
   my $markmenu   = Wx::Menu->new;
-  $markmenu->Append($MARK_ALL,      "Mark all\tCTRL+a",            "Mark all groups" );
-  $markmenu->Append($MARK_NONE,     "Clear all marks\tCTRL+u",     "Clear all marks" );
-  $markmenu->Append($MARK_INVERT,   "Invert marks\tCTRL+i",        "Invert all mark" );
-  $markmenu->Append($MARK_TOGGLE,   "Toggle current mark\tCTRL+t", "Toggle mark of current group" );
-  $markmenu->Append($MARK_REGEXP,   "Mark by regexp\tCTRL+r",      "Mark all groups matching a regular expression" );
-  $markmenu->Append($UNMARK_REGEXP, "Unmark by regex\tCTRL+x",     "Unmark all groups matching a regular expression" );
+  $markmenu->Append($MARK_ALL,      "Mark all\tShift+Ctrl+a",            "Mark all groups" );
+  $markmenu->Append($MARK_NONE,     "Clear all marks\tShift+Ctrl+u",     "Clear all marks" );
+  $markmenu->Append($MARK_INVERT,   "Invert marks\tShift+Ctrl+i",        "Invert all mark" );
+  $markmenu->Append($MARK_TOGGLE,   "Toggle current mark\tShift+Ctrl+t", "Toggle mark of current group" );
+  $markmenu->Append($MARK_REGEXP,   "Mark by regexp\tShift+Ctrl+r",      "Mark all groups matching a regular expression" );
+  $markmenu->Append($UNMARK_REGEXP, "Unmark by regex\tShift+Ctrl+x",     "Unmark all groups matching a regular expression" );
   $app->{main}->{markmenu} = $markmenu;
 
   my $mergemenu  = Wx::Menu->new;
@@ -549,21 +549,22 @@ sub menubar {
   $monitormenu    -> Enable($_,0) foreach ($IFEFFIT_MEMORY);
   $helpmenu       -> Enable($_,0) foreach ($DOCUMENT, $DEMO);
 
-  my $accelerator = Wx::AcceleratorTable->new([wxACCEL_CTRL,  97, $MARK_ALL],
-					      [wxACCEL_CTRL, 117, $MARK_NONE],
-					      [wxACCEL_CTRL, 105, $MARK_INVERT],
-					      [wxACCEL_CTRL, 116, $MARK_TOGGLE],
-					      [wxACCEL_CTRL, 114, $MARK_REGEXP],
-					      [wxACCEL_CTRL, 120, $UNMARK_REGEXP],
-					      [wxACCEL_CTRL, 108, $RENAME],
-					      [wxACCEL_CTRL, 121, $COPY],
+  # my $accelerator = Wx::AcceleratorTable->new(
+  # 					      #[wxACCEL_CTRL|wxACCEL_SHIFT,  97, $MARK_ALL],
+  # 					      [wxACCEL_CTRL, 117, $MARK_NONE],
+  # 					      [wxACCEL_CTRL, 105, $MARK_INVERT],
+  # 					      [wxACCEL_CTRL, 116, $MARK_TOGGLE],
+  # 					      [wxACCEL_CTRL, 114, $MARK_REGEXP],
+  # 					      [wxACCEL_CTRL, 120, $UNMARK_REGEXP],
+  # 					      [wxACCEL_CTRL, 108, $RENAME],
+  # 					      [wxACCEL_CTRL, 121, $COPY],
 
-					      [wxACCEL_CTRL, 111, wxID_OPEN],
-					      [wxACCEL_CTRL, 115, wxID_SAVE],
-					      [wxACCEL_CTRL, 119, wxID_CLOSE],
-					      [wxACCEL_CTRL, 113, wxID_EXIT],
-					     );
-  $app->{main}->SetAcceleratorTable( $accelerator );
+  # 					      [wxACCEL_CTRL, 111, wxID_OPEN],
+  # 					      [wxACCEL_CTRL, 115, wxID_SAVE],
+  # 					      [wxACCEL_CTRL, 119, wxID_CLOSE],
+  # 					      [wxACCEL_CTRL, 113, wxID_EXIT],
+  # 					     );
+  # $app->{main}->SetAcceleratorTable( $accelerator );
 
 
   EVT_MENU($app->{main}, -1, sub{my ($frame,  $event) = @_; OnMenuClick($frame,  $event, $app)} );
@@ -1166,13 +1167,13 @@ sub side_bar {
 sub OnRightDown {
   my ($this, $event) = @_;
   return if $::app->is_empty;
-  my $menu = Wx::Menu->new(q{});
-  $menu->AppendSubMenu($::app->{main}->{groupmenu},  "Group" );
-  $menu->AppendSubMenu($::app->{main}->{markmenu},   "Mark"  );
-  $menu->AppendSubMenu($::app->{main}->{plotmenu},   "Plot"  );
-  $menu->AppendSubMenu($::app->{main}->{freezemenu}, "Freeze");
-  $this->PopupMenu($menu, $event->GetPosition);
-  ## $this->PopupMenu($::app->{main}->{groupmenu}, $event->GetPosition);
+  # my $menu = Wx::Menu->new(q{});
+  # $menu->AppendSubMenu($::app->{main}->{groupmenu},  "Group" );
+  # $menu->AppendSubMenu($::app->{main}->{markmenu},   "Mark"  );
+  # $menu->AppendSubMenu($::app->{main}->{plotmenu},   "Plot"  );
+  # $menu->AppendSubMenu($::app->{main}->{freezemenu}, "Freeze");
+  # $this->PopupMenu($menu, $event->GetPosition);
+  $this->PopupMenu($::app->{main}->{groupmenu}, $event->GetPosition);
   $event->Skip(0);
 };
 
