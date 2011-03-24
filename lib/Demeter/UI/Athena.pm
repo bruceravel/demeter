@@ -443,11 +443,10 @@ sub menubar {
 
 
   my $groupmenu   = Wx::Menu->new;
-  $groupmenu->Append($RENAME, "Rename current group\tALT+SHIFT+l", "Rename the current group");
-  $groupmenu->Append($COPY,   "Copy current group\tALT+SHIFT+y",   "Copy the current group");
+  $groupmenu->Append($RENAME, "Rename current group\tCTRL+l", "Rename the current group");
+  $groupmenu->Append($COPY,   "Copy current group\tCTRL+y",   "Copy the current group");
   $groupmenu->Append($CHANGE_DATATYPE, "Change data type", "Change the data type for the current group or the marked groups");
 
-  #my $valuesmenu  = Wx::Menu->new;
   $groupmenu->AppendSeparator;
   $groupmenu->Append($VALUES_ALL,    "Set all groups' values to the current",    "Push this groups parameter values onto all other groups.");
   $groupmenu->Append($VALUES_MARKED, "Set marked groups' values to the current", "Push this groups parameter values onto all marked groups.");
@@ -503,12 +502,12 @@ sub menubar {
   $app->{main}->{plotmenu} = $plotmenu;
 
   my $markmenu   = Wx::Menu->new;
-  $markmenu->Append($MARK_ALL,      "Mark all\tCTRL+SHIFT+a",            "Mark all groups" );
-  $markmenu->Append($MARK_NONE,     "Clear all marks\tCTRL+SHIFT+u",     "Clear all marks" );
-  $markmenu->Append($MARK_INVERT,   "Invert marks\tCTRL+SHIFT+i",        "Invert all mark" );
-  $markmenu->Append($MARK_TOGGLE,   "Toggle current mark\tCTRL+SHIFT+t", "Toggle mark of current group" );
-  $markmenu->Append($MARK_REGEXP,   "Mark by regexp\tCTRL+SHIFT+r",      "Mark all groups matching a regular expression" );
-  $markmenu->Append($UNMARK_REGEXP, "Unmark by regex\tCTRL+SHIFT+x",     "Unmark all groups matching a regular expression" );
+  $markmenu->Append($MARK_ALL,      "Mark all\tCTRL+a",            "Mark all groups" );
+  $markmenu->Append($MARK_NONE,     "Clear all marks\tCTRL+u",     "Clear all marks" );
+  $markmenu->Append($MARK_INVERT,   "Invert marks\tCTRL+i",        "Invert all mark" );
+  $markmenu->Append($MARK_TOGGLE,   "Toggle current mark\tCTRL+t", "Toggle mark of current group" );
+  $markmenu->Append($MARK_REGEXP,   "Mark by regexp\tCTRL+r",      "Mark all groups matching a regular expression" );
+  $markmenu->Append($UNMARK_REGEXP, "Unmark by regex\tCTRL+x",     "Unmark all groups matching a regular expression" );
   $app->{main}->{markmenu} = $markmenu;
 
   my $mergemenu  = Wx::Menu->new;
@@ -533,7 +532,6 @@ sub menubar {
   $bar->Append( $filemenu,    "&File" );
   $bar->Append( $groupmenu,   "&Group" );
   $bar->Append( $markmenu,    "&Mark" );
-  #$bar->Append( $valuesmenu,  "&Values" );
   $bar->Append( $plotmenu,    "&Plot" );
   $bar->Append( $freezemenu,  "Free&ze" );
   $bar->Append( $mergemenu,   "Me&rge" );
@@ -550,6 +548,23 @@ sub menubar {
 					   $FREEZE_TOGGLE_ALL);
   $monitormenu    -> Enable($_,0) foreach ($IFEFFIT_MEMORY);
   $helpmenu       -> Enable($_,0) foreach ($DOCUMENT, $DEMO);
+
+  my $accelerator = Wx::AcceleratorTable->new([wxACCEL_CTRL,  97, $MARK_ALL],
+					      [wxACCEL_CTRL, 117, $MARK_NONE],
+					      [wxACCEL_CTRL, 105, $MARK_INVERT],
+					      [wxACCEL_CTRL, 116, $MARK_TOGGLE],
+					      [wxACCEL_CTRL, 114, $MARK_REGEXP],
+					      [wxACCEL_CTRL, 120, $UNMARK_REGEXP],
+					      [wxACCEL_CTRL, 108, $RENAME],
+					      [wxACCEL_CTRL, 121, $COPY],
+
+					      [wxACCEL_CTRL, 111, wxID_OPEN],
+					      [wxACCEL_CTRL, 115, wxID_SAVE],
+					      [wxACCEL_CTRL, 119, wxID_CLOSE],
+					      [wxACCEL_CTRL, 113, wxID_EXIT],
+					     );
+  $app->{main}->SetAcceleratorTable( $accelerator );
+
 
   EVT_MENU($app->{main}, -1, sub{my ($frame,  $event) = @_; OnMenuClick($frame,  $event, $app)} );
   return $app;

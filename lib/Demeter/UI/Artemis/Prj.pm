@@ -69,7 +69,7 @@ sub new {
 				      ["$MU(E)", "|$CHI(R)|", "Re[$CHI(R)]", "Im[$CHI(R)]", "$CHI(k)", "|$CHI(q)|", "Re[$CHI(q)]", "Im[$CHI(q)]"],
 				      4, wxRA_SPECIFY_ROWS);
   $right -> Add($this->{plotas}, 0, wxGROW|wxALL, 5);
-  ($style eq 'single') ? $this->{plotas}->SetSelection(2) : $this->{plotas}->SetSelection(0);
+  ($style eq 'single') ? $this->{plotas}->SetSelection(1) : $this->{plotas}->SetSelection(0);
   EVT_RADIOBOX($this, $this->{plotas}, sub{OnPlotAs(@_, $prj, $names)});
 
   if ($style eq 'single') {	# importing into Artemis
