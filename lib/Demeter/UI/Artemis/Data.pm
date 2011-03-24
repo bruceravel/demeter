@@ -213,7 +213,7 @@ sub new {
   my $buttonbox  = Wx::StaticBox->new($leftpane, -1, 'Plot this data set as ', wxDefaultPosition, [-1,-1]);
   my $buttonboxsizer = Wx::StaticBoxSizer->new( $buttonbox, wxHORIZONTAL );
   $left -> Add($buttonboxsizer, 0, wxGROW|wxALL, 5);
-  $this->{plot_rmr}  = Wx::Button->new($leftpane, -1, "&Rmr",  wxDefaultPosition, [70,-1]);
+  $this->{plot_rmr}  = Wx::Button->new($leftpane, -1, "&Rm".$demeter->co->default("plot", "rmx"),  wxDefaultPosition, [70,-1]);
   $this->{plot_k123} = Wx::Button->new($leftpane, -1, "&k123", wxDefaultPosition, [70,-1]);
   $this->{plot_r123} = Wx::Button->new($leftpane, -1, "R&123", wxDefaultPosition, [70,-1]);
   $this->{plot_kq}   = Wx::Button->new($leftpane, -1, "k&q",   wxDefaultPosition, [70,-1]);

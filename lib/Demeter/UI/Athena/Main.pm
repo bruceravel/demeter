@@ -138,7 +138,7 @@ sub bkg {
   my $backgroundboxsizer  = Wx::BoxSizer->new( wxVERTICAL );
   $backgroundboxsizer -> Add(Wx::StaticLine->new($this, -1, wxDefaultPosition, wxDefaultSize, wxLI_HORIZONTAL), 0, wxGROW|wxBOTTOM, 2);
   $this->{sizer}  -> Add($backgroundboxsizer, 0, wxTOP|wxBOTTOM|wxGROW, 10);
-  $this->{background_group_label} = Wx::StaticText->new($this, -1, 'Forward Fourier transform parameters');
+  $this->{background_group_label} = Wx::StaticText->new($this, -1, 'Background removal parameters');
   $this->{background_group_label} -> SetFont( Wx::Font->new( $box_font_size, wxDEFAULT, wxNORMAL, wxBOLD, 0, "" ) );
   $backgroundboxsizer -> Add($this->{background_group_label}, 0, wxBOTTOM|wxALIGN_LEFT, 5);
 

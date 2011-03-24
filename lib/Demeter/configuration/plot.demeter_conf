@@ -444,3 +444,12 @@ default=2
 description
   This sets the kweight for plotting to be used at startup.
 
+variable=rmx
+type=list
+options=r i
+default=r
+description
+  In the plot that shows the data (and fit) in R as magnitude and
+  oscillatory part, this chooses whether the real or imaginary part
+  gets plotted.
+

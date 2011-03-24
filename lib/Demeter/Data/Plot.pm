@@ -377,7 +377,7 @@ sub plotRmr {
   $self -> po -> plot_win(0);
   $self -> y_offset($yoff+$down);
   $self -> name(q{});
-  $self -> po -> r_pl('r');
+  $self -> po -> r_pl($self->co->default("plot", "rmx"));
   $self -> po -> color($color);
   $self -> po -> increm($inc);
   $self -> plot('r');
