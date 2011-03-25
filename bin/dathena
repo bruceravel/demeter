@@ -1,11 +1,9 @@
 #!/usr/bin/perl
-#sub BEGIN {
-#  use Wx::Perl::SplashFast;
-#  my $splash = Wx::Perl::SplashFast->new('/home/bruce/codes/demeter/lib/Demeter/UI/Athena/share/logo.jpg',4000);
-#}
+#use Demeter::Here;
+#use Wx::Perl::SplashFast (Demeter::Here->here.'UI/Athena/share/logo2.jpg',4000);
 use Wx;
-use Demeter::UI::Athena;
 Wx::InitAllImageHandlers();
+use Demeter::UI::Athena;
 use vars qw($app);
 $app  = Demeter::UI::Athena->new;
 $app -> process_argv(@ARGV);

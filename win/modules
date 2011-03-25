@@ -1,0 +1,1612 @@
+.:
+bin/, lib/, modules
+
+./bin:
+argus*, argus.bat*, argus.pod, argus.pod.bat*, chartex*, chartex.bat*,
+dartemis*, dartemis.bat*, dathena*, dathena.bat*, datoms*, datoms.bat*,
+datoms.pod, datoms.pod.bat*, denv*, denv.bat*, dfeff*, dfeff.bat*, dfeff.pod,
+dfeff.pod.bat*, dfeffit*, dfeffit.bat*, dfeffit.pod, dfeffit.pod.bat*,
+dhephaestus*, dhephaestus.bat*, dlsprj*, dlsprj.bat*, dlsprj.pod,
+dlsprj.pod.bat*, imgsize*, imgsize.bat*, intrp*, intrp.bat*, intrp.pod,
+intrp.pod.bat*, package-stash-conflicts*, package-stash-conflicts.bat*,
+podlint*, podlint.bat*, pom2*, pom2.bat*, pomdump*, pomdump.bat*, ppi2html*,
+ppi2html.bat*, rdfit*, rdfit.bat*, rdfit.pod, rdfit.pod.bat*, standards*,
+standards.bat*, standards.pod, standards.pod.bat*, tpage*, tpage.bat*, ttree*,
+ttree.bat*, wxperl_overload*, wxperl_overload.bat*, xspp*, xspp.bat*
+
+./lib:
+Alien/, AppConfig/, AppConfig.pm, Attribute/, B/, CSS/, Capture/, Carp/,
+Chemistry/, Class/, Clone.pm, Config/, Data/, DateTime/, DateTime.pm,
+DateTimePP.pm, DateTimePPExtra.pm, Demeter/, Demeter.pm, Devel/, Dist/,
+ExtUtils/, Graph/, Graph.pm, Graph.pod, Graphics/, Heap/, Heap.pm, Heap071/,
+Hook/, Ifeffit.pm, Image/, List/, MRO/, Math/, Module/, Moose/, Moose.pm,
+MooseX/, OLE/, PPI/, PPI.pm, Package/, Params/, Parse/, Pod/, Readonly.pm,
+Regexp/, STAR/, Scope/, Spiffy.pm, Spreadsheet/, Statistics/, String/, Sub/,
+Template/, Template.pm, Test/, Text/, Tree/, Try/, Variable/, Want.pm, Wx/,
+Wx.pm, Xray/, auto/, benchmark.pl*, metaclass.pm, namespace/, oose.pm, pod.css
+
+./lib/Alien:
+wxWidgets/, wxWidgets.pm
+
+./lib/Alien/wxWidgets:
+Config/, Utility.pm, msw_2_8_10_uni_gcc_3_4/
+
+./lib/Alien/wxWidgets/Config:
+msw_2_8_10_uni_gcc_3_4.pm
+
+./lib/Alien/wxWidgets/msw_2_8_10_uni_gcc_3_4:
+include/, lib/
+
+./lib/Alien/wxWidgets/msw_2_8_10_uni_gcc_3_4/include:
+wx/
+
+./lib/Alien/wxWidgets/msw_2_8_10_uni_gcc_3_4/include/wx:
+aboutdlg.h, accel.h, access.h, afterstd.h, anidecod.h, animate.h, animdecod.h,
+app.h, applet/, apptrait.h, archive.h, arrimpl.cpp, arrstr.h, artprov.h, aui/,
+beforestd.h, bitmap.h, bmpbuttn.h, bmpcbox.h, bookctrl.h, brush.h, buffer.h,
+build.h, busyinfo.h, button.h, calctrl.h, caret.h, checkbox.h, checklst.h,
+chkconf.h, choicdlg.h, choice.h, choicebk.h, clipbrd.h, clntdata.h, clrpicker.h,
+cmdline.h, cmdproc.h, cmndata.h, collpane.h, colordlg.h, colour.h, combo.h,
+combobox.h, confbase.h, config.h, containr.h, control.h, convauto.h, cpp.h,
+cppunit.h, cshelp.h, ctrlsub.h, cursor.h, dataobj.h, dataview.h, datectrl.h,
+dateevt.h, datetime.h, datstrm.h, db.h, dbgrid.h, dbkeyg.h, dbtable.h, dc.h,
+dcbuffer.h, dcclient.h, dcgraph.h, dcmemory.h, dcmirror.h, dcprint.h, dcps.h,
+dcscreen.h, dde.h, debug.h, debugrpt.h, defs.h, defs.h.bak, deprecated/,
+dialog.h, dialup.h, dir.h, dirctrl.h, dirdlg.h, display.h, display_impl.h,
+dlimpexp.h, dnd.h, docmdi.h, docview.h, dragimag.h, dynarray.h, dynlib.h,
+dynload.h, effects.h, encconv.h, encinfo.h, event.h, evtloop.h, except.h,
+fdrepdlg.h, features.h, ffile.h, file.h, fileconf.h, filedlg.h, filefn.h,
+filefn.h.bak, filename.h, filepicker.h, filesys.h, fl/, flags.h, fmappriv.h,
+foldbar/, font.h, fontdlg.h, fontenc.h, fontenum.h, fontmap.h, fontpicker.h,
+fontutil.h, frame.h, fs_arc.h, fs_filter.h, fs_inet.h, fs_mem.h, fs_zip.h,
+gauge.h, gbsizer.h, gdicmn.h, gdiobj.h, generic/, geometry.h, gifdecod.h,
+gizmos/, glcanvas.h, graphics.h, grid.h, gsocket.h, hash.h, hashmap.h,
+hashset.h, help.h, helpbase.h, helphtml.h, helpwin.h, html/, htmllbox.h,
+hyperlink.h, icon.h, iconbndl.h, iconloc.h, imagbmp.h, image.h, imaggif.h,
+imagiff.h, imagjpeg.h, imaglist.h, imagpcx.h, imagpng.h, imagpnm.h, imagtga.h,
+imagtiff.h, imagxpm.h, init.h, intl.h, iosfwrap.h, ioswrap.h, ipc.h, ipcbase.h,
+isql.h, isqlext.h, joystick.h, layout.h, laywin.h, link.h, list.h, listbase.h,
+listbook.h, listbox.h, listctrl.h, listimpl.cpp, log.h, longlong.h, math.h,
+matrix.h, mdi.h, mediactrl.h, memconf.h, memory.h, memtext.h, menu.h,
+menuitem.h, metafile.h, mimetype.h, minifram.h, mmedia/, module.h, msgdlg.h,
+msgout.h, mstream.h, msw/, net/, notebook.h, numdlg.h, object.h, odcombo.h,
+ogl/, overlay.h, ownerdrw.h, palette.h, panel.h, paper.h, pen.h, pickerbase.h,
+platform.h, platinfo.h, plot/, popupwin.h, power.h, print.h, printdlg.h,
+private/, prntbase.h, process.h, progdlg.h, propdlg.h, protocol/, ptr_scpd.h,
+quantize.h, radiobox.h, radiobut.h, rawbmp.h, recguard.h, regex.h, region.h,
+renderer.h, richtext/, sashwin.h, sckaddr.h, sckipc.h, sckstrm.h, scopeguard.h,
+scrolbar.h, scrolwin.h, selstore.h, settings.h, setup_inc.h, setup_redirect.h,
+sizer.h, slider.h, snglinst.h, socket.h, sound.h, spinbutt.h, spinctrl.h,
+splash.h, splitter.h, srchctrl.h, sstream.h, stack.h, stackwalk.h, statbmp.h,
+statbox.h, statline.h, stattext.h, statusbr.h, stc/, stdpaths.h, stockitem.h,
+stopwatch.h, strconv.h, stream.h, string.h, svg/, sysopt.h, tab.h, tabctrl.h,
+tarstrm.h, taskbar.h, tbarbase.h, textbuf.h, textctrl.h, textdlg.h, textfile.h,
+tglbtn.h, thread.h, thrimpl.cpp, timer.h, tipdlg.h, tipwin.h, tokenzr.h,
+toolbar.h, toolbook.h, tooltip.h, toplevel.h, treebase.h, treebook.h,
+treectrl.h, txtstrm.h, types.h, uri.h, url.h, utils.h, valgen.h, validate.h,
+valtext.h, variant.h, vector.h, version.h, vidmode.h, vlbox.h, vms_x_fix.h,
+volume.h, vscroll.h, wave.h, wfstream.h, window.h, wizard.h, wupdlock.h, wx.h,
+wx_cw.h, wx_cw_cm.h, wx_cw_d.h, wx_cwc.h, wx_cwc_d.h, wx_cwcocoa.h,
+wx_cwcocoa_cm.h, wx_cwcocoa_d.h, wx_cwu_d.h, wxchar.h, wxhtml.h, wxprec.h,
+wxshlb_cw.h, wxshlb_cw_d.h, wxshlb_cwc.h, wxshlb_cwc_d.h, wxshlba_cw.h,
+wxshlba_cw_d.h, wxshlba_cwc.h, wxshlba_cwc_d.h, xml/, xpmdecod.h, xpmhand.h,
+xrc/, xti.h, xtistrm.h, xtixml.h, zipstrm.h, zstream.h
+
+./lib/Alien/wxWidgets/msw_2_8_10_uni_gcc_3_4/include/wx/applet:
+applet.h, echovar.h, ifelsevar.h, loadpage.h, plugin.h, prepecho.h,
+prepifelse.h, prepinclude.h, window.h
+
+./lib/Alien/wxWidgets/msw_2_8_10_uni_gcc_3_4/include/wx/aui:
+aui.h, auibar.h, auibook.h, dockart.h, floatpane.h, framemanager.h, tabmdi.h
+
+./lib/Alien/wxWidgets/msw_2_8_10_uni_gcc_3_4/include/wx/deprecated:
+expr.h, prop.h, propform.h, proplist.h, resource.h, setup.h, tbarsmpl.h,
+treelay.h, wxexpr.h
+
+./lib/Alien/wxWidgets/msw_2_8_10_uni_gcc_3_4/include/wx/fl:
+antiflickpl.h, bardragpl.h, barhintspl.h, cbcustom.h, controlbar.h, dynbarhnd.h,
+dyntbar.h, dyntbarhnd.h, fldefs.h, frmview.h, garbagec.h, gcupdatesmgr.h,
+hintanimpl.h, newbmpbtn.h, panedrawpl.h, rowdragpl.h, rowlayoutpl.h, toolwnd.h,
+updatesmgr.h
+
+./lib/Alien/wxWidgets/msw_2_8_10_uni_gcc_3_4/include/wx/foldbar:
+captionbar.h, doc_mainpage.h, foldpanelbar.h, foldpanelitem.h
+
+./lib/Alien/wxWidgets/msw_2_8_10_uni_gcc_3_4/include/wx/generic:
+aboutdlgg.h, accel.h, animate.h, bmpcbox.h, busyinfo.h, buttonbar.h, calctrl.h,
+caret.h, choicdgg.h, clrpickerg.h, collpaneg.h, colour.h, colrdlgg.h, combo.h,
+dataview.h, datectrl.h, dcpsg.h, dirctrlg.h, dirdlgg.h, dragimgg.h, fdrepdlg.h,
+filedlgg.h, filepickerg.h, fontdlgg.h, fontpickerg.h, grid.h, gridctrl.h,
+gridsel.h, helpext.h, icon.h, imaglist.h, laywin.h, listctrl.h, logg.h, mask.h,
+mdig.h, msgdlgg.h, notebook.h, numdlgg.h, paletteg.h, panelg.h, printps.h,
+prntdlgg.h, progdlgg.h, propdlg.h, region.h, sashwin.h, scrolwin.h, spinctlg.h,
+splash.h, splitter.h, srchctlg.h, statline.h, statusbr.h, tabg.h, textdlgg.h,
+timer.h, treectlg.h, wizard.h
+
+./lib/Alien/wxWidgets/msw_2_8_10_uni_gcc_3_4/include/wx/gizmos:
+dynamicsash.h, editlbox.h, gizmos.h, ledctrl.h, multicell.h, splittree.h,
+statpict.h, xh_statpict.h
+
+./lib/Alien/wxWidgets/msw_2_8_10_uni_gcc_3_4/include/wx/html:
+forcelnk.h, helpctrl.h, helpdata.h, helpdlg.h, helpfrm.h, helpwnd.h, htmlcell.h,
+htmldefs.h, htmlfilt.h, htmlpars.h, htmlproc.h, htmltag.h, htmlwin.h,
+htmprint.h, m_templ.h, webkit.h, winpars.h
+
+./lib/Alien/wxWidgets/msw_2_8_10_uni_gcc_3_4/include/wx/mmedia:
+cdbase.h, cdunix.h, cdwin.h, defs.h, internal/, sndaiff.h, sndbase.h,
+sndcodec.h, sndcpcm.h, sndesd.h, sndfile.h, sndg72x.h, sndmsad.h, sndoss.h,
+sndpcm.h, sndulaw.h, sndwav.h, sndwin.h, vidbase.h, vidwin.h, vidxanm.h
+
+./lib/Alien/wxWidgets/msw_2_8_10_uni_gcc_3_4/include/wx/mmedia/internal:
+g72x.h
+
+./lib/Alien/wxWidgets/msw_2_8_10_uni_gcc_3_4/include/wx/msw:
+accel.h, amd64.manifest, app.h, apptbase.h, apptrait.h, bitmap.h, blank.cur,
+bmpbuttn.h, brush.h, bullseye.cur, button.h, caret.h, cdrom.ico, checkbox.h,
+checklst.h, child.ico, chkconf.h, choice.h, clipbrd.h, colordlg.h, colour.h,
+colours.bmp, combo.h, combobox.h, computer.ico, control.h, crashrpt.h,
+cross.cur, csquery.bmp, cursor.h, datectrl.h, dc.h, dcclient.h, dcmemory.h,
+dcprint.h, dcscreen.h, dde.h, debughlp.h, dialog.h, dib.h, dirdlg.h, dragimag.h,
+drive.ico, enhmeta.h, evtloop.h, fdrepdlg.h, file1.ico, filedlg.h, floppy.ico,
+folder1.ico, folder2.ico, font.h, fontdlg.h, fontenum.h, frame.h, gauge95.h,
+gccpriv.h, gdiimage.h, genrcdefs.h, glcanvas.h, gsockmsw.h, hand.cur,
+helpbest.h, helpchm.h, helpwin.h, htmlhelp.h, ia64.manifest, icon.h, imaglist.h,
+iniconf.h, joystick.h, libraries.h, listbox.h, listctrl.h, magnif1.cur, mdi.h,
+mdi.ico, menu.h, menuitem.h, metafile.h, microwin.h, mimetype.h, minifram.h,
+missing.h, msgdlg.h, mslu.h, msvcrt.h, notebook.h, ole/, palette.h, pbrush.cur,
+pen.h, pencil.cur, pntleft.cur, pntright.cur, popupwin.h, printdlg.h,
+printwin.h, private.h, question.ico, radiobox.h, radiobut.h, rcdefs.h,
+regconf.h, region.h, registry.h, removble.ico, rightarr.cur, roller.cur,
+scrolbar.h, seh.h, setup.h, setup.h.bak, setup0.h, setup_microwin.h, slider95.h,
+sound.h, spinbutt.h, spinctrl.h, stackwalk.h, statbmp.h, statbox.h, statbr95.h,
+statline.h, stattext.h, std.ico, stdpaths.h, subwin.h, tabctrl.h, taskbar.h,
+tbar95.h, textctrl.h, tglbtn.h, timer.h, tooltip.h, toplevel.h, treectrl.h,
+uxtheme.h, uxthemep.h, wince/, window.h, winundef.h, wrapcctl.h, wrapcdlg.h,
+wrapshl.h, wrapwin.h, wx.manifest, wx.rc
+
+./lib/Alien/wxWidgets/msw_2_8_10_uni_gcc_3_4/include/wx/msw/ole:
+access.h, activex.h, automtn.h, dataform.h, dataobj.h, dataobj2.h, dropsrc.h,
+droptgt.h, oleutils.h, uuid.h
+
+./lib/Alien/wxWidgets/msw_2_8_10_uni_gcc_3_4/include/wx/msw/wince:
+checklst.h, chkconf.h, choicece.h, helpwce.h, libraries.h, missing.h, net.h,
+resources.h, setup.h, smartphone.rc, tbarwce.h, textctrlce.h, time.h, wince.rc
+
+./lib/Alien/wxWidgets/msw_2_8_10_uni_gcc_3_4/include/wx/net:
+email.h, msg.h, smapi.h, web.h
+
+./lib/Alien/wxWidgets/msw_2_8_10_uni_gcc_3_4/include/wx/ogl:
+basic.h, basicp.h, bmpshape.h, canvas.h, composit.h, constrnt.h, divided.h,
+drawn.h, drawnp.h, lines.h, linesp.h, mfutils.h, misc.h, ogl.h, ogldiag.h
+
+./lib/Alien/wxWidgets/msw_2_8_10_uni_gcc_3_4/include/wx/plot:
+plot.h, plot_dwn.bmp, plot_dwn.xpm, plot_enl.bmp, plot_enl.xpm, plot_shr.bmp,
+plot_shr.xpm, plot_up.bmp, plot_up.xpm, plot_zin.bmp, plot_zin.xpm,
+plot_zot.bmp, plot_zot.xpm, wxplot.rc
+
+./lib/Alien/wxWidgets/msw_2_8_10_uni_gcc_3_4/include/wx/private:
+browserhack28.h, fileback.h, filename.h, fontmgr.h, overlay.h,
+socketevtdispatch.h
+
+./lib/Alien/wxWidgets/msw_2_8_10_uni_gcc_3_4/include/wx/protocol:
+file.h, ftp.h, http.h, protocol.h
+
+./lib/Alien/wxWidgets/msw_2_8_10_uni_gcc_3_4/include/wx/richtext:
+richtextbuffer.h, richtextbulletspage.h, richtextctrl.h, richtextfontpage.h,
+richtextformatdlg.h, richtexthtml.h, richtextindentspage.h,
+richtextliststylepage.h, richtextprint.h, richtextstyledlg.h,
+richtextstylepage.h, richtextstyles.h, richtextsymboldlg.h, richtexttabspage.h,
+richtextxml.h
+
+./lib/Alien/wxWidgets/msw_2_8_10_uni_gcc_3_4/include/wx/stc:
+stc.h, stc.h.bak
+
+./lib/Alien/wxWidgets/msw_2_8_10_uni_gcc_3_4/include/wx/svg:
+dcsvg.h
+
+./lib/Alien/wxWidgets/msw_2_8_10_uni_gcc_3_4/include/wx/xml:
+xml.h
+
+./lib/Alien/wxWidgets/msw_2_8_10_uni_gcc_3_4/include/wx/xrc:
+xh_all.h, xh_animatctrl.h, xh_bmp.h, xh_bmpbt.h, xh_bmpcbox.h, xh_bttn.h,
+xh_cald.h, xh_chckb.h, xh_chckl.h, xh_choic.h, xh_choicbk.h, xh_clrpicker.h,
+xh_collpane.h, xh_combo.h, xh_datectrl.h, xh_dirpicker.h, xh_dlg.h,
+xh_filepicker.h, xh_fontpicker.h, xh_frame.h, xh_gauge.h, xh_gdctl.h, xh_grid.h,
+xh_html.h, xh_htmllbox.h, xh_hyperlink.h, xh_listb.h, xh_listbk.h, xh_listc.h,
+xh_mdi.h, xh_menu.h, xh_notbk.h, xh_odcombo.h, xh_panel.h, xh_propdlg.h,
+xh_radbt.h, xh_radbx.h, xh_richtext.h, xh_scrol.h, xh_scwin.h, xh_sizer.h,
+xh_slidr.h, xh_spin.h, xh_split.h, xh_statbar.h, xh_stbmp.h, xh_stbox.h,
+xh_stlin.h, xh_sttxt.h, xh_text.h, xh_tglbtn.h, xh_toolb.h, xh_tree.h,
+xh_treebk.h, xh_unkwn.h, xh_wizrd.h, xmlres.h
+
+./lib/Alien/wxWidgets/msw_2_8_10_uni_gcc_3_4/lib:
+build.cfg, libwxbase28u.a, libwxbase28u_net.a, libwxbase28u_xml.a,
+libwxmsw28u_adv.a, libwxmsw28u_aui.a, libwxmsw28u_core.a, libwxmsw28u_gl.a,
+libwxmsw28u_html.a, libwxmsw28u_media.a, libwxmsw28u_richtext.a,
+libwxmsw28u_stc.a, libwxmsw28u_xrc.a, mingwm10.dll*, wx/,
+wxbase28u_gcc_custom.dll*, wxbase28u_net_gcc_custom.dll*,
+wxbase28u_xml_gcc_custom.dll*, wxmsw28u_adv_gcc_custom.dll*,
+wxmsw28u_aui_gcc_custom.dll*, wxmsw28u_core_gcc_custom.dll*,
+wxmsw28u_gl_gcc_custom.dll*, wxmsw28u_html_gcc_custom.dll*,
+wxmsw28u_media_gcc_custom.dll*, wxmsw28u_richtext_gcc_custom.dll*,
+wxmsw28u_stc_gcc_custom.dll*, wxmsw28u_xrc_gcc_custom.dll*
+
+./lib/Alien/wxWidgets/msw_2_8_10_uni_gcc_3_4/lib/wx:
+setup.h
+
+./lib/AppConfig:
+Args.pm, CGI.pm, File.pm, Getopt.pm, State.pm, Sys.pm
+
+./lib/Attribute:
+Params/
+
+./lib/Attribute/Params:
+Validate.pm
+
+./lib/B:
+Hooks/
+
+./lib/B/Hooks:
+EndOfScope.pm
+
+./lib/CSS:
+Tiny.pm
+
+./lib/Capture:
+Tiny.pm
+
+./lib/Carp:
+Clan.pm, Clan.pod
+
+./lib/Chemistry:
+Elements.pm, Formula.pm
+
+./lib/Class:
+Load.pm, MOP/, MOP.pm, Singleton.pm
+
+./lib/Class/MOP:
+Attribute.pm, Class/, Class.pm, Deprecated.pm, Instance.pm, Method/, Method.pm,
+MiniTrait.pm, Mixin/, Mixin.pm, Module.pm, Object.pm, Package.pm
+
+./lib/Class/MOP/Class:
+Immutable/
+
+./lib/Class/MOP/Class/Immutable:
+Trait.pm
+
+./lib/Class/MOP/Method:
+Accessor.pm, Constructor.pm, Generated.pm, Inlined.pm, Meta.pm, Wrapped.pm
+
+./lib/Class/MOP/Mixin:
+AttributeCore.pm, HasAttributes.pm, HasMethods.pm
+
+./lib/Config:
+IniFiles.pm
+
+./lib/Data:
+OptList.pm
+
+./lib/DateTime:
+Duration.pm, Helpers.pm, Infinite.pm, LeapSecond.pm, Locale/, Locale.pm,
+LocaleCatalog.pm, TimeZone/, TimeZone.pm
+
+./lib/DateTime/Locale:
+Base.pm, Catalog.pm, aa.pm, aa_DJ.pm, aa_ER.pm, aa_ER_SAAHO.pm, aa_ET.pm, af.pm,
+af_NA.pm, af_ZA.pm, ak.pm, ak_GH.pm, am.pm, am_ET.pm, ar.pm, ar_AE.pm, ar_BH.pm,
+ar_DZ.pm, ar_EG.pm, ar_IQ.pm, ar_JO.pm, ar_KW.pm, ar_LB.pm, ar_LY.pm, ar_MA.pm,
+ar_OM.pm, ar_QA.pm, ar_SA.pm, ar_SD.pm, ar_SY.pm, ar_TN.pm, ar_YE.pm, as.pm,
+as_IN.pm, az.pm, az_AZ.pm, az_Cyrl.pm, az_Cyrl_AZ.pm, az_Latn.pm, az_Latn_AZ.pm,
+be.pm, be_BY.pm, bg.pm, bg_BG.pm, bn.pm, bn_BD.pm, bn_IN.pm, bo.pm, bo_CN.pm,
+bo_IN.pm, bs.pm, bs_BA.pm, byn.pm, byn_ER.pm, ca.pm, ca_ES.pm, cch.pm,
+cch_NG.pm, cop.pm, cs.pm, cs_CZ.pm, cy.pm, cy_GB.pm, da.pm, da_DK.pm, de.pm,
+de_AT.pm, de_BE.pm, de_CH.pm, de_DE.pm, de_LI.pm, de_LU.pm, dv.pm, dv_MV.pm,
+dz.pm, dz_BT.pm, ee.pm, ee_GH.pm, ee_TG.pm, el.pm, el_CY.pm, el_GR.pm,
+el_POLYTON.pm, en.pm, en_AS.pm, en_AU.pm, en_BE.pm, en_BW.pm, en_BZ.pm,
+en_CA.pm, en_Dsrt.pm, en_Dsrt_US.pm, en_GB.pm, en_GU.pm, en_HK.pm, en_IE.pm,
+en_IN.pm, en_JM.pm, en_MH.pm, en_MP.pm, en_MT.pm, en_NA.pm, en_NZ.pm, en_PH.pm,
+en_PK.pm, en_SG.pm, en_Shaw.pm, en_TT.pm, en_UM.pm, en_US.pm, en_US_POSIX.pm,
+en_VI.pm, en_ZA.pm, en_ZW.pm, eo.pm, es.pm, es_AR.pm, es_BO.pm, es_CL.pm,
+es_CO.pm, es_CR.pm, es_DO.pm, es_EC.pm, es_ES.pm, es_GT.pm, es_HN.pm, es_MX.pm,
+es_NI.pm, es_PA.pm, es_PE.pm, es_PR.pm, es_PY.pm, es_SV.pm, es_US.pm, es_UY.pm,
+es_VE.pm, et.pm, et_EE.pm, eu.pm, eu_ES.pm, fa.pm, fa_AF.pm, fa_IR.pm, fi.pm,
+fi_FI.pm, fil.pm, fil_PH.pm, fo.pm, fo_FO.pm, fr.pm, fr_BE.pm, fr_CA.pm,
+fr_CH.pm, fr_FR.pm, fr_LU.pm, fr_MC.pm, fr_SN.pm, fur.pm, fur_IT.pm, ga.pm,
+ga_IE.pm, gaa.pm, gaa_GH.pm, gez.pm, gez_ER.pm, gez_ET.pm, gl.pm, gl_ES.pm,
+gsw.pm, gsw_CH.pm, gu.pm, gu_IN.pm, gv.pm, gv_GB.pm, ha.pm, ha_Arab.pm,
+ha_Arab_NG.pm, ha_Arab_SD.pm, ha_GH.pm, ha_Latn.pm, ha_Latn_GH.pm,
+ha_Latn_NE.pm, ha_Latn_NG.pm, ha_NE.pm, ha_NG.pm, ha_SD.pm, haw.pm, haw_US.pm,
+he.pm, he_IL.pm, hi.pm, hi_IN.pm, hr.pm, hr_HR.pm, hu.pm, hu_HU.pm, hy.pm,
+hy_AM.pm, hy_AM_REVISED.pm, ia.pm, id.pm, id_ID.pm, ig.pm, ig_NG.pm, ii.pm,
+ii_CN.pm, is.pm, is_IS.pm, it.pm, it_CH.pm, it_IT.pm, iu.pm, ja.pm, ja_JP.pm,
+ka.pm, ka_GE.pm, kaj.pm, kaj_NG.pm, kam.pm, kam_KE.pm, kcg.pm, kcg_NG.pm,
+kfo.pm, kfo_CI.pm, kk.pm, kk_Cyrl.pm, kk_Cyrl_KZ.pm, kk_KZ.pm, kl.pm, kl_GL.pm,
+km.pm, km_KH.pm, kn.pm, kn_IN.pm, ko.pm, ko_KR.pm, kok.pm, kok_IN.pm, kpe.pm,
+kpe_GN.pm, kpe_LR.pm, ku.pm, ku_Arab.pm, ku_Arab_IQ.pm, ku_Arab_IR.pm,
+ku_Arab_SY.pm, ku_IQ.pm, ku_IR.pm, ku_Latn.pm, ku_Latn_TR.pm, ku_SY.pm,
+ku_TR.pm, kw.pm, kw_GB.pm, ky.pm, ky_KG.pm, ln.pm, ln_CD.pm, ln_CG.pm, lo.pm,
+lo_LA.pm, lt.pm, lt_LT.pm, lv.pm, lv_LV.pm, mk.pm, mk_MK.pm, ml.pm, ml_IN.pm,
+mn.pm, mn_CN.pm, mn_Cyrl.pm, mn_Cyrl_MN.pm, mn_MN.pm, mn_Mong.pm, mn_Mong_CN.pm,
+mo.pm, mr.pm, mr_IN.pm, ms.pm, ms_BN.pm, ms_MY.pm, mt.pm, mt_MT.pm, my.pm,
+my_MM.pm, nb.pm, nb_NO.pm, nds.pm, nds_DE.pm, ne.pm, ne_IN.pm, ne_NP.pm, nl.pm,
+nl_BE.pm, nl_NL.pm, nn.pm, nn_NO.pm, no.pm, nr.pm, nr_ZA.pm, nso.pm, nso_ZA.pm,
+ny.pm, ny_MW.pm, oc.pm, oc_FR.pm, om.pm, om_ET.pm, om_KE.pm, or.pm, or_IN.pm,
+pa.pm, pa_Arab.pm, pa_Arab_PK.pm, pa_Guru.pm, pa_Guru_IN.pm, pa_IN.pm, pa_PK.pm,
+pl.pm, pl_PL.pm, ps.pm, ps_AF.pm, pt.pm, pt_BR.pm, pt_PT.pm, ro.pm, ro_MD.pm,
+ro_RO.pm, root.pm, ru.pm, ru_RU.pm, ru_UA.pm, rw.pm, rw_RW.pm, sa.pm, sa_IN.pm,
+se.pm, se_FI.pm, se_NO.pm, sh.pm, sh_BA.pm, sh_CS.pm, sh_YU.pm, si.pm, si_LK.pm,
+sid.pm, sid_ET.pm, sk.pm, sk_SK.pm, sl.pm, sl_SI.pm, so.pm, so_DJ.pm, so_ET.pm,
+so_KE.pm, so_SO.pm, sq.pm, sq_AL.pm, sr.pm, sr_BA.pm, sr_CS.pm, sr_Cyrl.pm,
+sr_Cyrl_BA.pm, sr_Cyrl_CS.pm, sr_Cyrl_ME.pm, sr_Cyrl_RS.pm, sr_Cyrl_YU.pm,
+sr_Latn.pm, sr_Latn_BA.pm, sr_Latn_CS.pm, sr_Latn_ME.pm, sr_Latn_RS.pm,
+sr_Latn_YU.pm, sr_ME.pm, sr_RS.pm, sr_YU.pm, ss.pm, ss_SZ.pm, ss_ZA.pm, st.pm,
+st_LS.pm, st_ZA.pm, sv.pm, sv_FI.pm, sv_SE.pm, sw.pm, sw_KE.pm, sw_TZ.pm,
+syr.pm, syr_SY.pm, ta.pm, ta_IN.pm, te.pm, te_IN.pm, tg.pm, tg_Cyrl.pm,
+tg_Cyrl_TJ.pm, tg_TJ.pm, th.pm, th_TH.pm, ti.pm, ti_ER.pm, ti_ET.pm, tig.pm,
+tig_ER.pm, tl.pm, tn.pm, tn_ZA.pm, to.pm, to_TO.pm, tr.pm, tr_TR.pm, trv.pm,
+trv_TW.pm, ts.pm, ts_ZA.pm, tt.pm, tt_RU.pm, ug.pm, ug_Arab.pm, ug_Arab_CN.pm,
+ug_CN.pm, uk.pm, uk_UA.pm, ur.pm, ur_IN.pm, ur_PK.pm, uz.pm, uz_AF.pm,
+uz_Arab.pm, uz_Arab_AF.pm, uz_Cyrl.pm, uz_Cyrl_UZ.pm, uz_Latn.pm, uz_Latn_UZ.pm,
+uz_UZ.pm, ve.pm, ve_ZA.pm, vi.pm, vi_VN.pm, wal.pm, wal_ET.pm, wo.pm,
+wo_Latn.pm, wo_Latn_SN.pm, wo_SN.pm, xh.pm, xh_ZA.pm, yo.pm, yo_NG.pm, zh.pm,
+zh_CN.pm, zh_HK.pm, zh_Hans.pm, zh_Hans_CN.pm, zh_Hans_HK.pm, zh_Hans_MO.pm,
+zh_Hans_SG.pm, zh_Hant.pm, zh_Hant_HK.pm, zh_Hant_MO.pm, zh_Hant_TW.pm,
+zh_MO.pm, zh_SG.pm, zh_TW.pm, zu.pm, zu_ZA.pm
+
+./lib/DateTime/TimeZone:
+Africa/, America/, Antarctica/, Asia/, Atlantic/, Australia/, CET.pm,
+CST6CDT.pm, Catalog.pm, EET.pm, EST.pm, EST5EDT.pm, Europe/, Floating.pm,
+HST.pm, Indian/, Local/, Local.pm, MET.pm, MST.pm, MST7MDT.pm, OffsetOnly.pm,
+OlsonDB/, OlsonDB.pm, PST8PDT.pm, Pacific/, UTC.pm, WET.pm
+
+./lib/DateTime/TimeZone/Africa:
+Abidjan.pm, Accra.pm, Addis_Ababa.pm, Algiers.pm, Asmara.pm, Bamako.pm,
+Bangui.pm, Banjul.pm, Bissau.pm, Blantyre.pm, Brazzaville.pm, Bujumbura.pm,
+Cairo.pm, Casablanca.pm, Ceuta.pm, Conakry.pm, Dakar.pm, Dar_es_Salaam.pm,
+Djibouti.pm, Douala.pm, El_Aaiun.pm, Freetown.pm, Gaborone.pm, Harare.pm,
+Johannesburg.pm, Kampala.pm, Khartoum.pm, Kigali.pm, Kinshasa.pm, Lagos.pm,
+Libreville.pm, Lome.pm, Luanda.pm, Lubumbashi.pm, Lusaka.pm, Malabo.pm,
+Maputo.pm, Maseru.pm, Mbabane.pm, Mogadishu.pm, Monrovia.pm, Nairobi.pm,
+Ndjamena.pm, Niamey.pm, Nouakchott.pm, Ouagadougou.pm, Porto_Novo.pm,
+Sao_Tome.pm, Tripoli.pm, Tunis.pm, Windhoek.pm
+
+./lib/DateTime/TimeZone/America:
+Adak.pm, Anchorage.pm, Anguilla.pm, Antigua.pm, Araguaina.pm, Argentina/,
+Aruba.pm, Asuncion.pm, Atikokan.pm, Bahia.pm, Bahia_Banderas.pm, Barbados.pm,
+Belem.pm, Belize.pm, Blanc_Sablon.pm, Boa_Vista.pm, Bogota.pm, Boise.pm,
+Cambridge_Bay.pm, Campo_Grande.pm, Cancun.pm, Caracas.pm, Cayenne.pm, Cayman.pm,
+Chicago.pm, Chihuahua.pm, Costa_Rica.pm, Cuiaba.pm, Curacao.pm, Danmarkshavn.pm,
+Dawson.pm, Dawson_Creek.pm, Denver.pm, Detroit.pm, Dominica.pm, Edmonton.pm,
+Eirunepe.pm, El_Salvador.pm, Fortaleza.pm, Glace_Bay.pm, Godthab.pm,
+Goose_Bay.pm, Grand_Turk.pm, Grenada.pm, Guadeloupe.pm, Guatemala.pm,
+Guayaquil.pm, Guyana.pm, Halifax.pm, Havana.pm, Hermosillo.pm, Indiana/,
+Inuvik.pm, Iqaluit.pm, Jamaica.pm, Juneau.pm, Kentucky/, La_Paz.pm, Lima.pm,
+Los_Angeles.pm, Maceio.pm, Managua.pm, Manaus.pm, Martinique.pm, Matamoros.pm,
+Mazatlan.pm, Menominee.pm, Merida.pm, Metlakatla.pm, Mexico_City.pm,
+Miquelon.pm, Moncton.pm, Monterrey.pm, Montevideo.pm, Montreal.pm,
+Montserrat.pm, Nassau.pm, New_York.pm, Nipigon.pm, Nome.pm, Noronha.pm,
+North_Dakota/, Ojinaga.pm, Panama.pm, Pangnirtung.pm, Paramaribo.pm, Phoenix.pm,
+Port_au_Prince.pm, Port_of_Spain.pm, Porto_Velho.pm, Puerto_Rico.pm,
+Rainy_River.pm, Rankin_Inlet.pm, Recife.pm, Regina.pm, Resolute.pm,
+Rio_Branco.pm, Santa_Isabel.pm, Santarem.pm, Santiago.pm, Santo_Domingo.pm,
+Sao_Paulo.pm, Scoresbysund.pm, Sitka.pm, St_Johns.pm, St_Kitts.pm, St_Lucia.pm,
+St_Thomas.pm, St_Vincent.pm, Swift_Current.pm, Tegucigalpa.pm, Thule.pm,
+Thunder_Bay.pm, Tijuana.pm, Toronto.pm, Tortola.pm, Vancouver.pm, Whitehorse.pm,
+Winnipeg.pm, Yakutat.pm, Yellowknife.pm
+
+./lib/DateTime/TimeZone/America/Argentina:
+Buenos_Aires.pm, Catamarca.pm, Cordoba.pm, Jujuy.pm, La_Rioja.pm, Mendoza.pm,
+Rio_Gallegos.pm, Salta.pm, San_Juan.pm, San_Luis.pm, Tucuman.pm, Ushuaia.pm
+
+./lib/DateTime/TimeZone/America/Indiana:
+Indianapolis.pm, Knox.pm, Marengo.pm, Petersburg.pm, Tell_City.pm, Vevay.pm,
+Vincennes.pm, Winamac.pm
+
+./lib/DateTime/TimeZone/America/Kentucky:
+Louisville.pm, Monticello.pm
+
+./lib/DateTime/TimeZone/America/North_Dakota:
+Beulah.pm, Center.pm, New_Salem.pm
+
+./lib/DateTime/TimeZone/Antarctica:
+Casey.pm, Davis.pm, DumontDUrville.pm, Macquarie.pm, Mawson.pm, McMurdo.pm,
+Palmer.pm, Rothera.pm, Syowa.pm, Vostok.pm
+
+./lib/DateTime/TimeZone/Asia:
+Aden.pm, Almaty.pm, Amman.pm, Anadyr.pm, Aqtau.pm, Aqtobe.pm, Ashgabat.pm,
+Baghdad.pm, Bahrain.pm, Baku.pm, Bangkok.pm, Beirut.pm, Bishkek.pm, Brunei.pm,
+Choibalsan.pm, Chongqing.pm, Colombo.pm, Damascus.pm, Dhaka.pm, Dili.pm,
+Dubai.pm, Dushanbe.pm, Gaza.pm, Harbin.pm, Ho_Chi_Minh.pm, Hong_Kong.pm,
+Hovd.pm, Irkutsk.pm, Jakarta.pm, Jayapura.pm, Jerusalem.pm, Kabul.pm,
+Kamchatka.pm, Karachi.pm, Kashgar.pm, Kathmandu.pm, Kolkata.pm, Krasnoyarsk.pm,
+Kuala_Lumpur.pm, Kuching.pm, Kuwait.pm, Macau.pm, Magadan.pm, Makassar.pm,
+Manila.pm, Muscat.pm, Nicosia.pm, Novokuznetsk.pm, Novosibirsk.pm, Omsk.pm,
+Oral.pm, Phnom_Penh.pm, Pontianak.pm, Pyongyang.pm, Qatar.pm, Qyzylorda.pm,
+Rangoon.pm, Riyadh.pm, Sakhalin.pm, Samarkand.pm, Seoul.pm, Shanghai.pm,
+Singapore.pm, Taipei.pm, Tashkent.pm, Tbilisi.pm, Tehran.pm, Thimphu.pm,
+Tokyo.pm, Ulaanbaatar.pm, Urumqi.pm, Vientiane.pm, Vladivostok.pm, Yakutsk.pm,
+Yekaterinburg.pm, Yerevan.pm
+
+./lib/DateTime/TimeZone/Atlantic:
+Azores.pm, Bermuda.pm, Canary.pm, Cape_Verde.pm, Faroe.pm, Madeira.pm,
+Reykjavik.pm, South_Georgia.pm, St_Helena.pm, Stanley.pm
+
+./lib/DateTime/TimeZone/Australia:
+Adelaide.pm, Brisbane.pm, Broken_Hill.pm, Currie.pm, Darwin.pm, Eucla.pm,
+Hobart.pm, Lindeman.pm, Lord_Howe.pm, Melbourne.pm, Perth.pm, Sydney.pm
+
+./lib/DateTime/TimeZone/Europe:
+Amsterdam.pm, Andorra.pm, Athens.pm, Belgrade.pm, Berlin.pm, Brussels.pm,
+Bucharest.pm, Budapest.pm, Chisinau.pm, Copenhagen.pm, Dublin.pm, Gibraltar.pm,
+Helsinki.pm, Istanbul.pm, Kaliningrad.pm, Kiev.pm, Lisbon.pm, London.pm,
+Luxembourg.pm, Madrid.pm, Malta.pm, Minsk.pm, Monaco.pm, Moscow.pm, Oslo.pm,
+Paris.pm, Prague.pm, Riga.pm, Rome.pm, Samara.pm, Simferopol.pm, Sofia.pm,
+Stockholm.pm, Tallinn.pm, Tirane.pm, Uzhgorod.pm, Vaduz.pm, Vienna.pm,
+Vilnius.pm, Volgograd.pm, Warsaw.pm, Zaporozhye.pm, Zurich.pm
+
+./lib/DateTime/TimeZone/Indian:
+Antananarivo.pm, Chagos.pm, Christmas.pm, Cocos.pm, Comoro.pm, Kerguelen.pm,
+Mahe.pm, Maldives.pm, Mauritius.pm, Mayotte.pm, Reunion.pm
+
+./lib/DateTime/TimeZone/Local:
+Unix.pm, VMS.pm, Win32.pm
+
+./lib/DateTime/TimeZone/OlsonDB:
+Change.pm, Observance.pm, Rule.pm, Zone.pm
+
+./lib/DateTime/TimeZone/Pacific:
+Apia.pm, Auckland.pm, Chatham.pm, Chuuk.pm, Easter.pm, Efate.pm, Enderbury.pm,
+Fakaofo.pm, Fiji.pm, Funafuti.pm, Galapagos.pm, Gambier.pm, Guadalcanal.pm,
+Guam.pm, Honolulu.pm, Johnston.pm, Kiritimati.pm, Kosrae.pm, Kwajalein.pm,
+Majuro.pm, Marquesas.pm, Midway.pm, Nauru.pm, Niue.pm, Norfolk.pm, Noumea.pm,
+Pago_Pago.pm, Palau.pm, Pitcairn.pm, Pohnpei.pm, Port_Moresby.pm, Rarotonga.pm,
+Saipan.pm, Tahiti.pm, Tarawa.pm, Tongatapu.pm, Wake.pm, Wallis.pm
+
+./lib/Demeter:
+Atoms/, Atoms.pm, Carp.pm, Config.pm, Data/, Data.pm, Diff.pm, Dispose.pm,
+FPath.pm, FSPath.pm, Feff/, Feff.pm, Files.pm, Fit/, Fit.pm, GDS.pm, Journal.pm,
+LCF.pm, LogRatio.pm, MRU.pm, Mode.pm, NumTypes.pm, Path/, Path.pm, PeakFit/,
+PeakFit.pm, Plot/, Plot.pm, Plugins/, Project.pm, SSPath.pm, ScatteringPath/,
+ScatteringPath.pm, StrTypes.pm, StructuralUnit.pm, ThreeBody.pm, Tools.pm, UI/,
+VPath.pm, XES.pm, configuration/, doc/, share/, templates/, templates.pod
+
+./lib/Demeter/Atoms:
+Absorption.pm, Cif.pm
+
+./lib/Demeter/Data:
+Arrays.pm, Athena.pm, Defaults.pm, E0.pm, FT.pm, IO.pm, Mu.pm, MultiChannel.pm,
+Parts.pm, Pixel.pm, Plot.pm, Prj.pm, Process.pm, SelfAbsorption.pm, Units.pm,
+XDI.pm
+
+./lib/Demeter/Feff:
+DL_POLY.pm, External.pm, Histogram.pm, Paths.pm, Sanity.pm
+
+./lib/Demeter/Fit:
+Feffit.pm, Happiness.pm, Sanity.pm
+
+./lib/Demeter/Path:
+Process.pm, Sanity.pm
+
+./lib/Demeter/PeakFit:
+Fityk.pm, LineShape.pm
+
+./lib/Demeter/Plot:
+Gnuplot.pm, Indicator.pm, SingleFile.pm, Style.pm
+
+./lib/Demeter/Plugins:
+10BMMultiChannel.pm, CMC.pm, DUBBLE.pm, FileType.pm, HXMA.pm, Lytle.pm,
+PFBL12C.pm, SSRLA.pm, SSRLB.pm, SSRLmicro.pm, X10C.pm, X15B.pm, X23A2MED.pm,
+X23A2MultiChannel.pm
+
+./lib/Demeter/ScatteringPath:
+Histogram/, Histogram.pm
+
+./lib/Demeter/ScatteringPath/Histogram:
+DL_POLY.pm
+
+./lib/Demeter/UI:
+Artemis/, Artemis.pm, Athena/, Athena.pm, Atoms/, Atoms.pm, Hephaestus/,
+Hephaestus.pm, Screen/, Standards.pm, Wx/
+
+./lib/Demeter/UI/Artemis:
+Buffer.pm, Config.pm, DND/, Data/, Data.pm, GDS/, GDS.pm, History.pm, Import.pm,
+Journal.pm, Log.pm, LogText.pm, Path.pm, Plot/, Plot.pm, Prj.pm, Project.pm,
+ShowText.pm, Status.pm, icons/, share/
+
+./lib/Demeter/UI/Artemis/DND:
+PathDrag.pm, PlotListDrag.pm
+
+./lib/Demeter/UI/Artemis/Data:
+AddParameter.pm, Histogram.pm, Quickfs.pm
+
+./lib/Demeter/UI/Artemis/GDS:
+Restraint.pm
+
+./lib/Demeter/UI/Artemis/Plot:
+Indicators.pm, Limits.pm, Stack.pm, VPaths.pm
+
+./lib/Demeter/UI/Artemis/icons:
+add.png, addgds.png, artemis.png, bestfit-128x128.png, bestfit.png, convert.png,
+discard.png, export.png, fit.png, gds-128x128.png, gds.png, highlight.png,
+highlight_64x64.png, history-128x128.png, history.png, import.png,
+journal-128x128.png, journal.png, log.png, log_84x89.png, orbits.png, pixel.png,
+plot-128x128.png, plot.png, plotgrab.png, reset-128x128.png, reset.png,
+trash-128x128.png, unhighlight.png, unhighlight_64x64.png
+
+./lib/Demeter/UI/Artemis/share:
+GPL.dem, artemis.demeter_conf, temple.png
+
+./lib/Demeter/UI/Athena:
+Align.pm, Calibrate.pm, ChangeDatatype.pm, ColumnSelection/, ColumnSelection.pm,
+ConvoluteNoise.pm, Cursor.pm, Deconvolute.pm, DeglitchTruncate.pm,
+Difference.pm, Group.pm, GroupList.pm, IO.pm, Journal.pm, LCF.pm, LogRatio.pm,
+Main.pm, Null.pm, PCA.pm, PeakFit.pm, Plot/, PluginRegistry.pm, Prefs.pm,
+Rebin.pm, Replot.pm, SelfAbsorption.pm, Series.pm, Smooth.pm, Status.pm,
+TextBuffer.pm, ToolTemplate.pm, XDI.pm, icons/, share/
+
+./lib/Demeter/UI/Athena/ColumnSelection:
+Preprocess.pm, Rebin.pm, Reference.pm
+
+./lib/Demeter/UI/Athena/Plot:
+Indicators.pm, Other.pm, PlotE.pm, PlotK.pm, PlotQ.pm, PlotR.pm, Stack.pm,
+Style.pm
+
+./lib/Demeter/UI/Athena/icons:
+Thumbs.db, athena.png, bullseye.png, chainlink.png
+
+./lib/Demeter/UI/Athena/share:
+GPL.dem, athena.demeter_conf
+
+./lib/Demeter/UI/Atoms:
+Config.pm, Console.pm, Doc.pm, Feff.pm, Paths.pm, SS.pm, Xtal.pm, data/, icons/
+
+./lib/Demeter/UI/Atoms/data:
+GPL.dem
+
+./lib/Demeter/UI/Atoms/icons:
+add-128x128.png, add.png, atoms.png, atoms_disabled.png,
+atoms_nottransparent.png, boilerplate-64x64.png, boilerplate.png, chik.png,
+chirim.png, chirmag.png, chirre.png, clear-128x128.png, clear.png,
+configure-128x128.png, configure.png, console-128x128.png, console.png,
+delsite-128x128.png, delsite.png, document-128x128.png, document.png,
+empty-128x128.png, empty.png, exec-128x128.png, exec.png, feff.png,
+fileclose-128x128.png, open-128x128.png, open.png, output-128x128.png,
+output.png, paths-128x128.png, paths.png, plot-128x128.png, plot.png,
+save-128x128.png, save.png, ss.png
+
+./lib/Demeter/UI/Hephaestus:
+Absorption.pm, Common.pm, Config.pm, Data.pm, EdgeFinder.pm, F1F2.pm,
+Formulas.pm, Help.pm, Ion.pm, LineFinder.pm, Standards.pm, Transitions.pm,
+data/, icons/
+
+./lib/Demeter/UI/Hephaestus/data:
+GPL.dem, hephaestus.demeter_conf, hephaestus.htm, kalziumrc.dem,
+trans_table.png, vulcan.png
+
+./lib/Demeter/UI/Hephaestus/icons:
+absorption.png, configure.png, data.png, f1f2.png, find.png, formulas.png,
+help.png, ion.png, line.png, standards.png, transitions.png, vulcan.xpm
+
+./lib/Demeter/UI/Screen:
+Interview.pm, Pause.pm, Progress.pm
+
+./lib/Demeter/UI/Wx:
+AutoSave.pm, CheckListBook.pm, ColourDatabase.pm, Config.pm, EchoArea.pm,
+MRU.pm, OverwritePrompt.pm, PeriodicTable.pm, PeriodicTableDialog.pm,
+SpecialCharacters.pm
+
+./lib/Demeter/configuration:
+atoms.demeter_conf, bft.demeter_conf, bkg.demeter_conf, clamp.demeter_conf,
+config.demeter_conf, feff.demeter_conf, fft.demeter_conf, file.demeter_conf,
+fit.demeter_conf, fspath.demeter_conf, gds.demeter_conf, gnuplot.demeter_conf,
+happiness.demeter_conf, histogram.demeter_conf, interpolation.demeter_conf,
+lcf.demeter_conf, operations.demeter_conf, ornaments.demeter_conf,
+pathfinder.demeter_conf, plot.demeter_conf, process.demeter_conf,
+screen.demeter_conf, warnings.demeter_conf, xanes.demeter_conf
+
+./lib/Demeter/doc:
+dpg/
+
+./lib/Demeter/doc/dpg:
+Template/, images/, templates/
+
+./lib/Demeter/doc/dpg/Template:
+Plugin/
+
+./lib/Demeter/doc/dpg/Template/Plugin:
+PerlSyntaxHtml.pm, PerlSyntaxLatex.pm, PerlSyntaxLatexBw.pm, PerlSyntaxPod.pm
+
+./lib/Demeter/doc/dpg/images:
+Demeter.png, LightningBolt.png, agau_fit.png, bend.png, cufit.png, cumds.png,
+deglitch.png, dimethyltin.png, histo_fit_noss.png, histo_fit_withss.png,
+histo_fit_wpaths.png, histo_fit_wpaths_zoom.png, histogram.png,
+methyltin_fit.png, plot_chie.png, plot_e_deriv.png, plot_e_ezero.png,
+plot_e_flat.png, plot_e_i0signal.png, plot_e_norm.png, plot_e_prepost.png,
+plot_k.png, plot_k_k123.png, plot_kq.png, plot_q.png, plot_quad.png,
+plot_r_magwin.png, plot_r_mri.png, plot_r_r123.png, plot_r_rmr.png,
+plot_stddev.png, plot_variance.png, somerights20.png, truncate.png, uranyl.png,
+uranyl_k.png, uranyl_rmag.png, uranyl_rre.png
+
+./lib/Demeter/doc/dpg/templates:
+src/
+
+./lib/Demeter/doc/dpg/templates/src:
+ab.css, perl.css, ppi.css
+
+./lib/Demeter/share:
+Demeter.png, Demeter_icon.png, Demeter_large.png, Readme.fit_serialization,
+gnuplot_colors.dem, ini/, pgplot/, rgb_colors.dem, standards/
+
+./lib/Demeter/share/ini:
+10bmmultichannel.ini, athena.styles.ini
+
+./lib/Demeter/share/pgplot:
+grfont.dat, rgb.txt
+
+./lib/Demeter/share/standards:
+data/, standards.ini, templates/
+
+./lib/Demeter/share/standards/data:
+Ag.prj, Au.prj, Cd.prj, Ce.prj, Fe.prj, Hg.prj, Mn.prj, Sn.prj, ag.stan,
+au.stan, co.stan, cr.stan, cu.stan, fe.stan, goethite.stan, hematite.stan,
+lepidocrocite.stan, mn.stan, mo.stan, nb.stan, pt.stan, rh.stan, u4.stan,
+u6.stan, v.stan, v2o5.stan, zn.stan, zr.stan
+
+./lib/Demeter/share/standards/templates:
+htmlindex.tmpl, htmlpage.tmpl
+
+./lib/Demeter/templates:
+analysis/, atoms/, feff/, fit/, plot/, process/, test/
+
+./lib/Demeter/templates/analysis:
+ifeffit/
+
+./lib/Demeter/templates/analysis/ifeffit:
+diff_diff.tmpl, lcf_clean.tmpl, lcf_fit.tmpl, lcf_header.tmpl, lcf_prep.tmpl,
+lcf_prep_k.tmpl, lcf_prep_last.tmpl, lcf_prep_last_k.tmpl,
+lcf_prep_standard.tmpl, lcf_prep_standard_k.tmpl, lcf_report.tmpl,
+lcf_save.tmpl, lcf_sum.tmpl, lcf_sum_standard.tmpl, lr_fit.tmpl,
+lr_results.tmpl, lr_save.tmpl, xes_background.tmpl, xes_read.tmpl
+
+./lib/Demeter/templates/atoms:
+absorption.tmpl, atoms_header.tmpl, copyright.tmpl, feff6.tmpl, feff7.tmpl,
+feff8.tmpl, mcmaster.tmpl, prettyline.tmpl, spacegroup.tmpl
+
+./lib/Demeter/templates/feff:
+feff6/
+
+./lib/Demeter/templates/feff/feff6:
+boilerplate.tmpl, firstshell4.tmpl, firstshell6.tmpl, full.tmpl, genfmt.tmpl,
+potentials.tmpl
+
+./lib/Demeter/templates/fit:
+demeter/, feffit/, ifeffit/, iff_columns/
+
+./lib/Demeter/templates/fit/demeter:
+background.tmpl, correl.tmpl, endfit.tmpl, fit.tmpl, gds.tmpl, next.tmpl,
+path.tmpl, prep_fit.tmpl*, residual.tmpl
+
+./lib/Demeter/templates/fit/feffit:
+background.tmpl, correl.tmpl, ff2chi.tmpl, fit.tmpl, fit_report.tmpl, gds.tmpl,
+next.tmpl, path.tmpl, residual.tmpl, restraint.tmpl, save_fit.tmpl, sum.tmpl
+
+./lib/Demeter/templates/fit/ifeffit:
+background.tmpl, correl.tmpl, endfit.tmpl, ff2chi.tmpl, fit.tmpl,
+fit_report.tmpl, gds.tmpl, next.tmpl, path.tmpl, pathll.tmpl, prep_fit.tmpl,
+read_fit.tmpl, report_head_param.tmpl, report_head_stats.tmpl,
+report_param.tmpl, report_stats.tmpl, residual.tmpl, restraint.tmpl,
+save_bkgsub.tmpl, save_fit.tmpl, save_fit_kw.tmpl, save_fit_q.tmpl,
+save_fit_r.tmpl, sum.tmpl
+
+./lib/Demeter/templates/fit/iff_columns:
+background.tmpl, correl.tmpl, endfit.tmpl, ff2chi.tmpl, fit.tmpl, gds.tmpl,
+next.tmpl, residual.tmpl, restraint.tmpl, save_bkgsub.tmpl, save_fit.tmpl,
+sum.tmpl
+
+./lib/Demeter/templates/plot:
+demeter/, gnuplot/, pgplot/, singlefile/
+
+./lib/Demeter/templates/plot/demeter:
+copyright.tmpl, newe.tmpl, overe.tmpl
+
+./lib/Demeter/templates/plot/gnuplot:
+copyright.tmpl, f1.tmpl, f1f2.tmpl, f2.tmpl, file.tmpl, filter.tmpl, histo.tmpl,
+indicator.tmpl, label.tmpl, lreven.tmpl, lrodd.tmpl, marker.tmpl, newchie.tmpl,
+newdiff.tmpl, newe.tmpl, newk.tmpl, newlcf.tmpl, newpeak.tmpl, newq.tmpl,
+newr.tmpl, newxes.tmpl, overchie.tmpl, overdiff.tmpl, overe.tmpl, overk.tmpl,
+overlcf.tmpl, overpeak.tmpl, overq.tmpl, overr.tmpl, overxes.tmpl,
+plot_file.tmpl, plot_info_depth.tmpl, plot_stats.tmpl, prep_f1f2.tmpl,
+prep_filter.tmpl, quadend.tmpl, quadstart.tmpl, restore.tmpl, run.tmpl,
+start.tmpl, stddeve.tmpl, stddevk.tmpl, stddevn.tmpl, variancee.tmpl,
+variancek.tmpl, window.tmpl
+
+./lib/Demeter/templates/plot/pgplot:
+copyright.tmpl, f1.tmpl, f1f2.tmpl, f2.tmpl, file.tmpl, filter.tmpl,
+indicator.tmpl, label.tmpl, lreven.tmpl, lrodd.tmpl, marker.tmpl, newchie.tmpl,
+newe.tmpl, newk.tmpl, newlcf.tmpl, newpeak.tmpl, newq.tmpl, newr.tmpl,
+newxes.tmpl, overchie.tmpl, overe.tmpl, overk.tmpl, overlcf.tmpl, overpeak.tmpl,
+overq.tmpl, overr.tmpl, overxes.tmpl, plot_file.tmpl, plot_info_depth.tmpl,
+plot_stats.tmpl, prep_f1f2.tmpl, prep_filter.tmpl, run.tmpl, save_f1f2.tmpl,
+stddev.tmpl, stddeve.tmpl, stddevk.tmpl, stddevn.tmpl, variancee.tmpl,
+variancek.tmpl, window.tmpl
+
+./lib/Demeter/templates/plot/singlefile:
+end.tmpl, indicator.tmpl, marker.tmpl, newchie.tmpl, newe.tmpl, newk.tmpl,
+newq.tmpl, newr.tmpl, overchie.tmpl, overe.tmpl, overk.tmpl, overq.tmpl,
+overr.tmpl, run.tmpl, start.tmpl, window.tmpl
+
+./lib/Demeter/templates/process:
+demeter/, feffit/, ifeffit/, iff_columns/
+
+./lib/Demeter/templates/process/demeter:
+autobk.tmpl, chi_noise.tmpl, deriv.tmpl, fft.tmpl, flatten_fit.tmpl,
+flatten_set.tmpl, nderiv.tmpl, normalize.tmpl, post_autobk.tmpl, read_chi.tmpl,
+read_prj.tmpl, read_xmu.tmpl
+
+./lib/Demeter/templates/process/feffit:
+read_chi.tmpl
+
+./lib/Demeter/templates/process/ifeffit:
+about.tmpl, addto_vpath.tmpl, align.tmpl, autobk.tmpl, bft.tmpl, chi_noise.tmpl,
+chikn.tmpl, clone.tmpl, columns.tmpl, convolve.tmpl, data_report.tmpl,
+deglitch.tmpl, deriv.tmpl, display.tmpl, erase_chikn.tmpl, erase_group.tmpl,
+fft.tmpl, filtered_filter.tmpl, filtered_head.tmpl, find_e0.tmpl, fix_chik.tmpl,
+flatten_fit.tmpl, flatten_set.tmpl, gds_out.tmpl, histogram_add.tmpl,
+histogram_clean.tmpl, histogram_first.tmpl, interpolate.tmpl, k123.tmpl,
+kev.tmpl, merge.tmpl, merge_end.tmpl, merge_interp.tmpl, merge_norm.tmpl,
+merge_start.tmpl, merge_stddev.tmpl, merge_stddev_end.tmpl, merge_subarray.tmpl,
+nderiv.tmpl, noise.tmpl, normalize.tmpl, pixel_fit.tmpl, pixel_set.tmpl,
+pixel_setup.tmpl, post_autobk.tmpl, prep_kwindow.tmpl, prep_rwindow.tmpl,
+prep_vpath.tmpl, read.tmpl, read_chi.tmpl, read_prj.tmpl, read_xmu.tmpl,
+rebin.tmpl, replicate.tmpl, sa_atoms.tmpl, sa_atoms_text.tmpl,
+sa_booth_pre.tmpl, sa_booth_thick.tmpl, sa_booth_thin.tmpl, sa_fluo.tmpl,
+sa_info_depth.tmpl, sa_troger.tmpl, save_chik.tmpl, save_chiq.tmpl,
+save_chir.tmpl, save_many.tmpl, save_many_header.tmpl, save_norm.tmpl,
+save_xmu.tmpl, smooth.tmpl, smoothed.tmpl, trun_signal_after.tmpl,
+trun_signal_before.tmpl, truncate_after.tmpl, truncate_before.tmpl,
+xdi_report.tmpl
+
+./lib/Demeter/templates/process/iff_columns:
+autobk.tmpl, bft.tmpl, chi_noise.tmpl, fft.tmpl, noise.tmpl, normalize.tmpl,
+post_autobk.tmpl, read_chi.tmpl, read_xmu.tmpl, save_chik.tmpl, save_chiq.tmpl,
+save_chir.tmpl, save_norm.tmpl, save_xmu.tmpl
+
+./lib/Demeter/templates/test:
+test/
+
+./lib/Demeter/templates/test/test:
+test.tmpl
+
+./lib/Devel:
+GlobalDestruction.pm*
+
+./lib/Dist:
+CheckConflicts.pm
+
+./lib/ExtUtils:
+XSpp/, XSpp.pm, XSpp.pod
+
+./lib/ExtUtils/XSpp:
+Cmd.pm, Driver.pm, Exception/, Exception.pm, Grammar.pm, Lexer.pm, Node/,
+Node.pm, Parser.pm, Plugin.pod, Typemap/, Typemap.pm
+
+./lib/ExtUtils/XSpp/Exception:
+code.pm, object.pm, perlcode.pm, simple.pm, stdmessage.pm, unknown.pm
+
+./lib/ExtUtils/XSpp/Node:
+Access.pm, Argument.pm, Class.pm, Comment.pm, Constructor.pm, Destructor.pm,
+Enum.pm, EnumValue.pm, File.pm, Function.pm, Method.pm, Module.pm, Package.pm,
+PercAny.pm, Preprocessor.pm, Raw.pm, Type.pm
+
+./lib/ExtUtils/XSpp/Typemap:
+parsed.pm, reference.pm, simple.pm
+
+./lib/Graph:
+AdjacencyMap/, AdjacencyMap.pm, AdjacencyMatrix.pm, Attribute.pm, BitMatrix.pm,
+Directed.pm, MSTHeapElem.pm, Matrix.pm, SPTHeapElem.pm, TransitiveClosure/,
+TransitiveClosure.pm, Traversal/, Traversal.pm, Undirected.pm, UnionFind.pm
+
+./lib/Graph/AdjacencyMap:
+Heavy.pm, Light.pm, Vertex.pm
+
+./lib/Graph/TransitiveClosure:
+Matrix.pm
+
+./lib/Graph/Traversal:
+BFS.pm, DFS.pm
+
+./lib/Graphics:
+GnuplotIF.pm, GnuplotIF.pm.save
+
+./lib/Heap:
+Binary.pm, Binomial.pm, Elem/, Elem.pm, Fibonacci.pm
+
+./lib/Heap/Elem:
+Num.pm, NumRev.pm, Ref.pm, RefRev.pm, Str.pm, StrRev.pm
+
+./lib/Heap071:
+Elem.pm, Fibonacci.pm
+
+./lib/Hook:
+LexWrap.pm
+
+./lib/Image:
+Size.pm
+
+./lib/List:
+MoreUtils.pm
+
+./lib/MRO:
+Compat.pm
+
+./lib/Math:
+Combinatorics.pm, Derivative.pm, Round.pm, Spline.pm
+
+./lib/Module:
+Install/
+
+./lib/Module/Install:
+TestBase.pm
+
+./lib/Moose:
+Cookbook/, Cookbook.pod, Deprecated.pm, Error/, Exporter.pm, Intro.pod, Manual/,
+Manual.pod, Meta/, Object.pm, Role.pm, Spec/, Unsweetened.pod, Util/, Util.pm
+
+./lib/Moose/Cookbook:
+Basics/, Extending/, Meta/, Roles/, Snack/, Style.pod
+
+./lib/Moose/Cookbook/Basics:
+Recipe1.pod, Recipe10.pod, Recipe11.pod, Recipe2.pod, Recipe3.pod, Recipe4.pod,
+Recipe5.pod, Recipe6.pod, Recipe7.pod, Recipe8.pod, Recipe9.pod
+
+./lib/Moose/Cookbook/Extending:
+Recipe1.pod, Recipe2.pod, Recipe3.pod, Recipe4.pod
+
+./lib/Moose/Cookbook/Meta:
+Recipe1.pod, Recipe2.pod, Recipe3.pod, Recipe4.pod, Recipe5.pod, Recipe6.pod,
+Recipe7.pod
+
+./lib/Moose/Cookbook/Roles:
+Recipe1.pod, Recipe2.pod, Recipe3.pod
+
+./lib/Moose/Cookbook/Snack:
+Keywords.pod, Types.pod
+
+./lib/Moose/Error:
+Confess.pm, Croak.pm, Default.pm
+
+./lib/Moose/Manual:
+Attributes.pod, BestPractices.pod, Classes.pod, Concepts.pod, Construction.pod,
+Contributing.pod, Delegation.pod, Delta.pod, FAQ.pod, MOP.pod,
+MethodModifiers.pod, MooseX.pod, Roles.pod, Support.pod, Types.pod,
+Unsweetened.pod
+
+./lib/Moose/Meta:
+Attribute/, Attribute.pm, Class/, Class.pm, Instance.pm, Method/, Method.pm,
+Mixin/, Object/, Role/, Role.pm, TypeCoercion/, TypeCoercion.pm,
+TypeConstraint/, TypeConstraint.pm
+
+./lib/Moose/Meta/Attribute:
+Native/, Native.pm
+
+./lib/Moose/Meta/Attribute/Native:
+Trait/, Trait.pm
+
+./lib/Moose/Meta/Attribute/Native/Trait:
+Array.pm, Bool.pm, Code.pm, Counter.pm, Hash.pm, Number.pm, String.pm
+
+./lib/Moose/Meta/Class:
+Immutable/
+
+./lib/Moose/Meta/Class/Immutable:
+Trait.pm
+
+./lib/Moose/Meta/Method:
+Accessor/, Accessor.pm, Augmented.pm, Constructor.pm, Delegation.pm,
+Destructor.pm, Meta.pm, Overridden.pm
+
+./lib/Moose/Meta/Method/Accessor:
+Native/, Native.pm
+
+./lib/Moose/Meta/Method/Accessor/Native:
+Array/, Array.pm, Bool/, Code/, Collection.pm, Counter/, Hash/, Hash.pm,
+Number/, Reader.pm, String/, Writer.pm
+
+./lib/Moose/Meta/Method/Accessor/Native/Array:
+Writer.pm, accessor.pm, clear.pm, count.pm, delete.pm, elements.pm, first.pm,
+get.pm, grep.pm, insert.pm, is_empty.pm, join.pm, map.pm, natatime.pm, pop.pm,
+push.pm, reduce.pm, set.pm, shift.pm, shuffle.pm, sort.pm, sort_in_place.pm,
+splice.pm, uniq.pm, unshift.pm
+
+./lib/Moose/Meta/Method/Accessor/Native/Bool:
+not.pm, set.pm, toggle.pm, unset.pm
+
+./lib/Moose/Meta/Method/Accessor/Native/Code:
+execute.pm, execute_method.pm
+
+./lib/Moose/Meta/Method/Accessor/Native/Counter:
+Writer.pm, dec.pm, inc.pm, reset.pm, set.pm
+
+./lib/Moose/Meta/Method/Accessor/Native/Hash:
+Writer.pm, accessor.pm, clear.pm, count.pm, defined.pm, delete.pm, elements.pm,
+exists.pm, get.pm, is_empty.pm, keys.pm, kv.pm, set.pm, values.pm
+
+./lib/Moose/Meta/Method/Accessor/Native/Number:
+abs.pm, add.pm, div.pm, mod.pm, mul.pm, set.pm, sub.pm
+
+./lib/Moose/Meta/Method/Accessor/Native/String:
+append.pm, chomp.pm, chop.pm, clear.pm, inc.pm, length.pm, match.pm, prepend.pm,
+replace.pm, substr.pm
+
+./lib/Moose/Meta/Mixin:
+AttributeCore.pm
+
+./lib/Moose/Meta/Object:
+Trait.pm
+
+./lib/Moose/Meta/Role:
+Application/, Application.pm, Attribute.pm, Composite.pm, Method/, Method.pm
+
+./lib/Moose/Meta/Role/Application:
+RoleSummation.pm, ToClass.pm, ToInstance.pm, ToRole.pm
+
+./lib/Moose/Meta/Role/Method:
+Conflicting.pm, Required.pm
+
+./lib/Moose/Meta/TypeCoercion:
+Union.pm
+
+./lib/Moose/Meta/TypeConstraint:
+Class.pm, DuckType.pm, Enum.pm, Parameterizable.pm, Parameterized.pm,
+Registry.pm, Role.pm, Union.pm
+
+./lib/Moose/Spec:
+Role.pod
+
+./lib/Moose/Util:
+MetaRole.pm, TypeConstraints/, TypeConstraints.pm
+
+./lib/Moose/Util/TypeConstraints:
+OptimizedConstraints.pm
+
+./lib/MooseX:
+Aliases/, Aliases.pm, AttributeHelpers/, AttributeHelpers.pm, SetGet.pm,
+Singleton/, Singleton.pm, StrictConstructor/, StrictConstructor.pm, Types/,
+Types.pm
+
+./lib/MooseX/Aliases:
+Meta/
+
+./lib/MooseX/Aliases/Meta:
+Trait/
+
+./lib/MooseX/Aliases/Meta/Trait:
+Attribute.pm, Class.pm, Constructor.pm, Method.pm
+
+./lib/MooseX/AttributeHelpers:
+Bool.pm, Collection/, Counter.pm, Meta/, MethodProvider/, Number.pm, String.pm,
+Trait/
+
+./lib/MooseX/AttributeHelpers/Collection:
+Array.pm, Bag.pm, Hash.pm, ImmutableHash.pm, List.pm
+
+./lib/MooseX/AttributeHelpers/Meta:
+Method/
+
+./lib/MooseX/AttributeHelpers/Meta/Method:
+Curried.pm, Provided.pm
+
+./lib/MooseX/AttributeHelpers/MethodProvider:
+Array.pm, Bag.pm, Bool.pm, Counter.pm, Hash.pm, ImmutableHash.pm, List.pm,
+String.pm
+
+./lib/MooseX/AttributeHelpers/Trait:
+Base.pm, Bool.pm, Collection/, Collection.pm, Counter.pm, Number.pm, String.pm
+
+./lib/MooseX/AttributeHelpers/Trait/Collection:
+Array.pm, Bag.pm, Hash.pm, ImmutableHash.pm, List.pm
+
+./lib/MooseX/Singleton:
+Role/
+
+./lib/MooseX/Singleton/Role:
+Meta/, Object.pm
+
+./lib/MooseX/Singleton/Role/Meta:
+Class.pm, Instance.pm, Method/
+
+./lib/MooseX/Singleton/Role/Meta/Method:
+Constructor.pm
+
+./lib/MooseX/StrictConstructor:
+Role/, Trait/
+
+./lib/MooseX/StrictConstructor/Role:
+Object.pm
+
+./lib/MooseX/StrictConstructor/Trait:
+Class.pm, Method/
+
+./lib/MooseX/StrictConstructor/Trait/Method:
+Constructor.pm
+
+./lib/MooseX/Types:
+Base.pm, CheckedUtilExports.pm, Combine.pm, Moose.pm, TypeDecorator.pm,
+UndefinedType.pm, Util.pm, Wrapper.pm
+
+./lib/OLE:
+Storage_Lite.pm
+
+./lib/PPI:
+Cache.pm, Document/, Document.pm, Dumper.pm, Element.pm, Exception/,
+Exception.pm, Find.pm, HTML/, HTML.pm, Lexer.pm, Node.pm, Normal/, Normal.pm,
+Statement/, Statement.pm, Structure/, Structure.pm, Token/, Token.pm,
+Tokenizer.pm, Transform/, Transform.pm, Util.pm, XSAccessor.pm
+
+./lib/PPI/Document:
+File.pm, Fragment.pm, Normalized.pm
+
+./lib/PPI/Exception:
+ParserRejection.pm, ParserTimeout.pm
+
+./lib/PPI/HTML:
+Fragment.pm
+
+./lib/PPI/Normal:
+Standard.pm
+
+./lib/PPI/Statement:
+Break.pm, Compound.pm, Data.pm, End.pm, Expression.pm, Given.pm, Include/,
+Include.pm, Null.pm, Package.pm, Scheduled.pm, Sub.pm, Unknown.pm,
+UnmatchedBrace.pm, Variable.pm, When.pm
+
+./lib/PPI/Statement/Include:
+Perl6.pm
+
+./lib/PPI/Structure:
+Block.pm, Condition.pm, Constructor.pm, For.pm, Given.pm, List.pm, Subscript.pm,
+Unknown.pm, When.pm
+
+./lib/PPI/Token:
+ArrayIndex.pm, Attribute.pm, BOM.pm, Cast.pm, Comment.pm, DashedWord.pm,
+Data.pm, End.pm, HereDoc.pm, Label.pm, Magic.pm, Number/, Number.pm,
+Operator.pm, Pod.pm, Prototype.pm, Quote/, Quote.pm, QuoteLike/, QuoteLike.pm,
+Regexp/, Regexp.pm, Separator.pm, Structure.pm, Symbol.pm, Unknown.pm,
+Whitespace.pm, Word.pm, _QuoteEngine/, _QuoteEngine.pm
+
+./lib/PPI/Token/Number:
+Binary.pm, Exp.pm, Float.pm, Hex.pm, Octal.pm, Version.pm
+
+./lib/PPI/Token/Quote:
+Double.pm, Interpolate.pm, Literal.pm, Single.pm
+
+./lib/PPI/Token/QuoteLike:
+Backtick.pm, Command.pm, Readline.pm, Regexp.pm, Words.pm
+
+./lib/PPI/Token/Regexp:
+Match.pm, Substitute.pm, Transliterate.pm
+
+./lib/PPI/Token/_QuoteEngine:
+Full.pm, Simple.pm
+
+./lib/PPI/Transform:
+UpdateCopyright.pm
+
+./lib/Package:
+DeprecationManager.pm, Stash/, Stash.pm
+
+./lib/Package/Stash:
+Conflicts.pm, PP.pm, XS.pm
+
+./lib/Params:
+Validate.pm, ValidatePP.pm, ValidateXS.pm
+
+./lib/Parse:
+RecDescent.pm
+
+./lib/Pod:
+POM/, POM.pm
+
+./lib/Pod/POM:
+Constants.pm, Node/, Node.pm, Nodes.pm, Test.pm, View/, View.pm
+
+./lib/Pod/POM/Node:
+Begin.pm, Code.pm, Content.pm, For.pm, Head1.pm, Head2.pm, Head3.pm, Head4.pm,
+Item.pm, Over.pm, Pod.pm, Sequence.pm, Text.pm, Verbatim.pm
+
+./lib/Pod/POM/View:
+HTML.pm, Pod.pm, Text.pm
+
+./lib/Regexp:
+Assemble.pm, Common/, Common.pm
+
+./lib/Regexp/Common:
+CC.pm, SEN.pm, URI/, URI.pm, _support.pm, balanced.pm, comment.pm, delimited.pm,
+lingua.pm, list.pm, net.pm, number.pm, profanity.pm, whitespace.pm, zip.pm
+
+./lib/Regexp/Common/URI:
+RFC1035.pm, RFC1738.pm, RFC1808.pm, RFC2384.pm, RFC2396.pm, RFC2806.pm, fax.pm,
+file.pm, ftp.pm, gopher.pm, http.pm, news.pm, pop.pm, prospero.pm, tel.pm,
+telnet.pm, tv.pm, wais.pm
+
+./lib/STAR:
+Checker.pm, DataBlock.pm, Dictionary.pm, Filter.pm, Parser.pm, Writer.pm
+
+./lib/Scope:
+Guard.pm
+
+./lib/Spreadsheet:
+WriteExcel/, WriteExcel.pm
+
+./lib/Spreadsheet/WriteExcel:
+BIFFwriter.pm, Big.pm, Chart/, Chart.pm, Examples.pm, Format.pm, Formula.pm,
+OLEwriter.pm, Properties.pm, Utility.pm, Workbook.pm, Worksheet.pm
+
+./lib/Spreadsheet/WriteExcel/Chart:
+Area.pm, Bar.pm, Column.pm, External.pm, Line.pm, Pie.pm, Scatter.pm, Stock.pm
+
+./lib/Statistics:
+Descriptive.pm
+
+./lib/String:
+Random.pm
+
+./lib/Sub:
+Exporter/, Exporter.pm, Identify.pm, Install.pm, Name.pm
+
+./lib/Sub/Exporter:
+Cookbook.pod, Tutorial.pod, Util.pm
+
+./lib/Template:
+Base.pm, Config.pm, Constants.pm, Context.pm, Directive.pm, Document.pm,
+Exception.pm, FAQ.pod, Filters.pm, Grammar.pm, Iterator.pm, Manual/, Manual.pod,
+Modules.pod, Namespace/, Parser.pm, Plugin/, Plugin.pm, Plugins.pm, Provider.pm,
+Service.pm, Stash/, Stash.pm, Test.pm, Toolkit.pod, Tools/, Tools.pod,
+Tutorial/, Tutorial.pod, VMethods.pm, View.pm
+
+./lib/Template/Manual:
+Config.pod, Credits.pod, Directives.pod, Filters.pod, Internals.pod, Intro.pod,
+Plugins.pod, Syntax.pod, VMethods.pod, Variables.pod, Views.pod
+
+./lib/Template/Namespace:
+Constants.pm
+
+./lib/Template/Plugin:
+Assert.pm, CGI.pm, Datafile.pm, Date.pm, Directory.pm, Dumper.pm, File.pm,
+Filter.pm, Format.pm, HTML.pm, Image.pm, Iterator.pm, Math.pm, Pod.pm,
+Procedural.pm, Scalar.pm, String.pm, Table.pm, URL.pm, View.pm, Wrap.pm
+
+./lib/Template/Stash:
+Context.pm, XS.pm
+
+./lib/Template/Tools:
+tpage.pod, ttree.pod
+
+./lib/Template/Tutorial:
+Datafile.pod, Web.pod
+
+./lib/Test:
+Base/, Base.pm, Differences.pm, Fatal.pm, Moose.pm, Object/, Object.pm,
+Requires.pm, SubCalls.pm
+
+./lib/Test/Base:
+Filter.pm
+
+./lib/Test/Object:
+Test.pm
+
+./lib/Text:
+Template/, Template.pm
+
+./lib/Text/Template:
+Preprocess.pm
+
+./lib/Tree:
+Simple/, Simple.pm
+
+./lib/Tree/Simple:
+Visitor.pm
+
+./lib/Try:
+Tiny.pm
+
+./lib/Variable:
+Magic.pm
+
+./lib/Wx:
+AUI.pm, Api.pod, App.pm, ArtProvider.pm, Calendar.pm, DND.pm, DateTime.pm,
+DocView.pm, DropSource.pm, Event.pm, FS.pm, Grid.pm, Help.pm, Html.pm,
+Loader.pod, Locale.pm, MDI.pm, Media.pm, Menu.pm, Mini.pm, NewClass.pod,
+Overload/, Perl/, Print.pm, RadioBox.pm, RichText.pm, STC.pm, Socket.pm,
+Thread.pod, Timer.pm, Wx_Exp.pm, XRC.pm, XSP/, build/, cpp/, typemap
+
+./lib/Wx/Overload:
+Driver.pm, Handle.pm
+
+./lib/Wx/Perl:
+Carp.pm, SplashFast.pm, TextValidator.pm
+
+./lib/Wx/XSP:
+Enum.pm, Event.pm, Overload.pm, Virtual.pm
+
+./lib/Wx/build:
+MakeMaker/, MakeMaker.pm, Opt.pm, Options.pm, Utils.pm
+
+./lib/Wx/build/MakeMaker:
+Any_OS.pm, Any_wx_config.pm, Core.pm, Hacks.pm, MacOSX_GCC.pm, Win32.pm,
+Win32_MSVC.pm, Win32_MinGW.pm
+
+./lib/Wx/cpp:
+chkconfig.h, compat.h, constants.h, e_cback.h, event.h, helpers.h, overload.h,
+setup.h, streams.h, v_cback.h, v_cback_def.h, wxapi.h
+
+./lib/Xray:
+Absorption/, Absorption.pm, Crystal/, Crystal.pm, FluorescenceEXAFS.pm,
+Scattering/, Scattering.pm
+
+./lib/Xray/Absorption:
+CL.pm, Chantler.pm, Elam.pm, Henke.pm, McMaster.pm, None.pm, Shaltout.pm,
+chantler.db, cl.db, elam.db, henke.db, hubbell_g.db, mcmaster.db, shaltout.db
+
+./lib/Xray/Crystal:
+Cell.pm, Site.pm, SpaceGroup.pm, share/
+
+./lib/Xray/Crystal/share:
+space_groups.db
+
+./lib/Xray/Scattering:
+CromerMann.pm, None.pm, WaasKirf.pm, cromann.db, waaskirf.db
+
+./lib/auto:
+Alien/, AppConfig/, B/, CSS/, Capture/, Carp/, Chemistry/, Class/, Clone/,
+Config/, Data/, DateTime/, Demeter/, Devel/, Dist/, ExtUtils/, Graph/,
+Graphics/, Heap/, Heap071/, Hook/, Ifeffit/, Image/, List/, MRO/, Math/, Moose/,
+MooseX/, OLE/, PPI/, Package/, Params/, Parse/, Pod/, Readonly/, Regexp/,
+Scope/, Spiffy/, Spreadsheet/, Statistics/, String/, Sub/, Template/, Test/,
+Text/, Tree/, Try/, Variable/, Want/, Wx/, namespace/
+
+./lib/auto/Alien:
+wxWidgets/
+
+./lib/auto/Alien/wxWidgets:
+
+./lib/auto/AppConfig:
+
+./lib/auto/B:
+Hooks/
+
+./lib/auto/B/Hooks:
+EndOfScope/
+
+./lib/auto/B/Hooks/EndOfScope:
+
+./lib/auto/CSS:
+Tiny/
+
+./lib/auto/CSS/Tiny:
+
+./lib/auto/Capture:
+Tiny/
+
+./lib/auto/Capture/Tiny:
+
+./lib/auto/Carp:
+Clan/
+
+./lib/auto/Carp/Clan:
+
+./lib/auto/Chemistry:
+Elements/
+
+./lib/auto/Chemistry/Elements:
+
+./lib/auto/Class:
+Load/, MOP/, Singleton/
+
+./lib/auto/Class/Load:
+
+./lib/auto/Class/MOP:
+MOP.bs, MOP.dll*
+
+./lib/auto/Class/Singleton:
+
+./lib/auto/Clone:
+Clone.bs, Clone.dll*, autosplit.ix
+
+./lib/auto/Config:
+IniFiles/
+
+./lib/auto/Config/IniFiles:
+
+./lib/auto/Data:
+OptList/
+
+./lib/auto/Data/OptList:
+
+./lib/auto/DateTime:
+DateTime.bs, DateTime.dll*, Locale/, TimeZone/
+
+./lib/auto/DateTime/Locale:
+
+./lib/auto/DateTime/TimeZone:
+
+./lib/auto/Demeter:
+
+./lib/auto/Devel:
+GlobalDestruction/
+
+./lib/auto/Devel/GlobalDestruction:
+GlobalDestruction.bs, GlobalDestruction.dll*
+
+./lib/auto/Dist:
+CheckConflicts/
+
+./lib/auto/Dist/CheckConflicts:
+
+./lib/auto/ExtUtils:
+XSpp/
+
+./lib/auto/ExtUtils/XSpp:
+
+./lib/auto/Graph:
+
+./lib/auto/Graphics:
+GnuplotIF/
+
+./lib/auto/Graphics/GnuplotIF:
+
+./lib/auto/Heap:
+
+./lib/auto/Heap071:
+Elem/, Fibonacci/
+
+./lib/auto/Heap071/Elem:
+autosplit.ix
+
+./lib/auto/Heap071/Fibonacci:
+autosplit.ix
+
+./lib/auto/Hook:
+LexWrap/
+
+./lib/auto/Hook/LexWrap:
+
+./lib/auto/Ifeffit:
+Ifeffit.bs, Ifeffit.dll*
+
+./lib/auto/Image:
+Size/
+
+./lib/auto/Image/Size:
+autosplit.ix, bmpsize.al, emfsize.al, gifsize.al, jpegsize.al, mngsize.al,
+pcdsize.al, pngsize.al, ppmsize.al, psdsize.al, swfmxsize.al, swfsize.al,
+tiffsize.al, xbmsize.al, xpmsize.al
+
+./lib/auto/List:
+MoreUtils/
+
+./lib/auto/List/MoreUtils:
+MoreUtils.bs, MoreUtils.dll*
+
+./lib/auto/MRO:
+Compat/
+
+./lib/auto/MRO/Compat:
+
+./lib/auto/Math:
+Combinatorics/, Derivative/, Round/, Spline/
+
+./lib/auto/Math/Combinatorics:
+
+./lib/auto/Math/Derivative:
+
+./lib/auto/Math/Round:
+autosplit.ix
+
+./lib/auto/Math/Spline:
+
+./lib/auto/Moose:
+Moose.bs, Moose.dll*
+
+./lib/auto/MooseX:
+Aliases/, AttributeHelpers/, Singleton/, StrictConstructor/, Types/
+
+./lib/auto/MooseX/Aliases:
+
+./lib/auto/MooseX/AttributeHelpers:
+
+./lib/auto/MooseX/Singleton:
+
+./lib/auto/MooseX/StrictConstructor:
+
+./lib/auto/MooseX/Types:
+
+./lib/auto/OLE:
+Storage_Lite/
+
+./lib/auto/OLE/Storage_Lite:
+
+./lib/auto/PPI:
+HTML/
+
+./lib/auto/PPI/HTML:
+
+./lib/auto/Package:
+DeprecationManager/, Stash/
+
+./lib/auto/Package/DeprecationManager:
+
+./lib/auto/Package/Stash:
+XS/
+
+./lib/auto/Package/Stash/XS:
+XS.bs, XS.dll*
+
+./lib/auto/Params:
+Validate/
+
+./lib/auto/Params/Validate:
+Validate.bs, Validate.dll*
+
+./lib/auto/Parse:
+RecDescent/
+
+./lib/auto/Parse/RecDescent:
+
+./lib/auto/Pod:
+POM/
+
+./lib/auto/Pod/POM:
+
+./lib/auto/Readonly:
+
+./lib/auto/Regexp:
+Assemble/, Common/
+
+./lib/auto/Regexp/Assemble:
+
+./lib/auto/Regexp/Common:
+
+./lib/auto/Scope:
+Guard/
+
+./lib/auto/Scope/Guard:
+
+./lib/auto/Spiffy:
+
+./lib/auto/Spreadsheet:
+WriteExcel/
+
+./lib/auto/Spreadsheet/WriteExcel:
+
+./lib/auto/Statistics:
+Descriptive/
+
+./lib/auto/Statistics/Descriptive:
+
+./lib/auto/String:
+Random/
+
+./lib/auto/String/Random:
+
+./lib/auto/Sub:
+Exporter/, Identify/, Install/, Name/
+
+./lib/auto/Sub/Exporter:
+
+./lib/auto/Sub/Identify:
+Identify.bs, Identify.dll*
+
+./lib/auto/Sub/Install:
+
+./lib/auto/Sub/Name:
+Name.bs, Name.dll*
+
+./lib/auto/Template:
+Stash/
+
+./lib/auto/Template/Stash:
+XS/
+
+./lib/auto/Template/Stash/XS:
+XS.bs, XS.dll*
+
+./lib/auto/Test:
+Base/, Differences/, Fatal/, Object/, Requires/, SubCalls/
+
+./lib/auto/Test/Base:
+
+./lib/auto/Test/Differences:
+
+./lib/auto/Test/Fatal:
+
+./lib/auto/Test/Object:
+
+./lib/auto/Test/Requires:
+
+./lib/auto/Test/SubCalls:
+
+./lib/auto/Text:
+Template/
+
+./lib/auto/Text/Template:
+
+./lib/auto/Tree:
+Simple/
+
+./lib/auto/Tree/Simple:
+
+./lib/auto/Try:
+Tiny/
+
+./lib/auto/Try/Tiny:
+
+./lib/auto/Variable:
+Magic/
+
+./lib/auto/Variable/Magic:
+Magic.bs, Magic.dll*
+
+./lib/auto/Want:
+Want.bs, Want.dll*
+
+./lib/auto/Wx:
+AUI/, Calendar/, DND/, DateTime/, DocView/, FS/, Grid/, Help/, Html/, MDI/,
+Media/, Print/, RichText/, STC/, Socket/, Wx.bs, Wx.dll*, XRC/
+
+./lib/auto/Wx/AUI:
+AUI.bs, AUI.dll*
+
+./lib/auto/Wx/Calendar:
+Calendar.bs, Calendar.dll*
+
+./lib/auto/Wx/DND:
+DND.bs, DND.dll*
+
+./lib/auto/Wx/DateTime:
+DateTime.bs, DateTime.dll*
+
+./lib/auto/Wx/DocView:
+DocView.bs, DocView.dll*
+
+./lib/auto/Wx/FS:
+FS.bs, FS.dll*
+
+./lib/auto/Wx/Grid:
+Grid.bs, Grid.dll*
+
+./lib/auto/Wx/Help:
+Help.bs, Help.dll*
+
+./lib/auto/Wx/Html:
+Html.bs, Html.dll*
+
+./lib/auto/Wx/MDI:
+MDI.bs, MDI.dll*
+
+./lib/auto/Wx/Media:
+Media.bs, Media.dll*
+
+./lib/auto/Wx/Print:
+Print.bs, Print.dll*
+
+./lib/auto/Wx/RichText:
+RichText.bs, RichText.dll*
+
+./lib/auto/Wx/STC:
+STC.bs, STC.dll*
+
+./lib/auto/Wx/Socket:
+Socket.bs, Socket.dll*
+
+./lib/auto/Wx/XRC:
+XRC.bs, XRC.dll*
+
+./lib/auto/namespace:
+autoclean/, clean/
+
+./lib/auto/namespace/autoclean:
+
+./lib/auto/namespace/clean:
+
+./lib/namespace:
+autoclean.pm, clean.pm
