@@ -1160,7 +1160,7 @@ sub Rename {
 
   my $plotlist = $Demeter::UI::Artemis::frames{Plot}->{plotlist};
   foreach my $i (0 .. $plotlist->GetCount-1) {
-    if ($datapage->{data}->group eq $plotlist->GetClientData($i)->group) {
+    if ($datapage->{data}->group eq $plotlist->GetIndexedData($i)->group) {
       my $checked = $plotlist->IsChecked($i);
       $plotlist->SetString($i, "Data: ".$newname);
       $plotlist->Check($i, $checked);
@@ -1188,7 +1188,7 @@ sub set_degens {
   my ($self, $how) = @_;
   foreach my $n (0 .. $self->{pathlist}->GetPageCount-1) {
     my $page = $self->{pathlist}->GetPage($n);
-    my $pathobject = $self->{pathlist}->{LIST}->GetClientData($n)->{path};
+    my $pathobject = $self->{pathlist}->{LIST}->GetIndexedData($n)->{path};
     my $value = ($how eq $DATA_DEGEN_N) ? $pathobject->degen : 1;
     $page->{pp_n} -> SetValue($value);
     $pathobject->n($value);
@@ -1373,7 +1373,7 @@ sub save_marked_paths {
   my $data = $self->{data};
   my @list;
   foreach my $i (0 .. $self->{pathlist}->GetPageCount-1) {
-    my $pathpage = $self->{pathlist}->{LIST}->GetClientData($i);
+    my $pathpage = $self->{pathlist}->{LIST}->GetIndexedData($i);
     if (($self->{pathlist}->IsChecked($i)) and ($pathpage->{include}->GetValue)) {
       push @list, $pathpage->{path};
     };
@@ -1572,7 +1572,7 @@ sub include {
  SWITCH: {
     ($how eq 'all') and do {
       foreach my $i (0 .. $npaths) {
-	my $pathpage = $self->{pathlist}->{LIST}->GetClientData($i);
+	my $pathpage = $self->{pathlist}->{LIST}->GetIndexedData($i);
 	$pathpage->{include}->SetValue(1);
 	$pathpage->include_label(0,$i);
       };
@@ -1582,7 +1582,7 @@ sub include {
 
     ($how eq 'none') and do {
       foreach my $i (0 .. $npaths) {
-	my $pathpage = $self->{pathlist}->{LIST}->GetClientData($i);
+	my $pathpage = $self->{pathlist}->{LIST}->GetIndexedData($i);
 	$pathpage->{include}->SetValue(0);
 	$pathpage->include_label(0,$i);
       };
@@ -1592,7 +1592,7 @@ sub include {
 
     ($how eq 'invert') and do {
       foreach my $i (0 .. $npaths) {
-	my $pathpage = $self->{pathlist}->{LIST}->GetClientData($i);
+	my $pathpage = $self->{pathlist}->{LIST}->GetIndexedData($i);
 	my $onoff = ($pathpage->{include}->IsChecked) ? 0 : 1;
 	$pathpage->{include}->SetValue($onoff);
 	$pathpage->include_label(0,$i);
@@ -1603,7 +1603,7 @@ sub include {
 
     ($how eq 'marked') and do {
       foreach my $i (0 .. $npaths) {
-	my $pathpage = $self->{pathlist}->{LIST}->GetClientData($i);
+	my $pathpage = $self->{pathlist}->{LIST}->GetIndexedData($i);
 	next if not $self->{pathlist}->IsChecked($i);
 	$pathpage->{include}->SetValue(1);
 	$pathpage->include_label(0,$i);
@@ -1614,7 +1614,7 @@ sub include {
 
     ($how eq 'marked_none') and do {
       foreach my $i (0 .. $npaths) {
-	my $pathpage = $self->{pathlist}->{LIST}->GetClientData($i);
+	my $pathpage = $self->{pathlist}->{LIST}->GetIndexedData($i);
 	next if not $self->{pathlist}->IsChecked($i);
 	$pathpage->{include}->SetValue(0);
 	$pathpage->include_label(0,$i);
@@ -1627,7 +1627,7 @@ sub include {
       my $sel = $self->{pathlist}->GetSelection;
       foreach my $i (0 .. $npaths) {
 	next if ($i <= $sel);
-	my $pathpage = $self->{pathlist}->{LIST}->GetClientData($i);
+	my $pathpage = $self->{pathlist}->{LIST}->GetIndexedData($i);
 	$pathpage->{include}->SetValue(0);
 	$pathpage->include_label(0,$i);
       };
@@ -1637,7 +1637,7 @@ sub include {
 
     ($how eq 'ss') and do {
       foreach my $i (0 .. $npaths) {
-	my $pathpage = $self->{pathlist}->{LIST}->GetClientData($i);
+	my $pathpage = $self->{pathlist}->{LIST}->GetIndexedData($i);
 	my $path = $pathpage->{path};
 	next if not ($path->sp->nleg == 2);
 	$pathpage->{include}->SetValue(1);
@@ -1649,7 +1649,7 @@ sub include {
 
     ($how eq 'high') and do {
       foreach my $i (0 .. $npaths) {
-	my $pathpage = $self->{pathlist}->{LIST}->GetClientData($i);
+	my $pathpage = $self->{pathlist}->{LIST}->GetIndexedData($i);
 	my $path = $pathpage->{path};
 	next if not ($path->sp->weight == 2);
 	$pathpage->{include}->SetValue(1);
@@ -1671,7 +1671,7 @@ sub include {
 	return;
       };
       foreach my $i (0 .. $npaths) {
-	my $pathpage = $self->{pathlist}->{LIST}->GetClientData($i);
+	my $pathpage = $self->{pathlist}->{LIST}->GetIndexedData($i);
 	my $path = $pathpage->{path};
 	next if ($path->sp->fuzzy > $r);
 	$pathpage->{include}->SetValue(1);
@@ -1698,8 +1698,8 @@ sub discard_data {
   ## remove data and its paths & VPaths from the plot list
   my $plotlist = $Demeter::UI::Artemis::frames{Plot}->{plotlist};
   foreach my $i (reverse (0 .. $plotlist->GetCount-1)) {
-    if ($self->{data}->group eq $plotlist->GetClientData($i)->data->group) {
-      $plotlist->Delete($i);
+    if ($self->{data}->group eq $plotlist->GetIndexedData($i)->data->group) {
+      $plotlist->DeleteData($i);
     };
   };
 
@@ -1846,7 +1846,7 @@ sub flag {
   my $text = ($how eq 'marked') ? "Flagged marked paths for transfer to plotting list after a fit."
            :                      "Unflagged all paths for transfer to plotting list.";
   foreach my $i (0 .. $npaths) {
-    my $pathpage = $self->{pathlist}->{LIST}->GetClientData($i);
+    my $pathpage = $self->{pathlist}->{LIST}->GetIndexedData($i);
     if ($how eq 'marked') {
       if (($self->{pathlist}->IsChecked($i)) and ($pathpage->{include}->GetValue)) {
 	$pathpage->{plotafter}->SetValue(1);
@@ -1874,7 +1874,7 @@ sub transfer {
   my $found     = 0;
   my $thisgroup = $self->{data}->group;
   foreach my $i (0 .. $plotlist->GetCount - 1) {
-    if ($thisgroup eq $plotlist->GetClientData($i)->group) {
+    if ($thisgroup eq $plotlist->GetIndexedData($i)->group) {
       $found = 1;
       last;
     };
@@ -1883,9 +1883,9 @@ sub transfer {
     $self->status("\"$name\" is already in the plotting list.");
     return;
   };
-  $plotlist->Append("Data: $name");
+  $plotlist->AddData("Data: $name", $self->{data});
   my $i = $plotlist->GetCount - 1;
-  $plotlist->SetClientData($i, $self->{data});
+  #$plotlist->SetClientData($i, $self->{data});
   $plotlist->Check($i,1);
   $self->status("Transfered data set \"$name\" to the plotting list.");
 };

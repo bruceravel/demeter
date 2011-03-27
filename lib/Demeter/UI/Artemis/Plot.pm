@@ -121,6 +121,7 @@ sub new {
   my $groupboxsizer  = Wx::StaticBoxSizer->new( $groupbox, wxVERTICAL );
 
   $this->{plotlist} = Wx::CheckListBox->new($this, -1, wxDefaultPosition, [-1,200], [ ], wxLB_MULTIPLE);
+  $this->{plotlist}->{datalist} = [];
   #foreach my $i (0 .. $this->{plotlist}->GetCount) {
   #  $this->{plotlist} -> Check($i, 1) if ($i%3);
   #};
@@ -270,7 +271,7 @@ sub plot {
   my @list = ();
   foreach my $i (0 .. $self->{plotlist}->GetCount-1) {
     next if (not $self->{plotlist}->IsChecked($i));
-    push @list, $self->{plotlist}->GetClientData($i);
+    push @list, $self->{plotlist}->GetIndexedData($i);
   };
   if ($#list == -1) {
     $Demeter::UI::Artemis::frames{main}->status("The plotting list is empty.");
@@ -293,7 +294,7 @@ sub plot {
   my $offset = 0;
   foreach my $i (0 .. $self->{plotlist}->GetCount-1) {
     next if (not $self->{plotlist}->IsChecked($i));
-    my $obj = $self->{plotlist}->GetClientData($i);
+    my $obj = $self->{plotlist}->GetIndexedData($i);
     #print $obj, "  ", $obj->name, "  ", $obj->group, $/;
     if (ref($obj) !~ m{Data}) {
       $obj->update_path(1);
@@ -308,7 +309,7 @@ sub plot {
     my $jump = $self->{stack}->{start}->GetValue;
     foreach my $i (0 .. $self->{plotlist}->GetCount-1) {
       next if (not $self->{plotlist}->IsChecked($i));
-      my $obj = $self->{plotlist}->GetClientData($i);
+      my $obj = $self->{plotlist}->GetIndexedData($i);
       my $save = $obj->data->y_offset;
       $obj -> data -> y_offset($jump);
       if ($self->{plotlist}->GetString($i) =~ m{\AFit}) {
@@ -322,7 +323,7 @@ sub plot {
   } elsif ($invert_r or $invert_q) {
     foreach my $i (0 .. $self->{plotlist}->GetCount-1) {
       next if (not $self->{plotlist}->IsChecked($i));
-      my $obj = $self->{plotlist}->GetClientData($i);
+      my $obj = $self->{plotlist}->GetIndexedData($i);
       if ($self->{plotlist}->GetString($i) =~ m{\AFit}) {
 	$self->plot_fit($space, $i);
       } elsif (ref($obj) =~ m{Data}) {  # Data and fits plotted normally
@@ -339,7 +340,7 @@ sub plot {
   } else {			# plot normally
     foreach my $i (0 .. $self->{plotlist}->GetCount-1) {
       next if (not $self->{plotlist}->IsChecked($i));
-      my $obj = $self->{plotlist}->GetClientData($i);
+      my $obj = $self->{plotlist}->GetIndexedData($i);
       if ($self->{plotlist}->GetString($i) =~ m{\AFit}) {
 	$self->plot_fit($space, $i);
       } else {
@@ -368,7 +369,7 @@ sub plot_fit {
   my ($self, $space, $count) = @_;
   my $tempname = $self->{plotlist}->GetString($count);
   $tempname = (split(/ from /, $tempname))[1];
-  my $data = $self->{plotlist}->GetClientData($count);
+  my $data = $self->{plotlist}->GetIndexedData($count);
   $data->plotkey($tempname);
   $data->co->set(plot_part=>'fit');
   $data->part_plot('fit', $space);
@@ -452,7 +453,7 @@ sub OnData {
   $this->GetData;		# this line is what transfers the data from the Source to the Target
 
   my $from = ${ $this->{DATA}->{Data} };
-  my $from_object  = $list->GetClientData($from);
+  my $from_object  = $list->GetIndexedData($from);
   my $from_label   = $list->GetString($from);
   my $from_checked = $list->IsChecked($from);
   my $point = Wx::Point->new($x, $y);
@@ -462,16 +463,16 @@ sub OnData {
   return 0 if ($to == $from+1);
 
   my $message;
-  $list -> Delete($from);
+  $list -> DeleteData($from);
   if ($to == -1) {
-    $list -> Append($from_label, $from_object);
+    $list -> AddData($from_label, $from_object);
     $list -> Check($list->GetCount-1, $from_checked);
     $message = sprintf("Moved '%s' to the last position.", $from_label);
   } else {
     $message = sprintf("Moved '%s' from position %d to position %d.", $from_label, $from+1, $to+1);
     --$to if ($from < $to);
-    $list -> Insert($from_label, $to);
-    $list -> SetClientData($to, $from_object);
+    $list -> InsertData($from_label, $to, $from_object);
+    #$list -> SetClientData($to, $from_object);
     $list -> Check($to, $from_checked);
   };
   $Demeter::UI::Artemis::frames{main}->status($message);

@@ -197,8 +197,10 @@ sub _data {
 	       denominator => $suggest{denominator}||1,
 	       ln          => $suggest{ln}||0,
 	       display	   => 1);
+  $data->_update('data');
   my $yaml;
   $yaml->{columns} = q{};
+  my $do_guess = 0;
   if (-e $persist) {
     $yaml = YAML::Tiny::Load($data->slurp($persist));
     if ($data->columns eq $yaml->{columns}) {
@@ -213,14 +215,17 @@ sub _data {
 		  );
     } else {
       $yaml->{each} = 0;
+      $do_guess = 1;
     };
+  } else {
+    $do_guess = 1;
   };
 
   ## for an XDI file, setting the xdi attribute has to be delayed
   ## until *after* the energy/numerator/denominator attributes are
   ## set.  then guess_columns can be called.
   $data->xdi($orig) if (ref($orig) =~ m{Class::MOP});
-  $data->guess_columns;
+  $data->guess_columns if $do_guess;
 
 
   ## -------- display column selection dialog

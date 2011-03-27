@@ -59,9 +59,9 @@ sub add_named_vpath {
   $vpath -> include(@list);
   my $help = join(", ", map { $_->label } @list);
 
-  $self->{vpathlist}->Append($name);
+  $self->{vpathlist}->Append($name, $vpath);
   my $this = $self->{vpathlist}->GetCount-1;
-  $self->{vpathlist}->SetClientData($this, $vpath);
+  ##$self->{vpathlist}->SetClientData($this, $vpath);
   $self->{vpathlist}->Select($this);
   $self->transfer($this);
 
@@ -100,23 +100,23 @@ sub OnMenu {
     };
 
     ($id == $VPATH_DESCRIBE) and do {
-      my $vpath = $listbox->GetClientData($sel);
+      my $vpath = $listbox->GetIndexedData($sel);
       my $text = "\"" . $vpath->name . "\" contains: " . join(", ", map {$_->label} @{$vpath->paths});
       $Demeter::UI::Artemis::frames{main}->status($text);
       last SWITCH;
     };
 
     ($id == $VPATH_DISCARD) and do {
-      my $vpath = $listbox->GetClientData($sel);
+      my $vpath = $listbox->GetIndexedData($sel);
       foreach my $i (0 .. $Demeter::UI::Artemis::frames{Plot}->{plotlist}->GetCount-1) {
-	if ($Demeter::UI::Artemis::frames{Plot}->{plotlist}->GetClientData($i)->group eq $vpath->group) {
-	  my $obj = $Demeter::UI::Artemis::frames{Plot}->{plotlist}->GetClientData($i);
-	  $Demeter::UI::Artemis::frames{Plot}->{plotlist}->Delete($i);
+	if ($Demeter::UI::Artemis::frames{Plot}->{plotlist}->GetIndexedData($i)->group eq $vpath->group) {
+	  my $obj = $Demeter::UI::Artemis::frames{Plot}->{plotlist}->GetIndexedData($i);
+	  $Demeter::UI::Artemis::frames{Plot}->{plotlist}->DeleteData($i);
 	  $obj -> DESTROY;
 	  last;
 	};
       };
-      $listbox->Delete($sel);
+      $listbox->DeleteData($sel);
       my $text = "Discarded \"" . $vpath->name . "\".";
       $Demeter::UI::Artemis::frames{main}->status($text);
       last SWITCH;
@@ -126,13 +126,13 @@ sub OnMenu {
 
 sub transfer {
   my ($self, $selection) = @_;
-  my $vpath     = $self->{vpathlist}->GetClientData($selection);
+  my $vpath     = $self->{vpathlist}->GetIndexedData($selection);
   my $plotlist  = $Demeter::UI::Artemis::frames{Plot}->{plotlist};
   my $name      = $vpath->name;
   my $found     = 0;
   my $thisgroup = $vpath->group;
   foreach my $i (0 .. $plotlist->GetCount - 1) {
-    if ($thisgroup eq $plotlist->GetClientData($i)->group) {
+    if ($thisgroup eq $plotlist->GetIndexedData($i)->group) {
       $found = 1;
       last;
     };
@@ -141,9 +141,9 @@ sub transfer {
     $Demeter::UI::Artemis::frames{main}->status("\"$name\" is already in the plotting list.");
     return;
   };
-  $plotlist->Append("VPath: $name");
+  $plotlist->Append("VPath: $name", $vpath);
   my $i = $plotlist->GetCount - 1;
-  $plotlist->SetClientData($i, $vpath);
+  #$plotlist->SetClientData($i, $vpath);
   $plotlist->Check($i,1);
   $Demeter::UI::Artemis::frames{main}->status("Transfered VPath \"$name\" to the plotting list.");
 };

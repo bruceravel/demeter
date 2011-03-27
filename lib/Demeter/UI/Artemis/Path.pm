@@ -439,7 +439,7 @@ sub transfer {
   my $found     = 0;
   my $thisgroup = $self->{path}->group;
   foreach my $i (0 .. $plotlist->GetCount - 1) {
-    if ($thisgroup eq $plotlist->GetClientData($i)->group) {
+    if ($thisgroup eq $plotlist->GetIndexedData($i)->group) {
       $found = 1;
       last;
     };
@@ -448,9 +448,9 @@ sub transfer {
     $self->{datapage}->status("\"$name\" is already in the plotting list.");
     return;
   };
-  $plotlist->Append("Path: $name from " . $self->{path}->data->name);
+  $plotlist->AddData("Path: $name from " . $self->{path}->data->name, $self->{path});
   my $i = $plotlist->GetCount - 1;
-  $plotlist->SetClientData($i, $self->{path});
+  ##$plotlist->SetClientData($i, $self->{path});
   $plotlist->Check($i,1);
   $self->{datapage}->status("Transfered path \"$name\" to the plotting list.");
 };

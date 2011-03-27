@@ -45,6 +45,7 @@ sub new {
 
   $this->{list} = Wx::CheckListBox->new($this, -1, wxDefaultPosition, [-1,500],
 				   [], wxLB_SINGLE);
+  $this->{list}->{datalist} = [];
   $listboxsizer -> Add($this->{list}, 1, wxGROW|wxALL, 0);
   $left -> Add($listboxsizer, 0, wxGROW|wxALL, 5);
   EVT_LISTBOX($this, $this->{list}, sub{OnSelect(@_)} );
@@ -172,7 +173,7 @@ sub mouseover {
 
 sub OnSelect {
   my ($self, $event) = @_;
-  my $fit = $self->{list}->GetClientData($self->{list}->GetSelection);
+  my $fit = $self->{list}->GetIndexedData($self->{list}->GetSelection);
   return if not defined $fit;
   $self->put_log($fit);
   $self->set_params($fit);
@@ -258,7 +259,7 @@ sub mark {
   foreach my $i (0 .. $self->{list}->GetCount-1) {
     my $onoff = 0;
     if ($how eq 'regexp') {
-      $onoff = ($self->{list}->GetClientData($i)->name =~ m{$re}) ? 1 : $self->{list}->IsChecked($i);
+      $onoff = ($self->{list}->GetIndexedData($i)->name =~ m{$re}) ? 1 : $self->{list}->IsChecked($i);
     } else {
       $onoff = ($how eq 'all') ? 1 : 0;
     };
@@ -316,7 +317,7 @@ sub write_report {
   my @x = ();
   foreach my $i (0 .. $self->{list}->GetCount-1) {
     next if not $self->{list}->IsChecked($i);
-    my $fit = $self->{list}->GetClientData($i);
+    my $fit = $self->{list}->GetIndexedData($i);
     push @x, $fit->fom;
     if ($param eq 'Statistcal parameters') {
       $self->{report}->AppendText($fit->template('fit', 'report_stats'));
@@ -354,7 +355,7 @@ sub summarize {
   my $text = q{};
   foreach my $i (0 .. $self->{list}->GetCount-1) {
     next if not $self->{list}->IsChecked($i);
-    my $fit = $self->{list}->GetClientData($i);
+    my $fit = $self->{list}->GetIndexedData($i);
     $text .= $fit -> summary;
   };
   return if (not $text);
@@ -384,7 +385,7 @@ sub restore {
   ($position = $self->{list}->GetSelection) if not defined ($position);
   my $busy = Wx::BusyCursor -> new();
   Demeter::UI::Artemis::Project::discard_fit(\%Demeter::UI::Artemis::frames);
-  my $fit = $self->{list}->GetClientData($position);
+  my $fit = $self->{list}->GetIndexedData($position);
   Demeter::UI::Artemis::Project::restore_fit(\%Demeter::UI::Artemis::frames, $fit);
   undef $busy;
   $self->status("Restored ".$self->{list}->GetString($position));
@@ -393,7 +394,7 @@ sub restore {
 sub discard {
   my ($self, $how, $position) = @_;
   ($position = $self->{list}->GetSelection) if not defined ($position);
-  my $thisfit = $self->{list}->GetClientData($position);
+  my $thisfit = $self->{list}->GetIndexedData($position);
   my $name = $thisfit->name;
 
   ## -------- remove this fit from the fit_order hash and rewrite the order file
@@ -414,7 +415,7 @@ sub discard {
     $self->{list}->SetSelection($position+1);
     $self->OnSelect;
   };
-  $self->{list}->Delete($position);
+  $self->{list}->DeleteData($position);
 
   ## -------- destroy the Fit object and delete its folder in stash space
   $thisfit->DEMOLISH;
@@ -428,7 +429,7 @@ sub discard {
 sub savelog {
   my ($self, $position) = @_;
   ($position = $self->{list}->GetSelection) if not defined ($position);
-  my $fit = $self->{list}->GetClientData($position);
+  my $fit = $self->{list}->GetIndexedData($position);
 
   (my $pref = $fit->name) =~ s{\s+}{_}g;
   my $fd = Wx::FileDialog->new( $self, "Save log file", cwd, $pref.q{.log},
@@ -475,9 +476,9 @@ sub add_plottool {
 sub transfer {
   my ($self, $fit, $data) = @_;
   my $plotlist  = $Demeter::UI::Artemis::frames{Plot}->{plotlist};
-  $plotlist->Append("Fit to " . $data->name . " from ".$fit->name);
+  $plotlist->Append("Fit to " . $data->name . " from ".$fit->name, $data);
   my $i = $plotlist->GetCount - 1;
-  $plotlist->SetClientData($i, $data);
+  ##$plotlist->SetClientData($i, $data);
   $plotlist->Check($i,1);
   $self->status("\"" . $data->name . "\" from \"" . $fit->name . "\" was added to the plotting list.")
 };

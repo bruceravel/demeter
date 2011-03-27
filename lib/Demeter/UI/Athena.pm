@@ -1714,7 +1714,7 @@ package Wx::CheckListBox;
 use Wx qw(:everything);
 sub AddData {
   my ($clb, $name, $data) = @_;
-  $clb->Append($data->name);
+  $clb->Append($name);
   push @{$clb->{datalist}}, $data;
 };
 

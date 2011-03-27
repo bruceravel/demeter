@@ -53,6 +53,7 @@ sub new {
   #$self->{LEFT} -> SetSizerAndFit($box);
 
   $self->{LIST} = Wx::CheckListBox->new($self, -1, wxDefaultPosition, Wx::Size->new(int($w/4),$h), [ ], wxLB_SINGLE);
+  $self->{LIST}->{datalist} = []; # see modifications to CheckBookList at end of this file....
   $self->{LIST} -> SetFont( Wx::Font->new( 8, wxDEFAULT, wxNORMAL, wxNORMAL, 0, "" ) );
   $self->{LIST}->{PARENT} = $self;
   EVT_LEFT_DOWN(   $self->{LIST},        sub{OnLeftDown(@_)}  );
@@ -90,13 +91,13 @@ sub InitialPage {
   my ($self) = @_;
   $self->{VIEW}->Hide if $self->{VIEW};
   $self->{LIST}->Clear;
-  $self->{LIST}->Append('Path list');
+  $self->{LIST}->AddData('Path list', $self->{initial});
   $self->{LIST}->Select(0);
 
   $self->{VIEW} = $self->{initial};
   $self->{VIEW} -> Show(1);
 
-  $self->{LIST}-> SetClientData(0, $self->{initial});
+  #$self->{LIST}-> SetIndexedData(0, $self->{initial});
   $self->{LIST}-> Show;
 };
 
@@ -114,8 +115,8 @@ sub set_initial_page_callback {
 sub AddPage {
   my ($self, $page, $text, $select, $imageid, $position) = @_;
   my $end = (defined($position)) ? $position : $self->{LIST} -> GetCount;
-  $self->{LIST} -> InsertItems([$text], $end);
-  $self->{LIST} -> SetClientData($end, $page);
+  $self->{LIST} -> InsertData($text, $end, $page);
+  #$self->{LIST} -> SetIndexedData($end, $page);
   $self->{LIST} -> Deselect($self->{LIST}->GetSelection);
   $self->{LIST} -> Select($end) if $select;
 
@@ -147,10 +148,10 @@ sub RemovePage {
   ($new = 0) if ($new >= $self->GetPageCount);
   ##print " ======== $id   $new\n";
   $self->{VIEW} -> Hide;
-  $self->{LIST} -> GetClientData($new) -> Show;
-  $self->{VIEW}  = ($self->{LIST}->IsEmpty) ? q{} : $self->{LIST}->GetClientData($new);
+  $self->{LIST} -> GetIndexedData($new) -> Show;
+  $self->{VIEW}  = ($self->{LIST}->IsEmpty) ? q{} : $self->{LIST}->GetIndexedData($new);
   $self->{LIST} -> Select($new);
-  $self->{LIST} -> Delete($id);
+  $self->{LIST} -> DeleteData($id);
   return 1;
 };
 
@@ -177,10 +178,10 @@ sub page_and_id {
   my ($id, $obj) = (-1,-1);
   if ($arg =~ m{\A$NUMBER\z}) {
     $id = $arg;
-    $obj = $self->{LIST}->GetClientData($arg)
+    $obj = $self->{LIST}->GetIndexedData($arg)
   } else {
     foreach my $pos (0 .. $self->{LIST}->GetCount-1) {
-      if ($arg eq $self->{LIST}->GetClientData($pos)) {
+      if ($arg eq $self->{LIST}->GetIndexedData($pos)) {
 	$id = $pos;
 	$obj = $arg;
 	last;
@@ -203,7 +204,7 @@ sub GetCurrentPage {
 
 sub GetPage {
   my ($self, $pos) = @_;
-  return $self->{LIST}->GetClientData($pos);
+  return $self->{LIST}->GetIndexedData($pos);
 };
 
 sub GetPageCount {
@@ -225,8 +226,8 @@ sub SetSelection {
   $self->{LIST} -> SetSelection($pos);
   ## plotzing here:
   $self->{VIEW} -> Hide;
-  $self->{LIST} -> GetClientData($pos) -> Show;
-  $self->{VIEW} = $self->{LIST} -> GetClientData($pos);
+  $self->{LIST} -> GetIndexedData($pos) -> Show;
+  $self->{VIEW} = $self->{LIST} -> GetIndexedData($pos);
   $self->{PAGEBOX} -> Layout;
 };
 {
@@ -322,7 +323,7 @@ sub RenameSelection {
   my $newname = $ted->GetValue;
   return if ($newname =~ m{\A\s*\z});
   $self->{LIST}->SetString($self->{LIST}->GetSelection, $newname);
-  my $page = $self->{LIST}->GetClientData($self->{LIST}->GetSelection);
+  my $page = $self->{LIST}->GetIndexedData($self->{LIST}->GetSelection);
   $page->Rename($newname) if $page->can('Rename');
   $self->{LIST}->Check($self->{LIST}->GetSelection, $check_state);
 };
@@ -358,8 +359,8 @@ sub OnList {
     $self->{LIST}->Select($now);
   } else {
     $self->{VIEW} -> Hide;
-    $self->{LIST} -> GetClientData($sel) -> Show;
-    $self->{VIEW} = $self->{LIST} -> GetClientData($sel);
+    $self->{LIST} -> GetIndexedData($sel) -> Show;
+    $self->{VIEW} = $self->{LIST} -> GetIndexedData($sel);
     $self->{PAGEBOX} -> Layout;
   };
 };

@@ -555,7 +555,7 @@ sub fit {
 	next if ($k !~ m{data});
 	$rframes->{$k}->transfer if $rframes->{$k}->{plot_after}->GetValue;
 	foreach my $p (0 .. $rframes->{$k}->{pathlist}->GetPageCount -1) {
-	  my $pathpage = $rframes->{$k}->{pathlist}->{LIST}->GetClientData($p);
+	  my $pathpage = $rframes->{$k}->{pathlist}->{LIST}->GetIndexedData($p);
 	  $pathpage->transfer if $pathpage->{plotafter}->GetValue;
 	};
       };
@@ -574,7 +574,7 @@ sub fit {
     my $finish = DateTime->now( time_zone => 'floating' );
     my $dur = $finish->delta_ms($start);
     $finishtext = sprintf "Your fit finished in %d seconds.", $dur->seconds;
-    $rframes->{History}->{list}->Append($fit->name, $fit);
+    $rframes->{History}->{list}->AddData($fit->name, $fit);
     $rframes->{History}->add_plottool($fit);
     undef $dur;
     undef $finish;
@@ -1121,6 +1121,72 @@ sub status {
   $Demeter::UI::Artemis::frames{Status}->put_text($text, $type);
 };
 
+
+=for Explain
+
+According to the wxWidgets documentation, "Please note that
+wxCheckListBox uses client data in its implementation, and therefore
+this is not available to the application."  This appears either not to
+be true on Linux or, perhaps, that the client data is overwritable
+with no ill effect.  On Windows, however, attempting to set client
+data crashes the application.
+
+On the wxperl-users mailing list Mattia Barbon said: "It's a wxWidgets
+limitation: it uses the same Win32 client data slot in wxListBox to
+store client data, in wxCheckListBox to store the boolean state of the
+item."
+
+Sigh....
+
+These methods are an attempt to replicate the effect of client data by
+maintaining a list of pointers to data that is indexed to the
+CheckListBox.  This list is stored in the underlying hash of the
+CheckListBox object.  The trick is to keep the list in sync with the
+displayed content of the CheckListBox at all times.
+
+Yes, this *is* much to complicated.
+
+=cut
+
+package Wx::CheckListBox;
+use Wx qw(:everything);
+sub AddData {
+  my ($clb, $name, $data) = @_;
+  $clb->Append($name);
+  push @{$clb->{datalist}}, $data;
+};
+
+sub InsertData {
+  my ($clb, $name, $n, $data) = @_;
+  $clb->Insert($name, $n);
+  my @list = @{$clb->{datalist}};
+  splice(@list, $n, 0, $data);
+  $clb->{datalist} = \@list;
+};
+
+sub SetIndexedData {
+  my ($clb, $n, $data) = @_;
+  $clb->{datalist}->[$n]=$data;
+};
+
+sub GetIndexedData {
+  my ($clb, $n) = @_;
+  return $clb->{datalist}->[$n];
+};
+
+sub DeleteData {
+  my ($clb, $n) = @_;
+
+  ## remove from the Indexed array
+  my @list = @{$clb->{datalist}};
+  my $gone = splice(@list, $n, 1);
+  #print $gone, "  ", $gone->name, $/;
+  $clb->{datalist} = \@list;
+
+  $clb->Delete($n); # this calls the selection event on the new item
+};
+
+## also need a method for reordering items on the list...
 
 1;
 

@@ -61,7 +61,7 @@ sub get_mru_list {
   foreach my $g (@groups) {
     next if not $mru{$g};
     my %hash = %{ $mru{$g} };
-    push @list_of_files, map { [$hash{$_}, $g] } sort keys %hash;
+    push @list_of_files, map { [$hash{$_}, $g] } grep {-e $hash{$_}} sort keys %hash;
   };
   undef %mru;
   return @list_of_files;
