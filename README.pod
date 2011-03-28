@@ -16,7 +16,7 @@ This document described Demeter 0.4.
 The POD documentation is the documentation embedded into each module
 contained in a Demeter distribution.  The PODs have been nicely
 formatted for html and organized into a hierarchical structure that
-looks like a CPAN projetc page.
+looks like a CPAN project page.
 
 =item C<Demeter Programming Guide>
 
