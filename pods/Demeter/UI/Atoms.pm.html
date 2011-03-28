@@ -1,0 +1,249 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+	<title>Demeter::UI::Atoms</title>
+<link rel="stylesheet" type="text/css" href="../../podstyle.css" /><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+  <script type="text/javascript">
+
+  function toggleCode( id ) {
+    if ( document.getElementById )
+      elem = document.getElementById( id );
+    else if ( document.all )
+      elem = eval( "document.all." + id );
+    else
+      return false;
+
+    elemStyle = elem.style;
+
+    if ( elemStyle.display != "block" ) {
+      elemStyle.display = "block"
+    } else {
+      elemStyle.display = "none"
+    }
+
+    return true;
+  }
+  document.writeln( "<style type=\"text/css\">div.method-source-code { display: none }</style>" )
+  </script></head>
+<body>
+<div class="box">
+  <h1 class="t1">Demeter</h1>
+  <table>
+    <tr>
+      <td class="label">Description</td>
+      <td class="cell">Perl tools for X-ray Absorption Spectroscopy</td>
+    </tr>
+  </table>
+</div>
+<div class="path">
+  <a href="../../index.html">Demeter</a> &gt; Perl Modules &gt;
+  Demeter-UI-Atoms
+</div>
+<div>
+<a href="../../src/Demeter/UI/Atoms.pm">Source</a>
+</div>
+
+
+<div class="pod">
+<!-- INDEX START -->
+<h3 id="TOP">Index</h3>
+<ul>
+	<li><a href="#NAME">NAME</a></li>
+	<li><a href="#VERSION">VERSION</a></li>
+	<li><a href="#SYNOPSIS">SYNOPSIS</a></li>
+	<li><a href="#DESCRIPTION">DESCRIPTION</a></li>
+	<li><a href="#USE">USE</a><br />
+<ul>
+	<li><a href="#Atoms_tab">Atoms tab</a></li>
+	<li><a href="#Feff_tab">Feff tab</a></li>
+	<li><a href="#Paths_tab">Paths tab</a></li>
+	<li><a href="#Console_tab">Console tab</a></li>
+	<li><a href="#Configure_tab">Configure tab</a></li>
+	<li><a href="#Tool_bars">Tool bars</a></li>
+	<li><a href="#Status_bar">Status bar</a></li>
+</ul>
+</li>
+	<li><a href="#CONFIGURATION">CONFIGURATION</a></li>
+	<li><a href="#DEPENDENCIES">DEPENDENCIES</a></li>
+	<li><a href="#BUGS_AND_LIMITATIONS">BUGS AND LIMITATIONS</a></li>
+	<li><a href="#AUTHOR">AUTHOR</a></li>
+	<li><a href="#LICENCE_AND_COPYRIGHT">LICENCE AND COPYRIGHT</a></li>
+</ul>
+<hr />
+<!-- INDEX END -->
+
+<h1 id="NAME">NAME <a href="#TOP" class="toplink"><img alt="^" src="../../up.gif" /></a></h1>
+
+<p>Demeter::UI::Atoms - Crystallography for the X-ray absorption spectroscopist</p>
+
+<h1 id="VERSION">VERSION <a href="#TOP" class="toplink"><img alt="^" src="../../up.gif" /></a></h1>
+
+<p>This documentation refers to Demeter version 0.4.</p>
+
+<h1 id="SYNOPSIS">SYNOPSIS <a href="#TOP" class="toplink"><img alt="^" src="../../up.gif" /></a></h1>
+
+<p>This short program launches the Wx interface to Atoms:</p>
+
+<pre>  use Wx;
+  use Demeter::UI::Atoms;
+  Wx::InitAllImageHandlers();
+  my $window = Demeter::UI::Atoms-&gt;new;
+  $window -&gt; MainLoop;
+
+</pre><h1 id="DESCRIPTION">DESCRIPTION <a href="#TOP" class="toplink"><img alt="^" src="../../up.gif" /></a></h1>
+
+<p>Atoms is a graphical interface to crystallography classes and classes
+for interacting with Feff, as well as to tables of X-ray absorption
+coefficients and elemental data.  The main purpose of Atoms is help
+the user generate input data for Feff, run the Feff calculation, and
+organize Feff's output for use in a fit to EXAFS data.</p>
+
+<p>For more information see <a href="../Atoms.pm.html">Demeter::Atoms</a>, <a href="../Feff.pm.html">Demeter::Feff</a>, and
+<a href="../ScatteringPath.pm.html">Demeter::ScatteringPath</a>.</p>
+
+<h1 id="USE">USE <a href="#TOP" class="toplink"><img alt="^" src="../../up.gif" /></a></h1>
+
+<h2 id="Atoms_tab">Atoms tab</h2>
+
+<p>This section of this document explains a biut about the mechanics of
+using the wx Atoms client.  This is not an explanation of the
+algorithms used to convert crystal data to Feff input structures, nor
+is this an explanation of crystallography in general.</p>
+
+<p>Most of the Atoms tab is pretty straight forward.  Numbers should be
+entered in the text controls for lattice constants, radial distances,
+and the shift vector.  The shift vector coordinates can be written as
+simple fractions -- things like <code>1/2</code> or <code>2/3</code>.  If any of these
+cannot be interpreted as a number, a warning will be flagged and the
+calculation will not proceed.</p>
+
+<p>The space group symbol can be a Hermann-Maguin or Schoenflies symbol,
+a number between 1 and 230 corresponding to the order of space groups
+listed in the International Tables, or a common name like <code>fcc</code> or
+<code>bcc</code>.  Atoms tries really hard to interpret what you write.  For
+instance, white space is ignored and the super- and subscripts of a
+Schoenflies symbol can come in either order.</p>
+
+<p>The grid of unique sites should be fairly straightforward to use.
+Simply enter a two letter element symbol in the second column, numbers
+in the next three columns, and a string up to 10 characters long in
+the last column.</p>
+
+<p>The numbers for the site coordinates can be expressed as simple
+fractions, such as <code>1/2</code> or <code>2/3</code>.  In fact, using fractions is
+highly recommended as it obviates issues of precision for numbers like
+1/3 and 2/3.</p>
+
+<p>If an element symbol cannot be intepreted as such or a site
+coordinate cannot be interpreted as a number, a warning will be
+flagged and the calculation will be stopped.</p>
+
+<p>To choose a site as the central atom, click on its check button.</p>
+
+<p>You can copy, cut, and paste a site by right clicking anywhere on the
+row containing that site and choosing from the popup menu.  When you
+paste a site, it will be inserted into the grid above the site you
+clicked on.</p>
+
+<p>Empty rows will be ignored, as will rows with an empty string as the
+atom symbol.</p>
+
+<p>If you need more space, click on the &quot;Add site&quot; button just above the
+grid.</p>
+
+<h2 id="Feff_tab">Feff tab</h2>
+
+<p>This tab is quite simple.  The <cite>feff.inp</cite> file is displayed in the
+big text area.  In principle, the data that goes into the <cite>feff.inp</cite>
+file could be stuffed into various widgets, but that seems more
+complicated than necessary to me.  If the user needs to modify the
+<cite>feff.inp</cite> file, it seems easiest to do so using a text editor rather
+than having to click thorugh a buncg of controls.</p>
+
+<h2 id="Paths_tab">Paths tab</h2>
+
+<p>The path list displays a summary of Feff calculation.  You can select
+paths by left-clicking.  Holding the control key while left-clicking
+adds to the selection, while holding the shift key while left-clicking
+selects all paths between the current and previous selections.</p>
+
+<p>Once paths are selected, they can be plotted as the magnitude of R
+using k-weight of 2 and a reasonable set of Fourier transform
+parameters.  Click the plot button in the tool bar to do so.</p>
+
+<p>The save file for these data is Demeter's Feff serialization file.
+See <a href="../Feff.pm.html">Demeter::Feff</a>.</p>
+
+<h2 id="Console_tab">Console tab</h2>
+
+<p>This tab displays the screen output of every Feff calculation as well
+as some other information.</p>
+
+<h2 id="Configure_tab">Configure tab</h2>
+
+<p>You can customize the behavior of many parts of Atoms, Feff, or the
+path finder using this tab.</p>
+
+<p>See <a href="Wx/Config.pm.html">Demeter::UI::Wx::Config</a> for instructions on using Demeter's
+graphical configuration tool.</p>
+
+<h2 id="Tool_bars">Tool bars</h2>
+
+<p>Much ofthe functionality of the various tabs is found on the tool
+bars, which are the lines of colorful buttons at the top of some
+tabs. Data appropriate to the tabs can be imported or saved using
+these buttons and the major task of each tab (i.e. running Atoms,
+running Feff, or plotting paths) is accomplished via the tool bars.</p>
+
+<h2 id="Status_bar">Status bar</h2>
+
+<p>The status bar is the narrow strip at the bottom of the screen which
+is used to convey information to the user.  When the mouse passes over
+many of the controls in the program, a short hint is displayed in the
+status bar.  The status bar is also used to display messages at the
+end of certain chores performed by the program.</p>
+
+<h1 id="CONFIGURATION">CONFIGURATION <a href="#TOP" class="toplink"><img alt="^" src="../../up.gif" /></a></h1>
+
+<p>Many aspects of Atoms and its UI are configurable using the
+Configuration tab in the Wx application.</p>
+
+<h1 id="DEPENDENCIES">DEPENDENCIES <a href="#TOP" class="toplink"><img alt="^" src="../../up.gif" /></a></h1>
+
+<p>This is a Wx application.  Demeter's dependencies are in the
+<cite>Bundle/DemeterBundle.pm</cite> file.</p>
+
+<h1 id="BUGS_AND_LIMITATIONS">BUGS AND LIMITATIONS <a href="#TOP" class="toplink"><img alt="^" src="../../up.gif" /></a></h1>
+
+<ul>
+	<li>Config parameter for turning OK/Cancel dialogs off</li>
+	<li>Croak when feff executable doesn't exist &amp; when sanity checks fail in
+read_inp</li>
+	<li>Correctly clean up Path gatherer in Mode object after a plot</li>
+	<li>How is plotting going to work when this is bolted onto Artemis?</li>
+</ul>
+
+<p>Please report problems to Bruce Ravel (bravel AT bnl DOT gov)</p>
+
+<p>Patches are welcome.</p>
+
+<h1 id="AUTHOR">AUTHOR <a href="#TOP" class="toplink"><img alt="^" src="../../up.gif" /></a></h1>
+
+<p>Bruce Ravel (bravel AT bnl DOT gov)</p>
+
+<p><a href="http://cars9.uchicago.edu/~ravel/software/">http://cars9.uchicago.edu/~ravel/software/</a></p>
+
+<h1 id="LICENCE_AND_COPYRIGHT">LICENCE AND COPYRIGHT <a href="#TOP" class="toplink"><img alt="^" src="../../up.gif" /></a></h1>
+
+<p>Copyright (c) 2006-2011 Bruce Ravel (bravel AT bnl DOT gov). All rights reserved.</p>
+
+<p>This module is free software; you can redistribute it and/or
+modify it under the same terms as Perl itself. See <a href="http://search.cpan.org/perldoc?perlgpl">perlgpl</a>.</p>
+
+<p>This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.</p>
+
+
+</div><div class="footer">generated by <a href="http://search.cpan.org/perldoc?Pod%3A%3AProjectDocs">Pod::ProjectDocs</a></div></body>
+</html>

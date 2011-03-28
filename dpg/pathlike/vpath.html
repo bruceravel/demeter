@@ -1,0 +1,177 @@
+<!DOCTYPE HTMP PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <title>VPath object</title>
+    <link rel="stylesheet" href=../ab.css />
+    <link rel="stylesheet" href=../ppi.css />
+    <meta http-equiv="Content-Type" content="text/html"; charset=iso-8859-15 />
+    <meta name="robots" contents="all" />
+  </head>
+
+  <body>
+    <div class=topbar>
+  <div class=navbar>
+  <table class=navtable>
+    <tr>
+      <td align=left>
+        [&nbsp;<a href="../index.html">Home</a>&nbsp;] &nbsp;&nbsp;
+        [&nbsp;<a href="http://cars9.uchicago.edu/iffwiki/Demeter"><span class=programlink>DEMETER</span></a>&nbsp;] &nbsp;&nbsp;
+        [&nbsp;<a href="http://cars9.uchicago.edu/iffwiki/Ifeffit"><span class=programlink>IFEFFIT</span></a>&nbsp;] &nbsp;&nbsp;
+        [&nbsp;<a href="http://leonardo.phys.washington.edu/feff/wiki/index.php?title=FEFF_Documentation"><span class=programlink>FEFF</span></a>&nbsp;] &nbsp;&nbsp;
+        [&nbsp;<a href="http://xafs.org">xafs.org</a>&nbsp;] &nbsp;&nbsp;
+	[&nbsp;<a href="../demeter.pdf">PDF&nbsp;doc</a>&nbsp;]
+      </td>
+      <td align=right>
+        Next: <a href="../pathlike/fspath.html" class="menu" >FSPath</a>
+        &nbsp;&nbsp;
+        Up: <a href="../pathlike/index.html" class="menu" >Path-like objects</a>      </td>
+    </tr>
+  </table>
+  </div>
+  <h1>
+  VPath object
+</h1>
+</div>
+
+<hr class=hide />
+
+
+<div class=sidebar>
+  <a href="../ceres.html"><img src=../../images/Isis-Sothis-Demeter_sm.jpg
+    width=100% border=0 alt='[Demeter logo]'></a>
+  <br />
+  <a href="../index.html" class="menu" >Home</a><br />
+<a href="../intro.html" class="menu" >Introduction</a><br />
+<a href="../data/index.html" class="menu" >Importing data</a><br />
+<a href="../mue/index.html" class="menu" >Processing mu(E) data</a><br />
+<a href="../xanes/index.html" class="menu" >Analysis of XANES data</a><br />
+<a href="../highlevel/index.html" class="menu" >High level actions for Demeter objects</a><br />
+<a href="../atoms/index.html" class="menu" >Atoms</a><br />
+<a href="../feff/index.html" class="menu" >Feff</a><br />
+<a href="../paths/index.html" class="menu" >Scattering paths</a><br />
+<a href="../gds/index.html" class="menu" >Guess/Def/Set parameters</a><br />
+<a href="../fit/index.html" class="menu" >Fitting EXAFS data</a><br />
+<a href="../perl/index.html" class="menu" >Using perl to create a fitting model</a><br />
+<a href="../lgcv.html" class="menu" >Local guess parameters and the characteristic value</a><br />
+<br />
+<a href="../pathlike/index.html" class="menuselect" >Path-like objects</a><br />
+&nbsp;-&nbsp;<a href="../pathlike/vpath.html" class="menuselect" >VPath</a><br />
+&nbsp;-&nbsp;<a href="../pathlike/fspath.html" class="menu" >FSPath</a><br />
+&nbsp;-&nbsp;<a href="../pathlike/fpath.html" class="menu" >FPath</a><br />
+&nbsp;-&nbsp;<a href="../pathlike/sspath.html" class="menu" >SSPath</a><br />
+&nbsp;-&nbsp;<a href="../pathlike/mspath.html" class="menu" >MSPath</a><br />
+&nbsp;-&nbsp;<a href="../pathlike/threebody.html" class="menu" >ThreeBody</a><br />
+&nbsp;-&nbsp;<a href="../pathlike/forward.html" class="menu" >Forward</a><br /><br />
+<a href="../su.html" class="menu" >Structural Units</a><br />
+<a href="../ui.html" class="menu" >User interfaces</a><br />
+<a href="../output.html" class="menu" >Output formats</a><br />
+<a href="../examples/index.html" class="menu" >Full examples</a><br />
+</div>
+
+<p>
+
+A fit can involve a lot of paths.  It is often useful to make a plot
+showing your data and its fit along with some of the paths that were
+used in the fit.  This quickly becomes unweildy for a complex fit with
+lots of small paths.  A plot showing each individual path will be
+messy and won't effectively convey how the large number of small paths
+contribute to the fit.
+</p>
+
+<p>
+The VPath, or &ldquo;virtual path&rdquo;, is a solution
+to this problem.  The VPath is a user-defined colelction of normal
+Path objects which can be bundled together, summed, then plotted as
+such.  The VPath serves no purpose in the construction of a fitting
+model, but it can be very useful for visualizing the results of a fit.
+</p>
+
+<p>
+It works like this:
+</p>
+
+
+<pre class=olscript>
+<ol class=perlblock>
+<li><span class="keyword">my</span> <span class="symbol">$vpath</span> <span class="operator">=</span> <span class="word">Demeter::VPath</span><span class="operator">-&gt;</span><span class="word">new</span><span class="structure">(</span><span class="word">name</span> <span class="operator">=&gt;</span> <span class="double">&quot;my virtual path&quot;</span><span class="structure">);</span>
+<li><span class="symbol">$vpath</span> <span class="operator">-&gt;</span> <span class="word">include</span><span class="structure">(</span><span class="symbol">$path1</span><span class="operator">,</span> <span class="symbol">$path2</span><span class="operator">,</span> <span class="symbol">$path3</span><span class="structure">);</span>
+<li><span class="symbol">$vpath</span> <span class="operator">-&gt;</span> <span class="word">plot</span><span class="structure">(</span><span class="single">'R'</span><span class="structure">);</span>
+</ol>
+</pre>
+
+<p>
+
+The VPath is created like any object, using the 
+<tt>new</tt> method.  It can be given a name,
+which, like the name of a Data or Path object, will be used in the
+legend of any plot.
+</p>
+
+<p>
+The collection of paths is created using the
+<tt>include</tt> method.  This method takes one or
+more Path objects, in this case <tt>$path1</tt>,
+<tt>$path2</tt>, and
+<tt>$path3</tt> contain references to Path
+objects.  The <tt>include</tt> method is
+cumulative.  You can call it repeatedly, each time adding another Path
+to the collection.
+</p>
+
+<p>
+Finally, the VPath object is plotted just like any Data or Path
+object.   <span class=program>DEMETER</span> is careful to keep each element of the VPath up
+to date with respect to the fit and will make the summation in k-space
+just before Fourier transforming (if plotting in R or q) and making
+the plot.
+</p>
+
+<p>
+The use of the VPath to make interesting plots is demonstrated in the
+example of a
+<a href="../examples/uranyl.html">uranyl ion in solution</a>.
+That example also demonstrates the cumulative use of the
+<tt>include</tt> method.
+</p>
+
+<br />
+<hr class=hide />
+
+<div class=bottombar>
+  <div class=navbar>
+  <table class=navtable>
+    <tr>
+      <td align=left>
+        [&nbsp;<a href="../index.html">Home</a>&nbsp;] &nbsp;&nbsp;
+        [&nbsp;<a href="http://cars9.uchicago.edu/iffwiki/Demeter"><span class=programlink>DEMETER</span></a>&nbsp;] &nbsp;&nbsp;
+        [&nbsp;<a href="http://cars9.uchicago.edu/iffwiki/Ifeffit"><span class=programlink>IFEFFIT</span></a>&nbsp;] &nbsp;&nbsp;
+        [&nbsp;<a href="http://leonardo.phys.washington.edu/feff/wiki/index.php?title=FEFF_Documentation"><span class=programlink>FEFF</span></a>&nbsp;] &nbsp;&nbsp;
+        [&nbsp;<a href="http://xafs.org">xafs.org</a>&nbsp;] &nbsp;&nbsp;
+	[&nbsp;<a href="../demeter.pdf">PDF&nbsp;doc</a>&nbsp;]
+      </td>
+      <td align=right>
+        Next: <a href="../pathlike/fspath.html" class="menu" >FSPath</a>
+        &nbsp;&nbsp;
+        Up: <a href="../pathlike/index.html" class="menu" >Path-like objects</a>      </td>
+    </tr>
+  </table>
+  </div>
+  <div class=copyright>
+   <span class=program>DEMETER</span> is copyright &copy; 2009-2010 Bruce Ravel
+  <br />
+  This document is copyright &copy; 2010 Bruce Ravel
+  <br />
+  email: (bravel |A|T| bnl |D|O|T| gov)
+  <br />
+  
+  <a href="http://creativecommons.org/licenses/by-sa/3.0/"><img src="../../images/somerights20.png" width="88" height="31" alt="" border="0" /></a> &nbsp;&nbsp;&nbsp;
+  <br />
+  This document is licensed under <a href="http://creativecommons.org/licenses/by-sa/3.0/">
+  The Creative Commons Attribution-ShareAlike License</a>.
+  <br />
+  If  <span class=program>DEMETER</span> and this document are useful to you, please consider
+  <a href="http://creativecommons.org/support/">supporting The Creative Commons</a>.
+</div>
+</div>
+  </body>
+</html>

@@ -1,0 +1,347 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+	<title>STAR::Checker</title>
+<link rel="stylesheet" type="text/css" href="../podstyle.css" /><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+  <script type="text/javascript">
+
+  function toggleCode( id ) {
+    if ( document.getElementById )
+      elem = document.getElementById( id );
+    else if ( document.all )
+      elem = eval( "document.all." + id );
+    else
+      return false;
+
+    elemStyle = elem.style;
+
+    if ( elemStyle.display != "block" ) {
+      elemStyle.display = "block"
+    } else {
+      elemStyle.display = "none"
+    }
+
+    return true;
+  }
+  document.writeln( "<style type=\"text/css\">div.method-source-code { display: none }</style>" )
+  </script></head>
+<body>
+<div class="box">
+  <h1 class="t1">Demeter</h1>
+  <table>
+    <tr>
+      <td class="label">Description</td>
+      <td class="cell">Perl tools for X-ray Absorption Spectroscopy</td>
+    </tr>
+  </table>
+</div>
+<div class="path">
+  <a href="../index.html">Demeter</a> &gt; Perl Modules &gt;
+  STAR-Checker
+</div>
+<div>
+<a href="../src/STAR/Checker.pm">Source</a>
+</div>
+
+
+<div class="pod">
+<!-- INDEX START -->
+<h3 id="TOP">Index</h3>
+<ul>
+	<li><a href="#NAME">NAME</a><br />
+<ul>
+	<li><a href="#Version">Version</a></li>
+</ul>
+</li>
+	<li><a href="#SYNOPSIS">SYNOPSIS</a></li>
+	<li><a href="#DESCRIPTION">DESCRIPTION</a></li>
+	<li><a href="#CLASS_METHODS">CLASS METHODS</a><br />
+<ul>
+	<li><a href="#check">check</a></li>
+</ul>
+</li>
+	<li><a href="#AUTHOR">AUTHOR</a><br />
+<ul>
+	<li><a href="#Acknowledgments">Acknowledgments</a></li>
+</ul>
+</li>
+	<li><a href="#COPYRIGHT">COPYRIGHT</a></li>
+	<li><a href="#SEE_ALSO">SEE ALSO</a></li>
+</ul>
+<hr />
+<!-- INDEX END -->
+
+<h1 id="NAME">NAME <a href="#TOP" class="toplink"><img alt="^" src="../up.gif" /></a></h1>
+
+<p>STAR::Checker - Perl extension for checking DataBlock objects</p>
+
+<h2 id="Version">Version</h2>
+
+<p>This documentation refers to version 0.02 of this module.</p>
+
+<h1 id="SYNOPSIS">SYNOPSIS <a href="#TOP" class="toplink"><img alt="^" src="../up.gif" /></a></h1>
+
+<pre>  use STAR::Checker;
+
+  $check = STAR::Checker-&gt;check( -datablock=&gt;$ARGV[0],
+                                 -dictionary=&gt;$ARGV[1] );
+
+</pre><h1 id="DESCRIPTION">DESCRIPTION <a href="#TOP" class="toplink"><img alt="^" src="../up.gif" /></a></h1>
+
+<p>Contains the checker object, with methods for checking DataBlock object against 
+STAR rules and against a specified dictionary.
+DataBlock objects are created by Parser and modified by DataBlock.</p>
+
+<h1 id="CLASS_METHODS">CLASS METHODS <a href="#TOP" class="toplink"><img alt="^" src="../up.gif" /></a></h1>
+
+<h2 id="check">check</h2>
+
+<p><a href="#" onclick="toggleCode('method_check');return false;">[Source]</a></p>
+                                        <div class="method-source-code" id="method_check">
+                                        <pre>
+
+sub check {
+
+    my ($self, @parameters) = @_;                 
+    my ($data,$dict,$options);
+    $options = "";
+	
+    while ($_ = shift @parameters) {
+       $data = shift @parameters if /-datablock/;
+       $dict = shift @parameters if /-dictionary/;
+       $options = shift @parameters if /-options/;
+    }
+
+    my ($n, $d, $save, @saves, $cat, @cats, $item, @items);
+    my (@depend_items, $depend_item);
+    my ($value, @values);
+    my (%dict_lookup, %item_lookup, %cat_lookup);
+    my (@parent_items, @child_items);
+    my (%cp_hash, $cp_hash_ref);   #child parent hash
+    my ($mand);
+    my ($construct, @constructs, $code, @code_data, @codes, %item_types);
+    my ($debug, $log,$problem);
+
+    $log = 1       if $options =~ /l/;
+    $debug = 1     if $options =~ /d/;
+    
+    if ( $data->type eq 'dictionary' ) {
+        print STDERR "Method check_against_dict is to be invoked only on\n",
+          "DataBlock objects, not on dictionaries themselves.\n";
+        return;
+    }
+
+    print STDERR "-"x50,"\n" if $log;
+    print STDERR "$0 ", ctime(),"\n" if $log;
+    print STDERR "Checking ",$data->title,
+      " against ",$dict->title,"\n" if $log;
+
+    @items = $data->get_items;
+    @cats = $data->get_categories;
+    @saves = $dict->get_save_blocks;
+
+    #make a dictionary lookup hash -- keys: lowercase, values: original case
+    foreach $save (@saves) {
+        $dict_lookup{lc($save)} = $save;
+    }
+
+    #same for an file item lookup hash
+    foreach $item (@items) {
+        $item_lookup{lc($item)} = $item;
+    }
+
+    #same for a file category lookup hash
+    foreach $cat (@cats) {
+        $cat_lookup{lc($cat)} = $cat;
+    }
+
+    # 1) checking whether items are present in dictionary
+    # ---------------------------------------------------
+
+    print STDERR "Checking whether items are present in dictionary\n" if $log;
+
+    foreach $item (@items) {
+        if ( ! exists $dict_lookup{lc($item)} ) {
+	    $problem=1;
+	    print STDERR "\t$item not in dictionary\n" if $log;
+	}
+    }
+  
+    # 2) checking for presence of mandatory items in file
+    # ---------------------------------------------------
+
+    print STDERR "Checking whether mandatory items ",
+     "are present in file\n" if $log;
+
+    foreach $save ( @saves ) {
+        if ( $save =~ /^(_\S+?)\.\S+/ ) { # $save is item, not cat 
+            $cat = $1;
+            $item = $save;
+            $mand = ($dict->get_item_data(-save=>$save,
+                                 -item=>"_item.mandatory_code"))[0];
+            if ( $mand eq "yes" ) {  #item is mandatory
+                if ( exists $cat_lookup{lc($cat)} ) { #the cat is in the file
+                    if ( ! exists $item_lookup{lc($item)} ) { #oops, should've
+                                                             #been present
+                        $problem=1;
+                        print STDERR "\t$item not present\n" if $log;
+                    }
+                }
+            }
+        }
+    } 
+    
+    # 3) checking for presence of dependent items in file
+    # ---------------------------------------------------
+
+    print STDERR "Checking whether dependent items",
+     " are present in file\n" if $log;
+
+    foreach $item ( @items ) {
+        if ( exists $dict_lookup{lc($item)} ) {
+            @depend_items = $dict->get_item_data(
+                              -save=>$dict_lookup{lc($item)},
+                              -item=>"_item_dependent.dependent_name");
+            foreach $depend_item ( @depend_items ) {
+                if ( ! exists $item_lookup{lc($depend_item)} ) {
+                    $problem=1;
+                    print STDERR "\t$depend_item not present ",
+                      "(required by $item)\n" if $log;
+                }
+            }
+        }
+    }
+ 
+    # 4) checking for presence of parent items
+    # ----------------------------------------
+
+    print STDERR "Checking for presence of parent items\n" if $log;
+
+    if ( -r "cp_hash" ) {
+        print "Retrieving previously stored cp_hash\n" if $log;
+        $cp_hash_ref = Storable::retrieve("cp_hash");
+        %cp_hash = %$cp_hash_ref;
+    }
+    else {
+        print "Assembling and storing new cp_hash\n" if $log;
+        foreach $save ( @saves ) {
+            @parent_items  = $dict->get_item_data(-save=>$save,
+                                      -item=>"_item_linked.parent_name");
+            @child_items   = $dict->get_item_data(-save=>$save,
+                                      -item=>"_item_linked.child_name");
+            if ( $#parent_items >=0 ) {
+                foreach $n ( 0..$#parent_items ) {
+                    $cp_hash{lc($child_items[$n])} = lc($parent_items[$n]);
+                }
+            }
+        }
+        Storable::store \%cp_hash, "cp_hash";
+    }
+ 
+    foreach $item ( @items ) {
+        if ( exists $cp_hash{lc($item)} ) {
+            if ( ! exists $item_lookup{$cp_hash{lc($item)}} ) {
+                print STDERR "\t",$cp_hash{lc($item)}, " not present ",
+                  "(parent to $item)\n" if $log;
+            }
+        }
+    }
+    
+    # 5) checking for correct item types
+    # ----------------------------------
+
+    print STDERR "Checking values against type definitions\n" if $log;
+
+    @constructs=$dict->get_item_data(-save=>'-',
+                                     -item=>'_item_type_list.construct');
+    @codes=$dict->get_item_data(-save=>'-',
+                                -item=>'_item_type_list.code');
+    foreach $n (0..$#codes) {
+        $item_types{$codes[$n]} = $constructs[$n];
+    }
+
+    foreach $item ( @items ) {
+        $code="";
+        print STDERR "data item: $item\n" if $debug;
+        print STDERR "dict item: ",$dict_lookup{lc($item)},"\n" if $debug;
+        if ($dict_lookup{lc($item)}) {
+            $code = ($dict->get_item_data
+                          (-save=>$dict_lookup{lc($item)},
+                           -item=>'_item_type.code'))[0];
+		     # not all items have this defined
+            $construct = $item_types{$code} if $code;
+        }
+		
+	if ( !$code ) {
+            print STDERR "type code undefined\n" if $debug;
+	}
+	else {
+            @values = $data->get_item_data(-item=>$item);
+	    print STDERR "values 0..",$#values,"\n" if $debug;
+            $n=0;
+	    foreach $value (@values) {
+                if ( $value eq '.' || $value eq '?' ) {
+                    print STDERR "$n item value undefined\n" if $debug;
+                }
+                elsif ( $value =~ /^$construct$/ ) {
+                    print STDERR "$n type $code ok\n" if $debug;
+                }              
+                else {
+	            $problem = 1;
+                    if ($log) {
+                        print STDERR "\t","-"x14,"\n","\ttype mismatch:\n"; 
+                        print STDERR "\titem: $item\n";
+                        print STDERR "\titeration: $n\n";
+                        print STDERR "\tvalue: $value\n";
+                        print STDERR "\tcode: $code\n";
+                        print STDERR "\tconstruct: $construct\n";
+                    }
+                }
+            $n++;
+            }
+	}
+    }
+    return ( $problem ? 0 : 1 );  #returns 1 if check ok (no problem)
+                                  #returns 0 if problem found
+}
+</pre></div>
+
+<pre>  Usage:   $check = STAR::Checker-&gt;check(-datablock=&gt;$data, 
+                                         -dictionary=&gt;$dict [,
+                                         -options=&gt;$options ] );
+
+</pre><p>Checks the DataBlock object <code>$data</code> against the dictionary object 
+<code>$dict</code> (see STAR::Parser and STAR::DataBlock). Checks 1) whether 
+all items in the DataBlock are defined in the dictionary, 
+2) whether mandatory items are present in the file, 3) whether dependent 
+items are present in the file (e.g. cartn_x makes cartn_y and cartn_z 
+dependent), 4) whether parent items are present,  
+and 5) whether the item values in the DataBlock conform to the item type 
+definitions in the dictionary.</p>
+
+<p>Returns 1 if the check was successful (no problems were found), 
+and 0 if the check was unsuccessful (problems were found). 
+A list of the specific problems is written to STDERR when <code>-options=&gt;'l'</code> 
+is specified.</p>
+
+<h1 id="AUTHOR">AUTHOR <a href="#TOP" class="toplink"><img alt="^" src="../up.gif" /></a></h1>
+
+<p>Wolfgang Bluhm, mail@wbluhm.com</p>
+
+<h2 id="Acknowledgments">Acknowledgments</h2>
+
+<p>Thanks to Phil Bourne, Helge Weissig, Anne Kuller, Doug Greer, 
+Michele Bluhm, and others for support, help, and comments.</p>
+
+<h1 id="COPYRIGHT">COPYRIGHT <a href="#TOP" class="toplink"><img alt="^" src="../up.gif" /></a></h1>
+
+<p>A full copyright statement is provided with the distribution
+Copyright (c) 2000 University of California, San Diego</p>
+
+<h1 id="SEE_ALSO">SEE ALSO <a href="#TOP" class="toplink"><img alt="^" src="../up.gif" /></a></h1>
+
+<p>STAR::Parser, STAR::DataBlock, STAR::Dictionary.</p>
+
+
+</div><div class="footer">generated by <a href="http://search.cpan.org/perldoc?Pod%3A%3AProjectDocs">Pod::ProjectDocs</a></div></body>
+</html>

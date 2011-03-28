@@ -1,0 +1,224 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+	<title>Demeter::Data::Process</title>
+<link rel="stylesheet" type="text/css" href="../../podstyle.css" /><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+  <script type="text/javascript">
+
+  function toggleCode( id ) {
+    if ( document.getElementById )
+      elem = document.getElementById( id );
+    else if ( document.all )
+      elem = eval( "document.all." + id );
+    else
+      return false;
+
+    elemStyle = elem.style;
+
+    if ( elemStyle.display != "block" ) {
+      elemStyle.display = "block"
+    } else {
+      elemStyle.display = "none"
+    }
+
+    return true;
+  }
+  document.writeln( "<style type=\"text/css\">div.method-source-code { display: none }</style>" )
+  </script></head>
+<body>
+<div class="box">
+  <h1 class="t1">Demeter</h1>
+  <table>
+    <tr>
+      <td class="label">Description</td>
+      <td class="cell">Perl tools for X-ray Absorption Spectroscopy</td>
+    </tr>
+  </table>
+</div>
+<div class="path">
+  <a href="../../index.html">Demeter</a> &gt; Perl Modules &gt;
+  Demeter-Data-Process
+</div>
+<div>
+<a href="../../src/Demeter/Data/Process.pm">Source</a>
+</div>
+
+
+<div class="pod">
+<!-- INDEX START -->
+<h3 id="TOP">Index</h3>
+<ul>
+	<li><a href="#NAME">NAME</a></li>
+	<li><a href="#VERSION">VERSION</a></li>
+	<li><a href="#DESCRIPTION">DESCRIPTION</a></li>
+	<li><a href="#METHODS">METHODS</a></li>
+	<li><a href="#CONFIGURATION">CONFIGURATION</a></li>
+	<li><a href="#DEPENDENCIES">DEPENDENCIES</a></li>
+	<li><a href="#BUGS_AND_LIMITATIONS">BUGS AND LIMITATIONS</a></li>
+	<li><a href="#AUTHOR">AUTHOR</a></li>
+	<li><a href="#LICENCE_AND_COPYRIGHT">LICENCE AND COPYRIGHT</a></li>
+</ul>
+<hr />
+<!-- INDEX END -->
+
+<h1 id="NAME">NAME <a href="#TOP" class="toplink"><img alt="^" src="../../up.gif" /></a></h1>
+
+<p>Demeter::Data::Process - Processing XAS data</p>
+
+<h1 id="VERSION">VERSION <a href="#TOP" class="toplink"><img alt="^" src="../../up.gif" /></a></h1>
+
+<p>This documentation refers to Demeter version 0.4.</p>
+
+<h1 id="DESCRIPTION">DESCRIPTION <a href="#TOP" class="toplink"><img alt="^" src="../../up.gif" /></a></h1>
+
+<p>This subclass of <a href="../Data.pm.html">Demeter::Data</a> contains methods for calibrating
+mu(E) data and adjusting e0.</p>
+
+<h1 id="METHODS">METHODS <a href="#TOP" class="toplink"><img alt="^" src="../../up.gif" /></a></h1>
+
+<p>Note that these data processing methods are not reversable (without
+reimporting the data).  Many of the examples suggest the use of the
+<code>clone</code> method for easy comparison between the processed and original
+data.  In those cases cloning is a good idea because the methods
+<strong>will</strong> alter the arrays in Ifeffit.</p>
+
+<dl>
+	<dt><code>rebin</code></dt>
+		<dd><p>This method rebins EXAFS data onto a standard EXAFS grid defined by
+parameters that can be passed to the method via an anonymous hash.  It
+returns the reference to the new object and creates an appropriate set
+of Ifeffit arrays.  The new object is a clone of the original object.</p></dd>
+<dd><pre>  $rebinned_group = $data -&gt; rebin(pre=&gt;-35, xanes=&gt;0.3);
+  $rebinned_group -&gt; plot('E');
+
+</pre></dd>		<dd><p>The parameter hash can contain zero or more of these parameters:</p></dd>
+<dd><dl>
+	<dt><i>group</i></dt>
+		<dd><p>The group name of the newly created group containing the rebinned
+data.  The default is to generate a unique group name.</p></dd>
+	<dt><i>emin</i></dt>
+		<dd><p>The boundary between the pre-edge and XANES regions, expressed in
+relative energy.  The default is -30 eV.</p></dd>
+	<dt><i>emin</i></dt>
+		<dd><p>The boundary between the XANES and EXAFS regions, expressed in
+relative energy.  The default is 50 eV.</p></dd>
+	<dt><i>pre</i></dt>
+		<dd><p>The grid size in energy of the rebinned pre-edge region.  The default
+is 10 eV.</p></dd>
+	<dt><i>xanes</i></dt>
+		<dd><p>The grid size in energy of the rebinned XANES region.  The default is
+0.5 eV.</p></dd>
+	<dt><i>exafs</i></dt>
+		<dd><p>The grid size in wavenumber of the rebinned EXAFS region.  The default
+is 0.07 inverse Angstrom.</p></dd>
+</dl>
+</dd>
+		<dd><p>See <a href="../Config.pm.html">Demeter::Config</a> and the rebin configuration group for
+details about configuring the defaults.</p></dd>
+	<dt><code>merge</code></dt>
+		<dd><p>This method merges a list of data groups.  The merge can be done in
+mu(E), norm(E), or chi(k).  A list of Data objects will be
+interpolated onto the energy (or k) grid of <code>$data</code> and merged along
+with <code>$data</code>.</p></dd>
+<dd><pre>  $merged_group = $data-&gt;merge('e', @groups);
+
+</pre></dd>		<dd><p>The first argument is <code>e</code>, <code>n</code>, or <code>k</code>.  The remaining arguments
+are Data objects to be included in the merge.</p></dd>
+	<dt><code>Truncate</code></dt>
+		<dd><p>Truncate data before or after a given value.  This discards the
+truncated points from the arrays in Ifeffit.</p></dd>
+<dd><pre>  $data -&gt; Truncate(&quot;after&quot;, 7700);
+
+</pre></dd>		<dd><p>The truncation is exclusive -- that is the value closest in energy or
+k to the supplied value remains in the array.</p></dd>
+		<dd><p>This is capitalized to avoid confusion with the perl built-in.</p></dd>
+	<dt><code>deglitch</code></dt>
+		<dd><p>Remove a single data points -- glitches -- from the data.  This only
+works on mu(E) data and a check is made that the supplied values are
+within the data range.</p></dd>
+<dd><pre>  $data -&gt; deglitch(17385.686);
+
+</pre></dd>		<dd><p>or</p></dd>
+<dd><pre>  $data -&gt; deglitch(@spurious_points);
+
+</pre></dd>		<dd><p>In each case, the points closest in energy to the supplied values are
+removed.  Glitches are simply removed from the data -- no
+interpolation between surrounding values is made.</p></dd>
+		<dd><p>There is no method explicitly intended to find a glitchy point.  That
+is left as a chore for the user interface.</p></dd>
+		<dd><p>Due to a quirk in Ifeffit (or perhaps in my understanding of Ifeffit)
+attempting to deglitch any of the last two points of data will result
+in both points being removed.  The same is true of the first two
+points.  This is a bug, but not, I don't think, a horrible one.</p></dd>
+	<dt><code>smooth</code></dt>
+		<dd><p>Perform Ifeffit's three-point smoothing on the mu(E) or chi(k) data,
+as appropriate.  The argument tells Demeter how many times to reapply
+the smoothing.</p></dd>
+<dd><pre>  $copy = $data -&gt; clone;
+  $copy -&gt; smooth(5);
+
+</pre></dd>	<dt><code>convolve</code></dt>
+		<dd><p>Perform a Gaussian or Lorentzian convolution on the data.  Becuase
+this has a number of possible arguments, named arguments in an
+anonymous hash are used.  The width is Ifeffit's sigma value and is a
+possitive number.  A negative number will be interpretted as zero.
+The type is either &quot;Gaussian&quot; or &quot;Lorentzian&quot;.  The type is either
+&quot;xmu&quot; or &quot;chi&quot; -- that is convolute mu(E) or chi(k) data.</p></dd>
+<dd><pre>  $copy = $data -&gt; clone;
+  $copy -&gt; convolve(width=&gt;2, type=&gt;'gaussian', which=&gt;'xmu');
+
+</pre></dd>	<dt><code>noise</code></dt>
+		<dd><p>Add noise to a mu(E) or chi(k) spectrum.</p></dd>
+<dd><pre>  $copy = $data -&gt; clone;
+  $copy -&gt; noise(noise=&gt;0.02, which=&gt;'xmu');
+
+</pre></dd>		<dd><p>The amount of noise is intepretted differently for mu(E) data as for
+chi(k).  For chi(k) data, the supplied noise used as the RMS value of
+the noise to be applied to the un-weighted chi(k) data.  Consequently,
+you probably want to use a small value -- probably something on the
+order of 0.001.</p></dd>
+		<dd><p>For mu(E) data, the noise is interpretted as a fraction of the edge
+step.  Thus the noise level for a given value scales with the size of
+the edge step.  A value of 0.02, as in the example above, is 2% of the
+edge step.</p></dd>
+</dl>
+<h1 id="CONFIGURATION">CONFIGURATION <a href="#TOP" class="toplink"><img alt="^" src="../../up.gif" /></a></h1>
+
+<p>See <a href="../Config.pm.html">Demeter::Config</a> for a description of the configuration system.</p>
+
+<h1 id="DEPENDENCIES">DEPENDENCIES <a href="#TOP" class="toplink"><img alt="^" src="../../up.gif" /></a></h1>
+
+<p>Demeter's dependencies are in the <cite>Bundle/DemeterBundle.pm</cite> file.</p>
+
+<h1 id="BUGS_AND_LIMITATIONS">BUGS AND LIMITATIONS <a href="#TOP" class="toplink"><img alt="^" src="../../up.gif" /></a></h1>
+
+<ul>
+	<li>The merge method does not yet return the varience array.</li>
+	<li>Adding noise to chi(k) is not working correctly.  (But adding noise to
+mu(E) does.)</li>
+</ul>
+
+<p>Please report problems to Bruce Ravel (bravel AT bnl DOT gov)</p>
+
+<p>Patches are welcome.</p>
+
+<h1 id="AUTHOR">AUTHOR <a href="#TOP" class="toplink"><img alt="^" src="../../up.gif" /></a></h1>
+
+<p>Bruce Ravel (bravel AT bnl DOT gov)</p>
+
+<p><a href="http://cars9.uchicago.edu/~ravel/software/">http://cars9.uchicago.edu/~ravel/software/</a></p>
+
+<h1 id="LICENCE_AND_COPYRIGHT">LICENCE AND COPYRIGHT <a href="#TOP" class="toplink"><img alt="^" src="../../up.gif" /></a></h1>
+
+<p>Copyright (c) 2006-2011 Bruce Ravel (bravel AT bnl DOT gov). All rights reserved.</p>
+
+<p>This module is free software; you can redistribute it and/or
+modify it under the same terms as Perl itself. See <a href="http://search.cpan.org/perldoc?perlgpl">perlgpl</a>.</p>
+
+<p>This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.</p>
+
+
+</div><div class="footer">generated by <a href="http://search.cpan.org/perldoc?Pod%3A%3AProjectDocs">Pod::ProjectDocs</a></div></body>
+</html>

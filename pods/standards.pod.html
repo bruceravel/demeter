@@ -1,0 +1,315 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+	<title>standards</title>
+<link rel="stylesheet" type="text/css" href="podstyle.css" /><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+  <script type="text/javascript">
+
+  function toggleCode( id ) {
+    if ( document.getElementById )
+      elem = document.getElementById( id );
+    else if ( document.all )
+      elem = eval( "document.all." + id );
+    else
+      return false;
+
+    elemStyle = elem.style;
+
+    if ( elemStyle.display != "block" ) {
+      elemStyle.display = "block"
+    } else {
+      elemStyle.display = "none"
+    }
+
+    return true;
+  }
+  document.writeln( "<style type=\"text/css\">div.method-source-code { display: none }</style>" )
+  </script></head>
+<body>
+<div class="box">
+  <h1 class="t1">Demeter</h1>
+  <table>
+    <tr>
+      <td class="label">Description</td>
+      <td class="cell">Perl tools for X-ray Absorption Spectroscopy</td>
+    </tr>
+  </table>
+</div>
+<div class="path">
+  <a href="index.html">Demeter</a> &gt; Perl Manuals &gt;
+  standards
+</div>
+<div>
+<a href="src/standards.pod">Source</a>
+</div>
+
+
+<div class="pod">
+<!-- INDEX START -->
+<h3 id="TOP">Index</h3>
+<ul>
+	<li><a href="#NAME">NAME</a></li>
+	<li><a href="#VERSION">VERSION</a></li>
+	<li><a href="#SYNOPSIS">SYNOPSIS</a></li>
+	<li><a href="#DESCRIPTION">DESCRIPTION</a></li>
+	<li><a href="#MODES">MODES</a></li>
+	<li><a href="#COMMAND_LINE_SWITCHES">COMMAND LINE SWITCHES</a><br />
+<ul>
+	<li><a href="#Screen_mode">Screen mode</a></li>
+	<li><a href="#Web_mode">Web mode</a></li>
+	<li><a href="#Athena_mode">Athena mode</a></li>
+</ul>
+</li>
+	<li><a href="#PLOT_TYPES">PLOT TYPES</a></li>
+	<li><a href="#CONFIGURATION_AND_ENVIRONMENT">CONFIGURATION AND ENVIRONMENT</a></li>
+	<li><a href="#DEPENDENCIES">DEPENDENCIES</a></li>
+	<li><a href="#BUGS_AND_LIMITATIONS">BUGS AND LIMITATIONS</a></li>
+	<li><a href="#AUTHOR">AUTHOR</a></li>
+	<li><a href="#LICENCE_AND_COPYRIGHT">LICENCE AND COPYRIGHT</a></li>
+</ul>
+<hr />
+<!-- INDEX END -->
+
+<h1 id="NAME">NAME <a href="#TOP" class="toplink"><img alt="^" src="up.gif" /></a></h1>
+
+<p>standards - Visualization of a library of standard reference materials</p>
+
+<h1 id="VERSION">VERSION <a href="#TOP" class="toplink"><img alt="^" src="up.gif" /></a></h1>
+
+<p>This documentation refers to Demeter version 0.3.</p>
+
+<h1 id="SYNOPSIS">SYNOPSIS <a href="#TOP" class="toplink"><img alt="^" src="up.gif" /></a></h1>
+
+<pre>  standards [options] &lt;mode&gt;
+
+</pre><p>Available modes are</p>
+
+<ul>
+	<li>screen</li>
+	<li>web</li>
+	<li>athena</li>
+</ul>
+
+<p>LaTeX mode is not yet working.</p>
+
+<h1 id="DESCRIPTION">DESCRIPTION <a href="#TOP" class="toplink"><img alt="^" src="up.gif" /></a></h1>
+
+<p>This program is an attempt to expand and improve upon the
+<a href="http://exafsmaterials.com/Ref_Spectra_0.4MB.pdf">pictures of metal foils spectra</a>
+that come with a box of foils from <a href="http://exafsmaterials.com">EXAFS Materials</a>.</p>
+
+<p>That document is fine as far as it goes, but the spectra are not all
+of the highest resolution and it only includes foils of a few select
+elements.  This implementation expands upon that by inlcuding
+reference spectra other than foils.  It is extensible in the sense
+that new materials can be added easily.  Thus this visualization of
+standard reference spectra can cover more of the periodic table and
+include various common (or even uncommon) species of any element.</p>
+
+<p>A small database of reference data ships with Demeter and various
+mechanisms are provided for extending the list of materials in the
+database.  You can use files on your own computer simply by pointing
+the program at that file's location.  You can also grab data from the
+web by pointing the program at the data file's URL.</p>
+
+<p>Ideally, adequate metadata is provided about each material such that a
+useful and thorough presentation of the data can be made.  This
+metadata includes some comments identifying the provenance of the
+data, the crystal type used to measure the data, enough information to
+properly calibrate the data, and lists of points to mark in mu(E) or
+the derivative of mu(E).  The program behaves well in the absence of
+any of this metadata, but the utility of the program is dimished.</p>
+
+<p>This program is a wrapper around four distinct ways of visualizing
+standards data.  It can be used to interactively plot standards,
+selecting elements from an on-screen periodic table.  It can be used
+to generate a sequance of web pages that can be dropped on a web
+site. It can be used to generate a latex document that can be
+converted to PDF and printed to replace the one from EXAFS Materials.
+Finally, is can be used to create an Athena project file containing a
+subset of the reference materials.</p>
+
+<p>Using this program in these four modes is explained in the following
+section.</p>
+
+<h1 id="MODES">MODES <a href="#TOP" class="toplink"><img alt="^" src="up.gif" /></a></h1>
+
+<p>The available modes of operation are:</p>
+
+<dl>
+	<dt>screen</dt>
+		<dd><p>In this mode, this is an interactive utility with a simple keyboard
+interface.  The user is presented with a screen that looks like this
+(albeit in color, if <a href="http://search.cpan.org/perldoc?Term%3A%3AANSIColor">Term::ANSIColor</a> is available):</p></dd>
+<dd><pre> Standard reference materials (Demeter 0.1.0)
+ .
+       H                                                                   He
+       Li  Be                                          B   C   N   O   F   Ne
+       Na  Mg                                          Al  Si  P   S   Cl  Ar
+       K   Ca  Sc  Ti  V   Cr  Mn *Fe  Co  Ni  Cu  Zn  Ga  Ge  As  Se  Br  Kr
+       Rb  Sr  Y   Zr  Nb  Mo  Tc  Ru  Rh  Pd  Ag  Cd  In  Sn  Sb  Te  I   Xe
+       Cs  Ba  La  Hf  Ta  W   Re  Os  Ir  Pt  Au  Hg  Tl  Pb  Bi  Po  At  Rn
+       Fr  Ra  Ac  Rf  Ha  Sg  Bh  Hs
+             Ce  Pr  Nd  Pm  Sm  Eu  Gd  Tb  Dy  Ho  Er  Tm  Yb  Lu
+             Th  Pa  U   Np  Pu  Am  Cm  Bk  Cf  Es  Fm  Md  No  Lr
+ .
+ Available Iron standard reference materials
+ .
+            *Fe : (26) Iron foil                 Goethite : (26) alpha-FeOOH
+       Hematite : (26) alpha-Fe2O3          Lepidocrocite : (26) gamma-FeOOH
+ .
+      q = quit    1 = plot mu(E)    2 = plot derivative    3 = plot filter
+ .
+ Comment:
+        File: fe.stan   Crystal: Si(111)
+        Iron foil measured at NSLS X11A 10/4/2002 by BR
+ .
+ Enter an element or material, a number to plot, or q=quit &gt;
+
+</pre></dd>		<dd><p>By entering an element symbol, all standards for which that element is
+the absorber are listed below the periodic table.  By entering the
+name of a material, that one is selected for plotting.  By entering a
+number between 1 and 3, a useful plot is made of that material.</p></dd>
+		<dd><p>Screen mode is the default mode.</p></dd>
+	<dt>web</dt>
+		<dd><p>In this mode, the program loops over all materials in the database,
+generating an html file for each material as well as a PNG file for
+each plot type.  This collection of files can be dropped onto a web
+site or viewed locally.  <a href="http://cars9.uchicago.edu/~ravel/software/doc/Standards/">Here is an example</a>
+using the database that ships with Demeter.</p></dd>
+	<dt>latex</dt>
+		<dd><p>In this mode, the program loops over all materials in the database,
+generating an latex file for each material as well as a PNG file for
+each plot type.  This mode has not yet been written.</p></dd>
+	<dt>athena</dt>
+		<dd><p>In this mode, one or more elements is selected at the command line and
+an Athena project file is generated for every material with those
+elements as the absorber.  The idea here is that you can generate a
+project file with data analysis standards that can be inorporated into
+a project file containing your own data.</p></dd>
+</dl>
+
+
+
+<h1 id="COMMAND_LINE_SWITCHES">COMMAND LINE SWITCHES <a href="#TOP" class="toplink"><img alt="^" src="up.gif" /></a></h1>
+
+<p>Each mode has its own set of command line switches.  The switches for
+one mode are ignored by other modes.</p>
+
+<h2 id="Screen_mode">Screen mode</h2>
+
+<p>Example:</p>
+
+<pre>  standards -l screen
+
+</pre><dl>
+	<dt><code>-l</code></dt>
+		<dd><p>Choose screen colors suitable for viewing in a terminal using a light
+background color.  The default is to choose colors that look good on a
+dark backdrop.</p></dd>
+</dl>
+<h2 id="Web_mode">Web mode</h2>
+
+<p>Example:</p>
+
+<pre>  standards --folder=html web
+
+</pre><dl>
+	<dt><code>--folder</code>, <code>-f</code></dt>
+		<dd><p>This takes a string containing the name of the folder in which to
+place all generated files.  If the folder does not exist, it will be
+created.</p></dd>
+	<dt><code>--quiet</code>, <code>-q</code></dt>
+		<dd><p>Suppress all screen messages.</p></dd>
+	<dt><code>--skip</code>, <code>-s</code></dt>
+		<dd><p>Skip all materials for which an html file already exists in the folder
+indicated by the <code>folder</code> command line switch.</p></dd>
+	<dt><code>--noimage</code>, <code>-n</code></dt>
+		<dd><p>Do not generate the image files, while still generating the html
+files.</p></dd>
+</dl>
+<h2 id="Athena_mode">Athena mode</h2>
+
+<p>Example:</p>
+
+<pre>  standards --elements=&quot;fe,zn&quot; -o mine.prj athena
+
+</pre><dl>
+	<dt><code>--outfile</code>, <code>-o</code></dt>
+		<dd><p>The name of the output Athena project file.</p></dd>
+	<dt><code>--elements</code>, <code>-e</code></dt>
+		<dd><p>A comma separated list of element symbols to include in the project
+file.  You may need to quote the list for more than one element</p></dd>
+	<dt><code>-a</code></dt>
+		<dd><p>Include all elements in the database in the project file.</p></dd>
+</dl>
+<h1 id="PLOT_TYPES">PLOT TYPES <a href="#TOP" class="toplink"><img alt="^" src="up.gif" /></a></h1>
+
+<p>There are currently three plot types.  All three are available in
+screen mode and all three get included in the html page in web mode.</p>
+
+<dl>
+	<dt>XANES</dt>
+		<dd><p>This plots the normalized, calibrated XANES data with several
+interesting points marked.</p></dd>
+	<dt>derivative</dt>
+		<dd><p>This plots the derivative of the XANES data with several interesting
+points marked.  The XANES and derivative points are specified
+separately in the metadata file.</p></dd>
+	<dt>filter</dt>
+		<dd><p>This plots something just like the filter plot in Hephaestus.  Using
+the bext guess for fluorescence filter material, this plot shows the
+edge of filter along with the edge and line energies of the absorber.</p></dd>
+</dl>
+<h1 id="CONFIGURATION_AND_ENVIRONMENT">CONFIGURATION AND ENVIRONMENT <a href="#TOP" class="toplink"><img alt="^" src="up.gif" /></a></h1>
+
+<p>The <cite>standards.ini</cite> file (which is found under the Demeter <cite>share</cite>
+directory) is used to specify metadata about the various standard
+reference materials.  The <code>config</code> section of the file is used to
+control a few details of plots that are generated by this program.
+All other aspects of Demeter are configured via its configuration
+system.</p>
+
+<h1 id="DEPENDENCIES">DEPENDENCIES <a href="#TOP" class="toplink"><img alt="^" src="up.gif" /></a></h1>
+
+<p>The dependencies of the Demeter system are in the
+<cite>Bundle/DemeterBundle.pm</cite> file.</p>
+
+<h1 id="BUGS_AND_LIMITATIONS">BUGS AND LIMITATIONS <a href="#TOP" class="toplink"><img alt="^" src="up.gif" /></a></h1>
+
+<p>See <a href="Demeter/Atoms.pm.html">Demeter::Atoms</a> for bugs and limitations of the underlying
+libraries.</p>
+
+<ul>
+	<li>LaTeX mode</li>
+	<li>More plot types: chi(k), chi(R), second derivative, extended XAS</li>
+	<li>Prettier CSS in web mode</li>
+</ul>
+
+<p>Please report problems to Bruce Ravel (bravel AT bnl DOT gov)</p>
+
+<p>Patches are welcome.</p>
+
+<h1 id="AUTHOR">AUTHOR <a href="#TOP" class="toplink"><img alt="^" src="up.gif" /></a></h1>
+
+<p>Bruce Ravel (bravel AT bnl DOT gov)</p>
+
+<p>http://cars9.uchicago.edu/~ravel/software/</p>
+
+
+
+
+<h1 id="LICENCE_AND_COPYRIGHT">LICENCE AND COPYRIGHT <a href="#TOP" class="toplink"><img alt="^" src="up.gif" /></a></h1>
+
+<p>Copyright (c) 2008-2009 Bruce Ravel (bravel AT bnl DOT gov). All rights reserved.</p>
+
+<p>This module is free software; you can redistribute it and/or
+modify it under the same terms as Perl itself. See <a href="http://search.cpan.org/perldoc?perlgpl">perlgpl</a>.</p>
+
+<p>This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.</p>
+
+
+</div><div class="footer">generated by <a href="http://search.cpan.org/perldoc?Pod%3A%3AProjectDocs">Pod::ProjectDocs</a></div></body>
+</html>

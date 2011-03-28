@@ -1,0 +1,203 @@
+<!DOCTYPE HTMP PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <title>SSPath object</title>
+    <link rel="stylesheet" href=../ab.css />
+    <link rel="stylesheet" href=../ppi.css />
+    <meta http-equiv="Content-Type" content="text/html"; charset=iso-8859-15 />
+    <meta name="robots" contents="all" />
+  </head>
+
+  <body>
+    <div class=topbar>
+  <div class=navbar>
+  <table class=navtable>
+    <tr>
+      <td align=left>
+        [&nbsp;<a href="../index.html">Home</a>&nbsp;] &nbsp;&nbsp;
+        [&nbsp;<a href="http://cars9.uchicago.edu/iffwiki/Demeter"><span class=programlink>DEMETER</span></a>&nbsp;] &nbsp;&nbsp;
+        [&nbsp;<a href="http://cars9.uchicago.edu/iffwiki/Ifeffit"><span class=programlink>IFEFFIT</span></a>&nbsp;] &nbsp;&nbsp;
+        [&nbsp;<a href="http://leonardo.phys.washington.edu/feff/wiki/index.php?title=FEFF_Documentation"><span class=programlink>FEFF</span></a>&nbsp;] &nbsp;&nbsp;
+        [&nbsp;<a href="http://xafs.org">xafs.org</a>&nbsp;] &nbsp;&nbsp;
+	[&nbsp;<a href="../demeter.pdf">PDF&nbsp;doc</a>&nbsp;]
+      </td>
+      <td align=right>
+        Back: <a href="../pathlike/fpath.html" class="menu" >FPath</a> &nbsp;&nbsp;
+        Next: <a href="../pathlike/mspath.html" class="menu" >MSPath</a>
+        &nbsp;&nbsp;
+        Up: <a href="../pathlike/index.html" class="menu" >Path-like objects</a>      </td>
+    </tr>
+  </table>
+  </div>
+  <h1>
+  SSPath object
+</h1>
+</div>
+
+<hr class=hide />
+
+
+<div class=sidebar>
+  <a href="../ceres.html"><img src=../../images/Isis-Sothis-Demeter_sm.jpg
+    width=100% border=0 alt='[Demeter logo]'></a>
+  <br />
+  <a href="../index.html" class="menu" >Home</a><br />
+<a href="../intro.html" class="menu" >Introduction</a><br />
+<a href="../data/index.html" class="menu" >Importing data</a><br />
+<a href="../mue/index.html" class="menu" >Processing mu(E) data</a><br />
+<a href="../xanes/index.html" class="menu" >Analysis of XANES data</a><br />
+<a href="../highlevel/index.html" class="menu" >High level actions for Demeter objects</a><br />
+<a href="../atoms/index.html" class="menu" >Atoms</a><br />
+<a href="../feff/index.html" class="menu" >Feff</a><br />
+<a href="../paths/index.html" class="menu" >Scattering paths</a><br />
+<a href="../gds/index.html" class="menu" >Guess/Def/Set parameters</a><br />
+<a href="../fit/index.html" class="menu" >Fitting EXAFS data</a><br />
+<a href="../perl/index.html" class="menu" >Using perl to create a fitting model</a><br />
+<a href="../lgcv.html" class="menu" >Local guess parameters and the characteristic value</a><br />
+<br />
+<a href="../pathlike/index.html" class="menuselect" >Path-like objects</a><br />
+&nbsp;-&nbsp;<a href="../pathlike/vpath.html" class="menu" >VPath</a><br />
+&nbsp;-&nbsp;<a href="../pathlike/fspath.html" class="menu" >FSPath</a><br />
+&nbsp;-&nbsp;<a href="../pathlike/fpath.html" class="menu" >FPath</a><br />
+&nbsp;-&nbsp;<a href="../pathlike/sspath.html" class="menuselect" >SSPath</a><br />
+&nbsp;-&nbsp;<a href="../pathlike/mspath.html" class="menu" >MSPath</a><br />
+&nbsp;-&nbsp;<a href="../pathlike/threebody.html" class="menu" >ThreeBody</a><br />
+&nbsp;-&nbsp;<a href="../pathlike/forward.html" class="menu" >Forward</a><br /><br />
+<a href="../su.html" class="menu" >Structural Units</a><br />
+<a href="../ui.html" class="menu" >User interfaces</a><br />
+<a href="../output.html" class="menu" >Output formats</a><br />
+<a href="../examples/index.html" class="menu" >Full examples</a><br />
+</div>
+
+<p>
+
+The SSPath, or &ldquo;single scattering path&rdquo;, 
+is, like the FSPath, derived from the Path object and so
+can be used just like a Path in a fit or a plot.  Unlike a Path
+object, which is associated with a particular scattering geometry from
+the cluster of atoms used in the  <span class=program>FEFF</span> calculation, the SSPath is
+a generalized single scattering path computed using a particular
+scattering potential from the  <span class=program>FEFF</span> calculation, but with the
+scattering atom in an arbitrary location and at a specified distance.
+</p>
+
+<p>
+The problem this is intended to solve is one for which the  <span class=program>FEFF</span>
+calculation is only an approximation of the actual structure.  In this
+case, one purpose of the EXAFS analysis is to determine the extent to
+which the measured structure differs from the model structure.  The
+paths used in the fit are parameterized to somehow determine these
+differences. 
+</p>
+
+<p>
+Sometimes, in the course of pursuing the analysis project, it is
+useful to examine the prospect of of a particular scattering atom at a
+distance that does not exist in the model structure.  In practice and
+without  <span class=program>DEMETER</span>, this is kind of tricky.  You must either find a
+different model structure which does have the desired atom at
+approximately the desired distance or have detailed knowledge of the
+inner workings of  <span class=program>FEFF</span> to know how to generate theory for that
+trial scatterer.
+</p>
+
+<p>
+The SSPath object makes this data analysis trick very easy.  In an
+existing  <span class=program>FEFF</span> calculation and its associated Feff object, a set
+of scattering potentials have been defined and calculated.  In the 
+<span class=file>feff.inp</span> file, these are the
+<tt>ipot</tt>s, or unique potential indeces, in the
+<tt>POTENTIALS</tt> list.
+</p>
+
+<p>
+To define an SSPath, you must specify the Feff object, the potential
+index of the desired scatterer, and the distance.  Here is the SSPath
+used in the example of the <a href="../examples/uranyl.html">uranyl ion in
+solution</a>.
+</p>
+
+
+<ol class=perlsample>
+<br />
+&nbsp;&nbsp;<span class="keyword">my</span> <span class="symbol">$sspath</span> <span class="operator">=</span> <span class="word">Demeter::SSPath</span><span class="operator">-&gt;</span><span class="word">new</span><span class="structure">(</span><span class="word">parent</span> <span class="operator">=&gt;</span> <span class="symbol">$feff</span><span class="operator">,</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="word">data</span>&nbsp;&nbsp;&nbsp;<span class="operator">=&gt;</span> <span class="symbol">$data</span><span class="operator">,</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="word">name</span>&nbsp;&nbsp;&nbsp;<span class="operator">=&gt;</span> <span class="double">&quot;hydration sphere&quot;</span><span class="operator">,</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="word">ipot</span>&nbsp;&nbsp;&nbsp;<span class="operator">=&gt;</span> <span class="number">3</span><span class="operator">,</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="word">reff</span>&nbsp;&nbsp;&nbsp;<span class="operator">=&gt;</span> <span class="float">3.5</span><span class="operator">,</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="structure">);</span>
+</ol>
+
+<p>
+
+As you can read in the section on 
+<a href="../examples/uranyl.html">that example</a>,
+the SSPath is used to model the possibility of scattering from the
+oxygen atoms in the hydration sphere around the ion in solution.  The
+arguments to the <tt>new</tt> method shown above
+are the bare requirements for creating an SSPath.  In this case,
+unique potential 3 is the equatorial oxygen atom.  Thus, the
+approximation is made that the scattering potential of the existing
+kind of oxygen atom is enough like this test scatterer that its
+potential can be used.
+</p>
+
+<p>
+Once created (or, indeed, as arguments during creation, the SSPath is
+parametrized exactly like any normal Path, i.e.:
+</p>
+
+
+<ol class=perlsample>
+<br />
+&nbsp;&nbsp;<span class="symbol">$fspath</span> <span class="operator">-&gt;</span> <span class="word">set</span><span class="structure">(</span><span class="word">s02</span> <span class="operator">=&gt;</span> <span class="single">'Nhydr * amp'</span><span class="operator">,</span> <span class="word">enot</span><span class="operator">=&gt;</span><span class="single">'e0hydr'</span><span class="structure">);</span>
+</ol>
+
+<p>
+
+Once created, the SSPath is used in a plot or a fit just like a normal
+Path object.
+</p>
+
+<br />
+<hr class=hide />
+
+<div class=bottombar>
+  <div class=navbar>
+  <table class=navtable>
+    <tr>
+      <td align=left>
+        [&nbsp;<a href="../index.html">Home</a>&nbsp;] &nbsp;&nbsp;
+        [&nbsp;<a href="http://cars9.uchicago.edu/iffwiki/Demeter"><span class=programlink>DEMETER</span></a>&nbsp;] &nbsp;&nbsp;
+        [&nbsp;<a href="http://cars9.uchicago.edu/iffwiki/Ifeffit"><span class=programlink>IFEFFIT</span></a>&nbsp;] &nbsp;&nbsp;
+        [&nbsp;<a href="http://leonardo.phys.washington.edu/feff/wiki/index.php?title=FEFF_Documentation"><span class=programlink>FEFF</span></a>&nbsp;] &nbsp;&nbsp;
+        [&nbsp;<a href="http://xafs.org">xafs.org</a>&nbsp;] &nbsp;&nbsp;
+	[&nbsp;<a href="../demeter.pdf">PDF&nbsp;doc</a>&nbsp;]
+      </td>
+      <td align=right>
+        Back: <a href="../pathlike/fpath.html" class="menu" >FPath</a> &nbsp;&nbsp;
+        Next: <a href="../pathlike/mspath.html" class="menu" >MSPath</a>
+        &nbsp;&nbsp;
+        Up: <a href="../pathlike/index.html" class="menu" >Path-like objects</a>      </td>
+    </tr>
+  </table>
+  </div>
+  <div class=copyright>
+   <span class=program>DEMETER</span> is copyright &copy; 2009-2010 Bruce Ravel
+  <br />
+  This document is copyright &copy; 2010 Bruce Ravel
+  <br />
+  email: (bravel |A|T| bnl |D|O|T| gov)
+  <br />
+  
+  <a href="http://creativecommons.org/licenses/by-sa/3.0/"><img src="../../images/somerights20.png" width="88" height="31" alt="" border="0" /></a> &nbsp;&nbsp;&nbsp;
+  <br />
+  This document is licensed under <a href="http://creativecommons.org/licenses/by-sa/3.0/">
+  The Creative Commons Attribution-ShareAlike License</a>.
+  <br />
+  If  <span class=program>DEMETER</span> and this document are useful to you, please consider
+  <a href="http://creativecommons.org/support/">supporting The Creative Commons</a>.
+</div>
+</div>
+  </body>
+</html>

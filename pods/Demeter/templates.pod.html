@@ -1,0 +1,314 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+	<title>An overview of Demeter's templating system.</title>
+<link rel="stylesheet" type="text/css" href="../podstyle.css" /><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+  <script type="text/javascript">
+
+  function toggleCode( id ) {
+    if ( document.getElementById )
+      elem = document.getElementById( id );
+    else if ( document.all )
+      elem = eval( "document.all." + id );
+    else
+      return false;
+
+    elemStyle = elem.style;
+
+    if ( elemStyle.display != "block" ) {
+      elemStyle.display = "block"
+    } else {
+      elemStyle.display = "none"
+    }
+
+    return true;
+  }
+  document.writeln( "<style type=\"text/css\">div.method-source-code { display: none }</style>" )
+  </script></head>
+<body>
+<div class="box">
+  <h1 class="t1">Demeter</h1>
+  <table>
+    <tr>
+      <td class="label">Description</td>
+      <td class="cell">Perl tools for X-ray Absorption Spectroscopy</td>
+    </tr>
+  </table>
+</div>
+<div class="path">
+  <a href="../index.html">Demeter</a> &gt; Perl Manuals &gt;
+  Demeter-templates
+</div>
+<div>
+<a href="../src/Demeter/templates.pod">Source</a>
+</div>
+
+
+<div class="pod">
+<!-- INDEX START -->
+<h3 id="TOP">Index</h3>
+<ul>
+	<li><a href="#NAME">NAME</a></li>
+	<li><a href="#VERSION">VERSION</a></li>
+	<li><a href="#SYNOPSIS">SYNOPSIS</a></li>
+	<li><a href="#DESCRIPTION">DESCRIPTION</a></li>
+	<li><a href="#TEMPLATE_GROUPS">TEMPLATE GROUPS</a></li>
+	<li><a href="#TEMPLATE_SETS">TEMPLATE SETS</a></li>
+	<li><a href="#DIAGNOSTICS">DIAGNOSTICS</a></li>
+	<li><a href="#CONFIGURATION_AND_ENVIRONMENT">CONFIGURATION AND ENVIRONMENT</a></li>
+	<li><a href="#DEPENDENCIES">DEPENDENCIES</a></li>
+	<li><a href="#BUGS_AND_LIMITATIONS">BUGS AND LIMITATIONS</a></li>
+	<li><a href="#AUTHOR">AUTHOR</a></li>
+	<li><a href="#LICENCE_AND_COPYRIGHT">LICENCE AND COPYRIGHT</a></li>
+</ul>
+<hr />
+<!-- INDEX END -->
+
+<h1 id="NAME">NAME <a href="#TOP" class="toplink"><img alt="^" src="../up.gif" /></a></h1>
+
+<p>An overview of Demeter's templating system.</p>
+
+<h1 id="VERSION">VERSION <a href="#TOP" class="toplink"><img alt="^" src="../up.gif" /></a></h1>
+
+<p>This documentation refers to Demeter version 0.4.</p>
+
+<h1 id="SYNOPSIS">SYNOPSIS <a href="#TOP" class="toplink"><img alt="^" src="../up.gif" /></a></h1>
+
+<pre>      $string = $self-&gt;template($group, $template);
+      $data -&gt; dispose($string)
+
+</pre><h1 id="DESCRIPTION">DESCRIPTION <a href="#TOP" class="toplink"><img alt="^" src="../up.gif" /></a></h1>
+
+<p>Demeter uses <a href="http://search.cpan.org/perldoc?Text%3A%3ATemplate">Text::Template</a> to construct all text destined for
+Ifeffit as well as for atoms and feff input files and the plotting
+backends.  The use of templating system add a bit of complexity to
+Demeter in the sense that the actual content of Ifeffit commands (or
+input files) is generated quite far away from the location in the code
+where that text is used.  However, the use of a templating system adds
+a lot to Demeter.  Output can be highly customized or directed to a
+different target altogether.  For example, it is already possible in
+version 0.2 to generate content for a <cite>feffit.inp</cite> file rather than
+for an Ifeffit script.  In the future, templates will make it easy for
+Demeter to target multiple plotting backends, write out functional
+Demeter scripts, or upgrade to Ifeffit 2.0 (whenever that becomes
+available).</p>
+
+<p><a href="http://search.cpan.org/perldoc?Text%3A%3ATemplate">Text::Template</a> is wonderful -- it hits a real sweet spot between
+simple and powerful.  A template in this system is plain text with
+snippets of perl code interspersed.  Here is an example:</p>
+
+<pre>   { # -*- ifm -*-
+     # Forward transform template
+     #   {$D} returns the ifeffit group name
+     #   {$D-&gt;get(&quot;&quot;parameter&quot;)} returns the value of that parameter
+   }
+   fftf({$D-&gt;group}.chi,
+        k        = {$D}.k,
+        kmin     = {$D-&gt;fft_kmin},
+        kmax     = {$D-&gt;fft_kmax},
+        dk       = {$D-&gt;fft_dk&quot;},
+        kwindow  = {$D-&gt;fft_kwindow},
+        kweight  = {$P-&gt;kweight},
+        rmax_out = {$D-&gt;rmax_out})
+
+</pre><p>This is the template for generating a forward Fourier transform
+command using the <code>iff_columns</code> <a href="#TEMPLATE_SETS">template set</a>.
+Anything contained in curly brackets is interpreted as perl,
+everything else is plain text that gets passed through the templating
+system unaltered.</p>
+
+<p>The way that this template gets used is like so:</p>
+
+<pre>  $data -&gt; set_mode(template_process =&gt; &quot;iff_columns&quot;);
+  $string = $data -&gt; template(&quot;process&quot;, &quot;fft&quot;);
+  $data -&gt; dispose($string);
+
+</pre><p>The first line chooses the <a href="#TEMPLATE_SETS">template set</a>.  The second
+line fills in the <code>fft</code> template from the <i>process</i> <a href="#TEMPLATE_GROUPS">template group</a> using the parameters of the Data objects
+contained in <code>$data</code>.  The <code>template</code> method returns a string
+containing the appropriate Ifeffit commands.  This string is
+<a href="Dispose.pm.html">disposed</a> in the last line.</p>
+
+<p>Demeter uses certain conventions to push particular data into a
+template.  You can see two of those conventions in this example.
+<code>$D</code>, when used inside of curly braces, refers to the Data object of
+the referent.  <code>$P</code> refers to the current Plot object, which is
+defined as the <code>plot</code> mode parameter and
+<a href="Dispose.pm.html#OTHER_USES_OF_set_mode">explained here</a>.</p>
+
+<p>Within the curly braces, Demeter syntax is used and Demeter methods
+are used to get data out of Demeetr objects.  Some templates contain
+more complicated blocks of code, such as loops or control structures.
+Most curly-brackets perl blocks are simply object accesses, such as in
+the example above.</p>
+
+<p>Here is a complete list of the special scalars for accessing Demeetr
+objects in templates.</p>
+
+<dl>
+	<dt><code>$S</code></dt>
+		<dd><p>This refers to the object that invoked the <code>template</code> method.</p></dd>
+	<dt><code>$D</code></dt>
+		<dd><p>This refers to the Data object associated with the object that invoked
+the <code>template</code> method.  For a Data object, <code>$S</code> and <code>$D</code> point at
+the same object.  For a Path, SSPath, or VPath object, however, <code>$D</code>
+points at the Data object to which that Path object belongs.</p></dd>
+	<dt><code>$P</code></dt>
+		<dd><p>This refers to the default Plot object.  This is the same object that
+gets returned by <code>po</code> method of the base class.</p></dd>
+	<dt><code>$C</code></dt>
+		<dd><p>This refers to the Config object containing all the data from the
+configuration subsystem.  Note that you should use the <code>default</code> (or
+possibly <code>demeter</code>) method to access system configuration parameters.</p></dd>
+		<dd><p>The other use of <code>$C</code> is to access user-defined parameters.  The
+merge templates for example make extensive use of this to set, for
+example, the boundaries of the merge range and the space in which the
+merge takes place.  See <a href="Config.pm.html">Demeter::Config</a> for details on
+setting user-defined Config parameetrs.  For user-defined parameters,
+you should use the <code>get</code> method.</p></dd>
+	<dt><code>$F</code></dt>
+		<dd><p>This refers to the current Fit object.  Normally, the <code>fit</code> or <code>sum</code>
+method of the <a href="Fit.pm.html">Demeter::Fit</a> class will set the default for
+you.</p></dd>
+	<dt><code>$DS</code></dt>
+		<dd><p>This refers to the data object chosen as the data standard, as
+<a href="Dispose.pm.html#OTHER_USES_OF_set_mode">explained here</a>.
+Data processing methods such as <code>align</code> will set the data standard so
+that <code>$DS</code> evaluates correctly in templates.</p></dd>
+	<dt><code>$T</code></dt>
+		<dd><p>This refers to the active Feff object and is mostly used to generate
+<cite>feff.inp</cite> files.</p></dd>
+	<dt><code>$A</code></dt>
+		<dd><p>This refers to the Atoms object from which a <cite>feff.inp</cite> is being
+generated.</p></dd>
+</dl>
+<p>There is one final mechanism for moving data into a template.  This
+method is quite similar to user-defined Config attributes, but may be
+more convenient.  You can supply an additional argument to the
+<code>template</code> method which is an anonymous hash.  An example would be
+the <code>save_xmu</code> template from the <i>process</i> tamplate group.  It is
+called like so in <code>save_xmu</code> in <code>Demeter::Data::Mu</code>:</p>
+
+<pre>   my $string = $self-&gt;template(&quot;process&quot;, &quot;save_xmu&quot;,
+                                {filename =&gt; $filename,
+				 titles   =&gt; &quot;dem_data_*&quot;});
+
+</pre><p>The corresponding template looks like this:</p>
+
+<pre>  write_data(file=&quot;{$filename}&quot;, ${$titles}, ${$D-&gt;group}_title_*,
+             {$D-&gt;group}.energy, {$D-&gt;group}.xmu, {$D-&gt;group}.bkg, {$D-&gt;group}.preline,
+             {$D-&gt;group}.postline, {$D-&gt;group}.der, {$D-&gt;group}.sec)
+
+</pre><p>Here the filename and titles glob are passed in the anonymous hash and
+accessed in the template via their hash keys inside of curly brackets.</p>
+
+<h1 id="TEMPLATE_GROUPS">TEMPLATE GROUPS <a href="#TOP" class="toplink"><img alt="^" src="../up.gif" /></a></h1>
+
+<p>Demeter has a lot of templates and they are grouped according to
+general function as a way fo imposing some order on their large
+numbers.  The (currently) five template groups are:</p>
+
+<dl>
+	<dt><i>analysis</i></dt>
+		<dd><p>These templates are used for analysis chores that do not involve
+Feff. Things such as linear combination fitting and difference
+spectra go into this template group.</p></dd>
+	<dt><i>atoms</i></dt>
+		<dd><p>These templates are used by the Atoms object to structure its output
+files.  Although in the future I hope to use OpenBabel to direct lists
+of atomic coordinates to differnt output targets, you could put a
+template in this group to make, say, an alchemy file.</p></dd>
+	<dt><i>feff</i></dt>
+		<dd><p>These templates are used to structure <cite>feff.inp</cite> files made using
+Feff objects as part of Demeter's rewrite of Feff fucntionality.</p></dd>
+	<dt><i>plot</i></dt>
+		<dd><p>These templates are used to generate plotting commands from Data or
+Path objects.</p></dd>
+	<dt><i>process</i></dt>
+		<dd><p>All the rest of the templates go into this group.  Everything involved
+in reading, writing, or processing data goes in this template group.</p></dd>
+</dl>
+<h1 id="TEMPLATE_SETS">TEMPLATE SETS <a href="#TOP" class="toplink"><img alt="^" src="../up.gif" /></a></h1>
+
+<p>Within the different template groups, you may find multiple template
+sets.</p>
+
+<dl>
+	<dt><i>feff</i></dt>
+		<dd><p>The <i>feff</i> template group has sets for &quot;feff6&quot;, &quot;feff7&quot;, and &quot;feff8&quot;.
+The feff template set is chosen by setting the <code>template_feff</code> mode,
+as <a href="Dispose.pm.html#OTHER_USES_OF_set_mode">explained here</a>.</p></dd>
+	<dt><i>plot</i></dt>
+		<dd><p>The plotting template sets are &quot;pgplot&quot;, &quot;gnuplot&quot;, and &quot;demeter&quot;.
+The first two generate commands for the currently available plotting
+backends.  The last is intended for use with the Demeter fitting and
+processing template set.  In the future new sets may be written for
+different plotting backends (for example, Grace would be a target that
+would work very well within Demeter).  The plot template set is chosen
+by setting the <code>template_plot</code> mode, as <a href="Dispose.pm.html#OTHER_USES_OF_set_mode">explained here</a>.</p></dd>
+	<dt><i>fit</i> and <i>process</i></dt>
+		<dd><p>Template sets exist for Ifeffit, Feffit, and Demeter.  There are two
+version of the Ifeffit template set called &quot;ifeffit&quot; and
+&quot;iff_columns&quot;.  The first set uses a fairly terse style while the
+second one tries to align ifeffit command arguments into columns
+aligned at the equals sign wherever possible.  The second one may be a
+bit more human readable.  The fit and process template sets are chosen
+by setting the <code>template_fit</code> and <code>template_process</code> modes, as
+<a href="Dispose.pm.html#OTHER_USES_OF_set_mode">explained here</a>.</p></dd>
+</dl>
+<p>Atoms does not use template sets and currently there is only an
+ifeffit set for the <i>analysis</i> group.</p>
+
+<h1 id="DIAGNOSTICS">DIAGNOSTICS <a href="#TOP" class="toplink"><img alt="^" src="../up.gif" /></a></h1>
+
+<dl>
+	<dt><code>Unknown Demeter template file: group $group; type $file; $tmpl</code></dt>
+		<dd><p>You specified a combination of template group and template file that
+does not exist.</p></dd>
+</dl>
+<h1 id="CONFIGURATION_AND_ENVIRONMENT">CONFIGURATION AND ENVIRONMENT <a href="#TOP" class="toplink"><img alt="^" src="../up.gif" /></a></h1>
+
+<p>See <a href="Config.pm.html">Demeter::Config</a> for details about the configuration
+system.</p>
+
+<h1 id="DEPENDENCIES">DEPENDENCIES <a href="#TOP" class="toplink"><img alt="^" src="../up.gif" /></a></h1>
+
+<p>The dependencies of the Demeter system are in the
+<cite>Bundle/DemeterBundle.pm</cite> file.</p>
+
+<h1 id="BUGS_AND_LIMITATIONS">BUGS AND LIMITATIONS <a href="#TOP" class="toplink"><img alt="^" src="../up.gif" /></a></h1>
+
+<p>New template sets:</p>
+
+<ul>
+	<li>More plotting backends?  Grace?  others?</li>
+	<li>tdl/ifeffit 2.0 target</li>
+</ul>
+
+<p>Please report problems to Bruce Ravel (bravel AT bnl DOT gov)</p>
+
+<p>Patches are welcome.</p>
+
+<h1 id="AUTHOR">AUTHOR <a href="#TOP" class="toplink"><img alt="^" src="../up.gif" /></a></h1>
+
+<p>Bruce Ravel (bravel AT bnl DOT gov)</p>
+
+<p>http://cars9.uchicago.edu/~ravel/software/</p>
+
+
+
+
+<h1 id="LICENCE_AND_COPYRIGHT">LICENCE AND COPYRIGHT <a href="#TOP" class="toplink"><img alt="^" src="../up.gif" /></a></h1>
+
+<p>Copyright (c) 2006-2011 Bruce Ravel (bravel AT bnl DOT gov). All rights reserved.</p>
+
+<p>This module is free software; you can redistribute it and/or
+modify it under the same terms as Perl itself. See <a href="http://search.cpan.org/perldoc?perlgpl">perlgpl</a>.</p>
+
+<p>This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.</p>
+
+
+</div><div class="footer">generated by <a href="http://search.cpan.org/perldoc?Pod%3A%3AProjectDocs">Pod::ProjectDocs</a></div></body>
+</html>

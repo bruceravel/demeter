@@ -1,0 +1,149 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+	<title>rdfit</title>
+<link rel="stylesheet" type="text/css" href="podstyle.css" /><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+  <script type="text/javascript">
+
+  function toggleCode( id ) {
+    if ( document.getElementById )
+      elem = document.getElementById( id );
+    else if ( document.all )
+      elem = eval( "document.all." + id );
+    else
+      return false;
+
+    elemStyle = elem.style;
+
+    if ( elemStyle.display != "block" ) {
+      elemStyle.display = "block"
+    } else {
+      elemStyle.display = "none"
+    }
+
+    return true;
+  }
+  document.writeln( "<style type=\"text/css\">div.method-source-code { display: none }</style>" )
+  </script></head>
+<body>
+<div class="box">
+  <h1 class="t1">Demeter</h1>
+  <table>
+    <tr>
+      <td class="label">Description</td>
+      <td class="cell">Perl tools for X-ray Absorption Spectroscopy</td>
+    </tr>
+  </table>
+</div>
+<div class="path">
+  <a href="index.html">Demeter</a> &gt; Perl Manuals &gt;
+  rdfit
+</div>
+<div>
+<a href="src/rdfit.pod">Source</a>
+</div>
+
+
+<div class="pod">
+<!-- INDEX START -->
+<h3 id="TOP">Index</h3>
+<ul>
+	<li><a href="#NAME">NAME</a></li>
+	<li><a href="#VERSION">VERSION</a></li>
+	<li><a href="#SYNOPSIS">SYNOPSIS</a></li>
+	<li><a href="#DESCRIPTION">DESCRIPTION</a></li>
+	<li><a href="#DEPENDENCIES">DEPENDENCIES</a></li>
+	<li><a href="#BUGS_AND_LIMITATIONS">BUGS AND LIMITATIONS</a></li>
+	<li><a href="#AUTHOR">AUTHOR</a></li>
+	<li><a href="#LICENCE_AND_COPYRIGHT">LICENCE AND COPYRIGHT</a></li>
+</ul>
+<hr />
+<!-- INDEX END -->
+
+<h1 id="NAME">NAME <a href="#TOP" class="toplink"><img alt="^" src="up.gif" /></a></h1>
+
+<p>rdfit - Simple interaction with Demeter fit projects</p>
+
+<h1 id="VERSION">VERSION <a href="#TOP" class="toplink"><img alt="^" src="up.gif" /></a></h1>
+
+<p>This documentation refers to Demeter version 0.3.</p>
+
+<h1 id="SYNOPSIS">SYNOPSIS <a href="#TOP" class="toplink"><img alt="^" src="up.gif" /></a></h1>
+
+<pre>  rdfit myfit.dpj
+
+</pre><h1 id="DESCRIPTION">DESCRIPTION <a href="#TOP" class="toplink"><img alt="^" src="up.gif" /></a></h1>
+
+<p>This program provides a simple, screen-based interaction with the
+results of a fit using Demeter which has been saved into a project
+file.  All commands are entered as one or two keystrokes.  You can
+plot your data in k, R, or q along with the fit and the paths.  You
+can examine the guess, def, and set parameters and the fitting
+statistics.  And you can view the log file.  This is a fairly
+bare-bones application, but it provides most of what you need to
+examine your data analysis handiwork.</p>
+
+<p>Here is an example of the main interview screen:</p>
+
+<pre>  c#) change plotting parameter:
+   1) k-weight    = 1                     g) show guess, def, set parameters
+   2) plot space  = r                     s) show statistics
+   3) R part      = m                    d#) show fit parameters
+   4) q part      = r                     l) show log file
+   5) plot paths  = 0                     v) show version
+  .
+  Data included in the fit
+     1. data0 : 10 K copper data
+     2. data1 : 150 K copper data
+  .
+  Choose data by number, select an operation by letter, or q=quit &gt;
+
+</pre><p>And here is an example of the guess, def, set interview with a report
+on one of the parameters:</p>
+
+<pre>  Guess, def, set parameters:
+  .
+    1. g: alpha010        = -0.0067                 2. g: alpha150        = 0.0030
+    3. g: amp             = 0.9782                  4. g: enot            = 1.4856
+    5. g: theta           = 314.8034                6. s: sigmm           = 0.0005
+  .
+  alpha010
+    guess parameter
+    math expression: 0
+    evaluates to  -0.00665617 +/-   0.00161217
+    annotation: &quot;alpha010:  -0.00665617 +/-   0.00161217&quot;
+  .
+  Choose a parameter for a full report or r to return &gt;
+
+</pre><h1 id="DEPENDENCIES">DEPENDENCIES <a href="#TOP" class="toplink"><img alt="^" src="up.gif" /></a></h1>
+
+<p>Along with needing <a href="Demeter.pm.html">Demeter</a> and <a href="Demeter/UI/Screen/Interview.pm.html">Demeter::UI::Screen::Interview</a>,
+this program requires <a href="http://search.cpan.org/perldoc?Term%3A%3AANSIColor">Term::ANSIColor</a>, <a href="http://search.cpan.org/perldoc?Term%3A%3AReadLine">Term::ReadLine</a>, and
+<a href="http://search.cpan.org/perldoc?Term%3A%3ATwiddle">Term::Twiddle</a>.</p>
+
+<h1 id="BUGS_AND_LIMITATIONS">BUGS AND LIMITATIONS <a href="#TOP" class="toplink"><img alt="^" src="up.gif" /></a></h1>
+
+<p>Please report problems to Bruce Ravel (bravel AT bnl DOT gov)</p>
+
+<p>Patches are welcome.</p>
+
+<h1 id="AUTHOR">AUTHOR <a href="#TOP" class="toplink"><img alt="^" src="up.gif" /></a></h1>
+
+<p>Bruce Ravel (bravel AT bnl DOT gov)</p>
+
+<p><a href="http://cars9.uchicago.edu/~ravel/software/">http://cars9.uchicago.edu/~ravel/software/</a></p>
+
+<h1 id="LICENCE_AND_COPYRIGHT">LICENCE AND COPYRIGHT <a href="#TOP" class="toplink"><img alt="^" src="up.gif" /></a></h1>
+
+<p>Copyright (c) 2006-2009 Bruce Ravel (bravel AT bnl DOT gov). All rights reserved.</p>
+
+<p>This module is free software; you can redistribute it and/or
+modify it under the same terms as Perl itself. See <a href="http://search.cpan.org/perldoc?perlgpl">perlgpl</a>.</p>
+
+<p>This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.</p>
+
+
+</div><div class="footer">generated by <a href="http://search.cpan.org/perldoc?Pod%3A%3AProjectDocs">Pod::ProjectDocs</a></div></body>
+</html>

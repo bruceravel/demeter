@@ -1,0 +1,137 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+	<title>Demeter::UI::Artemis::Import</title>
+<link rel="stylesheet" type="text/css" href="../../../podstyle.css" /><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+  <script type="text/javascript">
+
+  function toggleCode( id ) {
+    if ( document.getElementById )
+      elem = document.getElementById( id );
+    else if ( document.all )
+      elem = eval( "document.all." + id );
+    else
+      return false;
+
+    elemStyle = elem.style;
+
+    if ( elemStyle.display != "block" ) {
+      elemStyle.display = "block"
+    } else {
+      elemStyle.display = "none"
+    }
+
+    return true;
+  }
+  document.writeln( "<style type=\"text/css\">div.method-source-code { display: none }</style>" )
+  </script></head>
+<body>
+<div class="box">
+  <h1 class="t1">Demeter</h1>
+  <table>
+    <tr>
+      <td class="label">Description</td>
+      <td class="cell">Perl tools for X-ray Absorption Spectroscopy</td>
+    </tr>
+  </table>
+</div>
+<div class="path">
+  <a href="../../../index.html">Demeter</a> &gt; Perl Modules &gt;
+  Demeter-UI-Artemis-Import
+</div>
+<div>
+<a href="../../../src/Demeter/UI/Artemis/Import.pm">Source</a>
+</div>
+
+
+<div class="pod">
+<!-- INDEX START -->
+<h3 id="TOP">Index</h3>
+<ul>
+	<li><a href="#NAME">NAME</a></li>
+	<li><a href="#VERSION">VERSION</a></li>
+	<li><a href="#SYNOPSIS">SYNOPSIS</a></li>
+	<li><a href="#METHODS">METHODS</a></li>
+	<li><a href="#DEPENDENCIES">DEPENDENCIES</a></li>
+	<li><a href="#BUGS_AND_LIMITATIONS">BUGS AND LIMITATIONS</a></li>
+	<li><a href="#AUTHOR">AUTHOR</a></li>
+	<li><a href="#LICENCE_AND_COPYRIGHT">LICENCE AND COPYRIGHT</a></li>
+</ul>
+<hr />
+<!-- INDEX END -->
+
+<h1 id="NAME">NAME <a href="#TOP" class="toplink"><img alt="^" src="../../../up.gif" /></a></h1>
+
+<p>Demeter::UI::Artemis::Import - Import various kinds of data into Artemis</p>
+
+<h1 id="VERSION">VERSION <a href="#TOP" class="toplink"><img alt="^" src="../../../up.gif" /></a></h1>
+
+<p>This documentation refers to Demeter version 0.4.</p>
+
+<h1 id="SYNOPSIS">SYNOPSIS <a href="#TOP" class="toplink"><img alt="^" src="../../../up.gif" /></a></h1>
+
+<p>This module exports the <code>Import</code> method, which is used to import
+various kinds of data into Artemis.</p>
+
+<h1 id="METHODS">METHODS <a href="#TOP" class="toplink"><img alt="^" src="../../../up.gif" /></a></h1>
+
+<dl>
+	<dt><code>Import</code></dt>
+		<dd><p>Import a specific data type.</p></dd>
+<dd><pre>  import($type, $filename);
+
+</pre></dd>		<dd><p>If the filename is omitted, the user will be prompted for a file using
+the file selection dialog.  The type can be one of:</p></dd>
+<dd><dl>
+	<dt><code>prj</code> or <code>athena</code></dt>
+		<dd><p>An Athena project file</p></dd>
+	<dt><code>chi</code></dt>
+		<dd><p>A column data file containing chi(k) data.  If the data are on a
+non-standard grid, they will be rebinned onto the proper grid.</p></dd>
+	<dt><code>feff</code></dt>
+		<dd><p>A <cite>feff.inp</cite> file, an <cite>atoms.inp</cite> file, or a CIF file.</p></dd>
+	<dt><code>external</code></dt>
+		<dd><p>An entire Feff calculation.  Note that a <cite>feff.inp</cite> file by itself can be imported using </p></dd>
+	<dt><code>old</code></dt>
+		<dd><p>An project file from the Tk version of Artemis.</p></dd>
+</dl>
+</dd>
+	<dt><code>prjrecord</code></dt>
+		<dd><p>Post a dialog prompting for a record in an Athena project file.</p></dd>
+</dl>
+<h1 id="DEPENDENCIES">DEPENDENCIES <a href="#TOP" class="toplink"><img alt="^" src="../../../up.gif" /></a></h1>
+
+<p>Demeter's dependencies are in the <cite>Bundle/DemeterBundle.pm</cite> file.</p>
+
+<h1 id="BUGS_AND_LIMITATIONS">BUGS AND LIMITATIONS <a href="#TOP" class="toplink"><img alt="^" src="../../../up.gif" /></a></h1>
+
+<ul>
+	<li>Not handling local parameters</li>
+	<li>While single-data-set fits with multiple k-weights does work
+correctly, MDS+MKW fits will not be imported properly.</li>
+</ul>
+
+<p>Please report problems to Bruce Ravel (bravel AT bnl DOT gov)</p>
+
+<p>Patches are welcome.</p>
+
+<h1 id="AUTHOR">AUTHOR <a href="#TOP" class="toplink"><img alt="^" src="../../../up.gif" /></a></h1>
+
+<p>Bruce Ravel (bravel AT bnl DOT gov)</p>
+
+<p><a href="http://cars9.uchicago.edu/~ravel/software/">http://cars9.uchicago.edu/~ravel/software/</a></p>
+
+<h1 id="LICENCE_AND_COPYRIGHT">LICENCE AND COPYRIGHT <a href="#TOP" class="toplink"><img alt="^" src="../../../up.gif" /></a></h1>
+
+<p>Copyright (c) 2006-2011 Bruce Ravel (bravel AT bnl DOT gov). All rights reserved.</p>
+
+<p>This module is free software; you can redistribute it and/or
+modify it under the same terms as Perl itself. See <a href="http://search.cpan.org/perldoc?perlgpl">perlgpl</a>.</p>
+
+<p>This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.</p>
+
+
+</div><div class="footer">generated by <a href="http://search.cpan.org/perldoc?Pod%3A%3AProjectDocs">Pod::ProjectDocs</a></div></body>
+</html>

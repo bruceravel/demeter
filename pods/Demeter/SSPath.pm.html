@@ -1,0 +1,190 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+	<title>Demeter::SSPath</title>
+<link rel="stylesheet" type="text/css" href="../podstyle.css" /><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+  <script type="text/javascript">
+
+  function toggleCode( id ) {
+    if ( document.getElementById )
+      elem = document.getElementById( id );
+    else if ( document.all )
+      elem = eval( "document.all." + id );
+    else
+      return false;
+
+    elemStyle = elem.style;
+
+    if ( elemStyle.display != "block" ) {
+      elemStyle.display = "block"
+    } else {
+      elemStyle.display = "none"
+    }
+
+    return true;
+  }
+  document.writeln( "<style type=\"text/css\">div.method-source-code { display: none }</style>" )
+  </script></head>
+<body>
+<div class="box">
+  <h1 class="t1">Demeter</h1>
+  <table>
+    <tr>
+      <td class="label">Description</td>
+      <td class="cell">Perl tools for X-ray Absorption Spectroscopy</td>
+    </tr>
+  </table>
+</div>
+<div class="path">
+  <a href="../index.html">Demeter</a> &gt; Perl Modules &gt;
+  Demeter-SSPath
+</div>
+<div>
+<a href="../src/Demeter/SSPath.pm">Source</a>
+</div>
+
+
+<div class="pod">
+<!-- INDEX START -->
+<h3 id="TOP">Index</h3>
+<ul>
+	<li><a href="#NAME">NAME</a></li>
+	<li><a href="#VERSION">VERSION</a></li>
+	<li><a href="#SYNOPSIS">SYNOPSIS</a></li>
+	<li><a href="#DESCRIPTION">DESCRIPTION</a></li>
+	<li><a href="#ATTRIBUTES">ATTRIBUTES</a></li>
+	<li><a href="#METHODS">METHODS</a></li>
+	<li><a href="#SERIALIZATION_AND_DESERIALIZATION">SERIALIZATION AND DESERIALIZATION</a></li>
+	<li><a href="#CONFIGURATION_AND_ENVIRONMENT">CONFIGURATION AND ENVIRONMENT</a></li>
+	<li><a href="#DEPENDENCIES">DEPENDENCIES</a></li>
+	<li><a href="#BUGS_AND_LIMITATIONS">BUGS AND LIMITATIONS</a></li>
+	<li><a href="#AUTHOR">AUTHOR</a></li>
+	<li><a href="#LICENCE_AND_COPYRIGHT">LICENCE AND COPYRIGHT</a></li>
+</ul>
+<hr />
+<!-- INDEX END -->
+
+<h1 id="NAME">NAME <a href="#TOP" class="toplink"><img alt="^" src="../up.gif" /></a></h1>
+
+<p>Demeter::SSPath - Arbitrary single scattering paths</p>
+
+<h1 id="VERSION">VERSION <a href="#TOP" class="toplink"><img alt="^" src="../up.gif" /></a></h1>
+
+<p>This documentation refers to Demeter version 0.4.</p>
+
+<h1 id="SYNOPSIS">SYNOPSIS <a href="#TOP" class="toplink"><img alt="^" src="../up.gif" /></a></h1>
+
+<p>Build a single scattering path of arbitrary length from the potentials
+of a Feff calculation:</p>
+
+<pre>  my $sspath = Demeter::SSPath-&gt;new(parent =&gt; $feff_object,
+                                    data   =&gt; $data_object,
+                                    name   =&gt; &quot;my SS path&quot;,
+                                    ipot   =&gt; 3,
+                                    reff   =&gt; 3.2,
+                                   );
+  $sspath -&gt; plot('R');
+
+</pre><h1 id="DESCRIPTION">DESCRIPTION <a href="#TOP" class="toplink"><img alt="^" src="../up.gif" /></a></h1>
+
+<p>This object behaves in much the same way as Feff's own SS keyword,
+<a href="http://leonardo.phys.washington.edu/feff/wiki/index.php?title=SS">documented here</a>.
+An SSPath is, in almost every way, exactly like a Path object.  The
+SSPath is a subclass of Path, so all Path attributes and methods are
+also SSPath attributes and methods.  Specifically, you set all path
+parameters in exactly the same way and you use an SSPath in plots and
+fits exactly as a normal Path object.</p>
+
+<p>The difference between a Path and SSPath is in how the geometry of the
+path is specified.  For a Path object, you must specify either a
+ScatteringPath object as the <code>sp</code> attribute or you must set the
+<code>folder</code> and <code>file</code> attributes to point at the location of a
+<cite>feffNNNN.dat</cite> file.</p>
+
+<p>For an SSPath object, you set none of those attributes yourself (they
+all get set, but not by you).  Instead, you specify the <code>ipot</code> and
+<code>reff</code> attributes, which are new attributes for this subclass.
+Demeter will then generate a single scattering path for that potential
+at that distance. The resulting path will have a natural degeneracy of
+1, which can, of course, be overriden by the <code>n</code> attribute.</p>
+
+<p>SSPath objects are plotted just like any Path object, as shown in the
+synopsis above.  They are used in fits in the same way as ordinary
+Path objects.  That is, the <code>paths</code> attribute of the Fit object takes
+a reference to a list of Path and/or SSPath objects.  Path and SSPath
+objects can be used as you wish in the Fit object's path list.</p>
+
+<h1 id="ATTRIBUTES">ATTRIBUTES <a href="#TOP" class="toplink"><img alt="^" src="../up.gif" /></a></h1>
+
+<p>As with any Moose object, the attribute names are the name of the
+accessor methods.</p>
+
+<p>This extends <a href="Path.pm.html">Demeter::Path</a>.  Along with the standard attributes of
+any Demeter object (<code>name</code>, <code>plottable</code>, <code>data</code>, and so on), and of
+the Path object, an SSPath has the following:</p>
+
+<dl>
+	<dt><code>ipot</code></dt>
+		<dd><p>This takes the index of the unique potential for which you wish to
+construct a single scattering path.</p></dd>
+		<dd><p>As with any Path object, you <strong>must</strong> specify a Feff object. The value
+for the <code>ipot</code> attribute is in reference to the associated Feff
+object.</p></dd>
+	<dt><code>reff</code></dt>
+		<dd><p>The half path length of the desired single scattering path.</p></dd>
+</dl>
+<h1 id="METHODS">METHODS <a href="#TOP" class="toplink"><img alt="^" src="../up.gif" /></a></h1>
+
+<p>There are no outward-looking methods for the SSPath object beyond
+those of the Path object.  All methods in this module are used behind
+the scenes and need never be called by the user.</p>
+
+<h1 id="SERIALIZATION_AND_DESERIALIZATION">SERIALIZATION AND DESERIALIZATION <a href="#TOP" class="toplink"><img alt="^" src="../up.gif" /></a></h1>
+
+<p>Good question ...</p>
+
+<h1 id="CONFIGURATION_AND_ENVIRONMENT">CONFIGURATION AND ENVIRONMENT <a href="#TOP" class="toplink"><img alt="^" src="../up.gif" /></a></h1>
+
+<p>See <a href="Config.pm.html">Demeter::Config</a> for a description of the configuration system.</p>
+
+<h1 id="DEPENDENCIES">DEPENDENCIES <a href="#TOP" class="toplink"><img alt="^" src="../up.gif" /></a></h1>
+
+<p>Demeter's dependencies are in the <cite>Bundle/DemeterBundle.pm</cite> file.</p>
+
+<h1 id="BUGS_AND_LIMITATIONS">BUGS AND LIMITATIONS <a href="#TOP" class="toplink"><img alt="^" src="../up.gif" /></a></h1>
+
+<ul>
+	<li>Type constraints needed for several of the attributes.</li>
+	<li>Sanity checking, for instance, need to check that the requested ipot
+actually exists; that parent and data are set before anything is done;
+...</li>
+	<li>Think about serialization by itself and in a fit.</li>
+</ul>
+
+<p>Please report problems to Bruce Ravel (bravel AT bnl DOT gov)</p>
+
+<p>Patches are welcome.</p>
+
+<h1 id="AUTHOR">AUTHOR <a href="#TOP" class="toplink"><img alt="^" src="../up.gif" /></a></h1>
+
+<p>Bruce Ravel (bravel AT bnl DOT gov)</p>
+
+<p><a href="http://cars9.uchicago.edu/~ravel/software/">http://cars9.uchicago.edu/~ravel/software/</a></p>
+
+
+
+
+<h1 id="LICENCE_AND_COPYRIGHT">LICENCE AND COPYRIGHT <a href="#TOP" class="toplink"><img alt="^" src="../up.gif" /></a></h1>
+
+<p>Copyright (c) 2006-2011 Bruce Ravel (bravel AT bnl DOT gov). All rights reserved.</p>
+
+<p>This module is free software; you can redistribute it and/or
+modify it under the same terms as Perl itself. See <a href="http://search.cpan.org/perldoc?perlgpl">perlgpl</a>.</p>
+
+<p>This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.</p>
+
+
+</div><div class="footer">generated by <a href="http://search.cpan.org/perldoc?Pod%3A%3AProjectDocs">Pod::ProjectDocs</a></div></body>
+</html>

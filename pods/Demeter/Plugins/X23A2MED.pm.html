@@ -1,0 +1,173 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+	<title>Demeter::Plugin::X23A2MED</title>
+<link rel="stylesheet" type="text/css" href="../../podstyle.css" /><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+  <script type="text/javascript">
+
+  function toggleCode( id ) {
+    if ( document.getElementById )
+      elem = document.getElementById( id );
+    else if ( document.all )
+      elem = eval( "document.all." + id );
+    else
+      return false;
+
+    elemStyle = elem.style;
+
+    if ( elemStyle.display != "block" ) {
+      elemStyle.display = "block"
+    } else {
+      elemStyle.display = "none"
+    }
+
+    return true;
+  }
+  document.writeln( "<style type=\"text/css\">div.method-source-code { display: none }</style>" )
+  </script></head>
+<body>
+<div class="box">
+  <h1 class="t1">Demeter</h1>
+  <table>
+    <tr>
+      <td class="label">Description</td>
+      <td class="cell">Perl tools for X-ray Absorption Spectroscopy</td>
+    </tr>
+  </table>
+</div>
+<div class="path">
+  <a href="../../index.html">Demeter</a> &gt; Perl Modules &gt;
+  Demeter-Plugins-X23A2MED
+</div>
+<div>
+<a href="../../src/Demeter/Plugins/X23A2MED.pm">Source</a>
+</div>
+
+
+<div class="pod">
+<!-- INDEX START -->
+<h3 id="TOP">Index</h3>
+<ul>
+	<li><a href="#NAME">NAME</a></li>
+	<li><a href="#SYNOPSIS">SYNOPSIS</a></li>
+	<li><a href="#METHODS">METHODS</a></li>
+	<li><a href="#ADDITIONAL_ATTRIBUTE">ADDITIONAL ATTRIBUTE</a></li>
+	<li><a href="#THE_CORRECTION_ALGORITHM">THE CORRECTION ALGORITHM</a></li>
+	<li><a href="#BUGS_AND_LIMITATIONS">BUGS AND LIMITATIONS</a></li>
+	<li><a href="#AUTHORS">AUTHORS</a></li>
+</ul>
+<hr />
+<!-- INDEX END -->
+
+<h1 id="NAME">NAME <a href="#TOP" class="toplink"><img alt="^" src="../../up.gif" /></a></h1>
+
+<p>Demeter::Plugin::X23A2MED - filetype plugin for X23A2 Vortex data</p>
+
+<h1 id="SYNOPSIS">SYNOPSIS <a href="#TOP" class="toplink"><img alt="^" src="../../up.gif" /></a></h1>
+
+<p>This plugin performs a deadtime correction on data recorded using the
+X23A2 Vortex silicon drift detector.  It requires an ini file to
+provide all the information needed to correct each channel, including
+the known deadtime (in nanoseconds) for each channel and the columns
+in the file containing the ROI, fast, and slow channels.</p>
+
+<h1 id="METHODS">METHODS <a href="#TOP" class="toplink"><img alt="^" src="../../up.gif" /></a></h1>
+
+<dl>
+	<dt><code>is</code></dt>
+		<dd><p>An X23A2 file is recognized by the second comment line identifying the
+beamline at which the data were collected.  An MED file is recognized
+by having a large (&gt;7) number of columns.</p></dd>
+	<dt><code>fix</code></dt>
+		<dd><p>An ini file is used to specify the deadtime for each channel and is
+prompted for the column labels for the ROI, fast, and slow channels
+for each element of the detector.  The default deadtime (2.80
+nanoseconds) is very good for channels 1 and 2 and quite close for
+channels 3 and 4.</p></dd>
+		<dd><p>Once all of this information is supplied, the deadtime correction is
+done point-by-point for each channel and written out to a temporary
+file in the stash directory.  The columns in the stash directory are
+energy, i0, the four corrected channels, It, and Ir.  It and Ir are
+written out if present in the original file.</p></dd>
+</dl>
+<h1 id="ADDITIONAL_ATTRIBUTE">ADDITIONAL ATTRIBUTE <a href="#TOP" class="toplink"><img alt="^" src="../../up.gif" /></a></h1>
+
+<p>This plugin also provides the <code>inifile</code> attribute which points at an
+ini file containing the various paremeters of the deadtime correction.
+This content for the ini file works with the X23A2 Vortex at the time
+of this writing.</p>
+
+<pre>   [elements]
+   n=4
+
+   [med]
+   # deadtimes are in nanoseconds
+   dt1=280
+   roi1=if1
+   fast1=ifast1
+   slow1=islow1
+   # deadtimes are in nanoseconds
+   dt2=280
+   roi2=if2
+   fast2=ifast2
+   slow2=islow2
+   # deadtimes are in nanoseconds
+   dt3=280
+   roi3=if3
+   fast3=ifast3
+   slow3=islow3
+   # deadtimes are in nanoseconds
+   dt4=280
+   roi4=if4
+   fast4=ifast4
+   slow4=islow4
+   energy=nergy
+   i0=i0
+   inttime=1
+   time=constant
+   intcol=inttime
+
+</pre><p>By deafult, the file called <cite>x23a2vortex.ini</cite> in the dot folder
+(<cite>$HOME/.horae</cite> on unix, <cite>%APPDATA%\horae</cite> on Windows).  To supply
+new parameters, either overwrite that file or specify a different file
+as the value of this attribute.</p>
+
+<h1 id="THE_CORRECTION_ALGORITHM">THE CORRECTION ALGORITHM <a href="#TOP" class="toplink"><img alt="^" src="../../up.gif" /></a></h1>
+
+<p>If the deadtime is known for a channel, that will be used to correct
+the fast channel (aka input count rate, or ICR) by iteratively solving
+the transcendental equation which describes the attenuation of the
+fast channel due to deadtime:</p>
+
+<pre>   y = x*exp(-x*tau)
+
+</pre><p>where tau is the deadtime, x is the actual input rate on the fast
+channel, and y is the measured rate on the dast channel.  The
+iterative solution encoded in the <code>correct</code> subroutine thus solves
+point-by-point for x using a value for tau and the column containing
+y.</p>
+
+<p>If the deadtime is set to 0 (or negative) for a channel, then the
+standard correction of the ratio of the fast and slow channels (or
+ICR/OCR) will be applied to that channel.</p>
+
+<p>For high count rates, the proper deadtime correction is considerably
+more accurate than the standard correction.  For details see the
+upcoming paper by Woicik, Ravel, Fischer, Newburgh in the Journal of
+Synchrotron Radiation.</p>
+
+<h1 id="BUGS_AND_LIMITATIONS">BUGS AND LIMITATIONS <a href="#TOP" class="toplink"><img alt="^" src="../../up.gif" /></a></h1>
+
+<ul>
+	<li>Need to do error checking on ini file values.</li>
+</ul>
+
+<h1 id="AUTHORS">AUTHORS <a href="#TOP" class="toplink"><img alt="^" src="../../up.gif" /></a></h1>
+
+<pre>  Joe Woicik &lt;woicik@bnl.gov&gt; (algorithm)
+  Bruce Ravel &lt;bravel@bnl.gov&gt; (implementation)
+  http://xafs.org/BruceRavel
+
+</pre>
+</div><div class="footer">generated by <a href="http://search.cpan.org/perldoc?Pod%3A%3AProjectDocs">Pod::ProjectDocs</a></div></body>
+</html>

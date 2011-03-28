@@ -1,0 +1,272 @@
+<!DOCTYPE HTMP PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <title>Importing mu(E) data files</title>
+    <link rel="stylesheet" href=../ab.css />
+    <link rel="stylesheet" href=../ppi.css />
+    <meta http-equiv="Content-Type" content="text/html"; charset=iso-8859-15 />
+    <meta name="robots" contents="all" />
+  </head>
+
+  <body>
+    <div class=topbar>
+  <div class=navbar>
+  <table class=navtable>
+    <tr>
+      <td align=left>
+        [&nbsp;<a href="../index.html">Home</a>&nbsp;] &nbsp;&nbsp;
+        [&nbsp;<a href="http://cars9.uchicago.edu/iffwiki/Demeter"><span class=programlink>DEMETER</span></a>&nbsp;] &nbsp;&nbsp;
+        [&nbsp;<a href="http://cars9.uchicago.edu/iffwiki/Ifeffit"><span class=programlink>IFEFFIT</span></a>&nbsp;] &nbsp;&nbsp;
+        [&nbsp;<a href="http://leonardo.phys.washington.edu/feff/wiki/index.php?title=FEFF_Documentation"><span class=programlink>FEFF</span></a>&nbsp;] &nbsp;&nbsp;
+        [&nbsp;<a href="http://xafs.org">xafs.org</a>&nbsp;] &nbsp;&nbsp;
+	[&nbsp;<a href="../demeter.pdf">PDF&nbsp;doc</a>&nbsp;]
+      </td>
+      <td align=right>
+        Next: <a href="../data/chi.html" class="menu" >chi(k) data files</a>
+        &nbsp;&nbsp;
+        Up: <a href="../data/index.html" class="menu" >Importing data</a>      </td>
+    </tr>
+  </table>
+  </div>
+  <h1>
+  Importing mu(E) data files
+</h1>
+</div>
+
+<hr class=hide />
+
+
+<div class=sidebar>
+  <a href="../ceres.html"><img src=../../images/Isis-Sothis-Demeter_sm.jpg
+    width=100% border=0 alt='[Demeter logo]'></a>
+  <br />
+  <a href="../index.html" class="menu" >Home</a><br />
+<a href="../intro.html" class="menu" >Introduction</a><br />
+<br />
+<a href="../data/index.html" class="menuselect" >Importing data</a><br />
+&nbsp;-&nbsp;<a href="../data/mue.html" class="menuselect" >mu(E) data files</a><br />
+&nbsp;-&nbsp;<a href="../data/chi.html" class="menu" >chi(k) data files</a><br />
+&nbsp;-&nbsp;<a href="../data/columns.html" class="menu" >Column data files</a><br />
+&nbsp;-&nbsp;<a href="../data/athena.html" class="menu" >Athena project files</a><br />
+&nbsp;-&nbsp;<a href="../data/mc.html" class="menu" >Multichannel data files</a><br />
+&nbsp;-&nbsp;<a href="../data/special.html" class="menu" >Special data types</a><br />
+&nbsp;-&nbsp;<a href="../data/other.html" class="menu" >Handling arbitrary data</a><br />
+&nbsp;-&nbsp;<a href="../data/plot.html" class="menu" >Basic plotting and data processing</a><br /><br />
+<a href="../mue/index.html" class="menu" >Processing mu(E) data</a><br />
+<a href="../xanes/index.html" class="menu" >Analysis of XANES data</a><br />
+<a href="../highlevel/index.html" class="menu" >High level actions for Demeter objects</a><br />
+<a href="../atoms/index.html" class="menu" >Atoms</a><br />
+<a href="../feff/index.html" class="menu" >Feff</a><br />
+<a href="../paths/index.html" class="menu" >Scattering paths</a><br />
+<a href="../gds/index.html" class="menu" >Guess/Def/Set parameters</a><br />
+<a href="../fit/index.html" class="menu" >Fitting EXAFS data</a><br />
+<a href="../perl/index.html" class="menu" >Using perl to create a fitting model</a><br />
+<a href="../lgcv.html" class="menu" >Local guess parameters and the characteristic value</a><br />
+<a href="../pathlike/index.html" class="menu" >Path-like objects</a><br />
+<a href="../su.html" class="menu" >Structural Units</a><br />
+<a href="../ui.html" class="menu" >User interfaces</a><br />
+<a href="../output.html" class="menu" >Output formats</a><br />
+<a href="../examples/index.html" class="menu" >Full examples</a><br />
+</div>
+
+<p>
+
+The most basic form of data import is from a column data file with the
+first and second columns including energy and  &mu;(E)    .  In that case,
+the data has already been processed from its raw form and saved in this
+immediately useful form.
+</p>
+
+<p>
+Importing a data file of this sort is very simple, as shown in this
+example: 
+</p>
+
+
+<pre class=olscript>
+<ol class=perlblock>
+<li><span class="comment">#!/usr/bin/perl
+<li></span><span class="keyword">use</span> <span class="word">Demeter</span><span class="structure">;</span>
+<li>
+<li><span class="keyword">my</span> <span class="symbol">$data</span> <span class="operator">=</span> <span class="word">Demeter::Data</span> <span class="operator">-&gt;</span> <span class="word">new</span><span class="structure">(</span><span class="word">file</span> <span class="operator">=&gt;</span> <span class="double">&quot;data/fe.060.xmu&quot;</span><span class="operator">,</span>
+<li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="word">name</span> <span class="operator">=&gt;</span> <span class="single">'Fe 60K'</span><span class="operator">,</span>
+<li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="structure">);</span>
+<li><span class="symbol">$data</span> <span class="operator">-&gt;</span> <span class="word">plot</span><span class="structure">(</span><span class="single">'E'</span><span class="structure">);</span>
+</ol>
+</pre>
+
+<p>
+
+As always, the program begins by importing the  <span class=program>DEMETER</span> package.
+At line 4, the Data object is created -- as all  <span class=program>DEMETER</span> objects
+are created -- by the <tt>new</tt> method.  The
+object is given a name and the file containing the data is specified.
+The name will be used whenever the data needs to be identified, for
+instance in the legend of a plot.
+</p>
+
+<p>
+For a data file containing  &mu;(E)     data, it is usually not necessary
+to explicitly identify the data as such.   <span class=program>DEMETER</span> will analyze
+the contents of the data file and recognize it as  &mu;(E)     data.  In
+the rare case that  &mu;(E)     data is not recognized as such, it can be
+explicitly specified like so:
+</p>
+
+
+<ol class=perlsample>
+<br />
+&nbsp;&nbsp;<span class="symbol">$data</span> <span class="operator">-&gt;</span> <span class="word">datatype</span><span class="structure">(</span><span class="single">'xmu'</span><span class="structure">);</span>
+</ol>
+
+<p>
+
+Parameters for normalization, background removal, and Fourier transforms
+are set as attributes of the Data object.  In this example, several
+basic data processing parameters (discussed in detail in the
+documentation for the <span class=file>Demeter::Data</span>
+module) are set using the <tt>set</tt> method.
+</p>
+
+
+<pre class=olscript>
+<ol class=perlblock>
+<li><span class="comment">#!/usr/bin/perl
+<li></span><span class="keyword">use</span> <span class="word">Demeter</span><span class="structure">;</span>
+<li>
+<li><span class="keyword">my</span> <span class="symbol">$data</span> <span class="operator">=</span> <span class="word">Demeter::Data</span> <span class="operator">-&gt;</span> <span class="word">new</span><span class="structure">(</span><span class="word">file</span> <span class="operator">=&gt;</span> <span class="double">&quot;data/fe.060.xmu&quot;</span><span class="operator">,</span>
+<li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="word">name</span> <span class="operator">=&gt;</span> <span class="single">'Fe 60K'</span><span class="operator">,</span>
+<li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="structure">);</span>
+<li><span class="symbol">$data</span> <span class="operator">-&gt;</span> <span class="word">set</span><span class="structure">(</span><span class="word">bkg_rbkg</span>&nbsp;&nbsp;&nbsp;&nbsp;<span class="operator">=&gt;</span> <span class="float">1.5</span><span class="operator">,</span>
+<li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="word">bkg_spl1</span>&nbsp;&nbsp;&nbsp;&nbsp;<span class="operator">=&gt;</span> <span class="number">0</span><span class="operator">,</span>&nbsp;&nbsp;&nbsp;&nbsp;<span class="word">bkg_spl2</span>&nbsp;&nbsp;&nbsp;&nbsp;<span class="operator">=&gt;</span> <span class="number">18</span><span class="operator">,</span>
+<li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="word">bkg_nor1</span>&nbsp;&nbsp;&nbsp;&nbsp;<span class="operator">=&gt;</span> <span class="number">100</span><span class="operator">,</span>&nbsp;&nbsp;<span class="word">bkg_nor2</span>&nbsp;&nbsp;&nbsp;&nbsp;<span class="operator">=&gt;</span> <span class="number">1800</span><span class="operator">,</span>
+<li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="word">fft_kmax</span>&nbsp;&nbsp;&nbsp;&nbsp;<span class="operator">=&gt;</span> <span class="number">3</span><span class="operator">,</span>&nbsp;&nbsp;&nbsp;&nbsp;<span class="word">fft_kmin</span>&nbsp;&nbsp;&nbsp;&nbsp;<span class="operator">=&gt;</span> <span class="number">17</span><span class="operator">,</span>
+<li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="structure">);</span>
+<li><span class="symbol">$data</span> <span class="operator">-&gt;</span> <span class="word">plot</span><span class="structure">(</span><span class="single">'E'</span><span class="structure">);</span>
+</ol>
+</pre>
+
+<a name="settingattributes">
+
+<h3>  Setting attributes</h3>
+</a>
+
+<p>
+
+Since the parameters used for normalization, background removal,
+Fourier transforms are all implemented as normal Moose attributes,
+they are accessed and evaluated as normal Moose attributes.  There are
+several ways of doing this, including those inherent to Moose and
+those defined by the <span class=file>MooseX::SetGet</span>
+module which comes with  <span class=program>DEMETER</span>.
+</p>
+
+<p>
+To obtain <tt>bkg_rbkg</tt>, the  R<sub>bkg</sub>  value
+for background removal, you can do this: </p>
+
+
+<ol class=perlsample>
+<br />
+&nbsp;&nbsp;<span class="keyword">my</span> <span class="symbol">$rbkg</span> <span class="operator">=</span> <span class="symbol">$data</span> <span class="operator">-&gt;</span> <span class="word">bkg_rbkg</span><span class="structure">;</span>
+</ol>
+
+<p>
+
+To set a new value for  R<sub>bkg</sub> , do this:
+</p>
+
+
+<ol class=perlsample>
+<br />
+&nbsp;&nbsp;<span class="symbol">$data</span> <span class="operator">-&gt;</span> <span class="word">bkg_rbkg</span><span class="structure">(</span><span class="float">1.2</span><span class="structure">);</span>
+</ol>
+
+<p>
+
+Each attribute has an accessor method for getting and setting the
+value of the attribute that has the same name as the attribute itself.
+</p>
+
+<p>
+To get and set several parameters at a time, you can use the 
+<tt>get</tt> and
+<tt>set</tt> methods, which are thin wrappers around
+the normal accessors:
+</p>
+
+
+<ol class=perlsample>
+<br />
+&nbsp;&nbsp;<span class="keyword">my</span> <span class="symbol">@values</span> <span class="operator">=</span> <span class="symbol">$data</span> <span class="operator">-&gt;</span> <span class="word">get</span><span class="structure">(</span><span class="single">'bkg_rbkg'</span><span class="operator">,</span> <span class="single">'bkg_nor1'</span><span class="operator">,</span> <span class="single">'bkg_nor2'</span><span class="structure">);</span><br />
+&nbsp;&nbsp;<span class="symbol">$data</span> <span class="operator">-&gt;</span> <span class="word">set</span><span class="structure">(</span><span class="word">bkg_rbkg</span> <span class="operator">=&gt;</span> <span class="float">1.2</span><span class="operator">,</span> <span class="word">bkg_nor1</span> <span class="operator">=&gt;</span> <span class="number">50</span><span class="operator">,</span> <span class="word">bkg_nor2</span> <span class="operator">=&gt;</span> <span class="number">600</span><span class="structure">);</span>
+</ol>
+
+<p>
+
+Finally, parameters can be set at the time of object creation:
+</p>
+
+
+<pre class=olscript>
+<ol class=perlblock>
+<li><span class="comment">#!/usr/bin/perl
+<li></span><span class="keyword">use</span> <span class="word">Demeter</span><span class="structure">;</span>
+<li>
+<li><span class="keyword">my</span> <span class="symbol">$data</span> <span class="operator">=</span> <span class="word">Demeter::Data</span> <span class="operator">-&gt;</span> <span class="word">new</span><span class="structure">(</span><span class="word">file</span> <span class="operator">=&gt;</span> <span class="double">&quot;data/fe.060.xmu&quot;</span><span class="operator">,</span>
+<li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="word">name</span> <span class="operator">=&gt;</span> <span class="single">'Fe 60K'</span><span class="operator">,</span>
+<li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="word">bkg_rbkg</span> <span class="operator">=&gt;</span> <span class="float">1.5</span><span class="operator">,</span>
+<li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="word">bkg_spl1</span> <span class="operator">=&gt;</span> <span class="number">0</span><span class="operator">,</span>&nbsp;&nbsp;&nbsp;&nbsp;<span class="word">bkg_spl2</span> <span class="operator">=&gt;</span> <span class="number">18</span><span class="operator">,</span>
+<li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="word">bkg_nor1</span> <span class="operator">=&gt;</span> <span class="number">100</span><span class="operator">,</span>&nbsp;&nbsp;<span class="word">bkg_nor2</span> <span class="operator">=&gt;</span> <span class="number">1800</span><span class="operator">,</span>
+<li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="word">fft_kmax</span> <span class="operator">=&gt;</span> <span class="number">3</span><span class="operator">,</span>&nbsp;&nbsp;&nbsp;&nbsp;<span class="word">fft_kmin</span> <span class="operator">=&gt;</span> <span class="number">17</span><span class="operator">,</span>
+<li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="structure">);</span>
+</ol>
+</pre>
+
+<p>
+
+All the arguments of <tt>new</tt> are passed to the
+<tt>set</tt> method.
+</p>
+
+<br />
+<hr class=hide />
+
+<div class=bottombar>
+  <div class=navbar>
+  <table class=navtable>
+    <tr>
+      <td align=left>
+        [&nbsp;<a href="../index.html">Home</a>&nbsp;] &nbsp;&nbsp;
+        [&nbsp;<a href="http://cars9.uchicago.edu/iffwiki/Demeter"><span class=programlink>DEMETER</span></a>&nbsp;] &nbsp;&nbsp;
+        [&nbsp;<a href="http://cars9.uchicago.edu/iffwiki/Ifeffit"><span class=programlink>IFEFFIT</span></a>&nbsp;] &nbsp;&nbsp;
+        [&nbsp;<a href="http://leonardo.phys.washington.edu/feff/wiki/index.php?title=FEFF_Documentation"><span class=programlink>FEFF</span></a>&nbsp;] &nbsp;&nbsp;
+        [&nbsp;<a href="http://xafs.org">xafs.org</a>&nbsp;] &nbsp;&nbsp;
+	[&nbsp;<a href="../demeter.pdf">PDF&nbsp;doc</a>&nbsp;]
+      </td>
+      <td align=right>
+        Next: <a href="../data/chi.html" class="menu" >chi(k) data files</a>
+        &nbsp;&nbsp;
+        Up: <a href="../data/index.html" class="menu" >Importing data</a>      </td>
+    </tr>
+  </table>
+  </div>
+  <div class=copyright>
+   <span class=program>DEMETER</span> is copyright &copy; 2009-2010 Bruce Ravel
+  <br />
+  This document is copyright &copy; 2010 Bruce Ravel
+  <br />
+  email: (bravel |A|T| bnl |D|O|T| gov)
+  <br />
+  
+  <a href="http://creativecommons.org/licenses/by-sa/3.0/"><img src="../../images/somerights20.png" width="88" height="31" alt="" border="0" /></a> &nbsp;&nbsp;&nbsp;
+  <br />
+  This document is licensed under <a href="http://creativecommons.org/licenses/by-sa/3.0/">
+  The Creative Commons Attribution-ShareAlike License</a>.
+  <br />
+  If  <span class=program>DEMETER</span> and this document are useful to you, please consider
+  <a href="http://creativecommons.org/support/">supporting The Creative Commons</a>.
+</div>
+</div>
+  </body>
+</html>

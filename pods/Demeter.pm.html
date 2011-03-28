@@ -1,0 +1,503 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+	<title>Demeter</title>
+<link rel="stylesheet" type="text/css" href="podstyle.css" /><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+  <script type="text/javascript">
+
+  function toggleCode( id ) {
+    if ( document.getElementById )
+      elem = document.getElementById( id );
+    else if ( document.all )
+      elem = eval( "document.all." + id );
+    else
+      return false;
+
+    elemStyle = elem.style;
+
+    if ( elemStyle.display != "block" ) {
+      elemStyle.display = "block"
+    } else {
+      elemStyle.display = "none"
+    }
+
+    return true;
+  }
+  document.writeln( "<style type=\"text/css\">div.method-source-code { display: none }</style>" )
+  </script></head>
+<body>
+<div class="box">
+  <h1 class="t1">Demeter</h1>
+  <table>
+    <tr>
+      <td class="label">Description</td>
+      <td class="cell">Perl tools for X-ray Absorption Spectroscopy</td>
+    </tr>
+  </table>
+</div>
+<div class="path">
+  <a href="index.html">Demeter</a> &gt; Perl Modules &gt;
+  Demeter
+</div>
+<div>
+<a href="src/Demeter.pm">Source</a>
+</div>
+
+
+<div class="pod">
+<!-- INDEX START -->
+<h3 id="TOP">Index</h3>
+<ul>
+	<li><a href="#NAME">NAME</a></li>
+	<li><a href="#VERSION">VERSION</a></li>
+	<li><a href="#SYNOPSIS">SYNOPSIS</a></li>
+	<li><a href="#DESCRIPTION">DESCRIPTION</a></li>
+	<li><a href="#IMPORT">IMPORT</a></li>
+	<li><a href="#PRAGMATA">PRAGMATA</a></li>
+	<li><a href="#METHODS">METHODS</a><br />
+<ul>
+	<li><a href="#Main_methods">Main methods</a></li>
+	<li><a href="#Convenience_methods">Convenience methods</a></li>
+	<li><a href="#Utility_methods">Utility methods</a></li>
+</ul>
+</li>
+	<li><a href="#CONFIGURATION_AND_ENVIRONMENT">CONFIGURATION AND ENVIRONMENT</a></li>
+	<li><a href="#DEPENDENCIES">DEPENDENCIES</a></li>
+	<li><a href="#BUGS_AND_LIMITATIONS">BUGS AND LIMITATIONS</a></li>
+	<li><a href="#VERSIONS">VERSIONS</a></li>
+	<li><a href="#AUTHOR">AUTHOR</a></li>
+	<li><a href="#LICENCE_AND_COPYRIGHT">LICENCE AND COPYRIGHT</a></li>
+</ul>
+<hr />
+<!-- INDEX END -->
+
+<h1 id="NAME">NAME <a href="#TOP" class="toplink"><img alt="^" src="up.gif" /></a></h1>
+
+<p>Demeter - A comprehensive XAS data analysis system using Feff and Ifeffit</p>
+
+<h1 id="VERSION">VERSION <a href="#TOP" class="toplink"><img alt="^" src="up.gif" /></a></h1>
+
+<p>This documentation refers to Demeter version 0.4</p>
+
+<h1 id="SYNOPSIS">SYNOPSIS <a href="#TOP" class="toplink"><img alt="^" src="up.gif" /></a></h1>
+
+<p>Import Demeter components into your program:</p>
+
+<pre>  use Demeter;
+
+</pre><p>This will import all Demeter components into your program.
+Using Demeter automatically turns on <a href="http://search.cpan.org/perldoc?strict">strict</a> and <a href="http://search.cpan.org/perldoc?warnings">warnings</a>.</p>
+
+<h1 id="DESCRIPTION">DESCRIPTION <a href="#TOP" class="toplink"><img alt="^" src="up.gif" /></a></h1>
+
+<p>This module provides an object oriented interface to the EXAFS data
+analysis capabilities of the popular and powerful Ifeffit package.
+Mindful that the Ifeffit API involves streams of text commands, this
+package is, at heart, a code generator.  Many methods of this package
+return text.  All actual interaction with Ifeffit is handled through a
+single method, <code>dispose</code>, which is described below.  The internal
+structure of this package involves accumulating text in a scalar
+variable through successive calls to the various code generating
+methods.  This text is then disposed to Ifeffit, to a file, or
+elsewhere.  The outward looking methods, as shown in the example
+above, organize all of the complicated interactions of your data with
+Ifeffit.</p>
+
+<p>This package is aimed at many targets.  It can be the back-end of a
+graphical data analysis program, providing the glue between the
+on-screen representation of the fit and the actual command executed by
+Ifeffit.  It can be used for one-off data analysis chores -- indeed
+most of the examples that come with the package can be reworked into
+useful one-off scripts.  It can also be the back-end to sophisticated
+data analysis chores such as high-throughout data processing and
+analysis or complex physical modeling.</p>
+
+<p>Demeter is a parent class for the objects that are directly
+manipulated in any real program using Demeter.  Each of these objects
+is implemented using Moose, the amazing meta-object system for Perl.
+Although Moose adds some overhead at start-up for any application
+using Demeter, its benefits are legion.  See <a href="http://search.cpan.org/perldoc?Moose">Moose</a> and
+<a href="http://www.iinteractive.com/moose">http://www.iinteractive.com/moose</a> for more information.</p>
+
+<h1 id="IMPORT">IMPORT <a href="#TOP" class="toplink"><img alt="^" src="up.gif" /></a></h1>
+
+<p>Subsets of Demeter can be imported to shorted loading time.</p>
+
+<dl>
+	<dt><code>:data</code></dt>
+		<dd><p>Import just enough of Demeter to perform data processing chores like
+those of Athena.</p></dd>
+<dd><pre>  use Demeter qw(:data)
+
+</pre></dd>	<dt><code>:analysis</code></dt>
+		<dd><p>Import all the data processing chores as well as non-Feff data
+analysis modules for things like linear combination fitting and peak
+fitting.</p></dd>
+<dd><pre>  use Demeter qw(:analysis)
+
+</pre></dd>	<dt><code>:hephaestus</code></dt>
+		<dd><p>Import a bare bones set of data processing modules. This will not
+allow much more than the plotting of mu(E) data.</p></dd>
+<dd><pre>  use Demeter qw(:hephaestus)
+
+</pre></dd>	<dt><code>:xes</code></dt>
+		<dd><p>Import the XES processing and peak fitting modules.</p></dd>
+<dd><pre>  use Demeter qw(:xes)
+
+</pre></dd>	<dt><code>:fit</code></dt>
+		<dd><p>Import everything needed to do data analysis with Feff.</p></dd>
+<dd><pre>  use Demeter qw(:fit)
+
+</pre></dd></dl>
+<h1 id="PRAGMATA">PRAGMATA <a href="#TOP" class="toplink"><img alt="^" src="up.gif" /></a></h1>
+
+<p>Demeter pragmata are ways of affecting the run-time behavior of a
+Demeter program by specfying that behavior at compile-time.</p>
+
+<pre>     use Demeter qw(:plotwith=gnuplot)
+   or
+     use Demeter qw(:ui=screen)
+   or
+     use Demeter qw(:plotwith=gnuplot :ui=screen)
+
+</pre><dl>
+	<dt><code>:plotwith=XX</code></dt>
+		<dd><p>Specify the plotting backend.  The default is <code>pgplot</code>.  The other
+option is <code>gnuplot</code>.  A <code>demeter</code> option will be available soon for
+generating perl scripts which plot.</p></dd>
+		<dd><p>This can also be set during run-time using the <code>plot_with</code> method
+during run-time.</p></dd>
+	<dt><code>:ui=XX</code></dt>
+		<dd><p>Specify the user interface.  Currently the only option is <code>screen</code>.
+Setting the UI to screen does four things:</p></dd>
+<dd><dl>
+	<dt>1.</dt>
+		<dd><p>Provides <a href="Demeter/UI/Screen/Interview.pm.html">Demeter::UI::Screen::Interview</a> as a role for the Fit
+object.  This imports the <code>interview</code> method for use with the Fit
+object, offering a CLI interface to the results of a fit.</p></dd>
+	<dt>2.</dt>
+		<dd><p>Uses <a href="http://search.cpan.org/perldoc?Term%3A%3ATwiddle">Term::Twiddle</a> or <code>Term::Sk</code> to provide some visual feedback
+on the screen while something time consuming is happening.</p></dd>
+	<dt>3.</dt>
+		<dd><p>Makes the CLI prompting tool from <a href="Demeter/UI/Screen/Pause.pm.html">Demeter::UI::Screen::Pause</a>
+available.</p></dd>
+	<dt>4.</dt>
+		<dd><p>Turns on colorization of output using <a href="http://search.cpan.org/perldoc?Term%3A%3AASCIIColor">Term::ASCIIColor</a>.</p></dd>
+</dl>
+</dd>
+		<dd><p>The interview method uses <a href="http://search.cpan.org/perldoc?Term%3A%3AReadLine">Term::ReadLine</a>.  This is made into a
+pragmatic interaction in Demeter in case you want to use
+<a href="http://search.cpan.org/perldoc?Term%3A%3AReadLine">Term::ReadLine</a> in some other way in your program.  Not importing
+the interview method by default allows you to avoid this error message
+from Term::ReadLine when you are using it in some other capacity:
+<code>Cannot create second readline interface, falling back to dumb.</code></p></dd>
+		<dd><p>Also <a href="http://search.cpan.org/perldoc?Term%3A%3ATwiddle">Term::Twiddle</a> is not imported until it is needed, allowing
+this dependeny to be relaxed from a requirement to a suggestion.</p></dd>
+		<dd><p>Future UI options might include <code>tk</code>, <code>wx</code>, or <code>rpc</code>.</p></dd>
+	<dt><code>:template=XX</code></dt>
+		<dd><p>Specify the template set to use for data processing and fitting
+chores.  See <a href="http://search.cpan.org/perldoc?Demeter%3A%3Atemplates">Demeter::templates</a>.</p></dd>
+		<dd><p>In the future, a template set will be written for <a href="http://cars9.uchicago.edu/ifeffit/tdl">Ifeffit 2</a> when it becomes available.</p></dd>
+		<dd><p>These can also be set during run-time using the <code>set_mode</code> method -- see
+<a href="Demeter/Mode.pm.html">Demeter::Mode</a>.</p></dd>
+</dl>
+
+
+
+<h1 id="METHODS">METHODS <a href="#TOP" class="toplink"><img alt="^" src="up.gif" /></a></h1>
+
+<p>An object of this class represents a part of the problem of EXAFS data
+processing and analysis.  That component might be data, a path from
+Feff, a parameter, a fit, or a plot.  Moose provides a sane, solid,
+and consistent way of interacting with these objects.</p>
+
+<p>Not every method shown in the example above is described here.  You
+need to see the subclass documentation for methods specific to those
+subclasses.</p>
+
+<h2 id="Main_methods">Main methods</h2>
+
+<p>These are the basic methods for constructing objects and accessing
+their attributes.</p>
+
+<dl>
+	<dt><code>new</code></dt>
+		<dd><p>This the constructor method.  It builds and initializes new objects.</p></dd>
+<dd><pre>  use Demeter;
+  my $data_object = Demeter::Data -&gt; new;
+  my $path_object = Demeter::Path -&gt; new;
+  my $gds_object  = Demeter::GDS  -&gt; new;
+    ## and so on ...
+
+</pre></dd>		<dd><p>New can optionally take an array of attributes and values with the
+same syntax as the <code>set</code> method.</p></dd>
+	<dt><code>clone</code></dt>
+		<dd><p>This method clones an object, returning the reference to the new object.</p></dd>
+<dd><pre>  $newobject = $oldobject-&gt;clone(@new_arguments);
+
+</pre></dd>		<dd><p>Cloning returns the reference and sets all attributes of the new
+object to the values for the old object.  The optional argument is a
+reference to a hash of those attributes which you wish to change for
+the new object.  Passing this hash reference is equivalent to cloning
+the object, then calling the <code>set</code> method on the new object with that
+hash reference.</p></dd>
+	<dt><code>set</code></dt>
+		<dd><p>This method sets object attributes.  This is a convenience wrapper
+around the accessors provided by <a href="http://search.cpan.org/perldoc?Moose">Moose</a>.</p></dd>
+<dd><pre>  $data_object -&gt; set(fft_kmin=&gt;3.1, fft_kmax=&gt;12.7);
+  $path_object -&gt; set(file=&gt;'feff0123.dat', s0=&gt;'amp');
+  $gds_object  -&gt; set(Type=&gt;'set', name=&gt;'foo', mathexp=&gt;7);
+
+</pre></dd>		<dd><p>The set method of each subclass behaves slightly differently for each
+subclass in the sense that error checking is performed appropriately
+for each subclass.  Each subclass takes a hash reference as its
+argument, as shown above.  An exception is thrown is you attempt to
+<code>set</code> an undefined attribute for every subclass except for the Config
+subclass.</p></dd>
+		<dd><p>The argument are simply a list (remember that the =&gt; symbol is
+sytactically equivalent to a comma). The following are equivalent:</p></dd>
+<dd><pre>    $data_object -&gt; set(file =&gt; &quot;my.data&quot;, kmin =&gt; 2.5);
+  and
+    @atts = (file =&gt; &quot;my.data&quot;, kmin =&gt; 2.5);
+    $data_object -&gt; set(@atts);
+
+</pre></dd>		<dd><p>The sense in which this is a convenience wrapper is in that the
+following are equivalent:</p></dd>
+<dd><pre>    $data_object -&gt; set(fft_kmin=&gt;3.1, fft_kmax=&gt;12.7);
+  and
+    $data_object -&gt; fft_kmin(3.1);
+    $data_object -&gt; fft_kmax(12.7);
+
+</pre></dd>		<dd><p>The latter two lines use the accessors auto-generated by Moose.  With
+Moose, accessors to attributes have names that are the same as the
+attributes.  The <code>set</code> method simply loops over its arguments, calling
+the appropriate accessor.</p></dd>
+<dd>
+
+
+</dd>	<dt><code>get</code></dt>
+		<dd><p>This is the accessor method.  It &quot;does the right thing&quot; in both scalar
+and list context.</p></dd>
+<dd><pre>  $kmin = $data_object -&gt; get('fft_kmin');
+  @window_params = $data_object -&gt; get(qw(fft_kmin fft_kmax fft_dk fft_kwindow));
+
+</pre></dd>		<dd><p>See the documentation for each subclass for complete lists of what
+attributes are available for each subclass.  An exception is thrown if
+you attempt to <code>get</code> an undefined attribute for all subclasses except
+for the Config subclass, which is specifically intended to store
+user-defined parameters.</p></dd>
+	<dt><code>serialize</code></dt>
+		<dd><p>Returns the YAML serialization string for the object.  See the Fit
+objects serialize method for complete details of serialization of a
+fitting model.</p></dd>
+	<dt><code>matches</code></dt>
+		<dd><p>This is a gneeralized way of testing to see if an attribute value
+matches a regular expression.  By default it tries to match the
+supplied regular expression again the <code>name</code> attribute.</p></dd>
+<dd><pre>  $is_match = $object-&gt;matches($regexp);
+
+</pre></dd>		<dd><p>You can supply a second argument to match against some other
+attribute.  For instance, to match the <code>group</code> attribute against a
+regular expression:</p></dd>
+<dd><pre>  $group_matches = $object-&gt;matches($regexp, 'group');
+
+</pre></dd>	<dt><code>dispose</code></dt>
+		<dd><p>This method sends data processing and plotting commands off to their
+eventual destinations.  See the document page for <a href="Demeter/Dispose.pm.html">Demeter::Dispose</a>
+for complete details.</p></dd>
+	<dt><code>set_mode</code></dt>
+		<dd><p>This is the method used to set the attributes described in
+<a href="Demeter/Dispose.pm.html">Demeter::Dispose</a>.  Any Demeter object can call this method.</p></dd>
+<dd><pre>   $object -&gt; set_mode(ifeffit =&gt; 1,
+                       screen  =&gt; 1,
+                       buffer  =&gt; \@buffer_array
+                      );
+
+</pre></dd>	<dt><code>get_mode</code></dt>
+		<dd><p>When called with no arguments, this method returns a hash of all attributes
+their values.  When called with an argument (which must be one of the
+attributes), it returns the value of that attribute.  Any Demeter object can
+call this method.</p></dd>
+<dd><pre>   %hash = $object -&gt; get_mode;
+   $value = $object -&gt; get_mode(&quot;screen&quot;);
+
+</pre></dd>		<dd><p>See <a href="Demeter:Dispose">Demeter:Dispose</a> for more details.</p></dd>
+</dl>
+<h2 id="Convenience_methods">Convenience methods</h2>
+
+<dl>
+	<dt><code>co</code></dt>
+		<dd><p>This returns the Config object.  This is a wrapper around <code>get_mode</code>
+and is intended to be used in a method call chain with any Demeter
+object.  The following are equivalent:</p></dd>
+<dd><pre>  my $config = $data-&gt;get_mode(&quot;params&quot;);
+  $config -&gt; set_default(&quot;clamp&quot;, &quot;medium&quot;, 20);
+
+</pre></dd>		<dd><p>and</p></dd>
+<dd><pre>  $data -&gt; co -&gt; set_default(&quot;clamp&quot;, &quot;medium&quot;, 20);
+
+</pre></dd>		<dd><p>The latter involves much less typing!</p></dd>
+	<dt><code>po</code></dt>
+		<dd><p>This returns the Plot object.  Like the <code>co</code> method, this is a
+wrapper around <code>get_mode</code> and is intended to be used in a method call
+chain with any Demeter object.</p></dd>
+<dd><pre>  $data -&gt; po -&gt; set(&quot;c9&quot;, 'yellowchiffon3');
+
+</pre></dd>	<dt><code>mo</code></dt>
+		<dd><p>This returns the Mode object.  This is intended to be used in a method
+call chain with any Demeter object.</p></dd>
+<dd><pre>  print &quot;on screen!&quot; if ($data -&gt; mo -&gt; ui eq 'screen');
+
+</pre></dd>	<dt><code>dd</code></dt>
+		<dd><p>This returns the default Data object.  When a Path object is created,
+if it is created without having its <code>data</code> attribute set to an
+existing Data object, a new Data object with sensible default values
+for all of its attributs is created and stored as the <code>datadefault</code>
+attribute of the Mode object.</p></dd>
+		<dd><p>Path objects always rely on their associated Data objects for plotting
+and processing parameters.  So every Path object <strong>must</strong> have an
+associated Data object.  If the <code>data</code> attribute is not specified by
+the user, the default Data object will be used.</p></dd>
+<dd><pre>  print ref($object-&gt;dd);
+       ===prints===&gt; Demeter::Data
+
+</pre></dd></dl>
+<h2 id="Utility_methods">Utility methods</h2>
+
+<p>Here are a number of methods used internally, but which are available
+for your use.</p>
+
+<dl>
+	<dt><code>hashes</code></dt>
+		<dd><p>This returns a string which can be used as a comment character in
+Ifeffit.  The idea is that every comment included in the commands
+generated by methods of this class use this string.  That provides a
+way of distinguishing comments generated by the methods of this class
+from other comment lines sent to Ifeffit.  This is a user interface
+convenience.</p></dd>
+<dd><pre>   print $object-&gt;hashes, &quot;\n&quot;;
+       ===prints===&gt; ###___
+
+</pre></dd>	<dt><code>group</code></dt>
+		<dd><p>This returns a unique five-character string for the object.  For Data
+and Path objects, this is used as the Ifeffit group name for this
+object.</p></dd>
+	<dt><code>name</code></dt>
+		<dd><p>This returns a short, user-supplied, string identifying the object.
+For a GDS object, this is the parameter name.  For Path and Data
+objects, this is the string that will be put in a plot legend.</p></dd>
+	<dt><code>data</code></dt>
+		<dd><p>Path objects (also VPath and SSPath) are associated with Data objects.
+This method returns the reference to the associated Data object.  For
+Data objects, this returns a reference to itself.  For other object
+types this returns a false value.</p></dd>
+	<dt><code>plottable</code></dt>
+		<dd><p>This returns a true value if the object is one that can be plotted.
+Currently, Data, Path, VPath, and SSPath objects return a true value.
+All others return false.</p></dd>
+<dd><pre>   $can_plot = $object -&gt; plottable;
+
+</pre></dd>	<dt><code>sentinal</code></dt>
+		<dd><p>This attribute is inherited by all Demeter objects and provides a
+completely generic way for interactivity to be built into any process
+that a Demeter program undertakes.  At the moment, the only use is in
+the <a href="Demeter/LCF.pm.html">Demeter::LCF</a> <code>combi</code> method.  This attribute takes a code
+reference.  At the beginning of each fit in the combinatorial
+sequence, this is dereference and called.  This allows Athena to
+provide status bar updates during this potentially long-running
+process.</p></dd>
+		<dd><p>The dereferencing and calling of the sentinal is handled by <code>call</code></p></dd>
+<dd><pre>  $object -&gt; call_sentinal;
+
+</pre></dd></dl>
+
+
+
+<p>Demeter provides a generic mechanism for reporting on errors in a
+fitting model.  When using Demeter non-interactively, useful messages
+about problems in the fitting model will be written to standard
+output.  Critical problems in a non-interactive mode will be cause the
+script to croak (see <a href="http://search.cpan.org/perldoc?Carp">Carp</a>).</p>
+
+<p>In an interactive mode (such as with the Wx interface), the
+<code>add_trouble</code> method is used to fill the <code>trouble</code> attribute, which
+is inherited by all Demeter objects.  In the default, untroubled
+state, an object will have the <code>trouble</code> attribute set to an empty
+string (i.e. something logically false).  As problems are found in the
+fitting model (see <a href="Demeter/Fit/Sanity.pm.html">Demeter::Fit::Sanity</a>), the <code>trouble</code> attribute
+gets short text strings appended to it.  The list of problems an
+object has are separated by pipe characters (<code>|</code>).</p>
+
+<p>See <a href="Demeter/Fit/Sanity.pm.html">Demeter::Fit::Sanity</a> for a complete description of these
+problem codes.  The Fit, Data, Path, and GDS objects each have their
+own set of problem codes.</p>
+
+<h1 id="CONFIGURATION_AND_ENVIRONMENT">CONFIGURATION AND ENVIRONMENT <a href="#TOP" class="toplink"><img alt="^" src="up.gif" /></a></h1>
+
+<p>See <a href="Demeter/Config.pm.html">Demeter::Config</a> for details about the configuration
+system.</p>
+
+<h1 id="DEPENDENCIES">DEPENDENCIES <a href="#TOP" class="toplink"><img alt="^" src="up.gif" /></a></h1>
+
+<p>The dependencies of the Demeter system are in the
+<cite>Bundle/DemeterBundle.pm</cite> file.</p>
+
+<h1 id="BUGS_AND_LIMITATIONS">BUGS AND LIMITATIONS <a href="#TOP" class="toplink"><img alt="^" src="up.gif" /></a></h1>
+
+<ul>
+	<li>Template evaluation is a potential security hole in the sense that
+someone could put something like <code>{system 'rm -rf *'}</code> in one of the
+templates.  <a href="http://search.cpan.org/perldoc?Text%3A%3ATemplate">Text::Template</a> supports using a <a href="http://search.cpan.org/perldoc?Safe">Safe</a> compartment.</li>
+	<li>Serialization is incompletely implemented at this time.</li>
+</ul>
+
+<p>Please report problems to Bruce Ravel (bravel AT bnl DOT gov)</p>
+
+<p>Patches are welcome.</p>
+
+<h1 id="VERSIONS">VERSIONS <a href="#TOP" class="toplink"><img alt="^" src="up.gif" /></a></h1>
+
+<dl>
+	<dt>0.4.6</dt>
+		<dd><p>We now have a mostly functional Athena.</p></dd>
+	<dt>0.4.5</dt>
+		<dd><p>Fit history in Artemis is mostly functional.  Reordering of Plot list
+in Artemis now possible by mouse.  Added rudimentary XES support.</p></dd>
+	<dt>0.4.4</dt>
+		<dd><p>Added fit history to Artemis</p></dd>
+	<dt>0.4.3</dt>
+		<dd><p>Added LCF fitting</p></dd>
+	<dt>0.4.2</dt>
+		<dd><p>Cloning a Feff object now deeply copies the array references in an
+overridden clone method.</p></dd>
+		<dd><p>Added showlegend attribute to Plot object</p></dd>
+	<dt>0.4.1</dt>
+		<dd><p>Now supplying the <code>bootstrap</code> script in an attempt to ease initial
+installation.  Also building the DPG with a PL_file at build time.</p></dd>
+		<dd><p>Fixed a bug setting the Plot object space attribute in quad, stddev,
+and variance plots.  Added stddev and variance plots to the merge
+example in <code>harness</code>.</p></dd>
+</dl>
+<h1 id="AUTHOR">AUTHOR <a href="#TOP" class="toplink"><img alt="^" src="up.gif" /></a></h1>
+
+<p>Bruce Ravel (bravel AT bnl DOT gov)</p>
+
+<p>http://cars9.uchicago.edu/~ravel/software/</p>
+
+
+
+
+<h1 id="LICENCE_AND_COPYRIGHT">LICENCE AND COPYRIGHT <a href="#TOP" class="toplink"><img alt="^" src="up.gif" /></a></h1>
+
+<p>Copyright (c) 2006-2011 Bruce Ravel (bravel AT bnl DOT gov). All rights reserved.</p>
+
+<p>This module is free software; you can redistribute it and/or
+modify it under the same terms as Perl itself. See <a href="http://search.cpan.org/perldoc?perlgpl">perlgpl</a>.</p>
+
+<p>This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.</p>
+
+
+</div><div class="footer">generated by <a href="http://search.cpan.org/perldoc?Pod%3A%3AProjectDocs">Pod::ProjectDocs</a></div></body>
+</html>

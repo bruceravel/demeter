@@ -1,0 +1,276 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+	<title>Xray::Absorption::Elam</title>
+<link rel="stylesheet" type="text/css" href="../../podstyle.css" /><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+  <script type="text/javascript">
+
+  function toggleCode( id ) {
+    if ( document.getElementById )
+      elem = document.getElementById( id );
+    else if ( document.all )
+      elem = eval( "document.all." + id );
+    else
+      return false;
+
+    elemStyle = elem.style;
+
+    if ( elemStyle.display != "block" ) {
+      elemStyle.display = "block"
+    } else {
+      elemStyle.display = "none"
+    }
+
+    return true;
+  }
+  document.writeln( "<style type=\"text/css\">div.method-source-code { display: none }</style>" )
+  </script></head>
+<body>
+<div class="box">
+  <h1 class="t1">Demeter</h1>
+  <table>
+    <tr>
+      <td class="label">Description</td>
+      <td class="cell">Perl tools for X-ray Absorption Spectroscopy</td>
+    </tr>
+  </table>
+</div>
+<div class="path">
+  <a href="../../index.html">Demeter</a> &gt; Perl Modules &gt;
+  Xray-Absorption-Elam
+</div>
+<div>
+<a href="../../src/Xray/Absorption/Elam.pm">Source</a>
+</div>
+
+
+<div class="pod">
+<!-- INDEX START -->
+<h3 id="TOP">Index</h3>
+<ul>
+	<li><a href="#NAME">NAME</a></li>
+	<li><a href="#SYNOPSIS">SYNOPSIS</a></li>
+	<li><a href="#DESCRIPTION">DESCRIPTION</a></li>
+	<li><a href="#LITERATURE_REFERENCES">LITERATURE REFERENCES</a></li>
+	<li><a href="#METHODS">METHODS</a></li>
+	<li><a href="#EDGE_AND_LINE_ENERGIES">EDGE AND LINE ENERGIES</a></li>
+	<li><a href="#BUGS_AND_THINGS_TO_DO">BUGS AND THINGS TO DO</a></li>
+	<li><a href="#AUTHOR">AUTHOR</a></li>
+</ul>
+<hr />
+<!-- INDEX END -->
+
+<h1 id="NAME">NAME <a href="#TOP" class="toplink"><img alt="^" src="../../up.gif" /></a></h1>
+
+<p>Xray::Absorption::Elam - Perl interface to the Elam tables</p>
+
+<h1 id="SYNOPSIS">SYNOPSIS <a href="#TOP" class="toplink"><img alt="^" src="../../up.gif" /></a></h1>
+
+<pre>   use Xray::Absorption;
+   Xray::Absorption -&gt; load(&quot;elam&quot;);
+
+</pre><p>See the documentation for Xray::Absorption for details.</p>
+
+<h1 id="DESCRIPTION">DESCRIPTION <a href="#TOP" class="toplink"><img alt="^" src="../../up.gif" /></a></h1>
+
+<p>This module is inherited by the Xray::Absorption module and provides
+access to the data contained in the 1999 Elam tables of absorption
+cross-sections and line and edge energies.</p>
+
+<p>The data in this module, here referred to as &quot;The Elam Tables&quot;, will
+be published real soon.  The compilation of data is the work of Tim
+Elam (tim.elam@nrl.navy.mil).</p>
+
+<p>The data is contained in a database file called <cite>elam.db</cite> which is
+generated at install time from a flat text database of the Elam data.
+The data is stored in a Storable archive using &quot;network&quot; ordering.
+This allows speedy disk and memory access along with network and
+platform portability.</p>
+
+<p>The required <code>Chemistry::Elements</code>, <code>Math::Spline</code>, and
+<code>Math::Derivative</code> modules are available from CPAN.</p>
+
+<h1 id="LITERATURE_REFERENCES">LITERATURE REFERENCES <a href="#TOP" class="toplink"><img alt="^" src="../../up.gif" /></a></h1>
+
+<p>K-shell fluorescence yield below Z=11 from new fits in J. H. Hubbell
+et. al.,  J. Chem. Phys. Ref. Data, Vol. 23, No. 2, 1994, pp. 339-364.</p>
+
+<p>Fluorescence yields and Coster-Kronig transition rates for K and L
+shells Krause, J. Phys. Chem. Ref. Data, Vol. 8, No. 2, 1979,
+pp. 307-327.  values for wK, wL2,and f23 are from Table 1. (values for
+light atoms in condensed matter) (note that this produces a large step
+in f23 values at z=30, see discussion in reference section 5.3 L2
+Subshell and section 7 last paragraph)</p>
+
+<p>Values of wL1 for Z=85-110 and f12 for Z=72-96 from Krause were
+modified as suggested by W. Jitschin, &quot;Progress in Measurements of
+L-Subshell Fluorescence, Coster-Kronig, and Auger Values&quot;, AIP
+Conference Proceedings 215, X-ray and Inner-Shell Processes,
+Knocxville, TN, 1990. T. A. Carlson, M. O. Krause, and S. T. Manson,
+Eds. (American Institute of Physics, 1990).</p>
+
+<p>Fluorescence yields and Coster-Kronig transition rates for M shells
+Eugene J. McGuire, &quot;Atomic M-Shell Coster-Kronig, Auger, and Radiative
+Rates, and Fluorescence Yields for Ca-Th&quot;, Physical Review A, Vol. 5,
+No. 3, March 1972, pp. 1043-1047.</p>
+
+<p>Fluorescence yields and Coster-Kronig transition rates for N shells
+Eugene J. McGuire, &quot;Atomic N-shell Coster-Kronig, Auger, and Radiative
+Rates and Fluorescence Yields for 38 &lt;= Z &lt;= 103&quot;, Physical Review A
+9, No. 5, May 1974, pp. 1840-1851.  Values for Z=38 to 50 were
+adjusted according to instructions on page 1845, at the end of Section
+IV.a., and the last sentence of the conclusions.</p>
+
+<p>Relative emission rates, fits to low-order polynomials, low-Z
+extrapolations by hand and eye data from Salem, Panossian, and Krause,
+Atomic Data and Nuclear Data Tables Vol. 14 No.2 August 1974,
+pp. 92-109.  M shell data is from T. P. Schreiber and A. M. Wims,
+X-ray Spectrometry Vol. 11, No. 2, 1982, pp. 42-45.  Small, arbitrary
+intensities assigned to Mgamma and Mzeta lines.</p>
+
+<p>Cross sections are in cm2/gm vs energy in eV.  Berger and
+Hubbell above 1 keV, Plechaty et. al. below.</p>
+
+<p>Reference: M. J. Berger and J. H. Hubbell, XCOM: Photon Cross Sections
+on a Personal Computer, Publication NBSIR 87-3597, National Bureau of
+Standards, Gaithersburg, MD, 1987.  Machine-readable data from
+J. H. Hubbell, personal communication, Nov. 9, 1998.  The data were
+updated as of May 7, 1998 (XCOM Version 2.1).</p>
+
+<p>Reference: Plechaty, E. F., Cullen, D. E., and Howerton,R.J, &quot;Tables
+and Graphs of Photon Interaction Cross Sections from 0.1 keV to 100
+MeV Derived from the LLL Evaluated Nuclear Data Library,&quot; Report
+UCRL-50400, Vol. 6, Rev. 3, NTIS DE82-004819, Lawrence Livermore
+National Laboratory, Livermore, CA. (1981).  Machine-readable data
+from D. B. Brown, Naval Research Laboratory.</p>
+
+
+
+
+<h1 id="METHODS">METHODS <a href="#TOP" class="toplink"><img alt="^" src="../../up.gif" /></a></h1>
+
+<p>The behaviour of the <code>get_energy</code> method in this module is a bit
+different from other modules used by <code>Xray::Absorption</code>.  This
+section describes methods which behave differently for this data
+resource and methods offered by this module which are not available
+for other resources.</p>
+
+<dl>
+	<dt><code>get_energy</code></dt>
+		<dd><p>Example:</p></dd>
+<dd><pre>   $energy = Xray::Absorption -&gt; get_energy($elem, $edge)
+
+</pre></dd>		<dd><p>This behaves similarly to the <code>get_energy</code> method of othe resources,
+except there are some differences regarding the syntax of specifying
+<code>$edge</code>.  When using the Elam data resource, <code>$edge</code> can be any of
+K, L1-L3, M1-M5, N1-N7, O1-O7, or P1-P3.  To get a fluorescence line,
+you may use any Siegbahn or IUPAC symbol to specify the line.  See the
+pod in <code>Xray::Absorption</code> for details about these symbols.  You may
+also specify a &quot;generic&quot; Siegbahn symbol, such as Kalpha.  The energy
+that is returned depends on the value of an internal variable which
+may be set using the <code>line_toggle</code> method.  If the toggle is set to
+&quot;brightest&quot;, the energy of the brightest line of the class is
+returned.  In the case of &quot;Kalpha&quot;, the energy or the Kalpha1 line is
+returned.  If the toggle is set to &quot;weighted&quot; then the intestity
+weighted average energy of all lines of the class is returned.
+&quot;weighted&quot; is the default.</p></dd>
+</dl>
+<dl>
+	<dt><code>line_toggle</code></dt>
+		<dd><p>Toggle the method of computing a generic fluorescence line between
+&quot;weighted&quot; and &quot;brightest&quot;.  This determines the response to a use of
+<code>get_energy</code> like this:</p></dd>
+<dd><pre>  $energy = Xray::Absorption -&gt; line_toggle(&quot;brightest&quot;);
+  $energy = Xray::Absorption -&gt; get_energy(&quot;cu&quot;, &quot;kalpha&quot;);
+  $energy = Xray::Absorption -&gt; line_toggle(&quot;wieghted&quot;);
+  $energy = Xray::Absorption -&gt; get_energy(&quot;cu&quot;, &quot;kalpha&quot;);
+
+</pre></dd>		<dd><p>When &quot;weighted&quot; is selected, this returns the intensity weighted
+energy of the various Kalpha lines.  When &quot;brightest&quot; is chosen, this
+returns the energy of the Kalpha1 line because that is the brightest
+Kalpha line.  The default is &quot;weighted&quot;.  Case does not matter for the
+argument, but spelling does.  If the argument is not spelled correctly
+then the calculation method is not toggled.</p></dd>
+</dl>
+<dl>
+	<dt><code>fluor_yield</code></dt>
+		<dd><p>Return the fluorescence yield for an atomic symbol and edge</p></dd>
+<dd><pre>  $fyield = Xray::Absorption -&gt; fluor_yield(&quot;cu&quot;, &quot;k&quot;);
+
+</pre></dd>		<dd><p>The value returned is the probability of an fluorescent x-ray being emitted
+for an absorption event.
+Data comes from M. O. Krause, J. Phys. Chem. Ref. Data 8, 307 (1979)
+Returns -1 for non-interpretable input</p></dd>
+</dl>
+<dl>
+	<dt><code>edge_jump</code></dt>
+		<dd><p>Return edge jump ratio for an atomic symbol and edge</p></dd>
+<dd><pre>  $jump = Xray::Absorption -&gt; edge_jump(&quot;cu&quot;, &quot;k&quot;);
+
+</pre></dd>		<dd><p>The value returned is the ratio of the above-edge absorption coefficient 
+to the below-edge coefficient</p></dd>
+<dd>
+
+
+</dd></dl>
+<dl>
+	<dt><code>get_intesity</code></dt>
+		<dd><p>Example:</p></dd>
+<dd><pre>   $intensity = Xray::Absorption -&gt; get_intesity($elem, $symbol)
+
+</pre></dd>		<dd><p>Get the relative amount of the line specified by $symbol for the
+element $elem.  $elem can be a two letter symbol, a full name, or a Z
+number.  $symbol may be either a Siegbahn or IUPAC symbol.  The
+intesities are such that all lines of a type (e.g. all Kalpha lines)
+have intesities which sum to 1.  If $elem or $symbol is not
+recognized, then this returns 0.</p></dd>
+</dl>
+<dl>
+	<dt><code>cross_section</code></dt>
+		<dd><p>Example:</p></dd>
+<dd><pre>   $xsec = Xray::Absorption -&gt; cross_section($elem, $energy, $mode);
+
+</pre></dd><dd><pre>   @xsec = Xray::Absorption -&gt; cross_section($elem, \@energy, $mode);
+
+</pre></dd><dd>
+
+
+</dd>		<dd><p>The <code>$mode</code> argument is different here than for the other resources.
+The options are &quot;xsec&quot;, &quot;photo&quot;, &quot;coherent&quot; and &quot;incoherent&quot;, telling
+this method to return the full cross-section or just the
+photoelectric, coherent, or incoherent portions.</p></dd>
+		<dd><p>The values for all cross-sections are computed using spline
+interpolation as described in the paper by Elam, Ravel, and Siebert.</p></dd>
+</dl>
+<h1 id="EDGE_AND_LINE_ENERGIES">EDGE AND LINE ENERGIES <a href="#TOP" class="toplink"><img alt="^" src="../../up.gif" /></a></h1>
+
+<p>The Elam data resource provides a fairly complete set of edge and line
+energies.  Any edge tabulated on the Gwyn William's Table of Electron
+Binding Energies for the Elements (that's the one published by NSLS
+and on the door of just about every hutch at NSLS) is in the Elam data
+resource.  Additionally, a large but not exhaustive collection of line
+energies is tabulated.  Every line in the table in the <strong>SYMBOLS FOR
+FLUORESCENCE LINES</strong> section of the <code>Absorption.pm</code> pod is included in
+the Elam tables.  A reasonable value for the relative line intensity
+if also included in this table.  See (the elam reference) for a
+discussion of which lines were included in the tables and how the
+intensities were calculated.</p>
+
+<h1 id="BUGS_AND_THINGS_TO_DO">BUGS AND THINGS TO DO <a href="#TOP" class="toplink"><img alt="^" src="../../up.gif" /></a></h1>
+
+<ul>
+	<li>The &quot;weighted&quot; option for <code>get_energy</code> is not quite right in that it
+counts in lines from different edges.  While that might be
+appropriate, there is some question as to the relative weights of
+lines from different edges.  So a better solution would be to only use
+lines from the edge directly below the chosen energy.</li>
+</ul>
+
+<h1 id="AUTHOR">AUTHOR <a href="#TOP" class="toplink"><img alt="^" src="../../up.gif" /></a></h1>
+
+<pre>  Bruce Ravel, bruce@phys.washington.edu
+  http://feff.phys.washington.edu/~ravel/software/Absorption/
+
+</pre>
+</div><div class="footer">generated by <a href="http://search.cpan.org/perldoc?Pod%3A%3AProjectDocs">Pod::ProjectDocs</a></div></body>
+</html>

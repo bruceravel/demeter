@@ -1,0 +1,181 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+	<title>MooseX::SetGet</title>
+<link rel="stylesheet" type="text/css" href="../podstyle.css" /><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+  <script type="text/javascript">
+
+  function toggleCode( id ) {
+    if ( document.getElementById )
+      elem = document.getElementById( id );
+    else if ( document.all )
+      elem = eval( "document.all." + id );
+    else
+      return false;
+
+    elemStyle = elem.style;
+
+    if ( elemStyle.display != "block" ) {
+      elemStyle.display = "block"
+    } else {
+      elemStyle.display = "none"
+    }
+
+    return true;
+  }
+  document.writeln( "<style type=\"text/css\">div.method-source-code { display: none }</style>" )
+  </script></head>
+<body>
+<div class="box">
+  <h1 class="t1">Demeter</h1>
+  <table>
+    <tr>
+      <td class="label">Description</td>
+      <td class="cell">Perl tools for X-ray Absorption Spectroscopy</td>
+    </tr>
+  </table>
+</div>
+<div class="path">
+  <a href="../index.html">Demeter</a> &gt; Perl Modules &gt;
+  MooseX-SetGet
+</div>
+<div>
+<a href="../src/MooseX/SetGet.pm">Source</a>
+</div>
+
+
+<div class="pod">
+<!-- INDEX START -->
+<h3 id="TOP">Index</h3>
+<ul>
+	<li><a href="#NAME">NAME</a></li>
+	<li><a href="#VERSION">VERSION</a></li>
+	<li><a href="#SYNOPSIS">SYNOPSIS</a></li>
+	<li><a href="#METHODS">METHODS</a><br />
+<ul>
+	<li><a href="#set">set</a></li>
+	<li><a href="#get">get</a></li>
+</ul>
+</li>
+	<li><a href="#ACKNOWLEDGEMENTS">ACKNOWLEDGEMENTS</a></li>
+	<li><a href="#BUGS_AND_LIMITATIONS">BUGS AND LIMITATIONS</a></li>
+	<li><a href="#AUTHOR">AUTHOR</a></li>
+	<li><a href="#LICENCE_AND_COPYRIGHT">LICENCE AND COPYRIGHT</a></li>
+</ul>
+<hr />
+<!-- INDEX END -->
+
+<h1 id="NAME">NAME <a href="#TOP" class="toplink"><img alt="^" src="../up.gif" /></a></h1>
+
+<p>MooseX::SetGet - Moose Role to add a quick set and get methods</p>
+
+<h1 id="VERSION">VERSION <a href="#TOP" class="toplink"><img alt="^" src="../up.gif" /></a></h1>
+
+<p>This documentation refers to Demeter version 0.4.</p>
+
+<h1 id="SYNOPSIS">SYNOPSIS <a href="#TOP" class="toplink"><img alt="^" src="../up.gif" /></a></h1>
+
+<p>This swipes the <code>set</code> method from <a href="http://search.cpan.org/perldoc?MooseX%3A%3AMutatorAttributes">MooseX::MutatorAttributes</a> and
+adds a get method.  Like the <code>set</code> from MooseX::MutatorAttributes,
+this one returns self.  The <code>get</code> method will return a scalar or an
+array.</p>
+
+<pre>    with qw{MooseX::MutatorAttributes};
+    $obj-&gt;set( attr1 =&gt; $value1, attr2 =&gt; $value2 )-&gt;method_that_uses_attr;
+    $value  = $obj-&gt;get('attr1');
+    @values = $obj-&gt;get(qw(attr1 attr2));
+
+</pre><h1 id="METHODS">METHODS <a href="#TOP" class="toplink"><img alt="^" src="../up.gif" /></a></h1>
+
+<h2 id="set">set</h2>
+
+<p><a href="#" onclick="toggleCode('method_set');return false;">[Source]</a></p>
+                                        <div class="method-source-code" id="method_set">
+                                        <pre>
+
+sub set {
+  my ($self, %opts) = @_;
+  while ( my ($name, $value) = each %opts ) {
+    croak sprintf q{[!!!] %s is not an attribute to set for %s}, $name, $self
+      unless defined $self->meta->find_attribute_by_name($name);
+
+    my $setter = $self->meta->find_attribute_by_name($name)->get_write_method;
+    croak sprintf q{[!!!] %s is not writable, no setter defined}, $name
+      unless defined $setter;
+
+    $self->$setter($value);
+  };
+  return $self;
+};
+</pre></div>
+
+<pre>    $self-&gt;set( HASH );
+
+</pre><p>This takes a hash, keys are expected to be attributes, if they are not
+then we Carp::croak. If a key is an acceptable attribute then we
+attempt to set with $value.</p>
+
+<h2 id="get">get</h2>
+
+<p><a href="#" onclick="toggleCode('method_get');return false;">[Source]</a></p>
+                                        <div class="method-source-code" id="method_get">
+                                        <pre>
+
+sub get {
+  my ($self, @opts) = @_;
+  my @list;
+  foreach my $o (@opts) {
+    croak sprintf q{[!!!] %s is not an attribute to get for %s}, $o, $self
+      unless defined $self->meta->find_attribute_by_name($o);
+
+    my $reader = $self->meta->find_attribute_by_name($o)->get_read_method;
+    croak sprintf q{[!!!] %s is not readable, no reader defined}, $o
+      unless defined $reader;
+
+    push @list, $self->$reader;
+  };
+  return wantarray ? @list : $list[0];
+};
+</pre></div>
+
+<pre>    $value  = $self-&gt;get(&quot;attribute&quot;);
+    @values = $self-&gt;get(@attributes);
+
+</pre><p>This takes a list of one or more attributes and returns either a
+scalar or an array containing the values associated with the
+attributes.</p>
+
+<h1 id="ACKNOWLEDGEMENTS">ACKNOWLEDGEMENTS <a href="#TOP" class="toplink"><img alt="^" src="../up.gif" /></a></h1>
+
+<p><code>set</code> was swiped from <a href="http://search.cpan.org/perldoc?MooseX%3A%3AMutatorAttributes">MooseX::MutatorAttributes</a> by ben hengst,
+<code>&lt;notbenh at cpan.org&gt;</code>.  <code>get</code> was based closely upon <code>set</code>.</p>
+
+<h1 id="BUGS_AND_LIMITATIONS">BUGS AND LIMITATIONS <a href="#TOP" class="toplink"><img alt="^" src="../up.gif" /></a></h1>
+
+<p>Please report problems to Bruce Ravel (bravel AT bnl DOT gov)</p>
+
+<p>Patches are welcome.</p>
+
+<h1 id="AUTHOR">AUTHOR <a href="#TOP" class="toplink"><img alt="^" src="../up.gif" /></a></h1>
+
+<p>Bruce Ravel (bravel AT bnl DOT gov)</p>
+
+<p>http://cars9.uchicago.edu/~ravel/software/</p>
+
+
+
+
+<h1 id="LICENCE_AND_COPYRIGHT">LICENCE AND COPYRIGHT <a href="#TOP" class="toplink"><img alt="^" src="../up.gif" /></a></h1>
+
+<p>Copyright (c) 2011 Bruce Ravel (bravel AT bnl DOT gov). All rights reserved.</p>
+
+<p>This module is free software; you can redistribute it and/or
+modify it under the same terms as Perl itself. See <a href="http://search.cpan.org/perldoc?perlgpl">perlgpl</a>.</p>
+
+<p>This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.</p>
+
+
+</div><div class="footer">generated by <a href="http://search.cpan.org/perldoc?Pod%3A%3AProjectDocs">Pod::ProjectDocs</a></div></body>
+</html>

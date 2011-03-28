@@ -1,0 +1,350 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+	<title>Demeter::Mode</title>
+<link rel="stylesheet" type="text/css" href="../podstyle.css" /><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+  <script type="text/javascript">
+
+  function toggleCode( id ) {
+    if ( document.getElementById )
+      elem = document.getElementById( id );
+    else if ( document.all )
+      elem = eval( "document.all." + id );
+    else
+      return false;
+
+    elemStyle = elem.style;
+
+    if ( elemStyle.display != "block" ) {
+      elemStyle.display = "block"
+    } else {
+      elemStyle.display = "none"
+    }
+
+    return true;
+  }
+  document.writeln( "<style type=\"text/css\">div.method-source-code { display: none }</style>" )
+  </script></head>
+<body>
+<div class="box">
+  <h1 class="t1">Demeter</h1>
+  <table>
+    <tr>
+      <td class="label">Description</td>
+      <td class="cell">Perl tools for X-ray Absorption Spectroscopy</td>
+    </tr>
+  </table>
+</div>
+<div class="path">
+  <a href="../index.html">Demeter</a> &gt; Perl Modules &gt;
+  Demeter-Mode
+</div>
+<div>
+<a href="../src/Demeter/Mode.pm">Source</a>
+</div>
+
+
+<div class="pod">
+<!-- INDEX START -->
+<h3 id="TOP">Index</h3>
+<ul>
+	<li><a href="#NAME">NAME</a></li>
+	<li><a href="#VERSION">VERSION</a></li>
+	<li><a href="#DESCRIPTION">DESCRIPTION</a></li>
+	<li><a href="#ATTRIBUTES">ATTRIBUTES</a><br />
+<ul>
+	<li><a href="#Disposal_modes">Disposal modes</a></li>
+	<li><a href="#Template_objects">Template objects</a></li>
+	<li><a href="#Template_sets">Template sets</a></li>
+	<li><a href="#Object_collections">Object collections</a></li>
+	<li><a href="#Other_attributes">Other attributes</a></li>
+</ul>
+</li>
+	<li><a href="#SENTINEL_FUNCTIONALITY">SENTINEL FUNCTIONALITY</a><br />
+<ul>
+	<li><a href="#Sentinel_methods">Sentinel methods</a></li>
+</ul>
+</li>
+	<li><a href="#DIAGNOSTICS">DIAGNOSTICS</a></li>
+	<li><a href="#SERIALIZATION_AND_DESERIALIZATION">SERIALIZATION AND DESERIALIZATION</a></li>
+	<li><a href="#CONFIGURATION_AND_ENVIRONMENT">CONFIGURATION AND ENVIRONMENT</a></li>
+	<li><a href="#DEPENDENCIES">DEPENDENCIES</a></li>
+	<li><a href="#BUGS_AND_LIMITATIONS">BUGS AND LIMITATIONS</a></li>
+	<li><a href="#AUTHOR">AUTHOR</a></li>
+	<li><a href="#LICENCE_AND_COPYRIGHT">LICENCE AND COPYRIGHT</a></li>
+</ul>
+<hr />
+<!-- INDEX END -->
+
+<h1 id="NAME">NAME <a href="#TOP" class="toplink"><img alt="^" src="../up.gif" /></a></h1>
+
+<p>Demeter::Mode - Demeter's sentinel system</p>
+
+<h1 id="VERSION">VERSION <a href="#TOP" class="toplink"><img alt="^" src="../up.gif" /></a></h1>
+
+<p>This documentation refers to Demeter version 0.4.</p>
+
+<h1 id="DESCRIPTION">DESCRIPTION <a href="#TOP" class="toplink"><img alt="^" src="../up.gif" /></a></h1>
+
+<p>This special object is used to store global attributes of an instance
+of Demeter in a way that makes those attributes available to any
+Demeter object.</p>
+
+<p>Access to this object is via the <code>get_mode</code> and <code>set_mode</code> methods
+of the Demeter base class.  The convenience methods <code>co</code> and <code>po</code> of
+the Demeter base class are used to gain access to the Config and Plot
+objects.  Any of these methods can be called by any Demeter object:</p>
+
+<pre>  $to_screen = $data_object     -&gt; get_mode('screen');
+  $to_screen = $gds_object      -&gt; get_mode('screen');
+  $to_screen = $path_object     -&gt; get_mode('screen');
+  $to_screen = $scattering_path -&gt; get_mode('screen');
+  $to_screen = $prj_object      -&gt; get_mode('screen');
+    ## and so on ...
+
+</pre><p>This object also monitors the creation and destruction of Demeter
+objects (Atoms, Data, Data::Prj, Data::MultiChannel, Feff,
+Feff::External, Fit, GDS, Path, Plot, Plot::Indicator, ScatteringPath,
+SSPath, VPath, etc.) and provides methods which give a way for one
+object to affect any other objects created during the instance of
+Demeter.  For example, when the kweight value of the Plot object is
+changed, it is necessary to signal all Data objects that they will
+need to update their forward Fourier transforms.  This object is the
+glue that allows things like that to happen.</p>
+
+<h1 id="ATTRIBUTES">ATTRIBUTES <a href="#TOP" class="toplink"><img alt="^" src="../up.gif" /></a></h1>
+
+<h2 id="Disposal_modes">Disposal modes</h2>
+
+<dl>
+	<dt><code>ifeffit</code></dt>
+		<dd><p>Dispose commands to Ifeffit when true.</p></dd>
+	<dt><code>screen</code></dt>
+		<dd><p>Dispose commands to STDOUT when true.</p></dd>
+	<dt><code>plotscreen</code></dt>
+		<dd><p>Dispose plotting commands to STDOUT when true.</p></dd>
+	<dt><code>repscreen</code></dt>
+		<dd><p>Dispose reprocessed commands to STDOUT when true.</p></dd>
+	<dt><code>file</code></dt>
+		<dd><p>Dispose commands to a file when a filename is given.</p></dd>
+	<dt><code>plotfile</code></dt>
+		<dd><p>Dispose plotting commands to a file when a filename is given.</p></dd>
+	<dt><code>repfile</code></dt>
+		<dd><p>Dispose reprocessed commands to a file when a filename is given.</p></dd>
+	<dt><code>buffer</code></dt>
+		<dd><p>Dispose commands to a string or array when given a reference to a
+string or array.</p></dd>
+	<dt><code>plotbuffer</code></dt>
+		<dd><p>Optionally dispose of plotting commands to a difference string or
+array reference.</p></dd>
+	<dt><code>callback</code></dt>
+		<dd><p>Dispose commands by sending them as the argument to a user-supplied
+code rerference.</p></dd>
+	<dt><code>plotcallback</code></dt>
+		<dd><p>Optionally dispose of plotting commands to a difference code
+reference.</p></dd>
+	<dt><code>feedback</code></dt>
+		<dd><p>A code ref for disposing of feedback from Ifeffit.</p></dd>
+</dl>
+<h2 id="Template_objects">Template objects</h2>
+
+<dl>
+	<dt><code>config</code></dt>
+		<dd><p>A reference to the singleton Config object.  <code>$C</code> is the special
+template variable.</p></dd>
+	<dt><code>plot</code></dt>
+		<dd><p>A reference to the current Plot object.  <code>$P</code> is the special
+template variable.</p></dd>
+	<dt><code>fit</code></dt>
+		<dd><p>A reference to the current Fit object.  <code>$F</code> is the special
+template variable.</p></dd>
+	<dt><code>standard</code></dt>
+		<dd><p>A reference to the current Data object used as a data processing
+standard.  <code>$DS</code> is the special template variable.</p></dd>
+	<dt><code>theory</code></dt>
+		<dd><p>A reference to the current Feff object.  <code>$T</code> is the special
+template variable.</p></dd>
+	<dt><code>path</code></dt>
+		<dd><p>A reference to the current Path object.  <code>$PT</code> is the special
+template variable.</p></dd>
+</dl>
+<h2 id="Template_sets">Template sets</h2>
+
+<dl>
+	<dt><code>template_process</code></dt>
+		<dd><p>The template set to use for processing data.</p></dd>
+	<dt><code>template_fit</code></dt>
+		<dd><p>The template set to use for fitting data.</p></dd>
+	<dt><code>template_analysis</code></dt>
+		<dd><p>The template set to use for analyzing mu(E) data.</p></dd>
+	<dt><code>template_plot</code></dt>
+		<dd><p>The template set to use for plotting data.</p></dd>
+	<dt><code>template_feff</code></dt>
+		<dd><p>The template set to use for writing <cite>feff.inp</cite> files.</p></dd>
+	<dt><code>template_test</code></dt>
+		<dd><p>A special template set used for testing Demeter.</p></dd>
+</dl>
+<h2 id="Object_collections">Object collections</h2>
+
+<dl>
+	<dt><code>Atoms</code></dt>
+		<dd><p>A list of all Atoms objects created during this instance of Demeter.</p></dd>
+	<dt><code>Data</code></dt>
+		<dd><p>A list of all Data objects created during this instance of Demeter.</p></dd>
+	<dt><code>Feff</code></dt>
+		<dd><p>A list of all Feff objects created during this instance of Demeter.</p></dd>
+	<dt><code>External</code></dt>
+		<dd><p>A list of all Feff::External objects created during this instance of Demeter.</p></dd>
+	<dt><code>Fit</code></dt>
+		<dd><p>A list of all Fit objects created during this instance of Demeter.</p></dd>
+	<dt><code>GDS</code></dt>
+		<dd><p>A list of all GDS objects created during this instance of Demeter.</p></dd>
+	<dt><code>Path</code></dt>
+		<dd><p>A list of all Path objects created during this instance of Demeter.</p></dd>
+	<dt><code>Plot</code></dt>
+		<dd><p>A list of all Plot objects created during this instance of Demeter.</p></dd>
+	<dt><code>ScatteringPath</code></dt>
+		<dd><p>A list of all ScatteringPath objects created during this instance of Demeter.</p></dd>
+	<dt><code>VPath</code></dt>
+		<dd><p>A list of all VPath objects created during this instance of Demeter.</p></dd>
+	<dt><code>SSPath</code></dt>
+		<dd><p>A list of all SSPath objects created during this instance of Demeter.</p></dd>
+	<dt><code>Prj</code></dt>
+		<dd><p>A list of all Data::Prj objects created during this instance of Demeter.</p></dd>
+</dl>
+<h2 id="Other_attributes">Other attributes</h2>
+
+<dl>
+	<dt><code>iwd</code></dt>
+		<dd><p>The initial working directory when Demeter starts.</p></dd>
+	<dt><code>cwd</code></dt>
+		<dd><p>Demeter's current working directory.</p></dd>
+	<dt>echo</dt>
+		<dd><p>???</p></dd>
+	<dt><code>datadefault</code></dt>
+		<dd><p>This is a Data object used as a fallback.  For instance, one might
+want to process and plot Path objects without having imported a Data
+object.  This global attribute will be used in that case to properly
+process and plot the Path.</p></dd>
+	<dt><code>feffdefault</code></dt>
+		<dd><p>This is a Feff object used as a fallback in some Path-like objects.</p></dd>
+	<dt><code>external_plot_object</code></dt>
+		<dd><p>For plotting backends that have an objective interface, this global
+attribute carried the refernece to that object.  For example, in the
+gnuplot backend, this contains a reference to the
+<a href="http://search.cpan.org/perldoc?Graphics%3A%3AGnuplotIF">Graphics::GnuplotIF</a> object.</p></dd>
+	<dt><code>ui</code></dt>
+		<dd><p>This is a string identifying the user interface backend.  At this
+time, its only use is to tell the Fit object to import the
+curses-based methods in <a href="UI/Screen/Interview.pm.html">Demeter::UI::Screen::Interview</a> and
+<a href="UI/Screen/Progress.pm.html">Demeter::UI::Screen::Progress</a> when it is set to <code>screen</code>.  Future
+possibilities might include <code>wx</code> or <code>rpc</code>.</p></dd>
+	<dt><code>silently_ignore_unplottable</code></dt>
+		<dd><p>When true, this averts croaking in certain situations where an attempt
+is made to plot an object in a way that it cannot be plotted (for
+example, attempting to plot in energy a Data object of datatype chi).
+This is useful in the context of a GUI, but is stringly discouraged in
+a command line script.</p></dd>
+</dl>
+<h1 id="SENTINEL_FUNCTIONALITY">SENTINEL FUNCTIONALITY <a href="#TOP" class="toplink"><img alt="^" src="../up.gif" /></a></h1>
+
+<p>It should rarely be necessary that a user script needs to access this
+part of this object.  Mostly the sentinel functionality is handled
+behind the scenes, during object creation or destruction or at the end
+of a script.  The details are documented here for those times when one
+needs to see under the hood.</p>
+
+<p>Each Demeter object (Atoms, Data, Data::Prj, Data::MultiChannel, Feff,
+Feff::External, Fit, GDS, Path, Plot, Plot::Indicator, ScatteringPath,
+SSPath, VPath, etc.) (Data::Prj is refered to just as Prj, other
+Data::* classes are the same) has each of the following three function
+associated with it.</p>
+
+<p>All of my examples use the Data object.</p>
+
+<dl>
+	<dt><i>Object</i></dt>
+		<dd><p>This is the accessor for the attribute which holds the list of all
+Data objects created during this instance of Demeter.</p></dd>
+<dd><pre>  my @list = @{ $object-&gt;mo-&gt;Data };
+
+</pre></dd>	<dt><code>push_</code><i>Object</i></dt>
+		<dd><p>This is the method used to append an object to the list;</p></dd>
+<dd><pre>  $data_object-&gt;push_Data($data_object);
+
+</pre></dd>		<dd><p>This happens automatically when a Data object is created.</p></dd>
+	<dt><code>clear_</code><i>Object</i></dt>
+		<dd><p>This method is used to clear the contents of the list.</p></dd>
+<dd><pre>  $data_object-&gt;clear_Data;
+
+</pre></dd>		<dd><p>This is not used for anything at this time, but it seemed useful.</p></dd>
+</dl>
+<h2 id="Sentinel_methods">Sentinel methods</h2>
+
+<dl>
+	<dt><code>fetch</code></dt>
+		<dd><p>This method returns an object reference given its group name.</p></dd>
+<dd><pre>  $object = $demeter_object-&gt;mo-&gt;fetch(&quot;ScatteringPath&quot;, $group);
+
+</pre></dd>		<dd><p>In this example, the ScatteringPath object whose group name is $group
+will be returned.  The first argument is one of the Demeter object
+types.  This method was written to facilitate drag and drop in the Wx
+version of Artemis.  Wx's drag and drop capability does not easily do
+DND on blessed references.  It was much easier to do DND on an array
+of group names, which are simple strings.  I then needed this method
+to convert the list of group names back into a list of object
+references.</p></dd>
+	<dt><code>reset_path_index</code></dt>
+		<dd><p>This resets the path counter to 1.  This is used when closing one
+project and starting a new one so that path indexing can start at 1 in
+the new fit.  See <code>close_project</code> in <a href="UI/Artemis/Project.pm.html">Demeter::UI::Artemis::Project</a>.</p></dd>
+</dl>
+<h1 id="DIAGNOSTICS">DIAGNOSTICS <a href="#TOP" class="toplink"><img alt="^" src="../up.gif" /></a></h1>
+
+<p>Moose type constraints are used on several of the GDS object
+attributes.  Error messages appropriate to the type constrain will be
+generated.</p>
+
+<h1 id="SERIALIZATION_AND_DESERIALIZATION">SERIALIZATION AND DESERIALIZATION <a href="#TOP" class="toplink"><img alt="^" src="../up.gif" /></a></h1>
+
+<p>See the discussion of serialization and deserialization in
+<code>Demeter::Fit</code>.</p>
+
+<h1 id="CONFIGURATION_AND_ENVIRONMENT">CONFIGURATION AND ENVIRONMENT <a href="#TOP" class="toplink"><img alt="^" src="../up.gif" /></a></h1>
+
+<p>See <a href="Config.pm.html">Demeter::Config</a> for a description of the configuration system.</p>
+
+<h1 id="DEPENDENCIES">DEPENDENCIES <a href="#TOP" class="toplink"><img alt="^" src="../up.gif" /></a></h1>
+
+<p>Demeter's dependencies are in the <cite>Bundle/DemeterBundle.pm</cite> file.</p>
+
+<h1 id="BUGS_AND_LIMITATIONS">BUGS AND LIMITATIONS <a href="#TOP" class="toplink"><img alt="^" src="../up.gif" /></a></h1>
+
+<ul>
+	<li>Errors should be propagated into def parameters</li>
+</ul>
+
+<p>Please report problems to Bruce Ravel (bravel AT bnl DOT gov)</p>
+
+<p>Patches are welcome.</p>
+
+<h1 id="AUTHOR">AUTHOR <a href="#TOP" class="toplink"><img alt="^" src="../up.gif" /></a></h1>
+
+<p>Bruce Ravel (bravel AT bnl DOT gov)</p>
+
+<p><a href="http://cars9.uchicago.edu/~ravel/software/">http://cars9.uchicago.edu/~ravel/software/</a></p>
+
+<h1 id="LICENCE_AND_COPYRIGHT">LICENCE AND COPYRIGHT <a href="#TOP" class="toplink"><img alt="^" src="../up.gif" /></a></h1>
+
+<p>Copyright (c) 2006-2011 Bruce Ravel (bravel AT bnl DOT gov). All rights reserved.</p>
+
+<p>This module is free software; you can redistribute it and/or
+modify it under the same terms as Perl itself. See <a href="http://search.cpan.org/perldoc?perlgpl">perlgpl</a>.</p>
+
+<p>This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.</p>
+
+
+</div><div class="footer">generated by <a href="http://search.cpan.org/perldoc?Pod%3A%3AProjectDocs">Pod::ProjectDocs</a></div></body>
+</html>

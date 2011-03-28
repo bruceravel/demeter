@@ -1,0 +1,228 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+	<title>Demeter::Plot::Indicator</title>
+<link rel="stylesheet" type="text/css" href="../../podstyle.css" /><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+  <script type="text/javascript">
+
+  function toggleCode( id ) {
+    if ( document.getElementById )
+      elem = document.getElementById( id );
+    else if ( document.all )
+      elem = eval( "document.all." + id );
+    else
+      return false;
+
+    elemStyle = elem.style;
+
+    if ( elemStyle.display != "block" ) {
+      elemStyle.display = "block"
+    } else {
+      elemStyle.display = "none"
+    }
+
+    return true;
+  }
+  document.writeln( "<style type=\"text/css\">div.method-source-code { display: none }</style>" )
+  </script></head>
+<body>
+<div class="box">
+  <h1 class="t1">Demeter</h1>
+  <table>
+    <tr>
+      <td class="label">Description</td>
+      <td class="cell">Perl tools for X-ray Absorption Spectroscopy</td>
+    </tr>
+  </table>
+</div>
+<div class="path">
+  <a href="../../index.html">Demeter</a> &gt; Perl Modules &gt;
+  Demeter-Plot-Indicator
+</div>
+<div>
+<a href="../../src/Demeter/Plot/Indicator.pm">Source</a>
+</div>
+
+
+<div class="pod">
+<!-- INDEX START -->
+<h3 id="TOP">Index</h3>
+<ul>
+	<li><a href="#NAME">NAME</a></li>
+	<li><a href="#VERSION">VERSION</a></li>
+	<li><a href="#SYNOPSIS">SYNOPSIS</a></li>
+	<li><a href="#DESCRIPTION">DESCRIPTION</a></li>
+	<li><a href="#ATTRIBUTES">ATTRIBUTES</a></li>
+	<li><a href="#METHODS">METHODS</a></li>
+	<li><a href="#SERIALIZATION_AND_DESERIALIZATION">SERIALIZATION AND DESERIALIZATION</a></li>
+	<li><a href="#CONFIGURATION_AND_ENVIRONMENT">CONFIGURATION AND ENVIRONMENT</a></li>
+	<li><a href="#DEPENDENCIES">DEPENDENCIES</a></li>
+	<li><a href="#BUGS_AND_LIMITATIONS">BUGS AND LIMITATIONS</a></li>
+	<li><a href="#AUTHOR">AUTHOR</a></li>
+	<li><a href="#LICENCE_AND_COPYRIGHT">LICENCE AND COPYRIGHT</a></li>
+</ul>
+<hr />
+<!-- INDEX END -->
+
+<h1 id="NAME">NAME <a href="#TOP" class="toplink"><img alt="^" src="../../up.gif" /></a></h1>
+
+<p>Demeter::Plot::Indicator - Vertical lines marking points on a plot</p>
+
+<h1 id="VERSION">VERSION <a href="#TOP" class="toplink"><img alt="^" src="../../up.gif" /></a></h1>
+
+<p>This documentation refers to Demeter version 0.4.</p>
+
+<h1 id="SYNOPSIS">SYNOPSIS <a href="#TOP" class="toplink"><img alt="^" src="../../up.gif" /></a></h1>
+
+<p>Mark a position in k-space:</p>
+
+<pre>  my $data = Demeter::Data-&gt;new( ... );
+  $data -&gt; standard;
+  $data -&gt; plot('E');
+  my $indic = Demeter::Plot::Indicator-&gt;new(space=&gt;'k', x=&gt;42);
+  $indic -&gt; plot;
+
+</pre><p>then, show where that energy value is in k:</p>
+
+<pre>  $data  -&gt; plot('k');
+  $indic -&gt; plot;
+
+</pre><h1 id="DESCRIPTION">DESCRIPTION <a href="#TOP" class="toplink"><img alt="^" src="../../up.gif" /></a></h1>
+
+<p>Indicators are vertical lines used to draw attention to specific
+points in plots of your data. This can be useful for comparing
+specific features in different data sets or for seeing how a
+particular feature propagates from energy to k to q.</p>
+
+<p>Points selected in energy, k, or q are plotted in any of those
+spaces. Points selected in R can only be plotted in R.</p>
+
+<p>Note that you <strong>must</strong> set a data standard (see <a href="../Mode.pm.html">Demeter::Mode</a>) to be
+able to plot an indicator.  The indicator is always scaled to the size
+of the standard data set.  It also uses the <code>y_offset</code> attribute of
+the standard and its E0 shift when plotting in energy.</p>
+
+<p>In normal operation, the upper and lower bounds of the indicator are
+genertated automatically, but they can be explicitly set using the
+<code>ymin</code> and <code>ymax</code> attributes.</p>
+
+<h1 id="ATTRIBUTES">ATTRIBUTES <a href="#TOP" class="toplink"><img alt="^" src="../../up.gif" /></a></h1>
+
+<dl>
+	<dt><code>space</code></dt>
+		<dd><p>An indicator is associated with a space, one of E, k, R, or q.</p></dd>
+	<dt><code>x</code></dt>
+		<dd><p>The position on the x-axis of the indicator.  For an energy indicator,
+this must be an energy in eV <i>relative</i> to the edge (i.e. something
+like 70 rather than 7182).</p></dd>
+	<dt><code>x2</code></dt>
+		<dd><p>For an energy indicator, this is the corresponding k value.  For a k
+or q indicator, this is the corresponding energy value.  It gets
+updated whenever <code>x</code> is set.  For an R indicator, this is the same as
+<code>x</code>, although it wont actually be used for anything.</p></dd>
+	<dt><code>active</code></dt>
+		<dd><p>This turns plotting of the indicator on and off.  When set to 0, the
+<code>plot</code> method returns silently.  This, then, is the equivalent of
+&quot;commenting out&quot; an indicator without deleting it.</p></dd>
+	<dt><code>i</code></dt>
+		<dd><p>This is an auto-generated index associated with the indicator.  In
+practice, this is used in gnuplot to provide a tag for the (headless)
+arrow that is plotted as the indicator.  There is no need to set this.
+This attribute is accessed by the gnuplot indicator template.</p></dd>
+	<dt><code>ymin</code></dt>
+		<dd><p>The lower bound of the indicator.  If left as 0, the lower bound will
+be generated automatically based on the contents of the data standard.</p></dd>
+	<dt><code>ymax</code></dt>
+		<dd><p>The upper bound of the indicator.  If left as 0, the upper bound will
+be generated automatically based on the contents of the data standard.</p></dd>
+	<dt><code>y1</code></dt>
+		<dd><p>The actual lower bound of the indicator.  This is <code>ymin</code> scaled by is
+the configured indicator margin.  Setting this does nothing as it will
+be overwritten the next time that <code>ymin</code> is set.</p></dd>
+	<dt><code>y2</code></dt>
+		<dd><p>The actual upper bound of the indicator.  This is <code>ymax</code> scaled by is
+the configured indicator margin.  Setting this does nothing as it will
+be overwritten the next time that <code>ymax</code> is set.</p></dd>
+</dl>
+<h1 id="METHODS">METHODS <a href="#TOP" class="toplink"><img alt="^" src="../../up.gif" /></a></h1>
+
+<dl>
+	<dt><code>plot</code></dt>
+		<dd><p>Plot the indicator in the space oset by the <code>space</code> attribute of the
+Plot object.</p></dd>
+<dd><pre>  $indic -&gt; plot;
+
+</pre></dd>		<dd><p>An indicator created in energy, k, or q will be plotted in energy, k,
+or q.  Attempting to plot in R an indicator created in energy, k, or q
+will silently do nothing.  Similarly, an indicator created in R will
+silently do nothing when plotted in energy, k, or q.  This behavior
+allows you to do something like this:</p></dd>
+<dd><pre>  $_ -&gt; plot($space) foreach (@all_data, @all_indicators);
+
+</pre></dd>		<dd><p>This will plot sensibly without regard to the value of <code>$space</code> or
+how the indicators were created.</p></dd>
+	<dt><code>xcoord</code></dt>
+		<dd><p>Return the value of the x-coordinate of the indicator based on the
+current settings of the Plot and standard Data object.</p></dd>
+<dd><pre>  my $x = $indic-&gt;xcoord;
+
+</pre></dd>	<dt><code>y1coord</code></dt>
+		<dd><p>Return the value of the lower y-coordinate of the indicator based on
+the value of <code>ymax</code> or current settings of the Plot and standard Data
+object.</p></dd>
+<dd><pre>  my $y1 = $indic-&gt;y1coord;
+
+</pre></dd>	<dt><code>y2coord</code></dt>
+		<dd><p>Return the value of the upper y-coordinate of the indicator based on
+the value of <code>ymin</code> or current settings of the Plot and standard Data
+object.</p></dd>
+<dd><pre>  my $y2 = $indic-&gt;y2coord;
+
+</pre></dd></dl>
+<p>The <code>xcoord</code>, <code>y1coord</code>, and <code>y2coord</code> are used in the templates
+for plotting indicators.</p>
+
+<h1 id="SERIALIZATION_AND_DESERIALIZATION">SERIALIZATION AND DESERIALIZATION <a href="#TOP" class="toplink"><img alt="^" src="../../up.gif" /></a></h1>
+
+<p>Good question ...</p>
+
+<h1 id="CONFIGURATION_AND_ENVIRONMENT">CONFIGURATION AND ENVIRONMENT <a href="#TOP" class="toplink"><img alt="^" src="../../up.gif" /></a></h1>
+
+<p>See <a href="../Config.pm.html">Demeter::Config</a> for a description of the configuration system.
+There is an indicator group that can be adjusted to modify the default
+behavior of this object.  It is in the <cite>ornaments.demeter_conf</cite>
+file.</p>
+
+<h1 id="DEPENDENCIES">DEPENDENCIES <a href="#TOP" class="toplink"><img alt="^" src="../../up.gif" /></a></h1>
+
+<p>Demeter's dependencies are in the <cite>Bundle/DemeterBundle.pm</cite> file.</p>
+
+<h1 id="BUGS_AND_LIMITATIONS">BUGS AND LIMITATIONS <a href="#TOP" class="toplink"><img alt="^" src="../../up.gif" /></a></h1>
+
+<p>Please report problems to Bruce Ravel (bravel AT bnl DOT gov)</p>
+
+<p>Patches are welcome.</p>
+
+<h1 id="AUTHOR">AUTHOR <a href="#TOP" class="toplink"><img alt="^" src="../../up.gif" /></a></h1>
+
+<p>Bruce Ravel (bravel AT bnl DOT gov)</p>
+
+<p><a href="http://cars9.uchicago.edu/~ravel/software/">http://cars9.uchicago.edu/~ravel/software/</a></p>
+
+
+
+
+<h1 id="LICENCE_AND_COPYRIGHT">LICENCE AND COPYRIGHT <a href="#TOP" class="toplink"><img alt="^" src="../../up.gif" /></a></h1>
+
+<p>Copyright (c) 2006-2011 Bruce Ravel (bravel AT bnl DOT gov). All rights reserved.</p>
+
+<p>This module is free software; you can redistribute it and/or
+modify it under the same terms as Perl itself. See <a href="http://search.cpan.org/perldoc?perlgpl">perlgpl</a>.</p>
+
+<p>This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.</p>
+
+
+</div><div class="footer">generated by <a href="http://search.cpan.org/perldoc?Pod%3A%3AProjectDocs">Pod::ProjectDocs</a></div></body>
+</html>

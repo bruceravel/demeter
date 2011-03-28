@@ -1,0 +1,195 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+	<title>lsprj</title>
+<link rel="stylesheet" type="text/css" href="podstyle.css" /><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+  <script type="text/javascript">
+
+  function toggleCode( id ) {
+    if ( document.getElementById )
+      elem = document.getElementById( id );
+    else if ( document.all )
+      elem = eval( "document.all." + id );
+    else
+      return false;
+
+    elemStyle = elem.style;
+
+    if ( elemStyle.display != "block" ) {
+      elemStyle.display = "block"
+    } else {
+      elemStyle.display = "none"
+    }
+
+    return true;
+  }
+  document.writeln( "<style type=\"text/css\">div.method-source-code { display: none }</style>" )
+  </script></head>
+<body>
+<div class="box">
+  <h1 class="t1">Demeter</h1>
+  <table>
+    <tr>
+      <td class="label">Description</td>
+      <td class="cell">Perl tools for X-ray Absorption Spectroscopy</td>
+    </tr>
+  </table>
+</div>
+<div class="path">
+  <a href="index.html">Demeter</a> &gt; Perl Manuals &gt;
+  dlsprj
+</div>
+<div>
+<a href="src/dlsprj.pod">Source</a>
+</div>
+
+
+<div class="pod">
+<!-- INDEX START -->
+<h3 id="TOP">Index</h3>
+<ul>
+	<li><a href="#NAME">NAME</a></li>
+	<li><a href="#VERSION">VERSION</a></li>
+	<li><a href="#SYNOPSIS">SYNOPSIS</a></li>
+	<li><a href="#DESCRIPTION">DESCRIPTION</a></li>
+	<li><a href="#COMMAND_LINE_SWITCHES">COMMAND LINE SWITCHES</a></li>
+	<li><a href="#ENVIRONMENT_VARIABLE">ENVIRONMENT VARIABLE</a></li>
+	<li><a href="#DEPENDENCIES">DEPENDENCIES</a></li>
+	<li><a href="#BUGS_AND_LIMITATIONS">BUGS AND LIMITATIONS</a></li>
+	<li><a href="#AUTHOR">AUTHOR</a></li>
+	<li><a href="#LICENCE_AND_COPYRIGHT">LICENCE AND COPYRIGHT</a></li>
+</ul>
+<hr />
+<!-- INDEX END -->
+
+<h1 id="NAME">NAME <a href="#TOP" class="toplink"><img alt="^" src="up.gif" /></a></h1>
+
+<p>lsprj - List contents of an Athena project file</p>
+
+<h1 id="VERSION">VERSION <a href="#TOP" class="toplink"><img alt="^" src="up.gif" /></a></h1>
+
+<p>This documentation refers to Demeter version 0.3.</p>
+
+<h1 id="SYNOPSIS">SYNOPSIS <a href="#TOP" class="toplink"><img alt="^" src="up.gif" /></a></h1>
+
+<pre>  lsprj my.prj
+
+</pre><h1 id="DESCRIPTION">DESCRIPTION <a href="#TOP" class="toplink"><img alt="^" src="up.gif" /></a></h1>
+
+<p>This program writes out a list of the labels for each group in an
+Athena project file.  This, then, is a quick way of peering inside a
+project file without actually opening it.</p>
+
+<p>The data from the project file can also be plotted by supplying the
+optinal <code>--plot</code> command line switch.  This is a quick-and-dirty
+plotting tool intended for taking a peek inside a project file rather
+than providing fine control over the details of the plot.</p>
+
+<p>A short usage message will be printed to the screen if you leave off
+the filename at the command line.</p>
+
+<h1 id="COMMAND_LINE_SWITCHES">COMMAND LINE SWITCHES <a href="#TOP" class="toplink"><img alt="^" src="up.gif" /></a></h1>
+
+<dl>
+	<dt><code>--plot</code> or <code>-p</code></dt>
+		<dd><p>Optionally plot the data from the project file in the specified
+plotting space.  The plotting options are</p></dd>
+<dd><dl>
+	<dt>e</dt>
+		<dd><p>plot mu(E)</p></dd>
+	<dt>n</dt>
+		<dd><p>plot normalized mu(E)</p></dd>
+	<dt>d</dt>
+		<dd><p>plot derivative mu(E)</p></dd>
+	<dt>k</dt>
+		<dd><p>plot k-weighted chi(k)</p></dd>
+	<dt>r</dt>
+		<dd><p>plot the magnitude of chi(R) Fourier tranformed with k^2 weighting</p></dd>
+	<dt>q</dt>
+		<dd><p>plot the real part of chi(q)</p></dd>
+</dl>
+</dd>
+		<dd><p>Values for data processing parameters are taken from the Athena
+project file.  This is intended for quick-n-dirty display, so very few
+plotting options are available.</p></dd>
+		<dd><p>Note that for large project files, the plot will be time consuming and
+cluttered.  This option is most useful for smaller project files.</p></dd>
+	<dt><code>--stack</code></dt>
+		<dd><p>Data plotted as normalized mu(E), chi(k), chi(R), or chi(q) are
+stacked, with each subsequent trace being shifted downward by
+0.2.  The amount of the shift can be specified with this switch.</p></dd>
+	<dt><code>-kw</code> or <code>-kweight</code></dt>
+		<dd><p>Override the default k-weight (which is 2).</p></dd>
+	<dt><code>--xanes</code></dt>
+		<dd><p>When plotting mu(E) or normalized mu(E) this flag restricts the plot
+to 50 volts below and 120 volts above the edge.</p></dd>
+	<dt><code>--edge</code></dt>
+		<dd><p>When plotting mu(E) or normalized mu(E) this flag restricts the plot
+to 20 volts below and 60 volts above the edge.</p></dd>
+	<dt><code>--emin</code> and <code>--emax</code></dt>
+		<dd><p>To fine tune the plotting ranges in energy beyond the setting
+associated with <code>--xanes</code> or <code>--edge</code>, you can use these two
+switches, which take energy vlues relative to the edge.</p></dd>
+	<dt><code>--params</code></dt>
+		<dd><p>A comma separated list of data processing parameters to include in the
+list of groups.  This is a bit awkward to use in that you must specify
+the parameters using their internal representations as given explained
+in the documentation for <a href="Demeter/Data.pm.html">Demeter::Data</a>.  For instance,
+this will show the values for the background removal R_bkg and the
+forward Fourier transform kmin value:</p></dd>
+<dd><pre>  lsprj my.prj --params=bkg_rbkg,fft_kmin,
+   ==prints==&gt;
+    #       record     bkg_rbkg   fft_kmin
+    # ----------------------------------------------------
+        1 : HgO        1.0        2
+        2 : HgS black  1.0        2
+        3 : HgS red    1.0        2
+
+</pre></dd>	<dt><code>-g</code></dt>
+		<dd><p>Use the gnuplot plotting backend.  The default is to use pgplot.</p></dd>
+</dl>
+<h1 id="ENVIRONMENT_VARIABLE">ENVIRONMENT VARIABLE <a href="#TOP" class="toplink"><img alt="^" src="up.gif" /></a></h1>
+
+<p>Command line switches can be specified via an environment variable
+called <code>LSPRJ</code>.  The contents of that variable will be parsed before
+the specified command line variables.  That is, the flags specified on
+the command line over-ride the contents of the <code>LSPRJ</code> environment
+variable.  For example:</p>
+
+<pre>   export LSPRJ=&quot;--plot=e --edge -g&quot;
+   lsprj my.prj 7,12,17
+
+</pre><p>This does the same as</p>
+
+<pre>   lsprj my.prj --plot=e --edge -g 7,12,17
+
+</pre><h1 id="DEPENDENCIES">DEPENDENCIES <a href="#TOP" class="toplink"><img alt="^" src="up.gif" /></a></h1>
+
+<p>This uses <a href="Demeter.pm.html">Demeter</a> and its dependencies.</p>
+
+<h1 id="BUGS_AND_LIMITATIONS">BUGS AND LIMITATIONS <a href="#TOP" class="toplink"><img alt="^" src="up.gif" /></a></h1>
+
+<p>Please report problems to Bruce Ravel (bravel AT bnl DOT gov)</p>
+
+<p>Patches are welcome.</p>
+
+<h1 id="AUTHOR">AUTHOR <a href="#TOP" class="toplink"><img alt="^" src="up.gif" /></a></h1>
+
+<p>Bruce Ravel (bravel AT bnl DOT gov)</p>
+
+<p><a href="http://cars9.uchicago.edu/~ravel/software/">http://cars9.uchicago.edu/~ravel/software/</a></p>
+
+<h1 id="LICENCE_AND_COPYRIGHT">LICENCE AND COPYRIGHT <a href="#TOP" class="toplink"><img alt="^" src="up.gif" /></a></h1>
+
+<p>Copyright (c) 2006-2009 Bruce Ravel (bravel AT bnl DOT gov). All rights reserved.</p>
+
+<p>This module is free software; you can redistribute it and/or
+modify it under the same terms as Perl itself. See <a href="http://search.cpan.org/perldoc?perlgpl">perlgpl</a>.</p>
+
+<p>This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.</p>
+
+
+</div><div class="footer">generated by <a href="http://search.cpan.org/perldoc?Pod%3A%3AProjectDocs">Pod::ProjectDocs</a></div></body>
+</html>

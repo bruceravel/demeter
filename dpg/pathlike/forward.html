@@ -1,0 +1,167 @@
+<!DOCTYPE HTMP PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <title>Forward object</title>
+    <link rel="stylesheet" href=../ab.css />
+    <link rel="stylesheet" href=../ppi.css />
+    <meta http-equiv="Content-Type" content="text/html"; charset=iso-8859-15 />
+    <meta name="robots" contents="all" />
+  </head>
+
+  <body>
+    <div class=topbar>
+  <div class=navbar>
+  <table class=navtable>
+    <tr>
+      <td align=left>
+        [&nbsp;<a href="../index.html">Home</a>&nbsp;] &nbsp;&nbsp;
+        [&nbsp;<a href="http://cars9.uchicago.edu/iffwiki/Demeter"><span class=programlink>DEMETER</span></a>&nbsp;] &nbsp;&nbsp;
+        [&nbsp;<a href="http://cars9.uchicago.edu/iffwiki/Ifeffit"><span class=programlink>IFEFFIT</span></a>&nbsp;] &nbsp;&nbsp;
+        [&nbsp;<a href="http://leonardo.phys.washington.edu/feff/wiki/index.php?title=FEFF_Documentation"><span class=programlink>FEFF</span></a>&nbsp;] &nbsp;&nbsp;
+        [&nbsp;<a href="http://xafs.org">xafs.org</a>&nbsp;] &nbsp;&nbsp;
+	[&nbsp;<a href="../demeter.pdf">PDF&nbsp;doc</a>&nbsp;]
+      </td>
+      <td align=right>
+        Back: <a href="../pathlike/threebody.html" class="menu" >ThreeBody</a>
+        
+        &nbsp;&nbsp;
+        Up: <a href="../pathlike/index.html" class="menu" >Path-like objects</a>      </td>
+    </tr>
+  </table>
+  </div>
+  <h1>
+  Forward object
+</h1>
+</div>
+
+<hr class=hide />
+
+
+<div class=sidebar>
+  <a href="../ceres.html"><img src=../../images/Isis-Sothis-Demeter_sm.jpg
+    width=100% border=0 alt='[Demeter logo]'></a>
+  <br />
+  <a href="../index.html" class="menu" >Home</a><br />
+<a href="../intro.html" class="menu" >Introduction</a><br />
+<a href="../data/index.html" class="menu" >Importing data</a><br />
+<a href="../mue/index.html" class="menu" >Processing mu(E) data</a><br />
+<a href="../xanes/index.html" class="menu" >Analysis of XANES data</a><br />
+<a href="../highlevel/index.html" class="menu" >High level actions for Demeter objects</a><br />
+<a href="../atoms/index.html" class="menu" >Atoms</a><br />
+<a href="../feff/index.html" class="menu" >Feff</a><br />
+<a href="../paths/index.html" class="menu" >Scattering paths</a><br />
+<a href="../gds/index.html" class="menu" >Guess/Def/Set parameters</a><br />
+<a href="../fit/index.html" class="menu" >Fitting EXAFS data</a><br />
+<a href="../perl/index.html" class="menu" >Using perl to create a fitting model</a><br />
+<a href="../lgcv.html" class="menu" >Local guess parameters and the characteristic value</a><br />
+<br />
+<a href="../pathlike/index.html" class="menuselect" >Path-like objects</a><br />
+&nbsp;-&nbsp;<a href="../pathlike/vpath.html" class="menu" >VPath</a><br />
+&nbsp;-&nbsp;<a href="../pathlike/fspath.html" class="menu" >FSPath</a><br />
+&nbsp;-&nbsp;<a href="../pathlike/fpath.html" class="menu" >FPath</a><br />
+&nbsp;-&nbsp;<a href="../pathlike/sspath.html" class="menu" >SSPath</a><br />
+&nbsp;-&nbsp;<a href="../pathlike/mspath.html" class="menu" >MSPath</a><br />
+&nbsp;-&nbsp;<a href="../pathlike/threebody.html" class="menu" >ThreeBody</a><br />
+&nbsp;-&nbsp;<a href="../pathlike/forward.html" class="menuselect" >Forward</a><br /><br />
+<a href="../su.html" class="menu" >Structural Units</a><br />
+<a href="../ui.html" class="menu" >User interfaces</a><br />
+<a href="../output.html" class="menu" >Output formats</a><br />
+<a href="../examples/index.html" class="menu" >Full examples</a><br />
+</div>
+
+<p>
+
+The Forward object has not yet been implemented as of version 0.4.
+Its purpose will be to facilitate the consideration of the effect of
+scatering angle on double and triple scattering paths arising from a
+collection of three nearly colinear atoms.
+</p>
+
+<p>
+Because there is no way to recalculate any part of the  <span class=program>FEFF</span>
+calculation as part of  <span class=program>IFEFFIT</span>'s fitting loop, there is no
+convenient and straightforward way to parameterize the effect of
+changing scattering angle. That is, it is possible to parwameterize a
+fitting model in such a way that it considers the possibility that
+inter-atomic distances change as the parameters of the fit are
+refined.  In such a case, it is possible that the only way to
+logically resolve the distances to collinear or nearly-collinear paths
+is to allow the path to buckle.
+</p>
+
+<p>
+There are many solutions to this problem.  The data analysis program 
+ <span class=program>XFIT</span>
+(P. J. Ellis and H. C. Freeman, <em>J. Synchrotron Radiat.</em>, <strong>2:4</strong>, 
+(1995) p. 190) actually does recompute  <span class=program>FEFF</span> during the course of the fit.
+A number of approximate or interpolative solutions have also been
+proposed.  One involves pre-calculating double and triple scattering
+paths of thesame length but over a span of scattering angles.  These
+precalculated paths are then used in an interpolative solution.  The
+mixing coefficients (i.e. <tt>x</tt> and
+<tt>1-x</tt> in a two-point interpolation) are
+computed from other parameters of the fit.  This is explained in
+deatil in 
+<a href="http://cars9.uchicago.edu/~ravel/thesis.html">my graduate dissertation</a>.
+</p>
+
+<p>
+The interpolation methodology explained in my thesis is complicated
+and error-prone to implement.  The FSPath will do all of the rote work
+required to pre-calculate the paths and parameterize them for the
+interpolation.  The input attributes will llikely be the species of
+the two scattering atoms, a math expression for calculating the length
+of the collinear single scattering path to the further of the two
+scattering atoms, and a math expression for computing the scattering
+angle.  The math expressions will, of course, depend on the details of
+your fitting model.
+</p>
+
+
+<p class=todo>
+<strong>On the to do list:</strong>&nbsp;&nbsp;
+Create Forward class.
+</p>
+
+<br />
+<hr class=hide />
+
+<div class=bottombar>
+  <div class=navbar>
+  <table class=navtable>
+    <tr>
+      <td align=left>
+        [&nbsp;<a href="../index.html">Home</a>&nbsp;] &nbsp;&nbsp;
+        [&nbsp;<a href="http://cars9.uchicago.edu/iffwiki/Demeter"><span class=programlink>DEMETER</span></a>&nbsp;] &nbsp;&nbsp;
+        [&nbsp;<a href="http://cars9.uchicago.edu/iffwiki/Ifeffit"><span class=programlink>IFEFFIT</span></a>&nbsp;] &nbsp;&nbsp;
+        [&nbsp;<a href="http://leonardo.phys.washington.edu/feff/wiki/index.php?title=FEFF_Documentation"><span class=programlink>FEFF</span></a>&nbsp;] &nbsp;&nbsp;
+        [&nbsp;<a href="http://xafs.org">xafs.org</a>&nbsp;] &nbsp;&nbsp;
+	[&nbsp;<a href="../demeter.pdf">PDF&nbsp;doc</a>&nbsp;]
+      </td>
+      <td align=right>
+        Back: <a href="../pathlike/threebody.html" class="menu" >ThreeBody</a>
+        
+        &nbsp;&nbsp;
+        Up: <a href="../pathlike/index.html" class="menu" >Path-like objects</a>      </td>
+    </tr>
+  </table>
+  </div>
+  <div class=copyright>
+   <span class=program>DEMETER</span> is copyright &copy; 2009-2010 Bruce Ravel
+  <br />
+  This document is copyright &copy; 2010 Bruce Ravel
+  <br />
+  email: (bravel |A|T| bnl |D|O|T| gov)
+  <br />
+  
+  <a href="http://creativecommons.org/licenses/by-sa/3.0/"><img src="../../images/somerights20.png" width="88" height="31" alt="" border="0" /></a> &nbsp;&nbsp;&nbsp;
+  <br />
+  This document is licensed under <a href="http://creativecommons.org/licenses/by-sa/3.0/">
+  The Creative Commons Attribution-ShareAlike License</a>.
+  <br />
+  If  <span class=program>DEMETER</span> and this document are useful to you, please consider
+  <a href="http://creativecommons.org/support/">supporting The Creative Commons</a>.
+</div>
+</div>
+  </body>
+</html>

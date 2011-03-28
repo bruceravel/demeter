@@ -1,0 +1,301 @@
+
+=head1 NAME
+
+standards - Visualization of a library of standard reference materials
+
+=head1 VERSION
+
+This documentation refers to Demeter version 0.3.
+
+=head1 SYNOPSIS
+
+  standards [options] <mode>
+
+Available modes are
+
+=over 4
+
+=item *
+
+screen
+
+=item *
+
+web
+
+=item *
+
+athena
+
+=back
+
+LaTeX mode is not yet working.
+
+=head1 DESCRIPTION
+
+This program is an attempt to expand and improve upon the
+L<pictures of metal foils spectra|http://exafsmaterials.com/Ref_Spectra_0.4MB.pdf>
+that come with a box of foils from L<EXAFS Materials|http://exafsmaterials.com>.
+
+That document is fine as far as it goes, but the spectra are not all
+of the highest resolution and it only includes foils of a few select
+elements.  This implementation expands upon that by inlcuding
+reference spectra other than foils.  It is extensible in the sense
+that new materials can be added easily.  Thus this visualization of
+standard reference spectra can cover more of the periodic table and
+include various common (or even uncommon) species of any element.
+
+A small database of reference data ships with Demeter and various
+mechanisms are provided for extending the list of materials in the
+database.  You can use files on your own computer simply by pointing
+the program at that file's location.  You can also grab data from the
+web by pointing the program at the data file's URL.
+
+Ideally, adequate metadata is provided about each material such that a
+useful and thorough presentation of the data can be made.  This
+metadata includes some comments identifying the provenance of the
+data, the crystal type used to measure the data, enough information to
+properly calibrate the data, and lists of points to mark in mu(E) or
+the derivative of mu(E).  The program behaves well in the absence of
+any of this metadata, but the utility of the program is dimished.
+
+This program is a wrapper around four distinct ways of visualizing
+standards data.  It can be used to interactively plot standards,
+selecting elements from an on-screen periodic table.  It can be used
+to generate a sequance of web pages that can be dropped on a web
+site. It can be used to generate a latex document that can be
+converted to PDF and printed to replace the one from EXAFS Materials.
+Finally, is can be used to create an Athena project file containing a
+subset of the reference materials.
+
+Using this program in these four modes is explained in the following
+section.
+
+=head1 MODES
+
+The available modes of operation are:
+
+=over 4
+
+=item screen
+
+In this mode, this is an interactive utility with a simple keyboard
+interface.  The user is presented with a screen that looks like this
+(albeit in color, if L<Term::ANSIColor> is available):
+
+ Standard reference materials (Demeter 0.1.0)
+ .
+       H                                                                   He
+       Li  Be                                          B   C   N   O   F   Ne
+       Na  Mg                                          Al  Si  P   S   Cl  Ar
+       K   Ca  Sc  Ti  V   Cr  Mn *Fe  Co  Ni  Cu  Zn  Ga  Ge  As  Se  Br  Kr
+       Rb  Sr  Y   Zr  Nb  Mo  Tc  Ru  Rh  Pd  Ag  Cd  In  Sn  Sb  Te  I   Xe
+       Cs  Ba  La  Hf  Ta  W   Re  Os  Ir  Pt  Au  Hg  Tl  Pb  Bi  Po  At  Rn
+       Fr  Ra  Ac  Rf  Ha  Sg  Bh  Hs
+             Ce  Pr  Nd  Pm  Sm  Eu  Gd  Tb  Dy  Ho  Er  Tm  Yb  Lu
+             Th  Pa  U   Np  Pu  Am  Cm  Bk  Cf  Es  Fm  Md  No  Lr
+ .
+ Available Iron standard reference materials
+ .
+            *Fe : (26) Iron foil                 Goethite : (26) alpha-FeOOH
+       Hematite : (26) alpha-Fe2O3          Lepidocrocite : (26) gamma-FeOOH
+ .
+      q = quit    1 = plot mu(E)    2 = plot derivative    3 = plot filter
+ .
+ Comment:
+        File: fe.stan   Crystal: Si(111)
+        Iron foil measured at NSLS X11A 10/4/2002 by BR
+ .
+ Enter an element or material, a number to plot, or q=quit >
+
+By entering an element symbol, all standards for which that element is
+the absorber are listed below the periodic table.  By entering the
+name of a material, that one is selected for plotting.  By entering a
+number between 1 and 3, a useful plot is made of that material.
+
+Screen mode is the default mode.
+
+=item web
+
+In this mode, the program loops over all materials in the database,
+generating an html file for each material as well as a PNG file for
+each plot type.  This collection of files can be dropped onto a web
+site or viewed locally.  L<Here is an
+example|http://cars9.uchicago.edu/~ravel/software/doc/Standards/>
+using the database that ships with Demeter.
+
+=item latex
+
+In this mode, the program loops over all materials in the database,
+generating an latex file for each material as well as a PNG file for
+each plot type.  This mode has not yet been written.
+
+=item athena
+
+In this mode, one or more elements is selected at the command line and
+an Athena project file is generated for every material with those
+elements as the absorber.  The idea here is that you can generate a
+project file with data analysis standards that can be inorporated into
+a project file containing your own data.
+
+=back
+
+
+=head1 COMMAND LINE SWITCHES
+
+Each mode has its own set of command line switches.  The switches for
+one mode are ignored by other modes.
+
+=head2 Screen mode
+
+Example:
+
+  standards -l screen
+
+=over 4
+
+=item C<-l>
+
+Choose screen colors suitable for viewing in a terminal using a light
+background color.  The default is to choose colors that look good on a
+dark backdrop.
+
+=back
+
+=head2 Web mode
+
+Example:
+
+  standards --folder=html web
+
+=over 4
+
+=item C<--folder>, C<-f>
+
+This takes a string containing the name of the folder in which to
+place all generated files.  If the folder does not exist, it will be
+created.
+
+=item C<--quiet>, C<-q>
+
+Suppress all screen messages.
+
+=item C<--skip>, C<-s>
+
+Skip all materials for which an html file already exists in the folder
+indicated by the C<folder> command line switch.
+
+=item C<--noimage>, C<-n>
+
+Do not generate the image files, while still generating the html
+files.
+
+=back
+
+=head2 Athena mode
+
+Example:
+
+  standards --elements="fe,zn" -o mine.prj athena
+
+=over 4
+
+=item C<--outfile>, C<-o>
+
+The name of the output Athena project file.
+
+=item C<--elements>, C<-e>
+
+A comma separated list of element symbols to include in the project
+file.  You may need to quote the list for more than one element
+
+=item C<-a>
+
+Include all elements in the database in the project file.
+
+=back
+
+=head1 PLOT TYPES
+
+There are currently three plot types.  All three are available in
+screen mode and all three get included in the html page in web mode.
+
+=over 4
+
+=item XANES
+
+This plots the normalized, calibrated XANES data with several
+interesting points marked.
+
+=item derivative
+
+This plots the derivative of the XANES data with several interesting
+points marked.  The XANES and derivative points are specified
+separately in the metadata file.
+
+=item filter
+
+This plots something just like the filter plot in Hephaestus.  Using
+the bext guess for fluorescence filter material, this plot shows the
+edge of filter along with the edge and line energies of the absorber.
+
+=back
+
+=head1 CONFIGURATION AND ENVIRONMENT
+
+The F<standards.ini> file (which is found under the Demeter F<share>
+directory) is used to specify metadata about the various standard
+reference materials.  The C<config> section of the file is used to
+control a few details of plots that are generated by this program.
+All other aspects of Demeter are configured via its configuration
+system.
+
+=head1 DEPENDENCIES
+
+The dependencies of the Demeter system are in the
+F<Bundle/DemeterBundle.pm> file.
+
+=head1 BUGS AND LIMITATIONS
+
+See L<Demeter::Atoms> for bugs and limitations of the underlying
+libraries.
+
+=over 4
+
+=item *
+
+LaTeX mode
+
+=item *
+
+More plot types: chi(k), chi(R), second derivative, extended XAS
+
+=item *
+
+Prettier CSS in web mode
+
+=back
+
+Please report problems to Bruce Ravel (bravel AT bnl DOT gov)
+
+Patches are welcome.
+
+=head1 AUTHOR
+
+Bruce Ravel (bravel AT bnl DOT gov)
+
+http://cars9.uchicago.edu/~ravel/software/
+
+
+=head1 LICENCE AND COPYRIGHT
+
+Copyright (c) 2008-2009 Bruce Ravel (bravel AT bnl DOT gov). All rights reserved.
+
+This module is free software; you can redistribute it and/or
+modify it under the same terms as Perl itself. See L<perlgpl>.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+
+=cut

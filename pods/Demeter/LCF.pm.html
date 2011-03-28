@@ -1,0 +1,525 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+	<title>Demeter::LCF</title>
+<link rel="stylesheet" type="text/css" href="../podstyle.css" /><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+  <script type="text/javascript">
+
+  function toggleCode( id ) {
+    if ( document.getElementById )
+      elem = document.getElementById( id );
+    else if ( document.all )
+      elem = eval( "document.all." + id );
+    else
+      return false;
+
+    elemStyle = elem.style;
+
+    if ( elemStyle.display != "block" ) {
+      elemStyle.display = "block"
+    } else {
+      elemStyle.display = "none"
+    }
+
+    return true;
+  }
+  document.writeln( "<style type=\"text/css\">div.method-source-code { display: none }</style>" )
+  </script></head>
+<body>
+<div class="box">
+  <h1 class="t1">Demeter</h1>
+  <table>
+    <tr>
+      <td class="label">Description</td>
+      <td class="cell">Perl tools for X-ray Absorption Spectroscopy</td>
+    </tr>
+  </table>
+</div>
+<div class="path">
+  <a href="../index.html">Demeter</a> &gt; Perl Modules &gt;
+  Demeter-LCF
+</div>
+<div>
+<a href="../src/Demeter/LCF.pm">Source</a>
+</div>
+
+
+<div class="pod">
+<!-- INDEX START -->
+<h3 id="TOP">Index</h3>
+<ul>
+	<li><a href="#NAME">NAME</a></li>
+	<li><a href="#VERSION">VERSION</a></li>
+	<li><a href="#SYNOPSIS">SYNOPSIS</a></li>
+	<li><a href="#DESCRIPTION">DESCRIPTION</a></li>
+	<li><a href="#ATTRIBUTES">ATTRIBUTES</a><br />
+<ul>
+	<li><a href="#Parameters_of_the_fit">Parameters of the fit</a></li>
+	<li><a href="#Standards">Standards</a></li>
+	<li><a href="#Statistics">Statistics</a></li>
+</ul>
+</li>
+	<li><a href="#METHODS">METHODS</a></li>
+	<li><a href="#COMBINATORIAL_FITTING">COMBINATORIAL FITTING</a><br />
+<ul>
+	<li><a href="#Attributes_for_combinatorial_fitting">Attributes for combinatorial fitting</a></li>
+	<li><a href="#Methods_of_combinatorial_fitting">Methods of combinatorial fitting</a></li>
+</ul>
+</li>
+	<li><a href="#SERIALIZATION_AND_DESERIALIZATION">SERIALIZATION AND DESERIALIZATION</a></li>
+	<li><a href="#CONFIGURATION_AND_ENVIRONMENT">CONFIGURATION AND ENVIRONMENT</a></li>
+	<li><a href="#DEPENDENCIES">DEPENDENCIES</a></li>
+	<li><a href="#BUGS_AND_LIMITATIONS">BUGS AND LIMITATIONS</a></li>
+	<li><a href="#AUTHOR">AUTHOR</a></li>
+	<li><a href="#LICENCE_AND_COPYRIGHT">LICENCE AND COPYRIGHT</a></li>
+</ul>
+<hr />
+<!-- INDEX END -->
+
+<h1 id="NAME">NAME <a href="#TOP" class="toplink"><img alt="^" src="../up.gif" /></a></h1>
+
+<p>Demeter::LCF - Linear combination fitting</p>
+
+<h1 id="VERSION">VERSION <a href="#TOP" class="toplink"><img alt="^" src="../up.gif" /></a></h1>
+
+<p>This documentation refers to Demeter version 0.4.</p>
+
+<h1 id="SYNOPSIS">SYNOPSIS <a href="#TOP" class="toplink"><img alt="^" src="../up.gif" /></a></h1>
+
+<pre>   #!/usr/bin/perl
+   use Demeter;
+
+   my $prj  = Demeter::Data::Prj -&gt; new(file=&gt;'examples/cyanobacteria.prj');
+   my $lcf  = Demeter::LCF -&gt; new;
+   my $data = $prj-&gt;record(4);
+   my ($metal, $chloride, $sulfide) = $prj-&gt;records(9, 11, 15);
+
+   $lcf -&gt; data($data);
+   $lcf -&gt; add($metal);
+   $lcf -&gt; add($chloride);
+   $lcf -&gt; add($sulfide);
+
+   $lcf -&gt; xmin($data-&gt;bkg_e0-20);
+   $lcf -&gt; xmax($data-&gt;bkg_e0+60);
+   $lcf -&gt; po -&gt; set(emin=&gt;-30, emax=&gt;80);
+   $lcf -&gt; fit;
+   $lcf -&gt; plot_fit;
+   $lcf -&gt; save('lcf_fit_result.dat');
+
+</pre><h1 id="DESCRIPTION">DESCRIPTION <a href="#TOP" class="toplink"><img alt="^" src="../up.gif" /></a></h1>
+
+<p>Linear combination fitting (LCF) is an analysis method for
+interpreting XANES or EXAFS data using standards.  The assumption is
+that the data from an unknown sample can be understood as a linear
+superposition of the data from two or more known, well-understood
+standards.  The LCF analysis, therefore, tells us what fraction of the
+unknown sample is explained by one of the known standards.</p>
+
+<p>For example, imagine mixing together quantities of iron oxide and iron
+sulfide such that there are equal numbers of iron atoms surrounded by
+oxygen and by sulfur.  You would then expect to be able to describe
+the data from the mixure by adding together equal parts of the data
+from the two pure materials.</p>
+
+<p>This object provides a framework for performing this sort of analysis.
+In the example shown above, data and standards are imported from an
+Athena project file.  The data are fit as a linear combination of
+three standards.  The result of the fit is the fraction of each
+standard present in the data as well as uncertainties in those
+fractions.</p>
+
+<p>This object also provides methods for &quot;combinatorial fitting&quot;.  In
+this approach an ensemble of standards are compared to the data in all
+possible combinations (with certain constraints).  The results are
+sorted by increasing R-factor of the fit.  The first result, then, is
+the combination of standards giving the closest fit to the data.</p>
+
+<h1 id="ATTRIBUTES">ATTRIBUTES <a href="#TOP" class="toplink"><img alt="^" src="../up.gif" /></a></h1>
+
+<h2 id="Parameters_of_the_fit">Parameters of the fit</h2>
+
+<dl>
+	<dt><code>xmin</code></dt>
+		<dd><p>The lower bound of the fit.  For a fit to the normalized or derivative
+mu(E), this is an absolute energy value and <strong>not</strong> relative to the
+edge energy.</p></dd>
+	<dt><code>xmax</code></dt>
+		<dd><p>The upper bound of the fit.  For a fit to the normalized or derivative
+mu(E), this is an absolute energy value and <strong>not</strong> relative to the
+edge energy.</p></dd>
+	<dt><code>space</code></dt>
+		<dd><p>The fitting space.  This can be one of <code>nor</code>, <code>der</code>, or <code>chi</code>.
+When fitting in <code>chi</code>, e0 cannot be varied.</p></dd>
+	<dt><code>max_standards</code></dt>
+		<dd><p>The maximum number of standards to use in each fit of a combinatorial
+sequence.</p></dd>
+	<dt><code>linear</code></dt>
+		<dd><p>A boolean.  When true, add a linear term to the fit.  (Not implemented
+yet.)</p></dd>
+	<dt><code>inclusive</code></dt>
+		<dd><p>A boolean.  When true, all weights are forced to be between 0 and 1
+inclusive.</p></dd>
+	<dt><code>unity</code></dt>
+		<dd><p>A boolean.  When true, the weights are forced to sum to 1.</p></dd>
+	<dt><code>one_e0</code></dt>
+		<dd><p>A boolean.  When true, one over-all e0 parameter is used in the fit
+rather than one for each standard.  In practice, the standards are
+shifted by the same floated e0 value.  That is, one parameter is
+floated and an e0 for each standard is def-ed to that value.</p></dd>
+	<dt><code>noise</code></dt>
+		<dd><p>If non-zero, add artifical noise to the data.  The value is used as
+the sigma of the normally distributed artifical noise.  You may need
+to play around to find an appropriate value for your data.  Note that
+for a fit in chi(k), the noise is added to the un-k-weighted chi(k)
+data.</p></dd>
+	<dt><code>plot_components</code></dt>
+		<dd><p>A boolean.  When true, the scaled components of the fit will be
+included in a plot.</p></dd>
+	<dt><code>plot_difference</code></dt>
+		<dd><p>A boolean.  When true, the residual of the fit will be included in a
+plot.</p></dd>
+	<dt><code>plot_indicators</code></dt>
+		<dd><p>A boolean.  When true, plot indicators will mark the boundaries of the
+fit in a plot.</p></dd>
+</dl>
+<h2 id="Standards">Standards</h2>
+
+<dl>
+	<dt><code>standards</code></dt>
+		<dd><p>This attribute contains the list of standards added to this LCF problem.
+The accessor returns a list reference:</p></dd>
+<dd><pre>  $ref_to_standards = $lcf-&gt;standards;
+
+</pre></dd>		<dd><p>It is strongly recommended that you do not assign standards directly
+to this.  Instead use the <code>add</code> or <code>add_many</code> methods.  Those
+methods take care of some other chores required to keep the LCF
+organized.</p></dd>
+</dl>
+<p>A number of methods are provided by Moose for interacting with the
+list stored in this attribute:</p>
+
+<dl>
+	<dt><code>push_standards</code></dt>
+		<dd><p>Push a value to the list.</p></dd>
+	<dt><code>pop_standards</code></dt>
+		<dd><p>Pop a value from the list.</p></dd>
+	<dt><code>shift_standards</code></dt>
+		<dd><p>Shift a value from the list.</p></dd>
+	<dt><code>unshift_standards</code></dt>
+		<dd><p>Unshift a value to the list.</p></dd>
+	<dt><code>clear_standards</code></dt>
+		<dd><p>Assign an empty list.</p></dd>
+</dl>
+<h2 id="Statistics">Statistics</h2>
+
+<p>Once the fit finishes, each of the following attributes is filled with
+a value appropriate to recently completed fit.</p>
+
+<dl>
+	<dt><code>nstan</code></dt>
+		<dd><p>The number of standars used in the fit.</p></dd>
+	<dt><code>npoints</code></dt>
+		<dd><p>The number of data points included in the fit.</p></dd>
+	<dt><code>nvarys</code></dt>
+		<dd><p>The number of variable parameters used in the fit.</p></dd>
+	<dt><code>rfactor</code></dt>
+		<dd><p>An R-factor for the fit.  For fits to chi(k) or the derivative
+spectrum, this is an Ifeffit-normal R-factor:</p></dd>
+<dd><pre>   sum( [data_i - fit_i]^2 ]
+  --------------------------
+      sum ( data_i^2 )
+
+</pre></dd>		<dd><p>For a fit to normalized mu(E), that formulation for an R-factor always
+results in a really tiny number.  Demeter thus scales the R-factor to
+make it somewhat closer to 10^-2.</p></dd>
+<dd><pre>    npoints * sum( [data_i - fit_i]^2 ]
+  ---------------------------------------
+        sum ( [data_i - &lt;data&gt;]^2 )
+
+</pre></dd>		<dd><p>where &lt;data&gt; is the geometric mean of the data in the fitting range.</p></dd>
+	<dt><code>chisqr</code></dt>
+		<dd><p>This is Ifeffit's chi-square for the fit.</p></dd>
+	<dt><code>chinu</code></dt>
+		<dd><p>This is Ifeffit's reduced chi-square for the fit.</p></dd>
+</dl>
+<h1 id="METHODS">METHODS <a href="#TOP" class="toplink"><img alt="^" src="../up.gif" /></a></h1>
+
+<dl>
+	<dt><code>add</code></dt>
+		<dd><p>Add a Data object to the LCF object for use one of the fitting
+standards.  In it's simplest form, the sole argument is a Data objectL</p></dd>
+<dd><pre>  $lcf -&gt; add($data_object);
+
+</pre></dd>		<dd><p>You can also set certain parameters of the standard by supplying an
+optional anonymous hash:</p></dd>
+<dd><pre>  $lcf -&gt; add($data_object, { required =&gt; 0,
+                              float_e0 =&gt; 0,
+                              weight   =&gt; 1/3,
+                              e0       =&gt; 1/3,});
+
+</pre></dd>		<dd><p>The <code>required</code> parameter flags this standard as one that is required
+to be in a combinatorial fit.  <code>float_e0</code> is true when you wish to
+float an energy shift for this standard.  The other two are used to
+specify the weight and e0.</p></dd>
+		<dd><p>There are methods (described) below for setting each of these
+parameters.</p></dd>
+	<dt><code>add_many</code></dt>
+		<dd><p>This method provides a way of setting a group of Data objects as
+standard in one shot.  It is equivalent to repeated calls to the
+<code>add</code> method without the anonymous hash.</p></dd>
+<dd><pre>  $lcf -&gt; add_many(@data);
+
+</pre></dd>	<dt><code>float_e0</code></dt>
+		<dd><p>This method is used to turn a floating e0 value on or off for a given
+standard.</p></dd>
+<dd><pre>  $lcf-&gt;float_e0($standard, $onoff);
+
+</pre></dd>		<dd><p>The first argument is the standard in question, the second is a
+boolean toggling the floating e0 on or off.</p></dd>
+		<dd><p>These are the same:</p></dd>
+<dd><pre>  $lcf-&gt;add($data);
+  $lcf-&gt;float_e0($data, 1);
+
+</pre></dd>		<dd><p>and</p></dd>
+<dd><pre>  $lcf-&gt;add($add, float_e0=&gt;1);
+
+</pre></dd>	<dt><code>required</code></dt>
+		<dd><p>This method is used to require a given standard in a combinatorial
+fit.</p></dd>
+<dd><pre>  $lcf-&gt;required($standard, $onoff);
+
+</pre></dd>		<dd><p>The first argument is the standard in question, the second is a
+boolean toggling the requirement on or off.</p></dd>
+		<dd><p>These are the same:</p></dd>
+<dd><pre>  $lcf-&gt;add($data);
+  $lcf-&gt;required($data, 1);
+
+</pre></dd>		<dd><p>and</p></dd>
+<dd><pre>  $lcf-&gt;add($add, required=&gt;1);
+
+</pre></dd>	<dt><code>weight</code></dt>
+		<dd><p>This method is both a setter and getter of the weight for a given
+standard.  As a getter:</p></dd>
+<dd><pre>  my ($weight, $dweight) = $lcf-&gt;weight($standard);
+
+</pre></dd>		<dd><p>The weight and the uncertainty in the weight are returned as an array.</p></dd>
+		<dd><p>The weight can be set to an explicit value:</p></dd>
+<dd><pre>  my ($weight, $dweight) = $lcf-&gt;weight($standard, $value);
+
+</pre></dd>		<dd><p>Again weight and the uncertainty in the weight are returned as an
+array.  The uncertainty is zeroed when the weight is explicitly set.</p></dd>
+		<dd><p>In scalar context, this just returns the weight.</p></dd>
+	<dt><code>e0</code></dt>
+		<dd><p>This method is both a setter and getter of the e0 shift for a given
+standard.  As a getter:</p></dd>
+<dd><pre>  my ($e0, $e0) = $lcf-&gt;e0($standard);
+
+</pre></dd>		<dd><p>The e0 and the uncertainty in the e0 are returned as an array.</p></dd>
+		<dd><p>The e0 can be set to an explicit value:</p></dd>
+<dd><pre>  my ($e0, $de0) = $lcf-&gt;e0($standard, $value);
+
+</pre></dd>		<dd><p>Again e0 and the uncertainty in the e0 are returned as an array.  The
+uncertainty is zeroed when the e0 is explicitly set.</p></dd>
+		<dd><p>In scalar context, this just returns the e0.</p></dd>
+	<dt><code>fit</code></dt>
+		<dd><p>Perform the fit.</p></dd>
+<dd><pre>  $lcf-&gt;fit;
+
+</pre></dd>		<dd><p>This will perform some sanity checks, including verifying that the
+data has been set and that at least two standards have been defined.
+It will also make sure <code>xmin</code> and <code>xmax</code> are in the correct order.</p></dd>
+		<dd><p>An optional boolean argument turns the spinner off when in screen UI
+mode.  This allows use of a counter for combinatorial fits.</p></dd>
+<dd><pre>  $lcf-&gt;fit(1);  # true value means to turn spinner off
+
+</pre></dd>	<dt><code>report</code></dt>
+		<dd><p>This returns a summary of the fitting results.</p></dd>
+<dd><pre>  print $lcf-&gt;report;
+
+</pre></dd>	<dt><code>save</code></dt>
+		<dd><p>This method saves the results of a fit to a column data file
+containing columns for the x-axis (energy or wavenumber), the data,
+the fit, and each of the weighted components.</p></dd>
+<dd><pre>  $lcf -&gt; save(&quot;file.dat&quot;);
+
+</pre></dd>	<dt><code>plot_fit</code></dt>
+		<dd><p>This method will generate a plot showing the data and the fit.</p></dd>
+<dd><pre>  $lcf -&gt; plot_fit;
+
+</pre></dd>		<dd><p>The <code>plot_difference</code>, <code>plot_components</code>, and <code>plot_indicators</code>
+attributes determine whether the residual, the weighted components,
+and indicators marking the fitting range are included in the plot.</p></dd>
+		<dd><p>By default, the chi(k) and derivative components are stacked
+automatically.</p></dd>
+	<dt><code>plot</code></dt>
+		<dd><p>This is the generic plotting method for use when overplotting a large
+number of objects.  In this example, the data, the standards, and the
+result of the LCF fit are plotted together with the standards plotted
+normally rather than as the weighted components of the fit.</p></dd>
+<dd><pre>   $lcf-&gt;po-&gt;start_plot;
+   $lcf-&gt;po-&gt;set(e_norm=&gt;1, e_der=&gt;1, emin=&gt;-30, emax=&gt;70);
+   $_-&gt;plot('e') foreach ($data, @standards, $lcf);
+
+</pre></dd>		<dd><p>This method does nothing (i.e. it does not attempt to plot the LCF fit
+at all) if the plot conditions do not match the fitting space of the
+fit.  E.g., an LCF fit to normalized data will only be plotted if the
+fit is in energy and the <code>e_norm</code> Plot attribute is true.</p></dd>
+	<dt><code>clean</code></dt>
+		<dd><p>This method clears all scalars and arrays our of Ifeffit's memory.</p></dd>
+<dd><pre>  $lcf-&gt;clean;
+
+</pre></dd></dl>
+<p>Note that there is not a <code>remove</code> method to do the opposite of
+<code>add</code>.  This seems to me unnecessarily difficult to use.  I suggest
+explicitly clearing the standards list and then <code>add</code>ing a new set of
+standards.  This is how the combinatorial fitting loop works.</p>
+
+<pre>  $lcf-&gt;add(@data);
+   ... do stuff, then
+  $lcf-&gt;clear_standards;
+  $lcf-&gt;add(@new_data);
+
+</pre><p>Explain these:</p>
+
+<pre>				  'push'    =&gt; 'push_standards',
+				  'pop'     =&gt; 'pop_standards',
+				  'shift'   =&gt; 'shift_standards',
+				  'unshift' =&gt; 'unshift_standards',
+				  'clear'   =&gt; 'clear_standards',
+
+</pre><h1 id="COMBINATORIAL_FITTING">COMBINATORIAL FITTING <a href="#TOP" class="toplink"><img alt="^" src="../up.gif" /></a></h1>
+
+<p>These attributes and methods are specifically related to combinatorial
+fitting.  A combinatorial fit is one in which all possible
+combinations (within certain constraints) are compared to the data.</p>
+
+<h2 id="Attributes_for_combinatorial_fitting">Attributes for combinatorial fitting</h2>
+
+<dl>
+	<dt><code>max_standards</code></dt>
+		<dd><p>The maximum number of standards to use in each fit of a combinatorial
+sequence.  Note that the size of the combinatorial problem grows
+geometrically in the value of this parameter and in the number of
+possible standards.</p></dd>
+		<dd><p>If, for example, this is set to 4, then in a combinatorial fit, all
+possible combinations of 2, 3, or 4 standards will be fit to the data.</p></dd>
+		<dd><p>Note that the size of the combinatorial problem gets very large as
+this number grows.</p></dd>
+	<dt><code>combi_results</code></dt>
+		<dd><p>This is an array of hashes, sorted by rfactor, containing all the
+results of fitting sequence.</p></dd>
+		<dd><p>Each hash in the array looks like this:</p></dd>
+<dd><pre>  {
+   Rfactor =&gt; Num,
+   Chinu   =&gt; Num,
+   Chisqr  =&gt; Num,
+   Nvarys  =&gt; Num,
+   Scaleby =&gt; Num,
+   aaaaa   =&gt; [weight, dweight, e0, de0],
+   bbbbb   =&gt; [weight, dweight, e0, de0],
+   ....
+  }
+
+</pre></dd>		<dd><p>A key like &quot;aaaaa&quot; is the group attribute of a Data object used in the
+fit.  From this, the final state of each fit can be recovered using
+the <code>restore</code> method.</p></dd>
+</dl>
+<h2 id="Methods_of_combinatorial_fitting">Methods of combinatorial fitting</h2>
+
+<dl>
+	<dt><code>combi</code></dt>
+		<dd><p>Perform a combinatorial sequence of fits, that is, perform all fits
+using all combinations of standards up to the number in
+<code>max_standards</code>.  If <code>max_standards</code> is 4, then all combinations of
+2, 3, or 4 of all the standards added to the object will considered.</p></dd>
+<dd><pre>  $lcf-&gt;combi;
+
+</pre></dd>		<dd><p>At the end of the fit, the <code>combi_results</code> attribute is filled with
+an array of hashes containing the sorted results of the fit.  The
+first item in the array contains th results from the fit with the
+lowest R-factor (that is, the combinationof standards that most
+closely describes the data).</p></dd>
+		<dd><p>One or more standards can be flagged as being required in a fit.  That
+is, each fit will include the flagged standards.  This will
+significantly reduce the size of the combinatorial problem.  See the
+discussion of the <code>add</code>, <code>required</code>, and <code>is_required</code> methods
+above.</p></dd>
+		<dd><p>At the end of the combinatorial sequence of fits, the fit with the
+lowest R-factor will be restored.  Calling <code>plot_fit</code>, <code>report</code>, or
+<code>save</code> will act on that fit.  To examine other fits from the
+sequence, the <code>restore</code> must be called using one of the results from
+the <code>combi_results</code> attribute.</p></dd>
+	<dt><code>combi_size</code></dt>
+		<dd><p>This is used by the <code>combi</code> method to determine the entire list of
+combinations.  When called in scalar context, it gives the number of
+fit in the combinatorial problem.  It is probably best to call it in
+explicit scalar context:</p></dd>
+<dd><pre>  printf(&quot;There will be %d fits.\n&quot;, scalar($lcf-&gt;combi_size));
+
+</pre></dd>		<dd><p>This can be used, for example, to query the user as to whether to
+continue in the case of a very large number of fits.</p></dd>
+	<dt><code>combi_report</code></dt>
+		<dd><p>Write a CSV (comma separated value) file that can be imported into a
+spreadsheet with the results of the combinatorial fit.</p></dd>
+<dd><pre>  $lcf-&gt;combi_report(&quot;results.csv&quot;);
+
+</pre></dd>		<dd><p>The argument is the name of the output file (which you probably want
+to give a &quot;.csv&quot; extension so your spreadsheet will know to import it
+as such.</p></dd>
+		<dd><p>Note that care is taken to strip any commas from the names of the
+standards before writing the CSV file.  Also note that this does not
+make the most elegant spreadsheet, but it is certainly functional and
+it certainly allows you to examine all of your results.</p></dd>
+</dl>
+<h1 id="SERIALIZATION_AND_DESERIALIZATION">SERIALIZATION AND DESERIALIZATION <a href="#TOP" class="toplink"><img alt="^" src="../up.gif" /></a></h1>
+
+<p>Good question ...</p>
+
+<h1 id="CONFIGURATION_AND_ENVIRONMENT">CONFIGURATION AND ENVIRONMENT <a href="#TOP" class="toplink"><img alt="^" src="../up.gif" /></a></h1>
+
+<p>See <a href="Config.pm.html">Demeter::Config</a> for a description of the configuration system.
+See the lcf configuration group for the relevant parameters.</p>
+
+<h1 id="DEPENDENCIES">DEPENDENCIES <a href="#TOP" class="toplink"><img alt="^" src="../up.gif" /></a></h1>
+
+<p>Demeter's dependencies are in the <cite>Bundle/DemeterBundle.pm</cite> file.</p>
+
+<h1 id="BUGS_AND_LIMITATIONS">BUGS AND LIMITATIONS <a href="#TOP" class="toplink"><img alt="^" src="../up.gif" /></a></h1>
+
+<ul>
+	<li>noise</li>
+	<li>Serialization and deserialization</li>
+	<li>linear term</li>
+	<li>better sanity method that provides usable feedback for a GUI</li>
+	<li>singlefile plot</li>
+	<li>further processing of LCF result (i.e. bkg removal, FTs).  This seems
+better than converting the fit into a normal Data object</li>
+</ul>
+
+<p>Please report problems to Bruce Ravel (bravel AT bnl DOT gov)</p>
+
+<p>Patches are welcome.</p>
+
+<h1 id="AUTHOR">AUTHOR <a href="#TOP" class="toplink"><img alt="^" src="../up.gif" /></a></h1>
+
+<p>Bruce Ravel (bravel AT bnl DOT gov)</p>
+
+<p><a href="http://cars9.uchicago.edu/~ravel/software/">http://cars9.uchicago.edu/~ravel/software/</a></p>
+
+
+
+
+<h1 id="LICENCE_AND_COPYRIGHT">LICENCE AND COPYRIGHT <a href="#TOP" class="toplink"><img alt="^" src="../up.gif" /></a></h1>
+
+<p>Copyright (c) 2006-2011 Bruce Ravel (bravel AT bnl DOT gov). All rights reserved.</p>
+
+<p>This module is free software; you can redistribute it and/or
+modify it under the same terms as Perl itself. See <a href="http://search.cpan.org/perldoc?perlgpl">perlgpl</a>.</p>
+
+<p>This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.</p>
+
+
+</div><div class="footer">generated by <a href="http://search.cpan.org/perldoc?Pod%3A%3AProjectDocs">Pod::ProjectDocs</a></div></body>
+</html>

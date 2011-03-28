@@ -1,0 +1,195 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+	<title>Demeter::UI::Screen::Interview</title>
+<link rel="stylesheet" type="text/css" href="../../../podstyle.css" /><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+  <script type="text/javascript">
+
+  function toggleCode( id ) {
+    if ( document.getElementById )
+      elem = document.getElementById( id );
+    else if ( document.all )
+      elem = eval( "document.all." + id );
+    else
+      return false;
+
+    elemStyle = elem.style;
+
+    if ( elemStyle.display != "block" ) {
+      elemStyle.display = "block"
+    } else {
+      elemStyle.display = "none"
+    }
+
+    return true;
+  }
+  document.writeln( "<style type=\"text/css\">div.method-source-code { display: none }</style>" )
+  </script></head>
+<body>
+<div class="box">
+  <h1 class="t1">Demeter</h1>
+  <table>
+    <tr>
+      <td class="label">Description</td>
+      <td class="cell">Perl tools for X-ray Absorption Spectroscopy</td>
+    </tr>
+  </table>
+</div>
+<div class="path">
+  <a href="../../../index.html">Demeter</a> &gt; Perl Modules &gt;
+  Demeter-UI-Screen-Interview
+</div>
+<div>
+<a href="../../../src/Demeter/UI/Screen/Interview.pm">Source</a>
+</div>
+
+
+<div class="pod">
+<!-- INDEX START -->
+<h3 id="TOP">Index</h3>
+<ul>
+	<li><a href="#NAME">NAME</a></li>
+	<li><a href="#VERSION">VERSION</a></li>
+	<li><a href="#SYNOPSIS">SYNOPSIS</a></li>
+	<li><a href="#DESCRIPTION">DESCRIPTION</a></li>
+	<li><a href="#METHOD">METHOD</a></li>
+	<li><a href="#CONFIGURATION_AND_ENVIRONMENT">CONFIGURATION AND ENVIRONMENT</a></li>
+	<li><a href="#DEPENDENCIES">DEPENDENCIES</a></li>
+	<li><a href="#BUGS_AND_LIMITATIONS">BUGS AND LIMITATIONS</a></li>
+	<li><a href="#AUTHOR">AUTHOR</a></li>
+	<li><a href="#LICENCE_AND_COPYRIGHT">LICENCE AND COPYRIGHT</a></li>
+</ul>
+<hr />
+<!-- INDEX END -->
+
+<h1 id="NAME">NAME <a href="#TOP" class="toplink"><img alt="^" src="../../../up.gif" /></a></h1>
+
+<p>Demeter::UI::Screen::Interview - Simple screen interface to Demeter fit results</p>
+
+<h1 id="VERSION">VERSION <a href="#TOP" class="toplink"><img alt="^" src="../../../up.gif" /></a></h1>
+
+<p>This documentation refers to Demeter version 0.4.</p>
+
+<h1 id="SYNOPSIS">SYNOPSIS <a href="#TOP" class="toplink"><img alt="^" src="../../../up.gif" /></a></h1>
+
+<pre>  use Demeter;
+  my $fit = Demeter::Fit-&gt;new(project=&gt;'project.dpj');
+  $fit-&gt;interview;
+
+</pre><h1 id="DESCRIPTION">DESCRIPTION <a href="#TOP" class="toplink"><img alt="^" src="../../../up.gif" /></a></h1>
+
+<p>This provides a simple, screen-based machanism for interacting with a
+Demeter fit result imported from a project file.  This interview is
+implemented as a method of the Fit object.  The screen interview
+allows you to plot data from the fit, examine the fitting parameters
+and statistics, and change some of the plotting parameters.  It is
+bare-bones, but still useful.  It is a handy thing to add to the end
+of a Demeter fitting script as a simple plotting back-end to the fit.</p>
+
+<h1 id="METHOD">METHOD <a href="#TOP" class="toplink"><img alt="^" src="../../../up.gif" /></a></h1>
+
+<dl>
+	<dt><code>interview</code></dt>
+		<dd><p>Explore the Demeter project file via an on-screen interview.  The
+first argument is the fit object to probe.  The optional second
+argument is a boolean which, when true, suppresses the plotting of the
+first data object with its fit before the beginning of the interview.</p></dd>
+		<dd><p>The interview understands these concise commands:</p></dd>
+<dd><dl>
+	<dt><code>number</code></dt>
+		<dd><p>Plot the data set using its number in the data list.</p></dd>
+	<dt><code>c#</code></dt>
+		<dd><p>Change one of the plotting parameters.  For example <code>c1</code> is used to
+change the k-weight used in the plots and Fourier transforms.</p></dd>
+	<dt><code>d#</code></dt>
+		<dd><p>Show the operational parameters of the fit for that data set.</p></dd>
+	<dt><code>g</code></dt>
+		<dd><p>Examine the guess, def, and set parameters from the fit.  Enter a
+number from the list of parameters to see all the details of that
+parameter.</p></dd>
+	<dt><code>s</code></dt>
+		<dd><p>Examine the fitting statistics.</p></dd>
+	<dt><code>l</code></dt>
+		<dd><p>Show the log file.</p></dd>
+	<dt><code>h</code></dt>
+		<dd><p>Get a bit of help written to the screen.</p></dd>
+	<dt><code>v</code></dt>
+		<dd><p>Show the Demeter version number.</p></dd>
+</dl>
+</dd>
+		<dd><p>Here is an example of the main interview screen:</p></dd>
+<dd><pre>  c#) change plotting parameter:
+   1) k-weight    = 1                     g) show guess, def, set parameters
+   2) plot space  = r                     s) show statistics
+   3) R part      = m                    d#) show fit parameters
+   4) q part      = r                     l) show log file
+   5) plot paths  = 0                     v) show version
+  .
+  Data included in the fit
+     1. data0 : 10 K copper data
+     2. data1 : 150 K copper data
+  .
+  Choose data by number, select an operation by letter, or q=quit &gt;
+
+</pre></dd>		<dd><p>And here is an example of the guess, def, set interview with a report
+on one of the parameters:</p></dd>
+<dd><pre>  Guess, def, set parameters:
+  .
+    1. g: alpha010        = -0.0067                 2. g: alpha150        = 0.0030
+    3. g: amp             = 0.9782                  4. g: enot            = 1.4856
+    5. g: theta           = 314.8034                6. s: sigmm           = 0.0005
+  .
+  alpha010
+    guess parameter
+    math expression: 0
+    evaluates to  -0.00665617 +/-   0.00161217
+    annotation: &quot;alpha010:  -0.00665617 +/-   0.00161217&quot;
+  .
+  Choose a parameter for a full report or r to return &gt;
+
+</pre></dd></dl>
+<h1 id="CONFIGURATION_AND_ENVIRONMENT">CONFIGURATION AND ENVIRONMENT <a href="#TOP" class="toplink"><img alt="^" src="../../../up.gif" /></a></h1>
+
+<p>See <a href="../../Config.pm.html">Demeter::Config</a> for a description of Demeter's configuration
+system.</p>
+
+<h1 id="DEPENDENCIES">DEPENDENCIES <a href="#TOP" class="toplink"><img alt="^" src="../../../up.gif" /></a></h1>
+
+<p>Along with needing Demeter, this uses <a href="http://search.cpan.org/perldoc?Term%3A%3AANSIColor">Term::ANSIColor</a> and
+<a href="http://search.cpan.org/perldoc?Term%3A%3AReadLine">Term::ReadLine</a>.  The example script in the Demeter distribution
+also uses <a href="http://search.cpan.org/perldoc?Term%3A%3ATwiddle">Term::Twiddle</a>.</p>
+
+<h1 id="BUGS_AND_LIMITATIONS">BUGS AND LIMITATIONS <a href="#TOP" class="toplink"><img alt="^" src="../../../up.gif" /></a></h1>
+
+<ul>
+	<li>Plotting rmr and turning on plotting of paths results in a crash.
+Should disable plotting paths when plotting rmr.</li>
+</ul>
+
+<p>Please report problems to Bruce Ravel (bravel AT bnl DOT gov)</p>
+
+<p>Patches are welcome.</p>
+
+<h1 id="AUTHOR">AUTHOR <a href="#TOP" class="toplink"><img alt="^" src="../../../up.gif" /></a></h1>
+
+<p>Bruce Ravel (bravel AT bnl DOT gov)</p>
+
+<p><a href="http://cars9.uchicago.edu/~ravel/software/">http://cars9.uchicago.edu/~ravel/software/</a></p>
+
+
+
+
+<h1 id="LICENCE_AND_COPYRIGHT">LICENCE AND COPYRIGHT <a href="#TOP" class="toplink"><img alt="^" src="../../../up.gif" /></a></h1>
+
+<p>Copyright (c) 2006-2011 Bruce Ravel (bravel AT bnl DOT gov). All rights reserved.</p>
+
+<p>This module is free software; you can redistribute it and/or
+modify it under the same terms as Perl itself. See <a href="http://search.cpan.org/perldoc?perlgpl">perlgpl</a>.</p>
+
+<p>This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.</p>
+
+
+</div><div class="footer">generated by <a href="http://search.cpan.org/perldoc?Pod%3A%3AProjectDocs">Pod::ProjectDocs</a></div></body>
+</html>

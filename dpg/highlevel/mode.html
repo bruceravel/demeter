@@ -1,0 +1,228 @@
+<!DOCTYPE HTMP PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <title>Mode object</title>
+    <link rel="stylesheet" href=../ab.css />
+    <link rel="stylesheet" href=../ppi.css />
+    <meta http-equiv="Content-Type" content="text/html"; charset=iso-8859-15 />
+    <meta name="robots" contents="all" />
+  </head>
+
+  <body>
+    <div class=topbar>
+  <div class=navbar>
+  <table class=navtable>
+    <tr>
+      <td align=left>
+        [&nbsp;<a href="../index.html">Home</a>&nbsp;] &nbsp;&nbsp;
+        [&nbsp;<a href="http://cars9.uchicago.edu/iffwiki/Demeter"><span class=programlink>DEMETER</span></a>&nbsp;] &nbsp;&nbsp;
+        [&nbsp;<a href="http://cars9.uchicago.edu/iffwiki/Ifeffit"><span class=programlink>IFEFFIT</span></a>&nbsp;] &nbsp;&nbsp;
+        [&nbsp;<a href="http://leonardo.phys.washington.edu/feff/wiki/index.php?title=FEFF_Documentation"><span class=programlink>FEFF</span></a>&nbsp;] &nbsp;&nbsp;
+        [&nbsp;<a href="http://xafs.org">xafs.org</a>&nbsp;] &nbsp;&nbsp;
+	[&nbsp;<a href="../demeter.pdf">PDF&nbsp;doc</a>&nbsp;]
+      </td>
+      <td align=right>
+        Back: <a href="../highlevel/dispose.html" class="menu" >Command disposal and command templates</a> &nbsp;&nbsp;
+        Next: <a href="../highlevel/plot.html" class="menu" >The Plot object</a>
+        &nbsp;&nbsp;
+        Up: <a href="../highlevel/index.html" class="menu" >High level actions for Demeter objects</a>      </td>
+    </tr>
+  </table>
+  </div>
+  <h1>
+  Mode object
+</h1>
+</div>
+
+<hr class=hide />
+
+
+<div class=sidebar>
+  <a href="../ceres.html"><img src=../../images/Isis-Sothis-Demeter_sm.jpg
+    width=100% border=0 alt='[Demeter logo]'></a>
+  <br />
+  <a href="../index.html" class="menu" >Home</a><br />
+<a href="../intro.html" class="menu" >Introduction</a><br />
+<a href="../data/index.html" class="menu" >Importing data</a><br />
+<a href="../mue/index.html" class="menu" >Processing mu(E) data</a><br />
+<a href="../xanes/index.html" class="menu" >Analysis of XANES data</a><br />
+<br />
+<a href="../highlevel/index.html" class="menuselect" >High level actions for Demeter objects</a><br />
+&nbsp;-&nbsp;<a href="../highlevel/dispose.html" class="menu" >Command disposal and command templates</a><br />
+&nbsp;-&nbsp;<a href="../highlevel/mode.html" class="menuselect" >The Mode object</a><br />
+&nbsp;-&nbsp;<a href="../highlevel/plot.html" class="menu" >The Plot object</a><br />
+&nbsp;-&nbsp;<a href="../highlevel/config.html" class="menu" >The Config object</a><br />
+&nbsp;-&nbsp;<a href="../highlevel/methods.html" class="menu" >Other high level methods</a><br /><br />
+<a href="../atoms/index.html" class="menu" >Atoms</a><br />
+<a href="../feff/index.html" class="menu" >Feff</a><br />
+<a href="../paths/index.html" class="menu" >Scattering paths</a><br />
+<a href="../gds/index.html" class="menu" >Guess/Def/Set parameters</a><br />
+<a href="../fit/index.html" class="menu" >Fitting EXAFS data</a><br />
+<a href="../perl/index.html" class="menu" >Using perl to create a fitting model</a><br />
+<a href="../lgcv.html" class="menu" >Local guess parameters and the characteristic value</a><br />
+<a href="../pathlike/index.html" class="menu" >Path-like objects</a><br />
+<a href="../su.html" class="menu" >Structural Units</a><br />
+<a href="../ui.html" class="menu" >User interfaces</a><br />
+<a href="../output.html" class="menu" >Output formats</a><br />
+<a href="../examples/index.html" class="menu" >Full examples</a><br />
+</div>
+
+<p>
+
+The Mode object is a singleton created automatically when an instance
+of a  <span class=program>DEMETER</span> program is started.  The Mode object is the thing
+that keeps track of the state of everything in a  <span class=program>DEMETER</span>
+program.  For example, attributes of the mode are used to set the 
+<a href="dispose.html#commanddisposal">disposal channel</a> and the
+<a href="dispose.html#templatesets">template set</a>.
+</p>
+
+<p>
+To make the Mode object readily accessible at all times in your
+program, the <tt>mo</tt> method is a method of the
+base class and is inherited by all  <span class=program>DEMETER</span> objects.  Thus, given
+any object, you can &ldquo;find&rdquo; the Mode object
+like so:
+</p>
+
+
+<ol class=perlsample>
+<br />
+&nbsp;&nbsp;<span class="symbol">$the_mode_object</span> <span class="operator">=</span> <span class="symbol">$any_object</span> <span class="operator">-&gt;</span> <span class="word">mo</span><span class="structure">;</span>
+</ol>
+
+<p>
+
+To choose disposal channels, use the <tt>set_mode</tt>
+method.  For instance, to direct output to both  <span class=program>IFEFFIT</span> and to
+the screen (which is useful for debugging purposes)
+</p>
+
+
+<ol class=perlsample>
+<br />
+&nbsp;&nbsp;<span class="symbol">$any_object</span> <span class="operator">-&gt;</span> <span class="word">set_mode</span><span class="structure">(</span><span class="word">ifeffit</span><span class="operator">=&gt;</span><span class="number">1</span><span class="operator">,</span> <span class="word">screen</span><span class="operator">=&gt;</span><span class="number">1</span><span class="structure">);</span>
+</ol>
+
+<p>
+
+To then turn off screen output:
+</p>
+
+
+<ol class=perlsample>
+<br />
+&nbsp;&nbsp;<span class="symbol">$any_object</span> <span class="operator">-&gt;</span> <span class="word">set_mode</span><span class="structure">(</span><span class="word">screen</span><span class="operator">=&gt;</span><span class="number">0</span><span class="structure">);</span>
+</ol>
+
+<p>
+
+The Mode object does a lot more that.  It keeps count of the number of
+data sets used in a fitting model so that  <span class=program>IFEFFIT</span>'s 
+<tt>feffit</tt> command works properly for a
+multiple data set fit.  It keeps track of the number of fits that have
+been run in the current instance of the  <span class=program>DEMETER</span> program.  And it
+keeps track of the indexing of Path objects.  It also keeps track of
+the directory in which the  <span class=program>DEMETER</span> program started and of the
+current working directory as the program proceeds.  For a full list of
+the atttributes, see the documentation for the 
+<span class=file>Demeter::Mode</span> object.
+</p>
+
+<p>
+Other attributes keep track of every object created during
+and instance of  <span class=program>DEMETER</span>: 
+</p>
+
+
+<ol class=perlsample>
+<br />
+&nbsp;&nbsp;<span class="keyword">my</span> <span class="symbol">@all_atoms</span>&nbsp;&nbsp;<span class="operator">=</span> <span class="cast">@</span><span class="structure">{</span> <span class="symbol">$any_object</span><span class="operator">-&gt;</span><span class="word">mo</span><span class="operator">-&gt;</span><span class="word">Atoms</span> <span class="structure">};</span><br />
+&nbsp;&nbsp;<span class="keyword">my</span> <span class="symbol">@all_data</span>&nbsp;&nbsp;&nbsp;<span class="operator">=</span> <span class="cast">@</span><span class="structure">{</span> <span class="symbol">$any_object</span><span class="operator">-&gt;</span><span class="word">mo</span><span class="operator">-&gt;</span><span class="word">Data</span> <span class="structure">};</span><br />
+&nbsp;&nbsp;<span class="keyword">my</span> <span class="symbol">@all_feff</span>&nbsp;&nbsp;&nbsp;<span class="operator">=</span> <span class="cast">@</span><span class="structure">{</span> <span class="symbol">$any_object</span><span class="operator">-&gt;</span><span class="word">mo</span><span class="operator">-&gt;</span><span class="word">Feff</span> <span class="structure">};</span><br />
+&nbsp;&nbsp;<span class="keyword">my</span> <span class="symbol">@all_fit</span>&nbsp;&nbsp;&nbsp;&nbsp;<span class="operator">=</span> <span class="cast">@</span><span class="structure">{</span> <span class="symbol">$any_object</span><span class="operator">-&gt;</span><span class="word">mo</span><span class="operator">-&gt;</span><span class="word">Fit</span> <span class="structure">};</span><br />
+&nbsp;&nbsp;<span class="keyword">my</span> <span class="symbol">@all_gds</span>&nbsp;&nbsp;&nbsp;&nbsp;<span class="operator">=</span> <span class="cast">@</span><span class="structure">{</span> <span class="symbol">$any_object</span><span class="operator">-&gt;</span><span class="word">mo</span><span class="operator">-&gt;</span><span class="word">GDS</span> <span class="structure">};</span><br />
+&nbsp;&nbsp;<span class="keyword">my</span> <span class="symbol">@all_path</span>&nbsp;&nbsp;&nbsp;<span class="operator">=</span> <span class="cast">@</span><span class="structure">{</span> <span class="symbol">$any_object</span><span class="operator">-&gt;</span><span class="word">mo</span><span class="operator">-&gt;</span><span class="word">Path</span> <span class="structure">};</span><br />
+&nbsp;&nbsp;<span class="keyword">my</span> <span class="symbol">@all_plot</span>&nbsp;&nbsp;&nbsp;<span class="operator">=</span> <span class="cast">@</span><span class="structure">{</span> <span class="symbol">$any_object</span><span class="operator">-&gt;</span><span class="word">mo</span><span class="operator">-&gt;</span><span class="word">Plot</span> <span class="structure">};</span><br />
+&nbsp;&nbsp;<span class="comment">##&nbsp;&nbsp;... and so on ... one for each kind of object<br />
+&nbsp;&nbsp;</span>
+</ol>
+
+<p>
+
+The accessor returns an array reference.  The 
+<tt>@{ }</tt> syntax dereferences the array.
+References in perl are explained in detail in the
+<a href="http://perldoc.perl.org/perlref.html">perlref document</a>.
+</p>
+
+<p>
+The <tt>everything</tt> method returns references
+to every object created during the instance of the  <span class=program>DEMETER</span>
+program.
+</p>
+
+
+<ol class=perlsample>
+<br />
+&nbsp;&nbsp;<span class="keyword">my</span> <span class="symbol">@all_of_them</span> <span class="operator">=</span> <span class="symbol">$any_object</span><span class="operator">-&gt;</span><span class="word">mo</span><span class="operator">-&gt;</span><span class="word">everything</span><span class="structure">;</span>
+</ol>
+
+<p>
+
+The <tt>fetch</tt> method can be used to find a
+particular object given the value of its 
+<tt>group</tt> attribute, which is a randmoly
+generated string that gets made when the object is created.  This is
+most useful when deserializing a save file.  This example finds a Data
+object:
+</p>
+
+
+<ol class=perlsample>
+<br />
+&nbsp;&nbsp;<span class="keyword">my</span> <span class="symbol">$object</span> <span class="operator">=</span> <span class="symbol">$any_object</span><span class="operator">-&gt;</span><span class="word">mo</span><span class="operator">-&gt;</span><span class="word">fetch</span><span class="structure">(</span><span class="double">&quot;Data&quot;</span><span class="operator">,</span> <span class="symbol">$group_name</span><span class="structure">);</span>
+</ol>
+
+<br />
+<hr class=hide />
+
+<div class=bottombar>
+  <div class=navbar>
+  <table class=navtable>
+    <tr>
+      <td align=left>
+        [&nbsp;<a href="../index.html">Home</a>&nbsp;] &nbsp;&nbsp;
+        [&nbsp;<a href="http://cars9.uchicago.edu/iffwiki/Demeter"><span class=programlink>DEMETER</span></a>&nbsp;] &nbsp;&nbsp;
+        [&nbsp;<a href="http://cars9.uchicago.edu/iffwiki/Ifeffit"><span class=programlink>IFEFFIT</span></a>&nbsp;] &nbsp;&nbsp;
+        [&nbsp;<a href="http://leonardo.phys.washington.edu/feff/wiki/index.php?title=FEFF_Documentation"><span class=programlink>FEFF</span></a>&nbsp;] &nbsp;&nbsp;
+        [&nbsp;<a href="http://xafs.org">xafs.org</a>&nbsp;] &nbsp;&nbsp;
+	[&nbsp;<a href="../demeter.pdf">PDF&nbsp;doc</a>&nbsp;]
+      </td>
+      <td align=right>
+        Back: <a href="../highlevel/dispose.html" class="menu" >Command disposal and command templates</a> &nbsp;&nbsp;
+        Next: <a href="../highlevel/plot.html" class="menu" >The Plot object</a>
+        &nbsp;&nbsp;
+        Up: <a href="../highlevel/index.html" class="menu" >High level actions for Demeter objects</a>      </td>
+    </tr>
+  </table>
+  </div>
+  <div class=copyright>
+   <span class=program>DEMETER</span> is copyright &copy; 2009-2010 Bruce Ravel
+  <br />
+  This document is copyright &copy; 2010 Bruce Ravel
+  <br />
+  email: (bravel |A|T| bnl |D|O|T| gov)
+  <br />
+  
+  <a href="http://creativecommons.org/licenses/by-sa/3.0/"><img src="../../images/somerights20.png" width="88" height="31" alt="" border="0" /></a> &nbsp;&nbsp;&nbsp;
+  <br />
+  This document is licensed under <a href="http://creativecommons.org/licenses/by-sa/3.0/">
+  The Creative Commons Attribution-ShareAlike License</a>.
+  <br />
+  If  <span class=program>DEMETER</span> and this document are useful to you, please consider
+  <a href="http://creativecommons.org/support/">supporting The Creative Commons</a>.
+</div>
+</div>
+  </body>
+</html>

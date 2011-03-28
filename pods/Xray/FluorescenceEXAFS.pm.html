@@ -1,0 +1,146 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+	<title>Ifeffit::Demeter::FluorescenceEXAFS</title>
+<link rel="stylesheet" type="text/css" href="../podstyle.css" /><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+  <script type="text/javascript">
+
+  function toggleCode( id ) {
+    if ( document.getElementById )
+      elem = document.getElementById( id );
+    else if ( document.all )
+      elem = eval( "document.all." + id );
+    else
+      return false;
+
+    elemStyle = elem.style;
+
+    if ( elemStyle.display != "block" ) {
+      elemStyle.display = "block"
+    } else {
+      elemStyle.display = "none"
+    }
+
+    return true;
+  }
+  document.writeln( "<style type=\"text/css\">div.method-source-code { display: none }</style>" )
+  </script></head>
+<body>
+<div class="box">
+  <h1 class="t1">Demeter</h1>
+  <table>
+    <tr>
+      <td class="label">Description</td>
+      <td class="cell">Perl tools for X-ray Absorption Spectroscopy</td>
+    </tr>
+  </table>
+</div>
+<div class="path">
+  <a href="../index.html">Demeter</a> &gt; Perl Modules &gt;
+  Xray-FluorescenceEXAFS
+</div>
+<div>
+<a href="../src/Xray/FluorescenceEXAFS.pm">Source</a>
+</div>
+
+
+<div class="pod">
+<!-- INDEX START -->
+<h3 id="TOP">Index</h3>
+<ul>
+	<li><a href="#NAME">NAME</a></li>
+	<li><a href="#DESCRIPTION">DESCRIPTION</a></li>
+	<li><a href="#METHODS">METHODS</a></li>
+	<li><a href="#BUGS_AND_LIMITATIONS">BUGS AND LIMITATIONS</a></li>
+	<li><a href="#AUTHOR">AUTHOR</a></li>
+	<li><a href="#LICENCE_AND_COPYRIGHT">LICENCE AND COPYRIGHT</a></li>
+</ul>
+<hr />
+<!-- INDEX END -->
+
+<h1 id="NAME">NAME <a href="#TOP" class="toplink"><img alt="^" src="../up.gif" /></a></h1>
+
+<p>Ifeffit::Demeter::FluorescenceEXAFS - Corrections for fluorescence EXAFS data</p>
+
+<h1 id="DESCRIPTION">DESCRIPTION <a href="#TOP" class="toplink"><img alt="^" src="../up.gif" /></a></h1>
+
+<p>This provides class methods for computing corrections to fluorescence
+EXAFS data due to normalization, I0, and self-absorption effects.  The
+corrections are computed from x-ray absorption coefficients provided
+by the Xray::Absorption package.</p>
+
+<h1 id="METHODS">METHODS <a href="#TOP" class="toplink"><img alt="^" src="../up.gif" /></a></h1>
+
+<p>Note that the values returned for all methods depend on the data
+resource used.  See <a href="Absorption.pm.html">Xray::Absorption</a>.</p>
+
+<dl>
+	<dt><code>mcmaster</code></dt>
+		<dd><p>This is called <code>mcmaster</code> for historical reasons.  It calculates the
+normalization correcion for a given element.</p></dd>
+<dd><pre>  $sigma_mm = Xray::FluorescenceEXAFS-&gt;mcmaster($element, $edge);
+
+</pre></dd>		<dd><p>It takes the central atoms tag and the alphanumeric edge symbol as
+arguments and returns the normalization correction in units of
+Angstrom squared.</p></dd>
+		<dd><p><code>normalization</code> and <code>edgestep</code> are aliases for this method.</p></dd>
+	<dt><code>i0</code></dt>
+		<dd><p>This calculates the correcion due to the I0 fill gases in a
+fluorescence experiment.</p></dd>
+<dd><pre>  $gases = {nitrogen=&gt;$nitrogen, argon=&gt;$argon, krypton=&gt;$krypton};
+  $sigma_i0 = Xray::FluorescenceEXAFS-&gt;i_zero($central, $edge, $gases);
+
+</pre></dd>		<dd><p>It takes the central atoms tag, the alphanumeric edge symbol, and a
+reference to a hash containing the volume percentages of the three
+gases as arguments.  It assumes that any remaining volume is filled
+with helium and it correctly accounts for the fact that nitrogen is a
+diatom.  It returns the I0 correction in units of Angstrom squared.</p></dd>
+		<dd><p><code>i_zero</code> and <code>izero</code> are aliases for this method.</p></dd>
+	<dt><code>self</code></dt>
+		<dd><p>This calculates the correcion due to self-absorption fluorescence
+experiment.  It assumes that the sample is infinately thick and that
+the entry and exit angles of the photons are the same.</p></dd>
+<dd><pre>  $contents = {Y=&gt;1, Ba=&gt;2, Cu=&gt;3, O=&gt;7};
+  ($amp_i0, $sigma_i0) = Xray::FluorescenceEXAFS-&gt;self($central, $edge, $contents);
+
+</pre></dd>		<dd><p>It takes the central atoms tag, the alphanumeric edge symbol, and a
+reference to a hash which counts the atoms in the unit cell.  It
+returns a list whose zeroth element is the multiplicative amplitude
+correction and whose first element is the sigma^2 correction in units
+of Angstrom squared.</p></dd>
+		<dd><p><code>overabsorption</code> is an aliases for this method.</p></dd>
+</dl>
+<h1 id="BUGS_AND_LIMITATIONS">BUGS AND LIMITATIONS <a href="#TOP" class="toplink"><img alt="^" src="../up.gif" /></a></h1>
+
+<ul>
+	<li>Fourth cumulant corrections are not calculated.</li>
+	<li>Geometry and thickness effects are not included in the self absorption calculation</li>
+</ul>
+
+<p>Please report problems to Bruce Ravel (bravel AT bnl DOT gov)</p>
+
+<p>Patches are welcome.</p>
+
+<h1 id="AUTHOR">AUTHOR <a href="#TOP" class="toplink"><img alt="^" src="../up.gif" /></a></h1>
+
+<p>Bruce Ravel (bravel AT bnl DOT gov)</p>
+
+<p>http://cars9.uchicago.edu/~ravel/software/</p>
+
+
+
+
+<h1 id="LICENCE_AND_COPYRIGHT">LICENCE AND COPYRIGHT <a href="#TOP" class="toplink"><img alt="^" src="../up.gif" /></a></h1>
+
+<p>Copyright (c) 2006-2008 Bruce Ravel (bravel AT bnl DOT gov). All rights reserved.</p>
+
+<p>This module is free software; you can redistribute it and/or
+modify it under the same terms as Perl itself. See <a href="http://search.cpan.org/perldoc?perlartistic">perlartistic</a>.</p>
+
+<p>This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.</p>
+
+
+</div><div class="footer">generated by <a href="http://search.cpan.org/perldoc?Pod%3A%3AProjectDocs">Pod::ProjectDocs</a></div></body>
+</html>

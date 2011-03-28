@@ -1,0 +1,167 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+	<title>intrp</title>
+<link rel="stylesheet" type="text/css" href="podstyle.css" /><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+  <script type="text/javascript">
+
+  function toggleCode( id ) {
+    if ( document.getElementById )
+      elem = document.getElementById( id );
+    else if ( document.all )
+      elem = eval( "document.all." + id );
+    else
+      return false;
+
+    elemStyle = elem.style;
+
+    if ( elemStyle.display != "block" ) {
+      elemStyle.display = "block"
+    } else {
+      elemStyle.display = "none"
+    }
+
+    return true;
+  }
+  document.writeln( "<style type=\"text/css\">div.method-source-code { display: none }</style>" )
+  </script></head>
+<body>
+<div class="box">
+  <h1 class="t1">Demeter</h1>
+  <table>
+    <tr>
+      <td class="label">Description</td>
+      <td class="cell">Perl tools for X-ray Absorption Spectroscopy</td>
+    </tr>
+  </table>
+</div>
+<div class="path">
+  <a href="index.html">Demeter</a> &gt; Perl Manuals &gt;
+  intrp
+</div>
+<div>
+<a href="src/intrp.pod">Source</a>
+</div>
+
+
+<div class="pod">
+<!-- INDEX START -->
+<h3 id="TOP">Index</h3>
+<ul>
+	<li><a href="#NAME">NAME</a></li>
+	<li><a href="#VERSION">VERSION</a></li>
+	<li><a href="#SYNOPSIS">SYNOPSIS</a></li>
+	<li><a href="#DESCRIPTION">DESCRIPTION</a></li>
+	<li><a href="#COMMAND_LINE_SWITCHES">COMMAND LINE SWITCHES</a></li>
+	<li><a href="#CONFIGURATION_AND_ENVIRONMENT">CONFIGURATION AND ENVIRONMENT</a></li>
+	<li><a href="#DEPENDENCIES">DEPENDENCIES</a></li>
+	<li><a href="#BUGS_AND_LIMITATIONS">BUGS AND LIMITATIONS</a></li>
+	<li><a href="#AUTHOR">AUTHOR</a></li>
+	<li><a href="#LICENCE_AND_COPYRIGHT">LICENCE AND COPYRIGHT</a></li>
+</ul>
+<hr />
+<!-- INDEX END -->
+
+<h1 id="NAME">NAME <a href="#TOP" class="toplink"><img alt="^" src="up.gif" /></a></h1>
+
+<p>intrp - Write a textual interpretation of a Feff calculation</p>
+
+<h1 id="VERSION">VERSION <a href="#TOP" class="toplink"><img alt="^" src="up.gif" /></a></h1>
+
+<p>This documentation refers to Demeter version 0.3.</p>
+
+<h1 id="SYNOPSIS">SYNOPSIS <a href="#TOP" class="toplink"><img alt="^" src="up.gif" /></a></h1>
+
+<pre>  intrp [option] myfeffcalc.yaml
+
+</pre><p>If no yaml file is specified at the command line, <cite>feff.yaml</cite>
+in the current working directory will be used, if available.</p>
+
+<h1 id="DESCRIPTION">DESCRIPTION <a href="#TOP" class="toplink"><img alt="^" src="up.gif" /></a></h1>
+
+<p>This writes a concise summary of a Feff calculation to standard
+output, providing useful information for interpreting the calculation
+and begining to set up a fit.  The degeneracy and nominal path length
+are reported as well as an summary of the scattering geometry of each
+path.</p>
+
+<h1 id="COMMAND_LINE_SWITCHES">COMMAND LINE SWITCHES <a href="#TOP" class="toplink"><img alt="^" src="up.gif" /></a></h1>
+
+<dl>
+	<dt><code>--color</code></dt>
+		<dd><p>Write output using terminal ANSI colors.  This is the default
+behavior.</p></dd>
+	<dt><code>--nocolor</code></dt>
+		<dd><p>Suppress color output.  This is the default behavior if the terminal
+colors are not available.</p></dd>
+	<dt><code>--latex</code></dt>
+		<dd><p>Write output as a latex file ready to be compiled.  Note that the
+output is written to the screen, so you may need to direct the output
+to a file.</p></dd>
+<dd><pre>  intrp --latex myfeffcalc.yaml &gt; myfeffcalc.tex
+
+</pre></dd>	<dt><code>--html</code></dt>
+		<dd><p>Write output in the form of an html page.  Note that the
+output is written to the screen, so you may need to direct the output
+to a file.</p></dd>
+<dd><pre>  intrp --html myfeffcalc.yaml &gt; myfeffcalc.html
+
+</pre></dd>	<dt><code>--noframe</code></dt>
+		<dd><p>With this flag, the html or latex output will be written without the
+header and footer.  That is, the output will be valid html or latex,
+but will not contain the lines at the beginning and end of the file
+necessary to make them free-standing html or compilable latex.</p></dd>
+	<dt><code>--rmax</code> or <code>-r</code></dt>
+		<dd><p>Restrict output to a given value of R.  If R is larger than the
+longest path, all paths will be displayed.</p></dd>
+</dl>
+<h1 id="CONFIGURATION_AND_ENVIRONMENT">CONFIGURATION AND ENVIRONMENT <a href="#TOP" class="toplink"><img alt="^" src="up.gif" /></a></h1>
+
+<p>See <a href="Demeter/Config.pm.html">Demeter::Config</a> for a description of Demeter's
+configuration system.  The <code>feff</code> configuration group controls many
+aspects of the interpretation.</p>
+
+<h1 id="DEPENDENCIES">DEPENDENCIES <a href="#TOP" class="toplink"><img alt="^" src="up.gif" /></a></h1>
+
+<p>This script uses <a href="http://search.cpan.org/perldoc?Term%3A%3AANSIColor">Term::ANSIColor</a> to color the terminal output, but
+it defaults gracefully to colorless output if this module is not
+available.</p>
+
+<p>This reads the <a href="http://www.yaml.org">YAML</a> output from Demeter's
+reimplementation of Feff's pathfinder.  This version of <code>intrp</code> does
+<strong>not</strong> do its interpretation using <cite>feff.inp</cite>, <cite>files.dat</cite>, and
+<cite>paths.dat</cite>, like earlier incarnations and will <strong>not</strong> do an
+interpretation of your non-Demeter Feff calculations.</p>
+
+<p>The dependencies of the Demeter system are in the
+<cite>Bundle/DemeterBundle.pm</cite> file.</p>
+
+<h1 id="BUGS_AND_LIMITATIONS">BUGS AND LIMITATIONS <a href="#TOP" class="toplink"><img alt="^" src="up.gif" /></a></h1>
+
+<p>See <a href="Demeter/Feff.pm.html">Demeter::Feff</a> and <a href="Demeter/ScatteringPath.pm.html">Demeter::ScatteringPath</a>
+for bugs and limitations of the underlying libraries.</p>
+
+<p>Please report problems to Bruce Ravel (bravel AT bnl DOT gov)</p>
+
+<p>Patches are welcome.</p>
+
+<h1 id="AUTHOR">AUTHOR <a href="#TOP" class="toplink"><img alt="^" src="up.gif" /></a></h1>
+
+<p>Bruce Ravel (bravel AT bnl DOT gov)</p>
+
+<p>http://cars9.uchicago.edu/~ravel/software/</p>
+
+<h1 id="LICENCE_AND_COPYRIGHT">LICENCE AND COPYRIGHT <a href="#TOP" class="toplink"><img alt="^" src="up.gif" /></a></h1>
+
+<p>Copyright (c) 2008-2009 Bruce Ravel (bravel AT bnl DOT gov). All rights reserved.</p>
+
+<p>This module is free software; you can redistribute it and/or
+modify it under the same terms as Perl itself. See <a href="http://search.cpan.org/perldoc?perlgpl">perlgpl</a>.</p>
+
+<p>This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.</p>
+
+
+</div><div class="footer">generated by <a href="http://search.cpan.org/perldoc?Pod%3A%3AProjectDocs">Pod::ProjectDocs</a></div></body>
+</html>

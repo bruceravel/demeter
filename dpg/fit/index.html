@@ -1,0 +1,272 @@
+<!DOCTYPE HTMP PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <title>Fitting EXAFS data</title>
+    <link rel="stylesheet" href=../ab.css />
+    <link rel="stylesheet" href=../ppi.css />
+    <meta http-equiv="Content-Type" content="text/html"; charset=iso-8859-15 />
+    <meta name="robots" contents="all" />
+  </head>
+
+  <body>
+    <div class=topbar>
+  <div class=navbar>
+  <table class=navtable>
+    <tr>
+      <td align=left>
+        [&nbsp;<a href="../index.html">Home</a>&nbsp;] &nbsp;&nbsp;
+        [&nbsp;<a href="http://cars9.uchicago.edu/iffwiki/Demeter"><span class=programlink>DEMETER</span></a>&nbsp;] &nbsp;&nbsp;
+        [&nbsp;<a href="http://cars9.uchicago.edu/iffwiki/Ifeffit"><span class=programlink>IFEFFIT</span></a>&nbsp;] &nbsp;&nbsp;
+        [&nbsp;<a href="http://leonardo.phys.washington.edu/feff/wiki/index.php?title=FEFF_Documentation"><span class=programlink>FEFF</span></a>&nbsp;] &nbsp;&nbsp;
+        [&nbsp;<a href="http://xafs.org">xafs.org</a>&nbsp;] &nbsp;&nbsp;
+	[&nbsp;<a href="../demeter.pdf">PDF&nbsp;doc</a>&nbsp;]
+      </td>
+      <td align=right>
+        Back: <a href="../gds/index.html" class="menu" >Guess/Def/Set parameters</a> &nbsp;&nbsp;
+        Next: <a href="../perl/index.html" class="menu" >Using perl to create a fitting model</a> &nbsp;&nbsp;
+        Down: <a href="../fit/collection.html" class="menu" >Setting up a fitting model</a>      </td>
+    </tr>
+  </table>
+  </div>
+  <h1>
+  Fitting EXAFS data
+</h1>
+</div>
+
+<hr class=hide />
+
+
+<div class=sidebar>
+  <a href="../ceres.html"><img src=../../images/Isis-Sothis-Demeter_sm.jpg
+    width=100% border=0 alt='[Demeter logo]'></a>
+  <br />
+  <a href="../index.html" class="menu" >Home</a><br />
+<a href="../intro.html" class="menu" >Introduction</a><br />
+<a href="../data/index.html" class="menu" >Importing data</a><br />
+<a href="../mue/index.html" class="menu" >Processing mu(E) data</a><br />
+<a href="../xanes/index.html" class="menu" >Analysis of XANES data</a><br />
+<a href="../highlevel/index.html" class="menu" >High level actions for Demeter objects</a><br />
+<a href="../atoms/index.html" class="menu" >Atoms</a><br />
+<a href="../feff/index.html" class="menu" >Feff</a><br />
+<a href="../paths/index.html" class="menu" >Scattering paths</a><br />
+<a href="../gds/index.html" class="menu" >Guess/Def/Set parameters</a><br />
+<br />
+<a href="../fit/index.html" class="menuselect" >Fitting EXAFS data</a><br />
+&nbsp;-&nbsp;<a href="../fit/collection.html" class="menu" >Setting up a fitting model</a><br />
+&nbsp;-&nbsp;<a href="../fit/sanity.html" class="menu" >Sanity checking a fitting model</a><br />
+&nbsp;-&nbsp;<a href="../fit/after.html" class="menu" >After a fit finishes</a><br />
+&nbsp;-&nbsp;<a href="../fit/happiness.html" class="menu" >The non-statistical happiness parameter</a><br /><br />
+<a href="../perl/index.html" class="menu" >Using perl to create a fitting model</a><br />
+<a href="../lgcv.html" class="menu" >Local guess parameters and the characteristic value</a><br />
+<a href="../pathlike/index.html" class="menu" >Path-like objects</a><br />
+<a href="../su.html" class="menu" >Structural Units</a><br />
+<a href="../ui.html" class="menu" >User interfaces</a><br />
+<a href="../output.html" class="menu" >Output formats</a><br />
+<a href="../examples/index.html" class="menu" >Full examples</a><br />
+</div>
+
+<p>
+Here is a complete fitting example.  In this example, data on a copper
+foil are fit using a model considering isotropic expansion and a correlated
+Debye model.
+</p>
+
+<p>
+Everything up to line 44 should be familiar to you if you have read
+all the previous parts of this programming guide.  An  <span class=program>ATHENA</span>
+project file is imported at line 5.  A record from that project file
+is imported into a Data obejct at line 8 and various parameters of the
+Data object are set at lines 9-15.
+</p>
+
+<p>
+A  <span class=program>FEFF</span> calculation is made at lines 17-19.  Note the use of
+chained method calls at line 19.  This is possible because the
+<tt>potph</tt> method returns the calling object.
+(So does <tt>pathfinder</tt>, for that matter,
+although its return value is thrown away here.)  The path list is
+dereferenced for convenience at line 20.
+</p>
+
+<p>
+Various guess and set parameters are defined at lines 23-28 and stored
+in an array.  The parameters will be used to set up a simple fitting
+model consisting of an amplitude term, an  E&#8320;  shift, an isotropic
+expnasion model for  &Delta;R  for each path, and a correlated Debye
+model for the  &sigma;&sup2;  for each path.
+</p>
+
+<p>
+At lines 33-42, various Path objects are defined using the
+ScatteringPath objects from the  <span class=program>FEFF</span> calculation.  The path
+parameters are assigned mathexpressions using the appropriate GDS
+parameters.
+</p>
+
+
+
+<pre class=olscript>
+<ol class=perlblock>
+<li><span class="comment">#!/usr/bin/perl
+<li></span><span class="keyword">use</span> <span class="word">Demeter</span> <span class="words">qw(:ui=screen)</span><span class="structure">;</span>
+<li>
+<li><span class="comment">## import an Athena project file with copper metal in it
+<li></span><span class="keyword">my</span> <span class="symbol">$prj</span> <span class="operator">=</span> <span class="word">Demeter::Data::Prj</span><span class="operator">-&gt;</span><span class="word">new</span><span class="structure">(</span><span class="word">file</span><span class="operator">=</span><span class="single">'cu_data.prj'</span><span class="structure">);</span>
+<li>
+<li><span class="comment">## make a Data object and set the FT and fit parameters
+<li></span><span class="keyword">my</span> <span class="symbol">$data</span> <span class="operator">=</span> <span class="symbol">$prj</span><span class="operator">-&gt;</span><span class="word">record</span><span class="structure">(</span><span class="number">1</span><span class="structure">);</span>
+<li><span class="symbol">$data</span> <span class="operator">-&gt;</span><span class="word">set</span><span class="structure">(</span><span class="word">name</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="operator">=&gt;</span> <span class="single">'My copper data'</span><span class="operator">,</span>
+<li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="word">fft_kmin</span>&nbsp;&nbsp;&nbsp;<span class="operator">=&gt;</span> <span class="number">3</span><span class="operator">,</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="word">fft_kmax</span>&nbsp;&nbsp;&nbsp;<span class="operator">=&gt;</span> <span class="number">14</span><span class="operator">,</span>
+<li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="word">fit_k1</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="operator">=&gt;</span> <span class="number">1</span><span class="operator">,</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="word">fit_k3</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="operator">=&gt;</span> <span class="number">1</span><span class="operator">,</span>
+<li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="word">bft_rmin</span>&nbsp;&nbsp;&nbsp;<span class="operator">=&gt;</span> <span class="float">1.6</span><span class="operator">,</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="word">bft_rmax</span>&nbsp;&nbsp;&nbsp;<span class="operator">=&gt;</span> <span class="float">4.3</span><span class="operator">,</span>
+<li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="word">fit_do_bkg</span> <span class="operator">=&gt;</span> <span class="number">0</span><span class="operator">,</span>
+<li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="structure">);</span>
+<li>
+<li><span class="comment">## run a Feff calculation on copper metal
+<li></span><span class="keyword">my</span> <span class="symbol">$feff</span> <span class="operator">=</span> <span class="word">Demeter::Feff</span> <span class="operator">-&gt;</span> <span class="word">new</span><span class="structure">(</span><span class="word">file</span> <span class="operator">=&gt;</span> <span class="double">&quot;cu_metal.inp&quot;</span><span class="structure">);</span>
+<li><span class="symbol">$feff</span> <span class="operator">-&gt;</span> <span class="word">set</span><span class="structure">(</span><span class="word">workspace</span> <span class="operator">=&gt;</span> <span class="double">&quot;cu_workspace/&quot;</span><span class="operator">,</span> <span class="word">screen</span> <span class="operator">=&gt;</span> <span class="number">0</span><span class="operator">,</span><span class="structure">);</span>
+<li><span class="symbol">$feff</span> <span class="operator">-&gt;</span> <span class="word">potph</span> <span class="operator">-&gt;</span> <span class="word">pathfinder</span><span class="structure">;</span>
+<li><span class="keyword">my</span> <span class="symbol">@list_of_paths</span> <span class="operator">=</span> <span class="symbol">$feff</span><span class="operator">-&gt;</span> <span class="word">list_of_paths</span><span class="structure">;</span>
+<li>
+<li><span class="comment">## make GDS objects for an isotropic expansion, correlated Debye model fit to copper
+<li></span><span class="keyword">my</span> <span class="symbol">@gds</span> <span class="operator">=</span>&nbsp;&nbsp;<span class="structure">(</span><span class="word">Demeter::GDS</span> <span class="operator">-&gt;</span> <span class="word">new</span><span class="structure">(</span><span class="word">gds</span> <span class="operator">=&gt;</span> <span class="single">'guess'</span><span class="operator">,</span> <span class="word">name</span> <span class="operator">=&gt;</span> <span class="single">'alpha'</span><span class="operator">,</span> <span class="word">mathexp</span> <span class="operator">=&gt;</span> <span class="number">0</span><span class="structure">)</span><span class="operator">,</span>
+<li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="word">Demeter::GDS</span> <span class="operator">-&gt;</span> <span class="word">new</span><span class="structure">(</span><span class="word">gds</span> <span class="operator">=&gt;</span> <span class="single">'guess'</span><span class="operator">,</span> <span class="word">name</span> <span class="operator">=&gt;</span> <span class="single">'amp'</span><span class="operator">,</span>&nbsp;&nbsp;&nbsp;<span class="word">mathexp</span> <span class="operator">=&gt;</span> <span class="number">1</span><span class="structure">)</span><span class="operator">,</span>
+<li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="word">Demeter::GDS</span> <span class="operator">-&gt;</span> <span class="word">new</span><span class="structure">(</span><span class="word">gds</span> <span class="operator">=&gt;</span> <span class="single">'guess'</span><span class="operator">,</span> <span class="word">name</span> <span class="operator">=&gt;</span> <span class="single">'enot'</span><span class="operator">,</span>&nbsp;&nbsp;<span class="word">mathexp</span> <span class="operator">=&gt;</span> <span class="number">0</span><span class="structure">)</span><span class="operator">,</span>
+<li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="word">Demeter::GDS</span> <span class="operator">-&gt;</span> <span class="word">new</span><span class="structure">(</span><span class="word">gds</span> <span class="operator">=&gt;</span> <span class="single">'guess'</span><span class="operator">,</span> <span class="word">name</span> <span class="operator">=&gt;</span> <span class="single">'theta'</span><span class="operator">,</span> <span class="word">mathexp</span> <span class="operator">=&gt;</span> <span class="number">500</span><span class="structure">)</span><span class="operator">,</span>
+<li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="word">Demeter::GDS</span> <span class="operator">-&gt;</span> <span class="word">new</span><span class="structure">(</span><span class="word">gds</span> <span class="operator">=&gt;</span> <span class="single">'set'</span><span class="operator">,</span>&nbsp;&nbsp;&nbsp;<span class="word">name</span> <span class="operator">=&gt;</span> <span class="single">'temp'</span><span class="operator">,</span>&nbsp;&nbsp;<span class="word">mathexp</span> <span class="operator">=&gt;</span> <span class="number">300</span><span class="structure">)</span><span class="operator">,</span>
+<li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="word">Demeter::GDS</span> <span class="operator">-&gt;</span> <span class="word">new</span><span class="structure">(</span><span class="word">gds</span> <span class="operator">=&gt;</span> <span class="single">'set'</span><span class="operator">,</span>&nbsp;&nbsp;&nbsp;<span class="word">name</span> <span class="operator">=&gt;</span> <span class="single">'sigmm'</span><span class="operator">,</span> <span class="word">mathexp</span> <span class="operator">=&gt;</span> <span class="float">0.00052</span><span class="structure">)</span><span class="operator">,</span>
+<li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="structure">);</span>
+<li>
+<li><span class="comment">## make Path objects for the first 5 paths in copper (3 shell fit)
+<li></span><span class="keyword">my</span> <span class="symbol">@paths</span> <span class="operator">=</span> <span class="structure">();</span>
+<li><span class="keyword">foreach</span> <span class="keyword">my</span> <span class="symbol">$i</span> <span class="structure">(</span><span class="number">0</span> <span class="operator">..</span> <span class="number">4</span><span class="structure">)</span> <span class="structure">{</span>
+<li>&nbsp;&nbsp;<span class="symbol">$paths</span><span class="structure">[</span><span class="symbol">$i</span><span class="structure">]</span> <span class="operator">=</span> <span class="word">Demeter::Path</span> <span class="operator">-&gt;</span> <span class="word">new</span><span class="structure">();</span>
+<li>&nbsp;&nbsp;<span class="symbol">$paths</span><span class="structure">[</span><span class="symbol">$i</span><span class="structure">]</span><span class="operator">-&gt;</span><span class="word">set</span><span class="structure">(</span><span class="word">data</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="operator">=&gt;</span> <span class="symbol">$data</span><span class="operator">,</span>
+<li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="word">sp</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="operator">=&gt;</span> <span class="symbol">$list_of_paths</span><span class="structure">[</span><span class="symbol">$i</span><span class="structure">];</span>
+<li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="word">s02</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="operator">=&gt;</span> <span class="single">'amp'</span><span class="operator">,</span>
+<li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="word">e0</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="operator">=&gt;</span> <span class="single">'enot'</span><span class="operator">,</span>
+<li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="word">delr</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="operator">=&gt;</span> <span class="single">'alpha*reff'</span><span class="operator">,</span>
+<li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="word">sigma2</span>&nbsp;&nbsp;&nbsp;<span class="operator">=&gt;</span> <span class="single">'debye(temp, theta) + sigmm'</span><span class="operator">,</span>
+<li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="structure">);</span>
+<li><span class="structure">};</span>
+<li>
+<li><span class="comment">## make a Fit object
+<li></span><span class="keyword">my</span> <span class="symbol">$fit</span> <span class="operator">=</span> <span class="word">Demeter::Fit</span> <span class="operator">-&gt;</span> <span class="word">new</span><span class="structure">(</span><span class="word">gds</span>&nbsp;&nbsp;&nbsp;<span class="operator">=&gt;</span> <span class="cast">\</span><span class="symbol">@gds</span><span class="operator">,</span>
+<li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="word">data</span>&nbsp;&nbsp;<span class="operator">=&gt;</span> <span class="structure">[</span><span class="symbol">$data</span><span class="structure">]</span><span class="operator">,</span>
+<li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="word">paths</span> <span class="operator">=&gt;</span> <span class="cast">\</span><span class="symbol">@paths</span>
+<li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="structure">);</span>
+<li>
+<li><span class="comment">## do the fit
+<li></span><span class="symbol">$fit</span> <span class="operator">-&gt;</span> <span class="word">fit</span><span class="structure">;</span>
+<li>
+<li><span class="comment">## set up some plotting parameters
+<li></span><span class="symbol">$data</span><span class="operator">-&gt;</span><span class="word">po</span><span class="operator">-&gt;</span><span class="word">set</span><span class="structure">(</span><span class="word">plot_data</span> <span class="operator">=&gt;</span> <span class="number">1</span><span class="operator">,</span>&nbsp;&nbsp;&nbsp;<span class="word">plot_fit</span>&nbsp;&nbsp;<span class="operator">=&gt;</span> <span class="number">1</span><span class="operator">,</span>
+<li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="word">plot_bkg</span>&nbsp;&nbsp;<span class="operator">=&gt;</span> <span class="number">0</span><span class="operator">,</span>&nbsp;&nbsp;&nbsp;<span class="word">plot_res</span>&nbsp;&nbsp;<span class="operator">=&gt;</span> <span class="number">0</span><span class="operator">,</span>
+<li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="word">plot_win</span>&nbsp;&nbsp;<span class="operator">=&gt;</span> <span class="number">1</span><span class="operator">,</span>&nbsp;&nbsp;&nbsp;<span class="word">plot_run</span>&nbsp;&nbsp;<span class="operator">=&gt;</span> <span class="number">1</span><span class="operator">,</span>
+<li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="word">kweight</span>&nbsp;&nbsp;&nbsp;<span class="operator">=&gt;</span> <span class="number">2</span><span class="operator">,</span>
+<li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="word">r_pl</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="operator">=&gt;</span> <span class="single">'r'</span><span class="operator">,</span>
+<li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="structure">);</span>
+<li><span class="symbol">$data</span><span class="operator">-&gt;</span><span class="word">plot</span><span class="structure">(</span><span class="single">'r'</span><span class="structure">);</span>
+<li><span class="symbol">$data</span><span class="operator">-&gt;</span><span class="word">pause</span><span class="structure">;</span>
+</ol>
+</pre>
+
+<p>
+As I said, everything up to this point has been covered already.  The
+fitting magic happens at lines 46-49.  A Fit object is defined as a
+collection of GDS, Data, and Path objects.  Those three attributes of
+the Fit object each takes an anonymous array (as at line 47) or
+references to named arrays (as at lines 46 and 48).  That's it!
+That's how you make a fit.
+</p>
+
+<p>
+Although the first 42 lines of code do not constitute a substantial
+savings of effort compared to a writing  <span class=program>FEFFIT</span> input file or an
+ <span class=program>IFEFFIT</span> script in terms of the amount of typing that you have to
+do.  That changes substantially once the fit is defined.  When the fit
+is requested at line 52,  <span class=program>DEMETER</span> does a lot of work disentangle
+the contents of the arrays containing the GDS, Data, and Path objects.
+As discussed <a href="sanity.html">in an
+upcoming section</a> extensive checks are run to confirm that all
+aspects of the fitting model make sense and that there are no obvious
+errors in the fitting model (e.g. guess parameters that are defined
+but not used).
+</p>
+
+
+<table>
+<tr>
+<td>
+<p>
+
+Lines 54-58 in the script above defined how the plot at line 61 will
+appear.  Various flags of the Plot object are set such that the data
+and fit are plotted alonmg with a window showing the fitting range and
+the running R-factor, which is a way of visualizing how the misfit is
+distributed over the fitting range.  A k-weight of 2 is used to make
+the Fourier transform before the plot.
+</p>
+
+</td>
+<td width=640>
+<a href="../../images/cufit.png" target=_blank><img border=0 src="../../images/cufit.png" alt="cufit.png" width=100%></a>
+</td>
+</tr>
+</table>
+
+<p>
+In the 
+<a href="collection.html">next section</a>, 
+we'll see how to do multiple data set fitting and
+how to incorporate more than one  <span class=program>FEFF</span> calculation in a fit.  In
+later sections we will explore other features of the Fit object,
+including its <a href="sanity.html">extensive sanity checking</a>, all the interesting things
+that can be done with the Fit object 
+<a href="after.html">after a fit finishes</a>, and a
+discussion of  <span class=program>DEMETER</span>'s 
+<a href="happiness.html">happiness</a>
+parameter.
+</p>
+
+<br />
+<hr class=hide />
+
+<div class=bottombar>
+  <div class=navbar>
+  <table class=navtable>
+    <tr>
+      <td align=left>
+        [&nbsp;<a href="../index.html">Home</a>&nbsp;] &nbsp;&nbsp;
+        [&nbsp;<a href="http://cars9.uchicago.edu/iffwiki/Demeter"><span class=programlink>DEMETER</span></a>&nbsp;] &nbsp;&nbsp;
+        [&nbsp;<a href="http://cars9.uchicago.edu/iffwiki/Ifeffit"><span class=programlink>IFEFFIT</span></a>&nbsp;] &nbsp;&nbsp;
+        [&nbsp;<a href="http://leonardo.phys.washington.edu/feff/wiki/index.php?title=FEFF_Documentation"><span class=programlink>FEFF</span></a>&nbsp;] &nbsp;&nbsp;
+        [&nbsp;<a href="http://xafs.org">xafs.org</a>&nbsp;] &nbsp;&nbsp;
+	[&nbsp;<a href="../demeter.pdf">PDF&nbsp;doc</a>&nbsp;]
+      </td>
+      <td align=right>
+        Back: <a href="../gds/index.html" class="menu" >Guess/Def/Set parameters</a> &nbsp;&nbsp;
+        Next: <a href="../perl/index.html" class="menu" >Using perl to create a fitting model</a> &nbsp;&nbsp;
+        Down: <a href="../fit/collection.html" class="menu" >Setting up a fitting model</a>      </td>
+    </tr>
+  </table>
+  </div>
+  <div class=copyright>
+   <span class=program>DEMETER</span> is copyright &copy; 2009-2010 Bruce Ravel
+  <br />
+  This document is copyright &copy; 2010 Bruce Ravel
+  <br />
+  email: (bravel |A|T| bnl |D|O|T| gov)
+  <br />
+  
+  <a href="http://creativecommons.org/licenses/by-sa/3.0/"><img src="../../images/somerights20.png" width="88" height="31" alt="" border="0" /></a> &nbsp;&nbsp;&nbsp;
+  <br />
+  This document is licensed under <a href="http://creativecommons.org/licenses/by-sa/3.0/">
+  The Creative Commons Attribution-ShareAlike License</a>.
+  <br />
+  If  <span class=program>DEMETER</span> and this document are useful to you, please consider
+  <a href="http://creativecommons.org/support/">supporting The Creative Commons</a>.
+</div>
+</div>
+  </body>
+</html>

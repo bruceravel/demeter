@@ -1,0 +1,164 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+	<title>Demeter::UI::Screen::Pause</title>
+<link rel="stylesheet" type="text/css" href="../../../podstyle.css" /><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+  <script type="text/javascript">
+
+  function toggleCode( id ) {
+    if ( document.getElementById )
+      elem = document.getElementById( id );
+    else if ( document.all )
+      elem = eval( "document.all." + id );
+    else
+      return false;
+
+    elemStyle = elem.style;
+
+    if ( elemStyle.display != "block" ) {
+      elemStyle.display = "block"
+    } else {
+      elemStyle.display = "none"
+    }
+
+    return true;
+  }
+  document.writeln( "<style type=\"text/css\">div.method-source-code { display: none }</style>" )
+  </script></head>
+<body>
+<div class="box">
+  <h1 class="t1">Demeter</h1>
+  <table>
+    <tr>
+      <td class="label">Description</td>
+      <td class="cell">Perl tools for X-ray Absorption Spectroscopy</td>
+    </tr>
+  </table>
+</div>
+<div class="path">
+  <a href="../../../index.html">Demeter</a> &gt; Perl Modules &gt;
+  Demeter-UI-Screen-Pause
+</div>
+<div>
+<a href="../../../src/Demeter/UI/Screen/Pause.pm">Source</a>
+</div>
+
+
+<div class="pod">
+<!-- INDEX START -->
+<h3 id="TOP">Index</h3>
+<ul>
+	<li><a href="#NAME">NAME</a></li>
+	<li><a href="#VERSION">VERSION</a></li>
+	<li><a href="#SYNOPSIS">SYNOPSIS</a></li>
+	<li><a href="#DESCRIPTION">DESCRIPTION</a></li>
+	<li><a href="#ATTRIBUTES">ATTRIBUTES</a></li>
+	<li><a href="#METHODS">METHODS</a></li>
+	<li><a href="#DEPENDENCIES">DEPENDENCIES</a></li>
+	<li><a href="#BUGS_AND_LIMITATIONS">BUGS AND LIMITATIONS</a></li>
+	<li><a href="#AUTHOR">AUTHOR</a></li>
+	<li><a href="#LICENCE_AND_COPYRIGHT">LICENCE AND COPYRIGHT</a></li>
+</ul>
+<hr />
+<!-- INDEX END -->
+
+<h1 id="NAME">NAME <a href="#TOP" class="toplink"><img alt="^" src="../../../up.gif" /></a></h1>
+
+<p>Demeter::UI::Screen::Pause - A generic pause method for the screen UI</p>
+
+<h1 id="VERSION">VERSION <a href="#TOP" class="toplink"><img alt="^" src="../../../up.gif" /></a></h1>
+
+<p>This documentation refers to Demeter version 0.4.</p>
+
+<h1 id="SYNOPSIS">SYNOPSIS <a href="#TOP" class="toplink"><img alt="^" src="../../../up.gif" /></a></h1>
+
+<pre>   $fitobject-&gt;pause(-1);
+
+</pre><h1 id="DESCRIPTION">DESCRIPTION <a href="#TOP" class="toplink"><img alt="^" src="../../../up.gif" /></a></h1>
+
+<p>This role for a Demeter object provides a generic and easy-to-use
+pause when using the terminal.  This role is imported when the UI mode
+is set to &quot;screen&quot;.  See <a href="../../../Demeter.pm.html#PRAGMATA">PRAGMATA in Demeter</a>.</p>
+
+<p>Trying to use the <code>pause</code> method without being in screen mode will do
+nothing.  That is because there is a pause method in the base class
+that does nothing.  That no-op gets overridden when in screen mode
+with this more useful method.  Note, however, that the attributes
+documented below do not exist in the base class and will return the
+&quot;Can't locate object method&quot; error when you attempt to access them
+outside of screen mode.</p>
+
+<h1 id="ATTRIBUTES">ATTRIBUTES <a href="#TOP" class="toplink"><img alt="^" src="../../../up.gif" /></a></h1>
+
+<dl>
+	<dt><code>prompt</code></dt>
+		<dd><p>The text of the carriage return prompt which is displayed when not
+pausing for specified amount of time.  The default is</p></dd>
+<dd><pre>  Hit return to continue&gt;
+
+</pre></dd>		<dd><p>If ANSI colors are available, the prompt will be displayed in reverse
+colors (usually black on white).  The ANSI colors control sequences
+are part of the default value of this attribute and so can be
+overriden by resetting its value.</p></dd>
+	<dt><code>highlight</code></dt>
+		<dd><p>This sets the form of highlighting of the prompt.  The possible values
+are underline and reverse, which will cause the prompt text to be
+either underlined or reverse video in the sense of <code>Term::ANSIColor</code>.
+Any other value for this attribute will result in no highlighting of
+the prompt string.</p></dd>
+</dl>
+<h1 id="METHODS">METHODS <a href="#TOP" class="toplink"><img alt="^" src="../../../up.gif" /></a></h1>
+
+<dl>
+	<dt><code>pause</code></dt>
+		<dd><p>This pauses either for the amount of time indicated in seconds or, if
+the argument is zero or negative, until the enter key is pressed.</p></dd>
+<dd><pre>   $object-&gt;pause(-1);
+
+</pre></dd>		<dd><p>This method returns whatever string is entered before return is hit.
+So this method could be used, for example, to prompt for the answer
+with a question.</p></dd>
+<dd><pre>   $object-&gt;prompt(&quot;What is 2+2? &quot;);
+   my $answer = $object-&gt;pause;
+   chomp $answer;
+   if ($answer eq '4') {
+      print &quot;You're a math genius!\n&quot;;
+   } else {
+      print &quot;Sigh. I don't know why I even bother....\n&quot;;
+   };
+
+</pre></dd></dl>
+<h1 id="DEPENDENCIES">DEPENDENCIES <a href="#TOP" class="toplink"><img alt="^" src="../../../up.gif" /></a></h1>
+
+<p>Demeter's dependencies are in the <cite>Bundle/DemeterBundle.pm</cite> file.
+This module uses <a href="http://search.cpan.org/perldoc?Term%3A%3AANSIColor">Term::ANSIColor</a> if it is available.</p>
+
+<h1 id="BUGS_AND_LIMITATIONS">BUGS AND LIMITATIONS <a href="#TOP" class="toplink"><img alt="^" src="../../../up.gif" /></a></h1>
+
+<p>Please report problems to Bruce Ravel (bravel AT bnl DOT gov)</p>
+
+<p>Patches are welcome.</p>
+
+<h1 id="AUTHOR">AUTHOR <a href="#TOP" class="toplink"><img alt="^" src="../../../up.gif" /></a></h1>
+
+<p>Bruce Ravel (bravel AT bnl DOT gov)</p>
+
+<p><a href="http://cars9.uchicago.edu/~ravel/software/">http://cars9.uchicago.edu/~ravel/software/</a></p>
+
+
+
+
+<h1 id="LICENCE_AND_COPYRIGHT">LICENCE AND COPYRIGHT <a href="#TOP" class="toplink"><img alt="^" src="../../../up.gif" /></a></h1>
+
+<p>Copyright (c) 2006-2011 Bruce Ravel (bravel AT bnl DOT gov). All rights reserved.</p>
+
+<p>This module is free software; you can redistribute it and/or
+modify it under the same terms as Perl itself. See <a href="http://search.cpan.org/perldoc?perlgpl">perlgpl</a>.</p>
+
+<p>This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.</p>
+
+
+</div><div class="footer">generated by <a href="http://search.cpan.org/perldoc?Pod%3A%3AProjectDocs">Pod::ProjectDocs</a></div></body>
+</html>

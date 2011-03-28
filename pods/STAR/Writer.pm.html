@@ -1,0 +1,262 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+	<title>STAR::Writer</title>
+<link rel="stylesheet" type="text/css" href="../podstyle.css" /><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+  <script type="text/javascript">
+
+  function toggleCode( id ) {
+    if ( document.getElementById )
+      elem = document.getElementById( id );
+    else if ( document.all )
+      elem = eval( "document.all." + id );
+    else
+      return false;
+
+    elemStyle = elem.style;
+
+    if ( elemStyle.display != "block" ) {
+      elemStyle.display = "block"
+    } else {
+      elemStyle.display = "none"
+    }
+
+    return true;
+  }
+  document.writeln( "<style type=\"text/css\">div.method-source-code { display: none }</style>" )
+  </script></head>
+<body>
+<div class="box">
+  <h1 class="t1">Demeter</h1>
+  <table>
+    <tr>
+      <td class="label">Description</td>
+      <td class="cell">Perl tools for X-ray Absorption Spectroscopy</td>
+    </tr>
+  </table>
+</div>
+<div class="path">
+  <a href="../index.html">Demeter</a> &gt; Perl Modules &gt;
+  STAR-Writer
+</div>
+<div>
+<a href="../src/STAR/Writer.pm">Source</a>
+</div>
+
+
+<div class="pod">
+<!-- INDEX START -->
+<h3 id="TOP">Index</h3>
+<ul>
+	<li><a href="#NAME">NAME</a><br />
+<ul>
+	<li><a href="#Version">Version</a></li>
+</ul>
+</li>
+	<li><a href="#SYNOPSIS">SYNOPSIS</a></li>
+	<li><a href="#DESCRIPTION">DESCRIPTION</a></li>
+	<li><a href="#CLASS_METHODS">CLASS METHODS</a><br />
+<ul>
+	<li><a href="#write_cif">write_cif</a></li>
+</ul>
+</li>
+	<li><a href="#COMMENTS">COMMENTS</a></li>
+	<li><a href="#AUTHOR">AUTHOR</a><br />
+<ul>
+	<li><a href="#Acknowledgments">Acknowledgments</a></li>
+</ul>
+</li>
+	<li><a href="#COPYRIGHT">COPYRIGHT</a></li>
+	<li><a href="#SEE_ALSO">SEE ALSO</a></li>
+</ul>
+<hr />
+<!-- INDEX END -->
+
+<h1 id="NAME">NAME <a href="#TOP" class="toplink"><img alt="^" src="../up.gif" /></a></h1>
+
+<p>STAR::Writer - Perl extension for writing STAR::DataBlock objects 
+as files.</p>
+
+<h2 id="Version">Version</h2>
+
+<p>This documentation refers to version 0.01 of this module.</p>
+
+<h1 id="SYNOPSIS">SYNOPSIS <a href="#TOP" class="toplink"><img alt="^" src="../up.gif" /></a></h1>
+
+<pre>  use STAR::Writer;
+
+  STAR::Writer-&gt;write_cif( -dataref=&gt;$data, -file=&gt;$file );
+
+</pre><h1 id="DESCRIPTION">DESCRIPTION <a href="#TOP" class="toplink"><img alt="^" src="../up.gif" /></a></h1>
+
+<p>This module will provide several methods for writing STAR::DataBlocks 
+as files in different format. Currently, there is a write_cif method, 
+which writes a STAR::DataBlock or STAR::Dictionary object as a file 
+in CIF (STAR) format.</p>
+
+<h1 id="CLASS_METHODS">CLASS METHODS <a href="#TOP" class="toplink"><img alt="^" src="../up.gif" /></a></h1>
+
+<h2 id="write_cif">write_cif</h2>
+
+<p><a href="#" onclick="toggleCode('method_write_cif');return false;">[Source]</a></p>
+                                        <div class="method-source-code" id="method_write_cif">
+                                        <pre>
+
+sub write_cif {
+
+    my ($self,@parameters) = @_;      
+    my ($file, $data);
+    my $options = "";
+        
+#   single unnamed parameter doesn't make sense here, 
+#   need -dataref and -file
+
+    while ($_ = shift @parameters) {
+       $file = shift @parameters if /-file/;
+       $data = shift @parameters if /-dataref/;
+       $options = shift @parameters if /-options/;
+    }
+    
+    my ($d, $s, $c, $i);  #data, save, category, item
+    my ($m);   # loop counter
+    my ($string, $dict, $log, $debug);
+    my ($cat, $item, @cats, @items, $next);
+    
+    $dict = 1     if ( $data->type eq 'dictionary' );
+    $log  = 1     if ( $options =~ /l/ );
+    $debug = 1    if ( $options =~ /d/ );
+    
+    $data->add_quotes;
+    
+    open (OUT, ">$file");
+    
+    print STDERR "writing $file\n" if ( $log );
+    
+    foreach $d ( sort keys %{$data->{DATA}} ) {
+        print OUT "data_$d\n";
+
+        foreach $s ( sort keys %{$data->{DATA}{$d}} ) {
+
+            print STDERR "$s\n" if $debug ; # for debugging
+
+            unless ( $s eq '-' ) { 
+                print OUT "\n","#"x(length($s)+4),"\n";
+                print OUT "# $s #\n";
+                print OUT "#"x(length($s)+4),"\n\n";
+                print OUT "save_$s\n"; 
+            }
+            if ( $dict && ( $s eq '-' ) ) {
+                print OUT "\n##############\n";
+                print OUT   "# DICTIONARY #\n";
+                print OUT   "##############\n\n";
+            }
+
+        
+            foreach $c ( sort keys %{$data->{DATA}{$d}{$s}} ) {
+ 
+                print STDERR "\t$c\n" if $debug ; #for debugging
+
+                unless ( $dict ) {
+                    print OUT "\n","#"x(length($c)+4),"\n";
+                    print OUT "# $c #\n";
+                    print OUT "#"x(length($c)+4),"\n\n";
+                }
+            
+                @items = sort keys %{$data->{DATA}{$d}{$s}{$c}};
+                if ( $#{$data->{DATA}{$d}{$s}{$c}{$items[0]}} == 0 ) {
+
+                    print STDERR "\t\tin items if\n" if $debug; #debugging
+
+                    foreach $item ( @items ) {
+
+                        print STDERR "\t\t$item\n" if $debug;  #for debugging
+
+                        print OUT $item, "   ";
+                        $next = $data->{DATA}{$d}{$s}{$c}{$item}[0];
+                        if ( $next =~ /^;/ ||
+                             length($item.$next) >= 77 ) {
+                            print OUT "\n";
+                        }
+                        print OUT "$next\n";
+                    }
+                }
+                else {                              #loop
+
+                    print STDERR "\t\tin items else\n" if $debug ; #debugging
+
+                    print OUT "loop_\n";
+                
+                    foreach $item ( @items ) {      #items in loop
+                        print OUT "$item\n";
+                    }
+                
+                    #values in loop:
+                    foreach $m (0..$#{$data->{DATA}{$d}{$s}{$c}{$items[0]}}) {
+                        $string='';
+                        foreach $i ( @items ) {    
+                            $next = $data->{DATA}{$d}{$s}{$c}{$i}[$m];
+                            if ( $next =~ /^;/ ) {
+                                $string .="\n" unless ( $string eq '' );
+                                print OUT $string,$next;
+                                $string = '';
+                            }
+                            elsif ( length($string.$next) >= 80 ) {
+                                $string .= "\n";
+                                print OUT $string;
+                                $string = $next.' ';
+                            }
+                            else {
+                                $string .= $next;
+                                $string .= ' ';
+                            }
+                        } 
+                        print OUT "$string\n";
+                    } 
+                }
+            }
+            print OUT "save_\n" unless ( $s eq '-' );
+        }
+    }
+    
+    print STDERR "writing $file\n" if $log;
+    
+    close (OUT);
+}
+</pre></div>
+
+<pre>  Usage:  STAR::Writer-&gt;write_cif( -dataref=&gt;$data,
+                                   -file=&gt;$file [,
+                                   -options=&gt;$options ] );
+
+</pre><p>Write the STAR::DataBlock object referenced by $data to the file specified
+by $file. <code>$options</code> are <code>'l'</code> for logging activity (to STDERR) and 
+<code>'d'</code> for debugging. </p>
+
+<h1 id="COMMENTS">COMMENTS <a href="#TOP" class="toplink"><img alt="^" src="../up.gif" /></a></h1>
+
+<p>Categories and items are currently written out in alphabetical
+order. Obviously, this is of no importance to automated
+parsing. However, it may not be desirable for visual inspection
+of files.</p>
+
+<h1 id="AUTHOR">AUTHOR <a href="#TOP" class="toplink"><img alt="^" src="../up.gif" /></a></h1>
+
+<p>Wolfgang Bluhm, mail@wbluhm.com</p>
+
+<h2 id="Acknowledgments">Acknowledgments</h2>
+
+<p>Thanks to Phil Bourne, Helge Weissig, Anne Kuller, Doug Greer,
+Michele Bluhm, and others for support, help, and comments.</p>
+
+<h1 id="COPYRIGHT">COPYRIGHT <a href="#TOP" class="toplink"><img alt="^" src="../up.gif" /></a></h1>
+
+<p>A full copyright statement is provided with the distribution
+Copyright (c) 2000 University of California, San Diego</p>
+
+<h1 id="SEE_ALSO">SEE ALSO <a href="#TOP" class="toplink"><img alt="^" src="../up.gif" /></a></h1>
+
+<p>STAR::Parser, STAR::Dictionary.</p>
+
+
+</div><div class="footer">generated by <a href="http://search.cpan.org/perldoc?Pod%3A%3AProjectDocs">Pod::ProjectDocs</a></div></body>
+</html>

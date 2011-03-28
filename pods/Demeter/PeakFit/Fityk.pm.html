@@ -1,0 +1,233 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+	<title>Demeter::PeakFit::LineShape</title>
+<link rel="stylesheet" type="text/css" href="../../podstyle.css" /><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+  <script type="text/javascript">
+
+  function toggleCode( id ) {
+    if ( document.getElementById )
+      elem = document.getElementById( id );
+    else if ( document.all )
+      elem = eval( "document.all." + id );
+    else
+      return false;
+
+    elemStyle = elem.style;
+
+    if ( elemStyle.display != "block" ) {
+      elemStyle.display = "block"
+    } else {
+      elemStyle.display = "none"
+    }
+
+    return true;
+  }
+  document.writeln( "<style type=\"text/css\">div.method-source-code { display: none }</style>" )
+  </script></head>
+<body>
+<div class="box">
+  <h1 class="t1">Demeter</h1>
+  <table>
+    <tr>
+      <td class="label">Description</td>
+      <td class="cell">Perl tools for X-ray Absorption Spectroscopy</td>
+    </tr>
+  </table>
+</div>
+<div class="path">
+  <a href="../../index.html">Demeter</a> &gt; Perl Modules &gt;
+  Demeter-PeakFit-Fityk
+</div>
+<div>
+<a href="../../src/Demeter/PeakFit/Fityk.pm">Source</a>
+</div>
+
+
+<div class="pod">
+<!-- INDEX START -->
+<h3 id="TOP">Index</h3>
+<ul>
+	<li><a href="#NAME">NAME</a></li>
+	<li><a href="#VERSION">VERSION</a></li>
+	<li><a href="#SYNOPSIS">SYNOPSIS</a></li>
+	<li><a href="#DESCRIPTION">DESCRIPTION</a></li>
+	<li><a href="#METHODS">METHODS</a></li>
+	<li><a href="#LINESHAPES">LINESHAPES</a></li>
+	<li><a href="#LINESHAPES_DEFINE_BY_DEMETER">LINESHAPES DEFINE BY DEMETER</a></li>
+	<li><a href="#CONFIGURATION_AND_ENVIRONMENT">CONFIGURATION AND ENVIRONMENT</a></li>
+	<li><a href="#DEPENDENCIES">DEPENDENCIES</a></li>
+	<li><a href="#BUGS_AND_LIMITATIONS">BUGS AND LIMITATIONS</a></li>
+	<li><a href="#AUTHOR">AUTHOR</a></li>
+	<li><a href="#LICENCE_AND_COPYRIGHT">LICENCE AND COPYRIGHT</a></li>
+</ul>
+<hr />
+<!-- INDEX END -->
+
+<h1 id="NAME">NAME <a href="#TOP" class="toplink"><img alt="^" src="../../up.gif" /></a></h1>
+
+<p>Demeter::PeakFit::LineShape - A lineshape object for peak fitting in Demeter</p>
+
+<h1 id="VERSION">VERSION <a href="#TOP" class="toplink"><img alt="^" src="../../up.gif" /></a></h1>
+
+<p>This documentation refers to Demeter version 0.4.</p>
+
+<h1 id="SYNOPSIS">SYNOPSIS <a href="#TOP" class="toplink"><img alt="^" src="../../up.gif" /></a></h1>
+
+<h1 id="DESCRIPTION">DESCRIPTION <a href="#TOP" class="toplink"><img alt="^" src="../../up.gif" /></a></h1>
+
+<h1 id="METHODS">METHODS <a href="#TOP" class="toplink"><img alt="^" src="../../up.gif" /></a></h1>
+
+
+
+
+<h1 id="LINESHAPES">LINESHAPES <a href="#TOP" class="toplink"><img alt="^" src="../../up.gif" /></a></h1>
+
+<p>These are Fityk's built in lineshapes.  Note that the format of this
+document section is parsed by the reporting methods of this object.</p>
+
+<dl>
+	<dt>Constant(a=avgy)</dt>
+<dd><pre> a
+
+</pre></dd>	<dt>Linear(a0=intercept,a1=slope)</dt>
+<dd><pre> a0 + a1 * x
+
+</pre></dd>	<dt>Quadratic(a0=avgy, a1=0, a2=0)</dt>
+<dd><pre> a0 + a1*x + a2*x^2
+
+</pre></dd>	<dt>Cubic(a0=avgy, a1=0, a2=0, a3=0)</dt>
+<dd><pre> a0 + a1*x + a2*x^2 + a3*x^3
+
+</pre></dd>	<dt>Polynomial4(a0=avgy, a1=0, a2=0, a3=0, a4=0)</dt>
+<dd><pre> a0 + a1*x + a2*x^2 + a3*x^3 + a4*x^4
+
+</pre></dd>	<dt>Polynomial5(a0=avgy, a1=0, a2=0, a3=0, a4=0, a5=0)</dt>
+<dd><pre> a0 + a1*x + a2*x^2 + a3*x^3 + a4*x^4 + a5*x^5
+
+</pre></dd>	<dt>Polynomial6(a0=avgy, a1=0, a2=0, a3=0, a4=0, a5=0, a6=0)</dt>
+<dd><pre> a0 + a1*x + a2*x^2 + a3*x^3 + a4*x^4 + a5*x^5 + a6*x^6
+
+</pre></dd>	<dt>Gaussian(height, center, hwhm)</dt>
+<dd><pre> height*exp(-ln(2)*((x-center)/hwhm)^2)
+
+</pre></dd>	<dt>SplitGaussian(height, center, hwhm1=fwhm*0.5, hwhm2=fwhm*0.5)</dt>
+<dd><pre> if x &lt; center then Gaussian(height, center, hwhm1)else Gaussian(height, center, hwhm2)
+
+</pre></dd>	<dt>Lorentzian(height, center, hwhm)</dt>
+<dd><pre> height/(1+((x-center)/hwhm)^2)
+
+</pre></dd>	<dt>Pearson7(height, center, hwhm, shape=2) </dt>
+<dd><pre> height/(1+((x-center)/hwhm)^2*(2^(1/shape)-1))^shape
+
+</pre></dd>	<dt>SplitPearson7(height, center, hwhm1=fwhm*0.5, hwhm2=fwhm*0.5, shape1=2, shape2=2)</dt>
+<dd><pre> if x &lt; center then Pearson7(height, center, hwhm1, shape1) else Pearson7(height, center, hwhm2, shape2)
+
+</pre></dd>	<dt>PseudoVoigt(height, center, hwhm, shape=0.5)</dt>
+<dd><pre> height*((1-shape)*exp(-ln(2)*((x-center)/hwhm)^2)+shape/(1+((x-center)/hwhm)^2))
+
+</pre></dd>	<dt>Voigt(height, center, gwidth=fwhm*0.4, shape=0.1)</dt>
+<dd><pre> convolution of Gaussian and Lorentzian #
+
+</pre></dd>	<dt>VoigtA(area, center, gwidth=fwhm*0.4, shape=0.1)</dt>
+<dd><pre> convolution of Gaussian and Lorentzian #
+
+</pre></dd>	<dt>EMG(a=height, b=center, c=fwhm*0.4, d=fwhm*0.04)</dt>
+<dd><pre> a*c*(2*pi)^0.5/(2*d) * exp((b-x)/d + c^2/(2*d^2)) * (abs(d)/d - erf((b-x)/(2^0.5*c) + c/(2^0.5*d)))
+
+</pre></dd>	<dt>DoniachSunjic(h=height, a=0.1, F=1, E=center)</dt>
+<dd><pre> h * cos(pi*a/2 + (1-a)*atan((x-E)/F)) / (F^2+(x-E)^2)^((1-a)/2)
+
+</pre></dd>	<dt>PielaszekCube(a=height*0.016, center, r=300, s=150)</dt>
+<dd><pre> ...#
+
+</pre></dd>	<dt>LogNormal(height, center, width=fwhm, asym = 0.1)</dt>
+<dd><pre> height*exp(-ln(2)*(ln(2.0*asym*(x-center)/width+1)/asym)^2)
+
+</pre></dd>	<dt>Spline()</dt>
+<dd><pre> cubic spline #
+
+</pre></dd>	<dt>Polyline()</dt>
+<dd><pre> linear interpolation #
+
+</pre></dd>	<dt>ExpDecay(a=0, t=1)</dt>
+<dd><pre> a*exp(-x/t)
+
+</pre></dd>	<dt>GaussianA(area, center, hwhm)</dt>
+<dd><pre> Gaussian(area/hwhm/sqrt(pi/ln(2)), center, hwhm)
+
+</pre></dd>	<dt>LogNormalA(area, center, width=fwhm, asym=0.1)</dt>
+<dd><pre> LogNormal(sqrt(ln(2)/pi)*(2*area/width)*exp(-asym^2/4/ln(2)), center, width, asym)
+
+</pre></dd>	<dt>LorentzianA(area, center, hwhm)</dt>
+<dd><pre> Lorentzian(area/hwhm/pi, center, hwhm)
+
+</pre></dd>	<dt>Pearson7A(area, center, hwhm, shape)</dt>
+<dd><pre> Pearson7(area/(hwhm*exp(lgamma(shape-0.5)-lgamma(shape))*sqrt(pi/(2^(1/shape)-1))), center, hwhm, shape)
+
+</pre></dd>	<dt>PseudoVoigtA(area, center, hwhm, shape)</dt>
+<dd><pre> GaussianA(area*(1-shape), center, hwhm) + LorentzianA(area*shape, center, hwhm)
+
+</pre></dd>	<dt>SplitLorentzian(height, center, hwhm1, hwhm2)</dt>
+<dd><pre> x &lt; center ? Lorentzian(height, center, hwhm1) : Lorentzian(height, center, hwhm2)
+
+</pre></dd>	<dt>SplitPseudoVoigt(height, center, hwhm1, hwhm2, shape1, shape2)</dt>
+<dd><pre> x &lt; center ? PseudoVoigt(height, center, hwhm1, shape1) : PseudoVoigt(height, center, hwhm2, shape2)
+
+</pre></dd>	<dt>SplitVoigt(height, center, hwhm1, hwhm2, shape1, shape2)</dt>
+<dd><pre> x &lt; center ? Voigt(height, center, hwhm1, shape1) : Voigt(height, center, hwhm2, shape2)
+
+</pre></dd></dl>
+<h1 id="LINESHAPES_DEFINE_BY_DEMETER">LINESHAPES DEFINE BY DEMETER <a href="#TOP" class="toplink"><img alt="^" src="../../up.gif" /></a></h1>
+
+<p>These are lineshapes defined by Demeter</p>
+
+<dl>
+	<dt>Atan(step=1, e0=0, width=0)</dt>
+<dd><pre>  step*[atan((x-E0)/width)/pi + 0.5]
+
+</pre></dd>	<dt>Erf(step=0.5, e0=0, width=0)</dt>
+<dd><pre>  step*(erf((x-e0)/width) + 1)
+
+</pre></dd></dl>
+<h1 id="CONFIGURATION_AND_ENVIRONMENT">CONFIGURATION AND ENVIRONMENT <a href="#TOP" class="toplink"><img alt="^" src="../../up.gif" /></a></h1>
+
+<p>See <a href="../Config.pm.html">Demeter::Config</a> for a description of the configuration system.</p>
+
+<h1 id="DEPENDENCIES">DEPENDENCIES <a href="#TOP" class="toplink"><img alt="^" src="../../up.gif" /></a></h1>
+
+<p>Demeter's dependencies are in the <cite>Bundle/DemeterBundle.pm</cite> file.</p>
+
+<h1 id="BUGS_AND_LIMITATIONS">BUGS AND LIMITATIONS <a href="#TOP" class="toplink"><img alt="^" src="../../up.gif" /></a></h1>
+
+<ul>
+	<li>Need better aliasing of parameter names for add and reporting.</li>
+</ul>
+
+<p>Please report problems to Bruce Ravel (bravel AT bnl DOT gov)</p>
+
+<p>Patches are welcome.</p>
+
+<h1 id="AUTHOR">AUTHOR <a href="#TOP" class="toplink"><img alt="^" src="../../up.gif" /></a></h1>
+
+<p>Bruce Ravel (bravel AT bnl DOT gov)</p>
+
+<p><a href="http://cars9.uchicago.edu/~ravel/software/">http://cars9.uchicago.edu/~ravel/software/</a></p>
+
+
+
+
+<h1 id="LICENCE_AND_COPYRIGHT">LICENCE AND COPYRIGHT <a href="#TOP" class="toplink"><img alt="^" src="../../up.gif" /></a></h1>
+
+<p>Copyright (c) 2006-2011 Bruce Ravel (bravel AT bnl DOT gov). All rights reserved.</p>
+
+<p>This module is free software; you can redistribute it and/or
+modify it under the same terms as Perl itself. See <a href="http://search.cpan.org/perldoc?perlgpl">perlgpl</a>.</p>
+
+<p>This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.</p>
+
+
+</div><div class="footer">generated by <a href="http://search.cpan.org/perldoc?Pod%3A%3AProjectDocs">Pod::ProjectDocs</a></div></body>
+</html>

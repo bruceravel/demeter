@@ -1,0 +1,234 @@
+<!DOCTYPE HTMP PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <title>Input data for Feff</title>
+    <link rel="stylesheet" href=../ab.css />
+    <link rel="stylesheet" href=../ppi.css />
+    <meta http-equiv="Content-Type" content="text/html"; charset=iso-8859-15 />
+    <meta name="robots" contents="all" />
+  </head>
+
+  <body>
+    <div class=topbar>
+  <div class=navbar>
+  <table class=navtable>
+    <tr>
+      <td align=left>
+        [&nbsp;<a href="../index.html">Home</a>&nbsp;] &nbsp;&nbsp;
+        [&nbsp;<a href="http://cars9.uchicago.edu/iffwiki/Demeter"><span class=programlink>DEMETER</span></a>&nbsp;] &nbsp;&nbsp;
+        [&nbsp;<a href="http://cars9.uchicago.edu/iffwiki/Ifeffit"><span class=programlink>IFEFFIT</span></a>&nbsp;] &nbsp;&nbsp;
+        [&nbsp;<a href="http://leonardo.phys.washington.edu/feff/wiki/index.php?title=FEFF_Documentation"><span class=programlink>FEFF</span></a>&nbsp;] &nbsp;&nbsp;
+        [&nbsp;<a href="http://xafs.org">xafs.org</a>&nbsp;] &nbsp;&nbsp;
+	[&nbsp;<a href="../demeter.pdf">PDF&nbsp;doc</a>&nbsp;]
+      </td>
+      <td align=right>
+        Next: <a href="../feff/potph.html" class="menu" >Calculating potentials</a>
+        &nbsp;&nbsp;
+        Up: <a href="../feff/index.html" class="menu" >Feff</a>      </td>
+    </tr>
+  </table>
+  </div>
+  <h1>
+  Input data for Feff
+</h1>
+</div>
+
+<hr class=hide />
+
+
+<div class=sidebar>
+  <a href="../ceres.html"><img src=../../images/Isis-Sothis-Demeter_sm.jpg
+    width=100% border=0 alt='[Demeter logo]'></a>
+  <br />
+  <a href="../index.html" class="menu" >Home</a><br />
+<a href="../intro.html" class="menu" >Introduction</a><br />
+<a href="../data/index.html" class="menu" >Importing data</a><br />
+<a href="../mue/index.html" class="menu" >Processing mu(E) data</a><br />
+<a href="../xanes/index.html" class="menu" >Analysis of XANES data</a><br />
+<a href="../highlevel/index.html" class="menu" >High level actions for Demeter objects</a><br />
+<a href="../atoms/index.html" class="menu" >Atoms</a><br />
+<br />
+<a href="../feff/index.html" class="menuselect" >Feff</a><br />
+&nbsp;-&nbsp;<a href="../feff/input.html" class="menuselect" >Feff input</a><br />
+&nbsp;-&nbsp;<a href="../feff/potph.html" class="menu" >Calculating potentials</a><br />
+&nbsp;-&nbsp;<a href="../feff/pathfinder.html" class="menu" >Running the path finder</a><br />
+&nbsp;-&nbsp;<a href="../feff/intrp.html" class="menu" >Path interpretation</a><br /><br />
+<a href="../paths/index.html" class="menu" >Scattering paths</a><br />
+<a href="../gds/index.html" class="menu" >Guess/Def/Set parameters</a><br />
+<a href="../fit/index.html" class="menu" >Fitting EXAFS data</a><br />
+<a href="../perl/index.html" class="menu" >Using perl to create a fitting model</a><br />
+<a href="../lgcv.html" class="menu" >Local guess parameters and the characteristic value</a><br />
+<a href="../pathlike/index.html" class="menu" >Path-like objects</a><br />
+<a href="../su.html" class="menu" >Structural Units</a><br />
+<a href="../ui.html" class="menu" >User interfaces</a><br />
+<a href="../output.html" class="menu" >Output formats</a><br />
+<a href="../examples/index.html" class="menu" >Full examples</a><br />
+</div>
+
+<a name="startingfromaconventionalfeff.inpfile">
+
+<h3>  Starting from a conventional feff.inp file</h3>
+</a>
+
+<p>
+
+ <span class=program>FEFF</span> is, let's face it, a bit long in the tooth.  It requires
+that its instructions be contained is a rather rigidly structured
+textual input file.  The keywords of the file are called 
+&ldquo;cards&rdquo; in the  <span class=program>FEFF</span> documentation --
+a word whose etymology probably escapes  <span class=program>FEFF</span>'s younger users.
+</p>
+
+<p>
+ <span class=program>DEMETER</span> goes through some serious gymnastics in an attempt to
+hide  <span class=program>FEFF</span>'s clunky interface.  The need for an input file is
+unavoidable and  <span class=program>DEMETER</span> does, in fact, read in and write out 
+<span class=file>feff.inp</span> files repeatedly.  It does so,
+however, in a stealthy way that should require the attention of the
+programmer using  <span class=program>DEMETER</span> only at the very beginning of the
+process.
+</p>
+
+<p>
+Creating a Feff object and populating it with the contents of a
+<span class=file>feff.inp</span> file is done in a way that
+should be quite familiar at this point:
+</p>
+
+
+<pre class=olscript>
+<ol class=perlblock>
+<li><span class="comment">#!/usr/bin/perl
+<li></span><span class="keyword">use</span> <span class="word">Demeter</span><span class="structure">;</span>
+<li>
+<li><span class="keyword">my</span> <span class="symbol">$feff</span> <span class="operator">=</span> <span class="word">Demeter::Feff</span> <span class="operator">-&gt;</span> <span class="word">new</span><span class="structure">(</span><span class="word">file</span> <span class="operator">=&gt;</span> <span class="double">&quot;feff/feff.inp&quot;</span><span class="structure">);</span>
+<li><span class="symbol">$feff</span><span class="operator">-&gt;</span><span class="word">set</span><span class="structure">(</span><span class="word">workspace</span><span class="operator">=&gt;</span><span class="double">&quot;feff/&quot;</span><span class="operator">,</span> <span class="word">screen</span><span class="operator">=&gt;</span><span class="number">0</span><span class="structure">);</span>
+</ol>
+</pre>
+
+<p>
+
+Because  <span class=program>FEFF</span> is heavily dependent on disk-based IO to do its
+work, you must specify a <tt>workspace</tt>.  This
+is a directory on disk where the various files  that  <span class=program>FEFF</span> needs
+to do its business can be written.  In the example that will be
+running through this section, that workspace is a subdirectory called 
+<span class=file>feff/</span>.
+</p>
+
+<p>
+The <tt>screen</tt> attribute is a boolean which
+will suppress the messages the  <span class=program>FEFF</span> would normally write to
+standard output when set to 0.
+</p>
+
+<p>
+When the <tt>file</tt> attribute is set, that input
+file will be parsed and its contents stored as attributes of the Feff
+object.  At this point, the new Feff object is fully instrumented and
+ready to start being used for interesting work.
+</p>
+
+
+<a name="startingfromanatomsobject">
+
+<h3>  Starting from an Atoms object</h3>
+</a>
+
+<p>
+
+If you are running  <span class=program>FEFF</span> on a crystalline material for which you
+have an <span class=file>atoms.inp</span> or CIF file, then
+ <span class=program>DEMETER</span> also allows you to skip the step fo explicitly writing
+the <span class=file>feff.inp</span> file.  Insetad of setting the 
+<tt>file</tt> attribute of the Feff object, you can
+set the <tt>atoms</tt> attribute to an Atoms
+object.  The <span class=file>feff.inp</span> still gets
+generated, but it is done behind the scenes using a temporary file
+that is quickly discarded.
+</p>
+
+
+<pre class=olscript>
+<ol class=perlblock>
+<li><span class="comment">#!/usr/bin/perl
+<li></span><span class="keyword">use</span> <span class="word">Demeter</span><span class="structure">;</span>
+<li>
+<li><span class="keyword">my</span> <span class="symbol">$atoms</span> <span class="operator">=</span> <span class="word">Demeter::Atoms</span> <span class="operator">-&gt;</span> <span class="word">new</span><span class="structure">(</span><span class="word">file</span> <span class="operator">=&gt;</span> <span class="single">'atoms.inp'</span><span class="structure">);</span>
+<li><span class="keyword">my</span> <span class="symbol">$feff</span> <span class="operator">=</span> <span class="word">Demeter::Feff</span> <span class="operator">-&gt;</span> <span class="word">new</span><span class="structure">(</span><span class="word">atoms</span> <span class="operator">=&gt;</span> <span class="symbol">$atoms</span><span class="structure">);</span>
+<li><span class="symbol">$feff</span><span class="operator">-&gt;</span><span class="word">set</span><span class="structure">(</span><span class="word">workspace</span><span class="operator">=&gt;</span><span class="double">&quot;feff/&quot;</span><span class="operator">,</span> <span class="word">screen</span><span class="operator">=&gt;</span><span class="number">0</span><span class="structure">);</span>
+</ol>
+</pre>
+
+<p>
+
+When the <tt>atoms</tt> attribute is set, the 
+<span class=file>feff.inp</span> file is created, parsed, then
+deleted.  Its contents are stored as attributes of the Feff object.  At
+this point, the new Feff object is fully instrumented and ready to
+start being used for interesting work.
+</p>
+
+<p>
+This approach is convenient in any situation for which you do not need
+to modify  <span class=program>FEFF</span> input data in any way from the form that the 
+ <span class=program>ATOMS</span> calculation generates.  In that situation, this approach
+to  <span class=program>FEFF</span> is identical in every way to starting from a 
+<span class=file>feff.inp</span> file.
+</p>
+
+
+<a name="startingfromamolecularstructurefile">
+
+<h3>  Starting from a molecular structure file</h3>
+</a>
+
+<p class=todo>
+<strong>On the to do list:</strong>&nbsp;&nbsp; 
+Integration with 
+<a href="http://openbabel.org/">OpenBabel</a>
+so that other cluster file formats can be used directly as input to 
+ <span class=program>FEFF</span>.
+</p>
+
+<br />
+<hr class=hide />
+
+<div class=bottombar>
+  <div class=navbar>
+  <table class=navtable>
+    <tr>
+      <td align=left>
+        [&nbsp;<a href="../index.html">Home</a>&nbsp;] &nbsp;&nbsp;
+        [&nbsp;<a href="http://cars9.uchicago.edu/iffwiki/Demeter"><span class=programlink>DEMETER</span></a>&nbsp;] &nbsp;&nbsp;
+        [&nbsp;<a href="http://cars9.uchicago.edu/iffwiki/Ifeffit"><span class=programlink>IFEFFIT</span></a>&nbsp;] &nbsp;&nbsp;
+        [&nbsp;<a href="http://leonardo.phys.washington.edu/feff/wiki/index.php?title=FEFF_Documentation"><span class=programlink>FEFF</span></a>&nbsp;] &nbsp;&nbsp;
+        [&nbsp;<a href="http://xafs.org">xafs.org</a>&nbsp;] &nbsp;&nbsp;
+	[&nbsp;<a href="../demeter.pdf">PDF&nbsp;doc</a>&nbsp;]
+      </td>
+      <td align=right>
+        Next: <a href="../feff/potph.html" class="menu" >Calculating potentials</a>
+        &nbsp;&nbsp;
+        Up: <a href="../feff/index.html" class="menu" >Feff</a>      </td>
+    </tr>
+  </table>
+  </div>
+  <div class=copyright>
+   <span class=program>DEMETER</span> is copyright &copy; 2009-2010 Bruce Ravel
+  <br />
+  This document is copyright &copy; 2010 Bruce Ravel
+  <br />
+  email: (bravel |A|T| bnl |D|O|T| gov)
+  <br />
+  
+  <a href="http://creativecommons.org/licenses/by-sa/3.0/"><img src="../../images/somerights20.png" width="88" height="31" alt="" border="0" /></a> &nbsp;&nbsp;&nbsp;
+  <br />
+  This document is licensed under <a href="http://creativecommons.org/licenses/by-sa/3.0/">
+  The Creative Commons Attribution-ShareAlike License</a>.
+  <br />
+  If  <span class=program>DEMETER</span> and this document are useful to you, please consider
+  <a href="http://creativecommons.org/support/">supporting The Creative Commons</a>.
+</div>
+</div>
+  </body>
+</html>

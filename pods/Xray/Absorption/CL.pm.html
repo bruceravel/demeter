@@ -1,0 +1,176 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+	<title>Xray::Absorption::CL</title>
+<link rel="stylesheet" type="text/css" href="../../podstyle.css" /><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+  <script type="text/javascript">
+
+  function toggleCode( id ) {
+    if ( document.getElementById )
+      elem = document.getElementById( id );
+    else if ( document.all )
+      elem = eval( "document.all." + id );
+    else
+      return false;
+
+    elemStyle = elem.style;
+
+    if ( elemStyle.display != "block" ) {
+      elemStyle.display = "block"
+    } else {
+      elemStyle.display = "none"
+    }
+
+    return true;
+  }
+  document.writeln( "<style type=\"text/css\">div.method-source-code { display: none }</style>" )
+  </script></head>
+<body>
+<div class="box">
+  <h1 class="t1">Demeter</h1>
+  <table>
+    <tr>
+      <td class="label">Description</td>
+      <td class="cell">Perl tools for X-ray Absorption Spectroscopy</td>
+    </tr>
+  </table>
+</div>
+<div class="path">
+  <a href="../../index.html">Demeter</a> &gt; Perl Modules &gt;
+  Xray-Absorption-CL
+</div>
+<div>
+<a href="../../src/Xray/Absorption/CL.pm">Source</a>
+</div>
+
+
+<div class="pod">
+<!-- INDEX START -->
+<h3 id="TOP">Index</h3>
+<ul>
+	<li><a href="#NAME">NAME</a></li>
+	<li><a href="#SYNOPSIS">SYNOPSIS</a></li>
+	<li><a href="#DESCRIPTION">DESCRIPTION</a></li>
+	<li><a href="#METHODS">METHODS</a></li>
+	<li><a href="#EDGE_AND_LINE_ENERGIES">EDGE AND LINE ENERGIES</a></li>
+	<li><a href="#BUGS_AND_THINGS_TO_DO">BUGS AND THINGS TO DO</a></li>
+	<li><a href="#AUTHOR">AUTHOR</a></li>
+</ul>
+<hr />
+<!-- INDEX END -->
+
+<h1 id="NAME">NAME <a href="#TOP" class="toplink"><img alt="^" src="../../up.gif" /></a></h1>
+
+<p>Xray::Absorption::CL - Perl interface to the Cromer-Liberman tables</p>
+
+<h1 id="SYNOPSIS">SYNOPSIS <a href="#TOP" class="toplink"><img alt="^" src="../../up.gif" /></a></h1>
+
+<pre>   use Xray::Absorption;
+   Xray::Absorption -&gt; load(&quot;cl&quot;);
+
+</pre><p>See the documentation for Xray::Absorption for details.</p>
+
+<h1 id="DESCRIPTION">DESCRIPTION <a href="#TOP" class="toplink"><img alt="^" src="../../up.gif" /></a></h1>
+
+<p>This module is inherited by the Xray::Absorption module and provides
+access to the data contained in the Cromer-Liberman tables of anomalous
+scattering factors and line and edge energies.</p>
+
+<p>The data in this module and the Fortran code which it calls as a
+shared library, referred to as &quot;The CL Tables&quot;, was published as</p>
+
+<pre>  S. Brennan and P.L. Cowen, Rev. Sci. Instrum, vol 63,
+  p.850 (1992)
+
+</pre><p>More information about these data is available on the Web at</p>
+
+<pre>   http://www.slac.ssrl.stanford.edu/absorb.html.
+
+</pre><p>The values for the anomalous scattering factors are calculated by
+calls to the Ifeffit library by Matt Newville.</p>
+
+<p>The values of edge and line energies are contained in a database file
+called <cite>cl.db</cite> which is generated at install time from the flat
+text files of the these data.  The data is stored in a Storable
+archive using &quot;network&quot; ordering.  This allows speedy disk and memory
+access along with network and platform portability.</p>
+
+<p>The required <code>File::Spec</code>, <code>Chemistry::Elements</code>, <code>Storable</code> are
+available from CPAN.</p>
+
+<h1 id="METHODS">METHODS <a href="#TOP" class="toplink"><img alt="^" src="../../up.gif" /></a></h1>
+
+<p>The behaviour of the methods in this module is a bit different from
+other modules used by <code>Xray::Absorption</code>.  This section describes
+methods which behave differently for this data resource.</p>
+
+<dl>
+	<dt><code>get_energy</code></dt>
+		<dd><p>Example:</p></dd>
+<dd><pre>   $energy = Xray::Absorption -&gt; get_energy($elem, $edge);
+
+</pre></dd>		<dd><p>This behaves similarly to the <code>get_energy</code> method of the other
+resources.  When using the CL data resource, <code>$edge</code> can be any of
+K, L1-L3, M1-M5, N1-N7, O1-O7, or P1-P3.  Line energies are not
+supplied with the CL data set.  The line energies from the McMaster
+tables are used.</p></dd>
+</dl>
+<dl>
+	<dt><code>cross_section</code></dt>
+		<dd><p>Example:</p></dd>
+<dd><pre>   $xsec = Xray::Absorption -&gt; cross_section($elem, $energy, $mode);
+
+</pre></dd><dd><pre>   @xsec = Xray::Absorption -&gt; cross_section($elem, \@energy, $mode);
+
+</pre></dd>		<dd><p>For this data resource, one call in list context is considerably
+faster than repeated calls in scalar context.  It is well worth the
+trouble of organizing your code to make a single call in list context
+and store the results for later use.</p></dd>
+		<dd><p>This behaves slightly differently from the similar method for the
+McMaster and Elam resources.  The CL tables are actually tables of
+anomalous scattering factors and do not come with coherent and
+incoherent scattering cross-sections.  The photo-electric
+cross-section is calculated from the imaginary part of the anomalous
+scattering by the formula</p></dd>
+<dd><pre>     mu = 2 * r_e * lambda * conv * f_2
+
+</pre></dd>		<dd><p>where, <code>r_e</code> is the classical electron radius, lamdba is the photon
+wavelength, and conv is a units conversion factor.</p></dd>
+<dd><pre>     r_e    = 2.817938 x 10^-15 m
+     lambda = 2 pi hbar c / energy
+     hbar*c = 1973.27053324 eV*Angstrom
+     conv   = Avagadro / atomic weight
+            = 6.022045e7 / weight in cgs
+
+</pre></dd>		<dd><p>The <code>$mode</code> argument is different here than for the other resources.
+The options are &quot;xsec&quot;, &quot;f1&quot;, and &quot;f2&quot;, telling this method to return
+the cross-section or the real or imaginary anomalous scattering
+factor, respectively.</p></dd>
+		<dd><p>The values for f1 and f2 are computed by linear interpolation of a
+semi-log scale.  Care is taken to avoid the discontinuities at the
+edges.</p></dd>
+		<dd><p>Because the CL tables do not include the coherent and incoherent
+scattering terms, the value returned by <code>get_energy</code> is a bit smaller
+using the CL tables than using the others.</p></dd>
+</dl>
+<h1 id="EDGE_AND_LINE_ENERGIES">EDGE AND LINE ENERGIES <a href="#TOP" class="toplink"><img alt="^" src="../../up.gif" /></a></h1>
+
+<p>The CL data resource provides a fairly complete set of edge energies.
+Any edge tabulated on the Gwyn William's Table of Electron Binding
+Energies for the Elements (that's the one published by NSLS and on the
+door of just about every hutch at NSLS) is in the CL data resource.
+The CL data comes with the same, limited set of fluorescence energies
+as McMaster.</p>
+
+<h1 id="BUGS_AND_THINGS_TO_DO">BUGS AND THINGS TO DO <a href="#TOP" class="toplink"><img alt="^" src="../../up.gif" /></a></h1>
+
+<p>None that I know about...</p>
+
+<h1 id="AUTHOR">AUTHOR <a href="#TOP" class="toplink"><img alt="^" src="../../up.gif" /></a></h1>
+
+<pre>  Bruce Ravel, bruce@phys.washington.edu
+  http://feff.phys.washington.edu/~ravel/software/Absorption
+
+</pre>
+</div><div class="footer">generated by <a href="http://search.cpan.org/perldoc?Pod%3A%3AProjectDocs">Pod::ProjectDocs</a></div></body>
+</html>
