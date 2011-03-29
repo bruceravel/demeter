@@ -61,7 +61,7 @@
    - [ ] reference of another edge
    - [ ] keV data
 
-*** needs doing [3/13]
+*** needs doing [4/14]
    - [X] deglitching crashes with gnuplot					:HUH:
    - [X] in project selection dialog, controls for entering a periodic
          subset (i.e. every Nth record starting with the Jth record)
@@ -69,10 +69,10 @@
          many measurements.  regexp matching against names would also
          be nice
    - [X] replot upon group selection, space is configurable (E, k, R, q, quad, k123, r123, i0/signal, none)
+   - [X] column selection dialog is not remembering data numerator and
+         denominator selection
    - [ ] implement frozen groups
    - [ ] links to documentation on each tool
-   - [ ] column selection dialog is not remembering data numerator and
-         denominator selection
    - [ ] fix edge step button is not working
    - [ ] *Pluck buttons* [0/2]
        + [ ] implement everywhere needed

@@ -10,8 +10,9 @@ use strict;
 use Carp;
 use Cwd;
 use File::Copy;
-use File::Path qw(mkpath);
+use File::Path qw(mkpath rmtree);
 use File::Spec;
+use Pod::ProjectDocs;
 
 my %windows = (strawberry => 'C:\strawberry',                     # base of Strawberry perl
 	       gnuwin     => 'C:\GnuWin32',                       # base of GnuWin32, readline, ncurses
@@ -23,11 +24,16 @@ my %windows = (strawberry => 'C:\strawberry',                     # base of Stra
 
 sub ACTION_build {
   my $self = shift;
-  $self->dispatch("build_document");
   $self->dispatch("compile_ifeffit_wrapper");
   $self->SUPER::ACTION_build;
   $self->dispatch("post_build");
 }
+
+sub ACTION_ghpages {
+  my $self = shift;
+  $self->dispatch("build_dpg");
+  $self->dispatch("doctree");
+};
 
 sub ACTION_compile_ifeffit_wrapper {
   my $self = shift;
@@ -117,7 +123,7 @@ sub ACTION_post_build {
 			   flatten => 1);
 };
 
-sub ACTION_build_document {
+sub ACTION_build_dpg {
   my $self = shift;
   my $here = cwd;
   chdir 'lib/Demeter/doc/dpg/';
@@ -126,6 +132,8 @@ sub ACTION_build_document {
   system(q(./configure));
   system(q(./bin/build));
   chdir $here;
+  rmtree('../demeter-gh-pages/dpg', 1, 1);
+  move('lib/Demeter/doc/dpg/html', '../demeter-gh-pages/dpg');
 };
 
 sub ACTION_org2html {
@@ -139,6 +147,23 @@ sub ACTION_update {
   die "failed to update Demeter from github\n" if not $ret;
 };
 
+
+sub ACTION_doctree {
+  my $self = shift;
+  my $LIB  = 'lib'; #File::Spec->catfile('..', '..', '..', 'lib');
+  my $BIN  = 'bin'; #File::Spec->catfile('..', '..', '..', 'bin');
+  copy(File::Spec->catfile($BIN, 'denv'),        File::Spec->catfile($BIN, 'denv.pl'));
+  copy(File::Spec->catfile($BIN, 'dhephaestus'), File::Spec->catfile($BIN, 'dhephaestus.pl'));
+  my $pd = Pod::ProjectDocs->new(
+				 outroot => '../demeter-gh-pages/pods',
+				 libroot => [$LIB, $BIN],
+				 title   => 'Demeter',
+				 desc    => "Perl tools for X-ray Absorption Spectroscopy",
+				);
+  $pd->gen();
+  unlink File::Spec->catfile($BIN, 'denv.pl');
+  unlink File::Spec->catfile($BIN, 'dhephaestus.pl');
+};
 
 sub is_older {
   my ($file1, $file2) = @_;
