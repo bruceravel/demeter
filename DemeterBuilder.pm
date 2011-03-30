@@ -33,6 +33,7 @@ sub ACTION_ghpages {
   my $self = shift;
   $self->dispatch("build_dpg");
   $self->dispatch("doctree");
+  $self->dispatch("org2html");
 };
 
 sub ACTION_compile_ifeffit_wrapper {
@@ -137,8 +138,9 @@ sub ACTION_build_dpg {
 };
 
 sub ACTION_org2html {
-  return if is_older("todo.org", "todo.html");
+  return if is_older("todo.org", "../demeter-gh-pages/todo.html");
   system('emacs --batch --eval "(setq org-export-headline-levels 2)" --visit=todo.org --funcall org-export-as-html-batch');
+  move('todo.html', "../demeter-gh-pages/todo.html");
 };
 
 sub ACTION_update {
