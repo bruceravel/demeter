@@ -41,7 +41,7 @@ a {
 }
 
 a:hover, a:active {
-	text-decoration: none;
+	text-decoration: underline;
 	color: #1B75A9;
 }
 

@@ -130,12 +130,14 @@ sub _update {
 sub sum {
   my ($self, $space) = @_;
   my @list = @{ $self->paths };
+  $self->start_spinner("Summing VPath ".$self->name) if ($self->mo->ui eq 'screen');
   my $command = $self->template("process", "prep_vpath");
   foreach my $p (@list[1..$#list]) {
     $self->mode->path($p);
     $command .= $self->template("process", "addto_vpath");
   };
   $self->mode->path(q{});
+  $self->stop_spinner if ($self->mo->ui eq 'screen');
   return $command;
 };
 

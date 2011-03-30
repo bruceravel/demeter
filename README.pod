@@ -5,9 +5,11 @@ Demeter Documentation
 
 =head1 VERSION
 
-This document described Demeter 0.4.
+This document describes Demeter 0.4.
 
 =head1 DESCRIPTION
+
+See the Demeter documentation pages at L<http://bruceravel.github.com/demeter/>.
 
 =over 4
 
