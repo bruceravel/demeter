@@ -31,8 +31,8 @@ our $SIGMA   = chr(963);          #"\xCF\x83";            #'σ';
 our $SIGSQR  = chr(963).chr(178); #"\xCF\x83"."\xC2\xB2"; #'σ²';
 our $PHI     = chr(966);          #"\xCF\x86";            #'φ';
 our $PI      = chr(960);
-our $S02     = 'S'.chr(8320).chr(178);
-our $E0      = 'E'.chr(8320);
+our $S02     = ($is_windows) ? 'S0'.chr(178) : 'S'.chr(8320).chr(178);
+our $E0      = ($is_windows) ? 'E0' : 'E'.chr(8320);
 our $ALPHA   = chr(0x03B1);
 our $BETA    = chr(0x03B2);
 our $GAMMA   = chr(0x03B3);
@@ -48,7 +48,7 @@ our $LAQUO     = chr(171);  #"\xC2\xAB";     #'«';
 our $RAQUO     = chr(187);  #"\xC2\xBB";     #'»';
 our $MDASH     = chr(8212); #"\xE2\x80\x94"; #'—';
 our $ARING     = chr(197);  # 'Å'
-our $MACRON    = chr(175);  # 'Å'
+our $MACRON    = chr(175);  # ''
 
 sub emph {
   my ($string) = @_;

@@ -38,7 +38,10 @@ sub new {
 				 wxDefaultPosition,
 				 [560,700],
 			       );
+  $self -> SetBackgroundColour( wxNullColour );
+
   my $nb = Wx::Notebook->new( $self, -1, wxDefaultPosition, wxDefaultSize, wxNB_TOP );
+  $nb -> SetBackgroundColour( wxNullColour );
   $self->{base} = $base;
   $self->{notebook} = $nb;
   $self->{feffobject} = $feffobject;

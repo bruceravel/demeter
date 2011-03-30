@@ -110,7 +110,7 @@ my $build = DemeterBuilder
 				'Getopt::Long'       => '2.38',
 
 				## this is required for the gnuplot plotting backend
-				(($^O eq 'MSWin32') or ($^O eq 'cygwin')) ? () :
+				#(($^O eq 'MSWin32') or ($^O eq 'cygwin')) ? () :
 				('Graphics::GnuplotIF' => '0'),
 
 				## GUI for Atehna, Artemis, and Hephaestus
@@ -148,6 +148,7 @@ $build->add_build_element('html');
 $build->add_build_element('css');
 $build->add_build_element('ini');
 $build->add_build_element('png');
+$build->add_build_element('jpg');
 $build->add_build_element('prj');
 $build->add_build_element('stan');
 $build->add_build_element('tmpl');

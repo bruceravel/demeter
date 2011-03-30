@@ -236,7 +236,7 @@ sub new {
   my $titlesbox      = Wx::StaticBox->new($leftpane, -1, 'Title lines ', wxDefaultPosition, wxDefaultSize);
   my $titlesboxsizer = Wx::StaticBoxSizer->new( $titlesbox, wxHORIZONTAL );
   $this->{titles}      = Wx::TextCtrl->new($leftpane, -1, q{}, wxDefaultPosition, [300,-1],
-					   wxVSCROLL|wxHSCROLL|wxTE_MULTILINE|wxTE_READONLY);
+					   wxHSCROLL|wxTE_READONLY|wxTE_MULTILINE|wxTE_RICH);
   $titlesboxsizer -> Add($this->{titles}, 1, wxALL|wxGROW, 0);
   $left           -> Add($titlesboxsizer, 1, wxALL|wxGROW, 5);
   $this->mouseover("titles", "These lines will be written to output files.  Use them to describe this data set.");
@@ -399,7 +399,7 @@ sub new {
   $leftpane -> SetSizerAndFit($left);
 
 
-  $hbox -> Add(Wx::StaticLine->new($this, -1, wxDefaultPosition, [4, -1], wxLI_VERTICAL), 0, wxGROW|wxALL, 5);
+  $hbox -> Add(Wx::StaticLine->new($this, -1, wxDefaultPosition, [4, -1], wxLI_VERTICAL), 0, wxGROW|wxALL, 0);
 
 
   ##-------- paths list for this data

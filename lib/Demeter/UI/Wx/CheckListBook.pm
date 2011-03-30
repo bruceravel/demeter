@@ -226,7 +226,8 @@ sub SetSelection {
   $self->{LIST} -> SetSelection($pos);
   ## plotzing here:
   $self->{VIEW} -> Hide;
-  $self->{LIST} -> GetIndexedData($pos) -> Show;
+  $self->Refresh;
+  $self->{LIST} -> GetIndexedData($pos) -> Show(1);
   $self->{VIEW} = $self->{LIST} -> GetIndexedData($pos);
   $self->{PAGEBOX} -> Layout;
 };
