@@ -104,6 +104,8 @@ sub OnInit {
 				[0,0], # position -- along top of screen
 				[Wx::SystemSettings::GetMetric(wxSYS_SCREEN_X), -1] # size -- entire width of screen
 			       );
+  $frames{main} -> SetBackgroundColour( wxNullColour );
+
   my $iconfile = File::Spec->catfile(dirname($INC{'Demeter/UI/Artemis.pm'}), 'Artemis', 'icons', "artemis.png");
   $icon = Wx::Icon->new( $iconfile, wxBITMAP_TYPE_ANY );
   $frames{main} -> SetIcon($icon);

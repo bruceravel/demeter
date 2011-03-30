@@ -52,6 +52,9 @@ sub new {
   my $this = $class->SUPER::new($parent, -1, "Artemis [Plot]",
 				[0,$yy], wxDefaultSize,
 				wxMINIMIZE_BOX|wxCAPTION|wxSYSTEM_MENU|wxCLOSE_BOX);
+  #$this -> SetBackgroundColour( Wx::Colour->new(0,255,0,0));
+  #$this -> SetBackgroundColour( Wx::SystemSettings::GetColour(wxSYS_COLOUR_WINDOW) );
+  $this -> SetBackgroundColour( wxNullColour );
   EVT_CLOSE($this, \&on_close);
   $this->{last} = q{};
 
