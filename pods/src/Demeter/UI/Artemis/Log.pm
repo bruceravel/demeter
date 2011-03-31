@@ -34,6 +34,7 @@ sub new {
   my $this = $class->SUPER::new($parent, -1, "Artemis [Log]",
 				wxDefaultPosition, [550,650],
 				wxMINIMIZE_BOX|wxCAPTION|wxSYSTEM_MENU|wxCLOSE_BOX|wxRESIZE_BORDER);
+  $this -> SetBackgroundColour( wxNullColour );
   EVT_CLOSE($this, \&on_close);
   my $vbox = Wx::BoxSizer->new( wxVERTICAL );
 

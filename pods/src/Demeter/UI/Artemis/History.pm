@@ -31,6 +31,7 @@ sub new {
   my $this = $class->SUPER::new($parent, -1, "Artemis [History]",
 				wxDefaultPosition, wxDefaultSize,
 				wxMINIMIZE_BOX|wxCAPTION|wxSYSTEM_MENU|wxCLOSE_BOX);
+  $this -> SetBackgroundColour( wxNullColour );
   EVT_CLOSE($this, \&on_close);
   $this->{statusbar} = $this->CreateStatusBar;
   $this->{statusbar} -> SetStatusText(q{ });

@@ -150,7 +150,7 @@ sub _dlpoly {
   $ssboxsizer -> Add( $self->{dlp_ss_ipot}, 0, wxLEFT|wxRIGHT, 10 );
 
   $self->{dlp_ss_rattle} = Wx::CheckBox->new($scrl, -1, "Also create triple scattering path from this histogram");
-  $ssboxsizer -> Add( $self->{dlp_ss_rattle}, 0, wxLEFT|wxRIGHT, 10 );
+  $ssboxsizer -> Add( $self->{dlp_ss_rattle}, 0, wxTOP|wxLEFT|wxRIGHT, 10 );
   $self->{dlp_ss_rattle}->Enable(0);
 
   $hbox = Wx::BoxSizer->new( wxHORIZONTAL );

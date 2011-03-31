@@ -28,6 +28,7 @@ sub new {
   my ($class, $parent) = @_;
   my $this = $class->SUPER::new($parent, -1, "Artemis [Journal]",
 				wxDefaultPosition, wxDefaultSize, wxDEFAULT_FRAME_STYLE);
+  $this -> SetBackgroundColour( wxNullColour );
   EVT_CLOSE($this, \&on_close);
   #_doublewide($this);
 

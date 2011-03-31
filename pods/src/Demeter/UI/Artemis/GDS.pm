@@ -86,6 +86,7 @@ sub new {
   my $this = $class->SUPER::new($parent, -1, "Artemis [GDS] Guess, Def, Set parameters",
 				wxDefaultPosition, [-1,-1], #[725,480],
 				wxMINIMIZE_BOX|wxCAPTION|wxSYSTEM_MENU|wxCLOSE_BOX|wxRESIZE_BORDER);
+  $this -> SetBackgroundColour( wxNullColour );
   $this->{statusbar} = $this->CreateStatusBar;
   $this->{statusbar} -> SetStatusText(q{});
   EVT_CLOSE($this, \&on_close);

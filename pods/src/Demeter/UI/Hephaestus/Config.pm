@@ -32,6 +32,7 @@ sub new {
   my @list = ('hephaestus', 'plot');
   push @list, 'gnuplot' if ($Demeter::UI::Hephaestus::demeter->co->default(qw(plot plotwith)) eq 'gnuplot');
   $self->populate(\@list);
+  $self->{params}->Expand($self->{params}->GetRootItem);
 
   return $self;
 };

@@ -31,6 +31,7 @@ sub new {
   $self->{parent}    = $parent;
   $self->{statusbar} = $parent->{statusbar};
   $self->populate(['atoms', 'feff', 'pathfinder']);
+  $self->{params}->Expand($self->{params}->GetRootItem);
 
   return $self;
 };
