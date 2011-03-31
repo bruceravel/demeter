@@ -94,7 +94,7 @@ input, textarea, select {
 /* Header */
 
 #header {
-	width: 880px;
+	width: 950px;
 	margin: 0 auto;
 	height: 60px;
 	border: 10px #FFFFFF solid;
@@ -104,7 +104,7 @@ input, textarea, select {
 
 #menu {
 	float: left;
-	width: 880px;
+	width: 950px;
 	height: 58px;
 	background: url(images/img02.jpg) repeat-x left top;
 }
@@ -123,7 +123,7 @@ input, textarea, select {
 
 #menu a {
 	display: block;
-	padding: 0 48px;
+	padding: 0 55px;
 	background: url(images/img03.jpg) no-repeat right 50%;
 	text-decoration: none;
 	text-transform: uppercase;
@@ -137,7 +137,7 @@ input, textarea, select {
 
 #menu .current_page_item {
 	display: block;
-	padding: 0 48px;
+	padding: 0 55px;
 	background: url(images/img03.jpg) no-repeat right 50%;
 	text-decoration: none;
 	text-transform: uppercase;
@@ -148,7 +148,7 @@ input, textarea, select {
 /** LOGO */
 
 #logo {
-	width: 880px;
+	width: 950px;
 	height: 130px;
 	margin: 0 auto;
 }
@@ -163,6 +163,7 @@ input, textarea, select {
 #logo h1 { 
 	font-family: Georgia, "Times New Roman", Times, serif;
 	font-size:40px;
+	color: #28313A; 
 }
 
 #logo h1 a {
@@ -174,7 +175,7 @@ input, textarea, select {
 
 #logo h2 {
 	float: left;
-	padding: 65px 0 0 18px;
+	padding: 89px 0 0 18px;
 	font: 18px Georgia, "Times New Roman", Times, serif;
 	color: #28313A; 
 }
@@ -191,7 +192,7 @@ input, textarea, select {
 /* Page */
 
 #page {
-	width: 880px;
+	width: 950px;
 	margin: 0 auto;
 	background: #FFFFFF;
 	border: 10px #FFFFFF solid;
@@ -201,7 +202,7 @@ input, textarea, select {
 
 #content {
 	float: left;
-	width: 700px;
+	width: 770px;
 	border-right: 1px dashed #DFE1E0;
 }
 
@@ -360,7 +361,7 @@ input, textarea, select {
 }
 
 #footer {
-	width: 880px;
+	width: 950px;
 	margin: 0 auto;
 	background: #E5E5E5;
 	border: 10px #FFFFFF solid;

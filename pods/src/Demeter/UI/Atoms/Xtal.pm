@@ -118,6 +118,7 @@ my $atoms = Demeter::Atoms->new;
 sub new {
   my ($class, $page, $parent) = @_;
   my $self = $class->SUPER::new($page, -1, wxDefaultPosition, wxDefaultSize, wxMAXIMIZE_BOX );
+  $self -> SetBackgroundColour( wxNullColour );
   $self->{parent}    = $parent;
   $self->{statusbar} = $parent->{statusbar};
   $self->{buffered_site} = 0;

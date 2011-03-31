@@ -118,7 +118,7 @@ sub new {
   $this->{geombox}  = Wx::StaticBox->new($this, -1, 'Geometry ', wxDefaultPosition, wxDefaultSize);
   my $geomboxsizer  = Wx::StaticBoxSizer->new( $this->{geombox}, wxHORIZONTAL );
   $this->{geometry} = Wx::TextCtrl->new($this, -1, q{}, wxDefaultPosition, [-1,110],
-					wxVSCROLL|wxHSCROLL|wxTE_MULTILINE|wxTE_READONLY);
+					wxHSCROLL|wxTE_READONLY|wxTE_MULTILINE|wxTE_RICH);
   $this->{geometry} -> SetFont( Wx::Font->new( 9, wxTELETYPE, wxNORMAL, wxNORMAL, 0, "" ) );
   $this->{geometry} -> SetDefaultStyle($aleft);
   $geomboxsizer -> Add($this->{geometry}, 1, wxGROW|wxALL, 0);
@@ -143,10 +143,10 @@ sub new {
 
   foreach my $k (qw(label n s02 e0 delr sigma2 ei third fourth dphase)) {
     next if (($k eq 'dphase') and (not $this->{datapage}->{data}->co->default('artemis', 'offer_dphase')));
-    my $label = Wx::HyperlinkCtrl -> new($this, -1, $labels{$k}, q{}, wxDefaultPosition, wxDefaultSize );
+    my $label = Wx::HyperlinkCtrl -> new($this, -1, $labels{$k}, q{}, wxDefaultPosition, [40,-1] );
     $label->{which} = $k;
     $this->{"lab_$k"} = $label;
-    my $w = 250;
+    my $w = 225;
     $this->{"pp_$k"} = Wx::TextCtrl  ->new($this, -1, q{}, wxDefaultPosition, [$w,-1]);
     $gbs     -> Add($label,           Wx::GBPosition->new($i,1));
     $gbs     -> Add($this->{"pp_$k"}, Wx::GBPosition->new($i,2));

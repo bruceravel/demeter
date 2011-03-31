@@ -88,7 +88,7 @@ sub fetch {
     my $indic = ($self->{'group'.$j}) ? $Demeter::UI::Artemis::demeter->mo->fetch("Indicator", $self->{'group'.$j})
       : Demeter::Plot::Indicator->new;
     $self->{'group'.$j} = $indic->group;
-    $indic->space ($self->{'space'.$j}->GetStringSelection);
+    $indic->space ($self->{'space'.$j}->GetStringSelection || 'k');
     $indic->x     ($self->{'value'.$j}->GetValue || 0);
     $indic->active($self->{'check'.$j}->GetValue);
     $indic->active(0) if ($self->{'value'.$j}->GetValue =~ m{\A\s*\z});
