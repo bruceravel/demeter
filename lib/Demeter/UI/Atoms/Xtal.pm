@@ -20,7 +20,7 @@ use base qw(Wx::Grid);
 
 sub new {
   my $class = shift;
-  my $this = $class->SUPER::new($_[0], -1, wxDefaultPosition, wxDefaultSize, wxVSCROLL|wxALWAYS_SHOW_SB);
+  my $this = $class->SUPER::new($_[0], -1, wxDefaultPosition, wxDefaultSize, wxVSCROLL);
 
   $this -> CreateGrid(6,6);
   #$this -> EnableScrolling(1,1);
@@ -138,7 +138,7 @@ sub new {
   $self->{toolbar} -> AddTool(-1, "Run Atoms",  $self->icon("exec"),   wxNullBitmap, wxITEM_NORMAL, q{}, $hints{exec} );
   EVT_TOOL_ENTER( $self, $self->{toolbar}, sub{my ($toolbar, $event) = @_; &OnToolEnter($toolbar, $event, 'toolbar')} );
   $self->{toolbar} -> Realize;
-  $vbox -> Add($self->{toolbar}, 0, wxALL, 5);
+  $vbox -> Add($self->{toolbar}, 0, wxGROW|wxALL, 5);
   EVT_TOOL_RCLICKED($self->{toolbar}, -1, sub{my ($toolbar, $event) = @_; OnToolRightClick($toolbar, $event, $self)});
 
   my $hbox = Wx::BoxSizer->new( wxHORIZONTAL );
@@ -148,7 +148,7 @@ sub new {
   $self->set_hint("titles");
   $self->{titlesboxsizer} -> Add($self->{titles}, 1, wxGROW|wxALL, 0);
   $hbox -> Add($self->{titlesboxsizer}, 1, wxGROW|wxALL, 5);
-  $vbox -> Add($hbox, 0, wxGROW|wxALL);
+  $vbox -> Add($hbox, 1, wxGROW|wxALL);
 
 
 
@@ -310,8 +310,8 @@ sub new {
   EVT_GRID_LABEL_RIGHT_CLICK($self->{sitesgrid}, \&PostGridMenu);
   EVT_MENU($self->{sitesgrid}, -1, \&OnGridMenu);
 
-  $hbox -> Add($self->{sitesgrid}, 1, wxSHAPED|wxALL|wxALIGN_CENTER_HORIZONTAL, 0);
-  $vbox -> Add($hbox, 1, wxSHAPED|wxALL|wxALIGN_CENTER_HORIZONTAL, 5);
+  $hbox -> Add($self->{sitesgrid}, 1, wxGROW|wxALL|wxALIGN_CENTER_HORIZONTAL, 0);
+  $vbox -> Add($hbox, 1, wxGROW|wxALL|wxALIGN_CENTER_HORIZONTAL, 5);
 
   $self -> SetSizerAndFit( $vbox );
 

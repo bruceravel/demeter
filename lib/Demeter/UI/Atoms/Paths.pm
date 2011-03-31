@@ -45,7 +45,7 @@ sub new {
 
   EVT_TOOL_ENTER( $self, $self->{toolbar}, sub{my ($toolbar, $event) = @_; &OnToolEnter($toolbar, $event, 'toolbar')} );
   $self->{toolbar} -> Realize;
-  $vbox -> Add($self->{toolbar}, 0, wxALL, 5);
+  $vbox -> Add($self->{toolbar}, 0, wxGROW|wxALL, 5);
 
   my $hh = Wx::BoxSizer->new( wxHORIZONTAL );
   $vbox -> Add($hh, 0, wxEXPAND|wxALL, 0);

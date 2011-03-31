@@ -1556,7 +1556,6 @@ t/test.demeter_conf
 t/withHg.inp
 t/ybco.inp
 todo.org
-todo.html
 tools/config-mode.el
 tools/ifeffit-mode.el
 videos

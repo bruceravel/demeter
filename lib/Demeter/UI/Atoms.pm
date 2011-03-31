@@ -36,7 +36,7 @@ sub new {
 				 -1,              # ID -1 means any
 				 'Atoms',         # title
 				 wxDefaultPosition,
-				 [560,700],
+				 [560,800],
 			       );
   $self -> SetBackgroundColour( wxNullColour );
 

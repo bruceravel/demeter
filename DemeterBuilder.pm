@@ -12,7 +12,6 @@ use Cwd;
 use File::Copy;
 use File::Path qw(mkpath rmtree);
 use File::Spec;
-use Pod::ProjectDocs;
 
 my %windows = (strawberry => 'C:\strawberry',                     # base of Strawberry perl
 	       gnuwin     => 'C:\GnuWin32',                       # base of GnuWin32, readline, ncurses
@@ -21,6 +20,8 @@ my %windows = (strawberry => 'C:\strawberry',                     # base of Stra
 	       ifeffit    => 'C:\source\ifeffit-1.2.11d\src\lib', # install location of libifeffit.a
 	       gnuplot    => 'C:\gnuplot\binaries',		  # install location of gnuplot.exe
 	      );
+
+my $ghpages = '../demeter-gh-pages';
 
 sub ACTION_build {
   my $self = shift;
@@ -54,6 +55,9 @@ sub ACTION_compile_ifeffit_wrapper {
       ($pgplot_location, $iffdir) = (q{}, q{});
 
       $linker_flags = [
+		       q{-L}.$windows{gnuwin}.q{\lib"},
+		       q{-lcurses -lreadline},
+
 		       q{-L}.$windows{strawberry}.q{\perl\lib\CORE"},
 		       q{-L}.$windows{strawberry}.q{\c\lib"},
 		       q{-L}.$windows{strawberry}.q{\c\lib\gcc\i686-w64-mingw32\4.4.3"},
@@ -65,9 +69,6 @@ sub ACTION_compile_ifeffit_wrapper {
 		       q{-L}.$windows{mingw}.q{\lib\gcc\mingw32\4.5.2"},
 		       q{-L}.$windows{mingw}.q{\lib"},
 		       q(-lgfortran -lmingw32 -lgcc_s -lmoldname -lmingwex -lmsvcrt -luser32 -lkernel32 -ladvapi32 -lshell32),
-
-		       q{-L}.$windows{gnuwin}.q{\lib"},
-		       q{-lcurses -lreadline},
 
 		       q{-L}.$windows{pgplot},
 		       qw{-lcpgplot -lpgplot -lGrWin -lgdi32 -lg2c},
@@ -133,14 +134,14 @@ sub ACTION_build_dpg {
   system(q(./configure));
   system(q(./bin/build));
   chdir $here;
-  rmtree('../demeter-gh-pages/dpg', 1, 1);
-  move('lib/Demeter/doc/dpg/html', '../demeter-gh-pages/dpg');
+  rmtree(File::Spec->catfile($ghpages, 'dpg'), 1, 1);
+  move('lib/Demeter/doc/dpg/html', File::Spec->catfile($ghpages, 'dpg'));
 };
 
 sub ACTION_org2html {
-  return if is_older("todo.org", "../demeter-gh-pages/todo.html");
+  return if is_older("todo.org", File::Spec->catfile($ghpages, 'todo.html'));
   system('emacs --batch --eval "(setq org-export-headline-levels 2)" --visit=todo.org --funcall org-export-as-html-batch');
-  move('todo.html', "../demeter-gh-pages/todo.html");
+  move('todo.html', File::Spec->catfile($ghpages, 'todo.html'));
 };
 
 sub ACTION_update {
@@ -152,12 +153,13 @@ sub ACTION_update {
 
 sub ACTION_doctree {
   my $self = shift;
+  require Pod::ProjectDocs;
   my $LIB  = 'lib'; #File::Spec->catfile('..', '..', '..', 'lib');
   my $BIN  = 'bin'; #File::Spec->catfile('..', '..', '..', 'bin');
   copy(File::Spec->catfile($BIN, 'denv'),        File::Spec->catfile($BIN, 'denv.pl'));
   copy(File::Spec->catfile($BIN, 'dhephaestus'), File::Spec->catfile($BIN, 'dhephaestus.pl'));
   my $pd = Pod::ProjectDocs->new(
-				 outroot => '../demeter-gh-pages/pods',
+				 outroot => File::Spec->canonpath(File::Spec->catfile($ghpages, 'pods')),
 				 libroot => [$LIB, $BIN],
 				 title   => 'Demeter',
 				 desc    => "Perl tools for X-ray Absorption Spectroscopy",
@@ -169,6 +171,7 @@ sub ACTION_doctree {
 
 sub is_older {
   my ($file1, $file2) = @_;
+  return 1 if not -e $file1;
   return (stat($file1))[9] < (stat($file2))[9]
 };
 

@@ -27,11 +27,13 @@ sub new {
   my $this = $class->SUPER::new($parent, -1, "Artemis [Preferences]",
 				wxDefaultPosition, [650,500],
 				wxMINIMIZE_BOX|wxCAPTION|wxSYSTEM_MENU|wxCLOSE_BOX|wxRESIZE_BORDER);
+  $this -> SetBackgroundColour( wxNullColour );
   EVT_CLOSE($this, \&on_close);
 
   my $box = Wx::BoxSizer->new( wxVERTICAL );
   my $config = Demeter::UI::Wx::Config->new($this, \&target);
   $config->populate(['all', 'artemis']);
+  $config->{params}->Expand($config->{params}->GetRootItem);
   $box->Add($config, 1, wxGROW|wxALL, 5);
 
   my $close = Wx::Button->new($this, -1, "&Close");

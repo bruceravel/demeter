@@ -11,6 +11,9 @@
         https://bugs.launchpad.net/ubuntu/+source/gtk+2.0/+bug/558674 for more info
         Turns out this is a gtk problem -- I can make the same thing happen with Firefox!
 
+** installation issues [0/1]
+  - [ ] jpg needs to be a Module::Build build_element, but there are too many such files in the distro .. not all serve a purpose
+
 ** Demeter bugs and shortcomings  [0/11]
   - [ ] in D::Data::IO::save_many, why doesn't updating in n specifying "background" not work to bring data up to date?  (fft, i.e. doing autobk, does work)
   - [ ] +serialize VPath+, put VPath into +dpj and+ fpj files
@@ -100,14 +103,22 @@
        + [ ] document
        + [ ] memory usage
 
-*** Windows issues [1/6]
-   - [ ] spurious message from clipboard
-   - [X] parameter group context menus don't get posted (see http://www.nntp.perl.org/group/perl.wxperl.users/2011/03/msg7929.html)
-   - [ ] the frickin' Gnuplot error logs seem to remain locked on Windows when a crash happens
-   - [ ] status bar does not get color for wait or error messages
-   - [ ] ugly background colors on command and status buffer frames (particularly at bottom, also a problem in Artemis)
-   - [ ] ifeffit is currently compiled not knowing where to find the feff tables, so PC transforms are not possible.
-	 in general, the compilation of Ifeffit needs to be better integrated into Strawberry.
+** Windows issues [2/14]
+  - [ ] spurious message from clipboard
+  - [X] parameter group context menus don't get posted (see http://www.nntp.perl.org/group/perl.wxperl.users/2011/03/msg7929.html)
+  - [ ] the frickin' Gnuplot error logs seem to remain locked on Windows when a crash happens
+  - [ ] status bar does not get color for wait or error messages
+  - [X] ugly background colors on command and status buffer frames (particularly at bottom, also a problem in Artemis)
+  - [ ] ifeffit is currently compiled not knowing where to find the feff tables, so PC transforms are not possible.
+	in general, the compilation of Ifeffit needs to be better integrated into Strawberry.
+  - [ ] The atoms panel background color is too light.  Which window needs its BackgroundColour set to wxNullColour?
+  - [ ] raised text with data name in data frame
+  - [ ] InitialPage in path list does not get hidden properly
+  - [ ] colors missing in log file text
+  - [ ] do project files get saved correctly?                  :Project:
+  - [ ] clampbox does not get enabled/disabled explicitly, is this another aspect of StaticBox that is different on Windows? (see link above)
+  - [ ] Artemis key accellerators
+  - [ ] fpj file on Win seems to not get unpacked correctly
 
 
 ** Artemis
@@ -146,6 +157,9 @@
    - [ ] ipot=1 is hardwired in many places -- generalize....
    - [ ] scatter plot of ncl distribution
    - [ ] factor out DLPOLY dependence into a role so that other MD packages can be added more easily
+
+** Hephaestus [1/1]
+  - [X] need to open prefs with root in place so they display correctly on windows as well
 
 ** Other object types [0/3]
   - [ ] Structural Units
