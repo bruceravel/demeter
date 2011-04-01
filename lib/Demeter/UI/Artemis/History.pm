@@ -101,7 +101,7 @@ sub new {
 
   ## -------- text box for log file
   $this->{log} = Wx::TextCtrl->new($logpage, -1, q{}, wxDefaultPosition, [550, -1],
-				   wxTE_MULTILINE|wxTE_READONLY|wxHSCROLL);
+				   wxTE_MULTILINE|wxTE_READONLY|wxHSCROLL|wxTE_RICH);
   $this->{log} -> SetFont( Wx::Font->new( 9, wxTELETYPE, wxNORMAL, wxNORMAL, 0, "" ) );
   $logbox -> Add($this->{log}, 1, wxGROW|wxALL, 5);
 

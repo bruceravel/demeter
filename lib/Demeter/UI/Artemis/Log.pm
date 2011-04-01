@@ -40,7 +40,7 @@ sub new {
 
   $this->{name} = q{};
   $this->{text} = Wx::TextCtrl->new($this, -1, q{}, wxDefaultPosition, wxDefaultSize,
-				    wxTE_MULTILINE|wxTE_READONLY|wxHSCROLL);
+				    wxTE_MULTILINE|wxTE_READONLY|wxHSCROLL|wxTE_RICH);
   $this->{text} -> SetFont( Wx::Font->new( 9, wxTELETYPE, wxNORMAL, wxNORMAL, 0, "" ) );
 
   $vbox -> Add($this->{text}, 1, wxGROW, 0);
@@ -64,6 +64,8 @@ sub put_log {
   my ($self, $fit) = @_;
   Demeter::UI::Artemis::LogText -> make_text($self->{text}, $fit);
   $self->{save}->Enable(1);
+  $self->{text}->ShowPosition(1);
+  $self->{text}->Refresh;
 };
 
 

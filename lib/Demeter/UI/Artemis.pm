@@ -134,9 +134,9 @@ sub OnInit {
   $exportmenu->Append($EXPORT_IFEFFIT,  "to an Ifeffit script",  "Export the current fitting model as an Ifeffit script");
   $exportmenu->Append($EXPORT_DEMETER,  "to a Demeter script",   "Export the current fitting model as a perl script using Demeter");
 
-  $filemenu->Append(wxID_OPEN,       "Open project",       "Read from a project file" );
+  $filemenu->Append(wxID_OPEN,       "Open project\tCtrl+o", "Read from a project file" );
   $filemenu->AppendSubMenu($mrumenu, "Recent projects",    "Open a submenu of recently used files" );
-  $filemenu->Append(wxID_SAVE,       "Save project",       "Save project" );
+  $filemenu->Append(wxID_SAVE,       "Save project\tCtrl+s", "Save project" );
   $filemenu->Append(wxID_SAVEAS,     "Save project as...", "Save to a new project file" );
   $filemenu->AppendSeparator;
   $filemenu->AppendSubMenu($importmenu, "Import...", "Export a fitting model from ..." );
@@ -144,8 +144,8 @@ sub OnInit {
   $filemenu->AppendSeparator;
   $filemenu->Append(wxID_PREFERENCES , "Edit Preferences",   "Show the preferences editing dialog");
   $filemenu->AppendSeparator;
-  $filemenu->Append(wxID_CLOSE, "&Close" );
-  $filemenu->Append(wxID_EXIT, "E&xit" );
+  $filemenu->Append(wxID_CLOSE, "&Close\tCtrl+w" );
+  $filemenu->Append(wxID_EXIT, "E&xit\tCtrl+q" );
   $frames{main}->{filemenu} = $filemenu;
   $frames{main}->{mrumenu}  = $mrumenu;
 
@@ -215,7 +215,7 @@ sub OnInit {
   mouseover($frames{main}->{newdata}, "Import a new data set.  Right click for menu of recently used Athena project files.");
   EVT_BUTTON($frames{main}->{newdata}, -1, sub{Import('prj', q{})});
 
-  $datavbox     -> Add(Wx::StaticLine->new($datalist, -1, wxDefaultPosition, wxDefaultSize, wxLI_HORIZONTAL), 0, wxGROW|wxALL, 5);
+  $datavbox     -> Add(Wx::StaticLine->new($datalist, -1, wxDefaultPosition, wxDefaultSize, wxLI_HORIZONTAL), 0, wxGROW|wxALL, 2);
   $databoxsizer -> Add($datalist, 1, wxGROW|wxALL, 0);
   $hbox         -> Add($databoxsizer, 2, wxGROW|wxALL, 0);
 
@@ -240,7 +240,7 @@ sub OnInit {
   mouseover($frames{main}->{newfeff}, "Start a new Feff calculation.  Right click for menu of recently used crystal data files.  Also right click to start a brand new Atoms input file.");
   EVT_BUTTON($frames{main}->{newfeff}, -1, sub{Import('feff')});
 
-  $feffvbox     -> Add(Wx::StaticLine->new($fefflist, -1, wxDefaultPosition, wxDefaultSize, wxLI_HORIZONTAL), 0, wxGROW|wxALL, 5);
+  $feffvbox     -> Add(Wx::StaticLine->new($fefflist, -1, wxDefaultPosition, wxDefaultSize, wxLI_HORIZONTAL), 0, wxGROW|wxALL, 2);
   $feffboxsizer -> Add($fefflist, 1, wxGROW|wxALL, 0);
   $hbox         -> Add($feffboxsizer, 2, wxGROW|wxALL, 0);
 
