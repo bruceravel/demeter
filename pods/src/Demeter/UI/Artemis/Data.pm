@@ -188,7 +188,7 @@ sub new {
 
   $this->{plotgrab} = Wx::BitmapButton->new($leftpane, -1, Demeter::UI::Artemis::icon('plotgrab'));
   $namebox -> Add($this->{plotgrab}, 0, wxLEFT|wxRIGHT|wxTOP, 3);
-  $this->{name} = Wx::StaticText->new($leftpane, -1, q{}, wxDefaultPosition, wxDefaultSize, wxRAISED_BORDER );
+  $this->{name} = Wx::StaticText->new($leftpane, -1, q{}, wxDefaultPosition, wxDefaultSize );
   $this->{name}->SetFont( Wx::Font->new( 12, wxDEFAULT, wxNORMAL, wxBOLD, 0, "" ) );
   $namebox -> Add($this->{name}, 1, wxLEFT|wxRIGHT|wxTOP, 5);
   $namebox -> Add(Wx::StaticText->new($leftpane, -1, "CV"), 0, wxLEFT|wxRIGHT|wxTOP, 5);
@@ -448,10 +448,10 @@ sub initial_page_panel {
 
   my $dndtext = Wx::StaticText    -> new($panel, -1, "Drag paths from a Feff interpretation list and drop them in this space to add paths to this data set", wxDefaultPosition, [300,-1]);
   $dndtext   -> Wrap(280);
-  my $atoms   = Wx::HyperlinkCtrl -> new($panel, -1, 'Import crystal data or a Feff calculation', q{}, wxDefaultPosition, wxDefaultSize );
-  my $qfs     = Wx::HyperlinkCtrl -> new($panel, -1, 'Start a quick first shell fit',             q{}, wxDefaultPosition, wxDefaultSize );
-  my $su      = Wx::StaticText    -> new($panel, -1, 'Import a structural unit',                       wxDefaultPosition, wxDefaultSize );
-  ##my $feff    = Wx::HyperlinkCtrl -> new($panel, -1, 'Import a Feff calculation',     q{}, wxDefaultPosition, wxDefaultSize );
+  my $atoms   = Wx::HyperlinkCtrl -> new($panel, -1, 'Import crystal data or a Feff calculation', q{}, wxDefaultPosition, wxDefaultSize, wxNO_BORDER );
+  my $qfs     = Wx::HyperlinkCtrl -> new($panel, -1, 'Start a quick first shell fit',             q{}, wxDefaultPosition, wxDefaultSize, wxNO_BORDER );
+  my $su      = Wx::StaticText    -> new($panel, -1, 'Import a structural unit',                       wxDefaultPosition, wxDefaultSize, wxNO_BORDER );
+  ##my $feff    = Wx::HyperlinkCtrl -> new($panel, -1, 'Import a Feff calculation',     q{}, wxDefaultPosition, wxDefaultSize, wxNO_BORDER );
 
   EVT_HYPERLINK($self, $atoms, sub{Import('feff', q{});});
   EVT_HYPERLINK($self, $qfs,   sub{$self->quickfs;});
@@ -642,39 +642,39 @@ sub make_menubar {
 
   ## -------- marks menu
   $self->{markmenu}  = Wx::Menu->new;
-  $self->{markmenu}->Append($MARK_ALL,    "Mark all\tCTRL+SHIFT+a",              "Mark all paths for this $CHI(k)",             wxITEM_NORMAL );
-  $self->{markmenu}->Append($MARK_NONE,   "Unmark all\tCTRL+SHIFT+u",            "Unmark all paths for this $CHI(k)",           wxITEM_NORMAL );
-  $self->{markmenu}->Append($MARK_INVERT, "Invert marks\tCTRL+SHIFT+i",          "Invert all marks for this $CHI(k)",           wxITEM_NORMAL );
-  $self->{markmenu}->Append($MARK_REGEXP, "Mark regexp\tCTRL+SHIFT+r",           "Mark by regular expression for this $CHI(k)", wxITEM_NORMAL );
+  $self->{markmenu}->Append($MARK_ALL,    "Mark all\tCtrl+Shift+a",              "Mark all paths for this $CHI(k)",             wxITEM_NORMAL );
+  $self->{markmenu}->Append($MARK_NONE,   "Unmark all\tCtrl+Shift+u",            "Unmark all paths for this $CHI(k)",           wxITEM_NORMAL );
+  $self->{markmenu}->Append($MARK_INVERT, "Invert marks\tCtrl+Shift+i",          "Invert all marks for this $CHI(k)",           wxITEM_NORMAL );
+  $self->{markmenu}->Append($MARK_REGEXP, "Mark regexp\tCtrl+Shift+r",           "Mark by regular expression for this $CHI(k)", wxITEM_NORMAL );
   $self->{markmenu}->AppendSeparator;
-  $self->{markmenu}->Append($MARK_BEFORE, "Mark before current\tCTRL+SHIFT+b",   "Mark this path and all paths above it in the path list for this $CHI(k)", wxITEM_NORMAL );
-  $self->{markmenu}->Append($MARK_AFTER,  "Mark after current\tCTRL+SHIFT+f",    "Mark all paths after this one in the path list for this $CHI(k)",         wxITEM_NORMAL );
+  $self->{markmenu}->Append($MARK_BEFORE, "Mark before current\tCtrl+Shift+b",   "Mark this path and all paths above it in the path list for this $CHI(k)", wxITEM_NORMAL );
+  $self->{markmenu}->Append($MARK_AFTER,  "Mark after current\tCtrl+Shift+f",    "Mark all paths after this one in the path list for this $CHI(k)",         wxITEM_NORMAL );
   $self->{markmenu}->AppendSeparator;
-  $self->{markmenu}->Append($MARK_INC,    "Mark included\tCTRL+SHIFT+c",         "Mark all paths included in the fit",   wxITEM_NORMAL );
-  $self->{markmenu}->Append($MARK_EXC,    "Mark excluded\tCTRL+SHIFT+x",         "Mark all paths excluded from the fit", wxITEM_NORMAL );
+  $self->{markmenu}->Append($MARK_INC,    "Mark included\tCtrl+Shift+c",         "Mark all paths included in the fit",   wxITEM_NORMAL );
+  $self->{markmenu}->Append($MARK_EXC,    "Mark excluded\tCtrl+Shift+x",         "Mark all paths excluded from the fit", wxITEM_NORMAL );
   $self->{markmenu}->AppendSeparator;
-  $self->{markmenu}->Append($MARK_SS,     "Mark SS paths\tCTRL+SHIFT+s",         "Mark all single scattering paths for this $CHI(k)", wxITEM_NORMAL );
-  $self->{markmenu}->Append($MARK_MS,     "Mark MS paths\tCTRL+SHIFT+m",         "Mark all multiple scattering paths for this $CHI(k)", wxITEM_NORMAL );
+  $self->{markmenu}->Append($MARK_SS,     "Mark SS paths\tCtrl+Shift+s",         "Mark all single scattering paths for this $CHI(k)", wxITEM_NORMAL );
+  $self->{markmenu}->Append($MARK_MS,     "Mark MS paths\tCtrl+Shift+m",         "Mark all multiple scattering paths for this $CHI(k)", wxITEM_NORMAL );
   $self->{markmenu}->AppendSeparator;
-  $self->{markmenu}->Append($MARK_HIGH,   "Mark high importance\tCTRL+SHIFT+h",  "Mark all high importance paths for this $CHI(k)", wxITEM_NORMAL );
-  $self->{markmenu}->Append($MARK_MID,    "Mark mid importance\tCTRL+SHIFT+k",   "Mark all mid importance paths for this $CHI(k)", wxITEM_NORMAL );
-  $self->{markmenu}->Append($MARK_LOW,    "Mark low importance\tCTRL+SHIFT+l",   "Mark all low importance paths for this $CHI(k)", wxITEM_NORMAL );
+  $self->{markmenu}->Append($MARK_HIGH,   "Mark high importance\tCtrl+Shift+h",  "Mark all high importance paths for this $CHI(k)", wxITEM_NORMAL );
+  $self->{markmenu}->Append($MARK_MID,    "Mark mid importance\tCtrl+Shift+k",   "Mark all mid importance paths for this $CHI(k)", wxITEM_NORMAL );
+  $self->{markmenu}->Append($MARK_LOW,    "Mark low importance\tCtrl+Shift+l",   "Mark all low importance paths for this $CHI(k)", wxITEM_NORMAL );
   $self->{markmenu}->AppendSeparator;
-  $self->{markmenu}->Append($MARK_RBELOW, "Mark all paths < R\tCTRL+SHIFT+<",    "Mark all paths shorter than a specified path length for this $CHI(k)", wxITEM_NORMAL );
-  $self->{markmenu}->Append($MARK_RABOVE, "Mark all paths > R\tCTRL+SHIFT+>",    "Mark all paths longer than a specified path length for this $CHI(k)", wxITEM_NORMAL );
+  $self->{markmenu}->Append($MARK_RBELOW, "Mark all paths < R\tCtrl+Shift+<",    "Mark all paths shorter than a specified path length for this $CHI(k)", wxITEM_NORMAL );
+  $self->{markmenu}->Append($MARK_RABOVE, "Mark all paths > R\tCtrl+Shift+>",    "Mark all paths longer than a specified path length for this $CHI(k)", wxITEM_NORMAL );
 
    ## -------- actions menu
   $self->{actionsmenu} = Wx::Menu->new;
-  $self->{actionsmenu}->Append($ACTION_VPATH,     "Make VPath from marked\tALT+SHIFT+v",  "Make a virtual path from all marked paths", wxITEM_NORMAL );
-  $self->{actionsmenu}->Append($ACTION_TRANSFER,  "Transfer marked\tALT+SHIFT+t",         "Transfer all marked paths to the plotting list",   wxITEM_NORMAL );
+  $self->{actionsmenu}->Append($ACTION_VPATH,     "Make VPath from marked\tAlt+Shift+v",  "Make a virtual path from all marked paths", wxITEM_NORMAL );
+  $self->{actionsmenu}->Append($ACTION_TRANSFER,  "Transfer marked\tAlt+Shift+t",         "Transfer all marked paths to the plotting list",   wxITEM_NORMAL );
   $self->{actionsmenu}->AppendSeparator;
-  $self->{actionsmenu}->Append($ACTION_INCLUDE,   "Include marked\tALT+SHIFT+c",          "Include all marked paths in the fit",   wxITEM_NORMAL );
-  $self->{actionsmenu}->Append($ACTION_EXCLUDE,   "Exclude marked\tALT+SHIFT+x",          "Exclude all marked paths from the fit", wxITEM_NORMAL );
+  $self->{actionsmenu}->Append($ACTION_INCLUDE,   "Include marked\tAlt+Shift+c",          "Include all marked paths in the fit",   wxITEM_NORMAL );
+  $self->{actionsmenu}->Append($ACTION_EXCLUDE,   "Exclude marked\tAlt+Shift+x",          "Exclude all marked paths from the fit", wxITEM_NORMAL );
   $self->{actionsmenu}->AppendSeparator;
   $self->{actionsmenu}->Append($ACTION_DISCARD,   "Discard marked",          "Discard all marked paths",              wxITEM_NORMAL );
   $self->{actionsmenu}->AppendSeparator;
-  $self->{actionsmenu}->Append($ACTION_AFTER,     "Plot marked after fit\tALT+SHIFT+p",   "Flag all marked paths for transfer to the plotting list after completion of a fit", wxITEM_NORMAL );
-  $self->{actionsmenu}->Append($ACTION_NONEAFTER, "Plot no paths after fit\tALT+SHIFT+u", "Unflag all paths for transfer to the plotting list after completion of a fit", wxITEM_NORMAL );
+  $self->{actionsmenu}->Append($ACTION_AFTER,     "Plot marked after fit\tAlt+Shift+p",   "Flag all marked paths for transfer to the plotting list after completion of a fit", wxITEM_NORMAL );
+  $self->{actionsmenu}->Append($ACTION_NONEAFTER, "Plot no paths after fit\tAlt+Shift+u", "Unflag all paths for transfer to the plotting list after completion of a fit", wxITEM_NORMAL );
 
 
   $self->{menubar}->Append( $self->{datamenu},    "&Data" );
@@ -2303,26 +2303,6 @@ Patches are welcome.
 =head1 AUTHOR
 
 Bruce Ravel (bravel AT bnl DOT gov)
-
-L<http://cars9.uchicago.edu/~ravel/software/>  if (0) {
-    $this->{up}        = Wx::Button->new($rightpane, wxID_UP,   q{},        wxDefaultPosition, wxDefaultSize, wxBU_EXACTFIT);
-    $this->{down}      = Wx::Button->new($rightpane, wxID_DOWN, q{},        wxDefaultPosition, wxDefaultSize, wxBU_EXACTFIT);
-    $this->{makevpath} = Wx::Button->new($rightpane, -1, 'Make &VPath',     wxDefaultPosition, wxDefaultSize, wxBU_EXACTFIT);
-    $this->{transfer}  = Wx::Button->new($rightpane, -1, 'Transfer marked', wxDefaultPosition, wxDefaultSize, wxBU_EXACTFIT);
-    $pathbuttons -> Add($this->{up},        0, wxLEFT|wxRIGHT, 5);
-    $pathbuttons -> Add($this->{down},      0, wxLEFT|wxRIGHT, 5);
-    $pathbuttons -> Add($this->{makevpath}, 0, wxLEFT|wxRIGHT, 5);
-    $pathbuttons -> Add($this->{transfer},  0, wxLEFT|wxRIGHT, 5);
-    $this->mouseover("up",        "Move the current path up in the path list");
-    $this->mouseover("down",      "Move the current path up in the path list");
-    $this->mouseover("makevpath", "Make a VPath out of the marked paths");
-    $this->mouseover("transfer",  "Transfer each of the marked paths to the plotting list");
-    EVT_BUTTON($this, $this->{up},        sub{$this->OnUpButton});
-    EVT_BUTTON($this, $this->{down},      sub{$this->OnDownButton});
-    EVT_BUTTON($this, $this->{makevpath}, sub{$this->OnMakeVPathButton});
-    EVT_BUTTON($this, $this->{transfer},  sub{$this->OnTransferButton});
-  };
-
 
 
 =head1 LICENCE AND COPYRIGHT

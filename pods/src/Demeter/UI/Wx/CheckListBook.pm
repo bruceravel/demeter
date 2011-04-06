@@ -121,6 +121,7 @@ sub AddPage {
   $self->{LIST} -> Select($end) if $select;
 
   $page->Reparent($self->{PAGE});
+  $self->{initial} -> Hide;
   $self->{VIEW} -> Hide if ($self->{VIEW} and $self->{VIEW}->IsShown);
 
   $self->{VIEW}  = $page;

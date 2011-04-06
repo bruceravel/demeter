@@ -38,7 +38,7 @@ sub new {
   $this->{name} = q{};
   my $id = q{}; #sprintf("[%s] %s (%s)\n", DateTime->now, 'Starting Artemis', Demeter->identify);
   $this->{text} = Wx::TextCtrl->new($this, -1, $id, wxDefaultPosition, wxDefaultSize,
-				    wxTE_MULTILINE|wxTE_READONLY|wxHSCROLL);
+				    wxTE_MULTILINE|wxTE_READONLY|wxHSCROLL|wxTE_RICH2);
   $this->{text} -> SetFont( Wx::Font->new( 9, wxTELETYPE, wxNORMAL, wxNORMAL, 0, "" ) );
 
   $this->{normal} = Wx::TextAttr->new(Wx::Colour->new('#000000'), wxNullColour, Wx::Font->new( @font ) );
