@@ -1967,7 +1967,7 @@ sub process_histogram {
     YAML::Tiny::DumpFile($persist, $histo_dialog->{yaml});
 
     if (not $dlp) {
-      $dlp = Demeter::ScatteringPath::Histogram::DL_POLY->new(rmin=>$rmin, rmax=>$rmax, bin=>$bin, ss=>1, ncl=>0);
+      $dlp = Demeter::ScatteringPath::Histogram::DL_POLY->new(rmin=>$rmin, rmax=>$rmax, bin=>$bin, type=>'ss');
       $histo_dialog->{DLPOLY}=$dlp;
       $dlp->sentinal(sub{$histo_dialog->dlpoly_sentinal});
       my $busy = Wx::BusyCursor->new();
@@ -2161,7 +2161,7 @@ sub OnData {
     #  return $def;
     #};
     my $dlp = Demeter::Feff::DL_POLY->new(rmin=>$spref->[3], rmax=>$spref->[4], bin=>$spref->[5],
-					  feff=>$feff, ipot=>$ipot, ss=>1, ncl=>0);
+					  feff=>$feff, ipot=>$ipot, type=>'ss');
     $this->{PARENT}->{DLPOLY} = $dlp;
 
     $dlp->sentinal(sub{$this->{PARENT}->dlpoly_sentinal_rdf});
@@ -2206,7 +2206,7 @@ sub OnData {
     my $dlp = Demeter::Feff::DL_POLY->new( r1=>$spref->[3], r2=>$spref->[4], r3=>$spref->[5], r4=>$spref->[6],
 					   rbin => $spref->[7], betabin => $spref->[8],
 					   feff=>$feff, ipot1 => $spref->[9], ipot2 => $spref->[10],
-					   ncl=>1, ss=>0, skip=>20,);
+					   type=>'ncl', skip=>20,);
     $this->{PARENT}->{DLPOLY} = $dlp;
 
     $dlp->sentinal(sub{$this->{PARENT}->dlpoly_sentinal_rdf});

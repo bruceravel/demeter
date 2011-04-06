@@ -107,7 +107,7 @@
   - [ ] spurious message from clipboard
   - [X] parameter group context menus don't get posted (see http://www.nntp.perl.org/group/perl.wxperl.users/2011/03/msg7929.html)
   - [ ] the frickin' Gnuplot error logs seem to remain locked on Windows when a crash happens
-  - [ ] status bar does not get color for wait or error messages
+  - [ ] status bar does not get color for wait or error messages /this may be unfixable, see/ http://www.nntp.perl.org/group/perl.wxperl.users/2011/04/msg7943.html
   - [X] ugly background colors on command and status buffer frames (particularly at bottom, also a problem in Artemis)
   - [ ] ifeffit is currently compiled not knowing where to find the feff tables, so PC transforms are not possible.
 	in general, the compilation of Ifeffit needs to be better integrated into Strawberry.

@@ -46,10 +46,10 @@ has 'nsteps'    => (is => 'rw', isa => NonNeg, default => 0);
 has 'nbins'     => (is => 'rw', isa => NonNeg, default => 0);
 has 'file'      => (is => 'rw', isa => 'Str', default => q{},
 		    trigger => sub{ my($self, $new) = @_;
-				    if ($new and (-e $new)) {
+				    if ($new) {
 				      $self->_cluster;
-				      $self->rdf if $self->ss;
-				      $self->nearly_collinear if $self->ncl;
+				      $self->rdf if ($self->type eq 'ss');
+				      $self->nearly_collinear if ($self->type eq 'ncl');
 				    };
 				  });
 has 'clusters'    => (is => 'rw', isa => 'ArrayRef', default => sub{[]});
@@ -102,8 +102,9 @@ has 'betabin'   => (is            => 'rw',
 		    isa           => 'Num',
 		    default       => 0.5,);
 
-has 'ss'        => (is => 'rw', isa => 'Bool', default => 0, trigger=>sub{my($self, $new) = @_; $self->ncl(0) if $new});
-has 'ncl'       => (is => 'rw', isa => 'Bool', default => 0, trigger=>sub{my($self, $new) = @_; $self->ss(0)  if $new});
+has 'type'      => (is => 'rw', isa => 'Str',  default => q{},);
+#has 'ss'        => (is => 'rw', isa => 'Bool', default => 0, trigger=>sub{my($self, $new) = @_; $self->ncl(0) if $new});
+#has 'ncl'       => (is => 'rw', isa => 'Bool', default => 0, trigger=>sub{my($self, $new) = @_; $self->ss(0)  if $new});
 
 has 'bin_count'   => (is => 'rw', isa => 'Int',  default => 0);
 has 'timestep_count' => (is => 'rw', isa => 'Int',  default => 0);
@@ -120,13 +121,15 @@ has 'ipot2'       => (is => 'rw', isa => Ipot, default => 1, );
 
 sub rebin {
   my($self, $new) = @_;
-  $self->_bin   if ($self->ss  and $self->update_bins);
-  $self->_bin2d if ($self->ncl and $self->update_bins);
+  $self->_bin   if (($self->type eq 'ss')  and $self->update_bins);
+  $self->_bin2d if (($self->type eq 'ncl') and $self->update_bins);
   return $self;
 };
 
 sub _number_of_steps {
   my ($self) = @_;
+  die("File ".$self->file." does not exist\n") if (not -e $self->file);
+  die("File ".$self->file." cannot be read\n") if (not -r $self->file);
   open(my $H, '<', $self->file);
   my $count = 0;
   while (<$H>) {
@@ -321,6 +324,7 @@ sub _trig {
 sub _bin {
   my ($self) = @_;
   my (@x, @y);
+  die("No history file has been read, thus no distribution functions have been computed\n") if ($#{$self->ssrdf} == -1);
   my $bin_start = sqrt($self->ssrdf->[0]);
   my ($population, $average) = (0,0);
   $self->start_spinner(sprintf("Rebinning RDF into %.4f A bins", $self->bin)) if ($self->mo->ui eq 'screen');
@@ -446,7 +450,7 @@ sub fpath {
   my ($self) = @_;
   my $composite;
   my $index = $self->mo->pathindex;
-  if ($self->ss) {
+  if ($self->type eq 'ss') {
     my $histo = $self->histogram;
     $composite = $self -> feff -> chi_from_histogram($histo);
     my $text = sprintf("\n\ntaken from %d samples between %.3f and %.3f A\nbinned into %.4f A bins",
@@ -457,7 +461,7 @@ sub fpath {
     $text .= sprintf "       third  = %9.6f\n",   $composite->c3;
     $text .= sprintf "       fourth = %9.6f",     $composite->c4;
     $composite->pdtext($text);
-  } elsif ($self->ncl) {
+  } elsif ($self->type eq 'ncl') {
     $composite = $self->chi_nearly_colinear;
     my $text = sprintf("\n\nthree body configurations with the near atom between %.3f and %.3f A\nthe distant atom between %.3f and %.3f A\nbinned into %.4f A x %.4f deg bins",
 		       $self->get(qw{r1 r2 r3 r4 rbin betabin}));
