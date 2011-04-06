@@ -1,0 +1,422 @@
+<!DOCTYPE HTMP PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <title>Introduction</title>
+    <link rel="stylesheet" href=./ab.css />
+    <link rel="stylesheet" href=./ppi.css />
+    <meta http-equiv="Content-Type" content="text/html"; charset=iso-8859-15 />
+    <meta name="robots" contents="all" />
+  </head>
+
+  <body>
+    <div class=topbar>
+  <div class=navbar>
+  <table class=navtable>
+    <tr>
+      <td align=left>
+        [&nbsp;<a href="./index.html">Home</a>&nbsp;] &nbsp;&nbsp;
+        [&nbsp;<a href="http://cars9.uchicago.edu/iffwiki/Demeter"><span class=programlink>DEMETER</span></a>&nbsp;] &nbsp;&nbsp;
+        [&nbsp;<a href="http://cars9.uchicago.edu/iffwiki/Ifeffit"><span class=programlink>IFEFFIT</span></a>&nbsp;] &nbsp;&nbsp;
+        [&nbsp;<a href="http://leonardo.phys.washington.edu/feff/wiki/index.php?title=FEFF_Documentation"><span class=programlink>FEFF</span></a>&nbsp;] &nbsp;&nbsp;
+        [&nbsp;<a href="http://xafs.org">xafs.org</a>&nbsp;] &nbsp;&nbsp;
+	[&nbsp;<a href="./demeter.pdf">PDF&nbsp;doc</a>&nbsp;]
+      </td>
+      <td align=right>
+        Back: <a href="./index.html" class="menu" >Home</a> &nbsp;&nbsp;
+        Next: <a href="./data/index.html" class="menu" >Importing data</a>      </td>
+    </tr>
+  </table>
+  </div>
+  <h1>
+  Introduction
+</h1>
+</div>
+
+<hr class=hide />
+
+
+<div class=sidebar>
+  <a href="./ceres.html"><img src=./../images/Isis-Sothis-Demeter_sm.jpg
+    width=100% border=0 alt='[Demeter logo]'></a>
+  <br />
+  <a href="./index.html" class="menu" >Home</a><br />
+<a href="./intro.html" class="menuselect" >Introduction</a><br />
+<a href="./data/index.html" class="menu" >Importing data</a><br />
+<a href="./mue/index.html" class="menu" >Processing mu(E) data</a><br />
+<a href="./xanes/index.html" class="menu" >Analysis of XANES data</a><br />
+<a href="./highlevel/index.html" class="menu" >High level actions for Demeter objects</a><br />
+<a href="./atoms/index.html" class="menu" >Atoms</a><br />
+<a href="./feff/index.html" class="menu" >Feff</a><br />
+<a href="./paths/index.html" class="menu" >Scattering paths</a><br />
+<a href="./gds/index.html" class="menu" >Guess/Def/Set parameters</a><br />
+<a href="./fit/index.html" class="menu" >Fitting EXAFS data</a><br />
+<a href="./perl/index.html" class="menu" >Using perl to create a fitting model</a><br />
+<a href="./lgcv.html" class="menu" >Local guess parameters and the characteristic value</a><br />
+<a href="./pathlike/index.html" class="menu" >Path-like objects</a><br />
+<a href="./su.html" class="menu" >Structural Units</a><br />
+<a href="./ui.html" class="menu" >User interfaces</a><br />
+<a href="./output.html" class="menu" >Output formats</a><br />
+<a href="./examples/index.html" class="menu" >Full examples</a><br />
+</div>
+
+<p>
+
+ <span class=program>FEFF</span> and  <span class=program>IFEFFIT</span> are amazing tools.  Together and over the
+years, they have enabled the analysis and interpretation of many
+thousands of EXAFS experiments spanning an impressive broad range of
+scientific disciplines.
+</p>
+
+<p>
+Unfortunately, each of these tools is quite difficult to use to its
+full capabilities.  The lack of readily accessible, flexible,
+highly-capable high-level tools has, for the most part, limited the
+use of  <span class=program>FEFF</span> and  <span class=program>IFEFFIT</span> to relatively simple problem.
+Most examples of their use in the literature are restricted to fairly
+simple parameterization of a model structure that is calculated using
+ <span class=program>FEFF</span> in the most straight-forward manner.
+</p>
+
+<p>
+Certainly examples exist of highly sophisticated used of  <span class=program>FEFF</span>
+and  <span class=program>IFEFFIT</span>.  For instance, we see the clever use of multiple 
+ <span class=program>FEFF</span> calculations on crystalline materials as analogs for
+metallo-organic environments in
+S. Kelly, et al., <em>Geochem. Cosmo. Acta</em>, <strong>66:22</strong>, 
+(2002) p. 3875.  As another example, we find a very complete accounting of the
+effects of anti-site disorder in a crystal in 
+S. Calvin, et al., <em>Phys Rev B</em>, <strong>66:22</strong>, 
+(2002) p. 224405.  Both of these examples, however, are the work of particularly
+dedicated and talented experts in the application of  <span class=program>FEFF</span> and 
+ <span class=program>IFEFFIT</span> and both represent many months of painstaking effort to
+develop idiosyncratic analytical methodology.
+</p>
+
+<p>
+There <strong>has</strong> to be a better way.
+</p>
+
+<p>
+ <span class=program>DEMETER</span> is my attempt to provide a set of tools to enable the
+sort of high-level approach to EXAFS data analysis that has always
+been the province of the dedicated few.  It is also the result of more
+than a decade of writing software specifically intended to enable the
+use of  <span class=program>FEFF</span> and  <span class=program>IFEFFIT</span>.
+</p>
+
+<p>
+Many people reading this wil be familiar with my programs  <span class=program>ATHENA</span>
+and  <span class=program>ARTEMIS</span>.  They are in wide use throughout the XAS community
+and around the world.  As graphical interfaces to XAS data management
+and the use of  <span class=program>FEFF</span> and  <span class=program>IFEFFIT</span>, each has proven
+successful to a certain degree.  Each one, however, suffers from one
+major flaw (and any number of minor flaws).  <em>There is no easy way to write a small, personal program that
+replicates the exact behavior of the GUI programs.</em>
+</p>
+
+<p>
+As convenient as  <span class=program>ATHENA</span> is for processing modest amounts of data
+at the beamline or upon returning home from a beam run, it is not
+really the right tool for managing huge volumes of data.  In several
+days at a beamline with quick-XAS capabilities, it is quite common to
+generate many hundreds, even many thousands, of XAS scans.  The
+interactivity that makes  <span class=program>ATHENA</span> so appealing when handling small
+amounts of data becomes a tedious, repetitive nightmare when
+processing large amounts of data.  Unfortunately, there is no way of
+separating the data processing capabilities of  <span class=program>ATHENA</span> from the
+graphical interface.  (This is not an inherent flaw of any of the tools
+used to create  <span class=program>ATHENA</span> -- it is entirely due to my own
+inexperience when I began writing  <span class=program>ATHENA</span>.)
+</p>
+
+<p>
+This problem is where  <span class=program>DEMETER</span> starts.   <span class=program>DEMETER</span> is 
+&ldquo;middleware&rdquo; -- it is a system of software
+tools that sit between  <span class=program>FEFF</span> and  <span class=program>IFEFFIT</span> and the program
+that the user actually interacts with.   <span class=program>DEMETER</span> is not, by
+itself, a computer program.  Rather it is the tool from which computer
+programs for XAS data processing and analysis are built.
+</p>
+
+<p>
+The package containing the  <span class=program>DEMETER</span> libraries actually does
+include various kinds of interface tools.  For example, there is a
+version of  <span class=program>ARTEMIS</span> written using  <span class=program>DEMETER</span>.  However, this
+version of  <span class=program>ARTEMIS</span> does not add any functionality related to XAS
+data management not already present in the  <span class=program>DEMETER</span> libraries.
+It is merely a graphical shell layered on top of  <span class=program>DEMETER</span>'s
+capabilities.  As a result, it is possible -- indeed, often quite easy
+-- to write a small program which performs a fit to EXAFS data in
+exactly the same manner as  <span class=program>ARTEMIS</span>.
+</p>
+
+<p>
+Armed with this middleware layer, it is much easier to consider
+implementing tools for automating large quantities of data or writing
+tools for special, one-off data processing chores.  And  <span class=program>DEMETER</span>
+offers tools for easily passing data between  <span class=program>ATHENA</span> and 
+ <span class=program>ARTEMIS</span> and your own  <span class=program>DEMETER</span>-using programs.
+</p>
+
+<p>
+Tools for automation and for easy access to the capabilities available
+in the GUI programs would be benefit enough to merit the creation of a
+software library.   <span class=program>DEMETER</span>, however, offers quite a bit more
+than that.  It has capabilities already written or under development
+for very sophisticated uses of  <span class=program>FEFF</span>.  Inspired by the articles
+cited above and by other interesting uses of XAS theory,  <span class=program>DEMETER</span>
+offers easy access to a variety of ways of manipulating the output of
+ <span class=program>FEFF</span> that had previously required a deep understanding of 
+ <span class=program>FEFF</span>'s inner workings.
+</p>
+
+<p>
+So there you have it.   <span class=program>DEMETER</span> is a software tool for making
+easy XAS chores very easy and for making difficult XAS chores
+tractable.  This document is full of code samples which demonstrate the
+ <span class=program>DEMETER</span> way of solving XAS data management and analysis
+problems.  In many cases, you should be able to cut-and-paste examples
+into your own programs, modifying them slightly to suite your
+particular problem.  Hopefully,  <span class=program>DEMETER</span> has enough flexibility
+that you can begin working on problems that have not even crossed my
+mind.
+</p>
+
+
+<a name="thetechnologybehinddemeter">
+
+<h3>  The technology behind Demeter</h3>
+</a>
+
+<p>
+
+ <span class=program>DEMETER</span> uses <a href="http://perl.org">perl</a>.  This is, I suppose, an unsexy
+choice these days.  All the cool kids are, after all, using python or
+ruby.  I like perl.  I can think in perl.  And I can code quickly and
+fluently in perl.  What's more, perl has <a href="http://www.cpan.org/">CPAN</a>, the worlds largest
+repository of language extensions.  CPAN means that I have far fewer
+wheels to recreate (and probably get wrong).  Virtually any language
+extension I need in pursuit of making  <span class=program>DEMETER</span> awesome probably
+already exists.
+</p>
+
+<p>
+ <span class=program>DEMETER</span> uses <a href="http://search.cpan.org/~flora/Moose/lib/Moose/Manual.pod">Moose</a>.  This is,
+on the balance, a very good thing, indeed.  Moose brings many powerful
+capabilities to the programming table.  When I was about halfway
+through writing  <span class=program>DEMETER</span>, I paused for a bit less than a month to
+rewrite everything I had thus far created to use Moose.  This left me
+with about 2/3 as many lines of code and a code base that was more
+robust and more featureful.  Neat-o!
+</p>
+
+<p>
+For the nerdly, Moose is an implementation of a <a href="http://en.wikipedia.com/wiki/Metaobject">meta-object protocol</a>.  This interesting
+and powerful tool allows for the semantics of the object system to be
+modified at either compile or run time.  The problem of adding
+features and functionality to the object system is therefore pushed
+downstream from the developers of the language to the users of the
+language.  In good CPAN fashion, a healthy and robust ecosystem has
+evolved around Moose producing a whole host of useful extensions.
+</p>
+
+<p>
+Moose offers lots of great features, including an extremely powerful
+attribute system, a type attribute system, method modifiers, an
+ability to mix object and aspect orientation, and a wonderfully deep
+set of automated tests.  I am confident that simply by using Moose, my
+code is better code and, because Moose testing is so deep, I am
+confident that any bugs in  <span class=program>DEMETER</span> are my fault and not the
+fault of the people whose work I depend on.
+</p>
+
+<p>
+For all the wonderfulness of Moose, it does have one big wart that I
+need to be up-front about.  Moose is slow at start-up.  Since 
+ <span class=program>DEMETER</span> is big and Moose starts slowly, any program using 
+ <span class=program>DEMETER</span> will take about 2 extra second to start.  For a
+long-running program like a complicated fitting script or a GUI, an
+additional couple of seconds at start-up is no big deal.  For
+quick-n-dirty or one-off application, that may a bit annoying.  The
+Moose folk claim to be working on start-up issues.  I am keeping my
+fingers crossed.  Until then, I live with the slow start-up, confident
+that the rest of  <span class=program>DEMETER</span> is worth the wait.
+</p>
+
+<p>
+Discuss how an understanding of Moose can inform your program, but
+that it is not necessary.
+</p>
+
+<p>
+<a name="somevocabulary">
+</p>
+
+<p>
+<h4>  Some vocabulary</h4>
+</a>
+</p>
+
+<p>
+Throughout this document, I use the language of object systems to
+describe  <span class=program>DEMETER</span>.  I don't expect than everyone using 
+ <span class=program>DEMETER</span> should know much about object oriented programming.
+indeed, my hope is that the examples in this document can be followed
+and adapted by anyone with a basic grounding in the use of perl.  To
+helpintroduce that person to the prospect of coding with 
+ <span class=program>DEMETER</span>, I'll define a few terms.  (More specifically, I'll
+relate my understanding of those terms.  I have no formal training in
+computer science and am probably wrong a lot about this stuff.  
+ <span class=program>DEMETER</span> seems to work nonetheless.)  For a bit more
+Moose-specific information, 
+see <a href="http://search.cpan.org/~flora/Moose/lib/Moose/Manual/Concepts.pod">the concepts page from the Moose manual</a>.
+</p>
+
+<p>
+<dl>
+  
+<dt>
+  Object
+</dt>
+<dd>
+Think of an object as a box containing data.  This box comes with a
+set of instructions for how to manipulate the stuff in the box.  The
+data are called the attributes of the object and tend to be things
+like numbers, strings, booleans, or other data structures.  The set of
+instructions are called methods and are very similar to a subroutine
+in a non-object-oriented perl script with the caveat that there is an
+important syntax relation between an object and a method.
+  <br />
+  <br />
+</dd>
+<dt>
+  Attribute
+</dt>
+<dd>
+An attribute is a piece of information about the method that is either
+set by the user or computed as a result of some interaction with the
+object.  You can always query an object about an attribute value.
+Some attributes are read-write, which means that they can be set in
+your program.  Others are read-only, which means they have a value
+that is set when the object is created and cannot be further modified
+in your program.
+See <a href="http://search.cpan.org/~flora/Moose/lib/Moose/Manual/Attributes.pod">the attributes page from the Moose manual</a>
+for more details.
+  <br />
+  <br />
+</dd>
+<dt>
+  Accessor
+</dt>
+<dd>
+An accessor is a kind of method whose specific job is to query an
+object for an attribute value or to set the attribute to a new value.
+ <span class=program>DEMETER</span> uses a feature of Moose whereby an attribute is given a
+name and this name is used as the name of the accessor method.  When
+the accessor is called without an argument, it gets the value of the
+attribute.  When it is called with a value, it attempts to set the
+attribute to that value.   <span class=program>DEMETER</span> defines two additional
+accessor functions, <tt>set</tt> and
+<tt>get</tt> which are used to access multiple
+attributes with a single method call.
+  <br />
+  <br />
+</dd>
+<dt>
+  Type constraints
+</dt>
+<dd>
+Moose offers a flexible type constraint system, which means that an
+attribute can be restricted to have a value that meets a defined
+criterion.  For example, the value for the 
+<tt>kmin</tt> parameter of the Fourier transform
+can be defined to be a non-negative number.  Attempting to set it to a
+negative value triggers an error.  In this way, sanity checking of
+parameters is built deeply into  <span class=program>DEMETER</span>.
+See <a href="http://search.cpan.org/~flora/Moose/lib/Moose/Manual/Types.pod">the types page from the Moose manual</a>
+for more details.
+  <br />
+  <br />
+</dd>
+<dt>
+  Method
+</dt>
+<dd>
+A method is a thing that can be done to an object.  For example, there
+is an object type in  <span class=program>DEMETER</span> that is used to contain an XAS
+spectrum.  That object has a method called 
+<tt>plot</tt> whose purpose is to prepare and
+display a plot of the data.  Another object type is used to define an
+EXAFS fitting model.  That object has a method called
+<tt>fit</tt> which is used to actually perform the
+fit and store the resulting statistical parameters.  Many other
+methods serve rather more mundane chores.  In every case, though, the
+method is something that is done to or with a particular object.  Each
+object has a set of methods that can be called.  This set of methods
+defines the complete behavior of the object.
+  <br />
+  <br />
+</dd>
+<dt>
+  Trigger
+</dt>
+<dd>
+A trigger is something that happens what an accessor is used to set an
+attribute value.  It is an action that takes place as a result of
+changing an attribute value.  For example, when the value of 
+ R<sub>bkg</sub>  is changed for an object associated with XAS data, the
+trigger performs a series of chores that will assure that the
+background removal is performed anew the next time it is necessary to
+do a Fourier transform of those data.  Triggers are used to control
+much of the high-level functionality in  <span class=program>DEMETER</span>.
+  <br />
+  <br />
+</dd>
+</dl>
+</p>
+
+<p>
+I will, on occassion in this document, point the reader to where more
+of the programming details can be found.
+</p>
+
+<br />
+<hr class=hide />
+
+<div class=bottombar>
+  <div class=navbar>
+  <table class=navtable>
+    <tr>
+      <td align=left>
+        [&nbsp;<a href="./index.html">Home</a>&nbsp;] &nbsp;&nbsp;
+        [&nbsp;<a href="http://cars9.uchicago.edu/iffwiki/Demeter"><span class=programlink>DEMETER</span></a>&nbsp;] &nbsp;&nbsp;
+        [&nbsp;<a href="http://cars9.uchicago.edu/iffwiki/Ifeffit"><span class=programlink>IFEFFIT</span></a>&nbsp;] &nbsp;&nbsp;
+        [&nbsp;<a href="http://leonardo.phys.washington.edu/feff/wiki/index.php?title=FEFF_Documentation"><span class=programlink>FEFF</span></a>&nbsp;] &nbsp;&nbsp;
+        [&nbsp;<a href="http://xafs.org">xafs.org</a>&nbsp;] &nbsp;&nbsp;
+	[&nbsp;<a href="./demeter.pdf">PDF&nbsp;doc</a>&nbsp;]
+      </td>
+      <td align=right>
+        Back: <a href="./index.html" class="menu" >Home</a> &nbsp;&nbsp;
+        Next: <a href="./data/index.html" class="menu" >Importing data</a>      </td>
+    </tr>
+  </table>
+  </div>
+  <div class=copyright>
+   <span class=program>DEMETER</span> is copyright &copy; 2009-2010 Bruce Ravel
+  <br />
+  This document is copyright &copy; 2010 Bruce Ravel
+  <br />
+  email: (bravel |A|T| bnl |D|O|T| gov)
+  <br />
+  
+  <a href="http://creativecommons.org/licenses/by-sa/3.0/"><img src="../images/somerights20.png" width="88" height="31" alt="" border="0" /></a> &nbsp;&nbsp;&nbsp;
+  <br />
+  This document is licensed under <a href="http://creativecommons.org/licenses/by-sa/3.0/">
+  The Creative Commons Attribution-ShareAlike License</a>.
+  <br />
+  If  <span class=program>DEMETER</span> and this document are useful to you, please consider
+  <a href="http://creativecommons.org/support/">supporting The Creative Commons</a>.
+</div>
+</div>
+  </body>
+</html>

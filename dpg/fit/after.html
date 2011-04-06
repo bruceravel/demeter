@@ -1,0 +1,253 @@
+<!DOCTYPE HTMP PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <title>After a fit</title>
+    <link rel="stylesheet" href=../ab.css />
+    <link rel="stylesheet" href=../ppi.css />
+    <meta http-equiv="Content-Type" content="text/html"; charset=iso-8859-15 />
+    <meta name="robots" contents="all" />
+  </head>
+
+  <body>
+    <div class=topbar>
+  <div class=navbar>
+  <table class=navtable>
+    <tr>
+      <td align=left>
+        [&nbsp;<a href="../index.html">Home</a>&nbsp;] &nbsp;&nbsp;
+        [&nbsp;<a href="http://cars9.uchicago.edu/iffwiki/Demeter"><span class=programlink>DEMETER</span></a>&nbsp;] &nbsp;&nbsp;
+        [&nbsp;<a href="http://cars9.uchicago.edu/iffwiki/Ifeffit"><span class=programlink>IFEFFIT</span></a>&nbsp;] &nbsp;&nbsp;
+        [&nbsp;<a href="http://leonardo.phys.washington.edu/feff/wiki/index.php?title=FEFF_Documentation"><span class=programlink>FEFF</span></a>&nbsp;] &nbsp;&nbsp;
+        [&nbsp;<a href="http://xafs.org">xafs.org</a>&nbsp;] &nbsp;&nbsp;
+	[&nbsp;<a href="../demeter.pdf">PDF&nbsp;doc</a>&nbsp;]
+      </td>
+      <td align=right>
+        Back: <a href="../fit/sanity.html" class="menu" >Sanity checking a fitting model</a> &nbsp;&nbsp;
+        Next: <a href="../fit/happiness.html" class="menu" >The non-statistical happiness parameter</a>
+        &nbsp;&nbsp;
+        Up: <a href="../fit/index.html" class="menu" >Fitting EXAFS data</a>      </td>
+    </tr>
+  </table>
+  </div>
+  <h1>
+  After a fit
+</h1>
+</div>
+
+<hr class=hide />
+
+
+<div class=sidebar>
+  <a href="../ceres.html"><img src=../../images/Isis-Sothis-Demeter_sm.jpg
+    width=100% border=0 alt='[Demeter logo]'></a>
+  <br />
+  <a href="../index.html" class="menu" >Home</a><br />
+<a href="../intro.html" class="menu" >Introduction</a><br />
+<a href="../data/index.html" class="menu" >Importing data</a><br />
+<a href="../mue/index.html" class="menu" >Processing mu(E) data</a><br />
+<a href="../xanes/index.html" class="menu" >Analysis of XANES data</a><br />
+<a href="../highlevel/index.html" class="menu" >High level actions for Demeter objects</a><br />
+<a href="../atoms/index.html" class="menu" >Atoms</a><br />
+<a href="../feff/index.html" class="menu" >Feff</a><br />
+<a href="../paths/index.html" class="menu" >Scattering paths</a><br />
+<a href="../gds/index.html" class="menu" >Guess/Def/Set parameters</a><br />
+<br />
+<a href="../fit/index.html" class="menuselect" >Fitting EXAFS data</a><br />
+&nbsp;-&nbsp;<a href="../fit/collection.html" class="menu" >Setting up a fitting model</a><br />
+&nbsp;-&nbsp;<a href="../fit/sanity.html" class="menu" >Sanity checking a fitting model</a><br />
+&nbsp;-&nbsp;<a href="../fit/after.html" class="menuselect" >After a fit finishes</a><br />
+&nbsp;-&nbsp;<a href="../fit/happiness.html" class="menu" >The non-statistical happiness parameter</a><br /><br />
+<a href="../perl/index.html" class="menu" >Using perl to create a fitting model</a><br />
+<a href="../lgcv.html" class="menu" >Local guess parameters and the characteristic value</a><br />
+<a href="../pathlike/index.html" class="menu" >Path-like objects</a><br />
+<a href="../su.html" class="menu" >Structural Units</a><br />
+<a href="../ui.html" class="menu" >User interfaces</a><br />
+<a href="../output.html" class="menu" >Output formats</a><br />
+<a href="../examples/index.html" class="menu" >Full examples</a><br />
+</div>
+
+<p>
+
+After a fit finishes, each of the following tasks happens:
+</p>
+
+
+<ol>
+  
+<li>
+Best fit values and error bars are stored for each GDS object defining
+a guess parameter.
+</li>
+<li>
+Final values are stored for each GDS object defining
+a def parameter.
+</li>
+<li>
+All after parameters are evaluated.
+</li>
+<li>
+The residual of the fit is calculated.
+</li>
+<li>
+The statistics of the fit, including  &chi;&sup2; , reduced  &chi;&sup2; , 
+R-factor, and all correlations between guess parameters are stored in
+the Fit object.
+</li>
+<li>
+All path parameters are evaluated and stored in the Path objects.
+</li>
+<li>
+The fit's &ldquo;happiness&rdquo; (see the next section
+for details) is evaluated.
+</li>
+<li>
+All GDS parameters flagged for automatoic annotation are annotated.
+</li>
+</ol>
+
+<p>
+
+All of that is a detailed way of saying that every object involved in
+the fit is ready to be used for useful and interesting chores after
+the fit.  All Data and Path objects are ready to be plotted.  The fit
+can be saved a Fit serialization.  Column data files can be exported.
+A log file can be written.  Any of the chores can happen with
+confidence that every thing is completely up-t0-date with the results
+of the fit.
+</p>
+
+<p>
+Picking up from the example of 
+<a href="collection.html">the multiple data set fit</a>,
+the following example demonstrates how to perform several of the
+common after-fit chores that might be part of a fitting script.  The
+previous example demonstrated how to make an interesting plot using
+the two data sets and their fits.
+</p>
+
+
+<pre class=olscript>
+<ol class=perlblock>
+<li><span class="comment">### ... picking up at line 61 of the previous example ...
+<li></span>
+<li><span class="comment">## do the fit
+<li></span><span class="symbol">$fit</span> <span class="operator">-&gt;</span> <span class="word">fit</span><span class="structure">;</span>
+<li>
+<li><span class="comment">## write a log file
+<li></span><span class="keyword">my</span> <span class="structure">(</span><span class="symbol">$header</span><span class="operator">,</span> <span class="symbol">$footer</span><span class="structure">)</span> <span class="operator">=</span> <span class="structure">(</span><span class="single">''</span><span class="operator">,</span> <span class="single">''</span><span class="structure">);</span>
+<li><span class="symbol">$fit</span> <span class="operator">-&gt;</span> <span class="word">logfile</span><span class="structure">(</span><span class="double">&quot;cufit.log&quot;</span><span class="operator">,</span> <span class="symbol">$header</span><span class="operator">,</span> <span class="symbol">$footer</span><span class="structure">);</span>
+<li>
+<li><span class="symbol">$fit</span> <span class="operator">-&gt;</span> <span class="word">freeze</span><span class="structure">(</span><span class="word">file</span><span class="operator">=&gt;</span><span class="double">&quot;cu_temperature.dpj&quot;</span><span class="structure">);</span>
+<li>
+<li><span class="symbol">$data</span><span class="structure">[</span><span class="number">0</span><span class="structure">]</span><span class="operator">-&gt;</span><span class="word">save</span><span class="structure">(</span><span class="double">&quot;fit&quot;</span><span class="operator">,</span> <span class="double">&quot;cu_10K.fit&quot;</span><span class="structure">);</span>
+<li><span class="symbol">$data</span><span class="structure">[</span><span class="number">0</span><span class="structure">]</span><span class="operator">-&gt;</span><span class="word">save</span><span class="structure">(</span><span class="double">&quot;fit&quot;</span><span class="operator">,</span> <span class="double">&quot;cu_150K.fit&quot;</span><span class="structure">);</span>
+<li>
+<li><span class="symbol">$fit</span> <span class="operator">-&gt;</span> <span class="word">interview</span><span class="structure">;</span>
+</ol>
+</pre>
+
+<dl>
+  
+<dt>
+  Log file
+</dt>
+<dd>
+At line 8 a log file is written.  The first argument of the 
+<tt>logfile</tt> method is the name of the output
+log file.  The other two arguments, both set to empty strings in this
+example, contain user-specified text that is written to the beginning
+and end of log file. 
+  <br />
+  <br />
+</dd>
+<dt>
+  Fit serialization
+</dt>
+<dd>
+At line 10 the fit is serialized.  This serialization file is simply a
+normal zip file containing the serializations of all the objects used
+in the fit along with a log file and a few other results of the fit.
+The convention is for this zip file to have the extension
+<tt>.dpj</tt> (i.e.  <span class=program>DEMETER</span> project).
+  <br />
+  <br />
+</dd>
+<dt>
+  Saving column data
+</dt>
+<dd>
+At lines 12 and 13, the results of the fit to each data set are saved
+as column data files.  These files contain columns with the k, data,
+the fit, the window, the residual, and the background function is it
+was corefined.  See the
+<a href="../output.html">chapter on output formats</a>
+for more details on this and other column output formats.
+  <br />
+  <br />
+</dd>
+<dt>
+  Fit interview
+</dt>
+<dd>
+At line 15, the <tt>interview</tt> method is
+called.  This is a simple terminal application for examining the
+results of the fit.  The log file and statistical parameters of the
+fit can be examined using this application and simple plots can be
+made.  The interview is a bare-bones tool.  But it is a nice
+compromise between using a GUI and writing your own tools to examine
+the results of the fit.  
+ <span class=program>DEMETER</span> ships with a command line program called 
+<tt>rdfit</tt> which is a wrapper around the 
+<tt>interview</tt> method.  It reads a dpj file
+specified at the command line, imports it into a Fit object, then runs
+the <tt>interview</tt> method.
+The <tt>interview</tt> method and 
+<tt>rdfit</tt> are described in more detail in
+<a href="../ui.html">chapter on user interfaces</a>.
+  <br />
+  <br />
+</dd>
+</dl>
+
+<br />
+<hr class=hide />
+
+<div class=bottombar>
+  <div class=navbar>
+  <table class=navtable>
+    <tr>
+      <td align=left>
+        [&nbsp;<a href="../index.html">Home</a>&nbsp;] &nbsp;&nbsp;
+        [&nbsp;<a href="http://cars9.uchicago.edu/iffwiki/Demeter"><span class=programlink>DEMETER</span></a>&nbsp;] &nbsp;&nbsp;
+        [&nbsp;<a href="http://cars9.uchicago.edu/iffwiki/Ifeffit"><span class=programlink>IFEFFIT</span></a>&nbsp;] &nbsp;&nbsp;
+        [&nbsp;<a href="http://leonardo.phys.washington.edu/feff/wiki/index.php?title=FEFF_Documentation"><span class=programlink>FEFF</span></a>&nbsp;] &nbsp;&nbsp;
+        [&nbsp;<a href="http://xafs.org">xafs.org</a>&nbsp;] &nbsp;&nbsp;
+	[&nbsp;<a href="../demeter.pdf">PDF&nbsp;doc</a>&nbsp;]
+      </td>
+      <td align=right>
+        Back: <a href="../fit/sanity.html" class="menu" >Sanity checking a fitting model</a> &nbsp;&nbsp;
+        Next: <a href="../fit/happiness.html" class="menu" >The non-statistical happiness parameter</a>
+        &nbsp;&nbsp;
+        Up: <a href="../fit/index.html" class="menu" >Fitting EXAFS data</a>      </td>
+    </tr>
+  </table>
+  </div>
+  <div class=copyright>
+   <span class=program>DEMETER</span> is copyright &copy; 2009-2010 Bruce Ravel
+  <br />
+  This document is copyright &copy; 2010 Bruce Ravel
+  <br />
+  email: (bravel |A|T| bnl |D|O|T| gov)
+  <br />
+  
+  <a href="http://creativecommons.org/licenses/by-sa/3.0/"><img src="../../images/somerights20.png" width="88" height="31" alt="" border="0" /></a> &nbsp;&nbsp;&nbsp;
+  <br />
+  This document is licensed under <a href="http://creativecommons.org/licenses/by-sa/3.0/">
+  The Creative Commons Attribution-ShareAlike License</a>.
+  <br />
+  If  <span class=program>DEMETER</span> and this document are useful to you, please consider
+  <a href="http://creativecommons.org/support/">supporting The Creative Commons</a>.
+</div>
+</div>
+  </body>
+</html>

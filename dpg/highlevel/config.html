@@ -1,0 +1,234 @@
+<!DOCTYPE HTMP PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <title>Config object</title>
+    <link rel="stylesheet" href=../ab.css />
+    <link rel="stylesheet" href=../ppi.css />
+    <meta http-equiv="Content-Type" content="text/html"; charset=iso-8859-15 />
+    <meta name="robots" contents="all" />
+  </head>
+
+  <body>
+    <div class=topbar>
+  <div class=navbar>
+  <table class=navtable>
+    <tr>
+      <td align=left>
+        [&nbsp;<a href="../index.html">Home</a>&nbsp;] &nbsp;&nbsp;
+        [&nbsp;<a href="http://cars9.uchicago.edu/iffwiki/Demeter"><span class=programlink>DEMETER</span></a>&nbsp;] &nbsp;&nbsp;
+        [&nbsp;<a href="http://cars9.uchicago.edu/iffwiki/Ifeffit"><span class=programlink>IFEFFIT</span></a>&nbsp;] &nbsp;&nbsp;
+        [&nbsp;<a href="http://leonardo.phys.washington.edu/feff/wiki/index.php?title=FEFF_Documentation"><span class=programlink>FEFF</span></a>&nbsp;] &nbsp;&nbsp;
+        [&nbsp;<a href="http://xafs.org">xafs.org</a>&nbsp;] &nbsp;&nbsp;
+	[&nbsp;<a href="../demeter.pdf">PDF&nbsp;doc</a>&nbsp;]
+      </td>
+      <td align=right>
+        Back: <a href="../highlevel/plot.html" class="menu" >The Plot object</a> &nbsp;&nbsp;
+        Next: <a href="../highlevel/methods.html" class="menu" >Other high level methods</a>
+        &nbsp;&nbsp;
+        Up: <a href="../highlevel/index.html" class="menu" >High level actions for Demeter objects</a>      </td>
+    </tr>
+  </table>
+  </div>
+  <h1>
+  Config object
+</h1>
+</div>
+
+<hr class=hide />
+
+
+<div class=sidebar>
+  <a href="../ceres.html"><img src=../../images/Isis-Sothis-Demeter_sm.jpg
+    width=100% border=0 alt='[Demeter logo]'></a>
+  <br />
+  <a href="../index.html" class="menu" >Home</a><br />
+<a href="../intro.html" class="menu" >Introduction</a><br />
+<a href="../data/index.html" class="menu" >Importing data</a><br />
+<a href="../mue/index.html" class="menu" >Processing mu(E) data</a><br />
+<a href="../xanes/index.html" class="menu" >Analysis of XANES data</a><br />
+<br />
+<a href="../highlevel/index.html" class="menuselect" >High level actions for Demeter objects</a><br />
+&nbsp;-&nbsp;<a href="../highlevel/dispose.html" class="menu" >Command disposal and command templates</a><br />
+&nbsp;-&nbsp;<a href="../highlevel/mode.html" class="menu" >The Mode object</a><br />
+&nbsp;-&nbsp;<a href="../highlevel/plot.html" class="menu" >The Plot object</a><br />
+&nbsp;-&nbsp;<a href="../highlevel/config.html" class="menuselect" >The Config object</a><br />
+&nbsp;-&nbsp;<a href="../highlevel/methods.html" class="menu" >Other high level methods</a><br /><br />
+<a href="../atoms/index.html" class="menu" >Atoms</a><br />
+<a href="../feff/index.html" class="menu" >Feff</a><br />
+<a href="../paths/index.html" class="menu" >Scattering paths</a><br />
+<a href="../gds/index.html" class="menu" >Guess/Def/Set parameters</a><br />
+<a href="../fit/index.html" class="menu" >Fitting EXAFS data</a><br />
+<a href="../perl/index.html" class="menu" >Using perl to create a fitting model</a><br />
+<a href="../lgcv.html" class="menu" >Local guess parameters and the characteristic value</a><br />
+<a href="../pathlike/index.html" class="menu" >Path-like objects</a><br />
+<a href="../su.html" class="menu" >Structural Units</a><br />
+<a href="../ui.html" class="menu" >User interfaces</a><br />
+<a href="../output.html" class="menu" >Output formats</a><br />
+<a href="../examples/index.html" class="menu" >Full examples</a><br />
+</div>
+
+<p>
+
+The Config object is a 
+<a href="http://en.wikipedia.org/wiki/Singleton_pattern">singleton object</a>
+which is used to contain all of  <span class=program>DEMETER</span>'s configuration
+parameters as well as providing an simple way for user-defined
+parameters to be stored and made available to the 
+<a href="dispose.html">templating system</a>.
+</p>
+
+<p>
+At start-up,  <span class=program>DEMETER</span> reads the  <span class=program>DEMETER</span> configuration
+files, then updates those values from the 
+<span class=file>demeter.ini</span> file, which is stored in 
+<span class=file>$HOME/.horae</span> on unix systems and in 
+<span class=file>%APPDATA%/demeter</span> on Windows systems.
+</p>
+
+<p>
+To make the Config object readily accessible at all times in your
+program, the <tt>co</tt> method is a method of the
+base class and is inherited by all  <span class=program>DEMETER</span> objects.  Thus, given
+any object, you can &ldquo;find&rdquo; the Config object
+like so:
+</p>
+
+
+<ol class=perlsample>
+<br />
+&nbsp;&nbsp;<span class="symbol">$the_config_object</span> <span class="operator">=</span> <span class="symbol">$any_object</span> <span class="operator">-&gt;</span> <span class="word">co</span><span class="structure">;</span>
+</ol>
+
+<p>
+
+Any method of the plot object is easily called by chaining with the 
+<tt>co</tt> method.  For example to get the
+configured default value for the <tt>bkg_rbkg</tt>
+attribute of the Data object, you do this
+</p>
+
+
+<ol class=perlsample>
+<br />
+&nbsp;&nbsp;<span class="symbol">$any_object</span> <span class="operator">-&gt;</span> <span class="word">po</span> <span class="operator">-&gt;</span> <span class="word">default</span><span class="structure">(</span><span class="single">'bkg'</span><span class="operator">,</span> <span class="single">'rbkg'</span><span class="structure">);</span>
+</ol>
+
+<a name="theconfigurationfileformat">
+
+<h3>  The configuration file format</h3>
+</a>
+
+<p>
+
+This is the configuration file for the parameters controlling the
+back-Fourier transform of data.  The format of the file is somewhat
+rigid in order to simplify the parsing of these files.
+</p>
+
+
+<pre>
+######################################################################
+section=bft
+section_description
+  These parameters determine how backward Fourier transforms
+  are done by Demeter.
+
+variable=dr
+type=real
+default=0.0
+units=Angstroms
+description
+  The default width of the window sill used in the backward Fourier
+  transform.  0 is used if this is set to less than 0.
+
+variable=rwindow
+type=list
+default=hanning
+options=hanning kaiser-bessel welch parzen sine
+description
+  The default window type to use for the backward Fourier transform.
+
+variable=rmin
+type=real
+default=1
+units=Angstroms
+description
+  The default value for the lower range of the backward Fourier
+  transform.
+
+variable=rmax
+type=real
+default=3
+units=Angstroms
+description
+  The default value for the upper range of the backward Fourier
+  transform.
+</pre>
+
+<p>
+
+</p>
+
+
+<a name="user-definedconfigurationfiles">
+
+<h3>  User-defined configuration files</h3>
+</a>
+
+<a name="usingandresettingconfigurationparameters">
+
+<h3>  Using and resetting configuration parameters</h3>
+</a>
+
+<a name="theconfigobjectandthetemplatingsystem">
+
+<h3>  The Config object and the templating system</h3>
+</a>
+
+<a name="wxwidgetsandtheconfigurationsystem">
+
+<h3>  WxWidgets and the configuration system</h3>
+</a>
+
+<br />
+<hr class=hide />
+
+<div class=bottombar>
+  <div class=navbar>
+  <table class=navtable>
+    <tr>
+      <td align=left>
+        [&nbsp;<a href="../index.html">Home</a>&nbsp;] &nbsp;&nbsp;
+        [&nbsp;<a href="http://cars9.uchicago.edu/iffwiki/Demeter"><span class=programlink>DEMETER</span></a>&nbsp;] &nbsp;&nbsp;
+        [&nbsp;<a href="http://cars9.uchicago.edu/iffwiki/Ifeffit"><span class=programlink>IFEFFIT</span></a>&nbsp;] &nbsp;&nbsp;
+        [&nbsp;<a href="http://leonardo.phys.washington.edu/feff/wiki/index.php?title=FEFF_Documentation"><span class=programlink>FEFF</span></a>&nbsp;] &nbsp;&nbsp;
+        [&nbsp;<a href="http://xafs.org">xafs.org</a>&nbsp;] &nbsp;&nbsp;
+	[&nbsp;<a href="../demeter.pdf">PDF&nbsp;doc</a>&nbsp;]
+      </td>
+      <td align=right>
+        Back: <a href="../highlevel/plot.html" class="menu" >The Plot object</a> &nbsp;&nbsp;
+        Next: <a href="../highlevel/methods.html" class="menu" >Other high level methods</a>
+        &nbsp;&nbsp;
+        Up: <a href="../highlevel/index.html" class="menu" >High level actions for Demeter objects</a>      </td>
+    </tr>
+  </table>
+  </div>
+  <div class=copyright>
+   <span class=program>DEMETER</span> is copyright &copy; 2009-2010 Bruce Ravel
+  <br />
+  This document is copyright &copy; 2010 Bruce Ravel
+  <br />
+  email: (bravel |A|T| bnl |D|O|T| gov)
+  <br />
+  
+  <a href="http://creativecommons.org/licenses/by-sa/3.0/"><img src="../../images/somerights20.png" width="88" height="31" alt="" border="0" /></a> &nbsp;&nbsp;&nbsp;
+  <br />
+  This document is licensed under <a href="http://creativecommons.org/licenses/by-sa/3.0/">
+  The Creative Commons Attribution-ShareAlike License</a>.
+  <br />
+  If  <span class=program>DEMETER</span> and this document are useful to you, please consider
+  <a href="http://creativecommons.org/support/">supporting The Creative Commons</a>.
+</div>
+</div>
+  </body>
+</html>

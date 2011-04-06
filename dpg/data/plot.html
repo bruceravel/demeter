@@ -1,0 +1,552 @@
+<!DOCTYPE HTMP PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <title>Plotting and basic data processing</title>
+    <link rel="stylesheet" href=../ab.css />
+    <link rel="stylesheet" href=../ppi.css />
+    <meta http-equiv="Content-Type" content="text/html"; charset=iso-8859-15 />
+    <meta name="robots" contents="all" />
+  </head>
+
+  <body>
+    <div class=topbar>
+  <div class=navbar>
+  <table class=navtable>
+    <tr>
+      <td align=left>
+        [&nbsp;<a href="../index.html">Home</a>&nbsp;] &nbsp;&nbsp;
+        [&nbsp;<a href="http://cars9.uchicago.edu/iffwiki/Demeter"><span class=programlink>DEMETER</span></a>&nbsp;] &nbsp;&nbsp;
+        [&nbsp;<a href="http://cars9.uchicago.edu/iffwiki/Ifeffit"><span class=programlink>IFEFFIT</span></a>&nbsp;] &nbsp;&nbsp;
+        [&nbsp;<a href="http://leonardo.phys.washington.edu/feff/wiki/index.php?title=FEFF_Documentation"><span class=programlink>FEFF</span></a>&nbsp;] &nbsp;&nbsp;
+        [&nbsp;<a href="http://xafs.org">xafs.org</a>&nbsp;] &nbsp;&nbsp;
+	[&nbsp;<a href="../demeter.pdf">PDF&nbsp;doc</a>&nbsp;]
+      </td>
+      <td align=right>
+        Back: <a href="../data/other.html" class="menu" >Handling arbitrary data</a>
+        
+        &nbsp;&nbsp;
+        Up: <a href="../data/index.html" class="menu" >Importing data</a>      </td>
+    </tr>
+  </table>
+  </div>
+  <h1>
+  Plotting and basic data processing
+</h1>
+</div>
+
+<hr class=hide />
+
+
+<div class=sidebar>
+  <a href="../ceres.html"><img src=../../images/Isis-Sothis-Demeter_sm.jpg
+    width=100% border=0 alt='[Demeter logo]'></a>
+  <br />
+  <a href="../index.html" class="menu" >Home</a><br />
+<a href="../intro.html" class="menu" >Introduction</a><br />
+<br />
+<a href="../data/index.html" class="menuselect" >Importing data</a><br />
+&nbsp;-&nbsp;<a href="../data/mue.html" class="menu" >mu(E) data files</a><br />
+&nbsp;-&nbsp;<a href="../data/chi.html" class="menu" >chi(k) data files</a><br />
+&nbsp;-&nbsp;<a href="../data/columns.html" class="menu" >Column data files</a><br />
+&nbsp;-&nbsp;<a href="../data/athena.html" class="menu" >Athena project files</a><br />
+&nbsp;-&nbsp;<a href="../data/mc.html" class="menu" >Multichannel data files</a><br />
+&nbsp;-&nbsp;<a href="../data/special.html" class="menu" >Special data types</a><br />
+&nbsp;-&nbsp;<a href="../data/other.html" class="menu" >Handling arbitrary data</a><br />
+&nbsp;-&nbsp;<a href="../data/plot.html" class="menuselect" >Basic plotting and data processing</a><br /><br />
+<a href="../mue/index.html" class="menu" >Processing mu(E) data</a><br />
+<a href="../xanes/index.html" class="menu" >Analysis of XANES data</a><br />
+<a href="../highlevel/index.html" class="menu" >High level actions for Demeter objects</a><br />
+<a href="../atoms/index.html" class="menu" >Atoms</a><br />
+<a href="../feff/index.html" class="menu" >Feff</a><br />
+<a href="../paths/index.html" class="menu" >Scattering paths</a><br />
+<a href="../gds/index.html" class="menu" >Guess/Def/Set parameters</a><br />
+<a href="../fit/index.html" class="menu" >Fitting EXAFS data</a><br />
+<a href="../perl/index.html" class="menu" >Using perl to create a fitting model</a><br />
+<a href="../lgcv.html" class="menu" >Local guess parameters and the characteristic value</a><br />
+<a href="../pathlike/index.html" class="menu" >Path-like objects</a><br />
+<a href="../su.html" class="menu" >Structural Units</a><br />
+<a href="../ui.html" class="menu" >User interfaces</a><br />
+<a href="../output.html" class="menu" >Output formats</a><br />
+<a href="../examples/index.html" class="menu" >Full examples</a><br />
+</div>
+
+<a name="typesofplots">
+
+<h3>  Types of plots</h3>
+</a>
+
+<p>
+
+Once you have imported data, you will want to start doing interesting
+things with it.  &ldquo;Interesting things&rdquo; are,
+of course, the topic of the rest of this programming guide.  The first
+interesting thing to discuss is plotting.
+</p>
+
+<p>
+One might think that topics such as background removal, normalization,
+and Fourier transforms are discussion-worthy.  In fact,  <span class=program>DEMETER</span>
+goes to great lengths to assure that you do not need to ever worry
+about having to explicitly do any of those data processing chores.
+Certainly methods exist for doing those data processing chores, but it
+should never be necessary to call them explicitly.  (If you find a
+case where you need to do so, please consider that as a bug and report
+it to Bruce.)
+</p>
+
+<p>
+ <span class=program>DEMETER</span> keeps track of the state of the Data object and will
+re-perform data processing steps as necessary.  For example, if you
+change the value of one of the back-Fourier transform range
+attributes,  <span class=program>DEMETER</span> will know that the back-transform must be
+recomputed the next time the  &chi;(q)    data is in some way used.
+Similarly, if a background removal attribute is changed, then 
+ <span class=program>DEMETER</span> will know that all steps of data processing must be
+re-done.
+</p>
+
+<p>
+ <span class=program>DEMETER</span> is also aware of what data processing steps must be
+up-to-date in order to properly perform any method, including
+plotting.  Thus if you do this:
+</p>
+
+
+<ol class=perlsample>
+<br />
+&nbsp;&nbsp;<span class="symbol">$data</span> <span class="operator">-&gt;</span> <span class="word">plot</span><span class="structure">(</span><span class="single">'k'</span><span class="structure">);</span>
+</ol>
+
+<p>
+
+ <span class=program>DEMETER</span> knows to check wether the background removal,
+normalization, and forward transform are up to date and to perform
+them if they are not.
+</p>
+
+<p>
+Plotting in the four spaces is quite straightforward:
+</p>
+
+
+<dl>
+  
+<dt>
+  plot in energy
+</dt>
+<dd>
+<ol class=perlsample>
+<br />
+&nbsp;&nbsp;<span class="symbol">$data</span><span class="operator">-&gt;</span><span class="word">plot</span><span class="structure">(</span><span class="single">'E'</span><span class="structure">);</span>
+</ol>
+  <br />
+  <br />
+</dd>
+<dt>
+  plot in k
+</dt>
+<dd>
+<ol class=perlsample>
+<br />
+&nbsp;&nbsp;<span class="symbol">$data</span><span class="operator">-&gt;</span><span class="word">plot</span><span class="structure">(</span><span class="single">'k'</span><span class="structure">);</span>
+</ol>
+  <br />
+  <br />
+</dd>
+<dt>
+  plot in R
+</dt>
+<dd>
+<ol class=perlsample>
+<br />
+&nbsp;&nbsp;<span class="symbol">$data</span><span class="operator">-&gt;</span><span class="word">plot</span><span class="structure">(</span><span class="single">'R'</span><span class="structure">);</span>
+</ol>
+  <br />
+  <br />
+</dd>
+<dt>
+  plot in back-transform k
+</dt>
+<dd>
+<ol class=perlsample>
+<br />
+&nbsp;&nbsp;<span class="symbol">$data</span><span class="operator">-&gt;</span><span class="word">plot</span><span class="structure">(</span><span class="single">'q'</span><span class="structure">);</span>
+</ol>
+  <br />
+  <br />
+</dd>
+</dl>
+
+<p>
+
+There are also a number of pre-defined, specialty plots.  (Need to
+show examples of rmr, r123, k123, and kq.)
+</p>
+
+
+<dl>
+  
+<dt>
+  plot the magnitude and real part of chi(R)
+</dt>
+<dd>
+<ol class=perlsample>
+<br />
+&nbsp;&nbsp;<span class="symbol">$data</span><span class="operator">-&gt;</span><span class="word">plot</span><span class="structure">(</span><span class="single">'rmr'</span><span class="structure">);</span>
+</ol>
+  <br />
+  <br />
+</dd>
+<dt>
+  plot chi(k) with k-weights of 1, 2, and 3,
+                       scaled to be the same size
+</dt>
+<dd>
+<ol class=perlsample>
+<br />
+&nbsp;&nbsp;<span class="symbol">$data</span><span class="operator">-&gt;</span><span class="word">plot</span><span class="structure">(</span><span class="single">'k123'</span><span class="structure">);</span>
+</ol>
+  <br />
+  <br />
+</dd>
+<dt>
+  plot chi(R) with k-weights of 1, 2, and 3,
+                       scaled to be the same size
+</dt>
+<dd>
+<ol class=perlsample>
+<br />
+&nbsp;&nbsp;<span class="symbol">$data</span><span class="operator">-&gt;</span><span class="word">plot</span><span class="structure">(</span><span class="single">'R123'</span><span class="structure">);</span>
+</ol>
+  <br />
+  <br />
+</dd>
+<dt>
+  plot in chi(k) with the real part of chi(q)
+</dt>
+<dd>
+<ol class=perlsample>
+<br />
+&nbsp;&nbsp;<span class="symbol">$data</span><span class="operator">-&gt;</span><span class="word">plot</span><span class="structure">(</span><span class="single">'kq'</span><span class="structure">);</span>
+</ol>
+  <br />
+  <br />
+</dd>
+<dt>
+  quad plot with data in all four spaces
+</dt>
+<dd>
+<ol class=perlsample>
+<br />
+&nbsp;&nbsp;<span class="symbol">$data</span><span class="operator">-&gt;</span><span class="word">plot</span><span class="structure">(</span><span class="single">'quad'</span><span class="structure">);</span>
+</ol>
+<table>
+<tr>
+<td>
+<p>
+
+This quad plot shows data on MnOOH in all four spaces.  The current
+value of k-weighting in the Plot object is used in this kind of plot.
+<em>This kind of plot cannot be made with the pgplot plotting backend.</em>
+</p>
+
+</td>
+<td width=60%>
+<a href="../../images/plot_quad.png" target=_blank><img border=0 src="../../images/plot_quad.png" alt="plot_quad.png" width=100%></a>
+</td>
+</tr>
+</table>
+  <br />
+  <br />
+</dd>
+</dl>
+
+
+<p>
+
+There are two more pre-packaged plot type which are specifically about
+visualizing merged data and its standard deviation:
+</p>
+
+
+<ol class=perlsample>
+<br />
+&nbsp;&nbsp;<span class="symbol">$data</span><span class="operator">-&gt;</span><span class="word">plot</span><span class="structure">(</span><span class="single">'stddev'</span><span class="structure">);</span><br />
+&nbsp;&nbsp;<span class="symbol">$data</span><span class="operator">-&gt;</span><span class="word">plot</span><span class="structure">(</span><span class="single">'variance'</span><span class="structure">);</span>
+</ol>
+
+
+<p>
+
+See <a href="../mue/merge.html">the section on merged data</a> for details of those two plot types.
+</p>
+
+<p>
+Finally, it is plossible to plot  &chi;(k)    data in energy.  This is
+done by setting the <tt>chie</tt> attribute of the
+Plot object to a true value.  When that attribute is true and the data
+are plotted in k, the x-axis values will instead be absolute energy.
+</p>
+
+
+<pre class=olscript>
+<ol class=perlblock>
+<li><span class="symbol">$data</span> <span class="operator">-&gt;</span> <span class="word">po</span> <span class="operator">-&gt;</span> <span class="word">set</span><span class="structure">(</span><span class="word">kweight</span> <span class="operator">=&gt;</span> <span class="number">2</span><span class="operator">,</span> <span class="word">space</span> <span class="operator">=&gt;</span> <span class="single">'k'</span><span class="operator">,</span> <span class="word">chie</span> <span class="operator">=&gt;</span> <span class="number">1</span><span class="structure">);</span>
+<li><span class="symbol">$data</span> <span class="operator">-&gt;</span> <span class="word">plot</span><span class="structure">;</span>
+</ol>
+</pre>
+
+<p>
+
+Note that the argument of the <tt>plot</tt> method
+is case insensitive.  Little attempt is made to glean meaning from
+that argument.  If it is not one of the strings shown above, 
+the <tt>plot</tt> method will likely return an
+error.
+</p>
+
+<p>
+<a name="plottingandoverplotting">
+</p>
+
+<p>
+<h3>  Plotting and overplotting</h3>
+</a>
+</p>
+
+<p>
+The <tt>plot</tt> method typically will overplot
+data, that is add a new trace to the existing plot.  If you wish to
+start a new plot, you must explicitly do so, as shown on line 8 of
+this example.
+</p>
+
+
+
+<pre class=olscript>
+<ol class=perlblock>
+<li><span class="comment">#!/usr/bin/perl
+<li></span><span class="keyword">use</span> <span class="word">Demeter</span><span class="structure">;</span>
+<li>
+<li><span class="keyword">my</span> <span class="symbol">$prj</span> <span class="operator">=</span> <span class="word">Demeter::Data::Prj</span> <span class="operator">-&gt;</span> <span class="word">new</span><span class="structure">(</span><span class="word">file</span><span class="operator">=&gt;</span><span class="single">'iron_data.prj'</span><span class="structure">);</span>
+<li><span class="keyword">my</span> <span class="structure">(</span><span class="symbol">$data1</span><span class="operator">,</span> <span class="symbol">$data2</span><span class="structure">)</span> <span class="operator">=</span> <span class="symbol">$prj</span> <span class="operator">-&gt;</span> <span class="word">records</span><span class="structure">(</span><span class="number">1</span><span class="operator">,</span><span class="number">2</span><span class="structure">);</span>
+<li><span class="magic">$_</span> <span class="operator">-&gt;</span> <span class="word">plot</span><span class="structure">(</span><span class="single">'k'</span><span class="structure">)</span> <span class="word">foreach</span> <span class="structure">(</span><span class="symbol">$data1</span><span class="operator">,</span> <span class="symbol">$data2</span><span class="structure">);</span>
+<li><span class="word">sleep</span> <span class="number">3</span><span class="operator">,</span>
+<li><span class="symbol">$data1</span> <span class="operator">-&gt;</span> <span class="word">po</span> <span class="operator">-&gt;</span> <span class="word">start_plot</span><span class="structure">;</span>
+<li><span class="magic">$_</span> <span class="operator">-&gt;</span> <span class="word">plot</span><span class="structure">(</span><span class="single">'R'</span><span class="structure">)</span> <span class="word">foreach</span> <span class="structure">(</span><span class="symbol">$data1</span><span class="operator">,</span> <span class="symbol">$data2</span><span class="structure">);</span>
+</ol>
+</pre>
+
+<p>
+
+The quad plot is an exception, however.  There is an implicit 
+<tt>start_plot</tt> when a quad plot is made.
+</p>
+
+<p>
+The details of the funny syntax using the 
+<tt>po</tt> method is explained in
+<a href="../highlevel/plot.html">the section on the Plot object</a>.
+</p>
+
+
+
+<a name="thesinglefileplottingbackend">
+
+<h3>  The singlefile plotting backend</h3>
+</a>
+
+<p>
+
+Although the PGPLOT and Gnuplot plotting backends work just fine,
+sometimes you would like to be able to replicate a particular plot in
+another plotting program.  To that end,  <span class=program>DEMETER</span> provides a
+special plotting backend called the 
+&ldquo;SingleFile&rdquo; backend.  This will replicate
+a plot form of a column data file.  The data in those columns include
+whatever y-offsets, energy shifts, or scaling factors were included in
+the plot.  The plot can then be replicated in another program simply
+by importing and plotting the columns.
+</p>
+
+<p>
+Here is an example.  The fit is the standard copper fit.  At the end,
+the data, the fit, the window, and the paths are plotted usin the
+gnuplot backend.  Then, at line 67,
+the &ldquo;SingleFile&rdquo;
+backend is used to output that plot to a file.
+</p>
+
+
+
+<pre class=olscript>
+<ol class=perlblock>
+<li><span class="comment">#!/usr/bin/perl
+<li></span><span class="keyword">use</span> <span class="word">Demeter</span> <span class="words">qw(:ui=screen)</span><span class="structure">;</span>
+<li><span class="word">print</span> <span class="double">&quot;Sample fit to copper data demonstrating the singlefile plotting backend.\n&quot;</span><span class="structure">;</span>
+<li>
+<li><span class="keyword">my</span> <span class="symbol">$data</span> <span class="operator">=</span> <span class="word">Demeter::Data</span> <span class="operator">-&gt;</span> <span class="word">new</span><span class="structure">();</span>
+<li><span class="symbol">$data</span><span class="operator">-&gt;</span><span class="word">set_mode</span><span class="structure">(</span><span class="word">screen</span>&nbsp;&nbsp;<span class="operator">=&gt;</span> <span class="number">0</span><span class="operator">,</span> <span class="word">ifeffit</span> <span class="operator">=&gt;</span> <span class="number">1</span><span class="structure">);</span>
+<li><span class="symbol">$data</span> <span class="operator">-&gt;</span><span class="word">set</span><span class="structure">(</span><span class="word">file</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="operator">=&gt;</span> <span class="double">&quot;../../cu/cu10k.chi&quot;</span><span class="operator">,</span>
+<li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="word">fft_kmin</span>&nbsp;&nbsp;&nbsp;<span class="operator">=&gt;</span> <span class="number">3</span><span class="operator">,</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="word">fft_kmax</span>&nbsp;&nbsp;&nbsp;<span class="operator">=&gt;</span> <span class="number">14</span><span class="operator">,</span>
+<li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="word">fit_space</span>&nbsp;&nbsp;<span class="operator">=&gt;</span> <span class="single">'r'</span><span class="operator">,</span>
+<li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="word">fit_k1</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="operator">=&gt;</span> <span class="number">1</span><span class="operator">,</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="word">fit_k3</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="operator">=&gt;</span> <span class="number">1</span><span class="operator">,</span>
+<li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="word">bft_rmin</span>&nbsp;&nbsp;&nbsp;<span class="operator">=&gt;</span> <span class="float">1.6</span><span class="operator">,</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="word">bft_rmax</span>&nbsp;&nbsp;&nbsp;<span class="operator">=&gt;</span> <span class="float">4.3</span><span class="operator">,</span>
+<li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="word">fit_do_bkg</span> <span class="operator">=&gt;</span> <span class="number">0</span><span class="operator">,</span>
+<li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="word">name</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="operator">=&gt;</span> <span class="single">'My copper data'</span><span class="operator">,</span>
+<li>&nbsp;&nbsp;&nbsp;&nbsp;<span class="structure">);</span>
+<li>
+<li><span class="keyword">my</span> <span class="symbol">@gds</span> <span class="operator">=</span>&nbsp;&nbsp;<span class="structure">(</span><span class="word">Demeter::GDS</span> <span class="operator">-&gt;</span> <span class="word">new</span><span class="structure">(</span><span class="word">gds</span> <span class="operator">=&gt;</span> <span class="single">'guess'</span><span class="operator">,</span> <span class="word">name</span> <span class="operator">=&gt;</span> <span class="single">'alpha'</span><span class="operator">,</span> <span class="word">mathexp</span> <span class="operator">=&gt;</span> <span class="number">0</span><span class="structure">)</span><span class="operator">,</span>
+<li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="word">Demeter::GDS</span> <span class="operator">-&gt;</span> <span class="word">new</span><span class="structure">(</span><span class="word">gds</span> <span class="operator">=&gt;</span> <span class="single">'guess'</span><span class="operator">,</span> <span class="word">name</span> <span class="operator">=&gt;</span> <span class="single">'amp'</span><span class="operator">,</span>&nbsp;&nbsp;&nbsp;<span class="word">mathexp</span> <span class="operator">=&gt;</span> <span class="number">1</span><span class="structure">)</span><span class="operator">,</span>
+<li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="word">Demeter::GDS</span> <span class="operator">-&gt;</span> <span class="word">new</span><span class="structure">(</span><span class="word">gds</span> <span class="operator">=&gt;</span> <span class="single">'guess'</span><span class="operator">,</span> <span class="word">name</span> <span class="operator">=&gt;</span> <span class="single">'enot'</span><span class="operator">,</span>&nbsp;&nbsp;<span class="word">mathexp</span> <span class="operator">=&gt;</span> <span class="number">0</span><span class="structure">)</span><span class="operator">,</span>
+<li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="word">Demeter::GDS</span> <span class="operator">-&gt;</span> <span class="word">new</span><span class="structure">(</span><span class="word">gds</span> <span class="operator">=&gt;</span> <span class="single">'guess'</span><span class="operator">,</span> <span class="word">name</span> <span class="operator">=&gt;</span> <span class="single">'theta'</span><span class="operator">,</span> <span class="word">mathexp</span> <span class="operator">=&gt;</span> <span class="number">500</span><span class="structure">)</span><span class="operator">,</span>
+<li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="word">Demeter::GDS</span> <span class="operator">-&gt;</span> <span class="word">new</span><span class="structure">(</span><span class="word">gds</span> <span class="operator">=&gt;</span> <span class="single">'set'</span><span class="operator">,</span>&nbsp;&nbsp;&nbsp;<span class="word">name</span> <span class="operator">=&gt;</span> <span class="single">'temp'</span><span class="operator">,</span>&nbsp;&nbsp;<span class="word">mathexp</span> <span class="operator">=&gt;</span> <span class="number">300</span><span class="structure">)</span><span class="operator">,</span>
+<li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="word">Demeter::GDS</span> <span class="operator">-&gt;</span> <span class="word">new</span><span class="structure">(</span><span class="word">gds</span> <span class="operator">=&gt;</span> <span class="single">'set'</span><span class="operator">,</span>&nbsp;&nbsp;&nbsp;<span class="word">name</span> <span class="operator">=&gt;</span> <span class="single">'sigmm'</span><span class="operator">,</span> <span class="word">mathexp</span> <span class="operator">=&gt;</span> <span class="float">0.00052</span><span class="structure">)</span><span class="operator">,</span>
+<li>&nbsp;&nbsp;&nbsp;&nbsp;<span class="structure">);</span>
+<li>
+<li><span class="keyword">my</span> <span class="symbol">$feff</span> <span class="operator">=</span> <span class="word">Demeter::Feff</span><span class="operator">-&gt;</span><span class="word">new</span><span class="structure">(</span><span class="word">file</span><span class="operator">=&gt;</span><span class="single">'../../cu/orig.inp'</span><span class="operator">,</span> <span class="word">screen</span><span class="operator">=&gt;</span><span class="number">0</span><span class="operator">,</span> <span class="word">workspace</span><span class="operator">=&gt;</span><span class="single">'temp/'</span><span class="structure">);</span>
+<li><span class="symbol">$feff</span> <span class="operator">-&gt;</span> <span class="word">rmax</span><span class="structure">(</span><span class="number">5</span><span class="structure">);</span>
+<li><span class="symbol">$feff</span> <span class="operator">-&gt;</span> <span class="word">run</span><span class="structure">;</span>
+<li><span class="keyword">my</span> <span class="symbol">@sp</span> <span class="operator">=</span> <span class="cast">@</span><span class="structure">{</span> <span class="symbol">$feff</span><span class="operator">-&gt;</span><span class="word">pathlist</span> <span class="structure">};</span>
+<li>
+<li><span class="keyword">my</span> <span class="symbol">@paths</span> <span class="operator">=</span> <span class="structure">();</span>
+<li><span class="keyword">foreach</span> <span class="keyword">my</span> <span class="symbol">$i</span> <span class="structure">(</span><span class="number">0</span> <span class="operator">..</span> <span class="number">4</span><span class="structure">)</span> <span class="structure">{</span>
+<li>&nbsp;&nbsp;<span class="symbol">$paths</span><span class="structure">[</span><span class="symbol">$i</span><span class="structure">]</span> <span class="operator">=</span> <span class="word">Demeter::Path</span> <span class="operator">-&gt;</span> <span class="word">new</span><span class="structure">();</span>
+<li>&nbsp;&nbsp;<span class="symbol">$paths</span><span class="structure">[</span><span class="symbol">$i</span><span class="structure">]</span><span class="operator">-&gt;</span><span class="word">set</span><span class="structure">(</span><span class="word">data</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="operator">=&gt;</span> <span class="symbol">$data</span><span class="operator">,</span>
+<li>&nbsp;&nbsp;&nbsp;&nbsp;<span class="word">sp</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="operator">=&gt;</span> <span class="symbol">$sp</span><span class="structure">[</span><span class="symbol">$i</span><span class="structure">]</span><span class="operator">,</span>
+<li>&nbsp;&nbsp;&nbsp;&nbsp;<span class="word">s02</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="operator">=&gt;</span> <span class="single">'amp'</span><span class="operator">,</span>
+<li>&nbsp;&nbsp;&nbsp;&nbsp;<span class="word">e0</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="operator">=&gt;</span> <span class="single">'enot'</span><span class="operator">,</span>
+<li>&nbsp;&nbsp;&nbsp;&nbsp;<span class="word">delr</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="operator">=&gt;</span> <span class="single">'alpha*reff'</span><span class="operator">,</span>
+<li>&nbsp;&nbsp;&nbsp;&nbsp;<span class="word">sigma2</span>&nbsp;&nbsp;&nbsp;<span class="operator">=&gt;</span> <span class="single">'debye(temp, theta) + sigmm'</span><span class="operator">,</span>
+<li>&nbsp;&nbsp;&nbsp;<span class="structure">);</span>
+<li><span class="structure">};</span>
+<li>
+<li><span class="keyword">my</span> <span class="symbol">$fit</span> <span class="operator">=</span> <span class="word">Demeter::Fit</span> <span class="operator">-&gt;</span> <span class="word">new</span><span class="structure">(</span><span class="word">gds</span>&nbsp;&nbsp;&nbsp;<span class="operator">=&gt;</span> <span class="cast">\</span><span class="symbol">@gds</span><span class="operator">,</span>
+<li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="word">data</span>&nbsp;&nbsp;<span class="operator">=&gt;</span> <span class="structure">[</span><span class="symbol">$data</span><span class="structure">]</span><span class="operator">,</span>
+<li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="word">paths</span> <span class="operator">=&gt;</span> <span class="cast">\</span><span class="symbol">@paths</span>
+<li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="structure">);</span>
+<li>
+<li><span class="symbol">$fit</span> <span class="operator">-&gt;</span> <span class="word">fit</span><span class="structure">;</span>
+<li>
+<li><span class="comment">## plot normally using gnuplot
+<li></span><span class="symbol">$data</span><span class="operator">-&gt;</span><span class="word">po</span><span class="operator">-&gt;</span><span class="word">set</span><span class="structure">(</span><span class="word">plot_data</span> <span class="operator">=&gt;</span> <span class="number">1</span><span class="operator">,</span> <span class="word">plot_fit</span>&nbsp;&nbsp;<span class="operator">=&gt;</span> <span class="number">1</span><span class="operator">,</span>
+<li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="word">plot_bkg</span>&nbsp;&nbsp;<span class="operator">=&gt;</span> <span class="number">0</span><span class="operator">,</span> <span class="word">plot_res</span>&nbsp;&nbsp;<span class="operator">=&gt;</span> <span class="number">0</span><span class="operator">,</span>
+<li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="word">plot_win</span>&nbsp;&nbsp;<span class="operator">=&gt;</span> <span class="number">1</span><span class="operator">,</span> <span class="word">plot_run</span>&nbsp;&nbsp;<span class="operator">=&gt;</span> <span class="number">0</span><span class="operator">,</span>
+<li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="word">kweight</span>&nbsp;&nbsp;&nbsp;<span class="operator">=&gt;</span> <span class="number">2</span><span class="operator">,</span>
+<li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="word">r_pl</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="operator">=&gt;</span> <span class="single">'m'</span><span class="operator">,</span> <span class="single">'q_pl'</span>&nbsp;&nbsp;&nbsp;&nbsp;<span class="operator">=&gt;</span> <span class="single">'r'</span><span class="operator">,</span>
+<li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="structure">);</span>
+<li><span class="symbol">$data</span><span class="operator">-&gt;</span><span class="word">po</span><span class="operator">-&gt;</span><span class="word">space</span><span class="structure">(</span><span class="single">'R'</span><span class="structure">);</span>
+<li><span class="symbol">$data</span> <span class="operator">-&gt;</span> <span class="word">plot_with</span><span class="structure">(</span><span class="single">'gnuplot'</span><span class="structure">);</span>
+<li><span class="keyword">my</span> <span class="symbol">$step</span> <span class="operator">=</span> <span class="number">0</span><span class="structure">;</span>&nbsp;&nbsp;<span class="comment"># stack the plot interestingly...</span>
+<li><span class="keyword">foreach</span> <span class="keyword">my</span> <span class="symbol">$obj</span> <span class="structure">(</span><span class="symbol">$data</span><span class="operator">,</span> <span class="symbol">@paths</span><span class="operator">,</span><span class="structure">)</span> <span class="structure">{</span>
+<li>&nbsp;&nbsp;<span class="symbol">$obj</span> <span class="operator">-&gt;</span> <span class="word">plot</span><span class="structure">;</span>
+<li>&nbsp;&nbsp;<span class="symbol">$step</span> <span class="operator">-=</span> <span class="float">0.8</span><span class="structure">;</span>
+<li>&nbsp;&nbsp;<span class="symbol">$data</span> <span class="operator">-&gt;</span> <span class="word">y_offset</span><span class="structure">(</span><span class="symbol">$step</span><span class="structure">);</span>
+<li><span class="structure">};</span>
+<li><span class="symbol">$data</span> <span class="operator">-&gt;</span> <span class="word">y_offset</span><span class="structure">(</span><span class="number">0</span><span class="structure">);</span>
+<li><span class="symbol">$data</span> <span class="operator">-&gt;</span> <span class="word">pause</span><span class="structure">;</span>
+<li>
+<li><span class="comment">## replicate that plot in a single file
+<li></span><span class="symbol">$data</span><span class="operator">-&gt;</span><span class="word">plot_with</span><span class="structure">(</span><span class="single">'singlefile'</span><span class="structure">);</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment"># 1: switch to single file backend</span>
+<li><span class="symbol">$data</span> <span class="operator">-&gt;</span> <span class="word">po</span> <span class="operator">-&gt;</span> <span class="word">prep</span><span class="structure">(</span><span class="word">file</span><span class="operator">=&gt;</span><span class="single">'nifty_plot.dat'</span><span class="operator">,</span> <span class="word">standard</span><span class="operator">=&gt;</span><span class="symbol">$data</span><span class="operator">,</span> <span class="word">space</span><span class="operator">=&gt;</span><span class="single">'R'</span><span class="structure">);</span>
+<li>
+<li><span class="symbol">$step</span> <span class="operator">=</span> <span class="number">0</span><span class="structure">;</span>
+<li><span class="keyword">foreach</span> <span class="keyword">my</span> <span class="symbol">$obj</span> <span class="structure">(</span><span class="symbol">$data</span><span class="operator">,</span> <span class="symbol">@paths</span><span class="operator">,</span><span class="structure">)</span> <span class="structure">{</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment"># 5: make the plot</span>
+<li>&nbsp;&nbsp;<span class="symbol">$obj</span> <span class="operator">-&gt;</span> <span class="word">plot</span><span class="structure">;</span>
+<li>&nbsp;&nbsp;<span class="symbol">$step</span> <span class="operator">-=</span> <span class="float">0.8</span><span class="structure">;</span>
+<li>&nbsp;&nbsp;<span class="symbol">$data</span> <span class="operator">-&gt;</span> <span class="word">y_offset</span><span class="structure">(</span><span class="symbol">$step</span><span class="structure">);</span>
+<li><span class="structure">};</span>
+<li><span class="symbol">$data</span> <span class="operator">-&gt;</span> <span class="word">y_offset</span><span class="structure">(</span><span class="number">0</span><span class="structure">);</span>
+<li><span class="symbol">$data</span> <span class="operator">-&gt;</span> <span class="word">po</span> <span class="operator">-&gt;</span> <span class="word">finish</span><span class="structure">;</span>
+<li><span class="symbol">$data</span> <span class="operator">-&gt;</span> <span class="word">unset_standard</span><span class="structure">;</span>
+</ol>
+</pre>
+
+<p>
+
+Note that at line 68, some additional information is provided to make
+the SingleFile output, including the name of the output file.  A Data
+object with data included in the file is set as the SingleFile
+standard.  The x-axis in the file will be the x-axis of that Dtaa
+object.  in the case of a plot in energy, all other data will be
+interpolated onto that energy grid.
+</p>
+
+<p>
+The plot is then remade at lines 70-76.  The 
+<tt>finish</tt> method is called at line 77 to
+actually write out the file.  It is good practice to unset the
+standard, as at line 78, to avoid future confusion.
+</p>
+
+<p>
+The <tt>prep</tt> method at line 68 is a
+convenience method which does the following:
+</p>
+
+
+<ol class=perlsample>
+<br />
+&nbsp;&nbsp;<span class="symbol">$data</span><span class="operator">-&gt;</span><span class="word">po</span><span class="operator">-&gt;</span><span class="word">space</span><span class="structure">(</span><span class="single">'R'</span><span class="structure">);</span><br />
+&nbsp;&nbsp;<span class="symbol">$data</span><span class="operator">-&gt;</span><span class="word">standard</span><span class="structure">;</span><br />
+&nbsp;&nbsp;<span class="symbol">$data</span><span class="operator">-&gt;</span><span class="word">po</span><span class="operator">-&gt;</span><span class="word">file</span><span class="structure">(</span><span class="single">'nifty_plot.dat'</span><span class="structure">);</span><br />
+&nbsp;&nbsp;<span class="symbol">$data</span><span class="operator">-&gt;</span><span class="word">po</span><span class="operator">-&gt;</span><span class="word">start_plot</span><span class="structure">;</span>
+</ol>
+
+<a name="otheroddsandends">
+
+<h3>  Other odds and ends</h3>
+</a>
+
+
+<p>
+
+The <tt>plotkey</tt> atribute of the Data object is
+a convenient way to override the label of a plotted object.  Normally,
+the <tt>name</tt> attribute is used for this
+purpose, but it is sometimes useful to not rename an object but still
+provide a specific bit of text to use as a plotting label.
+</p>
+
+<br />
+<hr class=hide />
+
+<div class=bottombar>
+  <div class=navbar>
+  <table class=navtable>
+    <tr>
+      <td align=left>
+        [&nbsp;<a href="../index.html">Home</a>&nbsp;] &nbsp;&nbsp;
+        [&nbsp;<a href="http://cars9.uchicago.edu/iffwiki/Demeter"><span class=programlink>DEMETER</span></a>&nbsp;] &nbsp;&nbsp;
+        [&nbsp;<a href="http://cars9.uchicago.edu/iffwiki/Ifeffit"><span class=programlink>IFEFFIT</span></a>&nbsp;] &nbsp;&nbsp;
+        [&nbsp;<a href="http://leonardo.phys.washington.edu/feff/wiki/index.php?title=FEFF_Documentation"><span class=programlink>FEFF</span></a>&nbsp;] &nbsp;&nbsp;
+        [&nbsp;<a href="http://xafs.org">xafs.org</a>&nbsp;] &nbsp;&nbsp;
+	[&nbsp;<a href="../demeter.pdf">PDF&nbsp;doc</a>&nbsp;]
+      </td>
+      <td align=right>
+        Back: <a href="../data/other.html" class="menu" >Handling arbitrary data</a>
+        
+        &nbsp;&nbsp;
+        Up: <a href="../data/index.html" class="menu" >Importing data</a>      </td>
+    </tr>
+  </table>
+  </div>
+  <div class=copyright>
+   <span class=program>DEMETER</span> is copyright &copy; 2009-2010 Bruce Ravel
+  <br />
+  This document is copyright &copy; 2010 Bruce Ravel
+  <br />
+  email: (bravel |A|T| bnl |D|O|T| gov)
+  <br />
+  
+  <a href="http://creativecommons.org/licenses/by-sa/3.0/"><img src="../../images/somerights20.png" width="88" height="31" alt="" border="0" /></a> &nbsp;&nbsp;&nbsp;
+  <br />
+  This document is licensed under <a href="http://creativecommons.org/licenses/by-sa/3.0/">
+  The Creative Commons Attribution-ShareAlike License</a>.
+  <br />
+  If  <span class=program>DEMETER</span> and this document are useful to you, please consider
+  <a href="http://creativecommons.org/support/">supporting The Creative Commons</a>.
+</div>
+</div>
+  </body>
+</html>

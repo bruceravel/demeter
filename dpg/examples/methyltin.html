@@ -1,0 +1,387 @@
+<!DOCTYPE HTMP PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <title>Methyltin chloride</title>
+    <link rel="stylesheet" href=../ab.css />
+    <link rel="stylesheet" href=../ppi.css />
+    <meta http-equiv="Content-Type" content="text/html"; charset=iso-8859-15 />
+    <meta name="robots" contents="all" />
+  </head>
+
+  <body>
+    <div class=topbar>
+  <div class=navbar>
+  <table class=navtable>
+    <tr>
+      <td align=left>
+        [&nbsp;<a href="../index.html">Home</a>&nbsp;] &nbsp;&nbsp;
+        [&nbsp;<a href="http://cars9.uchicago.edu/iffwiki/Demeter"><span class=programlink>DEMETER</span></a>&nbsp;] &nbsp;&nbsp;
+        [&nbsp;<a href="http://cars9.uchicago.edu/iffwiki/Ifeffit"><span class=programlink>IFEFFIT</span></a>&nbsp;] &nbsp;&nbsp;
+        [&nbsp;<a href="http://leonardo.phys.washington.edu/feff/wiki/index.php?title=FEFF_Documentation"><span class=programlink>FEFF</span></a>&nbsp;] &nbsp;&nbsp;
+        [&nbsp;<a href="http://xafs.org">xafs.org</a>&nbsp;] &nbsp;&nbsp;
+	[&nbsp;<a href="../demeter.pdf">PDF&nbsp;doc</a>&nbsp;]
+      </td>
+      <td align=right>
+        Next: <a href="../examples/agau.html" class="menu" >Silver/gold alloy</a>
+        &nbsp;&nbsp;
+        Up: <a href="../examples/index.html" class="menu" >Full examples</a>      </td>
+    </tr>
+  </table>
+  </div>
+  <h1>
+  Methyltin chloride
+</h1>
+<h2>
+  Using object cloning, multiple data sets, and multiple k-weights 
+</h2>
+</div>
+
+<hr class=hide />
+
+
+<div class=sidebar>
+  <a href="../ceres.html"><img src=../../images/Isis-Sothis-Demeter_sm.jpg
+    width=100% border=0 alt='[Demeter logo]'></a>
+  <br />
+  <a href="../index.html" class="menu" >Home</a><br />
+<a href="../intro.html" class="menu" >Introduction</a><br />
+<a href="../data/index.html" class="menu" >Importing data</a><br />
+<a href="../mue/index.html" class="menu" >Processing mu(E) data</a><br />
+<a href="../xanes/index.html" class="menu" >Analysis of XANES data</a><br />
+<a href="../highlevel/index.html" class="menu" >High level actions for Demeter objects</a><br />
+<a href="../atoms/index.html" class="menu" >Atoms</a><br />
+<a href="../feff/index.html" class="menu" >Feff</a><br />
+<a href="../paths/index.html" class="menu" >Scattering paths</a><br />
+<a href="../gds/index.html" class="menu" >Guess/Def/Set parameters</a><br />
+<a href="../fit/index.html" class="menu" >Fitting EXAFS data</a><br />
+<a href="../perl/index.html" class="menu" >Using perl to create a fitting model</a><br />
+<a href="../lgcv.html" class="menu" >Local guess parameters and the characteristic value</a><br />
+<a href="../pathlike/index.html" class="menu" >Path-like objects</a><br />
+<a href="../su.html" class="menu" >Structural Units</a><br />
+<a href="../ui.html" class="menu" >User interfaces</a><br />
+<a href="../output.html" class="menu" >Output formats</a><br />
+<br />
+<a href="../examples/index.html" class="menuselect" >Full examples</a><br />
+&nbsp;-&nbsp;<a href="../examples/methyltin.html" class="menuselect" >Methyltin chloride</a><br />
+&nbsp;-&nbsp;<a href="../examples/agau.html" class="menu" >Silver/gold alloy</a><br />
+&nbsp;-&nbsp;<a href="../examples/uranyl.html" class="menu" >Uranyl complex in solution</a><br />
+&nbsp;-&nbsp;<a href="../examples/histo.html" class="menu" >Histogram</a><br /><br />
+</div>
+
+<p>
+
+This example will deomnstrate several features of  <span class=program>DEMETER</span>,
+including object cloning, multiple data set fitting, and multiple
+k-weights in a fit.  The data are dimethyl tin dichloride and
+monomethyl tin trichloride, both in solution.  These organic tin
+compounds consist of a tin atom surrounded tetrahedrally by chlorine
+atoms and methyl ( CH<sub>3</sub>       ) groups.
+</p>
+
+<p>
+Obviously, this is not a crystal.  To start, I found structural
+information for the dimethyltin molecule in the form of a Protein
+Databank File.  This is shown here:
+</p>
+
+
+<pre>COMPND    5261536
+HETATM    1  C1  LIG     1      -0.027   2.146   0.014  1.00  0.00
+HETATM    2 SN2  LIG     1       0.002  -0.004   0.002  1.00  0.00
+HETATM    3  C3  LIG     1       1.042  -0.716   1.744  1.00  0.00
+HETATM    4 CL4  LIG     1      -2.212  -0.821   0.019  1.00  0.00
+HETATM    5 CL5  LIG     1       1.107  -0.765  -1.940  1.00  0.00
+HETATM    6 1H1  LIG     1       0.996   2.523   0.006  1.00  0.00
+HETATM    7 2H1  LIG     1      -0.554   2.507  -0.869  1.00  0.00
+HETATM    8 3H1  LIG     1      -0.537   2.497   0.911  1.00  0.00
+HETATM    9 1H3  LIG     1       0.532  -0.365   2.641  1.00  0.00
+HETATM   10 2H3  LIG     1       1.057  -1.806   1.738  1.00  0.00
+HETATM   11 3H3  LIG     1       2.065  -0.339   1.736  1.00  0.00
+END
+</pre>
+
+<table>
+<tr>
+<td>
+<p>
+
+This structure is shown here as a ball-and-stick figure.  The
+monomethyl tin looks just like this, except that one of the methyl
+groups is replaced by another chlorine atoms.
+</p>
+
+</td>
+<td width=512>
+<a href="../../images/dimethyltin.png" target=_blank><img border=0 src="../../images/dimethyltin.png" alt="dimethyltin.png" width=100%></a>
+</td>
+</tr>
+</table>
+
+<p>
+
+This is simply converted to a <span class=file>feff.inp</span>
+file by cutting and pasting the atomic coordinates and lfleshing out
+the input file with a potentials list and  <span class=program>FEFF</span> boilerplate.
+Note that the central atom need not be at (0,0,0) nor does it need to
+be the first item in the atoms list.  To constrain the muffin tin
+potentials abd assure physically reasonable muffin tin radii, it might
+be prudent to insert a shell of waters around the molecule.  Without
+some theoretical (molecular dynamics, for instance) help, doing so
+would be pretty ad hoc.  Not doing so is certainly the simplest way to
+proceed, so let's do that.  The <span class=file>feff.inp</span>
+is shown here:
+</p>
+
+
+<pre> TITLE dimethyltin dichloride
+
+ HOLE 1   1.0 
+
+ *         mphase,mpath,mfeff,mchi
+ CONTROL   1      1     1     1
+ PRINT     1      0     0     0
+
+ RMAX        6.0
+ NLEG         4
+
+ POTENTIALS
+ *    ipot   Z  element
+        0   50   Sn        
+        1   17   Cl
+        2    6   C
+        3    1   H
+
+ ATOMS
+ *   x          y          z  
+   -0.027   2.146   0.014  2
+    0.002  -0.004   0.002  0
+    1.042  -0.716   1.744  2
+   -2.212  -0.821   0.019  1
+    1.107  -0.765  -1.940  1
+    0.996   2.523   0.006  3
+   -0.554   2.507  -0.869  3
+   -0.537   2.497   0.911  3
+    0.532  -0.365   2.641  3
+    1.057  -1.806   1.738  3
+    2.065  -0.339   1.736  3
+</pre>
+
+<p>
+
+Armed with a <span class=file>feff.inp</span> file, we are ready
+to proceed with the fit.
+</p>
+
+
+
+<pre class=olscript>
+<ol class=perlblock>
+<li><span class="comment">#!/usr/bin/perl
+<li></span><span class="keyword">use</span> <span class="word">Demeter</span> <span class="words">qw(:ui=screen :plotwith=gnuplot)</span><span class="structure">;</span>
+<li>
+<li><span class="comment">## -------- Import data from a project file
+<li></span><span class="keyword">my</span> <span class="symbol">$prj</span> <span class="operator">=</span> <span class="word">Demeter::Data::Prj</span><span class="operator">-&gt;</span><span class="word">new</span><span class="structure">(</span><span class="word">file</span><span class="operator">=&gt;</span><span class="single">'methyltin.prj'</span><span class="structure">);</span>
+<li><span class="keyword">my</span> <span class="symbol">@common</span> <span class="operator">=</span> <span class="structure">(</span><span class="word">fft_kmin</span> <span class="operator">=&gt;</span> <span class="number">2</span><span class="operator">,</span> <span class="word">fft_kmax</span> <span class="operator">=&gt;</span> <span class="float">10.5</span><span class="operator">,</span>
+<li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="word">bft_rmin</span> <span class="operator">=&gt;</span> <span class="number">1</span><span class="operator">,</span> <span class="word">bft_rmax</span> <span class="operator">=&gt;</span> <span class="float">2.4</span><span class="operator">,</span>
+<li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="word">fit_k1</span>&nbsp;&nbsp;&nbsp;<span class="operator">=&gt;</span> <span class="number">1</span><span class="operator">,</span> <span class="word">fit_k2</span>&nbsp;&nbsp;&nbsp;<span class="operator">=&gt;</span> <span class="number">1</span><span class="operator">,</span>&nbsp;&nbsp;&nbsp;&nbsp;<span class="word">fit_k3</span> <span class="operator">=&gt;</span> <span class="number">1</span><span class="structure">);</span>
+<li><span class="keyword">my</span> <span class="symbol">$mmt</span> <span class="operator">=</span> <span class="symbol">$prj</span><span class="operator">-&gt;</span><span class="word">record</span><span class="structure">(</span><span class="number">1</span><span class="structure">);</span>
+<li><span class="symbol">$mmt</span> <span class="operator">-&gt;</span> <span class="word">set</span><span class="structure">(</span><span class="word">name</span> <span class="operator">=&gt;</span> <span class="double">&quot;Monomethyltin trichloride&quot;</span><span class="operator">,</span> <span class="symbol">@common</span><span class="structure">);</span>
+<li><span class="keyword">my</span> <span class="symbol">$dmt</span> <span class="operator">=</span> <span class="symbol">$prj</span><span class="operator">-&gt;</span><span class="word">record</span><span class="structure">(</span><span class="number">2</span><span class="structure">);</span>
+<li><span class="symbol">$dmt</span> <span class="operator">-&gt;</span> <span class="word">set</span><span class="structure">(</span><span class="word">name</span> <span class="operator">=&gt;</span> <span class="double">&quot;Dimethyltin dichloride&quot;</span><span class="operator">,</span> <span class="symbol">@common</span><span class="structure">);</span>
+<li>
+<li><span class="comment">## -------- make a Feff calculation
+<li></span><span class="keyword">my</span> <span class="symbol">$feff</span> <span class="operator">=</span> <span class="word">Demeter::Feff</span><span class="operator">-&gt;</span><span class="word">new</span><span class="structure">(</span><span class="word">file</span><span class="operator">=&gt;</span><span class="single">'methyltin.inp'</span><span class="structure">);</span>
+<li><span class="symbol">$feff</span> <span class="operator">-&gt;</span> <span class="word">set</span><span class="structure">(</span><span class="word">workspace</span><span class="operator">=&gt;</span><span class="single">'feff'</span><span class="operator">,</span> <span class="word">screen</span><span class="operator">=&gt;</span><span class="number">0</span><span class="structure">);</span>
+<li><span class="symbol">$feff</span> <span class="operator">-&gt;</span> <span class="word">make_workspace</span><span class="structure">;</span>
+<li><span class="symbol">$feff</span> <span class="operator">-&gt;</span> <span class="word">run</span><span class="structure">;</span>
+<li><span class="keyword">my</span> <span class="symbol">@list</span> <span class="operator">=</span> <span class="symbol">$feff</span> <span class="operator">-&gt;</span> <span class="word">list_of_paths</span><span class="structure">;</span>
+<li>
+<li><span class="comment">## -------- make some guess parameters
+<li></span><span class="keyword">my</span> <span class="symbol">@gds</span> <span class="operator">=</span> <span class="structure">(</span><span class="word">Demeter::GDS</span><span class="operator">-&gt;</span><span class="word">new</span><span class="structure">(</span><span class="word">name</span><span class="operator">=&gt;</span><span class="single">'amp'</span><span class="operator">,</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="word">gds</span><span class="operator">=&gt;</span><span class="single">'guess'</span><span class="operator">,</span> <span class="word">mathexp</span><span class="operator">=&gt;</span><span class="number">1</span><span class="structure">)</span><span class="operator">,</span>
+<li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="word">Demeter::GDS</span><span class="operator">-&gt;</span><span class="word">new</span><span class="structure">(</span><span class="word">name</span><span class="operator">=&gt;</span><span class="single">'enot'</span><span class="operator">,</span>&nbsp;&nbsp;&nbsp;&nbsp;<span class="word">gds</span><span class="operator">=&gt;</span><span class="single">'guess'</span><span class="operator">,</span> <span class="word">mathexp</span><span class="operator">=&gt;</span><span class="number">0</span><span class="structure">)</span><span class="operator">,</span>
+<li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="word">Demeter::GDS</span><span class="operator">-&gt;</span><span class="word">new</span><span class="structure">(</span><span class="word">name</span><span class="operator">=&gt;</span><span class="single">'delr_c'</span><span class="operator">,</span>&nbsp;&nbsp;<span class="word">gds</span><span class="operator">=&gt;</span><span class="single">'guess'</span><span class="operator">,</span> <span class="word">mathexp</span><span class="operator">=&gt;</span><span class="number">0</span><span class="structure">)</span><span class="operator">,</span>
+<li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="word">Demeter::GDS</span><span class="operator">-&gt;</span><span class="word">new</span><span class="structure">(</span><span class="word">name</span><span class="operator">=&gt;</span><span class="single">'ss_c'</span><span class="operator">,</span>&nbsp;&nbsp;&nbsp;&nbsp;<span class="word">gds</span><span class="operator">=&gt;</span><span class="single">'guess'</span><span class="operator">,</span> <span class="word">mathexp</span><span class="operator">=&gt;</span><span class="float">0.003</span><span class="structure">)</span><span class="operator">,</span>
+<li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="word">Demeter::GDS</span><span class="operator">-&gt;</span><span class="word">new</span><span class="structure">(</span><span class="word">name</span><span class="operator">=&gt;</span><span class="single">'delr_cl'</span><span class="operator">,</span> <span class="word">gds</span><span class="operator">=&gt;</span><span class="single">'guess'</span><span class="operator">,</span> <span class="word">mathexp</span><span class="operator">=&gt;</span><span class="number">0</span><span class="structure">)</span><span class="operator">,</span>
+<li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="word">Demeter::GDS</span><span class="operator">-&gt;</span><span class="word">new</span><span class="structure">(</span><span class="word">name</span><span class="operator">=&gt;</span><span class="single">'ss_cl'</span><span class="operator">,</span>&nbsp;&nbsp;&nbsp;<span class="word">gds</span><span class="operator">=&gt;</span><span class="single">'guess'</span><span class="operator">,</span> <span class="word">mathexp</span><span class="operator">=&gt;</span><span class="float">0.003</span><span class="structure">)</span><span class="operator">,</span>
+<li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="structure">);</span>
+<li>
+<li><span class="comment">## -------- define some paths
+<li></span><span class="keyword">my</span> <span class="symbol">@paths</span> <span class="operator">=</span> <span class="structure">(</span><span class="word">Demeter::Path</span><span class="operator">-&gt;</span><span class="word">new</span><span class="structure">(</span><span class="word">name</span>&nbsp;&nbsp;&nbsp;&nbsp;<span class="operator">=&gt;</span> <span class="double">&quot;carbon neighbor&quot;</span><span class="operator">,</span>
+<li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="word">sp</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="operator">=&gt;</span> <span class="symbol">$list</span><span class="structure">[</span><span class="number">0</span><span class="structure">]</span><span class="operator">,</span>
+<li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="word">parent</span>&nbsp;&nbsp;<span class="operator">=&gt;</span> <span class="symbol">$feff</span><span class="operator">,</span>
+<li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="word">data</span>&nbsp;&nbsp;&nbsp;&nbsp;<span class="operator">=&gt;</span> <span class="symbol">$dmt</span><span class="operator">,</span>
+<li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="word">n</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="operator">=&gt;</span> <span class="number">2</span><span class="operator">,</span>
+<li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="word">s02</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="operator">=&gt;</span> <span class="single">'amp'</span><span class="operator">,</span>
+<li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="word">e0</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="operator">=&gt;</span> <span class="single">'enot'</span><span class="operator">,</span>
+<li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="word">delr</span>&nbsp;&nbsp;&nbsp;&nbsp;<span class="operator">=&gt;</span> <span class="single">'delr_c'</span><span class="operator">,</span>
+<li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="word">sigma2</span>&nbsp;&nbsp;<span class="operator">=&gt;</span> <span class="single">'ss_c'</span><span class="operator">,</span><span class="structure">)</span><span class="operator">,</span>
+<li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="word">Demeter::Path</span><span class="operator">-&gt;</span><span class="word">new</span><span class="structure">(</span><span class="word">name</span>&nbsp;&nbsp;&nbsp;&nbsp;<span class="operator">=&gt;</span> <span class="double">&quot;chlorine neighbor&quot;</span><span class="operator">,</span>
+<li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="word">sp</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="operator">=&gt;</span> <span class="symbol">$list</span><span class="structure">[</span><span class="number">1</span><span class="structure">]</span><span class="operator">,</span>
+<li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="word">parent</span>&nbsp;&nbsp;<span class="operator">=&gt;</span> <span class="symbol">$feff</span><span class="operator">,</span>
+<li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="word">data</span>&nbsp;&nbsp;&nbsp;&nbsp;<span class="operator">=&gt;</span> <span class="symbol">$dmt</span><span class="operator">,</span>
+<li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="word">n</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="operator">=&gt;</span> <span class="number">2</span><span class="operator">,</span>
+<li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="word">s02</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="operator">=&gt;</span> <span class="single">'amp'</span><span class="operator">,</span>
+<li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="word">e0</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="operator">=&gt;</span> <span class="single">'enot'</span><span class="operator">,</span>
+<li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="word">delr</span>&nbsp;&nbsp;&nbsp;&nbsp;<span class="operator">=&gt;</span> <span class="single">'delr_cl'</span><span class="operator">,</span>
+<li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="word">sigma2</span>&nbsp;&nbsp;<span class="operator">=&gt;</span> <span class="single">'ss_cl'</span><span class="operator">,</span><span class="structure">)</span>
+<li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="structure">);</span>
+<li><span class="word">push</span> <span class="symbol">@paths</span><span class="operator">,</span> <span class="symbol">$paths</span><span class="structure">[</span><span class="number">0</span><span class="structure">]</span><span class="operator">-&gt;</span><span class="word">clone</span><span class="structure">(</span><span class="word">n</span><span class="operator">=&gt;</span><span class="number">1</span><span class="operator">,</span> <span class="word">data</span><span class="operator">=&gt;</span><span class="symbol">$mmt</span><span class="structure">);</span>
+<li><span class="word">push</span> <span class="symbol">@paths</span><span class="operator">,</span> <span class="symbol">$paths</span><span class="structure">[</span><span class="number">1</span><span class="structure">]</span><span class="operator">-&gt;</span><span class="word">clone</span><span class="structure">(</span><span class="word">n</span><span class="operator">=&gt;</span><span class="number">3</span><span class="operator">,</span> <span class="word">data</span><span class="operator">=&gt;</span><span class="symbol">$mmt</span><span class="structure">);</span>
+<li>
+<li><span class="comment">## -------- and fit!
+<li></span><span class="keyword">my</span> <span class="symbol">$fit</span> <span class="operator">=</span> <span class="word">Demeter::Fit</span><span class="operator">-&gt;</span><span class="word">new</span><span class="structure">(</span><span class="word">data</span>&nbsp;&nbsp;<span class="operator">=&gt;</span> <span class="structure">[</span><span class="symbol">$dmt</span><span class="operator">,</span> <span class="symbol">$mmt</span><span class="structure">]</span><span class="operator">,</span>
+<li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="word">paths</span> <span class="operator">=&gt;</span> <span class="cast">\</span><span class="symbol">@paths</span><span class="operator">,</span>
+<li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="word">gds</span>&nbsp;&nbsp;&nbsp;<span class="operator">=&gt;</span> <span class="cast">\</span><span class="symbol">@gds</span><span class="structure">);</span>
+<li><span class="symbol">$fit</span> <span class="operator">-&gt;</span> <span class="word">fit</span><span class="structure">;</span>
+<li><span class="symbol">$fit</span> <span class="operator">-&gt;</span> <span class="word">interview</span><span class="structure">;</span>
+</ol>
+</pre>
+
+<p>
+
+The data on the two methyltin molecules is imported from an  <span class=program>ATHENA</span>
+project file at lines 5-12.  The  <span class=program>FEFF</span> calculation is made at
+lines 15-18 and the list of ScatteringPath objects is imported at line
+19 using the <tt>list_of_path</tt> method, which is
+a convenience method which returns a list rather than a reference to a
+list.  The ScatteringPath object representing scattering from the
+carboin atom in the methyl group is the first item in this list, the
+ScatteringPath for the chlorine atom is the second item in this list.
+</p>
+
+<p>
+At lines 31-49, these two paths are parameterized and assigned to the
+dimethyl tin data.  At lines 50 and 51, these two paths are cloned and
+assigned to the monomethyl tin data.  The <tt>n</tt>
+attributes of the two cloned paths are set to 1 and 4 -- appropriate
+for the monomethyl tin trichloride.
+</p>
+
+<p>
+This is a fairly simple fitting model that assumes that the
+tin-carbon and tin-chlorine bonds behave identically for each
+molecule.  This simple assumption is made by changing the 
+<tt>n</tt> attributes of the cloned paths, but not
+any of the other path parameters.  Of course, new GDS parameters could
+be introduced to the fit to lift this constraint and explore that
+assumption. 
+</p>
+
+<p>
+Finally, note that all three values for the fitting k-weights are
+used.  This is indicated at line 8 then applied to both Data objects
+at lines 10 and 12.  Doing a multiple k-weight fit is really that easy.
+</p>
+
+
+
+<table>
+<tr>
+<td>
+<p>
+
+The lines below replaced the <tt>interview</tt> method 
+to produce this plot of the result of the fit.  Note the Data and Path
+objects  are conveniently wrapped up in a 
+<tt>foreach</tt> loop.  The plotting syntax is
+transparent for these two object types and the
+Path objects use the <tt>y_offset</tt> attribute of
+the associated Data object.  This is one of the reasons why every Path
+must have an associated Data object.
+<ol class=perlsample>
+<br />
+&nbsp;&nbsp;<span class="symbol">$fit</span><span class="operator">-&gt;</span> <span class="word">po</span> <span class="operator">-&gt;</span> <span class="word">set</span><span class="structure">(</span><span class="word">plot_fit</span> <span class="operator">=&gt;</span>&nbsp;&nbsp;<span class="number">1</span><span class="operator">,</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="word">r_pl</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="operator">=&gt;</span> <span class="single">'m'</span><span class="operator">,</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="word">kweight</span>&nbsp;&nbsp;<span class="operator">=&gt;</span>&nbsp;&nbsp;<span class="number">2</span><span class="structure">);</span><br />
+&nbsp;&nbsp;<span class="symbol">$mmt</span><span class="operator">-&gt;</span> <span class="word">y_offset</span><span class="structure">(</span><span class="float">1.0</span><span class="structure">);</span><br />
+&nbsp;&nbsp;<span class="magic">$_</span>&nbsp;&nbsp;<span class="operator">-&gt;</span> <span class="word">plot</span><span class="structure">(</span><span class="single">'r'</span><span class="structure">)</span> <span class="word">foreach</span> <span class="structure">(</span><span class="symbol">$dmt</span><span class="operator">,</span> <span class="symbol">@paths</span><span class="structure">[</span><span class="number">0</span><span class="operator">,</span><span class="number">1</span><span class="structure">]</span><span class="operator">,</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="symbol">$mmt</span><span class="operator">,</span> <span class="symbol">@paths</span><span class="structure">[</span><span class="number">2</span><span class="operator">,</span><span class="number">3</span><span class="structure">]);</span><br />
+&nbsp;&nbsp;<span class="symbol">$mmt</span><span class="operator">-&gt;</span> <span class="word">pause</span><span class="structure">;</span>
+</ol>
+</p>
+
+</td>
+<td width=640>
+<a href="../../images/methyltin_fit.png" target=_blank><img border=0 src="../../images/methyltin_fit.png" alt="methyltin_fit.png" width=100%></a>
+</td>
+</tr>
+</table>
+
+<p>
+
+As a final note, I want to comment on lines 32 and 41 where the 
+<tt>sp</tt> attribute of the Path objects is set to
+the proper ScatteringPath objects from the  <span class=program>FEFF</span> calculation.
+Choosing the correct ScatteringPaths from <tt>@list</tt>
+requires having specific knowledge of the order of the paths from the
+ <span class=program>FEFF</span>'s pathfinder.  That is not difficult to obtain using the 
+<a href="../feff/intrp.html">intrp method</a>
+of the Feff object, however it is something that is difficult to put
+in-line in a script like this.  Of course, in this case, it is fairly
+obvious that the first two paths are the C and Cl single scattering
+paths.  In general, though, it is hard to know a priori the order of
+paths that come from the pathfinder.
+</p>
+
+<p>
+<a href="../paths/semantic.html">Semantic path descriptions</a>
+are the solution to this problem.  In this case, the 
+<tt>find_path</tt> method of the Feff object could
+be used like so:
+</p>
+
+
+<ol class=perlsample>
+<br />
+&nbsp;&nbsp;<span class="symbol">$paths</span><span class="structure">[</span><span class="number">0</span><span class="structure">]</span> <span class="operator">-&gt;</span> <span class="word">set</span><span class="structure">(</span><span class="word">sp</span> <span class="operator">=&gt;</span> <span class="symbol">$feff</span><span class="operator">-&gt;</span><span class="word">find_path</span><span class="structure">(</span><span class="word">tag</span><span class="operator">=&gt;</span><span class="structure">[</span><span class="single">'C'</span><span class="structure">]);</span><br />
+&nbsp;&nbsp;<span class="symbol">$paths</span><span class="structure">[</span><span class="number">1</span><span class="structure">]</span> <span class="operator">-&gt;</span> <span class="word">set</span><span class="structure">(</span><span class="word">sp</span> <span class="operator">=&gt;</span> <span class="symbol">$feff</span><span class="operator">-&gt;</span><span class="word">find_path</span><span class="structure">(</span><span class="word">tag</span><span class="operator">=&gt;</span><span class="structure">[</span><span class="single">'Cl'</span><span class="structure">]);</span>
+</ol>
+
+<p>
+
+The <tt>find_path</tt> method can be relied upon to
+find the correct path regardless of the order of things after the
+pathfinder has done its work.
+</p>
+
+<br />
+<hr class=hide />
+
+<div class=bottombar>
+  <div class=navbar>
+  <table class=navtable>
+    <tr>
+      <td align=left>
+        [&nbsp;<a href="../index.html">Home</a>&nbsp;] &nbsp;&nbsp;
+        [&nbsp;<a href="http://cars9.uchicago.edu/iffwiki/Demeter"><span class=programlink>DEMETER</span></a>&nbsp;] &nbsp;&nbsp;
+        [&nbsp;<a href="http://cars9.uchicago.edu/iffwiki/Ifeffit"><span class=programlink>IFEFFIT</span></a>&nbsp;] &nbsp;&nbsp;
+        [&nbsp;<a href="http://leonardo.phys.washington.edu/feff/wiki/index.php?title=FEFF_Documentation"><span class=programlink>FEFF</span></a>&nbsp;] &nbsp;&nbsp;
+        [&nbsp;<a href="http://xafs.org">xafs.org</a>&nbsp;] &nbsp;&nbsp;
+	[&nbsp;<a href="../demeter.pdf">PDF&nbsp;doc</a>&nbsp;]
+      </td>
+      <td align=right>
+        Next: <a href="../examples/agau.html" class="menu" >Silver/gold alloy</a>
+        &nbsp;&nbsp;
+        Up: <a href="../examples/index.html" class="menu" >Full examples</a>      </td>
+    </tr>
+  </table>
+  </div>
+  <div class=copyright>
+   <span class=program>DEMETER</span> is copyright &copy; 2009-2010 Bruce Ravel
+  <br />
+  This document is copyright &copy; 2010 Bruce Ravel
+  <br />
+  email: (bravel |A|T| bnl |D|O|T| gov)
+  <br />
+  
+  <a href="http://creativecommons.org/licenses/by-sa/3.0/"><img src="../../images/somerights20.png" width="88" height="31" alt="" border="0" /></a> &nbsp;&nbsp;&nbsp;
+  <br />
+  This document is licensed under <a href="http://creativecommons.org/licenses/by-sa/3.0/">
+  The Creative Commons Attribution-ShareAlike License</a>.
+  <br />
+  If  <span class=program>DEMETER</span> and this document are useful to you, please consider
+  <a href="http://creativecommons.org/support/">supporting The Creative Commons</a>.
+</div>
+</div>
+  </body>
+</html>
