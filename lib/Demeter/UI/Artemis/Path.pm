@@ -143,7 +143,7 @@ sub new {
 
   foreach my $k (qw(label n s02 e0 delr sigma2 ei third fourth dphase)) {
     next if (($k eq 'dphase') and (not $this->{datapage}->{data}->co->default('artemis', 'offer_dphase')));
-    my $label = Wx::HyperlinkCtrl -> new($this, -1, $labels{$k}, q{}, wxDefaultPosition, [40,-1] );
+    my $label = Wx::HyperlinkCtrl -> new($this, -1, $labels{$k}, q{}, wxDefaultPosition, [40,-1], wxNO_BORDER );
     $label->{which} = $k;
     $this->{"lab_$k"} = $label;
     my $w = 225;

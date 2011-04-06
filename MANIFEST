@@ -479,7 +479,7 @@ lib/Demeter/share/Demeter_large.png
 lib/Demeter/share/gnuplot_colors.dem
 lib/Demeter/share/ini/10bmmultichannel.ini
 lib/Demeter/share/ini/athena.styles.ini
-lib/Demeter/share/peacock.jpg
+lib/Demeter/share/peacock.jpeg
 lib/Demeter/share/pgplot/grfont.dat
 lib/Demeter/share/pgplot/rgb.txt
 lib/Demeter/share/Readme.fit_serialization
@@ -881,7 +881,7 @@ lib/Demeter/UI/Artemis/Prj.pm
 lib/Demeter/UI/Artemis/Project.pm
 lib/Demeter/UI/Artemis/share/artemis.demeter_conf
 lib/Demeter/UI/Artemis/share/GPL.dem
-lib/Demeter/UI/Artemis/share/temple.jpg
+lib/Demeter/UI/Artemis/share/temple.jpeg
 lib/Demeter/UI/Artemis/share/temple.png
 lib/Demeter/UI/Artemis/ShowText.pm
 lib/Demeter/UI/Artemis/Status.pm
@@ -926,7 +926,7 @@ lib/Demeter/UI/Athena/Replot.pm
 lib/Demeter/UI/Athena/SelfAbsorption.pm
 lib/Demeter/UI/Athena/Series.pm
 lib/Demeter/UI/Athena/share/athena.demeter_conf
-lib/Demeter/UI/Athena/share/Brygos_Painter_lekythos_Athena_holding_spear_MET.jpg
+lib/Demeter/UI/Athena/share/Brygos_Painter_lekythos_Athena_holding_spear_MET.jpeg
 lib/Demeter/UI/Athena/share/GPL.dem
 lib/Demeter/UI/Athena/share/logo.jpg
 lib/Demeter/UI/Athena/share/logo.readme

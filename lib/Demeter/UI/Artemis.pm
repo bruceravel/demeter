@@ -545,9 +545,10 @@ sub fit {
 
     $rframes->{GDS}->fill_results(@gds);
     $rframes->{Log}->{name} = $fit->name;
+    $rframes->{Log}->Show(1);
     $rframes->{Log}->put_log($fit);
     $rframes->{Log}->SetTitle("Artemis [Log] " . $rframes->{main}->{name}->GetValue);
-    $rframes->{Log}->Show(1);
+    $rframes->{Log}->Refresh;
     $rframes->{main}->{log_toggle}->SetValue(1);
 
     ## fill in plotting list
@@ -1118,6 +1119,7 @@ sub status {
             : ($type =~ m{error})  ? $error
 	    :                        $normal;
   $self->{statusbar}->SetBackgroundColour($color);
+  $self->{statusbar}->Refresh;
   $self->{statusbar}->SetStatusText($text);
   return if ($type =~ m{nobuffer});
   $Demeter::UI::Artemis::frames{Status}->put_text($text, $type);
@@ -1173,7 +1175,8 @@ sub SetIndexedData {
 
 sub GetIndexedData {
   my ($clb, $n) = @_;
-  return $clb->{datalist}->[$n];
+  return $clb->{datalist}->[$n]; # if defined($n);
+  #return $clb->{intial};
 };
 
 sub DeleteData {
