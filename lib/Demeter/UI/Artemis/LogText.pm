@@ -60,6 +60,8 @@ sub make_text {
 	      :                                                                                            'normal';
     $color = 'normal' if ((not $Demeter::UI::Artemis::demeter->co->default("artemis", "happiness"))
 			  and ($color eq 'stats'));
+    #local $|=1;
+    #print join("|", $was, $is, $color), $/;
     $location->SetStyle($was, $is, $attr{$color});
   };
   $location->ShowPosition(0);

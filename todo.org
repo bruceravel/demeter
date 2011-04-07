@@ -103,7 +103,7 @@
        + [ ] document
        + [ ] memory usage
 
-** Windows issues [2/14]
+** Windows issues [6/14]
   - [ ] spurious message from clipboard
   - [X] parameter group context menus don't get posted (see http://www.nntp.perl.org/group/perl.wxperl.users/2011/03/msg7929.html)
   - [ ] the frickin' Gnuplot error logs seem to remain locked on Windows when a crash happens
@@ -112,13 +112,13 @@
   - [ ] ifeffit is currently compiled not knowing where to find the feff tables, so PC transforms are not possible.
 	in general, the compilation of Ifeffit needs to be better integrated into Strawberry.
   - [ ] The atoms panel background color is too light.  Which window needs its BackgroundColour set to wxNullColour?
-  - [ ] raised text with data name in data frame
-  - [ ] InitialPage in path list does not get hidden properly
-  - [ ] colors missing in log file text
-  - [ ] do project files get saved correctly?                  :Project:
+  - [X] raised text with data name in data frame
+  - [X] InitialPage in path list does not get hidden properly
+  - [X] colors missing in log file text
+  - [ ] log frame not displayed/refreshed properly after a fit
   - [ ] clampbox does not get enabled/disabled explicitly, is this another aspect of StaticBox that is different on Windows? (see link above)
-  - [ ] Artemis key accellerators
-  - [ ] fpj file on Win seems to not get unpacked correctly
+  - [X] Artemis key accellerators
+  - [ ] fpj file on Win seems to not get unpacked correctly	:Project:
 
 
 ** Artemis
