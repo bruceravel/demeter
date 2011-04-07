@@ -32,7 +32,6 @@ use autodie qw(open close);
 use Moose;
 use MooseX::Aliases;
 extends 'Demeter';
-with 'Demeter::ScatteringPath::Histogram';
 #use Demeter::NumTypes qw( PosInt Natural NonNeg );
 
 use Chemistry::Elements qw(get_symbol);

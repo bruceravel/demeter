@@ -31,7 +31,6 @@ use Wx::Perl::Carp;
 use Demeter::UI::Artemis::Project;
 use Demeter::UI::Artemis::Import;
 use Demeter::UI::Artemis::Data::AddParameter;
-#use Demeter::UI::Artemis::Data::Histogram;
 use Demeter::UI::Artemis::Data::Quickfs;
 use Demeter::UI::Artemis::ShowText;
 use Demeter::UI::Wx::CheckListBook;
@@ -85,9 +84,6 @@ Readonly my $PATH_ADD		=> Wx::NewId();
 Readonly my $PATH_CLONE		=> Wx::NewId();
 Readonly my $PATH_YAML		=> Wx::NewId();
 Readonly my $PATH_TYPE		=> Wx::NewId();
-Readonly my $PATH_HISTO_FILE    => Wx::NewId();
-Readonly my $PATH_HISTO_GAMMA	=> Wx::NewId();
-Readonly my $PATH_HISTO_DLPOLY	=> Wx::NewId();
 
 Readonly my $PATH_EXPORT_FEFF	=> Wx::NewId();
 Readonly my $PATH_EXPORT_DATA	=> Wx::NewId();
@@ -609,11 +605,6 @@ sub make_menubar {
 #   $explain_menu->Append($PATH_EXP_THIRD,  '3rd',     'Explain the third cumulant');
 #   $explain_menu->Append($PATH_EXP_FOURTH, '4th',     'Explain the fourth cumulant');
 
-#   my $histo_menu    = Wx::Menu->new;
-#   $histo_menu->Append($PATH_HISTO_DLPOLY, "a DL_POLY history",     "Generate a histogram using the currently displayed path", wxITEM_NORMAL );
-#   $histo_menu->Append($PATH_HISTO_FILE,   "a column data file",    "Generate a histogram using the currently displayed path", wxITEM_NORMAL );
-#   $histo_menu->Append($PATH_HISTO_GAMMA,  "a Gamma-like function", "Generate a histogram using the currently displayed path", wxITEM_NORMAL );
-
 
   $self->{pathsmenu} = Wx::Menu->new;
   $self->{pathsmenu}->Append($PATH_TRANSFER, "Transfer displayed path",            "Transfer the path currently on display to the plotting list", wxITEM_NORMAL );
@@ -1059,30 +1050,6 @@ sub OnMenuClick {
       $datapage->clone;
       last SWITCH;
     };
-
-    (any {$id == $_} ($PATH_HISTO_FILE, $PATH_HISTO_GAMMA, $PATH_HISTO_DLPOLY))  and do {
-      my $pathpage = $datapage->{pathlist}->GetPage($datapage->{pathlist}->GetSelection);
-      my $sp = $pathpage->{path}->sp;
-      if ($sp->nleg != 2) {
-	my $text = "You can currently only build histograms from single scattering paths.  (MS histograms will be in a later version of Demeter.)";
-	$datapage->status($text);
-	Wx::MessageDialog->new($datapage, $text, "Error!", wxOK|wxICON_ERROR) -> ShowModal;
-	return;
-      };
-      my $how = ($id == $PATH_HISTO_FILE)   ? 'column'
-	      : ($id == $PATH_HISTO_GAMMA)  ? 'gamma'
-	      : ($id == $PATH_HISTO_DLPOLY) ? 'dlpoly'
-	      :                               'column';
-      my $histo_dialog = Demeter::UI::Artemis::Data::Histogram->new($datapage, $how);
-      my $result = $histo_dialog -> ShowModal;
-      if ($result == wxID_CANCEL) {
-	$datapage->status("Cancelled histogram creation.");
-	return;
-      };
-      $datapage -> process_histogram($histo_dialog, $how);
-      last SWITCH;
-    };
-
 
     ($id == $PATH_EXP_LABEL) and do {
       $datapage->status($Demeter::UI::Artemis::Pathexplanation{label});
@@ -1909,103 +1876,6 @@ sub clone {
   $datapage->status("Cloned $LAQUO" . $path->name . "$RAQUO and set N to half its value for the new and old paths.");
 };
 
-sub process_histogram {
-  my ($datapage, $histo_dialog, $how) = @_;
-  my $pathpage = $datapage->{pathlist}->GetPage($datapage->{pathlist}->GetSelection);
-  my $pathname = $pathpage->{path}->name;
-  my $sp = $pathpage->{path}->sp;
-  my $common = [data=>$datapage->{data}];
-
-  ## -------- from file:
-  if ($how =~ m{column}) {
-    my ($file, $rmin, $rmax, $xcol, $ycol, $amp, $scale) = 
-      ($histo_dialog->{filepicker} -> GetTextCtrl -> GetValue,
-       $histo_dialog->{filermin}   -> GetValue,
-       $histo_dialog->{filermax}   -> GetValue,
-       $histo_dialog->{filexcol}   -> GetValue,
-       $histo_dialog->{fileycol}   -> GetValue,
-       $histo_dialog->{fileamp}    -> GetValue,
-       $histo_dialog->{filescale}  -> GetValue,
-      );
-    carp("$file does not exist"), return if (not -e $file);
-    carp("$file cannot be read"), return if (not -r $file);
-    my ($rx, $ry) = $sp->histogram_from_file($file, $xcol, $ycol, $rmin, $rmax);
-    my $paths = $sp -> make_histogram($rx, $ry, $amp, $scale, $common);
-
-    my $id = $datapage->{pathlist}->GetSelection;
-    $datapage->{pathlist}->DeletePage($id);
-    #$datapage->{pathlist}->SetSelection($id);
-    foreach my $p (@$paths) {
-      my $histo_name = '[' . $p->parent->name . '] ' . $p->name;
-      my $page = Demeter::UI::Artemis::Path->new($datapage->{pathlist}, $p, $datapage);
-      $datapage->{pathlist}->AddPage($page, $histo_name, 1, 0);
-      #$page->include_label;
-    };
-    $Demeter::UI::Artemis::frames{Plot}->{VPaths}->add_named_vpath("histogram from $pathname", @$paths);
-
-    my $gdsframe = $Demeter::UI::Artemis::frames{GDS};
-    $gdsframe  -> put_param('guess', $amp,   '1');
-    $gdsframe  -> put_param('guess', $scale, '0') if $scale;
-    $gdsframe  -> clear_highlight;
-    my $re = ($scale)  ?  '\A(?:'.$amp.'|'.$scale.')\z'  :  '\A(?:'.$amp.')\z';
-    $gdsframe  -> set_highlight($re);
-    $gdsframe  -> Show(1);
-    $Demeter::UI::Artemis::frames{main} -> {toolbar}->ToggleTool(1,1);
-    $gdsframe  -> {toolbar}->ToggleTool(2,1);
-
-  } elsif ($how =~ m{dl_?poly}) {
-    my $file = $histo_dialog->{dlfile}->GetTextCtrl->GetValue;
-    my $rmin = $histo_dialog->{dlrmin}->GetValue;
-    my $rmax = $histo_dialog->{dlrmax}->GetValue;
-    my $bin  = $histo_dialog->{dlbin}->GetValue;
-    my $dlp  = $histo_dialog->{DLPOLY};
-    $histo_dialog->{yaml}->{file} = $file;
-    $histo_dialog->{yaml}->{rmin} = $rmin;
-    $histo_dialog->{yaml}->{rmax} = $rmax;
-    $histo_dialog->{yaml}->{bin}  = $bin;
-    my $persist = File::Spec->catfile($Demeter::UI::Artemis::demeter->dot_folder, 'demeter.dlpoly');
-    YAML::Tiny::DumpFile($persist, $histo_dialog->{yaml});
-
-    if (not $dlp) {
-      $dlp = Demeter::ScatteringPath::Histogram::DL_POLY->new(rmin=>$rmin, rmax=>$rmax, bin=>$bin, type=>'ss');
-      $histo_dialog->{DLPOLY}=$dlp;
-      $dlp->sentinal(sub{$histo_dialog->dlpoly_sentinal});
-      my $busy = Wx::BusyCursor->new();
-      my $start = DateTime->now( time_zone => 'floating' );
-      $dlp->file($file);
-      my $finish = DateTime->now( time_zone => 'floating' );
-      my $dur = $finish->subtract_datetime($start);
-      my $finishtext = sprintf("Making histogram from %d timesteps (%d minutes, %d seconds)", $dlp->nsteps, $dur->minutes, $dur->seconds);
-      $datapage->status($finishtext);
-      undef $busy;
-    };
-    my $busy = Wx::BusyCursor->new();
-    $dlp->set(rmin=>$rmin, rmax=>$rmax, bin=>$bin);
-    $datapage->status("Rebinning histogram into $bin $ARING bins");
-    $dlp->rebin;
-    $dlp->set(sp=>$sp);
-    my $composite = $dlp->fpath;
-    $composite->data($datapage->{data});
-    my $id = $datapage->{pathlist}->GetSelection;
-    $datapage->{pathlist}->DeletePage($id);
-    my $page = Demeter::UI::Artemis::Path->new($datapage->{pathlist}, $composite, $datapage);
-    $datapage->{pathlist}->AddPage($page, $composite->name, 1, 0, $id);
-    #$composite->po->start_plot;
-    #$composite->plot('r');
-    $page->transfer;
-    $Demeter::UI::Artemis::frames{Plot}->plot(0, 'r');
-    $histo_dialog->{DLPOLY} = q{};
-    $dlp->DEMOLISH;
-    undef $busy;
-  } elsif ($how =~ m{gamma}) {
-    printf("%s  %s  %s  %s\n",
-	   $sp,
-	   $histo_dialog->{gammargrid}->GetValue,
-	   $histo_dialog->{gammarmin}->GetValue,
-	   $histo_dialog->{gammarmax}->GetValue);
-  };
-};
-
 
 my @element_list = qw(h he li be b c n o f ne na mg al si p s cl ar k ca
 		      sc ti v cr mn fe co ni cu zn ga ge as se br kr rb
@@ -2066,26 +1936,33 @@ sub quickfs {
 };
 
 
-sub dlpoly_sentinal_rdf {
+sub histogram_sentinal_rdf {
   my ($datapage) = @_;
-  if (not $datapage->{DLPOLY}->timestep_count % 10) {
-    my $text = ($datapage->{DLPOLY}->ss)
-      ? $datapage->{DLPOLY}->timestep_count . " of " . $datapage->{DLPOLY}->{nsteps} . " timesteps"
-	: sprintf("%d of %d timesteps (every %d-th step)",
-		  $datapage->{DLPOLY}->timestep_count/$datapage->{DLPOLY}->skip,
-		  ($#{$datapage->{DLPOLY}->clusters}+1)/$datapage->{DLPOLY}->skip,
-		  $datapage->{DLPOLY}->skip );
+  if (not $datapage->{DISTRIBUTION}->timestep_count % 10) {
+    my $text = q{};
+
+    ## single scattering histogram
+    $text = $datapage->{DISTRIBUTION}->timestep_count . " of " . $datapage->{DISTRIBUTION}->{nsteps} . " timesteps"
+      if ($datapage->{DISTRIBUTION}->type eq 'ss');
+
+    ## nearly collinear histrogram
+    $text = sprintf("%d of %d timesteps (every %d-th step)",
+		    $datapage->{DISTRIBUTION}->timestep_count/$datapage->{DISTRIBUTION}->skip,
+		    ($#{$datapage->{DISTRIBUTION}->clusters}+1)/$datapage->{DISTRIBUTION}->skip,
+		    $datapage->{DISTRIBUTION}->skip )
+      if ($datapage->{DISTRIBUTION}->type eq 'ncl');
+
     $datapage->status($text, 'wait|nobuffer');
   };
   $::app->Yield();
 };
 
 my $dlcount = 0;
-sub dlpoly_sentinal_fpath {
+sub histogram_sentinal_fpath {
   my ($datapage) = @_;
   ++$dlcount;
   if (not $dlcount % 5) {
-    my $text = "Making FPath from bins: " . $dlcount . " of " . $datapage->{DLPOLY}->{nbins} . " bins processed";
+    my $text = "Making FPath from bins: " . $dlcount . " of " . $datapage->{DISTRIBUTION}->{nbins} . " bins processed";
     $datapage->status($text, 'wait|nobuffer');
   };
   $::app->Yield();
@@ -2100,7 +1977,7 @@ use base qw(Wx::DropTarget);
 use Demeter::UI::Artemis::DND::PathDrag;
 use Demeter::UI::Artemis::Path;
 use Demeter::UI::Wx::SpecialCharacters qw(:all);
-use Demeter::Feff::DL_POLY;
+use Demeter::Feff::Distributions;
 
 use Scalar::Util qw(looks_like_number);
 
@@ -2151,23 +2028,24 @@ sub OnData {
     $sspath->set(name=>$name, label=>$name) if ($name);
     $page->include_label;
 
-  } elsif ($spref->[0] eq 'DLPSS') {
-    my $feff = $demeter->mo->fetch("Feff", $spref->[1]);
-    my $ipot = $spref->[6];
+  } elsif ($spref->[0] eq 'HistogramSS') {
+    my $feff = $demeter->mo->fetch("Feff", $spref->[2]);
+    my $ipot = $spref->[7];
     #if (not looks_like_number($reff)) {
     #  my $text = "Your distance, $reff, is not a number.  This arbitrary single scattering path cannot be created.";
     #  $this->{PARENT}->status($text);
     #  Wx::MessageDialog->new($this->{PARENT}, $text, "Error!", wxOK|wxICON_ERROR) -> ShowModal;
     #  return $def;
     #};
-    my $dlp = Demeter::Feff::DL_POLY->new(rmin=>$spref->[3], rmax=>$spref->[4], bin=>$spref->[5],
-					  feff=>$feff, ipot=>$ipot, type=>'ss');
-    $this->{PARENT}->{DLPOLY} = $dlp;
+    my $dlp = Demeter::Feff::Distributions->new(rmin=>$spref->[4], rmax=>$spref->[5], bin=>$spref->[6],
+						feff=>$feff, ipot=>$ipot, type=>'ss');
+    $this->{PARENT}->{DISTRIBUTION} = $dlp;
 
-    $dlp->sentinal(sub{$this->{PARENT}->dlpoly_sentinal_rdf});
+    $dlp->sentinal(sub{$this->{PARENT}->histogram_sentinal_rdf});
     my $busy = Wx::BusyCursor->new();
     my $start = DateTime->now( time_zone => 'floating' );
-    $dlp->file($spref->[2]);
+    $dlp->backend($spref->[1]);
+    $dlp->file($spref->[3]);
     my $finish = DateTime->now( time_zone => 'floating' );
     my $dur = $finish->subtract_datetime($start);
     my $finishtext = sprintf("Making histogram from %d timesteps (%d minutes, %d seconds)", $dlp->nsteps, $dur->minutes, $dur->seconds);
@@ -2176,12 +2054,12 @@ sub OnData {
 
 
     $busy = Wx::BusyCursor->new();
-    $this->{PARENT}->status("Rebinning histogram into $spref->[5] $ARING bins");
+    $this->{PARENT}->status("Rebinning histogram into $spref->[6] $ARING bins");
     $start = DateTime->now( time_zone => 'floating' );
     $dlp->rebin;
     #$dlp->set(sp=>$sp);
     $dlcount = 0;
-    $dlp->feff->sentinal(sub{$this->{PARENT}->dlpoly_sentinal_fpath});
+    $dlp->feff->sentinal(sub{$this->{PARENT}->histogram_sentinal_fpath});
     my $composite = $dlp->fpath;
     $finish = DateTime->now( time_zone => 'floating' );
     $dur = $finish->subtract_datetime($start);
@@ -2195,40 +2073,43 @@ sub OnData {
     #$composite->plot('r');
     $page->transfer;
     $Demeter::UI::Artemis::frames{Plot}->plot(0, 'r');
-#    $histo_dialog->{DLPOLY} = q{};
+#    $histo_dialog->{DISTRIBUTION} = q{};
     $dlp->DEMOLISH;
     undef $busy;
 
-  } elsif ($spref->[0] eq 'DLPNCL') {
+  } elsif ($spref->[0] eq 'HistogramNCL') {
     #print join("|",@$spref), $/;
 
-    my $feff = $demeter->mo->fetch("Feff", $spref->[1]);
-    my $dlp = Demeter::Feff::DL_POLY->new( r1=>$spref->[3], r2=>$spref->[4], r3=>$spref->[5], r4=>$spref->[6],
-					   rbin => $spref->[7], betabin => $spref->[8],
-					   feff=>$feff, ipot1 => $spref->[9], ipot2 => $spref->[10],
-					   type=>'ncl', skip=>20,);
-    $this->{PARENT}->{DLPOLY} = $dlp;
+    my $feff = $demeter->mo->fetch("Feff", $spref->[2]);
+    my $dlp = Demeter::Feff::Distributions->new( r1=>$spref->[4], r2=>$spref->[5], r3=>$spref->[6], r4=>$spref->[7],
+						 rbin => $spref->[8], betabin => $spref->[9],
+						 feff=>$feff, ipot1 => $spref->[10], ipot2 => $spref->[11],
+						 type=>'ncl', skip=>20,);
+    $this->{PARENT}->{DISTRIBUTION} = $dlp;
 
-    $dlp->sentinal(sub{$this->{PARENT}->dlpoly_sentinal_rdf});
+    $dlp->sentinal(sub{$this->{PARENT}->histogram_sentinal_rdf});
     my $busy = Wx::BusyCursor->new();
     my $start = DateTime->now( time_zone => 'floating' );
-    $dlp->file($spref->[2]);
+    $dlp->backend($spref->[1]);
+    $dlp->file($spref->[3]);
     my $finish = DateTime->now( time_zone => 'floating' );
     my $dur = $finish->subtract_datetime($start);
-    my $finishtext = sprintf("Making histogram from %d timesteps (%d minutes, %d seconds)", $dlp->nsteps/$dlp->skip, $dur->minutes, $dur->seconds);
+    my $finishtext = sprintf("Making histogram from %d timesteps (%d minutes, %d seconds)",
+			     $dlp->nsteps/$dlp->skip, $dur->minutes, $dur->seconds);
     $this->{PARENT}->status($finishtext);
     undef $busy;
 
     $busy = Wx::BusyCursor->new();
-    $this->{PARENT}->status("Rebinning histogram into $spref->[7] $ARING x $spref->[8] degree bins");
+    $this->{PARENT}->status("Rebinning histogram into $spref->[8] $ARING x $spref->[9] degree bins");
     $start = DateTime->now( time_zone => 'floating' );
     $dlp->rebin;
     $dlcount = 0;
-    $dlp->sentinal(sub{$this->{PARENT}->dlpoly_sentinal_fpath});
+    $dlp->sentinal(sub{$this->{PARENT}->histogram_sentinal_fpath});
     my $composite = $dlp->fpath;
     $finish = DateTime->now( time_zone => 'floating' );
     $dur = $finish->subtract_datetime($start);
-    $finishtext = sprintf("Rebined and made FPath in %d minutes, %d seconds", $dur->minutes, $dur->seconds);
+    $finishtext = sprintf("Rebined and made FPath in %d minutes, %d seconds",
+			  $dur->minutes, $dur->seconds);
     $this->{PARENT}->status($finishtext);
 
     $composite->data($this->{PARENT}->{data});
@@ -2238,7 +2119,6 @@ sub OnData {
     #$composite->plot('r');
     $page->transfer;
     $Demeter::UI::Artemis::frames{Plot}->plot(0, 'r');
-#    $histo_dialog->{DLPOLY} = q{};
     $dlp->DEMOLISH;
     undef $busy;
 

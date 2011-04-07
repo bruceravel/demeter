@@ -138,7 +138,7 @@ sub populate {
   #-------------------------- handle different settings as needed
   my $positions = "positions";
   my $is_ortho = (($class eq "orthorhombic" ) and ($setting));
-  my $is_tetr  = (($class eq "tetragonal" )   and ($setting));
+  my $is_tetr  = (($class eq "tetragonal" )   and ($setting ne 'positions'));
 				# bravais vector for the //given// symbol
   ($positions = $setting) if ($class eq "monoclinic");
   ($positions = $setting ? $setting : $positions) if ($group =~ m{\Ar}i);

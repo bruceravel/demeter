@@ -1,4 +1,4 @@
-package Demeter::ScatteringPath::Histogram::DL_POLY;
+package Demeter::Feff::Distributions;
 
 =for Copyright
  .
@@ -20,10 +20,14 @@ use warnings;
 
 use Moose;
 use MooseX::Aliases;
+use Moose::Util qw(apply_all_roles);
+use Moose::Util::TypeConstraints;
 #use MooseX::StrictConstructor;
 extends 'Demeter';
+with "Demeter::Feff::MD::Null";
+
 use Demeter::StrTypes qw( Empty );
-use Demeter::NumTypes qw( Natural PosInt NonNeg );
+use Demeter::NumTypes qw( Natural PosInt NonNeg Ipot );
 
 use POSIX qw(acos);
 use Readonly;
@@ -43,15 +47,31 @@ has '+plottable'      => (default => 1);
 
 ## HISTORY file attributes
 has 'nsteps'    => (is => 'rw', isa => NonNeg, default => 0);
+has 'nbins'     => (is => 'rw', isa => NonNeg, default => 0);
 has 'file'      => (is => 'rw', isa => 'Str', default => q{},
 		    trigger => sub{ my($self, $new) = @_;
-				    if ($new and (-e $new)) {
+				    if ($new) {
 				      $self->_cluster;
-				      $self->rdf if $self->ss;
-				      $self->nearly_collinear if $self->ncl;
+				      $self->rdf if ($self->type eq 'ss');
+				      $self->nearly_collinear if ($self->type eq 'ncl');
 				    };
 				  });
 has 'clusters'    => (is => 'rw', isa => 'ArrayRef', default => sub{[]});
+
+enum 'HistogramBackends' => ['dl_poly', 'something_else'];
+coerce 'HistogramBackends',
+  from 'Str',
+  via { lc($_) };
+has backend       => (is => 'rw', isa => 'HistogramBackends', coerce => 1,
+		      trigger => sub{my ($self, $new) = @_;
+				     if ($new eq 'dl_poly') {
+				       eval {apply_all_roles($self, 'Demeter::Feff::MD::DL_POLY')};
+				       $@ and die("Histogram backend Demeter::Feff::MD::DL_POLY could not be loaded");
+				     } else {
+				       eval {apply_all_roles($self, 'Demeter::Feff::MD::'.$new)};
+				       $@ and die("Histogram backend Demeter::Feff::MD::$new does not exist");
+				     };
+				   });
 
 ## SS histogram attributes
 has 'update_bins' => (is            => 'rw',
@@ -88,7 +108,7 @@ has 'populations' => (is	    => 'rw',
 
 ## nearly collinear DS and TS historgram attributes
 has 'skip'      => (is => 'rw', isa => 'Int', default => 50,);
-has 'nconfig'   => (is => 'rw', isa => 'Int', default => 0, documentation => "the number of configurations found at each time step");
+has 'nconfig'   => (is => 'rw', isa => 'Int', default => 0, documentation => "the number of 3-body configurations found at each time step");
 has 'r1'        => (is => 'rw', isa => 'Num', default => 0.0,);
 has 'r2'        => (is => 'rw', isa => 'Num', default => 3.5,);
 has 'r3'        => (is => 'rw', isa => 'Num', default => 5.2,);
@@ -101,9 +121,13 @@ has 'betabin'   => (is            => 'rw',
 		    isa           => 'Num',
 		    default       => 0.5,);
 
-has 'ss'        => (is => 'rw', isa => 'Bool', default => 0, trigger=>sub{my($self, $new) = @_; $self->ncl(0) if $new});
-has 'ncl'       => (is => 'rw', isa => 'Bool', default => 0, trigger=>sub{my($self, $new) = @_; $self->ss(0)  if $new});
+enum 'HistogramTypes' => ['ss', 'ncl', 'thru'];
+coerce 'HistogramTypes',
+  from 'Str',
+  via { lc($_) };
+has 'type'  => (is => 'rw', isa => 'HistogramTypes', coerce => 1, default => 'ss');
 
+has 'bin_count'   => (is => 'rw', isa => 'Int',  default => 0);
 has 'timestep_count' => (is => 'rw', isa => 'Int',  default => 0);
 has 'nearcl'      => (is => 'rw', isa => 'ArrayRef', default => sub{[]});
 
@@ -111,53 +135,15 @@ has 'nearcl'      => (is => 'rw', isa => 'ArrayRef', default => sub{[]});
 has 'feff'        => (is => 'rw', isa => Empty.'|Demeter::Feff', default => q{},);
 has 'sp'          => (is => 'rw', isa => Empty.'|Demeter::ScatteringPath', default => q{},);
 
+has 'ipot'        => (is => 'rw', isa => Ipot, default => 1, alias => 'ipot1');
+has 'ipot2'       => (is => 'rw', isa => Ipot, default => 1, );
+
 ## need a pgplot plotting template
 
 sub rebin {
   my($self, $new) = @_;
-  $self->_bin   if ($self->ss  and $self->update_bins);
-  $self->_bin2d if ($self->ncl and $self->update_bins);
-  return $self;
-};
-
-sub _number_of_steps {
-  my ($self) = @_;
-  open(my $H, '<', $self->file);
-  my $count = 0;
-  while (<$H>) {
-    ++$count if m{\Atimestep};
-  }
-  #print $steps, $/;
-  close $H;
-  $self->nsteps($count);
-  return $self;
-};
-
-sub _cluster {
-  my ($self) = @_;
-  $self->_number_of_steps;
-  open(my $H, '<', $self->file);
-  my @cluster = ();
-  my @all = ();
-  while (<$H>) {
-    if (m{\Atimestep}) {
-      push @all, [@cluster] if $#cluster>0;
-      $#cluster = -1;
-      next;
-    };
-    next if not m{\APt}; # skip the three lines trailing the timestamp
-    my $position = <$H>;
-    my @vec = split(' ', $position);
-    push @cluster, \@vec;
-    <$H>;
-    <$H>;
-    #my $velocity = <$H>;
-    #my $force    = <$H>;
-    #chomp $position;
-  };
-  push @all, [@cluster];
-  $self->clusters(\@all);
-  close $H;
+  $self->_bin   if (($self->type eq 'ss')  and $self->update_bins);
+  $self->_bin2d if (($self->type eq 'ncl') and $self->update_bins);
   return $self;
 };
 
@@ -316,6 +302,7 @@ sub _trig {
 sub _bin {
   my ($self) = @_;
   my (@x, @y);
+  die("No history file has been read, thus no distribution functions have been computed\n") if ($#{$self->ssrdf} == -1);
   my $bin_start = sqrt($self->ssrdf->[0]);
   my ($population, $average) = (0,0);
   $self->start_spinner(sprintf("Rebinning RDF into %.4f A bins", $self->bin)) if ($self->mo->ui eq 'screen');
@@ -411,11 +398,12 @@ sub _bin2d {
     push @binned_plane, [$r/$count, $b/$count, $l1/$count, $l2/$count, $count];
   };
   $self->populations(\@binned_plane);
+  $self->nbins($#binned_plane+1);
   $self->update_bins(0);
   $self->stop_spinner if ($self->mo->ui eq 'screen');
-  printf "number of pixels: unbinned = %d    binned = %d\n", $#plane+1, $#binned_plane+1;
-  printf "stripe pass = %d   pixel pass = %d    last pass = %d\n", $aa, $bb, $cc;
-  printf "binned = %d  unbinned = %d\n", $total, $#{$self->nearcl}+1;
+  #printf "number of pixels: unbinned = %d    binned = %d\n", $#plane+1, $#binned_plane+1;
+  #printf "stripe pass = %d   pixel pass = %d    last pass = %d\n", $aa, $bb, $cc;
+  #printf "binned = %d  unbinned = %d\n", $total, $#{$self->nearcl}+1;
   return $self;
 };
 
@@ -430,17 +418,19 @@ sub plot {
 
 sub histogram {
   my ($self) = @_;
-  return if not $self->sp;
-  my $histo = $self -> sp -> make_histogram($self->positions, $self->populations, q{}, q{});
+  return if not $self->feff;
+  my $histo = $self -> feff -> make_histogram($self->positions, $self->populations, $self->ipot, q{}, q{});
+  $self->nbins($#{$histo}+1);
   return $histo;
 };
 
 sub fpath {
   my ($self) = @_;
   my $composite;
-  if ($self->ss) {
+  my $index = $self->mo->pathindex;
+  if ($self->type eq 'ss') {
     my $histo = $self->histogram;
-    $composite = $self -> sp -> chi_from_histogram($histo);
+    $composite = $self -> feff -> chi_from_histogram($histo);
     my $text = sprintf("\n\ntaken from %d samples between %.3f and %.3f A\nbinned into %.4f A bins",
 		       $self->get(qw{npairs rmin rmax bin}));
     $text .= "\n\nThe structural contributions to the first four cumulants are \n";
@@ -449,9 +439,14 @@ sub fpath {
     $text .= sprintf "       third  = %9.6f\n",   $composite->c3;
     $text .= sprintf "       fourth = %9.6f",     $composite->c4;
     $composite->pdtext($text);
-  } elsif ($self->ncl) {
+  } elsif ($self->type eq 'ncl') {
     $composite = $self->chi_nearly_colinear;
+    my $text = sprintf("\n\nthree body configurations with the near atom between %.3f and %.3f A\nthe distant atom between %.3f and %.3f A\nbinned into %.4f A x %.4f deg bins",
+		       $self->get(qw{r1 r2 r3 r4 rbin betabin}));
+    $composite->pdtext($text);
   };
+  $composite->Index($index);
+  $self->mo->pathindex($index+1);
   return $composite;
 };
 
@@ -463,9 +458,9 @@ sub chi_nearly_colinear {
 
   my @paths = ();
   foreach my $c (@{$self->populations}) {
-    push @paths, Demeter::ThreeBody->new(r1    => $c->[2], r2    => $c->[3],
-					 ipot1 => 1,       ipot2 => 1,
-					 beta  => $c->[1], s02   => $c->[4]/$self->nconfig,
+    push @paths, Demeter::ThreeBody->new(r1    => $c->[2],      r2    => $c->[3],
+					 ipot1 => $self->ipot1, ipot2 => $self->ipot2,
+					 beta  => $c->[1],      s02   => $c->[4]/$self->nconfig,
 					 parent=> $self->feff,
 					 update_path => 1,
 					 @$common);
@@ -495,6 +490,7 @@ sub chi_nearly_colinear {
   my $ravg = $first->s02 * ($first->r1+$first->r2);
   my $n    = $first->s02;
   foreach my $i (1 .. $#paths) {
+    $self->call_sentinal;
     $paths[$i]->_update('fft');
     my $save = $paths[$i]->group;
 
@@ -529,17 +525,23 @@ sub chi_nearly_colinear {
 				   degen     => 1,
 				   @$common
 				  );
+  my $name = sprintf("Histo 3-Body %s-%s-%s (%.5f)",
+		     $self->feff->potentials->[0]->[2],
+		     $self->feff->potentials->[$self->ipot1]->[2],
+		     $self->feff->potentials->[$self->ipot2]->[2],
+		     $path->reff);
+  $path->name($name);
   $self->stop_counter if ($self->mo->ui eq 'screen');
   return $path;
 };
 
-
+no Moose::Util::TypeConstraints;
 __PACKAGE__->meta->make_immutable;
 1;
 
 =head1 NAME
 
-Demeter::ScatteringPath::Histogram::DL_POLY - Support for DL_POLY HISTORY file
+Demeter::Feff::DL_POLY - Support for DL_POLY HISTORY file
 
 =head1 VERSION
 
