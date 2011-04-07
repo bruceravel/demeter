@@ -1,7 +1,0 @@
-[% META title = 'ThreeBody object' %]
-
-[% FILTER html_para %]
-Mkae a DS and TS path given an arrangement of three atoms or two lag
-lengths and an angle. 
-[% END %]
-

@@ -1,5 +1,0 @@
-[% META title = 'Adding artificial nose to data' %]
-
-[% FILTER html_para %]
-Adding artificial noise to  data
-[% END %]

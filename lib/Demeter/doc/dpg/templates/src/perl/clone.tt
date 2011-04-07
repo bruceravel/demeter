@@ -1,5 +1,0 @@
-[% META title = 'Cloning Demeter objects' %]
-
-[% FILTER html_para %]
-Cloning
-[% END %]

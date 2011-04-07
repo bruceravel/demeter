@@ -1,0 +1,5 @@
+<a name=[% label %]
+<p align=center>
+[% content %]
+</p>
+</a>

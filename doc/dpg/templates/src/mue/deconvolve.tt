@@ -1,0 +1,5 @@
+[% META title = 'Deconvolving data' %]
+
+[% WRAPPER html/todo %]
+A deconvolution algorithm is one of the most important things in [% demeter %] that has not yet been started.
+[% END %]

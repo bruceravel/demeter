@@ -1,0 +1,19 @@
+[% USE PerlSyntaxHtml %]
+[% dots  = template.nosubpages ? "../images" : "../../images";
+   file  = "${dots}/${this}";
+%]
+[% USE image "${rootdir}/images/${this}" %]
+[% ww    = image.width;
+%]
+<table>
+<tr>
+<td>
+[% FILTER html_para %]
+[%- content -%]
+[% END %]
+</td>
+<td width=[%- IF ww < 700 -%][%- ww -%][%- ELSE -%]60%[%- END -%]>
+<a href="[% file %]" target=_blank><img border=0 src="[% file %]" alt="[% this %]" width=100%></a>
+</td>
+</tr>
+</table>

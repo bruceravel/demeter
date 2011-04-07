@@ -1,9 +1,0 @@
-[% META title = 'Smoothing data' %]
-
-[% FILTER html_para %]
-Smoothing data
-[% END %]
-
-[% WRAPPER html/todo %]
-Try a Savitsky-Golay filter
-[% END %]

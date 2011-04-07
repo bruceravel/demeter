@@ -1,0 +1,96 @@
+[% META title = 'Config object' %]
+
+[% FILTER html_para %]
+The Config object is a 
+[% INCLUDE html/link text="singleton object"
+                     link="http://en.wikipedia.org/wiki/Singleton_pattern" %]
+which is used to contain all of [% demeter %]'s configuration
+parameters as well as providing an simple way for user-defined
+parameters to be stored and made available to the 
+[% INCLUDE html/link text="templating system" link="dispose.html" %].
+
+At start-up, [% demeter %] reads the [% demeter %] configuration
+files, then updates those values from the 
+[% INCLUDE font/file a="demeter.ini" %] file, which is stored in 
+[% INCLUDE font/file a="\$HOME/.horae" %] on unix systems and in 
+[% INCLUDE font/file a="\%APPDATA\%/demeter" %] on Windows systems.
+
+To make the Config object readily accessible at all times in your
+program, the [% INCLUDE font/mono a="co" %] method is a method of the
+base class and is inherited by all [% demeter %] objects.  Thus, given
+any object, you can [% INCLUDE font/quote a="find" %] the Config object
+like so:
+[% END %]
+
+[% WRAPPER codesample -%]
+$the_config_object = $any_object -> co;
+[% END %]
+
+[% FILTER html_para %]
+Any method of the plot object is easily called by chaining with the 
+[% INCLUDE font/mono a="co" %] method.  For example to get the
+configured default value for the [% INCLUDE font/mono a="bkg_rbkg" %]
+attribute of the Data object, you do this
+[% END %]
+
+[% WRAPPER codesample -%]
+$any_object -> po -> default('bkg', 'rbkg');
+[% END %]
+
+[% PROCESS section label="The configuration file format" %]
+
+[% FILTER html_para %]
+This is the configuration file for the parameters controlling the
+back-Fourier transform of data.  The format of the file is somewhat
+rigid in order to simplify the parsing of these files.
+[% END %]
+
+[% WRAPPER html/pre %]
+######################################################################
+section=bft
+section_description
+  These parameters determine how backward Fourier transforms
+  are done by Demeter.
+
+variable=dr
+type=real
+default=0.0
+units=Angstroms
+description
+  The default width of the window sill used in the backward Fourier
+  transform.  0 is used if this is set to less than 0.
+
+variable=rwindow
+type=list
+default=hanning
+options=hanning kaiser-bessel welch parzen sine
+description
+  The default window type to use for the backward Fourier transform.
+
+variable=rmin
+type=real
+default=1
+units=Angstroms
+description
+  The default value for the lower range of the backward Fourier
+  transform.
+
+variable=rmax
+type=real
+default=3
+units=Angstroms
+description
+  The default value for the upper range of the backward Fourier
+  transform.
+[% END %]
+
+[% FILTER html_para %]
+[% END %]
+
+[% PROCESS section label="User-defined configuration files" %]
+
+[% PROCESS section label="Using and resetting configuration parameters" %]
+
+[% PROCESS section label="The Config object and the templating system" %]
+
+[% PROCESS section label="WxWidgets and the configuration system" %]

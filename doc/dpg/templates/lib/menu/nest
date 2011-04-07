@@ -1,0 +1,32 @@
+[%
+   ## need to reformat the links in the sidebar to be relative rather
+   ## than absolute, taking care of the depth of the current template
+   dots = template.nosubpages ? "." : ".."
+-%]
+[% DEFAULT pad = '';
+  
+     FOREACH item = menu.items;
+	 thisurl = item.url.replace("$site.url.root", "$dots");
+         pad;
+  
+         IF item.subs;
+             "<br />\n";
+         END;
+         INCLUDE menu/text
+           link = {
+             text     = item.name
+             url      = thisurl
+             class    = item.hot ? 'menuselect' : 'menu'
+           };
+  
+         IF item.subs;
+             "<br />\n";
+             INCLUDE menu/nest 
+               menu = item 
+               pad  = pad ? "&nbsp;&nbsp;&nbsp;$pad" 
+                          : "&nbsp;-&nbsp;";
+         END;
+  
+         "<br />\n";
+     END
+ -%]

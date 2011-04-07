@@ -1,0 +1,41 @@
+[% META title = 'Full examples'
+	chapter = 1 %]
+
+[% FILTER html_para -%]
+In this chapter, several full example fitting scripts are shown and
+annotated.  Hopefully, these examples will give you good ideas for
+your own fits and demonstrate some [% demeter %] idioms that you can
+apply to your own scripts.
+[% END %]
+
+[% WRAPPER html/list type="dl" %]
+[% WRAPPER html/dt dt="Methyltin" %]
+Multiple data set fit with an demonstration of multiple k-weighting and 
+cloning of [% demeter %] objects.
+[% END %]
+[% WRAPPER html/dt dt="Silver/Gold alloy" %]
+Multiple data set fit to several silver/gold alloys of varying ratios
+making effective use of cloning and of the characteristic value.
+[% END %]
+[% WRAPPER html/dt dt="Uranyl ion" %]
+Uranyl ion in solution, demonstrating the use of the SSPath and VPath
+pathlike objects.
+[% END %]
+[% WRAPPER html/dt dt="Hg bound to synthetic DNA" %]
+Blah blah
+[% END %]
+[% WRAPPER html/dt dt="Complex partial pair distributions as histograms" %]
+Modeling arbitrary pair distribution functions using 
+[% INCLUDE html/link text="SSPath" link="../pathlike/sspath.html" %]
+objects to represent bins in a histogram.
+[% END %]
+[% WRAPPER html/dt dt="Plot adornments" %]
+Adding eye candy to your plots.  While [% demeter %] is certainly not
+a full-featured plotting solution, it is capable of
+generating very complex plots with a relatively small amount of code.
+[% END %]
+[% WRAPPER html/dt dt="Using Demeter to write Ifeffit and Demeter scripts" %]
+Blah blah
+[% END %]
+[% END %]
+

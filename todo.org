@@ -11,8 +11,8 @@
         https://bugs.launchpad.net/ubuntu/+source/gtk+2.0/+bug/558674 for more info
         Turns out this is a gtk problem -- I can make the same thing happen with Firefox!
 
-** installation issues [0/1]
-  - [ ] jpg needs to be a Module::Build build_element, but there are too many such files in the distro .. not all serve a purpose
+** installation issues [1/1]
+  - [X] jpg needs to be a Module::Build build_element, but there are too many such files in the distro .. not all serve a purpose
 
 ** Demeter bugs and shortcomings  [0/11]
   - [ ] in D::Data::IO::save_many, why doesn't updating in n specifying "background" not work to bring data up to date?  (fft, i.e. doing autobk, does work)
@@ -103,11 +103,11 @@
        + [ ] document
        + [ ] memory usage
 
-** Windows issues [6/14]
+** Windows issues [7/14]
   - [ ] spurious message from clipboard
   - [X] parameter group context menus don't get posted (see http://www.nntp.perl.org/group/perl.wxperl.users/2011/03/msg7929.html)
   - [ ] the frickin' Gnuplot error logs seem to remain locked on Windows when a crash happens
-  - [ ] status bar does not get color for wait or error messages
+  - [ ] status bar does not get color for wait or error messages /this may be unfixable, see/ http://www.nntp.perl.org/group/perl.wxperl.users/2011/04/msg7943.html
   - [X] ugly background colors on command and status buffer frames (particularly at bottom, also a problem in Artemis)
   - [ ] ifeffit is currently compiled not knowing where to find the feff tables, so PC transforms are not possible.
 	in general, the compilation of Ifeffit needs to be better integrated into Strawberry.
@@ -115,14 +115,14 @@
   - [X] raised text with data name in data frame
   - [X] InitialPage in path list does not get hidden properly
   - [X] colors missing in log file text
-  - [ ] log frame not displayed/refreshed properly after a fit
+  - [X] log frame not displayed/refreshed properly after a fit
   - [ ] clampbox does not get enabled/disabled explicitly, is this another aspect of StaticBox that is different on Windows? (see link above)
   - [X] Artemis key accellerators
   - [ ] fpj file on Win seems to not get unpacked correctly	:Project:
 
 
 ** Artemis
-*** Artemis bugs and missing features [1/16]
+*** Artemis bugs and missing features [1/17]
    - [X] use text buffers as in Athena for TextEntryDialogs
    - [ ] import an FPath from a yaml or from a project file, pathlist start page link for doing so
    - [ ] what is the purpose of regenerate in fit deserialization?  in any case, need to fix group values *inside* yaml files
@@ -141,6 +141,7 @@
    - [ ] sending Ifeffit feedback to the buffer makes it unavailable for other purposes.  the big problem
 	 is that correlations don't get written to the log file in Artemis (or in a script with set_mode(screen=>1),
 	 for that matter...)
+   - [ ] discading last page and returning to initial page has an undefined value problem
 
 *** Histograms [4/11]
    - [X] sum histogram bins into a single chi(k) file

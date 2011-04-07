@@ -1,9 +1,0 @@
-[% META title = 'FPath object' %]
-
-[% FILTER html_para %]
-The FPath, or [% INCLUDE font/quote a='filtered path' %], is ...
-
-empirical standard
-
-condense a histogram
-[% END %]

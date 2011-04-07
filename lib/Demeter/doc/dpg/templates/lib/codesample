@@ -1,8 +1,0 @@
-[% USE PerlSyntaxHtml %]
-[% WRAPPER html/perlsample -%]
-[% FILTER html_line_break %]
-[% FILTER highlighter_nolinum %]
-[%- content -%]
-[%- END -%]
-[%- END -%]
-[%- END -%]

@@ -1,0 +1,43 @@
+[% META title = 'Truncating data' %]
+
+[% FILTER html_para %]
+Truncating is the process of removing data from one end or the other
+of a data set.  The [% INCLUDE font/mono a='Truncate' %] method takes
+two arguments.  The first is either of the words 
+[% INCLUDE font/quote a='before' %] or
+[% INCLUDE font/quote a='after' %] and indicates whether data is to be
+removed from the front or back end of the data.  The second argument
+is the energy value before/after which all data points are removed.
+
+Truncating changes the representation of the data within
+both [% demeter %] and [% ifeffit %].  This method 
+[% INCLUDE font/em a='does not' %] return a new object.
+[% END %]
+
+[% WRAPPER codeexample -%]
+#!/usr/bin/perl
+use Demeter;
+my $d0 = Demeter::Data -> new(file        => "$where/data/fe.060",
+                              name        => '60K',
+                              ln          => 1,
+                              energy      => q{$1},
+                              numerator   => q{$2},
+                              denominator => q{$3});
+$d0 -> plot('E');
+
+$d0 -> Truncate('after', 7500);
+$d0 -> plot('E');
+[% END %]
+[% FILTER html_para %]
+In the example above, all points after 7500 eV are removed from the
+data.  Here is an example of removing points from  the front end of
+the data. 
+[% END %]
+[% WRAPPER codesample -%]
+$d0 -> Truncate('before', 7050);
+[% END %]
+
+
+[% WRAPPER scriptcaption this="truncate.png" %]
+These are the data as plotted by the example script above.
+[% END %]

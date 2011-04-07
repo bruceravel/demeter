@@ -1,0 +1,13 @@
+[% META title = 'MSPath object' %]
+
+[% FILTER html_para %]
+The MSPath, or [% INCLUDE font/quote a='multiple scattering path' %], 
+is the N-legged extension of the SSPath.  As of version 0.4, it is not
+yet implemented.  The syntax will, however, be somewhat similar to the
+SSPath.  Lists of [% INCLUDE font/mono a='ipot' %] values, leg
+lengths, and scattering angles will be input attributes.
+[% END %]
+
+[% WRAPPER html/todo %]
+Create MSPath class.
+[% END %]

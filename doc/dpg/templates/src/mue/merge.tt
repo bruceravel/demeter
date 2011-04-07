@@ -1,0 +1,87 @@
+[% META title = 'Merging data' %]
+
+[% FILTER html_para %]
+Merging data is one of the essential data processing steps.  As with
+every thing, [% demeter %] tries to make merging as easy as possible:
+[% END %]
+
+[% WRAPPER codesample -%]
+my $merged = $data[0]->merge('e', @data);
+[% END %]
+
+[% FILTER html_para %]
+The first argument to the [% INCLUDE font/mono a='merge' %] method
+specifies which spectrum is merged: [% INCLUDE font/mono a='e' %]
+means to merge [% mu %], [% INCLUDE font/mono a='n' %] means to merge
+normalized [% mu %], and [% INCLUDE font/mono a='k' %] means to merge
+[% chik %].
+
+Care is taken not to double count the caller.  This is a convenience
+because, as shown above, you can pass an entire array which also
+contains the caller.
+
+The [% INCLUDE font/mono a='merge' %] method returns a new Data
+object. 
+
+Both of the plot types below ([% INCLUDE font/mono a='stddev' %] and
+[% INCLUDE font/mono a='varience' %]) plot ignore many setting of the
+Plot object in order to plot the data in the form in which it was
+merged.  Attempting to plot the standard deviation or variance plots
+with a Data object that does not contain merged data will return as
+error.
+[% END %]
+
+[% WRAPPER html/list type="dl" %]
+[% WRAPPER html/dt dt="plot merged data with standard deviation" %]
+[% WRAPPER codeexample -%]
+#!/usr/bin/perl
+use Demeter;
+my @common = (energy => '$1', numerator => '$2', denominator => '$3', ln => 1,);
+my $prj = Demeter::Data::Prj -> new(file=>'U_DNA.prj');
+my @data = (
+            Demeter::Data -> new(file => 'examples/data/fe.060',
+                                 name => "Fe scan 1",
+                                 @common,
+                                ),
+            Demeter::Data -> new(file => 'examples/data/fe.061',
+                                 name => "Fe scan 2",
+                                 @common,
+                                ),
+            Demeter::Data -> new(file => 'examples/data/fe.062',
+                                 name => "Fe scan 3",
+                                 @common,
+                                ),
+           );
+my $merged = $data[0] -> merge('e', @data);
+$merged -> plot('stddev');
+[% END %]
+[% WRAPPER scriptcaption this="plot_stddev.png" %]
+This shows the merge of [% mu %] of 3 iron foil scans along with the
+standard deviation array.  The standard deviation has been added to
+and subtracted from the [% mu %] spectrum, so the red trace is an
+error margin for the [% mu %] spectrum.  Note that this plot type can
+only be plotted using a Data object which contains the data from a
+merge.  Trying to plot a non-merged Data object in this way will
+return a warning without plotting anything.
+[% WRAPPER html/todo %]
+I really need to show noisier data in this example.
+[% END %]
+[% END %]
+[% END %]
+[% WRAPPER html/dt dt="plot merged data with standard deviation" %]
+Change line 20 in the script shown above to this:
+[% WRAPPER codesample -%]
+$merged -> plot('variance');
+[% END %]
+[% WRAPPER scriptcaption this="plot_variance.png" %]
+This shows the merge of [% mu %] of 3 iron foil scans along with the
+standard deviation array.  The standard deviation has been scaled to
+plot with the [% mu %] spectrum, with the scaling factor is given in
+the legend.  This, then, is a way of visualizing how the standard
+deviation is distributed across the spectrum.  Note that this plot
+type can only be plotted using a Data object which contains the data
+from a merge.  Trying to plot a non-merged Data object in this way
+will return a warning without plotting anything.
+[% END %]
+[% END %]
+[% END %]

@@ -1,0 +1,66 @@
+[% META title = 'Parameter types' %]
+
+[% FILTER html_para %]
+There are 9 types of GDS parameetrs, that is, 9 possible values for the
+[% INCLUDE font/mono a='gds' %] attribute.  Several of these will be
+familiar to users of [% ifeffit %] and [% artemis %], a few are newly
+introduced by [% demeter %].
+[% END %]
+
+[% WRAPPER html/list type="dl" %]
+[% WRAPPER html/dt dt='guess' %]
+A parameter which is varied in a fit.
+[% END %]
+[% WRAPPER html/dt dt='def' %]
+A parameter whose math expression is continuously updated throughout
+the fit.
+[% END %]
+[% WRAPPER html/dt dt='set' %]
+A parameter which is evaluated at the beginning of the fit and remains
+unchanged after that.
+[% END %]
+[% WRAPPER html/dt dt='lguess' %]
+A locally guessed parameter.  In a multiple data set fit, this will be
+expanded to one guess parameter per data set.  See
+[% INCLUDE html/link text="the section on local guess parameters" link="../lgcv.html" %]
+for more details.
+[% END %]
+[% WRAPPER html/dt dt='restrain' %]
+A restrain parameter is defined in an [% ifeffit %] script as a def
+parameter but is used as a restraint in the call to [% ifeffit %]'s
+[% INCLUDE font/mono a='feffit' %]
+command.  In a multiple data set fit, all restraints are defined in
+the first call to the [% INCLUDE font/mono a='feffit' %] command.
+[% END %]
+[% WRAPPER html/dt dt='skip' %]
+A skip is a parameter that is defined but then ignored.  Setting a
+variable to a skip is useful in a GUI as a way of
+[% INCLUDE font/quote a='commenting out' %] a parameter without
+removing it from the fitting project.
+[% END %]
+[% WRAPPER html/dt dt='after' %]
+This is like a def parameter, but is not used in the fitting model and
+only evaluated when the fit finishes.  It is then reported in the log
+file.
+[% END %]
+[% WRAPPER html/dt dt='penalty' %]
+This is like a def parameter, but is used as a user-defined penalty to
+the [% INCLUDE html/link text="happiness parameter" link="../fit/happiness.html" %],
+which is evaluated at the end of the fit.  This is not currently implemented.
+[% END %]
+[% WRAPPER html/dt dt='merge' %]
+A merge is the type given to a parameter that cannot be unambiguously
+resolved when two Fit objects are merged into a single Fit object. A
+fit cannot proceed until all merge parameters are resolved.  It is
+unlikely that a variable would ever be declared as a merge by a user,
+although if a user script makes use of any of [% demeter %]'s (as yet
+unimplemented) project merging features, it will certainly be
+necessary to resolve a merge parameter by renaming it globally and
+resetting the [% INCLUDE font/mono a='gds' %] attribute.
+[% END %]
+[% END %]
+
+[% WRAPPER html/todo %] 
+Penalty and merge types are currently unimplemented.
+[% END %]
+

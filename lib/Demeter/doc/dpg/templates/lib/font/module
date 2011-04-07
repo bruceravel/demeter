@@ -1,1 +1,0 @@
-<span class=file>[%- a | html_entity | replace(" ", "&nbsp;") -%]</span>

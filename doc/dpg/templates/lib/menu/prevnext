@@ -1,0 +1,56 @@
+[%
+   ## need to reformat the links in the navbar to be relative rather
+   ## than absolute, taking care of the depth of the current template
+   dots = template.nosubpages ? "." : ".." 
+   prev = page.prev.url.replace("$site.url.root", "$dots")
+   next = page.next.url.replace("$site.url.root", "$dots")
+   down = page.down.url.replace("$site.url.root", "$dots")
+-%]
+[% FILTER collapse %]
+[% IF page.prev -%]
+  Back: [% PROCESS menu/text link = {
+					text  = page.prev.name
+					url   = prev
+					class = 'menu'
+					};
+  -%]
+  [% IF page.next -%] &nbsp;&nbsp; [% END -%]
+[% END %]
+[% END %]
+        [% FILTER collapse %]
+[% IF page.next -%]
+  Next: 
+  [% PROCESS menu/text link = {
+			      text  = page.next.name
+			      url   = next
+			      class = 'menu'
+			      };
+  -%]
+  [% IF page.down -%] &nbsp;&nbsp; [% END -%]
+[% END %]
+[% END %]
+        [% FILTER collapse %]
+  [% IF page.down -%]
+    Down: 
+    [% PROCESS menu/text link = {
+			      text  = page.down.name
+			      url   = down
+			      class = 'menu'
+			      };
+    -%]
+  [% END %]
+  [% IF page.trail.size == 2 -%] &nbsp;&nbsp; [% END -%]
+[% END %]
+        [% FILTER collapse %]
+  [% IF page.trail.size == 2 -%]
+  [% up   = page.trail.first.url.replace("$site.url.root", '..') -%]
+    Up: 
+    [% PROCESS menu/text link = {
+			      text  = page.trail.first.name
+			      url   = up
+			      class = 'menu'
+			      };
+    -%]
+  [% END %]
+[% END %]
+

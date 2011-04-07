@@ -1,0 +1,41 @@
+## This file is copyright (c) 2009-2011 Bruce Ravel and
+## licensed under The Creative Commons Attribution-ShareAlike License.
+
+### directories
+src  = [% installdir %]/templates/src
+lib  = [% installdir %]/templates/latex
+dest = [% installdir %]/tex
+
+### copy images and other binary files
+copy = \.(png|gif|jpg|pdf)$
+### copy athena, artemis, and demeter project files
+copy = \.(prj|apj|dpj)$
+### copy the style sheet
+##copy = \.sty$
+
+### ignore svn and emacs backup/temporary files
+ignore = \.(svn)\b
+ignore = \#$
+ignore = ~$
+ignore = \.example$
+ignore = \.css$
+ignore = \.pod$
+ignore = athenabw.sty
+
+### options
+verbose
+recurse
+recursion
+
+### TT options
+pre_process = config/main
+wrapper     = site/wrapper
+
+### local variables
+define rootdir = [% installdir %]
+define rooturl = [% installdir %]
+define document_style = 'latex'
+define debug   = 0
+
+### en passant suffix conversion
+suffix tt=tex

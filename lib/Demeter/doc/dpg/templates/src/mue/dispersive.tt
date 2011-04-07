@@ -1,5 +1,0 @@
-[% META title = 'Processing dispersive XAS data' %]
-
-[% FILTER html_para %]
-dXAS
-[% END %]

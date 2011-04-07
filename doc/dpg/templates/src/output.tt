@@ -1,0 +1,358 @@
+[% META title = 'Output formats'
+        about = ''
+	chapter = 1
+	nosubpages = 1
+%]
+
+
+[% FILTER html_para %]
+[% demeter %] offers a large number of output formats for the various
+kinds of data handled by the various kinds of objects. 
+[% END %]
+
+[% PROCESS section label="Single object column data files" %]
+[% FILTER html_para %]
+There are a number of ways to save Data, Path, and path-like objects
+into column data files that can be plotted using other plotting
+programs or imported into a spreadsheet program.
+
+The available single object output types are:
+[% END %]
+
+[% WRAPPER html/list type="dl" %]
+[% WRAPPER html/dt dt='xmu' %]
+This file has 7 columns : energy, data as [% mue %], background,
+pre-edge, post-edge line, derivative, and second derivative for a
+Data object. 
+[% END %]
+[% WRAPPER html/dt dt='norm' %]
+This file has 7 columns: energy, data as normalized [% mue %],
+normalized background, flattened [% mue %], flattened background,
+derivative of the normalized [% mue %], and second derivative of the
+normalized [% mue %] for a Data object.
+[% END %]
+[% WRAPPER html/dt dt='chi' %]
+This file has 6 columns: wavenumber, [% chik %], [% chik1 %], 
+[% chik2 %], [% chik3 %], and the  window function in k
+for a Data, Path, or pathlike object.
+[% END %]
+[% WRAPPER html/dt dt='r' %]
+This file has 6 columns: R, real part of [% chir %], imaginary part,
+magnitude, phase, and the window function in R for a Data, Path, or
+pathlike object.  The current value of k-weighting in the Plot object
+is used to generate the data for this file. 
+[% END %]
+[% WRAPPER html/dt dt='q' %]
+This file has 6 columns: q, real part of [% chiq %], imaginary part,
+magnitude, phase, and the window function in k for a Data, Path, or
+pathlike object.  The current value of k-weighting in the Plot object
+is used to generate the data for this file. 
+[% END %]
+[% END %]
+[% WRAPPER codesample -%] 
+$data_object -> save('xmu',  'myfit.dat')
+$path_object -> save('chir', 'mypath.dat')
+[% END %]
+
+[% PROCESS subsection label="Column data file headers" %]
+[% FILTER html_para %]
+The header of the fit and bkgsub file types is generated using the 
+[% INCLUDE font/mono a="data_parameter_report" %] method which, in
+turn, takes its formatting from the 
+[% INCLUDE font/file a="data_report.tmpl" %] 
+[% INCLUDE html/link text="template file"
+                     link="highlevel/dispose.html" %].
+[% END %]
+[% FILTER html_para %]
+This line of code:
+[% END %]
+[% WRAPPER codesample -%] 
+print $data_object -> data_parameter_report;
+[% END %]
+[% FILTER html_para %]
+generates this text:
+[% END %]
+[% WRAPPER html/pre %]
+.  Element=Au   Edge=l3
+Background parameters
+.  E0=11919.166  Eshift=0  Rbkg=1.6
+.  Standard=None
+.  k-weight=1  Edge step=0.8548872
+.  Fixed step=no    Flatten=yes
+.  Pre-edge range: [ -150 : -30 ]
+.  Pre-edge line: 2.404416 - 0.000174619 * energy
+.  Normalization range: [ 150 : 869.877293080001 ]
+.  Post-edge polynomial: 4.337632 - 0.000197019 * en - 5.71097e-09 * en^2
+.  Spline range (energy): [ 0.000 : 969.877 ]   Clamps: 0/24
+.  Spline range (k): [ 0.000 : 15.955 ]
+Foreward FT parameters
+.  Kweight=1   Window=kaiser-bessel   Phase correction=0
+.  k-range: [ 2 : 13 ]   dk=1
+Backward FT parameters
+.  R-range: [ 1 : 3 ]
+.  dR=0.2   Window=kaiser-bessel
+Plotting parameters
+.  Multiplier=1   Y-offset=0.0000
+[% END %]
+
+
+
+[% PROCESS section label="Fit result column data files" %]
+[% FILTER html_para %]
+The results of a fit can be saved in one of two special column data files:
+[% END %]
+[% WRAPPER html/list type="dl" %]
+[% WRAPPER html/dt dt='fit' %]
+This file of 5 or 6 columns uses the fitting space for the first
+column (i.e. wavenumber for a fit in k or q; distance for a fit in R),
+followed by the data, the fit, the residual, the background if it was
+fitted, and the appropriate window function.  This is only for a Data
+object that has been used in a fit.
+[% END %]
+[% WRAPPER html/dt dt='bkgsub' %]
+This file has 3 columns: k, [% chik %] with the background function
+subtracted, and the k-space window.  This is only for a Data object
+that has been used in a fit.
+[% END %]
+[% END %]
+
+[% FILTER html_para %]
+The [% INCLUDE font/mono a="save" %] method takes an additional
+argument used only for the fit type.  It specifies what form of the
+data and the other parts to write to the file.  It can take a value of
+[% INCLUDE font/mono a="k" %], 
+[% INCLUDE font/mono a="k1" %], 
+[% INCLUDE font/mono a="k2" %], 
+[% INCLUDE font/mono a="k3" %], 
+[% INCLUDE font/mono a="rmag" %], 
+[% INCLUDE font/mono a="rre" %], 
+[% INCLUDE font/mono a="rim" %], 
+[% INCLUDE font/mono a="qmag" %], 
+[% INCLUDE font/mono a="qre" %], or 
+[% INCLUDE font/mono a="qim" %] to indicate the space, the k-weighting
+for k-space output, or the part of the complex function for R- or
+q-space output.  The default (no argument) is [% INCLUDE font/mono a="k" %],
+i.e. un-k-weighted [% chik %].
+[% END %]
+[% WRAPPER codesample -%] 
+$dobject->save("fit", "cufit.fit");
+$dobject->save("fit", "rmag.fit", 'rmag');
+$dobject->save("fit", "rre.fit", 'rre');
+$dobject->save("fit", "rim.fit", 'rim');
+[% END %]
+
+[% PROCESS subsection label="Column data file headers" %]
+[% FILTER html_para %]
+The header of the fit and bkgsub file types is generated using the 
+[% INCLUDE font/mono a="fit_parameter_report" %] method which, in
+turn, takes its formatting from the 
+[% INCLUDE font/file a="fit_report.tmpl" %] 
+[% INCLUDE html/link text="template file"
+                     link="highlevel/dispose.html" %].
+[% END %]
+[% FILTER html_para %]
+This line of code:
+[% END %]
+[% WRAPPER codesample -%] 
+print $data_object -> fit_parameter_report;
+[% END %]
+[% FILTER html_para %]
+generates this text:
+[% END %]
+[% WRAPPER html/pre %]
+Demeter fit file -- Demeter 0.4.1
+: file                = cu10k.chi
+: name                = My copper data
+: k-range             = 3.000 - 14.000
+: dk                  = 1
+: k-window            = hanning
+: k-weight            = 1,2,3
+: R-range             = 1.6 - 4.3
+: dR                  = 0.0
+: R-window            = hanning
+: fitting space       = r
+: background function = no
+: phase correction    = 0
+[% END %]
+
+[% PROCESS section label="Multiple object column data files" %]
+[% FILTER html_para %]
+[% demeter %] offers the [% INCLUDE font/mono a="save_many" %] method
+as a way to export many Data, Path, and pathlike objects to a single
+column data file which can be easily imported into a plotting or
+spreadsheet program.  The x-axis of the export space will be in the
+first column, followed by one column for each object exported.  Those
+columns will be in the order specified in the method call.
+[% END %]
+
+[% WRAPPER codesample -%] 
+$data->save_many("many.out", 'chik3', $paths[0], $paths[1], $carbon);
+[% END %]
+
+[% FILTER html_para %]
+The first argument is the output file name.  The second argument is
+the kind of data to write out (see the list below).  The remaining
+arguments are Data, Path, or pathlike objects to wrtie to the file.
+The calling object (which san be any Data, Path, or pathlike object)
+will be added to the front of the list of objects to export.  Care is
+taken not to export the caller twice if it also appears in the
+argument list and the caller appears in the second column of the
+output file.
+
+Every item in the list is interpolated (if necessary) to the grid of
+the caller.
+
+The available types are as follows (note that trying to write energy
+data with Path or pathlike objects in the argument list will trigger
+an error):
+[% END %]
+
+[% WRAPPER html/list type="ul" %]
+[% WRAPPER html/li %]
+[% INCLUDE font/mono a="xmu" %]: save [% mue %] for all objects in the
+argument list. 
+[% END %]
+[% WRAPPER html/li %]
+[% INCLUDE font/mono a="norm" %]: save normalized [% mue %] for all
+objects in the argument list. 
+[% END %]
+[% WRAPPER html/li %]
+[% INCLUDE font/mono a="der" %]: save the derivative of [% mue %] for
+all objects in the argument list. 
+[% END %]
+[% WRAPPER html/li %]
+[% INCLUDE font/mono a="nder" %]: save the derivative of normalized 
+[% mue %] for all objects in the argument list. 
+[% END %]
+[% WRAPPER html/li %]
+[% INCLUDE font/mono a="sec" %]: save the second derivative of [% mue
+%] for all objects in the argument list. 
+[% END %]
+[% WRAPPER html/li %]
+[% INCLUDE font/mono a="nsec" %]: save the second derivative of
+normalized [% mue %] for all objects in the argument list. 
+[% END %]
+[% WRAPPER html/li %]
+[% INCLUDE font/mono a="chi" %]: save unweighted [% chik %] for all
+objects in the argument list. 
+[% END %]
+[% WRAPPER html/li %]
+[% INCLUDE font/mono a="chik" %]: save [% k1 %]-weighted [% chik %]
+for all objects in the argument list. 
+[% END %]
+[% WRAPPER html/li %]
+[% INCLUDE font/mono a="chik2" %]: save [% k2 %]-weighted [% chik %]
+for all objects in the argument list. 
+[% END %]
+[% WRAPPER html/li %]
+[% INCLUDE font/mono a="chik3" %]: save [% k3 %]-weighted [% chik %]
+for all objects in the argument list. 
+[% END %]
+[% WRAPPER html/li %]
+[% INCLUDE font/mono a="chir_mag" %]: save the magnitude of [% chir %]
+for all objects in the argument list. 
+[% END %]
+[% WRAPPER html/li %]
+[% INCLUDE font/mono a="chir_re" %]: save  the real part of [% chir %]
+for all objects in the argument list. 
+[% END %]
+[% WRAPPER html/li %]
+[% INCLUDE font/mono a="chir_im" %]: save the imaginary part of 
+[% chir %] for all objects in the argument list. 
+[% END %]
+[% WRAPPER html/li %]
+[% INCLUDE font/mono a="chiq_mag" %]: save the magnitude of [% chiq %]
+for all objects in the argument list. 
+[% END %]
+[% WRAPPER html/li %]
+[% INCLUDE font/mono a="chiq_re" %]: save the real part of [% chiq %]
+for all objects in the argument list. 
+[% END %]
+[% WRAPPER html/li %]
+[% INCLUDE font/mono a="chiq_im" %]: save the imaginary part of 
+[% chiq %] for all objects in the argument list. 
+[% END %]
+[% END %]
+
+[% PROCESS section label="Athena  project files" %]
+[% FILTER html_para %]
+You can export an [% athena %] project files from a group of data
+objects like so:
+[% END %]
+
+[% WRAPPER codesample -%] 
+$data->write_athena("myproject.prj", @list_of_data);
+[% END %]
+
+[% FILTER html_para %]
+The first argument is the filename for the project file. This is
+followed by a list additional data objects to export. The caller will
+be the first group in the project file, followed by the addition data
+in the order supplied. If the caller is also in the list, it will not
+be written twice to the project file. 
+
+This is, in every way, a normal [% athena %] project file that can be
+imported by [% athena %] or [% artemis %] (either the old version or
+the new version).
+[% END %]
+
+[% PROCESS section label="Serialization files" %]
+[% FILTER html_para %]
+Every [% demeter %] object type has a serialization format.  The
+purpose of this is to freeze the state of an object to disk in a form
+that can be easily reimported to recover the state of the object.
+
+These files use the 
+[% INCLUDE html/link text="YAML data serialization" link="http://www.yaml.org/" %]
+format.  YAML is a fairly simple, text-only way of recording state of
+an object.  Although you should never need to do so, you can examine
+or even edit a YAML file with any text editor.  To save a little
+space, [% demeter %] compresses the files using the same algorithm as the
+[% INCLUDE html/link text="gzip program" link="http://www.gzip.org/"%].
+This kind of compressed file can be read by most compression or
+archiving programs on all platforms.
+
+An object is written to a yaml file using the 
+[% INCLUDE font/mono a="freeze" %] method.  It's argument is the name
+of the output file. 
+[% END %]
+
+[% WRAPPER codesample -%] 
+$data->freeze("data.yaml");
+[% END %]
+
+[% FILTER html_para %]
+You can import one of these serialization using the 
+[% INCLUDE font/mono a="thaw" %] method.  It's argument is the name
+of the file to import.  It returns the object. 
+[% END %]
+
+[% WRAPPER codesample -%] 
+$data->thaw("data.yaml");
+[% END %]
+
+
+[% PROCESS section label="Log files" %]
+[% FILTER html_para %]
+The Fit object has a [% INCLUDE font/mono a="logfile" %] method.
+[% END %]
+
+[% WRAPPER codesample -%] 
+$fitobject->logfile("myfit.log", $header, $footer);
+[% END %]
+
+
+[% PROCESS section label="Project files" %]
+[% FILTER html_para %]
+Project files are zip files filled with YAML files and other things.
+[% END %]
+
+[% PROCESS section label="Atoms and feff I/O" %]
+[% FILTER html_para %]
+[% atoms %] and [% feff %] I/O
+[% END %]
+
+[% PROCESS section label="Scripts" %]
+[% FILTER html_para %]
+[% demeter %] and [% ifeffit %] scripts
+[% END %]

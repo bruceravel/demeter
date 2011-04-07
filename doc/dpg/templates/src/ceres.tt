@@ -1,0 +1,25 @@
+[% META title = 'Pallas Athene by Gustav Klimt'
+	nosubpages = 1
+%]
+
+
+[% FILTER html_para %]
+Why demeter...
+[% END %]
+
+[% WRAPPER figure file="Isis-Sothis-Demeter.jpg" %]
+Bust of Isis-Sothis-Demeter. White marble, Roman artwork, second part
+of Hadrian's reign, ca. 131--138 CE. From the gymnasium in the Villa
+Adriana, near Tivoli, 1736.
+This image can be found at
+[% INCLUDE html/link text="Wikimedia Commons"
+                     link="http://commons.wikimedia.org/wiki/File:Isis-Sothis-Demeter_MGEg_Inv22804.jpg" %].
+[% END %]
+
+[% FILTER html_para %]
+[% INCLUDE html/link text="The image on the cover"
+   	   	     link="http://commons.wikimedia.org/wiki/File:Demeter_Pio-Clementino_Inv254.jpg" %]
+is a statue of a goddess restored as Demeter from the Vatican Museums,
+Vatican City. It is a Roman copy in marble after a Greek original from
+ca. 420 BC.
+[% END %]

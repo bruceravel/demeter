@@ -13,6 +13,9 @@ use File::Copy;
 use File::Path qw(mkpath rmtree);
 use File::Spec;
 
+######################################################################
+## Configuration
+
 my %windows = (strawberry => 'C:\strawberry',                     # base of Strawberry perl
 	       gnuwin     => 'C:\GnuWin32',                       # base of GnuWin32, readline, ncurses
 	       mingw      => 'C:\MinGW',                          # base of the MinGW compiler suite
@@ -20,8 +23,10 @@ my %windows = (strawberry => 'C:\strawberry',                     # base of Stra
 	       ifeffit    => 'C:\source\ifeffit-1.2.11d\src\lib', # install location of libifeffit.a
 	       gnuplot    => 'C:\gnuplot\binaries',		  # install location of gnuplot.exe
 	      );
-
 my $ghpages = '../demeter-gh-pages';
+
+######################################################################
+## Actions
 
 sub ACTION_build {
   my $self = shift;
@@ -128,14 +133,14 @@ sub ACTION_post_build {
 sub ACTION_build_dpg {
   my $self = shift;
   my $here = cwd;
-  chdir 'lib/Demeter/doc/dpg/';
+  chdir 'doc/dpg/';
   #do 'build_dpg.PL';
   mkdir 'html' if not -d 'html';
   system(q(./configure));
   system(q(./bin/build));
   chdir $here;
   rmtree(File::Spec->catfile($ghpages, 'dpg'), 1, 1);
-  move('lib/Demeter/doc/dpg/html', File::Spec->catfile($ghpages, 'dpg'));
+  move('doc/dpg/html', File::Spec->catfile($ghpages, 'dpg'));
 };
 
 sub ACTION_org2html {
@@ -143,13 +148,6 @@ sub ACTION_org2html {
   system('emacs --batch --eval "(setq org-export-headline-levels 2)" --visit=todo.org --funcall org-export-as-html-batch');
   move('todo.html', File::Spec->catfile($ghpages, 'todo.html'));
 };
-
-sub ACTION_update {
-  my $self = shift;
-  my $ret = $self->do_system(qw(git fetch));
-  die "failed to update Demeter from github\n" if not $ret;
-};
-
 
 sub ACTION_doctree {
   my $self = shift;
@@ -168,6 +166,15 @@ sub ACTION_doctree {
   unlink File::Spec->catfile($BIN, 'denv.pl');
   unlink File::Spec->catfile($BIN, 'dhephaestus.pl');
 };
+
+sub ACTION_update {
+  my $self = shift;
+  my $ret = $self->do_system(qw(git pull));
+  die "failed to update Demeter from github\n" if not $ret;
+};
+
+######################################################################
+## tools
 
 sub is_older {
   my ($file1, $file2) = @_;

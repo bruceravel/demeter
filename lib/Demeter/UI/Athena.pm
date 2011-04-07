@@ -1,6 +1,7 @@
 package Demeter::UI::Athena;
 
 use Demeter qw(::analysis);
+#use Demeter::UI::Wx::DFrame;
 use Demeter::UI::Wx::MRU;
 use Demeter::UI::Wx::SpecialCharacters qw(:all);
 use Demeter::UI::Athena::IO;
@@ -75,6 +76,7 @@ sub OnInit {
   ## -------- create a new frame and set icon
   #print DateTime->now,  "  Making main frame ...\n";
   $app->{main} = Wx::Frame->new(undef, -1, 'Athena [XAS data processing]', wxDefaultPosition, wxDefaultSize,);
+  #$app->{main} = Demeter::UI::Wx::DFrame->new(undef, -1, 'Athena [XAS data processing]', wxDefaultPosition, wxDefaultSize,);
   my $iconfile = File::Spec->catfile(dirname($INC{'Demeter/UI/Athena.pm'}), 'Athena', 'icons', "athena.png");
   $icon = Wx::Icon->new( $iconfile, wxBITMAP_TYPE_ANY );
   $app->{main} -> SetIcon($icon);
@@ -1683,6 +1685,12 @@ sub status {
   return if ($type =~ m{nobuffer});
   $self->{Status}->put_text($text, $type);
 };
+
+# sub OnCreateStatusBar {
+#   my ($self, $number, $style, $id, $name);
+#   print "Hi!\n";
+#   return Demeter::UI::Wx::EchoArea->new($self);
+# };
 
 =for Explain
 

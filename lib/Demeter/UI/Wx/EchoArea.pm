@@ -21,28 +21,44 @@ use Carp;
 
 use Wx qw( :everything );
 ##use Wx::Event qw(EVT_KEY_DOWN);
-use base 'Wx::TextCtrl';
+use base 'Wx::Panel';
 
 my @buffer;
 
 sub new {
-  my ($class, $parent, $maxlength) = @_;
-  $maxlength ||= 0;
-  my $self = $class->SUPER::new($parent, -1, q{}, wxDefaultPosition, wxDefaultSize, wxTE_READONLY);
-  $self->{maxlength} = $maxlength;
-  $self->SetForegroundColour( Wx::Colour->new(68, 31, 156) );
+  my ($class, $parent) = @_;
+#  $maxlength ||= 0;
+  my $self = $class->SUPER::new($parent, -1);
+  my $sizer = Wx::BoxSizer->new( wxHORIZONTAL );
+  $self->{prompt} = Wx::StaticText->new($self, -1, q{});
+  $self->{text}   = Wx::TextCtrl($self, -1, q{}, wxDefaultPosition, wxDefaultSize, wxTE_READONLY);
+  $sizer->Add($self->{prompt}, 0, wxALL, 0);
+  $sizer->Add($self->{text},   1, wxALL, 0);
+  $self->{prompt}->Hide;
+  $self->SetSizerAndFit($sizer);
   #$self->SetFont( Wx::Font->new( 16, wxDEFAULT, wxNORMAL, wxBOLD, 0, "" ) );
   return $self;
 };
+
+sub SetStatusText {
+
+};
+sub PopStatusText {
+
+};
+sub PushStatusText {
+
+};
+
 
 sub echo {
   my ($self, $string) = @_;
   ## set default colors
   $self->SetValue($string);
   push @buffer, $string if $string !~ m{\A\s*\z};
-  if ($self->{maxlength} and ($#buffer >= $self->{maxlength})) {
-    shift @buffer;
-  };
+#  if ($self->{maxlength} and ($#buffer >= $self->{maxlength})) {
+#    shift @buffer;
+#  };
   return $self;
 };
 
