@@ -83,8 +83,8 @@ has 'phase_array'     => (is=>'rw', isa=>'Str', default => q{});
 
 ## these four provide a generic way of storing cumulant information
 ## about a Path or Path-like object.  this is used, for instance, in
-## Demeter::ScatteringPath::Histogram::DL_POLY to store the cumulants
-## computed from the SS distribution in an FPath object
+## Demeter::Feff::Distributions to store the cumulants computed from
+## the SS distribution in an FPath object created from a histogram
 has 'c1'              => (is=>'rw', isa=>'Num', default =>  0, documentation => "the computed first cumulant");
 has 'c2'              => (is=>'rw', isa=>'Num', default =>  0, documentation => "the computed second cumulant");
 has 'c3'              => (is=>'rw', isa=>'Num', default =>  0, documentation => "the computed third cumulant");

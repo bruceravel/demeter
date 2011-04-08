@@ -425,7 +425,7 @@ sub remove {
     $type = 'Plot';
   } elsif ($type eq 'Demeter') {
     return;
-  } elsif ($type eq 'DL_POLY') {
+  } elsif ($type eq 'Distributions') {
     return;
   };
   my $group = $object->group;

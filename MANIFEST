@@ -424,7 +424,8 @@ doc/dpg/templates/src/xanes/lcf.tt
 doc/dpg/templates/src/xanes/pca.tt
 doc/dpg/templates/src/xanes/peak.tt
 lib/Demeter/Feff.pm
-lib/Demeter/Feff/DL_POLY.pm
+lib/Demeter/Feff/Distributions.pm
+lib/Demeter/Feff/MD/DL_POLY.pm
 lib/Demeter/Feff/External.pm
 lib/Demeter/Feff/Histogram.pm
 lib/Demeter/Feff/Paths.pm
@@ -471,8 +472,6 @@ lib/Demeter/Plugins/X23A2MED.pm
 lib/Demeter/Plugins/X23A2MultiChannel.pm
 lib/Demeter/Project.pm
 lib/Demeter/ScatteringPath.pm
-lib/Demeter/ScatteringPath/Histogram.pm
-lib/Demeter/ScatteringPath/Histogram/DL_POLY.pm
 lib/Demeter/share/Demeter.png
 lib/Demeter/share/Demeter_icon.png
 lib/Demeter/share/Demeter_large.png
@@ -829,7 +828,6 @@ lib/Demeter/UI/Artemis/Buffer.pm
 lib/Demeter/UI/Artemis/Config.pm
 lib/Demeter/UI/Artemis/Data.pm
 lib/Demeter/UI/Artemis/Data/AddParameter.pm
-lib/Demeter/UI/Artemis/Data/Histogram.pm
 lib/Demeter/UI/Artemis/Data/Quickfs.pm
 lib/Demeter/UI/Artemis/DND/PathDrag.pm
 lib/Demeter/UI/Artemis/DND/PlotListDrag.pm

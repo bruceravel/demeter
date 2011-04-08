@@ -1,7 +1,7 @@
 #!/usr/bin/perl
 
 use Demeter qw(:ui=screen :plotwith=gnuplot);
-use Demeter::Feff::DL_POLY;
+use Demeter::Feff::Distributions;
 
 use DateTime;
 
@@ -15,8 +15,10 @@ $data->fft_kmax(12);
 $data->po->rmax(8);
 
       my $start = DateTime->now( time_zone => 'floating' );
-my $dlp = Demeter::Feff::DL_POLY->new( rmin=>1.5, rmax=>3.5, type=>'ss', file=>'HISTORY',);
-#my $dlp = Demeter::ScatteringPath::Histogram::DL_POLY->new( r1=>1.5, r2=>3.5, r3=>5.2, r4=>5.7, type=>'ncl', skip=>20, file=>'HISTORY',);
+my $dlp = Demeter::Feff::Distributions->new( rmin=>1.5, rmax=>3.5, type=>'ss');
+$dlp->backend('DL_POLY');
+$dlp->file('HISTORY');
+#my $dlp = Demeter::Feff::Distributions->new( r1=>1.5, r2=>3.5, r3=>5.2, r4=>5.7, type=>'ncl', skip=>20, backend => 'DL_POLY', file=>'HISTORY',);
       my $lap = DateTime->now( time_zone => 'floating' );
       my $dur = $lap->subtract_datetime($start);
       printf("%d minutes, %d seconds\n", $dur->minutes, $dur->seconds);
