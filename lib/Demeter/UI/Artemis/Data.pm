@@ -2037,18 +2037,18 @@ sub OnData {
     #  Wx::MessageDialog->new($this->{PARENT}, $text, "Error!", wxOK|wxICON_ERROR) -> ShowModal;
     #  return $def;
     #};
-    my $dlp = Demeter::Feff::Distributions->new(rmin=>$spref->[4], rmax=>$spref->[5], bin=>$spref->[6],
-						feff=>$feff, ipot=>$ipot, type=>'ss');
-    $this->{PARENT}->{DISTRIBUTION} = $dlp;
+    my $histogram = Demeter::Feff::Distributions->new(type=>'ss');
+    $histogram -> set(rmin=>$spref->[4], rmax=>$spref->[5], bin=>$spref->[6], feff=>$feff, ipot=>$ipot, );
+    $this->{PARENT}->{DISTRIBUTION} = $histogram;
 
-    $dlp->sentinal(sub{$this->{PARENT}->histogram_sentinal_rdf});
+    $histogram->sentinal(sub{$this->{PARENT}->histogram_sentinal_rdf});
     my $busy = Wx::BusyCursor->new();
     my $start = DateTime->now( time_zone => 'floating' );
-    $dlp->backend($spref->[1]);
-    $dlp->file($spref->[3]);
+    $histogram->backend($spref->[1]);
+    $histogram->file($spref->[3]);
     my $finish = DateTime->now( time_zone => 'floating' );
     my $dur = $finish->subtract_datetime($start);
-    my $finishtext = sprintf("Making histogram from %d timesteps (%d minutes, %d seconds)", $dlp->nsteps, $dur->minutes, $dur->seconds);
+    my $finishtext = sprintf("Making histogram from %d timesteps (%d minutes, %d seconds)", $histogram->nsteps, $dur->minutes, $dur->seconds);
     $this->{PARENT}->status($finishtext);
     undef $busy;
 
@@ -2056,11 +2056,11 @@ sub OnData {
     $busy = Wx::BusyCursor->new();
     $this->{PARENT}->status("Rebinning histogram into $spref->[6] $ARING bins");
     $start = DateTime->now( time_zone => 'floating' );
-    $dlp->rebin;
-    #$dlp->set(sp=>$sp);
+    $histogram->rebin;
+    #$histogram->set(sp=>$sp);
     $dlcount = 0;
-    $dlp->feff->sentinal(sub{$this->{PARENT}->histogram_sentinal_fpath});
-    my $composite = $dlp->fpath;
+    $histogram->feff->sentinal(sub{$this->{PARENT}->histogram_sentinal_fpath});
+    my $composite = $histogram->fpath;
     $finish = DateTime->now( time_zone => 'floating' );
     $dur = $finish->subtract_datetime($start);
     $finishtext = sprintf("Rebined and made FPath in %d minutes, %d seconds", $dur->minutes, $dur->seconds);
@@ -2074,38 +2074,44 @@ sub OnData {
     $page->transfer;
     $Demeter::UI::Artemis::frames{Plot}->plot(0, 'r');
 #    $histo_dialog->{DISTRIBUTION} = q{};
-    $dlp->DEMOLISH;
+    $histogram->DEMOLISH;
     undef $busy;
 
   } elsif ($spref->[0] eq 'HistogramNCL') {
     #print join("|",@$spref), $/;
 
     my $feff = $demeter->mo->fetch("Feff", $spref->[2]);
-    my $dlp = Demeter::Feff::Distributions->new( r1=>$spref->[4], r2=>$spref->[5], r3=>$spref->[6], r4=>$spref->[7],
-						 rbin => $spref->[8], betabin => $spref->[9],
-						 feff=>$feff, ipot1 => $spref->[10], ipot2 => $spref->[11],
-						 type=>'ncl', skip=>20,);
-    $this->{PARENT}->{DISTRIBUTION} = $dlp;
+    my $histogram = Demeter::Feff::Distributions->new(type=>'ncl');
+    local $|=1;
+    print join("|", r1=>$spref->[4], r2=>$spref->[5], r3=>$spref->[6], r4=>$spref->[7],
+		      rbin => $spref->[8], betabin => $spref->[9],
+		      feff=>$feff, ipot => $spref->[10], ipot2 => $spref->[11],
+		      skip=>20, update_bins=>1), $/;
+    $histogram -> set(r1=>$spref->[4], r2=>$spref->[5], r3=>$spref->[6], r4=>$spref->[7],
+		      rbin => $spref->[8], betabin => $spref->[9],
+		      feff=>$feff, ipot => $spref->[10], ipot2 => $spref->[11],
+		      skip=>20, update_bins=>1);
+    $this->{PARENT}->{DISTRIBUTION} = $histogram;
 
-    $dlp->sentinal(sub{$this->{PARENT}->histogram_sentinal_rdf});
+    $histogram->sentinal(sub{$this->{PARENT}->histogram_sentinal_rdf});
     my $busy = Wx::BusyCursor->new();
     my $start = DateTime->now( time_zone => 'floating' );
-    $dlp->backend($spref->[1]);
-    $dlp->file($spref->[3]);
+    $histogram->backend($spref->[1]);
+    $histogram->file($spref->[3]);
     my $finish = DateTime->now( time_zone => 'floating' );
     my $dur = $finish->subtract_datetime($start);
     my $finishtext = sprintf("Making histogram from %d timesteps (%d minutes, %d seconds)",
-			     $dlp->nsteps/$dlp->skip, $dur->minutes, $dur->seconds);
+			     $histogram->nsteps/$histogram->skip, $dur->minutes, $dur->seconds);
     $this->{PARENT}->status($finishtext);
     undef $busy;
 
     $busy = Wx::BusyCursor->new();
     $this->{PARENT}->status("Rebinning histogram into $spref->[8] $ARING x $spref->[9] degree bins");
     $start = DateTime->now( time_zone => 'floating' );
-    $dlp->rebin;
+    $histogram->rebin;
     $dlcount = 0;
-    $dlp->sentinal(sub{$this->{PARENT}->histogram_sentinal_fpath});
-    my $composite = $dlp->fpath;
+    $histogram->sentinal(sub{$this->{PARENT}->histogram_sentinal_fpath});
+    my $composite = $histogram->fpath;
     $finish = DateTime->now( time_zone => 'floating' );
     $dur = $finish->subtract_datetime($start);
     $finishtext = sprintf("Rebined and made FPath in %d minutes, %d seconds",
@@ -2119,7 +2125,7 @@ sub OnData {
     #$composite->plot('r');
     $page->transfer;
     $Demeter::UI::Artemis::frames{Plot}->plot(0, 'r');
-    $dlp->DEMOLISH;
+    $histogram->DEMOLISH;
     undef $busy;
 
   } else {			#  this is a normal path
