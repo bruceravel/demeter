@@ -2083,13 +2083,9 @@ sub OnData {
     my $feff = $demeter->mo->fetch("Feff", $spref->[2]);
     my $histogram = Demeter::Feff::Distributions->new(type=>'ncl');
     local $|=1;
-    print join("|", r1=>$spref->[4], r2=>$spref->[5], r3=>$spref->[6], r4=>$spref->[7],
-		      rbin => $spref->[8], betabin => $spref->[9],
-		      feff=>$feff, ipot => $spref->[10], ipot2 => $spref->[11],
-		      skip=>20, update_bins=>1), $/;
     $histogram -> set(r1=>$spref->[4], r2=>$spref->[5], r3=>$spref->[6], r4=>$spref->[7],
 		      rbin => $spref->[8], betabin => $spref->[9],
-		      feff=>$feff, ipot => $spref->[10], ipot2 => $spref->[11],
+		      feff=>$feff, ipot1 => $spref->[10], ipot2 => $spref->[11],
 		      skip=>20, update_bins=>1);
     $this->{PARENT}->{DISTRIBUTION} = $histogram;
 

@@ -231,14 +231,16 @@ sub _histo {
 		histo_ncl_dlr1 histo_ncl_dlr2 histo_ncl_dlr3 histo_ncl_dlr4
 		histo_ncl_rbin histo_ncl_betabin));
 
-  my $persist = File::Spec->catfile(Demeter->dot_folder, 'demeter.dlpoly');
+  my $persist = File::Spec->catfile(Demeter->dot_folder, 'demeter.histograms');
   if (-e $persist) {
     my $yaml = YAML::Tiny::LoadFile($persist);
     $self->{histoyaml} = $yaml;
     $self->{histo_file} -> SetPath ($yaml->{file});
-    $self->{histo_ss_rmin} -> SetValue($yaml->{rmin} || 1.5);
-    $self->{histo_ss_rmax} -> SetValue($yaml->{rmax} || 3.5);
-    $self->{histo_ss_bin}  -> SetValue($yaml->{bin}  || 0.5);
+    $self->{histo_ss_rmin} -> SetValue($yaml->{rmin}  || 1.5);
+    $self->{histo_ss_rmax} -> SetValue($yaml->{rmax}  || 3.5);
+    $self->{histo_ss_bin}  -> SetValue($yaml->{bin}   || 0.5);
+    my $i1 = (exists $yaml->{ipot1}) ? $yaml->{ipot1}-1 : 0;
+    $self->{histo_ss_ipot} -> SetSelection($i1);
 
     $self->{histo_ncl_dlr1}   -> SetValue($yaml->{r1} || 1);
     $self->{histo_ncl_dlr2}   -> SetValue($yaml->{r2} || 3);
@@ -246,6 +248,9 @@ sub _histo {
     $self->{histo_ncl_dlr4}   -> SetValue($yaml->{r4} || 5);
     $self->{histo_ncl_rbin}   -> SetValue($yaml->{rbin} || 0.01);
     $self->{histo_ncl_betabin}-> SetValue($yaml->{betabin} || 0.5);
+    my $i2 = (exists $yaml->{ipot2}) ? $yaml->{ipot2}-1 : 0;
+    $self->{histo_ncl_ipot1}  -> SetSelection($i1);
+    $self->{histo_ncl_ipot2}  -> SetSelection($i2);
   };
 
   $vbox -> Add($scrl, 1, wxGROW|wxALL, 2);
@@ -270,7 +275,7 @@ sub histoplot {
   };
 
   my $dlp = Demeter::Feff::Distributions->new(rmin=>$rmin, rmax=>$rmax, bin=>$bin, type=>'ss');
-  my $persist = File::Spec->catfile($dlp->dot_folder, 'demeter.dlpoly');
+  my $persist = File::Spec->catfile($dlp->dot_folder, 'demeter.histograms');
   YAML::Tiny::DumpFile($persist, $this->{histoyaml});
 
 
@@ -449,22 +454,23 @@ sub OnDrag {
   my( $this, $event, $parent ) = @_;
 
 
-  my $dragdata = ['HistogramSS',					  # id
-		  'DL_POLY',				                  # backend
-		  $parent->{Feff}->{feffobject}->group,			  # feff object group
-		  $parent->{SS}->{histo_file}->GetTextCtrl->GetValue,   # HISTORY file
-		  $parent->{SS}->{histo_ss_rmin}->GetValue,		  # rmin
-		  $parent->{SS}->{histo_ss_rmax}->GetValue,		  # rmax
-		  $parent->{SS}->{histo_ss_bin} ->GetValue,		  # bin size
-		  $parent->{SS}->{histo_ss_ipot}->GetSelection+1,	  # ipot
+  my $dragdata = ['HistogramSS',					  # 0 id
+		  'DL_POLY',				                  # 1 backend
+		  $parent->{Feff}->{feffobject}->group,			  # 2 feff object group
+		  $parent->{SS}->{histo_file}->GetTextCtrl->GetValue,     # 3 HISTORY file
+		  $parent->{SS}->{histo_ss_rmin}->GetValue,		  # 4 rmin
+		  $parent->{SS}->{histo_ss_rmax}->GetValue,		  # 5 rmax
+		  $parent->{SS}->{histo_ss_bin} ->GetValue,		  # 6 bin size
+		  $parent->{SS}->{histo_ss_ipot}->GetSelection+1,	  # 7 ipot
 		 ];
 
   ## handle persistence file
-  $parent->{SS}->{histoyaml}->{file} = $dragdata->[3];
-  $parent->{SS}->{histoyaml}->{rmin} = $dragdata->[4];
-  $parent->{SS}->{histoyaml}->{rmax} = $dragdata->[5];
-  $parent->{SS}->{histoyaml}->{bin}  = $dragdata->[6];
-  my $persist = File::Spec->catfile(Demeter->dot_folder, 'demeter.dlpoly');
+  $parent->{SS}->{histoyaml}->{file}  = $dragdata->[3];
+  $parent->{SS}->{histoyaml}->{rmin}  = $dragdata->[4];
+  $parent->{SS}->{histoyaml}->{rmax}  = $dragdata->[5];
+  $parent->{SS}->{histoyaml}->{bin}   = $dragdata->[6];
+  $parent->{SS}->{histoyaml}->{ipot1} = $dragdata->[7];
+  my $persist = File::Spec->catfile(Demeter->dot_folder, 'demeter.histograms');
   YAML::Tiny::DumpFile($persist, $parent->{SS}->{histoyaml});
 
   my $data = Demeter::UI::Artemis::DND::PathDrag->new($dragdata);
@@ -525,6 +531,8 @@ sub OnDrag {
   $parent->{SS}->{histoyaml}->{r4}	= $dragdata->[7];
   $parent->{SS}->{histoyaml}->{rbin}    = $dragdata->[8];
   $parent->{SS}->{histoyaml}->{betabin} = $dragdata->[9];
+  $parent->{SS}->{histoyaml}->{ipot1}   = $dragdata->[10];
+  $parent->{SS}->{histoyaml}->{ipot2}   = $dragdata->[11];
   my $persist = File::Spec->catfile(Demeter->dot_folder, 'demeter.histograms');
   YAML::Tiny::DumpFile($persist, $parent->{SS}->{histoyaml});
 

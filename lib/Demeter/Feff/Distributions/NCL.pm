@@ -1,5 +1,6 @@
 package Demeter::Feff::Distributions::NCL;
 use Moose::Role;
+use MooseX::Aliases;
 
 use POSIX qw(acos);
 use Readonly;
@@ -21,6 +22,7 @@ has 'rbin'      => (is            => 'rw',
 has 'betabin'   => (is            => 'rw',
 		    isa           => 'Num',
 		    default       => 0.5,);
+has 'ipot'      => (is => 'rw', isa => Ipot, default => 1, alias => 'ipot1');
 has 'ipot2'     => (is => 'rw', isa => Ipot, default => 1, );
 has 'nearcl'    => (is => 'rw', isa => 'ArrayRef', default => sub{[]});
 
@@ -95,10 +97,10 @@ sub _bin {
   $self->nbins($#binned_plane+1);
   $self->update_bins(0);
   $self->stop_spinner if ($self->mo->ui eq 'screen');
-    local $|=1;
-  printf "number of pixels: unbinned = %d    binned = %d\n", $#plane+1, $#binned_plane+1;
-  printf "stripe pass = %d   pixel pass = %d    last pass = %d\n", $aa, $bb, $cc;
-  printf "binned = %d  unbinned = %d\n", $total, $#{$self->nearcl}+1;
+  #   local $|=1;
+  # printf "number of pixels: unbinned = %d    binned = %d\n", $#plane+1, $#binned_plane+1;
+  # printf "stripe pass = %d   pixel pass = %d    last pass = %d\n", $aa, $bb, $cc;
+  # printf "binned = %d  unbinned = %d\n", $total, $#{$self->nearcl}+1;
   return $self;
 };
 
@@ -200,8 +202,8 @@ sub nearly_collinear {
   $self->stop_spinner if ($self->mo->ui eq 'screen');
   $self->nconfig( $#three+1 );
   #$self->nconfig( int( ($#three+1) / (($#{$self->clusters}+1) / $self->skip) + 0.5 ) );
-  local $|=1;
-  print "||||||| ", $self->nconfig, $/;
+  # local $|=1;
+  # print "||||||| ", $self->nconfig, $/;
   $self->nearcl(\@three);
 };
 

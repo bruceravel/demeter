@@ -95,7 +95,6 @@ has 'type'  => (is => 'rw', isa => 'HistogramTypes', coerce => 1, default => 'ss
 has 'timestep_count' => (is => 'rw', isa => 'Int',  default => 0);
 has 'feff'           => (is => 'rw', isa => Empty.'|Demeter::Feff', default => q{},);
 has 'sp'             => (is => 'rw', isa => Empty.'|Demeter::ScatteringPath', default => q{},);
-has 'ipot'           => (is => 'rw', isa => Ipot, default => 1, alias => 'ipot1');
 
 
 has 'update_bins' => (is            => 'rw',

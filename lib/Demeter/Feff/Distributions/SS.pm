@@ -1,7 +1,8 @@
 package Demeter::Feff::Distributions::SS;
 use Moose::Role;
+use MooseX::Aliases;
 
-use Demeter::NumTypes qw( NonNeg );
+use Demeter::NumTypes qw( NonNeg Ipot );
 
 ## SS histogram attributes
 has 'rmin'        => (is	    => 'rw',
@@ -14,6 +15,7 @@ has 'rmax'        => (is	    => 'rw',
 		      default	    => 5.6,
 		      trigger	    => sub{ my($self, $new) = @_; $self->update_bins(1) if $new},
 		      documentation => "The upper bound of the SS histogram to be extracted from the cluster");
+has 'ipot'        => (is => 'rw', isa => Ipot, default => 1, alias => 'ipot1');
 has 'bin'         => (is            => 'rw',
 		      isa           => 'Num',
 		      default       => 0.005,);
@@ -103,7 +105,7 @@ sub rdf {
 sub chi {
   my ($self) = @_;
 
-  my $paths = $self -> feff -> make_histogram($self->positions, $self->populations, $self->ipot, q{}, q{});
+  my $paths = $self->feff->make_histogram($self->positions, $self->populations, $self->ipot, q{}, q{});
   $self->nbins($#{$paths}+1);
   $self->start_spinner("Making FPath from histogram") if ($self->mo->ui eq 'screen');
 
