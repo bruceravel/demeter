@@ -151,6 +151,22 @@ sub find_all_paths {
   return @list_of_paths;
 };
 
+sub find_nearest {
+  my ($self, @params) = @_;
+  my %params = @params;
+  my $reff = $params{reff};
+  delete $params{reff};
+  my @list = $self->find_all_paths(%params);
+  my ($this, $diff) = (q{}, 100000);
+  foreach my $sp (@list) {
+    if (abs($sp->fuzzy-$reff) < $diff) {
+      $this = $sp;
+      $diff = abs($sp->fuzzy-$reff);
+    };
+  };
+  return $this;
+};
+
 1;
 
 =head1 NAME
@@ -316,6 +332,37 @@ Another example:
 
 This returns all single scattering paths less than 6 Angstroms.
 
+An empty list is returned if no paths meet the criteria, so a logic
+test can be performed on the results.
+
+=item C<find_nearest>
+
+This find the path that meets a semantic description and is closest in
+path length to a specified value.
+
+  my $scatteringpath = $feff->find_nearest(reff=>2.546, element=>['Fe']);
+
+This example will find the single scattering path with Fe as the
+scatterer which has a half path length closest to 2.546 Ang.  The
+C<reff> is required.  All other arguments are the same as for
+C<find_all_paths>.  In fact, this method calls C<find_all_paths> with
+all arguments other than C<reff> then examines the list that gets
+returned for the path closest to the given value.
+
+This method returns the reference to the ScatteringPath object which
+matches.
+
+In the event that no paths are returned, the return value will be an
+empty string.  Thus you can do a logical check on the success of the
+method call.
+
+In the event that multiple ScatteringPath objects meet the semantic
+criteria and are of the same path length (which could happen for
+multiple scattering paths), the first such path as ordered by
+Demeter's pathfinder will returned.  If this is not the path that you
+want, then you will have to search through the list returned by
+C<find_all_paths> yourself.
+
 =back
 
 =head1 CONFIGURATION AND ENVIRONMENT
@@ -330,13 +377,10 @@ F<Bundle/DemeterBundle.pm> file.
 
 =head1 BUGS AND LIMITATIONS
 
-=over 4
 
 Please report problems to Bruce Ravel (bravel AT bnl DOT gov)
 
 Patches are welcome.
-
-=back
 
 =head1 AUTHOR
 

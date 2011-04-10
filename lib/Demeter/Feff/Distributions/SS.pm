@@ -15,7 +15,9 @@ has 'rmax'        => (is	    => 'rw',
 		      default	    => 5.6,
 		      trigger	    => sub{ my($self, $new) = @_; $self->update_bins(1) if $new},
 		      documentation => "The upper bound of the SS histogram to be extracted from the cluster");
-has 'ipot'        => (is => 'rw', isa => Ipot, default => 1, alias => 'ipot1');
+has 'ipot'        => (is => 'rw', isa => Ipot, default => 1,
+		      traits => ['MooseX::Aliases::Meta::Trait::Attribute'],
+		      alias => 'ipot1');
 has 'bin'         => (is            => 'rw',
 		      isa           => 'Num',
 		      default       => 0.005,);

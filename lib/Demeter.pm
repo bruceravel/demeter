@@ -22,7 +22,7 @@ BEGIN {
 require 5.8.0;
 
 use version;
-our $VERSION = version->new('0.4.6');
+our $VERSION = version->new('0.4.7');
 
 #use Demeter::Carp;
 use Carp;
@@ -1057,13 +1057,20 @@ user-defined parameters.
 
 =item C<serialize>
 
-Returns the YAML serialization string for the object.  See the Fit
-objects serialize method for complete details of serialization of a
-fitting model.
+Write the serialization of an object to a file.  C<freeze> is an alias
+for C<serialize>.  More complex objects override this method.  For
+instance, see the Fit objects serialize method for complete details of
+serialization of a fitting model.
+
+  $object -> freeze('save.yaml');
+
+=item C<serialization>
+
+Returns the YAML serialization string for the object as text.
 
 =item C<matches>
 
-This is a gneeralized way of testing to see if an attribute value
+This is a generalized way of testing to see if an attribute value
 matches a regular expression.  By default it tries to match the
 supplied regular expression again the C<name> attribute.
 
@@ -1185,15 +1192,18 @@ object.
 =item C<name>
 
 This returns a short, user-supplied, string identifying the object.
-For a GDS object, this is the parameter name.  For Path and Data
-objects, this is the string that will be put in a plot legend.
+For a GDS object, this is the parameter name.  For Data, Path,
+Path-like objects, and other plottable objects this is the string that
+will be put in a plot legend.
 
 =item C<data>
 
-Path objects (also VPath and SSPath) are associated with Data objects.
-This method returns the reference to the associated Data object.  For
-Data objects, this returns a reference to itself.  For other object
-types this returns a false value.
+Path and Path-like objects are associated with Data objects for chores
+like Fourier transforming.  That is, the Path or Path-like object will
+use the processing parameters of the associated Data object.  This
+method returns the reference to the associated Data object.  For Data
+objects, this returns a reference to itself.  For other object types
+this returns a false value.
 
 =item C<plottable>
 
@@ -1207,12 +1217,12 @@ All others return false.
 
 This attribute is inherited by all Demeter objects and provides a
 completely generic way for interactivity to be built into any process
-that a Demeter program undertakes.  At the moment, the only use is in
-the L<Demeter::LCF> C<combi> method.  This attribute takes a code
-reference.  At the beginning of each fit in the combinatorial
-sequence, this is dereference and called.  This allows Athena to
-provide status bar updates during this potentially long-running
-process.
+that a Demeter program undertakes.  It is used, for example, in the
+L<Demeter::LCF> C<combi> method and in several of the histogram
+processing methods.  This attribute takes a code reference.  At the
+beginning of each fit in the combinatorial sequence, this is
+dereference and called.  This allows a GUI to provide status updates
+during a potentially long-running process.
 
 The dereferencing and calling of the sentinal is handled by C<call>
 
@@ -1273,6 +1283,10 @@ Patches are welcome.
 =head1 VERSIONS
 
 =over 4
+
+=item 0.4.7
+
+Things mostly working on Windows.
 
 =item 0.4.6
 

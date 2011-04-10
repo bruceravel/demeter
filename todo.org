@@ -14,7 +14,7 @@
 ** installation issues [1/1]
   - [X] jpg needs to be a Module::Build build_element, but there are too many such files in the distro .. not all serve a purpose
 
-** Demeter bugs and shortcomings  [0/11]
+** Demeter bugs and shortcomings  [1/14]
   - [ ] in D::Data::IO::save_many, why doesn't updating in n specifying "background" not work to bring data up to date?  (fft, i.e. doing autobk, does work)
   - [ ] +serialize VPath+, put VPath into +dpj and+ fpj files
   - [ ] tie multiple groups together
@@ -26,6 +26,11 @@
   - [ ] Demeter command backend needs polishing
   - [ ] we seem not to have a normalized group (i.e. plot the same as mu or norm)
   - [ ] 3rd derivative
+  - [ ] SDK: "It  seems that if you use the old fashioned GSD string you can have capitals
+	in your variable names but if you use the fancy simpleGDS you can not.
+  - [X] SDK: something like find_path method, but which find the path closest to some R value
+  - [ ] SDK: better documentation for freeze/thaw//serialize/deserialize
+
 
 
 ** Athena
@@ -77,6 +82,9 @@
    - [ ] implement frozen groups
    - [ ] links to documentation on each tool
    - [ ] fix edge step button is not working
+   - [ ] test preprocessing (I had a crash with all three preproc options selected for
+	 data with a reference): 'Can't call method "GetSelection" on an undefined value
+	 at /home/bruce/git/demeter/lib/Demeter/UI/Athena/IO.pm line 423.'
    - [ ] *Pluck buttons* [0/2]
        + [ ] implement everywhere needed
        + [ ] figure out cause of spurious error on Windows "failed to get

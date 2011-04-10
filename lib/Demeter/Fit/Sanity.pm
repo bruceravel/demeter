@@ -84,7 +84,7 @@ sub S_defined_not_used {
     next if ($g->gds ne 'guess');
     foreach my $d (@gds) {
       next if ($d->gds !~ m{(?:def|restrain)});
-      ++$found if ($d->mathexp =~ /\b$name\b/);
+      ++$found if ($d->mathexp =~ /\b$name\b/i);
       last if $found;
     };
     foreach my $p (@paths) {
@@ -92,7 +92,7 @@ sub S_defined_not_used {
       next if not $p->include;
       last if $found;
       foreach my $pp (qw(s02 e0 delr sigma2 ei third fourth dphase)) {
-	++$found if ($p->$pp =~ /\b$name\b/);
+	++$found if ($p->$pp =~ /\b$name\b/i);
 	last if $found;
       };
     };
@@ -132,7 +132,7 @@ sub S_used_not_defined {
       next if ($token =~ m{\A$NUMBER\z});	    # number, ok
       next if (is_IfeffitFunction($token));       # function, ok
       next if ($token =~ m{\A(?:etok|pi)\z});     # Ifeffit's defined constants, ok
-      next if ($token =~ m{\A$params_regexp\z});  # defined param, ok
+      next if ($token =~ m{\A$params_regexp\z}i); # defined param, ok
       next if (lc($token) eq 'reff');             # reff, ok
       if (lc($token) =~ m{\[?cv\]?}) {
 	++$found;
@@ -155,7 +155,7 @@ sub S_used_not_defined {
 	next if ($token =~ m{\A$NUMBER\z});         # number, ok
 	next if (is_IfeffitFunction($token));       # function, ok
 	next if ($token =~ m{\A(?:etok|pi)\z});     # Ifeffit's defined constants, ok
-	next if ($token =~ m{\A$params_regexp\z});  # defined param, ok
+	next if ($token =~ m{\A$params_regexp\z}i); # defined param, ok
 	next if (lc($token) eq 'reff');             # reff, ok
 	next if (lc($token) =~ m{\[?cv\]?});        # cv, ok
 	++$found;
@@ -213,7 +213,6 @@ sub S_function_names {
 
   foreach my $g (@gds) {
     next if ($g->gds =~ m{(?:merge|skip)});
-    my $name = $g->name;
     if ($g->mathexp =~ m{(\b\w+)\s*\(}) {
       my $match = $1;
       if (not is_IfeffitFunction($match)) {
@@ -224,7 +223,6 @@ sub S_function_names {
   };
   foreach my $p (@paths) {
     next if not defined($p);
-    my $label = $p->name;
     foreach my $pp (qw(s02 e0 delr sigma2 ei third fourth dphase)) {
       my $mathexp = $p->$pp;
       if ($mathexp =~ m{(\b\w+)\s*\(}) {
@@ -310,8 +308,8 @@ sub S_gds_unique_names {
   my @gds = @{ $self->gds };
   my %seen = ();
   foreach my $g (@gds) {
-    ++$seen{$g->name};
-    $g->add_trouble('notunique') if ($seen{$g->name} > 1);
+    ++$seen{lc($g->name)};
+    $g->add_trouble('notunique') if ($seen{lc($g->name)} > 1);
   };
   foreach my $s (keys %seen) {
     if ($seen{$s} > 1) {
@@ -329,7 +327,6 @@ sub S_parens_not_match {
   my @paths = @{ $self->paths };
   foreach my $g (@gds) {
     next if ($g->gds =~ m{(?:merge|skip)});
-    my $name = $g->name;
     my $not_ok = $self->check_parens($g->mathexp);
     if ($not_ok) {
       ++$found;
@@ -338,7 +335,6 @@ sub S_parens_not_match {
   };
   foreach my $p (@paths) {
     next if not defined($p);
-    my $label = $p->name;
     foreach my $pp (qw(s02 e0 delr sigma2 ei third fourth dphase)) {
       my $mathexp = $p->$pp;
       my $not_ok = $self->check_parens($mathexp);
@@ -501,7 +497,7 @@ sub S_program_var_names {
   my $found = 0;
   my @gds = @{ $self->gds };
   foreach my $g (@gds) {
-    if (is_IfeffitProgramVar($g->name)) {
+    if (is_IfeffitProgramVar(lc($g->name))) {
       ++$found;
       $g->add_trouble('progvar');
     };
@@ -567,7 +563,7 @@ sub S_cycle_loop {
   foreach my $g (@gds) {
     next if ($g->gds =~ m{(?:merge|skip)});
     my $mathexp = $g->mathexp;
-    my @list = split(/$tokenizer_regexp+/, $mathexp);
+    my @list = split(/$tokenizer_regexp+/, lc($mathexp));
     foreach my $token (@list) {
       next if ($token =~ m{\A\s*\z});		  # space, ok
       next if ($token =~ m{\A$NUMBER\z});	  # number, ok
@@ -575,7 +571,7 @@ sub S_cycle_loop {
       next if ($token =~ m{\A(?:etok|pi)\z});     # Ifeffit's defined constants, ok
       next if (lc($token) eq 'reff');             # reff, ok
 
-      $graph -> add_edge($g->name, $token);
+      $graph -> add_edge(lc($g->name), $token);
     };
   };
 

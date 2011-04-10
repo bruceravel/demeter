@@ -17,7 +17,7 @@
 
 =cut
 
-use Test::More tests => 25;
+use Test::More tests => 26;
 
 use Demeter;
 use Cwd;
@@ -104,7 +104,10 @@ my @list = $feff -> find_all_paths(element=>'N');
 ok( ((abs($list[0]->fuzzy - 2.040) < 0.001) and
      (abs($list[1]->fuzzy - 4.191) < 0.001)),           "find_all_paths found both SS N paths");
 
-@list = $feff -> find_all_paths(nleg=>2);
+#@list = $feff -> find_all_paths(nleg=>2);
 #print join($/, map {$_->intrpline} @list), $/;
+
+my $nearest = $feff -> find_nearest(reff=>4, element=>'N');
+ok( (abs($nearest->fuzzy - 4.191) < 0.001),             "find_nearest");
 
 $feff -> clean_workspace;

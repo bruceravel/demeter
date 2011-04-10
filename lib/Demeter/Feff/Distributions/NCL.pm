@@ -22,7 +22,9 @@ has 'rbin'      => (is            => 'rw',
 has 'betabin'   => (is            => 'rw',
 		    isa           => 'Num',
 		    default       => 0.5,);
-has 'ipot'      => (is => 'rw', isa => Ipot, default => 1, alias => 'ipot1');
+has 'ipot'      => (is => 'rw', isa => Ipot, default => 1,
+		    traits => ['MooseX::Aliases::Meta::Trait::Attribute'],
+		    alias => 'ipot1');
 has 'ipot2'     => (is => 'rw', isa => Ipot, default => 1, );
 has 'nearcl'    => (is => 'rw', isa => 'ArrayRef', default => sub{[]});
 

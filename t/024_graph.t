@@ -40,7 +40,7 @@ my $tokenizer_regexp = '(?-xism:(?=[\t\ \(\)\*\+\,\-\/\^])[\-\+\*\^\/\(\)\,\ \t]
 my $graph = make_graph(@params);
 ok( (not $graph->has_a_cycle),   "recognize acyclic graph");
 
-$params[2] = Demeter::GDS->new(gds=>'def',   name=>'c', mathexp=>"10*e");
+$params[2] = Demeter::GDS->new(gds=>'def',   name=>'c', mathexp=>"10*E");
 $graph = make_graph(@params);
 ok( $graph->has_a_cycle,         "recognize cyclic graph " . join(" -> ", $graph->find_a_cycle));
 
@@ -48,7 +48,7 @@ $params[2] = Demeter::GDS->new(gds=>'def',   name=>'c', mathexp=>"10*a");
 $graph = make_graph(@params);
 ok( (not $graph->has_a_cycle),   "fixed cyclic graph");
 
-push @params, Demeter::GDS->new(gds=>'def',   name=>'s', mathexp=>"5*s");
+push @params, Demeter::GDS->new(gds=>'def',   name=>'s', mathexp=>"5*S");
 $graph = make_graph(@params);
 ok( $graph->self_loop_vertices,  "recognize looped parameter " . join(" ", $graph->self_loop_vertices));
 
@@ -59,14 +59,14 @@ sub make_graph {
   foreach my $g (@params) {
     next if ($g->gds =~ m{(?:merge|skip)});
     my $mathexp = $g->mathexp;
-    my @list = split(/$tokenizer_regexp+/, $mathexp);
+    my @list = split(/$tokenizer_regexp+/, lc($mathexp));
     foreach my $token (@list) {
       next if ($token =~ m{\A\s*\z});		  # space, ok
       next if ($token =~ m{\A$NUMBER\z});	  # number, ok
       next if (is_IfeffitFunction($token));       # function, ok
       next if ($token =~ m{\A(?:etok|pi)\z});     # Ifeffit's defined constants, ok
       next if (lc($token) eq 'reff');             # reff, ok
-      $graph -> add_edge($g->name, $token);
+      $graph -> add_edge(lc($g->name), $token);
     };
   };
   return $graph;

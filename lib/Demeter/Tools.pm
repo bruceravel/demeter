@@ -180,7 +180,8 @@ sub simpleGDS {
   ($string =~ s{(?:\A\s+|\s+\z)}{}g);    # trim leading and training space
 
   my ($type, $name, @rest) = split(" ", $string);
-  ($type, $name) = (lc $type, lc $name); # enforce lower case
+  #($type, $name) = (lc $type, lc $name); # enforce lower case
+  $type = lc $type;		# enforce lower case for gds attribute
 
   my $mathexp = lc(join(" ", @rest));
   $mathexp =~ s{\A\s*[=,]\s*}{};         # remove leading space, comma, equals sign from mathexp

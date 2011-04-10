@@ -352,7 +352,7 @@ sub param_present {
   my ($parent, $name) = @_;
   my $grid = $parent->{grid};
   foreach my $row (0 .. $grid->GetNumberRows) {
-    return 1 if ($grid->GetCellValue($row, 1) eq $name);
+    return 1 if (lc($grid->GetCellValue($row, 1)) eq lc($name));
   };
   return 0;
 };
