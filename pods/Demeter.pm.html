@@ -287,11 +287,16 @@ you attempt to <code>get</code> an undefined attribute for all subclasses except
 for the Config subclass, which is specifically intended to store
 user-defined parameters.</p></dd>
 	<dt><code>serialize</code></dt>
-		<dd><p>Returns the YAML serialization string for the object.  See the Fit
-objects serialize method for complete details of serialization of a
-fitting model.</p></dd>
+		<dd><p>Write the serialization of an object to a file.  <code>freeze</code> is an alias
+for <code>serialize</code>.  More complex objects override this method.  For
+instance, see the Fit objects serialize method for complete details of
+serialization of a fitting model.</p></dd>
+<dd><pre>  $object -&gt; freeze('save.yaml');
+
+</pre></dd>	<dt><code>serialization</code></dt>
+		<dd><p>Returns the YAML serialization string for the object as text.</p></dd>
 	<dt><code>matches</code></dt>
-		<dd><p>This is a gneeralized way of testing to see if an attribute value
+		<dd><p>This is a generalized way of testing to see if an attribute value
 matches a regular expression.  By default it tries to match the
 supplied regular expression again the <code>name</code> attribute.</p></dd>
 <dd><pre>  $is_match = $object-&gt;matches($regexp);
@@ -384,13 +389,16 @@ and Path objects, this is used as the Ifeffit group name for this
 object.</p></dd>
 	<dt><code>name</code></dt>
 		<dd><p>This returns a short, user-supplied, string identifying the object.
-For a GDS object, this is the parameter name.  For Path and Data
-objects, this is the string that will be put in a plot legend.</p></dd>
+For a GDS object, this is the parameter name.  For Data, Path,
+Path-like objects, and other plottable objects this is the string that
+will be put in a plot legend.</p></dd>
 	<dt><code>data</code></dt>
-		<dd><p>Path objects (also VPath and SSPath) are associated with Data objects.
-This method returns the reference to the associated Data object.  For
-Data objects, this returns a reference to itself.  For other object
-types this returns a false value.</p></dd>
+		<dd><p>Path and Path-like objects are associated with Data objects for chores
+like Fourier transforming.  That is, the Path or Path-like object will
+use the processing parameters of the associated Data object.  This
+method returns the reference to the associated Data object.  For Data
+objects, this returns a reference to itself.  For other object types
+this returns a false value.</p></dd>
 	<dt><code>plottable</code></dt>
 		<dd><p>This returns a true value if the object is one that can be plotted.
 Currently, Data, Path, VPath, and SSPath objects return a true value.
@@ -400,12 +408,12 @@ All others return false.</p></dd>
 </pre></dd>	<dt><code>sentinal</code></dt>
 		<dd><p>This attribute is inherited by all Demeter objects and provides a
 completely generic way for interactivity to be built into any process
-that a Demeter program undertakes.  At the moment, the only use is in
-the <a href="Demeter/LCF.pm.html">Demeter::LCF</a> <code>combi</code> method.  This attribute takes a code
-reference.  At the beginning of each fit in the combinatorial
-sequence, this is dereference and called.  This allows Athena to
-provide status bar updates during this potentially long-running
-process.</p></dd>
+that a Demeter program undertakes.  It is used, for example, in the
+<a href="Demeter/LCF.pm.html">Demeter::LCF</a> <code>combi</code> method and in several of the histogram
+processing methods.  This attribute takes a code reference.  At the
+beginning of each fit in the combinatorial sequence, this is
+dereference and called.  This allows a GUI to provide status updates
+during a potentially long-running process.</p></dd>
 		<dd><p>The dereferencing and calling of the sentinal is handled by <code>call</code></p></dd>
 <dd><pre>  $object -&gt; call_sentinal;
 
@@ -458,6 +466,8 @@ templates.  <a href="http://search.cpan.org/perldoc?Text%3A%3ATemplate">Text::Te
 <h1 id="VERSIONS">VERSIONS <a href="#TOP" class="toplink"><img alt="^" src="up.gif" /></a></h1>
 
 <dl>
+	<dt>0.4.7</dt>
+		<dd><p>Things mostly working on Windows.</p></dd>
 	<dt>0.4.6</dt>
 		<dd><p>We now have a mostly functional Athena.</p></dd>
 	<dt>0.4.5</dt>

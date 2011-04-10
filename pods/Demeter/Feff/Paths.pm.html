@@ -192,6 +192,30 @@ list is in order of increasing half path length.</p></dd>
 <dd><pre>   my @list =  $feff-&gt;find_all_paths(lt=&gt;6, nleg=&gt;2);
 
 </pre></dd>		<dd><p>This returns all single scattering paths less than 6 Angstroms.</p></dd>
+		<dd><p>An empty list is returned if no paths meet the criteria, so a logic
+test can be performed on the results.</p></dd>
+	<dt><code>find_nearest</code></dt>
+		<dd><p>This find the path that meets a semantic description and is closest in
+path length to a specified value.</p></dd>
+<dd><pre>  my $scatteringpath = $feff-&gt;find_nearest(reff=&gt;2.546, element=&gt;['Fe']);
+
+</pre></dd>		<dd><p>This example will find the single scattering path with Fe as the
+scatterer which has a half path length closest to 2.546 Ang.  The
+<code>reff</code> is required.  All other arguments are the same as for
+<code>find_all_paths</code>.  In fact, this method calls <code>find_all_paths</code> with
+all arguments other than <code>reff</code> then examines the list that gets
+returned for the path closest to the given value.</p></dd>
+		<dd><p>This method returns the reference to the ScatteringPath object which
+matches.</p></dd>
+		<dd><p>In the event that no paths are returned, the return value will be an
+empty string.  Thus you can do a logical check on the success of the
+method call.</p></dd>
+		<dd><p>In the event that multiple ScatteringPath objects meet the semantic
+criteria and are of the same path length (which could happen for
+multiple scattering paths), the first such path as ordered by
+Demeter's pathfinder will returned.  If this is not the path that you
+want, then you will have to search through the list returned by
+<code>find_all_paths</code> yourself.</p></dd>
 </dl>
 <h1 id="CONFIGURATION_AND_ENVIRONMENT">CONFIGURATION AND ENVIRONMENT <a href="#TOP" class="toplink"><img alt="^" src="../../up.gif" /></a></h1>
 
@@ -205,11 +229,13 @@ system.</p>
 
 <h1 id="BUGS_AND_LIMITATIONS">BUGS AND LIMITATIONS <a href="#TOP" class="toplink"><img alt="^" src="../../up.gif" /></a></h1>
 
+
+
+
 <p>Please report problems to Bruce Ravel (bravel AT bnl DOT gov)</p>
 
 <p>Patches are welcome.</p>
 
-</dl>
 <h1 id="AUTHOR">AUTHOR <a href="#TOP" class="toplink"><img alt="^" src="../../up.gif" /></a></h1>
 
 <p>Bruce Ravel (bravel AT bnl DOT gov)</p>

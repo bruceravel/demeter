@@ -31,7 +31,6 @@ use Wx::Perl::Carp;
 use Demeter::UI::Artemis::Project;
 use Demeter::UI::Artemis::Import;
 use Demeter::UI::Artemis::Data::AddParameter;
-#use Demeter::UI::Artemis::Data::Histogram;
 use Demeter::UI::Artemis::Data::Quickfs;
 use Demeter::UI::Artemis::ShowText;
 use Demeter::UI::Wx::CheckListBook;
@@ -85,9 +84,6 @@ Readonly my $PATH_ADD		=> Wx::NewId();
 Readonly my $PATH_CLONE		=> Wx::NewId();
 Readonly my $PATH_YAML		=> Wx::NewId();
 Readonly my $PATH_TYPE		=> Wx::NewId();
-Readonly my $PATH_HISTO_FILE    => Wx::NewId();
-Readonly my $PATH_HISTO_GAMMA	=> Wx::NewId();
-Readonly my $PATH_HISTO_DLPOLY	=> Wx::NewId();
 
 Readonly my $PATH_EXPORT_FEFF	=> Wx::NewId();
 Readonly my $PATH_EXPORT_DATA	=> Wx::NewId();
@@ -188,7 +184,7 @@ sub new {
 
   $this->{plotgrab} = Wx::BitmapButton->new($leftpane, -1, Demeter::UI::Artemis::icon('plotgrab'));
   $namebox -> Add($this->{plotgrab}, 0, wxLEFT|wxRIGHT|wxTOP, 3);
-  $this->{name} = Wx::StaticText->new($leftpane, -1, q{}, wxDefaultPosition, wxDefaultSize, wxRAISED_BORDER );
+  $this->{name} = Wx::StaticText->new($leftpane, -1, q{}, wxDefaultPosition, wxDefaultSize );
   $this->{name}->SetFont( Wx::Font->new( 12, wxDEFAULT, wxNORMAL, wxBOLD, 0, "" ) );
   $namebox -> Add($this->{name}, 1, wxLEFT|wxRIGHT|wxTOP, 5);
   $namebox -> Add(Wx::StaticText->new($leftpane, -1, "CV"), 0, wxLEFT|wxRIGHT|wxTOP, 5);
@@ -448,10 +444,10 @@ sub initial_page_panel {
 
   my $dndtext = Wx::StaticText    -> new($panel, -1, "Drag paths from a Feff interpretation list and drop them in this space to add paths to this data set", wxDefaultPosition, [300,-1]);
   $dndtext   -> Wrap(280);
-  my $atoms   = Wx::HyperlinkCtrl -> new($panel, -1, 'Import crystal data or a Feff calculation', q{}, wxDefaultPosition, wxDefaultSize );
-  my $qfs     = Wx::HyperlinkCtrl -> new($panel, -1, 'Start a quick first shell fit',             q{}, wxDefaultPosition, wxDefaultSize );
-  my $su      = Wx::StaticText    -> new($panel, -1, 'Import a structural unit',                       wxDefaultPosition, wxDefaultSize );
-  ##my $feff    = Wx::HyperlinkCtrl -> new($panel, -1, 'Import a Feff calculation',     q{}, wxDefaultPosition, wxDefaultSize );
+  my $atoms   = Wx::HyperlinkCtrl -> new($panel, -1, 'Import crystal data or a Feff calculation', q{}, wxDefaultPosition, wxDefaultSize, wxNO_BORDER );
+  my $qfs     = Wx::HyperlinkCtrl -> new($panel, -1, 'Start a quick first shell fit',             q{}, wxDefaultPosition, wxDefaultSize, wxNO_BORDER );
+  my $su      = Wx::StaticText    -> new($panel, -1, 'Import a structural unit',                       wxDefaultPosition, wxDefaultSize, wxNO_BORDER );
+  ##my $feff    = Wx::HyperlinkCtrl -> new($panel, -1, 'Import a Feff calculation',     q{}, wxDefaultPosition, wxDefaultSize, wxNO_BORDER );
 
   EVT_HYPERLINK($self, $atoms, sub{Import('feff', q{});});
   EVT_HYPERLINK($self, $qfs,   sub{$self->quickfs;});
@@ -609,11 +605,6 @@ sub make_menubar {
 #   $explain_menu->Append($PATH_EXP_THIRD,  '3rd',     'Explain the third cumulant');
 #   $explain_menu->Append($PATH_EXP_FOURTH, '4th',     'Explain the fourth cumulant');
 
-#   my $histo_menu    = Wx::Menu->new;
-#   $histo_menu->Append($PATH_HISTO_DLPOLY, "a DL_POLY history",     "Generate a histogram using the currently displayed path", wxITEM_NORMAL );
-#   $histo_menu->Append($PATH_HISTO_FILE,   "a column data file",    "Generate a histogram using the currently displayed path", wxITEM_NORMAL );
-#   $histo_menu->Append($PATH_HISTO_GAMMA,  "a Gamma-like function", "Generate a histogram using the currently displayed path", wxITEM_NORMAL );
-
 
   $self->{pathsmenu} = Wx::Menu->new;
   $self->{pathsmenu}->Append($PATH_TRANSFER, "Transfer displayed path",            "Transfer the path currently on display to the plotting list", wxITEM_NORMAL );
@@ -642,39 +633,39 @@ sub make_menubar {
 
   ## -------- marks menu
   $self->{markmenu}  = Wx::Menu->new;
-  $self->{markmenu}->Append($MARK_ALL,    "Mark all\tCTRL+SHIFT+a",              "Mark all paths for this $CHI(k)",             wxITEM_NORMAL );
-  $self->{markmenu}->Append($MARK_NONE,   "Unmark all\tCTRL+SHIFT+u",            "Unmark all paths for this $CHI(k)",           wxITEM_NORMAL );
-  $self->{markmenu}->Append($MARK_INVERT, "Invert marks\tCTRL+SHIFT+i",          "Invert all marks for this $CHI(k)",           wxITEM_NORMAL );
-  $self->{markmenu}->Append($MARK_REGEXP, "Mark regexp\tCTRL+SHIFT+r",           "Mark by regular expression for this $CHI(k)", wxITEM_NORMAL );
+  $self->{markmenu}->Append($MARK_ALL,    "Mark all\tCtrl+Shift+a",              "Mark all paths for this $CHI(k)",             wxITEM_NORMAL );
+  $self->{markmenu}->Append($MARK_NONE,   "Unmark all\tCtrl+Shift+u",            "Unmark all paths for this $CHI(k)",           wxITEM_NORMAL );
+  $self->{markmenu}->Append($MARK_INVERT, "Invert marks\tCtrl+Shift+i",          "Invert all marks for this $CHI(k)",           wxITEM_NORMAL );
+  $self->{markmenu}->Append($MARK_REGEXP, "Mark regexp\tCtrl+Shift+r",           "Mark by regular expression for this $CHI(k)", wxITEM_NORMAL );
   $self->{markmenu}->AppendSeparator;
-  $self->{markmenu}->Append($MARK_BEFORE, "Mark before current\tCTRL+SHIFT+b",   "Mark this path and all paths above it in the path list for this $CHI(k)", wxITEM_NORMAL );
-  $self->{markmenu}->Append($MARK_AFTER,  "Mark after current\tCTRL+SHIFT+f",    "Mark all paths after this one in the path list for this $CHI(k)",         wxITEM_NORMAL );
+  $self->{markmenu}->Append($MARK_BEFORE, "Mark before current\tCtrl+Shift+b",   "Mark this path and all paths above it in the path list for this $CHI(k)", wxITEM_NORMAL );
+  $self->{markmenu}->Append($MARK_AFTER,  "Mark after current\tCtrl+Shift+f",    "Mark all paths after this one in the path list for this $CHI(k)",         wxITEM_NORMAL );
   $self->{markmenu}->AppendSeparator;
-  $self->{markmenu}->Append($MARK_INC,    "Mark included\tCTRL+SHIFT+c",         "Mark all paths included in the fit",   wxITEM_NORMAL );
-  $self->{markmenu}->Append($MARK_EXC,    "Mark excluded\tCTRL+SHIFT+x",         "Mark all paths excluded from the fit", wxITEM_NORMAL );
+  $self->{markmenu}->Append($MARK_INC,    "Mark included\tCtrl+Shift+c",         "Mark all paths included in the fit",   wxITEM_NORMAL );
+  $self->{markmenu}->Append($MARK_EXC,    "Mark excluded\tCtrl+Shift+x",         "Mark all paths excluded from the fit", wxITEM_NORMAL );
   $self->{markmenu}->AppendSeparator;
-  $self->{markmenu}->Append($MARK_SS,     "Mark SS paths\tCTRL+SHIFT+s",         "Mark all single scattering paths for this $CHI(k)", wxITEM_NORMAL );
-  $self->{markmenu}->Append($MARK_MS,     "Mark MS paths\tCTRL+SHIFT+m",         "Mark all multiple scattering paths for this $CHI(k)", wxITEM_NORMAL );
+  $self->{markmenu}->Append($MARK_SS,     "Mark SS paths\tCtrl+Shift+s",         "Mark all single scattering paths for this $CHI(k)", wxITEM_NORMAL );
+  $self->{markmenu}->Append($MARK_MS,     "Mark MS paths\tCtrl+Shift+m",         "Mark all multiple scattering paths for this $CHI(k)", wxITEM_NORMAL );
   $self->{markmenu}->AppendSeparator;
-  $self->{markmenu}->Append($MARK_HIGH,   "Mark high importance\tCTRL+SHIFT+h",  "Mark all high importance paths for this $CHI(k)", wxITEM_NORMAL );
-  $self->{markmenu}->Append($MARK_MID,    "Mark mid importance\tCTRL+SHIFT+k",   "Mark all mid importance paths for this $CHI(k)", wxITEM_NORMAL );
-  $self->{markmenu}->Append($MARK_LOW,    "Mark low importance\tCTRL+SHIFT+l",   "Mark all low importance paths for this $CHI(k)", wxITEM_NORMAL );
+  $self->{markmenu}->Append($MARK_HIGH,   "Mark high importance\tCtrl+Shift+h",  "Mark all high importance paths for this $CHI(k)", wxITEM_NORMAL );
+  $self->{markmenu}->Append($MARK_MID,    "Mark mid importance\tCtrl+Shift+k",   "Mark all mid importance paths for this $CHI(k)", wxITEM_NORMAL );
+  $self->{markmenu}->Append($MARK_LOW,    "Mark low importance\tCtrl+Shift+l",   "Mark all low importance paths for this $CHI(k)", wxITEM_NORMAL );
   $self->{markmenu}->AppendSeparator;
-  $self->{markmenu}->Append($MARK_RBELOW, "Mark all paths < R\tCTRL+SHIFT+<",    "Mark all paths shorter than a specified path length for this $CHI(k)", wxITEM_NORMAL );
-  $self->{markmenu}->Append($MARK_RABOVE, "Mark all paths > R\tCTRL+SHIFT+>",    "Mark all paths longer than a specified path length for this $CHI(k)", wxITEM_NORMAL );
+  $self->{markmenu}->Append($MARK_RBELOW, "Mark all paths < R\tCtrl+Shift+<",    "Mark all paths shorter than a specified path length for this $CHI(k)", wxITEM_NORMAL );
+  $self->{markmenu}->Append($MARK_RABOVE, "Mark all paths > R\tCtrl+Shift+>",    "Mark all paths longer than a specified path length for this $CHI(k)", wxITEM_NORMAL );
 
    ## -------- actions menu
   $self->{actionsmenu} = Wx::Menu->new;
-  $self->{actionsmenu}->Append($ACTION_VPATH,     "Make VPath from marked\tALT+SHIFT+v",  "Make a virtual path from all marked paths", wxITEM_NORMAL );
-  $self->{actionsmenu}->Append($ACTION_TRANSFER,  "Transfer marked\tALT+SHIFT+t",         "Transfer all marked paths to the plotting list",   wxITEM_NORMAL );
+  $self->{actionsmenu}->Append($ACTION_VPATH,     "Make VPath from marked\tAlt+Shift+v",  "Make a virtual path from all marked paths", wxITEM_NORMAL );
+  $self->{actionsmenu}->Append($ACTION_TRANSFER,  "Transfer marked\tAlt+Shift+t",         "Transfer all marked paths to the plotting list",   wxITEM_NORMAL );
   $self->{actionsmenu}->AppendSeparator;
-  $self->{actionsmenu}->Append($ACTION_INCLUDE,   "Include marked\tALT+SHIFT+c",          "Include all marked paths in the fit",   wxITEM_NORMAL );
-  $self->{actionsmenu}->Append($ACTION_EXCLUDE,   "Exclude marked\tALT+SHIFT+x",          "Exclude all marked paths from the fit", wxITEM_NORMAL );
+  $self->{actionsmenu}->Append($ACTION_INCLUDE,   "Include marked\tAlt+Shift+c",          "Include all marked paths in the fit",   wxITEM_NORMAL );
+  $self->{actionsmenu}->Append($ACTION_EXCLUDE,   "Exclude marked\tAlt+Shift+x",          "Exclude all marked paths from the fit", wxITEM_NORMAL );
   $self->{actionsmenu}->AppendSeparator;
   $self->{actionsmenu}->Append($ACTION_DISCARD,   "Discard marked",          "Discard all marked paths",              wxITEM_NORMAL );
   $self->{actionsmenu}->AppendSeparator;
-  $self->{actionsmenu}->Append($ACTION_AFTER,     "Plot marked after fit\tALT+SHIFT+p",   "Flag all marked paths for transfer to the plotting list after completion of a fit", wxITEM_NORMAL );
-  $self->{actionsmenu}->Append($ACTION_NONEAFTER, "Plot no paths after fit\tALT+SHIFT+u", "Unflag all paths for transfer to the plotting list after completion of a fit", wxITEM_NORMAL );
+  $self->{actionsmenu}->Append($ACTION_AFTER,     "Plot marked after fit\tAlt+Shift+p",   "Flag all marked paths for transfer to the plotting list after completion of a fit", wxITEM_NORMAL );
+  $self->{actionsmenu}->Append($ACTION_NONEAFTER, "Plot no paths after fit\tAlt+Shift+u", "Unflag all paths for transfer to the plotting list after completion of a fit", wxITEM_NORMAL );
 
 
   $self->{menubar}->Append( $self->{datamenu},    "&Data" );
@@ -1059,30 +1050,6 @@ sub OnMenuClick {
       $datapage->clone;
       last SWITCH;
     };
-
-    (any {$id == $_} ($PATH_HISTO_FILE, $PATH_HISTO_GAMMA, $PATH_HISTO_DLPOLY))  and do {
-      my $pathpage = $datapage->{pathlist}->GetPage($datapage->{pathlist}->GetSelection);
-      my $sp = $pathpage->{path}->sp;
-      if ($sp->nleg != 2) {
-	my $text = "You can currently only build histograms from single scattering paths.  (MS histograms will be in a later version of Demeter.)";
-	$datapage->status($text);
-	Wx::MessageDialog->new($datapage, $text, "Error!", wxOK|wxICON_ERROR) -> ShowModal;
-	return;
-      };
-      my $how = ($id == $PATH_HISTO_FILE)   ? 'column'
-	      : ($id == $PATH_HISTO_GAMMA)  ? 'gamma'
-	      : ($id == $PATH_HISTO_DLPOLY) ? 'dlpoly'
-	      :                               'column';
-      my $histo_dialog = Demeter::UI::Artemis::Data::Histogram->new($datapage, $how);
-      my $result = $histo_dialog -> ShowModal;
-      if ($result == wxID_CANCEL) {
-	$datapage->status("Cancelled histogram creation.");
-	return;
-      };
-      $datapage -> process_histogram($histo_dialog, $how);
-      last SWITCH;
-    };
-
 
     ($id == $PATH_EXP_LABEL) and do {
       $datapage->status($Demeter::UI::Artemis::Pathexplanation{label});
@@ -1909,103 +1876,6 @@ sub clone {
   $datapage->status("Cloned $LAQUO" . $path->name . "$RAQUO and set N to half its value for the new and old paths.");
 };
 
-sub process_histogram {
-  my ($datapage, $histo_dialog, $how) = @_;
-  my $pathpage = $datapage->{pathlist}->GetPage($datapage->{pathlist}->GetSelection);
-  my $pathname = $pathpage->{path}->name;
-  my $sp = $pathpage->{path}->sp;
-  my $common = [data=>$datapage->{data}];
-
-  ## -------- from file:
-  if ($how =~ m{column}) {
-    my ($file, $rmin, $rmax, $xcol, $ycol, $amp, $scale) = 
-      ($histo_dialog->{filepicker} -> GetTextCtrl -> GetValue,
-       $histo_dialog->{filermin}   -> GetValue,
-       $histo_dialog->{filermax}   -> GetValue,
-       $histo_dialog->{filexcol}   -> GetValue,
-       $histo_dialog->{fileycol}   -> GetValue,
-       $histo_dialog->{fileamp}    -> GetValue,
-       $histo_dialog->{filescale}  -> GetValue,
-      );
-    carp("$file does not exist"), return if (not -e $file);
-    carp("$file cannot be read"), return if (not -r $file);
-    my ($rx, $ry) = $sp->histogram_from_file($file, $xcol, $ycol, $rmin, $rmax);
-    my $paths = $sp -> make_histogram($rx, $ry, $amp, $scale, $common);
-
-    my $id = $datapage->{pathlist}->GetSelection;
-    $datapage->{pathlist}->DeletePage($id);
-    #$datapage->{pathlist}->SetSelection($id);
-    foreach my $p (@$paths) {
-      my $histo_name = '[' . $p->parent->name . '] ' . $p->name;
-      my $page = Demeter::UI::Artemis::Path->new($datapage->{pathlist}, $p, $datapage);
-      $datapage->{pathlist}->AddPage($page, $histo_name, 1, 0);
-      #$page->include_label;
-    };
-    $Demeter::UI::Artemis::frames{Plot}->{VPaths}->add_named_vpath("histogram from $pathname", @$paths);
-
-    my $gdsframe = $Demeter::UI::Artemis::frames{GDS};
-    $gdsframe  -> put_param('guess', $amp,   '1');
-    $gdsframe  -> put_param('guess', $scale, '0') if $scale;
-    $gdsframe  -> clear_highlight;
-    my $re = ($scale)  ?  '\A(?:'.$amp.'|'.$scale.')\z'  :  '\A(?:'.$amp.')\z';
-    $gdsframe  -> set_highlight($re);
-    $gdsframe  -> Show(1);
-    $Demeter::UI::Artemis::frames{main} -> {toolbar}->ToggleTool(1,1);
-    $gdsframe  -> {toolbar}->ToggleTool(2,1);
-
-  } elsif ($how =~ m{dl_?poly}) {
-    my $file = $histo_dialog->{dlfile}->GetTextCtrl->GetValue;
-    my $rmin = $histo_dialog->{dlrmin}->GetValue;
-    my $rmax = $histo_dialog->{dlrmax}->GetValue;
-    my $bin  = $histo_dialog->{dlbin}->GetValue;
-    my $dlp  = $histo_dialog->{DLPOLY};
-    $histo_dialog->{yaml}->{file} = $file;
-    $histo_dialog->{yaml}->{rmin} = $rmin;
-    $histo_dialog->{yaml}->{rmax} = $rmax;
-    $histo_dialog->{yaml}->{bin}  = $bin;
-    my $persist = File::Spec->catfile($Demeter::UI::Artemis::demeter->dot_folder, 'demeter.dlpoly');
-    YAML::Tiny::DumpFile($persist, $histo_dialog->{yaml});
-
-    if (not $dlp) {
-      $dlp = Demeter::ScatteringPath::Histogram::DL_POLY->new(rmin=>$rmin, rmax=>$rmax, bin=>$bin, ss=>1, ncl=>0);
-      $histo_dialog->{DLPOLY}=$dlp;
-      $dlp->sentinal(sub{$histo_dialog->dlpoly_sentinal});
-      my $busy = Wx::BusyCursor->new();
-      my $start = DateTime->now( time_zone => 'floating' );
-      $dlp->file($file);
-      my $finish = DateTime->now( time_zone => 'floating' );
-      my $dur = $finish->subtract_datetime($start);
-      my $finishtext = sprintf("Making histogram from %d timesteps (%d minutes, %d seconds)", $dlp->nsteps, $dur->minutes, $dur->seconds);
-      $datapage->status($finishtext);
-      undef $busy;
-    };
-    my $busy = Wx::BusyCursor->new();
-    $dlp->set(rmin=>$rmin, rmax=>$rmax, bin=>$bin);
-    $datapage->status("Rebinning histogram into $bin $ARING bins");
-    $dlp->rebin;
-    $dlp->set(sp=>$sp);
-    my $composite = $dlp->fpath;
-    $composite->data($datapage->{data});
-    my $id = $datapage->{pathlist}->GetSelection;
-    $datapage->{pathlist}->DeletePage($id);
-    my $page = Demeter::UI::Artemis::Path->new($datapage->{pathlist}, $composite, $datapage);
-    $datapage->{pathlist}->AddPage($page, $composite->name, 1, 0, $id);
-    #$composite->po->start_plot;
-    #$composite->plot('r');
-    $page->transfer;
-    $Demeter::UI::Artemis::frames{Plot}->plot(0, 'r');
-    $histo_dialog->{DLPOLY} = q{};
-    $dlp->DEMOLISH;
-    undef $busy;
-  } elsif ($how =~ m{gamma}) {
-    printf("%s  %s  %s  %s\n",
-	   $sp,
-	   $histo_dialog->{gammargrid}->GetValue,
-	   $histo_dialog->{gammarmin}->GetValue,
-	   $histo_dialog->{gammarmax}->GetValue);
-  };
-};
-
 
 my @element_list = qw(h he li be b c n o f ne na mg al si p s cl ar k ca
 		      sc ti v cr mn fe co ni cu zn ga ge as se br kr rb
@@ -2066,26 +1936,33 @@ sub quickfs {
 };
 
 
-sub dlpoly_sentinal_rdf {
+sub histogram_sentinal_rdf {
   my ($datapage) = @_;
-  if (not $datapage->{DLPOLY}->timestep_count % 10) {
-    my $text = ($datapage->{DLPOLY}->ss)
-      ? $datapage->{DLPOLY}->timestep_count . " of " . $datapage->{DLPOLY}->{nsteps} . " timesteps"
-	: sprintf("%d of %d timesteps (every %d-th step)",
-		  $datapage->{DLPOLY}->timestep_count/$datapage->{DLPOLY}->skip,
-		  ($#{$datapage->{DLPOLY}->clusters}+1)/$datapage->{DLPOLY}->skip,
-		  $datapage->{DLPOLY}->skip );
+  if (not $datapage->{DISTRIBUTION}->timestep_count % 10) {
+    my $text = q{};
+
+    ## single scattering histogram
+    $text = $datapage->{DISTRIBUTION}->timestep_count . " of " . $datapage->{DISTRIBUTION}->{nsteps} . " timesteps"
+      if ($datapage->{DISTRIBUTION}->type eq 'ss');
+
+    ## nearly collinear histrogram
+    $text = sprintf("%d of %d timesteps (every %d-th step)",
+		    $datapage->{DISTRIBUTION}->timestep_count/$datapage->{DISTRIBUTION}->skip,
+		    ($#{$datapage->{DISTRIBUTION}->clusters}+1)/$datapage->{DISTRIBUTION}->skip,
+		    $datapage->{DISTRIBUTION}->skip )
+      if ($datapage->{DISTRIBUTION}->type eq 'ncl');
+
     $datapage->status($text, 'wait|nobuffer');
   };
   $::app->Yield();
 };
 
 my $dlcount = 0;
-sub dlpoly_sentinal_fpath {
+sub histogram_sentinal_fpath {
   my ($datapage) = @_;
   ++$dlcount;
   if (not $dlcount % 5) {
-    my $text = "Making FPath from bins: " . $dlcount . " of " . $datapage->{DLPOLY}->{nbins} . " bins processed";
+    my $text = "Making FPath from bins: " . $dlcount . " of " . $datapage->{DISTRIBUTION}->{nbins} . " bins processed";
     $datapage->status($text, 'wait|nobuffer');
   };
   $::app->Yield();
@@ -2100,7 +1977,7 @@ use base qw(Wx::DropTarget);
 use Demeter::UI::Artemis::DND::PathDrag;
 use Demeter::UI::Artemis::Path;
 use Demeter::UI::Wx::SpecialCharacters qw(:all);
-use Demeter::Feff::DL_POLY;
+use Demeter::Feff::Distributions;
 
 use Scalar::Util qw(looks_like_number);
 
@@ -2151,38 +2028,39 @@ sub OnData {
     $sspath->set(name=>$name, label=>$name) if ($name);
     $page->include_label;
 
-  } elsif ($spref->[0] eq 'DLPSS') {
-    my $feff = $demeter->mo->fetch("Feff", $spref->[1]);
-    my $ipot = $spref->[6];
+  } elsif ($spref->[0] eq 'HistogramSS') {
+    my $feff = $demeter->mo->fetch("Feff", $spref->[2]);
+    my $ipot = $spref->[7];
     #if (not looks_like_number($reff)) {
     #  my $text = "Your distance, $reff, is not a number.  This arbitrary single scattering path cannot be created.";
     #  $this->{PARENT}->status($text);
     #  Wx::MessageDialog->new($this->{PARENT}, $text, "Error!", wxOK|wxICON_ERROR) -> ShowModal;
     #  return $def;
     #};
-    my $dlp = Demeter::Feff::DL_POLY->new(rmin=>$spref->[3], rmax=>$spref->[4], bin=>$spref->[5],
-					  feff=>$feff, ipot=>$ipot, ss=>1, ncl=>0);
-    $this->{PARENT}->{DLPOLY} = $dlp;
+    my $histogram = Demeter::Feff::Distributions->new(type=>'ss');
+    $histogram -> set(rmin=>$spref->[4], rmax=>$spref->[5], bin=>$spref->[6], feff=>$feff, ipot=>$ipot, );
+    $this->{PARENT}->{DISTRIBUTION} = $histogram;
 
-    $dlp->sentinal(sub{$this->{PARENT}->dlpoly_sentinal_rdf});
+    $histogram->sentinal(sub{$this->{PARENT}->histogram_sentinal_rdf});
     my $busy = Wx::BusyCursor->new();
     my $start = DateTime->now( time_zone => 'floating' );
-    $dlp->file($spref->[2]);
+    $histogram->backend($spref->[1]);
+    $histogram->file($spref->[3]);
     my $finish = DateTime->now( time_zone => 'floating' );
     my $dur = $finish->subtract_datetime($start);
-    my $finishtext = sprintf("Making histogram from %d timesteps (%d minutes, %d seconds)", $dlp->nsteps, $dur->minutes, $dur->seconds);
+    my $finishtext = sprintf("Making histogram from %d timesteps (%d minutes, %d seconds)", $histogram->nsteps, $dur->minutes, $dur->seconds);
     $this->{PARENT}->status($finishtext);
     undef $busy;
 
 
     $busy = Wx::BusyCursor->new();
-    $this->{PARENT}->status("Rebinning histogram into $spref->[5] $ARING bins");
+    $this->{PARENT}->status("Rebinning histogram into $spref->[6] $ARING bins");
     $start = DateTime->now( time_zone => 'floating' );
-    $dlp->rebin;
-    #$dlp->set(sp=>$sp);
+    $histogram->rebin;
+    #$histogram->set(sp=>$sp);
     $dlcount = 0;
-    $dlp->feff->sentinal(sub{$this->{PARENT}->dlpoly_sentinal_fpath});
-    my $composite = $dlp->fpath;
+    $histogram->feff->sentinal(sub{$this->{PARENT}->histogram_sentinal_fpath});
+    my $composite = $histogram->fpath;
     $finish = DateTime->now( time_zone => 'floating' );
     $dur = $finish->subtract_datetime($start);
     $finishtext = sprintf("Rebined and made FPath in %d minutes, %d seconds", $dur->minutes, $dur->seconds);
@@ -2195,40 +2073,45 @@ sub OnData {
     #$composite->plot('r');
     $page->transfer;
     $Demeter::UI::Artemis::frames{Plot}->plot(0, 'r');
-#    $histo_dialog->{DLPOLY} = q{};
-    $dlp->DEMOLISH;
+#    $histo_dialog->{DISTRIBUTION} = q{};
+    $histogram->DEMOLISH;
     undef $busy;
 
-  } elsif ($spref->[0] eq 'DLPNCL') {
+  } elsif ($spref->[0] eq 'HistogramNCL') {
     #print join("|",@$spref), $/;
 
-    my $feff = $demeter->mo->fetch("Feff", $spref->[1]);
-    my $dlp = Demeter::Feff::DL_POLY->new( r1=>$spref->[3], r2=>$spref->[4], r3=>$spref->[5], r4=>$spref->[6],
-					   rbin => $spref->[7], betabin => $spref->[8],
-					   feff=>$feff, ipot1 => $spref->[9], ipot2 => $spref->[10],
-					   ncl=>1, ss=>0, skip=>20,);
-    $this->{PARENT}->{DLPOLY} = $dlp;
+    my $feff = $demeter->mo->fetch("Feff", $spref->[2]);
+    my $histogram = Demeter::Feff::Distributions->new(type=>'ncl');
+    local $|=1;
+    $histogram -> set(r1=>$spref->[4], r2=>$spref->[5], r3=>$spref->[6], r4=>$spref->[7],
+		      rbin => $spref->[8], betabin => $spref->[9],
+		      feff=>$feff, ipot => $spref->[10], ipot2 => $spref->[11],
+		      skip=>20, update_bins=>1);
+    $this->{PARENT}->{DISTRIBUTION} = $histogram;
 
-    $dlp->sentinal(sub{$this->{PARENT}->dlpoly_sentinal_rdf});
+    $histogram->sentinal(sub{$this->{PARENT}->histogram_sentinal_rdf});
     my $busy = Wx::BusyCursor->new();
     my $start = DateTime->now( time_zone => 'floating' );
-    $dlp->file($spref->[2]);
+    $histogram->backend($spref->[1]);
+    $histogram->file($spref->[3]);
     my $finish = DateTime->now( time_zone => 'floating' );
     my $dur = $finish->subtract_datetime($start);
-    my $finishtext = sprintf("Making histogram from %d timesteps (%d minutes, %d seconds)", $dlp->nsteps/$dlp->skip, $dur->minutes, $dur->seconds);
+    my $finishtext = sprintf("Making histogram from %d timesteps (%d minutes, %d seconds)",
+			     $histogram->nsteps/$histogram->skip, $dur->minutes, $dur->seconds);
     $this->{PARENT}->status($finishtext);
     undef $busy;
 
     $busy = Wx::BusyCursor->new();
-    $this->{PARENT}->status("Rebinning histogram into $spref->[7] $ARING x $spref->[8] degree bins");
+    $this->{PARENT}->status("Rebinning histogram into $spref->[8] $ARING x $spref->[9] degree bins");
     $start = DateTime->now( time_zone => 'floating' );
-    $dlp->rebin;
+    $histogram->rebin;
     $dlcount = 0;
-    $dlp->sentinal(sub{$this->{PARENT}->dlpoly_sentinal_fpath});
-    my $composite = $dlp->fpath;
+    $histogram->sentinal(sub{$this->{PARENT}->histogram_sentinal_fpath});
+    my $composite = $histogram->fpath;
     $finish = DateTime->now( time_zone => 'floating' );
     $dur = $finish->subtract_datetime($start);
-    $finishtext = sprintf("Rebined and made FPath in %d minutes, %d seconds", $dur->minutes, $dur->seconds);
+    $finishtext = sprintf("Rebined and made FPath in %d minutes, %d seconds",
+			  $dur->minutes, $dur->seconds);
     $this->{PARENT}->status($finishtext);
 
     $composite->data($this->{PARENT}->{data});
@@ -2238,8 +2121,7 @@ sub OnData {
     #$composite->plot('r');
     $page->transfer;
     $Demeter::UI::Artemis::frames{Plot}->plot(0, 'r');
-#    $histo_dialog->{DLPOLY} = q{};
-    $dlp->DEMOLISH;
+    $histogram->DEMOLISH;
     undef $busy;
 
   } else {			#  this is a normal path
@@ -2303,26 +2185,6 @@ Patches are welcome.
 =head1 AUTHOR
 
 Bruce Ravel (bravel AT bnl DOT gov)
-
-L<http://cars9.uchicago.edu/~ravel/software/>  if (0) {
-    $this->{up}        = Wx::Button->new($rightpane, wxID_UP,   q{},        wxDefaultPosition, wxDefaultSize, wxBU_EXACTFIT);
-    $this->{down}      = Wx::Button->new($rightpane, wxID_DOWN, q{},        wxDefaultPosition, wxDefaultSize, wxBU_EXACTFIT);
-    $this->{makevpath} = Wx::Button->new($rightpane, -1, 'Make &VPath',     wxDefaultPosition, wxDefaultSize, wxBU_EXACTFIT);
-    $this->{transfer}  = Wx::Button->new($rightpane, -1, 'Transfer marked', wxDefaultPosition, wxDefaultSize, wxBU_EXACTFIT);
-    $pathbuttons -> Add($this->{up},        0, wxLEFT|wxRIGHT, 5);
-    $pathbuttons -> Add($this->{down},      0, wxLEFT|wxRIGHT, 5);
-    $pathbuttons -> Add($this->{makevpath}, 0, wxLEFT|wxRIGHT, 5);
-    $pathbuttons -> Add($this->{transfer},  0, wxLEFT|wxRIGHT, 5);
-    $this->mouseover("up",        "Move the current path up in the path list");
-    $this->mouseover("down",      "Move the current path up in the path list");
-    $this->mouseover("makevpath", "Make a VPath out of the marked paths");
-    $this->mouseover("transfer",  "Transfer each of the marked paths to the plotting list");
-    EVT_BUTTON($this, $this->{up},        sub{$this->OnUpButton});
-    EVT_BUTTON($this, $this->{down},      sub{$this->OnDownButton});
-    EVT_BUTTON($this, $this->{makevpath}, sub{$this->OnMakeVPathButton});
-    EVT_BUTTON($this, $this->{transfer},  sub{$this->OnTransferButton});
-  };
-
 
 
 =head1 LICENCE AND COPYRIGHT

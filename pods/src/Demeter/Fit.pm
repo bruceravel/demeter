@@ -1008,7 +1008,7 @@ sub fetch_correlations {
     };
   };
 
-  my @gds = map {$_->name} @{ $self->gds };
+  my @gds = map {lc($_->name)} @{ $self->gds };
   my $regex = Regexp::Assemble->new()->add(@gds)->re;
 
   foreach my $line (@correl_text) {
@@ -1092,7 +1092,7 @@ sub fetch_gds {
   my ($self, $which) = @_;
   $which = lc($which);
   foreach my $g (@{$self->gds}) {
-    return $g if ($which eq $g->name);
+    return $g if ($which eq lc($g->name));
   };
   return 0;
 };

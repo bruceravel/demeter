@@ -31,13 +31,13 @@ sub new {
   #($cb->GetChildren)[0]->SetFont( Wx::Font->new($size, wxDEFAULT, wxNORMAL, wxNORMAL, 0, "" ) );
   $vbox->Add($cb, 1, wxALL, 5);
 
-  $self->{dlyaml} = {};
+  $self->{histoyaml} = {};
 
   $self->{ss} = $self->_ss($parent);
   $cb  -> AddPage($self->{ss}, "Make a Single Scattering path of arbitrary length", 1);
 
-  $self->{dlp_ss} = $self->_dlpoly($parent);
-  $cb  -> AddPage($self->{dlp_ss}, "Make histograms from a DL_POLY history", 0);
+  $self->{histo_ss} = $self->_histo($parent);
+  $cb  -> AddPage($self->{histo_ss}, "Make histograms from a molecular dynamics history", 0);
 
   $self -> SetSizerAndFit( $vbox );
   return $self;
@@ -98,16 +98,16 @@ sub _ss {
 };
 
 
-sub _dlpoly {
+sub _histo {
   my ($self, $parent) = @_;
   my $page = Wx::Panel->new($self->{book}, -1, wxDefaultPosition, wxDefaultSize);
 
   my $vbox = Wx::BoxSizer->new( wxVERTICAL );
 
-  $self->{dlp_dlfile} = Wx::FilePickerCtrl->new( $page, -1, "", "Choose a HISTORY File", "HISTORY files|HISTORY|All files|*",
+  $self->{histo_file} = Wx::FilePickerCtrl->new( $page, -1, "", "Choose a HISTORY File", "HISTORY files|HISTORY|All files|*",
 						    wxDefaultPosition, wxDefaultSize,
 						    wxFLP_DEFAULT_STYLE|wxFLP_USE_TEXTCTRL|wxFLP_CHANGE_DIR|wxFLP_FILE_MUST_EXIST );
-  $vbox -> Add($self->{dlp_dlfile}, 0, wxGROW|wxALL, 10);
+  $vbox -> Add($self->{histo_file}, 0, wxGROW|wxALL, 10);
 
 
   my $scrl = Wx::ScrolledWindow->new($page, -1, wxDefaultPosition, wxDefaultSize, wxVSCROLL);
@@ -122,44 +122,44 @@ sub _dlpoly {
 
   my $hbox = Wx::BoxSizer->new( wxHORIZONTAL );
   $ssboxsizer -> Add($hbox, 0, wxGROW|wxLEFT|wxRIGHT, 10);
-  $self -> {dlp_ss_rminlab} = Wx::StaticText -> new($scrl, -1, "Rmin");
-  $self -> {dlp_ss_rmin}    = Wx::TextCtrl   -> new($scrl, -1, 1.0, @PosSize,);
-  $hbox -> Add($self->{dlp_ss_rminlab}, 0, wxALL|wxALIGN_CENTRE_VERTICAL, 5);
-  $hbox -> Add($self->{dlp_ss_rmin},    0, wxALL|wxALIGN_CENTRE_VERTICAL, 5);
+  $self -> {histo_ss_rminlab} = Wx::StaticText -> new($scrl, -1, "Rmin");
+  $self -> {histo_ss_rmin}    = Wx::TextCtrl   -> new($scrl, -1, 1.0, @PosSize,);
+  $hbox -> Add($self->{histo_ss_rminlab}, 0, wxALL|wxALIGN_CENTRE_VERTICAL, 5);
+  $hbox -> Add($self->{histo_ss_rmin},    0, wxALL|wxALIGN_CENTRE_VERTICAL, 5);
 
-  $self -> {dlp_ss_rmaxlab} = Wx::StaticText -> new($scrl, -1, "Rmax");
-  $self -> {dlp_ss_rmax}    = Wx::TextCtrl   -> new($scrl, -1, 3.5, @PosSize,);
-  $hbox -> Add($self->{dlp_ss_rmaxlab}, 0, wxALL|wxALIGN_CENTRE_VERTICAL, 5);
-  $hbox -> Add($self->{dlp_ss_rmax},    0, wxALL|wxALIGN_CENTRE_VERTICAL, 5);
+  $self -> {histo_ss_rmaxlab} = Wx::StaticText -> new($scrl, -1, "Rmax");
+  $self -> {histo_ss_rmax}    = Wx::TextCtrl   -> new($scrl, -1, 3.5, @PosSize,);
+  $hbox -> Add($self->{histo_ss_rmaxlab}, 0, wxALL|wxALIGN_CENTRE_VERTICAL, 5);
+  $hbox -> Add($self->{histo_ss_rmax},    0, wxALL|wxALIGN_CENTRE_VERTICAL, 5);
 
-  $self -> {dlp_ss_binlab} = Wx::StaticText -> new($scrl, -1, "Bin size");
-  $self -> {dlp_ss_bin}    = Wx::TextCtrl   -> new($scrl, -1, 0.005, @PosSize,);
-  $hbox -> Add($self->{dlp_ss_binlab},  0, wxALL|wxALIGN_CENTRE_VERTICAL, 5);
-  $hbox -> Add($self->{dlp_ss_bin},     0, wxALL|wxALIGN_CENTRE_VERTICAL, 5);
+  $self -> {histo_ss_binlab} = Wx::StaticText -> new($scrl, -1, "Bin size");
+  $self -> {histo_ss_bin}    = Wx::TextCtrl   -> new($scrl, -1, 0.005, @PosSize,);
+  $hbox -> Add($self->{histo_ss_binlab},  0, wxALL|wxALIGN_CENTRE_VERTICAL, 5);
+  $hbox -> Add($self->{histo_ss_bin},     0, wxALL|wxALIGN_CENTRE_VERTICAL, 5);
 
-  $self -> {dlp_ss_dlplot} = Wx::Button -> new($scrl, -1, "Plot RDF");
-  $hbox -> Add($self->{dlp_ss_dlplot},    1, wxALL|wxALIGN_CENTRE_VERTICAL, 5);
-  EVT_BUTTON($self, $self->{dlp_ss_dlplot}, sub{ dlplot(@_) });
+  $self -> {histo_ss_histoplot} = Wx::Button -> new($scrl, -1, "Plot RDF");
+  $hbox -> Add($self->{histo_ss_histoplot},    1, wxALL|wxALIGN_CENTRE_VERTICAL, 5);
+  EVT_BUTTON($self, $self->{histo_ss_histoplot}, sub{ histoplot(@_) });
 
 
-  $self->{dlp_ss_ipot} = Wx::RadioBox->new($scrl, -1, ' ipot of scatterer ', wxDefaultPosition, wxDefaultSize,
+  $self->{histo_ss_ipot} = Wx::RadioBox->new($scrl, -1, ' ipot of scatterer ', wxDefaultPosition, wxDefaultSize,
 				       [q{     },q{     },q{     },q{     },q{     },q{     },q{     }], 7, wxRA_SPECIFY_COLS);
-  $self->{dlp_ss_ipot}->Enable($_,0) foreach (0..6);
-  EVT_RADIOBOX($self, $self->{dlp_ss_ipot}, sub{set_name(@_,'dlp_ss')});
+  $self->{histo_ss_ipot}->Enable($_,0) foreach (0..6);
+  EVT_RADIOBOX($self, $self->{histo_ss_ipot}, sub{set_name(@_,'histo_ss')});
 
-  $ssboxsizer -> Add( $self->{dlp_ss_ipot}, 0, wxLEFT|wxRIGHT, 10 );
+  $ssboxsizer -> Add( $self->{histo_ss_ipot}, 0, wxLEFT|wxRIGHT, 10 );
 
-  $self->{dlp_ss_rattle} = Wx::CheckBox->new($scrl, -1, "Also create triple scattering path from this histogram");
-  $ssboxsizer -> Add( $self->{dlp_ss_rattle}, 0, wxTOP|wxLEFT|wxRIGHT, 10 );
-  $self->{dlp_ss_rattle}->Enable(0);
+  $self->{histo_ss_rattle} = Wx::CheckBox->new($scrl, -1, "Also create triple scattering path from this histogram");
+  $ssboxsizer -> Add( $self->{histo_ss_rattle}, 0, wxTOP|wxLEFT|wxRIGHT, 10 );
+  $self->{histo_ss_rattle}->Enable(0);
 
   $hbox = Wx::BoxSizer->new( wxHORIZONTAL );
   $ssboxsizer -> Add( $hbox, 0, wxGROW|wxALL, 10 );
-  $self->{dlp_ss_drag} = Demeter::UI::Atoms::SS::DLPSSDragSource->new($scrl, -1, wxDefaultPosition, wxDefaultSize, $parent);
-  $hbox  -> Add( $self->{dlp_ss_drag}, 0, wxALL, 0);
-  $self->{dlp_ss_drag}->SetCursor(Wx::Cursor->new(wxCURSOR_HAND));
-  $self->{dlp_ss_drag}->SetFont( Wx::Font->new( 10, wxDEFAULT, wxNORMAL, wxNORMAL, 1, "" ) );
-  $self->{dlp_ss_drag}->Enable(0);
+  $self->{histo_ss_drag} = Demeter::UI::Atoms::SS::DLPSSDragSource->new($scrl, -1, wxDefaultPosition, wxDefaultSize, $parent);
+  $hbox  -> Add( $self->{histo_ss_drag}, 0, wxALL, 0);
+  $self->{histo_ss_drag}->SetCursor(Wx::Cursor->new(wxCURSOR_HAND));
+  $self->{histo_ss_drag}->SetFont( Wx::Font->new( 10, wxDEFAULT, wxNORMAL, wxNORMAL, 1, "" ) );
+  $self->{histo_ss_drag}->Enable(0);
 
 
   my $nclbox       = Wx::StaticBox->new($scrl, -1, 'Make a nearly collinear three-body histogram', wxDefaultPosition, wxDefaultSize);
@@ -169,57 +169,57 @@ sub _dlpoly {
 
   $hbox = Wx::BoxSizer->new( wxHORIZONTAL );
   $nclboxsizer -> Add($hbox, 0, wxGROW|wxLEFT|wxRIGHT, 10);
-  $self -> {dlp_ncl_rbinlab} = Wx::StaticText -> new($scrl, -1, "Radial bin size");
-  $self -> {dlp_ncl_rbin}    = Wx::TextCtrl   -> new($scrl, -1, 1.0, @PosSize,);
-  $self -> {dlp_ncl_betabinlab} = Wx::StaticText -> new($scrl, -1, "Angular bin size");
-  $self -> {dlp_ncl_betabin}    = Wx::TextCtrl   -> new($scrl, -1, 1.0, @PosSize,);
-  $hbox -> Add($self->{dlp_ncl_rbinlab},    0, wxALL|wxALIGN_CENTRE_VERTICAL, 5);
-  $hbox -> Add($self->{dlp_ncl_rbin},       0, wxALL|wxALIGN_CENTRE_VERTICAL, 5);
-  $hbox -> Add($self->{dlp_ncl_betabinlab}, 0, wxALL|wxALIGN_CENTRE_VERTICAL, 5);
-  $hbox -> Add($self->{dlp_ncl_betabin},    0, wxALL|wxALIGN_CENTRE_VERTICAL, 5);
+  $self -> {histo_ncl_rbinlab} = Wx::StaticText -> new($scrl, -1, "Radial bin size");
+  $self -> {histo_ncl_rbin}    = Wx::TextCtrl   -> new($scrl, -1, 1.0, @PosSize,);
+  $self -> {histo_ncl_betabinlab} = Wx::StaticText -> new($scrl, -1, "Angular bin size");
+  $self -> {histo_ncl_betabin}    = Wx::TextCtrl   -> new($scrl, -1, 1.0, @PosSize,);
+  $hbox -> Add($self->{histo_ncl_rbinlab},    0, wxALL|wxALIGN_CENTRE_VERTICAL, 5);
+  $hbox -> Add($self->{histo_ncl_rbin},       0, wxALL|wxALIGN_CENTRE_VERTICAL, 5);
+  $hbox -> Add($self->{histo_ncl_betabinlab}, 0, wxALL|wxALIGN_CENTRE_VERTICAL, 5);
+  $hbox -> Add($self->{histo_ncl_betabin},    0, wxALL|wxALIGN_CENTRE_VERTICAL, 5);
 
-  $self -> {dlp_ncl_plot} = Wx::Button -> new($scrl, -1, "Scatter plot");
-  $hbox -> Add($self->{dlp_ncl_plot},    1, wxALL|wxALIGN_CENTRE_VERTICAL, 5);
-  #EVT_BUTTON($self, $self->{dlp_ncl_plot}, sub{ scatterplot(@_) });
-  $self -> {dlp_ncl_plot} -> Enable(0);
+  $self -> {histo_ncl_plot} = Wx::Button -> new($scrl, -1, "Scatter plot");
+  $hbox -> Add($self->{histo_ncl_plot},    1, wxALL|wxALIGN_CENTRE_VERTICAL, 5);
+  #EVT_BUTTON($self, $self->{histo_ncl_plot}, sub{ scatterplot(@_) });
+  $self -> {histo_ncl_plot} -> Enable(0);
 
   $hbox = Wx::BoxSizer->new( wxHORIZONTAL );
   $nclboxsizer -> Add($hbox, 0, wxGROW|wxLEFT|wxRIGHT, 10);
-  $self->{dlp_ncl_ipot1} = Wx::RadioBox->new($scrl, -1, ' ipot of near neighbor scatterer ', wxDefaultPosition, wxDefaultSize,
+  $self->{histo_ncl_ipot1} = Wx::RadioBox->new($scrl, -1, ' ipot of near neighbor scatterer ', wxDefaultPosition, wxDefaultSize,
 					     [q{     },q{     },q{     },q{     },q{     },q{     },q{     }], 7, wxRA_SPECIFY_COLS);
-  $self->{dlp_ncl_ipot1}->Enable($_,0) foreach (0..6);
-  EVT_RADIOBOX($self, $self->{dlp_ncl_ipot1}, sub{set_name(@_,'dlp_ncl1')});
-  $hbox -> Add( $self->{dlp_ncl_ipot1}, 0, wxALL|wxALIGN_CENTRE_VERTICAL, 5 );
+  $self->{histo_ncl_ipot1}->Enable($_,0) foreach (0..6);
+  EVT_RADIOBOX($self, $self->{histo_ncl_ipot1}, sub{set_name(@_,'histo_ncl1')});
+  $hbox -> Add( $self->{histo_ncl_ipot1}, 0, wxALL|wxALIGN_CENTRE_VERTICAL, 5 );
 
-  $self -> {dlp_ncl_dlr1}    = Wx::TextCtrl   -> new($scrl, -1, 1.0, @PosSize,);
-  $self -> {dlp_ncl_dlr2}    = Wx::TextCtrl   -> new($scrl, -1, 1.0, @PosSize,);
+  $self -> {histo_ncl_dlr1}    = Wx::TextCtrl   -> new($scrl, -1, 1.0, @PosSize,);
+  $self -> {histo_ncl_dlr2}    = Wx::TextCtrl   -> new($scrl, -1, 1.0, @PosSize,);
   $hbox -> Add(Wx::StaticText -> new($scrl, -1, "R1:"), 0, wxALL|wxALIGN_CENTRE_VERTICAL, 5);
-  $hbox -> Add($self->{dlp_ncl_dlr1},      0, wxALL|wxALIGN_CENTRE_VERTICAL, 5);
+  $hbox -> Add($self->{histo_ncl_dlr1},      0, wxALL|wxALIGN_CENTRE_VERTICAL, 5);
   $hbox -> Add(Wx::StaticText -> new($scrl, -1, "R2:"), 0, wxALL|wxALIGN_CENTRE_VERTICAL, 5);
-  $hbox -> Add($self->{dlp_ncl_dlr2},      0, wxALL|wxALIGN_CENTRE_VERTICAL, 5);
+  $hbox -> Add($self->{histo_ncl_dlr2},      0, wxALL|wxALIGN_CENTRE_VERTICAL, 5);
 
   $hbox = Wx::BoxSizer->new( wxHORIZONTAL );
   $nclboxsizer -> Add($hbox, 0, wxGROW|wxLEFT|wxRIGHT, 10);
-  $self->{dlp_ncl_ipot2} = Wx::RadioBox->new($scrl, -1, ' ipot of distant scatterer ', wxDefaultPosition, wxDefaultSize,
+  $self->{histo_ncl_ipot2} = Wx::RadioBox->new($scrl, -1, ' ipot of distant scatterer ', wxDefaultPosition, wxDefaultSize,
 					     [q{     },q{     },q{     },q{     },q{     },q{     },q{     }], 7, wxRA_SPECIFY_COLS);
-  $self->{dlp_ncl_ipot2}->Enable($_,0) foreach (0..6);
-  EVT_RADIOBOX($self, $self->{dlp_ncl_ipot2}, sub{set_name(@_,'dlp_ncl2')});
-  $hbox -> Add( $self->{dlp_ncl_ipot2}, 0, wxALL|wxALIGN_CENTRE_VERTICAL, 5 );
+  $self->{histo_ncl_ipot2}->Enable($_,0) foreach (0..6);
+  EVT_RADIOBOX($self, $self->{histo_ncl_ipot2}, sub{set_name(@_,'histo_ncl2')});
+  $hbox -> Add( $self->{histo_ncl_ipot2}, 0, wxALL|wxALIGN_CENTRE_VERTICAL, 5 );
 
-  $self -> {dlp_ncl_dlr3}    = Wx::TextCtrl   -> new($scrl, -1, 1.0, @PosSize,);
-  $self -> {dlp_ncl_dlr4}    = Wx::TextCtrl   -> new($scrl, -1, 1.0, @PosSize,);
+  $self -> {histo_ncl_dlr3}    = Wx::TextCtrl   -> new($scrl, -1, 1.0, @PosSize,);
+  $self -> {histo_ncl_dlr4}    = Wx::TextCtrl   -> new($scrl, -1, 1.0, @PosSize,);
   $hbox -> Add(Wx::StaticText -> new($scrl, -1, "R3:"), 0, wxALL|wxALIGN_CENTRE_VERTICAL, 5);
-  $hbox -> Add($self->{dlp_ncl_dlr3},      0, wxALL|wxALIGN_CENTRE|wxALIGN_CENTRE_VERTICAL, 5);
+  $hbox -> Add($self->{histo_ncl_dlr3},      0, wxALL|wxALIGN_CENTRE|wxALIGN_CENTRE_VERTICAL, 5);
   $hbox -> Add(Wx::StaticText -> new($scrl, -1, "R4:"), 0, wxALL|wxALIGN_CENTRE_VERTICAL, 5);
-  $hbox -> Add($self->{dlp_ncl_dlr4},      0, wxALL|wxALIGN_CENTRE|wxALIGN_CENTRE_VERTICAL, 5);
+  $hbox -> Add($self->{histo_ncl_dlr4},      0, wxALL|wxALIGN_CENTRE|wxALIGN_CENTRE_VERTICAL, 5);
 
   $hbox = Wx::BoxSizer->new( wxHORIZONTAL );
   $nclboxsizer -> Add( $hbox, 0, wxGROW|wxALL, 10 );
-  $self->{dlp_ncl_drag} = Demeter::UI::Atoms::SS::DLPNCLDragSource->new($scrl, -1, wxDefaultPosition, wxDefaultSize, $parent);
-  $hbox  -> Add( $self->{dlp_ncl_drag}, 0, wxALL, 0);
-  $self->{dlp_ncl_drag}->SetCursor(Wx::Cursor->new(wxCURSOR_HAND));
-  $self->{dlp_ncl_drag}->SetFont( Wx::Font->new( 10, wxDEFAULT, wxNORMAL, wxNORMAL, 1, "" ) );
-  $self->{dlp_ncl_drag}->Enable(0);
+  $self->{histo_ncl_drag} = Demeter::UI::Atoms::SS::DLPNCLDragSource->new($scrl, -1, wxDefaultPosition, wxDefaultSize, $parent);
+  $hbox  -> Add( $self->{histo_ncl_drag}, 0, wxALL, 0);
+  $self->{histo_ncl_drag}->SetCursor(Wx::Cursor->new(wxCURSOR_HAND));
+  $self->{histo_ncl_drag}->SetFont( Wx::Font->new( 10, wxDEFAULT, wxNORMAL, wxNORMAL, 1, "" ) );
+  $self->{histo_ncl_drag}->Enable(0);
 
   my $thrubox       = Wx::StaticBox->new($scrl, -1, 'Make a three-body histogram through the absorber', wxDefaultPosition, wxDefaultSize);
   my $thruboxsizer  = Wx::StaticBoxSizer->new( $thrubox, wxVERTICAL );
@@ -227,25 +227,30 @@ sub _dlpoly {
 
 
   $self->{$_} -> SetValidator( Wx::Perl::TextValidator->new( qr([0-9.]) ) )
-    foreach (qw(dlp_ss_rmin dlp_ss_rmax dlp_ss_bin
-		dlp_ncl_dlr1 dlp_ncl_dlr2 dlp_ncl_dlr3 dlp_ncl_dlr4
-		dlp_ncl_rbin dlp_ncl_betabin));
+    foreach (qw(histo_ss_rmin histo_ss_rmax histo_ss_bin
+		histo_ncl_dlr1 histo_ncl_dlr2 histo_ncl_dlr3 histo_ncl_dlr4
+		histo_ncl_rbin histo_ncl_betabin));
 
-  my $persist = File::Spec->catfile(Demeter->dot_folder, 'demeter.dlpoly');
+  my $persist = File::Spec->catfile(Demeter->dot_folder, 'demeter.histograms');
   if (-e $persist) {
     my $yaml = YAML::Tiny::LoadFile($persist);
-    $self->{dlyaml} = $yaml;
-    $self->{dlp_dlfile} -> SetPath ($yaml->{file});
-    $self->{dlp_ss_rmin} -> SetValue($yaml->{rmin} || 1.5);
-    $self->{dlp_ss_rmax} -> SetValue($yaml->{rmax} || 3.5);
-    $self->{dlp_ss_bin}  -> SetValue($yaml->{bin}  || 0.5);
+    $self->{histoyaml} = $yaml;
+    $self->{histo_file} -> SetPath ($yaml->{file});
+    $self->{histo_ss_rmin} -> SetValue($yaml->{rmin}  || 1.5);
+    $self->{histo_ss_rmax} -> SetValue($yaml->{rmax}  || 3.5);
+    $self->{histo_ss_bin}  -> SetValue($yaml->{bin}   || 0.5);
+    my $i1 = (exists $yaml->{ipot1}) ? $yaml->{ipot1}-1 : 0;
+    $self->{histo_ss_ipot} -> SetSelection($i1);
 
-    $self->{dlp_ncl_dlr1}   -> SetValue($yaml->{r1} || 1);
-    $self->{dlp_ncl_dlr2}   -> SetValue($yaml->{r2} || 3);
-    $self->{dlp_ncl_dlr3}   -> SetValue($yaml->{r3} || 4);
-    $self->{dlp_ncl_dlr4}   -> SetValue($yaml->{r4} || 5);
-    $self->{dlp_ncl_rbin}   -> SetValue($yaml->{rbin} || 0.01);
-    $self->{dlp_ncl_betabin}-> SetValue($yaml->{betabin} || 0.5);
+    $self->{histo_ncl_dlr1}   -> SetValue($yaml->{r1} || 1);
+    $self->{histo_ncl_dlr2}   -> SetValue($yaml->{r2} || 3);
+    $self->{histo_ncl_dlr3}   -> SetValue($yaml->{r3} || 4);
+    $self->{histo_ncl_dlr4}   -> SetValue($yaml->{r4} || 5);
+    $self->{histo_ncl_rbin}   -> SetValue($yaml->{rbin} || 0.01);
+    $self->{histo_ncl_betabin}-> SetValue($yaml->{betabin} || 0.5);
+    my $i2 = (exists $yaml->{ipot2}) ? $yaml->{ipot2}-1 : 0;
+    $self->{histo_ncl_ipot1}  -> SetSelection($i1);
+    $self->{histo_ncl_ipot2}  -> SetSelection($i2);
   };
 
   $vbox -> Add($scrl, 1, wxGROW|wxALL, 2);
@@ -253,28 +258,28 @@ sub _dlpoly {
   return $page;
 };
 
-sub dlplot {
+sub histoplot {
   my ($this, $event) = @_;
-  my $file = $this->{dlp_dlfile}->GetTextCtrl->GetValue;
-  my $rmin = $this->{dlp_ss_rmin}->GetValue;
-  my $rmax = $this->{dlp_ss_rmax}->GetValue;
-  my $bin  = $this->{dlp_ss_bin}->GetValue;
-  $this->{dlyaml}->{file} = $file;
-  $this->{dlyaml}->{rmin} = $rmin;
-  $this->{dlyaml}->{rmax} = $rmax;
-  $this->{dlyaml}->{bin}  = $bin;
+  my $file = $this->{histo_file}->GetTextCtrl->GetValue;
+  my $rmin = $this->{histo_ss_rmin}->GetValue;
+  my $rmax = $this->{histo_ss_rmax}->GetValue;
+  my $bin  = $this->{histo_ss_bin}->GetValue;
+  $this->{histoyaml}->{file} = $file;
+  $this->{histoyaml}->{rmin} = $rmin;
+  $this->{histoyaml}->{rmax} = $rmax;
+  $this->{histoyaml}->{bin}  = $bin;
 
   if ((not $file) or (not -e $file) or (not -r $file)) {
     $this->GetParent->status("You did not specify a file or your file cannot be read.");
     return;
   };
 
-  my $dlp = Demeter::Feff::DL_POLY->new(rmin=>$rmin, rmax=>$rmax, bin=>$bin, ss=>1, ncl=>0);
-  my $persist = File::Spec->catfile($dlp->dot_folder, 'demeter.dlpoly');
-  YAML::Tiny::DumpFile($persist, $this->{dlyaml});
+  my $dlp = Demeter::Feff::Distributions->new(rmin=>$rmin, rmax=>$rmax, bin=>$bin, type=>'ss');
+  my $persist = File::Spec->catfile($dlp->dot_folder, 'demeter.histograms');
+  YAML::Tiny::DumpFile($persist, $this->{histoyaml});
 
 
-  $this->{DLPOLY} = $dlp;
+  $this->{DISTRIBUTION} = $dlp;
   $dlp->sentinal(sub{$this->dlpoly_sentinal});
 
   my $busy = Wx::BusyCursor->new();
@@ -291,11 +296,11 @@ sub dlplot {
 
 sub dlpoly_sentinal {
   my ($this) = @_;
-  if (not $this->{DLPOLY}->timestep_count % 10) {
-    my $text = $this->{DLPOLY}->timestep_count . " of " . $this->{DLPOLY}->{nsteps} . " timesteps";
+  if (not $this->{DISTRIBUTION}->timestep_count % 10) {
+    my $text = $this->{DISTRIBUTION}->timestep_count . " of " . $this->{DISTRIBUTION}->{nsteps} . " timesteps";
     #print $text, $/;
     $this->{statusbar}->SetStatusText($text);
-    #$this->GetParent->status($text, 'wait|nobuffer') if not $this->{DLPOLY}->timestep_count % 10;
+    #$this->GetParent->status($text, 'wait|nobuffer') if not $this->{DISTRIBUTION}->timestep_count % 10;
     $::app->Yield();
   };
 };
@@ -449,22 +454,24 @@ sub OnDrag {
   my( $this, $event, $parent ) = @_;
 
 
-  my $dragdata = ['DLPSS',						  # id
-		  $parent->{Feff}->{feffobject}->group,			  # feff object group
-		  $parent->{SS}->{dlp_dlfile}->GetTextCtrl->GetValue,  # HISTORY file
-		  $parent->{SS}->{dlp_ss_rmin}->GetValue,		  # rmin
-		  $parent->{SS}->{dlp_ss_rmax}->GetValue,		  # rmax
-		  $parent->{SS}->{dlp_ss_bin} ->GetValue,		  # bin size
-		  $parent->{SS}->{dlp_ss_ipot}->GetSelection+1,		  # ipot
+  my $dragdata = ['HistogramSS',					  # 0 id
+		  'DL_POLY',				                  # 1 backend
+		  $parent->{Feff}->{feffobject}->group,			  # 2 feff object group
+		  $parent->{SS}->{histo_file}->GetTextCtrl->GetValue,     # 3 HISTORY file
+		  $parent->{SS}->{histo_ss_rmin}->GetValue,		  # 4 rmin
+		  $parent->{SS}->{histo_ss_rmax}->GetValue,		  # 5 rmax
+		  $parent->{SS}->{histo_ss_bin} ->GetValue,		  # 6 bin size
+		  $parent->{SS}->{histo_ss_ipot}->GetSelection+1,	  # 7 ipot
 		 ];
 
   ## handle persistence file
-  $parent->{SS}->{dlyaml}->{file} = $dragdata->[2];
-  $parent->{SS}->{dlyaml}->{rmin} = $dragdata->[3];
-  $parent->{SS}->{dlyaml}->{rmax} = $dragdata->[4];
-  $parent->{SS}->{dlyaml}->{bin}  = $dragdata->[5];
-  my $persist = File::Spec->catfile(Demeter->dot_folder, 'demeter.dlpoly');
-  YAML::Tiny::DumpFile($persist, $parent->{SS}->{dlyaml});
+  $parent->{SS}->{histoyaml}->{file}  = $dragdata->[3];
+  $parent->{SS}->{histoyaml}->{rmin}  = $dragdata->[4];
+  $parent->{SS}->{histoyaml}->{rmax}  = $dragdata->[5];
+  $parent->{SS}->{histoyaml}->{bin}   = $dragdata->[6];
+  $parent->{SS}->{histoyaml}->{ipot1} = $dragdata->[7];
+  my $persist = File::Spec->catfile(Demeter->dot_folder, 'demeter.histograms');
+  YAML::Tiny::DumpFile($persist, $parent->{SS}->{histoyaml});
 
   my $data = Demeter::UI::Artemis::DND::PathDrag->new($dragdata);
   my $source = Wx::DropSource->new( $this );
@@ -502,29 +509,32 @@ sub OnPaint {
 sub OnDrag {
   my( $this, $event, $parent ) = @_;
 
-  my $dragdata = ['DLPNCL',						      # 0  id
-		  $parent->{Feff}->{feffobject}    -> group,		      # 1  feff object group
-		  $parent->{SS}->{dlp_dlfile}      -> GetTextCtrl->GetValue,  # 2  HISTORY file
-		  $parent->{SS}->{dlp_ncl_dlr1}    -> GetValue,		      # 3  r ranges
-		  $parent->{SS}->{dlp_ncl_dlr2}    -> GetValue,		      # 4
-		  $parent->{SS}->{dlp_ncl_dlr3}    -> GetValue,		      # 5
-		  $parent->{SS}->{dlp_ncl_dlr4}    -> GetValue,		      # 6
-		  $parent->{SS}->{dlp_ncl_rbin}    -> GetValue,		      # 7  bin size
-		  $parent->{SS}->{dlp_ncl_betabin} -> GetValue,		      # 8  bin size
-		  $parent->{SS}->{dlp_ncl_ipot1}   -> GetSelection+1,	      # 9  ipot
-		  $parent->{SS}->{dlp_ncl_ipot2}   -> GetSelection+1,	      # 10 ipot
+  my $dragdata = ['HistogramNCL',						# 0  id
+		  'DL_POLY',							# 1 backend
+		  $parent->{Feff}->{feffobject}      -> group,			# 2  feff object group
+		  $parent->{SS}->{histo_file}        -> GetTextCtrl->GetValue,	# 3  HISTORY file
+		  $parent->{SS}->{histo_ncl_dlr1}    -> GetValue,		# 4  r ranges
+		  $parent->{SS}->{histo_ncl_dlr2}    -> GetValue,		# 5
+		  $parent->{SS}->{histo_ncl_dlr3}    -> GetValue,		# 6
+		  $parent->{SS}->{histo_ncl_dlr4}    -> GetValue,		# 7
+		  $parent->{SS}->{histo_ncl_rbin}    -> GetValue,		# 8  bin size
+		  $parent->{SS}->{histo_ncl_betabin} -> GetValue,		# 9  bin size
+		  $parent->{SS}->{histo_ncl_ipot1}   -> GetSelection+1,		# 10 ipot
+		  $parent->{SS}->{histo_ncl_ipot2}   -> GetSelection+1,		# 11 ipot
 		 ];
 
   ## handle persistence file
-  $parent->{SS}->{dlyaml}->{file}    = $dragdata->[2];
-  $parent->{SS}->{dlyaml}->{r1}	     = $dragdata->[3];
-  $parent->{SS}->{dlyaml}->{r2}	     = $dragdata->[4];
-  $parent->{SS}->{dlyaml}->{r3}	     = $dragdata->[5];
-  $parent->{SS}->{dlyaml}->{r4}	     = $dragdata->[6];
-  $parent->{SS}->{dlyaml}->{rbin}    = $dragdata->[7];
-  $parent->{SS}->{dlyaml}->{betabin} = $dragdata->[8];
-  my $persist = File::Spec->catfile(Demeter->dot_folder, 'demeter.dlpoly');
-  YAML::Tiny::DumpFile($persist, $parent->{SS}->{dlyaml});
+  $parent->{SS}->{histoyaml}->{file}    = $dragdata->[3];
+  $parent->{SS}->{histoyaml}->{r1}	= $dragdata->[4];
+  $parent->{SS}->{histoyaml}->{r2}	= $dragdata->[5];
+  $parent->{SS}->{histoyaml}->{r3}	= $dragdata->[6];
+  $parent->{SS}->{histoyaml}->{r4}	= $dragdata->[7];
+  $parent->{SS}->{histoyaml}->{rbin}    = $dragdata->[8];
+  $parent->{SS}->{histoyaml}->{betabin} = $dragdata->[9];
+  $parent->{SS}->{histoyaml}->{ipot1}   = $dragdata->[10];
+  $parent->{SS}->{histoyaml}->{ipot2}   = $dragdata->[11];
+  my $persist = File::Spec->catfile(Demeter->dot_folder, 'demeter.histograms');
+  YAML::Tiny::DumpFile($persist, $parent->{SS}->{histoyaml});
 
   my $data = Demeter::UI::Artemis::DND::PathDrag->new($dragdata);
   my $source = Wx::DropSource->new( $this );

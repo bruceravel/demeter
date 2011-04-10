@@ -405,7 +405,6 @@ sub populate {
   my @all_sites = @$r_sites;
   my @minimal   = ();
   my @unit_cell = ();
-
   $self -> determine_monoclinic;
 
   my $count = 0;
@@ -419,7 +418,7 @@ sub populate {
   my ($crystal_class, $setting) = ($self->group->class, $self->group->setting);
 
   ## rotate a tetragonal group to the standard setting
-  if (($crystal_class eq "tetragonal" ) and $setting) {
+  if (($crystal_class eq "tetragonal" ) and ($setting ne 'positions')) {
     my ($a, $b) = $self->get(qw(a b));
     $self->a($a/sqrt(2));
     $self->b($b/sqrt(2));
