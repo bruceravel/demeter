@@ -28,8 +28,8 @@ $histogram->file('HISTORY');
 
 
 $histogram->rebin;
-#$histogram->plot;
-#$histogram->pause;
+$histogram->plot;
+$histogram->pause;
 
 
 my $atoms = Demeter::Atoms->new();

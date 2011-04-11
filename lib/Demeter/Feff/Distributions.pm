@@ -52,8 +52,7 @@ has 'file'      => (is => 'rw', isa => 'Str', default => q{},
 		    trigger => sub{ my($self, $new) = @_;
 				    if ($new) {
 				      $self->_cluster;
-				      $self->rdf if ($self->type eq 'ss');
-				      $self->nearly_collinear if ($self->type eq 'ncl');
+				      $self->rdf;
 				    };
 				  });
 has 'clusters'    => (is => 'rw', isa => 'ArrayRef', default => sub{[]});

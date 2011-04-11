@@ -14,7 +14,7 @@
 ** installation issues [1/1]
   - [X] jpg needs to be a Module::Build build_element, but there are too many such files in the distro .. not all serve a purpose
 
-** Demeter bugs and shortcomings  [1/14]
+** Demeter bugs and shortcomings  [2/14]
   - [ ] in D::Data::IO::save_many, why doesn't updating in n specifying "background" not work to bring data up to date?  (fft, i.e. doing autobk, does work)
   - [ ] +serialize VPath+, put VPath into +dpj and+ fpj files
   - [ ] tie multiple groups together
@@ -26,7 +26,7 @@
   - [ ] Demeter command backend needs polishing
   - [ ] we seem not to have a normalized group (i.e. plot the same as mu or norm)
   - [ ] 3rd derivative
-  - [ ] SDK: "It  seems that if you use the old fashioned GSD string you can have capitals
+  - [X] SDK: "It  seems that if you use the old fashioned GSD string you can have capitals
 	in your variable names but if you use the fancy simpleGDS you can not.
   - [X] SDK: something like find_path method, but which find the path closest to some R value
   - [ ] SDK: better documentation for freeze/thaw//serialize/deserialize
@@ -130,7 +130,7 @@
 
 
 ** Artemis
-*** Artemis bugs and missing features [1/17]
+*** Artemis bugs and missing features [1/18]
    - [X] use text buffers as in Athena for TextEntryDialogs
    - [ ] import an FPath from a yaml or from a project file, pathlist start page link for doing so
    - [ ] what is the purpose of regenerate in fit deserialization?  in any case, need to fix group values *inside* yaml files
@@ -149,7 +149,8 @@
    - [ ] sending Ifeffit feedback to the buffer makes it unavailable for other purposes.  the big problem
 	 is that correlations don't get written to the log file in Artemis (or in a script with set_mode(screen=>1),
 	 for that matter...)
-   - [ ] discading last page and returning to initial page has an undefined value problem
+   - [ ] discarding last page and returning to initial page has an undefined value problem
+   - [ ] status messages in Atoms/Feff frame do not get posted in Artemis status buffer
 
 *** Histograms [4/11]
    - [X] sum histogram bins into a single chi(k) file

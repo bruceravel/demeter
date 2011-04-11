@@ -124,21 +124,21 @@ sub _histo {
   $ssboxsizer -> Add($hbox, 0, wxGROW|wxLEFT|wxRIGHT, 10);
   $self -> {histo_ss_rminlab} = Wx::StaticText -> new($scrl, -1, "Rmin");
   $self -> {histo_ss_rmin}    = Wx::TextCtrl   -> new($scrl, -1, 1.0, @PosSize,);
-  $hbox -> Add($self->{histo_ss_rminlab}, 0, wxALL|wxALIGN_CENTRE_VERTICAL, 5);
-  $hbox -> Add($self->{histo_ss_rmin},    0, wxALL|wxALIGN_CENTRE_VERTICAL, 5);
+  $hbox -> Add($self->{histo_ss_rminlab},   0, wxALL|wxALIGN_CENTRE_VERTICAL, 5);
+  $hbox -> Add($self->{histo_ss_rmin},      0, wxALL|wxALIGN_CENTRE_VERTICAL, 5);
 
   $self -> {histo_ss_rmaxlab} = Wx::StaticText -> new($scrl, -1, "Rmax");
   $self -> {histo_ss_rmax}    = Wx::TextCtrl   -> new($scrl, -1, 3.5, @PosSize,);
-  $hbox -> Add($self->{histo_ss_rmaxlab}, 0, wxALL|wxALIGN_CENTRE_VERTICAL, 5);
-  $hbox -> Add($self->{histo_ss_rmax},    0, wxALL|wxALIGN_CENTRE_VERTICAL, 5);
+  $hbox -> Add($self->{histo_ss_rmaxlab},   0, wxALL|wxALIGN_CENTRE_VERTICAL, 5);
+  $hbox -> Add($self->{histo_ss_rmax},      0, wxALL|wxALIGN_CENTRE_VERTICAL, 5);
 
   $self -> {histo_ss_binlab} = Wx::StaticText -> new($scrl, -1, "Bin size");
   $self -> {histo_ss_bin}    = Wx::TextCtrl   -> new($scrl, -1, 0.005, @PosSize,);
-  $hbox -> Add($self->{histo_ss_binlab},  0, wxALL|wxALIGN_CENTRE_VERTICAL, 5);
-  $hbox -> Add($self->{histo_ss_bin},     0, wxALL|wxALIGN_CENTRE_VERTICAL, 5);
+  $hbox -> Add($self->{histo_ss_binlab},    0, wxALL|wxALIGN_CENTRE_VERTICAL, 5);
+  $hbox -> Add($self->{histo_ss_bin},       0, wxALL|wxALIGN_CENTRE_VERTICAL, 5);
 
   $self -> {histo_ss_histoplot} = Wx::Button -> new($scrl, -1, "Plot RDF");
-  $hbox -> Add($self->{histo_ss_histoplot},    1, wxALL|wxALIGN_CENTRE_VERTICAL, 5);
+  $hbox -> Add($self->{histo_ss_histoplot}, 1, wxALL|wxALIGN_CENTRE_VERTICAL, 5);
   EVT_BUTTON($self, $self->{histo_ss_histoplot}, sub{ histoplot(@_) });
 
 
@@ -169,8 +169,8 @@ sub _histo {
 
   $hbox = Wx::BoxSizer->new( wxHORIZONTAL );
   $nclboxsizer -> Add($hbox, 0, wxGROW|wxLEFT|wxRIGHT, 10);
-  $self -> {histo_ncl_rbinlab} = Wx::StaticText -> new($scrl, -1, "Radial bin size");
-  $self -> {histo_ncl_rbin}    = Wx::TextCtrl   -> new($scrl, -1, 1.0, @PosSize,);
+  $self -> {histo_ncl_rbinlab}    = Wx::StaticText -> new($scrl, -1, "Radial bin size");
+  $self -> {histo_ncl_rbin}       = Wx::TextCtrl   -> new($scrl, -1, 1.0, @PosSize,);
   $self -> {histo_ncl_betabinlab} = Wx::StaticText -> new($scrl, -1, "Angular bin size");
   $self -> {histo_ncl_betabin}    = Wx::TextCtrl   -> new($scrl, -1, 1.0, @PosSize,);
   $hbox -> Add($self->{histo_ncl_rbinlab},    0, wxALL|wxALIGN_CENTRE_VERTICAL, 5);
@@ -180,8 +180,7 @@ sub _histo {
 
   $self -> {histo_ncl_plot} = Wx::Button -> new($scrl, -1, "Scatter plot");
   $hbox -> Add($self->{histo_ncl_plot},    1, wxALL|wxALIGN_CENTRE_VERTICAL, 5);
-  #EVT_BUTTON($self, $self->{histo_ncl_plot}, sub{ scatterplot(@_) });
-  $self -> {histo_ncl_plot} -> Enable(0);
+  EVT_BUTTON($self, $self->{histo_ncl_plot}, sub{ scatterplot(@_) });
 
   $hbox = Wx::BoxSizer->new( wxHORIZONTAL );
   $nclboxsizer -> Add($hbox, 0, wxGROW|wxLEFT|wxRIGHT, 10);
@@ -191,12 +190,12 @@ sub _histo {
   EVT_RADIOBOX($self, $self->{histo_ncl_ipot1}, sub{set_name(@_,'histo_ncl1')});
   $hbox -> Add( $self->{histo_ncl_ipot1}, 0, wxALL|wxALIGN_CENTRE_VERTICAL, 5 );
 
-  $self -> {histo_ncl_dlr1}    = Wx::TextCtrl   -> new($scrl, -1, 1.0, @PosSize,);
-  $self -> {histo_ncl_dlr2}    = Wx::TextCtrl   -> new($scrl, -1, 1.0, @PosSize,);
+  $self -> {histo_ncl_r1}    = Wx::TextCtrl   -> new($scrl, -1, 1.0, @PosSize,);
+  $self -> {histo_ncl_r2}    = Wx::TextCtrl   -> new($scrl, -1, 1.0, @PosSize,);
   $hbox -> Add(Wx::StaticText -> new($scrl, -1, "R1:"), 0, wxALL|wxALIGN_CENTRE_VERTICAL, 5);
-  $hbox -> Add($self->{histo_ncl_dlr1},      0, wxALL|wxALIGN_CENTRE_VERTICAL, 5);
+  $hbox -> Add($self->{histo_ncl_r1},                   0, wxALL|wxALIGN_CENTRE_VERTICAL, 5);
   $hbox -> Add(Wx::StaticText -> new($scrl, -1, "R2:"), 0, wxALL|wxALIGN_CENTRE_VERTICAL, 5);
-  $hbox -> Add($self->{histo_ncl_dlr2},      0, wxALL|wxALIGN_CENTRE_VERTICAL, 5);
+  $hbox -> Add($self->{histo_ncl_r2},                   0, wxALL|wxALIGN_CENTRE_VERTICAL, 5);
 
   $hbox = Wx::BoxSizer->new( wxHORIZONTAL );
   $nclboxsizer -> Add($hbox, 0, wxGROW|wxLEFT|wxRIGHT, 10);
@@ -206,12 +205,12 @@ sub _histo {
   EVT_RADIOBOX($self, $self->{histo_ncl_ipot2}, sub{set_name(@_,'histo_ncl2')});
   $hbox -> Add( $self->{histo_ncl_ipot2}, 0, wxALL|wxALIGN_CENTRE_VERTICAL, 5 );
 
-  $self -> {histo_ncl_dlr3}    = Wx::TextCtrl   -> new($scrl, -1, 1.0, @PosSize,);
-  $self -> {histo_ncl_dlr4}    = Wx::TextCtrl   -> new($scrl, -1, 1.0, @PosSize,);
+  $self -> {histo_ncl_r3}    = Wx::TextCtrl   -> new($scrl, -1, 1.0, @PosSize,);
+  $self -> {histo_ncl_r4}    = Wx::TextCtrl   -> new($scrl, -1, 1.0, @PosSize,);
   $hbox -> Add(Wx::StaticText -> new($scrl, -1, "R3:"), 0, wxALL|wxALIGN_CENTRE_VERTICAL, 5);
-  $hbox -> Add($self->{histo_ncl_dlr3},      0, wxALL|wxALIGN_CENTRE|wxALIGN_CENTRE_VERTICAL, 5);
+  $hbox -> Add($self->{histo_ncl_r3},                   0, wxALL|wxALIGN_CENTRE|wxALIGN_CENTRE_VERTICAL, 5);
   $hbox -> Add(Wx::StaticText -> new($scrl, -1, "R4:"), 0, wxALL|wxALIGN_CENTRE_VERTICAL, 5);
-  $hbox -> Add($self->{histo_ncl_dlr4},      0, wxALL|wxALIGN_CENTRE|wxALIGN_CENTRE_VERTICAL, 5);
+  $hbox -> Add($self->{histo_ncl_r4},                   0, wxALL|wxALIGN_CENTRE|wxALIGN_CENTRE_VERTICAL, 5);
 
   $hbox = Wx::BoxSizer->new( wxHORIZONTAL );
   $nclboxsizer -> Add( $hbox, 0, wxGROW|wxALL, 10 );
@@ -228,24 +227,24 @@ sub _histo {
 
   $self->{$_} -> SetValidator( Wx::Perl::TextValidator->new( qr([0-9.]) ) )
     foreach (qw(histo_ss_rmin histo_ss_rmax histo_ss_bin
-		histo_ncl_dlr1 histo_ncl_dlr2 histo_ncl_dlr3 histo_ncl_dlr4
+		histo_ncl_r1 histo_ncl_r2 histo_ncl_r3 histo_ncl_r4
 		histo_ncl_rbin histo_ncl_betabin));
 
   my $persist = File::Spec->catfile(Demeter->dot_folder, 'demeter.histograms');
   if (-e $persist) {
     my $yaml = YAML::Tiny::LoadFile($persist);
     $self->{histoyaml} = $yaml;
-    $self->{histo_file} -> SetPath ($yaml->{file});
+    $self->{histo_file}    -> SetPath ($yaml->{file});
     $self->{histo_ss_rmin} -> SetValue($yaml->{rmin}  || 1.5);
     $self->{histo_ss_rmax} -> SetValue($yaml->{rmax}  || 3.5);
     $self->{histo_ss_bin}  -> SetValue($yaml->{bin}   || 0.5);
     my $i1 = (exists $yaml->{ipot1}) ? $yaml->{ipot1}-1 : 0;
     $self->{histo_ss_ipot} -> SetSelection($i1);
 
-    $self->{histo_ncl_dlr1}   -> SetValue($yaml->{r1} || 1);
-    $self->{histo_ncl_dlr2}   -> SetValue($yaml->{r2} || 3);
-    $self->{histo_ncl_dlr3}   -> SetValue($yaml->{r3} || 4);
-    $self->{histo_ncl_dlr4}   -> SetValue($yaml->{r4} || 5);
+    $self->{histo_ncl_r1}     -> SetValue($yaml->{r1} || 1);
+    $self->{histo_ncl_r2}     -> SetValue($yaml->{r2} || 3);
+    $self->{histo_ncl_r3}     -> SetValue($yaml->{r3} || 4);
+    $self->{histo_ncl_r4}     -> SetValue($yaml->{r4} || 5);
     $self->{histo_ncl_rbin}   -> SetValue($yaml->{rbin} || 0.01);
     $self->{histo_ncl_betabin}-> SetValue($yaml->{betabin} || 0.5);
     my $i2 = (exists $yaml->{ipot2}) ? $yaml->{ipot2}-1 : 0;
@@ -291,6 +290,50 @@ sub histoplot {
   my $finishtext = sprintf("Plotting histogram from %d timesteps (%d minutes, %d seconds)", $dlp->nsteps, $dur->minutes, $dur->seconds);
   $this->{statusbar}->SetStatusText($finishtext);
   $dlp->plot;
+  undef $busy;
+};
+
+sub scatterplot {
+  my ($this, $event) = @_;
+  my $file = $this->{histo_file}->GetTextCtrl->GetValue;
+  my $r1   = $this->{histo_ncl_r1}->GetValue;
+  my $r2   = $this->{histo_ncl_r2}->GetValue;
+  my $r3   = $this->{histo_ncl_r3}->GetValue;
+  my $r4   = $this->{histo_ncl_r4}->GetValue;
+  my $rbin = $this->{histo_ncl_rbin}->GetValue;
+  my $betabin = $this->{histo_ncl_betabin}->GetValue;
+  $this->{histoyaml}->{file} = $file;
+  $this->{histoyaml}->{r1}   = $r1;
+  $this->{histoyaml}->{r2}   = $r2;
+  $this->{histoyaml}->{r3}   = $r3;
+  $this->{histoyaml}->{r4}   = $r4;
+  $this->{histoyaml}->{rbin} = $rbin;
+  $this->{histoyaml}->{betabin} = $betabin;
+
+  if ((not $file) or (not -e $file) or (not -r $file)) {
+    $this->GetParent->status("You did not specify a file or your file cannot be read.");
+    return;
+  };
+
+  my $histo = Demeter::Feff::Distributions->new(type=>'ncl');
+  $histo->set(r1=>$r1, r2=>$r2, r3=>$r3, r4=>$r4, rbin=>$rbin, betabin=>$betabin);
+
+  my $persist = File::Spec->catfile($histo->dot_folder, 'demeter.histograms');
+  YAML::Tiny::DumpFile($persist, $this->{histoyaml});
+
+  $this->{DISTRIBUTION} = $histo;
+  $histo->sentinal(sub{$this->dlpoly_sentinal});
+
+  my $busy = Wx::BusyCursor->new();
+  my $start = DateTime->now( time_zone => 'floating' );
+  $histo->backend('DL_POLY');
+  $histo->file($file);
+  $histo->rebin;
+  my $finish = DateTime->now( time_zone => 'floating' );
+  my $dur = $finish->subtract_datetime($start);
+  my $finishtext = sprintf("Plotting histogram from %d timesteps (%d minutes, %d seconds)", $histo->nsteps, $dur->minutes, $dur->seconds);
+  $this->{statusbar}->SetStatusText($finishtext);
+  $histo->plot;
   undef $busy;
 };
 
@@ -453,6 +496,23 @@ sub OnPaint {
 sub OnDrag {
   my( $this, $event, $parent ) = @_;
 
+  my $file = $parent->{SS}->{histo_file}->GetTextCtrl->GetValue;
+  if (not -e $file) {
+    $parent->{statusbar}->SetStatusText("Histogram canceled: The file $file does not exist");
+    return;
+  };
+  if (not -r $file) {
+    $parent->{statusbar}->SetStatusText("Histogram canceled: The file $file cannot be read");
+    return;
+  };
+  if ($parent->{SS}->{histo_ss_rmin}->GetValue >= $parent->{SS}->{histo_ss_rmax}->GetValue) {
+    $parent->{statusbar}->SetStatusText("Histogram canceled: Rmin >= Rmax for the single scattering histogram.");
+    return;
+  };
+  if ($parent->{SS}->{histo_ss_bin}->GetValue <= 0) {
+    $parent->{statusbar}->SetStatusText("Histogram canceled: R bin size must be positive.");
+    return;
+  };
 
   my $dragdata = ['HistogramSS',					  # 0 id
 		  'DL_POLY',				                  # 1 backend
@@ -509,14 +569,40 @@ sub OnPaint {
 sub OnDrag {
   my( $this, $event, $parent ) = @_;
 
+  my $file = $parent->{SS}->{histo_file}->GetTextCtrl->GetValue;
+  if (not -e $file) {
+    $parent->{statusbar}->SetStatusText("Histogram canceled: The file $file does not exist");
+    return;
+  };
+  if (not -r $file) {
+    $parent->{statusbar}->SetStatusText("Histogram canceled: The file $file cannot be read");
+    return;
+  };
+  if ($parent->{SS}->{histo_ncl_r1}->GetValue >= $parent->{SS}->{histo_ncl_r2}->GetValue) {
+    $parent->{statusbar}->SetStatusText("Histogram canceled: R1 >= R2 for the near atom.");
+    return;
+  };
+  if ($parent->{SS}->{histo_ncl_r3}->GetValue >= $parent->{SS}->{histo_ncl_r4}->GetValue) {
+    $parent->{statusbar}->SetStatusText("Histogram canceled: R3 >= R4 for the far atom.");
+    return;
+  };
+  if ($parent->{SS}->{histo_ncl_rbin}->GetValue <= 0) {
+    $parent->{statusbar}->SetStatusText("Histogram canceled: R bin size must be positive.");
+    return;
+  };
+  if ($parent->{SS}->{histo_ncl_betabin}->GetValue <= 0) {
+    $parent->{statusbar}->SetStatusText("Histogram canceled: Beta bin size must be positive.");
+    return;
+  };
+
   my $dragdata = ['HistogramNCL',						# 0  id
 		  'DL_POLY',							# 1 backend
 		  $parent->{Feff}->{feffobject}      -> group,			# 2  feff object group
 		  $parent->{SS}->{histo_file}        -> GetTextCtrl->GetValue,	# 3  HISTORY file
-		  $parent->{SS}->{histo_ncl_dlr1}    -> GetValue,		# 4  r ranges
-		  $parent->{SS}->{histo_ncl_dlr2}    -> GetValue,		# 5
-		  $parent->{SS}->{histo_ncl_dlr3}    -> GetValue,		# 6
-		  $parent->{SS}->{histo_ncl_dlr4}    -> GetValue,		# 7
+		  $parent->{SS}->{histo_ncl_r1}      -> GetValue,		# 4  r ranges
+		  $parent->{SS}->{histo_ncl_r2}      -> GetValue,		# 5
+		  $parent->{SS}->{histo_ncl_r3}      -> GetValue,		# 6
+		  $parent->{SS}->{histo_ncl_r4}      -> GetValue,		# 7
 		  $parent->{SS}->{histo_ncl_rbin}    -> GetValue,		# 8  bin size
 		  $parent->{SS}->{histo_ncl_betabin} -> GetValue,		# 9  bin size
 		  $parent->{SS}->{histo_ncl_ipot1}   -> GetSelection+1,		# 10 ipot

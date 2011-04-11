@@ -106,7 +106,7 @@ sub _bin {
   return $self;
 };
 
-sub nearly_collinear {
+sub rdf {
   my ($self) = @_;
   my $count = 0;
   my $r1sqr = $self->r1**2;
@@ -302,7 +302,23 @@ sub describe {
 };
 
 sub plot {
-  warn("No plot for ncl histogram");
+  my ($self) = @_;
+  $self->po->start_plot;
+  my $twod = $self->po->tempfile;
+  open(my $f1, '>', $twod);
+  foreach my $p (@{$self->nearcl}) {
+    printf $f1 "  %.9f  %.9f  %.9f  %.9f  %.15f\n", @$p;
+  };
+  close $f1;
+  my $bin2d = $self->po->tempfile;
+  open(my $f2, '>', $bin2d);
+  foreach my $p (@{$self->populations}) {
+    printf $f2 "  %.9f  %.9f  %.9f  %.9f  %d\n", @$p;
+  };
+  close $f2;
+  my $text = $self->template('plot', 'histo2d', {twod=>$twod, bin2d=>$bin2d, type=>'nearly collinear'});
+  $self->dispose($text, 'plotting');
+  return $self;
 };
 
 1;
@@ -321,7 +337,12 @@ This documentation refers to Demeter version 0.4.
 
 This provides methods for generating two-dimensional histograms in
 path length and forward scattering angle for nearly collinear
-arrangements of three atoms.  Given 
+arrangements of three atoms, like so:
+
+   Absorber ---> Scatterer ---> Scatterer
+
+Given two radial ranges for the nearer and more distant scatterers and
+bin sizes for 
 
 =head1 ATTRIBUTES
 

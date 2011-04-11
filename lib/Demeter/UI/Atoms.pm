@@ -36,7 +36,7 @@ sub new {
 				 -1,              # ID -1 means any
 				 'Atoms',         # title
 				 wxDefaultPosition,
-				 [560,800],
+				 [560,650],
 			       );
   $self -> SetBackgroundColour( wxNullColour );
 
@@ -91,7 +91,7 @@ sub new {
   $vbox -> Add($nb, 1, wxEXPAND|wxGROW, 0);
   #EVT_NOTEBOOK_PAGE_CHANGED( $self, $nb, sub{$echoarea->echo(q{})} );
 
-  $self -> SetSizerAndFit($vbox);
+  $self -> SetSizer($vbox);
   #$vbox -> Fit($nb);
   #$vbox -> SetSizeHints($nb);
   return $self;
