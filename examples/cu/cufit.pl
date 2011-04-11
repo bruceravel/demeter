@@ -36,11 +36,12 @@ $data ->set(file       => "cu10k.chi",
 
 
 print "make GDS objects for an isotropic expansion, correlated Debye model fit to copper\n";
-my @gds =  (Demeter::GDS -> new(gds => 'guess', name => 'alpha', mathexp => 0),
+my @gds =  (Demeter::GDS -> new(gds => 'guess', name => 'alPha', mathexp => 0),
 	    Demeter::GDS -> new(gds => 'guess', name => 'amp',   mathexp => 1),
-	    Demeter::GDS -> new(gds => 'guess', name => 'enot',  mathexp => 0),
+	    Demeter::GDS -> new(gds => 'guess', name => 'Enot',  mathexp => 0),
 	    Demeter::GDS -> new(gds => 'guess', name => 'theta', mathexp => 500),
-	    Demeter::GDS -> new(gds => 'set',   name => 'temp',  mathexp => 300),
+	    #Demeter::GDS -> new(gds => 'guess', name => 'fred',  mathexp => 500),
+	    Demeter::GDS -> new(gds => 'set',   name => 'temP',  mathexp => 300),
 	    Demeter::GDS -> new(gds => 'set',   name => 'sigmm', mathexp => 0.00052),
 	   );
 
@@ -59,8 +60,8 @@ foreach my $i (0 .. 4) {
 		  sp       => $sp[$i],
 		  s02      => 'amp',
 		  e0       => 'enot',
-		  delr     => 'alpha*reff',
-		  sigma2   => 'debye(temp, theta) + sigmm',
+		  delr     => 'Alpha*reff',
+		  sigma2   => 'debye(temp, Theta) + sigmm',
 		 );
 };
 
