@@ -5,8 +5,6 @@ use Demeter::Feff::Distributions;
 use DateTime;
 
 my $prj = Demeter::Data::Prj->new(file=>"PtData.prj");
-unlink 'histo.iff' if (-e 'histo.iff');
-$prj->set_mode(screen=>0, file=>'>histo.iff');
 my $data = $prj->record(1);
 $data->bft_rmin(1.6);
 $data->fft_kmin(3);

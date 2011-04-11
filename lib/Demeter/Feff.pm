@@ -520,6 +520,8 @@ sub make_one_path {
   open my $PD, ">".$pd;
   print $PD $self->_pathsdat_head;
   print $PD $sp  -> pathsdat(index=>$self->co->default('pathfinder', 'one_off_index'));
+  #local $|=1;
+  #print STDOUT $sp  -> pathsdat(index=>$self->co->default('pathfinder', 'one_off_index'));
   close $PD;
   return $self;
 };

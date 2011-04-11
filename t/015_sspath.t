@@ -17,7 +17,7 @@
 
 =cut
 
-use Test::More tests => 17;
+use Test::More tests => 20;
 
 use Demeter;
 
@@ -85,5 +85,13 @@ $this->e0_value(30);
 ok(!$list[0],                          'e0 sanity test, too large');
 
 ok($this->parent eq $this->feff,           'feff as alias for parent attribute');
+
+#$feff -> clean_workspace;
+
+$this -> rattle(1);
+ok( $this->fuzzy == 7, 'rattle path length');
+ok( $this->nleg == 4, 'rattle nlegs');
+@list = split("\n", $this->pathsdat);
+ok( $#list == 5, 'rattle paths.dat is longer');
 
 $feff -> clean_workspace;

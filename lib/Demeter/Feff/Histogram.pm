@@ -31,12 +31,12 @@ sub make_histogram {
 				    degen      => 1,
 				    n	       => 1,
 				    s02	       => $s02 . ' * ' . $amp,
-				    @$common,
 				   );
+    $this -> set(@$common);
     $this -> population($amp);
     $this -> make_name;
     (my $oldname = $this->name) =~ s{\s*\z}{};
-    $this -> name($oldname . '@ ' . sprintf("%.3f",$rx->[$i]));
+    $this -> name($oldname . '@ ' . sprintf("%.3f",$this->fuzzy));
     #$this -> update_path(1);
     push @paths, $this;
   };

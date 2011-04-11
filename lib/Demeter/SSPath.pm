@@ -25,7 +25,6 @@ with 'Demeter::UI::Screen::Pause' if ($Demeter::mode->ui eq 'screen');
 
 use Chemistry::Elements qw(get_symbol);
 use String::Random qw(random_string);
-
 has 'ipot'	 => (is => 'rw', isa => 'Int',    default => 0,
 		     trigger  => \&set_tag);
 has 'reff'	 => (is => 'rw', isa => 'Num',    default => 0.1,
@@ -37,7 +36,8 @@ has 'Type'	 => (is => 'ro', isa => 'Str',    default => 'arbitrary single scatte
 has 'string'	 => (is => 'ro', isa => 'Str',    default => q{});
 has 'tag'	 => (is => 'rw', isa => 'Str',    default => q{});
 has 'randstring' => (is => 'rw', isa => 'Str',    default => sub{random_string('ccccccccc').'.sp'});
-
+has 'rattle'     => (is => 'rw', isa => 'Bool',   default => 0,
+		     trigger => sub{ my ($self, $new) = @_; $self->set_rattle($new); $self->update_path(1)});
 
 ## the sp attribute must be set to this SSPath object so that the Path
 ## _update_from_ScatteringPath method can be used to generate the
@@ -75,6 +75,17 @@ sub set_tag {
   return $self;
 };
 
+sub set_rattle {
+  my ($self, $israttle) = @_;
+  $israttle = $self->rattle if not defined ($israttle);
+  my $nl   = ($israttle) ? 4 : 2;
+  $self->nleg($nl);
+  my $reff = ($israttle) ? 2*$self->reff : $self->reff;
+  $self->fuzzy($reff);
+  return $self;
+};
+
+
 override make_name => sub {
   my ($self) = @_;
   my $tag = $self->tag;
@@ -85,7 +96,11 @@ override make_name => sub {
 
 sub labelline {
   my ($self) = @_;
-  return sprintf("Reff=%6.3f  nleg=%d   degen=%2d", $self->fuzzy, 2, 1);
+  if ($self->rattle) {
+    return sprintf("Reff=%6.3f  nleg=%d   degen=%2d", 2*$self->fuzzy, 4, 1);
+  } else {
+    return sprintf("Reff=%6.3f  nleg=%d   degen=%2d", $self->fuzzy, 2, 1);
+  };
 };
 
 
@@ -93,7 +108,9 @@ sub labelline {
 sub intrplist {
   my ($self) = @_;
   my $token  = $self->co->default("pathfinder", "token") || '<+>';
-  my $string = sprintf("%s %-6s %s", $token, $self->tag, $token);
+  my $string = ($self->rattle)
+    ? sprintf("%s %-6s %s %-6s %s", $token, $self->tag, $token, $self->tag, $token)
+    : sprintf("%s %-6s %s", $token, $self->tag, $token);
   return join(" ", $string);
 };
 
@@ -101,9 +118,9 @@ sub intrpline {
   my ($self, $i) = @_;
   #print join($/,     $i, $self->n, $self->reff, $self->intrplist, $self->weight, $self->nleg, $self->Type), $/;
   #$i ||= 9999;
-
+  $self->set_rattle;
   return sprintf " %4.4d  %2d   %6.3f  ----  %-29s       %2d  %d %s",
-    9999, $self->n, $self->reff, $self->intrplist, $self->weight, $self->nleg, $self->Type;
+    9999, $self->n, $self->fuzzy, $self->intrplist, $self->weight, $self->nleg, $self->Type;
 };
 
 sub pathsdat {
@@ -112,18 +129,23 @@ sub pathsdat {
   $args{index}  ||= 1;
   #$self -> randstring(random_string('ccccccccc').'.sp') if ($self->randstring =~ m{\A\s*\z});
 
+  $self->set_rattle;
   my $feff = $self->parent;
   my @central = $feff->central;
   my @sites = @{ $feff->sites };
   my $pd = q{};
 
   $pd .= sprintf("  %4d    %d  %6.3f  index, nleg, degeneracy, r= %.4f\n",
-		 $args{index}, $self->get(qw(nleg n fuzzy)) );
+		 $args{index}, $self->nleg, $self->n, $self->fuzzy );
   $pd .= "      x           y           z     ipot  label";
   $pd .= "      rleg      beta        eta" if ($args{angles});
   $pd .= "\n";
   $pd .= sprintf(" %11.6f %11.6f %11.6f   %d '%-6s'\n", $central[0], $central[1], $central[2]+$self->reff, $self->ipot, $self->tag);
   $pd .= sprintf(" %11.6f %11.6f %11.6f   %d '%-6s'\n", $feff->central, 0, 'abs');
+  if ($self->rattle) {
+    $pd .= sprintf(" %11.6f %11.6f %11.6f   %d '%-6s'\n", $central[0], $central[1], $central[2]+$self->reff, $self->ipot, $self->tag);
+    $pd .= sprintf(" %11.6f %11.6f %11.6f   %d '%-6s'\n", $feff->central, 0, 'abs');
+  };
   return $pd;
 };
 
@@ -213,6 +235,11 @@ object.
 =item C<reff>
 
 The half path length of the desired single scattering path.
+
+=item C<rattle>
+
+If this boolean is true, then the triple scattering rattle path will
+be computed rather than the single scattering path.
 
 =back
 
