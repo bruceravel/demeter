@@ -189,7 +189,7 @@ sub chi {
 				   c4        => $fourth,
 				   #@$common
 				  );
-  my $name = sprintf("Histo SS %s-%s (%.5f)", $path->absorber, $path->scatterer, $rave);
+  my $name = sprintf("Histo %s %s-%s (%.5f)", $kind, $path->absorber, $path->scatterer, $rave);
   $path->name($name);
   $self->stop_spinner if ($self->mo->ui eq 'screen');
   return $path;

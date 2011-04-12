@@ -2031,6 +2031,7 @@ sub OnData {
   } elsif ($spref->[0] eq 'HistogramSS') {
     my $feff = $demeter->mo->fetch("Feff", $spref->[2]);
     my $ipot = $spref->[7];
+    my $do_rattle = $spref->[8];
     #if (not looks_like_number($reff)) {
     #  my $text = "Your distance, $reff, is not a number.  This arbitrary single scattering path cannot be created.";
     #  $this->{PARENT}->status($text);
@@ -2046,6 +2047,7 @@ sub OnData {
     my $start = DateTime->now( time_zone => 'floating' );
     $histogram->backend($spref->[1]);
     $histogram->file($spref->[3]);
+    $histogram->sentinal(sub{1});
     my $finish = DateTime->now( time_zone => 'floating' );
     my $dur = $finish->subtract_datetime($start);
     my $finishtext = sprintf("Making histogram from %d timesteps (%d minutes, %d seconds)", $histogram->nsteps, $dur->minutes, $dur->seconds);
@@ -2054,13 +2056,14 @@ sub OnData {
 
 
     $busy = Wx::BusyCursor->new();
-    $this->{PARENT}->status("Rebinning histogram into $spref->[6] $ARING bins");
+    $this->{PARENT}->status("Rebinning histogram into $spref->[6] $ARING bins", 'wait');
     $start = DateTime->now( time_zone => 'floating' );
     $histogram->rebin;
     #$histogram->set(sp=>$sp);
     $dlcount = 0;
     $histogram->feff->sentinal(sub{$this->{PARENT}->histogram_sentinal_fpath});
     my $composite = $histogram->fpath;
+    $histogram->feff->sentinal(sub{1});
     $finish = DateTime->now( time_zone => 'floating' );
     $dur = $finish->subtract_datetime($start);
     $finishtext = sprintf("Rebined and made FPath in %d minutes, %d seconds", $dur->minutes, $dur->seconds);
@@ -2072,6 +2075,24 @@ sub OnData {
     #$composite->po->start_plot;
     #$composite->plot('r');
     $page->transfer;
+    if ($do_rattle) {
+      $histogram->rattle(1);
+      $this->{PARENT}->status("Rebinning histogram into rattle path with $spref->[6] $ARING bins", 'wait');
+      $start = DateTime->now( time_zone => 'floating' );
+      $dlcount = 0;
+      $histogram->feff->sentinal(sub{$this->{PARENT}->histogram_sentinal_fpath});
+      my $rattle = $histogram->fpath;
+      $histogram->feff->sentinal(sub{1});
+      $finish = DateTime->now( time_zone => 'floating' );
+      $dur = $finish->subtract_datetime($start);
+      $finishtext = sprintf("Rebined and made FPath in %d minutes, %d seconds", $dur->minutes, $dur->seconds);
+      $this->{PARENT}->status($finishtext);
+      $rattle -> data($this->{PARENT}->{data});
+      $page = Demeter::UI::Artemis::Path->new($book, $rattle, $this->{PARENT});
+      $book->AddPage($page, $rattle->name, 1, 0);
+      $page->transfer;
+    };
+
     $Demeter::UI::Artemis::frames{Plot}->plot(0, 'r');
 #    $histo_dialog->{DISTRIBUTION} = q{};
     $histogram->DEMOLISH;

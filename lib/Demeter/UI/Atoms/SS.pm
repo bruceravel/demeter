@@ -151,7 +151,6 @@ sub _histo {
 
   $self->{histo_ss_rattle} = Wx::CheckBox->new($scrl, -1, "Also create triple scattering path from this histogram");
   $ssboxsizer -> Add( $self->{histo_ss_rattle}, 0, wxTOP|wxLEFT|wxRIGHT, 10 );
-  $self->{histo_ss_rattle}->Enable(0);
 
   $hbox = Wx::BoxSizer->new( wxHORIZONTAL );
   $ssboxsizer -> Add( $hbox, 0, wxGROW|wxALL, 10 );
@@ -283,6 +282,7 @@ sub histoplot {
 
   my $busy = Wx::BusyCursor->new();
   my $start = DateTime->now( time_zone => 'floating' );
+  $dlp->backend('DL_POLY');
   $dlp->file($file);
   $dlp->rebin;
   my $finish = DateTime->now( time_zone => 'floating' );
@@ -522,6 +522,7 @@ sub OnDrag {
 		  $parent->{SS}->{histo_ss_rmax}->GetValue,		  # 5 rmax
 		  $parent->{SS}->{histo_ss_bin} ->GetValue,		  # 6 bin size
 		  $parent->{SS}->{histo_ss_ipot}->GetSelection+1,	  # 7 ipot
+		  $parent->{SS}->{histo_ss_rattle}->GetValue,		  # 8 do rattle path
 		 ];
 
   ## handle persistence file
