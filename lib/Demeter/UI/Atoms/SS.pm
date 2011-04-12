@@ -116,6 +116,8 @@ sub _histo {
   $scrl -> SetScrollbars(0, 20, 0, 50);
 
 
+  ################################################################################
+  ######## single scattering
   my $ssbox       = Wx::StaticBox->new($scrl, -1, 'Make a single scattering histogram', wxDefaultPosition, wxDefaultSize);
   my $ssboxsizer  = Wx::StaticBoxSizer->new( $ssbox, wxVERTICAL );
   $svbox         -> Add($ssboxsizer, 0, wxALL|wxGROW, 5);
@@ -154,13 +156,15 @@ sub _histo {
 
   $hbox = Wx::BoxSizer->new( wxHORIZONTAL );
   $ssboxsizer -> Add( $hbox, 0, wxGROW|wxALL, 10 );
-  $self->{histo_ss_drag} = Demeter::UI::Atoms::SS::DLPSSDragSource->new($scrl, -1, wxDefaultPosition, wxDefaultSize, $parent);
+  $self->{histo_ss_drag} = Demeter::UI::Atoms::SS::HistoSSDragSource->new($scrl, -1, wxDefaultPosition, wxDefaultSize, $parent);
   $hbox  -> Add( $self->{histo_ss_drag}, 0, wxALL, 0);
   $self->{histo_ss_drag}->SetCursor(Wx::Cursor->new(wxCURSOR_HAND));
   $self->{histo_ss_drag}->SetFont( Wx::Font->new( 10, wxDEFAULT, wxNORMAL, wxNORMAL, 1, "" ) );
   $self->{histo_ss_drag}->Enable(0);
 
 
+  ################################################################################
+  ######## nearly collinear
   my $nclbox       = Wx::StaticBox->new($scrl, -1, 'Make a nearly collinear three-body histogram', wxDefaultPosition, wxDefaultSize);
   my $nclboxsizer  = Wx::StaticBoxSizer->new( $nclbox, wxVERTICAL );
   $svbox           -> Add($nclboxsizer, 0, wxALL|wxGROW, 5);
@@ -213,21 +217,76 @@ sub _histo {
 
   $hbox = Wx::BoxSizer->new( wxHORIZONTAL );
   $nclboxsizer -> Add( $hbox, 0, wxGROW|wxALL, 10 );
-  $self->{histo_ncl_drag} = Demeter::UI::Atoms::SS::DLPNCLDragSource->new($scrl, -1, wxDefaultPosition, wxDefaultSize, $parent);
+  $self->{histo_ncl_drag} = Demeter::UI::Atoms::SS::HistoNCLDragSource->new($scrl, -1, wxDefaultPosition, wxDefaultSize, $parent);
   $hbox  -> Add( $self->{histo_ncl_drag}, 0, wxALL, 0);
   $self->{histo_ncl_drag}->SetCursor(Wx::Cursor->new(wxCURSOR_HAND));
   $self->{histo_ncl_drag}->SetFont( Wx::Font->new( 10, wxDEFAULT, wxNORMAL, wxNORMAL, 1, "" ) );
   $self->{histo_ncl_drag}->Enable(0);
 
+  ################################################################################
+  ######## through absorber
   my $thrubox       = Wx::StaticBox->new($scrl, -1, 'Make a three-body histogram through the absorber', wxDefaultPosition, wxDefaultSize);
   my $thruboxsizer  = Wx::StaticBoxSizer->new( $thrubox, wxVERTICAL );
   $svbox           -> Add($thruboxsizer, 0, wxALL|wxGROW, 5);
 
+  $hbox = Wx::BoxSizer->new( wxHORIZONTAL );
+  $thruboxsizer -> Add($hbox, 0, wxGROW|wxLEFT|wxRIGHT, 10);
+  $self -> {histo_thru_rbinlab}    = Wx::StaticText -> new($scrl, -1, "Radial bin size");
+  $self -> {histo_thru_rbin}       = Wx::TextCtrl   -> new($scrl, -1, 1.0, @PosSize,);
+  $self -> {histo_thru_betabinlab} = Wx::StaticText -> new($scrl, -1, "Angular bin size");
+  $self -> {histo_thru_betabin}    = Wx::TextCtrl   -> new($scrl, -1, 1.0, @PosSize,);
+  $hbox -> Add($self->{histo_thru_rbinlab},    0, wxALL|wxALIGN_CENTRE_VERTICAL, 5);
+  $hbox -> Add($self->{histo_thru_rbin},       0, wxALL|wxALIGN_CENTRE_VERTICAL, 5);
+  $hbox -> Add($self->{histo_thru_betabinlab}, 0, wxALL|wxALIGN_CENTRE_VERTICAL, 5);
+  $hbox -> Add($self->{histo_thru_betabin},    0, wxALL|wxALIGN_CENTRE_VERTICAL, 5);
+
+  $self -> {histo_thru_plot} = Wx::Button -> new($scrl, -1, "Scatter plot");
+  $hbox -> Add($self->{histo_thru_plot},    1, wxALL|wxALIGN_CENTRE_VERTICAL, 5);
+  EVT_BUTTON($self, $self->{histo_thru_plot}, sub{ scatterplot(@_) });
+
+  $hbox = Wx::BoxSizer->new( wxHORIZONTAL );
+  $thruboxsizer -> Add($hbox, 0, wxGROW|wxLEFT|wxRIGHT, 10);
+  $self -> {histo_thru_rmin} = Wx::TextCtrl   -> new($scrl, -1, 1.0, @PosSize,);
+  $self -> {histo_thru_rmax} = Wx::TextCtrl   -> new($scrl, -1, 1.0, @PosSize,);
+  $hbox -> Add(Wx::StaticText -> new($scrl, -1, "Rmin:"), 0, wxALL|wxALIGN_CENTRE_VERTICAL, 5);
+  $hbox -> Add($self->{histo_thru_rmin},                  0, wxALL|wxALIGN_CENTRE_VERTICAL, 5);
+  $hbox -> Add(Wx::StaticText -> new($scrl, -1, "Rmax:"), 0, wxALL|wxALIGN_CENTRE_VERTICAL, 5);
+  $hbox -> Add($self->{histo_thru_rmax},                  0, wxALL|wxALIGN_CENTRE_VERTICAL, 5);
+
+  $hbox = Wx::BoxSizer->new( wxHORIZONTAL );
+  $thruboxsizer -> Add($hbox, 0, wxGROW|wxLEFT|wxRIGHT, 10);
+  $self->{histo_thru_ipot1} = Wx::RadioBox->new($scrl, -1, ' ipot of first scatterer in range ', wxDefaultPosition, wxDefaultSize,
+					     [q{     },q{     },q{     },q{     },q{     },q{     },q{     }], 7, wxRA_SPECIFY_COLS);
+  $self->{histo_thru_ipot1}->Enable($_,0) foreach (0..6);
+  EVT_RADIOBOX($self, $self->{histo_thru_ipot1}, sub{set_name(@_,'histo_thru1')});
+  $hbox -> Add( $self->{histo_thru_ipot1}, 0, wxALL|wxALIGN_CENTRE_VERTICAL, 5 );
+
+  $hbox = Wx::BoxSizer->new( wxHORIZONTAL );
+  $thruboxsizer -> Add($hbox, 0, wxGROW|wxLEFT|wxRIGHT, 10);
+  $self->{histo_thru_ipot2} = Wx::RadioBox->new($scrl, -1, ' ipot of second scatterer in range ', wxDefaultPosition, wxDefaultSize,
+					     [q{     },q{     },q{     },q{     },q{     },q{     },q{     }], 7, wxRA_SPECIFY_COLS);
+  $self->{histo_thru_ipot2}->Enable($_,0) foreach (0..6);
+  EVT_RADIOBOX($self, $self->{histo_thru_ipot2}, sub{set_name(@_,'histo_thru2')});
+  $hbox -> Add( $self->{histo_thru_ipot2}, 0, wxALL|wxALIGN_CENTRE_VERTICAL, 5 );
+
+  $hbox = Wx::BoxSizer->new( wxHORIZONTAL );
+  $thruboxsizer -> Add( $hbox, 0, wxGROW|wxALL, 10 );
+  $self->{histo_thru_drag} = Demeter::UI::Atoms::SS::HistoThruDragSource->new($scrl, -1, wxDefaultPosition, wxDefaultSize, $parent);
+  $hbox  -> Add( $self->{histo_thru_drag}, 0, wxALL, 0);
+  $self->{histo_thru_drag}->SetCursor(Wx::Cursor->new(wxCURSOR_HAND));
+  $self->{histo_thru_drag}->SetFont( Wx::Font->new( 10, wxDEFAULT, wxNORMAL, wxNORMAL, 1, "" ) );
+  $self->{histo_thru_drag}->Enable(0);
+
+
+  ################################################################################
+  ######## set validators and draw values from persistance file
 
   $self->{$_} -> SetValidator( Wx::Perl::TextValidator->new( qr([0-9.]) ) )
     foreach (qw(histo_ss_rmin histo_ss_rmax histo_ss_bin
 		histo_ncl_r1 histo_ncl_r2 histo_ncl_r3 histo_ncl_r4
-		histo_ncl_rbin histo_ncl_betabin));
+		histo_ncl_rbin histo_ncl_betabin
+		histo_thru_rmin histo_thru_rmax histo_thru_rbin histo_thru_betabin
+	      ));
 
   my $persist = File::Spec->catfile(Demeter->dot_folder, 'demeter.histograms');
   if (-e $persist) {
@@ -244,11 +303,19 @@ sub _histo {
     $self->{histo_ncl_r2}     -> SetValue($yaml->{r2} || 3);
     $self->{histo_ncl_r3}     -> SetValue($yaml->{r3} || 4);
     $self->{histo_ncl_r4}     -> SetValue($yaml->{r4} || 5);
-    $self->{histo_ncl_rbin}   -> SetValue($yaml->{rbin} || 0.01);
+    $self->{histo_ncl_rbin}   -> SetValue($yaml->{rbin} || 0.02);
     $self->{histo_ncl_betabin}-> SetValue($yaml->{betabin} || 0.5);
     my $i2 = (exists $yaml->{ipot2}) ? $yaml->{ipot2}-1 : 0;
     $self->{histo_ncl_ipot1}  -> SetSelection($i1);
     $self->{histo_ncl_ipot2}  -> SetSelection($i2);
+
+    $self->{histo_thru_rmin}   -> SetValue($yaml->{rmin}    || 1.5);
+    $self->{histo_thru_rmax}   -> SetValue($yaml->{rmax}    || 3.5);
+    $self->{histo_thru_rbin}   -> SetValue($yaml->{rbin}    || 0.02);
+    $self->{histo_thru_betabin}-> SetValue($yaml->{betabin} || 0.5);
+    $self->{histo_thru_ipot1}  -> SetSelection($i1);
+    $self->{histo_thru_ipot2}  -> SetSelection($i2);
+
   };
 
   $vbox -> Add($scrl, 1, wxGROW|wxALL, 2);
@@ -467,7 +534,7 @@ sub OnDrag {
 };
 
 
-package Demeter::UI::Atoms::SS::DLPSSDragSource;
+package Demeter::UI::Atoms::SS::HistoSSDragSource;
 
 use Demeter;
 
@@ -541,7 +608,7 @@ sub OnDrag {
 };
 
 
-package Demeter::UI::Atoms::SS::DLPNCLDragSource;
+package Demeter::UI::Atoms::SS::HistoNCLDragSource;
 
 use Demeter;
 
@@ -620,6 +687,89 @@ sub OnDrag {
   $parent->{SS}->{histoyaml}->{betabin} = $dragdata->[9];
   $parent->{SS}->{histoyaml}->{ipot1}   = $dragdata->[10];
   $parent->{SS}->{histoyaml}->{ipot2}   = $dragdata->[11];
+  my $persist = File::Spec->catfile(Demeter->dot_folder, 'demeter.histograms');
+  YAML::Tiny::DumpFile($persist, $parent->{SS}->{histoyaml});
+
+  my $data = Demeter::UI::Artemis::DND::PathDrag->new($dragdata);
+  my $source = Wx::DropSource->new( $this );
+  $source->SetData( $data );
+  $source->DoDragDrop(1);
+};
+
+
+
+
+package Demeter::UI::Atoms::SS::HistoThruDragSource;
+
+use Demeter;
+
+use Wx qw( :everything );
+use base qw(Wx::Window);
+use Wx::Event qw(EVT_LEFT_DOWN EVT_PAINT);
+
+sub new {
+  my $class = shift;
+  my $this = $class->SUPER::new( @_[0..2], [300,30] );
+  my $parent = $_[4];
+
+  EVT_PAINT( $this, \&OnPaint );
+  EVT_LEFT_DOWN( $this, sub{OnDrag(@_, $parent)} );
+
+  return $this;
+};
+
+sub OnPaint {
+  my( $this, $event ) = @_;
+  my $dc = Wx::PaintDC->new( $this );
+
+  $dc->DrawText( "Drag nearly collinear path through absorber from here ", 2, 2 );
+};
+
+sub OnDrag {
+  my( $this, $event, $parent ) = @_;
+
+  my $file = $parent->{SS}->{histo_file}->GetTextCtrl->GetValue;
+  if (not -e $file) {
+    $parent->{statusbar}->SetStatusText("Histogram canceled: The file $file does not exist");
+    return;
+  };
+  if (not -r $file) {
+    $parent->{statusbar}->SetStatusText("Histogram canceled: The file $file cannot be read");
+    return;
+  };
+  if ($parent->{SS}->{histo_thru_rmin}->GetValue >= $parent->{SS}->{histo_thru_rmax}->GetValue) {
+    $parent->{statusbar}->SetStatusText("Histogram canceled: R1 >= R2 for the near atom.");
+    return;
+  };
+  if ($parent->{SS}->{histo_thru_rbin}->GetValue <= 0) {
+    $parent->{statusbar}->SetStatusText("Histogram canceled: R bin size must be positive.");
+    return;
+  };
+  if ($parent->{SS}->{histo_thru_betabin}->GetValue <= 0) {
+    $parent->{statusbar}->SetStatusText("Histogram canceled: Beta bin size must be positive.");
+    return;
+  };
+
+  my $dragdata = ['HistogramThru',						# 0  id
+		  'DL_POLY',							# 1  backend
+		  $parent->{Feff}->{feffobject}       -> group,			# 2  feff object group
+		  $parent->{SS}->{histo_file}         -> GetTextCtrl->GetValue,	# 3  HISTORY file
+		  $parent->{SS}->{histo_thru_rmin}    -> GetValue,		# 4  r ranges
+		  $parent->{SS}->{histo_thru_rmax}    -> GetValue,		# 5
+		  $parent->{SS}->{histo_thru_rbin}    -> GetValue,		# 6  bin size
+		  $parent->{SS}->{histo_thru_betabin} -> GetValue,		# 7  bin size
+		  $parent->{SS}->{histo_thru_ipot1}   -> GetSelection+1,	# 8  ipot
+		  $parent->{SS}->{histo_thru_ipot2}   -> GetSelection+1,	# 9  ipot
+		 ];
+
+  ## handle persistence file
+  $parent->{SS}->{histoyaml}->{file}    = $dragdata->[3];
+  $parent->{SS}->{histoyaml}->{rmin}	= $dragdata->[4];
+  $parent->{SS}->{histoyaml}->{rmax}	= $dragdata->[5];
+  $parent->{SS}->{histoyaml}->{rbin}    = $dragdata->[6];
+  $parent->{SS}->{histoyaml}->{betabin} = $dragdata->[7];
+  $parent->{SS}->{histoyaml}->{ipot1}   = $dragdata->[8];
+  $parent->{SS}->{histoyaml}->{ipot2}   = $dragdata->[9];
   my $persist = File::Spec->catfile(Demeter->dot_folder, 'demeter.histograms');
   YAML::Tiny::DumpFile($persist, $parent->{SS}->{histoyaml});
 

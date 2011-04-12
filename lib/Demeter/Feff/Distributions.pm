@@ -80,13 +80,16 @@ has 'type'  => (is => 'rw', isa => 'HistogramTypes', coerce => 1, default => 'ss
 		trigger => sub{my ($self, $new) = @_;
 			       if ($new eq 'ss') {
 				 eval {apply_all_roles($self, 'Demeter::Feff::Distributions::SS')};
-				 $@ and die("Histogram backend Demeter::Feff::Distributions::SS could not be loaded");
+				 $@ and die("Histogram configuration Demeter::Feff::Distributions::SS could not be loaded");
 			       } elsif ($new eq 'ncl') {
 				 eval {apply_all_roles($self, 'Demeter::Feff::Distributions::NCL')};
-				 $@ and die("Histogram backend Demeter::Feff::Distributions::NCL could not be loaded");
+				 $@ and die("Histogram configuration Demeter::Feff::Distributions::NCL could not be loaded");
+			       } elsif ($new eq 'thru') {
+				 eval {apply_all_roles($self, 'Demeter::Feff::Distributions::Thru')};
+				 $@ and die("Histogram configuration Demeter::Feff::Distributions::Thru could not be loaded");
 			       } else {
 				 eval {apply_all_roles($self, 'Demeter::Feff::Distributions::'.$new)};
-				 $@ and die("Histogram backend Demeter::Feff::Distributions::$new does not exist");
+				 $@ and die("Histogram configuration Demeter::Feff::Distributions::$new does not exist");
 			       };
 			     });
 

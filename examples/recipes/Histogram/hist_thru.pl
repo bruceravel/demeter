@@ -15,8 +15,8 @@ $data->po->kweight(2);
 
       my $start = DateTime->now( time_zone => 'floating' );
 
-my $histogram = Demeter::Feff::Distributions->new( type=>'ncl');
-$histogram->set(r1=>1.5, r2=>3.5, r3=>5.2, r4=>5.7, skip=>20,);
+my $histogram = Demeter::Feff::Distributions->new( type=>'thru');
+$histogram->set(rmin=>1.5, rmax=>3.5, skip=>20,);
 $histogram->backend('DL_POLY');
 $histogram->file('HISTORY');
 
@@ -41,8 +41,8 @@ $feff->run;
 $feff->freeze('feff/feff.yaml');
 #$histogram->sp($feff->pathlist->[0]);
 $histogram->feff($feff);
-my $leg3 = Demeter::Path->new(data=>$data, feff=>$feff, sp=>$feff->pathlist->[10], n=>2);
-my $leg4 = Demeter::Path->new(data=>$data, feff=>$feff, sp=>$feff->pathlist->[12], n=>1);
+my $leg3 = Demeter::Path->new(data=>$data, feff=>$feff, sp=>$feff->pathlist->[9],  n=>1);
+my $leg4 = Demeter::Path->new(data=>$data, feff=>$feff, sp=>$feff->pathlist->[11], n=>1);
 my $vpath = Demeter::VPath->new(data=>$data, name=>"metal 3-body");
 $vpath->include($leg3, $leg4);
 

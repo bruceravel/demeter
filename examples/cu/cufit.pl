@@ -104,6 +104,7 @@ my ($header, $footer) = ("Fit to copper data", q{});
 $fit -> logfile("cufit.log", $header, $footer);
 $data->save("fit", "cufit.fit");
 $paths[0]->save("r", "path0.rsp");
+$fit -> freeze(file=>"cufit.dpj");
 exit;
 ##############################################################################################
 

@@ -298,6 +298,7 @@ sub read_fit {
   my ($self, $filename) = @_;
   croak("No filename specified for read_fit") unless $filename;
   my $command = $self-> template("fit", "read_fit", {filename => $filename,});
+  ##print $command, $/, $/;
   $self->dispose($command);
   $self->update_fft(1);
   $self->po->plot_fit(1);

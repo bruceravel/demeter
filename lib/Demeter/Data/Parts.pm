@@ -10,7 +10,9 @@ use Carp;
 ## fftf() or fftr() command using the group name of the part
 sub part_fft {
   my ($self, $part) = @_;
-  $self->dispose($self->_part_fft_command($part));
+  my $command = $self->_part_fft_command($part);
+  print $command;
+  $self->dispose($command);
   return $self;
 };
 sub _part_fft_command {
@@ -26,7 +28,9 @@ sub _part_fft_command {
 
 sub part_bft {
   my ($self, $part) = @_;
-  $self->dispose($self->_part_bft_command($part))
+  my $command = $self->_part_bft_command($part);
+  $self->dispose($command);
+  return $self;
 };
 sub _part_bft_command {
   my ($self, $pt) = @_;
