@@ -40,6 +40,7 @@ my $spinner = new Term::Twiddle;
 
 sub start_spinner {
   my ($self, $text) = @_;
+  return if $self->get_mode('screen');
   $text ||= 'Demeter is thinking ';
   print $text, " ";
   $spinner->rate($self->rate);
@@ -48,6 +49,7 @@ sub start_spinner {
 };
 sub stop_spinner {
   my ($self) = @_;
+  return if $self->get_mode('screen');
   $spinner->stop;
   print $/;
 };
@@ -57,6 +59,7 @@ my $counter = q{};
 
 sub start_counter {
   my ($self, $text, $target) = @_;
+  return if $self->get_mode('screen');
   $text ||= 'Demeter is thinking';
   ($text .= "\n") if ($text !~ m{\n$});
   print $text;
@@ -67,9 +70,11 @@ sub start_counter {
   $counter->{value}  = 0;
 };
 sub count {
+  return if $_[0]->get_mode('screen');
   $counter->up;
 };
 sub stop_counter {
+  return if $_[0]->get_mode('screen');
   $counter->close;
   $counter = q{}
 };
@@ -103,6 +108,8 @@ A counter indicating an operation of known length:
    }
     ...
    $object->stop_counter;
+
+Both spinner and counter are disabled if screen disposal mode is turned on.
 
 =head1 DESCRIPTION
 

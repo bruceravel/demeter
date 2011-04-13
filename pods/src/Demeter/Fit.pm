@@ -1008,7 +1008,7 @@ sub fetch_correlations {
     };
   };
 
-  my @gds = map {$_->name} @{ $self->gds };
+  my @gds = map {lc($_->name)} @{ $self->gds };
   my $regex = Regexp::Assemble->new()->add(@gds)->re;
 
   foreach my $line (@correl_text) {
@@ -1092,7 +1092,7 @@ sub fetch_gds {
   my ($self, $which) = @_;
   $which = lc($which);
   foreach my $g (@{$self->gds}) {
-    return $g if ($which eq $g->name);
+    return $g if ($which eq lc($g->name));
   };
   return 0;
 };
@@ -1154,7 +1154,7 @@ override 'serialize' => sub {
     my $dd = $d->group;
     $d -> file($NULLFILE) if $d->prjrecord;
     my $datafile =  File::Spec->catfile($self->folder, "$dd.yaml");
-    ##print ">>> $datafile\n";
+    $d -> serialization($datafile);
     $d -> serialize($datafile);
   };
 
@@ -1169,7 +1169,7 @@ override 'serialize' => sub {
       my $this = sprintf("%s", $p->parent);
       $feffs{$this} = $p->get("parent");
     } else {			# this path imported a feffNNNN.dat file
-
+      1;
     };
   };
   close $PATHS;

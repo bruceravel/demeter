@@ -23,6 +23,9 @@ with 'Demeter::Path::Process';
 use MooseX::AttributeHelpers;
 #use MooseX::StrictConstructor;
 use Demeter::StrTypes qw( Empty );
+if ($Demeter::mode->ui eq 'screen') {
+  with 'Demeter::UI::Screen::Progress';
+};
 
 with 'Demeter::UI::Screen::Pause' if ($Demeter::mode->ui eq 'screen');
 

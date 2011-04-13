@@ -57,6 +57,8 @@ has 'dspath'     => (is => 'rw', isa =>  Empty.'|Demeter::Path',  default => q{}
 has 'tspath'     => (is => 'rw', isa =>  Empty.'|Demeter::Path',  default => q{});
 has 'vpath'      => (is => 'rw', isa =>  Empty.'|Demeter::VPath', default => q{});
 
+has 'through'    => (is => 'ro', isa => 'Bool', default => 0);
+
 ## the sp attribute must be set to this SSPath object so that the Path
 ## _update_from_ScatteringPath method can be used to generate the
 ## feffNNNN.dat file.  an ugly but functional bit of voodoo
@@ -176,6 +178,38 @@ override plot => sub {
 
 sub pathsdat {
   my ($self) = @_;
+  my $text = ($self->through) ? $self->pathsdat_through : $self->pathsdat_forward;
+  #print $text;
+  return $text;
+};
+
+sub pathsdat_through {
+  my ($self) = @_;
+  my $tag1 = $self->parent->potentials->[$self->ipot1]->[2];
+  my $tag2 = $self->parent->potentials->[$self->ipot2]->[2];
+  my $pd = q{};
+  $pd .= sprintf("  %4d    %d  %6.3f  index, nleg, degeneracy, r= %.4f\n",
+		 $self->co->default('pathfinder', 'one_off_index'), 3, 1, ($self->r1+$self->r2+$self->r3)/2);
+  $pd .= "      x           y           z     ipot  label      rleg      beta        eta";
+  $pd .= "\n";
+  $pd .= sprintf(" %11.6f %11.6f %11.6f   %d '%-6s' %9.4f %9.4f %9.4f\n", $self->r1, 0, 0, $self->ipot1, $tag1, $self->r1, 180-$self->beta/2, 0);
+  $pd .= sprintf(" %11.6f %11.6f %11.6f   %d '%-6s' %9.4f %9.4f %9.4f\n", -1*$self->r2*cos($PI*$self->beta/180), -1*$self->r2*sin($PI*$self->beta/180), 0, $self->ipot2, $tag2, $self->r3, 180-$self->beta/2, 0);
+  $pd .= sprintf(" %11.6f %11.6f %11.6f   %d '%-6s' %9.4f %9.4f %9.4f\n", 0, 0, 0, 0, 'abs', $self->r2, $self->beta, 0);
+
+  $pd .= sprintf("  %4d    %d  %6.3f  index, nleg, degeneracy, r= %.4f\n",
+		 $self->co->default('pathfinder', 'one_off_index')-1, 4, 1, $self->r1+$self->r2);
+  $pd .= "      x           y           z     ipot  label      rleg      beta        eta";
+  $pd .= "\n";
+  $pd .= sprintf(" %11.6f %11.6f %11.6f   %d '%-6s' %9.4f %9.4f %9.4f\n", $self->r1, 0, 0, $self->ipot1, $tag1, $self->r1, 180, 0);
+  $pd .= sprintf(" %11.6f %11.6f %11.6f   %d '%-6s' %9.4f %9.4f %9.4f\n", 0, 0, 0, 0, 'abs', $self->r1, $self->beta, 0);
+  $pd .= sprintf(" %11.6f %11.6f %11.6f   %d '%-6s' %9.4f %9.4f %9.4f\n", -1*$self->r2*cos($PI*$self->beta/180), -1*$self->r2*sin($PI*$self->beta/180), 0, $self->ipot2, $tag2, $self->r2, 180, 0);
+  $pd .= sprintf(" %11.6f %11.6f %11.6f   %d '%-6s' %9.4f %9.4f %9.4f\n", 0, 0, 0, 0, 'abs', $self->r2, $self->beta, 0);
+
+  return $pd;
+};
+
+sub pathsdat_forward {
+  my ($self) = @_;
 
 #  my $c = sqrt( $self->r1**2 + $self->r2**2 + 2*$self->r1*$self->r2*cos($PI*$self->beta/180) );
 
@@ -187,7 +221,7 @@ sub pathsdat {
 		 $self->co->default('pathfinder', 'one_off_index'), 3, 2, ($self->r1+$self->r2+$self->r3)/2);
   $pd .= "      x           y           z     ipot  label      rleg      beta        eta";
   $pd .= "\n";
-  $pd .= sprintf(" %11.6f %11.6f %11.6f   %d '%-6s' %9.4f %9.4f %9.4f\n", $self->r1+$self->r2*cos($self->beta), $self->r2*sin($self->beta / 2), 0, $self->ipot2, $tag2, $self->r3, 180-$self->beta/2, 0);
+  $pd .= sprintf(" %11.6f %11.6f %11.6f   %d '%-6s' %9.4f %9.4f %9.4f\n", $self->r1+$self->r2*cos($PI*$self->beta/180), $self->r2*sin($PI*$self->beta/180), 0, $self->ipot2, $tag2, $self->r3, 180-$self->beta/2, 0);
   $pd .= sprintf(" %11.6f %11.6f %11.6f   %d '%-6s' %9.4f %9.4f %9.4f\n", $self->r1, 0, 0, $self->ipot1, $tag1, $self->r2, $self->beta, 0);
   $pd .= sprintf(" %11.6f %11.6f %11.6f   %d '%-6s' %9.4f %9.4f %9.4f\n", 0, 0, 0, 0, 'abs', $self->r1, 180-$self->beta/2, 0);
 
@@ -196,7 +230,7 @@ sub pathsdat {
   $pd .= "      x           y           z     ipot  label      rleg      beta        eta";
   $pd .= "\n";
   $pd .= sprintf(" %11.6f %11.6f %11.6f   %d '%-6s' %9.4f %9.4f %9.4f\n", $self->r1, 0, 0, $self->ipot1, $tag1, $self->r2, $self->beta, 0);
-  $pd .= sprintf(" %11.6f %11.6f %11.6f   %d '%-6s' %9.4f %9.4f %9.4f\n", $self->r1+$self->r2*cos($self->beta), $self->r2*sin($self->beta / 2), 0, $self->ipot2, $tag2, $self->r1, 180, 0);
+  $pd .= sprintf(" %11.6f %11.6f %11.6f   %d '%-6s' %9.4f %9.4f %9.4f\n", $self->r1+$self->r2*cos($PI*$self->beta/180), $self->r2*sin($PI*$self->beta/180), 0, $self->ipot2, $tag2, $self->r1, 180, 0);
   $pd .= sprintf(" %11.6f %11.6f %11.6f   %d '%-6s' %9.4f %9.4f %9.4f\n", $self->r1, 0, 0, $self->ipot1, $tag1, $self->r2, $self->beta, 0);
   $pd .= sprintf(" %11.6f %11.6f %11.6f   %d '%-6s' %9.4f %9.4f %9.4f\n", 0, 0, 0, 0, 'abs', $self->r1, 180, 0);
 
@@ -317,6 +351,20 @@ path.
 
 This contains the Path object for the triple scattering (4-legged)
 path.
+
+=item C<through>
+
+When true, this computes paths which scatter through the absorber:
+
+     Absorber ---> Atom1 ---> Absorber ---> Atom2 ---> Absorber
+
+plus the three-legged path which skips the absorber
+
+When false, this computes paths which scatter through the first atom:
+
+     Absorber ---> Atom1 ---> Atom2 ---> Atom1 ---> Absorber
+
+plus the three-legged path which skips Atom1.
 
 =back
 

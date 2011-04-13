@@ -201,6 +201,7 @@ override 'clone' => sub {
     my @list = @{ $self -> $ca };
     $new -> $ca(\@list);
   };
+  $hash{atoms} = q{} if (not defined $hash{atoms});
 
   $new -> set(%hash);
   $new -> iobuffer([]);
@@ -520,6 +521,8 @@ sub make_one_path {
   open my $PD, ">".$pd;
   print $PD $self->_pathsdat_head;
   print $PD $sp  -> pathsdat(index=>$self->co->default('pathfinder', 'one_off_index'));
+  #local $|=1;
+  #print STDOUT $sp  -> pathsdat(index=>$self->co->default('pathfinder', 'one_off_index'));
   close $PD;
   return $self;
 };

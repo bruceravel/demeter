@@ -154,6 +154,15 @@ path.</p></dd>
 	<dt><code>tspath</code></dt>
 		<dd><p>This contains the Path object for the triple scattering (4-legged)
 path.</p></dd>
+	<dt><code>through</code></dt>
+		<dd><p>When true, this computes paths which scatter through the absorber:</p></dd>
+<dd><pre>     Absorber ---&gt; Atom1 ---&gt; Absorber ---&gt; Atom2 ---&gt; Absorber
+
+</pre></dd>		<dd><p>plus the three-legged path which skips the absorber</p></dd>
+		<dd><p>When false, this computes paths which scatter through the first atom:</p></dd>
+<dd><pre>     Absorber ---&gt; Atom1 ---&gt; Atom2 ---&gt; Atom1 ---&gt; Absorber
+
+</pre></dd>		<dd><p>plus the three-legged path which skips Atom1.</p></dd>
 </dl>
 <h1 id="METHODS">METHODS <a href="#TOP" class="toplink"><img alt="^" src="../up.gif" /></a></h1>
 

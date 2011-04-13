@@ -1684,6 +1684,7 @@ sub status {
   $self->{statusbar}->SetStatusText($text);
   return if ($type =~ m{nobuffer});
   $self->{Status}->put_text($text, $type);
+  $self->Refresh;
 };
 
 # sub OnCreateStatusBar {

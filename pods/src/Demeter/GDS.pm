@@ -156,9 +156,9 @@ sub evaluate {
   return 0 if (($self->gds eq 'skip') or ($self->gds eq 'merge'));
   $self->modified(0);
   my $name = $self->name;
-  my $value = Ifeffit::get_scalar($name);
+  my $value = Ifeffit::get_scalar(lc($name));
   if ($self->gds eq 'guess') {
-    my $error = Ifeffit::get_scalar("delta_$name");
+    my $error = Ifeffit::get_scalar("delta_".lc($name));
     $self -> set(bestfit=>$value, error=>$error);
   } else {
     $self -> set(bestfit=>$value, error=>0);
