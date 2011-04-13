@@ -11,7 +11,7 @@ use Carp;
 sub part_fft {
   my ($self, $part) = @_;
   my $command = $self->_part_fft_command($part);
-  print $command;
+  #print $command;
   $self->dispose($command);
   return $self;
 };

@@ -12,7 +12,7 @@
 
 =for Copyright
  .
- Copyright (c) 2006-2009 Bruce Ravel (bravel AT bnl DOT gov).
+ Copyright (c) 2006-2011 Bruce Ravel (bravel AT bnl DOT gov).
  All rights reserved.
  .
  This file is free software; you can redistribute it and/or
@@ -151,7 +151,8 @@ $fitobject -> fit;
 # $data_40  -> save("fit", "ag_40.fit");
 
 ## write a log file
-# my ($header, $footer) = ("Corefinement of several silver/gold data sets\n", q{});
-# $fitobject -> logfile("ag-au.log", $header, $footer);
+my ($header, $footer) = ("Corefinement of several silver/gold data sets\n", q{});
+$fitobject -> logfile("ag-au.log", $header, $footer);
 
+$fitobject -> freeze(file=>'mds.dpj');
 $fitobject -> interview;

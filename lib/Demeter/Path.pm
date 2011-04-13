@@ -281,6 +281,7 @@ sub path {
 };
 sub _update_from_ScatteringPath {
   my ($self) = @_;
+  #print $/, join("|", ">>>>", $self->data->name, $self->reff, $self->sp->fuzzy), $/;
   ## generate from a ScatteringPath object
   my $sp     = $self->sp;
   my $feff   = $self->parent;
@@ -288,6 +289,8 @@ sub _update_from_ScatteringPath {
 
   ## this feffNNNN.dat has already been generated
   if ($fname and (-e File::Spec->catfile($workspace, $fname))) {
+    #print File::Spec->catfile($workspace, $fname), $/;
+    #print join("|", "||||", $self->data->name, $self->reff, $self->sp->fuzzy), $/, $/;
     $self->set(folder => $workspace,
 	       file   => $fname);
     return $self;
@@ -306,8 +309,10 @@ sub _update_from_ScatteringPath {
 	     file   => $fname);
   $self->sp->set(folder => $workspace,
 		 file   => $fname);
+  ##print "++", File::Spec->catfile($workspace, $fname), $/;
   my $label = $self -> name || $sp->intrplist;
   $self->set(name=>$label);
+  #print join("|", "<<<<", $self->data->name, $self->reff, $self->sp->fuzzy), $/, $/;
 
   unlink File::Spec->catfile($feff->workspace, "paths.dat");
   unlink File::Spec->catfile($feff->workspace, "feff.run");
@@ -397,7 +402,6 @@ sub parse_nnnn {
   my $oneoff = "feff" . $self->co->default('pathfinder', 'one_off_index');
   my ($folder, $file) = $self->get(qw(folder file));
   my $fname = File::Spec -> catfile($folder, $file);
-
   return if not -f $fname;
 
   open (my $NNNN, $fname);
@@ -421,6 +425,7 @@ sub parse_nnnn {
 	     nleg  => $list[0],
 	     reff  => $list[2]
 	    );
+  return 0 if $self->sp;
 
   $fname = File::Spec -> catfile($folder, 'files.dat');
   if (-e $fname) {
@@ -429,16 +434,15 @@ sub parse_nnnn {
       next if ($_ !~ /(?:$file|$oneoff)/); # $oneoff is matched when working from a ScatteringPath object
       @list = split(" ", $_);
       $n_set = $self->n;
-      $self->zcwif($list[2]) if (not $self->sp); # zcwif is imported from the feffNNNN.dat only when
-      $self->set(degen => int($list[3]),	 # the sp attribute is not set, otherwise zcwif is inherited
-		 n     => $n_set || int($list[3]), # fromthe ScatteringPath object
+      $self->zcwif($list[2]) if (not $self->sp);   # zcwif is imported from the feffNNNN.dat only when
+      $self->set(degen => int($list[3]),	   # the sp attribute is not set, otherwise zcwif is inherited
+		 n     => $n_set || int($list[3]), # from the ScatteringPath object
 		 nleg  => $list[4],
 		 reff  => $list[5]
 		);
     };
     close $FILESDAT;
   };
-
   return 0;
 };
 

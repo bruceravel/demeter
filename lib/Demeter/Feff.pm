@@ -201,6 +201,7 @@ override 'clone' => sub {
     my @list = @{ $self -> $ca };
     $new -> $ca(\@list);
   };
+  $hash{atoms} = q{} if (not defined $hash{atoms});
 
   $new -> set(%hash);
   $new -> iobuffer([]);

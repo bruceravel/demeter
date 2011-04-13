@@ -1154,7 +1154,7 @@ override 'serialize' => sub {
     my $dd = $d->group;
     $d -> file($NULLFILE) if $d->prjrecord;
     my $datafile =  File::Spec->catfile($self->folder, "$dd.yaml");
-    ##print ">>> $datafile\n";
+    $d -> serialization($datafile);
     $d -> serialize($datafile);
   };
 
@@ -1169,7 +1169,7 @@ override 'serialize' => sub {
       my $this = sprintf("%s", $p->parent);
       $feffs{$this} = $p->get("parent");
     } else {			# this path imported a feffNNNN.dat file
-
+      1;
     };
   };
   close $PATHS;

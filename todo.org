@@ -14,7 +14,7 @@
 ** installation issues [1/1]
   - [X] jpg needs to be a Module::Build build_element, but there are too many such files in the distro .. not all serve a purpose
 
-** Demeter bugs and shortcomings  [2/14]
+** Demeter bugs and shortcomings  [2/15]
   - [ ] in D::Data::IO::save_many, why doesn't updating in n specifying "background" not work to bring data up to date?  (fft, i.e. doing autobk, does work)
   - [ ] +serialize VPath+, put VPath into +dpj and+ fpj files
   - [ ] tie multiple groups together
@@ -30,6 +30,9 @@
 	in your variable names but if you use the fancy simpleGDS you can not.
   - [X] SDK: something like find_path method, but which find the path closest to some R value
   - [ ] SDK: better documentation for freeze/thaw//serialize/deserialize
+  - [ ] autogenerate workspace for Feff objects (i.e. something in stashdir)
+  - [ ] better detection of chi ascii data in case of
+	   $data = Demeter::Data->new(file=>"foo.chi");
 
 
 
