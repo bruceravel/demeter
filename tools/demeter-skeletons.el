@@ -19,6 +19,7 @@
 
 
 (add-hook 'cperl-mode-hook (lambda () (abbrev-mode 1)))
+(add-hook 'perl-mode-hook (lambda () (abbrev-mode 1)))
 
 (define-skeleton demeter-data-skeleton
   "Insert a Demeter Path object definition"
