@@ -155,7 +155,7 @@
    - [ ] discarding last page and returning to initial page has an undefined value problem
    - [ ] status messages in Atoms/Feff frame do not get posted in Artemis status buffer
 
-*** Histograms [4/11]
+*** Histograms [8/11]
    - [X] sum histogram bins into a single chi(k) file
    - [X] convert chi(k) data to a mock feffNNNN.dat file
    - [X] Triangle object
@@ -163,13 +163,13 @@
      - by R and theta
      - +by a trio of Cartesian coordinates+
    - [X] bin nealy colinear configurations by R and theta and sum into a single chi(k)
-   - [ ] turn SS histogram into a rattle TS histogram
-   - [ ] three-body histogram from X -- [+] -- X configurations
+   - [X] turn SS histogram into a rattle TS histogram
+   - [X] three-body histogram from X -- [+] -- X configurations
    - [ ] error check numbers before making histograms in Artemis.  it is possible to have value like "3.3."
    - [ ] check that there is at least one bin in the supplied range(s)
    - [ ] ipot=1 is hardwired in many places -- generalize....
-   - [ ] scatter plot of ncl distribution
-   - [ ] factor out DLPOLY dependence into a role so that other MD packages can be added more easily
+   - [X] scatter plot of ncl distribution
+   - [X] factor out DLPOLY dependence into a role so that other MD packages can be added more easily
 
 ** Hephaestus [1/1]
   - [X] need to open prefs with root in place so they display correctly on windows as well

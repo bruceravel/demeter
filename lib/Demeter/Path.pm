@@ -350,11 +350,11 @@ sub rewrite_cv {
 sub plot {
   my ($self, $space) = @_;
   $space ||= $self->po->space;
-  my $which = q{};
-  if (lc($space) eq 'k') {
+  my $which = q{update_path};
+  if (lc($space) =~ m{\Ak}) {
     $self -> _update("fft");
     $which = "update_path";
-  } elsif (lc($space) eq 'r') {
+  } elsif (lc($space) =~ m{\Ar}) {
     $self -> _update("bft");
     $which = "update_fft";
   } elsif (lc($space) eq 'q') {
