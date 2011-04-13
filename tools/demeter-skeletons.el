@@ -25,7 +25,7 @@
   "Insert a Demeter Path object definition"
   nil
   \n >
-  "my $path = Demeter::Data->new(name     => ,  cv       => ,"
+  "my $data = Demeter::Data->new(name     => ,  cv       => ,"
   \n >
   "fft_kmin =>  , fft_kmax => ,"
   \n >
