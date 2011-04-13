@@ -27,9 +27,9 @@
   \n >
   "my $data = Demeter::Data->new(name     => ,  cv       => ,"
   \n >
-  "fft_kmin =>  , fft_kmax => ,"
+  "fft_kmin => , fft_kmax => ,"
   \n >
-  "bft_rmin =>  , bft_kmax => ,"
+  "bft_rmin => , bft_kmax => ,"
   \n >
   "fit_k1   => 1, fit_k2   => 1, fit_k3 => 1,"
   \n >

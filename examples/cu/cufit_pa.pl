@@ -42,6 +42,7 @@ $data ->set(file       => "cu10k.chi",
 	   );
 
 
+
 print "make GDS objects for an isotropic expansion, correlated Debye model fit to copper\n";
 my @gds =  (GDS -> new(gds => 'guess', name => 'alPha', mathexp => 0),
 	    GDS -> new(gds => 'guess', name => 'amp',   mathexp => 1),
