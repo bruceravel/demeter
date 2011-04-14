@@ -431,6 +431,10 @@ sub savelog {
   my ($self, $position) = @_;
   ($position = $self->{list}->GetSelection) if not defined ($position);
   my $fit = $self->{list}->GetIndexedData($position);
+  if (not defined($fit)) {
+    $self->status("Cannot save log file -- cannot determine fit.");
+    return;
+  };
 
   (my $pref = $fit->name) =~ s{\s+}{_}g;
   my $fd = Wx::FileDialog->new( $self, "Save log file", cwd, $pref.q{.log},
@@ -477,7 +481,7 @@ sub add_plottool {
 sub transfer {
   my ($self, $fit, $data) = @_;
   my $plotlist  = $Demeter::UI::Artemis::frames{Plot}->{plotlist};
-  $plotlist->Append("Fit to " . $data->name . " from ".$fit->name, $data);
+  $plotlist->AddData("Fit to " . $data->name . " from ".$fit->name, $data);
   my $i = $plotlist->GetCount - 1;
   ##$plotlist->SetClientData($i, $data);
   $plotlist->Check($i,1);

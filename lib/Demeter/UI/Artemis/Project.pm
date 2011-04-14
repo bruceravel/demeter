@@ -234,8 +234,8 @@ sub read_project {
   foreach my $d (@dirs) {
     my $fit = Demeter::Fit->new(group=>$d, interface=>"Artemis (Wx $Wx::VERSION)");
     my $regen = ($d eq $current) ? 0 : 1;
-    $fit->deserialize(folder=> File::Spec->catfile($projfolder, 'fits', $d), regenerate=>0); #$regen);
-    $rframes->{History}->{list}->Append($fit->name, $fit) if $fit->fitted;
+    $fit->deserialize(folder=> File::Spec->catfile($projfolder, 'fits', $d), regenerate=>1); #$regen);
+    $rframes->{History}->{list}->AddData($fit->name, $fit) if $fit->fitted;
     $rframes->{History}->add_plottool($fit);
     next unless ($d eq $current);
     $currentfit = $fit;

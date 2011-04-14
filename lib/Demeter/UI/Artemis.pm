@@ -37,6 +37,7 @@ use Readonly;
 Readonly my $MRU	     => Wx::NewId();
 Readonly my $SHOW_BUFFER     => Wx::NewId();
 Readonly my $CONFIG	     => Wx::NewId();
+Readonly my $CRASH	     => Wx::NewId();
 Readonly my $SHOW_GROUPS     => Wx::NewId();
 Readonly my $SHOW_ARRAYS     => Wx::NewId();
 Readonly my $SHOW_SCALARS    => Wx::NewId();
@@ -161,6 +162,7 @@ sub OnInit {
   $debugmenu->Append($PLOT_YAML,    "Show YAML for Plot object",  "Show YAML for Plot object",  wxITEM_NORMAL );
   $debugmenu->Append($MODE_STATUS,  "Mode status",                "Mode status",  wxITEM_NORMAL );
   $debugmenu->Append($PERL_MODULES, "Perl modules",               "Show perl module versions", wxITEM_NORMAL );
+  $debugmenu->Append($CRASH,        "Crash Artemis",              "Force a crash of Artemis to test autosave file", wxITEM_NORMAL );
 
   my $feedbackmenu = Wx::Menu->new;
   $feedbackmenu->Append($SHOW_BUFFER, "Show command buffer",    'Show the Ifeffit and plotting commands buffer');
@@ -802,6 +804,10 @@ sub OnMenuClick {
     };
     ($id == $MODE_STATUS) and do {
       my $dialog = Demeter::UI::Artemis::ShowText->new($frames{main}, $demeter->mo->report('all'), 'Overview of this instance of Demeter') -> Show;
+      last SWITCH;
+    };
+    ($id == $CRASH) and do {
+      my $x = 1/0;
       last SWITCH;
     };
 

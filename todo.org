@@ -1,7 +1,7 @@
 #+TITLE: Demeter To Do List (also Athena and Artemis)
 #+AUTHOR: Bruce Ravel
 #+EMAIL: bravel AT bnl DOT gov
-#+FILETAGS: :PDL:HUH::MFC:MDS:FitSequence:Project:
+#+TAGS: PDL HUH Advanced Windows
 
 * things that need doing
 
@@ -14,7 +14,7 @@
 ** installation issues [1/1]
   - [X] jpg needs to be a Module::Build build_element, but there are too many such files in the distro .. not all serve a purpose
 
-** Demeter bugs and shortcomings  [2/15]
+** Demeter bugs and shortcomings  [3/16] [18%]
   - [ ] in D::Data::IO::save_many, why doesn't updating in n specifying "background" not work to bring data up to date?  (fft, i.e. doing autobk, does work)
   - [ ] +serialize VPath+, put VPath into +dpj and+ fpj files
   - [ ] tie multiple groups together
@@ -30,7 +30,7 @@
 	in your variable names but if you use the fancy simpleGDS you can not.
   - [X] SDK: something like find_path method, but which find the path closest to some R value
   - [ ] SDK: better documentation for freeze/thaw//serialize/deserialize
-  - [ ] autogenerate workspace for Feff objects (i.e. something in stashdir)
+  - [X] autogenerate workspace for Feff objects (i.e. something in stashdir)
   - [ ] better detection of chi ascii data in case of
 	   $data = Demeter::Data->new(file=>"foo.chi");
 
@@ -43,12 +43,11 @@
    - [X] calibrate
    - [X] align
    - [X] deglitch
-   - [ ] /smooth with Savitsky-Golay filter/				:PDL:
-          [[file:notes/sgolay.m][Matlab routine for SG filter]] 
+   - [ ] /smooth with Savitsky-Golay filter/ [[file:notes/sgolay.m][Matlab routine for SG filter]] 
    - [X] truncate
    - [X] rebin
    - [X] convolution and noise
-   - [ ] /deconvolution/						:PDL:
+   - [ ] /deconvolution/
    - [X] self absorption
    - [X] copy series
 
@@ -56,8 +55,7 @@
    - [ ] multi-electron removal
 
    - [X] LCF
-   - [ ] /PCA/								:PDL:
-          [[http://mailman.jach.hawaii.edu/pipermail/perldl/2006-August/000588.html][PCA from PDL mail archives]]
+   - [ ] /PCA/ [[http://mailman.jach.hawaii.edu/pipermail/perldl/2006-August/000588.html][PCA from PDL mail archives]]
    - [ ] Peak fit
    - [X] log ratio
    - [X] difference
@@ -67,6 +65,11 @@
    - [X] journal
    - [X] plugins
    - [X] preference 
+
+**** Requires PDL 							:PDL:
+    1. smoothing
+    2. deconvolution
+    3. PCA
 
 *** needs testing [0/2]
    - [ ] reference of another edge
@@ -114,7 +117,7 @@
        + [ ] document
        + [ ] memory usage
 
-** Windows issues [7/14]
+** Windows issues [7/14]					    :Windows:
   - [ ] spurious message from clipboard
   - [X] parameter group context menus don't get posted (see http://www.nntp.perl.org/group/perl.wxperl.users/2011/03/msg7929.html)
   - [ ] the frickin' Gnuplot error logs seem to remain locked on Windows when a crash happens
@@ -133,27 +136,36 @@
 
 
 ** Artemis
-*** Artemis bugs and missing features [1/18]
+*** Artemis bugs and missing features [2/13]
    - [X] use text buffers as in Athena for TextEntryDialogs
    - [ ] import an FPath from a yaml or from a project file, pathlist start page link for doing so
    - [ ] what is the purpose of regenerate in fit deserialization?  in any case, need to fix group values *inside* yaml files
    - [ ] fit numbering is wrong,should not increment if previous fit has fitted=0
    - [ ] should I clear out unfitted fit folders from project upon import?
-   - [ ] update pods for D::Feff::Histogram and D::Feff::DL_POLY
-   - [ ] feffit.inp import: needs testing; MDS that is not merely MKW
+   - [X] update pods for D::Feff::Histogram and D::Feff::DL_POLY
    - [ ] rename Atoms/Feff
-   - [ ] Balance interstitial energies for MFC fits		:MFC:
-   - [ ] Import mutiple data sets from an Athena project file	:MDS:FitSequence:
    - [ ] Reorganize lists, move individual items up and down, move blocks up and down, Path list, Plot list
-   - [ ] Clone data sets such that the path list gets replicated efficiently (i.e. for MDS fits)
-   - [ ] VPaths to project file  				:Project:
-   - [ ] Indicators to project file  				:Project:
    - [ ] Rename VPaths in VPath right click menu
    - [ ] sending Ifeffit feedback to the buffer makes it unavailable for other purposes.  the big problem
 	 is that correlations don't get written to the log file in Artemis (or in a script with set_mode(screen=>1),
 	 for that matter...)
    - [ ] discarding last page and returning to initial page has an undefined value problem
    - [ ] status messages in Atoms/Feff frame do not get posted in Artemis status buffer
+   - [ ] fit history plotting tool is broken -- it seems that previous
+	 fits are not saved, instead current fit is plotted repeatedly
+
+**** Project [0/2]
+   - [ ] VPaths to project file
+   - [ ] Indicators to project file
+
+**** Advanced fitting						   :Advanced:
+***** MFC [0/1]
+   - [ ] Balance interstitial energies for MFC fits
+***** MDS & Fit Sequence [0/3]
+   - [ ] Import mutiple data sets from an Athena project file
+   - [ ] feffit.inp import: needs testing; MDS that is not merely MKW
+   - [ ] Clone data sets such that the path list gets replicated efficiently (i.e. for MDS fits)
+
 
 *** Histograms [8/11]
    - [X] sum histogram bins into a single chi(k) file
@@ -174,21 +186,21 @@
 ** Hephaestus [1/1]
   - [X] need to open prefs with root in place so they display correctly on windows as well
 
-** Other object types [0/3]
+** Other object types [1/3]
   - [ ] Structural Units
       + Extension of VPath.  
       + Store GDS, feff, and path objects in a zip file.
       + On import, mark GDS parameters as merge if in conflict
   - [ ] MSPaths
       + Much like SSPath, make an arbitrary n-legged path
-  - [ ] Nearly collinear paths
+  - [X] Nearly collinear paths
       + Define a three body configuration, generate its 4-legged path and a sequence of three-legged paths along with a mixing parameter.
       + It will take a single set of path parameters that are pushed onto the generated Path objects, except for the amplitude, which will be computed from the mixing parameter.
       + This is a single object for the user to interact with which expands into 2 or 3 3-legged paths and a single 4-legged path
 
 
 
-** Windows
+** Windows							    :Windows:
 *** DONE non-ascii symbols
 *** DONE Fix [[file:lib/Demeter/UI/Wx/CheckListBook.pm][CheckListBook]]
       The solution is shown at the end of Athena.pm.  Define new methods for
