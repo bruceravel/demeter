@@ -10,8 +10,11 @@ blib
 Build
 Build.bat
 MYMETA.yml
-lib/Demeter/doc/dpg/bin/build
-lib/Demeter/doc/dpg/etc/ttree.cfg
-lib/Demeter/doc/dpg/html/
-lib/Demeter/doc/dpg/templates/lib/config/map
-lib/Demeter/doc/dpg/templates/lib/config/version
+doc/dpg/bin/build
+doc/dpg/etc/ttree.cfg
+doc/dpg/html/
+doc/dpg/templates/lib/config/map
+doc/dpg/templates/lib/config/version
+try/
+examples/cu/temp/
+examples/feff/

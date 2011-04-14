@@ -41,11 +41,13 @@ use Cwd;
 use File::Path;
 use File::Spec;
 use File::Temp qw(tempfile);
-use List::Util qw(sum);
-use List::MoreUtils qw(any false notall);
-use Regexp::Common;
-use Tree::Simple;
 use Heap::Fibonacci;
+use List::MoreUtils qw(any false notall);
+use List::Util qw(sum);
+use Regexp::Common;
+use String::Random qw(random_string);
+use Tree::Simple;
+
 use Readonly;
 Readonly my $NLEGMAX      => 4;
 Readonly my $CTOKEN       => '+';
@@ -138,7 +140,8 @@ has 'othercards' => (
 				   'clear' => 'clear_othercards',
 				  }
 		    );
-has 'workspace'    => (is=>'rw', isa => 'Str', default => q{}); # valid directory
+has 'workspace'    => (is=>'rw', isa => 'Str',
+		       default => sub{File::Spec->catfile(Demeter->stash_folder, 'feff_'.random_string('ccccccccc'))} );
 has 'miscdat'      => (is=>'rw', isa => 'Str', default => q{});
 has 'vint'         => (is=>'rw', isa => 'Num', default => 0);
 has 'hidden'       => (is=>'rw', isa => 'Bool',     default => 0);
@@ -423,7 +426,6 @@ sub run {
 
 sub potph {
   my ($self) = @_;
-  ##verify_feff_processing_hash($self);
   $self->check_workspace;
 
   ## write a feff.inp for the first module

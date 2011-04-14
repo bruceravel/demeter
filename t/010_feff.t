@@ -28,9 +28,11 @@ use File::Spec;
 my $here  = dirname($0);
 my $orig = File::Spec->catfile($here, 'orig.inp');
 
-my $where = File::Spec->catfile($here, 'feff');
+#my $where = File::Spec->catfile($here, 'feff');
 
-my $this = Demeter::Feff -> new(workspace => $where);
+my $this = Demeter::Feff -> new(); #workspace => $where);
+my $where = $this->workspace;
+print $where, $/;
 my $OBJ  = 'Feff';
 
 ok( ref($this) =~ m{$OBJ},                          "made a $OBJ object");
@@ -92,7 +94,7 @@ $text = do { local( $/ ) ; <$fh> } ;
 close $fh;
 ok( $text =~ m{CONTROL\s+0\s+0\s+1\s+0},            'CONTROL written for genfmt');
 
-my $new = Demeter::Feff -> new(workspace => $where, file => File::Spec->catfile($where, "feff.inp"));
+my $new = Demeter::Feff -> new(file => File::Spec->catfile($where, "feff.inp"));
 $ref = $new->sites;
 ok( $#{$ref} == 86,                                 'output feff.inp file has the correct number of sites');
 
@@ -100,6 +102,7 @@ ok( $#{$ref} == 86,                                 'output feff.inp file has th
 $this -> screen(0);
 $this -> buffer(1);
 $this -> potph;
+
 ok( ((-s File::Spec->catfile($where, "phase.bin") > 30000)
      and (-e File::Spec->catfile($where, "misc.dat"))), 'feff module potph ran correctly');
 
@@ -108,11 +111,10 @@ ok( $#{$this->iobuffer} >= 10,                      'iobuffer works');
 $this -> screen(0);
 $this -> rmax(4);
 $this -> pathfinder;
-$this -> freeze(File::Spec->catfile($where, "feff.yaml"));
+$this -> freeze(File::Spec->catfile($here, "feff.yaml"));
 
 
-
-$new = Demeter::Feff -> new(yaml => File::Spec->catfile($where, "feff.yaml"));
+$new = Demeter::Feff -> new(yaml => File::Spec->catfile($here, "feff.yaml"));
 
 
 ok( (($new->rmax == 4.0) and

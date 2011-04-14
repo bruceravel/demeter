@@ -1478,7 +1478,7 @@ override 'deserialize' => sub {
     };
     $d->read_fit($file) if (-e $file);
     $d->fitting(1);
-    #unlink $file;
+    unlink $file;
   };
 
   ## -------- import the Plot object, if requested
