@@ -555,7 +555,7 @@ sub fit {
 
     ## fill in plotting list
     if (not $rframes->{Plot}->{freeze}->GetValue) {
-      $rframes->{Plot}->{plotlist}->Clear;
+      $rframes->{Plot}->{plotlist}->ClearAll;
       foreach my $k (sort (keys (%$rframes))) {
 	next if ($k !~ m{data});
 	$rframes->{$k}->transfer if $rframes->{$k}->{plot_after}->GetValue;
@@ -1195,6 +1195,12 @@ sub DeleteData {
   $clb->{datalist} = \@list;
 
   $clb->Delete($n); # this calls the selection event on the new item
+};
+
+sub ClearAll {
+  my ($clb) = @_;
+  $clb->{datalist} = [];
+  $clb->Clear;
 };
 
 ## also need a method for reordering items on the list...

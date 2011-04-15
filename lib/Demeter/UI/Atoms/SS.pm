@@ -542,6 +542,8 @@ use Wx qw( :everything );
 use base qw(Wx::Window);
 use Wx::Event qw(EVT_LEFT_DOWN EVT_PAINT);
 
+use Scalar::Util qw(looks_like_number);
+
 sub new {
   my $class = shift;
   my $this = $class->SUPER::new( @_[0..2], [300,30] );
@@ -572,6 +574,14 @@ sub OnDrag {
     $parent->{statusbar}->SetStatusText("Histogram canceled: The file $file cannot be read");
     return;
   };
+
+  foreach my $s (qw(rmin rmax bin)) {
+    if (not looks_like_number($parent->{SS}->{"histo_ss_".$s}->GetValue)) {
+      $parent->{statusbar}->SetStatusText("Histogram canceled: $s is not a number.");
+      return;
+    };
+  };
+
   if ($parent->{SS}->{histo_ss_rmin}->GetValue >= $parent->{SS}->{histo_ss_rmax}->GetValue) {
     $parent->{statusbar}->SetStatusText("Histogram canceled: Rmin >= Rmax for the single scattering histogram.");
     return;
@@ -616,6 +626,8 @@ use Wx qw( :everything );
 use base qw(Wx::Window);
 use Wx::Event qw(EVT_LEFT_DOWN EVT_PAINT);
 
+use Scalar::Util qw(looks_like_number);
+
 sub new {
   my $class = shift;
   my $this = $class->SUPER::new( @_[0..2], [300,30] );
@@ -646,6 +658,14 @@ sub OnDrag {
     $parent->{statusbar}->SetStatusText("Histogram canceled: The file $file cannot be read");
     return;
   };
+
+  foreach my $s (qw(r1 r2 r3 r4 rbin betabin)) {
+    if (not looks_like_number($parent->{SS}->{"histo_ncl_".$s}->GetValue)) {
+      $parent->{statusbar}->SetStatusText("Histogram canceled: $s is not a number.");
+      return;
+    };
+  };
+
   if ($parent->{SS}->{histo_ncl_r1}->GetValue >= $parent->{SS}->{histo_ncl_r2}->GetValue) {
     $parent->{statusbar}->SetStatusText("Histogram canceled: R1 >= R2 for the near atom.");
     return;
@@ -707,6 +727,8 @@ use Wx qw( :everything );
 use base qw(Wx::Window);
 use Wx::Event qw(EVT_LEFT_DOWN EVT_PAINT);
 
+use Scalar::Util qw(looks_like_number);
+
 sub new {
   my $class = shift;
   my $this = $class->SUPER::new( @_[0..2], [300,30] );
@@ -737,6 +759,14 @@ sub OnDrag {
     $parent->{statusbar}->SetStatusText("Histogram canceled: The file $file cannot be read");
     return;
   };
+
+  foreach my $s (qw(rmin rmax rbin betabin)) {
+    if (not looks_like_number($parent->{SS}->{"histo_thru_".$s}->GetValue)) {
+      $parent->{statusbar}->SetStatusText("Histogram canceled: $s is not a number.");
+      return;
+    };
+  };
+
   if ($parent->{SS}->{histo_thru_rmin}->GetValue >= $parent->{SS}->{histo_thru_rmax}->GetValue) {
     $parent->{statusbar}->SetStatusText("Histogram canceled: R1 >= R2 for the near atom.");
     return;

@@ -379,12 +379,7 @@ sub fit {
     $data -> set(fitting=>1, fit_data=>$count);
 
     ## read the data
-    if (($data->from_athena)  or ($data->datatype eq 'xmu')) {
-      $data -> _update('fft');
-    } else {
-      $command .= "\n";
-      $command .= $data -> _read_data_command("chi");
-    };
+    $data -> _update('fft');
     $command .= "\n";
 
     ## define all the paths for this data set
@@ -1478,7 +1473,7 @@ override 'deserialize' => sub {
     };
     $d->read_fit($file) if (-e $file);
     $d->fitting(1);
-    unlink $file;
+    #unlink $file;
   };
 
   ## -------- import the Plot object, if requested

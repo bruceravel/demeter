@@ -14,7 +14,7 @@
 ** installation issues [1/1]
   - [X] jpg needs to be a Module::Build build_element, but there are too many such files in the distro .. not all serve a purpose
 
-** Demeter bugs and shortcomings  [3/16] [18%]
+** Demeter bugs and shortcomings  [4/16] [25%]
   - [ ] in D::Data::IO::save_many, why doesn't updating in n specifying "background" not work to bring data up to date?  (fft, i.e. doing autobk, does work)
   - [ ] +serialize VPath+, put VPath into +dpj and+ fpj files
   - [ ] tie multiple groups together
@@ -31,14 +31,16 @@
   - [X] SDK: something like find_path method, but which find the path closest to some R value
   - [ ] SDK: better documentation for freeze/thaw//serialize/deserialize
   - [X] autogenerate workspace for Feff objects (i.e. something in stashdir)
-  - [ ] better detection of chi ascii data in case of
-	   $data = Demeter::Data->new(file=>"foo.chi");
+  - [X] better detection of chi ascii data in case of 
+#+begin_src cperl
+        $data = Demeter::Data->new(file=>"foo.chi");
+#+end_src
 
 
 
 ** Athena
 
-*** Tools [16/23]
+*** Tools [16/23] [69%]
    - [X] main
    - [X] calibrate
    - [X] align
@@ -75,7 +77,7 @@
    - [ ] reference of another edge
    - [ ] keV data
 
-*** needs doing [4/14]
+*** needs doing [4/15] [26%]
    - [X] deglitching crashes with gnuplot					:HUH:
    - [X] in project selection dialog, controls for entering a periodic
          subset (i.e. every Nth record starting with the Jth record)
@@ -136,7 +138,7 @@
 
 
 ** Artemis
-*** Artemis bugs and missing features [2/13]
+*** Artemis bugs and missing features [3/13]  [23%]
    - [X] use text buffers as in Athena for TextEntryDialogs
    - [ ] import an FPath from a yaml or from a project file, pathlist start page link for doing so
    - [ ] what is the purpose of regenerate in fit deserialization?  in any case, need to fix group values *inside* yaml files
@@ -151,7 +153,7 @@
 	 for that matter...)
    - [ ] discarding last page and returning to initial page has an undefined value problem
    - [ ] status messages in Atoms/Feff frame do not get posted in Artemis status buffer
-   - [ ] fit history plotting tool is broken -- it seems that previous
+   - [X] fit history plotting tool is broken -- it seems that previous
 	 fits are not saved, instead current fit is plotted repeatedly
 
 **** Project [0/2]
@@ -167,7 +169,7 @@
    - [ ] Clone data sets such that the path list gets replicated efficiently (i.e. for MDS fits)
 
 
-*** Histograms [8/11]
+*** Histograms [9/11] [81%]
    - [X] sum histogram bins into a single chi(k) file
    - [X] convert chi(k) data to a mock feffNNNN.dat file
    - [X] Triangle object
@@ -177,7 +179,7 @@
    - [X] bin nealy colinear configurations by R and theta and sum into a single chi(k)
    - [X] turn SS histogram into a rattle TS histogram
    - [X] three-body histogram from X -- [+] -- X configurations
-   - [ ] error check numbers before making histograms in Artemis.  it is possible to have value like "3.3."
+   - [X] error check numbers before making histograms in Artemis.  it is possible to have value like "3.3."
    - [ ] check that there is at least one bin in the supplied range(s)
    - [ ] ipot=1 is hardwired in many places -- generalize....
    - [X] scatter plot of ncl distribution

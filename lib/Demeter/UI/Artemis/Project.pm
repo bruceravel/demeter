@@ -231,24 +231,39 @@ sub read_project {
   $current ||= $dirs[0];
   ##print join("|", $current, @dirs), $/;
   my $currentfit;
+  my @fits;
   foreach my $d (@dirs) {
     my $fit = Demeter::Fit->new(group=>$d, interface=>"Artemis (Wx $Wx::VERSION)");
     my $regen = ($d eq $current) ? 0 : 1;
     $fit->deserialize(folder=> File::Spec->catfile($projfolder, 'fits', $d), regenerate=>1); #$regen);
-    $rframes->{History}->{list}->AddData($fit->name, $fit) if $fit->fitted;
-    $rframes->{History}->add_plottool($fit);
-    next unless ($d eq $current);
-    $currentfit = $fit;
-    $rframes->{History}->{list}->SetSelection($rframes->{History}->{list}->GetCount-1);
-    $rframes->{History}->OnSelect;
-    $rframes->{main}->{currentfit} = $fit;
-    $rframes->{Plot}->{limits}->{fit}->SetValue(1);
-    my $current = $fit->number || 1;
-    #++$current;
-    $fit->mo->currentfit($current+1);
-    my $name = ($fit->name =~ m{\A\s*Fit\s+\d+\z}) ? 'Fit '.$fit->mo->currentfit : $fit->name;
-    $rframes->{main}->{name}->SetValue($name);
-    $rframes->{main}->{description}->SetValue($fit->description);
+    if (not $fit->fitted) { # discard the ones that don't actually involve a performed fit
+      $fit->DEMOLISH;
+      next;
+    };
+    push @fits, $fit;
+  };
+  if (@fits) {		# found some actual fits
+    my $found = 0;
+    foreach my $fit (@fits) {	# take care that the one labeled as current actually exists, if not use the latest
+      ++$found, last if ($fit->group eq $current);
+    };
+    $current = $fits[-1]->group if not $found;
+    foreach my $fit (@fits) {
+      $rframes->{History}->{list}->AddData($fit->name, $fit);
+      $rframes->{History}->add_plottool($fit);
+      next unless ($fit->group eq $current);
+      $currentfit = $fit;
+      $rframes->{History}->{list}->SetSelection($rframes->{History}->{list}->GetCount-1);
+      $rframes->{History}->OnSelect;
+      $rframes->{main}->{currentfit} = $fit;
+      $rframes->{Plot}->{limits}->{fit}->SetValue(1);
+      my $current = $fit->number || 1;
+      #++$current;
+      $fit->mo->currentfit($current+1);
+      my $name = ($fit->name =~ m{\A\s*Fit\s+\d+\z}) ? 'Fit '.$fit->mo->currentfit : $fit->name;
+      $rframes->{main}->{name}->SetValue($name);
+      $rframes->{main}->{description}->SetValue($fit->description);
+    };
   };
 
   ## -------- plot and indicator yamls, journal
@@ -450,7 +465,7 @@ sub close_project {
   };
 
   ## -------- clear history
-  $rframes->{History}->{list}->Clear;
+  $rframes->{History}->{list}->ClearAll;
   $rframes->{History}->{log}->Clear;
   $rframes->{History}->{params}->Clear;
   $rframes->{History}->{params}->Append("Statistcal parameters");

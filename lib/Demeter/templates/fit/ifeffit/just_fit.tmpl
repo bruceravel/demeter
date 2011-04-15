@@ -1,0 +1,13 @@
+{ # -*- ifm -*-
+  # import the fit column as data from a fit template
+  #   {$D->group} returns the ifeffit group name
+  #   {$D->get("parameter")} returns the value of that parameter
+}
+##| reading fit file "{$filename}" as group {$D->group}
+read_data(file="{$filename}", group=t___emp)
+set({$D->group}.k       = t___emp.k,
+    {$D->group}.chi     = t___emp.fit)
+erase @group t___emp 
+erase $t___emp_title_01 $t___emp_title_02 $t___emp_title_03 $t___emp_title_04 $t___emp_title_05
+erase $t___emp_title_06 $t___emp_title_07 $t___emp_title_08 $t___emp_title_09 $t___emp_title_10
+erase $t___emp_title_11 $t___emp_title_12 $t___emp_title_13 $t___emp_title_14

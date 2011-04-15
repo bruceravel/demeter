@@ -45,7 +45,7 @@ sub new {
   my $listboxsizer  = Wx::StaticBoxSizer->new( $listbox, wxVERTICAL );
 
   $this->{list} = Wx::CheckListBox->new($this, -1, wxDefaultPosition, [-1,500],
-				   [], wxLB_SINGLE);
+					[], wxLB_SINGLE);
   $this->{list}->{datalist} = [];
   $listboxsizer -> Add($this->{list}, 1, wxGROW|wxALL, 0);
   $left -> Add($listboxsizer, 0, wxGROW|wxALL, 5);
@@ -480,12 +480,21 @@ sub add_plottool {
 ## need to check if it is already in the plot list...
 sub transfer {
   my ($self, $fit, $data) = @_;
+
+  my $fitfile = File::Spec->catfile($Demeter::UI::Artemis::frames{main}->{project_folder}, 'fits', $fit->group, $data->group.'.fit');
+  my $pldata = Demeter::Data->new(datatype => 'chi',
+				  name     => sprintf("Fit to %s from %s", $data->name, $fit->name),);
+  foreach my $att (qw(fft_kmin fft_kmax fft_kwindow fft_dk fft_pc fft_pctype fft_pcpath fft_pcpathgroup
+		      bft_rmin bft_rmax bft_rwindow bft_dr)) {
+    $pldata->$att($data->$att);
+  };
+  $pldata->just_fit($fitfile);
   my $plotlist  = $Demeter::UI::Artemis::frames{Plot}->{plotlist};
-  $plotlist->AddData("Fit to " . $data->name . " from ".$fit->name, $data);
+  $plotlist->AddData($pldata->name, $pldata);
   my $i = $plotlist->GetCount - 1;
   ##$plotlist->SetClientData($i, $data);
   $plotlist->Check($i,1);
-  $self->status("\"" . $data->name . "\" from \"" . $fit->name . "\" was added to the plotting list.")
+  $self->status("\"" . $pldata->name . "\" was added to the plotting list.")
 };
 
 

@@ -1711,7 +1711,7 @@ sub discard {
     };
 
     ($how eq 'all') and do {
-      $self->{pathlist}->Clear;
+      $self->{pathlist}->ClearAll;
       $text = "Discarded all paths.";
       last SWITCH;
     };
