@@ -298,7 +298,7 @@ sub plot {
   foreach my $i (0 .. $self->{plotlist}->GetCount-1) {
     next if (not $self->{plotlist}->IsChecked($i));
     my $obj = $self->{plotlist}->GetIndexedData($i);
-    #print $obj, "  ", $obj->name, "  ", $obj->group, $/;
+    ##print $obj, "  ", $obj->name, "  ", $obj->group, $/;
     if (ref($obj) !~ m{Data}) {
       $obj->update_path(1);
       next;

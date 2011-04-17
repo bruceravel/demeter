@@ -214,6 +214,9 @@ sub read_project {
       $rframes->{$fnum}->{Feff} ->{name}->SetValue($feffobject->name);
       $rframes->{$fnum}->{Paths}->{name}->SetValue($feffobject->name);
       $rframes->{$fnum}->status("Imported crystal and Feff data from ". basename($fname));
+      my $label = $rframes->{main}->{$fnum}->GetLabel;
+      $label =~ s{Hide}{Show};
+      $rframes->{main}->{$fnum}->SetLabel($label)
     };
   };
 
@@ -232,11 +235,18 @@ sub read_project {
   ##print join("|", $current, @dirs), $/;
   my $currentfit;
   my @fits;
+
+  ## explanation:
+  ## the list of fits in a project file includes some that have been fitted and some
+  ## that have not.  it is likely the one marked as the current fit has not been
+  ## fitted.  all unfitted fits are destroyed except for the current.  all fitted
+  ## fits are pushed onto the history and the current fit (fitted or not) is restored
+
   foreach my $d (@dirs) {
     my $fit = Demeter::Fit->new(group=>$d, interface=>"Artemis (Wx $Wx::VERSION)");
     my $regen = ($d eq $current) ? 0 : 1;
     $fit->deserialize(folder=> File::Spec->catfile($projfolder, 'fits', $d), regenerate=>1); #$regen);
-    if (not $fit->fitted) { # discard the ones that don't actually involve a performed fit
+    if (($d ne $current) and (not $fit->fitted)) { # discard the ones that don't actually involve a performed fit
       $fit->DEMOLISH;
       next;
     };
@@ -249,8 +259,8 @@ sub read_project {
     };
     $current = $fits[-1]->group if not $found;
     foreach my $fit (@fits) {
-      $rframes->{History}->{list}->AddData($fit->name, $fit);
-      $rframes->{History}->add_plottool($fit);
+      $rframes->{History}->{list}->AddData($fit->name, $fit) if $fit->fitted;
+      $rframes->{History}->add_plottool($fit) if $fit->fitted;
       next unless ($fit->group eq $current);
       $currentfit = $fit;
       $rframes->{History}->{list}->SetSelection($rframes->{History}->{list}->GetCount-1);
@@ -279,7 +289,7 @@ sub read_project {
   };
   my $journal = File::Spec->catfile($rframes->{main}->{project_folder}, 'journal');
   if (-e $journal) {
-    $rframes->{Journal}->{journal}->SetValue($currentfit->slurp($journal));
+    $rframes->{Journal}->{journal}->SetValue(Demeter->slurp($journal));
   };
 
   $import_problems .= restore_fit($rframes, $currentfit);

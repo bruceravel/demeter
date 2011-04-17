@@ -109,7 +109,7 @@
        + [ ] plot in R for fit in k
        + [ ] persistance of LCF results
    - [-] *Group list* [2/3]
-       + [ ] move groups up and down, keystroke | DnD
+       + [ ] reorganize list, keystroke | DnD
        + [X] left click on groups list should post group menu (others?)
        + [X] it needs to be impossible to select nothing in the group list
    - [ ] *Plot menu*
@@ -138,16 +138,16 @@
 
 
 ** Artemis
-*** Artemis bugs and missing features [3/13]  [23%]
+*** Artemis bugs and missing features [5/13]  [38%]
    - [X] use text buffers as in Athena for TextEntryDialogs
    - [ ] import an FPath from a yaml or from a project file, pathlist start page link for doing so
    - [ ] what is the purpose of regenerate in fit deserialization?  in any case, need to fix group values *inside* yaml files
    - [ ] fit numbering is wrong,should not increment if previous fit has fitted=0
-   - [ ] should I clear out unfitted fit folders from project upon import?
+   - [X] should I clear out unfitted fit folders from project upon import?
    - [X] update pods for D::Feff::Histogram and D::Feff::DL_POLY
    - [ ] rename Atoms/Feff
    - [ ] Reorganize lists, move individual items up and down, move blocks up and down, Path list, Plot list
-   - [ ] Rename VPaths in VPath right click menu
+   - [X] Rename VPaths in VPath right click menu
    - [ ] sending Ifeffit feedback to the buffer makes it unavailable for other purposes.  the big problem
 	 is that correlations don't get written to the log file in Artemis (or in a script with set_mode(screen=>1),
 	 for that matter...)
