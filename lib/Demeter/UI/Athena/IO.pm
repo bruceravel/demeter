@@ -684,8 +684,8 @@ sub FPath {
   };
 
   (my $base = $app->current_data->name) =~ s{[^-a-zA-Z0-9.+]+}{_}g;
-  my $fd = Wx::FileDialog->new( $app->{main}, "Save current group as an empirical standard", cwd, $base.'.yaml',
-				"epirical standards (*.yaml)|*.yaml|All files|*",
+  my $fd = Wx::FileDialog->new( $app->{main}, "Save current group as an empirical standard", cwd, $base.'.es',
+				"epirical standards (*.es)|*.es|All files|*",
 				wxFD_SAVE|wxFD_CHANGE_DIR, #|wxFD_OVERWRITE_PROMPT,
 				wxDefaultPosition);
   if ($fd->ShowModal == wxID_CANCEL) {

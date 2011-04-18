@@ -164,7 +164,7 @@ sub BUILD {
 override all => sub {
   my ($self) = @_;
   my %all = $self->SUPER::all;
-  delete $all{$_} foreach (qw(Index sp parent));
+  delete $all{$_} foreach (qw(Index sp parent sentinal));
   return %all;
 };
 

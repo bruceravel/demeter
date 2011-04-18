@@ -336,6 +336,7 @@ sub fit {
   $self->dispose($prefit);
 
   $self->mo->fit($self);
+  $self->mo->pathindex(1);
   foreach my $p (@{ $self->paths }) {
     $self->dispose("set path_index = " . $p->Index) if ($p->default_path);
   };
@@ -392,6 +393,11 @@ sub fit {
       next if not $p->include;
       $p->_update_from_ScatteringPath if $p->sp;
       ++$ipath;
+
+      my $i = $p->mo->pathindex;
+      $p->Index($i);
+      $p->mo->pathindex(++$i);
+
       my $lab = $p->name;
       ($lab = "path $ipath") if ($lab =~ m{\A(?:\s*|path\s+\d+)\z});
       $p->set(name=>$lab);
@@ -726,7 +732,7 @@ sub _normalize_paths {
     $prev = $this;
   };
   ($concat eq "-") and $string .= $concat . $this;
-  $string =~ s{(\d+)-(\1)}{$1}g;
+  $string =~ s{(\d+)-(\1)\b}{$1}g;
   return $string || q{};
 };
 

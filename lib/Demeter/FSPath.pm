@@ -112,7 +112,7 @@ sub BUILD {
 
 override 'all' => sub {
   my ($self) = @_;
-  my @keys   = map {$_->name} grep {$_->name !~ m{\A(?:data|plot|plottable|is_mc|mode|parent|sp|gds)\z}} $self->meta->get_all_attributes;
+  my @keys   = map {$_->name} grep {$_->name !~ m{\A(?:data|plot|plottable|is_mc|mode|parent|sp|gds|sentinal)\z}} $self->meta->get_all_attributes;
   push @keys, qw(name group mark plottable);
   #print join($/, @keys), $/;
   my @values = map {$self->$_} @keys;

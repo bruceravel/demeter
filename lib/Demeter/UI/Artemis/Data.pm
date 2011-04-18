@@ -443,18 +443,20 @@ sub initial_page_panel {
 
   my $vv = Wx::BoxSizer->new( wxVERTICAL );
 
-  my $dndtext = Wx::StaticText    -> new($panel, -1, "Drag paths from a Feff interpretation list and drop them in this space to add paths to this data set", wxDefaultPosition, [300,-1]);
-  $dndtext   -> Wrap(280);
+  my $dndtext = Wx::StaticText    -> new($panel, -1, "Drag paths from a Feff interpretation list and drop them in this space to add paths to this data set", wxDefaultPosition, [-1,-1]);
+  $dndtext   -> Wrap(200);
   my $atoms   = Wx::HyperlinkCtrl -> new($panel, -1, 'Import crystal data or a Feff calculation', q{}, wxDefaultPosition, wxDefaultSize, wxNO_BORDER );
   my $qfs     = Wx::HyperlinkCtrl -> new($panel, -1, 'Start a quick first shell fit',             q{}, wxDefaultPosition, wxDefaultSize, wxNO_BORDER );
   my $su      = Wx::StaticText    -> new($panel, -1, 'Import a structural unit',                       wxDefaultPosition, wxDefaultSize, wxNO_BORDER );
+  my $emp     = Wx::HyperlinkCtrl -> new($panel, -1, 'Import an empirical standard',              q{}, wxDefaultPosition, wxDefaultSize, wxNO_BORDER );
   ##my $feff    = Wx::HyperlinkCtrl -> new($panel, -1, 'Import a Feff calculation',     q{}, wxDefaultPosition, wxDefaultSize, wxNO_BORDER );
 
   EVT_HYPERLINK($self, $atoms, sub{Import('feff', q{});});
   EVT_HYPERLINK($self, $qfs,   sub{$self->quickfs;});
-  $_ -> SetFont( Wx::Font->new( 10, wxDEFAULT, wxITALIC, wxNORMAL, 0, "" ) ) foreach ($dndtext, $qfs, $atoms, $su);
+  EVT_HYPERLINK($self, $emp,   sub{$self->empirical;});
+  $_ -> SetFont( Wx::Font->new( 10, wxDEFAULT, wxITALIC, wxNORMAL, 0, "" ) ) foreach ($dndtext, $qfs, $atoms, $su, $emp);
   $su-> Enable(0);
-  $_ -> SetVisitedColour($_->GetNormalColour) foreach ($qfs, $atoms); #, $su, $feff);
+  $_ -> SetVisitedColour($_->GetNormalColour) foreach ($qfs, $atoms, $emp); #, $su, $feff);
 
   ##my $or = Wx::StaticText -> new($panel, -1, "\tor");
 
@@ -465,6 +467,8 @@ sub initial_page_panel {
   $vv -> Add($qfs,                                      0, wxALL, 5 );
   $vv -> Add(Wx::StaticText -> new($panel, -1, "\tor"), 0, wxALL, 10);
   $vv -> Add($su,                                       0, wxALL, 5 );
+  $vv -> Add(Wx::StaticText -> new($panel, -1, "\tor"), 0, wxALL, 10);
+  $vv -> Add($emp,                                      0, wxALL, 5 );
   ##$vv -> Add(Wx::StaticText -> new($panel, -1, "\tor"), 0, wxALL, 10);
   ##$vv -> Add($feff,                                     0, wxALL, 5 );
 
@@ -556,6 +560,11 @@ sub make_menubar {
   $markedsave_menu->Append($MARKED_SAVE_QR, "Re[$CHI(q)]",   "Save the data and all marked paths as the real part of $CHI(q) with all path parameters evaluated", wxITEM_NORMAL);
   $markedsave_menu->Append($MARKED_SAVE_QI, "Im[$CHI(q)]",   "Save the data and all marked paths as the imaginary part of $CHI(q) with all path parameters evaluated", wxITEM_NORMAL);
 
+  $self->{importmenu}  = Wx::Menu->new;
+  $self->{importmenu}->Append($PATH_FSPATH,    "Quick first shell model", "Generate a quick first shell fitting model", wxITEM_NORMAL );
+  $self->{importmenu}->Append($PATH_EMPIRICAL, "Import empirical standard", "Import an empirical standard exported from Athen", wxITEM_NORMAL );
+  $self->{importmenu}->Append($PATH_SU,        "Import structural unit",  "Import a structural unit", wxITEM_NORMAL );
+
   ## -------- chi(k) menu
   $self->{datamenu}  = Wx::Menu->new;
   $self->{datamenu}->Append($DATA_RENAME,      "Rename this $CHI(k)",         "Rename this data set",  wxITEM_NORMAL );
@@ -567,9 +576,7 @@ sub make_menubar {
   $self->{datamenu}->AppendSubMenu($fitsave_menu,    "Save data and fit as ...",        "Save a column data file containing the data, fit, background, residual, running R-factor, and window.");
   $self->{datamenu}->AppendSubMenu($markedsave_menu, "Save data + marked paths as ...", "Save a column data file containing the data and all marked paths from this data's path list.");
   $self->{datamenu}->AppendSeparator;
-  $self->{datamenu}->Append($PATH_FSPATH,      "Quick first shell model", "Generate a quick first shell fitting model", wxITEM_NORMAL );
-  $self->{datamenu}->Append($PATH_EMPIRICAL,   "Import empirical standard", "Import an empirical standard exported from Athen", wxITEM_NORMAL );
-  $self->{datamenu}->Append($PATH_SU,          "Import structural unit",  "Import a structural unit", wxITEM_NORMAL );
+  $self->{datamenu}->AppendSubMenu($self->{importmenu}, "Other fitting standards ...", "Import fitting standards from other places");
   $self->{datamenu}->AppendSeparator;
   $self->{datamenu}->Append($DATA_BALANCE,     "Balance interstitial energies", "Adjust E0 for every path so that the interstitial energies for each Feff calculation are balanced",  wxITEM_NORMAL );
   $self->{datamenu}->Append($DATA_DEGEN_N,     "Set all degens to Feff",   "Set degeneracies for all paths in this data set to values from Feff",  wxITEM_NORMAL );
@@ -676,7 +683,8 @@ sub make_menubar {
   $self->{menubar}->Append( $self->{actionsmenu}, "&Actions" );
   $self->{menubar}->Append( $self->{debugmenu},   "Debu&g" ) if ($demeter->co->default("artemis", "debug_menus"));
 
-  map { $self->{datamenu} ->Enable($_,0) } ($DATA_BALANCE, $PATH_SU, $DATA_EXPORT);
+  map { $self->{datamenu}  ->Enable($_,0) } ($DATA_BALANCE, $DATA_EXPORT);
+  map { $self->{importmenu}->Enable($_,0) } ($PATH_SU);
 
   $self->{menubar}->SetHelpString(3,    "Blah blah");
 };
@@ -1945,19 +1953,20 @@ sub quickfs {
 sub empirical {
   my ($datapage) = @_;
   my $fd = Wx::FileDialog->new( $datapage, "Import an empirical standard", cwd, q{},
-				"Empirical standard (*.yaml)|*.yaml|All files|*",
+				"Empirical standard (*.es)|*.es|All files|*",
 				wxFD_OPEN|wxFD_FILE_MUST_EXIST|wxFD_CHANGE_DIR|wxFD_PREVIEW,
 				wxDefaultPosition);
-  if ($fd->ShowModal == wxID_CANCEL) {
-    $datapage->status("Empirical standard import cancelled.");
-    return;
-  };
-  my $file = File::Spec->catfile($fd->GetDirectory, $fd->GetFilename);
-  my $fpath = Demeter::FPath->new;
-  $fpath -> deserialize($file);
+  $datapage->status("Empirical standard import cancelled."), return if $fd->ShowModal == wxID_CANCEL;
+  my $file  = File::Spec->catfile($fd->GetDirectory, $fd->GetFilename);
+  my $fpath = Demeter::FPath->new();
+  my $is_ok = $fpath -> deserialize($file);
+  $datapage->status("\"$file\" isn't an empirical standard file."), return if not $is_ok;
+  $fpath -> data($datapage->{data});
+  $fpath -> _update('fft');
+  $datapage->{pathlist}->DeletePage(0) if ($datapage->{pathlist}->GetPage(0) =~ m{Panel});
   my $page = Demeter::UI::Artemis::Path->new($datapage->{pathlist}, $fpath, $datapage);
   $datapage->{pathlist}->AddPage($page, $fpath->name, 1, 0);
-
+  $page->include_label;
 };
 
 sub histogram_sentinal_rdf {

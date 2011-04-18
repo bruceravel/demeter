@@ -6,16 +6,16 @@
 * things that need doing
 
 ** wx issues
-  - [ ] why does Wx::FileDialog with wxFD_OVERWRITE_PROMPT style not work correctly?
+  - [ ] why does Wx::FileDialog with ~wxFD_OVERWRITE_PROMPT~ style not work correctly?
         see https://bugzilla.gnome.org/show_bug.cgi?id=631908 and 
         https://bugs.launchpad.net/ubuntu/+source/gtk+2.0/+bug/558674 for more info
         Turns out this is a gtk problem -- I can make the same thing happen with Firefox!
 
 ** installation issues [1/1]
-  - [X] jpg needs to be a Module::Build build_element, but there are too many such files in the distro .. not all serve a purpose
+  - [X] jpg needs to be a Module::Build ~build_element~, but there are too many such files in the distro .. not all serve a purpose
 
-** Demeter bugs and shortcomings  [4/16] [25%]
-  - [ ] in D::Data::IO::save_many, why doesn't updating in n specifying "background" not work to bring data up to date?  (fft, i.e. doing autobk, does work)
+** Demeter bugs and shortcomings  [4/17] [23%]
+  - [ ] in =Demeter::Data::IO::save_many=, why doesn't updating in n specifying "background" not work to bring data up to date?  (fft, i.e. doing autobk, does work)
   - [ ] +serialize VPath+, put VPath into +dpj and+ fpj files
   - [ ] tie multiple groups together
   - [ ] add a record to an existing Athena project file
@@ -26,15 +26,14 @@
   - [ ] Demeter command backend needs polishing
   - [ ] we seem not to have a normalized group (i.e. plot the same as mu or norm)
   - [ ] 3rd derivative
+  - [ ] SDK: better documentation for freeze/thaw//serialize/deserialize
+  - [ ] error check deserialization for all objects, verify that it is a yaml or whatnot, return 0 if not
   - [X] SDK: "It  seems that if you use the old fashioned GSD string you can have capitals
 	in your variable names but if you use the fancy simpleGDS you can not.
-  - [X] SDK: something like find_path method, but which find the path closest to some R value
-  - [ ] SDK: better documentation for freeze/thaw//serialize/deserialize
+  - [X] SDK: something like ~find_path~ method, but which find the path closest to some R value
   - [X] autogenerate workspace for Feff objects (i.e. something in stashdir)
   - [X] better detection of chi ascii data in case of 
-#+begin_src cperl
-        $data = Demeter::Data->new(file=>"foo.chi");
-#+end_src
+        =$data = Demeter::Data->new(file=>"foo.chi");=
 
 
 
@@ -91,12 +90,11 @@
    - [ ] links to documentation on each tool
    - [ ] fix edge step button is not working
    - [ ] test preprocessing (I had a crash with all three preproc options selected for
-	 data with a reference): 'Can't call method "GetSelection" on an undefined value
-	 at /home/bruce/git/demeter/lib/Demeter/UI/Athena/IO.pm line 423.'
+	 data with a reference):
+	 ~Can't call method "GetSelection" on an undefined value at /home/bruce/git/demeter/lib/Demeter/UI/Athena/IO.pm line 423.~
    - [ ] *Pluck buttons* [0/2]
        + [ ] implement everywhere needed
-       + [ ] figure out cause of spurious error on Windows "failed to get
-	     data from the clipboard error -2147221040 openClipboard failed"
+       + [ ] figure out cause of spurious error on Windows ~failed to get data from the clipboard error -2147221040 openClipboard failed~
    - [ ] *Convolve/noise tool*
        + add noise to chi data
    - [ ] *Difference tool* [0/3]
@@ -120,41 +118,41 @@
        + [ ] memory usage
 
 ** Windows issues [7/14]					    :Windows:
-  - [ ] spurious message from clipboard
   - [X] parameter group context menus don't get posted (see http://www.nntp.perl.org/group/perl.wxperl.users/2011/03/msg7929.html)
-  - [ ] the frickin' Gnuplot error logs seem to remain locked on Windows when a crash happens
-  - [ ] status bar does not get color for wait or error messages /this may be unfixable, see/ http://www.nntp.perl.org/group/perl.wxperl.users/2011/04/msg7943.html
   - [X] ugly background colors on command and status buffer frames (particularly at bottom, also a problem in Artemis)
-  - [ ] ifeffit is currently compiled not knowing where to find the feff tables, so PC transforms are not possible.
-	in general, the compilation of Ifeffit needs to be better integrated into Strawberry.
-  - [ ] The atoms panel background color is too light.  Which window needs its BackgroundColour set to wxNullColour?
   - [X] raised text with data name in data frame
   - [X] InitialPage in path list does not get hidden properly
   - [X] colors missing in log file text
   - [X] log frame not displayed/refreshed properly after a fit
-  - [ ] clampbox does not get enabled/disabled explicitly, is this another aspect of StaticBox that is different on Windows? (see link above)
   - [X] Artemis key accellerators
+  - [ ] spurious message from clipboard
+  - [ ] the frickin' Gnuplot error logs seem to remain locked on Windows when a crash happens
+  - [ ] status bar does not get color for wait or error messages /this may be unfixable, see/ http://www.nntp.perl.org/group/perl.wxperl.users/2011/04/msg7943.html
+  - [ ] ifeffit is currently compiled not knowing where to find the feff tables, so PC transforms are not possible.
+	in general, the compilation of Ifeffit needs to be better integrated into Strawberry.
+  - [ ] The atoms panel background color is too light.  Which window needs its BackgroundColour set to wxNullColour?
+  - [ ] clampbox does not get enabled/disabled explicitly, is this another aspect of StaticBox that is different on Windows? (see link above)
   - [ ] fpj file on Win seems to not get unpacked correctly	:Project:
 
 
 ** Artemis
-*** Artemis bugs and missing features [6/13]  [46%]
+*** Artemis bugs and missing features [7/13]  [53%]
    - [X] use text buffers as in Athena for TextEntryDialogs
-   - [ ] import an FPath from a yaml or from a project file, pathlist start page link for doing so
-   - [ ] what is the purpose of regenerate in fit deserialization?  in any case, need to fix group values *inside* yaml files
-   - [ ] fit numbering is wrong,should not increment if previous fit has fitted=0
+   - [X] import an FPath from a yaml or from a project file, pathlist start page link for doing so
    - [X] should I clear out unfitted fit folders from project upon import?
-   - [X] update pods for D::Feff::Histogram and D::Feff::DL_POLY
-   - [ ] rename Atoms/Feff
-   - [ ] Reorganize lists, move individual items up and down, move blocks up and down, Path list, Plot list
+   - [X] update pods for ~Demeter::Feff::Histogram~ and ~Demeter::Feff::DL_POLY~
    - [X] Rename VPaths in VPath right click menu
    - [X] sending Ifeffit feedback to the buffer makes it unavailable for other purposes.  the big problem
-	 is that correlations don't get written to the log file in Artemis (or in a script with set_mode(screen=>1),
+	 is that correlations don't get written to the log file in Artemis (or in a script with =set_mode(screen=>1)=,
 	 for that matter...)
-   - [ ] discarding last page and returning to initial page has an undefined value problem
-   - [ ] status messages in Atoms/Feff frame do not get posted in Artemis status buffer
    - [X] fit history plotting tool is broken -- it seems that previous
 	 fits are not saved, instead current fit is plotted repeatedly
+   - [ ] what is the purpose of regenerate in fit deserialization?  in any case, need to fix group values *inside* yaml files
+   - [ ] fit numbering is wrong, should not increment if previous fit has fitted=0
+   - [ ] rename Atoms/Feff
+   - [ ] Reorganize lists, move individual items up and down, move blocks up and down, Path list, Plot list
+   - [ ] discarding last page and returning to initial page has an undefined value problem
+   - [ ] status messages in Atoms/Feff frame do not get posted in Artemis status buffer
 
 **** Project [0/2]
    - [ ] VPaths to project file
