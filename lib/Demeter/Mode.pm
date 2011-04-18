@@ -22,7 +22,7 @@ has 'plotbuffer' => (is => 'rw', isa => 'ArrayRef | ScalarRef');
 
 has 'callback'     => (is => 'rw', isa => 'CodeRef');
 has 'plotcallback' => (is => 'rw', isa => 'CodeRef');
-has 'feedback'     => (is => 'rw', isa => 'CodeRef');
+has 'feedback'     => (is => 'rw', isa => Empty.'|CodeRef');
 
 ## -------- default objects for templates
 has 'config'   => (is => 'rw', isa => 'Any');  #         Demeter::Config);

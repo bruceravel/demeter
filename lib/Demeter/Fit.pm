@@ -990,8 +990,16 @@ sub happiness_report {
 sub fetch_correlations {
   my ($self) = @_;
 
+  my @save = (Ifeffit::get_scalar("\&screen_echo"),
+	      $self->get_mode("screen"),
+	      $self->get_mode("plotscreen"),
+	      $self->get_mode("feedback"));
+  Ifeffit::ifeffit("\&screen_echo = 0\n");
+  $self->set_mode(screen=>0, plotscreen=>0, feedback=>q{});
   my %correlations_of;
   my $d = $self -> data -> [0];
+  my $correl_lines;
+  $self->set_mode(buffer=>\$correl_lines);
   $self->dispose($d->template("fit", "correl"));
   #my $correl_text = Demeter->get_mode("echo");
   my $lines = Ifeffit::get_scalar('&echo_lines');
@@ -1002,6 +1010,8 @@ sub fetch_correlations {
       push @correl_text, $response;
     };
   };
+  Ifeffit::ifeffit("\&screen_echo = $save[0]\n");
+  $self->set_mode(screen=>$save[1], plotscreen=>$save[2], feedback=>$save[3]);
 
   my @gds = map {lc($_->name)} @{ $self->gds };
   my $regex = Regexp::Assemble->new()->add(@gds)->re;

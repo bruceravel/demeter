@@ -77,6 +77,7 @@ Readonly my $FIT_SAVE_QI        => Wx::NewId();
 
 Readonly my $PATH_TRANSFER	=> Wx::NewId();
 Readonly my $PATH_FSPATH	=> Wx::NewId();
+Readonly my $PATH_EMPIRICAL     => Wx::NewId();
 Readonly my $PATH_SU	        => Wx::NewId();
 Readonly my $PATH_RENAME	=> Wx::NewId();
 Readonly my $PATH_SHOW		=> Wx::NewId();
@@ -567,6 +568,7 @@ sub make_menubar {
   $self->{datamenu}->AppendSubMenu($markedsave_menu, "Save data + marked paths as ...", "Save a column data file containing the data and all marked paths from this data's path list.");
   $self->{datamenu}->AppendSeparator;
   $self->{datamenu}->Append($PATH_FSPATH,      "Quick first shell model", "Generate a quick first shell fitting model", wxITEM_NORMAL );
+  $self->{datamenu}->Append($PATH_EMPIRICAL,   "Import empirical standard", "Import an empirical standard exported from Athen", wxITEM_NORMAL );
   $self->{datamenu}->Append($PATH_SU,          "Import structural unit",  "Import a structural unit", wxITEM_NORMAL );
   $self->{datamenu}->AppendSeparator;
   $self->{datamenu}->Append($DATA_BALANCE,     "Balance interstitial energies", "Adjust E0 for every path so that the interstitial energies for each Feff calculation are balanced",  wxITEM_NORMAL );
@@ -938,6 +940,11 @@ sub OnMenuClick {
 
     ($id == $PATH_FSPATH) and do {
       $datapage -> quickfs;
+      last SWITCH;
+    };
+
+    ($id == $PATH_EMPIRICAL) and do {
+      $datapage -> empirical;
       last SWITCH;
     };
 
@@ -1711,7 +1718,7 @@ sub discard {
     };
 
     ($how eq 'all') and do {
-      $self->{pathlist}->ClearAll;
+      $self->{pathlist}->Clear;
       $text = "Discarded all paths.";
       last SWITCH;
     };
@@ -1935,6 +1942,23 @@ sub quickfs {
 
 };
 
+sub empirical {
+  my ($datapage) = @_;
+  my $fd = Wx::FileDialog->new( $datapage, "Import an empirical standard", cwd, q{},
+				"Empirical standard (*.yaml)|*.yaml|All files|*",
+				wxFD_OPEN|wxFD_FILE_MUST_EXIST|wxFD_CHANGE_DIR|wxFD_PREVIEW,
+				wxDefaultPosition);
+  if ($fd->ShowModal == wxID_CANCEL) {
+    $datapage->status("Empirical standard import cancelled.");
+    return;
+  };
+  my $file = File::Spec->catfile($fd->GetDirectory, $fd->GetFilename);
+  my $fpath = Demeter::FPath->new;
+  $fpath -> deserialize($file);
+  my $page = Demeter::UI::Artemis::Path->new($datapage->{pathlist}, $fpath, $datapage);
+  $datapage->{pathlist}->AddPage($page, $fpath->name, 1, 0);
+
+};
 
 sub histogram_sentinal_rdf {
   my ($datapage) = @_;

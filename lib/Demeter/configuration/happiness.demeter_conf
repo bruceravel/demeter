@@ -104,6 +104,19 @@ description
   points.  No penalty is assessed for using less than 2/3 of the
   independent points.
 
+variable=correl_cutoff
+type=real
+default=0.95
+description
+  A penalty is assessed for each correlation above this value.
+
+variable=correl_scale
+type=real
+default=3
+description
+  This is the penalty assessed for each correlation above the level
+  of correl_cutoff.
+
 variable=good_color
 type=color
 default=#C5E49A

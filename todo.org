@@ -138,7 +138,7 @@
 
 
 ** Artemis
-*** Artemis bugs and missing features [5/13]  [38%]
+*** Artemis bugs and missing features [6/13]  [46%]
    - [X] use text buffers as in Athena for TextEntryDialogs
    - [ ] import an FPath from a yaml or from a project file, pathlist start page link for doing so
    - [ ] what is the purpose of regenerate in fit deserialization?  in any case, need to fix group values *inside* yaml files
@@ -148,7 +148,7 @@
    - [ ] rename Atoms/Feff
    - [ ] Reorganize lists, move individual items up and down, move blocks up and down, Path list, Plot list
    - [X] Rename VPaths in VPath right click menu
-   - [ ] sending Ifeffit feedback to the buffer makes it unavailable for other purposes.  the big problem
+   - [X] sending Ifeffit feedback to the buffer makes it unavailable for other purposes.  the big problem
 	 is that correlations don't get written to the log file in Artemis (or in a script with set_mode(screen=>1),
 	 for that matter...)
    - [ ] discarding last page and returning to initial page has an undefined value problem

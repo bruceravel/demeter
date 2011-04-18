@@ -46,6 +46,11 @@ sub get_happiness {
   $cheer     -= $c;
   $summary   .= $s;
 
+  ## correlations
+  ($c, $s)    = $self->_penalize_correlations;
+  $cheer     -= $c;
+  $summary   .= $s;
+
   $cheer = 0 if ($cheer < 0);
   return wantarray ? ($cheer, $summary) : $cheer;
 };
@@ -166,6 +171,27 @@ sub _penalize_nidp {
   return ($penalty, $summary);
 };
 
+sub _penalize_correlations {
+  my ($self) = @_;
+  my ($cutoff, $scale) = (
+			  $self->co->default("happiness", "correl_cutoff"),
+			  $self->co->default("happiness", "correl_scale"),
+			 );
+  my %all = $self->all_correl;
+  my @order = sort {abs($all{$b}) <=> abs($all{$a})} (keys %all);
+  my $count  = 0;
+  foreach my $k (@order) {
+    last if (abs($all{$k}) < $cutoff);
+    ++$count;
+  };
+  my $penalty = $count * $scale;
+  my $s = ($count > 1) ? q{s} : q{};
+  my $summary = ($count)
+    ? sprintf("%d correlation%s above %.3f for a penalty of %.3f\n", $count, $s, $cutoff, $penalty)
+    : q{};
+  return ($penalty, $summary);
+};
+
 1;
 
 
@@ -251,6 +277,10 @@ The S02 and sigma2 path parameters should not be negative.
 
 The e0, deltaR and sigma2 path parameters should not be too big.
 
+=item *
+
+Fitting parameters should not be too highly correlated.
+
 =back
 
 This module introduces an entirely semantic (i.e. non-statistical, I<ad
@@ -286,7 +316,7 @@ this device is that it snarfs stock data from the internet and glows
 green when the market is up and red when the market is down.  This
 provides a semantic, ambient indication of the state of one's stock
 portfolio.  The part that interested me when I first heard about this
-is that users of the ord tend to be less anxious about their stock
+is that users of the orb tend to be less anxious about their stock
 portfolios.  Rather than needing to continuously check etrade.com, one
 can glance a splash of color out of the corner of the eye.  I like the
 thought of having a visual indicator of how well a fit is working out
@@ -337,6 +367,11 @@ Diminish happiness if the number of variables used is too large
 compared to the number of independent points.  The full penalty is
 applied when all independent points are used.  No penalty is applied
 if less than 2/3 of the independent points are used.
+
+=item I<correlations>
+
+Diminish happiness for each correlation above a certain value.  No
+penalty is applied if no correlations are too high.
 
 =back
 
@@ -412,6 +447,11 @@ The scaling factor. Default: 10.
 =item I<nidp>
 
 The cutoff and the scaling factor. Defaults: 2/3 and 40.
+
+=item I<correlations>
+
+The cutoff and the penalty for each high correlation. Defaults: 0.95
+and 3.
 
 =back
 
