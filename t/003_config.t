@@ -61,7 +61,7 @@ my $groups = $demeter->co->main_groups;
 ok( ($#{$groups} == $number_of_groups),                          'configuration system introspection works: main_groups '.$#groups);
 
 my @parameters = $demeter->co->parameters('happiness');
-ok( ($parameters[0] eq 'average_color' and $#parameters == 11),  'configuration system introspection works: group parameters');
+ok( ($parameters[0] eq 'average_color' and $#parameters == 13),  'configuration system introspection works: group parameters');
 
 $demeter->co->read_config(File::Spec->catfile($here, 'test.demeter_conf'));
 ok( (not $demeter->co->default(qw(testing boolean))),            'reading boolean from arbitrary config file');
