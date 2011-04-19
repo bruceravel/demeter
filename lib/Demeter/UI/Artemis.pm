@@ -495,7 +495,7 @@ sub fit {
 
   $rframes->{Plot}->{fileout}->SetValue(0);
 
-  my $rgds = $rframes->{GDS}->reset_all(1, 1);
+  my $rgds = $rframes->{GDS}->reset_all(1, 0);
   my ($abort, $rdata, $rpaths) = uptodate($rframes);
 
   if (($#{$rdata} == -1) or ($#{$rpaths} == -1) or ($#{$rgds} == -1)) {
@@ -1181,8 +1181,8 @@ sub SetIndexedData {
 
 sub GetIndexedData {
   my ($clb, $n) = @_;
-  return $clb->{datalist}->[$n]; # if defined($n);
-  #return $clb->{intial};
+  return $clb->{datalist}->[$n] if defined($n);
+  return $clb->{intial};
 };
 
 sub DeleteData {

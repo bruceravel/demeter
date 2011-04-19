@@ -32,14 +32,14 @@ use String::Random qw(random_string);
 
 with 'Demeter::UI::Screen::Pause' if ($Demeter::mode->ui eq 'screen');
 
-has 'abs'	   => (is => 'rw', isa => ElementSymbol, default => q{Fe},
+has 'abs'	   => (is => 'rw', isa => Empty.'|'.ElementSymbol, default => q{},
 		       trigger => sub{my ($self, $new) = @_;
 				      $self->absorber(get_symbol($new));
 				      $self->guesses;
 				      $self->feff_done(0);
 				    });
 has 'absorber'     => (is => 'rw', isa => 'Str',    default => q{},);
-has 'scat'	   => (is => 'rw', isa => ElementSymbol, default => q{O},
+has 'scat'	   => (is => 'rw', isa => Empty.'|'.ElementSymbol, default => q{},
 		       trigger => sub{my ($self, $new) = @_;
 				      $self->scatterer(get_symbol($new));
 				      $self->guesses;
@@ -208,7 +208,7 @@ sub save_feff_yaml {
 
 sub guesses {
   my ($self) = @_;
-  return $self if ((not $self->abs) or (not $self->scat));
+  return $self if ((not $self->absorber) or (not $self->scatterer));
   $self->clear_gds;
   my $elems = join('_', lc($self->absorber), lc($self->scatterer));
   #$self->name($elems) if (not $self->name or ($self->name =~ m{FS\s*\z}));

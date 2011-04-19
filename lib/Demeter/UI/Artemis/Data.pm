@@ -1942,7 +1942,9 @@ sub quickfs {
   $page->{pp_n} -> SetValue(1);
   $page->{pp_label} -> SetValue(sprintf("%s-%s path at %s", $firstshell->absorber, $firstshell->scatterer, $firstshell->reff));
 
-  $Demeter::UI::Artemis::frames{GDS}->put_gds($_) foreach (@{$firstshell->gds});
+  foreach my $p (@{$firstshell->gds}) {
+    $Demeter::UI::Artemis::frames{GDS}->put_gds($p);
+  };
 
   autosave();
 

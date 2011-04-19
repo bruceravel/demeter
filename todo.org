@@ -89,8 +89,7 @@
    - [ ] implement frozen groups
    - [ ] links to documentation on each tool
    - [ ] fix edge step button is not working
-   - [ ] test preprocessing (I had a crash with all three preproc options selected for
-	 data with a reference):
+   - [ ] test preprocessing (I had a crash with all three preproc options selected for data with a reference):
 	 ~Can't call method "GetSelection" on an undefined value at /home/bruce/git/demeter/lib/Demeter/UI/Athena/IO.pm line 423.~
    - [ ] *Pluck buttons* [0/2]
        + [ ] implement everywhere needed

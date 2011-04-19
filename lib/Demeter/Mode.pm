@@ -503,6 +503,7 @@ sub report {
       my $i = 0;
       foreach my $obj (@{$self->$this}) {
 	$text .= sprintf("\t%3d (%s) : %s\n", ++$i, $obj->group, $obj->$att);
+	chop $text if ($this eq 'GDS');
       };
     };
   };

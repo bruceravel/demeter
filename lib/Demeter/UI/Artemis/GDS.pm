@@ -234,6 +234,8 @@ sub use_best_fit {
   return 0;
 };
 
+#  print join("|",  1, map {$_->group} @{ Demeter->mo->GDS }), $/;
+
 sub reset_all {
   my ($parent, $no_ifeffit, $renew) = @_;
   $no_ifeffit ||= 0;
@@ -248,7 +250,8 @@ sub reset_all {
     my $thisgds;
     if ($renew or (not defined $grid->{$name})) {
       $thisgds = Demeter::GDS->new();
-    } else {
+      print $thisgds->group, $/;
+   } else {
       $thisgds = $grid->{$name};
     };
     $thisgds -> set(name=>$name, gds=>$type, mathexp=>$mathexp);
@@ -334,6 +337,7 @@ sub find_next_empty_row {
 sub put_gds {
   my ($parent, $gds) = @_;
   $parent->put_param($gds->gds, $gds->name, $gds->mathexp);
+  $parent->{grid} -> {$gds->name} = $gds;
 };
 
 sub put_param {
@@ -341,11 +345,11 @@ sub put_param {
   my $grid = $parent->{grid};
   $type = 'merge' if $parent->param_present($name);
   my $start = $parent->find_next_empty_row;
-  $grid -> AppendRows(1,1) if ($start >= $grid->GetNumberRows);
-  $grid -> SetCellValue($start, 0, $type);
-  $grid -> SetCellValue($start, 1, $name);
-  $grid -> SetCellValue($start, 2, $mathexp);
-  $parent->set_type($start);
+  $grid   -> AppendRows(1,1) if ($start >= $grid->GetNumberRows);
+  $grid   -> SetCellValue($start, 0, $type);
+  $grid   -> SetCellValue($start, 1, $name);
+  $grid   -> SetCellValue($start, 2, $mathexp);
+  $parent -> set_type($start);
 };
 
 sub param_present {
@@ -457,8 +461,11 @@ sub discard {
   $grid -> SetCellValue($row, 1, q{});
   $grid -> SetCellValue($row, 2, q{});
   $grid -> SetCellValue($row, 3, q{});
-  $grid->{$name}->DEMOLISH if ((exists $grid->{$name}) and ($grid->{$name} =~ m{GDS}));
-  #undef $grid->{$name};
+  if ((exists $grid->{$name}) and ($grid->{$name} =~ m{GDS})) {
+    $grid->{$name}->dispose("erase ".$grid->{$name}->name);
+    $grid->{$name}->DEMOLISH;
+    delete $grid->{$name};
+  };
 };
 
 sub OnSetType {
@@ -599,6 +606,8 @@ sub cut {
     foreach my $r (0 .. $parent->{grid}->GetNumberRows-1) {
       next if ($name ne $grid->GetCellValue($r, 1));
       $grid->DeleteRows($r,1,1);
+      $grid->{$g->name}->dispose("erase ".$grid->{$name}->name);
+      $grid->{$g->name}->DEMOLISH;
     };
   };
   while ($grid->GetNumberRows < 12) {

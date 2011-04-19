@@ -294,6 +294,19 @@ sub read_project {
 
   $import_problems .= restore_fit($rframes, $currentfit);
 
+  ## when each fit is deserialized, new GDS objects are instantiated
+  ## for each one.  for many projects, this means that many GDS
+  ## objects then have the same name.  the simplest solution to this
+  ## problem is to just destroy all the GDS parameters and
+  ## re-instantiate the ones from the current fit which was just
+  ## restored.  this is a bit wasteful, but GDS objects are small and
+  ## quick to work with.
+  foreach my $g (reverse @{ $currentfit->mo->GDS }) {
+    delete($rframes->{GDS}->{grid}->{$g->name}) if exists($rframes->{GDS}->{grid}->{$g->name});
+    $g->DEMOLISH;
+  };
+  $currentfit->gds( $rframes->{GDS}->reset_all );
+
   if ($import_problems) {
     Wx::MessageDialog->new($Demeter::UI::Artemis::frames{main}, $import_problems, "Warning!", wxOK|wxICON_WARNING) -> ShowModal;
   };
