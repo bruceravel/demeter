@@ -269,10 +269,6 @@ sub read_project {
       $rframes->{Plot}->{limits}->{fit}->SetValue(1);
       my $current = $fit->number || 1;
       #++$current;
-      $fit->mo->currentfit($current+1);
-      my $name = ($fit->name =~ m{\A\s*Fit\s+\d+\z}) ? 'Fit '.$fit->mo->currentfit : $fit->name;
-      $rframes->{main}->{name}->SetValue($name);
-      $rframes->{main}->{description}->SetValue($fit->description);
     };
   };
 
@@ -351,6 +347,10 @@ sub restore_fit {
     $rframes->{GDS}->set_type($start);
     ++$start;
   };
+  $fit->mo->currentfit($fit->fom+1);
+  my $name = ($fit->name =~ m{\A\s*Fit\s+\d+\z}) ? 'Fit '.$fit->mo->currentfit : $fit->name;
+  $rframes->{main}->{name}->SetValue($name);
+  $rframes->{main}->{description}->SetValue($fit->description);
 
   ## -------- Data and Paths
   my $count = 0;

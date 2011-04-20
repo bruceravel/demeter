@@ -1281,7 +1281,10 @@ override 'deserialize' => sub {
     delete $r_attributes->{fit_pcpath};	   # correct an early
     delete $r_attributes->{fit_do_pcpath}; # design mistake...
     my @array = %$r_attributes;
+    my $savecv = $self->mo->datacount;
     my $this = Demeter::Data -> new(@array);
+    $this->cv($r_attributes->{cv});
+    $self->mo->datacount($savecv);
     $datae{$this->group} = $this;
     if ($this->datatype eq 'xmu') {
       Ifeffit::put_array($this->group.".energy", $r_x);
@@ -1368,8 +1371,10 @@ override 'deserialize' => sub {
       $this -> workspace($this->stash_folder);
     } elsif (exists $plotlike->{absorber}) { # this is an FSPath
       my $feff = $parents{$plotlike->{parentgroup}} || $data[0] -> mo -> fetch('Feff', $plotlike->{parentgroup});
-      $this = Demeter::FSPath->new(workspace=>$feff->workspace);
+      $this = Demeter::FSPath->new();
       $this -> set(@array);
+      my $where = Cwd::realpath(File::Spec->catfile($args{folder}, '..', '..', 'feff', basename($feff->workspace)));
+      $this -> set(workspace=>$where, folder=>$where, parent=>$data[0] -> mo -> fetch('Feff', $plotlike->{parentgroup}));
       my $sp = $sps{$this->spgroup} || $data[0] -> mo -> fetch('ScatteringPath', $this->spgroup);
       $this -> sp($sp);
     } else {

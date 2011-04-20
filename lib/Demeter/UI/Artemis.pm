@@ -545,7 +545,6 @@ sub fit {
 		     );
     update_order_file();
 
-    $rframes->{GDS}->fill_results(@gds);
     $rframes->{Log}->{name} = $fit->name;
     $rframes->{Log}->Show(1);
     $rframes->{Log}->put_log($fit);
@@ -576,6 +575,7 @@ sub fit {
     } elsif ($how =~ m{\A[krq]\z}) {
       $rframes->{Plot}->plot(q{}, $how);
     };
+    $rframes->{GDS}->fill_results(@gds);
     my $finish = DateTime->now( time_zone => 'floating' );
     my $dur = $finish->delta_ms($start);
     $finishtext = sprintf "Your fit finished in %d seconds.", $dur->seconds;

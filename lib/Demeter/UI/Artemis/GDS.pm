@@ -250,14 +250,13 @@ sub reset_all {
     my $thisgds;
     if ($renew or (not defined $grid->{$name})) {
       $thisgds = Demeter::GDS->new();
-      print $thisgds->group, $/;
-   } else {
+      $grid->SetCellValue($row, 3, q{});
+    } else {
       $thisgds = $grid->{$name};
     };
     $thisgds -> set(name=>$name, gds=>$type, mathexp=>$mathexp);
     $grid->{$name} = $thisgds;
     push @gds, $thisgds;
-    $grid->SetCellValue($row, 3, q{});
     $thisgds->push_ifeffit if (not $no_ifeffit);
   };
   $parent->status("Reset all parameter values in Ifeffit.") if (not $no_ifeffit);
@@ -863,6 +862,7 @@ sub fill_results {
   my ($this, @gds) = @_;
   my $grid = $this->{grid};
   foreach my $row (0 .. $grid->GetNumberRows) {
+    next if not $grid->GetCellValue($row, 1);
     foreach my $g (@gds) {
       next if (lc($g->name) ne lc($grid->GetCellValue($row, 1)));
       my $text;
@@ -874,6 +874,7 @@ sub fill_results {
 	1;
       };
       $grid -> SetCellValue($row, 3, $text);
+      $grid -> Refresh;
     };
   };
 };

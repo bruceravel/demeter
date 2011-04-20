@@ -368,7 +368,7 @@ sub BUILD {
     $self->mo->push_Data($self);
     my $thiscv = $self->mo->datacount;
     $self->cv($thiscv);
-    ++$thiscv;
+    ++$thiscv if ($self->group ne 'default___');
     $self->mo->datacount($thiscv);
   };
 };
