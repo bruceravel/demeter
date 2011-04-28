@@ -135,7 +135,7 @@
 
 
 ** Artemis
-*** Artemis bugs and missing features [7/14]  [50%]
+*** Artemis bugs and missing features [8/14]  [57%]
    - [X] use text buffers as in Athena for TextEntryDialogs
    - [X] import an FPath from a yaml or from a project file, pathlist start page link for doing so
    - [X] should I clear out unfitted fit folders from project upon import?
@@ -146,15 +146,15 @@
 	 for that matter...)
    - [X] fit history plotting tool is broken -- it seems that previous
 	 fits are not saved, instead current fit is plotted repeatedly
+   - [X] fit numbering is wrong, should not increment if previous fit has fitted=0
    - [ ] what is the purpose of regenerate in fit deserialization?  in any case, need to fix group values *inside* yaml files
-   - [ ] fit numbering is wrong, should not increment if previous fit has fitted=0
    - [ ] rename Atoms/Feff
-   - [ ] Reorganize lists, move individual items up and down, move blocks up and down, Path list, Plot list
-   - [ ] discarding last page and returning to initial page has an undefined value problem
+   - [ ] Reorganize lists, move individual items up and down, move blocks up and down, Path list, +Plot list+
+   - [ ] discarding last page and returning to initial page has an undefined value problem   :HUH:
    - [ ] status messages in Atoms/Feff frame do not get posted in Artemis status buffer
    - [ ] do SSPaths get serialized and deserialized with the pointers
          to the feff calculation set correctly and no additional
-         folders being created in stash?
+         folders being created in stash (as was the case for FSPath)?
 
 **** Project [0/2]
    - [ ] VPaths to project file
