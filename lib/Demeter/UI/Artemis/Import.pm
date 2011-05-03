@@ -173,7 +173,9 @@ sub _dpj {
     };
     $file = File::Spec->catfile($fd->GetDirectory, $fd->GetFilename);
   };
-  return if not close_project($rframes);
+  if ($rframes->{main}->{modified}) {
+    return if not close_project($rframes);
+  };
 
   my $zip = Archive::Zip->new;
   if ($zip->read($file) != AZ_OK) {
@@ -251,7 +253,7 @@ sub _dpj {
   $rframes->{History}->add_plottool($fit) if $fit->fitted;
   $rframes->{History}->{list}->SetSelection($rframes->{History}->{list}->GetCount-1);
   $rframes->{History}->OnSelect;
-  $Demeter::UI::Artemis::demeter->push_mru("fit_serialization", $fname);
+  $fit->push_mru("fit_serialization", $file);
   $rframes->{main}->{projectpath} = $file;
   $rframes->{main}->{projectname} = basename($file, '.dpj');
   $rframes->{main}->status("Imported fit serialization $file.");
@@ -780,6 +782,11 @@ An Athena project file
 A column data file containing chi(k) data.  If the data are on a
 non-standard grid, they will be rebinned onto the proper grid.
 
+=item C<dpj>
+
+A serialization file from a Fit object.  This sort of file is
+generated from a free-standing script using Demeter.
+
 =item C<feff>
 
 A F<feff.inp> file, an F<atoms.inp> file, or a CIF file.
@@ -810,12 +817,13 @@ Demeter's dependencies are in the F<Bundle/DemeterBundle.pm> file.
 
 =item *
 
-Not handling local parameters
+Not handling local parameters from feffit.inp files
 
 =item *
 
 While single-data-set fits with multiple k-weights does work
-correctly, MDS+MKW fits will not be imported properly.
+correctly, MDS+MKW fits will not be imported properly from a
+feffit.inp file
 
 =back
 

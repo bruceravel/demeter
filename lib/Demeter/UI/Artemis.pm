@@ -138,7 +138,7 @@ sub OnInit {
   $exportmenu->Append($EXPORT_DEMETER,  "to a Demeter script",   "Export the current fitting model as a perl script using Demeter");
 
   $filemenu->Append(wxID_OPEN,       "Open project\tCtrl+o", "Read from a project file" );
-  $filemenu->AppendSubMenu($mrumenu, "Recent projects",    "Open a submenu of recently used files" );
+  $filemenu->AppendSubMenu($mrumenu, "Recent files",    "Open a submenu of recently used files" );
   $filemenu->Append(wxID_SAVE,       "Save project\tCtrl+s", "Save project" );
   $filemenu->Append(wxID_SAVEAS,     "Save project as...", "Save to a new project file" );
   $filemenu->AppendSeparator;
@@ -151,6 +151,17 @@ sub OnInit {
   $filemenu->Append(wxID_EXIT, "E&xit\tCtrl+q" );
   $frames{main}->{filemenu} = $filemenu;
   $frames{main}->{mrumenu}  = $mrumenu;
+
+  $frames{main}->{mruartemis}   = Wx::Menu->new;
+  $frames{main}->{mrufit}       = Wx::Menu->new;
+  $frames{main}->{mruathena}    = Wx::Menu->new;
+  $frames{main}->{mrustructure} = Wx::Menu->new;
+  $mrumenu->AppendSubMenu($frames{main}->{mruartemis},   "Artemis projects" );
+  $mrumenu->AppendSubMenu($frames{main}->{mruathena},    "Athena projects" );
+  $mrumenu->AppendSubMenu($frames{main}->{mrustructure}, "Crystal/structure data" );
+  $mrumenu->AppendSubMenu($frames{main}->{mrufit},       "Fit serializations" );
+
+
 
   my $showmenu = Wx::Menu->new;
   $showmenu->Append($SHOW_GROUPS,    "groups",    "Show Ifeffit groups");
@@ -700,14 +711,16 @@ sub _doublewide {
 sub set_mru {
   my ($self) = @_;
 
-  foreach my $i (0 .. $frames{main}->{mrumenu}->GetMenuItemCount-1) {
-    $frames{main}->{mrumenu}->Delete($frames{main}->{mrumenu}->FindItemByPosition(0));
-  };
+  foreach my $which (qw(artemis athena structure fit_serialization)) {
+    my $type = ($which eq 'fit_serialization') ? 'fit' : $which;
+    foreach my $i (0 .. $frames{main}->{mrumenu}->GetMenuItemCount-1) {
+      $frames{main}->{'mru'.$type}->Delete($frames{main}->{'mru'.$type}->FindItemByPosition(0));
+    };
 
-  my @list = $demeter->get_mru_list('artemis');
-  foreach my $f (@list) {
-    #print ">> $f\n";
-    $frames{main}->{mrumenu}->Append(-1, $f->[0]);
+    my @list = ($which eq 'structure') ? $demeter->get_mru_list('atoms', 'feff') : $demeter->get_mru_list($which);
+    foreach my $f (@list) {
+      $frames{main}->{'mru'.$type}-> Append(-1, $f->[0]);
+    };
   };
 };
 
@@ -753,7 +766,11 @@ sub OnMenuClick {
       last SWITCH;
     };
     ($mru) and do {
-      read_project(\%frames, $mru);
+      ## figure out which submenu it came from...
+      read_project(\%frames, $mru) if $frames{main}->{mruartemis}  ->GetLabel($id);
+      Import('dpj',  $mru)         if $frames{main}->{mrufit}      ->GetLabel($id);
+      Import('prj',  $mru)         if $frames{main}->{mruathena}   ->GetLabel($id);
+      Import('feff', $mru)         if $frames{main}->{mrustructure}->GetLabel($id);
       last SWITCH;
     };
 
