@@ -558,7 +558,7 @@ sub get_crystal_data {
   $atoms->clear;
 
   my $this = $self->{space}->GetValue || q{};
-  if (not $this) {
+  if ((not $this) and ($self->{used})) {
     $self->{problems} = "You have not specified a space group.";
     return 0;
   };

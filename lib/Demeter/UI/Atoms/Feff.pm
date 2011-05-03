@@ -181,14 +181,15 @@ sub run_feff {
   my $busy = Wx::BusyCursor->new();
   my $feff = $self->{feffobject};
   $feff -> clear;
-  $feff -> name($self->{name}->GetValue);
 
   my $inpfile = File::Spec->catfile($feff->workspace, $feff->group . ".inp");
   open my $OUT, ">".$inpfile;
   print $OUT $self->{feff}->GetValue;
   close $OUT;
-  $feff->name($self->{name}->GetValue);
+  $feff->name($self->{parent}->{Feff}->{name}->GetValue);
+  print $feff->name, $/;
   $feff->file($inpfile);
+
 
   my %problems = %{ $feff->problems };
   my @warnings = @{ $problems{warnings} };
@@ -205,11 +206,13 @@ sub run_feff {
   $self->{parent}->{Console}->{console}->AppendText($self->now("Feff calculation beginning at ", $feff));
   $self->{statusbar}->SetStatusText("Computing potentials using Feff6 ...");
   $feff->potph;
+  print $feff->name, $/;
 
   $self->{statusbar}->SetStatusText("Finding scattering paths using Demeter's pathfinder...");
   $feff->pathfinder;
   my $yaml = File::Spec->catfile($feff->workspace, $feff->group.".yaml");
   $feff->freeze($yaml);
+  print $feff->name, $/;
 
   $self->fill_intrp_page($feff);
   $self->fill_ss_page($feff);

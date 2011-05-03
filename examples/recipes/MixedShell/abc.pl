@@ -69,7 +69,8 @@ push @paths, Demeter::Path->new(data   => $data,
 my $fit = Demeter::Fit -> new(data=>[$data], paths=>\@paths, gds=>\@gds);
 $fit -> fit;
 $data -> po -> set(kweight=>2, kmax=>18);
-$fit -> interview;
+$fit -> freeze(file=>'abc.dpj');
+#$fit -> interview;
 
 #$data -> po -> start_plot;
 #$data -> po -> set(plot_fit => 1, plot_win => 0, r_pl => 'm');

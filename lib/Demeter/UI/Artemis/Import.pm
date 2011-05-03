@@ -17,6 +17,7 @@ use File::Basename;
 use File::Copy;
 use File::Path;
 use File::Spec;
+use List::MoreUtils qw{any};
 
 use Wx qw(:everything);
 use base qw( Exporter );
@@ -32,6 +33,7 @@ sub Import {
     $retval = _feff($fname),          last SWITCH if  ($which eq 'feff');
     $retval = _external_feff($fname), last SWITCH if  ($which eq 'external');
     $retval = _chi($fname),           last SWITCH if  ($which eq 'chi');
+    $retval = _dpj($fname),           last SWITCH if  ($which eq 'dpj');
     $retval = _feffit($fname),        last SWITCH if  ($which eq 'feffit');
   };
   return $retval;
@@ -154,6 +156,108 @@ sub _chi {
   autosave();
   chdir dirname($file);
   $rframes->{main}->status("Imported $file as $CHI(k) data.");
+};
+
+sub _dpj {
+  my ($fname, $noshow) = @_;
+  my $file = $fname;
+  $noshow ||= 0;
+  if (not $fname) {
+    my $fd = Wx::FileDialog->new( $rframes->{main}, "Import a Demeter fit serialization file", cwd, q{},
+				  "Fit serialization (*.dpj)|*.dpj|All files|*",
+				  wxFD_OPEN|wxFD_FILE_MUST_EXIST|wxFD_CHANGE_DIR|wxFD_PREVIEW,
+				  wxDefaultPosition);
+    if ($fd->ShowModal == wxID_CANCEL) {
+      $rframes->{main}->status(".dpj file import cancelled.");
+      return;
+    };
+    $file = File::Spec->catfile($fd->GetDirectory, $fd->GetFilename);
+  };
+
+  my $zip = Archive::Zip->new;
+  if ($zip->read($file) != AZ_OK) {
+    $rframes->{main}->status("$CHI(k) import cancelled.");
+    return;
+  };
+  if (not defined($zip->memberNamed('FIT.SERIALIZATION'))) {
+    $rframes->{main}->status("$file is not a fit serialization.");
+    return;
+  };
+
+  ## -------- make a new Fit object
+  my $fit = Demeter::Fit->new(interface=>"Artemis (Wx $Wx::VERSION)");
+  $rframes->{main}->{currentfit} = $fit;
+  $rframes->{Plot}->{limits}->{fit}->SetValue(1);
+  $fit->mo->currentfit(1);
+  my $projfolder = $rframes->{main}->{project_folder};
+  my $fitdir = File::Spec->catfile($projfolder, 'fits', $fit->group);
+  mkpath($fitdir);
+
+  foreach my $file ($zip->memberNames) {
+  SWITCH: {
+      ($file =~ m{([a-z]+)\.bin\z}) and do {
+	#print "found feff $1\n";
+	my $feffdir = File::Spec->catfile($rframes->{main}->{project_folder}, 'feff', $1);
+	mkpath $feffdir;
+	$zip->extractMember("$1.bin",  File::Spec->catfile($feffdir, "phase.bin"));
+	$zip->extractMember("$1.yaml", File::Spec->catfile($feffdir, "$1.yaml"));
+
+	my $feffobject = Demeter::Feff->new(yaml=>File::Spec->catfile($feffdir, "$1.yaml"), group=>$1); # force group to be the same as before
+	$feffobject -> workspace($feffdir);
+	$feffobject -> make_feffinp('full');
+	my $feff = File::Spec->catfile($feffdir, "$1.inp");
+	rename(File::Spec->catfile($feffdir, "feff.inp"), $feff);
+	## import atoms.inp
+	#my $atoms = File::Spec->catfile($projfolder, 'feff', $d, 'atoms.inp');
+	my ($fnum, $ifeff) = &$make_feff_frame($rframes->{main}, q{}, $feffobject->name, $feffobject);
+
+	## import feff.inp
+	my $text = $feffobject->slurp($feff);
+	$rframes->{$fnum}->{Feff}->{feff}->SetValue($text);
+
+	## make Feff frame
+	$rframes->{$fnum}->{Feff}->{feffobject} = $feffobject;
+	$rframes->{$fnum}->{Feff}->fill_intrp_page($feffobject);
+	$rframes->{$fnum}->{notebook}->ChangeSelection(2);
+
+	$rframes->{$fnum}->{Feff} ->{name}->SetValue($feffobject->name);
+	$rframes->{$fnum}->{Paths}->{name}->SetValue($feffobject->name);
+	$rframes->{$fnum}->status("Imported crystal and Feff data from ". basename($fname));
+	my $label = $rframes->{main}->{$fnum}->GetLabel;
+	$label =~ s{Hide}{Show};
+	$rframes->{main}->{$fnum}->SetLabel($label);
+
+	$rframes->{$fnum}->{Feff}->fill_ss_page($feffobject);
+	last SWITCH;
+      };
+      (any {$file eq $_} (qw(plot.yaml vpaths.yaml paths.yaml fit.yaml gds.yaml log structure.yaml))) and do {
+	$zip->extractMember($file,  File::Spec->catfile($fitdir, $file));
+	last SWITCH;
+      };
+      ($file =~ m{([a-z]+)\.fit\z}) and do {
+	$zip->extractMember("$1.fit",  File::Spec->catfile($fitdir, "$1.fit"));
+	$zip->extractMember("$1.yaml", File::Spec->catfile($fitdir, "$1.yaml"));
+      };
+      ## skip Readme and FIT.SERIALIZATION
+    };
+  };
+  $fit->deserialize(folder=>$fitdir, regenerate=>1); #$regen);
+  my $import_problems .= Demeter::UI::Artemis::Project::restore_fit($rframes, $fit);
+  if ($import_problems) {
+    Wx::MessageDialog->new($rframes->{main}, $import_problems, "Warning!", wxOK|wxICON_WARNING) -> ShowModal;
+  };
+  $rframes->{History}->{list}->AddData($fit->name, $fit) if $fit->fitted;
+  $rframes->{History}->add_plottool($fit) if $fit->fitted;
+  $rframes->{History}->{list}->SetSelection($rframes->{History}->{list}->GetCount-1);
+  $rframes->{History}->OnSelect;
+  $Demeter::UI::Artemis::demeter->push_mru("fit_serialization", $fname);
+  $rframes->{main}->{projectpath} = $file;
+  $rframes->{main}->{projectname} = basename($file, '.dpj');
+  $rframes->{main}->status("Imported fit serialization $file.");
+  my $newfit = Demeter::Fit->new(interface=>"Artemis (Wx $Wx::VERSION)");
+  $rframes->{main} -> {currentfit} = $newfit;
+  modified(0);
+
 };
 
 

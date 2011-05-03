@@ -245,7 +245,7 @@ sub read_project {
   foreach my $d (@dirs) {
     my $fit = Demeter::Fit->new(group=>$d, interface=>"Artemis (Wx $Wx::VERSION)");
     my $regen = ($d eq $current) ? 0 : 1;
-    $fit->deserialize(folder=> File::Spec->catfile($projfolder, 'fits', $d), regenerate=>1); #$regen);
+    $fit->deserialize(folder=> File::Spec->catfile($projfolder, 'fits', $d), regenerate=>0); #$regen);
     if (($d ne $current) and (not $fit->fitted)) { # discard the ones that don't actually involve a performed fit
       $fit->DEMOLISH;
       next;
@@ -259,8 +259,14 @@ sub read_project {
     };
     $current = $fits[-1]->group if not $found;
     foreach my $fit (@fits) {
-      $rframes->{History}->{list}->AddData($fit->name, $fit) if $fit->fitted;
-      $rframes->{History}->add_plottool($fit) if $fit->fitted;
+      if ($fit->fitted) {
+	$rframes->{History}->{list}->AddData($fit->name, $fit);
+	$rframes->{History}->add_plottool($fit);
+      } elsif ($fit->group ne $current) {
+	foreach my $g ( @{ $fit->gds }) {
+	  $g->DEMOLISH;
+	};
+      };
       next unless ($fit->group eq $current);
       $currentfit = $fit;
       $rframes->{History}->{list}->SetSelection($rframes->{History}->{list}->GetCount-1);
@@ -297,11 +303,11 @@ sub read_project {
   ## re-instantiate the ones from the current fit which was just
   ## restored.  this is a bit wasteful, but GDS objects are small and
   ## quick to work with.
-  foreach my $g (reverse @{ $currentfit->mo->GDS }) {
-    delete($rframes->{GDS}->{grid}->{$g->name}) if exists($rframes->{GDS}->{grid}->{$g->name});
-    $g->DEMOLISH;
-  };
-  $currentfit->gds( $rframes->{GDS}->reset_all );
+  # foreach my $g (reverse @{ $currentfit->mo->GDS }) {
+  #   delete($rframes->{GDS}->{grid}->{$g->name}) if exists($rframes->{GDS}->{grid}->{$g->name});
+  #   $g->DEMOLISH;
+  # };
+  # $currentfit->gds( $rframes->{GDS}->reset_all );
 
   if ($import_problems) {
     Wx::MessageDialog->new($Demeter::UI::Artemis::frames{main}, $import_problems, "Warning!", wxOK|wxICON_WARNING) -> ShowModal;

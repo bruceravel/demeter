@@ -44,6 +44,7 @@ Readonly my $SHOW_SCALARS    => Wx::NewId();
 Readonly my $SHOW_STRINGS    => Wx::NewId();
 Readonly my $SHOW_FEFFPATHS  => Wx::NewId();
 Readonly my $SHOW_PATHS      => Wx::NewId();
+Readonly my $IMPORT_DPJ      => Wx::NewId();
 Readonly my $IMPORT_FEFFIT   => Wx::NewId();
 Readonly my $IMPORT_FEFF     => Wx::NewId();
 Readonly my $IMPORT_MOLECULE => Wx::NewId();
@@ -123,6 +124,7 @@ sub OnInit {
 
   my $importmenu = Wx::Menu->new;
   $importmenu->Append($IMPORT_CHI,      "$CHI(k) data",                  "Import $CHI(k) data from a column data file");
+  $importmenu->Append($IMPORT_DPJ,      "Demeter fit serialization",     "Import a Demeter fit serialization (.dpj) file");
   $importmenu->AppendSeparator;
   $importmenu->Append($IMPORT_FEFF,     "a Feff calculation",            "Import a Feff input file and the results of a calculation made with that file");
   $importmenu->Append($IMPORT_MOLECULE, "a molecule",                    "Import a molecule using OpenBabel");
@@ -495,7 +497,7 @@ sub fit {
 
   $rframes->{Plot}->{fileout}->SetValue(0);
 
-  my $rgds = $rframes->{GDS}->reset_all(1, 0);
+  my $rgds = $rframes->{GDS}->reset_all(1, 1);
   my ($abort, $rdata, $rpaths) = uptodate($rframes);
 
   if (($#{$rdata} == -1) or ($#{$rpaths} == -1) or ($#{$rgds} == -1)) {
@@ -779,6 +781,10 @@ sub OnMenuClick {
       Import('chi', q{});
       last SWITCH;
     };
+    ($id == $IMPORT_DPJ) and do {
+      Import('dpj', q{});
+      last SWITCH;
+    };
 
     ## -------- export submenu
     ($id == $EXPORT_IFEFFIT) and do {
@@ -936,8 +942,7 @@ sub OnFeffRightClick {
 sub make_feff_frame {
   my ($self, $file, $name, $feffobject) = @_;
   my $feffbox = $self->{feffbox};
-  $name ||= basename($file);	# ok for importing an atoms or CIF file
-  ($name = 'new') if not $file;
+  $name ||= basename($file) if $file;	# ok for importing an atoms or CIF file
 
   my $new = Wx::ToggleButton->new($self->{fefflist}, -1, "Hide ".emph($name));
   $feffbox -> Add($new, 0, wxGROW|wxRIGHT, 5);
@@ -965,7 +970,7 @@ sub make_feff_frame {
   if ($file and (-e $file) and ($demeter->is_atoms($file) or $demeter->is_cif($file))) {
     $frames{$fnum}->{Atoms}->Demeter::UI::Atoms::Xtal::open_file($file);
   } else {
-    #$frames{$fnum}->{Atoms}->{used} = 0;
+    $frames{$fnum}->{Atoms}->{used} = 0;
     $frames{$fnum}->{Atoms}->{name}->SetValue('new');
     $frames{$fnum}->{notebook}->SetPageImage(0, 5); # see Demeter::UI::Atoms.pm around line 60
     $frames{$fnum}->{notebook}->SetPageText(0, '');

@@ -38,6 +38,7 @@ use Capture::Tiny qw(capture);
 use Carp;
 use Compress::Zlib;
 use Cwd;
+use File::Basename;
 use File::Path;
 use File::Spec;
 use File::Temp qw(tempfile);
@@ -63,7 +64,11 @@ my $shortest = 100000000;
 
 has 'source'      => (is => 'rw', isa => 'Str', default => 'demeter/feff6');
 has 'file'        => (is => 'rw', isa => 'Str',  default => q{},
-		      trigger => sub{my ($self, $new) = @_; $self->rdinp if $new} );
+		      trigger => sub{my ($self, $new) = @_;
+				     if ($new) {
+				       $self->rdinp;
+				       $self->name(basename($new, '.inp')) if not $self->name;
+				     }} );
 has 'yaml'        => (is=>'rw', isa => 'Str', default => q{},
 		      trigger => sub{my ($self, $new) = @_; $self->deserialize if $new} );
 has 'atoms'       => (is=>'rw', isa => Empty|'Demeter::Atoms',

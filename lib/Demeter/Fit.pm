@@ -1127,7 +1127,7 @@ override 'serialize' => sub {
   $args{folder} ||= $self->group;
   $args{file}   ||= $args{project};
   ($args{nozip} = 1) if not $args{file};
-  $args{copyfeff} ||= 0;
+  $args{copyfeff} ||= 1;
 
   my @gds    = @{ $self->gds   };
   my @data   = @{ $self->data  };
@@ -1212,7 +1212,7 @@ override 'serialize' => sub {
   };
 
   ## -------- save a yaml containing the fit properties
-  my @properties = grep {$_ !~ m{\A(?:gds|data|paths|vpaths|project|folder|rate|thingy)\z}} $self->meta->get_attribute_list;
+  my @properties = grep {$_ !~ m{\A(?:gds|data|paths|vpaths|project|folder|rate|thingy|progress)\z}} $self->meta->get_attribute_list;
   push @properties, 'name';
   my @vals = $self->get(@properties);
   my %props = zip(@properties, @vals);
@@ -1240,6 +1240,8 @@ override 'serialize' => sub {
     my $readme = File::Spec->catfile($self->share_folder, "Readme.fit_serialization");
     my $target = File::Spec->catfile($self->folder, "Readme");
     copy($readme, $target);
+    open(my $touch, '>', File::Spec->catfile($self->folder, "FIT.SERIALIZATION"));
+    close $touch;
     if (not $args{nozip}) {
       $self->zip_project($self->folder, $args{file});
       rmtree($self->folder);
