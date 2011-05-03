@@ -173,6 +173,7 @@ sub _dpj {
     };
     $file = File::Spec->catfile($fd->GetDirectory, $fd->GetFilename);
   };
+  return if not close_project($rframes);
 
   my $zip = Archive::Zip->new;
   if ($zip->read($file) != AZ_OK) {

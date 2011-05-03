@@ -516,7 +516,7 @@ sub close_project {
   $rframes->{main}->{name}->SetValue(q{});
   $rframes->{main}->{description}->SetValue(q{});
   $rframes->{main}->{fitspace}->[1]->SetValue(1);
-
+  return 1;
 };
 
 1;
