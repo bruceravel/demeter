@@ -72,6 +72,8 @@ sub add_named_vpath {
 use Readonly;
 Readonly my $VPATH_TRANSFER => Wx::NewId();
 Readonly my $VPATH_DESCRIBE => Wx::NewId();
+Readonly my $VPATH_RENAME   => Wx::NewId();
+Readonly my $VPATH_YAML     => Wx::NewId();
 Readonly my $VPATH_DISCARD  => Wx::NewId();
 
 sub OnRightDown {
@@ -82,6 +84,8 @@ sub OnRightDown {
   my $menu = Wx::Menu->new(q{});
   $menu->Append($VPATH_TRANSFER, "Transfer $name to plotting list");
   $menu->Append($VPATH_DESCRIBE, "Show contents of $name");
+  $menu->Append($VPATH_RENAME,   "Rename $name");
+  $menu->Append($VPATH_YAML,     "Show yaml for VPath $name") if ($Demeter::UI::Artemis::demeter->co->default("artemis", "debug_menus"));
   $menu->AppendSeparator;
   $menu->Append($VPATH_DISCARD,  "Discard $name");
   $self->PopupMenu($menu, $event->GetPosition);
@@ -100,14 +104,50 @@ sub OnMenu {
     };
 
     ($id == $VPATH_DESCRIBE) and do {
-      my $vpath = $listbox->GetIndexedData($sel);
+      my $vpath = $listbox->GetClientData($sel);
       my $text = "\"" . $vpath->name . "\" contains: " . join(", ", map {$_->label} @{$vpath->paths});
       $Demeter::UI::Artemis::frames{main}->status($text);
       last SWITCH;
     };
 
+    ($id == $VPATH_RENAME) and do {
+      my $vp = $listbox->GetClientData($sel);
+      my $name = $vp->name;
+      my $ted = Wx::TextEntryDialog->new($self, "Enter a new name for \"$name\":", "Rename \"$name\"", q{}, wxOK|wxCANCEL, Wx::GetMousePosition);
+      if ($ted->ShowModal == wxID_CANCEL) {
+	$self->status("VPath renaming cancelled.");
+	return;
+      };
+      my $newname = $ted->GetValue;
+      if ($name eq $newname) {
+	$self->status("VPath renaming cancelled.");
+	return;
+      };
+      $vp->name($newname);
+      $listbox->SetString($sel, $newname);
+
+      my $thisgroup = $vp->group;
+      my $plotlist  = $Demeter::UI::Artemis::frames{Plot}->{plotlist};
+      foreach my $i (0 .. $plotlist->GetCount - 1) {
+	if ($thisgroup eq $plotlist->GetIndexedData($i)->group) {
+	  $plotlist->SetString($i, "VPath: $newname");
+	  $plotlist->Check($i,1);
+	};
+      };
+
+      last SWITCH;
+    };
+
+    ($id == $VPATH_YAML) and do {
+      my $vp = $listbox->GetClientData($sel);
+      my $yaml = $vp->serialization;
+      my $dialog = Demeter::UI::Artemis::ShowText->new($self, $yaml, 'YAML of ' . $vp->name)
+	-> Show;
+      last SWITCH;
+    };
+
     ($id == $VPATH_DISCARD) and do {
-      my $vpath = $listbox->GetIndexedData($sel);
+      my $vpath = $listbox->GetClientData($sel);
       foreach my $i (0 .. $Demeter::UI::Artemis::frames{Plot}->{plotlist}->GetCount-1) {
 	if ($Demeter::UI::Artemis::frames{Plot}->{plotlist}->GetIndexedData($i)->group eq $vpath->group) {
 	  my $obj = $Demeter::UI::Artemis::frames{Plot}->{plotlist}->GetIndexedData($i);
@@ -116,7 +156,7 @@ sub OnMenu {
 	  last;
 	};
       };
-      $listbox->DeleteData($sel);
+      $listbox->Delete($sel);
       my $text = "Discarded \"" . $vpath->name . "\".";
       $Demeter::UI::Artemis::frames{main}->status($text);
       last SWITCH;
@@ -126,7 +166,7 @@ sub OnMenu {
 
 sub transfer {
   my ($self, $selection) = @_;
-  my $vpath     = $self->{vpathlist}->GetIndexedData($selection);
+  my $vpath     = $self->{vpathlist}->GetClientData($selection);
   my $plotlist  = $Demeter::UI::Artemis::frames{Plot}->{plotlist};
   my $name      = $vpath->name;
   my $found     = 0;
@@ -141,7 +181,7 @@ sub transfer {
     $Demeter::UI::Artemis::frames{main}->status("\"$name\" is already in the plotting list.");
     return;
   };
-  $plotlist->Append("VPath: $name", $vpath);
+  $plotlist->AddData("VPath: $name", $vpath);
   my $i = $plotlist->GetCount - 1;
   #$plotlist->SetClientData($i, $vpath);
   $plotlist->Check($i,1);

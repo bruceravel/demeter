@@ -214,6 +214,9 @@ sub read_project {
       $rframes->{$fnum}->{Feff} ->{name}->SetValue($feffobject->name);
       $rframes->{$fnum}->{Paths}->{name}->SetValue($feffobject->name);
       $rframes->{$fnum}->status("Imported crystal and Feff data from ". basename($fname));
+      my $label = $rframes->{main}->{$fnum}->GetLabel;
+      $label =~ s{Hide}{Show};
+      $rframes->{main}->{$fnum}->SetLabel($label)
     };
   };
 
@@ -231,24 +234,48 @@ sub read_project {
   $current ||= $dirs[0];
   ##print join("|", $current, @dirs), $/;
   my $currentfit;
+  my @fits;
+
+  ## explanation:
+  ## the list of fits in a project file includes some that have been fitted and some
+  ## that have not.  it is likely the one marked as the current fit has not been
+  ## fitted.  all unfitted fits are destroyed except for the current.  all fitted
+  ## fits are pushed onto the history and the current fit (fitted or not) is restored
+
   foreach my $d (@dirs) {
     my $fit = Demeter::Fit->new(group=>$d, interface=>"Artemis (Wx $Wx::VERSION)");
     my $regen = ($d eq $current) ? 0 : 1;
     $fit->deserialize(folder=> File::Spec->catfile($projfolder, 'fits', $d), regenerate=>0); #$regen);
-    $rframes->{History}->{list}->Append($fit->name, $fit) if $fit->fitted;
-    $rframes->{History}->add_plottool($fit);
-    next unless ($d eq $current);
-    $currentfit = $fit;
-    $rframes->{History}->{list}->SetSelection($rframes->{History}->{list}->GetCount-1);
-    $rframes->{History}->OnSelect;
-    $rframes->{main}->{currentfit} = $fit;
-    $rframes->{Plot}->{limits}->{fit}->SetValue(1);
-    my $current = $fit->number || 1;
-    #++$current;
-    $fit->mo->currentfit($current+1);
-    my $name = ($fit->name =~ m{\A\s*Fit\s+\d+\z}) ? 'Fit '.$fit->mo->currentfit : $fit->name;
-    $rframes->{main}->{name}->SetValue($name);
-    $rframes->{main}->{description}->SetValue($fit->description);
+    if (($d ne $current) and (not $fit->fitted)) { # discard the ones that don't actually involve a performed fit
+      $fit->DEMOLISH;
+      next;
+    };
+    push @fits, $fit;
+  };
+  if (@fits) {		# found some actual fits
+    my $found = 0;
+    foreach my $fit (@fits) {	# take care that the one labeled as current actually exists, if not use the latest
+      ++$found, last if ($fit->group eq $current);
+    };
+    $current = $fits[-1]->group if not $found;
+    foreach my $fit (@fits) {
+      if ($fit->fitted) {
+	$rframes->{History}->{list}->AddData($fit->name, $fit);
+	$rframes->{History}->add_plottool($fit);
+      } elsif ($fit->group ne $current) {
+	foreach my $g ( @{ $fit->gds }) {
+	  $g->DEMOLISH;
+	};
+      };
+      next unless ($fit->group eq $current);
+      $currentfit = $fit;
+      $rframes->{History}->{list}->SetSelection($rframes->{History}->{list}->GetCount-1);
+      $rframes->{History}->OnSelect;
+      $rframes->{main}->{currentfit} = $fit;
+      $rframes->{Plot}->{limits}->{fit}->SetValue(1);
+      my $current = $fit->number || 1;
+      #++$current;
+    };
   };
 
   ## -------- plot and indicator yamls, journal
@@ -264,10 +291,23 @@ sub read_project {
   };
   my $journal = File::Spec->catfile($rframes->{main}->{project_folder}, 'journal');
   if (-e $journal) {
-    $rframes->{Journal}->{journal}->SetValue($currentfit->slurp($journal));
+    $rframes->{Journal}->{journal}->SetValue(Demeter->slurp($journal));
   };
 
   $import_problems .= restore_fit($rframes, $currentfit);
+
+  ## when each fit is deserialized, new GDS objects are instantiated
+  ## for each one.  for many projects, this means that many GDS
+  ## objects then have the same name.  the simplest solution to this
+  ## problem is to just destroy all the GDS parameters and
+  ## re-instantiate the ones from the current fit which was just
+  ## restored.  this is a bit wasteful, but GDS objects are small and
+  ## quick to work with.
+  # foreach my $g (reverse @{ $currentfit->mo->GDS }) {
+  #   delete($rframes->{GDS}->{grid}->{$g->name}) if exists($rframes->{GDS}->{grid}->{$g->name});
+  #   $g->DEMOLISH;
+  # };
+  # $currentfit->gds( $rframes->{GDS}->reset_all );
 
   if ($import_problems) {
     Wx::MessageDialog->new($Demeter::UI::Artemis::frames{main}, $import_problems, "Warning!", wxOK|wxICON_WARNING) -> ShowModal;
@@ -313,6 +353,10 @@ sub restore_fit {
     $rframes->{GDS}->set_type($start);
     ++$start;
   };
+  $fit->mo->currentfit($fit->fom+1);
+  my $name = ($fit->name =~ m{\A\s*Fit\s+\d+\z}) ? 'Fit '.$fit->mo->currentfit : $fit->name;
+  $rframes->{main}->{name}->SetValue($name);
+  $rframes->{main}->{description}->SetValue($fit->description);
 
   ## -------- Data and Paths
   my $count = 0;
@@ -450,7 +494,7 @@ sub close_project {
   };
 
   ## -------- clear history
-  $rframes->{History}->{list}->Clear;
+  $rframes->{History}->{list}->ClearAll;
   $rframes->{History}->{log}->Clear;
   $rframes->{History}->{params}->Clear;
   $rframes->{History}->{params}->Append("Statistcal parameters");
@@ -472,7 +516,7 @@ sub close_project {
   $rframes->{main}->{name}->SetValue(q{});
   $rframes->{main}->{description}->SetValue(q{});
   $rframes->{main}->{fitspace}->[1]->SetValue(1);
-
+  return 1;
 };
 
 1;

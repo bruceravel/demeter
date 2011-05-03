@@ -88,6 +88,9 @@ the file selection dialog.  The type can be one of:</p></dd>
 	<dt><code>chi</code></dt>
 		<dd><p>A column data file containing chi(k) data.  If the data are on a
 non-standard grid, they will be rebinned onto the proper grid.</p></dd>
+	<dt><code>dpj</code></dt>
+		<dd><p>A serialization file from a Fit object.  This sort of file is
+generated from a free-standing script using Demeter.</p></dd>
 	<dt><code>feff</code></dt>
 		<dd><p>A <cite>feff.inp</cite> file, an <cite>atoms.inp</cite> file, or a CIF file.</p></dd>
 	<dt><code>external</code></dt>
@@ -106,9 +109,10 @@ non-standard grid, they will be rebinned onto the proper grid.</p></dd>
 <h1 id="BUGS_AND_LIMITATIONS">BUGS AND LIMITATIONS <a href="#TOP" class="toplink"><img alt="^" src="../../../up.gif" /></a></h1>
 
 <ul>
-	<li>Not handling local parameters</li>
+	<li>Not handling local parameters from feffit.inp files</li>
 	<li>While single-data-set fits with multiple k-weights does work
-correctly, MDS+MKW fits will not be imported properly.</li>
+correctly, MDS+MKW fits will not be imported properly from a
+feffit.inp file</li>
 </ul>
 
 <p>Please report problems to Bruce Ravel (bravel AT bnl DOT gov)</p>

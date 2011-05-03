@@ -184,13 +184,13 @@ sub mouseover {
 sub populate {
   my ($this, $parent, $pathobject) = @_;
   $this->{path} = $pathobject;
-  return if not ($pathobject->sp); # it is kind of a disaster for a pth not to have an sp associated with it
+  return if not ($pathobject->sp); # it is kind of a disaster for a path not to have an sp associated with it
 				   # this is non-ideal as it will leave a blank path page, but it
-				   # is better than crashing.  even better would be to figure out how
+				   # is better than crashing.  even better would be to figure out how it
                                    # gets here....
 
   $this->{fefflabel} -> SetLabel('[' . $pathobject->parent->name . '] ') if $pathobject->parent;
-  $this->{fefflabel} -> SetLabel(q{}) if ref($pathobject) =~ m{FPath};
+  $this->{fefflabel} -> SetLabel(q{[Emp.] }) if ref($pathobject) =~ m{FPath};
   my $name = $pathobject->name;
   $name =~ s{\A\s+}{};
   $name =~ s{\s+\z}{};
@@ -424,7 +424,11 @@ sub Rename {
   my ($self, $newname) = @_;
   my $included = $self->{path}->include;
   $self->{path}->name($newname);
-  $self->{path}->label(sprintf("[%s] %s", ($self->{path}->parent) ? $self->{path}->parent->name : q{}, $newname));
+  if (ref($self->{path}) =~ m{FPath}) {
+    $self->{path}->label($newname);
+  } else {
+    $self->{path}->label(sprintf("[%s] %s", ($self->{path}->parent) ? $self->{path}->parent->name : q{}, $newname));
+  };
   my $label = $newname;
   ($label = sprintf("((( %s )))", $label)) if not $included;
   $self->{idlabel} -> SetLabel($label);

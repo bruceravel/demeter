@@ -181,14 +181,14 @@ sub run_feff {
   my $busy = Wx::BusyCursor->new();
   my $feff = $self->{feffobject};
   $feff -> clear;
-  $feff -> name($self->{name}->GetValue);
 
   my $inpfile = File::Spec->catfile($feff->workspace, $feff->group . ".inp");
   open my $OUT, ">".$inpfile;
   print $OUT $self->{feff}->GetValue;
   close $OUT;
-  $feff->name($self->{name}->GetValue);
+  $feff->name($self->{parent}->{Feff}->{name}->GetValue);
   $feff->file($inpfile);
+
 
   my %problems = %{ $feff->problems };
   my @warnings = @{ $problems{warnings} };

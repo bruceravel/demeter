@@ -304,6 +304,15 @@ sub read_fit {
   $self->po->plot_fit(1);
   return $self;
 };
+sub just_fit {
+  my ($self, $filename) = @_;
+  croak("No filename specified for just_fit") unless $filename;
+  my $command = $self-> template("fit", "just_fit", {filename => $filename,});
+  ##print $command, $/, $/;
+  $self->dispose($command);
+  $self->set(update_fft=>1, update_data=>0, update_columns=>0, update_norm=>0, update_bkg=>0, is_fit=>1);
+  return $self;
+};
 
 
 

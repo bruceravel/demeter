@@ -22,7 +22,7 @@ has 'plotbuffer' => (is => 'rw', isa => 'ArrayRef | ScalarRef');
 
 has 'callback'     => (is => 'rw', isa => 'CodeRef');
 has 'plotcallback' => (is => 'rw', isa => 'CodeRef');
-has 'feedback'     => (is => 'rw', isa => 'CodeRef');
+has 'feedback'     => (is => 'rw', isa => Empty.'|CodeRef', default=>q{});
 
 ## -------- default objects for templates
 has 'config'   => (is => 'rw', isa => 'Any');  #         Demeter::Config);
@@ -503,6 +503,7 @@ sub report {
       my $i = 0;
       foreach my $obj (@{$self->$this}) {
 	$text .= sprintf("\t%3d (%s) : %s\n", ++$i, $obj->group, $obj->$att);
+	chop $text if ($this eq 'GDS');
       };
     };
   };

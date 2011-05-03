@@ -81,7 +81,7 @@ sub plot {
   $self->dispose($command, "plotting");
   $self->po->after_plot_hook($self);
   $pf->increment if ($space ne 'e');
-  if ((ref($self) =~ m{Data}) and $self->fitting) {
+  if ((ref($self) =~ m{Data}) and $self->fitting and (not $self->is_fit)) {
     foreach my $p (qw(fit res bkg)) {
       my $pp = "plot_$p";
       next if not $pf->$pp;
@@ -95,7 +95,7 @@ sub plot {
       $pf->increment;
     };
   };
-  if ($pf->plot_win) {
+  if ($pf->plot_win and (not $self->is_fit)) {
     $self->plot_window($space);
     $self->po->after_plot_hook($self, 'win');
     $pf->increment;

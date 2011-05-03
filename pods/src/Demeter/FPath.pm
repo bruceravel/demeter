@@ -185,7 +185,7 @@ sub pathsdat {
 override all => sub {
   my ($self) = @_;
   my %all = $self->SUPER::all;
-  delete $all{$_} foreach (qw(data source weight Type string kgrid));
+  delete $all{$_} foreach (qw(data source weight Type string kgrid sentinal));
   return %all;
 };
 
@@ -197,6 +197,8 @@ before serialization => sub {
   $self->nnnntext($self->_nnnn);
 };
 
+
+## need to check that fname is really an fpath yaml, return 0 if not
 override deserialize => sub {
   my ($self, $fname) = @_;
   my $r_args = YAML::Tiny::LoadFile($fname);

@@ -37,12 +37,14 @@ use Readonly;
 Readonly my $MRU	     => Wx::NewId();
 Readonly my $SHOW_BUFFER     => Wx::NewId();
 Readonly my $CONFIG	     => Wx::NewId();
+Readonly my $CRASH	     => Wx::NewId();
 Readonly my $SHOW_GROUPS     => Wx::NewId();
 Readonly my $SHOW_ARRAYS     => Wx::NewId();
 Readonly my $SHOW_SCALARS    => Wx::NewId();
 Readonly my $SHOW_STRINGS    => Wx::NewId();
 Readonly my $SHOW_FEFFPATHS  => Wx::NewId();
 Readonly my $SHOW_PATHS      => Wx::NewId();
+Readonly my $IMPORT_DPJ      => Wx::NewId();
 Readonly my $IMPORT_FEFFIT   => Wx::NewId();
 Readonly my $IMPORT_FEFF     => Wx::NewId();
 Readonly my $IMPORT_MOLECULE => Wx::NewId();
@@ -122,6 +124,7 @@ sub OnInit {
 
   my $importmenu = Wx::Menu->new;
   $importmenu->Append($IMPORT_CHI,      "$CHI(k) data",                  "Import $CHI(k) data from a column data file");
+  $importmenu->Append($IMPORT_DPJ,      "Demeter fit serialization",     "Import a Demeter fit serialization (.dpj) file");
   $importmenu->AppendSeparator;
   $importmenu->Append($IMPORT_FEFF,     "a Feff calculation",            "Import a Feff input file and the results of a calculation made with that file");
   $importmenu->Append($IMPORT_MOLECULE, "a molecule",                    "Import a molecule using OpenBabel");
@@ -135,7 +138,7 @@ sub OnInit {
   $exportmenu->Append($EXPORT_DEMETER,  "to a Demeter script",   "Export the current fitting model as a perl script using Demeter");
 
   $filemenu->Append(wxID_OPEN,       "Open project\tCtrl+o", "Read from a project file" );
-  $filemenu->AppendSubMenu($mrumenu, "Recent projects",    "Open a submenu of recently used files" );
+  $filemenu->AppendSubMenu($mrumenu, "Recent files",    "Open a submenu of recently used files" );
   $filemenu->Append(wxID_SAVE,       "Save project\tCtrl+s", "Save project" );
   $filemenu->Append(wxID_SAVEAS,     "Save project as...", "Save to a new project file" );
   $filemenu->AppendSeparator;
@@ -149,6 +152,17 @@ sub OnInit {
   $frames{main}->{filemenu} = $filemenu;
   $frames{main}->{mrumenu}  = $mrumenu;
 
+  $frames{main}->{mruartemis}   = Wx::Menu->new;
+  $frames{main}->{mrufit}       = Wx::Menu->new;
+  $frames{main}->{mruathena}    = Wx::Menu->new;
+  $frames{main}->{mrustructure} = Wx::Menu->new;
+  $mrumenu->AppendSubMenu($frames{main}->{mruartemis},   "Artemis projects" );
+  $mrumenu->AppendSubMenu($frames{main}->{mruathena},    "Athena projects" );
+  $mrumenu->AppendSubMenu($frames{main}->{mrustructure}, "Crystal/structure data" );
+  $mrumenu->AppendSubMenu($frames{main}->{mrufit},       "Fit serializations" );
+
+
+
   my $showmenu = Wx::Menu->new;
   $showmenu->Append($SHOW_GROUPS,    "groups",    "Show Ifeffit groups");
   $showmenu->Append($SHOW_ARRAYS,    "arrays",    "Show Ifeffit arrays");
@@ -161,6 +175,7 @@ sub OnInit {
   $debugmenu->Append($PLOT_YAML,    "Show YAML for Plot object",  "Show YAML for Plot object",  wxITEM_NORMAL );
   $debugmenu->Append($MODE_STATUS,  "Mode status",                "Mode status",  wxITEM_NORMAL );
   $debugmenu->Append($PERL_MODULES, "Perl modules",               "Show perl module versions", wxITEM_NORMAL );
+  #$debugmenu->Append($CRASH,        "Crash Artemis",              "Force a crash of Artemis to test autosave file", wxITEM_NORMAL );
 
   my $feedbackmenu = Wx::Menu->new;
   $feedbackmenu->Append($SHOW_BUFFER, "Show command buffer",    'Show the Ifeffit and plotting commands buffer');
@@ -543,7 +558,6 @@ sub fit {
 		     );
     update_order_file();
 
-    $rframes->{GDS}->fill_results(@gds);
     $rframes->{Log}->{name} = $fit->name;
     $rframes->{Log}->Show(1);
     $rframes->{Log}->put_log($fit);
@@ -553,7 +567,7 @@ sub fit {
 
     ## fill in plotting list
     if (not $rframes->{Plot}->{freeze}->GetValue) {
-      $rframes->{Plot}->{plotlist}->Clear;
+      $rframes->{Plot}->{plotlist}->ClearAll;
       foreach my $k (sort (keys (%$rframes))) {
 	next if ($k !~ m{data});
 	$rframes->{$k}->transfer if $rframes->{$k}->{plot_after}->GetValue;
@@ -574,6 +588,7 @@ sub fit {
     } elsif ($how =~ m{\A[krq]\z}) {
       $rframes->{Plot}->plot(q{}, $how);
     };
+    $rframes->{GDS}->fill_results(@gds);
     my $finish = DateTime->now( time_zone => 'floating' );
     my $dur = $finish->delta_ms($start);
     $finishtext = sprintf "Your fit finished in %d seconds.", $dur->seconds;
@@ -696,14 +711,16 @@ sub _doublewide {
 sub set_mru {
   my ($self) = @_;
 
-  foreach my $i (0 .. $frames{main}->{mrumenu}->GetMenuItemCount-1) {
-    $frames{main}->{mrumenu}->Delete($frames{main}->{mrumenu}->FindItemByPosition(0));
-  };
+  foreach my $which (qw(artemis athena structure fit_serialization)) {
+    my $type = ($which eq 'fit_serialization') ? 'fit' : $which;
+    foreach my $i (0 .. $frames{main}->{mrumenu}->GetMenuItemCount-1) {
+      $frames{main}->{'mru'.$type}->Delete($frames{main}->{'mru'.$type}->FindItemByPosition(0));
+    };
 
-  my @list = $demeter->get_mru_list('artemis');
-  foreach my $f (@list) {
-    #print ">> $f\n";
-    $frames{main}->{mrumenu}->Append(-1, $f->[0]);
+    my @list = ($which eq 'structure') ? $demeter->get_mru_list('atoms', 'feff') : $demeter->get_mru_list($which);
+    foreach my $f (@list) {
+      $frames{main}->{'mru'.$type}-> Append(-1, $f->[0]);
+    };
   };
 };
 
@@ -749,7 +766,11 @@ sub OnMenuClick {
       last SWITCH;
     };
     ($mru) and do {
-      read_project(\%frames, $mru);
+      ## figure out which submenu it came from...
+      read_project(\%frames, $mru) if $frames{main}->{mruartemis}  ->GetLabel($id);
+      Import('dpj',  $mru)         if $frames{main}->{mrufit}      ->GetLabel($id);
+      Import('prj',  $mru)         if $frames{main}->{mruathena}   ->GetLabel($id);
+      Import('feff', $mru)         if $frames{main}->{mrustructure}->GetLabel($id);
       last SWITCH;
     };
 
@@ -775,6 +796,10 @@ sub OnMenuClick {
     };
     ($id == $IMPORT_CHI) and do {
       Import('chi', q{});
+      last SWITCH;
+    };
+    ($id == $IMPORT_DPJ) and do {
+      Import('dpj', q{});
       last SWITCH;
     };
 
@@ -804,6 +829,10 @@ sub OnMenuClick {
       my $dialog = Demeter::UI::Artemis::ShowText->new($frames{main}, $demeter->mo->report('all'), 'Overview of this instance of Demeter') -> Show;
       last SWITCH;
     };
+    #($id == $CRASH) and do {
+    #  my $x = 1/0;
+    #  last SWITCH;
+    #};
 
     ## -------- help menu
     ($id == $STATUS) and do {
@@ -930,8 +959,7 @@ sub OnFeffRightClick {
 sub make_feff_frame {
   my ($self, $file, $name, $feffobject) = @_;
   my $feffbox = $self->{feffbox};
-  $name ||= basename($file);	# ok for importing an atoms or CIF file
-  ($name = 'new') if not $file;
+  $name ||= basename($file) if $file;	# ok for importing an atoms or CIF file
 
   my $new = Wx::ToggleButton->new($self->{fefflist}, -1, "Hide ".emph($name));
   $feffbox -> Add($new, 0, wxGROW|wxRIGHT, 5);
@@ -959,7 +987,7 @@ sub make_feff_frame {
   if ($file and (-e $file) and ($demeter->is_atoms($file) or $demeter->is_cif($file))) {
     $frames{$fnum}->{Atoms}->Demeter::UI::Atoms::Xtal::open_file($file);
   } else {
-    #$frames{$fnum}->{Atoms}->{used} = 0;
+    $frames{$fnum}->{Atoms}->{used} = 0;
     $frames{$fnum}->{Atoms}->{name}->SetValue('new');
     $frames{$fnum}->{notebook}->SetPageImage(0, 5); # see Demeter::UI::Atoms.pm around line 60
     $frames{$fnum}->{notebook}->SetPageText(0, '');
@@ -1175,8 +1203,8 @@ sub SetIndexedData {
 
 sub GetIndexedData {
   my ($clb, $n) = @_;
-  return $clb->{datalist}->[$n]; # if defined($n);
-  #return $clb->{intial};
+  return $clb->{datalist}->[$n] if defined($n);
+  return $clb->{intial};
 };
 
 sub DeleteData {
@@ -1189,6 +1217,12 @@ sub DeleteData {
   $clb->{datalist} = \@list;
 
   $clb->Delete($n); # this calls the selection event on the new item
+};
+
+sub ClearAll {
+  my ($clb) = @_;
+  $clb->{datalist} = [];
+  $clb->Clear;
 };
 
 ## also need a method for reordering items on the list...

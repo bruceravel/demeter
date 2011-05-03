@@ -131,6 +131,7 @@ instance,</p>
 independent points.</li>
 	<li>The S02 and sigma2 path parameters should not be negative.</li>
 	<li>The e0, deltaR and sigma2 path parameters should not be too big.</li>
+	<li>Fitting parameters should not be too highly correlated.</li>
 </ul>
 
 <p>This module introduces an entirely semantic (i.e. non-statistical, <i>ad
@@ -165,7 +166,7 @@ this device is that it snarfs stock data from the internet and glows
 green when the market is up and red when the market is down.  This
 provides a semantic, ambient indication of the state of one's stock
 portfolio.  The part that interested me when I first heard about this
-is that users of the ord tend to be less anxious about their stock
+is that users of the orb tend to be less anxious about their stock
 portfolios.  Rather than needing to continuously check etrade.com, one
 can glance a splash of color out of the corner of the eye.  I like the
 thought of having a visual indicator of how well a fit is working out
@@ -204,6 +205,9 @@ its boundaries, the restraint will not diminish happiness.</p></dd>
 compared to the number of independent points.  The full penalty is
 applied when all independent points are used.  No penalty is applied
 if less than 2/3 of the independent points are used.</p></dd>
+	<dt><i>correlations</i></dt>
+		<dd><p>Diminish happiness for each correlation above a certain value.  No
+penalty is applied if no correlations are too high.</p></dd>
 </dl>
 <h1 id="METHODS">METHODS <a href="#TOP" class="toplink"><img alt="^" src="../../up.gif" /></a></h1>
 
@@ -259,6 +263,9 @@ using the parameters in the warnings group.</p></dd>
 		<dd><p>The scaling factor. Default: 10.</p></dd>
 	<dt><i>nidp</i></dt>
 		<dd><p>The cutoff and the scaling factor. Defaults: 2/3 and 40.</p></dd>
+	<dt><i>correlations</i></dt>
+		<dd><p>The cutoff and the penalty for each high correlation. Defaults: 0.95
+and 3.</p></dd>
 </dl>
 <h1 id="DEPENDENCIES">DEPENDENCIES <a href="#TOP" class="toplink"><img alt="^" src="../../up.gif" /></a></h1>
 

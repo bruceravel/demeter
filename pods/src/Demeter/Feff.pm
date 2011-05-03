@@ -38,14 +38,17 @@ use Capture::Tiny qw(capture);
 use Carp;
 use Compress::Zlib;
 use Cwd;
+use File::Basename;
 use File::Path;
 use File::Spec;
 use File::Temp qw(tempfile);
-use List::Util qw(sum);
-use List::MoreUtils qw(any false notall);
-use Regexp::Common;
-use Tree::Simple;
 use Heap::Fibonacci;
+use List::MoreUtils qw(any false notall);
+use List::Util qw(sum);
+use Regexp::Common;
+use String::Random qw(random_string);
+use Tree::Simple;
+
 use Readonly;
 Readonly my $NLEGMAX      => 4;
 Readonly my $CTOKEN       => '+';
@@ -61,7 +64,11 @@ my $shortest = 100000000;
 
 has 'source'      => (is => 'rw', isa => 'Str', default => 'demeter/feff6');
 has 'file'        => (is => 'rw', isa => 'Str',  default => q{},
-		      trigger => sub{my ($self, $new) = @_; $self->rdinp if $new} );
+		      trigger => sub{my ($self, $new) = @_;
+				     if ($new) {
+				       $self->rdinp;
+				       $self->name(basename($new, '.inp')) if not $self->name;
+				     }} );
 has 'yaml'        => (is=>'rw', isa => 'Str', default => q{},
 		      trigger => sub{my ($self, $new) = @_; $self->deserialize if $new} );
 has 'atoms'       => (is=>'rw', isa => Empty|'Demeter::Atoms',
@@ -138,7 +145,8 @@ has 'othercards' => (
 				   'clear' => 'clear_othercards',
 				  }
 		    );
-has 'workspace'    => (is=>'rw', isa => 'Str', default => q{}); # valid directory
+has 'workspace'    => (is=>'rw', isa => 'Str',
+		       default => sub{File::Spec->catfile(Demeter->stash_folder, 'feff_'.random_string('ccccccccc'))} );
 has 'miscdat'      => (is=>'rw', isa => 'Str', default => q{});
 has 'vint'         => (is=>'rw', isa => 'Num', default => 0);
 has 'hidden'       => (is=>'rw', isa => 'Bool',     default => 0);
@@ -423,7 +431,6 @@ sub run {
 
 sub potph {
   my ($self) = @_;
-  ##verify_feff_processing_hash($self);
   $self->check_workspace;
 
   ## write a feff.inp for the first module

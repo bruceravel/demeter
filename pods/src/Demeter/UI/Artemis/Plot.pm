@@ -143,7 +143,7 @@ sub new {
   $hbox -> Add($this->{freeze}, 1, wxGROW|wxLEFT|wxRIGHT|wxTOP, 5);
   $this->{clear} = Wx::Button->new($this, wxID_CLEAR, q{}, wxDefaultPosition, wxDefaultSize);
   $hbox -> Add($this->{clear}, 1, wxGROW|wxLEFT|wxRIGHT|wxTOP, 5);
-  EVT_BUTTON($this, $this->{clear}, sub{$_[0]->{plotlist}->Clear; $_[0]->{freeze}->SetValue(0);});
+  EVT_BUTTON($this, $this->{clear}, sub{$_[0]->{plotlist}->ClearAll; $_[0]->{freeze}->SetValue(0);});
 
   $this->mouseover("freeze", "When this button is checked, the plotting list will NOT be refreshed after a fit finishes.");
   $this->mouseover("clear",  "Clear all items from the plotting list.");
@@ -298,7 +298,7 @@ sub plot {
   foreach my $i (0 .. $self->{plotlist}->GetCount-1) {
     next if (not $self->{plotlist}->IsChecked($i));
     my $obj = $self->{plotlist}->GetIndexedData($i);
-    #print $obj, "  ", $obj->name, "  ", $obj->group, $/;
+    ##print $obj, "  ", $obj->name, "  ", $obj->group, $/;
     if (ref($obj) !~ m{Data}) {
       $obj->update_path(1);
       next;
@@ -315,7 +315,7 @@ sub plot {
       my $obj = $self->{plotlist}->GetIndexedData($i);
       my $save = $obj->data->y_offset;
       $obj -> data -> y_offset($jump);
-      if ($self->{plotlist}->GetString($i) =~ m{\AFit}) {
+      if ($self->{plotlist}->GetIndexedData($i) =~ m{\AFit}) {
 	$self->plot_fit($space, $i);
       } else {
 	$obj->plot($space);
@@ -327,7 +327,7 @@ sub plot {
     foreach my $i (0 .. $self->{plotlist}->GetCount-1) {
       next if (not $self->{plotlist}->IsChecked($i));
       my $obj = $self->{plotlist}->GetIndexedData($i);
-      if ($self->{plotlist}->GetString($i) =~ m{\AFit}) {
+      if ($self->{plotlist}->GetIndexedData($i) =~ m{\AFit}) {
 	$self->plot_fit($space, $i);
       } elsif (ref($obj) =~ m{Data}) {  # Data and fits plotted normally
 	$obj->plot($space);
@@ -344,7 +344,7 @@ sub plot {
     foreach my $i (0 .. $self->{plotlist}->GetCount-1) {
       next if (not $self->{plotlist}->IsChecked($i));
       my $obj = $self->{plotlist}->GetIndexedData($i);
-      if ($self->{plotlist}->GetString($i) =~ m{\AFit}) {
+      if ($self->{plotlist}->GetIndexedData($i) =~ m{\AFit}) {
 	$self->plot_fit($space, $i);
       } else {
 	$obj->plot($space);
@@ -370,6 +370,8 @@ sub plot {
 
 sub plot_fit {
   my ($self, $space, $count) = @_;
+  print $self, $/;
+  return;
   my $tempname = $self->{plotlist}->GetString($count);
   $tempname = (split(/ from /, $tempname))[1];
   my $data = $self->{plotlist}->GetIndexedData($count);

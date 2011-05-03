@@ -336,6 +336,7 @@ sub fit {
   $self->dispose($prefit);
 
   $self->mo->fit($self);
+  $self->mo->pathindex(1);
   foreach my $p (@{ $self->paths }) {
     $self->dispose("set path_index = " . $p->Index) if ($p->default_path);
   };
@@ -379,12 +380,7 @@ sub fit {
     $data -> set(fitting=>1, fit_data=>$count);
 
     ## read the data
-    if (($data->from_athena)  or ($data->datatype eq 'xmu')) {
-      $data -> _update('fft');
-    } else {
-      $command .= "\n";
-      $command .= $data -> _read_data_command("chi");
-    };
+    $data -> _update('fft');
     $command .= "\n";
 
     ## define all the paths for this data set
@@ -397,6 +393,11 @@ sub fit {
       next if not $p->include;
       $p->_update_from_ScatteringPath if $p->sp;
       ++$ipath;
+
+      my $i = $p->mo->pathindex;
+      $p->Index($i);
+      $p->mo->pathindex(++$i);
+
       my $lab = $p->name;
       ($lab = "path $ipath") if ($lab =~ m{\A(?:\s*|path\s+\d+)\z});
       $p->set(name=>$lab);
@@ -731,7 +732,7 @@ sub _normalize_paths {
     $prev = $this;
   };
   ($concat eq "-") and $string .= $concat . $this;
-  $string =~ s{(\d+)-(\1)}{$1}g;
+  $string =~ s{(\d+)-(\1)\b}{$1}g;
   return $string || q{};
 };
 
@@ -995,8 +996,16 @@ sub happiness_report {
 sub fetch_correlations {
   my ($self) = @_;
 
+  my @save = (Ifeffit::get_scalar("\&screen_echo"),
+	      $self->get_mode("screen"),
+	      $self->get_mode("plotscreen"),
+	      $self->get_mode("feedback"));
+  Ifeffit::ifeffit("\&screen_echo = 0\n");
+  $self->set_mode(screen=>0, plotscreen=>0, feedback=>q{});
   my %correlations_of;
   my $d = $self -> data -> [0];
+  my $correl_lines;
+  $self->set_mode(buffer=>\$correl_lines);
   $self->dispose($d->template("fit", "correl"));
   #my $correl_text = Demeter->get_mode("echo");
   my $lines = Ifeffit::get_scalar('&echo_lines');
@@ -1007,6 +1016,8 @@ sub fetch_correlations {
       push @correl_text, $response;
     };
   };
+  Ifeffit::ifeffit("\&screen_echo = $save[0]\n");
+  $self->set_mode(screen=>$save[1], plotscreen=>$save[2], feedback=>$save[3]);
 
   my @gds = map {lc($_->name)} @{ $self->gds };
   my $regex = Regexp::Assemble->new()->add(@gds)->re;
@@ -1116,7 +1127,7 @@ override 'serialize' => sub {
   $args{folder} ||= $self->group;
   $args{file}   ||= $args{project};
   ($args{nozip} = 1) if not $args{file};
-  $args{copyfeff} ||= 0;
+  $args{copyfeff} ||= 1;
 
   my @gds    = @{ $self->gds   };
   my @data   = @{ $self->data  };
@@ -1201,7 +1212,7 @@ override 'serialize' => sub {
   };
 
   ## -------- save a yaml containing the fit properties
-  my @properties = grep {$_ !~ m{\A(?:gds|data|paths|vpaths|project|folder|rate|thingy)\z}} $self->meta->get_attribute_list;
+  my @properties = grep {$_ !~ m{\A(?:gds|data|paths|vpaths|project|folder|rate|thingy|progress)\z}} $self->meta->get_attribute_list;
   push @properties, 'name';
   my @vals = $self->get(@properties);
   my %props = zip(@properties, @vals);
@@ -1229,6 +1240,8 @@ override 'serialize' => sub {
     my $readme = File::Spec->catfile($self->share_folder, "Readme.fit_serialization");
     my $target = File::Spec->catfile($self->folder, "Readme");
     copy($readme, $target);
+    open(my $touch, '>', File::Spec->catfile($self->folder, "FIT.SERIALIZATION"));
+    close $touch;
     if (not $args{nozip}) {
       $self->zip_project($self->folder, $args{file});
       rmtree($self->folder);
@@ -1270,7 +1283,10 @@ override 'deserialize' => sub {
     delete $r_attributes->{fit_pcpath};	   # correct an early
     delete $r_attributes->{fit_do_pcpath}; # design mistake...
     my @array = %$r_attributes;
+    my $savecv = $self->mo->datacount;
     my $this = Demeter::Data -> new(@array);
+    $this->cv($r_attributes->{cv});
+    $self->mo->datacount($savecv);
     $datae{$this->group} = $this;
     if ($this->datatype eq 'xmu') {
       Ifeffit::put_array($this->group.".energy", $r_x);
@@ -1357,8 +1373,10 @@ override 'deserialize' => sub {
       $this -> workspace($this->stash_folder);
     } elsif (exists $plotlike->{absorber}) { # this is an FSPath
       my $feff = $parents{$plotlike->{parentgroup}} || $data[0] -> mo -> fetch('Feff', $plotlike->{parentgroup});
-      $this = Demeter::FSPath->new(workspace=>$feff->workspace);
+      $this = Demeter::FSPath->new();
       $this -> set(@array);
+      my $where = Cwd::realpath(File::Spec->catfile($args{folder}, '..', '..', 'feff', basename($feff->workspace)));
+      $this -> set(workspace=>$where, folder=>$where, parent=>$data[0] -> mo -> fetch('Feff', $plotlike->{parentgroup}));
       my $sp = $sps{$this->spgroup} || $data[0] -> mo -> fetch('ScatteringPath', $this->spgroup);
       $this -> sp($sp);
     } else {

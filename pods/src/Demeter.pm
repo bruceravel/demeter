@@ -19,7 +19,7 @@ BEGIN {
   $ENV{PGPLOT_DEV} = (($^O eq 'MSWin32') or ($^O eq 'cygwin')) ? '/GW' : '/xserve';
 };
 
-require 5.8.0;
+require 5.008;
 
 use version;
 our $VERSION = version->new('0.4.7');

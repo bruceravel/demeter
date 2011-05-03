@@ -1752,6 +1752,83 @@ sub DeleteData {
   $clb->Delete($n); # this calls the selection event on the new item
 };
 
+sub ClearAll {
+  my ($clb) = @_;
+  $clb->{datalist} = [];
+  $clb->Clear;
+};
+
 ## also need a method for reordering items on the list...
 
 1;
+
+
+
+=head1 NAME
+
+Demeter::UI::Athena - XAS data processing
+
+=head1 VERSION
+
+This documentation refers to Demeter version 0.4.
+
+=head1 SYNOPSIS
+
+This short program launches Athena:
+
+  use Wx;
+  use Demeter::UI::Athena;
+  Wx::InitAllImageHandlers();
+  my $window = Demeter::UI::Athena->new;
+  $window -> MainLoop;
+
+=head1 DESCRIPTION
+
+Athena is ...
+
+=head1 USE
+
+Using ...
+
+=head1 CONFIGURATION
+
+Many aspects of Athena and its UI are configurable using the
+configuration ...
+
+=head1 DEPENDENCIES
+
+This is a Wx application.  Demeter's dependencies are in the
+F<Bundle/DemeterBundle.pm> file.
+
+=head1 BUGS AND LIMITATIONS
+
+=over 4
+
+=item *
+
+Many, many, many ...
+
+=back
+
+Please report problems to Bruce Ravel (bravel AT bnl DOT gov)
+
+Patches are welcome.
+
+=head1 AUTHOR
+
+Bruce Ravel (bravel AT bnl DOT gov)
+
+L<http://cars9.uchicago.edu/~ravel/software/>
+
+=head1 LICENCE AND COPYRIGHT
+
+Copyright (c) 2006-2011 Bruce Ravel (bravel AT bnl DOT gov). All rights reserved.
+
+This module is free software; you can redistribute it and/or
+modify it under the same terms as Perl itself. See L<perlgpl>.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+
+=cut

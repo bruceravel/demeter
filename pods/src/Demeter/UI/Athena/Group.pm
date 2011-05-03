@@ -128,7 +128,7 @@ sub Remove {
       $this->dispose("erase \@group ".$this->group);
       $this->DEMOLISH;
     };
-    $app->{main}->{list}->Clear;
+    $app->{main}->{list}->ClearAll;
     $app->{main}->{list}->{datalist} = [];
     $app->Clear;
     $app->{main}->{views}->SetSelection(0);

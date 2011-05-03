@@ -199,7 +199,7 @@ has 'titles' => (
 			       'clear' => 'clear_titles',
 			      }
 		);
-has 'ipot_style'       => (is => 'rw', isa =>'Str', default=> sub{ shift->mode->config->default("atoms","ipot_style") || 'elements'},
+has 'ipot_style'       => (is => 'rw', isa =>'Str', default=> sub{ shift->mo->config->default("atoms","ipot_style") || 'elements'},
 			   trigger => sub{ my ($self, $new) = @_; $self->is_ipots_set(0) if $new});
 
 has 'nitrogen'	       => (is => 'rw', isa => NonNeg, default=> 0,

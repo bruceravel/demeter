@@ -32,14 +32,14 @@ use String::Random qw(random_string);
 
 with 'Demeter::UI::Screen::Pause' if ($Demeter::mode->ui eq 'screen');
 
-has 'abs'	   => (is => 'rw', isa => ElementSymbol, default => q{Fe},
+has 'abs'	   => (is => 'rw', isa => Empty.'|'.ElementSymbol, default => q{},
 		       trigger => sub{my ($self, $new) = @_;
 				      $self->absorber(get_symbol($new));
 				      $self->guesses;
 				      $self->feff_done(0);
 				    });
 has 'absorber'     => (is => 'rw', isa => 'Str',    default => q{},);
-has 'scat'	   => (is => 'rw', isa => ElementSymbol, default => q{O},
+has 'scat'	   => (is => 'rw', isa => Empty.'|'.ElementSymbol, default => q{},
 		       trigger => sub{my ($self, $new) = @_;
 				      $self->scatterer(get_symbol($new));
 				      $self->guesses;
@@ -112,7 +112,7 @@ sub BUILD {
 
 override 'all' => sub {
   my ($self) = @_;
-  my @keys   = map {$_->name} grep {$_->name !~ m{\A(?:data|plot|plottable|is_mc|mode|parent|sp|gds)\z}} $self->meta->get_all_attributes;
+  my @keys   = map {$_->name} grep {$_->name !~ m{\A(?:data|plot|plottable|is_mc|mode|parent|sp|gds|sentinal)\z}} $self->meta->get_all_attributes;
   push @keys, qw(name group mark plottable);
   #print join($/, @keys), $/;
   my @values = map {$self->$_} @keys;
@@ -208,7 +208,7 @@ sub save_feff_yaml {
 
 sub guesses {
   my ($self) = @_;
-  return $self if ((not $self->abs) or (not $self->scat));
+  return $self if ((not $self->absorber) or (not $self->scatterer));
   $self->clear_gds;
   my $elems = join('_', lc($self->absorber), lc($self->scatterer));
   #$self->name($elems) if (not $self->name or ($self->name =~ m{FS\s*\z}));

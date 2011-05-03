@@ -142,7 +142,7 @@ has 'datatype' => (is => 'rw', isa => Empty.'|'.DataType, default => q{},
 		   trigger => sub{shift->explain_recordtype},
 		  );
 has  $_  => (is => 'rw', isa => 'Bool',  default => 0, trigger => sub{shift->explain_recordtype},)
-  foreach (qw(is_col is_nor is_kev is_special));
+  foreach (qw(is_col is_nor is_kev is_special is_fit));
 has 'is_merge' => (is => 'rw', isa => 'Str',  default => q{});
 #foreach (qw(is_col is_xmu is_xmudat is_chi is_nor is_xanes is_merge));
 
@@ -368,7 +368,7 @@ sub BUILD {
     $self->mo->push_Data($self);
     my $thiscv = $self->mo->datacount;
     $self->cv($thiscv);
-    ++$thiscv;
+    ++$thiscv if ($self->group ne 'default___');
     $self->mo->datacount($thiscv);
   };
 };
