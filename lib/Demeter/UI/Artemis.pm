@@ -806,10 +806,10 @@ sub OnMenuClick {
       my $dialog = Demeter::UI::Artemis::ShowText->new($frames{main}, $demeter->mo->report('all'), 'Overview of this instance of Demeter') -> Show;
       last SWITCH;
     };
-    ($id == $CRASH) and do {
-      my $x = 1/0;
-      last SWITCH;
-    };
+    #($id == $CRASH) and do {
+    #  my $x = 1/0;
+    #  last SWITCH;
+    #};
 
     ## -------- help menu
     ($id == $STATUS) and do {
