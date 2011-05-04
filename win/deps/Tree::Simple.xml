@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  This is an experimental XML interface.
+  It's structure and location may change.
+  If you want them to change, please ask.
+  Please try to avoid kicking the shit out of my server,
+  it's only little and doesn't like being bullied.
+-->
+<cpandeps>
+  <module>Tree::Simple</module>
+  <perl>5.12.3</perl>
+  <os>any OS</os>
+  
+    
+    
+      <dependency>
+  <module>Tree::Simple</module>
+  <depth>0</depth>
+  <warning/>
+  <textresult/>
+  <ispureperl>?</ispureperl>
+  
+  <totalresults>62</totalresults>
+  
+    <passes>62</passes>
+    <fails>0</fails>
+    <unknowns>0</unknowns>
+    <nas>0</nas>
+  
+</dependency>
+
+      
+        
+      
+    
+      <dependency>
+  <module>Test::More</module>
+  <depth>1</depth>
+  <warning/>
+  <textresult>Core module</textresult>
+  <ispureperl>?</ispureperl>
+  
+  <totalresults>0</totalresults>
+  
+</dependency>
+
+      
+    
+      <dependency>
+  <module>Scalar::Util</module>
+  <depth>1</depth>
+  <warning/>
+  <textresult>Core module</textresult>
+  <ispureperl>?</ispureperl>
+  
+  <totalresults>0</totalresults>
+  
+</dependency>
+
+      
+    
+      <dependency>
+  <module>Test::Exception</module>
+  <depth>1</depth>
+  <warning/>
+  <textresult/>
+  <ispureperl>?</ispureperl>
+  
+  <totalresults>64</totalresults>
+  
+    <passes>64</passes>
+    <fails>0</fails>
+    <unknowns>0</unknowns>
+    <nas>0</nas>
+  
+</dependency>
+
+      
+        
+      
+    
+      <dependency>
+  <module>Test::Harness</module>
+  <depth>2</depth>
+  <warning/>
+  <textresult>Core module</textresult>
+  <ispureperl>?</ispureperl>
+  
+  <totalresults>0</totalresults>
+  
+</dependency>
+
+      
+    
+      <dependency>
+  <module>Sub::Uplevel</module>
+  <depth>2</depth>
+  <warning/>
+  <textresult/>
+  <ispureperl>?</ispureperl>
+  
+  <totalresults>66</totalresults>
+  
+    <passes>65</passes>
+    <fails>0</fails>
+    <unknowns>1</unknowns>
+    <nas>0</nas>
+  
+</dependency>
+
+      
+        
+      
+    
+      <dependency>
+  <module>Module::Build</module>
+  <depth>3</depth>
+  <warning/>
+  <textresult>Core module</textresult>
+  <ispureperl>?</ispureperl>
+  
+  <totalresults>0</totalresults>
+  
+</dependency>
+
+      
+    
+      <dependency>
+  <module>Carp</module>
+  <depth>3</depth>
+  <warning/>
+  <textresult>Core module</textresult>
+  <ispureperl>?</ispureperl>
+  
+  <totalresults>0</totalresults>
+  
+</dependency>
+
+      
+    
+    <chanceofsuccess>
+      
+        100%
+      
+    </chanceofsuccess>
+  
+
+<debug/>
+</cpandeps>

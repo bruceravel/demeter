@@ -1,0 +1,174 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  This is an experimental XML interface.
+  It's structure and location may change.
+  If you want them to change, please ask.
+  Please try to avoid kicking the shit out of my server,
+  it's only little and doesn't like being bullied.
+-->
+<cpandeps>
+  <module>Archive::Zip</module>
+  <perl>5.12.3</perl>
+  <os>any OS</os>
+  
+    
+    
+      <dependency>
+  <module>Archive::Zip</module>
+  <depth>0</depth>
+  <warning/>
+  <textresult/>
+  <ispureperl>?</ispureperl>
+  
+  <totalresults>72</totalresults>
+  
+    <passes>61</passes>
+    <fails>11</fails>
+    <unknowns>0</unknowns>
+    <nas>0</nas>
+  
+</dependency>
+
+      
+        
+      
+    
+      <dependency>
+  <module>File::Copy</module>
+  <depth>1</depth>
+  <warning/>
+  <textresult>Core module</textresult>
+  <ispureperl>?</ispureperl>
+  
+  <totalresults>0</totalresults>
+  
+</dependency>
+
+      
+    
+      <dependency>
+  <module>IO::Seekable</module>
+  <depth>1</depth>
+  <warning/>
+  <textresult>Core module</textresult>
+  <ispureperl>?</ispureperl>
+  
+  <totalresults>0</totalresults>
+  
+</dependency>
+
+      
+    
+      <dependency>
+  <module>ExtUtils::MakeMaker</module>
+  <depth>1</depth>
+  <warning/>
+  <textresult>Core module</textresult>
+  <ispureperl>?</ispureperl>
+  
+  <totalresults>0</totalresults>
+  
+</dependency>
+
+      
+    
+      <dependency>
+  <module>File::Spec</module>
+  <depth>1</depth>
+  <warning/>
+  <textresult>Core module</textresult>
+  <ispureperl>?</ispureperl>
+  
+  <totalresults>0</totalresults>
+  
+</dependency>
+
+      
+    
+      <dependency>
+  <module>Compress::Raw::Zlib</module>
+  <depth>1</depth>
+  <warning/>
+  <textresult>Core module</textresult>
+  <ispureperl>?</ispureperl>
+  
+  <totalresults>0</totalresults>
+  
+</dependency>
+
+      
+    
+      <dependency>
+  <module>Test::More</module>
+  <depth>1</depth>
+  <warning/>
+  <textresult>Core module</textresult>
+  <ispureperl>?</ispureperl>
+  
+  <totalresults>0</totalresults>
+  
+</dependency>
+
+      
+    
+      <dependency>
+  <module>File::Find</module>
+  <depth>1</depth>
+  <warning/>
+  <textresult>Core module</textresult>
+  <ispureperl>?</ispureperl>
+  
+  <totalresults>0</totalresults>
+  
+</dependency>
+
+      
+    
+      <dependency>
+  <module>File::Temp</module>
+  <depth>1</depth>
+  <warning/>
+  <textresult>Core module</textresult>
+  <ispureperl>?</ispureperl>
+  
+  <totalresults>0</totalresults>
+  
+</dependency>
+
+      
+    
+      <dependency>
+  <module>File::Path</module>
+  <depth>1</depth>
+  <warning/>
+  <textresult>Core module</textresult>
+  <ispureperl>?</ispureperl>
+  
+  <totalresults>0</totalresults>
+  
+</dependency>
+
+      
+    
+      <dependency>
+  <module>Time::Local</module>
+  <depth>1</depth>
+  <warning/>
+  <textresult>Core module</textresult>
+  <ispureperl>?</ispureperl>
+  
+  <totalresults>0</totalresults>
+  
+</dependency>
+
+      
+    
+    <chanceofsuccess>
+      
+        84%
+      
+    </chanceofsuccess>
+  
+
+<debug/>
+</cpandeps>

@@ -1,0 +1,386 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  This is an experimental XML interface.
+  It's structure and location may change.
+  If you want them to change, please ask.
+  Please try to avoid kicking the shit out of my server,
+  it's only little and doesn't like being bullied.
+-->
+<cpandeps>
+  <module>Wx</module>
+  <perl>5.12.3</perl>
+  <os>any OS</os>
+  
+    
+    
+      <dependency>
+  <module>Wx</module>
+  <depth>0</depth>
+  <warning/>
+  <textresult/>
+  <ispureperl>?</ispureperl>
+  
+  <totalresults>27</totalresults>
+  
+    <passes>6</passes>
+    <fails>10</fails>
+    <unknowns>11</unknowns>
+    <nas>0</nas>
+  
+</dependency>
+
+      
+        
+      
+    
+      <dependency>
+  <module>Test::More</module>
+  <depth>1</depth>
+  <warning/>
+  <textresult>Core module</textresult>
+  <ispureperl>?</ispureperl>
+  
+  <totalresults>0</totalresults>
+  
+</dependency>
+
+      
+    
+      <dependency>
+  <module>Alien::wxWidgets</module>
+  <depth>1</depth>
+  <warning/>
+  <textresult/>
+  <ispureperl>?</ispureperl>
+  
+  <totalresults>42</totalresults>
+  
+    <passes>35</passes>
+    <fails>0</fails>
+    <unknowns>7</unknowns>
+    <nas>0</nas>
+  
+</dependency>
+
+      
+        
+      
+    
+      <dependency>
+  <module>Module::Pluggable</module>
+  <depth>2</depth>
+  <warning/>
+  <textresult>Core module</textresult>
+  <ispureperl>?</ispureperl>
+  
+  <totalresults>0</totalresults>
+  
+</dependency>
+
+      
+    
+      <dependency>
+  <module>File::Spec</module>
+  <depth>2</depth>
+  <warning/>
+  <textresult>Core module</textresult>
+  <ispureperl>?</ispureperl>
+  
+  <totalresults>0</totalresults>
+  
+</dependency>
+
+      
+    
+      <dependency>
+  <module>Module::Build</module>
+  <depth>2</depth>
+  <warning/>
+  <textresult>Core module</textresult>
+  <ispureperl>?</ispureperl>
+  
+  <totalresults>0</totalresults>
+  
+</dependency>
+
+      
+    
+      <dependency>
+  <module>ExtUtils::CBuilder</module>
+  <depth>2</depth>
+  <warning/>
+  <textresult>Core module</textresult>
+  <ispureperl>?</ispureperl>
+  
+  <totalresults>0</totalresults>
+  
+</dependency>
+
+      
+    
+      <dependency>
+  <module>Test::Harness</module>
+  <depth>1</depth>
+  <warning/>
+  <textresult>Core module</textresult>
+  <ispureperl>?</ispureperl>
+  
+  <totalresults>0</totalresults>
+  
+</dependency>
+
+      
+    
+      <dependency>
+  <module>Data::Dumper</module>
+  <depth>1</depth>
+  <warning/>
+  <textresult>Core module</textresult>
+  <ispureperl>?</ispureperl>
+  
+  <totalresults>0</totalresults>
+  
+</dependency>
+
+      
+    
+      <dependency>
+  <module>ExtUtils::MakeMaker</module>
+  <depth>1</depth>
+  <warning/>
+  <textresult>Core module</textresult>
+  <ispureperl>?</ispureperl>
+  
+  <totalresults>0</totalresults>
+  
+</dependency>
+
+      
+    
+      <dependency>
+  <module>ExtUtils::ParseXS</module>
+  <depth>1</depth>
+  <warning/>
+  <textresult/>
+  <ispureperl>?</ispureperl>
+  
+  <totalresults>51</totalresults>
+  
+    <passes>51</passes>
+    <fails>0</fails>
+    <unknowns>0</unknowns>
+    <nas>0</nas>
+  
+</dependency>
+
+      
+        
+      
+    
+      <dependency>
+  <module>Exporter</module>
+  <depth>2</depth>
+  <warning/>
+  <textresult>Core module</textresult>
+  <ispureperl>?</ispureperl>
+  
+  <totalresults>0</totalresults>
+  
+</dependency>
+
+      
+    
+      <dependency>
+  <module>Symbol</module>
+  <depth>2</depth>
+  <warning/>
+  <textresult>Core module</textresult>
+  <ispureperl>?</ispureperl>
+  
+  <totalresults>0</totalresults>
+  
+</dependency>
+
+      
+    
+      <dependency>
+  <module>ExtUtils::XSpp</module>
+  <depth>1</depth>
+  <warning/>
+  <textresult/>
+  <ispureperl>?</ispureperl>
+  
+  <totalresults>39</totalresults>
+  
+    <passes>39</passes>
+    <fails>0</fails>
+    <unknowns>0</unknowns>
+    <nas>0</nas>
+  
+</dependency>
+
+      
+        
+      
+    
+      <dependency>
+  <module>Test::Base</module>
+  <depth>2</depth>
+  <warning/>
+  <textresult/>
+  <ispureperl>?</ispureperl>
+  
+  <totalresults>51</totalresults>
+  
+    <passes>50</passes>
+    <fails>1</fails>
+    <unknowns>0</unknowns>
+    <nas>0</nas>
+  
+</dependency>
+
+      
+        
+      
+    
+      <dependency>
+  <module>Filter::Util::Call</module>
+  <depth>3</depth>
+  <warning/>
+  <textresult>Core module</textresult>
+  <ispureperl>?</ispureperl>
+  
+  <totalresults>0</totalresults>
+  
+</dependency>
+
+      
+    
+      <dependency>
+  <module>Spiffy</module>
+  <depth>3</depth>
+  <warning/>
+  <textresult/>
+  <ispureperl>?</ispureperl>
+  
+  <totalresults>64</totalresults>
+  
+    <passes>64</passes>
+    <fails>0</fails>
+    <unknowns>0</unknowns>
+    <nas>0</nas>
+  
+</dependency>
+
+      
+        
+      
+    
+      <dependency>
+  <module>Scalar::Util</module>
+  <depth>4</depth>
+  <warning/>
+  <textresult>Core module</textresult>
+  <ispureperl>?</ispureperl>
+  
+  <totalresults>0</totalresults>
+  
+</dependency>
+
+      
+    
+      <dependency>
+  <module>Test::Differences</module>
+  <depth>2</depth>
+  <warning/>
+  <textresult/>
+  <ispureperl>?</ispureperl>
+  
+  <totalresults>40</totalresults>
+  
+    <passes>40</passes>
+    <fails>0</fails>
+    <unknowns>0</unknowns>
+    <nas>0</nas>
+  
+</dependency>
+
+      
+        
+      
+    
+      <dependency>
+  <module>Text::Diff</module>
+  <depth>3</depth>
+  <warning/>
+  <textresult/>
+  <ispureperl>?</ispureperl>
+  
+  <totalresults>41</totalresults>
+  
+    <passes>41</passes>
+    <fails>0</fails>
+    <unknowns>0</unknowns>
+    <nas>0</nas>
+  
+</dependency>
+
+      
+        
+      
+    
+      <dependency>
+  <module>Algorithm::Diff</module>
+  <depth>4</depth>
+  <warning/>
+  <textresult/>
+  <ispureperl>?</ispureperl>
+  
+  <totalresults>66</totalresults>
+  
+    <passes>66</passes>
+    <fails>0</fails>
+    <unknowns>0</unknowns>
+    <nas>0</nas>
+  
+</dependency>
+
+      
+        
+      
+    
+      <dependency>
+  <module>Digest::MD5</module>
+  <depth>2</depth>
+  <warning/>
+  <textresult>Core module</textresult>
+  <ispureperl>?</ispureperl>
+  
+  <totalresults>0</totalresults>
+  
+</dependency>
+
+      
+    
+      <dependency>
+  <module>if</module>
+  <depth>1</depth>
+  <warning/>
+  <textresult>Core module</textresult>
+  <ispureperl>?</ispureperl>
+  
+  <totalresults>0</totalresults>
+  
+</dependency>
+
+      
+    
+    <chanceofsuccess>
+      
+        61%
+      
+    </chanceofsuccess>
+  
+
+<debug/>
+</cpandeps>
