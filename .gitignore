@@ -18,3 +18,4 @@ doc/dpg/templates/lib/config/version
 try/
 examples/cu/temp/
 examples/feff/
+win/deps/*.xml

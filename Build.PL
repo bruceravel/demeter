@@ -33,7 +33,7 @@ my $build = DemeterBuilder
 	 auto_configure_requires => 1,
 	 needs_compiler     => 1,
 	 requires           => {
-				'autodie'                   => '0',
+				#'autodie'                   => '0', #  this is core
 
 				'Moose'			    => '1.21',
 				'MooseX::Aliases'           => '0.08',
@@ -106,7 +106,7 @@ my $build = DemeterBuilder
 				('Term::Twiddle'      => '0',
 				 'Term::Sk'           => '0',
 				),
-				'Getopt::Long'       => '2.38',
+				#'Getopt::Long'       => '2.38', #  this is core
 
 				## this is required for the gnuplot plotting backend
 				#(($^O eq 'MSWin32') or ($^O eq 'cygwin')) ? () :

@@ -1,4 +1,7 @@
 #!/usr/bin/perl -I.
+######################################################################
+## http://deps.cpantesters.org/?xml=1;module=Moose;perl=5.12.2;os=any%20OS;pureperl=0';
+######################################################################
 
 use strict;
 use warnings;
@@ -7,12 +10,13 @@ use LWP::UserAgent;
 use Term::Sk;
 
 my $ua = LWP::UserAgent->new;
-$ua->timeout(10);
+$ua->timeout(30);
 $ua->env_proxy;
 
 my $perl_version = '5.12.2';
+my @missing;
 
-my $counter = Term::Sk->new('fetching %k  (#%c) %8t', {freq => 's', base => 0, token=>'Archive::Zip'})
+my $counter = Term::Sk->new('fetching %k  (#%c) %8t', {freq => 's', base => 0, token=>'autodie'})
   or die "Error 0010: Term::Sk->new, (code $Term::Sk::errcode) $Term::Sk::errmsg";
 
 foreach my $xml (<DATA>) {
@@ -26,15 +30,21 @@ foreach my $xml (<DATA>) {
     print $O $response->decoded_content;
     close $0;
   } else {
-    die $response->status_line;
+    push @missing, $xml;
+    next;
   };
 };
 $counter->close;
 
 rename('Wx.xml', 'zzzWx.xml') if (-e 'Wx.xml');
 
+if (@missing) {
+  print "Timed out: ", join(', ', @missing), $/;
+} else {
+  print "All done!\n";
+};
+
 __DATA__
-autodie
 Archive::Zip
 Capture::Tiny
 Chemistry::Elements
