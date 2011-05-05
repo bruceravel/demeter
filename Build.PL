@@ -34,7 +34,6 @@ my $build = DemeterBuilder
 	 needs_compiler     => 1,
 	 requires           => {
 				'autodie'                   => '0',
-				'Module::Build'	            => '0',
 
 				'Moose'			    => '1.21',
 				'MooseX::Aliases'           => '0.08',
