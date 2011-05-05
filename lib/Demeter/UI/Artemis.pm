@@ -956,6 +956,7 @@ sub OnFeffRightClick {
 };
 
 
+## name for empty feff frame...
 sub make_feff_frame {
   my ($self, $file, $name, $feffobject) = @_;
   my $feffbox = $self->{feffbox};

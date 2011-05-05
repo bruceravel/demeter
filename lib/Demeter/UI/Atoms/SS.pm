@@ -339,7 +339,8 @@ sub histoplot {
     return;
   };
 
-  my $dlp = Demeter::Feff::Distributions->new(rmin=>$rmin, rmax=>$rmax, bin=>$bin, type=>'ss');
+  my $dlp = Demeter::Feff::Distributions->new(rmin=>$rmin, rmax=>$rmax, bin=>$bin, type=>'ss',
+					      feff=>$this->{parent}->{Feff}->{feffobject});
   my $persist = File::Spec->catfile($dlp->dot_folder, 'demeter.histograms');
   YAML::Tiny::DumpFile($persist, $this->{histoyaml});
 
@@ -383,7 +384,8 @@ sub scatterplot {
   };
 
   my $histo = Demeter::Feff::Distributions->new(type=>'ncl');
-  $histo->set(r1=>$r1, r2=>$r2, r3=>$r3, r4=>$r4, rbin=>$rbin, betabin=>$betabin);
+  $histo->set(r1=>$r1, r2=>$r2, r3=>$r3, r4=>$r4, rbin=>$rbin, betabin=>$betabin,
+	      feff=>$this->{parent}->{Feff}->{feffobject});
 
   my $persist = File::Spec->catfile($histo->dot_folder, 'demeter.histograms');
   YAML::Tiny::DumpFile($persist, $this->{histoyaml});

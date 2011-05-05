@@ -135,7 +135,7 @@
 
 
 ** Artemis
-*** Artemis bugs and missing features [8/14]  [57%]
+*** Artemis bugs and missing features [8/15]  [53%]
    - [X] use text buffers as in Athena for TextEntryDialogs
    - [X] import an FPath from a yaml or from a project file, pathlist start page link for doing so
    - [X] should I clear out unfitted fit folders from project upon import?
@@ -155,6 +155,7 @@
    - [ ] do SSPaths get serialized and deserialized with the pointers
          to the feff calculation set correctly and no additional
          folders being created in stash (as was the case for FSPath)?
+   - [ ] feff does not get a sensible name when opening an empty feff frame
 
 **** Project [0/2]
    - [ ] VPaths to project file

@@ -15,9 +15,26 @@ $data->po->rmax(8);
 $data->po->kweight(1);
 $data->po->space('k');
 
+
+my $atoms = Demeter::Atoms->new();
+$atoms -> a(3.92);
+$atoms -> space('f m 3 m');
+$atoms -> push_sites( join("|", 'Pt',  0.0, 0.0, 0.0,   'Pt'  ) );
+$atoms -> core('Pt');
+$atoms -> set(rpath=>6, rmax=>9, rmax => 8);
+my $feff = Demeter::Feff->new(workspace=>"feff/", screen=>0, atoms=>$atoms);
+$feff->run;
+$feff->freeze('feff/feff.yaml');
+my $first    = Demeter::Path->new(data=>$data, feff=>$feff, sp=>$feff->pathlist->[0],  n=>1);
+my $eighteen = Demeter::Path->new(data=>$data, feff=>$feff, sp=>$feff->pathlist->[17], n=>1);
+#print $first -> intrpline, $/;
+#print $eighteen -> intrpline, $/;
+#$histogram->pause;
+
+
       my $start = DateTime->now( time_zone => 'floating' );
 
-my $histogram = Demeter::Feff::Distributions->new( rmin=>1.5, rmax=>3.5, type=>'ss');
+my $histogram = Demeter::Feff::Distributions->new( rmin=>1.5, rmax=>3.5, type=>'ss', feff=>$feff);
 $histogram->backend('DL_POLY');
 $histogram->file('HISTORY');
 
@@ -31,23 +48,6 @@ $histogram->rebin;
 $histogram->plot;
 $histogram->pause;
 
-
-my $atoms = Demeter::Atoms->new();
-$atoms -> a(3.92);
-$atoms -> space('f m 3 m');
-$atoms -> push_sites( join("|", 'Pt',  0.0, 0.0, 0.0,   'Pt'  ) );
-$atoms -> core('Pt');
-$atoms -> set(rpath=>6, rmax=>9, rmax => 8);
-my $feff = Demeter::Feff->new(workspace=>"feff/", screen=>0, atoms=>$atoms);
-$feff->run;
-$feff->freeze('feff/feff.yaml');
-#$histogram->sp($feff->pathlist->[0]);
-$histogram->feff($feff);
-my $first    = Demeter::Path->new(data=>$data, feff=>$feff, sp=>$feff->pathlist->[0],  n=>1);
-my $eighteen = Demeter::Path->new(data=>$data, feff=>$feff, sp=>$feff->pathlist->[17], n=>1);
-#print $first -> intrpline, $/;
-#print $eighteen -> intrpline, $/;
-#$histogram->pause;
 
 
 #################################################

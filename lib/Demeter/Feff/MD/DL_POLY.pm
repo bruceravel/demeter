@@ -1,6 +1,18 @@
 package Demeter::Feff::MD::DL_POLY;
 use Moose::Role;
 
+use Chemistry::Elements qw (get_Z);
+use Regexp::Assemble;
+my @element_list = qw(H He Li Be B C N O F Ne Na Mg Al Si P S Cl Ar K Ca
+		      Sc Ti V Cr Mn Fe Co Ni Cu Zn Ga Ge As Se Br Kr Rb
+		      Sr Y Zr Nb Mo Tc Ru Rh Pd Ag Cd In Sn Sb Te I Xe Cs
+		      Ba La Ce Pr Nd Pm Sm Eu Gd Tb Dy Ho Er Tm Yb Lu Hf
+		      Ta W Re Os Ir Pt Au Hg Tl Pb Bi Po At Rn Fr Ra Ac
+		      Th Pa U Np Pu
+		      Nu);
+my $element_regexp = Regexp::Assemble->new()->add(@element_list)->re;
+
+
 sub _number_of_steps {
   my ($self) = @_;
   die("File ".$self->file." does not exist\n") if (not -e $self->file);
@@ -28,10 +40,11 @@ sub _cluster {
       $#cluster = -1;
       next;
     };
-    next if not m{\APt}; # skip the three lines trailing the timestamp
+    next if not m{\A($element_regexp)}io; # skip the three lines trailing the timestamp
+    my $atom = $1;
     my $position = <$H>;
     my @vec = split(' ', $position);
-    push @cluster, \@vec;
+    push @cluster, [@vec, get_Z($atom)];
     <$H>;
     <$H>;
     #my $velocity = <$H>;
@@ -59,12 +72,14 @@ This documentation refers to Demeter version 0.4.
 
 =head1 DESCRIPTION
 
-This role provides support for importing data from the DL_POLY HISTORY
-file, which is a format for providing the trajectory of a cluster
-during a molecular dynamics simulation.  The DL_POLY website is
-L<http://www.cse.scitech.ac.uk/ccg/software/DL_POLY/> and a
-description of the HISTORY format is in section 5.2.1 of the User
-Guide, a link to which can be found at the DL_POLY website.
+This role provides support for importing data from the DL_POLY
+formatted HISTORY file, which is a format for providing the trajectory
+of a cluster during a molecular dynamics simulation.  The DL_POLY
+website is
+L<http://www.cse.scitech.ac.uk/ccg/software/DL_POLY_CLASSIC/index.shtml>
+and a description of the HISTORY format is in section 5.2.1.1 of the
+User Guide, a link to which can be found at the DL_POLY_CLASIC
+website.
 
 The purpose of this role is to extract parse the DL_POLY HISTORY file
 into the data structures expected by the rest of Demeter's histogram

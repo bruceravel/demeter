@@ -93,7 +93,7 @@ sub new {
             or      $disp_code eq 't'
             or      $disp_code eq 'k') {
                 $errcode = 110;
-                $errmsg  = qq{Found invalid display-code ('$disp_code'), expected ('b', 'c', 'd', 'm', 'p', 'P' or 't') in '%$portion', total line is '$format'};
+                $errmsg  = qq{Found invalid display-code ('$disp_code'), expected ('b', 'c', 'd', 'm', 'p', 'P' 't' or 'k') in '%$portion', total line is '$format'};
                 die sprintf('Error-%04d: %s', $errcode, $errmsg);
             }
 
@@ -535,6 +535,24 @@ Actual counter value (commified by '_'), format '99_999_999'
 =item characters '%m'
 
 Target maximum value (commified by '_'), format '99_999_999'
+
+=item characters '%k'
+
+Token which updates its value before being displayed.  An example use
+of this would be a loop wherein every step of the loop could be
+identified by a particular string.  For example:
+
+    my $ctr = Term::Sk->new('Processing %k', {base => 0, token => 'Albania'})
+       or die "Error 0010: Term::Sk->new, (code $Term::Sk::errcode) $Term::Sk::errmsg";
+    foreach my $country (@list_of european_nations) {
+      $ctr->token($country);
+      ## do something for each country
+    };
+    $ctr->close;
+
+The C<token> method is used to update the token value and is also a
+wrapper around the C<up> method.  The counter can be instantiated
+with an intial value for the token.
 
 =item characters '%P'
 
