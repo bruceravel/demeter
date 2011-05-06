@@ -961,13 +961,14 @@ sub make_feff_frame {
   my ($self, $file, $name, $feffobject) = @_;
   my $feffbox = $self->{feffbox};
   $name ||= basename($file) if $file;	# ok for importing an atoms or CIF file
+  $name ||= 'new';
 
   my $new = Wx::ToggleButton->new($self->{fefflist}, -1, "Hide ".emph($name));
+  my $ifeff = $new->GetId;
   $feffbox -> Add($new, 0, wxGROW|wxRIGHT, 5);
   mouseover($new, "Display/hide $name.");
 
   do_the_size_dance($self);
-  my $ifeff = $new->GetId;
   my $fnum = sprintf("feff%s", $ifeff);
   $self->{$fnum} = $new;
   EVT_TOGGLEBUTTON($new, -1, sub{
