@@ -17,14 +17,14 @@ use Demeter qw(:analysis :ui=screen :plotwith=gnuplot);
 
 my $prj = Demeter::Data::Prj -> new(file=>'../../cyanobacteria.prj');
 my $lcf = Demeter::LCF -> new(space=>'nor', unity=>1, inclusive=>0, one_e0=>0,
-			      plot_difference=>1, plot_components=>1, noise=>0);
-
+			      plot_difference=>0, plot_components=>0, noise=>0);
 $prj -> set_mode('screen' => 0);
+$prj -> co -> set_default('lcf', 'plot_during', 1);
 
-my $data = $prj->record(3);
+my @data = $prj->record(1..8);
 my ($metal, $chloride, $sulfide) = $prj->records(9, 11, 15);
 
-$lcf->data($data);
+$lcf->data($data[0]);
 $lcf->add_many($metal, $chloride, $sulfide);
 #$lcf->add($metal);
 #$lcf->add($chloride);
@@ -35,22 +35,18 @@ if ($lcf->space eq 'chi') {
   $lcf->xmax(12);
   $lcf->po->kmax(14);
 } else {
-  $lcf->xmin($data->bkg_e0-20);
-  $lcf->xmax($data->bkg_e0+60);
+  $lcf->xmin($data[0]->bkg_e0-20);
+  $lcf->xmax($data[0]->bkg_e0+60);
   $lcf->po->set(emin=>-30, emax=>80);
 };
 
-$lcf -> fit
-  -> plot_fit
-  -> save('foo.dat');
-print $lcf->report;
-#$lcf->clean;
+$lcf -> sequence(@data);
+
+$lcf -> plot_fit;
+#print $lcf->report;
+#$lcf->sequence_report('seq.xls');
+print $lcf->sequence_columns;
+#print $lcf->sequence_xtics;
+$lcf->sequence_plot;
 
 $lcf->pause;
-
-## test plot method
-# $lcf->po->start_plot;
-# $lcf->po->set(e_norm=>0, e_der=>1);
-# $_->plot('e') foreach ($data, $metal, $chloride, $sulfide, $lcf);
-
-# $lcf->pause;

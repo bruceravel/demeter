@@ -27,7 +27,7 @@ use Moose::Util::TypeConstraints;
 use Demeter::StrTypes qw( Empty );
 
 use List::Util qw(min);
-use List::MoreUtils qw(any none);
+use List::MoreUtils qw(any none uniq);
 use Math::Combinatorics;
 use Spreadsheet::WriteExcel;
 
@@ -96,6 +96,22 @@ has 'combi_results'=> (
 				     'clear'   => 'clear_combi_results',
 				    },
 		      );
+
+has 'doing_seq' => (is => 'rw', isa => 'Bool', default => 0);
+has 'seq_count' => (is => 'rw', isa => 'Int',  default => 0);
+has 'seq_results'=> (
+		     metaclass => 'Collection::Array',
+		     is        => 'rw',
+		     isa       => 'ArrayRef',
+		     default   => sub { [] },
+		     provides  => {
+				   'push'    => 'push_seq_results',
+				   'pop'     => 'pop_seq_results',
+				   'shift'   => 'shift_seq_results',
+				   'unshift' => 'unshift_seq_results',
+				   'clear'   => 'clear_seq_results',
+				  },
+		    );
 
 has 'options' => (
 		  metaclass => 'Collection::Hash',
@@ -502,7 +518,7 @@ sub combi {
     $self->count if ($self->mo->ui eq 'screen');
     $self->call_sentinal;
     $self->fit(1);
-    $self->plot_fit if $self->co->default('lcf', 'combi_plot_during');
+    $self->plot_fit if $self->co->default('lcf', 'plot_during');
     #$self->clean;
 
     my %fit = (
@@ -540,6 +556,7 @@ sub restore {
   $self->clear_standards;
   foreach my $k (keys %$rhash) {
     next if ($k =~ m{\A(?:$stats_regex)});
+    next if ($k eq 'Data');
     my $rlist = $rhash->{$k};
     my $this_data = $self->mo->fetch('Data', $k);
     $self->push_standards($this_data);
@@ -556,16 +573,16 @@ sub restore {
 
 sub combi_report {
   my ($self, $fname) = @_;
-  if ($self->co->default("lcf", "combi_output") eq 'excel') {
-    $self->combi_report_excel($fname);
+  if ($self->co->default("lcf", "output") eq 'excel') {
+    $self->report_excel($fname, 'combi');
   } else {
-    $self->combi_report_csv($fname);
+    $self->report_csv($fname, 'combi');
   };
 };
 
 
-sub combi_report_excel {
-  my ($self, $fname) = @_;
+sub report_excel {
+  my ($self, $fname, $which) = @_;
   my @stats = qw(rfactor chinu chisqr nvarys scaleby);
   my @stand = keys %{ $self->options };
   my @names = map {$self->mo->fetch('Data', $_)->name} @stand;
@@ -597,6 +614,10 @@ sub combi_report_excel {
   $group -> set_align('left');
 
   my $col = 0;
+  if ($which eq 'seq') {
+    $worksheet->write(1, $col, 'Data', $head);
+    ++$col;
+  };
   foreach my $s (@stats) {
     $worksheet->write(1, $col, $s, $head);
     ++$col;
@@ -612,7 +633,12 @@ sub combi_report_excel {
 
   my $row = 2;
   $col = 0;
-  foreach my $res (@{ $self->combi_results }) {
+  my $att = $which.'_results';
+  foreach my $res (@{ $self->$att }) {
+    if ($which eq 'seq') {
+      $worksheet->write($row, $col, $self->mo->fetch('Data', $res->{Data})->name);
+      ++$col;
+    };
     foreach my $s (@stats) {
       $worksheet->write($row, $col, $res->{ucfirst($s)});
       ++$col;
@@ -634,8 +660,8 @@ sub combi_report_excel {
   $workbook->close;
 };
 
-sub combi_report_csv {
-  my ($self, $fname) = @_;
+sub report_csv {
+  my ($self, $fname, $which) = @_;
   my @stats = qw(rfactor chinu chisqr nvarys scaleby);
   my @stand = keys %{ $self->options };
   my @names = map {$self->mo->fetch('Data', $_)->name} @stand;
@@ -643,7 +669,8 @@ sub combi_report_csv {
   open(my $FH, '>', $fname);
   print $FH join(',', @stats), ',';
   print $FH join(',,,,', @names), ",,,,\n";
-  foreach my $res (@{ $self->combi_results }) {
+  my $att = $which.'_results';
+  foreach my $res (@{ $self->$att }) {
     print $FH ($res->{ucfirst($_)},',') foreach @stats;
     foreach my $st (@stand) {
       if (exists $res->{$st}) {
@@ -657,6 +684,129 @@ sub combi_report_csv {
   close $FH;
 };
 
+
+sub sequence {
+  my ($self, @groups) = @_;
+  my $first = $self->data;
+  my @data = uniq($first, @groups);
+  my $nfits = $#data+1;
+
+  $self->doing_seq(1);
+  $self->start_counter("Performing a sequence of LCF fitting", $nfits) if ($self->mo->ui eq 'screen');
+  my @results = ();
+  my $count = 1;
+  my @standards = @{$self->standards};
+  foreach my $d (@data) {
+    $self->clean;
+    $self->seq_count($count);
+    $self->count if ($self->mo->ui eq 'screen');
+    $self->call_sentinal;
+    $self->data($d);
+    $self->clear_standards;
+   foreach my $st (@standards) {
+      $self->push_standards($st);
+      $self->weight($st, 1/($#standards+1));
+      $self->e0($st, 0);
+    };
+    $self->fit(1);
+    $self->plot_fit if $self->co->default('lcf', 'plot_during');
+    my %fit = (
+	       Rfactor => $self->rfactor,
+	       Chinu   => $self->chinu,
+	       Chisqr  => $self->chisqr,
+	       Nvarys  => $self->nvarys,
+	       Scaleby => $self->scaleby,
+	       Data    => $d->group,
+	      );
+    foreach my $st (@standards) { # use of capitalized keys above avoid key collision
+      $fit{$st->group} = [$self->weight($st), $self->e0($st)];
+    };
+    push @results, \%fit;
+    ++$count;
+  };
+  $self->stop_counter if ($self->mo->ui eq 'screen');
+  $self->clean;
+  $self->data($first);
+  my $which = ($self->space =~ m{\Achi}) ? "lcf_prep_k" : "lcf_prep";
+  $self->dispose($self->template("analysis", $which));
+  $self->set(doing_seq=>0, seq_results=>\@results);
+  $self->restore($results[0]);
+  $self->plot_fit if $self->co->default('lcf', 'plot_during');
+  return $self;
+};
+
+
+sub sequence_report {
+  my ($self, $fname) = @_;
+  if ($self->co->default("lcf", "output") eq 'excel') {
+    $self->report_excel($fname, 'seq');
+  } else {
+    $self->report_csv($fname, 'seq');
+  };
+  return $self;
+};
+
+sub sequence_plot {
+  my ($self) = @_;
+  $self->po->start_plot;
+  my $tempfile = $self->po->tempfile;
+  open my $T, '>'.$tempfile;
+  print $T $self->sequence_columns;
+  close $T;
+
+  my $first = $self->seq_results->[0];
+  my @all = keys(%$first);
+  my @stan = grep {$_ !~ m{\A[A-Z]}} @all;
+  my $st1 = shift @stan;
+  $self->dispose($self->template('plot', 'newlcf_seq', {file=>$tempfile, col=>2, title=>$self->mo->fetch('Data', $st1)->name}), 'plotting');
+  my $col = 4;
+  foreach my $st (@stan) {
+    $self->po->increment;
+    $self->dispose($self->template('plot', 'overlcf_seq', {file=>$tempfile, col=>$col, title=>$self->mo->fetch('Data', $st)->name}), 'plotting');
+    $col += 2;
+  };
+  return $self;
+};
+
+sub sequence_columns {
+  my ($self) = @_;
+  my $first = $self->seq_results->[0];
+  my @all = keys(%$first);
+  my @stan = grep {$_ !~ m{\A[A-Z]}} @all;
+  my $nstan = $#all - 5;
+  my $format = ' %d' . '   %.3f' x (2*$nstan) . "\n";
+  my $text = "# Linear combination results\n";
+  my $count = 1;
+  foreach my $res (@{ $self->seq_results }) {
+    $text   .= "# $count: ". $self->mo->fetch('Data', $res->{Data})->name . "\n";
+    ++$count;
+  };
+  $text   .= "# --------------------------\n";
+  $text   .= "# N   " . join("   ", map {$_ =~ s{\s}{_}g; "$_   error"} map {$self->mo->fetch('Data', $_)->name} @stan) . "\n";
+  $count = 1;
+  foreach my $res (@{ $self->seq_results }) {
+    my @weights;
+    foreach my $st (@stan) {
+      push @weights, $res->{$st}->[0], $res->{$st}->[1];
+    };
+    $text .= sprintf($format, $count++, @weights);
+  };
+  return $text;
+};
+
+sub sequence_xtics {
+  my ($self) = @_;
+  my $text = 'set xtics (';
+  my $i = 1;
+  foreach my $res (@{ $self->seq_results }) {
+    $text .= '"' . $self->mo->fetch('Data', $res->{Data})->name . "\" $i, ";
+    ++$i;
+  };
+  chop $text;
+  chop $text;
+  $text .= ")\n";
+  return $text;
+};
 
 
 __PACKAGE__->meta->make_immutable;
@@ -1159,28 +1309,93 @@ C<save> will act on that fit.  To examine other fits from the
 sequence, the C<restore> must be called using one of the results from
 the C<combi_results> attribute.
 
-=item C<combi_size>
-
-This is used by the C<combi> method to determine the entire list of
-combinations.  When called in scalar context, it gives the number of
-fit in the combinatorial problem.  It is probably best to call it in
-explicit scalar context:
-
-  printf("There will be %d fits.\n", scalar($lcf->combi_size));
-
-This can be used, for example, to query the user as to whether to
-continue in the case of a very large number of fits.
-
 =item C<combi_report>
 
-Write a CSV (comma separated value) file that can be imported into a
-spreadsheet with the results of the combinatorial fit.
+Write an Excel or CSV (comma separated value) file that can be
+imported into a spreadsheet with the results of the combinatorial fit.
 
-  $lcf->combi_report("results.csv");
+  $lcf->combi_report("results.xls");
 
 The argument is the name of the output file (which you probably want
-to give a ".csv" extension so your spreadsheet will know to import it
-as such.
+to give a ".csv" or ".xls" extension so your spreadsheet will know to
+import it as such.  The choice of file type is controlled by the value
+of the C<lcf -E<gt>; output> configuration parameter.
+
+Note that care is taken to strip any commas from the names of the
+standards before writing the CSV file.  Also note that this does not
+make the most elegant spreadsheet, but it is certainly functional and
+it certainly allows you to examine all of your results.
+
+=back
+
+=head1 SEQUENCE FITTING
+
+These attributes and methods are specifically related to combinatorial
+fitting.  A combinatorial fit is one in which all possible
+combinations (within certain constraints) are compared to the data.
+
+=head2 Attributes for combinatorial fitting
+
+=over 4
+
+=item C<seq_results>
+
+This is an array of hashes, sorted by rfactor, containing all the
+results of fitting sequence.
+
+Each hash in the array looks like this:
+
+  {
+   Rfactor => Num,
+   Chinu   => Num,
+   Chisqr  => Num,
+   Nvarys  => Num,
+   Scaleby => Num,
+   aaaaa   => [weight, dweight, e0, de0],
+   bbbbb   => [weight, dweight, e0, de0],
+   ....
+  }
+
+A key like "aaaaa" is the group attribute of a Data object used in the
+fit.  From this, the final state of each fit can be recovered using
+the C<restore> method.
+
+=back
+
+=head2 Methods of sequence fitting
+
+=over 4
+
+=item C<sequence>
+
+Perform a sequence of fits to a group data.
+
+  $lcf->sequence(@data);
+
+The data in C<$lcf> is appended to the beginning of C<@data>. Care is
+taken to remove repeats from C<@data>.
+
+At the end of the fit, the C<seq_results> attribute is filled with an
+array of hashes containing the results of each fit.  This array is in
+the same order as C<@data>.
+
+At the end of the sequence of fits, the fit to the data originally in
+C<$lcf> will be restored.  Calling C<plot_fit>, C<report>, or C<save>
+will act on that fit.  To examine other fits from the sequence, the
+C<restore> must be called using one of the results from the
+C<seq_results> attribute.
+
+=item C<sequence_report>
+
+Write an Excel or CSV (comma separated value) file that can be
+imported into a spreadsheet with the results of the combinatorial fit.
+
+  $lcf->sequence_report("results.csv");
+
+The argument is the name of the output file (which you probably want
+to give a ".csv" or ".xls" extension so your spreadsheet will know to
+import it as such.  The choice of file type is controlled by the value
+of the C<lcf -E<gt>; output> configuration parameter.
 
 Note that care is taken to strip any commas from the names of the
 standards before writing the CSV file.  Also note that this does not
@@ -1196,7 +1411,7 @@ Good question ...
 =head1 CONFIGURATION AND ENVIRONMENT
 
 See L<Demeter::Config> for a description of the configuration system.
-See the lcf configuration group for the relevant parameters.
+See the C<lcf> configuration group for the relevant parameters.
 
 =head1 DEPENDENCIES
 

@@ -224,7 +224,7 @@ sub import {
       next PRAG;
     };
     if ($p eq ':analysis') {
-      @load = (@data, @anal);
+      @load = (@data, @anal, @xes);
       $colonanalysis = 1;	# need to load peakfit separately while using fityk, see below
       next PRAG;
     };

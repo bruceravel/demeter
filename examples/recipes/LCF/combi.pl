@@ -20,6 +20,7 @@ my $lcf = Demeter::LCF -> new(space=>'nor', unity=>1, inclusive=>0,
 			      plot_difference=>1, plot_components=>0);
 
 $prj -> set_mode('screen' => 0);
+#$prj -> co -> set_default('lcf', 'plot_during', 1);
 
 my $data     = $prj->record(4);
 my @standards = $prj->records(10, 12..17);

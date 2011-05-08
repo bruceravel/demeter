@@ -98,23 +98,23 @@ description
   The initialization default for the maximum number of standards to
   use in a combinatorial fit.
 
-variable=combi_output
+variable=output
 type=list
 options=excel csv
 default=excel
 description
   The output format of the report on the reuslts of a combinatorial
-  sequence of fits.  The default is an Excel spreadsheet.  The other
+  or sequence fit.  The default is an Excel spreadsheet.  The other
   option is an text file of comma-spearated values.
 
-variable=combi_plot_during
+variable=plot_during
 type=boolean
 onvalue=1
 offvalue=0
 default=false
 description
   When true, a plot will be made at every step during a combinatorial
-  plot.
+  or sequence fit.
 
 variable=emin
 type=real

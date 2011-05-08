@@ -155,6 +155,7 @@ sub main_page {
 });
   EVT_BUTTON($this, $this->{report}, sub{save(@_)});
   EVT_BUTTON($this, $this->{combi},  sub{combi(@_)});
+  EVT_BUTTON($this, $this->{fitmarked}, sub{sequence(@_)});
 
 
   $panel->SetSizerAndFit($box);
@@ -222,13 +223,26 @@ sub marked_page {
   $this->{markedresults}->InsertColumn( 0, "Data",            wxLIST_FORMAT_LEFT, 100 );
   $this->{markedresults}->InsertColumn( 1, "R-factor",        wxLIST_FORMAT_LEFT, 80 );
   $this->{markedresults}->InsertColumn( 2, "Red. chi-square", wxLIST_FORMAT_LEFT, 80 );
+  $this->{markedresults}->InsertColumn( 3, "Stan. 1",         wxLIST_FORMAT_LEFT, 80 );
+  $this->{markedresults}->InsertColumn( 4, "Stan. 2",         wxLIST_FORMAT_LEFT, 80 );
+  $this->{markedresults}->InsertColumn( 5, "Stan. 3",         wxLIST_FORMAT_LEFT, 80 );
+  $this->{markedresults}->InsertColumn( 6, "Stan. 4",         wxLIST_FORMAT_LEFT, 80 );
   $box->Add($this->{markedresults}, 1, wxALL|wxGROW, 3);
+  EVT_LIST_ITEM_SELECTED($this, $this->{markedresults}, sub{seq_select(@_)});
 
-  $this->{plotmarked}	 = Wx::Button->new($panel, -1, 'Plot results of fits to marked groups');
-  $this->{markedreport}	 = Wx::Button->new($panel, -1, 'Save marked fits report as an Excel file');
+  $this->{mreport} = Wx::TextCtrl->new($panel, -1, q{}, wxDefaultPosition, wxDefaultSize,
+					    wxTE_MULTILINE|wxTE_WORDWRAP|wxTE_AUTO_URL|wxTE_READONLY|wxTE_RICH2);
+  my $size = Wx::SystemSettings::GetFont(wxSYS_DEFAULT_GUI_FONT)->GetPointSize;
+  $this->{mreport}->SetFont( Wx::Font->new( $size, wxTELETYPE, wxNORMAL, wxNORMAL, 0, "" ) );
+  $box->Add($this->{mreport}, 1, wxALL|wxGROW, 3);
+
+
+  $this->{plotmarked}	 = Wx::Button->new($panel, -1, 'Plot components from fit sequence');
+  $this->{markedreport}	 = Wx::Button->new($panel, -1, 'Save fit sequence report as an Excel file');
   $box->Add($this->{plotmarked},   0, wxGROW|wxALL, 2);
   $box->Add($this->{markedreport}, 0, wxGROW|wxALL, 2);
-  #EVT_BUTTON($this, $this->{markedreport}, sub{combi_report(@_)});
+  EVT_BUTTON($this, $this->{markedreport}, sub{seq_report(@_)});
+  EVT_BUTTON($this, $this->{plotmarked},   sub{seq_plot(@_)});
   $this->{plotmarked}->Enable(0);
   $this->{markedreport}->Enable(0);
 
@@ -280,10 +294,11 @@ sub push_values {
   foreach my $i (0 .. $this->{nstan}-1) {
     ++$count if ($this->{'standard'.$i}->GetSelection > 0);
   };
-  $this->{fit}   -> Enable($count > 1);
-  $this->{combi} -> Enable($count > 2);
-  $this->{plot}  -> Enable($count > 0);
-  $this->{plotr} -> Enable($count > 0) if ($this->{space}->GetSelection == 2);
+  $this->{fit}       -> Enable($count > 1);
+  $this->{fitmarked} -> Enable($count > 1);
+  $this->{combi}     -> Enable($count > 2);
+  $this->{plot}      -> Enable($count > 0);
+  $this->{plotr}     -> Enable($count > 0) if ($this->{space}->GetSelection == 2);
 
   1;
 };
@@ -307,14 +322,14 @@ sub OnSelect {
       $this->{'weight'.$i}->SetValue(0);
     };
   };
-  $this->{fit}   -> Enable($count > 1);
-  $this->{combi} -> Enable($count > 2);
-  $this->{plot}  -> Enable($count > 0);
-  $this->{plotr} -> Enable($count > 0) if ($this->{space}->GetSelection == 2);
+  $this->{fit}       -> Enable($count > 1);
+  $this->{fitmarked} -> Enable($count > 1);
+  $this->{combi}     -> Enable($count > 2);
+  $this->{plot}      -> Enable($count > 0);
+  $this->{plotr}     -> Enable($count > 0) if ($this->{space}->GetSelection == 2);
 
   $this->{make}         -> Enable(0);
   $this->{report}       -> Enable(0);
-  $this->{fitmarked}    -> Enable(0);
   $this->{resultplot}   -> Enable(0);
   $this->{resultreport} -> Enable(0);
 };
@@ -506,13 +521,13 @@ sub combi {
   $this->combi_results;
   $this->{make}         -> Enable(1);
   $this->{report}       -> Enable(1);
-  #$this->{fitmarked}    -> Enable(1);
-  #$this->{markedreport} -> Enable(1);
+  $this->{fitmarked}    -> Enable(1);
   $this->{resultplot}   -> Enable(1);
   $this->{resultreport} -> Enable(1);
   $this->{combireport}  -> Enable(1);
 
   $this->{stats}->SetItemState(0, wxLIST_STATE_SELECTED, wxLIST_STATE_SELECTED );
+  $this->{notebook}->ChangeSelection(2);
 
   my $finish = DateTime->now( time_zone => 'floating' );
   my $dur = $finish->subtract_datetime($start);
@@ -621,6 +636,133 @@ sub combi_report {
   $this->{LCF}->combi_report($fname);
   $::app->{main}->status("Wrote combinatorial report as an Excel spreadsheet to $fname");
 };
+
+
+sub sequence {
+  my ($this, $event) = @_;
+  my $busy = Wx::BusyCursor->new();
+  my $trouble = $this->_prep(0);
+  if ($trouble) {
+    $::app->{main}->status("Not doing sequence -- the $trouble parameter value is not a number!", 'error|nobuffer');
+    return;
+  };
+
+  my @groups = $::app->marked_groups;
+  $::app->{main}->status(sprintf("Fitting %d marked groups", $#groups+1), 'wait');
+  my $start = DateTime->now( time_zone => 'floating' );
+  $this->{LCF} -> sentinal(sub{$this->seq_sentinal($#groups+1)});
+  $this->{LCF} -> sequence(@groups);
+
+  $this->{result}->Clear;
+  $this->{result}->SetValue($this->{LCF}->report);
+
+  $this->seq_results(@groups);
+  $this->{markedresults} -> SetItemState(0, wxLIST_STATE_SELECTED, wxLIST_STATE_SELECTED );
+  $this->{plotmarked}    -> Enable(1);
+  $this->{markedreport}  -> Enable(1);
+
+  my $finish = DateTime->now( time_zone => 'floating' );
+  my $dur = $finish->subtract_datetime($start);
+  my $finishtext = sprintf "Fit %d groups %d minutes, %d seconds.", $#groups+1, $dur->minutes, $dur->seconds;
+  $::app->{main}->status($finishtext);
+
+  undef $busy;
+};
+
+sub seq_sentinal {
+  my ($this, $size) = @_;
+  $::app->{main}->status($this->{LCF}->seq_count." of $size LCF fits", 'wait|nobuffer');
+};
+
+sub seq_results {
+  my ($this, @data) = @_;
+
+  $this->{markedresults}->DeleteAllItems;
+  $this->{mreport}->Clear;
+  my @standards = @{ $this->{LCF}->standards };
+
+  my $ncol = $this->{markedresults}->GetColumnCount;
+  foreach my $nc (reverse(4..$ncol)) {
+    $this->{markedresults}->DeleteColumn($nc-1);
+  };
+  my $c = 3;
+  foreach my $st (@standards) {
+    $this->{markedresults}->InsertColumn($c++ , $st->name, wxLIST_FORMAT_LEFT, 80 );
+  };
+
+  my ($i, $row) = (0,0);
+  foreach my $res (@{ $this->{LCF}->seq_results }) {
+    my $rfact = $res->{Rfactor};
+    my $chinu = $res->{Chinu};
+
+    my $idx = $this->{markedresults}->InsertStringItem($i, $row);
+    $this->{markedresults}->SetItemData($idx, $i);
+    $this->{markedresults}->SetItem( $idx, 0, $data[$i]->name );
+    $this->{markedresults}->SetItem( $idx, 1, sprintf("%.5g", $rfact) );
+    $this->{markedresults}->SetItem( $idx, 2, sprintf("%.5g", $chinu) );
+    ++$i;
+    my $c = 3;
+    foreach my $st (@standards) {
+      $this->{markedresults}->SetItem( $idx, $c, sprintf("%.3f(%.3f)", $res->{$st->group}->[0], $res->{$st->group}->[1]) );
+      ++$c;
+      last if $c>6;
+    };
+    ++$row;
+  };
+  $this->{notebook}->ChangeSelection(3);
+};
+
+
+sub seq_select {
+  my ($this, $event) = @_;
+  my $result = $this->{LCF}->seq_results->[$event->GetIndex];
+  my $data   = $this->{LCF}->mo->fetch('Data', $result->{Data});
+  $this->{LCF}->data($data);
+  my $which = ($this->{LCF}->space =~ m{\Achi}) ? "lcf_prep_k" : "lcf_prep";
+  $this->{LCF}->dispose($this->{LCF}->template("analysis", $which));
+  $this->{LCF}->restore($result);
+  $this->{mreport}->SetValue($this->{LCF}->report);
+
+  $this->{result}->Clear;
+  $this->{result}->SetValue($this->{LCF}->report);
+  $this->_remove_all;
+  my $i = 0;
+  foreach my $st (@{ $this->{LCF}->standards }) {
+    $this->{'standard'.$i}->SetStringSelection($st->name);
+    my $w = sprintf("%.3f", $this->{LCF}->weight($st));
+    my $e = sprintf("%.3f", $this->{LCF}->e0($st));
+    $this->{'weight'.$i}  -> SetValue($w);
+    $this->{'e0'.$i}      -> SetValue($e);
+    $this->{'fite0'.$i}   -> SetValue($this->{LCF}->is_e0_floated($st));
+    $this->{'require'.$i} -> SetValue($this->{LCF}->is_required($st));
+    ++$i;
+  };
+
+  $this->{LCF}->plot_fit;
+};
+
+sub seq_report {
+  my ($this, $event) = @_;
+  my $fd = Wx::FileDialog->new( $::app->{main}, "Save fit sequence results", cwd, "sequence.xls",
+				"Excel (*.xls)|*.xls|All files|*",
+				wxFD_SAVE|wxFD_CHANGE_DIR, #|wxFD_OVERWRITE_PROMPT,
+				wxDefaultPosition);
+  if ($fd->ShowModal == wxID_CANCEL) {
+    $::app->{main}->status("Saving fit sequence results has been cancelled.");
+    return 0;
+  };
+  my $fname = File::Spec->catfile($fd->GetDirectory, $fd->GetFilename);
+  return if $::app->{main}->overwrite_prompt($fname); # work-around gtk's wxFD_OVERWRITE_PROMPT bug (5 Jan 2011)
+  $this->{LCF}->sequence_report($fname);
+  $::app->{main}->status("Wrote fit sequence report as an Excel spreadsheet to $fname");
+};
+
+sub seq_plot {
+  my ($this, $event) = @_;
+  $this->{LCF}->sequence_plot;
+  $::app->{main}->status("Plotted components from the fit sequence");
+};
+
 
 sub _remove_all {
   my ($this) = @_;
