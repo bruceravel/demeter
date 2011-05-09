@@ -45,8 +45,8 @@ $lcf -> sequence(@data);
 $lcf -> plot_fit;
 #print $lcf->report;
 #$lcf->sequence_report('seq.xls');
-print $lcf->sequence_columns;
-#print $lcf->sequence_xtics;
+#print $lcf->sequence_columns;
+print $lcf->serialization;
 $lcf->sequence_plot;
 
 $lcf->pause;

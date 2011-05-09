@@ -150,13 +150,12 @@ sub main_page {
     $actionsboxsizer->Add($this->{$w}, 0, wxGROW|wxALL, 0);
     $this->{$w}->Enable(0);
   };
-  EVT_BUTTON($this, $this->{fit},    sub{fit(@_, 0)});
-  EVT_BUTTON($this, $this->{plot},   sub{$this->{LCF}->plot_fit;   $::app->{main}->status(sprintf("Plotted %s and LCF fit", $this->{LCF}->data->name));
-});
-  EVT_BUTTON($this, $this->{report}, sub{save(@_)});
-  EVT_BUTTON($this, $this->{combi},  sub{combi(@_)});
+  EVT_BUTTON($this, $this->{fit},       sub{fit(@_, 0)});
+  EVT_BUTTON($this, $this->{plot},      sub{$this->{LCF}->plot_fit;   $::app->{main}->status(sprintf("Plotted %s and LCF fit", $this->{LCF}->data->name));});
+  EVT_BUTTON($this, $this->{report},    sub{save(@_)});
+  EVT_BUTTON($this, $this->{combi},     sub{combi(@_)});
   EVT_BUTTON($this, $this->{fitmarked}, sub{sequence(@_)});
-
+  EVT_BUTTON($this, $this->{make},      sub{make(@_)});
 
   $panel->SetSizerAndFit($box);
   return $panel;
@@ -790,6 +789,21 @@ sub save {
   return if $::app->{main}->overwrite_prompt($fname); # work-around gtk's wxFD_OVERWRITE_PROMPT bug (5 Jan 2011)
   $this->{LCF}->save($fname);
   $::app->{main}->status("Saved LCF results to $fname");
+};
+
+
+sub make {
+  my ($this, $event) = @_;
+  my $new = $this->{LCF}->make_group;
+
+  my $index = $::app->current_index;
+  if ($index == $::app->{main}->{list}->GetCount-1) {
+    $::app->{main}->{list}->AddData($new->name, $new);
+  } else {
+    $::app->{main}->{list}->InsertData($new->name, $index+1, $new);
+  };
+  $::app->{main}->status("Made a new data group fromLCF fit to " . $::app->current_data->name);
+  $::app->modified(1);
 };
 
 1;

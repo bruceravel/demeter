@@ -267,43 +267,47 @@ sub normalize {
 
   my $fixed = $self->bkg_fixstep;
 
-  ## call pre_edge()
-  my $precmd = $self->template("process", "normalize");
-  $self->dispose($precmd);
+  if (not $self->is_nor) {
+    ## call pre_edge()
+    my $precmd = $self->template("process", "normalize");
+    $self->dispose($precmd);
 
-  my $e0 = Ifeffit::get_scalar("e0");
-  my ($elem, $edge) = $self->find_edge($e0);
-  $self->bkg_e0($e0);
-  $self->bkg_z($elem);
-  $self->fft_edge($edge);
-  $self->bkg_spl1($self->bkg_spl1); # this odd move sets the spl1e and
-  $self->bkg_spl2($self->bkg_spl2); # spl2e attributes correctly for the
-				    # new value of e0
+    my $e0 = Ifeffit::get_scalar("e0");
+    my ($elem, $edge) = $self->find_edge($e0);
+    $self->bkg_e0($e0);
+    $self->bkg_z($elem);
+    $self->fft_edge($edge);
+    $self->bkg_spl1($self->bkg_spl1); # this odd move sets the spl1e and
+    $self->bkg_spl2($self->bkg_spl2); # spl2e attributes correctly for the
+				      # new value of e0
 
-  ## incorporate results of pre_edge() into data object
-  $self->bkg_nc0(sprintf("%.14f", Ifeffit::get_scalar("norm_c0")));
-  $self->bkg_nc1(sprintf("%.14f", Ifeffit::get_scalar("norm_c1")));
-  $self->bkg_nc2(sprintf("%.14g", Ifeffit::get_scalar("norm_c2")));
+    ## incorporate results of pre_edge() into data object
+    $self->bkg_nc0(sprintf("%.14f", Ifeffit::get_scalar("norm_c0")));
+    $self->bkg_nc1(sprintf("%.14f", Ifeffit::get_scalar("norm_c1")));
+    $self->bkg_nc2(sprintf("%.14g", Ifeffit::get_scalar("norm_c2")));
 
-  if ($self->datatype eq 'xmudat') {
-    $self->bkg_slope(0);
-    $self->bkg_int(0);
+    if ($self->datatype eq 'xmudat') {
+      $self->bkg_slope(0);
+      $self->bkg_int(0);
+    } else {
+      $self->bkg_slope(sprintf("%.14f", Ifeffit::get_scalar("pre_slope")));
+      $self->bkg_int(sprintf("%.14f", Ifeffit::get_scalar("pre_offset")));
+    };
+    $self->bkg_step(sprintf("%.7f", $fixed || Ifeffit::get_scalar("edge_step")));
+    $self->bkg_fitted_step($self->bkg_step) if not ($self->bkg_fixstep);
+    $self->bkg_fitted_step(1) if ($self->is_nor);
+
+    my $command = q{};
+    $command .= $self->template("process", "post_autobk");
+    if ($self->bkg_fixstep) { # or ($self->datatype eq 'xanes')) {
+      $command .= $self->template("process", "flatten_fit");
+    } else {
+      $command .= $self->template("process", "flatten_set");
+    };
+    $self->dispose($command);
   } else {
-    $self->bkg_slope(sprintf("%.14f", Ifeffit::get_scalar("pre_slope")));
-    $self->bkg_int(sprintf("%.14f", Ifeffit::get_scalar("pre_offset")));
+    $self->dispose($self->template("process", "is_nor"));
   };
-  $self->bkg_step(sprintf("%.7f", $fixed || Ifeffit::get_scalar("edge_step")));
-  $self->bkg_fitted_step($self->bkg_step) if not ($self->bkg_fixstep);
-  $self->bkg_fitted_step(1) if ($self->is_nor);
-
-  my $command = q{};
-  $command .= $self->template("process", "post_autobk");
-  if ($self->bkg_fixstep or $self->is_nor) { # or ($self->datatype eq 'xanes')) {
-    $command .= $self->template("process", "flatten_fit");
-  } else {
-    $command .= $self->template("process", "flatten_set");
-  };
-  $self->dispose($command);
 
   $self->update_norm(0);
   return $self;

@@ -19,3 +19,4 @@ try/
 examples/cu/temp/
 examples/feff/
 win/deps/*.xml
+examples/recipes/LCF/*.xls

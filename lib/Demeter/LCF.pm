@@ -808,6 +808,21 @@ sub sequence_xtics {
   return $text;
 };
 
+sub make_group {
+  my ($self) = @_;
+  my $suff = ($self->space =~ m{\Achi}) ? "k" : "energy";
+  my @x = $self->get_array('x');
+  my @y = $self->get_array('lcf');
+  my $name = "LCF " . $self->data->name;
+  my $which = ($self->space =~ m{\Achi}) ? "chi" : "xmu";
+  my $data = $self->data->put(\@x, \@y, datatype=>$which, is_nor=>1, name=>$name);
+  #my %attributes = $self->data->all;
+  #foreach my $a (qw(datatype name is_nor bkg_step bkg_eshift data datagroup)) {
+  #  delete $attributes{$a};
+  #};
+  #$data->set(%attributes);
+  return $data;
+};
 
 __PACKAGE__->meta->make_immutable;
 1;
@@ -1401,6 +1416,10 @@ Note that care is taken to strip any commas from the names of the
 standards before writing the CSV file.  Also note that this does not
 make the most elegant spreadsheet, but it is certainly functional and
 it certainly allows you to examine all of your results.
+
+=item C<sequence_plot>
+
+Make a plot of the component weights as a function of data set.
 
 =back
 
