@@ -863,7 +863,7 @@ sub make_group {
   foreach my $k (keys %attributes) {
     delete $attributes{$k} if ($k !~ m{\A(?:bkg|bft|fft|fit)_});
   };
-  delete %attributes{bkg_eshift};
+  delete $attributes{bkg_eshift};
   #foreach my $a (qw(datatype name is_nor bkg_step bkg_eshift data datagroup)) {
   #  delete $attributes{$a};
   #};
