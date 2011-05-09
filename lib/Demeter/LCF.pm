@@ -27,7 +27,7 @@ use Moose::Util::TypeConstraints;
 use Demeter::StrTypes qw( Empty );
 
 use List::Util qw(min);
-use List::MoreUtils qw(any none uniq);
+use List::MoreUtils qw(any none uniq pairwise);
 use Math::Combinatorics;
 use Spreadsheet::WriteExcel;
 
@@ -52,6 +52,7 @@ has 'space' => (is => 'rw', isa => 'Str',    default => q{norm},  # deriv chi
 has 'suffix' => (is => 'rw', isa => 'Str',    default => q{flat});
 has 'space_description' => (is => 'rw', isa => 'Str',    default => q{flattened mu(E)});
 has 'noise'  => (is => 'rw', isa => 'Num',    default => 0);
+has 'kweight'   => (is => 'rw', isa => 'Num',  default => 0);
 
 has 'max_standards' => (is => 'rw', isa => 'Int', default => sub{ shift->co->default("lcf", "max_standards")  || 4});
 
@@ -163,6 +164,7 @@ sub add {
   $hash{float_e0} ||= 0;
   $hash{required} ||= 0;
   $hash{e0}       ||= 0;
+  my $weight_provided = exists($hash{weight});
   my @previous = @{ $self->standards };
   $self->push_standards($stan);
 
@@ -173,8 +175,9 @@ sub add {
   my $key = $stan->group;
   $self->set_option($key, [$hash{float_e0}, $hash{required}, $hash{weight}, 0, $hash{e0}, 0]); ## other 2 are dweight and de0
 
+  return $self if $weight_provided;
   foreach my $prev (@previous) {
-    $self->weight($prev, (1-$hash{weight})/($n-1));
+    $self->weight($prev, 1/$n);
   };
   return $self;
 };
@@ -269,23 +272,20 @@ sub _sanity {
   return $self;
 };
 
-sub fit {
-  my ($self, $quiet) = @_;
-  $self->_sanity;
-
-  $self->start_spinner("Demeter is performing an LCF fit") if (($self->mo->ui eq 'screen') and (not $quiet));
-  my ($how) = ($self->suffix eq 'chi') ? 'bft' : 'fft';
-  $self->data->_update($how);
-  my @all = @{ $self->standards };
-  $_ -> _update($how) foreach (@all);
+sub prep_arrays {
+  my ($self, $how) = @_;
+  my $ud = ($self->suffix eq 'chi') ? 'bft' : 'fft';
 
   ## prepare the data for LCF fitting
   my $n1 = $self->data->iofx('energy', $self->xmin);
   my $n2 = $self->data->iofx('energy', $self->xmax);
+  $self->data -> _update($ud);
   my $which = ($self->space =~ m{\Achi}) ? "lcf_prep_k" : "lcf_prep";
   $self -> dispose($self->template("analysis", $which));
 
   ## interpolate all the standards onto the grid of the data
+  my @all = @{ $self->standards };
+  $_ -> _update($ud) foreach (@all);
   $self->mo->standard($self);
   foreach my $stan (@all[0..$#all-1]) {
     $which = ($self->space =~ m{\Achi}) ? "lcf_prep_standard_k" : "lcf_prep_standard";
@@ -298,7 +298,19 @@ sub fit {
     $which = ($self->space =~ m{\Achi}) ? "lcf_prep_standard_k" : "lcf_prep_standard";
     $all[-1] -> dispose($all[-1]->template("analysis", $which));
   };
+  $self -> dispose($self->template("analysis", 'lcf_prep_lcf', {how=>$how}));
+  $self->mo->standard(q{});
+  return $self;
+};
 
+sub fit {
+  my ($self, $quiet) = @_;
+  $self->_sanity;
+
+  $self->start_spinner("Demeter is performing an LCF fit") if (($self->mo->ui eq 'screen') and (not $quiet));
+  my @all = @{ $self->standards };
+
+  $self->prep_arrays('def');
   ## create the array to minimize and perform the fit
   $self -> dispose($self->template("analysis", "lcf_fit"));
 
@@ -318,7 +330,6 @@ sub fit {
   };
   $self->_statistics;
 
-  $self->mo->standard(q{});
   $self->stop_spinner if (($self->mo->ui eq 'screen') and (not $quiet));
   return $self;
 };
@@ -336,7 +347,7 @@ sub _statistics {
       ++$count;
       $avg += $func[$i];
     };
-    $avg /= $count;
+    $avg /= $count if $count != 0;
   };
   foreach my $i (0 .. $#x) {
     next if ($x[$i] < $self->xmin);
@@ -364,6 +375,7 @@ sub _statistics {
     $sum += $w;
   };
   $self->scaleby(sprintf("%.3f",$sum));
+  $self->kweight($self->po->kweight) if ($self->space =~ m{\Achi});
   return $self;
 };
 
@@ -375,6 +387,7 @@ sub report {
 
 sub plot_fit {
   my ($self) = @_;
+  $self->prep_arrays('set');
   $self->po->start_plot;
   my $step = 0;
   if ($self->space =~ m{\Achi}) {
@@ -436,8 +449,6 @@ sub plot {
   ## only make a plot if the LCF meets all the conditions of the current plot
   ($do_plot = 1) if (($self->po->space eq 'k') and ($self->space =~ m{\Achi}));
 
-  #($do_plot = 1) if (($self->po->space eq 'r') and ($self->space =~ m{\Achi}));
-
   ($do_plot = 1) if (($self->po->space eq 'e') and ($self->space =~ m{\Anor}) and
 		     $self->po->e_norm and (not $self->po->e_der));
 
@@ -448,9 +459,37 @@ sub plot {
     ## if space is chi and plot ir R, do FFTs and plot those...
     $self->dispose($self->template("plot", "overlcf", {suffix=>'lcf', yoffset=>$self->data->y_offset}), 'plotting');
   };
+  if (($self->po->space eq 'r') and ($self->space =~ m{\Achi})) {
+    my $suff = ($self->po->r_pl eq 'm') ? 'chir_mag'
+             : ($self->po->r_pl eq 'r') ? 'chir_re'
+             : ($self->po->r_pl eq 'i') ? 'chir_im'
+             : ($self->po->r_pl eq 'p') ? 'chir_pha'
+	     :                            'chir_mag';
+    $self->dispose($self->template("plot", "overlcf", {suffix=>$suff, yoffset=>$self->data->y_offset}), 'plotting');
+  };
 
   return $self;
 };
+
+
+sub fft {
+  my ($self) = @_;
+  $self->data->_update("fft");
+  $self->prep_arrays('set');
+
+  my $group = $self->group;
+  my $dobject = $self->data->group;
+  my $string = $self->data->_fft_command;
+  $string =~ s{\b$dobject\b}{$group}g; # replace group names
+  $string =~ s{\.k\b}{.x};             # replace abscissa suffix
+  $string =~ s{\.chi\b}{.lcf};         # replace ordinate suffix
+  $string =~ s{\bkweight=\d\b}{kweight=0}; # replace kweighting
+
+  #print $string;
+  $self->dispose($string);
+  return $string;
+};
+
 
 sub save {
   my ($self, $fname) = @_;
@@ -782,7 +821,7 @@ sub sequence_columns {
     ++$count;
   };
   $text   .= "# --------------------------\n";
-  $text   .= "# N   " . join("   ", map {$_ =~ s{\s}{_}g; "$_   error"} map {$self->mo->fetch('Data', $_)->name} @stan) . "\n";
+  $text   .= "# N   " . join("   ", map {$_ =~ s{\s}{_}g; "$_   error_$_"} map {$self->mo->fetch('Data', $_)->name} @stan) . "\n";
   $count = 1;
   foreach my $res (@{ $self->seq_results }) {
     my @weights;
@@ -813,14 +852,22 @@ sub make_group {
   my $suff = ($self->space =~ m{\Achi}) ? "k" : "energy";
   my @x = $self->get_array('x');
   my @y = $self->get_array('lcf');
+  if ($self->space =~ m{\Achi}) {
+    local $SIG{__WARN__} = undef;
+    @y = pairwise {$a**(-1*$self->kweight)*($b||0)} @x, @y;
+  };
   my $name = "LCF " . $self->data->name;
   my $which = ($self->space =~ m{\Achi}) ? "chi" : "xmu";
-  my $data = $self->data->put(\@x, \@y, datatype=>$which, is_nor=>1, name=>$name);
-  #my %attributes = $self->data->all;
+  my $data = $self->data->put(\@x, \@y, datatype=>$which, is_nor=>1, name=>$name, file=>"LCF fit to ".$self->data->name);
+  my %attributes = $self->data->all;
+  foreach my $k (keys %attributes) {
+    delete $attributes{$k} if ($k !~ m{\A(?:bkg|bft|fft|fit)_});
+  };
+  delete %attributes{bkg_eshift};
   #foreach my $a (qw(datatype name is_nor bkg_step bkg_eshift data datagroup)) {
   #  delete $attributes{$a};
   #};
-  #$data->set(%attributes);
+  $data->set(%attributes);
   return $data;
 };
 
@@ -942,6 +989,10 @@ the sigma of the normally distributed artifical noise.  You may need
 to play around to find an appropriate value for your data.  Note that
 for a fit in chi(k), the noise is added to the un-k-weighted chi(k)
 data.
+
+=item C<kweight>
+
+The kweighting used in a fit using chi(k) data.
 
 =item C<plot_components>
 

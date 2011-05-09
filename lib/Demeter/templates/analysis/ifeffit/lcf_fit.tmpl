@@ -1,14 +1,4 @@
-{
-  @list = $S->standards_list;
-  $mix = join('.', $S->group, shift(@list));
-  foreach my $stan (@list) {
-    $mix .= ' + ' . join('.', $S->group, $stan);
-  };
-  q{};
-}
 ##| perform the LCF fit
-def {$S->group}.lcf = {$mix}
-def {$S->group}.resid = {$S->group}.lcf - {$S->group}.func
 minimize({$S->group}.resid, x={$S->group}.x, xmin={$S->xmin}, xmax={$S->xmax})
 
 ##| undef all of the arrays

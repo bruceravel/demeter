@@ -8,12 +8,14 @@
   $suffix ||= 'lcf';
   $file = $P->tempfile;
   $S->points(file    => $file,
-             space   => 'lcf', 
+             space   => ($suffix =~ m{chir}) ? 'r' : 'lcf', 
 	     suffix  => $suffix,
 	     yoffset => $yoffset,
+	     scale   => 1,
 	    );
   $thiskey = ($suffix eq 'resid') ? 'residual' 
            : ($suffix eq 'lcf')   ? 'LCF fit'
+           : ($suffix =~ m{chir}) ? 'LCF fit'
            : ($suffix eq 'func')  ? $S->data->name
 	   :                        $S->mo->fetch('Data', $suffix)->name;
   q{}

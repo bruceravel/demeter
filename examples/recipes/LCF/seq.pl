@@ -13,12 +13,11 @@
 ## The data are contained in an Athena project file that is one of the
 ## standard examples in the Demeter distro.
 
-use Demeter qw(:analysis :ui=screen :plotwith=gnuplot);
+use Demeter qw(:analysis :ui=screen); # :plotwith=gnuplot);
 
 my $prj = Demeter::Data::Prj -> new(file=>'../../cyanobacteria.prj');
 my $lcf = Demeter::LCF -> new(space=>'nor', unity=>1, inclusive=>0, one_e0=>0,
 			      plot_difference=>0, plot_components=>0, noise=>0);
-$prj -> set_mode('screen' => 0);
 $prj -> co -> set_default('lcf', 'plot_during', 1);
 
 my @data = $prj->record(1..8);
@@ -45,8 +44,9 @@ $lcf -> sequence(@data);
 $lcf -> plot_fit;
 #print $lcf->report;
 #$lcf->sequence_report('seq.xls');
-#print $lcf->sequence_columns;
-print $lcf->serialization;
+print $lcf->sequence_columns;
+#print $lcf->serialization;
+$lcf -> set_mode('screen' => 0);
 $lcf->sequence_plot;
 
 $lcf->pause;

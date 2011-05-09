@@ -151,11 +151,12 @@ sub main_page {
     $this->{$w}->Enable(0);
   };
   EVT_BUTTON($this, $this->{fit},       sub{fit(@_, 0)});
-  EVT_BUTTON($this, $this->{plot},      sub{$this->{LCF}->plot_fit;   $::app->{main}->status(sprintf("Plotted %s and LCF fit", $this->{LCF}->data->name));});
+  EVT_BUTTON($this, $this->{plot},      sub{plot(@_)});
   EVT_BUTTON($this, $this->{report},    sub{save(@_)});
   EVT_BUTTON($this, $this->{combi},     sub{combi(@_)});
   EVT_BUTTON($this, $this->{fitmarked}, sub{sequence(@_)});
   EVT_BUTTON($this, $this->{make},      sub{make(@_)});
+  EVT_BUTTON($this, $this->{plotr},     sub{fft(@_)});
 
   $panel->SetSizerAndFit($box);
   return $panel;
@@ -298,7 +299,7 @@ sub push_values {
   $this->{combi}     -> Enable($count > 2);
   $this->{plot}      -> Enable($count > 0);
   $this->{plotr}     -> Enable($count > 0) if ($this->{space}->GetSelection == 2);
-
+  $this->{LCF}->data($::app->current_data);
   1;
 };
 
@@ -368,7 +369,7 @@ sub OnSpace {
       $this->{xmin}->SetValue($this->{kmin});
       $this->{xmax}->SetValue($this->{kmax});
     };
-    #$this->{plotr} -> Enable(1);
+    $this->{plotr} -> Enable(1);
     $this->{LCF}->po->space('k');
   } else {
     if ($this->{pastspace} == 2) {
@@ -410,7 +411,7 @@ sub _prep {
     my $n = $this->{'standard'.$i}->GetSelection;
     my $stan = $this->{'standard'.$i}->GetClientData($n);
     next if not defined($stan);
-    #print join("|", $i, $n, $stan), $/;
+    #print join("|", $i, $n, $this->{'weight'.$i}->GetValue), $/;
 
      return sprintf("weight #%d", $i+1) if (not looks_like_number($this->{'weight'.$i}->GetValue));
      return sprintf("e0 #%d"    , $i+1) if (not looks_like_number($this->{'e0'.$i}->GetValue));
@@ -426,6 +427,7 @@ sub _prep {
   $this->{LCF}->space('deriv') if $this->{space}->GetSelection == 1;
   $this->{LCF}->space('chi')   if $this->{space}->GetSelection == 2;
   my $e0 = ($this->{LCF}->space eq 'chi') ? 0 : $this->{LCF}->data->bkg_e0;
+  ($this->{LCF}->space eq 'chi') ? $this->{LCF}->data->_update('fft') : $this->{LCF}->data->_update('background');
 
   return 'xmin' if (not looks_like_number($this->{xmin}->GetValue));
   return 'xmax' if (not looks_like_number($this->{xmax}->GetValue));
@@ -472,6 +474,7 @@ sub fit {
   #$this->{markedreport} -> Enable(1);
   $this->{resultplot}   -> Enable(1);
   $this->{resultreport} -> Enable(1);
+  $this->{plotr}        -> Enable(1) if ($this->{LCF}->space =~ m{\Achi});
   $::app->{main}->status(sprintf("Finished LCF fit to %s", $this->{LCF}->data->name));
   undef $busy;
 };
@@ -772,6 +775,13 @@ sub _remove_all {
   };
 };
 
+sub plot {
+  my ($this, $event) = @_;
+  $this->_prep;
+  $this->{LCF}->plot_fit;
+  $::app->{main}->status(sprintf("Plotted %s and LCF fit", $this->{LCF}->data->name));
+};
+
 sub save {
   my ($this, $event) = @_;
 
@@ -805,6 +815,24 @@ sub make {
   $::app->{main}->status("Made a new data group fromLCF fit to " . $::app->current_data->name);
   $::app->modified(1);
 };
+
+
+sub fft {
+  my ($this, $event) = @_;
+  $this->_prep;
+  $::app->{main}->{'PlotR'}->pull_marked_values;
+  $this->{LCF}->data->po->start_plot;
+  $this->{LCF}->data->plot('R');
+  $this->{LCF}->fft;
+  $this->{LCF}->plot('R');
+};
+
+
+  # my $string = $this->{LCF}->data->_plot_command('R');
+  # my $group = $this->{LCF}->group;
+  # my $dobject = $this->{LCF}->data->group;
+  # $string =~ s{\b$dobject\b}{$group}g; # replace group names
+  # print $string;
 
 1;
 

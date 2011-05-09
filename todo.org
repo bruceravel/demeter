@@ -100,12 +100,12 @@
        + [ ] plot diff for marked groups
        + [ ] plot areas from marked groups
        + [ ] make difference groups from marked groups
-   - [-] *LCF tool* [1/5]
-       + [ ] make data group from fit (use InsertData method)
+   - [-] *LCF tool* [4/5]
+       + [X] make data group from fit (use InsertData method)
        + [X] marked groups automation, display in fourth tab, excel output
-       + [ ] plot in R for fit in k
+       + [X] plot in R for fit in k
        + [ ] persistance of LCF results
-       + [ ] plot sequence results with pgplot
+       + [X] plot sequence results with pgplot
    - [-] *Group list* [2/3]
        + [ ] reorganize list, keystroke | DnD
        + [X] left click on groups list should post group menu (others?)

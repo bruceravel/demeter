@@ -1,0 +1,11 @@
+{
+  @list = $S->standards_list;
+  $mix = join('.', $S->group, shift(@list));
+  foreach my $stan (@list) {
+    $mix .= ' + ' . join('.', $S->group, $stan);
+  };
+  q{};
+}
+##| set the lcf arrays
+{$how} {$S->group}.lcf = {$mix}
+{$how} {$S->group}.resid = {$S->group}.lcf - {$S->group}.func
