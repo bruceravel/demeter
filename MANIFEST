@@ -325,6 +325,7 @@ examples/recipes/Histogram/td.gp
 examples/recipes/Indicators/indic.pl
 examples/recipes/LCF/combi.pl
 examples/recipes/LCF/lcf.pl
+examples/recipes/LCF/seq.pl
 examples/recipes/LogRatio/lrpd.pl
 examples/recipes/Methyltin/DMT.fpj
 examples/recipes/Methyltin/fit.pl
@@ -542,6 +543,7 @@ lib/Demeter/templates/analysis/ifeffit/lcf_prep.tmpl
 lib/Demeter/templates/analysis/ifeffit/lcf_prep_k.tmpl
 lib/Demeter/templates/analysis/ifeffit/lcf_prep_last.tmpl
 lib/Demeter/templates/analysis/ifeffit/lcf_prep_last_k.tmpl
+lib/Demeter/templates/analysis/ifeffit/lcf_prep_lcf.tmpl
 lib/Demeter/templates/analysis/ifeffit/lcf_prep_standard.tmpl
 lib/Demeter/templates/analysis/ifeffit/lcf_prep_standard_k.tmpl
 lib/Demeter/templates/analysis/ifeffit/lcf_report.tmpl
@@ -647,6 +649,7 @@ lib/Demeter/templates/plot/gnuplot/newdiff.tmpl
 lib/Demeter/templates/plot/gnuplot/newe.tmpl
 lib/Demeter/templates/plot/gnuplot/newk.tmpl
 lib/Demeter/templates/plot/gnuplot/newlcf.tmpl
+lib/Demeter/templates/plot/gnuplot/newlcf_seq.tmpl
 lib/Demeter/templates/plot/gnuplot/newpeak.tmpl
 lib/Demeter/templates/plot/gnuplot/newq.tmpl
 lib/Demeter/templates/plot/gnuplot/newr.tmpl
@@ -656,6 +659,7 @@ lib/Demeter/templates/plot/gnuplot/overdiff.tmpl
 lib/Demeter/templates/plot/gnuplot/overe.tmpl
 lib/Demeter/templates/plot/gnuplot/overk.tmpl
 lib/Demeter/templates/plot/gnuplot/overlcf.tmpl
+lib/Demeter/templates/plot/gnuplot/overlcf_seq.tmpl
 lib/Demeter/templates/plot/gnuplot/overpeak.tmpl
 lib/Demeter/templates/plot/gnuplot/overq.tmpl
 lib/Demeter/templates/plot/gnuplot/overr.tmpl
@@ -691,6 +695,7 @@ lib/Demeter/templates/plot/pgplot/newchie.tmpl
 lib/Demeter/templates/plot/pgplot/newe.tmpl
 lib/Demeter/templates/plot/pgplot/newk.tmpl
 lib/Demeter/templates/plot/pgplot/newlcf.tmpl
+lib/Demeter/templates/plot/pgplot/newlcf_seq.tmpl
 lib/Demeter/templates/plot/pgplot/newpeak.tmpl
 lib/Demeter/templates/plot/pgplot/newq.tmpl
 lib/Demeter/templates/plot/pgplot/newr.tmpl
@@ -699,6 +704,7 @@ lib/Demeter/templates/plot/pgplot/overchie.tmpl
 lib/Demeter/templates/plot/pgplot/overe.tmpl
 lib/Demeter/templates/plot/pgplot/overk.tmpl
 lib/Demeter/templates/plot/pgplot/overlcf.tmpl
+lib/Demeter/templates/plot/pgplot/overlcf_seq.tmpl
 lib/Demeter/templates/plot/pgplot/overpeak.tmpl
 lib/Demeter/templates/plot/pgplot/overq.tmpl
 lib/Demeter/templates/plot/pgplot/overr.tmpl
@@ -774,6 +780,7 @@ lib/Demeter/templates/process/ifeffit/histogram_add.tmpl
 lib/Demeter/templates/process/ifeffit/histogram_clean.tmpl
 lib/Demeter/templates/process/ifeffit/histogram_first.tmpl
 lib/Demeter/templates/process/ifeffit/interpolate.tmpl
+lib/Demeter/templates/process/ifeffit/is_nor.tmpl
 lib/Demeter/templates/process/ifeffit/k123.tmpl
 lib/Demeter/templates/process/ifeffit/kev.tmpl
 lib/Demeter/templates/process/ifeffit/merge.tmpl
@@ -1492,6 +1499,7 @@ lib/Xray/Scattering/None.pm
 lib/Xray/Scattering/WaasKirf.pm
 LICENSE
 MANIFEST			This list of files
+META.yml
 notes/copyright.block
 notes/how_to_freeze
 notes/how_to_tie
@@ -1588,5 +1596,10 @@ tools/config-mode.el
 tools/demeter-skeletons.el
 tools/ifeffit-mode.el
 videos
+win/build_perl.pl
 win/Demeter_icon.ico
-META.yml
+win/DemeterPerlBuild.pm
+win/deps/fetch.pl
+win/deps/parsexml.pl
+win/iconf_pgplot
+win/iconf_term
