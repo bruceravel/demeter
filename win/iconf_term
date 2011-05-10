@@ -1,0 +1,5 @@
+#!/bin/sh
+#
+#  This is how to link to readline for use with Demeter and Strawberry Perl.
+#
+echo "-L/c/strawberry/c/lib -lcurses -lreadline"
