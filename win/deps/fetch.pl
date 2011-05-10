@@ -1,4 +1,4 @@
-#!/usr/bin/perl -I.
+#!/usr/bin/perl
 ######################################################################
 ## http://deps.cpantesters.org/?xml=1;module=Moose;perl=5.12.2;os=any%20OS;pureperl=0';
 ######################################################################
@@ -7,7 +7,7 @@ use strict;
 use warnings;
 
 use LWP::UserAgent;
-use Term::Sk;
+use Term::Sk 0.07;
 
 my $ua = LWP::UserAgent->new;
 $ua->timeout(30);
@@ -16,7 +16,7 @@ $ua->env_proxy;
 my $perl_version = '5.12.2';
 my @missing;
 
-my $counter = Term::Sk->new('fetching %k  (#%c) %8t', {freq => 's', base => 0, token=>'autodie'})
+my $counter = Term::Sk->new('fetching %k  (#%c) %8t', {base => 0, token=>'autodie'})
   or die "Error 0010: Term::Sk->new, (code $Term::Sk::errcode) $Term::Sk::errmsg";
 
 foreach my $xml (<DATA>) {

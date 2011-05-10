@@ -55,7 +55,7 @@ description
 variable=executable
 type=string
 default=feff6
-windows=C:\Program Files\Ifeffit\bin\feff6l.exe
+windows=C:\strawberry\c\bin\feff6.exe
 description
   This string is used to invoke the Feff executable.  If the Feff
   executable is not in your path, then this string should be the fully

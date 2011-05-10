@@ -50,11 +50,12 @@ section_description
 variable=program
 type=string
 default=gnuplot
-windows=C:\gnuplot\binary\gnuplot.exe
+windows=C:\strawberry\c\bin\gnuplot.exe
 description
-  This is the name of the gnuplot executable.  On windows this is
-  something like C:\gnuplot\binary\gnuplot.exe.  The installation
-  location might not be C:\gnuplot\binary, but a gnuplot executable
+  This is the name of the gnuplot executable.  In the Strawberry Perl
+  Plus Demeter package, the default windows value should not be
+  changed.  On other windows installations, the installation location
+  might be something like C:\gnuplot\binary.  A gnuplot executable
   with pipes support is certainly the one that you want to use.
 
 variable=persist

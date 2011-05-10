@@ -104,7 +104,7 @@ my $build = DemeterBuilder
 				## these add functionality when using demeter at the command line
 				(($^O eq 'MSWin32') or ($^O eq 'cygwin')) ? () :
 				('Term::Twiddle'      => '0',
-				 'Term::Sk'           => '0',
+				 'Term::Sk'           => '0.07',
 				),
 				#'Getopt::Long'       => '2.38', #  this is core
 

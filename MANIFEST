@@ -1589,3 +1589,4 @@ tools/demeter-skeletons.el
 tools/ifeffit-mode.el
 videos
 win/Demeter_icon.ico
+META.yml

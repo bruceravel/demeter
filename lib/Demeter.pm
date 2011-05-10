@@ -116,7 +116,7 @@ sub alldone {
 };
 sub remove {
   my ($self) = @_;
-  $self->mo->remove($self) if (defined($self) and ref($self) =~ m{Demeter});;
+  $self->mo->remove($self) if (defined($self) and ref($self) =~ m{Demeter} and defined($self->mo));
   return $self;
 };
 

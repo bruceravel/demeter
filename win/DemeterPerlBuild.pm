@@ -284,7 +284,7 @@ sub install_non_perl_prerequisites {
   my $self = shift;
   # install non-perl prereqs from the big zip file
   my $prereq_dir = 'prereq';
-  rmtree $prereq_dir;
+  rmtree $prereq_dir if (-d  $prereq_dir);
   mkdir $prereq_dir;
   my $zip = Archive::Zip->new('Demeter.prereqs.zip');
   foreach my $m ($zip->members) {
@@ -298,6 +298,7 @@ sub install_non_perl_prerequisites {
 			url => q{},
 			install_to => $destination);
   };
+  rmtree $prereq_dir;
   return 1;
 };
 
