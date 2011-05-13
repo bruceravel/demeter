@@ -27,7 +27,8 @@ my $root = 'C:\strawberry';
 #	     hephaestus => catdir( 'C:\strawberry', 'perl', 'site', 'lib', 'Demeter', 'UI', 'Hephaestus', 'icons' ),
 #	    );
 my %share = (demeter    => catdir( 'C:\git', 'demeter', 'lib', 'Demeter', 'share' ),
-	     athena     => catdir( 'C:\git', 'demeter', 'lib', 'Demeter', 'UI', 'Athena',     'share' ),
+	     perlbin    => 'C:\strawberry\perl\bin',
+	     athena     => 'C:\strawberry\perl\vendor\lib\Demeter\UI\Athena\share',
 	     artemis    => catdir( 'C:\git', 'demeter', 'lib', 'Demeter', 'UI', 'Artemis',    'share' ),
 	     hephaestus => catdir( 'C:\git', 'demeter', 'lib', 'Demeter', 'UI', 'Hephaestus', 'icons' ),
 	    );
@@ -153,6 +154,26 @@ sub install_perl_5120 {
 
 
 
+# Params::Util after Algorithm::C3
+# Sub::Uplevel after Test::Fatal
+# IO::String after File::Remove
+# Digest::SHA after DateTime
+# YAML::Tiny after YAML::XS
+# YAML after Error
+# File::Remove after Hook::LexWrap
+# Test::Tester before Hook::LexWrap
+# Archive::Zip at top
+# Task::Weaken after MRO::Compat
+# File::Slurp after MooseX::Types
+# Test::Exception after List::MoreUtils
+# HTML::Entities before List::MoreUtils
+# Algorithm::Diff before Spiffy
+# Text::Diff after Spiffy
+# Test::NoWarnings after Test::Object
+# HTML::Tagset after Heap
+
+
+
 
 sub install_demeter_prereq_modules {
 	my $self = shift;
@@ -160,38 +181,29 @@ sub install_demeter_prereq_modules {
 	# Manually install our non-Wx dependencies first to isolate
 	# them from the Wx problems
 	$self->install_modules( qw{
-				    Archive::Zip
 				    Capture::Tiny
 				    Chemistry::Elements
 				    Config::IniFiles
 
 				    Try::Tiny
 				    Test::Fatal
-				    Sub::Uplevel
 				    Class::Load
 				    Class::Singleton
 				    Params::Validate
 				    List::MoreUtils
-				    Test::Exception
 				    DateTime::TimeZone
 				    DateTime::Locale
 				    Math::Round
 
 				    DateTime
-				    Digest::SHA
 				    Graph
 				    Heap
 
-				    HTML::Tagset
-
-				    HTML::Entities
-				    List::MoreUtils
 				    Math::Combinatorics
 				    Math::Derivative
 				    Math::Spline
 
 				    Algorithm::C3
-				    Params::Util
 				    Sub::Install
 				    Data::OptList
 				    Class::C3
@@ -202,7 +214,6 @@ sub install_demeter_prereq_modules {
 				    Package::DeprecationManager
 				    Package::Stash::XS
 				    MRO::Compat
-				    Task::Weaken
 				    Eval::Closure
 				    Package::Stash
 				    Sub::Name
@@ -225,8 +236,6 @@ sub install_demeter_prereq_modules {
 
 				    MooseX::Types
 
-				    File::Slurp
-
 				    Pod::POM
 				    Readonly
 				    Regexp::Common
@@ -243,15 +252,11 @@ sub install_demeter_prereq_modules {
 				    Want
 
 				    Error
-				    YAML
 				    YAML::Syck
 				    YAML::Perl
 				    YAML::XS
-				    YAML::Tiny
 
-				    Algorithm::Diff
 				    Spiffy
-				    Text::Diff
 				    Test::Base
 				    Test::Differences
 				    ExtUtils::ParseXS
@@ -260,12 +265,8 @@ sub install_demeter_prereq_modules {
 				    AppConfig
 				    Template
 
-				    Test::Tester
 				    Hook::LexWrap
-				    File::Remove
-				    IO::String
 				    Test::Object
-				    Test::NoWarnings
 				    Clone
 				    Test::SubCalls
 				    Class::Inspector
@@ -274,12 +275,21 @@ sub install_demeter_prereq_modules {
 				    Image::Size
 				    CSS::Tiny
 				    PPI::HTML
+
+				    Win32::Pipe
+				    Win32::Console::ANSI
 				} );
 
 	return 1;
 } ## end sub install_demeter_prereq_modules
 
 
+## Demeter has a large number of non-perl dependencies (Gnuplot,
+## PGPLOT, readline, ncurses, Ifeffit).  My strategy for getting them
+## into the package is to place them all in a staging area and zip up
+## the contents of the staging area.  In this task, the zip file is
+## opened and the files are extracted and installed one by one using
+## install_file.
 sub install_non_perl_prerequisites {
   my $self = shift;
   # install non-perl prereqs from the big zip file
@@ -303,7 +313,7 @@ sub install_non_perl_prerequisites {
 };
 
 
-## regarding the Alien-wxWidgets par file:
+## From Curtis Jewell, regarding the Alien-wxWidgets par file:
 # BUT: The par becomes dependent on your major version of Perl and your
 # $Config::Config{archname}. If you're building on 5.12, or building for
 # 64-bit Windows, you have to rebuild the par file, because that one is
@@ -313,32 +323,40 @@ sub install_non_perl_prerequisites {
 # That's easy enough.
 #
 # Extract Alien::wxWidgets, do the appropriate 'perl Makefile.PL && dmake
-# && dmake test' or 'perl Build.PL & Build && Build test', whichever one
-# it is, and then run 'perl -MPAR::Dist -eblib_to_par'.
-
+# && dmake test' or 'perl Build.PL && Build && Build test', whichever one
+# it is, and then run 'perl -MPAR::Dist -eblib_to_par' or 'Build pardist'.
 sub install_demeter_modules {
   my $self = shift;
 
-  ## install gnuplot and Graphics::GunplotIF
-
-  ## no critic(RestrictLongStrings)
-  # Install the Alien::wxWidgets module from a precompiled .par
-  ## The class underneath install_par (Perl::Dist::WiX::Asset::PAR)
-  ## reuires that the dist_info attribute be set, apparently to the
-  ## thing as the url attribute.  go figure...
-  my $par_url = 'http://cars9.uchicago.edu/~ravel/misc/athena+artemis/Alien-wxWidgets-0.52-MSWin32-x86-multi-thread-5.12.2.par';
-  ##  'http://strawberryperl.com/download/padre/Alien-wxWidgets-0.50-MSWin32-x86-multi-thread-5.10.1.par';
+  ## install Graphics::GunplotIF, this par file contains a version of
+  ## the CPAN G::G modified to work on Windows
+  print "Installing Graphics-Gnuplot\n";
+  my $par_url = 'http://10.0.61.254/~bruce/strawberry/Graphics-GnuplotIF-1.6-MSWin32-x86-multi-thread-5.12.2.par';
   my $filelist = $self->install_par(
-				    name => 'Alien_wxWidgets',
+				    name => 'Graphics-GnuplotIF',
 				    dist_info => $par_url,
 				    url  => $par_url,
 				   );
+  print "Installing Graphics-Gnuplot ... Done!\n";
+
+
+  ## no critic(RestrictLongStrings)
+  ## Install the Alien::wxWidgets module from a precompiled .par since compilation takes so darn long
+  ##
+  ## The class underneath install_par (Perl::Dist::WiX::Asset::PAR)
+  ## reuires that the dist_info attribute be set, apparently to the
+  ## thing as the url attribute.  go figure...
+  print "Installing Wx ... \n";
+  $par_url = 'http://10.0.61.254/~bruce/strawberry/Alien-wxWidgets-0.52-MSWin32-x86-multi-thread-5.12.2.par';
+  $filelist = $self->install_par(
+				 name => 'Alien_wxWidgets',
+				 dist_info => $par_url,
+				 url  => $par_url,
+				);
 
   # Install the Wx module over the top of alien module
-  ## Wx 0.99 failed to install, so try 0.98 installed from a file
   $self->install_module( name => 'Wx' );
-
-
+  print "Installing Wx ... Done!\n";
 
   # Install modules that add more Wx functionality
   #$self->install_module(
@@ -348,12 +366,20 @@ sub install_demeter_modules {
 
   # And finally, install Demeter itself
   ## do a "perl Build dist" first?
-  $self->install_distribution_from_file(
-					file => 'C:\git\demeter\Demeter-v0.4.7.tar.gz',
-					url => q{},
-					force => 0,
-					automated_testing => 1,
-				       );
+  print "Installing Demeter ...\n";
+  $par_url = 'http://10.0.61.254/~bruce/strawberry/Demeter-v0.4.7-MSWin32-x86-multi-thread-5.12.0.par';
+  $filelist = $self->install_par(
+				 name => 'Demeter',
+				 dist_info => $par_url,
+				 url  => $par_url,
+				);
+  # $self->install_distribution_from_file(
+  # 					file => 'C:\git\demeter\Demeter-v0.4.7.tar.gz',
+  # 					url => q{},
+  # 					force => 0,
+  # 					automated_testing => 1,
+  # 				       );
+  print "Installing Demeter ... Done!\n";
 
   return 1;
 }				## end sub install_demeter_modules
@@ -362,18 +388,22 @@ sub install_demeter_extras {
   my $self = shift;
 
   # Get the Id for directory object that stores the filename passed in.
+  print "Getting dir_id$/";
   my $dir_id = $self->get_directory_tree()
     ->search_dir(
-		 path_to_find => catdir( $self->image_dir(), 'perl', 'site', 'bin' ),
+		 path_to_find => catdir( $self->image_dir(), 'perl', 'bin' ),
 		 exact        => 1,
 		 descend      => 1,
 		)->get_id();
 
+  print "Getting icon_id$/";
   my $icon_id =
     $self->_icons()
-      ->add_icon( catfile( $share{athena}, 'athena_icon.ico' ), 'dathena' );
+      ->add_icon( catfile( $share{athena},  'athena_icon.ico' ),
+		  catfile( $share{perlbin}, 'dathena.bat' ));
 
   # Add the start menu icon.
+  print "Adding start menu icon$/";
   $self->get_fragment_object('StartMenuIcons')
     ->add_shortcut(
 		   name        => 'Athena',

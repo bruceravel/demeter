@@ -102,7 +102,8 @@ my $build = DemeterBuilder
 			       },
 	 recommends         => {
 				## these add functionality when using demeter at the command line
-				(($^O eq 'MSWin32') or ($^O eq 'cygwin')) ? () :
+				(($^O eq 'MSWin32') or ($^O eq 'cygwin')) ? 
+				('Win32::Console::ANSI' => '0',) :
 				('Term::Twiddle'      => '0',
 				 'Term::Sk'           => '0.07',
 				),
@@ -147,6 +148,7 @@ $build->add_build_element('html');
 $build->add_build_element('css');
 $build->add_build_element('ini');
 $build->add_build_element('png');
+$build->add_build_element('ico');
 $build->add_build_element('jpg');
 $build->add_build_element('prj');
 $build->add_build_element('stan');

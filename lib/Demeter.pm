@@ -16,7 +16,8 @@ package Demeter;  # http://xkcd.com/844/
 =cut
 
 BEGIN {
-  $ENV{PGPLOT_DEV} = (($^O eq 'MSWin32') or ($^O eq 'cygwin')) ? '/GW' : '/xserve';
+  #$ENV{PGPLOT_DEV} = (($^O eq 'MSWin32') or ($^O eq 'cygwin')) ? '/gw' : '/xserve';
+  $ENV{PGPLOT_DIR} = 'C:\strawberry\perl\c\lib\pgplot' if (($^O eq 'MSWin32') or ($^O eq 'cygwin'));
 };
 
 require 5.008;
@@ -35,6 +36,7 @@ use Pod::POM;
 use String::Random qw(random_string);
 use Text::Template;
 use Ifeffit;
+Ifeffit::ifeffit("\$plot_device=/gw\n") if (($^O eq 'MSWin32') or ($^O eq 'cygwin'));
 use Xray::Absorption;
 Xray::Absorption->load('elam');
 

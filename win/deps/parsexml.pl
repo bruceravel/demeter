@@ -6,12 +6,35 @@ use XML::Simple;
 use Data::Dumper;
 use File::Basename;
 use List::Util qw(max);
+use List::MoreUtils qw(any);
 
 my $requiredby;
 my %seen;
 opendir(my $dh, ".");
 my @xmllist = grep { m{xml\z} } sort {$a cmp $b} readdir($dh);
 closedir $dh;
+
+my @in_vender = qw(Test::Moose
+		   Alien::wxWidgets
+		   Params::Util
+		   Sub::Uplevel
+		   IO::String
+		   Digest::SHA
+		   YAML::Tiny
+		   YAML
+		   File::Remove
+		   Test::Tester
+		   Archive::Zip
+		   Task::Weaken
+		   File::Slurp
+		   Test::Exception
+		   HTML::Entities
+		   Algorithm::Diff
+		   Text::Diff
+		   Test::NoWarnings
+		   HTML::Tagset
+		   Win32::Process
+		 );
 
 my @biglist = ();
 foreach my $xml (@xmllist) {
@@ -31,8 +54,7 @@ foreach my $xml (@xmllist) {
     $seen{$item->{module}} = max($item->{depth}, $seen{$item->{module}});
 
     ## special cases ...
-    next if $item->{module} eq 'Test::Moose';
-    next if $item->{module} eq 'Alien::wxWidgets';
+    next if any {$item->{module} eq $_} @in_vendor;
 
     push @sublist, [$item->{module}, $seen{$item->{module}}, $requiredby];
   };

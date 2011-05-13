@@ -1,0 +1,34 @@
+[Ifeffit] atoms possible bugs
+From: George Sterbinsky <GeorgeSterbinsky@u.northwestern.edu>
+  To: XAFS Analysis using Ifeffit <ifeffit@millenia.cars.aps.anl.gov>
+Date: Tuesday 02:21:07 pm
+Attachments:  C2c_atoms.inp A2n_atoms.inp
+   
+Hello,
+
+I want to make everyone aware of some bugs that I think I have found in
+atoms, and pose some questions regarding the bugs, to anyone who may have
+seen them before.
+
+I have attached two atoms input files, generated using the Artemis atoms
+interface. The file A2n_atoms.inp is for a monoclinic structure in the A 2/n
+setting. On running atoms, one will find that there are six Ga atoms within
+a 4 A radius from the central Ga atom. If one reduces the the cluster size
+from 8 A in the .inp file to 6 A, one finds that now there are only two Ga
+atoms within 4 A of the central Ga atom. So it appears that atoms does not
+necessarily include all atoms within the cluster radius. The leads me to the
+question: how big should I make the cluster if I want to include all atoms
+within 6 A?
+
+An input file for the same structure converted to the C 2/c setting is also
+attached. When running atoms in the Artemis interface, the message "The axis
+lengths and angles specified are not appropriate for the given space group"
+is returned. Although, it appears that a Feff.inp file is still generated.
+It also appears to not have the same cluster size dependence as the A2/n
+structure. So can I trust this feff.inp file even though I received an error
+message? It seems to me that the answer would be yes, atoms did the
+calculations correctly and the error message being generated is just a bug,
+but I'm not certain about this.
+
+Thank you,
+George
