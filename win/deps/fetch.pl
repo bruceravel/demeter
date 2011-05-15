@@ -82,3 +82,4 @@ Tree::Simple
 Want
 YAML::Tiny
 Wx
+Win32::Console::ANSI

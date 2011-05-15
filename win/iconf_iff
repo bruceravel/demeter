@@ -1,0 +1,69 @@
+#!/bin/sh
+##
+## shell script to help configure ifeffit:
+##   1. get version number from Changelog (and return to rest of configure script)
+##   2. write maxpts.h and sys.h for ifeffit library
+##
+prefix=$1
+ARRSIZE=$2
+PACKAGE=$3
+def_prefix=$4
+test "x$SYSTEMROOT" = "x"  || sysdir='C:\strawberry\c\share\ifeffit'
+test "x$prefix"  = "xNONE" && prefix=$def_prefix
+test "x$prefix"  = "xNONE" && prefix='/usr/local'
+test "x$prefix"  = "x"     && prefix='/usr/local'
+test "x$ARRSIZE" = "x"     && ARRSIZE='large'
+test "x$PACKAGE" = "x"     && PACKAGE='ifeffit'
+# echo $prefix / $PACKAGE / $ARRSIZE
+
+VERSION=`grep '* Version' ChangeLog | head -1| sed 's/[ ]*\* Version[ ]*//g' | sed 's/:.*//g'`
+
+srcdir='src/lib'
+cright="Copyright (c) 2008 Matt Newville, Univ of Chicago"
+
+##
+## set arraysize to maxpts.h
+case $ARRSIZE in
+  huge)   size=16384 ;;
+  medium) size=4096  ;;
+  small)  size=2048  ;;
+  tiny)   size=1024  ;;
+  large)  size=8192  ;;
+  *)      size=4096  ;;
+esac
+
+current=`cat $srcdir/arrsize.dat`
+maxpts_h="$srcdir/maxpts.h"
+if test "x$current" == "x$size" && [ -f $maxpts_h ] ; then \
+  x=1
+else
+   echo "c{maxpts.h  -*-fortran-*- "                  > $maxpts_h
+   echo "         integer  maxpts, maxsize_array"    >> $maxpts_h
+   echo "         parameter(maxsize_array =  $size)" >> $maxpts_h
+   echo "         parameter(maxpts = maxsize_array)" >> $maxpts_h
+   echo "c}"                                         >> $maxpts_h
+   echo "$size" > $srcdir/arrsize.dat
+fi
+
+DEVICE='/gw'
+test "x$SYSTEMROOT" = "x" && DEVICE='/xserve'
+
+test "x$SYSTEMROOT" = "x"  || SYSDIR=$prefix/share/$PACKAGE
+
+##
+## write sys.h
+
+sys_h="$srcdir/sys.h"
+echo "c{sys.h  -*-fortran-*- "                      > $sys_h
+echo "c system and build specific stuff goes here" >> $sys_h
+echo "c to be included in iff_config.f"            >> $sys_h
+echo "       sysdir = '$sysdir'"                   >> $sys_h
+echo "       pgdev  = '$DEVICE'"                   >> $sys_h
+echo "       inifile= 'startup.iff  .ifeffit'"     >> $sys_h
+echo "       build = '$VERSION'//"                 >> $sys_h
+echo "     $   ' $cright'"                         >> $sys_h
+echo "c}"                                          >> $sys_h
+
+##
+## finally, output the version number
+echo $VERSION

@@ -14,7 +14,7 @@
 ** installation issues [1/1]
   - [X] jpg needs to be a Module::Build ~build_element~, but there are too many such files in the distro .. not all serve a purpose
 
-** Demeter bugs and shortcomings  [4/17] [23%]
+** Demeter bugs and shortcomings  [4/19] [21%]
   - [ ] in =Demeter::Data::IO::save_many=, why doesn't updating in n specifying "background" not work to bring data up to date?  (fft, i.e. doing autobk, does work)
   - [ ] +serialize VPath+, put VPath into +dpj and+ fpj files
   - [ ] tie multiple groups together
@@ -28,12 +28,15 @@
   - [ ] 3rd derivative
   - [ ] SDK: better documentation for freeze/thaw//serialize/deserialize
   - [ ] error check deserialization for all objects, verify that it is a yaml or whatnot, return 0 if not
+  - [ ] per data set R-factors, computed correctly for mkw fits (what is "correctly?")
+  - [ ] OpenBabel interface, tied into Feff
   - [X] SDK: "It  seems that if you use the old fashioned GSD string you can have capitals
 	in your variable names but if you use the fancy simpleGDS you can not.
   - [X] SDK: something like ~find_path~ method, but which find the path closest to some R value
   - [X] autogenerate workspace for Feff objects (i.e. something in stashdir)
   - [X] better detection of chi ascii data in case of 
         =$data = Demeter::Data->new(file=>"foo.chi");=
+
 
 
 
@@ -68,7 +71,7 @@
    - [X] preference 
 
 **** Requires PDL 							:PDL:
-    1. smoothing
+    1. smoothing by S-G
     2. deconvolution
     3. PCA
 
