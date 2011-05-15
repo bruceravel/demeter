@@ -197,7 +197,7 @@ sub OnInit {
   ## -------- Set up menubar
   my $bar = Wx::MenuBar->new;
   my $file = Wx::Menu->new;
-  $file->Append( wxID_EXIT, "E&xit" );
+  $file->Append( wxID_EXIT, "E&xit\tCtrl+q" );
 
   my $help = Wx::Menu->new;
   $help->Append( $CONFIG,    "&Configure" );

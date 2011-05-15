@@ -925,6 +925,8 @@ sub OnMenuClick {
       my $sp = $data->is_merge;
       $sp = 'e' if ($sp eq 'n');
       #return if not $app->preplot($sp, $data);
+      my $which = ($sp eq 'k') ? 'PlotK' : 'PlotE';
+      $app->{main}->{$which}->pull_marked_values;
       $data->po->title($app->{main}->{Other}->{title}->GetValue);
       $data->plot('stddev');
       #$app->postplot($data);
@@ -935,11 +937,13 @@ sub OnMenuClick {
       my $data = $app->current_data;
       last SWITCH if not $data->is_merge;
       #return if not $app->postplot($data);
+      my $sp = $data->is_merge;
+      $sp = 'E' if ($sp eq 'n');
+      my $which = ($sp eq 'k') ? 'PlotK' : 'PlotE';
+      $app->{main}->{$which}->pull_marked_values;
       $data->po->title($app->{main}->{Other}->{title}->GetValue);
       $data->plot('variance');
       #$app->postplot($data);
-      my $sp = $data->is_merge;
-      $sp = 'E' if ($sp eq 'n');
       $app->{lastplot} = [$sp, 'single'];
       last SWITCH;
     };

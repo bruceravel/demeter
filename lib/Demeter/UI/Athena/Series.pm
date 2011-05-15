@@ -82,6 +82,7 @@ sub new {
   $this->{begin}   = Wx::TextCtrl->new($this, -1, q{}, wxDefaultPosition, $tcsize);
   $this->{number}  = Wx::TextCtrl->new($this, -1, q{}, wxDefaultPosition, $tcsize);
   $this->{increm}  = Wx::TextCtrl->new($this, -1, q{}, wxDefaultPosition, $tcsize);
+  $this->{param}  -> SetSelection(0);
   $gbs->Add($this->{group},   Wx::GBPosition->new(0,1));
   $gbs->Add($this->{param},   Wx::GBPosition->new(1,1));
   $gbs->Add($this->{current}, Wx::GBPosition->new(2,1));

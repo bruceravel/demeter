@@ -24,7 +24,7 @@ sub new {
   my $box = Wx::BoxSizer->new( wxVERTICAL);
   $this->{sizer}  = $box;
 
-  $this->{LCF} = Demeter::LCF->new;
+  $this->{LCF} = Demeter::LCF->new(include_caller=>0);
   $this->{emin} = $demeter->co->default('lcf', 'emin');
   $this->{emax} = $demeter->co->default('lcf', 'emax');
   $this->{kmin} = $demeter->co->default('lcf', 'kmin');

@@ -99,6 +99,7 @@ has 'combi_results'=> (
 		      );
 
 has 'doing_seq' => (is => 'rw', isa => 'Bool', default => 0);
+has 'include_caller' => (is => 'rw', isa => 'Bool', default => 1);
 has 'seq_count' => (is => 'rw', isa => 'Int',  default => 0);
 has 'seq_results'=> (
 		     metaclass => 'Collection::Array',
@@ -727,7 +728,7 @@ sub report_csv {
 sub sequence {
   my ($self, @groups) = @_;
   my $first = $self->data;
-  my @data = uniq($first, @groups);
+  my @data = ($self->include_caller) ? uniq($first, @groups) : uniq(@groups);
   my $nfits = $#data+1;
 
   $self->doing_seq(1);
@@ -960,6 +961,13 @@ When fitting in C<chi>, e0 cannot be varied.
 
 The maximum number of standards to use in each fit of a combinatorial
 sequence.
+
+=item C<include_caller>
+
+A boolean.  Use in sequence fitting to determine whether the data
+currently associated with the LCF object is inlcuded in the fit
+sequence.  The default is true.  This is a convenience introduced for
+the sake of the LCF tool in Athena.
 
 =item C<linear>
 
@@ -1438,8 +1446,9 @@ Perform a sequence of fits to a group data.
 
   $lcf->sequence(@data);
 
-The data in C<$lcf> is appended to the beginning of C<@data>. Care is
-taken to remove repeats from C<@data>.
+The data in C<$lcf> is appended to the beginning of C<@data> unless
+the C<include_caller> attribute is false. Care is taken to remove
+repeats from C<@data>.
 
 At the end of the fit, the C<seq_results> attribute is filled with an
 array of hashes containing the results of each fit.  This array is in
