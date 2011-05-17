@@ -212,7 +212,7 @@ sub populate {
 
   $this->{include}   -> SetValue(1);
   $this->{pp_label}  -> SetValue($pathobject->sp->labelline);
-  $this->{pp_n}      -> SetValue($pathobject->degen);
+  $this->{pp_n}      -> SetValue($pathobject->n);
   $this->{pp_s02}    -> SetValue($pathobject->s02);
   $this->{pp_e0}     -> SetValue($pathobject->e0     || q{});
   $this->{pp_delr}   -> SetValue($pathobject->delr   || q{});

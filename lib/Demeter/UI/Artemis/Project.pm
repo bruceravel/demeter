@@ -337,7 +337,11 @@ sub restore_fit {
     $grid -> AppendRows(1,1) if ($start >= $grid->GetNumberRows);
     $grid -> SetCellValue($start, 0, $g->gds);
     $grid -> SetCellValue($start, 1, $g->name);
-    $grid -> SetCellValue($start, 2, $g->mathexp);
+    if ($g->gds eq 'guess') {
+      $grid -> SetCellValue($start, 2, $g->bestfit || $g->mathexp);
+    } else {
+      $grid -> SetCellValue($start, 2, $g->mathexp);
+    };
     $grid -> {$g->name} = $g;
     my $text = q{};
     if ($g->bestfit or $g->error) {
