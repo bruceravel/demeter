@@ -96,39 +96,48 @@ sub report {
   my $type   = ($identify) ? sprintf("%-8s: ", $self->gds) : q{};
  SWITCH: {
     ($self->gds eq 'guess') and do {
-      $string = sprintf("%s%-18s = %12.8f    # +/- %12.8f     [%s]\n", $type, $self->get(qw(name bestfit error mathexp)));
+      $string = $self->template("report", "guess", {type=>$type});
+      ##$string = sprintf("%s%-18s = %12.8f    # +/- %12.8f     [%s]\n", $type, $self->get(qw(name bestfit error mathexp)));
       last SWITCH;
     };
     ($self->gds eq 'set') and do {
       if ($self->mathexp =~ m{\A$NUMBER\z}) {
-	$string = sprintf("%s%-18s = %12.8f\n",                        $type, $self->get(qw(name mathexp)));
+	$string = $self->template("report", "set", {type=>$type});
+	#$string = sprintf("%s%-18s = %12.8f\n",                        $type, $self->get(qw(name mathexp)));
       } else {
-	$string = sprintf("%s%-18s = %12.8f    # [%s]\n",              $type, $self->get(qw(name bestfit mathexp)));
+	$string = $self->template("report", "setme", {type=>$type});
+	#$string = sprintf("%s%-18s = %12.8f    # [%s]\n",              $type, $self->get(qw(name bestfit mathexp)));
       };
       last SWITCH;
     };
     ($self->gds eq 'lguess') and do {
-      $string = sprintf("%s%-18s = %12.8f\n",                          $type, $self->get(qw(name mathexp)));
+      $string = $self->template("report", "lguess", {type=>$type});
+      ##$string = sprintf("%s%-18s = %12.8f\n",                          $type, $self->get(qw(name mathexp)));
       last SWITCH;
     };
     ($self->gds eq 'def') and do {
-      $string = sprintf("%s%-18s = %12.8f    # [%s]\n",                $type, $self->get(qw(name bestfit mathexp)));
+      $string = $self->template("report", "def", {type=>$type});
+      #$string = sprintf("%s%-18s = %12.8f    # [%s]\n",                $type, $self->get(qw(name bestfit mathexp)));
       last SWITCH;
     };
     ($self->gds eq 'restrain') and do {
-      $string = sprintf("%s%-18s = %12.8f # [:= %s]\n",                $type, $self->get(qw(name bestfit mathexp)));
+      $string = $self->template("report", "restrain", {type=>$type});
+      #$string = sprintf("%s%-18s = %12.8f # [:= %s]\n",                $type, $self->get(qw(name bestfit mathexp)));
       last SWITCH;
     };
     ($self->gds eq 'after') and do {
-      $string = sprintf("%s%-18s = %12.8f    # [%s]\n",                $type, $self->get(qw(name bestfit mathexp)));
+      $string = $self->template("report", "after", {type=>$type});
+      #$string = sprintf("%s%-18s = %12.8f    # [%s]\n",                $type, $self->get(qw(name bestfit mathexp)));
       last SWITCH;
     };
     ($self->gds eq 'skip') and do {
-      $string = sprintf("%s is a skip parameter\n",                    $self->name);
+      $string = $self->template("report", "skip", {type=>$type});
+      #$string = sprintf("%s is a skip parameter\n",                    $self->name);
       last SWITCH;
     };
     ($self->gds eq 'merge') and do {
-      $string = sprintf("%s is a merge parameter\n",                   $self->name);
+      $string = $self->template("report", "merge", {type=>$type});
+      #$string = sprintf("%s is a merge parameter\n",                   $self->name);
       last SWITCH;
     };
   };

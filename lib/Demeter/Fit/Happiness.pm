@@ -122,7 +122,7 @@ sub _penalize_pathparams {
     foreach my $pa (@params) {
       my ($isok, $explanation) = $p->is_resonable($pa);
       if (not $isok) {
-	$summary .= "Penalty of $scale : " . $explanation . $/;
+	$summary .= "Penalty of $scale : " . $explanation . "\n";
 	++$count;
       };
     };

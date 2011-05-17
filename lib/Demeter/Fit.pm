@@ -156,7 +156,9 @@ has 'epsilon_r'         => (is => 'rw', isa =>  NonNeg,   default => 0);
 has 'r_factor'          => (is => 'rw', isa =>  NonNeg,   default => 0);
 has 'chi_square'        => (is => 'rw', isa =>  NonNeg,   default => 0);
 has 'chi_reduced'       => (is => 'rw', isa =>  NonNeg,   default => 0);
-has 'fancyline'         => (is => 'rw', isa => 'Str',     default => "\n" . "=*" x 38 . "=\n\n");
+
+## deprecated and unused...
+has 'fancyline'         => (is => 'rw', isa => 'Str',     default => q{});
 
 has 'correlations' => (
 		       metaclass => 'Collection::Hash',
@@ -791,7 +793,7 @@ sub summary {
   $text .= $self->statistics_report;
   $text .= $/;
   $text .= $self->gds_report;
-  $text .= $self->fancyline;
+  $text .= $self->template("report", "fancyline");
   return $text;
 };
 
@@ -814,11 +816,11 @@ sub logtext {
 
   $text .= $header;
   $text .= $self->properties_header;
-  $text .= $self->fancyline;
+  $text .= $self->template("report", "fancyline");
 
   $text .= $self->statistics_report;
   $text .= $/;
-  $text .= $self->happiness_report;
+  $text .= $self->template("report", "happiness");  #happiness_report;
   $text .= $/;
   $text .= $self->gds_report;
   $text .= $/;
@@ -861,7 +863,7 @@ sub logtext {
     };
   };
 
-  $text .= $self->fancyline;
+  $text .= $self->template("report", "fancyline");
   ($footer .= "\n") if ($footer !~ m{\n\z});
   $text .= $footer;
 
@@ -967,7 +969,8 @@ sub statistics_report {
 	       );
   my $string = q{};
   foreach my $stat (split(" ", $STAT_TEXT)) {
-    $string .= sprintf("%s : %s\n", $things{$stat}, $self->$stat||0);
+    $string .= $self->template("report", "statistics", {name=>$things{$stat}, stat=>$stat});
+    ##$string .= sprintf("%s : %s\n", $things{$stat}, $self->$stat||0);
   };
   return $string;
 };
@@ -1093,7 +1096,7 @@ sub correl_report {
   foreach my $k (@order) {
     last if (abs($all{$k}) < $cormin);
     my ($x, $y) = split(/\|/, $k);
-    $string .= sprintf("  %18s & %-18s --> %7.4f\n", $x, $y, $all{$k});
+    $string .= $self->template("report", "correl", {p1=>$x, p2=>$y, correl=>$all{$k}});
   };
   $string .= "All other correlations below $cormin\n" if $cormin;
   return $string;
@@ -1396,22 +1399,24 @@ override 'deserialize' => sub {
   my @vpaths = ();
   $yaml = ($args{file}) ? $zip->contents("vpaths.yaml")
     : $self->slurp(File::Spec->catfile($args{folder}, "vpaths.yaml"));
-  @list = YAML::Tiny::Load($yaml);
-  foreach my $vp (@list) {
-    delete $vp->{$_} foreach qw(id update_path update_fft update_bft);
-    my $dg = $vp->{datagroup};
-    $vp->{data} = $datae{$dg};
+  if ($yaml) {
+    @list = YAML::Tiny::Load($yaml);
+    foreach my $vp (@list) {
+      delete $vp->{$_} foreach qw(id update_path update_fft update_bft);
+      my $dg = $vp->{datagroup};
+      $vp->{data} = $datae{$dg};
 
-    my @pathgroups = @{ $vp->{pathgroups} };
+      my @pathgroups = @{ $vp->{pathgroups} };
 
-    my @array = %{ $vp };
-    my $this = Demeter::VPath->new();
-    $this -> set(@array);
-    $this -> update_path(1);
-    foreach my $pg (@pathgroups) {
-      $this->push_paths($this -> mo -> fetch('Path', $pg));
+      my @array = %{ $vp };
+      my $this = Demeter::VPath->new();
+      $this -> set(@array);
+      $this -> update_path(1);
+      foreach my $pg (@pathgroups) {
+	$this->push_paths($this -> mo -> fetch('Path', $pg));
+      };
+      push @vpaths, $this;
     };
-    push @vpaths, $this;
   };
 
   if ($args{regenerate}) {

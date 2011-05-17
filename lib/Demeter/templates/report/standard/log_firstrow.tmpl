@@ -1,0 +1,3 @@
+{ $pattern = '%-' . $width . 's'; q{} }
+<<  >>{sprintf $pattern, $S->name}{sprintf " %8.3f %7.3f %9.5f %7.3f %8.5f %8.5f %8.5f", 
+                                           $S->get(qw(n s02_value sigma2_value e0_value delr_value reff)), $S->R}

@@ -539,39 +539,23 @@ sub paragraph {
 sub row_main_label {
   my ($self, $width) = @_;
   $width ||= 15;
-  my $pattern = '  %-' . $width . join(" ", qw(s %8s %7s %9s %7s %7s %8s %8s)) . "\n";
-  my $string = sprintf($pattern, qw(name N S02 sigma^2 e0 delr Reff R));
-  $string .= "=" x (length($string)+2) . "\n";
+  return $self->template("report", "log_firstrow_label",  {width=>$width});
 };
 sub row_main {
   my ($self, $width) = @_;
   $width ||= 15;
-  my $pattern = '  %-' . $width . join(" ", qw(s %8.3f %7.3f %9.5f %7.3f %8.5f %8.5f %8.5f)) . "\n";
-  my $string = sprintf($pattern,
-		       $self->name, $self->n,
-		       (map {$self->$_} (qw(s02_value sigma2_value e0_value delr_value))),
-		       $self->reff,
-		       $self->R,
-		      );
-  return $string;
+  return $self->template("report", "log_firstrow",        {width=>$width});
 }
 
 sub row_second_label {
   my ($self, $width) = @_;
   $width ||= 15;
-  my $pattern = '  %-' . $width . join(" ", qw(s %9s %9s %9s %9s)) . "\n";
-  my $string = sprintf($pattern, qw(name ei third fourth dphase));
-  $string .= "=" x (length($string)+1) . "\n";
+  return $self->template("report", "log_secondrow_label", {width=>$width});
 };
 sub row_second {
   my ($self, $width) = @_;
   $width ||= 15;
-  my $pattern = '  %-' . $width . join(" ", qw(s %9.5f %9.5f %9.5f)) . "\n";
-  my $string = sprintf($pattern,
-		       $self->name,
-		       (map {$self->$_} (qw(ei_value third_value fourth_value))),
-		      );
-  return $string;
+  return $self->template("report", "log_secondrow",        {width=>$width});
 };
 
 __PACKAGE__->meta->make_immutable;
