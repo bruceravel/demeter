@@ -1,0 +1,15 @@
+{
+  $description = $S->description;
+  my @lines = split($/, $description);
+  $string  = shift @lines;
+  $string .= (sprintf "$/ %-15s : %s", '        ...', $_) foreach @lines;
+  q{}
+}
+<< >>Name            : {$S->name}
+ Description     : {$string}
+ Figure of merit : {$S->fom}
+ Time of fit     : {$S->time_of_fit}
+ Environment     : {$S->fitenvironment}
+ Interface       : {$S->interface}
+ Prepared by     : {$S->prepared_by}
+ Contact         : {$S->contact}

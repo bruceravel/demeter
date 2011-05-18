@@ -815,15 +815,12 @@ sub logtext {
   my $text = q{};
 
   $text .= $header;
-  $text .= $self->properties_header;
+  $text .= $self->template("report", "properties"); #properties_header;
   $text .= $self->template("report", "fancyline");
 
-  $text .= $self->statistics_report;
-  $text .= $/;
+  $text .= $self->template("report", "statistics"); #statistics_report;
   $text .= $self->template("report", "happiness");  #happiness_report;
-  $text .= $/;
   $text .= $self->gds_report;
-  $text .= $/;
   $text .= $self->correl_report(); # arg is cormin
 
   foreach my $data (@{ $self->data }) {

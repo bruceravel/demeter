@@ -679,17 +679,26 @@ sub template {
   my $theory   = $self->mo->theory;
   my $path     = $self->mo->path;
 
-  my $tmpl = File::Spec->catfile(dirname($INC{"Demeter.pm"}),
-				 "Demeter",
+  # try personal templates first
+  my $tmpl = File::Spec->catfile($self->dot_folder,
 				 "templates",
 				 $category,
 				 $self->get_mode("template_$category") || q{xxx},
 				 "$file.tmpl");
-  if (not -e $tmpl) {		# fall back to ifeffit/pgplot template
-    my $set = ($category eq 'plot') ? "pgplot" :
-              ($category eq 'feff') ? "feff6"  :
-              ($category eq 'test') ? 'test'   :
-                                      "ifeffit";
+  if (not -e $tmpl) {		# then try system templates
+    $tmpl = File::Spec->catfile(dirname($INC{"Demeter.pm"}),
+				"Demeter",
+				"templates",
+				$category,
+				$self->get_mode("template_$category") || q{xxx},
+				"$file.tmpl");
+  };
+  if (not -e $tmpl) {		# fall back to default templates
+    my $set = ($category eq 'plot')   ? "pgplot"   :
+              ($category eq 'feff')   ? "feff6"    :
+              ($category eq 'report') ? 'standard' :
+              ($category eq 'test')   ? 'test'     :
+                                        "ifeffit";
     $tmpl = File::Spec->catfile(dirname($INC{"Demeter.pm"}),
 				"Demeter", "templates", $category, $set, "$file.tmpl");
   };

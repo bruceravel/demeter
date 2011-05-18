@@ -1,0 +1,33 @@
+
+This folder contains various tools that might be useful interacting
+with Demeter.
+
+Emacs-lisp files
+================
+
+The can be used with Emacs or XEmacs.
+
+config-mode.el:       major mode for editing Demeter configuration files
+ifeffit-mode.el:      major mode for editing Ifeffit scripts
+demeter-skeletons.el: skeleton and abbrev definitions to help write Demeter perl scripts
+		      see the comments in the header for using this
+
+
+Personal Demeter templates
+==========================
+
+The file cumulant_order.zip shows an example of how to define and use
+personal templates which override the standard templates provided with
+Demeter.  This example shows how to write the columns of path
+parameter evaluations in an EXAFS fit log file in order of increasing
+cumulant order.  (The default is to organize the columns such that
+commonly correlated parameters are next to one another and the less
+common parameters are in the second list.)
+
+To use these, unzip this file in ~/.horae (unix) or %APPDATA%\demeter
+(windows) and put something like the following in a script:
+
+    $fit->set_mode(template_report=>'order');
+
+That will cause Demeter to format the path parameter columns according
+to these templates rather than the default one.

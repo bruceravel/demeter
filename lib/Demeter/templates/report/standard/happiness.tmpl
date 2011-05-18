@@ -1,5 +1,6 @@
 {$OUT = q{}; q{}}
-Happiness = {sprintf "%.5f", $S->happiness}/100             color = {$S->color}
+<<nl>>Happiness = {sprintf "%.2f", $S->happiness}/100             color = {$S->color}
 { foreach $l (split "\n", $S->happiness_summary) { $OUT .= "   $l\n"; };
 }***** Note: happiness is a semantic parameter and should *****
 *****    NEVER be reported in a publication -- NEVER!    *****
+<<nl>>
