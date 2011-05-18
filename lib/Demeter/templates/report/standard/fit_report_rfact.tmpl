@@ -2,8 +2,14 @@
   # fit parameter report
   #   {$D->group} returns the ifeffit group name
   #   {$D->parameter} returns the value of that parameter
+  ($file, $label) = ($D->file,      'file          ');
+  ($file, $label) = ($D->prjrecord, 'Athena project') if $D->from_athena;
+  q{}
 }
-: file                = {$D->file}
+<<nl>>===== Data set >> {$D->name} << ====================================
+
+: {$label}      = {$file}
+: name                = {$D->name}
 : k-range             = {$D->fft_kmin} - {$D->fft_kmax}
 : dk                  = {$D->fft_dk}
 : k-window            = {$D->fft_kwindow}
@@ -14,3 +20,6 @@
 : fitting space       = {$D->fit_space}
 : background function = {$D->yesno("fit_do_bkg")}
 : phase correction    = {$D->fft_pc}
+
+r-factor for this data set = {sprintf "%.7f", $F->rfactor}
+<<nl>>

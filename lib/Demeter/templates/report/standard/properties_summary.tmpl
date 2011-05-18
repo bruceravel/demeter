@@ -1,0 +1,11 @@
+{
+  $description = $S->description;
+  my @lines = split($/, $description);
+  $string  = shift @lines;
+  $string .= (sprintf "$/ %-15s : %s", '        ...', $_) foreach @lines;
+  q{}
+}
+<< >>Name            : {$S->name}
+ Description     : {$string}
+ Figure of merit : {$S->fom}
+<<nl>>

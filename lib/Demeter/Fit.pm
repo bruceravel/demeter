@@ -788,10 +788,8 @@ sub properties_header {
 sub summary {
   my ($self) = @_;
   my $text = q{};
-  $text .= $self->properties_header(1);
-  $text .= $/;
-  $text .= $self->statistics_report;
-  $text .= $/;
+  $text .= $self->template("report", "properties_summary");
+  $text .= $self->template("report", "statistics"); #statistics_report;
   $text .= $self->gds_report;
   $text .= $self->template("report", "fancyline");
   return $text;
@@ -834,10 +832,7 @@ sub logtext {
       $data->part_fft("fit") if (lc($data->fitsum) eq 'sum');
       $data->part_bft("fit") if (lc($data->fitsum) eq 'sum');
     };
-    $text .= $/;
-    $text .= "===== Data set >> " . $data->name . " << ====================================\n\n" ;
     $text .= $data->fit_parameter_report($#{ $self->data }, $self->fit_performed);
-    $text .= $/;
     my @all_paths = @{ $self->paths };
     if (@all_paths) {
       ## figure out how wide the column of path labels should be
@@ -1285,7 +1280,7 @@ override 'deserialize' => sub {
     my @array = %$r_attributes;
     my $savecv = $self->mo->datacount;
     my $this = Demeter::Data -> new(@array);
-    $this->cv($r_attributes->{cv});
+    $this->cv($r_attributes->{cv}||0);
     $self->mo->datacount($savecv);
     $datae{$this->group} = $this;
     if ($this->datatype eq 'xmu') {
@@ -1498,7 +1493,7 @@ override 'deserialize' => sub {
     };
     $d->read_fit($file) if (-e $file);
     $d->fitting(1);
-    #unlink $file;
+    unlink $file;
   };
 
   ## -------- import the Plot object, if requested

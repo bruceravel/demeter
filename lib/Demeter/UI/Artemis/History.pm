@@ -311,9 +311,9 @@ sub write_report {
   my $param = $self->{params}->GetStringSelection;
   (my $pp = $param) =~ s{_}{\\_}g;
   if ($param eq 'Statistcal parameters') {
-    $self->{report}->AppendText($Demeter::UI::Artemis::demeter->template('fit', 'report_head_stats'));
+    $self->{report}->AppendText($Demeter::UI::Artemis::demeter->template('report', 'report_head_stats'));
   } else {
-    $self->{report}->AppendText($Demeter::UI::Artemis::demeter->template('fit', 'report_head_param', {param=>$param}));
+    $self->{report}->AppendText($Demeter::UI::Artemis::demeter->template('report', 'report_head_param', {param=>$param}));
   };
   my @x = ();
   foreach my $i (0 .. $self->{list}->GetCount-1) {
@@ -321,12 +321,12 @@ sub write_report {
     my $fit = $self->{list}->GetIndexedData($i);
     push @x, $fit->fom;
     if ($param eq 'Statistcal parameters') {
-      $self->{report}->AppendText($fit->template('fit', 'report_stats'));
+      $self->{report}->AppendText($fit->template('report', 'report_stats'));
     } else {
       my $g = $fit->fetch_gds($param);
       next if not $g;
       $fit->mo->fit($fit);
-      $self->{report}->AppendText($g->template('fit', 'report_param'));
+      $self->{report}->AppendText($g->template('report', 'report_param'));
       $fit->mo->fit(q{});
     };
   };

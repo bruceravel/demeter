@@ -6,6 +6,8 @@
   ($file, $label) = ($D->prjrecord, 'Athena project') if $D->from_athena;
   q{}
 }
+<<nl>>===== Data set >> {$D->name} << ====================================
+
 : {$label}      = {$file}
 : name                = {$D->name}
 : k-range             = {$D->fft_kmin} - {$D->fft_kmax}
@@ -18,3 +20,4 @@
 : fitting space       = {$D->fit_space}
 : background function = {$D->yesno("fit_do_bkg")}
 : phase correction    = {$D->fft_pc}
+<<nl>>
