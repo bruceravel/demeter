@@ -973,12 +973,7 @@ override serialization => sub {
     $text .= YAML::Tiny::Dump($self->get($key));
   };
   ## dump attributes of each ScatteringPath object
-  #my %pathinfo = ();
   foreach my $sp ( @{$self->pathlist}) {
-    #foreach my $key ($sp->savelist) {
-    #  $pathinfo{$key} = $sp->$key;
-    #};
-    #$text .= YAML::Tiny::Dump(\%pathinfo);
     $text .= $sp->serialization;
   };
   return $text;
@@ -988,48 +983,14 @@ sub serialize {
   my ($self, $filename, $nozip) = @_;
   croak("No filename specified for serializing Feff object") unless $filename;
 
-  my %cards = ();
-  foreach my $key (qw(abs_index edge s02 rmax name nlegs npaths rmultiplier pcrit ccrit
-		      workspace screen buffer save fuzz betafuzz eta_suppress miscdat
-		      group hidden source)) {
-    $cards{$key} = $self->$key;
-  };
-  $cards{zzz_arrays} = "titles othercards potentials absorber sites";
-
   if ($nozip) {
     open my $Y, ">".$filename;
-    ## dump attributes of the Feff object
-    print $Y YAML::Tiny::Dump(\%cards);
-    foreach my $key (split(" ", $cards{zzz_arrays})) {
-      print $Y YAML::Tiny::Dump($self->get($key));
-    };
-    ## dump attributes of each ScatteringPath object
-    my %pathinfo = ();
-    foreach my $sp ( @{$self->pathlist}) {
-      foreach my $key ($sp->savelist) {
-	$pathinfo{$key} = $sp->$key;
-      };
-      print $Y YAML::Tiny::Dump(\%pathinfo);
-    };
+    print $Y, $self->serialization;
     close $Y;
-
   } else {
     my $gzout = gzopen($filename, 'wb9');
-    ## dump attributes of the Feff object
-    $gzout->gzwrite(YAML::Tiny::Dump(\%cards));
-    foreach my $key (split(" ", $cards{zzz_arrays})) {
-      $gzout->gzwrite(YAML::Tiny::Dump($self->get($key)));
-    };
-    ## dump attributes of each ScatteringPath object
-    my %pathinfo = ();
-    foreach my $sp ( @{$self->pathlist}) {
-      foreach my $key ($sp->savelist) {
-	$pathinfo{$key} = $sp->$key;
-      };
-      $gzout->gzwrite(YAML::Tiny::Dump(\%pathinfo));
-    };
+    $gzout->gzwrite($self->serialization);
     $gzout->gzclose;
-
   };
 };
 

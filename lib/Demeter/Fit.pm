@@ -958,25 +958,24 @@ sub fetch_statistics {
 };
 
 
-sub statistics_report {
-  my ($self) = @_;
-
-  my %things = ("n_idp"       => "Independent points          ",
-		"n_varys"     => "Number of variables         ",
-		"chi_square"  => "Chi-square                  ",
-		"chi_reduced" => "Reduced chi-square          ",
-		"r_factor"    => "R-factor                    ",
-		"epsilon_k"   => "Measurement uncertainty (k) ",
-		"epsilon_r"   => "Measurement uncertainty (R) ",
-		"data_total"  => "Number of data sets         ",
-	       );
-  my $string = q{};
-  foreach my $stat (split(" ", $STAT_TEXT)) {
-    $string .= $self->template("report", "statistics", {name=>$things{$stat}, stat=>$stat});
-    ##$string .= sprintf("%s : %s\n", $things{$stat}, $self->$stat||0);
-  };
-  return $string;
-};
+# sub statistics_report {
+#   my ($self) = @_;
+#   my %things = ("n_idp"       => "Independent points          ",
+# 		"n_varys"     => "Number of variables         ",
+# 		"chi_square"  => "Chi-square                  ",
+# 		"chi_reduced" => "Reduced chi-square          ",
+# 		"r_factor"    => "R-factor                    ",
+# 		"epsilon_k"   => "Measurement uncertainty (k) ",
+# 		"epsilon_r"   => "Measurement uncertainty (R) ",
+# 		"data_total"  => "Number of data sets         ",
+# 	       );
+#   my $string = q{};
+#   foreach my $stat (split(" ", $STAT_TEXT)) {
+#     $string .= $self->template("report", "statistics", {name=>$things{$stat}, stat=>$stat});
+#     ##$string .= sprintf("%s : %s\n", $things{$stat}, $self->$stat||0);
+#   };
+#   return $string;
+# };
 
 sub happiness_report {
   my ($self) = @_;
@@ -1771,14 +1770,6 @@ An exception is thrown is the argument is not one of the following:
 
    n_idp n_varys chi_square chi_reduced r_factor
    epsilon_k epsilon_r data_total
-
-=item C<statistics_report>
-
-This method returns a block of text summarizing all the fitting
-statistics, assuming the C<evaluate> method has been called.  This
-method is used by the C<logfile> method.
-
-   $text = $fitobject -> statistics_report;
 
 =item C<correl>
 

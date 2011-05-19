@@ -39,7 +39,6 @@ ok( ($this->mo->template_plot     eq 'pgplot'  and
      $this->mo->template_fit      eq 'ifeffit' and
      $this->mo->template_analysis eq 'ifeffit'),
                                        "$OBJ object can find template sets");
-
 $this -> set(name=>'foo', gds=>'guess', mathexp=>5);
 ok( $this -> write_gds =~ m{\Aguess\s+foo\s+=\s+5},                 "write_gds works: simple");
 $this -> set(name=>'foo', gds=>'def', mathexp=>'sin(blarg)+a**5');

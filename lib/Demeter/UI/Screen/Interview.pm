@@ -84,7 +84,7 @@ sub I_data_report {
 };
 sub I_stats {
   my ($fit) = @_;
-  $message = $fit->statistics_report;
+  $message = $fit->template("report", "statistics");
   return 0;
 };
 

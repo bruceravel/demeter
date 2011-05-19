@@ -36,7 +36,7 @@ has 'bestfit'	  => (is => 'rw', isa => 'Num',   default => 0,
 has 'error'	  => (is => 'rw', isa => 'Num',   default => 0);
 has 'modified'	  => (is => 'rw', isa => 'Bool',  default => 1);
 has 'note'	  => (is => 'rw', isa => 'Str',   default => q{},
-		     trigger => sub{my ($self, $new) = @_; $self->autonote(1) if ($new =~ m{\A\s*\z})} );
+		      trigger => sub{my ($self, $new) = @_; $self->autonote(1) if ($new =~ m{\A\s*\z})} );
 has 'autonote'	  => (is => 'rw', isa => 'Bool',  default => 1);
 has 'highlighted' => (is => 'rw', isa => 'Bool',  default => 0);
 has 'Use'	  => (is => 'rw', isa => 'Bool',  default => 1);
@@ -48,13 +48,13 @@ sub BUILD {
   my ($self, @params) = @_;
   $self->mo->push_GDS($self);
 };
-sub DEMOLISH {
-  my ($self) = @_;
-  $self->alldone;
-  ## --- this would be nice, but it seems to happen after Ifeffit is
-  ##     shut down in certain cases when exiting Artemis
-  # $self->dispose("erase ".$self->name);
-};
+# sub DEMOLISH {
+#   my ($self) = @_;
+#   $self->alldone;
+#   ## --- this would be nice, but it seems to happen after Ifeffit is
+#   ##     shut down in certain cases when exiting Artemis
+#   # $self->dispose("erase ".$self->name);
+# };
 
 ## return a list of valid GDS attributes
 sub parameter_list {

@@ -727,6 +727,7 @@ sub template {
   $string =~ s{\s+$}{\n};	      # remove trailing white space
   $string =~ s{<<nl>>}{\n}g;	      # convert newline token into a real newline
   $string =~ s{<<( +)>>}{$1}g;	      # convert white space token into real white space
+  undef $template;
   return $string;
 };
 

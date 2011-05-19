@@ -92,8 +92,9 @@ ok( $#lines == 3,                             'correl_report returns the correct
 
 
 ## -------- log file methods
-@lines  = split(/\n/, $this->statistics_report);
-ok( (($#lines == 7) and ($this->statistics_report =~ m{Number of variables})), 'statistics_report seems to run correctly');
+my $text = $this->template("report", "statistics");
+@lines  = split(/\n/, $text);
+ok( (($#lines == 7) and ($text =~ m{Number of variables})), 'statistics reporting seems ok');
 
 @lines  = split(/\n/, $this->gds_report);
 ok( $#lines == 4,                            'gds_report seems to run correctly');
