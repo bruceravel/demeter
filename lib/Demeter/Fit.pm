@@ -201,6 +201,17 @@ override 'alldone' => sub {
   rmtree $self->folder if (-d $self->folder);
 };
 
+override all => sub {
+  my ($self) = @_;
+  my %all = $self->SUPER::all;
+  delete $all{gds};
+  delete $all{data};
+  delete $all{paths};
+  delete $all{vpaths};
+  return %all;
+};
+
+
 sub rm {
   my ($self) = @_;
   #print "removing ", $self->location, $/;
@@ -1114,6 +1125,28 @@ sub has_data {
 
 ## ------------------------------------------------------------
 ## Serialization and deserialization of the Fit object
+
+override 'serialization' => sub {
+  my ($self) = @_;
+  my @gds    = @{ $self->gds   };
+  my @data   = @{ $self->data  };
+  my @paths  = @{ $self->paths };
+  my @vpaths = @{ $self->vpaths };
+
+  my @gdsgroups    = map { $_->group } @gds;
+  my @datagroups   = map { $_->group } @data;
+  my @pathsgroups  = map { $_->group } grep {defined $_} @paths;
+  my @feffgroups   = map { $_ ?  $_->group : q{} } map {$_ -> parent} grep {defined $_} @paths;
+  my @vpathsgroups = map { $_->group } grep {defined $_} @vpaths;
+  @feffgroups = uniq @feffgroups;
+
+  my $text = "# gdsgroups, datagroups, pathsgroups, feffgroups, vpathsgroups\n";
+  $text .= YAML::Tiny::Dump(\@gdsgroups, \@datagroups, \@pathsgroups, \@feffgroups, \@vpathsgroups);
+  $text .= "\n";
+  my %hash = $self->all;
+  $text .= YAML::Tiny::Dump(\%hash);
+  return $text;
+};
 
 override 'serialize' => sub {
   my ($self, @args) = @_;

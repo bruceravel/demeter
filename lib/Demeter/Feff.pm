@@ -957,6 +957,33 @@ sub report {
 ##-------------------------------------------------------------------------
 ## serializing/deserializing
 
+override serialization => sub {
+  my ($self) = @_;
+
+  my %cards = ();
+  foreach my $key (qw(abs_index edge s02 rmax name nlegs npaths rmultiplier pcrit ccrit
+		      workspace screen buffer save fuzz betafuzz eta_suppress miscdat
+		      group hidden source)) {
+    $cards{$key} = $self->$key;
+  };
+  $cards{zzz_arrays} = "titles othercards potentials absorber sites";
+
+  my $text = YAML::Tiny::Dump(\%cards);
+  foreach my $key (split(" ", $cards{zzz_arrays})) {
+    $text .= YAML::Tiny::Dump($self->get($key));
+  };
+  ## dump attributes of each ScatteringPath object
+  #my %pathinfo = ();
+  foreach my $sp ( @{$self->pathlist}) {
+    #foreach my $key ($sp->savelist) {
+    #  $pathinfo{$key} = $sp->$key;
+    #};
+    #$text .= YAML::Tiny::Dump(\%pathinfo);
+    $text .= $sp->serialization;
+  };
+  return $text;
+};
+
 sub serialize {
   my ($self, $filename, $nozip) = @_;
   croak("No filename specified for serializing Feff object") unless $filename;

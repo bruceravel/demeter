@@ -147,6 +147,14 @@ sub savelist { # returns all SP attributes that are saved when a Feff calc is se
   ##print join(" ", $self->attributes), $/;
   return grep { $_ !~ m{feff|heapvalue|data|plot|mode} } $self->attributes;
 };
+override serialization => sub {
+  my ($self) = @_;
+  my %pathinfo = ();
+  foreach my $key ($self->savelist) {
+    $pathinfo{$key} = $self->$key;
+  };
+  return YAML::Tiny::Dump(\%pathinfo);
+};
 
 
 ## construct the intrp line by disentangling the SP string

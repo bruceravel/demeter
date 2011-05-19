@@ -494,7 +494,7 @@ sub report {
   $which ||= 'all';
   foreach my $this (sort @{$self->types}) {
     my $n = 19 - length($this);
-    $text .= sprintf("\n%s %s %d\n", $this, '.' x $n, $#{$self->$this}+1);
+    #$text .= sprintf("\n%s %s %d\n", $this, '.' x $n, $#{$self->$this}+1);
     if (($this eq $which) or ($which eq 'all')) {
       my $att = ($this eq 'ScatteringPath') ? 'intrpline'
 	      : ($this eq 'Plot')           ? 'backend'
@@ -503,9 +503,10 @@ sub report {
 	      :                               'name';
       my $i = 0;
       foreach my $obj (@{$self->$this}) {
-	$text .= sprintf("\t%3d (%s) : %s\n", ++$i, $obj->group, $obj->$att);
+	$text .= sprintf("%-14s %4d (%s) : %s\n", $this, ++$i, $obj->group, $obj->$att);
 	chop $text if ($this eq 'GDS');
       };
+      $text .= "\n" if $i;
     };
   };
   return $text

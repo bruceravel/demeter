@@ -20,7 +20,7 @@ use warnings;
 
 use Wx qw( :everything );
 use base qw(Wx::Dialog);
-use Wx::Event qw(EVT_LISTBOX EVT_BUTTON EVT_RADIOBOX EVT_CHOICE);
+use Wx::Event qw(EVT_LEFT_DCLICK);
 
 my $aleft = Wx::TextAttr->new();
 $aleft->SetAlignment(wxTEXT_ALIGNMENT_LEFT);
@@ -44,9 +44,57 @@ sub new {
   my $button = Wx::Button->new($this, wxID_OK, q{}, wxDefaultPosition, wxDefaultSize, 0,);
   $vbox -> Add($button, 0, wxGROW|wxALL, 5);
 
+  EVT_LEFT_DCLICK($text, sub{OnLeftDclick(@_)}); # if $title =~ m{Overview of this instance};
 
   $this -> SetSizer( $vbox );
   return $this;
+};
+
+sub OnLeftDclick {
+  my ($text, $event) = @_;
+  #print join("|", $event, $text->HitTest($event->GetPosition)), $/;
+  my ($x, $col, $row) = $text->HitTest($event->GetPosition);
+  $event->Skip(0);
+  my $object;
+  my $kind;
+  my @line = split(" ", $text->GetLineText($row));
+  return if not @line;
+ SWITCH: {
+    ## a YAML is displayed
+    ($line[0] =~ m{\A(sp|parent|data)group:}) and do {
+      $kind = ($1 eq 'sp')        ? 'ScatteringPath'
+	    : ($1 eq 'data')      ? 'Data'
+	    : ($1 eq 'reference') ? 'Data'
+	    : ($1 eq 'parent')    ? 'Feff'
+	    :                       q{};
+      return if not $kind;
+      $object = Demeter->mo->fetch($kind, $line[1]);
+      last SWITCH;
+    };
+    ## a Fit YAML is displayed, this is the top part of the display
+    ## (ok, lots of other lines will start with a dash, but few will
+    ## actually return something from fetch)
+    ($line[0] eq '-') and do {
+      foreach my $type (qw(GDS Data Path Feff VPath)) {
+	$kind = $type;
+	$object = Demeter->mo->fetch($type, $line[1]);
+	last SWITCH if $object;
+      };
+      last SWITCH;
+    };
+    ## this is the Demeter mode display
+    ($line[2] and (length($line[2]) > 5)) and do {
+      $kind = $line[0];
+      $object = Demeter->mo->fetch($kind, substr($line[2], 1, -1));
+      last SWITCH;
+    }
+  };
+  return if not $object;
+  my $str = sprintf("YAML of %s object <%s> (%s)", $kind, $object->name, $object->group);
+  Demeter::UI::Artemis::ShowText->new($Demeter::UI::Artemis::frames{main},
+				      $object->serialization,
+				      $str)
+      -> Show;
 };
 
 sub ShouldPreventAppExit {
