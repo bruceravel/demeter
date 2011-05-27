@@ -457,7 +457,11 @@ sub fit {
   $self->fitted(1);
   $self->mo->fit(q{});
   $self->mo->increment_fit;
-  #$_->update_fft(1) foreach (@datasets);
+
+  ## prep data for plotting
+  foreach my $data (@datasets) {
+    $data->update_fft(1);
+  };
 
   $self->stop_spinner if ($self->mo->ui eq 'screen');
 

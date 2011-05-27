@@ -168,17 +168,17 @@ Moose folk claim to be working on start-up issues.  I am keeping my
 fingers crossed.  Until then, I live with the slow start-up, confident
 that the rest of [% demeter %] is worth the wait.
 
-Discuss how an understanding of Moose can inform your program, but
-that it is not necessary.
+[%# Discuss how an understanding of Moose can inform your program, but 
+    that it is not necessary. %]
 
-[% PROCESS subsection label="Some vocabulary" %]
+[% PROCESS section label="Some vocabulary" %]
 
 Throughout this document, I use the language of object systems to
 describe [% demeter %].  I don't expect than everyone using 
 [% demeter %] should know much about object oriented programming.
 indeed, my hope is that the examples in this document can be followed
 and adapted by anyone with a basic grounding in the use of perl.  To
-helpintroduce that person to the prospect of coding with 
+help introduce that person to the prospect of coding with 
 [% demeter %], I'll define a few terms.  (More specifically, I'll
 relate my understanding of those terms.  I have no formal training in
 computer science and am probably wrong a lot about this stuff.  
@@ -193,12 +193,12 @@ Think of an object as a box containing data.  This box comes with a
 set of instructions for how to manipulate the stuff in the box.  The
 data are called the attributes of the object and tend to be things
 like numbers, strings, booleans, or other data structures.  The set of
-instructions are called methods and are very similar to a subroutine
+instructions are called methods and are very similar to subroutines
 in a non-object-oriented perl script with the caveat that there is an
-important syntax relation between an object and a method.
+important syntax relation between an object and any of its methods.
 [% END %]
 [% WRAPPER html/dt dt='Attribute' %]
-An attribute is a piece of information about the method that is either
+An attribute is a piece of information about the object that is either
 set by the user or computed as a result of some interaction with the
 object.  You can always query an object about an attribute value.
 Some attributes are read-write, which means that they can be set in
@@ -252,13 +252,13 @@ A trigger is something that happens what an accessor is used to set an
 attribute value.  It is an action that takes place as a result of
 changing an attribute value.  For example, when the value of 
 [% rbkg %] is changed for an object associated with XAS data, the
-trigger performs a series of chores that will assure that the
+trigger is used to set a flag that assures that the
 background removal is performed anew the next time it is necessary to
 do a Fourier transform of those data.  Triggers are used to control
 much of the high-level functionality in [% demeter %].
 [% END %]
 [% END %]
 
-I will, on occassion in this document, point the reader to where more
-of the programming details can be found.
+I will, on occassion in this document, point the reader to web sites
+where more of the programming details can be found.
 [% END %]
