@@ -111,9 +111,9 @@ my $build = DemeterBuilder
 
 				## this is required for the gnuplot plotting backend
 				#(($^O eq 'MSWin32') or ($^O eq 'cygwin')) ? () :
-				('Graphics::GnuplotIF' => '0'),
+				'Graphics::GnuplotIF' => '0',
 
-				## GUI for Atehna, Artemis, and Hephaestus
+				## GUI for Athena, Artemis, and Hephaestus
 				'Wx'                  => '0.86'
 
 				## these are used for direct access to the pgplot terminal

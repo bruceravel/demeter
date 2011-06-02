@@ -275,6 +275,7 @@ sub _data {
 	last;
       };
     };
+    $yaml->{preproc_standard} ||= 'None';
     ($yaml->{preproc_standard} eq 'None') ? $colsel->{Preprocess}->{standard}->SetSelection(0)
       : $colsel->{Preprocess}->{standard}->SetSelection($found+1);
     if ($colsel->{Preprocess}->{standard}->GetStringSelection =~ m{\A(?:None|)\z}) {

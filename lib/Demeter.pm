@@ -15,10 +15,10 @@ package Demeter;  # http://xkcd.com/844/
 
 =cut
 
-BEGIN {
-  #$ENV{PGPLOT_DEV} = (($^O eq 'MSWin32') or ($^O eq 'cygwin')) ? '/gw' : '/xserve';
-  $ENV{PGPLOT_DIR} = 'C:\strawberry\perl\c\lib\pgplot' if (($^O eq 'MSWin32') or ($^O eq 'cygwin'));
-};
+#BEGIN {
+#  #$ENV{PGPLOT_DEV} = (($^O eq 'MSWin32') or ($^O eq 'cygwin')) ? '/gw' : '/xserve';
+#  $ENV{PGPLOT_DIR} = 'C:\strawberry\perl\c\lib\pgplot' if (($^O eq 'MSWin32') or ($^O eq 'cygwin'));
+#};
 
 require 5.008;
 
@@ -56,10 +56,10 @@ Readonly my $PI     => 4*atan2(1,1);
 
 =cut
 # Metaclass definition must come before Moose is used.
-    use metaclass (
-        metaclass => 'Moose::Meta::Class',
-        error_class => 'Moose::Error::Confess',
-    );
+use metaclass (
+	       metaclass => 'Moose::Meta::Class',
+	       error_class => 'Moose::Error::Confess',
+	      );
 
 use Moose;
 use MooseX::Aliases;
