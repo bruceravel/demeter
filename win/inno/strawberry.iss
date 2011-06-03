@@ -55,7 +55,6 @@ Root: HKCR; Subkey: ".prj"; ValueType: string; ValueName: ""; ValueData: "{app}\
 
 [Files]
 Source: "*"; DestDir: "{app}"; Flags: "recursesubdirs"; Excludes: "\cpan\build\*,\cpan\sources\*";
-; need this to not wrap up stuff in C:\strawberry\cpan   ; Excludes: "*.~*,\Temp\*";
 
 [Tasks]
 Name: "desktopicon"; Description: "Create &desktop icons"; GroupDescription: "Additional shortcuts:";
@@ -65,7 +64,7 @@ Name: "desktopicon"; Description: "Create &desktop icons"; GroupDescription: "Ad
 Name: "{group}\Athena"; Filename: "{app}\perl\site\bin\dathena.bat"; WorkingDir: "{app}"; IconFilename: "{app}\perl\site\lib\Demeter\UI\Athena\share\athena_icon.ico"
 Name: "{group}\Artemis"; Filename: "{app}\perl\site\bin\dartemis.bat"; WorkingDir: "{app}"; IconFilename: "{app}\perl\site\lib\Demeter\UI\Artemis\share\artemis_icon.ico"
 Name: "{group}\Hephaestus"; Filename: "{app}\perl\site\bin\dhephaestus.bat"; WorkingDir: "{app}"; IconFilename: "{app}\perl\site\lib\Demeter\UI\Hephaestus\icons\vulcan.ico"
-;Name: "{group}\Atoms"; Filename: "{app}\perl\site\bin\datoms.bat"; Parameters: "--wx"; WorkingDir: "{app}"; IconFilename: "{app}\perl\site\lib\Demeter\UI\Atoms\icons\atoms.ico"
+Name: "{group}\Stand-alone Atoms"; Filename: "{app}\perl\site\bin\datoms.bat"; Parameters: "--wx"; WorkingDir: "{app}"; IconFilename: "{app}\perl\site\lib\Demeter\UI\Atoms\icons\atoms.ico"
 Name: "{group}\Uninstall"; Filename: "{app}\unins000.exe";
 ;;; Demeter URLs
 Name: "{group}\Demeter Website"; Filename: "{app}\win32\Demeter Website.url"; IconFilename: "{app}\win32\Demeter.ico"
@@ -88,9 +87,9 @@ Name: "{group}\Perl\Tools\Create local library areas"; Filename: "{app}\perl\bin
 Name: "{group}\Perl\Tools\CPAN Client"; Filename: "{app}\perl\bin\cpan.bat"; WorkingDir: "{app}\perl\bin\"; IconFilename: "{app}\win32\cpan.ico";
 
 ;;; Application desktop icons
-;Name: "{userdesktop}\Athena"; Filename: "{app}\perl\site\bin\dathena.bat"; WorkingDir: "{app}"; IconFilename: "{app}\perl\site\lib\Demeter\UI\Athena\share\athena_icon.ico"; Tasks: desktopicon
-;Name: "{userdesktop}\Artemis"; Filename: "{app}\perl\site\bin\dartemis.bat"; WorkingDir: "{app}"; IconFilename: "{app}\perl\site\lib\Demeter\UI\Artemis\share\artemis_icon.ico"; Tasks: desktopicon
-;Name: "{userdesktop}\Hephaestus"; Filename: "{app}\perl\site\bin\dhephaestus.bat"; WorkingDir: "{app}"; IconFilename: "{app}\perl\site\lib\Demeter\UI\Hephaestus\icons\vulcan.ico"; Tasks: desktopicon
+Name: "{userdesktop}\Athena"; Filename: "{app}\perl\site\bin\dathena.bat"; WorkingDir: "{app}"; IconFilename: "{app}\perl\site\lib\Demeter\UI\Athena\share\athena_icon.ico"; Tasks: desktopicon
+Name: "{userdesktop}\Artemis"; Filename: "{app}\perl\site\bin\dartemis.bat"; WorkingDir: "{app}"; IconFilename: "{app}\perl\site\lib\Demeter\UI\Artemis\share\artemis_icon.ico"; Tasks: desktopicon
+Name: "{userdesktop}\Hephaestus"; Filename: "{app}\perl\site\bin\dhephaestus.bat"; WorkingDir: "{app}"; IconFilename: "{app}\perl\site\lib\Demeter\UI\Hephaestus\icons\vulcan.ico"; Tasks: desktopicon
 
 [Code]
 function getPath(Param: String): string;
