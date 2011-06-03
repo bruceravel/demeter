@@ -42,6 +42,7 @@ has 'group'     => (is => 'rw', isa => 'Str',  default => sub{shift->_get_group(
 has 'name'      => (is => 'rw', isa => 'Str',  default => q{});
 has 'plottable' => (is => 'ro', isa => 'Bool', default => 0);
 has 'data'      => (is => 'rw', isa => 'Any',  default => q{});
+has 'perl_base' => (is => 'rw', isa => 'Str',  default => q{});
 
 has 'config_file' => (is => 'ro', isa => 'Str',
 		      default => File::Spec->catfile(dirname($INC{"Demeter.pm"}),
@@ -91,6 +92,16 @@ my %params_of;
 sub BUILD {
   my ($self) = @_;
   #return $Demeter::mode->config if $Demeter::mode->config;
+
+  if ($self->is_windows) {
+    my ($volume,$directories,$fname) = File::Spec->splitpath( $INC{'Demeter.pm'} );
+    #$directories =~ s{\A[/\\]}{};
+    $directories =~ s{[/\\]\z}{};
+    my @dir = File::Spec->splitdir( $directories );
+    pop @dir; pop @dir; pop @dir;  # perl\site\lib
+    $self->perl_base(File::Spec->catdir($volume, @dir));
+  };
+
   $self -> dot_folder;
   $self -> read_config;
   $self -> read_ini;
@@ -183,6 +194,7 @@ sub _read_config_file {
   my $key_regex = Regexp::Assemble->new()->add(qw(type default minint maxint options windows
 						  units onvalue offvalue restart))->re;
 
+
   my (%hash, $description, $group, $param, $value);
   my $line;
   open (my $CONFIG, $file);
@@ -246,7 +258,10 @@ sub _read_config_file {
       $hash{$1} = $value;
       ($hash{demeter} = $value) if ($1 eq 'default');
       if (($self->is_windows) and ($1 eq 'windows')) {
-	$hash{demeter} = $value
+	my $relocated = $self->perl_base;       # make paths to executables (feff, gnuplot, etc)
+	$value =~ s{__PERL_BASE__}{$relocated}; # tolerant to relocation upon installation
+	$hash{demeter} = $value;
+	$hash{windows} = $value;
       };
     };
   };
@@ -626,7 +641,18 @@ by an imported INI file or by the C<set_default> method.
 
 =item windows
 
-This overrides the default, but only on Windows computers
+This overrides the default, but only on Windows computers.
+
+Strings that take a fully resolved path to an executable are treated
+specially.  If that executable resides beneath the perl installation
+location, then the installation location should be denoted as
+C<__PERL_BASE__>.  For example, Strawberry perl is typically instaled
+into C<C:\strawberry>.  Rather than denoting the location of the Feff
+executable as C<C:\strawberry\c\bin\feff.exe>, it should be specified
+as C<__PERL_BASE__\c\bin\feff.exe>.  The C<__PERL_BASE__> tag will be
+replaced by the correct installation location.  Then, if Strawberry is
+installed into some other location, the Feff executable will be found
+at runtime.
 
 =item demeter
 

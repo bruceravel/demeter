@@ -124,7 +124,7 @@
    - Need to expand the filetype system by examining data from *all* the XAS beamlines in the world.  Yes ... all of them.
    - solicit help from the facility representatives
 
-** Windows issues [8/14]					    :Windows:
+** Windows issues [8/15]					    :Windows:
   - [X] parameter group context menus don't get posted (see http://www.nntp.perl.org/group/perl.wxperl.users/2011/03/msg7929.html)
   - [X] ugly background colors on command and status buffer frames (particularly at bottom, also a problem in Artemis)
   - [X] raised text with data name in data frame
@@ -140,6 +140,7 @@
   - [ ] The atoms panel background color is too light.  Which window needs its BackgroundColour set to wxNullColour?
   - [ ] clampbox does not get enabled/disabled explicitly, is this another aspect of StaticBox that is different on Windows? (see link above)
   - [ ] fpj file on Win seems to not get unpacked correctly	:Project:
+  - [ ] Get .prj file to open with a double click into Athena, .fpj into Artemis
 
 
 ** Artemis

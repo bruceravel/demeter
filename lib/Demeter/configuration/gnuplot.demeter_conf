@@ -50,7 +50,7 @@ section_description
 variable=program
 type=string
 default=gnuplot
-windows=C:\strawberry\c\bin\gnuplot.exe
+windows=__PERL_BASE__\c\bin\gnuplot.exe
 description
   This is the name of the gnuplot executable.  In the Strawberry Perl
   Plus Demeter package, the default windows value should not be

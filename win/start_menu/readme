@@ -1,0 +1,7 @@
+The files in this directory are windows internet shortcuts and icon
+files.  These should be copied into the `C:\strawberry\win32' folder
+before building the "Demeter with Strawberry Perl" package using Inno
+Setup.
+
+The two .txt files need to be moved into `C:\strawberry' before
+packaging.

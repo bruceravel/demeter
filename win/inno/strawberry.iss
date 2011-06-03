@@ -31,8 +31,8 @@ AppPublisherURL=http://bruceravel.github.com/demeter/
 ChangesAssociations=yes
 ChangesEnvironment=yes
 
-;LicenseFile=license.txt
-;InfoAfterFile=README.txt
+LicenseFile=Demeter.license.txt
+InfoAfterFile=Demeter.readme.txt
 
 
 
@@ -48,19 +48,46 @@ Root: HKLM; Subkey: "SYSTEM\CurrentControlSet\Control\Session Manager\Environmen
 Root: HKLM; Subkey: "SYSTEM\CurrentControlSet\Control\Session Manager\Environment"; ValueName: "PGPLOT_DIR"; ValueType: expandsz; ValueData: "{app}\c\lib\pgplot";
 Root: HKLM; Subkey: "SYSTEM\CurrentControlSet\Control\Session Manager\Environment"; ValueName: "FONTCONFIG_FILE"; ValueType: expandsz; ValueData: "{app}\c\bin\etc\fonts\fonts.conf";
 
+;; File associations
+Root: HKCR; Subkey: ".pl"; ValueType: string; ValueName: ""; ValueData: "{app}\perl\bin\perl.exe"; Flags: uninsdeletevalue
+Root: HKCR; Subkey: ".prj"; ValueType: string; ValueName: ""; ValueData: "{app}\perl\site\bin\dathena.bat"; Flags: uninsdeletevalue
+
+
 [Files]
-Source: "*"; DestDir: "{app}"; Flags: "recursesubdirs"
+Source: "*"; DestDir: "{app}"; Flags: "recursesubdirs"; Excludes: "\cpan\build\*,\cpan\sources\*";
 ; need this to not wrap up stuff in C:\strawberry\cpan   ; Excludes: "*.~*,\Temp\*";
 
 [Tasks]
 Name: "desktopicon"; Description: "Create &desktop icons"; GroupDescription: "Additional shortcuts:";
 
 [Icons]
+;;; Demeter applications
 Name: "{group}\Athena"; Filename: "{app}\perl\site\bin\dathena.bat"; WorkingDir: "{app}"; IconFilename: "{app}\perl\site\lib\Demeter\UI\Athena\share\athena_icon.ico"
 Name: "{group}\Artemis"; Filename: "{app}\perl\site\bin\dartemis.bat"; WorkingDir: "{app}"; IconFilename: "{app}\perl\site\lib\Demeter\UI\Artemis\share\artemis_icon.ico"
 Name: "{group}\Hephaestus"; Filename: "{app}\perl\site\bin\dhephaestus.bat"; WorkingDir: "{app}"; IconFilename: "{app}\perl\site\lib\Demeter\UI\Hephaestus\icons\vulcan.ico"
 ;Name: "{group}\Atoms"; Filename: "{app}\perl\site\bin\datoms.bat"; Parameters: "--wx"; WorkingDir: "{app}"; IconFilename: "{app}\perl\site\lib\Demeter\UI\Atoms\icons\atoms.ico"
-Name: "{group}\Uninstall"; Filename: "{app}\unins000.exe"
+Name: "{group}\Uninstall"; Filename: "{app}\unins000.exe";
+;;; Demeter URLs
+Name: "{group}\Demeter Website"; Filename: "{app}\win32\Demeter Website.url"; IconFilename: "{app}\win32\Demeter.ico"
+Name: "{group}\Ifeffit Wiki"; Filename: "{app}\win32\Ifeffit Wiki.url"; IconFilename: "{app}\win32\Ifeffit.ico"
+Name: "{group}\XAFS.org"; Filename: "{app}\win32\xafs.org.url"; IconFilename: "{app}\win32\xafs.org.ico"
+;;; replicating the Start menu entries installed by Strawberry
+Name: "{group}\Perl\Perl (command line)"; Filename: "C:\WINDOWS\system32\cmd.exe"; WorkingDir: "{app}"; Comment: "Quick way to get to the command line in order to use Perl."
+Name: "{group}\Perl\Strawberry Perl README"; Filename: "{app}\README.txt"; Comment: "Strawberry Perl README"
+Name: "{group}\Perl\Strawberry Perl Release Notes"; Filename: "{app}\win32\Strawberry Perl Release Notes.url"; Comment: "Strawberry Perl Release Notes"; IconFilename: "{app}\win32\strawberry.ico";
+Name: "{group}\Perl\Related Websites\Beginning Perl (onlne book)"; Filename: "{app}\win32\Beginning Perl (online book).url"; Comment: "Beginning Perl (online book)"; IconFilename: "{app}\win32\perlhelp.ico";
+Name: "{group}\Perl\Related Websites\learn.perl.org (tutorials, links)"; Filename: "{app}\win32\learn.perl.org (tutorials, links).url"; Comment: "learn.perl.org (tutorials, links)";  IconFilename: "{app}\win32\perlhelp.ico";
+Name: "{group}\Perl\Related Websites\Ovid's CGI Course"; Filename: "{app}\win32\Ovid's CGI Course.url"; Comment: "Ovid's CGI Course"; IconFilename: "{app}\win32\perlhelp.ico";
+Name: "{group}\Perl\Related Websites\Strawberry Perl Website"; Filename: "{app}\win32\Strawberry Perl Website.url"; Comment: "Strawberry Perl Website"; IconFilename: "{app}\win32\strawberry.ico";
+Name: "{group}\Perl\Related Websites\CPAN Module Search"; Filename: "{app}\win32\CPAN Module Search.url"; Comment: "CPAN Module Search"; IconFilename: "{app}\win32\cpan.ico";
+Name: "{group}\Perl\Related Websites\Live Support"; Filename: "{app}\win32\Live Support.url"; Comment: "Live Support"; IconFilename: "{app}\win32\onion.ico";
+Name: "{group}\Perl\Related Websites\Perl 5.12.2 Documentation (5.12.3 not available yet)"; Filename: "{app}\win32\Perl 5.12.2 Documentation (5.12.3 not available yet).url"; Comment: "Perl 5.12.2 Documentation (5.12.3 not available yet)"; IconFilename: "{app}\win32\perldoc.ico";
+Name: "{group}\Perl\Related Websites\Win32 Perl Wiki"; Filename: "{app}\win32\Win32 Perl Wiki.url"; Comment: "Win32 Perl Wiki"; IconFilename: "{app}\win32\strawberry.ico";
+Name: "{group}\Perl\Tools\Check installed versions of modules"; Filename: "{app}\perl\bin\module-version.bat"; WorkingDir: "{app}\perl\"; IconFilename: "{app}\win32\strawberry.ico";
+Name: "{group}\Perl\Tools\Create local library areas"; Filename: "{app}\perl\bin\llw32helper.bat"; WorkingDir: "{app}\perl\"; IconFilename: "{app}\win32\strawberry.ico";
+Name: "{group}\Perl\Tools\CPAN Client"; Filename: "{app}\perl\bin\cpan.bat"; WorkingDir: "{app}\perl\bin\"; IconFilename: "{app}\win32\cpan.ico";
+
+;;; Application desktop icons
 ;Name: "{userdesktop}\Athena"; Filename: "{app}\perl\site\bin\dathena.bat"; WorkingDir: "{app}"; IconFilename: "{app}\perl\site\lib\Demeter\UI\Athena\share\athena_icon.ico"; Tasks: desktopicon
 ;Name: "{userdesktop}\Artemis"; Filename: "{app}\perl\site\bin\dartemis.bat"; WorkingDir: "{app}"; IconFilename: "{app}\perl\site\lib\Demeter\UI\Artemis\share\artemis_icon.ico"; Tasks: desktopicon
 ;Name: "{userdesktop}\Hephaestus"; Filename: "{app}\perl\site\bin\dhephaestus.bat"; WorkingDir: "{app}"; IconFilename: "{app}\perl\site\lib\Demeter\UI\Hephaestus\icons\vulcan.ico"; Tasks: desktopicon

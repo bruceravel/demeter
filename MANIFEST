@@ -1608,6 +1608,7 @@ t/nonuniform.chi
 t/orig.inp
 t/PbFe12O19.inp
 t/re4chan.000
+t/t
 t/test.demeter_conf
 t/withHg.inp
 t/ybco.inp
@@ -1618,11 +1619,12 @@ tools/demeter-skeletons.el
 tools/ifeffit-mode.el
 tools/README
 videos
-win/build_perl.pl
 win/Demeter_icon.ico
-win/DemeterPerlBuild.pm
 win/deps/fetch.pl
 win/deps/parsexml.pl
-win/iconf_iff
-win/iconf_pgplot
-win/iconf_term
+win/ifeffit/iconf_iff
+win/ifeffit/iconf_pgplot
+win/ifeffit/iconf_term
+win/inno/strawberry.iss
+win/spp/build_perl.pl
+win/spp/DemeterPerlBuild.pm
