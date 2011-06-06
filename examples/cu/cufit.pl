@@ -66,10 +66,17 @@ foreach my $i (0 .. 4) {
 };
 
 print "make a Fit object, which is just a collection of GDS, Data, and Path objects\n";
-my $fit = Demeter::Fit -> new(gds   => \@gds,
+my $fit = Demeter::Fit -> new(name  => 'simple fcc model',
+			      gds   => \@gds,
 			      data  => [$data],
 			      paths => \@paths
 			     );
+
+# my $sum = $fit->sum;
+# $data->plot('r');
+# $sum->plot('r');
+# $data->pause;
+# exit;
 
 print "do the fit (or the sum of paths)\n";
 $fit -> fit;

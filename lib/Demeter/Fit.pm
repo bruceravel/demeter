@@ -68,6 +68,7 @@ has 'time_of_fit'    => (is => 'rw', isa => 'Str',    default => q{});  # should
 has 'prepared_by'    => (is => 'rw', isa => 'Str',    default => sub{ shift->who });
 has 'contact'        => (is => 'rw', isa => 'Str',    default => q{});
 has 'fitted'         => (is => 'rw', isa => 'Bool',   default => 0);
+has 'update_gds'     => (is => 'rw', isa => 'Bool',   default => 1);
 has 'number'         => (is => 'rw', isa => 'Num',    default => 0);
 
 ## -------- serialization/deserialization
@@ -100,7 +101,8 @@ has 'gds' => (
 			    'shift'   => 'shift_gds',
 			    'unshift' => 'unshift_gds',
 			    'clear'   => 'clear_gds',
-			   }
+			   },
+	      trigger => sub{my ($self) = @_; $self->update_gds(1)},
 	     );
 
 has 'data' => (
@@ -358,6 +360,7 @@ sub fit {
   foreach my $type (qw(guess lguess set def restrain)) {
     $command .= $self->_gds_commands($type);
   };
+  $self->update_gds(0);
 
   ## get a list of all data sets included in the fit
   my @datasets = @{ $self->data };
@@ -469,85 +472,24 @@ sub fit {
 };
 alias feffit => 'fit';
 
-sub ff2chi {
+sub sum {
   my ($self, $data) = @_;
-  $self->start_spinner("Demeter is doing a summation of paths") if ($self->mo->ui eq 'screen');
-  my $prefit = $self->pre_fit;
-
-  my @alldata = @{ $self->data };
-  $data ||= $alldata[0];
-
-  $data -> fitting(1);
-
-  my $trouble_found = $self->_verify_fit;
-  if ($trouble_found) {
-    $self->stop(1);
-    my $text = $self->trouble_report;
-    carp($text);
-    $self->troubletext($text);
-    if (not $self->ignore_errors) {
-      if ($self->mo->ui eq 'Wx') {
-	return "This summation has unrecoverable errors";
-      } else {
-	croak("This summation has unrecoverable errors");
-      };
-    };
-  };
-  return "Tilt!" if $self->stop;
-  $self->dispose($prefit);
-
-
-  $self->mo->fit($self);
-  my $command = q{};
-  foreach my $type (qw(guess set def restrain)) {
-    $command .= $self->_gds_commands($type);
-  };
-  ## munge parameters and path parameters to deal with lguess
-  $command .= $self->_local_parameters;
-
-  ## read the data
-  $command .= $data -> _read_data_command("chi");
-  $command .= "\n";
-
-  my $ipath = 0;
-  my $count = 0;
-  my @indexstring = ();
+  $data ||= $self->data->[0];
+  my $sum = Demeter::VPath->new(name=>$self->name . ' -- sum');
   foreach my $p (@{ $self->paths }) {
-    next if not defined($p);
-    next if ($p->data ne $data);
-    next if not $p->include;
-    $p->_update_from_ScatteringPath if $p->get("sp");
-    ++$ipath;
-    my $lab = $p->name;
-    ($lab = "path $ipath") if ($lab =~ m{\A(?:\s*|path\s+\d+)\z});
-    $p->set(name=>$lab);
-    $p->rewrite_cv;
-    $command .= $p->_path_command(0);
-    push @indexstring, $p->Index;
+    next if ($data ne $p->data);
+    $sum -> include($p);
   };
-
-  $command .= "\n";
-  $command .= $data->hashes . " make sum of paths for data \"$data\"\n";
-  $self -> indeces(_normalize_paths(\@indexstring));
-  $command .= $data->template("fit", "sum");
-
-  $command .= $data->hashes . " make residual array\n";
-  $command .= $data->template("fit", "residual");
-
-  $data->fitsum('sum');
-  $self->dispose($command);
-  $self->evaluate;
-  $self->happiness(0);
-  $self->happiness_summary(q{});
-
-  $self->mo->fit(q{});
-
-  $self->stop_spinner if ($self->mo->ui eq 'screen');
-
-  return $self;
+  if ($self->update_gds) {
+    my $command = q{};
+    foreach my $type (qw(guess lguess set def)) {
+      $command .= $self->_gds_commands($type);
+    };
+    $self->dispose($command);
+    $self->update_gds(0);
+  };
+  return $sum;
 };
-alias sum => 'ff2chi';
-
 
 sub trouble_report {
   my ($fit) = @_;
@@ -1677,21 +1619,16 @@ A number of sanity checks are made on the fitting model before the fit is
 performed.  For the complete list of these sanity checks, see
 L<Demeter::Fit::Sanity>.
 
-=item C<ff2chi>
+=item C<sum>
 
-This method is exactly like the fit method, except that the command
-returned perform a sum over paths rather than a fit.  All the same
-sanity checks are run.
+This method returns a VPath object containing all paths associated
+with the fit and with the specified Data object.  If the data argument
+is not supplied, the first data set in the C<data> attribute will be
+used.  Ths, for a one-data-set fit, the data argument is optional.
 
-This takes one argument -- the Data object from the C<data> attribute
-whose paths are to be summed.
-
-   $fitobject -> ff2chi($data);
-
-It is useful to remember that a fit can be one a single data set or on
-multiple data sets.  An ff2chi is always on a single data set.
-
-C<sum> is an alias for C<ff2chi>;
+  my $sum = $fit->sum($data);
+  $data -> plot('r');
+  $sum  -> plot('r');
 
 =item C<rm>
 

@@ -1608,7 +1608,6 @@ t/nonuniform.chi
 t/orig.inp
 t/PbFe12O19.inp
 t/re4chan.000
-t/t
 t/test.demeter_conf
 t/withHg.inp
 t/ybco.inp
