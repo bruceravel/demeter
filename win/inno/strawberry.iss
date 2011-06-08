@@ -11,19 +11,19 @@
 ; TODO: check for other perl installations (eg. in the Path variable) and warn or even abort if there is another one
 
 [Setup]
-AppName=Demeter and Strawberry Perl
+AppName=Demeter with Strawberry Perl
 AppVersion=0.01
 DefaultDirName=\strawberry
-DefaultGroupName=Demeter and Strawberry Perl
+DefaultGroupName=Demeter with Strawberry Perl
 ; UninstallDisplayIcon={app}\MyProg.exe
 Compression=lzma2
 SolidCompression=yes
 SourceDir=c:\strawberry
 OutputDir=c:\output
-OutputBaseFilename=demeter-and-strawberry-perl
+OutputBaseFilename=demeter-with-strawberry-perl
 AppComments=XAS Data Processing and Analysis
 AppContact=http://bruceravel.github.com/demeter/
-AppCopyright=Demeter is copyright (c) 2006-2011 Bruce Ravel, Perl is copyright 1987-2010, Larry Wall
+AppCopyright=Demeter is copyright (c) 2006-2011 Bruce Ravel; Ifeffit is copyright (c) 2008, Matt Newville; Perl is copyright 1987-2010, Larry Wall
 AppId=Strawberry_Perl_with_Demeter
 ; AppMutex= TODO!
 AppPublisherURL=http://bruceravel.github.com/demeter/
@@ -33,8 +33,6 @@ ChangesEnvironment=yes
 
 LicenseFile=Demeter.license.txt
 InfoAfterFile=Demeter.readme.txt
-
-
 
 
 [Run]
@@ -49,8 +47,20 @@ Root: HKLM; Subkey: "SYSTEM\CurrentControlSet\Control\Session Manager\Environmen
 Root: HKLM; Subkey: "SYSTEM\CurrentControlSet\Control\Session Manager\Environment"; ValueName: "FONTCONFIG_FILE"; ValueType: expandsz; ValueData: "{app}\c\bin\etc\fonts\fonts.conf";
 
 ;; File associations
-Root: HKCR; Subkey: ".pl"; ValueType: string; ValueName: ""; ValueData: "{app}\perl\bin\perl.exe"; Flags: uninsdeletevalue
-Root: HKCR; Subkey: ".prj"; ValueType: string; ValueName: ""; ValueData: "{app}\perl\site\bin\dathena.bat"; Flags: uninsdeletevalue
+Root: HKCR; Subkey: ".pl"; ValueType: string; ValueName: ""; ValueData: "Perl"; Flags: uninsdeletevalue
+Root: HKCR; Subkey: "Perl"; ValueType: string; ValueName: ""; ValueData: "Perl program"; Flags: uninsdeletekey 
+Root: HKCR; Subkey: "Perl\DefaultIcon"; ValueType: string; ValueName: ""; ValueData: "{app}\perl\bin\perl.exe,0"; Flags: uninsdeletekey
+Root: HKCR; Subkey: "Perl\shell\open\command"; ValueType: string; ValueName: ""; ValueData: """{app}\perl\bin"" ""%1"""; Flags: uninsdeletekey 
+
+Root: HKCR; Subkey: ".prj"; ValueType: string; ValueName: ""; ValueData: "Athena"; Flags: uninsdeletevalue
+Root: HKCR; Subkey: "Athena"; ValueType: string; ValueName: ""; ValueData: "Athena project file"; Flags: uninsdeletekey 
+Root: HKCR; Subkey: "Athena\DefaultIcon"; ValueType: string; ValueName: ""; ValueData: "{app}\perl\site\lib\Demeter\UI\Athena\share\athena_icon.ico"; Flags: uninsdeletekey
+Root: HKCR; Subkey: "Athena\shell\open\command"; ValueType: string; ValueName: ""; ValueData: """{app}\perl\site\bin\dathena.bat"" ""%1"""; Flags: uninsdeletekey 
+
+Root: HKCR; Subkey: ".fpj"; ValueType: string; ValueName: ""; ValueData: "Artemis"; Flags: uninsdeletevalue
+Root: HKCR; Subkey: "Artemis"; ValueType: string; ValueName: ""; ValueData: "Artemis fitting project"; Flags: uninsdeletekey 
+Root: HKCR; Subkey: "Artemis\DefaultIcon"; ValueType: string; ValueName: ""; ValueData: "{app}\perl\site\lib\Demeter\UI\Artemis\share\artemis_icon.ico"; Flags: uninsdeletekey
+Root: HKCR; Subkey: "Artemis\shell\open\command"; ValueType: string; ValueName: ""; ValueData: """{app}\perl\site\bin\dartemis.bat"" ""%1"""; Flags: uninsdeletekey 
 
 
 [Files]
@@ -61,15 +71,15 @@ Name: "desktopicon"; Description: "Create &desktop icons"; GroupDescription: "Ad
 
 [Icons]
 ;;; Demeter applications
-Name: "{group}\Athena"; Filename: "{app}\perl\site\bin\dathena.bat"; WorkingDir: "{app}"; IconFilename: "{app}\perl\site\lib\Demeter\UI\Athena\share\athena_icon.ico"
-Name: "{group}\Artemis"; Filename: "{app}\perl\site\bin\dartemis.bat"; WorkingDir: "{app}"; IconFilename: "{app}\perl\site\lib\Demeter\UI\Artemis\share\artemis_icon.ico"
-Name: "{group}\Hephaestus"; Filename: "{app}\perl\site\bin\dhephaestus.bat"; WorkingDir: "{app}"; IconFilename: "{app}\perl\site\lib\Demeter\UI\Hephaestus\icons\vulcan.ico"
-Name: "{group}\Stand-alone Atoms"; Filename: "{app}\perl\site\bin\datoms.bat"; Parameters: "--wx"; WorkingDir: "{app}"; IconFilename: "{app}\perl\site\lib\Demeter\UI\Atoms\icons\atoms.ico"
+Name: "{group}\Athena"; Filename: "{app}\perl\site\bin\dathena.bat"; Comment: "XAS Data Processing"; WorkingDir: "{app}"; IconFilename: "{app}\perl\site\lib\Demeter\UI\Athena\share\athena_icon.ico"
+Name: "{group}\Artemis"; Filename: "{app}\perl\site\bin\dartemis.bat"; Comment: "EXAFS Data Analysis using Feff and Ifeffit"; WorkingDir: "{app}"; IconFilename: "{app}\perl\site\lib\Demeter\UI\Artemis\share\artemis_icon.ico"
+Name: "{group}\Hephaestus"; Filename: "{app}\perl\site\bin\dhephaestus.bat"; Comment: "A periodic table for the absorption spectroscopist"; WorkingDir: "{app}"; IconFilename: "{app}\perl\site\lib\Demeter\UI\Hephaestus\icons\vulcan.ico"
+Name: "{group}\Stand-alone Atoms"; Filename: "{app}\perl\site\bin\datoms.bat"; Comment: "Crystallography for the x-ray spectroscopist"; Parameters: "--wx"; WorkingDir: "{app}"; IconFilename: "{app}\perl\site\lib\Demeter\UI\Atoms\icons\atoms.ico"
 Name: "{group}\Uninstall"; Filename: "{app}\unins000.exe";
 ;;; Demeter URLs
-Name: "{group}\Demeter Website"; Filename: "{app}\win32\Demeter Website.url"; IconFilename: "{app}\win32\Demeter.ico"
-Name: "{group}\Ifeffit Wiki"; Filename: "{app}\win32\Ifeffit Wiki.url"; IconFilename: "{app}\win32\Ifeffit.ico"
-Name: "{group}\XAFS.org"; Filename: "{app}\win32\xafs.org.url"; IconFilename: "{app}\win32\xafs.org.ico"
+Name: "{group}\Website - Demeter"; Filename: "{app}\win32\Demeter Website.url"; IconFilename: "{app}\win32\Demeter.ico"
+Name: "{group}\Website - Ifeffit Wiki"; Filename: "{app}\win32\Ifeffit Wiki.url"; IconFilename: "{app}\win32\Ifeffit.ico"
+Name: "{group}\Website - XAFS.org"; Filename: "{app}\win32\xafs.org.url"; IconFilename: "{app}\win32\xafs.org.ico"
 ;;; replicating the Start menu entries installed by Strawberry
 Name: "{group}\Perl\Perl (command line)"; Filename: "C:\WINDOWS\system32\cmd.exe"; WorkingDir: "{app}"; Comment: "Quick way to get to the command line in order to use Perl."
 Name: "{group}\Perl\Strawberry Perl README"; Filename: "{app}\README.txt"; Comment: "Strawberry Perl README"
@@ -87,9 +97,9 @@ Name: "{group}\Perl\Tools\Create local library areas"; Filename: "{app}\perl\bin
 Name: "{group}\Perl\Tools\CPAN Client"; Filename: "{app}\perl\bin\cpan.bat"; WorkingDir: "{app}\perl\bin\"; IconFilename: "{app}\win32\cpan.ico";
 
 ;;; Application desktop icons
-Name: "{userdesktop}\Athena"; Filename: "{app}\perl\site\bin\dathena.bat"; WorkingDir: "{app}"; IconFilename: "{app}\perl\site\lib\Demeter\UI\Athena\share\athena_icon.ico"; Tasks: desktopicon
-Name: "{userdesktop}\Artemis"; Filename: "{app}\perl\site\bin\dartemis.bat"; WorkingDir: "{app}"; IconFilename: "{app}\perl\site\lib\Demeter\UI\Artemis\share\artemis_icon.ico"; Tasks: desktopicon
-Name: "{userdesktop}\Hephaestus"; Filename: "{app}\perl\site\bin\dhephaestus.bat"; WorkingDir: "{app}"; IconFilename: "{app}\perl\site\lib\Demeter\UI\Hephaestus\icons\vulcan.ico"; Tasks: desktopicon
+Name: "{userdesktop}\Athena"; Filename: "{app}\perl\site\bin\dathena.bat"; Comment: "XAS Data Processing"; WorkingDir: "{app}"; IconFilename: "{app}\perl\site\lib\Demeter\UI\Athena\share\athena_icon.ico"; Tasks: desktopicon
+Name: "{userdesktop}\Artemis"; Filename: "{app}\perl\site\bin\dartemis.bat"; Comment: "EXAFS Data Analysis using Feff and Ifeffit"; WorkingDir: "{app}"; IconFilename: "{app}\perl\site\lib\Demeter\UI\Artemis\share\artemis_icon.ico"; Tasks: desktopicon
+Name: "{userdesktop}\Hephaestus"; Filename: "{app}\perl\site\bin\dhephaestus.bat"; Comment: "A periodic table for the absorption spectroscopist"; WorkingDir: "{app}"; IconFilename: "{app}\perl\site\lib\Demeter\UI\Hephaestus\icons\vulcan.ico"; Tasks: desktopicon
 
 [Code]
 function getPath(Param: String): string;

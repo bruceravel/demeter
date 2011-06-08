@@ -145,6 +145,8 @@ sub process_argv {
       my $i = $1-1;
       #print  $list[$i]->[0], $/;
       $app->Import($list[$i]->[0]);
+    } elsif (-r $a) {
+      $app -> Import($a);
     } elsif (-r File::Spec->catfile($demeter->mo->iwd, $a)) {
       $app->Import(File::Spec->catfile($demeter->mo->iwd, $a));
     }; # switches?

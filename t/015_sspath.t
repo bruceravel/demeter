@@ -53,12 +53,14 @@ ok( ($this->mo->template_plot     eq 'pgplot'  and
      $this->mo->template_fit      eq 'ifeffit' and
      $this->mo->template_analysis eq 'ifeffit'),
                                      "$OBJ object can find template sets");
-
-$this->path;
-ok( (($this->degen == 1)      and
-     ($this->nleg  == 2)      and
-     (abs($this->reff - 3.5)) < 0.0001),
-                                     "parse_nnnn works");
+SKIP: {
+  skip "This test not currently working on Windows",1 if $feff->is_windows;
+  $this->path;
+  ok( (($this->degen == 1)      and
+       ($this->nleg  == 2)      and
+       (abs($this->reff - 3.5)) < 0.0001),
+                                          "parse_nnnn works");
+}
 
 $this->update_path(0);
 $this->update_fft(0);

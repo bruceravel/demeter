@@ -985,7 +985,7 @@ sub serialize {
 
   if ($nozip) {
     open my $Y, ">".$filename;
-    print $Y, $self->serialization;
+    print $Y $self->serialization;
     close $Y;
   } else {
     my $gzout = gzopen($filename, 'wb9');
