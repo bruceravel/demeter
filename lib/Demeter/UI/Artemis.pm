@@ -350,6 +350,7 @@ sub OnInit {
   my $readme = File::Spec->catfile($demeter->share_folder, "Readme.fit_serialization");
   my $target = File::Spec->catfile($project_folder, "Readme");
   copy($readme, $target);
+  chmod(0666, $target) if $demeter->is_windows;
 
   my $orderfile = File::Spec->catfile($frames{main}->{project_folder}, "order");
   $frames{main}->{order_file} = $orderfile;

@@ -444,7 +444,7 @@ sub initial_page_panel {
 
   my $vv = Wx::BoxSizer->new( wxVERTICAL );
 
-  my $dndtext = Wx::StaticText    -> new($panel, -1, "Drag paths from a Feff interpretation list and drop them in this space to add paths to this data set", wxDefaultPosition, [-1,-1]);
+  my $dndtext = Wx::StaticText    -> new($panel, -1, "Drag paths from a Feff interpretation list and drop them in this space to add paths to this data set", wxDefaultPosition, [280,-1]);
   $dndtext   -> Wrap(200);
   my $atoms   = Wx::HyperlinkCtrl -> new($panel, -1, 'Import crystal data or a Feff calculation', q{}, wxDefaultPosition, wxDefaultSize, wxNO_BORDER );
   my $qfs     = Wx::HyperlinkCtrl -> new($panel, -1, 'Start a quick first shell fit',             q{}, wxDefaultPosition, wxDefaultSize, wxNO_BORDER );
@@ -473,7 +473,7 @@ sub initial_page_panel {
   ##$vv -> Add(Wx::StaticText -> new($panel, -1, "\tor"), 0, wxALL, 10);
   ##$vv -> Add($feff,                                     0, wxALL, 5 );
 
-  $panel -> SetSizer($vv);
+  $panel -> SetSizerAndFit($vv);
   return $panel;
 };
 
@@ -2071,7 +2071,8 @@ sub OnData {
   my ($this, $x, $y, $def) = @_;
   $this->GetData;		# this line is what transfers the data from the Source to the Target
   my $book  = $this->{BOOK};
-  $book->DeletePage(0) if ($book->GetPage(0) =~ m{Panel});
+  my $first = ($book->GetPage(0) =~ m{Panel});
+  $book->DeletePage(0) if $first;
   my $spref = $this->{DATA}->{Data};
   my $is_sspath = ($spref->[0] eq 'SSPath') ? 1 : 0;
   if ($spref->[0] eq 'SSPath') {
