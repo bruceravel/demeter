@@ -559,11 +559,11 @@ sub fit {
     update_order_file();
 
     $rframes->{Log}->{name} = $fit->name;
-    $rframes->{Log}->Show(1);
+    $rframes->{Log}->Show(1) if ($fit->co->default("artemis", "show_after_fit") eq 'log');
     $rframes->{Log}->put_log($fit);
     $rframes->{Log}->SetTitle("Artemis [Log] " . $rframes->{main}->{name}->GetValue);
     $rframes->{Log}->Refresh;
-    $rframes->{main}->{log_toggle}->SetValue(1);
+    $rframes->{main}->{log_toggle}->SetValue(1) if ($fit->co->default("artemis", "show_after_fit") eq 'log');
 
     ## fill in plotting list
     if (not $rframes->{Plot}->{freeze}->GetValue) {
@@ -594,6 +594,12 @@ sub fit {
     $finishtext = sprintf "Your fit finished in %d seconds.", $dur->seconds;
     $rframes->{History}->{list}->AddData($fit->name, $fit);
     $rframes->{History}->add_plottool($fit);
+    if ($fit->co->default("artemis", "show_after_fit") eq 'history') {
+      $rframes->{History}->Show(1);
+      $rframes->{History}->{list}->SetSelection($rframes->{History}->{list}->GetCount-1);
+      $rframes->{History}->put_log($fit);
+      $rframes->{History}->set_params($fit);
+    };
     undef $dur;
     undef $finish;
   } else {

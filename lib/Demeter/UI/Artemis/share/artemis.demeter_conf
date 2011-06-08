@@ -1,6 +1,6 @@
 ## -*- config -*-
 ###########################################################################
-##         Demeter and Artemis is copyright (c) 2006-2009 Bruce Ravel
+##         Demeter and Artemis is copyright (c) 2006-2011 Bruce Ravel
 ##                                                     bravel@bnl.gov
 ##                                        http://xafs.org/BruceRavel/
 ##
@@ -81,13 +81,24 @@ description
 variable=plot_after_fit
 type=list
 default=rmr
-options=rmr r123 k123 kq  k r q none
+options=rmr r123 k123 kq k r q none
 description
   This tells Artemis which kind of plot to make when a fit finishes.
   The default is to plot each data marked for plotting after the fit
   as Rmr.  The k, r, and q options will use the contents of the
   plotting list.  The none options means not to make a plot after the
   fit finishes.
+
+variable=show_after_fit
+type=list
+default=log
+options=log history none
+description
+  After the fit finishes, the default is to have the log window
+  (i.e. the one that has the most recent log file in it) shown.  The
+  other options are to have the history window shown instead or to
+  have neither shown (thus reducing the number of open windows on
+  the desktop).
 
 variable=offer_dphase
 type=boolean

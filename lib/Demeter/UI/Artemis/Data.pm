@@ -85,6 +85,7 @@ Readonly my $PATH_ADD		=> Wx::NewId();
 Readonly my $PATH_CLONE		=> Wx::NewId();
 Readonly my $PATH_YAML		=> Wx::NewId();
 Readonly my $PATH_TYPE		=> Wx::NewId();
+Readonly my $PATH_4PARAM	=> Wx::NewId();
 
 Readonly my $PATH_EXPORT_FEFF	=> Wx::NewId();
 Readonly my $PATH_EXPORT_DATA	=> Wx::NewId();
@@ -621,11 +622,11 @@ sub make_menubar {
   $self->{pathsmenu}->Append($PATH_SHOW,   "Show displayed path",              "Evaluate and show the path parameters for the path currently on display", wxITEM_NORMAL );
   $self->{pathsmenu}->AppendSeparator;
   $self->{pathsmenu}->AppendSubMenu($save_menu, "Save displayed path in ...", "Save a column data file containing only the displayed path." );
-  $self->{pathsmenu}->Append($PATH_CLONE, "Clone displayed path", "Make a copy of the currently displayed path", wxITEM_NORMAL );
+  $self->{pathsmenu}->Append($PATH_CLONE, "Clone displayed path",         "Make a copy of the currently displayed path", wxITEM_NORMAL );
   $self->{pathsmenu}->AppendSeparator;
-  $self->{pathsmenu}->Append($PATH_ADD,    "Add path parameter",     "Add path parameter to many paths", wxITEM_NORMAL );
+  $self->{pathsmenu}->Append($PATH_ADD,    "Add path parameter",          "Add path parameter to many paths", wxITEM_NORMAL );
   $self->{pathsmenu}->AppendSubMenu($export_menu, "Export all path parameters to ...", "Export the path parameters from the displayed path to other paths in this fitting model.");
-  #  $self->{pathsmenu}->AppendSubMenu($histo_menu,  "Make a histogram from ...", "Generate a histogram using the currently displayed path");
+  $self->{pathsmenu}->Append($PATH_4PARAM, "Quick 4 parameter fit",       "Make a quick-n-dirty, simple 4 parameter fit with guess parameters amp, enot, delr, and ss", wxITEM_NORMAL );
   $self->{pathsmenu}->AppendSeparator;
   $self->{pathsmenu}->Append($DISCARD_THIS, "Discard displayed path",     "Discard the path currently on display", wxITEM_NORMAL );
   #  $self->{pathsmenu}->AppendSeparator;
@@ -943,6 +944,11 @@ sub OnMenuClick {
     ($id == $PATH_TRANSFER) and do {
       my $pathpage = $datapage->{pathlist}->GetPage($datapage->{pathlist}->GetSelection);
       $pathpage->transfer;
+      last SWITCH;
+    };
+
+    ($id == $PATH_4PARAM) and do {
+      $datapage -> fourparam;
       last SWITCH;
     };
 
@@ -1900,6 +1906,35 @@ my @element_list = qw(h he li be b c n o f ne na mg al si p s cl ar k ca
 		      th pa u np pu);
 my $element_regexp = Regexp::Assemble->new()->add(@element_list)->re;
 
+sub fourparam {
+  my ($datapage) = @_;
+  my $count = 0;
+  foreach my $i (0 .. $datapage->{pathlist}->GetPageCount-1) {
+    my $path = $datapage->{pathlist}->GetPage($i)->{path};
+    next if not defined($path);
+    $path->set(s02=>'amp', e0=>'enot', delr=>'delr', sigma2=>'ss');
+    $datapage->{pathlist}->GetPage($i)->{pp_s02}   ->SetValue('amp');
+    $datapage->{pathlist}->GetPage($i)->{pp_e0}    ->SetValue('enot');
+    $datapage->{pathlist}->GetPage($i)->{pp_delr}  ->SetValue('delr');
+    $datapage->{pathlist}->GetPage($i)->{pp_sigma2}->SetValue('ss');
+    ++$count;
+  };
+  if (not $count) {
+    $datapage->status("Skipping quick 4-parameter fit -- no paths have been imported yet.");
+    return;
+  };
+  my $gds = Demeter::GDS->new(gds=>'guess', name=>'amp',  mathexp=>1);
+  $Demeter::UI::Artemis::frames{GDS}->put_gds($gds);
+  $gds    = Demeter::GDS->new(gds=>'guess', name=>'enot', mathexp=>0);
+  $Demeter::UI::Artemis::frames{GDS}->put_gds($gds);
+  $gds    = Demeter::GDS->new(gds=>'guess', name=>'delr', mathexp=>0);
+  $Demeter::UI::Artemis::frames{GDS}->put_gds($gds);
+  $gds    = Demeter::GDS->new(gds=>'guess', name=>'ss',   mathexp=>0.003);
+  $Demeter::UI::Artemis::frames{GDS}->put_gds($gds);
+  autosave();
+  $datapage->status("Made a quick 4-parameter fit by defining amp, enot, delr, and ss.");
+};
+
 sub quickfs {
   my ($datapage) = @_;
 
@@ -2080,6 +2115,7 @@ sub OnData {
 					data   => $this->{PARENT}->{data},
 					sp     => $sp,
 					degen  => $sp->n,
+					n      => $sp->n,
 				       );
       my $label = $thispath->label;
       my $page = Demeter::UI::Artemis::Path->new($book, $thispath, $this->{PARENT});
