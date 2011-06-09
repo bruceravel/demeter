@@ -1,6 +1,6 @@
 package Demeter::UI::Athena;
 
-use Demeter qw(::analysis);
+use Demeter qw(:analysis);
 #use Demeter::UI::Wx::DFrame;
 use Demeter::UI::Wx::MRU;
 use Demeter::UI::Wx::SpecialCharacters qw(:all);

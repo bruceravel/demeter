@@ -260,6 +260,7 @@ sub _read_config_file {
       if (($self->is_windows) and ($1 eq 'windows')) {
 	my $relocated = $self->perl_base;       # make paths to executables (feff, gnuplot, etc)
 	$value =~ s{__PERL_BASE__}{$relocated}; # tolerant to relocation upon installation
+	$hash{default} = $value;
 	$hash{demeter} = $value;
 	$hash{windows} = $value;
       };

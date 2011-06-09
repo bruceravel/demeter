@@ -127,17 +127,24 @@ sub set_datagroup {
   $self->datagroup($group);
 };
 
-use Demeter::Plot;
-use vars qw($plot);
-$plot = Demeter::Plot -> new() if not $mode->plot;
-$plot -> screen_echo(0);
-
 use vars qw($Gnuplot_exists $Fityk_exists $STAR_Parser_exists $XDI_exists);
 $Gnuplot_exists     = eval "require Graphics::GnuplotIF";
 $Fityk_exists       = eval "require fityk";
 $STAR_Parser_exists = 1;
 use STAR::Parser;
 $XDI_exists         = eval "require Xray::XDI";
+
+use Demeter::Plot;
+use vars qw($plot);
+$plot = Demeter::Plot -> new() if not $mode->plot;
+$plot -> screen_echo(0);
+my $backend = $config->default('plot', 'plotwith');
+if ($backend eq 'gnuplot') {
+  $mode -> template_plot('gnuplot');
+  $mode -> external_plot_object( Graphics::GnuplotIF->new(program => $config->default('gnuplot', 'program')) );
+  require Demeter::Plot::Gnuplot;
+  $mode -> plot( Demeter::Plot::Gnuplot->new() );
+};
 
 use Demeter::StrTypes qw( Empty
 			  IfeffitCommand
