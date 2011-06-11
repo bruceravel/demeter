@@ -312,7 +312,6 @@ examples/recipes/Histogram/hist_ncl.pl
 examples/recipes/Histogram/hist_ss.pl
 examples/recipes/Histogram/hist_thru.pl
 examples/recipes/Histogram/histo.pl
-examples/recipes/Histogram/HISTORY
 examples/recipes/Histogram/pbaq.prj
 examples/recipes/Histogram/phase.bin
 examples/recipes/Histogram/Pt.inp
@@ -320,6 +319,7 @@ examples/recipes/Histogram/PtData.prj
 examples/recipes/Histogram/rdf.gp
 examples/recipes/Histogram/RDFDAT0K
 examples/recipes/Histogram/RDFDAT20K
+examples/recipes/Histogram/README
 examples/recipes/Histogram/tb.pl
 examples/recipes/Histogram/td.gp
 examples/recipes/Indicators/indic.pl
@@ -1627,3 +1627,4 @@ win/ifeffit/iconf_term
 win/inno/strawberry.iss
 win/spp/build_perl.pl
 win/spp/DemeterPerlBuild.pm
+META.yml

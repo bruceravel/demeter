@@ -37,7 +37,7 @@ ok( ref($data->mo->plot) =~ 'Plot',     'Data object can find the Plot object');
 ok( $data->group =~ m{\A\w{5}\z},       'Data object has a proper group name');
 $data -> name('this');
 ok( $data->name eq 'this',           'Data object has a settable label');
-ok( ($data->mo->template_plot     eq 'pgplot'  and
+ok( ($data->mo->template_plot     =~ m{plot}   and
      $data->mo->template_feff     eq 'feff6'   and
      $data->mo->template_process  eq 'ifeffit' and
      $data->mo->template_fit      eq 'ifeffit' and
@@ -150,8 +150,15 @@ my $e = 0;
 if ($data3->_preline_marker_command =~ m{plot_marker\((\d+)}) {
   $e = $1;
 };
+if ((not $e) and ($data3->_preline_marker_command =~ m{at (\d+)})) {
+  $e = $1;
+};
 ok( $e == $data3->bkg_e0+$data3->bkg_pre1, 'preline marker method: '.join(" ", $e, $data3->bkg_e0, $data3->bkg_pre1));
+$e = 0;
 if ($data3->_postline_marker_command =~ m{plot_marker\((\d+)}) {
+  $e = $1;
+};
+if ((not $e) and ($data3->_postline_marker_command =~ m{at (\d+)})) {
   $e = $1;
 };
 ok( $e == $data3->bkg_e0+$data3->bkg_nor1, 'postline marker method: '.join(" ", $e, $data3->bkg_e0, $data3->bkg_nor1));

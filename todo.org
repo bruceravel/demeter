@@ -220,6 +220,16 @@
       upon client data, which simply doesn't work on Windows.
 
  
+* Atoms and Feff
+
+** Atoms [0/2] [0%]
+  - [ ] CIF issue: CIF file with "_eof" token at end of file, as in [[file:notes/H16PW12O46.cif][this cif file]]
+  - [ ] 2 sites at the same position with occupancies <1.  see file above for an example
+  - [ ] George Sterbinsky's recent mailing list post that turned out to be about 
+	atoms' sphere and rhomboid in a non-orthogonal group
+
+** Feff8 is unsupported except as an Atoms output type
+
 
 
 * Weird stuff I'd prefer not to implement unless demanded

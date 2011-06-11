@@ -1,0 +1,96 @@
+#### CIF created by Crystallographica 2 ####
+
+data_DodecatungstophosphoricAcidHexahydrate
+
+_audit_creation_method                    'Crystallographica 2' 
+_cell_angle_alpha                         90 
+_cell_angle_beta                          90 
+_cell_angle_gamma                         90 
+_cell_formula_units_Z                     2 
+_cell_length_a                            12.0772 
+_cell_length_b                            12.0772 
+_cell_length_c                            12.0772 
+_cell_volume                              1761.57 
+_cgraph_comments                         'Structural modifications of dodecatungstophosphoric acid 
+     hexahydrate induced by temperature in the 10 - 358 K range. 
+     In situ high-resolution neutron powder diffraction 
+     investigation
+'
+_cgraph_title                            'Dodecatungstophosphoric Acid Hexahydrate'
+_chemical_formula_sum                    'H3 P W12 O40 (H2 O)6'
+_symmetry_space_group_name_H-M           'P n -3 m'
+_symmetry_space_group_name_Hall          '-P 4bc 2bc 3'
+
+loop_
+        _symmetry_equiv_pos_as_xyz
+        'x, y, z'
+        '-x, -y, -z'
+        '-y, x+1/2, z+1/2'
+        'y, -x+1/2, -z+1/2'
+        '-x+1/2, -y+1/2, z'
+        'x+1/2, y+1/2, -z'
+        'y+1/2, -x, z+1/2'
+        '-y+1/2, x, -z+1/2'
+        'x+1/2, -z, y+1/2'
+        '-x+1/2, z, -y+1/2'
+        'x, -y+1/2, -z+1/2'
+        '-x, y+1/2, z+1/2'
+        'x+1/2, z+1/2, -y'
+        '-x+1/2, -z+1/2, y'
+        'z+1/2, y+1/2, -x'
+        '-z+1/2, -y+1/2, x'
+        '-x+1/2, y, -z+1/2'
+        'x+1/2, -y, z+1/2'
+        '-z, y+1/2, x+1/2'
+        'z, -y+1/2, -x+1/2'
+        'z, x, y'
+        '-z, -x, -y'
+        'y, z, x'
+        '-y, -z, -x'
+        '-y+1/2, -z+1/2, x'
+        'y+1/2, z+1/2, -x'
+        'z, -x+1/2, -y+1/2'
+        '-z, x+1/2, y+1/2'
+        '-y+1/2, z, -x+1/2'
+        'y+1/2, -z, x+1/2'
+        '-z+1/2, -x+1/2, y'
+        'z+1/2, x+1/2, -y'
+        '-z+1/2, x, -y+1/2'
+        'z+1/2, -x, y+1/2'
+        'y, -z+1/2, -x+1/2'
+        '-y, z+1/2, x+1/2'
+        'y+1/2, x+1/2, -z'
+        '-y+1/2, -x+1/2, z'
+        '-y, -x, -z'
+        'y, x, z'
+        '-x, z+1/2, y+1/2'
+        'x, -z+1/2, -y+1/2'
+        '-x, -z, -y'
+        'x, z, y'
+        'z+1/2, -y, x+1/2'
+        '-z+1/2, y, -x+1/2'
+        '-z, -y, -x'
+        'z, y, x'
+
+loop_
+        _atom_site_label
+        _atom_site_type_symbol
+        _atom_site_fract_x
+        _atom_site_fract_y
+        _atom_site_fract_z
+        _atom_site_U_iso_or_equiv
+        _atom_site_thermal_displace_type
+        _atom_site_occupancy
+        W1 W6+ 0.7589 0.9575 0.9575 0.0035 Uiso 1
+        P1 P 0.75 0.75 0.75 0.0015 Uiso 1
+        O1 O2- 0.8236 0.8236 0.8236 0.0032 Uiso 1
+        O2 O2- 0.6552 0.6552 0.5065 0.0031 Uiso 1
+        O3 O2- 0.8719 0.8719 0.0296 0.0035 Uiso 1
+        O4 O2- 0.7321 0.0556 0.0556 0.0032 Uiso 1
+        O5 O2- 0.75 0.1548 0.25 0.0052 Uiso 0.5
+        H1 H 0.738 0.1124 0.1845 0.0092 Uiso 0.5
+#        H2 H 0.75 0.25 0.25 0.0062 Uiso 1
+
+_eof
+
+#### End of Crystallographic Information File ####

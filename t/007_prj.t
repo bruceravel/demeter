@@ -38,7 +38,7 @@ ok(!$this->data,                                        "$OBJ object has no asso
 ok( ref($this->mo) =~ 'Mode',                         "$OBJ object can find the Mode object");
 ok( ref($this->co) =~ 'Config',               "$OBJ object can find the Config object");
 ok( ref($this->po) =~ 'Plot',                   "$OBJ object can find the Plot object");
-ok( ($this->mo->template_plot     eq 'pgplot'  and
+ok( ($this->mo->template_plot     =~ m{plot}   and
      $this->mo->template_feff     eq 'feff6'   and
      $this->mo->template_process  eq 'ifeffit' and
      $this->mo->template_fit      eq 'ifeffit' and
@@ -66,7 +66,7 @@ ok( $first->data,                                       "$OBJ object is its own 
 ok( ref($first->mode) =~ 'Mode',                        "$OBJ object can find the Mode object");
 ok( ref($first->mode->config) =~ 'Config',              "$OBJ object can find the Config object");
 ok( ref($first->mode->plot) =~ 'Plot',                  "$OBJ object can find the Plot object");
-ok( ($first->mode->template_plot     eq 'pgplot'  and
+ok( ($first->mode->template_plot     =~ m{plot}   and
      $first->mode->template_feff     eq 'feff6'   and
      $first->mode->template_process  eq 'ifeffit' and
      $first->mode->template_fit      eq 'ifeffit' and
