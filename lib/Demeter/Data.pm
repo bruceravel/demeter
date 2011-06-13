@@ -81,6 +81,7 @@ has 'file'        => (is => 'rw', isa => 'Str',  default => $NULLFILE,
 has 'source'      => (is => 'rw', isa => 'Str',  default => $NULLFILE,);
 has 'prjrecord'   => (is => 'rw', isa => 'Str',  default => q{});
 has 'from_athena' => (is => 'rw', isa => 'Bool', default => 0);
+has 'from_yaml'   => (is => 'rw', isa => 'Bool', default => 0);
 subtype 'FitSum'
       => as 'Str'
       => where { lc($_) =~ m{\A(?:\s*|fit|sum)\z} }

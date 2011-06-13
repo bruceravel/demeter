@@ -63,7 +63,7 @@ sub _part_plot_command {
   my $datagroup    = $self->group;
   my $group        = (is_DataPart($part)) ? join("_", $datagroup, $part) : $self->name;  ## huh?
   my %labels       = (bkg=>'background', fit=>$self->fitsum, res=>'residual');
-  $labels{$part} ||= $part->name;
+#  $labels{$part} ||= $part->name;
   my $datalabel    = $self->name;
 
   $self->co->set(plot_part=>$part);

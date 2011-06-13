@@ -27,6 +27,7 @@ use MooseX::Aliases;
 #use MooseX::StrictConstructor;
 
 with 'Demeter::Fit::Happiness';
+with 'Demeter::Fit::Horae';
 with 'Demeter::Fit::Sanity';
 
 if ($Demeter::mode->ui eq 'screen') {

@@ -156,10 +156,12 @@ sub OnInit {
   $frames{main}->{mrufit}       = Wx::Menu->new;
   $frames{main}->{mruathena}    = Wx::Menu->new;
   $frames{main}->{mrustructure} = Wx::Menu->new;
+  $frames{main}->{mruold}       = Wx::Menu->new;
   $mrumenu->AppendSubMenu($frames{main}->{mruartemis},   "Artemis projects" );
   $mrumenu->AppendSubMenu($frames{main}->{mruathena},    "Athena projects" );
   $mrumenu->AppendSubMenu($frames{main}->{mrustructure}, "Crystal/structure data" );
   $mrumenu->AppendSubMenu($frames{main}->{mrufit},       "Fit serializations" );
+  $mrumenu->AppendSubMenu($frames{main}->{mruold},       "Old-style artemis projects" );
 
 
 
@@ -718,8 +720,10 @@ sub _doublewide {
 sub set_mru {
   my ($self) = @_;
 
-  foreach my $which (qw(artemis athena structure fit_serialization)) {
-    my $type = ($which eq 'fit_serialization') ? 'fit' : $which;
+  foreach my $which (qw(artemis athena structure fit_serialization old_artemis)) {
+    my $type = ($which eq 'fit_serialization') ? 'fit'
+             : ($which eq 'old_artemis')       ? 'old'
+	     :                                   $which;
     foreach my $i (0 .. $frames{main}->{mrumenu}->GetMenuItemCount-1) {
       $frames{main}->{'mru'.$type}->Delete($frames{main}->{'mru'.$type}->FindItemByPosition(0));
     };
@@ -778,6 +782,7 @@ sub OnMenuClick {
       Import('dpj',  $mru)         if $frames{main}->{mrufit}      ->GetLabel($id);
       Import('prj',  $mru)         if $frames{main}->{mruathena}   ->GetLabel($id);
       Import('feff', $mru)         if $frames{main}->{mrustructure}->GetLabel($id);
+      Import('old',  $mru)         if $frames{main}->{mruold}      ->GetLabel($id);
       last SWITCH;
     };
 

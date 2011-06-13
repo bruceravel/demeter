@@ -111,10 +111,10 @@ sub S_check_rmax {
     $rfarthest = $r if ($r > $rfarthest);
   };
   #print join(" ", $rmax,$rfarthest), $/;
-  if ($rmax > $rfarthest) {
-    $$r_problems{rmax_outside_cluster} = 1;
-    push @{$$r_problems{warnings}}, "You have specified a value of rmax that is outside the cluster."
-  };
+  #if ($rmax > $rfarthest) {
+  #  $$r_problems{rmax_outside_cluster} = 1;
+  #  push @{$$r_problems{warnings}}, "You have specified a value of rmax that is outside the cluster."
+  #};
 };
 
 
