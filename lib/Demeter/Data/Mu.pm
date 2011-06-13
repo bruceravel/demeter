@@ -265,7 +265,7 @@ sub normalize {
   };
   $self->_update("normalize");
 
-  my $fixed = $self->bkg_fixstep;
+  my $fixed = ($self->bkg_fixstep) ? $self->bkg_step : 0;
 
   if (not $self->is_nor) {
     ## call pre_edge()
