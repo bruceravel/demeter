@@ -12,6 +12,7 @@ Readonly my $make_data_frame => \&Demeter::UI::Artemis::make_data_frame;
 Readonly my $make_feff_frame => \&Demeter::UI::Artemis::make_feff_frame;
 
 use Archive::Zip qw( :ERROR_CODES :CONSTANTS );
+use Carp;
 use Cwd;
 use File::Basename;
 use File::Copy;
@@ -385,13 +386,19 @@ sub _old {
   };
 
   my $busy = Wx::BusyCursor->new();
-  my $tempfit = Demeter::Fit->new(interface=>"Artemis (Wx $Wx::VERSION)");
-  my $projfolder = $rframes->{main}->{project_folder};
-
-  my $dpj = File::Spec->catfile($tempfit->stash_folder, basename($file, '.apj').".dpj");
   $rframes->{main}->status("Converting old-style project to Demeter fit serialization", 'wait');
-  $tempfit->apj2dpj($file, $dpj);
-  $tempfit->DEMOLISH;
+
+  my $tempfit = Demeter::Fit->new(interface=>"Artemis (Wx $Wx::VERSION)");
+  my $dpj = File::Spec->catfile($tempfit->stash_folder, basename($file, '.apj').".dpj");
+  my $journal = q{};
+  my $result = $tempfit -> apj2dpj($file, $dpj, \$journal);
+  $tempfit   -> DEMOLISH;
+
+  if (ref($result) !~ m{Fit}) {
+    $rframes->{main}->status($result, 'alert');
+    undef $busy;
+    return;
+  };
 
   $rframes->{main}->status("Importing Demeter fit serialization", 'wait');
   Import('dpj', $dpj);
@@ -400,6 +407,7 @@ sub _old {
   $$rdemeter->push_mru("old_artemis", $file);
   $rframes->{main}->{projectpath} = $file;
   $rframes->{main}->{projectname} = basename($file, '.apj');
+  $rframes->{Journal}->{journal} -> SetValue($journal);
 
   modified(1);
   $rframes->{main}->status("Imported old-style Artemis project $file");

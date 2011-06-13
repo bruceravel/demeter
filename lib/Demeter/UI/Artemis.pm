@@ -1146,6 +1146,7 @@ use Demeter::UI::Wx::OverwritePrompt;
 my $normal = wxNullColour;
 my $wait   = Wx::Colour->new("#C5E49A");
 my $error  = Wx::Colour->new("#FD7E6F");
+my $alert  = Wx::Colour->new("#FCDD9F");
 my $debug  = 0;
 sub status {
   my ($self, $text, $type) = @_;
@@ -1156,11 +1157,12 @@ sub status {
     print $text, " -- ", join(", ", (caller)[0,2]), $/;
   };
 
-  my $color = ($type =~ m{normal}) ? $normal
-            : ($type =~ m{wait})   ? $wait
-            : ($type =~ m{error})  ? $error
-	    :                        $normal;
-  $self->{statusbar}->SetBackgroundColour($color);
+  my $bgcolor = ($type =~ m{normal}) ? $normal
+              : ($type =~ m{wait})   ? $wait
+              : ($type =~ m{alert})  ? $alert
+              : ($type =~ m{error})  ? $error
+	      :                        $normal;
+  $self->{statusbar}->SetBackgroundColour($bgcolor);
   $self->{statusbar}->Refresh;
   $self->{statusbar}->SetStatusText($text);
   return if ($type =~ m{nobuffer});

@@ -186,6 +186,8 @@ has 'iobuffer' => (
 has 'save'     => (is=>'rw', isa => 'Bool',    default => 1);
 has 'problems' => (is=>'rw', isa => 'HashRef', default => sub{ {} });
 
+has 'inp_is_feff8' => (is=>'rw', isa => 'Bool', default => 0);
+
 sub BUILD {
   my ($self, @params) = @_;
   #print join(" ", caller(1)), $/;
@@ -281,9 +283,11 @@ sub rdinp {
   $self->clear;
   my $file = $self->file;
   my $mode = q{};
+  my $nmodules = 0;
   open (my $INP, $file);
   while (<$INP>) {
-    chomp;
+    #chomp;
+    $_ =~ s{[\n\r]+\z}{}; # how do you chomp a eol sequence from an alien OS?
     last if (/^\s*end/i);
     next if (/^\s*$/);	# blank line
     next if (/^\s*\*/);	# commented line
@@ -305,7 +309,7 @@ sub rdinp {
 	$thiscard = 'nlegs',	    last CARDS if ($thiscard =~ m{\Anle});
 	$thiscard = 'criteria',     last CARDS if ($thiscard =~ m{\Acri});
 	                            last CARDS if ($thiscard =~ m{\A(?:con|pri)}); ## CONTROL and PRINT are under demeter's control
-	$self -> push_othercards($_);  ## pass through all other cards
+	$self -> push_othercards($thiscard);  ## pass through all other cards
       };
 
       ##print $thiscard, $/;
@@ -315,6 +319,7 @@ sub rdinp {
       $self->set(edge  => $line[1], s02   => $line[2]) if ($thiscard eq 'hole');
       $self->set(pcrit => $line[1], ccrit => $line[2]) if ($thiscard eq 'criteria');
       $self->_title($_)                                if ($thiscard eq 'titles');
+      $nmodules = $#line                               if ($thiscard =~ m{(?:control|print)});
 
     } elsif ($mode eq 'atoms') {
       #print "atoms: $_\n";
@@ -326,9 +331,11 @@ sub rdinp {
     } elsif ($mode eq 'potentials') {
       #print "potentials: $_\n";
       $self->_ipot($_);
-    }
+    };
   };
   close $INP;
+  $self->inp_is_feff8(1) if any {$_ =~ m{scf|exafs|xanes|ldos}} @{$self->othercards};
+  $self->inp_is_feff8(1) if $nmodules > 4;
 
   my %problems = (used_not_defined     => 0,
 		  defined_not_used     => 0,

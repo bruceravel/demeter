@@ -144,7 +144,7 @@
 
 
 ** Artemis
-*** Artemis bugs and missing features [10/16]  [62%]
+*** Artemis bugs and missing features [10/17]  [58%]
    - [X] use text buffers as in Athena for TextEntryDialogs
    - [X] import an FPath from a yaml or from a project file, pathlist start page link for doing so
    - [X] should I clear out unfitted fit folders from project upon import?
@@ -165,6 +165,7 @@
          to the feff calculation set correctly and no additional
          folders being created in stash (as was the case for FSPath)?
    - [ ] pluck buttons have not been implemented
+   - [ ] per-data set R-factor reporting in log file is turned off.  see fit_parameter_report in Demeter::Data::I0
 
 **** Project [0/2]
    - [ ] VPaths to/from project file

@@ -1357,6 +1357,7 @@ override 'deserialize' => sub {
       $this = Demeter::Path->new(@array);
       my $sp = $sps{$this->spgroup} || $data[0] -> mo -> fetch('ScatteringPath', $this->spgroup);
       $this -> sp($sp);
+      #$this -> folder(q{});
       #print $this, "  ", $this->sp, $/;
     };
     $this -> datagroup($dg);

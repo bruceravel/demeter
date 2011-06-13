@@ -21,12 +21,18 @@ use Moose::Role;
 
 use Archive::Zip qw( :ERROR_CODES :CONSTANTS );
 use File::Basename;
+use File::Copy;
 use File::Path;
 use File::Spec;
+use Regexp::Common;
 use Safe;
+use Scalar::Util qw(looks_like_number);
+
+use Readonly;
+Readonly my $NUMBER   => $RE{num}{real};
 
 sub apj2dpj {
-  my ($self, $apj, $dpj) = @_;
+  my ($self, $apj, $dpj, $rjournal) = @_;
 
   ## -------- make a folder to unzip the old-style project and unzip it
   my $unzip = File::Spec->catfile($self->stash_folder, '_old_'.basename($apj, '.apj'));
@@ -46,9 +52,10 @@ sub apj2dpj {
   my (@gds, @data, @paths, @feff);
   my %map;
   my ($current_data, $current_feff);
+  my $trouble = qw{};
   my $cpt = new Safe;
   open(my $DESC, '<', File::Spec->catfile($unzip, 'descriptions', 'artemis'));
-  while (my $line = <$DESC>) {
+ DESC: while (my $line = <$DESC>) {
     next if $line =~ m{\A\#};
     next if $line =~ m{\A\s*\z};
     next if $line =~ m{\[record\]};
@@ -59,34 +66,57 @@ sub apj2dpj {
       ($line =~ m{\@parameter}) and do {
 	@ {$cpt->varglob('parameter')} = $cpt->reval( $line );
 	my @parameter = @ {$cpt->varglob('parameter')};
+	my $me = $parameter[2];
+	## old artemis might store a best fit as "1.23 (0.45)".  This purges the uncertainty
+	if ($me =~ m{\A\s*($NUMBER)\s+\($NUMBER\)\s*\z}) {
+	  $me = $1;
+	};
 	push @gds, Demeter::GDS->new(name    => $parameter[0],
 				     gds     => $parameter[1],
-				     mathexp => $parameter[2],
-				     bestfit => $parameter[2],
+				     mathexp => $me,
+				     bestfit => (looks_like_number($parameter[2])) ? $parameter[2] : 0,
 				     note    => $parameter[3],
-				    );
+				    ) if ($parameter[1] ne 'sep');
 	last SWITCH;
       };
 
       ## Data, Feff, Path
+      ##  order of objects in description file is (note all data objects come first)
+      ##     data0
+      ##     data1
+      ##     ... dataN
+      ##     data0.feff0
+      ##       each path under that feff calc
+      ##     ... dataN.feffM
+      ##       each path under that feff calc
       ($line =~ m{\$old_path}) and do {
 	$ {$cpt->varglob('old_path')} = $cpt->reval( $line );
 	my $old_path = $ {$cpt->varglob('old_path')};
+	if ($old_path eq 'gsd') {
+	  $trouble .= "$apj is in a very old format.  Demeter does not import old-style project files as ancient as this one.";
+	  last DESC;
+	};
 	my @list = split(/\./, $old_path);
 	if ($#list == 0) {
 	  my $args = <$DESC>;
 	  my $strings = <$DESC>;
 	  $current_data = $self->horae_data($unzip, \%map, $args, $strings);
+	  last SWITCH if not $current_data;
 	  $current_data->readfromfit(File::Spec->catfile($unzip, 'fits', $latest, $old_path.'.fit'));
 	  push @data, $current_data;
+	  $map{$old_path} = $current_data;
 	} elsif ($#list == 1) {
 	  my $args = <$DESC>;
 	  $current_feff = $self->horae_feff($unzip, \%map, $old_path, $args);
 	  push @feff, $current_feff;
+	  if ($current_feff->inp_is_feff8) {
+	    $trouble .= "The old-style project file $apj appears to use Feff8, which Demeter cannot yet handle.";
+	    last DESC;
+	  };
 	} elsif ($#list == 2) {
 	  my $args = <$DESC>;
 	  my $strings = <$DESC>;
-	  push @paths, $self->horae_path($unzip, \%map, $current_data, $current_feff,
+	  push @paths, $self->horae_path($unzip, \%map, $old_path, $current_feff,
 					 $args, $strings);
 	};
 	last SWITCH;
@@ -95,12 +125,21 @@ sub apj2dpj {
 
   };
   close $DESC;
+  $$rjournal = $self->slurp(File::Spec->catfile($unzip, 'descriptions', 'journal.artemis')) if $rjournal;
+
+  if (not $trouble) {
+    $trouble .= "There were no data sets in that project file." if not @data;
+    $trouble .= "  There were no paths in that project file." if not @paths;
+  };
+
   foreach my $p (@paths) {
     $p->update_path(1);
     $p->folder(q{});
   };
-  $self->set(gds=>\@gds, data=>\@data, paths=>\@paths, fitted=>0);
-  $self->freeze(file=>$dpj);
+  if (not $trouble) {
+    $self->set(gds=>\@gds, data=>\@data, paths=>\@paths, fitted=>0);
+    $self->freeze(file=>$dpj);
+  };
 
   ## clean up
   undef $cpt;
@@ -108,6 +147,7 @@ sub apj2dpj {
   foreach my $obj (@gds, @data, @paths, @feff) {
     $obj->DEMOLISH;
   };
+  return $trouble if $trouble;
   return $self;
 };
 
@@ -123,7 +163,12 @@ sub horae_data {
   @ {$cpt->varglob('args')} = $cpt->reval( $args_line );
   my @args = @ {$cpt->varglob('args')};
   my %args = @args;
-  my $file = basename($args{file});
+  my $file = $args{file};
+  return 0 if not $file;
+  $file =~ s{/}{\\}g if $self->is_windows;
+  $file =~ s{\\}{/}g if not $self->is_windows;
+  $file = basename($file);
+  return 0 if not -e File::Spec->catfile($unzip, 'chi_data', $file);
   $data->set(datatype=>'chi', name=>$args{lab},
 	     file=>File::Spec->catfile($unzip, 'chi_data', $file));
   $data->set(fft_kmin		=> $args{kmin},
@@ -174,14 +219,19 @@ sub horae_feff {
   $feff -> set(workspace=>File::Spec->catfile($unzip, $old_path), screen=>0);
   $feff -> file(File::Spec->catfile($unzip, $old_path, 'feff.inp'));
 
+  #$feff->set_mode(theory=>$feff);
+  #print $feff->template("feff", 'full');
+  #$feff->set_mode(theory=>q{});
+
   #$map->{$args{group}} = $feff->group;
   undef $cpt;
   return $feff;
 };
 
 sub horae_path {
-  my ($self, $unzip, $map, $current_data, $current_feff, $args_line, $string_line) = @_;
-  my $path = Demeter::Path->new(parent=>$current_feff, data=>$current_data);
+  my ($self, $unzip, $map, $old_path, $current_feff, $args_line, $string_line) = @_;
+  my @list = split(/\./, $old_path);
+  my $path = Demeter::Path->new(parent=>$current_feff, data=>$map->{$list[0]});
 
   my $cpt = new Safe;
   @ {$cpt->varglob('args')} = $cpt->reval( $args_line );
@@ -199,8 +249,8 @@ sub horae_path {
 	     fourth  => $args{'4th'},
 	     dphase  => $args{dphase},
 	     include => $args{include},
-	     n       => $current_feff->pathlist->[$nnnn]->n,
-	     degen   => $current_feff->pathlist->[$nnnn]->n,
+	     n       => $args{deg},
+	     #degen   => $current_feff->pathlist->[$nnnn]->n,
 	    );
 
   # do I need this?

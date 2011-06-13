@@ -226,7 +226,7 @@ sub SetSelection {
   my ($self, $pos) = @_;
   $self->{LIST} -> SetSelection($pos);
   ## plotzing here:
-  #print join("|", caller), $/;
+  ##print join("|", caller), $/;
   $self->{VIEW} -> Hide;
   $self->Refresh;
   $self->{LIST} -> GetIndexedData($pos) -> Show(1);

@@ -254,7 +254,8 @@ sub data_parameter_report {
 };
 sub fit_parameter_report {
   my ($self, $include_rfactor, $fit_performed) = @_;
-  $include_rfactor ||= 0;
+  #$include_rfactor ||= 0;
+  $include_rfactor = 0;
   $fit_performed   ||= 0;
   my $string = q{};
   if ($include_rfactor and $fit_performed) {	# only print this for a multiple data set fit

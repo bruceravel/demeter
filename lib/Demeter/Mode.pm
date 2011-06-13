@@ -424,6 +424,8 @@ sub remove {
   if (($type eq 'Gnuplot') or ($type eq 'SingleFile')) {
     $object->end_plot;
     $type = 'Plot';
+  } elsif ($type eq 'External') {
+    $type = 'Feff';
   } elsif ($type eq 'Demeter') {
     return;
   } elsif ($type eq 'Distributions') {
