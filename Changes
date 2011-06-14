@@ -22,6 +22,7 @@
   * Feff object's rdinp method now recognizes a Feff8 input file.
     This is mostly used by Artemis to refuse to import such a thing as
     Feff8 is not yet supported in Demeter
+  * Implemented Rk plot and made a button for it
 
 *** Demeter
   * Changes to selection of the plotting backend just prior to R1

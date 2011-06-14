@@ -1,0 +1,37 @@
+{ # -*- ifm -*-
+  # template for the k portion of an Rk plot
+  #   {$D->group} returns the ifeffit group name
+  #   {$D->parameter} returns the value of that parameter
+  #   {$P->parameter} returns the value of a Plot parameter
+}
+{
+
+  $ylabel = $P->plot_kylabel;
+  $data = $P->tempfile;
+  $this->points(file    => $data,
+                space   => 'k', 
+	        suffix  => 'chi',
+	        weight  => $P->kweight,
+	       );
+
+  $fit = $P->tempfile;
+  $this->points(file    => $fit,
+                part    => 'fit',
+                space   => 'k', 
+	        suffix  => 'chi',
+	        weight  => $P->kweight,
+	       );
+  q{}
+}
+set size 1,0.40
+set origin 0,0.55
+
+set xlabel "\{/*1.2 Wavenumber&\{aa\}(\{\305\}^\{-1\})\}"
+set ylabel "\{/*1.2 {$ylabel}\}"
+set xrange [ {$P->kmin} : {$P->kmax} ]
+
+unset key
+plot '{$data}' using 1:2 with {$C->default("gnuplot", "datastyle")} ls {$P->increm+1} title "",\
+     '{$fit}' using 1:2 with {$C->default("gnuplot", "datastyle")} ls {$P->increm+2} title ""
+
+unset multiplot

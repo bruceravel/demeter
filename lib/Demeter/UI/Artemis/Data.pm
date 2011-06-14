@@ -210,21 +210,24 @@ sub new {
   my $buttonboxsizer = Wx::StaticBoxSizer->new( $buttonbox, wxHORIZONTAL );
   $left -> Add($buttonboxsizer, 0, wxGROW|wxALL, 5);
   $this->{plot_rmr}  = Wx::Button->new($leftpane, -1, "&Rm".$demeter->co->default("plot", "rmx"),  wxDefaultPosition, [70,-1]);
+  $this->{plot_rk}   = Wx::Button->new($leftpane, -1, "Rk",    wxDefaultPosition, [70,-1]);
   $this->{plot_k123} = Wx::Button->new($leftpane, -1, "&k123", wxDefaultPosition, [70,-1]);
   $this->{plot_r123} = Wx::Button->new($leftpane, -1, "R&123", wxDefaultPosition, [70,-1]);
   $this->{plot_kq}   = Wx::Button->new($leftpane, -1, "k&q",   wxDefaultPosition, [70,-1]);
-  foreach my $b (qw(plot_k123 plot_r123 plot_rmr plot_kq)) {
+  foreach my $b (qw(plot_k123 plot_r123 plot_rmr plot_rk plot_kq)) {
     $buttonboxsizer -> Add($this->{$b}, 1, wxGROW|wxALL, 2);
     $this->{$b} -> SetForegroundColour(Wx::Colour->new("#000000"));
     $this->{$b} -> SetBackgroundColour(Wx::Colour->new($Demeter::UI::Artemis::demeter->co->default("happiness", "average_color")));
     $this->{$b} -> SetFont(Wx::Font->new( 10, wxDEFAULT, wxNORMAL, wxNORMAL, 0, "" ) );
   };
   EVT_BUTTON($this, $this->{plot_rmr},  sub{plot(@_, 'rmr')});
+  EVT_BUTTON($this, $this->{plot_rk},   sub{plot(@_, 'rk')});
   EVT_BUTTON($this, $this->{plot_k123}, sub{plot(@_, 'k123')});
   EVT_BUTTON($this, $this->{plot_r123}, sub{plot(@_, 'r123')});
   EVT_BUTTON($this, $this->{plot_kq},   sub{plot(@_, 'kqfit')});
 
   $this->mouseover("plot_rmr",  "Plot this data set as |$CHI(R)| and Re[$CHI(R)].");
+  $this->mouseover("plot_rk",   "Plot this data set as a stack of $CHI(k) with |$CHI(R)| and Re[$CHI(R)].");
   $this->mouseover("plot_k123", "Plot this data set as $CHI(k) with all three k-weights and scaled to the same size.");
   $this->mouseover("plot_r123", "Plot this data set as $CHI(R) with all three k-weights and scaled to the same size.");
   $this->mouseover("plot_kq",   "Plot this data set as both $CHI(k) and Re[$CHI(q)].");
@@ -826,6 +829,7 @@ sub plot {
   $self->{data}->po->start_plot;
   $self->{data}->plot($how);
   my $text = ($how eq 'rmr')   ? "as the magnitude and real part of chi(R)"
+           : ($how eq 'rk')    ? "as a stacked plot with chi(k) + the magnitude and real part of chi(R)"
            : ($how eq 'r123')  ? "in R with three k-weights"
            : ($how eq 'k123')  ? "in k with three k-weights"
            : ($how eq 'kqfit') ? "in k- and q-space"

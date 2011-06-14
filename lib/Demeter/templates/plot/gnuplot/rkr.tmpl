@@ -1,0 +1,61 @@
+{ # -*- ifm -*-
+  # template for the R portion of an Rk plot
+  #   {$D->group} returns the ifeffit group name
+  #   {$D->parameter} returns the value of that parameter
+  #   {$P->parameter} returns the value of a Plot parameter
+}
+{
+  $this = $PT || $D;
+  $ylabel = $P->plot_rylabel;
+  $mag = $P->tempfile;
+  $this->points(file    => $mag,
+                space   => 'R', 
+	        suffix  => 'chir_mag',
+	       );
+
+  $magfit = $P->tempfile;
+  $this->points(file    => $magfit,
+                part    => 'fit',
+                space   => 'R', 
+	        suffix  => 'chir_mag',
+	       );
+
+  $re = $P->tempfile;
+  $this->points(file    => $re,
+                space   => 'R', 
+	        suffix  => 'chir_re',
+	        yoffset => $D->rmr_offset
+	       );
+
+  $refit = $P->tempfile;
+  $this->points(file    => $refit,
+                part    => 'fit',
+                space   => 'R', 
+	        suffix  => 'chir_re',
+	        yoffset => $D->rmr_offset
+	       );
+
+  $thiskey = $D->name;
+  $thiskey =~ s{_}{\\\\_}g;
+  if (ref($PT) =~ m{Path}) { $thiskey = $PT->name || 'Path '.$PT->Index };
+  $legend  = ($P->showlegend) ? '' : "\nunset key" ;
+  q{}
+}
+## gnuplot script
+set multiplot layout 2,1
+set size 1,0.55
+set origin 0,0.01
+
+unset label{$legend}
+
+unset title
+set xlabel "\{/*1.2 Radial distance&\{aa\}(\{\305\})\}"
+set ylabel "\{/*1.2 {$ylabel}\}"
+set xrange [ {$P->rmin} : {$P->rmax} ]
+set key bottom right width 1 height 1 box
+
+# {$this->name}: ifeffit group = {$D->group}
+plot '{$mag}' using 1:2 with {$C->default("gnuplot", "datastyle")} ls {$P->increm+1} title "{$thiskey}",\
+     '{$magfit}' using 1:2 with {$C->default("gnuplot", "datastyle")} ls {$P->increm+2} title "fit",\
+     '{$re}' using 1:2 with {$C->default("gnuplot", "datastyle")} ls {$P->increm+1} title "",\
+     '{$refit}' using 1:2 with {$C->default("gnuplot", "datastyle")} ls {$P->increm+2} title ""
