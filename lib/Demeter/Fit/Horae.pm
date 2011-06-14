@@ -34,7 +34,7 @@ Readonly my $NUMBER   => $RE{num}{real};
 sub apj2dpj {
   my ($self, $apj, $dpj, $rjournal) = @_;
 
-  ## -------- make a folder to unzip the old-style project and unzip it
+  ## -------- make a folder in which to unzip the old-style project, then unzip it
   my $unzip = File::Spec->catfile($self->stash_folder, '_old_'.basename($apj, '.apj'));
   rmtree $unzip if (-d $unzip);
   my $zip = Archive::Zip->new();
@@ -127,7 +127,7 @@ sub apj2dpj {
   close $DESC;
   $$rjournal = $self->slurp(File::Spec->catfile($unzip, 'descriptions', 'journal.artemis')) if $rjournal;
 
-  if (not $trouble) {
+  if (not $trouble) {		# prior problems take precedence...
     $trouble .= "There were no data sets in that project file." if not @data;
     $trouble .= "  There were no paths in that project file." if not @paths;
   };
@@ -263,3 +263,92 @@ sub horae_path {
 
 
 1;
+
+
+=head1 NAME
+
+Demeter::Fit::Horae - Convert an old-style Artemis project file into a Demeter fit serialization
+
+=head1 VERSION
+
+This documentation refers to Demeter version 0.4.
+
+=head1 DESCRIPTION
+
+Convert an old-style Artemis project file file into the equivalent
+Demeter fit serialization.  This is a role of the Fit object.
+
+   my $fit = Demeter::Fit->new();
+   $fit -> apj2dpj($apjfile, $dpjfile, $rjournal);
+
+This is currently in use by Artemis to import projects from the older
+version.
+
+=head1 METHODS
+
+There is only one outwardly visible method, C<apj2dpj>.  It takes
+three arguments:
+
+=over 4
+
+=item 1.
+
+The filename of the old-style C<.apj> file.
+
+=item 2.
+
+The filename of the fit serialization, i.e. C<.dpj> file.  This is the
+output of this method.  In Artemis, this is a temporary file in the
+stash folder which is unlinked after being imported into Artemis.
+
+=item 3.
+
+A reference to a scalar which will be filled with the contents of the
+journal from the C<.apj> file.  InArtemis, this is inserted as text
+into the Journal buffer.
+
+=back
+
+=head1 CONFIGURATION
+
+There are no configuration options for this role.
+
+See L<Demeter::Config> for a description of Demeter's
+configuration system.
+
+=head1 DEPENDENCIES
+
+Demeter's dependencies are in the F<Bundle/DemeterBundle.pm> file.
+
+=head1 BUGS AND LIMITATIONS
+
+=over 4
+
+=item *
+
+blah blah
+
+=back
+
+Please report problems to Bruce Ravel (bravel AT bnl DOT gov)
+
+Patches are welcome.
+
+=head1 AUTHOR
+
+Bruce Ravel (bravel AT bnl DOT gov)
+
+L<http://cars9.uchicago.edu/~ravel/software/>
+
+=head1 LICENCE AND COPYRIGHT
+
+Copyright (c) 2006-2011 Bruce Ravel (bravel AT bnl DOT gov). All rights reserved.
+
+This module is free software; you can redistribute it and/or
+modify it under the same terms as Perl itself. See L<perlgpl>.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+
+=cut

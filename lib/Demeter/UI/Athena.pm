@@ -363,7 +363,7 @@ sub menubar {
   $filemenu->AppendSeparator;
   $filemenu->Append(wxID_SAVE,    "Save project\tCtrl+s", "Save an Athena project file" );
   $filemenu->Append(wxID_SAVEAS,  "Save project as...", "Save an Athena project file as..." );
-  $filemenu->Append($SAVE_MARKED, "Save marked groups as...", "Save marked groups as an Athena project file as..." );
+  $filemenu->Append($SAVE_MARKED, "Save marked groups as a project ...", "Save marked groups as an Athena project file ..." );
   $filemenu->AppendSeparator;
 
   my $exportmenu   = Wx::Menu->new;
@@ -411,8 +411,8 @@ sub menubar {
   $saveeachmenu->Append($EACH_CHIQ,   "$CHI(q)", "Save $CHI(q) for each marked group" );
 
   $filemenu->AppendSubMenu($savecurrentmenu, "Save current group as ...",     "Save the data in the current group as a column data file" );
-  $filemenu->AppendSubMenu($savemarkedmenu,  "Save marked groups as ...",     "Save the data from the marked group as a column data file" );
-  $filemenu->AppendSubMenu($saveeachmenu,    "Save each marked group as ...", "Save the data in the marked group as column data files" );
+  $filemenu->AppendSubMenu($savemarkedmenu,  "Save marked groups as ...",     "Save the data from the marked group as a single column data file" );
+  $filemenu->AppendSubMenu($saveeachmenu,    "Save each marked group as ...", "Save the marked groups, each as its own column data file" );
   $filemenu->AppendSubMenu($exportmenu,      "Export ...",                    "Export" );
   $filemenu->AppendSeparator;
   $filemenu->Append($CLEAR_PROJECT, 'Clear project name', 'Clear project name');
