@@ -5,7 +5,7 @@ use warnings;
 
 use Wx qw( :everything );
 use base 'Wx::Panel';
-use Wx::Event qw(EVT_TOGGLEBUTTON EVT_CHECKBOX EVT_RADIOBOX);
+use Wx::Event qw(EVT_TOGGLEBUTTON EVT_CHECKBOX EVT_RADIOBOX EVT_TEXT_ENTER);
 use Wx::Perl::TextValidator;
 
 use Demeter::UI::Wx::SpecialCharacters qw(:all);
@@ -20,8 +20,11 @@ sub new {
   my $titlebox       = Wx::StaticBox->new($this, -1, 'Title for marked group plot', wxDefaultPosition, wxDefaultSize);
   my $titleboxsizer  = Wx::StaticBoxSizer->new( $titlebox, wxHORIZONTAL );
   $box              -> Add($titleboxsizer, 0, wxGROW|wxALL, 5);
-  $this->{title}     = Wx::TextCtrl->new($this, -1, q{});
+  $this->{title}     = Wx::TextCtrl->new($this, -1, q{}, wxDefaultPosition, wxDefaultSize, wxTE_PROCESS_ENTER);
   $titleboxsizer    -> Add($this->{title}, 1, wxALL|wxGROW, 0);
+  EVT_TEXT_ENTER($this, $this->{title}, sub{
+		   $app->plot(q{}, q{}, @{$app->{lastplot}});
+		 });
 
   $this->{location}  = Wx::RadioBox->new($this, -1, 'Legend location', wxDefaultPosition, wxDefaultSize,
 					 ["top left", "top right", "bottom left", "bottom right"], 2, wxRA_SPECIFY_COLS);
@@ -33,7 +36,10 @@ sub new {
   $this->{singlefile} = Wx::ToggleButton->new($this, -1, "Save next plot to a file");
   $box               -> Add($this->{nokey},      0, wxGROW|wxALL, 5);
   $box               -> Add($this->{singlefile}, 0, wxGROW|wxALL, 5);
-  EVT_CHECKBOX($this, $this->{nokey}, sub{$app->current_data->po->showlegend(not $_[0]->{nokey}->IsChecked)});
+  EVT_CHECKBOX($this, $this->{nokey}, sub{
+		 $app->current_data->po->showlegend(not $_[0]->{nokey}->IsChecked);
+		 $app->plot(q{}, q{}, @{$app->{lastplot}});
+	       });
   $app->mouseover($this->{title},      "Specify a title for a marked group plot.");
   $app->mouseover($this->{nokey},      "Turn off the legend in subsequent plots.");
   $app->mouseover($this->{singlefile}, "Write the next plot to a column data file.  (Does not yet work for quad, stddev, or variance plots.)");
@@ -45,6 +51,7 @@ sub new {
 sub location {
   my ($this, $event, $app) = @_;
   $app->current_data->co->set_default('gnuplot', 'keylocation', $this->{location}->GetStringSelection);
+  $app->plot(q{}, q{}, @{$app->{lastplot}});
 };
 
 sub label {
