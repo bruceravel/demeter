@@ -16,6 +16,7 @@
     allows replotting or other actions (or none at all) upon hitting
     return with focus in a text box.
   * Rewrote the quad plot
+  * Clarified language used in stack tab of plotting options section
 
 *** Artemis
   * Completely rewrote mechanism for importing old-style Artemis
@@ -24,6 +25,7 @@
     This is mostly used by Artemis to refuse to import such a thing as
     Feff8 is not yet supported in Demeter
   * Implemented Rk plot and made a button for it
+  * Added wxTE_PROCESS_ENTER style to all one-line text entry boxes.
 
 *** Demeter
   * Changes to selection of the plotting backend just prior to R1

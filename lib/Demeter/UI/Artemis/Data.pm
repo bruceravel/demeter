@@ -22,7 +22,7 @@ use Wx qw( :everything);
 use base qw(Wx::Frame);
 use Wx::Event qw(EVT_MENU EVT_CLOSE EVT_TOOL_ENTER EVT_CHECKBOX EVT_CHOICE
 		 EVT_BUTTON EVT_ENTER_WINDOW EVT_LEAVE_WINDOW
-		 EVT_HYPERLINK);
+		 EVT_HYPERLINK EVT_TEXT_ENTER);
 use Wx::DND;
 use Wx::Perl::TextValidator;
 
@@ -190,9 +190,10 @@ sub new {
   $this->{name}->SetFont( Wx::Font->new( 12, wxDEFAULT, wxNORMAL, wxBOLD, 0, "" ) );
   $namebox -> Add($this->{name}, 1, wxLEFT|wxRIGHT|wxTOP, 5);
   $namebox -> Add(Wx::StaticText->new($leftpane, -1, "CV"), 0, wxLEFT|wxRIGHT|wxTOP, 5);
-  $this->{cv} = Wx::TextCtrl->new($leftpane, -1, $nset, wxDefaultPosition, [60,-1],);
+  $this->{cv} = Wx::TextCtrl->new($leftpane, -1, $nset, wxDefaultPosition, [60,-1], wxTE_PROCESS_ENTER);
   $namebox -> Add($this->{cv}, 0, wxLEFT|wxRIGHT|wxTOP, 3);
   EVT_BUTTON($this, $this->{plotgrab}, sub{transfer(@_)});
+  EVT_TEXT_ENTER($this, $this->{cv}, sub{1});
 
   $this->mouseover("plotgrab", "Transfer this data set to the plotting list.");
   $this->mouseover("cv",       "The characteristic value for this data set, which is used in certain advanced modeling features.  (The CV must be a number.)");
@@ -252,37 +253,37 @@ sub new {
 
   my $label     = Wx::StaticText->new($leftpane, -1, "kmin");
   $this->{kmin} = Wx::TextCtrl  ->new($leftpane, -1, $demeter->co->default("fft", "kmin"),
-				      wxDefaultPosition, [50,-1]);
+				      wxDefaultPosition, [50,-1], wxTE_PROCESS_ENTER);
   $gbs     -> Add($label,      Wx::GBPosition->new(0,1));
   $gbs     -> Add($this->{kmin}, Wx::GBPosition->new(0,2));
 
   $label        = Wx::StaticText->new($leftpane, -1, "kmax");
   $this->{kmax} = Wx::TextCtrl  ->new($leftpane, -1, $demeter->co->default("fft", "kmax"),
-				      wxDefaultPosition, [50,-1]);
+				      wxDefaultPosition, [50,-1], wxTE_PROCESS_ENTER);
   $gbs     -> Add($label,      Wx::GBPosition->new(0,3));
   $gbs     -> Add($this->{kmax}, Wx::GBPosition->new(0,4));
 
   $label      = Wx::StaticText->new($leftpane, -1, "dk");
   $this->{dk} = Wx::TextCtrl  ->new($leftpane, -1, $demeter->co->default("fft", "dk"),
-				      wxDefaultPosition, [50,-1]);
+				      wxDefaultPosition, [50,-1], wxTE_PROCESS_ENTER);
   $gbs     -> Add($label,      Wx::GBPosition->new(0,5));
   $gbs     -> Add($this->{dk}, Wx::GBPosition->new(0,6));
 
   $label        = Wx::StaticText->new($leftpane, -1, "rmin");
   $this->{rmin} = Wx::TextCtrl  ->new($leftpane, -1, $demeter->co->default("bft", "rmin"),
-				      wxDefaultPosition, [50,-1]);
+				      wxDefaultPosition, [50,-1], wxTE_PROCESS_ENTER);
   $gbs     -> Add($label,        Wx::GBPosition->new(1,1));
   $gbs     -> Add($this->{rmin}, Wx::GBPosition->new(1,2));
 
   $label        = Wx::StaticText->new($leftpane, -1, "rmax");
   $this->{rmax} = Wx::TextCtrl  ->new($leftpane, -1, $demeter->co->default("bft", "rmax"),
-				      wxDefaultPosition, [50,-1]);
+				      wxDefaultPosition, [50,-1], wxTE_PROCESS_ENTER);
   $gbs     -> Add($label,        Wx::GBPosition->new(1,3));
   $gbs     -> Add($this->{rmax}, Wx::GBPosition->new(1,4));
 
   $label      = Wx::StaticText->new($leftpane, -1, "dr");
   $this->{dr} = Wx::TextCtrl  ->new($leftpane, -1, $demeter->co->default("bft", "dr"),
-				    wxDefaultPosition, [50,-1]);
+				    wxDefaultPosition, [50,-1], wxTE_PROCESS_ENTER);
   $gbs     -> Add($label,      Wx::GBPosition->new(1,5));
   $gbs     -> Add($this->{dr}, Wx::GBPosition->new(1,6));
 
@@ -301,6 +302,14 @@ sub new {
   $this->mouseover("rmax", "The upper bound in R-space for the fit and the backwards Fourier transform.");
   $this->mouseover("dr",   "The width of the window sill in R-space for the backwards Fourier transform.");
 
+  foreach my $x (qw(kmin kmax dk rmin rmax dr)) {
+    EVT_TEXT_ENTER($this, $this->{$x},
+		   sub{
+		     $this->fetch_parameters;
+		     my $text = sprintf("The number of independent points in this data set is %.2f", $this->{data}->nidp);
+		     $this->status($text);
+		   });
+  };
 
   $ftboxsizer -> Add($gbs, 0, wxALL, 5);
 
@@ -331,7 +340,7 @@ sub new {
   $this->{k2}   = Wx::CheckBox->new($leftpane, -1, "2",     wxDefaultPosition, wxDefaultSize);
   $this->{k3}   = Wx::CheckBox->new($leftpane, -1, "3",     wxDefaultPosition, wxDefaultSize);
   $this->{karb} = Wx::CheckBox->new($leftpane, -1, "other", wxDefaultPosition, wxDefaultSize);
-  $this->{karb_value} = Wx::TextCtrl->new($leftpane, -1, $demeter->co->default('fit', 'karb_value'), wxDefaultPosition, wxDefaultSize);
+  $this->{karb_value} = Wx::TextCtrl->new($leftpane, -1, $demeter->co->default('fit', 'karb_value'), wxDefaultPosition, wxDefaultSize, wxTE_PROCESS_ENTER);
   $kwboxsizer -> Add($this->{k1}, 1, wxLEFT|wxRIGHT, 5);
   $kwboxsizer -> Add($this->{k2}, 1, wxLEFT|wxRIGHT, 5);
   $kwboxsizer -> Add($this->{k3}, 1, wxLEFT|wxRIGHT, 5);
@@ -348,6 +357,8 @@ sub new {
   $this->mouseover("k3", "Use a k-weight of 3 when evaluating the fit.  You may choose any or all k-weights for fitting.");
   $this->mouseover("karb", "Use the supplied value of k-weight when evaluating the fit.  You may choose any or all k-weights for fitting.");
   $this->mouseover("karb_value", "The user-supplied value of k-weight for use in the fit.  You may choose any or all k-weights for fitting.");
+
+  EVT_TEXT_ENTER($this, $this->{karb_value}, sub{1});
 
   my $otherbox      = Wx::StaticBox->new($leftpane, -1, 'Other parameters ', wxDefaultPosition, wxDefaultSize);
   my $otherboxsizer = Wx::StaticBoxSizer->new( $otherbox, wxVERTICAL );
@@ -376,7 +387,7 @@ sub new {
   $otherboxsizer -> Add($extrabox, 0, wxALL|wxGROW|wxALIGN_CENTER_HORIZONTAL, 0);
 
   $extrabox -> Add(Wx::StaticText->new($leftpane, -1, "$EPSILON(k)"), 0, wxALL, 5);
-  $this->{epsilon} = Wx::TextCtrl->new($leftpane, -1, 0, wxDefaultPosition, [50,-1]);
+  $this->{epsilon} = Wx::TextCtrl->new($leftpane, -1, 0, wxDefaultPosition, [50,-1], wxTE_PROCESS_ENTER);
   $extrabox  -> Add($this->{epsilon}, 0, wxALL, 2);
   $extrabox  -> Add(Wx::StaticText->new($leftpane, -1, q{}), 1, wxALL, 0);
   $this->{pcplot}  = Wx::CheckBox->new($leftpane, -1, "Plot with phase correction", wxDefaultPosition, wxDefaultSize);
@@ -393,6 +404,7 @@ sub new {
 		 }
 	       });
 
+  EVT_TEXT_ENTER($this, $this->{epsilon}, sub{1});
   $this->{epsilon} -> SetValidator( Wx::Perl::TextValidator->new( qr([0-9.]) ) );
   $this->mouseover("epsilon", "A user specified value for the measurement uncertainty.  A value of 0 means to let Ifeffit determine the uncertainty.");
   $this->mouseover("pcplot",  "Check here to make plots using phase corrected Fourier transforms.  Note that the fit is NOT made using phase corrected transforms.");

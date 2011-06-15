@@ -21,7 +21,8 @@ use warnings;
 use Wx qw( :everything );
 use base qw(Wx::Panel);
 use Wx::Event qw(EVT_RIGHT_DOWN EVT_ENTER_WINDOW EVT_LEAVE_WINDOW EVT_MENU
-		 EVT_CHECKBOX EVT_BUTTON EVT_HYPERLINK EVT_COLLAPSIBLEPANE_CHANGED);
+		 EVT_CHECKBOX EVT_BUTTON EVT_HYPERLINK
+		 EVT_COLLAPSIBLEPANE_CHANGED EVT_TEXT_ENTER);
 
 use Demeter::UI::Wx::SpecialCharacters qw(:all);
 
@@ -147,7 +148,7 @@ sub new {
     $label->{which} = $k;
     $this->{"lab_$k"} = $label;
     my $w = 225;
-    $this->{"pp_$k"} = Wx::TextCtrl  ->new($this, -1, q{}, wxDefaultPosition, [$w,-1]);
+    $this->{"pp_$k"} = Wx::TextCtrl  ->new($this, -1, q{}, wxDefaultPosition, [$w,-1], wxTE_PROCESS_ENTER);
     $gbs     -> Add($label,           Wx::GBPosition->new($i,1));
     $gbs     -> Add($this->{"pp_$k"}, Wx::GBPosition->new($i,2));
     ++$i;
@@ -161,6 +162,7 @@ sub new {
     $label -> SetVisitedColour($black);
     $this  -> mouseover("lab_$k", "(Click for the " . $labels{$k} . " menu) " . $explanation{$k});
     $this  -> mouseover("pp_$k",  $explanation{$k});
+    EVT_TEXT_ENTER($this, $this->{"pp_$k"}, sub{1});
   };
   $vbox -> Add($gbs, 2, wxGROW|wxTOP|wxBOTTOM, 10);
   $this->{pp_n} -> SetValidator( Wx::Perl::TextValidator->new( qr([0-9.]) ) );

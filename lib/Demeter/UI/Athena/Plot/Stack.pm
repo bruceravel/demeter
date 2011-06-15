@@ -18,7 +18,7 @@ sub new {
   my $box = Wx::BoxSizer->new( wxVERTICAL );
 
   $box -> Add(Wx::StaticText->new($this, -1, "Set y-offset values for"), 0, wxALIGN_CENTER_HORIZONTAL|wxTOP, 5);
-  $box -> Add(Wx::StaticText->new($this, -1, "all marked groups"), 0, wxALIGN_CENTER_HORIZONTAL|wxBOTTOM, 5);
+  $box -> Add(Wx::StaticText->new($this, -1, "the set of marked groups"), 0, wxALIGN_CENTER_HORIZONTAL|wxBOTTOM, 5);
 
   my $gbs = Wx::GridBagSizer->new( 5, 5 );
 
@@ -27,7 +27,7 @@ sub new {
 
   $this->{initial}   = Wx::TextCtrl->new($this, -1, 0, wxDefaultPosition, [60,-1], wxTE_PROCESS_ENTER);
   $this->{increment} = Wx::TextCtrl->new($this, -1, 0, wxDefaultPosition, [60,-1], wxTE_PROCESS_ENTER);
-  $this->{apply}     = Wx::Button  ->new($this, -1, "Apply");
+  $this->{apply}     = Wx::Button  ->new($this, -1, "Apply to marked");
   $gbs -> Add($this->{initial},   Wx::GBPosition->new(0,1));
   $gbs -> Add($this->{increment}, Wx::GBPosition->new(1,1));
   $app->mouseover($this->{initial},   "The y_offset value of the first marked group.");
