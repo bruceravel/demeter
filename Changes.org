@@ -1,4 +1,3 @@
--*- org -*-
 #+TITLE: Demeter revision history
 #+AUTHOR: Bruce Ravel
 #+EMAIL: bravel AT bnl DOT gov
@@ -8,29 +7,29 @@
 
 ** Release 2: xx June, 2011
 *** Athena
-  * Fixed some language issues in the Files menu
-  * Fixed several bugs surrounding the bkg_fixstep Data attribute and
-    made its behavior in relation to editing the normalization,
-    pre-edge, and edge step text entry boxes more sensible
-  * Added wxTE_PROCESS_ENTER style to all text entry boxes.  This
-    allows replotting or other actions (or none at all) upon hitting
-    return with focus in a text box.
-  * Rewrote the quad plot
-  * Clarified language used in stack tab of plotting options section
+   - Fixed some language issues in the Files menu
+   - Fixed several bugs surrounding the bkg_fixstep Data attribute and
+     made its behavior in relation to editing the normalization,
+     pre-edge, and edge step text entry boxes more sensible
+   - Added wxTE_PROCESS_ENTER style to all text entry boxes.  This
+     allows replotting or other actions (or none at all) upon hitting
+     return with focus in a text box.
+   - Rewrote the quad plot
+   - Clarified language used in stack tab of plotting options section
 
 *** Artemis
-  * Completely rewrote mechanism for importing old-style Artemis
-    project files, which now works much more reliably.
-  * Feff object's rdinp method now recognizes a Feff8 input file.
-    This is mostly used by Artemis to refuse to import such a thing as
-    Feff8 is not yet supported in Demeter
-  * Implemented Rk plot and made a button for it
-  * Added wxTE_PROCESS_ENTER style to all one-line text entry boxes.
+   - Completely rewrote mechanism for importing old-style Artemis
+     project files, which now works much more reliably.
+   - Feff object's rdinp method now recognizes a Feff8 input file.
+     This is mostly used by Artemis to refuse to import such a thing as
+     Feff8 is not yet supported in Demeter
+   - Implemented Rk plot and made a button for it
+   - Added wxTE_PROCESS_ENTER style to all one-line text entry boxes.
 
 *** Demeter
-  * Changes to selection of the plotting backend just prior to R1
-    broke most of the tests.  Both the selection mechanism and all the
-    tests were fixed.
+   - Changes to selection of the plotting backend just prior to R1
+     broke most of the tests.  Both the selection mechanism and all the
+     tests were fixed.
 
 ** Release 1: 10 June, 2011
  Initial beta testing release
