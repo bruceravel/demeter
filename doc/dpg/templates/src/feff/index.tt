@@ -9,6 +9,23 @@ seems reasonable as [% demeter %] currently have no special
 capabilities for XANES or other inner shell spectroscopy analysis
 beyond basic, [% athena %]-level functionality.
 
+[% WRAPPER scriptcaption this="feff6.png" %]
+This is a rough flow diagram for [% feff6 %].  The configuration of
+atoms in the [% INCLUDE font/file a="feff.inp" %] file is used to
+compute the potentials in the [% INCLUDE font/em a="potph" %]
+part of [% feff6 %] and to find all possible scattering geometries
+with the cluster in the [% INCLUDE font/em a="pathfinder" %] part.
+The output files from those two parts, 
+[% INCLUDE font/file a="phase.bin" %] and
+[% INCLUDE font/file a="paths.dat" %], are used by
+[% INCLUDE font/em a="genfmt" %] to compute the
+[% INCLUDE font/file a="feffNNNN.dat" %] files, each of which contains
+the contribution to the EXAFS from an individual scattering geometry.
+The various scattering contributions are then summed by
+[% INCLUDE font/em a="ff2chi" %] to make the theoretical [% chik %].
+[% END %]
+
+
 When run outside of [% demeter %], [% feff6 %] is usually treated as a
 single program that starts by reading an input file and ends by
 writing out [% INCLUDE font/file a="feffNNNN.dat" %] files containing
@@ -39,38 +56,136 @@ Sum the contributions from the scattering paths into a calculated
 [% END %]
 [% END %]
 
-[% FILTER html_para -%]
-It is actually possibly to run each of these steps independently of
-the others by using the [% INCLUDE font/mono a="CONTROL" %] keyword in
-the [% INCLUDE font/file a="feff.inp" %] file.  That keyword takes
-four arguments which turn on and off the potph, pathfinder, genfmt,
-and ff2chi parts of [% feff %].  Thus it is relatively easy to break 
-[% feff %] down into its constituent parts, thus gaining fine-grained
-control over how [% feff %] behaves.
 
-[% demeter %] exploits this fine grained control.  The potph part of
-[% feff %] is run normally.  [% feff %]'s pathfinder is not used by 
-[% demeter %], as discussed in
-[% INCLUDE html/link text="a later section" link="pathfinder.html" %].
 
-The genfmt part of [% feff %] is used by [% demeter %], but not in the
-normal way.  Individual paths are computed one at a time and only when
-needed.  This just-in-time calculation of scattering path
-contributions happens behind the scenes.  As [% demeter %] user, you
-should never have to worry about the individual paths being
-calculated.  In much the same way that you can trust [% demeter %] to
-perform background removal and Fourier transforms of data as needed
-for plotting, you can trust that whenever you wish to plot a path or
-use it in a fit, [% demeter %] will calculate it if needed or reuse it
-if it is still up to date.
+[% FILTER html_para -%] 
 
-Finally, the ff2chi part of [% feff %] is never used.  You could say
-that [% ifeffit %] is an elaborate re-write of ff2chi!
+In [% ifeffit %] and in the older version of [% artemis %], we simply
+drop [% INCLUDE font/em a="ff2chi" %].  [% ifeffit %] is a
+high-functionality replacement for [% INCLUDE font/em a="ff2chi" %].
+It takes all the contributions computed by the [% feff %] calculation
+and adds them up with parameterization for the path parameters.
 
-[% demeter %]'s interface to [% feff %] is one of its more elaborate
-parts and it offers several powerful, new features that may be
-unfamliar even to the experienced [% feff %] user.  By the end of this
-chapter, you should be able to create rich, feature-full tools which
-access the capabilities of [% feff %] for simulation or fitting of
-EXAFS spectra.
+That was the only part of [% feff6 %] that was unused in old 
+[% artemis %].  When you imported a 
+[% INCLUDE font/file a="feff.inp" %] file into [% artemis %], 
+[% feff6 %] was run all the way through the
+[% INCLUDE font/em a="genfmt" %] stage.  Hidden somewhere out of the
+way were all the oputput
+files from [% feff %].  This is why old [% artemis %] project files
+are so very large.  It is because they contain the 
+[% INCLUDE font/file a="phase.bin" %] file and
+possibly hundreds of 
+[% INCLUDE font/file a="feffNNNN.dat" %] files -- one for each scattering
+path computed in each [% feff %] calculation performed.
+
+[% feff %], however, does not have to be run this way.  Using the 
+[% INCLUDE font/tt a="CONTROL" %] keyword, you can specify which parts of
+[% feff %] actually run.  Each of 
+[% INCLUDE font/em a="potph" %]
+[% INCLUDE font/em a="pathfinder" %]
+[% INCLUDE font/em a="genfmt" %]
+[% INCLUDE font/em a="ff2chi" %] can
+be turned on and off individually, so long as the all the necessary
+input information is somehow available.  For example, to run just
+[% INCLUDE font/em a="genfmt" %], you must somehow have already
+calculated
+the [% INCLUDE font/file a="phase.bin" %] and
+[% INCLUDE font/file a="paths.dat" %] files.
+
+An aside about [% feff %]'s [% INCLUDE font/em a="pathfinder" %]:  
+it is fast, but is missing
+useful features.  One missing feature is that, when it determines
+which scattering geometries are degenerate (i.e. they provide the same
+contributions to the EXAFS), it throws each degenerate path away.
+That is, the [% INCLUDE font/file a="feffNNNN.dat" %] file for the 
+first coordination shell in an
+BCC metal tells you the coordinates of one such scattering atom and it
+tells you that the degeneracy is 8.  It does not, however, retain the
+coordinates of the other 7 atoms.
+
+The other shortcoming of the [% INCLUDE font/em a="pathfinder" %]
+is that it treats scattering
+paths as non-degenerate if their half path lengths differ by 0.00001 
+[% AA %] or more.  That is, in most cases, a ridiculously tight
+tolerance which leads to a substantial proliferation of very similar
+paths. 
+
+OK, back to how [% feff %] is use in [% artemis %].  In the new 
+[% artemis %], I take a
+much more fine-grained approach.  [% feff %] is never run from beginning 
+to end.  When [% feff %] is run, the [% INCLUDE font/em a="potph" %]
+part is run and the resulting 
+[% INCLUDE font/file a="phase.bin" %] file is saved.
+
+Then the [% INCLUDE font/em a="pathfinder" %] is run, but not 
+[% feff %]'s [% INCLUDE font/em a="pathfinder" %].
+The [% INCLUDE font/em a="pathfinder" %] has been completely rewritten
+as part of [% demeter %]
+The new [% INCLUDE font/em a="pathfinder" %] is missing one important
+feature.  It has no way of doing [% feff %]'s quick and dirty
+estimation of path amplitude, the so-called curved-wave importance
+factor, thus [% demeter %]'s [% INCLUDE font/em a="pathfinder" %]
+does not have that
+way of discarding obviously small paths and all higher-order
+scattering paths based on that geometry.  Also, [% demeter %]'s 
+[% INCLUDE font/em a="pathfinder" %] is
+pretty slow compared to [% feff %]'s.
+
+However, [% demeter %]'s [% INCLUDE font/em a="pathfinder" %] retains
+information about all scattering geometries that contribute to the
+degeneracy of a path.  In the future, this will allow propagattion of
+distortions to the starting structure through all the scattering
+paths.
+
+Secondly, [% demeter %]'s [% INCLUDE font/em a="pathfinder" %]
+introduces something called 
+[% INCLUDE font/quote a="fuzzy degeneracy" %].  This is a
+configurable parameter that defines a length scale below which paths
+of similar length are considered degenerate.  The default is 0.03 
+[% AA %], but can be set as you wish.  Thus paths that differ in 
+length by less
+than 0.03 [% AA %] are considered degenerate and the resulting path is
+computed at the average length of the paths that are considered
+degenerate.
+
+So, the [% INCLUDE font/em a="pathfinder" %] introduces a number of
+new features.  But the really powerful bit is how [% artemis %]
+interacts with [% INCLUDE font/em a="genfmt" %].  Basically, 
+[% INCLUDE font/em a="genfmt" %] is
+run on demand the first time that the corresponding 
+[% INCLUDE font/file a="feffNNNN.dat" %] file
+is needed (perhaps for a fit, perhaps for a plot).  When the current
+instance of [% demeter %] is finished (say, by quitting [% artemis %])
+all the
+[% INCLUDE font/file a="feffNNNN.dat" %] files are deleted.  The next
+time you fire up your program, they will be recalcualted.
+
+It turns out that the call to [% INCLUDE font/em a="genfmt" %] is so 
+fast that it is better to
+recompute the [% INCLUDE font/file a="feffNNNN.dat" %] 
+files rather than carry them around.  Thus
+[% artemis %] project files are much, much smaller.  The 
+[% INCLUDE font/file a="feffNNNN.dat" %] files are
+given names based on random strings, so there is no chance of
+accidentally over-writing them if you happen to re-run earlier parts
+of [% feff %].
+
+The way this on-demand calcualtion of 
+[% INCLUDE font/file a="feffNNNN.dat" %] files works is by
+having [% demeter %] generate short replacements for the 
+[% INCLUDE font/file a="paths.dat" %] file
+which contain only the single path that you want to calculate.  The
+[% INCLUDE font/file a="paths.dat" %] file is deleted immediately
+after it is used. 
+
+This approach makes it very easy to define interesting abstractions
+of paths.  For instance, suppose you want to consider the possibility
+that one of the atoms in your material is at a position very different
+from the examples in the cluster.  This approach makes it easy to
+compute that.  It's called an SSPath.
+
+There are a number of other tricks that this capability will enable,
+including things like considering variation in scattering angle of a
+MS path or consideration of arbitrary radial distribution functions.
 [% END %]

@@ -13,7 +13,9 @@
      pre-edge, and edge step text entry boxes more sensible
    - Added wxTE_PROCESS_ENTER style to all text entry boxes.  This
      allows replotting or other actions (or none at all) upon hitting
-     return with focus in a text box.
+     return with focus in a text box.  This is in response to a
+     complaint that hitting enter in a text box caused focus to shift
+     unexpectedly.
    - Rewrote the quad plot
    - Clarified language used in stack tab of plotting options section
 
@@ -30,6 +32,14 @@
    - Changes to selection of the plotting backend just prior to R1
      broke most of the tests.  Both the selection mechanism and all the
      tests were fixed.
+
+*** Windows Installer
+   - Renamed desktop icons so as to not overwrite Horae's icons
+
+*** Acknowledgements for this release
+   1. Scott Calvin
+   2. Eric Breynaert
+   3. LachLan MacLean
 
 ** Release 1: 10 June, 2011
  Initial beta testing release
