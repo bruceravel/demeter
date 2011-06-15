@@ -5,7 +5,7 @@ use warnings;
 
 use Wx qw( :everything );
 use base 'Wx::Panel';
-use Wx::Event qw(EVT_BUTTON EVT_CHOICE);
+use Wx::Event qw(EVT_BUTTON EVT_CHOICE EVT_TEXT_ENTER);
 use Wx::Perl::TextValidator;
 
 use Scalar::Util qw(looks_like_number);
@@ -79,9 +79,9 @@ sub new {
   $this->{group}   = Wx::StaticText->new($this, -1, q{});
   $this->{param}   = Wx::Choice->new($this, -1, wxDefaultPosition, [240, -1], [@labels]);
   $this->{current} = Wx::StaticText->new($this, -1, q{});
-  $this->{begin}   = Wx::TextCtrl->new($this, -1, q{}, wxDefaultPosition, $tcsize);
-  $this->{number}  = Wx::TextCtrl->new($this, -1, q{}, wxDefaultPosition, $tcsize);
-  $this->{increm}  = Wx::TextCtrl->new($this, -1, q{}, wxDefaultPosition, $tcsize);
+  $this->{begin}   = Wx::TextCtrl->new($this, -1, q{}, wxDefaultPosition, $tcsize, wxTE_PROCESS_ENTER);
+  $this->{number}  = Wx::TextCtrl->new($this, -1, q{}, wxDefaultPosition, $tcsize, wxTE_PROCESS_ENTER);
+  $this->{increm}  = Wx::TextCtrl->new($this, -1, q{}, wxDefaultPosition, $tcsize, wxTE_PROCESS_ENTER);
   $this->{param}  -> SetSelection(0);
   $gbs->Add($this->{group},   Wx::GBPosition->new(0,1));
   $gbs->Add($this->{param},   Wx::GBPosition->new(1,1));
@@ -91,6 +91,9 @@ sub new {
   $gbs->Add($this->{increm},  Wx::GBPosition->new(5,1));
   $this->{$_} -> SetValidator( Wx::Perl::TextValidator->new( qr([-0-9.]) ) ) foreach (qw(begin increm));
   $this->{number} -> SetValidator( Wx::Perl::TextValidator->new( qr([0-9]) ) );
+  foreach my $x (qw(begin number increm)) {
+    EVT_TEXT_ENTER($this, $this->{$x}, sub{make(@_, $app)});
+  };
 
   EVT_CHOICE($this, $this->{param}, sub{OnChoice(@_, $app)});
 

@@ -5,7 +5,7 @@ use warnings;
 
 use Wx qw( :everything );
 use base 'Wx::Panel';
-use Wx::Event qw(EVT_BUTTON EVT_RADIOBOX);
+use Wx::Event qw(EVT_BUTTON EVT_RADIOBOX EVT_TEXT_ENTER);
 use Wx::Perl::TextValidator;
 
 use Demeter::UI::Wx::SpecialCharacters qw(:all);
@@ -57,19 +57,19 @@ sub new {
 
   $this->{margin_label} = Wx::StaticText->new($this, -1, "Margin:");
   $hbox -> Add($this->{margin_label}, 0, wxALL|wxALIGN_CENTER, 5);
-  $this->{margin} = Wx::TextCtrl->new($this, -1, q{}, wxDefaultPosition, $tcsize);
+  $this->{margin} = Wx::TextCtrl->new($this, -1, q{}, wxDefaultPosition, $tcsize, wxTE_PROCESS_ENTER);
   $hbox -> Add($this->{margin}, 0, wxALL|wxALIGN_CENTER, 5);
 
   $this->{emin_label} = Wx::StaticText->new($this, -1, "Emin:");
   $hbox -> Add($this->{emin_label}, 0, wxALL|wxALIGN_CENTER, 5);
-  $this->{emin} = Wx::TextCtrl->new($this, -1, q{}, wxDefaultPosition, $tcsize);
+  $this->{emin} = Wx::TextCtrl->new($this, -1, q{}, wxDefaultPosition, $tcsize, wxTE_PROCESS_ENTER);
   $hbox -> Add($this->{emin}, 0, wxALL|wxALIGN_CENTER, 5);
   $this->{emin_pluck}   = Wx::BitmapButton -> new($this, -1, $bullseye);
   $hbox -> Add($this->{emin_pluck}, 0, wxALL|wxALIGN_CENTER, 5);
 
   $this->{emax_label} = Wx::StaticText->new($this, -1, "Emax:");
   $hbox -> Add($this->{emax_label}, 0, wxALL|wxALIGN_CENTER, 5);
-  $this->{emax} = Wx::TextCtrl->new($this, -1, q{}, wxDefaultPosition, $tcsize);
+  $this->{emax} = Wx::TextCtrl->new($this, -1, q{}, wxDefaultPosition, $tcsize, wxTE_PROCESS_ENTER);
   $hbox -> Add($this->{emax}, 0, wxALL|wxALIGN_CENTER, 5);
   $this->{emax_pluck}   = Wx::BitmapButton -> new($this, -1, $bullseye);
   $hbox -> Add($this->{emax_pluck}, 0, wxALL|wxALIGN_CENTER, 5);
@@ -97,9 +97,10 @@ sub new {
 
   $this->{beforeafter} = Wx::RadioBox->new($this, -1, q{Drop points}, wxDefaultPosition, wxDefaultSize,
 					   ["before", "after"], 1, wxRA_SPECIFY_ROWS);
-  $this->{etrun} = Wx::TextCtrl->new($this, -1, q{});
+  $this->{etrun} = Wx::TextCtrl->new($this, -1, q{}, wxDefaultPosition, wxDefaultSize, wxTE_PROCESS_ENTER);
   $hbox -> Add($this->{beforeafter}, 0, wxALL|wxALIGN_CENTER, 5);
   $hbox -> Add($this->{etrun},       0, wxALL|wxALIGN_CENTER, 5);
+  EVT_TEXT_ENTER($this, $this->{etrun}, sub{$this->plot_truncate($app->current_data)});
   $this->{etrun_pluck}   = Wx::BitmapButton -> new($this, -1, $bullseye);
   $hbox -> Add($this->{etrun_pluck}, 0, wxALL|wxALIGN_CENTER, 5);
   EVT_BUTTON($this, $this->{etrun_pluck}, sub{OnPluckTruncate(@_, $app)});

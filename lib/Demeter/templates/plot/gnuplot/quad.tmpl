@@ -1,0 +1,105 @@
+{ # -*- ifm -*-
+  # template for quad plot
+  #   {$D->group} returns the ifeffit group name
+  #   {$D->parameter} returns the value of that parameter
+  #   {$P->parameter} returns the value of a Plot parameter
+}
+{
+  $datastyle = ($P->datastyle eq 'solid') ? 'lines' : 'points';
+  $emin = $D->bkg_e0 + $P->emin;
+  $emax = $D->bkg_e0 + $P->emax;
+
+  ## energy quadrant: mu, bkg, preline, postline
+  $emu = $P->tempfile;
+  $D->points(file    => $emu,
+             space   => 'E', 
+             suffix  => 'xmu',
+	     shift   => $D->bkg_eshift,
+	    );
+  $ebkg = $P->tempfile;
+  $D->points(file    => $ebkg,
+             space   => 'E', 
+             suffix  => 'bkg',
+	     shift   => $D->bkg_eshift,
+	    );
+  $epre = $P->tempfile;
+  $D->points(file    => $epre,
+             space   => 'E', 
+             suffix  => 'preline',
+	     shift   => $D->bkg_eshift,
+	    );
+  $epost = $P->tempfile;
+  $D->points(file    => $epost,
+             space   => 'E', 
+             suffix  => 'postline',
+	     shift   => $D->bkg_eshift,
+	    );
+
+  ## k quadrant: k-weighted chi(k)
+  $kylabel = $P->plot_kylabel;
+  $chik = $P->tempfile;
+  $D->points(file    => $chik,
+             space   => 'k', 
+             suffix  => 'chi',
+             weight  => $P->kweight,
+	    );
+
+  ## R quadrant: magnitude and real part chi(R)
+  $rylabel = $P->plot_rylabel;
+  $rmag = $P->tempfile;
+  $D->points(file    => $rmag,
+             space   => 'R', 
+             suffix  => 'chir_mag',
+	    );
+  $rre = $P->tempfile;
+  $D->points(file    => $rre,
+             space   => 'R', 
+             suffix  => 'chir_re',
+	    );
+
+  ## q quadrant: real part chi(q)
+  $chiq = $P->tempfile;
+  $D->points(file    => $chiq,
+             space   => 'q', 
+             suffix  => 'chiq_re',
+	    );
+  q{}
+}
+# {$D->name}: ifeffit group = {$D->group}
+set multiplot layout 2,2
+unset key
+unset label
+
+## energy quadrant
+set title "\{/*1.6 Energy\}"
+set xlabel "\{/*1.4 Energy&\{aa\}(eV)\}"
+set ylabel "\{/*1.4 x\{/Symbol m\}(E)\}"
+#set xrange [ {$emin} : {$emax} ]
+plot '{$ebkg}' using 1:2 with {$datastyle} ls {$P->increm+2},\
+     '{$emu}' using 1:2 with {$datastyle} ls {$P->increm+1},\
+     '{$epre}' using 1:2 with {$datastyle} ls {$P->increm+3},\
+     '{$epost}' using 1:2 with {$datastyle} ls {$P->increm+4}
+
+## k quadrant
+set title "\{/*1.5 k-space\}"
+set xlabel "\{/*1.2 Wavenumber&\{aa\}(\{\305\}^\{-1\})\}"
+set ylabel "\{/*1.2 {$P->plot_kylabel}\}"
+set xrange [ {$P->kmin} : {$P->kmax} ]
+plot '{$chik}' using 1:2 with {$datastyle} ls {$P->increm+1}
+
+## R quadrant
+set title "\{/*1.5 R-space\}"
+set xlabel "\{/*1.2 Radial distance&\{aa\}(\{\305\})\}"
+set ylabel "\{/*1.2 {$P->plot_rylabel}\}"
+set xrange [ {$P->rmin} : {$P->rmax} ]
+plot '{$rmag}' using 1:2 with {$datastyle} ls {$P->increm+1},\
+     '{$rre}' using 1:2 with {$datastyle} ls {$P->increm+2}
+
+## q quadrant
+set title "\{/*1.5 q-space\}"
+set xlabel "\{/*1.2 Wavenumber&\{aa\}(\{\305\}^\{-1\})\}"
+set ylabel "\{/*1.2 {$P->plot_qylabel}\}"
+set xrange [ {$P->qmin} : {$P->qmax} ]
+plot '{$chiq}' using 1:2 with {$datastyle} ls {$P->increm+1}
+
+unset multiplot

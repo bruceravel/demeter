@@ -5,7 +5,7 @@ use warnings;
 
 use Wx qw( :everything );
 use base 'Wx::Panel';
-use Wx::Event qw(EVT_BUTTON);
+use Wx::Event qw(EVT_BUTTON EVT_TEXT_ENTER);
 use Wx::Perl::TextValidator;
 use Demeter::UI::Wx::SpecialCharacters qw(:all);
 
@@ -49,12 +49,12 @@ sub new {
   my $hbox = Wx::BoxSizer->new( wxHORIZONTAL );
 
   $hbox->Add(Wx::StaticText->new($this, -1, 'Integration range'), 0, wxLEFT|wxRIGHT|wxALIGN_CENTER, 5);
-  $this->{xmin} = Wx::TextCtrl->new($this, -1, $this->{Diff}->xmin);
+  $this->{xmin} = Wx::TextCtrl->new($this, -1, $this->{Diff}->xmin, wxDefaultPosition, wxDefaultSize, wxTE_PROCESS_ENTER);
   $hbox->Add($this->{xmin}, 0, wxLEFT|wxRIGHT|wxALIGN_CENTER, 5);
   $this->{xmin_pluck}   = Wx::BitmapButton -> new($this, -1, $bullseye);
   $hbox->Add($this->{xmin_pluck}, 0, wxLEFT|wxRIGHT|wxALIGN_CENTER, 1);
   $hbox->Add(Wx::StaticText->new($this, -1, 'to'), 0, wxLEFT|wxRIGHT|wxALIGN_CENTER, 5);
-  $this->{xmax} = Wx::TextCtrl->new($this, -1, $this->{Diff}->xmax);
+  $this->{xmax} = Wx::TextCtrl->new($this, -1, $this->{Diff}->xmax, wxDefaultPosition, wxDefaultSize, wxTE_PROCESS_ENTER);
   $hbox->Add($this->{xmax}, 0, wxLEFT|wxRIGHT|wxALIGN_CENTER, 5);
   $this->{xmax_pluck}   = Wx::BitmapButton -> new($this, -1, $bullseye);
   $hbox->Add($this->{xmax_pluck}, 0, wxLEFT|wxRIGHT|wxALIGN_CENTER, 1);
@@ -63,6 +63,8 @@ sub new {
   $this->{xmax} -> SetValidator( Wx::Perl::TextValidator->new( qr([-0-9.]) ) );
   EVT_BUTTON($this, $this->{xmin_pluck}, sub{Pluck(@_, $app, 'xmin')});
   EVT_BUTTON($this, $this->{xmax_pluck}, sub{Pluck(@_, $app, 'xmax')});
+  EVT_TEXT_ENTER($this, $this->{xmin},   sub{$this->plot});
+  EVT_TEXT_ENTER($this, $this->{xmax},   sub{$this->plot});
 
 
   $box -> Add($hbox, 0, wxALIGN_CENTER_HORIZONTAL|wxALL, 5);

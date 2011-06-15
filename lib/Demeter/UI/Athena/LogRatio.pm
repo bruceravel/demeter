@@ -6,7 +6,7 @@ use Cwd;
 
 use Wx qw( :everything );
 use base 'Wx::Panel';
-use Wx::Event qw(EVT_BUTTON);
+use Wx::Event qw(EVT_BUTTON EVT_TEXT_ENTER);
 use Wx::Perl::TextValidator;
 
 use Demeter::UI::Wx::SpecialCharacters qw(:all);
@@ -45,14 +45,14 @@ sub new {
   $box            -> Add($fitboxsizer, 0, wxALIGN_CENTER_HORIZONTAL|wxALL, 5);
 
   $fitboxsizer->Add(Wx::StaticText->new($this, -1, q{q-range}), 0, wxALL, 5);
-  $this->{qmin} = Wx::TextCtrl->new($this, -1, 3);
+  $this->{qmin} = Wx::TextCtrl->new($this, -1, 3, wxDefaultPosition, wxDefaultSize, wxTE_PROCESS_ENTER);
   $fitboxsizer->Add($this->{qmin}, 0, wxALL, 5);
   $fitboxsizer->Add(Wx::StaticText->new($this, -1, q{to}), 0, wxALL, 5);
-  $this->{qmax} = Wx::TextCtrl->new($this, -1, 12);
+  $this->{qmax} = Wx::TextCtrl->new($this, -1, 12, wxDefaultPosition, wxDefaultSize, wxTE_PROCESS_ENTER);
   $fitboxsizer->Add($this->{qmax}, 0, wxALL, 5);
   $this->{$_} -> SetValidator( Wx::Perl::TextValidator->new( qr([0-9.]) ) ) foreach (qw(qmin qmax));
   $fitboxsizer->Add(Wx::StaticText->new($this, -1, "2$PI jumps"), 0, wxALL, 5);
-  $this->{twopi} = Wx::SpinCtrl->new($this, -1, 0, wxDefaultPosition, $tcsize, wxSP_ARROW_KEYS, -5, 5);
+  $this->{twopi} = Wx::SpinCtrl->new($this, -1, 0, wxDefaultPosition, $tcsize, wxSP_ARROW_KEYS|wxTE_PROCESS_ENTER, -5, 5);
   $fitboxsizer->Add($this->{twopi}, 0, wxALL, 5);
 
   $this->{fit} = Wx::Button->new($this, -1, 'Fit');
@@ -83,6 +83,9 @@ sub new {
   $box -> Add($this->{save}, 0, wxGROW|wxALL, 2);
   $this->{save}->Enable(0);
 
+  foreach my $x (qw(qmin qmax twopi)) {
+    EVT_TEXT_ENTER($this, $this->{$x}, sub{fit(@_)});
+  };
   EVT_BUTTON($this, $this->{fit},  sub{fit(@_)});
   EVT_BUTTON($this, $this->{lr},   sub{plot(@_, 'even')});
   EVT_BUTTON($this, $this->{pd},   sub{plot(@_, 'odd')});

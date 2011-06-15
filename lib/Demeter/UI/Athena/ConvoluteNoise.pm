@@ -5,7 +5,7 @@ use warnings;
 
 use Wx qw( :everything );
 use base 'Wx::Panel';
-use Wx::Event qw(EVT_BUTTON EVT_CHAR EVT_CHOICE);
+use Wx::Event qw(EVT_BUTTON EVT_CHAR EVT_CHOICE EVT_TEXT_ENTER);
 use Wx::Perl::TextValidator;
 use Scalar::Util qw(looks_like_number);
 
@@ -33,8 +33,8 @@ sub new {
   $this->{group}    = Wx::StaticText->new($this, -1, q{});
   $this->{function} = Wx::Choice->new($this, -1, wxDefaultPosition, wxDefaultSize,
 				      ["Gaussian", 'Lorentzian']);
-  $this->{width}    = Wx::TextCtrl->new($this, -1, 0,  wxDefaultPosition, $tcsize);
-  $this->{noise}    = Wx::TextCtrl->new($this, -1, 0,  wxDefaultPosition, $tcsize);
+  $this->{width}    = Wx::TextCtrl->new($this, -1, 0,  wxDefaultPosition, $tcsize, wxTE_PROCESS_ENTER);
+  $this->{noise}    = Wx::TextCtrl->new($this, -1, 0,  wxDefaultPosition, $tcsize, wxTE_PROCESS_ENTER);
 
   $gbs->Add($this->{group},    Wx::GBPosition->new(0,1));
   $gbs->Add($this->{function}, Wx::GBPosition->new(1,1));
@@ -45,6 +45,8 @@ sub new {
   EVT_CHOICE($this, $this->{function}, sub{ $this->{make}->Enable(0) });
   EVT_CHAR($this->{width}, sub{ $this->{make}->Enable(0); $_[1]->Skip(1) });
   EVT_CHAR($this->{noise}, sub{ $this->{make}->Enable(0); $_[1]->Skip(1) });
+  EVT_TEXT_ENTER($this, $this->{width}, sub{$this->plot($app->current_data)});
+  EVT_TEXT_ENTER($this, $this->{noise}, sub{$this->plot($app->current_data)});
 
   $box -> Add($gbs, 0, wxALIGN_CENTER_HORIZONTAL|wxALL, 5);
 

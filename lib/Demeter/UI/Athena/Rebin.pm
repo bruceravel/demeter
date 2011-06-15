@@ -5,7 +5,7 @@ use warnings;
 
 use Wx qw( :everything );
 use base 'Wx::Panel';
-use Wx::Event qw(EVT_BUTTON EVT_CHOICE);
+use Wx::Event qw(EVT_BUTTON EVT_CHOICE EVT_TEXT_ENTER);
 use Wx::Perl::TextValidator;
 
 use Demeter::UI::Wx::SpecialCharacters qw(:all);
@@ -66,9 +66,10 @@ sub new {
   $this->{abs}   = Wx::StaticText->new($this, -1, q{}, wxDefaultPosition, [60,-1]);
   $this->{edge}   = Wx::StaticText->new($this, -1, q{}, wxDefaultPosition, [60,-1]);
   foreach my $w (qw(emin emax pre xanes exafs)) {
-    $this->{$w}  = Wx::TextCtrl->new($this, -1, $demeter->co->default('rebin', $w), wxDefaultPosition, [120,-1]);
+    $this->{$w}  = Wx::TextCtrl->new($this, -1, $demeter->co->default('rebin', $w), wxDefaultPosition, [120,-1], wxTE_PROCESS_ENTER);
     my $re = ($w eq 'emin') ? qr([-0-9.]) : qr([0-9.]);
     $this->{$w} -> SetValidator( Wx::Perl::TextValidator->new( $re ) );
+    EVT_TEXT_ENTER($this, $this->{$w}, sub{$this->plot($app->current_data)});
   };
   $gbs->Add($this->{abs},   Wx::GBPosition->new(0,2), Wx::GBSpan->new(1,3));
   $gbs->Add($this->{edge},  Wx::GBPosition->new(1,2));

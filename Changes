@@ -12,9 +12,10 @@
   * Fixed several bugs surrounding the bkg_fixstep Data attribute and
     made its behavior in relation to editing the normalization,
     pre-edge, and edge step text entry boxes more sensible
-  * Added wxTE_PROCESS_ENTER style to text entry boxes on the main
-    page and in the plot options area.  This allows replotting upon
-    hitting return with focus in a text box.
+  * Added wxTE_PROCESS_ENTER style to all text entry boxes.  This
+    allows replotting or other actions (or none at all) upon hitting
+    return with focus in a text box.
+  * Rewrote the quad plot
 
 *** Artemis
   * Completely rewrote mechanism for importing old-style Artemis

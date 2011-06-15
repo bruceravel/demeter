@@ -5,7 +5,7 @@ use warnings;
 
 use Wx qw( :everything );
 use base 'Wx::Panel';
-use Wx::Event qw(EVT_BUTTON EVT_RADIOBOX);
+use Wx::Event qw(EVT_BUTTON EVT_RADIOBOX EVT_TEXT_ENTER);
 use Wx::Perl::TextValidator;
 
 use Demeter::UI::Wx::SpecialCharacters qw(:all);
@@ -50,11 +50,14 @@ sub new {
   $this->{group}     = Wx::StaticText->new($this, -1, q{});
   $this->{element}   = Wx::StaticText->new($this, -1, q{});
   $this->{edge}      = Wx::StaticText->new($this, -1, q{});
-  $this->{formula}   = Wx::TextCtrl->new($this, -1, q{},  wxDefaultPosition, [180, -1]);
-  $this->{in}        = Wx::SpinCtrl->new($this, -1, 45,   wxDefaultPosition, $tcsize, wxSP_ARROW_KEYS, 0, 90);
-  $this->{out}       = Wx::SpinCtrl->new($this, -1, 45,   wxDefaultPosition, $tcsize, wxSP_ARROW_KEYS, 0, 90);
-  $this->{thickness} = Wx::TextCtrl->new($this, -1, 1000, wxDefaultPosition, $tcsize);
+  $this->{formula}   = Wx::TextCtrl->new($this, -1, q{},  wxDefaultPosition, [180, -1], wxTE_PROCESS_ENTER);
+  $this->{in}        = Wx::SpinCtrl->new($this, -1, 45,   wxDefaultPosition, $tcsize, wxSP_ARROW_KEYS|wxTE_PROCESS_ENTER, 0, 90);
+  $this->{out}       = Wx::SpinCtrl->new($this, -1, 45,   wxDefaultPosition, $tcsize, wxSP_ARROW_KEYS|wxTE_PROCESS_ENTER, 0, 90);
+  $this->{thickness} = Wx::TextCtrl->new($this, -1, 1000, wxDefaultPosition, $tcsize, wxTE_PROCESS_ENTER);
 
+  foreach my $x (qw(formula in out thickness)) {
+    EVT_TEXT_ENTER($this, $this->{$x}, sub{$this->plot($app->current_data)});
+  };
   $this->{thickness} -> SetValidator( Wx::Perl::TextValidator->new( qr([0-9.]) ) );
   $this->{thickness_label}->Enable(0);
   $this->{thickness}->Enable(0);

@@ -4,7 +4,7 @@ use warnings;
 
 use Wx qw( :everything );
 use base 'Wx::Panel';
-use Wx::Event qw(EVT_BUTTON EVT_CHECKBOX EVT_COMBOBOX EVT_RADIOBOX EVT_LIST_ITEM_SELECTED);
+use Wx::Event qw(EVT_BUTTON EVT_CHECKBOX EVT_COMBOBOX EVT_RADIOBOX EVT_LIST_ITEM_SELECTED EVT_TEXT_ENTER);
 use Wx::Perl::TextValidator;
 
 use Demeter::UI::Wx::SpecialCharacters qw(:all);
@@ -34,10 +34,10 @@ sub new {
   my $hbox = Wx::BoxSizer->new( wxHORIZONTAL );
   $box->Add($hbox, 0, wxGROW|wxLEFT|wxRIGHT, 5);
   $hbox->Add(Wx::StaticText->new($this, -1, 'Fit range:'), 0, wxRIGHT|wxALIGN_CENTRE, 5);
-  $this->{xmin} = Wx::TextCtrl->new($this, -1, $this->{emin}, wxDefaultPosition, $tcsize);
+  $this->{xmin} = Wx::TextCtrl->new($this, -1, $this->{emin}, wxDefaultPosition, $tcsize, wxTE_PROCESS_ENTER);
   $hbox->Add($this->{xmin}, 0, wxLEFT|wxRIGHT|wxALIGN_CENTRE, 5);
   $hbox->Add(Wx::StaticText->new($this, -1, 'to'), 0, wxRIGHT|wxALIGN_CENTRE, 5);
-  $this->{xmax} = Wx::TextCtrl->new($this, -1, $this->{emax}, wxDefaultPosition, $tcsize);
+  $this->{xmax} = Wx::TextCtrl->new($this, -1, $this->{emax}, wxDefaultPosition, $tcsize, wxTE_PROCESS_ENTER);
   $hbox->Add($this->{xmax}, 0, wxLEFT|wxRIGHT|wxALIGN_CENTRE, 5);
   $this->{space} = Wx::RadioBox->new($this, -1, 'Fitting space', wxDefaultPosition, wxDefaultSize,
 				     ["norm $MU(E)", "deriv $MU(E)", "$CHI(k)"],
@@ -47,6 +47,8 @@ sub new {
   EVT_RADIOBOX($this, $this->{space}, sub{OnSpace(@_)});
   $this->{xmin} -> SetValidator( Wx::Perl::TextValidator->new( qr([-0-9.]) ) );
   $this->{xmax} -> SetValidator( Wx::Perl::TextValidator->new( qr([-0-9.]) ) );
+  EVT_TEXT_ENTER($this, $this->{xmin}, sub{plot(@_)});
+  EVT_TEXT_ENTER($this, $this->{xmax}, sub{plot(@_)});
 
   $this->{notebook} = Wx::Notebook->new($this, -1, wxDefaultPosition, wxDefaultSize, wxNB_TOP);
   $box -> Add($this->{notebook}, 1, wxGROW|wxALL, 2);
@@ -58,6 +60,7 @@ sub new {
   $this->{notebook} ->AddPage($fits,   'Fit results',   0);
   $this->{notebook} ->AddPage($combi,  'Combinatorics', 0);
   $this->{notebook} ->AddPage($marked, 'Marked',        0);
+
 
   $this->{document} = Wx::Button->new($this, -1, 'Document section: linear combination fitting');
   $box -> Add($this->{document}, 0, wxGROW|wxALL, 2);
@@ -116,7 +119,7 @@ sub main_page {
   my $noisebox = Wx::BoxSizer->new( wxHORIZONTAL );
   $optionsboxsizer->Add($noisebox, 0, wxGROW|wxALL, 1);
   $noisebox->Add(Wx::StaticText->new($panel, -1, 'Add noise'), 0, wxRIGHT|wxALIGN_CENTRE, 5);
-  $this->{noise} = Wx::TextCtrl->new($panel, -1, 0, wxDefaultPosition, $tcsize);
+  $this->{noise} = Wx::TextCtrl->new($panel, -1, 0, wxDefaultPosition, $tcsize, wxTE_PROCESS_ENTER);
   $this->{noise} -> SetValidator( Wx::Perl::TextValidator->new( qr([0-9.]) ) );
   $noisebox->Add($this->{noise}, 0, wxLEFT|wxRIGHT|wxALIGN_CENTRE, 5);
   $noisebox->Add(Wx::StaticText->new($panel, -1, 'to data'), 0, wxRIGHT|wxALIGN_CENTRE, 5);
@@ -135,6 +138,8 @@ sub main_page {
   EVT_CHECKBOX($this, $this->{one_e0},     sub{$this->{LCF}->one_e0   ($this->{one_e0}          ->GetValue)});
   EVT_BUTTON($this, $this->{usemarked},    sub{use_marked(@_)});
   EVT_BUTTON($this, $this->{reset},        sub{Reset(@_)});
+  EVT_TEXT_ENTER($this, $this->{noise},    sub{1;});
+
 
   my $actionsbox       = Wx::StaticBox->new($panel, -1, 'Actions', wxDefaultPosition, wxDefaultSize);
   my $actionsboxsizer  = Wx::StaticBoxSizer->new( $actionsbox, wxVERTICAL );
@@ -255,8 +260,8 @@ sub add_standard {
   my ($this, $panel, $gbs, $i) = @_;
   my $box = Wx::BoxSizer->new( wxHORIZONTAL );
   $this->{'standard'.$i} = Demeter::UI::Athena::GroupList -> new($panel, $::app, 0, 0);
-  $this->{'weight'.$i}   = Wx::TextCtrl -> new($panel, -1, 0, wxDefaultPosition, $tcsize);
-  $this->{'e0'.$i}       = Wx::TextCtrl -> new($panel, -1, 0, wxDefaultPosition, $tcsize);
+  $this->{'weight'.$i}   = Wx::TextCtrl -> new($panel, -1, 0, wxDefaultPosition, $tcsize, wxTE_PROCESS_ENTER);
+  $this->{'e0'.$i}       = Wx::TextCtrl -> new($panel, -1, 0, wxDefaultPosition, $tcsize, wxTE_PROCESS_ENTER);
   $this->{'fite0'.$i}    = Wx::CheckBox -> new($panel, -1, q{ });
   $this->{'require'.$i}  = Wx::CheckBox -> new($panel, -1, q{ });
   $gbs -> Add(Wx::StaticText->new($panel, -1, sprintf("%2d: ",$i+1)), Wx::GBPosition->new($i,0));
@@ -266,6 +271,8 @@ sub add_standard {
   $gbs -> Add($this->{'fite0'.$i},    Wx::GBPosition->new($i,4));
   $gbs -> Add($this->{'require'.$i},  Wx::GBPosition->new($i,5));
   $this->{'standard'.$i}->SetSelection(0);
+  EVT_TEXT_ENTER($this, $this->{'weight'.$i}, sub{1});
+  EVT_TEXT_ENTER($this, $this->{'e0'.$i}, sub{1});
   EVT_COMBOBOX($this, $this->{'standard'.$i}, sub{OnSelect(@_)});
   $this->{'weight'.$i} -> SetValidator( Wx::Perl::TextValidator->new( qr([0-9.]) ) );
   $this->{'e0'.$i}     -> SetValidator( Wx::Perl::TextValidator->new( qr([-0-9.]) ) );
