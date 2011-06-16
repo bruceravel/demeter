@@ -74,9 +74,9 @@ override alldone => sub {
   unlink $nnnn if (-e $nnnn);
   $nnnn = File::Spec->catfile($self->folder, $self->tsstring);
   unlink $nnnn if (-e $nnnn);
-  $self->dspath->DEMOLISH;
-  $self->tspath->DEMOLISH;
-  $self->vpath ->DEMOLISH;
+  $self->dspath->DEMOLISH if (ref($self->dspath) =~ m{Demeter});
+  $self->tspath->DEMOLISH if (ref($self->tspath) =~ m{Demeter});
+  $self->vpath ->DEMOLISH if (ref($self->vpath)  =~ m{Demeter});
   $self->remove;
   return $self;
 };

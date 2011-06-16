@@ -29,6 +29,7 @@ sub plot {
             : ($space eq 'r123')  ? $self->_update('bft')
             : ($space eq 'r')     ? $self->_update('bft')
             : ($space eq 'rmr')   ? $self->_update('bft')
+            : ($space eq 'rk')    ? $self->_update('bft')
 	    : ($space eq 'q')     ? $self->_update('all')
 	    : ($space eq 'kq')    ? $self->_update('all')
 	    : ($space eq 'kqfit') ? $self->_update('all')
@@ -55,6 +56,12 @@ sub plot {
     };
     (lc($space) eq 'rmr' ) and do {
       $self -> plotRmr;
+      $pf   -> increment;
+      return $self;
+      last SWITCH;
+    };
+    (lc($space) eq 'rk' ) and do {
+      $self -> rkplot;
       $pf   -> increment;
       return $self;
       last SWITCH;
@@ -683,11 +690,18 @@ sub quadplot {
     carp(sprintf("Sorry, the quadplot is not possible with the %s backend.", $self->mo->template_plot));
     return $self;
   };
+  croak(ref $self . " objects are not plottable") if not $self->plottable;
+  if ((ref($self) =~ m{Data}) and ($self->datatype eq 'xanes')) {
+    croak("XANES data and non Data objects are not plottable as Rk") if not $self->mo->silently_ignore_unplottable;
+  };
+
+  $self->_update('all');
+
   my $save = $self->co->default("plot", "showcopyright");
   $self->co->set_default("plot", "showcopyright", 0);
   $self -> po -> start_plot;
-  my $string = $self->template("plot", "quadstart");
-  $self -> dispose($string, 'plotting');
+#  my $string = $self->template("plot", "quadstart");
+#  $self -> dispose($string, 'plotting');
 
   my @e = qw(e_bkg e_pre e_post e_markers e_i0 e_signal);
   my @zeros = map {0} @e;
@@ -696,27 +710,59 @@ sub quadplot {
   #$self -> po -> e_markers(0);
   #$self -> po -> e_bkg(1);
 
-  $self -> po -> title('energy');
-  $self -> plot('e');
-
-  $self -> po -> title('k space');
-  $self -> po -> New(1);
-  $self -> plot('k');
-
-  $self -> po -> title('R space');
-  $self -> po -> New(1);
-  $self -> plot('r');
-
-  $self -> po -> title('q space');
-  $self -> po -> space('q');
-  $self -> po -> New(1);
-  $self -> plot;
-
-  $string = $self->template("plot", "quadend");
+  my $string = $self->template("plot", "quad");
   $self -> dispose($string, 'plotting');
+
+
+  # $self -> po -> title('energy');
+  # $self -> plot('e');
+
+  # $self -> po -> title('k space');
+  # $self -> po -> New(1);
+  # $self -> plot('k');
+
+  # $self -> po -> title('R space');
+  # $self -> po -> New(1);
+  # $self -> plot('r');
+
+  # $self -> po -> title('q space');
+  # $self -> po -> space('q');
+  # $self -> po -> New(1);
+  # $self -> plot;
+
+#  $string = $self->template("plot", "quadend");
+#  $self -> dispose($string, 'plotting');
 
   $self -> po -> set(zip(@e, @vals));
   $self->co->set_default("plot", "showcopyright", $save);
+  return $self;
+};
+
+sub rkplot {
+  my ($self) = @_;
+  if ($self->mo->template_plot ne 'gnuplot') {
+    carp(sprintf("Sorry, the Rk plot is not possible with the %s backend.", $self->mo->template_plot));
+    return $self;
+  };
+  croak(ref $self . " objects are not plottable") if not $self->plottable;
+  if ((ref($self) =~ m{Data}) and ($self->datatype eq 'xanes')) {
+    croak("XANES data and non Data objects are not plottable as Rk") if not $self->mo->silently_ignore_unplottable;
+  };
+
+  my $rpl = $self->po->r_pl;
+  $self->po->r_pl('m');
+
+  $self->_update('bft');
+  $self->part_fft('fit');
+
+  $self -> po -> start_plot;
+
+  my $string = $self->template("plot", "rkr");
+  $string   .= $self->template("plot", "rkk");
+  $self -> dispose($string, 'plotting');
+
+  $self->po->r_pl($rpl);
+  return $self;
 };
 
 
@@ -824,6 +870,13 @@ Make the plot of chi(R) in distance.
 
 Make a stacked plot of the magnitude and real part of chi(R).  This is
 a particularly nice plot to make after a fit.
+
+=item Rk
+
+Make a multiplot with chi(k) on the top and an Rmr plot on the bottom.
+This type of plot should only be made after a fit is performed as the
+template B<will> attempt to plot the fit part of the data.  This plot
+type benefits by a taller plot window than Gnuplot's default.
 
 =item r123
 

@@ -78,13 +78,15 @@ sub read_folder {
     #return $self;
   } else {
     $self->phasebin(File::Spec->catfile($folder, 'phase.bin'));
-    if (-d $self->workspace) {
-      copy($self->phasebin, $self->workspace);
-    } elsif ($self->workspace) {
-      mkpath($self->workspace);
-      copy($self->phasebin, $self->workspace);
-    } else {
-      $self->check_workspace;
+    if ($self->folder ne $self->workspace) {
+      if (-d $self->workspace) {
+	copy($self->phasebin, $self->workspace);
+      } elsif ($self->workspace) {
+	mkpath($self->workspace);
+	copy($self->phasebin, $self->workspace);
+      } else {
+	$self->check_workspace;
+      };
     };
   };
   if (none {$_ eq 'files.dat'} @files) {

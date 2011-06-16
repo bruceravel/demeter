@@ -22,7 +22,7 @@ use Wx qw( :everything);
 use base qw(Wx::Frame);
 use Wx::Event qw(EVT_MENU EVT_CLOSE EVT_TOOL_ENTER EVT_CHECKBOX EVT_CHOICE
 		 EVT_BUTTON EVT_ENTER_WINDOW EVT_LEAVE_WINDOW
-		 EVT_HYPERLINK);
+		 EVT_HYPERLINK EVT_TEXT_ENTER);
 use Wx::DND;
 use Wx::Perl::TextValidator;
 
@@ -85,6 +85,7 @@ Readonly my $PATH_ADD		=> Wx::NewId();
 Readonly my $PATH_CLONE		=> Wx::NewId();
 Readonly my $PATH_YAML		=> Wx::NewId();
 Readonly my $PATH_TYPE		=> Wx::NewId();
+Readonly my $PATH_4PARAM	=> Wx::NewId();
 
 Readonly my $PATH_EXPORT_FEFF	=> Wx::NewId();
 Readonly my $PATH_EXPORT_DATA	=> Wx::NewId();
@@ -189,9 +190,10 @@ sub new {
   $this->{name}->SetFont( Wx::Font->new( 12, wxDEFAULT, wxNORMAL, wxBOLD, 0, "" ) );
   $namebox -> Add($this->{name}, 1, wxLEFT|wxRIGHT|wxTOP, 5);
   $namebox -> Add(Wx::StaticText->new($leftpane, -1, "CV"), 0, wxLEFT|wxRIGHT|wxTOP, 5);
-  $this->{cv} = Wx::TextCtrl->new($leftpane, -1, $nset, wxDefaultPosition, [60,-1],);
+  $this->{cv} = Wx::TextCtrl->new($leftpane, -1, $nset, wxDefaultPosition, [60,-1], wxTE_PROCESS_ENTER);
   $namebox -> Add($this->{cv}, 0, wxLEFT|wxRIGHT|wxTOP, 3);
   EVT_BUTTON($this, $this->{plotgrab}, sub{transfer(@_)});
+  EVT_TEXT_ENTER($this, $this->{cv}, sub{1});
 
   $this->mouseover("plotgrab", "Transfer this data set to the plotting list.");
   $this->mouseover("cv",       "The characteristic value for this data set, which is used in certain advanced modeling features.  (The CV must be a number.)");
@@ -209,21 +211,24 @@ sub new {
   my $buttonboxsizer = Wx::StaticBoxSizer->new( $buttonbox, wxHORIZONTAL );
   $left -> Add($buttonboxsizer, 0, wxGROW|wxALL, 5);
   $this->{plot_rmr}  = Wx::Button->new($leftpane, -1, "&Rm".$demeter->co->default("plot", "rmx"),  wxDefaultPosition, [70,-1]);
+  $this->{plot_rk}   = Wx::Button->new($leftpane, -1, "Rk",    wxDefaultPosition, [70,-1]);
   $this->{plot_k123} = Wx::Button->new($leftpane, -1, "&k123", wxDefaultPosition, [70,-1]);
   $this->{plot_r123} = Wx::Button->new($leftpane, -1, "R&123", wxDefaultPosition, [70,-1]);
   $this->{plot_kq}   = Wx::Button->new($leftpane, -1, "k&q",   wxDefaultPosition, [70,-1]);
-  foreach my $b (qw(plot_k123 plot_r123 plot_rmr plot_kq)) {
+  foreach my $b (qw(plot_k123 plot_r123 plot_rmr plot_rk plot_kq)) {
     $buttonboxsizer -> Add($this->{$b}, 1, wxGROW|wxALL, 2);
     $this->{$b} -> SetForegroundColour(Wx::Colour->new("#000000"));
     $this->{$b} -> SetBackgroundColour(Wx::Colour->new($Demeter::UI::Artemis::demeter->co->default("happiness", "average_color")));
     $this->{$b} -> SetFont(Wx::Font->new( 10, wxDEFAULT, wxNORMAL, wxNORMAL, 0, "" ) );
   };
   EVT_BUTTON($this, $this->{plot_rmr},  sub{plot(@_, 'rmr')});
+  EVT_BUTTON($this, $this->{plot_rk},   sub{plot(@_, 'rk')});
   EVT_BUTTON($this, $this->{plot_k123}, sub{plot(@_, 'k123')});
   EVT_BUTTON($this, $this->{plot_r123}, sub{plot(@_, 'r123')});
   EVT_BUTTON($this, $this->{plot_kq},   sub{plot(@_, 'kqfit')});
 
   $this->mouseover("plot_rmr",  "Plot this data set as |$CHI(R)| and Re[$CHI(R)].");
+  $this->mouseover("plot_rk",   "Plot this data set as a stack of $CHI(k) with |$CHI(R)| and Re[$CHI(R)].");
   $this->mouseover("plot_k123", "Plot this data set as $CHI(k) with all three k-weights and scaled to the same size.");
   $this->mouseover("plot_r123", "Plot this data set as $CHI(R) with all three k-weights and scaled to the same size.");
   $this->mouseover("plot_kq",   "Plot this data set as both $CHI(k) and Re[$CHI(q)].");
@@ -248,37 +253,37 @@ sub new {
 
   my $label     = Wx::StaticText->new($leftpane, -1, "kmin");
   $this->{kmin} = Wx::TextCtrl  ->new($leftpane, -1, $demeter->co->default("fft", "kmin"),
-				      wxDefaultPosition, [50,-1]);
+				      wxDefaultPosition, [50,-1], wxTE_PROCESS_ENTER);
   $gbs     -> Add($label,      Wx::GBPosition->new(0,1));
   $gbs     -> Add($this->{kmin}, Wx::GBPosition->new(0,2));
 
   $label        = Wx::StaticText->new($leftpane, -1, "kmax");
   $this->{kmax} = Wx::TextCtrl  ->new($leftpane, -1, $demeter->co->default("fft", "kmax"),
-				      wxDefaultPosition, [50,-1]);
+				      wxDefaultPosition, [50,-1], wxTE_PROCESS_ENTER);
   $gbs     -> Add($label,      Wx::GBPosition->new(0,3));
   $gbs     -> Add($this->{kmax}, Wx::GBPosition->new(0,4));
 
   $label      = Wx::StaticText->new($leftpane, -1, "dk");
   $this->{dk} = Wx::TextCtrl  ->new($leftpane, -1, $demeter->co->default("fft", "dk"),
-				      wxDefaultPosition, [50,-1]);
+				      wxDefaultPosition, [50,-1], wxTE_PROCESS_ENTER);
   $gbs     -> Add($label,      Wx::GBPosition->new(0,5));
   $gbs     -> Add($this->{dk}, Wx::GBPosition->new(0,6));
 
   $label        = Wx::StaticText->new($leftpane, -1, "rmin");
   $this->{rmin} = Wx::TextCtrl  ->new($leftpane, -1, $demeter->co->default("bft", "rmin"),
-				      wxDefaultPosition, [50,-1]);
+				      wxDefaultPosition, [50,-1], wxTE_PROCESS_ENTER);
   $gbs     -> Add($label,        Wx::GBPosition->new(1,1));
   $gbs     -> Add($this->{rmin}, Wx::GBPosition->new(1,2));
 
   $label        = Wx::StaticText->new($leftpane, -1, "rmax");
   $this->{rmax} = Wx::TextCtrl  ->new($leftpane, -1, $demeter->co->default("bft", "rmax"),
-				      wxDefaultPosition, [50,-1]);
+				      wxDefaultPosition, [50,-1], wxTE_PROCESS_ENTER);
   $gbs     -> Add($label,        Wx::GBPosition->new(1,3));
   $gbs     -> Add($this->{rmax}, Wx::GBPosition->new(1,4));
 
   $label      = Wx::StaticText->new($leftpane, -1, "dr");
   $this->{dr} = Wx::TextCtrl  ->new($leftpane, -1, $demeter->co->default("bft", "dr"),
-				    wxDefaultPosition, [50,-1]);
+				    wxDefaultPosition, [50,-1], wxTE_PROCESS_ENTER);
   $gbs     -> Add($label,      Wx::GBPosition->new(1,5));
   $gbs     -> Add($this->{dr}, Wx::GBPosition->new(1,6));
 
@@ -297,6 +302,14 @@ sub new {
   $this->mouseover("rmax", "The upper bound in R-space for the fit and the backwards Fourier transform.");
   $this->mouseover("dr",   "The width of the window sill in R-space for the backwards Fourier transform.");
 
+  foreach my $x (qw(kmin kmax dk rmin rmax dr)) {
+    EVT_TEXT_ENTER($this, $this->{$x},
+		   sub{
+		     $this->fetch_parameters;
+		     my $text = sprintf("The number of independent points in this data set is %.2f", $this->{data}->nidp);
+		     $this->status($text);
+		   });
+  };
 
   $ftboxsizer -> Add($gbs, 0, wxALL, 5);
 
@@ -327,7 +340,7 @@ sub new {
   $this->{k2}   = Wx::CheckBox->new($leftpane, -1, "2",     wxDefaultPosition, wxDefaultSize);
   $this->{k3}   = Wx::CheckBox->new($leftpane, -1, "3",     wxDefaultPosition, wxDefaultSize);
   $this->{karb} = Wx::CheckBox->new($leftpane, -1, "other", wxDefaultPosition, wxDefaultSize);
-  $this->{karb_value} = Wx::TextCtrl->new($leftpane, -1, $demeter->co->default('fit', 'karb_value'), wxDefaultPosition, wxDefaultSize);
+  $this->{karb_value} = Wx::TextCtrl->new($leftpane, -1, $demeter->co->default('fit', 'karb_value'), wxDefaultPosition, wxDefaultSize, wxTE_PROCESS_ENTER);
   $kwboxsizer -> Add($this->{k1}, 1, wxLEFT|wxRIGHT, 5);
   $kwboxsizer -> Add($this->{k2}, 1, wxLEFT|wxRIGHT, 5);
   $kwboxsizer -> Add($this->{k3}, 1, wxLEFT|wxRIGHT, 5);
@@ -344,6 +357,8 @@ sub new {
   $this->mouseover("k3", "Use a k-weight of 3 when evaluating the fit.  You may choose any or all k-weights for fitting.");
   $this->mouseover("karb", "Use the supplied value of k-weight when evaluating the fit.  You may choose any or all k-weights for fitting.");
   $this->mouseover("karb_value", "The user-supplied value of k-weight for use in the fit.  You may choose any or all k-weights for fitting.");
+
+  EVT_TEXT_ENTER($this, $this->{karb_value}, sub{1});
 
   my $otherbox      = Wx::StaticBox->new($leftpane, -1, 'Other parameters ', wxDefaultPosition, wxDefaultSize);
   my $otherboxsizer = Wx::StaticBoxSizer->new( $otherbox, wxVERTICAL );
@@ -372,7 +387,7 @@ sub new {
   $otherboxsizer -> Add($extrabox, 0, wxALL|wxGROW|wxALIGN_CENTER_HORIZONTAL, 0);
 
   $extrabox -> Add(Wx::StaticText->new($leftpane, -1, "$EPSILON(k)"), 0, wxALL, 5);
-  $this->{epsilon} = Wx::TextCtrl->new($leftpane, -1, 0, wxDefaultPosition, [50,-1]);
+  $this->{epsilon} = Wx::TextCtrl->new($leftpane, -1, 0, wxDefaultPosition, [50,-1], wxTE_PROCESS_ENTER);
   $extrabox  -> Add($this->{epsilon}, 0, wxALL, 2);
   $extrabox  -> Add(Wx::StaticText->new($leftpane, -1, q{}), 1, wxALL, 0);
   $this->{pcplot}  = Wx::CheckBox->new($leftpane, -1, "Plot with phase correction", wxDefaultPosition, wxDefaultSize);
@@ -389,6 +404,7 @@ sub new {
 		 }
 	       });
 
+  EVT_TEXT_ENTER($this, $this->{epsilon}, sub{1});
   $this->{epsilon} -> SetValidator( Wx::Perl::TextValidator->new( qr([0-9.]) ) );
   $this->mouseover("epsilon", "A user specified value for the measurement uncertainty.  A value of 0 means to let Ifeffit determine the uncertainty.");
   $this->mouseover("pcplot",  "Check here to make plots using phase corrected Fourier transforms.  Note that the fit is NOT made using phase corrected transforms.");
@@ -443,7 +459,7 @@ sub initial_page_panel {
 
   my $vv = Wx::BoxSizer->new( wxVERTICAL );
 
-  my $dndtext = Wx::StaticText    -> new($panel, -1, "Drag paths from a Feff interpretation list and drop them in this space to add paths to this data set", wxDefaultPosition, [-1,-1]);
+  my $dndtext = Wx::StaticText    -> new($panel, -1, "Drag paths from a Feff interpretation list and drop them in this space to add paths to this data set", wxDefaultPosition, [280,-1]);
   $dndtext   -> Wrap(200);
   my $atoms   = Wx::HyperlinkCtrl -> new($panel, -1, 'Import crystal data or a Feff calculation', q{}, wxDefaultPosition, wxDefaultSize, wxNO_BORDER );
   my $qfs     = Wx::HyperlinkCtrl -> new($panel, -1, 'Start a quick first shell fit',             q{}, wxDefaultPosition, wxDefaultSize, wxNO_BORDER );
@@ -472,7 +488,7 @@ sub initial_page_panel {
   ##$vv -> Add(Wx::StaticText -> new($panel, -1, "\tor"), 0, wxALL, 10);
   ##$vv -> Add($feff,                                     0, wxALL, 5 );
 
-  $panel -> SetSizer($vv);
+  $panel -> SetSizerAndFit($vv);
   return $panel;
 };
 
@@ -621,11 +637,11 @@ sub make_menubar {
   $self->{pathsmenu}->Append($PATH_SHOW,   "Show displayed path",              "Evaluate and show the path parameters for the path currently on display", wxITEM_NORMAL );
   $self->{pathsmenu}->AppendSeparator;
   $self->{pathsmenu}->AppendSubMenu($save_menu, "Save displayed path in ...", "Save a column data file containing only the displayed path." );
-  $self->{pathsmenu}->Append($PATH_CLONE, "Clone displayed path", "Make a copy of the currently displayed path", wxITEM_NORMAL );
+  $self->{pathsmenu}->Append($PATH_CLONE, "Clone displayed path",         "Make a copy of the currently displayed path", wxITEM_NORMAL );
   $self->{pathsmenu}->AppendSeparator;
-  $self->{pathsmenu}->Append($PATH_ADD,    "Add path parameter",     "Add path parameter to many paths", wxITEM_NORMAL );
+  $self->{pathsmenu}->Append($PATH_ADD,    "Add path parameter",          "Add path parameter to many paths", wxITEM_NORMAL );
   $self->{pathsmenu}->AppendSubMenu($export_menu, "Export all path parameters to ...", "Export the path parameters from the displayed path to other paths in this fitting model.");
-  #  $self->{pathsmenu}->AppendSubMenu($histo_menu,  "Make a histogram from ...", "Generate a histogram using the currently displayed path");
+  $self->{pathsmenu}->Append($PATH_4PARAM, "Quick 4 parameter fit",       "Make a quick-n-dirty, simple 4 parameter fit with guess parameters amp, enot, delr, and ss", wxITEM_NORMAL );
   $self->{pathsmenu}->AppendSeparator;
   $self->{pathsmenu}->Append($DISCARD_THIS, "Discard displayed path",     "Discard the path currently on display", wxITEM_NORMAL );
   #  $self->{pathsmenu}->AppendSeparator;
@@ -825,6 +841,7 @@ sub plot {
   $self->{data}->po->start_plot;
   $self->{data}->plot($how);
   my $text = ($how eq 'rmr')   ? "as the magnitude and real part of chi(R)"
+           : ($how eq 'rk')    ? "as a stacked plot with chi(k) + the magnitude and real part of chi(R)"
            : ($how eq 'r123')  ? "in R with three k-weights"
            : ($how eq 'k123')  ? "in k with three k-weights"
            : ($how eq 'kqfit') ? "in k- and q-space"
@@ -943,6 +960,11 @@ sub OnMenuClick {
     ($id == $PATH_TRANSFER) and do {
       my $pathpage = $datapage->{pathlist}->GetPage($datapage->{pathlist}->GetSelection);
       $pathpage->transfer;
+      last SWITCH;
+    };
+
+    ($id == $PATH_4PARAM) and do {
+      $datapage -> fourparam;
       last SWITCH;
     };
 
@@ -1900,6 +1922,35 @@ my @element_list = qw(h he li be b c n o f ne na mg al si p s cl ar k ca
 		      th pa u np pu);
 my $element_regexp = Regexp::Assemble->new()->add(@element_list)->re;
 
+sub fourparam {
+  my ($datapage) = @_;
+  my $count = 0;
+  foreach my $i (0 .. $datapage->{pathlist}->GetPageCount-1) {
+    my $path = $datapage->{pathlist}->GetPage($i)->{path};
+    next if not defined($path);
+    $path->set(s02=>'amp', e0=>'enot', delr=>'delr', sigma2=>'ss');
+    $datapage->{pathlist}->GetPage($i)->{pp_s02}   ->SetValue('amp');
+    $datapage->{pathlist}->GetPage($i)->{pp_e0}    ->SetValue('enot');
+    $datapage->{pathlist}->GetPage($i)->{pp_delr}  ->SetValue('delr');
+    $datapage->{pathlist}->GetPage($i)->{pp_sigma2}->SetValue('ss');
+    ++$count;
+  };
+  if (not $count) {
+    $datapage->status("Skipping quick 4-parameter fit -- no paths have been imported yet.");
+    return;
+  };
+  my $gds = Demeter::GDS->new(gds=>'guess', name=>'amp',  mathexp=>1);
+  $Demeter::UI::Artemis::frames{GDS}->put_gds($gds);
+  $gds    = Demeter::GDS->new(gds=>'guess', name=>'enot', mathexp=>0);
+  $Demeter::UI::Artemis::frames{GDS}->put_gds($gds);
+  $gds    = Demeter::GDS->new(gds=>'guess', name=>'delr', mathexp=>0);
+  $Demeter::UI::Artemis::frames{GDS}->put_gds($gds);
+  $gds    = Demeter::GDS->new(gds=>'guess', name=>'ss',   mathexp=>0.003);
+  $Demeter::UI::Artemis::frames{GDS}->put_gds($gds);
+  autosave();
+  $datapage->status("Made a quick 4-parameter fit by defining amp, enot, delr, and ss.");
+};
+
 sub quickfs {
   my ($datapage) = @_;
 
@@ -2036,7 +2087,8 @@ sub OnData {
   my ($this, $x, $y, $def) = @_;
   $this->GetData;		# this line is what transfers the data from the Source to the Target
   my $book  = $this->{BOOK};
-  $book->DeletePage(0) if ($book->GetPage(0) =~ m{Panel});
+  my $first = ($book->GetPage(0) =~ m{Panel});
+  $book->DeletePage(0) if $first;
   my $spref = $this->{DATA}->{Data};
   my $is_sspath = ($spref->[0] eq 'SSPath') ? 1 : 0;
   if ($spref->[0] eq 'SSPath') {
@@ -2080,6 +2132,7 @@ sub OnData {
 					data   => $this->{PARENT}->{data},
 					sp     => $sp,
 					degen  => $sp->n,
+					n      => $sp->n,
 				       );
       my $label = $thispath->label;
       my $page = Demeter::UI::Artemis::Path->new($book, $thispath, $this->{PARENT});

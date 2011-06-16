@@ -75,6 +75,39 @@ beyond basic,  <span class=program>ATHENA</span>-level functionality.
 </p>
 
 <p>
+<table>
+<tr>
+<td>
+<p>
+</p>
+
+<p>
+This is a rough flow diagram for  <span class=program>FEFF6</span>.  The configuration of
+atoms in the <span class=file>feff.inp</span> file is used to
+compute the potentials in the <em>potph</em>
+part of  <span class=program>FEFF6</span> and to find all possible scattering geometries
+with the cluster in the <em>pathfinder</em> part.
+The output files from those two parts, 
+<span class=file>phase.bin</span> and
+<span class=file>paths.dat</span>, are used by
+<em>genfmt</em> to compute the
+<span class=file>feffNNNN.dat</span> files, each of which contains
+the contribution to the EXAFS from an individual scattering geometry.
+The various scattering contributions are then summed by
+<em>ff2chi</em> to make the theoretical  &chi;(k)   .
+</p>
+</p>
+
+<p>
+</td>
+<td width=588>
+<a href="../../images/feff6.png" target=_blank><img border=0 src="../../images/feff6.png" alt="feff6.png" width=100%></a>
+</td>
+</tr>
+</table>
+</p>
+
+<p>
 When run outside of  <span class=program>DEMETER</span>,  <span class=program>FEFF6</span> is usually treated as a
 single program that starts by reading an input file and ends by
 writing out <span class=file>feffNNNN.dat</span> files containing
@@ -107,48 +140,152 @@ Sum the contributions from the scattering paths into a calculated
 </li>
 </ol>
 
+
+
 <p>
-It is actually possibly to run each of these steps independently of
-the others by using the <tt>CONTROL</tt> keyword in
-the <span class=file>feff.inp</span> file.  That keyword takes
-four arguments which turn on and off the potph, pathfinder, genfmt,
-and ff2chi parts of  <span class=program>FEFF</span>.  Thus it is relatively easy to break 
- <span class=program>FEFF</span> down into its constituent parts, thus gaining fine-grained
-control over how  <span class=program>FEFF</span> behaves.
+
+In  <span class=program>IFEFFIT</span> and in the older version of  <span class=program>ARTEMIS</span>, we simply
+drop <em>ff2chi</em>.   <span class=program>IFEFFIT</span> is a
+high-functionality replacement for <em>ff2chi</em>.
+It takes all the contributions computed by the  <span class=program>FEFF</span> calculation
+and adds them up with parameterization for the path parameters.
 </p>
 
 <p>
- <span class=program>DEMETER</span> exploits this fine grained control.  The potph part of
- <span class=program>FEFF</span> is run normally.   <span class=program>FEFF</span>'s pathfinder is not used by 
- <span class=program>DEMETER</span>, as discussed in
-<a href="pathfinder.html">a later section</a>.
+That was the only part of  <span class=program>FEFF6</span> that was unused in old 
+ <span class=program>ARTEMIS</span>.  When you imported a 
+<span class=file>feff.inp</span> file into  <span class=program>ARTEMIS</span>, 
+ <span class=program>FEFF6</span> was run all the way through the
+<em>genfmt</em> stage.  Hidden somewhere out of the
+way were all the oputput
+files from  <span class=program>FEFF</span>.  This is why old  <span class=program>ARTEMIS</span> project files
+are so very large.  It is because they contain the 
+<span class=file>phase.bin</span> file and
+possibly hundreds of 
+<span class=file>feffNNNN.dat</span> files -- one for each scattering
+path computed in each  <span class=program>FEFF</span> calculation performed.
 </p>
 
 <p>
-The genfmt part of  <span class=program>FEFF</span> is used by  <span class=program>DEMETER</span>, but not in the
-normal way.  Individual paths are computed one at a time and only when
-needed.  This just-in-time calculation of scattering path
-contributions happens behind the scenes.  As  <span class=program>DEMETER</span> user, you
-should never have to worry about the individual paths being
-calculated.  In much the same way that you can trust  <span class=program>DEMETER</span> to
-perform background removal and Fourier transforms of data as needed
-for plotting, you can trust that whenever you wish to plot a path or
-use it in a fit,  <span class=program>DEMETER</span> will calculate it if needed or reuse it
-if it is still up to date.
+ <span class=program>FEFF</span>, however, does not have to be run this way.  Using the 
+<tt>CONTROL</tt> keyword, you can specify which parts of
+ <span class=program>FEFF</span> actually run.  Each of 
+<em>potph</em>
+<em>pathfinder</em>
+<em>genfmt</em>
+<em>ff2chi</em> can
+be turned on and off individually, so long as the all the necessary
+input information is somehow available.  For example, to run just
+<em>genfmt</em>, you must somehow have already
+calculated
+the <span class=file>phase.bin</span> and
+<span class=file>paths.dat</span> files.
 </p>
 
 <p>
-Finally, the ff2chi part of  <span class=program>FEFF</span> is never used.  You could say
-that  <span class=program>IFEFFIT</span> is an elaborate re-write of ff2chi!
+An aside about  <span class=program>FEFF</span>'s <em>pathfinder</em>:  
+it is fast, but is missing
+useful features.  One missing feature is that, when it determines
+which scattering geometries are degenerate (i.e. they provide the same
+contributions to the EXAFS), it throws each degenerate path away.
+That is, the <span class=file>feffNNNN.dat</span> file for the 
+first coordination shell in an
+BCC metal tells you the coordinates of one such scattering atom and it
+tells you that the degeneracy is 8.  It does not, however, retain the
+coordinates of the other 7 atoms.
+The other shortcoming of the <em>pathfinder</em>
+is that it treats scattering
+paths as non-degenerate if their half path lengths differ by 0.00001 
+ &Aring;     or more.  That is, in most cases, a ridiculously tight
+tolerance which leads to a substantial proliferation of very similar
+paths. 
 </p>
 
 <p>
- <span class=program>DEMETER</span>'s interface to  <span class=program>FEFF</span> is one of its more elaborate
-parts and it offers several powerful, new features that may be
-unfamliar even to the experienced  <span class=program>FEFF</span> user.  By the end of this
-chapter, you should be able to create rich, feature-full tools which
-access the capabilities of  <span class=program>FEFF</span> for simulation or fitting of
-EXAFS spectra.
+OK, back to how  <span class=program>FEFF</span> is use in  <span class=program>ARTEMIS</span>.  In the new 
+ <span class=program>ARTEMIS</span>, I take a
+much more fine-grained approach.   <span class=program>FEFF</span> is never run from beginning 
+to end.  When  <span class=program>FEFF</span> is run, the <em>potph</em>
+part is run and the resulting 
+<span class=file>phase.bin</span> file is saved.
+</p>
+
+<p>
+Then the <em>pathfinder</em> is run, but not 
+ <span class=program>FEFF</span>'s <em>pathfinder</em>.
+The <em>pathfinder</em> has been completely rewritten
+as part of  <span class=program>DEMETER</span>
+The new <em>pathfinder</em> is missing one important
+feature.  It has no way of doing  <span class=program>FEFF</span>'s quick and dirty
+estimation of path amplitude, the so-called curved-wave importance
+factor, thus  <span class=program>DEMETER</span>'s <em>pathfinder</em>
+does not have that
+way of discarding obviously small paths and all higher-order
+scattering paths based on that geometry.  Also,  <span class=program>DEMETER</span>'s 
+<em>pathfinder</em> is
+pretty slow compared to  <span class=program>FEFF</span>'s.
+However,  <span class=program>DEMETER</span>'s <em>pathfinder</em> retains
+information about all scattering geometries that contribute to the
+degeneracy of a path.  In the future, this will allow propagattion of
+distortions to the starting structure through all the scattering
+paths.
+</p>
+
+<p>
+Secondly,  <span class=program>DEMETER</span>'s <em>pathfinder</em>
+introduces something called 
+&ldquo;fuzzy degeneracy&rdquo;.  This is a
+configurable parameter that defines a length scale below which paths
+of similar length are considered degenerate.  The default is 0.03 
+ &Aring;    , but can be set as you wish.  Thus paths that differ in 
+length by less
+than 0.03  &Aring;     are considered degenerate and the resulting path is
+computed at the average length of the paths that are considered
+degenerate.
+</p>
+
+<p>
+So, the <em>pathfinder</em> introduces a number of
+new features.  But the really powerful bit is how  <span class=program>ARTEMIS</span>
+interacts with <em>genfmt</em>.  Basically, 
+<em>genfmt</em> is
+run on demand the first time that the corresponding 
+<span class=file>feffNNNN.dat</span> file
+is needed (perhaps for a fit, perhaps for a plot).  When the current
+instance of  <span class=program>DEMETER</span> is finished (say, by quitting  <span class=program>ARTEMIS</span>)
+all the
+<span class=file>feffNNNN.dat</span> files are deleted.  The next
+time you fire up your program, they will be recalcualted.
+It turns out that the call to <em>genfmt</em> is so 
+fast that it is better to
+recompute the <span class=file>feffNNNN.dat</span> 
+files rather than carry them around.  Thus
+ <span class=program>ARTEMIS</span> project files are much, much smaller.  The 
+<span class=file>feffNNNN.dat</span> files are
+given names based on random strings, so there is no chance of
+accidentally over-writing them if you happen to re-run earlier parts
+of  <span class=program>FEFF</span>.
+The way this on-demand calcualtion of 
+<span class=file>feffNNNN.dat</span> files works is by
+having  <span class=program>DEMETER</span> generate short replacements for the 
+<span class=file>paths.dat</span> file
+which contain only the single path that you want to calculate.  The
+<span class=file>paths.dat</span> file is deleted immediately
+after it is used. 
+</p>
+
+<p>
+This approach makes it very easy to define interesting abstractions
+of paths.  For instance, suppose you want to consider the possibility
+that one of the atoms in your material is at a position very different
+from the examples in the cluster.  This approach makes it easy to
+compute that.  It's called an SSPath.
+</p>
+
+<p>
+There are a number of other tricks that this capability will enable,
+including things like considering variation in scattering angle of a
+MS path or consideration of arbitrary radial distribution functions.
 </p>
 
 <br />

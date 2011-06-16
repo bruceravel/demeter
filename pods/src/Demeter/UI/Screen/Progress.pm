@@ -64,7 +64,7 @@ sub start_counter {
   ($text .= "\n") if ($text !~ m{\n$});
   print $text;
   $target ||= 100;
-  $counter = Term::Sk->new($self->progress, {freq => 's', base => 0, pdisp => '!'})
+  $counter = Term::Sk->new($self->progress, {freq => 's', base => 0})
     or die "Error 0010: Term::Sk->new, (code $Term::Sk::errcode) $Term::Sk::errmsg";
   $counter->{target} = $target;
   $counter->{value}  = 0;

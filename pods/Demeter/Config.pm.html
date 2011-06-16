@@ -218,7 +218,17 @@ by an imported INI file or by the <code>set_default</code> method.</p></dd>
       hanning
 
 </pre></dd>	<dt>windows</dt>
-		<dd><p>This overrides the default, but only on Windows computers</p></dd>
+		<dd><p>This overrides the default, but only on Windows computers.</p></dd>
+		<dd><p>Strings that take a fully resolved path to an executable are treated
+specially.  If that executable resides beneath the perl installation
+location, then the installation location should be denoted as
+<code>__PERL_BASE__</code>.  For example, Strawberry perl is typically instaled
+into <code>C:\strawberry</code>.  Rather than denoting the location of the Feff
+executable as <code>C:\strawberry\c\bin\feff.exe</code>, it should be specified
+as <code>__PERL_BASE__\c\bin\feff.exe</code>.  The <code>__PERL_BASE__</code> tag will be
+replaced by the correct installation location.  Then, if Strawberry is
+installed into some other location, the Feff executable will be found
+at runtime.</p></dd>
 	<dt>demeter</dt>
 		<dd><p>This is the default value from the configuration file shipped with
 demeter.  This is untouched even when a default is overridden by an

@@ -18,7 +18,8 @@ package  Demeter::UI::Artemis::Plot::Limits;
 
 use Wx qw( :everything );
 use base qw(Wx::Panel);
-use Wx::Event qw(EVT_MENU EVT_CLOSE EVT_TOOL_ENTER EVT_CHECKBOX EVT_CHOICE EVT_ENTER_WINDOW EVT_LEAVE_WINDOW EVT_RADIOBOX);
+use Wx::Event qw(EVT_MENU EVT_CLOSE EVT_TOOL_ENTER EVT_CHECKBOX EVT_CHOICE EVT_ENTER_WINDOW
+		 EVT_LEAVE_WINDOW EVT_RADIOBOX EVT_TEXT_ENTER);
 use Wx::Perl::TextValidator;
 use Demeter::UI::Wx::SpecialCharacters qw(:all);
 
@@ -100,34 +101,34 @@ sub new {
 
   $label    = Wx::StaticText->new($this, -1, "kmin");
   $this->{kmin} = Wx::TextCtrl  ->new($this, -1, $demeter->co->default("plot", "kmin"),
-				      wxDefaultPosition, [50,-1]);
+				      wxDefaultPosition, [50,-1], wxTE_PROCESS_ENTER);
   $gbs     -> Add($label,    Wx::GBPosition->new(0,1));
   $gbs     -> Add($this->{kmin}, Wx::GBPosition->new(0,2));
   $label    = Wx::StaticText->new($this, -1, "kmax");
   $this->{kmax} = Wx::TextCtrl  ->new($this, -1, $demeter->co->default("plot", "kmax"),
-				      wxDefaultPosition, [50,-1]);
+				      wxDefaultPosition, [50,-1], wxTE_PROCESS_ENTER);
   $gbs     -> Add($label,    Wx::GBPosition->new(0,3));
   $gbs     -> Add($this->{kmax}, Wx::GBPosition->new(0,4));
 
   $label    = Wx::StaticText->new($this, -1, "rmin");
   $this->{rmin} = Wx::TextCtrl  ->new($this, -1, $demeter->co->default("plot", "rmin"),
-				      wxDefaultPosition, [50,-1]);
+				      wxDefaultPosition, [50,-1], wxTE_PROCESS_ENTER);
   $gbs     -> Add($label,    Wx::GBPosition->new(1,1));
   $gbs     -> Add($this->{rmin}, Wx::GBPosition->new(1,2));
   $label    = Wx::StaticText->new($this, -1, "rmax");
   $this->{rmax} = Wx::TextCtrl  ->new($this, -1, $demeter->co->default("plot", "rmax"),
-				      wxDefaultPosition, [50,-1]);
+				      wxDefaultPosition, [50,-1], wxTE_PROCESS_ENTER);
   $gbs     -> Add($label,    Wx::GBPosition->new(1,3));
   $gbs     -> Add($this->{rmax}, Wx::GBPosition->new(1,4));
 
   $label    = Wx::StaticText->new($this, -1, "qmin");
   $this->{qmin} = Wx::TextCtrl  ->new($this, -1, $demeter->co->default("plot", "qmin"),
-				      wxDefaultPosition, [50,-1]);
+				      wxDefaultPosition, [50,-1], wxTE_PROCESS_ENTER);
   $gbs     -> Add($label,    Wx::GBPosition->new(2,1));
   $gbs     -> Add($this->{qmin}, Wx::GBPosition->new(2,2));
   $label    = Wx::StaticText->new($this, -1, "qmax");
   $this->{qmax} = Wx::TextCtrl  ->new($this, -1, $demeter->co->default("plot", "qmax"),
-				      wxDefaultPosition, [50,-1]);
+				      wxDefaultPosition, [50,-1], wxTE_PROCESS_ENTER);
   $gbs     -> Add($label,    Wx::GBPosition->new(2,3));
   $gbs     -> Add($this->{qmax}, Wx::GBPosition->new(2,4));
 
@@ -145,6 +146,12 @@ sub new {
   $this->mouseover("qmin", "The lower bound of a plot of $CHI(q).");
   $this->mouseover("qmax", "The upper bound of a plot of $CHI(q).");
 
+  EVT_TEXT_ENTER($this, $this->{kmin}, sub{$Demeter::UI::Artemis::frames{Plot}->plot(q{}, 'k')});
+  EVT_TEXT_ENTER($this, $this->{kmax}, sub{$Demeter::UI::Artemis::frames{Plot}->plot(q{}, 'k')});
+  EVT_TEXT_ENTER($this, $this->{rmin}, sub{$Demeter::UI::Artemis::frames{Plot}->plot(q{}, 'r')});
+  EVT_TEXT_ENTER($this, $this->{rmax}, sub{$Demeter::UI::Artemis::frames{Plot}->plot(q{}, 'r')});
+  EVT_TEXT_ENTER($this, $this->{qmin}, sub{$Demeter::UI::Artemis::frames{Plot}->plot(q{}, 'q')});
+  EVT_TEXT_ENTER($this, $this->{qmax}, sub{$Demeter::UI::Artemis::frames{Plot}->plot(q{}, 'q')});
 
   $this -> SetSizer($szr);
   return $this;

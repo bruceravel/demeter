@@ -265,7 +265,7 @@ has 'nclus'	       => (is => 'rw', isa =>'Str', default=> 0);
 
 sub BUILD {
   my ($self, @params) = @_;
-  $self->mode->push_Atoms($self);
+  $self->mo->push_Atoms($self);
 };
 
 sub DEMOLISH {

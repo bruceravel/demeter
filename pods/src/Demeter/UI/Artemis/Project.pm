@@ -168,12 +168,28 @@ sub read_project {
     $fname = File::Spec->catfile($fd->GetDirectory, $fd->GetFilename);
   };
 
+
+#  my ($volume,$directories,$fl) = File::Spec->splitpath( $rframes->{main}->{project_folder} );
+#  $directories =~ s{\\}{/}g;
+#  $directories .= $fl.'/';
+#  print join("|", $volume,$directories), $/;
+  my $wasdir = cwd;
+  my $projfolder = $rframes->{main}->{project_folder};
+  chdir $projfolder;
+
   my $zip = Archive::Zip->new();
   carp("Error reading project file $fname"), return 1 unless ($zip->read($fname) == AZ_OK);
-  $zip->extractTree("", $rframes->{main}->{project_folder}.'/');
-  undef $zip;
+  foreach my $f ($zip->members) {
+    $zip->extractMember($f);
+  };
+  chdir($wasdir);
 
-  my $projfolder = $rframes->{main}->{project_folder};
+#  ##print join($/, $zip->memberNames), $/;
+#  (my $pf = $rframes->{main}->{project_folder}) =~ s{\\}{/}g;
+#  $zip->extractTree(".", $rframes->{main}->{project_folder});
+#  print $zip->extractTree(".", $directories, $volume), $/;
+#  undef $zip;
+
   my $import_problems = q{};
 
   %Demeter::UI::Artemis::fit_order = YAML::Tiny::LoadFile(File::Spec->catfile($projfolder, 'order'));
@@ -337,7 +353,11 @@ sub restore_fit {
     $grid -> AppendRows(1,1) if ($start >= $grid->GetNumberRows);
     $grid -> SetCellValue($start, 0, $g->gds);
     $grid -> SetCellValue($start, 1, $g->name);
-    $grid -> SetCellValue($start, 2, $g->mathexp);
+    if ($g->gds eq 'guess') {
+      $grid -> SetCellValue($start, 2, $g->bestfit || $g->mathexp);
+    } else {
+      $grid -> SetCellValue($start, 2, $g->mathexp);
+    };
     $grid -> {$g->name} = $g;
     my $text = q{};
     if ($g->bestfit or $g->error) {

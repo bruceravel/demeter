@@ -5,7 +5,7 @@ use warnings;
 
 use Wx qw( :everything );
 use base 'Wx::Panel';
-use Wx::Event qw(EVT_BUTTON EVT_CHECKBOX EVT_TEXT);
+use Wx::Event qw(EVT_BUTTON EVT_CHECKBOX EVT_TEXT EVT_TEXT_ENTER);
 
 #use Demeter::UI::Wx::SpecialCharacters qw(:all);
 

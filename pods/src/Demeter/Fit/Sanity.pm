@@ -40,6 +40,7 @@ sub S_data_files_exist {
   my @data = @{ $self->data };
   foreach my $d (@data) {
     next if $d->from_athena;
+    next if $d->from_yaml;
     return 0 if ($d->file eq $NULLFILE);
     my $file = $d->file;
     if (not -e $file) {

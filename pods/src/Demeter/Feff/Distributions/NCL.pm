@@ -414,7 +414,8 @@ and from YAMLs with a single object perl YAML.
 
 =item *
 
-This currently only works for a monoatomic cluster.
+This currently only works for a monoatomic cluster.  See rdf in SS.pm
+for species checks
 
 =item *
 

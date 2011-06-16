@@ -248,17 +248,20 @@ sub _save_many_command {
 
 sub data_parameter_report {
   my ($self, $include_rfactor) = @_;
-  my $string = $self->data->template("process", "data_report");
+  my $string = $self->data->template("report", "data_report");
   $string =~ s/\+ \-/- /g;
   return $string;
 };
 sub fit_parameter_report {
   my ($self, $include_rfactor, $fit_performed) = @_;
-  $include_rfactor ||= 0;
+  #$include_rfactor ||= 0;
+  $include_rfactor = 0;
   $fit_performed   ||= 0;
-  my $string = $self->data->template("fit", "fit_report");
+  my $string = q{};
   if ($include_rfactor and $fit_performed) {	# only print this for a multiple data set fit
-    $string .= sprintf("\nr-factor for this data set = %.7f\n", $self->rfactor);
+    $string = $self->data->template("report", "fit_report_rfact");
+  } else {
+    $string = $self->data->template("report", "fit_report");
   };
   return $string;
 };
@@ -281,7 +284,7 @@ sub title_glob {
              ($space eq 'f') ? " fit"     :
 	                       q{}        ;
 
-  my @titles = split(/\n/, $self->data->template("process", "xdi_report"));
+  my @titles = split(/\n/, $self->data->template("report", "xdi_report"));
   ($space eq 'f') ? push @titles, split(/\n/, $data->fit_parameter_report) : push @titles, split(/\n/, $data->data_parameter_report);
   my $i = 0;
   $self->dispose("erase \$$globname\*");
@@ -298,6 +301,16 @@ sub read_fit {
   my ($self, $filename) = @_;
   croak("No filename specified for read_fit") unless $filename;
   my $command = $self-> template("fit", "read_fit", {filename => $filename,});
+  ##print $command, $/, $/;
+  $self->dispose($command);
+  $self->update_fft(1);
+  $self->po->plot_fit(1);
+  return $self;
+};
+sub readfromfit {
+  my ($self, $filename) = @_;
+  croak("No filename specified for read_fit") unless $filename;
+  my $command = $self-> template("fit", "readfromfit", {filename => $filename,});
   ##print $command, $/, $/;
   $self->dispose($command);
   $self->update_fft(1);

@@ -156,10 +156,12 @@ sub OnInit {
   $frames{main}->{mrufit}       = Wx::Menu->new;
   $frames{main}->{mruathena}    = Wx::Menu->new;
   $frames{main}->{mrustructure} = Wx::Menu->new;
+  $frames{main}->{mruold}       = Wx::Menu->new;
   $mrumenu->AppendSubMenu($frames{main}->{mruartemis},   "Artemis projects" );
   $mrumenu->AppendSubMenu($frames{main}->{mruathena},    "Athena projects" );
   $mrumenu->AppendSubMenu($frames{main}->{mrustructure}, "Crystal/structure data" );
   $mrumenu->AppendSubMenu($frames{main}->{mrufit},       "Fit serializations" );
+  $mrumenu->AppendSubMenu($frames{main}->{mruold},       "Old-style artemis projects" );
 
 
 
@@ -350,6 +352,7 @@ sub OnInit {
   my $readme = File::Spec->catfile($demeter->share_folder, "Readme.fit_serialization");
   my $target = File::Spec->catfile($project_folder, "Readme");
   copy($readme, $target);
+  chmod(0666, $target) if $demeter->is_windows;
 
   my $orderfile = File::Spec->catfile($frames{main}->{project_folder}, "order");
   $frames{main}->{order_file} = $orderfile;
@@ -559,11 +562,11 @@ sub fit {
     update_order_file();
 
     $rframes->{Log}->{name} = $fit->name;
-    $rframes->{Log}->Show(1);
+    $rframes->{Log}->Show(1) if ($fit->co->default("artemis", "show_after_fit") eq 'log');
     $rframes->{Log}->put_log($fit);
     $rframes->{Log}->SetTitle("Artemis [Log] " . $rframes->{main}->{name}->GetValue);
     $rframes->{Log}->Refresh;
-    $rframes->{main}->{log_toggle}->SetValue(1);
+    $rframes->{main}->{log_toggle}->SetValue(1) if ($fit->co->default("artemis", "show_after_fit") eq 'log');
 
     ## fill in plotting list
     if (not $rframes->{Plot}->{freeze}->GetValue) {
@@ -594,6 +597,12 @@ sub fit {
     $finishtext = sprintf "Your fit finished in %d seconds.", $dur->seconds;
     $rframes->{History}->{list}->AddData($fit->name, $fit);
     $rframes->{History}->add_plottool($fit);
+    if ($fit->co->default("artemis", "show_after_fit") eq 'history') {
+      $rframes->{History}->Show(1);
+      $rframes->{History}->{list}->SetSelection($rframes->{History}->{list}->GetCount-1);
+      $rframes->{History}->put_log($fit);
+      $rframes->{History}->set_params($fit);
+    };
     undef $dur;
     undef $finish;
   } else {
@@ -711,8 +720,10 @@ sub _doublewide {
 sub set_mru {
   my ($self) = @_;
 
-  foreach my $which (qw(artemis athena structure fit_serialization)) {
-    my $type = ($which eq 'fit_serialization') ? 'fit' : $which;
+  foreach my $which (qw(artemis athena structure fit_serialization old_artemis)) {
+    my $type = ($which eq 'fit_serialization') ? 'fit'
+             : ($which eq 'old_artemis')       ? 'old'
+	     :                                   $which;
     foreach my $i (0 .. $frames{main}->{mrumenu}->GetMenuItemCount-1) {
       $frames{main}->{'mru'.$type}->Delete($frames{main}->{'mru'.$type}->FindItemByPosition(0));
     };
@@ -771,6 +782,7 @@ sub OnMenuClick {
       Import('dpj',  $mru)         if $frames{main}->{mrufit}      ->GetLabel($id);
       Import('prj',  $mru)         if $frames{main}->{mruathena}   ->GetLabel($id);
       Import('feff', $mru)         if $frames{main}->{mrustructure}->GetLabel($id);
+      Import('old',  $mru)         if $frames{main}->{mruold}      ->GetLabel($id);
       last SWITCH;
     };
 
@@ -956,17 +968,19 @@ sub OnFeffRightClick {
 };
 
 
+## name for empty feff frame...
 sub make_feff_frame {
   my ($self, $file, $name, $feffobject) = @_;
   my $feffbox = $self->{feffbox};
   $name ||= basename($file) if $file;	# ok for importing an atoms or CIF file
+  $name ||= 'new';
 
   my $new = Wx::ToggleButton->new($self->{fefflist}, -1, "Hide ".emph($name));
+  my $ifeff = $new->GetId;
   $feffbox -> Add($new, 0, wxGROW|wxRIGHT, 5);
   mouseover($new, "Display/hide $name.");
 
   do_the_size_dance($self);
-  my $ifeff = $new->GetId;
   my $fnum = sprintf("feff%s", $ifeff);
   $self->{$fnum} = $new;
   EVT_TOGGLEBUTTON($new, -1, sub{
@@ -1132,6 +1146,7 @@ use Demeter::UI::Wx::OverwritePrompt;
 my $normal = wxNullColour;
 my $wait   = Wx::Colour->new("#C5E49A");
 my $error  = Wx::Colour->new("#FD7E6F");
+my $alert  = Wx::Colour->new("#FCDD9F");
 my $debug  = 0;
 sub status {
   my ($self, $text, $type) = @_;
@@ -1142,11 +1157,12 @@ sub status {
     print $text, " -- ", join(", ", (caller)[0,2]), $/;
   };
 
-  my $color = ($type =~ m{normal}) ? $normal
-            : ($type =~ m{wait})   ? $wait
-            : ($type =~ m{error})  ? $error
-	    :                        $normal;
-  $self->{statusbar}->SetBackgroundColour($color);
+  my $bgcolor = ($type =~ m{normal}) ? $normal
+              : ($type =~ m{wait})   ? $wait
+              : ($type =~ m{alert})  ? $alert
+              : ($type =~ m{error})  ? $error
+	      :                        $normal;
+  $self->{statusbar}->SetBackgroundColour($bgcolor);
   $self->{statusbar}->Refresh;
   $self->{statusbar}->SetStatusText($text);
   return if ($type =~ m{nobuffer});

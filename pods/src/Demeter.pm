@@ -15,9 +15,10 @@ package Demeter;  # http://xkcd.com/844/
 
 =cut
 
-BEGIN {
-  $ENV{PGPLOT_DEV} = (($^O eq 'MSWin32') or ($^O eq 'cygwin')) ? '/GW' : '/xserve';
-};
+#BEGIN {
+#  #$ENV{PGPLOT_DEV} = (($^O eq 'MSWin32') or ($^O eq 'cygwin')) ? '/gw' : '/xserve';
+#  $ENV{PGPLOT_DIR} = 'C:\strawberry\perl\c\lib\pgplot' if (($^O eq 'MSWin32') or ($^O eq 'cygwin'));
+#};
 
 require 5.008;
 
@@ -35,6 +36,7 @@ use Pod::POM;
 use String::Random qw(random_string);
 use Text::Template;
 use Ifeffit;
+Ifeffit::ifeffit("\$plot_device=/gw\n") if (($^O eq 'MSWin32') or ($^O eq 'cygwin'));
 use Xray::Absorption;
 Xray::Absorption->load('elam');
 
@@ -54,10 +56,10 @@ Readonly my $PI     => 4*atan2(1,1);
 
 =cut
 # Metaclass definition must come before Moose is used.
-    use metaclass (
-        metaclass => 'Moose::Meta::Class',
-        error_class => 'Moose::Error::Confess',
-    );
+use metaclass (
+	       metaclass => 'Moose::Meta::Class',
+	       error_class => 'Moose::Error::Confess',
+	      );
 
 use Moose;
 use MooseX::Aliases;
@@ -116,7 +118,7 @@ sub alldone {
 };
 sub remove {
   my ($self) = @_;
-  $self->mo->remove($self) if (defined($self) and ref($self) =~ m{Demeter});;
+  $self->mo->remove($self) if (defined($self) and ref($self) =~ m{Demeter} and defined($self->mo));
   return $self;
 };
 
@@ -125,17 +127,24 @@ sub set_datagroup {
   $self->datagroup($group);
 };
 
-use Demeter::Plot;
-use vars qw($plot);
-$plot = Demeter::Plot -> new() if not $mode->plot;
-$plot -> screen_echo(0);
-
 use vars qw($Gnuplot_exists $Fityk_exists $STAR_Parser_exists $XDI_exists);
 $Gnuplot_exists     = eval "require Graphics::GnuplotIF";
 $Fityk_exists       = eval "require fityk";
 $STAR_Parser_exists = 1;
 use STAR::Parser;
 $XDI_exists         = eval "require Xray::XDI";
+
+use Demeter::Plot;
+use vars qw($plot);
+$plot = Demeter::Plot -> new() if not $mode->plot;
+$plot -> screen_echo(0);
+my $backend = $config->default('plot', 'plotwith');
+if ($backend eq 'gnuplot') {
+  $mode -> template_plot('gnuplot');
+  $mode -> external_plot_object( Graphics::GnuplotIF->new(program => $config->default('gnuplot', 'program')) );
+  require Demeter::Plot::Gnuplot;
+  $mode -> plot( Demeter::Plot::Gnuplot->new() );
+};
 
 use Demeter::StrTypes qw( Empty
 			  IfeffitCommand
@@ -224,7 +233,7 @@ sub import {
       next PRAG;
     };
     if ($p eq ':analysis') {
-      @load = (@data, @anal);
+      @load = (@data, @anal, @xes);
       $colonanalysis = 1;	# need to load peakfit separately while using fityk, see below
       next PRAG;
     };
@@ -542,7 +551,7 @@ sub what_isa {
 ## down into override methods in extended classes
 sub all {
   my ($self) = @_;
-  my @keys   = map {$_->name} grep {$_->name !~ m{\A(?:data|reference|plot|plottable|pathtype|mode|highlight|hl|prompt|sentinal)\z}} $self->meta->get_all_attributes;
+  my @keys   = map {$_->name} grep {$_->name !~ m{\A(?:data|reference|plot|plottable|pathtype|mode|highlight|hl|prompt|sentinal|progress|rate|thingy)\z}} $self->meta->get_all_attributes;
   my @values = map {$self->$_} @keys;
   my %hash   = zip(@keys, @values);
   return %hash;
@@ -677,17 +686,26 @@ sub template {
   my $theory   = $self->mo->theory;
   my $path     = $self->mo->path;
 
-  my $tmpl = File::Spec->catfile(dirname($INC{"Demeter.pm"}),
-				 "Demeter",
+  # try personal templates first
+  my $tmpl = File::Spec->catfile($self->dot_folder,
 				 "templates",
 				 $category,
 				 $self->get_mode("template_$category") || q{xxx},
 				 "$file.tmpl");
-  if (not -e $tmpl) {		# fall back to ifeffit/pgplot template
-    my $set = ($category eq 'plot') ? "pgplot" :
-              ($category eq 'feff') ? "feff6"  :
-              ($category eq 'test') ? 'test'   :
-                                      "ifeffit";
+  if (not -e $tmpl) {		# then try system templates
+    $tmpl = File::Spec->catfile(dirname($INC{"Demeter.pm"}),
+				"Demeter",
+				"templates",
+				$category,
+				$self->get_mode("template_$category") || q{xxx},
+				"$file.tmpl");
+  };
+  if (not -e $tmpl) {		# fall back to default templates
+    my $set = ($category eq 'plot')   ? "pgplot"   :
+              ($category eq 'feff')   ? "feff6"    :
+              ($category eq 'report') ? 'standard' :
+              ($category eq 'test')   ? 'test'     :
+                                        "ifeffit";
     $tmpl = File::Spec->catfile(dirname($INC{"Demeter.pm"}),
 				"Demeter", "templates", $category, $set, "$file.tmpl");
   };
@@ -716,6 +734,7 @@ sub template {
   $string =~ s{\s+$}{\n};	      # remove trailing white space
   $string =~ s{<<nl>>}{\n}g;	      # convert newline token into a real newline
   $string =~ s{<<( +)>>}{$1}g;	      # convert white space token into real white space
+  undef $template;
   return $string;
 };
 

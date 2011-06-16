@@ -12,6 +12,7 @@ Readonly my $make_data_frame => \&Demeter::UI::Artemis::make_data_frame;
 Readonly my $make_feff_frame => \&Demeter::UI::Artemis::make_feff_frame;
 
 use Archive::Zip qw( :ERROR_CODES :CONSTANTS );
+use Carp;
 use Cwd;
 use File::Basename;
 use File::Copy;
@@ -159,9 +160,9 @@ sub _chi {
 };
 
 sub _dpj {
-  my ($fname, $noshow) = @_;
+  my ($fname, $nomru) = @_;
   my $file = $fname;
-  $noshow ||= 0;
+  $nomru ||= 0;
   if (not $fname) {
     my $fd = Wx::FileDialog->new( $rframes->{main}, "Import a Demeter fit serialization file", cwd, q{},
 				  "Fit serialization (*.dpj)|*.dpj|All files|*",
@@ -249,14 +250,18 @@ sub _dpj {
   if ($import_problems) {
     Wx::MessageDialog->new($rframes->{main}, $import_problems, "Warning!", wxOK|wxICON_WARNING) -> ShowModal;
   };
-  $rframes->{History}->{list}->AddData($fit->name, $fit) if $fit->fitted;
-  $rframes->{History}->add_plottool($fit) if $fit->fitted;
-  $rframes->{History}->{list}->SetSelection($rframes->{History}->{list}->GetCount-1);
-  $rframes->{History}->OnSelect;
-  $fit->push_mru("fit_serialization", $file);
-  $rframes->{main}->{projectpath} = $file;
-  $rframes->{main}->{projectname} = basename($file, '.dpj');
-  $rframes->{main}->status("Imported fit serialization $file.");
+  if ($fit->fitted) {
+    $rframes->{History}->{list}->AddData($fit->name, $fit);
+      $rframes->{History}->add_plottool($fit);
+    $rframes->{History}->{list}->SetSelection($rframes->{History}->{list}->GetCount-1);
+    $rframes->{History}->OnSelect;
+  };
+  if (not $nomru) {
+    $fit->push_mru("fit_serialization", $file) ;
+    $rframes->{main}->{projectpath} = $file;
+    $rframes->{main}->{projectname} = basename($file, '.dpj');
+    $rframes->{main}->status("Imported fit serialization $file.");
+  };
   my $newfit = Demeter::Fit->new(interface=>"Artemis (Wx $Wx::VERSION)");
   $rframes->{main} -> {currentfit} = $newfit;
   modified(0);
@@ -380,227 +385,33 @@ sub _old {
     $file = File::Spec->catfile($fd->GetDirectory, $fd->GetFilename);
   };
 
-  ## -------- make a folder to unzip the old-style project and unzip it
-  my $unzip = File::Spec->catfile($Demeter::UI::Artemis::demeter->stash_folder, '_old_'.basename($file));
-  rmtree $unzip if (-d $unzip);
-  mkpath $unzip;
-  my $zip = Archive::Zip->new();
-  confess("Error reading old-style project file $file"), return 1 unless ($zip->read($file) == AZ_OK);
-  $zip->extractTree("", $unzip.'/');
-  undef $zip;
+  my $busy = Wx::BusyCursor->new();
+  $rframes->{main}->status("Converting old-style project to Demeter fit serialization", 'wait');
 
-  my $cpt = new Safe;
-  my $description = File::Spec->catfile($unzip, 'descriptions', 'artemis');
-  my %datae = ();
-  my %datae_id = ();
-  my %feffs = ();
-  my $mds = 0;
+  my $tempfit = Demeter::Fit->new(interface=>"Artemis (Wx $Wx::VERSION)");
+  my $dpj = File::Spec->catfile($tempfit->stash_folder, basename($file, '.apj').".dpj");
+  my $journal = q{};
+  my $result = $tempfit -> apj2dpj($file, $dpj, \$journal);
+  $tempfit   -> DEMOLISH;
 
-  ## -------- make a new Fit object
-  my $fit = Demeter::Fit->new(interface=>"Artemis (Wx $Wx::VERSION)");
-  $rframes->{main}->{currentfit} = $fit;
-  $rframes->{Plot}->{limits}->{fit}->SetValue(1);
-  $fit->mo->currentfit(1);
-  my $projfolder = $rframes->{main}->{project_folder};
-  mkpath(File::Spec->catfile($projfolder, 'fits', $fit->group));
-
-  ## -------- begin parsing the description file
-  open(my $D, $description);
-  while (<$D>) {
-    next if (m{\A\s*\z});
-    next if (m{\A\s*\#});
-    next if (m{\A\s*\[record\]});
-
-  SWITCH: {
-
-      ## -------- this section contains data, feff, or path...
-      (m{\A\$old_path}) and do {
-	$ {$cpt->varglob('old_group')} = $cpt->reval( $_ );
-	my $og = $ {$cpt->varglob('old_group')};
-	## get args line
-	my $line = <$D>;
-	@ {$cpt->varglob('args')} = $cpt->reval( $line );
-	my %args = @ {$cpt->varglob('args')};
-	## get string line
-	$line = <$D>;
-	@ {$cpt->varglob('strings')} = $cpt->reval( $line );
-	my @strings = @ {$cpt->varglob('strings')};
-
-	## -------- this is data
-	if ($og =~ m{\Adata\d+\z}) {
-	  my $original_file = $args{file};
-	  if ($original_file =~ m{\\}) { # crude test for windows file path ...
-	    my @list = split(/\\/, $original_file);
-	    $original_file = $list[-1];
-	  } else {
-	    $original_file = basename($original_file);
-	  };
-	  my $datafile = File::Spec->catfile($unzip, 'chi_data', $original_file);
-	  my $data = Demeter::Data->new(datatype       => 'chi',
-					file	       => $datafile,
-					name	       => $args{lab},
-					bkg_rbkg       => $args{bkg_rbkg} || 0,
-					fit_k1	       => $args{k1},
-					fit_k2	       => $args{k2},
-					fit_k3	       => $args{k3},
-					fit_karb       => $args{karb},
-					fit_karb_value => $args{karb_use},
-					fft_kmin       => $args{kmin},
-					fft_kmax       => $args{kmax},
-					fft_dk	       => $args{dk},
-					fft_kwindow    => $args{kwindow},
-					bft_rmin       => $args{rmin},
-					bft_rmax       => $args{rmax},
-					bft_dr	       => $args{dr},
-					bft_rwindow    => $args{rwindow},
-					fit_space      => $args{fit_space},
-					fit_epsilon    => $args{epsilon_k},
-					fit_cormin     => $args{cormin},
-					fit_include    => $args{include},
-					provenance     => 'chi(k) data from an old-style artemis project file',
-				       );
-	  $datae{$og} = $data;
-	  $data -> fit_do_bkg($data->onezero($args{do_bkg}));
-	  $data -> titles(\@strings);
-	  my ($dnum, $idata) = &$make_data_frame($rframes->{main}, $data);
-	  $data->_update('fft');
-	  $rframes->{$dnum} -> populate($data);
-	  my $show = ($mds) ? 0 : 1;
-	  $rframes->{$dnum} -> Show($show);
-	  $datae_id{$og} = $dnum;
-	  $rframes->{main}->{$dnum}->SetValue($show);
-	  ++$mds;
-
-	## -------- this is Feff
-	} elsif ($og =~ m{feff\d+\z}) {
-	  my $pathto = File::Spec->catfile($unzip, $og);
-	  my $efeff = Demeter::Feff::External -> new(screen=>0, name=>$args{lab});
-	  my $destination = File::Spec->catfile($projfolder, 'feff', $efeff->group);
-	  $efeff->workspace($destination);
-
-	  $efeff->file(File::Spec->catfile($pathto, 'feff.inp'));
-	  copy(File::Spec->catfile($pathto, 'atoms.inp'), File::Spec->catfile($destination, 'atoms.inp')) 
-	    if (-e File::Spec->catfile($pathto, 'atoms.inp'));
-	  copy(File::Spec->catfile($pathto, 'feff.inp'), File::Spec->catfile($destination, $efeff->group.'.inp'));
-	  $efeff->freeze(File::Spec->catfile($destination, $efeff->group.'.yaml'));
-
-	  ## import atoms.inp
-	  #if (-e File::Spec->catfile($pathto, 'atoms.inp')) {
-	    my $atoms = File::Spec->catfile($pathto, 'atoms.inp');
-	    my ($fnum, $ifeff) = Demeter::UI::Artemis::make_feff_frame($rframes->{main}, $atoms, $efeff->name, $efeff);
-	  #};
-
-	  ## import feff.inp
-	  my $feff = File::Spec->catfile($pathto, 'feff.inp');
-	  my $text = $efeff->slurp($feff);
-	  $rframes->{$fnum}->{Feff}->{feff}->SetValue($text);
-
-	  ## make Feff frame
-	  $feffs{$og} = $efeff;
-	  $rframes->{$fnum}->{Feff}->{feffobject} = $efeff;
-	  $rframes->{$fnum}->{Feff}->fill_intrp_page($efeff);
-	  $rframes->{$fnum}->{notebook}->ChangeSelection(2);
-
-	  $rframes->{$fnum}->{Feff} ->{name}->SetValue($efeff->name);
-	  $rframes->{$fnum}->{Paths}->{name}->SetValue($efeff->name);
-
-	  #$rframes->{$fnum} -> Show(0);
-	  #$rframes->{main}->{$fnum}->SetValue(0);
-
-	## -------- this is a path  dataN.feffM.P
-	} elsif ($og =~ m{feff\d+\.\d+\z}) {
-	  my ($this_data, $this_feff, $pathid) = split(/\./, $og);
-	  my $nnnn = $args{feff};
-	  my $feff_group = join('.', $this_data, $this_feff);
-	  my $path = Demeter::Path->new(data	=> $datae{$this_data},
-					parent	=> $feffs{$feff_group},
-					degen	=> $args{n} || $args{deg}, # which is right?
-					s02	=> $args{s02},
-					e0	=> $args{e0},
-					delr	=> $args{delr},
-					sigma2	=> $args{'sigma^2'},
-					ei	=> $args{ei},
-					third	=> $args{'3rd'},
-					fourth	=> $args{'4th'},
-					dphase	=> $args{dphase},
-					include => $args{include},
-				       );
-	  $path -> sp($path->mo->fetch("ScatteringPath", $feffs{$feff_group}->get_nnnn($nnnn)));
-	  my $label = $args{lab};
-	  my $book = $rframes->{$datae_id{$this_data}}->{pathlist};
-	  $book->DeletePage(0) if ($rframes->{$datae_id{$this_data}}->{pathlist}->GetPage(0) =~ m{Panel});
-	  my $page = Demeter::UI::Artemis::Path->new($book, $path, $rframes->{$datae_id{$this_data}});
-	  $book->AddPage($page, $label, 1, 0);
-	  $page->include_label;
-	};
-
-	last SWITCH;
-      };
-
-      ## -------- this line defines a GDS parameter
-      (m{\A\@parameter}) and do {
-	@ {$cpt->varglob('parameter')} = $cpt->reval( $_ );
-	my @parameter = @ {$cpt->varglob('parameter')};
- 	my $thisgds = Demeter::GDS->new(gds     => $parameter[1],
- 					name    => $parameter[0],
- 					mathexp => $parameter[2],
- 				       );
-	$rframes->{GDS}->put_gds($thisgds);
- 	$rframes->{GDS}->{grid} -> {$thisgds->name} = $thisgds;
-	last SWITCH;
-      };
-
-      ## -------- this section contain the plotting parameters
-      (m{\A\%plot_features}) and do {
-	% {$cpt->varglob('plot_features')} = $cpt->reval( $_ );
-	my %pf = % {$cpt->varglob('plot_features')};
-	foreach my $p (qw(kmin kmax rmin rmax qmin qmax)) {
-	  $rframes->{Plot}->{limits}->{$p}->SetValue($pf{$p});
-	};
-	$rframes->{Plot}->{kweight}->SetSelection($pf{kweight}) if ($pf{kweight} =~ m{[0123]});
-	last SWITCH;
-      };
-
-      ## -------- indicators
-      (m{\A\@extra}) and do {
-	last SWITCH;
-      };
-
-      ## -------- project properties
-      (m{\A\%props}) and do {
-	% {$cpt->varglob('props')} = $cpt->reval( $_ );
-	my %props = % {$cpt->varglob('props')};
-	$rframes->{main}->{name}->SetValue($props{'Project title'});
-	$rframes->{main}->{description}->SetValue($props{'Comment'});
-	$rframes->{main}->{currentfit}->contact($props{Contact});
-	$rframes->{main}->{currentfit}->prepared_by($props{'Prepared by'});
-	$rframes->{main}->{currentfit}->started($props{Started});
-	$rframes->{main}->{currentfit}->time_of_fit($props{'Last fit'});
-	last SWITCH;
-      };
-
-    };
+  if (ref($result) !~ m{Fit}) {
+    $rframes->{main}->status($result, 'alert');
+    undef $busy;
+    return;
   };
-  close $D;
 
-  ## -------- finally, import the journal
-  my $journal = File::Spec->catfile($unzip, 'descriptions', 'journal.artemis');
-  $rframes->{Journal}->{journal}->SetValue($fit->slurp($journal));
+  $rframes->{main}->status("Importing Demeter fit serialization", 'wait');
+  Import('dpj', $dpj);
+  unlink $dpj;
 
-  ## -------- clean up and finish
-  rmtree $unzip if (-d $unzip);
-  $rframes->{main}->{projectname} = basename($file, qw(.apj));
-  autosave;
   $$rdemeter->push_mru("old_artemis", $file);
-  chdir dirname($file);
-
-  my $newfit = Demeter::Fit->new(interface=>"Artemis (Wx $Wx::VERSION)");
-  $rframes->{main} -> {currentfit} = $newfit;
-  ++$Demeter::UI::Artemis::fit_order{order}{current};
+  $rframes->{main}->{projectpath} = $file;
+  $rframes->{main}->{projectname} = basename($file, '.apj');
+  $rframes->{Journal}->{journal} -> SetValue($journal);
 
   modified(1);
   $rframes->{main}->status("Imported old-style Artemis project $file");
-
+  undef $busy;
 };
 
 

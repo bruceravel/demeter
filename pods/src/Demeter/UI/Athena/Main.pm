@@ -7,7 +7,7 @@ use Wx qw( :everything );
 use base 'Wx::Panel';
 use Wx::Event qw(EVT_LIST_ITEM_ACTIVATED EVT_LIST_ITEM_SELECTED EVT_BUTTON EVT_KEY_DOWN
 		 EVT_TEXT EVT_CHOICE EVT_COMBOBOX EVT_CHECKBOX EVT_RADIOBUTTON
-		 EVT_RIGHT_DOWN EVT_MENU);
+		 EVT_RIGHT_DOWN EVT_MENU EVT_TEXT_ENTER);
 use Wx::Perl::TextValidator;
 
 use Chemistry::Elements qw(get_name get_Z get_symbol);
@@ -149,10 +149,10 @@ sub bkg {
 
   ## E0, Rbkg, flatten
   $this->{bkg_e0_label}   = Wx::StaticText   -> new($this, -1, "E0");
-  $this->{bkg_e0}         = Wx::TextCtrl     -> new($this, -1, q{}, wxDefaultPosition, $tcsize);
+  $this->{bkg_e0}         = Wx::TextCtrl     -> new($this, -1, q{}, wxDefaultPosition, $tcsize, wxTE_PROCESS_ENTER);
   $this->{bkg_e0_pluck}   = Wx::BitmapButton -> new($this, -1, $bullseye);
   $this->{bkg_rbkg_label} = Wx::StaticText   -> new($this, -1, "Rbkg");
-  $this->{bkg_rbkg}       = Wx::TextCtrl     -> new($this, -1, q{}, wxDefaultPosition, $tcsize);
+  $this->{bkg_rbkg}       = Wx::TextCtrl     -> new($this, -1, q{}, wxDefaultPosition, $tcsize, wxTE_PROCESS_ENTER);
   $this->{bkg_rbkg_pluck} = Wx::BitmapButton -> new($this, -1, $bullseye);
   $this->{bkg_flatten}    = Wx::CheckBox     -> new($this, -1, q{Flatten normalized data});
   $gbs -> Add($this->{bkg_e0_label},   Wx::GBPosition->new(0,0));
@@ -167,7 +167,7 @@ sub bkg {
 
   ## kweight, step, fix step
   $this->{bkg_kw_label}   = Wx::StaticText -> new($this, -1, "k-weight");
-  $this->{bkg_kw}         = Wx::SpinCtrl   -> new($this, -1, q{}, wxDefaultPosition, $tcsize, wxSP_ARROW_KEYS, 0, 3);
+  $this->{bkg_kw}         = Wx::SpinCtrl   -> new($this, -1, q{}, wxDefaultPosition, $tcsize, wxTE_PROCESS_ENTER|wxSP_ARROW_KEYS, 0, 3);
   $gbs -> Add($this->{bkg_kw_label},   Wx::GBPosition->new(1,3));
   $gbs -> Add($this->{bkg_kw},         Wx::GBPosition->new(1,4));
   push @bkg_parameters, qw(bkg_kw bkg_step bkg_fixstep);
@@ -196,9 +196,9 @@ sub bkg {
 
   ## pre edge line
   $this->{bkg_pre1_label} = Wx::StaticText   -> new($this, -1, "Pre-edge range");
-  $this->{bkg_pre1}       = Wx::TextCtrl     -> new($this, -1, q{}, wxDefaultPosition, $tcsize);
+  $this->{bkg_pre1}       = Wx::TextCtrl     -> new($this, -1, q{}, wxDefaultPosition, $tcsize, wxTE_PROCESS_ENTER);
   $this->{bkg_pre2_label} = Wx::StaticText   -> new($this, -1, "to");
-  $this->{bkg_pre2}       = Wx::TextCtrl     -> new($this, -1, q{}, wxDefaultPosition, $tcsize);
+  $this->{bkg_pre2}       = Wx::TextCtrl     -> new($this, -1, q{}, wxDefaultPosition, $tcsize, wxTE_PROCESS_ENTER);
   $this->{bkg_pre1_pluck} = Wx::BitmapButton -> new($this, -1, $bullseye);
   $this->{bkg_pre2_pluck} = Wx::BitmapButton -> new($this, -1, $bullseye);
   $gbs -> Add($this->{bkg_pre1_label}, Wx::GBPosition->new(0,0));
@@ -211,9 +211,9 @@ sub bkg {
 
   ## noirmalization line
   $this->{bkg_nor1_label} = Wx::StaticText   -> new($this, -1, "Normalization range");
-  $this->{bkg_nor1}       = Wx::TextCtrl     -> new($this, -1, q{}, wxDefaultPosition, $tcsize);
+  $this->{bkg_nor1}       = Wx::TextCtrl     -> new($this, -1, q{}, wxDefaultPosition, $tcsize, wxTE_PROCESS_ENTER);
   $this->{bkg_nor2_label} = Wx::StaticText   -> new($this, -1, "to");
-  $this->{bkg_nor2}       = Wx::TextCtrl     -> new($this, -1, q{}, wxDefaultPosition, $tcsize);
+  $this->{bkg_nor2}       = Wx::TextCtrl     -> new($this, -1, q{}, wxDefaultPosition, $tcsize, wxTE_PROCESS_ENTER);
   $this->{bkg_nor1_pluck} = Wx::BitmapButton -> new($this, -1, $bullseye);
   $this->{bkg_nor2_pluck} = Wx::BitmapButton -> new($this, -1, $bullseye);
   $gbs -> Add($this->{bkg_nor1_label}, Wx::GBPosition->new(1,0));
@@ -255,9 +255,9 @@ sub bkg {
 
   ## spline range in k
   $this->{bkg_spl1_label} = Wx::StaticText   -> new($this, -1, "Spline range in k");
-  $this->{bkg_spl1}       = Wx::TextCtrl     -> new($this, -1, q{}, wxDefaultPosition, $tcsize);
+  $this->{bkg_spl1}       = Wx::TextCtrl     -> new($this, -1, q{}, wxDefaultPosition, $tcsize, wxTE_PROCESS_ENTER);
   $this->{bkg_spl2_label} = Wx::StaticText   -> new($this, -1, "to");
-  $this->{bkg_spl2}       = Wx::TextCtrl     -> new($this, -1, q{}, wxDefaultPosition, $tcsize);
+  $this->{bkg_spl2}       = Wx::TextCtrl     -> new($this, -1, q{}, wxDefaultPosition, $tcsize, wxTE_PROCESS_ENTER);
   $this->{bkg_spl1_pluck} = Wx::BitmapButton -> new($this, -1, $bullseye);
   $this->{bkg_spl2_pluck} = Wx::BitmapButton -> new($this, -1, $bullseye);
   $gbs -> Add($this->{bkg_spl1_label}, Wx::GBPosition->new(2,0));
@@ -276,9 +276,9 @@ sub bkg {
 
   ## spline range in E
   $this->{bkg_spl1e_label} = Wx::StaticText   -> new($this, -1, "Spline range in E");
-  $this->{bkg_spl1e}       = Wx::TextCtrl     -> new($this, -1, q{}, wxDefaultPosition, $tcsize);
+  $this->{bkg_spl1e}       = Wx::TextCtrl     -> new($this, -1, q{}, wxDefaultPosition, $tcsize, wxTE_PROCESS_ENTER);
   $this->{bkg_spl2e_label} = Wx::StaticText   -> new($this, -1, "to");
-  $this->{bkg_spl2e}       = Wx::TextCtrl     -> new($this, -1, q{}, wxDefaultPosition, $tcsize);
+  $this->{bkg_spl2e}       = Wx::TextCtrl     -> new($this, -1, q{}, wxDefaultPosition, $tcsize, wxTE_PROCESS_ENTER);
   $this->{bkg_spl1e_pluck} = Wx::BitmapButton -> new($this, -1, $bullseye);
   $this->{bkg_spl2e_pluck} = Wx::BitmapButton -> new($this, -1, $bullseye);
   $gbs -> Add($this->{bkg_spl1e_label}, Wx::GBPosition->new(3,0));
@@ -311,6 +311,7 @@ sub bkg {
 		bkg_e0 bkg_rbkg bkg_kw));
   foreach my $x (qw(bkg_e0 bkg_rbkg bkg_kw bkg_pre1 bkg_pre2 bkg_nor1 bkg_nor2 bkg_step bkg_stan)) {
     EVT_TEXT($this, $this->{$x}, sub{OnParameter(@_, $app, $x)});
+    EVT_TEXT_ENTER($this, $this->{$x}, sub{OnTextEnter(@_, $app, $x)});
     next if (any {$x eq $_} qw(bkg_pre2 bkg_nor2 bkg_spl2 bkg_spl2e));
     EVT_RIGHT_DOWN($this->{$x.'_label'}, sub{ContextMenu(@_, $app, $x)});
     EVT_MENU($this->{$x.'_label'}, -1, sub{ $this->DoContextMenu(@_, $app, $x) });
@@ -365,17 +366,17 @@ sub fft {
   my $gbs = Wx::GridBagSizer->new( 5, 5 );
 
   $this->{fft_kmin_label} = Wx::StaticText   -> new($this, -1, "k-range");
-  $this->{fft_kmin}       = Wx::TextCtrl     -> new($this, -1, q{}, wxDefaultPosition, $tcsize);
+  $this->{fft_kmin}       = Wx::TextCtrl     -> new($this, -1, q{}, wxDefaultPosition, $tcsize, wxTE_PROCESS_ENTER);
   $this->{fft_kmin_pluck} = Wx::BitmapButton -> new($this, -1, $bullseye);
   $gbs -> Add($this->{fft_kmin_label}, Wx::GBPosition->new(0,0));
   $gbs -> Add($this->{fft_kmin},       Wx::GBPosition->new(0,1));
   $gbs -> Add($this->{fft_kmin_pluck}, Wx::GBPosition->new(0,2));
 
   $this->{fft_kmax_label} = Wx::StaticText   -> new($this, -1, "to");
-  $this->{fft_kmax}       = Wx::TextCtrl     -> new($this, -1, q{}, wxDefaultPosition, $tcsize);
+  $this->{fft_kmax}       = Wx::TextCtrl     -> new($this, -1, q{}, wxDefaultPosition, $tcsize, wxTE_PROCESS_ENTER);
   $this->{fft_kmax_pluck} = Wx::BitmapButton -> new($this, -1, $bullseye);
   $this->{fft_dk_label}   = Wx::StaticText   -> new($this, -1, "dk");
-  $this->{fft_dk}         = Wx::TextCtrl     -> new($this, -1, q{}, wxDefaultPosition, $tcsize);
+  $this->{fft_dk}         = Wx::TextCtrl     -> new($this, -1, q{}, wxDefaultPosition, $tcsize, wxTE_PROCESS_ENTER);
   $gbs -> Add($this->{fft_kmax_label}, Wx::GBPosition->new(0,3));
   $gbs -> Add($this->{fft_kmax},       Wx::GBPosition->new(0,4));
   $gbs -> Add($this->{fft_kmax_pluck}, Wx::GBPosition->new(0,5));
@@ -386,7 +387,7 @@ sub fft {
   $this->{fft_kwindow}          = Wx::Choice     -> new($this, -1, wxDefaultPosition, wxDefaultSize,
 							[qw(Kaiser-Bessel Hanning Welch Parzen Sine Gaussian)]);
   $this->{fit_karb_value_label} = Wx::StaticText -> new($this, -1, q{arbitrary k-weight});
-  $this->{fit_karb_value}       = Wx::TextCtrl   -> new($this, -1, q{}, wxDefaultPosition, $tcsize);
+  $this->{fit_karb_value}       = Wx::TextCtrl   -> new($this, -1, q{}, wxDefaultPosition, $tcsize, wxTE_PROCESS_ENTER);
   $this->{fft_pc}               = Wx::CheckBox   -> new($this, -1, q{phase correction});
   $gbs -> Add($this->{fft_kwindow_label},    Wx::GBPosition->new(1,0));
   $gbs -> Add($this->{fft_kwindow},          Wx::GBPosition->new(1,1), Wx::GBSpan->new(1,3));
@@ -402,6 +403,7 @@ sub fft {
     foreach (qw(fft_kmin fft_kmax fft_dk fit_karb_value));
   foreach my $x (qw(fft_kmin fft_kmax fft_dk fit_karb_value)) {
     EVT_TEXT($this, $this->{$x}, sub{OnParameter(@_, $app, $x)});
+    EVT_TEXT_ENTER($this, $this->{$x}, sub{OnTextEnter(@_, $app, $x)});
     next if ($x eq 'fft_kmax');
     EVT_RIGHT_DOWN($this->{$x.'_label'}, sub{ContextMenu(@_, $app, $x)});
     EVT_MENU($this->{$x.'_label'}, -1, sub{ $this->DoContextMenu(@_, $app, $x) });
@@ -439,13 +441,13 @@ sub bft {
   my $gbs = Wx::GridBagSizer->new( 5, 5 );
 
   $this->{bft_rmin_label} = Wx::StaticText   -> new($this, -1, "R-range");
-  $this->{bft_rmin}       = Wx::TextCtrl     -> new($this, -1, q{}, wxDefaultPosition, $tcsize);
+  $this->{bft_rmin}       = Wx::TextCtrl     -> new($this, -1, q{}, wxDefaultPosition, $tcsize, wxTE_PROCESS_ENTER);
   $this->{bft_rmin_pluck} = Wx::BitmapButton -> new($this, -1, $bullseye);
   $this->{bft_rmax_label} = Wx::StaticText   -> new($this, -1, "to");
-  $this->{bft_rmax}       = Wx::TextCtrl     -> new($this, -1, q{}, wxDefaultPosition, $tcsize);
+  $this->{bft_rmax}       = Wx::TextCtrl     -> new($this, -1, q{}, wxDefaultPosition, $tcsize, wxTE_PROCESS_ENTER);
   $this->{bft_rmax_pluck} = Wx::BitmapButton -> new($this, -1, $bullseye);
-  $this->{bft_dr_label}   = Wx::StaticText -> new($this, -1, "dR");
-  $this->{bft_dr}         = Wx::TextCtrl   -> new($this, -1, q{}, wxDefaultPosition, $tcsize);
+  $this->{bft_dr_label}   = Wx::StaticText   -> new($this, -1, "dR");
+  $this->{bft_dr}         = Wx::TextCtrl     -> new($this, -1, q{}, wxDefaultPosition, $tcsize, wxTE_PROCESS_ENTER);
   $gbs -> Add($this->{bft_rmin_label}, Wx::GBPosition->new(0,0));
   $gbs -> Add($this->{bft_rmin},       Wx::GBPosition->new(0,1));
   $gbs -> Add($this->{bft_rmin_pluck}, Wx::GBPosition->new(0,2));
@@ -469,6 +471,7 @@ sub bft {
     foreach (qw(bft_rmin bft_rmax bft_dr));
   foreach my $x (qw(bft_rmin bft_rmax bft_dr)) {
     EVT_TEXT($this, $this->{$x}, sub{OnParameter(@_, $app, $x)});
+    EVT_TEXT_ENTER($this, $this->{$x}, sub{OnTextEnter(@_, $app, $x)});
     next if ($x eq 'bft_rmax');
     EVT_RIGHT_DOWN($this->{$x.'_label'}, sub{ContextMenu(@_, $app, $x)});
     EVT_MENU($this->{$x.'_label'}, -1, sub{ $this->DoContextMenu(@_, $app, $x) });
@@ -502,9 +505,9 @@ sub plot {
 
   my $pbox = Wx::BoxSizer->new( wxHORIZONTAL );
   $this->{plot_multiplier_label} = Wx::StaticText->new($this, -1, "Plot multiplier");
-  $this->{plot_multiplier}       = Wx::TextCtrl  ->new($this, -1, q{}, wxDefaultPosition, $tcsize);
+  $this->{plot_multiplier}       = Wx::TextCtrl  ->new($this, -1, q{}, wxDefaultPosition, $tcsize, wxTE_PROCESS_ENTER);
   $this->{'y_offset_label'}        = Wx::StaticText->new($this, -1, "y-axis offset");
-  $this->{'y_offset'}              = Wx::TextCtrl  ->new($this, -1, q{}, wxDefaultPosition, $tcsize);
+  $this->{'y_offset'}              = Wx::TextCtrl  ->new($this, -1, q{}, wxDefaultPosition, $tcsize, wxTE_PROCESS_ENTER);
   $pbox -> Add($this->{plot_multiplier_label}, 0, wxALL,    5);
   $pbox -> Add($this->{plot_multiplier},       0, wxRIGHT, 10);
   $pbox -> Add($this->{'y_offset_label'},      0, wxALL,    5);
@@ -515,6 +518,7 @@ sub plot {
     foreach (qw(plot_multiplier y_offset));
   foreach my $x (qw(plot_multiplier y_offset)) {
     EVT_TEXT($this, $this->{$x}, sub{OnParameter(@_, $app, $x)});
+    EVT_TEXT_ENTER($this, $this->{$x}, sub{OnTextEnter(@_, $app, $x)});
     EVT_RIGHT_DOWN($this->{$x.'_label'}, sub{ContextMenu(@_, $app, $x)});
     EVT_MENU($this->{$x.'_label'}, -1, sub{ $this->DoContextMenu(@_, $app, $x) });
   };
@@ -566,7 +570,7 @@ sub mode {
     };
   };
 
-  foreach my $w (qw(bkg_algorithm bkg_fixstep)) {
+  foreach my $w (qw(bkg_algorithm)) {
     $this->set_widget_state($w, 0);
   };
 
@@ -592,6 +596,7 @@ sub set_widget_state {
 
 sub push_values {
   my ($this, $data) = @_;
+  my $is_fixed = $data->bkg_fixstep;
   foreach my $w (@group_params, @plot_parameters, @bkg_parameters, @fft_parameters, @bft_parameters) {
     next if ($w =~ m{(?:label|pluck|file)\z});
     #print($w.$/), 
@@ -612,6 +617,9 @@ sub push_values {
   #$this->{bft_rwindow}-> SetStringSelection($this->window_name($data->bft_rwindow));
   my $nnorm = $data->bkg_nnorm;
   $this->{'bkg_nnorm_'.$nnorm}->SetValue(1);
+
+  ## handle fixed step correctly
+  $this->{bkg_fixstep}->SetValue($is_fixed);
 
   ## standard
   $this->{bkg_stan}->fill($::app, 1, 0);
@@ -722,10 +730,36 @@ sub OnParameter {
   if ($which eq 'bkg_stan') {
     my $stan = $app->{main}->{Main}->{bkg_stan}->GetClientData($value);
     $data->bkg_stan($stan->group);
+
+    ##### implementing aninteraction between step and normalization
+    ##### TextCtrl windows as suggested by Scott Calvin by email 13
+    ##### June 2011
+    # Changing the value in the edge step box should automatically check the
+    # "fix" button. Changing values in the pre-edge or normalization boxes
+    # should immediately uncheck the "fix" button and recalculate the edge
+    # step.
+  } elsif ($which eq 'bkg_step') {
+    $data->bkg_fixstep(1);
+    $app->{main}->{Main}->{bkg_fixstep}->SetValue(1);
+    $data->$which($value)
+  } elsif ($which =~ m{bkg_(?:nor|pre)}) {
+    $data->bkg_fixstep(0);
+    $app->{main}->{Main}->{bkg_fixstep}->SetValue(0);
+    $data->$which($value)
+
   } elsif ($which !~ m{nnorm}) {
     $data->$which($value)
   };
   $app->modified(1);
+  #$widget->SetFocus;
+};
+
+sub OnTextEnter {
+  my ($main, $event, $app, $which) = @_;
+  $app->plot(q{}, q{}, 'E', 'single') if ($which =~ m{\Abkg});
+  $app->plot(q{}, q{}, 'R', 'single') if ($which =~ m{\Afft});
+  $app->plot(q{}, q{}, 'q', 'single') if ($which =~ m{\Abft});
+  $app->plot(q{}, q{}, @{$app->{lastplot}}) if (($which eq 'plot_multiplier') or ($which eq 'y_offset'));
 };
 
 sub OnAbsorber {

@@ -5,7 +5,7 @@ use warnings;
 
 use Wx qw( :everything );
 use base 'Wx::Panel';
-use Wx::Event qw(EVT_BUTTON EVT_CHOICE);
+use Wx::Event qw(EVT_BUTTON EVT_CHOICE EVT_TEXT_ENTER);
 use Wx::Perl::TextValidator;
 
 use Demeter::UI::Wx::SpecialCharacters qw(:all);
@@ -39,9 +39,9 @@ sub new {
   $this->{group}   = Wx::StaticText->new($this, -1, q{});
   $this->{display} = Wx::Choice->new($this, -1, wxDefaultPosition, wxDefaultSize,
 				     ["$MU(E)", 'norm(E)', 'deriv(E)', 'second(E)']);
-  $this->{smooth}  = Wx::SpinCtrl->new($this, -1, 0,  wxDefaultPosition, $tcsize, wxSP_ARROW_KEYS, 0, 10);
-  $this->{e0}      = Wx::TextCtrl->new($this, -1, 0,  wxDefaultPosition, $tcsize);
-  $this->{cal}     = Wx::TextCtrl->new($this, -1, 0,  wxDefaultPosition, $tcsize);
+  $this->{smooth}  = Wx::SpinCtrl->new($this, -1, 0,  wxDefaultPosition, $tcsize, wxSP_ARROW_KEYS|wxTE_PROCESS_ENTER, 0, 10);
+  $this->{e0}      = Wx::TextCtrl->new($this, -1, 0,  wxDefaultPosition, $tcsize, wxTE_PROCESS_ENTER);
+  $this->{cal}     = Wx::TextCtrl->new($this, -1, 0,  wxDefaultPosition, $tcsize, wxTE_PROCESS_ENTER);
 
   $gbs->Add($this->{group},   Wx::GBPosition->new(0,1));
   $gbs->Add($this->{display}, Wx::GBPosition->new(1,1));
@@ -62,6 +62,9 @@ sub new {
   EVT_BUTTON($this, $this->{zero},      sub{OnFindZeroCrossing(@_, $app)});
   EVT_BUTTON($this, $this->{select},    sub{Pluck(@_, $app)});
   EVT_BUTTON($this, $this->{calibrate}, sub{OnCalibrate(@_, $app)});
+  foreach my $x (qw(smooth e0 cal)) {
+    EVT_TEXT_ENTER($this, $this->{$x}, sub{$this->plot($app->current_data)});
+  };
 
   $this->{e0}  -> SetValidator( Wx::Perl::TextValidator->new( qr([-0-9.]) ) );
   $this->{cal} -> SetValidator( Wx::Perl::TextValidator->new( qr([-0-9.]) ) );

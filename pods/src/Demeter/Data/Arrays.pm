@@ -203,6 +203,7 @@ sub points {
     @y = $self->get_array($args{suffix});
   };
   if (defined $args{weight}) {
+    $args{weight} || 0;
     @y = pairwise {$args{scale}*$a**$args{weight}*$b + $args{yoffset}} @k, @y;
   } else {
     @y = map {$args{scale}*$_ + $args{yoffset}} @y;

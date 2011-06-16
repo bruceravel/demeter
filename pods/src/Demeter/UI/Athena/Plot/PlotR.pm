@@ -6,7 +6,7 @@ use warnings;
 use Wx qw( :everything );
 use base 'Wx::Panel';
 use Wx::Event qw(EVT_LIST_ITEM_ACTIVATED EVT_LIST_ITEM_SELECTED EVT_BUTTON  EVT_KEY_DOWN
-		 EVT_CHECKBOX EVT_RADIOBUTTON);
+		 EVT_CHECKBOX EVT_RADIOBUTTON EVT_TEXT_ENTER);
 use Wx::Perl::TextValidator;
 
 use Scalar::Util qw(looks_like_number);
@@ -123,12 +123,12 @@ sub new {
   $box -> Add($range, 0, wxALL|wxGROW, 0);
   my $label = Wx::StaticText->new($this, -1, "Rmin", wxDefaultPosition, [35,-1]);
   $this->{rmin} = Wx::TextCtrl ->new($this, -1, $Demeter::UI::Athena::demeter->co->default("plot", "rmin"),
-				     wxDefaultPosition, [50,-1]);
+				     wxDefaultPosition, [50,-1], wxTE_PROCESS_ENTER);
   $range -> Add($label,        0, wxALL, 5);
   $range -> Add($this->{rmin}, 1, wxRIGHT, 10);
   $label = Wx::StaticText->new($this, -1, "Rmax", wxDefaultPosition, [35,-1]);
   $this->{rmax} = Wx::TextCtrl ->new($this, -1, $Demeter::UI::Athena::demeter->co->default("plot", "rmax"),
-				     wxDefaultPosition, [50,-1]);
+				     wxDefaultPosition, [50,-1], wxTE_PROCESS_ENTER);
   $range -> Add($label,        0, wxALL, 5);
   $range -> Add($this->{rmax}, 1, wxRIGHT, 10);
 
@@ -137,11 +137,20 @@ sub new {
   $this->{$_}->SetBackgroundColour( Wx::Colour->new($Demeter::UI::Athena::demeter->co->default("athena", "marked")) )
     foreach (qw(mmag mre mim mpha));
 
-  $this->{$_} -> SetValidator( Wx::Perl::TextValidator->new( qr([0-9.]) ) )
-    foreach (qw(rmin rmax));
+  foreach my $x (qw(rmin rmax)) {
+    $this->{$x} -> SetValidator( Wx::Perl::TextValidator->new( qr([0-9.]) ) );
+    EVT_TEXT_ENTER($this, $this->{$x}, sub{OnTextEnter(@_, $::app, $x)});
+  };
 
   $this->SetSizerAndFit($box);
   return $this;
+};
+
+sub OnTextEnter {
+  my ($main, $event, $app, $which) = @_;
+  my @list = $app->marked_groups;
+  my $how = (@list) ? 'marked' : 'single';
+  $app->plot(q{}, q{}, 'R', $how);
 };
 
 sub label {

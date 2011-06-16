@@ -167,18 +167,16 @@ for computing the residual arrays are made.</p></dd>
 </pre></dd>		<dd><p>A number of sanity checks are made on the fitting model before the fit is
 performed.  For the complete list of these sanity checks, see
 <a href="Fit/Sanity.pm.html">Demeter::Fit::Sanity</a>.</p></dd>
-	<dt><code>ff2chi</code></dt>
-		<dd><p>This method is exactly like the fit method, except that the command
-returned perform a sum over paths rather than a fit.  All the same
-sanity checks are run.</p></dd>
-		<dd><p>This takes one argument -- the Data object from the <code>data</code> attribute
-whose paths are to be summed.</p></dd>
-<dd><pre>   $fitobject -&gt; ff2chi($data);
+	<dt><code>sum</code></dt>
+		<dd><p>This method returns a VPath object containing all paths associated
+with the fit and with the specified Data object.  If the data argument
+is not supplied, the first data set in the <code>data</code> attribute will be
+used.  Ths, for a one-data-set fit, the data argument is optional.</p></dd>
+<dd><pre>  my $sum = $fit-&gt;sum($data);
+  $data -&gt; plot('r');
+  $sum  -&gt; plot('r');
 
-</pre></dd>		<dd><p>It is useful to remember that a fit can be one a single data set or on
-multiple data sets.  An ff2chi is always on a single data set.</p></dd>
-		<dd><p><code>sum</code> is an alias for <code>ff2chi</code>;</p></dd>
-	<dt><code>rm</code></dt>
+</pre></dd>	<dt><code>rm</code></dt>
 		<dd><p>Clean up all on-disk trace of this fit project, typically at the end
 of script involving deserialization of project file.</p></dd>
 <dd><pre>  $fitobject -&gt; rm;
@@ -236,12 +234,6 @@ of the log file.</p></dd>
 </pre></dd>		<dd><p>An exception is thrown is the argument is not one of the following:</p></dd>
 <dd><pre>   n_idp n_varys chi_square chi_reduced r_factor
    epsilon_k epsilon_r data_total
-
-</pre></dd>	<dt><code>statistics_report</code></dt>
-		<dd><p>This method returns a block of text summarizing all the fitting
-statistics, assuming the <code>evaluate</code> method has been called.  This
-method is used by the <code>logfile</code> method.</p></dd>
-<dd><pre>   $text = $fitobject -&gt; statistics_report;
 
 </pre></dd>	<dt><code>correl</code></dt>
 		<dd><p>This returns the correlation between any two parameters, assuming the

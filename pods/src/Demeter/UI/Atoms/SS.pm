@@ -9,7 +9,7 @@ use base 'Wx::Panel';
 
 use Wx::Event qw(EVT_CHOICE EVT_KEY_DOWN EVT_MENU EVT_TOOL_ENTER EVT_BUTTON
 		 EVT_ENTER_WINDOW EVT_LEAVE_WINDOW EVT_RADIOBOX
-		 EVT_LEFT_DOWN EVT_LIST_BEGIN_DRAG);
+		 EVT_LEFT_DOWN EVT_LIST_BEGIN_DRAG EVT_TEXT_ENTER);
 use Wx::Perl::TextValidator;
 
 use List::MoreUtils qw(uniq);
@@ -53,13 +53,13 @@ sub _ss {
 
   my $hbox = Wx::BoxSizer->new( wxHORIZONTAL );
   $hbox -> Add( Wx::StaticText->new($page, -1, "Name: "), 0, wxALL, 7);
-  $self->{ss_name} = Wx::TextCtrl->new($page, -1, q{});
+  $self->{ss_name} = Wx::TextCtrl->new($page, -1, q{}, wxDefaultPosition, wxDefaultSize, wxTE_PROCESS_ENTER);
   $hbox -> Add( $self->{ss_name}, 1, wxGROW|wxALL, 5);
   $vbox -> Add( $hbox, 0, wxGROW|wxLEFT|wxRIGHT, 20 );
 
   $hbox = Wx::BoxSizer->new( wxHORIZONTAL );
   $hbox -> Add( Wx::StaticText->new($page, -1, "Distance: "), 0, wxALL, 7);
-  $self->{ss_reff} = Wx::TextCtrl->new($page, -1, q{3.0});
+  $self->{ss_reff} = Wx::TextCtrl->new($page, -1, q{3.0}, wxDefaultPosition, wxDefaultSize, wxTE_PROCESS_ENTER);
   $hbox -> Add( $self->{ss_reff}, 0, wxALL, 5);
   $vbox -> Add( $hbox, 0, wxGROW|wxLEFT|wxRIGHT, 20 );
 
@@ -125,17 +125,17 @@ sub _histo {
   my $hbox = Wx::BoxSizer->new( wxHORIZONTAL );
   $ssboxsizer -> Add($hbox, 0, wxGROW|wxLEFT|wxRIGHT, 10);
   $self -> {histo_ss_rminlab} = Wx::StaticText -> new($scrl, -1, "Rmin");
-  $self -> {histo_ss_rmin}    = Wx::TextCtrl   -> new($scrl, -1, 1.0, @PosSize,);
+  $self -> {histo_ss_rmin}    = Wx::TextCtrl   -> new($scrl, -1, 1.0, @PosSize, wxTE_PROCESS_ENTER);
   $hbox -> Add($self->{histo_ss_rminlab},   0, wxALL|wxALIGN_CENTRE_VERTICAL, 5);
   $hbox -> Add($self->{histo_ss_rmin},      0, wxALL|wxALIGN_CENTRE_VERTICAL, 5);
 
   $self -> {histo_ss_rmaxlab} = Wx::StaticText -> new($scrl, -1, "Rmax");
-  $self -> {histo_ss_rmax}    = Wx::TextCtrl   -> new($scrl, -1, 3.5, @PosSize,);
+  $self -> {histo_ss_rmax}    = Wx::TextCtrl   -> new($scrl, -1, 3.5, @PosSize, wxTE_PROCESS_ENTER);
   $hbox -> Add($self->{histo_ss_rmaxlab},   0, wxALL|wxALIGN_CENTRE_VERTICAL, 5);
   $hbox -> Add($self->{histo_ss_rmax},      0, wxALL|wxALIGN_CENTRE_VERTICAL, 5);
 
   $self -> {histo_ss_binlab} = Wx::StaticText -> new($scrl, -1, "Bin size");
-  $self -> {histo_ss_bin}    = Wx::TextCtrl   -> new($scrl, -1, 0.005, @PosSize,);
+  $self -> {histo_ss_bin}    = Wx::TextCtrl   -> new($scrl, -1, 0.005, @PosSize, wxTE_PROCESS_ENTER);
   $hbox -> Add($self->{histo_ss_binlab},    0, wxALL|wxALIGN_CENTRE_VERTICAL, 5);
   $hbox -> Add($self->{histo_ss_bin},       0, wxALL|wxALIGN_CENTRE_VERTICAL, 5);
 
@@ -173,9 +173,9 @@ sub _histo {
   $hbox = Wx::BoxSizer->new( wxHORIZONTAL );
   $nclboxsizer -> Add($hbox, 0, wxGROW|wxLEFT|wxRIGHT, 10);
   $self -> {histo_ncl_rbinlab}    = Wx::StaticText -> new($scrl, -1, "Radial bin size");
-  $self -> {histo_ncl_rbin}       = Wx::TextCtrl   -> new($scrl, -1, 1.0, @PosSize,);
+  $self -> {histo_ncl_rbin}       = Wx::TextCtrl   -> new($scrl, -1, 1.0, @PosSize, wxTE_PROCESS_ENTER);
   $self -> {histo_ncl_betabinlab} = Wx::StaticText -> new($scrl, -1, "Angular bin size");
-  $self -> {histo_ncl_betabin}    = Wx::TextCtrl   -> new($scrl, -1, 1.0, @PosSize,);
+  $self -> {histo_ncl_betabin}    = Wx::TextCtrl   -> new($scrl, -1, 1.0, @PosSize, wxTE_PROCESS_ENTER);
   $hbox -> Add($self->{histo_ncl_rbinlab},    0, wxALL|wxALIGN_CENTRE_VERTICAL, 5);
   $hbox -> Add($self->{histo_ncl_rbin},       0, wxALL|wxALIGN_CENTRE_VERTICAL, 5);
   $hbox -> Add($self->{histo_ncl_betabinlab}, 0, wxALL|wxALIGN_CENTRE_VERTICAL, 5);
@@ -193,8 +193,8 @@ sub _histo {
   EVT_RADIOBOX($self, $self->{histo_ncl_ipot1}, sub{set_name(@_,'histo_ncl1')});
   $hbox -> Add( $self->{histo_ncl_ipot1}, 0, wxALL|wxALIGN_CENTRE_VERTICAL, 5 );
 
-  $self -> {histo_ncl_r1}    = Wx::TextCtrl   -> new($scrl, -1, 1.0, @PosSize,);
-  $self -> {histo_ncl_r2}    = Wx::TextCtrl   -> new($scrl, -1, 1.0, @PosSize,);
+  $self -> {histo_ncl_r1}    = Wx::TextCtrl   -> new($scrl, -1, 1.0, @PosSize, wxTE_PROCESS_ENTER);
+  $self -> {histo_ncl_r2}    = Wx::TextCtrl   -> new($scrl, -1, 1.0, @PosSize, wxTE_PROCESS_ENTER);
   $hbox -> Add(Wx::StaticText -> new($scrl, -1, "R1:"), 0, wxALL|wxALIGN_CENTRE_VERTICAL, 5);
   $hbox -> Add($self->{histo_ncl_r1},                   0, wxALL|wxALIGN_CENTRE_VERTICAL, 5);
   $hbox -> Add(Wx::StaticText -> new($scrl, -1, "R2:"), 0, wxALL|wxALIGN_CENTRE_VERTICAL, 5);
@@ -208,8 +208,8 @@ sub _histo {
   EVT_RADIOBOX($self, $self->{histo_ncl_ipot2}, sub{set_name(@_,'histo_ncl2')});
   $hbox -> Add( $self->{histo_ncl_ipot2}, 0, wxALL|wxALIGN_CENTRE_VERTICAL, 5 );
 
-  $self -> {histo_ncl_r3}    = Wx::TextCtrl   -> new($scrl, -1, 1.0, @PosSize,);
-  $self -> {histo_ncl_r4}    = Wx::TextCtrl   -> new($scrl, -1, 1.0, @PosSize,);
+  $self -> {histo_ncl_r3}    = Wx::TextCtrl   -> new($scrl, -1, 1.0, @PosSize, wxTE_PROCESS_ENTER);
+  $self -> {histo_ncl_r4}    = Wx::TextCtrl   -> new($scrl, -1, 1.0, @PosSize, wxTE_PROCESS_ENTER);
   $hbox -> Add(Wx::StaticText -> new($scrl, -1, "R3:"), 0, wxALL|wxALIGN_CENTRE_VERTICAL, 5);
   $hbox -> Add($self->{histo_ncl_r3},                   0, wxALL|wxALIGN_CENTRE|wxALIGN_CENTRE_VERTICAL, 5);
   $hbox -> Add(Wx::StaticText -> new($scrl, -1, "R4:"), 0, wxALL|wxALIGN_CENTRE_VERTICAL, 5);
@@ -232,9 +232,9 @@ sub _histo {
   $hbox = Wx::BoxSizer->new( wxHORIZONTAL );
   $thruboxsizer -> Add($hbox, 0, wxGROW|wxLEFT|wxRIGHT, 10);
   $self -> {histo_thru_rbinlab}    = Wx::StaticText -> new($scrl, -1, "Radial bin size");
-  $self -> {histo_thru_rbin}       = Wx::TextCtrl   -> new($scrl, -1, 1.0, @PosSize,);
+  $self -> {histo_thru_rbin}       = Wx::TextCtrl   -> new($scrl, -1, 1.0, @PosSize, wxTE_PROCESS_ENTER);
   $self -> {histo_thru_betabinlab} = Wx::StaticText -> new($scrl, -1, "Angular bin size");
-  $self -> {histo_thru_betabin}    = Wx::TextCtrl   -> new($scrl, -1, 1.0, @PosSize,);
+  $self -> {histo_thru_betabin}    = Wx::TextCtrl   -> new($scrl, -1, 1.0, @PosSize, wxTE_PROCESS_ENTER);
   $hbox -> Add($self->{histo_thru_rbinlab},    0, wxALL|wxALIGN_CENTRE_VERTICAL, 5);
   $hbox -> Add($self->{histo_thru_rbin},       0, wxALL|wxALIGN_CENTRE_VERTICAL, 5);
   $hbox -> Add($self->{histo_thru_betabinlab}, 0, wxALL|wxALIGN_CENTRE_VERTICAL, 5);
@@ -246,8 +246,8 @@ sub _histo {
 
   $hbox = Wx::BoxSizer->new( wxHORIZONTAL );
   $thruboxsizer -> Add($hbox, 0, wxGROW|wxLEFT|wxRIGHT, 10);
-  $self -> {histo_thru_rmin} = Wx::TextCtrl   -> new($scrl, -1, 1.0, @PosSize,);
-  $self -> {histo_thru_rmax} = Wx::TextCtrl   -> new($scrl, -1, 1.0, @PosSize,);
+  $self -> {histo_thru_rmin} = Wx::TextCtrl   -> new($scrl, -1, 1.0, @PosSize, wxTE_PROCESS_ENTER);
+  $self -> {histo_thru_rmax} = Wx::TextCtrl   -> new($scrl, -1, 1.0, @PosSize, wxTE_PROCESS_ENTER);
   $hbox -> Add(Wx::StaticText -> new($scrl, -1, "Rmin:"), 0, wxALL|wxALIGN_CENTRE_VERTICAL, 5);
   $hbox -> Add($self->{histo_thru_rmin},                  0, wxALL|wxALIGN_CENTRE_VERTICAL, 5);
   $hbox -> Add(Wx::StaticText -> new($scrl, -1, "Rmax:"), 0, wxALL|wxALIGN_CENTRE_VERTICAL, 5);
@@ -339,7 +339,8 @@ sub histoplot {
     return;
   };
 
-  my $dlp = Demeter::Feff::Distributions->new(rmin=>$rmin, rmax=>$rmax, bin=>$bin, type=>'ss');
+  my $dlp = Demeter::Feff::Distributions->new(rmin=>$rmin, rmax=>$rmax, bin=>$bin, type=>'ss',
+					      feff=>$this->{parent}->{Feff}->{feffobject});
   my $persist = File::Spec->catfile($dlp->dot_folder, 'demeter.histograms');
   YAML::Tiny::DumpFile($persist, $this->{histoyaml});
 
@@ -383,7 +384,8 @@ sub scatterplot {
   };
 
   my $histo = Demeter::Feff::Distributions->new(type=>'ncl');
-  $histo->set(r1=>$r1, r2=>$r2, r3=>$r3, r4=>$r4, rbin=>$rbin, betabin=>$betabin);
+  $histo->set(r1=>$r1, r2=>$r2, r3=>$r3, r4=>$r4, rbin=>$rbin, betabin=>$betabin,
+	      feff=>$this->{parent}->{Feff}->{feffobject});
 
   my $persist = File::Spec->catfile($histo->dot_folder, 'demeter.histograms');
   YAML::Tiny::DumpFile($persist, $this->{histoyaml});

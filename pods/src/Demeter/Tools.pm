@@ -149,6 +149,8 @@ sub who {
 sub slurp {
   my ($class, $file) = @_;
   local $/;
+  return q{} if (not -e $file);
+  return q{} if (not -r $file);
   open(my $FH, $file);
   my $text = <$FH>;
   close $FH;

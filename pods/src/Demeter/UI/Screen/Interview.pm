@@ -84,7 +84,7 @@ sub I_data_report {
 };
 sub I_stats {
   my ($fit) = @_;
-  $message = $fit->statistics_report;
+  $message = $fit->template("report", "statistics");
   return 0;
 };
 
@@ -110,8 +110,8 @@ sub I_query {
   print BOLD, GREEN, " 2", RESET, ") plot space      = ", $space,            "\t\t\t";
   print BOLD, GREEN, " s", RESET, ") show fit statistics\n";
 
-  print BOLD, GREEN, " 3", RESET, ") R part          = ", $plot->r_pl,       "\t\t";
-  print "\t" if ($plot->r_pl ne 'rmr');
+  print BOLD, GREEN, " 3", RESET, ") R part          = ", $plot->r_pl,       "\t";
+  print "\t\t" if ($plot->r_pl ne 'rmr');
   print BOLD, GREEN, "d#", RESET, ") show fit parameters\n";
 
   print BOLD, GREEN, " 4", RESET, ") q part          = ", $plot->q_pl,       "\t\t\t";

@@ -73,7 +73,7 @@ use Wx qw( :everything );
 use base 'Wx::Panel';
 use Wx::Grid;
 use Wx::Event qw(EVT_CHOICE EVT_KEY_DOWN EVT_MENU EVT_TOOL_ENTER EVT_ENTER_WINDOW
-		 EVT_LEAVE_WINDOW EVT_TOOL_RCLICKED
+		 EVT_LEAVE_WINDOW EVT_TOOL_RCLICKED EVT_TEXT_ENTER
 		 EVT_GRID_CELL_LEFT_CLICK EVT_GRID_CELL_RIGHT_CLICK EVT_GRID_LABEL_RIGHT_CLICK);
 use Demeter::UI::Wx::MRU;
 use Demeter::UI::Wx::SpecialCharacters qw(:all);
@@ -171,14 +171,14 @@ sub new {
   my $hh = Wx::BoxSizer->new( wxHORIZONTAL );
   $spacebox -> Add($hh, 1, wxEXPAND|wxALL, 0);
   my $label      = Wx::StaticText->new($self, -1, 'Name', wxDefaultPosition, [-1,-1]);
-  $self->{name}  = Wx::TextCtrl  ->new($self, -1, q{}, wxDefaultPosition, [$width*7,-1]);
+  $self->{name}  = Wx::TextCtrl  ->new($self, -1, q{}, wxDefaultPosition, [$width*7,-1], wxTE_PROCESS_ENTER);
   $hh->Add($label,        0, wxEXPAND|wxALL, 5);
   $hh->Add($self->{name}, 1, wxEXPAND|wxALL, 5);
 
   $hh = Wx::BoxSizer->new( wxHORIZONTAL );
   $spacebox -> Add($hh, 1, wxEXPAND|wxALL, 0);
   $label      = Wx::StaticText->new($self, -1, 'Space Group', wxDefaultPosition, [-1,-1]);
-  $self->{space} = Wx::TextCtrl  ->new($self, -1, q{}, wxDefaultPosition, [$width*7,-1]);
+  $self->{space} = Wx::TextCtrl  ->new($self, -1, q{}, wxDefaultPosition, [$width*7,-1], wxTE_PROCESS_ENTER);
   $hh->Add($label,        0, wxEXPAND|wxALL, 5);
   $hh->Add($self->{space}, 1, wxEXPAND|wxALL, 5);
 
@@ -220,32 +220,32 @@ sub new {
   my $tsz = Wx::GridBagSizer->new( 6, 10 );
 
   $label = Wx::StaticText->new($self, -1, 'A', wxDefaultPosition, [$width,-1]);
-  $self->{a} = Wx::TextCtrl->new($self, -1, q{}, wxDefaultPosition, [$width*7,-1]);
+  $self->{a} = Wx::TextCtrl->new($self, -1, q{}, wxDefaultPosition, [$width*7,-1], wxTE_PROCESS_ENTER);
   $tsz -> Add($label,    Wx::GBPosition->new(0,0));
   $tsz -> Add($self->{a},Wx::GBPosition->new(0,1));
 
   $label = Wx::StaticText->new($self, -1, 'B', wxDefaultPosition, [$width,-1]);
-  $self->{b} = Wx::TextCtrl->new($self, -1, q{}, wxDefaultPosition, [$width*7,-1]);
+  $self->{b} = Wx::TextCtrl->new($self, -1, q{}, wxDefaultPosition, [$width*7,-1], wxTE_PROCESS_ENTER);
   $tsz -> Add($label,    Wx::GBPosition->new(0,2));
   $tsz -> Add($self->{b},Wx::GBPosition->new(0,3));
 
   $label     = Wx::StaticText->new($self, -1, 'C', wxDefaultPosition, [$width,-1]);
-  $self->{c} = Wx::TextCtrl->new($self, -1, q{}, wxDefaultPosition, [$width*7,-1]);
+  $self->{c} = Wx::TextCtrl->new($self, -1, q{}, wxDefaultPosition, [$width*7,-1], wxTE_PROCESS_ENTER);
   $tsz -> Add($label,    Wx::GBPosition->new(0,4));
   $tsz -> Add($self->{c},Wx::GBPosition->new(0,5));
 
   $label         = Wx::StaticText->new($self, -1, $ALPHA, wxDefaultPosition, [$width,-1]);
-  $self->{alpha} = Wx::TextCtrl  ->new($self, -1, q{}, wxDefaultPosition, [$width*7,-1]);
+  $self->{alpha} = Wx::TextCtrl  ->new($self, -1, q{}, wxDefaultPosition, [$width*7,-1], wxTE_PROCESS_ENTER);
   $tsz -> Add($label,        Wx::GBPosition->new(1,0));
   $tsz -> Add($self->{alpha},Wx::GBPosition->new(1,1));
 
   $label        = Wx::StaticText->new($self, -1, $BETA,  wxDefaultPosition, [$width,-1]);
-  $self->{beta} = Wx::TextCtrl  ->new($self, -1, q{}, wxDefaultPosition, [$width*7,-1]);
+  $self->{beta} = Wx::TextCtrl  ->new($self, -1, q{}, wxDefaultPosition, [$width*7,-1], wxTE_PROCESS_ENTER);
   $tsz -> Add($label,        Wx::GBPosition->new(1,2));
   $tsz -> Add($self->{beta}, Wx::GBPosition->new(1,3));
 
   $label         = Wx::StaticText->new($self, -1, $GAMMA, wxDefaultPosition, [$width,-1]);
-  $self->{gamma} = Wx::TextCtrl  ->new($self, -1, q{}, wxDefaultPosition, [$width*7,-1]);
+  $self->{gamma} = Wx::TextCtrl  ->new($self, -1, q{}, wxDefaultPosition, [$width*7,-1], wxTE_PROCESS_ENTER);
   $tsz -> Add($label,        Wx::GBPosition->new(1,4));
   $tsz -> Add($self->{gamma},Wx::GBPosition->new(1,5));
 
@@ -265,12 +265,12 @@ sub new {
 
   $label = Wx::StaticText->new($self, -1, 'Cluster size', wxDefaultPosition, [-1,-1]);
   $tsz -> Add($label,Wx::GBPosition->new(0,0));
-  $self->{rmax} = Wx::TextCtrl->new($self, -1, $atoms->rmax, wxDefaultPosition, [$width,-1]);
+  $self->{rmax} = Wx::TextCtrl->new($self, -1, $atoms->rmax, wxDefaultPosition, [$width,-1], wxTE_PROCESS_ENTER);
   $tsz -> Add($self->{rmax},Wx::GBPosition->new(0,1));
 
   $label = Wx::StaticText->new($self, -1, 'Longest path', wxDefaultPosition, [-1,-1]);
   $tsz -> Add($label,Wx::GBPosition->new(0,2));
-  $self->{rpath} = Wx::TextCtrl->new($self, -1, $atoms->rpath, wxDefaultPosition, [$width,-1]);
+  $self->{rpath} = Wx::TextCtrl->new($self, -1, $atoms->rpath, wxDefaultPosition, [$width,-1], wxTE_PROCESS_ENTER);
   $tsz -> Add($self->{rpath},Wx::GBPosition->new(0,3));
 
   $self->{Rboxsizer} -> Add($tsz, 0, wxGROW|wxALL, 5);
@@ -288,11 +288,11 @@ sub new {
 
   $label = Wx::StaticText->new($self, -1, 'Shift', wxDefaultPosition, [-1,-1]);
   $tsz -> Add($label,Wx::GBPosition->new(0,0));
-  $self->{shift_x} = Wx::TextCtrl->new($self, -1, 0, wxDefaultPosition, [$width,-1]);
+  $self->{shift_x} = Wx::TextCtrl->new($self, -1, 0, wxDefaultPosition, [$width,-1], wxTE_PROCESS_ENTER);
   $tsz -> Add($self->{shift_x},Wx::GBPosition->new(0,1));
-  $self->{shift_y} = Wx::TextCtrl->new($self, -1, 0, wxDefaultPosition, [$width,-1]);
+  $self->{shift_y} = Wx::TextCtrl->new($self, -1, 0, wxDefaultPosition, [$width,-1], wxTE_PROCESS_ENTER);
   $tsz -> Add($self->{shift_y},Wx::GBPosition->new(0,2));
-  $self->{shift_z} = Wx::TextCtrl->new($self, -1, 0, wxDefaultPosition, [$width,-1]);
+  $self->{shift_z} = Wx::TextCtrl->new($self, -1, 0, wxDefaultPosition, [$width,-1], wxTE_PROCESS_ENTER);
   $tsz -> Add($self->{shift_z},Wx::GBPosition->new(0,3));
 
   $self->{shiftboxsizer} -> Add($tsz, 0, wxGROW|wxALL, 5);
@@ -302,6 +302,9 @@ sub new {
   $self->set_hint($_) foreach (qw(a b c alpha beta gamma space rmax rpath
 				  shift_x shift_y shift_z edge template));
 
+  foreach my $x (qw(a b c alpha beta gamma name space rmax rpath shift_x shift_y shift_z edge template)) {
+    EVT_TEXT_ENTER($self, $self->{$x}, sub{1});
+  };
 
   $hbox = Wx::BoxSizer->new( wxHORIZONTAL );
   $self->{sitesgrid} = Demeter::UI::Atoms::Xtal::SiteList->new($self, -1);

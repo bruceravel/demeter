@@ -38,6 +38,7 @@ has 'template_fit'      => (is => 'rw', isa => 'Str', default => 'ifeffit');
 has 'template_analysis' => (is => 'rw', isa => 'Str', default => 'ifeffit');
 has 'template_plot'     => (is => 'rw', isa => 'Str', default => 'pgplot');
 has 'template_feff'     => (is => 'rw', isa => 'Str', default => 'feff6');
+has 'template_report'   => (is => 'rw', isa => 'Str', default => 'standard');
 # has 'template_process'  => (is => 'rw', isa => 'TemplateProcess',  default => 'ifeffit');
 # has 'template_fit'      => (is => 'rw', isa => 'TemplateFit',      default => 'ifeffit');
 # has 'template_analysis' => (is => 'rw', isa => 'TemplateAnalysis', default => 'ifeffit');
@@ -423,6 +424,8 @@ sub remove {
   if (($type eq 'Gnuplot') or ($type eq 'SingleFile')) {
     $object->end_plot;
     $type = 'Plot';
+  } elsif ($type eq 'External') {
+    $type = 'Feff';
   } elsif ($type eq 'Demeter') {
     return;
   } elsif ($type eq 'Distributions') {
@@ -493,7 +496,7 @@ sub report {
   $which ||= 'all';
   foreach my $this (sort @{$self->types}) {
     my $n = 19 - length($this);
-    $text .= sprintf("\n%s %s %d\n", $this, '.' x $n, $#{$self->$this}+1);
+    #$text .= sprintf("\n%s %s %d\n", $this, '.' x $n, $#{$self->$this}+1);
     if (($this eq $which) or ($which eq 'all')) {
       my $att = ($this eq 'ScatteringPath') ? 'intrpline'
 	      : ($this eq 'Plot')           ? 'backend'
@@ -502,9 +505,10 @@ sub report {
 	      :                               'name';
       my $i = 0;
       foreach my $obj (@{$self->$this}) {
-	$text .= sprintf("\t%3d (%s) : %s\n", ++$i, $obj->group, $obj->$att);
+	$text .= sprintf("%-14s %4d (%s) : %s\n", $this, ++$i, $obj->group, $obj->$att);
 	chop $text if ($this eq 'GDS');
       };
+      $text .= "\n" if $i;
     };
   };
   return $text

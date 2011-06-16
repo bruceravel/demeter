@@ -5,7 +5,7 @@ use warnings;
 
 use Wx qw( :everything );
 use base 'Wx::Panel';
-use Wx::Event qw(EVT_CHECKBOX EVT_RADIOBUTTON);
+use Wx::Event qw(EVT_CHECKBOX EVT_RADIOBUTTON EVT_TEXT_ENTER);
 use Wx::Perl::TextValidator;
 
 use Demeter::UI::Wx::SpecialCharacters qw(:all);
@@ -164,20 +164,29 @@ sub new {
   $box -> Add($range, 0, wxALL|wxGROW, 0);
   my $label = Wx::StaticText->new($this, -1, "Emin", wxDefaultPosition, [35,-1]);
   $this->{emin} = Wx::TextCtrl ->new($this, -1, $Demeter::UI::Athena::demeter->co->default("plot", "emin"),
-				     wxDefaultPosition, [50,-1]);
+				     wxDefaultPosition, [50,-1], wxTE_PROCESS_ENTER);
   $range -> Add($label,        0, wxALL, 5);
   $range -> Add($this->{emin}, 1, wxRIGHT, 10);
   $label = Wx::StaticText->new($this, -1, "Emax", wxDefaultPosition, [35,-1]);
   $this->{emax} = Wx::TextCtrl ->new($this, -1, $Demeter::UI::Athena::demeter->co->default("plot", "emax"),
-				     wxDefaultPosition, [50,-1]);
+				     wxDefaultPosition, [50,-1], wxTE_PROCESS_ENTER);
   $range -> Add($label,        0, wxALL, 5);
   $range -> Add($this->{emax}, 1, wxRIGHT, 10);
 
-  $this->{$_} -> SetValidator( Wx::Perl::TextValidator->new( qr([-0-9.]) ) )
-    foreach (qw(emin emax));
+  foreach my $x (qw(emin emax)) {
+    $this->{$x} -> SetValidator( Wx::Perl::TextValidator->new( qr([-0-9.]) ) );
+    EVT_TEXT_ENTER($this, $this->{$x}, sub{OnTextEnter(@_, $::app, $x)});
+  };
 
   $this->SetSizerAndFit($box);
   return $this;
+};
+
+sub OnTextEnter {
+  my ($main, $event, $app, $which) = @_;
+  my @list = $app->marked_groups;
+  my $how = (@list) ? 'marked' : 'single';
+  $app->plot(q{}, q{}, 'E', $how);
 };
 
 sub label {

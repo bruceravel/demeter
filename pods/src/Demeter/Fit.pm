@@ -27,6 +27,7 @@ use MooseX::Aliases;
 #use MooseX::StrictConstructor;
 
 with 'Demeter::Fit::Happiness';
+with 'Demeter::Fit::Horae';
 with 'Demeter::Fit::Sanity';
 
 if ($Demeter::mode->ui eq 'screen') {
@@ -68,6 +69,7 @@ has 'time_of_fit'    => (is => 'rw', isa => 'Str',    default => q{});  # should
 has 'prepared_by'    => (is => 'rw', isa => 'Str',    default => sub{ shift->who });
 has 'contact'        => (is => 'rw', isa => 'Str',    default => q{});
 has 'fitted'         => (is => 'rw', isa => 'Bool',   default => 0);
+has 'update_gds'     => (is => 'rw', isa => 'Bool',   default => 1);
 has 'number'         => (is => 'rw', isa => 'Num',    default => 0);
 
 ## -------- serialization/deserialization
@@ -100,7 +102,8 @@ has 'gds' => (
 			    'shift'   => 'shift_gds',
 			    'unshift' => 'unshift_gds',
 			    'clear'   => 'clear_gds',
-			   }
+			   },
+	      trigger => sub{my ($self) = @_; $self->update_gds(1)},
 	     );
 
 has 'data' => (
@@ -156,7 +159,9 @@ has 'epsilon_r'         => (is => 'rw', isa =>  NonNeg,   default => 0);
 has 'r_factor'          => (is => 'rw', isa =>  NonNeg,   default => 0);
 has 'chi_square'        => (is => 'rw', isa =>  NonNeg,   default => 0);
 has 'chi_reduced'       => (is => 'rw', isa =>  NonNeg,   default => 0);
-has 'fancyline'         => (is => 'rw', isa => 'Str',     default => "\n" . "=*" x 38 . "=\n\n");
+
+## deprecated and unused...
+has 'fancyline'         => (is => 'rw', isa => 'Str',     default => q{});
 
 has 'correlations' => (
 		       metaclass => 'Collection::Hash',
@@ -198,6 +203,17 @@ override 'alldone' => sub {
   $self->remove;
   rmtree $self->folder if (-d $self->folder);
 };
+
+override all => sub {
+  my ($self) = @_;
+  my %all = $self->SUPER::all;
+  delete $all{gds};
+  delete $all{data};
+  delete $all{paths};
+  delete $all{vpaths};
+  return %all;
+};
+
 
 sub rm {
   my ($self) = @_;
@@ -345,6 +361,7 @@ sub fit {
   foreach my $type (qw(guess lguess set def restrain)) {
     $command .= $self->_gds_commands($type);
   };
+  $self->update_gds(0);
 
   ## get a list of all data sets included in the fit
   my @datasets = @{ $self->data };
@@ -444,7 +461,11 @@ sub fit {
   $self->fitted(1);
   $self->mo->fit(q{});
   $self->mo->increment_fit;
-  #$_->update_fft(1) foreach (@datasets);
+
+  ## prep data for plotting
+  foreach my $data (@datasets) {
+    $data->update_fft(1);
+  };
 
   $self->stop_spinner if ($self->mo->ui eq 'screen');
 
@@ -452,85 +473,24 @@ sub fit {
 };
 alias feffit => 'fit';
 
-sub ff2chi {
+sub sum {
   my ($self, $data) = @_;
-  $self->start_spinner("Demeter is doing a summation of paths") if ($self->mo->ui eq 'screen');
-  my $prefit = $self->pre_fit;
-
-  my @alldata = @{ $self->data };
-  $data ||= $alldata[0];
-
-  $data -> fitting(1);
-
-  my $trouble_found = $self->_verify_fit;
-  if ($trouble_found) {
-    $self->stop(1);
-    my $text = $self->trouble_report;
-    carp($text);
-    $self->troubletext($text);
-    if (not $self->ignore_errors) {
-      if ($self->mo->ui eq 'Wx') {
-	return "This summation has unrecoverable errors";
-      } else {
-	croak("This summation has unrecoverable errors");
-      };
-    };
-  };
-  return "Tilt!" if $self->stop;
-  $self->dispose($prefit);
-
-
-  $self->mo->fit($self);
-  my $command = q{};
-  foreach my $type (qw(guess set def restrain)) {
-    $command .= $self->_gds_commands($type);
-  };
-  ## munge parameters and path parameters to deal with lguess
-  $command .= $self->_local_parameters;
-
-  ## read the data
-  $command .= $data -> _read_data_command("chi");
-  $command .= "\n";
-
-  my $ipath = 0;
-  my $count = 0;
-  my @indexstring = ();
+  $data ||= $self->data->[0];
+  my $sum = Demeter::VPath->new(name=>$self->name . ' -- sum');
   foreach my $p (@{ $self->paths }) {
-    next if not defined($p);
-    next if ($p->data ne $data);
-    next if not $p->include;
-    $p->_update_from_ScatteringPath if $p->get("sp");
-    ++$ipath;
-    my $lab = $p->name;
-    ($lab = "path $ipath") if ($lab =~ m{\A(?:\s*|path\s+\d+)\z});
-    $p->set(name=>$lab);
-    $p->rewrite_cv;
-    $command .= $p->_path_command(0);
-    push @indexstring, $p->Index;
+    next if ($data ne $p->data);
+    $sum -> include($p);
   };
-
-  $command .= "\n";
-  $command .= $data->hashes . " make sum of paths for data \"$data\"\n";
-  $self -> indeces(_normalize_paths(\@indexstring));
-  $command .= $data->template("fit", "sum");
-
-  $command .= $data->hashes . " make residual array\n";
-  $command .= $data->template("fit", "residual");
-
-  $data->fitsum('sum');
-  $self->dispose($command);
-  $self->evaluate;
-  $self->happiness(0);
-  $self->happiness_summary(q{});
-
-  $self->mo->fit(q{});
-
-  $self->stop_spinner if ($self->mo->ui eq 'screen');
-
-  return $self;
+  if ($self->update_gds) {
+    my $command = q{};
+    foreach my $type (qw(guess lguess set def)) {
+      $command .= $self->_gds_commands($type);
+    };
+    $self->dispose($command);
+    $self->update_gds(0);
+  };
+  return $sum;
 };
-alias sum => 'ff2chi';
-
 
 sub trouble_report {
   my ($fit) = @_;
@@ -786,12 +746,10 @@ sub properties_header {
 sub summary {
   my ($self) = @_;
   my $text = q{};
-  $text .= $self->properties_header(1);
-  $text .= $/;
-  $text .= $self->statistics_report;
-  $text .= $/;
+  $text .= $self->template("report", "properties_summary");
+  $text .= $self->template("report", "statistics"); #statistics_report;
   $text .= $self->gds_report;
-  $text .= $self->fancyline;
+  $text .= $self->template("report", "fancyline");
   return $text;
 };
 
@@ -813,15 +771,12 @@ sub logtext {
   my $text = q{};
 
   $text .= $header;
-  $text .= $self->properties_header;
-  $text .= $self->fancyline;
+  $text .= $self->template("report", "properties"); #properties_header;
+  $text .= $self->template("report", "fancyline");
 
-  $text .= $self->statistics_report;
-  $text .= $/;
-  $text .= $self->happiness_report;
-  $text .= $/;
+  $text .= $self->template("report", "statistics"); #statistics_report;
+  $text .= $self->template("report", "happiness");  #happiness_report;
   $text .= $self->gds_report;
-  $text .= $/;
   $text .= $self->correl_report(); # arg is cormin
 
   foreach my $data (@{ $self->data }) {
@@ -835,10 +790,7 @@ sub logtext {
       $data->part_fft("fit") if (lc($data->fitsum) eq 'sum');
       $data->part_bft("fit") if (lc($data->fitsum) eq 'sum');
     };
-    $text .= $/;
-    $text .= "===== Data set >> " . $data->name . " << ====================================\n\n" ;
     $text .= $data->fit_parameter_report($#{ $self->data }, $self->fit_performed);
-    $text .= $/;
     my @all_paths = @{ $self->paths };
     if (@all_paths) {
       ## figure out how wide the column of path labels should be
@@ -861,7 +813,7 @@ sub logtext {
     };
   };
 
-  $text .= $self->fancyline;
+  $text .= $self->template("report", "fancyline");
   ($footer .= "\n") if ($footer !~ m{\n\z});
   $text .= $footer;
 
@@ -953,24 +905,24 @@ sub fetch_statistics {
 };
 
 
-sub statistics_report {
-  my ($self) = @_;
-
-  my %things = ("n_idp"       => "Independent points          ",
-		"n_varys"     => "Number of variables         ",
-		"chi_square"  => "Chi-square                  ",
-		"chi_reduced" => "Reduced chi-square          ",
-		"r_factor"    => "R-factor                    ",
-		"epsilon_k"   => "Measurement uncertainty (k) ",
-		"epsilon_r"   => "Measurement uncertainty (R) ",
-		"data_total"  => "Number of data sets         ",
-	       );
-  my $string = q{};
-  foreach my $stat (split(" ", $STAT_TEXT)) {
-    $string .= sprintf("%s : %s\n", $things{$stat}, $self->$stat||0);
-  };
-  return $string;
-};
+# sub statistics_report {
+#   my ($self) = @_;
+#   my %things = ("n_idp"       => "Independent points          ",
+# 		"n_varys"     => "Number of variables         ",
+# 		"chi_square"  => "Chi-square                  ",
+# 		"chi_reduced" => "Reduced chi-square          ",
+# 		"r_factor"    => "R-factor                    ",
+# 		"epsilon_k"   => "Measurement uncertainty (k) ",
+# 		"epsilon_r"   => "Measurement uncertainty (R) ",
+# 		"data_total"  => "Number of data sets         ",
+# 	       );
+#   my $string = q{};
+#   foreach my $stat (split(" ", $STAT_TEXT)) {
+#     $string .= $self->template("report", "statistics", {name=>$things{$stat}, stat=>$stat});
+#     ##$string .= sprintf("%s : %s\n", $things{$stat}, $self->$stat||0);
+#   };
+#   return $string;
+# };
 
 sub happiness_report {
   my ($self) = @_;
@@ -1093,7 +1045,7 @@ sub correl_report {
   foreach my $k (@order) {
     last if (abs($all{$k}) < $cormin);
     my ($x, $y) = split(/\|/, $k);
-    $string .= sprintf("  %18s & %-18s --> %7.4f\n", $x, $y, $all{$k});
+    $string .= $self->template("report", "correl", {p1=>$x, p2=>$y, correl=>$all{$k}});
   };
   $string .= "All other correlations below $cormin\n" if $cormin;
   return $string;
@@ -1119,6 +1071,28 @@ sub has_data {
 
 ## ------------------------------------------------------------
 ## Serialization and deserialization of the Fit object
+
+override 'serialization' => sub {
+  my ($self) = @_;
+  my @gds    = @{ $self->gds   };
+  my @data   = @{ $self->data  };
+  my @paths  = @{ $self->paths };
+  my @vpaths = @{ $self->vpaths };
+
+  my @gdsgroups    = map { $_->group } @gds;
+  my @datagroups   = map { $_->group } @data;
+  my @pathsgroups  = map { $_->group } grep {defined $_} @paths;
+  my @feffgroups   = map { $_ ?  $_->group : q{} } map {$_ -> parent} grep {defined $_} @paths;
+  my @vpathsgroups = map { $_->group } grep {defined $_} @vpaths;
+  @feffgroups = uniq @feffgroups;
+
+  my $text = "# gdsgroups, datagroups, pathsgroups, feffgroups, vpathsgroups\n";
+  $text .= YAML::Tiny::Dump(\@gdsgroups, \@datagroups, \@pathsgroups, \@feffgroups, \@vpathsgroups);
+  $text .= "\n";
+  my %hash = $self->all;
+  $text .= YAML::Tiny::Dump(\%hash);
+  return $text;
+};
 
 override 'serialize' => sub {
   my ($self, @args) = @_;
@@ -1285,7 +1259,7 @@ override 'deserialize' => sub {
     my @array = %$r_attributes;
     my $savecv = $self->mo->datacount;
     my $this = Demeter::Data -> new(@array);
-    $this->cv($r_attributes->{cv});
+    $this->cv($r_attributes->{cv}||0);
     $self->mo->datacount($savecv);
     $datae{$this->group} = $this;
     if ($this->datatype eq 'xmu') {
@@ -1383,6 +1357,7 @@ override 'deserialize' => sub {
       $this = Demeter::Path->new(@array);
       my $sp = $sps{$this->spgroup} || $data[0] -> mo -> fetch('ScatteringPath', $this->spgroup);
       $this -> sp($sp);
+      #$this -> folder(q{});
       #print $this, "  ", $this->sp, $/;
     };
     $this -> datagroup($dg);
@@ -1396,22 +1371,24 @@ override 'deserialize' => sub {
   my @vpaths = ();
   $yaml = ($args{file}) ? $zip->contents("vpaths.yaml")
     : $self->slurp(File::Spec->catfile($args{folder}, "vpaths.yaml"));
-  @list = YAML::Tiny::Load($yaml);
-  foreach my $vp (@list) {
-    delete $vp->{$_} foreach qw(id update_path update_fft update_bft);
-    my $dg = $vp->{datagroup};
-    $vp->{data} = $datae{$dg};
+  if ($yaml) {
+    @list = YAML::Tiny::Load($yaml);
+    foreach my $vp (@list) {
+      delete $vp->{$_} foreach qw(id update_path update_fft update_bft);
+      my $dg = $vp->{datagroup};
+      $vp->{data} = $datae{$dg};
 
-    my @pathgroups = @{ $vp->{pathgroups} };
+      my @pathgroups = @{ $vp->{pathgroups} };
 
-    my @array = %{ $vp };
-    my $this = Demeter::VPath->new();
-    $this -> set(@array);
-    $this -> update_path(1);
-    foreach my $pg (@pathgroups) {
-      $this->push_paths($this -> mo -> fetch('Path', $pg));
+      my @array = %{ $vp };
+      my $this = Demeter::VPath->new();
+      $this -> set(@array);
+      $this -> update_path(1);
+      foreach my $pg (@pathgroups) {
+	$this->push_paths($this -> mo -> fetch('Path', $pg));
+      };
+      push @vpaths, $this;
     };
-    push @vpaths, $this;
   };
 
   if ($args{regenerate}) {
@@ -1496,7 +1473,7 @@ override 'deserialize' => sub {
     };
     $d->read_fit($file) if (-e $file);
     $d->fitting(1);
-    #unlink $file;
+    unlink $file;
   };
 
   ## -------- import the Plot object, if requested
@@ -1644,21 +1621,16 @@ A number of sanity checks are made on the fitting model before the fit is
 performed.  For the complete list of these sanity checks, see
 L<Demeter::Fit::Sanity>.
 
-=item C<ff2chi>
+=item C<sum>
 
-This method is exactly like the fit method, except that the command
-returned perform a sum over paths rather than a fit.  All the same
-sanity checks are run.
+This method returns a VPath object containing all paths associated
+with the fit and with the specified Data object.  If the data argument
+is not supplied, the first data set in the C<data> attribute will be
+used.  Ths, for a one-data-set fit, the data argument is optional.
 
-This takes one argument -- the Data object from the C<data> attribute
-whose paths are to be summed.
-
-   $fitobject -> ff2chi($data);
-
-It is useful to remember that a fit can be one a single data set or on
-multiple data sets.  An ff2chi is always on a single data set.
-
-C<sum> is an alias for C<ff2chi>;
+  my $sum = $fit->sum($data);
+  $data -> plot('r');
+  $sum  -> plot('r');
 
 =item C<rm>
 
@@ -1741,14 +1713,6 @@ An exception is thrown is the argument is not one of the following:
 
    n_idp n_varys chi_square chi_reduced r_factor
    epsilon_k epsilon_r data_total
-
-=item C<statistics_report>
-
-This method returns a block of text summarizing all the fitting
-statistics, assuming the C<evaluate> method has been called.  This
-method is used by the C<logfile> method.
-
-   $text = $fitobject -> statistics_report;
 
 =item C<correl>
 

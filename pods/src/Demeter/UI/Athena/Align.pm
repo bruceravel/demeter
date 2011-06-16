@@ -4,7 +4,7 @@ use warnings;
 
 use Wx qw( :everything );
 use base 'Wx::Panel';
-use Wx::Event qw(EVT_BUTTON EVT_CHOICE EVT_COMBOBOX EVT_TEXT);
+use Wx::Event qw(EVT_BUTTON EVT_CHOICE EVT_COMBOBOX EVT_TEXT EVT_TEXT_ENTER);
 use Wx::Perl::TextValidator;
 use Scalar::Util qw(looks_like_number);
 
@@ -61,7 +61,7 @@ sub new {
   my $hbox = Wx::BoxSizer->new( wxHORIZONTAL );
   $box -> Add($hbox, 0, wxALIGN_CENTER_HORIZONTAL|wxALL, 10);
   $this->{shiftlabel} = Wx::StaticText->new($this, -1, "Shift by");
-  $this->{shift}      = Wx::TextCtrl->new($this, -1, 0, wxDefaultPosition, $tcsize);
+  $this->{shift}      = Wx::TextCtrl->new($this, -1, 0, wxDefaultPosition, $tcsize, wxTE_PROCESS_ENTER);
   $this->{units}      = Wx::StaticText->new($this, -1, "eV");
   $this->{replot}     = Wx::Button->new($this, -1, "Replot", @ps2);
   $hbox->Add($this->{shiftlabel}, 0, wxALL,          4);
@@ -71,6 +71,7 @@ sub new {
 
   $this->{shift} -> SetValidator( Wx::Perl::TextValidator->new( qr([-0-9.]) ) );
   EVT_TEXT($this, $this->{shift}, sub{OnShift(@_, $app->current_data)});
+  EVT_TEXT_ENTER($this, $this->{shift}, sub{$this->plot($app->current_data)});
   EVT_BUTTON($this, $this->{replot}, sub{$this->plot($app->current_data)});
 
   $gbs = Wx::GridBagSizer->new( 5, 5 );

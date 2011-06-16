@@ -36,7 +36,7 @@ has 'bestfit'	  => (is => 'rw', isa => 'Num',   default => 0,
 has 'error'	  => (is => 'rw', isa => 'Num',   default => 0);
 has 'modified'	  => (is => 'rw', isa => 'Bool',  default => 1);
 has 'note'	  => (is => 'rw', isa => 'Str',   default => q{},
-		     trigger => sub{my ($self, $new) = @_; $self->autonote(1) if ($new =~ m{\A\s*\z})} );
+		      trigger => sub{my ($self, $new) = @_; $self->autonote(1) if ($new =~ m{\A\s*\z})} );
 has 'autonote'	  => (is => 'rw', isa => 'Bool',  default => 1);
 has 'highlighted' => (is => 'rw', isa => 'Bool',  default => 0);
 has 'Use'	  => (is => 'rw', isa => 'Bool',  default => 1);
@@ -48,13 +48,13 @@ sub BUILD {
   my ($self, @params) = @_;
   $self->mo->push_GDS($self);
 };
-sub DEMOLISH {
-  my ($self) = @_;
-  $self->alldone;
-  ## --- this would be nice, but it seems to happen after Ifeffit is
-  ##     shut down in certain cases when exiting Artemis
-  # $self->dispose("erase ".$self->name);
-};
+# sub DEMOLISH {
+#   my ($self) = @_;
+#   $self->alldone;
+#   ## --- this would be nice, but it seems to happen after Ifeffit is
+#   ##     shut down in certain cases when exiting Artemis
+#   # $self->dispose("erase ".$self->name);
+# };
 
 ## return a list of valid GDS attributes
 sub parameter_list {
@@ -96,39 +96,48 @@ sub report {
   my $type   = ($identify) ? sprintf("%-8s: ", $self->gds) : q{};
  SWITCH: {
     ($self->gds eq 'guess') and do {
-      $string = sprintf("%s%-18s = %12.8f    # +/- %12.8f     [%s]\n", $type, $self->get(qw(name bestfit error mathexp)));
+      $string = $self->template("report", "guess", {type=>$type});
+      ##$string = sprintf("%s%-18s = %12.8f    # +/- %12.8f     [%s]\n", $type, $self->get(qw(name bestfit error mathexp)));
       last SWITCH;
     };
     ($self->gds eq 'set') and do {
       if ($self->mathexp =~ m{\A$NUMBER\z}) {
-	$string = sprintf("%s%-18s = %12.8f\n",                        $type, $self->get(qw(name mathexp)));
+	$string = $self->template("report", "set", {type=>$type});
+	#$string = sprintf("%s%-18s = %12.8f\n",                        $type, $self->get(qw(name mathexp)));
       } else {
-	$string = sprintf("%s%-18s = %12.8f    # [%s]\n",              $type, $self->get(qw(name bestfit mathexp)));
+	$string = $self->template("report", "setme", {type=>$type});
+	#$string = sprintf("%s%-18s = %12.8f    # [%s]\n",              $type, $self->get(qw(name bestfit mathexp)));
       };
       last SWITCH;
     };
     ($self->gds eq 'lguess') and do {
-      $string = sprintf("%s%-18s = %12.8f\n",                          $type, $self->get(qw(name mathexp)));
+      $string = $self->template("report", "lguess", {type=>$type});
+      ##$string = sprintf("%s%-18s = %12.8f\n",                          $type, $self->get(qw(name mathexp)));
       last SWITCH;
     };
     ($self->gds eq 'def') and do {
-      $string = sprintf("%s%-18s = %12.8f    # [%s]\n",                $type, $self->get(qw(name bestfit mathexp)));
+      $string = $self->template("report", "def", {type=>$type});
+      #$string = sprintf("%s%-18s = %12.8f    # [%s]\n",                $type, $self->get(qw(name bestfit mathexp)));
       last SWITCH;
     };
     ($self->gds eq 'restrain') and do {
-      $string = sprintf("%s%-18s = %12.8f # [:= %s]\n",                $type, $self->get(qw(name bestfit mathexp)));
+      $string = $self->template("report", "restrain", {type=>$type});
+      #$string = sprintf("%s%-18s = %12.8f # [:= %s]\n",                $type, $self->get(qw(name bestfit mathexp)));
       last SWITCH;
     };
     ($self->gds eq 'after') and do {
-      $string = sprintf("%s%-18s = %12.8f    # [%s]\n",                $type, $self->get(qw(name bestfit mathexp)));
+      $string = $self->template("report", "after", {type=>$type});
+      #$string = sprintf("%s%-18s = %12.8f    # [%s]\n",                $type, $self->get(qw(name bestfit mathexp)));
       last SWITCH;
     };
     ($self->gds eq 'skip') and do {
-      $string = sprintf("%s is a skip parameter\n",                    $self->name);
+      $string = $self->template("report", "skip", {type=>$type});
+      #$string = sprintf("%s is a skip parameter\n",                    $self->name);
       last SWITCH;
     };
     ($self->gds eq 'merge') and do {
-      $string = sprintf("%s is a merge parameter\n",                   $self->name);
+      $string = $self->template("report", "merge", {type=>$type});
+      #$string = sprintf("%s is a merge parameter\n",                   $self->name);
       last SWITCH;
     };
   };

@@ -5,7 +5,7 @@ use warnings;
 
 use Wx qw( :everything );
 use base 'Wx::Panel';
-use Wx::Event qw(EVT_CHECKBOX EVT_RADIOBUTTON EVT_BUTTON);
+use Wx::Event qw(EVT_CHECKBOX EVT_RADIOBUTTON EVT_BUTTON EVT_TEXT_ENTER);
 use Wx::Perl::TextValidator;
 
 use Demeter::UI::Wx::SpecialCharacters qw(:all);
@@ -34,7 +34,7 @@ sub new {
     $this->{'check'.$j} = Wx::CheckBox->new($this, -1, $j, wxDefaultPosition, wxDefaultSize, wxALIGN_RIGHT);
     $this->{'space'.$j} = Wx::Choice->new($this, -1, wxDefaultPosition, [50, -1], ['E', 'k', 'R', 'q']);
     $this->{'text'.$j}  = Wx::StaticText->new($this, -1, ' at ');
-    $this->{'value'.$j} = Wx::TextCtrl->new($this, -1, q{}, wxDefaultPosition, [45, -1]);
+    $this->{'value'.$j} = Wx::TextCtrl->new($this, -1, q{}, wxDefaultPosition, [45, -1], wxTE_PROCESS_ENTER);
     $this->{'grab'.$j}  = Wx::BitmapButton -> new($this, -1, $bullseye);
     $this->{'group'.$j} = q{};
     $this->{'check'.$j} -> SetValue(1);
@@ -50,6 +50,7 @@ sub new {
     $app->mouseover($this->{'value'.$j}, "Specify the x-axis coordinate where indicator #$j is to be plotted.");
     $app->mouseover($this->{'grab'.$j},  "Grab the value for indicator #$j from the plot using the mouse.");
 
+    EVT_TEXT_ENTER($this, $this->{'value'.$j}, sub{1});
     EVT_BUTTON($this, $this->{'grab'.$j}, sub{Pluck(@_, $app, $j)});
   };
   $indboxsizer -> Add($gbs, 0, wxALL, 0);

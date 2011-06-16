@@ -6,7 +6,7 @@ use warnings;
 use Wx qw( :everything );
 use base 'Wx::Panel';
 use Wx::Event qw(EVT_LIST_ITEM_ACTIVATED EVT_LIST_ITEM_SELECTED EVT_BUTTON  EVT_KEY_DOWN
-		 EVT_CHECKBOX);
+		 EVT_CHECKBOX EVT_TEXT_ENTER);
 use Wx::Perl::TextValidator;
 
 use Demeter::UI::Wx::SpecialCharacters qw(:all);
@@ -71,22 +71,31 @@ sub new {
   #$box -> Add($range, 0, wxBOTTOM, 7);
   my $label = Wx::StaticText->new($this, -1, "kmin", wxDefaultPosition, [35,-1]);
   $this->{kmin} = Wx::TextCtrl ->new($this, -1, $Demeter::UI::Athena::demeter->co->default("plot", "kmin"),
-				     wxDefaultPosition, [50,-1]);
+				     wxDefaultPosition, [50,-1], wxTE_PROCESS_ENTER);
   $range -> Add($label,        0, wxALL, 5);
   $range -> Add($this->{kmin}, 1, wxRIGHT, 10);
   $label = Wx::StaticText->new($this, -1, "kmax", wxDefaultPosition, [35,-1]);
   $this->{kmax} = Wx::TextCtrl ->new($this, -1, $Demeter::UI::Athena::demeter->co->default("plot", "kmax"),
-				     wxDefaultPosition, [50,-1]);
+				     wxDefaultPosition, [50,-1], wxTE_PROCESS_ENTER);
   $range -> Add($label,        0, wxALL, 5);
   $range -> Add($this->{kmax}, 1, wxRIGHT, 10);
 
-  $this->{$_} -> SetValidator( Wx::Perl::TextValidator->new( qr([0-9.]) ) )
-    foreach (qw(kmin kmax));
+  foreach my $x (qw(kmin kmax)) {
+    $this->{$x} -> SetValidator( Wx::Perl::TextValidator->new( qr([0-9.]) ) );
+    EVT_TEXT_ENTER($this, $this->{$x}, sub{OnTextEnter(@_, $::app, $x)});
+  };
 
   $this->SetSizerAndFit($box);
   return $this;
 };
 
+
+sub OnTextEnter {
+  my ($main, $event, $app, $which) = @_;
+  my @list = $app->marked_groups;
+  my $how = (@list) ? 'marked' : 'single';
+  $app->plot(q{}, q{}, 'k', $how);
+};
 
 sub label {
   return 'Plot in k-space';

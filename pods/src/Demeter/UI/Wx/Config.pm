@@ -22,7 +22,7 @@ use List::MoreUtils qw(firstidx uniq);
 use Text::Wrap;
 
 use Wx qw( :everything );
-use Wx::Event qw(EVT_BUTTON EVT_TREE_SEL_CHANGED);
+use Wx::Event qw(EVT_BUTTON EVT_TREE_SEL_CHANGED EVT_TEXT_ENTER);
 
 #use Demeter;
 my $demeter = Demeter->new;
@@ -331,8 +331,8 @@ sub set_stub {
 sub set_string_widget {
   my ($self, $parent, $param, $type) = @_;
   my $this = $demeter->co->default($parent, $param);
-  $self->{Set} = Wx::TextCtrl->new( $self, -1, $this, [-1, -1], [-1, -1] );
-
+  $self->{Set} = Wx::TextCtrl->new( $self, -1, $this, [-1, -1], [-1, -1], wxTE_PROCESS_ENTER );
+  EVT_TEXT_ENTER($self, $self->{Set}, sub{1});
   ## use $type to set validation
 
   return $self->{Set};

@@ -1,6 +1,6 @@
 package Demeter::UI::Athena;
 
-use Demeter qw(::analysis);
+use Demeter qw(:analysis);
 #use Demeter::UI::Wx::DFrame;
 use Demeter::UI::Wx::MRU;
 use Demeter::UI::Wx::SpecialCharacters qw(:all);
@@ -145,6 +145,8 @@ sub process_argv {
       my $i = $1-1;
       #print  $list[$i]->[0], $/;
       $app->Import($list[$i]->[0]);
+    } elsif (-r $a) {
+      $app -> Import($a);
     } elsif (-r File::Spec->catfile($demeter->mo->iwd, $a)) {
       $app->Import(File::Spec->catfile($demeter->mo->iwd, $a));
     }; # switches?
@@ -361,7 +363,7 @@ sub menubar {
   $filemenu->AppendSeparator;
   $filemenu->Append(wxID_SAVE,    "Save project\tCtrl+s", "Save an Athena project file" );
   $filemenu->Append(wxID_SAVEAS,  "Save project as...", "Save an Athena project file as..." );
-  $filemenu->Append($SAVE_MARKED, "Save marked groups as...", "Save marked groups as an Athena project file as..." );
+  $filemenu->Append($SAVE_MARKED, "Save marked groups as a project ...", "Save marked groups as an Athena project file ..." );
   $filemenu->AppendSeparator;
 
   my $exportmenu   = Wx::Menu->new;
@@ -409,8 +411,8 @@ sub menubar {
   $saveeachmenu->Append($EACH_CHIQ,   "$CHI(q)", "Save $CHI(q) for each marked group" );
 
   $filemenu->AppendSubMenu($savecurrentmenu, "Save current group as ...",     "Save the data in the current group as a column data file" );
-  $filemenu->AppendSubMenu($savemarkedmenu,  "Save marked groups as ...",     "Save the data from the marked group as a column data file" );
-  $filemenu->AppendSubMenu($saveeachmenu,    "Save each marked group as ...", "Save the data in the marked group as column data files" );
+  $filemenu->AppendSubMenu($savemarkedmenu,  "Save marked groups as ...",     "Save the data from the marked group as a single column data file" );
+  $filemenu->AppendSubMenu($saveeachmenu,    "Save each marked group as ...", "Save the marked groups, each as its own column data file" );
   $filemenu->AppendSubMenu($exportmenu,      "Export ...",                    "Export" );
   $filemenu->AppendSeparator;
   $filemenu->Append($CLEAR_PROJECT, 'Clear project name', 'Clear project name');
@@ -925,6 +927,8 @@ sub OnMenuClick {
       my $sp = $data->is_merge;
       $sp = 'e' if ($sp eq 'n');
       #return if not $app->preplot($sp, $data);
+      my $which = ($sp eq 'k') ? 'PlotK' : 'PlotE';
+      $app->{main}->{$which}->pull_marked_values;
       $data->po->title($app->{main}->{Other}->{title}->GetValue);
       $data->plot('stddev');
       #$app->postplot($data);
@@ -935,11 +939,13 @@ sub OnMenuClick {
       my $data = $app->current_data;
       last SWITCH if not $data->is_merge;
       #return if not $app->postplot($data);
+      my $sp = $data->is_merge;
+      $sp = 'E' if ($sp eq 'n');
+      my $which = ($sp eq 'k') ? 'PlotK' : 'PlotE';
+      $app->{main}->{$which}->pull_marked_values;
       $data->po->title($app->{main}->{Other}->{title}->GetValue);
       $data->plot('variance');
       #$app->postplot($data);
-      my $sp = $data->is_merge;
-      $sp = 'E' if ($sp eq 'n');
       $app->{lastplot} = [$sp, 'single'];
       last SWITCH;
     };
@@ -1407,7 +1413,10 @@ sub postplot {
     $app->{main}->{Indicators}->plot;
     $data->unset_standard;
   };
+  my $is_fixed = $data->bkg_fixstep;
   $app->{main}->{Main}->{bkg_step}->SetValue($app->current_data->bkg_step);
+  $app->{main}->{Main}->{bkg_fixstep}->SetValue($is_fixed);
+
   $app->{main}->{Other}->{singlefile}->SetValue(0);
   return;
 };

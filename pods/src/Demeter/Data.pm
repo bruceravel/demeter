@@ -81,6 +81,7 @@ has 'file'        => (is => 'rw', isa => 'Str',  default => $NULLFILE,
 has 'source'      => (is => 'rw', isa => 'Str',  default => $NULLFILE,);
 has 'prjrecord'   => (is => 'rw', isa => 'Str',  default => q{});
 has 'from_athena' => (is => 'rw', isa => 'Bool', default => 0);
+has 'from_yaml'   => (is => 'rw', isa => 'Bool', default => 0);
 subtype 'FitSum'
       => as 'Str'
       => where { lc($_) =~ m{\A(?:\s*|fit|sum)\z} }
@@ -268,9 +269,14 @@ has 'bkg_spl2e'       => (is => 'rw', isa => 'Num',
 has 'bkg_kwindow' => (is => 'rw', isa =>  Window,   default => sub{ shift->co->default("bkg", "kwindow")     || 'kaiser-bessel'},
 		      trigger => sub{ my($self) = @_; $self->update_bkg(1) });
 
-has $_ => (is => 'rw', isa => 'Num',  default => 0) foreach (qw(bkg_slope bkg_int bkg_step bkg_fitted_step bkg_nc0 bkg_nc1 bkg_nc2 bkg_former_e0));
+has $_ => (is => 'rw', isa => 'Num',  default => 0) foreach (qw(bkg_slope bkg_int bkg_fitted_step bkg_nc0 bkg_nc1 bkg_nc2 bkg_former_e0));
 
-has $_ => (is => 'rw', isa => 'Bool', default => 0) foreach (qw(bkg_fixstep bkg_tie_e0 bkg_cl));
+has $_ => (is => 'rw', isa => 'Bool', default => 0) foreach (qw(bkg_tie_e0 bkg_cl));
+
+has 'bkg_step'    => (is => 'rw', isa => 'Num', default => 0,
+		      trigger => sub{ my($self) = @_; $self->update_norm(1) });
+has 'bkg_fixstep' => (is => 'rw', isa => 'Bool', default => 0,
+		      trigger => sub{ my($self) = @_; $self->update_norm(1) });
 
 has 'bkg_z'       => (is => 'rw', isa =>  Element,  default => 'H');
 

@@ -270,11 +270,13 @@ sub _data {
     $colsel->{Preprocess}->{standard}->fill($app, 0, 0);
     my $found = -1;
     foreach my $i (0 .. $app->{main}->{list}->GetCount-1) { # make sure the persistance value is still in the list
+      $yaml->{preproc_standard} ||= q{};
       if ($app->{main}->{list}->GetIndexedData($i)->name eq $yaml->{preproc_standard}) {
 	$found = $i;
 	last;
       };
     };
+    $yaml->{preproc_standard} ||= 'None';
     ($yaml->{preproc_standard} eq 'None') ? $colsel->{Preprocess}->{standard}->SetSelection(0)
       : $colsel->{Preprocess}->{standard}->SetSelection($found+1);
     if ($colsel->{Preprocess}->{standard}->GetStringSelection =~ m{\A(?:None|)\z}) {
