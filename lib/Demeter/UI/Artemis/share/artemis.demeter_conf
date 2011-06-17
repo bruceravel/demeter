@@ -81,7 +81,7 @@ description
 variable=plot_after_fit
 type=list
 default=rmr
-options=rmr r123 k123 kq k r q none
+options=rmr rk r123 k123 kq k r q none
 description
   This tells Artemis which kind of plot to make when a fit finishes.
   The default is to plot each data marked for plotting after the fit

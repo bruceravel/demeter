@@ -756,6 +756,7 @@ sub rkplot {
   $self->part_fft('fit');
 
   $self -> po -> start_plot;
+  $self -> po -> title($self->name);
 
   my $string = $self->template("plot", "rkr");
   $string   .= $self->template("plot", "rkk");

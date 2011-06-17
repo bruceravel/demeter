@@ -586,7 +586,7 @@ sub fit {
     $rframes->{Plot}->{limits}->{fit}->SetValue(1);
     $fit->po->plot_fit(1);
     my $how = $fit->co->default("artemis", "plot_after_fit");
-    if ($how =~ m{\A(?:rmr|r123|k123|kq)\z}) {
+    if ($how =~ m{\A(?:rmr|rk|r123|k123|kq)\z}) {
       $data[0]->plot($how);
     } elsif ($how =~ m{\A[krq]\z}) {
       $rframes->{Plot}->plot(q{}, $how);
@@ -694,6 +694,7 @@ sub set_happiness_color {
     $frames{$k}->{'plot_k123'} -> SetBackgroundColour(Wx::Colour->new($color));
     $frames{$k}->{plot_r123}   -> SetBackgroundColour(Wx::Colour->new($color));
     $frames{$k}->{plot_rmr}    -> SetBackgroundColour(Wx::Colour->new($color));
+    $frames{$k}->{plot_rk}     -> SetBackgroundColour(Wx::Colour->new($color));
     $frames{$k}->{plot_kq}     -> SetBackgroundColour(Wx::Colour->new($color));
   };
 };
