@@ -532,8 +532,11 @@ sub plot_marker {
   my $command = q{};
   my @list = (ref($x) eq 'ARRAY') ? @$x : ($x);
   foreach my $xx (@list) {
-    my $y = $self->yofx($requested, "", $xx);
-    $command .= $self->template("plot", "marker", { x => $xx, 'y'=> $y });
+    my $which = ($requested eq 'chie') ? 'chi' : $requested;
+    my $xxx = ($requested eq 'chie') ? $self->k2e($xx, 'absolute') : $xx ;
+    my $y = $self->yofx($which, "", $xx);
+    $y = $y*$xx**$self->po->kweight if ($requested eq 'chie');
+    $command .= $self->template("plot", "marker", { x => $xxx, 'y'=> $y });
   };
   #if ($self->get_mode("template_plot") eq 'gnuplot') {
   #  $self->get_mode('external_plot_object')->gnuplot_cmd($command);

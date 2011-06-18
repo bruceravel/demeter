@@ -87,6 +87,7 @@ has 'indeces'        => (is => 'rw', isa => 'Str',    default => q{});
 has 'location'       => (is => 'rw', isa => 'Str',    default => q{});
 has 'fit_performed'  => (is => 'rw', isa => 'Bool',   default => 0);
 has 'ignore_errors'  => (is => 'rw', isa => 'Bool',   default => 0);
+has 'ignore_nidp'    => (is => 'rw', isa => 'Bool',   default => 0);
 has 'stop'           => (is => 'rw', isa => 'Bool',   default => 0);
 has 'troubletext'    => (is => 'rw', isa => 'Str',    default => q{});
 
@@ -267,7 +268,7 @@ sub _verify_fit {
   $trouble_found += $self->S_data_parameters;
 
   ## 11. check number of guesses against Nidp
-  $trouble_found += $self->S_nidp;
+  $trouble_found += $self->S_nidp unless $self->ignore_nidp;
 
   ## 12. verify that Rmin is >= Rbkg for data imported as mu(E)
   $trouble_found += $self->S_rmin_rbkg;
@@ -1597,6 +1598,16 @@ performing the fit.
 
 Minimum correlation reported in the log file.  This must be a number
 between 0 and 1.
+
+=item C<ignore_nidp>
+
+If this boolean attribute is true, Demeter will not perform the sanity
+check which verifies that the number of guess parameters is smaller
+than the number of independent points.  Just because this parameter
+exists, B<do not> presume that this is a good idea.  If you run a fit
+with too many free parameters, best fit values, error bars and
+correlations will not be meaningful and the fit that you run cannot be
+reliably interpreted in a statistical sense.
 
 =back
 

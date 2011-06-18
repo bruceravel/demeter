@@ -195,24 +195,27 @@ sub OnChoose {
   $this->plot($data);
   my ($ok, $xx, $yy) = $app->cursor;
   return if not $ok;
-  #my $plucked = $data->bkg_e0 + $self->bkg_eshift + $x;
+  local $|=1;
 
   my ($dist, $ii) = (1e10, -1);
-  my @x = $data->get_array('energy');
-  my $which = ($this->{plotas}->GetSelection) ? 'chie' : 'xmu';
+  my $which = ($this->{plotas}->GetSelection) ? 'chi' : 'xmu';
+  my @x = ($which eq 'chi') ? $data->get_array('k') : $data->get_array('energy');
+  $xx = $data->e2k($xx, "absolute") if ($which eq 'chi');
   my @y = $data->get_array($which);
   my ($miny, $maxy) = minmax(@y);
   foreach my $i (0 .. $#x) {	# need to scale these appropriately
-    my $px = ($x[$i] - $xx)/($x[-1] - $x[0]);
-    my $py = ($y[$i] - $yy)/($maxy - $miny);
-    my $d  = sqrt($px**2 + $py**2);
+    my $px  = ($x[$i] - $xx)/($x[-1] - $x[0]);
+    my $ppy = ($which eq 'chi') ? $y[$i]*$xx**$data->po->kweight : $y[$i];
+    my $py  = ($ppy - $yy)/($maxy - $miny);
+    my $d   = sqrt($px**2 + $py**2);
     ($d < $dist) and ($dist, $ii) = ($d, $i);
   };
   $this->plot($data);
-  $data->plot_marker('xmu', $x[$ii]);
-  $this->{point} = $x[$ii];
+  my $request = ($which eq 'chi') ? 'chie' : 'xmu';
+  $data->plot_marker($request, $x[$ii]);
+  $this->{point} = ($which eq 'chi') ? $data->k2e($x[$ii], 'absolute') : $x[$ii];
   $this->{remove}->Enable(1);
-  $app->{main}->status(sprintf("Plucked point at %.3f from %s", $x[$ii], $data->name));
+  $app->{main}->status(sprintf("Plucked point at %.3f from %s", $this->{point}, $data->name));
 };
 
 sub OnRemove {
