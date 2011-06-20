@@ -22,6 +22,7 @@
      when weights constrained to be non-negative and to sum to one.
    - Escape underscores in gnuplot plot legend for LCF plots
    - Fixed a bug using a background removal standard
+   - Athena now read chi(k) data files correctly
 
 *** Artemis
    - Completely rewrote mechanism for importing old-style Artemis
@@ -42,9 +43,10 @@
 
 *** Acknowledgements for this release
    1. Scott Calvin
-   2. Eric Breynaert
-   3. LachLan MacLean
-   4. Andreas Voegelin
+   2. Shelly Kelly
+   3. Eric Breynaert
+   4. LachLan MacLean
+   5. Andreas Voegelin
 
 ** Release 1: 10 June, 2011
  Initial beta testing release
