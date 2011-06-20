@@ -21,6 +21,7 @@
    - Fix a problem doing LCF fits with the final weight being negative
      when weights constrained to be non-negative and to sum to one.
    - Escape underscores in gnuplot plot legend for LCF plots
+   - Fixed a bug using a background removal standard
 
 *** Artemis
    - Completely rewrote mechanism for importing old-style Artemis
@@ -43,6 +44,7 @@
    1. Scott Calvin
    2. Eric Breynaert
    3. LachLan MacLean
+   4. Andreas Voegelin
 
 ** Release 1: 10 June, 2011
  Initial beta testing release

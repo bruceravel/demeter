@@ -191,8 +191,10 @@ sub put_data {
   unshift @cols, q{};
 
   my $energy_string = ($self->is_kev) ? '1000*'.$self->energy : $self->energy;
-  my ($xmu_string, $i0_string, $signal_string) = (q{}, q{}, q{});
-  if ($self->ln) {
+  my ($chi_string, $xmu_string, $i0_string, $signal_string) = (q{}, q{}, q{});
+  if ($self->datatype eq 'chi') {
+    $chi_string = $self->chi_column;
+  } elsif ($self->ln) {
     $xmu_string    =   "ln(abs(  ("
 	           . $self->numerator
                    . ") / ("
@@ -208,31 +210,48 @@ sub put_data {
 
   ## resolve column tokens
   my $group = $self->group;
-  $i0_string     =~ s{\$(\d+)}{$group.$cols[$1]}g;
-  $signal_string =~ s{\$(\d+)}{$group.$cols[$1]}g;
-  $xmu_string    =~ s{\$(\d+)}{$group.$cols[$1]}g;
-  $energy_string =~ s{\$(\d+)}{$group.$cols[$1]}g;
+  if ($self->datatype eq 'chi') {
+    $chi_string    =~ s{\$(\d+)}{$group.$cols[$1]}g;
+    $energy_string =~ s{\$(\d+)}{$group.$cols[$1]}g;
+    $self->chi_string($chi_string);
+  } else {
+    $i0_string     =~ s{\$(\d+)}{$group.$cols[$1]}g;
+    $signal_string =~ s{\$(\d+)}{$group.$cols[$1]}g;
+    $xmu_string    =~ s{\$(\d+)}{$group.$cols[$1]}g;
+    $energy_string =~ s{\$(\d+)}{$group.$cols[$1]}g;
 
-  $self->i0_string($i0_string);
-  $self->signal_string($signal_string);
-  $self->xmu_string($xmu_string);
+    $self->i0_string($i0_string);
+    $self->signal_string($signal_string);
+    $self->xmu_string($xmu_string);
+  };
   $self->energy_string($energy_string);
 
-  if ($self->display) {
+  if (($self->display) and ($self->datatype ne 'chi')) {
     $self->dispose($self->template("process", "display"));
     return;
   };
 
-  my $command = $self->template("process", "columns");
-  $command   .= $self->template("process", "deriv");
+  if ($self->datatype eq 'chi') {
+    my $command = $self->template("process", "chi_column");
+    $self->dispose($command);
+    return if $self->display;
+    $self->update_columns(0);
+    $self->update_data(0);
+    $self->resolve_defaults;
 
-  $self->dispose($command);
-  $self->i0_scale(Ifeffit::get_scalar('__i0_scale'));
-  $self->signal_scale(Ifeffit::get_scalar('__signal_scale'));
-  $self->update_columns(0);
-  $self->update_data(0);
+  } else {
+    my $command = $self->template("process", "columns");
+    $command   .= $self->template("process", "deriv");
 
-  $self->initialize_e0
+    $self->dispose($command);
+    $self->i0_scale(Ifeffit::get_scalar('__i0_scale'));
+    $self->signal_scale(Ifeffit::get_scalar('__signal_scale'));
+    $self->update_columns(0);
+    $self->update_data(0);
+
+    $self->initialize_e0;
+  };
+  return $self;
 };
 
 sub fix_chik {
@@ -329,8 +348,11 @@ sub autobk {
   $self->bkg_fitted_step($self->bkg_step) if not $self->bkg_fitted_step;
 
   my $command = q{};
-
-  $command = $self->template("process", "autobk");
+  if (lc($self->bkg_stan) ne 'none') {
+    my $stan = $self->mo->fetch("Data", $self->bkg_stan);
+    $command .= $stan->template("process", "autobk") if ($stan->update_bkg  and ($stan->datatype =~ m{xmu}));
+  };
+  $command .= $self->template("process", "autobk");
   if ($self->bkg_fixstep) {
     $fixed = $self->bkg_step;
   };

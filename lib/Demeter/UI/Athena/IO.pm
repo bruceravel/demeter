@@ -238,6 +238,13 @@ sub _data {
 
     $colsel->{each}->SetValue($yaml->{each});
 
+    $colsel->{datatype}->SetSelection(0);
+    $colsel->{datatype}->SetSelection(1) if ($data->datatype eq 'xanes');
+    $colsel->{datatype}->SetSelection(2) if (($data->datatype eq 'xanes') and $data->is_nor);
+    $colsel->{datatype}->SetSelection(3) if ($data->datatype eq 'chi');
+    $colsel->{datatype}->SetSelection(4) if ($data->datatype eq 'xmudat');
+    $colsel->OnDatatype(q{}, $colsel, $data);
+
     ## set Reference controls from yaml
     if ($data->columns eq $yaml->{columns}) {
       $colsel->{Reference}->{do_ref}->SetValue($yaml->{do_ref});
@@ -383,7 +390,7 @@ sub _group {
   ## -------- import data group
   $app->{main}->status("Importing ". $data->name . " from $displayfile");
   $app->{main}->Update;
-  $data -> display(0);
+  $data->display(0);
   $data->source($displayfile);
   my $do_rebin = (defined $colsel) ? ($colsel->{Rebin}->{do_rebin}->GetValue) : $yaml->{do_rebin};
 

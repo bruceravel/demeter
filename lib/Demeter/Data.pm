@@ -130,10 +130,18 @@ has  denominator  => (is => 'rw', isa => 'Str',  default => q{1},
 					$self->is_col(1)
 				      }
 				    });
+has 'chi_column' => (is => 'rw', isa => 'Str',  default => q{1},
+		     trigger => sub{ my ($self, $new) = @_;
+				     if ($new) {
+				       $self->datatype('chi');
+				       $self->update_columns(1);
+				       $self->is_col(1)
+				     }
+				   });
 has  $_ => (is => 'rw', isa => 'Num',  default => 0) foreach (qw(i0_scale signal_scale));
 
 has  $_  => (is => 'rw', isa => 'Str',  default => q{})
-  foreach (qw(columns energy_string xmu_string i0_string signal_string));
+  foreach (qw(columns energy_string xmu_string i0_string signal_string chi_string));
 has 'ln' => (is => 'rw', isa => 'Bool', default => 0,
 	     trigger => sub{ my ($self, $new) = @_; $self->update_columns(1), $self->is_col(1) if $new});
 has 'display' => (is => 'rw', isa => 'Bool', default => 0,);
@@ -602,7 +610,7 @@ sub read_data {
   my ($self) = @_;
   my $return = $self->readable($self->file);
   croak($return) if $return;
-  my $type = ($self->is_col) ? q{}
+  my $type = (($self->is_col) and ($self->datatype ne 'chi')) ? q{}
            :  $self->datatype;
   if ((not $self->is_col) and (not $type)) {
     $self->determine_data_type;
@@ -711,9 +719,9 @@ sub _read_data_command {
     $string  = $self->template("process", "read_xmu");
     $string .= $self->template("process", "deriv");
     $self->provenance("mu(E) file ".$self->file);
-  } elsif ($type eq 'chi') {
-    $string  = $self->template("process", "read_chi");
-    $self->provenance("chi(k) file ".$self->file);
+#  } elsif ($type eq 'chi') {
+#    $string  = $self->template("process", "read_chi");
+#    $self->provenance("chi(k) file ".$self->file);
   } elsif ($type eq 'feff.dat') {
     $string  = $self->template("process", "read_feffdat");
   } else {

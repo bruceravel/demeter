@@ -625,11 +625,13 @@ sub push_values {
   $this->{bkg_stan}->fill($::app, 1, 0);
   if ($data->bkg_stan eq 'None') {
     $this->{bkg_stan}->SetStringSelection('None');
-  } elsif (not defined($this->{bkg_stan}->GetClientData($this->{bkg_stan}->GetSelection))) {
-    $this->{bkg_stan}->SetStringSelection('None');
   } else {
     my $stan = $data->mo->fetch("Data", $data->bkg_stan);
-    $this->{bkg_stan}->SetStringSelection($stan->name);
+    if (not $stan) {
+      $this->{bkg_stan}->SetStringSelection('None');
+    } else {
+      $this->{bkg_stan}->SetStringSelection($stan->name);
+    };
   };
 
 
@@ -718,20 +720,22 @@ sub OnParameter {
   my $widget = $app->{main}->{Main}->{$which};
   ## TextCtrl SpinCtrl ComboBox CheckBox RadioButton all have GetValue
   my $value = ((ref($widget) =~ m{Choice}) and ($which =~ m{clamp})) ? $data->co->default("clamp", $widget->GetStringSelection)
-            : (ref($widget) =~ m{Choice}) ? $widget->GetStringSelection
-            : ($which eq 'bkg_z')         ? interpret_bkg_z($widget->GetValue)
-            : ($which =~ m{nnorm})        ? interpret_nnorm($app)
-	    :                               $widget->GetValue;
+            : (ref($widget) =~ m{Choice})    ? $widget->GetStringSelection
+            : (ref($widget) =~ m{GroupList}) ? $widget->GetSelection # bkg_stan uses Demeter::UI::Athena::GroupList
+            : ($which eq 'bkg_z')            ? interpret_bkg_z($widget->GetValue)
+            : ($which =~ m{nnorm})           ? interpret_nnorm($app)
+	    :                                  $widget->GetValue;
   $value = 0 if ((not looks_like_number($value)) and ($which !~ m{window}));
   if ($which !~ m{nnorm}) {
     $value = 0.001 if (($data->what_isa($which) =~ m{PosNum}) and ($value<=0));
     $value = 0     if (($data->what_isa($which) =~ m{NonNeg}) and ($value<0));
   };
   if ($which eq 'bkg_stan') {
+    local $| = 1;
     my $stan = $app->{main}->{Main}->{bkg_stan}->GetClientData($value);
     $data->bkg_stan($stan->group);
 
-    ##### implementing aninteraction between step and normalization
+    ##### implementing interaction between step and normalization
     ##### TextCtrl windows as suggested by Scott Calvin by email 13
     ##### June 2011
     # Changing the value in the edge step box should automatically check the
@@ -1078,3 +1082,47 @@ sub importance_to_1 {
 };
 
 1;
+
+
+=head1 NAME
+
+Demeter::UI::Athena::Main - Main processing tool for Athena
+
+=head1 VERSION
+
+This documentation refers to Demeter version 0.4.
+
+=head1 SYNOPSIS
+
+This module provides the main data processing tool for Athena,
+including parameters for normalization and background removal, Fourier
+transforms, and group-specific plotting parameters.
+
+=head1 DEPENDENCIES
+
+Demeter's dependencies are in the F<Bundle/DemeterBundle.pm> file.
+
+=head1 BUGS AND LIMITATIONS
+
+Please report problems to Bruce Ravel (bravel AT bnl DOT gov)
+
+Patches are welcome.
+
+=head1 AUTHOR
+
+Bruce Ravel (bravel AT bnl DOT gov)
+
+L<http://cars9.uchicago.edu/~ravel/software/>
+
+=head1 LICENCE AND COPYRIGHT
+
+Copyright (c) 2006-2011 Bruce Ravel (bravel AT bnl DOT gov). All rights reserved.
+
+This module is free software; you can redistribute it and/or
+modify it under the same terms as Perl itself. See L<perlgpl>.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+
+=cut

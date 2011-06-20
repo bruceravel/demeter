@@ -80,7 +80,7 @@ possibly hundreds of
 path computed in each [% feff %] calculation performed.
 
 [% feff %], however, does not have to be run this way.  Using the 
-[% INCLUDE font/tt a="CONTROL" %] keyword, you can specify which parts of
+[% INCLUDE font/mono a="CONTROL" %] keyword, you can specify which parts of
 [% feff %] actually run.  Each of 
 [% INCLUDE font/em a="potph" %]
 [% INCLUDE font/em a="pathfinder" %]
@@ -103,7 +103,6 @@ first coordination shell in an
 BCC metal tells you the coordinates of one such scattering atom and it
 tells you that the degeneracy is 8.  It does not, however, retain the
 coordinates of the other 7 atoms.
-
 The other shortcoming of the [% INCLUDE font/em a="pathfinder" %]
 is that it treats scattering
 paths as non-degenerate if their half path lengths differ by 0.00001 
@@ -131,7 +130,6 @@ way of discarding obviously small paths and all higher-order
 scattering paths based on that geometry.  Also, [% demeter %]'s 
 [% INCLUDE font/em a="pathfinder" %] is
 pretty slow compared to [% feff %]'s.
-
 However, [% demeter %]'s [% INCLUDE font/em a="pathfinder" %] retains
 information about all scattering geometries that contribute to the
 degeneracy of a path.  In the future, this will allow propagattion of
@@ -160,7 +158,6 @@ instance of [% demeter %] is finished (say, by quitting [% artemis %])
 all the
 [% INCLUDE font/file a="feffNNNN.dat" %] files are deleted.  The next
 time you fire up your program, they will be recalcualted.
-
 It turns out that the call to [% INCLUDE font/em a="genfmt" %] is so 
 fast that it is better to
 recompute the [% INCLUDE font/file a="feffNNNN.dat" %] 
@@ -170,7 +167,6 @@ files rather than carry them around.  Thus
 given names based on random strings, so there is no chance of
 accidentally over-writing them if you happen to re-run earlier parts
 of [% feff %].
-
 The way this on-demand calcualtion of 
 [% INCLUDE font/file a="feffNNNN.dat" %] files works is by
 having [% demeter %] generate short replacements for the 

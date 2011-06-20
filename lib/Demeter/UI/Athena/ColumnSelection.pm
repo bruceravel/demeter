@@ -119,6 +119,7 @@ sub columns {
   my @energy; $#energy = $#cols+1;
   my @numer;  $#numer  = $#cols+1;
   my @denom;  $#denom  = $#cols+1;
+  my @denom_widgets;
 
   my $count = 1;
   my $med = 0;
@@ -148,6 +149,7 @@ sub columns {
     my $dcheck = Wx::CheckBox->new($columnbox, -1, q{});
     $gbs -> Add($dcheck, Wx::GBPosition->new(3,$count));
     EVT_CHECKBOX($parent, $dcheck, sub{OnDenomClick(@_, $this, $data, $i, \@denom)});
+    push @denom_widgets, $dcheck;
     if ($data->denominator =~ m{(?<=\$)$count\b}) {
       $denom[$i] = 1;
       $dcheck->SetValue(1);
@@ -156,6 +158,7 @@ sub columns {
     @args = ();
     ++$count;
   };
+  $this->{denom_widgets} = \@denom_widgets;
   $this->{each}->Enable($med>1);
 
   $this->display_plot($data) if (($data->numerator ne '1') or ($data->denominator ne '1'));
@@ -215,7 +218,8 @@ sub strings {
   $gbs -> Add($this->{energy},                            Wx::GBPosition->new(0,1));
   $this->{energy} -> SetValue($data->energy_string);
 
-  $gbs -> Add(Wx::StaticText->new($parent, -1, "$MU(E)"), Wx::GBPosition->new(1,0));
+  $this->{muchi_label} = Wx::StaticText->new($parent, -1, "$MU(E)");
+  $gbs -> Add($this->{muchi_label}, Wx::GBPosition->new(1,0));
   $gbs -> Add($this->{mue},                               Wx::GBPosition->new(1,1));
   $this->{mue} -> SetValue($data->xmu_string);
 
@@ -263,12 +267,15 @@ sub OnNumerClick {
   chop $string;
   #print "numerator is ", $string, $/;
   $string = "1" if not $string;
-  $data -> numerator($string);
+  ($data->datatype ne 'chi') ? $data -> numerator($string) : $data -> chi_column($string);
+  $data -> update_data(1) if ($data->datatype eq 'chi');
+  $data -> update_columns(1);
   $this -> display_plot($data);
 };
 
 sub OnDenomClick {
   my ($parent, $event, $this, $data, $i, $aref) = @_;
+  return if ($data->datatype eq 'chi');
   $aref->[$i] = $event->IsChecked;
   my $string = q{};
   foreach my $count (1 .. $#$aref) {
@@ -288,6 +295,47 @@ sub OnDatatype {
   $data->set(datatype=>'xmu', is_nor=>1)      if ($this->{datatype}->GetSelection == 2);
   $data->datatype('chi')                      if ($this->{datatype}->GetSelection == 3);
   $data->datatype('xmudat')                   if ($this->{datatype}->GetSelection == 4);
+
+  if ($this->{datatype}->GetSelection == 3) { # chi data
+    ## disable widgets needed for processing mu(E) data
+    $this->{ln}                    -> SetValue(0);
+    $this->{ln}                    -> Enable(0);
+    $this->{muchi_label}           -> SetLabel("$CHI(k)");
+    $this->{Reference}->{do_ref}   -> SetValue(0);
+    $this->{Reference}->{do_ref}   -> Enable(0);
+    $this->{Reference}             -> EnableReference(q{}, $data);
+    $this->{Rebin}->{do_rebin}     -> SetValue(0);
+    $this->{Rebin}->{do_rebin}     -> Enable(0);
+    $this->{Rebin}                 -> EnableRebin(q{}, $data);
+    $this->{Preprocess}->{standard}-> SetStringSelection('None');
+    $this->{Preprocess}->{standard}-> Enable(0);
+    $this->{Preprocess}->{align}   -> SetValue(0);
+    $this->{Preprocess}->{align}   -> Enable(0);
+    foreach my $d (@{$this->{denom_widgets}}) {
+      $d->Enable(0);
+    };
+
+    my $num = $data->numerator;
+    $data->set(numerator=>q{1}, denominator=>q{1}, ln=>0);
+    $data->chi_column($num);
+  } else {
+    ## re-enable widgets needed for processing mu(E) data
+    $this->{ln}                    -> Enable(1);
+    $this->{muchi_label}           -> SetLabel("$MU(E)");
+    $this->{Reference}->{do_ref}   -> Enable(1);
+    $this->{Reference}             -> EnableReference(q{}, $data);
+    $this->{Rebin}->{do_rebin}     -> Enable(1);
+    $this->{Rebin}                 -> EnableRebin(q{}, $data);
+    $this->{Preprocess}->{standard}-> Enable(1);
+    $this->{Preprocess}->{align}   -> Enable(1);
+    foreach my $d (@{$this->{denom_widgets}}) {
+      $d->Enable(1);
+    };
+
+    my $num = ($data->chi_column eq '1') ? $data->numerator : $data->chi_column;
+    $data->chi_column(q{1});
+    $data->numerator($num);
+  };
 };
 
 sub OnUnits {
@@ -298,14 +346,25 @@ sub OnUnits {
 
 sub display_plot {
   my ($this, $data) = @_;
-  $data -> _update('normalize');
-  $this->{energy} -> SetValue($data->energy_string);
-  $this->{mue}    -> SetValue($data->xmu_string);
-  my @energy = $data->get_array('energy');
-  my ($emin, $emax) = minmax(@energy);
-  $data -> po -> set(emin=>$emin, emax=>$emax);
-  $data -> po -> start_plot;
-  $data -> plot('e');
+  if ($data->datatype ne 'chi') {
+    $data -> _update('normalize');
+    $this->{energy} -> SetValue($data->energy_string);
+    $this->{mue}    -> SetValue($data->xmu_string);
+    my @energy = $data->get_array('energy');
+    my ($emin, $emax) = minmax(@energy);
+    $data -> po -> set(emin=>$emin, emax=>$emax);
+    $data -> po -> start_plot;
+    $data -> plot('e');
+  } else {
+    $data -> _update('normalize');
+    $this->{energy} -> SetValue($data->energy_string);
+    $this->{mue}    -> SetValue($data->chi_string);
+    my @k = $data->get_array('k');
+    my ($kmin, $kmax) = minmax(@k);
+    $data -> po -> set(kmin=>0, kmax=>$kmax);
+    $data -> po -> start_plot;
+    $data -> plot('k') if ($data->chi_string ne '1');
+  };
 };
 
 sub ShouldPreventAppExit {
