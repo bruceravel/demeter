@@ -18,6 +18,9 @@
      unexpectedly.
    - Rewrote the quad plot
    - Clarified language used in stack tab of plotting options section
+   - Fix a problem doing LCF fits with the final weight being negative
+     when weights constrained to be non-negative and to sum to one.
+   - Escape underscores in gnuplot plot legend for LCF plots
 
 *** Artemis
    - Completely rewrote mechanism for importing old-style Artemis

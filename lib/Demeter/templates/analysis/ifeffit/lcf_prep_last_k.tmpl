@@ -2,8 +2,10 @@
   @list = $DS->standards_list;
   pop(@list);
   $sum = join(' + ', map {join('_', 'aa', $_)} @list); ## makes a_w + a_x + a_y, i.e. sum of other amplitudes
+  $defaa = ($DS->inclusive) ? sprintf("def aa_%s = max(0,min(a_%s,1))", $S->group, $S->group) : sprintf("def aa_%s = a_%s", $S->group, $S->group);
   q{}
 }
 ##| prepare {$S->name} ({$S->group}) as an LCF standard
-def aa_{$S->group} = 1 - ({$sum})
+def a_{$S->group} = 1 - ({$sum})
+{$defaa}
 def {$DS->group}.{$S->group} = aa_{$S->group} * {$S->group}.chi*{$S->group}.k**{$P->kweight}

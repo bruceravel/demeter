@@ -28,6 +28,7 @@
            : ($suffix eq 'lcf')   ? 'LCF fit'
            : ($suffix eq 'func')  ? $S->data->name
 	   :                        $S->mo->fetch('Data', $suffix)->name;
+  $thiskey =~ s{_}{\\\\_}g;
   q{}
 }
 ## gnuplot script

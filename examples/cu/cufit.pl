@@ -31,6 +31,7 @@ $data ->set(file       => "cu10k.chi",
 	    fit_k1     => 1,	       fit_k3     => 1,
 	    bft_rmin   => 1.6,         bft_rmax   => 4.3,
 	    fit_do_bkg => 0,
+	    fit_space  => 'k',
 	    name       => 'My copper data',
 	   );
 

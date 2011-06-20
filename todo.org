@@ -3,10 +3,12 @@
 #+EMAIL: bravel AT bnl DOT gov
 #+TAGS: PDL HUH Advanced Windows
 
-* top of the to do list
+* top of the to do list [2/4]
 
-  1. Andreas' issues with LCF (se mail 16 June 05:47:33 am)
-  2. Shelly's atoms bug (see mail 17 June 06:35:58 pm)
+  1. [X] Andreas' issues with LCF (se mail 16 June 05:47:33 am)
+  2. [ ] Shelly's atoms bug (see mail 17 June 06:35:58 pm)
+  3. [X] +Test fitting in k+
+  4. [ ] Reading .fit file into dathena
 
 * things that need doing
 

@@ -18,6 +18,7 @@
            : ($suffix =~ m{chir}) ? 'LCF fit'
            : ($suffix eq 'func')  ? $S->data->name
 	   :                        $S->mo->fetch('Data', $suffix)->name;
+  $thiskey =~ s{_}{\\\\_}g;
   q{}
 }
 # LCF fit: plot {$thiskey}
