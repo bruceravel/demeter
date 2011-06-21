@@ -663,8 +663,7 @@ lib/Demeter/templates/plot/gnuplot/plot_info_depth.tmpl
 lib/Demeter/templates/plot/gnuplot/plot_stats.tmpl
 lib/Demeter/templates/plot/gnuplot/prep_f1f2.tmpl
 lib/Demeter/templates/plot/gnuplot/prep_filter.tmpl
-lib/Demeter/templates/plot/gnuplot/quadend.tmpl
-lib/Demeter/templates/plot/gnuplot/quadstart.tmpl
+lib/Demeter/templates/plot/gnuplot/quad.tmpl
 lib/Demeter/templates/plot/gnuplot/restore.tmpl
 lib/Demeter/templates/plot/gnuplot/run.tmpl
 lib/Demeter/templates/plot/gnuplot/start.tmpl

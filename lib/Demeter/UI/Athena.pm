@@ -185,7 +185,7 @@ sub feedback {
 sub mouseover {
   my ($app, $widget, $text) = @_;
   return if not $demeter->co->default("athena", "hints");
-  my $sb = $app->{main}->{statusbar};
+  my $sb = $app->{main}->GetStatusBar;
   EVT_ENTER_WINDOW($widget, sub{$sb->PushStatusText($text); $_[1]->Skip});
   EVT_LEAVE_WINDOW($widget, sub{$sb->PopStatusText if ($sb->GetStatusText eq $text); $_[1]->Skip});
 };
@@ -1689,8 +1689,8 @@ sub status {
             : ($type =~ m{wait})   ? $wait
             : ($type =~ m{error})  ? $error
 	    :                       $normal;
-  $self->{statusbar}->SetBackgroundColour($color);
-  $self->{statusbar}->SetStatusText($text);
+  $self->GetStatusBar->SetBackgroundColour($color);
+  $self->GetStatusBar->SetStatusText($text);
   return if ($type =~ m{nobuffer});
   $self->{Status}->put_text($text, $type);
   $self->Refresh;

@@ -97,9 +97,9 @@ Name: "{group}\Perl\Tools\Create local library areas"; Filename: "{app}\perl\bin
 Name: "{group}\Perl\Tools\CPAN Client"; Filename: "{app}\perl\bin\cpan.bat"; WorkingDir: "{app}\perl\bin\"; IconFilename: "{app}\win32\cpan.ico";
 
 ;;; Application desktop icons
-Name: "{userdesktop}\Athena"; Filename: "{app}\perl\site\bin\dathena.bat"; Comment: "XAS Data Processing"; WorkingDir: "{app}"; IconFilename: "{app}\perl\site\lib\Demeter\UI\Athena\share\athena_icon.ico"; Tasks: desktopicon
-Name: "{userdesktop}\Artemis"; Filename: "{app}\perl\site\bin\dartemis.bat"; Comment: "EXAFS Data Analysis using Feff and Ifeffit"; WorkingDir: "{app}"; IconFilename: "{app}\perl\site\lib\Demeter\UI\Artemis\share\artemis_icon.ico"; Tasks: desktopicon
-Name: "{userdesktop}\Hephaestus"; Filename: "{app}\perl\site\bin\dhephaestus.bat"; Comment: "A periodic table for the absorption spectroscopist"; WorkingDir: "{app}"; IconFilename: "{app}\perl\site\lib\Demeter\UI\Hephaestus\icons\vulcan.ico"; Tasks: desktopicon
+Name: "{userdesktop}\(D)Athena"; Filename: "{app}\perl\site\bin\dathena.bat"; Comment: "XAS Data Processing"; WorkingDir: "{app}"; IconFilename: "{app}\perl\site\lib\Demeter\UI\Athena\share\athena_icon.ico"; Tasks: desktopicon
+Name: "{userdesktop}\(D)Artemis"; Filename: "{app}\perl\site\bin\dartemis.bat"; Comment: "EXAFS Data Analysis using Feff and Ifeffit"; WorkingDir: "{app}"; IconFilename: "{app}\perl\site\lib\Demeter\UI\Artemis\share\artemis_icon.ico"; Tasks: desktopicon
+Name: "{userdesktop}\(D)Hephaestus"; Filename: "{app}\perl\site\bin\dhephaestus.bat"; Comment: "A periodic table for the absorption spectroscopist"; WorkingDir: "{app}"; IconFilename: "{app}\perl\site\lib\Demeter\UI\Hephaestus\icons\vulcan.ico"; Tasks: desktopicon
 
 [Code]
 function getPath(Param: String): string;

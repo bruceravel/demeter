@@ -15,14 +15,14 @@
      allows replotting or other actions (or none at all) upon hitting
      return with focus in a text box.  This is in response to a
      complaint that hitting enter in a text box caused focus to shift
-     unexpectedly.
+     unexpectedly and to a request for more functionality.
    - Rewrote the quad plot
    - Clarified language used in stack tab of plotting options section
    - Fix a problem doing LCF fits with the final weight being negative
      when weights constrained to be non-negative and to sum to one.
    - Escape underscores in gnuplot plot legend for LCF plots
    - Fixed a bug using a background removal standard
-   - Athena now read chi(k) data files correctly
+   - Athena now reads chi(k) data files correctly
 
 *** Artemis
    - Completely rewrote mechanism for importing old-style Artemis
@@ -40,6 +40,8 @@
 
 *** Windows Installer
    - Renamed desktop icons so as to not overwrite Horae's icons
+   - All bat file launchers save STDOUT and STDERR from the current
+     session to a log file in %APPDATA%\demeter\
 
 *** Acknowledgements for this release
    1. Scott Calvin

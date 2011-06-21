@@ -302,7 +302,7 @@ sub bkg {
   $abox -> Add($this->{bkg_stan_label},   0, wxBOTTOM|wxRIGHT,   5);
   $abox -> Add($this->{bkg_stan},         0, wxRIGHT, 10);
   push @bkg_parameters, qw(bkg_stan bkg_clamp1 bkg_clamp2 clamp);
-  $app -> mouseover($this->{bkg_stan}, "Background removal with a standard is not working yet.  Sorry.");
+  $app -> mouseover($this->{bkg_stan}, "Perform background removal using the selected data standard.");
 
   $backgroundboxsizer -> Add($abox, 0, wxLEFT, 10);
 

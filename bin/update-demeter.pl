@@ -4,19 +4,39 @@ use strict;
 
 use LWP::UserAgent;
 
-$ENV{https_proxy} ||= $ENV{http_proxy};
-
 my $ua = LWP::UserAgent->new;
 $ua->timeout(30);
-$ua->env_proxy;
+$ua->proxy(['http', 'https'], 'http://192.168.1.130:3128');
+
+my $url = 'http://github.com/bruceravel/demeter/downloads';
+my $request = HTTP::Request->new(CONNECT => $url);
+my $response = $ua->request($request);
+print $response->as_string;
+
+exit;
+
+
+
 
 my $release = 1;
-my $tag = 'https://github.com/bruceravel/demeter/tarball/release-' . $release;
+my $tag = 'http://github.com/bruceravel/demeter/downloads'; #zipball/release-' . $release;
 
-#$ua->cookie_jar(HTTP::Cookies->new(file => "lwpcookies.txt", autosave => 1));
+print $tag, $/;
+#exit;
+#my $req = HTTP::Request->new(GET => $tag);
 
-my $req = HTTP::Request->new(GET => $tag);
-print $ua->request($req, "Demeter-r$release.tar.gz")->as_string;
+my $response = $ua->get($tag);
+
+
+if ($response->is_success) {
+  print $response->decoded_content;  # or whatever
+} else {
+  die $response->status_line;
+}
+
+
+
+#print $ua->request($req, $tag)->as_string;
 
 
 # my $response = $ua->get($tag);

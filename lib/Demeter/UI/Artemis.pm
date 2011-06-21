@@ -1163,9 +1163,9 @@ sub status {
               : ($type =~ m{alert})  ? $alert
               : ($type =~ m{error})  ? $error
 	      :                        $normal;
-  $self->{statusbar}->SetBackgroundColour($bgcolor);
-  $self->{statusbar}->Refresh;
-  $self->{statusbar}->SetStatusText($text);
+  $self->GetStatusBar->SetBackgroundColour($bgcolor);
+  $self->GetStatusBar->Refresh;
+  $self->GetStatusBar->SetStatusText($text);
   return if ($type =~ m{nobuffer});
   $Demeter::UI::Artemis::frames{Status}->put_text($text, $type);
 };
