@@ -56,7 +56,7 @@ ok( ($this->mo->template_plot     =~ m{plot}   and
 SKIP: {
   skip "This test not currently working on Windows",1 if $feff->is_windows;
   $this->path;
-  ok( (($this->degen == 1)      and
+  ok( (($this->n == 1)          and
        ($this->nleg  == 2)      and
        (abs($this->reff - 3.5)) < 0.0001),
                                           "parse_nnnn works");
