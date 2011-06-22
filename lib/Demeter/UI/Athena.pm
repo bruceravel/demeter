@@ -14,6 +14,7 @@ use Demeter::UI::Artemis::Buffer;
 use Demeter::UI::Artemis::ShowText;
 use Demeter::UI::Athena::Cursor;
 use Demeter::UI::Athena::Status;
+use Demeter::UI::Artemis::DND::PlotListDrag;
 
 use vars qw($demeter $buffer $plotbuffer);
 
@@ -25,6 +26,11 @@ use File::Spec;
 use List::Util qw(min);
 use List::MoreUtils qw(any);
 use Readonly;
+Readonly my $FOCUS_UP	       => Wx::NewId();
+Readonly my $FOCUS_DOWN	       => Wx::NewId();
+Readonly my $MOVE_UP	       => Wx::NewId();
+Readonly my $MOVE_DOWN	       => Wx::NewId();
+
 use Scalar::Util qw{looks_like_number};
 
 use Wx qw(:everything);
@@ -32,7 +38,7 @@ use Wx::Event qw(EVT_MENU EVT_CLOSE EVT_TOOL_ENTER EVT_CHECKBOX EVT_BUTTON
 		 EVT_ENTER_WINDOW EVT_LEAVE_WINDOW
 		 EVT_RIGHT_UP EVT_LISTBOX EVT_RADIOBOX EVT_LISTBOX_DCLICK
 		 EVT_CHOICEBOOK_PAGE_CHANGED EVT_CHOICEBOOK_PAGE_CHANGING
-		 EVT_RIGHT_DOWN
+		 EVT_RIGHT_DOWN EVT_LEFT_DOWN
 	       );
 use base 'Wx::App';
 
@@ -96,6 +102,16 @@ sub OnInit {
   $app -> main_window($hbox);
   #print DateTime->now,  "  Making side bar ...\n";
   $app -> side_bar($hbox);
+
+  my $accelerator = Wx::AcceleratorTable->new(
+   					      [wxACCEL_CTRL, 106, $FOCUS_UP],
+   					      [wxACCEL_CTRL, 107, $FOCUS_DOWN],
+   					      [wxACCEL_ALT,  106, $MOVE_UP],
+   					      [wxACCEL_ALT,  107, $MOVE_DOWN],
+   					     );
+  $app->{main}->SetAcceleratorTable( $accelerator );
+
+
 
   ## -------- "global" parameters
   #print DateTime->now,  "  Finishing ...\n";
@@ -554,24 +570,6 @@ sub menubar {
   $monitormenu    -> Enable($_,0) foreach ($IFEFFIT_MEMORY);
   $helpmenu       -> Enable($_,0) foreach ($DOCUMENT, $DEMO);
 
-  # my $accelerator = Wx::AcceleratorTable->new(
-  # 					      #[wxACCEL_CTRL|wxACCEL_SHIFT,  97, $MARK_ALL],
-  # 					      [wxACCEL_CTRL, 117, $MARK_NONE],
-  # 					      [wxACCEL_CTRL, 105, $MARK_INVERT],
-  # 					      [wxACCEL_CTRL, 116, $MARK_TOGGLE],
-  # 					      [wxACCEL_CTRL, 114, $MARK_REGEXP],
-  # 					      [wxACCEL_CTRL, 120, $UNMARK_REGEXP],
-  # 					      [wxACCEL_CTRL, 108, $RENAME],
-  # 					      [wxACCEL_CTRL, 121, $COPY],
-
-  # 					      [wxACCEL_CTRL, 111, wxID_OPEN],
-  # 					      [wxACCEL_CTRL, 115, wxID_SAVE],
-  # 					      [wxACCEL_CTRL, 119, wxID_CLOSE],
-  # 					      [wxACCEL_CTRL, 113, wxID_EXIT],
-  # 					     );
-  # $app->{main}->SetAcceleratorTable( $accelerator );
-
-
   EVT_MENU($app->{main}, -1, sub{my ($frame,  $event) = @_; OnMenuClick($frame,  $event, $app)} );
   return $app;
 };
@@ -983,6 +981,23 @@ sub OnMenuClick {
       last SWITCH;
     };
 
+    ($id == $FOCUS_UP) and do {
+      $app->focus_up;
+      return;
+    };
+    ($id == $FOCUS_DOWN) and do {
+      $app->focus_down;
+      return;
+    };
+    ($id == $MOVE_UP) and do {
+      $app->move_group("up");
+      return;
+    };
+    ($id == $MOVE_DOWN) and do {
+      $app->move_group("down");
+      return;
+    };
+
 
     ($id == wxID_ABOUT) and do {
       $app->on_about;
@@ -1112,6 +1127,8 @@ sub side_bar {
   EVT_LISTBOX($toolpanel, $app->{main}->{list}, sub{$app->OnGroupSelect(@_,1)});
   EVT_LISTBOX_DCLICK($toolpanel, $app->{main}->{list}, sub{$app->Rename;});
   EVT_RIGHT_DOWN($app->{main}->{list}, sub{OnRightDown(@_)});
+  EVT_LEFT_DOWN($app->{main}->{list}, \&OnDrag);
+  $app->{main}->{list}->SetDropTarget( Demeter::UI::Athena::DropTarget->new( $app->{main}, $app->{main}->{list} ) );
   #print Wx::SystemSettings::GetColour(wxSYS_COLOUR_HIGHLIGHT), $/;
   #$app->{main}->{list}->SetBackgroundColour(Wx::Colour->new($demeter->co->default("athena", "single")));
 
@@ -1186,6 +1203,61 @@ sub OnRightDown {
   $event->Skip(0);
 };
 
+sub OnDrag {
+  my ($list, $event) = @_;
+  if ($event->ControlDown) {
+    my $which = $list->HitTest($event->GetPosition);
+    my $source = Wx::DropSource->new( $list );
+    my $dragdata = Demeter::UI::Artemis::DND::PlotListDrag->new(\$which);
+    $source->SetData( $dragdata );
+    $source->DoDragDrop(1);
+    $event->Skip(0);
+  } else {
+    $event->Skip(1);
+  };
+};
+
+sub focus_up {
+  my ($app) = @_;
+  my $i = $app->{main}->{list}->GetSelection;
+  return if ($i == 0);
+  $app->{main}->{list}->SetSelection($i-1);
+  $app->OnGroupSelect(q{}, $app->{main}->{list}->GetSelection, 0);
+};
+sub focus_down {
+  my ($app) = @_;
+  my $i = $app->{main}->{list}->GetSelection;
+  return if ($i == $app->{main}->{list}->GetCount);
+  $app->{main}->{list}->SetSelection($i+1);
+  $app->OnGroupSelect(q{}, $app->{main}->{list}->GetSelection, 0);
+};
+
+sub move_group {
+  my ($app, $dir) = @_;
+  my $i = $app->{main}->{list}->GetSelection;
+
+  return if (($dir eq 'up')   and ($i == 0));
+  return if (($dir eq 'down') and ($i == $app->{main}->{list}->GetCount-1));
+
+  my $from_object  = $app->{main}->{list}->GetIndexedData($i);
+  my $from_label   = $app->{main}->{list}->GetString($i);
+  my $from_checked = $app->{main}->{list}->IsChecked($i);
+
+  my $to_label     = $app->{main}->{list}->GetString($i-1);
+
+  $app->{main}->{list} -> DeleteData($i);
+  my $to = ($dir eq 'down') ? $i+1 : $i-1;
+
+  $app->{main}->{list} -> InsertData($from_label, $to, $from_object);
+  $app->{main}->{list} -> Check($to, $from_checked);
+  $app->{main}->{list} -> SetSelection($to);
+  $app->OnGroupSelect(q{}, $app->{main}->{list}->GetSelection, 0);
+
+  $app->modified(1);
+  $app->{main}->status("Moved $from_label $dir");
+};
+
+
 sub OnGroupSelect {
   my ($app, $parent, $event, $plot) = @_;
   if ((ref($event) =~ m{Event}) and (not $event->IsSelection)) { # capture a control click which would otherwise deselect
@@ -1195,7 +1267,7 @@ sub OnGroupSelect {
   };
   my $is_index = (ref($event) =~ m{Event}) ? $event->GetSelection : $app->{main}->{list}->GetSelection;
 
-  my $was = ($app->{selected} == -1) ? 0 : $app->{main}->{list}->GetIndexedData($app->{selected});
+  my $was = ((not defined($app->{selected})) or ($app->{selected} == -1)) ? 0 : $app->{main}->{list}->GetIndexedData($app->{selected});
   my $is  = $app->{main}->{list}->GetIndexedData($is_index);
   $app->{selecting_data_group}=1;
 
@@ -1767,7 +1839,64 @@ sub ClearAll {
   $clb->Clear;
 };
 
-## also need a method for reordering items on the list...
+
+package Demeter::UI::Athena::DropTarget;
+
+use Wx qw( :everything);
+use base qw(Wx::DropTarget);
+use Demeter::UI::Artemis::DND::PlotListDrag;
+
+use Scalar::Util qw(looks_like_number);
+
+sub new {
+  my $class = shift;
+  my $this = $class->SUPER::new;
+
+  my $data = Demeter::UI::Artemis::DND::PlotListDrag->new();
+  $this->SetDataObject( $data );
+  $this->{DATA} = $data;
+  return $this;
+};
+
+sub OnData {
+  my ($this, $x, $y, $def) = @_;
+
+  my $list = $::app->{main}->{list};
+  return 0 if not $list->GetCount;
+  $this->GetData;		# this line is what transfers the data from the Source to the Target
+
+  my $from = ${ $this->{DATA}->{Data} };
+  my $from_object  = $list->GetIndexedData($from);
+  my $from_label   = $list->GetString($from);
+  my $from_checked = $list->IsChecked($from);
+  my $point = Wx::Point->new($x, $y);
+  my $to = $list->HitTest($point);
+  my $to_label   = $list->GetString($to);
+
+  return 0 if ($to == $from);	# either of these two would leave the list in the same state
+#  return 0 if ($to == $from+1);
+
+  my $message;
+  $list -> DeleteData($from);
+  if ($to == -1) {
+    $list -> AddData($from_label, $from_object);
+    $list -> Check($list->GetCount-1, $from_checked);
+    $::app->{main}->{list}->SetSelection($from);
+    $message = sprintf("Moved '%s' to the last position.", $from_label);
+  } else {
+    $message = sprintf("Moved '%s' above %s.", $from_label, $to_label);
+    --$to if ($from < $to);
+    $list -> InsertData($from_label, $to, $from_object);
+    #$list -> SetClientData($to, $from_object);
+    $list -> Check($to, $from_checked);
+    $::app->{main}->{list}->SetSelection($to);
+  };
+  $::app->OnGroupSelect(q{}, $::app->{main}->{list}->GetSelection, 0);
+  $::app->modified(1);
+  $::app->{main}->status($message);
+
+  return $def;
+};
 
 1;
 

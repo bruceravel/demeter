@@ -86,7 +86,7 @@
    - [ ] reference of another edge
    - [ ] keV data
 
-*** needs doing [4/15] [26%]
+*** needs doing [5/15] [33%]
    - [X] deglitching crashes with gnuplot					:HUH:
    - [X] in project selection dialog, controls for entering a periodic
          subset (i.e. every Nth record starting with the Jth record)
@@ -116,8 +116,8 @@
        + [X] plot in R for fit in k
        + [ ] persistance of LCF results
        + [X] plot sequence results with pgplot
-   - [-] *Group list* [2/3]
-       + [ ] reorganize list, keystroke | DnD
+   - [X] *Group list* [3/3]
+       + [X] reorganize list, keystroke | DnD
        + [X] left click on groups list should post group menu (others?)
        + [X] it needs to be impossible to select nothing in the group list
    - [ ] *Plot menu*
@@ -130,7 +130,7 @@
 *** raw data
    - Need to expand the filetype system by examining data from *all* the XAS beamlines in the world.  Yes ... all of them.
    - solicit help from the facility representatives
-
+     
 ** Windows issues [8/15]					    :Windows:
   - [X] parameter group context menus don't get posted (see http://www.nntp.perl.org/group/perl.wxperl.users/2011/03/msg7929.html)
   - [X] ugly background colors on command and status buffer frames (particularly at bottom, also a problem in Artemis)

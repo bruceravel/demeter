@@ -23,6 +23,10 @@
    - Escape underscores in gnuplot plot legend for LCF plots
    - Fixed a bug using a background removal standard
    - Athena now reads chi(k) data files correctly
+   - Group list:
+       - Control-drag to rearrange groups in group list
+       - Ctrl-j/Ctrl-k to change focus up and down in the groups list
+       - Alt-j/Alt-k to move groups up and down in the groups list
 
 *** Artemis
    - Completely rewrote mechanism for importing old-style Artemis
