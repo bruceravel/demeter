@@ -39,6 +39,7 @@
      Feff8 is not yet supported in Demeter
    - Implemented Rk plot and made a button for it
    - Added wxTE_PROCESS_ENTER style to all one-line text entry boxes.
+   - Multiple plotting terminals with Gnuplot
 
 *** Demeter
    - Changes to selection of the plotting backend just prior to R1

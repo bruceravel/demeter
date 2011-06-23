@@ -57,6 +57,9 @@ Readonly my $MODE_STATUS     => Wx::NewId();
 Readonly my $PERL_MODULES    => Wx::NewId();
 Readonly my $STATUS          => Wx::NewId();
 Readonly my $DOCUMENT        => Wx::NewId();
+Readonly my $TERM_1          => Wx::NewId();
+Readonly my $TERM_2          => Wx::NewId();
+Readonly my $TERM_3          => Wx::NewId();
 
 use Wx::Perl::Carp qw(verbose);
 $SIG{__WARN__} = sub {Wx::Perl::Carp::warn($_[0])};
@@ -188,6 +191,12 @@ sub OnInit {
 
   #my $settingsmenu = Wx::Menu->new;
 
+  my $plotmenu = Wx::Menu->new;
+  $plotmenu->AppendRadioItem($TERM_1, "Plot to terminal 1", "Plot to terminal 1");
+  $plotmenu->AppendRadioItem($TERM_2, "Plot to terminal 2", "Plot to terminal 2");
+  $plotmenu->AppendRadioItem($TERM_3, "Plot to terminal 3", "Plot to terminal 3");
+
+
   my $helpmenu = Wx::Menu->new;
   $helpmenu->Append($DOCUMENT,  "Read user manual" );
   $helpmenu->Append(wxID_ABOUT, "&About..." );
@@ -195,7 +204,7 @@ sub OnInit {
 
   $bar->Append( $filemenu,      "&File" );
   $bar->Append( $feedbackmenu,  "&Monitor" );
-  #$bar->Append( $settingsmenu, "&Settings" );
+  $bar->Append( $plotmenu,      "Plot" ) if ($demeter->co->default('plot', 'plotwith') eq 'gnuplot');
   $bar->Append( $helpmenu,      "&Help" );
   $frames{main}->SetMenuBar( $bar );
 
@@ -846,6 +855,19 @@ sub OnMenuClick {
     #  my $x = 1/0;
     #  last SWITCH;
     #};
+
+    ($id == $TERM_1) and do {
+      $demeter->po->terminal_number(1);
+      last SWITCH;
+    };
+    ($id == $TERM_2) and do {
+      $demeter->po->terminal_number(2);
+      last SWITCH;
+    };
+    ($id == $TERM_3) and do {
+      $demeter->po->terminal_number(3);
+      last SWITCH;
+    };
 
     ## -------- help menu
     ($id == $STATUS) and do {
