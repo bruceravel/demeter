@@ -333,7 +333,7 @@ sub OnDatatype {
     };
 
     my $num = ($data->chi_column eq '1') ? $data->numerator : $data->chi_column;
-    $data->chi_column(q{1});
+    $data->chi_column(q{});
     $data->numerator($num);
   };
 };

@@ -104,7 +104,7 @@ sub Import {
     } else {
       $plugin = test_plugins($app, $file);
       $stashfile = ($plugin) ? $plugin->fixed : $file;
-      @suggest = ($plugin) ? $plugin->suggest('transmission') : ();
+      @suggest = ($plugin) ? $plugin->suggest() : ();
       $type = ($plugin and ($plugin->output eq 'data'))                ? 'raw'
             : ($plugin and ($plugin->output eq 'project'))             ? 'prj'
             : ($Demeter::UI::Athena::demeter->is_prj($file,$verbose))  ? 'prj'
@@ -205,17 +205,17 @@ sub _data {
     $yaml = YAML::Tiny::Load($data->slurp($persist));
     if ($data->columns eq $yaml->{columns}) {
       my $nnorm = ($yaml->{datatype} eq 'xanes') ? 2 : 3;
-      $data -> set(energy      => $yaml->{energy}||'$1',
-		   numerator   => $yaml->{numerator}||'1',
-		   denominator => $yaml->{denominator}||'1',
-		   ln          => $yaml->{ln},
+      $data -> set(energy      => $suggest{energy}||$yaml->{energy}||'$1',
+		   numerator   => $suggest{numerator}||$yaml->{numerator}||'1',
+		   denominator => $suggest{denominator}||$yaml->{denominator}||'1',
+		   ln          => $suggest{ln}||$yaml->{ln},
 		   ##is_kev      => $yaml->{units},
 		   datatype    => $yaml->{datatype}||'xmu',
 		   bkg_nnorm   => $nnorm,
 		  );
     } else {
       $yaml->{each} = 0;
-      $do_guess = 1;
+      $do_guess = ($suggest) ? 0 : 1;
     };
   } else {
     $do_guess = 1;
@@ -226,7 +226,6 @@ sub _data {
   ## set.  then guess_columns can be called.
   $data->xdi($orig) if (ref($orig) =~ m{Class::MOP});
   $data->guess_columns if $do_guess;
-
 
   ## -------- display column selection dialog
   my $repeated = 1;

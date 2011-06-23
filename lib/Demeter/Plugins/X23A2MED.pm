@@ -98,7 +98,7 @@ sub fix {
 sub suggest {
   my ($self, $which) = @_;
   $which ||= 'transmission';
-  if ($which eq 'transmission') {
+  if ($which eq 'fluorescence') {
     return (energy      => '$1',
 	    numerator   => '$2',
 	    denominator => '$7',
