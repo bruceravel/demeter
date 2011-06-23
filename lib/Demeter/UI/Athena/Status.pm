@@ -33,6 +33,7 @@ sub new {
 				wxDefaultPosition, [650,400],
 				wxMINIMIZE_BOX|wxCAPTION|wxSYSTEM_MENU|wxCLOSE_BOX|wxRESIZE_BORDER);
   EVT_CLOSE($this, \&on_close);
+  $this -> SetBackgroundColour( wxNullColour );
   my $vbox = Wx::BoxSizer->new( wxVERTICAL );
 
   $this->{name} = q{};

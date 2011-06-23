@@ -1,6 +1,6 @@
 ##
 ## ======== NEW PLOT ========
-set term {$C->default("gnuplot","terminal")} font '{$C->default("gnuplot","font")},{$C->default("gnuplot","fontsize")}' {$C->default("gnuplot","termparams")} title "{$C->mo->identity}[Plot]"
+set term {$C->default("gnuplot","terminal")} {$P->terminal_number} font '{$C->default("gnuplot","font")},{$C->default("gnuplot","fontsize")}' {$C->default("gnuplot","termparams")} title "{$C->mo->identity}[Plot.{$P->terminal_number}]"
 set encoding iso_8859_15
 set origin 0.01,0.01
 set size 0.99,0.99

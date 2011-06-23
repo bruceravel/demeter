@@ -337,6 +337,9 @@ Readonly my $PLOT_E00          => Wx::NewId();
 Readonly my $PLOT_I0MARKED     => Wx::NewId();
 Readonly my $PLOT_STDDEV       => Wx::NewId();
 Readonly my $PLOT_VARIENCE     => Wx::NewId();
+Readonly my $TERM_1            => Wx::NewId();
+Readonly my $TERM_2            => Wx::NewId();
+Readonly my $TERM_3            => Wx::NewId();
 
 Readonly my $SHOW_BUFFER       => Wx::NewId();
 Readonly my $PLOT_YAML	       => Wx::NewId();
@@ -475,7 +478,7 @@ sub menubar {
   $groupmenu->Append($DATA_YAML,      "Show structure of current group",                 "Show detailed contents of the current data group");
   $groupmenu->Append($DATA_TEXT,      "Show the text of the current group's data file",  "Show the text of the current data group's data file");
   $groupmenu->AppendSeparator;
-  $groupmenu->Append($SHOW_REFERENCE, "Show reference channel", "Identify the group that shares the data/reference relationship with this group.");
+  $groupmenu->Append($SHOW_REFERENCE, "Identify reference channel", "Identify the group that shares the data/reference relationship with this group.");
   $groupmenu->Append($TIE_REFERENCE,  "Tie reference channel",  "Tie together two marked groups as data and reference channel.");
   $groupmenu->AppendSeparator;
   $groupmenu->Append($REMOVE,         "Remove current group",   "Remove the current group from this project");
@@ -520,6 +523,12 @@ sub menubar {
   $plotmenu->AppendSubMenu($currentplotmenu, "Current group", "Special plot types for the current group");
   $plotmenu->AppendSubMenu($markedplotmenu,  "Marked groups", "Special plot types for the marked groups");
   $plotmenu->AppendSubMenu($mergedplotmenu,  "Merge groups",  "Special plot types for merge data");
+  if ($demeter->co->default('plot', 'plotwith') eq 'gnuplot') {
+    $plotmenu->AppendSeparator;
+    $plotmenu->AppendRadioItem($TERM_1, "Plot to terminal 1", "Plot to terminal 1");
+    $plotmenu->AppendRadioItem($TERM_2, "Plot to terminal 2", "Plot to terminal 2");
+    $plotmenu->AppendRadioItem($TERM_3, "Plot to terminal 3", "Plot to terminal 3");
+  };
   $app->{main}->{plotmenu} = $plotmenu;
 
   my $markmenu   = Wx::Menu->new;
@@ -953,6 +962,19 @@ sub OnMenuClick {
     };
     ($id == $PLOT_I0MARKED) and do {
       $app->plot_i0_marked;
+      last SWITCH;
+    };
+
+    ($id == $TERM_1) and do {
+      $demeter->po->terminal_number(1);
+      last SWITCH;
+    };
+    ($id == $TERM_2) and do {
+      $demeter->po->terminal_number(2);
+      last SWITCH;
+    };
+    ($id == $TERM_3) and do {
+      $demeter->po->terminal_number(3);
       last SWITCH;
     };
 

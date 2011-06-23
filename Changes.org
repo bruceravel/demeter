@@ -27,6 +27,9 @@
        - Control-drag to rearrange groups in group list
        - Ctrl-j/Ctrl-k to change focus up and down in the groups list
        - Alt-j/Alt-k to move groups up and down in the groups list
+   - Work around spurious error message when plucking from Gnuplot on
+     Windows
+   - Multiple plotting terminals with Gnuplot
 
 *** Artemis
    - Completely rewrote mechanism for importing old-style Artemis

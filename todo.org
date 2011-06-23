@@ -3,12 +3,10 @@
 #+EMAIL: bravel AT bnl DOT gov
 #+TAGS: PDL HUH Advanced Windows
 
-* top of the to do list [2/4]
+* top of the to do list [0/2]
 
-  1. [X] Andreas' issues with LCF (se mail 16 June 05:47:33 am)
-  2. [ ] Shelly's atoms bug (see mail 17 June 06:35:58 pm)
-  3. [X] +Test fitting in k+
-  4. [ ] Reading .fit file into dathena
+  1. [ ] Shelly's atoms bug (see mail 17 June 06:35:58 pm)
+  2. [ ] Handle CIF import problems more gracefully
 
 * things that need doing
 
@@ -101,9 +99,9 @@
    - [ ] fix edge step button is not working
    - [ ] test preprocessing (I had a crash with all three preproc options selected for data with a reference):
 	 ~Can't call method "GetSelection" on an undefined value at /home/bruce/git/demeter/lib/Demeter/UI/Athena/IO.pm line 423.~
-   - [ ] *Pluck buttons* [0/2]
+   - [-] *Pluck buttons* [1/2]
        + [ ] implement everywhere needed
-       + [ ] figure out cause of spurious error on Windows ~failed to get data from the clipboard error -2147221040 openClipboard failed~
+       + [X] figure out cause of spurious error on Windows ~failed to get data from the clipboard error -2147221040 openClipboard failed~
    - [ ] *Convolve/noise tool*
        + add noise to chi data
    - [ ] *Difference tool* [0/3]
@@ -230,11 +228,21 @@
  
 * Atoms and Feff
 
-** Atoms [0/2] [0%]
+** Atoms [0/5] [0%]
   - [ ] CIF issue: CIF file with "_eof" token at end of file, as in [[file:notes/H16PW12O46.cif][this cif file]]
   - [ ] 2 sites at the same position with occupancies <1.  see file above for an example
   - [ ] George Sterbinsky's recent mailing list post that turned out to be about 
 	atoms' sphere and rhomboid in a non-orthogonal group
+  - [ ] CIF errors are not handled gracefully (e.g. multiple occupancy)
+  - [ ] Rhombic groups seem not be handled properly.  This example fails to generate a subshell of 3 atoms at ~1.9A
+         : title name:     Fe2O3  hematite
+         : space  R -3 c
+         : a    = 5.0380	b    = 5.0380	c    = 13.7720
+         : rmax = 6.00	core = Fe1
+         : atom
+         :   Fe     0.00000   0.00000   0.35530  Fe1
+         :   O      0.30590   0.00000   0.25000  O1
+
 
 ** Feff8 is unsupported except as an Atoms output type
 

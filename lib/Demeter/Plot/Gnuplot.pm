@@ -42,6 +42,8 @@ has '+col7'	=> (default => '8');
 has '+col8'	=> (default => '9');
 has '+col9'	=> (default => '10');
 
+has 'terminal_number' => (is => 'rw', isa => 'Str', default => 1);
+
 
 before start_plot => sub {
   my ($self) = @_;
