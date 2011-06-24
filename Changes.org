@@ -5,7 +5,7 @@
 
 * Beta testing releases:
 
-** Release 2: xx June, 2011
+** Release 2: 24 June, 2011
 *** Athena
    - Fixed some language issues in the Files menu
    - Fixed several bugs surrounding the bkg_fixstep Data attribute and
