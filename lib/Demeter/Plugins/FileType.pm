@@ -1,6 +1,7 @@
 package Demeter::Plugins::FileType;
 
 use Moose;
+use Moose::Util::TypeConstraints;
 #use MooseX::StrictConstructor;
 with 'Demeter::Tools';
 with 'Demeter::Project';
@@ -23,7 +24,10 @@ has 'filename'    => (is => 'rw', isa => 'Str', default => q{});
 has 'folder'      => (is => 'rw', isa => 'Str', default => q{});
 has 'fixed'       => (is => 'rw', isa => 'Str', default => q{});
 
-has 'output'      => (is => 'ro', isa => 'Str', default => q{data});
+has 'inifile'     => (is => 'rw', isa => 'Str', default => q{});
+enum 'OutputTypes' => ['data', 'project'];
+coerce 'OutputTypes', from 'Str', via { lc($_) };
+has 'output'      => (is => 'ro', isa => 'OutputTypes', default => q{data});
 
 __PACKAGE__->meta->make_immutable;
 1;
@@ -299,6 +303,15 @@ an input data file into a stash file that Ifeffit can read.  A plugin
 can also make an Athena project file, in which case this attribute
 tells Demeter to interpret it that way.
 
+=item C<inifile>
+
+If the plugin requires configuration parameters, these can be
+specified in an Ini-style file whise name is given by this attribute.
+The default is an emty string, which indicates that no configuration
+file is required.  The file must be an Ini file so that a GUI (say,
+Athena) can provide a consistent mechanism for modifying the
+configuration.
+
 =back
 
 =head2 Required methods
@@ -371,9 +384,10 @@ Here the suggested column numbers for the energy, fluorescence
 C<suggest> method for use in defining the L<Demeter::Data> object.
 
 This method takes a single argument, which should be either
-"transmission" or "fluorescence".  If the argument is missing,
-"transmission" is assumed.  If the argument has a value but is not
-"transmission", then "fluorescence" is assumed.  (So spell carefully!)
+"transmission" or "fluorescence".  A plugin can choose which to make
+as the default.  Most use "transmission" as the default, but a plugin
+for an instrument or beamline related to a fluorescence measurement
+will make "fluorescence" the default.  In any case, spell carefully!+
 
 If the proper columns are not predictable, then this method should
 return an empty array.

@@ -30,6 +30,8 @@
    - Work around spurious error message when plucking from Gnuplot on
      Windows
    - Multiple plotting terminals with Gnuplot
+   - Configure utility for filetype plugins that come with
+     configuration files
 
 *** Artemis
    - Completely rewrote mechanism for importing old-style Artemis

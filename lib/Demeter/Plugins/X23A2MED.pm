@@ -7,9 +7,8 @@ has '+is_binary'   => (default => 0);
 has '+description' => (default => "the NSLS X23A2 Vortex");
 has '+version'     => (default => 0.1);
 
-#use Demeter;
 my $demeter = Demeter->new();
-has 'inifile' => (is => 'rw', isa => 'Str', default => File::Spec->catfile($demeter->dot_folder, 'x23a2vortex.ini'));
+has '+inifile'     => (default => File::Spec->catfile($demeter->dot_folder, 'x23a2vortex.ini'));
 
 use Config::IniFiles;
 

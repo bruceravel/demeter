@@ -5,8 +5,10 @@ use warnings;
 
 use Wx qw( :everything );
 use base 'Wx::Panel';
-use Wx::Event qw(EVT_CHECKBOX EVT_BUTTON);
+use Wx::Event qw(EVT_CHECKBOX EVT_BUTTON EVT_RIGHT_DOWN);
 use autodie qw(open close);
+
+use Demeter::UI::Athena::PluginConfig;
 
 #use Demeter::UI::Wx::SpecialCharacters qw(:all);
 
@@ -38,8 +40,10 @@ sub new {
     undef $obj;
     $this->{$pl}->SetValue($state->{$pl});
     EVT_CHECKBOX($this, $this->{$pl}, sub{OnCheck(@_, $app)});
+    EVT_RIGHT_DOWN($this->{$pl}, sub{Configure(@_, $app)});
   };
   $box->Add($this->{window}, 1, wxALL|wxGROW, 5);
+  $box->Add(Wx::StaticText->new($this, -1, "(Right click on a plugin above to open the configuration dialog for that plugin.)"), 0, wxALIGN_CENTER_HORIZONTAL|wxALL|wxGROW, 5);
 
   $this->{document} = Wx::Button->new($this, -1, 'Document section: plugin registry');
   $box -> Add($this->{document}, 0, wxGROW|wxALL, 2);
@@ -81,6 +85,34 @@ sub OnCheck {
   close $STATE;
 };
 
+sub Configure {
+  my ($this, $event, $app) = @_;
+  my $plugin = (split(/\s*:\s*/, $this->GetLabel))[0];
+  my $pl = "Demeter::Plugins::$plugin";
+  my $obj = $pl->new;
+  my $inifile = $obj->inifile;
+  if (not $inifile) {
+    $::app->{main}->status("The $plugin plugin does not have any configruation parameters.");
+    return;
+  };
+  my $cfg = new Config::IniFiles( -file => $inifile );
+  my $config = Demeter::UI::Athena::PluginConfig->new($this, $cfg, $plugin);
+  my $response = $config->ShowModal;
+  if ($response eq wxID_CANCEL) {
+    $::app->{main}->status("Canceled configuration of $plugin plugin");
+    return;
+  };
+
+  my @sections = $cfg->Sections;
+  foreach my $s (@sections) {
+    foreach my $p ($cfg->Parameters($s)) {
+      #printf "%s:%s = %s\n", $s, $p, $config->{"$s.$p"}->GetValue;
+      $cfg->setval($s, $p, $config->{"$s.$p"}->GetValue);
+    };
+  };
+  $cfg->WriteConfig($inifile);
+  $::app->{main}->status("Wrote $plugin configuration file: $inifile");
+};
 
 1;
 
