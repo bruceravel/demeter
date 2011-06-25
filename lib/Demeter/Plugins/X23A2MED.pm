@@ -96,8 +96,8 @@ sub fix {
 
 sub suggest {
   my ($self, $which) = @_;
-  $which ||= 'transmission';
-  if ($which eq 'fluorescence') {
+  $which ||= 'fluorescence';
+  if ($which eq 'transmission') {
     return (energy      => '$1',
 	    numerator   => '$2',
 	    denominator => '$7',
@@ -171,7 +171,7 @@ by having a large (>7) number of columns.
 
 An ini file is used to specify the deadtime for each channel and is
 prompted for the column labels for the ROI, fast, and slow channels
-for each element of the detector.  The default deadtime (2.80
+for each element of the detector.  The default deadtime (280
 nanoseconds) is very good for channels 1 and 2 and quite close for
 channels 3 and 4.
 
@@ -180,6 +180,12 @@ done point-by-point for each channel and written out to a temporary
 file in the stash directory.  The columns in the stash directory are
 energy, i0, the four corrected channels, It, and Ir.  It and Ir are
 written out if present in the original file.
+
+=item C<suggest>
+
+This method returns a list which can be used in a Demeter script
+define a Data object which will correctly process the output file as
+fluorescence XAS data.
 
 =back
 
@@ -194,28 +200,35 @@ of this writing.
    n=4
 
    [med]
-   # deadtimes are in nanoseconds
+   # Channel 1: deadtimes are in nanoseconds
    dt1=280
    roi1=if1
    fast1=ifast1
    slow1=islow1
-   # deadtimes are in nanoseconds
+   #
+   # Channel 2: deadtimes are in nanoseconds
    dt2=280
    roi2=if2
    fast2=ifast2
    slow2=islow2
-   # deadtimes are in nanoseconds
+   #
+   # Channel 3: deadtimes are in nanoseconds
    dt3=280
    roi3=if3
    fast3=ifast3
    slow3=islow3
-   # deadtimes are in nanoseconds
+   #
+   # Channel 4: deadtimes are in nanoseconds
    dt4=280
    roi4=if4
    fast4=ifast4
    slow4=islow4
-   energy=nergy
+   #
+   # other columns
    i0=i0
+   energy=nergy
+   #
+   # times
    inttime=1
    time=constant
    intcol=inttime
@@ -224,6 +237,66 @@ By deafult, the file called F<x23a2vortex.ini> in the dot folder
 (F<$HOME/.horae> on unix, F<%APPDATA%\horae> on Windows).  To supply
 new parameters, either overwrite that file or specify a different file
 as the value of this attribute.
+
+=head2 Deadtime correction parameters
+
+To apply the correction algorithm, this plugin needs to know which
+columns contain which data channels.  For each channel N, we need:
+
+=over 4
+
+=item C<dtN>
+
+The fast channel deadtime (which Joe mesaured to be approximately 280
+nsec for each channel) for detector N.
+
+=item C<roiN>
+
+The column label for the region of interest (i.e. the discrimator
+window channel) for detector N.
+
+=item C<fastN>
+
+The column label for the fast channel (i.e. the input count
+rate) for detector N.
+
+=item C<fastN>
+
+The column label for the slow channel (i.e. the output count
+rate) for detector N.
+
+=back
+
+=head2 Other column labels
+
+Additionally, the implementation of the algorithm needs to know the
+column labels for:
+
+=over
+
+=item *
+
+The energy column.  Oddly, Ifeffit removes the leading character from
+the line in the data file containing the column labels.  So "energy"
+becomes "nergy".  Go figure.
+
+=item *
+
+The I0 column label
+
+=back
+
+=head2 Integration time
+
+The implementation of the algorithm also needs to know how integration
+times were done in the measurement.
+
+I strongly recommend that the integration time be recorded in the
+file.  (that can be set in XDAC).  in that case, you set the C<intcol>
+parameter to the name of the column label containing the per-point
+integration time (which is called inttime) in XDAC.  If that column is
+missing, then the integration time must be specified by the C<inttime>
+parameters.
 
 =head1 THE CORRECTION ALGORITHM
 
@@ -245,9 +318,9 @@ standard correction of the ratio of the fast and slow channels (or
 ICR/OCR) will be applied to that channel.
 
 For high count rates, the proper deadtime correction is considerably
-more accurate than the standard correction.  For details see the
-upcoming paper by Woicik, Ravel, Fischer, Newburgh in the Journal of
-Synchrotron Radiation.
+more accurate than the standard correction.  For details see Woicik,
+Ravel, Fischer, and Newburgh, J. Synchrotron Rad. (2010). 17, 409-413
+http://dx.doi:org/10.1107/S0909049510009064
 
 =head1 BUGS AND LIMITATIONS
 

@@ -120,6 +120,10 @@ This plugin strips the many columns not normally needed from a file
 from CMC APS Sector 9 in an effort to interact with Ifeffit more
 efficiently and avoid some of the pitfalls of the CMC file format.
 
+This plugin is used with the SPEC file generated using the smaller,
+upstream station and is not necessary for data files obtained from the
+newer control system using the software orginally fro 20BM.
+
 ==head1 Methods
 
 =over 4

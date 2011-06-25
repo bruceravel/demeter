@@ -5,8 +5,14 @@ use warnings;
 
 use Wx qw( :everything );
 use base 'Wx::Panel';
-use Wx::Event qw(EVT_CHECKBOX EVT_BUTTON EVT_RIGHT_DOWN);
+use Wx::Event qw(EVT_CHECKBOX EVT_BUTTON EVT_RIGHT_DOWN EVT_MENU);
 use autodie qw(open close);
+
+use File::Basename;
+use File::Spec;
+use Pod::Text;
+use Readonly;
+use String::Random qw(random_string);
 
 use Demeter::UI::Athena::PluginConfig;
 
@@ -40,10 +46,11 @@ sub new {
     undef $obj;
     $this->{$pl}->SetValue($state->{$pl});
     EVT_CHECKBOX($this, $this->{$pl}, sub{OnCheck(@_, $app)});
-    EVT_RIGHT_DOWN($this->{$pl}, sub{Configure(@_, $app)});
+    EVT_RIGHT_DOWN($this->{$pl}, sub{OnRight(@_, $app)});
+    EVT_MENU($this->{$pl}, -1, sub{ $this->DoContextMenu(@_, $app, $pl) });
   };
   $box->Add($this->{window}, 1, wxALL|wxGROW, 5);
-  $box->Add(Wx::StaticText->new($this, -1, "(Right click on a plugin above to open the configuration dialog for that plugin.)"), 0, wxALIGN_CENTER_HORIZONTAL|wxALL|wxGROW, 5);
+  #$box->Add(Wx::StaticText->new($this, -1, "(Right click on a plugin above to open the configuration dialog for that plugin.)"), 0, wxALIGN_CENTER_HORIZONTAL|wxALL|wxGROW, 5);
 
   $this->{document} = Wx::Button->new($this, -1, 'Document section: plugin registry');
   $box -> Add($this->{document}, 0, wxGROW|wxALL, 2);
@@ -85,10 +92,41 @@ sub OnCheck {
   close $STATE;
 };
 
-sub Configure {
+Readonly my $DOCUMENT  => Wx::NewId();
+Readonly my $CONFIGURE => Wx::NewId();
+
+sub OnRight {
   my ($this, $event, $app) = @_;
   my $plugin = (split(/\s*:\s*/, $this->GetLabel))[0];
+  my $menu  = Wx::Menu->new(q{});
+  $menu->Append($DOCUMENT, "Show documentation for the $plugin plugin");
   my $pl = "Demeter::Plugins::$plugin";
+  my $obj = $pl->new;
+  my $inifile = $obj->inifile;
+  $menu->Append($CONFIGURE, "Configure the $plugin plugin")  if $inifile;
+  my $here = ($event =~ m{Mouse}) ? $event->GetPosition : Wx::Point->new(10,10);
+  $this -> PopupMenu($menu, $here);
+};
+sub DoContextMenu {
+  #print join("|", @_), $/;
+  my ($page, $this, $event, $app, $pl) = @_;
+  my $id = $event->GetId;
+ SWITCH: {
+    ($id == $CONFIGURE) and do {
+      $page->Configure($event, $app, $pl);
+      last SWITCH;
+    };
+    ($id == $DOCUMENT) and do {
+      $page->Document($event, $app, $pl);
+      last SWITCH;
+    };
+  };
+
+};
+
+sub Configure {
+  my ($this, $event, $app, $pl) = @_;
+  my $plugin = (split(/::/, $pl))[-1];
   my $obj = $pl->new;
   my $inifile = $obj->inifile;
   if (not $inifile) {
@@ -112,6 +150,23 @@ sub Configure {
   };
   $cfg->WriteConfig($inifile);
   $::app->{main}->status("Wrote $plugin configuration file: $inifile");
+};
+
+sub Document {
+  my ($this, $event, $app, $pl) = @_;
+  my $plugin = (split(/::/, $pl))[-1];
+  my $parser = Pod::Text->new (sentence => 0, width => 78);
+  my $podroot = dirname($INC{'Demeter.pm'});
+  (my $module = $pl) =~ s{::}{/}g;
+  my $tempfile = File::Spec->catfile(Demeter->stash_folder, random_string('cccccccc').'.txt');
+  $parser->parse_from_file (File::Spec->catfile($podroot, $module).'.pm', $tempfile);
+
+  my $dialog = Demeter::UI::Artemis::ShowText
+    -> new($app->{main}, Demeter->slurp($tempfile), "Documentation for $plugin");
+  my ($w, $h) = $dialog->GetSizeWH;
+  $dialog->SetSize(1.5*$w, $h);
+  $dialog -> Show;
+  unlink $tempfile;
 };
 
 1;

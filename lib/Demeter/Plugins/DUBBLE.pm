@@ -117,7 +117,7 @@ __END__
 
 =head1 NAME
 
-Ifeffit::Plugin::Filetype::Athena::DUBBLE - Import data from the DUBBLE beamline at ESRF
+Demeter::Plugin::DUBBLE - Import data from the DUBBLE beamline at ESRF
 
 =head1 SYNOPSIS
 

@@ -69,7 +69,7 @@ Demeter::Plugin::X10C - NSLS X10C filetype plugin
 
 =head1 SYNOPSIS
 
-This plugin directly files from NSLS beamline X10C
+This plugin directly imports files from NSLS beamline X10C
 
 =head1 Methods
 
