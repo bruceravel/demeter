@@ -3,10 +3,11 @@
 #+EMAIL: bravel AT bnl DOT gov
 #+TAGS: PDL HUH Advanced Windows
 
-* top of the to do list [0/2]
+* top of the to do list [0/3]
 
   1. [ ] Shelly's atoms bug (see mail 17 June 06:35:58 pm)
   2. [ ] Handle CIF import problems more gracefully
+  3. [ ] import data into Athena as norm(E)
 
 * things that need doing
 
@@ -19,7 +20,7 @@
 ** installation issues [1/1]
   - [X] jpg needs to be a Module::Build ~build_element~, but there are too many such files in the distro .. not all serve a purpose
 
-** Demeter bugs and shortcomings  [4/19] [21%]
+** Demeter bugs, shortcomings, missing features  [4/19] [21%]
   - [ ] in =Demeter::Data::IO::save_many=, why doesn't updating in n specifying "background" not work to bring data up to date?  (fft, i.e. doing autobk, does work)
   - [ ] +serialize VPath+, put VPath into +dpj and+ fpj files
   - [ ] tie multiple groups together
@@ -28,7 +29,7 @@
   - [ ] clnorm + Julia and Jingen's MXAN replacement
   - [ ] Data object should note that datatype is xanes and not compute fbkg since the bkg array does not exist
   - [ ] cannot specify title for stddev and variance plots
-  - [ ] Demeter command backend needs polishing
+  - [ ] Demeter command backend needs lots of polishing
   - [ ] we seem not to have a normalized group (i.e. plot the same as mu or norm)
   - [ ] 3rd derivative
   - [ ] SDK: better documentation for freeze/thaw//serialize/deserialize
@@ -80,11 +81,12 @@
     2. deconvolution
     3. PCA
 
-*** needs testing [0/2]
+*** needs testing [0/3]
    - [ ] reference of another edge
    - [ ] keV data
+   - [ ] importing xmu.dat files into Athena has never been tested
 
-*** needs doing [5/15] [33%]
+*** needs doing [6/16] [37%]
    - [X] deglitching crashes with gnuplot					:HUH:
    - [X] in project selection dialog, controls for entering a periodic
          subset (i.e. every Nth record starting with the Jth record)
@@ -94,9 +96,14 @@
    - [X] replot upon group selection, space is configurable (E, k, R, q, quad, k123, r123, i0/signal, none)
    - [X] column selection dialog is not remembering data numerator and
          denominator selection
+   - [X] fix edge step button is not working
+   - [X] *Group list* [3/3]
+       + [X] reorganize list, keystroke | DnD
+       + [X] left click on groups list should post group menu (others?)
+       + [X] it needs to be impossible to select nothing in the group list
    - [ ] implement frozen groups
+   - [ ] importing each channel of med data does not work
    - [ ] links to documentation on each tool
-   - [ ] fix edge step button is not working
    - [ ] test preprocessing (I had a crash with all three preproc options selected for data with a reference):
 	 ~Can't call method "GetSelection" on an undefined value at /home/bruce/git/demeter/lib/Demeter/UI/Athena/IO.pm line 423.~
    - [-] *Pluck buttons* [1/2]
@@ -114,10 +121,6 @@
        + [X] plot in R for fit in k
        + [ ] persistance of LCF results
        + [X] plot sequence results with pgplot
-   - [X] *Group list* [3/3]
-       + [X] reorganize list, keystroke | DnD
-       + [X] left click on groups list should post group menu (others?)
-       + [X] it needs to be impossible to select nothing in the group list
    - [ ] *Plot menu*
        + zoom/unzoom/cursor for pgplot
    - [ ] *Help menu* [0/3]
@@ -129,7 +132,7 @@
    - Need to expand the filetype system by examining data from *all* the XAS beamlines in the world.  Yes ... all of them.
    - solicit help from the facility representatives
      
-** Windows issues [8/15]					    :Windows:
+** Windows issues [10/16] [62%] 					    :Windows:
   - [X] parameter group context menus don't get posted (see http://www.nntp.perl.org/group/perl.wxperl.users/2011/03/msg7929.html)
   - [X] ugly background colors on command and status buffer frames (particularly at bottom, also a problem in Artemis)
   - [X] raised text with data name in data frame
@@ -137,7 +140,7 @@
   - [X] colors missing in log file text
   - [X] log frame not displayed/refreshed properly after a fit
   - [X] Artemis key accelerators
-  - [ ] spurious message from clipboard
+  - [X] +spurious message from clipboard+ (worked around)
   - [ ] the frickin' Gnuplot error logs seem to remain locked on Windows when a crash happens
   - [ ] status bar does not get color for wait or error messages /this may be unfixable, see/ http://www.nntp.perl.org/group/perl.wxperl.users/2011/04/msg7943.html
   - [X] ifeffit is currently compiled not knowing where to find the feff tables, so PC transforms are not possible.
@@ -145,7 +148,8 @@
   - [ ] The atoms panel background color is too light.  Which window needs its BackgroundColour set to wxNullColour?
   - [ ] clampbox does not get enabled/disabled explicitly, is this another aspect of StaticBox that is different on Windows? (see link above)
   - [ ] fpj file on Win seems to not get unpacked correctly	:Project:
-  - [ ] Get .prj file to open with a double click into Athena, .fpj into Artemis
+  - [X] Get .prj file to open with a double click into Athena, .fpj into Artemis
+  - [ ] relocation of Strawberry leaves Ifeffit unable to find pahse shift and CL tables
 
 
 ** Artemis

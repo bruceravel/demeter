@@ -124,7 +124,7 @@ This plugin is used with the SPEC file generated using the smaller,
 upstream station and is not necessary for data files obtained from the
 newer control system using the software orginally fro 20BM.
 
-==head1 Methods
+=head1 Methods
 
 =over 4
 
