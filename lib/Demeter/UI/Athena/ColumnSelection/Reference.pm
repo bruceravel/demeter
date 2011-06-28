@@ -133,8 +133,10 @@ sub OnDenomClick {
 
 sub display_plot {
   my ($this) = @_;
+  $this->{reference}  -> set(datatype=>'xmu', update_columns=>1, is_col=>1);
   $this->{reference}  -> _update('normalize');
   $this->{reference}  -> po -> start_plot;
+  $this->{reference}  -> po -> set(e_mu=>1, e_markers=>0, e_bkg=>0, e_pre=>0, e_post=>0, e_norm=>0, e_der=>0, e_sec=>0, e_i0=>0, e_signal=>0, e_smooth=>0);
   $this->{reference}  -> plot('e');
 };
 

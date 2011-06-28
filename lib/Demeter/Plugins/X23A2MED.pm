@@ -3,14 +3,23 @@ package Demeter::Plugins::X23A2MED;
 use Moose;
 extends 'Demeter::Plugins::FileType';
 
+use Config::IniFiles;
+use Readonly;
+Readonly my $INIFILE => 'x23a2vortex.ini';
+use List::MoreUtils qw(any);
+
 has '+is_binary'   => (default => 0);
 has '+description' => (default => "the NSLS X23A2 Vortex");
 has '+version'     => (default => 0.1);
 
 my $demeter = Demeter->new();
-has '+inifile'     => (default => File::Spec->catfile($demeter->dot_folder, 'x23a2vortex.ini'));
+has '+inifile'     => (default => File::Spec->catfile($demeter->dot_folder, $INIFILE));
 
-use Config::IniFiles;
+if (not -e File::Spec->catfile($demeter->dot_folder, $INIFILE)) {
+  copy(File::Spec->catfile(dirname($INC{'Demeter.pm'}), 'Demeter', 'share', 'ini', $INIFILE),
+       File::Spec->catfile($demeter->dot_folder, $INIFILE));
+};
+
 
 sub is {
   my ($self) = @_;
@@ -75,8 +84,9 @@ sub fix {
     $dts .= " $deadtime";
   };
 
-  push @labs, 'it' if grep {lc($_) eq 'it'} @labels;
-  push @labs, 'ir' if grep {lc($_) eq 'ir'} @labels;
+  push @labs, 'it'   if any {lc($_) eq 'it'} @labels;
+  push @labs, 'ir'   if any {lc($_) =~ m{\Air\z}} @labels;
+  push @labs, 'iref' if any {lc($_) =~ m{\Airef\z}} @labels;
 
   $command  = "\$title1 = \"<MED> Deadtime corrected MED data, $maxel channels\"\n";
   $command .= "\$title2 = \"<MED> Deadtimes (nsec):$dts\"\n";

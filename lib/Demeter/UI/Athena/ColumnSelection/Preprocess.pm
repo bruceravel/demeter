@@ -21,6 +21,7 @@ sub new {
   $hbox -> Add(Wx::StaticText->new($this, -1, "Standard"), 0, wxLEFT|wxRIGHT|wxALIGN_CENTRE, 5);
   $this->{standard} = Demeter::UI::Athena::GroupList -> new($this, $app, 1, 0);
   $hbox -> Add($this->{standard}, 0, wxLEFT|wxRIGHT|wxALIGN_CENTRE, 5);
+  $this->{standard}->{callback} = \&OnSelect;
 
   $box -> Add($hbox, 0, wxALL, 5);
 
@@ -34,6 +35,19 @@ sub new {
   $this->SetSizerAndFit($box);
   return $this;
 
+};
+
+sub OnSelect {
+  my ($this, $event) = @_;
+  if ($this->{standard}->GetStringSelection =~ m{\A(?:None|)\z}) {
+    $this->{align} -> SetValue(0);
+    $this->{align} -> Enable(0);
+    $this->{set}   -> SetValue(0);
+    $this->{set}   -> Enable(0);
+  } else {
+    $this->{align} -> Enable(1);
+    $this->{set}   -> Enable(1);
+  };
 };
 
 1;

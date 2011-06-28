@@ -84,6 +84,7 @@ sub merge {
   $self->standard;		# make self the standard for merging
 
   my $merged = $self->clone;
+  $merged -> reference(q{});
   $merged -> generated(1);
 
   my $sum = 0;

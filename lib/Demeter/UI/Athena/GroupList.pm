@@ -4,6 +4,7 @@ use strict;
 use warnings;
 
 use Wx qw(:everything);
+use Wx::Event qw(EVT_COMBOBOX);
 use base 'Wx::ComboBox';
 
 sub new {
@@ -11,6 +12,8 @@ sub new {
   my $this = $class->SUPER::new($parent, -1, q{None}, wxDefaultPosition, [180,-1], ['None'], wxCB_READONLY );
   $this->fill($app, $exclude_self, $exclude_none);
   $this->SetSelection(0);
+  $this->{callback} = sub{};
+  EVT_COMBOBOX($parent, $this, sub{&{$this->{callback}}});
   return $this;
 };
 

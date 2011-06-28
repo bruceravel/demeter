@@ -286,7 +286,9 @@ sub _data {
     ($yaml->{preproc_standard} eq 'None') ? $colsel->{Preprocess}->{standard}->SetSelection(0)
       : $colsel->{Preprocess}->{standard}->SetSelection($found+1);
     if ($colsel->{Preprocess}->{standard}->GetStringSelection =~ m{\A(?:None|)\z}) {
+      $colsel->{Preprocess}->{align}-> Enable(0);
       $yaml->{preproc_align} = 0;
+      $colsel->{Preprocess}->{set}-> Enable(0);
       $yaml->{preproc_set}   = 0;
     };
     foreach my $w (qw(mark align set)) {
@@ -321,7 +323,7 @@ sub _data {
 				ln          => $data->ln,
 				name        => join(" - ", basename($file), $cols[$cc]),
 			       );
-      _group($app, $colsel, $this, $yaml, $orig, $repeated, $align);
+      _group($app, $colsel, $this, $yaml, $file, $orig, $repeated, $align);
       $eshift = $this->bkg_eshift if $align;
       $this->bkg_eshift($eshift)  if not $align;
       $align = 0;
@@ -329,7 +331,7 @@ sub _data {
     $mc->discard;
   } else {
     $message = $data->name;
-    _group($app, $colsel, $data, $yaml, $orig, $repeated, 0);
+    _group($app, $colsel, $data, $yaml, $file, $orig, $repeated, 0);
   };
 
   $data->push_mru("xasdata", $displayfile);
@@ -366,6 +368,15 @@ sub _data {
   $persistence{preproc_mark}     = (defined($colsel)) ? $colsel->{Preprocess}->{mark} ->GetValue : $yaml->{preproc_mark};
   $persistence{preproc_align}    = (defined($colsel)) ? $colsel->{Preprocess}->{align}->GetValue : $yaml->{preproc_align};
   $persistence{preproc_set}      = (defined($colsel)) ? $colsel->{Preprocess}->{set}  ->GetValue : $yaml->{preproc_set};
+  my $stan = q{};
+  if (defined($colsel)) {
+    if ($colsel->{Preprocess}->{standard}->GetStringSelection  !~ m{\A(?:None|)\z}) {
+      $stan = $colsel->{Preprocess}->{standard}->GetClientData($colsel->{Preprocess}->{standard}->GetSelection)->group;
+    };
+  } else {
+    $stan = $yaml->{preproc_stgroup};
+  };
+  $persistence{preproc_stgroup} = $stan;
 
   my $string .= YAML::Tiny::Dump(\%persistence);
   open(my $ORDER, '>'.$persist);
@@ -382,8 +393,17 @@ sub _data {
   return 1;
 };
 
+## this argumenmt list has grown icky over time:
+# 1: Pointer to the Athena app, same as $::app
+# 2: $colsel, Pointer to the column selection frame
+# 3: $data, Pointer to the main Data object (as opposed to the refernece)
+# 4: $yaml: the yaml containing the column selection persistence
+# 5: $file: the actual file being read, stashfile for a pluhgin, original file otherwise
+# 6: $orig: the fully resolved original file
+# 7: $repeated: oddly, 1 if this is the first pass through, 0 for subsequent files in multiple file import
+# 8: $noalign: doesn't seem to be used
 sub _group {
-  my ($app, $colsel, $data, $yaml, $orig, $repeated, $noalign) = @_;
+  my ($app, $colsel, $data, $yaml, $file, $orig, $repeated, $noalign) = @_;
   my $displayfile = (ref($orig) =~ m{Class::MOP}) ? $orig->file : $orig;
 
   ## -------- import data group
@@ -426,11 +446,20 @@ sub _group {
   if ($do_mark) {
     $app->mark($data);
   };
+  my $stan = q{};
+  if (defined($colsel)) {
+    if ($colsel->{Preprocess}->{standard}->GetStringSelection  !~ m{\A(?:None|)\z}) {
+      $stan = $colsel->{Preprocess}->{standard}->GetClientData($colsel->{Preprocess}->{standard}->GetSelection)->group;
+      $stan = $data->mo->fetch("Data", $stan);
+    };
+  } else {
+    $stan = $data->mo->fetch("Data", $yaml->{preproc_stgroup});
+  };
   my $do_set  = (defined $colsel) ? ($colsel->{Preprocess}->{set}->GetValue)  : $yaml->{preproc_set};
   if ($do_set) {
-    my $stan = $colsel->{Preprocess}->{standard}->GetClientData($colsel->{Preprocess}->{standard}->GetSelection);
+    #my $stan = $colsel->{Preprocess}->{standard}->GetClientData($colsel->{Preprocess}->{standard}->GetSelection);
     $app->{main}->status("Constraining parameters for ". $data->name . " to " . $stan->name);
-    constrain($app, $colsel, $data);
+    constrain($app, $colsel, $data, $stan);
     $app->OnGroupSelect(0,0,0);
   };
   ## -------- import reference if reference channel is set
@@ -440,15 +469,16 @@ sub _group {
     $app->{main}->Update;
     my $ref = (defined $colsel) ? $colsel->{Reference}->{reference} : q{};
     if (not $ref) {
-      $ref = Demeter::Data->new(file => $displayfile,
-				name => "  Ref " . $data->name);
-      $ref -> set(energy      => $yaml->{energy},
-		  numerator   => '$'.$yaml->{ref_numer},
-		  denominator => '$'.$yaml->{ref_denom},
-		  ln          => $yaml->{ref_ln},
-		  is_col      => 1,
-		  display     => 1);
+      $ref = Demeter::Data->new(file => $file);
     };
+    $ref -> set(name        => "  Ref " . $data->name,
+		energy      => $yaml->{energy},
+		numerator   => '$'.$yaml->{ref_numer},
+		denominator => '$'.$yaml->{ref_denom},
+		ln          => $yaml->{ref_ln},
+		is_col      => 1,
+		display     => 1,
+		datatype    => $data->datatype);
     $ref->display(0);
     if ($do_rebin) {
       $app->{main}->status("Rebinning reference for ". $data->name);
@@ -473,7 +503,7 @@ sub _group {
 
   my $do_align = (defined $colsel) ? ($colsel->{Preprocess}->{align}->GetValue) : $yaml->{preproc_align};
   if ($do_align) {
-    my $stan = $colsel->{Preprocess}->{standard}->GetClientData($colsel->{Preprocess}->{standard}->GetSelection);
+    #my $stan = $colsel->{Preprocess}->{standard}->GetClientData($colsel->{Preprocess}->{standard}->GetSelection);
     if ($data->reference and $stan->reference) {
       $app->{main}->status("Aligning ". $data->name . " to " . $stan->name . " using references");
       $stan->align_with_reference($data);
@@ -497,10 +527,8 @@ Readonly my @all_bft    => (qw(bft_rmin bft_rmax bft_dr bft_rwindow));
 Readonly my @all_plot   => (qw(plot_multiplier y_offset));
 
 sub constrain {
-  my ($app, $colsel, $data) = @_;
-  return if ($colsel->{Preprocess}->{standard}->GetStringSelection eq 'None');
-  #my $data = $app->current_data;
-  my $stan = $colsel->{Preprocess}->{standard}->GetClientData($colsel->{Preprocess}->{standard}->GetSelection);
+  my ($app, $colsel, $data, $stan) = @_;
+  return if not $stan;
 
   foreach my $i (0 .. $app->{main}->{list}->GetCount-1) {
     my $this = $app->{main}->{list}->GetIndexedData($i);
