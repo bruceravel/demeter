@@ -220,12 +220,13 @@ sub _data {
   } else {
     $do_guess = 1;
   };
+  $yaml->{energy} = $data->energy;
 
   ## for an XDI file, setting the xdi attribute has to be delayed
   ## until *after* the energy/numerator/denominator attributes are
   ## set.  then guess_columns can be called.
   $data->xdi($orig) if (ref($orig) =~ m{Class::MOP});
-  $data->guess_columns if $do_guess;
+  $data->guess_columns if ($do_guess and not $suggest);
 
   ## -------- display column selection dialog
   my $repeated = 1;
@@ -471,6 +472,10 @@ sub _group {
     if (not $ref) {
       $ref = Demeter::Data->new(file => $file);
     };
+    $yaml -> {ref_numer} = (defined($colsel)) ? $colsel->{Reference}->{numerator}    : $yaml->{ref_numer};
+    $yaml -> {ref_denom} = (defined($colsel)) ? $colsel->{Reference}->{denominator}  : $yaml->{ref_denom};
+    $yaml -> {ref_ln}    = (defined($colsel)) ? $colsel->{Reference}->{ln}->GetValue : $yaml->{ref_ln};
+
     $ref -> set(name        => "  Ref " . $data->name,
 		energy      => $yaml->{energy},
 		numerator   => '$'.$yaml->{ref_numer},

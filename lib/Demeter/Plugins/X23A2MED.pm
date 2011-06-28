@@ -4,6 +4,8 @@ use Moose;
 extends 'Demeter::Plugins::FileType';
 
 use Config::IniFiles;
+use File::Basename;
+use File::Copy;
 use Readonly;
 Readonly my $INIFILE => 'x23a2vortex.ini';
 use List::MoreUtils qw(any);
@@ -16,8 +18,10 @@ my $demeter = Demeter->new();
 has '+inifile'     => (default => File::Spec->catfile($demeter->dot_folder, $INIFILE));
 
 if (not -e File::Spec->catfile($demeter->dot_folder, $INIFILE)) {
+  my $target = File::Spec->catfile($demeter->dot_folder, $INIFILE);
   copy(File::Spec->catfile(dirname($INC{'Demeter.pm'}), 'Demeter', 'share', 'ini', $INIFILE),
-       File::Spec->catfile($demeter->dot_folder, $INIFILE));
+       $target);
+  chmod(0666, $target) if $demeter->is_windows;
 };
 
 

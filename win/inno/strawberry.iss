@@ -11,7 +11,7 @@
 ; TODO: check for other perl installations (eg. in the Path variable) and warn or even abort if there is another one
 
 [Setup]
-AppName=Demeter with Strawberry Perl Release 2
+AppName=Demeter with Strawberry Perl Release 3
 AppVersion=0.01
 DefaultDirName=\strawberry
 DefaultGroupName=Demeter with Strawberry Perl
@@ -20,7 +20,7 @@ Compression=lzma2
 SolidCompression=yes
 SourceDir=c:\strawberry
 OutputDir=c:\output
-OutputBaseFilename=demeter-with-strawberry-perl-r2
+OutputBaseFilename=demeter-with-strawberry-perl-r3
 AppComments=XAS Data Processing and Analysis
 AppContact=http://bruceravel.github.com/demeter/
 AppCopyright=Demeter is copyright (c) 2006-2011 Bruce Ravel; Ifeffit is copyright (c) 2008, Matt Newville; Perl is copyright 1987-2010, Larry Wall
@@ -97,9 +97,9 @@ Name: "{group}\Perl\Tools\Create local library areas"; Filename: "{app}\perl\bin
 Name: "{group}\Perl\Tools\CPAN Client"; Filename: "{app}\perl\bin\cpan.bat"; WorkingDir: "{app}\perl\bin\"; IconFilename: "{app}\win32\cpan.ico";
 
 ;;; Application desktop icons
-Name: "{userdesktop}\(D)Athena"; Filename: "{app}\perl\site\bin\dathena.bat"; Comment: "XAS Data Processing"; WorkingDir: "{app}"; IconFilename: "{app}\perl\site\lib\Demeter\UI\Athena\share\athena_icon.ico"; Tasks: desktopicon
-Name: "{userdesktop}\(D)Artemis"; Filename: "{app}\perl\site\bin\dartemis.bat"; Comment: "EXAFS Data Analysis using Feff and Ifeffit"; WorkingDir: "{app}"; IconFilename: "{app}\perl\site\lib\Demeter\UI\Artemis\share\artemis_icon.ico"; Tasks: desktopicon
-Name: "{userdesktop}\(D)Hephaestus"; Filename: "{app}\perl\site\bin\dhephaestus.bat"; Comment: "A periodic table for the absorption spectroscopist"; WorkingDir: "{app}"; IconFilename: "{app}\perl\site\lib\Demeter\UI\Hephaestus\icons\vulcan.ico"; Tasks: desktopicon
+Name: "{commondesktop}\(D)Athena"; Filename: "{app}\perl\site\bin\dathena.bat"; Comment: "XAS Data Processing"; WorkingDir: "{app}"; IconFilename: "{app}\perl\site\lib\Demeter\UI\Athena\share\athena_icon.ico"; Tasks: desktopicon
+Name: "{commondesktop}\(D)Artemis"; Filename: "{app}\perl\site\bin\dartemis.bat"; Comment: "EXAFS Data Analysis using Feff and Ifeffit"; WorkingDir: "{app}"; IconFilename: "{app}\perl\site\lib\Demeter\UI\Artemis\share\artemis_icon.ico"; Tasks: desktopicon
+Name: "{commondesktop}\(D)Hephaestus"; Filename: "{app}\perl\site\bin\dhephaestus.bat"; Comment: "A periodic table for the absorption spectroscopist"; WorkingDir: "{app}"; IconFilename: "{app}\perl\site\lib\Demeter\UI\Hephaestus\icons\vulcan.ico"; Tasks: desktopicon
 
 [Code]
 function getPath(Param: String): string;

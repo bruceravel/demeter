@@ -87,7 +87,7 @@ sub module_environment {
 		     Tree::Simple
 		     YAML::Tiny
 		  )) {
-    my $v = '$' . $p . '::VERSION || "-"';
+    my $v = '$' . $p . '::VERSION || "?"';
     my $l = 30 - length($p);
     $string .= sprintf(" %s %s %s\n", $p, '.' x $l, eval $v);
   };
