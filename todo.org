@@ -86,7 +86,7 @@
    - [ ] keV data
    - [ ] importing xmu.dat files into Athena has never been tested
 
-*** needs doing [7/16] [43%]
+*** needs doing [8/16] [50%]
    - [X] deglitching crashes with gnuplot					:HUH:
    - [X] in project selection dialog, controls for entering a periodic
          subset (i.e. every Nth record starting with the Jth record)
@@ -97,18 +97,18 @@
    - [X] column selection dialog is not remembering data numerator and
          denominator selection
    - [X] fix edge step button is not working
+   - [X] test preprocessing (I had a crash with all three preproc options selected for data with a reference):
+	 ~Can't call method "GetSelection" on an undefined value at /home/bruce/git/demeter/lib/Demeter/UI/Athena/IO.pm line 423.~
    - [X] *Group list* [3/3]
        + [X] reorganize list, keystroke | DnD
        + [X] left click on groups list should post group menu (others?)
        + [X] it needs to be impossible to select nothing in the group list
-   - [ ] implement frozen groups
-   - [ ] importing each channel of med data does not work
-   - [ ] links to documentation on each tool
-   - [ ] test preprocessing (I had a crash with all three preproc options selected for data with a reference):
-	 ~Can't call method "GetSelection" on an undefined value at /home/bruce/git/demeter/lib/Demeter/UI/Athena/IO.pm line 423.~
    - [X] *Pluck buttons* [2/2]
        + [X] implement everywhere needed
        + [X] figure out cause of spurious error on Windows ~failed to get data from the clipboard error -2147221040 openClipboard failed~
+   - [ ] implement frozen groups
+   - [ ] importing each channel of med data does not work
+   - [ ] links to documentation on each tool
    - [ ] *Convolve/noise tool*
        + add noise to chi data
    - [ ] *Difference tool* [0/3]
@@ -128,11 +128,12 @@
        + [ ] document
        + [ ] memory usage
 
-*** raw data
+** raw data and plugins
    - Need to expand the filetype system by examining data from *all* the XAS beamlines in the world.  Yes ... all of them.
    - solicit help from the facility representatives
-     
-** Windows issues [10/16] [62%] 					    :Windows:
+   - X23A2MED needs to handle single element detector also
+
+** Windows issues [10/17] [58%] 					    :Windows:
   - [X] parameter group context menus don't get posted (see http://www.nntp.perl.org/group/perl.wxperl.users/2011/03/msg7929.html)
   - [X] ugly background colors on command and status buffer frames (particularly at bottom, also a problem in Artemis)
   - [X] raised text with data name in data frame
@@ -141,15 +142,16 @@
   - [X] log frame not displayed/refreshed properly after a fit
   - [X] Artemis key accelerators
   - [X] +spurious message from clipboard+ (worked around)
-  - [ ] the frickin' Gnuplot error logs seem to remain locked on Windows when a crash happens
+  - [ ] the frickin' Gnuplot error logs seem to remain open and locked on Windows when a crash happens
   - [ ] status bar does not get color for wait or error messages /this may be unfixable, see/ http://www.nntp.perl.org/group/perl.wxperl.users/2011/04/msg7943.html
   - [X] ifeffit is currently compiled not knowing where to find the feff tables, so PC transforms are not possible.
 	in general, the compilation of Ifeffit needs to be better integrated into Strawberry.
   - [ ] The atoms panel background color is too light.  Which window needs its BackgroundColour set to wxNullColour?
   - [ ] clampbox does not get enabled/disabled explicitly, is this another aspect of StaticBox that is different on Windows? (see link above)
-  - [ ] fpj file on Win seems to not get unpacked correctly	:Project:
+  - [ ] fpj file on Win seems to not get unpacked correctly /is this true?/	:Project:
   - [X] Get .prj file to open with a double click into Athena, .fpj into Artemis
-  - [ ] relocation of Strawberry leaves Ifeffit unable to find pahse shift and CL tables
+  - [ ] relocation of Strawberry leaves Ifeffit unable to find pahse shift and CL tables (use an ENV variable?)
+  - [ ] need a script for rewriting .bat files to redirect spew to log files.  this should run after installation as .bat's get overwritten
 
 
 ** Artemis

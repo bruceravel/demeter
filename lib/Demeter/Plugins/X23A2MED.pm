@@ -52,11 +52,6 @@ sub fix {
   $demeter->dispose($command);
 
   my @labels = split(" ", Ifeffit::get_string('$column_label'));
-  my @options = ();
-  foreach my $l (@labels) {
-    my $val = "v___ortex.$l";
-    push @options, [$l, $val];
-  };
 
   ## get the parameters for the deadtime correction from the persistent file
   my $vortexini = $self->inifile;
@@ -68,6 +63,21 @@ sub fix {
   #};
   my $cfg = new Config::IniFiles( -file => $vortexini );
   my $maxel = $cfg->val('elements','n');
+
+  my $is_ok = 1;
+  foreach my $ch (1 .. $maxel) {
+    $is_ok &&= any { $_ eq $cfg->val("med", "roi$ch")  } @labels;
+    $is_ok &&= any { $_ eq $cfg->val("med", "slow$ch") } @labels;
+    $is_ok &&= any { $_ eq $cfg->val("med", "fast$ch") } @labels;
+  };
+  return 0 if not $is_ok;
+
+  my @options = ();
+  foreach my $l (@labels) {
+    my $val = "v___ortex.$l";
+    push @options, [$l, $val];
+  };
+
 
   my @labs    = ($cfg->val('med', 'energy'), $cfg->val('med', 'i0'));
   my $maxints = q{};
@@ -88,8 +98,8 @@ sub fix {
     $dts .= " $deadtime";
   };
 
-  push @labs, 'it'   if any {lc($_) eq 'it'} @labels;
-  push @labs, 'ir'   if any {lc($_) =~ m{\Air\z}} @labels;
+  push @labs, 'it'   if any {lc($_) eq 'it'}        @labels;
+  push @labs, 'ir'   if any {lc($_) =~ m{\Air\z}}   @labels;
   push @labs, 'iref' if any {lc($_) =~ m{\Airef\z}} @labels;
 
   $command  = "\$title1 = \"<MED> Deadtime corrected MED data, $maxel channels\"\n";

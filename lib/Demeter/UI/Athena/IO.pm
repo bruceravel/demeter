@@ -103,6 +103,10 @@ sub Import {
       $type = 'xdi';
     } else {
       $plugin = test_plugins($app, $file);
+      if ($plugin =~ m{\A\!}) {
+	$app->{main}->status("There was an error reading that file as a " . (split(/::/, $plugin))[-1] . " file.  (Perhaps you do not have its plugin configured correctly?)");
+	return;
+      };
       $stashfile = ($plugin) ? $plugin->fixed : $file;
       @suggest = ($plugin) ? $plugin->suggest() : ();
       $type = ($plugin and ($plugin->output eq 'data'))                ? 'raw'
@@ -149,7 +153,8 @@ sub test_plugins {
       undef $this;
       next;
     };
-    $this->fix;
+    my $ok = $this->fix;
+    return '!'.$pl if not $ok;
     return $this;
   };
   return 0;

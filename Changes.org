@@ -13,8 +13,8 @@
      those plugins with an ini file.
    - Fixed several problems with the automation of the column
      selection dialog
-   - The X23A2MED plugin now configures itself correctly on the first
-     use
+   - The X23A2MED plugin now configures itself on the first use and
+     responds gracefully to misconfiguration
    - Pluck buttons implemented in more places
 
 *** Artemis
