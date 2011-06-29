@@ -29,18 +29,19 @@ our @EXPORT = qw(cursor);
 # 	  );
 
 sub cursor {
-  my ($app) = @_;
+  my ($app, $frame) = @_;
   my ($ok, $x, $y) = (1, -100000, -100000);
+  my $parent = $frame || $app->{main};
 
   my $busy;
-  if ($app->current_data->mo->template_plot eq 'pgplot') {
+  if (Demeter->mo->template_plot eq 'pgplot') {
     $app->{main}->status("Click on a point to pluck its value...", "wait");
-    $app->current_data->dispose("cursor(crosshair=true)");
+    Demeter->dispose("cursor(crosshair=true)");
     ($x, $y) = (Ifeffit::get_scalar("cursor_x"), Ifeffit::get_scalar("cursor_y"));
 
-  } elsif ($app->current_data->mo->template_plot eq 'gnuplot') {
+  } elsif (Demeter->mo->template_plot eq 'gnuplot') {
     my $yesno = Wx::MessageDialog
-      -> new($app->{main},
+      -> new($parent,
 	     "Double click in the Gnuplot window to pluck a point.  Click ok when ready.",
 	     "Pluck a point",
 	     wxOK|wxICON_EXCLAMATION|wxSTAY_ON_TOP)

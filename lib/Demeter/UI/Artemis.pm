@@ -7,6 +7,7 @@ use Demeter::UI::Artemis::Project;
 use Demeter::UI::Artemis::ShowText;
 use Demeter::UI::Wx::MRU;
 use Demeter::UI::Wx::SpecialCharacters qw(:all);
+use Demeter::UI::Athena::Cursor;
 
 use vars qw($demeter $buffer $plotbuffer);
 $demeter = Demeter->new;

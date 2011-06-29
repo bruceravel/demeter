@@ -11,10 +11,18 @@
      documentation (POD converted to text, displayed in a
      Demeter::UI::Artemis::ShowText) and a configuration utility for
      those plugins with an ini file.
+   - Fixed several problems with the automation of the column
+     selection dialog
+   - The X23A2MED plugin now configures itself correctly on the first
+     use
+   - Pluck buttons implemented in more places
 
 *** Artemis
+   - Pluck buttons now work on the Data page and on the indicators tab
 
 *** Demeter
+   - Changed the default color of indicators to a dark brown, which
+     stand out better against a red trace (i.e. line color #2)
 
 *** Windows installer
 

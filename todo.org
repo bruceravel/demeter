@@ -86,7 +86,7 @@
    - [ ] keV data
    - [ ] importing xmu.dat files into Athena has never been tested
 
-*** needs doing [6/16] [37%]
+*** needs doing [7/16] [43%]
    - [X] deglitching crashes with gnuplot					:HUH:
    - [X] in project selection dialog, controls for entering a periodic
          subset (i.e. every Nth record starting with the Jth record)
@@ -106,8 +106,8 @@
    - [ ] links to documentation on each tool
    - [ ] test preprocessing (I had a crash with all three preproc options selected for data with a reference):
 	 ~Can't call method "GetSelection" on an undefined value at /home/bruce/git/demeter/lib/Demeter/UI/Athena/IO.pm line 423.~
-   - [-] *Pluck buttons* [1/2]
-       + [ ] implement everywhere needed
+   - [X] *Pluck buttons* [2/2]
+       + [X] implement everywhere needed
        + [X] figure out cause of spurious error on Windows ~failed to get data from the clipboard error -2147221040 openClipboard failed~
    - [ ] *Convolve/noise tool*
        + add noise to chi data
@@ -153,7 +153,7 @@
 
 
 ** Artemis
-*** Artemis bugs and missing features [10/17]  [58%]
+*** Artemis bugs and missing features [11/17]  [64%]
    - [X] use text buffers as in Athena for TextEntryDialogs
    - [X] import an FPath from a yaml or from a project file, pathlist start page link for doing so
    - [X] should I clear out unfitted fit folders from project upon import?
@@ -173,7 +173,7 @@
    - [ ] do SSPaths get serialized and deserialized with the pointers
          to the feff calculation set correctly and no additional
          folders being created in stash (as was the case for FSPath)?
-   - [ ] pluck buttons have not been implemented
+   - [X] pluck buttons have not been implemented
    - [ ] per-data set R-factor reporting in log file is turned off.  see fit_parameter_report in Demeter::Data::I0
 
 **** Project [0/2]

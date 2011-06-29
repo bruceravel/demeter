@@ -9,13 +9,17 @@ use Wx::Perl::TextValidator;
 
 use Demeter::UI::Wx::SpecialCharacters qw(:all);
 use Cwd;
+use File::Basename;
+use File::Spec;
 use Scalar::Util qw(looks_like_number);
 
 use vars qw($label);
 $label = "Linear combination fitting";	# used in the Choicebox and in status bar messages to identify this tool
 
-my $tcsize = [60,-1];
-my $demeter = $Demeter::UI::Athena::demeter;
+my $tcsize   = [60,-1];
+my $demeter  = $Demeter::UI::Athena::demeter;
+my $icon     = File::Spec->catfile(dirname($INC{"Demeter/UI/Athena.pm"}), 'Athena', , 'icons', "bullseye.png");
+my $bullseye = Wx::Bitmap->new($icon, wxBITMAP_TYPE_PNG);
 
 sub new {
   my ($class, $parent, $app) = @_;
@@ -36,9 +40,15 @@ sub new {
   $hbox->Add(Wx::StaticText->new($this, -1, 'Fit range:'), 0, wxRIGHT|wxALIGN_CENTRE, 5);
   $this->{xmin} = Wx::TextCtrl->new($this, -1, $this->{emin}, wxDefaultPosition, $tcsize, wxTE_PROCESS_ENTER);
   $hbox->Add($this->{xmin}, 0, wxLEFT|wxRIGHT|wxALIGN_CENTRE, 5);
+  $this->{xmin_pluck} = Wx::BitmapButton -> new($this, -1, $bullseye);
+  $hbox->Add($this->{xmin_pluck}, 0, wxRIGHT|wxALIGN_CENTRE, 5);
+
   $hbox->Add(Wx::StaticText->new($this, -1, 'to'), 0, wxRIGHT|wxALIGN_CENTRE, 5);
   $this->{xmax} = Wx::TextCtrl->new($this, -1, $this->{emax}, wxDefaultPosition, $tcsize, wxTE_PROCESS_ENTER);
   $hbox->Add($this->{xmax}, 0, wxLEFT|wxRIGHT|wxALIGN_CENTRE, 5);
+  $this->{xmax_pluck} = Wx::BitmapButton -> new($this, -1, $bullseye);
+  $hbox->Add($this->{xmax_pluck}, 0, wxRIGHT|wxALIGN_CENTRE, 5);
+
   $this->{space} = Wx::RadioBox->new($this, -1, 'Fitting space', wxDefaultPosition, wxDefaultSize,
 				     ["norm $MU(E)", "deriv $MU(E)", "$CHI(k)"],
 				     1, wxRA_SPECIFY_ROWS);
@@ -65,6 +75,10 @@ sub new {
   $this->{document} = Wx::Button->new($this, -1, 'Document section: linear combination fitting');
   $box -> Add($this->{document}, 0, wxGROW|wxALL, 2);
   EVT_BUTTON($this, $this->{document}, sub{  $app->document("lcf")});
+  EVT_BUTTON($this, $this->{xmin_pluck}, sub{Pluck(@_, 'xmin')});
+  EVT_BUTTON($this, $this->{xmax_pluck}, sub{Pluck(@_, 'xmax')});
+  $this->{xmin_pluck}->Enable(0);
+  $this->{xmax_pluck}->Enable(0);
 
   $this->SetSizerAndFit($box);
   return $this;
@@ -273,7 +287,7 @@ sub add_standard {
   $this->{'standard'.$i}->SetSelection(0);
   EVT_TEXT_ENTER($this, $this->{'weight'.$i}, sub{1});
   EVT_TEXT_ENTER($this, $this->{'e0'.$i}, sub{1});
-  EVT_COMBOBOX($this, $this->{'standard'.$i}, sub{OnSelect(@_)});
+  $this->{'standard'.$i}->{callback} = sub{$this->OnSelect};
   $this->{'weight'.$i} -> SetValidator( Wx::Perl::TextValidator->new( qr([0-9.]) ) );
   $this->{'e0'.$i}     -> SetValidator( Wx::Perl::TextValidator->new( qr([-0-9.]) ) );
 
@@ -329,6 +343,9 @@ sub OnSelect {
       $this->{'weight'.$i}->SetValue(0);
     };
   };
+  $this->{xmin_pluck} -> Enable($count > 0);
+  $this->{xmax_pluck} -> Enable($count > 0);
+
   $this->{fit}       -> Enable($count > 1);
   $this->{fitmarked} -> Enable($count > 1);
   $this->{combi}     -> Enable($count > 2);
@@ -340,6 +357,21 @@ sub OnSelect {
   $this->{resultplot}   -> Enable(0);
   $this->{resultreport} -> Enable(0);
 };
+
+sub Pluck {
+  my ($self, $ev, $which) = @_;
+  my $busy = Wx::BusyCursor->new();
+  plot($self, $ev);
+  undef $busy;
+  my ($ok, $x, $y)    = $::app->cursor($self);
+  $self->status("Failed to pluck a value for $which"), return if not $ok;
+  $x -= $::app->current_data->bkg_e0 if ($self->{LCF}->space ne 'chi');
+  my $plucked         = sprintf("%.3f", $x);
+  $self->{$which}->SetValue($plucked);
+  my $text            = sprintf("Plucked %s as the value for %s.", $plucked, $which);
+  $::app->{main}->status($text);
+}
+
 
 sub use_marked {
   my ($this, $event) = @_;

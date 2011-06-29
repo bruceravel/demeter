@@ -37,11 +37,15 @@ use Demeter::UI::Wx::CheckListBook;
 use Demeter::UI::Wx::SpecialCharacters qw(:all);
 
 use Cwd;
+use File::Basename;
+use File::Spec;
 use List::MoreUtils qw(firstidx any);
 use YAML::Tiny;
 
-my $windows = [qw(hanning kaiser-bessel welch parzen sine)];
-my $demeter = $Demeter::UI::Artemis::demeter;
+my $windows  = [qw(hanning kaiser-bessel welch parzen sine)];
+my $demeter  = $Demeter::UI::Artemis::demeter;
+my $icon     = File::Spec->catfile(dirname($INC{"Demeter/UI/Artemis.pm"}), 'Athena', , 'icons', "bullseye.png");
+my $bullseye = Wx::Bitmap->new($icon, wxBITMAP_TYPE_PNG);
 
 use Regexp::Assemble;
 use Regexp::Common;
@@ -152,7 +156,6 @@ Readonly my $DISCARD_THIS	=> Wx::NewId();
 Readonly my $DISCARD_MARKED	=> Wx::NewId();
 Readonly my $DISCARD_UNMARKED	=> Wx::NewId();
 
-
 sub new {
   my ($class, $parent, $nset) = @_;
 
@@ -254,38 +257,46 @@ sub new {
   my $label     = Wx::StaticText->new($leftpane, -1, "kmin");
   $this->{kmin} = Wx::TextCtrl  ->new($leftpane, -1, $demeter->co->default("fft", "kmin"),
 				      wxDefaultPosition, [50,-1], wxTE_PROCESS_ENTER);
-  $gbs     -> Add($label,      Wx::GBPosition->new(0,1));
-  $gbs     -> Add($this->{kmin}, Wx::GBPosition->new(0,2));
+  $this->{kmin_pluck} = Wx::BitmapButton -> new($leftpane, -1, $bullseye);
+  $gbs     -> Add($label,              Wx::GBPosition->new(0,1));
+  $gbs     -> Add($this->{kmin},       Wx::GBPosition->new(0,2));
+  $gbs     -> Add($this->{kmin_pluck}, Wx::GBPosition->new(0,3));
 
   $label        = Wx::StaticText->new($leftpane, -1, "kmax");
   $this->{kmax} = Wx::TextCtrl  ->new($leftpane, -1, $demeter->co->default("fft", "kmax"),
 				      wxDefaultPosition, [50,-1], wxTE_PROCESS_ENTER);
-  $gbs     -> Add($label,      Wx::GBPosition->new(0,3));
-  $gbs     -> Add($this->{kmax}, Wx::GBPosition->new(0,4));
+  $this->{kmax_pluck} = Wx::BitmapButton -> new($leftpane, -1, $bullseye);
+  $gbs     -> Add($label,              Wx::GBPosition->new(0,4));
+  $gbs     -> Add($this->{kmax},       Wx::GBPosition->new(0,5));
+  $gbs     -> Add($this->{kmax_pluck}, Wx::GBPosition->new(0,6));
 
   $label      = Wx::StaticText->new($leftpane, -1, "dk");
   $this->{dk} = Wx::TextCtrl  ->new($leftpane, -1, $demeter->co->default("fft", "dk"),
 				      wxDefaultPosition, [50,-1], wxTE_PROCESS_ENTER);
-  $gbs     -> Add($label,      Wx::GBPosition->new(0,5));
-  $gbs     -> Add($this->{dk}, Wx::GBPosition->new(0,6));
+  $gbs     -> Add($label,      Wx::GBPosition->new(0,7));
+  $gbs     -> Add($this->{dk}, Wx::GBPosition->new(0,8));
 
   $label        = Wx::StaticText->new($leftpane, -1, "rmin");
   $this->{rmin} = Wx::TextCtrl  ->new($leftpane, -1, $demeter->co->default("bft", "rmin"),
 				      wxDefaultPosition, [50,-1], wxTE_PROCESS_ENTER);
-  $gbs     -> Add($label,        Wx::GBPosition->new(1,1));
-  $gbs     -> Add($this->{rmin}, Wx::GBPosition->new(1,2));
+  $this->{rmin_pluck} = Wx::BitmapButton -> new($leftpane, -1, $bullseye);
+  $gbs -> Add($label,              Wx::GBPosition->new(1,1));
+  $gbs -> Add($this->{rmin},       Wx::GBPosition->new(1,2));
+  $gbs -> Add($this->{rmin_pluck}, Wx::GBPosition->new(1,3));
 
   $label        = Wx::StaticText->new($leftpane, -1, "rmax");
   $this->{rmax} = Wx::TextCtrl  ->new($leftpane, -1, $demeter->co->default("bft", "rmax"),
 				      wxDefaultPosition, [50,-1], wxTE_PROCESS_ENTER);
-  $gbs     -> Add($label,        Wx::GBPosition->new(1,3));
-  $gbs     -> Add($this->{rmax}, Wx::GBPosition->new(1,4));
+  $this->{rmax_pluck} = Wx::BitmapButton -> new($leftpane, -1, $bullseye);
+  $gbs -> Add($label,              Wx::GBPosition->new(1,4));
+  $gbs -> Add($this->{rmax},       Wx::GBPosition->new(1,5));
+  $gbs -> Add($this->{rmax_pluck}, Wx::GBPosition->new(1,6));
 
   $label      = Wx::StaticText->new($leftpane, -1, "dr");
   $this->{dr} = Wx::TextCtrl  ->new($leftpane, -1, $demeter->co->default("bft", "dr"),
 				    wxDefaultPosition, [50,-1], wxTE_PROCESS_ENTER);
-  $gbs     -> Add($label,      Wx::GBPosition->new(1,5));
-  $gbs     -> Add($this->{dr}, Wx::GBPosition->new(1,6));
+  $gbs     -> Add($label,      Wx::GBPosition->new(1,7));
+  $gbs     -> Add($this->{dr}, Wx::GBPosition->new(1,8));
 
   $this->{cv}   -> SetValidator( Wx::Perl::TextValidator->new( qr([0-9.\-]) ) );
   $this->{kmin} -> SetValidator( Wx::Perl::TextValidator->new( qr([0-9.]) ) );
@@ -301,6 +312,10 @@ sub new {
   $this->mouseover("rmin", "The lower bound in R-space for the fit and the backwards Fourier transform.");
   $this->mouseover("rmax", "The upper bound in R-space for the fit and the backwards Fourier transform.");
   $this->mouseover("dr",   "The width of the window sill in R-space for the backwards Fourier transform.");
+  $this->mouseover("kmin_pluck", "Pluck a value for kmin from the plot.");
+  $this->mouseover("kmax_pluck", "Pluck a value for kmax from the plot.");
+  $this->mouseover("rmin_pluck", "Pluck a value for Rmin from the plot.");
+  $this->mouseover("rmax_pluck", "Pluck a value for Rmax from the plot.");
 
   foreach my $x (qw(kmin kmax dk rmin rmax dr)) {
     EVT_TEXT_ENTER($this, $this->{$x},
@@ -309,6 +324,8 @@ sub new {
 		     my $text = sprintf("The number of independent points in this data set is %.2f", $this->{data}->nidp);
 		     $this->status($text);
 		   });
+    next if ($x =~ m{d[kr]});
+    EVT_BUTTON($this, $this->{$x.'_pluck'}, sub{Pluck(@_, $x)});
   };
 
   $ftboxsizer -> Add($gbs, 0, wxALL, 5);
@@ -334,7 +351,7 @@ sub new {
   ## -------- k-weights
   my $kwbox      = Wx::StaticBox->new($leftpane, -1, 'Fitting k weights ', wxDefaultPosition, wxDefaultSize);
   my $kwboxsizer = Wx::StaticBoxSizer->new( $kwbox, wxHORIZONTAL );
-  $left         -> Add($kwboxsizer, 0, wxALL|wxGROW|wxALIGN_CENTER_HORIZONTAL, 5);
+  $left         -> Add($kwboxsizer, 0, wxALL, 5);
 
   $this->{k1}   = Wx::CheckBox->new($leftpane, -1, "1",     wxDefaultPosition, wxDefaultSize);
   $this->{k2}   = Wx::CheckBox->new($leftpane, -1, "2",     wxDefaultPosition, wxDefaultSize);
@@ -540,6 +557,38 @@ sub OnMakeVPathButton {
   autosave();
   $self->status("Made a VPath from the marked groups");
 };
+
+sub Pluck {
+  my ($self, $event, $which) = @_;
+
+  my $on_screen = $Demeter::UI::Artemis::frames{Plot}->{last};
+  if (not $on_screen) {
+    $self->status("You haven't made a plot yet");
+    return;
+  };
+  if ($on_screen eq 'multiplot') {
+    $self->status("Cannot pluck a value from a multiplot.");
+    return;
+  };
+  if (($on_screen eq 'r') and ($which !~ m{rmin|rmax})) {
+    $self->status("Cannot pluck for $which from an R plot.");
+    return;
+  };
+  if (($on_screen ne 'r') and ($which =~ m{rmin|rmax})) {
+    $self->status("Cannot pluck for $which from a $on_screen plot.");
+    return;
+  };
+
+  my ($ok, $x, $y) = $::app->cursor($self);
+  $self->status("Failed to pluck a value for $which"), return if not $ok;
+  $on_screen = 'k' if ($on_screen eq 'q');
+  my $plucked = sprintf("%.3f", $x);
+  $self->{$which}->SetValue($plucked);
+  $self->fetch_parameters;
+  my $text = sprintf("Plucked %s for %s. The number of independent points in this data set is now %.2f",
+		     $plucked, $which, $self->{data}->nidp);
+  $self->status($text);
+}
 
 sub make_menubar {
   my ($self) = @_;
@@ -857,6 +906,11 @@ sub plot {
   $self->status(sprintf("Plotted \"%s\" %s.",
 					    $self->{data}->name, $text));
   $Demeter::UI::Artemis::frames{Plot}->{indicators}->plot($self->{data});
+  $Demeter::UI::Artemis::frames{Plot}->{last} = ($how eq 'rmr')   ? 'r'
+                                              : ($how eq 'r123')  ? 'r'
+                                              : ($how eq 'k123')  ? 'k'
+                                              : ($how eq 'kqfit') ? 'k'
+					      :                     'multiplot';
 };
 
 sub OnMenuClick {

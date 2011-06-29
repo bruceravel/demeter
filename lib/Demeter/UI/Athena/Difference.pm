@@ -153,6 +153,7 @@ sub plot {
   $this->{Diff}->po->set(e_mu=>1, e_markers=>1, e_bkg=>0, e_pre=>0, e_post=>0, e_norm=>1, e_der=>0, e_sec=>0, e_i0=>0, e_signal=>0, e_smooth=>0);
   $this->{Diff}->po->start_plot;
   $this->{Diff}->plot;
+  $::app->{lastplot} = ['E', 'single'];
   $this->{make}->Enable(1);
 };
 
@@ -181,6 +182,7 @@ sub Pluck {
   my $data = $app->current_data;
   my $plucked = sprintf("%.3f", $x - $data->bkg_e0);
   $this->{$which}->SetValue($plucked);
+  $this->plot;
   $app->{main}->status("Plucked $plucked for $which");
 };
 

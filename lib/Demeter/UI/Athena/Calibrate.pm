@@ -148,29 +148,15 @@ sub plot {
 
 sub Pluck {
   my ($this, $event, $app) = @_;
-
   my $on_screen = lc($app->{lastplot}->[0]);
   if ($on_screen ne 'e') {
     $this->plot($app->current_data);
   };
-
-  $app->{main}->status("Double click on a point to pluck its value.", "wait");
-  my $busy = Wx::BusyCursor->new();
-  my $tdo = Wx::TextDataObject->new;
-  wxTheClipboard->Open;
-  wxTheClipboard->GetData( $tdo );
-  wxTheClipboard->Close;
-  my $top_of_clipboard = $tdo->GetText;
-  my $new = $top_of_clipboard;
-  while ($new eq $top_of_clipboard) {
-    wxTheClipboard->Open;
-    wxTheClipboard->GetData( $tdo );
-    wxTheClipboard->Close;
-    $new = $tdo->GetText;
-    sleep 0.5;
+  my ($ok, $x, $y) = $app->cursor;
+  if (not $ok) {
+    $app->{main}->status("Failed to pluck a point from the plot.");
+    return;
   };
-
-  my ($x, $y) = split(/,\s+/, $new);
   $this->{e0}->SetValue($x);
   $app->current_data->bkg_e0($x);
   $this->plot($app->current_data);
