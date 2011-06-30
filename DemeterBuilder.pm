@@ -182,5 +182,50 @@ sub is_older {
   return (stat($file1))[9] < (stat($file2))[9]
 };
 
+## redefine (and suppress the warning about doing so) the method used
+## to generate the bat files.  this adds code for redirecting STDOUT
+## and STDERR to a log file in %APPDATA%\demeter
+
+package Module::Build::Platform::Windows;
+
+{
+  no warnings 'redefine';
+  sub make_executable {
+    my $self = shift;
+
+    $self->SUPER::make_executable(@_);
+
+    foreach my $script (@_) {
+      my @list = split(/\\/, $script);
+      my $this = $list[-1];
+      # Native batch script
+      if ( $script =~ /\.(bat|cmd)$/ ) {
+	$self->SUPER::make_executable($script);
+	next;
+
+	# Perl script that needs to be wrapped in a batch script
+      } else {
+	my %opts = ();
+	if ( $script eq $self->build_script ) {
+	  $opts{ntargs}    = q(-x -S %0 --build_bat %*);
+	  $opts{otherargs} = q(-x -S "%0" --build_bat %1 %2 %3 %4 %5 %6 %7 %8 %9);
+	} else {
+	  $opts{ntargs}    = q(-x -S %0 %*)
+	    . ' > "%APPDATA%\\demeter\\' . $this . '.log" 2>&1';
+	  $opts{otherargs} = q(-x -S "%0" %1 %2 %3 %4 %5 %6 %7 %8 %9)
+	    . ' > "%APPDATA%\\demeter\\' . $this . '.log" 2>&1';
+	};
+
+	my $out = eval {$self->pl2bat(in => $script, update => 1, %opts)};
+	if ( $@ ) {
+	  $self->log_warn("WARNING: Unable to convert file '$script' to an executable script:\n$@");
+	} else {
+	  $self->SUPER::make_executable($out);
+	}
+      }
+    }
+  }
+
+}
 
 1;

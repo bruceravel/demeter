@@ -38,6 +38,9 @@ InfoAfterFile=Demeter.readme.txt
 [Run]
 Filename: "{app}\relocation.pl.bat";
 
+[Dirs]
+Name: "{userappdata}\demeter"
+
 [Registry]
 Root: HKLM; Subkey: "SYSTEM\CurrentControlSet\Control\Session Manager\Environment"; \
     ValueName: "Path"; ValueType: expandsz; ValueData: "{olddata};{code:getPath}"; \

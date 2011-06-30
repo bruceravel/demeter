@@ -40,8 +40,8 @@ sub is {
 
   my $cfg = new Config::IniFiles( -file => $self->inifile );
   my $ch1 = $cfg->val("med", "roi1");
-  my $sl1 = $cfg->val("med", "roi1");
-  my $fa1 = $cfg->val("med", "roi1");
+  my $sl1 = $cfg->val("med", "slow1");
+  my $fa1 = $cfg->val("med", "fast1");
   my $seems_med = ($line =~ m{\b$ch1\b}i);
   my $is_med = (($line =~ m{\b$sl1\b}i) and ($line =~ m{\b$fa1\b}i));
   close $D;
@@ -70,7 +70,7 @@ sub fix {
   ## is this the four-element or one-element vortex?
   my @represented = ();
   foreach my $i (1 .. 4) {
-    push @represented, $i if any {$_ eq $cfg->val("med", "roi$i")} @labels;
+    push @represented, $i if any {lc($_) eq $cfg->val("med", "roi$i")} @labels;
   };
   $self->nelements($#represented+1);
 
