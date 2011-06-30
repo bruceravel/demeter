@@ -13,6 +13,7 @@ use List::MoreUtils qw(any);
 has '+is_binary'   => (default => 0);
 has '+description' => (default => "the NSLS X23A2 Vortex");
 has '+version'     => (default => 0.1);
+has 'nelements'    => (is => 'rw', isa => 'Int', default => 4);
 
 my $demeter = Demeter->new();
 has '+inifile'     => (default => File::Spec->catfile($demeter->dot_folder, $INIFILE));
@@ -36,9 +37,15 @@ sub is {
   };
   $line = <$D> || q{};
   my @headers = split(" ", $line);
-  my $is_med = ($#headers > 6);
+
+  my $cfg = new Config::IniFiles( -file => $self->inifile );
+  my $ch1 = $cfg->val("med", "roi1");
+  my $sl1 = $cfg->val("med", "roi1");
+  my $fa1 = $cfg->val("med", "roi1");
+  my $seems_med = ($line =~ m{\b$ch1\b}i);
+  my $is_med = (($line =~ m{\b$sl1\b}i) and ($line =~ m{\b$fa1\b}i));
   close $D;
-  return ($is_x23a2 and $is_med);
+  return ($is_x23a2 and $seems_med and $is_med);
 };
 
 sub fix {
@@ -57,15 +64,19 @@ sub fix {
   my $vortexini = $self->inifile;
   confess "X23A2MED inifile $vortexini does not exist", return q{} if (not -e $vortexini);
   confess "could not read X23A2MED inifile $vortexini", return q{} if (not -r $vortexini);
-  #  open V, '>', $vortexini;
-  #  print V "[elements]\nn=4\n";
-  #  close V;
-  #};
   my $cfg = new Config::IniFiles( -file => $vortexini );
   my $maxel = $cfg->val('elements','n');
 
+  ## is this the four-element or one-element vortex?
+  my @represented = ();
+  foreach my $i (1 .. 4) {
+    push @represented, $i if any {$_ eq $cfg->val("med", "roi$i")} @labels;
+  };
+  $self->nelements($#represented+1);
+
+
   my $is_ok = 1;
-  foreach my $ch (1 .. $maxel) {
+  foreach my $ch (@represented) {
     $is_ok &&= any { $_ eq $cfg->val("med", "roi$ch")  } @labels;
     $is_ok &&= any { $_ eq $cfg->val("med", "slow$ch") } @labels;
     $is_ok &&= any { $_ eq $cfg->val("med", "fast$ch") } @labels;
@@ -85,7 +96,7 @@ sub fix {
   my $time    = $cfg->val("med", "time");
   my $inttime = $cfg->val("med", "inttime");
   my @intcol  = Ifeffit::get_array("v___ortex.".$cfg->val("med", "intcol"));
-  foreach my $ch (1 .. $maxel) {
+  foreach my $ch (@represented) {
     my $deadtime = $cfg->val("med", "dt$ch");
     my @roi  = Ifeffit::get_array("v___ortex.".$cfg->val("med", "roi$ch"));
     my @slow = Ifeffit::get_array("v___ortex.".$cfg->val("med", "slow$ch"));
@@ -102,7 +113,9 @@ sub fix {
   push @labs, 'ir'   if any {lc($_) =~ m{\Air\z}}   @labels;
   push @labs, 'iref' if any {lc($_) =~ m{\Airef\z}} @labels;
 
-  $command  = "\$title1 = \"<MED> Deadtime corrected MED data, $maxel channels\"\n";
+  my $text = ($self->nelements == 1) ? "1 channel" : $self->nelements." channels";
+
+  $command  = "\$title1 = \"<MED> Deadtime corrected MED data, " . $text . "\"\n";
   $command .= "\$title2 = \"<MED> Deadtimes (nsec):$dts\"\n";
   $command .= "\$title3 = \"<MED> Maximum iterations:$maxints\"\n";
   $command .= "write_data(file=\"$new\", \$title*, \$v___ortex_title_*, v___ortex." . join(", v___ortex.", @labs) . ")\n";
@@ -112,6 +125,7 @@ sub fix {
 
   unlink $new if (-e $new);
   $demeter->dispose($command);
+  undef $cfg;
 
   $self->fixed($new);
   return $new;
@@ -124,8 +138,23 @@ sub suggest {
   if ($which eq 'transmission') {
     return (energy      => '$1',
 	    numerator   => '$2',
-	    denominator => '$7',
+	    denominator => ($self->nelements == 1) ? '$4' : '$7',
 	    ln          =>  1,);
+  } elsif ($self->nelements == 1) {
+    return (energy      => '$1',
+	    numerator   => '$3',
+	    denominator => '$2',
+	    ln          =>  0,);
+  } elsif ($self->nelements == 2) {
+    return (energy      => '$1',
+	    numerator   => '$3+$4',
+	    denominator => '$2',
+	    ln          =>  0,);
+  } elsif ($self->nelements == 3) {
+    return (energy      => '$1',
+	    numerator   => '$3+$4+$5',
+	    denominator => '$2',
+	    ln          =>  0,);
   } else {
     return (energy      => '$1',
 	    numerator   => '$3+$4+$5+$6',
@@ -202,8 +231,9 @@ channels 3 and 4.
 Once all of this information is supplied, the deadtime correction is
 done point-by-point for each channel and written out to a temporary
 file in the stash directory.  The columns in the stash directory are
-energy, i0, the four corrected channels, It, and Ir.  It and Ir are
-written out if present in the original file.
+energy, I0, the four corrected channels, It, and Ir.  It and Ir are
+written out if present in the original file.  Ir can also be called
+Iref.
 
 =item C<suggest>
 
@@ -271,12 +301,12 @@ columns contain which data channels.  For each channel N, we need:
 
 =item C<dtN>
 
-The fast channel deadtime (which Joe mesaured to be approximately 280
+The fast channel deadtime (which Joe measured to be approximately 280
 nsec for each channel) for detector N.
 
 =item C<roiN>
 
-The column label for the region of interest (i.e. the discrimator
+The column label for the region of interest (i.e. the discriminator
 window channel) for detector N.
 
 =item C<fastN>
@@ -333,7 +363,7 @@ fast channel due to deadtime:
 
 where tau is the deadtime, x is the actual input rate on the fast
 channel, and y is the measured rate on the dast channel.  The
-iterative solution encoded in the C<correct> subroutine thus solves
+iterative solution encoded in the C<_correct> subroutine thus solves
 point-by-point for x using a value for tau and the column containing
 y.
 
@@ -348,17 +378,15 @@ http://dx.doi:org/10.1107/S0909049510009064
 
 =head1 BUGS AND LIMITATIONS
 
-=over 4
+Please report problems to Bruce Ravel (bravel AT bnl DOT gov)
 
-=item *
-
-Need to do error checking on ini file values.
+Patches are welcome.
 
 =back
 
 =head1 AUTHORS
 
-  Joe Woicik <woicik@bnl.gov> (algorithm)
-  Bruce Ravel <bravel@bnl.gov> (implementation)
+  Joe Woicik <woicik AT bnl DOT gov> (algorithm)
+  Bruce Ravel <bravel AT bnl DOT gov> (implementation)
   http://xafs.org/BruceRavel
 
