@@ -282,6 +282,16 @@ sub randomstring {
   return random_string('c' x $length);
 };
 
+sub ifeffit_heap {
+  my ($self, $length) = @_;
+  $self->mo->heap_used(Ifeffit::get_scalar('&heap_used'));
+  $self->mo->heap_free(Ifeffit::get_scalar('&heap_free'));
+  if (($self->mo->heap_used > 0.95) and ($self->mo->ui !~ m{wx}i)) {
+    warn "You have used over 95% of Ifeffit's memory."
+  };
+  return $self;
+};
+
 1;
 
 =head1 NAME

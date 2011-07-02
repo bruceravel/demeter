@@ -89,6 +89,8 @@ sub Import {
   ## evkev?
   my $first = 1;
   foreach my $file (sort {$a cmp $b} @files) {
+    ## check to see if this is a Windows shortcut, if so, resolve it
+    ## bail out if it points to a file that is not -e or cannot -r
     my $xdi = q{};
     if ($XDI_exists) {
       $xdi = Xray::XDI->new;

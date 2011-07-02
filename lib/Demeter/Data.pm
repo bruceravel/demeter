@@ -601,7 +601,8 @@ sub _update {
       last WHICH;
     };
 
- };
+  };
+  $self->ifeffit_heap;
   return $self;
 };
 

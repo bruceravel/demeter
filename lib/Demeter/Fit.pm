@@ -470,6 +470,7 @@ sub fit {
 
   $self->stop_spinner if ($self->mo->ui eq 'screen');
 
+  $self->ifeffit_heap;
   return $self;
 };
 alias feffit => 'fit';

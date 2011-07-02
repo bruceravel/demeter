@@ -576,7 +576,6 @@ sub menubar {
 					   $FREEZE_MARKED, $UNFREEZE_MARKED,
 					   $FREEZE_REGEX, $UNFREEZE_REGEX,
 					   $FREEZE_TOGGLE_ALL);
-  $monitormenu    -> Enable($_,0) foreach ($IFEFFIT_MEMORY);
   $helpmenu       -> Enable($_,0) foreach ($DOCUMENT, $DEMO);
 
   EVT_MENU($app->{main}, -1, sub{my ($frame,  $event) = @_; OnMenuClick($frame,  $event, $app)} );
@@ -876,6 +875,11 @@ sub OnMenuClick {
     };
     ($id == $MODE_STATUS) and do {
       my $dialog = Demeter::UI::Artemis::ShowText->new($app->{main}, $demeter->mo->report('all'), 'Overview of this instance of Demeter') -> Show;
+      last SWITCH;
+    };
+
+    ($id == $IFEFFIT_MEMORY) and do {
+      $app->heap_check(1);
       last SWITCH;
     };
 
@@ -1313,6 +1317,7 @@ sub OnGroupSelect {
 
   $app->select_plot($app->current_data) if $plot;
   $app->{selecting_data_group}=0;
+  $app->heap_check(0);
 };
 
 sub select_plot {
@@ -1650,8 +1655,9 @@ sub mark {
 
 
 sub merge {
-  my ($app, $how) = @_;
+  my ($app, $how, $noplot) = @_;
   return if $app->is_empty;
+  $noplot ||= 0;
   my $busy = Wx::BusyCursor->new();
   my @data = ();
   my $max = 0;
@@ -1665,9 +1671,11 @@ sub merge {
   };
   if (not @data) {
     $app->{main}->status("No groups are marked.  Merge cancelled.");
+    undef $busy;
     return;
   };
 
+  $app->{main}->status("Merging marked groups");
   my $merged = $data[0]->merge($how, @data);
   $max = q{} if not $max;
   $max = sprintf(" %d", $max+1) if $max;
@@ -1679,25 +1687,35 @@ sub merge {
   $app->{main}->{list}->Check($app->{main}->{list}->GetCount-1, 1);
   $app->modified(1);
 
-  ## handle plotting, respecting the choice in the athena->merge_plot config parameter
-  my $plot = $merged->co->default('athena', 'merge_plot');
-  if ($plot =~ m{stddev|variance}) {
-    $app->{main}->{PlotE}->pull_single_values;
-    $app->{main}->{PlotK}->pull_single_values;
-    $merged->plot($plot);
-  } elsif (($plot eq 'marked') and ($how =~ m{\A[en]\z})) {
-    $app->{main}->{PlotE}->pull_single_values;
-    $merged->po->set(e_mu=>1, e_bkg=>0, e_pre=>0, e_post=>0, e_norm=>0, e_der=>0, e_sec=>0, e_markers=>0, e_i0=>0, e_signal=>0);
-    $merged->po->set(e_norm=>1) if ($how eq 'n');
-    $merged->po->start_plot;
-    $_->plot('e') foreach (@data, $merged);
-  } elsif (($plot eq 'marked') and ($how eq 'k')) {
-    $app->{main}->{PlotK}->pull_single_values;
-    $merged->po->chie(0);
-    $merged->po->start_plot;
-    $_->plot('k') foreach (@data, $merged);
+  if ($data[0] -> reference) {
+    my @refs = grep {$_} map  {$_->reference} @data;
+    $app->{main}->status("Merging marked groups");
+    my $refmerged = $refs[0]->merge($how, @refs);
+    $refmerged->name("  Ref ". $merged->name);
+    $app->{main}->{list}->AddData($refmerged->name, $refmerged);
   };
-  $merged->po->e_markers(1);
+
+  ## handle plotting, respecting the choice in the athena->merge_plot config parameter
+  if (not $noplot) {
+    my $plot = $merged->co->default('athena', 'merge_plot');
+    if ($plot =~ m{stddev|variance}) {
+      $app->{main}->{PlotE}->pull_single_values;
+      $app->{main}->{PlotK}->pull_single_values;
+      $merged->plot($plot);
+    } elsif (($plot eq 'marked') and ($how =~ m{\A[en]\z})) {
+      $app->{main}->{PlotE}->pull_single_values;
+      $merged->po->set(e_mu=>1, e_bkg=>0, e_pre=>0, e_post=>0, e_norm=>0, e_der=>0, e_sec=>0, e_markers=>0, e_i0=>0, e_signal=>0);
+      $merged->po->set(e_norm=>1) if ($how eq 'n');
+      $merged->po->start_plot;
+      $_->plot('e') foreach (@data, $merged);
+    } elsif (($plot eq 'marked') and ($how eq 'k')) {
+      $app->{main}->{PlotK}->pull_single_values;
+      $merged->po->chie(0);
+      $merged->po->start_plot;
+      $_->plot('k') foreach (@data, $merged);
+    };
+    $merged->po->e_markers(1);
+  };
   undef $busy;
   $app->{main}->status("Made merged data group");
 };
@@ -1738,6 +1756,21 @@ sub Clear {
   $app->{main}->{project}->SetLabel('<untitled>');
   $app->modified(not $app->is_empty);
   $app->{main}->status(sprintf("Unamed the current project."));
+};
+
+sub heap_check {
+  my ($app, $show) = @_;
+  if ($app->current_data->mo->heap_used > 0.99) {
+    $app->{main}->status("You have used all of Ifeffit's memory!  It is likely that your data is corrupted!", "error");
+  } elsif ($app->current_data->mo->heap_used > 0.95) {
+    $app->{main}->status("You have used more than 95% of Ifeffit's memory.  save your work!", "error");
+  } elsif ($app->current_data->mo->heap_used > 0.9) {
+    $app->{main}->status("You have used more than 90% of Ifeffit's memory.  save your work!", "error");
+  } elsif ($show) {
+    $app->{main}->status(sprintf("You are currently using %.1f%% of Ifeffit's %d Mb of memory",
+				 100*$app->current_data->mo->heap_used,
+				 $app->current_data->mo->heap_free/(1-$app->current_data->mo->heap_used)/2**20));
+  };
 };
 
 sub document {

@@ -123,10 +123,10 @@
        + [X] plot sequence results with pgplot
    - [ ] *Plot menu*
        + zoom/unzoom/cursor for pgplot
-   - [ ] *Help menu* [0/3]
+   - [-] *Help menu* [1/3]
        + [ ] demos
        + [ ] document
-       + [ ] memory usage
+       + [X] memory usage
 
 ** raw data and plugins
    - Need to expand the filetype system by examining data from *all* the XAS beamlines in the world.  Yes ... all of them.

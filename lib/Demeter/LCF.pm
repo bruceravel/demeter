@@ -332,6 +332,7 @@ sub fit {
   $self->_statistics;
 
   $self->stop_spinner if (($self->mo->ui eq 'screen') and (not $quiet));
+  $self->ifeffit_heap;
   return $self;
 };
 
