@@ -73,6 +73,7 @@ sub Copy {
   };
   $app->modified(1);
   $app->{main}->status("Copied ".$data->name);
+  $app->heap_check(0);
   return $clone;
 };
 

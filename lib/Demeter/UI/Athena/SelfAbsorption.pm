@@ -174,6 +174,7 @@ sub plot {
 
   $this->{make}->Enable(1);
   $::app->{main}->status("Plotted data using " . ucfirst($algorithm) . " algorithm.");
+  $::app->heap_check(0);
 
   undef $busy;
 };
@@ -189,6 +190,7 @@ sub make {
   };
   $app->{main}->status("Made self-absorption corrected group from " . $app->current_data->name);
   $app->modified(1);
+  $app->heap_check(0);
 };
 
 sub info {

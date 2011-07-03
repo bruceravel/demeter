@@ -515,6 +515,7 @@ sub fit {
   $this->{resultreport} -> Enable(1);
   $this->{plotr}        -> Enable(1) if ($this->{LCF}->space =~ m{\Achi});
   $::app->{main}->status(sprintf("Finished LCF fit to %s", $this->{LCF}->data->name));
+  $::app->heap_check(0);
   undef $busy;
 };
 
@@ -819,6 +820,7 @@ sub plot {
   $this->_prep;
   $this->{LCF}->plot_fit;
   $::app->{main}->status(sprintf("Plotted %s and LCF fit", $this->{LCF}->data->name));
+  $::app->heap_check(0);
 };
 
 sub save {

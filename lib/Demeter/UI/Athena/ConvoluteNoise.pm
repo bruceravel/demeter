@@ -135,6 +135,7 @@ sub plot {
   $this->{processed} -> plot('E');
   $this->{make}->Enable(1);
   $::app->{main}->status(sprintf("Plotted %s with convolution and/or added noise", $data->name));
+  $::app->heap_check(0);
   undef $busy;
 };
 
@@ -149,6 +150,7 @@ sub make {
   };
   $app->{main}->status(sprintf("Convolved and/or added noise to %s and made a new data group", $app->current_data->name));
   $app->modified(1);
+  $app->heap_check(0);
 };
 
 1;

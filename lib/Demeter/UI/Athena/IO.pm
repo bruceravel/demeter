@@ -139,6 +139,11 @@ sub Import {
       return;
     };
     $first = 0;
+    if ($app->current_data->mo->heap_used > 0.95) {
+      $app->OnGroupSelect(q{}, $app->{main}->{list}->GetSelection, 0);
+      $app->{main}->status("Stopping multiple file import.  You have used more than 95% of Ifeffit's memory.", "error");
+      return;
+    };
   };
   $app->OnGroupSelect(q{}, $app->{main}->{list}->GetSelection, 0);
   return;

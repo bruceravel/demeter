@@ -155,6 +155,7 @@ sub plot {
   $this->{Diff}->plot;
   $::app->{lastplot} = ['E', 'single'];
   $this->{make}->Enable(1);
+  $::app->heap_check(0);
 };
 
 sub make {
@@ -168,6 +169,7 @@ sub make {
   };
   $::app->{main}->status("Made a new difference group");
   $::app->modified(1);
+  $::app->heap_check(0);
 };
 
 sub Pluck {

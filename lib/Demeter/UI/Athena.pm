@@ -1318,6 +1318,7 @@ sub OnGroupSelect {
   $app->select_plot($app->current_data) if $plot;
   $app->{selecting_data_group}=0;
   $app->heap_check(0);
+  return;
 };
 
 sub select_plot {
@@ -1455,6 +1456,7 @@ sub plot {
 
   $app->postplot($data[0]);
   $app->{lastplot} = [$space, $how];
+  $app->heap_check(0);
   undef $busy;
 };
 
@@ -1716,8 +1718,9 @@ sub merge {
     };
     $merged->po->e_markers(1);
   };
-  undef $busy;
   $app->{main}->status("Made merged data group");
+  $app->heap_check(0);
+  undef $busy;
 };
 
 sub modified {
@@ -1758,14 +1761,15 @@ sub Clear {
   $app->{main}->status(sprintf("Unamed the current project."));
 };
 
+## in future times, check to see if Ifeffit is being used
 sub heap_check {
   my ($app, $show) = @_;
-  if ($app->current_data->mo->heap_used > 0.99) {
+  if ($app->current_data->mo->heap_used > 0.98) {
     $app->{main}->status("You have used all of Ifeffit's memory!  It is likely that your data is corrupted!", "error");
   } elsif ($app->current_data->mo->heap_used > 0.95) {
-    $app->{main}->status("You have used more than 95% of Ifeffit's memory.  save your work!", "error");
+    $app->{main}->status("You have used more than 95% of Ifeffit's memory.  Save your work!", "error");
   } elsif ($app->current_data->mo->heap_used > 0.9) {
-    $app->{main}->status("You have used more than 90% of Ifeffit's memory.  save your work!", "error");
+    $app->{main}->status("You have used more than 90% of Ifeffit's memory.  Save your work!", "error");
   } elsif ($show) {
     $app->current_data->ifeffit_heap;
     $app->{main}->status(sprintf("You are currently using %.1f%% of Ifeffit's %.1f Mb of memory",

@@ -177,6 +177,7 @@ sub plot {
   $data->plot($space);
   $this->{remove}->Enable(0);
   $::app->{main}->status(sprintf("Plotted %s as points for deglitching", $data->name));
+  $::app->heap_check(0);
 
   $data->po->datastyle($save);
 };
@@ -245,6 +246,7 @@ sub plot_truncate {
   $data->standard;
   $this->{indicator}->plot('e');
   $data->unset_standard;
+  $::app->heap_check(0);
 };
 
 sub OnPluckTruncate {
@@ -269,8 +271,8 @@ sub Truncate {
     return;
   };
   $_->Truncate($beforeafter, $e) foreach (@data);
-  $this->plot_truncate($data[0]);
   $app->{main}->status(sprintf("Removed data %s %.3f for %s", $beforeafter, $e, $text));
+  $this->plot_truncate($data[0]);
   $::app->modified(1);
 };
 

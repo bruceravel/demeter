@@ -171,6 +171,7 @@ sub plot {
     $this->{LR}->standard->plot($how);
     $this->{LR}->data->plot($how);
   };
+  $::app->heap_check(0);
 };
 
 sub save {
