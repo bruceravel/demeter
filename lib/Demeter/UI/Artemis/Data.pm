@@ -911,6 +911,7 @@ sub plot {
                                               : ($how eq 'k123')  ? 'k'
                                               : ($how eq 'kqfit') ? 'k'
 					      :                     'multiplot';
+  $::app->heap_check;
 };
 
 sub OnMenuClick {
@@ -2195,6 +2196,7 @@ sub OnData {
     };
   };
 
+  $::app->heap_check;
   return $def;
 };
 

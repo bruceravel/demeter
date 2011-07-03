@@ -365,6 +365,7 @@ sub plot {
     $self->{fileout}->SetValue(0);
   };
   $self->{last} = $space;
+  $::app->heap_check;
   undef $busy;
 };
 
@@ -381,6 +382,7 @@ sub plot_fit {
   $data->co->set(plot_part=>q{});
   $data->plotkey(q{});
   $data->po->increment;
+  $::app->heap_check;
 };
 
 use Readonly;

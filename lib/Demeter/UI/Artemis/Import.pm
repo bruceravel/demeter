@@ -37,6 +37,7 @@ sub Import {
     $retval = _dpj($fname),           last SWITCH if  ($which eq 'dpj');
     $retval = _feffit($fname),        last SWITCH if  ($which eq 'feffit');
   };
+  $::app->heap_check;
   return $retval;
 };
 

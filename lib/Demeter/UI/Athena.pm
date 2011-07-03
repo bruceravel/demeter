@@ -1767,7 +1767,8 @@ sub heap_check {
   } elsif ($app->current_data->mo->heap_used > 0.9) {
     $app->{main}->status("You have used more than 90% of Ifeffit's memory.  save your work!", "error");
   } elsif ($show) {
-    $app->{main}->status(sprintf("You are currently using %.1f%% of Ifeffit's %d Mb of memory",
+    $app->current_data->ifeffit_heap;
+    $app->{main}->status(sprintf("You are currently using %.1f%% of Ifeffit's %.1f Mb of memory",
 				 100*$app->current_data->mo->heap_used,
 				 $app->current_data->mo->heap_free/(1-$app->current_data->mo->heap_used)/2**20));
   };

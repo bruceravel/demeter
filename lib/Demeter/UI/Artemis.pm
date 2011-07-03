@@ -61,6 +61,7 @@ Readonly my $DOCUMENT        => Wx::NewId();
 Readonly my $TERM_1          => Wx::NewId();
 Readonly my $TERM_2          => Wx::NewId();
 Readonly my $TERM_3          => Wx::NewId();
+Readonly my $IFEFFIT_MEMORY  => Wx::NewId();
 
 use Wx::Perl::Carp qw(verbose);
 $SIG{__WARN__} = sub {Wx::Perl::Carp::warn($_[0])};
@@ -189,6 +190,7 @@ sub OnInit {
   $feedbackmenu->AppendSubMenu($showmenu,  "Show Ifeffit ...",  'Show variables from Ifeffit');
   $feedbackmenu->AppendSubMenu($debugmenu, 'Debug options',     'Display debugging tools')
     if ($demeter->co->default("artemis", "debug_menus"));
+  $feedbackmenu->Append($IFEFFIT_MEMORY,  "Show Ifeffit's memory use", "Show Ifeffit's memory use and remaining capacity");
 
   #my $settingsmenu = Wx::Menu->new;
 
@@ -470,6 +472,22 @@ EOH
   Wx::AboutBox( $info );
 };
 
+sub heap_check {
+  my ($app, $show) = @_;
+  if ($demeter->mo->heap_used > 0.99) {
+    $app->{main}->status("You have used all of Ifeffit's memory!  It is likely that your data is corrupted!", "error");
+  } elsif ($demeter->mo->heap_used > 0.95) {
+    $app->{main}->status("You have used more than 95% of Ifeffit's memory.  Save your work!", "error");
+  } elsif ($demeter->mo->heap_used > 0.9) {
+    $app->{main}->status("You have used more than 90% of Ifeffit's memory.  Save your work!", "error");
+  } elsif ($show) {
+    $demeter->ifeffit_heap;
+    $app->{main}->status(sprintf("You are currently using %.1f%% of Ifeffit's %.1f Mb of memory",
+				 100*$demeter->mo->heap_used,
+				 $demeter->mo->heap_free/(1-$demeter->mo->heap_used)/2**20));
+  };
+};
+
 sub uptodate {
   my ($rframes) = @_;
   my (@data, @paths, @gds);
@@ -642,6 +660,7 @@ sub fit {
   ++$fit_order{order}{current};
 
   modified(1);
+  $::app->heap_check;
 
   undef $start;
   undef $busy;
@@ -856,6 +875,10 @@ sub OnMenuClick {
     #  my $x = 1/0;
     #  last SWITCH;
     #};
+    ($id == $IFEFFIT_MEMORY) and do {
+      $::app->heap_check(1);
+      last SWITCH;
+    };
 
     ($id == $TERM_1) and do {
       $demeter->po->terminal_number(1);
@@ -952,6 +975,7 @@ sub make_data_frame {
   $frames{$dnum} -> Show(0);
   $new->SetValue(0);
   modified(1);
+  $::app->heap_check;
   return ($dnum, $idata);
 };
 

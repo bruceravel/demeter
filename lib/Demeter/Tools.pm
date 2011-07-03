@@ -287,7 +287,9 @@ sub ifeffit_heap {
   $self->mo->heap_used(Ifeffit::get_scalar('&heap_used'));
   $self->mo->heap_free(Ifeffit::get_scalar('&heap_free'));
   if (($self->mo->heap_used > 0.95) and ($self->mo->ui !~ m{wx}i)) {
-    warn "You have used over 95% of Ifeffit's memory."
+    warn sprintf("You have used %.1f%% of Ifeffit's %.1f Mb of memory",
+		 100*$self->mo->heap_used,
+		 $self->mo->heap_free/(1-$self->mo->heap_used)/2**20);
   };
   return $self;
 };
