@@ -20,6 +20,9 @@
    - Merging groups with reference channels also merges reference
      channels into a reference group for the merge
    - Tools for monitoring Ifeffit's memory use
+   - Modified SSRLA plugin to handle data from the ESRF ROBL beamline.
+     ROBL writes some high-ASCII characters in a way that confuses the
+     column selection dialog, so theplugin strips them from the file
 
 *** Artemis
     - Pluck buttons now work on the Data page and on the indicators tab
