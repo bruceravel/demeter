@@ -89,6 +89,11 @@ sub Import {
   ## evkev?
   my $first = 1;
   foreach my $file (sort {$a cmp $b} @files) {
+    if (Demeter->is_windows) {
+      require Win32::Shortcut;
+      my $LINK = Win32::Shortcut->new();
+      $file = $LINK->{Path} if $LINK->Load($file);
+    };
     ## check to see if this is a Windows shortcut, if so, resolve it
     ## bail out if it points to a file that is not -e or cannot -r
     my $xdi = q{};

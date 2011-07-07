@@ -69,6 +69,8 @@ my $build = DemeterBuilder
 				'Want'			    => '0',
 				'YAML::Tiny'		    => '0',
 
+				(($^O eq 'MSWin32') or ($^O eq 'cygwin')) ? 
+				('Win32::Shortcut' => '0',) : (),
 				## deprecated....
 				#'Compress::Raw::Zlib'	   => '0',
 				#'Compress::Raw'	   => '0',
