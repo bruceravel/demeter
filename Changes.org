@@ -22,7 +22,7 @@
    - Tools for monitoring Ifeffit's memory use
    - Modified SSRLA plugin to handle data from the ESRF ROBL beamline.
      ROBL writes some high-ASCII characters in a way that confuses the
-     column selection dialog, so theplugin strips them from the file
+     column selection dialog, so the plugin strips them from the file
 
 *** Artemis
     - Pluck buttons now work on the Data page and on the indicators tab
@@ -40,9 +40,11 @@
      %APPDATA%\demeter\
    - Make %APPDATA%\demeter\ at install time if it does not already
      exist
+   - Compile Ifeffit with an 8 Mb heap, more arrays, and more Feff
+     paths.
 
 *** Acknowledgements for this release
-
+    Same gang as last time + Stephen Price.
 
 ** Release 2: 24 June, 2011
 *** Athena

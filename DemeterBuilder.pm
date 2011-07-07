@@ -210,10 +210,9 @@ package Module::Build::Platform::Windows;
 	  $opts{ntargs}    = q(-x -S %0 --build_bat %*);
 	  $opts{otherargs} = q(-x -S "%0" --build_bat %1 %2 %3 %4 %5 %6 %7 %8 %9);
 	} else {
-	  $opts{ntargs}    = q(-x -S %0 %*)
-	    . ' > "%APPDATA%\\demeter\\' . $this . '.log" 2>&1';
-	  $opts{otherargs} = q(-x -S "%0" %1 %2 %3 %4 %5 %6 %7 %8 %9)
-	    . ' > "%APPDATA%\\demeter\\' . $this . '.log" 2>&1';
+	  my $logfile = ' > "%APPDATA%\\demeter\\' . $this . '.log" 2>&1';
+	  $opts{ntargs}    = q(-x -S %0 %*) . $logfile;
+	  $opts{otherargs} = q(-x -S "%0" %1 %2 %3 %4 %5 %6 %7 %8 %9) . $logfile;
 	};
 
 	my $out = eval {$self->pl2bat(in => $script, update => 1, %opts)};

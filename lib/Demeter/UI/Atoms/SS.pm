@@ -335,7 +335,7 @@ sub histoplot {
   $this->{histoyaml}->{bin}  = $bin;
 
   if ((not $file) or (not -e $file) or (not -r $file)) {
-    $this->GetParent->status("You did not specify a file or your file cannot be read.");
+    $this->{parent}->status("You did not specify a file or your file cannot be read.");
     return;
   };
 
@@ -379,7 +379,7 @@ sub scatterplot {
   $this->{histoyaml}->{betabin} = $betabin;
 
   if ((not $file) or (not -e $file) or (not -r $file)) {
-    $this->GetParent->status("You did not specify a file or your file cannot be read.");
+    $this->{parent}->status("You did not specify a file or your file cannot be read.");
     return;
   };
 
@@ -412,7 +412,7 @@ sub dlpoly_sentinal {
     my $text = $this->{DISTRIBUTION}->timestep_count . " of " . $this->{DISTRIBUTION}->{nsteps} . " timesteps";
     #print $text, $/;
     $this->{statusbar}->SetStatusText($text);
-    #$this->GetParent->status($text, 'wait|nobuffer') if not $this->{DISTRIBUTION}->timestep_count % 10;
+    #$this->{parent}->status($text, 'wait|nobuffer') if not $this->{DISTRIBUTION}->timestep_count % 10;
     $::app->Yield();
   };
 };
