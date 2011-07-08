@@ -57,7 +57,7 @@ has 'file'      => (is => 'rw', isa => 'Str', default => q{},
 				  });
 has 'clusters'    => (is => 'rw', isa => 'ArrayRef', default => sub{[]});
 
-enum 'HistogramBackends' => ['dl_poly', 'something_else'];
+enum 'HistogramBackends' => ['dl_poly', 'vasp'];
 coerce 'HistogramBackends',
   from 'Str',
   via { lc($_) };
@@ -66,6 +66,10 @@ has backend       => (is => 'rw', isa => 'HistogramBackends', coerce => 1, alias
 				     if ($new eq 'dl_poly') {
 				       eval {apply_all_roles($self, 'Demeter::Feff::MD::DL_POLY')};
 				       $@ and die("Histogram backend Demeter::Feff::MD::DL_POLY could not be loaded");
+				     } elsif ($new eq 'vasp') {
+				       eval {apply_all_roles($self, 'Demeter::Feff::MD::VASP')};
+				       print $@;
+				       $@ and die("Histogram backend Demeter::Feff::MD::VASP does not exist");
 				     } else {
 				       eval {apply_all_roles($self, 'Demeter::Feff::MD::'.$new)};
 				       $@ and die("Histogram backend Demeter::Feff::MD::$new does not exist");
@@ -168,12 +172,14 @@ roles:
 
   Demeter::Feff::MD::Null
   Demeter::Feff::MD::DL_POLY
+  Demeter::Feff::MD::VASP
 
 This takes methods for making distributions functions and chi(k) (in
 the form of a L<Demeter::FPath> object from its roles:
 
   Demeter::Feff::Distributions::SS
   Demeter::Feff::Distributions::NCL
+  Demeter::Feff::Distributions::Thru
 
 =head1 ATTRIBUTES
 
