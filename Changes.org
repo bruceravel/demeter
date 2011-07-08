@@ -5,7 +5,7 @@
 
 * Beta testing releases:
 
-** Release 3: XX July, 2011
+** Release 3: 8 July, 2011
 *** Athena
    - Plugin registry: right click open a menu with for plugin
      documentation (POD converted to text, displayed in a
