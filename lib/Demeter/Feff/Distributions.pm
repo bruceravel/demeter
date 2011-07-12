@@ -44,6 +44,7 @@ with 'Demeter::Feff::Distributions::SS';
 use List::Util qw{sum};
 
 has '+plottable' => (default => 1);
+has '+name'      => (default => 'histogram');
 
 ## HISTORY file attributes
 has 'nsteps'    => (is => 'rw', isa => NonNeg, default => 0);
@@ -111,6 +112,24 @@ has 'populations' => (is	    => 'rw',
 		      default	    => sub{[]},
 		      documentation => "array of bin populations of the extracted histogram");
 
+has 'use_periodicity'=> (is              => 'rw',
+			 isa             => 'Bool',
+			 default         => 0,
+			 documentation   => "a flag for turning on/off the use of periodic boundary conditions");
+has 'periodic'=> (is              => 'rw',
+		  isa             => 'Bool',
+		  default         => 0,
+		  documentation   => "a boolean indicating periodic boundary conditions were used in the MD simulation");
+has 'lattice' => (metaclass => 'Collection::Array',
+		  is	          => 'rw',
+		  isa	          => 'ArrayRef',
+		  default	  => sub{[]},
+		  provides  => {
+				'push'  => 'push_lattice',
+				'pop'   => 'pop_lattice',
+				'clear' => 'clear_lattice',
+			       },
+		  documentation   => "the direct lattice vectors");
 
 
 ## need a pgplot plotting template

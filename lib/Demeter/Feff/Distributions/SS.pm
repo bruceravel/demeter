@@ -4,7 +4,7 @@ use MooseX::Aliases;
 
 use Demeter::NumTypes qw( NonNeg Ipot );
 
-use Chemistry::Elements qw (get_Z);
+use Chemistry::Elements qw (get_Z get_name);
 
 ## SS histogram attributes
 has 'rmin'        => (is	    => 'rw',
@@ -77,6 +77,8 @@ sub rdf {
   my ($self) = @_;
   my @rdf = ();
   my $count = 0;
+  my $rmin    = $self->rmin;
+  my $rmax    = $self->rmax;
   my $rminsqr = $self->rmin*$self->rmin;
   my $rmaxsqr = $self->rmax*$self->rmax;
   if ($Demeter::mode->ui eq 'screen') {
@@ -86,7 +88,16 @@ sub rdf {
   my $abs_species  = get_Z($self->feff->abs_species);
   my $scat_species = get_Z($self->feff->potentials->[$self->ipot]->[2]);
   my ($x0, $x1, $x2) = (0,0,0);
+  my ($y0, $y1, $y2) = (0,0,0);
+  my ($xx0, $xx1, $xx2) = (0,0,0);
+  my (@vec0, @vec1, @vec2);
+  if ($self->periodic) {	# pre-derefencing these vectors speeds up the loop where
+    @vec0 = @{$self->lattice->[0]}; # the periodic boundary conditions are applied by a
+    @vec1 = @{$self->lattice->[1]}; # substantial amount
+    @vec2 = @{$self->lattice->[2]};
+  };
   my @this;
+  my $rsqr = 0;
 
   foreach my $step (@{$self->clusters}) {
     @this = @$step;
@@ -96,12 +107,37 @@ sub rdf {
     foreach my $i (0 .. $#this) {
       next if ($abs_species != $this[$i]->[3]);
       ($x0, $x1, $x2) = @{$this[$i]};
-      foreach my $j ($i+1 .. $#this) { # remember that all pairs are doubly degenerate
+      foreach my $j (0 .. $#this) { # remember that all pairs are doubly degenerate (only if monoatomic)
+	next if ($i == $j);
 	next if ($scat_species != $this[$j]->[3]);
 	my $rsqr = ($x0 - $this[$j]->[0])**2
 	         + ($x1 - $this[$j]->[1])**2
 	         + ($x2 - $this[$j]->[2])**2; # this loop has been optimized for speed, hence the weird syntax
-	push @rdf, $rsqr if (($rsqr >= $rminsqr) and ($rsqr <= $rmaxsqr));
+	if (($rsqr >= $rminsqr) and ($rsqr <= $rmaxsqr)) {
+	  push @rdf, $rsqr;
+	} elsif ($self->periodic and $self->use_periodicity) {
+	  ## apply periodic boundary conditions by applying 1, 0, or -1 of all possible lattice translations to the possible scatterer
+	  ($y0, $y1, $y2) = @{$this[$j]};
+	OUTER: foreach my $a (-1,0,1) {
+	    foreach my $b (-1,0,1) {
+	      foreach my $c (-1,0,1) {
+		next if (($a == 0) and ($b == 0) and ($c == 0));
+		$xx0 = $y0 + $a*$vec0[0] + $b*$vec1[0] + $c*$vec2[0] - $x0;
+		next if abs($xx0) > $rmax;
+		$xx1 = $y1 + $a*$vec0[1] + $b*$vec1[1] + $c*$vec2[1] - $x1;
+		next if abs($xx1) > $rmax;
+		$xx2 = $y2 + $a*$vec0[2] + $b*$vec1[2] + $c*$vec2[2] - $x2;
+		next if abs($xx2) > $rmax;
+
+		$rsqr = $xx0**2 + $xx1**2 + $xx2**2;
+		if (($rsqr >= $rminsqr) and ($rsqr <= $rmaxsqr)) {
+		  push @rdf, $rsqr;
+		  last OUTER;
+		};
+	      };
+	    };
+	  };
+	};
 	#if (($i==1) and ($j==2)) {
 	#  print join("|", @{$this[$i]}, @{$this[$j]}, $rsqr), $/;
 	#};
@@ -225,6 +261,17 @@ sub plot {
   $self->po->start_plot;
   $self->dispose($self->template('plot', 'histo'), 'plotting');
   return $self;
+};
+
+sub info {
+  my ($self) = @_;
+  my $text = sprintf "Number of time steps: %d\n",   $self->nsteps;
+  $text   .= sprintf "Scatterer:            %s\n",   get_name($self->feff->potentials->[$self->ipot]->[2]);
+  $text   .= sprintf "RDF size:             %d\n",   $#{$self->ssrdf}+1;
+  $text   .= sprintf "Pairs per timestep:   %d\n",   $self->npairs;
+  $text   .= sprintf "Bin size:             %.4f\n", $self->bin;
+  $text   .= sprintf "Number of bins:       %d\n",   $#{$self->positions}+1;
+  return $text;
 };
 
 

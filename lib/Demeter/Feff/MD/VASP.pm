@@ -2,6 +2,9 @@ package Demeter::Feff::MD::VASP;
 use Moose::Role;
 use Moose::Util::TypeConstraints;
 
+with 'Demeter::UI::Screen::Progress' if $Demeter::mode->ui eq 'screen';
+
+use File::CountLines qw(count_lines);
 use Chemistry::Elements qw (get_Z);
 use Compress::Zlib;
 use Regexp::Assemble;
@@ -26,10 +29,22 @@ has 'numbers' => (metaclass => 'Collection::Array',
 				'clear' => 'clear_numbers',
 			       },
 		  documentation   => "numbers of each species obtained from the 'ions per type' line");
+has 'indeces' => (metaclass => 'Collection::Array',
+		  is        => 'rw',
+		  isa       => 'ArrayRef',
+		  default   => sub { [] },
+		  provides  => {
+				'push'  => 'push_indeces',
+				'pop'   => 'pop_indeces',
+				'clear' => 'clear_indeces',
+			       },
+		  documentation   => "index ranges of each species in the cluster lists");
 has 'start'   => (is	          => 'rw',
 		  isa	          => 'ArrayRef',
 		  default	  => sub{[]},
 		  documentation   => "the starting configuration of the cluster");
+
+
 
 my @element_list = qw(H He Li Be B C N O F Ne Na Mg Al Si P S Cl Ar K Ca
 		      Sc Ti V Cr Mn Fe Co Ni Cu Zn Ga Ge As Se Br Kr Rb
@@ -52,7 +67,6 @@ sub _number_of_steps {
   while ($fh->gzreadline($line) > 0) {
     last if $line =~ m{\A\s*General timing};
     ++$count if $line =~ m{\APOSITION};
-    print '+' if not $. % 1000;
   }
   #print $steps, $/;
   $fh->gzclose();
@@ -62,54 +76,114 @@ sub _number_of_steps {
 
 sub _cluster {
   my ($self) = @_;
-  $self->_number_of_steps;
+  #$self->_number_of_steps;
+  my $nruns  = count_lines($self->file, separator => 'General timing') + 1;
+  my $nlines = count_lines($self->file);
+  #print $nlines, $/;
   my $fh = gzopen($self->file, "rb") or die "could not open $self->file as a VASP OUTCAR file\n";
   my @cluster = ();
   my @all = ();
   my $line = q{};
-  local $|=1;
-  while ($fh->gzreadline($line) > 0) {
-    if ($line =~ m{\A\s*VRHFIN\s*=($element_regexp)}) {
-      $self->push_atoms($1);
-      next;
+  my $count = 0;
+  if ($self->mo->ui eq 'screen') {
+    #$self->start_spinner("Reading VASP file ".$self->file) 
+    $self->progress('%30b %c of %m (x10^4) lines in file <Time elapsed: %8t>');
+    $self->start_counter("Reading VASP file ".$self->file." with $nlines lines", int($nlines/1e4/$nruns));
+  };
+  my %flag = (starting_configuration => 0,
+	      time_step              => 0,
+	      line_of_dashes         => 0,
+	      npos                   => 0,
+	      direct_lattice         => 0);
+ FILE: while ($fh->gzreadline($line) > 0) {
+    $self->count if (not $. % 1e4) and ($self->mo->ui eq 'screen');
 
+    if ($flag{starting_configuration}) {
+      next FILE;
+
+    ## ----------------------------------------------------------------------
+    ## we are currently in a block of positions at a time step
+    } elsif ($flag{time_step}) {
+      if (($line =~ m{-{2,}}) and (not $flag{line_of_dashes})) {
+	## this is the beginning of the time point block
+	$flag{line_of_dashes} = 1;
+	next FILE;
+      } elsif (($line =~ m{-{2,}}) and $flag{line_of_dashes}) {
+	## this is the end of the time point block
+	push @all, [@cluster];
+	$#cluster = -1;
+	$flag{line_of_dashes} = 0;
+	$flag{time_step}      = 0;
+	$flag{npos}           = 0;
+	next FILE;
+      } else {
+	## this is a position in a time point
+	++$flag{npos};
+	my @position = split(" ", $line);
+	my $atom = q{};
+      ATOM: foreach my $i (0 .. $#{$self->indeces}) {
+	  #print $flag{npos}, " ", $self->indeces->[$i], $/;
+	  if ($flag{npos} <= $self->indeces->[$i]) {
+	    $atom = $self->atoms->[$i];
+	    last ATOM;
+	  };
+	};
+	#print join("|", @position[0..2], $atom), $/;
+	push @cluster, [@position[0..2], get_Z($atom)];
+      };
+      next FILE;
+
+    } elsif ($flag{direct_lattice}) {
+      next if $#{$self->lattice} == 2; # already found
+      my @vec = split(" ", $line);
+      $self->push_lattice([@vec[0..2]]);
+      $self->periodic(1);
+      $flag{direct_lattice} = 0 if ($#{$self->lattice} == 2);
+      next FILE;
+    } elsif ($line =~ m{\A\s*direct lattice vectors}) {
+      $flag{direct_lattice} = ($#{$self->lattice} == 2) ? 0 : 1;
+      next FILE;
+
+    ## ----------------------------------------------------------------------
+    ## this line identifies an atom species
+    } elsif ($line =~ m{\A\s*VRHFIN\s*=($element_regexp)}) {
+      $self->push_atoms($1);
+      next FILE;
+
+    ## ----------------------------------------------------------------------
+    ## this line identifies how many of each atom species there are
     } elsif ($line =~ m{\A\s*ions per type}) {
       my @line = split(" ", $line);
       shift @line; shift @line; shift @line; shift @line;
       $self->numbers(\@line);
+      my $sum = 0;
+      my @i = map {$sum+=$_} @line; # e.g. if numbers is (16,16,32,16), then indeces becomes (16,32,64,80)
+      $self->indeces(\@i);
+      next FILE;
 
+    ## ----------------------------------------------------------------------
+    ## this is the endof a run
     } elsif ($line =~ m{\A\s*General timing}) {
-      last;
+      last FILE;
 
+    ## ----------------------------------------------------------------------
+    ## this is the beginning of a block of positions at a time step
+    } elsif ($line =~ m{\A\s*POSITION}) {
+      ++$count;
+      $flag{time_step} = 1;
+      next FILE;
+
+    ## ----------------------------------------------------------------------
+    ## all other lines in this ginormous file are unimportant
     } else {
-      print '-' if not $. % 1000;
-      next;
+      next FILE;
     };
   };
-  #   if (m{\Atimestep}) {
-  #     push @all, [@cluster] if $#cluster>0;
-  #     $#cluster = -1;
-  #     next;
-  #   };
-  #   next if not m{\A($element_regexp)}io; # skip the three lines trailing the timestamp
-  #   my $atom = $1;
-  #   my $position = <$H>;
-  #   my @vec = split(' ', $position);
-  #   push @cluster, [@vec, get_Z($atom)];
-  #   <$H>;
-  #   <$H>;
-  #   #my $velocity = <$H>;
-  #   #my $force    = <$H>;
-  #   #chomp $position;
-  # };
-  # push @all, [@cluster];
-  # $self->clusters(\@all);
-
-print join("|", @{$self->atoms}), $/;
-print join("|", @{$self->numbers}), $/;
-
+  $self->nsteps($count);
+  $self->clusters(\@all);
 
   $fh->gzclose();
+  $self->stop_counter if ($self->mo->ui eq 'screen');
   return $self;
 };
 
@@ -182,7 +256,7 @@ in the same order as the C<VRHFIN> lines appear.
 After a long stretch of data about the run (several hundred lines)
 there are sections labeled 
 
-   position of ions in fractionalcoordinates (direct lattice)
+   position of ions in fractional coordinates (direct lattice)
 
 and
 

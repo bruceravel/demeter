@@ -26,6 +26,7 @@ use List::Util qw(sum);
 use String::Random qw(random_string);
 use Sys::Hostname;
 use DateTime;
+use Data::Dumper;
 #use Memoize;
 #memoize('distance');
 
@@ -294,6 +295,12 @@ sub ifeffit_heap {
   return $self;
 };
 
+sub Dump {
+  my ($self, $ref, $name) = @_;
+  return Data::Dumper->Dump([$ref], [$name]) if $name;
+  return Dumper($ref);
+};
+
 1;
 
 =head1 NAME
@@ -415,6 +422,13 @@ significant digits beyond the decimal.
 
   my $frac = $demeter_object -> fract(0.5);
   ## will print as "1/2"
+
+=item C<Dump>
+
+This is just a wrapper around L<Data::Dumper>.  Pass it a reference
+and it will be pretty-printed;
+
+  print $any_object -> Dump(\@some_array);
 
 =back
 
