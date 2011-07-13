@@ -88,7 +88,7 @@ sub _cluster {
   if ($self->mo->ui eq 'screen') {
     #$self->start_spinner("Reading VASP file ".$self->file) 
     $self->progress('%30b %c of %m (x10^4) lines in file <Time elapsed: %8t>');
-    $self->start_counter("Reading VASP file ".$self->file." with $nlines lines", int($nlines/1e4/$nruns));
+    $self->start_counter("Reading VASP file ".$self->file." with $nlines lines and $nruns runs", int($nlines/1e4/$nruns));
   };
   my %flag = (starting_configuration => 0,
 	      time_step              => 0,

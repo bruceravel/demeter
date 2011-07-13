@@ -2110,6 +2110,11 @@ sub histogram_sentinal_fpath {
 };
 
 
+## the data for these drop targets comes from Demeter::UI::Atoms::SS.
+## there is one drag source for each kind of drop-able path-like
+## object.  the data consists of an array reference containing the
+## attribute values needed to create an SSPath or a Feff::Distribution
+## object
 
 package Demeter::UI::Artemis::Data::DropTarget;
 
@@ -2210,13 +2215,14 @@ sub make_HistogramSS {
   my $do_rattle = $spref->[8];
 
   my $histogram = Demeter::Feff::Distributions->new(type=>'ss');
-  $histogram -> set(rmin=>$spref->[4], rmax=>$spref->[5], bin=>$spref->[6], feff=>$feff, ipot=>$ipot, );
+  $histogram -> set(rmin=>$spref->[4], rmax=>$spref->[5], bin=>$spref->[6], feff=>$feff, ipot=>$ipot,);
   $this->{PARENT}->{DISTRIBUTION} = $histogram;
 
   $histogram->sentinal(sub{$this->{PARENT}->histogram_sentinal_rdf});
   my $busy = Wx::BusyCursor->new();
   my $start = DateTime->now( time_zone => 'floating' );
   $histogram->backend($spref->[1]);
+  $this->{PARENT}->status("Reading MD time sequence file, please be patient...", 'wait');
   $histogram->file($spref->[3]);
   $histogram->sentinal(sub{1});
   my $finish = DateTime->now( time_zone => 'floating' );
@@ -2278,14 +2284,15 @@ sub make_HistogramNCL {
   my $histogram = Demeter::Feff::Distributions->new(type=>'ncl');
   $histogram -> set(r1=>$spref->[4], r2=>$spref->[5], r3=>$spref->[6], r4=>$spref->[7],
 		    rbin => $spref->[8], betabin => $spref->[9],
-		    feff=>$feff, ipot => $spref->[10], ipot2 => $spref->[11],
-		    skip=>20, update_bins=>1);
+		    feff => $feff, ipot => $spref->[10], ipot2 => $spref->[11],
+		    skip => 20, update_bins => 1);
   $this->{PARENT}->{DISTRIBUTION} = $histogram;
 
   $histogram->sentinal(sub{$this->{PARENT}->histogram_sentinal_rdf});
   my $busy = Wx::BusyCursor->new();
   my $start = DateTime->now( time_zone => 'floating' );
   $histogram->backend($spref->[1]);
+  $this->{parent}->status("Reading MD time sequence file, please be patient...", 'wait');
   $histogram->file($spref->[3]);
   my $finish = DateTime->now( time_zone => 'floating' );
   my $dur = $finish->subtract_datetime($start);
@@ -2334,6 +2341,7 @@ sub make_HistogramThru {
   my $busy = Wx::BusyCursor->new();
   my $start = DateTime->now( time_zone => 'floating' );
   $histogram->backend($spref->[1]);
+  $this->{parent}->status("Reading MD time sequence file, please be patient...", 'wait');
   $histogram->file($spref->[3]);
   my $finish = DateTime->now( time_zone => 'floating' );
   my $dur = $finish->subtract_datetime($start);

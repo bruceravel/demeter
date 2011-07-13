@@ -114,7 +114,7 @@ has 'populations' => (is	    => 'rw',
 
 has 'use_periodicity'=> (is              => 'rw',
 			 isa             => 'Bool',
-			 default         => 0,
+			 default         => 1,
 			 documentation   => "a flag for turning on/off the use of periodic boundary conditions");
 has 'periodic'=> (is              => 'rw',
 		  isa             => 'Bool',

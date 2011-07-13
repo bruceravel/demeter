@@ -37,7 +37,7 @@ sub new {
   $cb  -> AddPage($self->{ss}, "Make a Single Scattering path of arbitrary length", 1);
 
   $self->{histo_ss} = $self->_histo($parent);
-  $cb  -> AddPage($self->{histo_ss}, "Make histograms from a molecular dynamics history", 0);
+  $cb  -> AddPage($self->{histo_ss}, "Make histograms from a molecular dynamics time sequence", 0);
 
   $self -> SetSizerAndFit( $vbox );
   return $self;
@@ -104,11 +104,14 @@ sub _histo {
 
   my $vbox = Wx::BoxSizer->new( wxVERTICAL );
 
-  $self->{histo_file} = Wx::FilePickerCtrl->new( $page, -1, "", "Choose a HISTORY File", "HISTORY files|HISTORY|All files|*",
-						    wxDefaultPosition, wxDefaultSize,
-						    wxFLP_DEFAULT_STYLE|wxFLP_USE_TEXTCTRL|wxFLP_CHANGE_DIR|wxFLP_FILE_MUST_EXIST );
+  $self->{histo_file} = Wx::FilePickerCtrl->new( $page, -1, "", "Choose an MD output file", 
+						 "DL_POLY HISTORY files|HISTORY|VASP OUTCAR files|OUTCAR|All files|*",
+						 wxDefaultPosition, wxDefaultSize,
+						 wxFLP_DEFAULT_STYLE|wxFLP_USE_TEXTCTRL|wxFLP_CHANGE_DIR|wxFLP_FILE_MUST_EXIST );
   $vbox -> Add($self->{histo_file}, 0, wxGROW|wxALL, 10);
-
+  $self->{histo_role} = Wx::RadioBox->new($page, -1, "Molecular dymanics program", wxDefaultPosition, wxDefaultSize,
+					  ['DL_POLY', 'VASP']);
+  $vbox -> Add($self->{histo_role}, 0, wxGROW|wxLEFT|wxRIGHT|wxBOTTOM, 10);
 
   my $scrl = Wx::ScrolledWindow->new($page, -1, wxDefaultPosition, wxDefaultSize, wxVSCROLL);
   my $svbox = Wx::BoxSizer->new( wxVERTICAL );
@@ -292,7 +295,8 @@ sub _histo {
   if (-e $persist) {
     my $yaml = YAML::Tiny::LoadFile($persist);
     $self->{histoyaml} = $yaml;
-    $self->{histo_file}    -> SetPath ($yaml->{file});
+    $self->{histo_file}    -> SetPath($yaml->{file});
+    $self->{histo_role}    -> SetStringSelection($yaml->{role}||'DL_POLY');
     $self->{histo_ss_rmin} -> SetValue($yaml->{rmin}  || 1.5);
     $self->{histo_ss_rmax} -> SetValue($yaml->{rmax}  || 3.5);
     $self->{histo_ss_bin}  -> SetValue($yaml->{bin}   || 0.5);
@@ -326,10 +330,14 @@ sub _histo {
 sub histoplot {
   my ($this, $event) = @_;
   my $file = $this->{histo_file}->GetTextCtrl->GetValue;
+  my $backend = $this->{histo_role}->GetStringSelection;
+  my $ipot = $this->{histo_ss_ipot}->GetSelection+1;
   my $rmin = $this->{histo_ss_rmin}->GetValue;
   my $rmax = $this->{histo_ss_rmax}->GetValue;
   my $bin  = $this->{histo_ss_bin}->GetValue;
   $this->{histoyaml}->{file} = $file;
+  $this->{histoyaml}->{role} = $backend;
+  $this->{histoyaml}->{ipot1} = $ipot;
   $this->{histoyaml}->{rmin} = $rmin;
   $this->{histoyaml}->{rmax} = $rmax;
   $this->{histoyaml}->{bin}  = $bin;
@@ -339,44 +347,58 @@ sub histoplot {
     return;
   };
 
-  my $dlp = Demeter::Feff::Distributions->new(rmin=>$rmin, rmax=>$rmax, bin=>$bin, type=>'ss',
+  my $dlp = Demeter::Feff::Distributions->new(rmin=>$rmin, rmax=>$rmax, bin=>$bin, type=>'ss', ipot=>$ipot,
 					      feff=>$this->{parent}->{Feff}->{feffobject});
   my $persist = File::Spec->catfile($dlp->dot_folder, 'demeter.histograms');
   YAML::Tiny::DumpFile($persist, $this->{histoyaml});
 
 
   $this->{DISTRIBUTION} = $dlp;
-  $dlp->sentinal(sub{$this->dlpoly_sentinal});
 
   my $busy = Wx::BusyCursor->new();
   my $start = DateTime->now( time_zone => 'floating' );
-  $dlp->backend('DL_POLY');
+  $dlp->backend($backend);
+  $this->{parent}->status("Reading MD time sequence file, please be patient...", 'wait');
   $dlp->file($file);
+  if ($#{$dlp->ssrdf} == -1) {
+    $this->{parent}->status("Your choice of ipot did not yield any scatterers in the R range selected", 'error');
+    undef $busy;
+    return;
+  };
+  $this->{parent}->status("Binning pair distribution function, please be patient...", 'wait');
+  $dlp->sentinal(sub{$this->dlpoly_sentinal});
   $dlp->rebin;
+  $this->{parent}->{Console}->{console}->AppendText($/.$dlp->info.$/.$/);
   my $finish = DateTime->now( time_zone => 'floating' );
   my $dur = $finish->subtract_datetime($start);
   my $finishtext = sprintf("Plotting histogram from %d timesteps (%d minutes, %d seconds)", $dlp->nsteps, $dur->minutes, $dur->seconds);
-  $this->{statusbar}->SetStatusText($finishtext);
+  $this->{parent}->status($finishtext);
   $dlp->plot;
   undef $busy;
 };
 
 sub scatterplot {
   my ($this, $event) = @_;
-  my $file = $this->{histo_file}->GetTextCtrl->GetValue;
-  my $r1   = $this->{histo_ncl_r1}->GetValue;
-  my $r2   = $this->{histo_ncl_r2}->GetValue;
-  my $r3   = $this->{histo_ncl_r3}->GetValue;
-  my $r4   = $this->{histo_ncl_r4}->GetValue;
-  my $rbin = $this->{histo_ncl_rbin}->GetValue;
-  my $betabin = $this->{histo_ncl_betabin}->GetValue;
-  $this->{histoyaml}->{file} = $file;
-  $this->{histoyaml}->{r1}   = $r1;
-  $this->{histoyaml}->{r2}   = $r2;
-  $this->{histoyaml}->{r3}   = $r3;
-  $this->{histoyaml}->{r4}   = $r4;
-  $this->{histoyaml}->{rbin} = $rbin;
-  $this->{histoyaml}->{betabin} = $betabin;
+  my $file     = $this->{histo_file}->GetTextCtrl->GetValue;
+  my $backend  = $this->{histo_role}->GetStringSelection;
+  my $ipot1    = $this->{histo_ss_ipot1}->GetSelection+1;
+  my $ipot2    = $this->{histo_ss_ipot2}->GetSelection+1;
+  my $r1       = $this->{histo_ncl_r1}->GetValue;
+  my $r2       = $this->{histo_ncl_r2}->GetValue;
+  my $r3       = $this->{histo_ncl_r3}->GetValue;
+  my $r4       = $this->{histo_ncl_r4}->GetValue;
+  my $rbin     = $this->{histo_ncl_rbin}->GetValue;
+  my $betabin  = $this->{histo_ncl_betabin}->GetValue;
+  $this->{histoyaml}->{file}	= $file;
+  $this->{histoyaml}->{role}	= $backend;
+  $this->{histoyaml}->{ipot1}	= $ipot1;
+  $this->{histoyaml}->{ipot2}	= $ipot2;
+  $this->{histoyaml}->{r1}	= $r1;
+  $this->{histoyaml}->{r2}	= $r2;
+  $this->{histoyaml}->{r3}	= $r3;
+  $this->{histoyaml}->{r4}	= $r4;
+  $this->{histoyaml}->{rbin}	= $rbin;
+  $this->{histoyaml}->{betabin}	= $betabin;
 
   if ((not $file) or (not -e $file) or (not -r $file)) {
     $this->{parent}->status("You did not specify a file or your file cannot be read.");
@@ -391,17 +413,19 @@ sub scatterplot {
   YAML::Tiny::DumpFile($persist, $this->{histoyaml});
 
   $this->{DISTRIBUTION} = $histo;
-  $histo->sentinal(sub{$this->dlpoly_sentinal});
 
   my $busy = Wx::BusyCursor->new();
   my $start = DateTime->now( time_zone => 'floating' );
-  $histo->backend('DL_POLY');
+  $histo->backend($backend);
+  $this->{parent}->status("Reading MD time sequence file, please be patient...", 'wait');
   $histo->file($file);
+  $histo->sentinal(sub{$this->dlpoly_sentinal});
+  $this->{parent}->status("Binning three-body distribution function, please be patient...", 'wait');
   $histo->rebin;
   my $finish = DateTime->now( time_zone => 'floating' );
   my $dur = $finish->subtract_datetime($start);
   my $finishtext = sprintf("Plotting histogram from %d timesteps (%d minutes, %d seconds)", $histo->nsteps, $dur->minutes, $dur->seconds);
-  $this->{statusbar}->SetStatusText($finishtext);
+  $this->{parent}->status($finishtext);
   $histo->plot;
   undef $busy;
 };
@@ -594,7 +618,7 @@ sub OnDrag {
   };
 
   my $dragdata = ['HistogramSS',					  # 0 id
-		  'DL_POLY',				                  # 1 backend
+		  $parent->{SS}->{histo_role}->GetStringSelection,        # 1 backend
 		  $parent->{Feff}->{feffobject}->group,			  # 2 feff object group
 		  $parent->{SS}->{histo_file}->GetTextCtrl->GetValue,     # 3 HISTORY file
 		  $parent->{SS}->{histo_ss_rmin}->GetValue,		  # 4 rmin
@@ -605,6 +629,7 @@ sub OnDrag {
 		 ];
 
   ## handle persistence file
+  $parent->{SS}->{histoyaml}->{role}  = $dragdata->[1];
   $parent->{SS}->{histoyaml}->{file}  = $dragdata->[3];
   $parent->{SS}->{histoyaml}->{rmin}  = $dragdata->[4];
   $parent->{SS}->{histoyaml}->{rmax}  = $dragdata->[5];
@@ -686,7 +711,7 @@ sub OnDrag {
   };
 
   my $dragdata = ['HistogramNCL',						# 0  id
-		  'DL_POLY',							# 1 backend
+		  $parent->{SS}->{histo_role}->GetStringSelection,              # 1 backend
 		  $parent->{Feff}->{feffobject}      -> group,			# 2  feff object group
 		  $parent->{SS}->{histo_file}        -> GetTextCtrl->GetValue,	# 3  HISTORY file
 		  $parent->{SS}->{histo_ncl_r1}      -> GetValue,		# 4  r ranges
@@ -700,6 +725,7 @@ sub OnDrag {
 		 ];
 
   ## handle persistence file
+  $parent->{SS}->{histoyaml}->{role}    = $dragdata->[1];
   $parent->{SS}->{histoyaml}->{file}    = $dragdata->[3];
   $parent->{SS}->{histoyaml}->{r1}	= $dragdata->[4];
   $parent->{SS}->{histoyaml}->{r2}	= $dragdata->[5];
@@ -783,7 +809,7 @@ sub OnDrag {
   };
 
   my $dragdata = ['HistogramThru',						# 0  id
-		  'DL_POLY',							# 1  backend
+		  $parent->{SS}->{histo_role}->GetStringSelection,              # 1 backend
 		  $parent->{Feff}->{feffobject}       -> group,			# 2  feff object group
 		  $parent->{SS}->{histo_file}         -> GetTextCtrl->GetValue,	# 3  HISTORY file
 		  $parent->{SS}->{histo_thru_rmin}    -> GetValue,		# 4  r ranges
@@ -795,6 +821,7 @@ sub OnDrag {
 		 ];
 
   ## handle persistence file
+  $parent->{SS}->{histoyaml}->{role}    = $dragdata->[1];
   $parent->{SS}->{histoyaml}->{file}    = $dragdata->[3];
   $parent->{SS}->{histoyaml}->{rmin}	= $dragdata->[4];
   $parent->{SS}->{histoyaml}->{rmax}	= $dragdata->[5];

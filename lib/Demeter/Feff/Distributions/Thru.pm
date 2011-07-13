@@ -318,6 +318,11 @@ sub plot {
   return $self;
 };
 
+sub info {
+  my ($self) = @_;
+  my $text = sprintf "Made histogram from %s file '%s'\n\n", uc($self->backend), $self->file;
+  return $text;
+};
 
 1;
 

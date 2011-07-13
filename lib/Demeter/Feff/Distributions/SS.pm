@@ -41,7 +41,7 @@ has 'rattle'      => (is            => 'rw',
 sub _bin {
   my ($self) = @_;
   my (@x, @y);
-  die("No history file has been read, thus no distribution functions have been computed\n") if ($#{$self->ssrdf} == -1);
+  die("No MD output file has been read, thus no distribution functions have been computed\n") if ($#{$self->ssrdf} == -1);
   my $bin_start = sqrt($self->ssrdf->[0]);
   my ($population, $average) = (0,0);
   $self->start_spinner(sprintf("Rebinning RDF into %.4f A bins", $self->bin)) if ($self->mo->ui eq 'screen');
@@ -265,12 +265,15 @@ sub plot {
 
 sub info {
   my ($self) = @_;
-  my $text = sprintf "Number of time steps: %d\n",   $self->nsteps;
-  $text   .= sprintf "Scatterer:            %s\n",   get_name($self->feff->potentials->[$self->ipot]->[2]);
-  $text   .= sprintf "RDF size:             %d\n",   $#{$self->ssrdf}+1;
-  $text   .= sprintf "Pairs per timestep:   %d\n",   $self->npairs;
-  $text   .= sprintf "Bin size:             %.4f\n", $self->bin;
-  $text   .= sprintf "Number of bins:       %d\n",   $#{$self->positions}+1;
+  my $text = sprintf "Made histogram from %s file '%s'\n\n", uc($self->backend), $self->file;
+  $text   .= sprintf "Number of time steps:     %d\n",   $self->nsteps;
+  $text   .= sprintf "Absorber:                 %s\n",   get_name($self->feff->abs_species);
+  $text   .= sprintf "Scatterer:                %s\n",   get_name($self->feff->potentials->[$self->ipot]->[2]);
+  $text   .= sprintf "Pairs in RDF:             %d\n",   $#{$self->ssrdf}+1;
+  $text   .= sprintf "Pairs per timestep:       %d\n",   $self->npairs;
+  $text   .= sprintf "Used periodic boundaries: %s\n",   $self->yesno($self->periodic and $self->use_periodicity);
+  $text   .= sprintf "Bin size:                 %.4f\n", $self->bin;
+  $text   .= sprintf "Number of bins:           %d\n",   $#{$self->positions}+1;
   return $text;
 };
 

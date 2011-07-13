@@ -17,16 +17,17 @@ $data->po->kmax(18);
 $data->po->space('k');
 
 
-my $atoms = Demeter::Atoms->new(file=>'LaTiN3.inp');
+my $atoms = Demeter::Atoms->new(file=>'LaTiO3.inp');
 my $feff  = Demeter::Feff->new(workspace=>"feff/", screen=>0, atoms=>$atoms);
 $feff->run;
 $feff->freeze('feff/feff.yaml');
 my $first = Demeter::Path->new(data=>$data, feff=>$feff, sp=>$feff->pathlist->[0],  n=>6, sigma2=>0.005);
+my $la    = Demeter::Path->new(data=>$data, feff=>$feff, sp=>$feff->pathlist->[2],  n=>6, sigma2=>0.005);
 
       my $start = DateTime->now( time_zone => 'floating' );
 
-my $histogram = Demeter::Feff::Distributions->new(rmin=>1.5, rmax=>2.8, type=>'ss', feff=>$feff, bin=>0.01, ipot=>3,
-						  name=>"Ti-N histogram in LaTiO2N",
+my $histogram = Demeter::Feff::Distributions->new(rmin=>2.8, rmax=>4.1, type=>'ss', feff=>$feff, bin=>0.01, ipot=>1,
+						  name=>"Ti-La histogram in LaTiO2N",
 						  use_periodicity=>1);
 $histogram->backend('VASP');
 $histogram->file('OUTCAR');
@@ -52,7 +53,8 @@ $data->po->start_plot;
 
 $data->set_mode(screen=>0);
 $data->plot;
-$first->plot;
+#$first->plot;
+$la->plot;
 $composite->plot;
 print $composite->pdtext, $/;
 $histogram->pause;

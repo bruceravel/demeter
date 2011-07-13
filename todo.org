@@ -154,7 +154,7 @@
 
 
 ** Artemis
-*** Artemis bugs and missing features [11/17]  [64%]
+*** Artemis bugs and missing features [11/18]  [61%]
    - [X] use text buffers as in Athena for TextEntryDialogs
    - [X] import an FPath from a yaml or from a project file, pathlist start page link for doing so
    - [X] should I clear out unfitted fit folders from project upon import?
@@ -176,10 +176,12 @@
          folders being created in stash (as was the case for FSPath)?
    - [X] pluck buttons have not been implemented
    - [ ] per-data set R-factor reporting in log file is turned off.  see fit_parameter_report in Demeter::Data::I0
+   - [ ] replacing data in a project does not work
 
-**** Project [0/2]
+**** Project [0/3]
    - [ ] VPaths to/from project file
    - [ ] Indicators to/from project file
+   - [ ] Imported project file does not correctly set path-like tab
 
 **** Advanced fitting						   :Advanced:
 ***** MFC [0/1]
