@@ -227,6 +227,8 @@ sub read_project {
       $rframes->{$fnum}->{Feff}->fill_intrp_page($feffobject);
       $rframes->{$fnum}->{notebook}->ChangeSelection(2);
 
+      $rframes->{$fnum}->{Feff}->fill_ss_page($feffobject);
+
       $rframes->{$fnum}->{Feff} ->{name}->SetValue($feffobject->name);
       $rframes->{$fnum}->{Paths}->{name}->SetValue($feffobject->name);
       $rframes->{$fnum}->status("Imported crystal and Feff data from ". basename($fname));

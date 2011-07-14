@@ -5,6 +5,35 @@
 
 * Beta testing releases:
 
+** Release 4: XX July, 2011
+*** Athena
+
+*** Artemis
+   - The path-like tab in the Atoms/Feff frame is now set correctly
+     when importing a project file
+   - Replacing chi(k) on a Data frame now works correctly
+   - More descriptive update messages in statusbar during histogram
+     processing
+   - Histogrsam interface is more sensitive to whether time-consuming
+     chores need to be redone
+   - Grid in GDS frame now recognizes smart keys for changing
+     parameter type.  Change all selected params:
+       + Alt-g: guess
+       + Alt-s: set
+       + Alt-d: def
+       + Alt-l: lguess
+       + Alt-k: skip
+       + Alt-a: after
+       + Alt-r: restrain
+       + Alt-p: penalty
+
+*** Demeter
+   - Integrate VASP MD output into histogram subsystem
+
+*** Windows installer
+
+*** Acknowledgements for this release
+
 ** Release 3: 8 July, 2011
 *** Athena
    - Plugin registry: right click open a menu with for plugin

@@ -45,6 +45,7 @@ use List::Util qw{sum};
 
 has '+plottable' => (default => 1);
 has '+name'      => (default => 'histogram');
+#has 'type'       => (is => 'rw', isa => 'Str', default => 0);
 
 ## HISTORY file attributes
 has 'nsteps'    => (is => 'rw', isa => NonNeg, default => 0);
@@ -100,13 +101,20 @@ has 'type'  => (is => 'rw', isa => 'HistogramTypes', coerce => 1, default => 'ss
 
 #has 'bin_count'   => (is => 'rw', isa => 'Int',  default => 0);
 has 'timestep_count' => (is => 'rw', isa => 'Int',  default => 0);
+has 'fpath_count'    => (is => 'rw', isa => 'Int',  default => 0);
 has 'feff'           => (is => 'rw', isa => Empty.'|Demeter::Feff', default => q{},);
 has 'sp'             => (is => 'rw', isa => Empty.'|Demeter::ScatteringPath', default => q{},);
 
 
-has 'update_bins' => (is            => 'rw',
-		      isa           => 'Bool',
-		      default       => 1);
+has 'update_file'  => (is => 'rw', isa => 'Bool', default => 1,
+		       trigger => sub{my ($self, $new) = @_; $self->update_rdf(1)   if $new});
+has 'update_rdf'   => (is => 'rw', isa => 'Bool', default => 1,
+		       trigger => sub{my ($self, $new) = @_; $self->update_bins(1)  if $new});
+has 'update_bins'  => (is => 'rw', isa => 'Bool', default => 1,
+		       trigger => sub{my ($self, $new) = @_; $self->update_fpath(1) if $new});
+has 'update_fpath' => (is => 'rw', isa => 'Bool', default => 1);
+
+
 has 'populations' => (is	    => 'rw',
 		      isa	    => 'ArrayRef',
 		      default	    => sub{[]},
@@ -132,10 +140,36 @@ has 'lattice' => (metaclass => 'Collection::Array',
 		  documentation   => "the direct lattice vectors");
 
 
+has 'reading_file' => (is            => 'rw',
+		       isa           => 'Bool',
+		       default       => 0,
+		       documentation => 'flag set to 1 when reading MD output file');
+has 'computing_rdf' => (is            => 'rw',
+		       isa           => 'Bool',
+		       default       => 0,
+		       documentation => 'flag set to 1 when computing RDF from MD data');
+
+
 ## need a pgplot plotting template
+
+sub BUILD {
+  my ($self, @params) = @_;
+  $self->mo->push_Distributions($self);
+};
+
+override 'all' => sub {
+  my ($self) = @_;
+  my %hash = $self->SUPER::all;
+  delete $hash{feff};
+  delete $hash{sp};
+  delete $hash{clusters};
+  delete $hash{ssrdf};
+  return %hash;
+};
 
 sub rebin {
   my($self, $new) = @_;
+  $self->rdf  if ($self->update_rdf);
   $self->_bin if ($self->update_bins);
   return $self;
 };

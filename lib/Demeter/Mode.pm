@@ -357,11 +357,23 @@ has 'Journal' => (
 			     }
 	       );
 
+has 'Distributions' => (
+		metaclass => 'Collection::Array',
+		is        => 'rw',
+		isa       => 'ArrayRef',
+		default   => sub { [] },
+		provides  => {
+			      'push'    => 'push_Distributions',
+			      'clear'   => 'clear_Distributions',
+			      'splice'  => 'splice_Distributions',
+			     }
+	       );
+
 has 'types' => (is => 'ro', isa => 'ArrayRef',
 		default => sub{[qw(Atoms Data Feff External Fit Feffit GDS Path Plot Indicator Style
 				   LCF XES PeakFit LogRatio Diff LineShape
 				   ScatteringPath VPath SSPath ThreeBody FPath FSPath
-				   StructuralUnit Prj Pixel MultiChannel Journal)]},);
+				   StructuralUnit Prj Pixel MultiChannel Journal Distributions)]},);
 
 has 'Plugins' => (
 		metaclass => 'Collection::Array',
@@ -431,8 +443,6 @@ sub remove {
     $type = 'Feff';
   } elsif ($type eq 'Demeter') {
     return;
-  } elsif ($type eq 'Distributions') {
-    return;
   };
   my $group = $object->group;
   my ($i, $which) = (0, -1);
@@ -480,6 +490,7 @@ sub everything {
 	  @{ $self->Diff	   },
 	  @{ $self->LineShape      },
 	  @{ $self->Journal        },
+	  @{ $self->Distributions  },
 	  @{ $self->GDS		   },
 	 );
 };

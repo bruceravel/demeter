@@ -154,7 +154,7 @@
 
 
 ** Artemis
-*** Artemis bugs and missing features [11/18]  [61%]
+*** Artemis bugs and missing features [11/17]  [64%]
    - [X] use text buffers as in Athena for TextEntryDialogs
    - [X] import an FPath from a yaml or from a project file, pathlist start page link for doing so
    - [X] should I clear out unfitted fit folders from project upon import?
@@ -176,12 +176,12 @@
          folders being created in stash (as was the case for FSPath)?
    - [X] pluck buttons have not been implemented
    - [ ] per-data set R-factor reporting in log file is turned off.  see fit_parameter_report in Demeter::Data::I0
-   - [ ] replacing data in a project does not work
 
-**** Project [0/3]
+**** Project [2/4]
    - [ ] VPaths to/from project file
    - [ ] Indicators to/from project file
-   - [ ] Imported project file does not correctly set path-like tab
+   - [X] Imported project file does not correctly set path-like tab
+   - [X] replacing data in a project does not work
 
 **** Advanced fitting						   :Advanced:
 ***** MFC [0/1]
@@ -192,7 +192,7 @@
    - [ ] Clone data sets such that the path list gets replicated efficiently (i.e. for MDS fits)
 
 
-*** Histograms [10/11] [90%]
+*** Histograms [10/12] [83%]
    - [X] sum histogram bins into a single chi(k) file
    - [X] convert chi(k) data to a mock feffNNNN.dat file
    - [X] Triangle object
@@ -206,7 +206,14 @@
    - [X] ipot=1 is hardwired in many places -- generalize.... /fixed for SS, same should work for NCL and Thru/
    - [X] scatter plot of ncl distribution
    - [X] factor out DLPOLY dependence into a role so that other MD packages can be added more easily
-   - [ ] *Error checking*, e.g. check that there is at least one bin in the supplied range(s)
+   - [-] *Error checking* in Artemis, e.g. check that there is at least one bin in the supplied range(s)
+	 - [X] SS
+	 - [ ] ncl
+	 - [ ] thru
+   - [ ] Need flags for when to 
+	 - [ ] re-read the MD output file
+	 - [ ] re-parse the time steps
+	 - [ ] re-do the binning
 
 ** Hephaestus [1/1]
   - [X] need to open prefs with root in place so they display correctly on windows as well

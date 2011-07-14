@@ -11,21 +11,32 @@ use Demeter::NumTypes qw( Ipot );
 ## nearly collinear DS and TS historgram attributes
 has 'skip'      => (is => 'rw', isa => 'Int', default => 50,);
 has 'nconfig'   => (is => 'rw', isa => 'Int', default => 0, documentation => "the number of 3-body configurations found at each time step");
-has 'r1'        => (is => 'rw', isa => 'Num', default => 0.0,);
-has 'r2'        => (is => 'rw', isa => 'Num', default => 3.5,);
-has 'r3'        => (is => 'rw', isa => 'Num', default => 5.2,);
-has 'r4'        => (is => 'rw', isa => 'Num', default => 5.7,);
-has 'beta'      => (is => 'rw', isa => 'Num', default => 20,);
+has 'r1'        => (is => 'rw', isa => 'Num', default => 0.0,
+		    trigger	    => sub{ my($self, $new) = @_; $self->update_rdf(1) if $new},);
+has 'r2'        => (is => 'rw', isa => 'Num', default => 3.5,
+		    trigger	    => sub{ my($self, $new) = @_; $self->update_rdf(1) if $new},);
+has 'r3'        => (is => 'rw', isa => 'Num', default => 5.2,
+		    trigger	    => sub{ my($self, $new) = @_; $self->update_rdf(1) if $new},);
+has 'r4'        => (is => 'rw', isa => 'Num', default => 5.7,
+		    trigger	    => sub{ my($self, $new) = @_; $self->update_rdf(1) if $new},);
+has 'beta'      => (is => 'rw', isa => 'Num', default => 20,
+		    trigger	    => sub{ my($self, $new) = @_; $self->update_rdf(1) if $new},);
 has 'rbin'      => (is            => 'rw',
 		    isa           => 'Num',
-		    default       => 0.02,);
+		    default       => 0.02,
+		    trigger	  => sub{ my($self, $new) = @_; $self->update_bins(1) if $new},);
 has 'betabin'   => (is            => 'rw',
 		    isa           => 'Num',
-		    default       => 0.5,);
+		    default       => 0.5,
+		    trigger	  => sub{ my($self, $new) = @_; $self->update_bins(1) if $new},);
+
 has 'ipot'      => (is => 'rw', isa => Ipot, default => 1,
-		    traits => ['MooseX::Aliases::Meta::Trait::Attribute'],
-		    alias => 'ipot1');
-has 'ipot2'     => (is => 'rw', isa => Ipot, default => 1, );
+		    traits  => ['MooseX::Aliases::Meta::Trait::Attribute'],
+		    alias   => 'ipot1',
+		    trigger => sub{ my($self, $new) = @_; $self->update_rdf(1) if $new});
+has 'ipot2'     => (is => 'rw', isa => Ipot, default => 1,
+		    trigger => sub{ my($self, $new) = @_; $self->update_rdf(1) if $new}, );
+
 has 'nearcl'    => (is => 'rw', isa => 'ArrayRef', default => sub{[]});
 
 sub _bin {
@@ -207,6 +218,7 @@ sub rdf {
   # local $|=1;
   # print "||||||| ", $self->nconfig, $/;
   $self->nearcl(\@three);
+  $self->update_rdf(0);
 };
 
 sub chi {

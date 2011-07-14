@@ -1238,6 +1238,11 @@ sub replace {
   $datapage->{titles}->SetValue(join("\n", @{ $data->titles }));
   $datapage->{name}->SetLabel($data->name);
   $datapage->{datasource}->SetValue($data->prjrecord);
+  foreach my $n (0 .. $datapage->{pathlist}->GetPageCount-1) {
+    my $page = $datapage->{pathlist}->GetPage($n);
+    my $pathobject = $datapage->{pathlist}->{LIST}->GetIndexedData($n)->{path};
+    $pathobject->data($data);
+  };
   $datapage->fetch_parameters;
   $datapage->Rename($data->name);
   Demeter::UI::Artemis::modified(1);
@@ -2079,31 +2084,34 @@ sub empirical {
 
 sub histogram_sentinal_rdf {
   my ($datapage) = @_;
-  if (not $datapage->{DISTRIBUTION}->timestep_count % 10) {
-    my $text = q{};
+  my $text = q{};
+  if ($datapage->{DISTRIBUTION}->computing_rdf) {
+    if (not $datapage->{DISTRIBUTION}->timestep_count % 10) {
 
-    ## single scattering histogram
-    $text = $datapage->{DISTRIBUTION}->timestep_count . " of " . $datapage->{DISTRIBUTION}->{nsteps} . " timesteps"
-      if ($datapage->{DISTRIBUTION}->type eq 'ss');
+      ## single scattering histogram
+      $text = sprintf "Processing step %d of %d timesteps", $datapage->{DISTRIBUTION}->timestep_count, $datapage->{DISTRIBUTION}->{nsteps}
+	if ($datapage->{DISTRIBUTION}->type eq 'ss');
 
-    ## nearly collinear histrogram
-    $text = sprintf("%d of %d timesteps (every %d-th step)",
-		    $datapage->{DISTRIBUTION}->timestep_count/$datapage->{DISTRIBUTION}->skip,
-		    ($#{$datapage->{DISTRIBUTION}->clusters}+1)/$datapage->{DISTRIBUTION}->skip,
-		    $datapage->{DISTRIBUTION}->skip )
-      if (($datapage->{DISTRIBUTION}->type eq 'ncl') or ($datapage->{DISTRIBUTION}->type eq 'thru'));
+      ## nearly collinear histrogram
+      $text = sprintf("Processing step %d of %d timesteps (every %d-th step)",
+		      $datapage->{DISTRIBUTION}->timestep_count/$datapage->{DISTRIBUTION}->skip,
+		      ($#{$datapage->{DISTRIBUTION}->clusters}+1)/$datapage->{DISTRIBUTION}->skip,
+		      $datapage->{DISTRIBUTION}->skip )
+	if (($datapage->{DISTRIBUTION}->type eq 'ncl') or ($datapage->{DISTRIBUTION}->type eq 'thru'));
 
-    $datapage->status($text, 'wait|nobuffer');
+    };
+  } elsif ($datapage->{DISTRIBUTION}->reading_file) {
+    $text = "Reading line $. from ".$datapage->{DISTRIBUTION}->file;
   };
+  $datapage->status($text, 'wait|nobuffer') if $text;
   $::app->Yield();
 };
 
-my $dlcount = 0;
 sub histogram_sentinal_fpath {
   my ($datapage) = @_;
-  ++$dlcount;
-  if (not $dlcount % 5) {
-    my $text = "Making FPath from bins: " . $dlcount . " of " . $datapage->{DISTRIBUTION}->{nbins} . " bins processed";
+  my $count = $datapage->{DISTRIBUTION}->fpath_count;
+  if (not $count % 5) {
+    my $text = sprintf("Making FPath: %d of %d binds processed", $count, $datapage->{DISTRIBUTION}->{nbins});
     $datapage->status($text, 'wait|nobuffer');
   };
   $::app->Yield();
@@ -2211,20 +2219,35 @@ sub make_HistogramSS {
   my $book  = $this->{BOOK};
 
   my $feff = $demeter->mo->fetch("Feff", $spref->[2]);
-  my $ipot = $spref->[7];
   my $do_rattle = $spref->[8];
+  my $histogram;
+  my $read_file = 1;
 
-  my $histogram = Demeter::Feff::Distributions->new(type=>'ss');
-  $histogram -> set(rmin=>$spref->[4], rmax=>$spref->[5], bin=>$spref->[6], feff=>$feff, ipot=>$ipot,);
+  if ((not $spref->[9]) or ($feff->mo->fetch("Distributions", $spref->[9])->type ne 'ss')) {
+    $histogram = Demeter::Feff::Distributions->new(type=>'ss');
+    $histogram -> set(rmin=>$spref->[4], rmax=>$spref->[5], bin=>$spref->[6], feff=>$feff, ipot=>$spref->[7],);
+  } else {
+    $histogram = $feff->mo->fetch("Distributions", $spref->[9]);
+    $read_file = 0 if ($histogram->file eq $spref->[3]);
+    $histogram->rmin($spref->[4]) if ($histogram->rmin != $spref->[4]);
+    $histogram->rmax($spref->[5]) if ($histogram->rmax != $spref->[5]);
+    $histogram->bin ($spref->[6]) if ($histogram->bin  != $spref->[6]);
+    $histogram->ipot($spref->[7]) if ($histogram->ipot != $spref->[7]);
+  };
   $this->{PARENT}->{DISTRIBUTION} = $histogram;
 
-  $histogram->sentinal(sub{$this->{PARENT}->histogram_sentinal_rdf});
   my $busy = Wx::BusyCursor->new();
   my $start = DateTime->now( time_zone => 'floating' );
   $histogram->backend($spref->[1]);
   $this->{PARENT}->status("Reading MD time sequence file, please be patient...", 'wait');
-  $histogram->file($spref->[3]);
-  $histogram->sentinal(sub{1});
+  $histogram->sentinal(sub{$this->{PARENT}->histogram_sentinal_rdf});
+  $histogram->file($spref->[3]) if $read_file;
+  if ($#{$histogram->ssrdf} == -1) {
+    $this->{PARENT}->status("Your choice of ipot did not yield any scatterers in the R range selected", 'error');
+    undef $busy;
+    return;
+  };
+  #$histogram->sentinal(sub{1});
   my $finish = DateTime->now( time_zone => 'floating' );
   my $dur = $finish->subtract_datetime($start);
   my $finishtext = sprintf("Making histogram from %d timesteps (%d minutes, %d seconds)", $histogram->nsteps, $dur->minutes, $dur->seconds);
@@ -2237,10 +2260,9 @@ sub make_HistogramSS {
   $start = DateTime->now( time_zone => 'floating' );
   $histogram->rebin;
   #$histogram->set(sp=>$sp);
-  $dlcount = 0;
-  $histogram->feff->sentinal(sub{$this->{PARENT}->histogram_sentinal_fpath});
+  $histogram->sentinal(sub{$this->{PARENT}->histogram_sentinal_fpath});
   my $composite = $histogram->fpath;
-  $histogram->feff->sentinal(sub{1});
+  $histogram->sentinal(sub{1});
   $finish = DateTime->now( time_zone => 'floating' );
   $dur = $finish->subtract_datetime($start);
   $finishtext = sprintf("Rebined and made FPath in %d minutes, %d seconds", $dur->minutes, $dur->seconds);
@@ -2256,10 +2278,9 @@ sub make_HistogramSS {
     $histogram->rattle(1);
     $this->{PARENT}->status("Rebinning histogram into rattle path with $spref->[6] $ARING bins", 'wait');
     $start = DateTime->now( time_zone => 'floating' );
-    $dlcount = 0;
-    $histogram->feff->sentinal(sub{$this->{PARENT}->histogram_sentinal_fpath});
+    $histogram->sentinal(sub{$this->{PARENT}->histogram_sentinal_fpath});
     my $rattle = $histogram->fpath;
-    $histogram->feff->sentinal(sub{1});
+    $histogram->sentinal(sub{1});
     $finish = DateTime->now( time_zone => 'floating' );
     $dur = $finish->subtract_datetime($start);
     $finishtext = sprintf("Rebined and made FPath in %d minutes, %d seconds", $dur->minutes, $dur->seconds);
@@ -2273,6 +2294,7 @@ sub make_HistogramSS {
   $Demeter::UI::Artemis::frames{Plot}->plot(0, 'r');
   #    $histo_dialog->{DISTRIBUTION} = q{};
   $histogram->DEMOLISH;
+  Demeter::UI::Artemis::modified(1);
   undef $busy;
 };
 
@@ -2305,7 +2327,6 @@ sub make_HistogramNCL {
   $this->{PARENT}->status("Rebinning histogram into $spref->[8] $ARING x $spref->[9] degree bins");
   $start = DateTime->now( time_zone => 'floating' );
   $histogram->rebin;
-  $dlcount = 0;
   $histogram->sentinal(sub{$this->{PARENT}->histogram_sentinal_fpath});
   my $composite = $histogram->fpath;
   $finish = DateTime->now( time_zone => 'floating' );
@@ -2348,13 +2369,12 @@ sub make_HistogramThru {
   my $finishtext = sprintf("Making histogram from %d timesteps (%d minutes, %d seconds)",
 			   $histogram->nsteps/$histogram->skip, $dur->minutes, $dur->seconds);
   $this->{PARENT}->status($finishtext);
-  undef $busy;
+  # undef $busy;
 
-  $busy = Wx::BusyCursor->new();
+  # $busy = Wx::BusyCursor->new();
   $this->{PARENT}->status("Rebinning histogram into $spref->[8] $ARING x $spref->[9] degree bins");
   $start = DateTime->now( time_zone => 'floating' );
   $histogram->rebin;
-  $dlcount = 0;
   $histogram->sentinal(sub{$this->{PARENT}->histogram_sentinal_fpath});
   my $composite = $histogram->fpath;
   $finish = DateTime->now( time_zone => 'floating' );

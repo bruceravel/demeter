@@ -4,25 +4,27 @@ use MooseX::Aliases;
 
 use Demeter::NumTypes qw( NonNeg Ipot );
 
-use Chemistry::Elements qw (get_Z get_name);
+use Chemistry::Elements qw (get_Z get_name get_symbol);
 
 ## SS histogram attributes
 has 'rmin'        => (is	    => 'rw',
 		      isa	    => 'Num',
 		      default	    => 0.0,
-		      trigger	    => sub{ my($self, $new) = @_; $self->update_bins(1) if $new},
+		      trigger	    => sub{ my($self, $new) = @_; $self->update_rdf(1) if $new},
 		      documentation => "The lower bound of the SS histogram to be extracted from the cluster");
 has 'rmax'        => (is	    => 'rw',
 		      isa	    => 'Num',
 		      default	    => 5.6,
-		      trigger	    => sub{ my($self, $new) = @_; $self->update_bins(1) if $new},
+		      trigger	    => sub{ my($self, $new) = @_; $self->update_rdf(1) if $new},
 		      documentation => "The upper bound of the SS histogram to be extracted from the cluster");
 has 'ipot'        => (is => 'rw', isa => Ipot, default => 1,
 		      traits => ['MooseX::Aliases::Meta::Trait::Attribute'],
-		      alias => 'ipot1');
+		      alias => 'ipot1',
+		      trigger => sub{my ($self, $new) = @_; $self->update_rdf(1)   if $new});
 has 'bin'         => (is            => 'rw',
 		      isa           => 'Num',
-		      default       => 0.005,);
+		      default       => 0.005,
+		      trigger => sub{my ($self, $new) = @_; $self->update_bins(1)   if $new},);
 has 'ssrdf'       => (is	    => 'rw',
 		      isa	    => 'ArrayRef',
 		      default	    => sub{[]},
@@ -36,7 +38,8 @@ has 'npairs'      => (is            => 'rw',
 		      default       => 0);
 has 'rattle'      => (is            => 'rw',
 		      isa           => 'Bool',
-		      default       => 0);
+		      default       => 0,
+		      trigger       => sub{my ($self, $new) = @_; $self->update_fpath(1)   if $new});
 
 sub _bin {
   my ($self) = @_;
@@ -75,6 +78,7 @@ sub _bin {
 
 sub rdf {
   my ($self) = @_;
+  $self->computing_rdf(1);
   my @rdf = ();
   my $count = 0;
   my $rmin    = $self->rmin;
@@ -152,6 +156,10 @@ sub rdf {
   $self->stop_spinner if ($self->mo->ui eq 'screen');
   $self->ssrdf(\@rdf);
   $self->npairs(($#rdf+1)/$self->nsteps);
+  $self->name(sprintf("%s-%s SS histogram", get_symbol($self->feff->abs_species), get_symbol($self->feff->potentials->[$self->ipot]->[2])));
+
+  $self->computing_rdf(0);
+  $self->update_rdf(0);
   return $self;
 };
 
@@ -181,8 +189,10 @@ sub chi {
   my $sum   = $first->population;
   my @pop   = ($first->population);
   my @r     = ($first->R);
+  $self->fpath_count(0);
   foreach my $i (1 .. $#{ $paths }) {
     #$paths->[$i]->update_path(1);
+    $self->fpath_count($i);
     $self->call_sentinal;
     my $save = $paths->[$i]->group; # add up the SSPaths without requiring an Ifeffit group for each one
     $paths->[$i]->Index(255);

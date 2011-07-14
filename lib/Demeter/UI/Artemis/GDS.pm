@@ -20,7 +20,7 @@ use warnings;
 
 use Cwd;
 use File::Spec;
-use List::MoreUtils qw(uniq);
+use List::MoreUtils qw(uniq any);
 
 use Readonly;
 ## 0:grab all  1:reset all  2:toggle highlight  4:import   5:export  6:discard all  8:add one
@@ -33,6 +33,15 @@ Readonly my $DISCARD	 => 6;
 Readonly my $ADD	 => 8;
 Readonly my $PARAM_REGEX => '(guess|def|set|lguess|restrain|after|skip|penalty|merge)';
 Readonly my $SEPARATOR	 => '[ \t]*[ \t=,][ \t]*';
+
+Readonly my $GUESS    => Wx::NewId();
+Readonly my $LGUESS   => Wx::NewId();
+Readonly my $SET      => Wx::NewId();
+Readonly my $DEF      => Wx::NewId();
+Readonly my $SKIP     => Wx::NewId();
+Readonly my $AFTER    => Wx::NewId();
+Readonly my $RESTRAIN => Wx::NewId();
+Readonly my $PENALTY  => Wx::NewId();
 
 use Wx qw( :everything );
 use Wx::DND;
@@ -118,6 +127,19 @@ sub new {
   foreach my $row (0 .. $grid->GetNumberRows) {
     $this->initialize_row($row);
   };
+
+  my $accelerator = Wx::AcceleratorTable->new(
+   					      [wxACCEL_ALT, 103, $GUESS],
+   					      [wxACCEL_ALT, 115, $SET],
+   					      [wxACCEL_ALT, 100, $DEF],
+   					      [wxACCEL_ALT, 107, $SKIP],
+   					      [wxACCEL_ALT,  97, $AFTER],
+   					      [wxACCEL_ALT, 108, $LGUESS],
+   					      [wxACCEL_ALT, 112, $PENALTY],
+   					      [wxACCEL_ALT, 114, $RESTRAIN],
+   					     );
+  $grid->SetAcceleratorTable( $accelerator );
+
   EVT_GRID_CELL_CHANGE      ($grid,     sub{ $this->OnSetType(@_)     });
   EVT_GRID_CELL_RIGHT_CLICK ($grid,     sub{ $this->PostGridMenu(@_)  });
   EVT_GRID_LABEL_LEFT_CLICK ($grid,     sub{ $this->StartDrag(@_)     });
@@ -171,7 +193,7 @@ sub initialize_row {
 sub OnToolClick {
   my ($parent, $toolbar, $event, $grid) = @_;
   ## 0:grab all  1:reset all  2:toggle highlight  4:import   5:export  6:discard all  8:add one
-  my $which = $toolbar->GetToolPos($event->GetId);
+  my $which = $toolbar->GetToolPos($event->GetId) || $event->GetId;
  SWITCH: {
     ($which == $GRAB) and do {	     # grab best fit values
       $parent->use_best_fit;
@@ -211,6 +233,13 @@ sub OnToolClick {
     };
   };
 };
+
+sub OnMenu {
+  my ($self, $event) = @_;
+  my $id = $event->GetId;
+  print join("|", $event, $id), $/;
+};
+
 
 sub use_best_fit {
   my ($parent) = @_;
@@ -567,7 +596,18 @@ sub PostGridMenu {
 sub OnGridMenu {
   my ($parent, $self, $event) = @_;
   my $which = $event->GetId;
-  if ($which < 100) {
+  if (any {$which == $_} ($GUESS, $SET, $DEF, $LGUESS, $AFTER, $RESTRAIN, $PENALTY, $SKIP)) {
+    my $t = ($which == $GUESS)    ? "guess"
+          : ($which == $DEF)      ? "def"
+          : ($which == $SET)      ? "set"
+          : ($which == $LGUESS)   ? "lguess"
+          : ($which == $SKIP)     ? "skip"
+          : ($which == $AFTER)    ? "after"
+          : ($which == $RESTRAIN) ? "restrain"
+          : ($which == $PENALTY)  ? "penalty"
+	  :                         'skip';
+    $parent->change($t);
+  } elsif ($which < 100) {
     ##                  0    1    2     3        4            5       6      7       8       9             10     11   12    13
     my @callbacks = qw(copy cut paste noop insert_above insert_below noop set_type grab build_restraint annotate noop find rename_global);
     my $cb = $callbacks[$which];
@@ -832,7 +872,7 @@ sub change {
     $parent->set_type($row);
   };
   #delete $parent->{clicked_row};
-  $parent->{grid}->ClearSelection;
+  #$parent->{grid}->ClearSelection;
   return $parent;
 };
 

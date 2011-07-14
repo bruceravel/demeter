@@ -104,6 +104,7 @@ sub _histo {
 
   my $vbox = Wx::BoxSizer->new( wxVERTICAL );
 
+  $self->{DISTRIBUTION} = q{};
   $self->{histo_file} = Wx::FilePickerCtrl->new( $page, -1, "", "Choose an MD output file", 
 						 "DL_POLY HISTORY files|HISTORY|VASP OUTCAR files|OUTCAR|All files|*",
 						 wxDefaultPosition, wxDefaultSize,
@@ -186,7 +187,7 @@ sub _histo {
 
   $self -> {histo_ncl_plot} = Wx::Button -> new($scrl, -1, "Scatter plot");
   $hbox -> Add($self->{histo_ncl_plot},    1, wxALL|wxALIGN_CENTRE_VERTICAL, 5);
-  EVT_BUTTON($self, $self->{histo_ncl_plot}, sub{ scatterplot(@_) });
+  EVT_BUTTON($self, $self->{histo_ncl_plot}, sub{ scatterplot(@_, 'ncl') });
 
   $hbox = Wx::BoxSizer->new( wxHORIZONTAL );
   $nclboxsizer -> Add($hbox, 0, wxGROW|wxLEFT|wxRIGHT, 10);
@@ -245,7 +246,7 @@ sub _histo {
 
   $self -> {histo_thru_plot} = Wx::Button -> new($scrl, -1, "Scatter plot");
   $hbox -> Add($self->{histo_thru_plot},    1, wxALL|wxALIGN_CENTRE_VERTICAL, 5);
-  EVT_BUTTON($self, $self->{histo_thru_plot}, sub{ scatterplot(@_) });
+  EVT_BUTTON($self, $self->{histo_thru_plot}, sub{ scatterplot(@_, 'thru') });
 
   $hbox = Wx::BoxSizer->new( wxHORIZONTAL );
   $thruboxsizer -> Add($hbox, 0, wxGROW|wxLEFT|wxRIGHT, 10);
@@ -347,11 +348,27 @@ sub histoplot {
     return;
   };
 
-  my $dlp = Demeter::Feff::Distributions->new(rmin=>$rmin, rmax=>$rmax, bin=>$bin, type=>'ss', ipot=>$ipot,
-					      feff=>$this->{parent}->{Feff}->{feffobject});
+  my $dlp;
+  my $read_file = 1;
+  if ((not $this->{DISTRIBUTION}) or ($this->{DISTRIBUTION}->type ne 'ss')) {
+    $dlp = Demeter::Feff::Distributions->new(type=>'ss');
+    $dlp -> set(rmin => $rmin,
+		rmax => $rmax,
+		bin  => $bin,
+		ipot => $ipot,
+		feff => $this->{parent}->{Feff}->{feffobject},
+	       );
+  } else {
+    $dlp = $this->{DISTRIBUTION};
+    $read_file = 0 if ($dlp->file eq $file);
+    $dlp->rmin($rmin) if ($dlp->rmin != $rmin);
+    $dlp->rmax($rmax) if ($dlp->rmax != $rmax);
+    $dlp->bin ($bin ) if ($dlp->bin  != $bin);
+    $dlp->ipot($ipot) if ($dlp->ipot != $ipot);
+  };
+
   my $persist = File::Spec->catfile($dlp->dot_folder, 'demeter.histograms');
   YAML::Tiny::DumpFile($persist, $this->{histoyaml});
-
 
   $this->{DISTRIBUTION} = $dlp;
 
@@ -359,14 +376,14 @@ sub histoplot {
   my $start = DateTime->now( time_zone => 'floating' );
   $dlp->backend($backend);
   $this->{parent}->status("Reading MD time sequence file, please be patient...", 'wait');
-  $dlp->file($file);
+  $dlp->sentinal(sub{$this->dlpoly_sentinal});
+  $dlp->file($file) if $read_file;
   if ($#{$dlp->ssrdf} == -1) {
     $this->{parent}->status("Your choice of ipot did not yield any scatterers in the R range selected", 'error');
     undef $busy;
     return;
   };
   $this->{parent}->status("Binning pair distribution function, please be patient...", 'wait');
-  $dlp->sentinal(sub{$this->dlpoly_sentinal});
   $dlp->rebin;
   $this->{parent}->{Console}->{console}->AppendText($/.$dlp->info.$/.$/);
   my $finish = DateTime->now( time_zone => 'floating' );
@@ -378,7 +395,7 @@ sub histoplot {
 };
 
 sub scatterplot {
-  my ($this, $event) = @_;
+  my ($this, $event, $which) = @_;
   my $file     = $this->{histo_file}->GetTextCtrl->GetValue;
   my $backend  = $this->{histo_role}->GetStringSelection;
   my $ipot1    = $this->{histo_ss_ipot1}->GetSelection+1;
@@ -405,9 +422,32 @@ sub scatterplot {
     return;
   };
 
-  my $histo = Demeter::Feff::Distributions->new(type=>'ncl');
-  $histo->set(r1=>$r1, r2=>$r2, r3=>$r3, r4=>$r4, rbin=>$rbin, betabin=>$betabin,
-	      feff=>$this->{parent}->{Feff}->{feffobject});
+
+  my $histo;
+  my $read_file = 1;
+  if ((not $this->{DISTRIBUTION}) or ($this->{DISTRIBUTION}->type ne $which)) {
+    $histo = Demeter::Feff::Distributions->new(type=>$which);
+    $histo -> set(r1	  => $r1,
+		  r2	  => $r2,
+		  r3	  => $r3,
+		  r4	  => $r4,
+		  rbin	  => $rbin,
+		  betabin => $betabin,
+		  ipot1   => $ipot1,
+		  ipot2	  => $ipot2,
+		  feff	  => $this->{parent}->{Feff}->{feffobject},
+		);
+  } else {
+    $histo = $this->{DISTRIBUTION};
+    $read_file = 0 if ($histo->file eq $file);
+    $histo->rmin($r1)    if ($histo->rmin != $r1);
+    $histo->rmax($r2)    if ($histo->rmax != $r2);
+    $histo->rmin($r3)    if ($histo->rmin != $r3);
+    $histo->rmax($r4)    if ($histo->rmax != $r4);
+    $histo->bin ($rbin)  if ($histo->bin  != $rbin);
+    $histo->ipot($ipot1) if ($histo->ipot != $ipot1);
+    $histo->ipot($ipot2) if ($histo->ipot != $ipot2);
+  };
 
   my $persist = File::Spec->catfile($histo->dot_folder, 'demeter.histograms');
   YAML::Tiny::DumpFile($persist, $this->{histoyaml});
@@ -432,13 +472,16 @@ sub scatterplot {
 
 sub dlpoly_sentinal {
   my ($this) = @_;
-  if (not $this->{DISTRIBUTION}->timestep_count % 10) {
-    my $text = $this->{DISTRIBUTION}->timestep_count . " of " . $this->{DISTRIBUTION}->{nsteps} . " timesteps";
-    #print $text, $/;
-    $this->{statusbar}->SetStatusText($text);
-    #$this->{parent}->status($text, 'wait|nobuffer') if not $this->{DISTRIBUTION}->timestep_count % 10;
-    $::app->Yield();
+  my $text = q{};
+  if ($this->{DISTRIBUTION}->computing_rdf) {
+    if (not $this->{DISTRIBUTION}->timestep_count % 10) {
+      $text = $this->{DISTRIBUTION}->timestep_count . " of " . $this->{DISTRIBUTION}->{nsteps} . " timesteps";
+    };
+  } elsif ($this->{DISTRIBUTION}->reading_file) {
+    $text = "Reading line $. from ".$this->{DISTRIBUTION}->file;
   };
+  $this->{statusbar}->SetStatusText($text) if $text;
+  $::app->Yield();
 };
 
 
@@ -617,6 +660,7 @@ sub OnDrag {
     return;
   };
 
+  my $group = (ref($parent->{SS}->{DISTRIBUTION}) =~ m{Distributions|Moose}) ? $parent->{SS}->{DISTRIBUTION}->group : q{};
   my $dragdata = ['HistogramSS',					  # 0 id
 		  $parent->{SS}->{histo_role}->GetStringSelection,        # 1 backend
 		  $parent->{Feff}->{feffobject}->group,			  # 2 feff object group
@@ -626,6 +670,7 @@ sub OnDrag {
 		  $parent->{SS}->{histo_ss_bin} ->GetValue,		  # 6 bin size
 		  $parent->{SS}->{histo_ss_ipot}->GetSelection+1,	  # 7 ipot
 		  $parent->{SS}->{histo_ss_rattle}->GetValue,		  # 8 do rattle path
+		  $group,                                                 # 9 
 		 ];
 
   ## handle persistence file

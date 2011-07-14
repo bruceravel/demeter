@@ -76,7 +76,7 @@ sub _number_of_steps {
 
 sub _cluster {
   my ($self) = @_;
-  #$self->_number_of_steps;
+  $self->reading_file(1);
   my $nruns  = count_lines($self->file, separator => 'General timing') + 1;
   my $nlines = count_lines($self->file);
   #print $nlines, $/;
@@ -96,7 +96,13 @@ sub _cluster {
 	      npos                   => 0,
 	      direct_lattice         => 0);
  FILE: while ($fh->gzreadline($line) > 0) {
-    $self->count if (not $. % 1e4) and ($self->mo->ui eq 'screen');
+    if (not $. % 1e4) {
+      if ($self->mo->ui eq 'screen') {
+	$self->count;
+      } elsif (lc($self->mo->ui) eq 'wx') {
+	$self->call_sentinal;
+      };
+    };
 
     if ($flag{starting_configuration}) {
       next FILE;
@@ -184,6 +190,8 @@ sub _cluster {
 
   $fh->gzclose();
   $self->stop_counter if ($self->mo->ui eq 'screen');
+  $self->reading_file(0);
+  $self->update_file(0);
   return $self;
 };
 
