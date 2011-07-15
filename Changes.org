@@ -14,7 +14,7 @@
    - Replacing chi(k) on a Data frame now works correctly
    - More descriptive update messages in statusbar during histogram
      processing
-   - Histogrsam interface is more sensitive to whether time-consuming
+   - Histogram interface is more sensitive to whether time-consuming
      chores need to be redone
    - Grid in GDS frame now recognizes smart keys for changing
      parameter type.  Change all selected params:
@@ -26,6 +26,9 @@
        + Alt-a: after
        + Alt-r: restrain
        + Alt-p: penalty
+   - New config parameter (artemis->plot_frame_x) for aligning the
+     Plot window properly on a multiple monitor setup (something I am
+     having trouble figuring out properly)
 
 *** Demeter
    - Integrate VASP MD output into histogram subsystem

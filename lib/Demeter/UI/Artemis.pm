@@ -1043,7 +1043,7 @@ sub make_feff_frame {
 		   });
 
   my $base = File::Spec->catfile($self->{project_folder}, 'feff');
-  $frames{$fnum} =  Demeter::UI::AtomsApp->new($base, $feffobject, 1);
+  $frames{$fnum} =  Demeter::UI::AtomsApp->new($base, $feffobject, $fnum);
   $frames{$fnum} -> SetTitle('Artemis [Feff] Atoms and Feff');
   $frames{$fnum} -> SetIcon($icon);
   if ($file and (-e $file) and ($demeter->is_atoms($file) or $demeter->is_cif($file))) {

@@ -384,7 +384,7 @@ sub new {
 
   ## --------- toggles
   my $togglebox  = Wx::BoxSizer->new( wxHORIZONTAL );
-  $otherboxsizer -> Add($togglebox, 0, wxALIGN_CENTER_HORIZONTAL|wxALL, 0);
+  $otherboxsizer -> Add($togglebox, 0, wxALL, 0);
   $this->{include}    = Wx::CheckBox->new($leftpane, -1, "Include in fit", wxDefaultPosition, wxDefaultSize);
   $this->{plot_after} = Wx::CheckBox->new($leftpane, -1, "Plot after fit", wxDefaultPosition, wxDefaultSize);
   $this->{fit_bkg}    = Wx::CheckBox->new($leftpane, -1, "Fit background", wxDefaultPosition, wxDefaultSize);
@@ -401,7 +401,7 @@ sub new {
 
   ## -------- epsilon and phase correction
   my $extrabox    = Wx::BoxSizer->new( wxHORIZONTAL );
-  $otherboxsizer -> Add($extrabox, 0, wxALL|wxGROW|wxALIGN_CENTER_HORIZONTAL, 0);
+  $otherboxsizer -> Add($extrabox, 0, wxALL, 0);
 
   $extrabox -> Add(Wx::StaticText->new($leftpane, -1, "$EPSILON(k)"), 0, wxALL, 5);
   $this->{epsilon} = Wx::TextCtrl->new($leftpane, -1, 0, wxDefaultPosition, [50,-1], wxTE_PROCESS_ENTER);
@@ -2235,6 +2235,8 @@ sub make_HistogramSS {
     $histogram->ipot($spref->[7]) if ($histogram->ipot != $spref->[7]);
   };
   $this->{PARENT}->{DISTRIBUTION} = $histogram;
+  ## this pushes this Distribution object back into the Atopms/Feff frame so it can be reused
+  $Demeter::UI::Artemis::frames{$spref->[10]}->{SS}->{DISTRIBUTION} = $histogram;
 
   my $busy = Wx::BusyCursor->new();
   my $start = DateTime->now( time_zone => 'floating' );

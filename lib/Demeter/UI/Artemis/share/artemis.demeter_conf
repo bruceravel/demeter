@@ -108,3 +108,14 @@ default=false
 description
   If true, a space for the dphase path parameter will be displayed on
   each path page.
+
+variable=plot_frame_x
+type=real
+default=0
+units=pixels
+restart=1
+description
+  On a mulitple monitor setup, Artemis may have trouble finding the
+  correct location to place the Plot frame.  This is an adjustment in
+  the x position on screen to align the Plot frame underneath the main
+  Frame.

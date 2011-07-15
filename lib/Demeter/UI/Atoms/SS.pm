@@ -664,13 +664,14 @@ sub OnDrag {
   my $dragdata = ['HistogramSS',					  # 0 id
 		  $parent->{SS}->{histo_role}->GetStringSelection,        # 1 backend
 		  $parent->{Feff}->{feffobject}->group,			  # 2 feff object group
-		  $parent->{SS}->{histo_file}->GetTextCtrl->GetValue,     # 3 HISTORY file
+		  $parent->{SS}->{histo_file}->GetTextCtrl->GetValue,     # 3 MD output file
 		  $parent->{SS}->{histo_ss_rmin}->GetValue,		  # 4 rmin
 		  $parent->{SS}->{histo_ss_rmax}->GetValue,		  # 5 rmax
 		  $parent->{SS}->{histo_ss_bin} ->GetValue,		  # 6 bin size
 		  $parent->{SS}->{histo_ss_ipot}->GetSelection+1,	  # 7 ipot
 		  $parent->{SS}->{histo_ss_rattle}->GetValue,		  # 8 do rattle path
-		  $group,                                                 # 9 
+		  $group,                                                 # 9 Distibution object group name
+		  $parent->{component}                                    # 10 id for feff frame so Distribution object can be pushed back
 		 ];
 
   ## handle persistence file
@@ -755,6 +756,7 @@ sub OnDrag {
     return;
   };
 
+  my $group = (ref($parent->{SS}->{DISTRIBUTION}) =~ m{Distributions|Moose}) ? $parent->{SS}->{DISTRIBUTION}->group : q{};
   my $dragdata = ['HistogramNCL',						# 0  id
 		  $parent->{SS}->{histo_role}->GetStringSelection,              # 1 backend
 		  $parent->{Feff}->{feffobject}      -> group,			# 2  feff object group
@@ -767,6 +769,8 @@ sub OnDrag {
 		  $parent->{SS}->{histo_ncl_betabin} -> GetValue,		# 9  bin size
 		  $parent->{SS}->{histo_ncl_ipot1}   -> GetSelection+1,		# 10 ipot
 		  $parent->{SS}->{histo_ncl_ipot2}   -> GetSelection+1,		# 11 ipot
+		  $group,                                                 # 12 Distibution object group name
+		  $parent->{component}                                    # 13 id for feff frame so Distribution object can be pushed back
 		 ];
 
   ## handle persistence file
@@ -853,6 +857,7 @@ sub OnDrag {
     return;
   };
 
+  my $group = (ref($parent->{SS}->{DISTRIBUTION}) =~ m{Distributions|Moose}) ? $parent->{SS}->{DISTRIBUTION}->group : q{};
   my $dragdata = ['HistogramThru',						# 0  id
 		  $parent->{SS}->{histo_role}->GetStringSelection,              # 1 backend
 		  $parent->{Feff}->{feffobject}       -> group,			# 2  feff object group
@@ -863,6 +868,8 @@ sub OnDrag {
 		  $parent->{SS}->{histo_thru_betabin} -> GetValue,		# 7  bin size
 		  $parent->{SS}->{histo_thru_ipot1}   -> GetSelection+1,	# 8  ipot
 		  $parent->{SS}->{histo_thru_ipot2}   -> GetSelection+1,	# 9  ipot
+		  $group,                                                       # 10 Distibution object group name
+		  $parent->{component}                                          # 11 id for feff frame so Distribution object can be pushed back
 		 ];
 
   ## handle persistence file
