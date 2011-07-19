@@ -111,8 +111,7 @@ sub new {
   $self->{descbox} = Wx::StaticBox->new($self, -1, 'Description', wxDefaultPosition, wxDefaultSize);
   $self->{descboxsizer} = Wx::StaticBoxSizer->new( $self->{descbox}, wxVERTICAL );
   $self->{desc} = Wx::TextCtrl->new($self, -1, q{}, wxDefaultPosition, wxDefaultSize,
-				    wxHSCROLL|wxTE_WORDWRAP|wxTE_READONLY|wxTE_MULTILINE|wxTE_RICH);
-##				    wxVSCROLL|wxTE_WORDWRAP|wxTE_MULTILINE|wxTE_READONLY|wxNO_BORDER);
+				    wxHSCROLL|wxTE_WORDWRAP|wxTE_READONLY|wxTE_MULTILINE|wxTE_RICH2);
   $self->{descboxsizer} -> Add($self->{desc}, 1, wxEXPAND|wxALL, 2);
   $self->{desc}->SetFont( Wx::Font->new( Wx::SystemSettings::GetFont(wxSYS_DEFAULT_GUI_FONT)->GetPointSize, wxTELETYPE, wxNORMAL, wxNORMAL, 0, "" ) );
   $self->{desc}->SetDefaultStyle($aleft);
