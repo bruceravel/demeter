@@ -1800,7 +1800,7 @@ sub discard {
 
  SWITCH: {
     ($how eq 'this') and do {
-      my $path = $self->{pathlist}->GetPage->{path};
+      my $path = $self->{pathlist}->GetPage($sel)->{path};
       $self->{pathlist}->DeletePage($sel);
       $path->DEMOLISH;
       $text = "Discarded the path that was displayed.";
@@ -2073,13 +2073,14 @@ sub empirical {
   my $file  = File::Spec->catfile($fd->GetDirectory, $fd->GetFilename);
   my $fpath = Demeter::FPath->new();
   my $is_ok = $fpath -> deserialize($file);
-  $datapage->status("\"$file\" isn't an empirical standard file."), return if not $is_ok;
+  $datapage->status("\"$file\" isn't an empirical standard file.", 'error'), return if not $is_ok;
   $fpath -> data($datapage->{data});
   $fpath -> _update('fft');
   $datapage->{pathlist}->DeletePage(0) if ($datapage->{pathlist}->GetPage(0) =~ m{Panel});
   my $page = Demeter::UI::Artemis::Path->new($datapage->{pathlist}, $fpath, $datapage);
   $datapage->{pathlist}->AddPage($page, $fpath->name, 1, 0);
   $page->include_label;
+  $datapage->status("Imported \"$file\" as an empirical standard.");
 };
 
 sub histogram_sentinal_rdf {

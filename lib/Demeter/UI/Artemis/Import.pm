@@ -56,6 +56,10 @@ sub prjrecord {
     };
     $file = File::Spec->catfile($fd->GetDirectory, $fd->GetFilename);
   }
+  if (not $$rdemeter->is_prj($file)) {
+    $rframes->{main}->status("$file is not an Athena project file.", 'error');
+    return (q{}, q{}, -1);
+  };
   ##
   my $selection = 0;
   $rframes->{prj} =  Demeter::UI::Artemis::Prj->new($rframes->{main}, $file, 'single');
@@ -65,7 +69,7 @@ sub prjrecord {
       ($result == wxID_CANCEL) or     # cancel button clicked
       ($rframes->{prj}->{record} == -1)  # import button without selecting a group
      ) {
-    return (q{}, q{});
+    return (q{}, q{}, 0);
   };
 
   return ($file, $rframes->{prj}->{prj}, $rframes->{prj}->{record});
@@ -79,6 +83,9 @@ sub _prj {
   my ($fname) = @_;
   my ($file, $prj, $record) = prjrecord($fname);
 
+  if ($record < 0) {
+    return;
+  };
   if ((not $prj) or (not $record)) {
     $rframes->{main}->status("Data import cancelled.");
     return;
@@ -120,7 +127,7 @@ sub _feff {
     return;
   };
   if (not ($$rdemeter->is_feff($file) or $$rdemeter->is_atoms($file) or $$rdemeter->is_cif($file))) {
-    $rframes->{main}->status("$file does not seem to be a Feff input file, an Atoms input file, or a CIF file");
+    $rframes->{main}->status("$file does not seem to be a Feff input file, an Atoms input file, or a CIF file", 'error');
     return;
   };
 
@@ -145,6 +152,10 @@ sub _chi {
       return;
     };
     $file = File::Spec->catfile($fd->GetDirectory, $fd->GetFilename);
+  };
+  if (not $$rdemeter->is_data($file)) {
+    $rframes->{main}->status("$file is not a column data file.", 'error');
+    return;
   };
   my $data = Demeter::Data->new(file=>$file);
   $data->_update('data');
@@ -174,6 +185,10 @@ sub _dpj {
       return;
     };
     $file = File::Spec->catfile($fd->GetDirectory, $fd->GetFilename);
+  };
+  if (not $$rdemeter->is_zipproj($file,0, 'dpj')) {
+    $rframes->{main}->status("$file is not a demeter fit serialization.", 'error');
+    return;
   };
   if ($rframes->{main}->{modified}) {
     return if not close_project($rframes);
@@ -384,6 +399,11 @@ sub _old {
       return;
     };
     $file = File::Spec->catfile($fd->GetDirectory, $fd->GetFilename);
+  };
+
+  if (not $$rdemeter->is_zipproj($file,0, 'apj')) {
+    $rframes->{main}->status("$file is not an old style fitting project file.", 'error');
+    return;
   };
 
   my $busy = Wx::BusyCursor->new();

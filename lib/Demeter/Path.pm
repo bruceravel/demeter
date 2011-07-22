@@ -21,7 +21,7 @@ use Moose;
 use MooseX::Aliases;
 #use MooseX::StrictConstructor;
 extends 'Demeter';
-use Demeter::StrTypes qw( Empty PathParam );
+use Demeter::StrTypes qw( Empty PathParam FileName );
 use Demeter::NumTypes qw( Natural PosInt NonNeg );
 
 with 'Demeter::Data::Arrays';
@@ -402,7 +402,7 @@ sub parse_nnnn {
   my ($self) = @_;
   my $oneoff = "feff" . $self->co->default('pathfinder', 'one_off_index');
   my ($folder, $file) = $self->get(qw(folder file));
-  my $fname = File::Spec -> catfile($folder, $file);
+  my $fname = $self->follow_link(File::Spec -> catfile($folder, $file));
   return if not -f $fname;
 
   open (my $NNNN, $fname);

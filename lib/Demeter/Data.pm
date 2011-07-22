@@ -54,6 +54,7 @@ use Demeter::StrTypes qw( Element
 			  Window
 			  Empty
 			  DataType
+			  FileName
 		       );
 use Demeter::NumTypes qw( Natural
 			  PosInt
@@ -71,7 +72,8 @@ has '+data'       => (isa => Empty.'|Demeter::Data');
 has 'is_mc'       => (is => 'ro', isa => 'Bool', default => 0); # is not Demeter::Data::MultiChannel
 has 'tag'         => (is => 'rw', isa => 'Str',  default => q{});
 has 'cv'          => (is => 'rw', isa => 'Num',  default => 0);
-has 'file'        => (is => 'rw', isa => 'Str',  default => $NULLFILE,
+
+has 'file'        => (is => 'rw', isa => FileName,  default => $NULLFILE,
 		      trigger => sub{my ($self, $new) = @_;
 				     if ($new and ($new ne $NULLFILE)) {
 				       $self->update_data(1);

@@ -73,6 +73,7 @@ $dobject -> set(file        => "data/fe.060",
 		numerator   => '$2',
 		denominator => '$3',
 		ln          => 1,
+		datatype    => 'xmu',
 	       );
 
 &query;

@@ -201,7 +201,9 @@ before serialization => sub {
 ## need to check that fname is really an fpath yaml, return 0 if not
 override deserialize => sub {
   my ($self, $fname) = @_;
-  my $r_args = YAML::Tiny::LoadFile($fname);
+  my $r_args;
+  eval {local $SIG{__DIE__} = undef; $r_args = YAML::Tiny::LoadFile($fname)};
+  return 0 if $@;
   my @args = %$r_args;
   $self->set(@args);
   my $source = $self->mo->fetch('Data', $self->sourcegroup);

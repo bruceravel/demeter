@@ -32,6 +32,7 @@ use Data::Dumper;
 
 use Readonly;
 Readonly my $FRAC => 100000;
+Readonly my $NULLFILE => '@&^^null^^&@';
 
 
 # use vars qw(@ISA @EXPORT @EXPORT_OK);
@@ -299,6 +300,18 @@ sub Dump {
   my ($self, $ref, $name) = @_;
   return Data::Dumper->Dump([$ref], [$name]) if $name;
   return Dumper($ref);
+};
+
+
+sub follow_link {
+  my ($self, $file) = @_;
+  return $file if ($file eq $NULLFILE);
+  if (Demeter->is_windows) {
+    require Win32::Shortcut;
+    my $LINK = Win32::Shortcut->new();
+    $file = $LINK->{Path} if $LINK->Load($file);
+  };
+  return $file;
 };
 
 1;

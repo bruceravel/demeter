@@ -29,6 +29,7 @@ use Demeter::StrTypes qw( Element
 			  AtomsGas
 			  AtomsObsolete
 			  SpaceGroup
+			  FileName
 			  Empty
 		       );
 use Demeter::NumTypes qw( Natural
@@ -162,7 +163,7 @@ has 'shift' => (
 			      'clear' => 'clear_shift',
 			     }
 	       );
-has 'file'   => (is => 'rw', isa =>'Str', default=> q{},
+has 'file'   => (is => 'rw', isa =>FileName, default=> q{},
 		 trigger => sub{ my ($self, $new) = @_;
 				 if ($new) {
 				   $self->read_inp;

@@ -29,6 +29,12 @@
    - New config parameter (artemis->plot_frame_x) for aligning the
      Plot window properly on a multiple monitor setup (something I am
      having trouble figuring out properly)
+   - Check file type on import for:
+       + fitting projects
+       + Athena projects
+       + old-style fitting projects
+       + demeter serializations
+       + chi(k) data (this is imperfect -- mu(E) data, for instance,will pass the test)
 
 *** Demeter
    - Integrate VASP MD output into histogram subsystem

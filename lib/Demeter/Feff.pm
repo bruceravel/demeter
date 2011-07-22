@@ -24,7 +24,7 @@ use MooseX::AttributeHelpers;
 use MooseX::Aliases;
 #use MooseX::StrictConstructor;
 use Moose::Util::TypeConstraints;
-use Demeter::StrTypes qw( AtomsEdge FeffCard Empty ElementSymbol);
+use Demeter::StrTypes qw( AtomsEdge FeffCard Empty ElementSymbol FileName);
 use Demeter::NumTypes qw( Natural NonNeg PosInt );
 with 'Demeter::Feff::Histogram';
 with 'Demeter::Feff::Paths';
@@ -63,7 +63,7 @@ my $shortest = 100000000;
 
 
 has 'source'      => (is => 'rw', isa => 'Str', default => 'demeter/feff6');
-has 'file'        => (is => 'rw', isa => 'Str',  default => q{},
+has 'file'        => (is => 'rw', isa => FileName,  default => q{},
 		      trigger => sub{my ($self, $new) = @_;
 				     if ($new) {
 				       $self->rdinp;

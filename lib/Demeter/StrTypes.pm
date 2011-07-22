@@ -2,6 +2,7 @@ package Demeter::StrTypes;
 
 # predeclare our own types
 use MooseX::Types -declare => [qw( Empty
+				   FileName
 				   IfeffitCommand
 				   IfeffitFunction
 				   IfeffitProgramVar
@@ -53,6 +54,10 @@ subtype Empty,
   as Str,
   where { lc($_) =~ m{\A\s*\z} },
   message { "That string ($_) is not an empty string" };
+
+subtype FileName, as   Str, where { 1 };
+coerce  FileName, from Str, via { Demeter->follow_link($_) };
+
 
 ## -------- Ifeffit commands
 use vars qw(@command_list $command_regexp);
