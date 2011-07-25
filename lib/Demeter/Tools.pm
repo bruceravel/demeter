@@ -303,6 +303,8 @@ sub Dump {
 };
 
 
+## this will fail if on linux or Mac and importing a shortcut from a
+## network mounted folder
 sub follow_link {
   my ($self, $file) = @_;
   return $file if ($file eq $NULLFILE);

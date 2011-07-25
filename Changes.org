@@ -29,6 +29,7 @@
    - New config parameter (artemis->plot_frame_x) for aligning the
      Plot window properly on a multiple monitor setup (something I am
      having trouble figuring out properly)
+   - Follow Windows link files for various import types
    - Check file type on import for:
        + fitting projects
        + Athena projects
@@ -38,6 +39,8 @@
 
 *** Demeter
    - Integrate VASP MD output into histogram subsystem
+   - Follow Windows link files now done for every object that has a
+     file attribute
 
 *** Windows installer
 

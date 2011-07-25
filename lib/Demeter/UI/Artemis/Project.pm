@@ -167,6 +167,7 @@ sub read_project {
     };
     $fname = File::Spec->catfile($fd->GetDirectory, $fd->GetFilename);
   };
+  $fname = Demeter->follow_link($fname);
 
 
 #  my ($volume,$directories,$fl) = File::Spec->splitpath( $rframes->{main}->{project_folder} );

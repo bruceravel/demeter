@@ -20,8 +20,9 @@
 ** installation issues [1/1]
   - [X] jpg needs to be a Module::Build ~build_element~, but there are too many such files in the distro .. not all serve a purpose
 
-** Demeter bugs, shortcomings, missing features  [4/19] [21%]
+** Demeter bugs, shortcomings, missing features  [4/20] [20%]
   - [ ] in =Demeter::Data::IO::save_many=, why doesn't updating in n specifying "background" not work to bring data up to date?  (fft, i.e. doing autobk, does work)
+  - [ ] Importing a Windows shortcut from a network mounted folder on linux or Mac will fail
   - [ ] +serialize VPath+, put VPath into +dpj and+ fpj files
   - [ ] tie multiple groups together
   - [ ] add a record to an existing Athena project file
@@ -132,7 +133,7 @@
    - Need to expand the filetype system by examining data from *all* the XAS beamlines in the world.  Yes ... all of them.
    - solicit help from the facility representatives
 
-** Windows issues [10/17] [58%] 					    :Windows:
+** Windows issues [12/17] [70%] 					    :Windows:
   - [X] parameter group context menus don't get posted (see http://www.nntp.perl.org/group/perl.wxperl.users/2011/03/msg7929.html)
   - [X] ugly background colors on command and status buffer frames (particularly at bottom, also a problem in Artemis)
   - [X] raised text with data name in data frame
@@ -141,16 +142,16 @@
   - [X] log frame not displayed/refreshed properly after a fit
   - [X] Artemis key accelerators
   - [X] +spurious message from clipboard+ (worked around)
-  - [ ] the frickin' Gnuplot error logs seem to remain open and locked on Windows when a crash happens
-  - [ ] status bar does not get color for wait or error messages /this may be unfixable, see/ http://www.nntp.perl.org/group/perl.wxperl.users/2011/04/msg7943.html
   - [X] ifeffit is currently compiled not knowing where to find the feff tables, so PC transforms are not possible.
 	in general, the compilation of Ifeffit needs to be better integrated into Strawberry.
+  - [X] fpj file on Win seems to not get unpacked correctly /is this true?/	:Project:
+  - [X] Get .prj file to open with a double click into Athena, .fpj into Artemis
+  - [X] need a script for rewriting .bat files to redirect spew to log files.  this should run after installation as .bat's get overwritten
+  - [ ] the frickin' Gnuplot error logs seem to remain open and locked on Windows when a crash happens
+  - [ ] status bar does not get color for wait or error messages /this may be unfixable, see/ http://www.nntp.perl.org/group/perl.wxperl.users/2011/04/msg7943.html
   - [ ] The atoms panel background color is too light.  Which window needs its BackgroundColour set to wxNullColour?
   - [ ] clampbox does not get enabled/disabled explicitly, is this another aspect of StaticBox that is different on Windows? (see link above)
-  - [ ] fpj file on Win seems to not get unpacked correctly /is this true?/	:Project:
-  - [X] Get .prj file to open with a double click into Athena, .fpj into Artemis
   - [ ] relocation of Strawberry leaves Ifeffit unable to find pahse shift and CL tables (use an ENV variable?)
-  - [ ] need a script for rewriting .bat files to redirect spew to log files.  this should run after installation as .bat's get overwritten
 
 
 ** Artemis
@@ -192,7 +193,7 @@
    - [ ] Clone data sets such that the path list gets replicated efficiently (i.e. for MDS fits)
 
 
-*** Histograms [10/12] [83%]
+*** Histograms [11/12] [91%]
    - [X] sum histogram bins into a single chi(k) file
    - [X] convert chi(k) data to a mock feffNNNN.dat file
    - [X] Triangle object
@@ -210,10 +211,10 @@
 	 - [X] SS
 	 - [ ] ncl
 	 - [ ] thru
-   - [ ] Need flags for when to 
-	 - [ ] re-read the MD output file
-	 - [ ] re-parse the time steps
-	 - [ ] re-do the binning
+   - [X] Need flags for when to 
+	 - [X] re-read the MD output file
+	 - [X] re-parse the time steps
+	 - [X] re-do the binning
 
 ** Hephaestus [1/1]
   - [X] need to open prefs with root in place so they display correctly on windows as well

@@ -56,6 +56,7 @@ sub prjrecord {
     };
     $file = File::Spec->catfile($fd->GetDirectory, $fd->GetFilename);
   }
+  $file = Demeter->follow_link($file);
   if (not $$rdemeter->is_prj($file)) {
     $rframes->{main}->status("$file is not an Athena project file.", 'error');
     return (q{}, q{}, -1);
@@ -186,6 +187,7 @@ sub _dpj {
     };
     $file = File::Spec->catfile($fd->GetDirectory, $fd->GetFilename);
   };
+  $file = Demeter->follow_link($file);
   if (not $$rdemeter->is_zipproj($file,0, 'dpj')) {
     $rframes->{main}->status("$file is not a demeter fit serialization.", 'error');
     return;
@@ -400,6 +402,7 @@ sub _old {
     };
     $file = File::Spec->catfile($fd->GetDirectory, $fd->GetFilename);
   };
+  $file = Demeter->follow_link($file);
 
   if (not $$rdemeter->is_zipproj($file,0, 'apj')) {
     $rframes->{main}->status("$file is not an old style fitting project file.", 'error');
@@ -458,6 +461,7 @@ sub _feffit {
     $rframes->{main}->status("$file cannot be read.");
     return;
   };
+  $file = Demeter->follow_link($file);
 
   ## -------- want to skip autosave during the intermediate steps of the feffit import
   $Demeter::UI::Artemis::noautosave = 1;

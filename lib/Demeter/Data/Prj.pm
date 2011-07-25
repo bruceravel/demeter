@@ -22,6 +22,7 @@ extends 'Demeter';
 use MooseX::AttributeHelpers;
 use MooseX::Aliases;
 #use MooseX::StrictConstructor;
+use Demeter::StrTypes qw( FileName );
 
 #use diagnostics;
 use Carp;
@@ -32,7 +33,7 @@ use Safe;
 
 use Data::Dumper;
 
-has 'file'    => (is => 'rw', isa => 'Str',  default => q{},
+has 'file'    => (is => 'rw', isa => FileName,  default => q{},
 		  trigger => sub{shift -> Read} );
 has 'entries' => (
 		  metaclass => 'Collection::Array',
@@ -47,7 +48,7 @@ has 'entries' => (
 		 );
 has 'n'       => (is => 'rw', isa => 'Int',  default => 0);
 
-has 'journal'       => (is => 'rw', isa => 'Str',  default => q{},);
+has 'journal' => (is => 'rw', isa => 'Str',  default => q{},);
 
 sub BUILD {
   my ($self, @params) = @_;

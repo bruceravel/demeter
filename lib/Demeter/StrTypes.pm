@@ -55,6 +55,7 @@ subtype Empty,
   where { lc($_) =~ m{\A\s*\z} },
   message { "That string ($_) is not an empty string" };
 
+## -------- use a coercion to follow Windows shortcuts
 subtype FileName, as   Str, where { 1 };
 coerce  FileName, from Str, via { Demeter->follow_link($_) };
 
