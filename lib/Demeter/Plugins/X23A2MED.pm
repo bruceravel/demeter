@@ -77,9 +77,9 @@ sub fix {
 
   my $is_ok = 1;
   foreach my $ch (@represented) {
-    $is_ok &&= any { $_ eq $cfg->val("med", "roi$ch")  } @labels;
-    $is_ok &&= any { $_ eq $cfg->val("med", "slow$ch") } @labels;
-    $is_ok &&= any { $_ eq $cfg->val("med", "fast$ch") } @labels;
+    $is_ok &&= any { $_ eq lc($cfg->val("med", "roi$ch") ) } @labels;
+    $is_ok &&= any { $_ eq lc($cfg->val("med", "slow$ch")) } @labels;
+    $is_ok &&= any { $_ eq lc($cfg->val("med", "fast$ch")) } @labels;
   };
   return 0 if not $is_ok;
 
@@ -90,17 +90,17 @@ sub fix {
   };
 
 
-  my @labs    = ($cfg->val('med', 'energy'), $cfg->val('med', 'i0'));
+  my @labs    = ($cfg->val('med', 'energy'), lc($cfg->val('med', 'i0')));
   my $maxints = q{};
   my $dts     = q{};
   my $time    = $cfg->val("med", "time");
   my $inttime = $cfg->val("med", "inttime");
-  my @intcol  = Ifeffit::get_array("v___ortex.".$cfg->val("med", "intcol"));
+  my @intcol  = Ifeffit::get_array("v___ortex.".lc($cfg->val("med", "intcol")));
   foreach my $ch (@represented) {
     my $deadtime = $cfg->val("med", "dt$ch");
-    my @roi  = Ifeffit::get_array("v___ortex.".$cfg->val("med", "roi$ch"));
-    my @slow = Ifeffit::get_array("v___ortex.".$cfg->val("med", "slow$ch"));
-    my @fast = Ifeffit::get_array("v___ortex.".$cfg->val("med", "fast$ch"));
+    my @roi  = Ifeffit::get_array("v___ortex.".lc($cfg->val("med", "roi$ch" )));
+    my @slow = Ifeffit::get_array("v___ortex.".lc($cfg->val("med", "slow$ch")));
+    my @fast = Ifeffit::get_array("v___ortex.".lc($cfg->val("med", "fast$ch")));
     my ($max, @corr) = _correct($inttime, $time, $deadtime, \@intcol, \@roi, \@fast, \@slow);
 
     Ifeffit::put_array("v___ortex.corr$ch", \@corr);
@@ -351,6 +351,9 @@ parameter to the name of the column label containing the per-point
 integration time (which is called inttime) in XDAC.  If that column is
 missing, then the integration time must be specified by the C<inttime>
 parameters.
+
+The C<time> parameter is set to either C<column> or C<constant> to
+choose between the C<intcol> and C<inttime> options.
 
 =head1 THE CORRECTION ALGORITHM
 

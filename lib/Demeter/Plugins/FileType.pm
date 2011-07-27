@@ -24,7 +24,9 @@ has 'filename'    => (is => 'rw', isa => 'Str', default => q{});
 has 'folder'      => (is => 'rw', isa => 'Str', default => q{});
 has 'fixed'       => (is => 'rw', isa => 'Str', default => q{});
 
-has 'inifile'     => (is => 'rw', isa => 'Str', default => q{});
+has 'inifile'     => (is => 'rw', isa => 'Str',  default => q{});
+has 'lower_case'  => (is => 'rw', isa => 'Bool', default => 1);
+
 enum 'OutputTypes' => ['data', 'project'];
 coerce 'OutputTypes', from 'Str', via { lc($_) };
 has 'output'      => (is => 'ro', isa => 'OutputTypes', default => q{data});

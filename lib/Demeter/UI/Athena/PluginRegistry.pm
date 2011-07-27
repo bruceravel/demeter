@@ -145,7 +145,13 @@ sub Configure {
   foreach my $s (@sections) {
     foreach my $p ($cfg->Parameters($s)) {
       #printf "%s:%s = %s\n", $s, $p, $config->{"$s.$p"}->GetValue;
-      $cfg->setval($s, $p, $config->{"$s.$p"}->GetValue);
+      my $temp = $pl->new;
+      if ($temp->lower_case) {
+	$cfg->setval($s, $p, lc($config->{"$s.$p"}->GetValue));
+      } else {
+	$cfg->setval($s, $p, $config->{"$s.$p"}->GetValue);
+      };
+      undef $temp;
     };
   };
   $cfg->WriteConfig($inifile);
