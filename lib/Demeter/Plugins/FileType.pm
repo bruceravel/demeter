@@ -25,6 +25,7 @@ has 'folder'      => (is => 'rw', isa => 'Str', default => q{});
 has 'fixed'       => (is => 'rw', isa => 'Str', default => q{});
 
 has 'inifile'     => (is => 'rw', isa => 'Str',  default => q{});
+has 'conffile'    => (is => 'rw', isa => 'Str',  default => q{});
 has 'lower_case'  => (is => 'rw', isa => 'Bool', default => 1);
 
 enum 'OutputTypes' => ['data', 'project'];

@@ -7,7 +7,7 @@ use Config::IniFiles;
 use File::Basename;
 use File::Copy;
 use Readonly;
-Readonly my $INIFILE => 'x23a2vortex.ini';
+Readonly my $INIFILE => 'x23a2med.demeter_conf';
 use List::MoreUtils qw(any);
 
 has '+is_binary'   => (default => 0);
@@ -16,15 +16,19 @@ has '+version'     => (default => 0.1);
 has 'nelements'    => (is => 'rw', isa => 'Int', default => 4);
 
 my $demeter = Demeter->new();
-has '+inifile'     => (default => File::Spec->catfile($demeter->dot_folder, $INIFILE));
+has '+conffile'     => (default => File::Spec->catfile(dirname($INC{'Demeter.pm'}), 'Demeter', 'Plugins', $INIFILE));
 
-if (not -e File::Spec->catfile($demeter->dot_folder, $INIFILE)) {
-  my $target = File::Spec->catfile($demeter->dot_folder, $INIFILE);
-  copy(File::Spec->catfile(dirname($INC{'Demeter.pm'}), 'Demeter', 'share', 'ini', $INIFILE),
-       $target);
-  chmod(0666, $target) if $demeter->is_windows;
-};
+# if (not -e File::Spec->catfile($demeter->dot_folder, $INIFILE)) {
+#   my $target = File::Spec->catfile($demeter->dot_folder, $INIFILE);
+#   copy(File::Spec->catfile(dirname($INC{'Demeter.pm'}), 'Demeter', 'share', 'ini', $INIFILE),
+#        $target);
+#   chmod(0666, $target) if $demeter->is_windows;
+# };
 
+local $|=1;
+Demeter -> co -> read_config(File::Spec->catfile(dirname($INC{'Demeter.pm'}), 'Demeter', 'Plugins', $INIFILE));
+print Demeter -> co -> describe_param("x23a2med", 'i0');
+print Demeter -> co -> describe_param("x23a2med", 'roi1');
 
 sub is {
   my ($self) = @_;
@@ -38,10 +42,10 @@ sub is {
   $line = <$D> || q{};
   my @headers = split(" ", $line);
 
-  my $cfg = new Config::IniFiles( -file => $self->inifile );
-  my $ch1 = $cfg->val("med", "roi1");
-  my $sl1 = $cfg->val("med", "slow1");
-  my $fa1 = $cfg->val("med", "fast1");
+  #my $cfg = new Config::IniFiles( -file => $self->inifile );
+  my $ch1 = $self->co->default("x23a2vortex", "roi1");
+  my $sl1 = $self->co->default("x23a2vortex", "slow1");
+  my $fa1 = $self->co->default("x23a2vortex", "fast1");
   my $seems_med = ($line =~ m{\b$ch1\b}i);
   my $is_med = (($line =~ m{\b$sl1\b}i) and ($line =~ m{\b$fa1\b}i));
   close $D;
@@ -65,21 +69,21 @@ sub fix {
   confess "X23A2MED inifile $vortexini does not exist", return q{} if (not -e $vortexini);
   confess "could not read X23A2MED inifile $vortexini", return q{} if (not -r $vortexini);
   my $cfg = new Config::IniFiles( -file => $vortexini );
-  my $maxel = $cfg->val('elements','n');
+  #my $maxel = $self->co->default('elements','n');
 
   ## is this the four-element or one-element vortex?
   my @represented = ();
   foreach my $i (1 .. 4) {
-    push @represented, $i if any {lc($_) eq $cfg->val("med", "roi$i")} @labels;
+    push @represented, $i if any {lc($_) eq $self->co->default("x23a2vortex", "roi$i")} @labels;
   };
   $self->nelements($#represented+1);
 
 
   my $is_ok = 1;
   foreach my $ch (@represented) {
-    $is_ok &&= any { $_ eq lc($cfg->val("med", "roi$ch") ) } @labels;
-    $is_ok &&= any { $_ eq lc($cfg->val("med", "slow$ch")) } @labels;
-    $is_ok &&= any { $_ eq lc($cfg->val("med", "fast$ch")) } @labels;
+    $is_ok &&= any { $_ eq lc($self->co->default("x23a2vortex", "roi$ch") ) } @labels;
+    $is_ok &&= any { $_ eq lc($self->co->default("x23a2vortex", "slow$ch")) } @labels;
+    $is_ok &&= any { $_ eq lc($self->co->default("x23a2vortex", "fast$ch")) } @labels;
   };
   return 0 if not $is_ok;
 
@@ -90,17 +94,17 @@ sub fix {
   };
 
 
-  my @labs    = ($cfg->val('med', 'energy'), lc($cfg->val('med', 'i0')));
+  my @labs    = ($self->co->default('med', 'energy'), lc($self->co->default('med', 'i0')));
   my $maxints = q{};
   my $dts     = q{};
-  my $time    = $cfg->val("med", "time");
-  my $inttime = $cfg->val("med", "inttime");
-  my @intcol  = Ifeffit::get_array("v___ortex.".lc($cfg->val("med", "intcol")));
+  my $time    = $self->co->default("x23a2vortex", "time");
+  my $inttime = $self->co->default("x23a2vortex", "inttime");
+  my @intcol  = Ifeffit::get_array("v___ortex.".lc($self->co->default("x23a2vortex", "intcol")));
   foreach my $ch (@represented) {
-    my $deadtime = $cfg->val("med", "dt$ch");
-    my @roi  = Ifeffit::get_array("v___ortex.".lc($cfg->val("med", "roi$ch" )));
-    my @slow = Ifeffit::get_array("v___ortex.".lc($cfg->val("med", "slow$ch")));
-    my @fast = Ifeffit::get_array("v___ortex.".lc($cfg->val("med", "fast$ch")));
+    my $deadtime = $self->co->default("x23a2vortex", "dt$ch");
+    my @roi  = Ifeffit::get_array("v___ortex.".lc($self->co->default("x23a2vortex", "roi$ch" )));
+    my @slow = Ifeffit::get_array("v___ortex.".lc($self->co->default("x23a2vortex", "slow$ch")));
+    my @fast = Ifeffit::get_array("v___ortex.".lc($self->co->default("x23a2vortex", "fast$ch")));
     my ($max, @corr) = _correct($inttime, $time, $deadtime, \@intcol, \@roi, \@fast, \@slow);
 
     Ifeffit::put_array("v___ortex.corr$ch", \@corr);

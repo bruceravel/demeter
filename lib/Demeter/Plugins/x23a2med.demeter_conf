@@ -1,0 +1,148 @@
+######################################################################
+section=x23a2med
+section_description
+  These variables determine the behavior of the X23A2MED plugin.
+
+variable=i0
+type=string
+default=i0
+  This is the column label for the I0 channel.
+
+variable=dt1
+type=positive integer
+default=280
+minint=10
+maxint=10000
+units=nanoseconds
+description
+  The fast channel deadtime of the first detector element.
+
+variable=roi1
+type=string
+default=ifch1
+description
+  This is the column label for the ROI of the first detector.
+
+variable=fast1
+type=string
+default=iffast1
+description
+  This is the column label for the fast channel (ICR) of the first
+  detector.
+
+variable=slow1
+type=string
+default=ifslow1
+description
+  This is the column label for the fast channel (ICR) of the first
+  detector.
+
+variable=dt2
+type=positive integer
+default=280
+minint=10
+maxint=10000
+units=nanoseconds
+description
+  The fast channel deadtime of the second detector element.
+
+variable=roi2
+type=string
+default=ifch2
+description
+  This is the column label for the ROI of the second detector.
+
+variable=fast2
+type=string
+default=iffast2
+description
+  This is the column label for the fast channel (ICR) of the second
+  detector.
+
+variable=slow2
+type=string
+default=ifslow2
+description
+  This is the column label for the fast channel (ICR) of the second
+  detector.
+
+variable=dt3
+type=positive integer
+default=280
+minint=10
+maxint=10000
+units=nanoseconds
+description
+  The fast channel deadtime of the third detector element.
+
+variable=roi3
+type=string
+default=ifch3
+description
+  This is the column label for the ROI of the third detecter.
+
+variable=fast3
+type=string
+default=iffast3
+description
+  This is the column label for the fast channel (ICR) of the third
+  detecter.
+
+variable=slow3
+type=string
+default=ifslow3
+description
+  This is the column label for the fast channel (ICR) of the third
+  detecter.
+
+variable=dt4
+type=positive integer
+default=280
+minint=10
+maxint=10000
+units=nanoseconds
+description
+  The fast channel deadtime of the fourth detector element.
+
+variable=roi4
+type=string
+default=ifch4
+description
+  This is the column label for the ROI of the fourth detecter.
+
+variable=fast4
+type=string
+default=iffast4
+description
+  This is the column label for the fast channel (ICR) of the fourth
+  detecter.
+
+variable=slow4
+type=string
+default=ifslow4
+description
+  This is the column label for the fast channel (ICR) of the fourth
+  detecter.
+
+variable=time
+type=list
+default=column
+options=column constant
+description
+  This tells the plugin to use either constant integration time set
+  by the inttime parameter or to take integration times from the
+  column specified by the intcol parameter.
+
+variable=intcol
+type=string
+default=inttime
+  This is the column label for the integration time.
+
+variable=inttime
+type=real
+default=1
+units=seconds
+description
+  This is the fixed integration time used when constant integration
+  time is specified by the time parameter.
+

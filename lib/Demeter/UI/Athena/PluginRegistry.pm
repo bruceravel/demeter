@@ -102,7 +102,7 @@ sub OnRight {
   $menu->Append($DOCUMENT, "Show documentation for the $plugin plugin");
   my $pl = "Demeter::Plugins::$plugin";
   my $obj = $pl->new;
-  my $inifile = $obj->inifile;
+  my $inifile = $obj->inifile || $obj->conffile;
   $menu->Append($CONFIGURE, "Configure the $plugin plugin")  if $inifile;
   my $here = ($event =~ m{Mouse}) ? $event->GetPosition : Wx::Point->new(10,10);
   $this -> PopupMenu($menu, $here);
@@ -128,34 +128,34 @@ sub Configure {
   my ($this, $event, $app, $pl) = @_;
   my $plugin = (split(/::/, $pl))[-1];
   my $obj = $pl->new;
-  my $inifile = $obj->inifile;
+  my $inifile = $obj->inifile || $obj->conffile;
   if (not $inifile) {
-    $::app->{main}->status("The $plugin plugin does not have any configruation parameters.");
+    $::app->{main}->status("The $plugin plugin does not have any configuration parameters.");
     return;
   };
   my $cfg = new Config::IniFiles( -file => $inifile );
-  my $config = Demeter::UI::Athena::PluginConfig->new($this, $cfg, $plugin);
+  my $config = Demeter::UI::Athena::PluginConfig->new($this, $plugin, [lc($plugin)]);
   my $response = $config->ShowModal;
-  if ($response eq wxID_CANCEL) {
+  if ($response eq wxID_CLOSE) {
     $::app->{main}->status("Canceled configuration of $plugin plugin");
     return;
   };
 
-  my @sections = $cfg->Sections;
-  foreach my $s (@sections) {
-    foreach my $p ($cfg->Parameters($s)) {
-      #printf "%s:%s = %s\n", $s, $p, $config->{"$s.$p"}->GetValue;
-      my $temp = $pl->new;
-      if ($temp->lower_case) {
-	$cfg->setval($s, $p, lc($config->{"$s.$p"}->GetValue));
-      } else {
-	$cfg->setval($s, $p, $config->{"$s.$p"}->GetValue);
-      };
-      undef $temp;
-    };
-  };
-  $cfg->WriteConfig($inifile);
-  $::app->{main}->status("Wrote $plugin configuration file: $inifile");
+  # my @sections = $cfg->Sections;
+  # foreach my $s (@sections) {
+  #   foreach my $p ($cfg->Parameters($s)) {
+  #     #printf "%s:%s = %s\n", $s, $p, $config->{"$s.$p"}->GetValue;
+  #     my $temp = $pl->new;
+  #     if ($temp->lower_case) {
+  # 	$cfg->setval($s, $p, lc($config->{"$s.$p"}->GetValue));
+  #     } else {
+  # 	$cfg->setval($s, $p, $config->{"$s.$p"}->GetValue);
+  #     };
+  #     undef $temp;
+  #   };
+  # };
+  # $cfg->WriteConfig($inifile);
+  # $::app->{main}->status("Wrote $plugin configuration file: $inifile");
 };
 
 sub Document {
