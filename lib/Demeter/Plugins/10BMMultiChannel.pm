@@ -5,25 +5,23 @@ use File::Copy;
 use File::Spec;
 use List::MoreUtils qw(firstidx);
 use Readonly;
-Readonly my $INIFILE => '10bmmultichannel.ini';
+Readonly my $INIFILE => '10bmmultichannel.demeter_conf';
 
 use Moose;
 extends 'Demeter::Plugins::FileType';
 
 my $demeter = Demeter->new();
-has '+inifile'     => (default => File::Spec->catfile($demeter->dot_folder, $INIFILE));
+has '+conffile'     => (default => File::Spec->catfile($demeter->dot_folder, $INIFILE));
 
 has '+is_binary'   => (default => 0);
 has '+description' => (default => 'the APS 10BM multi-channel detector');
 has '+version'     => (default => 0.2);
 has '+output'      => (default => 'project');
 has 'edge_energy'  => (is => 'rw', isa => 'Num', default => 0);
+has '+time_consuming'  => (default => 1);
+has '+working_message' => (default => 'Converting multicolumn data file to an Athena project file');
 
-
-if (not -e File::Spec->catfile($demeter->dot_folder, $INIFILE)) {
-  copy(File::Spec->catfile(dirname($INC{'Demeter.pm'}), 'Demeter', 'share', 'ini', $INIFILE),
-       File::Spec->catfile($demeter->dot_folder, $INIFILE));
-};
+Demeter -> co -> read_config(File::Spec->catfile(dirname($INC{'Demeter.pm'}), 'Demeter', 'Plugins', $INIFILE));
 
 sub is {
   my ($self) = @_;
@@ -42,11 +40,6 @@ sub is {
 sub fix {
   my ($self) = @_;
 
-  my $ini = $self->inifile;
-  confess "10BM multi-channel inifile $ini does not exist", return q{} if (not -e $ini);
-  confess "could not read 10BM multi-channel inifile $ini", return q{} if (not -r $ini);
-  my $cfg = new Config::IniFiles( -file => $ini );
-
   my $file = $self->file;
   my $prj  = File::Spec->catfile($self->stash_folder, basename($self->file));
 
@@ -56,59 +49,60 @@ sub fix {
 
   ## -------- determine the temperature from the TC voltage at the edge
   my $temperature = 0;
-  if ($cfg->val('flags', 'temperature_column')) {
+  if (Demeter->co->default('10bmmultichannel', 'temperature_column')) {
     my @energy = $mc->get_array('nergy');
-    #my $iedge = firstidx {$_ > $cfg->val('flags', 'edge')} @energy;
     my $iedge = firstidx {$_ > $self->edge_energy} @energy;
-    my @temp = $mc->get_array($cfg->val('flags', 'temperature_column'));
+    my @temp = $mc->get_array(Demeter->co->default('10bmmultichannel', 'temperature_column'));
     $temperature = (@temp) ? sprintf("%dC", 200*($temp[$iedge]/100000 - 1)) : 0;
   };
 
   ## -------- make 4 mu(E) spectra
   ##          the name is a concatination of the file, the sample name, and T
-  my @data = ($mc->make_data(numerator   => q{$}.$cfg->val('numerator',   '1'),
-			     denominator => q{$}.$cfg->val('denominator', '1'),
+  my @data = ($mc->make_data(numerator   => q{$}.Demeter->co->default('10bmmultichannel', 'numer1'),
+			     denominator => q{$}.Demeter->co->default('10bmmultichannel', 'denom1'),
 			     ln          => 1,
-			     name        => join(" - ", basename($self->file), $cfg->val('names', '1'), $temperature),
-			     datatype    => $cfg->val('flags', 'type'),
-			     bkg_eshift  => $cfg->val('eshift', '1'),
+			     name        => join(" - ", basename($self->file), Demeter->co->default('10bmmultichannel', 'name1'), $temperature),
+			     datatype    => Demeter->co->default('10bmmultichannel', 'type'),
+			     bkg_eshift  => Demeter->co->default('10bmmultichannel', 'eshift1'),
 			    ),
-	      $mc->make_data(numerator   => q{$}.$cfg->val('numerator',   '2'),
-			     denominator => q{$}.$cfg->val('denominator', '2'),
+	      $mc->make_data(numerator   => q{$}.Demeter->co->default('10bmmultichannel', 'numer2'),
+			     denominator => q{$}.Demeter->co->default('10bmmultichannel', 'denom2'),
 			     ln          => 1,
-			     name        => join(" - ", basename($self->file), $cfg->val('names', '2'), $temperature),
-			     datatype    => $cfg->val('flags', 'type'),
-			     bkg_eshift  => $cfg->val('eshift', '2'),
+			     name        => join(" - ", basename($self->file), Demeter->co->default('10bmmultichannel', 'name2'), $temperature),
+			     datatype    => Demeter->co->default('10bmmultichannel', 'type'),
+			     bkg_eshift  => Demeter->co->default('10bmmultichannel', 'eshift2'),
 			    ),
-	      $mc->make_data(numerator   => q{$}.$cfg->val('numerator',   '3'),
-			     denominator => q{$}.$cfg->val('denominator', '3'),
+	      $mc->make_data(numerator   => q{$}.Demeter->co->default('10bmmultichannel', 'numer3'),
+			     denominator => q{$}.Demeter->co->default('10bmmultichannel', 'denom3'),
 			     ln          => 1,
-			     name        => join(" - ", basename($self->file), $cfg->val('names', '3'), $temperature),
-			     datatype    => $cfg->val('flags', 'type'),
-			     bkg_eshift  => $cfg->val('eshift', '3'),
+			     name        => join(" - ", basename($self->file), Demeter->co->default('10bmmultichannel', 'name3'), $temperature),
+			     datatype    => Demeter->co->default('10bmmultichannel', 'type'),
+			     bkg_eshift  => Demeter->co->default('10bmmultichannel', 'eshift3'),
 			    ),
-	      $mc->make_data(numerator   => q{$}.$cfg->val('numerator',   '4'),
-			     denominator => q{$}.$cfg->val('denominator', '4'),
+	      $mc->make_data(numerator   => q{$}.Demeter->co->default('10bmmultichannel', 'numer4'),
+			     denominator => q{$}.Demeter->co->default('10bmmultichannel', 'denom4'),
 			     ln          => 1,
-			     name        => join(" - ", basename($self->file), $cfg->val('names', '4'), $temperature),
-			     datatype    => $cfg->val('flags', 'type'),
-			     bkg_eshift  => $cfg->val('eshift', '4'),
+			     name        => join(" - ", basename($self->file), Demeter->co->default('10bmmultichannel', 'name4'), $temperature),
+			     datatype    => Demeter->co->default('10bmmultichannel', 'type'),
+			     bkg_eshift  => Demeter->co->default('10bmmultichannel', 'eshift4'),
 			    ),
 	     );
 
   ## -------- import the reference channel if requested in the ini file
-  if ($cfg->val('flags',   'reference')) {
-    $data[4] = $mc->make_data(numerator   => q{$}.$cfg->val('denominator', '1').q{+$}.$cfg->val('denominator', '2').q{+$}.$cfg->val('denominator', '3').q{+$}.$cfg->val('denominator', '4'),
-			      denominator => q{$}.$cfg->val('denominator', 'reference'),
+  if (Demeter->co->default('10bmmultichannel', 'reference')) {
+    $data[4] = $mc->make_data(numerator   => q{$}.Demeter->co->default('10bmmultichannel', 'denom1').q{+$}.Demeter->co->default('10bmmultichannel', 'denom2').q{+$}.Demeter->co->default('10bmmultichannel', 'denom3').q{+$}.Demeter->co->default('10bmmultichannel', 'denom4'),
+			      denominator => q{$}.Demeter->co->default('10bmmultichannel', 'denomref'),
 			      ln          => 1,
-			      name        => join(" - ", basename($self->file), $cfg->val('names', 'reference')),
-			      datatype    => $cfg->val('flags', 'type'),
+			      name        => join(" - ", basename($self->file), Demeter->co->default('10bmmultichannel', 'nameref')),
+			      datatype    => Demeter->co->default('10bmmultichannel', 'type'),
 			     );
   };
 
   ## -------- write the project file and clean up
+  my $journal = Demeter::Journal->new;
+  $journal->text(join($/, $mc->get_titles));
   $mc->dispose("erase \@group ".$mc->group);
-  $data[0]->write_athena($prj, @data);
+  $data[0]->write_athena($prj, @data, $journal);
   $_ -> DEMOLISH foreach (@data, $mc);
 
   $self->fixed($prj);
@@ -151,47 +145,9 @@ the L<Demeter::Data::MultiChannel> object.
 
 =back
 
-=head1 INI FILE
+=head1 CONF FILE
 
-Here is an example of F<$HOME/.horae/10bmmultichannel.ini>:
-
-   ## flags for changing the behavior of the plugin
-   [flags]
-   reference=1
-   temperature_column=mcs6
-   edge=11564.00
-   type=xmu
-
-   ## name each sample in each channel
-   [names]
-   1=oxide
-   2=sulfide
-   3=hydroxide
-   4=metal
-   reference=reference
-
-   ## column numbers for the I0 columns (reference numerator is the sum of the 4 It channels)
-   [numerator]
-   1=2
-   2=3
-   3=4
-   4=5
-
-   ## column numbers for the It columns
-   [denominator]
-   1=6
-   2=7
-   3=8
-   4=9
-   reference=10
-
-   ## energy offsets of channels 2,3,4 relative to channel 1
-   ## these are removed as the data are imported from the multichannel file
-   [eshift]
-   1=0
-   2=0
-   3=0
-   4=0
+Demeter ships with a demeter_conf file for configuring this plugin.
 
 The energy shifts are measured by placing a foil in front of all four
 channels and measuring the edge shift across the horizontal extent of

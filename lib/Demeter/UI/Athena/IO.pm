@@ -160,6 +160,9 @@ sub test_plugins {
       undef $this;
       next;
     };
+    if ($this->time_consuming) {
+      $app->{main}->status($this->working_message, "wait");
+    };
     my $ok = $this->fix;
     return '!'.$pl if not $ok;
     return $this;

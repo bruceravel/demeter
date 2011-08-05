@@ -102,7 +102,7 @@ sub OnRight {
   $menu->Append($DOCUMENT, "Show documentation for the $plugin plugin");
   my $pl = "Demeter::Plugins::$plugin";
   my $obj = $pl->new;
-  my $inifile = $obj->inifile || $obj->conffile;
+  my $inifile = $obj->conffile;
   $menu->Append($CONFIGURE, "Configure the $plugin plugin")  if $inifile;
   my $here = ($event =~ m{Mouse}) ? $event->GetPosition : Wx::Point->new(10,10);
   $this -> PopupMenu($menu, $here);
@@ -128,12 +128,12 @@ sub Configure {
   my ($this, $event, $app, $pl) = @_;
   my $plugin = (split(/::/, $pl))[-1];
   my $obj = $pl->new;
-  my $inifile = $obj->inifile || $obj->conffile;
+  my $inifile = $obj->conffile;
   if (not $inifile) {
     $::app->{main}->status("The $plugin plugin does not have any configuration parameters.");
     return;
   };
-  my $cfg = new Config::IniFiles( -file => $inifile );
+  #my $cfg = new Config::IniFiles( -file => $inifile );
   my $config = Demeter::UI::Athena::PluginConfig->new($this, $plugin, [lc($plugin)]);
   my $response = $config->ShowModal;
   if ($response eq wxID_CLOSE) {

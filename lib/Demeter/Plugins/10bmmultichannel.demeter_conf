@@ -1,0 +1,169 @@
+######################################################################
+section=10bmmultichannel
+section_description
+  These variables determine the behavior of the 10BMMultiChannel plugin.
+
+variable=name1
+type=string
+default=ch1
+description
+  The name given to channel 1 in the output Athena project file.
+
+variable=name2
+type=string
+default=ch2
+description
+  The name given to data channel 2 in the output Athena project file.
+
+variable=name3
+type=string
+default=ch3
+description
+  The name given to data channel 3 in the output Athena project file.
+
+variable=name4
+type=string
+default=ch4
+description
+  The name given to data channel 4 in the output Athena project file.
+
+variable=nameref
+type=string
+default=Reference
+description
+  The name given to the reference channel in the output Athena project file.
+
+variable=numer1
+type=positive integer
+default=2
+minint=1
+maxint=100
+description
+  The column number of the I0 signal for data channel 1.
+
+variable=numer2
+type=positive integer
+default=3
+minint=1
+maxint=100
+description
+  The column number of the I0 signal for data channel 2.
+
+variable=numer3
+type=positive integer
+default=4
+minint=1
+maxint=100
+description
+  The column number of the I0 signal for data channel 3.
+
+variable=numer4
+type=positive integer
+default=5
+minint=1
+maxint=100
+description
+  The column number of the I0 signal for data channel 4.
+
+variable=denom1
+type=positive integer
+default=6
+minint=1
+maxint=100
+description
+  The column number of the It signal for data channel 1.
+
+variable=denom2
+type=positive integer
+default=7
+minint=1
+maxint=100
+description
+  The column number of the It signal for data channel 2.
+
+variable=denom3
+type=positive integer
+default=8
+minint=1
+maxint=100
+description
+  The column number of the It signal for data channel 3.
+
+variable=denom4
+type=positive integer
+default=9
+minint=1
+maxint=100
+description
+  The column number of the It signal for data channel 4.
+
+variable=denomref
+type=positive integer
+default=10
+minint=1
+maxint=100
+description
+  The column number of the Iref signal.
+
+variable=eshift1
+type=real
+default=0
+units=eV
+description
+  The energy offset applied to data channel 1.  These is removed as
+  the data are imported from the multichannel file.  Its is determined
+  by pre-measuring a foil in all four channels
+
+variable=eshift2
+type=real
+default=0
+units=eV
+description
+  The energy offset applied to data channel 2.  These is removed as
+  the data are imported from the multichannel file.  Its is determined
+  by pre-measuring a foil in all four channels
+
+variable=eshift3
+type=real
+default=0
+units=eV
+description
+  The energy offset applied to data channel 3.  These is removed as
+  the data are imported from the multichannel file.  Its is determined
+  by pre-measuring a foil in all four channels
+
+variable=eshift4
+type=real
+default=0
+units=eV
+description
+  The energy offset applied to data channel 4.  These is removed as
+  the data are imported from the multichannel file.  Its is determined
+  by pre-measuring a foil in all four channels
+
+variable=reference
+type=boolean
+onvalue=1
+offvalue=0
+default=1
+description
+  When true, a reference channel will be imported using the sum of all
+  4 It channels for the numerator and the column specified by denomref
+  as the denominator.
+
+variable=temperature_column
+type=string
+default=mcs6
+description
+  Specify the label of the temperature column used to perform the
+  UOP-style temperature determination.  Note that this is a column
+  label, not a column number.  To skip the temperature calculation,
+  make this an empty string.
+
+variable=type
+type=list
+default=xmu
+options=xmu xanes
+description
+  Flag these data as xmu or xanes in the output Athena project file
+

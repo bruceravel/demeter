@@ -40,6 +40,19 @@ sub iofx {
   return $i;
 };
 
+sub get_titles {
+  my ($self) = @_;
+  my @titles;
+  my $string = Ifeffit::get_string(sprintf("%s_title_%2.2d", $self->group, 1));
+  my $i = 1;
+  while ($string !~ m{\A\s+\z}) {
+    push @titles, $string;
+    ++$i;
+    $string = Ifeffit::get_string(sprintf("%s_title_%2.2d", $self->group, $i));
+    #print sprintf("%s_title_%2.2d", $self->group, $i), ":  ", $string, $/;
+  };
+  return @titles;
+};
 
 sub put {
   my ($self, $eref, $xref, @args) = @_;

@@ -28,6 +28,9 @@ has 'ch4'          => (is => 'rw', isa => 'Str',  default => 'channel 4');
 has 'reference'    => (is => 'rw', isa => 'Str',  default => 'reference');
 has 'do_reference' => (is => 'rw', isa => 'Bool', default => 0);
 
+has '+time_consuming'  => (default => 1);
+has '+working_message' => (default => 'Converting multicolumn data file to an Athena project file');
+
 
 sub is {
   my ($self) = @_;

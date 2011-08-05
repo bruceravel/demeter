@@ -24,9 +24,11 @@ has 'filename'    => (is => 'rw', isa => 'Str', default => q{});
 has 'folder'      => (is => 'rw', isa => 'Str', default => q{});
 has 'fixed'       => (is => 'rw', isa => 'Str', default => q{});
 
-has 'inifile'     => (is => 'rw', isa => 'Str',  default => q{});
+#has 'inifile'     => (is => 'rw', isa => 'Str',  default => q{});
 has 'conffile'    => (is => 'rw', isa => 'Str',  default => q{});
 has 'lower_case'  => (is => 'rw', isa => 'Bool', default => 1);
+has 'time_consuming'  => (is => 'rw', isa => 'Bool', default => 0);
+has 'working_message' => (is => 'rw', isa => 'Str', default => q{});
 
 enum 'OutputTypes' => ['data', 'project'];
 coerce 'OutputTypes', from 'Str', via { lc($_) };
@@ -306,14 +308,14 @@ an input data file into a stash file that Ifeffit can read.  A plugin
 can also make an Athena project file, in which case this attribute
 tells Demeter to interpret it that way.
 
-=item C<inifile>
+=item C<conffile>
 
 If the plugin requires configuration parameters, these can be
-specified in an Ini-style file whise name is given by this attribute.
-The default is an emty string, which indicates that no configuration
-file is required.  The file must be an Ini file so that a GUI (say,
-Athena) can provide a consistent mechanism for modifying the
-configuration.
+specified in an demeter-style configuration file whise name is given
+by this attribute.  The default is an emty string, which indicates
+that no configuration file is required.  The file must be a
+demeter_conf file so that a GUI (say, Athena) can provide a consistent
+mechanism for modifying the configuration.
 
 =back
 

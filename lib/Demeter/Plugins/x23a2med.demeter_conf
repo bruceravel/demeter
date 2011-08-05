@@ -3,9 +3,18 @@ section=x23a2med
 section_description
   These variables determine the behavior of the X23A2MED plugin.
 
+variable=energy
+type=string
+default=nergy
+description
+  This is the column label for the energy channel.  Note that an odd
+  interaction between Ifeffit and XDAC data files results in the "E"
+  being dropped from the "Energy" column label.
+
 variable=i0
 type=string
 default=i0
+description
   This is the column label for the I0 channel.
 
 variable=dt1
@@ -136,6 +145,7 @@ description
 variable=intcol
 type=string
 default=inttime
+description
   This is the column label for the integration time.
 
 variable=inttime

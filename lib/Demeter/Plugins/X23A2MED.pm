@@ -18,17 +18,7 @@ has 'nelements'    => (is => 'rw', isa => 'Int', default => 4);
 my $demeter = Demeter->new();
 has '+conffile'     => (default => File::Spec->catfile(dirname($INC{'Demeter.pm'}), 'Demeter', 'Plugins', $INIFILE));
 
-# if (not -e File::Spec->catfile($demeter->dot_folder, $INIFILE)) {
-#   my $target = File::Spec->catfile($demeter->dot_folder, $INIFILE);
-#   copy(File::Spec->catfile(dirname($INC{'Demeter.pm'}), 'Demeter', 'share', 'ini', $INIFILE),
-#        $target);
-#   chmod(0666, $target) if $demeter->is_windows;
-# };
-
-local $|=1;
 Demeter -> co -> read_config(File::Spec->catfile(dirname($INC{'Demeter.pm'}), 'Demeter', 'Plugins', $INIFILE));
-print Demeter -> co -> describe_param("x23a2med", 'i0');
-print Demeter -> co -> describe_param("x23a2med", 'roi1');
 
 sub is {
   my ($self) = @_;
@@ -43,9 +33,9 @@ sub is {
   my @headers = split(" ", $line);
 
   #my $cfg = new Config::IniFiles( -file => $self->inifile );
-  my $ch1 = $self->co->default("x23a2vortex", "roi1");
-  my $sl1 = $self->co->default("x23a2vortex", "slow1");
-  my $fa1 = $self->co->default("x23a2vortex", "fast1");
+  my $ch1 = Demeter->co->default("x23a2med", "roi1");
+  my $sl1 = Demeter->co->default("x23a2med", "slow1");
+  my $fa1 = Demeter->co->default("x23a2med", "fast1");
   my $seems_med = ($line =~ m{\b$ch1\b}i);
   my $is_med = (($line =~ m{\b$sl1\b}i) and ($line =~ m{\b$fa1\b}i));
   close $D;
@@ -64,26 +54,19 @@ sub fix {
 
   my @labels = split(" ", Ifeffit::get_string('$column_label'));
 
-  ## get the parameters for the deadtime correction from the persistent file
-  my $vortexini = $self->inifile;
-  confess "X23A2MED inifile $vortexini does not exist", return q{} if (not -e $vortexini);
-  confess "could not read X23A2MED inifile $vortexini", return q{} if (not -r $vortexini);
-  my $cfg = new Config::IniFiles( -file => $vortexini );
-  #my $maxel = $self->co->default('elements','n');
-
   ## is this the four-element or one-element vortex?
   my @represented = ();
   foreach my $i (1 .. 4) {
-    push @represented, $i if any {lc($_) eq $self->co->default("x23a2vortex", "roi$i")} @labels;
+    push @represented, $i if any {lc($_) eq Demeter->co->default("x23a2med", "roi$i")} @labels;
   };
   $self->nelements($#represented+1);
 
 
   my $is_ok = 1;
   foreach my $ch (@represented) {
-    $is_ok &&= any { $_ eq lc($self->co->default("x23a2vortex", "roi$ch") ) } @labels;
-    $is_ok &&= any { $_ eq lc($self->co->default("x23a2vortex", "slow$ch")) } @labels;
-    $is_ok &&= any { $_ eq lc($self->co->default("x23a2vortex", "fast$ch")) } @labels;
+    $is_ok &&= any { $_ eq lc(Demeter->co->default("x23a2med", "roi$ch") ) } @labels;
+    $is_ok &&= any { $_ eq lc(Demeter->co->default("x23a2med", "slow$ch")) } @labels;
+    $is_ok &&= any { $_ eq lc(Demeter->co->default("x23a2med", "fast$ch")) } @labels;
   };
   return 0 if not $is_ok;
 
@@ -94,17 +77,17 @@ sub fix {
   };
 
 
-  my @labs    = ($self->co->default('med', 'energy'), lc($self->co->default('med', 'i0')));
+  my @labs    = (Demeter->co->default('x23a2med', 'energy'), lc(Demeter->co->default('x23a2med', 'i0')));
   my $maxints = q{};
   my $dts     = q{};
-  my $time    = $self->co->default("x23a2vortex", "time");
-  my $inttime = $self->co->default("x23a2vortex", "inttime");
-  my @intcol  = Ifeffit::get_array("v___ortex.".lc($self->co->default("x23a2vortex", "intcol")));
+  my $time    = Demeter->co->default("x23a2med", "time");
+  my $inttime = Demeter->co->default("x23a2med", "inttime");
+  my @intcol  = Ifeffit::get_array("v___ortex.".lc(Demeter->co->default("x23a2med", "intcol")));
   foreach my $ch (@represented) {
-    my $deadtime = $self->co->default("x23a2vortex", "dt$ch");
-    my @roi  = Ifeffit::get_array("v___ortex.".lc($self->co->default("x23a2vortex", "roi$ch" )));
-    my @slow = Ifeffit::get_array("v___ortex.".lc($self->co->default("x23a2vortex", "slow$ch")));
-    my @fast = Ifeffit::get_array("v___ortex.".lc($self->co->default("x23a2vortex", "fast$ch")));
+    my $deadtime = Demeter->co->default("x23a2med", "dt$ch");
+    my @roi  = Ifeffit::get_array("v___ortex.".lc(Demeter->co->default("x23a2med", "roi$ch" )));
+    my @slow = Ifeffit::get_array("v___ortex.".lc(Demeter->co->default("x23a2med", "slow$ch")));
+    my @fast = Ifeffit::get_array("v___ortex.".lc(Demeter->co->default("x23a2med", "fast$ch")));
     my ($max, @corr) = _correct($inttime, $time, $deadtime, \@intcol, \@roi, \@fast, \@slow);
 
     Ifeffit::put_array("v___ortex.corr$ch", \@corr);
@@ -129,7 +112,6 @@ sub fix {
 
   unlink $new if (-e $new);
   $demeter->dispose($command);
-  undef $cfg;
 
   $self->fixed($new);
   return $new;
@@ -209,10 +191,13 @@ Demeter::Plugin::X23A2MED - filetype plugin for X23A2 Vortex data
 =head1 SYNOPSIS
 
 This plugin performs a deadtime correction on data recorded using the
-X23A2 Vortex silicon drift detector.  It requires an ini file to
-provide all the information needed to correct each channel, including
-the known deadtime (in nanoseconds) for each channel and the columns
-in the file containing the ROI, fast, and slow channels.
+X23A2 Vortex silicon drift detector.  Both the single-element and
+four-element detectors are supported.
+
+This plugin requires configuration to provide all the information
+needed to correct each channel, including the known deadtime (in
+nanoseconds) for each channel and the columns in the file containing
+the ROI, fast, and slow channels.
 
 =head1 METHODS
 
@@ -251,50 +236,8 @@ fluorescence XAS data.
 
 This plugin also provides the C<inifile> attribute which points at an
 ini file containing the various paremeters of the deadtime correction.
-This content for the ini file works with the X23A2 Vortex at the time
-of this writing.
 
-   [elements]
-   n=4
-
-   [med]
-   # Channel 1: deadtimes are in nanoseconds
-   dt1=280
-   roi1=if1
-   fast1=ifast1
-   slow1=islow1
-   #
-   # Channel 2: deadtimes are in nanoseconds
-   dt2=280
-   roi2=if2
-   fast2=ifast2
-   slow2=islow2
-   #
-   # Channel 3: deadtimes are in nanoseconds
-   dt3=280
-   roi3=if3
-   fast3=ifast3
-   slow3=islow3
-   #
-   # Channel 4: deadtimes are in nanoseconds
-   dt4=280
-   roi4=if4
-   fast4=ifast4
-   slow4=islow4
-   #
-   # other columns
-   i0=i0
-   energy=nergy
-   #
-   # times
-   inttime=1
-   time=constant
-   intcol=inttime
-
-By deafult, the file called F<x23a2vortex.ini> in the dot folder
-(F<$HOME/.horae> on unix, F<%APPDATA%\horae> on Windows).  To supply
-new parameters, either overwrite that file or specify a different file
-as the value of this attribute.
+Demeter ships with a demeter_conf file for configuring this plugin.
 
 =head2 Deadtime correction parameters
 

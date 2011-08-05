@@ -36,7 +36,7 @@ sub new {
   $config->{params}->Expand($config->{params}->GetRootItem);
   $box->Add($config, 1, wxGROW|wxALL, 5);
 
-  my $close = Wx::Button->new($this, wxID_CLOSE, q{});
+  my $close = Wx::Button->new($this, wxID_CANCEL, q{});
   $box->Add($close, 0, wxGROW|wxALL, 5);
   #EVT_BUTTON($this, $close, \&on_close);
 
