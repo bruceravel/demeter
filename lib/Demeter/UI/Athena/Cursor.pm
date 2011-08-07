@@ -42,7 +42,7 @@ sub cursor {
   } elsif (Demeter->mo->template_plot eq 'gnuplot') {
     my $yesno = Wx::MessageDialog
       -> new($parent,
-	     "Double click in the Gnuplot window to pluck a point.  Click ok when ready.",
+	     "Double click in the Gnuplot window to pluck a point.  Click ok when done.",
 	     "Pluck a point",
 	     wxOK|wxICON_EXCLAMATION|wxSTAY_ON_TOP)
 	-> ShowModal;

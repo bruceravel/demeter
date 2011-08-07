@@ -862,8 +862,10 @@ sub Pluck {
     $plucked = $x;
   } elsif (($on_screen eq 'e') and ($which =~ m{bkg})) {
     $plucked = $x - $data->bkg_e0;
+    $plucked = $data->e2k($plucked) if ($which =~ m{spl\d\z});
   } elsif (($on_screen eq 'k') and ($which =~ m{bkg})) {
     $plucked = $data->k2e($x, 'relative');
+    $plucked = $data->e2k($plucked) if ($which =~ m{spl\d\z});
   };
   $plucked = sprintf("%.3f", $plucked);
   $app->{main}->{Main}->{$which}->SetValue($plucked);
