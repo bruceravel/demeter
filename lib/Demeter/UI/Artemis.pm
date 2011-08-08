@@ -522,7 +522,7 @@ sub uptodate {
       push @paths, $path->{path};
     };
   };
-  $rframes->{Plot}->fetch_parameters;
+  $rframes->{Plot}->fetch_parameters('plot');
 
   #modified(1);
   return ($abort, \@data, \@paths);
@@ -857,7 +857,7 @@ sub OnMenuClick {
 
     ## -------- debug submenu
     ($id == $PLOT_YAML) and do {
-      $frames{Plot}->fetch_parameters;
+      $frames{Plot}->fetch_parameters('plot');
       my $yaml   = $demeter->po->serialization;
       my $dialog = Demeter::UI::Artemis::ShowText->new($frames{main}, $yaml, 'YAML of Plot object') -> Show;
       last SWITCH;

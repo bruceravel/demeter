@@ -863,7 +863,7 @@ sub plot {
   my ($self, $event, $how) = @_;
   $self->fetch_parameters;
   my $pf = $Demeter::UI::Artemis::frames{Plot};
-  $pf->fetch_parameters;
+  $pf->fetch_parameters('data');
   my $saveplot = $demeter->co->default(qw(plot plotwith));
 
   if ($pf->{fileout}->GetValue) {

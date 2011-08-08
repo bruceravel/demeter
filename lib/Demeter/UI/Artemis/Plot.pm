@@ -33,6 +33,8 @@ use Demeter::UI::Artemis::DND::PlotListDrag;
 use Cwd;
 use File::Spec;
 use List::Util qw(first sum);
+use Readonly;
+Readonly my $EPSI => 0.01;
 
 my $demeter = $Demeter::UI::Artemis::demeter;
 
@@ -91,13 +93,12 @@ sub new {
   $left -> Add($this->{kweight}, 0, wxLEFT|wxRIGHT|wxGROW, 5);
   $this->{kweight}->SetSelection($demeter->co->default('plot', 'kweight'));
   $this->mouseover("kweight", "Select a value of k-weight to use when plotting data.");
-  $this->{kweight}->Enable(4, 0);
+  #$this->{kweight}->Enable(4, 0);
   $demeter->po->kweight($demeter->co->default('plot', 'kweight'));
   EVT_RADIOBOX($this, $this->{kweight},
 	       sub{
 		 my ($self, $event) = @_;
-		 my $kw = $this->{kweight}->GetStringSelection;
-		 $demeter->po->kweight($kw);
+		 $this->set_kweight('plot');
 		 $self->plot($event, $self->{last});
 	       });
 
@@ -195,10 +196,30 @@ sub mouseover {
 };
 
 
-sub fetch_parameters {
+sub set_kweight {
   my ($self) = @_;
+  my $kw = $self->{kweight}->GetStringSelection;
+  if ($kw eq 'kw') {
 
-  $demeter->po->kweight($self->{kweight}->GetStringSelection);
+    my @kweights = ();
+    foreach my $i (0 .. $self->{plotlist}->GetCount-1) {
+      next if (not $self->{plotlist}->IsChecked($i));
+      my $obj = $self->{plotlist}->GetIndexedData($i);
+      push @kweights, $obj->data->fit_karb_value;
+    };
+    ## check to see if plotted items all have the same arbitrary k-weight
+    my $nuniq = grep {abs($_-$kweights[0]) > $EPSI} @kweights;
+    $demeter->po->kweight($kweights[0]);
+    $demeter->po->kweight(-1) if $nuniq; # variable k-weighting if not all the same
+  } else {
+    $demeter->po->kweight($kw);
+  };
+};
+
+sub fetch_parameters {
+  my ($self, $how) = @_;
+
+  $self->set_kweight($how);
   foreach my $p (qw(kmin kmax rmin rmax qmin qmax)) {
     $demeter->po->$p($self->{limits}->{$p}->GetValue);
   };
@@ -270,7 +291,7 @@ sub plot {
     $demeter->po->file($file);
   };
   my ($abort, $rdata, $rpaths) = Demeter::UI::Artemis::uptodate(\%Demeter::UI::Artemis::frames);
-  $self->fetch_parameters;
+  $self->fetch_parameters('plot');
   my @list = ();
   foreach my $i (0 .. $self->{plotlist}->GetCount-1) {
     next if (not $self->{plotlist}->IsChecked($i));
