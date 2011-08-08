@@ -149,7 +149,7 @@ sub _save_fit_command {
               : ($how eq 'k2')      ? 2
               : ($how eq 'k3')      ? 3
               : ($how eq 'k')       ? 0
-	      : ($how =~ m{\A[rq]}) ? $self->po->kweight
+	      : ($how =~ m{\A[rq]}) ? $self->data->get_kweight
 	      :                       undef;
 
   if ($how =~ m{\A[rq]}) {

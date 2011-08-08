@@ -30,6 +30,7 @@ Readonly my $FOCUS_UP	       => Wx::NewId();
 Readonly my $FOCUS_DOWN	       => Wx::NewId();
 Readonly my $MOVE_UP	       => Wx::NewId();
 Readonly my $MOVE_DOWN	       => Wx::NewId();
+Readonly my $EPSI	       => 0.01;
 
 use Scalar::Util qw{looks_like_number};
 
@@ -1394,7 +1395,7 @@ sub plot {
   return if not $ok;
 
   #$app->{main}->{Main}->pull_values($app->current_data);
-  $app->pull_kweight($data[0]);
+  $app->pull_kweight($data[0], $how);
 
   $data[0]->po->start_plot;
   my $title = ($how eq 'single')                                  ? q{}
@@ -1537,7 +1538,7 @@ sub quadplot {
     $app->{main}->{PlotK}->pull_single_values;
     $app->{main}->{PlotR}->pull_marked_values;
     $app->{main}->{PlotQ}->pull_marked_values;
-    $app->pull_kweight($data);
+    $app->pull_kweight($data, 'single');
     $data->plot('quad');
 
     $data->po->showlegend($showkey);
@@ -1582,10 +1583,19 @@ sub plot_i0_marked {
 };
 
 sub pull_kweight {
-  my ($app, $data) = @_;
+  my ($app, $data, $how) = @_;
   my $kw = $app->{main}->{kweights}->GetStringSelection;
   if ($kw eq 'kw') {
-    $data->po->kweight($data->fit_karb_value);
+    #$data->po->kweight($data->fit_karb_value);
+    if ($how eq 'single') {
+      $data->po->kweight($data->fit_karb_value);
+    } else {
+      ## check to see if marked groups all have the same arbitrary k-weight
+      my @kweights = map {$_->fit_karb_value} $app->marked_groups;
+      my $nuniq = grep {abs($_-$kweights[0]) > $EPSI} @kweights;
+      $data->po->kweight($data->fit_karb_value);
+      $data->po->kweight(-1) if $nuniq; # variable k-weighting if not all the same
+    };
   } else {
     $data->po->kweight($kw);
   };

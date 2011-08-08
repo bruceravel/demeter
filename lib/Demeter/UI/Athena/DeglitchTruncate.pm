@@ -206,7 +206,7 @@ sub OnChoose {
   my ($miny, $maxy) = minmax(@y);
   foreach my $i (0 .. $#x) {	# need to scale these appropriately
     my $px  = ($x[$i] - $xx)/($x[-1] - $x[0]);
-    my $ppy = ($which eq 'chi') ? $y[$i]*$xx**$data->po->kweight : $y[$i];
+    my $ppy = ($which eq 'chi') ? $y[$i]*$xx**$data->get_kweight : $y[$i];
     my $py  = ($ppy - $yy)/($maxy - $miny);
     my $d   = sqrt($px**2 + $py**2);
     ($d < $dist) and ($dist, $ii) = ($d, $i);

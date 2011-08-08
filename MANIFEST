@@ -492,7 +492,6 @@ lib/Demeter/share/Demeter_large.png
 lib/Demeter/share/DemeterBanner.bmp
 lib/Demeter/share/DemeterDialog.bmp
 lib/Demeter/share/gnuplot_colors.dem
-lib/Demeter/share/ini/10bmmultichannel.ini
 lib/Demeter/share/ini/athena.styles.ini
 lib/Demeter/share/peacock.jpeg
 lib/Demeter/share/pgplot/grfont.dat
@@ -1602,7 +1601,6 @@ t/filetypes/ssrlmicro.dat
 t/filetypes/x10c.dat
 t/filetypes/x15b.dat
 t/filetypes/x23a2med.dat
-t/filetypes/x23a2vortex.ini
 t/nonuniform.chi
 t/orig.inp
 t/PbFe12O19.inp

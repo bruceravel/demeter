@@ -4,4 +4,4 @@
   #   {$D->parameter} returns the value of that parameter
 }
 chi_noise({$D->group}.chi, k={$D->group}.k, kmin={$D->fft_kmin}, kmax={$D->maxk}, dk={$D->fft_dk},
-           kwindow={$D->fft_kwindow}, kweight={$P->kweight})
+           kwindow={$D->fft_kwindow}, kweight={$D->get_kweight})

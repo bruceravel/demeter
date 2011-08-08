@@ -33,7 +33,7 @@ Athena-post_edge_polynomial: {$nc0} + {$nc1} * en + {$nc2} * en^2
 Athena-spline_range_energy:  {$spl1e} {$spl2e}
 Athena-clamps:               {$D->clamp($D->bkg_clamp1)}/{$D->clamp($D->bkg_clamp2)}
 Athena-spline_range_k:       {$spl1} {$spl2}
-Athena-kweight:              {$P->kweight}
+Athena-kweight:              {$D->get_kweight}
 Athena-window:               {$D->fft_kwindow}
 Athena-phase_correction:     {$D->fft_pc}
 Athena-k_range:              {$D->fft_kmin} {$D->fft_kmax}

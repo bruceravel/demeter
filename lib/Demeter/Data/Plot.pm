@@ -148,7 +148,7 @@ sub _plotk_command {
   my $pf  = $self->mo->plot;
   my $string = q{};
   my $group = $self->group;
-  my $kw = $pf->kweight;
+  my $kw = $self->data->get_kweight;
 
   my ($xlorig, $ylorig) = ($pf->xlabel, $pf->ylabel);
   my $xl = "k (\\A\\u-1\\d)" if ((not defined($xlorig)) or ($xlorig =~ /^\s*$/));
@@ -182,7 +182,7 @@ sub _plotR_command {
   my $string = q{};
   my $group = $self->group;
   my %suffix = ('m'=>"chir_mag", e=>"chir_mag", r=>"chir_re", i=>"chir_im", p=>"chir_pha");
-  my $kw = $pf->kweight;
+  my $kw = $self->data->get_kweight;
   my $xl = $pf->xlabel;
   $pf->xlabel("R (\\A)") if ((not defined($xl)) or ($xl =~ /^\s*$/));
   $pf->ylabel($pf->plot_rylabel);
@@ -220,7 +220,7 @@ sub _plotq_command {
   my $pf  = $self->mo->plot;
   my $string = q{};
   my $group = $self->group;
-  my $kw = $pf->kweight;
+  my $kw = $self->data->get_kweight;
   my $xl = $pf->xlabel;
   $pf->xlabel("k (\\A\\u-1\\d)") if ($xl =~ m{\A\s*\z});
   $pf->ylabel($pf->plot_qylabel);
@@ -445,7 +445,7 @@ sub rmr_offset {
   my ($self) = @_;
   $self->_update('bft');
   if ($self->po->plot_rmr_offset) {
-    my $kw = $self -> po -> kweight;
+    my $kw = $self -> data -> get_kweight;
     return -10**($kw-1) * $self->po->offset if ($kw == 1);
   };
   return -0.6*max($self->get_array("chir_mag"));
@@ -535,7 +535,7 @@ sub plot_marker {
     my $which = ($requested eq 'chie') ? 'chi' : $requested;
     my $xxx = ($requested eq 'chie') ? $self->k2e($xx, 'absolute') : $xx ;
     my $y = $self->yofx($which, "", $xx);
-    $y = $y*$xx**$self->po->kweight if ($requested eq 'chie');
+    $y = $y*$xx**$self->data->get_kweight if ($requested eq 'chie');
     $command .= $self->template("plot", "marker", { x => $xxx, 'y'=> $y });
   };
   #if ($self->get_mode("template_plot") eq 'gnuplot') {
@@ -566,7 +566,7 @@ sub stack {
 sub running {
   my ($self, $space, $kw) = @_;
   $space ||= $self->po->space;
-  $kw ||= $self->po->kweight;
+  $kw ||= $self->data->get_kweight;
   my ($diffsum, $max, $suff) = (0,0,q{});
   my @running = ();
  SWITCH: {

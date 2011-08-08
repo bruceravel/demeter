@@ -23,6 +23,8 @@ use File::Basename;
 use File::Spec;
 my $here  = dirname($0);
 
+my @plugins = qw(10bmmultichannel x23a2med);
+my $plregex = join("|", @plugins);
 my $number_of_groups = 25;
 
 use Demeter;
@@ -55,7 +57,7 @@ $demeter->co->set(var1 => 7, var2 => 'foo');
 ok( $demeter2->co->get("var1") == 7,              'wrote and read an arbitrary config parameter: number');
 ok( $demeter2->co->get("var2") eq 'foo',          'wrote and read an arbitrary config parameter: string');
 
-my @groups = $demeter->co->groups;
+my @groups = grep {$_ !~ m{$plregex}} $demeter->co->groups;
 ok( ($groups[0] eq 'atoms' and $#groups == $number_of_groups),   'configuration system introspection works: groups '.$#groups);
 my $groups = $demeter->co->main_groups;
 ok( ($#{$groups} == $number_of_groups),                          'configuration system introspection works: main_groups '.$#groups);
@@ -67,7 +69,8 @@ $demeter->co->read_config(File::Spec->catfile($here, 'test.demeter_conf'));
 ok( (not $demeter->co->default(qw(testing boolean))),            'reading boolean from arbitrary config file');
 ok( $demeter->co->default(qw(testing string))  eq 'Hi there!',   'reading string from arbitrary config file');
 ok( $demeter->co->default(qw(testing real))    == 1.0,           'reading real from arbitrary config file');
-@groups = $demeter->co->groups;
+
+@groups = grep {$_ !~ m{$plregex}} $demeter->co->groups;
 ok( ($#groups == $number_of_groups+1),                           'introspection after reading new group: groups');
 $groups = $demeter->co->main_groups;
 ok( ($#{$groups} == $number_of_groups),                          'introspection after reading new group: main_groups');

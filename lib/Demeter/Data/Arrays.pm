@@ -137,7 +137,7 @@ sub floor_ceil {
   my @array = $self->get_array($suffix, $part);
   if ($suffix eq 'chi') {
     my @k = $self->get_array('k');
-    my $w = $self->po->kweight;
+    my $w = $self->data->get_kweight;
     @array = map { $array[$_] * $k[$_] ** $w } (0 .. $#array);
   };
   my ($min, $max) = minmax(@array);

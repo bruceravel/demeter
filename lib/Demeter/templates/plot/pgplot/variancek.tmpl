@@ -6,5 +6,5 @@
   $mult = $D->plot_multiplier * $C->get("data_max") / $C->get("stddev_max") / 2;
   q{};
 }
-plot({$D->group}.k, "{$mult}*{$D->group}.k^{$P->kweight}*{$D->group}.stddev+{$D->y_offset}",
+plot({$D->group}.k, "{$mult}*{$D->group}.k^{$D->get_kweight}*{$D->group}.stddev+{$D->y_offset}",
      style={$P->datastyle}, color="{$P->color}", key="{sprintf("%d", $mult)} * STD. Dev.")

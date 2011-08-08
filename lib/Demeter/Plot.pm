@@ -362,7 +362,8 @@ sub plot_kylabel {
   my ($self) = @_;
   my $kw = $self->kweight;
   my $ylorig = $self->ylabel;
-  my $yl = ($kw and ($ylorig =~ m{\A\s*\z}))       ? sprintf("k\\u%d\\d\\gx(k) (\\A\\u-%d\\d)", $kw, $kw)
+  my $yl = (($kw>0) and ($ylorig =~ m{\A\s*\z}))   ? sprintf("k\\u%d\\d\\gx(k) (\\A\\u-%d\\d)", $kw, $kw)
+         : (($kw<0) and ($ylorig =~ m{\A\s*\z}))   ? sprintf("k\\u%d\\d\\gx(k) (variable k-weighting)", $kw)
          : ((not $kw) and ($ylorig =~ m{\A\s*\z})) ? "\\gx(k)" # special y label for kw=0
          :                                           $ylorig;
   return $yl;
@@ -374,7 +375,11 @@ sub plot_rylabel {
   my %open   = ('m'=>"|", e=>"Env[", r=>"Re[", i=>"Im[", p=>"Phase[");
   my %close  = ('m'=>"|", e=>"]",    r=>"]",   i=>"]",   p=>"]");
   my $part   = lc($self->r_pl);
-  return sprintf("%s\\gx(R)%s (\\A\\u-%.3g\\d)", $open{$part}, $close{$part}, $self->kweight+1);
+  if ($self->kweight >= 0) {
+    return sprintf("%s\\gx(R)%s (\\A\\u-%.3g\\d)", $open{$part}, $close{$part}, $self->kweight+1);
+  } else {
+    return sprintf("%s\\gx(R)%s (variable k-weighting)", $open{$part}, $close{$part});
+  };
 };
 
 sub plot_qylabel {
@@ -383,7 +388,11 @@ sub plot_qylabel {
   my %open   = ('m'=>"|", e=>"Env[", r=>"Re[", i=>"Im[", p=>"Phase[");
   my %close  = ('m'=>"|", e=>"]",    r=>"]",   i=>"]",   p=>"]");
   my $part   = lc($self->q_pl);
-  return sprintf("%s\\gx(q)%s (\\A\\u-%.3g\\d)", $open{$part}, $close{$part}, $self->kweight);
+  if ($self->kweight >= 0) {
+    return sprintf("%s\\gx(q)%s (\\A\\u-%.3g\\d)", $open{$part}, $close{$part}, $self->kweight);
+  } else {
+    return sprintf("%s\\gx(q)%s (variable k-weighting)", $open{$part}, $close{$part});
+  };
 };
 
 sub outfile {
@@ -748,6 +757,10 @@ before plotting in R or q.  Typically, this is 1, 2, or 3, but can
 actually be any number.  When this gets changed, all Data, Path, and
 VPath objects will be flagged as needing to be brought up-to-date for
 their forward Fourier transform.
+
+A negative value is interpreted to mean that the value of
+C<fit_karb_value> should be used as the k-weighting to each data
+group.  This allows data to be overplotted with variable k-weighting.
 
 =item C<chie> (boolean) I<[0]>
 

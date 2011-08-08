@@ -16,7 +16,7 @@
 	        suffix  => 'chi',
 	        scale   => $D->plot_multiplier,
 	        yoffset => $D->y_offset,
-	        weight  => $P->kweight,
+	        weight  => $D->get_kweight,
 	       );
   $thiskey = $D->plotkey || $C->get('plot_part') || $P->key;
   $thiskey =~ s{_}{\\\\_}g;

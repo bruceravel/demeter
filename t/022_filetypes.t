@@ -37,7 +37,7 @@ my %athena = (SSRLA	=> [25521.4,   'transmission'],
 	      PFBL12C	=> [12279.743, 'transmission'],
 	      CMC	=> [2473.6,    'fluorescence'],
 	      SSRLmicro	=> [11107.5,   'fluorescence'],
-	      X23A2MED	=> [6554.2,    'fluorescence'],
+	      X23A2MED	=> [7133.748,  'fluorescence'],
 	      Lytle 	=> [8979.15,   'transmission'],
 	      DUBBLE    => [12660.9,   'fluorescence'],
 	     );
@@ -48,12 +48,12 @@ foreach my $type (sort keys %athena) {
   my $this  = 'Demeter::Plugins::'.$type;
 				## test 1: check against a normal data file
   my $obj   = $this->new(file=>File::Spec->catfile($here, 'fe.060'));
-  $obj     -> inifile(File::Spec->catfile($here, "filetypes", "x23a2vortex.ini")) if (ref($obj) =~ m{X23A2MED});
+  #$obj     -> inifile(File::Spec->catfile($here, "filetypes", "x23a2vortex.ini")) if (ref($obj) =~ m{X23A2MED});
   ok( (not $obj->is), "fe.060 is not of type $type");
   $obj     -> DESTROY;
 				## test 2: check against a file of this type
   $obj      = $this->new(file=>$file);
-  $obj     -> inifile(File::Spec->catfile($here, 'filetypes', 'x23a2vortex.ini')) if (ref($obj) =~ m{X23A2MED});
+  #$obj     -> inifile(File::Spec->catfile($here, 'filetypes', 'x23a2vortex.ini')) if (ref($obj) =~ m{X23A2MED});
   ok( $obj->is, "File of type $type recognized");
 				## test 3: fix the data, import it as a Data object, check the e0 value
   my $fixed = $obj->fix;

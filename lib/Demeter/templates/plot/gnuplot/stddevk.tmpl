@@ -13,7 +13,7 @@
                 add      => 'stddev', 
 	        scale    => $D->plot_multiplier,
 	        yoffset  => $D->y_offset,
-	        weight   => $P->kweight,
+	        weight   => $D->get_kweight,
   	        part     => $C->get('plot_part'),
 	       );
   $file2 = $P->tempfile;
@@ -23,7 +23,7 @@
                 subtract => 'stddev', 
 	        scale    => $D->plot_multiplier,
 	        yoffset  => $D->y_offset,
-	        weight   => $P->kweight,
+	        weight   => $D->get_kweight,
   	        part     => $C->get('plot_part'),
 	       );
 

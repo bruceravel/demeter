@@ -4,5 +4,5 @@
   #   {$D->parameter} returns the value of that parameter
   #   {$P->parameter} returns the value of a Plot parameter
 }
-plot({$D->group}.k, "{$D->plot_multiplier}*{$D->group}.k^{$P->kweight}*{$D->group}.chi+{$D->y_offset}",
+plot({$D->group}.k, "{$D->plot_multiplier}*{$D->group}.k^{$D->get_kweight}*{$D->group}.chi+{$D->y_offset}",
      style={$P->datastyle}, color="{$P->color}", key="{$D->plotkey || $P->key}")

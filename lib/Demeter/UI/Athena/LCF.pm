@@ -500,8 +500,12 @@ sub fit {
   my ($this, $event, $nofit) = @_;
   my $busy = Wx::BusyCursor->new();
   my $trouble = $this->_prep($nofit);
+  if (($this->{space}->GetSelection == 2) and ($::app->{main}->{kweights}->GetStringSelection eq 'kw')) {
+    $::app->{main}->status("Not doing LCF -- Linear combination fitting in chi(k) cannot be done with arbitrary k-wieghting!", 'error');
+    return;
+  };
   if ($trouble) {
-    $::app->{main}->status("Not doing LCF -- the $trouble parameter value is not a number!", 'error|nobuffer');
+    $::app->{main}->status("Not doing LCF -- the $trouble parameter value is not a number!", 'error');
     return;
   };
   $this->{LCF} -> fit if not $nofit;

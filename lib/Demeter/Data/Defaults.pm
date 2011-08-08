@@ -154,8 +154,8 @@ sub to_default {
       $self->bft_rwindow($self->co->default('fft', 'kwindow'));
       last SWITCH;
     };
-    ($param eq 'fft_karb_value') and do {
-      $self->fft_karb_value(0.5);
+    ($param eq 'fit_karb_value') and do {
+      $self->fit_karb_value(0.5);
       last SWITCH;
     };
 

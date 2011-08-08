@@ -11,7 +11,7 @@
   $this->points(file    => $data,
                 space   => 'k', 
 	        suffix  => 'chi',
-	        weight  => $P->kweight,
+	        weight  => $D->get_kweight,
 	       );
 
   $fit = $P->tempfile;
@@ -19,7 +19,7 @@
                 part    => 'fit',
                 space   => 'k', 
 	        suffix  => 'chi',
-	        weight  => $P->kweight,
+	        weight  => $D->get_kweight,
 	       );
   q{}
 }

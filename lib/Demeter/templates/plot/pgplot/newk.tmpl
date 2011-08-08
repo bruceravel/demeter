@@ -4,7 +4,7 @@
   #   {$D->parameter} returns the value of that parameter
   #   {$P->parameter} returns the value of a Plot parameter
 }
-newplot({$D->group}.k, "{$D->plot_multiplier}*{$D->group}.k^{$P->kweight}*{$D->group}.chi+{$D->y_offset}",
+newplot({$D->group}.k, "{$D->plot_multiplier}*{$D->group}.k^{$D->get_kweight}*{$D->group}.chi+{$D->y_offset}",
         xlabel="{$P->xlabel}", ylabel="{$P->ylabel}",
 	grid, gridcolor="{$P->gridcolor}", xmin={$P->kmin}, xmax={$P->kmax},
 	style={$P->datastyle}, color="{$P->color}", key="{$D->plotkey || $P->key}", 

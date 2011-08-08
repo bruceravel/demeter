@@ -11,5 +11,5 @@
 }
 @params = (fft_kmin => {$S->fft_kmin}, fft_kmax => {$S->fft_kmax}, fft_dk => {$S->fft_dk}, fft_kwindow => '{$S->fft_kwindow}');
 ${$S->group} -> set(@params);
-${$S->group} -> po -> kweight({$P->kweight});
+${$S->group} -> po -> kweight({$D->get_kweight});
 ${$S->group} -> update_fft(1);

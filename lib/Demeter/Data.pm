@@ -487,6 +487,10 @@ sub chi_noise {
   return $self;
 };
 
+sub get_kweight {
+  my ($self) = @_;
+  return ($self->po->kweight >= 0) ? $self->po->kweight : $self->fit_karb_value;
+};
 sub _kw_string {
   my ($self) = @_;
   my @list = ();

@@ -15,7 +15,7 @@
 }
 ##|
 ##| saving "{$S->name}" as back-transformed chi(k)
-set {$S->group}.chik = {$S->group}.k^{$P->kweight}*{$S->group}.chi
+set {$S->group}.chik = {$S->group}.k^{$D->get_kweight}*{$S->group}.chi
 write_data(file="{$filename}", ${$titles}, ${$D->group}_title_*,
            label="q chiq_re chiq_im chiq_mag chiq_pha win chik",
            {$S->group}.q, {$S->group}.chiq_re, {$S->group}.chiq_im,

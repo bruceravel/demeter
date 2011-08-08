@@ -6,5 +6,5 @@
   $string = $S->randomstring(6);
   q{};
 }
-set p___lot.{$string} = {$D->plot_multiplier}*{$S->group}.k^{$P->kweight}*{$S->group}.chi+{$D->y_offset}
+set p___lot.{$string} = {$D->plot_multiplier}*{$S->group}.k^{$D->get_kweight}*{$S->group}.chi+{$D->y_offset}
 set $p___lot_string = {$string}

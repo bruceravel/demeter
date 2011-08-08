@@ -12,7 +12,7 @@
 	        suffix  => 'chi',
 	        scale   => $D->plot_multiplier,
 	        yoffset => $D->y_offset,
-	        weight  => $P->kweight,
+	        weight  => $D->get_kweight,
   	        part    => $C->get('plot_part'),
 	       );
   $thiskey = $D->plotkey || $C->get('plot_part') || $P->key;
