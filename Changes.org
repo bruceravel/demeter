@@ -5,8 +5,14 @@
 
 * Beta testing releases:
 
-** Release 4: XX July, 2011
+** Release 4: XX August, 2011
 *** Athena
+   - Fixed several small LCF bugs
+   - Use arbitrary k-weights more sensibly
+   - Fixed a bug plucking spline range in k
+   - Better message in pluck dialog
+   - Use demeter's configuration dialog to configure Plugins that have
+     configuration parameters (currently, 10BMMultiChannel and X23A2MED)
 
 *** Artemis
    - The path-like tab in the Atoms/Feff frame is now set correctly
@@ -36,15 +42,24 @@
        + old-style fitting projects
        + demeter serializations
        + chi(k) data (this is imperfect -- mu(E) data, for instance,will pass the test)
+   - Use arbitrary k-weights more sensibly
+   - Fix a bug creating a blank Atoms frame wherein one could not
+     return to the Atoms tab
 
 *** Demeter
    - Integrate VASP MD output into histogram subsystem
    - Follow Windows link files now done for every object that has a
      file attribute
+   - More sensible behavior using arbitrary k-weighting
+   - Fixed a bug plotting indicators with phase part of chi(R)
 
 *** Windows installer
 
 *** Acknowledgements for this release
+   1. Scott Calvin
+   2. Emmanuel Dolsch
+   3. Van Vu
+
 
 ** Release 3: 8 July, 2011
 *** Athena

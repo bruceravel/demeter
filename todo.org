@@ -151,7 +151,7 @@
   - [ ] status bar does not get color for wait or error messages /this may be unfixable, see/ http://www.nntp.perl.org/group/perl.wxperl.users/2011/04/msg7943.html
   - [ ] The atoms panel background color is too light.  Which window needs its BackgroundColour set to wxNullColour?
   - [ ] clampbox does not get enabled/disabled explicitly, is this another aspect of StaticBox that is different on Windows? (see link above)
-  - [ ] relocation of Strawberry leaves Ifeffit unable to find pahse shift and CL tables (use an ENV variable?)
+  - [ ] relocation of Strawberry leaves Ifeffit unable to find phase shift and CL tables (use an ENV variable?)
 
 
 ** Artemis
@@ -178,11 +178,12 @@
    - [X] pluck buttons have not been implemented
    - [ ] per-data set R-factor reporting in log file is turned off.  see fit_parameter_report in Demeter::Data::I0
 
-**** Project [2/4]
+**** Project [2/5]
    - [ ] VPaths to/from project file
    - [ ] Indicators to/from project file
    - [X] Imported project file does not correctly set path-like tab
    - [X] replacing data in a project does not work
+   - [ ] does autosave file work as intended?
 
 **** Advanced fitting						   :Advanced:
 ***** MFC [0/1]
@@ -193,7 +194,7 @@
    - [ ] Clone data sets such that the path list gets replicated efficiently (i.e. for MDS fits)
 
 
-*** Histograms [11/12] [91%]
+*** Histograms [11/13] [84%]
    - [X] sum histogram bins into a single chi(k) file
    - [X] convert chi(k) data to a mock feffNNNN.dat file
    - [X] Triangle object
@@ -207,6 +208,7 @@
    - [X] ipot=1 is hardwired in many places -- generalize.... /fixed for SS, same should work for NCL and Thru/
    - [X] scatter plot of ncl distribution
    - [X] factor out DLPOLY dependence into a role so that other MD packages can be added more easily
+   - [ ] triangle histogram
    - [-] *Error checking* in Artemis, e.g. check that there is at least one bin in the supplied range(s)
 	 - [X] SS
 	 - [ ] ncl

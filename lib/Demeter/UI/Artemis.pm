@@ -35,6 +35,7 @@ use base 'Wx::App';
 
 
 use Readonly;
+Readonly my $BLANK           => q{___.BLANK.___};
 Readonly my $MRU	     => Wx::NewId();
 Readonly my $SHOW_BUFFER     => Wx::NewId();
 Readonly my $CONFIG	     => Wx::NewId();
@@ -1002,7 +1003,7 @@ sub OnFeffRightClick {
   } else {
     my $which = $dialog->GetMruSelection;
     if ($which eq 'Open a blank Atoms window') {
-      my ($fnum, $ifeff) = make_feff_frame($frames{main}, q{});
+      my ($fnum, $ifeff) = make_feff_frame($frames{main}, $BLANK);
       $frames{$fnum} -> Show(1);
       $frames{main}->{$fnum}->SetValue(1);
     } elsif (not -e $which) {
@@ -1022,6 +1023,7 @@ sub make_feff_frame {
   my $feffbox = $self->{feffbox};
   $name ||= basename($file) if $file;	# ok for importing an atoms or CIF file
   $name ||= 'new';
+  $name   = 'new' if ($name eq $BLANK);
 
   my $new = Wx::ToggleButton->new($self->{fefflist}, -1, "Hide ".emph($name));
   my $ifeff = $new->GetId;
@@ -1051,14 +1053,16 @@ sub make_feff_frame {
   } else {
     $frames{$fnum}->{Atoms}->{used} = 0;
     $frames{$fnum}->{Atoms}->{name}->SetValue('new');
-    $frames{$fnum}->{notebook}->SetPageImage(0, 5); # see Demeter::UI::Atoms.pm around line 60
-    $frames{$fnum}->{notebook}->SetPageText(0, '');
-    EVT_NOTEBOOK_PAGE_CHANGING($frames{$fnum}, $frames{$fnum}->{notebook},
-			       sub{ my($self, $event) = @_;
-				    my ($selection) = $event->GetSelection;
-				    $event->Veto() if ($selection == 0); # veto selection of Atoms tab
-				    return;
-				  });
+    if ($file ne $BLANK) {
+      $frames{$fnum}->{notebook}->SetPageImage(0, 5); # see Demeter::UI::Atoms.pm around line 60
+      $frames{$fnum}->{notebook}->SetPageText(0, '');
+      EVT_NOTEBOOK_PAGE_CHANGING($frames{$fnum}, $frames{$fnum}->{notebook},
+				 sub{ my($self, $event) = @_;
+				      my ($selection) = $event->GetSelection;
+				      $event->Veto() if ($selection == 0); # veto selection of Atoms tab
+				      return;
+				    });
+    };
   };
   if ($file and (-e $file) and $demeter->is_feff($file)) {
     my $text = $demeter->slurp($file);

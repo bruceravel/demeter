@@ -108,7 +108,7 @@ sub new {
   $self->{resultsbox} = Wx::StaticBox->new($self, -1, 'Results', wxDefaultPosition, wxDefaultSize);
   $self->{resultsboxsizer} = Wx::StaticBoxSizer->new( $self->{resultsbox}, wxVERTICAL );
   $self->{results} = Wx::TextCtrl->new($self, -1, q{}, wxDefaultPosition, wxDefaultSize,
-				       wxVSCROLL|wxHSCROLL|wxTE_RICH2|wxTE_MULTILINE|wxTE_READONLY|wxNO_BORDER);
+				       wxHSCROLL|wxTE_RICH2|wxTE_MULTILINE|wxTE_READONLY);
   $self->{resultsboxsizer} -> Add($self->{results}, 1, wxEXPAND|wxALL, 2);
   $vbox -> Add($self->{resultsboxsizer}, 1, wxEXPAND|wxALL, 5);
   $self->{results}->SetFont( Wx::Font->new( 10, wxTELETYPE, wxNORMAL, wxNORMAL, 0, "" ) );
@@ -300,6 +300,7 @@ sub get_formula_data {
     local $Text::Wrap::columns = 55;
     $parent->{results} -> AppendText(wrap(q{}, q{}, $answer));
   };
+  $parent->{results} -> ShowPosition(1);
 };
 
 sub use_element {
