@@ -342,15 +342,13 @@ sub _statistics {
   my @func  = $self->get_array('func');
   my @resid = $self->get_array('resid');
   my ($avg, $count, $rfact, $sumsqr) = (0,0,0,0);
-  if ($self->space =~ m{\Anor}) {
-    foreach my $i (0 .. $#x) {
-      next if ($x[$i] < $self->xmin);
-      next if ($x[$i] > $self->xmax);
-      ++$count;
-      $avg += $func[$i];
-    };
-    $avg /= $count if $count != 0;
+  foreach my $i (0 .. $#x) {
+    next if ($x[$i] < $self->xmin);
+    next if ($x[$i] > $self->xmax);
+    ++$count;
+    $avg += $func[$i];
   };
+  $avg /= $count if $count != 0;
   foreach my $i (0 .. $#x) {
     next if ($x[$i] < $self->xmin);
     next if ($x[$i] > $self->xmax);

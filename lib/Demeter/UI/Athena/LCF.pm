@@ -102,7 +102,7 @@ sub main_page {
   $this->{window} -> SetSizer($winbox);
   $this->{window} -> SetScrollbars(0, 20, 0, 50);
 
-  $this->{nstan} = 12;
+  $this->{nstan} = $demeter->co->default('lcf', 'nstan');
   foreach my $i (0 .. $this->{nstan}-1) {
     $this->add_standard($this->{window}, $winbox, $i);
   };

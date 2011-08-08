@@ -796,7 +796,7 @@ sub suffix {
     $suff = 'chir_re';
   } elsif (($po->space eq 'r') and ($po->r_pl eq 'i')) {
     $suff = 'chir_im';
-  } elsif (($po->space eq 'q') and ($po->r_pl eq 'p')) {
+  } elsif (($po->space eq 'r') and ($po->r_pl eq 'p')) {
     $suff = 'chir_pha';
   } elsif (($po->space eq 'q') and ($po->q_pl eq 'm')) {
     $suff = 'chiq_mag';

@@ -10,7 +10,7 @@ use Wx::Event qw(EVT_BUTTON EVT_CHECKBOX EVT_TEXT EVT_TEXT_ENTER);
 #use Demeter::UI::Wx::SpecialCharacters qw(:all);
 
 use vars qw($label);
-$label = "XDI: File metadata";
+$label = "File metadata";
 
 my $tcsize = [60,-1];
 

@@ -60,7 +60,7 @@ sub plot {
   return if ( (lc($self->po->space) ne 'r') and (lc($self->space) eq 'r') );
 
   my $command = $self->template('plot', 'indicator');
-  #print $command;
+  ##print $command;
   $self->dispose($command, 'plotting');
 };
 

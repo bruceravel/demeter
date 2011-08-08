@@ -85,6 +85,8 @@ sub new {
   EVT_BUTTON($this, $this->{plot},    sub{$this->plot});
   EVT_BUTTON($this, $this->{make},    sub{$this->make});
 
+  $box->Add(Wx::StaticText->new($this, -1, "(Marked groups functionality has not yet been implemented.)"), 0, wxALL|wxALIGN_CENTER_HORIZONTAL, 5);
+
   $box->Add(1,1,1);		# this spacer may not be needed, Journal.pm, for example
 
   $this->{document} = Wx::Button->new($this, -1, 'Document section: difference spectra');
