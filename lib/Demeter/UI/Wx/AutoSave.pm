@@ -28,7 +28,8 @@ sub new {
   my ($class, $parent, $text, $title) = @_;
 
   opendir(my $stash, $demeter->stash_folder);
-  my @list = grep {$_ =~ m{autosave\z}} readdir $stash;
+  ##                                         vvvvvv this is an icky kludge!
+  my @list = grep {$_ =~ m{autosave\z} and $_ !~ m{\AAthena}} readdir $stash;
   close $stash;
   return -1 if not @list;
   my @toss = @list;

@@ -32,6 +32,7 @@ sub write_athena {
 		  "# This file created at " . $self->now . "\n" .
 		  "# Using " . $self->environment . "\n\n");
 
+  ##$gzout->gzwrite('$filename = ' . $filename . ";\n\n");
   $gzout->gzwrite($self->_write_record);
   my $journal = q{};
   foreach my $d (@list) {

@@ -54,13 +54,15 @@ sub Export {
   #$app->{main}->{Main}->pull_values($app->current_data);
   $app->{main}->{Journal}->{object}->text($app->{main}->{Journal}->{journal}->GetValue);
   $data[0]->write_athena($fname, @data, $app->{main}->{Journal}->{object});
-  $data[0]->push_mru("xasdata", $fname);
-  $app->set_mru;
-  $app->{main}->{project}->SetLabel(basename($fname, '.prj'));
-  $app->{main}->{currentproject} = $fname;
-  $app->modified(0);
-  my $extra = ($how eq 'marked') ? " with marked groups" : q{};
-  $app->{main}->status("Saved project file $fname".$extra);
+  if (dirname($fname) ne Demeter->stash_folder) {
+    $data[0]->push_mru("xasdata", $fname);
+    $app->set_mru;
+    $app->{main}->{project}->SetLabel(basename($fname, '.prj'));
+    $app->{main}->{currentproject} = $fname;
+    $app->modified(0);
+    my $extra = ($how eq 'marked') ? " with marked groups" : q{};
+    $app->{main}->status("Saved project file $fname".$extra);
+  };
   undef $busy;
   return $fname;
 };

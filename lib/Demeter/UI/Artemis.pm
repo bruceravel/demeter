@@ -389,15 +389,20 @@ sub OnInit {
 		     feedback     => \&feedback,
 		    );
 
-  if ($demeter->co->default("artemis", "autosave") and autosave_exists()) {
-    import_autosave();
-  } elsif ($ARGV[0] and -e $ARGV[0]) {
-    my $file = File::Spec->rel2abs( $ARGV[0] );
-    read_project(\%frames, $file);
-  };
   $frames{main}->status("Welcome to Artemis (" . $demeter->identify . ")");
   1;
 }
+
+sub process_argv {
+  my ($app, @args) = @_;
+  if ($demeter->co->default("artemis", "autosave") and autosave_exists()) {
+    import_autosave();
+  } elsif ($args[0]) { # and -e $args[0]) {
+    my $file = File::Spec->rel2abs( $args[0] );
+    read_project(\%frames, $file) if Demeter->is_zipproj($file, 0, 'fpj');
+  };
+
+};
 
 
 sub mouseover {

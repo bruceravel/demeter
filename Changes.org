@@ -7,7 +7,8 @@
 
 ** Release 4: XX August, 2011
 *** Athena
-   - Fixed several small LCF bugs
+   - Inmplemented an autosave feature + recovery of autosave after a crash
+   - Fixed several LCF bugs
    - Use arbitrary k-weights more sensibly
    - Fixed a bug plucking spline range in k
    - Better message in pluck dialog
@@ -45,6 +46,7 @@
    - Use arbitrary k-weights more sensibly
    - Fix a bug creating a blank Atoms frame wherein one could not
      return to the Atoms tab
+   - Fixed a bug importing autosave file
 
 *** Demeter
    - Integrate VASP MD output into histogram subsystem

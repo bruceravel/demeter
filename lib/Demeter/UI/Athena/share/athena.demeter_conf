@@ -69,7 +69,7 @@ default=true
 description
   If true, perform an autosave (i.e. write the project to a temporary
   project file to guard against unexpectedly exiting the program) at
-  certain key moments.  (Not currently in use.)
+  certain key moments.
 
 variable=single
 type=color
@@ -105,6 +105,19 @@ description
   YOUR PROJECT FILE!  If you want the bright red color to appear faster,
   make this a lower number.  A higher number slows the pace down.  A
   value of zero or less turns off the color changing.
+
+variable=autosave_frequency
+type=positive integer
+minint=1
+maxint=10000
+default=40
+units=number of events
+description
+  This integer sets the frequency at which autosave files are written.
+  If this is set to small, the frequency of the autosave event may be
+  annoying.  If it is set too large, the autosave will not happen fast
+  enough and you work will not be safeguarded.
+  
 
 variable=import_plot
 type=list

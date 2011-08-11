@@ -31,6 +31,7 @@ Readonly my $FOCUS_DOWN	       => Wx::NewId();
 Readonly my $MOVE_UP	       => Wx::NewId();
 Readonly my $MOVE_DOWN	       => Wx::NewId();
 Readonly my $EPSI	       => 0.01;
+Readonly my $AUTOSAVE_FILE     => 'Athena.autosave';
 
 use Scalar::Util qw{looks_like_number};
 
@@ -144,11 +145,11 @@ sub OnInit {
 		    );
 
   $app->{main} -> SetSizerAndFit($hbox);
-  $app->{main}->{return}->Hide;
+  $app->{main} ->{return}->Hide;
   #$app->{main} -> SetSize(600,800);
   $app->{main} -> Show( 1 );
-  $app->{main}->Refresh;
-  $app->{main}->Update;
+  $app->{main} -> Refresh;
+  $app->{main} -> Update;
   $app->{main} -> status("Welcome to Athena (" . $demeter->identify . ")");
   $app->OnGroupSelect(q{}, $app->{main}->{list}->GetSelection, 0);
   1;
@@ -156,6 +157,24 @@ sub OnInit {
 
 sub process_argv {
   my ($app, @args) = @_;
+  if (-r File::Spec->catfile($demeter->stash_folder, $AUTOSAVE_FILE)) {
+    my $yesno = Wx::MessageDialog->new($app->{main},
+  				       "Athena found an autosave file.  Would you like to import it?",
+  				       "Import autosave?",
+  				       wxYES_NO|wxYES_DEFAULT|wxICON_QUESTION);
+    my $result = $yesno->ShowModal;
+    if ($result == wxID_YES) {
+      $app->Import(File::Spec->catfile($demeter->stash_folder, $AUTOSAVE_FILE));
+    };
+    $app->Clear;
+    unlink File::Spec->catfile($demeter->stash_folder, $AUTOSAVE_FILE);
+    my $old_cwd = File::Spec->catfile($demeter->dot_folder, "athena.cwd");
+    if (-r $old_cwd) {
+      my $yaml = YAML::Tiny::LoadFile($old_cwd);
+      chdir($yaml->{cwd});
+    };
+    return;
+  };
   foreach my $a (@args) {
     if ($a =~ m{\A-(\d+)\z}) {
       my @list = $demeter->get_mru_list('xasdata');
@@ -172,6 +191,7 @@ sub process_argv {
 
 sub ifeffit_buffer {
   my ($text) = @_;
+  #return if not defined($::app->{Buffer});
   foreach my $line (split(/\n/, $text)) {
     my ($was, $is) = $::app->{Buffer}->insert('ifeffit', $line);
     my $color = ($line =~ m{\A\#}) ? 'comment' : 'normal';
@@ -225,7 +245,7 @@ sub on_close {
     $app -> Export('all', $app->{main}->{currentproject}) if $result == wxID_YES;
   };
 
-#  unlink $app->{main}->{autosave_file};
+  unlink File::Spec->catfile($demeter->stash_folder, $AUTOSAVE_FILE);
   my $persist = File::Spec->catfile($demeter->dot_folder, "athena.cwd");
   YAML::Tiny::DumpFile($persist, {cwd=>cwd});
   $demeter->mo->destroy_all;
@@ -1749,6 +1769,7 @@ sub modified {
   my $c = $app->{main}->{save_start_color};
   $app->{main}->{save}->SetBackgroundColour($c) if not $is_modified;
   my $j = $demeter->co->default('athena', 'save_alert');
+  $app->autosave if ($app->{modified} % $demeter->co->default('athena', 'autosave_frequency') == 0);
   return if ($j <= 0);
   my $n = min( 1, $app->{modified}/$j );
   if ($app->{modified}) {
@@ -1761,6 +1782,16 @@ sub modified {
   } else {
     $app->{main}->{save}->SetBackgroundColour($c);
   };
+};
+
+sub autosave {
+  my ($app, $j) = @_;
+  return if ($app->{modified} == 0);
+  return if not $demeter->co->default('athena', 'autosave');
+  return if ($demeter->co->default('athena', 'autosave_frequency') < 1);
+  $app->{main}->status("Performing autosave ...", "wait|nobuffer");
+  $app -> Export('all', File::Spec->catfile($demeter->stash_folder, $AUTOSAVE_FILE));
+  $app->{main}->status("Successfully performed autosave.");
 };
 
 sub Clear {

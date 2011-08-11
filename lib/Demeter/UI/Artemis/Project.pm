@@ -136,7 +136,7 @@ sub autosave_exists {
   opendir(my $stash, $Demeter::UI::Artemis::demeter->stash_folder);
   my @list = readdir $stash;
   closedir $stash;
-  return any {$_ =~ m{autosave\z}} @list;
+  return any {$_ =~ m{autosave\z} and $_ !~ m{\AAthena}} @list;
 };
 sub import_autosave {
   my $dialog = Demeter::UI::Wx::AutoSave->new($Demeter::UI::Artemis::frames{main});
