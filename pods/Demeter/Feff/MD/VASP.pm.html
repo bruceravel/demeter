@@ -1,0 +1,181 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+	<title>Demeter::Feff::MD::VASP</title>
+<link rel="stylesheet" type="text/css" href="../../../podstyle.css" /><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+  <script type="text/javascript">
+
+  function toggleCode( id ) {
+    if ( document.getElementById )
+      elem = document.getElementById( id );
+    else if ( document.all )
+      elem = eval( "document.all." + id );
+    else
+      return false;
+
+    elemStyle = elem.style;
+
+    if ( elemStyle.display != "block" ) {
+      elemStyle.display = "block"
+    } else {
+      elemStyle.display = "none"
+    }
+
+    return true;
+  }
+  document.writeln( "<style type=\"text/css\">div.method-source-code { display: none }</style>" )
+  </script></head>
+<body>
+<div class="box">
+  <h1 class="t1">Demeter</h1>
+  <table>
+    <tr>
+      <td class="label">Description</td>
+      <td class="cell">Perl tools for X-ray Absorption Spectroscopy</td>
+    </tr>
+  </table>
+</div>
+<div class="path">
+  <a href="../../../index.html">Demeter</a> &gt; Perl Modules &gt;
+  Demeter-Feff-MD-VASP
+</div>
+<div>
+<a href="../../../src/Demeter/Feff/MD/VASP.pm">Source</a>
+</div>
+
+
+<div class="pod">
+<!-- INDEX START -->
+<h3 id="TOP">Index</h3>
+<ul>
+	<li><a href="#NAME">NAME</a></li>
+	<li><a href="#VERSION">VERSION</a></li>
+	<li><a href="#SYNOPSIS">SYNOPSIS</a></li>
+	<li><a href="#DESCRIPTION">DESCRIPTION</a></li>
+	<li><a href="#NOTES_ON_THE_OUTCAR_FILE">NOTES ON THE OUTCAR FILE</a></li>
+	<li><a href="#METHODS">METHODS</a></li>
+	<li><a href="#DEPENDENCIES">DEPENDENCIES</a></li>
+	<li><a href="#BUGS_AND_LIMITATIONS">BUGS AND LIMITATIONS</a></li>
+	<li><a href="#AUTHOR">AUTHOR</a></li>
+	<li><a href="#LICENCE_AND_COPYRIGHT">LICENCE AND COPYRIGHT</a></li>
+</ul>
+<hr />
+<!-- INDEX END -->
+
+<h1 id="NAME">NAME <a href="#TOP" class="toplink"><img alt="^" src="../../../up.gif" /></a></h1>
+
+<p>Demeter::Feff::MD::VASP - Role supporting VASP OUTCAR file</p>
+
+<h1 id="VERSION">VERSION <a href="#TOP" class="toplink"><img alt="^" src="../../../up.gif" /></a></h1>
+
+<p>This documentation refers to Demeter version 0.5.</p>
+
+<h1 id="SYNOPSIS">SYNOPSIS <a href="#TOP" class="toplink"><img alt="^" src="../../../up.gif" /></a></h1>
+
+<h1 id="DESCRIPTION">DESCRIPTION <a href="#TOP" class="toplink"><img alt="^" src="../../../up.gif" /></a></h1>
+
+<p>This role provides support for importing data from the VASP formatted
+OUTCAR file, which is a format for providing the trajectory of a
+cluster during a molecular dynamics simulation (as well as a lot of
+other information not reelvant to this context).  The VASP website is
+<a href="http://cms.mpi.univie.ac.at/vasp/">http://cms.mpi.univie.ac.at/vasp/</a>.  The OUTCAR file format is not
+well documented (or, at least, I have not found its documentation),
+but not very hard to interpret.  It is, however, humungo-ginormous.</p>
+
+<p>The purpose of this role is to parse the VASp OUTCAR file into the
+data structures expected by the rest of Demeter's histogram subsystem.</p>
+
+<h1 id="NOTES_ON_THE_OUTCAR_FILE">NOTES ON THE OUTCAR FILE <a href="#TOP" class="toplink"><img alt="^" src="../../../up.gif" /></a></h1>
+
+<ul>
+	<li>An OUTCAR file can be the concatination of more than one VASP runs.  A
+run begins with a line identifying the VASP version number, a line
+identifying the machine it ran on and the date of the run, and a line
+identifying the number of nodes of the cluster. It ends with a table
+labeled <code>General timing and accounting informations for this job:</code>
+with statistics about time, memorty, and CPU usage of the run.</li>
+	<li>The first information in the file identifies each of the potential
+types.  The most relevant line begins with the keyword <code>VRHFIN</code>.
+This identifies the atomic species.  For instance<pre>  VRHFIN =Ti: 3s3p4s3d
+
+</pre>
+<br /><br />This line identifies a titanium atom and its electronic configuration.
+<br /><br />There will be one such line for each atom type in the cluster.  They
+will be separated by about 50 lines on other information about that
+atoms potential and electronic configuration.</li>
+	<li>The information about how many of each type of atom is pretty well
+hidden.  After about 400 lines, you find a section that starts
+<code>Dimension of arrays:</code>.  One of the following lines looks like so:<pre>  ions per type =              16  16  32  16
+
+</pre>
+<br /><br />This says how many of the atoms identified by the <code>VRHFIN</code> lines and
+in the same order as the <code>VRHFIN</code> lines appear.</li>
+	<li>After a long stretch of data about the run (several hundred lines)
+there are sections labeled <pre>   position of ions in fractional coordinates (direct lattice)
+
+</pre>
+<br /><br />and<pre>   position of ions in cartesian coordinates  (Angst):
+
+</pre>
+<br /><br />These two lists show the starting configuration of the cluster.  The
+second is more to the point, since it is in cartesian coordinates.
+<br /><br />This list is in the order specified by the order of the <code>VRHFIN</code>
+lines and in the numbers of indicated bythe <code>ions per type</code> line.</li>
+	<li>Soon after that, the MD time sequence starts.  After quite a bit of
+self-consistency looping, you come accross a line that starts
+<code>POSITION</code>.  This is a time step.  This followed by a line of dashes,
+then lines with the cartesian coordinates of and forces on each atom.
+It is finished by a line of dashes and there may be blank lines.</li>
+	<li>Keep reading <code>POSITION</code> entries until you come to the end of the run.</li>
+</ul>
+
+<h1 id="METHODS">METHODS <a href="#TOP" class="toplink"><img alt="^" src="../../../up.gif" /></a></h1>
+
+<dl>
+	<dt><code>_number_of_steps</code></dt>
+		<dd><p>Fills the <code>nsteps</code> attribute of the object using this role with the
+number of time steps contained in the input file (contained in the
+<code>file</code> attribute).</p></dd>
+	<dt><code>_cluster</code></dt>
+		<dd><p>Fills <code>clusters</code> attribute with a list-of-lists, each inner list
+containing the cartesian coordinates and atomic species of each item
+in the cluster at that time step.  The outer list is a list of
+timesteps in chronological order.</p></dd>
+</dl>
+<h1 id="DEPENDENCIES">DEPENDENCIES <a href="#TOP" class="toplink"><img alt="^" src="../../../up.gif" /></a></h1>
+
+<p>Demeter's dependencies are in the <cite>Bundle/DemeterBundle.pm</cite> file.</p>
+
+<h1 id="BUGS_AND_LIMITATIONS">BUGS AND LIMITATIONS <a href="#TOP" class="toplink"><img alt="^" src="../../../up.gif" /></a></h1>
+
+<ul>
+	<li>This currently only works for a monoatomic cluster.</li>
+</ul>
+
+<p>Please report problems to Bruce Ravel (bravel AT bnl DOT gov)</p>
+
+<p>Patches are welcome.</p>
+
+<h1 id="AUTHOR">AUTHOR <a href="#TOP" class="toplink"><img alt="^" src="../../../up.gif" /></a></h1>
+
+<p>Bruce Ravel (bravel AT bnl DOT gov)</p>
+
+<p><a href="http://cars9.uchicago.edu/~ravel/software/">http://cars9.uchicago.edu/~ravel/software/</a></p>
+
+
+
+
+<h1 id="LICENCE_AND_COPYRIGHT">LICENCE AND COPYRIGHT <a href="#TOP" class="toplink"><img alt="^" src="../../../up.gif" /></a></h1>
+
+<p>Copyright (c) 2006-2011 Bruce Ravel (bravel AT bnl DOT gov). All rights reserved.</p>
+
+<p>This module is free software; you can redistribute it and/or
+modify it under the same terms as Perl itself. See <a href="http://search.cpan.org/perldoc?perlgpl">perlgpl</a>.</p>
+
+<p>This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.</p>
+
+
+</div><div class="footer">generated by <a href="http://search.cpan.org/perldoc?Pod%3A%3AProjectDocs">Pod::ProjectDocs</a></div></body>
+</html>
