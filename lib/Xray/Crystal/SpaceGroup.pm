@@ -522,7 +522,7 @@ Xray::Crystal::SpaceGroup - A OO interface to the International Tables of Crysta
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.4.
+This documentation refers to Demeter version 0.5.
 
 =head1 SYNOPSIS
 

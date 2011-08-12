@@ -69,7 +69,7 @@ Demeter::UI::Screen::Pause - A generic pause method for the screen UI
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.4.
+This documentation refers to Demeter version 0.5.
 
 =head1 SYNOPSIS
 

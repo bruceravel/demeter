@@ -23,7 +23,7 @@ package Demeter;  # http://xkcd.com/844/
 require 5.008;
 
 use version;
-our $VERSION = version->new('0.4.7');
+our $VERSION = version->new('0.5.4');
 
 #use Demeter::Carp;
 use Carp;
@@ -817,7 +817,7 @@ Demeter - A comprehensive XAS data analysis system using Feff and Ifeffit
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.4
+This documentation refers to Demeter version 0.5
 
 =head1 SYNOPSIS
 
@@ -1302,6 +1302,13 @@ Patches are welcome.
 =head1 VERSIONS
 
 =over 4
+
+=item 0.5.4
+
+New numbering scheme: 0.5 is the beta version with a windows
+installer, the third number corresponds to the release number.  So
+Windows installer release 4 contains the code from version 0.5.4 and
+so on.
 
 =item 0.4.7
 

@@ -65,7 +65,7 @@ Demeter::UI::Wx::SpecialCharacters - A library of special characters for use in 
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.4.
+This documentation refers to Demeter version 0.5.
 
 =head1 SYNOPSIS
 

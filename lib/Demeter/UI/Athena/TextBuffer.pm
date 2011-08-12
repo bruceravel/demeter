@@ -66,7 +66,7 @@ Demeter::UI::Wx::TextBuffer - Manage a text buffers for a TextEntryDialog
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.4.
+This documentation refers to Demeter version 0.5.
 
 =head1 SYNOPSIS
 
