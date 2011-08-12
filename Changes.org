@@ -5,7 +5,7 @@
 
 * Beta testing releases:
 
-** Release 4: XX August, 2011
+** Release 4: 12 August, 2011
 *** Athena
    - Inmplemented an autosave feature + recovery of autosave after a crash
    - Fixed several LCF bugs
