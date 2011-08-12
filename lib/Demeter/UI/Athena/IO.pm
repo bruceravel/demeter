@@ -62,6 +62,7 @@ sub Export {
     $app->modified(0);
     my $extra = ($how eq 'marked') ? " with marked groups" : q{};
     $app->{main}->status("Saved project file $fname".$extra);
+    unlink File::Spec->catfile(Demeter->stash_folder, 'Athena.autosave') if $how eq 'all';
   };
   undef $busy;
   return $fname;
