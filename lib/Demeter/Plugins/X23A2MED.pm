@@ -332,8 +332,6 @@ Please report problems to Bruce Ravel (bravel AT bnl DOT gov)
 
 Patches are welcome.
 
-=back
-
 =head1 AUTHORS
 
   Joe Woicik <woicik AT bnl DOT gov> (algorithm)
