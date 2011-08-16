@@ -265,9 +265,9 @@ sub header {
   $grouphead -> set_bg_color('grey');
   $grouphead -> set_align('left');
 
-  $worksheet->merge_range(1,  0, 1, 30, "Athena report -- ".$::app->current_data->identify, $grouphead);
-  $worksheet->merge_range(2,  0, 2, 30, "This file created at ".$::app->current_data->now,  $grouphead);
-  $worksheet->merge_range(3,  0, 3, 30, join(", ",
+  $worksheet->merge_range(1,  0, 1, 31, "Athena report -- ".$::app->current_data->identify, $grouphead);
+  $worksheet->merge_range(2,  0, 2, 31, "This file created at ".$::app->current_data->now,  $grouphead);
+  $worksheet->merge_range(3,  0, 3, 31, join(", ",
 					     $::app->current_data->environment,
 					     "Wx ".$Wx::VERSION,
 					     "Spreadsheet::WriteExcel ".$Spreadsheet::WriteExcel::VERSION,
@@ -277,8 +277,8 @@ sub header {
 
   $worksheet->merge_range($i,  6, $i, 18, "Background removal parameters",         $grouphead);
   $worksheet->merge_range($i, 20, $i, 24, "Forward Fourier transform parameters",  $grouphead);
-  $worksheet->merge_range($i, 26, $i, 27, "Backward Fourier transform parameters", $grouphead);
-  $worksheet->merge_range($i, 29, $i, 30, "Plotting  parameters",                  $grouphead);
+  $worksheet->merge_range($i, 26, $i, 28, "Backward Fourier transform parameters", $grouphead);
+  $worksheet->merge_range($i, 30, $i, 31, "Plotting  parameters",                  $grouphead);
 
   my $colhead = $workbook->add_format();
   $colhead -> set_bold;
@@ -313,9 +313,10 @@ sub header {
 
   $worksheet->write($i+1,26, "R-range",             $colhead);
   $worksheet->write($i+1,27, "dR",                  $colhead);
+  $worksheet->write($i+1,28, "Window",              $colhead);
 
-  $worksheet->write($i+1,29, "Plot multiplier",     $colhead);
-  $worksheet->write($i+1,30, "y offset",            $colhead);
+  $worksheet->write($i+1,30, "Plot multiplier",     $colhead);
+  $worksheet->write($i+1,31, "y offset",            $colhead);
 };
 sub row {
   my ($workbook, $worksheet, $i, $data) = @_;
@@ -358,9 +359,10 @@ sub row {
 
   $worksheet->write($i,26, sprintf("[ %.3f : %.3f ]", $data->bft_rmin,  $data->bft_rmax ), $center);
   $worksheet->write($i,27, $data->bft_dr,               $number);
+  $worksheet->write($i,28, $data->bft_rwindow,          $center);
 
-  $worksheet->write($i,29, $data->plot_multiplier,      $exponent);
-  $worksheet->write($i,30, $data->y_offset,             $number);
+  $worksheet->write($i,30, $data->plot_multiplier,      $exponent);
+  $worksheet->write($i,31, $data->y_offset,             $number);
 };
 
 1;

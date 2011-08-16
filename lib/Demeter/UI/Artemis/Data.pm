@@ -333,20 +333,21 @@ sub new {
   my $windowsbox  = Wx::BoxSizer->new( wxHORIZONTAL );
   $ftboxsizer -> Add($windowsbox, 0, wxALIGN_LEFT|wxALL, 0);
 
-  $label     = Wx::StaticText->new($leftpane, -1, "FT window");
+  $label     = Wx::StaticText->new($leftpane, -1, "k window");
   $this->{kwindow} = Wx::Choice  ->new($leftpane, -1, , wxDefaultPosition, wxDefaultSize, $windows);
   $windowsbox -> Add($label, 0, wxALL, 5);
   $windowsbox -> Add($this->{kwindow}, 0, wxALL, 2);
   $this->{kwindow}->SetSelection(firstidx {$_ eq $demeter->co->default("fft", "kwindow")} @$windows);
 
-  $this->mouseover("kwindow", "The functional form of the window used for both forwards and backwards Fourier transforms.");
+  $label     = Wx::StaticText->new($leftpane, -1, "R window");
+  $this->{rwindow} = Wx::Choice  ->new($leftpane, -1, , wxDefaultPosition, wxDefaultSize, $windows);
+  $windowsbox -> Add($label, 0, wxALL, 5);
+  $windowsbox -> Add($this->{rwindow}, 0, wxALL, 2);
+  $this->{rwindow}->SetSelection(firstidx {$_ eq $demeter->co->default("bft", "rwindow")} @$windows);
 
+  $this->mouseover("kwindow", "The functional form of the window used for the forward Fourier transform.");
+  $this->mouseover("rwindow", "The functional form of the window used for the backward Fourier transform.");
 
-#   $label     = Wx::StaticText->new($leftpane, -1, "R window");
-#   $this->{rwindow} = Wx::Choice  ->new($leftpane, -1, , wxDefaultPosition, wxDefaultSize, $windows);
-#   $windowsbox -> Add($label, 0, wxALL, 5);
-#   $windowsbox -> Add($this->{rwindow}, 0, wxALL, 2);
-#   $this->{rwindow}->SetSelection(firstidx {$_ eq $demeter->co->default("bft", "rwindow")} @$windows);
 
   ## -------- k-weights
   my $kwbox      = Wx::StaticBox->new($leftpane, -1, 'Fitting k weights ', wxDefaultPosition, wxDefaultSize);
@@ -793,10 +794,8 @@ sub populate {
 
   #EVT_CHECKBOX($self, $self->{pcplot}, sub{$data->fft_pc($self->{pcplot}->GetValue)});
 
-  EVT_CHOICE($self, $self->{kwindow}, sub{$data->fft_kwindow($self->{kwindow}->GetStringSelection);
-					  $data->bft_rwindow($self->{kwindow}->GetStringSelection);
-					});
-  #EVT_CHOICE($self, $self->{rwindow}, sub{$data->bft_rwindow($self->{rwindow}->GetStringSelection)});
+  EVT_CHOICE($self, $self->{kwindow}, sub{$data->fft_kwindow($self->{kwindow}->GetStringSelection)});
+  EVT_CHOICE($self, $self->{rwindow}, sub{$data->bft_rwindow($self->{rwindow}->GetStringSelection)});
 
   return $self;
 }
@@ -816,7 +815,7 @@ sub fetch_parameters {
   $this->{data}->bft_rmax	    ($this->{rmax}      ->GetValue	    );
   $this->{data}->bft_dr		    ($this->{dr}        ->GetValue	    );
   $this->{data}->fft_kwindow	    ($this->{kwindow}   ->GetStringSelection);
-  $this->{data}->bft_rwindow	    ($this->{kwindow}   ->GetStringSelection);
+  $this->{data}->bft_rwindow	    ($this->{rwindow}   ->GetStringSelection);
   $this->{data}->fit_k1		    ($this->{k1}        ->GetValue	    );
   $this->{data}->fit_k2		    ($this->{k2}        ->GetValue	    );
   $this->{data}->fit_k3		    ($this->{k3}        ->GetValue	    );

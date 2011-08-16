@@ -363,9 +363,10 @@ sub fft {
   EVT_RIGHT_DOWN($this->{fft_group_label}, sub{ContextMenu(@_, $app, 'fft')});
   EVT_MENU($this->{fft_group_label}, -1, sub{ $this->DoContextMenu(@_, $app, 'fft') });
 
+  my $tcsize = [50,-1];
   my $gbs = Wx::GridBagSizer->new( 5, 5 );
 
-  $this->{fft_kmin_label} = Wx::StaticText   -> new($this, -1, "k-range");
+  $this->{fft_kmin_label} = Wx::StaticText   -> new($this, -1, "k-range", wxDefaultPosition, [42,-1]);
   $this->{fft_kmin}       = Wx::TextCtrl     -> new($this, -1, q{}, wxDefaultPosition, $tcsize, wxTE_PROCESS_ENTER);
   $this->{fft_kmin_pluck} = Wx::BitmapButton -> new($this, -1, $bullseye);
   $gbs -> Add($this->{fft_kmin_label}, Wx::GBPosition->new(0,0));
@@ -375,7 +376,7 @@ sub fft {
   $this->{fft_kmax_label} = Wx::StaticText   -> new($this, -1, "to");
   $this->{fft_kmax}       = Wx::TextCtrl     -> new($this, -1, q{}, wxDefaultPosition, $tcsize, wxTE_PROCESS_ENTER);
   $this->{fft_kmax_pluck} = Wx::BitmapButton -> new($this, -1, $bullseye);
-  $this->{fft_dk_label}   = Wx::StaticText   -> new($this, -1, "dk");
+  $this->{fft_dk_label}   = Wx::StaticText   -> new($this, -1, "dk", wxDefaultPosition, [18,-1]);
   $this->{fft_dk}         = Wx::TextCtrl     -> new($this, -1, q{}, wxDefaultPosition, $tcsize, wxTE_PROCESS_ENTER);
   $gbs -> Add($this->{fft_kmax_label}, Wx::GBPosition->new(0,3));
   $gbs -> Add($this->{fft_kmax},       Wx::GBPosition->new(0,4));
@@ -389,11 +390,11 @@ sub fft {
   $this->{fit_karb_value_label} = Wx::StaticText -> new($this, -1, q{arbitrary k-weight});
   $this->{fit_karb_value}       = Wx::TextCtrl   -> new($this, -1, q{}, wxDefaultPosition, $tcsize, wxTE_PROCESS_ENTER);
   $this->{fft_pc}               = Wx::CheckBox   -> new($this, -1, q{phase correction});
-  $gbs -> Add($this->{fft_kwindow_label},    Wx::GBPosition->new(1,0));
-  $gbs -> Add($this->{fft_kwindow},          Wx::GBPosition->new(1,1), Wx::GBSpan->new(1,3));
-  $gbs -> Add($this->{fit_karb_value_label}, Wx::GBPosition->new(1,4), Wx::GBSpan->new(1,2));
-  $gbs -> Add($this->{fit_karb_value},       Wx::GBPosition->new(1,6), Wx::GBSpan->new(1,2));
-  $gbs -> Add($this->{fft_pc},               Wx::GBPosition->new(1,8));
+  $gbs -> Add($this->{fft_kwindow_label},    Wx::GBPosition->new(0,8));
+  $gbs -> Add($this->{fft_kwindow},          Wx::GBPosition->new(0,9));
+  $gbs -> Add($this->{fit_karb_value_label}, Wx::GBPosition->new(1,0), Wx::GBSpan->new(1,2));
+  $gbs -> Add($this->{fit_karb_value},       Wx::GBPosition->new(1,2), Wx::GBSpan->new(1,3));
+  $gbs -> Add($this->{fft_pc},               Wx::GBPosition->new(1,5), Wx::GBSpan->new(1,4));
   $this->{fft_kwindow}->SetStringSelection($this->window_name($Demeter::UI::Athena::demeter->co->default("fft", "kwindow")));
   push @fft_parameters, qw(fft_kmin fft_kmax fft_dk fft_kwindow fit_karb_value fft_pc);
 
@@ -438,15 +439,16 @@ sub bft {
   EVT_RIGHT_DOWN($this->{bft_group_label}, sub{ContextMenu(@_, $app, 'bft')});
   EVT_MENU($this->{bft_group_label}, -1, sub{ $this->DoContextMenu(@_, $app, 'bft') });
 
+  my $tcsize = [50,-1];
   my $gbs = Wx::GridBagSizer->new( 5, 5 );
 
-  $this->{bft_rmin_label} = Wx::StaticText   -> new($this, -1, "R-range");
+  $this->{bft_rmin_label} = Wx::StaticText   -> new($this, -1, "R-range", wxDefaultPosition, [42,-1]);
   $this->{bft_rmin}       = Wx::TextCtrl     -> new($this, -1, q{}, wxDefaultPosition, $tcsize, wxTE_PROCESS_ENTER);
   $this->{bft_rmin_pluck} = Wx::BitmapButton -> new($this, -1, $bullseye);
   $this->{bft_rmax_label} = Wx::StaticText   -> new($this, -1, "to");
   $this->{bft_rmax}       = Wx::TextCtrl     -> new($this, -1, q{}, wxDefaultPosition, $tcsize, wxTE_PROCESS_ENTER);
   $this->{bft_rmax_pluck} = Wx::BitmapButton -> new($this, -1, $bullseye);
-  $this->{bft_dr_label}   = Wx::StaticText   -> new($this, -1, "dR");
+  $this->{bft_dr_label}   = Wx::StaticText   -> new($this, -1, "dR", wxDefaultPosition, [18,-1]);
   $this->{bft_dr}         = Wx::TextCtrl     -> new($this, -1, q{}, wxDefaultPosition, $tcsize, wxTE_PROCESS_ENTER);
   $gbs -> Add($this->{bft_rmin_label}, Wx::GBPosition->new(0,0));
   $gbs -> Add($this->{bft_rmin},       Wx::GBPosition->new(0,1));
@@ -458,12 +460,12 @@ sub bft {
   $gbs -> Add($this->{bft_dr},         Wx::GBPosition->new(0,7));
   push @bft_parameters, qw(bft_rmin bft_rmax bft_dr bft_rwindow);
 
-  # $this->{bft_rwindow_label} = Wx::StaticText -> new($this, -1, "window");
-  # $this->{bft_rwindow}       = Wx::Choice     -> new($this, -1, wxDefaultPosition, wxDefaultSize,
-  # 						  [qw(Kaiser-Bessel Hanning Welch Parzen Sine Gaussian)]);
-  # $gbs -> Add($this->{bft_rwindow_label}, Wx::GBPosition->new(1,0));
-  # $gbs -> Add($this->{bft_rwindow},       Wx::GBPosition->new(1,1), Wx::GBSpan->new(1,3));
-  # $this->{bft_rwindow}->SetStringSelection($this->window_name($Demeter::UI::Athena::demeter->co->default("bft", "rwindow")));
+  $this->{bft_rwindow_label} = Wx::StaticText -> new($this, -1, "window");
+  $this->{bft_rwindow}       = Wx::Choice     -> new($this, -1, wxDefaultPosition, wxDefaultSize,
+  						  [qw(Kaiser-Bessel Hanning Welch Parzen Sine Gaussian)]);
+  $gbs -> Add($this->{bft_rwindow_label}, Wx::GBPosition->new(0,8));
+  $gbs -> Add($this->{bft_rwindow},       Wx::GBPosition->new(0,9), Wx::GBSpan->new(1,3));
+  $this->{bft_rwindow}->SetStringSelection($this->window_name($Demeter::UI::Athena::demeter->co->default("bft", "rwindow")));
 
   $bftboxsizer -> Add($gbs, 0, wxLEFT, 10);
 
@@ -479,7 +481,9 @@ sub bft {
   foreach my $x (qw(bft_rmin bft_rmax)) {
     EVT_BUTTON($this, $this->{$x.'_pluck'}, sub{Pluck(@_, $app, $x)});
   };
-  EVT_CHECKBOX($this, $this->{bkg_flatten}, sub{OnParameter(@_, $app, 'bkg_flatten')});
+  EVT_CHOICE($this, $this->{bft_rwindow}, sub{OnParameter(@_, $app, 'bft_rwindow')});
+  EVT_RIGHT_DOWN($this->{bft_rwindow_label}, sub{ContextMenu(@_, $app, 'bft_rwindow')});
+  EVT_MENU($this->{bft_rwindow_label}, -1, sub{ $this->DoContextMenu(@_, $app, 'bft_rwindow') });
 
   return $this;
 };
@@ -614,7 +618,7 @@ sub push_values {
   $this->{bkg_clamp1} -> SetStringSelection($data->number2clamp($data->bkg_clamp1));
   $this->{bkg_clamp2} -> SetStringSelection($data->number2clamp($data->bkg_clamp2));
   $this->{fft_kwindow}-> SetStringSelection($this->window_name($data->fft_kwindow));
-  #$this->{bft_rwindow}-> SetStringSelection($this->window_name($data->bft_rwindow));
+  $this->{bft_rwindow}-> SetStringSelection($this->window_name($data->bft_rwindow));
   my $nnorm = $data->bkg_nnorm;
   $this->{'bkg_nnorm_'.$nnorm}->SetValue(1);
 
@@ -730,6 +734,7 @@ sub OnParameter {
     $value = 0.001 if (($data->what_isa($which) =~ m{PosNum}) and ($value<=0));
     $value = 0     if (($data->what_isa($which) =~ m{NonNeg}) and ($value<0));
   };
+  #print join("|",$which,$value), $/;
   if ($which eq 'bkg_stan') {
     local $| = 1;
     my $stan = $app->{main}->{Main}->{bkg_stan}->GetClientData($value);
@@ -751,7 +756,7 @@ sub OnParameter {
     $app->{main}->{Main}->{bkg_fixstep}->SetValue(0);
     $data->$which($value)
 
-  } elsif ($which !~ m{nnorm}) {
+  } elsif ($which !~ m{nnorm}) { # everything else...
     $data->$which($value)
   };
   $app->modified(1);
