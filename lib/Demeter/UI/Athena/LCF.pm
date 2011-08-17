@@ -144,6 +144,14 @@ sub main_page {
   $maxbox->Add($this->{max}, 0, wxLEFT|wxRIGHT|wxALIGN_CENTRE, 5);
   $maxbox->Add(Wx::StaticText->new($panel, -1, 'standards'), 0, wxRIGHT|wxALIGN_CENTRE, 5);
 
+
+  $this->{LCF}->plot_components($demeter->co->default('lcf', 'components'));
+  $this->{LCF}->plot_difference($demeter->co->default('lcf', 'difference'));
+  $this->{LCF}->linear   (0);
+  $this->{LCF}->inclusive($demeter->co->default('lcf', 'inclusive'));
+  $this->{LCF}->unity    ($demeter->co->default('lcf', 'unity'));
+  $this->{LCF}->one_e0   (0);
+
   EVT_CHECKBOX($this, $this->{components}, sub{$this->{LCF}->plot_components($this->{components}->GetValue)});
   EVT_CHECKBOX($this, $this->{residual},   sub{$this->{LCF}->plot_difference($this->{residual}  ->GetValue)});
   EVT_CHECKBOX($this, $this->{linear},     sub{$this->{LCF}->linear   ($this->{linear}          ->GetValue)});
