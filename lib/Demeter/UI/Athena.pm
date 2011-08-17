@@ -1713,19 +1713,21 @@ sub merge {
   $max = sprintf(" %d", $max+1) if $max;
   $merged->name('merge'.$max);
   $app->{main}->{list}->AddData($merged->name, $merged);
-  $app->{main}->{list}->SetSelection($app->{main}->{list}->GetCount-1);
-  $app->OnGroupSelect(q{}, $app->{main}->{list}->GetSelection, 0);
-  $app->{main}->{Main}->mode($merged, 1, 0);
-  $app->{main}->{list}->Check($app->{main}->{list}->GetCount-1, 1);
-  $app->modified(1);
 
   if ($data[0] -> reference) {
     my @refs = grep {$_} map  {$_->reference} @data;
     $app->{main}->status("Merging marked groups");
     my $refmerged = $refs[0]->merge($how, @refs);
     $refmerged->name("  Ref ". $merged->name);
+    $refmerged->reference($merged);
     $app->{main}->{list}->AddData($refmerged->name, $refmerged);
   };
+
+  $app->{main}->{list}->SetSelection($app->{main}->{list}->GetCount-2);
+  $app->OnGroupSelect(q{}, $app->{main}->{list}->GetSelection, 0);
+  $app->{main}->{Main}->mode($merged, 1, 0);
+  $app->{main}->{list}->Check($app->{main}->{list}->GetCount-2, 1);
+  $app->modified(1);
 
   ## handle plotting, respecting the choice in the athena->merge_plot config parameter
   if (not $noplot) {

@@ -175,13 +175,18 @@ sub change_datatype {
   if ($cdt->{how}->GetSelection == 0) {
     $app->current_data->datatype($newtype);
     $app->{main}->status("Changed current group's data type to $newtype");
-  } else {
+  } elsif ($cdt->{how}->GetSelection == 1) {
     foreach my $j (0 .. $app->{main}->{list}->GetCount-1) {
       if ($app->{main}->{list}->IsChecked($j)) {
 	$app->{main}->{list}->GetIndexedData($j)->datatype($newtype);
       };
     };
     $app->{main}->status("Changed all marked groups to data type $newtype");
+  } else {
+    foreach my $j (0 .. $app->{main}->{list}->GetCount-1) {
+      $app->{main}->{list}->GetIndexedData($j)->datatype($newtype);
+    };
+    $app->{main}->status("Changed all groups to data type $newtype");
   };
   $app->modified(1);
   $app->{main}->{Main}->mode($app->current_data, 1, 0);

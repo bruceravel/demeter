@@ -225,14 +225,16 @@ sub is_required {
 
 sub weight {
   my ($self, $stan, $value, $error) = @_;
-  my $rlist = $self->get_option($stan->group);
+  ($stan = $stan->group) if (ref($stan) =~ m{Data});
+  my $rlist = $self->get_option($stan);
+  if (not $rlist) { return wantarray ? (0,0) : 0 }; # why would this ever happen?
   my @params = @$rlist;
   if (not defined($value)) {
     return wantarray ? ($params[2], $params[3]) : $params[2];
   };
   $params[2] = $value;
   $params[3] = $error || 0;
-  $self->set_option($stan->group, \@params);
+  $self->set_option($stan, \@params);
   return wantarray ? ($params[2], $params[3]) : $params[2];
 };
 

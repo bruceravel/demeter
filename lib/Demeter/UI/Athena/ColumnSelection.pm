@@ -99,8 +99,8 @@ sub columns {
   #my $column_string = Ifeffit::get_string('column_label');
   my @cols = split(" ", $data->columns);
 
-  my $columnbox = Wx::ScrolledWindow->new($parent, -1, wxDefaultPosition, [350, -1], wxHSCROLL);
-  $columnbox->SetScrollbars(30, 0, 50, 500);
+  my $columnbox = Wx::ScrolledWindow->new($parent, -1, wxDefaultPosition, [350, 150], wxHSCROLL);
+  $columnbox->SetScrollbars(30, 0, 50, 0);
   $this->{left}     -> Add($columnbox, 1, wxGROW|wxALL, 10);
 
   #my $columnbox      = Wx::StaticBox->new($parent, -1, 'Columns', wxDefaultPosition, wxDefaultSize);

@@ -9,6 +9,8 @@ use Wx qw( :everything );
 use base 'Wx::Panel';
 use Wx::Event qw(EVT_BUTTON);
 
+use List::MoreUtils qw(none);
+
 use vars qw($label $tag);
 $label = "Preferences";
 $tag = 'Prefs';
@@ -39,6 +41,13 @@ sub target {
   my ($self, $parent, $param, $value, $save) = @_;
 
  SWITCH: {
+    ($parent eq 'lcf') and do {
+      last SWITCH if none {$param eq $_} qw(components difference unity inclusive);
+      my $p = (($param eq 'components') or ($param eq 'difference')) ? "plot_".$param : $param;
+      $::app->{main}->{LCF}->{LCF}->$p($value);
+      $::app->{main}->{LCF}->{$param}->SetValue($value);
+      last SWITCH;
+    };
     ($param eq 'plotwith') and do {
       $Demeter::UI::Athena::demeter->plot_with($value);
       last SWITCH;

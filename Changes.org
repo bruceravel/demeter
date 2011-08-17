@@ -5,6 +5,21 @@
 
 * Beta testing releases:
 
+** Release 5: XX August, 2011
+*** Athena
+   - Fixed a display problem in the column selection dialog
+   - Allow seeting window function for back transform independently
+   - Fix default settings for LCF object in athena's LCF dialog
+   - Tie together merge and reference for merge when the reference for
+     the merge is also made
+   - Added a "change all groups" option to the chnage type dialog
+   - Made the LCF layout a bit prettier
+
+*** Artemis
+   - Allow seeting window function for back transform independently
+
+
+
 ** Release 4: 12 August, 2011
 *** Athena
    - Inmplemented an autosave feature + recovery of autosave after a crash
