@@ -21,10 +21,10 @@
 
 *** Artemis
    - Allow seeting window function for back transform independently
-   - Correctly restore restoring LCF fits after performing a
-     combinatorial sequence
 
 *** Demeter
+   - Correctly restore restoring LCF fits after performing a
+     combinatorial sequence
 
 ** Release 4: 12 August, 2011
 *** Athena
