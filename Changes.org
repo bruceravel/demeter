@@ -18,13 +18,23 @@
    - Made the LCF layout a bit prettier
    - Do not unlink autosave file at start-up -- it needs to stick
      around in case the problem that lead to the crash happens again
+   - Improved behavior for Copy group feature
 
 *** Artemis
    - Allow seeting window function for back transform independently
+   - Fixed a bug involving non-zero values of arbitrary k-weighting
+     when importing old-style project files
 
 *** Demeter
    - Correctly restore restoring LCF fits after performing a
      combinatorial sequence
+
+*** Acknowledgements for this release
+   - Eric Breynaert
+   - Emmanuel Doelsch
+   - Scott Calvin
+   - Van Vu
+   - Chris Patridge
 
 ** Release 4: 12 August, 2011
 *** Athena

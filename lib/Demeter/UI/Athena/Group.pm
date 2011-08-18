@@ -60,10 +60,19 @@ sub Rename {
 sub Copy {
   my ($app, $newname) = @_;
   return if $app->is_empty;
+  $newname ||= q{};
 
   my $data = $app->current_data;
   my $clone = $data->clone;
-  $newname ||= "Copy of ".$data->name;
+  if (not $newname) {
+    my $largest = 0;
+    (my $snip = $data->name) =~ s{Copy\s+(\d+\s+)?of\s+}{};
+    foreach my $i (0 .. $app->{main}->{list}->GetCount-1) {
+      my $this = $app->{main}->{list}->GetIndexedData($i)->name;
+      ++$largest if ($this =~ m{$snip\z});
+    };
+    $newname = "Copy $largest of $snip";
+  };
   $clone->name($newname);
   my $index = $app->current_index;
   if ($index == $app->{main}->{list}->GetCount-1) {

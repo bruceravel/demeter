@@ -11,8 +11,8 @@
 ; TODO: check for other perl installations (eg. in the Path variable) and warn or even abort if there is another one
 
 [Setup]
-AppName=Demeter with Strawberry Perl Release 4
-AppVersion=0.5.4
+AppName=Demeter with Strawberry Perl Release 5
+AppVersion=0.5.5
 DefaultDirName=\strawberry
 DefaultGroupName=Demeter with Strawberry Perl
 ; UninstallDisplayIcon={app}\MyProg.exe
@@ -20,7 +20,7 @@ Compression=lzma2
 SolidCompression=yes
 SourceDir=c:\strawberry
 OutputDir=c:\output
-OutputBaseFilename=demeter-with-strawberry-perl-r4
+OutputBaseFilename=demeter-with-strawberry-perl-r5
 AppComments=XAS Data Processing and Analysis
 AppContact=http://bruceravel.github.com/demeter/
 AppCopyright=Demeter is copyright (c) 2006-2011 Bruce Ravel; Ifeffit is copyright (c) 2008, Matt Newville; Perl is copyright 1987-2010, Larry Wall
