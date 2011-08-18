@@ -8,17 +8,23 @@
 ** Release 5: XX August, 2011
 *** Athena
    - Fixed a display problem in the column selection dialog
+   - Fixed several problems with restoring LCF fits after performing a
+     combinatorial sequence
    - Allow seeting window function for back transform independently
    - Fix default settings for LCF object in athena's LCF dialog
    - Tie together merge and reference for merge when the reference for
      the merge is also made
    - Added a "change all groups" option to the chnage type dialog
    - Made the LCF layout a bit prettier
+   - Do not unlink autosave file at start-up -- it needs to stick
+     around in case the problem that lead to the crash happens again
 
 *** Artemis
    - Allow seeting window function for back transform independently
+   - Correctly restore restoring LCF fits after performing a
+     combinatorial sequence
 
-
+*** Demeter
 
 ** Release 4: 12 August, 2011
 *** Athena
