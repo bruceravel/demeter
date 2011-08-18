@@ -16,6 +16,7 @@ package Demeter::LCF;
 =cut
 
 use Carp;
+#use Demeter::Carp;
 use autodie qw(open close);
 
 use Moose;
@@ -121,10 +122,11 @@ has 'options' => (
 		  isa       => 'HashRef[ArrayRef]',
 		  default   => sub { +{} },
 		  provides  => {
-				set   => 'set_option',
-				get   => 'get_option',
-				keys  => 'get_option_list',
-				clear => 'clear_option',
+				set    => 'set_option',
+				get    => 'get_option',
+				keys   => 'get_option_list',
+				clear  => 'clear_option',
+				exists => 'option_exists',
 			       },
 		 );
 has 'rfactor' => (is => 'rw', isa => 'Num', default => 0);
@@ -164,7 +166,9 @@ sub add {
   my %hash = @params;
   $hash{float_e0} ||= 0;
   $hash{required} ||= 0;
+  $hash{dweight}  ||= 0;
   $hash{e0}       ||= 0;
+  $hash{de0}      ||= 0;
   my $weight_provided = exists($hash{weight});
   my @previous = @{ $self->standards };
   $self->push_standards($stan);
@@ -174,7 +178,7 @@ sub add {
   $hash{weight}   ||= sprintf("%.3f", 1/$n);
 
   my $key = $stan->group;
-  $self->set_option($key, [$hash{float_e0}, $hash{required}, $hash{weight}, 0, $hash{e0}, 0]); ## other 2 are dweight and de0
+  $self->set_option($key, [$hash{float_e0}, $hash{required}, $hash{weight}, $hash{dweight}, $hash{e0}, $hash{de0}]); ## other 2 are dweight and de0
 
   return $self if $weight_provided;
   foreach my $prev (@previous) {
@@ -193,6 +197,7 @@ sub float_e0 {
   my ($self, $stan, $onoff) = @_;
   $onoff ||= 0;
   my $rlist = $self->get_option($stan->group);
+  return $self if not $rlist;
   my @params = @$rlist;
   $params[0] = $onoff;
   $self->set_option($stan->group, \@params);
@@ -203,6 +208,7 @@ sub required {
   my ($self, $stan, $onoff) = @_;
   $onoff ||= 0;
   my $rlist = $self->get_option($stan->group);
+  return $self if not $rlist;
   my @params = @$rlist;
   $params[1] = $onoff;
   $self->set_option($stan->group, \@params);
@@ -214,20 +220,20 @@ sub is_e0_floated {
   my ($self, $stan) = @_;
   ($stan = $stan->group) if (ref($stan) =~ m{Data});
   my $rlist = $self->get_option($stan);
-  return $rlist->[0];
+  return ((not $rlist)) ? 0 : $rlist->[0];
 };
 sub is_required {
   my ($self, $stan) = @_;
   ($stan = $stan->group) if (ref($stan) =~ m{Data});
   my $rlist = $self->get_option($stan);
-  return $rlist->[1];
+  return ((not $rlist)) ? 0 : $rlist->[1];
 };
 
 sub weight {
   my ($self, $stan, $value, $error) = @_;
   ($stan = $stan->group) if (ref($stan) =~ m{Data});
   my $rlist = $self->get_option($stan);
-  if (not $rlist) { return wantarray ? (0,0) : 0 }; # why would this ever happen?
+  #if (not $rlist) { return wantarray ? (0,0) : 0 }; # this happens when perusing combinatoric fits
   my @params = @$rlist;
   if (not defined($value)) {
     return wantarray ? ($params[2], $params[3]) : $params[2];
@@ -240,14 +246,16 @@ sub weight {
 
 sub e0 {
   my ($self, $stan, $value, $error) = @_;
-  my $rlist = $self->get_option($stan->group);
+  ($stan = $stan->group) if (ref($stan) =~ m{Data});
+  my $rlist = $self->get_option($stan);
+  #if (not $rlist) { return wantarray ? (0,0) : 0 };
   my @params = @$rlist;
   if (not defined($value)) {
     return wantarray ? ($params[4], $params[5]) : $params[4];
   };
   $params[4] = $value;
   $params[5] = $error || 0;
-  $self->set_option($stan->group, \@params);
+  $self->set_option($stan, \@params);
   return wantarray ? ($params[4], $params[5]) : $params[4];
 };
 
@@ -600,10 +608,11 @@ sub restore {
     next if ($k eq 'Data');
     my $rlist = $rhash->{$k};
     my $this_data = $self->mo->fetch('Data', $k);
-    $self->push_standards($this_data);
     my ($w, $dw, $e0, $de0) = @$rlist;
-    $self->weight($this_data, $w, $dw);
-    $self->e0($this_data, $e0, $de0);
+    $self->add($this_data, weight=>$w, dweight=>$dw, e0=>$e0, de0=>$de0);
+    #$self->push_standards($this_data), weight=>$w, dweight=>$dw, e0=>$e0, de0=>$de0);
+    #$self->weight($this_data->group, $w, $dw);
+    #$self->e0($this_data->group, $e0, $de0);
     $self->dispose($this_data->template('analysis', 'lcf_sum_standard'));
   };
   $self->dispose($self->template('analysis', 'lcf_sum'));

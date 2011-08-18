@@ -167,7 +167,7 @@ sub process_argv {
       $app->Import(File::Spec->catfile($demeter->stash_folder, $AUTOSAVE_FILE));
     };
     $app->Clear;
-    unlink File::Spec->catfile($demeter->stash_folder, $AUTOSAVE_FILE);
+    #unlink File::Spec->catfile($demeter->stash_folder, $AUTOSAVE_FILE);
     my $old_cwd = File::Spec->catfile($demeter->dot_folder, "athena.cwd");
     if (-r $old_cwd) {
       my $yaml = YAML::Tiny::LoadFile($old_cwd);

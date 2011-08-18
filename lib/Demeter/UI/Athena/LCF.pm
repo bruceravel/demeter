@@ -69,7 +69,7 @@ sub new {
   $this->{notebook} ->AddPage($main,   'Standards',     1);
   $this->{notebook} ->AddPage($fits,   'Fit results',   0);
   $this->{notebook} ->AddPage($combi,  'Combinatorics', 0);
-  $this->{notebook} ->AddPage($marked, 'Marked',        0);
+  $this->{notebook} ->AddPage($marked, 'Sequence',      0);
 
 
   $this->{document} = Wx::Button->new($this, -1, 'Document section: linear combination fitting');
@@ -655,9 +655,10 @@ sub combi_results {
 
 sub combi_select {
   my ($this, $event) = @_;
-  my @stand = keys %{ $this->{LCF}->options };
   my @all = @{ $this->{LCF}->combi_results };
   my $result = $all[$event->GetIndex];
+  $this->{LCF} -> restore($result);
+  my @stand = keys %{ $this->{LCF}->options };
 
   my %idx = %{ $this->{index_map} };
   foreach my $s (@stand) {
@@ -671,13 +672,13 @@ sub combi_select {
     };
   };
 
-  $this->{LCF} -> restore($result);
   $this->{LCF} -> plot_fit;
   $this->{result}->Clear;
   $this->{result}->SetValue($this->{LCF}->report);
   $this->_remove_all;
   my $i = 0;
   foreach my $st (@{ $this->{LCF}->standards }) {
+    #next if not $this->{LCF}->option_exists($st->name);
     $this->{'standard'.$i}->SetStringSelection($st->name);
     my $w = sprintf("%.3f", $this->{LCF}->weight($st));
     my $e = sprintf("%.3f", $this->{LCF}->e0($st));
@@ -787,9 +788,9 @@ sub seq_select {
   my $result = $this->{LCF}->seq_results->[$event->GetIndex];
   my $data   = $this->{LCF}->mo->fetch('Data', $result->{Data});
   $this->{LCF}->data($data);
+  $this->{LCF}->restore($result);
   my $which = ($this->{LCF}->space =~ m{\Achi}) ? "lcf_prep_k" : "lcf_prep";
   $this->{LCF}->dispose($this->{LCF}->template("analysis", $which));
-  $this->{LCF}->restore($result);
   $this->{mreport}->SetValue($this->{LCF}->report);
 
   $this->{result}->Clear;
