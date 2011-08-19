@@ -474,8 +474,8 @@ sub _prep {
     next if not defined($stan);
     #print join("|", $i, $n, $this->{'weight'.$i}->GetValue), $/;
 
-     return sprintf("weight #%d", $i+1) if (not looks_like_number($this->{'weight'.$i}->GetValue));
-     return sprintf("e0 #%d"    , $i+1) if (not looks_like_number($this->{'e0'.$i}->GetValue));
+    return sprintf("weight #%d", $i+1) if (not looks_like_number($this->{'weight'.$i}->GetValue));
+    return sprintf("e0 #%d"    , $i+1) if (not looks_like_number($this->{'e0'.$i}->GetValue));
 
     $this->{LCF} -> add($stan,
 			required => $this->{'require'.$i}->GetValue,

@@ -175,7 +175,9 @@ sub add {
 
   my $n = $#{ $self->standards } + 1;
   $self->nstan($n);
-  $hash{weight}   ||= sprintf("%.3f", 1/$n);
+  if (not defined($hash{weight})) {
+    $hash{weight} = sprintf("%.3f", 1/$n);
+  };
 
   my $key = $stan->group;
   $self->set_option($key, [$hash{float_e0}, $hash{required}, $hash{weight}, $hash{dweight}, $hash{e0}, $hash{de0}]); ## other 2 are dweight and de0
@@ -302,7 +304,10 @@ sub prep_arrays {
     $which = ($self->space =~ m{\Achi}) ? "lcf_prep_standard_k" : "lcf_prep_standard";
     $stan -> dispose($stan->template("analysis", $which));
   };
-  if ($self->unity) {
+  if ($self->nstan eq 1) {
+    $which = ($self->space =~ m{\Achi}) ? "lcf_prep_standard_k" : "lcf_prep_standard";
+    $all[-1] -> dispose($all[-1]->template("analysis", $which));
+  } elsif ($self->unity) {
     $which = ($self->space =~ m{\Achi}) ? "lcf_prep_last_k" : "lcf_prep_last";
     $all[-1] -> dispose($all[-1]->template("analysis", $which));
   } else {
