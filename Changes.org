@@ -5,7 +5,20 @@
 
 * Beta testing releases:
 
-** Release 5: XX August, 2011
+** Release 6: XX August, 2011
+*** Athena
+   - Corrected the behavior of the LCF tool when plotting without
+     fitting in several edge cases that involve either a single
+     standard or weights set by hand
+
+*** Artemis
+   - Deal with situation in which Ifeffit return NAN as the value for
+     epsilon_k.  (Why does that happen?)
+
+*** Demeter
+*** Acknowledgements for this release
+
+** Release 5: 18 August, 2011
 *** Athena
    - Fixed a display problem in the column selection dialog
    - Fixed several problems with restoring LCF fits after performing a

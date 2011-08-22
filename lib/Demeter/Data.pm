@@ -479,8 +479,10 @@ sub chi_noise {
   $self->dispose($string);
   my $epsk = Ifeffit::get_scalar("epsilon_k");
   $epsk = (looks_like_number($epsk)) ? $epsk : 1;
+  $epsk = ($epsk =~ m{nan}i) ? 1 : $epsk;
   my $epsr = Ifeffit::get_scalar("epsilon_r");
   $epsr = (looks_like_number($epsr)) ? $epsr : 1;
+  $epsr = ($epsk =~ m{nan}i) ? 1 : $epsr;
   $self->epsk( sprintf("%.3e", $epsk) );
   $self->epsr( sprintf("%.3e", $epsr) );
   $self->recommended_kmax( sprintf("%.3f", Ifeffit::get_scalar("kmax_suggest")) );
