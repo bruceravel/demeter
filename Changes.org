@@ -10,12 +10,21 @@
    - Corrected the behavior of the LCF tool when plotting without
      fitting in several edge cases that involve either a single
      standard or weights set by hand
+   - Added a fourth plotting terminal
+   - Issue error to statusbar when kmax_suggest is oddly small
 
 *** Artemis
-   - Deal with situation in which Ifeffit return NAN as the value for
-     epsilon_k.  (Why does that happen?)
+   - Added a fourth plotting terminal
+   - Make the import file menu entry recognize all plausible file
+     types and do the right thing.  This makes the Import submenu
+     somewhat redundant.
+   - Issue error to statusbar when kmax_suggest is oddly small
+   - Add triangular paths to Histogram subsystem
 
 *** Demeter
+   - When reading epsilon from Ifeffit, recognize when it finds NaN
+     and do something sensible
+
 *** Acknowledgements for this release
 
 ** Release 5: 18 August, 2011

@@ -361,6 +361,7 @@ Readonly my $PLOT_VARIENCE     => Wx::NewId();
 Readonly my $TERM_1            => Wx::NewId();
 Readonly my $TERM_2            => Wx::NewId();
 Readonly my $TERM_3            => Wx::NewId();
+Readonly my $TERM_4            => Wx::NewId();
 
 Readonly my $SHOW_BUFFER       => Wx::NewId();
 Readonly my $PLOT_YAML	       => Wx::NewId();
@@ -549,6 +550,7 @@ sub menubar {
     $plotmenu->AppendRadioItem($TERM_1, "Plot to terminal 1", "Plot to terminal 1");
     $plotmenu->AppendRadioItem($TERM_2, "Plot to terminal 2", "Plot to terminal 2");
     $plotmenu->AppendRadioItem($TERM_3, "Plot to terminal 3", "Plot to terminal 3");
+    $plotmenu->AppendRadioItem($TERM_4, "Plot to terminal 4", "Plot to terminal 4");
   };
   $app->{main}->{plotmenu} = $plotmenu;
 
@@ -1000,6 +1002,10 @@ sub OnMenuClick {
     };
     ($id == $TERM_3) and do {
       $demeter->po->terminal_number(3);
+      last SWITCH;
+    };
+    ($id == $TERM_4) and do {
+      $demeter->po->terminal_number(4);
       last SWITCH;
     };
 

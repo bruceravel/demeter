@@ -959,8 +959,14 @@ sub OnMenuClick {
       $datapage->{data}->chi_noise;
       $datapage->{kmax}->SetValue($datapage->{data}->recommended_kmax);
       $datapage->{data}->fft_kmax($datapage->{data}->recommended_kmax);
-      my $text = sprintf("The number of independent points in this data set is now %.2f", $datapage->{data}->nidp);
-      $datapage->status($text);
+      my $text;
+      if ($datapage->{data}->fft_kmax > 5) {
+	$text = sprintf("The number of independent points in this data set is now %.2f", $datapage->{data}->nidp);
+	$datapage->status($text);
+      } else {
+	$text = "Ifeffit returned an odd value for recommended k-weight.  You probably should reset it to a more reasonable value.";
+	$datapage->status($text, 'error');
+      };
       last SWITCH;
     };
     ($id == $DATA_EPSK) and do {

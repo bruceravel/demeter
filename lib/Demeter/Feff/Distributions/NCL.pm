@@ -219,6 +219,7 @@ sub rdf {
   # print "||||||| ", $self->nconfig, $/;
   $self->nearcl(\@three);
   $self->update_rdf(0);
+  return $self;
 };
 
 sub chi {

@@ -974,6 +974,9 @@ sub DoContextMenu {
       $data->_update('bft');
       $data->fft_kmax($data->recommended_kmax);
       $app->{main}->{Main}->{fft_kmax}->SetValue($data->fft_kmax);
+      if ($data->fft_kmax < 5) {
+	$app->{main}->status("Ifeffit returned an oddly low value for its recommended k-weight.", 'error');
+      };
       $app->modified(1);
       last SWITCH;
     };

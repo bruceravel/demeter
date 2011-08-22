@@ -152,26 +152,29 @@ sub is_zipproj {
   $verbose ||= 0;
   $type ||= 'fpj';
   my $zip = Archive::Zip->new();
-  if ($zip->read($file) != AZ_OK) {
-    print "not a zip file\n" if $verbose;
-    undef $zip;
-    return 0;
-  };
- SWITCH: {
-    ($type eq 'fpj') and do {
-      print "not a fitting project file\n" if $verbose;
-      undef $zip, return 0 if not $zip->memberNamed('order');
-      last SWITCH;
+  {
+    local $Archive::Zip::ErrorHandler = sub{1}; # turn off Archive::Zip errors for this check
+    if ($zip->read($file) != AZ_OK) {
+      print "not a zip file\n" if $verbose;
+      undef $zip;
+      return 0;
     };
-    ($type eq 'dpj') and do {
-      print "not a demeter fit serialization\n" if $verbose;
-      undef $zip, return 0 if not $zip->memberNamed('gds.yaml');
-      last SWITCH;
-    };
-    ($type eq 'apj') and do {
-      print "not an old-style fitting project file\n" if $verbose;
-      undef $zip, return 0 if not $zip->memberNamed('HORAE');
-      last SWITCH;
+  SWITCH: {
+      ($type eq 'fpj') and do {
+	print "not a fitting project file\n" if $verbose;
+	undef $zip, return 0 if not $zip->memberNamed('order');
+	last SWITCH;
+      };
+      ($type eq 'dpj') and do {
+	print "not a demeter fit serialization\n" if $verbose;
+	undef $zip, return 0 if not $zip->memberNamed('gds.yaml');
+	last SWITCH;
+      };
+      ($type eq 'apj') and do {
+	print "not an old-style fitting project file\n" if $verbose;
+	undef $zip, return 0 if not $zip->memberNamed('HORAE');
+	last SWITCH;
+      };
     };
   };
   undef $zip;

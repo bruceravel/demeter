@@ -154,11 +154,23 @@ sub import_autosave {
 
 };
 
+
+## other data types:
+##  * empirical standard
+##  * structural unit
+##  * molecule
+
 sub read_project {
   my ($rframes, $fname) = @_;
   if (not $fname) {
-    my $fd = Wx::FileDialog->new( $rframes->{main}, "Import an Artemis project", cwd, q{},
-				  "Artemis project (*.fpj)|*.fpj|All files|*",
+    my $fd = Wx::FileDialog->new( $rframes->{main}, "Import an Artemis project or data", cwd, q{},
+				  "Artemis project or data (*.fpj;*.prj;*.apj;*.dpj;*.inp;*.cif)|*.fpj;*.prj;*.apj;*.dpj;*.inp;*.cif|" .
+				  "Artemis project (*.fpj)|*.fpj|" .
+				  "Athena project (*.prj)|*.prj|".
+				  "old-style project (*.apj)|*.apj|".
+				  "Demeter serializations (*.dpj)|*.dpj|".
+				  "Feff or crystal data (*.inp;*.cif)|*.inp;*.cif|".
+				  "All files|*",
 				  wxFD_OPEN|wxFD_FILE_MUST_EXIST|wxFD_CHANGE_DIR|wxFD_PREVIEW,
 				  wxDefaultPosition);
     if ($fd->ShowModal == wxID_CANCEL) {
@@ -168,6 +180,16 @@ sub read_project {
     $fname = File::Spec->catfile($fd->GetDirectory, $fd->GetFilename);
   };
   $fname = Demeter->follow_link($fname);
+
+  if (not Demeter->is_zipproj($fname,0, 'fpj')) {
+    Demeter::UI::Artemis::Import('old',  $fname), return if (Demeter->is_zipproj($fname,0,'apj'));
+    Demeter::UI::Artemis::Import('prj',  $fname), return if (Demeter->is_prj($fname));
+    Demeter::UI::Artemis::Import('chi',  $fname), return if (Demeter->is_data($fname));
+    Demeter::UI::Artemis::Import('feff', $fname), return if (Demeter->is_feff($fname) or Demeter->is_atoms($fname) or Demeter->is_cif($fname));
+    Demeter::UI::Artemis::Import('dpj',  $fname), return if (Demeter->is_zipproj($fname,0,'dpj'));
+    $rframes->{main}->status("$fname is not recognized as any kind of input data for Artemis", 'error');
+    return;
+  };
 
 
 #  my ($volume,$directories,$fl) = File::Spec->splitpath( $rframes->{main}->{project_folder} );
