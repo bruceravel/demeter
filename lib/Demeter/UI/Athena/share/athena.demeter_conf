@@ -87,6 +87,16 @@ description
   The color used to indicate widgets involved with plotting marked
   groups. 
 
+variable=show_dphase
+type=boolean
+onvalue=1
+offvalue=0
+default=false
+restart=1
+description
+  If true, display the check buttons for plotting the derivative of
+  the phase in R-space.
+
 variable=tied
 type=color
 default=#E5FEFC

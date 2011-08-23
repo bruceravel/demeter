@@ -177,6 +177,7 @@ sub points {
   $args{part}     ||= q{};
   $args{add}      ||= q{};
   $args{subtract} ||= q{};
+  $args{dphase}   ||= 0;
 
   my @x = ($args{space} eq 'e')    ? $self->get_array('energy')
         : ($args{space} eq 'k')    ? $self->get_array('k', $args{part})
@@ -192,6 +193,10 @@ sub points {
   @x = map {$_ + $args{shift}} @x;
   my @y = ();
   my @z = ();
+  if (($args{suffix} eq 'chir_pha') and $args{dphase}) {
+    $args{suffix} = 'dph';
+    #$self->dispose("erase ___dp_scale");
+  };
   if ($args{space} eq 'lcf') {
     @y = $self->get_array($args{suffix});
   } elsif ($args{space} eq 'lr') {

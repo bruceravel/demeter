@@ -182,6 +182,8 @@ sub _plotR_command {
   my $string = q{};
   my $group = $self->group;
   my %suffix = ('m'=>"chir_mag", e=>"chir_mag", r=>"chir_re", i=>"chir_im", p=>"chir_pha");
+  my %title = ('m'=>"Magnitude", e=>"Envelope", r=>"Real part", i=>"Imaginary part", p=>"Phase");
+  $title{p} = "Derivative of phase" if $self->po->dphase;
   my $kw = $self->data->get_kweight;
   my $xl = $pf->xlabel;
   $pf->xlabel("R (\\A)") if ((not defined($xl)) or ($xl =~ /^\s*$/));
@@ -190,9 +192,15 @@ sub _plotR_command {
   ($pf->showlegend) ? $pf->key($self->name) : $pf->key(q{});
   $pf->title(sprintf("%s in R space", $title)) if not $pf->title;
 
+  $self->plotkey($title{lc($pf->r_pl)}) if $self->po->single;
+
+  if ((lc($pf->r_pl) eq 'p') and $self->po->dphase) {
+    $self->dispose($self->template('process', 'dphase'));
+  };
   $string = ($pf->New)
           ? $self->template("plot", "newr")
           : $self->template("plot", "overr");
+  $self->plotkey(q{});
   if (lc($pf->r_pl) eq 'e') {		# envelope
     my $pm = $self->plot_multiplier;
     $self->plot_multiplier(-1*$pm);
@@ -220,6 +228,8 @@ sub _plotq_command {
   my $pf  = $self->mo->plot;
   my $string = q{};
   my $group = $self->group;
+  my %title = ('m'=>"Magnitude", e=>"Envelope", r=>"Real part", i=>"Imaginary part", p=>"Phase");
+  #$title{p} = "Derivative of phase" if $self->po->dphase;
   my $kw = $self->data->get_kweight;
   my $xl = $pf->xlabel;
   $pf->xlabel("k (\\A\\u-1\\d)") if ($xl =~ m{\A\s*\z});
@@ -227,10 +237,12 @@ sub _plotq_command {
   (my $title = $self->name) =~ s{D_E_F_A_U_L_T}{Plot of paths};
   ($pf->showlegend) ? $pf->key($self->name) : $pf->key(q{});
   $pf->title(sprintf("%s in q space", $title)) if not $pf->title;
+  $self->plotkey($title{lc($pf->q_pl)}) if $self->po->single;
 
   $string = ($pf->New)
           ? $self->template("plot", "newq")
           : $self->template("plot", "overq");
+  $self->plotkey(q{});
   if (lc($pf->q_pl) eq 'e') {		# envelope
     my $pm = $self->plot_multiplier;
     $self->plot_multiplier(-1*$pm);

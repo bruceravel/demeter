@@ -15,6 +15,6 @@
 ##|
 ##| saving "{$S->name}" as chi(R)
 write_data(file="{$filename}", ${$titles}, ${$D->group}_title_*,
-           label="r chir_re chir_im chir_mag chir_pha win",
+           label="r chir_re chir_im chir_mag chir_pha win deriv_phase",
            {$S->group}.r, {$S->group}.chir_re, {$S->group}.chir_im,
-           {$S->group}.chir_mag, {$S->group}.chir_pha, {$D->group}.rwin)
+           {$S->group}.chir_mag, {$S->group}.chir_pha, {$D->group}.rwin, {$S->group}.dph)

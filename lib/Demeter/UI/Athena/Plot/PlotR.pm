@@ -84,6 +84,20 @@ sub new {
   $slots -> Add($this->{win}, 1, wxGROW|wxALL, 1);
   EVT_CHECKBOX($this, $this->{win}, sub{$_[0]->replot(qw(r single))});
   $app->mouseover($this->{win}, "Plot the window function when ploting the current group in R-space.");
+  $slots -> Add(Wx::StaticText->new($this, -1, q{}), 0, wxGROW|wxALL, 1);
+
+  $this->{dphase} = Wx::CheckBox->new($this, -1, 'Deriv of phase', wxDefaultPosition, wxDefaultSize);
+  $slots -> Add($this->{dphase}, 1, wxGROW|wxALL, 1);
+  $this->{mdphase} = Wx::CheckBox->new($this, -1, 'Deriv of phase', wxDefaultPosition, wxDefaultSize);
+  $slots -> Add($this->{mdphase}, 1, wxGROW|wxALL, 1);
+  EVT_CHECKBOX($this, $this->{dphase}, sub{$_[0]->replot(qw(r single))});
+  EVT_CHECKBOX($this, $this->{mdphase}, sub{$_[0]->replot(qw(r marked))});
+  $app->mouseover($this->{dphase}, "Plot the the derivative of the phase of $CHI(R) for the current group.");
+  $app->mouseover($this->{mdphase}, "Plot the the derivative of the phase of $CHI(R) for all marked groups.");
+  if (not $Demeter::UI::Athena::demeter->co->default("athena", "show_dphase")) {
+    $this->{dphase}->Hide;
+    $this->{mdphase}->Hide;
+  };
 
   SWITCH: {
       ($Demeter::UI::Athena::demeter->co->default("plot", "r_pl") eq 'm') and do {
@@ -133,9 +147,9 @@ sub new {
   $range -> Add($this->{rmax}, 1, wxRIGHT, 10);
 
   $this->{$_}->SetBackgroundColour( Wx::Colour->new($Demeter::UI::Athena::demeter->co->default("athena", "single")) )
-    foreach (qw(mag env re im pha win));
+    foreach (qw(mag env re im pha win dphase));
   $this->{$_}->SetBackgroundColour( Wx::Colour->new($Demeter::UI::Athena::demeter->co->default("athena", "marked")) )
-    foreach (qw(mmag mre mim mpha));
+    foreach (qw(mmag mre mim mpha mdphase));
 
   foreach my $x (qw(rmin rmax)) {
     $this->{$x} -> SetValidator( Wx::Perl::TextValidator->new( qr([0-9.]) ) );

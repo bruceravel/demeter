@@ -317,6 +317,7 @@ Readonly my $MARKED_RMAG       => Wx::NewId();
 Readonly my $MARKED_RRE	       => Wx::NewId();
 Readonly my $MARKED_RIM	       => Wx::NewId();
 Readonly my $MARKED_RPHA       => Wx::NewId();
+Readonly my $MARKED_RDPHA      => Wx::NewId();
 Readonly my $MARKED_QMAG       => Wx::NewId();
 Readonly my $MARKED_QRE	       => Wx::NewId();
 Readonly my $MARKED_QIM	       => Wx::NewId();
@@ -438,6 +439,7 @@ sub menubar {
   $savemarkedmenu->Append($MARKED_RRE,   "Re[$CHI(R)]",     "Save marked groups as Re[$CHI(R)] to a column data file");
   $savemarkedmenu->Append($MARKED_RIM,   "Im[$CHI(R)]",     "Save marked groups as Im[$CHI(R)] to a column data file");
   $savemarkedmenu->Append($MARKED_RPHA,  "Pha[$CHI(R)]",    "Save marked groups as Pha[$CHI(R)] to a column data file");
+  $savemarkedmenu->Append($MARKED_RDPHA, "Deriv(Pha[$CHI(R)])", "Save marked groups as the derivative of Pha[$CHI(R)] to a column data file") if ($Demeter::UI::Athena::demeter->co->default("athena", "show_dphase"));
   $savemarkedmenu->AppendSeparator;
   $savemarkedmenu->Append($MARKED_QMAG,  "|$CHI(q)|",       "Save marked groups as |$CHI(q)| to a column data file");
   $savemarkedmenu->Append($MARKED_QRE,   "Re[$CHI(q)]",     "Save marked groups as Re[$CHI(q)] to a column data file");
@@ -701,8 +703,8 @@ sub OnMenuClick {
 
     (any {$id == $_} ($MARKED_XMU,  $MARKED_NORM, $MARKED_DER,  $MARKED_NDER,  $MARKED_SEC,
 		      $MARKED_NSEC, $MARKED_CHI,  $MARKED_CHIK, $MARKED_CHIK2, $MARKED_CHIK3,
-		      $MARKED_RMAG, $MARKED_RRE,  $MARKED_RIM,  $MARKED_RPHA,  $MARKED_QMAG,
-		      $MARKED_QRE,  $MARKED_QIM,  $MARKED_QPHA))
+		      $MARKED_RMAG, $MARKED_RRE,  $MARKED_RIM,  $MARKED_RPHA,  $MARKED_RDPHA,
+		      $MARKED_QMAG, $MARKED_QRE,  $MARKED_QIM,  $MARKED_QPHA))
       and do {
 	my $how = ($id == $MARKED_XMU)   ? "xmu"
 	        : ($id == $MARKED_NORM)  ? "norm"
@@ -718,6 +720,7 @@ sub OnMenuClick {
 	        : ($id == $MARKED_RRE)   ? "chir_re"
 	        : ($id == $MARKED_RIM)   ? "chir_im"
 	        : ($id == $MARKED_RPHA)  ? "chir_pha"
+	        : ($id == $MARKED_RDPHA) ? "dph"
 	        : ($id == $MARKED_QMAG)  ? "chiq_mag"
 	        : ($id == $MARKED_QRE)   ? "chiq_re"
 	        : ($id == $MARKED_QIM)   ? "chiq_im"
@@ -1423,6 +1426,7 @@ sub plot {
   #$app->{main}->{Main}->pull_values($app->current_data);
   $app->pull_kweight($data[0], $how);
 
+  $data[0]->po->single($how eq 'single');
   $data[0]->po->start_plot;
   my $title = ($how eq 'single')                                  ? q{}
             : ($app->{main}->{Other}->{title}->GetValue)          ? $app->{main}->{Other}->{title}->GetValue
@@ -1453,6 +1457,7 @@ sub plot {
   ## R
   } elsif (lc($space) eq 'r') {
     if ($how eq 'single') {
+      $data[0]->po->dphase($app->{main}->{PlotR}->{dphase}->GetValue);
       foreach my $which (qw(mag env re im pha)) {
 	if ($app->{main}->{PlotR}->{$which}->GetValue) {
 	  $data[0]->po->r_pl(substr($which, 0, 1));
@@ -1461,6 +1466,7 @@ sub plot {
       };
       $data[0]->plot_window('r') if $app->{main}->{PlotR}->{win}->GetValue;
     } else {
+      $data[0]->po->dphase($app->{main}->{PlotR}->{mdphase}->GetValue);
       $_->plot($space) foreach @data;
     };
     $app->{main}->{plottabs}->SetSelection(3) if $app->spacetab;

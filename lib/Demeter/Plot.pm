@@ -102,6 +102,7 @@ has 'pathstyle' => (is => 'rw', isa =>  PgplotLine, default => sub{ shift->co->d
 
 ## -------- default plotting space
 has 'space'	=> (is => 'rw', isa =>  PlotType, default => 'r', coerce => 1);
+has 'single'    => (is => 'rw', isa =>  'Bool',   default => 0);
 
 ## -------- energy plot parameters
 has 'emin'	=> (is => 'rw', isa =>  'Num',    default => sub{ shift->co->default("plot", "emin")	  || -200});
@@ -124,9 +125,13 @@ has 'e_zero'	=> (is => 'rw', isa =>  'Bool',   default => 0);
 has 'kmin'	=> (is => 'rw', isa =>  'Num',    default => sub{ shift->co->default("plot", "kmin") || 0});
 has 'kmax'	=> (is => 'rw', isa =>  'Num',    default => sub{ shift->co->default("plot", "kmax") || 15});
 has 'chie'	=> (is => 'rw', isa =>  'Bool',   default => 0);
+
 has 'rmin'	=> (is => 'rw', isa =>  'Num',    default => sub{ shift->co->default("plot", "rmin") || 0});
 has 'rmax'	=> (is => 'rw', isa =>  'Num',    default => sub{ shift->co->default("plot", "rmax") || 6});
 has 'r_pl'	=> (is => 'rw', isa =>  MERIP,    default => sub{ shift->co->default("plot", "r_pl") || "m"});
+has 'dphase'	=> (is => 'rw', isa =>  'Bool',   default => 0);
+has 'smag'	=> (is => 'rw', isa =>  'Bool',   default => 0);
+
 has 'qmin'	=> (is => 'rw', isa =>  'Num',    default => sub{ shift->co->default("plot", "qmin") || 0});
 has 'qmax'	=> (is => 'rw', isa =>  'Num',    default => sub{ shift->co->default("plot", "qmax") || 15});
 has 'q_pl'	=> (is => 'rw', isa =>  MERIP,    default => sub{ shift->co->default("plot", "q_pl") || "r"});
@@ -134,6 +139,7 @@ has 'q_pl'	=> (is => 'rw', isa =>  MERIP,    default => sub{ shift->co->default(
 has 'kweight'		=> (is => 'rw', isa =>  'Num',      default => "1",
 			    trigger => sub{my ($self) = @_; $self->propagate_kweight});
 has 'window_multiplier' => (is => 'rw', isa =>  'Num',      default => 1.05);
+
 has 'plot_data'	        => (is => 'rw', isa =>  'Bool',     default => 0);
 has 'plot_fit'		=> (is => 'rw', isa =>  'Bool',     default => 0);
 has 'plot_win'		=> (is => 'rw', isa =>  'Bool',     default => 0);
@@ -374,6 +380,7 @@ sub plot_rylabel {
   return $self->ylabel if ($self->ylabel !~ m{\A\s*\z});
   my %open   = ('m'=>"|", e=>"Env[", r=>"Re[", i=>"Im[", p=>"Phase[");
   my %close  = ('m'=>"|", e=>"]",    r=>"]",   i=>"]",   p=>"]");
+  ($open{p}, $close{p}) = ("Deriv(Phase[", "])") if $self->dphase;
   my $part   = lc($self->r_pl);
   if ($self->kweight >= 0) {
     return sprintf("%s\\gx(R)%s (\\A\\u-%.3g\\d)", $open{$part}, $close{$part}, $self->kweight+1);
@@ -786,6 +793,16 @@ The upper bound of the plot range in R.
 The part of the Fourier transform to plot when making a multiple data
 set plot in R.  The choices are m, p, r, and i for magnitude, phase,
 real, and imaginary.
+
+=item C<dphase> (boolean) I<[0]>
+
+When this flag is true, plots of the phase of chi(R) will be plotted
+in the derivative.
+
+=item C<smag> (boolean) I<[0]>
+
+When this flag is true, plots of the magnitude of chi(R) will be plotted
+in the second derivative.  (Not implemented yet.)
 
 =back
 

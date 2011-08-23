@@ -9,6 +9,7 @@
  my %suffixes = ('m'=>"chir_mag", e=>"chir_mag", r=>"chir_re", i=>"chir_im", p=>"chir_pha");
  my $part     = lc($P->r_pl);
  $suffix      = $suffixes{$part};
+ $suffix      = 'dph' if ($P->dphase and ($part eq 'p'));
  q{}
 }
 plot({$D->group}.r, "{$D->plot_multiplier}*{$D->group}.{$suffix}+{$D->y_offset}",

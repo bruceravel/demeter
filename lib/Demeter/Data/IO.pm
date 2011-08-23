@@ -58,6 +58,7 @@ sub save {
     };
     (lc($what) eq 'r') and do {
       $self->_update("bft");
+      $self->dispose($self->template('process', 'dphase'));
       $string = $self->_save_chi_command('r', $filename);
       last WHAT;
     };
@@ -206,6 +207,7 @@ sub _save_many_command {
                       : ($which =~ m{\Achir})        ? ('bft', 'r')
                       : ($which =~ m{\Achiq})        ? ('all', 'q')
                       : ($which =~ m{\Achi})         ? ('fft', 'k')
+                      : ($which =~ m{\Adph})         ? ('bft', 'r')
 	              :                                ('data', 'energy');
   $self->mo->standard($self);
   my $command = q{};
@@ -219,6 +221,7 @@ sub _save_many_command {
   foreach my $g (@groups) {
     next if ((ref($g) =~ m{VPath}) and ($level !~ m{(?:fft|bft|all)}));
     $g->_update($level);
+    $g->dispose($self->template('process', 'dphase')) if ($which eq 'dph');
     if ($which =~ m{\Achik(\d*)\z})  { # make k-weighted chi(k) array
       $command .= $g->template("process", "chikn");
     } elsif ($which =~ m{$e_regexp}) { # interpolate energy data onto $self's grid

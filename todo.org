@@ -20,7 +20,7 @@
 ** installation issues [1/1]
   - [X] jpg needs to be a Module::Build ~build_element~, but there are too many such files in the distro .. not all serve a purpose
 
-** Demeter bugs, shortcomings, missing features  [4/20] [20%]
+** Demeter bugs, shortcomings, missing features  [5/21] [23%]
   - [ ] in =Demeter::Data::IO::save_many=, why doesn't updating in n specifying "background" not work to bring data up to date?  (fft, i.e. doing autobk, does work)
   - [ ] Importing a Windows shortcut from a network mounted folder on linux or Mac will fail
   - [ ] +serialize VPath+, put VPath into +dpj and+ fpj files
@@ -37,6 +37,7 @@
   - [ ] error check deserialization for all objects, verify that it is a yaml or whatnot, return 0 if not
   - [ ] per data set R-factors, computed correctly for mkw fits (what is "correctly?")
   - [ ] OpenBabel interface, tied into Feff
+  - [X] use plotkeys in single group plots, not in multiple group plots
   - [X] SDK: "It  seems that if you use the old fashioned GSD string you can have capitals
 	in your variable names but if you use the fancy simpleGDS you can not.
   - [X] SDK: something like ~find_path~ method, but which find the path closest to some R value

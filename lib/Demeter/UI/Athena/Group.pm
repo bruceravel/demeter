@@ -75,11 +75,13 @@ sub Copy {
   };
   $clone->name($newname);
   my $index = $app->current_index;
+  my $checked = $app->{main}->{list}->IsChecked($index);
   if ($index == $app->{main}->{list}->GetCount-1) {
     $app->{main}->{list}->AddData($clone->name, $clone);
   } else {
     $app->{main}->{list}->InsertData($clone->name, $index+1, $clone);
   };
+  $app->{main}->{list}->Check($index+1, $checked);
   $app->modified(1);
   $app->{main}->status("Copied ".$data->name);
   $app->heap_check(0);

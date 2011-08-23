@@ -153,6 +153,7 @@ override 'plot_rylabel' => sub {
   my ($open, $close) = ($part eq 'm') ? ('{/*1.25 |}',    '{/*1.25 |}')
                      : ($part eq 'r') ? ('{/*1.25 Re[}',  '{/*1.25 ]}')
                      : ($part eq 'i') ? ('{/*1.25 Im[}',  '{/*1.25 ]}')
+                     : (($part eq 'p') and ($self->dphase)) ? ('{/*1.25 Deriv(Pha[}', '{/*1.25 ])}')
                      : ($part eq 'p') ? ('{/*1.25 Pha[}', '{/*1.25 ]}')
 		     :                  ('{/*1.25 Env[}', '{/*1.25 ]}');
   if ($w >= 0) {

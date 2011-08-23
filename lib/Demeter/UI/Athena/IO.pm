@@ -678,6 +678,7 @@ sub save_marked {
                     : ($how eq 'chir_re')  ? ("Re[$CHI(R)]",     '.chir_re')
                     : ($how eq 'chir_im')  ? ("Im[$CHI(R)]",     '.chir_im')
                     : ($how eq 'chir_pha') ? ("Pha[$CHI(R)]",    '.chir_pha')
+                    : ($how eq 'dph')      ? ("Deriv(Pha[$CHI(R)])", '.dph')
                     : ($how eq 'chiq_mag') ? ("|$CHI(q)|",       '.chiq_mag')
                     : ($how eq 'chiq_re')  ? ("Re[$CHI(q)]",     '.chiq_re')
                     : ($how eq 'chiq_im')  ? ("Im[$CHI(q)]",     '.chiq_im')

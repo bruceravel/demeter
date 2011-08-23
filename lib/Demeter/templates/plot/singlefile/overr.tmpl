@@ -9,6 +9,7 @@
  %suffixes = ('m'=>"chir_mag", e=>"chir_mag", r=>"chir_re", i=>"chir_im", p=>"chir_pha");
  $part     = lc($P->r_pl);
  $suffix   = $suffixes{$part};
+ $suffix   = 'dph' if ($P->dphase and ($part eq 'p'));
  $string   = $S->randomstring(6);
  q{}
 }

@@ -18,7 +18,8 @@
 	                 : ($P->r_pl eq 'p') ? 'chir_pha'
 		         :                     'chir_mag',
 	        scale   => $D->plot_multiplier,
-	        yoffset => $D->y_offset
+	        yoffset => $D->y_offset,
+		dphase  => $P->dphase,
 	       );
   $thiskey = $D->plotkey || $C->get('plot_part') || $P->key;
   $thiskey =~ s{_}{\\\\_}g;

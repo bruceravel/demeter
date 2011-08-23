@@ -12,6 +12,9 @@
      standard or weights set by hand
    - Added a fourth plotting terminal
    - Issue error to statusbar when kmax_suggest is oddly small
+   - Implemented Scott's deriv(phase(chi(R))) idea with a
+     configuration parameter for turning it on and off
+   - Copying a group now copies its marked state
 
 *** Artemis
    - Added a fourth plotting terminal
@@ -24,6 +27,10 @@
 *** Demeter
    - When reading epsilon from Ifeffit, recognize when it finds NaN
      and do something sensible
+   - Implemented Scott's deriv(phase(chi(R))) idea in all plotting
+     backends and in column output
+   - Boolean flag for indicating a single data group fit and setting
+     the Data plotkey attribute appropriately in R or q.
 
 *** Acknowledgements for this release
 
