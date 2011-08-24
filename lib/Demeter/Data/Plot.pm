@@ -183,7 +183,6 @@ sub _plotR_command {
   my $group = $self->group;
   my %suffix = ('m'=>"chir_mag", e=>"chir_mag", r=>"chir_re", i=>"chir_im", p=>"chir_pha");
   my %title = ('m'=>"Magnitude", e=>"Envelope", r=>"Real part", i=>"Imaginary part", p=>"Phase");
-  $title{p} = "Derivative of phase" if $self->po->dphase;
   my $kw = $self->data->get_kweight;
   my $xl = $pf->xlabel;
   $pf->xlabel("R (\\A)") if ((not defined($xl)) or ($xl =~ /^\s*$/));
@@ -192,11 +191,12 @@ sub _plotR_command {
   ($pf->showlegend) ? $pf->key($self->name) : $pf->key(q{});
   $pf->title(sprintf("%s in R space", $title)) if not $pf->title;
 
-  $self->plotkey($title{lc($pf->r_pl)}) if $self->po->single;
-
   if ((lc($pf->r_pl) eq 'p') and $self->po->dphase) {
     $self->dispose($self->template('process', 'dphase'));
+    $title{p} = sprintf("Derivative of phase * %.4f", Ifeffit::get_scalar('___dphase_scale'));
+    $self->dispose("erase ___dphase_scale");
   };
+  $self->plotkey($title{lc($pf->r_pl)}) if $self->po->single;
   $string = ($pf->New)
           ? $self->template("plot", "newr")
           : $self->template("plot", "overr");

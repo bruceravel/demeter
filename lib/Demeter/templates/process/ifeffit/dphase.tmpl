@@ -5,4 +5,5 @@
 
 ##| Set first derivative of phase in R
 set {$D->group}.dph = deriv({$D->group}.chir_pha)/deriv({$D->group}.r)
-set {$D->group}.dph = (ceil({$D->group}.chir_mag) / ceil(abs({$D->group}.dph))) * {$D->group}.dph
+set ___dphase_scale = (ceil({$D->group}.chir_mag) / ceil(abs({$D->group}.dph)))
+set {$D->group}.dph = ___dphase_scale * {$D->group}.dph

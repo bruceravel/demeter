@@ -32,7 +32,11 @@ sub new {
 
   my $box = Wx::BoxSizer->new( wxVERTICAL );
   my $config = Demeter::UI::Wx::Config->new($this, \&target);
-  $config->populate(['all', 'artemis']);
+  $config->populate([sort qw(gnuplot indicator marker artemis feff happiness pathfinder fft plot atoms
+			     file histogram bft fit interpolation bkg fspath lcf warnings gds
+			     operations)]);
+
+
   $config->{params}->Expand($config->{params}->GetRootItem);
   $box->Add($config, 1, wxGROW|wxALL, 5);
 

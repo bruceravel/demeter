@@ -71,9 +71,9 @@ sub OnInit {
   $demeter -> mo -> iwd(cwd);
 
   #print DateTime->now,  "  Reading configuration files ...\n";
-  my $conffile = File::Spec->catfile(dirname($INC{'Demeter/UI/Athena.pm'}), 'Athena', 'share', "athena.demeter_conf");
-  $demeter -> co -> read_config($conffile);
-  $demeter -> co -> read_ini('athena');
+  #my $conffile = File::Spec->catfile(dirname($INC{'Demeter/UI/Athena.pm'}), 'Athena', 'share', "athena.demeter_conf");
+  #$demeter -> co -> read_config($conffile);
+  #$demeter -> co -> read_ini('athena');
   $demeter -> plot_with($demeter->co->default(qw(plot plotwith)));
   my $old_cwd = File::Spec->catfile($demeter->dot_folder, "athena.cwd");
   if (-r $old_cwd) {

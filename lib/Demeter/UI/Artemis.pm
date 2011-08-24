@@ -96,9 +96,9 @@ sub OnInit {
 
   #my $app = $class->SUPER::new;
 
-  my $conffile = File::Spec->catfile(dirname($INC{'Demeter/UI/Artemis.pm'}), 'Artemis', 'share', "artemis.demeter_conf");
-  $demeter -> co -> read_config($conffile);
-  $demeter -> co -> read_ini('artemis');
+  #my $conffile = File::Spec->catfile(dirname($INC{'Demeter/UI/Artemis.pm'}), 'Artemis', 'share', "artemis.demeter_conf");
+  #$demeter -> co -> read_config($conffile);
+  #$demeter -> co -> read_ini('artemis');
   $demeter -> plot_with($demeter->co->default(qw(plot plotwith)));
 
   ## -------- import all of Artemis' various parts

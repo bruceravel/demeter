@@ -46,14 +46,6 @@ section_description
   file, any other named colors that your system recognizes, or
   hexadecimal triplets (i.e. "#0000FF" for blue and so on).
 
-variable=n
-type=positive integer
-default=8
-description
-  This determines the number of possible indicators that can be set.
-  Changing this parameter will not take effect until the next time you
-  start Athena.
-
 variable=color
 type=color
 default=#8F3910

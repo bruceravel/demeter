@@ -174,10 +174,10 @@ sub OnInit {
   $demeter -> mo -> ui('Wx');
   $demeter -> mo -> identity('Hephaestus');
   ## read hephaestus' demeter_conf file
-  my $conffile = File::Spec->catfile(dirname($INC{'Demeter/UI/Hephaestus.pm'}), 'Hephaestus', 'data', "hephaestus.demeter_conf");
-  $demeter -> co -> read_config($conffile);
+  #my $conffile = File::Spec->catfile(dirname($INC{'Demeter/UI/Hephaestus.pm'}), 'Hephaestus', 'data', "hephaestus.demeter_conf");
+  #$demeter -> co -> read_config($conffile);
   ## read ini file...
-  $demeter -> co -> read_ini('hephaestus');
+  #$demeter -> co -> read_ini('hephaestus');
   $demeter -> plot_with($demeter->co->default(qw(plot plotwith)));
 
   foreach my $m (qw(Absorption Formulas Ion Data Transitions EdgeFinder LineFinder
