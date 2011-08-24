@@ -17,11 +17,16 @@ use File::Spec;
 ## Configuration
 
 my %windows = (strawberry => 'C:\strawberry',                     # base of Strawberry perl
-	       gnuwin     => 'C:\GnuWin32',                       # base of GnuWin32, readline, ncurses
-	       mingw      => 'C:\MinGW',                          # base of the MinGW compiler suite
-	       pgplot     => 'C:\MinGW\lib\pgplot',               # install location of GRwin and PGPLOT
-	       ifeffit    => 'C:\source\ifeffit-1.2.11d\src\lib', # install location of libifeffit.a
-	       gnuplot    => 'C:\gnuplot\binaries',		  # install location of gnuplot.exe
+	       #gnuwin     => 'C:\GnuWin32',                      # base of GnuWin32, readline, ncurses
+	       gnuwin     => 'C:\strawberry\lib',
+	       #mingw      => 'C:\MinGW',                         # base of the MinGW compiler suite
+	       mingw      => 'C:\strawberry\c\lib\gcc\i686-w64-mingw32\4.4.3',
+	       #pgplot     => 'C:\MinGW\lib\pgplot',              # install location of GRwin and PGPLOT
+	       pgplot     => 'C:\strawberry\c\lib\pgplot',
+	       #ifeffit    => 'C:\source\ifeffit-1.2.11d\src\lib', # install location of libifeffit.a
+	       ifeffit    => 'C:\strawberry\lib',
+	       #gnuplot    => 'C:\gnuplot\binaries',		  # install location of gnuplot.exe
+	       gnuplot    => 'C:\strawberry\c\bin',
 	      );
 my $ghpages = '../demeter-gh-pages';
 

@@ -25,7 +25,7 @@ my $here  = dirname($0);
 
 my @plugins = qw(10bmmultichannel x23a2med);
 my $plregex = join("|", @plugins);
-my $number_of_groups = 25;
+my $number_of_groups = 28;
 
 use Demeter;
 
@@ -58,7 +58,7 @@ ok( $demeter2->co->get("var1") == 7,              'wrote and read an arbitrary c
 ok( $demeter2->co->get("var2") eq 'foo',          'wrote and read an arbitrary config parameter: string');
 
 my @groups = grep {$_ !~ m{$plregex}} $demeter->co->groups;
-ok( ($groups[0] eq 'atoms' and $#groups == $number_of_groups),   'configuration system introspection works: groups '.$#groups);
+ok( ($groups[0] eq 'artemis' and $#groups == $number_of_groups), 'configuration system introspection works: groups '.$#groups.' '.$groups[0]);
 my $groups = $demeter->co->main_groups;
 ok( ($#{$groups} == $number_of_groups),                          'configuration system introspection works: main_groups '.$#groups);
 

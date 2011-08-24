@@ -918,7 +918,6 @@ lib/Demeter/UI/Artemis/Plot/Stack.pm
 lib/Demeter/UI/Artemis/Plot/VPaths.pm
 lib/Demeter/UI/Artemis/Prj.pm
 lib/Demeter/UI/Artemis/Project.pm
-lib/Demeter/UI/Artemis/share/artemis.demeter_conf
 lib/Demeter/UI/Artemis/share/artemis_icon.ico
 lib/Demeter/UI/Artemis/share/artemis_icon.png
 lib/Demeter/UI/Artemis/share/GPL.dem
@@ -967,7 +966,6 @@ lib/Demeter/UI/Athena/Rebin.pm
 lib/Demeter/UI/Athena/Replot.pm
 lib/Demeter/UI/Athena/SelfAbsorption.pm
 lib/Demeter/UI/Athena/Series.pm
-lib/Demeter/UI/Athena/share/athena.demeter_conf
 lib/Demeter/UI/Athena/share/athena_icon.ico
 lib/Demeter/UI/Athena/share/athena_icon.jpeg
 lib/Demeter/UI/Athena/share/athena_icon.png
@@ -1038,7 +1036,6 @@ lib/Demeter/UI/Hephaestus/Common.pm
 lib/Demeter/UI/Hephaestus/Config.pm
 lib/Demeter/UI/Hephaestus/Data.pm
 lib/Demeter/UI/Hephaestus/data/GPL.dem
-lib/Demeter/UI/Hephaestus/data/hephaestus.demeter_conf
 lib/Demeter/UI/Hephaestus/data/hephaestus.htm
 lib/Demeter/UI/Hephaestus/data/kalziumrc.dem
 lib/Demeter/UI/Hephaestus/data/trans_table.png
@@ -1624,4 +1621,3 @@ win/ifeffit/iconf_term
 win/inno/strawberry.iss
 win/spp/build_perl.pl
 win/spp/DemeterPerlBuild.pm
-META.yml
