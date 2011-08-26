@@ -109,6 +109,17 @@ description
   If true, a space for the dphase path parameter will be displayed on
   each path page.
 
+variable=plot_phase
+type=boolean
+onvalue=1
+offvalue=0
+default=false
+restart=1
+description
+  If true, display the radio button for plotting the phase in R-space 
+  and the check button for plotting the derivative of phase.  (This is
+  not currently implemented in Artemis.)
+
 variable=plot_frame_x
 type=real
 default=0

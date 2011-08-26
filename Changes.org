@@ -31,6 +31,8 @@
      backends and in column output
    - Boolean flag for indicating a single data group fit and setting
      the Data plotkey attribute appropriately in R or q.
+   - Fixed a configuration bug wherein the GUIs could clobber one
+     another's configuration changes
 
 *** Acknowledgements for this release
 

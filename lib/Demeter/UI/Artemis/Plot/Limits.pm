@@ -23,7 +23,7 @@ use Wx::Event qw(EVT_MENU EVT_CLOSE EVT_TOOL_ENTER EVT_CHECKBOX EVT_CHOICE EVT_E
 use Wx::Perl::TextValidator;
 use Demeter::UI::Wx::SpecialCharacters qw(:all);
 
-my $parts = ['Magnitude', 'Real', 'Imag.'];
+my @parts = ('Magnitude', 'Real', 'Imag.');
 my $demeter = $Demeter::UI::Artemis::demeter;
 
 sub new {
@@ -33,20 +33,24 @@ sub new {
   my $szr = Wx::BoxSizer->new( wxVERTICAL );
 
   ## -------- plotting part for chi(R)
-  $this->{rpart} = Wx::RadioBox->new($this, -1, "Plot $CHI(R)", wxDefaultPosition, wxDefaultSize, $parts, 1, wxRA_SPECIFY_ROWS);
+  #if ($demeter->co->default('artemis', 'plot_phase')) {
+  #  $this->{rpart} = Wx::RadioBox->new($this, -1, "Plot $CHI(R)", wxDefaultPosition, wxDefaultSize, [@parts, 'Phase', 'Der(Phase)'], 3, wxRA_SPECIFY_COLS);
+  #} else {
+  $this->{rpart} = Wx::RadioBox->new($this, -1, "Plot $CHI(R)", wxDefaultPosition, wxDefaultSize, \@parts, 1, wxRA_SPECIFY_ROWS);
+  #};
   my $which = 0;
   ($which = 1) if ($demeter->co->default("plot", "r_pl") eq 'r');
   ($which = 2) if ($demeter->co->default("plot", "r_pl") eq 'i');
   $this->{rpart} -> SetSelection($which);
-  $szr -> Add($this->{rpart}, 1, wxGROW|wxALL, 5);
+  $szr -> Add($this->{rpart}, 0, wxGROW|wxALL, 5);
 
-  ## -------- plotting part for chi(R)
-  $this->{qpart} = Wx::RadioBox->new($this, -1, "Plot $CHI(q)", wxDefaultPosition, wxDefaultSize, $parts, 1, wxRA_SPECIFY_ROWS);
+  ## -------- plotting part for chi(q)
+  $this->{qpart} = Wx::RadioBox->new($this, -1, "Plot $CHI(q)", wxDefaultPosition, wxDefaultSize, \@parts, 1, wxRA_SPECIFY_ROWS);
   my $which = 1;
   ($which = 0) if ($demeter->co->default("plot", "q_pl") eq 'm');
   ($which = 2) if ($demeter->co->default("plot", "q_pl") eq 'i');
   $this->{qpart} -> SetSelection($which);
-  $szr -> Add($this->{qpart}, 1, wxGROW|wxALL, 5);
+  $szr -> Add($this->{qpart}, 0, wxGROW|wxALL, 5);
 
   $demeter->po->r_pl($demeter->co->default("plot", "r_pl"));
   $demeter->po->q_pl($demeter->co->default("plot", "q_pl"));
@@ -173,7 +177,13 @@ sub OnPlotToggle {
 };
 sub OnChoice {
   my ($this, $event, $choice, $accessor) = @_;
-  $demeter->po->$accessor(lc(substr($this->{$choice}->GetStringSelection, 0, 1)));
+  $demeter->po->dphase(0);
+  my $part = lc(substr($this->{$choice}->GetStringSelection, 0, 1));
+  if ($part eq 'd') {
+    $demeter->po->dphase(1);
+    $part = 'p';
+  };
+  $demeter->po->$accessor($part);
   my $plotframe = $Demeter::UI::Artemis::frames{Plot};
   my $space = substr($choice, 0, 1);
   $plotframe->plot($event, $space);

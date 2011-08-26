@@ -19,7 +19,9 @@ bin/rdfit
 bin/rdfit.pod
 bin/standards
 bin/standards.pod
+bin/update-demeter.pl
 Build.PL
+Changes.org
 COPYRIGHT.STAR-Parser
 DemeterBuilder.pm
 doc/doctree
@@ -40,6 +42,8 @@ doc/dpg/images/cumds.png
 doc/dpg/images/deglitch.png
 doc/dpg/images/Demeter.png
 doc/dpg/images/dimethyltin.png
+doc/dpg/images/feff6.dia
+doc/dpg/images/feff6.png
 doc/dpg/images/histo_fit_noss.png
 doc/dpg/images/histo_fit_withss.png
 doc/dpg/images/histo_fit_wpaths.png
@@ -217,6 +221,7 @@ doc/dpg/templates/src/xanes/peak.tt
 examples/Au.inp
 examples/AuCl.cif
 examples/aucn.0001
+examples/CT_I_0-8m.005
 examples/cu.prj
 examples/cu/atoms.inp
 examples/cu/cu10k.chi
@@ -252,6 +257,7 @@ examples/data/mn3o4.202
 examples/data/uhup.003
 examples/data/uhup.101
 examples/fe.060
+examples/FeS2.apj
 examples/filter.pl
 examples/harness
 examples/nonuniform.chi
@@ -322,6 +328,10 @@ examples/recipes/Histogram/RDFDAT20K
 examples/recipes/Histogram/README
 examples/recipes/Histogram/tb.pl
 examples/recipes/Histogram/td.gp
+examples/recipes/Histogram/VASP/histo.pl
+examples/recipes/Histogram/VASP/LaTiN3.inp
+examples/recipes/Histogram/VASP/LaTiO3.inp
+examples/recipes/Histogram/VASP/TiK.prj
 examples/recipes/Indicators/indic.pl
 examples/recipes/LCF/combi.pl
 examples/recipes/LCF/lcf.pl
@@ -388,6 +398,8 @@ lib/Demeter/Atoms/Cif.pm
 lib/Demeter/Carp.pm
 lib/Demeter/Config.pm
 lib/Demeter/configuration/000README
+lib/Demeter/configuration/artemis.demeter_conf
+lib/Demeter/configuration/athena.demeter_conf
 lib/Demeter/configuration/atoms.demeter_conf
 lib/Demeter/configuration/bft.demeter_conf
 lib/Demeter/configuration/bkg.demeter_conf
@@ -401,6 +413,7 @@ lib/Demeter/configuration/fspath.demeter_conf
 lib/Demeter/configuration/gds.demeter_conf
 lib/Demeter/configuration/gnuplot.demeter_conf
 lib/Demeter/configuration/happiness.demeter_conf
+lib/Demeter/configuration/hephaestus.demeter_conf
 lib/Demeter/configuration/histogram.demeter_conf
 lib/Demeter/configuration/interpolation.demeter_conf
 lib/Demeter/configuration/lcf.demeter_conf
@@ -436,16 +449,19 @@ lib/Demeter/Feff/Distributions.pm
 lib/Demeter/Feff/Distributions/NCL.pm
 lib/Demeter/Feff/Distributions/SS.pm
 lib/Demeter/Feff/Distributions/Thru.pm
+lib/Demeter/Feff/Distributions/Triangle.pm
 lib/Demeter/Feff/External.pm
 lib/Demeter/Feff/Histogram.pm
 lib/Demeter/Feff/MD/DL_POLY.pm
 lib/Demeter/Feff/MD/Null.pm
+lib/Demeter/Feff/MD/VASP.pm
 lib/Demeter/Feff/Paths.pm
 lib/Demeter/Feff/Sanity.pm
 lib/Demeter/Files.pm
 lib/Demeter/Fit.pm
 lib/Demeter/Fit/Feffit.pm
 lib/Demeter/Fit/Happiness.pm
+lib/Demeter/Fit/Horae.pm
 lib/Demeter/Fit/Sanity.pm
 lib/Demeter/FPath.pm
 lib/Demeter/FSPath.pm
@@ -469,6 +485,7 @@ lib/Demeter/Plot/Indicator.pm
 lib/Demeter/Plot/singlefile.org
 lib/Demeter/Plot/SingleFile.pm
 lib/Demeter/Plot/Style.pm
+lib/Demeter/Plugins/10bmmultichannel.demeter_conf
 lib/Demeter/Plugins/10BMMultiChannel.pm
 lib/Demeter/Plugins/CMC.pm
 lib/Demeter/Plugins/DUBBLE.pm
@@ -481,6 +498,7 @@ lib/Demeter/Plugins/SSRLB.pm
 lib/Demeter/Plugins/SSRLmicro.pm
 lib/Demeter/Plugins/X10C.pm
 lib/Demeter/Plugins/X15B.pm
+lib/Demeter/Plugins/x23a2med.demeter_conf
 lib/Demeter/Plugins/X23A2MED.pm
 lib/Demeter/Plugins/X23A2MultiChannel.pm
 lib/Demeter/Project.pm
@@ -601,6 +619,7 @@ lib/Demeter/templates/fit/ifeffit/path.tmpl
 lib/Demeter/templates/fit/ifeffit/pathll.tmpl
 lib/Demeter/templates/fit/ifeffit/prep_fit.tmpl
 lib/Demeter/templates/fit/ifeffit/read_fit.tmpl
+lib/Demeter/templates/fit/ifeffit/readfromfit.tmpl
 lib/Demeter/templates/fit/ifeffit/residual.tmpl
 lib/Demeter/templates/fit/ifeffit/restraint.tmpl
 lib/Demeter/templates/fit/ifeffit/save_bkgsub.tmpl
@@ -664,6 +683,8 @@ lib/Demeter/templates/plot/gnuplot/prep_f1f2.tmpl
 lib/Demeter/templates/plot/gnuplot/prep_filter.tmpl
 lib/Demeter/templates/plot/gnuplot/quad.tmpl
 lib/Demeter/templates/plot/gnuplot/restore.tmpl
+lib/Demeter/templates/plot/gnuplot/rkk.tmpl
+lib/Demeter/templates/plot/gnuplot/rkr.tmpl
 lib/Demeter/templates/plot/gnuplot/run.tmpl
 lib/Demeter/templates/plot/gnuplot/start.tmpl
 lib/Demeter/templates/plot/gnuplot/stddeve.tmpl
@@ -749,6 +770,7 @@ lib/Demeter/templates/process/ifeffit/addto_vpath.tmpl
 lib/Demeter/templates/process/ifeffit/align.tmpl
 lib/Demeter/templates/process/ifeffit/autobk.tmpl
 lib/Demeter/templates/process/ifeffit/bft.tmpl
+lib/Demeter/templates/process/ifeffit/chi_column.tmpl
 lib/Demeter/templates/process/ifeffit/chi_noise.tmpl
 lib/Demeter/templates/process/ifeffit/chikn.tmpl
 lib/Demeter/templates/process/ifeffit/clone.tmpl
@@ -757,6 +779,7 @@ lib/Demeter/templates/process/ifeffit/convolve.tmpl
 lib/Demeter/templates/process/ifeffit/deglitch.tmpl
 lib/Demeter/templates/process/ifeffit/deriv.tmpl
 lib/Demeter/templates/process/ifeffit/display.tmpl
+lib/Demeter/templates/process/ifeffit/dphase.tmpl
 lib/Demeter/templates/process/ifeffit/erase_chikn.tmpl
 lib/Demeter/templates/process/ifeffit/erase_group.tmpl
 lib/Demeter/templates/process/ifeffit/fft.tmpl
@@ -960,6 +983,7 @@ lib/Demeter/UI/Athena/Plot/PlotQ.pm
 lib/Demeter/UI/Athena/Plot/PlotR.pm
 lib/Demeter/UI/Athena/Plot/Stack.pm
 lib/Demeter/UI/Athena/Plot/Style.pm
+lib/Demeter/UI/Athena/PluginConfig.pm
 lib/Demeter/UI/Athena/PluginRegistry.pm
 lib/Demeter/UI/Athena/Prefs.pm
 lib/Demeter/UI/Athena/Rebin.pm
@@ -987,6 +1011,7 @@ lib/Demeter/UI/Atoms/Doc.pm
 lib/Demeter/UI/Atoms/Feff.pm
 lib/Demeter/UI/Atoms/icons/add-128x128.png
 lib/Demeter/UI/Atoms/icons/add.png
+lib/Demeter/UI/Atoms/icons/atoms.ico
 lib/Demeter/UI/Atoms/icons/atoms.png
 lib/Demeter/UI/Atoms/icons/atoms.xcf
 lib/Demeter/UI/Atoms/icons/atoms_disabled.png
@@ -1517,6 +1542,7 @@ notes/Atoms/A2n_atoms.inp
 notes/Atoms/C2c_atoms.inp
 notes/Atoms/cluster_problem
 notes/copyright.block
+notes/H16PW12O46.cif
 notes/how_to_freeze
 notes/how_to_tie
 notes/sgolay.m
@@ -1621,3 +1647,12 @@ win/ifeffit/iconf_term
 win/inno/strawberry.iss
 win/spp/build_perl.pl
 win/spp/DemeterPerlBuild.pm
+'win/start_menu/Demeter Website.url'
+win/start_menu/Demeter.ico
+win/start_menu/Demeter.license.txt
+win/start_menu/Demeter.readme.txt
+'win/start_menu/Ifeffit Wiki.url'
+win/start_menu/Ifeffit.ico
+win/start_menu/readme
+win/start_menu/xafs.org.ico
+win/start_menu/XAFS.org.url
