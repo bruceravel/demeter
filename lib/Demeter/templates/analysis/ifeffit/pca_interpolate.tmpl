@@ -1,0 +1,2 @@
+set {$D->group}.eee   = {$D->group}.energy+{$D->bkg_eshift}
+set {$S->group}.{$D->group} = splint({$D->group}.eee, {$D->group}.{$suff}, {$S->group}.x)

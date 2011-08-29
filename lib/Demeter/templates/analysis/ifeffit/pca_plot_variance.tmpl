@@ -1,0 +1,17 @@
+{
+  $temp = $P->tempfile;
+  $S->points(file    => $temp,
+             space   => 'index', 
+             suffix  => 'cumvar',
+            );
+  q{};
+}
+## gnuplot script
+unset label
+
+set title "\{/*1.6 PCA Variance Plot\}"
+set xlabel "\{/*1.4 Component\}"
+set ylabel "\{/*1.4 Cumulative variance\}"
+set xrange [0:{$#{$S->stack}+2}]
+
+plot '{$temp}' using ($1+1):2 with points ls {$P->increm+1} title "variance"

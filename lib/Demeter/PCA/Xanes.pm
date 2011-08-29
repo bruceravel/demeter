@@ -9,7 +9,35 @@ has 'space_description' => (is => 'rw', isa => 'Str',    default => q{normalized
 
 sub interpolate {
   my ($self) = @_;
-  1;
+
+  $self->xmin($self->emin);
+  $self->xmax($self->emax);
+
+  my @groups = @{ $self->stack };
+  @groups = grep {ref($_) =~ m{Data\z}} @groups;
+  foreach my $g (@groups) {
+    $g -> _update('fft');
+  };
+  my $first = shift @groups;
+
+  my $e1 = $first->bkg_e0 + $self->xmin;
+  my $i1 = $first->iofx('energy', $e1);
+  my $e2 = $first->bkg_e0 + $self->xmax;
+  my $i2 = $first->iofx('energy', $e2);
+  $first->standard;
+
+  my $suff = ($first->bkg_flatten) ? 'flat' : 'norm';
+  $self->dispose($self->template('analysis', 'pca_prep', {suff=>$suff , i1=>$i1, i2=>$i2}));
+
+  foreach my $g (@groups) {
+    $self->data($g);
+    $suff = ($g->bkg_flatten) ? 'flat' : 'norm';
+    $self->dispose($self->template('analysis', 'pca_interpolate', {suff=>$suff}));
+    $self->data(q{});
+  };
+
+  $first->unset_standard;
+
 };
 
 

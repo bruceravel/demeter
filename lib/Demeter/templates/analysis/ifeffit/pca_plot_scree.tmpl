@@ -1,0 +1,20 @@
+{
+  $temp = $P->tempfile;
+  $S->points(file    => $temp,
+             space   => 'index', 
+             suffix  => 'scree',
+            );
+  $logscale = ($log) ? "set logscale y 10" : q{};
+  $yl = ($log) ? "log of " : q{};
+  q{};
+}
+## gnuplot script
+unset label
+
+set title "\{/*1.6 PCA Scree Plot\}"
+set xlabel "\{/*1.4 Component\}"
+set ylabel "\{/*1.4 {$yl}Eignevalue\}"
+set xrange [0:{$#{$S->stack}+2}]
+{$logscale}
+
+plot '{$temp}' using ($1+1):2 with points ls {$P->increm+1} title "eignevalues"

@@ -26,8 +26,10 @@ extends 'Demeter';
 with 'Demeter::Data::Arrays';
 use Demeter::StrTypes qw( Empty );
 
-#use PDL;
+use PDL;
 use PDL::Stats::GLM;
+
+use List::Util;
 
 with 'Demeter::PCA::Xanes';
 
@@ -37,6 +39,7 @@ if ($Demeter::mode->ui eq 'screen') {
 };
 
 has '+plottable'  => (default => 1);
+has '+data'       => (isa => Empty.'|Demeter::Data');
 has '+name'       => (default => 'PCA' );
 
 has 'xmin'  => (is => 'rw', isa => 'Num',    default => 0);
@@ -62,7 +65,7 @@ has space => (is => 'rw', isa => 'PCASpaces', coerce => 1,
 			     };
 			   });
 
-has '_pdl' => (is => 'rw', isa => Empty.'|Demeter::Data', );
+has 'Piddle' => (is => 'rw', isa => 'PDL', default => sub {null});
 
 has 'ndata' => (is => 'rw', isa => 'Int', default => 0);
 has 'stack' => (
@@ -79,10 +82,10 @@ has 'stack' => (
 			     },
 	       );
 
-has 'eignevalues'  => (is => 'rw', isa => 'ArrayRef', default => sub{[]});
-has 'eignevectors' => (is => 'rw', isa => 'ArrayRef[ArrayRef]', default => sub{[]});
-has 'loadings'     => (is => 'rw', isa => 'ArrayRef[ArrayRef]', default => sub{[]});
-has 'pct_var'      => (is => 'rw', isa => 'ArrayRef', default => sub{[]});
+has 'eigenvalues'  => (is => 'rw', isa => 'PDL', default => sub {null});
+has 'eigenvectors' => (is => 'rw', isa => 'PDL', default => sub {null});
+has 'loadings'     => (is => 'rw', isa => 'PDL', default => sub {null});
+has 'pct_var'      => (is => 'rw', isa => 'PDL', default => sub {null});
 
 sub add {
   my ($self, @groups) = @_;
@@ -90,6 +93,78 @@ sub add {
     next if (ref($g) !~ m{Data\z});
     $self->push_stack($g);
   };
+  return $self;
 };
+
+sub make_pdl {
+  my ($self) = @_;
+  my @list = ();
+  foreach my $g (@{ $self->stack }) {
+    push @list, $self->ref_array($g->group);
+  };
+  my $pdl = pdl \@list;
+  $self->Piddle($pdl);
+  return $self;
+};
+
+sub do_pca {
+  my ($self) = @_;
+  my %result = $self->Piddle->pca({PLOT=>0});
+  $self->eigenvalues($result{eigenvalue});
+  $self->eigenvectors($result{eigenvector});
+  $self->loadings($result{loadings});
+  $self->pct_var($result{pct_var});
+
+  ## create the decomposition vectors
+  my $decomposed = $self->eigenvectors x $self->Piddle;
+
+  ## write each decomposition vector to an Ifeffit array in the PCA object's group
+  foreach my $row (0 .. $decomposed->getdim(1)-1) {
+    my $this = $decomposed->slice(":,($row)");
+    my @array = list $this;
+    $self->put_array("ev$row", \@array);
+  };
+  #$self->dispose("\&screen_echo = 1");
+  #$self->dispose("show \@group ".$self->group);
+  return $self;
+};
+
+sub plot_scree {
+  my ($self, $do_log) = @_;
+  $do_log ||= 0;
+  my @array = list $self->pct_var;
+  $self->put_array('index', [0 .. $#{ $self->stack }]);
+  $self->put_array('scree', \@array);
+  $self->po->start_plot;
+  $self->dispose($self->template('analysis', 'pca_plot_scree', {log=>$do_log}), 'plotting');
+  return $self;
+};
+
+sub plot_variance {
+  my ($self) = @_;
+  my @array = list $self->pct_var;
+  @array = map { List::Util::sum @array[0..$_] } (0 ..$#array);
+  $self->put_array('index', [0 .. $#{ $self->stack }]);
+  $self->put_array('cumvar', \@array);
+  $self->po->start_plot;
+  $self->dispose($self->template('analysis', 'pca_plot_variance'), 'plotting');
+  return $self;
+};
+
+sub plot_components {
+  my ($self, @list) = @_;
+  $self->po->start_plot;
+  $self->stack->[0]->standard;
+  my $which = 'pca_new_component';
+  @list = (0 .. $#{ $self->stack }) if not @list;
+  foreach my $i (@list) {
+    $self->dispose($self->template('analysis', $which, {component=>$i}), 'plotting');
+    $self->po->increment;
+    $which = 'pca_over_component';
+  };
+  $self->stack->[0]->unset_standard;
+  return $self;
+};
+
 
 1;

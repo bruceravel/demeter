@@ -1,0 +1,3 @@
+set {$DS->group}.eee  = {$DS->group}.energy+{$DS->bkg_eshift}
+set {$S->group}.x     = slice({$DS->group}.eee,  {$i1}, {$i2})
+set {$S->group}.{$DS->group} = slice({$DS->group}.{$suff}, {$i1}, {$i2})

@@ -250,7 +250,7 @@
  
 * Atoms and Feff
 
-** Atoms [0/5] [0%]
+** Atoms [0/6] [0%]
   - [ ] CIF issue: CIF file with "_eof" token at end of file, as in [[file:notes/H16PW12O46.cif][this cif file]]
   - [ ] 2 sites at the same position with occupancies <1.  see file above for an example
   - [ ] George Sterbinsky's recent mailing list post that turned out to be about 
@@ -264,6 +264,17 @@
          : atom
          :   Fe     0.00000   0.00000   0.35530  Fe1
          :   O      0.30590   0.00000   0.25000  O1
+  - [ ] This input data fails
+         : title formula:  LaCoO3
+         : title refer1:  PRB V. 66 P. 094408 (2002)
+         : title notes:   T = 300 K
+         : space  r -3 c
+         : a = 5.44864       c = 13.1035
+         : rmax = 6.00       core = Co1
+         : atom
+         :   Co     0.00000   0.00000   0.00000  Co1
+         :   La     0.00000   0.00000   0.25000  La1
+         :   O      0.55032   0.00000   0.25000  O1
 
 
 ** Feff8 is unsupported except as an Atoms output type
