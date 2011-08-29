@@ -127,12 +127,15 @@ sub set_datagroup {
   $self->datagroup($group);
 };
 
-use vars qw($Gnuplot_exists $Fityk_exists $STAR_Parser_exists $XDI_exists);
+use vars qw($Gnuplot_exists $Fityk_exists $STAR_Parser_exists $XDI_exists
+	    $PDL_exists $PSG_exists);
 $Gnuplot_exists     = eval "require Graphics::GnuplotIF";
 $Fityk_exists       = eval "require fityk";
 $STAR_Parser_exists = 1;
 use STAR::Parser;
 $XDI_exists         = eval "require Xray::XDI";
+$PDL_exists         = eval "require PDL";
+$PSG_exists         = eval "require PDL::Stats::GLM";
 
 use Demeter::Plot;
 use vars qw($plot);
@@ -256,7 +259,11 @@ sub import {
       require "Demeter/$m.pm";
     };
   };
-
+  if ($colonanalysis and $PDL_exists and $PSG_exists) {
+    next if $INC{"Demeter/PCA.pm"};
+    ##print "Demeter/PCA.pm\n";
+    require "Demeter/PCA.pm";
+  };
   $class -> register_plugins;
 };
 
