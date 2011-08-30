@@ -1,0 +1,11 @@
+{
+  $datastyle = ($P->datastyle eq 'solid') ? 'lines' : 'points';
+
+  $temp = $P->tempfile;
+  $S->points(file    => $temp,
+             space   => 'x', 
+             suffix  => $D->group,
+            );
+  q{};
+}
+replot '{$temp}' using 1:2 with {$C->default("gnuplot", "datastyle")} ls {$P->increm+1} title "{$D->name}"

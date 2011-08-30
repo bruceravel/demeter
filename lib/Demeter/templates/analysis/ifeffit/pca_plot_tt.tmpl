@@ -1,0 +1,36 @@
+{
+  $datastyle = ($P->datastyle eq 'solid') ? 'lines' : 'points';
+
+  $emin = $S->e0 + $S->xmin-10;
+  $emax = $S->e0 + $S->xmax+10;
+
+  $data = $P->tempfile;
+  $S->points(file    => $data,
+             space   => 'x', 
+             suffix  => $D->group,
+            );
+  $tart = $P->tempfile;
+  $S->points(file    => $tart,
+             space   => 'x', 
+             suffix  => 'tt',
+            );
+  $diff = $P->tempfile;
+  $S->points(file    => $diff,
+             space   => 'x', 
+             suffix  => 'diff',
+            );
+  q{};
+}
+## gnuplot script
+unset label
+
+set title "\{/*1.6 PCA components\}"
+set xlabel "\{/*1.4 Energy&\{aa\}(eV)\}"
+set ylabel "\{/*1.4 Normalized absorption\}"
+set xrange [ {$emin} : {$emax} ]
+
+## reconstruction of {$D->name} ({$D->group})
+#plot '{$data}' using 1:2 with {$C->default("gnuplot", "datastyle")} ls {$P->increm+1} title "{$D->name}",\
+#     '{$tart}' using 1:2 with {$C->default("gnuplot", "datastyle")} ls {$P->increm+2} title "target transform",\
+#     '{$diff}' using 1:2 with {$C->default("gnuplot", "datastyle")} ls {$P->increm+3} title "residual"
+plot '{$tart}' using 1:2 with {$C->default("gnuplot", "datastyle")} ls {$P->increm+2} title "target transform"
