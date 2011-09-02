@@ -1,14 +1,10 @@
-{
-  $suff = ($D->bkg_flatten) ? 'flat' : 'norm';
-  q{}
-}
 ## inserted s___a.mub was computed and inserted into ifeffit's memory
 set(s___a_beta        = {$mut_fluo}/{$mue_plus},
     s___a_gammaprime  = {$mub_plus}/{$mue_plus},
     s___a_ratio       = sin(pi*{$angle_in}/180) / sin(pi*{$angle_out}/180))
 set(s___a.energy = {$D->group}.energy+{$D->bkg_eshift},
-    s___a.num = {$D->group}.{$suff} * (s___a_beta*s___a_ratio + s___a.mub/{$mue_plus}),
-    s___a.den = (s___a_beta*s___a_ratio + s___a_gammaprime + 1) - {$D->group}.{$suff},
+    s___a.num = {$D->group}.{$D->nsuff} * (s___a_beta*s___a_ratio + s___a.mub/{$mue_plus}),
+    s___a.den = (s___a_beta*s___a_ratio + s___a_gammaprime + 1) - {$D->group}.{$D->nsuff},
     s___a.sacorr = s___a.num / s___a.den)
 set s___a_x = max(ceil(s___a.sacorr), abs(floor(s___a.sacorr)))
 

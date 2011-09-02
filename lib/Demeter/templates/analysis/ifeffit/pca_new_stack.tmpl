@@ -5,7 +5,7 @@
   $emax = $S->e0 + $S->xmax+10;
 
   $data = $P->tempfile;
-  $S->points(file    => data,
+  $S->points(file    => $data,
              space   => 'x', 
              suffix  => $D->group,
             );

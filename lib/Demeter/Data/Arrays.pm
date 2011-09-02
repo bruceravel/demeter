@@ -108,7 +108,7 @@ sub get_array {
   $part ||= q{};
   if (not $self->plottable) {
     my $class = ref $self;
-    croak("$class objects have no arrays associated with them");
+    croak("Demeter: $class objects have no arrays associated with them and are not plottable");
   };
   my $group = $self->group;
   my $text = ($part =~ m{(?:bkg|fit|res|run)}) ? "${group}_$part.$suffix" : "$group.$suffix";
@@ -148,7 +148,7 @@ sub arrays {
   my ($self) = @_;
   if (not $self->plottable) {
     my $class = ref $self;
-    croak("$class objects have no arrays associated with them");
+    croak("Demeter: $class objects have no arrays associated with them and are not plottable");
   };
   my $save = Ifeffit::get_scalar("\&screen_echo");
   $self->dispose("\&screen_echo = 0\nshow \@group ".$self->group);

@@ -5,11 +5,10 @@
   #   {$P->parameter} returns the value of a Plot parameter
 }
 {
-  $suffix = ($D->bkg_flatten) ? 'flat' : 'norm';
   $file1 = $P->tempfile;
   $S->points(file     => $file1,
              space    => 'E', 
-	     suffix   => $suffix,
+	     suffix   => $D->nsuff,
 	     add      => 'stddev', 
 	     shift    => $D->bkg_eshift,
 	     scale    => $D->plot_multiplier,
@@ -18,7 +17,7 @@
   $file2 = $P->tempfile;
   $S->points(file     => $file2,
              space    => 'E', 
-	     suffix   => $suffix,
+	     suffix   => $D->nsuff,
 	     subtract => 'stddev', 
 	     shift    => $D->bkg_eshift,
 	     scale    => $D->plot_multiplier,

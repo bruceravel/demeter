@@ -20,10 +20,11 @@ use Carp;
 use autodie qw(open close);
 
 use Moose;
-use Moose::Util qw(apply_all_roles);
-use Moose::Util::TypeConstraints;
 extends 'Demeter';
 with 'Demeter::Data::Arrays';
+
+use Moose::Util qw(apply_all_roles);
+use Moose::Util::TypeConstraints;
 use Demeter::StrTypes qw( Empty );
 
 use PDL;
@@ -51,23 +52,24 @@ coerce 'PCASpaces',
   from 'Str',
   via { lc($_) };
 has space => (is => 'rw', isa => 'PCASpaces', coerce => 1,
-	      trigger => sub{my ($self, $new) = @_;
-			     if ($new =~ m{[xe]}) {
-			       eval {apply_all_roles($self, 'Demeter::PCA::Xanes')};
-			       $@ and die("Histogram backend Demeter::PCA::Xanes could not be loaded");
-			     } elsif ($new eq 'd') {
-			       eval {apply_all_roles($self, 'Demeter::PCA::Deriv')};
-			       print $@;
-			       $@ and die("Histogram backend Demeter::PCA::Deriv does not exist");
-			     } elsif ($new =~ m{[ck]}) {
-			       eval {apply_all_roles($self, 'Demeter::PCA::Chi')};
-			       print $@;
-			       $@ and die("Histogram backend Demeter::PCA::Chi does not exist");
-			     };
-			   });
+	      # trigger => sub{my ($self, $new) = @_;
+	      # 		     if ($new =~ m{[xe]}) {
+	      # 		       eval {apply_all_roles($self, 'Demeter::PCA::Xanes')};
+	      # 		       $@ and die("Histogram backend Demeter::PCA::Xanes could not be loaded");
+	      # 		     } elsif ($new eq 'd') {
+	      # 		       eval {apply_all_roles($self, 'Demeter::PCA::Deriv')};
+	      # 		       print $@;
+	      # 		       $@ and die("Histogram backend Demeter::PCA::Deriv does not exist");
+	      # 		     } elsif ($new =~ m{[ck]}) {
+	      # 		       eval {apply_all_roles($self, 'Demeter::PCA::Chi')};
+	      # 		       print $@;
+	      # 		       $@ and die("Histogram backend Demeter::PCA::Chi does not exist");
+	      # 		     };
+		#	   }
+	     );
 
 has 'e0' => (is => 'rw', isa => 'Num', default => 0);
-has 'Piddle' => (is => 'rw', isa => 'PDL', default => sub {null});
+has 'data_matrix' => (is => 'rw', isa => 'PDL', default => sub {null});
 
 has 'ndata' => (is => 'rw', isa => 'Int', default => 0);
 has 'stack' => (
@@ -92,59 +94,113 @@ has 'pct_var'      => (is => 'rw', isa => 'PDL', default => sub {null});
 has 'reconstructed' => (is => 'rw', isa => 'PDL', default => sub {null});
 has 'ncompused'     => (is => 'rw', isa => 'Int', default => 0);
 
+has 'update_stack'  => (is => 'rw', isa => 'Bool', default => 1,
+			trigger => sub{ my($self, $new) = @_; $self->update_pdl(1) if $new });
+has 'update_pdl'    => (is => 'rw', isa => 'Bool', default => 1,
+			trigger => sub{ my($self, $new) = @_; $self->update_pca(1) if $new });
+has 'update_pca'    => (is => 'rw', isa => 'Bool', default => 1);
+has 'observations'  => (is => 'rw', isa => 'Int',  default => 0);
+has 'undersampled'  => (is => 'rw', isa => 'Bool', default => 0);
+
+## ======================================================================
+## construction methods
+
 sub add {
   my ($self, @groups) = @_;
   foreach my $g (@groups) {
     next if (ref($g) !~ m{Data\z});
     $self->push_stack($g);
   };
+  $self->update_stack(1);
   return $self;
 };
 
 sub make_pdl {
   my ($self) = @_;
+  $self->interpolate_stack if $self->update_stack;
   my @list = ();
   foreach my $g (@{ $self->stack }) {
     push @list, $self->ref_array($g->group);
   };
-  my $pdl = pdl \@list;
-  $self->Piddle($pdl);
+  my $pdl = pdl(\@list);
+  $self->data_matrix($pdl);
   $self->ndata($#{ $self->stack } + 1);
+  $self->update_pdl(0);
   return $self;
 };
 
+sub refeig {
+  my ($self) = @_;
+  my @list = list($self->pct_var);
+  return \@list;
+};
+
+## ======================================================================
+## linear algebra
 
 sub do_pca {
   my ($self) = @_;
-  my %result = $self->Piddle->pca({PLOT=>0});
+  $self->make_pdl if $self->update_pdl;
+  my %result = $self->data_matrix->pca({PLOT=>0, CORR=>1});
   $self->eigenvalues($result{eigenvalue});
   $self->eigenvectors($result{eigenvector});
   $self->loadings($result{loadings});
   $self->pct_var($result{pct_var});
 
   ## create the decomposition vectors
-  my $decomposed = $self->eigenvectors x $self->Piddle;
-
+  my $decomposed = $self->eigenvectors x $self->data_matrix;
   ## write each decomposition vector to an Ifeffit array in the PCA object's group
-  foreach my $row (0 .. $decomposed->getdim(1)-1) {
+  foreach my $row (0 .. $self->ndata-1) {
     my $this = $decomposed->slice(":,($row)");
     my @array = list $this;
     $self->put_array("ev$row", \@array);
   };
-  #$self->dispose("\&screen_echo = 1");
-  #$self->dispose("show \@group ".$self->group);
+  $self->update_pca(0);
   return $self;
 };
 
 sub reconstruct {
   my ($self, $ncomp) = @_;
+  $self->do_pca if $self->update_pca;
   $self->ncompused($ncomp);
   $ncomp = $ncomp-1;
   my $slice = $self->eigenvectors->slice(":,0:$ncomp");
-  my $reproduced = ($slice->transpose x $slice) x $self->Piddle;
+  my $reproduced = $slice->transpose x $slice x $self->data_matrix;
   $self->reconstructed($reproduced);
   return $self;
 };
+
+sub tt {
+  my ($self, $target) = @_;
+  $self->interpolate_data($target);
+  my $tarpdl = pdl($self->ref_array($target->group));
+  # #$self->dispose("\&screen_echo = 1");
+  # #$self->dispose("show \@group ".$self->group);
+
+  my $row_matrix = $self->eigenvectors->transpose x $self->data_matrix;
+  my $lambda     = stretcher($self->eigenvalues); # matrix of inverse eigenvalues on the diagonal
+  my $tt         = $row_matrix->transpose x $lambda->inv x $row_matrix x $tarpdl->transpose;
+  my @array      = list($tt);
+  $self->put_array("tt", \@array);
+
+  #print join("|", $row_matrix->dims), $/;
+  print join("|", $lambda->dims), $/;
+  print join("|", $tarpdl->dims), $/;
+  print join("|", $tt->dims), $/;
+  return $self;
+};
+
+# $self->dispose($self->template('analysis', 'pca_tt'));
+# foreach my $i (0 .. $self->ndata-1) {
+#   print "$i : ", Ifeffit::get_scalar("_p$i"), $/;
+# };
+
+
+
+
+
+## ======================================================================
+## plotting methods
 
 sub plot_scree {
   my ($self, $do_log) = @_;
@@ -203,7 +259,7 @@ sub plot_reconstruction {
   $self->po->start_plot;
   $self->e0($self->stack->[0]->bkg_e0);
   $self->data($self->stack->[$index]);
-  my @data  = list($self->Piddle->slice(":,($index)"));
+  my @data  = list($self->data_matrix->slice(":,($index)"));
   my @recon = list($self->reconstructed->slice(":,($index)"));
   my @diff  = pairwise {$a - $b} @data, @recon;
   $self->put_array("rec$index",  \@recon);
@@ -227,6 +283,9 @@ sub plot_tt {
   return $self;
 };
 
+## ======================================================================
+## reporting methods
+
 sub report {
   my ($self) = @_;
   my $text = sprintf("Observation set size: %d spectra\n", $#{$self->stack}+1);
@@ -239,62 +298,63 @@ sub report {
   return $text;
 };
 
+__PACKAGE__->meta->make_immutable;
 
 
-## see http://mailman.jach.hawaii.edu/pipermail/perldl/2006-August/000588.html
-package PDL;
+# ## see http://mailman.jach.hawaii.edu/pipermail/perldl/2006-August/000588.html
+# package PDL;
 
-=for ref
+# =for ref
 
-Standardization (possibly weighted) of matrix over specified axis:
+# Standardization (possibly weighted) of matrix over specified axis:
 
-                         a - mean
-        STANDARDIZED = ------------
-                        stdev(n-1)
+#                          a - mean
+#         STANDARDIZED = ------------
+#                         stdev(n-1)
 
-Uses arithmetic mean and standard deviation estimation if asked.
-Can use arbitrary values (PDL vector) and compute inplace.
+# Uses arithmetic mean and standard deviation estimation if asked.
+# Can use arbitrary values (PDL vector) and compute inplace.
 
-=for usage
+# =for usage
 
-PDL = stdize(PDL, SCALAR(axis), SCALAR|PDL(center), SCALAR|PDL(scale), SCALAR(weight))
-axis   : threading's axis, generally observation, default = 1 unless a vector is given
-center : center data by variable NOCENTER = 0 | CENTER = 1  | PDL, DEFAULT = 1
-scale  : scale data by variable NOSCALE = 0 | SCALE = 1 | PDL, DEFAULT = 0
-weight : PDL of weights (size(entry matrix)), DEFAULT = ones(entry matrix)
+# PDL = stdize(PDL, SCALAR(axis), SCALAR|PDL(center), SCALAR|PDL(scale), SCALAR(weight))
+# axis   : threading's axis, generally observation, default = 1 unless a vector is given
+# center : center data by variable NOCENTER = 0 | CENTER = 1  | PDL, DEFAULT = 1
+# scale  : scale data by variable NOSCALE = 0 | SCALE = 1 | PDL, DEFAULT = 0
+# weight : PDL of weights (size(entry matrix)), DEFAULT = ones(entry matrix)
 
-=for example
+# =for example
 
-my $a = random(10,10);
-my $standardized = stdize($a,1,1,1);
+# my $a = random(10,10);
+# my $standardized = stdize($a,1,1,1);
 
-=cut
+# =cut
 
-*stdize = \&PDL::stdize;
+# *stdize = \&PDL::stdize;
 
-sub PDL::stdize {
-  my($m, $obs, $center, $scale, $weight) = @_;
-  $obs = 1 unless defined($obs) ||  $m->getndims < 2;
-  $center = 1 unless defined $center;
-  my ($mean, $rms, $mm);
+# sub PDL::stdize {
+#   my($m, $obs, $center, $scale, $weight) = @_;
+#   $obs = 1 unless defined($obs) ||  $m->getndims < 2;
+#   $center = 1 unless defined $center;
+#   my ($mean, $rms, $mm);
 
-  $m = $m->copy unless $m->is_inplace(0);
+#   $m = $m->copy unless $m->is_inplace(0);
 
-  $mm = $m->mv($obs,0);
-  if ( !UNIVERSAL::isa($center,'PDL') || !UNIVERSAL::isa($scale,'PDL')) {
-    ($mean, $rms) = $mm->statsover($weight);
-    $center = $mean if (!UNIVERSAL::isa($center,'PDL') && $center);
-    $scale = $rms if (!UNIVERSAL::isa($scale,'PDL') && $scale);
-  }
-  $mm = $mm->mv(0,$m->getndims-1);
-  if (UNIVERSAL::isa($center,'PDL')){
-    $mm -=  $center;
-  }
-  if (UNIVERSAL::isa($scale,'PDL')){
-    $mm /=  $scale;
-  }
-  $m;
-}
+#   $mm = $m->mv($obs,0);
+#   if ( !UNIVERSAL::isa($center,'PDL') || !UNIVERSAL::isa($scale,'PDL')) {
+#     ($mean, $rms) = $mm->statsover($weight);
+#     $center = $mean if (!UNIVERSAL::isa($center,'PDL') && $center);
+#     $scale = $rms if (!UNIVERSAL::isa($scale,'PDL') && $scale);
+#   }
+#   $mm = $mm->mv(0,$m->getndims-1);
+#   if (UNIVERSAL::isa($center,'PDL')){
+#     $mm -=  $center;
+#   }
+#   if (UNIVERSAL::isa($scale,'PDL')){
+#     $mm /=  $scale;
+#   }
+#   $m;
+# }
 
 
 1;

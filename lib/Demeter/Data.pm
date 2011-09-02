@@ -503,6 +503,11 @@ sub _kw_string {
   return join(",", @list);
 };
 
+sub nsuff {
+  my ($self) = @_;
+  my $suff = ($self->bkg_flatten) ? 'flat' : 'norm';
+  return $suff;
+};
 
 sub standard {
   my ($self) = @_;
@@ -1484,6 +1489,11 @@ and C<bft_rwindow> to the specified window type.
 
 The window type must be one of C<Kaiser-Bessel>, C<Hanning>,
 C<Parzen>, C<Welch>, C<Sine>, or C<Gaussian>.
+
+=item C<nsuff>
+
+Returns either "norm" or "flat" as the proper suffix for the
+normalized mu(E) array depending on the value of C<bkg_flatten>.
 
 =item C<data>
 
