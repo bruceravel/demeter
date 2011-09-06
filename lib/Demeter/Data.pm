@@ -144,8 +144,10 @@ has  $_ => (is => 'rw', isa => 'Num',  default => 0) foreach (qw(i0_scale signal
 
 has  $_  => (is => 'rw', isa => 'Str',  default => q{})
   foreach (qw(columns energy_string xmu_string i0_string signal_string chi_string));
-has 'ln' => (is => 'rw', isa => 'Bool', default => 0,
-	     trigger => sub{ my ($self, $new) = @_; $self->update_columns(1), $self->is_col(1) if $new});
+has 'ln'  => (is => 'rw', isa => 'Bool', default => 0,
+	      trigger => sub{ my ($self, $new) = @_; $self->update_columns(1), $self->is_col(1) if $new});
+has 'inv' => (is => 'rw', isa => 'Bool', default => 0,
+	      trigger => sub{ my ($self, $new) = @_; $self->update_columns(1), $self->is_col(1) if $new});
 has 'display' => (is => 'rw', isa => 'Bool', default => 0,);
 
 ## -------- data type flags

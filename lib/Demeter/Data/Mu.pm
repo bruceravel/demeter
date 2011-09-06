@@ -207,6 +207,10 @@ sub put_data {
     $i0_string     = $self->denominator;
     $signal_string = $self->numerator;
   };
+  if ($self->inv) {
+    $xmu_string    = "-1*" . $xmu_string;
+    $signal_string = "-1*" . $signal_string;
+  };
 
   ## resolve column tokens
   my $group = $self->group;

@@ -54,6 +54,7 @@ sub new {
   ## refered to in the columns method, so I need to define it here.
   ## it will be placed in the other_parameters method.
   $this->{ln}     = Wx::CheckBox->new($leftpane, -1, 'Natural log');
+  $this->{inv}    = Wx::CheckBox->new($leftpane, -1, 'Invert');
   $this->{energy} = Wx::TextCtrl->new($leftpane, -1, q{}, wxDefaultPosition, [350,-1], wxTE_READONLY);
   $this->{mue}    = Wx::TextCtrl->new($leftpane, -1, q{}, wxDefaultPosition, [350,-1], wxTE_READONLY);
 
@@ -176,26 +177,30 @@ sub other_parameters {
   my ($this, $parent, $data) = @_;
 
   my $others = Wx::BoxSizer->new( wxHORIZONTAL );
-  $others -> Add($this->{ln}, 0, wxGROW|wxALL, 5);
+  $others -> Add($this->{ln},   0, wxGROW|wxALL, 5);
   EVT_CHECKBOX($parent, $this->{ln}, sub{OnLnClick(@_, $this, $data)});
-  $others->Add(1,1,1);
+  $others -> Add(1,1,1);
+  $others -> Add($this->{inv},  0, wxGROW|wxALL, 5); # defined in new
+  EVT_CHECKBOX($parent, $this->{inv}, sub{OnInvClick(@_, $this, $data)});
+  $others -> Add(1,1,1);
   $others -> Add($this->{each}, 0, wxGROW|wxALL, 5); # defined in new
-  $this->{replot} = Wx::Button->new($parent, -1, 'Replot');
-  $others -> Add($this->{replot}, 0, wxGROW|wxALL, 5);
   $this->{left}->Add($others, 0, wxGROW|wxALL, 0);
-  EVT_BUTTON($this, $this->{replot}, sub{  $this->display_plot($data) });
 
   $others = Wx::BoxSizer->new( wxHORIZONTAL );
   $this->{datatype} = Wx::Choice->new($parent,-1, wxDefaultPosition, wxDefaultSize,
 				     ["$MU(E)", 'xanes', 'norm(E)', 'chi(k)', 'xmu.dat']);
   $this->{units}    = Wx::Choice->new($parent,-1, wxDefaultPosition, wxDefaultSize, ['eV', 'keV']);
+  $this->{replot}   = Wx::Button->new($parent, -1, 'Replot');
   $others -> Add(Wx::StaticText->new($parent,-1, "Data type"), 0, wxGROW|wxALL, 7);
   $others -> Add($this->{datatype}, 0, wxGROW|wxRIGHT, 25);
   $others -> Add(Wx::StaticText->new($parent,-1, "Energy units"), 0, wxGROW|wxTOP|wxRIGHT, 7);
   $others -> Add($this->{units}, 0, wxGROW|wxALL, 0);
+  $others -> Add(1,1,1);
+  $others -> Add($this->{replot}, 0, wxGROW|wxALL, 5);
   $this->{$_}->SetSelection(0) foreach (qw(datatype units));
   $this->{left}->Add($others, 0, wxGROW|wxALL, 0);
 
+  EVT_BUTTON($this, $this->{replot}, sub{  $this->display_plot($data) });
   EVT_CHOICE($parent, $this->{datatype}, sub{OnDatatype(@_, $this, $data)});
   EVT_CHOICE($parent, $this->{units},    sub{OnUnits(@_, $this, $data)});
 
@@ -244,6 +249,11 @@ sub tabs {
 sub OnLnClick {
   my ($parent, $event, $this, $data) = @_;
   $data->ln($event->IsChecked);
+  $this->display_plot($data);
+};
+sub OnInvClick {
+  my ($parent, $event, $this, $data) = @_;
+  $data->inv($event->IsChecked);
   $this->display_plot($data);
 };
 
@@ -300,6 +310,8 @@ sub OnDatatype {
     ## disable widgets needed for processing mu(E) data
     $this->{ln}                    -> SetValue(0);
     $this->{ln}                    -> Enable(0);
+    $this->{inv}                   -> SetValue(0);
+    $this->{inv}                   -> Enable(0);
     $this->{muchi_label}           -> SetLabel("$CHI(k)");
     $this->{Reference}->{do_ref}   -> SetValue(0);
     $this->{Reference}->{do_ref}   -> Enable(0);
@@ -321,6 +333,7 @@ sub OnDatatype {
   } else {
     ## re-enable widgets needed for processing mu(E) data
     $this->{ln}                    -> Enable(1);
+    $this->{inv}                   -> Enable(1);
     $this->{muchi_label}           -> SetLabel("$MU(E)");
     $this->{Reference}->{do_ref}   -> Enable(1);
     $this->{Reference}             -> EnableReference(q{}, $data);

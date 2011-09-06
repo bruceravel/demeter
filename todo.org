@@ -109,9 +109,9 @@
        + [X] implement everywhere needed
        + [X] figure out cause of spurious error on Windows ~failed to get data from the clipboard error -2147221040 openClipboard failed~
    - [ ] implement frozen groups
-   - [ ] Column selection dialog [0/2]
+   - [-] Column selection dialog [1/2]
        + [ ] importing each channel of med data does not work
-       + [ ] negate button
+       + [X] negate button
    - [ ] links to documentation on each tool
    - [ ] *Convolve/noise tool*
        + add noise to chi data

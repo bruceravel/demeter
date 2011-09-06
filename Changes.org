@@ -15,6 +15,7 @@
    - Implemented Scott's deriv(phase(chi(R))) idea with a
      configuration parameter for turning it on and off
    - Copying a group now copies its marked state
+   - Added invert button to column selection dialog
 
 *** Artemis
    - Added a fourth plotting terminal
@@ -33,6 +34,7 @@
      the Data plotkey attribute appropriately in R or q.
    - Fixed a configuration bug wherein the GUIs could clobber one
      another's configuration changes
+   - Added inv attribute for negating column selection
 
 *** Acknowledgements for this release
 

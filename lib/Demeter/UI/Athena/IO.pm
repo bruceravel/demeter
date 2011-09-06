@@ -214,6 +214,7 @@ sub _data {
 	       numerator   => $suggest{numerator}||1,
 	       denominator => $suggest{denominator}||1,
 	       ln          => $suggest{ln}||0,
+	       inv         => $suggest{inv}||0,
 	       display	   => 1);
   $data->_update('data');
   my $yaml;
@@ -227,6 +228,7 @@ sub _data {
 		   numerator   => $suggest{numerator}||$yaml->{numerator}||'1',
 		   denominator => $suggest{denominator}||$yaml->{denominator}||'1',
 		   ln          => $suggest{ln}||$yaml->{ln},
+		   inv         => $suggest{inv}||$yaml->{inv},
 		   ##is_kev      => $yaml->{units},
 		   datatype    => $yaml->{datatype}||'xmu',
 		   bkg_nnorm   => $nnorm,
@@ -340,6 +342,7 @@ sub _data {
       my $this = $mc->make_data(numerator   => $ch,
 				denominator => $data->denominator,
 				ln          => $data->ln,
+				inv         => $data->inv,
 				name        => join(" - ", basename($file), $cols[$cc]),
 			       );
       _group($app, $colsel, $this, $yaml, $file, $orig, $repeated, $align);
@@ -365,6 +368,7 @@ sub _data {
 		     numerator	 => $data->numerator,
 		     denominator => $data->denominator,
 		     ln		 => $data->ln,
+		     inv	 => $data->inv,
 		     each        => $yaml->{each},
 		     datatype    => $data->datatype,
 		     units       => $data->is_kev,);
