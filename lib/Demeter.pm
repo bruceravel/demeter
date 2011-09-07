@@ -25,8 +25,9 @@ require 5.008;
 use version;
 our $VERSION = version->new('0.5.5');
 
-#use Demeter::Carp;
-use Carp;
+use Demeter::Carp;
+#use Carp::Always::Color;
+#use Carp;
 use Cwd;
 use File::Basename qw(dirname);
 use File::Spec;
@@ -134,7 +135,7 @@ $Fityk_exists       = eval "require fityk";
 $STAR_Parser_exists = 1;
 use STAR::Parser;
 $XDI_exists         = eval "require Xray::XDI";
-$PDL_exists         = eval "require PDL";
+$PDL_exists         = eval "require PDL::Lite";
 $PSG_exists         = eval "require PDL::Stats::GLM";
 
 use Demeter::Plot;

@@ -13,6 +13,16 @@ $pca ->add(@set);
 $pca->set_mode(screen=>0);
 $pca->do_pca;
 
+# my ($iv, $ic) = $pca->loadings->pca_sorti();
+# print $iv, $/;
+# print $ic, $/;
+
+#my @idv = (0..7);
+#foreach my $i (list $iv) {
+#  print $idv[$i] . "\t" . $pca->loadings->($_,$ic)->flat . "\n";
+#};
+#exit;
+
 $ARGV[0] ||= 0;
 
 my $data_index = $ARGV[0];

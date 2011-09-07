@@ -1,8 +1,10 @@
 {
   $datastyle = ($P->datastyle eq 'solid') ? 'lines' : 'points';
+  ($down, $up) = $D->floor_ceil('nder');
 
   $emin = $S->e0 + $S->xmin-10;
   $emax = $S->e0 + $S->xmax+10;
+  $where = ($S->space =~ m{[ex]}) ? 'center' : 'top';
 
   $data = $P->tempfile;
   $S->points(file    => $data,
@@ -18,19 +20,22 @@
   $S->points(file    => $diff,
              space   => 'x', 
              suffix  => 'diff'.$index,
+	     yoffset => ($S->space eq 'd') ? 1.25*$down : 0,
             );
+  $s = ($S->ncompused == 1) ? q{} : q{s}; 
   q{};
 }
 ## gnuplot script
 unset label
 
-set title "\{/*1.6 PCA components\}"
+set key {$where} right
+set title "\{/*1.6 PCA reconstruction\}"
 set xlabel "\{/*1.4 Energy&\{aa\}(eV)\}"
-set ylabel "\{/*1.4 PCA component\}"
+set ylabel "\{/*1.4 {$S->ylabel}\}"
 set xrange [ {$emin} : {$emax} ]
 
 ## reconstruction of {$D->name} ({$D->group})
 plot '{$data}' using 1:2 with {$C->default("gnuplot", "datastyle")} ls {$P->increm+1} title "{$D->name}",\
-     '{$reco}' using 1:2 with {$C->default("gnuplot", "datastyle")} ls {$P->increm+2} title "reconstruction with {$S->ncompused} components",\
+     '{$reco}' using 1:2 with {$C->default("gnuplot", "datastyle")} ls {$P->increm+2} title "reconstruction with {$S->ncompused} component{$s}",\
      '{$diff}' using 1:2 with {$C->default("gnuplot", "datastyle")} ls {$P->increm+3} title "residual"
 

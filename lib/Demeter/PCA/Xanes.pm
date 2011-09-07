@@ -1,12 +1,21 @@
 package Demeter::PCA::Xanes;
 use Moose::Role;
 
-use PDL;
+use PDL::Lite;
 
-has 'emin'  => (is => 'rw', isa => 'Num',    default => -30);
-has 'emax'  => (is => 'rw', isa => 'Num',    default =>  70);
-#has 'suffix' => (is => 'rw', isa => 'Str',    default => q{flat});
+has 'emin'  => (is => 'rw', isa => 'Num',    default => Demeter->co->default('pca', 'emin'));
+has 'emax'  => (is => 'rw', isa => 'Num',    default => Demeter->co->default('pca', 'emax'));
 has 'space_description' => (is => 'rw', isa => 'Str',    default => q{normalized mu(E)});
+
+sub set_space_description {
+  my ($self) = @_;
+  $self->space_description(q{normalized mu(E)});
+};
+
+sub ylabel {
+  my ($self) = @_;
+  return q{Normalized absorption};
+};
 
 sub update {
   my ($self, $data) = @_;

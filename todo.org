@@ -50,7 +50,7 @@
 
 ** Athena
 
-*** Tools [16/23] [69%]
+*** Tools [17/25] [68%]
    - [X] main
    - [X] calibrate
    - [X] align
@@ -62,17 +62,19 @@
    - [ ] /deconvolution/
    - [X] self absorption
    - [X] copy series
+   - [ ] data summer
 
    - [ ] dispersive
    - [ ] multi-electron removal
 
    - [X] LCF
-   - [ ] /PCA/ [[http://mailman.jach.hawaii.edu/pipermail/perldl/2006-August/000588.html][PCA from PDL mail archives]]
+   - [X] /PCA/ [[http://mailman.jach.hawaii.edu/pipermail/perldl/2006-August/000588.html][PCA from PDL mail archives]]
    - [ ] Peak fit
    - [X] log ratio
    - [X] difference
 
    - [ ] explain FT
+   - [ ] disk watcher
    - [X] XDI
    - [X] journal
    - [X] plugins
@@ -88,7 +90,7 @@
    - [ ] keV data
    - [ ] importing xmu.dat files into Athena has never been tested
 
-*** needs doing [8/16] [50%]
+*** needs doing [8/17] [47%]
    - [X] deglitching crashes with gnuplot					:HUH:
    - [X] in project selection dialog, controls for entering a periodic
          subset (i.e. every Nth record starting with the Jth record)
@@ -125,6 +127,20 @@
        + [X] plot in R for fit in k
        + [ ] persistance of LCF results
        + [X] plot sequence results with pgplot
+   - [-] *PCA tool* [3/12]
+       + [X] PCA in deriv(E)
+       + [ ] PCA in chi(k)
+       + [ ] save components to a file, put eigenvalues/eigenvectors in header
+       + [ ] save data stack to a file
+       + [ ] manual entry of component coefficients (??)
+       + [X] display coefficients of the TT
+       + [ ] save reconstruction to a file
+       + [ ] save target transform to a file
+       + [ ] cluster analysis, select two components and plot the
+             associations of each data with those two in a scatter plot.
+       + [ ] persistance
+       + [X] plot legend positioning for TT and recon plots needs to be sensitive to the space
+       + [ ] worry about "def group.tt" line being to long in tt template
    - [ ] *Plot menu*
        + zoom/unzoom/cursor for pgplot
    - [-] *Help menu* [1/3]
@@ -136,7 +152,7 @@
    - Need to expand the filetype system by examining data from *all* the XAS beamlines in the world.  Yes ... all of them.
    - solicit help from the facility representatives
 
-** Windows issues [12/17] [70%] 					    :Windows:
+** Windows issues [12/18] [66%] 					    :Windows:
   - [X] parameter group context menus don't get posted (see http://www.nntp.perl.org/group/perl.wxperl.users/2011/03/msg7929.html)
   - [X] ugly background colors on command and status buffer frames (particularly at bottom, also a problem in Artemis)
   - [X] raised text with data name in data frame
@@ -155,6 +171,11 @@
   - [ ] The atoms panel background color is too light.  Which window needs its BackgroundColour set to wxNullColour?
   - [ ] clampbox does not get enabled/disabled explicitly, is this another aspect of StaticBox that is different on Windows? (see link above)
   - [ ] relocation of Strawberry leaves Ifeffit unable to find phase shift and CL tables (use an ENV variable?)
+  - [ ] using gnuplot on Win XP Home Edition failed due to the
+        redirection of STDERR to ~$self->{__error_log}~ in
+        Graphics::GnuplotIF.  removing this redirection fixed the
+        problem, but I don't understand why it was a problem in the
+        first place.
 
 
 ** Artemis

@@ -588,7 +588,7 @@ sub menubar {
   $bar->Append( $groupmenu,   "&Group" );
   $bar->Append( $markmenu,    "&Mark" );
   $bar->Append( $plotmenu,    "&Plot" );
-  $bar->Append( $freezemenu,  "Free&ze" );
+  #$bar->Append( $freezemenu,  "Free&ze" );
   $bar->Append( $mergemenu,   "Me&rge" );
   $bar->Append( $monitormenu, "M&onitor" );
   $bar->Append( $helpmenu,    "&Help" );

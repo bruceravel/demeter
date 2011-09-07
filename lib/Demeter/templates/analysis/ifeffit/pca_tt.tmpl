@@ -1,20 +1,16 @@
 {
   $func = q{};
   $guess = q{};
-#  $def = q{1};
   $val = 1;
   foreach my $i (0 .. $S->ndata-1) {
     $func .= '_p' . $i . '*' . $S->group . '.ev' . $i . '+';
     $guess .= "guess _p$i = " . $S->refeig->[$i] . "\n";
-#    $def .= ' - _p' . $i;
     $val = 0;
   }
-#  $func .= '_p' . $i . '*' . $S->group . '.ev' . $S->ndata-1;
   chop $func;
   q{};
 }
 {$guess}
-#def _p{$S->ndata} = {$def}
 def {$S->group}.tt  = {$func}
 def {$S->group}.resid = {$S->group}.tt - {$S->group}.{$D->group}
 minimize({$S->group}.resid)

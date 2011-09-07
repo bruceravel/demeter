@@ -8,16 +8,17 @@ set autoscale
 unset logscale
 
 ## line styles
-set style line 1  linecolor rgb "{$C->default("gnuplot", "col0")}" pointsize 1 pointtype 7
-set style line 2  linecolor rgb "{$C->default("gnuplot", "col1")}" pointsize 1
-set style line 3  linecolor rgb "{$C->default("gnuplot", "col2")}" pointsize 1
-set style line 4  linecolor rgb "{$C->default("gnuplot", "col3")}" pointsize 1
-set style line 5  linecolor rgb "{$C->default("gnuplot", "col4")}" pointsize 1
-set style line 6  linecolor rgb "{$C->default("gnuplot", "col5")}" pointsize 1
-set style line 7  linecolor rgb "{$C->default("gnuplot", "col6")}" pointsize 1
-set style line 8  linecolor rgb "{$C->default("gnuplot", "col7")}" pointsize 1
-set style line 9  linecolor rgb "{$C->default("gnuplot", "col8")}" pointsize 1
-set style line 10 linecolor rgb "{$C->default("gnuplot", "col9")}" pointsize 1
+w={$C->default("gnuplot","linewidth")}
+set style line 1  linecolor rgb "{$C->default("gnuplot", "col0")}" linewidth w pointsize 1 pointtype 7
+set style line 2  linecolor rgb "{$C->default("gnuplot", "col1")}" linewidth w pointsize 1
+set style line 3  linecolor rgb "{$C->default("gnuplot", "col2")}" linewidth w pointsize 1
+set style line 4  linecolor rgb "{$C->default("gnuplot", "col3")}" linewidth w pointsize 1
+set style line 5  linecolor rgb "{$C->default("gnuplot", "col4")}" linewidth w pointsize 1
+set style line 6  linecolor rgb "{$C->default("gnuplot", "col5")}" linewidth w pointsize 1
+set style line 7  linecolor rgb "{$C->default("gnuplot", "col6")}" linewidth w pointsize 1
+set style line 8  linecolor rgb "{$C->default("gnuplot", "col7")}" linewidth w pointsize 1
+set style line 9  linecolor rgb "{$C->default("gnuplot", "col8")}" linewidth w pointsize 1
+set style line 10 linecolor rgb "{$C->default("gnuplot", "col9")}" linewidth w pointsize 1
 
 ## marker styles
 set style line 12 linecolor rgb "{$C->default("gnuplot", "markercolor")}"

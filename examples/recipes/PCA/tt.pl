@@ -16,4 +16,5 @@ $pca->do_pca;
 my $target = $prj->record(9);
 $pca->tt($target);
 $pca->plot_tt($target);
+
 $pca->pause;

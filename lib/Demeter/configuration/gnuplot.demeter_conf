@@ -116,6 +116,14 @@ description
   gnuplot's syntax -- Demeter does no error checking on the value of
   this parameter.
 
+variable=linewidth
+type=positive integer
+default=1
+minint=1
+maxint=4
+description
+  This is the line width to use by default in gnuplot plots.
+
 variable=bg
 type=color
 default=white

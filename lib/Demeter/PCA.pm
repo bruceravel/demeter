@@ -27,7 +27,7 @@ use Moose::Util qw(apply_all_roles);
 use Moose::Util::TypeConstraints;
 use Demeter::StrTypes qw( Empty );
 
-use PDL;
+use PDL::Lite;
 use PDL::Stats::GLM;
 
 use List::Util;
@@ -52,24 +52,26 @@ coerce 'PCASpaces',
   from 'Str',
   via { lc($_) };
 has space => (is => 'rw', isa => 'PCASpaces', coerce => 1,
-	      # trigger => sub{my ($self, $new) = @_;
-	      # 		     if ($new =~ m{[xe]}) {
-	      # 		       eval {apply_all_roles($self, 'Demeter::PCA::Xanes')};
-	      # 		       $@ and die("Histogram backend Demeter::PCA::Xanes could not be loaded");
-	      # 		     } elsif ($new eq 'd') {
-	      # 		       eval {apply_all_roles($self, 'Demeter::PCA::Deriv')};
-	      # 		       print $@;
-	      # 		       $@ and die("Histogram backend Demeter::PCA::Deriv does not exist");
-	      # 		     } elsif ($new =~ m{[ck]}) {
-	      # 		       eval {apply_all_roles($self, 'Demeter::PCA::Chi')};
-	      # 		       print $@;
-	      # 		       $@ and die("Histogram backend Demeter::PCA::Chi does not exist");
-	      # 		     };
-		#	   }
+	      trigger => sub{my ($self, $new) = @_;
+	      		     if ($new =~ m{[xe]}) {
+	      		       eval {apply_all_roles($self, 'Demeter::PCA::Xanes')};
+	      		       $@ and die("PCA backend Demeter::PCA::Xanes could not be loaded");
+	      		     } elsif ($new eq 'd') {
+	      		       eval {apply_all_roles($self, 'Demeter::PCA::Deriv')};
+	      		       print $@;
+	      		       $@ and die("PCA backend Demeter::PCA::Deriv could not be loaded");
+	      		     } elsif ($new =~ m{[ck]}) {
+	      		       eval {apply_all_roles($self, 'Demeter::PCA::Chi')};
+	      		       print $@;
+	      		       $@ and die("PCA backend Demeter::PCA::Chi could not be loaded");
+	      		     };
+			     $self->set_space_description;
+			     $self->update_stack(1);
+			   }
 	     );
 
 has 'e0' => (is => 'rw', isa => 'Num', default => 0);
-has 'data_matrix' => (is => 'rw', isa => 'PDL', default => sub {null});
+has 'data_matrix' => (is => 'rw', isa => 'PDL', default => sub {PDL::null});
 
 has 'ndata' => (is => 'rw', isa => 'Int', default => 0);
 has 'stack' => (
@@ -84,14 +86,15 @@ has 'stack' => (
 			      'unshift' => 'unshift_stack',
 			      'clear'   => 'clear_stack',
 			     },
+		trigger => sub{  my($self, $new) = @_; $self->ndata($#{ $self->stack } + 1);}
 	       );
 
-has 'eigenvalues'  => (is => 'rw', isa => 'PDL', default => sub {null});
-has 'eigenvectors' => (is => 'rw', isa => 'PDL', default => sub {null});
-has 'loadings'     => (is => 'rw', isa => 'PDL', default => sub {null});
-has 'pct_var'      => (is => 'rw', isa => 'PDL', default => sub {null});
+has 'eigenvalues'  => (is => 'rw', isa => 'PDL', default => sub {PDL::null});
+has 'eigenvectors' => (is => 'rw', isa => 'PDL', default => sub {PDL::null});
+has 'loadings'     => (is => 'rw', isa => 'PDL', default => sub {PDL::null});
+has 'pct_var'      => (is => 'rw', isa => 'PDL', default => sub {PDL::null});
 
-has 'reconstructed' => (is => 'rw', isa => 'PDL', default => sub {null});
+has 'reconstructed' => (is => 'rw', isa => 'PDL', default => sub {PDL::null});
 has 'ncompused'     => (is => 'rw', isa => 'Int', default => 0);
 
 has 'update_stack'  => (is => 'rw', isa => 'Bool', default => 1,
@@ -101,6 +104,15 @@ has 'update_pdl'    => (is => 'rw', isa => 'Bool', default => 1,
 has 'update_pca'    => (is => 'rw', isa => 'Bool', default => 1);
 has 'observations'  => (is => 'rw', isa => 'Int',  default => 0);
 has 'undersampled'  => (is => 'rw', isa => 'Bool', default => 0);
+
+has 'ttcoefficients' => (is => 'rw', isa => 'ArrayRef', default => sub{[]});
+
+sub BUILD {
+  my ($self, @params) = @_;
+  $self->mo->push_PCA($self);
+};
+
+## need to override 'all' => sub {}
 
 ## ======================================================================
 ## construction methods
@@ -122,7 +134,7 @@ sub make_pdl {
   foreach my $g (@{ $self->stack }) {
     push @list, $self->ref_array($g->group);
   };
-  my $pdl = pdl(\@list);
+  my $pdl = PDL->new(\@list);
   $self->data_matrix($pdl);
   $self->ndata($#{ $self->stack } + 1);
   $self->update_pdl(0);
@@ -131,7 +143,7 @@ sub make_pdl {
 
 sub refeig {
   my ($self) = @_;
-  my @list = list($self->pct_var);
+  my @list = PDL::list($self->pct_var);
   return \@list;
 };
 
@@ -152,7 +164,7 @@ sub do_pca {
   ## write each decomposition vector to an Ifeffit array in the PCA object's group
   foreach my $row (0 .. $self->ndata-1) {
     my $this = $decomposed->slice(":,($row)");
-    my @array = list $this;
+    my @array = PDL::list $this;
     $self->put_array("ev$row", \@array);
   };
   $self->update_pca(0);
@@ -173,27 +185,27 @@ sub reconstruct {
 sub tt {
   my ($self, $target) = @_;
   $self->interpolate_data($target);
-  my $tarpdl = pdl($self->ref_array($target->group));
+  my $tarpdl = PDL->new($self->ref_array($target->group));
   # #$self->dispose("\&screen_echo = 1");
   # #$self->dispose("show \@group ".$self->group);
 
-  my $row_matrix = $self->eigenvectors->transpose x $self->data_matrix;
-  my $lambda     = stretcher($self->eigenvalues); # matrix of inverse eigenvalues on the diagonal
-  my $tt         = $row_matrix->transpose x $lambda->inv x $row_matrix x $tarpdl->transpose;
-  my @array      = list($tt);
-  $self->put_array("tt", \@array);
+  $self->data($target);
+  $self->dispose($self->template('analysis', 'pca_tt'));
+  my @coef = ();
+  foreach my $i (0 .. $self->ndata-1) {
+    push @coef, Ifeffit::get_scalar("_p$i");
+  };
+  $self->ttcoefficients(\@coef);
 
-  #print join("|", $row_matrix->dims), $/;
-  print join("|", $lambda->dims), $/;
-  print join("|", $tarpdl->dims), $/;
-  print join("|", $tt->dims), $/;
+  # my $row_matrix = $self->eigenvectors->transpose x $self->data_matrix;
+  # my $lambda     = stretcher($self->eigenvalues); # matrix of inverse eigenvalues on the diagonal
+  # my $tt         = $row_matrix->transpose x $lambda->inv x $row_matrix x $tarpdl->transpose;
+  # my @array      = PDL::list($tt);
+  # $self->put_array("tt", \@array);
+
   return $self;
 };
 
-# $self->dispose($self->template('analysis', 'pca_tt'));
-# foreach my $i (0 .. $self->ndata-1) {
-#   print "$i : ", Ifeffit::get_scalar("_p$i"), $/;
-# };
 
 
 
@@ -205,7 +217,7 @@ sub tt {
 sub plot_scree {
   my ($self, $do_log) = @_;
   $do_log ||= 0;
-  my @array = list $self->pct_var;
+  my @array = PDL::list $self->pct_var;
   $self->put_array('index', [0 .. $#{ $self->stack }]);
   $self->put_array('scree', \@array);
   $self->po->start_plot;
@@ -215,7 +227,7 @@ sub plot_scree {
 
 sub plot_variance {
   my ($self) = @_;
-  my @array = list $self->pct_var;
+  my @array = PDL::list $self->pct_var;
   @array = map { List::Util::sum @array[0..$_] } (0 ..$#array);
   $self->put_array('index', [0 .. $#{ $self->stack }]);
   $self->put_array('cumvar', \@array);
@@ -259,8 +271,8 @@ sub plot_reconstruction {
   $self->po->start_plot;
   $self->e0($self->stack->[0]->bkg_e0);
   $self->data($self->stack->[$index]);
-  my @data  = list($self->data_matrix->slice(":,($index)"));
-  my @recon = list($self->reconstructed->slice(":,($index)"));
+  my @data  = PDL::list($self->data_matrix->slice(":,($index)"));
+  my @recon = PDL::list($self->reconstructed->slice(":,($index)"));
   my @diff  = pairwise {$a - $b} @data, @recon;
   $self->put_array("rec$index",  \@recon);
   $self->put_array("diff$index", \@diff);
@@ -288,12 +300,27 @@ sub plot_tt {
 
 sub report {
   my ($self) = @_;
-  my $text = sprintf("Observation set size: %d spectra\n", $#{$self->stack}+1);
-  $text   .= "Eignevalues:\n";
-  my @ev   = list $self->eigenvalues;
-  my @vars = list $self->pct_var;
+  my $text = "Performed PCA using " . $self->space_description . "\n";
+  $text   .= sprintf("Number of components: %d spectra\n", $#{$self->stack}+1);
+  $text   .= sprintf("Number of observations: %d data points\n", $self->observations);
+  return if $self->undersampled;
+  $text   .= "\n      Eignevalues   Variance   Cumulative variance\n";
+  my @ev   = PDL::list $self->eigenvalues;
+  my @vars = PDL::list $self->pct_var;
+  my @cumvar = map { List::Util::sum @vars[0..$_] } (0 ..$#vars);
   foreach my $i (0 .. $#{$self->stack}) {
-    $text .= sprintf("\t %d: %.3g   %.3g\n", $i+1, $ev[$i], $vars[$i]);
+    $text .= sprintf("%3d:   %.6f      %.6f    %.6f\n", $i+1, $ev[$i], $vars[$i], $cumvar[$i]);
+  };
+  return $text;
+};
+
+sub tt_report {
+  my ($self, $target) = @_;
+  my $i = 0;
+  my $text = $target->name . ":\n";
+  foreach my $c (@{$self->ttcoefficients}) {
+    ++$i;
+    $text .= sprintf("%4d: %9.5f\n", $i, $c)
   };
   return $text;
 };

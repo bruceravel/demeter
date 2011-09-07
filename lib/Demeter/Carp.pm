@@ -4,37 +4,40 @@ use 5.006;
 use strict;
 use warnings;
 
-use subs qw(BOLD RED YELLOW RESET);
+use subs qw(BOLD RED YELLOW WHITE BLACK ON_WHITE ON_YELLOW ON_RED RESET);
 my $ANSIColor_exists = (eval "require Term::ANSIColor");
 if ($ANSIColor_exists) {
   import Term::ANSIColor qw(:constants);
 } else {
   ## this eval works when Term::ANSIColor is not available AND when running tests
   eval '
-  sub BOLD    {q{}};
-  sub RED     {q{}};
-  sub YELLOW  {q{}};
-  sub RESET   {q{}};';
+  sub BOLD      {q{}};
+  sub WHITE     {q{}};
+  sub BLACK     {q{}};
+  sub RED       {q{}};
+  sub YELLOW    {q{}};
+  sub ON_RED    {q{}};
+  sub ON_YELLOW {q{}};
+  sub ON_WHITE  {q{}};
+  sub RESET     {q{}};';
 };
-
-our $VERSION = '0.01';
 
 use Carp;# qw(verbose); # makes carp() cluck and croak() confess
 
 sub _warn {
-  if ($_[-1] =~ /\n$/s) {
+  if ($_[-1] =~ m{\n$}s) {
     my $arg = pop @_;
-    $arg =~ s/ at .*? line .*?\n$//s;
-    $arg = BOLD . YELLOW . $arg . RESET if (Demeter::Mode->ui eq 'screen');
+    $arg =~ s{ at .*? line .*?\n$}{}s;
+    $arg = BOLD . YELLOW  . $arg . RESET if (Demeter::Mode->ui eq 'screen');
     push @_, $arg;
   };
   warn &Carp::longmess;
 }
 
 sub _die {
-  if ($_[-1] =~ /\n$/s) {
+  if ($_[-1] =~ m{\n$}s) {
     my $arg = pop @_;
-    $arg =~ s/ at .*? line .*?\n$//s;
+    $arg =~ s{ at .*? line .*?\n$}{}s;
     $arg = BOLD . RED . $arg . RESET if (Demeter::Mode->ui eq 'screen');
     push @_, $arg;
   };

@@ -82,6 +82,8 @@ include process.demeter_conf       ## data processing (rebin, convolve, )
 
 include lcf.demeter_conf           ## linear combination fitting
 
+include pca.demeter_conf           ## principle component analysis
+
 include happiness.demeter_conf     ## happiness (semantic fitting evaluation) parameters
 
 include warnings.demeter_conf      ## warnings (evaluation of pathparams after a fit)

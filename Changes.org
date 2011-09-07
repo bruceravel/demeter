@@ -16,6 +16,9 @@
      configuration parameter for turning it on and off
    - Copying a group now copies its marked state
    - Added invert button to column selection dialog
+   - Implemented PCA tool
+   - Commented out Freeze menu since group freezing is currently
+     unimplemented
 
 *** Artemis
    - Added a fourth plotting terminal
@@ -35,6 +38,7 @@
    - Fixed a configuration bug wherein the GUIs could clobber one
      another's configuration changes
    - Added inv attribute for negating column selection
+   - Implemented PCA using PDL + specialty plots
 
 *** Acknowledgements for this release
 
