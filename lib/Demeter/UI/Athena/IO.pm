@@ -416,7 +416,7 @@ sub _data {
   return 1;
 };
 
-## this argumenmt list has grown icky over time:
+## this argument list has grown icky over time:
 # 1: Pointer to the Athena app, same as $::app
 # 2: $colsel, Pointer to the column selection frame
 # 3: $data, Pointer to the main Data object (as opposed to the refernece)

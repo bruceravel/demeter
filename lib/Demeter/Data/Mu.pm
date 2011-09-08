@@ -195,7 +195,7 @@ sub put_data {
   if ($self->datatype eq 'chi') {
     $chi_string = $self->chi_column;
   } elsif ($self->ln) {
-    $xmu_string    =   "ln(abs(  ("
+    $xmu_string    = "ln(abs(  ("
 	           . $self->numerator
                    . ") / ("
 		   . $self->denominator

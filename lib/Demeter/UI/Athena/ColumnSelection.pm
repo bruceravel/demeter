@@ -132,7 +132,7 @@ sub columns {
 
     my $radio = Wx::RadioButton->new($columnbox, -1, q{}, @args);
     $gbs -> Add($radio, Wx::GBPosition->new(1,$count));
-    EVT_RADIOBUTTON($parent, $radio, sub{OnEnergyClick(@_, $data, $i)});
+    EVT_RADIOBUTTON($parent, $radio, sub{OnEnergyClick(@_, $this, $data, $i)});
     if ($data->energy =~ m{(?<=\$)$count\b}) {
       $energy[$i] = 1;
       $radio->SetValue(1);
@@ -192,11 +192,11 @@ sub other_parameters {
   $this->{units}    = Wx::Choice->new($parent,-1, wxDefaultPosition, wxDefaultSize, ['eV', 'keV']);
   $this->{replot}   = Wx::Button->new($parent, -1, 'Replot');
   $others -> Add(Wx::StaticText->new($parent,-1, "Data type"), 0, wxGROW|wxALL, 7);
-  $others -> Add($this->{datatype}, 0, wxGROW|wxRIGHT, 25);
+  $others -> Add($this->{datatype}, 0, wxRIGHT, 25);
   $others -> Add(Wx::StaticText->new($parent,-1, "Energy units"), 0, wxGROW|wxTOP|wxRIGHT, 7);
-  $others -> Add($this->{units}, 0, wxGROW|wxALL, 0);
+  $others -> Add($this->{units}, 0, wxALL, 0);
   $others -> Add(1,1,1);
-  $others -> Add($this->{replot}, 0, wxGROW|wxALL, 5);
+  $others -> Add($this->{replot}, 0, wxALL, 0);
   $this->{$_}->SetSelection(0) foreach (qw(datatype units));
   $this->{left}->Add($others, 0, wxGROW|wxALL, 0);
 
@@ -258,8 +258,9 @@ sub OnInvClick {
 };
 
 sub OnEnergyClick {
-  my ($parent, $event, $data, $i) = @_;
-  $data->energy('$'.$i);
+  my ($parent, $event, $this, $data, $i) = @_;
+  $data -> energy('$'.$i);
+  $this -> display_plot($data);
 };
 
 sub OnNumerClick {
@@ -278,8 +279,7 @@ sub OnNumerClick {
   #print "numerator is ", $string, $/;
   $string = "1" if not $string;
   ($data->datatype ne 'chi') ? $data -> numerator($string) : $data -> chi_column($string);
-  $data -> update_data(1) if ($data->datatype eq 'chi');
-  $data -> update_columns(1);
+  $data -> update_data(1);
   $this -> display_plot($data);
 };
 

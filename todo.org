@@ -127,7 +127,7 @@
        + [X] plot in R for fit in k
        + [ ] persistance of LCF results
        + [X] plot sequence results with pgplot
-   - [-] *PCA tool* [3/12]
+   - [-] *PCA tool* [3/13]
        + [X] PCA in deriv(E)
        + [ ] PCA in chi(k)
        + [ ] save components to a file, put eigenvalues/eigenvectors in header
@@ -141,6 +141,7 @@
        + [ ] persistance
        + [X] plot legend positioning for TT and recon plots needs to be sensitive to the space
        + [ ] worry about "def group.tt" line being to long in tt template
+       + [ ] plotting in pgplot
    - [ ] *Plot menu*
        + zoom/unzoom/cursor for pgplot
    - [-] *Help menu* [1/3]
