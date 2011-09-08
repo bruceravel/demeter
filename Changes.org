@@ -41,6 +41,9 @@
    - Implemented PCA using PDL + specialty plots
 
 *** Acknowledgements for this release
+   - Fred Mosselmans
+   - Scott Calvin
+   - Eric Breynaert
 
 ** Release 5: 18 August, 2011
 *** Athena

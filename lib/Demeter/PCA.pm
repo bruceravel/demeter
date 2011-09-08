@@ -143,7 +143,7 @@ sub make_pdl {
 
 sub refeig {
   my ($self) = @_;
-  my @list = PDL::list($self->pct_var);
+  my @list = $self->pct_var->list;
   return \@list;
 };
 
@@ -159,12 +159,12 @@ sub do_pca {
   $self->loadings($result{loadings});
   $self->pct_var($result{pct_var});
 
-  ## create the decomposition vectors
+  ## create the decomposition vectors (these are piddles)
   my $decomposed = $self->eigenvectors x $self->data_matrix;
   ## write each decomposition vector to an Ifeffit array in the PCA object's group
   foreach my $row (0 .. $self->ndata-1) {
     my $this = $decomposed->slice(":,($row)");
-    my @array = PDL::list $this;
+    my @array = $this->list;
     $self->put_array("ev$row", \@array);
   };
   $self->update_pca(0);
@@ -200,7 +200,7 @@ sub tt {
   # my $row_matrix = $self->eigenvectors->transpose x $self->data_matrix;
   # my $lambda     = stretcher($self->eigenvalues); # matrix of inverse eigenvalues on the diagonal
   # my $tt         = $row_matrix->transpose x $lambda->inv x $row_matrix x $tarpdl->transpose;
-  # my @array      = PDL::list($tt);
+  # my @array      = $tt->list;
   # $self->put_array("tt", \@array);
 
   return $self;
@@ -217,7 +217,7 @@ sub tt {
 sub plot_scree {
   my ($self, $do_log) = @_;
   $do_log ||= 0;
-  my @array = PDL::list $self->pct_var;
+  my @array = $self->pct_var->list; # these is a piddle
   $self->put_array('index', [0 .. $#{ $self->stack }]);
   $self->put_array('scree', \@array);
   $self->po->start_plot;
@@ -227,7 +227,7 @@ sub plot_scree {
 
 sub plot_variance {
   my ($self) = @_;
-  my @array = PDL::list $self->pct_var;
+  my @array = $self->pct_var->list; # these is a piddle
   @array = map { List::Util::sum @array[0..$_] } (0 ..$#array);
   $self->put_array('index', [0 .. $#{ $self->stack }]);
   $self->put_array('cumvar', \@array);
@@ -271,8 +271,8 @@ sub plot_reconstruction {
   $self->po->start_plot;
   $self->e0($self->stack->[0]->bkg_e0);
   $self->data($self->stack->[$index]);
-  my @data  = PDL::list($self->data_matrix->slice(":,($index)"));
-  my @recon = PDL::list($self->reconstructed->slice(":,($index)"));
+  my @data  = $self->data_matrix->slice(":,($index)")->list; # these are piddles
+  my @recon = $self->reconstructed->slice(":,($index)")->list;
   my @diff  = pairwise {$a - $b} @data, @recon;
   $self->put_array("rec$index",  \@recon);
   $self->put_array("diff$index", \@diff);
@@ -305,8 +305,8 @@ sub report {
   $text   .= sprintf("Number of observations: %d data points\n", $self->observations);
   return if $self->undersampled;
   $text   .= "\n      Eignevalues   Variance   Cumulative variance\n";
-  my @ev   = PDL::list $self->eigenvalues;
-  my @vars = PDL::list $self->pct_var;
+  my @ev   = $self->eigenvalues->list; # these are piddles
+  my @vars = $self->pct_var->list;
   my @cumvar = map { List::Util::sum @vars[0..$_] } (0 ..$#vars);
   foreach my $i (0 .. $#{$self->stack}) {
     $text .= sprintf("%3d:   %.6f      %.6f    %.6f\n", $i+1, $ev[$i], $vars[$i], $cumvar[$i]);

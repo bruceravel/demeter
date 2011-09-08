@@ -210,6 +210,19 @@ sub OnSpace {
     $this->{xmin}->SetValue($this->{PCA}->emin);
     $this->{xmax}->SetValue($this->{PCA}->emax);
   };
+
+  if ($this->{space}->GetSelection == 2) { # chi(k)
+    $this->tilt("PCA in chi(k) is not yet implemented.");
+    return;
+  };
+
+};
+
+sub tilt {
+  my ($this, $text) = @_;
+  $this->{result}->SetValue($text);
+  $::app->{main}->status($text, 'error');
+  return 0;
 };
 
 sub disable {
@@ -224,18 +237,22 @@ sub disable {
 
 sub pca {
   my ($this, $event) = @_;
+
+  if ($this->{space}->GetSelection == 2) { # chi(k)
+    $this->tilt("PCA in chi(k) is not yet implemented.");
+    return;
+  };
+
   my $busy = Wx::BusyCursor->new();
   $::app->{main}->status("Performing principle components analysis ...", 'wait');
   $this->disable;
   if (not looks_like_number($this->{xmin}->GetValue)) {
     my $letter = ($this->{space}->GetSelection == 2) ? 'k' : 'E';
-    $::app->{main}->status("Your ${letter}min value is not a number", 'error');
-    return;
+    return $this->tilt("Your ${letter}min value is not a number");
   };
   if (not looks_like_number($this->{xmax}->GetValue)) {
     my $letter = ($this->{space}->GetSelection == 2) ? 'k' : 'E';
-    $::app->{main}->status("Your ${letter}max value is not a number", 'error');
-    return;
+    return $this->tilt("Your ${letter}max value is not a number");
   };
   if ($this->{space}->GetSelection == 2) { # chi(k)
     $this->{PCA}->kmin($this->{xmin}->GetValue);
@@ -251,12 +268,12 @@ sub pca {
     $this->{PCA}->add($::app->{main}->{list}->GetIndexedData($i));
   };
   if ($count < 3) {
-    $::app->{main}->status("Your data set is not large enough.  You must mark at least 3 data groups", 'error');
+    $this->tilt("Your data set is not large enough.  You must mark at least 3 data groups");
     return;
   };
   $this->{PCA}->do_pca;
   if ($this->{PCA}->undersampled) {
-    $::app->{main}->status("Your problem is undersampled, try increasing the analysis range", 'error');
+    $this->tilt("Your problem is undersampled, try increasing the analysis range");
     return;
   };
   $::app->{main}->status(sprintf("Performed principle components analysis on %d data groups with %d observations",
@@ -296,7 +313,7 @@ sub plot_components {
 
 sub plot_cluster {
   my ($this, $event) = @_;
-  $::app->{main}->status("Cluster analysis (not yet implemented) ...");
+  $this->tilt("Cluster analysis (not yet implemented) ...");
 };
 
 
@@ -324,7 +341,7 @@ sub reconstruct {
 
 sub save_components {
   my ($this, $event) = @_;
-  $::app->{main}->status("Save components (not yet implemented) ...");
+  $this->tilt("Save components (not yet implemented) ...");
 };
 
 1;
