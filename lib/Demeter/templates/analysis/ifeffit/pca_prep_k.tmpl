@@ -1,0 +1,4 @@
+##| preparing for PCA in chi(k)
+set {$S->group}.x     = slice({$DS->group}.k,  {$i1}, {$i2})
+set {$S->group}.{$DS->group} = slice({$DS->group}.chi, {$i1}, {$i2})
+set {$S->group}.{$DS->group} = {$S->group}.{$DS->group} * {$S->group}.x**({$P->kweight})

@@ -3,11 +3,10 @@ use Moose::Role;
 
 has 'kmin'  => (is => 'rw', isa => 'Num', default => Demeter->co->default('pca', 'kmin'));
 has 'kmax'  => (is => 'rw', isa => 'Num', default => Demeter->co->default('pca', 'kmax'));
-has 'space_description' => (is => 'rw', isa => 'Str',    default => q{chi(k)});
 
-sub set_space_description {
+sub space_description {
   my ($self) = @_;
-  $self->space_description(sprintf("k^%d*chi(k)", $self->po->kweight));
+  return sprintf("k^%d*chi(k)", $self->po->kweight);
 };
 
 sub ylabel {
@@ -21,14 +20,43 @@ sub update {
   return $data;
 };
 
+## chi(k) data are always on the same grid, so this is k-weighting
+## rather than interpolating, but that's what the method is called...
 sub interpolate_data {
-  my ($self) = @_;
-  1;
+  my ($self, $data) = @_;
+  $self->update($data);
+  $self->data($data);
+  $self->dispose($self->template('analysis', 'pca_kw', {suff=>$data->nsuff}));
+  $self->data(q{});
+  return $self;
 };
 
 sub interpolate_stack {
   my ($self) = @_;
-  1;
+
+  $self->xmin($self->kmin);
+  $self->xmax($self->kmax);
+
+  my @groups = @{ $self->stack };
+  @groups = grep {ref($_) =~ m{Data\z}} @groups;
+
+  my $first = shift @groups;
+  $self->update($first);
+
+  my $i1 = $first->iofx('k', $self->xmin);
+  my $i2 = $first->iofx('k', $self->xmax);
+  $self->observations($i2-$i1+1);
+  $self->undersampled($self->observations <= $#{$self->stack});
+  $first->standard;
+  $self->dispose($self->template('analysis', 'pca_prep_k', {i1=>$i1, i2=>$i2}));
+
+  foreach my $g (@groups) {
+    $self->interpolate_data($g);
+  };
+
+  $first->unset_standard;
+  $self->update_stack(0);
+  return $self;
 };
 
 

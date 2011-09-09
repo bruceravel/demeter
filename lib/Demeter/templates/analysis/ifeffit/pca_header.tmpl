@@ -1,0 +1,11 @@
+{
+  @titles = split(/\n/, $S->header);
+  $i=0;
+  q{}
+}
+$pca_title_{++$i} = "Demeter PCA {$which} file - Demeter version {$S->version}"
+{
+  foreach $t (@titles) {
+    $OUT .= "\$pca_title_" . ++$i . ' = "' . $t . "\"\n";
+  }
+}

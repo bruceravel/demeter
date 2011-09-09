@@ -68,7 +68,7 @@ sub new {
 
   ## -------- report on PCA
   $hbox = Wx::BoxSizer->new( wxHORIZONTAL );
-  $box->Add($hbox, 1, wxGROW|wxLEFT|wxRIGHT, 5);
+  $box->Add($hbox, 2, wxGROW|wxLEFT|wxRIGHT, 5);
   $this->{result} = Wx::TextCtrl->new($this, -1, q{}, wxDefaultPosition, wxDefaultSize,
 				       wxTE_MULTILINE|wxTE_WORDWRAP|wxTE_AUTO_URL|wxTE_READONLY|wxTE_RICH2);
   my $size = Wx::SystemSettings::GetFont(wxSYS_DEFAULT_GUI_FONT)->GetPointSize;
@@ -76,7 +76,7 @@ sub new {
   $hbox->Add($this->{result}, 1, wxGROW|wxALL, 5);
 
   $hbox = Wx::BoxSizer->new( wxHORIZONTAL );
-  $box->Add($hbox, 1, wxGROW|wxLEFT|wxRIGHT, 5);
+  $box->Add($hbox, 3, wxGROW|wxLEFT|wxRIGHT, 5);
   my $plotbox       = Wx::StaticBox->new($this, -1, 'Plots', wxDefaultPosition, wxDefaultSize);
   my $plotboxsizer  = Wx::StaticBoxSizer->new( $plotbox, wxVERTICAL );
   $hbox -> Add($plotboxsizer, 1, wxGROW|wxALL, 5);
@@ -133,7 +133,6 @@ sub new {
   $this->{nrecon}      = Wx::SpinCtrl->new($this, -1, 2, wxDefaultPosition, $tcsize, wxSP_ARROW_KEYS, 1, 100);
   $this->{reconstruct} = Wx::Button->new($this, -1, 'Reconstruct data');
   $this->{tt}          = Wx::Button->new($this, -1, 'Target transform');
-  $this->{savecomp}    = Wx::Button->new($this, -1, 'Save components to a file');
 
   my $ttbox       = Wx::StaticBox->new($this, -1, 'TT coefficients', wxDefaultPosition, wxDefaultSize);
   my $ttboxsizer  = Wx::StaticBoxSizer->new( $ttbox, wxVERTICAL );
@@ -150,13 +149,33 @@ sub new {
   };
   $ttboxsizer->Add($this->{transform}, 1, wxGROW|wxALL, 0);
   $actionsboxsizer -> Add($ttboxsizer, 1, wxGROW|wxALL, 0);
-  $actionsboxsizer -> Add($this->{savecomp}, 0, wxGROW|wxALL, 0);
-  foreach my $w (qw(rectext nrecon reconstruct tt savecomp)) {
+  foreach my $w (qw(rectext nrecon reconstruct tt)) {
     $this->{$w}->Enable(0);
   };
   EVT_BUTTON($this, $this->{reconstruct}, sub{reconstruct(@_)});
   EVT_BUTTON($this, $this->{tt},          sub{tt(@_)});
   EVT_BUTTON($this, $this->{savecomp},    sub{save_components(@_)});
+  EVT_BUTTON($this, $this->{savestack},   sub{save_stack(@_)});
+
+  my $savebox       = Wx::StaticBox->new($this, -1, 'Save things to files', wxDefaultPosition, wxDefaultSize);
+  my $saveboxsizer  = Wx::StaticBoxSizer->new( $savebox, wxHORIZONTAL );
+  $box -> Add($saveboxsizer, 0, wxGROW|wxALL, 2);
+  $this->{savecomp}    = Wx::Button->new($this, -1, 'Components');
+  $this->{savestack}   = Wx::Button->new($this, -1, 'Data stack');
+  $this->{saverecon}   = Wx::Button->new($this, -1, 'Data reconstruction');
+  $this->{savett}      = Wx::Button->new($this, -1, 'Target transform');
+  $saveboxsizer -> Add($this->{savecomp},  1, wxGROW|wxALL, 0);
+  $saveboxsizer -> Add($this->{savestack}, 1, wxGROW|wxALL, 0);
+  $saveboxsizer -> Add($this->{saverecon}, 1, wxGROW|wxALL, 0);
+  $saveboxsizer -> Add($this->{savett},    1, wxGROW|wxALL, 0);
+
+  EVT_BUTTON($this, $this->{savecomp},  sub{save_components(@_)});
+  EVT_BUTTON($this, $this->{savestack}, sub{save_stack(@_)});
+  EVT_BUTTON($this, $this->{saverecon}, sub{save_reconstruction(@_)});
+  EVT_BUTTON($this, $this->{savett},    sub{save_tt(@_)});
+  foreach my $w (qw(savecomp savestack saverecon savett)) {
+    $this->{$w}->Enable(0);
+  };
 
   $this->{document} = Wx::Button->new($this, -1, 'Document section: principle components analysis');
   $box -> Add($this->{document}, 0, wxGROW|wxALL, 2);
@@ -189,7 +208,8 @@ sub mode {
     $this->{$_} -> Enable(0) foreach qw(reconstruct rectext nrecon);
     $this->{tt} -> Enable($enable);
   };
-  1;
+  $this->{saverecon}->Enable(0);
+  $this->{savett}->Enable(0);
 };
 
 sub OnSpace {
@@ -210,12 +230,6 @@ sub OnSpace {
     $this->{xmin}->SetValue($this->{PCA}->emin);
     $this->{xmax}->SetValue($this->{PCA}->emax);
   };
-
-  if ($this->{space}->GetSelection == 2) { # chi(k)
-    $this->tilt("PCA in chi(k) is not yet implemented.");
-    return;
-  };
-
 };
 
 sub tilt {
@@ -227,7 +241,8 @@ sub tilt {
 
 sub disable {
   my ($this) = @_;
-  foreach my $w (qw(scree logscree cumvar stack components ncomptext ncomp savecomp reconstruct rectext nrecon tt)) {
+  foreach my $w (qw(scree logscree cumvar stack components ncomptext ncomp savecomp savestack saverecon savett
+		    reconstruct rectext nrecon tt)) {
     $this->{$w}->Enable(0);
   };
   $this->{result}->Clear;
@@ -237,11 +252,6 @@ sub disable {
 
 sub pca {
   my ($this, $event) = @_;
-
-  if ($this->{space}->GetSelection == 2) { # chi(k)
-    $this->tilt("PCA in chi(k) is not yet implemented.");
-    return;
-  };
 
   my $busy = Wx::BusyCursor->new();
   $::app->{main}->status("Performing principle components analysis ...", 'wait');
@@ -257,9 +267,13 @@ sub pca {
   if ($this->{space}->GetSelection == 2) { # chi(k)
     $this->{PCA}->kmin($this->{xmin}->GetValue);
     $this->{PCA}->kmax($this->{xmax}->GetValue);
+    $this->{PCA}->xmin($this->{xmin}->GetValue);
+    $this->{PCA}->xmax($this->{xmax}->GetValue);
   } else {				   # xmu(E) or deriv(E)
     $this->{PCA}->emin($this->{xmin}->GetValue);
     $this->{PCA}->emax($this->{xmax}->GetValue);
+    $this->{PCA}->xmin($this->{xmin}->GetValue);
+    $this->{PCA}->xmax($this->{xmax}->GetValue);
   };
   my $count = 0;
   foreach my $i (0 .. $::app->{main}->{list}->GetCount-1) {
@@ -278,7 +292,8 @@ sub pca {
   };
   $::app->{main}->status(sprintf("Performed principle components analysis on %d data groups with %d observations",
 				 $this->{PCA}->ndata, $this->{PCA}->observations));
-  foreach my $w (qw(scree logscree cumvar stack components ncomptext ncomp savecomp cluster1 cluster2 clusvs clusplot)) {
+  foreach my $w (qw(scree logscree cumvar stack components ncomptext ncomp savecomp savestack
+		    cluster1 cluster2 clusvs clusplot)) {
     $this->{$w}->Enable(1);
   };
   $this->{$_} ->SetRange(1, $this->{PCA}->ndata) foreach qw(ncomp nrecon cluster1 cluster2);
@@ -324,6 +339,7 @@ sub tt {
   $this->{PCA}->tt($target);
   $this->{PCA}->plot_tt($target);
   $this->{transform}->SetValue($this->{PCA}->tt_report($target));
+  $this->{savett}->Enable(1);
   $::app->{main}->status(sprintf("Made target transform of %s", $::app->current_data->name));
 };
 
@@ -336,12 +352,65 @@ sub reconstruct {
     last if ($data_index = $::app->current_index);
   };
   $this->{PCA}->plot_reconstruction($data_index);
+  $this->{saverecon}->Enable(1);
   $::app->{main}->status(sprintf("Made reconstruction of %s with %d components", $::app->current_data->name, $this->{nrecon}->GetValue));
+};
+
+sub get_filename {
+  my ($this, $suff, $given) = @_;
+  $given ||= q{};
+  my %defname = ( pca=>'components', stack=>'datastack', recon=>'reconstruction', tt=>'targettransform' );
+  my %descr   = ( pca=>'components', stack=>'data stack', recon=>'reconstruction', tt=>'target transform' );
+  my $name = $given || basename($::app->{main}->{currentproject}, '.prj') || $defname{$suff};
+  my $fd = Wx::FileDialog->new( $::app->{main}, "Save PCA $descr{$suff} to a file", cwd, join(".", $name, $suff),
+				uc($suff)." (*.$suff)|*.$suff|All files|*",
+				wxFD_SAVE|wxFD_CHANGE_DIR, #|wxFD_OVERWRITE_PROMPT,
+				wxDefaultPosition);
+  if ($fd->ShowModal == wxID_CANCEL) {
+    $::app->{main}->status("Saving PCA $descr{$suff} to a file has been cancelled.");
+    return 0;
+  };
+  my $fname = File::Spec->catfile($fd->GetDirectory, $fd->GetFilename);
+  return 0 if $::app->{main}->overwrite_prompt($fname); # work-around gtk's wxFD_OVERWRITE_PROMPT bug (5 Jan 2011)
+  $::app->{main}->status("Wrote PCA $descr{$suff} to $fname");
+  return $fname;
 };
 
 sub save_components {
   my ($this, $event) = @_;
-  $this->tilt("Save components (not yet implemented) ...");
+  my $fname = $this->get_filename('pca');
+  return if not $fname;
+  $this->{PCA}->save_components($fname);
+};
+
+sub save_stack {
+  my ($this, $event) = @_;
+  my $fname = $this->get_filename('stack');
+  return if not $fname;
+  $this->{PCA}->save_stack($fname);
+};
+
+sub save_reconstruction {
+  my ($this, $event) = @_;
+  my $data = $::app->current_data;
+  (my $name = $data->name) =~ s{\s+}{_}g;
+  my $fname = $this->get_filename('recon', $name);
+  return if not $fname;
+  my $data_index = 0;
+  foreach my $i (0 .. $::app->{main}->{list}->GetCount-1) {
+    ++$data_index if $::app->{main}->{list}->IsChecked($i);
+    last if ($data_index = $::app->current_index);
+  };
+  $this->{PCA}->save_reconstruction($data_index, $fname);
+};
+
+sub save_tt {
+  my ($this, $event) = @_;
+  my $target = $::app->current_data;
+  (my $name = $target->name) =~ s{\s+}{_}g;
+  my $fname = $this->get_filename('tt', $name);
+  return if not $fname;
+  $this->{PCA}->save_tt($target, $fname);
 };
 
 1;

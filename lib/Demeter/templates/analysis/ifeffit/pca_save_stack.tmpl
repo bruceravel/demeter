@@ -1,0 +1,14 @@
+{
+  $labels = join(" ", grep {$_ =~ s{ +}{_}g} map {$_->name} (@{$S->stack}));
+  @list = map {$_->group} (@{$S->stack});
+  $datastack = $S->group . '.' . join(', '.$S->group.'.', @list);
+  q{}
+}
+write_data(file="{$filename}", $pca_title_*, {$S->group}.x,
+           {$datastack},
+           label="x data {$labels}")
+{
+  foreach $t (1 .. $S->ntitles+1) {
+    $OUT .= "erase \$pca_title_" . $t . "\n";
+  }
+}

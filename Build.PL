@@ -70,6 +70,7 @@ my $build = DemeterBuilder
 				'YAML::Tiny'		    => '0',
 
 				'PDL'                       => '2.4.9',
+				'PDL::Slatec'               => '0',
 				'PDL::Stats'                => '0.5.5',
 
 				(($^O eq 'MSWin32') or ($^O eq 'cygwin')) ?

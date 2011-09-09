@@ -5,11 +5,10 @@ use PDL::Lite;
 
 has 'emin'  => (is => 'rw', isa => 'Num',    default => Demeter->co->default('pca', 'emin'));
 has 'emax'  => (is => 'rw', isa => 'Num',    default => Demeter->co->default('pca', 'emax'));
-has 'space_description' => (is => 'rw', isa => 'Str',    default => q{normalized mu(E)});
 
-sub set_space_description {
+sub space_description {
   my ($self) = @_;
-  $self->space_description(q{normalized mu(E)});
+  return q{normalized mu(E)};
 };
 
 sub ylabel {

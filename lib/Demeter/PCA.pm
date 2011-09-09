@@ -44,8 +44,9 @@ has '+plottable'  => (default => 1);
 has '+data'       => (isa => Empty.'|Demeter::Data');
 has '+name'       => (default => 'PCA' );
 
-has 'xmin'  => (is => 'rw', isa => 'Num',    default => 0);
-has 'xmax'  => (is => 'rw', isa => 'Num',    default => 0);
+has 'xmin'    => (is => 'rw', isa => 'Num',    default => 0);
+has 'xmax'    => (is => 'rw', isa => 'Num',    default => 0);
+has 'ntitles' => (is => 'rw', isa => 'Int', default => 0);
 
 enum 'PCASpaces' => [qw(e x d c k)];
 coerce 'PCASpaces',
@@ -65,7 +66,6 @@ has space => (is => 'rw', isa => 'PCASpaces', coerce => 1,
 	      		       print $@;
 	      		       $@ and die("PCA backend Demeter::PCA::Chi could not be loaded");
 	      		     };
-			     $self->set_space_description;
 			     $self->update_stack(1);
 			   }
 	     );
@@ -323,6 +323,51 @@ sub tt_report {
     $text .= sprintf("%4d: %9.5f\n", $i, $c)
   };
   return $text;
+};
+
+sub header {
+  my ($self) = @_;
+  my $header = "Principle components for:\n";
+  my $i = 0;
+  foreach my $g (@{$self->stack}) {
+    $header .= sprintf(". %3d: %s\n", $i++, $g->name);
+  };
+  $header .= $self->report;
+  my @n = split(/\n/, $header);
+  $self->ntitles($#n+1);
+  return $header;
+};
+
+sub save_components {
+  my ($self, $filename) = @_;
+  $self->dispose($self->template('analysis', 'pca_header', {which=>'components'}));
+  $self->dispose($self->template('analysis', 'pca_save', {filename=>$filename}));
+  return $self;
+};
+
+sub save_stack {
+  my ($self, $filename) = @_;
+  $self->dispose($self->template('analysis', 'pca_header', {which=>'data stack'}));
+  $self->dispose($self->template('analysis', 'pca_save_stack', {filename=>$filename}));
+  return $self;
+};
+
+sub save_reconstruction {
+  my ($self, $index, $filename) = @_;
+  $self->data($self->stack->[$index]);
+  $self->dispose($self->template('analysis', 'pca_header', {which=>'reconstruction'}));
+  $self->dispose($self->template('analysis', 'pca_save_reconstruction', {index=>$index, filename=>$filename}));
+  $self->data(q{});
+  return $self;
+};
+
+sub save_tt {
+  my ($self, $target, $filename) = @_;
+  $self->data($target);
+  $self->dispose($self->template('analysis', 'pca_header', {which=>'target transform'}));
+  $self->dispose($self->template('analysis', 'pca_save_tt', {filename=>$filename}));
+  $self->data(q{});
+  return $self;
 };
 
 __PACKAGE__->meta->make_immutable;

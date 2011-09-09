@@ -127,15 +127,15 @@
        + [X] plot in R for fit in k
        + [ ] persistance of LCF results
        + [X] plot sequence results with pgplot
-   - [-] *PCA tool* [3/14]
+   - [-] *PCA tool* [8/15]
        + [X] PCA in deriv(E)
-       + [ ] PCA in chi(k)
-       + [ ] save components to a file, put eigenvalues/eigenvectors in header
-       + [ ] save data stack to a file
+       + [X] PCA in chi(k)
+       + [X] save components to a file, put eigenvalues/eigenvectors in header
+       + [X] save data stack to a file
        + [ ] manual entry of component coefficients (??)
        + [X] display coefficients of the TT
-       + [ ] save reconstruction to a file
-       + [ ] save target transform to a file
+       + [X] save reconstruction to a file
+       + [X] save target transform to a file
        + [ ] cluster analysis, select two components and plot the
              associations of each data with those two in a scatter plot.
        + [ ] persistance
@@ -143,6 +143,7 @@
        + [ ] worry about "def group.tt" line being to long in tt template
        + [ ] plotting in pgplot
        + [ ] error analysis, RET, SPOIL, etc, determination of number of components, validity of TT, etc
+       + [ ] specialized file headers for reconstruction and tt save files
    - [ ] *Plot menu*
        + zoom/unzoom/cursor for pgplot
    - [-] *Help menu* [1/3]
