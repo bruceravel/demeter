@@ -233,8 +233,8 @@ sub OnSpace {
 };
 
 sub tilt {
-  my ($this, $text) = @_;
-  $this->{result}->SetValue($text);
+  my ($this, $text, $no_result) = @_;
+  $this->{result}->SetValue($text) if not $no_result;
   $::app->{main}->status($text, 'error');
   return 0;
 };
@@ -328,7 +328,7 @@ sub plot_components {
 
 sub plot_cluster {
   my ($this, $event) = @_;
-  $this->tilt("Cluster analysis (not yet implemented) ...");
+  $this->tilt("Cluster analysis (not yet implemented) ...", 1);
 };
 
 
