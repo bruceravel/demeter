@@ -108,7 +108,7 @@
        + [X] plot in R for fit in k
        + [ ] persistance of LCF results
        + [X] plot sequence results with pgplot
-   - [ ] *PCA tool* [0/8]
+   - [ ] *PCA tool* [0/9]
        + [ ] manual entry of component coefficients (??)
        + [ ] cluster analysis, select two components and plot the
              associations of each data with those two in a scatter plot.
@@ -118,6 +118,7 @@
        + [ ] error analysis, RET, SPOIL, etc, determination of number of components, validity of TT, etc
        + [ ] specialized file headers for reconstruction and tt save files
        + [ ] save eigenvectors to a file
+       + [ ] pluck buttons for analysis range don't work
    - [ ] *Plot menu*
        + zoom/unzoom/cursor for pgplot
    - [-] *Help menu* [1/3]
