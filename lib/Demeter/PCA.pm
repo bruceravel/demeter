@@ -221,7 +221,7 @@ sub plot_scree {
   $self->put_array('index', [0 .. $#{ $self->stack }]);
   $self->put_array('scree', \@array);
   $self->po->start_plot;
-  $self->dispose($self->template('analysis', 'pca_plot_scree', {log=>$do_log}), 'plotting');
+  $self->dispose($self->template('plot', 'pca_plot_scree', {log=>$do_log}), 'plotting');
   return $self;
 };
 
@@ -232,7 +232,7 @@ sub plot_variance {
   $self->put_array('index', [0 .. $#{ $self->stack }]);
   $self->put_array('cumvar', \@array);
   $self->po->start_plot;
-  $self->dispose($self->template('analysis', 'pca_plot_variance'), 'plotting');
+  $self->dispose($self->template('plot', 'pca_plot_variance'), 'plotting');
   return $self;
 };
 
@@ -243,7 +243,7 @@ sub plot_components {
   my $which = 'pca_new_component';
   @list = (0 .. $#{ $self->stack }) if not @list;
   foreach my $i (@list) {
-    $self->dispose($self->template('analysis', $which, {component=>$i}), 'plotting');
+    $self->dispose($self->template('plot', $which, {component=>$i}), 'plotting');
     $self->po->increment;
     $which = 'pca_over_component';
   };
@@ -258,7 +258,7 @@ sub plot_stack {
   @list = (0 .. $#{ $self->stack }) if not @list;
   foreach my $i (@list) {
     $self->data($self->stack->[$i]);
-    $self->dispose($self->template('analysis', $which), 'plotting');
+    $self->dispose($self->template('plot', $which), 'plotting');
     $self->po->increment;
     $which = 'pca_over_stack';
     $self->data(q{});
@@ -276,7 +276,7 @@ sub plot_reconstruction {
   my @diff  = pairwise {$a - $b} @data, @recon;
   $self->put_array("rec$index",  \@recon);
   $self->put_array("diff$index", \@diff);
-  $self->dispose($self->template('analysis', 'pca_plot_reconstruction', {index=>$index}), 'plotting');
+  $self->dispose($self->template('plot', 'pca_plot_reconstruction', {index=>$index}), 'plotting');
   $self->data(q{});
   return $self;
 };
@@ -290,7 +290,7 @@ sub plot_tt {
   my @diff  = pairwise {$a - $b} @data, @tt;
   $self->put_array("diff", \@diff);
   $self->data($target);
-  $self->dispose($self->template('analysis', 'pca_plot_tt'), 'plotting');
+  $self->dispose($self->template('plot', 'pca_plot_tt'), 'plotting');
   $self->data(q{});
   return $self;
 };
