@@ -274,6 +274,7 @@ sub set_rhombohedral {
     $self->beta(90);
     $self->gamma(120);
   };
+  $self -> geometry;
   return $self;
 };
 

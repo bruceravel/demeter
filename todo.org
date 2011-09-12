@@ -228,13 +228,13 @@
  
 * Atoms and Feff
 
-** Atoms [0/6] [0%]
+** Atoms [2/6] [33%]
   - [ ] CIF issue: CIF file with "_eof" token at end of file, as in [[file:notes/H16PW12O46.cif][this cif file]]
   - [ ] 2 sites at the same position with occupancies <1.  see file above for an example
   - [ ] George Sterbinsky's recent mailing list post that turned out to be about 
 	atoms' sphere and rhomboid in a non-orthogonal group
   - [ ] CIF errors are not handled gracefully (e.g. multiple occupancy)
-  - [ ] Rhombic groups seem not be handled properly.  This example fails to generate a subshell of 3 atoms at ~1.9A
+  - [X] Rhombic groups seem not be handled properly.  This example fails to generate a subshell of 3 atoms at ~1.9A
          : title name:     Fe2O3  hematite
          : space  R -3 c
          : a    = 5.0380	b    = 5.0380	c    = 13.7720
@@ -242,7 +242,7 @@
          : atom
          :   Fe     0.00000   0.00000   0.35530  Fe1
          :   O      0.30590   0.00000   0.25000  O1
-  - [ ] This input data fails
+  - [X] This input data fails
          : title formula:  LaCoO3
          : title refer1:  PRB V. 66 P. 094408 (2002)
          : title notes:   T = 300 K

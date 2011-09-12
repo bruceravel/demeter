@@ -6,6 +6,15 @@
 * Beta testing releases:
 
 ** Release 6: 09 September, 2011
+
+*** Athena
+
+*** Artemis
+
+*** Demeter
+   - Fixed a problem interpreting rhombohedral space groups in Atoms.
+
+** Release 6: 09 September, 2011
 *** Athena
    - Corrected the behavior of the LCF tool when plotting without
      fitting in several edge cases that involve either a single
