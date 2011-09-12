@@ -331,7 +331,8 @@ sub _set_bravais {
   };
   my $setting = $self->setting;
   $self->bravais( [] );
-  $self->bravais( $table{r}  ) if (($g eq 'r') and ($setting eq "rhombohedral"));
+  #$self->bravais( $table{r}  ) if (($g eq 'r') and ($setting eq "rhombohedral"));
+  $self->bravais( $table{r}  ) if ($g eq 'r');
   $self->bravais( $table{$g} ) if ($g =~ m{[abcfi]});
   return $self;
 };

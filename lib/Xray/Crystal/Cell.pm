@@ -56,30 +56,56 @@ has 'space_group'  => (is => 'rw', isa => 'Str', default => q{},
 			 $self->given_group($new);
 			 $self->group->group($new);
 		       });
-has 'given_group'  => (is => 'rw', isa => 'Str', default => q{});
-has 'a'		   => (is => 'rw', isa => 'Num', default => 0,
+has 'given_group'  => (is => 'rw', isa => 'Str',  default => q{});
+has 'no_recurse'   => (is => 'rw', isa => 'Bool', default => 0);
+has 'a'		   => (is => 'rw', isa => 'Num',  default => 0,
 		       trigger => sub {
 			 my ($self, $new) = @_;
+			 return if $self->no_recurse;
 			 $self->b($new) if ($self->b < $EPSILON);
 			 $self->c($new) if ($self->c < $EPSILON);
+			 $self->set_rhombohedral;
 			 $self->geometry;
+			 $self->no_recurse(0);
 		       });
 has 'b'		   => (is => 'rw', isa => 'Num', default => 0,
-		       trigger => sub{ my ($self, $new) = @_; $self->geometry} );
+		       trigger => sub{ my ($self, $new) = @_;
+				       return if $self->no_recurse;
+				       $self->geometry;
+				       $self->no_recurse(0);
+				     });
 has 'c'		   => (is => 'rw', isa => 'Num', default => 0,
-		       trigger => sub{ my ($self, $new) = @_; $self->geometry} );
+		       trigger => sub{ my ($self, $new) = @_;
+				       return if $self->no_recurse;
+				       $self->set_rhombohedral;
+				       $self->geometry;
+				       $self->no_recurse(0);
+				     });
 has 'alpha'	   => (is => 'rw', isa => 'Num', default => 90,
 		       trigger => sub {
 			 my ($self, $new) = @_;
+			 return if $self->no_recurse;
 			 $self->beta($new)  if ($self->beta  < $EPSILON);
 			 $self->gamma($new) if ($self->gamma < $EPSILON);
 			 $self->determine_monoclinic;
+			 $self->set_rhombohedral;
 			 $self->geometry;
+			 $self->no_recurse(0);
 		       });
 has 'beta'	   => (is => 'rw', isa => 'Num', default => 90,
-		       trigger => sub{ my ($self, $new) = @_; $self->determine_monoclinic; $self->geometry} );
+		       trigger => sub{ my ($self, $new) = @_;
+				       return if $self->no_recurse;
+				       $self->determine_monoclinic;
+				       $self->geometry;
+				       $self->no_recurse(0);
+				     });
 has 'gamma'	   => (is => 'rw', isa => 'Num', default => 90,
-		       trigger => sub{ my ($self, $new) = @_; $self->determine_monoclinic; $self->geometry} );
+		       trigger => sub{ my ($self, $new) = @_;
+				       return if $self->no_recurse;
+				       $self->determine_monoclinic;
+				       $self->geometry;
+				       $self->no_recurse(0);
+				     });
 has 'angle'	   => (is => 'rw', isa => 'Str', default => q{});
 
 has 'sites'	   => (
@@ -229,6 +255,27 @@ sub determine_monoclinic {
   return $self;
 };
 
+
+sub set_rhombohedral {
+  my ($self) = @_;
+  return $self if ($self->space_group !~ m{\Ar}i);
+  $self->no_recurse(1);
+  if (abs($self->a - $self->c) < $EPSILON) {
+    ## rhombohedral setting
+    $self->b($self->a);
+    $self->alpha(90);
+    $self->beta(90);
+    $self->gamma(90);
+    $self->group->set_rhombohedral;
+  } else {
+    ## trigonal setting
+    $self->b($self->a);
+    $self->alpha(90);
+    $self->beta(90);
+    $self->gamma(120);
+  };
+  return $self;
+};
 
 sub verify_cell {
   my ($self) = @_;
@@ -406,6 +453,7 @@ sub populate {
   my @minimal   = ();
   my @unit_cell = ();
   $self -> determine_monoclinic;
+  $self -> set_rhombohedral;
 
   my $count = 0;
   my %seen;			# need unique tags for formulas

@@ -60,6 +60,7 @@ sub _absorption {
       scalar Xray::Absorption -> cross_section($element, $energy-50);
     $xsecb += $cache{lc($element)} * $factor;
   };
+  $volume ||= 1;
   $mass     *= 1.66053/$volume; ## atomic mass unit = 1.66053e-24 gram
   $xseca    /= $volume;
   $xsecb    /= $volume;
