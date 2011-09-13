@@ -3,11 +3,6 @@
 #+EMAIL: bravel AT bnl DOT gov
 #+TAGS: PDL HUH Advanced Windows
 
-* top of the to do list [0/3]
-
-  1. [ ] Shelly's atoms bug (see mail 17 June 06:35:58 pm) + other Atoms problems
-  2. [ ] Handle CIF import problems more gracefully
-  3. [ ] import data into Athena as norm(E)
 
 * things that need doing
 
@@ -23,7 +18,7 @@
   - [ ] in =Demeter::Data::IO::save_many=, why doesn't updating in n specifying "background" not work to bring data up to date?  (fft, i.e. doing autobk, does work)
   - [ ] Importing a Windows shortcut from a network mounted folder on linux or Mac will fail
   - [ ] +serialize VPath+, put VPath into +dpj and+ fpj files
-  - [ ] tie multiple groups together
+  - [ ] tie multiple groups together (e.g. MED data with reference)
   - [ ] add a record to an existing Athena project file
   - [ ] set E0 to peak of white line
   - [ ] clnorm + Julia and Jingen's MXAN replacement
@@ -90,11 +85,13 @@
 	 ~Can't call method "GetSelection" on an undefined value at /home/bruce/git/demeter/lib/Demeter/UI/Athena/IO.pm line 423.~
    - [X] *Pluck buttons* [2/2]
        + [X] implement everywhere needed
-       + [X] figure out cause of spurious error on Windows ~failed to get data from the clipboard error -2147221040 openClipboard failed~
+       + [X] figure out cause of spurious error on Windows
+	     ~failed to get data from the clipboard error -2147221040 openClipboard failed~
    - [ ] implement frozen groups
-   - [-] Column selection dialog [1/2]
+   - [-] Column selection dialog [1/3]
        + [ ] importing each channel of med data does not work
        + [X] negate button
+       + [ ] import data into Athena as norm(E)
    - [ ] links to documentation on each tool
    - [ ] *Convolve/noise tool*
        + add noise to chi data
@@ -130,32 +127,48 @@
    - Need to expand the filetype system by examining data from *all* the XAS beamlines in the world.  Yes ... all of them.
    - solicit help from the facility representatives
 
-** Windows issues [3/9] [33%] 					    :Windows:
-  - [X] parameter group context menus don't get posted (see http://www.nntp.perl.org/group/perl.wxperl.users/2011/03/msg7929.html)
+** Windows issues [3/10] [30%] 					    :Windows:
+  - [X] parameter group context menus don't get posted (see
+	http://www.nntp.perl.org/group/perl.wxperl.users/2011/03/msg7929.html)
   - [X] +spurious message from clipboard+ (worked around)
   - [X] fpj file on Win seems to not get unpacked correctly /is this true?/	:Project:
-  - [ ] the frickin' Gnuplot error logs seem to remain open and locked on Windows when a crash happens
-  - [ ] status bar does not get color for wait or error messages /this may be unfixable, see/ http://www.nntp.perl.org/group/perl.wxperl.users/2011/04/msg7943.html
-  - [ ] The atoms panel background color is too light.  Which window needs its BackgroundColour set to wxNullColour?
-  - [ ] clampbox does not get enabled/disabled explicitly, is this another aspect of StaticBox that is different on Windows? (see link above)
-  - [ ] relocation of Strawberry leaves Ifeffit unable to find phase shift and CL tables (use an ENV variable?)
+  - [ ] the frickin' Gnuplot error logs seem to remain open and locked
+	on Windows when a crash happens
+  - [ ] status bar does not getw color for wait or error messages
+	/this may be unfixable, see/
+	http://www.nntp.perl.org/group/perl.wxperl.users/2011/04/msg7943.html
+  - [ ] The atoms panel background color is too light.  Which window
+	needs its BackgroundColour set to wxNullColour?
+  - [ ] clampbox does not get enabled/disabled explicitly, is this
+	another aspect of StaticBox that is different on Windows? (see
+	link above)
+  - [ ] relocation of Strawberry leaves Ifeffit unable to find phase
+	shift and CL tables (use an ENV variable?)
   - [ ] using gnuplot on Win XP Home Edition failed due to the
         redirection of STDERR to ~$self->{__error_log}~ in
         Graphics::GnuplotIF.  removing this redirection fixed the
         problem, but I don't understand why it was a problem in the
         first place.
+  - [ ] The Strawberry+Demeter package does not coexist at all with
+        ActivePerl.  Best solution is to generate ppd for Demeter
+        armed with all dependencies.  Would need to compile wrapper
+        and somehow get gnuplot on the machine.
 
 
 ** Artemis
 *** Artemis bugs and missing features [0/7]  [0%]
    - [ ] *rename Atoms/Feff*
-   - [ ] Reorganize lists, move individual items up and down, move blocks up and down, Path list, +Plot list+
-   - [ ] discarding last page and returning to initial page has an undefined value problem   :HUH:
-   - [ ] status messages in Atoms/Feff frame do not get posted in Artemis status buffer
+   - [ ] Reorganize lists, move individual items up and down, move
+	 blocks up and down, Path list, +Plot list+
+   - [ ] discarding last page and returning to initial page has an
+	 undefined value problem :HUH:
+   - [ ] status messages in Atoms/Feff frame do not get posted in
+	 Artemis status buffer
    - [ ] do SSPaths get serialized and deserialized with the pointers
          to the feff calculation set correctly and no additional
          folders being created in stash (as was the case for FSPath)?
-   - [ ] per-data set R-factor reporting in log file is turned off.  see fit_parameter_report in Demeter::Data::I0
+   - [ ] per-data set R-factor reporting in log file is turned off.
+	 see fit_parameter_report in Demeter::Data::I0
    - [ ] implementing derivative of phase plotting would require
          proper handling of this signal in the bkg, residual, and
          running R-factor plots.  Also probably want to disallow it
@@ -228,8 +241,9 @@
  
 * Atoms and Feff
 
-** Atoms [2/6] [33%]
+** Atoms [2/7] [28%]
   - [ ] CIF issue: CIF file with "_eof" token at end of file, as in [[file:notes/H16PW12O46.cif][this cif file]]
+  - [ ] Handle CIF import problems more gracefully (See Shelly's other email from 17 June)
   - [ ] 2 sites at the same position with occupancies <1.  see file above for an example
   - [ ] George Sterbinsky's recent mailing list post that turned out to be about 
 	atoms' sphere and rhomboid in a non-orthogonal group
@@ -256,6 +270,11 @@
 
 
 ** Feff8 is unsupported except as an Atoms output type
+
+** Five and six legged paths
+[[file:examples/h12213.cif][This CIF file]] is an example of a structure that has five and six
+legged nearly collinear scattering paths at around 4 Angstroms.  It
+has metal atoms bridged by cyanide (CN).
 
 
 
