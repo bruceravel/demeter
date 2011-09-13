@@ -1,0 +1,124 @@
+This directory contains the crystallographic data for Iron Sulfide
+(pyrite, FeS2) along with a transmission scan of FeS2 taken at room
+temperature at beamline 13BM at the APS.  The data was taken from
+Matt's data archive at
+     http://cars9.uchicago.edu/~newville/ModelLib/search.html
+     
+This is sufficient information to begin a fitting project for FeS2.
+In this readme file, I'll write steps to take to work through this
+example.  You should not consider this to be a recipe -- at each step
+you should play around with the setting in both Athena and Artemis to
+understand fully these data.
+
+1.  Fire up Athena.  Import the data file.
+
+2.  Find a set of parameters that gives a good background removal and
+    Fourier transform.
+
+3.  Save the project and export the chi(k) file (if necessary)
+    a. If you are using a version of Artemis that can read the Athena
+       project file, then it is unnecessary to save the chi(k) file.
+    b. If you are using a version of Artemis which cannot read Athena
+       project files, then you will need to save the chi(k) by
+       selecting the correct group in the Athena groups list and then
+       selecting "Save as chi(k)" form the File menu.
+
+4.  Fire up Artemis.
+
+5.  Import the chi(k) data.
+    a. If you are using a version of Artemis that can read the Athena
+       project file, verify that you are still happy with the Fourier
+       transform parameters.
+    b. If you are using a version of Artemis which cannot read Athena
+       project files, set the Fourier transform and fit range
+       parameters to sensible values.
+
+6.  Import the crystallographic data contained in the file FeS2.inp.
+    Run Atoms.  Verify that the Feff input data is reasonable, then
+    run Feff.
+
+7.  When the path selection dialog comes up, any choice is ok.  You
+    may find the "first 10" paths option to be the most convenient.
+
+8.  Look at the various pages now available in Artemis.  Note that a
+    parameter set has been defined on the Guess, Def, Set page.  Note
+    that simple math expressions have been defined for each of the
+    paths.
+
+9.  Make plots of the data and the various paths using context menus
+    on the Feff interpretation page or by control-clicking on the data
+    and one or more paths.  Which paths contribute strongly in regions
+    of the first peak in the data?  In the region of the second peak?
+    Which multiple scattering paths seem to be strong contributers?
+    Which seem like they can be neglected?
+
+10. Set the fit range appropriate for a first shell fit.  Include only
+    those path(s) which contribute strongly under t he first peak.
+    Hit the big green button and examine your first shell fit results.
+
+11. Extend the fit range to cover the split peak between 2.3 and 3.7
+    Angstroms.  Include each of the first four SS paths in the fit.
+    Press the fit button.  This fit should look somewhat like the
+    data, but not quite.
+
+12. The problem with the previous fit was that it used a parameter set
+    appropriate to a first shell fit to fit data with four shells.
+    While the amplitude and E0 parameters are probably ok to use for
+    all those paths, it is physically unreasonable to use the same
+    delta R and sigma^2 for each path.
+
+13. FeS2 is a cubic material (it's space group is Pa3 -- a cubic
+    group).  This means we can use the trick of modeling the delta R
+    parameters by an isotropic expansion coefficient.  Discard the dr
+    parameter on the GDS page and define a guess parameter called
+    "alpha".  Define the delR parameter for each path to be
+    "alpha*reff".  Remember that "reff" always evaluates to the
+    nominal path length as used in Feff when a path parameter math
+    expression is interpreted.
+
+14. Define separate sigma^2 parameters for each shell.  Continue using
+    the same amplitude and E0 parameters for each path.  You fit using
+    the first four shells should now be using 6 parameters.  Try
+    running the fit.  Are the values for the parameters reasonable?
+
+15. What other paths contribute significant spectral weight in the
+    region between 2.3 and 3.7 Angstroms?  How about the next SS path?
+    How about path #6?  Try adding these paths to the fit.  You may
+    need to adjust the fit range or define new guess parameters?
+
+16. Can you think of a way to approximate the sigma^2 for the MS paths
+    using math expressions, def parameters, and the sigma^2 parameters
+    that are used to fit the SS paths?
+
+17. The 2nd and 3rd shells are both S and are relatively close
+    together in length.  Test to see if the data support measuring
+    sigma^2 independently for those two paths by comparing a fit in
+    which they are constrained to be to same to a fit in which the
+    float freely.
+
+18. If you look at the atoms information, you will see that this
+    structure is actually defined by two parameters -- the lattice
+    constant and the position of the S atom.  The variation in the
+    lattice constant is accommodated in our fit using the isotropic
+    expansion constant alpha.  How might you include the possibility
+    of refining the S coordinate in the fit?
+
+19. Explore the effect of different k-weights on the fit.  Try the
+    fits using different single k-weights and compare the best fit
+    values.  How do they change?  Is this variation outside their
+    error bars?  Try doing multiple k-weight fits?  How do the best
+    fit values compare?
+
+20. Explore the effect of co-refining the background spline.
+
+21. Try to fit the peak around 5 Angstroms using the model building
+    techniques you have employed in constructing your fitting model
+    out to 4 Angstroms.  That is, determine which paths are important
+    (you may need to import more paths from the calculation), define
+    appropriate fitting parameters and make appropriate constraints,
+    and set the fitting range accordingly.
+
+22. Are your values for the parameters all reasonable?  Is the
+    amplitude a reasonable value for S02?  If it is rather low, can
+    you think of any reasons to explain it?  (In the data file header
+    it says the data was collected as powder on tape.)

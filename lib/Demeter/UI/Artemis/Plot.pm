@@ -291,6 +291,7 @@ sub plot {
     $demeter->po->file($file);
   };
   my ($abort, $rdata, $rpaths) = Demeter::UI::Artemis::uptodate(\%Demeter::UI::Artemis::frames);
+  $Demeter::UI::Artemis::frames{GDS}->reset_all if (not $Demeter::UI::Artemis::frames{GDS}->{uptodate});
   $self->fetch_parameters('plot');
   my @list = ();
   foreach my $i (0 .. $self->{plotlist}->GetCount-1) {

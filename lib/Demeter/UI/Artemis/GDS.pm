@@ -49,7 +49,7 @@ use Wx::Grid;
 use base qw(Wx::Frame);
 use Wx::Event qw(EVT_CLOSE EVT_GRID_CELL_CHANGE EVT_GRID_CELL_RIGHT_CLICK  EVT_MENU
 		 EVT_GRID_LABEL_LEFT_CLICK EVT_GRID_LABEL_RIGHT_CLICK EVT_GRID_RANGE_SELECT
-		 EVT_GRID_SELECT_CELL);
+		 EVT_GRID_SELECT_CELL EVT_GRID_CELL_CHANGE);
 
 use Demeter::UI::Artemis::GDS::Restraint;
 use Demeter::UI::Artemis::ShowText;
@@ -98,6 +98,7 @@ sub new {
   $this -> SetBackgroundColour( wxNullColour );
   $this->{statusbar} = $this->CreateStatusBar;
   $this->{statusbar} -> SetStatusText(q{});
+  $this->{uptodate}  = 1;
   EVT_CLOSE($this, \&on_close);
 
   my $hbox = Wx::BoxSizer->new( wxHORIZONTAL );
@@ -147,6 +148,7 @@ sub new {
   EVT_MENU                  ($grid, -1, sub{ $this->OnGridMenu(@_)    });
   EVT_GRID_RANGE_SELECT     ($grid,     sub{ $this->OnRangeSelect(@_) });
   EVT_GRID_SELECT_CELL      ($grid,     sub{ $this->OnRowSelect(@_)   });
+  EVT_GRID_CELL_CHANGE      ($grid,     sub{ $this->OnCellChange(@_)  });
 
   $hbox -> Add($grid, 1, wxGROW|wxALL, 5);
 
@@ -193,7 +195,7 @@ sub initialize_row {
 sub OnToolClick {
   my ($parent, $toolbar, $event, $grid) = @_;
   ## 0:grab all  1:reset all  2:toggle highlight  4:import   5:export  6:discard all  8:add one
-  my $which = $toolbar->GetToolPos($event->GetId) || $event->GetId;
+  my $which = $toolbar->GetToolPos($event->GetId); # || $event->GetId;
  SWITCH: {
     ($which == $GRAB) and do {	     # grab best fit values
       $parent->use_best_fit;
@@ -257,6 +259,7 @@ sub use_best_fit {
   };
   if ($count) {
     $parent->status("Using best fit values as the new initial guesses.");
+    $parent->{uptodate} = 0;
     return 1;
   };
   $parent->status("Not using best fit values -- have you done a fit yet?");
@@ -288,6 +291,7 @@ sub reset_all {
     push @gds, $thisgds;
     $thisgds->push_ifeffit if (not $no_ifeffit);
   };
+  $parent->{uptodate} = 1;
   $parent->status("Reset all parameter values in Ifeffit.") if (not $no_ifeffit);
   return \@gds;
 };
@@ -366,6 +370,7 @@ sub put_gds {
   my ($parent, $gds) = @_;
   $parent->put_param($gds->gds, $gds->name, $gds->mathexp);
   $parent->{grid} -> {$gds->name} = $gds;
+  $parent->{uptodate} = 0;
 };
 
 sub put_param {
@@ -533,6 +538,14 @@ sub OnRowSelect {
   $parent->{statusbar}->SetStatusText($grid->{$name}->note);
   $event->Skip;
 };
+
+sub OnCellChange {
+  my ($parent, $self, $event) = @_;
+  #print join("|", $parent, $self, $event), $/;
+  $parent->{uptodate} = 0;
+  $event->Skip;
+};
+
 
 ######## Context menu section ############################################################
 
@@ -714,6 +727,7 @@ sub grab {
   $parent->{grid}->SetCellValue($row, 2, $bestfit);
   $parent->{grid}->SetCellValue($row, 3, q{});
   $parent->{grid}->ClearSelection;
+  $parent->{uptodate} = 0;
   $parent->status("Using $bestfit as the initial guess for $name.");
 };
 sub build_restraint {
@@ -917,6 +931,7 @@ sub fill_results {
       $grid -> Refresh;
     };
   };
+  $this->{uptodate}  = 1;
 };
 
 package Demeter::UI::Artemis::GDS::TextDropTarget;
@@ -975,14 +990,18 @@ sub OnDropText {
       return 1;
     } else {
       $grid -> SetCellValue($drop, 1, $text);
+      $grid -> SetCellValue($drop, 2, 0);
+      $parent->{uptodate} = 0;
       $parent->status("Dropped \"$text\" into row $rownum");
     };
 
   ## just drop it
   } else {
-   $grid -> SetCellValue($drop, 1, $text);
-   $parent->status("Dropped \"$text\" into row $rownum");
- };
+    $grid -> SetCellValue($drop, 1, $text);
+    $grid -> SetCellValue($drop, 2, 0);
+    $parent->{uptodate} = 0;
+    $parent->status("Dropped \"$text\" into row $rownum");
+  };
   return 1;
 }
 

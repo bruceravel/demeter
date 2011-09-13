@@ -25,9 +25,9 @@ require 5.008;
 use version;
 our $VERSION = version->new('0.5.6');
 
-use Demeter::Carp;
+#use Demeter::Carp;
 #use Carp::Always::Color;
-#use Carp;
+use Carp;
 use Cwd;
 use File::Basename qw(dirname);
 use File::Spec;

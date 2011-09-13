@@ -238,7 +238,7 @@ sub make_name {
   my $pattern = $self->co->default("pathfinder", "label");
   my $token = $self->co->default("pathfinder", "token");
   my $noends = $sp->intrplist;
-  my $re = qr($token);
+  my $re = qr(\Q$token\E);	# \Q...\E quotes the metacharacters, see perlre
   $noends =~ s{\A$re}{};
   $noends =~ s{$re\z}{};
   my %table = (i   => $self->Index,
