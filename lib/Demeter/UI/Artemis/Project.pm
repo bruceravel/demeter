@@ -322,7 +322,9 @@ sub read_project {
   ## -------- plot and indicator yamls, journal
   my $py = File::Spec->catfile($rframes->{main}->{plot_folder}, 'plot.yaml');
   if (-e $py) {
-    $Demeter::UI::Artemis::demeter->po->set(%{YAML::Tiny::LoadFile($py)});
+    my %hash = %{YAML::Tiny::LoadFile($py)};
+    delete $hash{nindicators};
+    $Demeter::UI::Artemis::demeter->po->set(%hash);
     $rframes->{Plot}->populate;
   };
   my $iy = File::Spec->catfile($rframes->{main}->{plot_folder}, 'indicators.yaml');

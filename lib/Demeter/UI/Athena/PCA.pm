@@ -26,155 +26,161 @@ sub new {
   my ($class, $parent, $app) = @_;
   my $this = $class->SUPER::new($parent, -1, wxDefaultPosition, wxDefaultSize, wxMAXIMIZE_BOX );
 
-  $this->{PCA} = Demeter::PCA->new(space=>'x', emin=>-20, emax=>80);
-  $this->{xmin} = $demeter->co->default('pca', 'emin');
-  $this->{xmax} = $demeter->co->default('pca', 'emax');
-
   my $box = Wx::BoxSizer->new( wxVERTICAL);
   $this->{sizer}  = $box;
 
-  ## -------- analysis range and space
-  my $hbox = Wx::BoxSizer->new( wxHORIZONTAL );
-  $box->Add($hbox, 0, wxGROW|wxLEFT|wxRIGHT, 5);
-  $hbox->Add(Wx::StaticText->new($this, -1, 'Analysis range:'), 0, wxRIGHT|wxALIGN_CENTRE, 5);
-  $this->{xmin} = Wx::TextCtrl->new($this, -1, $this->{xmin}, wxDefaultPosition, $tcsize, wxTE_PROCESS_ENTER);
-  $hbox->Add($this->{xmin}, 0, wxLEFT|wxRIGHT|wxALIGN_CENTRE, 5);
-  $this->{xmin_pluck} = Wx::BitmapButton -> new($this, -1, $bullseye);
-  $hbox->Add($this->{xmin_pluck}, 0, wxRIGHT|wxALIGN_CENTRE, 5);
+  if (not exists $INC{'Demeter/PCA.pm'}) {
+    $box->Add(Wx::StaticText->new($this, -1, "PCA is not enabled on this computer.\nThe most likely reason is that the perl modules PDL and/or PDL::Stats are not available."), 0, wxALL|wxALIGN_CENTER_HORIZONTAL, 5);
+    $box->Add(1,1,1);
+  } else {
 
-  $hbox->Add(Wx::StaticText->new($this, -1, 'to'), 0, wxRIGHT|wxALIGN_CENTRE, 5);
-  $this->{xmax} = Wx::TextCtrl->new($this, -1, $this->{xmax}, wxDefaultPosition, $tcsize, wxTE_PROCESS_ENTER);
-  $hbox->Add($this->{xmax}, 0, wxLEFT|wxRIGHT|wxALIGN_CENTRE, 5);
-  $this->{xmax_pluck} = Wx::BitmapButton -> new($this, -1, $bullseye);
-  $hbox->Add($this->{xmax_pluck}, 0, wxRIGHT|wxALIGN_CENTRE, 5);
+    $this->{PCA} = Demeter::PCA->new(space=>'x', emin=>-20, emax=>80);
+    $this->{xmin} = $demeter->co->default('pca', 'emin');
+    $this->{xmax} = $demeter->co->default('pca', 'emax');
 
-  $this->{space} = Wx::RadioBox->new($this, -1, 'Analysis space', wxDefaultPosition, wxDefaultSize,
-				     ["norm $MU(E)", "deriv $MU(E)", "$CHI(k)"],
-				     1, wxRA_SPECIFY_ROWS);
-  $hbox->Add($this->{space}, 0, wxLEFT|wxRIGHT|wxALIGN_CENTRE, 5);
-  $this->{space}->SetSelection(0);
-  EVT_RADIOBOX($this, $this->{space}, sub{OnSpace(@_)});
-  $this->{xmin} -> SetValidator( Wx::Perl::TextValidator->new( qr([-0-9.]) ) );
-  $this->{xmax} -> SetValidator( Wx::Perl::TextValidator->new( qr([-0-9.]) ) );
-  #EVT_TEXT_ENTER($this, $this->{xmin}, sub{plot(@_)});
-  #EVT_TEXT_ENTER($this, $this->{xmax}, sub{plot(@_)});
+    ## -------- analysis range and space
+    my $hbox = Wx::BoxSizer->new( wxHORIZONTAL );
+    $box->Add($hbox, 0, wxGROW|wxLEFT|wxRIGHT, 5);
+    $hbox->Add(Wx::StaticText->new($this, -1, 'Analysis range:'), 0, wxRIGHT|wxALIGN_CENTRE, 5);
+    $this->{xmin} = Wx::TextCtrl->new($this, -1, $this->{xmin}, wxDefaultPosition, $tcsize, wxTE_PROCESS_ENTER);
+    $hbox->Add($this->{xmin}, 0, wxLEFT|wxRIGHT|wxALIGN_CENTRE, 5);
+    $this->{xmin_pluck} = Wx::BitmapButton -> new($this, -1, $bullseye);
+    $hbox->Add($this->{xmin_pluck}, 0, wxRIGHT|wxALIGN_CENTRE, 5);
 
-  ## -------- big button
-  $hbox = Wx::BoxSizer->new( wxHORIZONTAL );
-  $box->Add($hbox, 0, wxGROW|wxLEFT|wxRIGHT, 5);
-  $this->{do_pca} = Wx::Button->new($this, -1, "Perform PCA");
-  $hbox->Add($this->{do_pca}, 1, wxALL, 0);
-  EVT_BUTTON($this, $this->{do_pca}, sub{pca(@_)});
+    $hbox->Add(Wx::StaticText->new($this, -1, 'to'), 0, wxRIGHT|wxALIGN_CENTRE, 5);
+    $this->{xmax} = Wx::TextCtrl->new($this, -1, $this->{xmax}, wxDefaultPosition, $tcsize, wxTE_PROCESS_ENTER);
+    $hbox->Add($this->{xmax}, 0, wxLEFT|wxRIGHT|wxALIGN_CENTRE, 5);
+    $this->{xmax_pluck} = Wx::BitmapButton -> new($this, -1, $bullseye);
+    $hbox->Add($this->{xmax_pluck}, 0, wxRIGHT|wxALIGN_CENTRE, 5);
 
-  ## -------- report on PCA
-  $hbox = Wx::BoxSizer->new( wxHORIZONTAL );
-  $box->Add($hbox, 2, wxGROW|wxLEFT|wxRIGHT, 5);
-  $this->{result} = Wx::TextCtrl->new($this, -1, q{}, wxDefaultPosition, wxDefaultSize,
-				       wxTE_MULTILINE|wxTE_WORDWRAP|wxTE_AUTO_URL|wxTE_READONLY|wxTE_RICH2);
-  my $size = Wx::SystemSettings::GetFont(wxSYS_DEFAULT_GUI_FONT)->GetPointSize;
-  $this->{result}->SetFont( Wx::Font->new( $size, wxTELETYPE, wxNORMAL, wxNORMAL, 0, "" ) );
-  $hbox->Add($this->{result}, 1, wxGROW|wxALL, 5);
+    $this->{space} = Wx::RadioBox->new($this, -1, 'Analysis space', wxDefaultPosition, wxDefaultSize,
+				       ["norm $MU(E)", "deriv $MU(E)", "$CHI(k)"],
+				       1, wxRA_SPECIFY_ROWS);
+    $hbox->Add($this->{space}, 0, wxLEFT|wxRIGHT|wxALIGN_CENTRE, 5);
+    $this->{space}->SetSelection(0);
+    EVT_RADIOBOX($this, $this->{space}, sub{OnSpace(@_)});
+    $this->{xmin} -> SetValidator( Wx::Perl::TextValidator->new( qr([-0-9.]) ) );
+    $this->{xmax} -> SetValidator( Wx::Perl::TextValidator->new( qr([-0-9.]) ) );
+    #EVT_TEXT_ENTER($this, $this->{xmin}, sub{plot(@_)});
+    #EVT_TEXT_ENTER($this, $this->{xmax}, sub{plot(@_)});
 
-  $hbox = Wx::BoxSizer->new( wxHORIZONTAL );
-  $box->Add($hbox, 3, wxGROW|wxLEFT|wxRIGHT, 5);
-  my $plotbox       = Wx::StaticBox->new($this, -1, 'Plots', wxDefaultPosition, wxDefaultSize);
-  my $plotboxsizer  = Wx::StaticBoxSizer->new( $plotbox, wxVERTICAL );
-  $hbox -> Add($plotboxsizer, 1, wxGROW|wxALL, 5);
-  $this->{screebox}   = Wx::BoxSizer->new( wxHORIZONTAL );
-  $this->{scree}      = Wx::Button->new($this, -1, 'Scree');
-  $this->{logscree}   = Wx::CheckBox->new($this, -1, 'Log');
-  $this->{cumvar}     = Wx::Button->new($this, -1, 'Cumulative variance');
-  $this->{stack}      = Wx::Button->new($this, -1, 'Data stack');
-  $this->{frombox}    = Wx::BoxSizer->new( wxHORIZONTAL );
-  $this->{ncomptext}  = Wx::StaticText->new($this, -1, "from");
-  $this->{ncomp}      = Wx::SpinCtrl->new($this, -1, 1, wxDefaultPosition, $tcsize, wxSP_ARROW_KEYS, 1, 100);
-  $this->{components} = Wx::Button->new($this, -1, 'Components');
+    ## -------- big button
+    $hbox = Wx::BoxSizer->new( wxHORIZONTAL );
+    $box->Add($hbox, 0, wxGROW|wxLEFT|wxRIGHT, 5);
+    $this->{do_pca} = Wx::Button->new($this, -1, "Perform PCA");
+    $hbox->Add($this->{do_pca}, 1, wxALL, 0);
+    EVT_BUTTON($this, $this->{do_pca}, sub{pca(@_)});
 
-  $this->{screebox} -> Add($this->{scree}, 1, wxRIGHT, 5);
-  $this->{screebox} -> Add($this->{logscree}, 0, wxTOP, 2);
-  $this->{frombox}  -> Add($this->{components}, 1, wxALL, 0);
-  $this->{frombox}  -> Add($this->{ncomptext}, 0, wxRIGHT|wxLEFT|wxTOP, 4);
-  $this->{frombox}  -> Add($this->{ncomp}, 0, wxGROW|wxALL, 0);
+    ## -------- report on PCA
+    $hbox = Wx::BoxSizer->new( wxHORIZONTAL );
+    $box->Add($hbox, 2, wxGROW|wxLEFT|wxRIGHT, 5);
+    $this->{result} = Wx::TextCtrl->new($this, -1, q{}, wxDefaultPosition, wxDefaultSize,
+					wxTE_MULTILINE|wxTE_WORDWRAP|wxTE_AUTO_URL|wxTE_READONLY|wxTE_RICH2);
+    my $size = Wx::SystemSettings::GetFont(wxSYS_DEFAULT_GUI_FONT)->GetPointSize;
+    $this->{result}->SetFont( Wx::Font->new( $size, wxTELETYPE, wxNORMAL, wxNORMAL, 0, "" ) );
+    $hbox->Add($this->{result}, 1, wxGROW|wxALL, 5);
 
-  my $clusterbox       = Wx::StaticBox->new($this, -1, 'Cluster analysis', wxDefaultPosition, wxDefaultSize);
-  my $clusterboxsizer  = Wx::StaticBoxSizer->new( $clusterbox, wxVERTICAL );
-  $this->{clusbox}     = Wx::BoxSizer->new( wxHORIZONTAL );
-  $this->{cluster1}    = Wx::SpinCtrl->new($this, -1, 1, wxDefaultPosition, $tcsize, wxSP_ARROW_KEYS, 1, 100);
-  $this->{cluster2}    = Wx::SpinCtrl->new($this, -1, 2, wxDefaultPosition, $tcsize, wxSP_ARROW_KEYS, 1, 100);
-  $this->{clusvs}      = Wx::StaticText->new($this, -1, "vs");
-  $this->{clusbox}    -> Add(1,1,1);
-  $this->{clusbox}    -> Add($this->{cluster1}, 0, wxALL, 0);
-  $this->{clusbox}    -> Add($this->{clusvs},   0, wxLEFT|wxRIGHT|wxTOP, 3);
-  $this->{clusbox}    -> Add($this->{cluster2}, 0, wxALL, 0);
-  $this->{clusbox}    -> Add(1,1,1);
-  $clusterboxsizer    -> Add($this->{clusbox},  1, wxGROW|wxTOP, 3);
-  $this->{clusplot}    = Wx::Button->new($this, -1, "Cluster plot");
-  $clusterboxsizer    -> Add($this->{clusplot},  1, wxGROW|wxALL, 0);
+    $hbox = Wx::BoxSizer->new( wxHORIZONTAL );
+    $box->Add($hbox, 3, wxGROW|wxLEFT|wxRIGHT, 5);
+    my $plotbox       = Wx::StaticBox->new($this, -1, 'Plots', wxDefaultPosition, wxDefaultSize);
+    my $plotboxsizer  = Wx::StaticBoxSizer->new( $plotbox, wxVERTICAL );
+    $hbox -> Add($plotboxsizer, 1, wxGROW|wxALL, 5);
+    $this->{screebox}   = Wx::BoxSizer->new( wxHORIZONTAL );
+    $this->{scree}      = Wx::Button->new($this, -1, 'Scree');
+    $this->{logscree}   = Wx::CheckBox->new($this, -1, 'Log');
+    $this->{cumvar}     = Wx::Button->new($this, -1, 'Cumulative variance');
+    $this->{stack}      = Wx::Button->new($this, -1, 'Data stack');
+    $this->{frombox}    = Wx::BoxSizer->new( wxHORIZONTAL );
+    $this->{ncomptext}  = Wx::StaticText->new($this, -1, "from");
+    $this->{ncomp}      = Wx::SpinCtrl->new($this, -1, 1, wxDefaultPosition, $tcsize, wxSP_ARROW_KEYS, 1, 100);
+    $this->{components} = Wx::Button->new($this, -1, 'Components');
 
-  foreach my $w (qw(frombox stack screebox cumvar)) {
-    $plotboxsizer->Add($this->{$w}, 0, wxGROW|wxALL, 0);
-  };
-  $plotboxsizer -> Add($clusterboxsizer, 0, wxGROW|wxALL, 0);
-  foreach my $w (qw(scree logscree cumvar stack components ncomptext ncomp cluster1 cluster2 clusvs clusplot)) {
-    $this->{$w}->Enable(0);
-  };
-  EVT_BUTTON($this, $this->{scree},      sub{plot_scree(@_)});
-  EVT_BUTTON($this, $this->{cumvar},     sub{plot_cumvar(@_)});
-  EVT_BUTTON($this, $this->{stack},      sub{plot_stack(@_)});
-  EVT_BUTTON($this, $this->{components}, sub{plot_components(@_)});
-  EVT_BUTTON($this, $this->{clusplot},   sub{plot_cluster(@_)});
+    $this->{screebox} -> Add($this->{scree}, 1, wxRIGHT, 5);
+    $this->{screebox} -> Add($this->{logscree}, 0, wxTOP, 2);
+    $this->{frombox}  -> Add($this->{components}, 1, wxALL, 0);
+    $this->{frombox}  -> Add($this->{ncomptext}, 0, wxRIGHT|wxLEFT|wxTOP, 4);
+    $this->{frombox}  -> Add($this->{ncomp}, 0, wxGROW|wxALL, 0);
+
+    my $clusterbox       = Wx::StaticBox->new($this, -1, 'Cluster analysis', wxDefaultPosition, wxDefaultSize);
+    my $clusterboxsizer  = Wx::StaticBoxSizer->new( $clusterbox, wxVERTICAL );
+    $this->{clusbox}     = Wx::BoxSizer->new( wxHORIZONTAL );
+    $this->{cluster1}    = Wx::SpinCtrl->new($this, -1, 1, wxDefaultPosition, $tcsize, wxSP_ARROW_KEYS, 1, 100);
+    $this->{cluster2}    = Wx::SpinCtrl->new($this, -1, 2, wxDefaultPosition, $tcsize, wxSP_ARROW_KEYS, 1, 100);
+    $this->{clusvs}      = Wx::StaticText->new($this, -1, "vs");
+    $this->{clusbox}    -> Add(1,1,1);
+    $this->{clusbox}    -> Add($this->{cluster1}, 0, wxALL, 0);
+    $this->{clusbox}    -> Add($this->{clusvs},   0, wxLEFT|wxRIGHT|wxTOP, 3);
+    $this->{clusbox}    -> Add($this->{cluster2}, 0, wxALL, 0);
+    $this->{clusbox}    -> Add(1,1,1);
+    $clusterboxsizer    -> Add($this->{clusbox},  1, wxGROW|wxTOP, 3);
+    $this->{clusplot}    = Wx::Button->new($this, -1, "Cluster plot");
+    $clusterboxsizer    -> Add($this->{clusplot},  1, wxGROW|wxALL, 0);
+
+    foreach my $w (qw(frombox stack screebox cumvar)) {
+      $plotboxsizer->Add($this->{$w}, 0, wxGROW|wxALL, 0);
+    };
+    $plotboxsizer -> Add($clusterboxsizer, 0, wxGROW|wxALL, 0);
+    foreach my $w (qw(scree logscree cumvar stack components ncomptext ncomp cluster1 cluster2 clusvs clusplot)) {
+      $this->{$w}->Enable(0);
+    };
+    EVT_BUTTON($this, $this->{scree},      sub{plot_scree(@_)});
+    EVT_BUTTON($this, $this->{cumvar},     sub{plot_cumvar(@_)});
+    EVT_BUTTON($this, $this->{stack},      sub{plot_stack(@_)});
+    EVT_BUTTON($this, $this->{components}, sub{plot_components(@_)});
+    EVT_BUTTON($this, $this->{clusplot},   sub{plot_cluster(@_)});
 
 
-  my $actionsbox       = Wx::StaticBox->new($this, -1, 'Actions', wxDefaultPosition, wxDefaultSize);
-  my $actionsboxsizer  = Wx::StaticBoxSizer->new( $actionsbox, wxVERTICAL );
-  $hbox -> Add($actionsboxsizer, 1, wxGROW|wxALL, 5);
-  $this->{nrecbox}     = Wx::BoxSizer->new( wxHORIZONTAL );
-  $this->{rectext}     = Wx::StaticText->new($this, -1, "with");
-  $this->{nrecon}      = Wx::SpinCtrl->new($this, -1, 2, wxDefaultPosition, $tcsize, wxSP_ARROW_KEYS, 1, 100);
-  $this->{reconstruct} = Wx::Button->new($this, -1, 'Reconstruct data');
-  $this->{tt}          = Wx::Button->new($this, -1, 'Target transform');
+    my $actionsbox       = Wx::StaticBox->new($this, -1, 'Actions', wxDefaultPosition, wxDefaultSize);
+    my $actionsboxsizer  = Wx::StaticBoxSizer->new( $actionsbox, wxVERTICAL );
+    $hbox -> Add($actionsboxsizer, 1, wxGROW|wxALL, 5);
+    $this->{nrecbox}     = Wx::BoxSizer->new( wxHORIZONTAL );
+    $this->{rectext}     = Wx::StaticText->new($this, -1, "with");
+    $this->{nrecon}      = Wx::SpinCtrl->new($this, -1, 2, wxDefaultPosition, $tcsize, wxSP_ARROW_KEYS, 1, 100);
+    $this->{reconstruct} = Wx::Button->new($this, -1, 'Reconstruct data');
+    $this->{tt}          = Wx::Button->new($this, -1, 'Target transform');
 
-  my $ttbox       = Wx::StaticBox->new($this, -1, 'TT coefficients', wxDefaultPosition, wxDefaultSize);
-  my $ttboxsizer  = Wx::StaticBoxSizer->new( $ttbox, wxVERTICAL );
+    my $ttbox       = Wx::StaticBox->new($this, -1, 'TT coefficients', wxDefaultPosition, wxDefaultSize);
+    my $ttboxsizer  = Wx::StaticBoxSizer->new( $ttbox, wxVERTICAL );
 
-  $this->{transform} = Wx::TextCtrl->new($this, -1, q{}, wxDefaultPosition, wxDefaultSize,
+    $this->{transform} = Wx::TextCtrl->new($this, -1, q{}, wxDefaultPosition, wxDefaultSize,
 					 wxTE_MULTILINE|wxTE_WORDWRAP|wxTE_AUTO_URL|wxTE_READONLY|wxTE_RICH2);
-  $this->{transform}->SetFont( Wx::Font->new( $size-1, wxTELETYPE, wxNORMAL, wxNORMAL, 0, "" ) );
+    $this->{transform}->SetFont( Wx::Font->new( $size-1, wxTELETYPE, wxNORMAL, wxNORMAL, 0, "" ) );
 
-  $this->{nrecbox} -> Add($this->{reconstruct}, 1, wxALL, 0);
-  $this->{nrecbox} -> Add($this->{rectext}, 0, wxRIGHT|wxLEFT|wxTOP, 4);
-  $this->{nrecbox} -> Add($this->{nrecon}, 0, wxGROW|wxALL, 0);
-  foreach my $w (qw(nrecbox tt)) {
-    $actionsboxsizer->Add($this->{$w}, 0, wxGROW|wxALL, 0);
-  };
-  $ttboxsizer->Add($this->{transform}, 1, wxGROW|wxALL, 0);
-  $actionsboxsizer -> Add($ttboxsizer, 1, wxGROW|wxALL, 0);
-  foreach my $w (qw(rectext nrecon reconstruct tt)) {
-    $this->{$w}->Enable(0);
-  };
-  EVT_BUTTON($this, $this->{reconstruct}, sub{reconstruct(@_)});
-  EVT_BUTTON($this, $this->{tt},          sub{tt(@_)});
-  EVT_BUTTON($this, $this->{savecomp},    sub{save_components(@_)});
-  EVT_BUTTON($this, $this->{savestack},   sub{save_stack(@_)});
+    $this->{nrecbox} -> Add($this->{reconstruct}, 1, wxALL, 0);
+    $this->{nrecbox} -> Add($this->{rectext}, 0, wxRIGHT|wxLEFT|wxTOP, 4);
+    $this->{nrecbox} -> Add($this->{nrecon}, 0, wxGROW|wxALL, 0);
+    foreach my $w (qw(nrecbox tt)) {
+      $actionsboxsizer->Add($this->{$w}, 0, wxGROW|wxALL, 0);
+    };
+    $ttboxsizer->Add($this->{transform}, 1, wxGROW|wxALL, 0);
+    $actionsboxsizer -> Add($ttboxsizer, 1, wxGROW|wxALL, 0);
+    foreach my $w (qw(rectext nrecon reconstruct tt)) {
+      $this->{$w}->Enable(0);
+    };
+    EVT_BUTTON($this, $this->{reconstruct}, sub{reconstruct(@_)});
+    EVT_BUTTON($this, $this->{tt},          sub{tt(@_)});
+    EVT_BUTTON($this, $this->{savecomp},    sub{save_components(@_)});
+    EVT_BUTTON($this, $this->{savestack},   sub{save_stack(@_)});
 
-  my $savebox       = Wx::StaticBox->new($this, -1, 'Save things to files', wxDefaultPosition, wxDefaultSize);
-  my $saveboxsizer  = Wx::StaticBoxSizer->new( $savebox, wxHORIZONTAL );
-  $box -> Add($saveboxsizer, 0, wxGROW|wxALL, 2);
-  $this->{savecomp}    = Wx::Button->new($this, -1, 'Components');
-  $this->{savestack}   = Wx::Button->new($this, -1, 'Data stack');
-  $this->{saverecon}   = Wx::Button->new($this, -1, 'Data reconstruction');
-  $this->{savett}      = Wx::Button->new($this, -1, 'Target transform');
-  $saveboxsizer -> Add($this->{savecomp},  1, wxGROW|wxALL, 0);
-  $saveboxsizer -> Add($this->{savestack}, 1, wxGROW|wxALL, 0);
-  $saveboxsizer -> Add($this->{saverecon}, 1, wxGROW|wxALL, 0);
-  $saveboxsizer -> Add($this->{savett},    1, wxGROW|wxALL, 0);
+    my $savebox       = Wx::StaticBox->new($this, -1, 'Save things to files', wxDefaultPosition, wxDefaultSize);
+    my $saveboxsizer  = Wx::StaticBoxSizer->new( $savebox, wxHORIZONTAL );
+    $box -> Add($saveboxsizer, 0, wxGROW|wxALL, 2);
+    $this->{savecomp}    = Wx::Button->new($this, -1, 'Components');
+    $this->{savestack}   = Wx::Button->new($this, -1, 'Data stack');
+    $this->{saverecon}   = Wx::Button->new($this, -1, 'Data reconstruction');
+    $this->{savett}      = Wx::Button->new($this, -1, 'Target transform');
+    $saveboxsizer -> Add($this->{savecomp},  1, wxGROW|wxALL, 0);
+    $saveboxsizer -> Add($this->{savestack}, 1, wxGROW|wxALL, 0);
+    $saveboxsizer -> Add($this->{saverecon}, 1, wxGROW|wxALL, 0);
+    $saveboxsizer -> Add($this->{savett},    1, wxGROW|wxALL, 0);
 
-  EVT_BUTTON($this, $this->{savecomp},  sub{save_components(@_)});
-  EVT_BUTTON($this, $this->{savestack}, sub{save_stack(@_)});
-  EVT_BUTTON($this, $this->{saverecon}, sub{save_reconstruction(@_)});
-  EVT_BUTTON($this, $this->{savett},    sub{save_tt(@_)});
-  foreach my $w (qw(savecomp savestack saverecon savett)) {
-    $this->{$w}->Enable(0);
+    EVT_BUTTON($this, $this->{savecomp},  sub{save_components(@_)});
+    EVT_BUTTON($this, $this->{savestack}, sub{save_stack(@_)});
+    EVT_BUTTON($this, $this->{saverecon}, sub{save_reconstruction(@_)});
+    EVT_BUTTON($this, $this->{savett},    sub{save_tt(@_)});
+    foreach my $w (qw(savecomp savestack saverecon savett)) {
+      $this->{$w}->Enable(0);
+    };
   };
 
   $this->{document} = Wx::Button->new($this, -1, 'Document section: principle components analysis');
@@ -200,6 +206,7 @@ sub push_values {
 ## this subroutine sets the enabled/frozen state of the controls
 sub mode {
   my ($this, $data, $enabled, $frozen) = @_;
+  return if (not exists $INC{'Demeter/PCA.pm'});
   my $enable = not $this->{PCA}->update_pca;
   if ($::app->{main}->{list}->IsChecked($::app->current_index)) {
     $this->{$_} -> Enable($enable) foreach qw(reconstruct rectext nrecon);

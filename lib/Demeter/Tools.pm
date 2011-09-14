@@ -80,6 +80,8 @@ sub module_environment {
 		     Graphics::GnuplotIF
 		     Math::Round
 		     Pod::POM
+		     PDL
+		     PDL::Stats
 		     Readonly
 		     Regexp::Assemble
 		     Regexp::Common
@@ -89,9 +91,9 @@ sub module_environment {
 		     Tree::Simple
 		     YAML::Tiny
 		  )) {
-    my $v = '$' . $p . '::VERSION || "?"';
+    my $v = '$' . $p . '::VERSION';
     my $l = 30 - length($p);
-    $string .= sprintf(" %s %s %s\n", $p, '.' x $l, eval $v);
+    $string .= sprintf(" %s %s %s\n", $p, '.' x $l, eval($v)||'?');
   };
   $string .= "\n";
   return $string;

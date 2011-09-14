@@ -1,0 +1,13 @@
+title name:     Fe2O3  hematite
+space  R -3 c
+a    = 5.0380	b    = 5.0380	c    = 13.7720
+rmax = 6.00	core = Fe1
+atom
+  Fe     0.00000   0.00000   0.35530  Fe1
+  O      0.30590   0.00000   0.25000  O1
+
+
+!!&& Local Variables:
+!!&& input-program-name: "atoms"
+!!&& End:
+%# Input-mode Time-stamp: <2011/09/12 09:48:44 bruce>

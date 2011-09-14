@@ -52,6 +52,13 @@ sub target {
       $Demeter::UI::Athena::demeter->plot_with($value);
       last SWITCH;
     };
+    ($param eq 'rmax_out') and do {
+      foreach my $i (0 .. $::app->{main}->{list}->GetCount-1) {
+	my $this = $::app->{main}->{list}->GetIndexedData($i);
+	$this->rmax_out($value);
+      };
+      last SWITCH;
+    };
   };
 
   ($save)

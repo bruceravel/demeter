@@ -8,6 +8,8 @@
 ** Release 6: 09 September, 2011
 
 *** Athena
+   - Handle changes to rmax_out correctly
+   - Handle the absence of PDL more gracefully
 
 *** Artemis
    - Fixed a formatting error reporting correlations in the log file
@@ -19,6 +21,9 @@
    - Fixed a bug in how the pathfinder->label configuration parameter
      was being interpreted.  Also changed the default absorber token
      to @
+   - Handle changes to rmax_out correctly
+   - Fixed a bug importing projects from earlier versions of Artemis
+     (deprecated nindicators attribute of the Plot onject)
 
 *** Demeter
    - Fixed a problem interpreting rhombohedral space groups in Atoms.

@@ -1,3 +1,10 @@
+*.autosave
+*.iff
+*.yaml
+*.tar.gz
+*.fit
+*.es
+*.rsp
 lib/Xray/Absorption/*.db
 lib/Xray/Scattering/*.db
 lib/Xray/Crystal/share/space_groups.db

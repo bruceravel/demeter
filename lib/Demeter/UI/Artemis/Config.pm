@@ -56,6 +56,14 @@ sub target {
       $Demeter::UI::Artemis::demeter->plot_with($value);
       last SWITCH;
     };
+    ($param eq 'rmax_out') and do {
+      foreach my $k (keys(%Demeter::UI::Artemis::frames)) {
+	next unless ($k =~ m{\Adata});
+	my $this = $Demeter::UI::Artemis::frames{$k}->{data};
+	$this->rmax_out($value);
+      };
+      last SWITCH;
+    };
   };
 
   ($save)
