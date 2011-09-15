@@ -1,6 +1,6 @@
 #!/usr/bin/perl
 
-use Demeter qw(:ui=screen :plotwith=gnuplot);
+use Demeter qw(:analysis :ui=screen :plotwith=gnuplot);
 
 my $xes = Demeter::XES->new(file=>'../XES/7725.11',
 			    energy => 2, emission => 3,

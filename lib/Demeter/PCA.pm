@@ -88,6 +88,20 @@ has 'stack' => (
 			     },
 		trigger => sub{  my($self, $new) = @_; $self->ndata($#{ $self->stack } + 1);}
 	       );
+has 'stackgroups' => (
+		      metaclass => 'Collection::Array',
+		      is        => 'rw',
+		      isa       => 'ArrayRef[Str]',
+		      default   => sub { [] },
+		      provides  => {
+				    'push'    => 'push_stackgroups',
+				    'pop'     => 'pop_stackgroups',
+				    'shift'   => 'shift_stackgroups',
+				    'unshift' => 'unshift_stackgroups',
+				    'clear'   => 'clear_stackgroups',
+				   },
+		     );
+
 
 has 'eigenvalues'  => (is => 'rw', isa => 'PDL', default => sub {PDL::null});
 has 'eigenvectors' => (is => 'rw', isa => 'PDL', default => sub {PDL::null});
@@ -112,7 +126,14 @@ sub BUILD {
   $self->mo->push_PCA($self);
 };
 
-## need to override 'all' => sub {}
+override all => sub {
+  my ($self) = @_;
+  my %all = $self->SUPER::all;
+  foreach my $att (qw{eigenvalues eigenvectors loadings pct_var data_matrix reconstructed stack}) {
+    delete $all{$att};
+  };
+  return %all;
+};
 
 ## ======================================================================
 ## construction methods
@@ -122,6 +143,7 @@ sub add {
   foreach my $g (@groups) {
     next if (ref($g) !~ m{Data\z});
     $self->push_stack($g);
+    $self->push_stackgroups($g->group);
   };
   $self->update_stack(1);
   return $self;

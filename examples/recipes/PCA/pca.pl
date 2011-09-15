@@ -13,6 +13,9 @@ $pca ->add(@set);
 $pca->set_mode(screen=>0);
 $pca->do_pca;
 
+print $pca->serialization;
+exit;
+
 # my ($iv, $ic) = $pca->loadings->pca_sorti();
 # print $iv, $/;
 # print $ic, $/;

@@ -5,10 +5,10 @@ use Demeter::StrTypes qw( FitykFunction );
 
 use Scalar::Util qw(looks_like_number);
 use String::Random qw(random_string);
-use fityk;
+use Fityk;
 
 use vars qw($FITYK $RESPONSE);
-$FITYK = fityk::Fityk->new;
+$FITYK = Fityk::Fityk->new;
 my $fityk_initialized = 0;
 
 has 'my_file'     => (is => 'ro', isa => 'Str',  default => 'Demeter/PeakFit/Fityk.pm');

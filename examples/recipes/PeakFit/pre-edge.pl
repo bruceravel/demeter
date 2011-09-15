@@ -1,6 +1,6 @@
 #!/usr/bin/perl
 
-use Demeter qw(:ui=screen :plotwith=gnuplot);
+use Demeter qw(:analysis :ui=screen :plotwith=gnuplot);
 
 my $data = Demeter::Data->new(file        => 'tipb.305',
 			      energy      => '$1',
@@ -16,7 +16,7 @@ $peak -> data($data);
 $data->set_mode(screen=>0);
 
 my $ls = $peak -> add('atan', center=>4976.5, name=>'arctangent');
-$peak -> add('gaussian', center=>4969.5, name=>'Peak1');
+$peak -> add('gaussian', center=>4969.92, name=>'Peak1');
 $peak -> add('lorentzian', center=>4966, name=>'Peak2');
 $ls->fix1(0);
 

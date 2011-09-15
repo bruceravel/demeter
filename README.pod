@@ -120,7 +120,7 @@ Setting the UI to screen does four things:
 
 =item 1.
 
-Provides L<Demeter::UI::Screen::Interview> as a role for the Fit
+Provides C<Demeter::UI::Screen::Interview> as a role for the Fit
 object.  This imports the C<interview> method for use with the Fit
 object, offering a CLI interface to the results of a fit.
 
@@ -131,7 +131,7 @@ on the screen while something time consuming is happening.
 
 =item 3.
 
-Makes the CLI prompting tool from L<Demeter::UI::Screen::Pause>
+Makes the CLI prompting tool from C<Demeter::UI::Screen::Pause>
 available.
 
 =item 4.
@@ -155,13 +155,13 @@ Future UI options might include C<tk>, C<wx>, or C<rpc>.
 =item C<:template=XX>
 
 Specify the template set to use for data processing and fitting
-chores.  See L<Demeter::templates>.
+chores.  See C<Demeter::templates>.
 
 In the future, a template set will be written for L<Ifeffit
 2|http://cars9.uchicago.edu/ifeffit/tdl> when it becomes available.
 
 These can also be set during run-time using the C<set_mode> method -- see
-L<Demeter::Mode>.
+C<Demeter::Mode>.
 
 =back
 
@@ -292,13 +292,13 @@ regular expression:
 =item C<dispose>
 
 This method sends data processing and plotting commands off to their
-eventual destinations.  See the document page for L<Demeter::Dispose>
+eventual destinations.  See the document page for C<Demeter::Dispose>
 for complete details.
 
 =item C<set_mode>
 
 This is the method used to set the attributes described in
-L<Demeter::Dispose>.  Any Demeter object can call this method.
+C<Demeter::Dispose>.  Any Demeter object can call this method.
 
    $object -> set_mode(ifeffit => 1,
                        screen  => 1,
@@ -315,7 +315,7 @@ call this method.
    %hash = $object -> get_mode;
    $value = $object -> get_mode("screen");
 
-See L<Demeter:Dispose> for more details.
+See C<Demeter:Dispose> for more details.
 
 =back
 
@@ -425,7 +425,7 @@ All others return false.
 This attribute is inherited by all Demeter objects and provides a
 completely generic way for interactivity to be built into any process
 that a Demeter program undertakes.  It is used, for example, in the
-L<Demeter::LCF> C<combi> method and in several of the histogram
+C<Demeter::LCF> C<combi> method and in several of the histogram
 processing methods.  This attribute takes a code reference.  At the
 beginning of each fit in the combinatorial sequence, this is
 dereference and called.  This allows a GUI to provide status updates
@@ -449,17 +449,17 @@ C<add_trouble> method is used to fill the C<trouble> attribute, which
 is inherited by all Demeter objects.  In the default, untroubled
 state, an object will have the C<trouble> attribute set to an empty
 string (i.e. something logically false).  As problems are found in the
-fitting model (see L<Demeter::Fit::Sanity>), the C<trouble> attribute
+fitting model (see C<Demeter::Fit::Sanity>), the C<trouble> attribute
 gets short text strings appended to it.  The list of problems an
 object has are separated by pipe characters (C<|>).
 
-See L<Demeter::Fit::Sanity> for a complete description of these
+See C<Demeter::Fit::Sanity> for a complete description of these
 problem codes.  The Fit, Data, Path, and GDS objects each have their
 own set of problem codes.
 
 =head1 CONFIGURATION AND ENVIRONMENT
 
-See L<Demeter::Config> for details about the configuration
+See C<Demeter::Config> for details about the configuration
 system.
 
 =head1 DEPENDENCIES

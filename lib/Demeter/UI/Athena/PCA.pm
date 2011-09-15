@@ -255,6 +255,7 @@ sub disable {
   $this->{result}->Clear;
   $this->{transform}->Clear;
   $this->{PCA}->clear_stack;
+  $this->{PCA}->clear_stackgroups;
 };
 
 sub pca {
