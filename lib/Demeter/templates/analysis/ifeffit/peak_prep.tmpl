@@ -1,0 +1,6 @@
+##| preparing for peak fitting in energy
+set {$S->group}.eee = {$DS->group}.energy+{$DS->bkg_eshift}
+set {$S->group}.energy = slice({$S->group}.eee,  {$i1}, {$i2})
+set {$S->group}.{$D->nsuff} = splint({$D->group}.energy, {$D->group}.{$D->nsuff}, {$S->group}.energy)
+def {$S->group}.func = zeros(npts({$S->group}.energy))
+erase {$S->group}.eee

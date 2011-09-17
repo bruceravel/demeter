@@ -39,6 +39,8 @@ use MooseX::Types -declare => [qw( Empty
 				   GDS
 				   NotReserved
                                    FitykFunction
+				   IfeffitLineshape
+				   Lineshape
 				)];
 
 ## to do: modes
@@ -419,6 +421,15 @@ subtype NotReserved,
   message { "reff, pi, etok, and cv are reserved words in Ifeffit or Demeter" };
 
 
+## -------- Ifeffit lineshapes
+use vars qw(@ifeffitlineshape_list $ifeffitlineshape_regexp);
+@ifeffitlineshape_list = qw(linear gauss loren pvoight atan erfc);
+$ifeffitlineshape_regexp = Regexp::Assemble->new()->add(map {lc($_)} @ifeffitlineshape_list)->re;
+subtype IfeffitLineshape,
+  as Str,
+  where { lc($_) =~ m{\A$ifeffitlineshape_regexp\z} },
+  message { "$_ is not a defined lineshape in Ifeffit" };
+
 ## -------- Fityk defined functions
 use vars qw(@fitykfunction_list $fitykfunction_regexp);
 @fitykfunction_list = qw(Constant Linear Quadratic Cubic Polynomial4 Polynomial5 Polynomial6
@@ -434,6 +445,14 @@ subtype FitykFunction,
   message { "$_ is not a defined function in Fityk" };
 
 
+## -------- all lineshapes of all possible backends
+use vars qw(@lineshape_list $lineshape_regexp);
+@lineshape_list = (@ifeffitlineshape_list, @fitykfunction_list);
+$lineshape_regexp = Regexp::Assemble->new()->add(map {lc($_)} @lineshape_list)->re;
+subtype Lineshape,
+  as Str,
+  where { lc($_) =~ m{\A$lineshape_regexp\z} },
+  message { "$_ is not a defined lineshape" };
 
 
 

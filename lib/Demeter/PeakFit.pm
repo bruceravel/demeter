@@ -20,10 +20,10 @@ use autodie qw(open close);
 
 use Moose;
 extends 'Demeter';
-with 'Demeter::PeakFit::Fityk';
 with 'Demeter::Data::Arrays';
 
 use MooseX::Aliases;
+use Moose::Util qw(apply_all_roles);
 use Moose::Util::TypeConstraints;
 use Demeter::StrTypes qw( Empty );
 
@@ -78,7 +78,6 @@ has 'linegroups'   => (
 				    },
 		      );
 
-has 'feedback'  => (is => 'rw', isa => 'Str',    default => q{});
 has 'tempfiles' => (
 		    metaclass => 'Collection::Array',
 		    is        => 'rw',
@@ -91,20 +90,34 @@ has 'tempfiles' => (
 				 }
 		   );
 
+enum 'PeakFitBackends' => ['ifeffit', 'fityk'];
+coerce 'PeakFitBackends',
+  from 'Str',
+  via { lc($_) };
+has backend => (is => 'rw', isa => 'PeakFitBackends', coerce => 1, alias => 'md',
+		trigger => sub{my ($self, $new) = @_;
+			       if ($new eq 'ifeffit') {
+				 eval {apply_all_roles($self, 'Demeter::PeakFit::Ifeffit')};
+				 print $@;
+				 $@ and die("PeakFit backend Demeter::PeakFit::Ifeffit could not be loaded");
+				 $self->initialize;
+			       } elsif ($new eq 'fityk') {
+				 eval {apply_all_roles($self, 'Demeter::PeakFit::Fityk')};
+				 $@ and die("PeakFit backend Demeter::PeakFit::Fityk does not exist");
+				 $self->initialize;
+			       } else {
+				 eval {apply_all_roles($self, 'Demeter::PeakFit'.$new)};
+				 $@ and die("PeakFit backend Demeter::PeakFit::$new does not exist");
+				 $self->initialize;
+			       };
+			     });
+
 sub BUILD {
   my ($self, @params) = @_;
   $self->mo->push_PeakFit($self);
-
-  $self->initialize;
   return $self;
 };
 
-sub DEMOLISH {
-  my ($self) = @_;
-  $self->close_file;
-  unlink $self->feedback;
-  $self->cleantemp;
-};
 
 sub cleantemp {
   my ($self) = @_;
@@ -121,14 +134,15 @@ sub add {
   croak("$function is not a valid lineshape") if not $self->valid($function);
 
   my %args = @args;
-  $args{a0} = $args{height} || 0;
-  $args{a1} = $args{center} || 0;
-  $args{a2} = $args{hwhm}   || 0;
+  $args{a0} = $args{height} || $args{m} || 0;
+  $args{a1} = $args{center} || $args{b} || 0;
+  $args{a2} = $args{hwhm}   || $args{sigma} || $args{width} || 0;
+  $args{a3} = $args{eta}    || 0;
   $args{name} ||= 'Lineshape';
   ## set defaults of things
 
   my $this = Demeter::PeakFit::LineShape->new(function=>$function,
-					      a0 => $args{a0}, a1 => $args{a1}, a2 => $args{a2},
+					      a0 => $args{a0}, a1 => $args{a1}, a2 => $args{a2}, a3 => $args{a3},
 					      name => $args{name},
 					      parent => $self,
 					     );
@@ -137,7 +151,7 @@ sub add {
   foreach my $in_model (@{$self->lineshapes}) {
     $start += $in_model->np;
   };
-  $this->start($start);
+  $this->start($start);		# what is this?
 
   $self->push_lineshapes($this);
   return $this;
@@ -158,31 +172,21 @@ sub fit {
   ## import data into Fityk
   #$FITYK->load_data(0, \@x, \@y, \@s, $self->name);
   if (@{$self->linegroups}) {    # clean up from previous fit
-    $self->dispose_to_fit_engine($self->cleanup(join(', ', @{$self->linegroups})));
+    $self->cleanup(@{$self->linegroups});
+    $self->clear_linegroups;
   };
-  my $file = File::Spec->catfile($self->stash_folder, 'data_'.random_string('cccccccc'));
-  $self->data->points(file    => $file,
-		      space   => 'E',
-		      suffix  => $self->yaxis,
-		      shift   => $self->data->eshift,
-		      scale   => $self->data->plot_multiplier,
-		      yoffset => $self->data->y_offset
-		     );
-  $self->dispose_to_fit_engine($self->read_command($file));
-  $self->add_tempfile($file);
-  $self->dispose_to_fit_engine($self->range_command($emin, $emax));
-  $self->dispose_to_fit_engine($self->init_data);
+  $self->prep_data;
 
   ## define each lineshape
   my @all = ();
   foreach my $ls (@{$self->lineshapes}) {
     $ls->set(xmin=>$emin, xmax=>$emax);
-    $self->dispose_to_fit_engine($ls->define);
+    $self->define($ls);
     push @all, $self->sigil.$ls->group;
   };
   $self -> linegroups(\@all);
 
-  $self->dispose_to_fit_engine($self->fit_command);
+  $self->pf_dispose($self->fit_command);
   my @data_x = $self->fetch_data_x;
   my @model_y = $self->fetch_model_y(\@data_x);
   Ifeffit::put_array($self->group.".energy", \@data_x);
@@ -193,8 +197,8 @@ sub fit {
   foreach my $ls (@{$self->lineshapes}) {
     $ls->put_arrays(\@data_x);
   };
-  $self->dispose_to_fit_engine($self->init_data);
-  $self->dispose_to_fit_engine($self->set_model(join(' + ', @all)));
+  $self->pf_dispose($self->init_data);
+  $self->pf_dispose($self->set_model(join(' + ', @all)));
 
   $self->fetch_statistics;
 
@@ -228,47 +232,6 @@ sub plot {
   return $self;
 };
 
-sub dispose_to_fit_engine {
-  my ($self, $string) = @_;
-  local $| = 1;
-
-  if ($self->screen) {
-    my ($start, $end) = ($self->mo->ui eq 'screen') ? $self->_ansify(q{}, 'peakfit') : (q{}, q{});
-    print $start, $string, $end, $/;
-  };
-
-  if ($self->engine) {
-    $self->process($string);
-    if ($self->screen) {
-      local $| = 1;
-      $self->close_file;
-      my $response = $self->slurp($self->feedback);
-      if ($response !~ m{\A\s+\z}) {
-	my ($start, $end) = ($self->mo->ui eq 'screen') ? $self->_ansify(q{}, 'comment') : (q{}, q{});
-	my $start_tag = '# --> ';
-	foreach my $line (split(/\n/, $response)) {
-	  print $start, $start_tag, $line, $end, $/;
-	  $start_tag = '      ';
-	};
-      };
-      $self->refresh_file;
-    };
-  };
-
-  if ($self->buffer) {
-    if (ref($self->buffer eq 'SCALAR')) {
-      my $contents = ${$self->buffer};
-      $contents .= $string . $/;
-      $self->buffer(\$contents);
-    } elsif (ref($self->buffer eq 'ARRAY')) {
-      my @contents = @{$self->buffer};
-      push @contents, $string;
-      $self->buffer(\@contents);
-    };
-  };
-
-  return $self;
-};
 
 sub report {
   my ($self) = @_;
@@ -457,7 +420,7 @@ When the PeakFit object is plotted, the residual from the fit will
 also be plotted if the C<plot_res> attribute of the Plot object is
 true.
 
-=item C<dispose_to_fit_engine>
+=item C<pf_dispose>
 
 This is the choke point for sending instructions to the fitting
 engine, much like the normal C<dispose> method handles text intended

@@ -1,0 +1,7 @@
+## pseudo-voight lineshape
+{$S->guess_set($L,0)} {$L->group}_0 = {$L->a0}
+{$S->guess_set($L,1)} {$L->group}_1 = {$L->a1}
+{$S->guess_set($L,2)} {$L->group}_2 = {$L->a2}
+{$S->guess_set($L,3)} {$L->group}_3 = {$L->a3}
+def {$L->group}.func = {$L->group}_0 * pvoight({$S->group}.energy,{$L->group}_1,{$L->group}_2,{$L->group}_3)
+{$S->group}.func = {$S->group}.func + {$L->group}.func

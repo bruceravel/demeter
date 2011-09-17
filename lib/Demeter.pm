@@ -131,7 +131,7 @@ sub set_datagroup {
 use vars qw($Gnuplot_exists $Fityk_exists $STAR_Parser_exists $XDI_exists
 	    $PDL_exists $PSG_exists);
 $Gnuplot_exists     = eval "require Graphics::GnuplotIF";
-$Fityk_exists       = eval "require Fityk";
+$Fityk_exists       = eval "require fityk";
 $STAR_Parser_exists = 1;
 use STAR::Parser;
 $XDI_exists         = eval "require Xray::XDI";
