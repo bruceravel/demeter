@@ -40,7 +40,7 @@ has 'np'       => (is => 'rw', isa => 'Int',  default => 0);
 has 'start'    => (is => 'rw', isa => 'Int',  default => 0);
 
 has 'xaxis'    => (is => 'rw', isa => 'Str',  default => q{energy});
-has 'yaxis'    => (is => 'rw', isa => 'Str',  default => q{func});
+has 'yaxis'    => (is => 'rw', isa => 'Str',  default => q{flat});
 has 'xmin'     => (is => 'rw', isa => 'Num',  default => 0);
 has 'xmax'     => (is => 'rw', isa => 'Num',  default => 0);
 
@@ -79,7 +79,6 @@ sub nparams {
   return 0 if ($function =~ m{\A\s*\z});
   return $self->parent->function_hash->{$function};
 };
-
 
 sub put_arrays {
   my ($self, $rx) = @_;

@@ -3,14 +3,16 @@ package Demeter::PeakFit::Ifeffit;
 use Moose::Role;
 use Demeter::StrTypes qw( IfeffitLineshape );
 
+has 'defwidth'    => (is => 'ro', isa => 'Num',  default => 1);
+has 'my_file'     => (is => 'ro', isa => 'Str',  default => 'Demeter/PeakFit/Ifeffit.pm');
 has 'sigil'       => (is => 'ro', isa => 'Str',  default => q{});
 has 'function_hash' => (is => 'ro', isa => 'HashRef',
 			default => sub{
 			  {
 			    linear	     => 2,
-			    gauss	     => 3,
-			    loren	     => 3,
-			    pvoight	     => 4,
+			    gaussian	     => 3,
+			    lorentzian	     => 3,
+			    pseudovoight     => 4,
 			    atan	     => 3,
 			    erfc	     => 3,
 			  }});
@@ -50,8 +52,12 @@ sub cleanup {
 
 sub prep_data {
   my ($self) = @_;
-  $self->update($self->data);
-  $self->dispose($self->template('analysis', 'peak_prep'));
+  $self->data->_update("background");
+  my $e1 = $self->xmin;
+  my $i1 = $self->data->iofx('energy', $e1);
+  my $e2 = $self->xmax;
+  my $i2 = $self->data->iofx('energy', $e2);
+  $self->dispose($self->template('analysis', 'peak_prep', {i1=>$i1, i2=>$i2}));
   return $self;
 };
 
@@ -65,17 +71,54 @@ sub guess_set {
 sub define {
   my ($self, $ls) = @_;
   my $template = "peak_".$ls->function;
-  $self->dispose($self->template('analysis', $template));
+  $self->dispose($self->template('analysis', $template, {L=>\$ls}));
   return $self;
 };
 
 sub fit_command {
   my ($self) = @_;
+  return $self->template('analysis', 'peak_fit');
+};
 
+sub fetch_data_x {
+  my ($self) = @_;
+  return ();
+};
+
+sub fetch_model_y {
+  my ($self) = @_;
+  return Ifeffit::get_array($self->group.".func");
+};
+
+sub put_arrays {
+  my ($self, $ls, $rx) = @_;
+  $self->dispose($self->template('analysis', 'peak_put', {L=>\$ls}));
+};
+
+sub resid {
+  my ($self) = @_;
   return $self;
 };
 
+sub post_fit {
+  my ($self, $rall) = @_;
+  return $self;
+};
 
+sub fetch_statistics {
+  my ($self) = @_;
+  foreach my $ls (@{$self->lineshapes}) {
+    foreach my $n (0 .. $ls->np-1) {
+      my $att = 'a'.$n;
+      my $scalar = $ls->group.'_'.$n;
+      $ls->$att(Ifeffit::get_scalar($scalar));
+      $att = 'e'.$n;
+      $scalar = 'delta_'.$scalar;
+      $ls->$att(sprintf("%.4f", Ifeffit::get_scalar($scalar)));
+    };
+    $ls->area($ls->a0);
+  };
+};
 
 sub pf_dispose {
   my ($self, $string) = @_;
@@ -110,27 +153,27 @@ document section is parsed by the reporting methods of this object.
 
 =over 4
 
-=item linear(slope,yint)
+=item linear(yint, slope)
 
  yint + slope * x
 
-=item gauss(height, center, sigma)
+=item gaussian(height, center, sigma)
 
  height*exp(-1*((x-center)/(2*sigma))^2) / (sigma*sqrt(2*pi)
 
-=item Lorentzian(height, center, sigma)
+=item lorentzian(height, center, sigma)
 
  (height*sigma/(2*pi)) / ((x-center)^2 * (sigma/2)^2)
 
-=item pvoigt(height, center, hwhm, eta)
+=item pseudovoigt(height, center, hwhm, eta)
 
  eta*loren + (1-eta)*gauss
 
-=item atan(step=1, e0=0, width=0)
+=item atan(step, e0, width)
 
   step*[atan((x-E0)/width)/pi + 0.5]
 
-=item erf(step=0.5, e0=0, width=0)
+=item erf(step, e0, width)
 
   step*(erf((x-e0)/width) + 1)
 

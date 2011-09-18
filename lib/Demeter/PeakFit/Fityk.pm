@@ -11,11 +11,12 @@ use vars qw($FITYK $RESPONSE);
 $FITYK = fityk::Fityk->new;
 my $fityk_initialized = 0;
 
-has 'feedback'  => (is => 'rw', isa => 'Str',    default => q{});
-has 'my_file'     => (is => 'ro', isa => 'Str',  default => 'Demeter/PeakFit/Fityk.pm');
-has 'sigil'       => (is => 'ro', isa => 'Str',  default => '%');
-has 'fit_command' => (is => 'ro', isa => 'Str',  default => 'fit in @0');
-has 'init_data'   => (is => 'ro', isa => 'Str',  default => '@0.F=0');
+has 'feedback'      => (is => 'rw', isa => 'Str',  default => q{});
+has 'my_file'       => (is => 'ro', isa => 'Str',  default => 'Demeter/PeakFit/Fityk.pm');
+has 'sigil'         => (is => 'ro', isa => 'Str',  default => '%');
+has 'fit_command'   => (is => 'ro', isa => 'Str',  default => 'fit in @0');
+has 'init_data'     => (is => 'ro', isa => 'Str',  default => '@0.F=0');
+has 'defwidth'      => (is => 'ro', isa => 'Num',  default => 0);
 has 'function_hash' => (is => 'ro', isa => 'HashRef',
 			default => sub{
 			  {
@@ -280,7 +281,22 @@ sub put_arrays {
   $self->pf_dispose($self->init_data);
   $self->pf_dispose($self->set_model('%'.$ls->group));
   my $model_y = $self->engine_object->get_model_vector($rx, 0);
+  Ifeffit::put_array($ls->group.".".$self->xaxis, $rx);
+  Ifeffit::put_array($ls->group.".".$self->yaxis, $model_y);
   return $model_y;
+};
+
+sub resid {
+  my ($self) = @_;
+  $self -> dispose(sprintf("set %s.resid = %s.%s - %s.%s", $self->group, $self->data->group, $self->yaxis, $self->group, $self->yaxis));
+  return $self;
+};
+
+sub post_fit {
+  my ($self, $rall) = @_;
+  $self->pf_dispose($self->init_data);
+  $self->pf_dispose($self->set_model(join(' + ', @$rall)));
+  return $self;
 };
 
 1;

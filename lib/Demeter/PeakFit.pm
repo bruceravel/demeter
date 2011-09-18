@@ -40,16 +40,19 @@ if ($Demeter::mode->ui eq 'screen') {
 has '+plottable'   => (default => 1);
 has '+data'        => (isa => Empty.'|Demeter::Data|Demeter::XES');
 has '+name'        => (default => 'PeakFit' );
-has 'engine'       => (is => 'rw', isa => 'Bool',   default => 1);
-has 'screen'       => (is => 'rw', isa => 'Bool',   default => 0);
+has 'screen'       => (is => 'rw', isa => 'Bool', default => 0);
 has 'buffer'       => (is => 'rw', isa => 'ArrayRef | ScalarRef');
+has 'engine'       => (is => 'rw', isa => 'Bool', default => 1);
 
-has 'xaxis'        => (is => 'rw', isa => 'Str',    default => q{energy});
-has 'yaxis'        => (is => 'rw', isa => 'Str',    default => q{flat});
-has 'sigma'        => (is => 'rw', isa => 'Str',    default => q{});
+has 'xaxis'        => (is => 'rw', isa => 'Str',  default => q{energy});
+has 'yaxis'        => (is => 'rw', isa => 'Str',  default => q{flat});
+has 'sigma'        => (is => 'rw', isa => 'Str',  default => q{});
 
-has 'xmin'         => (is => 'rw', isa => 'Num',    default => 0);
-has 'xmax'         => (is => 'rw', isa => 'Num',    default => 0);
+has 'xmin'         => (is => 'rw', isa => 'Num',  default => 0, alias => 'emin');
+has 'xmax'         => (is => 'rw', isa => 'Num',  default => 0, alias => 'emax');
+
+has 'plot_components' => (is => 'rw', isa => 'Bool', default => 0);
+has 'plot_residual'   => (is => 'rw', isa => 'Bool', default => 0);
 
 has 'lineshapes'   => (
 		       metaclass => 'Collection::Array',
@@ -103,6 +106,7 @@ has backend => (is => 'rw', isa => 'PeakFitBackends', coerce => 1, alias => 'md'
 				 $self->initialize;
 			       } elsif ($new eq 'fityk') {
 				 eval {apply_all_roles($self, 'Demeter::PeakFit::Fityk')};
+				 print $@;
 				 $@ and die("PeakFit backend Demeter::PeakFit::Fityk does not exist");
 				 $self->initialize;
 			       } else {
@@ -134,15 +138,36 @@ sub add {
   croak("$function is not a valid lineshape") if not $self->valid($function);
 
   my %args = @args;
-  $args{a0} = $args{height} || $args{m} || 0;
-  $args{a1} = $args{center} || $args{b} || 0;
-  $args{a2} = $args{hwhm}   || $args{sigma} || $args{width} || 0;
-  $args{a3} = $args{eta}    || 0;
+  $args{a0} ||= $args{height} || $args{yint}  || 0.3;
+  $args{a1} ||= $args{center} || $args{slope} || 0;
+  $args{a2} ||= $args{hwhm}   || $args{sigma} || $args{width} || $self->defwidth;
+  $args{a3} ||= $args{eta}    || 0;
+  $args{a4} ||= 0;
+  $args{a5} ||= 0;
+  $args{a6} ||= 0;
+  $args{a7} ||= 0;
+  $args{a8} ||= 0;
+  $args{fix0} ||= $args{fixheight} || $args{fixyint}  || 0;
+  $args{fix1} ||= $args{fixcenter} || $args{fixslope} || 0;
+  $args{fix2} ||= $args{fixhwhm}   || $args{fixsigma} || $args{fixwidth} || 0;
+  $args{fix3} ||= $args{fixeta}    || 0;
+  $args{fix4} ||= 0;
+  $args{fix5} ||= 0;
+  $args{fix6} ||= 0;
+  $args{fix7} ||= 0;
+  $args{fix8} ||= 0;
   $args{name} ||= 'Lineshape';
   ## set defaults of things
 
   my $this = Demeter::PeakFit::LineShape->new(function=>$function,
-					      a0 => $args{a0}, a1 => $args{a1}, a2 => $args{a2}, a3 => $args{a3},
+					      a0 => $args{a0}, a1 => $args{a1},
+					      a2 => $args{a2}, a3 => $args{a3},
+					      a4 => $args{a4}, a5 => $args{a5},
+					      a6 => $args{a6}, a7 => $args{a7},
+					      fix0 => $args{fix0}, fix1 => $args{fix1},
+					      fix2 => $args{fix2}, fix3 => $args{fix3},
+					      fix4 => $args{fix4}, fix5 => $args{fix5},
+					      fix6 => $args{fix6}, fix7 => $args{fix7},
 					      name => $args{name},
 					      parent => $self,
 					     );
@@ -189,16 +214,15 @@ sub fit {
   $self->pf_dispose($self->fit_command);
   my @data_x = $self->fetch_data_x;
   my @model_y = $self->fetch_model_y(\@data_x);
-  Ifeffit::put_array($self->group.".energy", \@data_x);
+  Ifeffit::put_array($self->group.".".$self->xaxis, \@data_x) if @data_x;
   Ifeffit::put_array($self->group.".".$self->yaxis, \@model_y);
-  $self -> dispose(sprintf("set %s.res = %s.%s - %s.%s", $self->group, $self->data->group, $self->yaxis, $self->group, $self->yaxis));
+  $self -> resid;
 
   ## gather arrays for each lineshape
   foreach my $ls (@{$self->lineshapes}) {
-    $ls->put_arrays(\@data_x);
+    $self->put_arrays($ls, \@data_x);
   };
-  $self->pf_dispose($self->init_data);
-  $self->pf_dispose($self->set_model(join(' + ', @all)));
+  $self->post_fit(\@all);
 
   $self->fetch_statistics;
 
@@ -210,13 +234,21 @@ sub fit {
 
 sub plot {
   my ($self) = @_;
+  $self -> po -> set(e_norm   => 1,
+		     emin     => $self->xmin - $self->data->bkg_e0 - 10,
+		     emax     => $self->xmax - $self->data->bkg_e0 + 10,
+		     plot_res => $self->plot_residual);
+
+
+  $self->po->start_plot;
+  $self->data->plot('E');
   $self->dispose($self->template('plot', 'overpeak'), 'plotting');
   $self->po->increment;
   if ($self->po->plot_res) {
     ## prep the residual plot
     my $save = $self->yaxis;
     my $yoff = $self->data->y_offset;
-    $self->yaxis('res');
+    $self->yaxis('resid');
     $self->data->plotkey('residual');
     my @y = $self->data->get_array($save);
     $self->data->y_offset($self->data->y_offset - 0.1*max(@y));
@@ -228,6 +260,12 @@ sub plot {
     $self->data->plotkey(q{});
     $self->data->y_offset($yoff);
     $self->po->increment;
+  };
+  if ($self->plot_components) {
+    foreach my $ls (@{$self->lineshapes}) {
+      $ls->dispose($ls->template('plot', 'overpeak'), 'plotting');
+      $self->po->increment;
+    };
   };
   return $self;
 };

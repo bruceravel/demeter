@@ -9,22 +9,18 @@ my $data = Demeter::Data->new(file        => 'tipb.305',
 			      ln          =>  1,
 			     );
 
-my $peak = Demeter::PeakFit->new(xmin=>-15, xmax=>5, screen => 0);
+my $peak = Demeter::PeakFit->new(data=>$data, xmin=>-15, xmax=>5, screen => 0);
 $peak -> backend('ifeffit');
-$peak -> data($data);
 
-$data->set_mode(screen=>1);
+$data->set_mode(screen=>0);
 
-my $ls = $peak -> add('atan', center=>4976.5, name=>'arctangent');
-$peak -> add('gaussian', center=>4969.92, name=>'Peak1');
-$peak -> add('lorentzian', center=>4966, name=>'Peak2');
-$ls->fix1(0);
+my $ls = $peak -> add('atan', center=>4975.73, name=>'arctangent', fixcenter=>1);
+$peak -> add('gaussian', center=>4969.55, name=>'Peak1', fixcenter=>1);
+$peak -> add('lorentzian', center=>4966.23, name=>'Peak2', fixcenter=>1);
+#$ls->fix1(0);
 
 $peak -> fit;
 
-exit;
 print $peak -> report;
-
-$data -> po -> set(e_norm=>1, emin=>-20, emax=>30, plot_res=>0);
-$_  -> plot('e') foreach ($data, $peak, @{$peak->lineshapes});
+$peak -> plot('e');
 $peak -> pause;

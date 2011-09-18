@@ -1,9 +1,14 @@
-def {$S->group}.resid = {$S->group}.{$data->nsuff} - {$S->group}.func
+{
+  $func = "def " . $S->group . ".func = " . join('.func + ', @{$S->linegroups}) . '.func';
+  q{}
+}
+{$func}
+def {$S->group}.resid = {$S->group}.{$D->nsuff} - {$S->group}.func
 minimize({$S->group}.resid)
 set {$S->group}.func  = {$S->group}.func
 set {$S->group}.resid = {$S->group}.resid
 {
   foreach $l (@{$S->lineshapes}) {
-    $OUT .= "set " . $l->group . ".func = " . $l->group . ".func";
+    $OUT .= "set " . $l->group . ".func = " . $l->group . ".func\n";
   }
-}
+}unguess
