@@ -54,6 +54,8 @@ has 'xmax'         => (is => 'rw', isa => 'Num',  default => 0, alias => 'emax')
 has 'plot_components' => (is => 'rw', isa => 'Bool', default => 0);
 has 'plot_residual'   => (is => 'rw', isa => 'Bool', default => 0);
 
+has 'nparam'       => (is => 'rw', isa => 'Int',  default => 0);
+has 'ndata'        => (is => 'rw', isa => 'Int',  default => 0);
 has 'lineshapes'   => (
 		       metaclass => 'Collection::Array',
 		       is        => 'rw',
@@ -175,6 +177,9 @@ sub add {
   my $start = 0;
   foreach my $in_model (@{$self->lineshapes}) {
     $start += $in_model->np;
+    foreach my $n (0 .. $in_model->np-1) {
+      my $att = "fix$n";
+    };
   };
   $this->start($start);		# what is this?
 
@@ -197,25 +202,32 @@ sub fit {
   ## import data into Fityk
   #$FITYK->load_data(0, \@x, \@y, \@s, $self->name);
   if (@{$self->linegroups}) {    # clean up from previous fit
-    $self->cleanup(@{$self->linegroups});
+    $self->cleanup($self->linegroups);
     $self->clear_linegroups;
   };
   $self->prep_data;
 
   ## define each lineshape
   my @all = ();
+  my $np = 0;
   foreach my $ls (@{$self->lineshapes}) {
     $ls->set(xmin=>$emin, xmax=>$emax);
     $self->define($ls);
     push @all, $self->sigil.$ls->group;
+    foreach my $i (0 .. $ls->np-1) {
+      my $att = "fix$i";
+      ++$np if not $ls->$att;
+    };
   };
   $self -> linegroups(\@all);
+  $self -> nparam($np);
 
   $self->pf_dispose($self->fit_command);
   my @data_x = $self->fetch_data_x;
   my @model_y = $self->fetch_model_y(\@data_x);
   Ifeffit::put_array($self->group.".".$self->xaxis, \@data_x) if @data_x;
   Ifeffit::put_array($self->group.".".$self->yaxis, \@model_y);
+  $self -> ndata($#model_y+1);
   $self -> resid;
 
   ## gather arrays for each lineshape
@@ -235,9 +247,12 @@ sub fit {
 sub plot {
   my ($self) = @_;
   $self -> po -> set(e_norm   => 1,
+		     e_markers=> 1,
+		     e_bkg    => 0,
+		     e_der    => 0,
+		     e_sec    => 0,
 		     emin     => $self->xmin - $self->data->bkg_e0 - 10,
-		     emax     => $self->xmax - $self->data->bkg_e0 + 10,
-		     plot_res => $self->plot_residual);
+		     emax     => $self->xmax - $self->data->bkg_e0 + 10,);
 
 
   $self->po->start_plot;
@@ -273,11 +288,27 @@ sub plot {
 
 sub report {
   my ($self) = @_;
-  my $string = q{};
+  my $string = "Fit to " . $self->data->name . "\n";
+  $string .= sprintf("   using %d data points with %d lineshapes and %d variables\n\n",
+		     $self->ndata, $#{$self->lineshapes}+1, $self->nparam);
   foreach my $ls (@{$self->lineshapes}) {
     $string .= $ls->report;
   };
   return $string;
+};
+
+
+sub clean {
+  my ($self) = @_;
+  if (@{$self->linegroups}) {    # clean up from previous fit
+    $self->cleanup($self->linegroups);
+    $self->clear_linegroups;
+  };
+  foreach my $ls (@{$self->lineshapes}) {
+    $ls->DEMOLISH;
+  };
+  $self->clear_lineshapes;
+  return $self;
 };
 
 __PACKAGE__->meta->make_immutable;

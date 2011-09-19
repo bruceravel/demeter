@@ -133,7 +133,7 @@ sub parameter_names {
 sub report {
   my ($self) = @_;
   my @names = $self->parameter_names;
-  my $string = sprintf("%s (%s) :", $self->name, $self->function);
+  my $string = sprintf("%s (%s)\n   ", $self->name, $self->function);
   my $count = 0;
   foreach my $n (@names) {
     my $a = 'a'.$count;
@@ -146,7 +146,7 @@ sub report {
     ++$count;
   };
   chop $string;
-  $string .= sprintf(", area = %.2f", $self->area) if $self->peaked;
+  $string .= sprintf("\n    area = %.2f", $self->area) if $self->peaked;
   $string .= $/;
   return $string;
 };

@@ -44,7 +44,7 @@ sub cleanup {
   my ($self, $ref) = @_;
   my $string = q{};
   foreach my $g (@$ref) {
-    $string .= 'erase @' . $g . "\n";
+    $string .= 'erase @group ' . $g . "\n";
   };
   $self->pf_dispose($string);
   return $self;

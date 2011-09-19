@@ -8,6 +8,7 @@ my $xes = Demeter::XES->new(file=>'../XES/7725.11',
 			   );
 
 my $peak = Demeter::PeakFit->new(screen => 1, yaxis=> 'raw', name => 'fit');
+$peak -> backend('fityk');
 
 $peak -> data($xes);
 

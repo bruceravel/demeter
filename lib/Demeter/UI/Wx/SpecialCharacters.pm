@@ -5,7 +5,7 @@ use strict;
 use base qw( Exporter );
 our @EXPORT_OK = qw(emph
 		    $MU $CHI $EPSILON $DELTA $SIGMA $SIGSQR $PHI $PI $S02 $E0
-		    $ALPHA $BETA $GAMMA
+		    $ALPHA $BETA $GAMMA $ETA
 		    $COPYRIGHT $LAQUO $RAQUO $MDASH
 		    $ONE $TWO $THR
 		    $ARING $MACRON
@@ -17,7 +17,7 @@ our %EXPORT_TAGS = (all   => [qw(emph
 				 $ONE $TWO $THR $MACRON)],
 		    super => [qw($ONE $TWO $THR $MACRON)],
 		    greek => [qw($MU $CHI $EPSILON $DELTA $SIGMA $SIGSQR $PHI $PI $S02 $E0
-				 $ALPHA $BETA $GAMMA)],
+				 $ALPHA $BETA $GAMMA $ETA)],
 		   );
 
 my $is_windows = (($^O eq 'MSWin32') or ($^O eq 'cygwin'));
@@ -36,6 +36,7 @@ our $E0      = ($is_windows) ? 'E0' : 'E'.chr(8320);
 our $ALPHA   = chr(0x03B1);
 our $BETA    = chr(0x03B2);
 our $GAMMA   = chr(0x03B3);
+our $ETA     = chr(0x03B7);
 
 ## -------- superscripts
 our $ONE     = chr(185);
@@ -117,6 +118,10 @@ lower case sigma followed by a proper superscripted 2
 =item C<$PHI>
 
 lower case phi
+
+=item C<$ETA>
+
+lower case eta
 
 =back
 
