@@ -82,6 +82,7 @@ has 'file'        => (is => 'rw', isa => FileName,  default => $NULLFILE,
 				   });
 has 'source'      => (is => 'rw', isa => 'Str',  default => $NULLFILE,);
 has 'prjrecord'   => (is => 'rw', isa => 'Str',  default => q{});
+has 'read_as_raw' => (is => 'rw', isa => 'Bool', default => 0);
 has 'from_athena' => (is => 'rw', isa => 'Bool', default => 0);
 has 'from_yaml'   => (is => 'rw', isa => 'Bool', default => 0);
 subtype 'FitSum'
@@ -731,6 +732,7 @@ sub sort_data {
 sub _read_data_command {
   my ($self, $type) = @_;
   my $string = q[];
+  $self->raw_check;
   if ($type eq 'xmu') {
     $string  = $self->template("process", "read_xmu");
     $string .= $self->template("process", "deriv");
@@ -747,6 +749,20 @@ sub _read_data_command {
   return $string;
 };
 
+
+sub raw_check {
+  my ($self) = @_;
+  open(my $F, $self->file);
+  while (<$F>) {
+    next if not m{\A[#*%;!]?\s*---+\s*\z};
+    my $cols = <$F>;
+    chomp $cols;
+    $self->read_as_raw(1) if length($cols) > 255;
+    last;
+  };
+  close $F;
+  return $self;
+};
 
 
 sub rfactor {

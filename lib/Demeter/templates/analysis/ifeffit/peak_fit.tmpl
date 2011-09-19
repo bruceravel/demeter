@@ -1,10 +1,11 @@
 {
   $func = "def " . $S->group . ".func = " . join('.func + ', @{$S->linegroups}) . '.func';
+  $hash = ($nofit) ? q{#} : q{};
   q{}
 }
 {$func}
 def {$S->group}.resid = {$S->group}.{$D->nsuff} - {$S->group}.func
-minimize({$S->group}.resid)
+{$hash}minimize({$S->group}.resid)
 set {$S->group}.func  = {$S->group}.func
 set {$S->group}.resid = {$S->group}.resid
 {

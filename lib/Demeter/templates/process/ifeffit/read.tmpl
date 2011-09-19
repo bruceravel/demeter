@@ -2,6 +2,9 @@
   # import column data template
   #   {$D->group} returns the ifeffit group name
   #   {$D->parameter} returns the value of that parameter
+  $raw = q{};
+  $raw = ', type=raw' if $D->read_as_raw;
+  q{};
 }
 ##| Reading raw data "{$D->file}" as group {$D->group}
-read_data(file="{$D->file}", group={$D->group})
+read_data(file="{$D->file}", group={$D->group}{$raw})

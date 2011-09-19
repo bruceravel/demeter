@@ -76,8 +76,9 @@ sub define {
 };
 
 sub fit_command {
-  my ($self) = @_;
-  return $self->template('analysis', 'peak_fit');
+  my ($self, $nofit) = @_;
+  $nofit ||= 0;
+  return $self->template('analysis', 'peak_fit', {nofit=>$nofit});
 };
 
 sub fetch_data_x {
@@ -111,10 +112,10 @@ sub fetch_statistics {
     foreach my $n (0 .. $ls->np-1) {
       my $att = 'a'.$n;
       my $scalar = $ls->group.'_'.$n;
-      $ls->$att(Ifeffit::get_scalar($scalar));
+      $ls->$att(sprintf("%.5f", Ifeffit::get_scalar($scalar)));
       $att = 'e'.$n;
       $scalar = 'delta_'.$scalar;
-      $ls->$att(sprintf("%.4f", Ifeffit::get_scalar($scalar)));
+      $ls->$att(sprintf("%.5f", Ifeffit::get_scalar($scalar)));
     };
     $ls->area($ls->a0);
   };

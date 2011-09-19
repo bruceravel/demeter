@@ -1,0 +1,15 @@
+{
+  $components = join(" ", map {$_ =~ s{ +}{_}g; $_} map {$_->name} (@{$S->lineshapes}));
+  @list = map {$_->group} (@{$S->lineshapes});
+  $shapes = join('.func, ', @list) . '.func';
+  q{}
+}
+set {$S->group}.{$D->nsuff} = splint({$D->group}.energy, {$D->group}.{$D->nsuff}, {$S->group}.energy)
+write_data(file="{$filename}", $peak_title_*, {$S->group}.{$S->xaxis}, {$S->group}.{$S->yaxis}, {$S->group}.func, {$S->group}.resid,
+           {$shapes},
+           label="energy data fit residual {$components}")
+{
+  foreach $t (1 .. $S->ntitles) {
+    $OUT .= "erase \$peak_title_" . $t . "\n";
+  }
+}

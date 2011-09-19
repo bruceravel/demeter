@@ -34,7 +34,7 @@
 ###########################################################################
 
 
-## This file contains the principle component analysis configuration group for Demeter
+## This file contains the peak fitting configuration group for Demeter
 
 
 ######################################################################
@@ -45,7 +45,7 @@ section_description
 
 variable=emin
 type=real
-default=-20
+default=--15
 restart=1
 units=eV (relative to e0)
 description
@@ -53,24 +53,8 @@ description
 
 variable=emax
 type=real
-default=80
+default=15
 restart=1
 units=eV (relative to e0)
 description
   The default lower bound of an analysis in energy.
-
-variable=kmin
-type=real
-default=3
-restart=1
-units=inverse Angstroms
-description
-  The default lower bound of an analysis in k.
-
-variable=kmax
-type=real
-default=12
-restart=1
-units=inverse Angstroms
-description
-  The default lower bound of an analysis in k.

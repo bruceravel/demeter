@@ -1,0 +1,11 @@
+{
+  @titles = split(/\n/, $S->report);
+  $i=0;
+  q{}
+}
+$peak_title_{++$i} = "Demeter Peak fitting output file - Demeter version {$S->version}"
+{
+  foreach $t (@titles) {
+    $OUT .= "\$peak_title_" . ++$i . ' = ".' . $t . "\"\n";
+  }
+}

@@ -116,23 +116,24 @@
        + [ ] specialized file headers for reconstruction and tt save files
        + [ ] save eigenvectors to a file
        + [ ] pluck buttons for analysis range don't work
-   - [-] *Peakfit tool* [6/16]
-       + [X] need to clean up lineshape groups when they are no longer needed
-       + [X] better report (inlcude # data points, # fitted, # fixed)
-       + [X] compute number of fitted parameters correctly
-       + [X] explicitly turn off energy plotting parts before plot
-       + [X] insert best fit values after fit
-       + [ ] plot without fitting
-       + [X] pluck centroid, set height from data
-       + [ ] save result
-       + [ ] make group from fitted function
+   - [-] *Peakfit tool* [4/17]
+       + [X] plot without fitting
+       + [X] save result
+       + [X] report has mismatched sig figs for best fit and error
+       + [X] plot and save buttons on results tab
+       + [ ] implement delete button
        + [ ] implement pseudovoight
-       + [ ] plot and save buttons on results tab
+       + [ ] verify that all centroids are within (or near) fit range
+       + [ ] verify that fit is sensible (ndata vs nparam)
+       + [ ] make group from fitted function
        + [ ] behavior when changing data
        + [ ] pluck fit ranges
-       + [ ] WxChoice for changing lineshape (atan<->erf)(gauss<->loren)
-       + [ ] ndata is full data range rather than fit range with Fityk
+       + [ ] control for changing lineshape (atan<->erf)(gauss<->loren)
+       + [ ] ndata is full data range rather than fit range with Fityk backend
        + [ ] broken using XES
+       + [ ] explicitly set title of plot
+       + [ ] configuration
+       + [ ] sequence over marked groups
    - [ ] *Plot menu*
        + zoom/unzoom/cursor for pgplot
    - [-] *Help menu* [1/3]

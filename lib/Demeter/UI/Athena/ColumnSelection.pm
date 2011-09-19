@@ -279,7 +279,6 @@ sub OnNumerClick {
   #print "numerator is ", $string, $/;
   $string = "1" if not $string;
   ($data->datatype ne 'chi') ? $data -> numerator($string) : $data -> chi_column($string);
-  $data -> update_data(1);
   $this -> display_plot($data);
 };
 

@@ -10,6 +10,9 @@
 *** Athena
    - Handle changes to rmax_out correctly
    - Handle the absence of PDL more gracefully
+   - Implemented peak fitting tool
+   - Fixed a bug that was slowing down the response of the column
+     selection dialog
 
 *** Artemis
    - Fixed a formatting error reporting correlations in the log file
@@ -27,10 +30,17 @@
 
 *** Demeter
    - Fixed a problem interpreting rhombohedral space groups in Atoms.
+   - Implemented peak fitting using Ifeffit as the backend (other
+     option is fityk)
+   - Files with very wide column label lines can run into a length
+     limit in Ifeffit, specifically in ishtxt iff_show.f.  Since
+     Demeter relies on Ifeffit reporting $column_label correctly, this
+     lead to truncation of columns available when importing such data.
 
 *** Acknowledgements for this release
    - George Sterbinsky
    - Shelly Kelly
+   - Erik Farquhar
 
 
 ** Release 6: 09 September, 2011

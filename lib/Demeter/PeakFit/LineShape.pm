@@ -141,7 +141,7 @@ sub report {
     if ($n =~ m{center|e0}) {
       $string .= sprintf(" %s = %.2f(%.2f),", $n, $self->$a, $self->$e);
     } else {
-      $string .= sprintf(" %s = %.3g(%.3g),", $n, $self->$a, $self->$e);
+      $string .= sprintf(" %s = %.3f(%.3f),", $n, $self->$a, $self->$e);
     };
     ++$count;
   };

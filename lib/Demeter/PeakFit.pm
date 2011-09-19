@@ -56,6 +56,7 @@ has 'plot_residual'   => (is => 'rw', isa => 'Bool', default => 0);
 
 has 'nparam'       => (is => 'rw', isa => 'Int',  default => 0);
 has 'ndata'        => (is => 'rw', isa => 'Int',  default => 0);
+has 'ntitles'      => (is => 'rw', isa => 'Int',  default => 0);
 has 'lineshapes'   => (
 		       metaclass => 'Collection::Array',
 		       is        => 'rw',
@@ -189,7 +190,8 @@ sub add {
 
 
 sub fit {
-  my ($self) = @_;
+  my ($self, $nofit) = @_;
+  $nofit ||= 0;
   $self->start_spinner("Demeter is performing a peak fit") if ($self->mo->ui eq 'screen');
 
   ## this does the right stuff for XES/Data
@@ -222,7 +224,7 @@ sub fit {
   $self -> linegroups(\@all);
   $self -> nparam($np);
 
-  $self->pf_dispose($self->fit_command);
+  $self->pf_dispose($self->fit_command($nofit));
   my @data_x = $self->fetch_data_x;
   my @model_y = $self->fetch_model_y(\@data_x);
   Ifeffit::put_array($self->group.".".$self->xaxis, \@data_x) if @data_x;
@@ -259,7 +261,7 @@ sub plot {
   $self->data->plot('E');
   $self->dispose($self->template('plot', 'overpeak'), 'plotting');
   $self->po->increment;
-  if ($self->po->plot_res) {
+  if ($self->plot_residual) {
     ## prep the residual plot
     my $save = $self->yaxis;
     my $yoff = $self->data->y_offset;
@@ -310,6 +312,17 @@ sub clean {
   $self->clear_lineshapes;
   return $self;
 };
+
+sub save {
+  my ($self, $filename) = @_;
+  my $text = $self->template('analysis', 'peak_header');
+  my @titles = split(/\n/, $text);
+  $self->ntitles($#titles + 1);
+  $text .= $self->template("analysis", "peak_save", {filename=>$filename});
+  $self->dispose($text);
+  return $self;
+};
+
 
 __PACKAGE__->meta->make_immutable;
 1;

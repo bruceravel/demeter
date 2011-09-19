@@ -59,11 +59,10 @@ sub new {
   $box -> Add($this->{notebook}, 1, wxGROW|wxALL, 2);
   my $main   = $this->main_page($this->{notebook});
   my $fits   = $this->fit_page($this->{notebook});
-  my $marked = $this->marked_page($this->{notebook});
-  $this->{notebook} ->AddPage($main,   'Lineshapes',     1);
+  #my $marked = $this->marked_page($this->{notebook});
+  $this->{notebook} ->AddPage($main,   'Lineshapes',    1);
   $this->{notebook} ->AddPage($fits,   'Fit results',   0);
-  $this->{notebook} ->AddPage($marked, 'Sequence',      0);
-
+  #$this->{notebook} ->AddPage($marked, 'Sequence',      0);
 
   $this->{document} = Wx::Button->new($this, -1, 'Document section: peak fitting');
   $box -> Add($this->{document}, 0, wxGROW|wxALL, 2);
@@ -87,12 +86,16 @@ sub main_page {
   $this->{plot}        = Wx::Button->new($panel, -1, "Plot sum");
   $this->{reset}       = Wx::Button->new($panel, -1, "Reset");
   $this->{save}        = Wx::Button->new($panel, -1, "Save fit");
-  $this->{make}        = Wx::Button->new($panel, -1, "Make group");
-  foreach my $ac (qw(fit plot reset save make)) {
-    $actionsboxsizer -> Add($this->{$ac}, 1, wxLEFT|wxRIGHT, 5);
+  #$this->{make}        = Wx::Button->new($panel, -1, "Make group");
+  foreach my $ac (qw(fit plot reset save)) { #  make
+    $actionsboxsizer -> Add($this->{$ac}, 1, wxLEFT|wxRIGHT, 3);
     $this->{$ac}->Enable(0);
   };
-  EVT_BUTTON($this, $this->{fit}, sub{ $this->fit });
+  EVT_BUTTON($this, $this->{fit},   sub{ $this->fit(0) });
+  EVT_BUTTON($this, $this->{plot},  sub{ $this->fit(1) });
+  EVT_BUTTON($this, $this->{reset}, sub{ $this->reset_all });
+  EVT_BUTTON($this, $this->{save},  sub{ $this->save });
+  #EVT_BUTTON($this, $this->{make},  sub{ $this->make });
 
   my $addbox       = Wx::StaticBox->new($panel, -1, 'Add lineshape', wxDefaultPosition, wxDefaultSize);
   my $addboxsizer  = Wx::StaticBoxSizer->new( $addbox, wxHORIZONTAL );
@@ -104,7 +107,7 @@ sub main_page {
   $this->{lorentzian}   = Wx::Button->new($panel, -1, "Lorentzian");
   $this->{pseudovoight} = Wx::Button->new($panel, -1, "Pseudo Voight");
   foreach my $ls (qw(atan erf gaussian lorentzian pseudovoight)) {
-    $addboxsizer -> Add($this->{$ls}, 1, wxLEFT|wxRIGHT, 5);
+    $addboxsizer -> Add($this->{$ls}, 1, wxLEFT|wxRIGHT, 3);
     EVT_BUTTON($this, $this->{$ls}, sub{ $this->add($ls) });
   };
 
@@ -124,7 +127,7 @@ sub fit_page {
   my $box = Wx::BoxSizer->new( wxVERTICAL);
 
   $this->{result} = Wx::TextCtrl->new($panel, -1, q{}, wxDefaultPosition, wxDefaultSize,
-				       wxTE_MULTILINE|wxTE_WORDWRAP|wxTE_AUTO_URL|wxTE_READONLY|wxTE_RICH2);
+				       wxTE_MULTILINE|wxHSCROLL|wxTE_AUTO_URL|wxTE_READONLY|wxTE_RICH2);
   my $size = Wx::SystemSettings::GetFont(wxSYS_DEFAULT_GUI_FONT)->GetPointSize;
   $this->{result}->SetFont( Wx::Font->new( $size, wxTELETYPE, wxNORMAL, wxNORMAL, 0, "" ) );
   $box->Add($this->{result}, 1, wxGROW|wxALL, 5);
@@ -133,8 +136,8 @@ sub fit_page {
   $box->Add($this->{resultplot}, 0, wxGROW|wxALL, 2);
   $this->{resultreport} = Wx::Button->new($panel, -1, 'Save fit as column data');
   $box->Add($this->{resultreport}, 0, wxGROW|wxALL, 2);
-  EVT_BUTTON($this, $this->{resultplot},   sub{fit(@_, 1)});
-  EVT_BUTTON($this, $this->{resultreport}, sub{save(@_)});
+  EVT_BUTTON($this, $this->{resultplot},   sub{ $this->fit(1) });
+  EVT_BUTTON($this, $this->{resultreport}, sub{ $this->save });
   $this->{resultplot}->Enable(0);
   $this->{resultreport}->Enable(0);
 
@@ -186,7 +189,7 @@ sub pull_values {
 sub push_values {
   my ($this, $data) = @_;
   $this->{PEAK}->data($::app->current_data);
-  foreach my $ac (qw(fit plot reset save make)) {
+  foreach my $ac (qw(fit plot reset save resultreport resultplot)) { # make 
     $this->{$ac}->Enable(0);
   };
   $this->{PEAK} -> po -> set(e_norm   => 1,
@@ -207,12 +210,22 @@ sub mode {
   1;
 };
 
+sub tilt {
+  my ($this, $text, $no_result) = @_;
+  $this->{result}->SetValue($text) if not $no_result;
+  $::app->{main}->status($text, 'error');
+  return 0;
+};
+
 
 sub add {
   my ($this, $function) = @_;
   ++$this->{count};
   if (any {$function eq $_} qw(atan erf gaussian lorentzian)) {
     $this->{'func'.$this->{count}} = $this->threeparam($function, $this->{count});
+  } else {
+    $this->tilt("$function is not yet implemented",1);
+    return;
   };
   $this->{lsbox} -> Add($this->{'func'.$this->{count}}, 0, wxGROW|wxALL, 5);
   $this->{lsbox} -> Fit($this->{main});
@@ -280,6 +293,7 @@ sub threeparam {
   $this->{'fix2'.$n}->SetValue(0);
 
   EVT_BUTTON($this, $this->{'grab'.$n}, sub{ $this->grab_center($n) });
+  EVT_BUTTON($this, $this->{'del'.$n},  sub{ $this->discard($n) });
 
   return $boxsizer;
 };
@@ -305,8 +319,8 @@ sub grab_center {
 
 
 sub fit {
-  my ($this) = @_;
-
+  my ($this, $nofit) = @_;
+  $nofit ||= 0;
   my $busy = Wx::BusyCursor->new();
   my $peak = $this->{PEAK};
   $peak -> data($::app->current_data);
@@ -337,30 +351,66 @@ sub fit {
   };
 
 
-  $peak -> fit;
-  $this->{result}->Clear;
-  $this->{result}->SetValue($peak->report);
-  foreach my $i (1 .. $this->{count}) {
-    next if not exists $this->{"func$i"};
-    next if $this->{'skip'.$i}->GetValue;
-    $this->{'val0'.$i}->SetValue(sprintf("%.3f", $this->{'lineshape'.$i}->a0));
-    $this->{'val1'.$i}->SetValue(sprintf("%.3f", $this->{'lineshape'.$i}->a1));
-    $this->{'val2'.$i}->SetValue(sprintf("%.3f", $this->{'lineshape'.$i}->a2));
-    if ($this->{'type'.$i} eq 'pseudovoight') {
-      $this->{'val3'.$i}->SetValue(sprintf("%.3f", $this->{'lineshape'.$i}->a3));
+  $peak -> fit($nofit);
+  if (not $nofit) {
+    $this->{result}->Clear;
+    $this->{result}->SetValue($peak->report);
+    foreach my $i (1 .. $this->{count}) {
+      next if not exists $this->{"func$i"};
+      next if $this->{'skip'.$i}->GetValue;
+      $this->{'val0'.$i}->SetValue(sprintf("%.3f", $this->{'lineshape'.$i}->a0));
+      $this->{'val1'.$i}->SetValue(sprintf("%.3f", $this->{'lineshape'.$i}->a1));
+      $this->{'val2'.$i}->SetValue(sprintf("%.3f", $this->{'lineshape'.$i}->a2));
+      if ($this->{'type'.$i} eq 'pseudovoight') {
+	$this->{'val3'.$i}->SetValue(sprintf("%.3f", $this->{'lineshape'.$i}->a3));
+      };
     };
   };
-
   $peak -> plot('e');
   $::app->{lastplot} = ['E', 'single'];
 
 
-  foreach my $ac (qw(save make)) {
-    $this->{$ac}->Enable(1);
+  if (not $nofit) {
+    foreach my $ac (qw(save make resultreport resultplot)) {
+      $this->{$ac}->Enable(1);
+    };
+    $::app->{main}->status(sprintf("Performed peak fitting on %s using %d lineshapes and %d variables",
+				   $peak->data->name, $nls, $peak->nparam));
   };
-  $::app->{main}->status(sprintf("Performed peak fitting on %s using %d lineshapes and %d variables",
-				 $peak->data->name, $nls, $peak->nparam));
   undef $busy;
+};
+
+sub save {
+  my ($this) = @_;
+  my $data = $::app->current_data;
+  (my $name = $data->name) =~ s{\s+}{_}g;
+  my $fd = Wx::FileDialog->new( $::app->{main}, "Save peak fit to a file", cwd, $name.".peak",
+				"peak fit (*.peak)|*.peak|All files|*",
+				wxFD_SAVE|wxFD_CHANGE_DIR, #|wxFD_OVERWRITE_PROMPT,
+				wxDefaultPosition);
+  if ($fd->ShowModal == wxID_CANCEL) {
+    $::app->{main}->status("Saving peak fitting results to a file has been cancelled.");
+    return 0;
+  };
+  my $fname = File::Spec->catfile($fd->GetDirectory, $fd->GetFilename);
+  return if $::app->{main}->overwrite_prompt($fname); # work-around gtk's wxFD_OVERWRITE_PROMPT bug (5 Jan 2011)
+  $this->{PEAK}->save($fname);
+  $::app->{main}->status("Saved peak fitting results to $fname");
+};
+
+sub reset_all {
+  my ($this) = @_;
+  $this->tilt("Resetting is not yet implemented",1);
+};
+
+sub make {
+  my ($this) = @_;
+  $this->tilt("Making a data group is not yet implemented",1);
+};
+
+sub discard {
+  my ($this, $n) = @_;
+  $this->tilt("Discarding is not yet implemented",1);
 };
 
 
