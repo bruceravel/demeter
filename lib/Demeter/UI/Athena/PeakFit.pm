@@ -5,7 +5,7 @@ use warnings;
 
 use Wx qw( :everything );
 use base 'Wx::Panel';
-use Wx::Event qw(EVT_BUTTON EVT_LIST_ITEM_SELECTED EVT_CHECKBOX);
+use Wx::Event qw(EVT_BUTTON EVT_LIST_ITEM_SELECTED EVT_CHECKBOX EVT_HYPERLINK);
 
 use Cwd;
 use File::Basename;
@@ -22,6 +22,10 @@ my $tcsize = [60,-1];
 my $demeter  = $Demeter::UI::Athena::demeter;
 my $icon     = File::Spec->catfile(dirname($INC{"Demeter/UI/Athena.pm"}), 'Athena', , 'icons', "bullseye.png");
 my $bullseye = Wx::Bitmap->new($icon, wxBITMAP_TYPE_PNG);
+
+my %map  = (atan => "Arctangent", erf => "Error function",
+	    gaussian => "Gaussian", lorentzian => "Lorentzian");
+my %swap = (atan => "erf", erf => "atan", gaussian => "lorentzian", lorentzian => "gaussian");
 
 sub new {
   my ($class, $parent, $app) = @_;
@@ -241,20 +245,21 @@ sub add {
 sub threeparam {
   my ($this, $fun, $n) = @_;
 
-  my %map = (atan => "Arctanget", erf => "Error function",
-	     gaussian => "Gaussian", lorentzian => "Lorentzian");
+  my $index = $this->increment($fun);
 
-  my $box       = Wx::StaticBox->new($this->{main}, -1, $map{$fun}.' (lineshape #'.$n.')',
-				     wxDefaultPosition, wxDefaultSize);
+  my $box       = Wx::StaticBox->new($this->{main}, -1, $map{$fun}, wxDefaultPosition, wxDefaultSize);
   my $boxsizer  = Wx::StaticBoxSizer->new( $box, wxVERTICAL );
 
+  $this->{'box'.$n} = $box;
   $this->{'type'.$n} = $fun;
 
   my $hbox = Wx::BoxSizer->new( wxHORIZONTAL );
   $boxsizer->Add($hbox, 0, wxGROW|wxLEFT|wxRIGHT, 5);
   $hbox -> Add(Wx::StaticText->new($this->{main}, -1, "Name"), 0, wxALL, 3);
-  $this->{'name'.$n} = Wx::TextCtrl->new($this->{main}, -1, lc($map{$fun}), wxDefaultPosition, [120,-1], wxTE_PROCESS_ENTER);
+  $this->{'name'.$n} = Wx::TextCtrl->new($this->{main}, -1, lc($map{$fun})." ".$index, wxDefaultPosition, [120,-1], wxTE_PROCESS_ENTER);
   $hbox -> Add($this->{'name'.$n}, 0, wxGROW|wxLEFT|wxRIGHT, 5);
+  $this->{'swap'.$n} = Wx::HyperlinkCtrl->new($this->{main}, -1, 'change to '.lc($map{$swap{$fun}}), q{}, wxDefaultPosition, wxDefaultSize, wxNO_BORDER);
+  $hbox -> Add($this->{'swap'.$n}, 0, wxGROW|wxLEFT|wxRIGHT, 5);
   $hbox->Add(1,1,1);
   $this->{'skip'.$n} = Wx::CheckBox->new($this->{main}, -1, 'exclude');
   $hbox -> Add($this->{'skip'.$n}, 0, wxGROW|wxLEFT|wxRIGHT, 5);
@@ -288,14 +293,28 @@ sub threeparam {
   $this->{'fix2'.$n} = Wx::CheckBox->new($this->{main}, -1, 'fix');
   $hbox -> Add($this->{'fix2'.$n}, 0, wxGROW|wxLEFT|wxRIGHT, 5);
 
+  $this->{'swap'.$n}->SetNormalColour(wxBLACK);
   $this->{'fix0'.$n}->SetValue(0);
   $this->{'fix1'.$n}->SetValue(1);
   $this->{'fix2'.$n}->SetValue(0);
 
   EVT_BUTTON($this, $this->{'grab'.$n}, sub{ $this->grab_center($n) });
   EVT_BUTTON($this, $this->{'del'.$n},  sub{ $this->discard($n) });
+  EVT_HYPERLINK($this, $this->{"swap$n"}, sub{ $this->swap($n) });
 
   return $boxsizer;
+};
+
+sub increment {
+  my ($this, $fun) = @_;
+  my $index = 0;
+  foreach my $i (1 .. $this->{count}) {
+    next if (not exists $this->{"func$i"});
+    next if ($this->{'type'.$i} ne $fun);
+    $index = $1 if ($this->{'name'.$i}->GetValue =~ m{$fun\s*(\d+)}i);
+  };
+  ++$index;
+  return $index;
 };
 
 
@@ -332,7 +351,7 @@ sub fit {
   $peak -> clean;
   my $nls = 0;
   foreach my $i (1 .. $this->{count}) {
-    next if not exists $this->{"func$i"};
+    next if (not exists $this->{"func$i"});
     next if $this->{'skip'.$i}->GetValue;
     ++$nls;
     $this->{'lineshape'.$i} = $peak -> add($this->{'type'.$i},
@@ -371,7 +390,7 @@ sub fit {
 
 
   if (not $nofit) {
-    foreach my $ac (qw(save make resultreport resultplot)) {
+    foreach my $ac (qw(save resultreport resultplot)) {
       $this->{$ac}->Enable(1);
     };
     $::app->{main}->status(sprintf("Performed peak fitting on %s using %d lineshapes and %d variables",
@@ -410,9 +429,51 @@ sub make {
 
 sub discard {
   my ($this, $n) = @_;
-  $this->tilt("Discarding is not yet implemented",1);
+  my $name = $this->{'name'.$n}->GetValue;
+  my $yesno = Wx::MessageDialog->new($::app->{main},
+				     "Really delete $name (lineshape #$n)?",
+				     "Delete lineshape?",
+				     wxYES_NO|wxYES_DEFAULT|wxICON_QUESTION);
+  my $result = $yesno->ShowModal;
+  if ($result == wxID_NO) {
+    $::app->{main}->status("Not deleting lineshape.");
+    return 0;
+  };
+  ## demolish the LineShape object, if it exists
+  $this->{'lineshape'.$n}->DEMOLISH if exists $this->{'lineshape'.$n};
+  ## dig through the hierarchy of the StaticBox and Remove/Destroy each element
+  foreach my $s ($this->{'func'.$n}->GetChildren) {
+    foreach my $w ($s->GetSizer->GetChildren) {
+      $w->GetWindow->Destroy if defined($w->GetWindow);
+    };
+    $this->{'func'.$n}->Remove($s->GetSizer);
+  };
+  $this->{'func'.$n}->GetStaticBox->Destroy;
+  $this->{lsbox} -> Remove($this->{'func'.$n});
+  delete $this->{'lineshape'.$n};
+  delete $this->{'type'.$n};
+  delete $this->{"func$n"};
+  delete $this->{"box$n"};
+  ## Refit the containiner
+  $this->{lsbox} -> Fit($this->{main});
+  $this->{vbox}  -> Fit($this->{panel});
+  $::app->{main}->status("Deleted $name (lineshape #$n)");
 };
 
+sub swap {
+  my ($this, $n) = @_;
+  my $name = $this->{'name'.$n}->GetValue;
+  my $type = $this->{'type'.$n};
+  if ($name =~ lc($map{$type})) {
+    my $to = lc($map{$swap{$type}});
+    $name =~ s{$map{$type}}{$to}i;
+  };
+  $this->{'name'.$n}->SetValue($name);
+  $this->{'type'.$n} = $swap{$this->{'type'.$n}};
+  $this->{"box$n"} -> SetLabel($map{$this->{'type'.$n}});
+  $this->{"swap$n"} -> SetLabel("change to $type");
+  $::app->{main} -> Update;
+};
 
 1;
 

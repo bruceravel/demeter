@@ -39,7 +39,7 @@
 
 ** Athena
 
-*** Tools [17/25] [68%]
+*** Tools [18/25] [72%]
    - [X] main
    - [X] calibrate
    - [X] align
@@ -58,7 +58,7 @@
 
    - [X] LCF
    - [X] /PCA/ [[http://mailman.jach.hawaii.edu/pipermail/perldl/2006-August/000588.html][PCA from PDL mail archives]]
-   - [ ] Peak fit
+   - [X] Peak fit
    - [X] log ratio
    - [X] difference
 
@@ -116,19 +116,19 @@
        + [ ] specialized file headers for reconstruction and tt save files
        + [ ] save eigenvectors to a file
        + [ ] pluck buttons for analysis range don't work
-   - [-] *Peakfit tool* [5/18]
+   - [-] *Peakfit tool* [7/18]
        + [X] plot without fitting
        + [X] save result
        + [X] report has mismatched sig figs for best fit and error
        + [X] plot and save buttons on results tab
-       + [ ] implement delete button
+       + [X] implement delete button
        + [ ] implement pseudovoight
        + [ ] verify that all centroids are within (or near) fit range
        + [ ] verify that fit is sensible (ndata vs nparam)
        + [ ] make group from fitted function
        + [ ] behavior when changing data
        + [ ] pluck fit ranges
-       + [ ] control for changing lineshape (atan<->erf)(gauss<->loren)
+       + [X] control for changing lineshape (atan<->erf)(gauss<->loren)
        + [ ] ndata is full data range rather than fit range with Fityk backend
        + [ ] broken using XES
        + [ ] explicitly set title of plot
