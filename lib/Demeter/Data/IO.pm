@@ -129,6 +129,16 @@ sub _save_fit_command {
   my ($self, $filename, $how) = @_;
   $how ||= q{};
   croak("No filename specified for save_fit") unless $filename;
+  ($which = "k1")   if ($which =~ m{chi(?:|k1?)});
+  ($which = "k2")   if ($which eq 'chik2');
+  ($which = "k3")   if ($which eq 'chik3');
+  ($which = "rmag") if ($which eq 'chir_mag');
+  ($which = "rre")  if ($which eq 'chir_re');
+  ($which = "rim")  if ($which eq 'chir_im');
+  ($which = "qmag") if ($which eq 'chiq_mag');
+  ($which = "qre")  if ($which eq 'chiq_re');
+  ($which = "qim")  if ($which eq 'chiq_im');
+
   my $template = ($how eq 'k1')   ? 'save_fit_kw'
                : ($how eq 'k2')   ? 'save_fit_kw'
                : ($how eq 'k3')   ? 'save_fit_kw'
@@ -200,6 +210,15 @@ sub save_many {
 sub _save_many_command {
   my ($self, $outfile, $which, @groups) = @_;
   ($which = "chik1") if ($which eq 'chik');
+  ($which = "chik1") if ($which eq 'k1');
+  ($which = "chik2") if ($which eq 'k2');
+  ($which = "chik3") if ($which eq 'k3');
+  ($which = "chir_mag") if ($which eq 'rmag');
+  ($which = "chir_re")  if ($which eq 'rre');
+  ($which = "chir_im")  if ($which eq 'rim');
+  ($which = "chiq_mag") if ($which eq 'qmag');
+  ($which = "chiq_re")  if ($which eq 'qre');
+  ($which = "chiq_im")  if ($which eq 'qim');
   my $e_regexp = Regexp::Assemble->new()->add(qw(xmu norm der nder sec nsec))->re;
   my $n_regexp = Regexp::Assemble->new()->add(qw(norm nder nsec))->re;
   my $k_regexp = Regexp::Assemble->new()->add(qw(chi chik chik2 chik3))->re;
@@ -220,6 +239,9 @@ sub _save_many_command {
   };
   foreach my $g (@groups) {
     next if ((ref($g) =~ m{VPath}) and ($level !~ m{(?:fft|bft|all)}));
+    if (ref($g) =~ m{ScatteringPath}) {
+      croak "save_many can take Data, Path, and Path-like objects as its argument, but cannot take ScatteringPath objects";
+    };
     $g->_update($level);
     $g->dispose($self->template('process', 'dphase')) if ($which eq 'dph');
     if ($which =~ m{\Achik(\d*)\z})  { # make k-weighted chi(k) array

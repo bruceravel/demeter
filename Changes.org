@@ -36,6 +36,11 @@
      limit in Ifeffit, specifically in ishtxt iff_show.f.  Since
      Demeter relies on Ifeffit reporting $column_label correctly, this
      lead to truncation of columns available when importing such data.
+   - Made the save_many and save("fit",...) methods understand either
+     set of strings denoting the part to be saved.  (save_many took
+     things like 'chik2' and 'chir_mag', which save("fit",...) took
+     things like 'k2' and 'rmag').  Also added a useful error message
+     to save_many warning against passing it ScatteringPath objects.
 
 *** Acknowledgements for this release
    - George Sterbinsky

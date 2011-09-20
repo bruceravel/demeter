@@ -116,7 +116,7 @@
        + [ ] specialized file headers for reconstruction and tt save files
        + [ ] save eigenvectors to a file
        + [ ] pluck buttons for analysis range don't work
-   - [-] *Peakfit tool* [4/17]
+   - [-] *Peakfit tool* [5/18]
        + [X] plot without fitting
        + [X] save result
        + [X] report has mismatched sig figs for best fit and error
@@ -132,8 +132,9 @@
        + [ ] ndata is full data range rather than fit range with Fityk backend
        + [ ] broken using XES
        + [ ] explicitly set title of plot
-       + [ ] configuration
+       + [X] configuration
        + [ ] sequence over marked groups
+       + [ ] persistance
    - [ ] *Plot menu*
        + zoom/unzoom/cursor for pgplot
    - [-] *Help menu* [1/3]
