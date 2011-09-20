@@ -437,14 +437,17 @@ another way.
 
     $dataobject -> save('fit', 'my.fit', $type);
 
-If type is left off, the default, un-k-weighted fit file is written.
-The other options are:
+If C<$type> is left off, the default, un-k-weighted fit file is
+written.  The other options for C<$type> are:
 
     k1 k2 k3 rmag rre rim qmag qre qim
 
 The first three export k-weighted data.  The next three are for the
 magnitude, real, or imaginary parts of chi(R).  The final three are
 for the magnitude, real, or imaginary parts of chi(q).
+
+This will also accept the the k-, R-, and q-space arguments in the
+format accepted the C<save_many> method.
 
 =item C<bkgsub>
 
@@ -470,6 +473,9 @@ data columns.  The second argument is one of:
 These are followed by the list of data groups to write to the file.
 The refering object will be added to the front of the list if it is
 not already included in the list.
+
+The arguments used with the C<save> method when saving a fit are also
+accepted for k-, R-, and q-space.
 
 =item C<read_fit>
 
