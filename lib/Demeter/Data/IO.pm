@@ -129,15 +129,15 @@ sub _save_fit_command {
   my ($self, $filename, $how) = @_;
   $how ||= q{};
   croak("No filename specified for save_fit") unless $filename;
-  ($which = "k1")   if ($which =~ m{chi(?:|k1?)});
-  ($which = "k2")   if ($which eq 'chik2');
-  ($which = "k3")   if ($which eq 'chik3');
-  ($which = "rmag") if ($which eq 'chir_mag');
-  ($which = "rre")  if ($which eq 'chir_re');
-  ($which = "rim")  if ($which eq 'chir_im');
-  ($which = "qmag") if ($which eq 'chiq_mag');
-  ($which = "qre")  if ($which eq 'chiq_re');
-  ($which = "qim")  if ($which eq 'chiq_im');
+  ($how = "k1")   if ($how =~ m{chi(?:|k1?)});
+  ($how = "k2")   if ($how eq 'chik2');
+  ($how = "k3")   if ($how eq 'chik3');
+  ($how = "rmag") if ($how eq 'chir_mag');
+  ($how = "rre")  if ($how eq 'chir_re');
+  ($how = "rim")  if ($how eq 'chir_im');
+  ($how = "qmag") if ($how eq 'chiq_mag');
+  ($how = "qre")  if ($how eq 'chiq_re');
+  ($how = "qim")  if ($how eq 'chiq_im');
 
   my $template = ($how eq 'k1')   ? 'save_fit_kw'
                : ($how eq 'k2')   ? 'save_fit_kw'
