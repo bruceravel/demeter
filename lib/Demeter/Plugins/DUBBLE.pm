@@ -56,8 +56,10 @@ sub fix {
       if ($is_med) {
 	foreach (0 .. $is_med-1) {
 	  my $extra = <D>;
-	  chomp $extra;
-	  print N $extra;
+	  if (defined($extra) and ($extra !~ m{\A\s*\z})) {
+	    chomp $extra;
+	    print N $extra;
+	  };
 	};
       };
       print N $/;

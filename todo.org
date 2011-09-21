@@ -125,7 +125,7 @@
        + [ ] implement pseudovoight
        + [ ] verify that all centroids are within (or near) fit range
        + [ ] verify that fit is sensible (ndata vs nparam)
-       + [ ] make group from fitted function
+       + [ ] +make group from fitted function+
        + [ ] behavior when changing data
        + [ ] pluck fit ranges
        + [X] control for changing lineshape (atan<->erf)(gauss<->loren)
