@@ -22,7 +22,7 @@ use Wx qw( :everything);
 use base qw(Wx::Frame);
 use Wx::Event qw(EVT_MENU EVT_CLOSE EVT_TOOL_ENTER EVT_CHECKBOX EVT_CHOICE
 		 EVT_BUTTON EVT_ENTER_WINDOW EVT_LEAVE_WINDOW
-		 EVT_HYPERLINK EVT_TEXT_ENTER);
+		 EVT_HYPERLINK EVT_TEXT_ENTER EVT_LEFT_DOWN);
 use Wx::DND;
 use Wx::Perl::TextValidator;
 
@@ -32,6 +32,7 @@ use Demeter::UI::Artemis::Project;
 use Demeter::UI::Artemis::Import;
 use Demeter::UI::Artemis::Data::AddParameter;
 use Demeter::UI::Artemis::Data::Quickfs;
+use Demeter::UI::Artemis::DND::PathDrag;
 use Demeter::UI::Artemis::ShowText;
 use Demeter::UI::Wx::CheckListBook;
 use Demeter::UI::Wx::SpecialCharacters qw(:all);
@@ -454,6 +455,8 @@ sub new {
   $right -> Add($pathbuttons, 0, wxGROW|wxALL, 5);
 
   $this->{pathlist}->SetDropTarget( Demeter::UI::Artemis::Data::DropTarget->new( $this, $this->{pathlist} ) );
+  my @kids = $this->{pathlist}->GetChildren;
+  EVT_LEFT_DOWN($kids[0], sub{OnDrag(@_,$this->{pathlist})});
 
   $rightpane -> SetSizerAndFit($right);
 
@@ -470,6 +473,24 @@ sub mouseover {
   EVT_ENTER_WINDOW($self->{$widget}, sub{$self->{statusbar}->PushStatusText($text); $_[1]->Skip});
   EVT_LEAVE_WINDOW($self->{$widget}, sub{$self->{statusbar}->PopStatusText if ($self->{statusbar}->GetStatusText eq $text); $_[1]->Skip});
 };
+
+sub OnDrag {
+  my ($checkbox, $event, $list) = @_;
+  if ($event->ControlDown) {
+    my $which = $checkbox->HitTest($event->GetPosition);
+    my $pathpage = $list->GetPage($which);
+    my $path = $pathpage->{path};
+    my $yaml = $path->serialization;
+    my $source = Wx::DropSource->new( $list );
+    my $dragdata = Demeter::UI::Artemis::DND::PathDrag->new(\$yaml);
+    $source->SetData( $dragdata );
+    $source->DoDragDrop(1);
+    $event->Skip(0);
+  } else {
+    $event->Skip(1);
+  };
+};
+
 
 sub initial_page_panel {
   my ($self) = @_;
@@ -1971,7 +1992,7 @@ sub clone {
   $cloned->name($path->name . " (clone)");
 
   my $newpage = Demeter::UI::Artemis::Path->new($datapage->{pathlist}, $cloned, $datapage);
-  $datapage->{pathlist}->AddPage($newpage, $cloned->name, 1, 0, $datapage->{pathlist}->GetSelection);
+  $datapage->{pathlist}->AddPage($newpage, $cloned->name, 1, 0, $datapage->{pathlist}->GetSelection+1);
   $newpage->{pp_n}->SetValue($path->n);
   $newpage->include_label(0,$datapage->{pathlist}->GetSelection);
 
@@ -2138,6 +2159,7 @@ use Demeter::UI::Artemis::DND::PathDrag;
 use Demeter::UI::Artemis::Path;
 use Demeter::UI::Wx::SpecialCharacters qw(:all);
 use Demeter::Feff::Distributions;
+use File::Basename;
 
 use Scalar::Util qw(looks_like_number);
 
@@ -2164,8 +2186,9 @@ sub OnData {
   my $first = ($book->GetPage(0) =~ m{Panel});
   $book->DeletePage(0) if $first;
   my $spref = $this->{DATA}->{Data};
-  my $is_sspath = ($spref->[0] eq 'SSPath') ? 1 : 0;
-  if ($spref->[0] eq 'SSPath') {
+  if (ref($spref) eq 'SCALAR') {
+    $this->make_path($spref);
+  } elsif ($spref->[0] eq 'SSPath') {
     my $feff = $demeter->mo->fetch("Feff", $spref->[1]);
     my $name = $spref->[2];
     my $reff = $spref->[3];
@@ -2217,6 +2240,53 @@ sub OnData {
 
   $::app->heap_check;
   return $def;
+};
+
+sub make_path {
+  my ($this, $spref) = @_;
+  my $rhash = YAML::Tiny::Load($$spref);
+  delete $rhash->{group};
+  my $pathlike;
+  if (exists $rhash->{ipot}) {          # this is an SSPath
+    my $feff = Demeter -> mo -> fetch('Feff', $rhash->{parentgroup});
+    delete $rhash->{$_} foreach qw(Type weight string pathtype plottable);
+    $pathlike = Demeter::SSPath->new(parent=>$feff);
+    $pathlike -> set();
+    $pathlike -> sp($pathlike);
+    #print $pathlike, "  ", $pathlike->sp, $/;
+  } elsif (exists $rhash->{nnnntext}) { # this is an FPath
+    $pathlike = Demeter::FPath->new();
+    $pathlike -> set(%$rhash);
+    $pathlike -> sp($pathlike);
+    $pathlike -> parentgroup($pathlike->group);
+    $pathlike -> parent($pathlike);
+    $pathlike -> workspace($pathlike->stash_folder);
+  } elsif (exists $rhash->{absorber}) { # this is an FSPath
+    my $feff = Demeter -> mo -> fetch('Feff', $rhash->{parentgroup});
+    $pathlike = Demeter::FSPath->new();
+    delete $rhash->{$_} foreach qw(workspace Type weight string pathtype plottable);
+    $pathlike -> set(%$rhash);
+    my $where = Cwd::realpath(File::Spec->catfile($rhash->{folder}, '..', '..', 'feff', basename($feff->workspace)));
+    $pathlike -> set(workspace=>$where, folder=>$where, parent=>Demeter -> mo -> fetch('Feff', $rhash->{parentgroup}));
+    my $sp = Demeter -> mo -> fetch('ScatteringPath', $pathlike->spgroup);
+    $pathlike -> sp($sp);
+  } else {
+    $pathlike = Demeter::Path->new(%$rhash);
+    my $sp = Demeter -> mo -> fetch('ScatteringPath', $pathlike->spgroup);
+    $pathlike -> sp($sp);
+    #$pathlike -> folder(q{});
+    #print $pathlike, "  ", $pathlike->sp, $/;
+  };
+
+  $pathlike->data($this->{PARENT}->{data});
+  foreach my $att (qw(delr e0 ei s02 sigma2 third fourth dphase)) {
+    $pathlike->$att($rhash->{$att});
+  };
+  my $book  = $this->{BOOK};
+  my $page = Demeter::UI::Artemis::Path->new($book, $pathlike, $this->{PARENT});
+  my $i = $book->AddPage($page, $pathlike->name, 1, 0);
+  $page->include_label(q{});
+
 };
 
 

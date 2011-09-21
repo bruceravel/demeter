@@ -291,8 +291,11 @@ sub _verify_fit {
   ## 18. check that no more than one path is flagged as the default path
   $trouble_found += $self->S_default_path;
 
-  ## 18. check that GDS math expressions do not have loops or cycles
+  ## 19. check that GDS math expressions do not have loops or cycles
   $trouble_found += $self->S_cycle_loop;
+
+  ## 20. check for obvious cases of a data set used more than once
+  $trouble_found += $self->S_data_collision;
 
   return $trouble_found;
 };

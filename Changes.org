@@ -27,6 +27,12 @@
    - Handle changes to rmax_out correctly
    - Fixed a bug importing projects from earlier versions of Artemis
      (deprecated nindicators attribute of the Plot onject)
+   - Quick first shell (FSPath) now properly respects a change in N
+   - Fixed a bug wherein Artemis would crash reading a project file
+     with a quick first shell (FSPath) object
+   - Implemented drag-n-drop for cloning a path and copying a path to
+     other data sets
+   - Fixed a bug cloning quick first shell (FSPath) objects
 
 *** Demeter
    - Fixed a problem interpreting rhombohedral space groups in Atoms.
@@ -41,6 +47,10 @@
      things like 'chik2' and 'chir_mag', which save("fit",...) took
      things like 'k2' and 'rmag').  Also added a useful error message
      to save_many warning against passing it ScatteringPath objects.
+   - Imporvements to the Dubble plugin
+   - Fit sanity check: notice an obvious case of attempting to use the
+     same data set more than once in a multiple data set fit.  This is
+     presumed to be a naughty attempt to increase Nidp.
 
 *** Acknowledgements for this release
    - George Sterbinsky

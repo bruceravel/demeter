@@ -79,7 +79,9 @@ with 'MooseX::SetGet';		# this is mine....
 
 my %seen_group;
 has 'group'     => (is => 'rw', isa => 'Str',     default => sub{shift->_get_group()},
-		    trigger => sub{ my($self, $new); ++$seen_group{$new} if defined($new)});
+		    trigger => sub{ my($self, $new);
+				    ++$seen_group{$new} if (defined($new));
+				  });
 has 'name'      => (is => 'rw', isa => 'Str',     default => q{});
 has 'plottable' => (is => 'ro', isa => 'Bool',    default => 0);
 has 'pathtype'  => (is => 'ro', isa => 'Bool',    default => 0);

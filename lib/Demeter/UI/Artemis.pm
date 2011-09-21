@@ -122,6 +122,7 @@ sub OnInit {
   $frames{main} -> {projectname} = '<untitled>';
   $frames{main} -> {projectpath} = q{};
   $frames{main} -> {modified} = 0;
+  $frames{main} -> {cvcount} = 0;
   $app->{main} = $frames{main};
 
   ## -------- Set up menubar
@@ -976,6 +977,8 @@ sub make_data_frame {
 		     $_[0]->SetLabel($label);
 		   });
 
+  ++$frames{main}->{cvcount};
+  $data->cv($frames{main}->{cvcount});
 
   $frames{$dnum}  = Demeter::UI::Artemis::Data->new($self, $nset++);
   $frames{$dnum} -> SetTitle("Artemis [Data] ".$data->name);

@@ -220,8 +220,16 @@ sub _record {
   my @std    = $self->_array($index, 'stddev');
   my ($i0_scale, $signal_scale, $is_merge) = (0,0,0);
 
+  ## this allows you to import the same data group twice without a
+  ## groupname collision.
+  my $collided = 0;
+  if (Demeter->mo->any($groupname)) {
+    $groupname = $self->_get_group;
+    $collided  = 1;
+  };
   my $data = Demeter::Data->new(group	    => $groupname,
 				from_athena => 1,
+				collided    => $collided,
 			       );
   my ($xsuff, $ysuff) = ($args{is_xmu}) ? qw(energy xmu) : qw(k chi);
   Ifeffit::put_array(join('.', $groupname, $xsuff), \@x);

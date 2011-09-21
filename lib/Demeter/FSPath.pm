@@ -32,6 +32,11 @@ use String::Random qw(random_string);
 
 with 'Demeter::UI::Screen::Pause' if ($Demeter::mode->ui eq 'screen');
 
+has '+data'        => (isa => Empty.'|Demeter::Data',
+		      trigger => sub{my ($self, $new) = @_;
+				     $self->guesses;
+				     $self->datagroup($new->group) if $new;
+				   });
 has 'abs'	   => (is => 'rw', isa => Empty.'|'.ElementSymbol, default => q{},
 		       trigger => sub{my ($self, $new) = @_;
 				      $self->absorber(get_symbol($new));
@@ -112,8 +117,8 @@ sub BUILD {
 
 override 'all' => sub {
   my ($self) = @_;
-  my @keys   = map {$_->name} grep {$_->name !~ m{\A(?:data|plot|plottable|is_mc|mode|parent|sp|gds|sentinal)\z}} $self->meta->get_all_attributes;
-  push @keys, qw(name group mark plottable);
+  my @keys   = map {$_->name} grep {$_->name !~ m{\A(?:data|plot|plottable|is_mc|mode|parent|sp|gds|sentinal|string|pathtype|Type|weight)\z}} $self->meta->get_all_attributes;
+  push @keys, qw(name group mark);
   #print join($/, @keys), $/;
   my @values = map {$self->$_} @keys;
   my %hash   = zip(@keys, @values);
@@ -175,7 +180,7 @@ override path => sub {
   $_->push_ifeffit foreach @{ $self->gds };
   my @list = @{ $self->parent->pathlist };
   $self->sp($list[0]);
-  $self->n(1);
+  #$self->n(1);
   $self->_update_from_ScatteringPath;
   $self->label(sprintf("%s-%s path at %s", $self->absorber, $self->scatterer, $self->reff));
   $self->dispose($self->_path_command(1));
@@ -208,9 +213,11 @@ sub save_feff_yaml {
 
 sub guesses {
   my ($self) = @_;
+  return if not $self->co->default("fspath", "make_gds");
   return $self if ((not $self->absorber) or (not $self->scatterer));
   $self->clear_gds;
   my $elems = join('_', lc($self->absorber), lc($self->scatterer));
+  $elems .= ($self->data) ? '_'.lc($self->data->cv) : q{};
   #$self->name($elems) if (not $self->name or ($self->name =~ m{FS\s*\z}));
   my @list = ($self->simpleGDS("guess aa_$elems = 1"),
 	      $self->simpleGDS("guess ee_$elems = 0"),

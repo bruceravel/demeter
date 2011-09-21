@@ -443,6 +443,17 @@ sub fetch {
   return q{};
 };
 
+sub any {
+  my ($self, $group) = @_;
+  foreach my $t (@{$self->types}) {
+    my $list = $self->$t;
+    foreach my $o (@$list) {
+      return $o if ($o->group eq $group);
+    };
+  };
+  return q{};
+};
+
 sub remove {
   my ($self, $object) = @_;
   my $type = (split(/::/, ref $object))[-1];

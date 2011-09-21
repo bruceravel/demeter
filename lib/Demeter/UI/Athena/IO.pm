@@ -224,11 +224,11 @@ sub _data {
     $yaml = YAML::Tiny::Load($data->slurp($persist));
     if ($data->columns eq $yaml->{columns}) {
       my $nnorm = ($yaml->{datatype} eq 'xanes') ? 2 : 3;
-      $data -> set(energy      => $suggest{energy}||$yaml->{energy}||'$1',
-		   numerator   => $suggest{numerator}||$yaml->{numerator}||'1',
-		   denominator => $suggest{denominator}||$yaml->{denominator}||'1',
-		   ln          => $suggest{ln}||$yaml->{ln},
-		   inv         => $suggest{inv}||$yaml->{inv},
+      $data -> set(energy      => $yaml->{energy}      || $suggest{energy}      || '$1',
+		   numerator   => $yaml->{numerator}   || $suggest{numerator}   || '1',
+		   denominator => $yaml->{denominator} || $suggest{denominator} || '1',
+		   ln          => (defined($yaml->{ln}))  ? $yaml->{ln}  : $suggest{ln},
+		   inv         => (defined($yaml->{inv})) ? $yaml->{inv} : $suggest{inv},
 		   ##is_kev      => $yaml->{units},
 		   datatype    => $yaml->{datatype}||'xmu',
 		   bkg_nnorm   => $nnorm,

@@ -590,6 +590,22 @@ sub S_cycle_loop {
 
   return $found;
 };
+
+## 20. check for an obvious data repitition, Data attribute collided set to 1 for any data group
+sub S_data_collision {
+  my ($self) = @_;
+  my $found = 0;
+  my @data = @{ $self->data };
+  foreach my $d (@data) {
+    next if not $d->fit_include;
+    if ($d->collided) {
+      ++$found;
+      $d->add_trouble('collision');
+    };
+  };
+  return $found;
+};
+
 1;
 
 
@@ -639,6 +655,10 @@ The following sanity checks are made on the Fit object:
 =item *
 
 All data files included in the fit exist.
+
+=item *
+
+No data set is obviously used twice in the fit.
 
 =item *
 
@@ -766,6 +786,12 @@ C<rmin> is larger than C<rmax>.
 
 C<rmin> is smaller than the value of C<rbkg> that was used in the
 background removal.
+
+=item C<collision>
+
+This data came from the the same source as another data group.  You
+seem to be trying to increase your number of independent points by
+fitting the same data more than once in a multiple data set fit.
 
 =back
 

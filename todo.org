@@ -175,7 +175,7 @@
 
 
 ** Artemis
-*** Artemis bugs and missing features [0/7]  [0%]
+*** Artemis bugs and missing features [0/8]  [0%]
    - [ ] *rename Atoms/Feff*
    - [ ] Reorganize lists, move individual items up and down, move
 	 blocks up and down, Path list, +Plot list+
@@ -192,6 +192,10 @@
          proper handling of this signal in the bkg, residual, and
          running R-factor plots.  Also probably want to disallow it
          for R123 plots.
+   - [ ] Path drag and drop [0/3]
+        - [ ] DND of an SSPath does not work correctly
+        - [ ] FPath untested
+        - [ ] DND of selection (currently only one at a time)
 
 **** Project [2/5]
    - [ ] VPaths to/from project file
@@ -203,10 +207,10 @@
 **** Advanced fitting						   :Advanced:
 ***** MFC [0/1]
    - [ ] Balance interstitial energies for MFC fits
-***** MDS & Fit Sequence [0/3]
+***** MDS & Fit Sequence [1/3]
    - [ ] Import mutiple data sets from an Athena project file
    - [ ] feffit.inp import: needs testing; MDS that is not merely MKW
-   - [ ] Clone data sets such that the path list gets replicated efficiently (i.e. for MDS fits)
+   - [-] Clone data sets such that the path list gets replicated efficiently (i.e. for MDS fits)
 
 
 *** Histograms [11/13] [84%]

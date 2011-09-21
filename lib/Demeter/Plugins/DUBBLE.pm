@@ -6,6 +6,7 @@ extends 'Demeter::Plugins::FileType';
 has '+is_binary'   => (default => 0);
 has '+description' => (default => "the DUBBLE beamline at the ESRF");
 has '+version'     => (default => 0.1);
+has 'is_med'       => (is => 'rw', isa => 'Int', default => 0);
 
 use Scalar::Util qw(looks_like_number);
 
@@ -34,7 +35,7 @@ sub fix {
   my ($self) = @_;
 
   my $file = $self->file;
-  my $is_med = $self->_is_med;
+  $self->is_med($self->_is_med);
 
   my $new = File::Spec->catfile($self->stash_folder, $self->filename);
   ($new = File::Spec->catfile($self->stash_folder, "toss")) if (length($new) > 127);
@@ -44,7 +45,16 @@ sub fix {
   my $header = 1;
   while (<D>) {
     if ($header) {
-      $header = 0 if ($_ =~ m{\A\s+\&END});
+      if ($_ =~ m{\A\s+\&END}) {
+	$header = 0;
+	print N '# ', $_;
+	my $labels = '# energy      time         i0        it        if        im';
+	$labels .= '             med1          med2         med3         med4         med5         med6         med7         med8         med9' if $self->is_med;
+	$labels .= $/;
+	print N "# -------------------$/";
+	print N $labels;
+	next;
+      };
       print N '# ', $_;
     } else {
       last if ($_ =~ m{\A\s+END}i);
@@ -53,8 +63,8 @@ sub fix {
       my $angle = shift(@line)/1000; # millidegrees, apparently
       $angle = sprintf("%.4f", (2*$PI*$HBARC) / ($TWOD * sin($angle * $PI / 180)));
       print N join("   ", $angle, @line);
-      if ($is_med) {
-	foreach (0 .. $is_med-1) {
+      if ($self->is_med) {
+	foreach (0 .. $self->is_med-1) {
 	  my $extra = <D>;
 	  if (defined($extra) and ($extra !~ m{\A\s*\z})) {
 	    chomp $extra;
@@ -99,6 +109,7 @@ sub _is_med {
 sub suggest {
   my ($self, $which) = @_;
   $which ||= 'transmission';
+  $which = 'fluorescence' if $self->is_med;
   if ($which eq 'transmission') {
     return (energy      => '$1',
 	    numerator   => '$3',
