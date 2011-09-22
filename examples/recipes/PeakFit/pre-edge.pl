@@ -10,7 +10,7 @@ my $data = Demeter::Data->new(file        => 'tipb.305',
 			     );
 
 my $peak = Demeter::PeakFit->new(data=>$data, xmin=>-15, xmax=>5, screen => 0);
-$peak -> backend('ifeffit');
+$peak -> backend('fityk');
 
 $data->set_mode(screen=>1);
 

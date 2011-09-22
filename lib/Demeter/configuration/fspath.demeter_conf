@@ -97,5 +97,6 @@ onvalue=1
 offvalue=0
 default=true
 description
-  When true, this tells Demeter to generate a set of guess parameters
-  for use with the FSPath object.
+  When true, this tells Demeter to generate by default a set of guess
+  parameters for use with the FSPath object.  In Artemis, this is the
+  default setting of the checkbox in the quick first shell dialog.

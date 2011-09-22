@@ -113,6 +113,7 @@ override set_parent_method => sub {
   #$self->parentgroup($feff->group);
 };
 
+
 sub set_sourcegroup {
   my ($self, $gp) = @_;
   $self->sourcegroup($gp);

@@ -37,6 +37,9 @@ if ($Demeter::mode->ui eq 'screen') {
   with 'Demeter::UI::Screen::Progress';
 };
 
+use vars qw($Fityk_exists);
+$Fityk_exists       = eval "require fityk";
+
 has '+plottable'   => (default => 1);
 has '+data'        => (isa => Empty.'|Demeter::Data|Demeter::XES');
 has '+name'        => (default => 'PeakFit' );
@@ -102,6 +105,10 @@ coerce 'PeakFitBackends',
   via { lc($_) };
 has backend => (is => 'rw', isa => 'PeakFitBackends', coerce => 1, alias => 'md',
 		trigger => sub{my ($self, $new) = @_;
+			       if (($new eq 'fityk') and (not $Fityk_exists)) {
+				 warn "The Fityk peak fitting backend is not available, falling back to Ifeffit.\n";
+				 $new = 'ifeffit';
+			       };
 			       if ($new eq 'ifeffit') {
 				 eval {apply_all_roles($self, 'Demeter::PeakFit::Ifeffit')};
 				 print $@;

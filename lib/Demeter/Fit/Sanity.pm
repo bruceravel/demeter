@@ -151,7 +151,6 @@ sub S_used_not_defined {
     foreach my $pp (qw(s02 e0 delr sigma2 ei third fourth dphase)) {
       my @list = split(/$tokenizer_regexp+/, $p->$pp);
       foreach my $token (@list) {
-	#print $mathexp, "  ", $token, $/;
 	next if ($token =~ m{\A\s*\z});	               # space, ok
 	next if ($token =~ m{\A$NUMBER\z});            # number, ok
 	next if (is_IfeffitFunction($token));          # function, ok
@@ -162,7 +161,7 @@ sub S_used_not_defined {
 	++$found;
 	#     "The math expression for $pp for \"$label\" uses an undefined token: $token"
 	#    );
-	$p->add_trouble(join('_', 'useundef', $pp, $token));
+	$p->add_trouble(join('~', 'useundef', $pp, $token));
       };
     };
   };
@@ -198,7 +197,7 @@ sub S_binary_ops {
 	++$found;
 	#     "The math expression for $pp for \"$label\" uses an invalid binary operation: $which"
 	#    );
-	$p->add_trouble(join('_', 'binary', $pp, $which));
+	$p->add_trouble(join('~', 'binary', $pp, $which));
       };
     };
   };
@@ -230,7 +229,7 @@ sub S_function_names {
 	my $match = $1;
 	if (not is_IfeffitFunction($match)) {
 	  ++$found;
-	  $p->add_trouble(join('_', 'function', $pp, $match));
+	  $p->add_trouble(join('~', 'function', $pp, $match));
 	};
       };
     };
@@ -577,13 +576,13 @@ sub S_cycle_loop {
   };
 
   foreach my $loop ($graph->self_loop_vertices) {
-    $self->add_trouble(join('_', 'loop', 'x', $loop));
+    $self->add_trouble(join('~', 'loop', 'x', $loop));
     ++$found;
   };
   if ($graph->has_a_cycle) {
     my @cycle = $graph->find_a_cycle;
     if ($#cycle) {		# we have already reported on loops
-      $self->add_trouble(join('_', 'cycle', 'x', join(" --> ", @cycle)));
+      $self->add_trouble(join('~', 'cycle', 'x', join(" --> ", @cycle)));
       ++$found;
     };
   };
@@ -888,7 +887,9 @@ The name of this GDS parameter is an Ifeffit program variable name.
 
 =item C<merge>
 
-This is an unresolved parameter from the merge of fitting projects.
+This is an parameter which has been defined twice, possibly from the
+merge of fitting projects or the creation of two more similar quick
+first shell fitting models.
 
 =back
 

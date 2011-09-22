@@ -36,6 +36,7 @@ if ($Demeter::mode->ui eq 'screen') {
 
 use Capture::Tiny qw(capture);
 use Carp;
+use Chemistry::Elements qw(get_symbol);
 use Compress::Zlib;
 use Cwd;
 use File::Basename;

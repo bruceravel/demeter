@@ -130,10 +130,9 @@ sub set_datagroup {
   $self->datagroup($group);
 };
 
-use vars qw($Gnuplot_exists $Fityk_exists $STAR_Parser_exists $XDI_exists
+use vars qw($Gnuplot_exists $STAR_Parser_exists $XDI_exists
 	    $PDL_exists $PSG_exists);
 $Gnuplot_exists     = eval "require Graphics::GnuplotIF";
-$Fityk_exists       = eval "require fityk";
 $STAR_Parser_exists = 1;
 use STAR::Parser;
 $XDI_exists         = eval "require Xray::XDI";
@@ -202,13 +201,14 @@ sub import {
   #print join(" ", $class, caller), $/;
 
   my @load = ();
-  my @data = (qw(Data Plot/Indicator Plot/Style Journal
+  ## I wish I didn't have to load XES here
+  my @data = (qw(Data XES Plot/Indicator Plot/Style Journal
 		 Data/Prj Data/Pixel Data/MultiChannel));
-  my @heph = (qw(Data));
+  my @heph = (qw(Data XES));
   my @fit  = (qw(Atoms Feff Feff/External ScatteringPath
 		 Path VPath SSPath ThreeBody FPath FSPath
 		 GDS Fit Fit/Feffit StructuralUnit));
-  my @anal = (qw(LCF LogRatio Diff));
+  my @anal = (qw(LCF LogRatio Diff PeakFit PeakFit/LineShape));
   my @xes  = ('XES');
   my $colonanalysis = 0;
 
@@ -239,8 +239,8 @@ sub import {
       next PRAG;
     };
     if ($p eq ':analysis') {
-      @load = (@data, @anal, @xes);
-      $colonanalysis = 1;	# need to load peakfit separately while using fityk, see below
+      @load = (@data, @anal);
+      $colonanalysis = 1;	# verify PDL before loading PCA
       next PRAG;
     };
     if ($p eq ':all') {
@@ -254,13 +254,6 @@ sub import {
     next if $INC{"Demeter/$m.pm"};
     ##print "Demeter/$m.pm\n";
     require "Demeter/$m.pm";
-  };
-  if ($colonanalysis and $Fityk_exists) {
-    foreach my $m (qw(PeakFit PeakFit/LineShape)) {
-      next if $INC{"Demeter/$m.pm"};
-      ##print "Demeter/$m.pm\n";
-      require "Demeter/$m.pm";
-    };
   };
   if ($colonanalysis and $PDL_exists and $PSG_exists) {
     next if $INC{"Demeter/PCA.pm"};
@@ -619,7 +612,7 @@ sub translate_trouble {
     my $match = $trouble;
     ($pp, $token) = (q{}, q{});
     if ($trouble =~ m{_}) {
-      ($match, $pp, $token) = split(/_/, $trouble);
+      ($match, $pp, $token) = split(/~/, $trouble);
     };
     if ($this =~ m{$match}) {
       my $content = $item->content();

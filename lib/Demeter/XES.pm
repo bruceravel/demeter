@@ -420,7 +420,7 @@ and from YAMLs with a single object perl YAML.
 
 =item *
 
-Some peak fitting, perhaps with fityk, would be dandy.
+Peak fitting is currently broken for XES data
 
 =back
 

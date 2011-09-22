@@ -33,6 +33,7 @@
    - Implemented drag-n-drop for cloning a path and copying a path to
      other data sets
    - Fixed a bug cloning quick first shell (FSPath) objects
+   - Artemis now respects choice of fit space.
 
 *** Demeter
    - Fixed a problem interpreting rhombohedral space groups in Atoms.

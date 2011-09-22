@@ -43,6 +43,17 @@ section_description
   These variables determine details of Demeter's principle component
   analysis system.
 
+variable=backend
+type=list
+options=ifeffit fityk
+default=ifeffit
+description
+  This tells Demeter which peak fitting backend to use.  This
+  parameter is not currently in use as the fityk backend is still
+  experimental.  It can be employed in a script by specifying the
+  backend when creating the PeakFit object.  Fityk is not available in
+  Athena at this time.
+
 variable=emin
 type=real
 default=--15

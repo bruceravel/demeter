@@ -431,6 +431,7 @@ sub on_close {
     };
     save_project(\%frames) if $result == wxID_YES;
   };
+  $frames{main}->{cvcount} = 0;
   rmtree($self->{project_folder}); #, {verbose=>1});
   unlink $frames{main}->{autosave_file};
   $demeter->mo->destroy_all;
@@ -584,6 +585,14 @@ sub fit {
   #$fit->ignore_errors(1);
   $rframes->{main} -> {currentfit} = $fit;
 
+  ## get fitting space
+  my $fit_space = 'r';
+  $fit_space = 'k' if $frames{main}->{fitspace}->[0]->GetValue;
+  $fit_space = 'r' if $frames{main}->{fitspace}->[1]->GetValue;
+  $fit_space = 'q' if $frames{main}->{fitspace}->[2]->GetValue;
+  foreach my $d (@data) {
+    $d->fit_space($fit_space);
+  };
 
   $fit->set_mode(ifeffit=>1, screen=>0);
   ##autosave($name);

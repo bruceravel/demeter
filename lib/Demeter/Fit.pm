@@ -1335,17 +1335,17 @@ override 'deserialize' => sub {
     } elsif (exists $plotlike->{nnnntext}) { # this is an FPath
       1;
     };
-    my @array = %{ $plotlike };
+    my %hash = %{ $plotlike };
     my $this;
     if (exists $plotlike->{ipot}) {          # this is an SSPath
       my $feff = $parents{$plotlike->{parentgroup}} || $data[0] -> mo -> fetch('Feff', $plotlike->{parentgroup});
       $this = Demeter::SSPath->new(parent=>$feff);
-      $this -> set(@array);
+      $this -> set(%hash);
       $this -> sp($this);
       #print $this, "  ", $this->sp, $/;
     } elsif (exists $plotlike->{nnnntext}) { # this is an FPath
       $this = Demeter::FPath->new();
-      $this -> set(@array);
+      $this -> set(%hash);
       $this -> sp($this);
       $this -> parentgroup($this->group);
       $this -> parent($this);
@@ -1353,13 +1353,18 @@ override 'deserialize' => sub {
     } elsif (exists $plotlike->{absorber}) { # this is an FSPath
       my $feff = $parents{$plotlike->{parentgroup}} || $data[0] -> mo -> fetch('Feff', $plotlike->{parentgroup});
       $this = Demeter::FSPath->new();
-      $this -> set(@array);
+      $this -> set(%hash);
+      foreach my $att (qw(e0 s02 delr sigma2 third fourth)) {
+	$this->$att($hash{$att});
+      };
       my $where = Cwd::realpath(File::Spec->catfile($args{folder}, '..', '..', 'feff', basename($feff->workspace)));
       $this -> set(workspace=>$where, folder=>$where, parent=>$data[0] -> mo -> fetch('Feff', $plotlike->{parentgroup}));
-      my $sp = $sps{$this->spgroup} || $data[0] -> mo -> fetch('ScatteringPath', $this->spgroup);
+      #my $sp = $sps{$this->spgroup} || $data[0] -> mo -> fetch('ScatteringPath', $this->spgroup);
+      my $sp = $data[0] -> mo -> fetch('ScatteringPath', $hash{spgroup});
       $this -> sp($sp);
+      $this -> feff_done(1);
     } else {
-      $this = Demeter::Path->new(@array);
+      $this = Demeter::Path->new(%hash);
       my $sp = $sps{$this->spgroup} || $data[0] -> mo -> fetch('ScatteringPath', $this->spgroup);
       $this -> sp($sp);
       #$this -> folder(q{});

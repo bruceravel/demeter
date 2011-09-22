@@ -480,6 +480,7 @@ sub OnDrag {
     my $which = $checkbox->HitTest($event->GetPosition);
     my $pathpage = $list->GetPage($which);
     my $path = $pathpage->{path};
+    $path->_update_from_ScatteringPath;
     my $yaml = $path->serialization;
     my $source = Wx::DropSource->new( $list );
     my $dragdata = Demeter::UI::Artemis::DND::PathDrag->new(\$yaml);
@@ -2048,10 +2049,11 @@ sub quickfs {
   };
 
   my $busy = Wx::BusyCursor->new();
-  my ($abs, $scat, $distance, $edge) = ($dialog->{abs}->GetValue,
-					$dialog->{scat}->GetValue,
-					$dialog->{distance}->GetValue,
-					$dialog->{edge}->GetStringSelection,);
+  my ($abs, $scat, $distance, $edge, $make) = ($dialog->{abs}->GetValue,
+					       $dialog->{scat}->GetValue,
+					       $dialog->{distance}->GetValue,
+					       $dialog->{edge}->GetStringSelection,
+					       $dialog->{make}->GetValue,);
 
   if (lc($abs) !~ m{\A$element_regexp\z}) {
     $datapage->status("Absorber $abs is not a valid element symbol.");
@@ -2063,12 +2065,14 @@ sub quickfs {
   };
 
   my $firstshell = Demeter::FSPath->new();
-  $firstshell -> set(abs       => $abs,
+  $firstshell -> set(make_gds  => $make,
+		     edge      => $edge,
+		     abs       => $abs,
 		     scat      => $scat,
 		     distance  => $distance,
-		     edge      => $edge,
 		     data      => $datapage->{data},
 		    );
+  $firstshell->make_name;
   my $ws = File::Spec->catfile($Demeter::UI::Artemis::frames{main}->{project_folder}, 'feff', $firstshell->parent->group);
   $firstshell -> workspace($ws);
   $firstshell -> _update('bft');
@@ -2263,13 +2267,14 @@ sub make_path {
     $pathlike -> workspace($pathlike->stash_folder);
   } elsif (exists $rhash->{absorber}) { # this is an FSPath
     my $feff = Demeter -> mo -> fetch('Feff', $rhash->{parentgroup});
-    $pathlike = Demeter::FSPath->new();
-    delete $rhash->{$_} foreach qw(workspace Type weight string pathtype plottable);
+    $pathlike = Demeter::FSPath->new(make_gds=>0);
+    delete $rhash->{$_} foreach qw(workspace Type weight string pathtype plottable gds make_gds data);
     $pathlike -> set(%$rhash);
     my $where = Cwd::realpath(File::Spec->catfile($rhash->{folder}, '..', '..', 'feff', basename($feff->workspace)));
     $pathlike -> set(workspace=>$where, folder=>$where, parent=>Demeter -> mo -> fetch('Feff', $rhash->{parentgroup}));
     my $sp = Demeter -> mo -> fetch('ScatteringPath', $pathlike->spgroup);
     $pathlike -> sp($sp);
+    $pathlike -> feff_done(1);
   } else {
     $pathlike = Demeter::Path->new(%$rhash);
     my $sp = Demeter -> mo -> fetch('ScatteringPath', $pathlike->spgroup);
