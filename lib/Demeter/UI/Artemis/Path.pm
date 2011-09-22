@@ -40,6 +40,7 @@ my %labels = (label  => 'Label',
 
 my $aleft = Wx::TextAttr->new();
 $aleft->SetAlignment(wxTEXT_ALIGNMENT_LEFT);
+my $size = Wx::SystemSettings::GetFont(wxSYS_DEFAULT_GUI_FONT)->GetPointSize;
 
 use vars qw(%explanation);
 %explanation =
@@ -152,9 +153,12 @@ sub new {
     $gbs     -> Add($label,           Wx::GBPosition->new($i,1));
     $gbs     -> Add($this->{"pp_$k"}, Wx::GBPosition->new($i,2));
     ++$i;
+    $this->{"pp_$k"}->SetFont( Wx::Font->new( $size, wxTELETYPE, wxNORMAL, wxNORMAL, 0, "" ) );
     EVT_RIGHT_DOWN($label, sub{DoLabelKeyPress(@_, $this)});
     EVT_MENU($label, -1, sub{ $this->OnLabelMenu(@_)    });
     EVT_HYPERLINK($this, $label, sub{DoLabelKeyPress($label, $_[1], $_[0])});
+    EVT_RIGHT_DOWN($this->{"pp_$k"}, sub{OnPPClick(@_)}) if (($k ne 'label') and ($k ne 'n'));
+    EVT_MENU($this->{"pp_$k"}, -1, sub{ $this->OnPPMenu(@_)    });
     $label -> SetFont( Wx::Font->new( 9, wxDEFAULT, wxNORMAL, wxNORMAL, 0, "" ) );
     my $black = Wx::Colour->new(wxNullColour);
     $label -> SetNormalColour($black);
@@ -265,6 +269,43 @@ sub DoLabelLeave {
   my ($st, $event) = @_;
   print "leaving ", $st->{which}, $/;
 };
+use Readonly;
+Readonly my $GUESS  => Wx::NewId();
+Readonly my $DEF    => Wx::NewId();
+Readonly my $SET    => Wx::NewId();
+Readonly my $LGUESS => Wx::NewId();
+Readonly my $SKIP   => Wx::NewId();
+
+my $tokenizer_regexp = '(?-xism:(?=[\t\ \(\)\*\+\,\-\/\^])[\-\+\*\^\/\(\)\,\ \t])';
+sub OnPPClick {
+  my ($tc, $event) = @_;
+  $tc->SetFocus;
+  my $pos = int($event->GetPosition->x/$size)+1;
+  $tc->SetInsertionPoint($pos);
+  $event->Skip(0);
+  my $text = $tc->GetValue;
+  my $before = substr($text, 0, $pos) || q{};
+  my $after  = ($pos > length($text)) ? q{} : substr($text, $pos);
+  if ($before) {
+    $before = reverse($before);
+    my @list = split(/$tokenizer_regexp+/, $before);
+    $before = $list[0];
+    $before = reverse($before);
+  };
+  if ($after) {
+    my @list = split(/$tokenizer_regexp+/, $after);
+    $after = $list[0];
+  };
+  my $str = $before . $after;
+  my $menu  = Wx::Menu->new(q{});
+  $menu->Append($GUESS,  "Guess $str");
+  $menu->Append($DEF,    "Def $str");
+  $menu->Append($SET,    "Set $str");
+  $menu->Append($LGUESS, "Lguess $str");
+  $menu->Append($SKIP,   "Skip $str");
+  my $here = ($event =~ m{Mouse}) ? $event->GetPosition : Wx::Point->new(10,10);
+  $tc -> PopupMenu($menu, $here);
+};
 
 
 sub this_path {
@@ -275,7 +316,6 @@ sub this_path {
   };
   return $this;
 };
-use Readonly;
 Readonly my $CLEAR	 => Wx::NewId();
 Readonly my $THISFEFF	 => Wx::NewId();
 Readonly my $THISDATA	 => Wx::NewId();
@@ -378,6 +418,37 @@ sub OnLabelMenu {
 
     ($id == $EXPLAIN) and do {
       $currentpage->{datapage}->status($explanation{$param});
+      last SWITCH;
+    };
+  };
+};
+
+
+sub OnPPMenu {
+  my ($currentpage, $tc, $event) = @_;
+  #my $listbook = $currentpage->{listbook};
+  #my $param = $st->{which};
+  my $id = $event->GetId;
+
+ SWITCH: {
+    ($id == $GUESS) and do {
+      print "guess\n";
+      last SWITCH;
+    };
+    ($id == $DEF) and do {
+      print "def\n";
+      last SWITCH;
+    };
+    ($id == $SET) and do {
+      print "set\n";
+      last SWITCH;
+    };
+    ($id == $LGUESS) and do {
+      print "lguess\n";
+      last SWITCH;
+    };
+    ($id == $SKIP) and do {
+      print "skip\n";
       last SWITCH;
     };
 
