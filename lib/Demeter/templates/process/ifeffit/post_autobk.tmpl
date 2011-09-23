@@ -6,7 +6,7 @@
   # flow control
   # see the Text::Template document for an explanation of $OUT
 }
-
+##| post autobk
 set({$D->group}.preline  = {$D->bkg_int} + {$D->bkg_slope}*({$D->group}.energy + {$D->bkg_eshift}),
     {$D->group}.nbkg     = ({$D->group}.bkg - {$D->group}.preline) / {$D->bkg_step} + {$D->y_offset},
 {if ($D->datatype eq 'xanes') {
@@ -17,6 +17,9 @@ set({$D->group}.preline  = {$D->bkg_int} + {$D->bkg_slope}*({$D->group}.energy +
                                                                     $D->group, $D->get(qw(bkg_eshift bkg_nc2)),
                                                                     $D->group, $D->get(qw(bkg_eshift)));
  } elsif ($D->datatype eq 'xmudat') {
+      $OUT .= sprintf("    %s.prex     = %s.xmu,\n",  $D->group, $D->group);
+      $OUT .= sprintf("    %s.norm     = %s.xmu )\n", $D->group, $D->group);
+ } elsif ($D->is_nor) {
       $OUT .= sprintf("    %s.prex     = %s.xmu,\n",  $D->group, $D->group);
       $OUT .= sprintf("    %s.norm     = %s.xmu )\n", $D->group, $D->group);
  } else {

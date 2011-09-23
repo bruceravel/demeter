@@ -230,9 +230,16 @@ sub _data {
 		   ln          => (defined($yaml->{ln}))  ? $yaml->{ln}  : $suggest{ln},
 		   inv         => (defined($yaml->{inv})) ? $yaml->{inv} : $suggest{inv},
 		   ##is_kev      => $yaml->{units},
-		   datatype    => $yaml->{datatype}||'xmu',
 		   bkg_nnorm   => $nnorm,
 		  );
+      my $dt = $yaml->{datatype};
+      if ($dt eq 'norm') {
+	$data->datatype('xmu');
+	$data->is_nor(1);
+      } else {
+	$data->datatype($dt);
+	$data->is_nor(0);
+      };
     } else {
       $yaml->{each} = 0;
       $do_guess = ($suggest) ? 0 : 1;
@@ -261,6 +268,7 @@ sub _data {
     $colsel->{datatype}->SetSelection(0);
     $colsel->{datatype}->SetSelection(1) if ($data->datatype eq 'xanes');
     $colsel->{datatype}->SetSelection(2) if (($data->datatype eq 'xanes') and $data->is_nor);
+    $colsel->{datatype}->SetSelection(2) if ($data->is_nor);
     $colsel->{datatype}->SetSelection(3) if ($data->datatype eq 'chi');
     $colsel->{datatype}->SetSelection(4) if ($data->datatype eq 'xmudat');
     $colsel->OnDatatype(q{}, $colsel, $data);
@@ -370,7 +378,7 @@ sub _data {
 		     ln		 => $data->ln,
 		     inv	 => $data->inv,
 		     each        => $yaml->{each},
-		     datatype    => $data->datatype,
+		     datatype    => ($data->is_nor) ? 'norm' : $data->datatype,
 		     units       => $data->is_kev,);
   ## reference
   $persistence{do_ref}      = (defined($colsel)) ? $colsel->{Reference}->{do_ref}->GetValue : $yaml->{do_ref};

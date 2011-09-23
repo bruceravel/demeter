@@ -306,13 +306,13 @@ sub prep_arrays {
   };
   if ($self->nstan eq 1) {
     $which = ($self->space =~ m{\Achi}) ? "lcf_prep_standard_k" : "lcf_prep_standard";
-    $all[-1] -> dispose($all[-1]->template("analysis", $which));
+    $all[$#all] -> dispose($all[$#all]->template("analysis", $which));
   } elsif ($self->unity) {
     $which = ($self->space =~ m{\Achi}) ? "lcf_prep_last_k" : "lcf_prep_last";
-    $all[-1] -> dispose($all[-1]->template("analysis", $which));
+    $all[$#all] -> dispose($all[$#all]->template("analysis", $which));
   } else {
     $which = ($self->space =~ m{\Achi}) ? "lcf_prep_standard_k" : "lcf_prep_standard";
-    $all[-1] -> dispose($all[-1]->template("analysis", $which));
+    $all[$#all] -> dispose($all[$#all]->template("analysis", $which));
   };
   $self -> dispose($self->template("analysis", 'lcf_prep_lcf', {how=>$how}));
   $self->mo->standard(q{});
@@ -341,8 +341,8 @@ sub fit {
     };
   };
   if ($self->unity) {		# propagate uncertainty for last amplitude
-    my ($w, $dw) = $self->weight($all[-1]);
-    $self->weight($all[-1], $w, sqrt($sumsqr));
+    my ($w, $dw) = $self->weight($all[$#all]);
+    $self->weight($all[$#all], $w, sqrt($sumsqr));
   };
   $self->_statistics;
 

@@ -28,6 +28,7 @@ use Demeter::UI::Athena::ColumnSelection::Preprocess;
 use Demeter::UI::Athena::ColumnSelection::Rebin;
 use Demeter::UI::Athena::ColumnSelection::Reference;
 
+use Encoding::FixLatin qw(fix_latin);
 use List::MoreUtils qw(minmax);
 
 my $contents_font_size = Wx::SystemSettings::GetFont(wxSYS_DEFAULT_GUI_FONT)->GetPointSize; # - 1;
@@ -80,9 +81,11 @@ sub new {
 
   $this->{contents} = Wx::TextCtrl->new($rightpane, -1, q{}, wxDefaultPosition, [-1,-1],
   					wxTE_MULTILINE|wxTE_RICH2|wxTE_DONTWRAP|wxALWAYS_SHOW_SB);
-  $this->{contents} -> SetFont( Wx::Font->new( $contents_font_size, wxTELETYPE, wxNORMAL, wxNORMAL, 0, "" ) );
+  $this->{contents} -> SetFont( Wx::Font->new( $contents_font_size, wxTELETYPE, wxNORMAL, wxNORMAL, 0, "", ) );
   $right -> Add($this->{contents}, 1, wxGROW|wxALL, 5);
-  $this->{contents}->LoadFile($data->file);
+  my $fixed = fix_latin(Demeter->slurp($data->file));
+  $this->{contents}->SetValue($fixed);
+  #$this->{contents}->LoadFile($data->file);
 
   $leftpane  -> SetSizerAndFit($left);
   $rightpane -> SetSizerAndFit($right);
@@ -111,11 +114,11 @@ sub columns {
   my $gbs = Wx::GridBagSizer->new( 3, 3 );
 
   my $label = Wx::StaticText->new($columnbox, -1, 'Energy');
-  $gbs -> Add($label, Wx::GBPosition->new(1,0));
-  $label    = Wx::StaticText->new($columnbox, -1, 'Numerator');
-  $gbs -> Add($label, Wx::GBPosition->new(2,0));
-  $label    = Wx::StaticText->new($columnbox, -1, 'Denominator');
-  $gbs -> Add($label, Wx::GBPosition->new(3,0));
+  $gbs  -> Add($label, Wx::GBPosition->new(1,0));
+  $label = Wx::StaticText->new($columnbox, -1, 'Numerator');
+  $gbs  -> Add($label, Wx::GBPosition->new(2,0));
+  $label = Wx::StaticText->new($columnbox, -1, 'Denominator');
+  $gbs  -> Add($label, Wx::GBPosition->new(3,0));
 
   my @energy; $#energy = $#cols+1;
   my @numer;  $#numer  = $#cols+1;
@@ -299,8 +302,8 @@ sub OnDenomClick {
 
 sub OnDatatype {
   my ($parent, $event, $this, $data) = @_;
-  $data->datatype('xmu')                      if ($this->{datatype}->GetSelection == 0);
-  $data->set(datatype=>'xanes', bkg_nnorm=>$data->co->default('xanes', 'nnorm')) if ($this->{datatype}->GetSelection == 1);
+  $data->set(datatype=>'xmu', is_nor=>0)      if ($this->{datatype}->GetSelection == 0);
+  $data->set(datatype=>'xanes', bkg_nnorm=>$data->co->default('xanes', 'nnorm'), is_nor=>0) if ($this->{datatype}->GetSelection == 1);
   $data->set(datatype=>'xmu', is_nor=>1)      if ($this->{datatype}->GetSelection == 2);
   $data->datatype('chi')                      if ($this->{datatype}->GetSelection == 3);
   $data->datatype('xmudat')                   if ($this->{datatype}->GetSelection == 4);
@@ -352,8 +355,8 @@ sub OnDatatype {
 
 sub OnUnits {
   my ($parent, $event, $this, $data) = @_;
-  $data->kev(0) if ($this->{units}->GetSelection == 0);
-  $data->kev(1) if ($this->{units}->GetSelection == 1);
+  $data->is_kev(0) if ($this->{units}->GetSelection == 0);
+  $data->is_kev(1) if ($this->{units}->GetSelection == 1);
 };
 
 sub display_plot {

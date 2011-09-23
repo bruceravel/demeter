@@ -39,3 +39,5 @@ unguess
 set({$D->group}.flat = (({$D->bkg_fitted_step} - {$D->group}.line)*{$D->group}.theta + {$D->group}.prex) / {$D->bkg_step},
     {$D->group}.fbkg = ({$D->group}.bkg-{$D->group}.preline+({$D->bkg_fitted_step}-{$D->group}.line)*{$D->group}.theta)/{$D->bkg_step} )
 {#      if $self->datatype ne 'xanes';}
+set {$D->group}.line  = {$D->group}.line
+set {$D->group}.resid = {$D->group}.resid

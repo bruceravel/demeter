@@ -295,7 +295,7 @@ sub plot_reconstruction {
   $self->data($self->stack->[$index]);
   my @data  = $self->data_matrix->slice(":,($index)")->list; # these are piddles
   my @recon = $self->reconstructed->slice(":,($index)")->list;
-  my @diff  = pairwise {$a - $b} @data, @recon;
+  my @diff  = pairwise {$a - $b} @recon, @data;
   $self->put_array("rec$index",  \@recon);
   $self->put_array("diff$index", \@diff);
   $self->dispose($self->template('plot', 'pca_plot_reconstruction', {index=>$index}), 'plotting');
@@ -309,7 +309,7 @@ sub plot_tt {
   $self->e0($self->stack->[0]->bkg_e0);
   my @data  = $self->get_array($target->group);
   my @tt    = $self->get_array('tt');
-  my @diff  = pairwise {$a - $b} @data, @tt;
+  my @diff  = pairwise {$a - $b} @tt, @data;
   $self->put_array("diff", \@diff);
   $self->data($target);
   $self->dispose($self->template('plot', 'pca_plot_tt'), 'plotting');

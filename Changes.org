@@ -13,6 +13,9 @@
    - Implemented peak fitting tool
    - Fixed a bug that was slowing down the response of the column
      selection dialog
+   - Fixed a bug causing a crash when importing keV data
+   - Fixed display of ISO-8859 encoded data files in the column
+     selection dialog.
 
 *** Artemis
    - Fixed a formatting error reporting correlations in the log file
@@ -34,6 +37,8 @@
      other data sets
    - Fixed a bug cloning quick first shell (FSPath) objects
    - Artemis now respects choice of fit space.
+   - Right click on words in path parameter math expressions to post a
+     context menu for creating/modifying GDS parameters
 
 *** Demeter
    - Fixed a problem interpreting rhombohedral space groups in Atoms.
@@ -48,12 +53,19 @@
      things like 'chik2' and 'chir_mag', which save("fit",...) took
      things like 'k2' and 'rmag').  Also added a useful error message
      to save_many warning against passing it ScatteringPath objects.
-   - Imporvements to the Dubble plugin
+   - Improvements to the Dubble plugin
    - Fit sanity check: notice an obvious case of attempting to use the
      same data set more than once in a multiple data set fit.  This is
      presumed to be a naughty attempt to increase Nidp.
+   - Inverted residual function in PCA plots
+   - Fixed several bugs importing already-normalized data
+   - Added Encoding::FixLatin as a dependence.  There is some chance
+     of data corruption using this tool, but since it is only used for
+     display of text in a GUI and not for passing data to Ifeffit,
+     this is not a very serious problem.
 
 *** Acknowledgements for this release
+   - Eric Breynaert, superstar (literally dozens of bug reports from the last release!)
    - George Sterbinsky
    - Shelly Kelly
    - Erik Farquhar

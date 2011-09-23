@@ -253,7 +253,7 @@ sub put_data {
     $self->update_columns(0);
     $self->update_data(0);
 
-    $self->initialize_e0;
+    $self->initialize_e0 if not $self->is_nor; # we take a somewhat different path through these chores for pre-normalized data
   };
   return $self;
 };
@@ -313,12 +313,13 @@ sub normalize {
       $self->bkg_slope(0);
       $self->bkg_int(0);
     } else {
+      $self->bkg_step(1);
+      $self->bkg_fixstep(1);
       $self->bkg_slope(sprintf("%.14f", Ifeffit::get_scalar("pre_slope")));
       $self->bkg_int(sprintf("%.14f", Ifeffit::get_scalar("pre_offset")));
     };
     $self->bkg_step(sprintf("%.7f", $fixed || Ifeffit::get_scalar("edge_step")));
     $self->bkg_fitted_step($self->bkg_step) if not ($self->bkg_fixstep);
-    $self->bkg_fitted_step(1) if ($self->is_nor);
 
     my $command = q{};
     $command .= $self->template("process", "post_autobk");
@@ -328,8 +329,10 @@ sub normalize {
       $command .= $self->template("process", "flatten_set");
     };
     $self->dispose($command);
-  } else {
-    $self->dispose($self->template("process", "is_nor"));
+  } else { # we take a somewhat different path through these chores for pre-normalized data
+    $self->bkg_step(1);
+    $self->bkg_fitted_step(1);
+    #$self->dispose($self->template("process", "is_nor"));
   };
 
   $self->update_norm(0);
@@ -357,8 +360,19 @@ sub autobk {
     $command .= $stan->template("process", "autobk") if ($stan->update_bkg  and ($stan->datatype =~ m{xmu}));
   };
   $command .= $self->template("process", "autobk");
-  if ($self->bkg_fixstep) {
-    $fixed = $self->bkg_step;
+  $fixed = $self->bkg_step if $self->bkg_fixstep;
+
+  if ($self->is_nor) {		# we take a somewhat different path through these chores for pre-normalized data
+    my $e0 = Ifeffit::get_scalar("e0");
+    my ($elem, $edge) = $self->find_edge($e0);
+    $self->bkg_e0($e0);
+    $self->bkg_z($elem);
+    $self->fft_edge($edge);
+    $self->bkg_spl1($self->bkg_spl1); # this odd move sets the spl1e and
+    $self->bkg_spl2($self->bkg_spl2); # spl2e attributes correctly for the
+				      # new value of e0
+    $self->bkg_nor2($self->co->default('bkg', 'nor2'));
+    $self->resolve_defaults;
   };
   #$self->dispose($command);
 
@@ -370,6 +384,12 @@ sub autobk {
   $self->update_fft(1);
   $self->bkg_cl(0);
   $command .= $self->template("process", "post_autobk");
+  if ($self->is_nor) {
+    $command .= $self->template("process", "deriv");
+    $command .= $self->template("process", "nderiv");
+    $command .= $self->template("process", "is_nor");
+  };
+
   #$self->dispose($command);
 
 #     $command .= sprintf("set $group.fbkg = ($group.bkg-$group.preline+(%.5f-$group.line)*$group.theta)/%.5f\n",
@@ -385,7 +405,7 @@ sub autobk {
 
   ## first and second derivative
   #$command .= $self->template("process", "deriv");
-  $command .= $self->template("process", "nderiv");
+  $command .= $self->template("process", "nderiv") if not $self->is_nor;
   $self->dispose($command);
 
   ## note the largest value of the k array

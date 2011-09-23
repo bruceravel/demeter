@@ -1549,7 +1549,7 @@ notes/sgolay.m
 notes/sgolayfilt.m
 notes/tree.pl
 private-install
-README
+README.org
 src/Ifeffit.bs
 src/ifeffit.h
 src/ifeffit_wrap.c

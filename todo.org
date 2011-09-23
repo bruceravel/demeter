@@ -14,7 +14,7 @@
 
 ** installation issues [/]
 
-** Demeter bugs, shortcomings, missing features  [1/17] [5%]
+** Demeter bugs, shortcomings, missing features  [2/17] [11%]
   - [ ] in =Demeter::Data::IO::save_many=, why doesn't updating in n specifying "background" not work to bring data up to date?  (fft, i.e. doing autobk, does work)
   - [ ] Importing a Windows shortcut from a network mounted folder on linux or Mac will fail
   - [ ] +serialize VPath+, put VPath into +dpj and+ fpj files
@@ -25,7 +25,7 @@
   - [ ] Data object should note that datatype is xanes and not compute fbkg since the bkg array does not exist
   - [ ] cannot specify title for stddev and variance plots
   - [ ] Demeter command backend needs lots of polishing
-  - [ ] we seem not to have a normalized group (i.e. plot the same as mu or norm)
+  - [X] we seem not to have a normalized group (i.e. plot the same as mu or norm)
   - [ ] 3rd derivative
   - [ ] SDK: better documentation for freeze/thaw//serialize/deserialize
   - [ ] error check deserialization for all objects, verify that it is a yaml or whatnot, return 0 if not
@@ -88,10 +88,10 @@
        + [X] figure out cause of spurious error on Windows
 	     ~failed to get data from the clipboard error -2147221040 openClipboard failed~
    - [ ] implement frozen groups
-   - [-] Column selection dialog [1/3]
+   - [-] Column selection dialog [2/3]
        + [ ] importing each channel of med data does not work
        + [X] negate button
-       + [ ] import data into Athena as norm(E)
+       + [X] import data into Athena as norm(E)
    - [ ] links to documentation on each tool
    - [ ] *Convolve/noise tool*
        + add noise to chi data
@@ -194,7 +194,7 @@
          for R123 plots.
    - [ ] Path drag and drop [0/3]
         - [ ] DND of an SSPath does not work correctly
-        - [ ] FPath untested
+        - [ ] DND of FPath also broken
         - [ ] DND of selection (currently only one at a time)
 
 **** Project [2/5]

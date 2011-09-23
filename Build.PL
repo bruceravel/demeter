@@ -49,6 +49,7 @@ my $build = DemeterBuilder
 				'Config::IniFiles'	    => '2.45',
 				'DateTime'                  => '0',
 				'Digest::SHA'		    => '0',
+				'Encoding::FixLatin'        => '0',
 				'Graph'                     => '0',
 				'Heap'			    => '0',
                                 'HTML::Entities'            => '0',

@@ -25,6 +25,9 @@ use Wx::Event qw(EVT_RIGHT_DOWN EVT_ENTER_WINDOW EVT_LEAVE_WINDOW EVT_MENU
 		 EVT_COLLAPSIBLEPANE_CHANGED EVT_TEXT_ENTER);
 
 use Demeter::UI::Wx::SpecialCharacters qw(:all);
+use Demeter::StrTypes qw( IfeffitFunction IfeffitProgramVar );
+
+use Scalar::Util qw(looks_like_number);
 
 my %labels = (label  => 'Label',
 	      n      => 'N',
@@ -154,19 +157,21 @@ sub new {
     $gbs     -> Add($this->{"pp_$k"}, Wx::GBPosition->new($i,2));
     ++$i;
     $this->{"pp_$k"}->SetFont( Wx::Font->new( $size, wxTELETYPE, wxNORMAL, wxNORMAL, 0, "" ) );
-    EVT_RIGHT_DOWN($label, sub{DoLabelKeyPress(@_, $this)});
-    EVT_MENU($label, -1, sub{ $this->OnLabelMenu(@_)    });
-    EVT_HYPERLINK($this, $label, sub{DoLabelKeyPress($label, $_[1], $_[0])});
-    EVT_RIGHT_DOWN($this->{"pp_$k"}, sub{OnPPClick(@_)}) if (($k ne 'label') and ($k ne 'n'));
-    EVT_MENU($this->{"pp_$k"}, -1, sub{ $this->OnPPMenu(@_)    });
     $label -> SetFont( Wx::Font->new( 9, wxDEFAULT, wxNORMAL, wxNORMAL, 0, "" ) );
+
     my $black = Wx::Colour->new(wxNullColour);
     $label -> SetNormalColour($black);
     $label -> SetHoverColour($black);
     $label -> SetVisitedColour($black);
-    $this  -> mouseover("lab_$k", "(Click for the " . $labels{$k} . " menu) " . $explanation{$k});
+    $this  -> mouseover("lab_$k", "(Right click for the " . $labels{$k} . " menu) " . $explanation{$k});
     $this  -> mouseover("pp_$k",  $explanation{$k});
-    EVT_TEXT_ENTER($this, $this->{"pp_$k"}, sub{1});
+
+    EVT_RIGHT_DOWN($label,                   sub{ DoLabelKeyPress(@_, $this)            });
+    EVT_MENU      ($label,           -1,     sub{ $this->OnLabelMenu(@_)                });
+    EVT_HYPERLINK ($this,            $label, sub{ DoLabelKeyPress($label, $_[1], $_[0]) });
+    EVT_RIGHT_DOWN($this->{"pp_$k"},         sub{ OnPPClick(@_, $this)                  }) if (($k ne 'label') and ($k ne 'n'));
+    EVT_MENU      ($this->{"pp_$k"}, -1,     sub{ $this->OnPPMenu(@_)                   });
+    EVT_TEXT_ENTER($this, $this->{"pp_$k"},  sub{1});
   };
   $vbox -> Add($gbs, 2, wxGROW|wxTOP|wxBOTTOM, 10);
   $this->{pp_n} -> SetValidator( Wx::Perl::TextValidator->new( qr([0-9.]) ) );
@@ -278,7 +283,7 @@ Readonly my $SKIP   => Wx::NewId();
 
 my $tokenizer_regexp = '(?-xism:(?=[\t\ \(\)\*\+\,\-\/\^])[\-\+\*\^\/\(\)\,\ \t])';
 sub OnPPClick {
-  my ($tc, $event) = @_;
+  my ($tc, $event, $currentpage) = @_;
   $tc->SetFocus;
   my $pos = int($event->GetPosition->x/$size)+1;
   $tc->SetInsertionPoint($pos);
@@ -297,6 +302,19 @@ sub OnPPClick {
     $after = $list[0];
   };
   my $str = $before . $after;
+
+  ## winnow out things that cannot be made into a GDS name
+  my ($bail, $reason) = (0, q{});
+  ($bail, $reason) = (1, q{whitespace})       if ($str =~ m{\A\s*\z});             # space
+  ($bail, $reason) = (1, q{number})           if looks_like_number($str);	   # number
+  ($bail, $reason) = (1, q{Ifeffit function}) if (is_IfeffitFunction($str));       # function
+  ($bail, $reason) = (1, q{Ifeffit constant}) if (lc($str) =~ m{\A(?:etok|pi)\z}); # Ifeffit's defined constants
+  ($bail, $reason) = (1, q{path constant})    if (lc($str) eq 'reff');             # reff
+  if ($bail) {
+    $currentpage->{datapage}->status("\"$str\" is not a valid name for a GDS parameter. ($reason)");
+    return;
+  };
+
   my $menu  = Wx::Menu->new(q{});
   $menu->Append($GUESS,  "Guess $str");
   $menu->Append($DEF,    "Def $str");
@@ -304,6 +322,7 @@ sub OnPPClick {
   $menu->Append($LGUESS, "Lguess $str");
   $menu->Append($SKIP,   "Skip $str");
   my $here = ($event =~ m{Mouse}) ? $event->GetPosition : Wx::Point->new(10,10);
+  $tc -> {string} = $str;
   $tc -> PopupMenu($menu, $here);
 };
 
@@ -430,29 +449,37 @@ sub OnPPMenu {
   #my $param = $st->{which};
   my $id = $event->GetId;
 
- SWITCH: {
-    ($id == $GUESS) and do {
-      print "guess\n";
-      last SWITCH;
-    };
-    ($id == $DEF) and do {
-      print "def\n";
-      last SWITCH;
-    };
-    ($id == $SET) and do {
-      print "set\n";
-      last SWITCH;
-    };
-    ($id == $LGUESS) and do {
-      print "lguess\n";
-      last SWITCH;
-    };
-    ($id == $SKIP) and do {
-      print "skip\n";
-      last SWITCH;
-    };
+  my $param = $tc->{string};
+  delete $tc->{string};
 
+
+
+  my $type = ($id == $GUESS)  ? 'guess'
+           : ($id == $DEF)    ? 'def'
+           : ($id == $SET)    ? 'set'
+           : ($id == $LGUESS) ? 'lguess'
+           : ($id == $SKIP)   ? 'skip'
+           :                    'guess';
+  my $gdsframe = $Demeter::UI::Artemis::frames{GDS};
+
+  if ($gdsframe->param_present($param)) {
+    my $grid = $gdsframe->{grid};
+    foreach my $row (0 .. $grid->GetNumberRows) {
+      if (lc($grid->GetCellValue($row, 1)) eq lc($param)) {
+	$grid     -> SetCellValue($row, 0, $type);
+	$gdsframe -> set_type($row);
+	last;
+      };
+    };
+    $currentpage->{datapage}->status("Changed \"$param\" to $type");
+  } else {
+    $gdsframe->put_param($type, $param, 0);
+    $currentpage->{datapage}->status("Created \"$param\" as $type");
   };
+  $gdsframe -> set_highlight("\\A$param\\z");
+  $gdsframe -> Show(1);
+  $Demeter::UI::Artemis::frames{main} -> {toolbar}->ToggleTool(1,1);
+  $gdsframe -> {toolbar}->ToggleTool(2,1);
 };
 
 sub include_label {
