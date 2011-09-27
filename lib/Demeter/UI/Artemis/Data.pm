@@ -2397,7 +2397,7 @@ sub make_HistogramNCL {
   my $busy = Wx::BusyCursor->new();
   my $start = DateTime->now( time_zone => 'floating' );
   $histogram->backend($spref->[1]);
-  $this->{parent}->status("Reading MD time sequence file, please be patient...", 'wait');
+  $this->{PARENT}->status("Reading MD time sequence file, please be patient...", 'wait');
   $histogram->file($spref->[3]);
   my $finish = DateTime->now( time_zone => 'floating' );
   my $dur = $finish->subtract_datetime($start);
