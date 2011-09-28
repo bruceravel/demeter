@@ -8,8 +8,15 @@ title notes1:   metal, fcc
 space  f m 3 m
 a    = 3.92
 alpha= 90
-rmax = 6.00
+rmax = 9.00
+rpath = 6.00
 core = Pt1
 atom
 Pt     0.00000   0.00000   0.00000  Pt1
 ------
+
+
+!!&& Local Variables:
+!!&& input-program-name: "atoms"
+!!&& End:
+%# Input-mode Time-stamp: <2011/09/28 15:51:45 bruce>

@@ -2034,7 +2034,7 @@ sub fourparam {
   $Demeter::UI::Artemis::frames{GDS}->put_gds($gds);
   $gds    = Demeter::GDS->new(gds=>'guess', name=>'ss',   mathexp=>0.003);
   $Demeter::UI::Artemis::frames{GDS}->put_gds($gds);
-  autosave();
+  $Demeter::UI::Artemis::frames{GDS}->reset_all;
   $datapage->status("Made a quick 4-parameter fit by defining amp, enot, delr, and ss.");
 };
 

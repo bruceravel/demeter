@@ -462,6 +462,7 @@ sub scatterplot {
   $histo->sentinal(sub{$this->dlpoly_sentinal});
   $this->{parent}->status("Binning three-body distribution function, please be patient...", 'wait');
   $histo->rebin;
+  $this->{parent}->{Console}->{console}->AppendText($/.$histo->info.$/.$/);
   my $finish = DateTime->now( time_zone => 'floating' );
   my $dur = $finish->subtract_datetime($start);
   my $finishtext = sprintf("Plotting histogram from %d timesteps (%d minutes, %d seconds)", $histo->nsteps, $dur->minutes, $dur->seconds);

@@ -375,7 +375,7 @@ sub plot {
   };
 
   my $ds = first {ref($_) =~ m{Data}} @list;
-  $self->{indicators}->plot($ds);
+  $self->{indicators}->plot($ds) if ($space ne 'rk');
 
 
   $Demeter::UI::Artemis::frames{main}->status("Plotted in $space");

@@ -299,9 +299,13 @@ sub OnInit {
 		  Wx::RadioButton->new($frames{main}, -1, 'q', wxDefaultPosition, wxDefaultSize),
 		 );
   $frames{main}->{fitspace} = \@fitspace;
+  my $savebutton = Wx::Button->new($frames{main}, wxID_SAVE, q{});
+  EVT_BUTTON($savebutton, -1, sub{save_project(\%frames, $frames{main}->{projectpath})});
 
   $hname  -> Add($label,   0, wxALL, 3);
   map {$hname  -> Add($_,   0, wxLEFT|wxRIGHT, 2)} @fitspace;
+  $hname  -> Add(Wx::StaticLine->new($frames{main}, -1, wxDefaultPosition, [4,-1], wxLI_VERTICAL),   0, wxGROW|wxLEFT|wxRIGHT, 7);
+  $hname  -> Add($savebutton,   0, wxLEFT|wxRIGHT, 3);
   $fitspace[0]->SetValue(1) if ($demeter->co->default("fit", "space") eq 'k');
   $fitspace[1]->SetValue(1) if ($demeter->co->default("fit", "space") eq 'r');
   $fitspace[2]->SetValue(1) if ($demeter->co->default("fit", "space") eq 'q');

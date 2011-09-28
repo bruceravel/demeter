@@ -141,11 +141,11 @@ sub Pluck {
   my ($self, $ev, $i) = @_;
   my $on_screen       = $Demeter::UI::Artemis::frames{Plot}->{last};
   if (not $on_screen) {
-    $self->status("You haven't made a plot yet");
+    $Demeter::UI::Artemis::frames{main}->status("You haven't made a plot yet");
     return;
   };
   if ($on_screen eq 'multiplot') {
-    $self->status("Cannot pluck a value from a multiplot.");
+    $Demeter::UI::Artemis::frames{main}->status("Cannot pluck a value from a multiplot.");
     return;
   };
   $on_screen          = 'R' if (lc($on_screen) eq 'r');
