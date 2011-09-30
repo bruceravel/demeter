@@ -51,10 +51,10 @@ $this->scat('fluorine');
 ok( $this->scatterer eq 'F',         'Setting scatterer works');
 my @list = @{ $this->gds };
 ok( $#list == 3,                     'GDS list correct length');
-ok( (    ($list[0]->name eq 'aa_cu_f')
-     and ($list[1]->name eq 'ee_cu_f')
-     and ($list[2]->name eq 'dr_cu_f')
-     and ($list[3]->name eq 'ss_cu_f')),   'GDS parameters named correctly');
+ok( (    ($list[0]->name eq 'aa_cu_f_0')
+     and ($list[1]->name eq 'ee_cu_f_0')
+     and ($list[2]->name eq 'dr_cu_f_0')
+     and ($list[3]->name eq 'ss_cu_f_0')),   'GDS parameters named correctly');
 $this->workspace(File::Spec->catfile($here, 'fs'));
 $this->_update('path');
 ok( $this->parent =~ m{Feff},              'Feff object associated');

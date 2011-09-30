@@ -72,7 +72,7 @@ has '+data'       => (isa => Empty.'|Demeter::Data');
 has 'is_mc'       => (is => 'ro', isa => 'Bool', default => 0); # is not Demeter::Data::MultiChannel
 has 'tag'         => (is => 'rw', isa => 'Str',  default => q{});
 has 'cv'          => (is => 'rw', isa => 'Num',  default => 0);
-has 'collided'    => (is => 'ro', isa => 'Bool', default => 0);
+has 'collided'    => (is => 'rw', isa => 'Bool', default => 0);
 
 has 'file'        => (is => 'rw', isa => FileName,  default => $NULLFILE,
 		      trigger => sub{my ($self, $new) = @_;

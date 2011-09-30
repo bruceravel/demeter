@@ -126,7 +126,7 @@ $data3->e0(7110);
 ok( abs($data3->bkg_e0 - 7110) < $fuzz,                         'find e0: number (' . $data3->bkg_e0 . ')');
 $data3->e0('fraction');
 
-ok( abs($data3->bkg_e0 - 7112.902) < $fuzz,                     'find e0: fraction (' . $data3->bkg_e0 . ' at ' . $data3->bkg_e0_fraction . ')');
+ok( abs($data3->bkg_e0 - 7106.5) < $fuzz,                       'find e0: fraction (' . $data3->bkg_e0 . ' at ' . $data3->bkg_e0_fraction . ')');
 $data3->e0('atomic');
 ok( abs($data3->bkg_e0 - 7112) < $fuzz,                         'find e0: atomic (' . $data3->bkg_e0 . ')');
 
