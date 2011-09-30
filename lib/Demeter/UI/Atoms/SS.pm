@@ -398,8 +398,8 @@ sub scatterplot {
   my ($this, $event, $which) = @_;
   my $file     = $this->{histo_file}->GetTextCtrl->GetValue;
   my $backend  = $this->{histo_role}->GetStringSelection;
-  my $ipot1    = $this->{histo_ss_ipot1}->GetSelection+1;
-  my $ipot2    = $this->{histo_ss_ipot2}->GetSelection+1;
+  my $ipot1    = $this->{histo_ncl_ipot1}->GetSelection+1;
+  my $ipot2    = $this->{histo_ncl_ipot2}->GetSelection+1;
   my $r1       = $this->{histo_ncl_r1}->GetValue;
   my $r2       = $this->{histo_ncl_r2}->GetValue;
   my $r3       = $this->{histo_ncl_r3}->GetValue;
@@ -433,7 +433,7 @@ sub scatterplot {
 		  r4	  => $r4,
 		  rbin	  => $rbin,
 		  betabin => $betabin,
-		  ipot1   => $ipot1,
+		  ipot    => $ipot1,
 		  ipot2	  => $ipot2,
 		  feff	  => $this->{parent}->{Feff}->{feffobject},
 		);
@@ -462,6 +462,7 @@ sub scatterplot {
   $histo->sentinal(sub{$this->dlpoly_sentinal});
   $this->{parent}->status("Binning three-body distribution function, please be patient...", 'wait');
   $histo->rebin;
+  $this->{parent}->{Console}->{console}->AppendText($/.$histo->info.$/.$/);
   my $finish = DateTime->now( time_zone => 'floating' );
   my $dur = $finish->subtract_datetime($start);
   my $finishtext = sprintf("Plotting histogram from %d timesteps (%d minutes, %d seconds)", $histo->nsteps, $dur->minutes, $dur->seconds);

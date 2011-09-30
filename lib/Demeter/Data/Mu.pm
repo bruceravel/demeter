@@ -314,7 +314,7 @@ sub normalize {
       $self->bkg_int(0);
     } else {
       $self->bkg_step(1);
-      $self->bkg_fixstep(1);
+      #$self->bkg_fixstep(1);
       $self->bkg_slope(sprintf("%.14f", Ifeffit::get_scalar("pre_slope")));
       $self->bkg_int(sprintf("%.14f", Ifeffit::get_scalar("pre_offset")));
     };
