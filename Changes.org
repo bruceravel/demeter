@@ -63,12 +63,15 @@
      of data corruption using this tool, but since it is only used for
      display of text in a GUI and not for passing data to Ifeffit,
      this is not a very serious problem.
+   - Fixed a bug wherein a cloned Data group did not have its
+     derivative computed
 
 *** Acknowledgements for this release
    - Eric Breynaert, superstar (literally dozens of bug reports from the last release!)
    - George Sterbinsky
    - Shelly Kelly
    - Erik Farquhar
+   - Scott Calvin
 
 
 ** Release 6: 09 September, 2011

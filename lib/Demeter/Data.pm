@@ -436,6 +436,7 @@ override clone => sub {
   $new  -> standard;
   $self -> dispose($self->template("process", "clone"));
   $new  -> unset_standard;
+  $new  -> dispose($new->template("process", "deriv"));
   $new  -> update_data(0);
   $new  -> update_columns(0);
   $new  -> update_norm($self->datatype =~ m{(?:xmu|xanes)});
