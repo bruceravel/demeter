@@ -130,6 +130,7 @@ while (my $line = <$SHALT>) {
 
   };
 };
+close $SHALT;
 
 print "\n  Parsing lines file ";
 $infile =  File::Spec -> catfile($thisdir, "cl_lines");

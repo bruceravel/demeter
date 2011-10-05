@@ -18,7 +18,7 @@ sub is {
   my ($self) = @_;
   my $Ocircumflex = chr(212);
   my $nulls = chr(0).chr(0).chr(0);
-  open D, $self->file or die "could not open " . $self->file . " as data (X15B)\n";
+  open D, $self->file or $self->Croak("could not open " . $self->file . " as data (X15B)\n");
   binmode D;
   my $first = <D>;
   close D;

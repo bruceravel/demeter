@@ -349,6 +349,7 @@ sub read_inp {
     $self->parse_line($line);
 
   };
+  close $INP;
   $self->is_imported(1);
   return $self;
 };

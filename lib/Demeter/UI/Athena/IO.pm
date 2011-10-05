@@ -94,6 +94,11 @@ sub Import {
   foreach my $file (sort {$a cmp $b} @files) {
     ## check to see if this is a Windows shortcut, if so, resolve it
     ## bail out if it points to a file that is not -e or cannot -r
+    if (not !Demeter->readable($file)) {
+      Wx::MessageDialog->new($app->{main}, "$file is not readable", "Warning!", wxOK|wxICON_WARNING) -> ShowModal;
+      next;
+    };
+
     my $xdi = q{};
     if ($XDI_exists) {
       $xdi = Xray::XDI->new;

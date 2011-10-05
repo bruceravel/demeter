@@ -30,7 +30,7 @@ sub new {
   opendir(my $stash, $demeter->stash_folder);
   ##                                         vvvvvv this is an icky kludge!
   my @list = grep {$_ =~ m{autosave\z} and $_ !~ m{\AAthena}} readdir $stash;
-  close $stash;
+  closedir $stash;
   return -1 if not @list;
   my @toss = @list;
 

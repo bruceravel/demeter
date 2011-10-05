@@ -8,6 +8,7 @@ has '+description' => (default => "the DUBBLE beamline at the ESRF");
 has '+version'     => (default => 0.1);
 has 'is_med'       => (is => 'rw', isa => 'Int', default => 0);
 
+use Carp;
 use Scalar::Util qw(looks_like_number);
 
 use Readonly;
@@ -18,7 +19,7 @@ Readonly my $NLMED => 3; # 9 MED elements, 4 per line, requires three lines
 
 sub is {
   my ($self) = @_;
-  open D, $self->file or die "could not open " . $self->file . " as data (DUBBLE)\n";
+  open D, $self->file or $self->Croak("could not open " . $self->file . " as data (DUBBLE)\n");
   my $first = <D>;
   my $is_srs = ($first =~ m{\&SRS});
   my $is_dubble = 0;
@@ -26,6 +27,7 @@ sub is {
     $is_dubble = ($_ =~ m{dubble});
     last if m{\A\s+\&END};
   };
+  close D;
   return $is_srs and $is_dubble;
 };
 

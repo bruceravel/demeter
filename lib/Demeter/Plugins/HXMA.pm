@@ -22,7 +22,7 @@ sub fix {
   my $file = $self->file;
   my $new = File::Spec->catfile($self->stash_folder, $self->filename);
   ($new = File::Spec->catfile($self->stash_folder, "toss")) if (length($new) > 127);
-  open D, $file or die "could not open $file as data (fix in HXMA)\n";
+  open D, $file or $self->Croak("could not open $file as data (fix in HXMA)\n");
   open N, ">".$new or die "could not write to $new (fix in HXMA)\n";
 
   print N "# $file demystified:", $/;

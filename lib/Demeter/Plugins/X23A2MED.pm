@@ -22,7 +22,7 @@ Demeter -> co -> read_config(File::Spec->catfile(dirname($INC{'Demeter.pm'}), 'D
 
 sub is {
   my ($self) = @_;
-  open(my $D, $self->file) or die "could not open " . $self->file . " as an X23A2MED file\n";
+  open(my $D, $self->file) or $self->Croak("could not open " . $self->file . " as an X23A2MED file\n");
   my $line = <$D>;
   $line = <$D>;
   my $is_x23a2 = ($line =~ m{X-23A2});

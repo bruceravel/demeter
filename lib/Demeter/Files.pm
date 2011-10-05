@@ -37,7 +37,7 @@ Readonly my $NUM  => qr/-?(\d+\.?\d*|\.\d+)/;
 ## atoms
 sub is_atoms {
   my ($self, $a, $verbose) = @_;
-  open (my $A, $a) or die "could not open $a: $!";
+  open (my $A, $a) or $self->Croak("could not open $a: $!");
   my ($space_test, $atoms_test, $toss) = (0,0,0);
   my $switch = 0;
  A: while (<$A>) {
@@ -88,7 +88,7 @@ sub is_cif {
 ## least two valid potentials line, the absorber and one other.
 sub is_feff {
   my ($self, $a, $verbose) = @_;
-  open (my $A, $a) or die "could not open $a: $!";
+  open (my $A, $a) or $self->Croak("could not open $a: $!");
   my $switch = 0;
   my ($abs_test, $scat_test) = (0,0);
  A: while (<$A>) {
@@ -134,7 +134,8 @@ sub is_data {
 sub is_prj {
   my ($self, $file, $verbose) = @_;
   $verbose ||= 0;
-  my $gz = gzopen($file, "rb") or croak "could not open $file as a record\n";
+  my $gz = gzopen($file, "rb");
+  return 0 if not defined $gz;
   my $first;
   $gz->gzreadline($first);
   $gz->gzclose();

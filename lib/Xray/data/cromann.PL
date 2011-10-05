@@ -1,6 +1,6 @@
 #!/usr/bin/perl -w
 ######################################################################
-## Time-stamp: <2011-03-03 17:24:37 bruce>
+## Time-stamp: <2011-10-05 16:07:35 bruce>
 ######################################################################
 ##  This program is copyright (c) 1999-2006, 2011 Bruce Ravel
 ##  <bravel@anl.gov>
@@ -102,6 +102,7 @@ while (<CM>) {
     $cromann{$key} = [split];
   };
 };
+close CM;
 print "\n";
 
 

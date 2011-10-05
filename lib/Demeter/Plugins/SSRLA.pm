@@ -15,7 +15,7 @@ my $re = '[' . join('|', keys(%special)) . ']';
 sub is {
   my ($self) = @_;
   my $null = chr(0);
-  open D, $self->file or die "could not open " . $self->file . " as data (SSRL ASCII)\n";
+  open D, $self->file or $self->Croak("could not open " . $self->file . " as data (SSRL ASCII)\n");
   my $line = <D>;
   my $is_ssrl  = ($line =~ m{^\s*SSRL\s+EXAFS Data Collector});
   $line = <D>;

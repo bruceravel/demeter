@@ -13,7 +13,7 @@ has 'ssrlb_version' => (is => 'rw', isa => 'Num', default => 1.1);
 sub is {
   my ($self) = @_;
   my $null = chr(0);
-  open D, $self->file or die "could not open " . $self->file . " as data (SSRL Binary)\n";
+  open D, $self->file or $self->Croak("could not open " . $self->file . " as data (SSRL Binary)\n");
   my $line;
   read D, $line, 40;
   my $is_ssrl = ($line =~ m{^\s*SSRL\s+\-\s+EXAFS Data Collector\s+(\d+\.\d+)});

@@ -16,6 +16,7 @@
    - Fixed a bug causing a crash when importing keV data
    - Fixed display of ISO-8859 encoded data files in the column
      selection dialog.
+   - Attempt to deal more gracefully with unreadable files
 
 *** Artemis
    - Fixed a formatting error reporting correlations in the log file
@@ -65,6 +66,11 @@
      this is not a very serious problem.
    - Fixed a bug wherein a cloned Data group did not have its
      derivative computed
+   - Fixed a bug in aligning data.  Also modified code to perform
+     alignment exactly like the old version.  Made "interp" the
+     default interpolation function (was qinterp).
+   - Found a few places where files or directories were opened and not
+     closed
 
 *** Acknowledgements for this release
    - Eric Breynaert, superstar (literally dozens of bug reports from the last release!)

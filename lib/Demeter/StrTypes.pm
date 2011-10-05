@@ -395,7 +395,7 @@ subtype PlotWeight,
 
 ## -------- Ifeffit interpolation functions
 use vars qw(@interp_list $interp_regexp);
-@interp_list = qw(linterp qinterp splint);
+@interp_list = qw(interp qinterp splint);
 $interp_regexp = Regexp::Assemble->new()->add(@interp_list)->re;
 subtype Interp,
   as Str,

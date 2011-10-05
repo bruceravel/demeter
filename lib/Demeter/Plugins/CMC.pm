@@ -10,7 +10,7 @@ has '+version'     => (default => 0.1);
 sub is {
   my ($self) = @_;
   my $is_cmc = 0;
-  open D, $self->file or die "could not open " . $self->file . " in CMC\n";
+  open D, $self->file or $self->Croak("could not open " . $self->file . " in CMC\n");
   my $line;
   foreach (1 .. 4) { $line = <D> };
   $is_cmc = ($line =~ /^\#C.+(?:bmexafs|9bmuser)/);

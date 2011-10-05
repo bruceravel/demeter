@@ -34,6 +34,16 @@ enum 'OutputTypes' => ['data', 'project'];
 coerce 'OutputTypes', from 'Str', via { lc($_) };
 has 'output'      => (is => 'ro', isa => 'OutputTypes', default => q{data});
 
+sub Croak {
+  my ($self, $arg) = @_;
+  if (Demeter->mo->ui eq 'Wx') {
+    Wx::Perl::Carp::warn($arg);
+  } else {
+    croak $arg;
+  };
+};
+
+
 __PACKAGE__->meta->make_immutable;
 1;
 

@@ -388,12 +388,10 @@ sub _array {
   my $cpt = new Safe;
   my @array;
   my $prj = gzopen($prjfile, "rb") or die "could not open $prjfile as an Athena project\n";
-  ##open A, $prjfile;
   my $count = 0;
   my $found = 0;
   my $re = '@' . $which;
   my $line = q{};
-  ##foreach my $line (<A>) {
   while ($prj->gzreadline($line) > 0) {
     ++$count;
     $found = 1 if ($count == $index);
@@ -406,7 +404,6 @@ sub _array {
     };
   };
   $prj->gzclose();
-  ##close A;
   return @array;
 };
 

@@ -34,7 +34,7 @@ has '+working_message' => (default => 'Converting multicolumn data file to an At
 
 sub is {
   my ($self) = @_;
-  open (my $D, $self->file) or die "could not open " . $self->file . " as data (X23A2 multi-channel)\n";
+  open (my $D, $self->file) or $self->Croak("could not open " . $self->file . " as data (X23A2 multi-channel)\n");
   my $is_xdac = (<$D> =~ m{\A\s*XDAC});
   while (<$D>) {
     last if (m{\A\s*-----});

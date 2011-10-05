@@ -1,6 +1,6 @@
 ## -*- config -*-
 ###########################################################################
-##                     Demeter is copyright (c) 2007-2009 Bruce Ravel
+##                     Demeter is copyright (c) 2007-2011 Bruce Ravel
 ##                                                     bravel@bnl.gov
 ##                                        http://xafs.org/BruceRavel/
 ##
@@ -45,7 +45,7 @@ section_description
 variable=type
 type=list
 options=qinterp interp splint
-default=qinterp
+default=interp
 description
   This parameter sets the functional form of interpolations done by
   Demeter.  The options are quadratic, linear, and spline

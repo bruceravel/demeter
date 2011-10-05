@@ -164,7 +164,7 @@ sub align {
     next if ($d->group eq $self->group);
     $d -> _update("background");
     $d -> dispose( $d-> template("process", "align") );
-    $shift = Ifeffit::get_scalar("aa___esh");
+    $shift = sprintf("%.3f", Ifeffit::get_scalar("aa___esh"));
     $d -> bkg_eshift($shift);
     $d -> update_bkg(1);
   };
@@ -190,7 +190,7 @@ sub align_with_reference {
     my $this = ($useref) ? $d->reference : $d;
     $this -> _update("background");
     $this -> dispose( $this-> template("process", "align") );
-    $shift = Ifeffit::get_scalar("aa___esh");
+    $shift = sprintf("%.3f", Ifeffit::get_scalar("aa___esh"));
     $this -> bkg_eshift($shift);
     $this -> update_bkg(1);
     $this -> reference -> update_bkg(1) if $this->reference;

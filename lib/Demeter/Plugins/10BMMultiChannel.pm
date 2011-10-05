@@ -25,7 +25,7 @@ Demeter -> co -> read_config(File::Spec->catfile(dirname($INC{'Demeter.pm'}), 'D
 
 sub is {
   my ($self) = @_;
-  open (my $D, $self->file) or die "could not open " . $self->file . " as data (10BM multi-channel)\n";
+  open (my $D, $self->file) or $self->Croak("could not open " . $self->file . " as data (10BM multi-channel)\n");
   my $is_mx = (<$D> =~ m{\A\s*MRCAT_XAFS});
   while (<$D>) {
     $self->edge_energy($1) if (m{E0\s*=\s*(\d*)});

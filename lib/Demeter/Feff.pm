@@ -458,6 +458,7 @@ sub potph {
       $text =~ s{$null}{}g;	# frakkin' feff
       $self->miscdat($text);
       $self->vint($1) if ($text =~ m{Vint\s*=\s*($NUMBER)});
+      close $fh;
       unlink $miscdat if not $self->save;
     };
   };

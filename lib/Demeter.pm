@@ -744,6 +744,15 @@ sub template {
 sub pause {};
 alias sleep => 'pause';
 
+sub Croak {
+  my ($self, $arg) = @_;
+  if (lc($self->mo->ui) eq 'wx') {
+    Wx::Perl::Carp::warn($arg);
+  } else {
+    croak $arg;
+  };
+};
+
 __PACKAGE__->meta->make_immutable;
 1;
 

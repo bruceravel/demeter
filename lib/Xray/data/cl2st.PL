@@ -119,7 +119,7 @@ while (<CL>) {
     };
   };
 };
-
+close CL;
 
 
 print "$/  Getting energy list keys ... ";

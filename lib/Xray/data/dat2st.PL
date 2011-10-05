@@ -140,6 +140,7 @@ while (<MCM>) {
   };
 
 };
+close MCM;
 print $/;
 my $outfile = File::Spec -> catfile($thisdir, '..', 'Absorption', "mcmaster.db");
 if (-e $outfile) {

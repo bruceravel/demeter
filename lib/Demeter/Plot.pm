@@ -190,7 +190,7 @@ has 'tempfiles' => (
 has 'lastplot'  => (is => 'rw', isa => 'Any',        default => q{});
 
 		       ## interpolation parameters
-has 'interp' => (is => 'rw', isa => Interp,          default => sub{ shift->co->default("interpolation", "type") || "qinterp"});
+has 'interp' => (is => 'rw', isa => Interp,          default => sub{ shift->co->default("interpolation", "type") || "interp"});
 
 
 sub BUILD {

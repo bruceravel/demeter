@@ -628,7 +628,7 @@ sub _update {
 sub read_data {
   my ($self) = @_;
   my $return = $self->readable($self->file);
-  croak($return) if $return;
+  $self->Croak($return) if $return;
   my $type = (($self->is_col) and ($self->datatype ne 'chi')) ? q{}
            :  $self->datatype;
   if ((not $self->is_col) and (not $type)) {
