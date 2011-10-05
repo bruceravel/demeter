@@ -58,7 +58,7 @@ sub new {
 
   my $pt = Demeter::UI::Wx::PeriodicTable->new($self, sub{$self->abs_get_data($_[0])}, $echoarea);
   my $vbox = Wx::BoxSizer->new( wxVERTICAL );
-  $self->SetSizer($vbox);
+#  $self->SetSizer($vbox);
   $vbox -> Add($pt, 0, wxALIGN_CENTER_HORIZONTAL|wxALL, 5);
 
   $vbox -> Add( 20, 10, 0, wxGROW );

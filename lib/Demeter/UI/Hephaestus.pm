@@ -62,7 +62,7 @@ my @utilities = qw(absorption formulas ion data transitions find line standards 
 sub new {
   my $ref    = shift;
   my $width  = 100;
-  my $height = int(($#utilities+1) * $icon_dimension * 1.8); # + 2*($#utilities+1);
+  my $height = int(($#utilities+1) * $icon_dimension * 1.85); # + 2*($#utilities+1);
   my $self   = $ref->SUPER::new( undef,           # parent window
 				 -1,              # ID -1 means any
 				 'Hephaestus',    # title
