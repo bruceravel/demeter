@@ -555,7 +555,6 @@ sub open_file {
 sub get_crystal_data {
   my ($self) = @_;
   return 1 if not $self->{used};
-
   $self->{problems} = q{};
   my $problems = q{};
   $atoms->clear;
@@ -614,7 +613,7 @@ sub get_crystal_data {
     #warn("$el is not an element symbol at site $rr\n"), return 0 if not is_Element($el);
     ($first_valid_row = $row) if ($first_valid_row == -1);
     if ($self->{sitesgrid}->GetCellValue($row, 0)) {
-      $atoms->core($self->{sitesgrid}->GetCellValue($row, 5));
+      $atoms->core($self->{sitesgrid}->GetCellValue($row, 5) || $self->{sitesgrid}->GetCellValue($row, 1));
       ++$core_selected;
     };
     my $x    = $self->{sitesgrid}->GetCellValue($row, 2) || 0; $x = $self->number($x);
@@ -636,6 +635,7 @@ sub get_crystal_data {
 		);
     $self->{sitesgrid}->SetCellValue($first_valid_row, 0, 1);
   };
+
   my $seems_ok = 0;
   $seems_ok = (
 	            ($atoms->space)

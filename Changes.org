@@ -5,7 +5,7 @@
 
 * Beta testing releases:
 
-** Release 7: 07 October, 2011
+** Release 7: 10 October, 2011
 
 *** Athena
    - Handle changes to rmax_out correctly
@@ -40,6 +40,7 @@
    - Artemis now respects choice of fit space.
    - Right click on words in path parameter math expressions to post a
      context menu for creating/modifying GDS parameters
+   - Fixed a bug precluding creating an atoms.inp by hand via the GUI
 
 *** Demeter
    - Fixed a problem interpreting rhombohedral space groups in Atoms.
@@ -72,6 +73,8 @@
    - Found a few places where files or directories were opened and not
      closed 
    - The element symbol type constraint was missing Am through Cf
+   - New "trace" method for printing a colorized stack trace from any
+     location to stdout
 
 *** Acknowledgements for this release
    - Eric Breynaert, superstar (literally dozens of bug reports from the last release!)

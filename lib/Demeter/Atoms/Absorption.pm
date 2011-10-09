@@ -23,8 +23,6 @@ use Xray::Absorption;
 use Xray::FluorescenceEXAFS;
 Readonly my $ETOK    => 0.262468292;
 
-
-
 sub _absorption {
   my ($self) = @_;
   $self->populate if (not $self->is_populated);

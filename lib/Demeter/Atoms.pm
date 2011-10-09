@@ -854,7 +854,7 @@ sub Write {
 
 sub Write_feff {
   my ($self, $type) = @_;
-  $self->build_cluster if (not $self->is_expanded);;
+  $self->build_cluster if (not $self->is_expanded);
   my $string = q{};
   $string .= $self->template('copyright',  {type=> $type, prefix => ' * '});
   if ($self->co->default("atoms", "atoms_in_feff")) {

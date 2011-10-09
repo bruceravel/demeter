@@ -1078,7 +1078,7 @@ sub make_feff_frame {
   if ($file and (-e $file) and ($demeter->is_atoms($file) or $demeter->is_cif($file))) {
     $frames{$fnum}->{Atoms}->Demeter::UI::Atoms::Xtal::open_file($file);
   } else {
-    $frames{$fnum}->{Atoms}->{used} = 0;
+    #$frames{$fnum}->{Atoms}->{used} = 0;
     $frames{$fnum}->{Atoms}->{name}->SetValue('new');
     if ($file ne $BLANK) {
       $frames{$fnum}->{notebook}->SetPageImage(0, 5); # see Demeter::UI::Atoms.pm around line 60
