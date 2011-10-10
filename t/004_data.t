@@ -125,8 +125,7 @@ ok( abs($data3->bkg_e0 - 7105.292) < $fuzz,                     'find e0: zero c
 $data3->e0(7110);
 ok( abs($data3->bkg_e0 - 7110) < $fuzz,                         'find e0: number (' . $data3->bkg_e0 . ')');
 $data3->e0('fraction');
-
-ok( abs($data3->bkg_e0 - 7106.5) < $fuzz,                       'find e0: fraction (' . $data3->bkg_e0 . ' at ' . $data3->bkg_e0_fraction . ')');
+ok( abs($data3->bkg_e0 - 7112.902) < $fuzz,                      'find e0: fraction (' . $data3->bkg_e0 . ' at ' . $data3->bkg_e0_fraction . ')');
 $data3->e0('atomic');
 ok( abs($data3->bkg_e0 - 7112) < $fuzz,                         'find e0: atomic (' . $data3->bkg_e0 . ')');
 
@@ -134,15 +133,14 @@ ok( abs($data3->bkg_e0 - 7112) < $fuzz,                         'find e0: atomic
 $data3->e0($data5);
 ok( abs($data3->bkg_e0 - 7105.506) < $fuzz,                     'find e0: other Data object (' . $data3->bkg_e0 . ')');
 
-#print $data3->yofx('xmu', '', 7112), $/;
 ok(abs($data3->yofx('xmu', q{}, 7112) - 1.17) < 0.01,           'yofx method works');
-#print $data3->iofx('energy', 7112), $/;
 ok($data3->iofx('energy', 7112) == 77,                          'iofx works');
 
 
 $data3->calibrate(7105.292, 7112);
 ok( (abs($data3->bkg_e0 - 7112) < $fuzz and
      abs($data3->bkg_eshift - 6.708) < $fuzz),                  'calbrate method works');
+$data4->bkg_eshift(5);		# need to get close enough
 $data3->align($data4);
 ok( abs($data4->bkg_eshift - 6.722) < 5*$fuzz,                  'align method works');
 

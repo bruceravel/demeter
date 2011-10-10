@@ -880,7 +880,7 @@ lib/Demeter/templates/report/standard/report_param.tmpl
 lib/Demeter/templates/report/standard/report_stats.tmpl
 lib/Demeter/templates/report/standard/restrain.tmpl
 lib/Demeter/templates/report/standard/set.tmpl
-lib/Demeter/templates/report/standard/setme_tmpl
+lib/Demeter/templates/report/standard/setme.tmpl
 lib/Demeter/templates/report/standard/skip.tmpl
 lib/Demeter/templates/report/standard/statistics.tmpl
 lib/Demeter/templates/report/standard/xdi_report.tmpl
@@ -1549,7 +1549,7 @@ notes/sgolay.m
 notes/sgolayfilt.m
 notes/tree.pl
 private-install
-README.org
+README.pod
 src/Ifeffit.bs
 src/ifeffit.h
 src/ifeffit_wrap.c

@@ -17,7 +17,7 @@
   q()
 }
 ##| auto-aligning {$D->group} to {$DS->group}
-guess(aa___esh   = 0,
+guess(aa___esh   = {$D->bkg_eshift},
       aa___scale = 1)
 def {$D->group}.xmui    = {$P->interp}({$D->group}.energy+aa___esh, {$D->group}.xmu, {$DS->group}.energy+{$DS->bkg_eshift})
 def aa___.res    = {$start}deriv({$DS->group}.xmu)/deriv({$DS->group}.energy){$end} - aa___scale*{$start}deriv({$D->group}.xmui)/deriv({$D->group}.energy){$end}

@@ -75,6 +75,8 @@
    - The element symbol type constraint was missing Am through Cf
    - New "trace" method for printing a colorized stack trace from any
      location to stdout
+   - Fixed a bug in the automated alignment algorithm (now using
+     data's current bkg_eshift as the initial guess)
 
 *** Acknowledgements for this release
    - Eric Breynaert, superstar (literally dozens of bug reports from the last release!)
