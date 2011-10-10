@@ -739,9 +739,9 @@ sub _read_data_command {
     $string  = $self->template("process", "read_xmu");
     $string .= $self->template("process", "deriv");
     $self->provenance("mu(E) file ".$self->file);
-#  } elsif ($type eq 'chi') {
-#    $string  = $self->template("process", "read_chi");
-#    $self->provenance("chi(k) file ".$self->file);
+  } elsif ($type eq 'chi') {
+    $string  = $self->template("process", "read_chi");
+    $self->provenance("chi(k) file ".$self->file);
   } elsif ($type eq 'feff.dat') {
     $string  = $self->template("process", "read_feffdat");
   } else {

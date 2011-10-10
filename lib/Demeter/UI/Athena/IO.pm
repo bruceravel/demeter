@@ -3,7 +3,7 @@ package Demeter::UI::Athena::IO;
 use strict;
 use warnings;
 
-#use Demeter;
+use Demeter::FPath;
 use Demeter::UI::Wx::SpecialCharacters qw(:all);
 use Demeter::UI::Athena::ColumnSelection;
 use Demeter::UI::Artemis::Prj;

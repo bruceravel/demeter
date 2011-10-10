@@ -158,7 +158,7 @@ sub _chi {
     $rframes->{main}->status("$file is not a column data file.", 'error');
     return;
   };
-  my $data = Demeter::Data->new(file=>$file);
+  my $data = Demeter::Data->new(datatype=>'chi', file=>$file);
   $data->_update('data');
   my ($dnum, $idata) = &$make_data_frame($rframes->{main}, $data);
   $data->po->start_plot;
