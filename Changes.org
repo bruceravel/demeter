@@ -5,6 +5,28 @@
 
 * Beta testing releases:
 
+** Release 8: 11 October, 2011
+
+*** Athena
+   - use Demeter::FPath so that empirical standard can be written
+   - fixstep button was being erroneously ticked due to a bug in
+     pre/norm/step interaction
+   - ignore project file records that are malformed due to missing
+     data arrays
+   - resort data if energy column other than 1 is selected in any way
+     when using the column selection dialog
+   - Now correctly importing MED columns as separate channels
+
+*** Artemis
+   - fixed a bug importing chi(k) column data file
+
+*** Demeter
+   - Datatype was not set correctly in Data::MultiChannel object
+
+*** Acknowledgements for this release
+   - Fred Mosslemans
+   - George Sterbinsky
+
 ** Release 7: 10 October, 2011
 
 *** Athena

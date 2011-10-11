@@ -263,6 +263,7 @@ sub OnInvClick {
 sub OnEnergyClick {
   my ($parent, $event, $this, $data, $i) = @_;
   $data -> energy('$'.$i);
+  $data -> update_data(1);
   $this -> display_plot($data);
 };
 

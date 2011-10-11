@@ -1550,6 +1550,7 @@ sub postplot {
   my $is_fixed = $data->bkg_fixstep;
   $app->{main}->{Main}->{bkg_step}->SetValue($app->current_data->bkg_step);
   $app->{main}->{Main}->{bkg_fixstep}->SetValue($is_fixed);
+  $data->bkg_fixstep($is_fixed);
 
   $app->{main}->{Other}->{singlefile}->SetValue(0);
   return;

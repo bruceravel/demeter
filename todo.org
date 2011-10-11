@@ -79,7 +79,7 @@
    - [X] keV data
    - [ ] importing xmu.dat files into Athena has never been tested
 
-*** needs doing [3/13] [23%]
+*** needs doing [4/13] [30%]
    - [X] deglitching crashes with gnuplot					:HUH:
    - [X] test preprocessing (I had a crash with all three preproc options selected for data with a reference):
 	 ~Can't call method "GetSelection" on an undefined value at /home/bruce/git/demeter/lib/Demeter/UI/Athena/IO.pm line 423.~
@@ -88,8 +88,8 @@
        + [X] figure out cause of spurious error on Windows
 	     ~failed to get data from the clipboard error -2147221040 openClipboard failed~
    - [ ] implement frozen groups
-   - [-] Column selection dialog [2/3]
-       + [ ] importing each channel of med data does not work
+   - [X] Column selection dialog [3/3]
+       + [X] importing each channel of med data does not work
        + [X] negate button
        + [X] import data into Athena as norm(E)
    - [ ] links to documentation on each tool
@@ -175,7 +175,7 @@
 
 
 ** Artemis
-*** Artemis bugs and missing features [0/8]  [0%]
+*** Artemis bugs and missing features [0/9]  [0%]
    - [ ] *rename Atoms/Feff*
    - [ ] Reorganize lists, move individual items up and down, move
 	 blocks up and down, Path list, +Plot list+
@@ -192,6 +192,9 @@
          proper handling of this signal in the bkg, residual, and
          running R-factor plots.  Also probably want to disallow it
          for R123 plots.
+   - [ ] better way of moving an empirical standard from Athena to
+         Artemis -- should be able to import it directly from the
+         athena project file.
    - [ ] Path drag and drop [0/3]
         - [ ] DND of an SSPath does not work correctly
         - [ ] DND of FPath also broken

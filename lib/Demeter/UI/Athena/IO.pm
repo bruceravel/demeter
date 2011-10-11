@@ -3,7 +3,6 @@ package Demeter::UI::Athena::IO;
 use strict;
 use warnings;
 
-use Demeter::FPath;
 use Demeter::UI::Wx::SpecialCharacters qw(:all);
 use Demeter::UI::Athena::ColumnSelection;
 use Demeter::UI::Artemis::Prj;
@@ -221,6 +220,7 @@ sub _data {
 	       ln          => $suggest{ln}||0,
 	       inv         => $suggest{inv}||0,
 	       display	   => 1);
+  $data->update_data(1) if ($data->energy ne '$1');;
   $data->_update('data');
   my $yaml;
   $yaml->{columns} = q{};
@@ -237,6 +237,7 @@ sub _data {
 		   ##is_kev      => $yaml->{units},
 		   bkg_nnorm   => $nnorm,
 		  );
+      $data->update_data(1) if ($data->energy ne '$1');;
       my $dt = $yaml->{datatype};
       if ($dt eq 'norm') {
 	$data->datatype('xmu');
@@ -346,17 +347,20 @@ sub _data {
   ## this.  Set all eshifts the same and don't redo alignment
   my $message = q{};
   if ($med) {
+    print "hi boss!\n";
     my $mc = Demeter::Data::MultiChannel->new(file=>$file, energy=>$data->energy);
     my $align = $yaml->{preproc_align};
     my $eshift = 0;
     my @cols = (q{}, split(" ", $data->columns));
     foreach my $ch (split(/\+/, $data->numerator)) {
       (my $cc = $ch) =~ s{\$}{};
+      print join("|", $ch, $data->denominator, join(" - ", basename($file), $cols[$cc])), $/;
       my $this = $mc->make_data(numerator   => $ch,
 				denominator => $data->denominator,
 				ln          => $data->ln,
 				inv         => $data->inv,
 				name        => join(" - ", basename($file), $cols[$cc]),
+				datatype    => $data->datatype,
 			       );
       _group($app, $colsel, $this, $yaml, $file, $orig, $repeated, $align);
       $eshift = $this->bkg_eshift if $align;
@@ -604,6 +608,7 @@ sub _prj {
   my $data;
   foreach my $rec (@records) {
     $data = $prj->record($rec);
+    next if not $data;
     if ($data->prjrecord =~ m{,\s+(\d+)}) {
       $data->prjrecord($orig . ", $1");
     };
@@ -792,6 +797,9 @@ sub FPath {
   $reff = $r[$imax];
   $app->current_data->fft_pc($save);
 
+  require Demeter::FPath;
+  require Demeter::Atoms;
+  require Demeter::Feff;
   my $fp = Demeter::FPath->new(absorber  => $app->current_data->bkg_z,
 			       scatterer => $scatterer,
 			       reff      => $reff,

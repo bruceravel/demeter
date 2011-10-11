@@ -23,7 +23,7 @@ package Demeter;  # http://xkcd.com/844/
 require 5.008;
 
 use version;
-our $VERSION = version->new('0.5.6');
+our $VERSION = version->new('0.5.8');
 
 #use Demeter::Carp;
 #use Carp::Always::Color;
@@ -31,7 +31,7 @@ use Carp;
 use Cwd;
 use File::Basename qw(dirname);
 use File::Spec;
-use List::MoreUtils qw(any minmax zip);
+use List::MoreUtils qw(any minmax zip uniq);
 #use Safe;
 use Pod::POM;
 use String::Random qw(random_string);
@@ -250,7 +250,7 @@ sub import {
   };
   @load = (@data, @fit, @anal, @xes) if not @load;
 
-  foreach my $m (@load) {
+  foreach my $m (uniq @load) {
     next if $INC{"Demeter/$m.pm"};
     ##print "Demeter/$m.pm\n";
     require "Demeter/$m.pm";

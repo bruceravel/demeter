@@ -624,6 +624,7 @@ sub push_values {
 
   ## handle fixed step correctly
   $this->{bkg_fixstep}->SetValue($is_fixed);
+  $data->bkg_fixstep($is_fixed);
 
   ## standard
   $this->{bkg_stan}->fill($::app, 1, 0);

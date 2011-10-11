@@ -1,6 +1,6 @@
 #!/usr/bin/perl
 
-use Demeter; # qw(:plotwith=gnuplot);
+use Demeter qw(:plotwith=gnuplot :ui=screen);
 use File::Basename;
 
 local $| = 1;
@@ -18,6 +18,7 @@ my $ref = $first_set[-1];	# grab the reference channel from the first data file
 foreach my $file (@ARGV) {	# process the rest, aligning to the reference of the first
   push @all_data, process($file, $ref);
 };
+$all_data[0]->pause;
 print "exporting $prjfile ... ";
 $all_data[0]->write_athena($prjfile, @all_data);
 $all_data[0]->po->end_plot;
@@ -38,6 +39,7 @@ sub process {			# returns a list of Data objects
 					    energy => '$1',
 					   );
   $mc -> po -> title($file);
+  $mc -> po -> e_bkg(0);
 
   print "channel 1, ";
   $data[0] = $mc->make_data(numerator   => '$2',

@@ -192,7 +192,6 @@ sub record {
     my $entries_ref = $self -> entries;
     my @this = @{ $entries_ref->[$gg] };
     my $rec = $self->_record( @this );
-    push @groups, $rec;
     $rec->prjrecord(join(", ", $self->file, $g));
     #$rec->provenance($rec->template("process", "read_prj", {file=>$self->file, record=>$g}));
     $rec->provenance(sprintf("Athena project file %s, record %d", $self->file, $g));
@@ -201,9 +200,14 @@ sub record {
               : ($rec->datatype eq 'chi')            ? 'k'
 	      :                                        'energy';
     my @x = $rec->get_array($array); # set things for about dialog
-    $rec->npts($#x+1);
-    $rec->xmin($x[0]);
-    $rec->xmax($x[$#x]);
+    if (@x) {
+      push @groups, $rec;
+      $rec->npts($#x+1);
+      $rec->xmin($x[0]);
+      $rec->xmax($x[$#x]);
+    } else {
+      $rec->DEMOLISH;
+    };
   };
   return (wantarray) ? @groups : $groups[0];
 };
