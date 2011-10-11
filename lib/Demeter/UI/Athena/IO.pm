@@ -347,14 +347,12 @@ sub _data {
   ## this.  Set all eshifts the same and don't redo alignment
   my $message = q{};
   if ($med) {
-    print "hi boss!\n";
     my $mc = Demeter::Data::MultiChannel->new(file=>$file, energy=>$data->energy);
     my $align = $yaml->{preproc_align};
     my $eshift = 0;
     my @cols = (q{}, split(" ", $data->columns));
     foreach my $ch (split(/\+/, $data->numerator)) {
       (my $cc = $ch) =~ s{\$}{};
-      print join("|", $ch, $data->denominator, join(" - ", basename($file), $cols[$cc])), $/;
       my $this = $mc->make_data(numerator   => $ch,
 				denominator => $data->denominator,
 				ln          => $data->ln,
