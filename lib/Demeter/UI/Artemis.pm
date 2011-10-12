@@ -1093,6 +1093,7 @@ sub make_feff_frame {
   };
   if ($file and (-e $file) and $demeter->is_feff($file)) {
     my $text = $demeter->slurp($file);
+    $frames{$fnum}->{Atoms}->{used} = 0;
     $frames{$fnum}->{Feff}->{feff}->SetValue($text);
     $frames{$fnum}->{Feff}->{name}->SetValue(basename($file, '.inp'));
     $frames{$fnum}->{notebook}->ChangeSelection(1);
