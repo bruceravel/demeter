@@ -2142,7 +2142,7 @@ sub histogram_sentinal_fpath {
   my ($datapage) = @_;
   my $count = $datapage->{DISTRIBUTION}->fpath_count;
   if (not $count % 5) {
-    my $text = sprintf("Making FPath: %d of %d binds processed", $count, $datapage->{DISTRIBUTION}->{nbins});
+    my $text = sprintf("Making FPath: %d of %d bins processed", $count, $datapage->{DISTRIBUTION}->{nbins});
     $datapage->status($text, 'wait|nobuffer');
   };
   $::app->Yield();
@@ -2445,7 +2445,7 @@ sub make_HistogramThru {
   my $busy = Wx::BusyCursor->new();
   my $start = DateTime->now( time_zone => 'floating' );
   $histogram->backend($spref->[1]);
-  $this->{parent}->status("Reading MD time sequence file, please be patient...", 'wait');
+  $this->{PARENT}->status("Reading MD time sequence file, please be patient...", 'wait');
   $histogram->file($spref->[3]);
   my $finish = DateTime->now( time_zone => 'floating' );
   my $dur = $finish->subtract_datetime($start);
@@ -2465,6 +2465,7 @@ sub make_HistogramThru {
   $finishtext = sprintf("Rebined and made FPath in %d minutes, %d seconds for histogram through absorber",
 			$dur->minutes, $dur->seconds);
   $this->{PARENT}->status($finishtext);
+  $histogram->sentinal(sub{1});
 
   $composite->data($this->{PARENT}->{data});
   my $page = Demeter::UI::Artemis::Path->new($book, $composite, $this->{PARENT});
