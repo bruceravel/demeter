@@ -132,6 +132,14 @@ sub BUILD {
   return $self;
 };
 
+override all => sub {
+  my ($self) = @_;
+  my %all = $self->SUPER::all;
+  foreach my $att (qw{lineshapes}) {
+    delete $all{$att};
+  };
+  return %all;
+};
 
 sub cleantemp {
   my ($self) = @_;

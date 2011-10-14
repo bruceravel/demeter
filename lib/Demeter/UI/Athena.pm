@@ -367,6 +367,8 @@ Readonly my $TERM_4            => Wx::NewId();
 Readonly my $SHOW_BUFFER       => Wx::NewId();
 Readonly my $PLOT_YAML	       => Wx::NewId();
 Readonly my $LCF_YAML	       => Wx::NewId();
+Readonly my $PCA_YAML	       => Wx::NewId();
+Readonly my $PEAK_YAML	       => Wx::NewId();
 Readonly my $STYLE_YAML	       => Wx::NewId();
 Readonly my $INDIC_YAML	       => Wx::NewId();
 Readonly my $MODE_STATUS       => Wx::NewId();
@@ -467,12 +469,14 @@ sub menubar {
   my $ifeffitmenu = Wx::Menu->new;
   my $yamlmenu    = Wx::Menu->new;
   my $debugmenu   = Wx::Menu->new;
-  $yamlmenu->Append($PLOT_YAML,      "Plot object",            "Show YAML for Plot object" );
-  $yamlmenu->Append($STYLE_YAML,     "plot style objects",     "Show YAML for plot style objects" );
-  $yamlmenu->Append($INDIC_YAML,     "Indicator objects",      "Show YAML for Indicator objects" );
-  $yamlmenu->Append($LCF_YAML,       "LCF object",             "Show YAML for LCF object" );
-  $debugmenu->Append($MODE_STATUS,   "Mode status",            "Mode status" );
-  $debugmenu->Append($PERL_MODULES,  "Perl modules",           "Show perl module versions" );
+  $yamlmenu->Append($PLOT_YAML,      "Plot object",            "Show YAML dialog for Plot object" );
+  $yamlmenu->Append($STYLE_YAML,     "plot style objects",     "Show YAML dialog for plot style objects" );
+  $yamlmenu->Append($INDIC_YAML,     "Indicator objects",      "Show YAML dialog for Indicator objects" );
+  $yamlmenu->Append($LCF_YAML,       "LCF object",             "Show YAML dialog for LCF object" );
+  $yamlmenu->Append($PCA_YAML,       "PCA object",             "Show YAML dialog for PCA object" );
+  $yamlmenu->Append($PEAK_YAML,      "PeakFit object",         "Show YAML dialog for PeakFit object" );
+  $debugmenu->Append($MODE_STATUS,   "Show mode status",       "Show mode status dialog" );
+  $debugmenu->Append($PERL_MODULES,  "Show perl modules",      "Show perl module versions" );
   $monitormenu->Append($SHOW_BUFFER, "Show command buffer",    'Show the Ifeffit and plotting commands buffer' );
   $monitormenu->Append($STATUS,      "Show status bar buffer", 'Show the buffer containing messages written to the status bars');
   $monitormenu->AppendSeparator;
@@ -482,11 +486,11 @@ sub menubar {
   $ifeffitmenu->Append($IFEFFIT_ARRAYS,  "arrays",       "Examine all the arrays currently defined in Ifeffit");
   $monitormenu->AppendSubMenu($ifeffitmenu,  'Query Ifeffit for ...',    'Obtain information from Ifeffit about variables and arrays');
   $monitormenu->Append($IFEFFIT_MEMORY,  "Show Ifeffit's memory use", "Show Ifeffit's memory use and remaining capacity");
-  if ($demeter->co->default("athena", "debug_menus")) {
+  #if ($demeter->co->default("athena", "debug_menus")) {
     $monitormenu->AppendSeparator;
     $monitormenu->AppendSubMenu($yamlmenu,  'Show YAML for ...',    'Display YAMLs of Demeter objects');
     $monitormenu->AppendSubMenu($debugmenu, 'Debug options', 'Display debugging tools');
-  };
+  #};
 
 
   my $groupmenu   = Wx::Menu->new;
@@ -870,6 +874,18 @@ sub OnMenuClick {
     ($id == $LCF_YAML) and do {
       my $dialog = Demeter::UI::Artemis::ShowText
 	-> new($app->{main}, $app->{main}->{LCF}->{LCF}->serialization, 'YAML of Plot object')
+	  -> Show;
+      last SWITCH;
+    };
+    ($id == $PCA_YAML) and do {
+      my $dialog = Demeter::UI::Artemis::ShowText
+	-> new($app->{main}, $app->{main}->{PCA}->{PCA}->serialization, 'YAML of Plot object')
+	  -> Show;
+      last SWITCH;
+    };
+    ($id == $PEAK_YAML) and do {
+      my $dialog = Demeter::UI::Artemis::ShowText
+	-> new($app->{main}, $app->{main}->{PeakFit}->{PEAK}->serialization, 'YAML of Plot object')
 	  -> Show;
       last SWITCH;
     };

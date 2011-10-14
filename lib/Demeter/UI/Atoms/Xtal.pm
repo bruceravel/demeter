@@ -138,7 +138,7 @@ sub new {
   $self->{toolbar} -> AddTool(-1, "Run Atoms",  $self->icon("exec"),   wxNullBitmap, wxITEM_NORMAL, q{}, $hints{exec} );
   EVT_TOOL_ENTER( $self, $self->{toolbar}, sub{my ($toolbar, $event) = @_; &OnToolEnter($toolbar, $event, 'toolbar')} );
   $self->{toolbar} -> Realize;
-  $vbox -> Add($self->{toolbar}, 0, wxGROW|wxALL, 5);
+  $vbox -> Add($self->{toolbar}, 0, wxGROW|wxLEFT|wxRIGHT, 5);
   EVT_TOOL_RCLICKED($self->{toolbar}, -1, sub{my ($toolbar, $event) = @_; OnToolRightClick($toolbar, $event, $self)});
 
   my $hbox = Wx::BoxSizer->new( wxHORIZONTAL );
@@ -148,55 +148,55 @@ sub new {
   $self->set_hint("titles");
   $self->{titlesboxsizer} -> Add($self->{titles}, 1, wxGROW|wxALL, 0);
   $hbox -> Add($self->{titlesboxsizer}, 1, wxGROW|wxALL, 5);
-  $vbox -> Add($hbox, 1, wxGROW|wxALL);
+  $vbox -> Add($hbox, 1, wxGROW|wxALL, 0);
 
 
 
 
   $hbox = Wx::BoxSizer->new( wxHORIZONTAL );
   my $leftbox = Wx::BoxSizer->new( wxVERTICAL );
-  $hbox -> Add($leftbox, 0, wxGROW|wxALL);
+  $hbox -> Add($leftbox, 0, wxGROW|wxALL, 5);
 
 
   my $sidebox = Wx::BoxSizer->new( wxVERTICAL );
-  $hbox -> Add($sidebox, 0, wxGROW|wxALL);
+  $hbox -> Add($sidebox, 0, wxGROW|wxALL, 5);
 
   my $width = 10;
 
 
   ## -------- space group and edge controls
   my $spacebox = Wx::BoxSizer->new( wxVERTICAL );
-  $leftbox -> Add($spacebox, 0, wxEXPAND|wxALL, 0);
+  $leftbox -> Add($spacebox, 0, wxEXPAND|wxLEFT, 3);
 
   my $hh = Wx::BoxSizer->new( wxHORIZONTAL );
-  $spacebox -> Add($hh, 1, wxEXPAND|wxALL, 0);
+  $spacebox -> Add($hh, 1, wxEXPAND|wxALL, 1);
   my $label      = Wx::StaticText->new($self, -1, 'Name', wxDefaultPosition, [-1,-1]);
   $self->{name}  = Wx::TextCtrl  ->new($self, -1, q{}, wxDefaultPosition, [$width*7,-1], wxTE_PROCESS_ENTER);
-  $hh->Add($label,        0, wxEXPAND|wxALL, 5);
-  $hh->Add($self->{name}, 1, wxEXPAND|wxALL, 5);
+  $hh->Add($label,        0, wxEXPAND|wxLEFT|wxRIGHT|wxTOP, 3);
+  $hh->Add($self->{name}, 1, wxEXPAND|wxLEFT|wxRIGHT, 5);
 
   $hh = Wx::BoxSizer->new( wxHORIZONTAL );
-  $spacebox -> Add($hh, 1, wxEXPAND|wxALL, 0);
+  $spacebox -> Add($hh, 1, wxEXPAND|wxALL, 1);
   $label      = Wx::StaticText->new($self, -1, 'Space Group', wxDefaultPosition, [-1,-1]);
   $self->{space} = Wx::TextCtrl  ->new($self, -1, q{}, wxDefaultPosition, [$width*7,-1], wxTE_PROCESS_ENTER);
-  $hh->Add($label,        0, wxEXPAND|wxALL, 5);
-  $hh->Add($self->{space}, 1, wxEXPAND|wxALL, 5);
+  $hh->Add($label,        0, wxEXPAND|wxLEFT|wxRIGHT|wxTOP, 3);
+  $hh->Add($self->{space}, 1, wxEXPAND|wxLEFT|wxRIGHT, 5);
 
   $hh = Wx::BoxSizer->new( wxHORIZONTAL );
-  $spacebox -> Add($hh, 0, wxEXPAND|wxALL, 0);
+  $spacebox -> Add($hh, 0, wxEXPAND|wxALL, 1);
   $label        = Wx::StaticText->new($self, -1, 'Edge', wxDefaultPosition, [-1,-1]);
   $self->{edge} = Wx::Choice    ->new($self, -1, [-1, -1], [-1, -1], ['K', 'L1', 'L2', 'L3'], );
-  $hh->Add($label,        0, wxEXPAND|wxALL, 5);
-  $hh->Add($self->{edge}, 0, wxEXPAND|wxALL, 5);
+  $hh->Add($label,        0, wxEXPAND|wxLEFT|wxRIGHT|wxTOP, 3);
+  $hh->Add($self->{edge}, 0, wxEXPAND|wxLEFT|wxRIGHT, 5);
   $self->{edge}->SetSelection(0);
   EVT_CHOICE($self, $self->{edge}, \&OnWidgetLeave);
 
   $hh = Wx::BoxSizer->new( wxHORIZONTAL );
-  $spacebox -> Add($hh, 0, wxEXPAND|wxALL, 0);
+  $spacebox -> Add($hh, 0, wxEXPAND|wxALL, 1);
   $label        = Wx::StaticText->new($self, -1, 'Style', wxDefaultPosition, [-1,-1]);
   $self->{template} = Wx::Choice    ->new($self, -1, [-1, -1], [-1, -1], $self->templates, );
-  $hh->Add($label,            0, wxEXPAND|wxALL, 5);
-  $hh->Add($self->{template}, 0, wxEXPAND|wxALL, 5);
+  $hh->Add($label,            0, wxEXPAND|wxLEFT|wxRIGHT|wxTOP, 3);
+  $hh->Add($self->{template}, 0, wxEXPAND|wxLEFT|wxRIGHT, 5);
   $self->{template}->SetSelection(2);
   EVT_CHOICE($self, $self->{template}, \&OnWidgetLeave);
 
@@ -208,7 +208,7 @@ sub new {
   $self->{addbar} -> AddTool(-1, "Add a site", $self->icon("add"),   wxNullBitmap, wxITEM_NORMAL, q{}, $hints{add}  );
   EVT_TOOL_ENTER( $self, $self->{addbar}, sub{my ($toolbar, $event) = @_; &OnToolEnter($toolbar, $event, 'addbar')} );
   $self->{addbar} -> Realize;
-  $spacebox -> Add($self->{addbar}, 0, wxALL|wxALIGN_BOTTOM, 5);
+  $spacebox -> Add($self->{addbar}, 0, wxALL|wxALIGN_BOTTOM, 0);
 
   ## -------- end off space group and edge controls
 
@@ -250,7 +250,7 @@ sub new {
   $tsz -> Add($self->{gamma},Wx::GBPosition->new(1,5));
 
   $self->{latticeboxsizer} -> Add($tsz, 0, wxGROW|wxALL, 5);
-  $sidebox -> Add($self->{latticeboxsizer}, 0, wxGROW|wxALL, 5);
+  $sidebox -> Add($self->{latticeboxsizer}, 0, wxGROW|wxALL, 0);
   $vbox -> Add($hbox, 0, wxGROW|wxALL);
   ## -------- end of lattice constant controls
 
@@ -274,7 +274,7 @@ sub new {
   $tsz -> Add($self->{rpath},Wx::GBPosition->new(0,3));
 
   $self->{Rboxsizer} -> Add($tsz, 0, wxGROW|wxALL, 5);
-  $sidebox -> Add($self->{Rboxsizer}, 0, wxGROW|wxALL, 5);
+  $sidebox -> Add($self->{Rboxsizer}, 0, wxGROW|wxALL, 0);
   ## -------- end of R constant controls
 
 
@@ -286,17 +286,17 @@ sub new {
 
   $width = 70;
 
-  $label = Wx::StaticText->new($self, -1, 'Shift', wxDefaultPosition, [-1,-1]);
-  $tsz -> Add($label,Wx::GBPosition->new(0,0));
+  #$label = Wx::StaticText->new($self, -1, 'Shift', wxDefaultPosition, [-1,-1]);
+  #$tsz -> Add($label,Wx::GBPosition->new(0,0));
   $self->{shift_x} = Wx::TextCtrl->new($self, -1, 0, wxDefaultPosition, [$width,-1], wxTE_PROCESS_ENTER);
-  $tsz -> Add($self->{shift_x},Wx::GBPosition->new(0,1));
+  $tsz -> Add($self->{shift_x},Wx::GBPosition->new(0,0));
   $self->{shift_y} = Wx::TextCtrl->new($self, -1, 0, wxDefaultPosition, [$width,-1], wxTE_PROCESS_ENTER);
-  $tsz -> Add($self->{shift_y},Wx::GBPosition->new(0,2));
+  $tsz -> Add($self->{shift_y},Wx::GBPosition->new(0,1));
   $self->{shift_z} = Wx::TextCtrl->new($self, -1, 0, wxDefaultPosition, [$width,-1], wxTE_PROCESS_ENTER);
-  $tsz -> Add($self->{shift_z},Wx::GBPosition->new(0,3));
+  $tsz -> Add($self->{shift_z},Wx::GBPosition->new(0,2));
 
   $self->{shiftboxsizer} -> Add($tsz, 0, wxGROW|wxALL, 5);
-  $sidebox -> Add($self->{shiftboxsizer}, 0, wxGROW|wxALL, 5);
+  $sidebox -> Add($self->{shiftboxsizer}, 0, wxGROW|wxALL, 0);
   ## -------- end of R constant controls
 
   $self->set_hint($_) foreach (qw(a b c alpha beta gamma space rmax rpath
@@ -314,7 +314,7 @@ sub new {
   EVT_MENU($self->{sitesgrid}, -1, \&OnGridMenu);
 
   $hbox -> Add($self->{sitesgrid}, 1, wxGROW|wxALL|wxALIGN_CENTER_HORIZONTAL, 0);
-  $vbox -> Add($hbox, 1, wxGROW|wxALL|wxALIGN_CENTER_HORIZONTAL, 5);
+  $vbox -> Add($hbox, 2, wxGROW|wxALL|wxALIGN_CENTER_HORIZONTAL, 5);
 
   $self -> SetSizer( $vbox );
 

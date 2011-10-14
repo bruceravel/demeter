@@ -7,8 +7,8 @@
 
 ** Release 9: 20 October, 2011
 
-
 *** Athena
+   - Display YAMLs for PCA and PeakFit objects
 
 *** Artemis
    - Fixed a bug deleting items from plotting list
@@ -17,9 +17,12 @@
    - commented out tic mark munging for history reports
    - suppress an extraneous warning box when a fit fails its sanity
      checks
+   - Several improvements to behavior of GDS grid
 
 *** Demeter
    - Atoms cluster list now tags atoms by shell
+   - Forcing display of debug menus in A&A until they become more
+     stable
 
 *** Acknowledgements for this release
 

@@ -182,17 +182,17 @@ sub OnInit {
   $showmenu->Append($SHOW_FEFFPATHS, "feffpaths", "Show Ifeffit feffpaths");
 
   my $debugmenu = Wx::Menu->new;
-  $debugmenu->Append($PLOT_YAML,    "Show YAML for Plot object",  "Show YAML for Plot object",  wxITEM_NORMAL );
-  $debugmenu->Append($MODE_STATUS,  "Mode status",                "Mode status",  wxITEM_NORMAL );
-  $debugmenu->Append($PERL_MODULES, "Perl modules",               "Show perl module versions", wxITEM_NORMAL );
+  $debugmenu->Append($PLOT_YAML,    "Show YAML for Plot object",  "Show YAML dialog for Plot object",  wxITEM_NORMAL );
+  $debugmenu->Append($MODE_STATUS,  "Show mode status",           "Show mode status dialog",  wxITEM_NORMAL );
+  $debugmenu->Append($PERL_MODULES, "Show perl modules",          "Show perl module versions", wxITEM_NORMAL );
   #$debugmenu->Append($CRASH,        "Crash Artemis",              "Force a crash of Artemis to test autosave file", wxITEM_NORMAL );
 
   my $feedbackmenu = Wx::Menu->new;
   $feedbackmenu->Append($SHOW_BUFFER, "Show command buffer",    'Show the Ifeffit and plotting commands buffer');
   $feedbackmenu->Append($STATUS,      "Show status bar buffer", 'Show the buffer containing messages written to the status bars');
   $feedbackmenu->AppendSubMenu($showmenu,  "Show Ifeffit ...",  'Show variables from Ifeffit');
-  $feedbackmenu->AppendSubMenu($debugmenu, 'Debug options',     'Display debugging tools')
-    if ($demeter->co->default("artemis", "debug_menus"));
+  $feedbackmenu->AppendSubMenu($debugmenu, 'Debug options',     'Display debugging tools');
+    ##if ($demeter->co->default("artemis", "debug_menus"));
   $feedbackmenu->Append($IFEFFIT_MEMORY,  "Show Ifeffit's memory use", "Show Ifeffit's memory use and remaining capacity");
 
   #my $settingsmenu = Wx::Menu->new;
@@ -553,7 +553,7 @@ sub fit {
 
   $rframes->{Plot}->{fileout}->SetValue(0);
 
-  my $rgds = $rframes->{GDS}->reset_all(1, 1);
+  my $rgds = $rframes->{GDS}->reset_all(1, 0);
   my ($abort, $rdata, $rpaths) = uptodate($rframes);
 
   if (($#{$rdata} == -1) or ($#{$rpaths} == -1) or ($#{$rgds} == -1)) {

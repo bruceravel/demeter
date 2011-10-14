@@ -21,6 +21,7 @@ use warnings;
 use Cwd;
 use File::Spec;
 use List::MoreUtils qw(uniq any);
+use Scalar::Util qw(looks_like_number);
 
 use Readonly;
 ## 0:grab all  1:reset all  2:toggle highlight  4:import   5:export  6:discard all  8:add one
@@ -112,14 +113,15 @@ sub new {
 
   $grid -> CreateGrid(12,4,wxGridSelectRows);
 
-  $grid -> SetColLabelValue(0, 'Type');
-  $grid -> SetColSize      (0,  85);
-  $grid -> SetColLabelValue(1, 'Name');
-  $grid -> SetColSize      (1,  100);
-  $grid -> SetColLabelValue(2, 'Math expression');
-  $grid -> SetColSize      (2,  330);
-  $grid -> SetColLabelValue(3, 'Evaluated');
-  $grid -> SetColSize      (3,  150);
+  $grid -> SetColLabelValue (0, 'Type');
+  $grid -> SetColSize       (0,  85);
+  $grid -> SetColLabelValue (1, 'Name');
+  $grid -> SetColSize       (1,  100);
+  $grid -> SetColLabelValue (2, 'Math expression');
+  $grid -> SetColSize       (2,  330);
+  #$grid -> SetColFormatFloat(2, -1, 5);
+  $grid -> SetColLabelValue (3, 'Evaluated');
+  $grid -> SetColSize       (3,  150);
 
   $grid -> SetRowLabelSize(40);
 
@@ -141,14 +143,14 @@ sub new {
    					     );
   $grid->SetAcceleratorTable( $accelerator );
 
-  EVT_GRID_CELL_CHANGE      ($grid,     sub{ $this->OnSetType(@_)     });
-  EVT_GRID_CELL_RIGHT_CLICK ($grid,     sub{ $this->PostGridMenu(@_)  });
-  EVT_GRID_LABEL_LEFT_CLICK ($grid,     sub{ $this->StartDrag(@_)     });
-  EVT_GRID_LABEL_RIGHT_CLICK($grid,     sub{ $this->PostGridMenu(@_)  });
-  EVT_MENU                  ($grid, -1, sub{ $this->OnGridMenu(@_)    });
-  EVT_GRID_RANGE_SELECT     ($grid,     sub{ $this->OnRangeSelect(@_) });
-  EVT_GRID_SELECT_CELL      ($grid,     sub{ $this->OnRowSelect(@_)   });
-  EVT_GRID_CELL_CHANGE      ($grid,     sub{ $this->OnCellChange(@_)  });
+  EVT_GRID_CELL_CHANGE      ($grid,     sub{ $this->OnSetType(@_)      });
+  EVT_GRID_CELL_RIGHT_CLICK ($grid,     sub{ $this->PostGridMenu(@_, 0)});
+  EVT_GRID_LABEL_LEFT_CLICK ($grid,     sub{ $this->StartDrag(@_)      });
+  EVT_GRID_LABEL_RIGHT_CLICK($grid,     sub{ $this->PostGridMenu(@_, 1)});
+  EVT_MENU                  ($grid, -1, sub{ $this->OnGridMenu(@_)     });
+  EVT_GRID_RANGE_SELECT     ($grid,     sub{ $this->OnRangeSelect(@_)  });
+  EVT_GRID_SELECT_CELL      ($grid,     sub{ $this->OnRowSelect(@_)    });
+  EVT_GRID_CELL_CHANGE      ($grid,     sub{ $this->OnCellChange(@_)   });
 
   $hbox -> Add($grid, 1, wxGROW|wxALL, 5);
 
@@ -253,7 +255,7 @@ sub use_best_fit {
     my $evaluated = $grid->GetCellValue($row, 3);
     next unless ($evaluated !~ m{\A\s*\z});
     $evaluated =~ s{\+/-\s*.*}{};
-    $grid->SetCellValue($row, 2, $evaluated);
+    $grid->SetCellValue($row, 2, $parent->display_value($evaluated));
     $grid->SetCellValue($row, 3, q{});
     ++$count;
   };
@@ -381,7 +383,8 @@ sub put_param {
   $grid   -> AppendRows(1,1) if ($start >= $grid->GetNumberRows);
   $grid   -> SetCellValue($start, 0, $type);
   $grid   -> SetCellValue($start, 1, $name);
-  $grid   -> SetCellValue($start, 2, $mathexp);
+  $grid   -> SetCellValue($start, 2, $parent->display_value($mathexp));
+  $parent -> tie_GDS_to_grid($start);
   $parent -> set_type($start);
 };
 
@@ -392,6 +395,24 @@ sub param_present {
     return 1 if (lc($grid->GetCellValue($row, 1)) eq lc($name));
   };
   return 0;
+};
+
+sub display_value {
+  my ($self, $string) = @_;
+  my $n = Demeter->co->default("gds", "display_precision");
+  my $patternf = '%.'.$n.'f';
+  my $patterne = '%.'.$n.'e';
+  if (looks_like_number($string)) {
+    if ($string == 0) {
+      return 0;
+    } elsif (abs($string) > 0.00001) {
+      return sprintf($patternf, $string);
+    } else {
+      return sprintf($patterne, $string);
+    };
+  } else {
+    return $string;
+  };
 };
 
 sub import {
@@ -419,11 +440,12 @@ sub import {
       $line =~ s{\s+\z}{};
       my ($gds, $name, @rest) = split(/$SEPARATOR/, $line);
       my $mathexp = join(" ", @rest);
-      $grid -> SetCellValue($start, 0, $gds);
-      $grid -> SetCellValue($start, 1, $name);
-      $grid -> SetCellValue($start, 2, $mathexp);
-      $parent->set_type($start);
-      ++$start;
+      $parent->put_param($gds, $name, $mathexp);
+      #$grid -> SetCellValue($start, 0, $gds);
+      #$grid -> SetCellValue($start, 1, $name);
+      #$grid -> SetCellValue($start, 2, $parent->display_value($mathexp));
+      #$parent->set_type($start);
+      #++$start;
     };
     close $PARAM;
   };
@@ -557,11 +579,16 @@ sub OnRangeSelect {
   $event->Skip;
 };
 sub PostGridMenu {
-  my ($parent, $self, $event) = @_;
+  my ($parent, $self, $event, $is_label) = @_;
   my $row = $event->GetRow;
   return if ($row < 0);
   $parent->{clicked_row} = $row;
   my $this = $self->GetCellValue($row, 1) || "current row";
+
+  if ($is_label) {
+    $parent->{grid}->ClearSelection;
+    $parent->{grid}->SelectRow($row);
+  };
 
   my @sel = grep {$parent->{grid}->IsInSelection($_,0)} (0 .. $parent->{grid}->GetNumberRows-1);
   my $which = ($#sel > 0) ? 'selected' : $this;
@@ -681,7 +708,7 @@ sub paste {
     my $this = $parent->insert_below;
     $parent->{grid} -> SetCellValue($this, 0, $g->gds);
     $parent->{grid} -> SetCellValue($this, 1, $g->name);
-    $parent->{grid} -> SetCellValue($this, 2, $g->mathexp);
+    $parent->{grid} -> SetCellValue($this, 2, $parent->display_value($g->mathexp));
     my $text = q{};
     if ($g->gds eq 'guess') {
       $text = sprintf("%.5f +/- %.5f", $g->bestfit, $g->error);
@@ -724,7 +751,7 @@ sub grab {
   my $bestfit = $parent->{grid}->GetCellValue($row,3);
   $parent->status("$name does not have a best fit value."), return if ($bestfit =~ m{\A\s*\z});
   $bestfit =~ s{\+/-\s*.*}{};
-  $parent->{grid}->SetCellValue($row, 2, $bestfit);
+  $parent->{grid}->SetCellValue($row, 2, $parent->display_value($bestfit));
   $parent->{grid}->SetCellValue($row, 3, q{});
   $parent->{grid}->ClearSelection;
   $parent->{uptodate} = 0;
@@ -980,6 +1007,27 @@ sub OnDropText {
   } elsif ($text =~ m{[^a-z0-9_?]}i) {
     $parent->status("Ifeffit guess/def/set parameters names can only use [a-z0-9_?] ($text)");
 
+  ## parameter name already exists
+  } elsif ($parent->param_present($text)) {
+    my $ted = Wx::TextEntryDialog->new($parent, "Clone parameter $text as", "Clone parameter", $text, wxOK|wxCANCEL, Wx::GetMousePosition);
+    if ($ted->ShowModal == wxID_CANCEL) {
+      $parent->status("Canceling parameter cloning");
+    };
+    my $newname = $ted->GetValue;
+    if ($parent->param_present($newname)) {
+      $parent->status("A parameter named $text alredy exists");
+      return 0;
+    };
+    my ($type, $mathexp);
+    foreach my $row (0 .. $grid->GetNumberRows) {
+      if (lc($grid->GetCellValue($row, 1)) eq lc($text)) {
+	$type    = $grid->GetCellValue($row, 0);
+	$mathexp = $grid->GetCellValue($row, 2);
+	last;
+      };
+    };
+    $parent->put_param($type, $newname, $mathexp);
+
   ## row already has a parameter in it
   } elsif ($grid -> GetCellValue($drop, 1) !~ m{\A\s*\z}) {
     my $yesno = Wx::MessageDialog->new($parent,
@@ -987,7 +1035,7 @@ sub OnDropText {
 				       "Replace parameter?",
 				       wxYES_NO|wxNO_DEFAULT|wxICON_QUESTION);
     if ($yesno->ShowModal == wxID_NO) {
-      return 1;
+      return 0;
     } else {
       $grid -> SetCellValue($drop, 1, $text);
       $grid -> SetCellValue($drop, 2, 0);

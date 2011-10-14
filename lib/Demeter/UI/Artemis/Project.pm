@@ -381,9 +381,9 @@ sub restore_fit {
     $grid -> SetCellValue($start, 0, $g->gds);
     $grid -> SetCellValue($start, 1, $g->name);
     if ($g->gds eq 'guess') {
-      $grid -> SetCellValue($start, 2, $g->bestfit || $g->mathexp);
+      $grid -> SetCellValue($start, 2, $rframes->{GDS}->display_value($g->bestfit || $g->mathexp));
     } else {
-      $grid -> SetCellValue($start, 2, $g->mathexp);
+      $grid -> SetCellValue($start, 2, $rframes->{GDS}->display_value($g->mathexp));
     };
     $grid -> {$g->name} = $g;
     my $text = q{};
