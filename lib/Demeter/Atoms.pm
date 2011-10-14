@@ -660,12 +660,18 @@ sub cluster_list {
 		     $abs->[0], $abs->[1], $abs->[2],
 		     0, $abs->[3]->tag, sqrt($abs->[4])
 		    );
+  my %seen;			# index tags by shell
   foreach my $pos (@list) {
-    ## rely upon coercions
+    if (not defined($seen{$pos->[3]->tag})) {
+      $seen{$pos->[3]->tag} = [1, sqrt($pos->[4])];
+    };
+    ++$seen{$pos->[3]->tag}->[0] if (sqrt($pos->[4]) - $seen{$pos->[3]->tag}->[1] > $EPSILON); # increment index if R has increased
+    my $tag = join(".", $pos->[3]->tag, $seen{$pos->[3]->tag}->[0]);
     $string .= sprintf($pattern,
 		       $pos->[0], $pos->[1], $pos->[2],
-		       $pos->[3]->ipot, $pos->[3]->tag, sqrt($pos->[4])
+		       $pos->[3]->ipot, $tag, sqrt($pos->[4])
 		      );
+    $seen{$pos->[3]->tag}->[1] = sqrt($pos->[4]);
   };
   return $string;
 };

@@ -437,7 +437,7 @@ sub OnPlotMenu {
   if ($event->GetId == $PLOT_REMOVE) {
     my @sel = $list->GetSelections;
     while (@sel) {
-      $list->Delete($sel[-1]);
+      $list->DeleteData($sel[-1]);
       @sel = $list->GetSelections;
     };
   } elsif ($event->GetId == $PLOT_ON) {

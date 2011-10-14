@@ -611,7 +611,7 @@ sub translate_trouble {
     my $this = $item->title;
     my $match = $trouble;
     ($pp, $token) = (q{}, q{});
-    if ($trouble =~ m{_}) {
+    if ($trouble =~ m{~}) {
       ($match, $pp, $token) = split(/~/, $trouble);
     };
     if ($this =~ m{$match}) {
@@ -629,7 +629,7 @@ sub translate_trouble {
     };
   };
   $text =~ s{C<\$pp>}{$pp};
-  $text =~ s{C<\$token>}{$token};
+  $text =~ s{C<\$token>}{"$token"};
   $text =~ s{C<([^>]*)>}{$1}g;
   undef $parser;
   undef $pom;

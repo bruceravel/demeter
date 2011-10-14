@@ -342,7 +342,7 @@ sub fit {
   if ($trouble_found) {
     $self->stop(1);
     my $text = $self->trouble_report;
-    carp($text);
+    carp($text) if ($self->mo->ui ne 'Wx');
     $self->troubletext($text);
     if (not $self->ignore_errors) {
       if ($self->mo->ui eq 'Wx') {

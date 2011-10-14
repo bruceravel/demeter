@@ -5,6 +5,24 @@
 
 * Beta testing releases:
 
+** Release 9: 20 October, 2011
+
+
+*** Athena
+
+*** Artemis
+   - Fixed a bug deleting items from plotting list
+   - Fixed a bug computing happiness, excluded paths should not be
+     evaluated for the pathparam penalty
+   - commented out tic mark munging for history reports
+   - suppress an extraneous warning box when a fit fails its sanity
+     checks
+
+*** Demeter
+   - Atoms cluster list now tags atoms by shell
+
+*** Acknowledgements for this release
+
 ** Release 8: 11 October, 2011
 
 *** Athena

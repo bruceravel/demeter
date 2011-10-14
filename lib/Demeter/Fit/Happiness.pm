@@ -119,6 +119,7 @@ sub _penalize_pathparams {
   my $count   = 0;
   my $summary = q{};
   foreach my $p (@paths) {
+    next if not $p->include;
     foreach my $pa (@params) {
       my ($isok, $explanation) = $p->is_resonable($pa);
       if (not $isok) {
