@@ -247,7 +247,7 @@ sub on_close {
 
   unlink File::Spec->catfile($demeter->stash_folder, $AUTOSAVE_FILE);
   my $persist = File::Spec->catfile($demeter->dot_folder, "athena.cwd");
-  YAML::Tiny::DumpFile($persist, {cwd=>cwd});
+  YAML::Tiny::DumpFile($persist, {cwd=>cwd . Demeter->slash});
   $demeter->mo->destroy_all;
   $event->Skip(1) if defined $event;
   return 1;

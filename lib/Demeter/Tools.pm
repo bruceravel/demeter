@@ -229,6 +229,11 @@ sub is_osx {
   return ($^O eq 'darwin');
 };
 
+sub slash {
+  my ($class) = @_;
+  return (Demeter->is_windows) ? '\\' : '/';
+};
+
 ## this is an exported function
 sub distance {
   my $self = shift;

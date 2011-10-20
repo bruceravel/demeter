@@ -9,6 +9,7 @@ use Wx::Event qw(EVT_BUTTON);
 use Demeter::UI::Athena::Timer;
 use Wx::Perl::TextValidator;
 use Scalar::Util qw(looks_like_number);
+use File::Monitor::Lite;
 
 use Cwd;
 
@@ -25,9 +26,6 @@ sub new {
 
   my $box = Wx::BoxSizer->new( wxVERTICAL);
   $this->{sizer} = $box;
-
-  $this->{seen}  = {};
-  $this->{last}  = q{};
 
   my $hbox = Wx::BoxSizer->new(wxHORIZONTAL);
   $box->Add($hbox, 0, wxGROW|wxALL, 5);
@@ -117,17 +115,14 @@ sub start {
   $this->{base} ->Enable(0);
   $this->{start}->Enable(0);
   $this->{stop} ->Enable(1);
-  $this->{seen}  = {};
-  $this->{last}  = q{};
-  opendir(my $D, $dir);
-  my @hits = grep { m{\A$base\.} } readdir($D);
-  closedir $D;
-  foreach my $file (@hits) {
-    $this->{seen}->{$file} = -s File::Spec->catfile($dir, $file);
-  };
+  $this->{monitor} = File::Monitor::Lite->new (in => $dir,
+					       name => $base.'.*',
+					      );
+  $this->{monitor}->check;
   $this->{timer}->Start($interval*1000);
   $::app->{main}->status("Started watching for $base in $dir (checking every $interval seconds)");
 };
+
 sub stop {
   my ($this) = @_;
   $this->{dir}  ->Enable(1);
