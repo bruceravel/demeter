@@ -1152,10 +1152,12 @@ sub main_window {
 		     'Difference',	  # 15
 		     # -----------------------
 		     'XDI',               # 17
-		     'Journal',		  # 18
-		     'PluginRegistry',    # 19
-		     'Prefs',		  # 20
+		     'Watcher',           # 18
+		     'Journal',		  # 19
+		     'PluginRegistry',    # 20
+		     'Prefs',		  # 21
 		    ) {
+    next if (($which eq 'Watcher') and (not Demeter->co->default(qw(athena show_watcher))));
     next if $INC{"Demeter/UI/Athena/$which.pm"};
     require "Demeter/UI/Athena/$which.pm";
     $app->{main}->{$which} = "Demeter::UI::Athena::$which"->new($app->{main}->{views}, $app);
@@ -1390,6 +1392,7 @@ sub select_plot {
 
 sub view_changing {
   my ($app, $frame, $event) = @_;
+  my $c = (Demeter->co->default(qw(athena show_watcher))) ? 4 : 3;
   my $ngroups = $app->{main}->{list}->GetCount;
   my $nviews  = $app->{main}->{views}->GetPageCount;
   #print join("|", $app, $event, $ngroups, $event->GetSelection), $/;
@@ -1399,7 +1402,7 @@ sub view_changing {
   my $string = $app->{main}->{views}->GetPageText($event->GetSelection);
   if ($string =~ m{\A-*\z}) {
     $event -> Veto();
-  } elsif (($event->GetSelection != 0) and ($event->GetSelection < $nviews-3)) {
+  } elsif (($event->GetSelection != 0) and ($event->GetSelection < $nviews-$c)) {
     if (not $ngroups) {
       $app->{main}->status(sprintf("You have no data imported in Athena, thus you cannot use the %s tool.", lc($string)));
       $event -> Veto();

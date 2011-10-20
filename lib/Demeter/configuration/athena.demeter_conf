@@ -156,3 +156,13 @@ description
   scaled by some amount so it plots nicely along with the data.  The
   final option is to plot the marge along with all the data that went
   into the merge in the same space as the merge.
+
+variable=show_watcher
+type=boolean
+onvalue=1
+offvalue=0
+default=false
+restart=1
+description
+  If true, show the data watcher tool.
+
