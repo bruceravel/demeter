@@ -22,6 +22,7 @@ use Chemistry::Elements qw(get_symbol);
 use Chemistry::Formula qw(parse_formula);
 use List::Util qw(min);
 use Xray::Absorption;
+use Xray::FluorescenceEXAFS;
 
 sub sa {
   my ($self, $how, @array) = @_;

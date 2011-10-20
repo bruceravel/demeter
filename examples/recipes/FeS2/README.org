@@ -1,0 +1,114 @@
+This directory contains the crystallographic data for Iron Sulfide
+(pyrite, FeS2) along with a transmission scan of FeS2 taken at room
+temperature at beamline 13BM at the APS.  The data was taken from
+Matt's data archive at
+     [[http://cars9.uchicago.edu/~newville/ModelLib/search.html]]
+     
+This is sufficient information to begin a fitting project for FeS2.
+In this readme file, I'll write steps to take to work through this
+example.  You should not consider this to be a recipe -- at each step
+you should play around with the settings in either Athena or Artemis
+to understand fully these data and the programs.
+
+ 1.  Fire up Athena.  Import the data file.
+
+ 2.  Find a set of parameters that gives a good background removal and
+     Fourier transform.  Note that the first couple data points in the
+     pre-edge are odd -- be sure to select pre-edge parameters that
+     avoid that bit of data.
+
+ 3.  Save the data to a project file.  You can ow close Athena.
+
+ 4.  Fire up Artemis.
+
+ 5.  Import the data from the Athena file that you just saved.
+
+ 6.  Import the crystallographic data contained in the file FeS2.inp.
+     Run Atoms.  Note that you can set the cluster size independently of
+     Rmax, the length of the longest path to be calculated.
+
+ 7.  Verify that the Feff input data is reasonable, then run Feff.
+
+ 8.  Select the first 10 paths in the path interpretation by clicking
+     on path #1 then clicking on path #10 while holding the shift key.
+     Drag and drop these paths onto the Data window.
+
+ 9.  Use the plot transfer buttons (the little red and blue buttons in
+     the upper left corner of the Data and Path windows to move data
+     and paths into the plotting list.  The buttons at the top of the
+     Plot window are used to plot the contents of the plotting window.
+
+     * Put the data and the first path in the plotting list.  See how
+       it contributes spectral weight in the region of the first peak.
+
+     * Clear the plotting list and put the data and the next three
+       singel scattering paths in the plotting list.  Where do those
+       paths contribute spectral weight?
+
+     * Plot the various multiple scattering pathss along with the
+       data.  Do anyof these MS paths seem like they might be
+       important contributions to the fit?
+
+ 10. Click the GDS button to open the parameters window.  Create 4
+     guess parameters called "amp", "enot", "delr", and "ss".  The
+     initial guess for amp should be 1.  ss should be 0.003.  The
+     other two can be 0.
+
+ 11. Deploy these four parameters as the path parameter values for the
+     first shell.
+
+ 12. Exclude all paths after the first one from the fit.  One way of
+     doing this is to select the first path, choose "mark after
+     current" from the Mark menu, the "exclude marked" from the
+     Actions menu.
+
+ 13. Set the fit range appropriate for a first shell fit.  Include
+     only those path or paths which contribute strongly under the
+     first peak.  Hit the big green button and examine your first
+     shell fit results.  Do the parameters make physical sense?
+
+ 14. Extend the fit range to cover the split peak between 2.3 and 3.9
+     Angstroms.  Include each of the first four SS paths in the fit.
+
+ 15. Now you need to set parameters for the paths you just included.
+     It is reasonable to use the same S02 and E0 parameters for each
+     path.  Should Delta R be the same for each path?  Should sigma^2?
+     Come up with some reasonable parameterization, either by making
+     interesting constraints between the paths or by creating new
+     guess parameters as needed.
+
+ 16. Make a fit using your parameterization.  Are the best fit values
+     reasonable?  How might you change the parameterization?  Is it
+     possible to make constraints between the paths?
+
+ 17. FeS2 is a cubic material (it's space group is Pa3 -- a cubic
+     group).  This means we can use the trick of modeling the delta R
+     parameters by an isotropic expansion coefficient.  Discard
+     whatever Delta R parameters you might have.  Define Delta R for
+     each path to be "alpha*reff".  Remember that "reff" always
+     evaluates to the nominal path length as used in Feff when a path
+     parameter math expression is interpreted.  Make alpha a guess
+     parameter.
+
+ 18. What other paths contribute significant spectral weight in the
+     region between 2.3 and 3.7 Angstroms?  Consider including
+     important MS paths and the fourth shell S atom to the fit.  How
+     about paths 13 and 14, which are collinear paths involving the
+     absorber and 1st shell S atoms?
+
+ 19. Can you think of a way to approximate the sigma^2 for the MS paths
+     using math expressions, def parameters, and the sigma^2 parameters
+     that are used to fit the SS paths?
+     
+ 20. The 2nd and 3rd shells are both S and are relatively close
+     together in length.  Test to see if the data support measuring
+     sigma^2 independently for those two paths by comparing a fit in
+     which they are constrained to be to same to a fit in which the
+     float freely.
+
+ 21. If you look at the atoms information, you will see that this
+     structure is actually defined by two parameters -- the lattice
+     constant and the position of the S atom.  The variation in the
+     lattice constant is accommodated in our fit using the isotropic
+     expansion constant alpha.  How might you include the possibility
+     of refining the S coordinate in the fit?
