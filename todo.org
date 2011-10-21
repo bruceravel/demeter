@@ -3,7 +3,6 @@
 #+EMAIL: bravel AT bnl DOT gov
 #+TAGS: PDL HUH Advanced Windows
 
-
 * things that need doing
 
 ** wx issues
@@ -39,7 +38,7 @@
 
 ** Athena
 
-*** Tools [18/25] [72%]
+*** Tools [19/25] [76%]
    - [X] main
    - [X] calibrate
    - [X] align
@@ -63,7 +62,7 @@
    - [X] difference
 
    - [ ] explain FT
-   - [ ] disk watcher
+   - [X] disk watcher
    - [X] XDI
    - [X] journal
    - [X] plugins
@@ -79,7 +78,7 @@
    - [X] keV data
    - [ ] importing xmu.dat files into Athena has never been tested
 
-*** needs doing [4/13] [30%]
+*** needs doing [4/14] [28%]
    - [X] deglitching crashes with gnuplot					:HUH:
    - [X] test preprocessing (I had a crash with all three preproc options selected for data with a reference):
 	 ~Can't call method "GetSelection" on an undefined value at /home/bruce/git/demeter/lib/Demeter/UI/Athena/IO.pm line 423.~
@@ -135,6 +134,14 @@
        + [X] configuration
        + [ ] sequence over marked groups
        + [ ] persistance
+   - [-] *Data watcher* [1/5]
+       + [ ] Data import
+       + [ ] Actively import the first file in order to set column
+             selection, save that example of column selection in case
+             its yaml gets overwritten before the timer starts
+       + [X] Recognize an incomplete scan, eg a scan terminated by a beam dump
+       + [ ] Import the last scan in a sequence
+       + [ ] Toggles for pre-processing (mark/set/align)
    - [ ] *Plot menu*
        + zoom/unzoom/cursor for pgplot
    - [-] *Help menu* [1/3]

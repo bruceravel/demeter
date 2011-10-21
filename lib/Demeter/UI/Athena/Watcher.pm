@@ -28,37 +28,44 @@ sub new {
   $this->{sizer} = $box;
 
   my $hbox = Wx::BoxSizer->new(wxHORIZONTAL);
-  $box->Add($hbox, 0, wxGROW|wxALL, 5);
+  $box->Add($hbox, 0, wxGROW|wxALL, 3);
   $this->{dir} = Wx::DirPickerCtrl->new($this, -1, cwd, "Select as folder",
 					wxDefaultPosition, wxDefaultSize,
 					wxDIRP_DIR_MUST_EXIST|wxDIRP_CHANGE_DIR|wxDIRP_USE_TEXTCTRL);
   $hbox -> Add($this->{dir}, 1, wxGROW|wxALL, 0);
 
   $hbox = Wx::BoxSizer->new(wxHORIZONTAL);
-  $box->Add($hbox, 0, wxGROW|wxALL, 5);
+  $box->Add($hbox, 0, wxGROW|wxALL, 3);
   $hbox->Add(Wx::StaticText->new($this, -1, "File basename"), 0, wxLEFT|wxRIGHT|wxTOP, 3);
   $this->{base} = Wx::TextCtrl->new($this, -1, q{});
   $hbox->Add($this->{base}, 1, wxLEFT|wxRIGHT, 3);
 
   $hbox = Wx::BoxSizer->new(wxHORIZONTAL);
-  $box->Add($hbox, 0, wxGROW|wxALL, 5);
+  $box->Add($hbox, 0, wxGROW|wxALL, 3);
   $hbox->Add(Wx::StaticText->new($this, -1, "Interval"), 0, wxLEFT|wxRIGHT|wxTOP, 3);
-  $this->{interval} = Wx::TextCtrl->new($this, -1, q{30}, wxDefaultPosition, [120,-1]);
+  $this->{interval} = Wx::TextCtrl->new($this, -1, Demeter->co->default(qw(watcher interval)), wxDefaultPosition, [120,-1]);
   $hbox->Add($this->{interval}, 0, wxLEFT|wxRIGHT, 3);
   $hbox->Add(Wx::StaticText->new($this, -1, "seconds"), 0, wxLEFT|wxRIGHT|wxTOP, 3);
   $this->{interval} -> SetValidator( Wx::Perl::TextValidator->new( qr([0-9]) ) );
 
   $hbox = Wx::BoxSizer->new(wxHORIZONTAL);
-  $box->Add($hbox, 0, wxGROW|wxALL, 5);
+  $box->Add($hbox, 0, wxGROW|wxALL, 3);
+  $this->{standard} = Wx::Button->new($this, -1, "Import the first file");
+  $hbox->Add($this->{standard}, 1, wxLEFT|wxRIGHT, 3);
+
+  $hbox = Wx::BoxSizer->new(wxHORIZONTAL);
+  $box->Add($hbox, 0, wxGROW|wxALL, 3);
   $this->{start} = Wx::Button->new($this, wxID_APPLY, "");
   $hbox->Add($this->{start}, 1, wxLEFT|wxRIGHT, 3);
   $this->{stop} = Wx::Button->new($this, wxID_STOP, "Stop");
   $hbox->Add($this->{stop}, 1, wxLEFT|wxRIGHT, 3);
+  $this->{start}->Enable(0);
   $this->{stop}->Enable(0);
 
   $this->{timer} = Demeter::UI::Athena::Timer->new();
-  EVT_BUTTON($this, $this->{start}, sub{$this->start});
-  EVT_BUTTON($this, $this->{stop},  sub{$this->stop});
+  EVT_BUTTON($this, $this->{standard}, sub{$this->standard});
+  EVT_BUTTON($this, $this->{start},    sub{$this->start});
+  EVT_BUTTON($this, $this->{stop},     sub{$this->stop});
 
   $box->Add(1,1,1);		# this spacer may not be needed, Journal.pm, for example
 
@@ -88,6 +95,13 @@ sub mode {
   1;
 };
 
+sub standard {
+  my ($this)   = @_;
+  $this->{standard}->Enable(1);
+  $this->{start}   ->Enable(1);
+  $this->{stop}    ->Enable(0);
+};
+
 sub start {
   my ($this)   = @_;
   my $base     = $this->{base}->GetValue;
@@ -111,8 +125,11 @@ sub start {
   };
   $this->{timer}->{dir}  = $dir;
   $this->{timer}->{base} = $base;
+  $this->{timer}->{size} = 0;
   $this->{dir}  ->Enable(0);
   $this->{base} ->Enable(0);
+  $this->{interval}->Enable(0);
+  $this->{standard}->Enable(0);
   $this->{start}->Enable(0);
   $this->{stop} ->Enable(1);
   $this->{monitor} = File::Monitor::Lite->new (in => $dir,
@@ -127,7 +144,9 @@ sub stop {
   my ($this) = @_;
   $this->{dir}  ->Enable(1);
   $this->{base} ->Enable(1);
-  $this->{start}->Enable(1);
+  $this->{interval}->Enable(1);
+  $this->{standard}->Enable(1);
+  $this->{start}->Enable(0);
   $this->{stop} ->Enable(0);
   $this->{timer}->Stop;
   my $base = $this->{base}->GetValue;
@@ -149,7 +168,8 @@ This documentation refers to Demeter version 0.5.
 
 =head1 SYNOPSIS
 
-This module provides a
+This module provides an Athena tool for watching data arrive to disk.
+As scans finish, they are imported in the current Athena project.
 
 =head1 CONFIGURATION
 
@@ -164,7 +184,7 @@ Demeter's dependencies are in the F<Bundle/DemeterBundle.pm> file.
 
 =item *
 
-This 'n' that
+Toggles for pre-processing
 
 =back
 

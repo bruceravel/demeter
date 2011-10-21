@@ -50,6 +50,7 @@ my $build = DemeterBuilder
 				'DateTime'                  => '0',
 				'Digest::SHA'		    => '0',
 				'Encoding::FixLatin'        => '0',
+				'File::Monitor::Lite'       => '0',
 				'Graph'                     => '0',
 				'Heap'			    => '0',
                                 'HTML::Entities'            => '0',

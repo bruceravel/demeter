@@ -9,6 +9,8 @@
 
 *** Athena
    - Display YAMLs for PCA and PeakFit objects
+   - Fixed a bug using one of the self-absorption algorithms
+   - YAML displays in Athena for PCA and PeakFit objects
 
 *** Artemis
    - Fixed a bug deleting items from plotting list
@@ -18,11 +20,20 @@
    - suppress an extraneous warning box when a fit fails its sanity
      checks
    - Several improvements to behavior of GDS grid
+   - Facelift on Atoms page
+   - Check to see if temp and theta already exist as parameters when
+     using Debye or Eins model from context menu
+   - better display of numbers/mathexps in GDS grid with configurable precision
 
 *** Demeter
    - Atoms cluster list now tags atoms by shell
    - Forcing display of debug menus in A&A until they become more
      stable
+   - Added a recipe for using Empirical standards
+   - override /all/ method in Demeter::PeakFit
+
+*** Windows installer
+   - have inno make an Atoms desktop icon
 
 *** Acknowledgements for this release
 

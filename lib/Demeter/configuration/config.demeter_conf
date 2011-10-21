@@ -112,6 +112,8 @@ include histogram.demeter_conf     ## histogram creation
 
 include screen.demeter_conf        ## screen UI
 
+include watcher.demeter_conf       ## data watcher
+
 include athena.demeter_conf        ## Athena
 
 include artemis.demeter_conf       ## Artemis
