@@ -578,9 +578,6 @@ sub get_crystal_data {
     next if $self->{$param}->GetValue;
     $self->{$param}->SetValue($self->{a}->GetValue);
   };
-  foreach my $param (qw(alpha beta gamma)) {
-    $self->{$param}->SetValue($self->verify_angle($param));
-  };
   foreach my $param (qw(rmax rpath)) {
     next if is_PosNum($self->{$param}->GetValue);
     $self->{$param}->SetValue($atoms->co->default("atoms", $param));
@@ -593,6 +590,10 @@ sub get_crystal_data {
     } else {
       $problems .= "\"$this\" is not a valid value for \"$param\" (should be a positive number).\n\n";
     };
+  };
+  foreach my $param (qw(alpha beta gamma)) {
+    $self->{$param}->SetValue($self->verify_angle($param));
+    $atoms->$param($self->{$param}->GetValue);
   };
 
   my @shift = map { $self->{$_}->GetValue || 0 } qw(shift_x shift_y shift_z);

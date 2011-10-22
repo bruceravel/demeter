@@ -24,6 +24,8 @@
    - Check to see if temp and theta already exist as parameters when
      using Debye or Eins model from context menu
    - better display of numbers/mathexps in GDS grid with configurable precision
+   - Atoms was setting angles incorrectly formonoclinic groups at the
+     step of verifying angle values against space group and setting
 
 *** Demeter
    - Atoms cluster list now tags atoms by shell
@@ -36,6 +38,8 @@
    - have inno make an Atoms desktop icon
 
 *** Acknowledgements for this release
+   - Emmanuel Doelsch
+
 
 ** Release 8: 11 October, 2011
 
