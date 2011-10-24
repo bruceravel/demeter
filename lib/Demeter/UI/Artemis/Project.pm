@@ -164,12 +164,13 @@ sub read_project {
   my ($rframes, $fname) = @_;
   if (not $fname) {
     my $fd = Wx::FileDialog->new( $rframes->{main}, "Import an Artemis project or data", cwd, q{},
-				  "Artemis project or data (*.fpj;*.prj;*.apj;*.dpj;*.inp;*.cif)|*.fpj;*.prj;*.apj;*.dpj;*.inp;*.cif|" .
+				  "Artemis project or data (*.fpj;*.prj;*.inp;*.cif)|*.fpj;*.prj;*.inp;*.cif|" .
 				  "Artemis project (*.fpj)|*.fpj|" .
 				  "Athena project (*.prj)|*.prj|".
-				  "old-style project (*.apj)|*.apj|".
+				  "old-style Artemis project (*.apj)|*.apj|".
 				  "Demeter serializations (*.dpj)|*.dpj|".
 				  "Feff or crystal data (*.inp;*.cif)|*.inp;*.cif|".
+				  "chi(k) column data (*.chi;*.dat)|*.chi;*.dat|".
 				  "All files|*",
 				  wxFD_OPEN|wxFD_FILE_MUST_EXIST|wxFD_CHANGE_DIR|wxFD_PREVIEW,
 				  wxDefaultPosition);

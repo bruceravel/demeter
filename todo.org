@@ -39,34 +39,34 @@
 ** Athena
 
 *** Tools [19/25] [76%]
-   - [X] main
-   - [X] calibrate
-   - [X] align
-   - [X] deglitch
-   - [ ] /smooth with Savitsky-Golay filter/ [[file:notes/sgolay.m][Matlab routine for SG filter]] 
-   - [X] truncate
-   - [X] rebin
-   - [X] convolution and noise
-   - [ ] /deconvolution/
-   - [X] self absorption
-   - [X] copy series
-   - [ ] data summer
+   1. [X] main
+   2. [X] calibrate
+   3. [X] align
+   4. [X] deglitch
+   5. [ ] /smooth with Savitsky-Golay filter/ [[file:notes/sgolay.m][Matlab routine for SG filter]] 
+   6. [X] truncate
+   7. [X] rebin
+   8. [X] convolution and noise
+   9. [ ] /deconvolution/
+   10. [X] self absorption
+   11. [X] copy series
+   12. [ ] data summer
 
-   - [ ] dispersive
-   - [ ] multi-electron removal
+   13. [ ] dispersive
+   14. [ ] multi-electron removal
 
-   - [X] LCF
-   - [X] /PCA/ [[http://mailman.jach.hawaii.edu/pipermail/perldl/2006-August/000588.html][PCA from PDL mail archives]]
-   - [X] Peak fit
-   - [X] log ratio
-   - [X] difference
+   15. [X] LCF
+   16. [X] /PCA/ [[http://mailman.jach.hawaii.edu/pipermail/perldl/2006-August/000588.html][PCA from PDL mail archives]]
+   17. [X] Peak fit
+   18. [X] log ratio
+   19. [X] difference
 
-   - [ ] explain FT
-   - [X] disk watcher
-   - [X] XDI
-   - [X] journal
-   - [X] plugins
-   - [X] preference 
+   20. [ ] explain FT
+   21. [X] disk watcher
+   22. [X] XDI
+   23. [X] journal
+   24. [X] plugins
+   25. [X] preference 
 
 **** Requires PDL 							:PDL:
     1. smoothing by S-G
