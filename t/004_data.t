@@ -17,7 +17,7 @@
 
 =cut
 
-use Test::More tests => 59;
+use Test::More tests => 60;
 
 use File::Basename;
 use File::Spec;
@@ -118,6 +118,7 @@ $data5->e0('ifeffit');
 
 $data3->e0('ifeffit'); ## how do I make this happen automatically??
 
+ok( $data3->datatype eq 'xmu',                                  "determine_data_type works, columns: xmu");
 ok( ($data3->fft_edge eq 'k' and $data3->bkg_z eq 'Fe'),        'find_edge works: '.join(" ", $data3->fft_edge, $data3->bkg_z));
 ok( abs($data3->bkg_e0 - 7105.506) < $fuzz,                     'find e0: ifeffit (' . $data3->bkg_e0 . ')');
 $data3->e0('zero');

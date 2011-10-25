@@ -296,11 +296,11 @@ sub normalize {
     $self->dispose($precmd);
 
     my $e0 = Ifeffit::get_scalar("e0");
+    $self->bkg_e0($e0);
     if (lc($self->bkg_z) eq 'h') {
       my ($elem, $edge) = $self->find_edge($e0);
-      $self->bkg_e0($e0);
       $self->bkg_z($elem);
-      $self->fft_edge($edge)
+      $self->fft_edge($edge);
     };
     $self->bkg_spl1($self->bkg_spl1); # this odd move sets the spl1e and
     $self->bkg_spl2($self->bkg_spl2); # spl2e attributes correctly for the

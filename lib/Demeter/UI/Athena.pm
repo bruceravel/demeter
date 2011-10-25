@@ -1679,11 +1679,13 @@ sub mark {
     foreach my $i (0 .. $clb->GetCount-1) {
       if ($clb->GetIndexedData($i)->group eq $how->group) {
 	$clb->Check($i,1);
+	$clb->GetIndexedData($i)->marked(1);
 	last;
       };
     };
   } elsif ($how eq 'toggle') {
     $clb->Check($clb->GetSelection, not $clb->IsChecked($clb->GetSelection));
+    $clb->GetIndexedData($::app->current_index)->marked($clb->IsChecked($::app->current_index));
     return;
 
   } elsif ($how =~ m{all|none|invert}) {
@@ -1693,6 +1695,7 @@ sub mark {
 	      : ($how eq 'invert') ? not $clb->IsChecked($i)
 	      :                     $clb->IsChecked($i);
       $clb->Check($i, $val);
+      $clb->GetIndexedData($i)->marked($val);
     };
 
   } else {			# regexp mark or unmark
@@ -1716,6 +1719,7 @@ sub mark {
       next if ($clb->GetIndexedData($i)->name !~ m{$re});
       my $val = ($how eq 'regexp') ? 1 : 0;
       $clb->Check($i, $val);
+      $clb->GetIndexedData($i)->marked($val);
     };
   };
   if (ref($how) !~ m{Demeter}) {
@@ -1769,6 +1773,7 @@ sub merge {
   $app->OnGroupSelect(q{}, $app->{main}->{list}->GetSelection, 0);
   $app->{main}->{Main}->mode($merged, 1, 0);
   $app->{main}->{list}->Check($app->{main}->{list}->GetCount-$n, 1);
+  $merged->marked(1);
   $app->modified(1);
 
   ## handle plotting, respecting the choice in the athena->merge_plot config parameter

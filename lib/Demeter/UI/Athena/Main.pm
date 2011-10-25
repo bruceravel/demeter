@@ -641,8 +641,6 @@ sub push_values {
     };
   };
 
-  #$this->{list}->Check($::app->current_index, $data->marked);
-
   if ($data->reference) {
     $this->{bkg_eshift}-> SetBackgroundColour( Wx::Colour->new($data->co->default("athena", "tied")) );
   } else {
