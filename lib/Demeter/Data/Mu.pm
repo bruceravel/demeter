@@ -296,10 +296,12 @@ sub normalize {
     $self->dispose($precmd);
 
     my $e0 = Ifeffit::get_scalar("e0");
-    my ($elem, $edge) = $self->find_edge($e0);
-    $self->bkg_e0($e0);
-    $self->bkg_z($elem);
-    $self->fft_edge($edge);
+    if (lc($self->bkg_z) eq 'h') {
+      my ($elem, $edge) = $self->find_edge($e0);
+      $self->bkg_e0($e0);
+      $self->bkg_z($elem);
+      $self->fft_edge($edge)
+    };
     $self->bkg_spl1($self->bkg_spl1); # this odd move sets the spl1e and
     $self->bkg_spl2($self->bkg_spl2); # spl2e attributes correctly for the
 				      # new value of e0
@@ -628,9 +630,9 @@ sub find_edge {
     ($elem, $edge) = ("Co", "K")  if (($elem eq "Sm") and ($edge eq "L1"));
     ## give special treatment to the case of mn oxide.
     ($elem, $edge) = ("Mn", "K")  if (($elem eq "Ce") and ($edge eq "L1"));
-    ## prefer Bi K to Ir L1
+    ## prefer Bi L3 to Ir L1
     ($elem, $edge) = ("Bi", "L3") if (($elem eq "Ir") and ($edge eq "L1"));
-    ## prefer Se K to Tl L2
+    ## prefer Se K to Tl L3
     ($elem, $edge) = ("Se", "K")  if (($elem eq "Tl") and ($edge eq "L3"));
     ## prefer Pt L3 to W L2
     #($elem, $edge) = ("Pt", "L3") if (($elem eq "W") and ($edge eq "L2"));
@@ -641,7 +643,7 @@ sub find_edge {
     ## prefer Cr K to Ba L1
     ($elem, $edge) = ("Cr", "K")  if (($elem eq "Ba") and ($edge eq "L1"));
     ## prefer Ni K to Er L3
-    ($elem, $edge) = ("Ni", "K")  if (($elem eq "Er") and ($edge eq "L3"));
+    #($elem, $edge) = ("Ni", "K")  if (($elem eq "Er") and ($edge eq "L3"));
   };
   return ($elem, $edge);
 };

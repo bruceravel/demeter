@@ -150,11 +150,12 @@ sub resolve_file {
 
 sub plot {
   my ($self, $choice, $which, $target) = @_;
+  my $cc = $choice;
   $choice = lc($choice);
 
   my $data;
   my $thisfile = $self->resolve_file($choice);
-  return "The download of the remote data file failed."                                if ($thisfile eq '^^PLOP^^: unsuccessful');
+  return "The download of the remote data file for \"$cc\" failed."                    if ($thisfile eq '^^PLOP^^: unsuccessful');
   return "You do not have perl's libwww installed, so remote files cannot be plotted." if ($thisfile eq '^^PLOP^^: nolibwww');
 
   if ($self->get($choice, 'record')) { # this is an Athena project
@@ -184,6 +185,7 @@ sub plot {
 		 numerator   => $self->get($choice, 'numerator'),
 		 denominator => $self->get($choice, 'denominator'),
 		 ln          => $self->get($choice, 'ln'),
+		 datatype    => 'xmu',
 		);
   };
 

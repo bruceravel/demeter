@@ -610,9 +610,11 @@ sub push_values {
     $this->{$w}->SetValue($data->$w) if (ref($this->{$w}) =~ m{CheckBox});
   };
   ($this->{file}->GetValue eq '@&^^null^^&@') ? $this->{file}->SetValue($data->prjrecord)  :
+  ($this->{file}->GetValue =~ m{\A\s*\z})     ? $this->{file}->SetValue($data->prjrecord)  :
   ($data->from_athena)                        ? $this->{file}->SetValue($data->prjrecord)  :
   ($data->is_merge)                           ? $this->{file}->SetValue($data->provenance) :
                                                 $this->{file}->SetValue($data->source);
+  $this->{file}->GetValue =~ m{\A\s*\z} && $this->{file}->SetValue($data->source);
   $this->{bkg_z}      -> SetValue(sprintf "%-2d: %s", get_Z($data->bkg_z), get_name($data->bkg_z));
   $this->{fft_edge}   -> SetValue(ucfirst($data->fft_edge));
   $this->{bkg_clamp1} -> SetStringSelection($data->number2clamp($data->bkg_clamp1));
@@ -776,11 +778,13 @@ sub OnAbsorber {
   my ($main, $event, $app) = @_;
   my $abs = interpret_bkg_z($app->{main}->{Main}->{bkg_z}->GetValue);
   $app->current_data->bkg_z(get_symbol($abs));
+  $app->modified(1);
 };
 sub OnEdge {
   my ($main, $event, $app) = @_;
   my $edge = $app->{main}->{Main}->{fft_edge}->GetValue;
   $app->current_data->fft_edge($edge);
+  $app->modified(1);
 };
 
 sub interpret_bkg_z {

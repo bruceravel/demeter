@@ -247,7 +247,8 @@
 	 - [X] re-parse the time steps
 	 - [X] re-do the binning
 
-** Hephaestus 
+** Hephaestus
+  More standards!!
 
 ** Other object types [0/3]
   - [ ] Structural Units

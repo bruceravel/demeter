@@ -296,11 +296,11 @@ sub _data {
     };
 
     ## set Rebinning controls from yaml
-    foreach my $w (qw(do_rebin abs emin emax pre xanes exafs)) {
+    foreach my $w (qw(do_rebin emin emax pre xanes exafs)) { # abs
       my $key = ($w eq 'do_rebin') ? $w : 'rebin_'.$w;
       $colsel->{Rebin}->{$w}->SetValue($yaml->{$key});
-      last if (any {$w eq $_} qw(do_rebin abs));
-      $data->co->set_default('rebin', $w);
+      next if (any {$w eq $_} qw(do_rebin abs));
+      $data->co->set_default('rebin', $w, $yaml->{$key});
     };
     if ($data->columns ne $yaml->{columns}) {
       $colsel->{Rebin}->{do_rebin}->SetValue(0)

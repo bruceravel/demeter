@@ -22,7 +22,7 @@ use Wx qw( :everything );
 use base qw(Wx::Panel);
 use Wx::Event qw(EVT_RIGHT_DOWN EVT_ENTER_WINDOW EVT_LEAVE_WINDOW EVT_MENU
 		 EVT_CHECKBOX EVT_BUTTON EVT_HYPERLINK
-		 EVT_COLLAPSIBLEPANE_CHANGED EVT_TEXT_ENTER);
+		 EVT_COLLAPSIBLEPANE_CHANGED EVT_TEXT EVT_TEXT_ENTER);
 
 use Demeter::UI::Wx::SpecialCharacters qw(:all);
 use Demeter::StrTypes qw( IfeffitFunction IfeffitProgramVar );
@@ -173,6 +173,8 @@ sub new {
     EVT_MENU      ($this->{"pp_$k"}, -1,     sub{ $this->OnPPMenu(@_)                   });
     EVT_TEXT_ENTER($this, $this->{"pp_$k"},  sub{1});
   };
+  EVT_TEXT($this, $this->{pp_n}, sub{ verify_n(@_) });
+  $this->{pp_n}->{was} = q{};
   $vbox -> Add($gbs, 2, wxGROW|wxTOP|wxBOTTOM, 10);
   $this->{pp_n} -> SetValidator( Wx::Perl::TextValidator->new( qr([0-9.]) ) );
 
@@ -326,6 +328,18 @@ sub OnPPClick {
   $tc -> PopupMenu($menu, $here);
 };
 
+
+sub verify_n {
+  my ($pathpage, $event) = @_;
+  my $value = $pathpage->{pp_n}->GetValue;
+  if (looks_like_number($value)) {
+    $pathpage->{pp_n}->{was} = $value;
+    $pathpage->{datapage}->status(q{});
+  } else {
+    $pathpage->{pp_n}->SetValue($pathpage->{pp_n}->{was});
+    $pathpage->{datapage}->status("N must be a number. \"$value\" is not a valid value for N", 'error' );
+  };
+};
 
 sub this_path {
   my ($page) = @_;

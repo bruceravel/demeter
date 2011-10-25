@@ -270,6 +270,7 @@ sub _record {
 	last SWITCH;
       };
       ($k eq 'reference') and do {
+	$groupargs{referencegroup} = $args{reference};
 	last SWITCH;
       };
       ($k eq 'importance') and do {

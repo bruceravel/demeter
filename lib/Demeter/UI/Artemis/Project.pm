@@ -162,6 +162,15 @@ sub import_autosave {
 
 sub read_project {
   my ($rframes, $fname) = @_;
+  if (project_started($rframes)) {
+    my $yesno = Wx::MessageDialog->new($rframes->{main},
+				       "Save current project before opening a new one?",
+				       "Save project?",
+				       wxYES_NO|wxYES_DEFAULT|wxICON_QUESTION);
+    my $result = $yesno->ShowModal;
+    save_project($rframes) if $result == wxID_YES;
+    close_project($rframes, 1);
+  };
   if (not $fname) {
     my $fd = Wx::FileDialog->new( $rframes->{main}, "Import an Artemis project or data", cwd, q{},
 				  "Artemis project or data (*.fpj;*.prj;*.inp;*.cif)|*.fpj;*.prj;*.inp;*.cif|" .
@@ -491,17 +500,19 @@ sub modified {
 
 
 sub close_project {
-  my ($rframes) = @_;
-  my $yesno = Wx::MessageDialog->new($rframes->{main},
-				     "Save this project before closing?",
-				     "Save project?",
-				     wxYES_NO|wxCANCEL|wxYES_DEFAULT|wxICON_QUESTION);
-  my $result = $yesno->ShowModal;
-  if ($result == wxID_CANCEL) {
-    $rframes->{main}->status("Not closing project.");
-    return 0;
+  my ($rframes, $force) = @_;
+  if (not $force) {
+    my $yesno = Wx::MessageDialog->new($rframes->{main},
+				       "Save this project before closing?",
+				       "Save project?",
+				       wxYES_NO|wxCANCEL|wxYES_DEFAULT|wxICON_QUESTION);
+    my $result = $yesno->ShowModal;
+    if ($result == wxID_CANCEL) {
+      $rframes->{main}->status("Not closing project.");
+      return 0;
+    };
+    save_project($rframes) if $result == wxID_YES;
   };
-  save_project($rframes) if $result == wxID_YES;
 
   Demeter::UI::Artemis::set_happiness_color($Demeter::UI::Artemis::demeter->co->default("happiness", "average_color"))
       if (exists $rframes->{main} -> {currentfit});
@@ -567,6 +578,20 @@ sub close_project {
   $rframes->{main}->{cvcount} = 0;
 
   return 1;
+};
+
+sub project_started {
+  my ($rframes) = @_;
+  my ($ndata, $nfeff, $ngds) = (0,0,0);
+  foreach my $f (keys %$rframes) {
+    ++$ndata if ($f =~ m{data});
+    ++$nfeff if ($f =~ m{feff});
+  };
+  my $grid = $rframes->{GDS}->{grid};
+  foreach my $row (0 .. $grid->GetNumberRows-1) {
+    ++$ngds if ($grid->GetCellValue($row, 1) !~ m{\A\s*\z});
+  };
+  return $ndata || $nfeff || $ngds;
 };
 
 1;

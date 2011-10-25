@@ -1745,6 +1745,7 @@ sub merge {
   $max = sprintf(" %d", $max+1) if $max;
   $merged->name('merge'.$max);
   $app->{main}->{list}->AddData($merged->name, $merged);
+  my $n = 1;
 
   if ($data[0] -> reference) {
     my @refs = grep {$_} map  {$_->reference} @data;
@@ -1753,12 +1754,13 @@ sub merge {
     $refmerged->name("  Ref ". $merged->name);
     $refmerged->reference($merged);
     $app->{main}->{list}->AddData($refmerged->name, $refmerged);
+    $n = 2;
   };
 
-  $app->{main}->{list}->SetSelection($app->{main}->{list}->GetCount-2);
+  $app->{main}->{list}->SetSelection($app->{main}->{list}->GetCount-$n);
   $app->OnGroupSelect(q{}, $app->{main}->{list}->GetSelection, 0);
   $app->{main}->{Main}->mode($merged, 1, 0);
-  $app->{main}->{list}->Check($app->{main}->{list}->GetCount-2, 1);
+  $app->{main}->{list}->Check($app->{main}->{list}->GetCount-$n, 1);
   $app->modified(1);
 
   ## handle plotting, respecting the choice in the athena->merge_plot config parameter

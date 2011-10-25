@@ -23,7 +23,8 @@ use Carp;
 use List::Util qw(reduce);
 use List::MoreUtils qw(minmax firstval uniq);
 use Readonly;
-Readonly my $EPSILON => 1e-5;
+Readonly my $EPSILON  => 1e-5;
+Readonly my $NULLFILE => '@&^^null^^&@';
 
 
 
@@ -84,8 +85,11 @@ sub merge {
   $self->standard;		# make self the standard for merging
 
   my $merged = $self->clone;
+  $merged -> source($NULLFILE);
+  $merged -> file($NULLFILE);
   $merged -> reference(q{});
   $merged -> generated(1);
+  $merged -> prjrecord(q{});
 
   my $sum = 0;
   foreach my $d (uniq($self, @data)) {
@@ -146,6 +150,7 @@ sub merge {
   $merged -> bkg_eshift(0);
   $merged -> i0_string(q{});
   $merged -> provenance("Merge of  " . join(', ', map {$_->name} (uniq($self, @data)))   );
+  $merged -> source("Merge of  " . join(', ', map {$_->name} (uniq($self, @data)))   );
   $merged -> name("data merged as " . $howstring{$how});
   ($how =~ m{^k}) ? $merged -> datatype('chi') : $merged -> datatype('xmu');
 

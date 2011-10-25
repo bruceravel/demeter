@@ -19,6 +19,7 @@ use strict;
 use warnings;
 use Carp;
 use Chemistry::Elements qw(get_Z get_name get_symbol);
+use Scalar::Util qw(looks_like_number);
 
 use Wx qw( :everything );
 use base 'Wx::Panel';
@@ -104,9 +105,12 @@ sub make_standards_plot {
   #$demeter  -> plot_with('gnuplot');
   my $which   = ($parent->{howtoplot}->GetStringSelection =~ m{XANES}) ? 'mu' : 'deriv';
   my $choice  = $parent->{data}->GetStringSelection;
-  $standards -> plot($choice, $which, 'plot');
+  my $result  = $standards -> plot($choice, $which, 'plot');
   undef $busy;
   #undef $demeter;
+  return 0 if ($result =~ m{Demeter});
+  return 0 if (looks_like_number($result) and ($result == 0));
+  $self->{echo}->SetStatusText($result);
   return 1;
 };
 
