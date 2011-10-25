@@ -94,6 +94,7 @@ has 'fitsum'      => (is => 'rw', isa => 'FitSum', default => q{});
 has 'fitting'     => (is => 'rw', isa => 'Bool',   default => 0);
 has 'plotkey'     => (is => 'rw', isa => 'Str',    default => q{});
 has 'frozen'      => (is => 'rw', isa => 'Bool',   default => 0);
+has 'marked'      => (is => 'rw', isa => 'Bool',   default => 0);
 
 has 'provenance'  => (is => 'rw', isa => 'Str',    default => q{});
 has 'importance'  => (is => 'rw', isa => 'Num',    default => 1);

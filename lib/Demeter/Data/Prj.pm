@@ -256,7 +256,7 @@ sub _record {
 				 bindtag deg_tol denominator detectors
 				 en_str file frozen line mu_str
 				 numerator old_group original_label
-				 peak refsame project_marked not_data
+				 peak refsame not_data
 				 bkg_switch bkg_switch2
 				 is_xmu is_chi is_xanes is_xmudat
 				 bkg_stan_lab bkg_flatten_was
@@ -271,6 +271,10 @@ sub _record {
       };
       ($k eq 'reference') and do {
 	$groupargs{referencegroup} = $args{reference};
+	last SWITCH;
+      };
+      ($k =~ m{\A(?:project_)?marked\z}) and do { # mark indicator in old or new Athena project file
+	$groupargs{marked} = $args{$k};
 	last SWITCH;
       };
       ($k eq 'importance') and do {

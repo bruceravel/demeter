@@ -40,7 +40,7 @@ use Wx::Event qw(EVT_MENU EVT_CLOSE EVT_TOOL_ENTER EVT_CHECKBOX EVT_BUTTON
 		 EVT_ENTER_WINDOW EVT_LEAVE_WINDOW
 		 EVT_RIGHT_UP EVT_LISTBOX EVT_RADIOBOX EVT_LISTBOX_DCLICK
 		 EVT_CHOICEBOOK_PAGE_CHANGED EVT_CHOICEBOOK_PAGE_CHANGING
-		 EVT_RIGHT_DOWN EVT_LEFT_DOWN
+		 EVT_RIGHT_DOWN EVT_LEFT_DOWN EVT_CHECKLISTBOX
 	       );
 use base 'Wx::App';
 
@@ -1202,6 +1202,7 @@ sub side_bar {
   EVT_LISTBOX_DCLICK($toolpanel, $app->{main}->{list}, sub{$app->Rename;});
   EVT_RIGHT_DOWN($app->{main}->{list}, sub{OnRightDown(@_)});
   EVT_LEFT_DOWN($app->{main}->{list}, \&OnDrag);
+  EVT_CHECKLISTBOX($toolpanel, $app->{main}->{list}, sub{OnMark(@_, $app->{main}->{list})});
   $app->{main}->{list}->SetDropTarget( Demeter::UI::Athena::DropTarget->new( $app->{main}, $app->{main}->{list} ) );
   #print Wx::SystemSettings::GetColour(wxSYS_COLOUR_HIGHLIGHT), $/;
   #$app->{main}->{list}->SetBackgroundColour(Wx::Colour->new($demeter->co->default("athena", "single")));
@@ -1289,6 +1290,13 @@ sub OnDrag {
   } else {
     $event->Skip(1);
   };
+};
+
+sub OnMark {
+  my ($this, $event, $clb) = @_;
+  my $n = $event->GetInt;
+  my $data = $clb->GetIndexedData($n);
+  $data->marked($clb->IsChecked($n));
 };
 
 sub focus_up {
@@ -1942,6 +1950,7 @@ use Wx qw(:everything);
 sub AddData {
   my ($clb, $name, $data) = @_;
   $clb->Append($name);
+  $clb->Check($clb->GetCount-1, $data->marked);
   push @{$clb->{datalist}}, $data;
 };
 
