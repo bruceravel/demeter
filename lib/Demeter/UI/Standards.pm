@@ -210,7 +210,7 @@ sub plot {
 		    e_pre  => 0,
 		    e_post => 0,
 		    e_markers => 0,
-		    e_smooth => 3,
+		    e_smooth => 0,
 		    emin   => $self->config('emin'),
 		    emax   => $self->config('emax'),
 		    );
