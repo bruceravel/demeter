@@ -19,6 +19,9 @@
    - after a merge group list selection and marking of merged group
      now done correctly
    - Athena project file now records and recovers marked state
+   - Record imported and exported athena project files for use in
+     "recently used" menus in such a way that they show up in
+     Artemis's MRU menu as well.
 
 *** Artemis
    - Fixed a bug deleting items from plotting list
@@ -54,6 +57,7 @@
      to something other than H
    - Made a ~marked~ attribute of Demeter::Data object for use with
      Athena
+   - Corrected an error is sorting the display of the MRU files
 
 *** Windows installer
    - have inno make an Atoms desktop icon

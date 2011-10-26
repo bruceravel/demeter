@@ -55,6 +55,7 @@ sub Export {
   $data[0]->write_athena($fname, @data, $app->{main}->{Journal}->{object});
   if (dirname($fname) ne Demeter->stash_folder) {
     $data[0]->push_mru("xasdata", $fname);
+    $data[0]->push_mru("athena", $fname);
     $app->set_mru;
     $app->{main}->{project}->SetLabel(basename($fname, '.prj'));
     $app->{main}->{currentproject} = $fname;
@@ -627,6 +628,7 @@ sub _prj {
   $app->{main}->{Main}->{bkg_stan}->fill($app, 1);
 
   $data->push_mru("xasdata", $orig);
+  $data->push_mru("athena", $orig);
   $app->set_mru;
   if (not $is_plugin) {
     $app->{main}->{project}->SetLabel(basename($file, '.prj'));
