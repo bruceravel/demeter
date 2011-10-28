@@ -30,12 +30,21 @@ sub new {
 					 ["top left", "top right", "bottom left", "bottom right"], 2, wxRA_SPECIFY_COLS);
   $this->{location}  -> SetStringSelection($app->current_data->co->default('gnuplot', 'keylocation'));
   EVT_RADIOBOX($this, $this->{location}, sub{location(@_,$app)});
-  $box               -> Add($this->{location},   0, wxGROW|wxALL, 5);
+  $box               -> Add($this->{location},   0, wxGROW|wxLEFT|wxRIGHT, 5);
 
   $this->{nokey}      = Wx::CheckBox->new($this, -1, "Suppress plot legend");
-  $this->{singlefile} = Wx::ToggleButton->new($this, -1, "Save next plot to a file");
   $box               -> Add($this->{nokey},      0, wxGROW|wxALL, 5);
-  $box               -> Add($this->{singlefile}, 0, wxGROW|wxALL, 5);
+
+  my $hbox = Wx::BoxSizer->new( wxHORIZONTAL );
+  $hbox   -> Add(Wx::StaticText->new($this, -1, "Marked plot pause (ms)"), 0, wxALL|wxTOP|wxRIGHT, 3);
+  $this->{pause} = Wx::TextCtrl->new($this, -1, 0, wxDefaultPosition, wxDefaultSize, wxTE_PROCESS_ENTER);
+  $hbox   -> Add($this->{pause}, 0, wxGROW|wxALL, 0);
+  $box    -> Add($hbox,   0, wxGROW|wxALL, 0);
+  $this->{pause} -> SetValidator( Wx::Perl::TextValidator->new( qr([0-9]) ) );
+
+  $this->{singlefile} = Wx::ToggleButton->new($this, -1, "Save next plot to a file");
+  $box    -> Add($this->{singlefile}, 0, wxGROW|wxALL, 5);
+
   EVT_CHECKBOX($this, $this->{nokey}, sub{
 		 $app->current_data->po->showlegend(not $_[0]->{nokey}->IsChecked);
 		 $app->plot(q{}, q{}, @{$app->{lastplot}});
@@ -43,6 +52,7 @@ sub new {
   $app->mouseover($this->{title},      "Specify a title for a marked group plot.");
   $app->mouseover($this->{nokey},      "Turn off the legend in subsequent plots.");
   $app->mouseover($this->{singlefile}, "Write the next plot to a column data file.  (Does not yet work for quad, stddev, or variance plots.)");
+  $app->mouseover($this->{pause},      "Specify a pause in miliseconds between groups in a marked group plot.");
 
   $this->SetSizerAndFit($box);
   return $this;
