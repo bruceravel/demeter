@@ -707,7 +707,8 @@ sub quadplot {
   };
   croak(ref $self . " objects are not plottable") if not $self->plottable;
   if ((ref($self) =~ m{Data}) and ($self->datatype eq 'xanes')) {
-    croak("XANES data and non Data objects are not plottable as Rk") if not $self->mo->silently_ignore_unplottable;
+    carp("XANES data and non Data objects are not plottable as quadplots") if not $self->mo->silently_ignore_unplottable;
+    return $self;
   };
 
   $self->_update('all');

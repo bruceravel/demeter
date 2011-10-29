@@ -927,6 +927,10 @@ sub OnMenuClick {
 
     ($id == $PLOT_QUAD) and do {
       my $data = $app->current_data;
+      if ($app->current_data->datatype ne 'xmu') {
+	$app->{main}->status("Cannot plot " . $app->current_data->datatype . " data as a quadplot.", "error");
+	return;
+      };
       #$app->{main}->{Main}->pull_values($data);
       $data->po->start_plot;
       $app->quadplot($data);

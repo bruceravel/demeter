@@ -22,6 +22,7 @@
    - Record imported and exported athena project files for use in
      "recently used" menus in such a way that they show up in
      Artemis's MRU menu as well.
+   - Refuse to plot xanes or chi data as a quadplot.
 
 *** Artemis
    - Fixed a bug deleting items from plotting list
