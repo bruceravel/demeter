@@ -25,6 +25,7 @@ use File::Path;
 use File::Spec;
 use List::Util qw(min);
 use List::MoreUtils qw(any);
+use Time::HiRes qw(usleep);
 use Readonly;
 Readonly my $FOCUS_UP	       => Wx::NewId();
 Readonly my $FOCUS_DOWN	       => Wx::NewId();
@@ -938,6 +939,7 @@ sub OnMenuClick {
     };
     ($id == $PLOT_IOSIG) and do {
       my $data = $app->current_data;
+      my $is_fixed = $data->bkg_fixstep;
       #$app->{main}->{Main}->pull_values($data);
       $app->{main}->{PlotE}->pull_single_values;
       $data->po->set(e_bkg=>0, e_pre=>0, e_post=>0, e_norm=>0, e_der=>0, e_sec=>0);
@@ -949,11 +951,12 @@ sub OnMenuClick {
       $data->po->set(e_i0=>0, e_signal=>0);
       $app->{main}->{plottabs}->SetSelection(1) if $app->spacetab;
       $app->{lastplot} = ['E', 'single'];
-      $app->postplot($data);
+      $app->postplot($data, $is_fixed);
       last SWITCH;
     };
     ($id == $PLOT_K123) and do {
       my $data = $app->current_data;
+      my $is_fixed = $data->bkg_fixstep;
       #$app->{main}->{Main}->pull_values($data);
       $app->{main}->{PlotK}->pull_single_values;
       return if not $app->preplot('k', $data);
@@ -962,18 +965,19 @@ sub OnMenuClick {
       $data->plot('k123');
       $app->{main}->{plottabs}->SetSelection(2) if $app->spacetab;
       $app->{lastplot} = ['k', 'single'];
-      $app->postplot($data);
+      $app->postplot($data, $is_fixed);
       last SWITCH;
     };
     ($id == $PLOT_R123) and do {
       my $data = $app->current_data;
+      my $is_fixed = $data->bkg_fixstep;
       #$app->{main}->{Main}->pull_values($data);
       $app->{main}->{PlotR}->pull_marked_values;
       return if not $app->preplot('r', $data);
       $data->po->start_plot;
       $data->po->title($app->{main}->{Other}->{title}->GetValue);
       $data->plot('R123');
-      $app->postplot($data);
+      $app->postplot($data, $is_fixed);
       $app->{main}->{plottabs}->SetSelection(3) if $app->spacetab;
       $app->{lastplot} = ['R', 'single'];
       last SWITCH;
@@ -1445,6 +1449,7 @@ sub plot {
   my $busy = Wx::BusyCursor->new();
 
   my @data = ($how eq 'single') ? ( $app->current_data ) : $app->marked_groups;
+  my @is_fixed = map {$_->bkg_fixstep} @data;
 
   if (not @data and ($how eq 'marked')) {
     $app->{main}->status("No groups are marked.  Marked plot cancelled.");
@@ -1453,6 +1458,8 @@ sub plot {
 
   my $ok = $app->preplot($space, $data[0]);
   return if not $ok;
+  my $pause = $data[0]->po->plot_pause*1000;
+  ($pause = 0) if ($#data == 0);
 
   #$app->{main}->{Main}->pull_values($app->current_data);
   $app->pull_kweight($data[0], $how);
@@ -1474,7 +1481,10 @@ sub plot {
 
   ## energy k and kq
   if (lc($space) =~ m{(?:e|k|kq)}) {
-    $_->plot($space) foreach @data;
+    foreach my $d (@data) {
+      $d->plot($space);
+      usleep($pause) if $pause;
+    };
     $data[0]->plot_window('k') if (($how eq 'single') and
 				   $app->{main}->{PlotK}->{win}->GetValue and
 				   ($data[0]->datatype ne 'xanes') and
@@ -1498,7 +1508,10 @@ sub plot {
       $data[0]->plot_window('r') if $app->{main}->{PlotR}->{win}->GetValue;
     } else {
       $data[0]->po->dphase($app->{main}->{PlotR}->{mdphase}->GetValue);
-      $_->plot($space) foreach @data;
+      foreach my $d (@data) {
+	$d->plot($space);
+	usleep($pause) if $pause;
+      };
     };
     $app->{main}->{plottabs}->SetSelection(3) if $app->spacetab;
 
@@ -1513,12 +1526,19 @@ sub plot {
       };
       $data[0]->plot_window('q') if $app->{main}->{PlotQ}->{win}->GetValue;
     } else {
-      $_->plot($space) foreach @data;
+      foreach my $d (@data) {
+	$d->plot($space);
+	usleep($pause) if $pause;
+      };
     };
     $app->{main}->{plottabs}->SetSelection(4) if $app->spacetab;
   };
 
-  $app->postplot($data[0]);
+  ## I am not clear why this is necessary...
+  foreach my $i (0 .. $#data) {
+    $data[$i]->bkg_fixstep($is_fixed[0]);
+  };
+  $app->postplot($data[0], $is_fixed[0]);
   $app->{lastplot} = [$space, $how];
   $app->heap_check(0);
   undef $busy;
@@ -1564,6 +1584,7 @@ sub preplot {
     #$data->po->space($space);
     #$demeter->po->file(File::Spec->catfile($fd->GetDirectory, $fd->GetFilename));
   };
+  $data->po->plot_pause($app->{main}->{Other}->{pause}->GetValue);
   return 1;
 };
 sub postplot {
@@ -1579,8 +1600,10 @@ sub postplot {
     $data->unset_standard;
   };
   my $is_fixed = $data->bkg_fixstep;
-  $app->{main}->{Main}->{bkg_step}->SetValue($app->current_data->bkg_step);
-  $app->{main}->{Main}->{bkg_fixstep}->SetValue($is_fixed);
+  if ($data eq $app->current_data) {
+    $app->{main}->{Main}->{bkg_step}->SetValue($app->current_data->bkg_step);
+    $app->{main}->{Main}->{bkg_fixstep}->SetValue($is_fixed);
+  };
   $data->bkg_fixstep($is_fixed);
 
   $app->{main}->{Other}->{singlefile}->SetValue(0);

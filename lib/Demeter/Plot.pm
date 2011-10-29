@@ -149,6 +149,8 @@ has 'plot_run'		=> (is => 'rw', isa =>  'Bool',     default => 0);
 has 'plot_paths'	=> (is => 'rw', isa =>  'Bool',     default => 0);
 has 'plot_rmr_offset'	=> (is => 'rw', isa =>   NonNeg,    default => 0);
 
+has 'plot_pause'        => (is => 'rw', isa =>  'Num',      default => 0);
+
 ## -------- ornaments
 #has 'nindicators'    => (is => 'rw', isa =>  PosInt,          default => sub{ shift->co->default("indicator", "n")     || 8});
 has 'indicatorcolor' => (is => 'rw', isa =>  'Str',           default => sub{ shift->co->default("indicator", "color") || "violetred"});

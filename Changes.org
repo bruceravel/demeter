@@ -4,7 +4,7 @@
 
 
 * Beta testing releases:
-
+  
 ** Release 9: 30 October, 2011
 
 *** Athena
@@ -23,6 +23,8 @@
      "recently used" menus in such a way that they show up in
      Artemis's MRU menu as well.
    - Refuse to plot xanes or chi data as a quadplot.
+   - Added a user-specified pause between traces in a marked group
+     plot -- this slows down the display of a sequence of traces
 
 *** Artemis
    - Fixed a bug deleting items from plotting list
@@ -59,6 +61,7 @@
    - Made a ~marked~ attribute of Demeter::Data object for use with
      Athena
    - Corrected an error is sorting the display of the MRU files
+   - added plot_pause attribute to the Plot object
 
 *** Windows installer
    - have inno make an Atoms desktop icon
