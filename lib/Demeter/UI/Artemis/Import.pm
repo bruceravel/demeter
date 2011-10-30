@@ -84,7 +84,7 @@ sub _prj {
   my ($fname) = @_;
   my ($file, $prj, $record) = prjrecord($fname);
 
-  if ($record < 0) {
+  if (defined($record) and ($record < 0)) {
     return;
   };
   if ((not $prj) or (not $record)) {
