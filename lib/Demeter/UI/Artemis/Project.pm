@@ -296,6 +296,7 @@ sub read_project {
   foreach my $d (@dirs) {
     my $fit = Demeter::Fit->new(group=>$d, interface=>"Artemis (Wx $Wx::VERSION)");
     my $regen = ($d eq $current) ? 0 : 1;
+    next if (not -d File::Spec->catfile($projfolder, 'fits', $d));
     $fit->deserialize(folder=> File::Spec->catfile($projfolder, 'fits', $d), regenerate=>0); #$regen);
     if (($d ne $current) and (not $fit->fitted)) { # discard the ones that don't actually involve a performed fit
       $fit->DEMOLISH;
