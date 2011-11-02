@@ -358,6 +358,11 @@ sub trace {
 };
 # print Devel::StackTrace->new()->as_string();
 
+sub pjoin {
+  my ($self, @stuff);
+  return join("|", @stuff) . $/;
+};
+
 
 ## this will fail if on linux or Mac and importing a shortcut from a
 ## network mounted folder

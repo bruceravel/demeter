@@ -623,10 +623,12 @@ sub fit {
       $rframes->{Plot}->{plotlist}->ClearAll;
       foreach my $k (sort (keys (%$rframes))) {
 	next if ($k !~ m{data});
-	$rframes->{$k}->transfer if $rframes->{$k}->{plot_after}->GetValue;
-	foreach my $p (0 .. $rframes->{$k}->{pathlist}->GetPageCount -1) {
-	  my $pathpage = $rframes->{$k}->{pathlist}->{LIST}->GetIndexedData($p);
-	  $pathpage->transfer if $pathpage->{plotafter}->GetValue;
+	if ($rframes->{$k}->{include}->GetValue) {
+	  $rframes->{$k}->transfer if $rframes->{$k}->{plot_after}->GetValue;
+	  foreach my $p (0 .. $rframes->{$k}->{pathlist}->GetPageCount -1) {
+	    my $pathpage = $rframes->{$k}->{pathlist}->{LIST}->GetIndexedData($p);
+	    $pathpage->transfer if $pathpage->{plotafter}->GetValue;
+	  };
 	};
       };
     };
@@ -637,7 +639,12 @@ sub fit {
     $fit->po->plot_fit(1);
     my $how = $fit->co->default("artemis", "plot_after_fit");
     if ($how =~ m{\A(?:rmr|rk|r123|k123|kq)\z}) {
-      $data[0]->plot($how);
+      foreach my $d (@data) {
+	if ($d->fit_include) {
+	  $d->plot($how);
+	  last;
+	};
+      };
     } elsif ($how =~ m{\A[krq]\z}) {
       $rframes->{Plot}->plot(q{}, $how);
     };

@@ -297,6 +297,9 @@ sub _verify_fit {
   ## 20. check for obvious cases of a data set used more than once
   $trouble_found += $self->S_data_collision;
 
+  ## 21. check that each data set used in the fit has one or more paths assigned to it
+  $trouble_found += $self->S_data_paths;
+
   return $trouble_found;
 };
 
@@ -369,12 +372,13 @@ sub fit {
 
   ## get a list of all data sets included in the fit
   my @datasets = @{ $self->data };
-  my $ndata = $#datasets + 1;
+  my @useddata = grep {$_->fit_include && $_} @datasets;
+  my $ndata = $#useddata+1;
   my $ipath = 0;
   my $count = 0;
   my $str = q{};
-  $self->name("fit to " . join(", ", map {$_->name} @datasets)) if not $self->name;
-  $self->description("fit to " . join(", ", map {$_->name} @datasets)) if not $self->description;
+  $self->name("fit to " . join(", ", map {$_->name} @useddata)) if not $self->name;
+  $self->description("fit to " . join(", ", map {$_->name} @useddata)) if not $self->description;
 
   ## munge parameters and path parameters to deal with lguess
   $command .= $self->_local_parameters;
@@ -444,7 +448,7 @@ sub fit {
   $command .= $self->_gds_commands('after');
 
   ## make residual and background arrays
-  foreach my $data (@datasets) {
+  foreach my $data (@useddata) {
     $command .= $data->template("fit", "residual");
     if ($data->fit_do_bkg) {
       $command .= $data->template("fit", "background");
@@ -467,7 +471,7 @@ sub fit {
   $self->mo->increment_fit;
 
   ## prep data for plotting
-  foreach my $data (@datasets) {
+  foreach my $data (@useddata) {
     $data->update_fft(1);
   };
 
@@ -1261,9 +1265,11 @@ override 'deserialize' => sub {
     my ($r_attributes, $r_x, $r_y) = YAML::Tiny::Load($yaml);
     delete $r_attributes->{fit_pcpath};	   # correct an early
     delete $r_attributes->{fit_do_pcpath}; # design mistake...
-    my @array = %$r_attributes;
+    my %hash = %$r_attributes;
     my $savecv = $self->mo->datacount;
-    my $this = Demeter::Data -> new(@array);
+    my $this = $self->mo->fetch('Data', $hash{group}) || Demeter::Data -> new(group=>$hash{group});
+    delete $hash{group};
+    $this->set(%hash);
     $this->cv($r_attributes->{cv}||0);
     $self->mo->datacount($savecv);
     $datae{$this->group} = $this;
@@ -1324,6 +1330,7 @@ override 'deserialize' => sub {
   my @paths = ();
   $yaml = ($args{file}) ? $zip->contents("paths.yaml")
     : $self->slurp(File::Spec->catfile($args{folder}, "paths.yaml"));
+  #print File::Spec->catfile($args{folder}, "paths.yaml"),$/;
   @list = YAML::Tiny::Load($yaml);
   foreach my $plotlike (@list) {
     my $dg = $plotlike->{datagroup};
@@ -1352,17 +1359,28 @@ override 'deserialize' => sub {
       $this -> workspace($this->stash_folder);
     } elsif (exists $plotlike->{absorber}) { # this is an FSPath
       my $feff = $parents{$plotlike->{parentgroup}} || $data[0] -> mo -> fetch('Feff', $plotlike->{parentgroup});
-      $this = Demeter::FSPath->new();
+      my $ws = $feff->workspace;
+      $ws =~ s{\\}{/}g;		# path separators...
+      my $where = Cwd::realpath(File::Spec->catfile($args{folder}, '..', '..', 'feff', basename($ws)));
+      $feff->workspace($where);
+      #print $feff->workspace, $/;
+      $this = $self->mo->fetch("FSPath", $hash{group}) || Demeter::FSPath->new();
+      $this->feff_done(0);
+      $hash{folder} = $where;
+      $hash{update_path} = 1;
+      $hash{update_fft}  = 1;
+      $hash{update_bft}  = 1;
+      delete $hash{feff_done};
       $this -> set(%hash);
+      #print $this->folder, $/;
       foreach my $att (qw(e0 s02 delr sigma2 third fourth)) {
 	$this->$att($hash{$att});
       };
-      my $where = Cwd::realpath(File::Spec->catfile($args{folder}, '..', '..', 'feff', basename($feff->workspace)));
       $this -> set(workspace=>$where, folder=>$where, parent=>$data[0] -> mo -> fetch('Feff', $plotlike->{parentgroup}));
       #my $sp = $sps{$this->spgroup} || $data[0] -> mo -> fetch('ScatteringPath', $this->spgroup);
-      my $sp = $data[0] -> mo -> fetch('ScatteringPath', $hash{spgroup});
-      $this -> sp($sp);
-      $this -> feff_done(1);
+      #my $sp = $data[0] -> mo -> fetch('ScatteringPath', $hash{spgroup});
+      #$this -> sp($sp);
+      #print $this->sp, $/ x 2;
     } else {
       $this = Demeter::Path->new(%hash);
       my $sp = $sps{$this->spgroup} || $data[0] -> mo -> fetch('ScatteringPath', $this->spgroup);

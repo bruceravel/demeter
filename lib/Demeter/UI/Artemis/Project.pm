@@ -201,6 +201,8 @@ sub read_project {
     return;
   };
 
+  my $busy = Wx::BusyCursor->new();
+  $rframes->{main}->status("Importing project (please be patient, it may take a while...)", "wait");
 
 #  my ($volume,$directories,$fl) = File::Spec->splitpath( $rframes->{main}->{project_folder} );
 #  $directories =~ s{\\}{/}g;
@@ -241,30 +243,33 @@ sub read_project {
   foreach my $d (@dirs) {
     ## import feff yaml
     my $yaml = File::Spec->catfile($projfolder, 'feff', $d, $d.'.yaml');
-    my $feffobject = Demeter::Feff->new(yaml=>$yaml, group=>$d); # force group to be the same as before
+    my $feffobject = Demeter::Feff->new(group=>$d); # force group to be the same as before
+    $feffobject->yaml($yaml) if (-e $yaml);
 
     if (not $feffobject->hidden) {
       ## import atoms.inp
       my $atoms = File::Spec->catfile($projfolder, 'feff', $d, 'atoms.inp');
       my ($fnum, $ifeff) = Demeter::UI::Artemis::make_feff_frame($rframes->{main}, $atoms, $feffobject->name, $feffobject);
 
-      ## import feff.inp
-      my $feff = File::Spec->catfile($projfolder, 'feff', $d, $d.'.inp');
-      my $text = $feffobject->slurp($feff);
-      $rframes->{$fnum}->{Feff}->{feff}->SetValue($text);
+      if (-e $yaml) {
+	## import feff.inp
+	my $feff = File::Spec->catfile($projfolder, 'feff', $d, $d.'.inp');
+	my $text = $feffobject->slurp($feff);
+	$rframes->{$fnum}->{Feff}->{feff}->SetValue($text);
 
-      ## make Feff frame
-      $feffobject -> workspace(File::Spec->catfile($projfolder, 'feff', $d));
-      $feffs{$d} = $feffobject;
-      $rframes->{$fnum}->{Feff}->{feffobject} = $feffobject;
-      $rframes->{$fnum}->{Feff}->fill_intrp_page($feffobject);
-      $rframes->{$fnum}->{notebook}->ChangeSelection(2);
+	## make Feff frame
+	$feffobject -> workspace(File::Spec->catfile($projfolder, 'feff', $d));
+	$feffs{$d} = $feffobject;
+	$rframes->{$fnum}->{Feff}->{feffobject} = $feffobject;
+	$rframes->{$fnum}->{Feff}->fill_intrp_page($feffobject);
+	$rframes->{$fnum}->{notebook}->ChangeSelection(2);
 
-      $rframes->{$fnum}->{Feff}->fill_ss_page($feffobject);
+	$rframes->{$fnum}->{Feff}->fill_ss_page($feffobject);
 
-      $rframes->{$fnum}->{Feff} ->{name}->SetValue($feffobject->name);
-      $rframes->{$fnum}->{Paths}->{name}->SetValue($feffobject->name);
-      $rframes->{$fnum}->status("Imported crystal and Feff data from ". basename($fname));
+	$rframes->{$fnum}->{Feff} ->{name}->SetValue($feffobject->name);
+	$rframes->{$fnum}->{Paths}->{name}->SetValue($feffobject->name);
+	$rframes->{$fnum}->status("Imported crystal and Feff data from ". basename($fname));
+      };
       my $label = $rframes->{main}->{$fnum}->GetLabel;
       $label =~ s{Hide}{Show};
       $rframes->{main}->{$fnum}->SetLabel($label)
@@ -378,6 +383,7 @@ sub read_project {
   #++$Demeter::UI::Artemis::fit_order{order}{current};
 
   modified(0);
+  undef $busy;
 };
 
 sub restore_fit {
@@ -425,16 +431,18 @@ sub restore_fit {
 						     (@{$fit->paths}));
     #my $first = $rframes->{$dnum}->{pathlist}->GetPage(0);
     #($first->DeletePage(0)) if (ref($first) =~ m{Panel});
+    my $datapaths = 0;
     foreach my $p (@{$fit->paths}) {
-      if (not $p->sp) {
-	$import_problems .= sprintf("The path named \"%s\" from data set \"%s\" was malformed.  It was discarded.\n", $p->name, $d->name);
-	next;
-      };
+#      if (not $p->sp) {
+#	$import_problems .= sprintf("The path named \"%s\" from data set \"%s\" was malformed.  It was discarded.\n", $p->name, $d->name);
+#	next;
+#      };
       #my $feff = $feffs{$p->{parentgroup}} || $fit -> mo -> fetch('Feff', $p->{parentgroup});
       my $feff = (ref($p) =~ m{FPath}) ? $p : $fit -> mo -> fetch('Feff', $p->{parentgroup});
       $p->set(file=>q{}, update_path=>1);
       $p->set(folder=>$feff->workspace) if (ref($p) !~ m{FPath});
       next if ($p->data ne $d);
+      ++$datapaths;
       $p->parent($feff);
       #my $this_sp = find_sp($p, \%feffs) || $fit->mo->fetch('ScatteringPath', $p->spgroup);
       #$p->sp($this_sp);
@@ -443,7 +451,7 @@ sub restore_fit {
       $page->include_label;
       $rframes->{$dnum}->{pathlist}->Check($n, $p->mark);
     };
-    $rframes->{$dnum}->{pathlist}->SetSelection(0) if ($#{$fit->paths} > -1);
+    $rframes->{$dnum}->{pathlist}->SetSelection(0) if $datapaths; #($#{$fit->paths} > -1);
     $rframes->{$dnum}->Show(0);
     $rframes->{main}->{$dnum}->SetValue(0);
     if (not $count) {

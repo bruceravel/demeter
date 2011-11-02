@@ -5,6 +5,22 @@
 
 * Initial release
 
+** 0.9.1 2 November 2011
+
+*** Artemis
+   - Take care with fit_include attribute of the Data in a Fit.  Need
+     to set data_total correctly in Ifeffit
+   - Fix lots of issues with importing FSPaths from a project file
+   - Take care with path seperators when moving aproject between
+     windows and unix
+   - Take care to populate plot list only with data that was included
+     in the fit
+   - Added a Fit sanity check to see that each data set has at least
+     one path associated with it
+
+*** Thanks to
+   - Jason Gaudet
+
 ** 0.9.0 31 October, 2011
 
 This is substantively identical to beta release 9.  This initial

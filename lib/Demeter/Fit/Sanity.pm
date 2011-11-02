@@ -605,6 +605,25 @@ sub S_data_collision {
   return $found;
 };
 
+## 21. check that each data set has at least one path associated with it
+sub S_data_paths {
+  my ($self) = @_;
+  my $found = 0;
+  my @data  = @{ $self->data  };
+  my @paths = @{ $self->paths };
+  foreach my $d (@data) {
+    my $count = 0;
+    foreach my $p (@paths) {
+      ++$count if ($p->data eq $d);
+    };
+    if ($count == 0) {
+      ++$found;
+      $d->add_trouble('datanopaths');
+    };
+  };
+  return $found;
+};
+
 1;
 
 
@@ -792,6 +811,11 @@ This data came from the the same source as another data group.  You
 seem to be trying to increase your number of independent points by
 fitting the same data more than once in a multiple data set fit.
 
+=item C<datanopaths>
+
+This data has no paths associated with it.  You must either assign
+paths to it or exclude it from the fit.
+
 =back
 
 =head2 Problems with Path objects
@@ -964,10 +988,6 @@ See L<Demeter> for a description of the configuration system.
 Missing tests:
 
 =over 4
-
-=item *
-
-Test that every included data set has at least 1 path associated with it.
 
 =item *
 
