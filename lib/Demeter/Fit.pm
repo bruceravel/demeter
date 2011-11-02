@@ -1311,13 +1311,16 @@ override 'deserialize' => sub {
   my @feff = ();
   if ($args{file}) {
     foreach my $f (@$r_feff) {
-      my $this = Demeter::Feff->new(group=>$f);
+      my $ws = $f->workspace;
+      $ws =~ s{\\}{/}g;		# path separators...
+      my $where = Cwd::realpath(File::Spec->catfile($args{folder}, '..', '..', 'feff', basename($ws)));
+      my $this = Demeter::Feff->new(group=>$f, workspace=>$where);
       $parents{$this->group} = $this;
       my $yaml = ($args{file}) ? $zip->contents("$f.yaml")
 	: $self->slurp(File::Spec->catfile($args{folder}, "$f.yaml"));
       if (defined $yaml) {
 	my @refs = YAML::Tiny::Load($yaml);
-	$this->read_yaml(\@refs);
+	$this->read_yaml(\@refs, $where);
 	foreach my $s (@{ $this->pathlist }) {
 	  $sps{$s->group} = $s
 	};
@@ -1358,12 +1361,12 @@ override 'deserialize' => sub {
       $this -> parent($this);
       $this -> workspace($this->stash_folder);
     } elsif (exists $plotlike->{absorber}) { # this is an FSPath
-      my $feff = $parents{$plotlike->{parentgroup}} || $data[0] -> mo -> fetch('Feff', $plotlike->{parentgroup});
+      #my $feff = $parents{$plotlike->{parentgroup}} || $data[0] -> mo -> fetch('Feff', $plotlike->{parentgroup});
+      my $feff = $data[0] -> mo -> fetch('Feff', $plotlike->{parentgroup});
       my $ws = $feff->workspace;
       $ws =~ s{\\}{/}g;		# path separators...
       my $where = Cwd::realpath(File::Spec->catfile($args{folder}, '..', '..', 'feff', basename($ws)));
       $feff->workspace($where);
-      #print $feff->workspace, $/;
       $this = $self->mo->fetch("FSPath", $hash{group}) || Demeter::FSPath->new();
       $this->feff_done(0);
       $hash{folder} = $where;
@@ -1371,16 +1374,14 @@ override 'deserialize' => sub {
       $hash{update_fft}  = 1;
       $hash{update_bft}  = 1;
       delete $hash{feff_done};
+      delete $hash{workspace};
+      delete $hash{folder};
+      $this -> set(parent=>$feff);
+      $this -> set(workspace=>$where, folder=>$where);
       $this -> set(%hash);
-      #print $this->folder, $/;
       foreach my $att (qw(e0 s02 delr sigma2 third fourth)) {
 	$this->$att($hash{$att});
       };
-      $this -> set(workspace=>$where, folder=>$where, parent=>$data[0] -> mo -> fetch('Feff', $plotlike->{parentgroup}));
-      #my $sp = $sps{$this->spgroup} || $data[0] -> mo -> fetch('ScatteringPath', $this->spgroup);
-      #my $sp = $data[0] -> mo -> fetch('ScatteringPath', $hash{spgroup});
-      #$this -> sp($sp);
-      #print $this->sp, $/ x 2;
     } else {
       $this = Demeter::Path->new(%hash);
       my $sp = $sps{$this->spgroup} || $data[0] -> mo -> fetch('ScatteringPath', $this->spgroup);

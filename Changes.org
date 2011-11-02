@@ -5,6 +5,12 @@
 
 * Initial release
 
+** 0.9.2 3 November 2011
+*** Artemis
+   - Fixed spurious creation of feff workspaces when importoing
+     FSPaths from a project
+
+
 ** 0.9.1 2 November 2011
 
 *** Artemis

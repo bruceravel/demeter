@@ -20,6 +20,7 @@ use warnings;
 use Carp;
 
 use Archive::Zip qw( :ERROR_CODES :CONSTANTS );
+use Compress::Zlib;
 use Cwd;
 use File::Basename;
 use File::Copy;
@@ -244,7 +245,14 @@ sub read_project {
     ## import feff yaml
     my $yaml = File::Spec->catfile($projfolder, 'feff', $d, $d.'.yaml');
     my $feffobject = Demeter::Feff->new(group=>$d); # force group to be the same as before
-    $feffobject->yaml($yaml) if (-e $yaml);
+    my $where = Cwd::realpath(File::Spec->catfile($feffdir, $d));
+    if (-e $yaml) {
+      my $gz = gzopen($yaml, 'rb');
+      my ($yy, $buffer);
+      $yy .= $buffer while $gz->gzreadline($buffer) > 0 ;
+      my @refs = YAML::Tiny::Load($yy);
+      $feffobject->read_yaml(\@refs, $where);
+    };
 
     if (not $feffobject->hidden) {
       ## import atoms.inp

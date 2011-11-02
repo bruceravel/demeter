@@ -1020,7 +1020,7 @@ sub deserialize {
   return $self;
 };
 sub read_yaml {
-  my ($self, $refs) = @_;
+  my ($self, $refs, $ws) = @_;
   my @refs = @$refs;
   ## snarf attributes of Feff object
   my $rhash = shift @refs;
@@ -1030,9 +1030,14 @@ sub read_yaml {
 	       absorber   => shift(@refs),
 	       sites	  => shift(@refs));
   foreach my $key (qw(abs_index edge s02 rmax name nlegs npaths rmultiplier pcrit ccrit
-		      workspace screen buffer save fuzz betafuzz eta_suppress miscdat
+		      screen buffer save fuzz betafuzz eta_suppress miscdat
 		      hidden source)) {
     $self -> $key($rhash->{$key}) if exists $rhash->{$key};
+  };
+  if (defined $ws) {
+    $self->workspace($ws);
+  } else {
+    $self->workspace($rhash->{workspace});
   };
   #$self -> prep_fuzz;
   ## snarf attributes of each ScatteringPath object
