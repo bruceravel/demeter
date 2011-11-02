@@ -612,6 +612,7 @@ sub S_data_paths {
   my @data  = @{ $self->data  };
   my @paths = @{ $self->paths };
   foreach my $d (@data) {
+    next if (not $d->fit_include);
     my $count = 0;
     foreach my $p (@paths) {
       ++$count if ($p->data eq $d);
