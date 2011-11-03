@@ -457,6 +457,7 @@ sub noop {
 
 sub open_file {
   my ($self, $file) = @_;
+  $atoms->partial_occupancy(0);
   if ((not $file) or (not -e $file)) {
     my $fd = Wx::FileDialog->new( $self, "Import crystal data", cwd, q{},
 				  "input and CIF files (*.inp;*.cif)|*.inp;*.cif|input file (*.inp)|*.inp|CIF file (*.cif)|*.cif|All files|*",
@@ -464,18 +465,18 @@ sub open_file {
 				  wxDefaultPosition);
     if ($fd->ShowModal == wxID_CANCEL) {
       $self->{statusbar}->SetStatusText("Crystal data import cancelled.");
-      return;
+      return 0;
     };
     $file = File::Spec->catfile($fd->GetDirectory, $fd->GetFilename);
   };
   $self->clear_all(1);
 
   my $is_cif = 0;
-  $is_cif = 1 if ($file =~ m{\.cif\z});
+  $is_cif = 1 if ($atoms->is_cif($file));
   if ($is_cif) {
     if (not $Demeter::STAR_Parser_exists) {
       warn "STAR::Parser is not available, so CIF files cannot be imported";
-      return;
+      return 0;
     };
 
     $atoms->cif($file);
@@ -485,15 +486,21 @@ sub open_file {
 						"CIF file", \@records );
       if( $dialog->ShowModal == wxID_CANCEL ) {
 	$self->{statusbar}->SetStatusText("Import cancelled.");
-	return;
+	return 0;
       } else {
-	$atoms->record($dialog->GetSelection);
+	my $which = $dialog->GetSelection||0;
+	$atoms->record($which);
       };
     } else {
       $atoms->record(0);
     };
   } else {
     $atoms->file($file);
+  };
+  if ($atoms->partial_occupancy) {
+    my $message = Wx::MessageDialog->new($self, "Atoms is currently unable to use crystal data which has sites of partial occupancy.  Sorry.", "Trouble", wxOK);
+    $message->ShowModal;
+    return 0;
   };
   my $name = basename($file, '.cif', '.inp');
   $atoms -> name($name) if not $atoms->name;
@@ -550,6 +557,7 @@ sub open_file {
   $atoms -> push_mru("atoms", $file) if ($file !~ m{_dem_});
 
   $self->{statusbar}->SetStatusText($message);
+  return 1;
 };
 
 sub get_crystal_data {

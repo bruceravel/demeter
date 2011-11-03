@@ -9,6 +9,9 @@
 *** Artemis
    - Fixed spurious creation of feff workspaces when importoing
      FSPaths from a project
+   - Begin work on making Artemis/Atoms fail gracefully with CIF file
+     that trigger problems.  Here, it fails gracefully for CIF files
+     with partial occupancy.
 
 
 ** 0.9.1 2 November 2011

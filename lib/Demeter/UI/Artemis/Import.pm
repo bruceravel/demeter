@@ -133,6 +133,7 @@ sub _feff {
   };
 
   my ($fnum, $ifeff) = &$make_feff_frame($rframes->{main}, $file);
+  return if (not defined($fnum));
   $rframes->{$fnum} -> Show(1);
   autosave();
   $rframes->{$fnum}->status("Imported crystal data from " . basename($file));

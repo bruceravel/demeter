@@ -152,6 +152,7 @@ has 'iedge'	       => (is => 'rw', isa => Natural,    default=> 1);
 has 'eedge'	       => (is => 'rw', isa => NonNeg,    default=> 0);
 has 'core'	       => (is => 'rw', isa =>'Str',      default=> q{});
 has 'corel'	       => (is => 'rw', isa =>'Str',      default=> q{});
+has 'partial_occupancy' => (is => 'rw', isa =>'Bool', default=> 0);
 has 'shift' => (
 		metaclass => 'Collection::Array',
 		is        => 'rw',
@@ -1047,6 +1048,11 @@ This is set to true when the populated cell is expanded into a cluster.
 =item C<is_ipots_set> (boolean) [false]
 
 This is set to true when the unique potentials are assigned.
+
+=item C<partial_occupancy>
+
+This is set to true if the input crystal data includes sites with
+partial occupancy.
 
 =back
 

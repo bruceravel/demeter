@@ -17,6 +17,8 @@ package Demeter::Atoms::Cif;
 
 use Moose::Role;
 use Demeter::StrTypes qw( Element );
+use Readonly;
+Readonly my $EPSILON   => 0.001;
 
 use Chemistry::Elements qw(get_Z);
 #use STAR::Parser; ## this is not needed since (1) all references
@@ -94,6 +96,7 @@ sub read_cif {
   my @z	  = $datablock->get_item_data(-item=>"_atom_site_fract_z");
   my @occ = $datablock->get_item_data(-item=>"_atom_site_occupancy");
   my ($core, $maxz) = (q{},0);
+  my $partial = 0;
   foreach my $i (0 .. $#tag) {
     my $ee = $el[$i] || $tag[$i];
     $ee = _get_elem($ee);
@@ -101,6 +104,7 @@ sub read_cif {
     (my $yy = $y[$i]) =~ s{\(\d+\)}{};
     (my $zz = $z[$i]) =~ s{\(\d+\)}{};
     (my $oo = $occ[$i]||1) =~ s/\(\d+\)//;
+    ++$partial if (abs($oo-1) > $EPSILON);
     my $this = join("|",$ee, $xx, $yy, $zz, $tag[$i]);
     $self->push_sites($this);
     my $z = get_Z($ee);
@@ -109,6 +113,7 @@ sub read_cif {
       $self->core($tag[$i]);
     };
   };
+  $self->partial_occupancy(1) if $partial;
   $self->is_imported(1);
 };
 

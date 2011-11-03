@@ -1083,7 +1083,14 @@ sub make_feff_frame {
   $frames{$fnum} -> SetTitle('Artemis [Feff] Atoms and Feff');
   $frames{$fnum} -> SetIcon($icon);
   if ($file and (-e $file) and ($demeter->is_atoms($file) or $demeter->is_cif($file))) {
-    $frames{$fnum}->{Atoms}->Demeter::UI::Atoms::Xtal::open_file($file);
+    my $result = $frames{$fnum}->{Atoms}->Demeter::UI::Atoms::Xtal::open_file($file);
+    if (not $result) {
+      $new -> Destroy;
+      $frames{$fnum} -> Hide;
+      $frames{$fnum} -> Destroy;
+      delete $frames{$fnum};
+      return;
+    };
   } else {
     #$frames{$fnum}->{Atoms}->{used} = 0;
     $frames{$fnum}->{Atoms}->{name}->SetValue('new');
