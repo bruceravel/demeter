@@ -176,6 +176,28 @@ has 'correlations' => (
 				     set       => 'set_correlations',
 				    }
 		      );
+has 'parameters' => (
+		     metaclass => 'Collection::Array',
+		     is        => 'rw',
+		     isa       => 'ArrayRef',
+		     default   => sub { [] },
+		     provides  => {
+				   'push'  => 'push_parameters',
+				   'pop'   => 'pop_parameters',
+				   'clear' => 'clear_parameters',
+				  }
+		    );
+has 'pathresults' => (
+		      metaclass => 'Collection::Array',
+		      is        => 'rw',
+		      isa       => 'ArrayRef',
+		      default   => sub { [] },
+		      provides  => {
+				    'push'  => 'push_pathresults',
+				    'pop'   => 'pop_pathresults',
+				    'clear' => 'clear_pathresults',
+				   }
+		     );
 
 sub BUILD {
   my ($self, @params) = @_;
@@ -724,8 +746,14 @@ sub evaluate {
   ## get fit and data set statistics (store in fit and data objects respectively)
   $self->fetch_statistics;
 
-  ## get correlations (store in fit object?)
+  ## get_parameter values for this fit
+  $self->fetch_parameters;
+
+  ## get correlations
   $self->fetch_correlations;
+
+  ## get correlations
+  $self->fetch_pathresults;
 
   ## set properties
   $self->set(time_of_fit=>$self->now, fit_performed=>1);
@@ -800,25 +828,24 @@ sub logtext {
       $data->part_bft("fit") if (lc($data->fitsum) eq 'sum');
     };
     $text .= $data->fit_parameter_report($#{ $self->data }, $self->fit_performed);
-    my @all_paths = @{ $self->paths };
-    if (@all_paths) {
-      ## figure out how wide the column of path labels should be
-      my $length = max( map { length($_->name) if ($_->data eq $data) } @all_paths ) + 1;
-      $text .= $all_paths[0]->row_main_label($length);
-      foreach my $path (@all_paths) {
-	next if not defined($path);
-	next if ($path->data ne $data);
-	next if not $path->include;
-	$text .= $path->row_main($length);
-      };
-      $text .= $/;
-      $text .= $all_paths[0]->row_second_label($length);
-      foreach my $path (@all_paths) {
-	next if not defined($path);
-	next if ($path->data ne $data);
-	next if not $path->include;
-	$text .= $path->row_second($length);
-      };
+
+
+    my $length  = max( map { length($_->[1]) if ($_->[0] eq $data->group) } @{ $self->pathresults } )  || 10;
+    $length += 1;
+    my $pattern = '%-' . $length . 's';
+    $text .= $self->paths->[0]->row_main_label($length);
+    foreach my $p (@{ $self->pathresults }) {
+      next if ($data->group ne $p->[0]);
+      $text .= sprintf($pattern, $p->[1]);
+      $text .= sprintf(" %8.3f %7.3f %9.5f %7.3f %8.5f %8.5f %8.5f\n",
+    		       $p->[2], $p->[3], $p->[4], $p->[5], $p->[6], $p->[7], $p->[6]+$p->[7]);
+    };
+    $text .= $/;
+    $text .= $self->paths->[0]->row_second_label($length);
+    foreach my $p (@{ $self->pathresults }) {
+      next if ($data->group ne $p->[0]);
+      $text .= sprintf($pattern, $p->[1]);
+      $text .= sprintf(" %9.5f %9.5f %9.5f\n", $p->[8], $p->[9], $p->[10]);
     };
   };
 
@@ -837,16 +864,23 @@ sub gds_report {
     my $tt = $type;
     my $head = "$type parameters:\n";
     my $string = q{};
-    foreach my $gds (@{ $self->gds} ) {
+    foreach my $gds (@{ $self->parameters} ) {
 ## 	## need to not lose guesses that get flagged as local by
 ## 	## virtue of a math expression dependence
 ## 	if ( ($type eq 'lguess') and ($gds->type) and (not $gds->Use) ) {
 ## 	  $string .= "  " . $gds->report(0);
 ## 	  next;
 ## 	};
-      next if ($gds->gds ne $type);
-      next if (not $gds->Use);
-      $string .= "  " . $gds->report(0);
+      next if ($gds->[1] ne $type);
+      next if (not $gds->[5]);
+      my $toss = Demeter::GDS->new(name    => $gds->[0],
+				   gds     => $gds->[1],
+				   mathexp => $gds->[2],
+				   bestfit => $gds->[3],
+				   error   => $gds->[4],
+				  );
+      $string .= "  " . $toss->report(0);
+      $toss->DEMOLISH;
     };
     if ($string) {
       $text.= $head . $string . "\n";
@@ -944,6 +978,14 @@ sub happiness_report {
   return $string;
 };
 
+sub fetch_parameters {
+  my ($self) = @_;
+  foreach my $g (@ {$self->gds}) {
+    $self->push_parameters([$g->name, $g->gds, $g->mathexp, $g->bestfit, $g->error, $g->Use]);
+  };
+};
+
+
 
 ## handle correlations: store every correlation as attributes of the
 ## object.  provide a variety of convenience functions for accessing
@@ -1026,6 +1068,18 @@ sub fetch_correlations {
   };
   return 0;
 };
+
+
+sub fetch_pathresults {
+  my ($self) = @_;
+  foreach my $p (@ {$self->paths}) {
+    $self->push_pathresults([$p->data->group,
+			     $p->get(qw(name n s02_value sigma2_value
+					e0_value delr_value reff
+					ei_value third_value fourth_value))]);
+  };
+};
+
 
 sub correl {
   my ($self, $x, $y) = @_;

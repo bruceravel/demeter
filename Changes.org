@@ -5,13 +5,17 @@
 
 * Initial release
 
-** 0.9.2 3 November 2011
+** 0.9.2 5 November 2011
 *** Artemis
    - Fixed spurious creation of feff workspaces when importoing
      FSPaths from a project
    - Begin work on making Artemis/Atoms fail gracefully with CIF file
      that trigger problems.  Here, it fails gracefully for CIF files
      with partial occupancy.
+   - Store parameter and path evaluations in the Fit YAML so that fit
+     history can be correctly reconstructed.  This has the drawback of
+     breaking old fpj files, in that they will no longer display
+     correctly in the history.  Oh well....
 
 
 ** 0.9.1 2 November 2011

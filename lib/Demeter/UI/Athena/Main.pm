@@ -149,11 +149,12 @@ sub bkg {
 
   ## E0, Rbkg, flatten
   $this->{bkg_e0_label}   = Wx::StaticText   -> new($this, -1, "E0");
-  $this->{bkg_e0}         = Wx::TextCtrl     -> new($this, -1, q{}, wxDefaultPosition, $tcsize, wxTE_PROCESS_ENTER);
+  $this->{bkg_e0}         = Wx::TextCtrl     -> new($this, -1, q{}, wxDefaultPosition, [80,-1], wxTE_PROCESS_ENTER);
   $this->{bkg_e0_pluck}   = Wx::BitmapButton -> new($this, -1, $bullseye);
   $this->{bkg_rbkg_label} = Wx::StaticText   -> new($this, -1, "Rbkg");
   $this->{bkg_rbkg}       = Wx::TextCtrl     -> new($this, -1, q{}, wxDefaultPosition, $tcsize, wxTE_PROCESS_ENTER);
-  $this->{bkg_rbkg_pluck} = Wx::BitmapButton -> new($this, -1, $bullseye);
+  #$this->{bkg_rbkg_pluck} = Wx::BitmapButton -> new($this, -1, $bullseye);
+  $this->{bkg_rbkg_pluck} = Wx::SpinButton -> new($this, -1, $bullseye);
   $this->{bkg_flatten}    = Wx::CheckBox     -> new($this, -1, q{Flatten normalized data});
   $gbs -> Add($this->{bkg_e0_label},   Wx::GBPosition->new(0,0));
   $gbs -> Add($this->{bkg_e0},         Wx::GBPosition->new(0,1));
