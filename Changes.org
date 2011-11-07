@@ -14,6 +14,7 @@
    - Fix a problem importing a project file into which data and Feff
      have been imported, but no paths have yet been assigned to any
      data
+   - Check parameter types when importing GDS parameters from a text file
 
 *** Demeter
    - Added ~current~ attribute to Mode as a way of identifying data

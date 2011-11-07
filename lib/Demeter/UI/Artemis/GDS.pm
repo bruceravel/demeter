@@ -54,6 +54,8 @@ use Wx::Event qw(EVT_CLOSE EVT_GRID_CELL_CHANGE EVT_GRID_CELL_RIGHT_CLICK  EVT_M
 
 use Demeter::UI::Artemis::GDS::Restraint;
 use Demeter::UI::Artemis::ShowText;
+use Demeter::StrTypes qw( GDS );
+
 
 my $types = [qw(guess def set lguess skip restrain after penalty merge)];
 
@@ -430,8 +432,10 @@ sub import {
 
     my $start = $parent->find_next_empty_row;
 
+    my $count = 0;
     open(my $PARAM, $file);
     foreach my $line (<$PARAM>) {
+      ++$count;
       next unless ($line =~ m{\A$PARAM_REGEX});
 
       $grid->AppendRows(1,1) if ($start >= $grid->GetNumberRows);
@@ -440,12 +444,14 @@ sub import {
       $line =~ s{\s+\z}{};
       my ($gds, $name, @rest) = split(/$SEPARATOR/, $line);
       my $mathexp = join(" ", @rest);
+      if (not is_GDS($gds)) {
+	my $ok = Wx::MessageDialog->new($parent,
+					"$gds is not a parameter type at line $count\n($gds $name = $mathexp)",
+					"Bad parameter type",
+					wxOK|wxICON_ERROR) -> ShowModal;
+	next;
+      };
       $parent->put_param($gds, $name, $mathexp);
-      #$grid -> SetCellValue($start, 0, $gds);
-      #$grid -> SetCellValue($start, 1, $name);
-      #$grid -> SetCellValue($start, 2, $parent->display_value($mathexp));
-      #$parent->set_type($start);
-      #++$start;
     };
     close $PARAM;
   };
