@@ -270,7 +270,10 @@ sub Truncate {
     $::app->{main}->status("Not truncating -- your value for the cutoff energy is not a number!", 'error|nobuffer');
     return;
   };
-  $_->Truncate($beforeafter, $e) foreach (@data);
+  foreach my $d (@data) {
+    $d->Truncate($beforeafter, $e);
+    $app->{main}->status("Truncating ".$d->name, 'nobuffer');
+  };
   $app->{main}->status(sprintf("Removed data %s %.3f for %s", $beforeafter, $e, $text));
   $this->plot_truncate($data[0]);
   $::app->modified(1);

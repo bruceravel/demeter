@@ -205,14 +205,15 @@ sub reconstruct {
 };
 
 sub tt {
-  my ($self, $target) = @_;
+  my ($self, $target, $ncomp) = @_;
+  $ncomp ||= $self->ndata;
   $self->interpolate_data($target);
   my $tarpdl = PDL->new($self->ref_array($target->group));
   # #$self->dispose("\&screen_echo = 1");
   # #$self->dispose("show \@group ".$self->group);
 
   $self->data($target);
-  $self->dispose($self->template('analysis', 'pca_tt'));
+  $self->dispose($self->template('analysis', 'pca_tt', {ncomp=>$ncomp}));
   my @coef = ();
   foreach my $i (0 .. $self->ndata-1) {
     push @coef, Ifeffit::get_scalar("_p$i");

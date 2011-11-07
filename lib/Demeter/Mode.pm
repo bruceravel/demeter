@@ -29,6 +29,7 @@ has 'config'   => (is => 'rw', isa => 'Any');  #         Demeter::Config);
 has 'plot'     => (is => 'rw', isa => 'Any');  #         Demeter::Plot);
 has 'fit'      => (is => 'rw', isa => 'Any');  # Empty.'|Demeter::Fit');
 has 'standard' => (is => 'rw', isa => 'Any');  # Empty.'|Demeter::Data');
+has 'current'  => (is => 'rw', isa => 'Any');  # Empty.'|Demeter::Data');
 has 'theory'   => (is => 'rw', isa => 'Any');  # Empty.'|Demeter::Feff');
 has 'path'     => (is => 'rw', isa => 'Any');  # Empty.'|Demeter::Path');
 

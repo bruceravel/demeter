@@ -5,8 +5,16 @@
 
 * Initial release
 
-** 0.9.2 5 November 2011
+** 0.9.3 12 November 2011
+*** Athena
+   - Progress messages when autoaligning marked groups (also truncating)
+   - Better first guess for autoalignment ($DS->bkg_e0 - $D->bkg_e0)
 
+*** Demeter
+   - Added ~current~ attribute to Mode as a way of identifying data
+     groups in asequence when making progress messages in a GUI
+
+** 0.9.2 7 November 2011
 *** Athena
    - Preserve source attribute when reading a project, display it as a
      mouseover for file TextCtrl

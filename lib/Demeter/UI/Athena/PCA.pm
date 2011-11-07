@@ -344,7 +344,7 @@ sub tt {
   my ($this, $event) = @_;
   $this->{transform}->Clear;
   my $target = $::app->current_data;
-  $this->{PCA}->tt($target);
+  $this->{PCA}->tt($target, $this->{nrecon}->GetValue);
   $this->{PCA}->plot_tt($target);
   $this->{transform}->SetValue($this->{PCA}->tt_report($target));
   $this->{savett}->Enable(1);

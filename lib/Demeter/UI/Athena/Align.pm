@@ -198,6 +198,7 @@ sub autoalign {
       push(@all, $::app->{main}->{list}->GetIndexedData($i))
 	if $::app->{main}->{list}->IsChecked($i);
     };
+    $stan->sentinal(sub{$this->alignment_sentinal});
   };
   $data->po->set(e_smooth=>0);
   $data->po->set(e_smooth=>3) if ($this->{fitas}->GetSelection == 1);
@@ -206,6 +207,10 @@ sub autoalign {
   $this->{shift}->SetValue($data->bkg_eshift);
   $this->plot($data);
   $::app->modified(1);
+};
+
+sub alignment_sentinal {
+  $::app->{main}->status("Aligning " . $::app->current_data->mo->current->name, 'nobuffer');
 };
 
 sub plot {
