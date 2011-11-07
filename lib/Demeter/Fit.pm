@@ -806,6 +806,7 @@ sub logtext {
   $self -> set(header=>$header, footer=>$footer);
   ($header .= "\n") if ($header !~ m{\n\z});
   my $text = q{};
+  return $text if (not @{ $self->paths });
 
   $text .= $header;
   $text .= $self->template("report", "properties"); #properties_header;
@@ -829,7 +830,6 @@ sub logtext {
     };
     $text .= $data->fit_parameter_report($#{ $self->data }, $self->fit_performed);
 
-
     my $length  = max( map { length($_->[1]) if ($_->[0] eq $data->group) } @{ $self->pathresults } )  || 10;
     $length += 1;
     my $pattern = '%-' . $length . 's';
@@ -838,7 +838,7 @@ sub logtext {
       next if ($data->group ne $p->[0]);
       $text .= sprintf($pattern, $p->[1]);
       $text .= sprintf(" %8.3f %7.3f %9.5f %7.3f %8.5f %8.5f %8.5f\n",
-    		       $p->[2], $p->[3], $p->[4], $p->[5], $p->[6], $p->[7], $p->[6]+$p->[7]);
+		       $p->[2], $p->[3], $p->[4], $p->[5], $p->[6], $p->[7], $p->[6]+$p->[7]);
     };
     $text .= $/;
     $text .= $self->paths->[0]->row_second_label($length);
