@@ -7,7 +7,8 @@ use Wx qw( :everything );
 use base 'Wx::Panel';
 use Wx::Event qw(EVT_LIST_ITEM_ACTIVATED EVT_LIST_ITEM_SELECTED EVT_BUTTON EVT_KEY_DOWN
 		 EVT_TEXT EVT_CHOICE EVT_COMBOBOX EVT_CHECKBOX EVT_RADIOBUTTON
-		 EVT_RIGHT_DOWN EVT_MENU EVT_TEXT_ENTER);
+		 EVT_RIGHT_DOWN EVT_MENU EVT_TEXT_ENTER EVT_SPIN_UP EVT_SPIN_DOWN
+		 EVT_ENTER_WINDOW EVT_LEAVE_WINDOW);
 use Wx::Perl::TextValidator;
 
 use Chemistry::Elements qw(get_name get_Z get_symbol);
@@ -85,6 +86,12 @@ sub group {
   $this->{file}       = Wx::TextCtrl   -> new($this, -1, q{}, wxDefaultPosition, [450,-1], wxTE_READONLY);
   $gbs -> Add($this->{file_label}, Wx::GBPosition->new(0,0));
   $gbs -> Add($this->{file},       Wx::GBPosition->new(0,1), Wx::GBSpan->new(1,7), 1);
+  EVT_ENTER_WINDOW($this->{file}, sub{my $text = $this->show_source;
+				      $::app->{main}->GetStatusBar->PushStatusText($text);
+				      $_[1]->Skip});
+  EVT_LEAVE_WINDOW($this->{file}, sub{my $text = $this->show_source;
+				      $::app->{main}->GetStatusBar->PopStatusText if ($::app->{main}->GetStatusBar->GetStatusText eq $text);
+				      $_[1]->Skip});
 
   my @elements = map {sprintf "%-2d: %s", $_, get_name($_)} (1 .. 96);
   $this->{bkg_z_label}      = Wx::StaticText -> new($this, -1, "Element");
@@ -153,8 +160,8 @@ sub bkg {
   $this->{bkg_e0_pluck}   = Wx::BitmapButton -> new($this, -1, $bullseye);
   $this->{bkg_rbkg_label} = Wx::StaticText   -> new($this, -1, "Rbkg");
   $this->{bkg_rbkg}       = Wx::TextCtrl     -> new($this, -1, q{}, wxDefaultPosition, $tcsize, wxTE_PROCESS_ENTER);
-  #$this->{bkg_rbkg_pluck} = Wx::BitmapButton -> new($this, -1, $bullseye);
-  $this->{bkg_rbkg_pluck} = Wx::SpinButton -> new($this, -1, $bullseye);
+  $this->{bkg_rbkg_pluck} = Wx::BitmapButton -> new($this, -1, $bullseye);
+  #$this->{bkg_rbkg_pluck} = Wx::SpinButton -> new($this, -1, wxDefaultPosition, wxDefaultSize, wxSP_HORIZONTAL|wxSP_WRAP);
   $this->{bkg_flatten}    = Wx::CheckBox     -> new($this, -1, q{Flatten normalized data});
   $gbs -> Add($this->{bkg_e0_label},   Wx::GBPosition->new(0,0));
   $gbs -> Add($this->{bkg_e0},         Wx::GBPosition->new(0,1));
@@ -165,6 +172,8 @@ sub bkg {
   $gbs -> Add($this->{bkg_flatten},    Wx::GBPosition->new(0,6), Wx::GBSpan->new(1,3));
   $this->{bkg_flatten}->SetValue(1);
   push @bkg_parameters, qw(bkg_e0 bkg_rbkg bkg_flatten);
+  #EVT_SPIN_UP  ($this, $this->{bkg_rbkg_pluck}, sub{spin_rbkg(@_, 'up'  )});
+  #EVT_SPIN_DOWN($this, $this->{bkg_rbkg_pluck}, sub{spin_rbkg(@_, 'down')});
 
   ## kweight, step, fix step
   $this->{bkg_kw_label}   = Wx::StaticText -> new($this, -1, "k-weight");
@@ -326,6 +335,7 @@ sub bkg {
     EVT_RIGHT_DOWN($this->{$x.'_label'}, sub{ContextMenu(@_, $app, $x)});
     EVT_MENU($this->{$x.'_label'}, -1, sub{ $this->DoContextMenu(@_, $app, $x) });
   };
+  #
   foreach my $x (qw(bkg_e0 bkg_rbkg bkg_pre1 bkg_pre2 bkg_nor1 bkg_nor2 bkg_spl1 bkg_spl2 bkg_spl1e bkg_spl2e)) {
     EVT_BUTTON($this, $this->{$x.'_pluck'}, sub{Pluck(@_, $app, $x)})
   };
@@ -741,7 +751,11 @@ sub OnParameter {
   if ($which eq 'bkg_stan') {
     local $| = 1;
     my $stan = $app->{main}->{Main}->{bkg_stan}->GetClientData($value);
-    $data->bkg_stan($stan->group);
+    if (not defined($stan)) {
+      $data->bkg_stan('None');
+    } else {
+      $data->bkg_stan($stan->group);
+    };
 
     ##### implementing interaction between step and normalization
     ##### TextCtrl windows as suggested by Scott Calvin by email 13
@@ -785,6 +799,28 @@ sub OnEdge {
   my $edge = $app->{main}->{Main}->{fft_edge}->GetValue;
   $app->current_data->fft_edge($edge);
   $app->modified(1);
+};
+
+sub show_source {
+  my ($this) = @_;
+  return "Data source: " . $::app->current_data->source;
+};
+
+sub spin_rbkg {
+  my ($main, $event, $dir) = @_;
+  my $cur =  $main->{bkg_rbkg}->GetValue;
+  my $pm  = ($dir eq 'up') ? +1 : -1;
+  my $new = $cur + $pm*$::app->current_data->co->default(qw(athena bkg_spin_step));
+  print join("|", @_, $dir, $cur, $pm, $new), $/;
+  $new = $cur if (($new < 0.5) and ($dir eq 'down'));
+  $main->{bkg_rbkg}->SetValue($new);
+  if ($::app->current_data->co->default(qw(athena bkg_spin_plot))) {
+    my $busy = Wx::BusyCursor->new();
+    $::app->plot(q{}, q{}, $::app->current_data->co->default(qw(athena bkg_spin_plot)), 'single');
+    undef $busy;
+  };
+  $::app->modified(1);
+  $event->Veto;
 };
 
 sub interpret_bkg_z {
@@ -857,29 +893,46 @@ sub Pluck {
   my ($ok, $x, $y) = $app->cursor;
   return if not $ok;
   my $plucked = -999;
+  my $space = 'E';
 
   $on_screen = 'k' if ($on_screen eq 'q');
   my $data = $app->current_data;
   if ($on_screen eq 'r') {
     $plucked = $x;
+    $space = 'q';
+    $space = 'R' if ($which eq 'bkg_rbkg');
   } elsif (($on_screen eq 'e') and ($which eq "bkg_e0")) {
     $plucked = $x;
+    $space = 'E';
   } elsif (($on_screen eq 'k') and ($which eq "bkg_e0")) {
     $plucked = $data->k2e($x, 'absolute');
+    $space = 'E';
   } elsif (($on_screen eq 'e') and ($which =~ m{fft})) {
     $plucked = $data->e2k($x, 'absolute');
+    $space = 'R';
   } elsif (($on_screen eq 'k') and ($which =~ m{fft})) {
     $plucked = $x;
+    $space = 'R';
   } elsif (($on_screen eq 'e') and ($which =~ m{bkg})) {
     $plucked = $x - $data->bkg_e0;
     $plucked = $data->e2k($plucked) if ($which =~ m{spl\d\z});
+    $space = 'E';
   } elsif (($on_screen eq 'k') and ($which =~ m{bkg})) {
     $plucked = $data->k2e($x, 'relative');
     $plucked = $data->e2k($plucked) if ($which =~ m{spl\d\z});
+    $space = 'E';
+  };
+  if ($plucked eq -999) {
+    $app->{main}->status("Could not use plucked value ($plucked)");
+    return;
   };
   $plucked = sprintf("%.3f", $plucked);
   $app->{main}->{Main}->{$which}->SetValue($plucked);
-
+  if ($::app->current_data->co->default(qw(athena pluck_plot))) {
+    my $busy = Wx::BusyCursor->new();
+    $::app->plot(q{}, q{}, $space, 'single');
+    undef $busy;
+  };
   $app->{main}->status("Plucked $plucked for $which");
 };
 

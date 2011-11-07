@@ -449,7 +449,7 @@ sub _group {
   $app->{main}->status("Importing ". $data->name . " from $displayfile");
   $app->{main}->Update;
   $data->display(0);
-  $data->source($displayfile);
+  #$data->source($displayfile);
   my $do_rebin = (defined $colsel) ? ($colsel->{Rebin}->{do_rebin}->GetValue) : $yaml->{do_rebin};
 
   if ($do_rebin) {

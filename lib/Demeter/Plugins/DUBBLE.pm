@@ -59,7 +59,7 @@ sub fix {
       };
       print N '# ', $_;
     } else {
-      last if ($_ =~ m{\A\s+END}i);
+      last if ($_ =~ m{\A\s+END|DATA\sABORTED}i);
       chomp;
       my @line = split(" ", $_);
       my $angle = shift(@line)/1000; # millidegrees, apparently

@@ -285,15 +285,11 @@ sub _record {
 	last SWITCH;
       };
       ($k eq 'signal') and do {
-	$groupargs{signal_string} = $args{signal_string};
+	$groupargs{signal_string} = $args{signal};
 	last SWITCH;
       };
-      (any {$k eq $_} qw(i0_string signal_string numerator denominator referencegroup)) and do {
+      (any {$k eq $_} qw(i0_string signal_string numerator denominator referencegroup source)) and do {
 	$groupargs{$k} = $args{$k};
-	last SWITCH;
-      };
-      ($k eq 'signal') and do {
-	$groupargs{signal_string} = $args{signal_string};
 	last SWITCH;
       };
       ($k eq 'label') and do {
@@ -362,7 +358,6 @@ sub _record {
 
     };
   };
-
   $groupargs{name} = $groupargs{label} || q{};
   delete $groupargs{label};
   $groupargs{fft_pc}   = ($args{fft_pc} eq 'None') ? 0 : 0;

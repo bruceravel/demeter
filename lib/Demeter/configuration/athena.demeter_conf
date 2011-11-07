@@ -166,3 +166,27 @@ restart=1
 description
   If true, show the data watcher tool.
 
+
+variable=bkg_spin_step
+type=real
+default=0.1
+units=Angstroms
+description
+  The amount by which to change the value of Rbkg when using the spin
+  button control.
+
+variable=bkg_spin_plot
+type=list
+options=E k R 0
+default=R
+description
+  Replot the current data in after spinning the Rbkg value if this is
+  set to E, k, or R.  Do not make the plot if this is 0.
+
+variable=pluck_plot
+type=boolean
+onvalue=1
+offvalue=0
+default=true
+description
+  Replot the current data in after plucking a value from a plot.

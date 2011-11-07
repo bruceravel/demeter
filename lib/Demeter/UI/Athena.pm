@@ -282,6 +282,7 @@ sub current_index {
 };
 sub current_data {
   my ($app) = @_;
+  return $demeter->dd if not defined $app->{main}->{list};
   return $demeter->dd if not $app->{main}->{list}->GetCount;
   return $app->{main}->{list}->GetIndexedData($app->{main}->{list}->GetSelection);
 };
