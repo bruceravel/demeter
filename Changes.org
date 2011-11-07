@@ -10,6 +10,11 @@
    - Progress messages when autoaligning marked groups (also truncating)
    - Better first guess for autoalignment ($DS->bkg_e0 - $D->bkg_e0)
 
+*** Artemis
+   - Fix a problem importing a project file into which data and Feff
+     have been imported, but no paths have yet been assigned to any
+     data
+
 *** Demeter
    - Added ~current~ attribute to Mode as a way of identifying data
      groups in asequence when making progress messages in a GUI
