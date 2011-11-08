@@ -146,6 +146,10 @@ sub Import {
     if ($retval == 0) {		# bail on a file sequence if one gets canceled
       return;
     };
+    if ($retval == -1) {	# bail on a file sequence if something bad happens
+      $app->{main}->status("Stopping file import.  $file could not be read correctly.", "error");
+      return;
+    };
     $first = 0;
     if ($app->current_data->mo->heap_used > 0.95) {
       $app->OnGroupSelect(q{}, $app->{main}->{list}->GetSelection, 0);
@@ -603,11 +607,12 @@ sub _prj {
   my @records = map {$_ + 1} @selected;
   my $prj = $app->{main}->{prj}->{prj};
 
-  my $count = 1;
+  my $count = 0;
   my $data;
   foreach my $rec (@records) {
     $data = $prj->record($rec);
     next if not $data;
+    ++$count;
     if ($data->prjrecord =~ m{,\s+(\d+)}) {
       $data->prjrecord($orig . ", $1");
     };
@@ -621,8 +626,8 @@ sub _prj {
       $app->OnGroupSelect(q{}, $app->{main}->{list}->GetSelection, 0);
       Import_plot($app, $data);
     };
-    ++$count;
   };
+  return -1 if not $count;
   $app->{main}->{Journal}->{object}->text($prj->journal);
   $app->{main}->{Journal}->{journal}->SetValue($app->{main}->{Journal}->{object}->text);
   $app->{main}->{Main}->{bkg_stan}->fill($app, 1);
