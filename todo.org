@@ -78,10 +78,12 @@
    - [X] keV data
    - [ ] importing xmu.dat files into Athena has never been tested
 
-*** needs doing [4/14] [28%]
+*** needs doing [4/16] [25%]
    - [X] deglitching crashes with gnuplot					:HUH:
    - [X] test preprocessing (I had a crash with all three preproc options selected for data with a reference):
 	 ~Can't call method "GetSelection" on an undefined value at /home/bruce/git/demeter/lib/Demeter/UI/Athena/IO.pm line 423.~
+   - [ ] SpinCtrl for use with Rbkg, bkg_spl1/2
+   - [ ] beter error handling in plugins
    - [X] *Pluck buttons* [2/2]
        + [X] implement everywhere needed
        + [X] figure out cause of spurious error on Windows
@@ -94,10 +96,11 @@
    - [ ] links to documentation on each tool
    - [ ] *Convolve/noise tool*
        + add noise to chi data
-   - [ ] *Difference tool* [0/3]
+   - [ ] *Difference tool* [0/4]
        + [ ] plot diff for marked groups
        + [ ] plot areas from marked groups
        + [ ] make difference groups from marked groups
+       + [ ] difference in k
    - [-] *LCF tool* [4/5]
        + [X] make data group from fit (use InsertData method)
        + [X] marked groups automation, display in fourth tab, excel output
@@ -153,14 +156,14 @@
    - Need to expand the filetype system by examining data from *all* the XAS beamlines in the world.  Yes ... all of them.
    - solicit help from the facility representatives
 
-** Windows issues [3/10] [30%] 					    :Windows:
+** Windows issues [4/10] [40%] 					    :Windows:
   - [X] parameter group context menus don't get posted (see
 	http://www.nntp.perl.org/group/perl.wxperl.users/2011/03/msg7929.html)
   - [X] +spurious message from clipboard+ (worked around)
   - [X] fpj file on Win seems to not get unpacked correctly /is this true?/	:Project:
   - [ ] the frickin' Gnuplot error logs seem to remain open and locked
 	on Windows when a crash happens
-  - [ ] status bar does not getw color for wait or error messages
+  - [ ] status bar does not get color for wait or error messages
 	/this may be unfixable, see/
 	http://www.nntp.perl.org/group/perl.wxperl.users/2011/04/msg7943.html
   - [ ] The atoms panel background color is too light.  Which window
@@ -170,9 +173,8 @@
 	link above)
   - [ ] relocation of Strawberry leaves Ifeffit unable to find phase
 	shift and CL tables (use an ENV variable?)
-  - [ ] using gnuplot on Win XP Home Edition failed due to the
-        redirection of STDERR to ~$self->{__error_log}~ in
-        Graphics::GnuplotIF.  removing this redirection fixed the
+  - [X] +using gnuplot on Win XP Home Edition failed due to the redirection of STDERR to ~$self->{__error_log}~ in Graphics::GnuplotIF.+
+	removing this redirection fixed the
         problem, but I don't understand why it was a problem in the
         first place.
   - [ ] The Strawberry+Demeter package does not coexist at all with
@@ -182,7 +184,7 @@
 
 
 ** Artemis
-*** Artemis bugs and missing features [0/9]  [0%]
+*** Artemis bugs and missing features [0/10]  [0%]
    - [ ] *rename Atoms/Feff*
    - [ ] Reorganize lists, move individual items up and down, move
 	 blocks up and down, Path list, +Plot list+
@@ -202,6 +204,7 @@
    - [ ] better way of moving an empirical standard from Athena to
          Artemis -- should be able to import it directly from the
          athena project file.
+   - [ ] Andreas Voegelin's idea about mixed Feff/empicial standards
    - [ ] Path drag and drop [0/3]
         - [ ] DND of an SSPath does not work correctly
         - [ ] DND of FPath also broken

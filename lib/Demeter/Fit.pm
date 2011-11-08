@@ -836,6 +836,7 @@ sub logtext {
     $text .= $self->paths->[0]->row_main_label($length);
     foreach my $p (@{ $self->pathresults }) {
       next if ($data->group ne $p->[0]);
+      next if not $p->[11];
       $text .= sprintf($pattern, $p->[1]);
       $text .= sprintf(" %8.3f %7.3f %9.5f %7.3f %8.5f %8.5f %8.5f\n",
 		       $p->[2], $p->[3], $p->[4], $p->[5], $p->[6], $p->[7], $p->[6]+$p->[7]);
@@ -844,6 +845,7 @@ sub logtext {
     $text .= $self->paths->[0]->row_second_label($length);
     foreach my $p (@{ $self->pathresults }) {
       next if ($data->group ne $p->[0]);
+      next if not $p->[11];
       $text .= sprintf($pattern, $p->[1]);
       $text .= sprintf(" %9.5f %9.5f %9.5f\n", $p->[8], $p->[9], $p->[10]);
     };
@@ -1076,7 +1078,7 @@ sub fetch_pathresults {
     $self->push_pathresults([$p->data->group,
 			     $p->get(qw(name n s02_value sigma2_value
 					e0_value delr_value reff
-					ei_value third_value fourth_value))]);
+					ei_value third_value fourth_value include))]);
   };
 };
 
