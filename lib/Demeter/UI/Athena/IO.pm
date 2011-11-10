@@ -303,7 +303,13 @@ sub _data {
     ## set Rebinning controls from yaml
     foreach my $w (qw(do_rebin emin emax pre xanes exafs)) { # abs
       my $key = ($w eq 'do_rebin') ? $w : 'rebin_'.$w;
-      $colsel->{Rebin}->{$w}->SetValue($yaml->{$key});
+      my $value;
+      if ($w eq 'do_rebin') {
+	$value = $yaml->{$key} || 0;
+      } else {
+	$value = $yaml->{$key} || $data->co->default('rebin', $w);
+      };
+      $colsel->{Rebin}->{$w}->SetValue($ yaml->{$key});
       next if (any {$w eq $_} qw(do_rebin abs));
       $data->co->set_default('rebin', $w, $yaml->{$key});
     };
