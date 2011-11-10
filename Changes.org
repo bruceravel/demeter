@@ -5,7 +5,17 @@
 
 * Initial release
 
-** 0.9.3 12 November 2011
+** 0.9.4 10 November 2011
+*** Athena
+   - Fixed a problem accessing the column selection persitance file
+     for the first time
+   - Fixed a possible crash when importing a damaged project file
+
+*** Artemis
+   - Don't list excluded paths in the log file
+
+
+** 0.9.3 8 November 2011
 *** Athena
    - Progress messages when autoaligning marked groups (also truncating)
    - Better first guess for autoalignment ($DS->bkg_e0 - $D->bkg_e0)
