@@ -1100,6 +1100,7 @@ sub constrain {
     $app->{main}->status("No data!");
     return;
   };
+  ($which = ['all']) if ($which eq 'all');
   my $data = $app->current_data;
   my @params = ($which->[0] eq 'all')  ? (@all_group, @all_bkg, @all_fft, @all_bft, @all_plot)
              : ($which->[0] eq 'file') ?  @all_group

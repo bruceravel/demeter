@@ -5,6 +5,11 @@
 
 * Initial release
 
+
+** 0.9.5 11 November 2011
+*** Athena
+   - Fixed a crash caused by constraining all parameters
+
 ** 0.9.4 10 November 2011
 *** Athena
    - Fixed a problem accessing the column selection persitance file
