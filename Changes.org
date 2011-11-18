@@ -6,6 +6,34 @@
 * Initial release
 
 
+** 0.9.6 XX November 2011
+*** Athena
+   - Fixed bug preventing import of multiple files with each channel
+     as a separate group
+   - Fixed a bug in which importing MED data as separate groups failed
+     to initialize data processing parameters
+   - Update column selection dialog when switching from eV to keV
+     units
+   - Handle keV units correctly for data and reference
+
+*** Artemis
+   - Trim leading and trailing spaces from gds names.
+
+*** Demeter
+   - Explicitly reset xtics when starting a new plot with gnuplot.
+     This is necessary because the components plot afetr a fit
+     sequence specifies an array of xtic labels.
+   - Prefer the Pd K edge to the Bk L2 edge when finding the edge
+   - Set bkg_pre2 to a value which is sensitive to the edge energy.
+     For higher energies (i.e. broader edges) move bkg_pre2 to a lower
+     energy to improve the default pre-edge line
+   - Do a better job of recognizing as data are imported whether an
+     energy array is in keV units
+
+*** Acknowledgements for this release
+   - The participants of the Diamond 2011 XAFS course who unwittingly
+     became beta testers for this software
+
 ** 0.9.5 11 November 2011
 *** Athena
    - Fixed a crash caused by constraining all parameters

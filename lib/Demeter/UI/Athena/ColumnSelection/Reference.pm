@@ -83,7 +83,7 @@ sub new {
   push @{$this->{controls}}, $this->{same};
   push @{$this->{controls}}, $this->{replot};
   EVT_CHECKBOX($this, $this->{ln}, sub{OnLnClick(@_, $this)} );
-  EVT_BUTTON($this, $this->{replot}, sub{  $this->display_plot });
+  EVT_BUTTON($this, $this->{replot}, sub{  $this->display_plot($parent) });
 
   $this->{ln}   -> SetValue(1);
   $this->{same} -> SetValue(1);
@@ -132,8 +132,9 @@ sub OnDenomClick {
 };
 
 sub display_plot {
-  my ($this) = @_;
-  $this->{reference}  -> set(datatype=>'xmu', update_columns=>1, is_col=>1);
+  my ($this, $parent) = @_;
+  my $kev = $parent->GetParent->GetParent->{units}->GetSelection;
+  $this->{reference}  -> set(datatype=>'xmu', update_columns=>1, is_col=>1, is_kev=>$kev);
   $this->{reference}  -> _update('normalize');
   $this->{reference}  -> po -> start_plot;
   $this->{reference}  -> po -> set(e_mu=>1, e_markers=>0, e_bkg=>0, e_pre=>0, e_post=>0, e_norm=>0, e_der=>0, e_sec=>0, e_i0=>0, e_signal=>0, e_smooth=>0);

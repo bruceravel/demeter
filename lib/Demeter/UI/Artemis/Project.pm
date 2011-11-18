@@ -163,15 +163,6 @@ sub import_autosave {
 
 sub read_project {
   my ($rframes, $fname) = @_;
-  if (project_started($rframes)) {
-    my $yesno = Wx::MessageDialog->new($rframes->{main},
-				       "Save current project before opening a new one?",
-				       "Save project?",
-				       wxYES_NO|wxYES_DEFAULT|wxICON_QUESTION);
-    my $result = $yesno->ShowModal;
-    save_project($rframes) if $result == wxID_YES;
-    close_project($rframes, 1);
-  };
   if (not $fname) {
     my $fd = Wx::FileDialog->new( $rframes->{main}, "Import an Artemis project or data", cwd, q{},
 				  "Artemis project or data (*.fpj;*.prj;*.inp;*.cif)|*.fpj;*.prj;*.inp;*.cif|" .
@@ -191,6 +182,18 @@ sub read_project {
     $fname = File::Spec->catfile($fd->GetDirectory, $fd->GetFilename);
   };
   $fname = Demeter->follow_link($fname);
+
+  if (not Demeter->is_zipproj($fname,0, 'any')) {
+    if (project_started($rframes)) {
+      my $yesno = Wx::MessageDialog->new($rframes->{main},
+					 "Save current project before opening a new one?",
+					 "Save project?",
+					 wxYES_NO|wxYES_DEFAULT|wxICON_QUESTION);
+      my $result = $yesno->ShowModal;
+      save_project($rframes) if $result == wxID_YES;
+      close_project($rframes, 1);
+    };
+  };
 
   if (not Demeter->is_zipproj($fname,0, 'fpj')) {
     Demeter::UI::Artemis::Import('old',  $fname), return if (Demeter->is_zipproj($fname,0,'apj'));

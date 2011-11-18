@@ -36,6 +36,15 @@ sub resolve_defaults {
     #my @y = $self->get_array("xmu");
 
     my ($pre1, $pre2) = $self->resolve_pre(\@x);
+    if ($pre2 >= -35) {
+      if (($self->bkg_e0 > 12000) and ($self->bkg_e0 < 20000)) {
+	$pre2 -= 15;
+      } elsif (($self->bkg_e0 > 20000) and ($self->bkg_e0 < 30000)) {
+	$pre2 -= 30;
+      } elsif ($self->bkg_e0 > 30000) {
+	$pre2 -= 45;
+      };
+    };
     $self->bkg_pre1(sprintf("%.3f",$pre1));
     $self->bkg_pre2(sprintf("%.3f",$pre2));
 

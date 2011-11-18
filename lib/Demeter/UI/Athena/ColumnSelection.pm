@@ -358,6 +358,7 @@ sub OnUnits {
   my ($parent, $event, $this, $data) = @_;
   $data->is_kev(0) if ($this->{units}->GetSelection == 0);
   $data->is_kev(1) if ($this->{units}->GetSelection == 1);
+  $this -> display_plot($data);
 };
 
 sub display_plot {

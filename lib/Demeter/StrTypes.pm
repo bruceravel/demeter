@@ -420,6 +420,10 @@ subtype NotReserved,
   where { lc($_) !~ m{\A$notreserved_regexp\z} },
   message { "reff, pi, etok, and cv are reserved words in Ifeffit or Demeter" };
 
+coerce NotReserved,
+  from Str,
+  via { $_=lc($_); $_=~s{\A\s+}{}; $_=~s{\s+\z}{} };
+
 
 ## -------- Ifeffit lineshapes
 use vars qw(@ifeffitlineshape_list $ifeffitlineshape_regexp);

@@ -100,6 +100,25 @@ sub set_nknots {
   return $self;
 };
 
+sub guess_units {
+  my ($self) = @_;
+  my @energy = $self->get_array('energy');
+  return 'eV' if not @energy;
+  if (($energy[0] < $energy[1]) and
+      ($energy[1] < $energy[2]) and
+      ($energy[2] < $energy[3]) and
+      ($energy[3] < $energy[4]) and
+      ($energy[4] < $energy[5])) {
+    if ($energy[0] > 100) {
+      return 'eV';
+    } else {
+      return 'keV';
+    };
+  } else {
+    return 'lambda';
+  };
+};
+
 sub guess_columns {
   my ($self) = @_;
   my $i0_regexp = $self->co->default("file", 'i0_regex');
@@ -644,6 +663,8 @@ sub find_edge {
     ($elem, $edge) = ("Cr", "K")  if (($elem eq "Ba") and ($edge eq "L1"));
     ## prefer Ni K to Er L3
     #($elem, $edge) = ("Ni", "K")  if (($elem eq "Er") and ($edge eq "L3"));
+    ## prefer Pd K to Bk L2
+    ($elem, $edge) = ("Pd", "K")  if (($elem eq "Bk") and ($edge eq "L2"));
   };
   return ($elem, $edge);
 };

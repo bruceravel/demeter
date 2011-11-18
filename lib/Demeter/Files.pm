@@ -161,6 +161,10 @@ sub is_zipproj {
       return 0;
     };
   SWITCH: {
+      ($type eq 'any') and do {
+	undef $zip;
+	return 1;
+      };
       ($type eq 'fpj') and do {
 	print "not a fitting project file\n" if $verbose;
 	undef $zip, return 0 if not $zip->memberNamed('order');

@@ -171,7 +171,7 @@ sub Document {
     -> new($app->{main}, Demeter->slurp($tempfile), "Documentation for $plugin");
   my ($w, $h) = $dialog->GetSizeWH;
   $dialog->SetSize(1.5*$w, $h);
-  $dialog -> Show;
+  $dialog->Show;
   unlink $tempfile;
 };
 

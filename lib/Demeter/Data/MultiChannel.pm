@@ -83,8 +83,8 @@ sub make_data {
   $this->provenance(sprintf("multichannel data file %s", $self->file));
   $this->initialize_e0;
   $args{datatype} ||= 'xmu';
-
-  $this -> set(%args);
+  $this->set(%args);
+  $this->resolve_defaults;
   return $this;
 };
 

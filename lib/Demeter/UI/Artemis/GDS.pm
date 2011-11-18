@@ -281,6 +281,9 @@ sub reset_all {
   foreach my $row (0 .. $grid->GetNumberRows) {
     my $name = $grid -> GetCellValue($row, 1);
     next if ($name =~ m{\A\s*\z});
+    $name =~ s{\A\s+}{};
+    $name =~ s{\s+\z}{};
+    $grid -> SetCellValue($row, 1, $name);
     my $type = $grid -> GetCellValue($row, 0);
     my $mathexp = $grid -> GetCellValue($row, 2);
     my $thisgds;

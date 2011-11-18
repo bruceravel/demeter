@@ -225,7 +225,7 @@ sub _data {
 	       ln          => $suggest{ln}||0,
 	       inv         => $suggest{inv}||0,
 	       display	   => 1);
-  $data->update_data(1) if ($data->energy ne '$1');;
+  $data->update_data(1) if ($data->energy ne '$1');
   $data->_update('data');
   my $yaml;
   $yaml->{columns} = q{};
@@ -239,7 +239,7 @@ sub _data {
 		   denominator => $yaml->{denominator} || $suggest{denominator} || '1',
 		   ln          => (defined($yaml->{ln}))  ? $yaml->{ln}  : $suggest{ln},
 		   inv         => (defined($yaml->{inv})) ? $yaml->{inv} : $suggest{inv},
-		   ##is_kev      => $yaml->{units},
+		   is_kev      => $yaml->{units},
 		   bkg_nnorm   => $nnorm,
 		  );
       $data->update_data(1) if ($data->energy ne '$1');;
@@ -259,22 +259,34 @@ sub _data {
     $do_guess = 1;
   };
   $yaml->{energy} = $data->energy;
+  my $untext = $data->guess_units;
+  my $un = ($untext eq 'eV')     ? 0
+         : ($untext eq 'keV')    ? 1
+         : ($untext eq 'lambda') ? 2
+	 :                         0;
+  $yaml->{units} = $un;
+  if ($untext eq 'keV') {
+    $data->is_kev(1);
+    $data->update_data(1);
+    $data->_update('data');
+  };
 
   ## for an XDI file, setting the xdi attribute has to be delayed
   ## until *after* the energy/numerator/denominator attributes are
   ## set.  then guess_columns can be called.
   $data->xdi($orig) if (ref($orig) =~ m{Class::MOP});
-  $data->guess_columns if ($do_guess and not $suggest);
+  $data->guess_columns if ($do_guess and (not $suggest));
 
   ## -------- display column selection dialog
   my $repeated = 1;
   my $colsel;
-  my $med = 0;			# this will be true is each channel of MED data is to be its own group
+  my $med = $yaml->{each}; # this will be true is each channel of MED data is to be its own group
   if ($first or ($data->columns ne $yaml->{columns})) {
     $colsel = Demeter::UI::Athena::ColumnSelection->new($app->{main}, $app, $data);
     $colsel->{ok}->SetFocus;
 
     $colsel->{each}->SetValue($yaml->{each});
+    $colsel->{units}->SetSelection($yaml->{units});
 
     $colsel->{datatype}->SetSelection(0);
     $colsel->{datatype}->SetSelection(1) if ($data->datatype eq 'xanes');
@@ -350,12 +362,17 @@ sub _data {
       return 0;
     };
     $med = 1 if ($colsel->{each}->IsEnabled and $colsel->{each}->GetValue);
-    $yaml->{each} = $colsel->{each}->GetValue;
+    $yaml->{each}  = $colsel->{each}->GetValue;
+    $yaml->{units} = $colsel->{units}->GetSelection;
     $repeated = 0;
   };
 
   ## to write each MED channel to a group, loop over channels, calling
   ## this.  Set all eshifts the same and don't redo alignment
+  my $dtp = ($colsel->{datatype}->GetSelection == 0) ? 'xmu'
+          : ($colsel->{datatype}->GetSelection == 1) ? 'xanes'
+          : ($colsel->{datatype}->GetSelection == 3) ? 'chi'
+	  :                                            'xmu';
   my $message = q{};
   if ($med) {
     my $mc = Demeter::Data::MultiChannel->new(file=>$file, energy=>$data->energy);
@@ -369,11 +386,12 @@ sub _data {
 				ln          => $data->ln,
 				inv         => $data->inv,
 				name        => join(" - ", basename($file), $cols[$cc]),
-				datatype    => $data->datatype,
+				datatype    => $dtp,
 			       );
       _group($app, $colsel, $this, $yaml, $file, $orig, $repeated, $align);
       $eshift = $this->bkg_eshift if $align;
       $this->bkg_eshift($eshift)  if not $align;
+      $repeated = 1 if (not $repeated);
       $align = 0;
     };
     $mc->discard;
@@ -530,6 +548,7 @@ sub _group {
 		denominator => '$'.$yaml->{ref_denom},
 		ln          => $yaml->{ref_ln},
 		is_col      => 1,
+		is_kev      => $data->is_kev,
 		display     => 1,
 		datatype    => $data->datatype);
     $ref->display(0);
