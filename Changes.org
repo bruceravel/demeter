@@ -15,9 +15,25 @@
    - Update column selection dialog when switching from eV to keV
      units
    - Handle keV units correctly for data and reference
+   - Handle very noisy reference data by setting the default E0 to the
+     tabulated value if the ifeffit-found value is far from the e0 of
+     the associated data.  This is essential for data that needs
+     rebinning.
+   - Correctly handle the situation where a column data file has a
+     column named "xmu".  Previously, that situation could lead to
+     data being corrupted in an unrecoverable manner as the column
+     selection dialog uses that same suffix to hold the mu(E) data.
+     This is done by constantly rereading the data file -- something
+     that will not happen (happily, since doing so is slow) for any
+     file without that column label.
+   - Added functionality to column selection dialog for bulk
+     (de)selection of numerator checkboxes and for pausing the replot
+     of the data while selecting columns (all of which may be useful
+     for an MED file)
 
 *** Artemis
    - Trim leading and trailing spaces from gds names.
+   - Write parameter history reports correctly.
 
 *** Demeter
    - Explicitly reset xtics when starting a new plot with gnuplot.
@@ -29,6 +45,16 @@
      energy to improve the default pre-edge line
    - Do a better job of recognizing as data are imported whether an
      energy array is in keV units
+   - Filetype plugin written for ESRF BM23, which uses a single scan
+     SPEC file.
+   - Added ~rebin->use_atomic~ configuration parameter
+   - Added a filetype plugin for data from the old SRS.  This is
+     intended to cover data from DUBBLE as well (thus deprecating the
+     DUBBLE plugin).
+   - Test to see whether local time can be used in Demeter's ~now~
+     method.  Using local time will make a program die if the
+     computer's time zone is not set.  The fallback is to use
+     DateTime's floating time zone.
 
 *** Acknowledgements for this release
    - The participants of the Diamond 2011 XAFS course who unwittingly

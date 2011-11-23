@@ -80,6 +80,19 @@ units=inverse Angstrom
 description
   The step in wavenumber in the EXAFS region.
 
+variable=use_atomic
+type=positive integer
+default=25
+description
+  This parameter tunes an attempt to handle extremely noisy reference
+  data in which the e0 value is found at an absurd location by the
+  default algorithm.  If the reference's E0 is found to be more than
+  this value from the E0 of the associated data, then the reference
+  will have its E0 set to the tabulated atomic value, thus increasing
+  the likelihood of a successful rebinning.  Set this to 0 to force E0
+  to be set to the tabulated value.  Set this to a very large number
+  to force Demeter to use the Ifeffit default value for E0.
+
 ######################################################################
 section=convolution
 section_description

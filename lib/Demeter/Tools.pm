@@ -47,9 +47,12 @@ my %seen = ();
 my $ra  = Regexp::Assemble->new;
 my $type_regexp = $ra->add(qw(guess def set restrain after skip merge lguess ldef))->re;
 
+## check to make sure that the computer's time zone is set.  fall back
+## to the floating time zone if not
+Readonly my $tz => (eval {DateTime->now(time_zone => 'local')}) ? 'local' : 'floating';
 sub now {
   my ($self) = @_;
-  return sprintf("%s", DateTime->now(time_zone => 'local'));;
+  return sprintf("%s", DateTime->now(time_zone => $tz));
 };
 
 sub environment {

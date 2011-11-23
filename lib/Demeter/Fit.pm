@@ -1119,8 +1119,8 @@ sub correl_report {
 sub fetch_gds {
   my ($self, $which) = @_;
   $which = lc($which);
-  foreach my $g (@{$self->gds}) {
-    return $g if ($which eq lc($g->name));
+  foreach my $g (@{$self->parameters}) {
+    return $g if ($which eq lc($g->[0]));
   };
   return 0;
 };

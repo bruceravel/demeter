@@ -116,19 +116,19 @@ sub EnableReference {
 sub OnLnClick {
   my ($nb, $event, $this) = @_;
   $this->{reference} -> ln($this->{ln}->GetValue);
-  $this->display_plot;
+  $this->display_plot($nb);
 };
 sub OnNumerClick {
   my ($nb, $event, $this, $i) = @_;
   $this->{numerator}   = $i;
   $this->{reference}  -> numerator('$'.$i);
-  $this->display_plot;
+  $this->display_plot($nb);
 };
 sub OnDenomClick {
   my ($nb, $event, $this, $i) = @_;
   $this->{denominator} = $i;
   $this->{reference}  -> denominator('$'.$i);
-  $this->display_plot;
+  $this->display_plot($nb);
 };
 
 sub display_plot {

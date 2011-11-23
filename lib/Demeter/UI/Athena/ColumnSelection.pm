@@ -50,6 +50,19 @@ sub new {
   my $left = Wx::BoxSizer->new( wxVERTICAL );
   $hbox->Add($leftpane, 1, wxGROW|wxALL, 0);
 
+
+  my $select = Wx::BoxSizer->new( wxHORIZONTAL );
+  $this->{selectall} = Wx::Button->new($leftpane, -1, 'Select all', wxDefaultPosition, wxDefaultSize, wxBU_EXACTFIT);
+  $select -> Add($this->{selectall}, 1, wxGROW|wxLEFT|wxRIGHT, 2);
+  $this->{deselect}  = Wx::Button->new($leftpane, -1, 'Clear numerator', wxDefaultPosition, wxDefaultSize, wxBU_EXACTFIT);
+  $select -> Add($this->{deselect},  1, wxGROW|wxLEFT|wxRIGHT, 2);
+  $this->{pauseplot} = Wx::ToggleButton->new($leftpane, -1, 'Pause plotting', wxDefaultPosition, wxDefaultSize, wxBU_EXACTFIT);
+  $select -> Add($this->{pauseplot},  1, wxGROW|wxLEFT|wxRIGHT, 2);
+  $left->Add($select, 0, wxGROW|wxALL, 0);
+  EVT_BUTTON($this, $this->{selectall}, sub{selectall(@_, $this, $data)});
+  EVT_BUTTON($this, $this->{deselect},  sub{deselect (@_, $this, $data)});
+
+
   $this->{left} = $left;
   ## the ln checkbox goes below the column selection widget, but if
   ## refered to in the columns method, so I need to define it here.
@@ -123,6 +136,8 @@ sub columns {
   my @energy; $#energy = $#cols+1;
   my @numer;  $#numer  = $#cols+1;
   my @denom;  $#denom  = $#cols+1;
+  my @energy_widgets;
+  my @numer_widgets;
   my @denom_widgets;
 
   my $count = 1;
@@ -136,6 +151,7 @@ sub columns {
     my $radio = Wx::RadioButton->new($columnbox, -1, q{}, @args);
     $gbs -> Add($radio, Wx::GBPosition->new(1,$count));
     EVT_RADIOBUTTON($parent, $radio, sub{OnEnergyClick(@_, $this, $data, $i)});
+    push @energy_widgets, $radio;
     if ($data->energy =~ m{(?<=\$)$count\b}) {
       $energy[$i] = 1;
       $radio->SetValue(1);
@@ -144,6 +160,7 @@ sub columns {
     my $ncheck = Wx::CheckBox->new($columnbox, -1, q{});
     $gbs -> Add($ncheck, Wx::GBPosition->new(2,$count));
     EVT_CHECKBOX($parent, $ncheck, sub{OnNumerClick(@_, $this, $data, $i, \@numer)});
+    push @numer_widgets, $ncheck;
     if ($data->numerator =~ m{(?<=\$)$count\b}) {
       $numer[$i] = 1;
       $ncheck->SetValue(1);
@@ -162,7 +179,9 @@ sub columns {
     @args = ();
     ++$count;
   };
-  $this->{denom_widgets} = \@denom_widgets;
+  $this->{energy_widgets} = \@energy_widgets;
+  $this->{numer_widgets}  = \@numer_widgets;
+  $this->{denom_widgets}  = \@denom_widgets;
   $this->{each}->Enable($med>1);
 
   $this->display_plot($data) if (($data->numerator ne '1') or ($data->denominator ne '1'));
@@ -269,7 +288,10 @@ sub OnEnergyClick {
 
 sub OnNumerClick {
   my ($parent, $event, $this, $data, $i, $aref) = @_;
-  $aref->[$i] = $event->IsChecked;
+  #$aref->[$i] = $event->IsChecked;
+  foreach my $ii (0..$#{$this->{numer_widgets}}) {
+    $aref->[$ii+1] = $this->{numer_widgets}->[$ii]->IsChecked;
+  };
   my $string = q{};
   my $n = 0;
   foreach my $count (1 .. $#$aref) {
@@ -361,12 +383,44 @@ sub OnUnits {
   $this -> display_plot($data);
 };
 
+  #my @energy_widgets = @{$this->{energy_widgets}};
+  #my @numer_widgets  = @{$this->{numer_widgets}};
+  #my @denom_widgets  = @{$this->{denom_widgets}};
+sub selectall {
+  my ($parent, $event, $this, $data) = @_;
+  my $string = q{};
+  foreach my $i (0..$#{$this->{numer_widgets}}) {
+    next if $this->{energy_widgets}->[$i]->GetValue;
+    next if $this->{denom_widgets}->[$i]->GetValue;
+    $this->{numer_widgets}->[$i]->SetValue(1);
+    my $count = $i+1;
+    $string .= '$'.$count.'+';
+  };
+  $string =~ s{\+\z}{};
+  $this->{each}->Enable(1);
+  ($data->datatype ne 'chi') ? $data -> numerator($string) : $data -> chi_column($string);
+  $this -> display_plot($data);
+};
+sub deselect {
+  my ($parent, $event, $this, $data) = @_;
+  foreach my $w (@{$this->{numer_widgets}}) {
+    $w->SetValue(0);
+  };
+  $this->{each}->Enable(0);
+  ($data->datatype ne 'chi') ? $data -> numerator('1') : $data -> chi_column('1');
+  $this -> display_plot($data);
+};
+
 sub display_plot {
   my ($this, $data) = @_;
+  if (($data->columns =~ m{\bxmu\b}) and (not $this->{pauseplot}->GetValue)) {
+    $data -> update_data(1);
+  };
   if ($data->datatype ne 'chi') {
     $data -> _update('normalize');
     $this->{energy} -> SetValue($data->energy_string);
     $this->{mue}    -> SetValue($data->xmu_string);
+    return if $this->{pauseplot}->GetValue;
     my @energy = $data->get_array('energy');
     my ($emin, $emax) = minmax(@energy);
     $data -> po -> set(emin=>$emin, emax=>$emax);
@@ -376,6 +430,7 @@ sub display_plot {
     $data -> _update('normalize');
     $this->{energy} -> SetValue($data->energy_string);
     $this->{mue}    -> SetValue($data->chi_string);
+    return if $this->{pauseplot}->GetValue;
     my @k = $data->get_array('k');
     my ($kmin, $kmax) = minmax(@k);
     $data -> po -> set(kmin=>0, kmax=>$kmax);

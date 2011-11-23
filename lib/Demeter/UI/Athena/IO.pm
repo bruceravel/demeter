@@ -175,7 +175,8 @@ sub test_plugins {
     if ($this->time_consuming) {
       $app->{main}->status($this->working_message, "wait");
     };
-    my $ok = $this->fix;
+    my $ok = eval {$this->fix};
+    return '!'.$pl if $@;
     return '!'.$pl if not $ok;
     return $this;
   };
@@ -321,7 +322,7 @@ sub _data {
       } else {
 	$value = $yaml->{$key} || $data->co->default('rebin', $w);
       };
-      $colsel->{Rebin}->{$w}->SetValue($ yaml->{$key});
+      $colsel->{Rebin}->{$w}->SetValue($yaml->{$key});
       next if (any {$w eq $_} qw(do_rebin abs));
       $data->co->set_default('rebin', $w, $yaml->{$key});
     };
@@ -552,6 +553,15 @@ sub _group {
 		display     => 1,
 		datatype    => $data->datatype);
     $ref->display(0);
+    my $same_edge = (defined $colsel) ? $colsel->{Reference}->{same}->GetValue : $yaml->{ref_same};
+    if ($same_edge) {
+      $ref->bkg_z($data->bkg_z);
+      $ref->fft_edge($data->fft_edge);
+    };
+    $ref -> _update('normalize');
+    if (abs($data->bkg_e0 - $ref->bkg_e0) > $data->co->default('rebin', 'use_atomic')) {
+      $ref->e0('atomic');
+    };
     if ($do_rebin) {
       $app->{main}->status("Rebinning reference for ". $data->name);
       my $rebin  = $ref->rebin;
@@ -566,11 +576,6 @@ sub _group {
     $app->{main}->{list}->AddData($ref->name, $ref);
     $app->{main}->{Main}->{bkg_eshift}-> SetBackgroundColour( Wx::Colour->new($ref->co->default("athena", "tied")) );
     $ref->reference($data);
-    my $same_edge = (defined $colsel) ? $colsel->{Reference}->{same}->GetValue : $yaml->{ref_same};
-    if ($same_edge) {
-      $ref->bkg_z($data->bkg_z);
-      $ref->fft_edge($data->fft_edge);
-    };
   };
 
   my $do_align = (defined $colsel) ? ($colsel->{Preprocess}->{align}->GetValue) : $yaml->{preproc_align};

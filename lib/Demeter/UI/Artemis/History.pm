@@ -326,7 +326,14 @@ sub write_report {
       my $g = $fit->fetch_gds($param);
       next if not $g;
       $fit->mo->fit($fit);
-      $self->{report}->AppendText($g->template('report', 'report_param'));
+      my $toss = Demeter::GDS->new(name    => $g->[0],
+				   gds     => $g->[1],
+				   mathexp => $g->[2],
+				   bestfit => $g->[3],
+				   error   => $g->[4],
+				  );
+      $self->{report}->AppendText($toss->template('report', 'report_param'));
+      $toss->DEMOLISH;
       $fit->mo->fit(q{});
     };
   };
