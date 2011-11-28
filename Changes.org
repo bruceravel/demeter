@@ -55,10 +55,14 @@
      method.  Using local time will make a program die if the
      computer's time zone is not set.  The fallback is to use
      DateTime's floating time zone.
+   - Fixed 2 tests in the test suite to respond to recent changes to
+     the alignment algorithm and the Fit object's fetch_gds method
 
 *** Acknowledgements for this release
    - The participants of the Diamond 2011 XAFS course who unwittingly
      became beta testers for this software
+   - Eric Breynaert
+   - George Sterbinsky
 
 ** 0.9.5 11 November 2011
 *** Athena

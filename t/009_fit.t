@@ -107,7 +107,7 @@ ok( $this->color(0.623) eq '#FD7E6F',         'color computed correctly (0.632 s
 ## -------- utilities
 ok( (not $this->fetch_gds('foobar')),         'fetch_gds, nonexistant parameter');
 my $ggg = $this->fetch_gds('dcu');
-ok( $ggg->gds eq 'guess',                     'fetch_gds, existing parameter');
+ok( $ggg->[1] eq 'guess',                     'fetch_gds, existing parameter');
 
 #print $this->summary;
 #$this->po->plot_fit(1);

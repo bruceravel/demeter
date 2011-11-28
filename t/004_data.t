@@ -141,7 +141,7 @@ ok($data3->iofx('energy', 7112) == 77,                          'iofx works');
 $data3->calibrate(7105.292, 7112);
 ok( (abs($data3->bkg_e0 - 7112) < $fuzz and
      abs($data3->bkg_eshift - 6.708) < $fuzz),                  'calbrate method works');
-$data4->bkg_eshift(5);		# need to get close enough
+#$data4->bkg_eshift(5);		# need to get close enough  (not needed as of 0.9.3)
 $data3->align($data4);
 ok( abs($data4->bkg_eshift - 6.722) < 5*$fuzz,                  'align method works');
 
