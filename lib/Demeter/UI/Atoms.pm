@@ -21,6 +21,8 @@ use Wx qw( :everything );
 use base 'Wx::Frame';
 use Wx::Event qw(EVT_NOTEBOOK_PAGE_CHANGED EVT_NOTEBOOK_PAGE_CHANGING);
 
+use Demeter::UI::Artemis::Close qw(on_close);
+
 my $icon_dimension = 30;
 
 foreach my $m (qw(Xtal Feff Config Paths Doc Console SS)) {

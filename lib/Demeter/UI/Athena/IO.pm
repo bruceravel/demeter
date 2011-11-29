@@ -370,7 +370,8 @@ sub _data {
 
   ## to write each MED channel to a group, loop over channels, calling
   ## this.  Set all eshifts the same and don't redo alignment
-  my $dtp = ($colsel->{datatype}->GetSelection == 0) ? 'xmu'
+  my $dtp = (not defined($colsel))                   ? 'xmu' # this line is a crude hack...
+          : ($colsel->{datatype}->GetSelection == 0) ? 'xmu'
           : ($colsel->{datatype}->GetSelection == 1) ? 'xanes'
           : ($colsel->{datatype}->GetSelection == 3) ? 'chi'
 	  :                                            'xmu';
@@ -482,14 +483,21 @@ sub _group {
   my $do_rebin = (defined $colsel) ? ($colsel->{Rebin}->{do_rebin}->GetValue) : $yaml->{do_rebin};
 
   if ($do_rebin) {
-    $app->{main}->status("Rebinning ". $data->name);
-    my $rebin  = $data->rebin;
-    foreach my $att (qw(energy numerator denominator ln name)) {
-      $rebin->$att($data->$att);
+    my $ret = $data->rebin_is_sensible;
+    if ($ret->is_ok) {
+      $app->{main}->status("Rebinning ". $data->name);
+      my $rebin  = $data->rebin;
+      foreach my $att (qw(energy numerator denominator ln name)) {
+	$rebin->$att($data->$att);
+      };
+      $data->dispose("erase \@group ".$data->group);
+      $data->DEMOLISH;
+      $data = $rebin;
+    } else {
+      $app->{main}->status("Rebinning canceled: ". $ret->message, 'error');
+      $app->{main}->{Status}->Show;
     };
-    $data->dispose("erase \@group ".$data->group);
-    $data->DEMOLISH;
-    $data = $rebin;
+    $ret->DESTROY;
   };
 
   $data -> po -> e_markers(1);
@@ -563,14 +571,18 @@ sub _group {
       $ref->e0('atomic');
     };
     if ($do_rebin) {
-      $app->{main}->status("Rebinning reference for ". $data->name);
-      my $rebin  = $ref->rebin;
-      foreach my $att (qw(energy numerator denominator ln name)) {
-	$rebin->$att($ref->$att);
+      my $ret = $data->rebin_is_sensible;
+      if ($ret->is_ok) {
+	$app->{main}->status("Rebinning reference for ". $data->name);
+	my $rebin  = $ref->rebin;
+	foreach my $att (qw(energy numerator denominator ln name)) {
+	  $rebin->$att($ref->$att);
+	};
+	$ref->dispose("erase \@group ".$ref->group);
+	$ref->DEMOLISH;
+	$ref = $rebin;
       };
-      $ref->dispose("erase \@group ".$ref->group);
-      $ref->DEMOLISH;
-      $ref = $rebin;
+      $ret->DESTROY;
     };
     $ref -> _update('fft');
     $app->{main}->{list}->AddData($ref->name, $ref);

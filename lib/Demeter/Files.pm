@@ -127,8 +127,27 @@ sub is_data {
       'not data' : 'data    ' ;
     printf "%s\n\t%s    col_string=%s\n", $a, $passfail, $col_string;
   };
+  $self->dispose("erase \@group a\n"), return 0 if ($col_string =~ /^(\s*|--undefined--)$/);
+
+  ## now check that the data file had more  than 1 data point
+  my $onepoint = 0;
+  my $tooshort = 0;
+  foreach my $l (split(" ", $col_string)) {
+    my $scalar = "a_".$l;
+    if (Ifeffit::get_scalar($scalar)) {
+      $onepoint = 1;
+      $self->dispose("erase $scalar");
+    };
+    my @array = Ifeffit::get_array("a.$l");
+    if (@array) {
+      my $npts = $#array+1;
+      $tooshort = 1 if ($npts < $self->co->default(qw(file minlength)));
+    };
+  };
+  $self->dispose("erase \@group a\n"), return 0 if $onepoint;
+  $self->dispose("erase \@group a\n"), return 0 if $tooshort;
   $self->dispose("erase \@group a\n");
-  return ($col_string =~ /^(\s*|--undefined--)$/) ? 0 : 1;
+  return 1;
 };
 
 sub is_prj {

@@ -1,6 +1,6 @@
 ## -*- config -*-
 ###########################################################################
-##                     Demeter is copyright (c) 2007-2010 Bruce Ravel
+##                     Demeter is copyright (c) 2007-2011 Bruce Ravel
 ##                                                     bravel@bnl.gov
 ##                                        http://xafs.org/BruceRavel/
 ##
@@ -76,3 +76,12 @@ description
   parameter depends on the value of the match_as preference.  "i{f,y}"
   is the glob expression that is pretty close to the default regular
   expression.
+
+
+variable=minlength
+type=positive integer
+default=20
+description
+  This is the minimum number of data points a data file must have to
+  be recognized as data.  That is, a file with fewer than this number
+  of points should be rejected as data.

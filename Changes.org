@@ -30,12 +30,20 @@
      (de)selection of numerator checkboxes and for pausing the replot
      of the data while selecting columns (all of which may be useful
      for an MED file)
+   - Do some sanity checking on Rebin values in column selection
+     dialog before actually rebinning
+   - Fixed a bug in both Plot->marked groups menu options
 
 *** Artemis
    - Trim leading and trailing spaces from gds names.
    - Write parameter history reports correctly.
+   - Improved window management.  Showing and hiding windows now works
+     correctly in conjunction with the window manager's minimize
+     (iconize) function.
 
 *** Demeter
+   - Begin playing around with using Demeter::Return as a function's
+     return value (see rebin_is_sensible in Demeter::Data::Process
    - Explicitly reset xtics when starting a new plot with gnuplot.
      This is necessary because the components plot afetr a fit
      sequence specifies an array of xtic labels.
@@ -57,12 +65,16 @@
      DateTime's floating time zone.
    - Fixed 2 tests in the test suite to respond to recent changes to
      the alignment algorithm and the Fit object's fetch_gds method
+   - Correctly identify files as being not data in the case where it
+     nominally looks like data (i.e. it has a header and column labels
+     as Ifeffit expects), but which has 0, 1, or too few lines of data
+   - Made file->minlength configuration parameter to define "too few"
+     points in a data file.
 
 *** Acknowledgements for this release
    - The participants of the Diamond 2011 XAFS course who unwittingly
      became beta testers for this software
    - Eric Breynaert
-   - George Sterbinsky
 
 ** 0.9.5 11 November 2011
 *** Athena

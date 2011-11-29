@@ -20,7 +20,7 @@ use warnings;
 
 use Wx qw( :everything);
 use base qw(Wx::Frame);
-use Wx::Event qw(EVT_MENU EVT_CLOSE EVT_TOOL_ENTER EVT_CHECKBOX EVT_CHOICE
+use Wx::Event qw(EVT_MENU EVT_CLOSE EVT_ICONIZE EVT_TOOL_ENTER EVT_CHECKBOX EVT_CHOICE
 		 EVT_BUTTON EVT_ENTER_WINDOW EVT_LEAVE_WINDOW
 		 EVT_HYPERLINK EVT_TEXT_ENTER EVT_LEFT_DOWN);
 use Wx::DND;
@@ -28,6 +28,7 @@ use Wx::Perl::TextValidator;
 
 use Wx::Perl::Carp;
 
+use Demeter::UI::Artemis::Close;
 use Demeter::UI::Artemis::Project;
 use Demeter::UI::Artemis::Import;
 use Demeter::UI::Artemis::Data::AddParameter;
@@ -168,6 +169,7 @@ sub new {
   $this->SetMenuBar( $this->{menubar} );
   EVT_MENU($this, -1, sub{OnMenuClick(@_)} );
   EVT_CLOSE($this, \&on_close);
+  EVT_ICONIZE($this, \&on_close);
 
   $this->{statusbar} = $this->CreateStatusBar;
   $this->{statusbar} -> SetStatusText(q{ });
@@ -533,13 +535,6 @@ sub initial_page_panel {
 };
 
 
-sub on_close {
-  my ($self) = @_;
-  $self->Show(0);
-  $self->{PARENT}->{$self->{dnum}}->SetValue(0);
-  (my $label = $self->{PARENT}->{$self->{dnum}}->GetLabel) =~ s{Hide}{Show};;
-  $self->{PARENT}->{$self->{dnum}}->SetLabel($label);
-};
 
 sub OnUpButton {
   my ($self, $event) = @_;

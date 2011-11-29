@@ -48,10 +48,11 @@ use Wx qw( :everything );
 use Wx::DND;
 use Wx::Grid;
 use base qw(Wx::Frame);
-use Wx::Event qw(EVT_CLOSE EVT_GRID_CELL_CHANGE EVT_GRID_CELL_RIGHT_CLICK  EVT_MENU
+use Wx::Event qw(EVT_CLOSE EVT_ICONIZE EVT_GRID_CELL_CHANGE EVT_GRID_CELL_RIGHT_CLICK EVT_MENU
 		 EVT_GRID_LABEL_LEFT_CLICK EVT_GRID_LABEL_RIGHT_CLICK EVT_GRID_RANGE_SELECT
 		 EVT_GRID_SELECT_CELL EVT_GRID_CELL_CHANGE);
 
+use Demeter::UI::Artemis::Close;
 use Demeter::UI::Artemis::GDS::Restraint;
 use Demeter::UI::Artemis::ShowText;
 use Demeter::StrTypes qw( GDS );
@@ -103,6 +104,7 @@ sub new {
   $this->{statusbar} -> SetStatusText(q{});
   $this->{uptodate}  = 1;
   EVT_CLOSE($this, \&on_close);
+  EVT_ICONIZE($this, \&on_close);
 
   my $hbox = Wx::BoxSizer->new( wxHORIZONTAL );
 
@@ -180,11 +182,11 @@ sub new {
 
 sub noop {};
 
-sub on_close {
-  my ($self) = @_;
-  $self->Show(0);
-  $self->GetParent->{toolbar}->ToggleTool(1, 0);
-};
+# sub on_close {
+#   my ($self) = @_;
+#   $self->Show(0);
+#   $self->GetParent->{toolbar}->ToggleTool(1, 0);
+# };
 
 sub initialize_row {
   my ($parent, $row) = @_;

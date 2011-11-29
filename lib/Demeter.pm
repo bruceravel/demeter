@@ -70,6 +70,7 @@ with 'Demeter::Tools';
 with 'Demeter::Files';
 with 'Demeter::Project';
 with 'Demeter::MRU';
+use Demeter::Return;
 
 with 'MooseX::SetGet';		# this is mine....
 

@@ -22,9 +22,11 @@ use File::Path qw(rmtree);
 use List::MoreUtils qw(minmax);
 
 use Wx qw( :everything );
-use Wx::Event qw(EVT_CLOSE EVT_LISTBOX EVT_CHECKLISTBOX EVT_BUTTON EVT_RADIOBOX
+use Wx::Event qw(EVT_CLOSE EVT_ICONIZE EVT_LISTBOX EVT_CHECKLISTBOX EVT_BUTTON EVT_RADIOBOX
 		 EVT_ENTER_WINDOW EVT_LEAVE_WINDOW EVT_CHOICE EVT_RIGHT_DOWN EVT_MENU);
 use base qw(Wx::Frame);
+
+use Demeter::UI::Artemis::Close;
 
 sub new {
   my ($class, $parent) = @_;
@@ -33,6 +35,7 @@ sub new {
 				wxMINIMIZE_BOX|wxCAPTION|wxSYSTEM_MENU|wxCLOSE_BOX);
   $this -> SetBackgroundColour( wxNullColour );
   EVT_CLOSE($this, \&on_close);
+  EVT_ICONIZE($this, \&on_close);
   $this->{statusbar} = $this->CreateStatusBar;
   $this->{statusbar} -> SetStatusText(q{ });
 
@@ -269,11 +272,11 @@ sub mark {
 };
 
 
-sub on_close {
-  my ($self) = @_;
-  $self->Show(0);
-  $self->GetParent->{toolbar}->ToggleTool(3, 0);
-};
+# sub on_close {
+#   my ($self) = @_;
+#   $self->Show(0);
+#   $self->GetParent->{toolbar}->ToggleTool(3, 0);
+# };
 
 sub put_log {
   my ($self, $fit) = @_;

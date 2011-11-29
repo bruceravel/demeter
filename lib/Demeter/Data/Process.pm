@@ -56,6 +56,47 @@ sub rebin {
   return $rebinned;
 };
 
+sub rebin_is_sensible {
+  my ($self) = @_;
+  my $ret = Demeter::Return -> new();
+
+  my $emin  = $self->co->default(qw(rebin emin));
+  my $emax  = $self->co->default(qw(rebin emax));
+  if ($emax < $emin) {
+    ($emin, $emax) = ($emax, $emin);
+    $self->co->set_default(qw(rebin emin), $emin);
+    $self->co->set_default(qw(rebin emax), $emax);
+  };
+  if ($emax == $emin) {
+    $ret->status(0);
+    $ret->message("The XANES region is of zero length (emin = emax)");
+    return $ret;
+  };
+
+  my $pre   = $self->co->default(qw(rebin pre));
+  if ($pre <= 0) {
+    $ret->status(0);
+    $ret->message("The pre-edge grid is zero or negative");
+    return $ret;
+  };
+
+  my $xanes = $self->co->default(qw(rebin xanes));
+  if ($xanes <= 0) {
+    $ret->status(0);
+    $ret->message("The XANES grid is zero or negative");
+    return $ret;
+  };
+
+  my $exafs = $self->co->default(qw(rebin exafs));
+  if ($exafs <= 0) {
+    $ret->status(0);
+    $ret->message("The EXAFS grid is zero or negative");
+    return $ret;
+  };
+
+  return $ret;
+};
+
 
   ## dispersive
   ## deconvolute

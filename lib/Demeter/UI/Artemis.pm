@@ -26,7 +26,7 @@ use String::Random qw(random_string);
 use YAML::Tiny;
 
 use Wx qw(:everything);
-use Wx::Event qw(EVT_MENU EVT_CLOSE EVT_TOOL_ENTER EVT_CHECKBOX EVT_BUTTON
+use Wx::Event qw(EVT_MENU EVT_CLOSE EVT_ICONIZE EVT_TOOL_ENTER EVT_CHECKBOX EVT_BUTTON
 		 EVT_TOGGLEBUTTON EVT_ENTER_WINDOW EVT_LEAVE_WINDOW
 		 EVT_TOOL_RCLICKED EVT_RIGHT_UP
 		 EVT_NOTEBOOK_PAGE_CHANGING
@@ -361,7 +361,11 @@ sub OnInit {
   $frames{main} -> Show( 1 );
   $toolbar->ToggleTool($frames{main}->{plot_toggle}->GetId,1);
   $frames{Plot} -> Show( 1 );
-  EVT_TOGGLEBUTTON($frames{main}->{log_toggle}, -1, sub{ $frames{Log}->Show($frames{main}->{log_toggle}->GetValue) });
+  EVT_TOGGLEBUTTON($frames{main}->{log_toggle}, -1,
+		   sub{
+		     $frames{Log}->Show($frames{main}->{log_toggle}->GetValue);
+		     $frames{Log}->Iconize(0) if $frames{main}->{log_toggle}->GetValue;
+		   });
 
   ## -------- disk space to hold this project
   my $this = '_dem_' . random_string('cccccccc');
@@ -956,6 +960,7 @@ sub OnToolClick {
   my ($toolbar, $event, $self) = @_;
   my $which = (qw(GDS Plot History Journal))[$toolbar->GetToolPos($event->GetId)];
   $frames{$which}->Show($toolbar->GetToolState($event->GetId));
+  $frames{$which}->Iconize(0) if $toolbar->GetToolState($event->GetId);
 };
 sub OnDataRightClick {
   my ($self, $event) = @_;
@@ -988,6 +993,7 @@ sub make_data_frame {
   $self->{$dnum} = $new;
   EVT_TOGGLEBUTTON($new, -1, sub{
 		     $frames{$dnum}->Show($_[0]->GetValue);
+		     $frames{$dnum}->Iconize(0) if $_[0]->GetValue;
 		     my $label = $_[0]->GetLabel;
 		     if ($_[0]->GetValue) {
 		       $label =~ s{Show}{Hide};
@@ -1069,6 +1075,7 @@ sub make_feff_frame {
   $self->{$fnum} = $new;
   EVT_TOGGLEBUTTON($new, -1, sub{
 		     $frames{$fnum}->Show($_[0]->GetValue);
+		     $frames{$fnum}->Iconize(0) if $_[0]->GetValue;
 		     my $label = $_[0]->GetLabel;
 		     if ($_[0]->GetValue) {
 		       $label =~ s{Show}{Hide};
@@ -1116,11 +1123,8 @@ sub make_feff_frame {
   #$newtool -> SetLabel( $frames{$fnum}->{Atoms}->{name}->GetValue );
   $frames{$fnum} -> {fnum} = $fnum;
 
-  EVT_CLOSE($frames{$fnum}, sub{  $frames{$fnum}->Show(0);
-				  $frames{main}->{$fnum}->SetValue(0);
-				  (my $label = $frames{main}->{$fnum}->GetLabel) =~ s{Hide}{Show};
-				  $frames{main}->{$fnum}->SetLabel($label);
-				});
+  EVT_CLOSE($frames{$fnum}, \&Demeter::UI::AtomsApp::on_close);
+  EVT_ICONIZE($frames{$fnum}, \&Demeter::UI::AtomsApp::on_close);
 
   $frames{$fnum} -> Show(0);
   $new->SetValue(0);

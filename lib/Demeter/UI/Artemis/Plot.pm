@@ -21,9 +21,10 @@ use warnings;
 use Wx qw( :everything );
 use Wx::DND;
 use base qw(Wx::Frame);
-use Wx::Event qw(EVT_CLOSE EVT_BUTTON EVT_RADIOBOX EVT_RIGHT_DOWN EVT_MENU EVT_ENTER_WINDOW EVT_LEAVE_WINDOW
+use Wx::Event qw(EVT_CLOSE EVT_ICONIZE EVT_BUTTON EVT_RADIOBOX EVT_RIGHT_DOWN EVT_MENU EVT_ENTER_WINDOW EVT_LEAVE_WINDOW
 		 EVT_TOGGLEBUTTON EVT_LEFT_DOWN);
 
+use Demeter::UI::Artemis::Close;
 use Demeter::UI::Artemis::Plot::Limits;
 use Demeter::UI::Artemis::Plot::Stack;
 use Demeter::UI::Artemis::Plot::Indicators;
@@ -58,6 +59,7 @@ sub new {
   #$this -> SetBackgroundColour( Wx::SystemSettings::GetColour(wxSYS_COLOUR_WINDOW) );
   $this -> SetBackgroundColour( wxNullColour );
   EVT_CLOSE($this, \&on_close);
+  EVT_ICONIZE($this, \&on_close);
   $this->{last} = q{};
 
   my $vbox  = Wx::BoxSizer->new( wxVERTICAL );
@@ -161,11 +163,6 @@ sub new {
   return $this;
 };
 
-sub on_close {
-  my ($self) = @_;
-  $self->Show(0);
-  $self->GetParent->{toolbar}->ToggleTool(2, 0);
-};
 
 sub OnDrag {
   my ($list, $event) = @_;

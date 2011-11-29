@@ -19,8 +19,10 @@ use strict;
 use warnings;
 
 use Wx qw( :everything );
-use Wx::Event qw(EVT_CLOSE EVT_BUTTON);
+use Wx::Event qw(EVT_CLOSE EVT_ICONIZE EVT_BUTTON);
 use base qw(Wx::Frame);
+
+use Demeter::UI::Artemis::Close;
 use Demeter::UI::Artemis::LogText;
 
 use Cwd;
@@ -35,6 +37,7 @@ sub new {
 				wxDefaultPosition, [550,650],
 				wxMINIMIZE_BOX|wxCAPTION|wxSYSTEM_MENU|wxCLOSE_BOX|wxRESIZE_BORDER);
   $this -> SetBackgroundColour( wxNullColour );
+  EVT_ICONIZE($this, \&on_close);
   EVT_CLOSE($this, \&on_close);
   my $vbox = Wx::BoxSizer->new( wxVERTICAL );
 
@@ -94,11 +97,6 @@ sub save_log {
   $::app->{main}->status("Wrote log file to '$fname'.");
 };
 
-sub on_close {
-  my ($self) = @_;
-  $self->Show(0);
-  $self->GetParent->{log_toggle}->SetValue(0);
-};
 
 1;
 

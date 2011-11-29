@@ -1640,7 +1640,7 @@ sub quadplot {
 sub plot_e00 {
   my ($app) = @_;
 
-  $app->preplot('e');
+  $app->preplot('e', $app->current_data);
   $app->{main}->{PlotE}->pull_single_values;
   $app->current_data->po->set(e_mu=>1, e_markers=>0, e_zero=>1, e_bkg=>0, e_pre=>0, e_post=>0,
 			      e_norm=>1, e_der=>0, e_sec=>0, e_i0=>0, e_signal=>0);
@@ -1656,7 +1656,7 @@ sub plot_e00 {
 sub plot_i0_marked {
   my ($app) = @_;
 
-  $app->preplot('e');
+  $app->preplot('e', $app->current_data);
   $app->{main}->{PlotE}->pull_single_values;
   $app->current_data->po->set(e_mu=>0, e_markers=>0, e_zero=>0, e_bkg=>0, e_pre=>0, e_post=>0,
 			      e_norm=>0, e_der=>0, e_sec=>0, e_i0=>1, e_signal=>0);

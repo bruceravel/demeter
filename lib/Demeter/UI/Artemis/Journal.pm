@@ -21,8 +21,10 @@ use warnings;
 use Cwd;
 
 use Wx qw( :everything );
-use Wx::Event qw(EVT_CLOSE EVT_BUTTON);
+use Wx::Event qw(EVT_CLOSE EVT_ICONIZE EVT_BUTTON);
 use base qw(Wx::Frame);
+
+use Demeter::UI::Artemis::Close;
 
 sub new {
   my ($class, $parent) = @_;
@@ -30,6 +32,7 @@ sub new {
 				wxDefaultPosition, wxDefaultSize, wxDEFAULT_FRAME_STYLE);
   $this -> SetBackgroundColour( wxNullColour );
   EVT_CLOSE($this, \&on_close);
+  EVT_ICONIZE($this, \&on_close);
   #_doublewide($this);
 
   my $vbox = Wx::BoxSizer->new( wxVERTICAL );
@@ -53,11 +56,6 @@ sub new {
   return $this;
 };
 
-sub on_close {
-  my ($self) = @_;
-  $self->Show(0);
-  $self->GetParent->{toolbar}->ToggleTool(4, 0);
-};
 
 sub _doublewide {
   my ($dialog) = @_;
