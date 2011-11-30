@@ -169,8 +169,8 @@ sub new {
     EVT_RIGHT_DOWN($label,                   sub{ DoLabelKeyPress(@_, $this)            });
     EVT_MENU      ($label,           -1,     sub{ $this->OnLabelMenu(@_)                });
     EVT_HYPERLINK ($this,            $label, sub{ DoLabelKeyPress($label, $_[1], $_[0]) });
-    EVT_RIGHT_DOWN($this->{"pp_$k"},         sub{ OnPPClick(@_, $this)                  }) if (($k ne 'label') and ($k ne 'n'));
-    EVT_MENU      ($this->{"pp_$k"}, -1,     sub{ $this->OnPPMenu(@_)                   });
+    EVT_RIGHT_DOWN($this->{"pp_$k"},         sub{ OnPPClick(@_, $this, $k)              }) if (($k ne 'label') and ($k ne 'n'));
+    EVT_MENU      ($this->{"pp_$k"}, -1,     sub{ $this->OnPPMenu(@_, $k)               });
     EVT_TEXT_ENTER($this, $this->{"pp_$k"},  sub{1});
   };
   EVT_TEXT($this, $this->{pp_n}, sub{ verify_n(@_) });
@@ -285,7 +285,7 @@ Readonly my $SKIP   => Wx::NewId();
 
 my $tokenizer_regexp = '(?-xism:(?=[\t\ \(\)\*\+\,\-\/\^])[\-\+\*\^\/\(\)\,\ \t])';
 sub OnPPClick {
-  my ($tc, $event, $currentpage) = @_;
+  my ($tc, $event, $currentpage, $which) = @_;
   $tc->SetFocus;
   my $pos = int($event->GetPosition->x/$size)+1;
   $tc->SetInsertionPoint($pos);
@@ -459,15 +459,13 @@ sub OnLabelMenu {
 
 
 sub OnPPMenu {
-  my ($currentpage, $tc, $event) = @_;
+  my ($currentpage, $tc, $event, $which) = @_;
   #my $listbook = $currentpage->{listbook};
   #my $param = $st->{which};
   my $id = $event->GetId;
 
   my $param = $tc->{string};
   delete $tc->{string};
-
-
 
   my $type = ($id == $GUESS)  ? 'guess'
            : ($id == $DEF)    ? 'def'
@@ -488,7 +486,10 @@ sub OnPPMenu {
     };
     $currentpage->{datapage}->status("Changed \"$param\" to $type");
   } else {
-    $gdsframe->put_param($type, $param, 0);
+    my $value = ($which eq 's02')    ? 1
+              : ($which eq 'sigma2') ? 0.003
+	      :                        0;
+    $gdsframe->put_param($type, $param, $value);
     $currentpage->{datapage}->status("Created \"$param\" as $type");
   };
   $gdsframe -> set_highlight("\\A$param\\z");

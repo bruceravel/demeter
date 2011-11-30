@@ -185,7 +185,7 @@ ball-and-stick molecule viewer.
 The Feff logo is taken from the Feff document wiki.
 
 The template icon on the Feff page is the icon Ubuntu
-uses for the game glpuzzle, leter called jigzo
+uses for the game glpuzzle, later called jigzo
 http://www.resorama.com/glpuzzle/
 
 All other icons icons are from the Kids icon set for

@@ -111,7 +111,7 @@ sub new {
 
 
 
-  my $grid = Wx::Grid->new($this, -1, wxDefaultPosition, wxDefaultSize, wxVSCROLL);
+  my $grid = Wx::Grid->new($this, -1, wxDefaultPosition, wxDefaultSize, wxALWAYS_SHOW_SB);
   $this->{grid} = $grid;
   $this->{buffer} = q{};
 
@@ -175,8 +175,9 @@ sub new {
   EVT_MENU($this->{toolbar}, -1, sub{ $this->OnToolClick(@_, $grid) } );
 
   $this -> SetSizerAndFit( $hbox );
-  $this -> SetMinSize($this->GetSize);
-  $this -> SetMaxSize($this->GetSize);
+  my ($xx, $yy) = $this->GetSizeWH;
+  $this -> SetMinSize(Wx::Size->new($xx, 1.1*$yy));
+  $this -> SetMaxSize(Wx::Size->new($xx, 1.1*$yy));
   return $this;
 };
 

@@ -40,6 +40,9 @@
    - Improved window management.  Showing and hiding windows now works
      correctly in conjunction with the window manager's minimize
      (iconize) function.
+   - When right clicking on a word in a path parameter math expression
+     to define a parameter, the value is now sensitive to which path
+     parameter the work comes from (s02 -> 1, sigma2 -> 0.003, else 0)
 
 *** Demeter
    - Begin playing around with using Demeter::Return as a function's

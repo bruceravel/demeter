@@ -1102,14 +1102,16 @@ sub make_feff_frame {
     #$frames{$fnum}->{Atoms}->{used} = 0;
     $frames{$fnum}->{Atoms}->{name}->SetValue('new');
     if ($file ne $BLANK) {
+      # $frames{$fnum}->{notebook}->DeletePage(0);
+      # $fefftab = 0;
       $frames{$fnum}->{notebook}->SetPageImage(0, 5); # see Demeter::UI::Atoms.pm around line 60
       $frames{$fnum}->{notebook}->SetPageText(0, '');
       EVT_NOTEBOOK_PAGE_CHANGING($frames{$fnum}, $frames{$fnum}->{notebook},
-				 sub{ my($self, $event) = @_;
-				      my ($selection) = $event->GetSelection;
-				      $event->Veto() if ($selection == 0); # veto selection of Atoms tab
-				      return;
-				    });
+      				 sub{ my($self, $event) = @_;
+      				      my ($selection) = $event->GetSelection;
+      				      $event->Veto() if ($selection == 0); # veto selection of Atoms tab
+      				      return;
+      				    });
     };
   };
   if ($file and (-e $file) and $demeter->is_feff($file)) {
