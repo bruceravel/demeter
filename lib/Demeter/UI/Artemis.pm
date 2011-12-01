@@ -28,7 +28,7 @@ use YAML::Tiny;
 use Wx qw(:everything);
 use Wx::Event qw(EVT_MENU EVT_CLOSE EVT_ICONIZE EVT_TOOL_ENTER EVT_CHECKBOX EVT_BUTTON
 		 EVT_TOGGLEBUTTON EVT_ENTER_WINDOW EVT_LEAVE_WINDOW
-		 EVT_TOOL_RCLICKED EVT_RIGHT_UP
+		 EVT_TOOL_RCLICKED EVT_RIGHT_UP EVT_LEFT_DOWN
 		 EVT_NOTEBOOK_PAGE_CHANGING
 	       );
 use base 'Wx::App';
@@ -1106,10 +1106,20 @@ sub make_feff_frame {
       # $fefftab = 0;
       $frames{$fnum}->{notebook}->SetPageImage(0, 5); # see Demeter::UI::Atoms.pm around line 60
       $frames{$fnum}->{notebook}->SetPageText(0, '');
+      ## The following two event handlers are used to overcome the
+      ## fact that $event->GetPosition is unreliable on Windows -- as
+      ## explained in the documentation:
+      ##   http://docs.wxwidgets.org/2.8.4/wx_wxnotebookevent.html#wxnotebookeventgetselection
+      ## This solution was suggested by Mark Dootson on the wxperl mailing list
+      ##   http://www.nntp.perl.org/group/perl.wxperl.users/2011/12/msg8296.html
+      EVT_LEFT_DOWN($frames{$fnum}->{notebook}, sub { $_[0]->{last_pos} = $_[1]->GetPosition();
+						      $_[1]->Skip(1);
+						    });
       EVT_NOTEBOOK_PAGE_CHANGING($frames{$fnum}, $frames{$fnum}->{notebook},
       				 sub{ my($self, $event) = @_;
-      				      my ($selection) = $event->GetSelection;
-      				      $event->Veto() if ($selection == 0); # veto selection of Atoms tab
+				      my $notebook = $event->GetEventObject;
+				      my ($nbtab, $flags ) = $notebook->HitTest($notebook->{last_pos});
+      				      $event->Veto() if ($nbtab == 0); # veto selection of Atoms tab
       				      return;
       				    });
     };
