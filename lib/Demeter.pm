@@ -146,6 +146,10 @@ $plot = Demeter::Plot -> new() if not $mode->plot;
 $plot -> screen_echo(0);
 my $backend = $config->default('plot', 'plotwith');
 if ($backend eq 'gnuplot') {
+  if (Demeter->is_windows) {
+    my $message = Demeter->check_exe('gnuplot');
+    exit $message if ($message);
+  };
   $mode -> template_plot('gnuplot');
   $mode -> external_plot_object( Graphics::GnuplotIF->new(program => $config->default('gnuplot', 'program')) );
   require Demeter::Plot::Gnuplot;

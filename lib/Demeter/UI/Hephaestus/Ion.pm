@@ -71,7 +71,7 @@ sub new {
 
 
 sub numval {
-  return Wx::Perl::TextValidator -> new('\d');
+  return Wx::Perl::TextValidator -> new('[\d.]');
 };
 
 ######################################################################
@@ -192,6 +192,7 @@ use strict;
 use warnings;
 use Carp;
 use Chemistry::Elements qw(get_Z get_name get_symbol);
+use Scalar::Util qw(looks_like_number);
 use Xray::Absorption;
 
 use Wx qw( :everything );
@@ -321,6 +322,11 @@ sub get_ion_data {
     $self->{percentage}->SetLabel('0 %');
     return;
   };
+  if (($self->{lengths}->GetSelection == 7) and (not looks_like_number($self->{userlength}))) {
+    $self->{echo}->SetStatusText("\"" . $self->{userlength} . "\" is not a valid value for a custom ion chamber length.");
+    $self->{percentage}->SetLabel('0 %');
+    return;
+  };
   $self->{echo}->SetStatusText(q{});
 
   my @gas = ($gases[$self->{primarygas}  ->GetCurrentSelection],
@@ -391,18 +397,25 @@ sub energy_key_down {
 
 sub flux_calc {
   my ($self) = @_;
-  if ($self->{volts}->GetValue > 0) {
+  my $volts = $self->{volts}->GetValue;
+  if (not looks_like_number($volts)) {
+    $self->{echo}->SetStatusText("\"" . $volts . "\" is not a valid value for voltage.");
+    $self->{fluxcalc}->SetLabel(0);
+    return;
+  } elsif ($volts > 0) {
     my $flux = (30/16) * (10**(20-$self->{amp}->GetValue)) * $self->{volts}->GetValue / $self->{energybox}->GetValue;
     $self->{fluxcalc} -> SetLabel(0), return unless ($self->{xsec});
     $flux /= (1-exp(-1*$self->{xsec}*$self->{thislength})); # account for fraction absorbed
     $self->{fluxcalc} -> SetLabel(sprintf("%.3e", $flux));
+    $self->{echo}->SetStatusText("",0);
   } else {
     $self->{fluxcalc} -> SetLabel(0);
+    $self->{echo}->SetStatusText("",0);
   };
 };
 
 sub numval {
-  return Wx::Perl::TextValidator -> new('\d');
+  return Wx::Perl::TextValidator -> new('[\d.]');
 };
 
 1;

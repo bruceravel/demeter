@@ -915,9 +915,13 @@ sub run_feff {
   my ($self) = @_;
   my $cwd = cwd();
   chdir $self->workspace;
+  if ($self->is_windows) {
+    my $message = Demeter->check_exe('feff');
+    die $message if ($message);
+  };
   my $exe = $self->co->default("feff", "executable");
   unless ($self->is_windows) { # avoid problems if feff->feff_executable isn't
-    my $which = `which $exe`;
+    my $which = `which "$exe"`;
     chomp $which;
     if (not -x $which) {
       croak("Could not find the feff6 executable");
@@ -935,7 +939,7 @@ sub run_feff {
 
   ## -------- the following is a more robust, CPAN-reliant way of
   ##          running Feff
-  my ($stdout, $stderr) = capture { system $exe };
+  my ($stdout, $stderr) = capture { system "\"$exe\"" };
   $self->report($stdout);
   $self->report($stderr, 1);
 

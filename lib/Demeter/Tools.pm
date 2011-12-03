@@ -148,6 +148,31 @@ sub windows_version {
   return $os;
 };
 
+## verify wonky paths to executables, falling back on the ones that
+## should have been installed along with Demeter.  this is mostly a
+## windows problem -- on a real operating system, we can rely upon the
+## shell's path.
+sub check_exe {
+  my ($class, $which) = @_;
+  my $param = ($which eq 'gnuplot') ? 'program'
+            : ($which eq 'feff')    ? 'executable'
+	    :                         'program';
+  #print Demeter->co->default($which, $param), $/;
+  if (-e Demeter->co->default($which, $param)) {
+    return 0;
+  };
+  if (-e Demeter->co->demeter($which, $param)) {
+    Demeter->co->set_default($which, $param, Demeter->co->demeter($which, $param));
+    #print Demeter->co->default($which, $param), $/;
+    return 0;
+  };
+  my $message = "The $which executable could not be found at your specified location" .
+    "(" . Demeter->co->default($which, $param) . ")" .
+      " nor at the system default location" .
+	"(" . Demeter->co->demeter($which, $param) . ")\n";
+  return $message;
+};
+
 sub who {
   my ($class) = @_;
   return q{} if $class->is_windows; # Win32::LoginName()  @  Win32::NodeName()

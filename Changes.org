@@ -44,7 +44,19 @@
      to define a parameter, the value is now sensitive to which path
      parameter the work comes from (s02 -> 1, sigma2 -> 0.003, else 0)
 
+*** Hephaestus
+   - Allow floats as values in the ion chamber tool
+
 *** Demeter
+   - Check that user value, then default value of executable
+     path (i.e. gnuplot and feff) actually exists before attempting to run
+     them.  Also properly quote executable name in system call or pipe so
+     that things like spaces and parens are interpeted correctly.
+     This guards against a number of issues.  If Demeter is installed on
+     Windows in one location, then unistalled and reinstalled elsewhere,
+     the ini file will retain the incorrect value.  This also guards
+     against having an executable in a place with somethinng like 
+     "system (x86)" or a unicode character in the path.
    - Begin playing around with using Demeter::Return as a function's
      return value (see rebin_is_sensible in Demeter::Data::Process
    - Explicitly reset xtics when starting a new plot with gnuplot.
@@ -78,6 +90,8 @@
    - The participants of the Diamond 2011 XAFS course who unwittingly
      became beta testers for this software
    - Eric Breynaert
+   - George Sterbinsky
+   - Brian Mattern
 
 ** 0.9.5 11 November 2011
 *** Athena
