@@ -43,6 +43,10 @@
    - When right clicking on a word in a path parameter math expression
      to define a parameter, the value is now sensitive to which path
      parameter the work comes from (s02 -> 1, sigma2 -> 0.003, else 0)
+   - Fixed a windows only bug -- when a feff.inp file is imported, the
+     Atoms tab is supposed to be disabled, but the mechanism I used to
+     disable selection of that tab was guaranteed to fail on Windows
+     (see http://docs.wxwidgets.org/2.8.4/wx_wxnotebookevent.html#wxnotebookeventgetselection)
 
 *** Hephaestus
    - Allow floats as values in the ion chamber tool
