@@ -3,7 +3,8 @@
   ($e0, $de0) = $DS->e0($S);
   ($e0_set_guess, $e0) = ('def', "e_".$DS->group) if ($DS->one_e0);
   ($weight, $error) = $DS->weight($S);
-  $defaa = ($DS->inclusive) ? sprintf("def aa_%s = max(0,min(a_%s,1))", $S->group, $S->group) : sprintf("def aa_%s = a_%s", $S->group, $S->group);
+  $defaa = ($DS->inclusive) ? sprintf("def aa_%s = abs(min(a_%s,1))", $S->group, $S->group) : sprintf("def aa_%s = a_%s", $S->group, $S->group);
+#  $defaa = ($DS->inclusive) ? sprintf("def aa_%s = max(0,min(a_%s,1))", $S->group, $S->group) : sprintf("def aa_%s = a_%s", $S->group, $S->group);
   q{}
 }
 ##| prepare {$S->name} ({$S->group}) as an LCF standard

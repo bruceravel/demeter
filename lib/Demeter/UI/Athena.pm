@@ -1537,7 +1537,7 @@ sub plot {
 
   ## I am not clear why this is necessary...
   foreach my $i (0 .. $#data) {
-    $data[$i]->bkg_fixstep($is_fixed[0]);
+    $data[$i]->bkg_fixstep($is_fixed[$i]);
   };
   $app->postplot($data[0], $is_fixed[0]);
   $app->{lastplot} = [$space, $how];

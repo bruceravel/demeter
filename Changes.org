@@ -5,8 +5,19 @@
 
 * Initial release
 
+** 0.9.7 ?? December 2011
+*** Athena
+   - Fixed a problem in the X23A2MED plugin -- it was getting confused
+     by an incomplete set of (roi, slow, fast) columns.
+   - Fixed a bug resulting in bkg_fixstep sometimes getting unset when
+     plotting multiple groups
 
-** 0.9.6 XX November 2011
+*** Acknowledgements for this release
+   - Eric Breynaert
+   - George Sterbinsky
+   - Jack Hitch
+
+** 0.9.6 12 December 2011
 *** Athena
    - Fixed bug preventing import of multiple files with each channel
      as a separate group

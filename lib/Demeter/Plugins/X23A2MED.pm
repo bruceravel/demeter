@@ -52,23 +52,36 @@ sub fix {
   my $command = "read_data(file=\"$file\", group=v___ortex)\n";
   $demeter->dispose($command);
 
+  #my $labels = Ifeffit::get_string('$column_label');
   my @labels = split(" ", Ifeffit::get_string('$column_label'));
 
   ## is this the four-element or one-element vortex?
   my @represented = ();
   foreach my $i (1 .. 4) {
-    push @represented, $i if any {lc($_) eq Demeter->co->default("x23a2med", "roi$i")} @labels;
+    my $is_ok = 1;
+    $is_ok &&= any { $_ eq lc(Demeter->co->default("x23a2med", "roi$i") ) } @labels;
+    $is_ok &&= any { $_ eq lc(Demeter->co->default("x23a2med", "slow$i")) } @labels;
+    $is_ok &&= any { $_ eq lc(Demeter->co->default("x23a2med", "fast$i")) } @labels;
+
+    push @represented, $i if $is_ok;
+
+# any {(lc($_) eq Demeter->co->default("x23a2med", "roi$i"))
+# 				    and
+# 				   lc($_) eq Demeter->co->default("x23a2med", "slow$i")
+# 				    and
+# 				   lc($_) eq Demeter->co->default("x23a2med", "fast$i")
+# 				} @labels;
   };
+  return 0 if ($#represented == -1);
   $self->nelements($#represented+1);
 
-
-  my $is_ok = 1;
-  foreach my $ch (@represented) {
-    $is_ok &&= any { $_ eq lc(Demeter->co->default("x23a2med", "roi$ch") ) } @labels;
-    $is_ok &&= any { $_ eq lc(Demeter->co->default("x23a2med", "slow$ch")) } @labels;
-    $is_ok &&= any { $_ eq lc(Demeter->co->default("x23a2med", "fast$ch")) } @labels;
-  };
-  return 0 if not $is_ok;
+  # my $is_ok = 1;
+  # foreach my $ch (@represented) {
+  #   $is_ok &&= any { $_ eq lc(Demeter->co->default("x23a2med", "roi$ch") ) } @labels;
+  #   $is_ok &&= any { $_ eq lc(Demeter->co->default("x23a2med", "slow$ch")) } @labels;
+  #   $is_ok &&= any { $_ eq lc(Demeter->co->default("x23a2med", "fast$ch")) } @labels;
+  # };
+  # return 0 if not $is_ok;
 
   my @options = ();
   foreach my $l (@labels) {
