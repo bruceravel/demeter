@@ -26,6 +26,7 @@ use String::Random qw(random_string);
 use YAML::Tiny;
 
 use Wx qw(:everything);
+use Wx::Html;			# so we can use Wx::HtmlEasyPrinting
 use Wx::Event qw(EVT_MENU EVT_CLOSE EVT_ICONIZE EVT_TOOL_ENTER EVT_CHECKBOX EVT_BUTTON
 		 EVT_TOGGLEBUTTON EVT_ENTER_WINDOW EVT_LEAVE_WINDOW
 		 EVT_TOOL_RCLICKED EVT_RIGHT_UP EVT_LEFT_DOWN
@@ -124,6 +125,7 @@ sub OnInit {
   $frames{main} -> {modified} = 0;
   $frames{main} -> {cvcount} = 0;
   $app->{main} = $frames{main};
+  $frames{main}->{printer} = Wx::HtmlEasyPrinting -> new("Printing", $frames{main});
 
   ## -------- Set up menubar
   my $bar      = Wx::MenuBar->new;
@@ -1276,6 +1278,7 @@ sub status {
   $self->GetStatusBar->Refresh;
   $self->GetStatusBar->SetStatusText($text);
   return if ($type =~ m{nobuffer});
+#  Demeter->trace;
   $Demeter::UI::Artemis::frames{Status}->put_text($text, $type);
 };
 

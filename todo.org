@@ -104,23 +104,32 @@
        + [ ] plot areas from marked groups
        + [ ] make difference groups from marked groups
        + [ ] difference in k
-   - [-] *LCF tool* [4/5]
+   - [-] *LCF tool* [4/6]
        + [X] make data group from fit (use InsertData method)
        + [X] marked groups automation, display in fourth tab, excel output
        + [X] plot in R for fit in k
        + [ ] persistance of LCF results
        + [X] plot sequence results with pgplot
-   - [ ] *PCA tool* [0/9]
+       + [ ] satisfying both inclusive and unity can be trouble for
+             poorly normalized data and/or poor standard selection
+             (see email from Jack Hitch)
+   - [ ] *PCA tool* [0/10]
        + [ ] manual entry of component coefficients (??)
        + [ ] cluster analysis, select two components and plot the
              associations of each data with those two in a scatter plot.
        + [ ] persistance
        + [ ] worry about "def group.tt" line being to long in tt template
        + [ ] plotting in pgplot
-       + [ ] error analysis, RET, SPOIL, etc, determination of number of components, validity of TT, etc
+       + [ ] error analysis, RET, SPOIL, etc, determination of number
+             of components, validity of TT, etc
        + [ ] specialized file headers for reconstruction and tt save files
        + [ ] save eigenvectors to a file
        + [ ] pluck buttons for analysis range don't work
+       + [ ] if the marked groups are changed after performing the PCA
+             but before reconstructing data, the plot will fail with
+             and exception.  need to save the list of data that went
+             into the PCA and check against that rather than the
+             current list of marked groups
    - [-] *Peakfit tool* [7/18]
        + [X] plot without fitting
        + [X] save result

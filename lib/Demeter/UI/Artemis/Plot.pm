@@ -218,7 +218,7 @@ sub fetch_parameters {
 
   $self->set_kweight($how);
   foreach my $p (qw(kmin kmax rmin rmax qmin qmax)) {
-    $demeter->po->$p($self->{limits}->{$p}->GetValue);
+    $demeter->po->$p($self->{limits}->{$p}->GetValue || 0);
   };
 
   #   $demeter->po->plot_fit($self->{limits}->{fit}       ->GetValue);
@@ -227,10 +227,10 @@ sub fetch_parameters {
   #   $demeter->po->plot_res($self->{limits}->{residual}  ->GetValue);
   #   $demeter->po->plot_run($self->{limits}->{running}   ->GetValue);
 
-  $demeter->po->stackdo($self->{stack}->{dostack}->GetValue);
-  $demeter->po->stackstart($self->{stack}->{start}->GetValue);
-  $demeter->po->stackinc($self->{stack}->{increment}->GetValue);
-  $demeter->po->stackdata($self->{stack}->{offset}->GetValue);
+  $demeter->po->stackdo   ($self->{stack}->{dostack}  ->GetValue);
+  $demeter->po->stackstart($self->{stack}->{start}    ->GetValue || 0);
+  $demeter->po->stackinc  ($self->{stack}->{increment}->GetValue || 0);
+  $demeter->po->stackdata ($self->{stack}->{offset}   ->GetValue || 0);
   my $val = ($self->{stack}->{invert}->GetStringSelection eq 'Never')  ? 0
           : ($self->{stack}->{invert}->GetStringSelection =~ m{Only})  ? 2
           :                                                              1;

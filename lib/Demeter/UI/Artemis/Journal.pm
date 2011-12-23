@@ -25,6 +25,7 @@ use Wx::Event qw(EVT_CLOSE EVT_ICONIZE EVT_BUTTON);
 use base qw(Wx::Frame);
 
 use Demeter::UI::Artemis::Close;
+use Demeter::UI::Wx::Printing;
 
 sub new {
   my ($class, $parent) = @_;
@@ -37,7 +38,7 @@ sub new {
 
   my $vbox = Wx::BoxSizer->new( wxVERTICAL );
 
-  $this->{journal} = Wx::TextCtrl->new($this, -1, q{}, wxDefaultPosition, wxDefaultSize,
+  $this->{journal} = Wx::TextCtrl->new($this, -1, q{}, wxDefaultPosition, [550,350],
 				       wxTE_MULTILINE|wxTE_RICH2|wxTE_WORDWRAP|wxTE_AUTO_URL);
   $this->{journal} -> SetFont( Wx::Font->new( 9, wxTELETYPE, wxNORMAL, wxNORMAL, 0, "" ) );
   $vbox -> Add($this->{journal}, 1, wxGROW|wxALL, 5);
@@ -47,12 +48,21 @@ sub new {
   $this->{save} = Wx::Button->new($this, wxID_SAVE, q{}, wxDefaultPosition, wxDefaultSize);
   $hbox -> Add($this->{save}, 1, wxGROW|wxLEFT|wxRIGHT|wxBOTTOM, 5);
   EVT_BUTTON($this, $this->{save}, \&on_save);
+
+  $this->{preview} = Wx::Button->new($this, wxID_PREVIEW, q{}, wxDefaultPosition, wxDefaultSize);
+  $hbox -> Add($this->{preview}, 1, wxGROW|wxLEFT|wxRIGHT|wxBOTTOM, 5);
+  EVT_BUTTON($this, $this->{preview}, sub{on_preview(@_, 'journal')});
+
+  $this->{print} = Wx::Button->new($this, wxID_PRINT, q{}, wxDefaultPosition, wxDefaultSize);
+  $hbox -> Add($this->{print}, 1, wxGROW|wxLEFT|wxRIGHT|wxBOTTOM, 5);
+  EVT_BUTTON($this, $this->{print}, sub{on_print(@_, 'journal')});
+
   $this->{close} = Wx::Button->new($this, wxID_CLOSE, q{}, wxDefaultPosition, wxDefaultSize);
   $hbox -> Add($this->{close}, 1, wxGROW|wxLEFT|wxRIGHT|wxBOTTOM, 5);
   EVT_BUTTON($this, $this->{close}, \&on_close);
   $vbox -> Add($hbox, 0, wxGROW|wxALL, 0);
 
-  $this->SetSizer($vbox);
+  $this->SetSizerAndFit($vbox);
   return $this;
 };
 

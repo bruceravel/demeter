@@ -77,8 +77,8 @@ sub group {
   $this->{group_group_label} -> SetFont( Wx::Font->new( $box_font_size, wxDEFAULT, wxNORMAL, wxBOLD, 0, "" ) );
   $groupboxsizer -> Add($this->{group_group_label}, 0, wxBOTTOM|wxALIGN_LEFT, 5);
 
-  EVT_RIGHT_DOWN($this->{group_group_label}, sub{ContextMenu(@_, $app, 'group')});
-  EVT_MENU($this->{group_group_label}, -1, sub{ $this->DoContextMenu(@_, $app, 'group') });
+  EVT_RIGHT_DOWN($this->{group_group_label}, sub{ContextMenu(@_, $app, 'currentgroup')});
+  EVT_MENU($this->{group_group_label}, -1, sub{ $this->DoContextMenu(@_, $app, 'currentgroup') });
 
   my $gbs = Wx::GridBagSizer->new( 5, 5 );
 
@@ -957,12 +957,12 @@ sub ContextMenu {
   my $menu  = Wx::Menu->new(q{});
   return if ($app->{main}->{list}->GetCount < 1);
 
-  my ($this) = (any {$which eq $_} qw(group bkg fft bft plot)) ? 'these values' : 'this value';
+  my ($this) = (any {$which eq $_} qw(currentgroup bkg fft bft plot)) ? 'these values' : 'this value';
   my $text = $label->GetLabel;
   return if not $label->IsEnabled;
   ($text = "Low spline clamp")  if ($text =~ m{low\z});
   ($text = "High spline clamp") if ($text eq 'high');
-  ($text = "group parameters")  if ($text =~ m{group});
+  ($text = "group parameters")  if ($text =~ m{currentgroup});
   $menu->Append($SET_ALL,    "Set all groups to $this of $text");
   $menu->Append($SET_MARKED, "Set marked groups to $this of $text");
   if ($text ne 'Edge step') {
@@ -1102,13 +1102,13 @@ sub constrain {
   };
   ($which = ['all']) if ($which eq 'all');
   my $data = $app->current_data;
-  my @params = ($which->[0] eq 'all')  ? (@all_group, @all_bkg, @all_fft, @all_bft, @all_plot)
-             : ($which->[0] eq 'file') ?  @all_group
-             : ($which->[0] eq 'bkg')  ?  @all_bkg
-             : ($which->[0] eq 'fft')  ?  @all_fft
-             : ($which->[0] eq 'bft')  ?  @all_bft
-             : ($which->[0] eq 'plot') ?  @all_plot
-	     :                            @$which;
+  my @params = ($which->[0] eq 'all')          ? (@all_group, @all_bkg, @all_fft, @all_bft, @all_plot)
+             : ($which->[0] eq 'currentgroup') ?  @all_group
+             : ($which->[0] eq 'bkg')          ?  @all_bkg
+             : ($which->[0] eq 'fft')          ?  @all_fft
+             : ($which->[0] eq 'bft')          ?  @all_bft
+             : ($which->[0] eq 'plot')         ?  @all_plot
+	     :                                    @$which;
   foreach my $i (0 .. $app->{main}->{list}->GetCount-1) {
     next if (($how eq 'marked') and (not $app->{main}->{list}->IsChecked($i)));
     my $this = $app->{main}->{list}->GetIndexedData($i);
