@@ -309,11 +309,12 @@ sub title_glob {
              ($space eq 'f') ? " fit"     :
 	                       q{}        ;
 
-  my @titles = split(/\n/, $self->data->template("report", "xdi_report"));
+  my @titles = split(/\n/, $data->template("report", "xdi_report"));
   ($space eq 'f') ? push @titles, split(/\n/, $data->fit_parameter_report) : push @titles, split(/\n/, $data->data_parameter_report);
   my $i = 0;
   $self->dispose("erase \$$globname\*");
-  foreach my $line ("XDI/1.0 Demeter/$Demeter::VERSION", @titles, "///", @{$self->data->xdi_comments}) {
+  my $apps = join(" ", "XDI/1.0", $self->xdi_applications, "Demeter/$Demeter::VERSION");
+  foreach my $line ($apps, @titles, "///", @{$self->data->xdi_comments}) {
     ++$i;
     my $t = sprintf("%s%2.2d", $globname, $i);
     Ifeffit::put_string($t, $line);

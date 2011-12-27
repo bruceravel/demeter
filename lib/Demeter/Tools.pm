@@ -348,6 +348,35 @@ sub ifeffit_heap {
   return $self;
 };
 
+sub clear_titles {
+  my ($self, $group) = @_;
+  $group ||= $self->group;
+$self->trace;
+  my @save = (Ifeffit::get_scalar("\&screen_echo"),
+	      $self->get_mode("screen"),
+	      $self->get_mode("plotscreen"),
+	      $self->get_mode("feedback"));
+  Ifeffit::ifeffit("\&screen_echo = 0\n");
+  $self->set_mode(screen=>0, plotscreen=>0, feedback=>q{});
+  $self->dispose('show @strings');
+  my $lines = Ifeffit::get_scalar('&echo_lines');
+  my $target = '\$' . $group . '_title_';
+  foreach my $l (1 .. $lines) {
+    my $response = Ifeffit::get_echo();
+    if ($response =~ m{$target}) {
+      (my $title = $response) =~ s{=.+\z}{};
+      $title =~ s{\s+\z}{};
+      $self->dispose('erase '.$title);
+    };
+  };
+  Ifeffit::ifeffit("\&screen_echo = $save[0]\n");
+  $self->set_mode(screen=>$save[1], plotscreen=>$save[2], feedback=>$save[3]);
+$self->trace;
+  return $self;
+};
+
+
+
 sub Dump {
   my ($self, $ref, $name) = @_;
   return Data::Dumper->Dump([$ref], [$name]) if $name;
@@ -387,7 +416,8 @@ sub trace {
 # print Devel::StackTrace->new()->as_string();
 
 sub pjoin {
-  my ($self, @stuff);
+  my ($self, @stuff) = @_;
+  print join("|", @stuff) . $/;
   return join("|", @stuff) . $/;
 };
 

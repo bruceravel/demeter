@@ -36,9 +36,17 @@ sub is_xdac {
   my ($self, $file) = @_;
   open(my $fh, '<', $file);
   my $first = <$fh>;
+
+  ## this IS an XDAC file
   if ($first =~ m{XDAC V(\d+)\.(\d+)}) {
+    $self->xdi_version("$Xray::XDI::VERSION");
     $self->xdi_applications(sprintf("XDAC/%s.%s", $1, $2));
-    foreach my $li (<$fh>) {
+    $self->set_xdi_facility('name', 'NSLS');
+    $self->set_xdi_facility('xray_source', 'bend magnet');
+
+    my $flag = 0;
+    my $remove_ifeffit_comments = 0;
+  FILE: foreach my $li (<$fh>) {
       chomp $li;
       next if ($li =~ m{\A\s*\z});
       my @line = split(" ", $li);
@@ -50,8 +58,9 @@ sub is_xdac {
 
 	($li =~ m{created on (\d+)/(\d+)/(\d+) at (\d+):(\d+):(\d+) ([AP])M on ([UX])-(\d+)([A-Z]?)(\d?)}) and do {
 	  my ($hour) = ($7 eq 'A') ? $4 : $4+12;
-	  my $time = sprintf("%d-%2.2d-%2.2d%s%2.2d:%2.2d:%2.2d", $3, $2, $1, 'T', $hour, $5, $6);
-	  my $bl = lc(sprintf("%s%d%s%d", $8, $9, $10, $11));
+	  my ($year) = ($3 < 80) ? 2000+$3 : 1900+$3;
+	  my $time = sprintf("%d-%2.2d-%2.2d%s%2.2d:%2.2d:%2.2d", $year, $2, $1, 'T', $hour, $5, $6);
+	  my $bl = lc(sprintf("%s%s%s%s", $8, $9, $10, $11));
 	  $self->set_xdi_scan('start_time', $time);
 	  $self->daq('xdac');
 	  $self->beamline($bl);
@@ -80,10 +89,36 @@ sub is_xdac {
 	  $self->push_xdi_extension('XDAC.Settling_time: ' . join(" ", $line[2]));
 	  last SWITCH;
 	};
+
+	($line[0] =~ m{\AOffsets}) and do {
+	  $self->push_xdi_extension('XDAC.Offsets: ' . join(" ", @line[1..$#line]));
+	  last SWITCH;
+	};
+
+	($line[0] =~ m{\AGains}) and do {
+	  $self->push_xdi_extension('XDAC.Gains: ' . join(" ", @line[1..$#line]));
+	  $flag = 1;
+	  last SWITCH;
+	};
+
+	($li =~ m{\A\-{3,}}) and do {
+	  last FILE;
+	};
+
+	($flag) and do {
+	  $remove_ifeffit_comments = 1;
+	  $self->push_xdi_comment($li);
+	  last SWITCH;
+	};
+
       };
     };
     close $fh;
+    $self->clear_titles if ($remove_ifeffit_comments);
     return 1;
+
+
+  ## this IS NOT an XDAC file
   } else {
     close $fh;
     return 0;

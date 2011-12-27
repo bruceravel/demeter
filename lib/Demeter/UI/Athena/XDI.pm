@@ -2,11 +2,12 @@ package Demeter::UI::Athena::XDI;
 
 use strict;
 use warnings;
+use Readonly;
 
 use Wx qw( :everything );
 use base 'Wx::Panel';
-use Wx::Event qw(EVT_BUTTON EVT_CHECKBOX EVT_TEXT EVT_TEXT_ENTER);
-
+use Wx::Event qw(EVT_BUTTON EVT_TEXT EVT_TEXT_ENTER EVT_TREE_ITEM_RIGHT_CLICK EVT_MENU);
+use Demeter::UI::Athena::XDIAddParameter;
 #use Demeter::UI::Wx::SpecialCharacters qw(:all);
 
 use vars qw($label);
@@ -52,8 +53,9 @@ sub new {
 
     $this->{tree} = Wx::TreeCtrl->new($this->{defined}, -1, wxDefaultPosition, wxDefaultSize,
 				      wxTR_HIDE_ROOT|wxTR_SINGLE|wxTR_HAS_BUTTONS);
-    $defbox -> Add($this->{tree}, 1, wxALL|wxGROW, 5);
+    $defbox -> Add($this->{tree}, 1, wxALL|wxGROW, 0);
     $this->{root} = $this->{tree}->AddRoot('Root');
+    EVT_TREE_ITEM_RIGHT_CLICK($this, $this->{tree}, sub{OnRightClick(@_)});
 
     my $size = Wx::SystemSettings::GetFont(wxSYS_DEFAULT_GUI_FONT)->GetPointSize;
 
@@ -100,17 +102,17 @@ sub push_values {
   my ($this, $data) = @_;
   return if (not exists $INC{'Xray/XDI.pm'});
   $this->{tree}->DeleteChildren($this->{root});
-  foreach my $namespace ('beamline', 'scan', 'mono', 'beamline', 'facility', 'detector', 'sample') {
+  foreach my $namespace ('beamline', 'scan', 'mono', 'facility', 'detector', 'sample') {
     my $leaf = $this->{tree}->AppendItem($this->{root}, ucfirst($namespace), 0, 1,
 					Wx::TreeItemData->new( $namespace ));
     my $att = 'xdi_'.$namespace;
-    foreach my $k (keys %{$data->$att}) {
+    foreach my $k (sort {$a cmp $b} keys %{$data->$att}) {
       my $label = sprintf("%s = %s", $k, $data->$att->{$k});
-      $this->{tree}->AppendItem($leaf, $label, 0, 1,
-				Wx::TreeItemData->new( sprintf("%s.%s = %s",
-							       $namespace, $k, $data->$att->{$k} ) ));
+      my $child = $this->{tree}->AppendItem($leaf, $label, 0, 1,
+					    Wx::TreeItemData->new( sprintf("%s.%s = %s",
+									   $namespace, $k, $data->$att->{$k} ) ));
     };
-    #$this->{tree}->Expand($leaf);
+    $this->{tree}->Expand($leaf);
   };
   $this->{xdi}->SetValue($data->xdi_version);
   $this->{apps}->SetValue($data->xdi_applications);
@@ -125,19 +127,72 @@ sub mode {
   1;
 };
 
-# sub ToggleEdit {
-#   my ($this) = @_;
-#   my $onoff = $this->{edit}->GetValue;
-#   foreach my $w ('beamline', 'source', 'undulator_harmonic',
-# 		 'ring_energy', 'ring_current', 'collimation', 'crystal',
-# 		 'd_spacing', 'focusing', 'harmonic_rejection', 'edge_energy',
-# 		 'start_time', 'end_time', 'abscissa', 'mu_transmission',
-# 		 'mu_fluorescence', 'mu_reference', 'extensions') {
-#     $this->{$w}->SetEditable($onoff);
-#   };
-#   my $which = ($onoff) ? "editable" : "readonly";
-#   $::app->{main}->status("Made defined and extension field text controls $which.");
-# };
+Readonly my $EDIT   => Wx::NewId();
+Readonly my $ADD    => Wx::NewId();
+Readonly my $DELETE => Wx::NewId();
+
+sub OnRightClick {
+  my ($tree, $event) = @_;
+  my $text = $tree->{tree}->GetItemData($event->GetItem)->GetData;
+  return if ($text !~ m{(\w+)\.(\w+) = (.+)});
+  my ($namespace, $parameter, $value) = ($1, $2, $3);
+  my $menu  = Wx::Menu->new(q{});
+  $menu->Append($EDIT,   "Edit ".ucfirst($namespace).".$parameter");
+  $menu->Append($ADD,    "Add a parameter to ".ucfirst($namespace)." namespace");
+  $menu->Append($DELETE, "Delete ".ucfirst($namespace).".$parameter");
+  EVT_MENU($menu, -1, sub{ $tree->DoContextMenu(@_, $namespace, $parameter, $value) });
+  $tree -> PopupMenu($menu, $event->GetPoint);
+
+  $event->Skip(1);
+};
+
+sub DoContextMenu {
+  my ($xditool, $menu, $event, $namespace, $parameter, $value) = @_;
+  my $data = $::app->current_data;
+  if ($event->GetId == $EDIT) {
+    my $method = "set_xdi_".$namespace;
+    my $ted = Wx::TextEntryDialog->new($::app->{main}, "Enter a new value for \"$namespace.$parameter\":", "$namespace.$parameter",
+				       $value, wxOK|wxCANCEL, Wx::GetMousePosition);
+    #$::app->set_text_buffer($ted, "xdi");
+    $ted->SetValue($value);
+    if ($ted->ShowModal == wxID_CANCEL) {
+      $::app->{main}->status("Resetting XDI parameter cancelled.");
+      return;
+    };
+    my $newvalue = $ted->GetValue;
+    $data->$method($parameter, $newvalue);
+
+  } elsif ($event->GetId == $ADD) {
+    my $method = "set_xdi_".$namespace;
+    my $addparam = Demeter::UI::Athena::XDIAddParameter->new($xditool, $data, $namespace);
+    my $response = $addparam->ShowModal;
+    if ($response eq wxID_CANCEL) {
+      $::app->{main}->status("Adding metadata cancelled");
+      return;
+    };
+    return if ($addparam->{param}->GetValue =~ m{\A\s*\z});
+    #print $addparam->{param}->GetValue, "  ", $addparam->{value}->GetValue, $/;
+    $data->$method($addparam->{param}->GetValue, $addparam->{value}->GetValue);
+    undef $addparam;
+
+  } elsif ($event->GetId == $DELETE) {
+    my $which = ucfirst($namespace).".$parameter";
+    my $yesno = Wx::MessageDialog->new($::app->{main},
+                                       "Really delete $which?",
+                                       "Really delete $which?",
+                                       wxYES_NO|wxNO_DEFAULT|wxICON_QUESTION|wxSTAY_ON_TOP);
+    my $result = $yesno->ShowModal;
+    if ($result == wxID_NO) {
+      $::app->{main}->status("Not deleting $which");
+      return 0;
+    };
+    my $method = "delete_from_xdi_".$namespace;
+    $data->$method($parameter);
+    $::app->{main}->status("Deleted $which");
+  };
+  $xditool->push_values($data);
+
+};
 
 sub OnParameter {
   my ($this, $param) = @_;
@@ -146,41 +201,29 @@ sub OnParameter {
   $data->$att($this->{$param}->GetValue)
 };
 
-## yes, there is some overlap between what push_values and mode do.
-## This separation was useful in Main.pm.  Some of the other tools
-## make mode a null op.
 
 1;
 
 
 =head1 NAME
 
-Demeter::UI::Athena::____ - A ____ for Athena
+Demeter::UI::Athena::XDI - An XDI metadata displayer for Athena
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.5.
+This documentation refers to Demeter version 0.9.
 
 =head1 SYNOPSIS
 
-This module provides a
-
-=head1 CONFIGURATION
-
+This module provides a simple, tree-based overview of XDI defined
+metadata and textual interfaces to other kinds of metadata.  Metadata
+can be edited, added, and deleted.
 
 =head1 DEPENDENCIES
 
 Demeter's dependencies are in the F<Bundle/DemeterBundle.pm> file.
 
 =head1 BUGS AND LIMITATIONS
-
-=over 4
-
-=item *
-
-This 'n' that
-
-=back
 
 Please report problems to Bruce Ravel (bravel AT bnl DOT gov)
 

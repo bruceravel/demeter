@@ -204,7 +204,7 @@ sub _data {
   my ($app, $file, $orig, $first, $suggest) = @_;
   my $busy = Wx::BusyCursor->new();
   my ($data, $displayfile);
-  if (ref($orig) =~ m{Class::MOP}) {
+  if (ref($orig) =~ m{Class::MOP|Moose::Meta::Class}) {
     $displayfile = $orig->file;
     $data = Demeter::Data->new;
     $data->xdi($orig);
@@ -274,7 +274,7 @@ sub _data {
   ## for an XDI file, setting the xdi attribute has to be delayed
   ## until *after* the energy/numerator/denominator attributes are
   ## set.  then guess_columns can be called.
-  #$data->xdi($orig) if (ref($orig) =~ m{Class::MOP});
+  #$data->xdi($orig) if (ref($orig) =~ m{Class::MOP|Moose::Meta::Class});
   $data->guess_columns if ($do_guess and (not $suggest));
 
   ## -------- display column selection dialog
@@ -282,6 +282,7 @@ sub _data {
   my $colsel;
   my $med = $yaml->{each}; # this will be true is each channel of MED data is to be its own group
   if ($first or ($data->columns ne $yaml->{columns})) {
+    Ifeffit::put_scalar("e0", 0);
     $colsel = Demeter::UI::Athena::ColumnSelection->new($app->{main}, $app, $data);
     $colsel->{ok}->SetFocus;
 
@@ -472,7 +473,7 @@ sub _data {
 # 8: $noalign: doesn't seem to be used
 sub _group {
   my ($app, $colsel, $data, $yaml, $file, $orig, $repeated, $noalign) = @_;
-  my $displayfile = (ref($orig) =~ m{Class::MOP}) ? $orig->file : $orig;
+  my $displayfile = (ref($orig) =~ m{Class::MOP|Moose::Meta::Class}) ? $orig->file : $orig;
 
   ## -------- import data group
   $app->{main}->status("Importing ". $data->name . " from $displayfile");

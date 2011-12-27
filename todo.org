@@ -78,7 +78,7 @@
    - [X] keV data
    - [ ] importing xmu.dat files into Athena has never been tested
 
-*** needs doing [4/17] [23%]
+*** needs doing [4/18] [22%]
    - [X] deglitching crashes with gnuplot					:HUH:
    - [X] test preprocessing (I had a crash with all three preproc options selected for data with a reference):
 	 ~Can't call method "GetSelection" on an undefined value at /home/bruce/git/demeter/lib/Demeter/UI/Athena/IO.pm line 423.~
@@ -163,6 +163,8 @@
        + [ ] demos
        + [ ] document
        + [X] memory usage
+   - [ ] XDI integration [0/1]
+       + [ ] Column namespace for column data output files
 
 ** raw data and plugins
    - Need to expand the filetype system by examining data from *all* the XAS beamlines in the world.  Yes ... all of them.

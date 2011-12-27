@@ -1,8 +1,9 @@
 package Demeter::Data::XDI;
 use Moose::Role;
 use File::Basename;
+use Demeter::StrTypes qw( Empty );
 
-has 'xdi'                     => (is => 'rw', isa => 'Xray::XDI',
+has 'xdi'                     => (is => 'rw', isa => Empty.'|Xray::XDI', default=>q{},
 				  trigger => sub{my ($self, $new) = @_; $self->import_xdi($new);});
 
 has 'xdi_version'	      => (is => 'rw', isa => 'Str', default => q{});
@@ -11,79 +12,86 @@ has 'xdi_applications'	      => (is => 'rw', isa => 'Str', default => q{});
 
 has 'xdi_column'    => (metaclass => 'Collection::Hash',
 			is        => 'rw',
-			isa       => 'HashRef[Str]',
+			isa       => 'HashRef',
 			default   => sub { {} },
 			provides  => {
 				      exists    => 'exists_in_xdi_column',
 				      keys      => 'keys_in_xdi_column',
 				      get       => 'get_xdi_column',
 				      set       => 'set_xdi_column',
+				      delete    => 'delete_from_xdi_column'
 				     }
 		       );
 has 'xdi_scan'      => (metaclass => 'Collection::Hash',
 			is        => 'rw',
-			isa       => 'HashRef[Str]',
+			isa       => 'HashRef',
 			default   => sub { {} },
 			provides  => {
 				      exists    => 'exists_in_xdi_scan',
 				      keys      => 'keys_in_xdi_scan',
 				      get       => 'get_xdi_scan',
 				      set       => 'set_xdi_scan',
+				      delete    => 'delete_from_xdi_scan'
 				     }
 		       );
 has 'xdi_mono'     => (metaclass => 'Collection::Hash',
 		       is        => 'rw',
-		       isa       => 'HashRef[Str]',
+		       isa       => 'HashRef',
 		       default   => sub { {} },
 		       provides  => {
 				     exists    => 'exists_in_xdi_mono',
 				     keys      => 'keys_in_xdi_mono',
 				     get       => 'get_xdi_mono',
 				     set       => 'set_xdi_mono',
+				     delete    => 'delete_from_xdi_mono'
 				    }
 		      );
 has 'xdi_beamline' => (metaclass => 'Collection::Hash',
 		       is        => 'rw',
-		       isa       => 'HashRef[Str]',
+		       isa       => 'HashRef',
 		       default   => sub { {} },
 		       provides  => {
 				     exists    => 'exists_in_xdi_beamline',
 				     keys      => 'keys_in_xdi_beamline',
 				     get       => 'get_xdi_beamline',
 				     set       => 'set_xdi_beamline',
+				     delete    => 'delete_from_xdi_beamline'
 				    }
 		      );
 has 'xdi_facility' => (metaclass => 'Collection::Hash',
 		       is        => 'rw',
-		       isa       => 'HashRef[Str]',
+		       isa       => 'HashRef',
 		       default   => sub { {} },
 		       provides  => {
 				     exists    => 'exists_in_xdi_facility',
 				     keys      => 'keys_in_xdi_facility',
 				     get       => 'get_xdi_facility',
 				     set       => 'set_xdi_facility',
+				     delete    => 'delete_from_xdi_facility'
 				    }
 		      );
 has 'xdi_detector' => (metaclass => 'Collection::Hash',
 		       is        => 'rw',
-		       isa       => 'HashRef[Str]',
+		       isa       => 'HashRef',
 		       default   => sub { {} },
 		       provides  => {
 				     exists    => 'exists_in_xdi_detector',
 				     keys      => 'keys_in_xdi_detector',
 				     get       => 'get_xdi_detector',
 				     set       => 'set_xdi_detector',
+				     delete    => 'delete_from_xdi_detector'
 				    }
 		      );
 has 'xdi_sample'   => (metaclass => 'Collection::Hash',
 		       is        => 'rw',
-		       isa       => 'HashRef[Str]',
+		       isa       => 'HashRef',
 		       default   => sub { {} },
 		       provides  => {
 				     exists    => 'exists_in_xdi_sample',
 				     keys      => 'keys_in_xdi_sample',
 				     get       => 'get_xdi_sample',
 				     set       => 'set_xdi_sample',
+				     delete    => 'delete_from_xdi_sample'
 				    }
 		      );
 
@@ -123,7 +131,7 @@ has 'xdi_labels'     => (
 
 sub import_xdi {
   my ($self, $xdi) = @_;
-  return $self if (ref($xdi) !~ m{XDI|Class::MOP});
+  return $self if (ref($xdi) !~ m{XDI|Class::MOP|Moose::Meta::Class});
   foreach my $f (qw(version applications
 		    column scan mono beamline facility detector sample
 		    extensions comments labels)) {
@@ -147,6 +155,7 @@ sub import_xdi {
   };
 
   ## process the data in the manner of Demeter::Data::read_data
+  Ifeffit::put_scalar("e0", 0);
   my $string = lc( join(" ", @{$xdi->labels}) );
   Ifeffit::put_string("column_label", $string);
   $self->columns(join(" ", $string));
@@ -185,6 +194,22 @@ sub configure_from_ini {
   };
   $self->labels([split(" ", $ini{labels}{labels})]) if exists $ini{labels};
 };
+
+sub xdi_defined {
+  my ($self, $cc) = @_;
+  $cc ||= q{};
+  $cc .= " " if ($cc and ($cc !~ m{ \z}));
+  my $text = q{};
+  foreach my $namespace (qw(beamline scan mono facility detector sample)) {
+    my $method = 'xdi_'.$namespace;
+    next if ($self->$method =~ m{\A\s*\z});
+    foreach my $k (sort keys %{$self->$method}) {
+      $text .= sprintf "%s%s.%s: %s$/", $cc, ucfirst($namespace), $k, $self->$method->{$k};
+    };
+  };
+  return $text;
+};
+
 
 1;
 

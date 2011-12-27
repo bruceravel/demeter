@@ -261,6 +261,13 @@ sub _record {
 				 is_xmu is_chi is_xanes is_xmudat
 				 bkg_stan_lab bkg_flatten_was
 			      );
+    ## clean up from old implementation(s) of XDI
+    next if any { $k eq $_ } qw(
+				 xdi_mu_reference  xdi_ring_current  xdi_abscissa            xdi_start_time
+				 xdi_crystal       xdi_focusing      xdi_mu_transmission     xdi_ring_energy
+				 xdi_collimation   xdi_d_spacing     xdi_undulator_harmonic  xdi_mu_fluorescence
+				 xdi_end_time      xdi_source        xdi_edge_energy         xdi_harmonic_rejection
+			      );
   SWITCH: {
       ($k =~ m{\A(?:lcf|peak|lr)}) and do {
 	last SWITCH;
@@ -294,6 +301,10 @@ sub _record {
       };
       ($k eq 'label') and do {
 	$groupargs{$k} = $args{$k};
+	last SWITCH;
+      };
+      ($k eq 'xdi_beamline') and do {
+	$groupargs{$k} = {name => $args{$k}} if $args{$k};
 	last SWITCH;
       };
 

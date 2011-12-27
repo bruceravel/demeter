@@ -165,14 +165,6 @@ sub guess_columns {
   };
 };
 
-# sub xmu_string {
-#   my ($self) = @_;
-#   carp("Demeter::Data::Mu: cannot put data unless the object contains mu(E) data\n\n"),
-#     return 0 if ($self->datatype ne 'xmu');
-#   my $string = q{};
-#   $self->xmu_string($string);
-#   return $string;
-# };
 sub put_data {
   my ($self) = @_;
 

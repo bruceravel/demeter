@@ -655,6 +655,7 @@ sub read_data {
   $self->xmax($x[$#x]);
   my $filename = fileparse($self->file, qr{\.dat}, qr{\.xmu}, qr{\.chi});
   $self->name($filename) if not $self->name;
+  $self->identify_beamline($self->file);
   return $self;
 };
 

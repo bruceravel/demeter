@@ -128,6 +128,7 @@ sub is_data {
     printf "%s\n\t%s    col_string=%s\n", $a, $passfail, $col_string;
   };
   $self->dispose("erase \@group a\n"), return 0 if ($col_string =~ /^(\s*|--undefined--)$/);
+#  $self->clear_titles('a');
 
   ## now check that the data file had more  than 1 data point
   my $onepoint = 0;
