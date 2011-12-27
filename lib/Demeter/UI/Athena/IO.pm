@@ -7,7 +7,6 @@ use Demeter::UI::Wx::SpecialCharacters qw(:all);
 use Demeter::UI::Athena::ColumnSelection;
 use Demeter::UI::Artemis::Prj;
 use Demeter::UI::Wx::PeriodicTableDialog;
-my $XDI_exists = 0;#        = eval "require Xray::XDI";
 #use Xray::XDI;
 
 use Cwd;
@@ -100,7 +99,7 @@ sub Import {
     };
 
     my $xdi = q{};
-    if ($XDI_exists) {
+    if ($Demeter::XDI_exists) {
       $xdi = Xray::XDI->new;
       $xdi->file($file);
       ## at this point, run a test against $xdi->applications and
@@ -203,12 +202,12 @@ sub Import_plot {
 
 sub _data {
   my ($app, $file, $orig, $first, $suggest) = @_;
-
   my $busy = Wx::BusyCursor->new();
   my ($data, $displayfile);
   if (ref($orig) =~ m{Class::MOP}) {
     $displayfile = $orig->file;
     $data = Demeter::Data->new;
+    $data->xdi($orig);
   } else {
     $displayfile = $orig;
     $data = Demeter::Data->new(file=>$file);
@@ -275,7 +274,7 @@ sub _data {
   ## for an XDI file, setting the xdi attribute has to be delayed
   ## until *after* the energy/numerator/denominator attributes are
   ## set.  then guess_columns can be called.
-  $data->xdi($orig) if (ref($orig) =~ m{Class::MOP});
+  #$data->xdi($orig) if (ref($orig) =~ m{Class::MOP});
   $data->guess_columns if ($do_guess and (not $suggest));
 
   ## -------- display column selection dialog

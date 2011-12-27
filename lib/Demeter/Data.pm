@@ -31,6 +31,7 @@ use Moose;
 extends 'Demeter';
 with 'Demeter::Data::Arrays';
 with 'Demeter::Data::Athena';
+with 'Demeter::Data::Beamlines';
 with 'Demeter::Data::Defaults';
 with 'Demeter::Data::E0';
 with 'Demeter::Data::FT';

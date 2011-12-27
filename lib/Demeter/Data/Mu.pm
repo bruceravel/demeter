@@ -107,8 +107,7 @@ sub guess_units {
   if (($energy[0] < $energy[1]) and
       ($energy[1] < $energy[2]) and
       ($energy[2] < $energy[3]) and
-      ($energy[3] < $energy[4]) and
-      ($energy[4] < $energy[5])) {
+      ($energy[3] < $energy[4])) {
     if ($energy[0] > 100) {
       return 'eV';
     } else {
@@ -625,6 +624,9 @@ sub find_edge {
   my $input = $e0;
   my ($edge, $answer, $this) = ("K", 1, 0);
   my $diff = 100000;
+  my $xdi_elem = (exists $self->xdi_scan->{element}) ? $self->xdi_scan->{element} : q{};
+  my $xdi_edge = (exists $self->xdi_scan->{edge})    ? $self->xdi_scan->{edge}    : q{};
+  return ($xdi_elem, $xdi_edge) if ($xdi_elem and $xdi_edge);
   foreach my $ed (qw(K L1 L2 L3)) {  # M1 M2 M3 M4 M5
   Z: foreach (1..104) {
       last Z unless (Xray::Absorption->in_resource($_));
