@@ -25,6 +25,8 @@
 *** Demeter
    - explicitly unset xrange at the start of every gnuplot plot.  this
      should fix any problem where zooming results in a backwards x-axis.
+   - added clear_ifeffit_titles method to clear out $group_title_NN
+     strings when no longer needed
 
 *** Acknowledgements for this release
    - Eric Breynaert

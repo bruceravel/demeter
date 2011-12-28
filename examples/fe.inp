@@ -1,0 +1,12 @@
+title name:     iron metal
+space  i m 3 m
+a    = 2.87
+rmax = 9.00 rpath = 6
+atom
+  Fe     0.00000   0.00000   0.00000
+
+
+!!&& Local Variables:
+!!&& input-program-name: "atoms"
+!!&& End:
+%# Input-mode Time-stamp: <2011/12/28 12:56:10 bruce>

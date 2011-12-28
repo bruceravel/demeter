@@ -1804,6 +1804,8 @@ sub discard_data {
   ## that's not quite right!
 
   ## destroy the data object
+  $dataobject->clear_ifeffit_titles;
+  $dataobject->dispose("erase \@group ".$dataobject->group);
   $dataobject->DEMOLISH;
 };
 

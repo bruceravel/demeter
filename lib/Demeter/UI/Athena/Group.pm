@@ -137,6 +137,7 @@ sub Remove {
     };
     foreach my $i (0 .. $app->{main}->{list}->GetCount-1) {
       my $this = $app->{main}->{list}->GetIndexedData($i);
+      $this->clear_ifeffit_titles;
       $this->dispose("erase \@group ".$this->group);
       $this->DEMOLISH;
     };
@@ -158,6 +159,7 @@ sub Remove {
 sub remove_one {
   my ($app, $i) = @_;
   my $data = $app->{main}->{list}->GetIndexedData($i);
+  $data->clear_ifeffit_titles;
   $data->dispose("erase \@group ".$data->group);
   $data->DEMOLISH;
   $app->{main}->{list}->DeleteData($i); # this calls the selection event on the new item

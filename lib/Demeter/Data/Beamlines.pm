@@ -114,7 +114,7 @@ sub is_xdac {
       };
     };
     close $fh;
-    $self->clear_titles if ($remove_ifeffit_comments);
+    $self->clear_ifeffit_titles if ($remove_ifeffit_comments);
     return 1;
 
 

@@ -348,10 +348,9 @@ sub ifeffit_heap {
   return $self;
 };
 
-sub clear_titles {
+sub clear_ifeffit_titles {
   my ($self, $group) = @_;
   $group ||= $self->group;
-$self->trace;
   my @save = (Ifeffit::get_scalar("\&screen_echo"),
 	      $self->get_mode("screen"),
 	      $self->get_mode("plotscreen"),
@@ -371,7 +370,6 @@ $self->trace;
   };
   Ifeffit::ifeffit("\&screen_echo = $save[0]\n");
   $self->set_mode(screen=>$save[1], plotscreen=>$save[2], feedback=>$save[3]);
-$self->trace;
   return $self;
 };
 

@@ -330,6 +330,16 @@ legged nearly collinear scattering paths at around 4 Angstroms.  It
 has metal atoms bridged by cyanide (CN).
 
 
+* Ifeffit
+
+In file ~src/lib/iff_show.f~, change line 431 from 
+
+:     character*(*) s, t , messg*256
+
+to
+
+:     character*(*) s, t , messg*1024
+
 * Weird stuff I'd prefer not to implement unless demanded
  1. xfit output (only used by women who glow and men who plunder)
  2. csv and text report (excel *is* implemented)

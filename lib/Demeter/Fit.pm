@@ -1321,7 +1321,18 @@ override 'deserialize' => sub {
     my ($r_attributes, $r_x, $r_y) = YAML::Tiny::Load($yaml);
     delete $r_attributes->{fit_pcpath};	   # correct an early
     delete $r_attributes->{fit_do_pcpath}; # design mistake...
+    ## correct for earlier XDI design
+    foreach my $x (qw(xdi_mu_reference  xdi_ring_current  xdi_abscissa            xdi_start_time
+		      xdi_crystal       xdi_focusing      xdi_mu_transmission     xdi_ring_energy
+		      xdi_collimation   xdi_d_spacing     xdi_undulator_harmonic  xdi_mu_fluorescence
+		      xdi_end_time      xdi_source        xdi_edge_energy         xdi_harmonic_rejection)) {
+      delete $r_attributes->{$x};
+    };
+    if (ref($r_attributes->{xdi_beamline}) ne 'HASH') {
+      $r_attributes->{xdi_beamline} = {name=>$r_attributes->{xdi_beamline}||q{}};
+    };
     my %hash = %$r_attributes;
+
     my $savecv = $self->mo->datacount;
     my $this = $self->mo->fetch('Data', $hash{group}) || Demeter::Data -> new(group=>$hash{group});
     delete $hash{group};

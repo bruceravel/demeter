@@ -128,7 +128,7 @@ my $build = DemeterBuilder
 				#'ExtUtils::F77'       => '0',
 				#'PGPLOT'              => '0',
 			       },
-	 sign               => 0,
+	 sign               => 1,
 	 add_to_cleanup     => [
 				'src/*.o',
 				'src/*.so',
