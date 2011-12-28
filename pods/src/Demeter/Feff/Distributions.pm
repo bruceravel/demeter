@@ -44,6 +44,8 @@ with 'Demeter::Feff::Distributions::SS';
 use List::Util qw{sum};
 
 has '+plottable' => (default => 1);
+has '+name'      => (default => 'histogram');
+#has 'type'       => (is => 'rw', isa => 'Str', default => 0);
 
 ## HISTORY file attributes
 has 'nsteps'    => (is => 'rw', isa => NonNeg, default => 0);
@@ -57,7 +59,7 @@ has 'file'      => (is => 'rw', isa => 'Str', default => q{},
 				  });
 has 'clusters'    => (is => 'rw', isa => 'ArrayRef', default => sub{[]});
 
-enum 'HistogramBackends' => ['dl_poly', 'something_else'];
+enum 'HistogramBackends' => ['dl_poly', 'vasp'];
 coerce 'HistogramBackends',
   from 'Str',
   via { lc($_) };
@@ -66,6 +68,10 @@ has backend       => (is => 'rw', isa => 'HistogramBackends', coerce => 1, alias
 				     if ($new eq 'dl_poly') {
 				       eval {apply_all_roles($self, 'Demeter::Feff::MD::DL_POLY')};
 				       $@ and die("Histogram backend Demeter::Feff::MD::DL_POLY could not be loaded");
+				     } elsif ($new eq 'vasp') {
+				       eval {apply_all_roles($self, 'Demeter::Feff::MD::VASP')};
+				       print $@;
+				       $@ and die("Histogram backend Demeter::Feff::MD::VASP does not exist");
 				     } else {
 				       eval {apply_all_roles($self, 'Demeter::Feff::MD::'.$new)};
 				       $@ and die("Histogram backend Demeter::Feff::MD::$new does not exist");
@@ -95,24 +101,75 @@ has 'type'  => (is => 'rw', isa => 'HistogramTypes', coerce => 1, default => 'ss
 
 #has 'bin_count'   => (is => 'rw', isa => 'Int',  default => 0);
 has 'timestep_count' => (is => 'rw', isa => 'Int',  default => 0);
+has 'fpath_count'    => (is => 'rw', isa => 'Int',  default => 0);
 has 'feff'           => (is => 'rw', isa => Empty.'|Demeter::Feff', default => q{},);
 has 'sp'             => (is => 'rw', isa => Empty.'|Demeter::ScatteringPath', default => q{},);
 
 
-has 'update_bins' => (is            => 'rw',
-		      isa           => 'Bool',
-		      default       => 1);
+has 'update_file'  => (is => 'rw', isa => 'Bool', default => 1,
+		       trigger => sub{my ($self, $new) = @_; $self->update_rdf(1)   if $new});
+has 'update_rdf'   => (is => 'rw', isa => 'Bool', default => 1,
+		       trigger => sub{my ($self, $new) = @_; $self->update_bins(1)  if $new});
+has 'update_bins'  => (is => 'rw', isa => 'Bool', default => 1,
+		       trigger => sub{my ($self, $new) = @_; $self->update_fpath(1) if $new});
+has 'update_fpath' => (is => 'rw', isa => 'Bool', default => 1);
+
+
 has 'populations' => (is	    => 'rw',
 		      isa	    => 'ArrayRef',
 		      default	    => sub{[]},
 		      documentation => "array of bin populations of the extracted histogram");
 
+has 'use_periodicity'=> (is              => 'rw',
+			 isa             => 'Bool',
+			 default         => 1,
+			 documentation   => "a flag for turning on/off the use of periodic boundary conditions");
+has 'periodic'=> (is              => 'rw',
+		  isa             => 'Bool',
+		  default         => 0,
+		  documentation   => "a boolean indicating periodic boundary conditions were used in the MD simulation");
+has 'lattice' => (metaclass => 'Collection::Array',
+		  is	          => 'rw',
+		  isa	          => 'ArrayRef',
+		  default	  => sub{[]},
+		  provides  => {
+				'push'  => 'push_lattice',
+				'pop'   => 'pop_lattice',
+				'clear' => 'clear_lattice',
+			       },
+		  documentation   => "the direct lattice vectors");
+
+
+has 'reading_file' => (is            => 'rw',
+		       isa           => 'Bool',
+		       default       => 0,
+		       documentation => 'flag set to 1 when reading MD output file');
+has 'computing_rdf' => (is            => 'rw',
+		       isa           => 'Bool',
+		       default       => 0,
+		       documentation => 'flag set to 1 when computing RDF from MD data');
 
 
 ## need a pgplot plotting template
 
+sub BUILD {
+  my ($self, @params) = @_;
+  $self->mo->push_Distributions($self);
+};
+
+override 'all' => sub {
+  my ($self) = @_;
+  my %hash = $self->SUPER::all;
+  delete $hash{feff};
+  delete $hash{sp};
+  delete $hash{clusters};
+  delete $hash{ssrdf};
+  return %hash;
+};
+
 sub rebin {
   my($self, $new) = @_;
+  $self->rdf  if ($self->update_rdf);
   $self->_bin if ($self->update_bins);
   return $self;
 };
@@ -154,7 +211,7 @@ Demeter::Feff::Distributions:: - Make historams from arbitrary clusters of atoms
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.4.
+This documentation refers to Demeter version 0.5.
 
 =head1 SYNOPSIS
 
@@ -168,12 +225,14 @@ roles:
 
   Demeter::Feff::MD::Null
   Demeter::Feff::MD::DL_POLY
+  Demeter::Feff::MD::VASP
 
 This takes methods for making distributions functions and chi(k) (in
 the form of a L<Demeter::FPath> object from its roles:
 
   Demeter::Feff::Distributions::SS
   Demeter::Feff::Distributions::NCL
+  Demeter::Feff::Distributions::Thru
 
 =head1 ATTRIBUTES
 

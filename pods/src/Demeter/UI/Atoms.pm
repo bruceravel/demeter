@@ -21,6 +21,8 @@ use Wx qw( :everything );
 use base 'Wx::Frame';
 use Wx::Event qw(EVT_NOTEBOOK_PAGE_CHANGED EVT_NOTEBOOK_PAGE_CHANGING);
 
+use Demeter::UI::Artemis::Close qw(on_close);
+
 my $icon_dimension = 30;
 
 foreach my $m (qw(Xtal Feff Config Paths Doc Console SS)) {
@@ -183,7 +185,7 @@ ball-and-stick molecule viewer.
 The Feff logo is taken from the Feff document wiki.
 
 The template icon on the Feff page is the icon Ubuntu
-uses for the game glpuzzle, leter called jigzo
+uses for the game glpuzzle, later called jigzo
 http://www.resorama.com/glpuzzle/
 
 All other icons icons are from the Kids icon set for
@@ -212,7 +214,7 @@ Demeter::UI::Atoms - Crystallography for the X-ray absorption spectroscopist
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.4.
+This documentation refers to Demeter version 0.5.
 
 =head1 SYNOPSIS
 

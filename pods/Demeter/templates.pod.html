@@ -70,7 +70,7 @@
 
 <h1 id="VERSION">VERSION <a href="#TOP" class="toplink"><img alt="^" src="../up.gif" /></a></h1>
 
-<p>This documentation refers to Demeter version 0.4.</p>
+<p>This documentation refers to Demeter version 0.5.</p>
 
 <h1 id="SYNOPSIS">SYNOPSIS <a href="#TOP" class="toplink"><img alt="^" src="../up.gif" /></a></h1>
 
@@ -108,7 +108,7 @@ snippets of perl code interspersed.  Here is an example:</p>
         kmax     = {$D-&gt;fft_kmax},
         dk       = {$D-&gt;fft_dk&quot;},
         kwindow  = {$D-&gt;fft_kwindow},
-        kweight  = {$P-&gt;kweight},
+        kweight  = {$D-&gt;get_kweight},
         rmax_out = {$D-&gt;rmax_out})
 
 </pre><p>This is the template for generating a forward Fourier transform

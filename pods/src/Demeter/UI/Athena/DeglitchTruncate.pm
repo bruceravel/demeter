@@ -177,6 +177,7 @@ sub plot {
   $data->plot($space);
   $this->{remove}->Enable(0);
   $::app->{main}->status(sprintf("Plotted %s as points for deglitching", $data->name));
+  $::app->heap_check(0);
 
   $data->po->datastyle($save);
 };
@@ -195,24 +196,27 @@ sub OnChoose {
   $this->plot($data);
   my ($ok, $xx, $yy) = $app->cursor;
   return if not $ok;
-  #my $plucked = $data->bkg_e0 + $self->bkg_eshift + $x;
+  local $|=1;
 
   my ($dist, $ii) = (1e10, -1);
-  my @x = $data->get_array('energy');
-  my $which = ($this->{plotas}->GetSelection) ? 'chie' : 'xmu';
+  my $which = ($this->{plotas}->GetSelection) ? 'chi' : 'xmu';
+  my @x = ($which eq 'chi') ? $data->get_array('k') : $data->get_array('energy');
+  $xx = $data->e2k($xx, "absolute") if ($which eq 'chi');
   my @y = $data->get_array($which);
   my ($miny, $maxy) = minmax(@y);
   foreach my $i (0 .. $#x) {	# need to scale these appropriately
-    my $px = ($x[$i] - $xx)/($x[-1] - $x[0]);
-    my $py = ($y[$i] - $yy)/($maxy - $miny);
-    my $d  = sqrt($px**2 + $py**2);
+    my $px  = ($x[$i] - $xx)/($x[-1] - $x[0]);
+    my $ppy = ($which eq 'chi') ? $y[$i]*$xx**$data->get_kweight : $y[$i];
+    my $py  = ($ppy - $yy)/($maxy - $miny);
+    my $d   = sqrt($px**2 + $py**2);
     ($d < $dist) and ($dist, $ii) = ($d, $i);
   };
   $this->plot($data);
-  $data->plot_marker('xmu', $x[$ii]);
-  $this->{point} = $x[$ii];
+  my $request = ($which eq 'chi') ? 'chie' : 'xmu';
+  $data->plot_marker($request, $x[$ii]);
+  $this->{point} = ($which eq 'chi') ? $data->k2e($x[$ii], 'absolute') : $x[$ii];
   $this->{remove}->Enable(1);
-  $app->{main}->status(sprintf("Plucked point at %.3f from %s", $x[$ii], $data->name));
+  $app->{main}->status(sprintf("Plucked point at %.3f from %s", $this->{point}, $data->name));
 };
 
 sub OnRemove {
@@ -242,6 +246,7 @@ sub plot_truncate {
   $data->standard;
   $this->{indicator}->plot('e');
   $data->unset_standard;
+  $::app->heap_check(0);
 };
 
 sub OnPluckTruncate {
@@ -265,9 +270,12 @@ sub Truncate {
     $::app->{main}->status("Not truncating -- your value for the cutoff energy is not a number!", 'error|nobuffer');
     return;
   };
-  $_->Truncate($beforeafter, $e) foreach (@data);
-  $this->plot_truncate($data[0]);
+  foreach my $d (@data) {
+    $d->Truncate($beforeafter, $e);
+    $app->{main}->status("Truncating ".$d->name, 'nobuffer');
+  };
   $app->{main}->status(sprintf("Removed data %s %.3f for %s", $beforeafter, $e, $text));
+  $this->plot_truncate($data[0]);
   $::app->modified(1);
 };
 
@@ -280,7 +288,7 @@ Demeter::UI::Athena::Deglitch - A deglitching tool_ for Athena
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.4.
+This documentation refers to Demeter version 0.5.
 
 =head1 SYNOPSIS
 

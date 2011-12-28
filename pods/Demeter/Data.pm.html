@@ -89,7 +89,7 @@
 
 <h1 id="VERSION">VERSION <a href="#TOP" class="toplink"><img alt="^" src="../up.gif" /></a></h1>
 
-<p>This documentation refers to Demeter version 0.4.</p>
+<p>This documentation refers to Demeter version 0.5.</p>
 
 
 
@@ -529,6 +529,9 @@ and <code>bft_rwindow</code> to the specified window type.</p></dd>
 
 </pre></dd>		<dd><p>The window type must be one of <code>Kaiser-Bessel</code>, <code>Hanning</code>,
 <code>Parzen</code>, <code>Welch</code>, <code>Sine</code>, or <code>Gaussian</code>.</p></dd>
+	<dt><code>nsuff</code></dt>
+		<dd><p>Returns either &quot;norm&quot; or &quot;flat&quot; as the proper suffix for the
+normalized mu(E) array depending on the value of <code>bkg_flatten</code>.</p></dd>
 	<dt><code>data</code></dt>
 		<dd><p>This method returns the reference to the data object itself.  This is
 less silly than it seems.  Having a <code>data</code> method defined for both

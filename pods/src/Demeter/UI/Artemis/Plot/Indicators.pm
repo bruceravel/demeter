@@ -20,8 +20,13 @@ use Wx qw( :everything );
 use base qw(Wx::Panel);
 use Wx::Event qw(EVT_BUTTON EVT_CHECKBOX EVT_ENTER_WINDOW EVT_LEAVE_WINDOW);
 
+use File::Basename;
+use File::Spec;
+
 use vars qw($nind);
 $nind = 5;
+my $icon     = File::Spec->catfile(dirname($INC{"Demeter/UI/Artemis.pm"}), 'Athena', , 'icons', "bullseye.png");
+my $bullseye = Wx::Bitmap->new($icon, wxBITMAP_TYPE_PNG);
 
 sub new {
   my ($class, $parent) = @_;
@@ -39,7 +44,7 @@ sub new {
     $this->{'space'.$j} = Wx::Choice->new($this, -1, wxDefaultPosition, [50, -1], ['k', 'R', 'q']);
     $this->{'text'.$j}  = Wx::StaticText->new($this, -1, ' at ');
     $this->{'value'.$j} = Wx::TextCtrl->new($this, -1, q{}, wxDefaultPosition, [45, -1]);
-    $this->{'grab'.$j}  = Wx::Button->new($this, -1, q{x}, wxDefaultPosition, wxDefaultSize, wxBU_EXACTFIT);
+    $this->{'grab'.$j}  = Wx::BitmapButton -> new($this, -1, $bullseye);
     $this->{'group'.$j} = q{};
     $this->{'check'.$j} -> SetValue(1);
 
@@ -52,7 +57,7 @@ sub new {
     $this->mouseover("check".$j,  "Toggle indicator #$j on and off.");
     $this->mouseover("space".$j,  "Select the plot space for indicator #$j.");
     $this->mouseover("value".$j,  "Specify the x-axis coordinate where indicator #$j is to be plotted.");
-    $this->mouseover("grab".$j,   "Grab the value for indicator #$j from the plot using the mouse.  (NOT WORKING YET.)");
+    $this->mouseover("grab".$j,   "Grab the value for indicator #$j from the plot using the mouse.");
 
   };
   $indboxsizer -> Add($gbs, 0, wxALL, 0);
@@ -66,6 +71,9 @@ sub new {
 
   EVT_BUTTON($this, $this->{all},  sub{$this->{'check'.$_}->SetValue(1) foreach (1..$nind)});
   EVT_BUTTON($this, $this->{none}, sub{$this->{'check'.$_}->SetValue(0) foreach (1..$nind)});
+  foreach my $i (1..$nind) {
+    EVT_BUTTON($this, $this->{'grab'.$i}, sub{Pluck(@_, $i)});
+  };
 
   $this->mouseover("all",  "Toggle all indicators ON.");
   $this->mouseover("none", "Toggle all indicators OFF.");
@@ -127,5 +135,27 @@ sub plot {
   $ds->unset_standard;
   return $self;
 };
+
+
+sub Pluck {
+  my ($self, $ev, $i) = @_;
+  my $on_screen       = $Demeter::UI::Artemis::frames{Plot}->{last};
+  if (not $on_screen) {
+    $Demeter::UI::Artemis::frames{main}->status("You haven't made a plot yet");
+    return;
+  };
+  if ($on_screen eq 'multiplot') {
+    $Demeter::UI::Artemis::frames{main}->status("Cannot pluck a value from a multiplot.");
+    return;
+  };
+  $on_screen          = 'R' if (lc($on_screen) eq 'r');
+  my ($ok, $x, $y)    = $::app->cursor($self);
+  $self->status("Failed to pluck a value for $which"), return if not $ok;
+  my $plucked         = sprintf("%.3f", $x);
+  $self->{'value'.$i}->SetValue($plucked);
+  $self->{'space'.$i}->SetStringSelection($on_screen);
+  my $text            = sprintf("Plucked %s as the value for an indicator in %s.", $plucked, $on_screen);
+  $Demeter::UI::Artemis::frames{main}->status($text);
+}
 
 1;

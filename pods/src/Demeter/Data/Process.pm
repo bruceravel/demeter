@@ -23,7 +23,8 @@ use Carp;
 use List::Util qw(reduce);
 use List::MoreUtils qw(minmax firstval uniq);
 use Readonly;
-Readonly my $EPSILON => 1e-5;
+Readonly my $EPSILON  => 1e-5;
+Readonly my $NULLFILE => '@&^^null^^&@';
 
 
 
@@ -55,6 +56,47 @@ sub rebin {
   return $rebinned;
 };
 
+sub rebin_is_sensible {
+  my ($self) = @_;
+  my $ret = Demeter::Return -> new();
+
+  my $emin  = $self->co->default(qw(rebin emin));
+  my $emax  = $self->co->default(qw(rebin emax));
+  if ($emax < $emin) {
+    ($emin, $emax) = ($emax, $emin);
+    $self->co->set_default(qw(rebin emin), $emin);
+    $self->co->set_default(qw(rebin emax), $emax);
+  };
+  if ($emax == $emin) {
+    $ret->status(0);
+    $ret->message("The XANES region is of zero length (emin = emax)");
+    return $ret;
+  };
+
+  my $pre   = $self->co->default(qw(rebin pre));
+  if ($pre <= 0) {
+    $ret->status(0);
+    $ret->message("The pre-edge grid is zero or negative");
+    return $ret;
+  };
+
+  my $xanes = $self->co->default(qw(rebin xanes));
+  if ($xanes <= 0) {
+    $ret->status(0);
+    $ret->message("The XANES grid is zero or negative");
+    return $ret;
+  };
+
+  my $exafs = $self->co->default(qw(rebin exafs));
+  if ($exafs <= 0) {
+    $ret->status(0);
+    $ret->message("The EXAFS grid is zero or negative");
+    return $ret;
+  };
+
+  return $ret;
+};
+
 
   ## dispersive
   ## deconvolute
@@ -84,7 +126,11 @@ sub merge {
   $self->standard;		# make self the standard for merging
 
   my $merged = $self->clone;
+  $merged -> source($NULLFILE);
+  $merged -> file($NULLFILE);
+  $merged -> reference(q{});
   $merged -> generated(1);
+  $merged -> prjrecord(q{});
 
   my $sum = 0;
   foreach my $d (uniq($self, @data)) {
@@ -145,6 +191,7 @@ sub merge {
   $merged -> bkg_eshift(0);
   $merged -> i0_string(q{});
   $merged -> provenance("Merge of  " . join(', ', map {$_->name} (uniq($self, @data)))   );
+  $merged -> source("Merge of  " . join(', ', map {$_->name} (uniq($self, @data)))   );
   $merged -> name("data merged as " . $howstring{$how});
   ($how =~ m{^k}) ? $merged -> datatype('chi') : $merged -> datatype('xmu');
 
@@ -401,7 +448,7 @@ Demeter::Data::Process - Processing XAS data
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.4.
+This documentation refers to Demeter version 0.5.
 
 =head1 DESCRIPTION
 

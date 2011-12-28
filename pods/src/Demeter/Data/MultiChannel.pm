@@ -82,8 +82,9 @@ sub make_data {
   $this->update_norm(1);
   $this->provenance(sprintf("multichannel data file %s", $self->file));
   $this->initialize_e0;
-
-  $this -> set(%args);
+  $args{datatype} ||= 'xmu';
+  $this->set(%args);
+  $this->resolve_defaults;
   return $this;
 };
 
@@ -107,7 +108,7 @@ Demeter::Data::MultiChannel - Efficiantly read multiple data channels from a sin
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.4.
+This documentation refers to Demeter version 0.5.
 
 =head1 DESCRIPTION
 

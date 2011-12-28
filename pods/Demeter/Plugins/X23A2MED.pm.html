@@ -51,7 +51,13 @@
 	<li><a href="#NAME">NAME</a></li>
 	<li><a href="#SYNOPSIS">SYNOPSIS</a></li>
 	<li><a href="#METHODS">METHODS</a></li>
-	<li><a href="#ADDITIONAL_ATTRIBUTE">ADDITIONAL ATTRIBUTE</a></li>
+	<li><a href="#ADDITIONAL_ATTRIBUTE">ADDITIONAL ATTRIBUTE</a><br />
+<ul>
+	<li><a href="#Deadtime_correction_parameters">Deadtime correction parameters</a></li>
+	<li><a href="#Other_column_labels">Other column labels</a></li>
+	<li><a href="#Integration_time">Integration time</a></li>
+</ul>
+</li>
 	<li><a href="#THE_CORRECTION_ALGORITHM">THE CORRECTION ALGORITHM</a></li>
 	<li><a href="#BUGS_AND_LIMITATIONS">BUGS AND LIMITATIONS</a></li>
 	<li><a href="#AUTHORS">AUTHORS</a></li>
@@ -66,10 +72,13 @@
 <h1 id="SYNOPSIS">SYNOPSIS <a href="#TOP" class="toplink"><img alt="^" src="../../up.gif" /></a></h1>
 
 <p>This plugin performs a deadtime correction on data recorded using the
-X23A2 Vortex silicon drift detector.  It requires an ini file to
-provide all the information needed to correct each channel, including
-the known deadtime (in nanoseconds) for each channel and the columns
-in the file containing the ROI, fast, and slow channels.</p>
+X23A2 Vortex silicon drift detector.  Both the single-element and
+four-element detectors are supported.</p>
+
+<p>This plugin requires configuration to provide all the information
+needed to correct each channel, including the known deadtime (in
+nanoseconds) for each channel and the columns in the file containing
+the ROI, fast, and slow channels.</p>
 
 <h1 id="METHODS">METHODS <a href="#TOP" class="toplink"><img alt="^" src="../../up.gif" /></a></h1>
 
@@ -81,56 +90,72 @@ by having a large (&gt;7) number of columns.</p></dd>
 	<dt><code>fix</code></dt>
 		<dd><p>An ini file is used to specify the deadtime for each channel and is
 prompted for the column labels for the ROI, fast, and slow channels
-for each element of the detector.  The default deadtime (2.80
+for each element of the detector.  The default deadtime (280
 nanoseconds) is very good for channels 1 and 2 and quite close for
 channels 3 and 4.</p></dd>
 		<dd><p>Once all of this information is supplied, the deadtime correction is
 done point-by-point for each channel and written out to a temporary
 file in the stash directory.  The columns in the stash directory are
-energy, i0, the four corrected channels, It, and Ir.  It and Ir are
-written out if present in the original file.</p></dd>
+energy, I0, the four corrected channels, It, and Ir.  It and Ir are
+written out if present in the original file.  Ir can also be called
+Iref.</p></dd>
+	<dt><code>suggest</code></dt>
+		<dd><p>This method returns a list which can be used in a Demeter script
+define a Data object which will correctly process the output file as
+fluorescence XAS data.</p></dd>
 </dl>
 <h1 id="ADDITIONAL_ATTRIBUTE">ADDITIONAL ATTRIBUTE <a href="#TOP" class="toplink"><img alt="^" src="../../up.gif" /></a></h1>
 
 <p>This plugin also provides the <code>inifile</code> attribute which points at an
-ini file containing the various paremeters of the deadtime correction.
-This content for the ini file works with the X23A2 Vortex at the time
-of this writing.</p>
+ini file containing the various paremeters of the deadtime correction.</p>
 
-<pre>   [elements]
-   n=4
+<p>Demeter ships with a demeter_conf file for configuring this plugin.</p>
 
-   [med]
-   # deadtimes are in nanoseconds
-   dt1=280
-   roi1=if1
-   fast1=ifast1
-   slow1=islow1
-   # deadtimes are in nanoseconds
-   dt2=280
-   roi2=if2
-   fast2=ifast2
-   slow2=islow2
-   # deadtimes are in nanoseconds
-   dt3=280
-   roi3=if3
-   fast3=ifast3
-   slow3=islow3
-   # deadtimes are in nanoseconds
-   dt4=280
-   roi4=if4
-   fast4=ifast4
-   slow4=islow4
-   energy=nergy
-   i0=i0
-   inttime=1
-   time=constant
-   intcol=inttime
+<h2 id="Deadtime_correction_parameters">Deadtime correction parameters</h2>
 
-</pre><p>By deafult, the file called <cite>x23a2vortex.ini</cite> in the dot folder
-(<cite>$HOME/.horae</cite> on unix, <cite>%APPDATA%\horae</cite> on Windows).  To supply
-new parameters, either overwrite that file or specify a different file
-as the value of this attribute.</p>
+<p>To apply the correction algorithm, this plugin needs to know which
+columns contain which data channels.  For each channel N, we need:</p>
+
+<dl>
+	<dt><code>dtN</code></dt>
+		<dd><p>The fast channel deadtime (which Joe measured to be approximately 280
+nsec for each channel) for detector N.</p></dd>
+	<dt><code>roiN</code></dt>
+		<dd><p>The column label for the region of interest (i.e. the discriminator
+window channel) for detector N.</p></dd>
+	<dt><code>fastN</code></dt>
+		<dd><p>The column label for the fast channel (i.e. the input count
+rate) for detector N.</p></dd>
+	<dt><code>fastN</code></dt>
+		<dd><p>The column label for the slow channel (i.e. the output count
+rate) for detector N.</p></dd>
+</dl>
+<h2 id="Other_column_labels">Other column labels</h2>
+
+<p>Additionally, the implementation of the algorithm needs to know the
+column labels for:</p>
+
+<ul>
+	<li>The energy column.  Oddly, Ifeffit removes the leading character from
+the line in the data file containing the column labels.  So &quot;energy&quot;
+becomes &quot;nergy&quot;.  Go figure.</li>
+	<li>The I0 column label</li>
+</ul>
+
+<h2 id="Integration_time">Integration time</h2>
+
+<p>The implementation of the algorithm also needs to know how integration
+times were done in the measurement.</p>
+
+<p>I strongly recommend that the integration time be recorded in the
+file.  (that can be set in XDAC).  in that case, you set the <code>intcol</code>
+parameter to the name of the column label containing the per-point
+integration time (which is called inttime) in XDAC.  If that column is
+missing, then the integration time must be specified by the <code>inttime</code>
+parameters.</p>
+
+<p>The <code>time</code> parameter is set to either <code>column</code> or <code>constant</code> to
+choose between the <code>intcol</code> and <code>inttime</code> options.</p>
 
 <h1 id="THE_CORRECTION_ALGORITHM">THE CORRECTION ALGORITHM <a href="#TOP" class="toplink"><img alt="^" src="../../up.gif" /></a></h1>
 
@@ -143,7 +168,7 @@ fast channel due to deadtime:</p>
 
 </pre><p>where tau is the deadtime, x is the actual input rate on the fast
 channel, and y is the measured rate on the dast channel.  The
-iterative solution encoded in the <code>correct</code> subroutine thus solves
+iterative solution encoded in the <code>_correct</code> subroutine thus solves
 point-by-point for x using a value for tau and the column containing
 y.</p>
 
@@ -152,20 +177,20 @@ standard correction of the ratio of the fast and slow channels (or
 ICR/OCR) will be applied to that channel.</p>
 
 <p>For high count rates, the proper deadtime correction is considerably
-more accurate than the standard correction.  For details see the
-upcoming paper by Woicik, Ravel, Fischer, Newburgh in the Journal of
-Synchrotron Radiation.</p>
+more accurate than the standard correction.  For details see Woicik,
+Ravel, Fischer, and Newburgh, J. Synchrotron Rad. (2010). 17, 409-413
+http://dx.doi:org/10.1107/S0909049510009064</p>
 
 <h1 id="BUGS_AND_LIMITATIONS">BUGS AND LIMITATIONS <a href="#TOP" class="toplink"><img alt="^" src="../../up.gif" /></a></h1>
 
-<ul>
-	<li>Need to do error checking on ini file values.</li>
-</ul>
+<p>Please report problems to Bruce Ravel (bravel AT bnl DOT gov)</p>
+
+<p>Patches are welcome.</p>
 
 <h1 id="AUTHORS">AUTHORS <a href="#TOP" class="toplink"><img alt="^" src="../../up.gif" /></a></h1>
 
-<pre>  Joe Woicik &lt;woicik@bnl.gov&gt; (algorithm)
-  Bruce Ravel &lt;bravel@bnl.gov&gt; (implementation)
+<pre>  Joe Woicik &lt;woicik AT bnl DOT gov&gt; (algorithm)
+  Bruce Ravel &lt;bravel AT bnl DOT gov&gt; (implementation)
   http://xafs.org/BruceRavel
 
 </pre>

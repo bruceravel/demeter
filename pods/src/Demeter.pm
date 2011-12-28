@@ -23,14 +23,15 @@ package Demeter;  # http://xkcd.com/844/
 require 5.008;
 
 use version;
-our $VERSION = version->new('0.4.7');
+our $VERSION = version->new('0.9.6');
 
 #use Demeter::Carp;
+#use Carp::Always::Color;
 use Carp;
 use Cwd;
 use File::Basename qw(dirname);
 use File::Spec;
-use List::MoreUtils qw(any minmax zip);
+use List::MoreUtils qw(any minmax zip uniq);
 #use Safe;
 use Pod::POM;
 use String::Random qw(random_string);
@@ -69,6 +70,7 @@ with 'Demeter::Tools';
 with 'Demeter::Files';
 with 'Demeter::Project';
 with 'Demeter::MRU';
+use Demeter::Return;
 
 with 'MooseX::SetGet';		# this is mine....
 
@@ -78,7 +80,9 @@ with 'MooseX::SetGet';		# this is mine....
 
 my %seen_group;
 has 'group'     => (is => 'rw', isa => 'Str',     default => sub{shift->_get_group()},
-		    trigger => sub{ my($self, $new); ++$seen_group{$new} if defined($new)});
+		    trigger => sub{ my($self, $new);
+				    ++$seen_group{$new} if (defined($new));
+				  });
 has 'name'      => (is => 'rw', isa => 'Str',     default => q{});
 has 'plottable' => (is => 'ro', isa => 'Bool',    default => 0);
 has 'pathtype'  => (is => 'ro', isa => 'Bool',    default => 0);
@@ -127,12 +131,14 @@ sub set_datagroup {
   $self->datagroup($group);
 };
 
-use vars qw($Gnuplot_exists $Fityk_exists $STAR_Parser_exists $XDI_exists);
+use vars qw($Gnuplot_exists $STAR_Parser_exists $XDI_exists
+	    $PDL_exists $PSG_exists);
 $Gnuplot_exists     = eval "require Graphics::GnuplotIF";
-$Fityk_exists       = eval "require fityk";
 $STAR_Parser_exists = 1;
 use STAR::Parser;
 $XDI_exists         = eval "require Xray::XDI";
+$PDL_exists         = eval "require PDL::Lite";
+$PSG_exists         = eval "require PDL::Stats::GLM";
 
 use Demeter::Plot;
 use vars qw($plot);
@@ -140,6 +146,10 @@ $plot = Demeter::Plot -> new() if not $mode->plot;
 $plot -> screen_echo(0);
 my $backend = $config->default('plot', 'plotwith');
 if ($backend eq 'gnuplot') {
+  if (Demeter->is_windows) {
+    my $message = Demeter->check_exe('gnuplot');
+    exit $message if ($message);
+  };
   $mode -> template_plot('gnuplot');
   $mode -> external_plot_object( Graphics::GnuplotIF->new(program => $config->default('gnuplot', 'program')) );
   require Demeter::Plot::Gnuplot;
@@ -196,13 +206,14 @@ sub import {
   #print join(" ", $class, caller), $/;
 
   my @load = ();
-  my @data = (qw(Data Plot/Indicator Plot/Style Journal
+  ## I wish I didn't have to load XES here
+  my @data = (qw(Data XES Plot/Indicator Plot/Style Journal
 		 Data/Prj Data/Pixel Data/MultiChannel));
-  my @heph = (qw(Data));
+  my @heph = (qw(Data XES));
   my @fit  = (qw(Atoms Feff Feff/External ScatteringPath
 		 Path VPath SSPath ThreeBody FPath FSPath
 		 GDS Fit Fit/Feffit StructuralUnit));
-  my @anal = (qw(LCF LogRatio Diff));
+  my @anal = (qw(LCF LogRatio Diff PeakFit PeakFit/LineShape));
   my @xes  = ('XES');
   my $colonanalysis = 0;
 
@@ -233,8 +244,8 @@ sub import {
       next PRAG;
     };
     if ($p eq ':analysis') {
-      @load = (@data, @anal, @xes);
-      $colonanalysis = 1;	# need to load peakfit separately while using fityk, see below
+      @load = (@data, @anal);
+      $colonanalysis = 1;	# verify PDL before loading PCA
       next PRAG;
     };
     if ($p eq ':all') {
@@ -244,19 +255,16 @@ sub import {
   };
   @load = (@data, @fit, @anal, @xes) if not @load;
 
-  foreach my $m (@load) {
+  foreach my $m (uniq @load) {
     next if $INC{"Demeter/$m.pm"};
     ##print "Demeter/$m.pm\n";
     require "Demeter/$m.pm";
   };
-  if ($colonanalysis and $Fityk_exists) {
-    foreach my $m (qw(PeakFit PeakFit/LineShape)) {
-      next if $INC{"Demeter/$m.pm"};
-      ##print "Demeter/$m.pm\n";
-      require "Demeter/$m.pm";
-    };
+  if ($colonanalysis and $PDL_exists and $PSG_exists) {
+    next if $INC{"Demeter/PCA.pm"};
+    ##print "Demeter/PCA.pm\n";
+    require "Demeter/PCA.pm";
   };
-
   $class -> register_plugins;
 };
 
@@ -608,8 +616,8 @@ sub translate_trouble {
     my $this = $item->title;
     my $match = $trouble;
     ($pp, $token) = (q{}, q{});
-    if ($trouble =~ m{_}) {
-      ($match, $pp, $token) = split(/_/, $trouble);
+    if ($trouble =~ m{~}) {
+      ($match, $pp, $token) = split(/~/, $trouble);
     };
     if ($this =~ m{$match}) {
       my $content = $item->content();
@@ -626,7 +634,7 @@ sub translate_trouble {
     };
   };
   $text =~ s{C<\$pp>}{$pp};
-  $text =~ s{C<\$token>}{$token};
+  $text =~ s{C<\$token>}{"$token"};
   $text =~ s{C<([^>]*)>}{$1}g;
   undef $parser;
   undef $pom;
@@ -741,6 +749,15 @@ sub template {
 sub pause {};
 alias sleep => 'pause';
 
+sub Croak {
+  my ($self, $arg) = @_;
+  if (lc($self->mo->ui) eq 'wx') {
+    Wx::Perl::Carp::warn($arg);
+  } else {
+    croak $arg;
+  };
+};
+
 __PACKAGE__->meta->make_immutable;
 1;
 
@@ -817,7 +834,7 @@ Demeter - A comprehensive XAS data analysis system using Feff and Ifeffit
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.4
+This documentation refers to Demeter version 0.5
 
 =head1 SYNOPSIS
 
@@ -1302,6 +1319,13 @@ Patches are welcome.
 =head1 VERSIONS
 
 =over 4
+
+=item 0.5.4
+
+New numbering scheme: 0.5 is the beta version with a windows
+installer, the third number corresponds to the release number.  So
+Windows installer release 4 contains the code from version 0.5.4 and
+so on.
 
 =item 0.4.7
 

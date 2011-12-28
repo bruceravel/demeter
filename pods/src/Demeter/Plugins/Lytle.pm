@@ -16,7 +16,7 @@ use List::MoreUtils qw(all);
 
 sub is {
   my ($self) = @_;
-  open D, $self->file or die "could not open " . $self->file . " as data (Lytle)\n";
+  open D, $self->file or $self->Croak("could not open " . $self->file . " as data (Lytle)\n");
   my $first = <D>;
   close D;
   return 1 if ($first =~ m{\A\s*NPTS\s+NS\s+CUEDGE\s+CUHITE});

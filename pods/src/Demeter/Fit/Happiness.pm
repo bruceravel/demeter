@@ -119,6 +119,7 @@ sub _penalize_pathparams {
   my $count   = 0;
   my $summary = q{};
   foreach my $p (@paths) {
+    next if not $p->include;
     foreach my $pa (@params) {
       my ($isok, $explanation) = $p->is_resonable($pa);
       if (not $isok) {
@@ -201,7 +202,7 @@ Demeter::Fit::Happiness - Semantic evaluation of an EXAFS fit
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.4.
+This documentation refers to Demeter version 0.5.
 
 =head1 SYNOPSIS
 

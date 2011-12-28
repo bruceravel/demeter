@@ -29,6 +29,7 @@ has 'config'   => (is => 'rw', isa => 'Any');  #         Demeter::Config);
 has 'plot'     => (is => 'rw', isa => 'Any');  #         Demeter::Plot);
 has 'fit'      => (is => 'rw', isa => 'Any');  # Empty.'|Demeter::Fit');
 has 'standard' => (is => 'rw', isa => 'Any');  # Empty.'|Demeter::Data');
+has 'current'  => (is => 'rw', isa => 'Any');  # Empty.'|Demeter::Data');
 has 'theory'   => (is => 'rw', isa => 'Any');  # Empty.'|Demeter::Feff');
 has 'path'     => (is => 'rw', isa => 'Any');  # Empty.'|Demeter::Path');
 
@@ -290,6 +291,17 @@ has 'LCF' => (
 			      'splice'  => 'splice_LCF',
 			     }
 	       );
+has 'PCA' => (
+		metaclass => 'Collection::Array',
+		is        => 'rw',
+		isa       => 'ArrayRef',
+		default   => sub { [] },
+		provides  => {
+			      'push'    => 'push_PCA',
+			      'clear'   => 'clear_PCA',
+			      'splice'  => 'splice_PCA',
+			     }
+	       );
 has 'XES' => (
 		metaclass => 'Collection::Array',
 		is        => 'rw',
@@ -357,11 +369,23 @@ has 'Journal' => (
 			     }
 	       );
 
+has 'Distributions' => (
+		metaclass => 'Collection::Array',
+		is        => 'rw',
+		isa       => 'ArrayRef',
+		default   => sub { [] },
+		provides  => {
+			      'push'    => 'push_Distributions',
+			      'clear'   => 'clear_Distributions',
+			      'splice'  => 'splice_Distributions',
+			     }
+	       );
+
 has 'types' => (is => 'ro', isa => 'ArrayRef',
 		default => sub{[qw(Atoms Data Feff External Fit Feffit GDS Path Plot Indicator Style
-				   LCF XES PeakFit LogRatio Diff LineShape
+				   LCF PCA XES PeakFit LogRatio Diff LineShape
 				   ScatteringPath VPath SSPath ThreeBody FPath FSPath
-				   StructuralUnit Prj Pixel MultiChannel Journal)]},);
+				   StructuralUnit Prj Pixel MultiChannel Journal Distributions)]},);
 
 has 'Plugins' => (
 		metaclass => 'Collection::Array',
@@ -394,6 +418,9 @@ has 'identity'             => (is => 'rw', isa => 'Str',  default => 'Demeter',)
 has 'ui'                   => (is => 'rw', isa => 'Str',  default => 'none',);
 has 'silently_ignore_unplottable' => (is => 'rw', isa => 'Bool', default => 0);
 
+has 'heap_free'	   => (is => 'rw', isa => 'Num', default => 0);
+has 'heap_used'	   => (is => 'rw', isa => 'Num', default => 0);
+
 sub increment_fit {
   my ($self) = @_;
   $self->currentfit($self->currentfit + 1);
@@ -417,6 +444,17 @@ sub fetch {
   return q{};
 };
 
+sub any {
+  my ($self, $group) = @_;
+  foreach my $t (@{$self->types}) {
+    my $list = $self->$t;
+    foreach my $o (@$list) {
+      return $o if ($o->group eq $group);
+    };
+  };
+  return q{};
+};
+
 sub remove {
   my ($self, $object) = @_;
   my $type = (split(/::/, ref $object))[-1];
@@ -427,8 +465,6 @@ sub remove {
   } elsif ($type eq 'External') {
     $type = 'Feff';
   } elsif ($type eq 'Demeter') {
-    return;
-  } elsif ($type eq 'Distributions') {
     return;
   };
   my $group = $object->group;
@@ -471,12 +507,14 @@ sub everything {
 	  @{ $self->Style	   },
 	  @{ $self->Feff	   },
 	  @{ $self->LCF		   },
+	  @{ $self->PCA		   },
 	  @{ $self->XES		   },
 	  @{ $self->PeakFit	   },
 	  @{ $self->LogRatio	   },
 	  @{ $self->Diff	   },
 	  @{ $self->LineShape      },
 	  @{ $self->Journal        },
+	  @{ $self->Distributions  },
 	  @{ $self->GDS		   },
 	 );
 };
@@ -523,7 +561,7 @@ Demeter::Mode - Demeter's sentinel system
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.4.
+This documentation refers to Demeter version 0.5.
 
 =head1 DESCRIPTION
 

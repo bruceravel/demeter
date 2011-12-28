@@ -19,6 +19,8 @@ use strict;
 use warnings;
 use Carp;
 use Chemistry::Elements qw(get_Z get_name get_symbol);
+use Cwd;
+use Scalar::Util qw(looks_like_number);
 
 use Wx qw( :everything );
 use base 'Wx::Panel';
@@ -30,6 +32,7 @@ my $standards = Demeter::UI::Standards->new();
 $standards -> ini(q{});
 
 use Demeter::UI::Wx::PeriodicTable;
+use Demeter::UI::Wx::SpecialCharacters qw($MU);
 
 sub new {
   my ($class, $page, $echoarea) = @_;
@@ -63,13 +66,18 @@ sub new {
   $hbox -> Add($controlbox, 1, wxEXPAND|wxALL, 5);
 
   $self->{howtoplot} = Wx::RadioBox->new( $self, -1, '', wxDefaultPosition, wxDefaultSize,
-				     ['Show XANES', 'Show derivative'], 1, wxRA_SPECIFY_COLS);
+				     ['Display XANES', 'Display derivative'], 1, wxRA_SPECIFY_COLS);
   $controlbox -> Add($self->{howtoplot}, 0, wxEXPAND|wxALL, 5);
 
   $self->{plot} = Wx::Button->new($self, -1, 'Plot standard', wxDefaultPosition, [120,-1]);
   EVT_BUTTON( $self, $self->{plot}, sub{make_standards_plot(@_, $self)} );
   $controlbox -> Add($self->{plot}, 0, wxEXPAND|wxALL, 5);
   $self->{plot}->Disable;
+
+  $self->{save} = Wx::Button->new($self, wxID_SAVE, q{}, wxDefaultPosition, [120,-1]);
+  EVT_BUTTON( $self, $self->{save}, sub{save_standard(@_, $self)} );
+  $controlbox -> Add($self->{save}, 0, wxEXPAND|wxALL, 5);
+  $self->{save}->Disable;
 
   ## finish up
   $vbox -> Add($hbox, 1, wxEXPAND|wxALL);
@@ -90,6 +98,7 @@ sub standards_get_data {
   };
   return 0 unless @choices;
   $self->{plot} -> Enable;
+  $self->{save} -> Enable;
   $self->{data} -> Set(\@choices);
   $self->{data} -> SetSelection(0);
   my $comment = join(': ', $standards->get(lc($choices[0]), 'tag'), $standards->get(lc($choices[0]), 'comment'));
@@ -104,10 +113,38 @@ sub make_standards_plot {
   #$demeter  -> plot_with('gnuplot');
   my $which   = ($parent->{howtoplot}->GetStringSelection =~ m{XANES}) ? 'mu' : 'deriv';
   my $choice  = $parent->{data}->GetStringSelection;
-  $standards -> plot($choice, $which, 'plot');
+  my $result  = $standards -> plot($choice, $which, 'plot');
   undef $busy;
   #undef $demeter;
+  return 0 if ($result =~ m{Demeter});
+  return 0 if (looks_like_number($result) and ($result == 0));
+  $self->{echo}->SetStatusText($result);
   return 1;
+};
+
+sub save_standard {
+  my ($self, $event, $parent) = @_;
+  my $choice  = $parent->{data}->GetStringSelection;
+  $choice =~ s{\s+}{_}g;
+  my $default = join('.', $choice, 'xmu');
+  my $fd = Wx::FileDialog->new( $self, "$MU(E) file", cwd, $default,
+				"data (*.dat,*.xmu)|*.data,*.xmu|All files|*",
+				wxFD_SAVE|wxFD_CHANGE_DIR, #|wxFD_OVERWRITE_PROMPT,
+				wxDefaultPosition);
+  return if ($fd->ShowModal == wxID_CANCEL);
+  my $file = $fd->GetPath;
+  if (-e $file) {
+    my $yesno = Wx::MessageDialog->new($self,
+				       "Overwrite existing file \"$file\"?",
+				       "Overwrite file?",
+				       wxYES_NO|wxYES_DEFAULT|wxICON_QUESTION,
+				      );
+                                      ##Wx::GetMousePosition  how is this done?
+    my $ok = $yesno->ShowModal;
+    return if $ok == wxID_NO;
+  };
+  $standards->save($choice, $file);
+  $self->{echo}->SetStatusText("Saved $MU(E) for $choice to $file");
 };
 
 sub echo_comment {
@@ -128,7 +165,7 @@ Demeter::UI::Hephaestus::Standards - Hephaestus' XAS data standards utility
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.4.
+This documentation refers to Demeter version 0.5.
 
 =head1 SYNOPSIS
 

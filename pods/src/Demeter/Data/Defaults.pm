@@ -36,6 +36,15 @@ sub resolve_defaults {
     #my @y = $self->get_array("xmu");
 
     my ($pre1, $pre2) = $self->resolve_pre(\@x);
+    if ($pre2 >= -35) {
+      if (($self->bkg_e0 > 12000) and ($self->bkg_e0 < 20000)) {
+	$pre2 -= 15;
+      } elsif (($self->bkg_e0 > 20000) and ($self->bkg_e0 < 30000)) {
+	$pre2 -= 30;
+      } elsif ($self->bkg_e0 > 30000) {
+	$pre2 -= 45;
+      };
+    };
     $self->bkg_pre1(sprintf("%.3f",$pre1));
     $self->bkg_pre2(sprintf("%.3f",$pre2));
 
@@ -154,8 +163,8 @@ sub to_default {
       $self->bft_rwindow($self->co->default('fft', 'kwindow'));
       last SWITCH;
     };
-    ($param eq 'fft_karb_value') and do {
-      $self->fft_karb_value(0.5);
+    ($param eq 'fit_karb_value') and do {
+      $self->fit_karb_value(0.5);
       last SWITCH;
     };
 
@@ -301,7 +310,7 @@ Demeter::Data::Defaults - Resolve default parameter values
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.4.
+This documentation refers to Demeter version 0.5.
 
 =head1 DESCRIPTION
 

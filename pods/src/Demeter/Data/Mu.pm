@@ -100,6 +100,24 @@ sub set_nknots {
   return $self;
 };
 
+sub guess_units {
+  my ($self) = @_;
+  my @energy = $self->get_array('energy');
+  return 'eV' if not @energy;
+  if (($energy[0] < $energy[1]) and
+      ($energy[1] < $energy[2]) and
+      ($energy[2] < $energy[3]) and
+      ($energy[3] < $energy[4])) {
+    if ($energy[0] > 100) {
+      return 'eV';
+    } else {
+      return 'keV';
+    };
+  } else {
+    return 'lambda';
+  };
+};
+
 sub guess_columns {
   my ($self) = @_;
   my $i0_regexp = $self->co->default("file", 'i0_regex');
@@ -147,14 +165,6 @@ sub guess_columns {
   };
 };
 
-# sub xmu_string {
-#   my ($self) = @_;
-#   carp("Demeter::Data::Mu: cannot put data unless the object contains mu(E) data\n\n"),
-#     return 0 if ($self->datatype ne 'xmu');
-#   my $string = q{};
-#   $self->xmu_string($string);
-#   return $string;
-# };
 sub put_data {
   my ($self) = @_;
 
@@ -191,9 +201,11 @@ sub put_data {
   unshift @cols, q{};
 
   my $energy_string = ($self->is_kev) ? '1000*'.$self->energy : $self->energy;
-  my ($xmu_string, $i0_string, $signal_string) = (q{}, q{}, q{});
-  if ($self->ln) {
-    $xmu_string    =   "ln(abs(  ("
+  my ($chi_string, $xmu_string, $i0_string, $signal_string) = (q{}, q{}, q{});
+  if ($self->datatype eq 'chi') {
+    $chi_string = $self->chi_column;
+  } elsif ($self->ln) {
+    $xmu_string    = "ln(abs(  ("
 	           . $self->numerator
                    . ") / ("
 		   . $self->denominator
@@ -205,34 +217,55 @@ sub put_data {
     $i0_string     = $self->denominator;
     $signal_string = $self->numerator;
   };
+  if ($self->inv) {
+    $xmu_string    = "-1*" . $xmu_string;
+    $signal_string = "-1*" . $signal_string;
+  };
 
   ## resolve column tokens
   my $group = $self->group;
-  $i0_string     =~ s{\$(\d+)}{$group.$cols[$1]}g;
-  $signal_string =~ s{\$(\d+)}{$group.$cols[$1]}g;
-  $xmu_string    =~ s{\$(\d+)}{$group.$cols[$1]}g;
-  $energy_string =~ s{\$(\d+)}{$group.$cols[$1]}g;
+  if ($self->datatype eq 'chi') {
+    $chi_string    =~ s{\$(\d+)}{$group.$cols[$1]}g;
+    $energy_string =~ s{\$(\d+)}{$group.$cols[$1]}g;
+    $self->chi_string($chi_string);
+  } else {
+    $i0_string     =~ s{\$(\d+)}{$group.$cols[$1]}g;
+    $signal_string =~ s{\$(\d+)}{$group.$cols[$1]}g;
+    $xmu_string    =~ s{\$(\d+)}{$group.$cols[$1]}g;
+    $energy_string =~ s{\$(\d+)}{$group.$cols[$1]}g;
 
-  $self->i0_string($i0_string);
-  $self->signal_string($signal_string);
-  $self->xmu_string($xmu_string);
+    $self->i0_string($i0_string);
+    $self->signal_string($signal_string);
+    $self->xmu_string($xmu_string);
+  };
   $self->energy_string($energy_string);
 
-  if ($self->display) {
+  if (($self->display) and ($self->datatype ne 'chi')) {
     $self->dispose($self->template("process", "display"));
     return;
   };
 
-  my $command = $self->template("process", "columns");
-  $command   .= $self->template("process", "deriv");
+  if ($self->datatype eq 'chi') {
+    my $command = $self->template("process", "chi_column");
+    $self->dispose($command);
+    return if $self->display;
+    $self->update_columns(0);
+    $self->update_data(0);
+    $self->resolve_defaults;
 
-  $self->dispose($command);
-  $self->i0_scale(Ifeffit::get_scalar('__i0_scale'));
-  $self->signal_scale(Ifeffit::get_scalar('__signal_scale'));
-  $self->update_columns(0);
-  $self->update_data(0);
+  } else {
+    my $command = $self->template("process", "columns");
+    $command   .= $self->template("process", "deriv");
 
-  $self->initialize_e0
+    $self->dispose($command);
+    $self->i0_scale(Ifeffit::get_scalar('__i0_scale'));
+    $self->signal_scale(Ifeffit::get_scalar('__signal_scale'));
+    $self->update_columns(0);
+    $self->update_data(0);
+
+    $self->initialize_e0 if not $self->is_nor; # we take a somewhat different path through these chores for pre-normalized data
+  };
+  return $self;
 };
 
 sub fix_chik {
@@ -273,10 +306,12 @@ sub normalize {
     $self->dispose($precmd);
 
     my $e0 = Ifeffit::get_scalar("e0");
-    my ($elem, $edge) = $self->find_edge($e0);
     $self->bkg_e0($e0);
-    $self->bkg_z($elem);
-    $self->fft_edge($edge);
+    if (lc($self->bkg_z) eq 'h') {
+      my ($elem, $edge) = $self->find_edge($e0);
+      $self->bkg_z($elem);
+      $self->fft_edge($edge);
+    };
     $self->bkg_spl1($self->bkg_spl1); # this odd move sets the spl1e and
     $self->bkg_spl2($self->bkg_spl2); # spl2e attributes correctly for the
 				      # new value of e0
@@ -290,12 +325,13 @@ sub normalize {
       $self->bkg_slope(0);
       $self->bkg_int(0);
     } else {
+      $self->bkg_step(1);
+      #$self->bkg_fixstep(1);
       $self->bkg_slope(sprintf("%.14f", Ifeffit::get_scalar("pre_slope")));
       $self->bkg_int(sprintf("%.14f", Ifeffit::get_scalar("pre_offset")));
     };
     $self->bkg_step(sprintf("%.7f", $fixed || Ifeffit::get_scalar("edge_step")));
     $self->bkg_fitted_step($self->bkg_step) if not ($self->bkg_fixstep);
-    $self->bkg_fitted_step(1) if ($self->is_nor);
 
     my $command = q{};
     $command .= $self->template("process", "post_autobk");
@@ -305,8 +341,10 @@ sub normalize {
       $command .= $self->template("process", "flatten_set");
     };
     $self->dispose($command);
-  } else {
-    $self->dispose($self->template("process", "is_nor"));
+  } else { # we take a somewhat different path through these chores for pre-normalized data
+    $self->bkg_step(1);
+    $self->bkg_fitted_step(1);
+    #$self->dispose($self->template("process", "is_nor"));
   };
 
   $self->update_norm(0);
@@ -329,10 +367,24 @@ sub autobk {
   $self->bkg_fitted_step($self->bkg_step) if not $self->bkg_fitted_step;
 
   my $command = q{};
+  if (lc($self->bkg_stan) ne 'none') {
+    my $stan = $self->mo->fetch("Data", $self->bkg_stan);
+    $command .= $stan->template("process", "autobk") if ($stan->update_bkg  and ($stan->datatype =~ m{xmu}));
+  };
+  $command .= $self->template("process", "autobk");
+  $fixed = $self->bkg_step if $self->bkg_fixstep;
 
-  $command = $self->template("process", "autobk");
-  if ($self->bkg_fixstep) {
-    $fixed = $self->bkg_step;
+  if ($self->is_nor) {		# we take a somewhat different path through these chores for pre-normalized data
+    my $e0 = Ifeffit::get_scalar("e0");
+    my ($elem, $edge) = $self->find_edge($e0);
+    $self->bkg_e0($e0);
+    $self->bkg_z($elem);
+    $self->fft_edge($edge);
+    $self->bkg_spl1($self->bkg_spl1); # this odd move sets the spl1e and
+    $self->bkg_spl2($self->bkg_spl2); # spl2e attributes correctly for the
+				      # new value of e0
+    $self->bkg_nor2($self->co->default('bkg', 'nor2'));
+    $self->resolve_defaults;
   };
   #$self->dispose($command);
 
@@ -344,6 +396,12 @@ sub autobk {
   $self->update_fft(1);
   $self->bkg_cl(0);
   $command .= $self->template("process", "post_autobk");
+  if ($self->is_nor) {
+    $command .= $self->template("process", "deriv");
+    $command .= $self->template("process", "nderiv");
+    $command .= $self->template("process", "is_nor");
+  };
+
   #$self->dispose($command);
 
 #     $command .= sprintf("set $group.fbkg = ($group.bkg-$group.preline+(%.5f-$group.line)*$group.theta)/%.5f\n",
@@ -359,7 +417,7 @@ sub autobk {
 
   ## first and second derivative
   #$command .= $self->template("process", "deriv");
-  $command .= $self->template("process", "nderiv");
+  $command .= $self->template("process", "nderiv") if not $self->is_nor;
   $self->dispose($command);
 
   ## note the largest value of the k array
@@ -558,6 +616,9 @@ sub find_edge {
   my $input = $e0;
   my ($edge, $answer, $this) = ("K", 1, 0);
   my $diff = 100000;
+  my $xdi_elem = (exists $self->xdi_scan->{element}) ? $self->xdi_scan->{element} : q{};
+  my $xdi_edge = (exists $self->xdi_scan->{edge})    ? $self->xdi_scan->{edge}    : q{};
+  return ($xdi_elem, $xdi_edge) if ($xdi_elem and $xdi_edge);
   foreach my $ed (qw(K L1 L2 L3)) {  # M1 M2 M3 M4 M5
   Z: foreach (1..104) {
       last Z unless (Xray::Absorption->in_resource($_));
@@ -582,9 +643,9 @@ sub find_edge {
     ($elem, $edge) = ("Co", "K")  if (($elem eq "Sm") and ($edge eq "L1"));
     ## give special treatment to the case of mn oxide.
     ($elem, $edge) = ("Mn", "K")  if (($elem eq "Ce") and ($edge eq "L1"));
-    ## prefer Bi K to Ir L1
+    ## prefer Bi L3 to Ir L1
     ($elem, $edge) = ("Bi", "L3") if (($elem eq "Ir") and ($edge eq "L1"));
-    ## prefer Se K to Tl L2
+    ## prefer Se K to Tl L3
     ($elem, $edge) = ("Se", "K")  if (($elem eq "Tl") and ($edge eq "L3"));
     ## prefer Pt L3 to W L2
     #($elem, $edge) = ("Pt", "L3") if (($elem eq "W") and ($edge eq "L2"));
@@ -595,7 +656,9 @@ sub find_edge {
     ## prefer Cr K to Ba L1
     ($elem, $edge) = ("Cr", "K")  if (($elem eq "Ba") and ($edge eq "L1"));
     ## prefer Ni K to Er L3
-    ($elem, $edge) = ("Ni", "K")  if (($elem eq "Er") and ($edge eq "L3"));
+    #($elem, $edge) = ("Ni", "K")  if (($elem eq "Er") and ($edge eq "L3"));
+    ## prefer Pd K to Bk L2
+    ($elem, $edge) = ("Pd", "K")  if (($elem eq "Bk") and ($edge eq "L2"));
   };
   return ($elem, $edge);
 };

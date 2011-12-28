@@ -9,7 +9,7 @@ has '+version'     => (default => 0.1);
 
 sub is {
   my ($self) = @_;
-  open D, $self->file or die "could not open " . $self->file . " as data (SSRLmicro)\n";
+  open D, $self->file or $self->Croak("could not open " . $self->file . " as data (SSRLmicro)\n");
   my $line = <D>;
   close D;
   my $is_ssrl  = ($line =~ m{^\s*SSRL\s+MicroEXAFS Data Collector});

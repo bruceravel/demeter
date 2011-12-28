@@ -148,7 +148,7 @@ sub _plotk_command {
   my $pf  = $self->mo->plot;
   my $string = q{};
   my $group = $self->group;
-  my $kw = $pf->kweight;
+  my $kw = $self->data->get_kweight;
 
   my ($xlorig, $ylorig) = ($pf->xlabel, $pf->ylabel);
   my $xl = "k (\\A\\u-1\\d)" if ((not defined($xlorig)) or ($xlorig =~ /^\s*$/));
@@ -182,7 +182,8 @@ sub _plotR_command {
   my $string = q{};
   my $group = $self->group;
   my %suffix = ('m'=>"chir_mag", e=>"chir_mag", r=>"chir_re", i=>"chir_im", p=>"chir_pha");
-  my $kw = $pf->kweight;
+  my %title = ('m'=>"Magnitude", e=>"Envelope", r=>"Real part", i=>"Imaginary part", p=>"Phase");
+  my $kw = $self->data->get_kweight;
   my $xl = $pf->xlabel;
   $pf->xlabel("R (\\A)") if ((not defined($xl)) or ($xl =~ /^\s*$/));
   $pf->ylabel($pf->plot_rylabel);
@@ -190,9 +191,16 @@ sub _plotR_command {
   ($pf->showlegend) ? $pf->key($self->name) : $pf->key(q{});
   $pf->title(sprintf("%s in R space", $title)) if not $pf->title;
 
+  if ((lc($pf->r_pl) eq 'p') and $self->po->dphase) {
+    $self->dispose($self->template('process', 'dphase'));
+    $title{p} = sprintf("Derivative of phase * %.4f", Ifeffit::get_scalar('___dphase_scale'));
+    $self->dispose("erase ___dphase_scale");
+  };
+  $self->plotkey($title{lc($pf->r_pl)}) if $self->po->single;
   $string = ($pf->New)
           ? $self->template("plot", "newr")
           : $self->template("plot", "overr");
+  $self->plotkey(q{});
   if (lc($pf->r_pl) eq 'e') {		# envelope
     my $pm = $self->plot_multiplier;
     $self->plot_multiplier(-1*$pm);
@@ -220,17 +228,21 @@ sub _plotq_command {
   my $pf  = $self->mo->plot;
   my $string = q{};
   my $group = $self->group;
-  my $kw = $pf->kweight;
+  my %title = ('m'=>"Magnitude", e=>"Envelope", r=>"Real part", i=>"Imaginary part", p=>"Phase");
+  #$title{p} = "Derivative of phase" if $self->po->dphase;
+  my $kw = $self->data->get_kweight;
   my $xl = $pf->xlabel;
   $pf->xlabel("k (\\A\\u-1\\d)") if ($xl =~ m{\A\s*\z});
   $pf->ylabel($pf->plot_qylabel);
   (my $title = $self->name) =~ s{D_E_F_A_U_L_T}{Plot of paths};
   ($pf->showlegend) ? $pf->key($self->name) : $pf->key(q{});
   $pf->title(sprintf("%s in q space", $title)) if not $pf->title;
+  $self->plotkey($title{lc($pf->q_pl)}) if $self->po->single;
 
   $string = ($pf->New)
           ? $self->template("plot", "newq")
           : $self->template("plot", "overq");
+  $self->plotkey(q{});
   if (lc($pf->q_pl) eq 'e') {		# envelope
     my $pm = $self->plot_multiplier;
     $self->plot_multiplier(-1*$pm);
@@ -445,7 +457,7 @@ sub rmr_offset {
   my ($self) = @_;
   $self->_update('bft');
   if ($self->po->plot_rmr_offset) {
-    my $kw = $self -> po -> kweight;
+    my $kw = $self -> data -> get_kweight;
     return -10**($kw-1) * $self->po->offset if ($kw == 1);
   };
   return -0.6*max($self->get_array("chir_mag"));
@@ -532,8 +544,11 @@ sub plot_marker {
   my $command = q{};
   my @list = (ref($x) eq 'ARRAY') ? @$x : ($x);
   foreach my $xx (@list) {
-    my $y = $self->yofx($requested, "", $xx);
-    $command .= $self->template("plot", "marker", { x => $xx, 'y'=> $y });
+    my $which = ($requested eq 'chie') ? 'chi' : $requested;
+    my $xxx = ($requested eq 'chie') ? $self->k2e($xx, 'absolute') : $xx ;
+    my $y = $self->yofx($which, "", $xx);
+    $y = $y*$xx**$self->data->get_kweight if ($requested eq 'chie');
+    $command .= $self->template("plot", "marker", { x => $xxx, 'y'=> $y });
   };
   #if ($self->get_mode("template_plot") eq 'gnuplot') {
   #  $self->get_mode('external_plot_object')->gnuplot_cmd($command);
@@ -563,7 +578,7 @@ sub stack {
 sub running {
   my ($self, $space, $kw) = @_;
   $space ||= $self->po->space;
-  $kw ||= $self->po->kweight;
+  $kw ||= $self->data->get_kweight;
   my ($diffsum, $max, $suff) = (0,0,q{});
   my @running = ();
  SWITCH: {
@@ -692,7 +707,8 @@ sub quadplot {
   };
   croak(ref $self . " objects are not plottable") if not $self->plottable;
   if ((ref($self) =~ m{Data}) and ($self->datatype eq 'xanes')) {
-    croak("XANES data and non Data objects are not plottable as Rk") if not $self->mo->silently_ignore_unplottable;
+    carp("XANES data and non Data objects are not plottable as quadplots") if not $self->mo->silently_ignore_unplottable;
+    return $self;
   };
 
   $self->_update('all');
@@ -756,6 +772,7 @@ sub rkplot {
   $self->part_fft('fit');
 
   $self -> po -> start_plot;
+  $self -> po -> title($self->name);
 
   my $string = $self->template("plot", "rkr");
   $string   .= $self->template("plot", "rkk");
@@ -792,7 +809,7 @@ sub suffix {
     $suff = 'chir_re';
   } elsif (($po->space eq 'r') and ($po->r_pl eq 'i')) {
     $suff = 'chir_im';
-  } elsif (($po->space eq 'q') and ($po->r_pl eq 'p')) {
+  } elsif (($po->space eq 'r') and ($po->r_pl eq 'p')) {
     $suff = 'chir_pha';
   } elsif (($po->space eq 'q') and ($po->q_pl eq 'm')) {
     $suff = 'chiq_mag';
@@ -814,7 +831,7 @@ Demeter::Data::Plot - Data plotting methods for Demeter
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.4.
+This documentation refers to Demeter version 0.5.
 
 =head1 METHODS
 

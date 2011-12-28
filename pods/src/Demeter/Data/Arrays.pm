@@ -40,6 +40,19 @@ sub iofx {
   return $i;
 };
 
+sub get_titles {
+  my ($self) = @_;
+  my @titles;
+  my $string = Ifeffit::get_string(sprintf("%s_title_%2.2d", $self->group, 1));
+  my $i = 1;
+  while ($string !~ m{\A\s+\z}) {
+    push @titles, $string;
+    ++$i;
+    $string = Ifeffit::get_string(sprintf("%s_title_%2.2d", $self->group, $i));
+    #print sprintf("%s_title_%2.2d", $self->group, $i), ":  ", $string, $/;
+  };
+  return @titles;
+};
 
 sub put {
   my ($self, $eref, $xref, @args) = @_;
@@ -95,7 +108,7 @@ sub get_array {
   $part ||= q{};
   if (not $self->plottable) {
     my $class = ref $self;
-    croak("$class objects have no arrays associated with them");
+    croak("Demeter: $class objects have no arrays associated with them and are not plottable");
   };
   my $group = $self->group;
   my $text = ($part =~ m{(?:bkg|fit|res|run)}) ? "${group}_$part.$suffix" : "$group.$suffix";
@@ -124,7 +137,7 @@ sub floor_ceil {
   my @array = $self->get_array($suffix, $part);
   if ($suffix eq 'chi') {
     my @k = $self->get_array('k');
-    my $w = $self->po->kweight;
+    my $w = $self->data->get_kweight;
     @array = map { $array[$_] * $k[$_] ** $w } (0 .. $#array);
   };
   my ($min, $max) = minmax(@array);
@@ -135,7 +148,7 @@ sub arrays {
   my ($self) = @_;
   if (not $self->plottable) {
     my $class = ref $self;
-    croak("$class objects have no arrays associated with them");
+    croak("Demeter: $class objects have no arrays associated with them and are not plottable");
   };
   my $save = Ifeffit::get_scalar("\&screen_echo");
   $self->dispose("\&screen_echo = 0\nshow \@group ".$self->group);
@@ -164,21 +177,27 @@ sub points {
   $args{part}     ||= q{};
   $args{add}      ||= q{};
   $args{subtract} ||= q{};
+  $args{dphase}   ||= 0;
 
-  my @x = ($args{space} eq 'e')    ? $self->get_array('energy')
-        : ($args{space} eq 'k')    ? $self->get_array('k', $args{part})
-        : ($args{space} eq 'chie') ? $self->get_array('k')
-        : ($args{space} eq 'r')    ? $self->get_array('r', $args{part})
-        : ($args{space} eq 'lcf')  ? $self->get_array('x')
-        : ($args{space} eq 'diff') ? $self->get_array('energy')
-        : ($args{space} eq 'lr')   ? $self->get_array('q')
-        : ($args{space} eq 'x')    ? $self->get_array('x')
-        :                            $self->get_array('q', $args{part});
+  my @x = ($args{space} eq 'e')     ? $self->get_array('energy')
+        : ($args{space} eq 'k')     ? $self->get_array('k', $args{part})
+        : ($args{space} eq 'chie')  ? $self->get_array('k')
+        : ($args{space} eq 'r')     ? $self->get_array('r', $args{part})
+        : ($args{space} eq 'lcf')   ? $self->get_array('x')
+        : ($args{space} eq 'diff')  ? $self->get_array('energy')
+        : ($args{space} eq 'lr')    ? $self->get_array('q')
+        : ($args{space} eq 'x')     ? $self->get_array('x')
+        : ($args{space} eq 'index') ? $self->get_array('index')
+        :                             $self->get_array('q', $args{part});
   my @k = @x;
   @x = map {$_**2/$ETOK + $self->bkg_e0} @x if ($args{space} eq 'chie');
   @x = map {$_ + $args{shift}} @x;
   my @y = ();
   my @z = ();
+  if (($args{suffix} eq 'chir_pha') and $args{dphase}) {
+    $args{suffix} = 'dph';
+    #$self->dispose("erase ___dp_scale");
+  };
   if ($args{space} eq 'lcf') {
     @y = $self->get_array($args{suffix});
   } elsif ($args{space} eq 'lr') {
@@ -230,7 +249,7 @@ Demeter::Data::Arrays - Data array methods for Demeter
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.4.
+This documentation refers to Demeter version 0.5.
 
 =head1 METHODS
 

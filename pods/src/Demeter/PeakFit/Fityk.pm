@@ -11,10 +11,11 @@ use vars qw($FITYK $RESPONSE);
 $FITYK = fityk::Fityk->new;
 my $fityk_initialized = 0;
 
-has 'my_file'     => (is => 'ro', isa => 'Str',  default => 'Demeter/PeakFit/Fityk.pm');
-has 'sigil'       => (is => 'ro', isa => 'Str',  default => '%');
-has 'fit_command' => (is => 'ro', isa => 'Str',  default => 'fit in @0');
-has 'init_data'   => (is => 'ro', isa => 'Str',  default => '@0.F=0');
+has 'feedback'      => (is => 'rw', isa => 'Str',  default => q{});
+has 'my_file'       => (is => 'ro', isa => 'Str',  default => 'Demeter/PeakFit/Fityk.pm');
+has 'sigil'         => (is => 'ro', isa => 'Str',  default => '%');
+has 'init_data'     => (is => 'ro', isa => 'Str',  default => '@0.F=0');
+has 'defwidth'      => (is => 'ro', isa => 'Num',  default => 0);
 has 'function_hash' => (is => 'ro', isa => 'HashRef',
 			default => sub{
 			  {
@@ -55,6 +56,79 @@ has 'function_hash' => (is => 'ro', isa => 'HashRef',
 			}
 		       );
 
+
+sub DEMOLISH {
+  my ($self) = @_;
+  $self->close_file;
+  unlink $self->feedback;
+  $self->cleantemp;
+};
+
+sub pf_dispose {
+  my ($self, $string) = @_;
+  local $| = 1;
+
+  if ($self->screen) {
+    my ($start, $end) = ($self->mo->ui eq 'screen') ? $self->_ansify(q{}, 'peakfit') : (q{}, q{});
+    print $start, $string, $end, $/;
+  };
+
+  if ($self->engine) {
+    $self->process($string);
+    if ($self->screen) {
+      local $| = 1;
+      $self->close_file;
+      my $response = $self->slurp($self->feedback);
+      if ($response !~ m{\A\s+\z}) {
+	my ($start, $end) = ($self->mo->ui eq 'screen') ? $self->_ansify(q{}, 'comment') : (q{}, q{});
+	my $start_tag = '# --> ';
+	foreach my $line (split(/\n/, $response)) {
+	  print $start, $start_tag, $line, $end, $/;
+	  $start_tag = '      ';
+	};
+      };
+      $self->refresh_file;
+    };
+  };
+
+  if ($self->buffer) {
+    if (ref($self->buffer eq 'SCALAR')) {
+      my $contents = ${$self->buffer};
+      $contents .= $string . $/;
+      $self->buffer(\$contents);
+    } elsif (ref($self->buffer eq 'ARRAY')) {
+      my @contents = @{$self->buffer};
+      push @contents, $string;
+      $self->buffer(\@contents);
+    };
+  };
+
+  return $self;
+};
+
+sub fit_command {
+  my ($self) = @_;
+  return 'fit in @0';
+};
+
+sub prep_data {
+  my ($self) = @_;
+  my $file = File::Spec->catfile($self->stash_folder, 'data_'.random_string('cccccccc'));
+  $self->data->points(file    => $file,
+		      space   => 'E',
+		      suffix  => $self->yaxis,
+		      shift   => $self->data->eshift,
+		      scale   => $self->data->plot_multiplier,
+		      yoffset => $self->data->y_offset
+		     );
+  $self->pf_dispose($self->read_command($file));
+  $self->add_tempfile($file);
+  $self->pf_dispose($self->range_command($self->xmin, $self->xmax));
+  $self->pf_dispose($self->init_data);
+  return $self;
+};
+
+
 sub read_command {
   my ($self, $file) = @_;
   return '@0 < ' . $file;
@@ -68,8 +142,10 @@ sub set_model {
   return '@0.F=' . $model;
 };
 sub cleanup {
-  my ($self, $string) = @_;
-  return 'delete ' . $string;
+  my ($self, $ref) = @_;
+  my $string = join(', ', @$ref);
+  $self->pf_dispose('delete ' . $string);
+  return $self;
 };
 
 sub initialize {
@@ -79,8 +155,8 @@ sub initialize {
   open $RESPONSE, '>', $file;
   $FITYK->redir_messages($RESPONSE);
   if (not $fityk_initialized) {
-    $self->dispose_to_fit_engine('define Atan(step=1, e0=0, width=1) = step*(atan((x-e0)/width)/pi + 0.5)');
-    $self->dispose_to_fit_engine('define Erf(step=0.5, e0=0, width=1) = step*(erf((x-e0)/width) + 1)');
+    $self->pf_dispose('define Atan(step=1, e0=0, width=1) = step*(atan((x-e0)/width)/pi + 0.5)');
+    $self->pf_dispose('define Erf(step=0.5, e0=0, width=1) = step*(erf((x-e0)/width) + 1)');
     $fityk_initialized = 1;
   };
   return $self;
@@ -186,6 +262,46 @@ sub fityk_report {
 };
 
 
+## define a lineshape
+sub define {
+  my ($self, $ls) = @_;
+  my $string = sprintf("%%%s = guess %s [%.2f:%.2f]", $ls->group, $ls->function, $self->xmin, $self->xmax);
+  my @args = ();
+  my @names = $ls->parameter_names;
+  foreach my $i (0 .. $ls->np-1) {
+    my $att = 'a'.$i;
+    push(@args, sprintf(" %s=%s%.5f", $names[$i], $ls->isfixed($i), $ls->$att)) if $ls->$att;
+  };
+  $string .= join(", ", @args);
+  $string .= ' in @0';
+  $self->pf_dispose($string);
+  return $self;
+};
+
+sub put_arrays {
+  my ($self, $ls, $rx) = @_;
+  ## this bit needs abstractin'
+  $self->pf_dispose($self->init_data);
+  $self->pf_dispose($self->set_model('%'.$ls->group));
+  my $model_y = $self->engine_object->get_model_vector($rx, 0);
+  Ifeffit::put_array($ls->group.".".$self->xaxis, $rx);
+  Ifeffit::put_array($ls->group.".".$self->yaxis, $model_y);
+  return $model_y;
+};
+
+sub resid {
+  my ($self) = @_;
+  $self -> dispose(sprintf("set %s.resid = %s.%s - %s.%s", $self->group, $self->data->group, $self->yaxis, $self->group, $self->yaxis));
+  return $self;
+};
+
+sub post_fit {
+  my ($self, $rall) = @_;
+  $self->pf_dispose($self->init_data);
+  $self->pf_dispose($self->set_model(join(' + ', @$rall)));
+  return $self;
+};
+
 1;
 
 
@@ -195,7 +311,7 @@ Demeter::PeakFit::LineShape - A lineshape object for peak fitting in Demeter
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.4.
+This documentation refers to Demeter version 0.5.
 
 =head1 SYNOPSIS
 

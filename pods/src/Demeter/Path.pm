@@ -21,7 +21,7 @@ use Moose;
 use MooseX::Aliases;
 #use MooseX::StrictConstructor;
 extends 'Demeter';
-use Demeter::StrTypes qw( Empty PathParam );
+use Demeter::StrTypes qw( Empty PathParam FileName );
 use Demeter::NumTypes qw( Natural PosInt NonNeg );
 
 with 'Demeter::Data::Arrays';
@@ -214,6 +214,7 @@ sub _update {
       last WHICH;
     };
   };
+  $self->ifeffit_heap;
   return $self;
 };
 
@@ -237,7 +238,7 @@ sub make_name {
   my $pattern = $self->co->default("pathfinder", "label");
   my $token = $self->co->default("pathfinder", "token");
   my $noends = $sp->intrplist;
-  my $re = qr($token);
+  my $re = qr(\Q$token\E);	# \Q...\E quotes the metacharacters, see perlre
   $noends =~ s{\A$re}{};
   $noends =~ s{$re\z}{};
   my %table = (i   => $self->Index,
@@ -401,7 +402,7 @@ sub parse_nnnn {
   my ($self) = @_;
   my $oneoff = "feff" . $self->co->default('pathfinder', 'one_off_index');
   my ($folder, $file) = $self->get(qw(folder file));
-  my $fname = File::Spec -> catfile($folder, $file);
+  my $fname = $self->follow_link(File::Spec -> catfile($folder, $file));
   return if not -f $fname;
 
   open (my $NNNN, $fname);
@@ -569,7 +570,7 @@ Demeter - Single and multiple scattering paths for EXAFS fitting
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.4.
+This documentation refers to Demeter version 0.5.
 
 
 =head1 SYNOPSIS

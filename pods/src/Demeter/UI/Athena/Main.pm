@@ -7,7 +7,8 @@ use Wx qw( :everything );
 use base 'Wx::Panel';
 use Wx::Event qw(EVT_LIST_ITEM_ACTIVATED EVT_LIST_ITEM_SELECTED EVT_BUTTON EVT_KEY_DOWN
 		 EVT_TEXT EVT_CHOICE EVT_COMBOBOX EVT_CHECKBOX EVT_RADIOBUTTON
-		 EVT_RIGHT_DOWN EVT_MENU EVT_TEXT_ENTER);
+		 EVT_RIGHT_DOWN EVT_MENU EVT_TEXT_ENTER EVT_SPIN_UP EVT_SPIN_DOWN
+		 EVT_ENTER_WINDOW EVT_LEAVE_WINDOW);
 use Wx::Perl::TextValidator;
 
 use Chemistry::Elements qw(get_name get_Z get_symbol);
@@ -76,8 +77,8 @@ sub group {
   $this->{group_group_label} -> SetFont( Wx::Font->new( $box_font_size, wxDEFAULT, wxNORMAL, wxBOLD, 0, "" ) );
   $groupboxsizer -> Add($this->{group_group_label}, 0, wxBOTTOM|wxALIGN_LEFT, 5);
 
-  EVT_RIGHT_DOWN($this->{group_group_label}, sub{ContextMenu(@_, $app, 'group')});
-  EVT_MENU($this->{group_group_label}, -1, sub{ $this->DoContextMenu(@_, $app, 'group') });
+  EVT_RIGHT_DOWN($this->{group_group_label}, sub{ContextMenu(@_, $app, 'currentgroup')});
+  EVT_MENU($this->{group_group_label}, -1, sub{ $this->DoContextMenu(@_, $app, 'currentgroup') });
 
   my $gbs = Wx::GridBagSizer->new( 5, 5 );
 
@@ -85,6 +86,12 @@ sub group {
   $this->{file}       = Wx::TextCtrl   -> new($this, -1, q{}, wxDefaultPosition, [450,-1], wxTE_READONLY);
   $gbs -> Add($this->{file_label}, Wx::GBPosition->new(0,0));
   $gbs -> Add($this->{file},       Wx::GBPosition->new(0,1), Wx::GBSpan->new(1,7), 1);
+  EVT_ENTER_WINDOW($this->{file}, sub{my $text = $this->show_source;
+				      $::app->{main}->GetStatusBar->PushStatusText($text);
+				      $_[1]->Skip});
+  EVT_LEAVE_WINDOW($this->{file}, sub{my $text = $this->show_source;
+				      $::app->{main}->GetStatusBar->PopStatusText if ($::app->{main}->GetStatusBar->GetStatusText eq $text);
+				      $_[1]->Skip});
 
   my @elements = map {sprintf "%-2d: %s", $_, get_name($_)} (1 .. 96);
   $this->{bkg_z_label}      = Wx::StaticText -> new($this, -1, "Element");
@@ -138,7 +145,7 @@ sub bkg {
   my $backgroundboxsizer  = Wx::BoxSizer->new( wxVERTICAL );
   $backgroundboxsizer -> Add(Wx::StaticLine->new($this, -1, wxDefaultPosition, wxDefaultSize, wxLI_HORIZONTAL), 0, wxGROW|wxBOTTOM, 2);
   $this->{sizer}  -> Add($backgroundboxsizer, 0, wxTOP|wxBOTTOM|wxGROW, 10);
-  $this->{background_group_label} = Wx::StaticText->new($this, -1, 'Background removal parameters');
+  $this->{background_group_label} = Wx::StaticText->new($this, -1, 'Background removal and normalization parameters');
   $this->{background_group_label} -> SetFont( Wx::Font->new( $box_font_size, wxDEFAULT, wxNORMAL, wxBOLD, 0, "" ) );
   $backgroundboxsizer -> Add($this->{background_group_label}, 0, wxBOTTOM|wxALIGN_LEFT, 5);
 
@@ -149,11 +156,12 @@ sub bkg {
 
   ## E0, Rbkg, flatten
   $this->{bkg_e0_label}   = Wx::StaticText   -> new($this, -1, "E0");
-  $this->{bkg_e0}         = Wx::TextCtrl     -> new($this, -1, q{}, wxDefaultPosition, $tcsize, wxTE_PROCESS_ENTER);
+  $this->{bkg_e0}         = Wx::TextCtrl     -> new($this, -1, q{}, wxDefaultPosition, [80,-1], wxTE_PROCESS_ENTER);
   $this->{bkg_e0_pluck}   = Wx::BitmapButton -> new($this, -1, $bullseye);
   $this->{bkg_rbkg_label} = Wx::StaticText   -> new($this, -1, "Rbkg");
   $this->{bkg_rbkg}       = Wx::TextCtrl     -> new($this, -1, q{}, wxDefaultPosition, $tcsize, wxTE_PROCESS_ENTER);
   $this->{bkg_rbkg_pluck} = Wx::BitmapButton -> new($this, -1, $bullseye);
+  #$this->{bkg_rbkg_pluck} = Wx::SpinButton -> new($this, -1, wxDefaultPosition, wxDefaultSize, wxSP_HORIZONTAL|wxSP_WRAP);
   $this->{bkg_flatten}    = Wx::CheckBox     -> new($this, -1, q{Flatten normalized data});
   $gbs -> Add($this->{bkg_e0_label},   Wx::GBPosition->new(0,0));
   $gbs -> Add($this->{bkg_e0},         Wx::GBPosition->new(0,1));
@@ -164,6 +172,8 @@ sub bkg {
   $gbs -> Add($this->{bkg_flatten},    Wx::GBPosition->new(0,6), Wx::GBSpan->new(1,3));
   $this->{bkg_flatten}->SetValue(1);
   push @bkg_parameters, qw(bkg_e0 bkg_rbkg bkg_flatten);
+  #EVT_SPIN_UP  ($this, $this->{bkg_rbkg_pluck}, sub{spin_rbkg(@_, 'up'  )});
+  #EVT_SPIN_DOWN($this, $this->{bkg_rbkg_pluck}, sub{spin_rbkg(@_, 'down')});
 
   ## kweight, step, fix step
   $this->{bkg_kw_label}   = Wx::StaticText -> new($this, -1, "k-weight");
@@ -302,7 +312,7 @@ sub bkg {
   $abox -> Add($this->{bkg_stan_label},   0, wxBOTTOM|wxRIGHT,   5);
   $abox -> Add($this->{bkg_stan},         0, wxRIGHT, 10);
   push @bkg_parameters, qw(bkg_stan bkg_clamp1 bkg_clamp2 clamp);
-  $app -> mouseover($this->{bkg_stan}, "Background removal with a standard is not working yet.  Sorry.");
+  $app -> mouseover($this->{bkg_stan}, "Perform background removal using the selected data standard.");
 
   $backgroundboxsizer -> Add($abox, 0, wxLEFT, 10);
 
@@ -325,6 +335,7 @@ sub bkg {
     EVT_RIGHT_DOWN($this->{$x.'_label'}, sub{ContextMenu(@_, $app, $x)});
     EVT_MENU($this->{$x.'_label'}, -1, sub{ $this->DoContextMenu(@_, $app, $x) });
   };
+  #
   foreach my $x (qw(bkg_e0 bkg_rbkg bkg_pre1 bkg_pre2 bkg_nor1 bkg_nor2 bkg_spl1 bkg_spl2 bkg_spl1e bkg_spl2e)) {
     EVT_BUTTON($this, $this->{$x.'_pluck'}, sub{Pluck(@_, $app, $x)})
   };
@@ -363,9 +374,10 @@ sub fft {
   EVT_RIGHT_DOWN($this->{fft_group_label}, sub{ContextMenu(@_, $app, 'fft')});
   EVT_MENU($this->{fft_group_label}, -1, sub{ $this->DoContextMenu(@_, $app, 'fft') });
 
+  my $tcsize = [50,-1];
   my $gbs = Wx::GridBagSizer->new( 5, 5 );
 
-  $this->{fft_kmin_label} = Wx::StaticText   -> new($this, -1, "k-range");
+  $this->{fft_kmin_label} = Wx::StaticText   -> new($this, -1, "k-range", wxDefaultPosition, [42,-1]);
   $this->{fft_kmin}       = Wx::TextCtrl     -> new($this, -1, q{}, wxDefaultPosition, $tcsize, wxTE_PROCESS_ENTER);
   $this->{fft_kmin_pluck} = Wx::BitmapButton -> new($this, -1, $bullseye);
   $gbs -> Add($this->{fft_kmin_label}, Wx::GBPosition->new(0,0));
@@ -375,7 +387,7 @@ sub fft {
   $this->{fft_kmax_label} = Wx::StaticText   -> new($this, -1, "to");
   $this->{fft_kmax}       = Wx::TextCtrl     -> new($this, -1, q{}, wxDefaultPosition, $tcsize, wxTE_PROCESS_ENTER);
   $this->{fft_kmax_pluck} = Wx::BitmapButton -> new($this, -1, $bullseye);
-  $this->{fft_dk_label}   = Wx::StaticText   -> new($this, -1, "dk");
+  $this->{fft_dk_label}   = Wx::StaticText   -> new($this, -1, "dk", wxDefaultPosition, [18,-1]);
   $this->{fft_dk}         = Wx::TextCtrl     -> new($this, -1, q{}, wxDefaultPosition, $tcsize, wxTE_PROCESS_ENTER);
   $gbs -> Add($this->{fft_kmax_label}, Wx::GBPosition->new(0,3));
   $gbs -> Add($this->{fft_kmax},       Wx::GBPosition->new(0,4));
@@ -389,11 +401,11 @@ sub fft {
   $this->{fit_karb_value_label} = Wx::StaticText -> new($this, -1, q{arbitrary k-weight});
   $this->{fit_karb_value}       = Wx::TextCtrl   -> new($this, -1, q{}, wxDefaultPosition, $tcsize, wxTE_PROCESS_ENTER);
   $this->{fft_pc}               = Wx::CheckBox   -> new($this, -1, q{phase correction});
-  $gbs -> Add($this->{fft_kwindow_label},    Wx::GBPosition->new(1,0));
-  $gbs -> Add($this->{fft_kwindow},          Wx::GBPosition->new(1,1), Wx::GBSpan->new(1,3));
-  $gbs -> Add($this->{fit_karb_value_label}, Wx::GBPosition->new(1,4), Wx::GBSpan->new(1,2));
-  $gbs -> Add($this->{fit_karb_value},       Wx::GBPosition->new(1,6), Wx::GBSpan->new(1,2));
-  $gbs -> Add($this->{fft_pc},               Wx::GBPosition->new(1,8));
+  $gbs -> Add($this->{fft_kwindow_label},    Wx::GBPosition->new(0,8));
+  $gbs -> Add($this->{fft_kwindow},          Wx::GBPosition->new(0,9));
+  $gbs -> Add($this->{fit_karb_value_label}, Wx::GBPosition->new(1,0), Wx::GBSpan->new(1,2));
+  $gbs -> Add($this->{fit_karb_value},       Wx::GBPosition->new(1,2), Wx::GBSpan->new(1,3));
+  $gbs -> Add($this->{fft_pc},               Wx::GBPosition->new(1,5), Wx::GBSpan->new(1,4));
   $this->{fft_kwindow}->SetStringSelection($this->window_name($Demeter::UI::Athena::demeter->co->default("fft", "kwindow")));
   push @fft_parameters, qw(fft_kmin fft_kmax fft_dk fft_kwindow fit_karb_value fft_pc);
 
@@ -438,15 +450,16 @@ sub bft {
   EVT_RIGHT_DOWN($this->{bft_group_label}, sub{ContextMenu(@_, $app, 'bft')});
   EVT_MENU($this->{bft_group_label}, -1, sub{ $this->DoContextMenu(@_, $app, 'bft') });
 
+  my $tcsize = [50,-1];
   my $gbs = Wx::GridBagSizer->new( 5, 5 );
 
-  $this->{bft_rmin_label} = Wx::StaticText   -> new($this, -1, "R-range");
+  $this->{bft_rmin_label} = Wx::StaticText   -> new($this, -1, "R-range", wxDefaultPosition, [42,-1]);
   $this->{bft_rmin}       = Wx::TextCtrl     -> new($this, -1, q{}, wxDefaultPosition, $tcsize, wxTE_PROCESS_ENTER);
   $this->{bft_rmin_pluck} = Wx::BitmapButton -> new($this, -1, $bullseye);
   $this->{bft_rmax_label} = Wx::StaticText   -> new($this, -1, "to");
   $this->{bft_rmax}       = Wx::TextCtrl     -> new($this, -1, q{}, wxDefaultPosition, $tcsize, wxTE_PROCESS_ENTER);
   $this->{bft_rmax_pluck} = Wx::BitmapButton -> new($this, -1, $bullseye);
-  $this->{bft_dr_label}   = Wx::StaticText   -> new($this, -1, "dR");
+  $this->{bft_dr_label}   = Wx::StaticText   -> new($this, -1, "dR", wxDefaultPosition, [18,-1]);
   $this->{bft_dr}         = Wx::TextCtrl     -> new($this, -1, q{}, wxDefaultPosition, $tcsize, wxTE_PROCESS_ENTER);
   $gbs -> Add($this->{bft_rmin_label}, Wx::GBPosition->new(0,0));
   $gbs -> Add($this->{bft_rmin},       Wx::GBPosition->new(0,1));
@@ -458,12 +471,12 @@ sub bft {
   $gbs -> Add($this->{bft_dr},         Wx::GBPosition->new(0,7));
   push @bft_parameters, qw(bft_rmin bft_rmax bft_dr bft_rwindow);
 
-  # $this->{bft_rwindow_label} = Wx::StaticText -> new($this, -1, "window");
-  # $this->{bft_rwindow}       = Wx::Choice     -> new($this, -1, wxDefaultPosition, wxDefaultSize,
-  # 						  [qw(Kaiser-Bessel Hanning Welch Parzen Sine Gaussian)]);
-  # $gbs -> Add($this->{bft_rwindow_label}, Wx::GBPosition->new(1,0));
-  # $gbs -> Add($this->{bft_rwindow},       Wx::GBPosition->new(1,1), Wx::GBSpan->new(1,3));
-  # $this->{bft_rwindow}->SetStringSelection($this->window_name($Demeter::UI::Athena::demeter->co->default("bft", "rwindow")));
+  $this->{bft_rwindow_label} = Wx::StaticText -> new($this, -1, "window");
+  $this->{bft_rwindow}       = Wx::Choice     -> new($this, -1, wxDefaultPosition, wxDefaultSize,
+  						  [qw(Kaiser-Bessel Hanning Welch Parzen Sine Gaussian)]);
+  $gbs -> Add($this->{bft_rwindow_label}, Wx::GBPosition->new(0,8));
+  $gbs -> Add($this->{bft_rwindow},       Wx::GBPosition->new(0,9), Wx::GBSpan->new(1,3));
+  $this->{bft_rwindow}->SetStringSelection($this->window_name($Demeter::UI::Athena::demeter->co->default("bft", "rwindow")));
 
   $bftboxsizer -> Add($gbs, 0, wxLEFT, 10);
 
@@ -479,7 +492,9 @@ sub bft {
   foreach my $x (qw(bft_rmin bft_rmax)) {
     EVT_BUTTON($this, $this->{$x.'_pluck'}, sub{Pluck(@_, $app, $x)});
   };
-  EVT_CHECKBOX($this, $this->{bkg_flatten}, sub{OnParameter(@_, $app, 'bkg_flatten')});
+  EVT_CHOICE($this, $this->{bft_rwindow}, sub{OnParameter(@_, $app, 'bft_rwindow')});
+  EVT_RIGHT_DOWN($this->{bft_rwindow_label}, sub{ContextMenu(@_, $app, 'bft_rwindow')});
+  EVT_MENU($this->{bft_rwindow_label}, -1, sub{ $this->DoContextMenu(@_, $app, 'bft_rwindow') });
 
   return $this;
 };
@@ -606,32 +621,36 @@ sub push_values {
     $this->{$w}->SetValue($data->$w) if (ref($this->{$w}) =~ m{CheckBox});
   };
   ($this->{file}->GetValue eq '@&^^null^^&@') ? $this->{file}->SetValue($data->prjrecord)  :
+  ($this->{file}->GetValue =~ m{\A\s*\z})     ? $this->{file}->SetValue($data->prjrecord)  :
   ($data->from_athena)                        ? $this->{file}->SetValue($data->prjrecord)  :
   ($data->is_merge)                           ? $this->{file}->SetValue($data->provenance) :
                                                 $this->{file}->SetValue($data->source);
+  $this->{file}->GetValue =~ m{\A\s*\z} && $this->{file}->SetValue($data->source);
   $this->{bkg_z}      -> SetValue(sprintf "%-2d: %s", get_Z($data->bkg_z), get_name($data->bkg_z));
   $this->{fft_edge}   -> SetValue(ucfirst($data->fft_edge));
   $this->{bkg_clamp1} -> SetStringSelection($data->number2clamp($data->bkg_clamp1));
   $this->{bkg_clamp2} -> SetStringSelection($data->number2clamp($data->bkg_clamp2));
   $this->{fft_kwindow}-> SetStringSelection($this->window_name($data->fft_kwindow));
-  #$this->{bft_rwindow}-> SetStringSelection($this->window_name($data->bft_rwindow));
+  $this->{bft_rwindow}-> SetStringSelection($this->window_name($data->bft_rwindow));
   my $nnorm = $data->bkg_nnorm;
   $this->{'bkg_nnorm_'.$nnorm}->SetValue(1);
 
   ## handle fixed step correctly
   $this->{bkg_fixstep}->SetValue($is_fixed);
+  $data->bkg_fixstep($is_fixed);
 
   ## standard
   $this->{bkg_stan}->fill($::app, 1, 0);
   if ($data->bkg_stan eq 'None') {
     $this->{bkg_stan}->SetStringSelection('None');
-  } elsif (not defined($this->{bkg_stan}->GetClientData($this->{bkg_stan}->GetSelection))) {
-    $this->{bkg_stan}->SetStringSelection('None');
   } else {
     my $stan = $data->mo->fetch("Data", $data->bkg_stan);
-    $this->{bkg_stan}->SetStringSelection($stan->name);
+    if (not $stan) {
+      $this->{bkg_stan}->SetStringSelection('None');
+    } else {
+      $this->{bkg_stan}->SetStringSelection($stan->name);
+    };
   };
-
 
   if ($data->reference) {
     $this->{bkg_eshift}-> SetBackgroundColour( Wx::Colour->new($data->co->default("athena", "tied")) );
@@ -718,20 +737,27 @@ sub OnParameter {
   my $widget = $app->{main}->{Main}->{$which};
   ## TextCtrl SpinCtrl ComboBox CheckBox RadioButton all have GetValue
   my $value = ((ref($widget) =~ m{Choice}) and ($which =~ m{clamp})) ? $data->co->default("clamp", $widget->GetStringSelection)
-            : (ref($widget) =~ m{Choice}) ? $widget->GetStringSelection
-            : ($which eq 'bkg_z')         ? interpret_bkg_z($widget->GetValue)
-            : ($which =~ m{nnorm})        ? interpret_nnorm($app)
-	    :                               $widget->GetValue;
+            : (ref($widget) =~ m{Choice})    ? $widget->GetStringSelection
+            : (ref($widget) =~ m{GroupList}) ? $widget->GetSelection # bkg_stan uses Demeter::UI::Athena::GroupList
+            : ($which eq 'bkg_z')            ? interpret_bkg_z($widget->GetValue)
+            : ($which =~ m{nnorm})           ? interpret_nnorm($app)
+	    :                                  $widget->GetValue;
   $value = 0 if ((not looks_like_number($value)) and ($which !~ m{window}));
   if ($which !~ m{nnorm}) {
     $value = 0.001 if (($data->what_isa($which) =~ m{PosNum}) and ($value<=0));
     $value = 0     if (($data->what_isa($which) =~ m{NonNeg}) and ($value<0));
   };
+  #print join("|",$which,$value), $/;
   if ($which eq 'bkg_stan') {
+    local $| = 1;
     my $stan = $app->{main}->{Main}->{bkg_stan}->GetClientData($value);
-    $data->bkg_stan($stan->group);
+    if (not defined($stan)) {
+      $data->bkg_stan('None');
+    } else {
+      $data->bkg_stan($stan->group);
+    };
 
-    ##### implementing aninteraction between step and normalization
+    ##### implementing interaction between step and normalization
     ##### TextCtrl windows as suggested by Scott Calvin by email 13
     ##### June 2011
     # Changing the value in the edge step box should automatically check the
@@ -747,7 +773,7 @@ sub OnParameter {
     $app->{main}->{Main}->{bkg_fixstep}->SetValue(0);
     $data->$which($value)
 
-  } elsif ($which !~ m{nnorm}) {
+  } elsif ($which !~ m{nnorm}) { # everything else...
     $data->$which($value)
   };
   $app->modified(1);
@@ -766,11 +792,35 @@ sub OnAbsorber {
   my ($main, $event, $app) = @_;
   my $abs = interpret_bkg_z($app->{main}->{Main}->{bkg_z}->GetValue);
   $app->current_data->bkg_z(get_symbol($abs));
+  $app->modified(1);
 };
 sub OnEdge {
   my ($main, $event, $app) = @_;
   my $edge = $app->{main}->{Main}->{fft_edge}->GetValue;
   $app->current_data->fft_edge($edge);
+  $app->modified(1);
+};
+
+sub show_source {
+  my ($this) = @_;
+  return "Data source: " . $::app->current_data->source;
+};
+
+sub spin_rbkg {
+  my ($main, $event, $dir) = @_;
+  my $cur =  $main->{bkg_rbkg}->GetValue;
+  my $pm  = ($dir eq 'up') ? +1 : -1;
+  my $new = $cur + $pm*$::app->current_data->co->default(qw(athena bkg_spin_step));
+  print join("|", @_, $dir, $cur, $pm, $new), $/;
+  $new = $cur if (($new < 0.5) and ($dir eq 'down'));
+  $main->{bkg_rbkg}->SetValue($new);
+  if ($::app->current_data->co->default(qw(athena bkg_spin_plot))) {
+    my $busy = Wx::BusyCursor->new();
+    $::app->plot(q{}, q{}, $::app->current_data->co->default(qw(athena bkg_spin_plot)), 'single');
+    undef $busy;
+  };
+  $::app->modified(1);
+  $event->Veto;
 };
 
 sub interpret_bkg_z {
@@ -843,27 +893,46 @@ sub Pluck {
   my ($ok, $x, $y) = $app->cursor;
   return if not $ok;
   my $plucked = -999;
+  my $space = 'E';
 
   $on_screen = 'k' if ($on_screen eq 'q');
   my $data = $app->current_data;
   if ($on_screen eq 'r') {
     $plucked = $x;
+    $space = 'q';
+    $space = 'R' if ($which eq 'bkg_rbkg');
   } elsif (($on_screen eq 'e') and ($which eq "bkg_e0")) {
     $plucked = $x;
+    $space = 'E';
   } elsif (($on_screen eq 'k') and ($which eq "bkg_e0")) {
     $plucked = $data->k2e($x, 'absolute');
+    $space = 'E';
   } elsif (($on_screen eq 'e') and ($which =~ m{fft})) {
     $plucked = $data->e2k($x, 'absolute');
+    $space = 'R';
   } elsif (($on_screen eq 'k') and ($which =~ m{fft})) {
     $plucked = $x;
+    $space = 'R';
   } elsif (($on_screen eq 'e') and ($which =~ m{bkg})) {
     $plucked = $x - $data->bkg_e0;
+    $plucked = $data->e2k($plucked) if ($which =~ m{spl\d\z});
+    $space = 'E';
   } elsif (($on_screen eq 'k') and ($which =~ m{bkg})) {
     $plucked = $data->k2e($x, 'relative');
+    $plucked = $data->e2k($plucked) if ($which =~ m{spl\d\z});
+    $space = 'E';
+  };
+  if ($plucked eq -999) {
+    $app->{main}->status("Could not use plucked value ($plucked)");
+    return;
   };
   $plucked = sprintf("%.3f", $plucked);
   $app->{main}->{Main}->{$which}->SetValue($plucked);
-
+  if ($::app->current_data->co->default(qw(athena pluck_plot))) {
+    my $busy = Wx::BusyCursor->new();
+    $::app->plot(q{}, q{}, $space, 'single');
+    undef $busy;
+  };
   $app->{main}->status("Plucked $plucked for $which");
 };
 
@@ -888,12 +957,12 @@ sub ContextMenu {
   my $menu  = Wx::Menu->new(q{});
   return if ($app->{main}->{list}->GetCount < 1);
 
-  my ($this) = (any {$which eq $_} qw(group bkg fft bft plot)) ? 'these values' : 'this value';
+  my ($this) = (any {$which eq $_} qw(currentgroup bkg fft bft plot)) ? 'these values' : 'this value';
   my $text = $label->GetLabel;
   return if not $label->IsEnabled;
   ($text = "Low spline clamp")  if ($text =~ m{low\z});
   ($text = "High spline clamp") if ($text eq 'high');
-  ($text = "group parameters")  if ($text =~ m{group});
+  ($text = "group parameters")  if ($text =~ m{currentgroup});
   $menu->Append($SET_ALL,    "Set all groups to $this of $text");
   $menu->Append($SET_MARKED, "Set marked groups to $this of $text");
   if ($text ne 'Edge step') {
@@ -963,6 +1032,9 @@ sub DoContextMenu {
       $data->_update('bft');
       $data->fft_kmax($data->recommended_kmax);
       $app->{main}->{Main}->{fft_kmax}->SetValue($data->fft_kmax);
+      if ($data->fft_kmax < 5) {
+	$app->{main}->status("Ifeffit returned an oddly low value for its recommended k-weight.", 'error');
+      };
       $app->modified(1);
       last SWITCH;
     };
@@ -1028,14 +1100,15 @@ sub constrain {
     $app->{main}->status("No data!");
     return;
   };
+  ($which = ['all']) if ($which eq 'all');
   my $data = $app->current_data;
-  my @params = ($which->[0] eq 'all')  ? (@all_group, @all_bkg, @all_fft, @all_bft, @all_plot)
-             : ($which->[0] eq 'file') ?  @all_group
-             : ($which->[0] eq 'bkg')  ?  @all_bkg
-             : ($which->[0] eq 'fft')  ?  @all_fft
-             : ($which->[0] eq 'bft')  ?  @all_bft
-             : ($which->[0] eq 'plot') ?  @all_plot
-	     :                            @$which;
+  my @params = ($which->[0] eq 'all')          ? (@all_group, @all_bkg, @all_fft, @all_bft, @all_plot)
+             : ($which->[0] eq 'currentgroup') ?  @all_group
+             : ($which->[0] eq 'bkg')          ?  @all_bkg
+             : ($which->[0] eq 'fft')          ?  @all_fft
+             : ($which->[0] eq 'bft')          ?  @all_bft
+             : ($which->[0] eq 'plot')         ?  @all_plot
+	     :                                    @$which;
   foreach my $i (0 .. $app->{main}->{list}->GetCount-1) {
     next if (($how eq 'marked') and (not $app->{main}->{list}->IsChecked($i)));
     my $this = $app->{main}->{list}->GetIndexedData($i);
@@ -1078,3 +1151,47 @@ sub importance_to_1 {
 };
 
 1;
+
+
+=head1 NAME
+
+Demeter::UI::Athena::Main - Main processing tool for Athena
+
+=head1 VERSION
+
+This documentation refers to Demeter version 0.5.
+
+=head1 SYNOPSIS
+
+This module provides the main data processing tool for Athena,
+including parameters for normalization and background removal, Fourier
+transforms, and group-specific plotting parameters.
+
+=head1 DEPENDENCIES
+
+Demeter's dependencies are in the F<Bundle/DemeterBundle.pm> file.
+
+=head1 BUGS AND LIMITATIONS
+
+Please report problems to Bruce Ravel (bravel AT bnl DOT gov)
+
+Patches are welcome.
+
+=head1 AUTHOR
+
+Bruce Ravel (bravel AT bnl DOT gov)
+
+L<http://cars9.uchicago.edu/~ravel/software/>
+
+=head1 LICENCE AND COPYRIGHT
+
+Copyright (c) 2006-2011 Bruce Ravel (bravel AT bnl DOT gov). All rights reserved.
+
+This module is free software; you can redistribute it and/or
+modify it under the same terms as Perl itself. See L<perlgpl>.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+
+=cut

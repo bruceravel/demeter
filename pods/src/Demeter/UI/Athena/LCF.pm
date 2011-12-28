@@ -9,13 +9,17 @@ use Wx::Perl::TextValidator;
 
 use Demeter::UI::Wx::SpecialCharacters qw(:all);
 use Cwd;
+use File::Basename;
+use File::Spec;
 use Scalar::Util qw(looks_like_number);
 
 use vars qw($label);
 $label = "Linear combination fitting";	# used in the Choicebox and in status bar messages to identify this tool
 
-my $tcsize = [60,-1];
-my $demeter = $Demeter::UI::Athena::demeter;
+my $tcsize   = [60,-1];
+my $demeter  = $Demeter::UI::Athena::demeter;
+my $icon     = File::Spec->catfile(dirname($INC{"Demeter/UI/Athena.pm"}), 'Athena', , 'icons', "bullseye.png");
+my $bullseye = Wx::Bitmap->new($icon, wxBITMAP_TYPE_PNG);
 
 sub new {
   my ($class, $parent, $app) = @_;
@@ -36,9 +40,15 @@ sub new {
   $hbox->Add(Wx::StaticText->new($this, -1, 'Fit range:'), 0, wxRIGHT|wxALIGN_CENTRE, 5);
   $this->{xmin} = Wx::TextCtrl->new($this, -1, $this->{emin}, wxDefaultPosition, $tcsize, wxTE_PROCESS_ENTER);
   $hbox->Add($this->{xmin}, 0, wxLEFT|wxRIGHT|wxALIGN_CENTRE, 5);
+  $this->{xmin_pluck} = Wx::BitmapButton -> new($this, -1, $bullseye);
+  $hbox->Add($this->{xmin_pluck}, 0, wxRIGHT|wxALIGN_CENTRE, 5);
+
   $hbox->Add(Wx::StaticText->new($this, -1, 'to'), 0, wxRIGHT|wxALIGN_CENTRE, 5);
   $this->{xmax} = Wx::TextCtrl->new($this, -1, $this->{emax}, wxDefaultPosition, $tcsize, wxTE_PROCESS_ENTER);
   $hbox->Add($this->{xmax}, 0, wxLEFT|wxRIGHT|wxALIGN_CENTRE, 5);
+  $this->{xmax_pluck} = Wx::BitmapButton -> new($this, -1, $bullseye);
+  $hbox->Add($this->{xmax_pluck}, 0, wxRIGHT|wxALIGN_CENTRE, 5);
+
   $this->{space} = Wx::RadioBox->new($this, -1, 'Fitting space', wxDefaultPosition, wxDefaultSize,
 				     ["norm $MU(E)", "deriv $MU(E)", "$CHI(k)"],
 				     1, wxRA_SPECIFY_ROWS);
@@ -59,12 +69,16 @@ sub new {
   $this->{notebook} ->AddPage($main,   'Standards',     1);
   $this->{notebook} ->AddPage($fits,   'Fit results',   0);
   $this->{notebook} ->AddPage($combi,  'Combinatorics', 0);
-  $this->{notebook} ->AddPage($marked, 'Marked',        0);
+  $this->{notebook} ->AddPage($marked, 'Sequence',      0);
 
 
   $this->{document} = Wx::Button->new($this, -1, 'Document section: linear combination fitting');
   $box -> Add($this->{document}, 0, wxGROW|wxALL, 2);
   EVT_BUTTON($this, $this->{document}, sub{  $app->document("lcf")});
+  EVT_BUTTON($this, $this->{xmin_pluck}, sub{Pluck(@_, 'xmin')});
+  EVT_BUTTON($this, $this->{xmax_pluck}, sub{Pluck(@_, 'xmax')});
+  $this->{xmin_pluck}->Enable(0);
+  $this->{xmax_pluck}->Enable(0);
 
   $this->SetSizerAndFit($box);
   return $this;
@@ -88,7 +102,7 @@ sub main_page {
   $this->{window} -> SetSizer($winbox);
   $this->{window} -> SetScrollbars(0, 20, 0, 50);
 
-  $this->{nstan} = 12;
+  $this->{nstan} = $demeter->co->default('lcf', 'nstan');
   foreach my $i (0 .. $this->{nstan}-1) {
     $this->add_standard($this->{window}, $winbox, $i);
   };
@@ -102,14 +116,27 @@ sub main_page {
   $hbox -> Add($optionsboxsizer, 1, wxGROW|wxALL, 5);
   $this->{components} = Wx::CheckBox->new($panel, -1, 'Plot weighted components');
   $this->{residual}   = Wx::CheckBox->new($panel, -1, 'Plot residual');
-  $this->{linear}     = Wx::CheckBox->new($panel, -1, 'Add a linear term after E0');
   $this->{inclusive}  = Wx::CheckBox->new($panel, -1, 'All weights between 0 and 1');
   $this->{unity}      = Wx::CheckBox->new($panel, -1, 'Force weights to sum to 1');
-  $this->{one_e0}     = Wx::CheckBox->new($panel, -1, 'All standards share an e0');
+  $this->{linear}     = Wx::CheckBox->new($panel, -1, 'Add a linear term after E0');
+  $this->{one_e0}     = Wx::CheckBox->new($panel, -1, 'All standards share an E0');
   $this->{usemarked}  = Wx::Button->new($panel, -1, 'Use marked groups', wxDefaultPosition, wxDefaultSize, wxBU_EXACTFIT);
   $this->{reset}      = Wx::Button->new($panel, -1, 'Reset', wxDefaultPosition, wxDefaultSize, wxBU_EXACTFIT);
+  $this->{spacer}     = Wx::StaticLine->new($panel, -1, wxDefaultPosition, [0,0], wxLI_HORIZONTAL);
+  #$optionsboxsizer->Add($this->{$_}, 0, wxGROW|wxALL, 0)
+  #  foreach (qw(components residual spacer inclusive unity spacer linear one_e0 usemarked reset));
   $optionsboxsizer->Add($this->{$_}, 0, wxGROW|wxALL, 0)
-    foreach (qw(components residual linear inclusive unity one_e0 usemarked reset));
+    foreach (qw(components residual));
+  $optionsboxsizer->Add($this->{spacer}, 0, wxALL, 3);
+  $optionsboxsizer->Add($this->{$_}, 0, wxGROW|wxALL, 0)
+    foreach (qw(inclusive unity));
+  $optionsboxsizer->Add($this->{spacer}, 0, wxALL, 3);
+  $optionsboxsizer->Add($this->{$_}, 0, wxGROW|wxALL, 0)
+    foreach (qw(linear one_e0));
+  $optionsboxsizer->Add($this->{spacer}, 0, wxALL, 3);
+  $optionsboxsizer->Add($this->{$_}, 0, wxGROW|wxALL, 0)
+    foreach (qw(usemarked reset));
+  $optionsboxsizer->Add($this->{spacer}, 0, wxALL, 3);
 
   $this->{components} -> SetValue($demeter->co->default('lcf', 'components'));
   $this->{residual}   -> SetValue($demeter->co->default('lcf', 'difference'));
@@ -130,12 +157,20 @@ sub main_page {
   $maxbox->Add($this->{max}, 0, wxLEFT|wxRIGHT|wxALIGN_CENTRE, 5);
   $maxbox->Add(Wx::StaticText->new($panel, -1, 'standards'), 0, wxRIGHT|wxALIGN_CENTRE, 5);
 
+
+  $this->{LCF}->plot_components($demeter->co->default('lcf', 'components'));
+  $this->{LCF}->plot_difference($demeter->co->default('lcf', 'difference'));
+  $this->{LCF}->linear   (0);
+  $this->{LCF}->inclusive($demeter->co->default('lcf', 'inclusive'));
+  $this->{LCF}->unity    ($demeter->co->default('lcf', 'unity'));
+  $this->{LCF}->one_e0   (0);
+
   EVT_CHECKBOX($this, $this->{components}, sub{$this->{LCF}->plot_components($this->{components}->GetValue)});
   EVT_CHECKBOX($this, $this->{residual},   sub{$this->{LCF}->plot_difference($this->{residual}  ->GetValue)});
-  EVT_CHECKBOX($this, $this->{linear},     sub{$this->{LCF}->linear   ($this->{linear}          ->GetValue)});
-  EVT_CHECKBOX($this, $this->{inclusive},  sub{$this->{LCF}->inclusive($this->{inclusive}       ->GetValue)});
-  EVT_CHECKBOX($this, $this->{unity},      sub{$this->{LCF}->unity    ($this->{unity}           ->GetValue)});
-  EVT_CHECKBOX($this, $this->{one_e0},     sub{$this->{LCF}->one_e0   ($this->{one_e0}          ->GetValue)});
+  EVT_CHECKBOX($this, $this->{linear},     sub{$this->{LCF}->linear         ($this->{linear}    ->GetValue)});
+  EVT_CHECKBOX($this, $this->{inclusive},  sub{$this->{LCF}->inclusive      ($this->{inclusive} ->GetValue)});
+  EVT_CHECKBOX($this, $this->{unity},      sub{$this->{LCF}->unity          ($this->{unity}     ->GetValue)});
+  EVT_CHECKBOX($this, $this->{one_e0},     sub{$this->{LCF}->one_e0         ($this->{one_e0}    ->GetValue)});
   EVT_BUTTON($this, $this->{usemarked},    sub{use_marked(@_)});
   EVT_BUTTON($this, $this->{reset},        sub{Reset(@_)});
   EVT_TEXT_ENTER($this, $this->{noise},    sub{1;});
@@ -273,7 +308,7 @@ sub add_standard {
   $this->{'standard'.$i}->SetSelection(0);
   EVT_TEXT_ENTER($this, $this->{'weight'.$i}, sub{1});
   EVT_TEXT_ENTER($this, $this->{'e0'.$i}, sub{1});
-  EVT_COMBOBOX($this, $this->{'standard'.$i}, sub{OnSelect(@_)});
+  $this->{'standard'.$i}->{callback} = sub{$this->OnSelect};
   $this->{'weight'.$i} -> SetValidator( Wx::Perl::TextValidator->new( qr([0-9.]) ) );
   $this->{'e0'.$i}     -> SetValidator( Wx::Perl::TextValidator->new( qr([-0-9.]) ) );
 
@@ -329,6 +364,9 @@ sub OnSelect {
       $this->{'weight'.$i}->SetValue(0);
     };
   };
+  $this->{xmin_pluck} -> Enable($count > 0);
+  $this->{xmax_pluck} -> Enable($count > 0);
+
   $this->{fit}       -> Enable($count > 1);
   $this->{fitmarked} -> Enable($count > 1);
   $this->{combi}     -> Enable($count > 2);
@@ -340,6 +378,21 @@ sub OnSelect {
   $this->{resultplot}   -> Enable(0);
   $this->{resultreport} -> Enable(0);
 };
+
+sub Pluck {
+  my ($self, $ev, $which) = @_;
+  my $busy = Wx::BusyCursor->new();
+  plot($self, $ev);
+  undef $busy;
+  my ($ok, $x, $y)    = $::app->cursor($self);
+  $self->status("Failed to pluck a value for $which"), return if not $ok;
+  $x -= $::app->current_data->bkg_e0 if ($self->{LCF}->space ne 'chi');
+  my $plucked         = sprintf("%.3f", $x);
+  $self->{$which}->SetValue($plucked);
+  my $text            = sprintf("Plucked %s as the value for %s.", $plucked, $which);
+  $::app->{main}->status($text);
+}
+
 
 sub use_marked {
   my ($this, $event) = @_;
@@ -410,6 +463,7 @@ sub _prep {
   my ($this, $nofit) = @_;
   $nofit ||= 0;
   my $trouble = 0;
+  my $busy = Wx::BusyCursor->new();
   $this->fetch;
   $this->{LCF}->clear;
   $this->{LCF}->clean if not $nofit;
@@ -420,8 +474,8 @@ sub _prep {
     next if not defined($stan);
     #print join("|", $i, $n, $this->{'weight'.$i}->GetValue), $/;
 
-     return sprintf("weight #%d", $i+1) if (not looks_like_number($this->{'weight'.$i}->GetValue));
-     return sprintf("e0 #%d"    , $i+1) if (not looks_like_number($this->{'e0'.$i}->GetValue));
+    return sprintf("weight #%d", $i+1) if (not looks_like_number($this->{'weight'.$i}->GetValue));
+    return sprintf("e0 #%d"    , $i+1) if (not looks_like_number($this->{'e0'.$i}->GetValue));
 
     $this->{LCF} -> add($stan,
 			required => $this->{'require'.$i}->GetValue,
@@ -446,6 +500,7 @@ sub _prep {
   } else {
     $this->{LCF}->po->set(emin=>$this->{xmin}->GetValue-10, emax=>$this->{xmax}->GetValue+10);
   };
+  undef $busy;
   return $trouble;
 };
 
@@ -466,10 +521,14 @@ sub _results {
 
 sub fit {
   my ($this, $event, $nofit) = @_;
-  my $busy = Wx::BusyCursor->new();
   my $trouble = $this->_prep($nofit);
+  my $busy = Wx::BusyCursor->new();
+  if (($this->{space}->GetSelection == 2) and ($::app->{main}->{kweights}->GetStringSelection eq 'kw')) {
+    $::app->{main}->status("Not doing LCF -- Linear combination fitting in chi(k) cannot be done with arbitrary k-wieghting!", 'error');
+    return;
+  };
   if ($trouble) {
-    $::app->{main}->status("Not doing LCF -- the $trouble parameter value is not a number!", 'error|nobuffer');
+    $::app->{main}->status("Not doing LCF -- the $trouble parameter value is not a number!", 'error');
     return;
   };
   $this->{LCF} -> fit if not $nofit;
@@ -483,13 +542,14 @@ sub fit {
   $this->{resultreport} -> Enable(1);
   $this->{plotr}        -> Enable(1) if ($this->{LCF}->space =~ m{\Achi});
   $::app->{main}->status(sprintf("Finished LCF fit to %s", $this->{LCF}->data->name));
+  $::app->heap_check(0);
   undef $busy;
 };
 
 sub combi {
   my ($this, $event) = @_;
-  my $busy = Wx::BusyCursor->new();
   my $trouble = $this->_prep(0);
+  my $busy = Wx::BusyCursor->new();
   if ($trouble) {
     $::app->{main}->status("Not doing LCF -- the $trouble parameter value is not a number!", 'error|nobuffer');
     return;
@@ -595,9 +655,10 @@ sub combi_results {
 
 sub combi_select {
   my ($this, $event) = @_;
-  my @stand = keys %{ $this->{LCF}->options };
   my @all = @{ $this->{LCF}->combi_results };
   my $result = $all[$event->GetIndex];
+  $this->{LCF} -> restore($result);
+  my @stand = keys %{ $this->{LCF}->options };
 
   my %idx = %{ $this->{index_map} };
   foreach my $s (@stand) {
@@ -611,13 +672,13 @@ sub combi_select {
     };
   };
 
-  $this->{LCF} -> restore($result);
   $this->{LCF} -> plot_fit;
   $this->{result}->Clear;
   $this->{result}->SetValue($this->{LCF}->report);
   $this->_remove_all;
   my $i = 0;
   foreach my $st (@{ $this->{LCF}->standards }) {
+    #next if not $this->{LCF}->option_exists($st->name);
     $this->{'standard'.$i}->SetStringSelection($st->name);
     my $w = sprintf("%.3f", $this->{LCF}->weight($st));
     my $e = sprintf("%.3f", $this->{LCF}->e0($st));
@@ -649,8 +710,8 @@ sub combi_report {
 
 sub sequence {
   my ($this, $event) = @_;
-  my $busy = Wx::BusyCursor->new();
   my $trouble = $this->_prep(0);
+  my $busy = Wx::BusyCursor->new();
   if ($trouble) {
     $::app->{main}->status("Not doing sequence -- the $trouble parameter value is not a number!", 'error|nobuffer');
     return;
@@ -727,9 +788,9 @@ sub seq_select {
   my $result = $this->{LCF}->seq_results->[$event->GetIndex];
   my $data   = $this->{LCF}->mo->fetch('Data', $result->{Data});
   $this->{LCF}->data($data);
+  $this->{LCF}->restore($result);
   my $which = ($this->{LCF}->space =~ m{\Achi}) ? "lcf_prep_k" : "lcf_prep";
   $this->{LCF}->dispose($this->{LCF}->template("analysis", $which));
-  $this->{LCF}->restore($result);
   $this->{mreport}->SetValue($this->{LCF}->report);
 
   $this->{result}->Clear;
@@ -787,6 +848,7 @@ sub plot {
   $this->_prep;
   $this->{LCF}->plot_fit;
   $::app->{main}->status(sprintf("Plotted %s and LCF fit", $this->{LCF}->data->name));
+  $::app->heap_check(0);
 };
 
 sub save {
@@ -827,19 +889,14 @@ sub make {
 sub fft {
   my ($this, $event) = @_;
   $this->_prep;
+  my $busy = Wx::BusyCursor->new();
   $::app->{main}->{'PlotR'}->pull_marked_values;
   $this->{LCF}->data->po->start_plot;
   $this->{LCF}->data->plot('R');
   $this->{LCF}->fft;
   $this->{LCF}->plot('R');
+  undef $busy;
 };
-
-
-  # my $string = $this->{LCF}->data->_plot_command('R');
-  # my $group = $this->{LCF}->group;
-  # my $dobject = $this->{LCF}->data->group;
-  # $string =~ s{\b$dobject\b}{$group}g; # replace group names
-  # print $string;
 
 1;
 
@@ -850,7 +907,7 @@ Demeter::UI::Athena::LCF - A linear combination fitting tool for Athena
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.4.
+This documentation refers to Demeter version 0.5.
 
 =head1 SYNOPSIS
 

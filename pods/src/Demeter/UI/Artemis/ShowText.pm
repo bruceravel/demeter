@@ -35,7 +35,7 @@ sub new {
   my $vbox  = Wx::BoxSizer->new( wxVERTICAL );
 
   my $text = Wx::TextCtrl->new($this, -1, q{}, wxDefaultPosition, wxDefaultSize,
-			       wxHSCROLL|wxTE_MULTILINE|wxTE_READONLY|wxTE_RICH);
+			       wxHSCROLL|wxTE_MULTILINE|wxTE_READONLY|wxTE_RICH2);
   $text -> SetDefaultStyle($aleft);
   $text -> SetFont(Wx::Font->new( Wx::SystemSettings::GetFont(wxSYS_DEFAULT_GUI_FONT)->GetPointSize, wxTELETYPE, wxNORMAL, wxNORMAL, 0, "" ) );
   $text -> SetValue($content);

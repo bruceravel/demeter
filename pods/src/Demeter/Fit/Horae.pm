@@ -182,8 +182,8 @@ sub horae_data {
 	     fit_k1		=> $args{k1},
 	     fit_k2		=> $args{k2},
 	     fit_k3		=> $args{k3},
-	     fit_karb		=> $args{karb},
-	     fit_karb_value	=> $args{karb_use},
+	     fit_karb		=> $args{karb_use},
+	     fit_karb_value	=> $args{karb},
 	     fit_cormin		=> $args{cormin},
 	     fit_do_bkg		=> ($args{do_bkg} eq 'yes'),
 	     fit_space		=> $args{fit_space},
@@ -271,7 +271,7 @@ Demeter::Fit::Horae - Convert an old-style Artemis project file into a Demeter f
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.4.
+This documentation refers to Demeter version 0.5.
 
 =head1 DESCRIPTION
 

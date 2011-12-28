@@ -7,10 +7,15 @@ has '+is_binary'   => (default => 0);
 has '+description' => (default => "ASCII data from the SSRL XAFS Data Collector");
 has '+version'     => (default => 0.1);
 
+my %special = (chr(169) => '(c)',
+	       chr(176) => 'deg',
+	      );
+my $re = '[' . join('|', keys(%special)) . ']';
+
 sub is {
   my ($self) = @_;
   my $null = chr(0);
-  open D, $self->file or die "could not open " . $self->file . " as data (SSRL ASCII)\n";
+  open D, $self->file or $self->Croak("could not open " . $self->file . " as data (SSRL ASCII)\n");
   my $line = <D>;
   my $is_ssrl  = ($line =~ m{^\s*SSRL\s+EXAFS Data Collector});
   $line = <D>;
@@ -55,7 +60,9 @@ sub fix {
 	@offsets = ($offsets[2], $offsets[1], $offsets[0], @offsets[3..$#offsets]);
 	print N "# ", join(" ", @offsets), $/;
       } else {
-	print N "# ", $_, $/;
+	my $text = $_;
+	$text =~ s{($re)}{$special{$1}}g; # files from ROBL contain © and ° characters
+	print N "# ", $text, $/;
       };
     } else {			# data columns
       my @line = split(" ", $_);
@@ -107,6 +114,16 @@ This plugin comments out the header lines, constructs a column label
 line out of the Data: section, moves the first column (real time
 clock) to the third column, and swaps the requested and acheived
 energy columns.
+
+=head1 ROBL files
+
+The ROBL beamline at ESRF uses the same file format as the SSRL Data
+Collector 1.1 except that it includes a couple of high-ASCII
+characters.  These characters may give a Wx TextCtrl some trouble, so
+they get stripped from the file and replaced with ASCII look-alikes.
+
+  ©  ==> (c)
+  °  ==> deg
 
 =head1 AUTHOR
 

@@ -6,7 +6,9 @@ extends 'Demeter::Plugins::FileType';
 has '+is_binary'   => (default => 0);
 has '+description' => (default => "the DUBBLE beamline at the ESRF");
 has '+version'     => (default => 0.1);
+has 'is_med'       => (is => 'rw', isa => 'Int', default => 0);
 
+use Carp;
 use Scalar::Util qw(looks_like_number);
 
 use Readonly;
@@ -17,7 +19,7 @@ Readonly my $NLMED => 3; # 9 MED elements, 4 per line, requires three lines
 
 sub is {
   my ($self) = @_;
-  open D, $self->file or die "could not open " . $self->file . " as data (DUBBLE)\n";
+  open D, $self->file or $self->Croak("could not open " . $self->file . " as data (DUBBLE)\n");
   my $first = <D>;
   my $is_srs = ($first =~ m{\&SRS});
   my $is_dubble = 0;
@@ -25,6 +27,7 @@ sub is {
     $is_dubble = ($_ =~ m{dubble});
     last if m{\A\s+\&END};
   };
+  close D;
   return $is_srs and $is_dubble;
 };
 
@@ -34,7 +37,7 @@ sub fix {
   my ($self) = @_;
 
   my $file = $self->file;
-  my $is_med = $self->_is_med;
+  $self->is_med($self->_is_med);
 
   my $new = File::Spec->catfile($self->stash_folder, $self->filename);
   ($new = File::Spec->catfile($self->stash_folder, "toss")) if (length($new) > 127);
@@ -44,20 +47,31 @@ sub fix {
   my $header = 1;
   while (<D>) {
     if ($header) {
-      $header = 0 if ($_ =~ m{\A\s+\&END});
+      if ($_ =~ m{\A\s+\&END}) {
+	$header = 0;
+	print N '# ', $_;
+	my $labels = '# energy      time         i0        it        if        im';
+	$labels .= '             med1          med2         med3         med4         med5         med6         med7         med8         med9' if $self->is_med;
+	$labels .= $/;
+	print N "# -------------------$/";
+	print N $labels;
+	next;
+      };
       print N '# ', $_;
     } else {
-      last if ($_ =~ m{\A\s+END}i);
+      last if ($_ =~ m{\A\s+END|DATA\sABORTED}i);
       chomp;
       my @line = split(" ", $_);
       my $angle = shift(@line)/1000; # millidegrees, apparently
       $angle = sprintf("%.4f", (2*$PI*$HBARC) / ($TWOD * sin($angle * $PI / 180)));
       print N join("   ", $angle, @line);
-      if ($is_med) {
-	foreach (0 .. $is_med-1) {
+      if ($self->is_med) {
+	foreach (0 .. $self->is_med-1) {
 	  my $extra = <D>;
-	  chomp $extra;
-	  print N $extra;
+	  if (defined($extra) and ($extra !~ m{\A\s*\z})) {
+	    chomp $extra;
+	    print N $extra;
+	  };
 	};
       };
       print N $/;
@@ -97,6 +111,7 @@ sub _is_med {
 sub suggest {
   my ($self, $which) = @_;
   $which ||= 'transmission';
+  $which = 'fluorescence' if $self->is_med;
   if ($which eq 'transmission') {
     return (energy      => '$1',
 	    numerator   => '$3',
@@ -117,7 +132,7 @@ __END__
 
 =head1 NAME
 
-Ifeffit::Plugin::Filetype::Athena::DUBBLE - Import data from the DUBBLE beamline at ESRF
+Demeter::Plugin::DUBBLE - Import data from the DUBBLE beamline at ESRF
 
 =head1 SYNOPSIS
 

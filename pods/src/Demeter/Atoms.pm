@@ -29,6 +29,7 @@ use Demeter::StrTypes qw( Element
 			  AtomsGas
 			  AtomsObsolete
 			  SpaceGroup
+			  FileName
 			  Empty
 		       );
 use Demeter::NumTypes qw( Natural
@@ -151,6 +152,7 @@ has 'iedge'	       => (is => 'rw', isa => Natural,    default=> 1);
 has 'eedge'	       => (is => 'rw', isa => NonNeg,    default=> 0);
 has 'core'	       => (is => 'rw', isa =>'Str',      default=> q{});
 has 'corel'	       => (is => 'rw', isa =>'Str',      default=> q{});
+has 'partial_occupancy' => (is => 'rw', isa =>'Bool', default=> 0);
 has 'shift' => (
 		metaclass => 'Collection::Array',
 		is        => 'rw',
@@ -162,7 +164,7 @@ has 'shift' => (
 			      'clear' => 'clear_shift',
 			     }
 	       );
-has 'file'   => (is => 'rw', isa =>'Str', default=> q{},
+has 'file'   => (is => 'rw', isa =>FileName, default=> q{},
 		 trigger => sub{ my ($self, $new) = @_;
 				 if ($new) {
 				   $self->read_inp;
@@ -348,6 +350,7 @@ sub read_inp {
     $self->parse_line($line);
 
   };
+  close $INP;
   $self->is_imported(1);
   return $self;
 };
@@ -658,12 +661,18 @@ sub cluster_list {
 		     $abs->[0], $abs->[1], $abs->[2],
 		     0, $abs->[3]->tag, sqrt($abs->[4])
 		    );
+  my %seen;			# index tags by shell
   foreach my $pos (@list) {
-    ## rely upon coercions
+    if (not defined($seen{$pos->[3]->tag})) {
+      $seen{$pos->[3]->tag} = [1, sqrt($pos->[4])];
+    };
+    ++$seen{$pos->[3]->tag}->[0] if (sqrt($pos->[4]) - $seen{$pos->[3]->tag}->[1] > $EPSILON); # increment index if R has increased
+    my $tag = join(".", $pos->[3]->tag, $seen{$pos->[3]->tag}->[0]);
     $string .= sprintf($pattern,
 		       $pos->[0], $pos->[1], $pos->[2],
-		       $pos->[3]->ipot, $pos->[3]->tag, sqrt($pos->[4])
+		       $pos->[3]->ipot, $tag, sqrt($pos->[4])
 		      );
+    $seen{$pos->[3]->tag}->[1] = sqrt($pos->[4]);
   };
   return $string;
 };
@@ -852,7 +861,7 @@ sub Write {
 
 sub Write_feff {
   my ($self, $type) = @_;
-  $self->build_cluster if (not $self->is_expanded);;
+  $self->build_cluster if (not $self->is_expanded);
   my $string = q{};
   $string .= $self->template('copyright',  {type=> $type, prefix => ' * '});
   if ($self->co->default("atoms", "atoms_in_feff")) {
@@ -905,7 +914,7 @@ Demeter::Atoms - Convert crystallographic data to atomic lists
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.4.
+This documentation refers to Demeter version 0.5.
 
 =head1 SYNOPSIS
 
@@ -1039,6 +1048,11 @@ This is set to true when the populated cell is expanded into a cluster.
 =item C<is_ipots_set> (boolean) [false]
 
 This is set to true when the unique potentials are assigned.
+
+=item C<partial_occupancy>
+
+This is set to true if the input crystal data includes sites with
+partial occupancy.
 
 =back
 

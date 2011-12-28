@@ -35,6 +35,7 @@ sub new {
   my $this = $class->SUPER::new($parent, -1, "Artemis [Ifeffit \& Plot Buffer]",
 				wxDefaultPosition, [500,800],
 				wxMINIMIZE_BOX|wxCAPTION|wxSYSTEM_MENU|wxCLOSE_BOX|wxRESIZE_BORDER);
+  $this -> SetBackgroundColour( wxNullColour );
   EVT_CLOSE($this, \&on_close);
   my $vbox = Wx::BoxSizer->new( wxVERTICAL );
 
@@ -174,7 +175,7 @@ Demeter::UI::Artemis::Buffer - A command and plot command buffer for Artemis
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.4.
+This documentation refers to Demeter version 0.5.
 
 =head1 SYNOPSIS
 

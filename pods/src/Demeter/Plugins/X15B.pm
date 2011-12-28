@@ -18,7 +18,7 @@ sub is {
   my ($self) = @_;
   my $Ocircumflex = chr(212);
   my $nulls = chr(0).chr(0).chr(0);
-  open D, $self->file or die "could not open " . $self->file . " as data (X15B)\n";
+  open D, $self->file or $self->Croak("could not open " . $self->file . " as data (X15B)\n");
   binmode D;
   my $first = <D>;
   close D;
@@ -88,7 +88,7 @@ EOH
 
 sub suggest {
   my ($self, $which) = @_;
-  $which ||= 'transmission';
+  $which ||= 'fluorescence';
   if ($which eq 'transmission') {
     return (energy      => '$1',
 	    numerator   => '$2',
@@ -122,9 +122,13 @@ X15B.
 At X15b there is a program called x15totxt, written in Turbo Pascal by
 some dude named Tim Darling.  He kindly left behind a short
 explanation the format of the X15b binary data file.  It seems that
-the header is 53 4-byte numbers.  Each line of data is 16 4 byte
+the header is 53 4-byte numbers.  Each line of data contains 16 4 byte
 numbers.  Thus this file is easily unpacked and processed in four byte
 bites.
+
+The X15B file is recognized by a a four character sequence at the
+beginning of the file which consists of character 212 (capital
+O-circumflex in ISO 8859) followed by three nulls (character 0).
 
 The resulting file is a well-labeled, well-formatted column data file
 in a form that will work well with Athena or virtually any other

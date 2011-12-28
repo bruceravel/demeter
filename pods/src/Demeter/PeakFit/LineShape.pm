@@ -18,7 +18,7 @@ package Demeter::PeakFit::LineShape;
 use Carp;
 use Pod::POM;
 
-use Demeter::StrTypes qw( Empty FitykFunction );
+use Demeter::StrTypes qw( Empty Lineshape );
 
 use Moose;
 extends 'Demeter';
@@ -30,7 +30,7 @@ has '+data'    => (isa => Empty.'|Demeter::Data|Demeter::XES');
 has '+name'    => (default => 'Lineshape' );
 has 'parent'   => (is => 'rw', isa => Empty.'|Demeter::PeakFit', default => q{},
 		   trigger => sub{ my ($self, $new) = @_; $self->data($new->data)});
-has 'function' => (is => 'rw', isa => FitykFunction, default => q{},
+has 'function' => (is => 'rw', isa => Lineshape, default => q{},
 		   trigger => sub{ my ($self, $new) = @_;
 				   $self->np($self->nparams);
 				   $self->peaked(0) if (lc($new) =~ m{linear|atan|erf|const|cubic|quadratic|polynomial|spline|polyline|expdecay});
@@ -40,32 +40,32 @@ has 'np'       => (is => 'rw', isa => 'Int',  default => 0);
 has 'start'    => (is => 'rw', isa => 'Int',  default => 0);
 
 has 'xaxis'    => (is => 'rw', isa => 'Str',  default => q{energy});
-has 'yaxis'    => (is => 'rw', isa => 'Str',  default => q{func});
+has 'yaxis'    => (is => 'rw', isa => 'Str',  default => q{flat});
 has 'xmin'     => (is => 'rw', isa => 'Num',  default => 0);
 has 'xmax'     => (is => 'rw', isa => 'Num',  default => 0);
 
-has 'a0'       => (is => 'rw', isa => 'Num',  default => 0, alias => 'height');
-has 'a1'       => (is => 'rw', isa => 'Num',  default => 0, alias => 'center');
+has 'a0'       => (is => 'rw', isa => 'Num',  default => 0, alias => [ qw(height yint) ]);
+has 'a1'       => (is => 'rw', isa => 'Num',  default => 0, alias => [ qw(center slope) ]);
 has 'a2'       => (is => 'rw', isa => 'Num',  default => 0, alias => 'hwhm');
-has 'a3'       => (is => 'rw', isa => 'Num',  default => 0);
+has 'a3'       => (is => 'rw', isa => 'Num',  default => 0, alias => 'eta');
 has 'a4'       => (is => 'rw', isa => 'Num',  default => 0);
 has 'a5'       => (is => 'rw', isa => 'Num',  default => 0);
 has 'a6'       => (is => 'rw', isa => 'Num',  default => 0);
 has 'a7'       => (is => 'rw', isa => 'Num',  default => 0);
 
-has 'e0'       => (is => 'rw', isa => 'Num',  default => 0, alias => 'eheight');
-has 'e1'       => (is => 'rw', isa => 'Num',  default => 0, alias => 'ecenter');
+has 'e0'       => (is => 'rw', isa => 'Num',  default => 0, alias => [ qw(eheight eyint) ]);
+has 'e1'       => (is => 'rw', isa => 'Num',  default => 0, alias => [ qw(ecenter eslopeyint) ]);
 has 'e2'       => (is => 'rw', isa => 'Num',  default => 0, alias => 'ehwhm');
-has 'e3'       => (is => 'rw', isa => 'Num',  default => 0);
+has 'e3'       => (is => 'rw', isa => 'Num',  default => 0, alias => 'eeta');
 has 'e4'       => (is => 'rw', isa => 'Num',  default => 0);
 has 'e5'       => (is => 'rw', isa => 'Num',  default => 0);
 has 'e6'       => (is => 'rw', isa => 'Num',  default => 0);
 has 'e7'       => (is => 'rw', isa => 'Num',  default => 0);
 
-has 'fix0'     => (is => 'rw', isa => 'Bool', default => 0, alias => 'fixheight');
-has 'fix1'     => (is => 'rw', isa => 'Bool', default => 0, alias => 'fixcenter');
+has 'fix0'     => (is => 'rw', isa => 'Bool', default => 0, alias => [ qw(fixheight fixyint) ]);
+has 'fix1'     => (is => 'rw', isa => 'Bool', default => 0, alias => [ qw(fixcenter fixslope) ]);
 has 'fix2'     => (is => 'rw', isa => 'Bool', default => 0, alias => 'fixhwhm');
-has 'fix3'     => (is => 'rw', isa => 'Bool', default => 0);
+has 'fix3'     => (is => 'rw', isa => 'Bool', default => 0, alias => 'fixeta');
 has 'fix4'     => (is => 'rw', isa => 'Bool', default => 0);
 has 'fix5'     => (is => 'rw', isa => 'Bool', default => 0);
 has 'fix6'     => (is => 'rw', isa => 'Bool', default => 0);
@@ -80,28 +80,11 @@ sub nparams {
   return $self->parent->function_hash->{$function};
 };
 
-
-sub define {
-  my ($self) = @_;
-  my $string = sprintf("%%%s = guess %s [%.2f:%.2f]", $self->group, $self->function, $self->xmin, $self->xmax);
-  my @args = ();
-  my @names = $self->parameter_names;
-  foreach my $i (0 .. $self->np-1) {
-    my $att = 'a'.$i;
-    push(@args, sprintf(" %s=%s%.5f", $names[$i], $self->isfixed($i), $self->$att)) if $self->$att;
-  };
-  $string .= join(", ", @args);
-  $string .= ' in @0';
-  return $string;
-};
-
 sub put_arrays {
   my ($self, $rx) = @_;
-  $self->parent->dispose_to_fit_engine($self->parent->init_data);
-  $self->parent->dispose_to_fit_engine($self->parent->set_model('%'.$self->group));
-  my @model_y = @{ $self->parent->engine_object->get_model_vector($rx, 0) };
-  Ifeffit::put_array($self->group.".energy", $rx);
-  Ifeffit::put_array($self->group.".".$self->yaxis, \@model_y);
+  my $model_y = $self->parent->put_arrays($self, $rx);
+  Ifeffit::put_array($self->group.".".$self->xaxis, $rx);
+  Ifeffit::put_array($self->group.".".$self->yaxis, $model_y);
   return $self;
 };
 
@@ -150,7 +133,7 @@ sub parameter_names {
 sub report {
   my ($self) = @_;
   my @names = $self->parameter_names;
-  my $string = sprintf("%s (%s) :", $self->name, $self->function);
+  my $string = sprintf("%s (%s)\n   ", $self->name, $self->function);
   my $count = 0;
   foreach my $n (@names) {
     my $a = 'a'.$count;
@@ -158,12 +141,12 @@ sub report {
     if ($n =~ m{center|e0}) {
       $string .= sprintf(" %s = %.2f(%.2f),", $n, $self->$a, $self->$e);
     } else {
-      $string .= sprintf(" %s = %.3g(%.3g),", $n, $self->$a, $self->$e);
+      $string .= sprintf(" %s = %.3f(%.3f),", $n, $self->$a, $self->$e);
     };
     ++$count;
   };
   chop $string;
-  $string .= sprintf(", area = %.2f", $self->area) if $self->peaked;
+  $string .= sprintf("\n    area = %.2f", $self->area) if $self->peaked;
   $string .= $/;
   return $string;
 };
@@ -209,7 +192,7 @@ Demeter::PeakFit::LineShape - A lineshape object for peak fitting in Demeter
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.4.
+This documentation refers to Demeter version 0.5.
 
 =head1 SYNOPSIS
 
@@ -229,17 +212,15 @@ The PeakFit function to which this LineShape belongs.
 
 =item C<function>
 
-The form of the function, like Linear or Gaussian.  See below for the
-complete list of possibilities.
+The form of the function, like Linear or Gaussian.
 
 =item C<peaked>
 
 A flag that is true if the function associated with this object is a
 peak-like function.
 
-Linear, Atan, Erf, Const, Cubic, Quadratic, Spline, PolyLine,
-ExpDecay, and the Polynomial functions are the ones for which this is
-set to 0.  All others are set to 1.
+Lines, step-like functions, and other non-peaked functions are set to
+0.  All others are set to 1.
 
 =item C<np>
 

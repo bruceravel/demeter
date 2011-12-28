@@ -30,11 +30,17 @@ sub _number_of_steps {
 
 sub _cluster {
   my ($self) = @_;
+  $self->reading_file(1);
   $self->_number_of_steps;
   open(my $H, '<', $self->file);
   my @cluster = ();
   my @all = ();
   while (<$H>) {
+    if (not $. % 1e4) {
+      if (lc($self->mo->ui) eq 'wx') {
+	$self->call_sentinal;
+      };
+    };
     if (m{\Atimestep}) {
       push @all, [@cluster] if $#cluster>0;
       $#cluster = -1;
@@ -54,6 +60,8 @@ sub _cluster {
   push @all, [@cluster];
   $self->clusters(\@all);
   close $H;
+  $self->reading_file(0);
+  $self->update_file(0);
   return $self;
 };
 
@@ -66,7 +74,7 @@ Demeter::Feff::MD::DL_POLY - Role supporting DL_POLY HISTORY file
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.4.
+This documentation refers to Demeter version 0.5.
 
 =head1 SYNOPSIS
 

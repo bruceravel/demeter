@@ -28,6 +28,7 @@ use Demeter::UI::Athena::ColumnSelection::Preprocess;
 use Demeter::UI::Athena::ColumnSelection::Rebin;
 use Demeter::UI::Athena::ColumnSelection::Reference;
 
+use Encoding::FixLatin qw(fix_latin);
 use List::MoreUtils qw(minmax);
 
 my $contents_font_size = Wx::SystemSettings::GetFont(wxSYS_DEFAULT_GUI_FONT)->GetPointSize; # - 1;
@@ -49,11 +50,25 @@ sub new {
   my $left = Wx::BoxSizer->new( wxVERTICAL );
   $hbox->Add($leftpane, 1, wxGROW|wxALL, 0);
 
+
+  my $select = Wx::BoxSizer->new( wxHORIZONTAL );
+  $this->{selectall} = Wx::Button->new($leftpane, -1, 'Select all', wxDefaultPosition, wxDefaultSize, wxBU_EXACTFIT);
+  $select -> Add($this->{selectall}, 1, wxGROW|wxLEFT|wxRIGHT, 2);
+  $this->{deselect}  = Wx::Button->new($leftpane, -1, 'Clear numerator', wxDefaultPosition, wxDefaultSize, wxBU_EXACTFIT);
+  $select -> Add($this->{deselect},  1, wxGROW|wxLEFT|wxRIGHT, 2);
+  $this->{pauseplot} = Wx::ToggleButton->new($leftpane, -1, 'Pause plotting', wxDefaultPosition, wxDefaultSize, wxBU_EXACTFIT);
+  $select -> Add($this->{pauseplot},  1, wxGROW|wxLEFT|wxRIGHT, 2);
+  $left->Add($select, 0, wxGROW|wxALL, 0);
+  EVT_BUTTON($this, $this->{selectall}, sub{selectall(@_, $this, $data)});
+  EVT_BUTTON($this, $this->{deselect},  sub{deselect (@_, $this, $data)});
+
+
   $this->{left} = $left;
   ## the ln checkbox goes below the column selection widget, but if
   ## refered to in the columns method, so I need to define it here.
   ## it will be placed in the other_parameters method.
   $this->{ln}     = Wx::CheckBox->new($leftpane, -1, 'Natural log');
+  $this->{inv}    = Wx::CheckBox->new($leftpane, -1, 'Invert');
   $this->{energy} = Wx::TextCtrl->new($leftpane, -1, q{}, wxDefaultPosition, [350,-1], wxTE_READONLY);
   $this->{mue}    = Wx::TextCtrl->new($leftpane, -1, q{}, wxDefaultPosition, [350,-1], wxTE_READONLY);
 
@@ -79,9 +94,11 @@ sub new {
 
   $this->{contents} = Wx::TextCtrl->new($rightpane, -1, q{}, wxDefaultPosition, [-1,-1],
   					wxTE_MULTILINE|wxTE_RICH2|wxTE_DONTWRAP|wxALWAYS_SHOW_SB);
-  $this->{contents} -> SetFont( Wx::Font->new( $contents_font_size, wxTELETYPE, wxNORMAL, wxNORMAL, 0, "" ) );
+  $this->{contents} -> SetFont( Wx::Font->new( $contents_font_size, wxTELETYPE, wxNORMAL, wxNORMAL, 0, "", ) );
   $right -> Add($this->{contents}, 1, wxGROW|wxALL, 5);
-  $this->{contents}->LoadFile($data->file);
+  my $fixed = fix_latin(Demeter->slurp($data->file));
+  $this->{contents}->SetValue($fixed);
+  #$this->{contents}->LoadFile($data->file);
 
   $leftpane  -> SetSizerAndFit($left);
   $rightpane -> SetSizerAndFit($right);
@@ -99,9 +116,9 @@ sub columns {
   #my $column_string = Ifeffit::get_string('column_label');
   my @cols = split(" ", $data->columns);
 
-  my $columnbox = Wx::ScrolledWindow->new($parent, -1, wxDefaultPosition, [350, -1], wxHSCROLL);
+  my $columnbox = Wx::ScrolledWindow->new($parent, -1, wxDefaultPosition, [350, 150], wxHSCROLL);
   $columnbox->SetScrollbars(30, 0, 50, 0);
-  $this->{left}     -> Add($columnbox, 0, wxGROW|wxALL, 10);
+  $this->{left}     -> Add($columnbox, 1, wxGROW|wxALL, 10);
 
   #my $columnbox      = Wx::StaticBox->new($parent, -1, 'Columns', wxDefaultPosition, wxDefaultSize);
   #my $columnboxsizer = Wx::StaticBoxSizer->new( $columnbox, wxVERTICAL );
@@ -110,15 +127,18 @@ sub columns {
   my $gbs = Wx::GridBagSizer->new( 3, 3 );
 
   my $label = Wx::StaticText->new($columnbox, -1, 'Energy');
-  $gbs -> Add($label, Wx::GBPosition->new(1,0));
-  $label    = Wx::StaticText->new($columnbox, -1, 'Numerator');
-  $gbs -> Add($label, Wx::GBPosition->new(2,0));
-  $label    = Wx::StaticText->new($columnbox, -1, 'Denominator');
-  $gbs -> Add($label, Wx::GBPosition->new(3,0));
+  $gbs  -> Add($label, Wx::GBPosition->new(1,0));
+  $label = Wx::StaticText->new($columnbox, -1, 'Numerator');
+  $gbs  -> Add($label, Wx::GBPosition->new(2,0));
+  $label = Wx::StaticText->new($columnbox, -1, 'Denominator');
+  $gbs  -> Add($label, Wx::GBPosition->new(3,0));
 
   my @energy; $#energy = $#cols+1;
   my @numer;  $#numer  = $#cols+1;
   my @denom;  $#denom  = $#cols+1;
+  my @energy_widgets;
+  my @numer_widgets;
+  my @denom_widgets;
 
   my $count = 1;
   my $med = 0;
@@ -130,7 +150,8 @@ sub columns {
 
     my $radio = Wx::RadioButton->new($columnbox, -1, q{}, @args);
     $gbs -> Add($radio, Wx::GBPosition->new(1,$count));
-    EVT_RADIOBUTTON($parent, $radio, sub{OnEnergyClick(@_, $data, $i)});
+    EVT_RADIOBUTTON($parent, $radio, sub{OnEnergyClick(@_, $this, $data, $i)});
+    push @energy_widgets, $radio;
     if ($data->energy =~ m{(?<=\$)$count\b}) {
       $energy[$i] = 1;
       $radio->SetValue(1);
@@ -139,6 +160,7 @@ sub columns {
     my $ncheck = Wx::CheckBox->new($columnbox, -1, q{});
     $gbs -> Add($ncheck, Wx::GBPosition->new(2,$count));
     EVT_CHECKBOX($parent, $ncheck, sub{OnNumerClick(@_, $this, $data, $i, \@numer)});
+    push @numer_widgets, $ncheck;
     if ($data->numerator =~ m{(?<=\$)$count\b}) {
       $numer[$i] = 1;
       $ncheck->SetValue(1);
@@ -148,6 +170,7 @@ sub columns {
     my $dcheck = Wx::CheckBox->new($columnbox, -1, q{});
     $gbs -> Add($dcheck, Wx::GBPosition->new(3,$count));
     EVT_CHECKBOX($parent, $dcheck, sub{OnDenomClick(@_, $this, $data, $i, \@denom)});
+    push @denom_widgets, $dcheck;
     if ($data->denominator =~ m{(?<=\$)$count\b}) {
       $denom[$i] = 1;
       $dcheck->SetValue(1);
@@ -156,6 +179,9 @@ sub columns {
     @args = ();
     ++$count;
   };
+  $this->{energy_widgets} = \@energy_widgets;
+  $this->{numer_widgets}  = \@numer_widgets;
+  $this->{denom_widgets}  = \@denom_widgets;
   $this->{each}->Enable($med>1);
 
   $this->display_plot($data) if (($data->numerator ne '1') or ($data->denominator ne '1'));
@@ -173,26 +199,30 @@ sub other_parameters {
   my ($this, $parent, $data) = @_;
 
   my $others = Wx::BoxSizer->new( wxHORIZONTAL );
-  $others -> Add($this->{ln}, 0, wxGROW|wxALL, 5);
+  $others -> Add($this->{ln},   0, wxGROW|wxALL, 5);
   EVT_CHECKBOX($parent, $this->{ln}, sub{OnLnClick(@_, $this, $data)});
-  $others->Add(1,1,1);
+  $others -> Add(1,1,1);
+  $others -> Add($this->{inv},  0, wxGROW|wxALL, 5); # defined in new
+  EVT_CHECKBOX($parent, $this->{inv}, sub{OnInvClick(@_, $this, $data)});
+  $others -> Add(1,1,1);
   $others -> Add($this->{each}, 0, wxGROW|wxALL, 5); # defined in new
-  $this->{replot} = Wx::Button->new($parent, -1, 'Replot');
-  $others -> Add($this->{replot}, 0, wxGROW|wxALL, 5);
   $this->{left}->Add($others, 0, wxGROW|wxALL, 0);
-  EVT_BUTTON($this, $this->{replot}, sub{  $this->display_plot($data) });
 
   $others = Wx::BoxSizer->new( wxHORIZONTAL );
   $this->{datatype} = Wx::Choice->new($parent,-1, wxDefaultPosition, wxDefaultSize,
 				     ["$MU(E)", 'xanes', 'norm(E)', 'chi(k)', 'xmu.dat']);
   $this->{units}    = Wx::Choice->new($parent,-1, wxDefaultPosition, wxDefaultSize, ['eV', 'keV']);
+  $this->{replot}   = Wx::Button->new($parent, -1, 'Replot');
   $others -> Add(Wx::StaticText->new($parent,-1, "Data type"), 0, wxGROW|wxALL, 7);
-  $others -> Add($this->{datatype}, 0, wxGROW|wxRIGHT, 25);
+  $others -> Add($this->{datatype}, 0, wxRIGHT, 25);
   $others -> Add(Wx::StaticText->new($parent,-1, "Energy units"), 0, wxGROW|wxTOP|wxRIGHT, 7);
-  $others -> Add($this->{units}, 0, wxGROW|wxALL, 0);
+  $others -> Add($this->{units}, 0, wxALL, 0);
+  $others -> Add(1,1,1);
+  $others -> Add($this->{replot}, 0, wxALL, 0);
   $this->{$_}->SetSelection(0) foreach (qw(datatype units));
   $this->{left}->Add($others, 0, wxGROW|wxALL, 0);
 
+  EVT_BUTTON($this, $this->{replot}, sub{  $this->display_plot($data) });
   EVT_CHOICE($parent, $this->{datatype}, sub{OnDatatype(@_, $this, $data)});
   EVT_CHOICE($parent, $this->{units},    sub{OnUnits(@_, $this, $data)});
 
@@ -215,7 +245,8 @@ sub strings {
   $gbs -> Add($this->{energy},                            Wx::GBPosition->new(0,1));
   $this->{energy} -> SetValue($data->energy_string);
 
-  $gbs -> Add(Wx::StaticText->new($parent, -1, "$MU(E)"), Wx::GBPosition->new(1,0));
+  $this->{muchi_label} = Wx::StaticText->new($parent, -1, "$MU(E)");
+  $gbs -> Add($this->{muchi_label}, Wx::GBPosition->new(1,0));
   $gbs -> Add($this->{mue},                               Wx::GBPosition->new(1,1));
   $this->{mue} -> SetValue($data->xmu_string);
 
@@ -242,15 +273,25 @@ sub OnLnClick {
   $data->ln($event->IsChecked);
   $this->display_plot($data);
 };
+sub OnInvClick {
+  my ($parent, $event, $this, $data) = @_;
+  $data->inv($event->IsChecked);
+  $this->display_plot($data);
+};
 
 sub OnEnergyClick {
-  my ($parent, $event, $data, $i) = @_;
-  $data->energy('$'.$i);
+  my ($parent, $event, $this, $data, $i) = @_;
+  $data -> energy('$'.$i);
+  $data -> update_data(1);
+  $this -> display_plot($data);
 };
 
 sub OnNumerClick {
   my ($parent, $event, $this, $data, $i, $aref) = @_;
-  $aref->[$i] = $event->IsChecked;
+  #$aref->[$i] = $event->IsChecked;
+  foreach my $ii (0..$#{$this->{numer_widgets}}) {
+    $aref->[$ii+1] = $this->{numer_widgets}->[$ii]->IsChecked;
+  };
   my $string = q{};
   my $n = 0;
   foreach my $count (1 .. $#$aref) {
@@ -263,12 +304,13 @@ sub OnNumerClick {
   chop $string;
   #print "numerator is ", $string, $/;
   $string = "1" if not $string;
-  $data -> numerator($string);
+  ($data->datatype ne 'chi') ? $data -> numerator($string) : $data -> chi_column($string);
   $this -> display_plot($data);
 };
 
 sub OnDenomClick {
   my ($parent, $event, $this, $data, $i, $aref) = @_;
+  return if ($data->datatype eq 'chi');
   $aref->[$i] = $event->IsChecked;
   my $string = q{};
   foreach my $count (1 .. $#$aref) {
@@ -283,29 +325,118 @@ sub OnDenomClick {
 
 sub OnDatatype {
   my ($parent, $event, $this, $data) = @_;
-  $data->datatype('xmu')                      if ($this->{datatype}->GetSelection == 0);
-  $data->set(datatype=>'xanes', bkg_nnorm=>$data->co->default('xanes', 'nnorm')) if ($this->{datatype}->GetSelection == 1);
+  $data->set(datatype=>'xmu', is_nor=>0)      if ($this->{datatype}->GetSelection == 0);
+  $data->set(datatype=>'xanes', bkg_nnorm=>$data->co->default('xanes', 'nnorm'), is_nor=>0) if ($this->{datatype}->GetSelection == 1);
   $data->set(datatype=>'xmu', is_nor=>1)      if ($this->{datatype}->GetSelection == 2);
   $data->datatype('chi')                      if ($this->{datatype}->GetSelection == 3);
   $data->datatype('xmudat')                   if ($this->{datatype}->GetSelection == 4);
+
+  if ($this->{datatype}->GetSelection == 3) { # chi data
+    ## disable widgets needed for processing mu(E) data
+    $this->{ln}                    -> SetValue(0);
+    $this->{ln}                    -> Enable(0);
+    $this->{inv}                   -> SetValue(0);
+    $this->{inv}                   -> Enable(0);
+    $this->{muchi_label}           -> SetLabel("$CHI(k)");
+    $this->{Reference}->{do_ref}   -> SetValue(0);
+    $this->{Reference}->{do_ref}   -> Enable(0);
+    $this->{Reference}             -> EnableReference(q{}, $data);
+    $this->{Rebin}->{do_rebin}     -> SetValue(0);
+    $this->{Rebin}->{do_rebin}     -> Enable(0);
+    $this->{Rebin}                 -> EnableRebin(q{}, $data);
+    $this->{Preprocess}->{standard}-> SetStringSelection('None');
+    $this->{Preprocess}->{standard}-> Enable(0);
+    $this->{Preprocess}->{align}   -> SetValue(0);
+    $this->{Preprocess}->{align}   -> Enable(0);
+    foreach my $d (@{$this->{denom_widgets}}) {
+      $d->Enable(0);
+    };
+
+    my $num = $data->numerator;
+    $data->set(numerator=>q{1}, denominator=>q{1}, ln=>0);
+    $data->chi_column($num);
+  } else {
+    ## re-enable widgets needed for processing mu(E) data
+    $this->{ln}                    -> Enable(1);
+    $this->{inv}                   -> Enable(1);
+    $this->{muchi_label}           -> SetLabel("$MU(E)");
+    $this->{Reference}->{do_ref}   -> Enable(1);
+    $this->{Reference}             -> EnableReference(q{}, $data);
+    $this->{Rebin}->{do_rebin}     -> Enable(1);
+    $this->{Rebin}                 -> EnableRebin(q{}, $data);
+    $this->{Preprocess}->{standard}-> Enable(1);
+    $this->{Preprocess}->{align}   -> Enable(1);
+    foreach my $d (@{$this->{denom_widgets}}) {
+      $d->Enable(1);
+    };
+
+    my $num = ($data->chi_column eq '1') ? $data->numerator : $data->chi_column;
+    $data->chi_column(q{});
+    $data->numerator($num);
+  };
 };
 
 sub OnUnits {
   my ($parent, $event, $this, $data) = @_;
-  $data->kev(0) if ($this->{units}->GetSelection == 0);
-  $data->kev(1) if ($this->{units}->GetSelection == 1);
+  $data->is_kev(0) if ($this->{units}->GetSelection == 0);
+  $data->is_kev(1) if ($this->{units}->GetSelection == 1);
+  $this -> display_plot($data);
+};
+
+  #my @energy_widgets = @{$this->{energy_widgets}};
+  #my @numer_widgets  = @{$this->{numer_widgets}};
+  #my @denom_widgets  = @{$this->{denom_widgets}};
+sub selectall {
+  my ($parent, $event, $this, $data) = @_;
+  my $string = q{};
+  foreach my $i (0..$#{$this->{numer_widgets}}) {
+    next if $this->{energy_widgets}->[$i]->GetValue;
+    next if $this->{denom_widgets}->[$i]->GetValue;
+    $this->{numer_widgets}->[$i]->SetValue(1);
+    my $count = $i+1;
+    $string .= '$'.$count.'+';
+  };
+  $string =~ s{\+\z}{};
+  $this->{each}->Enable(1);
+  ($data->datatype ne 'chi') ? $data -> numerator($string) : $data -> chi_column($string);
+  $this -> display_plot($data);
+};
+sub deselect {
+  my ($parent, $event, $this, $data) = @_;
+  foreach my $w (@{$this->{numer_widgets}}) {
+    $w->SetValue(0);
+  };
+  $this->{each}->Enable(0);
+  ($data->datatype ne 'chi') ? $data -> numerator('1') : $data -> chi_column('1');
+  $this -> display_plot($data);
 };
 
 sub display_plot {
   my ($this, $data) = @_;
-  $data -> _update('normalize');
-  $this->{energy} -> SetValue($data->energy_string);
-  $this->{mue}    -> SetValue($data->xmu_string);
-  my @energy = $data->get_array('energy');
-  my ($emin, $emax) = minmax(@energy);
-  $data -> po -> set(emin=>$emin, emax=>$emax);
-  $data -> po -> start_plot;
-  $data -> plot('e');
+  if (($data->columns =~ m{\bxmu\b}) and (not $this->{pauseplot}->GetValue)) {
+    $data -> update_data(1);
+  };
+  if ($data->datatype ne 'chi') {
+    $data -> _update('normalize');
+    $this->{energy} -> SetValue($data->energy_string);
+    $this->{mue}    -> SetValue($data->xmu_string);
+    return if $this->{pauseplot}->GetValue;
+    my @energy = $data->get_array('energy');
+    my ($emin, $emax) = minmax(@energy);
+    $data -> po -> set(emin=>$emin, emax=>$emax);
+    $data -> po -> start_plot;
+    $data -> plot('e');
+  } else {
+    $data -> _update('normalize');
+    $this->{energy} -> SetValue($data->energy_string);
+    $this->{mue}    -> SetValue($data->chi_string);
+    return if $this->{pauseplot}->GetValue;
+    my @k = $data->get_array('k');
+    my ($kmin, $kmax) = minmax(@k);
+    $data -> po -> set(kmin=>0, kmax=>$kmax);
+    $data -> po -> start_plot;
+    $data -> plot('k') if ($data->chi_string ne '1');
+  };
 };
 
 sub ShouldPreventAppExit {

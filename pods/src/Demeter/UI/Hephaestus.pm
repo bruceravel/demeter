@@ -62,7 +62,7 @@ my @utilities = qw(absorption formulas ion data transitions find line standards 
 sub new {
   my $ref    = shift;
   my $width  = 100;
-  my $height = int(($#utilities+1) * $icon_dimension * 1.8); # + 2*($#utilities+1);
+  my $height = int(($#utilities+1) * $icon_dimension * 1.85); # + 2*($#utilities+1);
   my $self   = $ref->SUPER::new( undef,           # parent window
 				 -1,              # ID -1 means any
 				 'Hephaestus',    # title
@@ -174,10 +174,10 @@ sub OnInit {
   $demeter -> mo -> ui('Wx');
   $demeter -> mo -> identity('Hephaestus');
   ## read hephaestus' demeter_conf file
-  my $conffile = File::Spec->catfile(dirname($INC{'Demeter/UI/Hephaestus.pm'}), 'Hephaestus', 'data', "hephaestus.demeter_conf");
-  $demeter -> co -> read_config($conffile);
+  #my $conffile = File::Spec->catfile(dirname($INC{'Demeter/UI/Hephaestus.pm'}), 'Hephaestus', 'data', "hephaestus.demeter_conf");
+  #$demeter -> co -> read_config($conffile);
   ## read ini file...
-  $demeter -> co -> read_ini('hephaestus');
+  #$demeter -> co -> read_ini('hephaestus');
   $demeter -> plot_with($demeter->co->default(qw(plot plotwith)));
 
   foreach my $m (qw(Absorption Formulas Ion Data Transitions EdgeFinder LineFinder
@@ -289,7 +289,7 @@ Demeter::UI::Hephaestus - A souped-up periodic table for XAS
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.4.
+This documentation refers to Demeter version 0.5.
 
 =head1 SYNOPSIS
 

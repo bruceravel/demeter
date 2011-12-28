@@ -67,7 +67,7 @@
 
 <h1 id="VERSION">VERSION <a href="#TOP" class="toplink"><img alt="^" src="../../up.gif" /></a></h1>
 
-<p>This documentation refers to Demeter version 0.4.</p>
+<p>This documentation refers to Demeter version 0.5.</p>
 
 <h1 id="SYNOPSIS">SYNOPSIS <a href="#TOP" class="toplink"><img alt="^" src="../../up.gif" /></a></h1>
 
@@ -81,14 +81,12 @@
 	<dt><code>parent</code></dt>
 		<dd><p>The PeakFit function to which this LineShape belongs.</p></dd>
 	<dt><code>function</code></dt>
-		<dd><p>The form of the function, like Linear or Gaussian.  See below for the
-complete list of possibilities.</p></dd>
+		<dd><p>The form of the function, like Linear or Gaussian.</p></dd>
 	<dt><code>peaked</code></dt>
 		<dd><p>A flag that is true if the function associated with this object is a
 peak-like function.</p></dd>
-		<dd><p>Linear, Atan, Erf, Const, Cubic, Quadratic, Spline, PolyLine,
-ExpDecay, and the Polynomial functions are the ones for which this is
-set to 0.  All others are set to 1.</p></dd>
+		<dd><p>Lines, step-like functions, and other non-peaked functions are set to
+0.  All others are set to 1.</p></dd>
 	<dt><code>np</code></dt>
 		<dd><p>The number of parameters used by the specified functional form.</p></dd>
 	<dt><code>xaxis</code></dt>

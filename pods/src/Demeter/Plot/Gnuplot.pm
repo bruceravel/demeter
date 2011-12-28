@@ -42,6 +42,8 @@ has '+col7'	=> (default => '8');
 has '+col8'	=> (default => '9');
 has '+col9'	=> (default => '10');
 
+has 'terminal_number' => (is => 'rw', isa => 'Str', default => 1);
+
 
 before start_plot => sub {
   my ($self) = @_;
@@ -137,8 +139,10 @@ override 'plot_kylabel' => sub {
     return 'k {\267} {/Symbol c}(k)&{aa}({\101})';
   } elsif ($w == 0) {
     return '{/Symbol c}(k)';
+  } elsif ($w < 0) {
+    return '{/Symbol c}(k) (variable k-weighting)';
   } else {
-    return sprintf('k^%s {\267} {/Symbol c}(k)&{aa}({\305}^{-%s})', $w, $w);
+    return sprintf('k^{%s} {\267} {/Symbol c}(k)&{aa}({\305}^{-%s})', $w, $w);
   };
 };
 
@@ -149,9 +153,14 @@ override 'plot_rylabel' => sub {
   my ($open, $close) = ($part eq 'm') ? ('{/*1.25 |}',    '{/*1.25 |}')
                      : ($part eq 'r') ? ('{/*1.25 Re[}',  '{/*1.25 ]}')
                      : ($part eq 'i') ? ('{/*1.25 Im[}',  '{/*1.25 ]}')
+                     : (($part eq 'p') and ($self->dphase)) ? ('{/*1.25 Deriv(Pha[}', '{/*1.25 ])}')
                      : ($part eq 'p') ? ('{/*1.25 Pha[}', '{/*1.25 ]}')
 		     :                  ('{/*1.25 Env[}', '{/*1.25 ]}');
-  return sprintf('%s{/Symbol c}(R)%s&{aa}({\305}^{-%s})', $open, $close, $w+1);
+  if ($w >= 0) {
+    return sprintf('%s{/Symbol c}(R)%s&{aa}({\305}^{-%s})', $open, $close, $w+1);
+  } else {
+    return sprintf('%s{/Symbol c}(R)%s&{aa}(variable k-weighting)', $open, $close);
+  };
 };
 override 'plot_qylabel' => sub {
   my ($self) = @_;
@@ -162,7 +171,11 @@ override 'plot_qylabel' => sub {
                      : ($part eq 'i') ? ('{/*1.25 Im[}',  '{/*1.25 ]}')
                      : ($part eq 'p') ? ('{/*1.25 Pha[}', '{/*1.25 ]}')
 		     :                  ('{/*1.25 Env[}', '{/*1.25 ]}');
-  return sprintf('%s{/Symbol c}(q)%s&{aa}({\305}^{-%s})', $open, $close, $w);
+  if ($w >= 0) {
+    return sprintf('%s{/Symbol c}(q)%s&{aa}({\305}^{-%s})', $open, $close, $w);
+  } else {
+    return sprintf('%s{/Symbol c}(q)%s&{aa}(variable k-weighting)', $open, $close);
+  };
 };
 
 override i0_text => sub {
@@ -203,7 +216,7 @@ Demeter::Plot::Gnuplot - Using Gnuplot with Demeter
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.4.
+This documentation refers to Demeter version 0.5.
 
 =head1 SYNOPSIS
 

@@ -51,6 +51,7 @@
 	<li><a href="#NAME">NAME</a></li>
 	<li><a href="#SYNOPSIS">SYNOPSIS</a></li>
 	<li><a href="#SSRL_files">SSRL files</a></li>
+	<li><a href="#ROBL_files">ROBL files</a></li>
 	<li><a href="#AUTHOR">AUTHOR</a></li>
 </ul>
 <hr />
@@ -71,7 +72,17 @@ line out of the Data: section, moves the first column (real time
 clock) to the third column, and swaps the requested and acheived
 energy columns.</p>
 
-<h1 id="AUTHOR">AUTHOR <a href="#TOP" class="toplink"><img alt="^" src="../../up.gif" /></a></h1>
+<h1 id="ROBL_files">ROBL files <a href="#TOP" class="toplink"><img alt="^" src="../../up.gif" /></a></h1>
+
+<p>The ROBL beamline at ESRF uses the same file format as the SSRL Data
+Collector 1.1 except that it includes a couple of high-ASCII
+characters.  These characters may give a Wx TextCtrl some trouble, so
+they get stripped from the file and replaced with ASCII look-alikes.</p>
+
+<pre>  Â©  ==&gt; (c)
+  Â°  ==&gt; deg
+
+</pre><h1 id="AUTHOR">AUTHOR <a href="#TOP" class="toplink"><img alt="^" src="../../up.gif" /></a></h1>
 
 <pre>  Bruce Ravel &lt;bravel@bnl.gov&gt;
   http://xafs.org/BruceRavel

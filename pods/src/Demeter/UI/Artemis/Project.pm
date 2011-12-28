@@ -20,6 +20,7 @@ use warnings;
 use Carp;
 
 use Archive::Zip qw( :ERROR_CODES :CONSTANTS );
+use Compress::Zlib;
 use Cwd;
 use File::Basename;
 use File::Copy;
@@ -136,7 +137,7 @@ sub autosave_exists {
   opendir(my $stash, $Demeter::UI::Artemis::demeter->stash_folder);
   my @list = readdir $stash;
   closedir $stash;
-  return any {$_ =~ m{autosave\z}} @list;
+  return any {$_ =~ m{autosave\z} and $_ !~ m{\AAthena}} @list;
 };
 sub import_autosave {
   my $dialog = Demeter::UI::Wx::AutoSave->new($Demeter::UI::Artemis::frames{main});
@@ -154,11 +155,24 @@ sub import_autosave {
 
 };
 
+
+## other data types:
+##  * empirical standard
+##  * structural unit
+##  * molecule
+
 sub read_project {
   my ($rframes, $fname) = @_;
   if (not $fname) {
-    my $fd = Wx::FileDialog->new( $rframes->{main}, "Import an Artemis project", cwd, q{},
-				  "Artemis project (*.fpj)|*.fpj|All files|*",
+    my $fd = Wx::FileDialog->new( $rframes->{main}, "Import an Artemis project or data", cwd, q{},
+				  "Artemis project or data (*.fpj;*.prj;*.inp;*.cif)|*.fpj;*.prj;*.inp;*.cif|" .
+				  "Artemis project (*.fpj)|*.fpj|" .
+				  "Athena project (*.prj)|*.prj|".
+				  "old-style Artemis project (*.apj)|*.apj|".
+				  "Demeter serializations (*.dpj)|*.dpj|".
+				  "Feff or crystal data (*.inp;*.cif)|*.inp;*.cif|".
+				  "chi(k) column data (*.chi;*.dat)|*.chi;*.dat|".
+				  "All files|*",
 				  wxFD_OPEN|wxFD_FILE_MUST_EXIST|wxFD_CHANGE_DIR|wxFD_PREVIEW,
 				  wxDefaultPosition);
     if ($fd->ShowModal == wxID_CANCEL) {
@@ -167,7 +181,32 @@ sub read_project {
     };
     $fname = File::Spec->catfile($fd->GetDirectory, $fd->GetFilename);
   };
+  $fname = Demeter->follow_link($fname);
 
+  if (not Demeter->is_zipproj($fname,0, 'any')) {
+    if (project_started($rframes)) {
+      my $yesno = Wx::MessageDialog->new($rframes->{main},
+					 "Save current project before opening a new one?",
+					 "Save project?",
+					 wxYES_NO|wxYES_DEFAULT|wxICON_QUESTION);
+      my $result = $yesno->ShowModal;
+      save_project($rframes) if $result == wxID_YES;
+      close_project($rframes, 1);
+    };
+  };
+
+  if (not Demeter->is_zipproj($fname,0, 'fpj')) {
+    Demeter::UI::Artemis::Import('old',  $fname), return if (Demeter->is_zipproj($fname,0,'apj'));
+    Demeter::UI::Artemis::Import('prj',  $fname), return if (Demeter->is_prj($fname));
+    Demeter::UI::Artemis::Import('chi',  $fname), return if (Demeter->is_data($fname));
+    Demeter::UI::Artemis::Import('feff', $fname), return if (Demeter->is_feff($fname) or Demeter->is_atoms($fname) or Demeter->is_cif($fname));
+    Demeter::UI::Artemis::Import('dpj',  $fname), return if (Demeter->is_zipproj($fname,0,'dpj'));
+    $rframes->{main}->status("$fname is not recognized as any kind of input data for Artemis", 'error');
+    return;
+  };
+
+  my $busy = Wx::BusyCursor->new();
+  $rframes->{main}->status("Importing project (please be patient, it may take a while...)", "wait");
 
 #  my ($volume,$directories,$fl) = File::Spec->splitpath( $rframes->{main}->{project_folder} );
 #  $directories =~ s{\\}{/}g;
@@ -208,28 +247,40 @@ sub read_project {
   foreach my $d (@dirs) {
     ## import feff yaml
     my $yaml = File::Spec->catfile($projfolder, 'feff', $d, $d.'.yaml');
-    my $feffobject = Demeter::Feff->new(yaml=>$yaml, group=>$d); # force group to be the same as before
+    my $feffobject = Demeter::Feff->new(group=>$d); # force group to be the same as before
+    my $where = Cwd::realpath(File::Spec->catfile($feffdir, $d));
+    if (-e $yaml) {
+      my $gz = gzopen($yaml, 'rb');
+      my ($yy, $buffer);
+      $yy .= $buffer while $gz->gzreadline($buffer) > 0 ;
+      my @refs = YAML::Tiny::Load($yy);
+      $feffobject->read_yaml(\@refs, $where);
+    };
 
     if (not $feffobject->hidden) {
       ## import atoms.inp
       my $atoms = File::Spec->catfile($projfolder, 'feff', $d, 'atoms.inp');
       my ($fnum, $ifeff) = Demeter::UI::Artemis::make_feff_frame($rframes->{main}, $atoms, $feffobject->name, $feffobject);
 
-      ## import feff.inp
-      my $feff = File::Spec->catfile($projfolder, 'feff', $d, $d.'.inp');
-      my $text = $feffobject->slurp($feff);
-      $rframes->{$fnum}->{Feff}->{feff}->SetValue($text);
+      if (-e $yaml) {
+	## import feff.inp
+	my $feff = File::Spec->catfile($projfolder, 'feff', $d, $d.'.inp');
+	my $text = $feffobject->slurp($feff);
+	$rframes->{$fnum}->{Feff}->{feff}->SetValue($text);
 
-      ## make Feff frame
-      $feffobject -> workspace(File::Spec->catfile($projfolder, 'feff', $d));
-      $feffs{$d} = $feffobject;
-      $rframes->{$fnum}->{Feff}->{feffobject} = $feffobject;
-      $rframes->{$fnum}->{Feff}->fill_intrp_page($feffobject);
-      $rframes->{$fnum}->{notebook}->ChangeSelection(2);
+	## make Feff frame
+	$feffobject -> workspace(File::Spec->catfile($projfolder, 'feff', $d));
+	$feffs{$d} = $feffobject;
+	$rframes->{$fnum}->{Feff}->{feffobject} = $feffobject;
+	$rframes->{$fnum}->{Feff}->fill_intrp_page($feffobject);
+	$rframes->{$fnum}->{notebook}->ChangeSelection(2);
 
-      $rframes->{$fnum}->{Feff} ->{name}->SetValue($feffobject->name);
-      $rframes->{$fnum}->{Paths}->{name}->SetValue($feffobject->name);
-      $rframes->{$fnum}->status("Imported crystal and Feff data from ". basename($fname));
+	$rframes->{$fnum}->{Feff}->fill_ss_page($feffobject);
+
+	$rframes->{$fnum}->{Feff} ->{name}->SetValue($feffobject->name);
+	$rframes->{$fnum}->{Paths}->{name}->SetValue($feffobject->name);
+	$rframes->{$fnum}->status("Imported crystal and Feff data from ". basename($fname));
+      };
       my $label = $rframes->{main}->{$fnum}->GetLabel;
       $label =~ s{Hide}{Show};
       $rframes->{main}->{$fnum}->SetLabel($label)
@@ -261,6 +312,7 @@ sub read_project {
   foreach my $d (@dirs) {
     my $fit = Demeter::Fit->new(group=>$d, interface=>"Artemis (Wx $Wx::VERSION)");
     my $regen = ($d eq $current) ? 0 : 1;
+    next if (not -d File::Spec->catfile($projfolder, 'fits', $d));
     $fit->deserialize(folder=> File::Spec->catfile($projfolder, 'fits', $d), regenerate=>0); #$regen);
     if (($d ne $current) and (not $fit->fitted)) { # discard the ones that don't actually involve a performed fit
       $fit->DEMOLISH;
@@ -297,7 +349,9 @@ sub read_project {
   ## -------- plot and indicator yamls, journal
   my $py = File::Spec->catfile($rframes->{main}->{plot_folder}, 'plot.yaml');
   if (-e $py) {
-    $Demeter::UI::Artemis::demeter->po->set(%{YAML::Tiny::LoadFile($py)});
+    my %hash = %{YAML::Tiny::LoadFile($py)};
+    delete $hash{nindicators};
+    $Demeter::UI::Artemis::demeter->po->set(%hash);
     $rframes->{Plot}->populate;
   };
   my $iy = File::Spec->catfile($rframes->{main}->{plot_folder}, 'indicators.yaml');
@@ -340,6 +394,7 @@ sub read_project {
   #++$Demeter::UI::Artemis::fit_order{order}{current};
 
   modified(0);
+  undef $busy;
 };
 
 sub restore_fit {
@@ -354,9 +409,9 @@ sub restore_fit {
     $grid -> SetCellValue($start, 0, $g->gds);
     $grid -> SetCellValue($start, 1, $g->name);
     if ($g->gds eq 'guess') {
-      $grid -> SetCellValue($start, 2, $g->bestfit || $g->mathexp);
+      $grid -> SetCellValue($start, 2, $rframes->{GDS}->display_value($g->bestfit || $g->mathexp));
     } else {
-      $grid -> SetCellValue($start, 2, $g->mathexp);
+      $grid -> SetCellValue($start, 2, $rframes->{GDS}->display_value($g->mathexp));
     };
     $grid -> {$g->name} = $g;
     my $text = q{};
@@ -387,16 +442,18 @@ sub restore_fit {
 						     (@{$fit->paths}));
     #my $first = $rframes->{$dnum}->{pathlist}->GetPage(0);
     #($first->DeletePage(0)) if (ref($first) =~ m{Panel});
+    my $datapaths = 0;
     foreach my $p (@{$fit->paths}) {
-      if (not $p->sp) {
-	$import_problems .= sprintf("The path named \"%s\" from data set \"%s\" was malformed.  It was discarded.\n", $p->name, $d->name);
-	next;
-      };
+#      if (not $p->sp) {
+#	$import_problems .= sprintf("The path named \"%s\" from data set \"%s\" was malformed.  It was discarded.\n", $p->name, $d->name);
+#	next;
+#      };
       #my $feff = $feffs{$p->{parentgroup}} || $fit -> mo -> fetch('Feff', $p->{parentgroup});
       my $feff = (ref($p) =~ m{FPath}) ? $p : $fit -> mo -> fetch('Feff', $p->{parentgroup});
       $p->set(file=>q{}, update_path=>1);
       $p->set(folder=>$feff->workspace) if (ref($p) !~ m{FPath});
       next if ($p->data ne $d);
+      ++$datapaths;
       $p->parent($feff);
       #my $this_sp = find_sp($p, \%feffs) || $fit->mo->fetch('ScatteringPath', $p->spgroup);
       #$p->sp($this_sp);
@@ -405,7 +462,7 @@ sub restore_fit {
       $page->include_label;
       $rframes->{$dnum}->{pathlist}->Check($n, $p->mark);
     };
-    $rframes->{$dnum}->{pathlist}->SetSelection(0) if ($#{$fit->paths} > -1);
+    $rframes->{$dnum}->{pathlist}->SetSelection(0) if $datapaths; #($#{$fit->paths} > -1);
     $rframes->{$dnum}->Show(0);
     $rframes->{main}->{$dnum}->SetValue(0);
     if (not $count) {
@@ -463,17 +520,19 @@ sub modified {
 
 
 sub close_project {
-  my ($rframes) = @_;
-  my $yesno = Wx::MessageDialog->new($rframes->{main},
-				     "Save this project before closing?",
-				     "Save project?",
-				     wxYES_NO|wxCANCEL|wxYES_DEFAULT|wxICON_QUESTION);
-  my $result = $yesno->ShowModal;
-  if ($result == wxID_CANCEL) {
-    $rframes->{main}->status("Not closing project.");
-    return 0;
+  my ($rframes, $force) = @_;
+  if (not $force) {
+    my $yesno = Wx::MessageDialog->new($rframes->{main},
+				       "Save this project before closing?",
+				       "Save project?",
+				       wxYES_NO|wxCANCEL|wxYES_DEFAULT|wxICON_QUESTION);
+    my $result = $yesno->ShowModal;
+    if ($result == wxID_CANCEL) {
+      $rframes->{main}->status("Not closing project.");
+      return 0;
+    };
+    save_project($rframes) if $result == wxID_YES;
   };
-  save_project($rframes) if $result == wxID_YES;
 
   Demeter::UI::Artemis::set_happiness_color($Demeter::UI::Artemis::demeter->co->default("happiness", "average_color"))
       if (exists $rframes->{main} -> {currentfit});
@@ -536,7 +595,23 @@ sub close_project {
   $rframes->{main}->{name}->SetValue(q{});
   $rframes->{main}->{description}->SetValue(q{});
   $rframes->{main}->{fitspace}->[1]->SetValue(1);
+  $rframes->{main}->{cvcount} = 0;
+
   return 1;
+};
+
+sub project_started {
+  my ($rframes) = @_;
+  my ($ndata, $nfeff, $ngds) = (0,0,0);
+  foreach my $f (keys %$rframes) {
+    ++$ndata if ($f =~ m{data});
+    ++$nfeff if ($f =~ m{feff});
+  };
+  my $grid = $rframes->{GDS}->{grid};
+  foreach my $row (0 .. $grid->GetNumberRows-1) {
+    ++$ngds if ($grid->GetCellValue($row, 1) !~ m{\A\s*\z});
+  };
+  return $ndata || $nfeff || $ngds;
 };
 
 1;
@@ -547,7 +622,7 @@ Demeter::UI::Artemis::Project - Import and export Artemis project files
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.4.
+This documentation refers to Demeter version 0.5.
 
 =head1 SYNOPSIS
 

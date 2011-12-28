@@ -102,6 +102,7 @@ has 'pathstyle' => (is => 'rw', isa =>  PgplotLine, default => sub{ shift->co->d
 
 ## -------- default plotting space
 has 'space'	=> (is => 'rw', isa =>  PlotType, default => 'r', coerce => 1);
+has 'single'    => (is => 'rw', isa =>  'Bool',   default => 0);
 
 ## -------- energy plot parameters
 has 'emin'	=> (is => 'rw', isa =>  'Num',    default => sub{ shift->co->default("plot", "emin")	  || -200});
@@ -124,9 +125,13 @@ has 'e_zero'	=> (is => 'rw', isa =>  'Bool',   default => 0);
 has 'kmin'	=> (is => 'rw', isa =>  'Num',    default => sub{ shift->co->default("plot", "kmin") || 0});
 has 'kmax'	=> (is => 'rw', isa =>  'Num',    default => sub{ shift->co->default("plot", "kmax") || 15});
 has 'chie'	=> (is => 'rw', isa =>  'Bool',   default => 0);
+
 has 'rmin'	=> (is => 'rw', isa =>  'Num',    default => sub{ shift->co->default("plot", "rmin") || 0});
 has 'rmax'	=> (is => 'rw', isa =>  'Num',    default => sub{ shift->co->default("plot", "rmax") || 6});
 has 'r_pl'	=> (is => 'rw', isa =>  MERIP,    default => sub{ shift->co->default("plot", "r_pl") || "m"});
+has 'dphase'	=> (is => 'rw', isa =>  'Bool',   default => 0);
+has 'smag'	=> (is => 'rw', isa =>  'Bool',   default => 0);
+
 has 'qmin'	=> (is => 'rw', isa =>  'Num',    default => sub{ shift->co->default("plot", "qmin") || 0});
 has 'qmax'	=> (is => 'rw', isa =>  'Num',    default => sub{ shift->co->default("plot", "qmax") || 15});
 has 'q_pl'	=> (is => 'rw', isa =>  MERIP,    default => sub{ shift->co->default("plot", "q_pl") || "r"});
@@ -134,6 +139,7 @@ has 'q_pl'	=> (is => 'rw', isa =>  MERIP,    default => sub{ shift->co->default(
 has 'kweight'		=> (is => 'rw', isa =>  'Num',      default => "1",
 			    trigger => sub{my ($self) = @_; $self->propagate_kweight});
 has 'window_multiplier' => (is => 'rw', isa =>  'Num',      default => 1.05);
+
 has 'plot_data'	        => (is => 'rw', isa =>  'Bool',     default => 0);
 has 'plot_fit'		=> (is => 'rw', isa =>  'Bool',     default => 0);
 has 'plot_win'		=> (is => 'rw', isa =>  'Bool',     default => 0);
@@ -143,8 +149,10 @@ has 'plot_run'		=> (is => 'rw', isa =>  'Bool',     default => 0);
 has 'plot_paths'	=> (is => 'rw', isa =>  'Bool',     default => 0);
 has 'plot_rmr_offset'	=> (is => 'rw', isa =>   NonNeg,    default => 0);
 
+has 'plot_pause'        => (is => 'rw', isa =>  'Num',      default => 0);
+
 ## -------- ornaments
-has 'nindicators'    => (is => 'rw', isa =>  PosInt,          default => sub{ shift->co->default("indicator", "n")     || 8});
+#has 'nindicators'    => (is => 'rw', isa =>  PosInt,          default => sub{ shift->co->default("indicator", "n")     || 8});
 has 'indicatorcolor' => (is => 'rw', isa =>  'Str',           default => sub{ shift->co->default("indicator", "color") || "violetred"});
 has 'indicatorline'  => (is => 'rw', isa =>  'Str',           default => sub{ shift->co->default("indicator", "line")  || "solid"});
 has 'showmarker'     => (is => 'rw', isa =>  'Str',           default => sub{ shift->co->default("marker", "show")     || 1});
@@ -184,7 +192,7 @@ has 'tempfiles' => (
 has 'lastplot'  => (is => 'rw', isa => 'Any',        default => q{});
 
 		       ## interpolation parameters
-has 'interp' => (is => 'rw', isa => Interp,          default => sub{ shift->co->default("interpolation", "type") || "qinterp"});
+has 'interp' => (is => 'rw', isa => Interp,          default => sub{ shift->co->default("interpolation", "type") || "interp"});
 
 
 sub BUILD {
@@ -362,7 +370,8 @@ sub plot_kylabel {
   my ($self) = @_;
   my $kw = $self->kweight;
   my $ylorig = $self->ylabel;
-  my $yl = ($kw and ($ylorig =~ m{\A\s*\z}))       ? sprintf("k\\u%d\\d\\gx(k) (\\A\\u-%d\\d)", $kw, $kw)
+  my $yl = (($kw>0) and ($ylorig =~ m{\A\s*\z}))   ? sprintf("k\\u%d\\d\\gx(k) (\\A\\u-%d\\d)", $kw, $kw)
+         : (($kw<0) and ($ylorig =~ m{\A\s*\z}))   ? sprintf("k\\u%d\\d\\gx(k) (variable k-weighting)", $kw)
          : ((not $kw) and ($ylorig =~ m{\A\s*\z})) ? "\\gx(k)" # special y label for kw=0
          :                                           $ylorig;
   return $yl;
@@ -373,8 +382,13 @@ sub plot_rylabel {
   return $self->ylabel if ($self->ylabel !~ m{\A\s*\z});
   my %open   = ('m'=>"|", e=>"Env[", r=>"Re[", i=>"Im[", p=>"Phase[");
   my %close  = ('m'=>"|", e=>"]",    r=>"]",   i=>"]",   p=>"]");
+  ($open{p}, $close{p}) = ("Deriv(Phase[", "])") if $self->dphase;
   my $part   = lc($self->r_pl);
-  return sprintf("%s\\gx(R)%s (\\A\\u-%.3g\\d)", $open{$part}, $close{$part}, $self->kweight+1);
+  if ($self->kweight >= 0) {
+    return sprintf("%s\\gx(R)%s (\\A\\u-%.3g\\d)", $open{$part}, $close{$part}, $self->kweight+1);
+  } else {
+    return sprintf("%s\\gx(R)%s (variable k-weighting)", $open{$part}, $close{$part});
+  };
 };
 
 sub plot_qylabel {
@@ -383,7 +397,11 @@ sub plot_qylabel {
   my %open   = ('m'=>"|", e=>"Env[", r=>"Re[", i=>"Im[", p=>"Phase[");
   my %close  = ('m'=>"|", e=>"]",    r=>"]",   i=>"]",   p=>"]");
   my $part   = lc($self->q_pl);
-  return sprintf("%s\\gx(q)%s (\\A\\u-%.3g\\d)", $open{$part}, $close{$part}, $self->kweight);
+  if ($self->kweight >= 0) {
+    return sprintf("%s\\gx(q)%s (\\A\\u-%.3g\\d)", $open{$part}, $close{$part}, $self->kweight);
+  } else {
+    return sprintf("%s\\gx(q)%s (variable k-weighting)", $open{$part}, $close{$part});
+  };
 };
 
 sub outfile {
@@ -446,7 +464,7 @@ Demeter::Plot - Controlling plots of XAS data
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.4.
+This documentation refers to Demeter version 0.5.
 
 =head1 SYNOPSIS
 
@@ -749,6 +767,10 @@ actually be any number.  When this gets changed, all Data, Path, and
 VPath objects will be flagged as needing to be brought up-to-date for
 their forward Fourier transform.
 
+A negative value is interpreted to mean that the value of
+C<fit_karb_value> should be used as the k-weighting to each data
+group.  This allows data to be overplotted with variable k-weighting.
+
 =item C<chie> (boolean) I<[0]>
 
 When this flag is true, plots of chi(k) will be plotted instead as
@@ -773,6 +795,16 @@ The upper bound of the plot range in R.
 The part of the Fourier transform to plot when making a multiple data
 set plot in R.  The choices are m, p, r, and i for magnitude, phase,
 real, and imaginary.
+
+=item C<dphase> (boolean) I<[0]>
+
+When this flag is true, plots of the phase of chi(R) will be plotted
+in the derivative.
+
+=item C<smag> (boolean) I<[0]>
+
+When this flag is true, plots of the magnitude of chi(R) will be plotted
+in the second derivative.  (Not implemented yet.)
 
 =back
 
@@ -846,10 +878,6 @@ plotted when this is true.
 =head2 Plot ornaments
 
 =over 4
-
-=item C<nindicators> (number) I<[8]>
-
-The maximum number of plot indicators that can be defined.
 
 =item C<indicatorcolor> (color) I<[violetred]>
 

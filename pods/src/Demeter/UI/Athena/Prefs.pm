@@ -9,6 +9,8 @@ use Wx qw( :everything );
 use base 'Wx::Panel';
 use Wx::Event qw(EVT_BUTTON);
 
+use List::MoreUtils qw(none);
+
 use vars qw($label $tag);
 $label = "Preferences";
 $tag = 'Prefs';
@@ -23,7 +25,7 @@ sub new {
 
   my $config = Demeter::UI::Wx::Config->new($this, \&target);
   $config->populate([qw(athena bft bkg clamp convolution fft file fit gnuplot indicator
-			interpolation lcf marker merge operations plot rebin xanes)]);
+			interpolation lcf marker merge operations pca peakfit plot rebin xanes)]);
   $box->Add($config, 1, wxGROW|wxALL, 5);
   $config->{params}->Expand($config->{params}->GetRootItem);
 
@@ -39,8 +41,22 @@ sub target {
   my ($self, $parent, $param, $value, $save) = @_;
 
  SWITCH: {
+    ($parent eq 'lcf') and do {
+      last SWITCH if none {$param eq $_} qw(components difference unity inclusive);
+      my $p = (($param eq 'components') or ($param eq 'difference')) ? "plot_".$param : $param;
+      $::app->{main}->{LCF}->{LCF}->$p($value);
+      $::app->{main}->{LCF}->{$param}->SetValue($value);
+      last SWITCH;
+    };
     ($param eq 'plotwith') and do {
       $Demeter::UI::Athena::demeter->plot_with($value);
+      last SWITCH;
+    };
+    ($param eq 'rmax_out') and do {
+      foreach my $i (0 .. $::app->{main}->{list}->GetCount-1) {
+	my $this = $::app->{main}->{list}->GetIndexedData($i);
+	$this->rmax_out($value);
+      };
       last SWITCH;
     };
   };

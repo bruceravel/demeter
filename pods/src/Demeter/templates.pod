@@ -4,7 +4,7 @@ An overview of Demeter's templating system.
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.4.
+This documentation refers to Demeter version 0.5.
 
 =head1 SYNOPSIS
 
@@ -42,7 +42,7 @@ snippets of perl code interspersed.  Here is an example:
         kmax     = {$D->fft_kmax},
         dk       = {$D->fft_dk"},
         kwindow  = {$D->fft_kwindow},
-        kweight  = {$P->kweight},
+        kweight  = {$D->get_kweight},
         rmax_out = {$D->rmax_out})
 
 This is the template for generating a forward Fourier transform

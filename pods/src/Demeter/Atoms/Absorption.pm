@@ -23,8 +23,6 @@ use Xray::Absorption;
 use Xray::FluorescenceEXAFS;
 Readonly my $ETOK    => 0.262468292;
 
-
-
 sub _absorption {
   my ($self) = @_;
   $self->populate if (not $self->is_populated);
@@ -60,6 +58,7 @@ sub _absorption {
       scalar Xray::Absorption -> cross_section($element, $energy-50);
     $xsecb += $cache{lc($element)} * $factor;
   };
+  $volume ||= 1;
   $mass     *= 1.66053/$volume; ## atomic mass unit = 1.66053e-24 gram
   $xseca    /= $volume;
   $xsecb    /= $volume;
@@ -132,7 +131,7 @@ Demeter::Atoms::Absorption - Interaction with tables of absorption coefficients
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.4.
+This documentation refers to Demeter version 0.5.
 
 =head1 DESCRIPTION
 

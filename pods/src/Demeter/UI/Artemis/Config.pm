@@ -32,7 +32,11 @@ sub new {
 
   my $box = Wx::BoxSizer->new( wxVERTICAL );
   my $config = Demeter::UI::Wx::Config->new($this, \&target);
-  $config->populate(['all', 'artemis']);
+  $config->populate([sort qw(gnuplot indicator marker artemis feff happiness pathfinder fft plot atoms
+			     file histogram bft fit interpolation bkg fspath lcf warnings gds
+			     operations)]);
+
+
   $config->{params}->Expand($config->{params}->GetRootItem);
   $box->Add($config, 1, wxGROW|wxALL, 5);
 
@@ -50,6 +54,14 @@ sub target {
  SWITCH: {
     ($param eq 'plotwith') and do {
       $Demeter::UI::Artemis::demeter->plot_with($value);
+      last SWITCH;
+    };
+    ($param eq 'rmax_out') and do {
+      foreach my $k (keys(%Demeter::UI::Artemis::frames)) {
+	next unless ($k =~ m{\Adata});
+	my $this = $Demeter::UI::Artemis::frames{$k}->{data};
+	$this->rmax_out($value);
+      };
       last SWITCH;
     };
   };
@@ -74,7 +86,7 @@ Demeter::UI::Artemis::Config - A configuration buffer for Artemis
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.4.
+This documentation refers to Demeter version 0.5.
 
 =head1 SYNOPSIS
 

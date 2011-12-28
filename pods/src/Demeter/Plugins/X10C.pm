@@ -9,7 +9,7 @@ has '+version'     => (default => 0.1);
 
 sub is {
   my ($self) = @_;
-  open D, $self->file or die "could not open " . $self->file . " as data (X10C)\n";
+  open D, $self->file or $self->Croak("could not open " . $self->file . " as data (X10C)\n");
   my $first = <D>;
   close D, return 0 unless (uc($first) =~ /^EXAFS/);
   my $lines = 0;
@@ -69,7 +69,7 @@ Demeter::Plugin::X10C - NSLS X10C filetype plugin
 
 =head1 SYNOPSIS
 
-This plugin directly files from NSLS beamline X10C
+This plugin directly imports files from NSLS beamline X10C
 
 =head1 Methods
 

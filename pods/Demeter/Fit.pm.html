@@ -71,7 +71,7 @@
 
 <h1 id="VERSION">VERSION <a href="#TOP" class="toplink"><img alt="^" src="../up.gif" /></a></h1>
 
-<p>This documentation refers to Demeter version 0.4.</p>
+<p>This documentation refers to Demeter version 0.5.</p>
 
 <h1 id="SYNOPSIS">SYNOPSIS <a href="#TOP" class="toplink"><img alt="^" src="../up.gif" /></a></h1>
 
@@ -147,6 +147,14 @@ performing the fit.</p></dd>
 	<dt><code>cormin</code></dt>
 		<dd><p>Minimum correlation reported in the log file.  This must be a number
 between 0 and 1.</p></dd>
+	<dt><code>ignore_nidp</code></dt>
+		<dd><p>If this boolean attribute is true, Demeter will not perform the sanity
+check which verifies that the number of guess parameters is smaller
+than the number of independent points.  Just because this parameter
+exists, <strong>do not</strong> presume that this is a good idea.  If you run a fit
+with too many free parameters, best fit values, error bars and
+correlations will not be meaningful and the fit that you run cannot be
+reliably interpreted in a statistical sense.</p></dd>
 </dl>
 
 

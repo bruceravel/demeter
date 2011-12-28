@@ -22,6 +22,7 @@ extends 'Demeter';
 use MooseX::AttributeHelpers;
 use MooseX::Aliases;
 #use MooseX::StrictConstructor;
+use Demeter::StrTypes qw( FileName );
 
 #use diagnostics;
 use Carp;
@@ -32,7 +33,7 @@ use Safe;
 
 use Data::Dumper;
 
-has 'file'    => (is => 'rw', isa => 'Str',  default => q{},
+has 'file'    => (is => 'rw', isa => FileName,  default => q{},
 		  trigger => sub{shift -> Read} );
 has 'entries' => (
 		  metaclass => 'Collection::Array',
@@ -47,7 +48,7 @@ has 'entries' => (
 		 );
 has 'n'       => (is => 'rw', isa => 'Int',  default => 0);
 
-has 'journal'       => (is => 'rw', isa => 'Str',  default => q{},);
+has 'journal' => (is => 'rw', isa => 'Str',  default => q{},);
 
 sub BUILD {
   my ($self, @params) = @_;
@@ -191,7 +192,6 @@ sub record {
     my $entries_ref = $self -> entries;
     my @this = @{ $entries_ref->[$gg] };
     my $rec = $self->_record( @this );
-    push @groups, $rec;
     $rec->prjrecord(join(", ", $self->file, $g));
     #$rec->provenance($rec->template("process", "read_prj", {file=>$self->file, record=>$g}));
     $rec->provenance(sprintf("Athena project file %s, record %d", $self->file, $g));
@@ -200,9 +200,14 @@ sub record {
               : ($rec->datatype eq 'chi')            ? 'k'
 	      :                                        'energy';
     my @x = $rec->get_array($array); # set things for about dialog
-    $rec->npts($#x+1);
-    $rec->xmin($x[0]);
-    $rec->xmax($x[$#x]);
+    if (@x) {
+      push @groups, $rec;
+      $rec->npts($#x+1);
+      $rec->xmin($x[0]);
+      $rec->xmax($x[$#x]);
+    } else {
+      $rec->DEMOLISH;
+    };
   };
   return (wantarray) ? @groups : $groups[0];
 };
@@ -219,8 +224,16 @@ sub _record {
   my @std    = $self->_array($index, 'stddev');
   my ($i0_scale, $signal_scale, $is_merge) = (0,0,0);
 
+  ## this allows you to import the same data group twice without a
+  ## groupname collision.
+  my $collided = 0;
+  if (Demeter->mo->any($groupname)) {
+    $groupname = $self->_get_group;
+    $collided  = 1;
+  };
   my $data = Demeter::Data->new(group	    => $groupname,
 				from_athena => 1,
+				collided    => $collided,
 			       );
   my ($xsuff, $ysuff) = ($args{is_xmu}) ? qw(energy xmu) : qw(k chi);
   Ifeffit::put_array(join('.', $groupname, $xsuff), \@x);
@@ -243,10 +256,17 @@ sub _record {
 				 bindtag deg_tol denominator detectors
 				 en_str file frozen line mu_str
 				 numerator old_group original_label
-				 peak refsame project_marked not_data
+				 peak refsame not_data
 				 bkg_switch bkg_switch2
 				 is_xmu is_chi is_xanes is_xmudat
 				 bkg_stan_lab bkg_flatten_was
+			      );
+    ## clean up from old implementation(s) of XDI
+    next if any { $k eq $_ } qw(
+				 xdi_mu_reference  xdi_ring_current  xdi_abscissa            xdi_start_time
+				 xdi_crystal       xdi_focusing      xdi_mu_transmission     xdi_ring_energy
+				 xdi_collimation   xdi_d_spacing     xdi_undulator_harmonic  xdi_mu_fluorescence
+				 xdi_end_time      xdi_source        xdi_edge_energy         xdi_harmonic_rejection
 			      );
   SWITCH: {
       ($k =~ m{\A(?:lcf|peak|lr)}) and do {
@@ -257,6 +277,11 @@ sub _record {
 	last SWITCH;
       };
       ($k eq 'reference') and do {
+	$groupargs{referencegroup} = $args{reference};
+	last SWITCH;
+      };
+      ($k =~ m{\A(?:project_)?marked\z}) and do { # mark indicator in old or new Athena project file
+	$groupargs{marked} = $args{$k};
 	last SWITCH;
       };
       ($k eq 'importance') and do {
@@ -267,19 +292,19 @@ sub _record {
 	last SWITCH;
       };
       ($k eq 'signal') and do {
-	$groupargs{signal_string} = $args{signal_string};
+	$groupargs{signal_string} = $args{signal};
 	last SWITCH;
       };
-      (any {$k eq $_} qw(i0_string signal_string numerator denominator referencegroup)) and do {
+      (any {$k eq $_} qw(i0_string signal_string numerator denominator referencegroup source)) and do {
 	$groupargs{$k} = $args{$k};
-	last SWITCH;
-      };
-      ($k eq 'signal') and do {
-	$groupargs{signal_string} = $args{signal_string};
 	last SWITCH;
       };
       ($k eq 'label') and do {
 	$groupargs{$k} = $args{$k};
+	last SWITCH;
+      };
+      ($k eq 'xdi_beamline') and do {
+	$groupargs{$k} = {name => $args{$k}} if $args{$k};
 	last SWITCH;
       };
 
@@ -344,7 +369,6 @@ sub _record {
 
     };
   };
-
   $groupargs{name} = $groupargs{label} || q{};
   delete $groupargs{label};
   $groupargs{fft_pc}   = ($args{fft_pc} eq 'None') ? 0 : 0;
@@ -379,12 +403,10 @@ sub _array {
   my $cpt = new Safe;
   my @array;
   my $prj = gzopen($prjfile, "rb") or die "could not open $prjfile as an Athena project\n";
-  ##open A, $prjfile;
   my $count = 0;
   my $found = 0;
   my $re = '@' . $which;
   my $line = q{};
-  ##foreach my $line (<A>) {
   while ($prj->gzreadline($line) > 0) {
     ++$count;
     $found = 1 if ($count == $index);
@@ -397,7 +419,6 @@ sub _array {
     };
   };
   $prj->gzclose();
-  ##close A;
   return @array;
 };
 
@@ -411,7 +432,7 @@ Demeter::Data::Prj - Read data from Athena project files
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.4.
+This documentation refers to Demeter version 0.5.
 
 =head1 DESCRIPTION
 

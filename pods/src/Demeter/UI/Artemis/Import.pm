@@ -37,6 +37,7 @@ sub Import {
     $retval = _dpj($fname),           last SWITCH if  ($which eq 'dpj');
     $retval = _feffit($fname),        last SWITCH if  ($which eq 'feffit');
   };
+  $::app->heap_check;
   return $retval;
 };
 
@@ -55,6 +56,11 @@ sub prjrecord {
     };
     $file = File::Spec->catfile($fd->GetDirectory, $fd->GetFilename);
   }
+  $file = Demeter->follow_link($file);
+  if (not $$rdemeter->is_prj($file)) {
+    $rframes->{main}->status("$file is not an Athena project file.", 'error');
+    return (q{}, q{}, -1);
+  };
   ##
   my $selection = 0;
   $rframes->{prj} =  Demeter::UI::Artemis::Prj->new($rframes->{main}, $file, 'single');
@@ -64,7 +70,7 @@ sub prjrecord {
       ($result == wxID_CANCEL) or     # cancel button clicked
       ($rframes->{prj}->{record} == -1)  # import button without selecting a group
      ) {
-    return (q{}, q{});
+    return (q{}, q{}, 0);
   };
 
   return ($file, $rframes->{prj}->{prj}, $rframes->{prj}->{record});
@@ -78,6 +84,9 @@ sub _prj {
   my ($fname) = @_;
   my ($file, $prj, $record) = prjrecord($fname);
 
+  if (defined($record) and ($record < 0)) {
+    return;
+  };
   if ((not $prj) or (not $record)) {
     $rframes->{main}->status("Data import cancelled.");
     return;
@@ -119,11 +128,12 @@ sub _feff {
     return;
   };
   if (not ($$rdemeter->is_feff($file) or $$rdemeter->is_atoms($file) or $$rdemeter->is_cif($file))) {
-    $rframes->{main}->status("$file does not seem to be a Feff input file, an Atoms input file, or a CIF file");
+    $rframes->{main}->status("$file does not seem to be a Feff input file, an Atoms input file, or a CIF file", 'error');
     return;
   };
 
   my ($fnum, $ifeff) = &$make_feff_frame($rframes->{main}, $file);
+  return if (not defined($fnum));
   $rframes->{$fnum} -> Show(1);
   autosave();
   $rframes->{$fnum}->status("Imported crystal data from " . basename($file));
@@ -145,7 +155,11 @@ sub _chi {
     };
     $file = File::Spec->catfile($fd->GetDirectory, $fd->GetFilename);
   };
-  my $data = Demeter::Data->new(file=>$file);
+  if (not $$rdemeter->is_data($file)) {
+    $rframes->{main}->status("$file is not a column data file.", 'error');
+    return;
+  };
+  my $data = Demeter::Data->new(datatype=>'chi', file=>$file);
   $data->_update('data');
   my ($dnum, $idata) = &$make_data_frame($rframes->{main}, $data);
   $data->po->start_plot;
@@ -173,6 +187,11 @@ sub _dpj {
       return;
     };
     $file = File::Spec->catfile($fd->GetDirectory, $fd->GetFilename);
+  };
+  $file = Demeter->follow_link($file);
+  if (not $$rdemeter->is_zipproj($file,0, 'dpj')) {
+    $rframes->{main}->status("$file is not a demeter fit serialization.", 'error');
+    return;
   };
   if ($rframes->{main}->{modified}) {
     return if not close_project($rframes);
@@ -384,6 +403,12 @@ sub _old {
     };
     $file = File::Spec->catfile($fd->GetDirectory, $fd->GetFilename);
   };
+  $file = Demeter->follow_link($file);
+
+  if (not $$rdemeter->is_zipproj($file,0, 'apj')) {
+    $rframes->{main}->status("$file is not an old style fitting project file.", 'error');
+    return;
+  };
 
   my $busy = Wx::BusyCursor->new();
   $rframes->{main}->status("Converting old-style project to Demeter fit serialization", 'wait');
@@ -437,6 +462,7 @@ sub _feffit {
     $rframes->{main}->status("$file cannot be read.");
     return;
   };
+  $file = Demeter->follow_link($file);
 
   ## -------- want to skip autosave during the intermediate steps of the feffit import
   $Demeter::UI::Artemis::noautosave = 1;
@@ -562,7 +588,7 @@ Demeter::UI::Artemis::Import - Import various kinds of data into Artemis
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.4.
+This documentation refers to Demeter version 0.5.
 
 =head1 SYNOPSIS
 

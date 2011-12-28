@@ -148,15 +148,9 @@ sub resolve_file {
   return $file;
 };
 
-sub plot {
-  my ($self, $choice, $which, $target) = @_;
-  $choice = lc($choice);
-
+sub fetch {
+  my ($self, $choice, $thisfile) = @_;
   my $data;
-  my $thisfile = $self->resolve_file($choice);
-  return "The download of the remote data file failed."                                if ($thisfile eq '^^PLOP^^: unsuccessful');
-  return "You do not have perl's libwww installed, so remote files cannot be plotted." if ($thisfile eq '^^PLOP^^: nolibwww');
-
   if ($self->get($choice, 'record')) { # this is an Athena project
     my $prj = Demeter::Data::Prj->new(file=>$thisfile);
     $data = $prj->record( $self->get($choice, 'record') );
@@ -184,8 +178,33 @@ sub plot {
 		 numerator   => $self->get($choice, 'numerator'),
 		 denominator => $self->get($choice, 'denominator'),
 		 ln          => $self->get($choice, 'ln'),
+		 datatype    => 'xmu',
 		);
   };
+  return $data;
+};
+
+sub save {
+  my ($self, $choice, $fname) = @_;
+  my $cc = $choice;
+  $choice = lc($choice);
+  my $thisfile = $self->resolve_file($choice);
+  return "The download of the remote data file for \"$cc\" failed."                    if ($thisfile eq '^^PLOP^^: unsuccessful');
+  return "You do not have perl's libwww installed, so remote files cannot be plotted." if ($thisfile eq '^^PLOP^^: nolibwww');
+  my $data = $self->fetch($choice, $thisfile);
+  $data->save("xmu", $fname);
+  return $self;
+};
+
+sub plot {
+  my ($self, $choice, $which, $target) = @_;
+  my $cc = $choice;
+  $choice = lc($choice);
+  my $thisfile = $self->resolve_file($choice);
+  return "The download of the remote data file for \"$cc\" failed."                    if ($thisfile eq '^^PLOP^^: unsuccessful');
+  return "You do not have perl's libwww installed, so remote files cannot be plotted." if ($thisfile eq '^^PLOP^^: nolibwww');
+
+  my $data = $self->fetch($choice, $thisfile);
 
   my $rebinned;
   if ($self->get($choice, 'rebin')) {
@@ -208,7 +227,7 @@ sub plot {
 		    e_pre  => 0,
 		    e_post => 0,
 		    e_markers => 0,
-		    e_smooth => 3,
+		    e_smooth => $ddd->co->default("plot", "e_smooth"),
 		    emin   => $self->config('emin'),
 		    emax   => $self->config('emax'),
 		    );
@@ -492,7 +511,7 @@ Demeter::UI::Standards - Standard reference material database interaction
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.4.
+This documentation refers to Demeter version 0.5.
 
 =head1 SYNOPSIS
 

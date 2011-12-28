@@ -22,15 +22,19 @@ use Moose::Role;
 use Carp;
 #use Demeter::GDS;
 use Regexp::Assemble;
+use Fcntl qw(:flock);
 use List::Util qw(sum);
 use String::Random qw(random_string);
 use Sys::Hostname;
 use DateTime;
+use Data::Dumper;
 #use Memoize;
 #memoize('distance');
 
+
 use Readonly;
 Readonly my $FRAC => 100000;
+Readonly my $NULLFILE => '@&^^null^^&@';
 
 
 # use vars qw(@ISA @EXPORT @EXPORT_OK);
@@ -43,9 +47,12 @@ my %seen = ();
 my $ra  = Regexp::Assemble->new;
 my $type_regexp = $ra->add(qw(guess def set restrain after skip merge lguess ldef))->re;
 
+## check to make sure that the computer's time zone is set.  fall back
+## to the floating time zone if not
+Readonly my $tz => (eval {DateTime->now(time_zone => 'local')}) ? 'local' : 'floating';
 sub now {
   my ($self) = @_;
-  return sprintf("%s", DateTime->now(time_zone => 'local'));;
+  return sprintf("%s", DateTime->now(time_zone => $tz));
 };
 
 sub environment {
@@ -78,6 +85,8 @@ sub module_environment {
 		     Graphics::GnuplotIF
 		     Math::Round
 		     Pod::POM
+		     PDL
+		     PDL::Stats
 		     Readonly
 		     Regexp::Assemble
 		     Regexp::Common
@@ -89,7 +98,7 @@ sub module_environment {
 		  )) {
     my $v = '$' . $p . '::VERSION';
     my $l = 30 - length($p);
-    $string .= sprintf(" %s %s %s\n", $p, '.' x $l, eval $v);
+    $string .= sprintf(" %s %s %s\n", $p, '.' x $l, eval($v)||'?');
   };
   $string .= "\n";
   return $string;
@@ -139,6 +148,31 @@ sub windows_version {
   return $os;
 };
 
+## verify wonky paths to executables, falling back on the ones that
+## should have been installed along with Demeter.  this is mostly a
+## windows problem -- on a real operating system, we can rely upon the
+## shell's path.
+sub check_exe {
+  my ($class, $which) = @_;
+  my $param = ($which eq 'gnuplot') ? 'program'
+            : ($which eq 'feff')    ? 'executable'
+	    :                         'program';
+  #print Demeter->co->default($which, $param), $/;
+  if (-e Demeter->co->default($which, $param)) {
+    return 0;
+  };
+  if (-e Demeter->co->demeter($which, $param)) {
+    Demeter->co->set_default($which, $param, Demeter->co->demeter($which, $param));
+    #print Demeter->co->default($which, $param), $/;
+    return 0;
+  };
+  my $message = "The $which executable could not be found at your specified location" .
+    "(" . Demeter->co->default($which, $param) . ")" .
+      " nor at the system default location" .
+	"(" . Demeter->co->demeter($which, $param) . ")\n";
+  return $message;
+};
+
 sub who {
   my ($class) = @_;
   return q{} if $class->is_windows; # Win32::LoginName()  @  Win32::NodeName()
@@ -161,8 +195,23 @@ sub readable {
   my ($self, $file) = @_;
   return "$file does not exist"  if (not -e $file);
   return "$file is not readable" if (not -r $file);
+  return "$file is locked"       if $self->locked($file);
   return 0;
 };
+
+sub locked {
+  my ($self, $file) = @_;
+  my $rc = open(my $HANDLE, $file);
+  $rc = flock($HANDLE, LOCK_EX|LOCK_NB);
+  close($HANDLE);
+  return !$rc;
+};
+  # if (open my $fh, "+<", $file) {
+  #   close $fh;
+  # } else {
+  #   ($^E == 0x20) ? return "in use by another process" : return $!;
+  # };
+
 
 
 ## see http://www.perlmonks.org/index.pl?node_id=38942
@@ -206,6 +255,11 @@ sub is_windows {
 sub is_osx {
   my ($class) = @_;
   return ($^O eq 'darwin');
+};
+
+sub slash {
+  my ($class) = @_;
+  return (Demeter->is_windows) ? '\\' : '/';
 };
 
 ## this is an exported function
@@ -282,6 +336,103 @@ sub randomstring {
   return random_string('c' x $length);
 };
 
+sub ifeffit_heap {
+  my ($self, $length) = @_;
+  $self->mo->heap_used(Ifeffit::get_scalar('&heap_used'));
+  $self->mo->heap_free(Ifeffit::get_scalar('&heap_free'));
+  if (($self->mo->heap_used > 0.95) and ($self->mo->ui !~ m{wx}i)) {
+    warn sprintf("You have used %.1f%% of Ifeffit's %.1f Mb of memory",
+		 100*$self->mo->heap_used,
+		 $self->mo->heap_free/(1-$self->mo->heap_used)/2**20);
+  };
+  return $self;
+};
+
+sub clear_ifeffit_titles {
+  my ($self, $group) = @_;
+  $group ||= $self->group;
+  my @save = (Ifeffit::get_scalar("\&screen_echo"),
+	      $self->get_mode("screen"),
+	      $self->get_mode("plotscreen"),
+	      $self->get_mode("feedback"));
+  Ifeffit::ifeffit("\&screen_echo = 0\n");
+  $self->set_mode(screen=>0, plotscreen=>0, feedback=>q{});
+  $self->dispose('show @strings');
+  my $lines = Ifeffit::get_scalar('&echo_lines');
+  my $target = '\$' . $group . '_title_';
+  foreach my $l (1 .. $lines) {
+    my $response = Ifeffit::get_echo();
+    if ($response =~ m{$target}) {
+      (my $title = $response) =~ s{=.+\z}{};
+      $title =~ s{\s+\z}{};
+      $self->dispose('erase '.$title);
+    };
+  };
+  Ifeffit::ifeffit("\&screen_echo = $save[0]\n");
+  $self->set_mode(screen=>$save[1], plotscreen=>$save[2], feedback=>$save[3]);
+  return $self;
+};
+
+
+
+sub Dump {
+  my ($self, $ref, $name) = @_;
+  return Data::Dumper->Dump([$ref], [$name]) if $name;
+  return Dumper($ref);
+};
+
+
+use subs qw(BOLD RED RESET YELLOW GREEN);
+my $ANSIColor_exists = (eval "require Term::ANSIColor");
+if ($ANSIColor_exists) {
+  import Term::ANSIColor qw(:constants);
+} else {
+  foreach my $s (qw(BOLD RED RESET YELLOW GREEN)) {
+    eval "sub $s {q{}}";
+  };
+};
+
+## see http://www.perlmonks.org/?node_id=640324
+sub trace {
+  my ($self) = @_;
+  my $max_depth = 30;
+  my $i = 0;
+  my $base = substr($INC{'Demeter.pm'}, 0, -10);
+  my ($green, $red, $yellow, $end) = (BOLD.GREEN, BOLD.RED, BOLD.YELLOW, RESET);
+  local $|=1;
+  print($/.BOLD."--- Begin stack trace ---$end\n");
+  while ( (my @call_details = (caller($i++))) && ($i<$max_depth) ) {
+    (my $from = $call_details[1]) =~ s{$base}{};
+    my $line  = $call_details[2];
+    my $color = RESET.YELLOW;
+    (my $func = $call_details[3]) =~ s{(?<=::)(\w+)\z}{$color$1};
+    print("$green$from$end line $red$line$end in function $yellow$func$end\n");
+  }
+  print(BOLD."--- End stack trace ---$end\n");
+  return $self;
+};
+# print Devel::StackTrace->new()->as_string();
+
+sub pjoin {
+  my ($self, @stuff) = @_;
+  print join("|", @stuff) . $/;
+  return join("|", @stuff) . $/;
+};
+
+
+## this will fail if on linux or Mac and importing a shortcut from a
+## network mounted folder
+sub follow_link {
+  my ($self, $file) = @_;
+  return $file if ($file eq $NULLFILE);
+  if (Demeter->is_windows) {
+    require Win32::Shortcut;
+    my $LINK = Win32::Shortcut->new();
+    $file = $LINK->{Path} if $LINK->Load($file);
+  };
+  return $file;
+};
+
 1;
 
 =head1 NAME
@@ -290,7 +441,7 @@ Demeter::Tools - Utility methods for the Demeter class
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.4.
+This documentation refers to Demeter version 0.5.
 
 =head1 DESCRIPTION
 
@@ -403,6 +554,19 @@ significant digits beyond the decimal.
 
   my $frac = $demeter_object -> fract(0.5);
   ## will print as "1/2"
+
+=item C<Dump>
+
+This is just a wrapper around L<Data::Dumper>.  Pass it a reference
+and it will be pretty-printed;
+
+  print $any_object -> Dump(\@some_array);
+
+=item C<trace>
+
+Print an ANSI-colorized stack trace to STDOUT from any location.
+
+  $any_object -> trace;
 
 =back
 

@@ -138,7 +138,7 @@ sub new {
   $self->{toolbar} -> AddTool(-1, "Run Atoms",  $self->icon("exec"),   wxNullBitmap, wxITEM_NORMAL, q{}, $hints{exec} );
   EVT_TOOL_ENTER( $self, $self->{toolbar}, sub{my ($toolbar, $event) = @_; &OnToolEnter($toolbar, $event, 'toolbar')} );
   $self->{toolbar} -> Realize;
-  $vbox -> Add($self->{toolbar}, 0, wxGROW|wxALL, 5);
+  $vbox -> Add($self->{toolbar}, 0, wxGROW|wxLEFT|wxRIGHT, 5);
   EVT_TOOL_RCLICKED($self->{toolbar}, -1, sub{my ($toolbar, $event) = @_; OnToolRightClick($toolbar, $event, $self)});
 
   my $hbox = Wx::BoxSizer->new( wxHORIZONTAL );
@@ -148,55 +148,55 @@ sub new {
   $self->set_hint("titles");
   $self->{titlesboxsizer} -> Add($self->{titles}, 1, wxGROW|wxALL, 0);
   $hbox -> Add($self->{titlesboxsizer}, 1, wxGROW|wxALL, 5);
-  $vbox -> Add($hbox, 1, wxGROW|wxALL);
+  $vbox -> Add($hbox, 1, wxGROW|wxALL, 0);
 
 
 
 
   $hbox = Wx::BoxSizer->new( wxHORIZONTAL );
   my $leftbox = Wx::BoxSizer->new( wxVERTICAL );
-  $hbox -> Add($leftbox, 0, wxGROW|wxALL);
+  $hbox -> Add($leftbox, 0, wxGROW|wxALL, 5);
 
 
   my $sidebox = Wx::BoxSizer->new( wxVERTICAL );
-  $hbox -> Add($sidebox, 0, wxGROW|wxALL);
+  $hbox -> Add($sidebox, 0, wxGROW|wxALL, 5);
 
   my $width = 10;
 
 
   ## -------- space group and edge controls
   my $spacebox = Wx::BoxSizer->new( wxVERTICAL );
-  $leftbox -> Add($spacebox, 0, wxEXPAND|wxALL, 0);
+  $leftbox -> Add($spacebox, 0, wxEXPAND|wxLEFT, 3);
 
   my $hh = Wx::BoxSizer->new( wxHORIZONTAL );
-  $spacebox -> Add($hh, 1, wxEXPAND|wxALL, 0);
+  $spacebox -> Add($hh, 1, wxEXPAND|wxALL, 1);
   my $label      = Wx::StaticText->new($self, -1, 'Name', wxDefaultPosition, [-1,-1]);
   $self->{name}  = Wx::TextCtrl  ->new($self, -1, q{}, wxDefaultPosition, [$width*7,-1], wxTE_PROCESS_ENTER);
-  $hh->Add($label,        0, wxEXPAND|wxALL, 5);
-  $hh->Add($self->{name}, 1, wxEXPAND|wxALL, 5);
+  $hh->Add($label,        0, wxEXPAND|wxLEFT|wxRIGHT|wxTOP, 3);
+  $hh->Add($self->{name}, 1, wxEXPAND|wxLEFT|wxRIGHT, 5);
 
   $hh = Wx::BoxSizer->new( wxHORIZONTAL );
-  $spacebox -> Add($hh, 1, wxEXPAND|wxALL, 0);
+  $spacebox -> Add($hh, 1, wxEXPAND|wxALL, 1);
   $label      = Wx::StaticText->new($self, -1, 'Space Group', wxDefaultPosition, [-1,-1]);
   $self->{space} = Wx::TextCtrl  ->new($self, -1, q{}, wxDefaultPosition, [$width*7,-1], wxTE_PROCESS_ENTER);
-  $hh->Add($label,        0, wxEXPAND|wxALL, 5);
-  $hh->Add($self->{space}, 1, wxEXPAND|wxALL, 5);
+  $hh->Add($label,        0, wxEXPAND|wxLEFT|wxRIGHT|wxTOP, 3);
+  $hh->Add($self->{space}, 1, wxEXPAND|wxLEFT|wxRIGHT, 5);
 
   $hh = Wx::BoxSizer->new( wxHORIZONTAL );
-  $spacebox -> Add($hh, 0, wxEXPAND|wxALL, 0);
+  $spacebox -> Add($hh, 0, wxEXPAND|wxALL, 1);
   $label        = Wx::StaticText->new($self, -1, 'Edge', wxDefaultPosition, [-1,-1]);
   $self->{edge} = Wx::Choice    ->new($self, -1, [-1, -1], [-1, -1], ['K', 'L1', 'L2', 'L3'], );
-  $hh->Add($label,        0, wxEXPAND|wxALL, 5);
-  $hh->Add($self->{edge}, 0, wxEXPAND|wxALL, 5);
+  $hh->Add($label,        0, wxEXPAND|wxLEFT|wxRIGHT|wxTOP, 3);
+  $hh->Add($self->{edge}, 0, wxEXPAND|wxLEFT|wxRIGHT, 5);
   $self->{edge}->SetSelection(0);
   EVT_CHOICE($self, $self->{edge}, \&OnWidgetLeave);
 
   $hh = Wx::BoxSizer->new( wxHORIZONTAL );
-  $spacebox -> Add($hh, 0, wxEXPAND|wxALL, 0);
+  $spacebox -> Add($hh, 0, wxEXPAND|wxALL, 1);
   $label        = Wx::StaticText->new($self, -1, 'Style', wxDefaultPosition, [-1,-1]);
   $self->{template} = Wx::Choice    ->new($self, -1, [-1, -1], [-1, -1], $self->templates, );
-  $hh->Add($label,            0, wxEXPAND|wxALL, 5);
-  $hh->Add($self->{template}, 0, wxEXPAND|wxALL, 5);
+  $hh->Add($label,            0, wxEXPAND|wxLEFT|wxRIGHT|wxTOP, 3);
+  $hh->Add($self->{template}, 0, wxEXPAND|wxLEFT|wxRIGHT, 5);
   $self->{template}->SetSelection(2);
   EVT_CHOICE($self, $self->{template}, \&OnWidgetLeave);
 
@@ -208,7 +208,7 @@ sub new {
   $self->{addbar} -> AddTool(-1, "Add a site", $self->icon("add"),   wxNullBitmap, wxITEM_NORMAL, q{}, $hints{add}  );
   EVT_TOOL_ENTER( $self, $self->{addbar}, sub{my ($toolbar, $event) = @_; &OnToolEnter($toolbar, $event, 'addbar')} );
   $self->{addbar} -> Realize;
-  $spacebox -> Add($self->{addbar}, 0, wxALL|wxALIGN_BOTTOM, 5);
+  $spacebox -> Add($self->{addbar}, 0, wxALL|wxALIGN_BOTTOM, 0);
 
   ## -------- end off space group and edge controls
 
@@ -250,7 +250,7 @@ sub new {
   $tsz -> Add($self->{gamma},Wx::GBPosition->new(1,5));
 
   $self->{latticeboxsizer} -> Add($tsz, 0, wxGROW|wxALL, 5);
-  $sidebox -> Add($self->{latticeboxsizer}, 0, wxGROW|wxALL, 5);
+  $sidebox -> Add($self->{latticeboxsizer}, 0, wxGROW|wxALL, 0);
   $vbox -> Add($hbox, 0, wxGROW|wxALL);
   ## -------- end of lattice constant controls
 
@@ -274,7 +274,7 @@ sub new {
   $tsz -> Add($self->{rpath},Wx::GBPosition->new(0,3));
 
   $self->{Rboxsizer} -> Add($tsz, 0, wxGROW|wxALL, 5);
-  $sidebox -> Add($self->{Rboxsizer}, 0, wxGROW|wxALL, 5);
+  $sidebox -> Add($self->{Rboxsizer}, 0, wxGROW|wxALL, 0);
   ## -------- end of R constant controls
 
 
@@ -286,17 +286,17 @@ sub new {
 
   $width = 70;
 
-  $label = Wx::StaticText->new($self, -1, 'Shift', wxDefaultPosition, [-1,-1]);
-  $tsz -> Add($label,Wx::GBPosition->new(0,0));
+  #$label = Wx::StaticText->new($self, -1, 'Shift', wxDefaultPosition, [-1,-1]);
+  #$tsz -> Add($label,Wx::GBPosition->new(0,0));
   $self->{shift_x} = Wx::TextCtrl->new($self, -1, 0, wxDefaultPosition, [$width,-1], wxTE_PROCESS_ENTER);
-  $tsz -> Add($self->{shift_x},Wx::GBPosition->new(0,1));
+  $tsz -> Add($self->{shift_x},Wx::GBPosition->new(0,0));
   $self->{shift_y} = Wx::TextCtrl->new($self, -1, 0, wxDefaultPosition, [$width,-1], wxTE_PROCESS_ENTER);
-  $tsz -> Add($self->{shift_y},Wx::GBPosition->new(0,2));
+  $tsz -> Add($self->{shift_y},Wx::GBPosition->new(0,1));
   $self->{shift_z} = Wx::TextCtrl->new($self, -1, 0, wxDefaultPosition, [$width,-1], wxTE_PROCESS_ENTER);
-  $tsz -> Add($self->{shift_z},Wx::GBPosition->new(0,3));
+  $tsz -> Add($self->{shift_z},Wx::GBPosition->new(0,2));
 
   $self->{shiftboxsizer} -> Add($tsz, 0, wxGROW|wxALL, 5);
-  $sidebox -> Add($self->{shiftboxsizer}, 0, wxGROW|wxALL, 5);
+  $sidebox -> Add($self->{shiftboxsizer}, 0, wxGROW|wxALL, 0);
   ## -------- end of R constant controls
 
   $self->set_hint($_) foreach (qw(a b c alpha beta gamma space rmax rpath
@@ -314,7 +314,7 @@ sub new {
   EVT_MENU($self->{sitesgrid}, -1, \&OnGridMenu);
 
   $hbox -> Add($self->{sitesgrid}, 1, wxGROW|wxALL|wxALIGN_CENTER_HORIZONTAL, 0);
-  $vbox -> Add($hbox, 1, wxGROW|wxALL|wxALIGN_CENTER_HORIZONTAL, 5);
+  $vbox -> Add($hbox, 2, wxGROW|wxALL|wxALIGN_CENTER_HORIZONTAL, 5);
 
   $self -> SetSizer( $vbox );
 
@@ -457,6 +457,7 @@ sub noop {
 
 sub open_file {
   my ($self, $file) = @_;
+  $atoms->partial_occupancy(0);
   if ((not $file) or (not -e $file)) {
     my $fd = Wx::FileDialog->new( $self, "Import crystal data", cwd, q{},
 				  "input and CIF files (*.inp;*.cif)|*.inp;*.cif|input file (*.inp)|*.inp|CIF file (*.cif)|*.cif|All files|*",
@@ -464,18 +465,18 @@ sub open_file {
 				  wxDefaultPosition);
     if ($fd->ShowModal == wxID_CANCEL) {
       $self->{statusbar}->SetStatusText("Crystal data import cancelled.");
-      return;
+      return 0;
     };
     $file = File::Spec->catfile($fd->GetDirectory, $fd->GetFilename);
   };
   $self->clear_all(1);
 
   my $is_cif = 0;
-  $is_cif = 1 if ($file =~ m{\.cif\z});
+  $is_cif = 1 if ($atoms->is_cif($file));
   if ($is_cif) {
     if (not $Demeter::STAR_Parser_exists) {
       warn "STAR::Parser is not available, so CIF files cannot be imported";
-      return;
+      return 0;
     };
 
     $atoms->cif($file);
@@ -485,15 +486,21 @@ sub open_file {
 						"CIF file", \@records );
       if( $dialog->ShowModal == wxID_CANCEL ) {
 	$self->{statusbar}->SetStatusText("Import cancelled.");
-	return;
+	return 0;
       } else {
-	$atoms->record($dialog->GetSelection);
+	my $which = $dialog->GetSelection||0;
+	$atoms->record($which);
       };
     } else {
       $atoms->record(0);
     };
   } else {
     $atoms->file($file);
+  };
+  if ($atoms->partial_occupancy) {
+    my $message = Wx::MessageDialog->new($self, "Atoms is currently unable to use crystal data which has sites of partial occupancy.  Sorry.", "Trouble", wxOK);
+    $message->ShowModal;
+    return 0;
   };
   my $name = basename($file, '.cif', '.inp');
   $atoms -> name($name) if not $atoms->name;
@@ -550,12 +557,12 @@ sub open_file {
   $atoms -> push_mru("atoms", $file) if ($file !~ m{_dem_});
 
   $self->{statusbar}->SetStatusText($message);
+  return 1;
 };
 
 sub get_crystal_data {
   my ($self) = @_;
   return 1 if not $self->{used};
-
   $self->{problems} = q{};
   my $problems = q{};
   $atoms->clear;
@@ -579,9 +586,6 @@ sub get_crystal_data {
     next if $self->{$param}->GetValue;
     $self->{$param}->SetValue($self->{a}->GetValue);
   };
-  foreach my $param (qw(alpha beta gamma)) {
-    $self->{$param}->SetValue($self->verify_angle($param));
-  };
   foreach my $param (qw(rmax rpath)) {
     next if is_PosNum($self->{$param}->GetValue);
     $self->{$param}->SetValue($atoms->co->default("atoms", $param));
@@ -594,6 +598,10 @@ sub get_crystal_data {
     } else {
       $problems .= "\"$this\" is not a valid value for \"$param\" (should be a positive number).\n\n";
     };
+  };
+  foreach my $param (qw(alpha beta gamma)) {
+    $self->{$param}->SetValue($self->verify_angle($param));
+    $atoms->$param($self->{$param}->GetValue);
   };
 
   my @shift = map { $self->{$_}->GetValue || 0 } qw(shift_x shift_y shift_z);
@@ -614,7 +622,7 @@ sub get_crystal_data {
     #warn("$el is not an element symbol at site $rr\n"), return 0 if not is_Element($el);
     ($first_valid_row = $row) if ($first_valid_row == -1);
     if ($self->{sitesgrid}->GetCellValue($row, 0)) {
-      $atoms->core($self->{sitesgrid}->GetCellValue($row, 5));
+      $atoms->core($self->{sitesgrid}->GetCellValue($row, 5) || $self->{sitesgrid}->GetCellValue($row, 1));
       ++$core_selected;
     };
     my $x    = $self->{sitesgrid}->GetCellValue($row, 2) || 0; $x = $self->number($x);
@@ -636,6 +644,7 @@ sub get_crystal_data {
 		);
     $self->{sitesgrid}->SetCellValue($first_valid_row, 0, 1);
   };
+
   my $seems_ok = 0;
   $seems_ok = (
 	            ($atoms->space)
@@ -866,7 +875,7 @@ Demeter::UI::Atoms::Xtal - Atoms' crystal utility
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.4.
+This documentation refers to Demeter version 0.5.
 
 =head1 DESCRIPTION
 

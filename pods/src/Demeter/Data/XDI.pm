@@ -1,38 +1,108 @@
 package Demeter::Data::XDI;
 use Moose::Role;
 use File::Basename;
+use Demeter::StrTypes qw( Empty );
 
-has 'xdi'                     => (is => 'rw', isa => 'Xray::XDI',
+has 'xdi'                     => (is => 'rw', isa => Empty.'|Xray::XDI', default=>q{},
 				  trigger => sub{my ($self, $new) = @_; $self->import_xdi($new);});
 
 has 'xdi_version'	      => (is => 'rw', isa => 'Str', default => q{});
 has 'xdi_applications'	      => (is => 'rw', isa => 'Str', default => q{});
 
-has 'xdi_abscissa'	      => (is => 'rw', isa => 'Str', default => q{});
-has 'xdi_beamline'	      => (is => 'rw', isa => 'Str', default => q{});
-has 'xdi_collimation'	      => (is => 'rw', isa => 'Str', default => q{});
-has 'xdi_crystal'	      => (is => 'rw', isa => 'Str', default => q{});
-has 'xdi_d_spacing'	      => (is => 'rw', isa => 'Str', default => q{});
-has 'xdi_edge_energy'	      => (is => 'rw', isa => 'Str', default => q{});
-has 'xdi_end_time'	      => (is => 'rw', isa => 'Str', default => q{});
-has 'xdi_focusing'	      => (is => 'rw', isa => 'Str', default => q{});
-has 'xdi_harmonic_rejection'  => (is => 'rw', isa => 'Str', default => q{});
-has 'xdi_mu_fluorescence'     => (is => 'rw', isa => 'Str', default => q{});
-has 'xdi_mu_reference'	      => (is => 'rw', isa => 'Str', default => q{});
-has 'xdi_mu_transmission'     => (is => 'rw', isa => 'Str', default => q{});
-has 'xdi_ring_current'	      => (is => 'rw', isa => 'Str', default => q{});
-has 'xdi_ring_energy'	      => (is => 'rw', isa => 'Str', default => q{});
-has 'xdi_start_time'	      => (is => 'rw', isa => 'Str', default => q{});
-has 'xdi_source'	      => (is => 'rw', isa => 'Str', default => q{});
-has 'xdi_undulator_harmonic'  => (is => 'rw', isa => 'Str', default => q{});
+
+has 'xdi_column'    => (metaclass => 'Collection::Hash',
+			is        => 'rw',
+			isa       => 'HashRef',
+			default   => sub { {} },
+			provides  => {
+				      exists    => 'exists_in_xdi_column',
+				      keys      => 'keys_in_xdi_column',
+				      get       => 'get_xdi_column',
+				      set       => 'set_xdi_column',
+				      delete    => 'delete_from_xdi_column'
+				     }
+		       );
+has 'xdi_scan'      => (metaclass => 'Collection::Hash',
+			is        => 'rw',
+			isa       => 'HashRef',
+			default   => sub { {} },
+			provides  => {
+				      exists    => 'exists_in_xdi_scan',
+				      keys      => 'keys_in_xdi_scan',
+				      get       => 'get_xdi_scan',
+				      set       => 'set_xdi_scan',
+				      delete    => 'delete_from_xdi_scan'
+				     }
+		       );
+has 'xdi_mono'     => (metaclass => 'Collection::Hash',
+		       is        => 'rw',
+		       isa       => 'HashRef',
+		       default   => sub { {} },
+		       provides  => {
+				     exists    => 'exists_in_xdi_mono',
+				     keys      => 'keys_in_xdi_mono',
+				     get       => 'get_xdi_mono',
+				     set       => 'set_xdi_mono',
+				     delete    => 'delete_from_xdi_mono'
+				    }
+		      );
+has 'xdi_beamline' => (metaclass => 'Collection::Hash',
+		       is        => 'rw',
+		       isa       => 'HashRef',
+		       default   => sub { {} },
+		       provides  => {
+				     exists    => 'exists_in_xdi_beamline',
+				     keys      => 'keys_in_xdi_beamline',
+				     get       => 'get_xdi_beamline',
+				     set       => 'set_xdi_beamline',
+				     delete    => 'delete_from_xdi_beamline'
+				    }
+		      );
+has 'xdi_facility' => (metaclass => 'Collection::Hash',
+		       is        => 'rw',
+		       isa       => 'HashRef',
+		       default   => sub { {} },
+		       provides  => {
+				     exists    => 'exists_in_xdi_facility',
+				     keys      => 'keys_in_xdi_facility',
+				     get       => 'get_xdi_facility',
+				     set       => 'set_xdi_facility',
+				     delete    => 'delete_from_xdi_facility'
+				    }
+		      );
+has 'xdi_detector' => (metaclass => 'Collection::Hash',
+		       is        => 'rw',
+		       isa       => 'HashRef',
+		       default   => sub { {} },
+		       provides  => {
+				     exists    => 'exists_in_xdi_detector',
+				     keys      => 'keys_in_xdi_detector',
+				     get       => 'get_xdi_detector',
+				     set       => 'set_xdi_detector',
+				     delete    => 'delete_from_xdi_detector'
+				    }
+		      );
+has 'xdi_sample'   => (metaclass => 'Collection::Hash',
+		       is        => 'rw',
+		       isa       => 'HashRef',
+		       default   => sub { {} },
+		       provides  => {
+				     exists    => 'exists_in_xdi_sample',
+				     keys      => 'keys_in_xdi_sample',
+				     get       => 'get_xdi_sample',
+				     set       => 'set_xdi_sample',
+				     delete    => 'delete_from_xdi_sample'
+				    }
+		      );
+
 
 has 'xdi_extensions'   => (metaclass => 'Collection::Array',
 			   is => 'rw', isa => 'ArrayRef[Str]',
 			   default => sub{[]},
 			   provides  => {
-					 'push'  => 'push_extension',
-					 'pop'   => 'pop_extension',
-					 'clear' => 'clear_extensions',
+					 'push'  => 'push_xdi_extension',
+					 'pop'   => 'pop_xdi_extension',
+					 'clear' => 'clear_xdi_extensions',
 					},
 			  );
 
@@ -42,9 +112,9 @@ has 'xdi_comments'     => (
 			   isa       => 'ArrayRef',
 			   default   => sub { [] },
 			   provides  => {
-					 'push'  => 'push_comment',
-					 'pop'   => 'pop_comment',
-					 'clear' => 'clear_comments',
+					 'push'  => 'push_xdi_comment',
+					 'pop'   => 'pop_xdi_comment',
+					 'clear' => 'clear_xdi_comments',
 					}
 			  );
 has 'xdi_labels'     => (
@@ -53,19 +123,18 @@ has 'xdi_labels'     => (
 			   isa       => 'ArrayRef',
 			   default   => sub { [] },
 			   provides  => {
-					 'push'  => 'push_label',
-					 'pop'   => 'pop_label',
-					 'clear' => 'clear_labels',
+					 'push'  => 'push_xdi_label',
+					 'pop'   => 'pop_xdi_label',
+					 'clear' => 'clear_xdi_labels',
 					}
 			  );
 
 sub import_xdi {
   my ($self, $xdi) = @_;
-  foreach my $f (qw(version applications abscissa beamline collimation crystal
-		    d_spacing edge_energy end_time focusing harmonic_rejection
-		    mu_fluorescence mu_reference mu_transmission ring_current
-		    ring_energy start_time source undulator_harmonic extensions
-		    comments labels)) {
+  return $self if (ref($xdi) !~ m{XDI|Class::MOP|Moose::Meta::Class});
+  foreach my $f (qw(version applications
+		    column scan mono beamline facility detector sample
+		    extensions comments labels)) {
     my $att = 'xdi_' . $f;
     $self->$att($xdi->$f);
   };
@@ -86,6 +155,7 @@ sub import_xdi {
   };
 
   ## process the data in the manner of Demeter::Data::read_data
+  Ifeffit::put_scalar("e0", 0);
   my $string = lc( join(" ", @{$xdi->labels}) );
   Ifeffit::put_string("column_label", $string);
   $self->columns(join(" ", $string));
@@ -100,6 +170,7 @@ sub import_xdi {
   $self->resolve_defaults;
 
   my @x = $self->get_array('energy'); # set things for about dialog
+  return $self if not @x;
   $self->npts($#x+1);
   $self->xmin($x[0]);
   $self->xmax($x[$#x]);
@@ -108,6 +179,37 @@ sub import_xdi {
 
   ## use math expressions for making spectra
 };
+
+sub configure_from_ini {
+  my ($self, $inifile) = @_;
+  return if not -e $inifile;
+  return if not -r $inifile;
+  tie my %ini, 'Config::IniFiles', ( -file => $inifile );
+  foreach my $namespace (keys %ini) {
+    next if ($namespace eq 'labels');
+    foreach my $parameter (keys(%{$ini{$namespace}})) {
+      my $method = "set_xdi_$namespace";
+      $self->$method($parameter, $ini{$namespace}{$parameter});
+    };
+  };
+  $self->labels([split(" ", $ini{labels}{labels})]) if exists $ini{labels};
+};
+
+sub xdi_defined {
+  my ($self, $cc) = @_;
+  $cc ||= q{};
+  $cc .= " " if ($cc and ($cc !~ m{ \z}));
+  my $text = q{};
+  foreach my $namespace (qw(beamline scan mono facility detector sample)) {
+    my $method = 'xdi_'.$namespace;
+    next if ($self->$method =~ m{\A\s*\z});
+    foreach my $k (sort keys %{$self->$method}) {
+      $text .= sprintf "%s%s.%s: %s$/", $cc, ucfirst($namespace), $k, $self->$method->{$k};
+    };
+  };
+  return $text;
+};
+
 
 1;
 
@@ -118,7 +220,7 @@ Demeter::Data::XDI - Import XDI objects into Demeter Data objects
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.4.
+This documentation refers to Demeter version 0.5.
 
 This is compliant with L<Xray::XDI> version 1.0.
 
@@ -131,7 +233,7 @@ This is compliant with L<Xray::XDI> version 1.0.
 Turn an Xray::XDI object into a Demeter::Data object.
 
   $data  = Demeter::Data->new;
-  $xdi   = Xray::Data->new;
+  $xdi   = Xray::XDI->new;
   $xdi  -> file($file);
   $data -> import_xdi($xdi);
 

@@ -32,6 +32,11 @@ use String::Random qw(random_string);
 
 with 'Demeter::UI::Screen::Pause' if ($Demeter::mode->ui eq 'screen');
 
+has '+data'        => (isa => Empty.'|Demeter::Data',
+		      trigger => sub{my ($self, $new) = @_;
+				     $self->guesses;
+				     $self->datagroup($new->group) if $new;
+				   });
 has 'abs'	   => (is => 'rw', isa => Empty.'|'.ElementSymbol, default => q{},
 		       trigger => sub{my ($self, $new) = @_;
 				      $self->absorber(get_symbol($new));
@@ -87,6 +92,13 @@ has 'use_third'  => (is => 'rw', isa => 'Bool',   default => 0);
 has 'use_fourth' => (is => 'rw', isa => 'Bool',   default => 0);
 has 'feff_done'  => (is => 'rw', isa => 'Bool',   default => 0);
 
+has 'make_gds'   => (is => 'rw', isa => 'Bool',   default => sub{ shift->co->default("fspath", "make_gds") },
+		    trigger =>  sub{ my ($this, $new) = @_;
+				     if (not $new) {
+				       $this->clear_gds;
+				       $this->unset_parameters;
+				     };
+				   });
 has 'gds' => (
 		metaclass => 'Collection::Array',
 		is        => 'rw',
@@ -112,8 +124,8 @@ sub BUILD {
 
 override 'all' => sub {
   my ($self) = @_;
-  my @keys   = map {$_->name} grep {$_->name !~ m{\A(?:data|plot|plottable|is_mc|mode|parent|sp|gds|sentinal)\z}} $self->meta->get_all_attributes;
-  push @keys, qw(name group mark plottable);
+  my @keys   = map {$_->name} grep {$_->name !~ m{\A(?:data|plot|plottable|is_mc|mode|parent|sp|gds|sentinal|string|pathtype|Type|weight)\z}} $self->meta->get_all_attributes;
+  push @keys, qw(name group mark);
   #print join($/, @keys), $/;
   my @values = map {$self->$_} @keys;
   my %hash   = zip(@keys, @values);
@@ -146,12 +158,12 @@ override set_parent_method => sub {
   $feff ||= $self->parent;
   return if not $feff;
   $self->parentgroup($feff->group);
-  return if not $self->workspace;
+  $feff->make_workspace if not $feff->workspace;
+  $self->workspace($feff->workspace) if not $self->workspace;
   my $text = ($self->co->default("fspath","coordination") == 6)
     ? $self->template("feff", "firstshell6")
       : $self->template("feff", "firstshell4");
   my $feffinp = File::Spec->catfile($feff->workspace, $feff->group.'.inp');
-  $feff->make_workspace;
   open my $FI, '>'.$feffinp;
   print $FI $text;
   close $FI;
@@ -161,27 +173,58 @@ override set_parent_method => sub {
 override path => sub {
   my ($self) = @_;
   if (not $self->parent) {
-    my $feff = Demeter::Feff->new(workspace => $self->workspace, screen => 0, name=>'qfs');
-    #$self->check_workspace;
+    my $feff = Demeter::Feff->new(workspace=>$self->workspace, screen => 0, name=>'qfs');
     $self->parent($feff);
   };
-  #$self->guesses;
   if (not $self->feff_done) {
+    $self->set_parent($self->parent);
     #$self->parent->screen(1);
     $self->parent->potph;
     $self->parent->pathfinder;
+    my @list = @{ $self->parent->pathlist };
+    $self->sp($list[0]);
     $self->feff_done(1);
   };
   $_->push_ifeffit foreach @{ $self->gds };
-  my @list = @{ $self->parent->pathlist };
-  $self->sp($list[0]);
-  $self->n(1);
+  #$self->n(1);
   $self->_update_from_ScatteringPath;
   $self->label(sprintf("%s-%s path at %s", $self->absorber, $self->scatterer, $self->reff));
   $self->dispose($self->_path_command(1));
   $self->update_path(0);
   return $self;
 };
+
+override clone => sub {
+  my ($self, @arguments) = @_;
+  $self->_update_from_ScatteringPath;
+
+  my $new = ref($self) -> new();
+  my %hash = $self->all;
+  delete $hash{group};
+  delete $hash{make_gds};
+  foreach my $k (keys %hash) {
+    #print $k, $/;
+    $new->set($k=>$hash{$k});
+    $new ->feff_done(1);
+  };
+  #$new -> set(%hash);
+  $new -> set(@arguments);
+  $new -> sp($self->sp);
+  $new -> make_gds(0);
+
+  $new->parent($self->parent);
+  $new->data($self->data);
+  $new->sp($self->sp);
+
+  $new->set(@arguments);
+  foreach my $att (qw(e0 s02 delr sigma2 third fourth)) {
+    $new->$att($self->$att);
+  };
+  $new->_update_from_ScatteringPath;
+  return $new;
+};
+
+
 
 sub check_workspace {
   my ($self) = @_;
@@ -208,9 +251,11 @@ sub save_feff_yaml {
 
 sub guesses {
   my ($self) = @_;
+  return $self if not $self->make_gds;
   return $self if ((not $self->absorber) or (not $self->scatterer));
   $self->clear_gds;
   my $elems = join('_', lc($self->absorber), lc($self->scatterer));
+  $elems .= ($self->data) ? '_'.lc($self->data->cv) : q{};
   #$self->name($elems) if (not $self->name or ($self->name =~ m{FS\s*\z}));
   my @list = ($self->simpleGDS("guess aa_$elems = 1"),
 	      $self->simpleGDS("guess ee_$elems = 0"),
@@ -241,7 +286,7 @@ sub unset_parameters {
 	     sigma2 => 0,
 	     third  => 0,
 	     fourth => 0);
-  $self -> _update('bft');	# this makes it ready to use immediately
+  $self -> _update('bft') if $self->data; # this makes it ready to use immediately
   return $self;
 };
 
@@ -316,7 +361,7 @@ Demeter::FSPath - Path for a quick first shell fit
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.4.
+This documentation refers to Demeter version 0.5.
 
 =head1 SYNOPSIS
 

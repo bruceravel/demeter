@@ -151,7 +151,6 @@ sub S_used_not_defined {
     foreach my $pp (qw(s02 e0 delr sigma2 ei third fourth dphase)) {
       my @list = split(/$tokenizer_regexp+/, $p->$pp);
       foreach my $token (@list) {
-	#print $mathexp, "  ", $token, $/;
 	next if ($token =~ m{\A\s*\z});	               # space, ok
 	next if ($token =~ m{\A$NUMBER\z});            # number, ok
 	next if (is_IfeffitFunction($token));          # function, ok
@@ -162,7 +161,7 @@ sub S_used_not_defined {
 	++$found;
 	#     "The math expression for $pp for \"$label\" uses an undefined token: $token"
 	#    );
-	$p->add_trouble(join('_', 'useundef', $pp, $token));
+	$p->add_trouble(join('~', 'useundef', $pp, $token));
       };
     };
   };
@@ -198,7 +197,7 @@ sub S_binary_ops {
 	++$found;
 	#     "The math expression for $pp for \"$label\" uses an invalid binary operation: $which"
 	#    );
-	$p->add_trouble(join('_', 'binary', $pp, $which));
+	$p->add_trouble(join('~', 'binary', $pp, $which));
       };
     };
   };
@@ -230,7 +229,7 @@ sub S_function_names {
 	my $match = $1;
 	if (not is_IfeffitFunction($match)) {
 	  ++$found;
-	  $p->add_trouble(join('_', 'function', $pp, $match));
+	  $p->add_trouble(join('~', 'function', $pp, $match));
 	};
       };
     };
@@ -577,19 +576,55 @@ sub S_cycle_loop {
   };
 
   foreach my $loop ($graph->self_loop_vertices) {
-    $self->add_trouble(join('_', 'loop', 'x', $loop));
+    $self->add_trouble(join('~', 'loop', 'x', $loop));
     ++$found;
   };
   if ($graph->has_a_cycle) {
     my @cycle = $graph->find_a_cycle;
     if ($#cycle) {		# we have already reported on loops
-      $self->add_trouble(join('_', 'cycle', 'x', join(" --> ", @cycle)));
+      $self->add_trouble(join('~', 'cycle', 'x', join(" --> ", @cycle)));
       ++$found;
     };
   };
 
   return $found;
 };
+
+## 20. check for an obvious data repitition, Data attribute collided set to 1 for any data group
+sub S_data_collision {
+  my ($self) = @_;
+  my $found = 0;
+  my @data = @{ $self->data };
+  foreach my $d (@data) {
+    next if not $d->fit_include;
+    if ($d->collided) {
+      ++$found;
+      $d->add_trouble('collision');
+    };
+  };
+  return $found;
+};
+
+## 21. check that each data set has at least one path associated with it
+sub S_data_paths {
+  my ($self) = @_;
+  my $found = 0;
+  my @data  = @{ $self->data  };
+  my @paths = @{ $self->paths };
+  foreach my $d (@data) {
+    next if (not $d->fit_include);
+    my $count = 0;
+    foreach my $p (@paths) {
+      ++$count if ($p->data eq $d);
+    };
+    if ($count == 0) {
+      ++$found;
+      $d->add_trouble('datanopaths');
+    };
+  };
+  return $found;
+};
+
 1;
 
 
@@ -599,7 +634,7 @@ Demeter::Fit::Sanity - Sanity checks for EXAFS fitting models
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.4.
+This documentation refers to Demeter version 0.5.
 
 =head1 SYNOPSIS
 
@@ -639,6 +674,10 @@ The following sanity checks are made on the Fit object:
 =item *
 
 All data files included in the fit exist.
+
+=item *
+
+No data set is obviously used twice in the fit.
 
 =item *
 
@@ -767,6 +806,17 @@ C<rmin> is larger than C<rmax>.
 C<rmin> is smaller than the value of C<rbkg> that was used in the
 background removal.
 
+=item C<collision>
+
+This data came from the the same source as another data group.  You
+seem to be trying to increase your number of independent points by
+fitting the same data more than once in a multiple data set fit.
+
+=item C<datanopaths>
+
+This data has no paths associated with it.  You must either assign
+paths to it or exclude it from the fit.
+
 =back
 
 =head2 Problems with Path objects
@@ -862,7 +912,9 @@ The name of this GDS parameter is an Ifeffit program variable name.
 
 =item C<merge>
 
-This is an unresolved parameter from the merge of fitting projects.
+This is an parameter which has been defined twice, possibly from the
+merge of fitting projects or the creation of two more similar quick
+first shell fitting models.
 
 =back
 
@@ -937,10 +989,6 @@ See L<Demeter> for a description of the configuration system.
 Missing tests:
 
 =over 4
-
-=item *
-
-Test that every included data set has at least 1 path associated with it.
 
 =item *
 

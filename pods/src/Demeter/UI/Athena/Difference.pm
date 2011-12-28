@@ -85,6 +85,8 @@ sub new {
   EVT_BUTTON($this, $this->{plot},    sub{$this->plot});
   EVT_BUTTON($this, $this->{make},    sub{$this->make});
 
+  $box->Add(Wx::StaticText->new($this, -1, "(Marked groups functionality has not yet been implemented.)"), 0, wxALL|wxALIGN_CENTER_HORIZONTAL, 5);
+
   $box->Add(1,1,1);		# this spacer may not be needed, Journal.pm, for example
 
   $this->{document} = Wx::Button->new($this, -1, 'Document section: difference spectra');
@@ -153,7 +155,9 @@ sub plot {
   $this->{Diff}->po->set(e_mu=>1, e_markers=>1, e_bkg=>0, e_pre=>0, e_post=>0, e_norm=>1, e_der=>0, e_sec=>0, e_i0=>0, e_signal=>0, e_smooth=>0);
   $this->{Diff}->po->start_plot;
   $this->{Diff}->plot;
+  $::app->{lastplot} = ['E', 'single'];
   $this->{make}->Enable(1);
+  $::app->heap_check(0);
 };
 
 sub make {
@@ -167,6 +171,7 @@ sub make {
   };
   $::app->{main}->status("Made a new difference group");
   $::app->modified(1);
+  $::app->heap_check(0);
 };
 
 sub Pluck {
@@ -181,6 +186,7 @@ sub Pluck {
   my $data = $app->current_data;
   my $plucked = sprintf("%.3f", $x - $data->bkg_e0);
   $this->{$which}->SetValue($plucked);
+  $this->plot;
   $app->{main}->status("Plucked $plucked for $which");
 };
 
@@ -193,7 +199,7 @@ Demeter::UI::Athena::Difference - A difference spectrum tool for Athena
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.4.
+This documentation refers to Demeter version 0.5.
 
 =head1 SYNOPSIS
 

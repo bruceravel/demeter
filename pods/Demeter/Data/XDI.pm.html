@@ -64,7 +64,7 @@
 
 <h1 id="VERSION">VERSION <a href="#TOP" class="toplink"><img alt="^" src="../../up.gif" /></a></h1>
 
-<p>This documentation refers to Demeter version 0.4.</p>
+<p>This documentation refers to Demeter version 0.5.</p>
 
 <p>This is compliant with <a href="http://search.cpan.org/perldoc?Xray%3A%3AXDI">Xray::XDI</a> version 1.0.</p>
 
@@ -74,7 +74,7 @@
 	<dt><code>import_xdi</code></dt>
 		<dd><p>Turn an Xray::XDI object into a Demeter::Data object.</p></dd>
 <dd><pre>  $data  = Demeter::Data-&gt;new;
-  $xdi   = Xray::Data-&gt;new;
+  $xdi   = Xray::XDI-&gt;new;
   $xdi  -&gt; file($file);
   $data -&gt; import_xdi($xdi);
 

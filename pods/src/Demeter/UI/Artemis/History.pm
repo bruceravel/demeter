@@ -22,9 +22,12 @@ use File::Path qw(rmtree);
 use List::MoreUtils qw(minmax);
 
 use Wx qw( :everything );
-use Wx::Event qw(EVT_CLOSE EVT_LISTBOX EVT_CHECKLISTBOX EVT_BUTTON EVT_RADIOBOX
+use Wx::Event qw(EVT_CLOSE EVT_ICONIZE EVT_LISTBOX EVT_CHECKLISTBOX EVT_BUTTON EVT_RADIOBOX
 		 EVT_ENTER_WINDOW EVT_LEAVE_WINDOW EVT_CHOICE EVT_RIGHT_DOWN EVT_MENU);
 use base qw(Wx::Frame);
+
+use Demeter::UI::Artemis::Close;
+use Demeter::UI::Wx::Printing;
 
 sub new {
   my ($class, $parent) = @_;
@@ -33,6 +36,7 @@ sub new {
 				wxMINIMIZE_BOX|wxCAPTION|wxSYSTEM_MENU|wxCLOSE_BOX);
   $this -> SetBackgroundColour( wxNullColour );
   EVT_CLOSE($this, \&on_close);
+  EVT_ICONIZE($this, \&on_close);
   $this->{statusbar} = $this->CreateStatusBar;
   $this->{statusbar} -> SetStatusText(q{ });
 
@@ -100,10 +104,31 @@ sub new {
   $this->{scrollbox} = $plottoolbox;
 
   ## -------- text box for log file
+  my $vbox = Wx::BoxSizer->new( wxVERTICAL );
+  $logbox -> Add($vbox, 1, wxGROW|wxALL, 5);
   $this->{log} = Wx::TextCtrl->new($logpage, -1, q{}, wxDefaultPosition, [550, -1],
 				   wxTE_MULTILINE|wxTE_READONLY|wxHSCROLL|wxTE_RICH);
   $this->{log} -> SetFont( Wx::Font->new( 9, wxTELETYPE, wxNORMAL, wxNORMAL, 0, "" ) );
-  $logbox -> Add($this->{log}, 1, wxGROW|wxALL, 5);
+  $vbox -> Add($this->{log}, 1, wxGROW|wxALL, 5);
+
+  my $hbox = Wx::BoxSizer->new( wxHORIZONTAL );
+  $vbox -> Add($hbox, 0, wxGROW|wxALL, 5);
+
+  $this->{save} = Wx::Button->new($logpage, -1, q{Save this log}, wxDefaultPosition, wxDefaultSize);
+  $hbox -> Add($this->{save}, 1, wxGROW|wxRIGHT, 2);
+  EVT_BUTTON($this, $this->{save}, sub{$this->savelog});
+  $this-> mouseover('save', "Save this log to a file.");
+
+  $this->{preview} = Wx::Button->new($logpage, -1, q{Log preview}, wxDefaultPosition, wxDefaultSize);
+  $hbox -> Add($this->{preview}, 1, wxGROW|wxRIGHT, 2);
+  EVT_BUTTON($this, $this->{preview}, sub{on_preview(@_, 'log')});
+  $this-> mouseover('preview', "Preview this log.");
+
+  $this->{print} = Wx::Button->new($logpage, -1, q{Print this log}, wxDefaultPosition, wxDefaultSize);
+  $hbox -> Add($this->{print}, 1, wxGROW|wxRIGHT, 2);
+  EVT_BUTTON($this, $this->{print}, sub{on_print(@_, 'log')});
+  $this-> mouseover('print', "Print this log.");
+
 
   ## -------- controls for writing reports on fits
   my $controls = Wx::BoxSizer->new( wxHORIZONTAL );
@@ -152,10 +177,20 @@ sub new {
 
   $controls = Wx::BoxSizer->new( wxHORIZONTAL );
   $reportbox -> Add($controls, 0, wxGROW|wxALL, 0);
-  $this->{savereport} = Wx::Button->new($reportpage, -1, "Save report");
+  $this->{savereport} = Wx::Button->new($reportpage, -1, q{Save report});
   $controls->Add($this->{savereport}, 1, wxALL, 5);
-  EVT_BUTTON($this, $this->{savereport}, sub{savereport(@_)});
-  $this-> mouseover('savereport', "Save the report contents to a file.");
+  EVT_BUTTON($this, $this->{savereport}, sub{$this->savereport});
+  $this-> mouseover('savereport', "Save this report to a file.");
+
+  $this->{previewreport} = Wx::Button->new($reportpage, -1, q{Report preview});
+  $controls->Add($this->{previewreport}, 1, wxALL, 5);
+  EVT_BUTTON($this, $this->{previewreport}, sub{on_preview(@_, 'report')});
+  $this-> mouseover('previewreport', "Preview report");
+
+  $this->{printreport} = Wx::Button->new($reportpage, -1, q{Print report});
+  $controls->Add($this->{printreport}, 1, wxALL, 5);
+  EVT_BUTTON($this, $this->{printreport}, sub{on_print(@_, 'report')});
+  $this-> mouseover('printreport', "Print report");
 
 
   $nb -> AddPage($logpage,      "Log file", 1);
@@ -269,11 +304,11 @@ sub mark {
 };
 
 
-sub on_close {
-  my ($self) = @_;
-  $self->Show(0);
-  $self->GetParent->{toolbar}->ToggleTool(3, 0);
-};
+# sub on_close {
+#   my ($self) = @_;
+#   $self->Show(0);
+#   $self->GetParent->{toolbar}->ToggleTool(3, 0);
+# };
 
 sub put_log {
   my ($self, $fit) = @_;
@@ -326,7 +361,14 @@ sub write_report {
       my $g = $fit->fetch_gds($param);
       next if not $g;
       $fit->mo->fit($fit);
-      $self->{report}->AppendText($g->template('report', 'report_param'));
+      my $toss = Demeter::GDS->new(name    => $g->[0],
+				   gds     => $g->[1],
+				   mathexp => $g->[2],
+				   bestfit => $g->[3],
+				   error   => $g->[4],
+				  );
+      $self->{report}->AppendText($toss->template('report', 'report_param'));
+      $toss->DEMOLISH;
       $fit->mo->fit(q{});
     };
   };
@@ -509,7 +551,7 @@ Demeter::UI::Artemis::History - A fit history interface for Artemis
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.4.
+This documentation refers to Demeter version 0.5.
 
 =head1 SYNOPSIS
 

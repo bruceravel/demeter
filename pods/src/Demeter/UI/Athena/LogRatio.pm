@@ -171,6 +171,7 @@ sub plot {
     $this->{LR}->standard->plot($how);
     $this->{LR}->data->plot($how);
   };
+  $::app->heap_check(0);
 };
 
 sub save {
@@ -199,7 +200,7 @@ Demeter::UI::Athena::LogRatio - A log-ratio/phase-difference analysis for Athena
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.4.
+This documentation refers to Demeter version 0.5.
 
 =head1 SYNOPSIS
 

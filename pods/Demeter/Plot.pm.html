@@ -82,7 +82,7 @@
 
 <h1 id="VERSION">VERSION <a href="#TOP" class="toplink"><img alt="^" src="../up.gif" /></a></h1>
 
-<p>This documentation refers to Demeter version 0.4.</p>
+<p>This documentation refers to Demeter version 0.5.</p>
 
 <h1 id="SYNOPSIS">SYNOPSIS <a href="#TOP" class="toplink"><img alt="^" src="../up.gif" /></a></h1>
 
@@ -281,6 +281,9 @@ before plotting in R or q.  Typically, this is 1, 2, or 3, but can
 actually be any number.  When this gets changed, all Data, Path, and
 VPath objects will be flagged as needing to be brought up-to-date for
 their forward Fourier transform.</p></dd>
+		<dd><p>A negative value is interpreted to mean that the value of
+<code>fit_karb_value</code> should be used as the k-weighting to each data
+group.  This allows data to be overplotted with variable k-weighting.</p></dd>
 	<dt><code>chie</code> (boolean) <i>[0]</i></dt>
 		<dd><p>When this flag is true, plots of chi(k) will be plotted instead as
 chi(E).</p></dd>
@@ -306,6 +309,12 @@ sub R {
 		<dd><p>The part of the Fourier transform to plot when making a multiple data
 set plot in R.  The choices are m, p, r, and i for magnitude, phase,
 real, and imaginary.</p></dd>
+	<dt><code>dphase</code> (boolean) <i>[0]</i></dt>
+		<dd><p>When this flag is true, plots of the phase of chi(R) will be plotted
+in the derivative.</p></dd>
+	<dt><code>smag</code> (boolean) <i>[0]</i></dt>
+		<dd><p>When this flag is true, plots of the magnitude of chi(R) will be plotted
+in the second derivative.  (Not implemented yet.)</p></dd>
 </dl>
 <h2 id="q_plots">q plots</h2>
 
@@ -351,8 +360,6 @@ plotted when this is true.</p></dd>
 <h2 id="Plot_ornaments">Plot ornaments</h2>
 
 <dl>
-	<dt><code>nindicators</code> (number) <i>[8]</i></dt>
-		<dd><p>The maximum number of plot indicators that can be defined.</p></dd>
 	<dt><code>indicatorcolor</code> (color) <i>[violetred]</i></dt>
 		<dd><p>The color of the plot indicators.</p></dd>
 	<dt><code>indicatorline</code> (string) <i>[solid]</i></dt>

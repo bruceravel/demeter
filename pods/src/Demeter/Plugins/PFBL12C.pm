@@ -16,7 +16,7 @@ Readonly my $HC      => 12398.52;
 
 sub is {
   my ($self) = @_;
-  open D, $self->file or die "could not open " . $self->file . " as data (Photon Factory/SPring8)\n";
+  open D, $self->file or $self->Croak("could not open " . $self->file . " as data (Photon Factory/SPring8)\n");
   my $line = <D>;
   close D;
   return 1 if ($line =~ m{9809\s+(?:KEK-PF|SPring-8)\s+(?:(BL\d+)|(NW\d+)|(\d+\w+\d*))});

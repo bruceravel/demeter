@@ -21,6 +21,7 @@ sub new {
   my $box = Wx::BoxSizer->new( wxVERTICAL);
   $this->{sizer}  = $box;
 
+  $box->Add(Wx::StaticText->new($this, -1, "This part of Athena has not yet been implemented."), 0, wxALL|wxALIGN_CENTER_HORIZONTAL, 5);
 
   $box->Add(1,1,1);		# this spacer may not be needed, Journal.pm, for example
 
@@ -63,7 +64,7 @@ Demeter::UI::Athena::Smooth - A smoothing tool for Athena
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.4.
+This documentation refers to Demeter version 0.5.
 
 =head1 SYNOPSIS
 

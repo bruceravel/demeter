@@ -160,6 +160,7 @@ sub do_plot {
   my @save = ($prj->po->r_pl, $prj->po->q_pl);
   $this->{record} = $record;
   my $data = $prj->record($record);
+  return if not defined($data);
   $this->{journal}->SetValue(join($/, @{$data->titles}));
   $prj->po->start_plot;
   my $plotas = $this->{plotas}->GetSelection;

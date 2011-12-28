@@ -19,9 +19,12 @@ use strict;
 use warnings;
 
 use Wx qw( :everything );
-use Wx::Event qw(EVT_CLOSE EVT_BUTTON);
+use Wx::Event qw(EVT_CLOSE EVT_ICONIZE EVT_BUTTON);
 use base qw(Wx::Frame);
+
+use Demeter::UI::Artemis::Close;
 use Demeter::UI::Artemis::LogText;
+use Demeter::UI::Wx::Printing;
 
 use Cwd;
 
@@ -35,6 +38,7 @@ sub new {
 				wxDefaultPosition, [550,650],
 				wxMINIMIZE_BOX|wxCAPTION|wxSYSTEM_MENU|wxCLOSE_BOX|wxRESIZE_BORDER);
   $this -> SetBackgroundColour( wxNullColour );
+  EVT_ICONIZE($this, \&on_close);
   EVT_CLOSE($this, \&on_close);
   my $vbox = Wx::BoxSizer->new( wxVERTICAL );
 
@@ -52,6 +56,17 @@ sub new {
   $hbox -> Add($this->{save}, 1, wxGROW|wxRIGHT, 2);
   EVT_BUTTON($this, $this->{save}, \&on_save);
   $this->{save}->Enable(0);
+
+  $this->{preview} = Wx::Button->new($this, wxID_PREVIEW, q{}, wxDefaultPosition, wxDefaultSize);
+  $hbox -> Add($this->{preview}, 1, wxGROW|wxRIGHT, 2);
+  EVT_BUTTON($this, $this->{preview}, sub{on_preview(@_, 'text')});
+  $this->{preview}->Enable(0);
+
+  $this->{print} = Wx::Button->new($this, wxID_PRINT, q{}, wxDefaultPosition, wxDefaultSize);
+  $hbox -> Add($this->{print}, 1, wxGROW|wxRIGHT, 2);
+  EVT_BUTTON($this, $this->{print}, sub{on_print(@_, 'text')});
+  $this->{print}->Enable(0);
+
   $this->{close} = Wx::Button->new($this, wxID_CLOSE, q{}, wxDefaultPosition, wxDefaultSize);
   $hbox -> Add($this->{close}, 1, wxGROW|wxLEFT, 2);
   EVT_BUTTON($this, $this->{close}, \&on_close);
@@ -64,6 +79,8 @@ sub put_log {
   my ($self, $fit) = @_;
   Demeter::UI::Artemis::LogText -> make_text($self->{text}, $fit);
   $self->{save}->Enable(1);
+  $self->{preview}->Enable(1);
+  $self->{print}->Enable(1);
   $self->{text}->ShowPosition(1);
   $self->{text}->Refresh;
 };
@@ -94,11 +111,6 @@ sub save_log {
   $::app->{main}->status("Wrote log file to '$fname'.");
 };
 
-sub on_close {
-  my ($self) = @_;
-  $self->Show(0);
-  $self->GetParent->{log_toggle}->SetValue(0);
-};
 
 1;
 
@@ -108,7 +120,7 @@ Demeter::UI::Artemis::Log - A log file display interface for Artemis
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.4.
+This documentation refers to Demeter version 0.5.
 
 =head1 SYNOPSIS
 

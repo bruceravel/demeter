@@ -75,7 +75,7 @@
 
 <h1 id="VERSION">VERSION <a href="#TOP" class="toplink"><img alt="^" src="../../up.gif" /></a></h1>
 
-<p>This documentation refers to Demeter version 0.4.</p>
+<p>This documentation refers to Demeter version 0.5.</p>
 
 <h1 id="SYNOPSIS">SYNOPSIS <a href="#TOP" class="toplink"><img alt="^" src="../../up.gif" /></a></h1>
 
@@ -112,6 +112,7 @@ will be made.</p>
 
 <ul>
 	<li>All data files included in the fit exist.</li>
+	<li>No data set is obviously used twice in the fit.</li>
 	<li>All <cite>feffNNNN.dat</cite> files used in the fit exist.</li>
 	<li>All guess parameters are used in at least one def parameter or path
 parameter.</li>
@@ -175,6 +176,13 @@ fit is an example of literate programming.</p>
 	<dt><code>rminrbkg</code></dt>
 		<dd><p><code>rmin</code> is smaller than the value of <code>rbkg</code> that was used in the
 background removal.</p></dd>
+	<dt><code>collision</code></dt>
+		<dd><p>This data came from the the same source as another data group.  You
+seem to be trying to increase your number of independent points by
+fitting the same data more than once in a multiple data set fit.</p></dd>
+	<dt><code>datanopaths</code></dt>
+		<dd><p>This data has no paths associated with it.  You must either assign
+paths to it or exclude it from the fit.</p></dd>
 </dl>
 <h2 id="Problems_with_Path_objects">Problems with Path objects</h2>
 
@@ -229,7 +237,9 @@ function unknown to Ifeffit, <code>$token</code>.</p></dd>
 	<dt><code>progvar</code></dt>
 		<dd><p>The name of this GDS parameter is an Ifeffit program variable name.</p></dd>
 	<dt><code>merge</code></dt>
-		<dd><p>This is an unresolved parameter from the merge of fitting projects.</p></dd>
+		<dd><p>This is an parameter which has been defined twice, possibly from the
+merge of fitting projects or the creation of two more similar quick
+first shell fitting models.</p></dd>
 </dl>
 <h2 id="Problems_with_Fit_objects">Problems with Fit objects</h2>
 
@@ -276,7 +286,6 @@ expressions. This cycle is <code>$token</code>.</p></dd>
 <p>Missing tests:</p>
 
 <ul>
-	<li>Test that every included data set has at least 1 path associated with it.</li>
 	<li>Test that every Path is associated with a data set.  (Warn, not fatal.)</li>
 	<li>Test that each data in the data array is properly defined.</li>
 	<li>Test that every Path points to a real path file</li>

@@ -36,6 +36,7 @@ use MooseX::Aliases;
 use Moose::Util::TypeConstraints;
 use Demeter::StrTypes qw( Element
 			  Line
+			  FileName
 			  Empty
 		       );
 use Demeter::NumTypes qw( Natural
@@ -50,7 +51,7 @@ has '+plottable' => (default => 1);
 has '+data'      => (isa => Empty.'|Demeter::XES');
 has '+name'      => (default => 'XES' );
 
-has 'file'       => (is => 'rw', isa => 'Str',  default => q{},
+has 'file'       => (is => 'rw', isa => FileName,  default => q{},
 		     trigger=>sub{my ($self, $new) = @_;
 				  $self->update_file(1);
 				  $self->name($new) if ((not $self->name) or ($self->name eq 'XES'));
@@ -257,7 +258,7 @@ Demeter::Data - Rudimentary processing of XES data
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.4.
+This documentation refers to Demeter version 0.5.
 
 =head1 SYNOPSIS
 
@@ -419,7 +420,7 @@ and from YAMLs with a single object perl YAML.
 
 =item *
 
-Some peak fitting, perhaps with fityk, would be dandy.
+Peak fitting is currently broken for XES data
 
 =back
 

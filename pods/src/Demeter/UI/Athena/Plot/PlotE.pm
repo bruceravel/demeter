@@ -150,6 +150,8 @@ sub new {
   $app->mouseover($this->{sec},  "Plot second derivative data when ploting the current group in energy.");
   $app->mouseover($this->{msec}, "Plot second derivative data when ploting the marked groups in energy.");
 
+  $this->{mnorm}->SetValue(1);
+
   $this->{$_}->SetBackgroundColour( Wx::Colour->new($Demeter::UI::Athena::demeter->co->default("athena", "single")) )
     foreach (qw(mu bkg pre post norm der sec));
   $this->{$_}->SetBackgroundColour( Wx::Colour->new($Demeter::UI::Athena::demeter->co->default("athena", "marked")) )

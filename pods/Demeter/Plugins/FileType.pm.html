@@ -73,7 +73,7 @@
 
 <h1 id="VERSION">VERSION <a href="#TOP" class="toplink"><img alt="^" src="../../up.gif" /></a></h1>
 
-<p>This documentation refers to Demeter version 0.4.</p>
+<p>This documentation refers to Demeter version 0.5.</p>
 
 <h1 id="SYNOPSIS">SYNOPSIS <a href="#TOP" class="toplink"><img alt="^" src="../../up.gif" /></a></h1>
 
@@ -286,6 +286,13 @@ file is written to the stash area by the plugin.  Most plugins filter
 an input data file into a stash file that Ifeffit can read.  A plugin
 can also make an Athena project file, in which case this attribute
 tells Demeter to interpret it that way.</p></dd>
+	<dt><code>conffile</code></dt>
+		<dd><p>If the plugin requires configuration parameters, these can be
+specified in an demeter-style configuration file whise name is given
+by this attribute.  The default is an emty string, which indicates
+that no configuration file is required.  The file must be a
+demeter_conf file so that a GUI (say, Athena) can provide a consistent
+mechanism for modifying the configuration.</p></dd>
 </dl>
 <h2 id="Required_methods">Required methods</h2>
 
@@ -349,9 +356,10 @@ of using the plugin.</p></dd>
 (numerator), and I0 (denominator) channels are returned by the
 <code>suggest</code> method for use in defining the <a href="../Data.pm.html">Demeter::Data</a> object.</p></dd>
 		<dd><p>This method takes a single argument, which should be either
-&quot;transmission&quot; or &quot;fluorescence&quot;.  If the argument is missing,
-&quot;transmission&quot; is assumed.  If the argument has a value but is not
-&quot;transmission&quot;, then &quot;fluorescence&quot; is assumed.  (So spell carefully!)</p></dd>
+&quot;transmission&quot; or &quot;fluorescence&quot;.  A plugin can choose which to make
+as the default.  Most use &quot;transmission&quot; as the default, but a plugin
+for an instrument or beamline related to a fluorescence measurement
+will make &quot;fluorescence&quot; the default.  In any case, spell carefully!+</p></dd>
 		<dd><p>If the proper columns are not predictable, then this method should
 return an empty array.</p></dd>
 		<dd><p>The return value should be an array and not an array reference.</p></dd>

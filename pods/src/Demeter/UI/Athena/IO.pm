@@ -3,12 +3,10 @@ package Demeter::UI::Athena::IO;
 use strict;
 use warnings;
 
-#use Demeter;
 use Demeter::UI::Wx::SpecialCharacters qw(:all);
 use Demeter::UI::Athena::ColumnSelection;
 use Demeter::UI::Artemis::Prj;
 use Demeter::UI::Wx::PeriodicTableDialog;
-my $XDI_exists = 0;#        = eval "require Xray::XDI";
 #use Xray::XDI;
 
 use Cwd;
@@ -54,13 +52,17 @@ sub Export {
   #$app->{main}->{Main}->pull_values($app->current_data);
   $app->{main}->{Journal}->{object}->text($app->{main}->{Journal}->{journal}->GetValue);
   $data[0]->write_athena($fname, @data, $app->{main}->{Journal}->{object});
-  $data[0]->push_mru("xasdata", $fname);
-  $app->set_mru;
-  $app->{main}->{project}->SetLabel(basename($fname, '.prj'));
-  $app->{main}->{currentproject} = $fname;
-  $app->modified(0);
-  my $extra = ($how eq 'marked') ? " with marked groups" : q{};
-  $app->{main}->status("Saved project file $fname".$extra);
+  if (dirname($fname) ne Demeter->stash_folder) {
+    $data[0]->push_mru("xasdata", $fname);
+    $data[0]->push_mru("athena", $fname);
+    $app->set_mru;
+    $app->{main}->{project}->SetLabel(basename($fname, '.prj'));
+    $app->{main}->{currentproject} = $fname;
+    $app->modified(0);
+    my $extra = ($how eq 'marked') ? " with marked groups" : q{};
+    $app->{main}->status("Saved project file $fname".$extra);
+    unlink File::Spec->catfile(Demeter->stash_folder, 'Athena.autosave') if $how eq 'all';
+  };
   undef $busy;
   return $fname;
 };
@@ -89,8 +91,15 @@ sub Import {
   ## evkev?
   my $first = 1;
   foreach my $file (sort {$a cmp $b} @files) {
+    ## check to see if this is a Windows shortcut, if so, resolve it
+    ## bail out if it points to a file that is not -e or cannot -r
+    if (not !Demeter->readable($file)) {
+      Wx::MessageDialog->new($app->{main}, "$file is not readable", "Warning!", wxOK|wxICON_WARNING) -> ShowModal;
+      next;
+    };
+
     my $xdi = q{};
-    if ($XDI_exists) {
+    if ($Demeter::XDI_exists) {
       $xdi = Xray::XDI->new;
       $xdi->file($file);
       ## at this point, run a test against $xdi->applications and
@@ -103,8 +112,12 @@ sub Import {
       $type = 'xdi';
     } else {
       $plugin = test_plugins($app, $file);
+      if ($plugin =~ m{\A\!}) {
+	$app->{main}->status("There was an error reading that file as a " . (split(/::/, $plugin))[-1] . " file.  (Perhaps you do not have its plugin configured correctly?)");
+	return;
+      };
       $stashfile = ($plugin) ? $plugin->fixed : $file;
-      @suggest = ($plugin) ? $plugin->suggest('transmission') : ();
+      @suggest = ($plugin) ? $plugin->suggest() : ();
       $type = ($plugin and ($plugin->output eq 'data'))                ? 'raw'
             : ($plugin and ($plugin->output eq 'project'))             ? 'prj'
             : ($Demeter::UI::Athena::demeter->is_prj($file,$verbose))  ? 'prj'
@@ -132,7 +145,16 @@ sub Import {
     if ($retval == 0) {		# bail on a file sequence if one gets canceled
       return;
     };
+    if ($retval == -1) {	# bail on a file sequence if something bad happens
+      $app->{main}->status("Stopping file import.  $file could not be read correctly.", "error");
+      return;
+    };
     $first = 0;
+    if ($app->current_data->mo->heap_used > 0.95) {
+      $app->OnGroupSelect(q{}, $app->{main}->{list}->GetSelection, 0);
+      $app->{main}->status("Stopping multiple file import.  You have used more than 95% of Ifeffit's memory.", "error");
+      return;
+    };
   };
   $app->OnGroupSelect(q{}, $app->{main}->{list}->GetSelection, 0);
   return;
@@ -149,7 +171,12 @@ sub test_plugins {
       undef $this;
       next;
     };
-    $this->fix;
+    if ($this->time_consuming) {
+      $app->{main}->status($this->working_message, "wait");
+    };
+    my $ok = eval {$this->fix};
+    return '!'.$pl if $@;
+    return '!'.$pl if not $ok;
     return $this;
   };
   return 0;
@@ -175,12 +202,12 @@ sub Import_plot {
 
 sub _data {
   my ($app, $file, $orig, $first, $suggest) = @_;
-
   my $busy = Wx::BusyCursor->new();
   my ($data, $displayfile);
-  if (ref($orig) =~ m{Class::MOP}) {
+  if (ref($orig) =~ m{Class::MOP|Moose::Meta::Class}) {
     $displayfile = $orig->file;
     $data = Demeter::Data->new;
+    $data->xdi($orig);
   } else {
     $displayfile = $orig;
     $data = Demeter::Data->new(file=>$file);
@@ -196,7 +223,9 @@ sub _data {
 	       numerator   => $suggest{numerator}||1,
 	       denominator => $suggest{denominator}||1,
 	       ln          => $suggest{ln}||0,
+	       inv         => $suggest{inv}||0,
 	       display	   => 1);
+  $data->update_data(1) if ($data->energy ne '$1');
   $data->_update('data');
   my $yaml;
   $yaml->{columns} = q{};
@@ -205,38 +234,68 @@ sub _data {
     $yaml = YAML::Tiny::Load($data->slurp($persist));
     if ($data->columns eq $yaml->{columns}) {
       my $nnorm = ($yaml->{datatype} eq 'xanes') ? 2 : 3;
-      $data -> set(energy      => $yaml->{energy}||'$1',
-		   numerator   => $yaml->{numerator}||'1',
-		   denominator => $yaml->{denominator}||'1',
-		   ln          => $yaml->{ln},
-		   ##is_kev      => $yaml->{units},
-		   datatype    => $yaml->{datatype}||'xmu',
+      $data -> set(energy      => $yaml->{energy}      || $suggest{energy}      || '$1',
+		   numerator   => $yaml->{numerator}   || $suggest{numerator}   || '1',
+		   denominator => $yaml->{denominator} || $suggest{denominator} || '1',
+		   ln          => (defined($yaml->{ln}))  ? $yaml->{ln}  : $suggest{ln},
+		   inv         => (defined($yaml->{inv})) ? $yaml->{inv} : $suggest{inv},
+		   is_kev      => $yaml->{units},
 		   bkg_nnorm   => $nnorm,
 		  );
+      $data->update_data(1) if ($data->energy ne '$1');;
+      my $dt = $yaml->{datatype};
+      if ($dt eq 'norm') {
+	$data->datatype('xmu');
+	$data->is_nor(1);
+      } else {
+	$data->datatype($dt);
+	$data->is_nor(0);
+      };
     } else {
       $yaml->{each} = 0;
-      $do_guess = 1;
+      $do_guess = ($suggest) ? 0 : 1;
     };
   } else {
     $do_guess = 1;
+  };
+  $yaml->{energy} = $data->energy;
+  my $untext = $data->guess_units;
+  my $un = ($untext eq 'eV')     ? 0
+         : ($untext eq 'keV')    ? 1
+         : ($untext eq 'lambda') ? 2
+	 :                         0;
+  $yaml->{units} = $un;
+  if ($untext eq 'keV') {
+    $data->is_kev(1);
+    $data->update_data(1);
+    $data->_update('data');
   };
 
   ## for an XDI file, setting the xdi attribute has to be delayed
   ## until *after* the energy/numerator/denominator attributes are
   ## set.  then guess_columns can be called.
-  $data->xdi($orig) if (ref($orig) =~ m{Class::MOP});
-  $data->guess_columns if $do_guess;
-
+  #$data->xdi($orig) if (ref($orig) =~ m{Class::MOP|Moose::Meta::Class});
+  $data->guess_columns if ($do_guess and (not $suggest));
 
   ## -------- display column selection dialog
   my $repeated = 1;
   my $colsel;
-  my $med = 0;			# this will be true is each channel of MED data is to be its own group
+  my $med = $yaml->{each}; # this will be true is each channel of MED data is to be its own group
   if ($first or ($data->columns ne $yaml->{columns})) {
+    Ifeffit::put_scalar("e0", 0);
     $colsel = Demeter::UI::Athena::ColumnSelection->new($app->{main}, $app, $data);
     $colsel->{ok}->SetFocus;
 
     $colsel->{each}->SetValue($yaml->{each});
+    $colsel->{units}->SetSelection($yaml->{units});
+
+    $colsel->{datatype}->SetSelection(0);
+    $colsel->{datatype}->SetSelection(1) if ($data->datatype eq 'xanes');
+    $colsel->{datatype}->SetSelection(2) if (($data->datatype eq 'xanes') and $data->is_nor);
+    $colsel->{datatype}->SetSelection(2) if ($data->is_nor);
+    $colsel->{datatype}->SetSelection(3) if ($data->datatype eq 'chi');
+    $colsel->{datatype}->SetSelection(4) if ($data->datatype eq 'xmudat');
+    $colsel->OnDatatype(q{}, $colsel, $data);
 
     ## set Reference controls from yaml
     if ($data->columns eq $yaml->{columns}) {
@@ -255,11 +314,17 @@ sub _data {
     };
 
     ## set Rebinning controls from yaml
-    foreach my $w (qw(do_rebin abs emin emax pre xanes exafs)) {
+    foreach my $w (qw(do_rebin emin emax pre xanes exafs)) { # abs
       my $key = ($w eq 'do_rebin') ? $w : 'rebin_'.$w;
+      my $value;
+      if ($w eq 'do_rebin') {
+	$value = $yaml->{$key} || 0;
+      } else {
+	$value = $yaml->{$key} || $data->co->default('rebin', $w);
+      };
       $colsel->{Rebin}->{$w}->SetValue($yaml->{$key});
-      last if (any {$w eq $_} qw(do_rebin abs));
-      $data->co->set_default('rebin', $w);
+      next if (any {$w eq $_} qw(do_rebin abs));
+      $data->co->set_default('rebin', $w, $yaml->{$key});
     };
     if ($data->columns ne $yaml->{columns}) {
       $colsel->{Rebin}->{do_rebin}->SetValue(0)
@@ -280,7 +345,9 @@ sub _data {
     ($yaml->{preproc_standard} eq 'None') ? $colsel->{Preprocess}->{standard}->SetSelection(0)
       : $colsel->{Preprocess}->{standard}->SetSelection($found+1);
     if ($colsel->{Preprocess}->{standard}->GetStringSelection =~ m{\A(?:None|)\z}) {
+      $colsel->{Preprocess}->{align}-> Enable(0);
       $yaml->{preproc_align} = 0;
+      $colsel->{Preprocess}->{set}-> Enable(0);
       $yaml->{preproc_set}   = 0;
     };
     foreach my $w (qw(mark align set)) {
@@ -296,12 +363,18 @@ sub _data {
       return 0;
     };
     $med = 1 if ($colsel->{each}->IsEnabled and $colsel->{each}->GetValue);
-    $yaml->{each} = $colsel->{each}->GetValue;
+    $yaml->{each}  = $colsel->{each}->GetValue;
+    $yaml->{units} = $colsel->{units}->GetSelection;
     $repeated = 0;
   };
 
   ## to write each MED channel to a group, loop over channels, calling
   ## this.  Set all eshifts the same and don't redo alignment
+  my $dtp = (not defined($colsel))                   ? 'xmu' # this line is a crude hack...
+          : ($colsel->{datatype}->GetSelection == 0) ? 'xmu'
+          : ($colsel->{datatype}->GetSelection == 1) ? 'xanes'
+          : ($colsel->{datatype}->GetSelection == 3) ? 'chi'
+	  :                                            'xmu';
   my $message = q{};
   if ($med) {
     my $mc = Demeter::Data::MultiChannel->new(file=>$file, energy=>$data->energy);
@@ -313,17 +386,20 @@ sub _data {
       my $this = $mc->make_data(numerator   => $ch,
 				denominator => $data->denominator,
 				ln          => $data->ln,
+				inv         => $data->inv,
 				name        => join(" - ", basename($file), $cols[$cc]),
+				datatype    => $dtp,
 			       );
-      _group($app, $colsel, $this, $yaml, $orig, $repeated, $align);
+      _group($app, $colsel, $this, $yaml, $file, $orig, $repeated, $align);
       $eshift = $this->bkg_eshift if $align;
       $this->bkg_eshift($eshift)  if not $align;
+      $repeated = 1 if (not $repeated);
       $align = 0;
     };
     $mc->discard;
   } else {
     $message = $data->name;
-    _group($app, $colsel, $data, $yaml, $orig, $repeated, 0);
+    _group($app, $colsel, $data, $yaml, $file, $orig, $repeated, 0);
   };
 
   $data->push_mru("xasdata", $displayfile);
@@ -338,8 +414,9 @@ sub _data {
 		     numerator	 => $data->numerator,
 		     denominator => $data->denominator,
 		     ln		 => $data->ln,
+		     inv	 => $data->inv,
 		     each        => $yaml->{each},
-		     datatype    => $data->datatype,
+		     datatype    => ($data->is_nor) ? 'norm' : $data->datatype,
 		     units       => $data->is_kev,);
   ## reference
   $persistence{do_ref}      = (defined($colsel)) ? $colsel->{Reference}->{do_ref}->GetValue : $yaml->{do_ref};
@@ -360,6 +437,15 @@ sub _data {
   $persistence{preproc_mark}     = (defined($colsel)) ? $colsel->{Preprocess}->{mark} ->GetValue : $yaml->{preproc_mark};
   $persistence{preproc_align}    = (defined($colsel)) ? $colsel->{Preprocess}->{align}->GetValue : $yaml->{preproc_align};
   $persistence{preproc_set}      = (defined($colsel)) ? $colsel->{Preprocess}->{set}  ->GetValue : $yaml->{preproc_set};
+  my $stan = q{};
+  if (defined($colsel)) {
+    if ($colsel->{Preprocess}->{standard}->GetStringSelection  !~ m{\A(?:None|)\z}) {
+      $stan = $colsel->{Preprocess}->{standard}->GetClientData($colsel->{Preprocess}->{standard}->GetSelection)->group;
+    };
+  } else {
+    $stan = $yaml->{preproc_stgroup};
+  };
+  $persistence{preproc_stgroup} = $stan;
 
   my $string .= YAML::Tiny::Dump(\%persistence);
   open(my $ORDER, '>'.$persist);
@@ -376,26 +462,42 @@ sub _data {
   return 1;
 };
 
+## this argument list has grown icky over time:
+# 1: Pointer to the Athena app, same as $::app
+# 2: $colsel, Pointer to the column selection frame
+# 3: $data, Pointer to the main Data object (as opposed to the refernece)
+# 4: $yaml: the yaml containing the column selection persistence
+# 5: $file: the actual file being read, stashfile for a pluhgin, original file otherwise
+# 6: $orig: the fully resolved original file
+# 7: $repeated: oddly, 1 if this is the first pass through, 0 for subsequent files in multiple file import
+# 8: $noalign: doesn't seem to be used
 sub _group {
-  my ($app, $colsel, $data, $yaml, $orig, $repeated, $noalign) = @_;
-  my $displayfile = (ref($orig) =~ m{Class::MOP}) ? $orig->file : $orig;
+  my ($app, $colsel, $data, $yaml, $file, $orig, $repeated, $noalign) = @_;
+  my $displayfile = (ref($orig) =~ m{Class::MOP|Moose::Meta::Class}) ? $orig->file : $orig;
 
   ## -------- import data group
   $app->{main}->status("Importing ". $data->name . " from $displayfile");
   $app->{main}->Update;
-  $data -> display(0);
-  $data->source($displayfile);
+  $data->display(0);
+  #$data->source($displayfile);
   my $do_rebin = (defined $colsel) ? ($colsel->{Rebin}->{do_rebin}->GetValue) : $yaml->{do_rebin};
 
   if ($do_rebin) {
-    $app->{main}->status("Rebinning ". $data->name);
-    my $rebin  = $data->rebin;
-    foreach my $att (qw(energy numerator denominator ln name)) {
-      $rebin->$att($data->$att);
+    my $ret = $data->rebin_is_sensible;
+    if ($ret->is_ok) {
+      $app->{main}->status("Rebinning ". $data->name);
+      my $rebin  = $data->rebin;
+      foreach my $att (qw(energy numerator denominator ln name)) {
+	$rebin->$att($data->$att);
+      };
+      $data->dispose("erase \@group ".$data->group);
+      $data->DEMOLISH;
+      $data = $rebin;
+    } else {
+      $app->{main}->status("Rebinning canceled: ". $ret->message, 'error');
+      $app->{main}->{Status}->Show;
     };
-    $data->dispose("erase \@group ".$data->group);
-    $data->DEMOLISH;
-    $data = $rebin;
+    $ret->DESTROY;
   };
 
   $data -> po -> e_markers(1);
@@ -420,11 +522,20 @@ sub _group {
   if ($do_mark) {
     $app->mark($data);
   };
+  my $stan = q{};
+  if (defined($colsel)) {
+    if ($colsel->{Preprocess}->{standard}->GetStringSelection  !~ m{\A(?:None|)\z}) {
+      $stan = $colsel->{Preprocess}->{standard}->GetClientData($colsel->{Preprocess}->{standard}->GetSelection)->group;
+      $stan = $data->mo->fetch("Data", $stan);
+    };
+  } else {
+    $stan = $data->mo->fetch("Data", $yaml->{preproc_stgroup});
+  };
   my $do_set  = (defined $colsel) ? ($colsel->{Preprocess}->{set}->GetValue)  : $yaml->{preproc_set};
   if ($do_set) {
-    my $stan = $colsel->{Preprocess}->{standard}->GetClientData($colsel->{Preprocess}->{standard}->GetSelection);
+    #my $stan = $colsel->{Preprocess}->{standard}->GetClientData($colsel->{Preprocess}->{standard}->GetSelection);
     $app->{main}->status("Constraining parameters for ". $data->name . " to " . $stan->name);
-    constrain($app, $colsel, $data);
+    constrain($app, $colsel, $data, $stan);
     $app->OnGroupSelect(0,0,0);
   };
   ## -------- import reference if reference channel is set
@@ -434,40 +545,54 @@ sub _group {
     $app->{main}->Update;
     my $ref = (defined $colsel) ? $colsel->{Reference}->{reference} : q{};
     if (not $ref) {
-      $ref = Demeter::Data->new(file => $displayfile,
-				name => "  Ref " . $data->name);
-      $ref -> set(energy      => $yaml->{energy},
-		  numerator   => '$'.$yaml->{ref_numer},
-		  denominator => '$'.$yaml->{ref_denom},
-		  ln          => $yaml->{ref_ln},
-		  is_col      => 1,
-		  display     => 1);
+      $ref = Demeter::Data->new(file => $file);
     };
+    $yaml -> {ref_numer} = (defined($colsel)) ? $colsel->{Reference}->{numerator}    : $yaml->{ref_numer};
+    $yaml -> {ref_denom} = (defined($colsel)) ? $colsel->{Reference}->{denominator}  : $yaml->{ref_denom};
+    $yaml -> {ref_ln}    = (defined($colsel)) ? $colsel->{Reference}->{ln}->GetValue : $yaml->{ref_ln};
+
+    $ref -> set(name        => "  Ref " . $data->name,
+		energy      => $yaml->{energy},
+		numerator   => '$'.$yaml->{ref_numer},
+		denominator => '$'.$yaml->{ref_denom},
+		ln          => $yaml->{ref_ln},
+		is_col      => 1,
+		is_kev      => $data->is_kev,
+		display     => 1,
+		datatype    => $data->datatype);
     $ref->display(0);
-    if ($do_rebin) {
-      $app->{main}->status("Rebinning reference for ". $data->name);
-      my $rebin  = $ref->rebin;
-      foreach my $att (qw(energy numerator denominator ln name)) {
-	$rebin->$att($ref->$att);
-      };
-      $ref->dispose("erase \@group ".$ref->group);
-      $ref->DEMOLISH;
-      $ref = $rebin;
-    };
-    $ref -> _update('fft');
-    $app->{main}->{list}->AddData($ref->name, $ref);
-    $app->{main}->{Main}->{bkg_eshift}-> SetBackgroundColour( Wx::Colour->new($ref->co->default("athena", "tied")) );
-    $ref->reference($data);
     my $same_edge = (defined $colsel) ? $colsel->{Reference}->{same}->GetValue : $yaml->{ref_same};
     if ($same_edge) {
       $ref->bkg_z($data->bkg_z);
       $ref->fft_edge($data->fft_edge);
     };
+    $ref -> _update('normalize');
+    if (abs($data->bkg_e0 - $ref->bkg_e0) > $data->co->default('rebin', 'use_atomic')) {
+      $ref->e0('atomic');
+    };
+    if ($do_rebin) {
+      my $ret = $data->rebin_is_sensible;
+      if ($ret->is_ok) {
+	$app->{main}->status("Rebinning reference for ". $data->name);
+	my $rebin  = $ref->rebin;
+	foreach my $att (qw(energy numerator denominator ln name)) {
+	  $rebin->$att($ref->$att);
+	};
+	$ref->dispose("erase \@group ".$ref->group);
+	$ref->DEMOLISH;
+	$ref = $rebin;
+      };
+      $ret->DESTROY;
+    };
+    $ref -> _update('fft');
+    $app->{main}->{list}->AddData($ref->name, $ref);
+    $app->{main}->{Main}->{bkg_eshift}-> SetBackgroundColour( Wx::Colour->new($ref->co->default("athena", "tied")) );
+    $ref->reference($data);
   };
 
   my $do_align = (defined $colsel) ? ($colsel->{Preprocess}->{align}->GetValue) : $yaml->{preproc_align};
   if ($do_align) {
-    my $stan = $colsel->{Preprocess}->{standard}->GetClientData($colsel->{Preprocess}->{standard}->GetSelection);
+    #my $stan = $colsel->{Preprocess}->{standard}->GetClientData($colsel->{Preprocess}->{standard}->GetSelection);
     if ($data->reference and $stan->reference) {
       $app->{main}->status("Aligning ". $data->name . " to " . $stan->name . " using references");
       $stan->align_with_reference($data);
@@ -491,10 +616,8 @@ Readonly my @all_bft    => (qw(bft_rmin bft_rmax bft_dr bft_rwindow));
 Readonly my @all_plot   => (qw(plot_multiplier y_offset));
 
 sub constrain {
-  my ($app, $colsel, $data) = @_;
-  return if ($colsel->{Preprocess}->{standard}->GetStringSelection eq 'None');
-  #my $data = $app->current_data;
-  my $stan = $colsel->{Preprocess}->{standard}->GetClientData($colsel->{Preprocess}->{standard}->GetSelection);
+  my ($app, $colsel, $data, $stan) = @_;
+  return if not $stan;
 
   foreach my $i (0 .. $app->{main}->{list}->GetCount-1) {
     my $this = $app->{main}->{list}->GetIndexedData($i);
@@ -526,10 +649,12 @@ sub _prj {
   my @records = map {$_ + 1} @selected;
   my $prj = $app->{main}->{prj}->{prj};
 
-  my $count = 1;
+  my $count = 0;
   my $data;
   foreach my $rec (@records) {
     $data = $prj->record($rec);
+    next if not $data;
+    ++$count;
     if ($data->prjrecord =~ m{,\s+(\d+)}) {
       $data->prjrecord($orig . ", $1");
     };
@@ -543,13 +668,14 @@ sub _prj {
       $app->OnGroupSelect(q{}, $app->{main}->{list}->GetSelection, 0);
       Import_plot($app, $data);
     };
-    ++$count;
   };
+  return -1 if not $count;
   $app->{main}->{Journal}->{object}->text($prj->journal);
   $app->{main}->{Journal}->{journal}->SetValue($app->{main}->{Journal}->{object}->text);
   $app->{main}->{Main}->{bkg_stan}->fill($app, 1);
 
   $data->push_mru("xasdata", $orig);
+  $data->push_mru("athena", $orig);
   $app->set_mru;
   if (not $is_plugin) {
     $app->{main}->{project}->SetLabel(basename($file, '.prj'));
@@ -621,6 +747,7 @@ sub save_marked {
                     : ($how eq 'chir_re')  ? ("Re[$CHI(R)]",     '.chir_re')
                     : ($how eq 'chir_im')  ? ("Im[$CHI(R)]",     '.chir_im')
                     : ($how eq 'chir_pha') ? ("Pha[$CHI(R)]",    '.chir_pha')
+                    : ($how eq 'dph')      ? ("Deriv(Pha[$CHI(R)])", '.dph')
                     : ($how eq 'chiq_mag') ? ("|$CHI(q)|",       '.chiq_mag')
                     : ($how eq 'chiq_re')  ? ("Re[$CHI(q)]",     '.chiq_re')
                     : ($how eq 'chiq_im')  ? ("Im[$CHI(q)]",     '.chiq_im')
@@ -717,6 +844,9 @@ sub FPath {
   $reff = $r[$imax];
   $app->current_data->fft_pc($save);
 
+  require Demeter::FPath;
+  require Demeter::Atoms;
+  require Demeter::Feff;
   my $fp = Demeter::FPath->new(absorber  => $app->current_data->bkg_z,
 			       scatterer => $scatterer,
 			       reff      => $reff,

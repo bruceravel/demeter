@@ -20,28 +20,34 @@ use warnings;
 
 use Wx qw( :everything);
 use base qw(Wx::Frame);
-use Wx::Event qw(EVT_MENU EVT_CLOSE EVT_TOOL_ENTER EVT_CHECKBOX EVT_CHOICE
+use Wx::Event qw(EVT_MENU EVT_CLOSE EVT_ICONIZE EVT_TOOL_ENTER EVT_CHECKBOX EVT_CHOICE
 		 EVT_BUTTON EVT_ENTER_WINDOW EVT_LEAVE_WINDOW
-		 EVT_HYPERLINK EVT_TEXT_ENTER);
+		 EVT_HYPERLINK EVT_TEXT_ENTER EVT_LEFT_DOWN);
 use Wx::DND;
 use Wx::Perl::TextValidator;
 
 use Wx::Perl::Carp;
 
+use Demeter::UI::Artemis::Close;
 use Demeter::UI::Artemis::Project;
 use Demeter::UI::Artemis::Import;
 use Demeter::UI::Artemis::Data::AddParameter;
 use Demeter::UI::Artemis::Data::Quickfs;
+use Demeter::UI::Artemis::DND::PathDrag;
 use Demeter::UI::Artemis::ShowText;
 use Demeter::UI::Wx::CheckListBook;
 use Demeter::UI::Wx::SpecialCharacters qw(:all);
 
 use Cwd;
+use File::Basename;
+use File::Spec;
 use List::MoreUtils qw(firstidx any);
 use YAML::Tiny;
 
-my $windows = [qw(hanning kaiser-bessel welch parzen sine)];
-my $demeter = $Demeter::UI::Artemis::demeter;
+my $windows  = [qw(hanning kaiser-bessel welch parzen sine)];
+my $demeter  = $Demeter::UI::Artemis::demeter;
+my $icon     = File::Spec->catfile(dirname($INC{"Demeter/UI/Artemis.pm"}), 'Athena', , 'icons', "bullseye.png");
+my $bullseye = Wx::Bitmap->new($icon, wxBITMAP_TYPE_PNG);
 
 use Regexp::Assemble;
 use Regexp::Common;
@@ -152,7 +158,6 @@ Readonly my $DISCARD_THIS	=> Wx::NewId();
 Readonly my $DISCARD_MARKED	=> Wx::NewId();
 Readonly my $DISCARD_UNMARKED	=> Wx::NewId();
 
-
 sub new {
   my ($class, $parent, $nset) = @_;
 
@@ -164,6 +169,7 @@ sub new {
   $this->SetMenuBar( $this->{menubar} );
   EVT_MENU($this, -1, sub{OnMenuClick(@_)} );
   EVT_CLOSE($this, \&on_close);
+  EVT_ICONIZE($this, \&on_close);
 
   $this->{statusbar} = $this->CreateStatusBar;
   $this->{statusbar} -> SetStatusText(q{ });
@@ -254,38 +260,46 @@ sub new {
   my $label     = Wx::StaticText->new($leftpane, -1, "kmin");
   $this->{kmin} = Wx::TextCtrl  ->new($leftpane, -1, $demeter->co->default("fft", "kmin"),
 				      wxDefaultPosition, [50,-1], wxTE_PROCESS_ENTER);
-  $gbs     -> Add($label,      Wx::GBPosition->new(0,1));
-  $gbs     -> Add($this->{kmin}, Wx::GBPosition->new(0,2));
+  $this->{kmin_pluck} = Wx::BitmapButton -> new($leftpane, -1, $bullseye);
+  $gbs     -> Add($label,              Wx::GBPosition->new(0,1));
+  $gbs     -> Add($this->{kmin},       Wx::GBPosition->new(0,2));
+  $gbs     -> Add($this->{kmin_pluck}, Wx::GBPosition->new(0,3));
 
   $label        = Wx::StaticText->new($leftpane, -1, "kmax");
   $this->{kmax} = Wx::TextCtrl  ->new($leftpane, -1, $demeter->co->default("fft", "kmax"),
 				      wxDefaultPosition, [50,-1], wxTE_PROCESS_ENTER);
-  $gbs     -> Add($label,      Wx::GBPosition->new(0,3));
-  $gbs     -> Add($this->{kmax}, Wx::GBPosition->new(0,4));
+  $this->{kmax_pluck} = Wx::BitmapButton -> new($leftpane, -1, $bullseye);
+  $gbs     -> Add($label,              Wx::GBPosition->new(0,4));
+  $gbs     -> Add($this->{kmax},       Wx::GBPosition->new(0,5));
+  $gbs     -> Add($this->{kmax_pluck}, Wx::GBPosition->new(0,6));
 
   $label      = Wx::StaticText->new($leftpane, -1, "dk");
   $this->{dk} = Wx::TextCtrl  ->new($leftpane, -1, $demeter->co->default("fft", "dk"),
 				      wxDefaultPosition, [50,-1], wxTE_PROCESS_ENTER);
-  $gbs     -> Add($label,      Wx::GBPosition->new(0,5));
-  $gbs     -> Add($this->{dk}, Wx::GBPosition->new(0,6));
+  $gbs     -> Add($label,      Wx::GBPosition->new(0,7));
+  $gbs     -> Add($this->{dk}, Wx::GBPosition->new(0,8));
 
   $label        = Wx::StaticText->new($leftpane, -1, "rmin");
   $this->{rmin} = Wx::TextCtrl  ->new($leftpane, -1, $demeter->co->default("bft", "rmin"),
 				      wxDefaultPosition, [50,-1], wxTE_PROCESS_ENTER);
-  $gbs     -> Add($label,        Wx::GBPosition->new(1,1));
-  $gbs     -> Add($this->{rmin}, Wx::GBPosition->new(1,2));
+  $this->{rmin_pluck} = Wx::BitmapButton -> new($leftpane, -1, $bullseye);
+  $gbs -> Add($label,              Wx::GBPosition->new(1,1));
+  $gbs -> Add($this->{rmin},       Wx::GBPosition->new(1,2));
+  $gbs -> Add($this->{rmin_pluck}, Wx::GBPosition->new(1,3));
 
   $label        = Wx::StaticText->new($leftpane, -1, "rmax");
   $this->{rmax} = Wx::TextCtrl  ->new($leftpane, -1, $demeter->co->default("bft", "rmax"),
 				      wxDefaultPosition, [50,-1], wxTE_PROCESS_ENTER);
-  $gbs     -> Add($label,        Wx::GBPosition->new(1,3));
-  $gbs     -> Add($this->{rmax}, Wx::GBPosition->new(1,4));
+  $this->{rmax_pluck} = Wx::BitmapButton -> new($leftpane, -1, $bullseye);
+  $gbs -> Add($label,              Wx::GBPosition->new(1,4));
+  $gbs -> Add($this->{rmax},       Wx::GBPosition->new(1,5));
+  $gbs -> Add($this->{rmax_pluck}, Wx::GBPosition->new(1,6));
 
   $label      = Wx::StaticText->new($leftpane, -1, "dr");
   $this->{dr} = Wx::TextCtrl  ->new($leftpane, -1, $demeter->co->default("bft", "dr"),
 				    wxDefaultPosition, [50,-1], wxTE_PROCESS_ENTER);
-  $gbs     -> Add($label,      Wx::GBPosition->new(1,5));
-  $gbs     -> Add($this->{dr}, Wx::GBPosition->new(1,6));
+  $gbs     -> Add($label,      Wx::GBPosition->new(1,7));
+  $gbs     -> Add($this->{dr}, Wx::GBPosition->new(1,8));
 
   $this->{cv}   -> SetValidator( Wx::Perl::TextValidator->new( qr([0-9.\-]) ) );
   $this->{kmin} -> SetValidator( Wx::Perl::TextValidator->new( qr([0-9.]) ) );
@@ -301,6 +315,10 @@ sub new {
   $this->mouseover("rmin", "The lower bound in R-space for the fit and the backwards Fourier transform.");
   $this->mouseover("rmax", "The upper bound in R-space for the fit and the backwards Fourier transform.");
   $this->mouseover("dr",   "The width of the window sill in R-space for the backwards Fourier transform.");
+  $this->mouseover("kmin_pluck", "Pluck a value for kmin from the plot.");
+  $this->mouseover("kmax_pluck", "Pluck a value for kmax from the plot.");
+  $this->mouseover("rmin_pluck", "Pluck a value for Rmin from the plot.");
+  $this->mouseover("rmax_pluck", "Pluck a value for Rmax from the plot.");
 
   foreach my $x (qw(kmin kmax dk rmin rmax dr)) {
     EVT_TEXT_ENTER($this, $this->{$x},
@@ -309,6 +327,8 @@ sub new {
 		     my $text = sprintf("The number of independent points in this data set is %.2f", $this->{data}->nidp);
 		     $this->status($text);
 		   });
+    next if ($x =~ m{d[kr]});
+    EVT_BUTTON($this, $this->{$x.'_pluck'}, sub{Pluck(@_, $x)});
   };
 
   $ftboxsizer -> Add($gbs, 0, wxALL, 5);
@@ -316,25 +336,26 @@ sub new {
   my $windowsbox  = Wx::BoxSizer->new( wxHORIZONTAL );
   $ftboxsizer -> Add($windowsbox, 0, wxALIGN_LEFT|wxALL, 0);
 
-  $label     = Wx::StaticText->new($leftpane, -1, "FT window");
+  $label     = Wx::StaticText->new($leftpane, -1, "k window");
   $this->{kwindow} = Wx::Choice  ->new($leftpane, -1, , wxDefaultPosition, wxDefaultSize, $windows);
   $windowsbox -> Add($label, 0, wxALL, 5);
   $windowsbox -> Add($this->{kwindow}, 0, wxALL, 2);
   $this->{kwindow}->SetSelection(firstidx {$_ eq $demeter->co->default("fft", "kwindow")} @$windows);
 
-  $this->mouseover("kwindow", "The functional form of the window used for both forwards and backwards Fourier transforms.");
+  $label     = Wx::StaticText->new($leftpane, -1, "R window");
+  $this->{rwindow} = Wx::Choice  ->new($leftpane, -1, , wxDefaultPosition, wxDefaultSize, $windows);
+  $windowsbox -> Add($label, 0, wxALL, 5);
+  $windowsbox -> Add($this->{rwindow}, 0, wxALL, 2);
+  $this->{rwindow}->SetSelection(firstidx {$_ eq $demeter->co->default("bft", "rwindow")} @$windows);
 
+  $this->mouseover("kwindow", "The functional form of the window used for the forward Fourier transform.");
+  $this->mouseover("rwindow", "The functional form of the window used for the backward Fourier transform.");
 
-#   $label     = Wx::StaticText->new($leftpane, -1, "R window");
-#   $this->{rwindow} = Wx::Choice  ->new($leftpane, -1, , wxDefaultPosition, wxDefaultSize, $windows);
-#   $windowsbox -> Add($label, 0, wxALL, 5);
-#   $windowsbox -> Add($this->{rwindow}, 0, wxALL, 2);
-#   $this->{rwindow}->SetSelection(firstidx {$_ eq $demeter->co->default("bft", "rwindow")} @$windows);
 
   ## -------- k-weights
   my $kwbox      = Wx::StaticBox->new($leftpane, -1, 'Fitting k weights ', wxDefaultPosition, wxDefaultSize);
   my $kwboxsizer = Wx::StaticBoxSizer->new( $kwbox, wxHORIZONTAL );
-  $left         -> Add($kwboxsizer, 0, wxALL|wxGROW|wxALIGN_CENTER_HORIZONTAL, 5);
+  $left         -> Add($kwboxsizer, 0, wxALL, 5);
 
   $this->{k1}   = Wx::CheckBox->new($leftpane, -1, "1",     wxDefaultPosition, wxDefaultSize);
   $this->{k2}   = Wx::CheckBox->new($leftpane, -1, "2",     wxDefaultPosition, wxDefaultSize);
@@ -367,7 +388,7 @@ sub new {
 
   ## --------- toggles
   my $togglebox  = Wx::BoxSizer->new( wxHORIZONTAL );
-  $otherboxsizer -> Add($togglebox, 0, wxALIGN_CENTER_HORIZONTAL|wxALL, 0);
+  $otherboxsizer -> Add($togglebox, 0, wxALL, 0);
   $this->{include}    = Wx::CheckBox->new($leftpane, -1, "Include in fit", wxDefaultPosition, wxDefaultSize);
   $this->{plot_after} = Wx::CheckBox->new($leftpane, -1, "Plot after fit", wxDefaultPosition, wxDefaultSize);
   $this->{fit_bkg}    = Wx::CheckBox->new($leftpane, -1, "Fit background", wxDefaultPosition, wxDefaultSize);
@@ -384,7 +405,7 @@ sub new {
 
   ## -------- epsilon and phase correction
   my $extrabox    = Wx::BoxSizer->new( wxHORIZONTAL );
-  $otherboxsizer -> Add($extrabox, 0, wxALL|wxGROW|wxALIGN_CENTER_HORIZONTAL, 0);
+  $otherboxsizer -> Add($extrabox, 0, wxALL, 0);
 
   $extrabox -> Add(Wx::StaticText->new($leftpane, -1, "$EPSILON(k)"), 0, wxALL, 5);
   $this->{epsilon} = Wx::TextCtrl->new($leftpane, -1, 0, wxDefaultPosition, [50,-1], wxTE_PROCESS_ENTER);
@@ -436,6 +457,8 @@ sub new {
   $right -> Add($pathbuttons, 0, wxGROW|wxALL, 5);
 
   $this->{pathlist}->SetDropTarget( Demeter::UI::Artemis::Data::DropTarget->new( $this, $this->{pathlist} ) );
+  my @kids = $this->{pathlist}->GetChildren;
+  EVT_LEFT_DOWN($kids[0], sub{OnDrag(@_,$this->{pathlist})});
 
   $rightpane -> SetSizerAndFit($right);
 
@@ -452,6 +475,25 @@ sub mouseover {
   EVT_ENTER_WINDOW($self->{$widget}, sub{$self->{statusbar}->PushStatusText($text); $_[1]->Skip});
   EVT_LEAVE_WINDOW($self->{$widget}, sub{$self->{statusbar}->PopStatusText if ($self->{statusbar}->GetStatusText eq $text); $_[1]->Skip});
 };
+
+sub OnDrag {
+  my ($checkbox, $event, $list) = @_;
+  if ($event->ControlDown) {
+    my $which = $checkbox->HitTest($event->GetPosition);
+    my $pathpage = $list->GetPage($which);
+    my $path = $pathpage->{path};
+    $path->_update_from_ScatteringPath;
+    my $yaml = $path->serialization;
+    my $source = Wx::DropSource->new( $list );
+    my $dragdata = Demeter::UI::Artemis::DND::PathDrag->new(\$yaml);
+    $source->SetData( $dragdata );
+    $source->DoDragDrop(1);
+    $event->Skip(0);
+  } else {
+    $event->Skip(1);
+  };
+};
+
 
 sub initial_page_panel {
   my ($self) = @_;
@@ -493,13 +535,6 @@ sub initial_page_panel {
 };
 
 
-sub on_close {
-  my ($self) = @_;
-  $self->Show(0);
-  $self->{PARENT}->{$self->{dnum}}->SetValue(0);
-  (my $label = $self->{PARENT}->{$self->{dnum}}->GetLabel) =~ s{Hide}{Show};;
-  $self->{PARENT}->{$self->{dnum}}->SetLabel($label);
-};
 
 sub OnUpButton {
   my ($self, $event) = @_;
@@ -540,6 +575,38 @@ sub OnMakeVPathButton {
   autosave();
   $self->status("Made a VPath from the marked groups");
 };
+
+sub Pluck {
+  my ($self, $event, $which) = @_;
+
+  my $on_screen = $Demeter::UI::Artemis::frames{Plot}->{last};
+  if (not $on_screen) {
+    $self->status("You haven't made a plot yet");
+    return;
+  };
+  if ($on_screen eq 'multiplot') {
+    $self->status("Cannot pluck a value from a multiplot.");
+    return;
+  };
+  if (($on_screen eq 'r') and ($which !~ m{rmin|rmax})) {
+    $self->status("Cannot pluck for $which from an R plot.");
+    return;
+  };
+  if (($on_screen ne 'r') and ($which =~ m{rmin|rmax})) {
+    $self->status("Cannot pluck for $which from a $on_screen plot.");
+    return;
+  };
+
+  my ($ok, $x, $y) = $::app->cursor($self);
+  $self->status("Failed to pluck a value for $which"), return if not $ok;
+  $on_screen = 'k' if ($on_screen eq 'q');
+  my $plucked = sprintf("%.3f", $x);
+  $self->{$which}->SetValue($plucked);
+  $self->fetch_parameters;
+  my $text = sprintf("Plucked %s for %s. The number of independent points in this data set is now %.2f",
+		     $plucked, $which, $self->{data}->nidp);
+  $self->status($text);
+}
 
 sub make_menubar {
   my ($self) = @_;
@@ -744,10 +811,8 @@ sub populate {
 
   #EVT_CHECKBOX($self, $self->{pcplot}, sub{$data->fft_pc($self->{pcplot}->GetValue)});
 
-  EVT_CHOICE($self, $self->{kwindow}, sub{$data->fft_kwindow($self->{kwindow}->GetStringSelection);
-					  $data->bft_rwindow($self->{kwindow}->GetStringSelection);
-					});
-  #EVT_CHOICE($self, $self->{rwindow}, sub{$data->bft_rwindow($self->{rwindow}->GetStringSelection)});
+  EVT_CHOICE($self, $self->{kwindow}, sub{$data->fft_kwindow($self->{kwindow}->GetStringSelection)});
+  EVT_CHOICE($self, $self->{rwindow}, sub{$data->bft_rwindow($self->{rwindow}->GetStringSelection)});
 
   return $self;
 }
@@ -767,7 +832,7 @@ sub fetch_parameters {
   $this->{data}->bft_rmax	    ($this->{rmax}      ->GetValue	    );
   $this->{data}->bft_dr		    ($this->{dr}        ->GetValue	    );
   $this->{data}->fft_kwindow	    ($this->{kwindow}   ->GetStringSelection);
-  $this->{data}->bft_rwindow	    ($this->{kwindow}   ->GetStringSelection);
+  $this->{data}->bft_rwindow	    ($this->{rwindow}   ->GetStringSelection);
   $this->{data}->fit_k1		    ($this->{k1}        ->GetValue	    );
   $this->{data}->fit_k2		    ($this->{k2}        ->GetValue	    );
   $this->{data}->fit_k3		    ($this->{k3}        ->GetValue	    );
@@ -814,7 +879,7 @@ sub plot {
   my ($self, $event, $how) = @_;
   $self->fetch_parameters;
   my $pf = $Demeter::UI::Artemis::frames{Plot};
-  $pf->fetch_parameters;
+  $pf->fetch_parameters('data');
   my $saveplot = $demeter->co->default(qw(plot plotwith));
 
   if ($pf->{fileout}->GetValue) {
@@ -857,6 +922,12 @@ sub plot {
   $self->status(sprintf("Plotted \"%s\" %s.",
 					    $self->{data}->name, $text));
   $Demeter::UI::Artemis::frames{Plot}->{indicators}->plot($self->{data});
+  $Demeter::UI::Artemis::frames{Plot}->{last} = ($how eq 'rmr')   ? 'r'
+                                              : ($how eq 'r123')  ? 'r'
+                                              : ($how eq 'k123')  ? 'k'
+                                              : ($how eq 'kqfit') ? 'k'
+					      :                     'multiplot';
+  $::app->heap_check;
 };
 
 sub OnMenuClick {
@@ -905,8 +976,14 @@ sub OnMenuClick {
       $datapage->{data}->chi_noise;
       $datapage->{kmax}->SetValue($datapage->{data}->recommended_kmax);
       $datapage->{data}->fft_kmax($datapage->{data}->recommended_kmax);
-      my $text = sprintf("The number of independent points in this data set is now %.2f", $datapage->{data}->nidp);
-      $datapage->status($text);
+      my $text;
+      if ($datapage->{data}->fft_kmax > 5) {
+	$text = sprintf("The number of independent points in this data set is now %.2f", $datapage->{data}->nidp);
+	$datapage->status($text);
+      } else {
+	$text = "Ifeffit returned an odd value for recommended k-weight.  You probably should reset it to a more reasonable value.";
+	$datapage->status($text, 'error');
+      };
       last SWITCH;
     };
     ($id == $DATA_EPSK) and do {
@@ -1183,6 +1260,11 @@ sub replace {
   $datapage->{titles}->SetValue(join("\n", @{ $data->titles }));
   $datapage->{name}->SetLabel($data->name);
   $datapage->{datasource}->SetValue($data->prjrecord);
+  foreach my $n (0 .. $datapage->{pathlist}->GetPageCount-1) {
+    my $page = $datapage->{pathlist}->GetPage($n);
+    my $pathobject = $datapage->{pathlist}->{LIST}->GetIndexedData($n)->{path};
+    $pathobject->data($data);
+  };
   $datapage->fetch_parameters;
   $datapage->Rename($data->name);
   Demeter::UI::Artemis::modified(1);
@@ -1722,6 +1804,8 @@ sub discard_data {
   ## that's not quite right!
 
   ## destroy the data object
+  $dataobject->clear_ifeffit_titles;
+  $dataobject->dispose("erase \@group ".$this->group);
   $dataobject->DEMOLISH;
 };
 
@@ -1740,7 +1824,7 @@ sub discard {
 
  SWITCH: {
     ($how eq 'this') and do {
-      my $path = $self->{pathlist}->GetPage->{path};
+      my $path = $self->{pathlist}->GetPage($sel)->{path};
       $self->{pathlist}->DeletePage($sel);
       $path->DEMOLISH;
       $text = "Discarded the path that was displayed.";
@@ -1906,7 +1990,7 @@ sub clone {
   $cloned->name($path->name . " (clone)");
 
   my $newpage = Demeter::UI::Artemis::Path->new($datapage->{pathlist}, $cloned, $datapage);
-  $datapage->{pathlist}->AddPage($newpage, $cloned->name, 1, 0, $datapage->{pathlist}->GetSelection);
+  $datapage->{pathlist}->AddPage($newpage, $cloned->name, 1, 0, $datapage->{pathlist}->GetSelection+1);
   $newpage->{pp_n}->SetValue($path->n);
   $newpage->include_label(0,$datapage->{pathlist}->GetSelection);
 
@@ -1947,7 +2031,7 @@ sub fourparam {
   $Demeter::UI::Artemis::frames{GDS}->put_gds($gds);
   $gds    = Demeter::GDS->new(gds=>'guess', name=>'ss',   mathexp=>0.003);
   $Demeter::UI::Artemis::frames{GDS}->put_gds($gds);
-  autosave();
+  $Demeter::UI::Artemis::frames{GDS}->reset_all;
   $datapage->status("Made a quick 4-parameter fit by defining amp, enot, delr, and ss.");
 };
 
@@ -1962,10 +2046,11 @@ sub quickfs {
   };
 
   my $busy = Wx::BusyCursor->new();
-  my ($abs, $scat, $distance, $edge) = ($dialog->{abs}->GetValue,
-					$dialog->{scat}->GetValue,
-					$dialog->{distance}->GetValue,
-					$dialog->{edge}->GetStringSelection,);
+  my ($abs, $scat, $distance, $edge, $make) = ($dialog->{abs}->GetValue,
+					       $dialog->{scat}->GetValue,
+					       $dialog->{distance}->GetValue,
+					       $dialog->{edge}->GetStringSelection,
+					       $dialog->{make}->GetValue,);
 
   if (lc($abs) !~ m{\A$element_regexp\z}) {
     $datapage->status("Absorber $abs is not a valid element symbol.");
@@ -1977,12 +2062,14 @@ sub quickfs {
   };
 
   my $firstshell = Demeter::FSPath->new();
-  $firstshell -> set(abs       => $abs,
+  $firstshell -> set(make_gds  => $make,
+		     edge      => $edge,
+		     abs       => $abs,
 		     scat      => $scat,
 		     distance  => $distance,
-		     edge      => $edge,
 		     data      => $datapage->{data},
 		    );
+  $firstshell->make_name;
   my $ws = File::Spec->catfile($Demeter::UI::Artemis::frames{main}->{project_folder}, 'feff', $firstshell->parent->group);
   $firstshell -> workspace($ws);
   $firstshell -> _update('bft');
@@ -2013,48 +2100,57 @@ sub empirical {
   my $file  = File::Spec->catfile($fd->GetDirectory, $fd->GetFilename);
   my $fpath = Demeter::FPath->new();
   my $is_ok = $fpath -> deserialize($file);
-  $datapage->status("\"$file\" isn't an empirical standard file."), return if not $is_ok;
+  $datapage->status("\"$file\" isn't an empirical standard file.", 'error'), return if not $is_ok;
   $fpath -> data($datapage->{data});
   $fpath -> _update('fft');
   $datapage->{pathlist}->DeletePage(0) if ($datapage->{pathlist}->GetPage(0) =~ m{Panel});
   my $page = Demeter::UI::Artemis::Path->new($datapage->{pathlist}, $fpath, $datapage);
   $datapage->{pathlist}->AddPage($page, $fpath->name, 1, 0);
   $page->include_label;
+  $datapage->status("Imported \"$file\" as an empirical standard.");
 };
 
 sub histogram_sentinal_rdf {
   my ($datapage) = @_;
-  if (not $datapage->{DISTRIBUTION}->timestep_count % 10) {
-    my $text = q{};
+  my $text = q{};
+  if ($datapage->{DISTRIBUTION}->computing_rdf) {
+    if (not $datapage->{DISTRIBUTION}->timestep_count % 10) {
 
-    ## single scattering histogram
-    $text = $datapage->{DISTRIBUTION}->timestep_count . " of " . $datapage->{DISTRIBUTION}->{nsteps} . " timesteps"
-      if ($datapage->{DISTRIBUTION}->type eq 'ss');
+      ## single scattering histogram
+      $text = sprintf "Processing step %d of %d timesteps", $datapage->{DISTRIBUTION}->timestep_count, $datapage->{DISTRIBUTION}->{nsteps}
+	if ($datapage->{DISTRIBUTION}->type eq 'ss');
 
-    ## nearly collinear histrogram
-    $text = sprintf("%d of %d timesteps (every %d-th step)",
-		    $datapage->{DISTRIBUTION}->timestep_count/$datapage->{DISTRIBUTION}->skip,
-		    ($#{$datapage->{DISTRIBUTION}->clusters}+1)/$datapage->{DISTRIBUTION}->skip,
-		    $datapage->{DISTRIBUTION}->skip )
-      if (($datapage->{DISTRIBUTION}->type eq 'ncl') or ($datapage->{DISTRIBUTION}->type eq 'thru'));
+      ## nearly collinear histrogram
+      $text = sprintf("Processing step %d of %d timesteps (every %d-th step)",
+		      $datapage->{DISTRIBUTION}->timestep_count/$datapage->{DISTRIBUTION}->skip,
+		      ($#{$datapage->{DISTRIBUTION}->clusters}+1)/$datapage->{DISTRIBUTION}->skip,
+		      $datapage->{DISTRIBUTION}->skip )
+	if (($datapage->{DISTRIBUTION}->type eq 'ncl') or ($datapage->{DISTRIBUTION}->type eq 'thru'));
 
-    $datapage->status($text, 'wait|nobuffer');
+    };
+  } elsif ($datapage->{DISTRIBUTION}->reading_file) {
+    $text = "Reading line $. from ".$datapage->{DISTRIBUTION}->file;
   };
+  $datapage->status($text, 'wait|nobuffer') if $text;
   $::app->Yield();
 };
 
-my $dlcount = 0;
 sub histogram_sentinal_fpath {
   my ($datapage) = @_;
-  ++$dlcount;
-  if (not $dlcount % 5) {
-    my $text = "Making FPath from bins: " . $dlcount . " of " . $datapage->{DISTRIBUTION}->{nbins} . " bins processed";
+  my $count = $datapage->{DISTRIBUTION}->fpath_count;
+  if (not $count % 5) {
+    my $text = sprintf("Making FPath: %d of %d bins processed", $count, $datapage->{DISTRIBUTION}->{nbins});
     $datapage->status($text, 'wait|nobuffer');
   };
   $::app->Yield();
 };
 
 
+## the data for these drop targets comes from Demeter::UI::Atoms::SS.
+## there is one drag source for each kind of drop-able path-like
+## object.  the data consists of an array reference containing the
+## attribute values needed to create an SSPath or a Feff::Distribution
+## object
 
 package Demeter::UI::Artemis::Data::DropTarget;
 
@@ -2064,6 +2160,7 @@ use Demeter::UI::Artemis::DND::PathDrag;
 use Demeter::UI::Artemis::Path;
 use Demeter::UI::Wx::SpecialCharacters qw(:all);
 use Demeter::Feff::Distributions;
+use File::Basename;
 
 use Scalar::Util qw(looks_like_number);
 
@@ -2090,8 +2187,9 @@ sub OnData {
   my $first = ($book->GetPage(0) =~ m{Panel});
   $book->DeletePage(0) if $first;
   my $spref = $this->{DATA}->{Data};
-  my $is_sspath = ($spref->[0] eq 'SSPath') ? 1 : 0;
-  if ($spref->[0] eq 'SSPath') {
+  if (ref($spref) eq 'SCALAR') {
+    $this->make_path($spref);
+  } elsif ($spref->[0] eq 'SSPath') {
     my $feff = $demeter->mo->fetch("Feff", $spref->[1]);
     my $name = $spref->[2];
     my $reff = $spref->[3];
@@ -2141,7 +2239,56 @@ sub OnData {
     };
   };
 
+  $::app->heap_check;
   return $def;
+};
+
+sub make_path {
+  my ($this, $spref) = @_;
+  my $rhash = YAML::Tiny::Load($$spref);
+  delete $rhash->{group};
+  my $pathlike;
+  if (exists $rhash->{ipot}) {          # this is an SSPath
+    my $feff = Demeter -> mo -> fetch('Feff', $rhash->{parentgroup});
+    delete $rhash->{$_} foreach qw(Type weight string pathtype plottable);
+    $pathlike = Demeter::SSPath->new(parent=>$feff);
+    $pathlike -> set();
+    $pathlike -> sp($pathlike);
+    #print $pathlike, "  ", $pathlike->sp, $/;
+  } elsif (exists $rhash->{nnnntext}) { # this is an FPath
+    $pathlike = Demeter::FPath->new();
+    $pathlike -> set(%$rhash);
+    $pathlike -> sp($pathlike);
+    $pathlike -> parentgroup($pathlike->group);
+    $pathlike -> parent($pathlike);
+    $pathlike -> workspace($pathlike->stash_folder);
+  } elsif (exists $rhash->{absorber}) { # this is an FSPath
+    my $feff = Demeter -> mo -> fetch('Feff', $rhash->{parentgroup});
+    $pathlike = Demeter::FSPath->new(make_gds=>0);
+    delete $rhash->{$_} foreach qw(workspace Type weight string pathtype plottable gds make_gds data);
+    $pathlike -> set(%$rhash);
+    my $where = Cwd::realpath(File::Spec->catfile($rhash->{folder}, '..', '..', 'feff', basename($feff->workspace)));
+    $pathlike -> set(workspace=>$where, folder=>$where, parent=>Demeter -> mo -> fetch('Feff', $rhash->{parentgroup}));
+    my $sp = Demeter -> mo -> fetch('ScatteringPath', $pathlike->spgroup);
+    $pathlike -> sp($sp);
+    $pathlike -> feff_done(1);
+  } else {
+    $pathlike = Demeter::Path->new(%$rhash);
+    my $sp = Demeter -> mo -> fetch('ScatteringPath', $pathlike->spgroup);
+    $pathlike -> sp($sp);
+    #$pathlike -> folder(q{});
+    #print $pathlike, "  ", $pathlike->sp, $/;
+  };
+
+  $pathlike->data($this->{PARENT}->{data});
+  foreach my $att (qw(delr e0 ei s02 sigma2 third fourth dphase)) {
+    $pathlike->$att($rhash->{$att});
+  };
+  my $book  = $this->{BOOK};
+  my $page = Demeter::UI::Artemis::Path->new($book, $pathlike, $this->{PARENT});
+  my $i = $book->AddPage($page, $pathlike->name, 1, 0);
+  $page->include_label(q{});
+
 };
 
 
@@ -2150,19 +2297,37 @@ sub make_HistogramSS {
   my $book  = $this->{BOOK};
 
   my $feff = $demeter->mo->fetch("Feff", $spref->[2]);
-  my $ipot = $spref->[7];
   my $do_rattle = $spref->[8];
+  my $histogram;
+  my $read_file = 1;
 
-  my $histogram = Demeter::Feff::Distributions->new(type=>'ss');
-  $histogram -> set(rmin=>$spref->[4], rmax=>$spref->[5], bin=>$spref->[6], feff=>$feff, ipot=>$ipot, );
+  if ((not $spref->[9]) or ($feff->mo->fetch("Distributions", $spref->[9])->type ne 'ss')) {
+    $histogram = Demeter::Feff::Distributions->new(type=>'ss');
+    $histogram -> set(rmin=>$spref->[4], rmax=>$spref->[5], bin=>$spref->[6], feff=>$feff, ipot=>$spref->[7],);
+  } else {
+    $histogram = $feff->mo->fetch("Distributions", $spref->[9]);
+    $read_file = 0 if ($histogram->file eq $spref->[3]);
+    $histogram->rmin($spref->[4]) if ($histogram->rmin != $spref->[4]);
+    $histogram->rmax($spref->[5]) if ($histogram->rmax != $spref->[5]);
+    $histogram->bin ($spref->[6]) if ($histogram->bin  != $spref->[6]);
+    $histogram->ipot($spref->[7]) if ($histogram->ipot != $spref->[7]);
+  };
   $this->{PARENT}->{DISTRIBUTION} = $histogram;
+  ## this pushes this Distribution object back into the Atopms/Feff frame so it can be reused
+  $Demeter::UI::Artemis::frames{$spref->[10]}->{SS}->{DISTRIBUTION} = $histogram;
 
-  $histogram->sentinal(sub{$this->{PARENT}->histogram_sentinal_rdf});
   my $busy = Wx::BusyCursor->new();
   my $start = DateTime->now( time_zone => 'floating' );
   $histogram->backend($spref->[1]);
-  $histogram->file($spref->[3]);
-  $histogram->sentinal(sub{1});
+  $this->{PARENT}->status("Reading MD time sequence file, please be patient...", 'wait');
+  $histogram->sentinal(sub{$this->{PARENT}->histogram_sentinal_rdf});
+  $histogram->file($spref->[3]) if $read_file;
+  if ($#{$histogram->ssrdf} == -1) {
+    $this->{PARENT}->status("Your choice of ipot did not yield any scatterers in the R range selected", 'error');
+    undef $busy;
+    return;
+  };
+  #$histogram->sentinal(sub{1});
   my $finish = DateTime->now( time_zone => 'floating' );
   my $dur = $finish->subtract_datetime($start);
   my $finishtext = sprintf("Making histogram from %d timesteps (%d minutes, %d seconds)", $histogram->nsteps, $dur->minutes, $dur->seconds);
@@ -2175,10 +2340,9 @@ sub make_HistogramSS {
   $start = DateTime->now( time_zone => 'floating' );
   $histogram->rebin;
   #$histogram->set(sp=>$sp);
-  $dlcount = 0;
-  $histogram->feff->sentinal(sub{$this->{PARENT}->histogram_sentinal_fpath});
+  $histogram->sentinal(sub{$this->{PARENT}->histogram_sentinal_fpath});
   my $composite = $histogram->fpath;
-  $histogram->feff->sentinal(sub{1});
+  $histogram->sentinal(sub{1});
   $finish = DateTime->now( time_zone => 'floating' );
   $dur = $finish->subtract_datetime($start);
   $finishtext = sprintf("Rebined and made FPath in %d minutes, %d seconds", $dur->minutes, $dur->seconds);
@@ -2194,10 +2358,9 @@ sub make_HistogramSS {
     $histogram->rattle(1);
     $this->{PARENT}->status("Rebinning histogram into rattle path with $spref->[6] $ARING bins", 'wait');
     $start = DateTime->now( time_zone => 'floating' );
-    $dlcount = 0;
-    $histogram->feff->sentinal(sub{$this->{PARENT}->histogram_sentinal_fpath});
+    $histogram->sentinal(sub{$this->{PARENT}->histogram_sentinal_fpath});
     my $rattle = $histogram->fpath;
-    $histogram->feff->sentinal(sub{1});
+    $histogram->sentinal(sub{1});
     $finish = DateTime->now( time_zone => 'floating' );
     $dur = $finish->subtract_datetime($start);
     $finishtext = sprintf("Rebined and made FPath in %d minutes, %d seconds", $dur->minutes, $dur->seconds);
@@ -2211,6 +2374,7 @@ sub make_HistogramSS {
   $Demeter::UI::Artemis::frames{Plot}->plot(0, 'r');
   #    $histo_dialog->{DISTRIBUTION} = q{};
   $histogram->DEMOLISH;
+  Demeter::UI::Artemis::modified(1);
   undef $busy;
 };
 
@@ -2222,14 +2386,15 @@ sub make_HistogramNCL {
   my $histogram = Demeter::Feff::Distributions->new(type=>'ncl');
   $histogram -> set(r1=>$spref->[4], r2=>$spref->[5], r3=>$spref->[6], r4=>$spref->[7],
 		    rbin => $spref->[8], betabin => $spref->[9],
-		    feff=>$feff, ipot => $spref->[10], ipot2 => $spref->[11],
-		    skip=>20, update_bins=>1);
+		    feff => $feff, ipot => $spref->[10], ipot2 => $spref->[11],
+		    skip => 20, update_bins => 1);
   $this->{PARENT}->{DISTRIBUTION} = $histogram;
 
   $histogram->sentinal(sub{$this->{PARENT}->histogram_sentinal_rdf});
   my $busy = Wx::BusyCursor->new();
   my $start = DateTime->now( time_zone => 'floating' );
   $histogram->backend($spref->[1]);
+  $this->{PARENT}->status("Reading MD time sequence file, please be patient...", 'wait');
   $histogram->file($spref->[3]);
   my $finish = DateTime->now( time_zone => 'floating' );
   my $dur = $finish->subtract_datetime($start);
@@ -2242,7 +2407,6 @@ sub make_HistogramNCL {
   $this->{PARENT}->status("Rebinning histogram into $spref->[8] $ARING x $spref->[9] degree bins");
   $start = DateTime->now( time_zone => 'floating' );
   $histogram->rebin;
-  $dlcount = 0;
   $histogram->sentinal(sub{$this->{PARENT}->histogram_sentinal_fpath});
   my $composite = $histogram->fpath;
   $finish = DateTime->now( time_zone => 'floating' );
@@ -2278,19 +2442,19 @@ sub make_HistogramThru {
   my $busy = Wx::BusyCursor->new();
   my $start = DateTime->now( time_zone => 'floating' );
   $histogram->backend($spref->[1]);
+  $this->{PARENT}->status("Reading MD time sequence file, please be patient...", 'wait');
   $histogram->file($spref->[3]);
   my $finish = DateTime->now( time_zone => 'floating' );
   my $dur = $finish->subtract_datetime($start);
   my $finishtext = sprintf("Making histogram from %d timesteps (%d minutes, %d seconds)",
 			   $histogram->nsteps/$histogram->skip, $dur->minutes, $dur->seconds);
   $this->{PARENT}->status($finishtext);
-  undef $busy;
+  # undef $busy;
 
-  $busy = Wx::BusyCursor->new();
+  # $busy = Wx::BusyCursor->new();
   $this->{PARENT}->status("Rebinning histogram into $spref->[8] $ARING x $spref->[9] degree bins");
   $start = DateTime->now( time_zone => 'floating' );
   $histogram->rebin;
-  $dlcount = 0;
   $histogram->sentinal(sub{$this->{PARENT}->histogram_sentinal_fpath});
   my $composite = $histogram->fpath;
   $finish = DateTime->now( time_zone => 'floating' );
@@ -2298,6 +2462,7 @@ sub make_HistogramThru {
   $finishtext = sprintf("Rebined and made FPath in %d minutes, %d seconds for histogram through absorber",
 			$dur->minutes, $dur->seconds);
   $this->{PARENT}->status($finishtext);
+  $histogram->sentinal(sub{1});
 
   $composite->data($this->{PARENT}->{data});
   my $page = Demeter::UI::Artemis::Path->new($book, $composite, $this->{PARENT});
@@ -2321,7 +2486,7 @@ Demeter::UI::Artemis::Data - Data group interface for Artemis
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.4.
+This documentation refers to Demeter version 0.5.
 
 =head1 SYNOPSIS
 

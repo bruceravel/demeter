@@ -22,6 +22,7 @@ use Chemistry::Elements qw(get_symbol);
 use Chemistry::Formula qw(parse_formula);
 use List::Util qw(min);
 use Xray::Absorption;
+use Xray::FluorescenceEXAFS;
 
 sub sa {
   my ($self, $how, @array) = @_;
@@ -393,7 +394,7 @@ Demeter::Data::SelfAbsorption - Self-absorption corrections for mu(E) data
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.4.
+This documentation refers to Demeter version 0.5.
 
 =head1 DESCRIPTION
 

@@ -78,7 +78,7 @@
 
 <h1 id="VERSION">VERSION <a href="#TOP" class="toplink"><img alt="^" src="../../up.gif" /></a></h1>
 
-<p>This documentation refers to Demeter version 0.4.</p>
+<p>This documentation refers to Demeter version 0.5.</p>
 
 <h1 id="SYNOPSIS">SYNOPSIS <a href="#TOP" class="toplink"><img alt="^" src="../../up.gif" /></a></h1>
 
@@ -180,6 +180,45 @@ See <a href="../Feff.pm.html">Demeter::Feff</a>.</p>
 as some other information.</p>
 
 <h2 id="Configure_tab">Configure tab</h2>
+
+<p><a href="#" onclick="toggleCode('method_Configure');return false;">[Source]</a></p>
+                                        <div class="method-source-code" id="method_Configure">
+                                        <pre>
+
+sub Configure {
+  my ($this, $event, $app, $pl) = @_;
+  my $plugin = (split(/::/, $pl))[-1];
+  my $obj = $pl->new;
+  my $inifile = $obj->conffile;
+  if (not $inifile) {
+    $::app->{main}->status("The $plugin plugin does not have any configuration parameters.");
+    return;
+  };
+  #my $cfg = new Config::IniFiles( -file => $inifile );
+  my $config = Demeter::UI::Athena::PluginConfig->new($this, $plugin, [lc($plugin)]);
+  my $response = $config->ShowModal;
+  if ($response eq wxID_CLOSE) {
+    $::app->{main}->status("Canceled configuration of $plugin plugin");
+    return;
+  };
+
+  # my @sections = $cfg->Sections;
+  # foreach my $s (@sections) {
+  #   foreach my $p ($cfg->Parameters($s)) {
+  #     #printf "%s:%s = %s\n", $s, $p, $config->{"$s.$p"}->GetValue;
+  #     my $temp = $pl->new;
+  #     if ($temp->lower_case) {
+  # 	$cfg->setval($s, $p, lc($config->{"$s.$p"}->GetValue));
+  #     } else {
+  # 	$cfg->setval($s, $p, $config->{"$s.$p"}->GetValue);
+  #     };
+  #     undef $temp;
+  #   };
+  # };
+  # $cfg->WriteConfig($inifile);
+  # $::app->{main}->status("Wrote $plugin configuration file: $inifile");
+};
+</pre></div>
 
 <p>You can customize the behavior of many parts of Atoms, Feff, or the
 path finder using this tab.</p>

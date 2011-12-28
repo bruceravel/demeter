@@ -83,7 +83,7 @@ sub new {
   push @{$this->{controls}}, $this->{same};
   push @{$this->{controls}}, $this->{replot};
   EVT_CHECKBOX($this, $this->{ln}, sub{OnLnClick(@_, $this)} );
-  EVT_BUTTON($this, $this->{replot}, sub{  $this->display_plot });
+  EVT_BUTTON($this, $this->{replot}, sub{  $this->display_plot($parent) });
 
   $this->{ln}   -> SetValue(1);
   $this->{same} -> SetValue(1);
@@ -116,25 +116,28 @@ sub EnableReference {
 sub OnLnClick {
   my ($nb, $event, $this) = @_;
   $this->{reference} -> ln($this->{ln}->GetValue);
-  $this->display_plot;
+  $this->display_plot($nb);
 };
 sub OnNumerClick {
   my ($nb, $event, $this, $i) = @_;
   $this->{numerator}   = $i;
   $this->{reference}  -> numerator('$'.$i);
-  $this->display_plot;
+  $this->display_plot($nb);
 };
 sub OnDenomClick {
   my ($nb, $event, $this, $i) = @_;
   $this->{denominator} = $i;
   $this->{reference}  -> denominator('$'.$i);
-  $this->display_plot;
+  $this->display_plot($nb);
 };
 
 sub display_plot {
-  my ($this) = @_;
+  my ($this, $parent) = @_;
+  my $kev = $parent->GetParent->GetParent->{units}->GetSelection;
+  $this->{reference}  -> set(datatype=>'xmu', update_columns=>1, is_col=>1, is_kev=>$kev);
   $this->{reference}  -> _update('normalize');
   $this->{reference}  -> po -> start_plot;
+  $this->{reference}  -> po -> set(e_mu=>1, e_markers=>0, e_bkg=>0, e_pre=>0, e_post=>0, e_norm=>0, e_der=>0, e_sec=>0, e_i0=>0, e_signal=>0, e_smooth=>0);
   $this->{reference}  -> plot('e');
 };
 

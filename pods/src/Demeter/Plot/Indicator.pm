@@ -60,7 +60,7 @@ sub plot {
   return if ( (lc($self->po->space) ne 'r') and (lc($self->space) eq 'r') );
 
   my $command = $self->template('plot', 'indicator');
-  #print $command;
+  ##print $command;
   $self->dispose($command, 'plotting');
 };
 
@@ -124,7 +124,7 @@ Demeter::Plot::Indicator - Vertical lines marking points on a plot
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.4.
+This documentation refers to Demeter version 0.5.
 
 =head1 SYNOPSIS
 

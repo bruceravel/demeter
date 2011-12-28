@@ -21,8 +21,11 @@ use warnings;
 use Cwd;
 
 use Wx qw( :everything );
-use Wx::Event qw(EVT_CLOSE EVT_BUTTON);
+use Wx::Event qw(EVT_CLOSE EVT_ICONIZE EVT_BUTTON);
 use base qw(Wx::Frame);
+
+use Demeter::UI::Artemis::Close;
+use Demeter::UI::Wx::Printing;
 
 sub new {
   my ($class, $parent) = @_;
@@ -30,11 +33,12 @@ sub new {
 				wxDefaultPosition, wxDefaultSize, wxDEFAULT_FRAME_STYLE);
   $this -> SetBackgroundColour( wxNullColour );
   EVT_CLOSE($this, \&on_close);
+  EVT_ICONIZE($this, \&on_close);
   #_doublewide($this);
 
   my $vbox = Wx::BoxSizer->new( wxVERTICAL );
 
-  $this->{journal} = Wx::TextCtrl->new($this, -1, q{}, wxDefaultPosition, wxDefaultSize,
+  $this->{journal} = Wx::TextCtrl->new($this, -1, q{}, wxDefaultPosition, [550,350],
 				       wxTE_MULTILINE|wxTE_RICH2|wxTE_WORDWRAP|wxTE_AUTO_URL);
   $this->{journal} -> SetFont( Wx::Font->new( 9, wxTELETYPE, wxNORMAL, wxNORMAL, 0, "" ) );
   $vbox -> Add($this->{journal}, 1, wxGROW|wxALL, 5);
@@ -44,20 +48,24 @@ sub new {
   $this->{save} = Wx::Button->new($this, wxID_SAVE, q{}, wxDefaultPosition, wxDefaultSize);
   $hbox -> Add($this->{save}, 1, wxGROW|wxLEFT|wxRIGHT|wxBOTTOM, 5);
   EVT_BUTTON($this, $this->{save}, \&on_save);
+
+  $this->{preview} = Wx::Button->new($this, wxID_PREVIEW, q{}, wxDefaultPosition, wxDefaultSize);
+  $hbox -> Add($this->{preview}, 1, wxGROW|wxLEFT|wxRIGHT|wxBOTTOM, 5);
+  EVT_BUTTON($this, $this->{preview}, sub{on_preview(@_, 'journal')});
+
+  $this->{print} = Wx::Button->new($this, wxID_PRINT, q{}, wxDefaultPosition, wxDefaultSize);
+  $hbox -> Add($this->{print}, 1, wxGROW|wxLEFT|wxRIGHT|wxBOTTOM, 5);
+  EVT_BUTTON($this, $this->{print}, sub{on_print(@_, 'journal')});
+
   $this->{close} = Wx::Button->new($this, wxID_CLOSE, q{}, wxDefaultPosition, wxDefaultSize);
   $hbox -> Add($this->{close}, 1, wxGROW|wxLEFT|wxRIGHT|wxBOTTOM, 5);
   EVT_BUTTON($this, $this->{close}, \&on_close);
   $vbox -> Add($hbox, 0, wxGROW|wxALL, 0);
 
-  $this->SetSizer($vbox);
+  $this->SetSizerAndFit($vbox);
   return $this;
 };
 
-sub on_close {
-  my ($self) = @_;
-  $self->Show(0);
-  $self->GetParent->{toolbar}->ToggleTool(4, 0);
-};
 
 sub _doublewide {
   my ($dialog) = @_;
@@ -100,7 +108,7 @@ Demeter::UI::Artemis::Journal - A fit journal interface for Artemis
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.4.
+This documentation refers to Demeter version 0.5.
 
 =head1 SYNOPSIS
 

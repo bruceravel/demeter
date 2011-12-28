@@ -146,6 +146,7 @@ sub plot {
   $data->po->start_plot;
   $_->plot('e') foreach ($data, $this->{rebinned});
   $::app->{main}->status("Plotted ".$data->name." with its rebinned data");
+  $::app->heap_check(0);
 };
 
 sub make {
@@ -170,6 +171,7 @@ sub make {
   };
   $app->{main}->status("Rebinned " . $app->current_data->name." and made a new data group");
   $app->modified(1);
+  $app->heap_check(0);
 };
 sub marked {
   my ($this, $app) = @_;
@@ -211,7 +213,7 @@ Demeter::UI::Athena::Rebin - A rebinning for continuous scan data for Athena
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.4.
+This documentation refers to Demeter version 0.5.
 
 =head1 SYNOPSIS
 

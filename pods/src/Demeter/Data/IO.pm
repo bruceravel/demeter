@@ -58,6 +58,7 @@ sub save {
     };
     (lc($what) eq 'r') and do {
       $self->_update("bft");
+      $self->dispose($self->template('process', 'dphase'));
       $string = $self->_save_chi_command('r', $filename);
       last WHAT;
     };
@@ -128,6 +129,16 @@ sub _save_fit_command {
   my ($self, $filename, $how) = @_;
   $how ||= q{};
   croak("No filename specified for save_fit") unless $filename;
+  ($how = "k1")   if ($how =~ m{chi(?:|k1?)});
+  ($how = "k2")   if ($how eq 'chik2');
+  ($how = "k3")   if ($how eq 'chik3');
+  ($how = "rmag") if ($how eq 'chir_mag');
+  ($how = "rre")  if ($how eq 'chir_re');
+  ($how = "rim")  if ($how eq 'chir_im');
+  ($how = "qmag") if ($how eq 'chiq_mag');
+  ($how = "qre")  if ($how eq 'chiq_re');
+  ($how = "qim")  if ($how eq 'chiq_im');
+
   my $template = ($how eq 'k1')   ? 'save_fit_kw'
                : ($how eq 'k2')   ? 'save_fit_kw'
                : ($how eq 'k3')   ? 'save_fit_kw'
@@ -149,7 +160,7 @@ sub _save_fit_command {
               : ($how eq 'k2')      ? 2
               : ($how eq 'k3')      ? 3
               : ($how eq 'k')       ? 0
-	      : ($how =~ m{\A[rq]}) ? $self->po->kweight
+	      : ($how =~ m{\A[rq]}) ? $self->data->get_kweight
 	      :                       undef;
 
   if ($how =~ m{\A[rq]}) {
@@ -199,6 +210,15 @@ sub save_many {
 sub _save_many_command {
   my ($self, $outfile, $which, @groups) = @_;
   ($which = "chik1") if ($which eq 'chik');
+  ($which = "chik1") if ($which eq 'k1');
+  ($which = "chik2") if ($which eq 'k2');
+  ($which = "chik3") if ($which eq 'k3');
+  ($which = "chir_mag") if ($which eq 'rmag');
+  ($which = "chir_re")  if ($which eq 'rre');
+  ($which = "chir_im")  if ($which eq 'rim');
+  ($which = "chiq_mag") if ($which eq 'qmag');
+  ($which = "chiq_re")  if ($which eq 'qre');
+  ($which = "chiq_im")  if ($which eq 'qim');
   my $e_regexp = Regexp::Assemble->new()->add(qw(xmu norm der nder sec nsec))->re;
   my $n_regexp = Regexp::Assemble->new()->add(qw(norm nder nsec))->re;
   my $k_regexp = Regexp::Assemble->new()->add(qw(chi chik chik2 chik3))->re;
@@ -206,6 +226,7 @@ sub _save_many_command {
                       : ($which =~ m{\Achir})        ? ('bft', 'r')
                       : ($which =~ m{\Achiq})        ? ('all', 'q')
                       : ($which =~ m{\Achi})         ? ('fft', 'k')
+                      : ($which =~ m{\Adph})         ? ('bft', 'r')
 	              :                                ('data', 'energy');
   $self->mo->standard($self);
   my $command = q{};
@@ -218,7 +239,11 @@ sub _save_many_command {
   };
   foreach my $g (@groups) {
     next if ((ref($g) =~ m{VPath}) and ($level !~ m{(?:fft|bft|all)}));
+    if (ref($g) =~ m{ScatteringPath}) {
+      croak "save_many can take Data, Path, and Path-like objects as its argument, but cannot take ScatteringPath objects";
+    };
     $g->_update($level);
+    $g->dispose($self->template('process', 'dphase')) if ($which eq 'dph');
     if ($which =~ m{\Achik(\d*)\z})  { # make k-weighted chi(k) array
       $command .= $g->template("process", "chikn");
     } elsif ($which =~ m{$e_regexp}) { # interpolate energy data onto $self's grid
@@ -284,11 +309,12 @@ sub title_glob {
              ($space eq 'f') ? " fit"     :
 	                       q{}        ;
 
-  my @titles = split(/\n/, $self->data->template("report", "xdi_report"));
+  my @titles = split(/\n/, $data->template("report", "xdi_report"));
   ($space eq 'f') ? push @titles, split(/\n/, $data->fit_parameter_report) : push @titles, split(/\n/, $data->data_parameter_report);
   my $i = 0;
   $self->dispose("erase \$$globname\*");
-  foreach my $line ("XDI/1.0 Demeter/$Demeter::VERSION", @titles, "///", @{$self->data->xdi_comments}) {
+  my $apps = join(" ", "XDI/1.0", $self->xdi_applications, "Demeter/$Demeter::VERSION");
+  foreach my $line ($apps, @titles, "///", @{$self->data->xdi_comments}) {
     ++$i;
     my $t = sprintf("%s%2.2d", $globname, $i);
     Ifeffit::put_string($t, $line);
@@ -339,7 +365,7 @@ Demeter::Data::IO - Data Input/Output methods for Demeter
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.4.
+This documentation refers to Demeter version 0.5.
 
 =head1 SYNOPSIS
 
@@ -412,14 +438,17 @@ another way.
 
     $dataobject -> save('fit', 'my.fit', $type);
 
-If type is left off, the default, un-k-weighted fit file is written.
-The other options are:
+If C<$type> is left off, the default, un-k-weighted fit file is
+written.  The other options for C<$type> are:
 
     k1 k2 k3 rmag rre rim qmag qre qim
 
 The first three export k-weighted data.  The next three are for the
 magnitude, real, or imaginary parts of chi(R).  The final three are
 for the magnitude, real, or imaginary parts of chi(q).
+
+This will also accept the the k-, R-, and q-space arguments in the
+format accepted the C<save_many> method.
 
 =item C<bkgsub>
 
@@ -445,6 +474,9 @@ data columns.  The second argument is one of:
 These are followed by the list of data groups to write to the file.
 The refering object will be added to the front of the list if it is
 not already included in the list.
+
+The arguments used with the C<save> method when saving a fit are also
+accepted for k-, R-, and q-space.
 
 =item C<read_fit>
 

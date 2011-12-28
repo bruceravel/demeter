@@ -24,7 +24,7 @@ use MooseX::AttributeHelpers;
 use MooseX::Aliases;
 #use MooseX::StrictConstructor;
 use Moose::Util::TypeConstraints;
-use Demeter::StrTypes qw( AtomsEdge FeffCard Empty ElementSymbol);
+use Demeter::StrTypes qw( AtomsEdge FeffCard Empty ElementSymbol FileName);
 use Demeter::NumTypes qw( Natural NonNeg PosInt );
 with 'Demeter::Feff::Histogram';
 with 'Demeter::Feff::Paths';
@@ -36,6 +36,7 @@ if ($Demeter::mode->ui eq 'screen') {
 
 use Capture::Tiny qw(capture);
 use Carp;
+use Chemistry::Elements qw(get_symbol);
 use Compress::Zlib;
 use Cwd;
 use File::Basename;
@@ -63,7 +64,7 @@ my $shortest = 100000000;
 
 
 has 'source'      => (is => 'rw', isa => 'Str', default => 'demeter/feff6');
-has 'file'        => (is => 'rw', isa => 'Str',  default => q{},
+has 'file'        => (is => 'rw', isa => FileName,  default => q{},
 		      trigger => sub{my ($self, $new) = @_;
 				     if ($new) {
 				       $self->rdinp;
@@ -457,6 +458,7 @@ sub potph {
       $text =~ s{$null}{}g;	# frakkin' feff
       $self->miscdat($text);
       $self->vint($1) if ($text =~ m{Vint\s*=\s*($NUMBER)});
+      close $fh;
       unlink $miscdat if not $self->save;
     };
   };
@@ -913,9 +915,13 @@ sub run_feff {
   my ($self) = @_;
   my $cwd = cwd();
   chdir $self->workspace;
+  if ($self->is_windows) {
+    my $message = Demeter->check_exe('feff');
+    die $message if ($message);
+  };
   my $exe = $self->co->default("feff", "executable");
   unless ($self->is_windows) { # avoid problems if feff->feff_executable isn't
-    my $which = `which $exe`;
+    my $which = `which "$exe"`;
     chomp $which;
     if (not -x $which) {
       croak("Could not find the feff6 executable");
@@ -933,7 +939,7 @@ sub run_feff {
 
   ## -------- the following is a more robust, CPAN-reliant way of
   ##          running Feff
-  my ($stdout, $stderr) = capture { system $exe };
+  my ($stdout, $stderr) = capture { system "\"$exe\"" };
   $self->report($stdout);
   $self->report($stderr, 1);
 
@@ -1018,7 +1024,7 @@ sub deserialize {
   return $self;
 };
 sub read_yaml {
-  my ($self, $refs) = @_;
+  my ($self, $refs, $ws) = @_;
   my @refs = @$refs;
   ## snarf attributes of Feff object
   my $rhash = shift @refs;
@@ -1028,9 +1034,14 @@ sub read_yaml {
 	       absorber   => shift(@refs),
 	       sites	  => shift(@refs));
   foreach my $key (qw(abs_index edge s02 rmax name nlegs npaths rmultiplier pcrit ccrit
-		      workspace screen buffer save fuzz betafuzz eta_suppress miscdat
+		      screen buffer save fuzz betafuzz eta_suppress miscdat
 		      hidden source)) {
     $self -> $key($rhash->{$key}) if exists $rhash->{$key};
+  };
+  if (defined $ws) {
+    $self->workspace($ws);
+  } else {
+    $self->workspace($rhash->{workspace});
   };
   #$self -> prep_fuzz;
   ## snarf attributes of each ScatteringPath object
@@ -1072,7 +1083,7 @@ Demeter::Feff - Make and manipulate Feff calculations
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.4.
+This documentation refers to Demeter version 0.5.
 
 
 =head1 SYNOPSIS

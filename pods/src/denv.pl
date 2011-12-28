@@ -2,7 +2,7 @@
 
 =for Copyright
  .
- Copyright (c) 2008-2009 Bruce Ravel (bravel AT bnl DOT gov).
+ Copyright (c) 2008-2011 Bruce Ravel (bravel AT bnl DOT gov).
  All rights reserved.
  .
  This file is free software; you can redistribute it and/or
@@ -20,6 +20,8 @@ my $wx = 0;
 my $result = GetOptions ("wx" => \$wx,);
 
 use Demeter;
+use PDL;
+use PDL::Stats;
 print Demeter->new->module_environment;
 print Demeter->new->wx_environment if ($wx);
 

@@ -67,7 +67,7 @@
 
 <h1 id="VERSION">VERSION <a href="#TOP" class="toplink"><img alt="^" src="../../up.gif" /></a></h1>
 
-<p>This documentation refers to Demeter version 0.4.</p>
+<p>This documentation refers to Demeter version 0.5.</p>
 
 <h1 id="SYNOPSIS">SYNOPSIS <a href="#TOP" class="toplink"><img alt="^" src="../../up.gif" /></a></h1>
 
@@ -122,13 +122,15 @@ passing an additional parameter, the fit file can be written out in
 another way.</p></dd>
 <dd><pre>    $dataobject -&gt; save('fit', 'my.fit', $type);
 
-</pre></dd>		<dd><p>If type is left off, the default, un-k-weighted fit file is written.
-The other options are:</p></dd>
+</pre></dd>		<dd><p>If <code>$type</code> is left off, the default, un-k-weighted fit file is
+written.  The other options for <code>$type</code> are:</p></dd>
 <dd><pre>    k1 k2 k3 rmag rre rim qmag qre qim
 
 </pre></dd>		<dd><p>The first three export k-weighted data.  The next three are for the
 magnitude, real, or imaginary parts of chi(R).  The final three are
 for the magnitude, real, or imaginary parts of chi(q).</p></dd>
+		<dd><p>This will also accept the the k-, R-, and q-space arguments in the
+format accepted the <code>save_many</code> method.</p></dd>
 	<dt><code>bkgsub</code></dt>
 		<dd><p>Background subtracted chi(k) data....</p></dd>
 </dl>
@@ -148,6 +150,8 @@ data columns.  The second argument is one of:</p></dd>
 </pre></dd>		<dd><p>These are followed by the list of data groups to write to the file.
 The refering object will be added to the front of the list if it is
 not already included in the list.</p></dd>
+		<dd><p>The arguments used with the <code>save</code> method when saving a fit are also
+accepted for k-, R-, and q-space.</p></dd>
 	<dt><code>read_fit</code></dt>
 		<dd><p>Reimport a fit written out by a previous instance of Demeter....</p></dd>
 	<dt><code>title_glob</code></dt>

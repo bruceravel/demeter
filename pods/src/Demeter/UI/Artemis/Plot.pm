@@ -21,9 +21,10 @@ use warnings;
 use Wx qw( :everything );
 use Wx::DND;
 use base qw(Wx::Frame);
-use Wx::Event qw(EVT_CLOSE EVT_BUTTON EVT_RADIOBOX EVT_RIGHT_DOWN EVT_MENU EVT_ENTER_WINDOW EVT_LEAVE_WINDOW
+use Wx::Event qw(EVT_CLOSE EVT_ICONIZE EVT_BUTTON EVT_RADIOBOX EVT_RIGHT_DOWN EVT_MENU EVT_ENTER_WINDOW EVT_LEAVE_WINDOW
 		 EVT_TOGGLEBUTTON EVT_LEFT_DOWN);
 
+use Demeter::UI::Artemis::Close;
 use Demeter::UI::Artemis::Plot::Limits;
 use Demeter::UI::Artemis::Plot::Stack;
 use Demeter::UI::Artemis::Plot::Indicators;
@@ -33,6 +34,8 @@ use Demeter::UI::Artemis::DND::PlotListDrag;
 use Cwd;
 use File::Spec;
 use List::Util qw(first sum);
+use Readonly;
+Readonly my $EPSI => 0.01;
 
 my $demeter = $Demeter::UI::Artemis::demeter;
 
@@ -50,12 +53,13 @@ sub new {
   #my $yy = sum($pos->y, $h, $windowsize, $parent->GetStatusBar->GetSize->GetHeight);
 
   my $this = $class->SUPER::new($parent, -1, "Artemis [Plot]",
-				[0,$yy], wxDefaultSize,
+				[$x+$Demeter::UI::Artemis::demeter->co->default("artemis", "plot_frame_x"),$yy], wxDefaultSize,
 				wxMINIMIZE_BOX|wxCAPTION|wxSYSTEM_MENU|wxCLOSE_BOX);
   #$this -> SetBackgroundColour( Wx::Colour->new(0,255,0,0));
   #$this -> SetBackgroundColour( Wx::SystemSettings::GetColour(wxSYS_COLOUR_WINDOW) );
   $this -> SetBackgroundColour( wxNullColour );
   EVT_CLOSE($this, \&on_close);
+  EVT_ICONIZE($this, \&on_close);
   $this->{last} = q{};
 
   my $vbox  = Wx::BoxSizer->new( wxVERTICAL );
@@ -91,13 +95,12 @@ sub new {
   $left -> Add($this->{kweight}, 0, wxLEFT|wxRIGHT|wxGROW, 5);
   $this->{kweight}->SetSelection($demeter->co->default('plot', 'kweight'));
   $this->mouseover("kweight", "Select a value of k-weight to use when plotting data.");
-  $this->{kweight}->Enable(4, 0);
+  #$this->{kweight}->Enable(4, 0);
   $demeter->po->kweight($demeter->co->default('plot', 'kweight'));
   EVT_RADIOBOX($this, $this->{kweight},
 	       sub{
 		 my ($self, $event) = @_;
-		 my $kw = $this->{kweight}->GetStringSelection;
-		 $demeter->po->kweight($kw);
+		 $this->set_kweight('plot');
 		 $self->plot($event, $self->{last});
 	       });
 
@@ -160,11 +163,6 @@ sub new {
   return $this;
 };
 
-sub on_close {
-  my ($self) = @_;
-  $self->Show(0);
-  $self->GetParent->{toolbar}->ToggleTool(2, 0);
-};
 
 sub OnDrag {
   my ($list, $event) = @_;
@@ -195,12 +193,32 @@ sub mouseover {
 };
 
 
-sub fetch_parameters {
+sub set_kweight {
   my ($self) = @_;
+  my $kw = $self->{kweight}->GetStringSelection;
+  if ($kw eq 'kw') {
 
-  $demeter->po->kweight($self->{kweight}->GetStringSelection);
+    my @kweights = ();
+    foreach my $i (0 .. $self->{plotlist}->GetCount-1) {
+      next if (not $self->{plotlist}->IsChecked($i));
+      my $obj = $self->{plotlist}->GetIndexedData($i);
+      push @kweights, $obj->data->fit_karb_value;
+    };
+    ## check to see if plotted items all have the same arbitrary k-weight
+    my $nuniq = grep {abs($_-$kweights[0]) > $EPSI} @kweights;
+    $demeter->po->kweight($kweights[0]);
+    $demeter->po->kweight(-1) if $nuniq; # variable k-weighting if not all the same
+  } else {
+    $demeter->po->kweight($kw);
+  };
+};
+
+sub fetch_parameters {
+  my ($self, $how) = @_;
+
+  $self->set_kweight($how);
   foreach my $p (qw(kmin kmax rmin rmax qmin qmax)) {
-    $demeter->po->$p($self->{limits}->{$p}->GetValue);
+    $demeter->po->$p($self->{limits}->{$p}->GetValue || 0);
   };
 
   #   $demeter->po->plot_fit($self->{limits}->{fit}       ->GetValue);
@@ -209,10 +227,10 @@ sub fetch_parameters {
   #   $demeter->po->plot_res($self->{limits}->{residual}  ->GetValue);
   #   $demeter->po->plot_run($self->{limits}->{running}   ->GetValue);
 
-  $demeter->po->stackdo($self->{stack}->{dostack}->GetValue);
-  $demeter->po->stackstart($self->{stack}->{start}->GetValue);
-  $demeter->po->stackinc($self->{stack}->{increment}->GetValue);
-  $demeter->po->stackdata($self->{stack}->{offset}->GetValue);
+  $demeter->po->stackdo   ($self->{stack}->{dostack}  ->GetValue);
+  $demeter->po->stackstart($self->{stack}->{start}    ->GetValue || 0);
+  $demeter->po->stackinc  ($self->{stack}->{increment}->GetValue || 0);
+  $demeter->po->stackdata ($self->{stack}->{offset}   ->GetValue || 0);
   my $val = ($self->{stack}->{invert}->GetStringSelection eq 'Never')  ? 0
           : ($self->{stack}->{invert}->GetStringSelection =~ m{Only})  ? 2
           :                                                              1;
@@ -270,7 +288,8 @@ sub plot {
     $demeter->po->file($file);
   };
   my ($abort, $rdata, $rpaths) = Demeter::UI::Artemis::uptodate(\%Demeter::UI::Artemis::frames);
-  $self->fetch_parameters;
+  $Demeter::UI::Artemis::frames{GDS}->reset_all if (not $Demeter::UI::Artemis::frames{GDS}->{uptodate});
+  $self->fetch_parameters('plot');
   my @list = ();
   foreach my $i (0 .. $self->{plotlist}->GetCount-1) {
     next if (not $self->{plotlist}->IsChecked($i));
@@ -353,7 +372,7 @@ sub plot {
   };
 
   my $ds = first {ref($_) =~ m{Data}} @list;
-  $self->{indicators}->plot($ds);
+  $self->{indicators}->plot($ds) if ($space ne 'rk');
 
 
   $Demeter::UI::Artemis::frames{main}->status("Plotted in $space");
@@ -365,6 +384,7 @@ sub plot {
     $self->{fileout}->SetValue(0);
   };
   $self->{last} = $space;
+  $::app->heap_check;
   undef $busy;
 };
 
@@ -381,6 +401,7 @@ sub plot_fit {
   $data->co->set(plot_part=>q{});
   $data->plotkey(q{});
   $data->po->increment;
+  $::app->heap_check;
 };
 
 use Readonly;
@@ -413,7 +434,7 @@ sub OnPlotMenu {
   if ($event->GetId == $PLOT_REMOVE) {
     my @sel = $list->GetSelections;
     while (@sel) {
-      $list->Delete($sel[-1]);
+      $list->DeleteData($sel[-1]);
       @sel = $list->GetSelections;
     };
   } elsif ($event->GetId == $PLOT_ON) {

@@ -29,34 +29,51 @@ our @EXPORT = qw(cursor);
 # 	  );
 
 sub cursor {
-  my ($app) = @_;
+  my ($app, $frame) = @_;
   my ($ok, $x, $y) = (1, -100000, -100000);
+  my $parent = $frame || $app->{main};
 
   my $busy;
-  if ($app->current_data->mo->template_plot eq 'pgplot') {
+  if (Demeter->mo->template_plot eq 'pgplot') {
     $app->{main}->status("Click on a point to pluck its value...", "wait");
-    $app->current_data->dispose("cursor(crosshair=true)");
+    Demeter->dispose("cursor(crosshair=true)");
     ($x, $y) = (Ifeffit::get_scalar("cursor_x"), Ifeffit::get_scalar("cursor_y"));
 
-  } elsif ($app->current_data->mo->template_plot eq 'gnuplot') {
+  } elsif (Demeter->mo->template_plot eq 'gnuplot') {
+    my $yesno = Wx::MessageDialog
+      -> new($parent,
+	     "1. Double click in the Gnuplot window to pluck a point.\n2. Then click ok to accept the value.",
+	     "Pluck a point",
+	     wxOK|wxICON_EXCLAMATION|wxSTAY_ON_TOP)
+	-> ShowModal;
+
+    my $tdo;
     if (wxTheClipboard->Open) {
-      $app->{main}->status("Double click on a point to pluck its value...", "wait");
-      $busy = Wx::BusyCursor->new();
-      my $tdo = Wx::TextDataObject->new;
-      $tdo->SetText(q{});
+      $tdo = Wx::TextDataObject->new;
       wxTheClipboard->GetData( $tdo );
       wxTheClipboard->Close;
-      my $top_of_clipboard = $tdo->GetText;
-      my $new = $top_of_clipboard;
-      while ($new eq $top_of_clipboard) {
-	wxTheClipboard->Open if not wxTheClipboard->IsOpened;
-	wxTheClipboard->GetData( $tdo );
-	wxTheClipboard->Close;
-	$new = $tdo->GetText;
-	sleep 0.5;
-      };
-      ($x, $y) = split(/,\s+/, $new);
     };
+    ($x, $y) = split(/,\s+/, $tdo->GetText);
+
+      # if (wxTheClipboard->Open) {
+      # $app->{main}->status("Double click on a point to pluck its value...", "wait");
+      # $busy = Wx::BusyCursor->new();
+      # my $tdo = Wx::TextDataObject->new;
+      # $tdo->SetText(q{});
+      # wxTheClipboard->GetData( $tdo );
+      # wxTheClipboard->Close;
+      # my $top_of_clipboard = $tdo->GetText;
+      # my $new = $top_of_clipboard;
+      # while ($new eq $top_of_clipboard) {
+      # 	wxTheClipboard->Open if not wxTheClipboard->IsOpened;
+      # 	next if not wxTheClipboard->IsSupport(wxDF_TEXT);
+      # 	wxTheClipboard->GetData( $tdo );
+      # 	wxTheClipboard->Close;
+      # 	$new = $tdo->GetText;
+      # 	sleep 0.5;
+      # };
+      # ($x, $y) = split(/,\s+/, $new);
+      # };
 
   } else {
     $app->{main}->status("Unknown plotting backend.  Pluck canceled.");

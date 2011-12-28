@@ -2,6 +2,7 @@ package Demeter::StrTypes;
 
 # predeclare our own types
 use MooseX::Types -declare => [qw( Empty
+				   FileName
 				   IfeffitCommand
 				   IfeffitFunction
 				   IfeffitProgramVar
@@ -38,6 +39,8 @@ use MooseX::Types -declare => [qw( Empty
 				   GDS
 				   NotReserved
                                    FitykFunction
+				   IfeffitLineshape
+				   Lineshape
 				)];
 
 ## to do: modes
@@ -53,6 +56,11 @@ subtype Empty,
   as Str,
   where { lc($_) =~ m{\A\s*\z} },
   message { "That string ($_) is not an empty string" };
+
+## -------- use a coercion to follow Windows shortcuts
+subtype FileName, as   Str, where { 1 };
+coerce  FileName, from Str, via { Demeter->follow_link($_) };
+
 
 ## -------- Ifeffit commands
 use vars qw(@command_list $command_regexp);
@@ -125,8 +133,8 @@ use vars qw(@element_list $element_regexp);
 		   sr y zr nb mo tc ru rh pd ag cd in sn sb te i xe cs
 		   ba la ce pr nd pm sm eu gd tb dy ho er tm yb lu hf
 		   ta w re os ir pt au hg tl pb bi po at rn fr ra ac
-		   th pa u np pu
-		   nu);
+		   th pa u np pu am cm bk cf
+		   nu); # es fm md no lr
 $element_regexp = Regexp::Assemble->new()->add(@element_list)->re;
 subtype Element,
   as Str,
@@ -387,7 +395,7 @@ subtype PlotWeight,
 
 ## -------- Ifeffit interpolation functions
 use vars qw(@interp_list $interp_regexp);
-@interp_list = qw(linterp qinterp splint);
+@interp_list = qw(interp qinterp splint);
 $interp_regexp = Regexp::Assemble->new()->add(@interp_list)->re;
 subtype Interp,
   as Str,
@@ -412,6 +420,19 @@ subtype NotReserved,
   where { lc($_) !~ m{\A$notreserved_regexp\z} },
   message { "reff, pi, etok, and cv are reserved words in Ifeffit or Demeter" };
 
+coerce NotReserved,
+  from Str,
+  via { $_=lc($_); $_=~s{\A\s+}{}; $_=~s{\s+\z}{} };
+
+
+## -------- Ifeffit lineshapes
+use vars qw(@ifeffitlineshape_list $ifeffitlineshape_regexp);
+@ifeffitlineshape_list = qw(linear gaussian lorentzian pseudovoight atan erfc);
+$ifeffitlineshape_regexp = Regexp::Assemble->new()->add(map {lc($_)} @ifeffitlineshape_list)->re;
+subtype IfeffitLineshape,
+  as Str,
+  where { lc($_) =~ m{\A$ifeffitlineshape_regexp\z} },
+  message { "$_ is not a defined lineshape in Ifeffit" };
 
 ## -------- Fityk defined functions
 use vars qw(@fitykfunction_list $fitykfunction_regexp);
@@ -428,6 +449,14 @@ subtype FitykFunction,
   message { "$_ is not a defined function in Fityk" };
 
 
+## -------- all lineshapes of all possible backends
+use vars qw(@lineshape_list $lineshape_regexp);
+@lineshape_list = (@ifeffitlineshape_list, @fitykfunction_list);
+$lineshape_regexp = Regexp::Assemble->new()->add(map {lc($_)} @lineshape_list)->re;
+subtype Lineshape,
+  as Str,
+  where { lc($_) =~ m{\A$lineshape_regexp\z} },
+  message { "$_ is not a defined lineshape" };
 
 
 
@@ -439,7 +468,7 @@ Demeter::StrTypes - String type constraints
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.4.
+This documentation refers to Demeter version 0.5.
 
 =head1 DESCRIPTION
 

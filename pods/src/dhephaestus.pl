@@ -1,6 +1,8 @@
 #!/usr/bin/perl
-use Demeter::Here;
-use Wx::Perl::SplashFast (Demeter::Here->here.'UI/Hephaestus/data/vulcan.png',4000);
+BEGIN {
+  use Demeter::Here;
+  use Wx::Perl::SplashFast Demeter::Here->here.'UI/Hephaestus/data/vulcan.png',4000;
+}
 use Wx;
 use Demeter::UI::Hephaestus;
 Wx::InitAllImageHandlers();

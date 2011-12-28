@@ -34,7 +34,7 @@ sub new {
   my $box  = Wx::BoxSizer->new( wxVERTICAL );
 
   $this->{how} = Wx::RadioBox->new($this, -1, "Change datatype for...", wxDefaultPosition, wxDefaultSize,
-				   ["current group", "all marked groups"], 1, wxRA_SPECIFY_ROWS);
+				   ["current group", "all marked groups", "all groups"], 1, wxRA_SPECIFY_ROWS);
   $box -> Add($this->{how}, 0, wxALL, 5);
 
 

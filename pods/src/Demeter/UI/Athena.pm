@@ -14,6 +14,7 @@ use Demeter::UI::Artemis::Buffer;
 use Demeter::UI::Artemis::ShowText;
 use Demeter::UI::Athena::Cursor;
 use Demeter::UI::Athena::Status;
+use Demeter::UI::Artemis::DND::PlotListDrag;
 
 use vars qw($demeter $buffer $plotbuffer);
 
@@ -24,7 +25,15 @@ use File::Path;
 use File::Spec;
 use List::Util qw(min);
 use List::MoreUtils qw(any);
+use Time::HiRes qw(usleep);
 use Readonly;
+Readonly my $FOCUS_UP	       => Wx::NewId();
+Readonly my $FOCUS_DOWN	       => Wx::NewId();
+Readonly my $MOVE_UP	       => Wx::NewId();
+Readonly my $MOVE_DOWN	       => Wx::NewId();
+Readonly my $EPSI	       => 0.01;
+Readonly my $AUTOSAVE_FILE     => 'Athena.autosave';
+
 use Scalar::Util qw{looks_like_number};
 
 use Wx qw(:everything);
@@ -32,7 +41,7 @@ use Wx::Event qw(EVT_MENU EVT_CLOSE EVT_TOOL_ENTER EVT_CHECKBOX EVT_BUTTON
 		 EVT_ENTER_WINDOW EVT_LEAVE_WINDOW
 		 EVT_RIGHT_UP EVT_LISTBOX EVT_RADIOBOX EVT_LISTBOX_DCLICK
 		 EVT_CHOICEBOOK_PAGE_CHANGED EVT_CHOICEBOOK_PAGE_CHANGING
-		 EVT_RIGHT_DOWN
+		 EVT_RIGHT_DOWN EVT_LEFT_DOWN EVT_CHECKLISTBOX
 	       );
 use base 'Wx::App';
 
@@ -63,9 +72,9 @@ sub OnInit {
   $demeter -> mo -> iwd(cwd);
 
   #print DateTime->now,  "  Reading configuration files ...\n";
-  my $conffile = File::Spec->catfile(dirname($INC{'Demeter/UI/Athena.pm'}), 'Athena', 'share', "athena.demeter_conf");
-  $demeter -> co -> read_config($conffile);
-  $demeter -> co -> read_ini('athena');
+  #my $conffile = File::Spec->catfile(dirname($INC{'Demeter/UI/Athena.pm'}), 'Athena', 'share', "athena.demeter_conf");
+  #$demeter -> co -> read_config($conffile);
+  #$demeter -> co -> read_ini('athena');
   $demeter -> plot_with($demeter->co->default(qw(plot plotwith)));
   my $old_cwd = File::Spec->catfile($demeter->dot_folder, "athena.cwd");
   if (-r $old_cwd) {
@@ -97,6 +106,16 @@ sub OnInit {
   #print DateTime->now,  "  Making side bar ...\n";
   $app -> side_bar($hbox);
 
+  my $accelerator = Wx::AcceleratorTable->new(
+   					      [wxACCEL_CTRL, 106, $FOCUS_UP],
+   					      [wxACCEL_CTRL, 107, $FOCUS_DOWN],
+   					      [wxACCEL_ALT,  106, $MOVE_UP],
+   					      [wxACCEL_ALT,  107, $MOVE_DOWN],
+   					     );
+  $app->{main}->SetAcceleratorTable( $accelerator );
+
+
+
   ## -------- "global" parameters
   #print DateTime->now,  "  Finishing ...\n";
   $app->{lastplot} = [q{}, q{single}];
@@ -127,11 +146,11 @@ sub OnInit {
 		    );
 
   $app->{main} -> SetSizerAndFit($hbox);
-  $app->{main}->{return}->Hide;
+  $app->{main} ->{return}->Hide;
   #$app->{main} -> SetSize(600,800);
   $app->{main} -> Show( 1 );
-  $app->{main}->Refresh;
-  $app->{main}->Update;
+  $app->{main} -> Refresh;
+  $app->{main} -> Update;
   $app->{main} -> status("Welcome to Athena (" . $demeter->identify . ")");
   $app->OnGroupSelect(q{}, $app->{main}->{list}->GetSelection, 0);
   1;
@@ -139,6 +158,24 @@ sub OnInit {
 
 sub process_argv {
   my ($app, @args) = @_;
+  if (-r File::Spec->catfile($demeter->stash_folder, $AUTOSAVE_FILE)) {
+    my $yesno = Wx::MessageDialog->new($app->{main},
+  				       "Athena found an autosave file.  Would you like to import it?",
+  				       "Import autosave?",
+  				       wxYES_NO|wxYES_DEFAULT|wxICON_QUESTION);
+    my $result = $yesno->ShowModal;
+    if ($result == wxID_YES) {
+      $app->Import(File::Spec->catfile($demeter->stash_folder, $AUTOSAVE_FILE));
+    };
+    $app->Clear;
+    #unlink File::Spec->catfile($demeter->stash_folder, $AUTOSAVE_FILE);
+    my $old_cwd = File::Spec->catfile($demeter->dot_folder, "athena.cwd");
+    if (-r $old_cwd) {
+      my $yaml = YAML::Tiny::LoadFile($old_cwd);
+      chdir($yaml->{cwd});
+    };
+    return;
+  };
   foreach my $a (@args) {
     if ($a =~ m{\A-(\d+)\z}) {
       my @list = $demeter->get_mru_list('xasdata');
@@ -155,6 +192,7 @@ sub process_argv {
 
 sub ifeffit_buffer {
   my ($text) = @_;
+  #return if not defined($::app->{Buffer});
   foreach my $line (split(/\n/, $text)) {
     my ($was, $is) = $::app->{Buffer}->insert('ifeffit', $line);
     my $color = ($line =~ m{\A\#}) ? 'comment' : 'normal';
@@ -185,7 +223,7 @@ sub feedback {
 sub mouseover {
   my ($app, $widget, $text) = @_;
   return if not $demeter->co->default("athena", "hints");
-  my $sb = $app->{main}->{statusbar};
+  my $sb = $app->{main}->GetStatusBar;
   EVT_ENTER_WINDOW($widget, sub{$sb->PushStatusText($text); $_[1]->Skip});
   EVT_LEAVE_WINDOW($widget, sub{$sb->PopStatusText if ($sb->GetStatusText eq $text); $_[1]->Skip});
 };
@@ -208,9 +246,9 @@ sub on_close {
     $app -> Export('all', $app->{main}->{currentproject}) if $result == wxID_YES;
   };
 
-#  unlink $app->{main}->{autosave_file};
+  unlink File::Spec->catfile($demeter->stash_folder, $AUTOSAVE_FILE);
   my $persist = File::Spec->catfile($demeter->dot_folder, "athena.cwd");
-  YAML::Tiny::DumpFile($persist, {cwd=>cwd});
+  YAML::Tiny::DumpFile($persist, {cwd=>cwd . Demeter->slash});
   $demeter->mo->destroy_all;
   $event->Skip(1) if defined $event;
   return 1;
@@ -244,6 +282,7 @@ sub current_index {
 };
 sub current_data {
   my ($app) = @_;
+  return $demeter->dd if not defined $app->{main}->{list};
   return $demeter->dd if not $app->{main}->{list}->GetCount;
   return $app->{main}->{list}->GetIndexedData($app->{main}->{list}->GetSelection);
 };
@@ -280,6 +319,7 @@ Readonly my $MARKED_RMAG       => Wx::NewId();
 Readonly my $MARKED_RRE	       => Wx::NewId();
 Readonly my $MARKED_RIM	       => Wx::NewId();
 Readonly my $MARKED_RPHA       => Wx::NewId();
+Readonly my $MARKED_RDPHA      => Wx::NewId();
 Readonly my $MARKED_QMAG       => Wx::NewId();
 Readonly my $MARKED_QRE	       => Wx::NewId();
 Readonly my $MARKED_QIM	       => Wx::NewId();
@@ -321,10 +361,16 @@ Readonly my $PLOT_E00          => Wx::NewId();
 Readonly my $PLOT_I0MARKED     => Wx::NewId();
 Readonly my $PLOT_STDDEV       => Wx::NewId();
 Readonly my $PLOT_VARIENCE     => Wx::NewId();
+Readonly my $TERM_1            => Wx::NewId();
+Readonly my $TERM_2            => Wx::NewId();
+Readonly my $TERM_3            => Wx::NewId();
+Readonly my $TERM_4            => Wx::NewId();
 
 Readonly my $SHOW_BUFFER       => Wx::NewId();
 Readonly my $PLOT_YAML	       => Wx::NewId();
 Readonly my $LCF_YAML	       => Wx::NewId();
+Readonly my $PCA_YAML	       => Wx::NewId();
+Readonly my $PEAK_YAML	       => Wx::NewId();
 Readonly my $STYLE_YAML	       => Wx::NewId();
 Readonly my $INDIC_YAML	       => Wx::NewId();
 Readonly my $MODE_STATUS       => Wx::NewId();
@@ -397,6 +443,7 @@ sub menubar {
   $savemarkedmenu->Append($MARKED_RRE,   "Re[$CHI(R)]",     "Save marked groups as Re[$CHI(R)] to a column data file");
   $savemarkedmenu->Append($MARKED_RIM,   "Im[$CHI(R)]",     "Save marked groups as Im[$CHI(R)] to a column data file");
   $savemarkedmenu->Append($MARKED_RPHA,  "Pha[$CHI(R)]",    "Save marked groups as Pha[$CHI(R)] to a column data file");
+  $savemarkedmenu->Append($MARKED_RDPHA, "Deriv(Pha[$CHI(R)])", "Save marked groups as the derivative of Pha[$CHI(R)] to a column data file") if ($Demeter::UI::Athena::demeter->co->default("athena", "show_dphase"));
   $savemarkedmenu->AppendSeparator;
   $savemarkedmenu->Append($MARKED_QMAG,  "|$CHI(q)|",       "Save marked groups as |$CHI(q)| to a column data file");
   $savemarkedmenu->Append($MARKED_QRE,   "Re[$CHI(q)]",     "Save marked groups as Re[$CHI(q)] to a column data file");
@@ -424,12 +471,14 @@ sub menubar {
   my $ifeffitmenu = Wx::Menu->new;
   my $yamlmenu    = Wx::Menu->new;
   my $debugmenu   = Wx::Menu->new;
-  $yamlmenu->Append($PLOT_YAML,      "Plot object",            "Show YAML for Plot object" );
-  $yamlmenu->Append($STYLE_YAML,     "plot style objects",     "Show YAML for plot style objects" );
-  $yamlmenu->Append($INDIC_YAML,     "Indicator objects",      "Show YAML for Indicator objects" );
-  $yamlmenu->Append($LCF_YAML,       "LCF object",             "Show YAML for LCF object" );
-  $debugmenu->Append($MODE_STATUS,   "Mode status",            "Mode status" );
-  $debugmenu->Append($PERL_MODULES,  "Perl modules",           "Show perl module versions" );
+  $yamlmenu->Append($PLOT_YAML,      "Plot object",            "Show YAML dialog for Plot object" );
+  $yamlmenu->Append($STYLE_YAML,     "plot style objects",     "Show YAML dialog for plot style objects" );
+  $yamlmenu->Append($INDIC_YAML,     "Indicator objects",      "Show YAML dialog for Indicator objects" );
+  $yamlmenu->Append($LCF_YAML,       "LCF object",             "Show YAML dialog for LCF object" );
+  $yamlmenu->Append($PCA_YAML,       "PCA object",             "Show YAML dialog for PCA object" );
+  $yamlmenu->Append($PEAK_YAML,      "PeakFit object",         "Show YAML dialog for PeakFit object" );
+  $debugmenu->Append($MODE_STATUS,   "Show mode status",       "Show mode status dialog" );
+  $debugmenu->Append($PERL_MODULES,  "Show perl modules",      "Show perl module versions" );
   $monitormenu->Append($SHOW_BUFFER, "Show command buffer",    'Show the Ifeffit and plotting commands buffer' );
   $monitormenu->Append($STATUS,      "Show status bar buffer", 'Show the buffer containing messages written to the status bars');
   $monitormenu->AppendSeparator;
@@ -439,11 +488,11 @@ sub menubar {
   $ifeffitmenu->Append($IFEFFIT_ARRAYS,  "arrays",       "Examine all the arrays currently defined in Ifeffit");
   $monitormenu->AppendSubMenu($ifeffitmenu,  'Query Ifeffit for ...',    'Obtain information from Ifeffit about variables and arrays');
   $monitormenu->Append($IFEFFIT_MEMORY,  "Show Ifeffit's memory use", "Show Ifeffit's memory use and remaining capacity");
-  if ($demeter->co->default("athena", "debug_menus")) {
+  #if ($demeter->co->default("athena", "debug_menus")) {
     $monitormenu->AppendSeparator;
     $monitormenu->AppendSubMenu($yamlmenu,  'Show YAML for ...',    'Display YAMLs of Demeter objects');
     $monitormenu->AppendSubMenu($debugmenu, 'Debug options', 'Display debugging tools');
-  };
+  #};
 
 
   my $groupmenu   = Wx::Menu->new;
@@ -459,7 +508,7 @@ sub menubar {
   $groupmenu->Append($DATA_YAML,      "Show structure of current group",                 "Show detailed contents of the current data group");
   $groupmenu->Append($DATA_TEXT,      "Show the text of the current group's data file",  "Show the text of the current data group's data file");
   $groupmenu->AppendSeparator;
-  $groupmenu->Append($SHOW_REFERENCE, "Show reference channel", "Identify the group that shares the data/reference relationship with this group.");
+  $groupmenu->Append($SHOW_REFERENCE, "Identify reference channel", "Identify the group that shares the data/reference relationship with this group.");
   $groupmenu->Append($TIE_REFERENCE,  "Tie reference channel",  "Tie together two marked groups as data and reference channel.");
   $groupmenu->AppendSeparator;
   $groupmenu->Append($REMOVE,         "Remove current group",   "Remove the current group from this project");
@@ -504,6 +553,13 @@ sub menubar {
   $plotmenu->AppendSubMenu($currentplotmenu, "Current group", "Special plot types for the current group");
   $plotmenu->AppendSubMenu($markedplotmenu,  "Marked groups", "Special plot types for the marked groups");
   $plotmenu->AppendSubMenu($mergedplotmenu,  "Merge groups",  "Special plot types for merge data");
+  if ($demeter->co->default('plot', 'plotwith') eq 'gnuplot') {
+    $plotmenu->AppendSeparator;
+    $plotmenu->AppendRadioItem($TERM_1, "Plot to terminal 1", "Plot to terminal 1");
+    $plotmenu->AppendRadioItem($TERM_2, "Plot to terminal 2", "Plot to terminal 2");
+    $plotmenu->AppendRadioItem($TERM_3, "Plot to terminal 3", "Plot to terminal 3");
+    $plotmenu->AppendRadioItem($TERM_4, "Plot to terminal 4", "Plot to terminal 4");
+  };
   $app->{main}->{plotmenu} = $plotmenu;
 
   my $markmenu   = Wx::Menu->new;
@@ -538,7 +594,7 @@ sub menubar {
   $bar->Append( $groupmenu,   "&Group" );
   $bar->Append( $markmenu,    "&Mark" );
   $bar->Append( $plotmenu,    "&Plot" );
-  $bar->Append( $freezemenu,  "Free&ze" );
+  #$bar->Append( $freezemenu,  "Free&ze" );
   $bar->Append( $mergemenu,   "Me&rge" );
   $bar->Append( $monitormenu, "M&onitor" );
   $bar->Append( $helpmenu,    "&Help" );
@@ -551,26 +607,7 @@ sub menubar {
 					   $FREEZE_MARKED, $UNFREEZE_MARKED,
 					   $FREEZE_REGEX, $UNFREEZE_REGEX,
 					   $FREEZE_TOGGLE_ALL);
-  $monitormenu    -> Enable($_,0) foreach ($IFEFFIT_MEMORY);
   $helpmenu       -> Enable($_,0) foreach ($DOCUMENT, $DEMO);
-
-  # my $accelerator = Wx::AcceleratorTable->new(
-  # 					      #[wxACCEL_CTRL|wxACCEL_SHIFT,  97, $MARK_ALL],
-  # 					      [wxACCEL_CTRL, 117, $MARK_NONE],
-  # 					      [wxACCEL_CTRL, 105, $MARK_INVERT],
-  # 					      [wxACCEL_CTRL, 116, $MARK_TOGGLE],
-  # 					      [wxACCEL_CTRL, 114, $MARK_REGEXP],
-  # 					      [wxACCEL_CTRL, 120, $UNMARK_REGEXP],
-  # 					      [wxACCEL_CTRL, 108, $RENAME],
-  # 					      [wxACCEL_CTRL, 121, $COPY],
-
-  # 					      [wxACCEL_CTRL, 111, wxID_OPEN],
-  # 					      [wxACCEL_CTRL, 115, wxID_SAVE],
-  # 					      [wxACCEL_CTRL, 119, wxID_CLOSE],
-  # 					      [wxACCEL_CTRL, 113, wxID_EXIT],
-  # 					     );
-  # $app->{main}->SetAcceleratorTable( $accelerator );
-
 
   EVT_MENU($app->{main}, -1, sub{my ($frame,  $event) = @_; OnMenuClick($frame,  $event, $app)} );
   return $app;
@@ -672,8 +709,8 @@ sub OnMenuClick {
 
     (any {$id == $_} ($MARKED_XMU,  $MARKED_NORM, $MARKED_DER,  $MARKED_NDER,  $MARKED_SEC,
 		      $MARKED_NSEC, $MARKED_CHI,  $MARKED_CHIK, $MARKED_CHIK2, $MARKED_CHIK3,
-		      $MARKED_RMAG, $MARKED_RRE,  $MARKED_RIM,  $MARKED_RPHA,  $MARKED_QMAG,
-		      $MARKED_QRE,  $MARKED_QIM,  $MARKED_QPHA))
+		      $MARKED_RMAG, $MARKED_RRE,  $MARKED_RIM,  $MARKED_RPHA,  $MARKED_RDPHA,
+		      $MARKED_QMAG, $MARKED_QRE,  $MARKED_QIM,  $MARKED_QPHA))
       and do {
 	my $how = ($id == $MARKED_XMU)   ? "xmu"
 	        : ($id == $MARKED_NORM)  ? "norm"
@@ -689,6 +726,7 @@ sub OnMenuClick {
 	        : ($id == $MARKED_RRE)   ? "chir_re"
 	        : ($id == $MARKED_RIM)   ? "chir_im"
 	        : ($id == $MARKED_RPHA)  ? "chir_pha"
+	        : ($id == $MARKED_RDPHA) ? "dph"
 	        : ($id == $MARKED_QMAG)  ? "chiq_mag"
 	        : ($id == $MARKED_QRE)   ? "chiq_re"
 	        : ($id == $MARKED_QIM)   ? "chiq_im"
@@ -841,6 +879,18 @@ sub OnMenuClick {
 	  -> Show;
       last SWITCH;
     };
+    ($id == $PCA_YAML) and do {
+      my $dialog = Demeter::UI::Artemis::ShowText
+	-> new($app->{main}, $app->{main}->{PCA}->{PCA}->serialization, 'YAML of Plot object')
+	  -> Show;
+      last SWITCH;
+    };
+    ($id == $PEAK_YAML) and do {
+      my $dialog = Demeter::UI::Artemis::ShowText
+	-> new($app->{main}, $app->{main}->{PeakFit}->{PEAK}->serialization, 'YAML of Plot object')
+	  -> Show;
+      last SWITCH;
+    };
     ($id == $STYLE_YAML) and do {
       my $text = q{};
       foreach my $i (0 .. $app->{main}->{Style}->{list}->GetCount-1) {
@@ -872,8 +922,17 @@ sub OnMenuClick {
       last SWITCH;
     };
 
+    ($id == $IFEFFIT_MEMORY) and do {
+      $app->heap_check(1);
+      last SWITCH;
+    };
+
     ($id == $PLOT_QUAD) and do {
       my $data = $app->current_data;
+      if ($app->current_data->datatype ne 'xmu') {
+	$app->{main}->status("Cannot plot " . $app->current_data->datatype . " data as a quadplot.", "error");
+	return;
+      };
       #$app->{main}->{Main}->pull_values($data);
       $data->po->start_plot;
       $app->quadplot($data);
@@ -881,6 +940,7 @@ sub OnMenuClick {
     };
     ($id == $PLOT_IOSIG) and do {
       my $data = $app->current_data;
+      my $is_fixed = $data->bkg_fixstep;
       #$app->{main}->{Main}->pull_values($data);
       $app->{main}->{PlotE}->pull_single_values;
       $data->po->set(e_bkg=>0, e_pre=>0, e_post=>0, e_norm=>0, e_der=>0, e_sec=>0);
@@ -892,11 +952,12 @@ sub OnMenuClick {
       $data->po->set(e_i0=>0, e_signal=>0);
       $app->{main}->{plottabs}->SetSelection(1) if $app->spacetab;
       $app->{lastplot} = ['E', 'single'];
-      $app->postplot($data);
+      $app->postplot($data, $is_fixed);
       last SWITCH;
     };
     ($id == $PLOT_K123) and do {
       my $data = $app->current_data;
+      my $is_fixed = $data->bkg_fixstep;
       #$app->{main}->{Main}->pull_values($data);
       $app->{main}->{PlotK}->pull_single_values;
       return if not $app->preplot('k', $data);
@@ -905,18 +966,19 @@ sub OnMenuClick {
       $data->plot('k123');
       $app->{main}->{plottabs}->SetSelection(2) if $app->spacetab;
       $app->{lastplot} = ['k', 'single'];
-      $app->postplot($data);
+      $app->postplot($data, $is_fixed);
       last SWITCH;
     };
     ($id == $PLOT_R123) and do {
       my $data = $app->current_data;
+      my $is_fixed = $data->bkg_fixstep;
       #$app->{main}->{Main}->pull_values($data);
       $app->{main}->{PlotR}->pull_marked_values;
       return if not $app->preplot('r', $data);
       $data->po->start_plot;
       $data->po->title($app->{main}->{Other}->{title}->GetValue);
       $data->plot('R123');
-      $app->postplot($data);
+      $app->postplot($data, $is_fixed);
       $app->{main}->{plottabs}->SetSelection(3) if $app->spacetab;
       $app->{lastplot} = ['R', 'single'];
       last SWITCH;
@@ -958,6 +1020,23 @@ sub OnMenuClick {
       last SWITCH;
     };
 
+    ($id == $TERM_1) and do {
+      $demeter->po->terminal_number(1);
+      last SWITCH;
+    };
+    ($id == $TERM_2) and do {
+      $demeter->po->terminal_number(2);
+      last SWITCH;
+    };
+    ($id == $TERM_3) and do {
+      $demeter->po->terminal_number(3);
+      last SWITCH;
+    };
+    ($id == $TERM_4) and do {
+      $demeter->po->terminal_number(4);
+      last SWITCH;
+    };
+
     ($id == $MARK_ALL) and do {
       $app->mark('all');
       last SWITCH;
@@ -981,6 +1060,23 @@ sub OnMenuClick {
     ($id == $UNMARK_REGEXP) and do {
       $app->mark('unmark_regexp');
       last SWITCH;
+    };
+
+    ($id == $FOCUS_UP) and do {
+      $app->focus_up;
+      return;
+    };
+    ($id == $FOCUS_DOWN) and do {
+      $app->focus_down;
+      return;
+    };
+    ($id == $MOVE_UP) and do {
+      $app->move_group("up");
+      return;
+    };
+    ($id == $MOVE_DOWN) and do {
+      $app->move_group("down");
+      return;
     };
 
 
@@ -1065,10 +1161,12 @@ sub main_window {
 		     'Difference',	  # 15
 		     # -----------------------
 		     'XDI',               # 17
-		     'Journal',		  # 18
-		     'PluginRegistry',    # 19
-		     'Prefs',		  # 20
+		     'Watcher',           # 18
+		     'Journal',		  # 19
+		     'PluginRegistry',    # 20
+		     'Prefs',		  # 21
 		    ) {
+    next if (($which eq 'Watcher') and (not Demeter->co->default(qw(athena show_watcher))));
     next if $INC{"Demeter/UI/Athena/$which.pm"};
     require "Demeter/UI/Athena/$which.pm";
     $app->{main}->{$which} = "Demeter::UI::Athena::$which"->new($app->{main}->{views}, $app);
@@ -1112,6 +1210,9 @@ sub side_bar {
   EVT_LISTBOX($toolpanel, $app->{main}->{list}, sub{$app->OnGroupSelect(@_,1)});
   EVT_LISTBOX_DCLICK($toolpanel, $app->{main}->{list}, sub{$app->Rename;});
   EVT_RIGHT_DOWN($app->{main}->{list}, sub{OnRightDown(@_)});
+  EVT_LEFT_DOWN($app->{main}->{list}, \&OnDrag);
+  EVT_CHECKLISTBOX($toolpanel, $app->{main}->{list}, sub{OnMark(@_, $app->{main}->{list})});
+  $app->{main}->{list}->SetDropTarget( Demeter::UI::Athena::DropTarget->new( $app->{main}, $app->{main}->{list} ) );
   #print Wx::SystemSettings::GetColour(wxSYS_COLOUR_HIGHLIGHT), $/;
   #$app->{main}->{list}->SetBackgroundColour(Wx::Colour->new($demeter->co->default("athena", "single")));
 
@@ -1186,6 +1287,68 @@ sub OnRightDown {
   $event->Skip(0);
 };
 
+sub OnDrag {
+  my ($list, $event) = @_;
+  if ($event->ControlDown) {
+    my $which = $list->HitTest($event->GetPosition);
+    my $source = Wx::DropSource->new( $list );
+    my $dragdata = Demeter::UI::Artemis::DND::PlotListDrag->new(\$which);
+    $source->SetData( $dragdata );
+    $source->DoDragDrop(1);
+    $event->Skip(0);
+  } else {
+    $event->Skip(1);
+  };
+};
+
+sub OnMark {
+  my ($this, $event, $clb) = @_;
+  my $n = $event->GetInt;
+  my $data = $clb->GetIndexedData($n);
+  $data->marked($clb->IsChecked($n));
+};
+
+sub focus_up {
+  my ($app) = @_;
+  my $i = $app->{main}->{list}->GetSelection;
+  return if ($i == 0);
+  $app->{main}->{list}->SetSelection($i-1);
+  $app->OnGroupSelect(q{}, $app->{main}->{list}->GetSelection, 0);
+};
+sub focus_down {
+  my ($app) = @_;
+  my $i = $app->{main}->{list}->GetSelection;
+  return if ($i == $app->{main}->{list}->GetCount);
+  $app->{main}->{list}->SetSelection($i+1);
+  $app->OnGroupSelect(q{}, $app->{main}->{list}->GetSelection, 0);
+};
+
+sub move_group {
+  my ($app, $dir) = @_;
+  my $i = $app->{main}->{list}->GetSelection;
+
+  return if (($dir eq 'up')   and ($i == 0));
+  return if (($dir eq 'down') and ($i == $app->{main}->{list}->GetCount-1));
+
+  my $from_object  = $app->{main}->{list}->GetIndexedData($i);
+  my $from_label   = $app->{main}->{list}->GetString($i);
+  my $from_checked = $app->{main}->{list}->IsChecked($i);
+
+  my $to_label     = $app->{main}->{list}->GetString($i-1);
+
+  $app->{main}->{list} -> DeleteData($i);
+  my $to = ($dir eq 'down') ? $i+1 : $i-1;
+
+  $app->{main}->{list} -> InsertData($from_label, $to, $from_object);
+  $app->{main}->{list} -> Check($to, $from_checked);
+  $app->{main}->{list} -> SetSelection($to);
+  $app->OnGroupSelect(q{}, $app->{main}->{list}->GetSelection, 0);
+
+  $app->modified(1);
+  $app->{main}->status("Moved $from_label $dir");
+};
+
+
 sub OnGroupSelect {
   my ($app, $parent, $event, $plot) = @_;
   if ((ref($event) =~ m{Event}) and (not $event->IsSelection)) { # capture a control click which would otherwise deselect
@@ -1195,7 +1358,7 @@ sub OnGroupSelect {
   };
   my $is_index = (ref($event) =~ m{Event}) ? $event->GetSelection : $app->{main}->{list}->GetSelection;
 
-  my $was = ($app->{selected} == -1) ? 0 : $app->{main}->{list}->GetIndexedData($app->{selected});
+  my $was = ((not defined($app->{selected})) or ($app->{selected} == -1)) ? 0 : $app->{main}->{list}->GetIndexedData($app->{selected});
   my $is  = $app->{main}->{list}->GetIndexedData($is_index);
   $app->{selecting_data_group}=1;
 
@@ -1219,6 +1382,8 @@ sub OnGroupSelect {
 
   $app->select_plot($app->current_data) if $plot;
   $app->{selecting_data_group}=0;
+  $app->heap_check(0);
+  return;
 };
 
 sub select_plot {
@@ -1244,6 +1409,7 @@ sub select_plot {
 
 sub view_changing {
   my ($app, $frame, $event) = @_;
+  my $c = (Demeter->co->default(qw(athena show_watcher))) ? 4 : 3;
   my $ngroups = $app->{main}->{list}->GetCount;
   my $nviews  = $app->{main}->{views}->GetPageCount;
   #print join("|", $app, $event, $ngroups, $event->GetSelection), $/;
@@ -1253,7 +1419,7 @@ sub view_changing {
   my $string = $app->{main}->{views}->GetPageText($event->GetSelection);
   if ($string =~ m{\A-*\z}) {
     $event -> Veto();
-  } elsif (($event->GetSelection != 0) and ($event->GetSelection < $nviews-3)) {
+  } elsif (($event->GetSelection != 0) and ($event->GetSelection < $nviews-$c)) {
     if (not $ngroups) {
       $app->{main}->status(sprintf("You have no data imported in Athena, thus you cannot use the %s tool.", lc($string)));
       $event -> Veto();
@@ -1284,6 +1450,7 @@ sub plot {
   my $busy = Wx::BusyCursor->new();
 
   my @data = ($how eq 'single') ? ( $app->current_data ) : $app->marked_groups;
+  my @is_fixed = map {$_->bkg_fixstep} @data;
 
   if (not @data and ($how eq 'marked')) {
     $app->{main}->status("No groups are marked.  Marked plot cancelled.");
@@ -1292,10 +1459,13 @@ sub plot {
 
   my $ok = $app->preplot($space, $data[0]);
   return if not $ok;
+  my $pause = $data[0]->po->plot_pause*1000;
+  ($pause = 0) if ($#data == 0);
 
   #$app->{main}->{Main}->pull_values($app->current_data);
-  $app->pull_kweight($data[0]);
+  $app->pull_kweight($data[0], $how);
 
+  $data[0]->po->single($how eq 'single');
   $data[0]->po->start_plot;
   my $title = ($how eq 'single')                                  ? q{}
             : ($app->{main}->{Other}->{title}->GetValue)          ? $app->{main}->{Other}->{title}->GetValue
@@ -1312,7 +1482,10 @@ sub plot {
 
   ## energy k and kq
   if (lc($space) =~ m{(?:e|k|kq)}) {
-    $_->plot($space) foreach @data;
+    foreach my $d (@data) {
+      $d->plot($space);
+      usleep($pause) if $pause;
+    };
     $data[0]->plot_window('k') if (($how eq 'single') and
 				   $app->{main}->{PlotK}->{win}->GetValue and
 				   ($data[0]->datatype ne 'xanes') and
@@ -1326,6 +1499,7 @@ sub plot {
   ## R
   } elsif (lc($space) eq 'r') {
     if ($how eq 'single') {
+      $data[0]->po->dphase($app->{main}->{PlotR}->{dphase}->GetValue);
       foreach my $which (qw(mag env re im pha)) {
 	if ($app->{main}->{PlotR}->{$which}->GetValue) {
 	  $data[0]->po->r_pl(substr($which, 0, 1));
@@ -1334,7 +1508,11 @@ sub plot {
       };
       $data[0]->plot_window('r') if $app->{main}->{PlotR}->{win}->GetValue;
     } else {
-      $_->plot($space) foreach @data;
+      $data[0]->po->dphase($app->{main}->{PlotR}->{mdphase}->GetValue);
+      foreach my $d (@data) {
+	$d->plot($space);
+	usleep($pause) if $pause;
+      };
     };
     $app->{main}->{plottabs}->SetSelection(3) if $app->spacetab;
 
@@ -1349,13 +1527,21 @@ sub plot {
       };
       $data[0]->plot_window('q') if $app->{main}->{PlotQ}->{win}->GetValue;
     } else {
-      $_->plot($space) foreach @data;
+      foreach my $d (@data) {
+	$d->plot($space);
+	usleep($pause) if $pause;
+      };
     };
     $app->{main}->{plottabs}->SetSelection(4) if $app->spacetab;
   };
 
-  $app->postplot($data[0]);
+  ## I am not clear why this is necessary...
+  foreach my $i (0 .. $#data) {
+    $data[$i]->bkg_fixstep($is_fixed[$i]);
+  };
+  $app->postplot($data[0], $is_fixed[0]);
   $app->{lastplot} = [$space, $how];
+  $app->heap_check(0);
   undef $busy;
 };
 
@@ -1399,6 +1585,7 @@ sub preplot {
     #$data->po->space($space);
     #$demeter->po->file(File::Spec->catfile($fd->GetDirectory, $fd->GetFilename));
   };
+  $data->po->plot_pause($app->{main}->{Other}->{pause}->GetValue);
   return 1;
 };
 sub postplot {
@@ -1414,8 +1601,11 @@ sub postplot {
     $data->unset_standard;
   };
   my $is_fixed = $data->bkg_fixstep;
-  $app->{main}->{Main}->{bkg_step}->SetValue($app->current_data->bkg_step);
-  $app->{main}->{Main}->{bkg_fixstep}->SetValue($is_fixed);
+  if ($data eq $app->current_data) {
+    $app->{main}->{Main}->{bkg_step}->SetValue($app->current_data->bkg_step);
+    $app->{main}->{Main}->{bkg_fixstep}->SetValue($is_fixed);
+  };
+  $data->bkg_fixstep($is_fixed);
 
   $app->{main}->{Other}->{singlefile}->SetValue(0);
   return;
@@ -1436,7 +1626,7 @@ sub quadplot {
     $app->{main}->{PlotK}->pull_single_values;
     $app->{main}->{PlotR}->pull_marked_values;
     $app->{main}->{PlotQ}->pull_marked_values;
-    $app->pull_kweight($data);
+    $app->pull_kweight($data, 'single');
     $data->plot('quad');
 
     $data->po->showlegend($showkey);
@@ -1450,7 +1640,7 @@ sub quadplot {
 sub plot_e00 {
   my ($app) = @_;
 
-  $app->preplot('e');
+  $app->preplot('e', $app->current_data);
   $app->{main}->{PlotE}->pull_single_values;
   $app->current_data->po->set(e_mu=>1, e_markers=>0, e_zero=>1, e_bkg=>0, e_pre=>0, e_post=>0,
 			      e_norm=>1, e_der=>0, e_sec=>0, e_i0=>0, e_signal=>0);
@@ -1466,7 +1656,7 @@ sub plot_e00 {
 sub plot_i0_marked {
   my ($app) = @_;
 
-  $app->preplot('e');
+  $app->preplot('e', $app->current_data);
   $app->{main}->{PlotE}->pull_single_values;
   $app->current_data->po->set(e_mu=>0, e_markers=>0, e_zero=>0, e_bkg=>0, e_pre=>0, e_post=>0,
 			      e_norm=>0, e_der=>0, e_sec=>0, e_i0=>1, e_signal=>0);
@@ -1481,10 +1671,19 @@ sub plot_i0_marked {
 };
 
 sub pull_kweight {
-  my ($app, $data) = @_;
+  my ($app, $data, $how) = @_;
   my $kw = $app->{main}->{kweights}->GetStringSelection;
   if ($kw eq 'kw') {
-    $data->po->kweight($data->fit_karb_value);
+    #$data->po->kweight($data->fit_karb_value);
+    if ($how eq 'single') {
+      $data->po->kweight($data->fit_karb_value);
+    } else {
+      ## check to see if marked groups all have the same arbitrary k-weight
+      my @kweights = map {$_->fit_karb_value} $app->marked_groups;
+      my $nuniq = grep {abs($_-$kweights[0]) > $EPSI} @kweights;
+      $data->po->kweight($data->fit_karb_value);
+      $data->po->kweight(-1) if $nuniq; # variable k-weighting if not all the same
+    };
   } else {
     $data->po->kweight($kw);
   };
@@ -1508,11 +1707,13 @@ sub mark {
     foreach my $i (0 .. $clb->GetCount-1) {
       if ($clb->GetIndexedData($i)->group eq $how->group) {
 	$clb->Check($i,1);
+	$clb->GetIndexedData($i)->marked(1);
 	last;
       };
     };
   } elsif ($how eq 'toggle') {
     $clb->Check($clb->GetSelection, not $clb->IsChecked($clb->GetSelection));
+    $clb->GetIndexedData($::app->current_index)->marked($clb->IsChecked($::app->current_index));
     return;
 
   } elsif ($how =~ m{all|none|invert}) {
@@ -1522,6 +1723,7 @@ sub mark {
 	      : ($how eq 'invert') ? not $clb->IsChecked($i)
 	      :                     $clb->IsChecked($i);
       $clb->Check($i, $val);
+      $clb->GetIndexedData($i)->marked($val);
     };
 
   } else {			# regexp mark or unmark
@@ -1545,6 +1747,7 @@ sub mark {
       next if ($clb->GetIndexedData($i)->name !~ m{$re});
       my $val = ($how eq 'regexp') ? 1 : 0;
       $clb->Check($i, $val);
+      $clb->GetIndexedData($i)->marked($val);
     };
   };
   if (ref($how) !~ m{Demeter}) {
@@ -1556,8 +1759,9 @@ sub mark {
 
 
 sub merge {
-  my ($app, $how) = @_;
+  my ($app, $how, $noplot) = @_;
   return if $app->is_empty;
+  $noplot ||= 0;
   my $busy = Wx::BusyCursor->new();
   my @data = ();
   my $max = 0;
@@ -1571,41 +1775,59 @@ sub merge {
   };
   if (not @data) {
     $app->{main}->status("No groups are marked.  Merge cancelled.");
+    undef $busy;
     return;
   };
 
+  $app->{main}->status("Merging marked groups");
   my $merged = $data[0]->merge($how, @data);
   $max = q{} if not $max;
   $max = sprintf(" %d", $max+1) if $max;
   $merged->name('merge'.$max);
   $app->{main}->{list}->AddData($merged->name, $merged);
-  $app->{main}->{list}->SetSelection($app->{main}->{list}->GetCount-1);
+  my $n = 1;
+
+  if ($data[0] -> reference) {
+    my @refs = grep {$_} map  {$_->reference} @data;
+    $app->{main}->status("Merging marked groups");
+    my $refmerged = $refs[0]->merge($how, @refs);
+    $refmerged->name("  Ref ". $merged->name);
+    $refmerged->reference($merged);
+    $app->{main}->{list}->AddData($refmerged->name, $refmerged);
+    $n = 2;
+  };
+
+  $app->{main}->{list}->SetSelection($app->{main}->{list}->GetCount-$n);
   $app->OnGroupSelect(q{}, $app->{main}->{list}->GetSelection, 0);
   $app->{main}->{Main}->mode($merged, 1, 0);
-  $app->{main}->{list}->Check($app->{main}->{list}->GetCount-1, 1);
+  $app->{main}->{list}->Check($app->{main}->{list}->GetCount-$n, 1);
+  $merged->marked(1);
   $app->modified(1);
 
   ## handle plotting, respecting the choice in the athena->merge_plot config parameter
-  my $plot = $merged->co->default('athena', 'merge_plot');
-  if ($plot =~ m{stddev|variance}) {
-    $app->{main}->{PlotE}->pull_single_values;
-    $app->{main}->{PlotK}->pull_single_values;
-    $merged->plot($plot);
-  } elsif (($plot eq 'marked') and ($how =~ m{\A[en]\z})) {
-    $app->{main}->{PlotE}->pull_single_values;
-    $merged->po->set(e_mu=>1, e_bkg=>0, e_pre=>0, e_post=>0, e_norm=>0, e_der=>0, e_sec=>0, e_markers=>0, e_i0=>0, e_signal=>0);
-    $merged->po->set(e_norm=>1) if ($how eq 'n');
-    $merged->po->start_plot;
-    $_->plot('e') foreach (@data, $merged);
-  } elsif (($plot eq 'marked') and ($how eq 'k')) {
-    $app->{main}->{PlotK}->pull_single_values;
-    $merged->po->chie(0);
-    $merged->po->start_plot;
-    $_->plot('k') foreach (@data, $merged);
+  if (not $noplot) {
+    my $plot = $merged->co->default('athena', 'merge_plot');
+    if ($plot =~ m{stddev|variance}) {
+      $app->{main}->{PlotE}->pull_single_values;
+      $app->{main}->{PlotK}->pull_single_values;
+      $merged->plot($plot);
+    } elsif (($plot eq 'marked') and ($how =~ m{\A[en]\z})) {
+      $app->{main}->{PlotE}->pull_single_values;
+      $merged->po->set(e_mu=>1, e_bkg=>0, e_pre=>0, e_post=>0, e_norm=>0, e_der=>0, e_sec=>0, e_markers=>0, e_i0=>0, e_signal=>0);
+      $merged->po->set(e_norm=>1) if ($how eq 'n');
+      $merged->po->start_plot;
+      $_->plot('e') foreach (@data, $merged);
+    } elsif (($plot eq 'marked') and ($how eq 'k')) {
+      $app->{main}->{PlotK}->pull_single_values;
+      $merged->po->chie(0);
+      $merged->po->start_plot;
+      $_->plot('k') foreach (@data, $merged);
+    };
+    $merged->po->e_markers(1);
   };
-  $merged->po->e_markers(1);
-  undef $busy;
   $app->{main}->status("Made merged data group");
+  $app->heap_check(0);
+  undef $busy;
 };
 
 sub modified {
@@ -1624,6 +1846,7 @@ sub modified {
   my $c = $app->{main}->{save_start_color};
   $app->{main}->{save}->SetBackgroundColour($c) if not $is_modified;
   my $j = $demeter->co->default('athena', 'save_alert');
+  $app->autosave if ($app->{modified} % $demeter->co->default('athena', 'autosave_frequency') == 0);
   return if ($j <= 0);
   my $n = min( 1, $app->{modified}/$j );
   if ($app->{modified}) {
@@ -1638,12 +1861,39 @@ sub modified {
   };
 };
 
+sub autosave {
+  my ($app, $j) = @_;
+  return if ($app->{modified} == 0);
+  return if not $demeter->co->default('athena', 'autosave');
+  return if ($demeter->co->default('athena', 'autosave_frequency') < 1);
+  $app->{main}->status("Performing autosave ...", "wait|nobuffer");
+  $app -> Export('all', File::Spec->catfile($demeter->stash_folder, $AUTOSAVE_FILE));
+  $app->{main}->status("Successfully performed autosave.");
+};
+
 sub Clear {
   my ($app) = @_;
   $app->{main}->{currentproject} = q{};
   $app->{main}->{project}->SetLabel('<untitled>');
   $app->modified(not $app->is_empty);
   $app->{main}->status(sprintf("Unamed the current project."));
+};
+
+## in future times, check to see if Ifeffit is being used
+sub heap_check {
+  my ($app, $show) = @_;
+  if ($app->current_data->mo->heap_used > 0.98) {
+    $app->{main}->status("You have used all of Ifeffit's memory!  It is likely that your data is corrupted!", "error");
+  } elsif ($app->current_data->mo->heap_used > 0.95) {
+    $app->{main}->status("You have used more than 95% of Ifeffit's memory.  Save your work!", "error");
+  } elsif ($app->current_data->mo->heap_used > 0.9) {
+    $app->{main}->status("You have used more than 90% of Ifeffit's memory.  Save your work!", "error");
+  } elsif ($show) {
+    $app->current_data->ifeffit_heap;
+    $app->{main}->status(sprintf("You are currently using %.1f%% of Ifeffit's %.1f Mb of memory",
+				 100*$app->current_data->mo->heap_used,
+				 $app->current_data->mo->heap_free/(1-$app->current_data->mo->heap_used)/2**20));
+  };
 };
 
 sub document {
@@ -1689,8 +1939,8 @@ sub status {
             : ($type =~ m{wait})   ? $wait
             : ($type =~ m{error})  ? $error
 	    :                       $normal;
-  $self->{statusbar}->SetBackgroundColour($color);
-  $self->{statusbar}->SetStatusText($text);
+  $self->GetStatusBar->SetBackgroundColour($color);
+  $self->GetStatusBar->SetStatusText($text);
   return if ($type =~ m{nobuffer});
   $self->{Status}->put_text($text, $type);
   $self->Refresh;
@@ -1733,6 +1983,7 @@ use Wx qw(:everything);
 sub AddData {
   my ($clb, $name, $data) = @_;
   $clb->Append($name);
+  $clb->Check($clb->GetCount-1, $data->marked);
   push @{$clb->{datalist}}, $data;
 };
 
@@ -1767,7 +2018,64 @@ sub ClearAll {
   $clb->Clear;
 };
 
-## also need a method for reordering items on the list...
+
+package Demeter::UI::Athena::DropTarget;
+
+use Wx qw( :everything);
+use base qw(Wx::DropTarget);
+use Demeter::UI::Artemis::DND::PlotListDrag;
+
+use Scalar::Util qw(looks_like_number);
+
+sub new {
+  my $class = shift;
+  my $this = $class->SUPER::new;
+
+  my $data = Demeter::UI::Artemis::DND::PlotListDrag->new();
+  $this->SetDataObject( $data );
+  $this->{DATA} = $data;
+  return $this;
+};
+
+sub OnData {
+  my ($this, $x, $y, $def) = @_;
+
+  my $list = $::app->{main}->{list};
+  return 0 if not $list->GetCount;
+  $this->GetData;		# this line is what transfers the data from the Source to the Target
+
+  my $from = ${ $this->{DATA}->{Data} };
+  my $from_object  = $list->GetIndexedData($from);
+  my $from_label   = $list->GetString($from);
+  my $from_checked = $list->IsChecked($from);
+  my $point = Wx::Point->new($x, $y);
+  my $to = $list->HitTest($point);
+  my $to_label   = $list->GetString($to);
+
+  return 0 if ($to == $from);	# either of these two would leave the list in the same state
+#  return 0 if ($to == $from+1);
+
+  my $message;
+  $list -> DeleteData($from);
+  if ($to == -1) {
+    $list -> AddData($from_label, $from_object);
+    $list -> Check($list->GetCount-1, $from_checked);
+    $::app->{main}->{list}->SetSelection($from);
+    $message = sprintf("Moved '%s' to the last position.", $from_label);
+  } else {
+    $message = sprintf("Moved '%s' above %s.", $from_label, $to_label);
+    --$to if ($from < $to);
+    $list -> InsertData($from_label, $to, $from_object);
+    #$list -> SetClientData($to, $from_object);
+    $list -> Check($to, $from_checked);
+    $::app->{main}->{list}->SetSelection($to);
+  };
+  $::app->OnGroupSelect(q{}, $::app->{main}->{list}->GetSelection, 0);
+  $::app->modified(1);
+  $::app->{main}->status($message);
+
+  return $def;
+};
 
 1;
 
@@ -1779,7 +2087,7 @@ Demeter::UI::Athena - XAS data processing
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.4.
+This documentation refers to Demeter version 0.5.
 
 =head1 SYNOPSIS
 

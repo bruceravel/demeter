@@ -87,6 +87,7 @@ has 'indeces'        => (is => 'rw', isa => 'Str',    default => q{});
 has 'location'       => (is => 'rw', isa => 'Str',    default => q{});
 has 'fit_performed'  => (is => 'rw', isa => 'Bool',   default => 0);
 has 'ignore_errors'  => (is => 'rw', isa => 'Bool',   default => 0);
+has 'ignore_nidp'    => (is => 'rw', isa => 'Bool',   default => 0);
 has 'stop'           => (is => 'rw', isa => 'Bool',   default => 0);
 has 'troubletext'    => (is => 'rw', isa => 'Str',    default => q{});
 
@@ -175,6 +176,28 @@ has 'correlations' => (
 				     set       => 'set_correlations',
 				    }
 		      );
+has 'parameters' => (
+		     metaclass => 'Collection::Array',
+		     is        => 'rw',
+		     isa       => 'ArrayRef',
+		     default   => sub { [] },
+		     provides  => {
+				   'push'  => 'push_parameters',
+				   'pop'   => 'pop_parameters',
+				   'clear' => 'clear_parameters',
+				  }
+		    );
+has 'pathresults' => (
+		      metaclass => 'Collection::Array',
+		      is        => 'rw',
+		      isa       => 'ArrayRef',
+		      default   => sub { [] },
+		      provides  => {
+				    'push'  => 'push_pathresults',
+				    'pop'   => 'pop_pathresults',
+				    'clear' => 'clear_pathresults',
+				   }
+		     );
 
 sub BUILD {
   my ($self, @params) = @_;
@@ -267,7 +290,7 @@ sub _verify_fit {
   $trouble_found += $self->S_data_parameters;
 
   ## 11. check number of guesses against Nidp
-  $trouble_found += $self->S_nidp;
+  $trouble_found += $self->S_nidp unless $self->ignore_nidp;
 
   ## 12. verify that Rmin is >= Rbkg for data imported as mu(E)
   $trouble_found += $self->S_rmin_rbkg;
@@ -290,8 +313,14 @@ sub _verify_fit {
   ## 18. check that no more than one path is flagged as the default path
   $trouble_found += $self->S_default_path;
 
-  ## 18. check that GDS math expressions do not have loops or cycles
+  ## 19. check that GDS math expressions do not have loops or cycles
   $trouble_found += $self->S_cycle_loop;
+
+  ## 20. check for obvious cases of a data set used more than once
+  $trouble_found += $self->S_data_collision;
+
+  ## 21. check that each data set used in the fit has one or more paths assigned to it
+  $trouble_found += $self->S_data_paths;
 
   return $trouble_found;
 };
@@ -338,7 +367,7 @@ sub fit {
   if ($trouble_found) {
     $self->stop(1);
     my $text = $self->trouble_report;
-    carp($text);
+    carp($text) if ($self->mo->ui ne 'Wx');
     $self->troubletext($text);
     if (not $self->ignore_errors) {
       if ($self->mo->ui eq 'Wx') {
@@ -365,12 +394,13 @@ sub fit {
 
   ## get a list of all data sets included in the fit
   my @datasets = @{ $self->data };
-  my $ndata = $#datasets + 1;
+  my @useddata = grep {$_->fit_include && $_} @datasets;
+  my $ndata = $#useddata+1;
   my $ipath = 0;
   my $count = 0;
   my $str = q{};
-  $self->name("fit to " . join(", ", map {$_->name} @datasets)) if not $self->name;
-  $self->description("fit to " . join(", ", map {$_->name} @datasets)) if not $self->description;
+  $self->name("fit to " . join(", ", map {$_->name} @useddata)) if not $self->name;
+  $self->description("fit to " . join(", ", map {$_->name} @useddata)) if not $self->description;
 
   ## munge parameters and path parameters to deal with lguess
   $command .= $self->_local_parameters;
@@ -440,7 +470,7 @@ sub fit {
   $command .= $self->_gds_commands('after');
 
   ## make residual and background arrays
-  foreach my $data (@datasets) {
+  foreach my $data (@useddata) {
     $command .= $data->template("fit", "residual");
     if ($data->fit_do_bkg) {
       $command .= $data->template("fit", "background");
@@ -463,12 +493,13 @@ sub fit {
   $self->mo->increment_fit;
 
   ## prep data for plotting
-  foreach my $data (@datasets) {
+  foreach my $data (@useddata) {
     $data->update_fft(1);
   };
 
   $self->stop_spinner if ($self->mo->ui eq 'screen');
 
+  $self->ifeffit_heap;
   return $self;
 };
 alias feffit => 'fit';
@@ -715,8 +746,14 @@ sub evaluate {
   ## get fit and data set statistics (store in fit and data objects respectively)
   $self->fetch_statistics;
 
-  ## get correlations (store in fit object?)
+  ## get_parameter values for this fit
+  $self->fetch_parameters;
+
+  ## get correlations
   $self->fetch_correlations;
+
+  ## get correlations
+  $self->fetch_pathresults;
 
   ## set properties
   $self->set(time_of_fit=>$self->now, fit_performed=>1);
@@ -769,6 +806,7 @@ sub logtext {
   $self -> set(header=>$header, footer=>$footer);
   ($header .= "\n") if ($header !~ m{\n\z});
   my $text = q{};
+  return $text if (not @{ $self->paths });
 
   $text .= $header;
   $text .= $self->template("report", "properties"); #properties_header;
@@ -791,25 +829,25 @@ sub logtext {
       $data->part_bft("fit") if (lc($data->fitsum) eq 'sum');
     };
     $text .= $data->fit_parameter_report($#{ $self->data }, $self->fit_performed);
-    my @all_paths = @{ $self->paths };
-    if (@all_paths) {
-      ## figure out how wide the column of path labels should be
-      my $length = max( map { length($_->name) if ($_->data eq $data) } @all_paths ) + 1;
-      $text .= $all_paths[0]->row_main_label($length);
-      foreach my $path (@all_paths) {
-	next if not defined($path);
-	next if ($path->data ne $data);
-	next if not $path->include;
-	$text .= $path->row_main($length);
-      };
-      $text .= $/;
-      $text .= $all_paths[0]->row_second_label($length);
-      foreach my $path (@all_paths) {
-	next if not defined($path);
-	next if ($path->data ne $data);
-	next if not $path->include;
-	$text .= $path->row_second($length);
-      };
+
+    my $length  = max( map { length($_->[1]) if ($_->[0] eq $data->group) } @{ $self->pathresults } )  || 10;
+    $length += 1;
+    my $pattern = '%-' . $length . 's';
+    $text .= $self->paths->[0]->row_main_label($length);
+    foreach my $p (@{ $self->pathresults }) {
+      next if ($data->group ne $p->[0]);
+      next if not $p->[11];
+      $text .= sprintf($pattern, $p->[1]);
+      $text .= sprintf(" %8.3f %7.3f %9.5f %7.3f %8.5f %8.5f %8.5f\n",
+		       $p->[2], $p->[3], $p->[4], $p->[5], $p->[6], $p->[7], $p->[6]+$p->[7]);
+    };
+    $text .= $/;
+    $text .= $self->paths->[0]->row_second_label($length);
+    foreach my $p (@{ $self->pathresults }) {
+      next if ($data->group ne $p->[0]);
+      next if not $p->[11];
+      $text .= sprintf($pattern, $p->[1]);
+      $text .= sprintf(" %9.5f %9.5f %9.5f\n", $p->[8], $p->[9], $p->[10]);
     };
   };
 
@@ -828,16 +866,23 @@ sub gds_report {
     my $tt = $type;
     my $head = "$type parameters:\n";
     my $string = q{};
-    foreach my $gds (@{ $self->gds} ) {
+    foreach my $gds (@{ $self->parameters} ) {
 ## 	## need to not lose guesses that get flagged as local by
 ## 	## virtue of a math expression dependence
 ## 	if ( ($type eq 'lguess') and ($gds->type) and (not $gds->Use) ) {
 ## 	  $string .= "  " . $gds->report(0);
 ## 	  next;
 ## 	};
-      next if ($gds->gds ne $type);
-      next if (not $gds->Use);
-      $string .= "  " . $gds->report(0);
+      next if ($gds->[1] ne $type);
+      next if (not $gds->[5]);
+      my $toss = Demeter::GDS->new(name    => $gds->[0],
+				   gds     => $gds->[1],
+				   mathexp => $gds->[2],
+				   bestfit => $gds->[3],
+				   error   => $gds->[4],
+				  );
+      $string .= "  " . $toss->report(0);
+      $toss->DEMOLISH;
     };
     if ($string) {
       $text.= $head . $string . "\n";
@@ -935,6 +980,14 @@ sub happiness_report {
   return $string;
 };
 
+sub fetch_parameters {
+  my ($self) = @_;
+  foreach my $g (@ {$self->gds}) {
+    $self->push_parameters([$g->name, $g->gds, $g->mathexp, $g->bestfit, $g->error, $g->Use]);
+  };
+};
+
+
 
 ## handle correlations: store every correlation as attributes of the
 ## object.  provide a variety of convenience functions for accessing
@@ -1018,6 +1071,18 @@ sub fetch_correlations {
   return 0;
 };
 
+
+sub fetch_pathresults {
+  my ($self) = @_;
+  foreach my $p (@ {$self->paths}) {
+    $self->push_pathresults([$p->data->group,
+			     $p->get(qw(name n s02_value sigma2_value
+					e0_value delr_value reff
+					ei_value third_value fourth_value include))]);
+  };
+};
+
+
 sub correl {
   my ($self, $x, $y) = @_;
   my $value = ($self->exists_in_correlations($x)) ? $self->get_correlations($x)->{$y}
@@ -1054,8 +1119,8 @@ sub correl_report {
 sub fetch_gds {
   my ($self, $which) = @_;
   $which = lc($which);
-  foreach my $g (@{$self->gds}) {
-    return $g if ($which eq lc($g->name));
+  foreach my $g (@{$self->parameters}) {
+    return $g if ($which eq lc($g->[0]));
   };
   return 0;
 };
@@ -1256,9 +1321,11 @@ override 'deserialize' => sub {
     my ($r_attributes, $r_x, $r_y) = YAML::Tiny::Load($yaml);
     delete $r_attributes->{fit_pcpath};	   # correct an early
     delete $r_attributes->{fit_do_pcpath}; # design mistake...
-    my @array = %$r_attributes;
+    my %hash = %$r_attributes;
     my $savecv = $self->mo->datacount;
-    my $this = Demeter::Data -> new(@array);
+    my $this = $self->mo->fetch('Data', $hash{group}) || Demeter::Data -> new(group=>$hash{group});
+    delete $hash{group};
+    $this->set(%hash);
     $this->cv($r_attributes->{cv}||0);
     $self->mo->datacount($savecv);
     $datae{$this->group} = $this;
@@ -1300,13 +1367,16 @@ override 'deserialize' => sub {
   my @feff = ();
   if ($args{file}) {
     foreach my $f (@$r_feff) {
-      my $this = Demeter::Feff->new(group=>$f);
+      my $ws = $f->workspace;
+      $ws =~ s{\\}{/}g;		# path separators...
+      my $where = Cwd::realpath(File::Spec->catfile($args{folder}, '..', '..', 'feff', basename($ws)));
+      my $this = Demeter::Feff->new(group=>$f, workspace=>$where);
       $parents{$this->group} = $this;
       my $yaml = ($args{file}) ? $zip->contents("$f.yaml")
 	: $self->slurp(File::Spec->catfile($args{folder}, "$f.yaml"));
       if (defined $yaml) {
 	my @refs = YAML::Tiny::Load($yaml);
-	$this->read_yaml(\@refs);
+	$this->read_yaml(\@refs, $where);
 	foreach my $s (@{ $this->pathlist }) {
 	  $sps{$s->group} = $s
 	};
@@ -1319,6 +1389,7 @@ override 'deserialize' => sub {
   my @paths = ();
   $yaml = ($args{file}) ? $zip->contents("paths.yaml")
     : $self->slurp(File::Spec->catfile($args{folder}, "paths.yaml"));
+  #print File::Spec->catfile($args{folder}, "paths.yaml"),$/;
   @list = YAML::Tiny::Load($yaml);
   foreach my $plotlike (@list) {
     my $dg = $plotlike->{datagroup};
@@ -1330,31 +1401,45 @@ override 'deserialize' => sub {
     } elsif (exists $plotlike->{nnnntext}) { # this is an FPath
       1;
     };
-    my @array = %{ $plotlike };
+    my %hash = %{ $plotlike };
     my $this;
     if (exists $plotlike->{ipot}) {          # this is an SSPath
       my $feff = $parents{$plotlike->{parentgroup}} || $data[0] -> mo -> fetch('Feff', $plotlike->{parentgroup});
       $this = Demeter::SSPath->new(parent=>$feff);
-      $this -> set(@array);
+      $this -> set(%hash);
       $this -> sp($this);
       #print $this, "  ", $this->sp, $/;
     } elsif (exists $plotlike->{nnnntext}) { # this is an FPath
       $this = Demeter::FPath->new();
-      $this -> set(@array);
+      $this -> set(%hash);
       $this -> sp($this);
       $this -> parentgroup($this->group);
       $this -> parent($this);
       $this -> workspace($this->stash_folder);
     } elsif (exists $plotlike->{absorber}) { # this is an FSPath
-      my $feff = $parents{$plotlike->{parentgroup}} || $data[0] -> mo -> fetch('Feff', $plotlike->{parentgroup});
-      $this = Demeter::FSPath->new();
-      $this -> set(@array);
-      my $where = Cwd::realpath(File::Spec->catfile($args{folder}, '..', '..', 'feff', basename($feff->workspace)));
-      $this -> set(workspace=>$where, folder=>$where, parent=>$data[0] -> mo -> fetch('Feff', $plotlike->{parentgroup}));
-      my $sp = $sps{$this->spgroup} || $data[0] -> mo -> fetch('ScatteringPath', $this->spgroup);
-      $this -> sp($sp);
+      #my $feff = $parents{$plotlike->{parentgroup}} || $data[0] -> mo -> fetch('Feff', $plotlike->{parentgroup});
+      my $feff = $data[0] -> mo -> fetch('Feff', $plotlike->{parentgroup});
+      my $ws = $feff->workspace;
+      $ws =~ s{\\}{/}g;		# path separators...
+      my $where = Cwd::realpath(File::Spec->catfile($args{folder}, '..', '..', 'feff', basename($ws)));
+      $feff->workspace($where);
+      $this = $self->mo->fetch("FSPath", $hash{group}) || Demeter::FSPath->new();
+      $this->feff_done(0);
+      $hash{folder} = $where;
+      $hash{update_path} = 1;
+      $hash{update_fft}  = 1;
+      $hash{update_bft}  = 1;
+      delete $hash{feff_done};
+      delete $hash{workspace};
+      delete $hash{folder};
+      $this -> set(parent=>$feff);
+      $this -> set(workspace=>$where, folder=>$where);
+      $this -> set(%hash);
+      foreach my $att (qw(e0 s02 delr sigma2 third fourth)) {
+	$this->$att($hash{$att});
+      };
     } else {
-      $this = Demeter::Path->new(@array);
+      $this = Demeter::Path->new(%hash);
       my $sp = $sps{$this->spgroup} || $data[0] -> mo -> fetch('ScatteringPath', $this->spgroup);
       $this -> sp($sp);
       #$this -> folder(q{});
@@ -1501,7 +1586,7 @@ Demeter::Fit - Fit EXAFS data using Ifeffit
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.4.
+This documentation refers to Demeter version 0.5.
 
 =head1 SYNOPSIS
 
@@ -1597,6 +1682,16 @@ performing the fit.
 
 Minimum correlation reported in the log file.  This must be a number
 between 0 and 1.
+
+=item C<ignore_nidp>
+
+If this boolean attribute is true, Demeter will not perform the sanity
+check which verifies that the number of guess parameters is smaller
+than the number of independent points.  Just because this parameter
+exists, B<do not> presume that this is a good idea.  If you run a fit
+with too many free parameters, best fit values, error bars and
+correlations will not be meaningful and the fit that you run cannot be
+reliably interpreted in a statistical sense.
 
 =back
 

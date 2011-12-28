@@ -4,25 +4,27 @@ use MooseX::Aliases;
 
 use Demeter::NumTypes qw( NonNeg Ipot );
 
-use Chemistry::Elements qw (get_Z);
+use Chemistry::Elements qw (get_Z get_name get_symbol);
 
 ## SS histogram attributes
 has 'rmin'        => (is	    => 'rw',
 		      isa	    => 'Num',
 		      default	    => 0.0,
-		      trigger	    => sub{ my($self, $new) = @_; $self->update_bins(1) if $new},
+		      trigger	    => sub{ my($self, $new) = @_; $self->update_rdf(1) if $new},
 		      documentation => "The lower bound of the SS histogram to be extracted from the cluster");
 has 'rmax'        => (is	    => 'rw',
 		      isa	    => 'Num',
 		      default	    => 5.6,
-		      trigger	    => sub{ my($self, $new) = @_; $self->update_bins(1) if $new},
+		      trigger	    => sub{ my($self, $new) = @_; $self->update_rdf(1) if $new},
 		      documentation => "The upper bound of the SS histogram to be extracted from the cluster");
 has 'ipot'        => (is => 'rw', isa => Ipot, default => 1,
 		      traits => ['MooseX::Aliases::Meta::Trait::Attribute'],
-		      alias => 'ipot1');
+		      alias => 'ipot1',
+		      trigger => sub{my ($self, $new) = @_; $self->update_rdf(1)   if $new});
 has 'bin'         => (is            => 'rw',
 		      isa           => 'Num',
-		      default       => 0.005,);
+		      default       => 0.005,
+		      trigger => sub{my ($self, $new) = @_; $self->update_bins(1)   if $new},);
 has 'ssrdf'       => (is	    => 'rw',
 		      isa	    => 'ArrayRef',
 		      default	    => sub{[]},
@@ -36,12 +38,13 @@ has 'npairs'      => (is            => 'rw',
 		      default       => 0);
 has 'rattle'      => (is            => 'rw',
 		      isa           => 'Bool',
-		      default       => 0);
+		      default       => 0,
+		      trigger       => sub{my ($self, $new) = @_; $self->update_fpath(1)   if $new});
 
 sub _bin {
   my ($self) = @_;
   my (@x, @y);
-  die("No history file has been read, thus no distribution functions have been computed\n") if ($#{$self->ssrdf} == -1);
+  die("No MD output file has been read, thus no distribution functions have been computed\n") if ($#{$self->ssrdf} == -1);
   my $bin_start = sqrt($self->ssrdf->[0]);
   my ($population, $average) = (0,0);
   $self->start_spinner(sprintf("Rebinning RDF into %.4f A bins", $self->bin)) if ($self->mo->ui eq 'screen');
@@ -75,8 +78,11 @@ sub _bin {
 
 sub rdf {
   my ($self) = @_;
+  $self->computing_rdf(1);
   my @rdf = ();
   my $count = 0;
+  my $rmin    = $self->rmin;
+  my $rmax    = $self->rmax;
   my $rminsqr = $self->rmin*$self->rmin;
   my $rmaxsqr = $self->rmax*$self->rmax;
   if ($Demeter::mode->ui eq 'screen') {
@@ -86,7 +92,16 @@ sub rdf {
   my $abs_species  = get_Z($self->feff->abs_species);
   my $scat_species = get_Z($self->feff->potentials->[$self->ipot]->[2]);
   my ($x0, $x1, $x2) = (0,0,0);
+  my ($y0, $y1, $y2) = (0,0,0);
+  my ($xx0, $xx1, $xx2) = (0,0,0);
+  my (@vec0, @vec1, @vec2);
+  if ($self->periodic) {	# pre-derefencing these vectors speeds up the loop where
+    @vec0 = @{$self->lattice->[0]}; # the periodic boundary conditions are applied by a
+    @vec1 = @{$self->lattice->[1]}; # substantial amount
+    @vec2 = @{$self->lattice->[2]};
+  };
   my @this;
+  my $rsqr = 0;
 
   foreach my $step (@{$self->clusters}) {
     @this = @$step;
@@ -96,12 +111,37 @@ sub rdf {
     foreach my $i (0 .. $#this) {
       next if ($abs_species != $this[$i]->[3]);
       ($x0, $x1, $x2) = @{$this[$i]};
-      foreach my $j ($i+1 .. $#this) { # remember that all pairs are doubly degenerate
+      foreach my $j (0 .. $#this) { # remember that all pairs are doubly degenerate (only if monoatomic)
+	next if ($i == $j);
 	next if ($scat_species != $this[$j]->[3]);
 	my $rsqr = ($x0 - $this[$j]->[0])**2
 	         + ($x1 - $this[$j]->[1])**2
 	         + ($x2 - $this[$j]->[2])**2; # this loop has been optimized for speed, hence the weird syntax
-	push @rdf, $rsqr if (($rsqr >= $rminsqr) and ($rsqr <= $rmaxsqr));
+	if (($rsqr >= $rminsqr) and ($rsqr <= $rmaxsqr)) {
+	  push @rdf, $rsqr;
+	} elsif ($self->periodic and $self->use_periodicity) {
+	  ## apply periodic boundary conditions by applying 1, 0, or -1 of all possible lattice translations to the possible scatterer
+	  ($y0, $y1, $y2) = @{$this[$j]};
+	OUTER: foreach my $a (-1,0,1) {
+	    foreach my $b (-1,0,1) {
+	      foreach my $c (-1,0,1) {
+		next if (($a == 0) and ($b == 0) and ($c == 0));
+		$xx0 = $y0 + $a*$vec0[0] + $b*$vec1[0] + $c*$vec2[0] - $x0;
+		next if abs($xx0) > $rmax;
+		$xx1 = $y1 + $a*$vec0[1] + $b*$vec1[1] + $c*$vec2[1] - $x1;
+		next if abs($xx1) > $rmax;
+		$xx2 = $y2 + $a*$vec0[2] + $b*$vec1[2] + $c*$vec2[2] - $x2;
+		next if abs($xx2) > $rmax;
+
+		$rsqr = $xx0**2 + $xx1**2 + $xx2**2;
+		if (($rsqr >= $rminsqr) and ($rsqr <= $rmaxsqr)) {
+		  push @rdf, $rsqr;
+		  last OUTER;
+		};
+	      };
+	    };
+	  };
+	};
 	#if (($i==1) and ($j==2)) {
 	#  print join("|", @{$this[$i]}, @{$this[$j]}, $rsqr), $/;
 	#};
@@ -116,6 +156,10 @@ sub rdf {
   $self->stop_spinner if ($self->mo->ui eq 'screen');
   $self->ssrdf(\@rdf);
   $self->npairs(($#rdf+1)/$self->nsteps);
+  $self->name(sprintf("%s-%s SS histogram", get_symbol($self->feff->abs_species), get_symbol($self->feff->potentials->[$self->ipot]->[2])));
+
+  $self->computing_rdf(0);
+  $self->update_rdf(0);
   return $self;
 };
 
@@ -145,8 +189,10 @@ sub chi {
   my $sum   = $first->population;
   my @pop   = ($first->population);
   my @r     = ($first->R);
+  $self->fpath_count(0);
   foreach my $i (1 .. $#{ $paths }) {
     #$paths->[$i]->update_path(1);
+    $self->fpath_count($i);
     $self->call_sentinal;
     my $save = $paths->[$i]->group; # add up the SSPaths without requiring an Ifeffit group for each one
     $paths->[$i]->Index(255);
@@ -227,6 +273,20 @@ sub plot {
   return $self;
 };
 
+sub info {
+  my ($self) = @_;
+  my $text = sprintf "Made histogram from %s file '%s'\n\n", uc($self->backend), $self->file;
+  $text   .= sprintf "Number of time steps:     %d\n",   $self->nsteps;
+  $text   .= sprintf "Absorber:                 %s\n",   get_name($self->feff->abs_species);
+  $text   .= sprintf "Scatterer:                %s\n",   get_name($self->feff->potentials->[$self->ipot]->[2]);
+  $text   .= sprintf "Pairs in RDF:             %d\n",   $#{$self->ssrdf}+1;
+  $text   .= sprintf "Pairs per timestep:       %d\n",   $self->npairs;
+  $text   .= sprintf "Used periodic boundaries: %s\n",   $self->yesno($self->periodic and $self->use_periodicity);
+  $text   .= sprintf "Bin size:                 %.4f\n", $self->bin;
+  $text   .= sprintf "Number of bins:           %d\n",   $#{$self->positions}+1;
+  return $text;
+};
+
 
 1;
 
@@ -237,7 +297,7 @@ Demeter::Feff::Distributions::SS - Histograms forsingle scattering paths
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.4.
+This documentation refers to Demeter version 0.5.
 
 =head1 SYNOPSIS
 

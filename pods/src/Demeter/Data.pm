@@ -31,6 +31,7 @@ use Moose;
 extends 'Demeter';
 with 'Demeter::Data::Arrays';
 with 'Demeter::Data::Athena';
+with 'Demeter::Data::Beamlines';
 with 'Demeter::Data::Defaults';
 with 'Demeter::Data::E0';
 with 'Demeter::Data::FT';
@@ -54,6 +55,7 @@ use Demeter::StrTypes qw( Element
 			  Window
 			  Empty
 			  DataType
+			  FileName
 		       );
 use Demeter::NumTypes qw( Natural
 			  PosInt
@@ -71,7 +73,9 @@ has '+data'       => (isa => Empty.'|Demeter::Data');
 has 'is_mc'       => (is => 'ro', isa => 'Bool', default => 0); # is not Demeter::Data::MultiChannel
 has 'tag'         => (is => 'rw', isa => 'Str',  default => q{});
 has 'cv'          => (is => 'rw', isa => 'Num',  default => 0);
-has 'file'        => (is => 'rw', isa => 'Str',  default => $NULLFILE,
+has 'collided'    => (is => 'rw', isa => 'Bool', default => 0);
+
+has 'file'        => (is => 'rw', isa => FileName,  default => $NULLFILE,
 		      trigger => sub{my ($self, $new) = @_;
 				     if ($new and ($new ne $NULLFILE)) {
 				       $self->update_data(1);
@@ -80,6 +84,7 @@ has 'file'        => (is => 'rw', isa => 'Str',  default => $NULLFILE,
 				   });
 has 'source'      => (is => 'rw', isa => 'Str',  default => $NULLFILE,);
 has 'prjrecord'   => (is => 'rw', isa => 'Str',  default => q{});
+has 'read_as_raw' => (is => 'rw', isa => 'Bool', default => 0);
 has 'from_athena' => (is => 'rw', isa => 'Bool', default => 0);
 has 'from_yaml'   => (is => 'rw', isa => 'Bool', default => 0);
 subtype 'FitSum'
@@ -90,6 +95,7 @@ has 'fitsum'      => (is => 'rw', isa => 'FitSum', default => q{});
 has 'fitting'     => (is => 'rw', isa => 'Bool',   default => 0);
 has 'plotkey'     => (is => 'rw', isa => 'Str',    default => q{});
 has 'frozen'      => (is => 'rw', isa => 'Bool',   default => 0);
+has 'marked'      => (is => 'rw', isa => 'Bool',   default => 0);
 
 has 'provenance'  => (is => 'rw', isa => 'Str',    default => q{});
 has 'importance'  => (is => 'rw', isa => 'Num',    default => 1);
@@ -116,7 +122,7 @@ has 'referencegroup' => (is => 'rw', isa => 'Str',     default => q{});
 has  $_  => (is => 'rw', isa => 'Str',  default => q{},
 	     trigger => sub{ my ($self, $new) = @_;
 			     if ($new) {
-			       $self->datatype('xmu');
+			       $self->datatype('xmu') if $self->datatype eq 'chi';
 			       $self->update_columns(1);
 			       $self->is_col(1)
 			     }
@@ -130,12 +136,22 @@ has  denominator  => (is => 'rw', isa => 'Str',  default => q{1},
 					$self->is_col(1)
 				      }
 				    });
+has 'chi_column' => (is => 'rw', isa => 'Str',  default => q{1},
+		     trigger => sub{ my ($self, $new) = @_;
+				     if ($new) {
+				       $self->datatype('chi') if $self->datatype ne 'chi';
+				       $self->update_columns(1);
+				       $self->is_col(1)
+				     }
+				   });
 has  $_ => (is => 'rw', isa => 'Num',  default => 0) foreach (qw(i0_scale signal_scale));
 
 has  $_  => (is => 'rw', isa => 'Str',  default => q{})
-  foreach (qw(columns energy_string xmu_string i0_string signal_string));
-has 'ln' => (is => 'rw', isa => 'Bool', default => 0,
-	     trigger => sub{ my ($self, $new) = @_; $self->update_columns(1), $self->is_col(1) if $new});
+  foreach (qw(columns energy_string xmu_string i0_string signal_string chi_string));
+has 'ln'  => (is => 'rw', isa => 'Bool', default => 0,
+	      trigger => sub{ my ($self, $new) = @_; $self->update_columns(1), $self->is_col(1) if $new});
+has 'inv' => (is => 'rw', isa => 'Bool', default => 0,
+	      trigger => sub{ my ($self, $new) = @_; $self->update_columns(1), $self->is_col(1) if $new});
 has 'display' => (is => 'rw', isa => 'Bool', default => 0,);
 
 ## -------- data type flags
@@ -422,6 +438,7 @@ override clone => sub {
   $new  -> standard;
   $self -> dispose($self->template("process", "clone"));
   $new  -> unset_standard;
+  $new  -> dispose($new->template("process", "deriv"));
   $new  -> update_data(0);
   $new  -> update_columns(0);
   $new  -> update_norm($self->datatype =~ m{(?:xmu|xanes)});
@@ -469,14 +486,20 @@ sub chi_noise {
   $self->dispose($string);
   my $epsk = Ifeffit::get_scalar("epsilon_k");
   $epsk = (looks_like_number($epsk)) ? $epsk : 1;
+  $epsk = ($epsk =~ m{nan|\#}i) ? 1 : $epsk; # unix returns '+/-NaN', windows returns '+/-1.#IOe000'
   my $epsr = Ifeffit::get_scalar("epsilon_r");
   $epsr = (looks_like_number($epsr)) ? $epsr : 1;
+  $epsr = ($epsk =~ m{nan|\#}i) ? 1 : $epsr;
   $self->epsk( sprintf("%.3e", $epsk) );
   $self->epsr( sprintf("%.3e", $epsr) );
   $self->recommended_kmax( sprintf("%.3f", Ifeffit::get_scalar("kmax_suggest")) );
   return $self;
 };
 
+sub get_kweight {
+  my ($self) = @_;
+  return ($self->po->kweight >= 0) ? $self->po->kweight : $self->fit_karb_value;
+};
 sub _kw_string {
   my ($self) = @_;
   my @list = ();
@@ -487,6 +510,11 @@ sub _kw_string {
   return join(",", @list);
 };
 
+sub nsuff {
+  my ($self) = @_;
+  my $suff = ($self->bkg_flatten) ? 'flat' : 'norm';
+  return $suff;
+};
 
 sub standard {
   my ($self) = @_;
@@ -593,7 +621,8 @@ sub _update {
       last WHICH;
     };
 
- };
+  };
+  $self->ifeffit_heap;
   return $self;
 };
 
@@ -601,8 +630,8 @@ sub _update {
 sub read_data {
   my ($self) = @_;
   my $return = $self->readable($self->file);
-  croak($return) if $return;
-  my $type = ($self->is_col) ? q{}
+  $self->Croak($return) if $return;
+  my $type = (($self->is_col) and ($self->datatype ne 'chi')) ? q{}
            :  $self->datatype;
   if ((not $self->is_col) and (not $type)) {
     $self->determine_data_type;
@@ -626,6 +655,7 @@ sub read_data {
   $self->xmax($x[$#x]);
   my $filename = fileparse($self->file, qr{\.dat}, qr{\.xmu}, qr{\.chi});
   $self->name($filename) if not $self->name;
+  $self->identify_beamline($self->file);
   return $self;
 };
 
@@ -707,6 +737,7 @@ sub sort_data {
 sub _read_data_command {
   my ($self, $type) = @_;
   my $string = q[];
+  $self->raw_check;
   if ($type eq 'xmu') {
     $string  = $self->template("process", "read_xmu");
     $string .= $self->template("process", "deriv");
@@ -723,6 +754,20 @@ sub _read_data_command {
   return $string;
 };
 
+
+sub raw_check {
+  my ($self) = @_;
+  open(my $F, $self->file);
+  while (<$F>) {
+    next if not m{\A[#*%;!]?\s*---+\s*\z};
+    my $cols = <$F>;
+    chomp $cols;
+    $self->read_as_raw(1) if length($cols) > 255;
+    last;
+  };
+  close $F;
+  return $self;
+};
 
 
 sub rfactor {
@@ -838,7 +883,7 @@ Demeter::Data - Process and analyze EXAFS data with Ifeffit
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.4.
+This documentation refers to Demeter version 0.5.
 
 
 =head1 SYNOPSIS
@@ -1467,6 +1512,11 @@ and C<bft_rwindow> to the specified window type.
 
 The window type must be one of C<Kaiser-Bessel>, C<Hanning>,
 C<Parzen>, C<Welch>, C<Sine>, or C<Gaussian>.
+
+=item C<nsuff>
+
+Returns either "norm" or "flat" as the proper suffix for the
+normalized mu(E) array depending on the value of C<bkg_flatten>.
 
 =item C<data>
 

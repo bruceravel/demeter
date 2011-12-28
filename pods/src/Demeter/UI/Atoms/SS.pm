@@ -37,7 +37,7 @@ sub new {
   $cb  -> AddPage($self->{ss}, "Make a Single Scattering path of arbitrary length", 1);
 
   $self->{histo_ss} = $self->_histo($parent);
-  $cb  -> AddPage($self->{histo_ss}, "Make histograms from a molecular dynamics history", 0);
+  $cb  -> AddPage($self->{histo_ss}, "Make histograms from a molecular dynamics time sequence", 0);
 
   $self -> SetSizerAndFit( $vbox );
   return $self;
@@ -104,11 +104,15 @@ sub _histo {
 
   my $vbox = Wx::BoxSizer->new( wxVERTICAL );
 
-  $self->{histo_file} = Wx::FilePickerCtrl->new( $page, -1, "", "Choose a HISTORY File", "HISTORY files|HISTORY|All files|*",
-						    wxDefaultPosition, wxDefaultSize,
-						    wxFLP_DEFAULT_STYLE|wxFLP_USE_TEXTCTRL|wxFLP_CHANGE_DIR|wxFLP_FILE_MUST_EXIST );
+  $self->{DISTRIBUTION} = q{};
+  $self->{histo_file} = Wx::FilePickerCtrl->new( $page, -1, "", "Choose an MD output file", 
+						 "DL_POLY HISTORY files|HISTORY|VASP OUTCAR files|OUTCAR|All files|*",
+						 wxDefaultPosition, wxDefaultSize,
+						 wxFLP_DEFAULT_STYLE|wxFLP_USE_TEXTCTRL|wxFLP_CHANGE_DIR|wxFLP_FILE_MUST_EXIST );
   $vbox -> Add($self->{histo_file}, 0, wxGROW|wxALL, 10);
-
+  $self->{histo_role} = Wx::RadioBox->new($page, -1, "Molecular dymanics program", wxDefaultPosition, wxDefaultSize,
+					  ['DL_POLY', 'VASP']);
+  $vbox -> Add($self->{histo_role}, 0, wxGROW|wxLEFT|wxRIGHT|wxBOTTOM, 10);
 
   my $scrl = Wx::ScrolledWindow->new($page, -1, wxDefaultPosition, wxDefaultSize, wxVSCROLL);
   my $svbox = Wx::BoxSizer->new( wxVERTICAL );
@@ -183,7 +187,7 @@ sub _histo {
 
   $self -> {histo_ncl_plot} = Wx::Button -> new($scrl, -1, "Scatter plot");
   $hbox -> Add($self->{histo_ncl_plot},    1, wxALL|wxALIGN_CENTRE_VERTICAL, 5);
-  EVT_BUTTON($self, $self->{histo_ncl_plot}, sub{ scatterplot(@_) });
+  EVT_BUTTON($self, $self->{histo_ncl_plot}, sub{ scatterplot(@_, 'ncl') });
 
   $hbox = Wx::BoxSizer->new( wxHORIZONTAL );
   $nclboxsizer -> Add($hbox, 0, wxGROW|wxLEFT|wxRIGHT, 10);
@@ -242,7 +246,7 @@ sub _histo {
 
   $self -> {histo_thru_plot} = Wx::Button -> new($scrl, -1, "Scatter plot");
   $hbox -> Add($self->{histo_thru_plot},    1, wxALL|wxALIGN_CENTRE_VERTICAL, 5);
-  EVT_BUTTON($self, $self->{histo_thru_plot}, sub{ scatterplot(@_) });
+  EVT_BUTTON($self, $self->{histo_thru_plot}, sub{ scatterplot(@_, 'thru') });
 
   $hbox = Wx::BoxSizer->new( wxHORIZONTAL );
   $thruboxsizer -> Add($hbox, 0, wxGROW|wxLEFT|wxRIGHT, 10);
@@ -292,7 +296,8 @@ sub _histo {
   if (-e $persist) {
     my $yaml = YAML::Tiny::LoadFile($persist);
     $self->{histoyaml} = $yaml;
-    $self->{histo_file}    -> SetPath ($yaml->{file});
+    $self->{histo_file}    -> SetPath($yaml->{file});
+    $self->{histo_role}    -> SetStringSelection($yaml->{role}||'DL_POLY');
     $self->{histo_ss_rmin} -> SetValue($yaml->{rmin}  || 1.5);
     $self->{histo_ss_rmax} -> SetValue($yaml->{rmax}  || 3.5);
     $self->{histo_ss_bin}  -> SetValue($yaml->{bin}   || 0.5);
@@ -326,95 +331,158 @@ sub _histo {
 sub histoplot {
   my ($this, $event) = @_;
   my $file = $this->{histo_file}->GetTextCtrl->GetValue;
+  my $backend = $this->{histo_role}->GetStringSelection;
+  my $ipot = $this->{histo_ss_ipot}->GetSelection+1;
   my $rmin = $this->{histo_ss_rmin}->GetValue;
   my $rmax = $this->{histo_ss_rmax}->GetValue;
   my $bin  = $this->{histo_ss_bin}->GetValue;
   $this->{histoyaml}->{file} = $file;
+  $this->{histoyaml}->{role} = $backend;
+  $this->{histoyaml}->{ipot1} = $ipot;
   $this->{histoyaml}->{rmin} = $rmin;
   $this->{histoyaml}->{rmax} = $rmax;
   $this->{histoyaml}->{bin}  = $bin;
 
   if ((not $file) or (not -e $file) or (not -r $file)) {
-    $this->GetParent->status("You did not specify a file or your file cannot be read.");
+    $this->{parent}->status("You did not specify a file or your file cannot be read.");
     return;
   };
 
-  my $dlp = Demeter::Feff::Distributions->new(rmin=>$rmin, rmax=>$rmax, bin=>$bin, type=>'ss',
-					      feff=>$this->{parent}->{Feff}->{feffobject});
+  my $dlp;
+  my $read_file = 1;
+  if ((not $this->{DISTRIBUTION}) or ($this->{DISTRIBUTION}->type ne 'ss')) {
+    $dlp = Demeter::Feff::Distributions->new(type=>'ss');
+    $dlp -> set(rmin => $rmin,
+		rmax => $rmax,
+		bin  => $bin,
+		ipot => $ipot,
+		feff => $this->{parent}->{Feff}->{feffobject},
+	       );
+  } else {
+    $dlp = $this->{DISTRIBUTION};
+    $read_file = 0 if ($dlp->file eq $file);
+    $dlp->rmin($rmin) if ($dlp->rmin != $rmin);
+    $dlp->rmax($rmax) if ($dlp->rmax != $rmax);
+    $dlp->bin ($bin ) if ($dlp->bin  != $bin);
+    $dlp->ipot($ipot) if ($dlp->ipot != $ipot);
+  };
+
   my $persist = File::Spec->catfile($dlp->dot_folder, 'demeter.histograms');
   YAML::Tiny::DumpFile($persist, $this->{histoyaml});
 
-
   $this->{DISTRIBUTION} = $dlp;
-  $dlp->sentinal(sub{$this->dlpoly_sentinal});
 
   my $busy = Wx::BusyCursor->new();
   my $start = DateTime->now( time_zone => 'floating' );
-  $dlp->backend('DL_POLY');
-  $dlp->file($file);
+  $dlp->backend($backend);
+  $this->{parent}->status("Reading MD time sequence file, please be patient...", 'wait');
+  $dlp->sentinal(sub{$this->dlpoly_sentinal});
+  $dlp->file($file) if $read_file;
+  if ($#{$dlp->ssrdf} == -1) {
+    $this->{parent}->status("Your choice of ipot did not yield any scatterers in the R range selected", 'error');
+    undef $busy;
+    return;
+  };
+  $this->{parent}->status("Binning pair distribution function, please be patient...", 'wait');
   $dlp->rebin;
+  $this->{parent}->{Console}->{console}->AppendText($/.$dlp->info.$/.$/);
   my $finish = DateTime->now( time_zone => 'floating' );
   my $dur = $finish->subtract_datetime($start);
   my $finishtext = sprintf("Plotting histogram from %d timesteps (%d minutes, %d seconds)", $dlp->nsteps, $dur->minutes, $dur->seconds);
-  $this->{statusbar}->SetStatusText($finishtext);
+  $this->{parent}->status($finishtext);
   $dlp->plot;
   undef $busy;
 };
 
 sub scatterplot {
-  my ($this, $event) = @_;
-  my $file = $this->{histo_file}->GetTextCtrl->GetValue;
-  my $r1   = $this->{histo_ncl_r1}->GetValue;
-  my $r2   = $this->{histo_ncl_r2}->GetValue;
-  my $r3   = $this->{histo_ncl_r3}->GetValue;
-  my $r4   = $this->{histo_ncl_r4}->GetValue;
-  my $rbin = $this->{histo_ncl_rbin}->GetValue;
-  my $betabin = $this->{histo_ncl_betabin}->GetValue;
-  $this->{histoyaml}->{file} = $file;
-  $this->{histoyaml}->{r1}   = $r1;
-  $this->{histoyaml}->{r2}   = $r2;
-  $this->{histoyaml}->{r3}   = $r3;
-  $this->{histoyaml}->{r4}   = $r4;
-  $this->{histoyaml}->{rbin} = $rbin;
-  $this->{histoyaml}->{betabin} = $betabin;
+  my ($this, $event, $which) = @_;
+  my $file     = $this->{histo_file}->GetTextCtrl->GetValue;
+  my $backend  = $this->{histo_role}->GetStringSelection;
+  my $ipot1    = $this->{histo_ncl_ipot1}->GetSelection+1;
+  my $ipot2    = $this->{histo_ncl_ipot2}->GetSelection+1;
+  my $r1       = $this->{histo_ncl_r1}->GetValue;
+  my $r2       = $this->{histo_ncl_r2}->GetValue;
+  my $r3       = $this->{histo_ncl_r3}->GetValue;
+  my $r4       = $this->{histo_ncl_r4}->GetValue;
+  my $rbin     = $this->{histo_ncl_rbin}->GetValue;
+  my $betabin  = $this->{histo_ncl_betabin}->GetValue;
+  $this->{histoyaml}->{file}	= $file;
+  $this->{histoyaml}->{role}	= $backend;
+  $this->{histoyaml}->{ipot1}	= $ipot1;
+  $this->{histoyaml}->{ipot2}	= $ipot2;
+  $this->{histoyaml}->{r1}	= $r1;
+  $this->{histoyaml}->{r2}	= $r2;
+  $this->{histoyaml}->{r3}	= $r3;
+  $this->{histoyaml}->{r4}	= $r4;
+  $this->{histoyaml}->{rbin}	= $rbin;
+  $this->{histoyaml}->{betabin}	= $betabin;
 
   if ((not $file) or (not -e $file) or (not -r $file)) {
-    $this->GetParent->status("You did not specify a file or your file cannot be read.");
+    $this->{parent}->status("You did not specify a file or your file cannot be read.");
     return;
   };
 
-  my $histo = Demeter::Feff::Distributions->new(type=>'ncl');
-  $histo->set(r1=>$r1, r2=>$r2, r3=>$r3, r4=>$r4, rbin=>$rbin, betabin=>$betabin,
-	      feff=>$this->{parent}->{Feff}->{feffobject});
+
+  my $histo;
+  my $read_file = 1;
+  if ((not $this->{DISTRIBUTION}) or ($this->{DISTRIBUTION}->type ne $which)) {
+    $histo = Demeter::Feff::Distributions->new(type=>$which);
+    $histo -> set(r1	  => $r1,
+		  r2	  => $r2,
+		  r3	  => $r3,
+		  r4	  => $r4,
+		  rbin	  => $rbin,
+		  betabin => $betabin,
+		  ipot    => $ipot1,
+		  ipot2	  => $ipot2,
+		  feff	  => $this->{parent}->{Feff}->{feffobject},
+		);
+  } else {
+    $histo = $this->{DISTRIBUTION};
+    $read_file = 0 if ($histo->file eq $file);
+    $histo->rmin($r1)    if ($histo->rmin != $r1);
+    $histo->rmax($r2)    if ($histo->rmax != $r2);
+    $histo->rmin($r3)    if ($histo->rmin != $r3);
+    $histo->rmax($r4)    if ($histo->rmax != $r4);
+    $histo->bin ($rbin)  if ($histo->bin  != $rbin);
+    $histo->ipot($ipot1) if ($histo->ipot != $ipot1);
+    $histo->ipot($ipot2) if ($histo->ipot != $ipot2);
+  };
 
   my $persist = File::Spec->catfile($histo->dot_folder, 'demeter.histograms');
   YAML::Tiny::DumpFile($persist, $this->{histoyaml});
 
   $this->{DISTRIBUTION} = $histo;
-  $histo->sentinal(sub{$this->dlpoly_sentinal});
 
   my $busy = Wx::BusyCursor->new();
   my $start = DateTime->now( time_zone => 'floating' );
-  $histo->backend('DL_POLY');
+  $histo->backend($backend);
+  $this->{parent}->status("Reading MD time sequence file, please be patient...", 'wait');
   $histo->file($file);
+  $histo->sentinal(sub{$this->dlpoly_sentinal});
+  $this->{parent}->status("Binning three-body distribution function, please be patient...", 'wait');
   $histo->rebin;
+  $this->{parent}->{Console}->{console}->AppendText($/.$histo->info.$/.$/);
   my $finish = DateTime->now( time_zone => 'floating' );
   my $dur = $finish->subtract_datetime($start);
   my $finishtext = sprintf("Plotting histogram from %d timesteps (%d minutes, %d seconds)", $histo->nsteps, $dur->minutes, $dur->seconds);
-  $this->{statusbar}->SetStatusText($finishtext);
+  $this->{parent}->status($finishtext);
   $histo->plot;
   undef $busy;
 };
 
 sub dlpoly_sentinal {
   my ($this) = @_;
-  if (not $this->{DISTRIBUTION}->timestep_count % 10) {
-    my $text = $this->{DISTRIBUTION}->timestep_count . " of " . $this->{DISTRIBUTION}->{nsteps} . " timesteps";
-    #print $text, $/;
-    $this->{statusbar}->SetStatusText($text);
-    #$this->GetParent->status($text, 'wait|nobuffer') if not $this->{DISTRIBUTION}->timestep_count % 10;
-    $::app->Yield();
+  my $text = q{};
+  if ($this->{DISTRIBUTION}->computing_rdf) {
+    if (not $this->{DISTRIBUTION}->timestep_count % 10) {
+      $text = $this->{DISTRIBUTION}->timestep_count . " of " . $this->{DISTRIBUTION}->{nsteps} . " timesteps";
+    };
+  } elsif ($this->{DISTRIBUTION}->reading_file) {
+    $text = "Reading line $. from ".$this->{DISTRIBUTION}->file;
   };
+  $this->{statusbar}->SetStatusText($text) if $text;
+  $::app->Yield();
 };
 
 
@@ -593,18 +661,22 @@ sub OnDrag {
     return;
   };
 
+  my $group = (ref($parent->{SS}->{DISTRIBUTION}) =~ m{Distributions|Moose}) ? $parent->{SS}->{DISTRIBUTION}->group : q{};
   my $dragdata = ['HistogramSS',					  # 0 id
-		  'DL_POLY',				                  # 1 backend
+		  $parent->{SS}->{histo_role}->GetStringSelection,        # 1 backend
 		  $parent->{Feff}->{feffobject}->group,			  # 2 feff object group
-		  $parent->{SS}->{histo_file}->GetTextCtrl->GetValue,     # 3 HISTORY file
+		  $parent->{SS}->{histo_file}->GetTextCtrl->GetValue,     # 3 MD output file
 		  $parent->{SS}->{histo_ss_rmin}->GetValue,		  # 4 rmin
 		  $parent->{SS}->{histo_ss_rmax}->GetValue,		  # 5 rmax
 		  $parent->{SS}->{histo_ss_bin} ->GetValue,		  # 6 bin size
 		  $parent->{SS}->{histo_ss_ipot}->GetSelection+1,	  # 7 ipot
 		  $parent->{SS}->{histo_ss_rattle}->GetValue,		  # 8 do rattle path
+		  $group,                                                 # 9 Distibution object group name
+		  $parent->{component}                                    # 10 id for feff frame so Distribution object can be pushed back
 		 ];
 
   ## handle persistence file
+  $parent->{SS}->{histoyaml}->{role}  = $dragdata->[1];
   $parent->{SS}->{histoyaml}->{file}  = $dragdata->[3];
   $parent->{SS}->{histoyaml}->{rmin}  = $dragdata->[4];
   $parent->{SS}->{histoyaml}->{rmax}  = $dragdata->[5];
@@ -685,8 +757,9 @@ sub OnDrag {
     return;
   };
 
+  my $group = (ref($parent->{SS}->{DISTRIBUTION}) =~ m{Distributions|Moose}) ? $parent->{SS}->{DISTRIBUTION}->group : q{};
   my $dragdata = ['HistogramNCL',						# 0  id
-		  'DL_POLY',							# 1 backend
+		  $parent->{SS}->{histo_role}->GetStringSelection,              # 1 backend
 		  $parent->{Feff}->{feffobject}      -> group,			# 2  feff object group
 		  $parent->{SS}->{histo_file}        -> GetTextCtrl->GetValue,	# 3  HISTORY file
 		  $parent->{SS}->{histo_ncl_r1}      -> GetValue,		# 4  r ranges
@@ -697,9 +770,12 @@ sub OnDrag {
 		  $parent->{SS}->{histo_ncl_betabin} -> GetValue,		# 9  bin size
 		  $parent->{SS}->{histo_ncl_ipot1}   -> GetSelection+1,		# 10 ipot
 		  $parent->{SS}->{histo_ncl_ipot2}   -> GetSelection+1,		# 11 ipot
+		  $group,                                                 # 12 Distibution object group name
+		  $parent->{component}                                    # 13 id for feff frame so Distribution object can be pushed back
 		 ];
 
   ## handle persistence file
+  $parent->{SS}->{histoyaml}->{role}    = $dragdata->[1];
   $parent->{SS}->{histoyaml}->{file}    = $dragdata->[3];
   $parent->{SS}->{histoyaml}->{r1}	= $dragdata->[4];
   $parent->{SS}->{histoyaml}->{r2}	= $dragdata->[5];
@@ -782,8 +858,9 @@ sub OnDrag {
     return;
   };
 
+  my $group = (ref($parent->{SS}->{DISTRIBUTION}) =~ m{Distributions|Moose}) ? $parent->{SS}->{DISTRIBUTION}->group : q{};
   my $dragdata = ['HistogramThru',						# 0  id
-		  'DL_POLY',							# 1  backend
+		  $parent->{SS}->{histo_role}->GetStringSelection,              # 1 backend
 		  $parent->{Feff}->{feffobject}       -> group,			# 2  feff object group
 		  $parent->{SS}->{histo_file}         -> GetTextCtrl->GetValue,	# 3  HISTORY file
 		  $parent->{SS}->{histo_thru_rmin}    -> GetValue,		# 4  r ranges
@@ -792,9 +869,12 @@ sub OnDrag {
 		  $parent->{SS}->{histo_thru_betabin} -> GetValue,		# 7  bin size
 		  $parent->{SS}->{histo_thru_ipot1}   -> GetSelection+1,	# 8  ipot
 		  $parent->{SS}->{histo_thru_ipot2}   -> GetSelection+1,	# 9  ipot
+		  $group,                                                       # 10 Distibution object group name
+		  $parent->{component}                                          # 11 id for feff frame so Distribution object can be pushed back
 		 ];
 
   ## handle persistence file
+  $parent->{SS}->{histoyaml}->{role}    = $dragdata->[1];
   $parent->{SS}->{histoyaml}->{file}    = $dragdata->[3];
   $parent->{SS}->{histoyaml}->{rmin}	= $dragdata->[4];
   $parent->{SS}->{histoyaml}->{rmax}	= $dragdata->[5];
@@ -821,7 +901,7 @@ Demeter::UI::Atoms::SS - Create SSPath objects in Atoms
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.4.
+This documentation refers to Demeter version 0.5.
 
 =head1 DESCRIPTION
 

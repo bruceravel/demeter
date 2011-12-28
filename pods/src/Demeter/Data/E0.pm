@@ -162,12 +162,15 @@ sub align {
   foreach my $d (@data) {
     next if (ref($d) !~ m{Data});
     next if ($d->group eq $self->group);
+    $self->mo->current($d);	# these two lines allow a GUI to
+    $self->call_sentinal;  	# display progress messages
     $d -> _update("background");
     $d -> dispose( $d-> template("process", "align") );
-    $shift = Ifeffit::get_scalar("aa___esh");
+    $shift = sprintf("%.3f", Ifeffit::get_scalar("aa___esh"));
     $d -> bkg_eshift($shift);
     $d -> update_bkg(1);
   };
+  $self->mo->current(q{});
   $standard->standard if (ref($standard) =~ m{Data});
   return $shift;
 };
@@ -181,6 +184,8 @@ sub align_with_reference {
   my $shift = 0;
   foreach my $d (@data) {
     next if (ref($d) !~ m{Data});
+    $self->mo->current($d);	# these two lines allow a GUI to
+    $self->call_sentinal;  	# display progress messages
     my $useref = $selfref and $d->reference;
     if ($useref) {
       $self->reference->standard;
@@ -190,12 +195,13 @@ sub align_with_reference {
     my $this = ($useref) ? $d->reference : $d;
     $this -> _update("background");
     $this -> dispose( $this-> template("process", "align") );
-    $shift = Ifeffit::get_scalar("aa___esh");
+    $shift = sprintf("%.3f", Ifeffit::get_scalar("aa___esh"));
     $this -> bkg_eshift($shift);
     $this -> update_bkg(1);
     $this -> reference -> update_bkg(1) if $this->reference;
 
   };
+  $self->mo->current(q{});
   $standard->standard if (ref($standard) =~ m{Data});
   return $shift;
 };
@@ -281,7 +287,7 @@ Demeter::Data::E0 - Calibrate and align XAS mu(E) data
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.4.
+This documentation refers to Demeter version 0.5.
 
 =head1 DESCRIPTION
 

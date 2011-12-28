@@ -16,6 +16,7 @@ package Demeter::LCF;
 =cut
 
 use Carp;
+#use Demeter::Carp;
 use autodie qw(open close);
 
 use Moose;
@@ -121,10 +122,11 @@ has 'options' => (
 		  isa       => 'HashRef[ArrayRef]',
 		  default   => sub { +{} },
 		  provides  => {
-				set   => 'set_option',
-				get   => 'get_option',
-				keys  => 'get_option_list',
-				clear => 'clear_option',
+				set    => 'set_option',
+				get    => 'get_option',
+				keys   => 'get_option_list',
+				clear  => 'clear_option',
+				exists => 'option_exists',
 			       },
 		 );
 has 'rfactor' => (is => 'rw', isa => 'Num', default => 0);
@@ -164,17 +166,21 @@ sub add {
   my %hash = @params;
   $hash{float_e0} ||= 0;
   $hash{required} ||= 0;
+  $hash{dweight}  ||= 0;
   $hash{e0}       ||= 0;
+  $hash{de0}      ||= 0;
   my $weight_provided = exists($hash{weight});
   my @previous = @{ $self->standards };
   $self->push_standards($stan);
 
   my $n = $#{ $self->standards } + 1;
   $self->nstan($n);
-  $hash{weight}   ||= sprintf("%.3f", 1/$n);
+  if (not defined($hash{weight})) {
+    $hash{weight} = sprintf("%.3f", 1/$n);
+  };
 
   my $key = $stan->group;
-  $self->set_option($key, [$hash{float_e0}, $hash{required}, $hash{weight}, 0, $hash{e0}, 0]); ## other 2 are dweight and de0
+  $self->set_option($key, [$hash{float_e0}, $hash{required}, $hash{weight}, $hash{dweight}, $hash{e0}, $hash{de0}]); ## other 2 are dweight and de0
 
   return $self if $weight_provided;
   foreach my $prev (@previous) {
@@ -193,6 +199,7 @@ sub float_e0 {
   my ($self, $stan, $onoff) = @_;
   $onoff ||= 0;
   my $rlist = $self->get_option($stan->group);
+  return $self if not $rlist;
   my @params = @$rlist;
   $params[0] = $onoff;
   $self->set_option($stan->group, \@params);
@@ -203,6 +210,7 @@ sub required {
   my ($self, $stan, $onoff) = @_;
   $onoff ||= 0;
   my $rlist = $self->get_option($stan->group);
+  return $self if not $rlist;
   my @params = @$rlist;
   $params[1] = $onoff;
   $self->set_option($stan->group, \@params);
@@ -214,38 +222,42 @@ sub is_e0_floated {
   my ($self, $stan) = @_;
   ($stan = $stan->group) if (ref($stan) =~ m{Data});
   my $rlist = $self->get_option($stan);
-  return $rlist->[0];
+  return ((not $rlist)) ? 0 : $rlist->[0];
 };
 sub is_required {
   my ($self, $stan) = @_;
   ($stan = $stan->group) if (ref($stan) =~ m{Data});
   my $rlist = $self->get_option($stan);
-  return $rlist->[1];
+  return ((not $rlist)) ? 0 : $rlist->[1];
 };
 
 sub weight {
   my ($self, $stan, $value, $error) = @_;
-  my $rlist = $self->get_option($stan->group);
+  ($stan = $stan->group) if (ref($stan) =~ m{Data});
+  my $rlist = $self->get_option($stan);
+  #if (not $rlist) { return wantarray ? (0,0) : 0 }; # this happens when perusing combinatoric fits
   my @params = @$rlist;
   if (not defined($value)) {
     return wantarray ? ($params[2], $params[3]) : $params[2];
   };
   $params[2] = $value;
   $params[3] = $error || 0;
-  $self->set_option($stan->group, \@params);
+  $self->set_option($stan, \@params);
   return wantarray ? ($params[2], $params[3]) : $params[2];
 };
 
 sub e0 {
   my ($self, $stan, $value, $error) = @_;
-  my $rlist = $self->get_option($stan->group);
+  ($stan = $stan->group) if (ref($stan) =~ m{Data});
+  my $rlist = $self->get_option($stan);
+  #if (not $rlist) { return wantarray ? (0,0) : 0 };
   my @params = @$rlist;
   if (not defined($value)) {
     return wantarray ? ($params[4], $params[5]) : $params[4];
   };
   $params[4] = $value;
   $params[5] = $error || 0;
-  $self->set_option($stan->group, \@params);
+  $self->set_option($stan, \@params);
   return wantarray ? ($params[4], $params[5]) : $params[4];
 };
 
@@ -292,12 +304,15 @@ sub prep_arrays {
     $which = ($self->space =~ m{\Achi}) ? "lcf_prep_standard_k" : "lcf_prep_standard";
     $stan -> dispose($stan->template("analysis", $which));
   };
-  if ($self->unity) {
+  if ($self->nstan eq 1) {
+    $which = ($self->space =~ m{\Achi}) ? "lcf_prep_standard_k" : "lcf_prep_standard";
+    $all[$#all] -> dispose($all[$#all]->template("analysis", $which));
+  } elsif ($self->unity) {
     $which = ($self->space =~ m{\Achi}) ? "lcf_prep_last_k" : "lcf_prep_last";
-    $all[-1] -> dispose($all[-1]->template("analysis", $which));
+    $all[$#all] -> dispose($all[$#all]->template("analysis", $which));
   } else {
     $which = ($self->space =~ m{\Achi}) ? "lcf_prep_standard_k" : "lcf_prep_standard";
-    $all[-1] -> dispose($all[-1]->template("analysis", $which));
+    $all[$#all] -> dispose($all[$#all]->template("analysis", $which));
   };
   $self -> dispose($self->template("analysis", 'lcf_prep_lcf', {how=>$how}));
   $self->mo->standard(q{});
@@ -326,12 +341,13 @@ sub fit {
     };
   };
   if ($self->unity) {		# propagate uncertainty for last amplitude
-    my ($w, $dw) = $self->weight($all[-1]);
-    $self->weight($all[-1], $w, sqrt($sumsqr));
+    my ($w, $dw) = $self->weight($all[$#all]);
+    $self->weight($all[$#all], $w, sqrt($sumsqr));
   };
   $self->_statistics;
 
   $self->stop_spinner if (($self->mo->ui eq 'screen') and (not $quiet));
+  $self->ifeffit_heap;
   return $self;
 };
 
@@ -341,15 +357,13 @@ sub _statistics {
   my @func  = $self->get_array('func');
   my @resid = $self->get_array('resid');
   my ($avg, $count, $rfact, $sumsqr) = (0,0,0,0);
-  if ($self->space =~ m{\Anor}) {
-    foreach my $i (0 .. $#x) {
-      next if ($x[$i] < $self->xmin);
-      next if ($x[$i] > $self->xmax);
-      ++$count;
-      $avg += $func[$i];
-    };
-    $avg /= $count if $count != 0;
+  foreach my $i (0 .. $#x) {
+    next if ($x[$i] < $self->xmin);
+    next if ($x[$i] > $self->xmax);
+    ++$count;
+    $avg += $func[$i];
   };
+  $avg /= $count if $count != 0;
   foreach my $i (0 .. $#x) {
     next if ($x[$i] < $self->xmin);
     next if ($x[$i] > $self->xmax);
@@ -599,10 +613,11 @@ sub restore {
     next if ($k eq 'Data');
     my $rlist = $rhash->{$k};
     my $this_data = $self->mo->fetch('Data', $k);
-    $self->push_standards($this_data);
     my ($w, $dw, $e0, $de0) = @$rlist;
-    $self->weight($this_data, $w, $dw);
-    $self->e0($this_data, $e0, $de0);
+    $self->add($this_data, weight=>$w, dweight=>$dw, e0=>$e0, de0=>$de0);
+    #$self->push_standards($this_data), weight=>$w, dweight=>$dw, e0=>$e0, de0=>$de0);
+    #$self->weight($this_data->group, $w, $dw);
+    #$self->e0($this_data->group, $e0, $de0);
     $self->dispose($this_data->template('analysis', 'lcf_sum_standard'));
   };
   $self->dispose($self->template('analysis', 'lcf_sum'));
@@ -882,7 +897,7 @@ Demeter::LCF - Linear combination fitting
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.4.
+This documentation refers to Demeter version 0.5.
 
 =head1 SYNOPSIS
 

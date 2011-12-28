@@ -58,6 +58,8 @@ sub new {
   EVT_BUTTON($this, $this->{abspt},  sub{$this->{which}='abs',  use_element(@_, $this)} );
   EVT_BUTTON($this, $this->{scatpt}, sub{$this->{which}='scat', use_element(@_, $this)} );
 
+  $this->{make}   = Wx::CheckBox->new($this, -1, "Auto-generate guess parameters");
+  $this->{make}->SetValue(Demeter->co->default("fspath", "make_gds"));
 
   $gbs -> Add( $this->{abs},      Wx::GBPosition->new(0,1));
   $gbs -> Add( $this->{abspt},    Wx::GBPosition->new(0,2));
@@ -65,6 +67,7 @@ sub new {
   $gbs -> Add( $this->{scatpt},   Wx::GBPosition->new(0,5));
   $gbs -> Add( $this->{edge},     Wx::GBPosition->new(1,1));
   $gbs -> Add( $this->{distance}, Wx::GBPosition->new(1,4));
+  $gbs -> Add( $this->{make},     Wx::GBPosition->new(2,0), Wx::GBSpan->new(1,4));
 
   $this->{ok} = Wx::Button->new($this, wxID_OK, q{}, wxDefaultPosition, wxDefaultSize, 0, );
   $vbox -> Add($this->{ok}, 0, wxGROW|wxALL, 5);
@@ -107,7 +110,7 @@ Demeter::UI::Artemis::Data::Quickfs - Dialog to set up a quick first shell fit
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.4.
+This documentation refers to Demeter version 0.5.
 
 =head1 SYNOPSIS
 
