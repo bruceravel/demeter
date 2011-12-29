@@ -2,7 +2,7 @@ package Demeter::UI::Screen::Pause;
 
 =for Copyright
  .
- Copyright (c) 2006-2011 Bruce Ravel (bravel AT bnl DOT gov).
+ Copyright (c) 2006-2012 Bruce Ravel (bravel AT bnl DOT gov).
  All rights reserved.
  .
  This file is free software; you can redistribute it and/or
@@ -69,7 +69,7 @@ Demeter::UI::Screen::Pause - A generic pause method for the screen UI
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.5.
+This documentation refers to Demeter version 0.9.
 
 =head1 SYNOPSIS
 
@@ -161,7 +161,7 @@ L<http://cars9.uchicago.edu/~ravel/software/>
 
 =head1 LICENCE AND COPYRIGHT
 
-Copyright (c) 2006-2011 Bruce Ravel (bravel AT bnl DOT gov). All rights reserved.
+Copyright (c) 2006-2012 Bruce Ravel (bravel AT bnl DOT gov). All rights reserved.
 
 This module is free software; you can redistribute it and/or
 modify it under the same terms as Perl itself. See L<perlgpl>.

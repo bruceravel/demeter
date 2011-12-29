@@ -1,5 +1,5 @@
 
-The Demeter code, which is copyright (c) 2006-2011, Bruce Ravel is
+The Demeter code, which is copyright (c) 2006-2012, Bruce Ravel is
 licensed under the Perl Artistic License.
 
 This package is composed of components which are licensed under a

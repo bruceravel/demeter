@@ -2,7 +2,7 @@ package Demeter::UI::Athena::PluginConfig;
 
 =for Copyright
  .
- Copyright (c) 2006-2011 Bruce Ravel (bravel AT bnl DOT gov).
+ Copyright (c) 2006-2012 Bruce Ravel (bravel AT bnl DOT gov).
  All rights reserved.
  .
  This file is free software; you can redistribute it and/or

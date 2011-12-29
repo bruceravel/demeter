@@ -2,7 +2,7 @@ package Demeter::Atoms;
 
 =for Copyright
  .
- Copyright (c) 2006-2011 Bruce Ravel (bravel AT bnl DOT gov).
+ Copyright (c) 2006-2012 Bruce Ravel (bravel AT bnl DOT gov).
  All rights reserved.
  .
  This file is free software; you can redistribute it and/or
@@ -914,7 +914,7 @@ Demeter::Atoms - Convert crystallographic data to atomic lists
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.5.
+This documentation refers to Demeter version 0.9.
 
 =head1 SYNOPSIS
 
@@ -1328,7 +1328,7 @@ L<http://cars9.uchicago.edu/~ravel/software/exafs/>
 
 =head1 LICENCE AND COPYRIGHT
 
-Copyright (c) 2006-2011 Bruce Ravel (bravel AT bnl DOT gov). All
+Copyright (c) 2006-2012 Bruce Ravel (bravel AT bnl DOT gov). All
 rights reserved.
 
 This module is free software; you can redistribute it and/or
