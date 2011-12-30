@@ -175,7 +175,9 @@ sub merge {
   $string  = $merged->template("process", "merge_stddev_end");
   $string .= $merged->template("process", "merge_end");
   $self->dispose($string);
-
+  #$merged -> set($self->metadata);
+  $merged -> delete_from_xdi_scan('start_time');
+  $merged -> delete_from_xdi_scan('end_time');
 
   if ($how !~ m{^k}) {
     $string  = $merged->template("process", "deriv");

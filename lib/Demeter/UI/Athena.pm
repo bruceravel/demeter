@@ -375,6 +375,7 @@ Readonly my $STYLE_YAML	       => Wx::NewId();
 Readonly my $INDIC_YAML	       => Wx::NewId();
 Readonly my $MODE_STATUS       => Wx::NewId();
 Readonly my $PERL_MODULES      => Wx::NewId();
+Readonly my $CONDITIONAL       => Wx::NewId();
 Readonly my $STATUS	       => Wx::NewId();
 Readonly my $IFEFFIT_STRINGS   => Wx::NewId();
 Readonly my $IFEFFIT_SCALARS   => Wx::NewId();
@@ -479,6 +480,7 @@ sub menubar {
   $yamlmenu->Append($PEAK_YAML,      "PeakFit object",         "Show YAML dialog for PeakFit object" );
   $debugmenu->Append($MODE_STATUS,   "Show mode status",       "Show mode status dialog" );
   $debugmenu->Append($PERL_MODULES,  "Show perl modules",      "Show perl module versions" );
+  $debugmenu->Append($CONDITIONAL,   "Show conditional features", "Show which conditional Demeter features are present" );
   $monitormenu->Append($SHOW_BUFFER, "Show command buffer",    'Show the Ifeffit and plotting commands buffer' );
   $monitormenu->Append($STATUS,      "Show status bar buffer", 'Show the buffer containing messages written to the status bars');
   $monitormenu->AppendSeparator;
@@ -919,6 +921,10 @@ sub OnMenuClick {
     };
     ($id == $MODE_STATUS) and do {
       my $dialog = Demeter::UI::Artemis::ShowText->new($app->{main}, $demeter->mo->report('all'), 'Overview of this instance of Demeter') -> Show;
+      last SWITCH;
+    };
+    ($id == $CONDITIONAL) and do {
+      my $dialog = Demeter::UI::Artemis::ShowText->new($app->{main}, $demeter->conditional_features, 'Conditionally loaded Demeter features') -> Show;
       last SWITCH;
     };
 

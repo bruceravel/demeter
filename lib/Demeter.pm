@@ -131,14 +131,17 @@ sub set_datagroup {
   $self->datagroup($group);
 };
 
+######################################################################
+## conditional features
 use vars qw($Gnuplot_exists $STAR_Parser_exists $XDI_exists
 	    $PDL_exists $PSG_exists);
-$Gnuplot_exists     = eval "require Graphics::GnuplotIF";
+$Gnuplot_exists     = eval "require Graphics::GnuplotIF" || 0;
 $STAR_Parser_exists = 1;
 use STAR::Parser;
-$XDI_exists         = eval "require Xray::XDI";
-$PDL_exists         = eval "require PDL::Lite";
-$PSG_exists         = eval "require PDL::Stats::GLM";
+$XDI_exists         = eval "require Xray::XDI" || 0;
+$PDL_exists         = eval "require PDL::Lite" || 0;
+$PSG_exists         = eval "require PDL::Stats::GLM" || 0;
+######################################################################
 
 use Demeter::Plot;
 use vars qw($plot);
@@ -426,6 +429,7 @@ sub onezero {
 };
 sub is_true {
   my ($self, $value) = @_;
+  return 0 if (not defined $value);
   return 1 if ($value =~ m{^[ty]}i);
   return 0 if ($value =~ m{^[fn]}i);
   return 0 if (($value =~ m{$NUMBER}) and ($value == 0));
@@ -756,6 +760,20 @@ sub Croak {
   } else {
     croak $arg;
   };
+};
+
+sub conditional_features {
+  my ($self) = @_;
+  my $text = "The following conditional features are available:\n\n";
+  $text .= "Graphics::GnuplotIF: " . $self->yesno($Gnuplot_exists);
+  $text .= ($Gnuplot_exists)     ? " -- plotting with Gnuplot\n" : "  -- plotting with Gnuplot is disabled.\n";
+  $text .= "STAR::Parser:        " . $self->yesno($STAR_Parser_exists);
+  $text .= ($STAR_Parser_exists) ? " -- importing CIF files\n"   : "  -- importing CIF files is disabled.\n";
+  $text .= "Xray::XDI:           " . $self->yesno($XDI_exists);
+  $text .= ($XDI_exists)         ? " -- file metadata\n"         : "  -- file metadata is disabled.\n";
+  $text .= "PDL:                 " . $self->yesno($PDL_exists);
+  $text .= ($PDL_exists)         ? " -- PCA\n" : "  -- PCA is disabled.\n";
+  return $text;
 };
 
 __PACKAGE__->meta->make_immutable;

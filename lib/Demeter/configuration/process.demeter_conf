@@ -121,3 +121,13 @@ description
   by default.  The noise option uses the noise determined by Ifeffit's
   chi_noise function.  The step option uses the value of the edge step
   determined by normalizing the data.
+
+variable=push_metadata
+type=boolean
+onvalue=1
+offvalue=0
+default=true
+description
+  When true, push the metadata tags of the first data group used to
+  make the merge onto the merged group.  When false, all metadata tags
+  of the merged group will be left blank.

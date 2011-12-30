@@ -2,9 +2,14 @@ package Demeter::Data::XDI;
 use Moose::Role;
 use File::Basename;
 use Demeter::StrTypes qw( Empty );
+use List::MoreUtils qw(zip);
 
-has 'xdi'                     => (is => 'rw', isa => Empty.'|Xray::XDI', default=>q{},
-				  trigger => sub{my ($self, $new) = @_; $self->import_xdi($new);});
+if ($INC{'Xray/XDI.pm'}) {
+  has 'xdi' => (is => 'rw', isa => Empty.'|Xray::XDI', default=>q{},
+		trigger => sub{my ($self, $new) = @_; $self->import_xdi($new);});
+} else {
+  has 'xdi' => (is => 'ro', isa => 'Str', default=>q{},);
+};
 
 has 'xdi_version'	      => (is => 'rw', isa => 'Str', default => q{});
 has 'xdi_applications'	      => (is => 'rw', isa => 'Str', default => q{});
@@ -131,6 +136,7 @@ has 'xdi_labels'     => (
 
 sub import_xdi {
   my ($self, $xdi) = @_;
+  return $self if not ($INC{'Xray/XDI.pm'});
   return $self if (ref($xdi) !~ m{XDI|Class::MOP|Moose::Meta::Class});
   foreach my $f (qw(version applications
 		    column scan mono beamline facility detector sample
@@ -182,6 +188,7 @@ sub import_xdi {
 
 sub configure_from_ini {
   my ($self, $inifile) = @_;
+  return $self if not ($INC{'Xray/XDI.pm'});
   return if not -e $inifile;
   return if not -r $inifile;
   tie my %ini, 'Config::IniFiles', ( -file => $inifile );
@@ -197,6 +204,7 @@ sub configure_from_ini {
 
 sub xdi_defined {
   my ($self, $cc) = @_;
+  return $self if not ($INC{'Xray/XDI.pm'});
   $cc ||= q{};
   $cc .= " " if ($cc and ($cc !~ m{ \z}));
   my $text = q{};
@@ -210,6 +218,14 @@ sub xdi_defined {
   return $text;
 };
 
+sub metadata {
+  my ($self) = @_;
+  my @keys = qw(xdi_version xdi_applications xdi_comments xdi_scan xdi_mono
+		xdi_beamline xdi_facility xdi_detector xdi_sample xdi_extensions
+		xdi_comments xdi_labels);
+  my @values = $self->get(@keys);
+  return zip @keys, @values;
+};
 
 1;
 
