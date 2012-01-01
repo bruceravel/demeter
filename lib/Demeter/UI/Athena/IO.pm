@@ -298,6 +298,8 @@ sub _data {
     $colsel->OnDatatype(q{}, $colsel, $data);
 
     ## set Reference controls from yaml
+    my @toss = split(" ", $data->columns);
+    my $n = $#toss+1;
     if ($data->columns eq $yaml->{columns}) {
       $colsel->{Reference}->{do_ref}->SetValue($yaml->{do_ref});
       $colsel->{Reference}->{ln}    ->SetValue($yaml->{ref_ln});
@@ -305,10 +307,18 @@ sub _data {
       if (($yaml->{ref_numer}) and exists($colsel->{Reference}->{'n'.$yaml->{ref_numer}}))  {
 	$colsel->{Reference}->{'n'.$yaml->{ref_numer}}->SetValue(1);
 	$colsel->{Reference}->{numerator}   = $yaml->{ref_numer};
+	foreach my $j (1 .. $n) {
+	  next if ($j == $yaml->{ref_numer});
+	  $colsel->{Reference}->{'n'.$j} -> SetValue(0);
+	};
       };
       if (($yaml->{ref_denom}) and exists($colsel->{Reference}->{'d'.$yaml->{ref_denom}})) {
 	$colsel->{Reference}->{'d'.$yaml->{ref_denom}}->SetValue(1);
 	$colsel->{Reference}->{denominator} = $yaml->{ref_denom};
+	foreach my $j (1 .. $n) {
+	  next if ($j == $yaml->{ref_denom});
+	  $colsel->{Reference}->{'d'.$j} -> SetValue(0);
+	};
       };
       $colsel->{Reference}->EnableReference(0, $data);
     };

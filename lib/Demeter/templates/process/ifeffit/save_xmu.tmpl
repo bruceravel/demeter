@@ -12,6 +12,8 @@
   #                             {filename=>$filename, titles=>"\$dem_data_*"});
 }
 ##| saving "{$D->name}" as mu(E)
+set {$D->group}.e = {$D->group}.energy+{$D->bkg_eshift}
 write_data(file="{$filename}", ${$titles}, ${$D->group}_title_*,
-           {$D->group}.energy, {$D->group}.xmu, {$D->group}.bkg, {$D->group}.preline,
+           {$D->group}.e, {$D->group}.xmu, {$D->group}.bkg, {$D->group}.preline,
            {$D->group}.postline, {$D->group}.der, {$D->group}.sec)
+erase {$D->group}.e
