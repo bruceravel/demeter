@@ -39,7 +39,11 @@ sub is_xdac {
 
   ## this IS an XDAC file
   if ($first =~ m{XDAC V(\d+)\.(\d+)}) {
-    $self->xdi_version("$Xray::XDI::VERSION");
+    if (exists $INC{'Xray/XDI.pm'}) {
+      $self->xdi_version("$Xray::XDI::VERSION");
+    } else {
+      $self->xdi_version('-1');
+    };
     $self->xdi_applications(sprintf("XDAC/%s.%s", $1, $2));
     $self->set_xdi_facility('name', 'NSLS');
     $self->set_xdi_facility('xray_source', 'bend magnet');

@@ -19,9 +19,10 @@ use File::Spec;
 
 use Wx qw( :everything );
 use base 'Wx::Frame';
-use Wx::Event qw(EVT_NOTEBOOK_PAGE_CHANGED EVT_NOTEBOOK_PAGE_CHANGING);
+use Wx::Event qw(EVT_NOTEBOOK_PAGE_CHANGED EVT_NOTEBOOK_PAGE_CHANGING EVT_MENU);
 
 use Demeter::UI::Artemis::Close qw(on_close);
+use Readonly;
 
 my $icon_dimension = 30;
 
@@ -53,6 +54,8 @@ sub new {
   my $statusbar = $self->CreateStatusBar;
   $statusbar -> SetStatusText("Welcome to Atoms (" . $Demeter::UI::Atoms::demeter->identify . ")");
   $self->{statusbar} = $statusbar;
+
+  #$self->component_menu if $component;
 
   my @utilities = ($component) ? qw(Atoms Feff Paths SS Console) : qw(Atoms Feff Paths Console Document Configure);
 
@@ -93,11 +96,85 @@ sub new {
   $vbox -> Add($nb, 1, wxEXPAND|wxGROW, 0);
   #EVT_NOTEBOOK_PAGE_CHANGED( $self, $nb, sub{$echoarea->echo(q{})} );
 
+  if ($component) {
+    $vbox -> Add(Wx::StaticLine->new($self, -1, wxDefaultPosition, [-1, 3], wxLI_HORIZONTAL), 0, wxGROW|wxALL, 5);
+
+    $self->{toolbar} = Wx::ToolBar->new($self, -1, wxDefaultPosition, wxDefaultSize, wxTB_HORIZONTAL|wxTB_3DBUTTONS|wxTB_TEXT|wxTB_HORZ_LAYOUT);
+    EVT_MENU( $self->{toolbar}, -1, sub{my ($toolbar, $event) = @_; OnToolClick($toolbar, $event, $self)} );
+    $self->{toolbar} -> AddTool(-1, "Rename this Feff calculation",     $self->icon("reset"),   wxNullBitmap, wxITEM_NORMAL, q{}, "Rename this Feff calculation" );
+    $self->{toolbar} -> AddTool(-1, "Discard this Feff calculation",    $self->icon("discard"), wxNullBitmap, wxITEM_NORMAL, q{}, "Discard this Feff calculation" );
+    $self->{toolbar} -> AddSeparator;
+    $self->{toolbar} -> AddTool(-1, "About Feff", $self->icon("info"),    wxNullBitmap, wxITEM_NORMAL, q{}, "Show information about Feff's configuration in Artemis" );
+    $self->{toolbar} -> Realize;
+    $vbox -> Add($self->{toolbar}, 0, wxGROW|wxALL, 0);
+  };
+
   $self -> SetSizer($vbox);
   #$vbox -> Fit($nb);
   #$vbox -> SetSizeHints($nb);
   return $self;
 };
+
+# Readonly my $RENAME  => Wx::NewId();
+# Readonly my $DISCARD => Wx::NewId();
+#
+# sub component_menu {
+#   my ($self) = @_;
+#   my $bar = Wx::MenuBar->new;
+#
+#   my $feff = Wx::Menu->new;
+#   $feff->Append( $RENAME,  "Rename this Feff calculation" );
+#   $feff->Append( $DISCARD, "Discard this Feff calculation" );
+#   EVT_MENU($self, $RENAME,  \&on_rename );
+#   EVT_MENU($self, $DISCARD, \&on_discard );
+#
+#   $bar->Append( $feff, "&Feff" );
+#   $self->SetMenuBar( $bar );
+#   return $self;
+# };
+#
+# sub on_rename {
+#   print "rename: ", join("|", @_), $/;
+# };
+#
+# sub on_discard {
+#   print "discard: ", join("|", @_), $/;
+# };
+
+sub OnToolClick {
+  my ($toolbar, $event, $self) = @_;
+  my $position = $toolbar->GetToolPos($event->GetId);
+  my @callbacks = qw(on_rename on_discard noop on_about);
+  my $closure = $callbacks[$toolbar->GetToolPos($event->GetId)];
+  $self->$closure;
+};
+
+sub icon {
+  my ($self, $which) = @_;
+  my $icon = File::Spec->catfile($Demeter::UI::Atoms::atoms_base, 'Atoms', 'icons', "$which.png");
+  return wxNullBitmap if (not -e $icon);
+  return Wx::Bitmap->new($icon, wxBITMAP_TYPE_ANY)
+};
+
+sub on_rename {
+  my ($self) = @_;
+  print "rename: ", join("|", @_), $/;
+};
+
+sub on_discard {
+  my ($self) = @_;
+  print "discard: ", join("|", @_), $/;
+};
+
+sub on_about {
+  my ($self) = @_;
+  print "about: ", join("|", @_), $/;
+};
+
+sub noop {
+  return 1;
+};
+
 
 
 package Demeter::UI::Atoms;
