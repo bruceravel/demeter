@@ -99,10 +99,10 @@ sub OnToolRightClick {
   my $dialog = Demeter::UI::Wx::MRU->new($self, 'feff',
 					 "Select a recent feff.inp file",
 					 "Recent feff.inp files");
-  $self->{statusbar}->SetStatusText("There are no recent Feff files."), return
+  $self->{parent}->status("There are no recent Feff files."), return
     if ($dialog == -1);
   if( $dialog->ShowModal == wxID_CANCEL ) {
-    $self->{statusbar}->SetStatusText("Import cancelled.");
+    $self->{parent}->status("Import cancelled.");
   } else {
    $self->import( $dialog->GetMruSelection );
   };
@@ -140,14 +140,14 @@ sub save_file {
 				wxFD_SAVE|wxFD_CHANGE_DIR,
 				wxDefaultPosition);
   if ($fd -> ShowModal == wxID_CANCEL) {
-    $self->{statusbar}->SetStatusText("Saving feff input file aborted.")
+    $self->{parent}->status("Saving feff input file aborted.")
   } else {
     my $file = File::Spec->catfile($fd->GetDirectory, $fd->GetFilename);
     open my $OUT, ">".$file;
     print $OUT $self->{feff}->GetValue;
     close $OUT;
     $Demeter::UI::Atoms::demeter -> push_mru("feff", $file);
-    $self->{statusbar}->SetStatusText("Saved feff input file to $file.");
+    $self->{parent}->status("Saved feff input file to $file.");
   };
 };
 
@@ -171,7 +171,7 @@ sub insert_boilerplate {
   my $feff   = Demeter::Feff->new(screen=>0, buffer=>1, save=>0);
   $self->{feff}->SetValue($feff->template("feff", "boilerplate"));
   undef $feff;
-  $self->{statusbar}->SetStatusText("Fill in this boilerplate with your structure....");
+  $self->{parent}->status("Fill in this boilerplate with your structure....");
 };
 
 
@@ -203,7 +203,7 @@ sub run_feff {
   };
 
   $self->{parent}->{Console}->{console}->AppendText($self->now("Feff calculation beginning at ", $feff));
-  $self->{statusbar}->SetStatusText("Computing potentials using Feff6 ...");
+  $self->{parent}->status("Computing potentials using Feff6 ...");
   $feff->potph;
   ## the call to check_exe happened in the previous method call,
   ## however, the logging happens below at line 225, so this appears
@@ -212,7 +212,7 @@ sub run_feff {
 						    $feff->co->default(qw(feff executable)) .
 						    ")\n\n");
 
-  $self->{statusbar}->SetStatusText("Finding scattering paths using Demeter's pathfinder...");
+  $self->{parent}->status("Finding scattering paths using Demeter's pathfinder...");
   $feff->pathfinder;
   my $yaml = File::Spec->catfile($feff->workspace, $feff->group.".yaml");
   $feff->freeze($yaml);
@@ -226,7 +226,7 @@ sub run_feff {
   $self->{parent}->{Console}->{console}->AppendText($self->now("Feff calculation finished at ", $feff));
   $feff->clear_iobuffer;
 
-  $self->{statusbar}->SetStatusText("Feff calculation complete!");
+  $self->{parent}->status("Feff calculation complete!");
   #unlink $inpfile;
   undef $busy;
 };

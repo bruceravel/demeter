@@ -150,7 +150,7 @@ sub set_plot {
   $self->{parent}->{Feff}->{feffobject}->po->r_pl($pl{$id}) if $pl{$id};
   # sensible status bar message
   my %as = (5 => 'chi(k)', 6 => 'the magnitude of chi(R)', 7 => 'the real part of chi(R)', 8 => 'the imaginary part of chi(R)');
-  $self->{statusbar}->SetStatusText("Plotting as $as{$id}");
+  $self->{parent}->status("Plotting as $as{$id}");
   return $self;
 };
 
@@ -167,12 +167,12 @@ sub save {
 				wxFD_SAVE|wxFD_CHANGE_DIR,
 				wxDefaultPosition);
   if ($fd -> ShowModal == wxID_CANCEL) {
-    $self->{statusbar}->SetStatusText("Saving Feff calculation aborted.")
+    $self->{parent}->status("Saving Feff calculation aborted.")
   } else {
     my $yaml = File::Spec->catfile($fd->GetDirectory, $fd->GetFilename);
     $self->{parent}->{Feff}->{feffobject}->freeze($yaml);
     #$self->{parent}->{Feff}->{feffobject}->push_mru("feffcalc", $yaml);
-    $self->{statusbar}->SetStatusText("Saved Feff calculation to $yaml.")
+    $self->{parent}->status("Saved Feff calculation to $yaml.")
   };
 };
 
@@ -180,7 +180,7 @@ sub plot {
   my ($self) = @_;
   return if not $self->{paths}->GetItemCount;
   my $this = $self->{paths}->GetFirstSelected;
-  $self->{statusbar}->SetStatusText("No paths are selected!") if ($this == -1);
+  $self->{parent}->status("No paths are selected!") if ($this == -1);
   my $busy   = Wx::BusyCursor->new();
   $Demeter::UI::Atoms::demeter->po->start_plot;
   $Demeter::UI::Atoms::demeter->reset_path_indeces;

@@ -55,7 +55,21 @@ sub new {
   $statusbar -> SetStatusText("Welcome to Atoms (" . $Demeter::UI::Atoms::demeter->identify . ")");
   $self->{statusbar} = $statusbar;
 
-  #$self->component_menu if $component;
+  if ($component) {
+    $self->{toolbar} = Wx::ToolBar->new($self, -1, wxDefaultPosition, wxDefaultSize, wxTB_HORIZONTAL|wxTB_3DBUTTONS|wxTB_TEXT|wxTB_HORZ_LAYOUT);
+    EVT_MENU( $self->{toolbar}, -1, sub{my ($toolbar, $event) = @_; OnToolClick($toolbar, $event, $self)} );
+    $self->{toolbar} -> AddTool(-1, " Rename this Feff calculation",     $self->icon("reset"),   wxNullBitmap, wxITEM_NORMAL, q{}, "Rename this Feff calculation" );
+    $self->{toolbar} -> AddTool(-1, "Discard this Feff calculation",    $self->icon("discard"), wxNullBitmap, wxITEM_NORMAL, q{}, "Discard this Feff calculation" );
+    $self->{toolbar} -> AddSeparator;
+    $self->{toolbar} -> AddTool(-1, "About Feff", $self->icon("info"),    wxNullBitmap, wxITEM_NORMAL, q{}, "Show information about Feff's configuration in Artemis" );
+    $self->{toolbar} -> Realize;
+    $vbox -> Add($self->{toolbar}, 0, wxGROW|wxALL, 0);
+    #$vbox -> Add(Wx::StaticLine->new($self, -1, wxDefaultPosition, [-1, 3], wxLI_HORIZONTAL), 0, wxGROW|wxALL, 5);
+  };
+
+
+  eval "use Demeter::UI::Atoms::Status" if not $component;
+
 
   my @utilities = ($component) ? qw(Atoms Feff Paths SS Console) : qw(Atoms Feff Paths Console Document Configure);
 
@@ -96,50 +110,11 @@ sub new {
   $vbox -> Add($nb, 1, wxEXPAND|wxGROW, 0);
   #EVT_NOTEBOOK_PAGE_CHANGED( $self, $nb, sub{$echoarea->echo(q{})} );
 
-  if ($component) {
-    $vbox -> Add(Wx::StaticLine->new($self, -1, wxDefaultPosition, [-1, 3], wxLI_HORIZONTAL), 0, wxGROW|wxALL, 5);
-
-    $self->{toolbar} = Wx::ToolBar->new($self, -1, wxDefaultPosition, wxDefaultSize, wxTB_HORIZONTAL|wxTB_3DBUTTONS|wxTB_TEXT|wxTB_HORZ_LAYOUT);
-    EVT_MENU( $self->{toolbar}, -1, sub{my ($toolbar, $event) = @_; OnToolClick($toolbar, $event, $self)} );
-    $self->{toolbar} -> AddTool(-1, "Rename this Feff calculation",     $self->icon("reset"),   wxNullBitmap, wxITEM_NORMAL, q{}, "Rename this Feff calculation" );
-    $self->{toolbar} -> AddTool(-1, "Discard this Feff calculation",    $self->icon("discard"), wxNullBitmap, wxITEM_NORMAL, q{}, "Discard this Feff calculation" );
-    $self->{toolbar} -> AddSeparator;
-    $self->{toolbar} -> AddTool(-1, "About Feff", $self->icon("info"),    wxNullBitmap, wxITEM_NORMAL, q{}, "Show information about Feff's configuration in Artemis" );
-    $self->{toolbar} -> Realize;
-    $vbox -> Add($self->{toolbar}, 0, wxGROW|wxALL, 0);
-  };
-
   $self -> SetSizer($vbox);
   #$vbox -> Fit($nb);
   #$vbox -> SetSizeHints($nb);
   return $self;
 };
-
-# Readonly my $RENAME  => Wx::NewId();
-# Readonly my $DISCARD => Wx::NewId();
-#
-# sub component_menu {
-#   my ($self) = @_;
-#   my $bar = Wx::MenuBar->new;
-#
-#   my $feff = Wx::Menu->new;
-#   $feff->Append( $RENAME,  "Rename this Feff calculation" );
-#   $feff->Append( $DISCARD, "Discard this Feff calculation" );
-#   EVT_MENU($self, $RENAME,  \&on_rename );
-#   EVT_MENU($self, $DISCARD, \&on_discard );
-#
-#   $bar->Append( $feff, "&Feff" );
-#   $self->SetMenuBar( $bar );
-#   return $self;
-# };
-#
-# sub on_rename {
-#   print "rename: ", join("|", @_), $/;
-# };
-#
-# sub on_discard {
-#   print "discard: ", join("|", @_), $/;
-# };
 
 sub OnToolClick {
   my ($toolbar, $event, $self) = @_;
@@ -158,17 +133,81 @@ sub icon {
 
 sub on_rename {
   my ($self) = @_;
-  print "rename: ", join("|", @_), $/;
+  my $ted = Wx::TextEntryDialog->new( $self, "Enter a name for this Feff calculation", "Enter a new name", q{},
+				      wxOK|wxCANCEL, Wx::GetMousePosition);
+  if ($ted->ShowModal == wxID_CANCEL) {
+    my $this = (exists $self->{Atoms}->{atomsobject}) ? $self->{Atoms}->{atomsobject}->name : $self->{Feff}->{feffobject}->name;
+    $self->status("Renaming Feff calculation \"$this\" cancelled.");
+    return;
+  };
+  my $name = $ted->GetValue;
+  if (exists $self->{Atoms}->{atomsobject}) {
+    $self->{Atoms}->{atomsobject}->name($name);
+  };
+  if ((exists $self->{feffobject}) and (ref($self->{feffobject}) =~ m{Feff})) {
+    $self->{feffobject}->name($name);
+  };
+  if ((exists $self->{Feff}->{feffobject}) and (ref($self->{Feff}->{feffobject}) =~ m{Feff})) {
+    $self->{Feff}->{feffobject}->name($name);
+  };
+  $self->{Atoms}->{name}->SetValue($name);
+  $self->{Feff}->{name}->SetValue($name);
+  $self->{Paths}->{name}->SetValue($name);
+  my $fnum = $self->{fnum};
+  $Demeter::UI::Artemis::frames{main}->{$fnum}->SetLabel("Hide $name");
 };
 
 sub on_discard {
-  my ($self) = @_;
-  print "discard: ", join("|", @_), $/;
+  my ($self, $force) = @_;
+  my ($self, $force) = @_;
+  my $atomsobject = $self->{Atoms}->{atomsobject};
+  my $feffobject  = $self->{Feff}->{feffobject};
+
+  if (not $force) {
+    my $yesno = Wx::MessageDialog->new($self, "Do you really wish to discard this Feff calculation?",
+				       "Discard?", wxYES_NO);
+    $self->status("Not discarding Feff calculation \"$this\".");
+    return if ($yesno->ShowModal == wxID_NO);
+  };
+
+  ## remove paths & VPaths from the plot list
+
+
+  ## discard all paths which come from this Feff calculation
+  if ($feffobject) {
+    foreach my $fr (keys %Demeter::UI::Artemis::frames) {
+      next if ($fr !~ m{data});
+      my $datapage = $Demeter::UI::Artemis::frames{$fr};
+      $datapage->discard($feffobject);
+    };
+  };
+
+  my $fnum = $self->{fnum};
+
+  ## destroy Atoms and Feff objects
+  $atomsobject->DEMOLISH if (ref($atomsobject) =~ m{Atoms});
+  $feffobject->DEMOLISH  if (ref($feffobject)  =~ m{Feff});
+
+  ## remove the frame with the datapage
+  $Demeter::UI::Artemis::frames{$fnum}->Hide;
+  $Demeter::UI::Artemis::frames{$fnum}->Destroy;
+  delete $Demeter::UI::Artemis::frames{$fnum};
+
+  ## remove the button from the feff tool bar
+  $Demeter::UI::Artemis::frames{main}->{feffbox}->Hide($Demeter::UI::Artemis::frames{main}->{$fnum});
+  $Demeter::UI::Artemis::frames{main}->{feffbox}->Detach($Demeter::UI::Artemis::frames{main}->{$fnum});
+  $Demeter::UI::Artemis::frames{main}->{feffbox}->Layout;
+  #$Demeter::UI::Artemis::frames{main}->{$fnum}->Destroy; ## this causes a segfaul .. why?
+
+  $Demeter::UI::Artemis::frames{main}->status("Discarded Feff calculation.  Note that unused GDS parameters may remain.");
 };
 
 sub on_about {
   my ($self) = @_;
-  print "about: ", join("|", @_), $/;
+  my $text = sprintf("Feff executable: %s\n\n", Demeter->co->default(qw(feff executable)));
+  $text   .= sprintf("Default feff.inp style: %s\n", Demeter->co->default(qw(atoms feff_version)));
+  $text   .= sprintf("Default ipot style: %s\n", Demeter->co->default(qw(atoms ipot_style)));
+  Demeter::UI::Artemis::ShowText->new($frames{main}, $text, 'Overview of Feff configuration') -> Show
 };
 
 sub noop {

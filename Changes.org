@@ -5,7 +5,7 @@
 
 * Initial release
 
-** 0.9.7 ?? December 2011
+** 0.9.7 ?? January 2012
 *** Athena
    - Fixed a problem in the X23A2MED plugin -- it was getting confused
      by an incomplete set of (roi, slow, fast) columns.
@@ -18,7 +18,7 @@
    - In column selection dialog, change reference radio buttons to
      checkbuttons so that either numerator or denominator can be
      unselected.
-   - In column selection dialog, unckecing reference ln button
+   - In column selection dialog, unchecking reference ln button
      triggered a crash.
 
 *** Artemis
@@ -26,6 +26,9 @@
      report, and journal
    - plot stacking parameters could evaluate to an empty string, so
      explicitly make the 0 in that case
+   - can now discard and rename Feff calculations
+   - fixed a bug causing a segfault when discarding data or feff
+   - capture Atoms' statusbar messages in Artemis' status buffer
 
 *** Demeter
    - explicitly unset xrange at the start of every gnuplot plot.  this
@@ -35,11 +38,14 @@
      strings when no longer needed
    - bkg_eshift was not applied when saving a group as mu(E) or
      norm(E)
+   - serializing Atoms object made safe for GUI display of object
+     contents
 
 *** Acknowledgements for this release
    - Eric Breynaert
-   - George Sterbinsky
+   - Scott Calvin
    - Jack Hitch
+   - George Sterbinsky
 
 ** 0.9.6 12 December 2011
 *** Athena

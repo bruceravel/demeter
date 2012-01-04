@@ -60,6 +60,7 @@ sub _toggle_button {		# toggle the correct button
 
   ## data or feff frame
   } elsif (ref($self) =~ m{Data}) {
+    return if not defined $self->{PARENT}->{$self->{dnum}};
     $self->{PARENT}->{$self->{dnum}}->SetValue($onoff);
     my $label = $self->{PARENT}->{$self->{dnum}}->GetLabel;
     if ($onoff) {

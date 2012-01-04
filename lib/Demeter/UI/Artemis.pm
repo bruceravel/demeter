@@ -55,6 +55,7 @@ Readonly my $IMPORT_OLD      => Wx::NewId();
 Readonly my $IMPORT_CHI      => Wx::NewId();
 Readonly my $EXPORT_IFEFFIT  => Wx::NewId();
 Readonly my $EXPORT_DEMETER  => Wx::NewId();
+Readonly my $FIT_YAML        => Wx::NewId();
 Readonly my $PLOT_YAML       => Wx::NewId();
 Readonly my $MODE_STATUS     => Wx::NewId();
 Readonly my $PERL_MODULES    => Wx::NewId();
@@ -184,6 +185,7 @@ sub OnInit {
   $showmenu->Append($SHOW_FEFFPATHS, "feffpaths", "Show Ifeffit feffpaths");
 
   my $debugmenu = Wx::Menu->new;
+  #$debugmenu->Append($FIT_YAML,     "Show YAML for current Fit object",  "Show YAML dialog for current Fit object",  wxITEM_NORMAL );
   $debugmenu->Append($PLOT_YAML,    "Show YAML for Plot object",  "Show YAML dialog for Plot object",  wxITEM_NORMAL );
   $debugmenu->Append($MODE_STATUS,  "Show mode status",           "Show mode status dialog",  wxITEM_NORMAL );
   $debugmenu->Append($PERL_MODULES, "Show perl modules",          "Show perl module versions", wxITEM_NORMAL );
@@ -891,6 +893,11 @@ sub OnMenuClick {
     };
 
     ## -------- debug submenu
+    ($id == $FIT_YAML) and do {
+      my $yaml   = $frames{main}->{currentfit}->serialization;
+      my $dialog = Demeter::UI::Artemis::ShowText->new($frames{main}, $yaml, 'YAML of Plot object') -> Show;
+      last SWITCH;
+    };
     ($id == $PLOT_YAML) and do {
       $frames{Plot}->fetch_parameters('plot');
       my $yaml   = $demeter->po->serialization;

@@ -905,6 +905,22 @@ sub spacegroup_file {
   return $string;
 };
 
+override serialization => sub {
+  my ($self) = @_;
+
+  my %cards = ();
+  foreach my $key (qw(space a b c alpha beta gamma rmax rpath rss edge iedge eedge core corel partial_occupancy
+		      shift cif record titles ipot_style nitrogen argon krypton xenon helium gases_set
+		      xsec deltamu density mcmaster i0 selfamp selfsig netsig is_imported is_populated
+		      is_ipots_set is_expanded absorption_done mcmaster_done i0_done self_done sites cluster nclus)) {
+    $cards{$key} = $self->$key;
+  };
+
+  my $text = YAML::Tiny::Dump(\%cards);
+  return $text;
+};
+
+
 __PACKAGE__->meta->make_immutable;
 1;
 

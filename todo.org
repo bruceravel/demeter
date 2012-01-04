@@ -198,13 +198,12 @@
 
 
 ** Artemis
-*** Artemis bugs and missing features [0/10]  [0%]
-   - [ ] *rename Atoms/Feff*
+*** Artemis bugs and missing features [3/10]  [30%]
+   - [X] rename Atoms/Feff
    - [ ] Reorganize lists, move individual items up and down, move
 	 blocks up and down, Path list, +Plot list+
-   - [ ] discarding last page and returning to initial page has an
-	 undefined value problem :HUH:
-   - [ ] status messages in Atoms/Feff frame do not get posted in
+   - [X] +discarding last page and returning to initial page has an undefined value problem+ (not true)
+   - [X] status messages in Atoms/Feff frame do not get posted in
 	 Artemis status buffer
    - [ ] do SSPaths get serialized and deserialized with the pointers
          to the feff calculation set correctly and no additional

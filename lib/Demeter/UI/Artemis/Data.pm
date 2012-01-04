@@ -167,7 +167,7 @@ sub new {
   $this ->{PARENT} = $parent;
   $this->make_menubar;
   $this->SetMenuBar( $this->{menubar} );
-  EVT_MENU($this, -1, sub{OnMenuClick(@_)} );
+  EVT_MENU($this, -1, sub{OnMenuClick(@_);} );
   EVT_CLOSE($this, \&on_close);
   EVT_ICONIZE($this, \&on_close);
 
@@ -1309,6 +1309,7 @@ sub add_parameters {
   } else {
     foreach my $n (0 .. $self->{pathlist}->GetPageCount-1) {
       next if (not $self->{pathlist}->IsChecked($n));
+      my $path = $self->{pathlist}->GetPage($n)->{path};
       $self->{pathlist}->GetPage($n)->{"pp_$param"}->SetValue($me);
     };
     $which = "the marked paths";
@@ -1792,10 +1793,12 @@ sub discard_data {
   ## get rid of all the paths
   $self->discard('all');
 
-  ## remove the button from the data tool bar
   my $dnum = $self->{dnum};
-  (my $id = $dnum) =~ s{data}{};
-  $Demeter::UI::Artemis::frames{main}->{$dnum}->Destroy;
+
+  ## destroy the data object
+  $dataobject->clear_ifeffit_titles;
+  $dataobject->dispose("erase \@group ".$dataobject->group);
+  $dataobject->DEMOLISH;
 
   ## remove the frame with the datapage
   $Demeter::UI::Artemis::frames{$dnum}->Hide;
@@ -1803,15 +1806,17 @@ sub discard_data {
   delete $Demeter::UI::Artemis::frames{$dnum};
   ## that's not quite right!
 
-  ## destroy the data object
-  $dataobject->clear_ifeffit_titles;
-  $dataobject->dispose("erase \@group ".$dataobject->group);
-  $dataobject->DEMOLISH;
+  ## remove the button from the data tool bar
+  $Demeter::UI::Artemis::frames{main}->{databox}->Hide($Demeter::UI::Artemis::frames{main}->{$dnum});
+  $Demeter::UI::Artemis::frames{main}->{databox}->Detach($Demeter::UI::Artemis::frames{main}->{$dnum});
+  $Demeter::UI::Artemis::frames{main}->{databox}->Layout;
+  #$Demeter::UI::Artemis::frames{main}->{$dnum}->Destroy; ## this causes a segfaul .. why?
 };
 
 sub discard {
   my ($self, $mode) = @_;
-  my $how = ($mode !~ m{$NUMBER})        ? $mode
+  my $how = (ref($mode) =~ m{Feff})      ? 'feff'
+          : ($mode !~ m{$NUMBER})        ? $mode
           : ($mode == $DISCARD_THIS)     ? 'this'
           : ($mode == $DISCARD_MARKED)   ? 'marked'
           : ($mode == $DISCARD_UNMARKED) ? 'unmarked'
@@ -1834,6 +1839,16 @@ sub discard {
     ($how eq 'all') and do {
       $self->{pathlist}->Clear;
       $text = "Discarded all paths.";
+      last SWITCH;
+    };
+
+    ($how eq 'feff') and do {
+      foreach my $i (@count) {
+	if ($self->{pathlist}->GetPage($i)->{path}->parent eq $mode) {
+	  $self->{pathlist}->DeletePage($i);
+	  ($sel = 0) if ($sel = $i);
+	};
+      };
       last SWITCH;
     };
 
