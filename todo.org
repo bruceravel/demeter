@@ -198,13 +198,15 @@
 
 
 ** Artemis
-*** Artemis bugs and missing features [3/10]  [30%]
+*** Artemis bugs and missing features [3/11]  [27%]
    - [X] rename Atoms/Feff
    - [ ] Reorganize lists, move individual items up and down, move
 	 blocks up and down, Path list, +Plot list+
    - [X] +discarding last page and returning to initial page has an undefined value problem+ (not true)
    - [X] status messages in Atoms/Feff frame do not get posted in
 	 Artemis status buffer
+   - [ ] It would be nice not to deserialize every fit in the history
+	 upon import, instead deserialize the first time it is needed
    - [ ] do SSPaths get serialized and deserialized with the pointers
          to the feff calculation set correctly and no additional
          folders being created in stash (as was the case for FSPath)?
@@ -290,14 +292,16 @@
  
 * Atoms and Feff
 
-** Atoms [2/8] [25%]
+** CIF [0/3] [0%]
   - [ ] CIF issue: CIF file with "_eof" token at end of file, as in [[file:notes/H16PW12O46.cif][this cif file]]
-  - [ ] Handle CIF import problems more gracefully (See Shelly's other email from 17 June)
+  - [ ] Handle CIF import problems more gracefully (See Shelly's other email from 17 June 2011)
+  - [ ] CIF errors are not handled gracefully (e.g. multiple occupancy)
+
+** Atoms [3/5] [60%]
   - [ ] 2 sites at the same position with occupancies <1.  see file above for an example
   - [ ] George Sterbinsky's recent mailing list post that turned out to be about 
 	atoms' sphere and rhomboid in a non-orthogonal group
-  - [ ] CIF errors are not handled gracefully (e.g. multiple occupancy)
-  - [ ] Shell tags in the feff.inp ATOMS list
+  - [X] Shell tags in the feff.inp ATOMS list
   - [X] Rhombic groups seem not be handled properly.  This example fails to generate a subshell of 3 atoms at ~1.9A
          : title name:     Fe2O3  hematite
          : space  R -3 c
@@ -338,6 +342,9 @@ In file ~src/lib/iff_show.f~, change line 431 from
 to
 
 :     character*(*) s, t , messg*1024
+
+Also need to specify locations of CL data and phase shift tables via
+an ENV variable
 
 * Weird stuff I'd prefer not to implement unless demanded
  1. xfit output (only used by women who glow and men who plunder)

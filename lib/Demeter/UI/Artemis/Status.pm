@@ -99,6 +99,7 @@ sub on_close {
 
 sub put_text {
   my ($self, $text, $type) = @_;
+  return if ($text =~ m{\A\s*\z});
 
   my $was = $self -> {text} -> GetInsertionPoint;
   $self->{text}->AppendText(sprintf "[%s]", DateTime->now);

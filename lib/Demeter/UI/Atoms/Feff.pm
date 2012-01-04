@@ -2,6 +2,7 @@ package  Demeter::UI::Atoms::Feff;
 
 use Demeter;
 use Demeter::StrTypes qw( Element );
+use Demeter::UI::Wx::SpecialCharacters qw($ARING);
 
 use Cwd;
 use File::Spec;
@@ -188,6 +189,26 @@ sub run_feff {
   close $OUT;
   $feff->name($self->{parent}->{Feff}->{name}->GetValue);
   $feff->file($inpfile);
+
+  if ($feff->rmax > 6.01) {
+    my $yesno = Wx::MessageDialog->new($self,
+				       'You have set RMAX to larger than 6 Angstroms.
+
+The pathfinder will likely be quite time consuming,
+as will reading and writing a project file
+containing this Feff calculation.
+
+Should we continue?',
+				       "Continue calculating?",
+				       wxYES_NO|wxNO_DEFAULT|wxICON_QUESTION,
+				      );
+    my $ok = $yesno->ShowModal;
+    if ($ok == wxID_NO) {
+      $self->{parent}->status("Cancelling Feff calculation");
+      return 0;
+    };
+
+  };
 
 
   my %problems = %{ $feff->problems };

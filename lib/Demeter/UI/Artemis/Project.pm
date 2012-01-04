@@ -163,6 +163,7 @@ sub import_autosave {
 
 sub read_project {
   my ($rframes, $fname) = @_;
+  my $statustype = 'wait|nobuffer';
   if (not $fname) {
     my $fd = Wx::FileDialog->new( $rframes->{main}, "Import an Artemis project or data", cwd, q{},
 				  "Artemis project or data (*.fpj;*.prj;*.inp;*.cif)|*.fpj;*.prj;*.inp;*.cif|" .
@@ -216,6 +217,7 @@ sub read_project {
   my $projfolder = $rframes->{main}->{project_folder};
   chdir $projfolder;
 
+  $rframes->{main}->status("Extracting members from zip file $fname.", $statustype);
   my $zip = Archive::Zip->new();
   carp("Error reading project file $fname"), return 1 unless ($zip->read($fname) == AZ_OK);
   foreach my $f ($zip->members) {
@@ -247,7 +249,7 @@ sub read_project {
   foreach my $d (@dirs) {
     ## import feff yaml
     my $yaml = File::Spec->catfile($projfolder, 'feff', $d, $d.'.yaml');
-    my $feffobject = Demeter::Feff->new(group=>$d); # force group to be the same as before
+    my $feffobject = Demeter::Feff->new(group=>$d); # force group to be the same as before.
     my $where = Cwd::realpath(File::Spec->catfile($feffdir, $d));
     if (-e $yaml) {
       my $gz = gzopen($yaml, 'rb');
@@ -256,6 +258,7 @@ sub read_project {
       my @refs = YAML::Tiny::Load($yy);
       $feffobject->read_yaml(\@refs, $where);
     };
+    $rframes->{main}->status("Creating Feff object ".$feffobject->name, $statustype);
 
     if (not $feffobject->hidden) {
       ## import atoms.inp
@@ -287,6 +290,7 @@ sub read_project {
     };
   };
 
+  $rframes->{main}->status("Begin importing history", $statustype);
   ## -------- import fit history from project file (currently only importing most recent)
   #opendir(my $FITS, File::Spec->catfile($projfolder, 'fits/'));
   #@dirs = grep { $_ =~ m{\A[a-z]} } readdir($FITS);
@@ -309,8 +313,10 @@ sub read_project {
   ## fitted.  all unfitted fits are destroyed except for the current.  all fitted
   ## fits are pushed onto the history and the current fit (fitted or not) is restored
 
+  my $count = 1;
   foreach my $d (@dirs) {
     my $fit = Demeter::Fit->new(group=>$d, interface=>"Artemis (Wx $Wx::VERSION)");
+    $rframes->{main}->status("Importing fit #$count into history", $statustype);
     my $regen = ($d eq $current) ? 0 : 1;
     next if (not -d File::Spec->catfile($projfolder, 'fits', $d));
     $fit->deserialize(folder=> File::Spec->catfile($projfolder, 'fits', $d), regenerate=>0); #$regen);
@@ -318,9 +324,11 @@ sub read_project {
       $fit->DEMOLISH;
       next;
     };
+    ++$count;
     push @fits, $fit;
   };
   if (@fits) {		# found some actual fits
+    $rframes->{main}->status("Found fit history, creating history window", $statustype);
     my $found = 0;
     foreach my $fit (@fits) {	# take care that the one labeled as current actually exists, if not use the latest
       ++$found, last if ($fit->group eq $current);
@@ -347,6 +355,7 @@ sub read_project {
   };
 
   ## -------- plot and indicator yamls, journal
+  $rframes->{main}->status("Plot, indicators, journal", $statustype);
   my $py = File::Spec->catfile($rframes->{main}->{plot_folder}, 'plot.yaml');
   if (-e $py) {
     my %hash = %{YAML::Tiny::LoadFile($py)};
