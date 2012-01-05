@@ -76,6 +76,8 @@ has 'number'         => (is => 'rw', isa => 'Num',    default => 0);
 has 'project'        => (is => 'rw', isa => 'Str',    default => q{},
 			 trigger => sub{my ($self, $new) = @_; $self->deserialize(file=>$new) if $new} );
 has 'folder'         => (is => 'rw', isa => 'Str',    default => q{});
+has 'grabbed'        => (is => 'rw', isa => 'Bool',   default => 0);
+has 'thawed'         => (is => 'rw', isa => 'Bool',   default => 0);
 
 ## -------- mechanics of the fit
 has 'cormin'         => (is => 'rw', isa =>  NonNeg,  default => sub{ shift->co->default("fit", "cormin")  || 0.4});
@@ -1133,6 +1135,37 @@ sub has_data {
   return 0;
 };
 
+sub grab {			# deserialize lite -- grab the yaml
+  my ($self, @args) = @_;	# without importing any data or paths
+  my %args = @args;
+  $args{plot}       ||= 0;
+  $args{file}       ||= 0;
+  $args{folder}     ||= 0;
+  $args{regenerate} ||= 0;
+
+  my ($zip, $dpj, $yaml);
+  if ($args{file}) {
+    $dpj = File::Spec->rel2abs($args{file});
+    $self->start_spinner("Demeter is unpacking \"$args{file}\"") if ($self->mo->ui eq 'screen');
+    my $folder = $self->project_folder("raw_demeter");
+
+    $zip = Archive::Zip->new();
+    carp("Error reading project file ".$args{file}."\n\n"), return 1 unless ($zip->read($dpj) == AZ_OK);
+  };
+
+
+  ## -------- import the fit properties, statistics, correlations
+  $yaml = ($args{file}) ? $zip->contents("fit.yaml")
+    : $self->slurp(File::Spec->catfile($args{folder}, "fit.yaml"));
+  my $rhash = YAML::Tiny::Load($yaml);
+  my @array = %$rhash;
+  $self -> set(@array);
+  $self -> fit_performed(0);
+
+  $self->grabbed(1);
+  $self->thawed(0);
+};
+
 
 ## ------------------------------------------------------------
 ## Serialization and deserialization of the Fit object
@@ -1581,6 +1614,8 @@ override 'deserialize' => sub {
     $self -> po -> set(@array);
   };
 
+  $self->grabbed(1);
+  $self->thawed(1);
   $self->location($project_folder);
   $self->stop_spinner if ($self->mo->ui eq 'screen');
   return $self;

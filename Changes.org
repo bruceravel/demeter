@@ -31,6 +31,10 @@
    - can now discard and rename Feff calculations
    - fixed a bug causing a segfault when discarding data or feff
    - capture Atoms' statusbar messages in Artemis' status buffer
+   - Faster project file import using partial deserialization of each
+     item in the fit history.  However, history plot tool not
+     currently working.
+   - Reduce R-factor penalty by factor of 10 when fitting in k-space
 
 *** Demeter
    - explicitly unset xrange at the start of every gnuplot plot.  this
@@ -49,6 +53,7 @@
    - Scott Calvin
    - Jack Hitch
    - George Sterbinsky
+   - Andreas Voegelin
 
 ** 0.9.6 12 December 2011
 *** Athena

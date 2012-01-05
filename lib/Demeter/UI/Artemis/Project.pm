@@ -163,7 +163,8 @@ sub import_autosave {
 
 sub read_project {
   my ($rframes, $fname) = @_;
-  my $statustype = 'wait|nobuffer';
+  my $debug = 0;
+  my $statustype = ($debug) ? 'wait' : 'wait|nobuffer';
   if (not $fname) {
     my $fd = Wx::FileDialog->new( $rframes->{main}, "Import an Artemis project or data", cwd, q{},
 				  "Artemis project or data (*.fpj;*.prj;*.inp;*.cif)|*.fpj;*.prj;*.inp;*.cif|" .
@@ -314,16 +315,19 @@ sub read_project {
   ## fits are pushed onto the history and the current fit (fitted or not) is restored
 
   my $count = 1;
+  my $folder;
   foreach my $d (@dirs) {
     my $fit = Demeter::Fit->new(group=>$d, interface=>"Artemis (Wx $Wx::VERSION)");
-    $rframes->{main}->status("Importing fit #$count into history", $statustype);
+    $rframes->{main}->status("Importing fit #$count into history", $statustype) if not $count % 5;
     my $regen = ($d eq $current) ? 0 : 1;
     next if (not -d File::Spec->catfile($projfolder, 'fits', $d));
-    $fit->deserialize(folder=> File::Spec->catfile($projfolder, 'fits', $d), regenerate=>0); #$regen);
+    $fit->grab(folder=> File::Spec->catfile($projfolder, 'fits', $d), regenerate=>0); #$regen);
+    #$fit->deserialize(folder=> File::Spec->catfile($projfolder, 'fits', $d), regenerate=>0); #$regen);
     if (($d ne $current) and (not $fit->fitted)) { # discard the ones that don't actually involve a performed fit
       $fit->DEMOLISH;
       next;
     };
+    $folder = File::Spec->catfile($projfolder, 'fits', $d);
     ++$count;
     push @fits, $fit;
   };
@@ -345,8 +349,10 @@ sub read_project {
       };
       next unless ($fit->group eq $current);
       $currentfit = $fit;
-      $rframes->{History}->{list}->SetSelection($rframes->{History}->{list}->GetCount-1);
-      $rframes->{History}->OnSelect;
+      $rframes->{main}->status("Thawing current fit", $statustype);
+      $currentfit->deserialize(folder=> $folder, regenerate=>0); #$regen);
+      #$rframes->{History}->{list}->SetSelection($rframes->{History}->{list}->GetCount-1);
+      #$rframes->{History}->OnSelect;
       $rframes->{main}->{currentfit} = $fit;
       $rframes->{Plot}->{limits}->{fit}->SetValue(1);
       my $current = $fit->number || 1;
@@ -355,7 +361,7 @@ sub read_project {
   };
 
   ## -------- plot and indicator yamls, journal
-  $rframes->{main}->status("Plot, indicators, journal", $statustype);
+  $rframes->{main}->status('Setting plot parameters, indicators, & journal', $statustype);
   my $py = File::Spec->catfile($rframes->{main}->{plot_folder}, 'plot.yaml');
   if (-e $py) {
     my %hash = %{YAML::Tiny::LoadFile($py)};

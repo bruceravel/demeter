@@ -114,20 +114,20 @@ sub new {
   my $hbox = Wx::BoxSizer->new( wxHORIZONTAL );
   $vbox -> Add($hbox, 0, wxGROW|wxALL, 5);
 
-  $this->{save} = Wx::Button->new($logpage, -1, q{Save this log}, wxDefaultPosition, wxDefaultSize);
+  $this->{save} = Wx::Button->new($logpage, -1, q{Save this log});
   $hbox -> Add($this->{save}, 1, wxGROW|wxRIGHT, 2);
   EVT_BUTTON($this, $this->{save}, sub{$this->savelog});
-  $this-> mouseover('save', "Save this log to a file.");
+  $this-> mouseover('save', "Save this fitting log to a file.");
 
-  $this->{preview} = Wx::Button->new($logpage, -1, q{Log preview}, wxDefaultPosition, wxDefaultSize);
+  $this->{preview} = Wx::Button->new($logpage, -1, q{Log preview});
   $hbox -> Add($this->{preview}, 1, wxGROW|wxRIGHT, 2);
   EVT_BUTTON($this, $this->{preview}, sub{on_preview(@_, 'log')});
-  $this-> mouseover('preview', "Preview this log.");
+  $this-> mouseover('preview', "Preview this fitting log.");
 
-  $this->{print} = Wx::Button->new($logpage, -1, q{Print this log}, wxDefaultPosition, wxDefaultSize);
+  $this->{print} = Wx::Button->new($logpage, -1, q{Print this log});
   $hbox -> Add($this->{print}, 1, wxGROW|wxRIGHT, 2);
   EVT_BUTTON($this, $this->{print}, sub{on_print(@_, 'log')});
-  $this-> mouseover('print', "Print this log.");
+  $this-> mouseover('print', "Print this fitting log.");
 
 
   ## -------- controls for writing reports on fits
@@ -177,21 +177,23 @@ sub new {
 
   $controls = Wx::BoxSizer->new( wxHORIZONTAL );
   $reportbox -> Add($controls, 0, wxGROW|wxALL, 0);
-  $this->{savereport} = Wx::Button->new($reportpage, -1, q{Save report});
+  $this->{savereport} = Wx::Button->new($reportpage, wxID_SAVE, q{});
   $controls->Add($this->{savereport}, 1, wxALL, 5);
   EVT_BUTTON($this, $this->{savereport}, sub{$this->savereport});
   $this-> mouseover('savereport', "Save this report to a file.");
 
-  $this->{previewreport} = Wx::Button->new($reportpage, -1, q{Report preview});
+  $this->{previewreport} = Wx::Button->new($reportpage, wxID_PREVIEW, q{});
   $controls->Add($this->{previewreport}, 1, wxALL, 5);
   EVT_BUTTON($this, $this->{previewreport}, sub{on_preview(@_, 'report')});
   $this-> mouseover('previewreport', "Preview report");
 
-  $this->{printreport} = Wx::Button->new($reportpage, -1, q{Print report});
+  $this->{printreport} = Wx::Button->new($reportpage, wxID_PRINT, q{});
   $controls->Add($this->{printreport}, 1, wxALL, 5);
   EVT_BUTTON($this, $this->{printreport}, sub{on_print(@_, 'report')});
   $this-> mouseover('printreport', "Print report");
 
+  ## -------- plotting tool page
+  $plottoolbox -> Add(Wx::StaticText->new($plottoolpage, -1, 'The history plotting tool is currently broken.  Drat!'), 0, wxALL|wxALIGN_CENTER_HORIZONTAL, 5);
 
   $nb -> AddPage($logpage,      "Log file", 1);
   $nb -> AddPage($reportpage,   "Reports", 0);
@@ -211,6 +213,13 @@ sub OnSelect {
   my ($self, $event) = @_;
   my $fit = $self->{list}->GetIndexedData($self->{list}->GetSelection);
   return if not defined $fit;
+  if (not $fit->thawed) {
+    my $busy = Wx::BusyCursor->new();
+    $self->status('Importing fit "'.$fit->name.'"', 'wait');
+    $fit->deserialize(folder=>File::Spec->catfile($::app->{main}->{project_folder}, 'fits', $fit->group));
+    $self->status('Imported fit "'.$fit->name.'"');
+    undef $busy;
+  };
   $self->put_log($fit);
   $self->set_params($fit);
 };
@@ -425,6 +434,8 @@ sub savereport {
 
 sub restore {
   my ($self, $position) = @_;
+  $self->status("Restoring a fit is currently broken.  Drat!", 'alert');
+  return;
   ($position = $self->{list}->GetSelection) if not defined ($position);
   my $busy = Wx::BusyCursor -> new();
   Demeter::UI::Artemis::Project::discard_fit(\%Demeter::UI::Artemis::frames);

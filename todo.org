@@ -198,15 +198,20 @@
 
 
 ** Artemis
-*** Artemis bugs and missing features [3/11]  [27%]
+*** Artemis bugs and missing features [4/13]  [30%]
    - [X] rename Atoms/Feff
    - [ ] Reorganize lists, move individual items up and down, move
 	 blocks up and down, Path list, +Plot list+
    - [X] +discarding last page and returning to initial page has an undefined value problem+ (not true)
    - [X] status messages in Atoms/Feff frame do not get posted in
 	 Artemis status buffer
-   - [ ] It would be nice not to deserialize every fit in the history
+   - [X] It would be nice not to deserialize every fit in the history
 	 upon import, instead deserialize the first time it is needed
+   - [ ] History plot tool is quite broken.  Need to make it work with
+         new grab method (i.e. partial deserialization).  The deeper
+         problem is that data from each fit are not themselves
+         deserialized into distinct objects with distinct group names.
+   - [ ] Restoring an historical fit results in an unplottable state
    - [ ] do SSPaths get serialized and deserialized with the pointers
          to the feff calculation set correctly and no additional
          folders being created in stash (as was the case for FSPath)?
