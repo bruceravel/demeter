@@ -487,21 +487,21 @@ sub _plotE_command {
       $this = 'smooth';
     };
     push @suffix_list, $this;
-    my $n = $incr;
+    my $n = $incr % 10;
     my $cn = "col$n";
     push @color_list,  $self->po->$cn;
     push @key_list,    $self->name;
   };
   if ($self->po->e_pre)  { # show the preline
     push @suffix_list, 'preline';
-    my $n = $incr+2;
+    my $n = ($incr+2) % 10;
     my $cn = "col$n";
     push @color_list,  $self->po->$cn;
     push @key_list,    "pre-edge";
   };
   if ($self->po->e_post) { # show the postline
     push @suffix_list, 'postline';
-    my $n = $incr+3;
+    my $n = ($incr+3) % 10;
     my $cn = "col$n";
     push @color_list,  $self->po->$cn;
     push @key_list,    "post-edge";
@@ -509,7 +509,9 @@ sub _plotE_command {
   if ($self->po->e_i0) { # show i0
     if ($self->i0_string) {
       push @suffix_list, 'i0';
-      my $n = $incr+4;
+      my $n = ($incr+4) % 10;
+      $n = $incr if ($self->po->is_i0_plot);
+      $n = $incr+4 if ($self->po->is_d0s_plot);
       my $cn = "col$n";
       push @color_list,  $self->po->$cn;
       push @key_list,    ($self->po->e_mu) ? $self->po->i0_text : $self->name . ": " . $self->po->i0_text;
@@ -518,7 +520,7 @@ sub _plotE_command {
   if ($self->po->e_signal) { # show signal
     if ($self->signal_string) {
       push @suffix_list, 'signal';
-      my $n = $incr+5;
+      my $n = ($incr+5) % 10;
       my $cn = "col$n";
       push @color_list,  $self->po->$cn;
       push @key_list,    ($self->po->e_mu) ? 'signal' : $self->name . ": signal";

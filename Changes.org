@@ -20,6 +20,8 @@
      unselected.
    - In column selection dialog, unchecking reference ln button
      triggered a crash.
+   - Fixed incorrect color sequence for marked group I0 plot.  This
+     also made marked group I0 plot crash with >6 marked groups.
 
 *** Artemis
    - Added preview and print buttons to log, history log, history
@@ -40,6 +42,7 @@
      norm(E)
    - serializing Atoms object made safe for GUI display of object
      contents
+   - Made clear_ifeffit_title method more efficient
 
 *** Acknowledgements for this release
    - Eric Breynaert

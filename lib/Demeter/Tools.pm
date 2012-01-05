@@ -28,6 +28,7 @@ use String::Random qw(random_string);
 use Sys::Hostname;
 use DateTime;
 use Data::Dumper;
+use Text::Wrap;
 #use Memoize;
 #memoize('distance');
 
@@ -360,14 +361,18 @@ sub clear_ifeffit_titles {
   $self->dispose('show @strings');
   my $lines = Ifeffit::get_scalar('&echo_lines');
   my $target = '\$' . $group . '_title_';
+  my @all = ();
   foreach my $l (1 .. $lines) {
     my $response = Ifeffit::get_echo();
     if ($response =~ m{$target}) {
       (my $title = $response) =~ s{=.+\z}{};
       $title =~ s{\s+\z}{};
-      $self->dispose('erase '.$title);
+      push @all, $title;
     };
   };
+  local $Text::Wrap::columns = 200;
+  my $all_titles = wrap('erase ', 'erase ', join(" ", @all));
+  $self->dispose($all_titles);
   Ifeffit::ifeffit("\&screen_echo = $save[0]\n");
   $self->set_mode(screen=>$save[1], plotscreen=>$save[2], feedback=>$save[3]);
   return $self;

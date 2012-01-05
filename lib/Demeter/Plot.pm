@@ -54,7 +54,7 @@ eval "PGPLOT->import" if $PGPLOT_exists;
   no warnings;
   my $foo = *PGPLOT::HANDLE;
 }
-use List::MoreUtils qw(zip);
+use List::MoreUtils qw(none zip);
 use Regexp::Common;
 use Readonly;
 Readonly my $NUMBER => $RE{num}{real};
@@ -427,6 +427,17 @@ sub propagate_kweight {
 
 sub i0_text {
   return 'I\d0\u';
+};
+
+sub is_i0_plot {
+  my ($self) = @_;
+  my @rest = $self->get(qw(e_mu e_zero e_bkg e_pre e_post e_norm e_der e_sec e_signal));
+  return $self->e_i0 and (none {$_} @rest);
+};
+sub is_d0s_plot {
+  my ($self) = @_;
+  my @rest = $self->get(qw(e_zero e_bkg e_pre e_post e_norm e_der e_sec));
+  return $self->e_mu and $self->e_i0 and $self->e_signal and (none {$_} @rest);
 };
 
 sub copyright_text {
