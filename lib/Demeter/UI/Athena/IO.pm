@@ -555,7 +555,7 @@ sub _group {
     $app->{main}->Update;
     my $ref = (defined $colsel) ? $colsel->{Reference}->{reference} : q{};
     if (not $ref) {
-      $ref = Demeter::Data->new(file => $file);
+      $ref = Demeter::Data->new(file => $data->file);
     };
     $yaml -> {ref_numer} = (defined($colsel)) ? $colsel->{Reference}->{numerator}    : $yaml->{ref_numer};
     $yaml -> {ref_denom} = (defined($colsel)) ? $colsel->{Reference}->{denominator}  : $yaml->{ref_denom};

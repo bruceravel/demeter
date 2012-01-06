@@ -218,7 +218,7 @@ sub read_project {
   my $projfolder = $rframes->{main}->{project_folder};
   chdir $projfolder;
 
-  $rframes->{main}->status("Extracting members from zip file $fname.", $statustype);
+  $rframes->{main}->status("Opening project file $fname.", $statustype);
   my $zip = Archive::Zip->new();
   carp("Error reading project file $fname"), return 1 unless ($zip->read($fname) == AZ_OK);
   foreach my $f ($zip->members) {
@@ -259,7 +259,7 @@ sub read_project {
       my @refs = YAML::Tiny::Load($yy);
       $feffobject->read_yaml(\@refs, $where);
     };
-    $rframes->{main}->status("Creating Feff object ".$feffobject->name, $statustype);
+    $rframes->{main}->status("Unpacking Feff calculation: ".$feffobject->name, $statustype);
 
     if (not $feffobject->hidden) {
       ## import atoms.inp
@@ -291,7 +291,6 @@ sub read_project {
     };
   };
 
-  $rframes->{main}->status("Begin importing history", $statustype);
   ## -------- import fit history from project file (currently only importing most recent)
   #opendir(my $FITS, File::Spec->catfile($projfolder, 'fits/'));
   #@dirs = grep { $_ =~ m{\A[a-z]} } readdir($FITS);
@@ -349,7 +348,7 @@ sub read_project {
       };
       next unless ($fit->group eq $current);
       $currentfit = $fit;
-      $rframes->{main}->status("Thawing current fit", $statustype);
+      $rframes->{main}->status("Unpacking current fit", $statustype);
       $currentfit->deserialize(folder=> $folder, regenerate=>0); #$regen);
       #$rframes->{History}->{list}->SetSelection($rframes->{History}->{list}->GetCount-1);
       #$rframes->{History}->OnSelect;

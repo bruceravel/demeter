@@ -249,7 +249,7 @@ sub OnInit {
 
   $frames{main}->{newdata} = Wx::Button->new($datalist, wxID_ADD, "", wxDefaultPosition, wxDefaultSize, wxNO_BORDER);
   $datavbox -> Add($frames{main}->{newdata}, 0, wxGROW|wxRIGHT, 5);
-  mouseover($frames{main}->{newdata}, "Import a new data set.  Right click for menu of recently used Athena project files.");
+  mouseover($frames{main}->{newdata}, "Import a new data set.  Right click for a menu of recently used Athena project files.");
   EVT_BUTTON($frames{main}->{newdata}, -1, sub{Import('prj', q{})});
 
   $datavbox     -> Add(Wx::StaticLine->new($datalist, -1, wxDefaultPosition, wxDefaultSize, wxLI_HORIZONTAL), 0, wxGROW|wxALL, 2);
@@ -274,7 +274,7 @@ sub OnInit {
 
   $frames{main}->{newfeff} = Wx::Button->new($fefflist, wxID_ADD, "", wxDefaultPosition, wxDefaultSize, wxNO_BORDER);
   $feffvbox -> Add($frames{main}->{newfeff}, 0, wxGROW|wxRIGHT, 5);
-  mouseover($frames{main}->{newfeff}, "Start a new Feff calculation.  Right click for menu of recently used crystal data files.  Also right click to start a brand new Atoms input file.");
+  mouseover($frames{main}->{newfeff}, "Start a new Feff calculation.  Right click for a menu of recently used crystal or Feff input files or to open an empty Atoms input file.");
   EVT_BUTTON($frames{main}->{newfeff}, -1, sub{Import('feff')});
 
   $feffvbox     -> Add(Wx::StaticLine->new($fefflist, -1, wxDefaultPosition, wxDefaultSize, wxLI_HORIZONTAL), 0, wxGROW|wxALL, 2);

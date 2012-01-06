@@ -94,7 +94,7 @@ sub _slice_rgb {
 
 sub _penalize_rfactor {
   my ($self) = @_;
-  my @data   = @{ $self->paths };
+  my @data   = @{ $self->data };
   my $space = 1;
   foreach my $d (@data) {
     $space = 0.1 if ($d->fit_space eq 'k');

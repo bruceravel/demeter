@@ -211,7 +211,8 @@
          new grab method (i.e. partial deserialization).  The deeper
          problem is that data from each fit are not themselves
          deserialized into distinct objects with distinct group names.
-   - [ ] Restoring an historical fit results in an unplottable state
+   - [ ] Restoring an historical fit does not sensibly preserve order,
+	 fom numbering, etc
    - [ ] do SSPaths get serialized and deserialized with the pointers
          to the feff calculation set correctly and no additional
          folders being created in stash (as was the case for FSPath)?
@@ -230,12 +231,14 @@
         - [ ] DND of FPath also broken
         - [ ] DND of selection (currently only one at a time)
 
-**** Project [2/5]
+**** Project [2/6]
    - [ ] VPaths to/from project file
    - [ ] Indicators to/from project file
    - [X] Imported project file does not correctly set path-like tab
    - [X] replacing data in a project does not work
    - [ ] does autosave file work as intended?
+   - [ ] GDS objects get created with same groupname over and over as
+	 they are used in fits in the history
 
 **** Advanced fitting						   :Advanced:
 ***** MFC [0/1]

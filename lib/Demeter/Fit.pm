@@ -239,6 +239,22 @@ override all => sub {
   return %all;
 };
 
+override clone => sub {
+  my ($self, @arguments) = @_;
+
+  my $new = ref($self) -> new();
+  my %hash = $self->SUPER::all;
+  delete $hash{group};
+  $new -> set(%hash);
+  $new -> set(@arguments);
+
+  ## the cloned object needs its own group name
+  #$new->group($self->_get_group());
+
+  return $new;
+
+};
+
 
 sub rm {
   my ($self) = @_;

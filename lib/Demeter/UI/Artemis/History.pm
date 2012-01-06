@@ -215,9 +215,9 @@ sub OnSelect {
   return if not defined $fit;
   if (not $fit->thawed) {
     my $busy = Wx::BusyCursor->new();
-    $self->status('Importing fit "'.$fit->name.'"', 'wait');
+    $self->status('Unpacking fit "'.$fit->name.'"', 'wait');
     $fit->deserialize(folder=>File::Spec->catfile($::app->{main}->{project_folder}, 'fits', $fit->group));
-    $self->status('Imported fit "'.$fit->name.'"');
+    $self->status('Unpacked fit "'.$fit->name.'"');
     undef $busy;
   };
   $self->put_log($fit);
@@ -234,15 +234,14 @@ Readonly my $FIT_SAVE	      => Wx::NewId();
 Readonly my $FIT_EXPORT	      => Wx::NewId();
 Readonly my $FIT_DISCARD      => Wx::NewId();
 Readonly my $FIT_DISCARD_MANY => Wx::NewId();
+Readonly my $FIT_SHOW         => Wx::NewId();
 
 sub OnRightDown {
   my ($self, $event) = @_;
   return if $self->IsEmpty;
-  #$self->Deselect($self->GetSelection);
-  #$self->SetSelection($self->HitTest($event->GetPosition));
-  #$self->GetParent->OnSelect($event);
-  #my $name = $self->GetStringSelection;
   my $position  = $self->HitTest($event->GetPosition);
+  $self->SetSelection($position);
+  $self->GetParent->OnSelect;
   $self->GetParent->{_position} = $position; # need a way to remember where the click happened in methods called from OnPlotMenu
   ($position = $self->GetCount - 1) if ($position == -1);
   my $name = $self->GetString($position);
@@ -253,8 +252,9 @@ sub OnRightDown {
   $menu->Append($FIT_DISCARD, "Discard \"$name\"");
   $menu->AppendSeparator;
   $menu->Append($FIT_DISCARD_MANY, "Discard marked fits");
+  $menu->AppendSeparator;
+  $menu->Append($FIT_SHOW, "Show YAML for \"$name\"");
   $menu->Enable($FIT_EXPORT,0);
-  $menu->Enable($FIT_DISCARD_MANY,0);
   $self->PopupMenu($menu, $event->GetPosition);
 };
 
@@ -275,11 +275,18 @@ sub OnPlotMenu {
       last SWITCH;
     };
     ($id == $FIT_DISCARD) and do {
-      $self->discard('selected', $self->{_position});
+      $self->discard($self->{_position}, 1);
       last SWITCH;
     };
     ($id == $FIT_DISCARD_MANY) and do {
-      $self->discard('all');
+      $self->discard_many;
+      last SWITCH;
+    };
+    ($id == $FIT_SHOW) and do {
+      my $thisfit = $self->{list}->GetIndexedData($self->{_position});
+      my $yaml   = $thisfit->serialization;
+      my $title = sprintf "YAML of Plot object (%s) [%s]", $thisfit->group, $thisfit->name;
+      my $dialog = Demeter::UI::Artemis::ShowText->new($::app->{main}, $yaml, $title) -> Show;
       last SWITCH;
     };
   };
@@ -403,13 +410,20 @@ sub write_report {
 sub summarize {
   my ($self, $event) = @_;
   return if $self->{list}->IsEmpty;
+  my $busy = Wx::BusyCursor->new();
   $self->mark_all_if_none;
   my $text = q{};
   foreach my $i (0 .. $self->{list}->GetCount-1) {
     next if not $self->{list}->IsChecked($i);
     my $fit = $self->{list}->GetIndexedData($i);
+    if (not $fit->thawed) {
+      $self->status('Unpacking fit "'.$fit->name.'"', 'wait');
+      $fit->deserialize(folder=>File::Spec->catfile($::app->{main}->{project_folder}, 'fits', $fit->group));
+      $self->status('Unpacked fit "'.$fit->name.'"');
+    };
     $text .= $fit -> summary;
   };
+  undef $busy;
   return if (not $text);
   $self->{report}->Clear;
   $self->{report}->SetValue($text)
@@ -434,49 +448,74 @@ sub savereport {
 
 sub restore {
   my ($self, $position) = @_;
-  $self->status("Restoring a fit is currently broken.  Drat!", 'alert');
-  return;
   ($position = $self->{list}->GetSelection) if not defined ($position);
   my $busy = Wx::BusyCursor -> new();
   Demeter::UI::Artemis::Project::discard_fit(\%Demeter::UI::Artemis::frames);
-  my $fit = $self->{list}->GetIndexedData($position);
+  my $old = $self->{list}->GetIndexedData($position);
+  my $fit = $old->clone;
+  my $folder = File::Spec->catfile($Demeter::UI::Artemis::frames{main}->{project_folder}, 'fits', $old->group);
+  $fit->deserialize(folder=> $folder, regenerate=>0); #$regen);
   Demeter::UI::Artemis::Project::restore_fit(\%Demeter::UI::Artemis::frames, $fit);
+  Demeter::UI::Artemis::update_order_file();
   undef $busy;
   $self->status("Restored ".$self->{list}->GetString($position));
 };
 
+sub discard_many {
+  my ($self, $event) = @_;
+  foreach my $i (reverse(0 .. $self->{list}->GetCount-1)) {
+    next if not $self->{list}->IsChecked($i);
+    $self->discard($i, 0);
+  };
+  return if not $self->{list}->GetCount;
+  $self->{list}->SetSelection($self->{list}->GetCount-1);
+  $self->OnSelect;
+  $self->status("discarded marked fits");
+};
+
 sub discard {
-  my ($self, $how, $position) = @_;
+  my ($self, $position, $show) = @_;
+  $show ||= 0;
   ($position = $self->{list}->GetSelection) if not defined ($position);
   my $thisfit = $self->{list}->GetIndexedData($position);
   my $name = $thisfit->name;
 
-  ## -------- remove this fit from the fit_order hash and rewrite the order file
-  delete $Demeter::UI::Artemis::fit_order{order}{$thisfit->group};
-  Demeter::UI::Artemis::update_order_file(1);
-  #my $string .= YAML::Tiny::Dump(%Demeter::UI::Artemis::fit_order);
-  #open(my $ORDER, '>'.$Demeter::UI::Artemis::frames{main}->{order_file});
-  #print $ORDER $string;
-  #close $ORDER;
-
   ## -------- remove this fit from the fit list
   if ($position == $self->{list}->GetCount-1) { # last position
-    $self->{list}->SetSelection($position-1);
-    $self->OnSelect;
+    if ($show) {
+      $self->{list}->SetSelection($position-1);
+      $self->OnSelect;
+    };
   } elsif ($self->{list}->GetCount == 1) {      # only position
     $self->{list}->SetSelection(wxNOT_FOUND);
   } else {			                # all others
-    $self->{list}->SetSelection($position+1);
-    $self->OnSelect;
+    if ($show) {
+      $self->{list}->SetSelection($position+1);
+      $self->OnSelect;
+    };
   };
   $self->{list}->DeleteData($position);
 
-  ## -------- destroy the Fit object and delete its folder in stash space
+  ## -------- destroy the Fit object, delete its folder in stash space, delete its entry in the order file
+  my $str = $thisfit->group;
   $thisfit->DEMOLISH;
-  my $folder = File::Spec->catfile($Demeter::UI::Artemis::frames{main}->{project_folder}, 'fits', $thisfit->group);
-  rmtree($folder);
-  Demeter::UI::Artemis::modified(1);
 
+  my $folder = File::Spec->catfile($Demeter::UI::Artemis::frames{main}->{project_folder}, 'fits', $str);
+  rmtree($folder);
+
+  my $orderfile = $Demeter::UI::Artemis::frames{main}->{order_file};
+  my %order = YAML::Tiny::LoadFile($orderfile);
+  print %order, $/;
+  foreach my $k (keys %{$order{order}}) {
+    delete $order{order}->{$k} if ($order{order}->{$k} eq $str);
+  };
+  my $string .= YAML::Tiny::Dump(%order);
+  open(my $ORDER, '>'.$orderfile);
+  print $ORDER $string;
+  close $ORDER;
+  %Demeter::UI::Artemis::fit_order = %order;
+
+  Demeter::UI::Artemis::modified(1);
   $self->status("discarded $name");
 };
 
