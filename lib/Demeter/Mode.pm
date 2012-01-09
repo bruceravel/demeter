@@ -11,9 +11,13 @@ use Demeter::StrTypes qw( Empty
 			  TemplateFeff
 			  TemplateAnalysis
 		       );
+use List::MoreUtils qw(zip);
 #use vars qw($singleton);	# Moose 0.61, MooseX::Singleton 0.12 seem to need this
 
 ## -------- disposal modes
+has 'group'     => (is => 'rw', isa => 'Str',     default => q{Mode});
+has 'name'      => (is => 'rw', isa => 'Str',     default => q{Mode});
+
 has 'ifeffit'    => (is => 'rw', isa => 'Bool',                 default => 1);
 has $_           => (is => 'rw', isa => 'Bool',                 default => 0)   foreach (qw(screen plotscreen repscreen));
 has $_           => (is => 'rw', isa => 'Str',                  default => q{}) foreach (qw(file plotfile repfile));
@@ -530,7 +534,7 @@ sub destroy_all {
 
 sub report {
   my ($self, $which) = @_;
-  my $text = q{};
+  my $text = "Mode object\n\n";
   $which ||= 'all';
   foreach my $this (sort @{$self->types}) {
     my $n = 19 - length($this);
@@ -551,6 +555,21 @@ sub report {
   };
   return $text
 };
+
+sub serialization {
+  my ($self) = @_;
+  my @keys = sort {$a cmp $b} grep{$_ if ($_ =~ m{\A[a-z]})} map {$_->name} $self->meta->get_all_attributes;
+  my @values = map { my $foo = (ref($_) =~ m{CODE})             ? 'Code reference'
+		             : (ref($_) =~ m{SCALAR})           ? $$_
+		             : (ref($_) =~ m{Demeter|Graphics}) ? ref($_).' object'
+			     :                                    $_;
+		     $foo||q{};
+		   } map {$self->$_} @keys;
+  my %hash   = zip(@keys, @values);
+  return YAML::Tiny::Dump(\%hash);
+};
+
+
 
 __PACKAGE__->meta->make_immutable;
 1;

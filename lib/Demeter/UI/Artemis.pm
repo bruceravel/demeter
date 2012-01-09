@@ -57,6 +57,7 @@ Readonly my $EXPORT_IFEFFIT  => Wx::NewId();
 Readonly my $EXPORT_DEMETER  => Wx::NewId();
 Readonly my $FIT_YAML        => Wx::NewId();
 Readonly my $PLOT_YAML       => Wx::NewId();
+Readonly my $MODE_YAML       => Wx::NewId();
 Readonly my $MODE_STATUS     => Wx::NewId();
 Readonly my $PERL_MODULES    => Wx::NewId();
 Readonly my $STATUS          => Wx::NewId();
@@ -187,6 +188,7 @@ sub OnInit {
   my $debugmenu = Wx::Menu->new;
   #$debugmenu->Append($FIT_YAML,     "Show YAML for current Fit object",  "Show YAML dialog for current Fit object",  wxITEM_NORMAL );
   $debugmenu->Append($PLOT_YAML,    "Show YAML for Plot object",  "Show YAML dialog for Plot object",  wxITEM_NORMAL );
+  $debugmenu->Append($MODE_YAML,    "Show YAML for Mode object",  "Show YAML dialog for Plot object",  wxITEM_NORMAL );
   $debugmenu->Append($MODE_STATUS,  "Show mode status",           "Show mode status dialog",  wxITEM_NORMAL );
   $debugmenu->Append($PERL_MODULES, "Show perl modules",          "Show perl module versions", wxITEM_NORMAL );
   #$debugmenu->Append($CRASH,        "Crash Artemis",              "Force a crash of Artemis to test autosave file", wxITEM_NORMAL );
@@ -695,6 +697,8 @@ sub fit {
   };
   $rframes->{main} -> {currentfit} = $newfit;
   ++$fit_order{order}{current};
+  $fit->grabbed(1);
+  $fit->thawed(1);
 
   modified(1);
   $::app->heap_check;
@@ -895,13 +899,18 @@ sub OnMenuClick {
     ## -------- debug submenu
     ($id == $FIT_YAML) and do {
       my $yaml   = $frames{main}->{currentfit}->serialization;
-      my $dialog = Demeter::UI::Artemis::ShowText->new($frames{main}, $yaml, 'YAML of Plot object') -> Show;
+      my $dialog = Demeter::UI::Artemis::ShowText->new($frames{main}, $yaml, 'YAML of current Fit object') -> Show;
       last SWITCH;
     };
     ($id == $PLOT_YAML) and do {
       $frames{Plot}->fetch_parameters('plot');
       my $yaml   = $demeter->po->serialization;
       my $dialog = Demeter::UI::Artemis::ShowText->new($frames{main}, $yaml, 'YAML of Plot object') -> Show;
+      last SWITCH;
+    };
+    ($id == $PLOT_YAML) and do {
+      my $yaml   = $demeter->mo->serialization;
+      my $dialog = Demeter::UI::Artemis::ShowText->new($frames{main}, $yaml, 'YAML of Mode object') -> Show;
       last SWITCH;
     };
     ($id == $PERL_MODULES) and do {

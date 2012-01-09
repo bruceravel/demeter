@@ -83,6 +83,11 @@ sub OnLeftDclick {
       last SWITCH;
     };
     ## this is the Demeter mode display
+    ($line[0] eq 'Mode') and do {
+      $kind = "Mode";
+      $object = Demeter->mo;
+      last SWITCH;
+    };
     ($line[2] and (length($line[2]) > 5)) and do {
       $kind = $line[0];
       $object = Demeter->mo->fetch($kind, substr($line[2], 1, -1));

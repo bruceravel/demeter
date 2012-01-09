@@ -450,12 +450,18 @@ sub restore {
   my ($self, $position) = @_;
   ($position = $self->{list}->GetSelection) if not defined ($position);
   my $busy = Wx::BusyCursor -> new();
+  my $was = Demeter->mo->currentfit;
   Demeter::UI::Artemis::Project::discard_fit(\%Demeter::UI::Artemis::frames);
   my $old = $self->{list}->GetIndexedData($position);
   my $fit = $old->clone;
   my $folder = File::Spec->catfile($Demeter::UI::Artemis::frames{main}->{project_folder}, 'fits', $old->group);
   $fit->deserialize(folder=> $folder, regenerate=>0); #$regen);
+  $fit->fom($was-1);
+  $fit->mo->currentfit($was-1);
   Demeter::UI::Artemis::Project::restore_fit(\%Demeter::UI::Artemis::frames, $fit);
+  my $text = $Demeter::UI::Artemis::frames{main}->{name}->GetValue;
+  $text =~ s{\d+\z}($was);
+  $Demeter::UI::Artemis::frames{main}->{name}->SetValue($text);
   Demeter::UI::Artemis::update_order_file();
   undef $busy;
   $self->status("Restored ".$self->{list}->GetString($position));

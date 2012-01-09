@@ -5,7 +5,7 @@
   $string .= (sprintf "$/ %-15s : %s", '        ...', $_) foreach @lines;
   q{}
 }
-<< >>Name            : {$S->name}
+<< >>Name            : {$S->name}    ({$S->group})
  Description     : {$string}
  Figure of merit : {$S->fom}
  Time of fit     : {$S->time_of_fit}
