@@ -35,6 +35,7 @@
      item in the fit history.  However, history plot tool not
      currently working.
    - Reduce R-factor penalty by factor of 10 when fitting in k-space
+   - Can now restore a previous fit reliably.
 
 *** Demeter
    - explicitly unset xrange at the start of every gnuplot plot.  this

@@ -9,10 +9,10 @@ and individual fits) is saved to a file, there are parallel directory
 trees for the Feff calculations and the individual fits.
 
 The serialization file is a normal zip file with the "dpj" extension
-when serializing an individual fit and "fpj" when serializing and
+when serializing an individual fit and "fpj" when serializing an
 Artemis fitting project.
 
-Contained in the zip file are several YAML files descript the various
+Contained in the zip file are several YAML files describing the various
 objects included in the fit, several column data files with the
 extension "fit", zero or more binary files from Feff, and a file
 called "log".
@@ -53,18 +53,18 @@ YAML files:
        the group name of the Data object associated with the path.
        When deserializing the Fit, this attribute needs to be
        converted into a reference to that Data object.  Similarly, the
-       parent and sp attributes need to be converted into referecens
+       parent and sp attributes need to be converted into references
        to the appropriate Feff and ScatteringPath objects.
 
   5. fit.yaml: 
-       Fit properties, fit statistics, all correlations
+       Fit properties, fit statistics, best fit values, all correlations
 
   6. plot.yaml: 
-       the Plot object at the time of the fit.
+       the state of Plot object at the time of the fit.
 
 Fit files:
   One for each of the Data objects included in the fit.  The columns
-  of this file are k, data, fit, resdiual, window.  This is the
+  of this file are k, data, fit, residual, window.  This is the
   standard Demeter fit file format.  The header gives lots of clues
   about how the fit was made and where the data came from.  The file
   names is "<data>.fit" where <data> is the group attribute of the

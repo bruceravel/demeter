@@ -193,7 +193,7 @@ sub new {
   $this-> mouseover('printreport', "Print report");
 
   ## -------- plotting tool page
-  $plottoolbox -> Add(Wx::StaticText->new($plottoolpage, -1, 'The history plotting tool is currently broken.  Drat!'), 0, wxALL|wxALIGN_CENTER_HORIZONTAL, 5);
+  $plottoolbox -> Add(Wx::StaticText->new($plottoolpage, -1, "The history plotting tool is currently broken.\nIt currently fails to import old fits from project files.  Drat!"), 0, wxALL|wxALIGN_CENTER_HORIZONTAL, 5);
 
   $nb -> AddPage($logpage,      "Log file", 1);
   $nb -> AddPage($reportpage,   "Reports", 0);

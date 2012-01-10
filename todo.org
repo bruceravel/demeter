@@ -198,7 +198,7 @@
 
 
 ** Artemis
-*** Artemis bugs and missing features [4/13]  [30%]
+*** Artemis bugs and missing features [5/13]  [38%]
    - [X] rename Atoms/Feff
    - [ ] Reorganize lists, move individual items up and down, move
 	 blocks up and down, Path list, +Plot list+
@@ -211,7 +211,7 @@
          new grab method (i.e. partial deserialization).  The deeper
          problem is that data from each fit are not themselves
          deserialized into distinct objects with distinct group names.
-   - [ ] Restoring an historical fit does not sensibly preserve order,
+   - [X] Restoring an historical fit does not sensibly preserve order,
 	 fom numbering, etc
    - [ ] do SSPaths get serialized and deserialized with the pointers
          to the feff calculation set correctly and no additional
@@ -231,8 +231,9 @@
         - [ ] DND of FPath also broken
         - [ ] DND of selection (currently only one at a time)
 
-**** Project [2/6]
+**** Project [2/7]
    - [ ] VPaths to/from project file
+   - [ ] SSPaths not saved/restored properly
    - [ ] Indicators to/from project file
    - [X] Imported project file does not correctly set path-like tab
    - [X] replacing data in a project does not work
