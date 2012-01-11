@@ -22,8 +22,11 @@
      triggered a crash.
    - Fixed incorrect color sequence for marked group I0 plot.  This
      also made marked group I0 plot crash with >6 marked groups.
+   - Post busy cursor when closing a project
+   - Reorganized Monitor and debug menus
 
 *** Artemis
+   - New icons!
    - Added preview and print buttons to log, history log, history
      report, and journal
    - plot stacking parameters could evaluate to an empty string, so
@@ -32,7 +35,7 @@
    - fixed a bug causing a segfault when discarding data or feff
    - capture Atoms' statusbar messages in Artemis' status buffer
    - Faster project file import using partial deserialization of each
-     item in the fit history.  However, history plot tool not
+     item in the fit history.  However, history plot tool is not
      currently working.
    - Reduce R-factor penalty by factor of 10 when fitting in k-space
    - Can now restore a previous fit reliably.
@@ -48,6 +51,8 @@
    - serializing Atoms object made safe for GUI display of object
      contents
    - Made clear_ifeffit_title method more efficient
+   - Mechanism for associating metadata with files imported using a
+     plugin
 
 *** Acknowledgements for this release
    - Eric Breynaert

@@ -70,7 +70,7 @@ sub is_xdac {
 	  $self->beamline($bl);
 	  my $ini = join(".", 'xdac', $bl, 'ini');
 	  my $inifile = File::Spec->catfile(dirname($INC{'Demeter.pm'}), 'Demeter', 'share', 'xdi', $ini);
-	  $self->configure_from_ini($inifile);
+	  $self->metadata_from_ini($inifile);
 	  last SWITCH;
 	};
 

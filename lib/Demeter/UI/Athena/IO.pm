@@ -107,23 +107,26 @@ sub Import {
       ## file from X23A2 or 10BM , if so, set is_xdi to false and let
       ## this fall through to the plugin
     };
-    my ($plugin, $stashfile, @suggest, $type);
-    if ($xdi and $xdi->is_xdi) {
-      $type = 'xdi';
+    my ($plugin, $stashfile, $type) = (q{}, q{}, q{});
+    if ($Demeter::UI::Athena::demeter->is_prj($file,$verbose)) {
+      $type = 'prj';
+      $stashfile = $file;
     } else {
-      $plugin = test_plugins($app, $file);
-      if ($plugin =~ m{\A\!}) {
-	$app->{main}->status("There was an error reading that file as a " . (split(/::/, $plugin))[-1] . " file.  (Perhaps you do not have its plugin configured correctly?)");
-	return;
+      if ($xdi and $xdi->is_xdi) {
+	$type = 'xdi';
+      } else {
+	$plugin = test_plugins($app, $file);
+	if ($plugin =~ m{\A\!}) {
+	  $app->{main}->status("There was an error reading that file as a " . (split(/::/, $plugin))[-1] . " file.  (Perhaps you do not have its plugin configured correctly?)");
+	  return;
+	};
+	$stashfile = ($plugin) ? $plugin->fixed : $file;
+	$type = ($plugin and ($plugin->output eq 'data'))                ? 'raw'
+	      : ($plugin and ($plugin->output eq 'project'))             ? 'prj'
+              : ($Demeter::UI::Athena::demeter->is_data($file,$verbose)) ? 'raw'
+              :                                                            '???';
       };
-      $stashfile = ($plugin) ? $plugin->fixed : $file;
-      @suggest = ($plugin) ? $plugin->suggest() : ();
-      $type = ($plugin and ($plugin->output eq 'data'))                ? 'raw'
-            : ($plugin and ($plugin->output eq 'project'))             ? 'prj'
-            : ($Demeter::UI::Athena::demeter->is_prj($file,$verbose))  ? 'prj'
-            : ($Demeter::UI::Athena::demeter->is_data($file,$verbose)) ? 'raw'
-            :                                                            '???';
-    }
+    };
     if ($type eq '???') {
       $app->{main}->status("Could not read \"$file\" as either data or as a project file. (Do you need to enable a plugin?)");
       return;
@@ -133,9 +136,9 @@ sub Import {
     };
 
   SWITCH: {
-      $retval = _data($app, $stashfile, $xdi,  $first, []),        last SWITCH if ($type eq 'xdi');
-      $retval = _prj ($app, $stashfile, $file, $first, $plugin),   last SWITCH if ($type eq 'prj');
-      $retval = _data($app, $stashfile, $file, $first, \@suggest), last SWITCH if ($type eq 'raw');
+      $retval = _data($app, $stashfile, $xdi,  $first, $plugin), last SWITCH if ($type eq 'xdi');
+      $retval = _prj ($app, $stashfile, $file, $first, $plugin), last SWITCH if ($type eq 'prj');
+      $retval = _data($app, $stashfile, $file, $first, $plugin), last SWITCH if ($type eq 'raw');
     };
     undef $xdi;
     if ($plugin) {
@@ -201,7 +204,7 @@ sub Import_plot {
 };
 
 sub _data {
-  my ($app, $file, $orig, $first, $suggest) = @_;
+  my ($app, $file, $orig, $first, $plugin) = @_;
   my $busy = Wx::BusyCursor->new();
   my ($data, $displayfile);
   if (ref($orig) =~ m{Class::MOP|Moose::Meta::Class}) {
@@ -212,7 +215,9 @@ sub _data {
     $displayfile = $orig;
     $data = Demeter::Data->new(file=>$file);
   };
-  my %suggest = @$suggest;	# suggested columns from a plugin
+
+  my @suggest = ($plugin) ? $plugin->suggest() : ();
+  my %suggest = @suggest;	# suggested columns from a plugin
   ## build suggestions from XDI attributes
 
   ## -------- import persistance file
@@ -253,7 +258,7 @@ sub _data {
       };
     } else {
       $yaml->{each} = 0;
-      $do_guess = ($suggest) ? 0 : 1;
+      $do_guess = ($plugin) ? 0 : 1;
     };
   } else {
     $do_guess = 1;
@@ -275,7 +280,7 @@ sub _data {
   ## until *after* the energy/numerator/denominator attributes are
   ## set.  then guess_columns can be called.
   #$data->xdi($orig) if (ref($orig) =~ m{Class::MOP|Moose::Meta::Class});
-  $data->guess_columns if ($do_guess and (not $suggest));
+  $data->guess_columns if ($do_guess and (not $plugin));
 
   ## -------- display column selection dialog
   my $repeated = 1;
@@ -412,6 +417,8 @@ sub _data {
     _group($app, $colsel, $data, $yaml, $file, $orig, $repeated, 0);
   };
 
+  $data->metadata_from_ini($plugin->metadata_ini) if ($plugin and $plugin->metadata_ini);
+  $plugin->add_metadata($data) if $plugin;
   $data->push_mru("xasdata", $displayfile);
   $app->set_mru;
 
@@ -641,7 +648,7 @@ sub constrain {
 
 
 sub _prj {
-  my ($app, $file, $orig, $first, $is_plugin) = @_;
+  my ($app, $file, $orig, $first, $plugin) = @_;
   my $busy = Wx::BusyCursor->new();
 
   $app->{main}->{prj} =  Demeter::UI::Artemis::Prj->new($app->{main}, $file, 'multiple');
@@ -668,6 +675,7 @@ sub _prj {
     if ($data->prjrecord =~ m{,\s+(\d+)}) {
       $data->prjrecord($orig . ", $1");
     };
+    $plugin->add_metadata($data) if $plugin;
     $app->{main}->status("Importing ". $data->prjrecord, "nobuffer");
     $app->{main}->Update;
     $app->{main}->{list}->AddData($data->name, $data);
@@ -687,13 +695,17 @@ sub _prj {
   $data->push_mru("xasdata", $orig);
   $data->push_mru("athena", $orig);
   $app->set_mru;
-  if (not $is_plugin) {
+  if (not $plugin) {
     $app->{main}->{project}->SetLabel(basename($file, '.prj'));
     $app->{main}->{currentproject} = $file;
   };
 
   chdir dirname($orig);
-  ($is_plugin) ? $app->modified(1) : $app->modified(0);
+  if ($plugin) {
+    $app->modified(1);
+  } else {
+    $app->modified(0);
+  };
   $prj->DEMOLISH;
   $app->OnGroupSelect(0,0,0);
   undef $busy;

@@ -28,7 +28,7 @@ sub is {
   open (my $D, $self->file) or $self->Croak("could not open " . $self->file . " as data (10BM multi-channel)\n");
   my $is_mx = (<$D> =~ m{\A\s*MRCAT_XAFS});
   while (<$D>) {
-    $self->edge_energy($1) if (m{E0\s*=\s*(\d*)});
+    $self->edge_energy($1) if $is_mx and (m{E0\s*=\s*(\d*)});
     last if (m{\A\s*-----});
   };
   my $is_mc = (<$D> =~ m{mcs\d{1,2}\s+mcs\d{1,2}\s+mcs\d{1,2}\s+mcs\d{1,2}\s+mcs\d{1,2}\s+mcs\d{1,2}\s+mcs\d{1,2}\s+mcs\d{1,2}});

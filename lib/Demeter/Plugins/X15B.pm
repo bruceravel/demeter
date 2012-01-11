@@ -3,9 +3,10 @@ package Demeter::Plugins::X15B;  # -*- cperl -*-
 use Moose;
 extends 'Demeter::Plugins::FileType';
 
-has '+is_binary'   => (default => 1);
-has '+description' => (default => "NSLS beamline X15B");
-has '+version'     => (default => 0.1);
+has '+is_binary'    => (default => 1);
+has '+description'  => (default => "NSLS beamline X15B");
+has '+version'      => (default => 0.1);
+has '+metadata_ini' => (default => File::Spec->catfile(File::Basename::dirname($INC{'Demeter.pm'}), 'Demeter', 'share', 'xdi', 'x15b.ini'));
 
 use Readonly;
 Readonly my $ENERGY => 0;	# columns containing the

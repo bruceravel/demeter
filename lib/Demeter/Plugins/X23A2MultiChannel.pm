@@ -9,6 +9,7 @@ has '+is_binary'   => (default => 0);
 has '+description' => (default => 'the NSLS X23A2 multi-channel detector');
 has '+version'     => (default => 0.1);
 has '+output'      => (default => 'project');
+has '+metadata_ini' => (default => File::Spec->catfile(File::Basename::dirname($INC{'Demeter.pm'}), 'Demeter', 'share', 'xdi', 'xdac.x23a2.ini'));
 
 has 'n1'           => (is => 'rw', isa => 'Str',  default => '$2');
 has 'n2'           => (is => 'rw', isa => 'Str',  default => '$3');
@@ -93,6 +94,16 @@ sub fix {
 sub suggest {
   ();
 };
+
+sub add_metadata {
+  my ($self, @data) = @_;
+  foreach my $d (@data) {
+    $d->is_xdac($self->file);
+    $d->set_xdi_detector('i0', 'multichannel ionization chamber');
+    $d->set_xdi_detector('it', 'multichannel ionization chamber');
+  };
+};
+
 
 __PACKAGE__->meta->make_immutable;
 1;

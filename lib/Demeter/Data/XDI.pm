@@ -186,7 +186,7 @@ sub import_xdi {
   ## use math expressions for making spectra
 };
 
-sub configure_from_ini {
+sub metadata_from_ini {
   my ($self, $inifile) = @_;
   return $self if not ($INC{'Xray/XDI.pm'});
   return if not -e $inifile;

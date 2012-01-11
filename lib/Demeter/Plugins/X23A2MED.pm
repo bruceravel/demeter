@@ -13,6 +13,7 @@ use List::MoreUtils qw(any);
 has '+is_binary'   => (default => 0);
 has '+description' => (default => "the NSLS X23A2 Vortex");
 has '+version'     => (default => 0.1);
+has '+metadata_ini' => (default => File::Spec->catfile(File::Basename::dirname($INC{'Demeter.pm'}), 'Demeter', 'share', 'xdi', 'xdac.x23a2.ini'));
 has 'nelements'    => (is => 'rw', isa => 'Int', default => 4);
 
 my $demeter = Demeter->new();
@@ -193,6 +194,13 @@ sub _correct {
   #print "Maximum number of iterations: $maxiter\n";
   return ($maxiter, @corrected);
 };
+
+sub add_metadata {
+  my ($self, $data) = @_;
+  $data->is_xdac($self->file);
+  $data->set_xdi_detector('if', $self->nelements.' element Vortex silicon drift');
+};
+
 
 __PACKAGE__->meta->make_immutable;
 1;

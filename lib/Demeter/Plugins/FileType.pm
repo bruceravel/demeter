@@ -30,6 +30,8 @@ has 'lower_case'  => (is => 'rw', isa => 'Bool', default => 1);
 has 'time_consuming'  => (is => 'rw', isa => 'Bool', default => 0);
 has 'working_message' => (is => 'rw', isa => 'Str', default => q{});
 
+has 'metadata_ini' => (is => 'rw', isa => 'Str', default => q{});
+
 enum 'OutputTypes' => ['data', 'project'];
 coerce 'OutputTypes', from 'Str', via { lc($_) };
 has 'output'      => (is => 'ro', isa => 'OutputTypes', default => q{data});
@@ -43,6 +45,9 @@ sub Croak {
   };
 };
 
+sub add_metadata {
+  return $_[0];
+};
 
 __PACKAGE__->meta->make_immutable;
 1;

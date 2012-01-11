@@ -470,17 +470,22 @@ sub menubar {
 
   my $monitormenu = Wx::Menu->new;
   my $ifeffitmenu = Wx::Menu->new;
-  my $yamlmenu    = Wx::Menu->new;
+  #my $yamlmenu    = Wx::Menu->new;
+
   my $debugmenu   = Wx::Menu->new;
-  $yamlmenu->Append($PLOT_YAML,      "Plot object",            "Show YAML dialog for Plot object" );
-  $yamlmenu->Append($STYLE_YAML,     "plot style objects",     "Show YAML dialog for plot style objects" );
-  $yamlmenu->Append($INDIC_YAML,     "Indicator objects",      "Show YAML dialog for Indicator objects" );
-  $yamlmenu->Append($LCF_YAML,       "LCF object",             "Show YAML dialog for LCF object" );
-  $yamlmenu->Append($PCA_YAML,       "PCA object",             "Show YAML dialog for PCA object" );
-  $yamlmenu->Append($PEAK_YAML,      "PeakFit object",         "Show YAML dialog for PeakFit object" );
-  $debugmenu->Append($MODE_STATUS,   "Show mode status",       "Show mode status dialog" );
-  $debugmenu->Append($PERL_MODULES,  "Show perl modules",      "Show perl module versions" );
-  $debugmenu->Append($CONDITIONAL,   "Show conditional features", "Show which conditional Demeter features are present" );
+  $debugmenu->Append($MODE_STATUS,  "Show mode status",          "Show mode status dialog" );
+  $debugmenu->Append($PERL_MODULES, "Show perl modules",         "Show perl module versions" );
+  $debugmenu->Append($CONDITIONAL,  "Show conditional features", "Show which conditional Demeter features are present" );
+  $debugmenu->AppendSeparator;
+  $debugmenu->Append($PLOT_YAML,    "Plot object YAML",          "Show YAML dialog for Plot object" );
+  $debugmenu->Append($STYLE_YAML,   "plot style objects YAML",   "Show YAML dialog for plot style objects" );
+  $debugmenu->Append($INDIC_YAML,   "Indicator objects YAML",    "Show YAML dialog for Indicator objects" );
+  $debugmenu->AppendSeparator;
+  $debugmenu->Append($LCF_YAML,     "LCF object YAML",           "Show YAML dialog for LCF object" );
+  $debugmenu->Append($PCA_YAML,     "PCA object YAML",           "Show YAML dialog for PCA object" );
+  $debugmenu->Append($PEAK_YAML,    "PeakFit object YAML",       "Show YAML dialog for PeakFit object" );
+
+
   $monitormenu->Append($SHOW_BUFFER, "Show command buffer",    'Show the Ifeffit and plotting commands buffer' );
   $monitormenu->Append($STATUS,      "Show status bar buffer", 'Show the buffer containing messages written to the status bars');
   $monitormenu->AppendSeparator;
@@ -492,7 +497,6 @@ sub menubar {
   $monitormenu->Append($IFEFFIT_MEMORY,  "Show Ifeffit's memory use", "Show Ifeffit's memory use and remaining capacity");
   #if ($demeter->co->default("athena", "debug_menus")) {
     $monitormenu->AppendSeparator;
-    $monitormenu->AppendSubMenu($yamlmenu,  'Show YAML for ...',    'Display YAMLs of Demeter objects');
     $monitormenu->AppendSubMenu($debugmenu, 'Debug options', 'Display debugging tools');
   #};
 
@@ -657,7 +661,10 @@ sub OnMenuClick {
     };
 
     ($id == wxID_CLOSE) and do {
+      $app->{main}->status("Closing project ...", "wait");
+      my $busy = Wx::BusyCursor->new();
       $app->Remove('all');
+      undef $busy;
       last SWITCH;
     };
     ($id == wxID_EXIT) and do {
