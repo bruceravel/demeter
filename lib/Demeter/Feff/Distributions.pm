@@ -59,7 +59,7 @@ has 'file'      => (is => 'rw', isa => 'Str', default => q{},
 				  });
 has 'clusters'    => (is => 'rw', isa => 'ArrayRef', default => sub{[]});
 
-enum 'HistogramBackends' => ['dl_poly', 'vasp'];
+enum 'HistogramBackends' => ['dl_poly', 'vasp', 'lammps'];
 coerce 'HistogramBackends',
   from 'Str',
   via { lc($_) };
@@ -72,8 +72,13 @@ has backend       => (is => 'rw', isa => 'HistogramBackends', coerce => 1, alias
 				       eval {apply_all_roles($self, 'Demeter::Feff::MD::VASP')};
 				       print $@;
 				       $@ and die("Histogram backend Demeter::Feff::MD::VASP does not exist");
+				     } elsif ($new eq 'lammps') {
+				       eval {apply_all_roles($self, 'Demeter::Feff::MD::LAMMPS')};
+				       print $@;
+				       $@ and die("Histogram backend Demeter::Feff::MD::LAMMPS does not exist");
 				     } else {
 				       eval {apply_all_roles($self, 'Demeter::Feff::MD::'.$new)};
+				       print $@;
 				       $@ and die("Histogram backend Demeter::Feff::MD::$new does not exist");
 				     };
 				   });
