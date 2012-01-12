@@ -314,6 +314,7 @@ sub _data {
 	$colsel->{Reference}->{numerator}   = $yaml->{ref_numer};
 	foreach my $j (1 .. $n) {
 	  next if ($j == $yaml->{ref_numer});
+	  next if not exists $colsel->{Reference}->{'n'.$j};
 	  $colsel->{Reference}->{'n'.$j} -> SetValue(0);
 	};
       };

@@ -1,0 +1,16 @@
+title formula:  LaCoO3
+title refer1:  PRB V. 66 P. 094408 (2002)
+title notes:   T = 300 K
+space  r -3 c
+a = 5.44864       c = 13.1035
+rmax = 6.00       core = Co1
+atom
+  Co     0.00000   0.00000   0.00000  Co1
+  La     0.00000   0.00000   0.25000  La1
+  O      0.55032   0.00000   0.25000  O1
+
+
+!!&& Local Variables:
+!!&& input-program-name: "atoms"
+!!&& End:
+%# Input-mode Time-stamp: <2011/09/12 09:36:32 bruce>

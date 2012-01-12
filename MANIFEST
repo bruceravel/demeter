@@ -581,6 +581,9 @@ lib/Demeter/share/standards/data/zr.stan
 lib/Demeter/share/standards/standards.ini
 lib/Demeter/share/standards/templates/htmlindex.tmpl
 lib/Demeter/share/standards/templates/htmlpage.tmpl
+lib/Demeter/share/xdi/template.ini
+lib/Demeter/share/xdi/x10c.ini
+lib/Demeter/share/xdi/x15b.ini
 lib/Demeter/share/xdi/xdac.u7a.ini
 lib/Demeter/share/xdi/xdac.x11a.ini
 lib/Demeter/share/xdi/xdac.x11b.ini

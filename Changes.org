@@ -31,7 +31,8 @@
      report, and journal
    - plot stacking parameters could evaluate to an empty string, so
      explicitly make the 0 in that case
-   - can now discard and rename Feff calculations
+   - can now discard and rename Feff calculations + simple "about
+     Feff" dialog
    - fixed a bug causing a segfault when discarding data or feff
    - capture Atoms' statusbar messages in Artemis' status buffer
    - Faster project file import using partial deserialization of each
@@ -45,12 +46,11 @@
      should fix any problem where zooming results in a backwards
      x-axis.
    - added clear_ifeffit_titles method to clear out $group_title_NN
-     strings when no longer needed
+     strings when no longer needed, use wrap to make this more efficient
    - bkg_eshift was not applied when saving a group as mu(E) or
      norm(E)
    - serializing Atoms object made safe for GUI display of object
      contents
-   - Made clear_ifeffit_title method more efficient
    - Mechanism for associating metadata with files imported using a
      plugin
 

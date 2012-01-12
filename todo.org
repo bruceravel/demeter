@@ -24,12 +24,12 @@
   - [ ] Data object should note that datatype is xanes and not compute fbkg since the bkg array does not exist
   - [ ] cannot specify title for stddev and variance plots
   - [ ] Demeter command backend needs lots of polishing
-  - [X] we seem not to have a normalized group (i.e. plot the same as mu or norm)
   - [ ] 3rd derivative
   - [ ] SDK: better documentation for freeze/thaw//serialize/deserialize
   - [ ] error check deserialization for all objects, verify that it is a yaml or whatnot, return 0 if not
   - [ ] per data set R-factors, computed correctly for mkw fits (what is "correctly?")
   - [ ] OpenBabel interface, tied into Feff
+  - [X] we seem not to have a normalized group (i.e. plot the same as mu or norm)
   - [X] better detection of chi ascii data in case of 
         =$data = Demeter::Data->new(file=>"foo.chi");=
 
@@ -37,6 +37,11 @@
 
 
 ** Athena
+
+*** needs testing [1/3]
+   - [ ] reference of another edge
+   - [X] keV data
+   - [ ] importing xmu.dat files into Athena has never been tested
 
 *** Tools [19/25] [76%]
    1. [X] main
@@ -50,7 +55,7 @@
    9. [ ] /deconvolution/
    10. [X] self absorption
    11. [X] copy series
-   12. [ ] data summer
+   12. [ ] data summation
 
    13. [ ] dispersive
    14. [ ] multi-electron removal
@@ -73,30 +78,31 @@
     2. deconvolution
     3. +PCA+
 
-*** needs testing [1/3]
-   - [ ] reference of another edge
-   - [X] keV data
-   - [ ] importing xmu.dat files into Athena has never been tested
-
-*** needs doing [4/18] [22%]
+*** needs doing [6/19] [31%]
    - [X] deglitching crashes with gnuplot					:HUH:
    - [X] test preprocessing (I had a crash with all three preproc options selected for data with a reference):
 	 ~Can't call method "GetSelection" on an undefined value at /home/bruce/git/demeter/lib/Demeter/UI/Athena/IO.pm line 423.~
-   - [ ] SpinCtrl for use with Rbkg, bkg_spl1/2
-   - [ ] beter error handling in plugins
-   - [ ] Check that data/standard relationship works when importing
+   - [X] Check that data/standard relationship works when importing
          from a project, when importing only one from a project, when
          discarding one or the other
+   - [ ] beter error handling in plugins -- specifically need to do a
+         better job of trapping errors in the ~fix~ method.  Perhaps
+         ~fix~ should always be called within an ~eval~?
+   - [ ] implement frozen groups
+   - [ ] links to documentation on each tool
+   - [ ] *Main window* [0/2] [0%]
+       + [ ] SpinCtrl for use with Rbkg, bkg_spl1/2
+       + [ ] push bkg_e0 /algorithm/ onto marked/all groups and recalculate
    - [X] *Pluck buttons* [2/2]
        + [X] implement everywhere needed
        + [X] figure out cause of spurious error on Windows
 	     ~failed to get data from the clipboard error -2147221040 openClipboard failed~
-   - [ ] implement frozen groups
-   - [X] Column selection dialog [3/3]
+   - [X] *Column selection dialog* [3/3]
        + [X] importing each channel of med data does not work
        + [X] negate button
        + [X] import data into Athena as norm(E)
-   - [ ] links to documentation on each tool
+   - [ ] *Calibration tool*
+       + smoothing does not work
    - [ ] *Convolve/noise tool*
        + add noise to chi data
    - [ ] *Difference tool* [0/4]
@@ -104,7 +110,7 @@
        + [ ] plot areas from marked groups
        + [ ] make difference groups from marked groups
        + [ ] difference in k
-   - [-] *LCF tool* [4/6]
+   - [-] *LCF tool* [4/7]
        + [X] make data group from fit (use InsertData method)
        + [X] marked groups automation, display in fourth tab, excel output
        + [X] plot in R for fit in k
@@ -113,6 +119,8 @@
        + [ ] satisfying both inclusive and unity can be trouble for
              poorly normalized data and/or poor standard selection
              (see email from Jack Hitch)
+       + [ ] compute R-factor in k or R using fit from energy.  (see
+             mail from Scott 7 January 2012)
    - [ ] *PCA tool* [0/10]
        + [ ] manual entry of component coefficients (??)
        + [ ] cluster analysis, select two components and plot the
@@ -163,18 +171,20 @@
        + [ ] demos
        + [ ] document
        + [X] memory usage
-   - [ ] XDI integration [0/1]
-       + [ ] Column namespace for column data output files
+   - [X] *metadata*
 
 ** raw data and plugins
    - Need to expand the filetype system by examining data from *all* the XAS beamlines in the world.  Yes ... all of them.
    - solicit help from the facility representatives
 
-** Windows issues [4/10] [40%] 					    :Windows:
+** Windows issues [4/14] [28%] 					    :Windows:
   - [X] parameter group context menus don't get posted (see
 	http://www.nntp.perl.org/group/perl.wxperl.users/2011/03/msg7929.html)
   - [X] +spurious message from clipboard+ (worked around)
   - [X] fpj file on Win seems to not get unpacked correctly /is this true?/	:Project:
+  - [X] +using gnuplot on Win XP Home Edition failed due to the redirection of STDERR to ~$self->{__error_log}~ in Graphics::GnuplotIF.+
+	removing this redirection fixed the problem, but I don't
+	understand why it was a problem in the first place.
   - [ ] the frickin' Gnuplot error logs seem to remain open and locked
 	on Windows when a crash happens
   - [ ] status bar does not get color for wait or error messages
@@ -187,32 +197,35 @@
 	link above)
   - [ ] relocation of Strawberry leaves Ifeffit unable to find phase
 	shift and CL tables (use an ENV variable?)
-  - [X] +using gnuplot on Win XP Home Edition failed due to the redirection of STDERR to ~$self->{__error_log}~ in Graphics::GnuplotIF.+
-	removing this redirection fixed the
-        problem, but I don't understand why it was a problem in the
-        first place.
   - [ ] The Strawberry+Demeter package does not coexist at all with
         ActivePerl.  Best solution is to generate ppd for Demeter
         armed with all dependencies.  Would need to compile wrapper
         and somehow get gnuplot on the machine.
+  - [ ] ScrolledWindow used in History plot tool does not scroll
+  - [ ] A link file linked to a directory does not get followed properly
+  - [ ] Need to test that paths with (parens|commas|quotes) get
+	followed correctly in all situations
+  - [ ] Initial initialization of gnuplot and feff executable
+        locations in the situation where the package has been moved or
+        reinstalled such that and old demeter.ini still exists
 
 
 ** Artemis
-*** Artemis bugs and missing features [5/13]  [38%]
+*** Artemis bugs and missing features [5/14]  [35%]
    - [X] rename Atoms/Feff
-   - [ ] Reorganize lists, move individual items up and down, move
-	 blocks up and down, Path list, +Plot list+
    - [X] +discarding last page and returning to initial page has an undefined value problem+ (not true)
    - [X] status messages in Atoms/Feff frame do not get posted in
 	 Artemis status buffer
    - [X] It would be nice not to deserialize every fit in the history
 	 upon import, instead deserialize the first time it is needed
+   - [X] Restoring an historical fit does not sensibly preserve order,
+	 fom numbering, etc
    - [ ] History plot tool is quite broken.  Need to make it work with
          new grab method (i.e. partial deserialization).  The deeper
          problem is that data from each fit are not themselves
          deserialized into distinct objects with distinct group names.
-   - [X] Restoring an historical fit does not sensibly preserve order,
-	 fom numbering, etc
+   - [ ] Reorganize lists, move individual items up and down, move
+	 blocks up and down, Path list, +Plot list+
    - [ ] do SSPaths get serialized and deserialized with the pointers
          to the feff calculation set correctly and no additional
          folders being created in stash (as was the case for FSPath)?
@@ -225,6 +238,11 @@
    - [ ] better way of moving an empirical standard from Athena to
          Artemis -- should be able to import it directly from the
          athena project file.
+   - [ ] Eric says: "if u use the automatic choice of parameters for
+         the paths, in combination with a few quick first shell models
+         and an imported feff.inp the whole thing runs in trouble. I
+         don't really expect name collisions, but it seems to loose
+         track between all the feff runs."  /This is a bit unclear.../
    - [ ] Andreas Voegelin's idea about mixed Feff/empicial standards
    - [ ] Path drag and drop [0/3]
         - [ ] DND of an SSPath does not work correctly
@@ -250,7 +268,7 @@
    - [-] Clone data sets such that the path list gets replicated efficiently (i.e. for MDS fits)
 
 
-*** Histograms [11/13] [84%]
+*** Histograms [11/14] [78%]
    - [X] sum histogram bins into a single chi(k) file
    - [X] convert chi(k) data to a mock feffNNNN.dat file
    - [X] Triangle object
@@ -264,6 +282,7 @@
    - [X] ipot=1 is hardwired in many places -- generalize.... /fixed for SS, same should work for NCL and Thru/
    - [X] scatter plot of ncl distribution
    - [X] factor out DLPOLY dependence into a role so that other MD packages can be added more easily
+   - [ ] LAMMPS
    - [ ] triangle histogram
    - [-] *Error checking* in Artemis, e.g. check that there is at least one bin in the supplied range(s)
 	 - [X] SS
