@@ -85,9 +85,13 @@ sub rdf {
   my $rmax    = $self->rmax;
   my $rminsqr = $self->rmin*$self->rmin;
   my $rmaxsqr = $self->rmax*$self->rmax;
-  if ($Demeter::mode->ui eq 'screen') {
+  if (($Demeter::mode->ui eq 'screen') and ($self->count_timesteps)) {
     $self->progress('%30b %c of %m timesteps <Time elapsed: %8t>');
     $self->start_counter("Making RDF from each timestep", $#{$self->clusters}+1);
+  };
+  if (($Demeter::mode->ui eq 'screen') and (not $self->count_timesteps)) {
+    $self->progress('%30b %c of %m positions <Time elapsed: %8t>');
+    $self->start_counter("Making RDF from large cluster", $#{$self->clusters->[0]});
   };
   my $abs_species  = get_Z($self->feff->abs_species);
   my $scat_species = get_Z($self->feff->potentials->[$self->ipot]->[2]);
@@ -102,21 +106,37 @@ sub rdf {
   };
   my @this;
   my $rsqr = 0;
+  my ($i, $j);
 
   foreach my $step (@{$self->clusters}) {
     @this = @$step;
-    $self->count if ($self->mo->ui eq 'screen');
-    $self->timestep_count(++$count);
-    $self->call_sentinal;
-    foreach my $i (0 .. $#this) {
+    if ($self->count_timesteps) { # progress over timesteps
+      $self->count if ($self->mo->ui eq 'screen');
+      $self->timestep_count(++$count);
+      $self->call_sentinal;
+    };
+    foreach $i (0 .. $#this) {
+      if (not $self->count_timesteps) { # progress over positions
+	$self->count if ($self->mo->ui eq 'screen');
+	$self->timestep_count(++$count);
+	$self->call_sentinal;
+      };
       next if ($abs_species != $this[$i]->[3]);
       ($x0, $x1, $x2) = @{$this[$i]};
-      foreach my $j (0 .. $#this) { # remember that all pairs are doubly degenerate (only if monoatomic)
+      next if (abs($x2) > $self->zmax); # assumes slab w/ interface at z=0
+##      print join(" ", $i, $x0, $x1, $x2, $this[$i]->[3], $abs_species), $/;
+      foreach $j (0 .. $#this) { # remember that all pairs are doubly degenerate (only if monoatomic)
 	next if ($i == $j);
 	next if ($scat_species != $this[$j]->[3]);
-	my $rsqr = ($x0 - $this[$j]->[0])**2
-	         + ($x1 - $this[$j]->[1])**2
-	         + ($x2 - $this[$j]->[2])**2; # this loop has been optimized for speed, hence the weird syntax
+
+	## LAMMPS
+	next if (abs($this[$j]->[2]) > $self->zmax); # assumes slab w/ interface at z=0
+	next if (abs($x0 - $this[$j]->[0]) > $rmax);
+	next if (abs($x1 - $this[$j]->[1]) > $rmax);
+
+	$rsqr = ($x0 - $this[$j]->[0])**2
+	      + ($x1 - $this[$j]->[1])**2
+	      + ($x2 - $this[$j]->[2])**2; # this loop has been optimized for speed, hence the weird syntax
 	if (($rsqr >= $rminsqr) and ($rsqr <= $rmaxsqr)) {
 	  push @rdf, $rsqr;
 	} elsif ($self->periodic and $self->use_periodicity) {

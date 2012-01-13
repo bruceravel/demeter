@@ -125,10 +125,15 @@ has 'populations' => (is	    => 'rw',
 		      default	    => sub{[]},
 		      documentation => "array of bin populations of the extracted histogram");
 
+has 'zmax'        => (is => 'rw', isa => 'Num',  default => 100.0);
 has 'use_periodicity'=> (is              => 'rw',
 			 isa             => 'Bool',
 			 default         => 1,
 			 documentation   => "a flag for turning on/off the use of periodic boundary conditions");
+has 'count_timesteps'=> (is              => 'rw',
+			 isa             => 'Bool',
+			 default         => 1,
+			 documentation   => "a flag for indicating whether progress meter measures timesteps or positions");
 has 'periodic'=> (is              => 'rw',
 		  isa             => 'Bool',
 		  default         => 0,

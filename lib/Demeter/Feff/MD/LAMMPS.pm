@@ -28,7 +28,7 @@ sub _cluster {
   if ($self->mo->ui eq 'screen') {
     #$self->start_spinner("Reading VASP file ".$self->file) 
     $self->progress('%30b %c of %m (x10^4) lines in file <Time elapsed: %8t>');
-    $self->start_counter("Reading LAMMPS file ".$self->file." with $natoms atoms", int($natoms/1e4));
+    $self->start_counter("Reading LAMMPS file ".$self->file." with $natoms atoms", int($natoms/1e3));
   };
 
   #   - row 19 onwards: these are the four entries you requested.
@@ -38,8 +38,10 @@ sub _cluster {
   #     in Angstroms. I've shifted the model so that the interface is
   #     at z=0. All the Cu atoms have z<0 and the Nb atoms have z>0.
   while (<$H>) {
-    if (not $. % 1e4) {
-      if (lc($self->mo->ui) eq 'wx') {
+    if (not $. % 1e3) {
+      if ($self->mo->ui eq 'screen') {
+	$self->count;
+      } elsif (lc($self->mo->ui) eq 'wx') {
 	$self->call_sentinal;
       };
     };
@@ -50,6 +52,7 @@ sub _cluster {
     push @cluster, [@vec[1..3], $el];
   };
   close $H;
+  $self->stop_counter if ($self->mo->ui eq 'screen');
   $self->nsteps(1);
   $self->clusters([\@cluster]);
   $self->reading_file(0);
