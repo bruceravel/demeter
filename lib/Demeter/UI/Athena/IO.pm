@@ -696,7 +696,7 @@ sub _prj {
   $data->push_mru("xasdata", $orig);
   $data->push_mru("athena", $orig);
   $app->set_mru;
-  if (not $plugin) {
+  if ((not $plugin) and ($app->{main}->{project}->GetLabel eq q{<untitled>}) and ($app->{main}->{prj}->{prj}->n == $#records+1)) {
     $app->{main}->{project}->SetLabel(basename($file, '.prj'));
     $app->{main}->{currentproject} = $file;
   };
@@ -709,6 +709,7 @@ sub _prj {
   };
   $prj->DEMOLISH;
   $app->OnGroupSelect(0,0,0);
+  undef $app->{main}->{prj};
   undef $busy;
   $app->{main}->status("Imported data from project $orig");
   return 1;

@@ -99,14 +99,15 @@ sub _save_chi_command {
   my ($label, $columns) = (q{}, q{});
   if ($space =~ m{\Ak0?\z}) {
     $self->_update("bft");
-    $string = $self->template("process", "save_chik", {filename => $filename,
-						       titles   => "dem_data_*"});
+    if ($self->co->default('file', 'chik_out') eq 'all') {
+      $string = $self->template("process", "save_chik",  {filename => $filename,
+							  titles   => "dem_data_*"});
+    } else {
+      $string = $self->template("process", "save_chikw", {filename => $filename,
+							  titles   => "dem_data_*"});
+    };
   } elsif ($space =~ /\Ak($NUMBER)/) {
-    croak("Not doing arbitrary wight chi(k) files just now");
-    #$string .= sprintf("set %s.chik = %s.k^%.3f*%s.chi\n", $self, $self, $1, $self);
-    #$label   = "k chi" . int($1) . " win";
-    #$columns = "$self.k, $self.chik, $self.win";
-    #$how = "chi(k) * k^$1";
+    carp("Use file->chik_out configuration parameter for arbitrary wight chi(k) files");
   } elsif ($space eq 'r') {
     $self->_update("all");
     $string = $self->template("process", "save_chir", {filename => $filename,

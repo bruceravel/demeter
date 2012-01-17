@@ -1,0 +1,22 @@
+{ # -*- ifm -*-
+  # save chi(k) template
+  #   {$S->group} returns the ifeffit group name
+  #   {$D->group} returns the data group name
+  #   {$D->parameter} returns the value of that parameter
+  # the filename and titles were passed to the template method
+  # $titles should contain a string that Ifeffit will be able to
+  # interpret as a set of title lines already set in Ifeffit.  one
+  # common way of doing this is with a glob structure, like
+  # $dem_data_*
+  # example:
+  #   $string = $self->template("process", "save_chik",
+  #                             {filename=>$filename, titles=>"\$dem_data_*"});
+  $kw = ($S->co->default('file', 'chik_out') eq 'kw') ? $D->fit_karb_value : $S->co->default('file', 'chik_out');
+  q{}
+}
+##|
+##| saving "{$S->name}" as k^{$kw}*chi(k)
+set {$S->group}.chik  = {$S->group}.k^{$kw}*{$S->group}.chi,
+write_data(file="{$filename}", ${$titles}, ${$D->group}_title_*,
+           label="k k{$kw}_chi", {$S->group}.k, {$S->group}.chik)
+erase {$S->group}.chik

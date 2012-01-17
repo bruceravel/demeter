@@ -153,7 +153,7 @@ sub main_page {
   my $maxbox = Wx::BoxSizer->new( wxHORIZONTAL );
   $optionsboxsizer->Add($maxbox, 0, wxGROW|wxALL, 1);
   $maxbox->Add(Wx::StaticText->new($panel, -1, 'Use at most'), 0, wxRIGHT|wxALIGN_CENTRE, 5);
-  $this->{max} = Wx::SpinCtrl->new($panel, -1, 4, wxDefaultPosition, $tcsize, wxSP_ARROW_KEYS, 2, 6);
+  $this->{max} = Wx::SpinCtrl->new($panel, -1, 4, wxDefaultPosition, $tcsize, wxSP_ARROW_KEYS, 2, 100);
   $maxbox->Add($this->{max}, 0, wxLEFT|wxRIGHT|wxALIGN_CENTRE, 5);
   $maxbox->Add(Wx::StaticText->new($panel, -1, 'standards'), 0, wxRIGHT|wxALIGN_CENTRE, 5);
 
@@ -622,7 +622,7 @@ sub combi_results {
   my %idx = ();
   my $i = 0;
   my $row = 0;
-  foreach my $s (@stand) {
+  foreach my $s (sort by_position @stand) {
     $map{$s} = chr($row+65);	# A B C ...
     $idx{$s} = $this->{fitresults}->InsertStringItem($i, $row);
     $this->{fitresults}->SetItemData($idx{$s}, $i++);
@@ -638,7 +638,7 @@ sub combi_results {
     my $rfact = $res->{Rfactor};
     my $chinu = $res->{Chinu};
     my @included = ();
-    foreach my $s (@stand) {
+    foreach my $s (sort by_position @stand) {
       if (exists $res->{$s}) {
 	push @included, $map{$s};
       };
@@ -655,13 +655,14 @@ sub combi_results {
 
 sub combi_select {
   my ($this, $event) = @_;
+  my $busy = Wx::BusyCursor->new();
   my @all = @{ $this->{LCF}->combi_results };
   my $result = $all[$event->GetIndex];
   $this->{LCF} -> restore($result);
   my @stand = keys %{ $this->{LCF}->options };
 
   my %idx = %{ $this->{index_map} };
-  foreach my $s (@stand) {
+  foreach my $s (sort by_position @stand) {
     if (exists $result->{$s}) {
       my @here = @{ $result->{$s} };
       $this->{fitresults}->SetItem( $idx{$s}, 2, sprintf("%.3f (%.3f)", @here[0,1]) );
@@ -677,7 +678,7 @@ sub combi_select {
   $this->{result}->SetValue($this->{LCF}->report);
   $this->_remove_all;
   my $i = 0;
-  foreach my $st (@{ $this->{LCF}->standards }) {
+  foreach my $st (sort by_data @{ $this->{LCF}->standards }) {
     #next if not $this->{LCF}->option_exists($st->name);
     $this->{'standard'.$i}->SetStringSelection($st->name);
     my $w = sprintf("%.3f", $this->{LCF}->weight($st));
@@ -688,7 +689,7 @@ sub combi_select {
     $this->{'require'.$i} -> SetValue($this->{LCF}->is_required($st));
     ++$i;
   };
-
+  undef $busy;
 };
 
 sub combi_report {
@@ -896,6 +897,23 @@ sub fft {
   $this->{LCF}->fft;
   $this->{LCF}->plot('R');
   undef $busy;
+};
+
+sub by_position {
+  my %hash = ();
+  foreach my $i (0 .. $::app->{main}->{list}->GetCount-1) {
+    my $g = $::app->{main}->{list}->GetIndexedData($i)->group;
+    $hash{$g} = $i;
+  };
+  $hash{$a} <=> $hash{$b};
+};
+sub by_data {
+  my %hash = ();
+  foreach my $i (0 .. $::app->{main}->{list}->GetCount-1) {
+    my $g = $::app->{main}->{list}->GetIndexedData($i);
+    $hash{$g->group} = $i;
+  };
+  $hash{$a->group} <=> $hash{$b->group};
 };
 
 1;

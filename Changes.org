@@ -5,7 +5,27 @@
 
 * Initial release
 
-** 0.9.7 ?? January 2012
+** 0.9.8 ?? January 2012
+*** Athena
+   - Only set project name if the project name is unset and an entire
+     project file is imported
+   - In LCF, make the maximum number of groups to use for
+     combinatorial fitting practically unlimited
+   - In combinatorial fits, sort everything according to position in
+     group list
+
+*** Artemis
+
+*** Demeter
+   - Add file-chik_out parameter to control how writing a chi(K)
+     output file work.  "all" means write a multicolumn file, 0, 1, 2,
+     3, or kw mean to write a two-column file using that k-weight
+
+*** Acknowledgements for this release
+   - Scott Calvin
+   - Andreas Voegelin
+
+** 0.9.7 12 January 2012
 *** Athena
    - Fixed a problem in the X23A2MED plugin -- it was getting confused
      by an incomplete set of (roi, slow, fast) columns.

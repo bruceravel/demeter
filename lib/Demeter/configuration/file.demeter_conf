@@ -85,3 +85,15 @@ description
   This is the minimum number of data points a data file must have to
   be recognized as data.  That is, a file with fewer than this number
   of points should be rejected as data.
+
+variable=chik_out
+type=list
+options=all 0 1 2 3 kw
+default=all
+description
+  This sets the style of an output chi(k) file.  The default value of
+  all says to write a multicolumn file containing all k-weightings
+  from 0 to 3 plus a column containing the window function in k.  The
+  integer values say to export a 2-column file containing only k and
+  that k-weight of chi.  The kw options also exports a two-column
+  file, but using the arbintrary k-weight value.
