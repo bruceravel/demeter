@@ -136,7 +136,7 @@ override 'plot_kylabel' => sub {
   my ($self) = @_;
   my $w = $self->kweight;
   if ($w == 1) {
-    return 'k {\267} {/Symbol c}(k)&{aa}({\101})';
+    return 'k {\267} {/Symbol c}(k)&{aa}({\305}^{-1})';
   } elsif ($w == 0) {
     return '{/Symbol c}(k)';
   } elsif ($w < 0) {
