@@ -240,6 +240,17 @@ has 'MultiChannel' => (
 			      'splice'  => 'splice_MultiChannel',
 			     }
 	       );
+has 'BulkMerge' => (
+		metaclass => 'Collection::Array',
+		is        => 'rw',
+		isa       => 'ArrayRef',
+		default   => sub { [] },
+		provides  => {
+			      'push'    => 'push_BulkMerge',
+			      'clear'   => 'clear_BulkMerge',
+			      'splice'  => 'splice_BulkMerge',
+			     }
+	       );
 has 'Pixel' => (
 		metaclass => 'Collection::Array',
 		is        => 'rw',
@@ -389,7 +400,7 @@ has 'types' => (is => 'ro', isa => 'ArrayRef',
 		default => sub{[qw(Atoms Data Feff External Fit Feffit GDS Path Plot Indicator Style
 				   LCF PCA XES PeakFit LogRatio Diff LineShape
 				   ScatteringPath VPath SSPath ThreeBody FPath FSPath
-				   StructuralUnit Prj Pixel MultiChannel Journal Distributions)]},);
+				   StructuralUnit Prj Pixel MultiChannel BulkMerge Journal Distributions)]},);
 
 has 'Plugins' => (
 		metaclass => 'Collection::Array',
@@ -506,6 +517,7 @@ sub everything {
 	  @{ $self->Prj		   },
 	  @{ $self->Pixel          },
 	  @{ $self->MultiChannel   },
+	  @{ $self->BulkMerge      },
 	  @{ $self->Plot	   },
 	  @{ $self->Indicator	   },
 	  @{ $self->Style	   },
@@ -601,14 +613,14 @@ objects.  Any of these methods can be called by any Demeter object:
     ## and so on ...
 
 This object also monitors the creation and destruction of Demeter
-objects (Atoms, Data, Data::Prj, Data::MultiChannel, Feff,
-Feff::External, Fit, GDS, Path, Plot, Plot::Indicator, ScatteringPath,
-SSPath, VPath, etc.) and provides methods which give a way for one
-object to affect any other objects created during the instance of
-Demeter.  For example, when the kweight value of the Plot object is
-changed, it is necessary to signal all Data objects that they will
-need to update their forward Fourier transforms.  This object is the
-glue that allows things like that to happen.
+objects (Atoms, Data, Data::Prj, Data::MultiChannel, Data::BulkMerge,
+Feff, Feff::External, Fit, GDS, Path, Plot, Plot::Indicator,
+ScatteringPath, SSPath, VPath, etc.) and provides methods which give a
+way for one object to affect any other objects created during the
+instance of Demeter.  For example, when the kweight value of the Plot
+object is changed, it is necessary to signal all Data objects that
+they will need to update their forward Fourier transforms.  This
+object is the glue that allows things like that to happen.
 
 =head1 ATTRIBUTES
 
@@ -850,11 +862,11 @@ behind the scenes, during object creation or destruction or at the end
 of a script.  The details are documented here for those times when one
 needs to see under the hood.
 
-Each Demeter object (Atoms, Data, Data::Prj, Data::MultiChannel, Feff,
-Feff::External, Fit, GDS, Path, Plot, Plot::Indicator, ScatteringPath,
-SSPath, VPath, etc.) (Data::Prj is refered to just as Prj, other
-Data::* classes are the same) has each of the following three function
-associated with it.
+Each Demeter object (Atoms, Data, Data::Prj, Data::MultiChannel,
+Data::BulkMerge, Feff, Feff::External, Fit, GDS, Path, Plot,
+Plot::Indicator, ScatteringPath, SSPath, VPath, etc.) (Data::Prj is
+refered to just as Prj, other Data::* classes are the same) has each
+of the following three function associated with it.
 
 All of my examples use the Data object.
 

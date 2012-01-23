@@ -43,6 +43,9 @@ with 'Demeter::Data::Process';
 with 'Demeter::Data::SelfAbsorption';
 with 'Demeter::Data::Units';
 with 'Demeter::Data::XDI';
+if ($Demeter::mode->ui eq 'screen') {
+  with 'Demeter::UI::Screen::Progress';
+};
 
 use MooseX::Aliases;
 #use MooseX::AlwaysCoerce;   # this might be useful....
@@ -96,6 +99,7 @@ has 'fitting'     => (is => 'rw', isa => 'Bool',   default => 0);
 has 'plotkey'     => (is => 'rw', isa => 'Str',    default => q{});
 has 'frozen'      => (is => 'rw', isa => 'Bool',   default => 0);
 has 'marked'      => (is => 'rw', isa => 'Bool',   default => 0);
+has 'quickmerge'  => (is => 'rw', isa => 'Bool',   default => 0);
 
 has 'provenance'  => (is => 'rw', isa => 'Str',    default => q{});
 has 'importance'  => (is => 'rw', isa => 'Num',    default => 1);

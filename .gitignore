@@ -42,3 +42,4 @@ examples/recipes/Histogram/VASP/feff/*
 examples/recipes/Histogram/feff/*
 examples/recipes/Histogram/HISTORY
 examples/recipes/Histogram/VASP/OUTCAR*
+examples/recipes/Megamerge/data/*

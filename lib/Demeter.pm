@@ -211,7 +211,7 @@ sub import {
   my @load = ();
   ## I wish I didn't have to load XES here
   my @data = (qw(Data XES Plot/Indicator Plot/Style Journal
-		 Data/Prj Data/Pixel Data/MultiChannel));
+		 Data/Prj Data/Pixel Data/MultiChannel Data/BulkMerge));
   my @heph = (qw(Data XES));
   my @fit  = (qw(Atoms Feff Feff/External ScatteringPath
 		 Path VPath SSPath ThreeBody FPath FSPath

@@ -333,6 +333,8 @@ sub OnDatatype {
 
   if ($this->{datatype}->GetSelection == 3) { # chi data
     ## disable widgets needed for processing mu(E) data
+    $this->{units}                 -> SetSelection(0);
+    $this->{units}                 -> Enable(0);
     $this->{ln}                    -> SetValue(0);
     $this->{ln}                    -> Enable(0);
     $this->{inv}                   -> SetValue(0);
@@ -353,10 +355,11 @@ sub OnDatatype {
     };
 
     my $num = $data->numerator;
-    $data->set(numerator=>q{1}, denominator=>q{1}, ln=>0);
+    $data->set(numerator=>q{1}, denominator=>q{1}, ln=>0, is_kev=>0);
     $data->chi_column($num);
   } else {
     ## re-enable widgets needed for processing mu(E) data
+    $this->{units}                 -> Enable(1);
     $this->{ln}                    -> Enable(1);
     $this->{inv}                   -> Enable(1);
     $this->{muchi_label}           -> SetLabel("$MU(E)");
@@ -374,6 +377,7 @@ sub OnDatatype {
     $data->chi_column(q{});
     $data->numerator($num);
   };
+  $this -> display_plot($data);
 };
 
 sub OnUnits {
