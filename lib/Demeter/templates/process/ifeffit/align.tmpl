@@ -10,8 +10,8 @@
   # need to allow for fitting smoothed data to standard
 }
 {
-  $emin = $DS->bkg_e0 -  50;
-  $emax = $DS->bkg_e0 + 100;
+  $emin = $DS->bkg_e0 - 20;
+  $emax = $DS->bkg_e0 + 50;
   $start = 'smooth(' x $P->e_smooth;
   $end = ')' x $P->e_smooth;
   q()

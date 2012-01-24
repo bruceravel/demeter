@@ -254,16 +254,20 @@ sub put_data {
     $self->resolve_defaults;
 
   } else {
-    my $command = $self->template("process", "columns");
-    $command   .= $self->template("process", "deriv");
-
-    $self->dispose($command);
-    $self->i0_scale(Ifeffit::get_scalar('__i0_scale'));
-    $self->signal_scale(Ifeffit::get_scalar('__signal_scale'));
-    $self->update_columns(0);
-    $self->update_data(0);
-
-    $self->initialize_e0 if not $self->is_nor; # we take a somewhat different path through these chores for pre-normalized data
+    if ($self->quickmerge) {
+      my $command = $self->template("process", "columns_qm");
+      $command   .= $self->template("process", "deriv_qm");
+      $self->dispose($command);
+    } else {
+      my $command = $self->template("process", "columns");
+      $command   .= $self->template("process", "deriv");
+      $self->dispose($command);
+      $self->i0_scale(Ifeffit::get_scalar('__i0_scale'));
+      $self->signal_scale(Ifeffit::get_scalar('__signal_scale'));
+      $self->update_columns(0);
+      $self->update_data(0);
+      $self->initialize_e0 if not $self->is_nor; # we take a somewhat different path through these chores for pre-normalized data
+    };
   };
   return $self;
 };

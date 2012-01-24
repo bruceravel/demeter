@@ -22,7 +22,7 @@ extends 'Demeter';
 with 'Demeter::Tools';
 with 'Demeter::Atoms::Absorption';
 with 'Demeter::Atoms::Cif' if $Demeter::STAR_Parser_exists;
-use MooseX::AttributeHelpers;
+#use MooseX::AttributeHelpers;
 use Demeter::StrTypes qw( Element
 			  Edge
 			  AtomsLattice

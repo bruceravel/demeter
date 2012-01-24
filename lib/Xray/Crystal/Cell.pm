@@ -819,7 +819,6 @@ There is nothing configurable and no environment variables are used.
 
 =head1 DEPENDENCIES
 
-  Moose and MooseX::AttributeHelpers
   Carp
   File::Spec
   Storable

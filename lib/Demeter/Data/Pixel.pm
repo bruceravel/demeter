@@ -20,7 +20,7 @@ use autodie qw(open close);
 
 use Moose;
 extends 'Demeter::Data';
-use MooseX::AttributeHelpers;
+#use MooseX::AttributeHelpers;
 use MooseX::Aliases;
 use Demeter::StrTypes qw( Empty );
 if ($Demeter::mode->ui eq 'screen') {

@@ -1,11 +1,8 @@
 #!/usr/bin/perl
 
-## to do:
-##   1. toggle btwn deadtime correcting and not
-##   2. aligning
-##   3. set and recognize quickmerge attribute to remove unecessary ifeffit commands
-##   4. Save after 4, 9, 25, 64, 100 -> export to a prj
-
+## grab the data from this zip file:
+##    http://cars.uchicago.edu/ifeffit/Demeter?action=AttachFile&do=view&target=CLT_data.zip
+## unpack in the same folder as this script
 
 use File::Basename;
 use File::Spec;
@@ -24,11 +21,12 @@ my $first = shift @list;
 my $plugin = Demeter::Plugins::X23A2MED->new(file=>$first);
 my $ok = eval {$plugin->fix};
 die $@ if $@;
-my $master = Demeter::Data->new(file => $plugin->fixed, $plugin->suggest('fluorescence'),
+my $master = Demeter::Data->new($plugin->data_attributes,
 				name => "Cr2O3, first scan",
 				bkg_e0=>6001, bkg_pre1=>-100, bkg_pre2=>-30,
 			       );
 
+## this is how it's done not using the plugin...
 # my $master = Demeter::Data->new(file        => $first,
 # 				energy	    => '$1',
 # 				numerator   => '$4+$5+$6+$7',
@@ -42,18 +40,15 @@ $master -> _update('normalize');
 $master -> po -> set(e_mu=>1, e_norm=>1, e_bkg=>0, e_pre=>0, e_post=>0, emin=>-100, emax=>600, kweight=>2);
 $master -> plot('E');
 
-my $bm = Demeter::Data::BulkMerge->new(master => $master,
-				       data   => \@list,
-				       size   => -s $first,
-				       plugin => 'X23A2MED',
-				       # align > 1,
+my $bm = Demeter::Data::BulkMerge->new(master	 => $master,
+				       data	 => \@list,
+				       plugin	 => 'X23A2MED',
+				       align 	 => 1,
+				       smooth 	 => 3,
+				       subsample => [4, 16, 36, 64, 100],
 				      );
 my $merged = $bm->merge;
+print join($/, @{$bm->skipped}), $/;
 
-$merged -> plot('E');
-$merged -> pause;
-
-$master -> po->start_plot;
-$master -> plot('k');
-$merged -> plot('k');
-$merged -> pause;
+$master -> write_athena("quickmerge.prj", $merged, @{$bm -> sequence});
+print "wrote sum of quickmerge.prj\n";

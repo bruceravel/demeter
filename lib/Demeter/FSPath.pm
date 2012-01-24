@@ -17,7 +17,7 @@ package Demeter::FSPath;
 
 use Moose;
 use MooseX::Aliases;
-use MooseX::AttributeHelpers;
+#use MooseX::AttributeHelpers;
 #use MooseX::StrictConstructor;
 extends 'Demeter::Path';
 use Demeter::NumTypes qw( Ipot PosNum PosInt );

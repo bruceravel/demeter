@@ -215,6 +215,7 @@ sub _data {
     $displayfile = $orig;
     $data = Demeter::Data->new(file=>$file);
   };
+  $data->source($plugin->file) if $plugin;
 
   my @suggest = ($plugin) ? $plugin->suggest() : ();
   my %suggest = @suggest;	# suggested columns from a plugin

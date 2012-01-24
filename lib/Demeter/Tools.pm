@@ -73,7 +73,6 @@ sub module_environment {
 		     Ifeffit
 		     Moose
 		     MooseX::Aliases
-		     MooseX::AttributeHelpers
 		     MooseX::StrictConstructor
 		     MooseX::Singleton
 		     MooseX::Types

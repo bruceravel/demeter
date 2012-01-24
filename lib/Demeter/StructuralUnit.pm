@@ -17,7 +17,7 @@ package Demeter::StructuralUnit;
 
 use Moose;
 extends 'Demeter::VPath';
-use MooseX::AttributeHelpers;
+#use MooseX::AttributeHelpers;
 use Demeter::StrTypes qw( Empty );
 
 use String::Random qw(random_string);

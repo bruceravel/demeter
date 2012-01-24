@@ -19,7 +19,7 @@ use autodie qw(open close);
 
 use Moose;
 extends 'Demeter::Feff';
-use MooseX::AttributeHelpers;
+#use MooseX::AttributeHelpers;
 use MooseX::Aliases;
 #use MooseX::StrictConstructor;
 

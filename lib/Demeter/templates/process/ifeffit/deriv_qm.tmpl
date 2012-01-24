@@ -1,0 +1,7 @@
+{ # -*- ifm -*-
+  # xmu quick merge derivatives template
+  #   {$D->group} returns the ifeffit group name
+}
+
+##| Set first of xmu data during a quick merge
+set {$D->group}.der = deriv({$D->group}.xmu)/deriv({$D->group}.energy)

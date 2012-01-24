@@ -22,7 +22,7 @@ use File::Spec;
 
 use Moose;
 extends 'Demeter';
-use MooseX::AttributeHelpers;
+#use MooseX::AttributeHelpers;
 use MooseX::Aliases;
 #use MooseX::StrictConstructor;
 

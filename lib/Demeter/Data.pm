@@ -82,9 +82,10 @@ has 'file'        => (is => 'rw', isa => FileName,  default => $NULLFILE,
 		      trigger => sub{my ($self, $new) = @_;
 				     if ($new and ($new ne $NULLFILE)) {
 				       $self->update_data(1);
-				       $self->source($new);
+				       $self->source($new) if $self->source eq $NULLFILE;
 				     };
 				   });
+
 has 'source'      => (is => 'rw', isa => 'Str',  default => $NULLFILE,);
 has 'prjrecord'   => (is => 'rw', isa => 'Str',  default => q{});
 has 'read_as_raw' => (is => 'rw', isa => 'Bool', default => 0);
@@ -439,9 +440,14 @@ override clone => sub {
   $self->_update('fft') if ($self->datatype =~ m{(?:xmu|chi)});
   my $new = $self->SUPER::clone();
 
+  my $standard = $self->get_mode('standard');
   $new  -> standard;
   $self -> dispose($self->template("process", "clone"));
-  $new  -> unset_standard;
+  if (ref($standard) =~ m{Data}) {
+    $standard->standard;
+  } else {
+    $new  -> unset_standard;
+  };
   $new  -> dispose($new->template("process", "deriv"));
   $new  -> update_data(0);
   $new  -> update_columns(0);

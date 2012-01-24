@@ -164,9 +164,10 @@ sub align {
     next if ($d->group eq $self->group);
     $self->mo->current($d);	# these two lines allow a GUI to
     $self->call_sentinal;  	# display progress messages
-    $d -> _update("background");
+    $d -> _update("background") if not $d->quickmerge;
     $d -> dispose( $d-> template("process", "align") );
     $shift = sprintf("%.3f", Ifeffit::get_scalar("aa___esh"));
+    #print ">>>>>>", $shift, $/;
     $d -> bkg_eshift($shift);
     $d -> update_bkg(1);
   };

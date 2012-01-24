@@ -21,7 +21,7 @@ use autodie qw(open close);
 use Moose;
 extends 'Demeter';
 use Moose::Util::TypeConstraints;
-use MooseX::AttributeHelpers;
+#use MooseX::AttributeHelpers;
 use MooseX::Aliases;
 #use vars qw($singleton);	# Moose 0.61, MooseX::Singleton 0.12 seem to need this
 

@@ -21,7 +21,7 @@ use Moose;
 extends 'Demeter';
 
 use MooseX::Aliases;
-use MooseX::AttributeHelpers;
+#use MooseX::AttributeHelpers;
 #use MooseX::AlwaysCoerce;   # this might be useful....
 #use Moose::Util::TypeConstraints;
 use Demeter::StrTypes qw( Element

@@ -1,14 +1,19 @@
 package Demeter::Data::BulkMerge;
 
 use Moose;
-use MooseX::AttributeHelpers;
+#use MooseX::AttributeHelpers;
 #use MooseX::StrictConstructor;
 extends 'Demeter';
 
+use List::MoreUtils qw(any);
+
 has 'align'  => (is => 'rw', isa => 'Bool', default => 0);
-has 'plugin' => (is => 'rw', isa => 'Str', default => q{});
-has 'max'    => (is => 'rw', isa => 'Int', default => 1e9);
-has 'size'   => (is => 'rw', isa => 'Int', default => 0);
+has 'smooth' => (is => 'rw', isa => 'Int',  default => 0);
+has 'plugin' => (is => 'rw', isa => 'Str',  default => q{});
+has 'max'    => (is => 'rw', isa => 'Int',  default => 1e9);
+has 'size'   => (is => 'rw', isa => 'Int',  default => 0);
+has 'margin' => (is => 'rw', isa => 'Num',  default => 0.997);
+has 'count'  => (is => 'rw', isa => 'Int',  default => 0);
 
 has 'data' => (
 	       metaclass => 'Collection::Array',
@@ -23,11 +28,53 @@ has 'data' => (
 			     'clear'   => 'clear_data',
 			    }
 	      );
+has 'subsample' => (
+		   metaclass => 'Collection::Array',
+		   is        => 'rw',
+		   isa       => 'ArrayRef[Int]',
+		   default   => sub { [] },
+		   provides  => {
+				 'push'    => 'push_subsample',
+				 'pop'     => 'pop_subsample',
+				 'shift'   => 'shift_subsample',
+				 'unshift' => 'unshift_subsample',
+				 'clear'   => 'clear_subsample',
+				}
+		  );
+has 'sequence' => (
+		   metaclass => 'Collection::Array',
+		   is        => 'rw',
+		   isa       => 'ArrayRef',
+		   default   => sub { [] },
+		   provides  => {
+				 'push'    => 'push_sequence',
+				 'pop'     => 'pop_sequence',
+				 'shift'   => 'shift_sequence',
+				 'unshift' => 'unshift_sequence',
+				 'clear'   => 'clear_sequence',
+				}
+		  );
+has 'skipped' => (
+		   metaclass => 'Collection::Array',
+		   is        => 'rw',
+		   isa       => 'ArrayRef',
+		   default   => sub { [] },
+		   provides  => {
+				 'push'    => 'push_skipped',
+				 'pop'     => 'pop_skipped',
+				 'shift'   => 'shift_skipped',
+				 'unshift' => 'unshift_skipped',
+				 'clear'   => 'clear_skipped',
+				}
+		  );
 
 has 'master' => (is => 'rw', isa => 'Demeter::Data',
 		 trigger => sub{my ($self, $new) = @_;
-				$self->sum($new->clone) if $new;
-				$self->sum->standard;
+				if ($new) {
+				  $self->sum($new->clone);
+				  $self->sum->standard;
+				  $self->sum->set(is_col=>0, i0_string=>q{}, signal_string=>q{}, i0_scale=>1, signal_scale=>1);
+				};
 			      });
 has 'sum'    => (is => 'rw', isa => 'Demeter::Data');
 
@@ -40,15 +87,20 @@ sub BUILD {
 sub merge {
   my ($self) = @_;
 
-  my $size  = $self->size || -s $self->master->file;
+  my $save = $self->po->e_smooth;
+  $self->po->set(e_smooth=>$self->smooth);
+  my $size  = $self->size || -s $self->master->source;
   my $group = 'mega';
   my ($plug, $thisdata);
-  my $count = 0;
+  my $count = 1;
   $self->sum -> start_counter("Merging data", $#{$self->data}) if $self->mo->ui eq 'screen';
-  Demeter->set_mode(screen=>0);
 
+  Demeter->set_mode(screen=>0);
   foreach my $file (@{$self->data}) {
-    next if (-s $file < 0.95*$size);
+    $self->push_skipped($file), next if (not -e $file);
+    $self->push_skipped($file), next if (not -r $file);
+    $self->push_skipped($file), next if (-s $file < $self->margin*$size);
+    last if ($count == $self->max);
     ++$count;
     $self->sum -> count if $self->mo->ui eq 'screen';
 
@@ -57,25 +109,39 @@ sub merge {
       $plug     = $which->new(file=>$file);
       my $ok = eval {$plug->fix};
       die $@ if $@;
-      $thisdata = Demeter::Data->new(group=>'mega', quickmerge=>1, file=>$plug->fixed, $plug->suggest('fluorescence'));
+      $thisdata = Demeter::Data->new(group  => 'mega', quickmerge=>1, file=>$plug->fixed, $plug->suggest('fluorescence'),
+				     bkg_e0 => $self->master->bkg_e0,
+				    );
     } else {
       $thisdata = Demeter::Data->new(group=>'mega', quickmerge=>1, file=>$file,
 				     energy      => $self->master->energy,
 				     numerator   => $self->master->numerator,
-				     denominator => $self->master->denominator ,
-				     ln	         => $self->master->ln
+				     denominator => $self->master->denominator,
+				     ln	         => $self->master->ln,
+				     bkg_e0      => $self->master->bkg_e0,
 				    );
     };
     $thisdata -> _update('data');
+    $self->master -> align($thisdata) if $self->align;
     $thisdata -> dispose($thisdata->template('process', 'musum'));
+    if (any {$count == $_} @{$self->subsample}) {
+      $self -> dispose("##| Quick merge subsample of $count spectra");
+      my $sample = $self->sum->clone;
+      $sample -> set(name=>"Merge of $count scans", is_col=>0, i0_string=>q{}, signal_string=>q{}, i0_scale=>1, signal_scale=>1);
+      $sample -> update_norm(1);
+      $sample -> dispose($sample->template('process', 'muave', {count=>$count}));
+      $self->push_sequence($sample);
+    };
     unlink $plug->fixed if $self->plugin;
   };
   $self->sum -> stop_counter if $self->mo->ui eq 'screen';
+  $self->count($count);
 
-  $self->sum -> dispose($self->sum->template('process', 'muave', {count=>$count}));
+  $self->sum -> dispose($self->sum->template('process', 'muave', {count=>$self->count}));
   $self->sum -> update_norm(1);
   $self->sum -> name("Merge of $count scans");
 
+  $self->po->set(e_smooth=>$save);
   return $self->sum;
 };
 
@@ -118,26 +184,70 @@ This requires that one data file be considered carefully.  This is the
 C<master>.  All other data are interpolated to the energy grid of the
 C<master>.
 
-Care is taken not to include files which are less than 95% of the size
-of the master data file.
+Care is taken not to include files which are less than 95%
+(configurable with the C<margin> attribute) of the size of the master
+data file.
+
+Note that preprocessing the data takes time.  A run with the C<plugin>
+and C<align> attributes set takes about twice as long as a straight
+merge of the raw data.
 
 =head1 ATTRIBUTES
 
 =over 4
 
-=item C<master>
+=item C<master> [Demeter::Data object]
 
-L<Demeter::Data> object...
+This contains the L<Demeter::Data> object for the processed data group
+to which all subsequent data files are merged.  This acts as the
+interpolation standard and as the alignment standard (if the C<align>
+attribute is true).  The merged data group will inherit attributes
+from this group.  So, if the master has sensible parameters for
+normalization and background removal, the merged group will have the
+same sensible parameters.
 
-=item C<data>
+=item C<data> [list of strings]
 
-Fully resolved paths....
+This is a list of fully resolved paths to the data files to be merged.
+These can be relative or absolute paths, but they B<must> resolve
+correctly to actual files.  Files that don't exist or aren't readable
+will be silently ignored.
 
-=item C<align>
+=item C<align> [boolean]
 
-=item C<plugin>
+When true, this says to align each file in the C<data> list to the
+C<master>.
 
-=item C<size>
+=item C<smooth> [integer]
+
+When non-zero, the alignment will be done using the smoothed
+derivative spectrum.  The value of this parameter indicated the number
+of smoothings.
+
+=item C<plugin> [string]
+
+The name of the plugin to use to interpret the data.  For example, to
+use the L<Demeter::Data::X23A2MED> plugin, this attribute would be set
+to C<X23A2MED>.
+
+=item C<margin> [number between 0 and 1]
+
+This number defines the margin in filesize outside of which a data
+file is excluded from the merge.  The default is 0.997, thus any file
+in the C<data> list which is smaller than 99.7% the size of the
+C<master> file will be excluded.
+
+=item C<subsample>  [array of integers]
+
+This is used to specify sub-samplings of the data ensemble, presumably
+to test convergence to the mean.  If this is set to C<[4, 16, 64]>
+then Data groups will be saved which sum 4, 16, and 64 of the files
+included in the merge.  The sub-sampled Data groups are saved to the
+C<sequence> attribute.
+
+=item C<sequence>  [array of Data objects]
+
+Data objects from a sub-sampling sequence.
 
 =back
 
@@ -147,8 +257,10 @@ Fully resolved paths....
 
 =item C<merge>
 
-This returns a Data object containing the merged spectrum, divided by
-the number of spectra included in the merge.
+Performs the merge using some special optimizations that minimize the
+interaction with Ifeffit.  This returns a Data object containing the
+merged spectrum, divided by the number of spectra included in the
+merge.
 
 =back
 
@@ -169,23 +281,12 @@ Demeter's dependencies are in the F<Bundle/DemeterBundle.pm> file.
 
 =item *
 
+A file that exists and is readable, but is not data will make for a
+confusing error
+
+=item *
+
 Standard deviation not computed
-
-=item *
-
-Plugins
-
-=item *
-
-alignment
-
-=item *
-
-use quickmerge attribute
-
-=item *
-
-Save intermediate spectra, demonstrate central limit theorem
 
 =back
 

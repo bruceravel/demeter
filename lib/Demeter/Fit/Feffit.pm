@@ -19,7 +19,7 @@ use autodie qw(open close);
 
 use Moose;
 extends 'Demeter';
-use MooseX::AttributeHelpers;
+#use MooseX::AttributeHelpers;
 
 use Cwd qw(realpath);
 use File::Basename;

@@ -5,6 +5,10 @@
 
 * things that need doing
 
+** Moose issues
+  - Figure out how to remove dependence on MooseX::AttributeHelpers
+    from Demeter::Mode and Xray::Crystal::Cell
+
 ** wx issues
   - [ ] why does Wx::FileDialog with ~wxFD_OVERWRITE_PROMPT~ style not work correctly?
         see https://bugzilla.gnome.org/show_bug.cgi?id=631908 and 

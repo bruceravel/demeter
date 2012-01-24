@@ -2,6 +2,7 @@ package Demeter::Mode;
 
 use MooseX::Singleton;
 use MooseX::AttributeHelpers;
+
 with 'MooseX::SetGet';
 #use Demeter::Config;
 use Demeter::StrTypes qw( Empty
