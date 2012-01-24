@@ -132,6 +132,7 @@ sub merge {
       $sample -> dispose($sample->template('process', 'muave', {count=>$count}));
       $self->push_sequence($sample);
     };
+    $thisdata->DEMOLISH;
     unlink $plug->fixed if $self->plugin;
   };
   $self->sum -> stop_counter if $self->mo->ui eq 'screen';

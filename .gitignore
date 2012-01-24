@@ -43,3 +43,4 @@ examples/recipes/Histogram/feff/*
 examples/recipes/Histogram/HISTORY
 examples/recipes/Histogram/VASP/OUTCAR*
 examples/recipes/Megamerge/data/*
+examples/recipes/Megamerge/*.prj
