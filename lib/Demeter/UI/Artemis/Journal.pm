@@ -95,7 +95,7 @@ sub save_journal {
   open (my $LOG, '>',$fname);
   print $LOG $self->{journal}->GetValue;
   close $LOG;
-  $::app->{main}->status("Wrote journal to '$fname'.");
+  $::app->{main}->status("Wrote journal to '$fname'.") if ($fname !~ m{_dem_});
 };
 
 

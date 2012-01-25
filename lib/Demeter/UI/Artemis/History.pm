@@ -17,9 +17,16 @@ package  Demeter::UI::Artemis::History;
 
 use strict;
 use warnings;
+
+use Archive::Zip qw( :ERROR_CODES :CONSTANTS );
 use Cwd;
-use File::Path qw(rmtree);
+use File::Basename;
+use File::Copy;
+use File::Copy::Recursive qw(dircopy);
+use File::Path;
+use File::Spec;
 use List::MoreUtils qw(minmax);
+use String::Random qw(random_string);
 
 use Wx qw( :everything );
 use Wx::Event qw(EVT_CLOSE EVT_ICONIZE EVT_LISTBOX EVT_CHECKLISTBOX EVT_BUTTON EVT_RADIOBOX
@@ -254,7 +261,6 @@ sub OnRightDown {
   $menu->Append($FIT_DISCARD_MANY, "Discard marked fits");
   $menu->AppendSeparator;
   $menu->Append($FIT_SHOW, "Show YAML for \"$name\"");
-  $menu->Enable($FIT_EXPORT,0);
   $self->PopupMenu($menu, $event->GetPosition);
 };
 
@@ -553,7 +559,63 @@ sub export {
   my ($self, $position) = @_;
   ($position = $self->{list}->GetSelection) if not defined ($position);
 
-  $self->status("export ".$self->{list}->GetString($position)."... ");
+  my $newfolder = File::Spec->catfile(Demeter->stash_folder, '_dem_export_' . random_string('cccccccc'));
+  my $fit = $self->{list}->GetIndexedData($position);
+  my $name = $fit->name;
+
+  my $fname = "$name.fpj";
+  $fname =~ s{\s+}{_}g;
+  my $fd = Wx::FileDialog->new( $::app->{main}, "Save $name project file", cwd, $fname,
+				"Artemis project (*.fpj)|*.fpj|All files|*",
+				wxFD_SAVE|wxFD_CHANGE_DIR); #|wxFD_OVERWRITE_PROMPT
+  if ($fd->ShowModal == wxID_CANCEL) {
+    $self->status("Saving project cancelled.");
+    return;
+  };
+  $fname = $fd->GetPath;
+  return if $::app->{main}->overwrite_prompt($fname); # work-around gtk's wxFD_OVERWRITE_PROMPT bug (5 Jan 2011)
+
+  mkpath($newfolder,0);
+
+  ## copy the Readme file
+  copy(File::Spec->catfile($::app->{main}->{project_folder}, 'Readme'),  File::Spec->catfile($newfolder, 'Readme'));
+  ## save the current journal
+  $::app->{Journal}->save_journal(File::Spec->catfile($::app->{main}->{project_folder}, 'journal'));
+  copy(File::Spec->catfile($::app->{main}->{project_folder}, 'journal'), File::Spec->catfile($newfolder, 'journal'));
+  ## save the current plot and indicator parameters  (indicator needs refactoring!)
+  $::app->{Plot}->fetch_parameters;
+  $::app->{Plot}->{indicators}->fetch;
+  mkpath(File::Spec->catfile($newfolder, 'plot'), 0);
+  Demeter->po -> serialize(File::Spec->catfile($newfolder, 'plot', 'plot.yaml'));
+  open(my $IN, '>'.File::Spec->catfile($newfolder, 'plot', 'indicators.yaml'));
+  foreach my $j (1..5) {
+    my $this = $::app->{Plot}->{indicators}->{'group'.$j};
+    my $found = Demeter->mo->fetch('Indicator', $this);
+    print($IN $found -> serialization) if $found;
+  };
+  close $IN;
+
+  ## copy over this fit
+  mkpath(File::Spec->catfile($newfolder, 'fits'), 0);
+  dircopy(File::Spec->catfile($::app->{main}->{project_folder}, 'fits', $fit->group), File::Spec->catfile($newfolder, 'fits', $fit->group));
+
+  ## copy over all feffs
+  dircopy(File::Spec->catfile($::app->{main}->{project_folder}, 'feff'), File::Spec->catfile($newfolder, 'feff'));
+
+  ## write the order file
+  open(my $OR, '>'.File::Spec->catfile($newfolder, 'order'));
+  printf $OR "--- order\n---\n1: %s\ncurrent: 1\n", $fit->group;
+  close $OR;
+
+  ## zip it all up and clean up the mess
+  my $zip = Archive::Zip->new();
+  $zip->addTree( $newfolder, "",  sub{ not m{\.sp$} }); #and not m{_dem_\w{8}\z}
+  carp('error writing zip-style project') unless ($zip->writeToFileNamed( $fname ) == AZ_OK);
+  undef $zip;
+
+  rmtree($newfolder,0);
+
+  $self->status("exported $name as $fname");
 };
 
 
