@@ -607,13 +607,16 @@ sub export {
   printf $OR "--- order\n---\n1: %s\ncurrent: 1\n", $fit->group;
   close $OR;
 
-  ## zip it all up and clean up the mess
+  ## zip it all up, clean up the mess, push it to the MRU list
   my $zip = Archive::Zip->new();
   $zip->addTree( $newfolder, "",  sub{ not m{\.sp$} }); #and not m{_dem_\w{8}\z}
   carp('error writing zip-style project') unless ($zip->writeToFileNamed( $fname ) == AZ_OK);
   undef $zip;
 
   rmtree($newfolder,0);
+
+  $Demeter::UI::Artemis::demeter->push_mru("artemis", $fname);
+  &Demeter::UI::Artemis::set_mru;
 
   $self->status("exported $name as $fname");
 };

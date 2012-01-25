@@ -1,10 +1,12 @@
 .gitignore
+artisitic_license.txt
 bin/argus
 bin/argus.pod
 bin/dartemis
 bin/dathena
 bin/datoms
 bin/datoms.pod
+bin/denergy
 bin/denv
 bin/dfeff
 bin/dfeff.pod
@@ -266,6 +268,7 @@ examples/filter.pl
 examples/h12213.cif
 examples/harness
 examples/hematite.inp
+examples/LaCoO3.inp
 examples/nonuniform.chi
 examples/notdata.0
 examples/notdata.1
@@ -352,6 +355,7 @@ examples/recipes/LCF/combi.pl
 examples/recipes/LCF/lcf.pl
 examples/recipes/LCF/seq.pl
 examples/recipes/LogRatio/lrpd.pl
+examples/recipes/Megamerge/megamerge.pl
 examples/recipes/Methyltin/DMT.fpj
 examples/recipes/Methyltin/fit.pl
 examples/recipes/Methyltin/MDS.fpj
@@ -452,6 +456,7 @@ lib/Demeter/Data.pm
 lib/Demeter/Data/Arrays.pm
 lib/Demeter/Data/Athena.pm
 lib/Demeter/Data/Beamlines.pm
+lib/Demeter/Data/BulkMerge.pm
 lib/Demeter/Data/Defaults.pm
 lib/Demeter/Data/E0.pm
 lib/Demeter/Data/FT.pm
@@ -478,6 +483,7 @@ lib/Demeter/Feff/Distributions/Triangle.pm
 lib/Demeter/Feff/External.pm
 lib/Demeter/Feff/Histogram.pm
 lib/Demeter/Feff/MD/DL_POLY.pm
+lib/Demeter/Feff/MD/LAMMPS.pm
 lib/Demeter/Feff/MD/Null.pm
 lib/Demeter/Feff/MD/VASP.pm
 lib/Demeter/Feff/Paths.pm
@@ -851,9 +857,11 @@ lib/Demeter/templates/process/ifeffit/chi_noise.tmpl
 lib/Demeter/templates/process/ifeffit/chikn.tmpl
 lib/Demeter/templates/process/ifeffit/clone.tmpl
 lib/Demeter/templates/process/ifeffit/columns.tmpl
+lib/Demeter/templates/process/ifeffit/columns_qm.tmpl
 lib/Demeter/templates/process/ifeffit/convolve.tmpl
 lib/Demeter/templates/process/ifeffit/deglitch.tmpl
 lib/Demeter/templates/process/ifeffit/deriv.tmpl
+lib/Demeter/templates/process/ifeffit/deriv_qm.tmpl
 lib/Demeter/templates/process/ifeffit/display.tmpl
 lib/Demeter/templates/process/ifeffit/dphase.tmpl
 lib/Demeter/templates/process/ifeffit/erase_chikn.tmpl
@@ -881,6 +889,8 @@ lib/Demeter/templates/process/ifeffit/merge_start.tmpl
 lib/Demeter/templates/process/ifeffit/merge_stddev.tmpl
 lib/Demeter/templates/process/ifeffit/merge_stddev_end.tmpl
 lib/Demeter/templates/process/ifeffit/merge_subarray.tmpl
+lib/Demeter/templates/process/ifeffit/muave.tmpl
+lib/Demeter/templates/process/ifeffit/musum.tmpl
 lib/Demeter/templates/process/ifeffit/nderiv.tmpl
 lib/Demeter/templates/process/ifeffit/noise.tmpl
 lib/Demeter/templates/process/ifeffit/normalize.tmpl
@@ -906,6 +916,7 @@ lib/Demeter/templates/process/ifeffit/sa_fluo.tmpl
 lib/Demeter/templates/process/ifeffit/sa_info_depth.tmpl
 lib/Demeter/templates/process/ifeffit/sa_troger.tmpl
 lib/Demeter/templates/process/ifeffit/save_chik.tmpl
+lib/Demeter/templates/process/ifeffit/save_chikw.tmpl
 lib/Demeter/templates/process/ifeffit/save_chiq.tmpl
 lib/Demeter/templates/process/ifeffit/save_chir.tmpl
 lib/Demeter/templates/process/ifeffit/save_many.tmpl

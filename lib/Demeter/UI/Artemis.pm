@@ -795,8 +795,8 @@ sub set_mru {
     my $type = ($which eq 'fit_serialization') ? 'fit'
              : ($which eq 'old_artemis')       ? 'old'
 	     :                                   $which;
-    foreach my $i (0 .. $frames{main}->{mrumenu}->GetMenuItemCount-1) {
-      $frames{main}->{'mru'.$type}->Delete($frames{main}->{'mru'.$type}->FindItemByPosition(0));
+    foreach my $i (reverse (0 .. $frames{main}->{'mru'.$type}->GetMenuItemCount-1)) {
+      $frames{main}->{'mru'.$type}->Delete($frames{main}->{'mru'.$type}->FindItemByPosition($i));
     };
 
     my @list = ($which eq 'structure') ? $demeter->get_mru_list('atoms', 'feff') : $demeter->get_mru_list($which);
