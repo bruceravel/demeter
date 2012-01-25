@@ -12,6 +12,7 @@ if ($ANSIColor_exists and not $nocolor) {
   import Term::ANSIColor qw(:constants);
 } else {
   sub BOLD    {q{}};
+  sub WHITE   {q{}};
   sub YELLOW  {q{}};
   sub CYAN    {q{}};
   sub RED     {q{}};
@@ -20,24 +21,33 @@ if ($ANSIColor_exists and not $nocolor) {
   sub RESET   {q{}};
 };
 
+pod2usage(1) && exit 0 if not $ARGV[0] or not $ARGV[1];
+
 use Chemistry::Elements qw(get_Z get_symbol get_name);
 use Xray::Absorption;
 my $element = ucfirst( lc($ARGV[0]) );
+die b("$element is not an element", RED).$/ if not get_Z($element);
 my $edge = lc($ARGV[1]);
 my $energy = Xray::Absorption->get_energy($element, $edge);
 
-my $which = ($edge =~ m{\b(?:k|l[1-3]|m[1-5]|n[1-7]|o[1-5]|p[1-3])\b}) ? 'edge' : 'line';
+my $which = ($edge =~ m{\A(?:k|l[1-3]|m[1-5]|n[1-7]|o[1-5]|p[1-3])\z}) ? 'edge' : 'line';
 
 if ($which eq 'edge') {
-  printf "\n%s%s%s (%s, #%d) %s%s%s %s energy = %s%s%s eV\n\n",
-    BOLD.CYAN, get_name($element), RESET, get_symbol($element), get_Z($element),
-      BOLD.GREEN, ucfirst($edge), RESET, $which,
-	BOLD.RED, $energy, RESET;
+  printf "\n%s (%s, #%d) %s %s energy = %s eV\n\n",
+    b(get_name($element), CYAN), get_symbol($element), get_Z($element),
+      b(ucfirst($edge), GREEN), $which,
+	b($energy, WHITE);
 } else {
-  printf "\n%s%s%s (%s, #%d) %s%s%s (%s) %s energy = %s%s%s eV\n\n",
-    BOLD.CYAN, get_name($element), RESET, get_symbol($element), get_Z($element),
-      BOLD.GREEN, ucfirst($edge), RESET, Xray::Absorption->get_IUPAC($edge), $which,
-	BOLD.RED, $energy, RESET;
+  die b("\n$edge is not an edge or line symbol\n", RED).$/ if not Xray::Absorption->get_IUPAC($edge);
+  printf "\n%s (%s, #%d) %s (%s) %s energy = %s eV\n\n",
+    b(get_name($element), CYAN), get_symbol($element), get_Z($element),
+      b(Xray::Absorption->get_Siegbahn_full($edge), GREEN), Xray::Absorption->get_IUPAC($edge), $which,
+	b($energy, YELLOW);
+};
+
+sub b {
+  my ($text, $color) = @_;
+  return $color . BOLD . $text . RESET;
 };
 
 
@@ -63,13 +73,28 @@ Examples:
     ==>  Copper (Cu, #29) K edge energy = 8979 eV
 
    denergy Pt La1
-    ==> Platinum (Pt, #78) La1 (L3-M5) line energy = 9442 eV
+    ==> Platinum (Pt, #78) Lalpha1 (L3-M5) line energy = 9442 eV
+
+=head1 BUGS and SHORTCOMINGS
+
+=over 4
+
+=item *
+
+Leaving of the edge/line argument should print a table of edge and
+line energies.
+
+=back
+
+Please report problems to Bruce Ravel (bravel AT bnl DOT gov)
+
+Patches are welcome.
 
 =head1 AUTHOR
 
 Bruce Ravel (bravel AT bnl DOT gov)
 
-http://cars9.uchicago.edu/~ravel/software/
+http://cars.uchicago.edu/ifeffit/Demeter
 
 =head1 LICENCE AND COPYRIGHT
 

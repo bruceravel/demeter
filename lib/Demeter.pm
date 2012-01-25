@@ -23,7 +23,7 @@ package Demeter;  # http://xkcd.com/844/
 require 5.008;
 
 use version;
-our $VERSION = version->new('0.9.7');
+our $VERSION = version->new('0.9.8');
 
 #use Demeter::Carp;
 #use Carp::Always::Color;

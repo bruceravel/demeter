@@ -13,15 +13,26 @@
      combinatorial fitting practically unlimited
    - In combinatorial fits, sort everything according to position in
      group list
+   - Fixed a potantial bug detemining units in the CSD when selecting
+     chi(k) as the data type
 
 *** Artemis
+   - Can now export a particular fit from the history to an fpj file
+   - Fixed a bug repopulating the recent files menu
+   - Fixed a bug in which the <data>.fit file was deleted as a project
+     was imported.  This was the main reason the history plot tool was
+     broken.
 
 *** Demeter
    - Add file-chik_out parameter to control how writing a chi(K)
      output file work.  "all" means write a multicolumn file, 0, 1, 2,
      3, or kw mean to write a two-column file using that k-weight
+   - Added a tool for efficiently merging a large number of data
+     files, see Demeter::Data::BulkMerge
+   - Added denergy script
 
 *** Acknowledgements for this release
+   - Eric Breynaert
    - Scott Calvin
    - Andreas Voegelin
 
