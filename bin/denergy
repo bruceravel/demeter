@@ -1,32 +1,25 @@
 #!/usr/bin/perl
 
+use strict;
+use warnings;
+#no warnings qw(redefine);
 use Pod::Usage;
 use Getopt::Long;
 
-my $nocolor = 0;
+eval 'use Term::ANSIColor ()';
+eval { require Win32::Console::ANSI } if (($^O =~ /MSWin32/) and ($ENV{TERM} eq 'dumb'));
+
+use vars qw($nocolor);
+$nocolor = 0;
 my $result  = GetOptions ('nocolor|n' => \$nocolor,
 			  'help|h' => sub{ pod2usage(1); exit 0},);
-
-my $ANSIColor_exists = (eval "require Term::ANSIColor");
-if ($ANSIColor_exists and not $nocolor) {
-  import Term::ANSIColor qw(:constants);
-} else {
-  sub BOLD    {q{}};
-  sub WHITE   {q{}};
-  sub YELLOW  {q{}};
-  sub CYAN    {q{}};
-  sub RED     {q{}};
-  sub GREEN   {q{}};
-  sub CYAN    {q{}};
-  sub RESET   {q{}};
-};
 
 pod2usage(1) && exit 0 if not $ARGV[0] or not $ARGV[1];
 
 use Chemistry::Elements qw(get_Z get_symbol get_name);
 use Xray::Absorption;
 my $element = ucfirst( lc($ARGV[0]) );
-die b("$element is not an element", RED).$/ if not get_Z($element);
+die b("$element is not an element", 'red').$/ if not get_Z($element);
 my $edge = lc($ARGV[1]);
 my $energy = Xray::Absorption->get_energy($element, $edge);
 
@@ -34,20 +27,21 @@ my $which = ($edge =~ m{\A(?:k|l[1-3]|m[1-5]|n[1-7]|o[1-5]|p[1-3])\z}) ? 'edge' 
 
 if ($which eq 'edge') {
   printf "\n%s (%s, #%d) %s %s energy = %s eV\n\n",
-    b(get_name($element), CYAN), get_symbol($element), get_Z($element),
-      b(ucfirst($edge), GREEN), $which,
-	b($energy, WHITE);
+    b(get_name($element), 'cyan'), get_symbol($element), get_Z($element),
+      b(ucfirst($edge), 'green'), $which,
+	b($energy, 'yellow');
 } else {
-  die b("\n$edge is not an edge or line symbol\n", RED).$/ if not Xray::Absorption->get_IUPAC($edge);
+  die b("\n$edge is not an edge or line symbol\n", 'red').$/ if not Xray::Absorption->get_IUPAC($edge);
   printf "\n%s (%s, #%d) %s (%s) %s energy = %s eV\n\n",
-    b(get_name($element), CYAN), get_symbol($element), get_Z($element),
-      b(Xray::Absorption->get_Siegbahn_full($edge), GREEN), Xray::Absorption->get_IUPAC($edge), $which,
-	b($energy, YELLOW);
+    b(get_name($element), 'cyan'), get_symbol($element), get_Z($element),
+      b(Xray::Absorption->get_Siegbahn_full($edge), 'green'), Xray::Absorption->get_IUPAC($edge), $which,
+	b($energy, 'yellow');
 };
 
 sub b {
-  my ($text, $color) = @_;
-  return $color . BOLD . $text . RESET;
+  my ($message, $color) = @_;
+  my $string = ($nocolor) ? $message : Term::ANSIColor::colored($message, "bold $color");
+  return $string;
 };
 
 
@@ -61,7 +55,7 @@ This documentation refers to Demeter version 0.9.
 
 =head1 SYNOPSIS
 
-   denergy element edge_or_line
+   denergy [options] element edge_or_line
 
 The element can be the 1- or 2-letter symbol, the Z number or the
 English language name.  The edge or line can be an edge symbol, a
@@ -74,6 +68,11 @@ Examples:
 
    denergy Pt La1
     ==> Platinum (Pt, #78) Lalpha1 (L3-M5) line energy = 9442 eV
+
+=head1 OPTIONS
+
+  -n   suppress colored output
+  -h   print this message
 
 =head1 BUGS and SHORTCOMINGS
 
