@@ -34,8 +34,7 @@ use Demeter::UI::Artemis::DND::PlotListDrag;
 use Cwd;
 use File::Spec;
 use List::Util qw(first sum);
-use Readonly;
-Readonly my $EPSI => 0.01;
+use Demeter::Constants qw($EPSILON2);
 
 my $demeter = $Demeter::UI::Artemis::demeter;
 
@@ -205,7 +204,7 @@ sub set_kweight {
       push @kweights, $obj->data->fit_karb_value;
     };
     ## check to see if plotted items all have the same arbitrary k-weight
-    my $nuniq = grep {abs($_-$kweights[0]) > $EPSI} @kweights;
+    my $nuniq = grep {abs($_-$kweights[0]) > $EPSILON2} @kweights;
     $demeter->po->kweight($kweights[0]);
     $demeter->po->kweight(-1) if $nuniq; # variable k-weighting if not all the same
   } else {
@@ -404,11 +403,10 @@ sub plot_fit {
   $::app->heap_check;
 };
 
-use Readonly;
-Readonly my $PLOT_REMOVE => Wx::NewId();
-Readonly my $PLOT_ON     => Wx::NewId();
-Readonly my $PLOT_OFF    => Wx::NewId();
-Readonly my $PLOT_TOGGLE => Wx::NewId();
+const my $PLOT_REMOVE => Wx::NewId();
+const my $PLOT_ON     => Wx::NewId();
+const my $PLOT_OFF    => Wx::NewId();
+const my $PLOT_TOGGLE => Wx::NewId();
 
 sub OnRightDown {
   my ($self, $event) = @_;

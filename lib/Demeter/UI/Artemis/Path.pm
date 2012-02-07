@@ -276,12 +276,12 @@ sub DoLabelLeave {
   my ($st, $event) = @_;
   print "leaving ", $st->{which}, $/;
 };
-use Readonly;
-Readonly my $GUESS  => Wx::NewId();
-Readonly my $DEF    => Wx::NewId();
-Readonly my $SET    => Wx::NewId();
-Readonly my $LGUESS => Wx::NewId();
-Readonly my $SKIP   => Wx::NewId();
+use Const::Fast;
+const my $GUESS  => Wx::NewId();
+const my $DEF    => Wx::NewId();
+const my $SET    => Wx::NewId();
+const my $LGUESS => Wx::NewId();
+const my $SKIP   => Wx::NewId();
 
 my $tokenizer_regexp = '(?-xism:(?=[\t\ \(\)\*\+\,\-\/\^])[\-\+\*\^\/\(\)\,\ \t])';
 sub OnPPClick {
@@ -349,16 +349,16 @@ sub this_path {
   };
   return $this;
 };
-Readonly my $CLEAR	 => Wx::NewId();
-Readonly my $THISFEFF	 => Wx::NewId();
-Readonly my $THISDATA	 => Wx::NewId();
-Readonly my $EACHDATA	 => Wx::NewId();
-Readonly my $MARKED	 => Wx::NewId();
-Readonly my $PREV	 => Wx::NewId();
-Readonly my $NEXT	 => Wx::NewId();
-Readonly my $DEBYE	 => Wx::NewId();
-Readonly my $EINS	 => Wx::NewId();
-Readonly my $EXPLAIN	 => Wx::NewId();
+const my $CLEAR	 => Wx::NewId();
+const my $THISFEFF	 => Wx::NewId();
+const my $THISDATA	 => Wx::NewId();
+const my $EACHDATA	 => Wx::NewId();
+const my $MARKED	 => Wx::NewId();
+const my $PREV	 => Wx::NewId();
+const my $NEXT	 => Wx::NewId();
+const my $DEBYE	 => Wx::NewId();
+const my $EINS	 => Wx::NewId();
+const my $EXPLAIN	 => Wx::NewId();
 
 ## use this to post context menu for path parameter
 sub DoLabelKeyPress {

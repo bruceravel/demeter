@@ -19,8 +19,8 @@ use Carp;
 use Chemistry::Elements qw(get_symbol get_Z);
 use Safe;
 use Scalar::Util;
-use Readonly;
-Readonly my $EPSILON  => 0.00001;
+use Const::Fast;
+const my $EPSILON  => 0.00001;
 
 
 use Moose;
@@ -454,7 +454,7 @@ There is nothing configurable and no environment variables are used.
   Chemistry::Elements
   Carp
   Safe
-  Readonly
+  Const::Fast
 
 =head1 BUGS AND LIMITATIONS
 

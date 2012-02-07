@@ -22,8 +22,7 @@ use Test::More tests => 17;
 use Demeter;
 use File::Basename;
 use File::Spec;
-use Readonly;
-Readonly my $EPSILON => 1e-2;
+use Demeter::Constants qw($EPSILON2);
 
 my $here  = dirname($0);
 
@@ -71,8 +70,8 @@ $peak -> fit;
 #peak 2 (Gaussian) : height = 0.413(0.0133), center = 7647.28(0.12), hwhm = 3.97(0.0923), area = 3.49
 #peak 3 (Lorentzian) : height = 0.186(0.00437), center = 7637.39(0.20), hwhm = 4.95(0.22), area = 2.90
 
-ok( abs($ls->a1 - 7637.39) < $EPSILON, "peak center from fit");
-ok( abs($ls->area - 2.90)  < $EPSILON, "peak area from fit");
+ok( abs($ls->a1 - 7637.39) < $EPSILON2, "peak center from fit");
+ok( abs($ls->area - 2.90)  < $EPSILON2, "peak area from fit");
 
 
 ok( join("|", $ls->parameter_names('PielaszekCube')) eq 'a|center|r|s',              "PielaszekCube parameters");

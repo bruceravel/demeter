@@ -49,6 +49,7 @@ Archive::Zip
 Capture::Tiny
 Chemistry::Elements
 Config::IniFiles
+Const::Fast
 DateTime
 Digest::SHA
 ExtUtils::CBuilder
@@ -70,7 +71,6 @@ MooseX::Types
 PPI
 PPI::HTML
 Pod::POM
-Readonly
 Regexp::Common
 Regexp::Assemble
 Spreadsheet::WriteExcel

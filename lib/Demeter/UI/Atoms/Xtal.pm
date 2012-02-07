@@ -61,13 +61,10 @@ use Cwd;
 use Chemistry::Elements qw(get_Z get_name get_symbol);
 use File::Basename;
 use List::MoreUtils qw(firstidx);
-use Regexp::Common;
 use Xray::Absorption;
 #use Demeter::UI::Wx::GridTable;
 
-use Readonly;
-Readonly my $EPSILON => 1e-3;
-Readonly my $NUMBER => $RE{num}{real};
+use Demeter::Constants qw($NUMBER $EPSILON3);
 
 use Wx qw( :everything );
 use base 'Wx::Panel';
@@ -514,7 +511,7 @@ sub open_file {
 
   foreach my $lc (qw(a b c)) {
     my $this = $atoms->$lc;
-    $this = $atoms->a if (($lc =~ m{[bc]}) and ($atoms->$lc < $EPSILON));
+    $this = $atoms->a if (($lc =~ m{[bc]}) and ($atoms->$lc < $EPSILON3));
     $self->{$lc}->SetValue($this);
   };
   foreach my $lc (qw(alpha beta gamma)) {
@@ -714,7 +711,7 @@ sub verify_angle {
       last SWITCH;
     };
     ($class =~ m{(?:cubic|tetragonal|orthorhombic)}) and do {
-      return 90 if ($atoms->$angle < $EPSILON);
+      return 90 if ($atoms->$angle < $EPSILON3);
       return $atoms->$angle;
       last SWITCH;
     };

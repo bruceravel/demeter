@@ -22,9 +22,7 @@ extends 'Demeter::Plot';
 
 use Carp;
 use File::Spec;
-use Regexp::Common;
-use Readonly;
-Readonly my $NUMBER => $RE{num}{real};
+use Demeter::Constants qw($NUMBER);
 use String::Random qw(random_string);
 
 has 'error_log' => (is => 'ro', isa => 'Str',  default => File::Spec->catfile($Demeter::mode->iwd,
@@ -267,10 +265,6 @@ Also
 =item L<File::Spec>
 
 =item L<Regexp::Assemble>
-
-=item L<Regexp::Common>
-
-=item L<Readonly>
 
 =item L<String::Random>
 

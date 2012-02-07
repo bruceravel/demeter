@@ -21,10 +21,7 @@ use Moose::Role;
 
 use Carp;
 
-use Regexp::Common;
-use Readonly;
-Readonly my $NUMBER  => $RE{num}{real};
-Readonly my $EPSILON => 1e-3;
+#use Demeter::Constants qw($NUMBER $EPSILON3);
 
 use Xray::Absorption;
 

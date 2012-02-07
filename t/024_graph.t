@@ -22,9 +22,7 @@ use Test::More tests => 4;
 use Demeter;
 use Demeter::StrTypes qw( IfeffitFunction IfeffitProgramVar );
 use Graph;
-use Regexp::Common;
-use Readonly;
-Readonly my $NUMBER   => $RE{num}{real};
+use Demeter::Constants qw($NUMBER);
 
 my @params = (
 	      Demeter::GDS->new(gds=>'guess', name=>'a', mathexp=>5),

@@ -6,8 +6,8 @@ extends 'Demeter::Plugins::FileType';
 use Config::IniFiles;
 use File::Basename;
 use File::Copy;
-use Readonly;
-Readonly my $INIFILE => 'x23a2med.demeter_conf';
+use Const::Fast;
+const my $INIFILE => 'x23a2med.demeter_conf';
 use List::MoreUtils qw(any);
 
 has '+is_binary'   => (default => 0);

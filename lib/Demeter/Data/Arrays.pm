@@ -5,8 +5,7 @@ use Demeter::StrTypes qw( DataPart FitSpace );
 use List::MoreUtils qw(pairwise minmax);
 use Regexp::Assemble;
 
-use Readonly;
-Readonly my $ETOK => 0.262468292;
+use Demeter::Constants qw($ETOK);
 
 sub yofx {
   my ($self, $suffix, $part, $x) = @_;

@@ -19,12 +19,9 @@ use Moose::Role;
 
 use Carp;
 use List::MoreUtils qw(none);
-use Regexp::Common;
 use Regexp::Assemble;
 
-use Readonly;
-Readonly my $NUMBER   => $RE{num}{real};
-
+use Demeter::Constants qw($NUMBER);
 
 sub save {
   my ($self, $what, $filename, $how) = @_;

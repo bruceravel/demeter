@@ -30,9 +30,7 @@ use Carp;
 use Config::IniFiles;
 use File::Basename;
 use Regexp::Assemble;
-use Regexp::Common;
-use Readonly;
-Readonly my $NUMBER => $RE{num}{real};
+#use Demeter::Constants qw($NUMBER);
 use Text::Wrap;
 #use Data::Dumper;
 

@@ -3,8 +3,7 @@ use Moose::Role;
 use MooseX::Aliases;
 
 use POSIX qw(acos);
-use Readonly;
-Readonly my $PI => 4*atan2(1,1);
+use Demeter::Constants qw($PI);
 
 use Demeter::NumTypes qw( Ipot );
 

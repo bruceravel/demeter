@@ -18,9 +18,7 @@ package Demeter::UI::Wx::CheckListBook;
 use strict;
 use warnings;
 
-use Regexp::Common;
-use Readonly;
-Readonly my $NUMBER => $RE{num}{real};
+use Demeter::Constants qw($NUMBER);
 
 use Wx qw( :everything );
 use Wx::Event qw(EVT_LISTBOX EVT_LEFT_DOWN EVT_MIDDLE_DOWN EVT_RIGHT_DOWN EVT_CHECKLISTBOX
@@ -534,7 +532,7 @@ Change the label at the given position interactively.
 
 =head1 DEPENDENCIES
 
-L<Wx>, Wx::SplitterWindow, Wx::CheckListBox, L<Readonly> and L<Regexp::Common>.
+L<Wx>, Wx::SplitterWindow, Wx::CheckListBox, and L<Const::Fast>
 
 =head1 BUGS AND LIMITATIONS
 

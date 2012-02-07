@@ -21,10 +21,7 @@ use Moose::Role;
 
 use Carp;
 use List::MoreUtils qw(any);
-use Regexp::Common;
-use Readonly;
-Readonly my $NUMBER  => $RE{num}{real};
-#Readonly my $INTEGER => $RE{num}{int};
+use Demeter::Constants qw($NUMBER);
 
 use Text::Wrap;
 $Text::Wrap::columns = 65;

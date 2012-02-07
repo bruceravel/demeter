@@ -23,9 +23,7 @@ extends 'Demeter';
 use Demeter::StrTypes qw( GDS NotReserved );
 
 use Carp;
-use Regexp::Common;
-use Readonly;
-Readonly my $NUMBER => $RE{num}{real};
+use Demeter::Constants qw($NUMBER);
 
 has '+name'	  => (isa => NotReserved);
 has 'gds'	  => (is => 'rw', isa =>  GDS,    default => 'guess');

@@ -23,26 +23,26 @@ use File::Spec;
 use List::MoreUtils qw(uniq any);
 use Scalar::Util qw(looks_like_number);
 
-use Readonly;
+use Demeter::Constants qw($SEPARATOR);
+use Const::Fast;
 ## 0:grab all  1:reset all  2:toggle highlight  4:import   5:export  6:discard all  8:add one
-Readonly my $GRAB	 => 0;
-Readonly my $RESET	 => 1;
-Readonly my $HIGHLIGHT	 => 2;
-Readonly my $IMPORT	 => 4;
-Readonly my $EXPORT	 => 5;
-Readonly my $DISCARD	 => 6;
-Readonly my $ADD	 => 8;
-Readonly my $PARAM_REGEX => '(guess|def|set|lguess|restrain|after|skip|penalty|merge)';
-Readonly my $SEPARATOR	 => '[ \t]*[ \t=,][ \t]*';
+const my $GRAB	      => 0;
+const my $RESET	      => 1;
+const my $HIGHLIGHT   => 2;
+const my $IMPORT      => 4;
+const my $EXPORT      => 5;
+const my $DISCARD     => 6;
+const my $ADD	      => 8;
+const my $PARAM_REGEX => '(guess|def|set|lguess|restrain|after|skip|penalty|merge)';
 
-Readonly my $GUESS    => Wx::NewId();
-Readonly my $LGUESS   => Wx::NewId();
-Readonly my $SET      => Wx::NewId();
-Readonly my $DEF      => Wx::NewId();
-Readonly my $SKIP     => Wx::NewId();
-Readonly my $AFTER    => Wx::NewId();
-Readonly my $RESTRAIN => Wx::NewId();
-Readonly my $PENALTY  => Wx::NewId();
+const my $GUESS	      => Wx::NewId();
+const my $LGUESS      => Wx::NewId();
+const my $SET	      => Wx::NewId();
+const my $DEF	      => Wx::NewId();
+const my $SKIP	      => Wx::NewId();
+const my $AFTER	      => Wx::NewId();
+const my $RESTRAIN    => Wx::NewId();
+const my $PENALTY     => Wx::NewId();
 
 use Wx qw( :everything );
 use Wx::DND;

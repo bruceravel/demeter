@@ -21,9 +21,7 @@ use version;
 use vars qw($VERSION @ISA @EXPORT @EXPORT_OK);
 $VERSION = qv("1.0.0");
 
-use Readonly;
-Readonly my $PI    => 4 * atan2 1, 1;
-Readonly my $HBARC => 1973.27053324;
+use Demeter::Constants qw($PI $HBARC);
 
 use Wx qw(wxVERSION_STRING);
 

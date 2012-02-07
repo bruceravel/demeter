@@ -29,9 +29,7 @@ with "Demeter::Feff::MD::Null";
 use Demeter::StrTypes qw( Empty );
 use Demeter::NumTypes qw( Natural PosInt NonNeg Ipot );
 
-use Readonly;
-Readonly my $PI => 4*atan2(1,1);
-Readonly my $TRIGEPS => 1e-6;
+use Demeter::Constants qw($PI $EPSILON6);
 
 with 'Demeter::Data::Arrays';
 with 'Demeter::UI::Screen::Pause' if ($Demeter::mode->ui eq 'screen');
@@ -192,8 +190,8 @@ sub _trig {
   my $rxy = sqrt($rxysqr);
   my ($ct, $st, $cp, $sp) = (1, 0, 1, 0);
 
-  ($ct, $st) = ($_[2]/$r,   $rxy/$r)    if ($r   > $TRIGEPS);
-  ($cp, $sp) = ($_[0]/$rxy, $_[1]/$rxy) if ($rxy > $TRIGEPS);
+  ($ct, $st) = ($_[2]/$r,   $rxy/$r)    if ($r   > $EPSILON6);
+  ($cp, $sp) = ($_[0]/$rxy, $_[1]/$rxy) if ($rxy > $EPSILON6);
 
   return ($ct, $st, $cp, $sp);
 };

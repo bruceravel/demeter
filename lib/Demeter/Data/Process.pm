@@ -22,11 +22,7 @@ use Moose::Role;
 use Carp;
 use List::Util qw(reduce);
 use List::MoreUtils qw(minmax firstval uniq);
-use Readonly;
-Readonly my $EPSILON  => 1e-5;
-Readonly my $NULLFILE => '@&^^null^^&@';
-
-
+use Demeter::Constants qw($EPSILON5 $NULLFILE);
 
 sub rebin {
   my ($self, $rhash) = @_;

@@ -46,18 +46,16 @@ use File::Temp qw(tempfile);
 use Heap::Fibonacci;
 use List::MoreUtils qw(any false notall);
 use List::Util qw(sum);
-use Regexp::Common;
 use String::Random qw(random_string);
 use Tree::Simple;
 
-use Readonly;
-Readonly my $NLEGMAX      => 4;
-Readonly my $CTOKEN       => '+';
-Readonly my $ETASUPPRESS  => 1;
-Readonly my $FUZZ_DEF     => 0.01;
-Readonly my $BETAFUZZ_DEF => 3;
-Readonly my $SEPARATOR    => '[ \t]*[ \t=,][ \t]*';
-Readonly my $NUMBER       => $RE{num}{real};
+
+use Demeter::Constants qw($NUMBER $SEPARATOR $CTOKEN);
+use Const::Fast;
+const my $NLEGMAX      => 4;
+const my $ETASUPPRESS  => 1;
+const my $FUZZ_DEF     => 0.01;
+const my $BETAFUZZ_DEF => 3;
 
 my @leglength = ();
 my $shortest = 100000000;

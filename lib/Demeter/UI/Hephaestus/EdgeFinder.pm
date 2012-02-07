@@ -19,7 +19,6 @@ use strict;
 use warnings;
 use Carp;
 use Chemistry::Elements qw(get_Z get_name get_symbol);
-#use Regexp::Common;
 use Xray::Absorption;
 
 use Wx qw( :everything );

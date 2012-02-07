@@ -27,8 +27,7 @@ with 'Demeter::UI::Screen::Pause' if ($Demeter::mode->ui eq 'screen');
 use File::Copy;
 use File::Spec;
 use String::Random qw(random_string);
-use Readonly;
-Readonly my $PI => 4*atan2(1,1);
+use Demeter::Constants qw($PI);
 
 has 'Type'	 => (is => 'ro', isa => 'Str',    default => 'three body scattering');
 has 'string'	 => (is => 'ro', isa => 'Str',    default => q{});

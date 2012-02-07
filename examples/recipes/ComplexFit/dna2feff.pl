@@ -10,10 +10,10 @@ use Text::Template;
 
 
 use Ifeffit qw(put_scalar get_scalar ifeffit);
-use Readonly;
-Readonly my $X => 1;
-Readonly my $Y => 2;
-Readonly my $Z => 3;
+use Const::Fast;
+const my $X => 1;
+const my $Y => 2;
+const my $Z => 3;
 
 my $dnafile = 'thymidine.pdb';
 
@@ -25,9 +25,9 @@ die "specify an amino acid [-a -c -g -t]\n" if (not $dnafile);
 ##  8,10,11: C on sugar
 ##  6, 7,11: O on sugar
 
-Readonly my $L => $ARGV[1] || 13;
-Readonly my $C => $ARGV[0] || 15;
-Readonly my $R => $ARGV[2] || 16;
+const my $L => $ARGV[1] || 13;
+const my $C => $ARGV[0] || 15;
+const my $R => $ARGV[2] || 16;
 
 ### indeces CLR:  $C,  $L,  $R
 

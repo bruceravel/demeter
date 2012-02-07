@@ -19,8 +19,7 @@ use autodie qw(open close);
 
 use Moose::Role;
 
-use Readonly;
-Readonly my $ENDOFLINE => $/;
+use Demeter::Constants qw($ENDOFLINE);
 
 use subs qw(BOLD BLACK RED GREEN YELLOW BLUE MAGENTA CYAN WHITE ON_RED RESET);
 my $ANSIColor_exists = (eval "require Term::ANSIColor");

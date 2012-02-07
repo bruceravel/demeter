@@ -27,9 +27,9 @@ use Carp;
 use File::Spec;
 use Storable;
 
-use Readonly;
-Readonly my $PI       => 4*atan2(1,1);
-Readonly my $EPSILON  => 0.00001;
+use Const::Fast;
+const my $PI       => 4*atan2(1,1);
+const my $EPSILON  => 0.00001;
 
 sub identify_self {
   my @caller = caller;
@@ -822,7 +822,7 @@ There is nothing configurable and no environment variables are used.
   Carp
   File::Spec
   Storable
-  Readonly
+  Const::Fast
 
 =head1 BUGS AND LIMITATIONS
 

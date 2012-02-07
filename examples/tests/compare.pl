@@ -7,7 +7,7 @@
 
 =for Copyright
  .
- Copyright (c) 2006-2009 Bruce Ravel (bravel AT bnl DOT gov).
+ Copyright (c) 2006-2012 Bruce Ravel (bravel AT bnl DOT gov).
  All rights reserved.
  .
  This file is free software; you can redistribute it and/or
@@ -52,7 +52,7 @@ $plot -> set(e_mu    => 1,
 
 print "Plotting in k-space ...\n";
 my $space = 'k';
-foreach (@data) { $_ -> plot($space) };
+foreach my $d (@data) { $d -> plot($space) };
 
 print "Sleeping for 3 seconds ...\n";
 sleep 3;
@@ -60,7 +60,7 @@ sleep 3;
 print "Plotting in R-space ...\n";
 $plot -> start_plot;
 $space = 'r';
-foreach (@data) { $_ -> plot($space) };
+foreach my $d (@data) { $d -> plot($space) };
 print "All done!\n";
 
 1;

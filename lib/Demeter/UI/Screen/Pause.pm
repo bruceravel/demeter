@@ -17,10 +17,7 @@ package Demeter::UI::Screen::Pause;
 
 use Moose::Role;
 
-use Regexp::Common;
-use Readonly;
-Readonly my $NUMBER => $RE{num}{real};
-
+use Demeter::Constants qw($NUMBER);
 
 #use subs qw(REVERSE UNDERLINE RESET);
 my $ANSIColor_exists = (eval "require Term::ANSIColor");

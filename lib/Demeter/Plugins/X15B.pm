@@ -8,12 +8,12 @@ has '+description'  => (default => "NSLS beamline X15B");
 has '+version'      => (default => 0.1);
 has '+metadata_ini' => (default => File::Spec->catfile(File::Basename::dirname($INC{'Demeter.pm'}), 'Demeter', 'share', 'xdi', 'x15b.ini'));
 
-use Readonly;
-Readonly my $ENERGY => 0;	# columns containing the
-Readonly my $I0     => 4;	# relevant scalars
-Readonly my $NARROW => 8;
-Readonly my $WIDE   => 9;
-Readonly my $TRANS  => 10;
+use Const::Fast;
+const my $ENERGY => 0;	# columns containing the
+const my $I0     => 4;	# relevant scalars
+const my $NARROW => 8;
+const my $WIDE   => 9;
+const my $TRANS  => 10;
 
 sub is {
   my ($self) = @_;

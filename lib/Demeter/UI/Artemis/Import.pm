@@ -5,11 +5,11 @@ use Demeter::UI::Artemis::Project;
 use Demeter::UI::Wx::SpecialCharacters qw(:all);
 
 ## -------- convenience parameters
-use Readonly;
-Readonly my $rdemeter        => \$Demeter::UI::Artemis::demeter;
-Readonly my $rframes         => \%Demeter::UI::Artemis::frames;
-Readonly my $make_data_frame => \&Demeter::UI::Artemis::make_data_frame;
-Readonly my $make_feff_frame => \&Demeter::UI::Artemis::make_feff_frame;
+#use Const::Fast;
+my $rdemeter = \$Demeter::UI::Artemis::demeter;
+my $rframes  = \%Demeter::UI::Artemis::frames;
+my $make_data_frame = \&Demeter::UI::Artemis::make_data_frame;
+my $make_feff_frame = \&Demeter::UI::Artemis::make_feff_frame;
 
 use Archive::Zip qw( :ERROR_CODES :CONSTANTS );
 use Carp;

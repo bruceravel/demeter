@@ -29,8 +29,8 @@ use Regexp::Assemble;
 my $sh_re = Regexp::Assemble->new()->add(qw(hex hcp zincblende zns cubic salt perov perovskite
 					    gra graphite fcc salt nacl diamond bcc cscl))->re;
 
-use Readonly;
-Readonly my $EPSILON  => 0.00001;
+use Const::Fast;
+const my $EPSILON  => 0.00001;
 
 use vars qw($VERSION);
 use version;
@@ -712,7 +712,7 @@ L<Storable>
 
 =item *
 
-L<Readonly>
+L<Const::Fast>
 
 =item *
 

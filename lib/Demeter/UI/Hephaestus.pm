@@ -158,9 +158,9 @@ use base 'Wx::App';
 use Demeter qw(:hephaestus);
 use Demeter::UI::Hephaestus::Common qw(hversion hcopyright hdescription);
 
-use Readonly;
-Readonly my $CONFIG   => Wx::NewId();
-Readonly my $DOCUMENT => Wx::NewId();
+use Const::Fast;
+const my $CONFIG   => Wx::NewId();
+const my $DOCUMENT => Wx::NewId();
 
 sub identify_self {
   my @caller = caller;

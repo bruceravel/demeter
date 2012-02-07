@@ -47,22 +47,19 @@ use File::Basename;
 use List::Util qw(min max reduce);
 #use Math::Cephes::Fraction qw(fract);
 use POSIX qw(ceil);
-use Regexp::Common;
-use Readonly;
 use Safe;
 use Text::Template;
 use Xray::Absorption;
 use Xray::Crystal;
 
-Readonly my $EPSILON   => 0.0001;
-Readonly my $FRAC      => 100000;
-Readonly my $SEPARATOR => '[ \t]*[ \t=,][ \t]*';
-Readonly my $NUMBER    => $RE{num}{real};
+use Demeter::Constants qw($NUMBER $SEPARATOR $EPSILON4);
+use Const::Fast;
+const my $FRAC      => 100000;
 
-Readonly my %EDGE_INDEX => (k =>1,  l1=>2,  l2=>3,  l3=>4,
-			    m1=>5,  m2=>6,  m3=>7,  m4=>8,  m5=>9,
-			    n1=>10, n2=>11, n3=>12, n4=>13, n5=>14, n6=>15, n7=>16,
-			   );
+const my %EDGE_INDEX => (k =>1,  l1=>2,  l2=>3,  l3=>4,
+			 m1=>5,  m2=>6,  m3=>7,  m4=>8,  m5=>9,
+			 n1=>10, n2=>11, n3=>12, n4=>13, n5=>14, n6=>15, n7=>16,
+			);
 
 
 #has 'cell' => (is => 'rw', isa =>Empty.'|Xray::Crystal::Cell', default=> q{});
@@ -666,7 +663,7 @@ sub cluster_list {
     if (not defined($seen{$pos->[3]->tag})) {
       $seen{$pos->[3]->tag} = [1, sqrt($pos->[4])];
     };
-    ++$seen{$pos->[3]->tag}->[0] if (sqrt($pos->[4]) - $seen{$pos->[3]->tag}->[1] > $EPSILON); # increment index if R has increased
+    ++$seen{$pos->[3]->tag}->[0] if (sqrt($pos->[4]) - $seen{$pos->[3]->tag}->[1] > $EPSILON4); # increment index if R has increased
     my $tag = join(".", $pos->[3]->tag, $seen{$pos->[3]->tag}->[0]);
     $string .= sprintf($pattern,
 		       $pos->[0], $pos->[1], $pos->[2],

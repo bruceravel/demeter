@@ -43,10 +43,7 @@ use List::MoreUtils qw(pairwise notall all any);
 use Math::Round qw(round);
 #use Math::Trig qw(acos atan);
 use POSIX qw(acos);
-use Readonly;
-#Readonly my $PI           => 2*atan2(1,0);
-#Readonly my $EPSI         => 0.00001;
-#Readonly my $TRIGEPS      => 1e-6;
+use Demeter::Constants qw($PI $EPSILON5 $EPSILON6);
 use String::Random qw(random_string);
 
 
@@ -258,7 +255,7 @@ sub compute_halflength {
 =for Explanation (compute_beta)
   trigonometry to determine beta and eta angles.  these are straight
   translations from mpprmd.f in the feff6 code base
-                         $TRIGEPS is set to 1e-6, as in rdpath.f
+                         $EPSILON6 is set to 1e-6, as in rdpath.f
    _trig
      compute Eulerian angles for each path vertex
      conventions from Feff6:
@@ -280,34 +277,32 @@ sub compute_halflength {
 
 # sub _trig {
 #   my ($x, $y, $z) = @_;
-#   my $TRIGEPS = 1e-6;
+#   my $EPSILON6 = 1e-6;
 #   my $rxysqr = $x*$x + $y*$y;
 #   my $r   = sqrt($rxysqr + $z*$z);
 #   my $rxy = sqrt($rxysqr);
 #   my ($ct, $st, $cp, $sp) = (1, 0, 1, 0);
-#   ($ct, $st) = ($z/$r,   $rxy/$r) if ($r   > $TRIGEPS);
-#   ($cp, $sp) = ($x/$rxy, $y/$rxy) if ($rxy > $TRIGEPS);
+#   ($ct, $st) = ($z/$r,   $rxy/$r) if ($r   > $EPSILON6);
+#   ($cp, $sp) = ($x/$rxy, $y/$rxy) if ($rxy > $EPSILON6);
 #   return ($ct, $st, $cp, $sp);
 # };
 sub _trig {
-  my $TRIGEPS = 1e-6;
   my $rxysqr = $_[0]*$_[0] + $_[1]*$_[1];
   my $r   = sqrt($rxysqr + $_[2]*$_[2]);
   my $rxy = sqrt($rxysqr);
   my ($ct, $st, $cp, $sp) = (1, 0, 1, 0);
 
-  ($ct, $st) = ($_[2]/$r,   $rxy/$r)    if ($r   > $TRIGEPS);
-  ($cp, $sp) = ($_[0]/$rxy, $_[1]/$rxy) if ($rxy > $TRIGEPS);
+  ($ct, $st) = ($_[2]/$r,   $rxy/$r)    if ($r   > $EPSILON6);
+  ($cp, $sp) = ($_[0]/$rxy, $_[1]/$rxy) if ($rxy > $EPSILON6);
 
   return ($ct, $st, $cp, $sp);
 };
 sub _arg {
   #my ($real, $imag) = @_;
-  my $TRIGEPS = 1e-6;
   #my $th = 0;
-  ($_[0] = 0) if (abs($_[0]) < $TRIGEPS);
-  ($_[1] = 0) if (abs($_[1]) < $TRIGEPS);
-  #if ((abs($real) > $TRIGEPS) or (abs($imag) > $TRIGEPS)) {
+  ($_[0] = 0) if (abs($_[0]) < $EPSILON6);
+  ($_[1] = 0) if (abs($_[1]) < $EPSILON6);
+  #if ((abs($real) > $EPSILON6) or (abs($imag) > $EPSILON6)) {
   return atan2($_[1], $_[0]) if ($_[0] || $_[1]);
   return 0;
   };
@@ -319,7 +314,6 @@ sub _arg {
 ## lines with asite/bsite/csite
 sub compute_beta {
   my ($self, $feff, $string) = @_;
-  my ($TRIGEPS, $PI) = (1e-6, 2*atan2(1,0));
   #my @sites  = @{ $feff->sites };
   my $rsites  = $feff->sites;
   my $ai      = $feff->abs_index;
@@ -401,7 +395,7 @@ sub compute_beta {
     #my $ee = $aleph[$j] * $gimel[$j+1];
     $eta[$j] = _arg($eer, $eei);
     $eta[$j] = sprintf("%.4f", 180 * $eta[$j] / $PI);
-    ($nonzero=1) if ($eta[$j] > $TRIGEPS);
+    ($nonzero=1) if ($eta[$j] > $EPSILON6);
   };
   my $fs = 0;
   foreach my $j (1 .. $#beta-1) {
@@ -471,7 +465,7 @@ sub compare {
     return "etas different" if (notall {$_} @eta_compare);
   };
 
-  #$self->set(fuzzy=>$fuzzy) if ( abs($self->halflength - $other->halflength) > $EPSI );
+  #$self->set(fuzzy=>$fuzzy) if ( abs($self->halflength - $other->halflength) > $EPSILON5 );
   return q{};
 };
 

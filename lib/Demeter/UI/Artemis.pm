@@ -1,6 +1,6 @@
 package Demeter::UI::Artemis;
 
-use Demeter; # qw(:plotwith=gnuplot);
+use Demeter;
 use Demeter::UI::Atoms;
 use Demeter::UI::Artemis::Import;
 use Demeter::UI::Artemis::Project;
@@ -9,9 +9,6 @@ use Demeter::UI::Wx::MRU;
 use Demeter::UI::Wx::SpecialCharacters qw(:all);
 use Demeter::UI::Athena::Cursor;
 
-use vars qw($demeter $buffer $plotbuffer);
-$demeter = Demeter->new;
-$demeter->set_mode(ifeffit=>1, screen=>0);
 
 use Archive::Zip qw( :ERROR_CODES :CONSTANTS );
 use Cwd;
@@ -35,38 +32,38 @@ use Wx::Event qw(EVT_MENU EVT_CLOSE EVT_ICONIZE EVT_TOOL_ENTER EVT_CHECKBOX EVT_
 use base 'Wx::App';
 
 
-use Readonly;
-Readonly my $BLANK           => q{___.BLANK.___};
-Readonly my $MRU	     => Wx::NewId();
-Readonly my $SHOW_BUFFER     => Wx::NewId();
-Readonly my $CONFIG	     => Wx::NewId();
-Readonly my $CRASH	     => Wx::NewId();
-Readonly my $SHOW_GROUPS     => Wx::NewId();
-Readonly my $SHOW_ARRAYS     => Wx::NewId();
-Readonly my $SHOW_SCALARS    => Wx::NewId();
-Readonly my $SHOW_STRINGS    => Wx::NewId();
-Readonly my $SHOW_FEFFPATHS  => Wx::NewId();
-Readonly my $SHOW_PATHS      => Wx::NewId();
-Readonly my $IMPORT_DPJ      => Wx::NewId();
-Readonly my $IMPORT_FEFFIT   => Wx::NewId();
-Readonly my $IMPORT_FEFF     => Wx::NewId();
-Readonly my $IMPORT_MOLECULE => Wx::NewId();
-Readonly my $IMPORT_OLD      => Wx::NewId();
-Readonly my $IMPORT_CHI      => Wx::NewId();
-Readonly my $EXPORT_IFEFFIT  => Wx::NewId();
-Readonly my $EXPORT_DEMETER  => Wx::NewId();
-Readonly my $FIT_YAML        => Wx::NewId();
-Readonly my $PLOT_YAML       => Wx::NewId();
-Readonly my $MODE_YAML       => Wx::NewId();
-Readonly my $MODE_STATUS     => Wx::NewId();
-Readonly my $PERL_MODULES    => Wx::NewId();
-Readonly my $STATUS          => Wx::NewId();
-Readonly my $DOCUMENT        => Wx::NewId();
-Readonly my $TERM_1          => Wx::NewId();
-Readonly my $TERM_2          => Wx::NewId();
-Readonly my $TERM_3          => Wx::NewId();
-Readonly my $TERM_4          => Wx::NewId();
-Readonly my $IFEFFIT_MEMORY  => Wx::NewId();
+use Const::Fast;
+const my $BLANK           => q{___.BLANK.___};
+const my $MRU	          => Wx::NewId();
+const my $SHOW_BUFFER     => Wx::NewId();
+const my $CONFIG          => Wx::NewId();
+const my $CRASH	          => Wx::NewId();
+const my $SHOW_GROUPS     => Wx::NewId();
+const my $SHOW_ARRAYS     => Wx::NewId();
+const my $SHOW_SCALARS    => Wx::NewId();
+const my $SHOW_STRINGS    => Wx::NewId();
+const my $SHOW_FEFFPATHS  => Wx::NewId();
+const my $SHOW_PATHS      => Wx::NewId();
+const my $IMPORT_DPJ      => Wx::NewId();
+const my $IMPORT_FEFFIT   => Wx::NewId();
+const my $IMPORT_FEFF     => Wx::NewId();
+const my $IMPORT_MOLECULE => Wx::NewId();
+const my $IMPORT_OLD      => Wx::NewId();
+const my $IMPORT_CHI      => Wx::NewId();
+const my $EXPORT_IFEFFIT  => Wx::NewId();
+const my $EXPORT_DEMETER  => Wx::NewId();
+const my $FIT_YAML        => Wx::NewId();
+const my $PLOT_YAML       => Wx::NewId();
+const my $MODE_YAML       => Wx::NewId();
+const my $MODE_STATUS     => Wx::NewId();
+const my $PERL_MODULES    => Wx::NewId();
+const my $STATUS          => Wx::NewId();
+const my $DOCUMENT        => Wx::NewId();
+const my $TERM_1          => Wx::NewId();
+const my $TERM_2          => Wx::NewId();
+const my $TERM_3          => Wx::NewId();
+const my $TERM_4          => Wx::NewId();
+const my $IFEFFIT_MEMORY  => Wx::NewId();
 
 use Wx::Perl::Carp qw(verbose);
 $SIG{__WARN__} = sub {Wx::Perl::Carp::warn($_[0])};
@@ -78,7 +75,7 @@ sub identify_self {
   my @caller = caller;
   return dirname($caller[1]);
 };
-use vars qw($artemis_base $icon $nset $noautosave %frames %fit_order);
+use vars qw($demeter $buffer $plotbuffer $artemis_base $icon $nset $noautosave %frames %fit_order);
 $fit_order{order}{current} = 0;
 $nset = 0;
 $artemis_base = identify_self();
@@ -94,14 +91,10 @@ my %hints = (
 
 sub OnInit {
   my ($app) = @_;
+  $demeter = Demeter->new;
+  $demeter -> set_mode(ifeffit=>1, screen=>0);
   $demeter -> mo -> ui('Wx');
   $demeter -> mo -> identity('Artemis');
-
-  #my $app = $class->SUPER::new;
-
-  #my $conffile = File::Spec->catfile(dirname($INC{'Demeter/UI/Artemis.pm'}), 'Artemis', 'share', "artemis.demeter_conf");
-  #$demeter -> co -> read_config($conffile);
-  #$demeter -> co -> read_ini('artemis');
   $demeter -> plot_with($demeter->co->default(qw(plot plotwith)));
 
   ## -------- import all of Artemis' various parts

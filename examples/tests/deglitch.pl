@@ -10,7 +10,7 @@
 
 =for Copyright
  .
- Copyright (c) 2006-2009 Bruce Ravel (bravel AT bnl DOT gov).
+ Copyright (c) 2006-2012 Bruce Ravel (bravel AT bnl DOT gov).
  All rights reserved.
  .
  This file is free software; you can redistribute it and/or
@@ -38,7 +38,7 @@ $d0 -> set(file=>"$where/data/uhup.003", name=>'HUP');
 
 my $plot = $d0 -> po;
 $plot->set_mode(screen=>0, repscreen=>0);
-$plot->set(emin=>-200, emax=>800, e_norm=>1, e_markers=>1, kweight=>2);
+$plot->set(emin=>-200, emax=>800, e_norm=>1, e_markers=>1, kweight=>2, e_bkg=>0);
 
 $d0 -> plot('e');
 

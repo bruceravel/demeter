@@ -16,7 +16,7 @@ use File::Basename;
 use File::Spec;
 use List::MoreUtils qw(none any);
 use Scalar::Util qw(looks_like_number);
-use Readonly;
+use Const::Fast;
 
 use vars qw($label $tag);
 $label = "Main window";
@@ -936,20 +936,20 @@ sub Pluck {
   $app->{main}->status("Plucked $plucked for $which");
 };
 
-Readonly my $SET_ALL	        => Wx::NewId();
-Readonly my $SET_MARKED	        => Wx::NewId();
-Readonly my $TO_DEFAULT	        => Wx::NewId();
-Readonly my $KMAX_RECOMMENDED   => Wx::NewId();
-Readonly my $IDENTIFY_REFERENCE => Wx::NewId();
-Readonly my $UNTIE_REFERENCE    => Wx::NewId();
-Readonly my $EXPLAIN_ESHIFT     => Wx::NewId();
-Readonly my $ALL_TO_1           => Wx::NewId();
-Readonly my $MARKED_TO_1        => Wx::NewId();
-Readonly my $E0_IFEFFIT         => Wx::NewId();
-Readonly my $E0_TABULATED       => Wx::NewId();
-Readonly my $E0_FRACTION        => Wx::NewId();
-Readonly my $E0_ZERO            => Wx::NewId();
-Readonly my $E0_PEAK            => Wx::NewId();
+const my $SET_ALL	     => Wx::NewId();
+const my $SET_MARKED	     => Wx::NewId();
+const my $TO_DEFAULT	     => Wx::NewId();
+const my $KMAX_RECOMMENDED   => Wx::NewId();
+const my $IDENTIFY_REFERENCE => Wx::NewId();
+const my $UNTIE_REFERENCE    => Wx::NewId();
+const my $EXPLAIN_ESHIFT     => Wx::NewId();
+const my $ALL_TO_1           => Wx::NewId();
+const my $MARKED_TO_1        => Wx::NewId();
+const my $E0_IFEFFIT         => Wx::NewId();
+const my $E0_TABULATED       => Wx::NewId();
+const my $E0_FRACTION        => Wx::NewId();
+const my $E0_ZERO            => Wx::NewId();
+const my $E0_PEAK            => Wx::NewId();
 
 
 sub ContextMenu {
@@ -1084,15 +1084,15 @@ sub DoContextMenu {
 };
 
 
-Readonly my @all_group  => (qw(bkg_z fft_edge bkg_eshift importance));
-Readonly my @all_bkg    => (qw(bkg_e0 bkg_rbkg bkg_flatten bkg_kw
-			       bkg_fixstep bkg_nnorm bkg_pre1 bkg_pre2
-			       bkg_nor1 bkg_nor2 bkg_spl1 bkg_spl2
-			       bkg_spl1e bkg_spl2e bkg_stan bkg_clamp1
-			       bkg_clamp2)); # bkg_algorithm bkg_step
-Readonly my @all_fft    => (qw(fft_kmin fft_kmax fft_dk fft_kwindow fit_karb_value fft_pc));
-Readonly my @all_bft    => (qw(bft_rmin bft_rmax bft_dr bft_rwindow));
-Readonly my @all_plot   => (qw(plot_multiplier y_offset));
+const my @all_group  => (qw(bkg_z fft_edge bkg_eshift importance));
+const my @all_bkg    => (qw(bkg_e0 bkg_rbkg bkg_flatten bkg_kw
+			    bkg_fixstep bkg_nnorm bkg_pre1 bkg_pre2
+			    bkg_nor1 bkg_nor2 bkg_spl1 bkg_spl2
+			    bkg_spl1e bkg_spl2e bkg_stan bkg_clamp1
+			    bkg_clamp2)); # bkg_algorithm bkg_step
+const my @all_fft    => (qw(fft_kmin fft_kmax fft_dk fft_kwindow fit_karb_value fft_pc));
+const my @all_bft    => (qw(bft_rmin bft_rmax bft_dr bft_rwindow));
+const my @all_plot   => (qw(plot_multiplier y_offset));
 
 sub constrain {
   my ($main, $app, $which, $how) = @_;

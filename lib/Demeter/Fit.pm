@@ -48,11 +48,9 @@ use File::Spec;
 use List::Util qw(max);
 use List::MoreUtils qw(any none zip uniq);
 use Regexp::Assemble;
-use Regexp::Common;
-use Readonly;
-Readonly my $NUMBER    => $RE{num}{real};
-Readonly my $STAT_TEXT => "n_idp n_varys chi_square chi_reduced r_factor epsilon_k epsilon_r data_total";
-Readonly my $NULLFILE  => '@&^^null^^&@';
+use Demeter::Constants qw($NUMBER $NULLFILE);
+use Const::Fast;
+const my $STAT_TEXT => "n_idp n_varys chi_square chi_reduced r_factor epsilon_k epsilon_r data_total";
 use Text::Wrap;
 use YAML::Tiny;
 

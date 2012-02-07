@@ -5,8 +5,7 @@ with 'Demeter::UI::Screen::Progress' if $Demeter::mode->ui eq 'screen';
 use Carp;
 use List::Util qw(sum);
 use Scalar::Util qw(looks_like_number);
-use Readonly;
-Readonly my $EPSILON  => 0.00001;
+use Demeter::Constants qw($EPSILON5);
 
 sub make_histogram {
   my ($self, $rx, $ry, $ipot, $s02, $scale, $common) = @_;
@@ -140,7 +139,7 @@ sub histogram_from_file {
     next if ($line =~ m{\A\s*\z});
     next if ($line =~ m{\A[\#\*\%;]});
     my @list = split(" ", $line);
-    next if ($list[$ycol] < $EPSILON);
+    next if ($list[$ycol] < $EPSILON5);
     next if ($list[$xcol] < $rmin);
     next if ($list[$xcol] > $rmax);
     push @x, $list[$xcol];
@@ -162,7 +161,7 @@ sub histogram_gamma {
   my ($self, $rmin, $rmax, $grid) = @_;
   my (@x, @y, @z);
   my $r = $rmin;
-  while ($r <= $rmax+$EPSILON) {
+  while ($r <= $rmax+$EPSILON5) {
     push @x, $r;
     my $term = sprintf("t%d",int($r*10000));
     push @y, "max(0, cn_gamma * prefactor * ((p_gamma+$term)**(p_gamma-1)) * exp(-p_gamma-$term))";

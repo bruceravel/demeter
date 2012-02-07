@@ -10,7 +10,7 @@
 
 =for Copyright
  .
- Copyright (c) 2006-2009 Bruce Ravel (bravel AT bnl DOT gov).
+ Copyright (c) 2006-2012 Bruce Ravel (bravel AT bnl DOT gov).
  All rights reserved.
  .
  This file is free software; you can redistribute it and/or
@@ -33,7 +33,7 @@ $d0 -> set(file=>"$where/data/auo_noisy.xmu", name=>'AuO, noisy');
 
 my $plot = $d0->po;
 $plot->set_mode(screen=>0, repscreen=>0);
-$plot->set(emin=>-50, emax=>200, e_norm=>0, e_markers=>1);
+$plot->set(emin=>-50, emax=>200, e_norm=>0, e_markers=>1, e_bkg=>0);
 
 $d0 -> plot('e');
 

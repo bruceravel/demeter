@@ -4,8 +4,8 @@ use File::Basename;
 use File::Copy;
 use File::Spec;
 use List::MoreUtils qw(firstidx);
-use Readonly;
-Readonly my $INIFILE => '10bmmultichannel.demeter_conf';
+use Const::Fast;
+const my $INIFILE => '10bmmultichannel.demeter_conf';
 
 use Moose;
 extends 'Demeter::Plugins::FileType';

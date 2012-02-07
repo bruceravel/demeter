@@ -11,7 +11,7 @@ use autodie qw(open close);
 use File::Basename;
 use File::Spec;
 use Pod::Text;
-use Readonly;
+use Const::Fast;
 use String::Random qw(random_string);
 
 use Demeter::UI::Athena::PluginConfig;
@@ -92,8 +92,8 @@ sub OnCheck {
   close $STATE;
 };
 
-Readonly my $DOCUMENT  => Wx::NewId();
-Readonly my $CONFIGURE => Wx::NewId();
+const my $DOCUMENT  => Wx::NewId();
+const my $CONFIGURE => Wx::NewId();
 
 sub OnRight {
   my ($this, $event, $app) = @_;

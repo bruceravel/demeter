@@ -235,13 +235,13 @@ sub OnCheck {
   1;
 };
 
-use Readonly;
-Readonly my $FIT_RESTORE      => Wx::NewId();
-Readonly my $FIT_SAVE	      => Wx::NewId();
-Readonly my $FIT_EXPORT	      => Wx::NewId();
-Readonly my $FIT_DISCARD      => Wx::NewId();
-Readonly my $FIT_DISCARD_MANY => Wx::NewId();
-Readonly my $FIT_SHOW         => Wx::NewId();
+use Const::Fast;
+const my $FIT_RESTORE      => Wx::NewId();
+const my $FIT_SAVE	   => Wx::NewId();
+const my $FIT_EXPORT	   => Wx::NewId();
+const my $FIT_DISCARD      => Wx::NewId();
+const my $FIT_DISCARD_MANY => Wx::NewId();
+const my $FIT_SHOW         => Wx::NewId();
 
 sub OnRightDown {
   my ($self, $event) = @_;

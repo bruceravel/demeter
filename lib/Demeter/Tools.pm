@@ -33,9 +33,9 @@ use Text::Wrap;
 #memoize('distance');
 
 
-use Readonly;
-Readonly my $FRAC => 100000;
-Readonly my $NULLFILE => '@&^^null^^&@';
+use Demeter::Constants qw($NULLFILE);
+use Const::Fast;
+const my $FRAC => 100000;
 
 
 # use vars qw(@ISA @EXPORT @EXPORT_OK);
@@ -50,7 +50,7 @@ my $type_regexp = $ra->add(qw(guess def set restrain after skip merge lguess lde
 
 ## check to make sure that the computer's time zone is set.  fall back
 ## to the floating time zone if not
-Readonly my $tz => (eval {DateTime->now(time_zone => 'local')}) ? 'local' : 'floating';
+const my $tz => (eval {DateTime->now(time_zone => 'local')}) ? 'local' : 'floating';
 sub now {
   my ($self) = @_;
   return sprintf("%s", DateTime->now(time_zone => $tz));
@@ -80,6 +80,7 @@ sub module_environment {
 		     Capture::Tiny
 		     Chemistry::Elements
 		     Config::IniFiles
+		     Const::Fast
 		     DateTime
 		     Graph
 		     Graphics::GnuplotIF
@@ -87,7 +88,6 @@ sub module_environment {
 		     Pod::POM
 		     PDL
 		     PDL::Stats
-		     Readonly
 		     Regexp::Assemble
 		     Regexp::Common
 		     Heap::Fibonacci

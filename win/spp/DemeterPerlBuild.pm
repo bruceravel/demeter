@@ -237,7 +237,7 @@ sub install_demeter_prereq_modules {
 				    MooseX::Types
 
 				    Pod::POM
-				    Readonly
+				    Const::Fast
 				    Regexp::Common
 				    Regexp::Assemble
 

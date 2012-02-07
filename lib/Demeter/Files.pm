@@ -27,9 +27,9 @@ use Compress::Zlib;
 use File::Basename;
 use Xray::Crystal;
 
-use Readonly;
-Readonly my $ELEM => qr/([bcfhiknopsuvwy]|a[cglmrstu]|b[aehikr]|c[adeflmorsu]|dy|e[rsu]|f[emr]|g[ade]|h[aefgos]|i[nr]|kr|l[airu]|m[dgnot]|n[abdeiop]|os|p[abdmortu]|r[abefhnu]|s[bcegimnr]|t[abcehilm]|xe|yb|z[nr])/;
-Readonly my $NUM  => qr/-?(\d+\.?\d*|\.\d+)/;
+use Const::Fast;
+const my $ELEM => qr/([bcfhiknopsuvwy]|a[cglmrstu]|b[aehikr]|c[adeflmorsu]|dy|e[rsu]|f[emr]|g[ade]|h[aefgos]|i[nr]|kr|l[airu]|m[dgnot]|n[abdeiop]|os|p[abdmortu]|r[abefhnu]|s[bcegimnr]|t[abcehilm]|xe|yb|z[nr])/;
+const my $NUM  => qr/-?(\d+\.?\d*|\.\d+)/;
 
 
 ## an atoms.inp file is identified by having a valid space group

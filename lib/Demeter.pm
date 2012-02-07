@@ -41,11 +41,9 @@ Ifeffit::ifeffit("\$plot_device=/gw\n") if (($^O eq 'MSWin32') or ($^O eq 'cygwi
 use Xray::Absorption;
 Xray::Absorption->load('elam');
 
-use Regexp::Common;
 use Regexp::Assemble;
-use Readonly;
-Readonly my $NUMBER => $RE{num}{real};
-Readonly my $PI     => 4*atan2(1,1);
+
+use Demeter::Constants qw($NUMBER $PI);
 
 =for LiteratureReference
   Then, spent as they were from all their toil,

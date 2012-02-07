@@ -19,11 +19,7 @@ use Carp;
 
 use File::Basename;
 use List::MoreUtils qw(any);
-use Regexp::Common;
-use Readonly;
-Readonly my $NUMBER   => $RE{num}{real};
-Readonly my $PI       => 4*atan2(1,1);
-Readonly my $NULLFILE => '@&^^null^^&@';
+use Demeter::Constants qw($NUMBER $PI $NULLFILE);
 use Scalar::Util qw(looks_like_number);
 use YAML::Tiny;
 
@@ -127,6 +123,7 @@ has 'referencegroup' => (is => 'rw', isa => 'Str',     default => q{});
 has  $_  => (is => 'rw', isa => 'Str',  default => q{},
 	     trigger => sub{ my ($self, $new) = @_;
 			     if ($new) {
+			       $self->datatype('xmu') if $self->denominator;
 			       $self->datatype('xmu') if $self->datatype eq 'chi';
 			       $self->update_columns(1);
 			       $self->is_col(1)

@@ -55,9 +55,6 @@ eval "PGPLOT->import" if $PGPLOT_exists;
   my $foo = *PGPLOT::HANDLE;
 }
 use List::MoreUtils qw(none zip);
-use Regexp::Common;
-use Readonly;
-Readonly my $NUMBER => $RE{num}{real};
 use String::Random qw(random_string);
 #use YAML::Tiny;
 

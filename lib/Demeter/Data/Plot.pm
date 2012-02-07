@@ -2,9 +2,7 @@ package Demeter::Data::Plot;
 use Moose::Role;
 
 use Carp;
-use Regexp::Common;
-use Readonly;
-Readonly my $NUMBER   => $RE{num}{real};
+use Demeter::Constants qw($NUMBER);
 use List::Util qw(max);
 use List::MoreUtils qw(uniq zip);
 

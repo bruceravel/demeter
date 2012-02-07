@@ -30,13 +30,13 @@ use warnings;
 use version;
 
 use Regexp::Common;
-use Readonly;
+use Const::Fast;
 use File::Spec;
 use vars qw(@ISA $VERSION $install_dir);
 $VERSION  = version->new("3.0.1");
 $install_dir = &identify_self;
 
-Readonly my $NUMBER => $RE{num}{real};
+const my $NUMBER => $RE{num}{real};
 
 my $is_windows = (($^O eq 'MSWin32') or ($^O eq 'cygwin'));
 

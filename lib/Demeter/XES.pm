@@ -22,8 +22,8 @@ use File::Basename;
 use List::MoreUtils qw(minmax);
 use List::Util qw(max);
 
-use Readonly;
-Readonly my $EPSILON => 1e-3;
+
+use Demeter::Constants qw{$EPSILON3};
 
 use Moose;
 extends 'Demeter';
@@ -190,10 +190,10 @@ sub prep_peakfit {
   my ($self, $xmin, $xmax) = @_;
   $self->_update('plot');
   my @e = $self->get_array("energy");
-  if (abs($xmin) < $EPSILON) {
+  if (abs($xmin) < $EPSILON3) {
     $xmin = $e[0];
   };
-  if (abs($xmax) < $EPSILON) {
+  if (abs($xmax) < $EPSILON3) {
     $xmax = $e[$#e];
   };
   return ($xmin, $xmax);

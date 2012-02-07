@@ -22,7 +22,6 @@ use base 'Wx::Frame';
 use Wx::Event qw(EVT_NOTEBOOK_PAGE_CHANGED EVT_NOTEBOOK_PAGE_CHANGING EVT_MENU);
 
 use Demeter::UI::Artemis::Close qw(on_close);
-use Readonly;
 
 my $icon_dimension = 30;
 

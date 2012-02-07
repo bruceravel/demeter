@@ -18,10 +18,9 @@ package Demeter::Atoms::Absorption;
 use Moose::Role;
 
 use Carp;
-use Readonly;
 use Xray::Absorption;
 use Xray::FluorescenceEXAFS;
-Readonly my $ETOK    => 0.262468292;
+use Demeter::Constants qw($ETOK);
 
 sub _absorption {
   my ($self) = @_;

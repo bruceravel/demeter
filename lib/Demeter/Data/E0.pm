@@ -22,10 +22,7 @@ use MooseX::Aliases;
 use Demeter::StrTypes qw( Element Edge );
 
 use Carp;
-use Regexp::Common;
-use Readonly;
-Readonly my $NUMBER  => $RE{num}{real};
-Readonly my $EPSILON => 1e-3;
+use Demeter::Constants qw($EPSILON3 $NUMBER);
 
 use Xray::Absorption;
 
@@ -71,7 +68,7 @@ sub e0_fraction {
   my $esh =  $self->bkg_eshift;
   my $prior = 0;
   my $count = 1;
-  while (abs($self->bkg_e0-$prior) > $EPSILON) {
+  while (abs($self->bkg_e0-$prior) > $EPSILON3) {
     $prior = $self->bkg_e0;
     $self->normalize;
     my $fracstep = $fraction * $self->bkg_step;

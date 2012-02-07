@@ -19,10 +19,7 @@ use Moose::Role;
 use MooseX::Aliases;
 
 use Carp;
-use Readonly;
-Readonly my $ETOK    => 0.262468292;
-Readonly my $PI      => 4 * atan2 1, 1;
-Readonly my $HBARC   => 1973.27053324;
+use Demeter::Constants qw($ETOK $PI $HBARC);
 
 sub e2k {
   my ($self, $e, $how) = @_;

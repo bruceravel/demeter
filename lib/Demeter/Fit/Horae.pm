@@ -24,12 +24,10 @@ use File::Basename;
 use File::Copy;
 use File::Path;
 use File::Spec;
-use Regexp::Common;
 use Safe;
 use Scalar::Util qw(looks_like_number);
 
-use Readonly;
-Readonly my $NUMBER   => $RE{num}{real};
+use Demeter::Constants qw($NUMBER);
 
 sub apj2dpj {
   my ($self, $apj, $dpj, $rjournal) = @_;

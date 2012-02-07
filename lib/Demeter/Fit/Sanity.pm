@@ -23,11 +23,7 @@ use File::Spec;
 use List::MoreUtils qw(any);
 use Graph;
 use Regexp::Assemble;
-use Regexp::Common;
-use Readonly;
-Readonly my $NUMBER   => $RE{num}{real};
-#Readonly my $INTEGER => $RE{num}{int};
-Readonly my $NULLFILE => '@&^^null^^&@';
+use Demeter::Constants qw($NUMBER $NULLFILE);
 
 use Text::Wrap;
 $Text::Wrap::columns = 65;

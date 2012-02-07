@@ -52,8 +52,8 @@ $plot->set(e_mu      => 1,    e_bkg     => 0,
 	  );
 
 print "plotting unaligned data\n";
-foreach ($d0, $d1) {
-  $_->plot('E');
+foreach my $d ($d0, $d1) {
+  $d->plot('E');
 };
 
 print "sleeping 3 seconds\n";
@@ -68,8 +68,8 @@ $d1->e0($d0);
 
 print "plotting aligned data\n";
 $plot->start_plot;
-foreach ($d0, $d1) {
-  $_->plot('E');
+foreach my $d ($d0, $d1) {
+  $d->plot('E');
 };
 
 1;

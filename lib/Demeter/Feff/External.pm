@@ -29,9 +29,7 @@ use File::Copy;
 use File::Path;
 use File::Spec;
 
-use Readonly;
-Readonly my $CTOKEN => '+';
-
+use Demeter::Constants qw($CTOKEN);
 
 has '+source'   => (default => 'external');
 has 'file'      => (is => 'rw', isa => 'Str',  default => q{},

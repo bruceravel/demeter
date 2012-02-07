@@ -49,114 +49,113 @@ my $demeter  = $Demeter::UI::Artemis::demeter;
 my $icon     = File::Spec->catfile(dirname($INC{"Demeter/UI/Artemis.pm"}), 'Athena', , 'icons', "bullseye.png");
 my $bullseye = Wx::Bitmap->new($icon, wxBITMAP_TYPE_PNG);
 
+
+use Demeter::Constants qw($NUMBER);
 use Regexp::Assemble;
-use Regexp::Common;
-use Readonly;
-Readonly my $NUMBER		=> $RE{num}{real};
+use Const::Fast;
+const my $DATA_RENAME	      => Wx::NewId();
+const my $DATA_DIFF	      => Wx::NewId();
+const my $DATA_TRANSFER	      => Wx::NewId();
+const my $DATA_VPATH	      => Wx::NewId();
+const my $DATA_BALANCE	      => Wx::NewId();
+const my $DATA_DEGEN_N	      => Wx::NewId();
+const my $DATA_DEGEN_1	      => Wx::NewId();
+const my $DATA_DISCARD	      => Wx::NewId();
+const my $DATA_REPLACE	      => Wx::NewId();
+const my $DATA_KMAXSUGEST     => Wx::NewId();
+const my $DATA_EPSK	      => Wx::NewId();
+const my $DATA_NIDP	      => Wx::NewId();
+const my $DATA_SHOW	      => Wx::NewId();
+const my $DATA_YAML	      => Wx::NewId();
+const my $DATA_EXPORT	      => Wx::NewId();
 
-Readonly my $DATA_RENAME	=> Wx::NewId();
-Readonly my $DATA_DIFF		=> Wx::NewId();
-Readonly my $DATA_TRANSFER	=> Wx::NewId();
-Readonly my $DATA_VPATH		=> Wx::NewId();
-Readonly my $DATA_BALANCE	=> Wx::NewId();
-Readonly my $DATA_DEGEN_N	=> Wx::NewId();
-Readonly my $DATA_DEGEN_1	=> Wx::NewId();
-Readonly my $DATA_DISCARD	=> Wx::NewId();
-Readonly my $DATA_REPLACE	=> Wx::NewId();
-Readonly my $DATA_KMAXSUGEST	=> Wx::NewId();
-Readonly my $DATA_EPSK		=> Wx::NewId();
-Readonly my $DATA_NIDP		=> Wx::NewId();
-Readonly my $DATA_SHOW		=> Wx::NewId();
-Readonly my $DATA_YAML		=> Wx::NewId();
-Readonly my $DATA_EXPORT	=> Wx::NewId();
+const my $FIT_SAVE_K	      => Wx::NewId();
+const my $FIT_SAVE_K1	      => Wx::NewId();
+const my $FIT_SAVE_K2	      => Wx::NewId();
+const my $FIT_SAVE_K3	      => Wx::NewId();
+const my $FIT_SAVE_RM	      => Wx::NewId();
+const my $FIT_SAVE_RR	      => Wx::NewId();
+const my $FIT_SAVE_RI	      => Wx::NewId();
+const my $FIT_SAVE_QM	      => Wx::NewId();
+const my $FIT_SAVE_QR	      => Wx::NewId();
+const my $FIT_SAVE_QI	      => Wx::NewId();
 
-Readonly my $FIT_SAVE_K	        => Wx::NewId();
-Readonly my $FIT_SAVE_K1        => Wx::NewId();
-Readonly my $FIT_SAVE_K2        => Wx::NewId();
-Readonly my $FIT_SAVE_K3        => Wx::NewId();
-Readonly my $FIT_SAVE_RM        => Wx::NewId();
-Readonly my $FIT_SAVE_RR        => Wx::NewId();
-Readonly my $FIT_SAVE_RI        => Wx::NewId();
-Readonly my $FIT_SAVE_QM        => Wx::NewId();
-Readonly my $FIT_SAVE_QR        => Wx::NewId();
-Readonly my $FIT_SAVE_QI        => Wx::NewId();
+const my $PATH_TRANSFER	      => Wx::NewId();
+const my $PATH_FSPATH	      => Wx::NewId();
+const my $PATH_EMPIRICAL      => Wx::NewId();
+const my $PATH_SU	      => Wx::NewId();
+const my $PATH_RENAME	      => Wx::NewId();
+const my $PATH_SHOW	      => Wx::NewId();
+const my $PATH_ADD	      => Wx::NewId();
+const my $PATH_CLONE	      => Wx::NewId();
+const my $PATH_YAML	      => Wx::NewId();
+const my $PATH_TYPE	      => Wx::NewId();
+const my $PATH_4PARAM	      => Wx::NewId();
 
-Readonly my $PATH_TRANSFER	=> Wx::NewId();
-Readonly my $PATH_FSPATH	=> Wx::NewId();
-Readonly my $PATH_EMPIRICAL     => Wx::NewId();
-Readonly my $PATH_SU	        => Wx::NewId();
-Readonly my $PATH_RENAME	=> Wx::NewId();
-Readonly my $PATH_SHOW		=> Wx::NewId();
-Readonly my $PATH_ADD		=> Wx::NewId();
-Readonly my $PATH_CLONE		=> Wx::NewId();
-Readonly my $PATH_YAML		=> Wx::NewId();
-Readonly my $PATH_TYPE		=> Wx::NewId();
-Readonly my $PATH_4PARAM	=> Wx::NewId();
+const my $PATH_EXPORT_FEFF    => Wx::NewId();
+const my $PATH_EXPORT_DATA    => Wx::NewId();
+const my $PATH_EXPORT_EACH    => Wx::NewId();
+const my $PATH_EXPORT_MARKED  => Wx::NewId();
 
-Readonly my $PATH_EXPORT_FEFF	=> Wx::NewId();
-Readonly my $PATH_EXPORT_DATA	=> Wx::NewId();
-Readonly my $PATH_EXPORT_EACH	=> Wx::NewId();
-Readonly my $PATH_EXPORT_MARKED	=> Wx::NewId();
+const my $DATA_SAVE_K	      => Wx::NewId();
+const my $DATA_SAVE_R	      => Wx::NewId();
+const my $DATA_SAVE_Q	      => Wx::NewId();
 
-Readonly my $DATA_SAVE_K	=> Wx::NewId();
-Readonly my $DATA_SAVE_R	=> Wx::NewId();
-Readonly my $DATA_SAVE_Q	=> Wx::NewId();
+const my $PATH_SAVE_K	      => Wx::NewId();
+const my $PATH_SAVE_R	      => Wx::NewId();
+const my $PATH_SAVE_Q	      => Wx::NewId();
 
-Readonly my $PATH_SAVE_K	=> Wx::NewId();
-Readonly my $PATH_SAVE_R	=> Wx::NewId();
-Readonly my $PATH_SAVE_Q	=> Wx::NewId();
+const my $PATH_EXP_LABEL      => Wx::NewId();
+const my $PATH_EXP_N	      => Wx::NewId();
+const my $PATH_EXP_S02	      => Wx::NewId();
+const my $PATH_EXP_E0	      => Wx::NewId();
+const my $PATH_EXP_DELR	      => Wx::NewId();
+const my $PATH_EXP_SIGMA2     => Wx::NewId();
+const my $PATH_EXP_EI	      => Wx::NewId();
+const my $PATH_EXP_THIRD      => Wx::NewId();
+const my $PATH_EXP_FOURTH     => Wx::NewId();
 
-Readonly my $PATH_EXP_LABEL     => Wx::NewId();
-Readonly my $PATH_EXP_N         => Wx::NewId();
-Readonly my $PATH_EXP_S02       => Wx::NewId();
-Readonly my $PATH_EXP_E0        => Wx::NewId();
-Readonly my $PATH_EXP_DELR      => Wx::NewId();
-Readonly my $PATH_EXP_SIGMA2    => Wx::NewId();
-Readonly my $PATH_EXP_EI        => Wx::NewId();
-Readonly my $PATH_EXP_THIRD     => Wx::NewId();
-Readonly my $PATH_EXP_FOURTH    => Wx::NewId();
+const my $MARKED_SAVE_K	      => Wx::NewId();
+const my $MARKED_SAVE_K1      => Wx::NewId();
+const my $MARKED_SAVE_K2      => Wx::NewId();
+const my $MARKED_SAVE_K3      => Wx::NewId();
+const my $MARKED_SAVE_RM      => Wx::NewId();
+const my $MARKED_SAVE_RR      => Wx::NewId();
+const my $MARKED_SAVE_RI      => Wx::NewId();
+const my $MARKED_SAVE_QM      => Wx::NewId();
+const my $MARKED_SAVE_QR      => Wx::NewId();
+const my $MARKED_SAVE_QI      => Wx::NewId();
 
-Readonly my $MARKED_SAVE_K	=> Wx::NewId();
-Readonly my $MARKED_SAVE_K1     => Wx::NewId();
-Readonly my $MARKED_SAVE_K2     => Wx::NewId();
-Readonly my $MARKED_SAVE_K3     => Wx::NewId();
-Readonly my $MARKED_SAVE_RM     => Wx::NewId();
-Readonly my $MARKED_SAVE_RR     => Wx::NewId();
-Readonly my $MARKED_SAVE_RI     => Wx::NewId();
-Readonly my $MARKED_SAVE_QM     => Wx::NewId();
-Readonly my $MARKED_SAVE_QR     => Wx::NewId();
-Readonly my $MARKED_SAVE_QI     => Wx::NewId();
+const my $MARK_ALL	      => Wx::NewId();
+const my $MARK_NONE	      => Wx::NewId();
+const my $MARK_INVERT	      => Wx::NewId();
+const my $MARK_REGEXP	      => Wx::NewId();
+const my $MARK_SS	      => Wx::NewId();
+const my $MARK_MS	      => Wx::NewId();
+const my $MARK_HIGH	      => Wx::NewId();
+const my $MARK_MID	      => Wx::NewId();
+const my $MARK_LOW	      => Wx::NewId();
+const my $MARK_RBELOW	      => Wx::NewId();
+const my $MARK_RABOVE	      => Wx::NewId();
+const my $MARK_BEFORE	      => Wx::NewId();
+const my $MARK_AFTER	      => Wx::NewId();
+const my $MARK_INC	      => Wx::NewId();
+const my $MARK_EXC	      => Wx::NewId();
 
-Readonly my $MARK_ALL		=> Wx::NewId();
-Readonly my $MARK_NONE		=> Wx::NewId();
-Readonly my $MARK_INVERT	=> Wx::NewId();
-Readonly my $MARK_REGEXP	=> Wx::NewId();
-Readonly my $MARK_SS		=> Wx::NewId();
-Readonly my $MARK_MS		=> Wx::NewId();
-Readonly my $MARK_HIGH		=> Wx::NewId();
-Readonly my $MARK_MID		=> Wx::NewId();
-Readonly my $MARK_LOW		=> Wx::NewId();
-Readonly my $MARK_RBELOW	=> Wx::NewId();
-Readonly my $MARK_RABOVE	=> Wx::NewId();
-Readonly my $MARK_BEFORE	=> Wx::NewId();
-Readonly my $MARK_AFTER  	=> Wx::NewId();
-Readonly my $MARK_INC		=> Wx::NewId();
-Readonly my $MARK_EXC		=> Wx::NewId();
+const my $ACTION_INCLUDE      => Wx::NewId();
+const my $ACTION_EXCLUDE      => Wx::NewId();
+const my $ACTION_DISCARD      => Wx::NewId();
+const my $ACTION_VPATH	      => Wx::NewId();
+const my $ACTION_TRANSFER     => Wx::NewId();
+const my $ACTION_AFTER	      => Wx::NewId();
+const my $ACTION_NONEAFTER    => Wx::NewId();
 
-Readonly my $ACTION_INCLUDE     => Wx::NewId();
-Readonly my $ACTION_EXCLUDE     => Wx::NewId();
-Readonly my $ACTION_DISCARD     => Wx::NewId();
-Readonly my $ACTION_VPATH       => Wx::NewId();
-Readonly my $ACTION_TRANSFER    => Wx::NewId();
-Readonly my $ACTION_AFTER       => Wx::NewId();
-Readonly my $ACTION_NONEAFTER   => Wx::NewId();
+const my $INCLUDE_MARKED      => Wx::NewId();
+const my $EXCLUDE_MARKED      => Wx::NewId();
 
-Readonly my $INCLUDE_MARKED	=> Wx::NewId();
-Readonly my $EXCLUDE_MARKED	=> Wx::NewId();
-
-Readonly my $DISCARD_THIS	=> Wx::NewId();
-Readonly my $DISCARD_MARKED	=> Wx::NewId();
-Readonly my $DISCARD_UNMARKED	=> Wx::NewId();
+const my $DISCARD_THIS	      => Wx::NewId();
+const my $DISCARD_MARKED      => Wx::NewId();
+const my $DISCARD_UNMARKED    => Wx::NewId();
 
 sub new {
   my ($class, $parent, $nset) = @_;
@@ -865,7 +864,7 @@ sub fetch_parameters {
   };
 
   my $cv = $this->{cv}->GetValue;
-  # things that are not caught by $RE{num}{real} or the validator
+  # things that are not caught by $NUMBER or the validator
   if (($cv =~ m{\-.*\-}) or ($cv =~ m{\..*\.}) or ($cv =~ m{[^-]+-})) {
     carp(sprintf("Oops. The CV for data set \"%s\" is not a number ($cv).\n\n", $this->{data}->name));
     return 0;

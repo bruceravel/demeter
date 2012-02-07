@@ -25,9 +25,9 @@ use File::Basename;
 use File::Spec;
 my $here  = dirname($0);
 
-use Readonly;
-Readonly my $EPSILON => 1e-1;
-Readonly my $PLOT    => 0;
+use Const::Fast;
+const my $EPSILON => 1e-1;
+const my $PLOT    => 0;
 
 my %athena = (SSRLA	=> [25521.4,   'transmission'],
 	      SSRLB	=> [20003.5,   'transmission'],

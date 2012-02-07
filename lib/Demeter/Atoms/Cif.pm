@@ -17,8 +17,7 @@ package Demeter::Atoms::Cif;
 
 use Moose::Role;
 use Demeter::StrTypes qw( Element );
-use Readonly;
-Readonly my $EPSILON   => 0.001;
+use Demeter::Constants qw($EPSILON3);
 
 use Chemistry::Elements qw(get_Z);
 #use STAR::Parser; ## this is not needed since (1) all references
@@ -104,7 +103,7 @@ sub read_cif {
     (my $yy = $y[$i]) =~ s{\(\d+\)}{};
     (my $zz = $z[$i]) =~ s{\(\d+\)}{};
     (my $oo = $occ[$i]||1) =~ s/\(\d+\)//;
-    ++$partial if (abs($oo-1) > $EPSILON);
+    ++$partial if (abs($oo-1) > $EPSILON3);
     my $this = join("|",$ee, $xx, $yy, $zz, $tag[$i]);
     $self->push_sites($this);
     my $z = get_Z($ee);

@@ -2,7 +2,7 @@ package Demeter::UI::Athena::XDI;
 
 use strict;
 use warnings;
-use Readonly;
+use Const::Fast;
 
 use Wx qw( :everything );
 use base 'Wx::Panel';
@@ -127,9 +127,9 @@ sub mode {
   1;
 };
 
-Readonly my $EDIT   => Wx::NewId();
-Readonly my $ADD    => Wx::NewId();
-Readonly my $DELETE => Wx::NewId();
+const my $EDIT   => Wx::NewId();
+const my $ADD    => Wx::NewId();
+const my $DELETE => Wx::NewId();
 
 sub OnRightClick {
   my ($tree, $event) = @_;

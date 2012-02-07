@@ -23,9 +23,8 @@ use Demeter;
 use File::Basename;
 use File::Spec;
 
-use Readonly;
-Readonly my $EPS1 => 1e-5;
-Readonly my $EPS2 => 1e-2;
+use Demeter::Constants qw($EPSILON2 $EPSILON5);
+use Const::Fast;
 
 my $here  = dirname($0);
 
@@ -66,10 +65,10 @@ $this->fit;
 
 ok( $this->data,                     "$OBJ object has an associated Data object");
 
-ok( abs($this->rfactor - 0.0047212) < $EPS1,  "R-factor (0.0047212)" );
+ok( abs($this->rfactor - 0.0047212) < $EPSILON5,  "R-factor (0.0047212)" );
 ok( $this->nvarys == 2,  "nvarys (2)" );
 my @list = @{ $this->standards };
 my ($w, $dw) = $this->weight($list[0]);
-ok( abs($w  - 0.322) < $EPS2,  "metal weight (0.322)" );
-ok( abs($dw - 0.028) < $EPS2,  "metal uncertainty (0.028)" );
+ok( abs($w  - 0.322) < $EPSILON2,  "metal weight (0.322)" );
+ok( abs($dw - 0.028) < $EPSILON2,  "metal uncertainty (0.028)" );
 

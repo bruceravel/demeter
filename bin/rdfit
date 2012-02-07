@@ -2,8 +2,8 @@
 
 use Demeter qw(:ui=screen);
 use Getopt::Long;
-use Readonly;
-Readonly my $USAGE => "usage: rdfit [-g] myfit.dpj\n";
+use Const::Fast;
+const my $USAGE => "usage: rdfit [-g] myfit.dpj\n";
 
 my $use_gnuplot = 0;
 my $result = GetOptions ( 'g' => \$use_gnuplot );
