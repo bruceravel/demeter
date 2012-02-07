@@ -19,7 +19,7 @@
      combinatorial fitting practically unlimited
    - In combinatorial fits, sort everything according to position in
      group list
-   - Fixed a potantial bug detemining units in the CSD when selecting
+   - Fixed a potantial bug determining units in the CSD when selecting
      chi(k) as the data type
 
 *** Artemis
