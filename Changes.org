@@ -9,6 +9,7 @@
 
 *** Demeter
    - Replaced Readonly with Const::Fast.  See [[http://neilb.org/reviews/constants.html]]
+   - Abstracted many common constants to Demeter::Constants
 
 ** 0.9.8 30 January 2012
 *** Athena

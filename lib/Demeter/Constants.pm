@@ -148,12 +148,12 @@ as a set using the C<:regexps> export tag.
 
 =item C<$NUMBER>
 
-This is C<$RE{num}{real} from L<Regexp::Common>, i.e. a match for
+This is C<$RE{num}{real}> from L<Regexp::Common>, i.e. a match for
 floats.
 
 =item C<$NUMBER>
 
-This is C<$RE{num}{int} from L<Regexp::Common>, i.e. a match for
+This is C<$RE{num}{int}> from L<Regexp::Common>, i.e. a match for
 integers.
 
 =item C<$SEPARATOR>
