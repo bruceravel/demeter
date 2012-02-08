@@ -286,6 +286,7 @@ sub _record {
 	last SWITCH;
       };
       ($k eq 'importance') and do {
+	$groupargs{importance} = $args{importance};
 	last SWITCH;
       };
       ($k eq 'i0') and do {

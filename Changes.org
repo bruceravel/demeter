@@ -6,6 +6,9 @@
 * Initial release
 
 ** 0.9.9 ?? February 2012
+*** Athena
+   - Importance was not being imported from a project file
+   - Made the importance control normal width
 
 *** Demeter
    - Replaced Readonly with Const::Fast.  See [[http://neilb.org/reviews/constants.html]]

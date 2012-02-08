@@ -102,7 +102,7 @@ sub group {
   $this->{bkg_eshift_label} = Wx::StaticText -> new($this, -1, "Energy shift");
   $this->{bkg_eshift}       = Wx::TextCtrl   -> new($this, -1, q{}, wxDefaultPosition, [40,-1] );
   $this->{importance_label} = Wx::StaticText -> new($this, -1, "Importance");
-  $this->{importance}       = Wx::TextCtrl   -> new($this, -1, q{}, wxDefaultPosition, [25,-1] );
+  $this->{importance}       = Wx::TextCtrl   -> new($this, -1, q{}, wxDefaultPosition, [40,-1] );
   $gbs -> Add($this->{bkg_z_label},      Wx::GBPosition->new(1,0));
   $gbs -> Add($this->{bkg_z},            Wx::GBPosition->new(1,1));
   $gbs -> Add($this->{fft_edge_label},   Wx::GBPosition->new(1,2));
