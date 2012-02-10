@@ -27,7 +27,7 @@ sub _cluster {
 
   if ($self->mo->ui eq 'screen') {
     #$self->start_spinner("Reading VASP file ".$self->file) 
-    $self->progress('%30b %c of %m (x10^4) lines in file <Time elapsed: %8t>');
+    $self->progress('%30b %c of %m lines in file <Time elapsed: %8t>');
     $self->start_counter("Reading LAMMPS file ".$self->file." with $natoms atoms", int($natoms/1e3));
   };
 

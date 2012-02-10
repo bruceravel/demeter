@@ -4,8 +4,9 @@ use MooseX::Aliases;
 
 use POSIX qw(acos);
 use Demeter::Constants qw($PI);
-
 use Demeter::NumTypes qw( Ipot );
+
+use Chemistry::Elements qw (get_Z get_name get_symbol);
 
 has 'skip'    => (is => 'rw', isa => 'Int', default => 50,
 		  trigger       => sub{ my($self, $new) = @_; $self->update_rdf(1) if $new},);
@@ -13,11 +14,15 @@ has 'nconfig' => (is => 'rw', isa => 'Int', default => 0, documentation => "the 
 has 'rmin'    => (is	        => 'rw',
 		  isa	        => 'Num',
 		  default       => 0.0,
+		  traits => ['MooseX::Aliases::Meta::Trait::Attribute'],
+		  alias         => 'r1',
 		  trigger       => sub{ my($self, $new) = @_; $self->update_rdf(1) if $new},
 		  documentation => "The lower bound of the through-absorber histogram to be extracted from the cluster");
 has 'rmax'    => (is 	        => 'rw',
 		  isa 	        => 'Num',
 		  default       => 5.6,
+		  traits => ['MooseX::Aliases::Meta::Trait::Attribute'],
+		  alias         => 'r2',
 		  trigger       => sub{ my($self, $new) = @_; $self->update_rdf(1) if $new},
 		  documentation => "The upper bound of the through-absorber histogram to be extracted from the cluster");
 
@@ -39,6 +44,8 @@ has 'betabin' => (is            => 'rw',
 		  isa           => 'Num',
 		  default       => 0.5,
 		  trigger	=> sub{ my($self, $new) = @_; $self->update_bins(1) if $new},);
+
+has 'huge_cluster' => (is => 'rw', isa => 'Bool', default => 0);
 
 sub _bin {
   my ($self) = @_;
@@ -125,9 +132,16 @@ sub rdf {
   my $count = 0;
   my $r1sqr = $self->rmin**2;
   my $r2sqr = $self->rmax**2;
+  my $abs_species  = get_Z($self->feff->abs_species);
+  my $scat1_species = get_Z($self->feff->potentials->[$self->ipot1]->[2]);
+  my $scat2_species = get_Z($self->feff->potentials->[$self->ipot2]->[2]);
 
-  $self->start_counter(sprintf("Making radial/angle distribution from every %d-th timestep", $self->skip), ($#{$self->clusters}+1)/$self->skip) if ($self->mo->ui eq 'screen');
-  my ($x0, $x1, $x2) = (0,0,0);
+  $self->progress('%30b %c of %m timesteps <Time elapsed: %8t>') if (not $self->huge_cluster);
+  $self->progress('%30b %c of %m positions <Time elapsed: %8t>') if $self->huge_cluster;
+
+  $self->start_counter(sprintf("Making radial/angle distribution from every %d-th timestep", $self->skip),
+		       ($#{$self->clusters}+1)/$self->skip) if (($self->mo->ui eq 'screen') and (not $self->huge_cluster));
+  my ($x0, $x1, $x2, $ip) = (0,0,0,-1);
   my ($ax, $ay, $az) = (0,0,0);
   my ($bx, $by, $bz) = (0,0,0);
   my ($cx, $cy, $cz) = (0,0,0);
@@ -143,28 +157,47 @@ sub rdf {
   foreach my $step (@{$self->clusters}) {
     @rdf = ();
 
+    $self->start_counter("Digging out 1st shell", $#{$step}+1) if (($self->mo->ui eq 'screen') and ($self->huge_cluster));
+
     @this = @$step;
-    $self->timestep_count(++$count);
-    next if ($count % $self->skip); # only process every Nth timestep
-    $self->count if ($self->mo->ui eq 'screen');
-    $self->call_sentinal;
+    $self->timestep_count(++$count) if (not $self->huge_cluster);
+    next if (($#{$self->clusters} > $self->skip) and ($count % $self->skip)); # only process every Nth timestep
+    if (not $self->huge_cluster) {
+      $self->count if ($self->mo->ui eq 'screen');
+      $self->call_sentinal;
+    };
 
     ## find the members of the specified coordination shell
     foreach my $i (0 .. $#this) {
-      ($x0, $x1, $x2) = @{$this[$i]};
+      if ($self->huge_cluster) {
+	$self->count if ($self->mo->ui eq 'screen');
+	$self->call_sentinal;
+      };
+      ($x0, $x1, $x2, $ip) = @{$this[$i]};
+      next if ($abs_species != $ip);
+      next if (abs($x2) > $self->zmax); # assumes slab w/ interface at z=0
       foreach my $j (0 .. $#this) {
 	next if ($i == $j);
+	next if not (($scat1_species == $this[$j]->[3]) or ($scat2_species == $this[$j]->[3]));
+	next if (abs($this[$j]->[2]) > $self->zmax); # assumes slab w/ interface at z=0
 	my $rsqr = ($x0 - $this[$j]->[0])**2
 	         + ($x1 - $this[$j]->[1])**2
 	         + ($x2 - $this[$j]->[2])**2; # this loop has been optimized for speed, hence the weird syntax
 	push @rdf, [sqrt($rsqr), $i, $j] if (($rsqr > $r1sqr) and ($rsqr < $r2sqr));
       };
     };
+    if (($self->mo->ui eq 'screen') and ($self->huge_cluster)) {
+      $self->stop_counter;
+      $self->start_counter("Finding nearly colinear pairs", $#{$rdf}+1) if ($self->mo->ui eq 'screen');
+    };
 
     ## find those 1st/1st pairs that share an absorber and have a small angle between them
     foreach my $second (@rdf) {
+      $self->count if ($self->mo->ui eq 'screen');
       $i2 = $second->[1];
+      next if ($this[$second->[2]]->[3] != $scat2_species); # this is not the ipot2 species
       foreach my $first (@rdf) {
+	next if ($this[$first->[2]]->[3] != $scat1_species); # this is not the ipot1 species
 	next if ($i2 != $first->[1]);          # these don't share absorber
 	next if ($second->[2] == $first->[2]); # this is a rattle, not a through
 

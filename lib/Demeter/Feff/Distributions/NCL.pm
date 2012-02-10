@@ -4,8 +4,9 @@ use MooseX::Aliases;
 
 use POSIX qw(acos);
 use Demeter::Constants qw($PI);
-
 use Demeter::NumTypes qw( Ipot );
+
+use Chemistry::Elements qw (get_Z get_name get_symbol);
 
 ## nearly collinear DS and TS historgram attributes
 has 'skip'      => (is => 'rw', isa => 'Int', default => 50,);
@@ -37,6 +38,8 @@ has 'ipot2'     => (is => 'rw', isa => Ipot, default => 1,
 		    trigger => sub{ my($self, $new) = @_; $self->update_rdf(1) if $new}, );
 
 has 'nearcl'    => (is => 'rw', isa => 'ArrayRef', default => sub{[]});
+
+has 'huge_cluster' => (is => 'rw', isa => 'Bool', default => 0);
 
 sub _bin {
   my ($self) = @_;
@@ -123,9 +126,17 @@ sub rdf {
   my $r2sqr = $self->r2**2;
   my $r3sqr = $self->r3**2;
   my $r4sqr = $self->r4**2;
+  my $abs_species  = get_Z($self->feff->abs_species);
+  my $scat1_species = get_Z($self->feff->potentials->[$self->ipot1]->[2]);
+  my $scat2_species = get_Z($self->feff->potentials->[$self->ipot2]->[2]);
 
-  $self->start_counter(sprintf("Making radial/angle distribution from every %d-th timestep", $self->skip), ($#{$self->clusters}+1)/$self->skip) if ($self->mo->ui eq 'screen');
-  my ($x0, $x1, $x2) = (0,0,0);
+
+  $self->progress('%30b %c of %m timesteps <Time elapsed: %8t>') if (not $self->huge_cluster);
+  $self->progress('%30b %c of %m positions <Time elapsed: %8t>') if $self->huge_cluster;
+
+  $self->start_counter(sprintf("Making radial/angle distribution from every %d-th timestep", $self->skip),
+		       ($#{$self->clusters}+1)/$self->skip) if (($self->mo->ui eq 'screen') and (not $self->huge_cluster));
+  my ($x0, $x1, $x2, $ip) = (0,0,0,-1);
   #my ($ax, $ay, $az) = (0,0,0);
   my ($bx, $by, $bz) = (0,0,0);
   #my ($cx, $cy, $cz) = (0,0,0);
@@ -137,32 +148,54 @@ sub rdf {
   my $i4;
   my $halfpath;
   my ($ct, $st, $cp, $sp, $ctp, $stp, $cpp, $spp, $cppp, $sppp, $beta, $leg2);
+  #my $testx = 30;
   #my $cosbetamax = cos($PI*$self->beta/180);
   foreach my $step (@{$self->clusters}) {
     @rdf1 = ();
     @rdf4 = ();
 
+    $self->start_counter("Digging out 1st and 4th shells", $#{$step}+1) if (($self->mo->ui eq 'screen') and ($self->huge_cluster));
     @this = @$step;
-    $self->timestep_count(++$count);
-    next if ($count % $self->skip); # only process every Nth timestep
-    $self->count if ($self->mo->ui eq 'screen');
-    $self->call_sentinal;
+    $self->timestep_count(++$count) if (not $self->huge_cluster);
+    next if (($#{$self->clusters} > $self->skip) and ($count % $self->skip)); # only process every Nth timestep
+    if (not $self->huge_cluster) {
+      $self->count if ($self->mo->ui eq 'screen');
+      $self->call_sentinal;
+    };
 
     ## dig out the first and fourth coordination shells
     foreach my $i (0 .. $#this) {
-      ($x0, $x1, $x2) = @{$this[$i]};
+      if ($self->huge_cluster) {
+	$self->count if ($self->mo->ui eq 'screen');
+	$self->call_sentinal;
+      };
+
+      ($x0, $x1, $x2, $ip) = @{$this[$i]};
+      next if ($abs_species != $ip);
+      next if (abs($x2) > $self->zmax); # assumes slab w/ interface at z=0
+      #next if (abs($x0) > $testx); # testing ...
+      #next if (abs($x1) > $testx); #
       foreach my $j (0 .. $#this) {
 	next if ($i == $j);
+	next if not (($scat1_species == $this[$j]->[3]) or ($scat2_species == $this[$j]->[3]));
+	next if (abs($this[$j]->[2]) > $self->zmax); # assumes slab w/ interface at z=0
+	#next if (abs($this[$j]->[0]) > $testx); # testing ...
+	#next if (abs($this[$j]->[1]) > $testx); #
 	my $rsqr = ($x0 - $this[$j]->[0])**2
 	         + ($x1 - $this[$j]->[1])**2
 	         + ($x2 - $this[$j]->[2])**2; # this loop has been optimized for speed, hence the weird syntax
-	push @rdf1, [sqrt($rsqr), $i, $j] if (($rsqr > $r1sqr) and ($rsqr < $r2sqr));
-	push @rdf4, [sqrt($rsqr), $i, $j] if (($rsqr > $r3sqr) and ($rsqr < $r4sqr));
+	push @rdf1, [sqrt($rsqr), $i, $j] if (($scat1_species == $this[$j]->[3]) and ($rsqr > $r1sqr) and ($rsqr < $r2sqr));
+	push @rdf4, [sqrt($rsqr), $i, $j] if (($scat2_species == $this[$j]->[3]) and ($rsqr > $r3sqr) and ($rsqr < $r4sqr));
       };
+    };
+    if (($self->mo->ui eq 'screen') and ($self->huge_cluster)) {
+      $self->stop_counter;
+      $self->start_counter("Finding nearly colinear pairs", $#{$rdf4}+1) if ($self->mo->ui eq 'screen');
     };
 
     ## find those 1st/4th pairs that share an absorber and have a small angle between them
     foreach my $fourth (@rdf4) {
+      $self->count if ($self->mo->ui eq 'screen');
       $i4 = $fourth->[1];
       foreach my $first (@rdf1) {
 	next if ($i4 != $first->[1]);
