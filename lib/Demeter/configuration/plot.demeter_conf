@@ -1,6 +1,6 @@
 ## -*- config -*-
 ###########################################################################
-##                     Demeter is copyright (c) 2007-2009 Bruce Ravel
+##                     Demeter is copyright (c) 2007-2012 Bruce Ravel
 ##                                                     bravel@bnl.gov
 ##                                        http://xafs.org/BruceRavel/
 ##
@@ -77,6 +77,14 @@ description
   larger than 2 may be useful, but since fine control over the spacing
   between tics is not provided by Athena, such large text tends to
   result in tic labels that run together.
+
+variable=imagetype
+type=list
+options=png gif
+default=png
+description
+  This sets the output image type when writing a plot directly to an
+  image file.
 
 variable=charfont
 type=positive integer

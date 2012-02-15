@@ -153,6 +153,7 @@ sub rdf {
   my $i2;
   my $halfpath;
   my ($ct, $st, $cp, $sp, $ctp, $stp, $cpp, $spp, $cppp, $sppp, $beta, $leg2);
+  my $testx = 15;
   #my $cosbetamax = cos($PI*$self->beta/180);
   foreach my $step (@{$self->clusters}) {
     @rdf = ();
@@ -176,10 +177,14 @@ sub rdf {
       ($x0, $x1, $x2, $ip) = @{$this[$i]};
       next if ($abs_species != $ip);
       next if (abs($x2) > $self->zmax); # assumes slab w/ interface at z=0
+      #next if (abs($this[$i]->[0]) > $testx); # testing ...
+      #next if (abs($this[$i]->[1]) > $testx); #
       foreach my $j (0 .. $#this) {
 	next if ($i == $j);
 	next if not (($scat1_species == $this[$j]->[3]) or ($scat2_species == $this[$j]->[3]));
 	next if (abs($this[$j]->[2]) > $self->zmax); # assumes slab w/ interface at z=0
+	#next if (abs($this[$j]->[0]) > $testx); # testing ...
+	#next if (abs($this[$j]->[1]) > $testx); #
 	my $rsqr = ($x0 - $this[$j]->[0])**2
 	         + ($x1 - $this[$j]->[1])**2
 	         + ($x2 - $this[$j]->[2])**2; # this loop has been optimized for speed, hence the weird syntax
@@ -188,7 +193,8 @@ sub rdf {
     };
     if (($self->mo->ui eq 'screen') and ($self->huge_cluster)) {
       $self->stop_counter;
-      $self->start_counter("Finding nearly colinear pairs", $#{$rdf}+1) if ($self->mo->ui eq 'screen');
+      $self->progress('%30b %c of %m 1st shell pairs <Time elapsed: %8t>') if $self->huge_cluster;
+      $self->start_counter("Finding nearly colinear pairs", $#rdf+1) if ($self->mo->ui eq 'screen');
     };
 
     ## find those 1st/1st pairs that share an absorber and have a small angle between them
@@ -351,6 +357,9 @@ sub plot {
     printf $f2 "  %.9f  %.9f  %.9f  %.9f  %d\n", @$p;
   };
   close $f2;
+  if ($self->po->output) {
+    $self->dispose($self->template('plot', 'output'), 'plotting');
+  };
   my $text = $self->template('plot', 'histo2d', {twod=>$twod, bin2d=>$bin2d, type=>'nearly collinear'});
   $self->dispose($text, 'plotting');
   return $self;
@@ -359,6 +368,15 @@ sub plot {
 sub info {
   my ($self) = @_;
   my $text = sprintf "Made histogram from %s file '%s'\n\n", uc($self->backend), $self->file;
+  $text   .= sprintf "Number of time steps:     %d\n",   $self->nsteps;
+  $text   .= sprintf "Absorber:                 %s\n",   get_name($self->feff->abs_species);
+  $text   .= sprintf "Scatterer #1:             %s\n",   get_name($self->feff->potentials->[$self->ipot1]->[2]);
+  $text   .= sprintf "Scatterer #1:             %s\n",   get_name($self->feff->potentials->[$self->ipot2]->[2]);
+  $text   .= sprintf "Number of configurations: %d\n",   $self->nconfig;
+  $text   .= sprintf "Used periodic boundaries: %s\n",   $self->yesno($self->periodic and $self->use_periodicity);
+  $text   .= sprintf "Radial bin size:          %.4f\n", $self->rbin;
+  $text   .= sprintf "Angular bin size:         %.4f\n", $self->betabin;
+  $text   .= sprintf "Number of bins:           %d\n",   $#{$self->populations}+1;
   return $text;
 };
 

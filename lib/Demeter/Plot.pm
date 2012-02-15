@@ -173,6 +173,7 @@ has 'key'    => (is => 'rw', isa =>  'Any',           default => q{});
 has 'title'  => (is => 'rw', isa =>  'Any',           default => q{},
 		trigger => sub{my ($self, $new) = @_; $new =~ s{_}{\\\\_}g; $self->escapedtitle($new);});
 has 'escapedtitle' => (is => 'rw', isa =>  'Any', default => q{});
+has 'output' => (is => 'rw', isa =>  'Str',           default => q{});
 
 has 'tempfiles' => (
 		    metaclass => 'Collection::Array',

@@ -148,7 +148,7 @@ sub rdf {
   my $i4;
   my $halfpath;
   my ($ct, $st, $cp, $sp, $ctp, $stp, $cpp, $spp, $cppp, $sppp, $beta, $leg2);
-  #my $testx = 30;
+  #my $testx = 15;
   #my $cosbetamax = cos($PI*$self->beta/180);
   foreach my $step (@{$self->clusters}) {
     @rdf1 = ();
@@ -190,7 +190,8 @@ sub rdf {
     };
     if (($self->mo->ui eq 'screen') and ($self->huge_cluster)) {
       $self->stop_counter;
-      $self->start_counter("Finding nearly colinear pairs", $#{$rdf4}+1) if ($self->mo->ui eq 'screen');
+      $self->progress('%30b %c of %m 4th shell pairs <Time elapsed: %8t>') if $self->huge_cluster;
+      $self->start_counter("Finding nearly colinear pairs", $#rdf4+1) if ($self->mo->ui eq 'screen');
     };
 
     ## find those 1st/4th pairs that share an absorber and have a small angle between them
@@ -361,6 +362,9 @@ sub plot {
     printf $f2 "  %.9f  %.9f  %.9f  %.9f  %d\n", @$p;
   };
   close $f2;
+  if ($self->po->output) {
+    $self->dispose($self->template('plot', 'output'), 'plotting');
+  };
   my $text = $self->template('plot', 'histo2d', {twod=>$twod, bin2d=>$bin2d, type=>'nearly collinear'});
   $self->dispose($text, 'plotting');
   return $self;
@@ -370,6 +374,15 @@ sub plot {
 sub info {
   my ($self) = @_;
   my $text = sprintf "Made histogram from %s file '%s'\n\n", uc($self->backend), $self->file;
+  $text   .= sprintf "Number of time steps:     %d\n",   $self->nsteps;
+  $text   .= sprintf "Absorber:                 %s\n",   get_name($self->feff->abs_species);
+  $text   .= sprintf "Scatterer #1:             %s\n",   get_name($self->feff->potentials->[$self->ipot1]->[2]);
+  $text   .= sprintf "Scatterer #1:             %s\n",   get_name($self->feff->potentials->[$self->ipot2]->[2]);
+  $text   .= sprintf "Number of configurations: %d\n",   $self->nconfig;
+  $text   .= sprintf "Used periodic boundaries: %s\n",   $self->yesno($self->periodic and $self->use_periodicity);
+  $text   .= sprintf "Radial bin size:          %.4f\n", $self->rbin;
+  $text   .= sprintf "Angular bin size:         %.4f\n", $self->betabin;
+  $text   .= sprintf "Number of bins:           %d\n",   $#{$self->populations}+1;
   return $text;
 };
 
