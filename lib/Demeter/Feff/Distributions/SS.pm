@@ -5,6 +5,7 @@ use MooseX::Aliases;
 use Demeter::NumTypes qw( NonNeg Ipot );
 
 use Chemistry::Elements qw (get_Z get_name get_symbol);
+use List::MoreUtils qw(pairwise);
 
 ## SS histogram attributes
 has 'rmin'        => (is	    => 'rw',
@@ -46,30 +47,50 @@ sub _bin {
   my (@x, @y);
   die("No MD output file has been read, thus no distribution functions have been computed\n") if ($#{$self->ssrdf} == -1);
   my $bin_start = sqrt($self->ssrdf->[0]);
+  my $bin_end = sqrt($self->ssrdf->[$#{$self->ssrdf}]);
+  my $ngrid = ($bin_end-$bin_start)/$self->bin;
+  my @popx = map {0} (0..$ngrid);
+  my @popy = map {0} (0..$ngrid);
+  my $where = 0;
+
   my ($population, $average) = (0,0);
   $self->start_spinner(sprintf("Rebinning RDF into %.4f A bins", $self->bin)) if ($self->mo->ui eq 'screen');
+  my $count = 0;
   foreach my $pair (@{$self->ssrdf}) {
     my $rr = sqrt($pair);
-    if (($rr - $bin_start) > $self->bin) {
-      $average = $average/$population;
-      push @x, sprintf("%.5f", $average);
-      push @y, $population*2;
-      #print join(" ", sprintf("%.5f", $average), $population*2), $/;
-      $bin_start += $self->bin;
-      $average = $rr;
-      $population = 1;
-    } else {
-      $average += $rr;
-      ++$population;
+    foreach my $i (1 .. $#popx) {
+      if (($rr < ($bin_start + $i*$self->bin)) and ($rr > ($bin_start + ($i-1)*$self->bin))) {
+	#print join("   ", $count++, $rr, $bin_start, $bin_end, $i, $bin_start + $i*$self->bin), $/;
+	$popx[$i-1] += $rr;
+	++$popy[$i-1];
+	next;
+      };
     };
+
+    # my $rr = sqrt($pair);
+    # if (($rr - $bin_start) > $self->bin) {
+    #   $average = $average/$population;
+    #   push @x, sprintf("%.5f", $average);
+    #   push @y, $population*2;
+    #   #print join(" ", sprintf("%.5f", $average), $population*2), $/;
+    #   $bin_start += $self->bin;
+    #   $average = $rr;
+    #   $population = 1;
+    # } else {
+    #   $average += $rr;
+    #   ++$population;
+    # };
   };
-  $average = $average/$population;
-  push @x, sprintf("%.5f", $average);
-  push @y, $population*2;
+  # $average = $average/$population;
+  # push @x, sprintf("%.5f", $average);
+  # push @y, $population*2;
   # use Data::Dumper;
   # print Data::Dumper->Dump([\@x, \@y], [qw(*x *y)]);
+
+  @x = pairwise { ($b == 0) ? 0 : $a/$b } @popx, @popy;
+
   $self->positions(\@x);
-  $self->populations(\@y);
+  $self->populations(\@popy);
   $self->update_bins(0);
   $self->stop_spinner if ($self->mo->ui eq 'screen');
   return $self;
