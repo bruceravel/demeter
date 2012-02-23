@@ -377,7 +377,7 @@ sub fft {
   my $tcsize = [50,-1];
   my $gbs = Wx::GridBagSizer->new( 5, 5 );
 
-  $this->{fft_kmin_label} = Wx::StaticText   -> new($this, -1, "k-range", wxDefaultPosition, [42,-1]);
+  $this->{fft_kmin_label} = Wx::StaticText   -> new($this, -1, "k-range", wxDefaultPosition, [48,-1]);
   $this->{fft_kmin}       = Wx::TextCtrl     -> new($this, -1, q{}, wxDefaultPosition, $tcsize, wxTE_PROCESS_ENTER);
   $this->{fft_kmin_pluck} = Wx::BitmapButton -> new($this, -1, $bullseye);
   $gbs -> Add($this->{fft_kmin_label}, Wx::GBPosition->new(0,0));
@@ -453,7 +453,7 @@ sub bft {
   my $tcsize = [50,-1];
   my $gbs = Wx::GridBagSizer->new( 5, 5 );
 
-  $this->{bft_rmin_label} = Wx::StaticText   -> new($this, -1, "R-range", wxDefaultPosition, [42,-1]);
+  $this->{bft_rmin_label} = Wx::StaticText   -> new($this, -1, "R-range", wxDefaultPosition, [48,-1]);
   $this->{bft_rmin}       = Wx::TextCtrl     -> new($this, -1, q{}, wxDefaultPosition, $tcsize, wxTE_PROCESS_ENTER);
   $this->{bft_rmin_pluck} = Wx::BitmapButton -> new($this, -1, $bullseye);
   $this->{bft_rmax_label} = Wx::StaticText   -> new($this, -1, "to");
@@ -764,11 +764,11 @@ sub OnParameter {
     # "fix" button. Changing values in the pre-edge or normalization boxes
     # should immediately uncheck the "fix" button and recalculate the edge
     # step.
-  } elsif ($which eq 'bkg_step') {
+  } elsif (($which eq 'bkg_step') and $data->co->default('athena', 'interactive_fixstep')) {
     $data->bkg_fixstep(1);
     $app->{main}->{Main}->{bkg_fixstep}->SetValue(1);
     $data->$which($value)
-  } elsif ($which =~ m{bkg_(?:nor|pre)}) {
+  } elsif (($which =~ m{bkg_(?:nor|pre)}) and $data->co->default('athena', 'interactive_fixstep')) {
     $data->bkg_fixstep(0);
     $app->{main}->{Main}->{bkg_fixstep}->SetValue(0);
     $data->$which($value)

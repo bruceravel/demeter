@@ -339,6 +339,9 @@ sub normalize {
       $command .= $self->template("process", "flatten_set");
     };
     $self->dispose($command);
+    $self->bkg_nc0(sprintf("%.14f", Ifeffit::get_scalar("norm_c0")));
+    $self->bkg_nc1(sprintf("%.14f", Ifeffit::get_scalar("norm_c1")));
+    $self->bkg_nc2(sprintf("%.14g", Ifeffit::get_scalar("norm_c2")));
   } else { # we take a somewhat different path through these chores for pre-normalized data
     $self->bkg_step(1);
     $self->bkg_fitted_step(1);
@@ -417,6 +420,9 @@ sub autobk {
   #$command .= $self->template("process", "deriv");
   $command .= $self->template("process", "nderiv") if not $self->is_nor;
   $self->dispose($command);
+    $self->bkg_nc0(sprintf("%.14f", Ifeffit::get_scalar("norm_c0")));
+    $self->bkg_nc1(sprintf("%.14f", Ifeffit::get_scalar("norm_c1")));
+    $self->bkg_nc2(sprintf("%.14g", Ifeffit::get_scalar("norm_c2")));
 
   ## note the largest value of the k array
   my @k = $self->get_array('k');

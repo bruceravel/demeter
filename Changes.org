@@ -9,10 +9,16 @@
 *** Athena
    - Importance was not being imported from a project file
    - Made the importance control normal width
+   - Added athena->interactive_fixstep configuration parameter for
+     disabling the interaction between pre-edge, normalization, and
+     edge step controls and the fixstep button.
+   - when importing a sequence of files and one cannot be imported
+     (e.g. aborted scan) offer to continue or quit importing sequence
 
 *** Demeter
    - Replaced Readonly with Const::Fast.  See [[http://neilb.org/reviews/constants.html]]
    - Abstracted many common constants to Demeter::Constants
+   - Many improvements to histogram subsystem
 
 ** 0.9.8 30 January 2012
 *** Athena

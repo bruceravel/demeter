@@ -6,6 +6,7 @@ use Demeter::NumTypes qw( NonNeg Ipot );
 
 use Chemistry::Elements qw (get_Z get_name get_symbol);
 use List::MoreUtils qw(pairwise);
+use String::Random qw(random_string);
 
 ## SS histogram attributes
 has 'rmin'        => (is	    => 'rw',
@@ -214,16 +215,20 @@ sub chi {
   my $kind = ($self->rattle) ? "rattle" : "SS";
   $self->start_spinner("Making FPath from $kind histogram") if ($self->mo->ui eq 'screen');
 
-
+  my $randstr = random_string('ccccccccc').'.sp';
   my $index = $self->mo->pathindex;
   my $first = $paths->[0];
   #$first->update_path(1);
   my $save = $first->group;
   $first->Index(255);
   $first->group("h_i_s_t_o");
+  $first->randstring($randstr);
   $first->_update('fft');
   $first->dispose($first->template('process', 'histogram_first'));
   $first->group($save);
+  $first->dispose($first->template('process', 'histogram_clean', {index=>255}));
+  my $nnnn = File::Spec->catfile($first->folder, $first->randstring);
+  unlink $nnnn if (-e $nnnn);
   my $rbar  = $first->population * $first->R;
   my $rave  = $first->population / $first->R;
   my $rnorm = $first->population / ($first->R**2);
@@ -238,10 +243,13 @@ sub chi {
     my $save = $paths->[$i]->group; # add up the SSPaths without requiring an Ifeffit group for each one
     $paths->[$i]->Index(255);
     $paths->[$i]->group("h_i_s_t_o");
+    $paths->[$i]->randstring($randstr);
     $paths->[$i]->_update('fft');
     $paths->[$i]->dispose($paths->[$i]->template('process', 'histogram_add'));
     $paths->[$i]->group($save);
     $paths->[$i]->dispose($paths->[$i]->template('process', 'histogram_clean', {index=>255}));
+    $nnnn = File::Spec->catfile($paths->[$i]->folder, $paths->[$i]->randstring);
+    unlink $nnnn if (-e $nnnn);
     $rbar  += $paths->[$i]->population * $paths->[$i]->R;
     $rave  += $paths->[$i]->population / $paths->[$i]->R;
     $rnorm += $paths->[$i]->population / ($paths->[$i]->R**2);
@@ -286,6 +294,7 @@ sub chi {
 				   c4        => $fourth,
 				   #@$common
 				  );
+  $path->randstring($randstr);
   my $name = sprintf("Histo %s %s-%s (%.5f)", $kind, $path->absorber, $path->scatterer, $rave);
   $path->name($name);
   $self->stop_spinner if ($self->mo->ui eq 'screen');

@@ -19,7 +19,7 @@ sub new {
 
   my $titlebox       = Wx::StaticBox->new($this, -1, 'Title for marked group plot', wxDefaultPosition, wxDefaultSize);
   my $titleboxsizer  = Wx::StaticBoxSizer->new( $titlebox, wxHORIZONTAL );
-  $box              -> Add($titleboxsizer, 0, wxGROW|wxALL, 5);
+  $box              -> Add($titleboxsizer, 0, wxGROW|wxALL, 2);
   $this->{title}     = Wx::TextCtrl->new($this, -1, q{}, wxDefaultPosition, wxDefaultSize, wxTE_PROCESS_ENTER);
   $titleboxsizer    -> Add($this->{title}, 1, wxALL|wxGROW, 0);
   EVT_TEXT_ENTER($this, $this->{title}, sub{
@@ -30,10 +30,10 @@ sub new {
 					 ["top left", "top right", "bottom left", "bottom right"], 2, wxRA_SPECIFY_COLS);
   $this->{location}  -> SetStringSelection($app->current_data->co->default('gnuplot', 'keylocation'));
   EVT_RADIOBOX($this, $this->{location}, sub{location(@_,$app)});
-  $box               -> Add($this->{location},   0, wxGROW|wxLEFT|wxRIGHT, 5);
+  $box               -> Add($this->{location},   0, wxGROW|wxLEFT|wxRIGHT, 2);
 
   $this->{nokey}      = Wx::CheckBox->new($this, -1, "Suppress plot legend");
-  $box               -> Add($this->{nokey},      0, wxGROW|wxALL, 5);
+  $box               -> Add($this->{nokey},      0, wxGROW|wxALL, 2);
 
   my $hbox = Wx::BoxSizer->new( wxHORIZONTAL );
   $hbox   -> Add(Wx::StaticText->new($this, -1, "Marked plot pause (ms)"), 0, wxALL|wxTOP|wxRIGHT, 3);
@@ -43,7 +43,7 @@ sub new {
   $this->{pause} -> SetValidator( Wx::Perl::TextValidator->new( qr([0-9]) ) );
 
   $this->{singlefile} = Wx::ToggleButton->new($this, -1, "Save next plot to a file");
-  $box    -> Add($this->{singlefile}, 0, wxGROW|wxALL, 5);
+  $box    -> Add($this->{singlefile}, 0, wxGROW|wxALL, 2);
 
   EVT_CHECKBOX($this, $this->{nokey}, sub{
 		 $app->current_data->po->showlegend(not $_[0]->{nokey}->IsChecked);

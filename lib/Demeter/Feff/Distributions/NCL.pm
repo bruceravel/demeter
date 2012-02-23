@@ -7,6 +7,7 @@ use Demeter::Constants qw($PI);
 use Demeter::NumTypes qw( Ipot );
 
 use Chemistry::Elements qw (get_Z get_name get_symbol);
+use String::Random qw(random_string);
 
 ## nearly collinear DS and TS historgram attributes
 has 'skip'      => (is => 'rw', isa => 'Int', default => 50,);
@@ -260,6 +261,7 @@ sub chi {
   $self->start_counter("Making FPath from radial/angle distribution", $#{$self->populations}+1) if ($self->mo->ui eq 'screen');
   #$self->start_spinner("Making FPath from path length/angle distribution") if ($self->mo->ui eq 'screen');
 
+  my $randstr = random_string('ccccccccc').'.sp';
   my @paths = ();
   foreach my $c (@{$self->populations}) {
     push @paths, Demeter::ThreeBody->new(r1    => $c->[2],      r2    => $c->[3],
@@ -268,6 +270,7 @@ sub chi {
 					 parent=> $self->feff,
 					 update_path => 1,
 					 through => 0,
+					 randstring => $randstr,
 					 @$common);
   };
 
@@ -284,6 +287,8 @@ sub chi {
   $first->dspath->dispose($first->dspath->template('process', 'histogram_first'));
   $first->dspath->group($save);
   $first->dspath->dispose($first->dspath->template('process', 'histogram_clean', {index=>255}));
+  my $nnnn = File::Spec->catfile($first->folder, $first->dsstring);
+  unlink $nnnn if (-e $nnnn);
 
   $first->tspath->Index(255);
   $first->tspath->group("h_i_s_t_o");
@@ -291,6 +296,8 @@ sub chi {
   $first->tspath->dispose($first->tspath->template('process', 'histogram_add'));
   $first->tspath->group($save);
   $first->tspath->dispose($first->tspath->template('process', 'histogram_clean', {index=>255}));
+  $nnnn = File::Spec->catfile($first->folder, $first->tsstring);
+  unlink $nnnn if (-e $nnnn);
 
   my $ravg = $first->s02 * ($first->r1+$first->r2);
   my $n    = $first->s02;
@@ -306,6 +313,8 @@ sub chi {
     $paths[$i]->dispose($paths[$i]->dspath->template('process', 'histogram_add'));
     $paths[$i]->dspath->group($save);
     $paths[$i]->dispose($paths[$i]->dspath->template('process', 'histogram_clean', {index=>255}));
+    $nnnn = File::Spec->catfile($paths[$i]->dspath->folder, $paths[$i]->dsstring);
+    unlink $nnnn if (-e $nnnn);
 
     $paths[$i]->tspath->Index(255);
     $paths[$i]->tspath->group("h_i_s_t_o");
@@ -313,6 +322,8 @@ sub chi {
     $paths[$i]->dispose($paths[$i]->tspath->template('process', 'histogram_add'));
     $paths[$i]->tspath->group($save);
     $paths[$i]->dispose($paths[$i]->tspath->template('process', 'histogram_clean', {index=>255}));
+    $nnnn = File::Spec->catfile($paths[$i]->tspath->folder, $paths[$i]->tsstring);
+    unlink $nnnn if (-e $nnnn);
 
     $ravg += $paths[$i]->s02 * ($paths[$i]->r1+$paths[$i]->r2);
     $n += $paths[$i]->s02;
@@ -335,6 +346,7 @@ sub chi {
 		     $self->feff->potentials->[$self->ipot2]->[2],
 		     $path->reff);
   $path->name($name);
+  $path->randstring($randstr);
   $self->stop_counter if ($self->mo->ui eq 'screen');
   return $path;
 };

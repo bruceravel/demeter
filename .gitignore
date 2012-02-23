@@ -24,6 +24,7 @@ Build
 Build.bat
 META.yml
 MYMETA.yml
+MYMETA.json
 
 doc/dpg/bin/build
 doc/dpg/etc/ttree.cfg
