@@ -149,8 +149,12 @@ sub Import {
       return;
     };
     if ($retval == -1) {	# bail on a file sequence if something bad happens
-      $app->{main}->status("Stopping file import.  $file could not be read correctly.", "error");
-      return;
+      my $md = Wx::MessageDialog->new($app->{main}, "$file could not be read correctly. OK to continue importing data, cancel to quit importing data.", "Warning!", wxOK|wxCANCEL|wxICON_WARNING);
+      my $response = $md -> ShowModal;
+      return if $response = wxID_CANCEL;
+      next;
+      #$app->{main}->status("Stopping file import.  $file could not be read correctly.", "error");
+      #return;
     };
     $first = 0;
     if ($app->current_data->mo->heap_used > 0.95) {

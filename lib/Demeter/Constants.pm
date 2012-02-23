@@ -4,7 +4,7 @@ use strict;
 #use Encode;
 use base qw( Exporter );
 our @EXPORT_OK = qw($PI $ETOK $HBARC $HC $R2D
-		    $NUMBER $INTEGER $SEPARATOR
+		    $NUMBER $INTEGER $SEPARATOR $ELEMENT
 		    $NULLFILE $ENDOFLINE $CTOKEN
 		    $EPSILON2 $EPSILON3 $EPSILON4 $EPSILON5 $EPSILON6 $EPSILON7
 		  );
@@ -13,8 +13,10 @@ our %EXPORT_TAGS = (all => [qw($PI $ETOK $HBARC $HC $R2D
 			       $NULLFILE $ENDOFLINE $CTOKEN
 			       $EPSILON2 $EPSILON3 $EPSILON4 $EPSILON5 $EPSILON6 $EPSILON7
 			     )],
-		    numbers => [qw($PI $ETOK $HBARC $HC $R2D $EPSILON2 $EPSILON3 $EPSILON4 $EPSILON5 $EPSILON6 $EPSILON7)],
-		    regexps => [qw($NUMBER $INTEGER $SEPARATOR)],
+		    numbers => [qw($PI $ETOK $HBARC $HC $R2D
+				   $EPSILON2 $EPSILON3 $EPSILON4 $EPSILON5 $EPSILON6 $EPSILON7
+				 )],
+		    regexps => [qw($NUMBER $INTEGER $SEPARATOR $ELEMENT)],
 		    strings => [qw($NULLFILE $ENDOFLINE $CTOKEN)],
 		   );
 
@@ -31,6 +33,8 @@ const our $R2D       => 57.29577951;
 const our $NUMBER    => $RE{num}{real};
 const our $INTEGER   => $RE{num}{int};
 const our $SEPARATOR => '[ \t]*[ \t=,][ \t]*';
+const our $ELEMENT   => qr/\b([bcfhiknopsuvwy]|a[cglmrstu]|b[aehikr]|c[adeflmorsu]|dy|e[rsu]|f[emr]|g[ade]|h[aefgos]|i[nr]|kr|l[airu]|m[dgnot]|n[abdeiop]|os|p[abdmortu]|r[abefhnu]|s[bcegimnr]|t[abcehilm]|xe|yb|z[nr])\b/;
+
 
 const our $NULLFILE  => '@&^^null^^&@';
 const our $ENDOFLINE => $/;

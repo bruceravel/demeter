@@ -5,6 +5,8 @@ use MooseX::Aliases;
 use Demeter::NumTypes qw( NonNeg Ipot );
 
 use Chemistry::Elements qw (get_Z get_name get_symbol);
+use List::MoreUtils qw(pairwise);
+use String::Random qw(random_string);
 
 ## SS histogram attributes
 has 'rmin'        => (is	    => 'rw',
@@ -46,30 +48,50 @@ sub _bin {
   my (@x, @y);
   die("No MD output file has been read, thus no distribution functions have been computed\n") if ($#{$self->ssrdf} == -1);
   my $bin_start = sqrt($self->ssrdf->[0]);
+  my $bin_end = sqrt($self->ssrdf->[$#{$self->ssrdf}]);
+  my $ngrid = ($bin_end-$bin_start)/$self->bin;
+  my @popx = map {0} (0..$ngrid);
+  my @popy = map {0} (0..$ngrid);
+  my $where = 0;
+
   my ($population, $average) = (0,0);
   $self->start_spinner(sprintf("Rebinning RDF into %.4f A bins", $self->bin)) if ($self->mo->ui eq 'screen');
+  my $count = 0;
   foreach my $pair (@{$self->ssrdf}) {
     my $rr = sqrt($pair);
-    if (($rr - $bin_start) > $self->bin) {
-      $average = $average/$population;
-      push @x, sprintf("%.5f", $average);
-      push @y, $population*2;
-      #print join(" ", sprintf("%.5f", $average), $population*2), $/;
-      $bin_start += $self->bin;
-      $average = $rr;
-      $population = 1;
-    } else {
-      $average += $rr;
-      ++$population;
+    foreach my $i (1 .. $#popx) {
+      if (($rr < ($bin_start + $i*$self->bin)) and ($rr > ($bin_start + ($i-1)*$self->bin))) {
+	#print join("   ", $count++, $rr, $bin_start, $bin_end, $i, $bin_start + $i*$self->bin), $/;
+	$popx[$i-1] += $rr;
+	++$popy[$i-1];
+	next;
+      };
     };
+
+    # my $rr = sqrt($pair);
+    # if (($rr - $bin_start) > $self->bin) {
+    #   $average = $average/$population;
+    #   push @x, sprintf("%.5f", $average);
+    #   push @y, $population*2;
+    #   #print join(" ", sprintf("%.5f", $average), $population*2), $/;
+    #   $bin_start += $self->bin;
+    #   $average = $rr;
+    #   $population = 1;
+    # } else {
+    #   $average += $rr;
+    #   ++$population;
+    # };
   };
-  $average = $average/$population;
-  push @x, sprintf("%.5f", $average);
-  push @y, $population*2;
+  # $average = $average/$population;
+  # push @x, sprintf("%.5f", $average);
+  # push @y, $population*2;
   # use Data::Dumper;
   # print Data::Dumper->Dump([\@x, \@y], [qw(*x *y)]);
+
+  @x = pairwise { ($b == 0) ? 0 : $a/$b } @popx, @popy;
+
   $self->positions(\@x);
-  $self->populations(\@y);
+  $self->populations(\@popy);
   $self->update_bins(0);
   $self->stop_spinner if ($self->mo->ui eq 'screen');
   return $self;
@@ -193,16 +215,20 @@ sub chi {
   my $kind = ($self->rattle) ? "rattle" : "SS";
   $self->start_spinner("Making FPath from $kind histogram") if ($self->mo->ui eq 'screen');
 
-
+  my $randstr = random_string('ccccccccc').'.sp';
   my $index = $self->mo->pathindex;
   my $first = $paths->[0];
   #$first->update_path(1);
   my $save = $first->group;
   $first->Index(255);
   $first->group("h_i_s_t_o");
+  $first->randstring($randstr);
   $first->_update('fft');
   $first->dispose($first->template('process', 'histogram_first'));
   $first->group($save);
+  $first->dispose($first->template('process', 'histogram_clean', {index=>255}));
+  my $nnnn = File::Spec->catfile($first->folder, $first->randstring);
+  unlink $nnnn if (-e $nnnn);
   my $rbar  = $first->population * $first->R;
   my $rave  = $first->population / $first->R;
   my $rnorm = $first->population / ($first->R**2);
@@ -217,10 +243,13 @@ sub chi {
     my $save = $paths->[$i]->group; # add up the SSPaths without requiring an Ifeffit group for each one
     $paths->[$i]->Index(255);
     $paths->[$i]->group("h_i_s_t_o");
+    $paths->[$i]->randstring($randstr);
     $paths->[$i]->_update('fft');
     $paths->[$i]->dispose($paths->[$i]->template('process', 'histogram_add'));
     $paths->[$i]->group($save);
     $paths->[$i]->dispose($paths->[$i]->template('process', 'histogram_clean', {index=>255}));
+    $nnnn = File::Spec->catfile($paths->[$i]->folder, $paths->[$i]->randstring);
+    unlink $nnnn if (-e $nnnn);
     $rbar  += $paths->[$i]->population * $paths->[$i]->R;
     $rave  += $paths->[$i]->population / $paths->[$i]->R;
     $rnorm += $paths->[$i]->population / ($paths->[$i]->R**2);
@@ -265,6 +294,7 @@ sub chi {
 				   c4        => $fourth,
 				   #@$common
 				  );
+  $path->randstring($randstr);
   my $name = sprintf("Histo %s %s-%s (%.5f)", $kind, $path->absorber, $path->scatterer, $rave);
   $path->name($name);
   $self->stop_spinner if ($self->mo->ui eq 'screen');

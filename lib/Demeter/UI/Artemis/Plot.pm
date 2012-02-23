@@ -403,6 +403,7 @@ sub plot_fit {
   $::app->heap_check;
 };
 
+use Const::Fast;
 const my $PLOT_REMOVE => Wx::NewId();
 const my $PLOT_ON     => Wx::NewId();
 const my $PLOT_OFF    => Wx::NewId();

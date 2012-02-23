@@ -97,6 +97,17 @@ description
   If true, display the check buttons for plotting the derivative of
   the phase in R-space.
 
+variable=interactive_fixstep
+type=boolean
+onvalue=1
+offvalue=0
+default=true
+description
+  If true, then editing pre-edge or normalization controls will toggle
+  the fixstep button off and editing the edge-step control will toggle
+  the fixstep button on.  If false, the fixstep button will be
+  unresponsive to editing those controls.
+
 variable=tied
 type=color
 default=#E5FEFC

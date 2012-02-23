@@ -1152,7 +1152,7 @@ sub main_window {
 
 
   $app->{main}->{views} = Wx::Choicebook->new($viewpanel, -1);
-  $viewbox -> Add($app->{main}->{views}, 0, wxALL, 5);
+  $viewbox -> Add($app->{main}->{views}, 1, wxLEFT|wxRIGHT, 5);
   #print join("|", $app->{main}->{views}->GetChildren), $/;
   $app->mouseover($app->{main}->{views}->GetChildren, "Change data processing and analysis tools using this menu.");
 
