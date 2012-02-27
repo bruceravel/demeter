@@ -146,13 +146,14 @@ sub OnInit {
 		    );
 
   $app->{main} -> SetSizerAndFit($hbox);
-  $app->{main} ->{return}->Hide;
+  $app->{main} ->{return}->Show;
   #$app->{main} -> SetSize(600,800);
   $app->{main} -> Show( 1 );
   $app->{main} -> Refresh;
   $app->{main} -> Update;
   $app->{main} -> status("Welcome to Athena (" . $demeter->identify . ")");
   $app->OnGroupSelect(q{}, $app->{main}->{list}->GetSelection, 0);
+  $app->{main} ->{return}->Hide;
   1;
 };
 
@@ -1203,7 +1204,8 @@ sub main_window {
 
 
   EVT_CHOICEBOOK_PAGE_CHANGED($app->{main}, $app->{main}->{views}, sub{$app->OnGroupSelect(0,0,0);
-								       $app->{main}->{return}->Show($app->{main}->{views}->GetSelection)});
+								       $app->{main}->{return}->Show($app->{main}->{views}->GetSelection)
+								     });
   EVT_CHOICEBOOK_PAGE_CHANGING($app->{main}, $app->{main}->{views}, sub{$app->view_changing(@_)});
 
 

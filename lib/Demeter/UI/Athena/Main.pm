@@ -981,7 +981,7 @@ sub ContextMenu {
     $menu->Append($MARKED_TO_1, "Set Importance to 1 for marked groups");
     if (any {$_ =~ m{BLA.pixel_ratio}} @{$app->current_data->xdi_extensions}) {
       $menu->AppendSeparator;
-      $menu->Append($IMP_BLA_PIXEL, "Set Importance for marked data BLA pixel ratio");
+      $menu->Append($IMP_BLA_PIXEL, "Set Importance for marked data to BLA pixel ratio");
     };
   } elsif ($which eq 'bkg_eshift') {
     $menu->AppendSeparator;
