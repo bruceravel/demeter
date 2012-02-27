@@ -76,7 +76,7 @@ sub Import {
   my @files = ($fname);
   if (not $fname) {
     my $fd = Wx::FileDialog->new( $app->{main}, "Import data", cwd, q{},
-				  "All files|*|Athena projects (*.prj)|*.prj|Data (*.dat)|*.dat",
+				  "All files|*|Athena projects (*.prj)|*.prj|Data (*.dat)|*.dat|XDI data (*.xdi)|*.xdi",
 				  wxFD_OPEN|wxFD_FILE_MUST_EXIST|wxFD_CHANGE_DIR|wxFD_PREVIEW|wxFD_MULTIPLE,
 				  wxDefaultPosition);
     if ($fd->ShowModal == wxID_CANCEL) {

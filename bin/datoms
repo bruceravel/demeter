@@ -14,6 +14,12 @@
  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 
 =cut
+BEGIN {
+  # turn off Unity feature of the Mac-like global menu bar, which
+  # interacts really poorly with Wx.  See
+  # http://www.webupd8.org/2011/03/disable-appmenu-global-menu-in-ubuntu.html
+  $ENV{UBUNTU_MENUPROXY} = 0;
+};
 
 use Demeter;
 use Getopt::Long;

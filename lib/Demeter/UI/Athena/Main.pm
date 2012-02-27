@@ -16,6 +16,7 @@ use File::Basename;
 use File::Spec;
 use List::MoreUtils qw(none any);
 use Scalar::Util qw(looks_like_number);
+use Demeter::Constants qw($NUMBER);
 use Const::Fast;
 
 use vars qw($label $tag);
@@ -945,6 +946,8 @@ const my $UNTIE_REFERENCE    => Wx::NewId();
 const my $EXPLAIN_ESHIFT     => Wx::NewId();
 const my $ALL_TO_1           => Wx::NewId();
 const my $MARKED_TO_1        => Wx::NewId();
+const my $IMP_BLA_PIXEL      => Wx::NewId();
+const my $SCALE_BLA_PIXEL    => Wx::NewId();
 const my $E0_IFEFFIT         => Wx::NewId();
 const my $E0_TABULATED       => Wx::NewId();
 const my $E0_FRACTION        => Wx::NewId();
@@ -974,8 +977,12 @@ sub ContextMenu {
     $menu->Append($KMAX_RECOMMENDED, "Set kmax to Ifeffit's suggestion");
   } elsif ($which eq 'importance') {
     $menu->AppendSeparator;
-    $menu->Append($ALL_TO_1,    "Set importance to 1 for all groups");
-    $menu->Append($MARKED_TO_1, "Set importance to 1 for marked groups");
+    $menu->Append($ALL_TO_1,    "Set Importance to 1 for all groups");
+    $menu->Append($MARKED_TO_1, "Set Importance to 1 for marked groups");
+    if (any {$_ =~ m{BLA.pixel_ratio}} @{$app->current_data->xdi_extensions}) {
+      $menu->AppendSeparator;
+      $menu->Append($IMP_BLA_PIXEL, "Set Importance for marked data BLA pixel ratio");
+    };
   } elsif ($which eq 'bkg_eshift') {
     $menu->AppendSeparator;
     $menu->Append($IDENTIFY_REFERENCE, "Identify this groups reference");
@@ -988,6 +995,9 @@ sub ContextMenu {
     $menu->Append($E0_FRACTION,  "Set E0 to a fraction of the edge step");
     $menu->Append($E0_ZERO,      "Set E0 to the zero crossing of the second derivative");
     #$menu->Append($E0_PEAK,      "Set E0 to the peak of the white line");
+  } elsif (($which eq 'plot_multiplier') and (any {$_ =~ m{BLA.pixel_ratio}} @{$app->current_data->xdi_extensions})) {
+    $menu->AppendSeparator;
+    $menu->Append($SCALE_BLA_PIXEL, "Set Plot multiplier for marked data to BLA pixel ratio");
   };
 
   ## set to session default
@@ -1078,6 +1088,32 @@ sub DoContextMenu {
     };
     ($id == $MARKED_TO_1) and do {
       $main->importance_to_1($app, 'marked');
+      last SWITCH;
+    };
+    ($id == $IMP_BLA_PIXEL) and do {
+      foreach my $i (0 .. $app->{main}->{list}->GetCount-1) {
+	next if (not $app->{main}->{list}->IsChecked($i));
+	foreach my $ext (@{$app->{main}->{list}->GetIndexedData($i)->xdi_extensions}) {
+	  if ($ext =~ m{BLA.pixel_ratio:\s+($NUMBER)}) {
+	    $app->{main}->{list}->GetIndexedData($i)->importance($1);
+	  };
+	};
+      };
+      $app->modified(1);
+      $app->OnGroupSelect(0,0,0);
+      last SWITCH;
+    };
+    ($id == $SCALE_BLA_PIXEL) and do {
+      foreach my $i (0 .. $app->{main}->{list}->GetCount-1) {
+	next if (not $app->{main}->{list}->IsChecked($i));
+	foreach my $ext (@{$app->{main}->{list}->GetIndexedData($i)->xdi_extensions}) {
+	  if ($ext =~ m{BLA.pixel_ratio:\s+($NUMBER)}) {
+	    $app->{main}->{list}->GetIndexedData($i)->plot_multiplier($1);
+	  };
+	};
+      };
+      $app->modified(1);
+      $app->OnGroupSelect(0,0,0);
       last SWITCH;
     };
   };
