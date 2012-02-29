@@ -6,10 +6,11 @@ use warnings;
 use Wx qw( :everything );
 use base 'Wx::Panel';
 use Wx::Event qw(EVT_BUTTON);
-use Demeter::UI::Athena::Timer;
 use Wx::Perl::TextValidator;
-use Scalar::Util qw(looks_like_number);
+
+use Demeter::UI::Athena::Timer;
 use File::Monitor::Lite;
+use Scalar::Util qw(looks_like_number);
 
 use Cwd;
 
@@ -28,6 +29,12 @@ sub new {
   $this->{sizer} = $box;
 
   my $hbox = Wx::BoxSizer->new(wxHORIZONTAL);
+  # $box->Add($hbox, 0, wxGROW|wxALL, 3);
+  # $hbox->Add(Wx::StaticText->new($this, -1, "Standard"), 0, wxLEFT|wxRIGHT|wxTOP, 3);
+  # $this->{standard} = Demeter::UI::Athena::GroupList -> new($this, $app, 0, 0);
+  # $hbox->Add($this->{standard}, 1, wxLEFT|wxRIGHT, 3);
+
+  # $hbox = Wx::BoxSizer->new(wxHORIZONTAL);
   $box->Add($hbox, 0, wxGROW|wxALL, 3);
   $this->{dir} = Wx::DirPickerCtrl->new($this, -1, cwd, "Select as folder",
 					wxDefaultPosition, wxDefaultSize,
@@ -97,9 +104,15 @@ sub mode {
 
 sub standard {
   my ($this)   = @_;
-  $this->{standard}->Enable(1);
+  my $busy = Wx::BusyCursor->new();
+  $::app -> Import(q{}, no_main=>1);
+  $this->{yaml} = Demeter->slurp(File::Spec->catfile(Demeter->dot_folder, "athena.column_selection"));
+  $this->{standard_group} = $::app->{most_recent};
+  $this->{standard}->Enable(0);
   $this->{start}   ->Enable(1);
   $this->{stop}    ->Enable(0);
+  $::app->{main}->status("Set " . $this->{standard_group}->name . " as the file watcher standard");
+  undef $busy;
 };
 
 sub start {
@@ -123,9 +136,13 @@ sub start {
     $::app->{main}->status("The timer interval must be a positive integer", 'error');
     return;
   };
+
+  ## need a check that standard is set and has a file associated....
+
   $this->{timer}->{dir}  = $dir;
   $this->{timer}->{base} = $base;
-  $this->{timer}->{size} = 0;
+
+  $this->{timer}->{size} = -s $this->{standard_group}->file;
   $this->{dir}  ->Enable(0);
   $this->{base} ->Enable(0);
   $this->{interval}->Enable(0);
@@ -146,7 +163,7 @@ sub stop {
   $this->{base} ->Enable(1);
   $this->{interval}->Enable(1);
   $this->{standard}->Enable(1);
-  $this->{start}->Enable(0);
+  $this->{start}->Enable(1);
   $this->{stop} ->Enable(0);
   $this->{timer}->Stop;
   my $base = $this->{base}->GetValue;
@@ -185,6 +202,10 @@ Demeter's dependencies are in the F<Bundle/DemeterBundle.pm> file.
 =item *
 
 Toggles for pre-processing
+
+=item *
+
+Globs and regex ratehr than basename
 
 =back
 

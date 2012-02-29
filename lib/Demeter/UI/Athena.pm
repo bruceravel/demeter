@@ -121,6 +121,7 @@ sub OnInit {
   $app->{lastplot} = [q{}, q{single}];
   $app->{selected} = -1;
   $app->{modified} = 0;
+  $app->{most_recent} = 0;
   $app->{main}->{currentproject} = q{};
   $app->{main}->{showing} = q{};
   $app->{constraining_spline_parameters}=0;
@@ -2000,6 +2001,7 @@ sub AddData {
   $clb->Append($name);
   $clb->Check($clb->GetCount-1, $data->marked);
   push @{$clb->{datalist}}, $data;
+  $::app->{most_recent} = $data;
 };
 
 sub InsertData {

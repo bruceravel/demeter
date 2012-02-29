@@ -9,25 +9,32 @@ use base 'Wx::Timer';
 use File::Monitor::Lite;
 use File::Spec;
 
+use Demeter::UI::Athena::IO;
+
 sub Notify {
   my ($timer) = @_;
 
-  print "here...\n";
+  printf "here... (%s  %s)\n", $::app->{main}->{Watcher}->{monitor}->{in}, $::app->{main}->{Watcher}->{monitor}->{name};
   my $base = $timer->{base};
   $::app->{main}->{Watcher}->{monitor}->check;
   my @created = $::app->{main}->{Watcher}->{monitor}->created;
   if (@created) {
     print "noticed $created[0]\n";
-    if (exists $timer->{filemonitor}) {
-      my $fname = File::Spec->catfile($timer->{filemonitor}->{name});
-      if ( $timer->{size} - (-s $timer->{filemonitor}->{name}) < Demeter->co->default(qw(watcher fuzz))) {
-	$timer->{size} = -s $timer->{filemonitor}->{name};
+    my $fname = $created[0];
+#    my $fname = File::Spec->catfile($timer->{filemonitor}->{name});
+#      if ( $timer->{size} - (-s $timer->{filemonitor}->{name}) < Demeter->co->default(qw(watcher fuzz))) {
+	$timer->{size} = -s $fname;
 	print "(1)importing $fname  (" . $timer->{size} . ")\n";
-      };
-    };
-    $timer->{filemonitor} = File::Monitor::Lite->new(in => $timer->{dir},
-						     name => $created[0],
-						    );
+
+    open(my $Y, '>', File::Spec->catfile(Demeter->dot_folder, "athena.column_selection"));
+    print $Y $::app->{main}->{Watcher}->{yaml};
+    close $Y;
+
+    $::app->Import($fname, no_main=>1, no_interactive=>1);
+#      };
+#    $timer->{filemonitor} = File::Monitor::Lite->new(in => $timer->{dir},
+#						     name => $created[0],
+#						    );
   };
   # if (not $::app->{main}->{Watcher}->{monitor}->anychange) {
   #   return if not exists $timer->{filemonitor};
