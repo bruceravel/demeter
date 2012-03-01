@@ -108,6 +108,13 @@ sub standard {
   $::app -> Import(q{}, no_main=>1);
   $this->{yaml} = Demeter->slurp(File::Spec->catfile(Demeter->dot_folder, "athena.column_selection"));
   $this->{standard_group} = $::app->{most_recent};
+  my ($name, $group) = ($::app->{most_recent}->name, $::app->{most_recent}->group);
+  $this->{yaml} =~ s{preproc_standard: .*}{preproc_standard: $name};
+  $this->{yaml} =~ s{preproc_stgroup: .*}{preproc_stgroup: $group};
+  $this->{yaml} =~ s{preproc_mark: .*}{preproc_mark: 1};
+  $this->{yaml} =~ s{preproc_align: .*}{preproc_align: 1};
+  $this->{yaml} =~ s{preproc_set: .*}{preproc_set: 1};
+
   $this->{standard}->Enable(0);
   $this->{start}   ->Enable(1);
   $this->{stop}    ->Enable(0);

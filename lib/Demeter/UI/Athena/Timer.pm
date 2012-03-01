@@ -11,39 +11,50 @@ use File::Spec;
 
 use Demeter::UI::Athena::IO;
 
+my $verbose = 1;
+
 sub Notify {
   my ($timer) = @_;
 
-  printf "here... (%s  %s)\n", $::app->{main}->{Watcher}->{monitor}->{in}, $::app->{main}->{Watcher}->{monitor}->{name};
+  printf("here... (%s  %s)\n", $::app->{main}->{Watcher}->{monitor}->{in}, $::app->{main}->{Watcher}->{monitor}->{name}) if $verbose;
   my $base = $timer->{base};
   $::app->{main}->{Watcher}->{monitor}->check;
   my @created = $::app->{main}->{Watcher}->{monitor}->created;
   if (@created) {
-    print "noticed $created[0]\n";
+    print "noticed $created[0]\n" if $verbose;
     my $fname = $created[0];
-#    my $fname = File::Spec->catfile($timer->{filemonitor}->{name});
-#      if ( $timer->{size} - (-s $timer->{filemonitor}->{name}) < Demeter->co->default(qw(watcher fuzz))) {
-	$timer->{size} = -s $fname;
-	print "(1)importing $fname  (" . $timer->{size} . ")\n";
-
-    open(my $Y, '>', File::Spec->catfile(Demeter->dot_folder, "athena.column_selection"));
-    print $Y $::app->{main}->{Watcher}->{yaml};
-    close $Y;
-
-    $::app->Import($fname, no_main=>1, no_interactive=>1);
-#      };
-#    $timer->{filemonitor} = File::Monitor::Lite->new(in => $timer->{dir},
-#						     name => $created[0],
-#						    );
+    $timer->{fname} = $fname;
+    $timer->{size}  = -s $fname;
+    return;
   };
-  # if (not $::app->{main}->{Watcher}->{monitor}->anychange) {
-  #   return if not exists $timer->{filemonitor};
-  #   my $fname = File::Spec->catfile($timer->{filemonitor}->{name});
-  #   print "(2)importing $fname\n";
-  #   delete $timer->{filemonitor};
-  # };
+
+  my @modified = $::app->{main}->{Watcher}->{monitor}->modified;
+  if (@modified) {
+    print "(1)noticed change to ".$timer->{fname}.$/ if $verbose;
+
+  } elsif ($timer->{fname}) {
+
+    print "(2)importing ".$timer->{fname}.$/ if $verbose;
+    import_data($timer->{fname});
+    $timer->{fname} = q{};
+  };
 
 };
+
+# Use of uninitialized value $line in pattern match (m//) at
+# /home/bruce/git/demeter/lib/Demeter/Plugins/X23A2MED.pm line 29,
+# <$D> line 1.
+
+
+
+sub import_data {
+  my ($fname) = @_;
+  open(my $Y, '>', File::Spec->catfile(Demeter->dot_folder, "athena.column_selection"));
+  print $Y $::app->{main}->{Watcher}->{yaml};
+  close $Y;
+  $::app->Import($fname, no_main=>1, no_interactive=>1);
+};
+
 
 1;
 
