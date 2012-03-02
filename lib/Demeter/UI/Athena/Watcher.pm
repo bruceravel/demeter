@@ -47,34 +47,39 @@ sub new {
   my $box = Wx::BoxSizer->new( wxVERTICAL);
   $this->{sizer} = $box;
 
-  my $hbox = Wx::BoxSizer->new(wxHORIZONTAL);
-  # $box->Add($hbox, 0, wxGROW|wxALL, 3);
-  # $hbox->Add(Wx::StaticText->new($this, -1, "Standard"), 0, wxLEFT|wxRIGHT|wxTOP, 3);
-  # $this->{standard} = Demeter::UI::Athena::GroupList -> new($this, $app, 0, 0);
-  # $hbox->Add($this->{standard}, 1, wxLEFT|wxRIGHT, 3);
+  ## folder
+  my $dirbox       = Wx::StaticBox->new($this, -1, 'Folder to watch', wxDefaultPosition, wxDefaultSize);
+  my $dirboxsizer  = Wx::StaticBoxSizer->new( $dirbox, wxVERTICAL );
+  $box->Add($dirboxsizer, 0, wxGROW|wxALL, 5);
 
-  # $hbox = Wx::BoxSizer->new(wxHORIZONTAL);
-  $box->Add($hbox, 0, wxGROW|wxALL, 3);
   $this->{dir} = Wx::DirPickerCtrl->new($this, -1, $yaml->{cwd}||cwd, "Select as folder",
 					wxDefaultPosition, wxDefaultSize,
 					wxDIRP_DIR_MUST_EXIST|wxDIRP_CHANGE_DIR|wxDIRP_USE_TEXTCTRL);
-  $hbox -> Add($this->{dir}, 1, wxGROW|wxALL, 0);
+  $dirboxsizer -> Add($this->{dir}, 1, wxGROW|wxALL, 0);
 
-  $hbox = Wx::BoxSizer->new(wxHORIZONTAL);
-  $box->Add($hbox, 0, wxGROW|wxALL, 3);
+  ## pattern
+  my $patternbox       = Wx::StaticBox->new($this, -1, 'File pattern to watch for', wxDefaultPosition, wxDefaultSize);
+  my $patternboxsizer  = Wx::StaticBoxSizer->new( $patternbox, wxHORIZONTAL );
+  $box->Add($patternboxsizer, 0, wxGROW|wxALL, 5);
+
   $this->{pattern} = Wx::RadioBox->new($this, -1, q{Pattern type}, wxDefaultPosition, wxDefaultSize,
 				       ["File basename", "Wildcard", "Regular expression"], 1, wxRA_SPECIFY_COLS);
-  $hbox->Add($this->{pattern}, 1, wxLEFT|wxRIGHT, 3);
+  $patternboxsizer->Add($this->{pattern}, 1, wxALL, 5);
   $this->{pattern}->SetSelection($yaml->{pattern});
   my $vbox = Wx::BoxSizer->new(wxVERTICAL);
-  $hbox->Add($vbox, 1, wxLEFT|wxRIGHT, 3);
+  $patternboxsizer->Add($vbox, 1, wxLEFT|wxRIGHT, 3);
 
-  $vbox->Add(Wx::StaticText->new($this, -1, "File pattern"), 0, wxALL, 3);
+  $vbox->Add(Wx::StaticText->new($this, -1, "File pattern"), 0, wxALL, 5);
   $this->{base} = Wx::TextCtrl->new($this, -1, $yaml->{base}||q{});
-  $vbox->Add($this->{base}, 1, wxGROW|wxLEFT|wxRIGHT, 3);
+  $vbox->Add($this->{base}, 1, wxGROW|wxLEFT|wxRIGHT, 5);
 
-  $hbox = Wx::BoxSizer->new(wxHORIZONTAL);
-  $box->Add($hbox, 0, wxGROW|wxALL, 3);
+  ## folder
+  my $paramsbox       = Wx::StaticBox->new($this, -1, 'Parameters', wxDefaultPosition, wxDefaultSize);
+  my $paramsboxsizer  = Wx::StaticBoxSizer->new( $paramsbox, wxVERTICAL );
+  $box->Add($paramsboxsizer, 0, wxGROW|wxALL, 5);
+
+  my $hbox = Wx::BoxSizer->new(wxHORIZONTAL);
+  $paramsboxsizer->Add($hbox, 0, wxGROW|wxALL, 3);
   $hbox->Add(Wx::StaticText->new($this, -1, "Interval"), 0, wxLEFT|wxRIGHT|wxTOP, 3);
   $this->{interval} = Wx::TextCtrl->new($this, -1, $yaml->{interval}||Demeter->co->default(qw(watcher interval)), wxDefaultPosition, [120,-1]);
   $hbox->Add($this->{interval}, 0, wxLEFT|wxRIGHT, 3);
@@ -82,7 +87,7 @@ sub new {
   $this->{interval} -> SetValidator( Wx::Perl::TextValidator->new( qr([0-9]) ) );
 
   $hbox = Wx::BoxSizer->new(wxHORIZONTAL);
-  $box->Add($hbox, 0, wxGROW|wxALL, 5);
+  $paramsboxsizer->Add($hbox, 0, wxGROW|wxALL, 5);
   $this->{mark}  = Wx::CheckBox->new($this, -1, "Mark each group");
   $hbox->Add($this->{mark}, 1, wxLEFT|wxRIGHT, 3);
   $this->{align} = Wx::CheckBox->new($this, -1, "Align each group");
@@ -91,7 +96,7 @@ sub new {
   $hbox->Add($this->{set}, 1, wxLEFT|wxRIGHT, 3);
 
   $hbox = Wx::BoxSizer->new(wxHORIZONTAL);
-  $box->Add($hbox, 0, wxGROW|wxALL, 5);
+  $paramsboxsizer->Add($hbox, 0, wxGROW|wxALL, 5);
   $this->{plot} = Wx::CheckBox->new($this, -1, "Plot data each time a file is imported");
   $hbox->Add($this->{plot}, 1, wxLEFT|wxRIGHT, 3);
 
@@ -104,7 +109,7 @@ sub new {
 
   $hbox = Wx::BoxSizer->new(wxHORIZONTAL);
   $box->Add($hbox, 0, wxGROW|wxALL, 3);
-  $this->{start} = Wx::Button->new($this, wxID_APPLY, "");
+  $this->{start} = Wx::Button->new($this, wxID_APPLY, "Start");
   $hbox->Add($this->{start}, 1, wxLEFT|wxRIGHT, 3);
   $this->{stop} = Wx::Button->new($this, wxID_STOP, "Stop");
   $hbox->Add($this->{stop}, 1, wxLEFT|wxRIGHT, 3);

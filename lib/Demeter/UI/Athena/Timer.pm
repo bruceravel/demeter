@@ -19,6 +19,7 @@ sub Notify {
   my @created = $::app->{main}->{Watcher}->{monitor}->created;
   my @modified = $::app->{main}->{Watcher}->{monitor}->modified;
   if (@modified) {
+    $timer->{fname} ||= $modified[0]; # handle situation where watcher starts after scan starts
     $::app->{main}->status("Noticed change to " . $timer->{fname});
     $timer->{size}  = -s $timer->{fname};
   };
