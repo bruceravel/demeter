@@ -68,10 +68,13 @@ sub Export {
 };
 
 sub Import {
-  my ($app, $fname) = @_;
+  my ($app, $fname, @args) = @_;
+  my %args = @args;
+  $args{no_main}        = 0 if not defined $args{no_main};
+  $args{no_interactive} = 0 if not defined $args{no_interactive};
   my $retval = q{};
 
-  $app->{main}->{views}->SetSelection(0);
+  $app->{main}->{views}->SetSelection(0) if not $args{no_main};
 
   my @files = ($fname);
   if (not $fname) {
@@ -89,7 +92,7 @@ sub Import {
   my $verbose = 0;
   ## also xmu.dat
   ## evkev?
-  my $first = 1;
+  my $first = ($args{no_interactive}) ? 0 : 1;
   foreach my $file (sort {$a cmp $b} @files) {
     ## check to see if this is a Windows shortcut, if so, resolve it
     ## bail out if it points to a file that is not -e or cannot -r
