@@ -132,13 +132,14 @@ sub set_datagroup {
 ######################################################################
 ## conditional features
 use vars qw($Gnuplot_exists $STAR_Parser_exists $XDI_exists
-	    $PDL_exists $PSG_exists);
+	    $PDL_exists $PSG_exists $FML_exists);
 $Gnuplot_exists     = eval "require Graphics::GnuplotIF" || 0;
 $STAR_Parser_exists = 1;
 use STAR::Parser;
 $XDI_exists         = eval "require Xray::XDI" || 0;
 $PDL_exists         = eval "require PDL::Lite" || 0;
 $PSG_exists         = eval "require PDL::Stats::GLM" || 0;
+$FML_exists         = eval "require File::Monitor::Lite" || 0;
 ######################################################################
 
 use Demeter::Plot;
@@ -770,7 +771,9 @@ sub conditional_features {
   $text .= "Xray::XDI:           " . $self->yesno($XDI_exists);
   $text .= ($XDI_exists)         ? " -- file metadata\n"         : "  -- file metadata is disabled.\n";
   $text .= "PDL:                 " . $self->yesno($PDL_exists);
-  $text .= ($PDL_exists)         ? " -- PCA\n" : "  -- PCA is disabled.\n";
+  $text .= ($PDL_exists)         ? " -- PCA\n"                   : "  -- PCA is disabled.\n";
+  $text .= "File::Monitor::Lite: " . $self->yesno($FML_exists);
+  $text .= ($FML_exists)         ? " -- data watcher\n"          : "  -- data watcher is disabled.\n";
   return $text;
 };
 

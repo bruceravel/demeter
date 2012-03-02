@@ -1181,6 +1181,7 @@ sub main_window {
 		     'PluginRegistry',    # 20
 		     'Prefs',		  # 21
 		    ) {
+    next if (($which eq 'Watcher') and (not $Demeter::FML_exists));
     next if (($which eq 'Watcher') and (not Demeter->co->default(qw(athena show_watcher))));
     next if $INC{"Demeter/UI/Athena/$which.pm"};
     require "Demeter/UI/Athena/$which.pm";

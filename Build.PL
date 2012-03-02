@@ -50,7 +50,6 @@ my $build = DemeterBuilder
 				'DateTime'                  => '0',
 				'Digest::SHA'		    => '0',
 				'Encoding::FixLatin'        => '0',
-				#'File::Monitor::Lite'       => '0',
 				'File::Copy::Recursive'     => '0',
 				'File::CountLines'          => '0',
 				'Graph'                     => '0',
@@ -125,6 +124,9 @@ my $build = DemeterBuilder
 
 				## GUI for Athena, Artemis, and Hephaestus
 				'Wx'                  => '0.86'
+
+				## this lets the data watcher work
+				'File::Monitor::Lite' => '0',
 
 				## these are used for direct access to the pgplot terminal
 				#'ExtUtils::F77'       => '0',
