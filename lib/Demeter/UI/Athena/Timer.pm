@@ -20,7 +20,7 @@ sub Notify {
   my @modified = $::app->{main}->{Watcher}->{monitor}->modified;
   if (@modified) {
     $timer->{fname} ||= $modified[0]; # handle situation where watcher starts after scan starts
-    $::app->{main}->status("Noticed change to " . $timer->{fname});
+    $::app->{main}->status("Noticed change to " . $timer->{fname}, 'nobuffer');
     $timer->{size}  = -s $timer->{fname};
   };
   if ($timer->{prev}) {
@@ -49,6 +49,14 @@ sub import_data {
   $::app->Import($fname, no_main=>1, no_interactive=>1);
   Demeter->po->e_smooth($save);
   $::app->plot(q{}, q{}, 'E', 'marked') if $::app->{main}->{Watcher}->{plot}->GetValue;
+  ++$::app->{main}->{Watcher}->{count};
+
+  if ($::app->{main}->{Watcher}->{yaml}->{stopafter} > 0) {
+    if ($::app->{main}->{Watcher}->{count} == $::app->{main}->{Watcher}->{yaml}->{stopafter}) {
+      $::app->{main}->{Watcher}->stop(1);
+    };
+  };
+
 };
 
 

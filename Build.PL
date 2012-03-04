@@ -123,7 +123,7 @@ my $build = DemeterBuilder
 				'Graphics::GnuplotIF' => '0',
 
 				## GUI for Athena, Artemis, and Hephaestus
-				'Wx'                  => '0.86'
+				'Wx'                  => '0.86',
 
 				## this lets the data watcher work
 				'File::Monitor::Lite' => '0',

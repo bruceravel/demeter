@@ -611,7 +611,9 @@ sub _group {
       $ret->DESTROY;
     };
     $ref -> _update('fft');
+    my $save = $app->{most_recent};
     $app->{main}->{list}->AddData($ref->name, $ref);
+    $app->{most_recent} = $save;
     $app->{main}->{Main}->{bkg_eshift}-> SetBackgroundColour( Wx::Colour->new($ref->co->default("athena", "tied")) );
     $ref->reference($data);
   };

@@ -1,0 +1,50 @@
+File basename (simplest)
+========================
+  Specify just the basename of the file with the assumption that
+  your files all follow a pattern of <basename>.<extension>.
+  For example a value of "Aufoil" will match a filename with any
+  extension, such as "Aufoil.001", "Aufoil.300", or even
+  "Aufoil.dat".
+
+
+Wildcard (more flexible)
+========================
+  Explicitly use shell wildcards to specify the files to watch.
+  Some examples:
+    + "Aufoil.*" will perform the same match as the basename
+      example above.
+    + "Aufoil.1*" will match those files with an extension
+       begining with the number 1.
+    + "Au*.*" will match any file begining with "Au" and ending
+      with any extension.  This is useful for a sequence of scans
+      on different gold-containing samples.
+
+  See http://en.wikipedia.org/wiki/Glob_(programming) for more
+  information.
+
+
+Regular expression (most powerful)
+==================================
+  Use a Perl regular expression to specify the filenames to watch.
+  This gives you full access to Perl's regular expression engine
+  to specify almost any grouping of files.  Some examples that
+  are difficult with wildcards:
+    + "Aufoil\.10\{2,3\}" will match "Aufoil.100", "Aufoil.1000",
+       but not "Aufoil.10" or "Aufoil.10000".
+    + "Au(chloride|sulfide)\.\d\{3\}" will match "Auchloride"
+      or "Ausulfide", followed by a dot, followed by exactly 3
+      numbers
+
+  The string you supply is passed as the argument to Perl's 'qr'
+  quote-like function.
+
+  If you supply an invalid regular expression, the file watcher
+  will refuse to start.
+
+  Nothing precludes you from using regular expressions with
+  dangerous extended patterns such as "(?\{ code \})".  If you
+  know what that is and are foolish enough to hurt yourself doing
+  that sort of black magick, it ain't Bruce's fault!
+
+  See http://perldoc.perl.org/perlre.html for the gory details.
+
