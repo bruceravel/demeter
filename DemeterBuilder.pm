@@ -12,6 +12,7 @@ use Cwd;
 use File::Copy;
 use File::Path qw(mkpath rmtree);
 use File::Spec;
+use File::Touch;
 
 ######################################################################
 ## Configuration
@@ -176,6 +177,15 @@ sub ACTION_update {
   my $self = shift;
   my $ret = $self->do_system(qw(git pull));
   die "failed to update Demeter from github\n" if not $ret;
+};
+
+sub ACTION_touch_wrapper {
+  my $self = shift;
+  print "touching src/ifeffit_wrap.c\n";
+  touch(File::Spec->catfile('src', 'ifeffit_wrap.c'));
+  $self->ACTION_build;
+  print "copying src/Ifeffit.so to local auto directory\n";
+  copy(File::Spec->catfile('src', 'Ifeffit.so'), File::Spec->catfile($ENV{HOME}, 'perl', 'auto', 'Ifeffit', 'Ifeffit.so'));
 };
 
 ######################################################################
