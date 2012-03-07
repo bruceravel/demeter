@@ -1623,6 +1623,7 @@ sub postplot {
     $app->{main}->{Main}->{bkg_fixstep}->SetValue($is_fixed);
   };
   $data->bkg_fixstep($is_fixed);
+  $data->set(update_norm=>0, update_bkg=>0);
 
   $app->{main}->{Other}->{singlefile}->SetValue(0);
   return;

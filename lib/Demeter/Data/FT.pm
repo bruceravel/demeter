@@ -7,7 +7,7 @@ sub fft {
     carp($self->name . " is a detector group, which cannot be Frouier transformed\n\n");
     return $self;
   };
-  $self->_update("fft");
+  #  $self->_update("fft");
   $self->dispose($self->_fft_command);
   $self->chi_noise;
   $self->update_fft(0);
@@ -25,7 +25,7 @@ sub bft {
     carp($self->name . " is a detector group, which cannot be Frouier transformed\n\n");
     return $self;
   };
-  $self->_update("fft");
+  #  $self->_update("fft");
   $self->dispose($self->_bft_command);
   $self->update_bft(0);
 };

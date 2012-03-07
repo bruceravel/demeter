@@ -6,7 +6,7 @@
 
 spline("{$D->group}.energy+{$D->bkg_eshift}", {$D->group}.xmu, e0={$D->bkg_e0}, rbkg={$D->bkg_rbkg},
        {($D->bkg_stan !~ /None/) ? sprintf("k_std=%s.k, chi_std=%s.chi, ", $D->bkg_stan, $D->bkg_stan) : q{}}
-       {($D->bkg_fixstep) ? sprintf("edge_step=%.7g, do_pre=F, ", $D->bkg_step) : q{} }
+       {($D->bkg_fixstep) ? sprintf("edge_step=%.7g, find_step=0, ", $D->bkg_step) : q{} }
        kmin={$D->bkg_spl1}, kmax={$D->bkg_spl2}, kweight={$D->bkg_kw}, dk={$D->bkg_dk},
        kwindow={$D->bkg_kwindow}, pre1={$D->bkg_pre1}, pre2={$D->bkg_pre2},
        norm_order={$D->bkg_nnorm}, norm1={$D->bkg_nor1}, norm2={$D->bkg_nor2}, 

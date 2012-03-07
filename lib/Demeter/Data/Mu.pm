@@ -387,13 +387,14 @@ sub autobk {
     $self->bkg_nor2($self->co->default('bkg', 'nor2'));
     $self->resolve_defaults;
   };
-  #$self->dispose($command);
+  $self->dispose($command);
+  $self->bkg_step(sprintf("%.7f", $fixed || Ifeffit::get_scalar("edge_step")));
+
 
 ## is it necessary to do post_autobk and flatten templates here?  they
 ## *were* done in the normalize method...
 
   ## begin setting up all the generated arrays from the background removal
-  $self->update_bkg(0);
   $self->update_fft(1);
   $self->bkg_cl(0);
   $command .= $self->template("process", "post_autobk");
@@ -404,10 +405,6 @@ sub autobk {
   };
 
   #$self->dispose($command);
-
-#     $command .= sprintf("set $group.fbkg = ($group.bkg-$group.preline+(%.5f-$group.line)*$group.theta)/%.5f\n",
-# 			$self->get(qw(bkg_fitted_step bkg_step)))
-#       if not $self->get('is_xanes');
 
   if ($self->bkg_fixstep or $self->is_nor or ($self->datatype eq 'xanes')) {
     $command .= $self->template("process", "flatten_fit");

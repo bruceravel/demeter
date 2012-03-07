@@ -207,7 +207,7 @@ has 'update_norm'    => (is => 'rw', isa => 'Bool',  default => 1,
 			 trigger => sub{ my($self, $new) = @_; $self->update_bkg(1) if $new});
 
 has 'update_bkg'     => (is => 'rw', isa => 'Bool',  default => 1,
-			 trigger => sub{ my($self, $new) = @_; $self->update_fft(1) if $new});
+			 trigger => sub{ my($self, $new) = @_; $self->update_fft(1) if $new;});
 
 has 'update_fft'     => (is => 'rw', isa => 'Bool',  default => 1,
 			 trigger => sub{ my($self, $new) = @_; $self->update_bft(1) if $new});
