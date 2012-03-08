@@ -24,9 +24,8 @@ use Wx::Event qw(EVT_CLOSE EVT_LISTBOX EVT_BUTTON EVT_RADIOBOX);
 
 use List::MoreUtils qw(any);
 
-#use Demeter;
+use Demeter qw(:none);
 
-my $demeter = Demeter->new();
 ## type is either a scalar containing a string or an array reference
 ## pointing to an array of strings
 sub new {
@@ -34,7 +33,7 @@ sub new {
 
   my @types = (ref($type) =~ m{ARRAY}) ? @$type : ($type);
 
-  my @list = $demeter->get_mru_list(@types);
+  my @list = Demeter->get_mru_list(@types);
   unshift(@list, ["Open a blank Atoms window", '-----']) if any {$_ eq 'atoms'} @types;
   return -1 if not @list;
 

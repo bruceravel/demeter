@@ -24,8 +24,7 @@ use Text::Wrap;
 use Wx qw( :everything );
 use Wx::Event qw(EVT_BUTTON EVT_TREE_SEL_CHANGED EVT_TEXT_ENTER);
 
-#use Demeter;
-my $demeter = Demeter->new;
+use Demeter qw(:none);
 
 use Demeter::UI::Wx::ColourDatabase;
 my $cdb = Demeter::UI::Wx::ColourDatabase->new;
@@ -47,7 +46,7 @@ sub new {
   ## -------- list of parameters
   $self->{paramsbox} = Wx::StaticBox->new($self, -1, 'Parameters', wxDefaultPosition, wxDefaultSize);
   $self->{paramsboxsizer} = Wx::StaticBoxSizer->new( $self->{paramsbox}, wxVERTICAL );
-  my $style = ($demeter->is_windows) ? wxTR_SINGLE|wxTR_HAS_BUTTONS : wxTR_SINGLE|wxTR_HAS_BUTTONS|wxTR_HIDE_ROOT;
+  my $style = (Demeter->is_windows) ? wxTR_SINGLE|wxTR_HAS_BUTTONS : wxTR_SINGLE|wxTR_HAS_BUTTONS|wxTR_HIDE_ROOT;
   $self->{params} = Wx::TreeCtrl->new($self, -1, wxDefaultPosition, wxDefaultSize, $style);
   $self->{paramsboxsizer} -> Add($self->{params}, 1, wxEXPAND|wxALL, 0);
   $mainsizer -> Add($self->{paramsboxsizer}, 1, wxEXPAND|wxALL, 5);
@@ -140,9 +139,9 @@ sub populate {
   my @templist = (ref($grouplist) eq 'ARRAY') ? @$grouplist : ($grouplist);
   foreach my $t (@templist) {
     if ($t eq 'base') {
-      push @grouplist,  @{ $demeter->co->main_groups };
+      push @grouplist,  @{ Demeter->co->main_groups };
     } elsif ($t eq 'all' ) {
-      push @grouplist,  $demeter->co->groups;
+      push @grouplist,  Demeter->co->groups;
     } elsif ($t =~ m{\A\!(\w+)}) {
       push @removelist, $1;
     } else {
@@ -160,7 +159,7 @@ sub populate {
 
   my $root = $self->{params} -> AddRoot('Root');
   foreach my $g (@grouplist) {
-    my @params = $demeter->co->parameters($g);
+    my @params = Demeter->co->parameters($g);
     my $branch = $self->{params} -> AppendItem($root, $g);
     map {$self->{params} -> AppendItem($branch, $_) if ($_ !~ m{\Ac\d{1,2}\z})} @params;
   };
@@ -170,7 +169,7 @@ sub populate {
     $self->{params}->SelectItem($first);
     my $this = $self->{params}->GetItemText( $self->{params}->GetSelection );
     $self->{desc}->Clear;
-    $self->{desc}->WriteText($demeter->co->description($this))
+    $self->{desc}->WriteText(Demeter->co->description($this))
   };
 };
 
@@ -189,11 +188,11 @@ sub tree_select {
     $parent = $self->{params}->GetItemParent($clickedon);
     $parent = $self->{params}->GetItemText($parent);
 
-    my $description = $demeter->co->description($parent, $param);
-    if ($demeter->co->units($parent, $param)) {
-      $description .= $/ x 3 . "This parameter is in units of " . $demeter->co->units($parent, $param) . ".";
+    my $description = Demeter->co->description($parent, $param);
+    if (Demeter->co->units($parent, $param)) {
+      $description .= $/ x 3 . "This parameter is in units of " . Demeter->co->units($parent, $param) . ".";
     };
-    if ($demeter->co->restart($parent, $param)) {
+    if (Demeter->co->restart($parent, $param)) {
       $description .= $/ x 3 . "A change in this parameter will take effect the next time you start this application.";
     };
     {				# this shouldnot be necessary, why doesn't wrapping work in TextCtrl?
@@ -201,15 +200,15 @@ sub tree_select {
       $self->{desc}  -> WriteText(wrap(q{}, q{}, $description));
     };
     $self->{Name}  -> SetLabel(join(' --> ', $parent, $param));
-    $self->{Type}  -> SetLabel($demeter->co->Type($parent, $param));
-    my $type = $demeter->co->Type($parent, $param);
+    $self->{Type}  -> SetLabel(Demeter->co->Type($parent, $param));
+    my $type = Demeter->co->Type($parent, $param);
 
     if ($type eq 'boolean') {
-      $self->{Value}   -> SetLabel($demeter->truefalse( $demeter->co->default($parent, $param) ));
-      $self->{Default} -> SetLabel($demeter->truefalse( $demeter->co->demeter($parent, $param) ));
+      $self->{Value}   -> SetLabel(Demeter->truefalse( Demeter->co->default($parent, $param) ));
+      $self->{Default} -> SetLabel(Demeter->truefalse( Demeter->co->demeter($parent, $param) ));
     } else {
-      $self->{Value} -> SetLabel($demeter->co->default($parent, $param));
-      $self->{Default} -> SetLabel($demeter->co->demeter($parent, $param));
+      $self->{Value} -> SetLabel(Demeter->co->default($parent, $param));
+      $self->{Default} -> SetLabel(Demeter->co->demeter($parent, $param));
     };
     $self->{Value}   -> SetOwnBackgroundColour(wxNullColour);
     $self->{Value}   -> Enable;
@@ -217,7 +216,7 @@ sub tree_select {
     $self->{Default} -> Enable;
     $self->{apply}   -> Enable;
     $self->{save}    -> Enable;
-    $self->{apply}   -> Disable if $demeter->co->restart($parent, $param);
+    $self->{apply}   -> Disable if Demeter->co->restart($parent, $param);
 
   WIDGET: {
       $self->set_string_widget($parent, $param, $type), last WIDGET if ($type =~ m{(?:string|real|regex|absolute energy)});
@@ -242,7 +241,7 @@ sub tree_select {
     $self->{Default} -> Disable;
     { # this shouldnot be necessary, why doesn't wrapping work in TextCtrl?
       local $Text::Wrap::columns = 47;
-      $self->{desc}  -> WriteText(wrap(q{}, q{}, $demeter->co->description($param)));
+      $self->{desc}  -> WriteText(wrap(q{}, q{}, Demeter->co->description($param)));
     };
     $self->{apply}   -> Disable;
     $self->{save}    -> Disable;
@@ -261,17 +260,17 @@ sub apply {
   $parent      = $self->{params}->GetItemText($parent);
 
   my $value;
-  my $type = $demeter->co->Type($parent, $param);
+  my $type = Demeter->co->Type($parent, $param);
  WIDGET: {
     $value = $self->{Set}->GetValue,           last WIDGET if ($type =~ m{(?:string|real|regex|absolute energy)});
     $value = $self->{Set}->GetStringSelection, last WIDGET if ($type eq 'list');
     $value = $self->{Set}->GetValue,           last WIDGET if ($type eq 'positive integer');
-    $value = $demeter->onezero($self->{Set}->GetValue), last WIDGET if ($type eq 'boolean');
+    $value = Demeter->onezero($self->{Set}->GetValue), last WIDGET if ($type eq 'boolean');
     $value = $self->{Set}->GetColour->GetAsString(wxC2S_HTML_SYNTAX), last WIDGET if ($type eq 'color');
   };
 
-  $demeter->co->set_default($parent, $param, $value);
-  $demeter->co->write_ini if $save;
+  Demeter->co->set_default($parent, $param, $value);
+  Demeter->co->write_ini if $save;
   $self->$callback($parent, $param, $value, $save);
 };
 
@@ -281,21 +280,21 @@ sub set_value {
   my $param    = $self->{params}->GetItemText($selected);
   my $parent   = $self->{params}->GetItemParent($selected);
   $parent      = $self->{params}->GetItemText($parent);
-  my $value    = $demeter->co->$which($parent, $param);
+  my $value    = Demeter->co->$which($parent, $param);
   #print join(" ", $which, $param, $parent, $value), $/;
 
-  my $type = $demeter->co->Type($parent, $param);
+  my $type = Demeter->co->Type($parent, $param);
  WIDGET: {
     $self->{Set}->SetValue($value),                     last WIDGET if ($type =~ m{(?:string|real|regex|absolute energy)});
 
     ($type eq 'list') and do {
-      $self->{Set}->SetSelection(firstidx {$_ eq $value} split(" ", $demeter->co->options($parent, $param)));
+      $self->{Set}->SetSelection(firstidx {$_ eq $value} split(" ", Demeter->co->options($parent, $param)));
       last WIDGET;
     };
 
     $self->{Set}->SetValue($value),                     last WIDGET if ($type eq 'positive integer');
 
-    $self->{Set}->SetValue($demeter->onezero($value)),  last WIDGET if ($type eq 'boolean');
+    $self->{Set}->SetValue(Demeter->onezero($value)),  last WIDGET if ($type eq 'boolean');
 
     ($type eq 'color') and do {
       if ($value =~ m{\A\#}) {
@@ -329,7 +328,7 @@ sub set_stub {
 
 sub set_string_widget {
   my ($self, $parent, $param, $type) = @_;
-  my $this = $demeter->co->default($parent, $param);
+  my $this = Demeter->co->default($parent, $param);
   $self->{Set} = Wx::TextCtrl->new( $self, -1, $this, [-1, -1], [-1, -1], wxTE_PROCESS_ENTER );
   EVT_TEXT_ENTER($self, $self->{Set}, sub{1});
   ## use $type to set validation
@@ -340,25 +339,25 @@ sub set_string_widget {
 
 sub set_list_widget {
   my ($self, $parent, $param) = @_;
-  my @choices  = split(" ", $demeter->co->options($parent, $param));
+  my @choices  = split(" ", Demeter->co->options($parent, $param));
   $self->{Set} = Wx::Choice->new( $self, -1, [-1, -1], [-1, -1], \@choices );
-  my $value    = $demeter->co->default($parent, $param);
-  $self->{Set}->SetSelection(firstidx {$_ eq $value} split(" ", $demeter->co->options($parent, $param)));
+  my $value    = Demeter->co->default($parent, $param);
+  $self->{Set}->SetSelection(firstidx {$_ eq $value} split(" ", Demeter->co->options($parent, $param)));
   return $self->{Set};
 };
 
 sub set_spin_widget {
   my ($self, $parent, $param) = @_;
-  my $this = $demeter->co->default($parent, $param);
+  my $this = Demeter->co->default($parent, $param);
   $self->{Set} = Wx::SpinCtrl->new($self, -1, $this, wxDefaultPosition, [-1,-1]);
-  $self->{Set} -> SetRange($demeter->co->minint($parent, $param),
-			   $demeter->co->maxint($parent, $param));
+  $self->{Set} -> SetRange(Demeter->co->minint($parent, $param),
+			   Demeter->co->maxint($parent, $param));
   return $self->{Set};
 };
 
 sub set_boolean_widget {
   my ($self, $parent, $param) = @_;
-  my $this = $demeter->co->default($parent, $param);
+  my $this = Demeter->co->default($parent, $param);
   $self->{Set} = Wx::CheckBox->new($self, -1, $param, wxDefaultPosition, [-1,-1]);
   $self->{Set}->SetValue($this);
   return $self->{Set};
@@ -368,7 +367,7 @@ sub set_color_widget {
   my ($self, $parent, $param) = @_;
 
   my $color;
-  my $this = $demeter->co->default($parent, $param);
+  my $this = Demeter->co->default($parent, $param);
   if ($this =~ m{\A\#}) {
     my $col = Wx::Colour->new($this);
     $self->{Value} -> SetOwnBackgroundColour( $col );
@@ -378,7 +377,7 @@ sub set_color_widget {
     $color = $cdb->Find($this);
   };
 
-  $this = $demeter->co->demeter($parent, $param);
+  $this = Demeter->co->demeter($parent, $param);
   if ($this =~ m{\A\#}) {
     my $col = Wx::Colour->new($this);
     $self->{Default}->SetOwnBackgroundColour( $col );

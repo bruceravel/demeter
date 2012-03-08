@@ -221,6 +221,7 @@ sub import {
   my @xes  = ('XES');
   my $colonanalysis = 0;
   my $doplugins     = 0;
+  my $none          = 0;
 
  PRAG: foreach my $p (@pragmata) {
     $plot -> plot_with($1),        next PRAG if ($p =~ m{:plotwith=(\w+)});
@@ -261,8 +262,13 @@ sub import {
       $doplugins = 1;
       next PRAG;
     };
+    if ($p eq ':none') {
+      $none = 1;
+      next PRAG;
+    };
   };
   @load = (@data, @fit, @anal, @xes) if not @load;
+  @load = () if $none;
 
   foreach my $m (uniq @load) {
     next if $INC{"Demeter/$m.pm"};
@@ -276,7 +282,7 @@ sub import {
   };
 
   if ($PDL_exists and $PSG_exists) {
-    next if $INC{"Demeter/PCA.pm"};
+    ##next if $INC{"Demeter/PCA.pm"};
     ##print DateTime->now,  "  Demeter/PCA.pm\n";
     require "Demeter/PCA.pm";
   };

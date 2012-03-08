@@ -22,9 +22,7 @@ use warnings;
 use File::Spec;
 use Wx qw(wxNullColour);
 
-#use Demeter;
-my $demeter = Demeter->new;
-
+use Demeter qw(:none);
 ################# The stuff from here to the next row of hashes is taken from Mark Dootson
 
 sub new {
@@ -158,7 +156,7 @@ sub __init {
 
 sub X11 {
   my ($self) = @_;
-  my $rgbtxt = File::Spec->catfile($demeter->location, "Demeter", "share", "rgb_colors.dem");
+  my $rgbtxt = File::Spec->catfile(Demeter->location, "Demeter", "share", "rgb_colors.dem");
   open RGB, $rgbtxt;
   while (<RGB>) {
     next if ($_ =~ m{^\!});
@@ -177,7 +175,7 @@ sub X11 {
 
 sub gnuplot {
   my ($self) = @_;
-  my $gp = File::Spec->catfile($demeter->location, "Demeter", "share", "gnuplot_colors.dem");
+  my $gp = File::Spec->catfile(Demeter->location, "Demeter", "share", "gnuplot_colors.dem");
   open GP, $gp;
   while (<GP>) {
     chomp;

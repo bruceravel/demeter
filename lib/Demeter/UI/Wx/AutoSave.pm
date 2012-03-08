@@ -21,13 +21,13 @@ use warnings;
 use Wx qw( :everything );
 use base qw(Wx::SingleChoiceDialog);
 
-use Demeter;
+use Demeter qw(:none);
 
-my $demeter = Demeter->new();
+#my $demeter = Demeter->new();
 sub new {
   my ($class, $parent, $text, $title) = @_;
 
-  opendir(my $stash, $demeter->stash_folder);
+  opendir(my $stash, Demeter->stash_folder);
   ##                                         vvvvvv this is an icky kludge!
   my @list = grep {$_ =~ m{autosave\z} and $_ !~ m{\AAthena}} readdir $stash;
   closedir $stash;

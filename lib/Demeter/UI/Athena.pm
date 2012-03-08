@@ -1151,6 +1151,28 @@ sub main_window {
   $app->mouseover($app->{main}->{none},   "Clear all marks");
   $app->mouseover($app->{main}->{invert}, "Invert all marks");
 
+  my %labels_of = (
+		   Main             => 'Main window',
+		   Calibrate	    => "Calibrate data",
+		   Align	    => "Align data",
+		   Rebin	    => "Rebin data",
+		   DeglitchTruncate => "Deglitch and truncate data",
+		   Smooth	    => "Smooth data",
+		   ConvoluteNoise   => "Convolute and add noise to data",
+		   Deconvolute	    => "Deconvolute data",
+		   SelfAbsorption   => "Self-absorption correction",
+		   Series	    => "Copy series",
+		   LCF		    => "Linear combination fitting",
+		   PCA		    => "Principle components analysis",
+		   PeakFit	    => "Peak fitting",
+		   LogRatio	    => "Log-ratio/phase-difference analysis",
+		   Difference	    => "Difference spectra of normalized $MU(E)",
+		   XDI		    => "File metadata",
+		   Watcher	    => "Data watcher",
+		   Journal	    => "Project journal",
+		   PluginRegistry   => "Plugin registry",
+		   Prefs	    => "Preferences",
+		  );
 
 
   $app->{main}->{views} = Wx::Choicebook->new($viewpanel, -1);
@@ -1158,6 +1180,7 @@ sub main_window {
   #print join("|", $app->{main}->{views}->GetChildren), $/;
   $app->mouseover($app->{main}->{views}->GetChildren, "Change data processing and analysis tools using this menu.");
 
+  my $pagesize;
   foreach my $which ('Main',		  # 0
 		     'Calibrate',	  # 1
 		     'Align',		  # 2
@@ -1184,12 +1207,26 @@ sub main_window {
     next if (($which eq 'Watcher') and (not $Demeter::FML_exists));
     next if (($which eq 'Watcher') and (not Demeter->co->default(qw(athena show_watcher))));
     next if $INC{"Demeter/UI/Athena/$which.pm"};
-    require "Demeter/UI/Athena/$which.pm";
-    $app->{main}->{$which} = "Demeter::UI::Athena::$which"->new($app->{main}->{views}, $app);
-    my $label = eval '$'.'Demeter::UI::Athena::'.$which.'::label';
-    $app->{main}->{views} -> AddPage($app->{main}->{$which}, $label, 0);
-    next if (not exists $app->{main}->{$which}->{document});
-    $app->{main}->{$which}->{document} -> Enable(0);
+
+    my $page = Wx::Panel->new($app->{main}->{views}, -1);
+    $app->{main}->{$which."_page"} = $page;
+    my $box = Wx::BoxSizer->new( wxVERTICAL );
+    $app->{main}->{$which."_sizer"} = $box;
+
+    ## postpone creating most views until they are selected for the first time. (see view_changing)
+    if (any {$which eq $_} qw(Main PluginRegistry Journal)) {
+      require "Demeter/UI/Athena/$which.pm";
+      my $pm = "Demeter::UI::Athena::$which";
+      $app->{main}->{$which} = $pm->new($page, $app);
+      my $hh   = Wx::BoxSizer->new( wxVERTICAL );
+      $hh  -> Add($app->{main}->{$which}, 1, wxGROW|wxEXPAND|wxALL, 0);
+      $box -> Add($hh, 1, wxEXPAND|wxALL, 0);
+    };
+    $page -> SetSizer($box);
+    ##my $label = eval '$'.'Demeter::UI::Athena::'.$which.'::label' || $labels_of{$which};
+    my $label = $labels_of{$which};
+    $app->{main}->{views} -> AddPage($page, $label, 0);
+
   };
   $app->{main}->{views}->SetSelection(0);
 
@@ -1197,6 +1234,8 @@ sub main_window {
   $app->EVT_BUTTON($app->{main}->{return},   sub{  $app->{main}->{views}->SetSelection(0); $app->OnGroupSelect(0)});
   $viewbox -> Add($app->{main}->{return}, 0, wxGROW|wxLEFT|wxRIGHT, 5);
 
+  $viewbox->Fit($app->{main}->{views});
+  $viewbox->SetSizeHints($app->{main}->{views});
   $viewpanel -> SetSizerAndFit($viewbox);
 
   require Demeter::UI::Athena::Null;
@@ -1379,7 +1418,9 @@ sub OnGroupSelect {
   my $is  = $app->{main}->{list}->GetIndexedData($is_index);
   $app->{selecting_data_group}=1;
 
-  my $showing = $app->{main}->{views}->GetPage($app->{main}->{views}->GetSelection);
+  my $view = $app->get_view($app->{main}->{views}->GetSelection);
+  $app->make_page($view) if (not exists $app->{main}->{$view});
+  my $showing = $app->{main}->{$view};
   if ($showing =~ m{XDI}) {
     $app->{main}->{XDI}->pull_values($was) if ($was and ($was ne $is));
   };
@@ -1424,28 +1465,86 @@ sub select_plot {
 };
 
 
+sub get_view {
+  my ($app, $i) = @_;
+  my @views = ('Main',		           # 0
+	       'Calibrate',		   # 1
+	       'Align',		           # 2
+	       'Rebin',		           # 3
+	       'DeglitchTruncate',	   # 4
+	       'Smooth',		   # 5
+	       'ConvoluteNoise',	   # 6
+	       'Deconvolute',		   # 7
+	       'SelfAbsorption',	   # 8
+	       'Series',		   # 9
+	       q{}, # -----------------------
+	       'LCF',			   # 11
+	       'PCA',			   # 12
+	       'PeakFit',		   # 13
+	       'LogRatio',		   # 14
+	       'Difference',		   # 15
+	       q{}, # -----------------------
+	       'XDI',			   # 17
+	       'Watcher',		   # 18
+	       'Journal',		   # 19
+	       'PluginRegistry',	   # 20
+	       'Prefs',		           # 21
+	      );
+  return $views[$i];
+};
+
+sub make_page {
+  my ($app, $view) = @_;
+  print join("|", caller, $view), $/;
+  my $busy = Wx::BusyCursor->new();
+  require "Demeter/UI/Athena/$view.pm";
+  my $pm = "Demeter::UI::Athena::$view";
+  $app->{main}->{$view} = $pm->new($app->{main}->{$view."_page"}, $app);
+  my $hh   = Wx::BoxSizer->new( wxVERTICAL );
+  $hh  -> Add($app->{main}->{$view}, 1, wxGROW|wxEXPAND|wxALL, 0);
+  $app->{main}->{$view."_sizer"} -> Add($hh, 1, wxEXPAND|wxALL, 0);
+
+  #next if (not exists $app->{main}->{$which}->{document});
+  $app->{main}->{$view}->{document} -> Enable(0);
+
+  #$hh -> Fit($app->{main}->{$view});
+  #$app->{main}->{$view."_page"} -> SetSizer($app->{main}->{$view."_sizer"});
+
+  $app->{main}->{$view."_page"}->SetSize($app->{main}->{"Main_page"}->GetSize);
+
+  undef $busy;
+};
+
 sub view_changing {
   my ($app, $frame, $event) = @_;
   my $c = (Demeter->co->default(qw(athena show_watcher))) ? 4 : 3;
   my $ngroups = $app->{main}->{list}->GetCount;
   my $nviews  = $app->{main}->{views}->GetPageCount;
-  #print join("|", $app, $event, $ngroups, $event->GetSelection), $/;
+  #print join("|", $app, $event, $nviews, $ngroups, $event->GetSelection), $/;
 
   my $prior = $app->{main}->{views}->GetPageText($app->{main}->{views}->GetSelection);
 
   my $string = $app->{main}->{views}->GetPageText($event->GetSelection);
   if ($string =~ m{\A-*\z}) {
     $event -> Veto();
-  } elsif (($event->GetSelection != 0) and ($event->GetSelection < $nviews-$c)) {
-    if (not $ngroups) {
-      $app->{main}->status(sprintf("You have no data imported in Athena, thus you cannot use the %s tool.", lc($string)));
-      $event -> Veto();
-    };
   } else {
-    $app->{main}->{XDI}->pull_values($app->current_data) if $prior =~ m{XDI};
-    $app->{main}->status(sprintf("Displaying the %s tool.",
-				 lc($app->{main}->{views}->GetPageText($event->GetSelection))));
-    #$app->{main}->{showing}=
+    ## create the view if it has not yet been seen
+    my $i = $event->GetSelection;
+    my $view = $app->get_view($i);
+    $app->make_page($view) if ($view and (not exists $app->{main}->{$view}));
+
+    if (($event->GetSelection != 0) and ($event->GetSelection < $nviews-$c)) {
+      if (not $ngroups) {
+	$app->{main}->status(sprintf("You have no data imported in Athena, thus you cannot use the %s tool.", lc($string)));
+	$event -> Veto();
+      };
+    } else {
+
+      $app->{main}->{XDI}->pull_values($app->current_data) if $prior =~ m{XDI};
+      $app->{main}->status(sprintf("Displaying the %s tool.",
+				   lc($app->{main}->{views}->GetPageText($event->GetSelection))));
+      #$app->{main}->{showing}=
+    };
   };
 };
 
