@@ -3,7 +3,8 @@ package Demeter::Plugins::X23A2MED;
 use Moose;
 extends 'Demeter::Plugins::FileType';
 
-use Config::IniFiles;
+#use Demeter::IniReader;
+#use Config::IniFiles;
 use File::Basename;
 use File::Copy;
 use Const::Fast;

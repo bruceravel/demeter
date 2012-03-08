@@ -32,6 +32,9 @@ doc/dpg/html/
 doc/dpg/templates/lib/config/map
 doc/dpg/templates/lib/config/version
 
+nytprof/
+nytprof.out
+
 try/
 win/deps/*.xml
 win/deps/deptree

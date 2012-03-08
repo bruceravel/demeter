@@ -20,6 +20,7 @@ package Demeter;  # http://xkcd.com/844/
 #  $ENV{PGPLOT_DIR} = 'C:\strawberry\perl\c\lib\pgplot' if (($^O eq 'MSWin32') or ($^O eq 'cygwin'));
 #};
 
+
 require 5.008;
 
 use version;
@@ -29,6 +30,7 @@ our $VERSION = version->new('0.9.8');
 #use Carp::Always::Color;
 use Carp;
 use Cwd;
+##use DateTime;
 use File::Basename qw(dirname);
 use File::Spec;
 use List::MoreUtils qw(any minmax zip uniq);
@@ -137,8 +139,8 @@ $Gnuplot_exists     = eval "require Graphics::GnuplotIF" || 0;
 $STAR_Parser_exists = 1;
 use STAR::Parser;
 $XDI_exists         = eval "require Xray::XDI" || 0;
-$PDL_exists         = eval "require PDL::Lite" || 0;
-$PSG_exists         = eval "require PDL::Stats::GLM" || 0;
+$PDL_exists         = 0;
+$PSG_exists         = 0;
 $FML_exists         = eval "require File::Monitor::Lite" || 0;
 ######################################################################
 
@@ -211,13 +213,14 @@ sub import {
   ## I wish I didn't have to load XES here
   my @data = (qw(Data XES Plot/Indicator Plot/Style Journal
 		 Data/Prj Data/Pixel Data/MultiChannel Data/BulkMerge));
-  my @heph = (qw(Data XES));
+  my @heph = (qw(Data Data/Prj));
   my @fit  = (qw(Atoms Feff Feff/External ScatteringPath
 		 Path VPath SSPath ThreeBody FPath FSPath
 		 GDS Fit Fit/Feffit StructuralUnit));
   my @anal = (qw(LCF LogRatio Diff PeakFit PeakFit/LineShape));
   my @xes  = ('XES');
   my $colonanalysis = 0;
+  my $doplugins     = 0;
 
  PRAG: foreach my $p (@pragmata) {
     $plot -> plot_with($1),        next PRAG if ($p =~ m{:plotwith=(\w+)});
@@ -235,10 +238,12 @@ sub import {
     };
     if ($p eq ':data') {
       @load = @data;
+      $doplugins = 1;
       next PRAG;
     };
     if ($p eq ':hephaestus') {
       @load = @heph;
+      $doplugins = 0;
       next PRAG;
     };
     if ($p eq ':fit') {
@@ -247,11 +252,13 @@ sub import {
     };
     if ($p eq ':analysis') {
       @load = (@data, @anal);
+      $doplugins = 1;
       $colonanalysis = 1;	# verify PDL before loading PCA
       next PRAG;
     };
     if ($p eq ':all') {
       @load = (@data, @fit, @anal);
+      $doplugins = 1;
       next PRAG;
     };
   };
@@ -259,15 +266,21 @@ sub import {
 
   foreach my $m (uniq @load) {
     next if $INC{"Demeter/$m.pm"};
-    ##print "Demeter/$m.pm\n";
+    #print DateTime->now, "  Demeter/$m.pm\n";
     require "Demeter/$m.pm";
   };
-  if ($colonanalysis and $PDL_exists and $PSG_exists) {
+
+  if ($colonanalysis) {
+    $PDL_exists = eval "require PDL::Lite" || 0;
+    $PSG_exists = eval "require PDL::Stats::GLM" || 0;
+  };
+
+  if ($PDL_exists and $PSG_exists) {
     next if $INC{"Demeter/PCA.pm"};
-    ##print "Demeter/PCA.pm\n";
+    ##print DateTime->now,  "  Demeter/PCA.pm\n";
     require "Demeter/PCA.pm";
   };
-  $class -> register_plugins;
+  $class -> register_plugins if $doplugins;
 };
 
 sub register_plugins {
@@ -689,13 +702,14 @@ alias thaw   => 'deserialize';
 sub template {
   my ($self, $category, $file, $rhash) = @_;
 
-  my $data     = $self->data;
-  my $pf       = $self->mo->plot;
-  my $config   = $self->mo->config;
-  my $fit      = $self->mo->fit;
-  my $standard = $self->mo->standard;
-  my $theory   = $self->mo->theory;
-  my $path     = $self->mo->path;
+  my $mo       = Demeter->mo;
+  my $data     = ($self eq 'Demeter') ? 0 : $self->data;
+  my $pf       = $mo->plot;
+  my $config   = $mo->config;
+  my $fit      = $mo->fit;
+  my $standard = $mo->standard;
+  my $theory   = $mo->theory;
+  my $path     = $mo->path;
 
   # try personal templates first
   my $tmpl = File::Spec->catfile($self->dot_folder,

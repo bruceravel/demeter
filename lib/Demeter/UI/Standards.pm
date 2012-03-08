@@ -29,10 +29,10 @@ use Text::Wrap;
 $Text::Wrap::columns = 75;
 
 use Xray::Absorption;
-use Demeter;
+use Demeter qw(:hephaestus);
 my $demeter = Demeter->new;
 
-use Config::IniFiles;
+use Demeter::IniReader;
 use Regexp::Assemble;
 
 
@@ -53,15 +53,15 @@ my $config_regex = Regexp::Assemble->new()->add(qw(emin emax key_x key_y))->re;
 sub read_ini {
   my ($self) = @_;
   my $file = File::Spec->catfile(Demeter->location, "Demeter", "share", "standards", "standards.ini");
-  my %ini;
-  tie %ini, 'Config::IniFiles', ( -file => $file );
+  my $ini = Demeter::IniReader->read_file($file);
+  #tie %ini, 'Config::IniFiles', ( -file => $file );
 
-  foreach my $k (keys %ini) {
-    $ini{$k}{element} ||= $k;
-    $ini{$k}{element} = lc($ini{$k}{element});
+  foreach my $k (keys %$ini) {
+    $ini->{$k}{element} ||= $k;
+    $ini->{$k}{element} = lc($ini->{$k}{element});
 
-    $materials_of{$k} = $ini{$k};
-    ++$elements_of{ $ini{$k}{element} };
+    $materials_of{$k} = $ini->{$k};
+    ++$elements_of{ $ini->{$k}{element} };
 
     ## untabulated (generated) attributes
     $materials_of{$k}{from_web} = 0;
@@ -72,8 +72,8 @@ sub read_ini {
     };
 
     ## deal gracefully with missing callibrate, xanes, or deriv attributes
-    my $edge = (get_Z($ini{$k}{element}) > 57) ? 'l3' : 'k';
-    my $edge_energy = Xray::Absorption->get_energy($ini{$k}{element}, $edge);
+    my $edge = (get_Z($ini->{$k}{element}) > 57) ? 'l3' : 'k';
+    my $edge_energy = Xray::Absorption->get_energy($ini->{$k}{element}, $edge);
     if ( (not exists($materials_of{$k}{calibrate})) or (not $materials_of{$k}{calibrate}) ) {
       $materials_of{$k}{calibrate} = join(", ", $edge_energy, $edge_energy);
     };

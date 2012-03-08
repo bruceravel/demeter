@@ -79,7 +79,7 @@ sub module_environment {
 		     Archive::Zip
 		     Capture::Tiny
 		     Chemistry::Elements
-		     Config::IniFiles
+		     Config::INI
 		     Const::Fast
 		     DateTime
 		     Graph

@@ -1,6 +1,7 @@
 package Demeter::Data::XDI;
 use Moose::Role;
 use File::Basename;
+use Demeter::IniReader;
 use Demeter::StrTypes qw( Empty );
 use List::MoreUtils qw(zip);
 
@@ -191,15 +192,16 @@ sub metadata_from_ini {
   return $self if not ($INC{'Xray/XDI.pm'});
   return if not -e $inifile;
   return if not -r $inifile;
-  tie my %ini, 'Config::IniFiles', ( -file => $inifile );
-  foreach my $namespace (keys %ini) {
+  my $ini = Demeter::IniReader->read_file($inifile);
+  #tie my %ini, 'Config::IniFiles', ( -file => $inifile );
+  foreach my $namespace (keys %$ini) {
     next if ($namespace eq 'labels');
-    foreach my $parameter (keys(%{$ini{$namespace}})) {
+    foreach my $parameter (keys(%{$ini->{$namespace}})) {
       my $method = "set_xdi_$namespace";
-      $self->$method($parameter, $ini{$namespace}{$parameter});
+      $self->$method($parameter, $ini->{$namespace}{$parameter});
     };
   };
-  $self->labels([split(" ", $ini{labels}{labels})]) if exists $ini{labels};
+  $self->labels([split(" ", $ini->{labels}{labels})]) if exists $ini->{labels};
 };
 
 sub xdi_defined {

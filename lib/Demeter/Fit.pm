@@ -35,7 +35,6 @@ if ($Demeter::mode->ui eq 'screen') {
   with 'Demeter::UI::Screen::Progress';
 };
 
-
 use Demeter::NumTypes qw( NonNeg Natural NaturalC );
 
 use Archive::Zip qw( :ERROR_CODES :CONSTANTS );

@@ -19,6 +19,7 @@ use strict;
 use warnings;
 use Carp;
 use Chemistry::Elements qw(get_Z get_name get_symbol);
+use Demeter::IniReader;
 
 use Wx qw( :everything );
 use base 'Wx::Panel';
@@ -26,9 +27,11 @@ use Wx::Event qw(EVT_LIST_ITEM_ACTIVATED EVT_LIST_ITEM_SELECTED);
 
 use Demeter::UI::Wx::PeriodicTable;
 
-my %kalzium;
-tie %kalzium, 'Config::IniFiles', (-file=>File::Spec->catfile($Demeter::UI::Hephaestus::hephaestus_base,
-							      'Hephaestus', 'data', "kalziumrc.dem"));
+my $rkalzium = Demeter::IniReader->read_file(File::Spec->catfile($Demeter::UI::Hephaestus::hephaestus_base,
+								 'Hephaestus', 'data', "kalziumrc.dem"));
+my %kalzium = %$rkalzium;
+#tie %kalzium, 'Config::IniFiles', (-file=>File::Spec->catfile($Demeter::UI::Hephaestus::hephaestus_base,
+#							      'Hephaestus', 'data', "kalziumrc.dem"));
 
 sub new {
   my ($class, $page, $echoarea) = @_;

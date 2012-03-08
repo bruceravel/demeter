@@ -29,18 +29,20 @@ use base 'Wx::Panel';
 ## snarf (quietly!) the list of energies from the list used for the
 ## next_energy function in Xray::Absoprtion::Elam
 my $hash;
-do {
-  no warnings;
-  $hash = $$Xray::Absorption::Elam::r_elam{line_list};
-};
-my @line_list = ();
-foreach my $key (keys %$hash) {
-  next unless exists $$hash{$key}->[2];
-  next unless ($$hash{$key}->[2] > 100);
-  push @line_list, $$hash{$key};
-};
-## and sort by increasing energy
-@line_list = sort {$a->[2] <=> $b->[2]} @line_list;
+# do {
+#   no warnings;
+#   $hash = $$Xray::Absorption::Elam::r_elam{line_list};
+# };
+# my @line_list = ();
+# foreach my $key (keys %$hash) {
+#   next unless exists $$hash{$key}->[2];
+#   next unless ($$hash{$key}->[2] > 100);
+#   push @line_list, $$hash{$key};
+# };
+# ## and sort by increasing energy
+# @line_list = sort {$a->[2] <=> $b->[2]} @line_list;
+
+my @line_list = @{$$Xray::Absorption::Elam::r_elam{sorted}};
 
 sub new {
   my ($class, $page, $echoarea) = @_;
@@ -48,7 +50,7 @@ sub new {
   my $hbox = Wx::BoxSizer->new( wxHORIZONTAL );
   $self->SetSizer($hbox);
 
-  $self->{targetenergy} = $Demeter::UI::Hephaestus::demeter->co->default(qw(hephaestus line_energy));
+  $self->{targetenergy} = Demeter->co->default(qw(hephaestus line_energy));
   $self->{echo} = $echoarea;
 
   ## -------- Edge energies

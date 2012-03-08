@@ -47,7 +47,7 @@ sub new {
 					  \@Demeter::UI::Hephaestus::Ion::lengths,
 					  1, wxRA_SPECIFY_COLS);
   my $i = 0;
-  my $setlength = $Demeter::UI::Hephaestus::demeter->co->default(qw(hephaestus ion_length));
+  my $setlength = Demeter->co->default(qw(hephaestus ion_length));
   foreach my $l (@Demeter::UI::Hephaestus::Ion::lengths) {
     $parent->{lengths}->SetSelection($i), last if ($l =~ m{$setlength});
     ++$i;
@@ -57,7 +57,7 @@ sub new {
   my $lengthsizer = Wx::BoxSizer->new( wxHORIZONTAL );
   $label = Wx::StaticText->new($self, -1, 'Custom length', wxDefaultPosition, wxDefaultSize);
   $lengthsizer -> Add($label, 0, wxLEFT|wxRIGHT, 2);
-  $parent->{userlength} = $Demeter::UI::Hephaestus::demeter->co->default('hephaestus', 'ion_custom');
+  $parent->{userlength} = Demeter->co->default('hephaestus', 'ion_custom');
   $parent->{userlengthbox} = Wx::TextCtrl -> new($self, -1, $parent->{userlength}, wxDefaultPosition, [40,-1]);
   $parent->{userlengthbox}->SetValidator(numval());
   $lengthsizer -> Add($parent->{userlengthbox}, 0, wxLEFT|wxRIGHT|wxEXPAND, 2);
@@ -99,7 +99,7 @@ sub new {
 					   \@Demeter::UI::Hephaestus::Ion::gases,
 					 );
   my $i = 0;
-  my $setgas = $Demeter::UI::Hephaestus::demeter->co->default(qw(hephaestus ion_gas1));
+  my $setgas = Demeter->co->default(qw(hephaestus ion_gas1));
   foreach my $g (@Demeter::UI::Hephaestus::Ion::gases) {
     $parent->{primarygas}->SetSelection($i), last if ($g eq $setgas);
     ++$i;
@@ -171,11 +171,11 @@ sub new {
   my %max  = (torr => 2300, mbar => 3066, atm => 3);
   my %line = (torr => 1, mbar => 1, atm => 0.01);
 
-  my $units = $Demeter::UI::Hephaestus::demeter->co->default("hephaestus", "ion_pressureunits");
+  my $units = Demeter->co->default("hephaestus", "ion_pressureunits");
   $parent->{pressureunits} = Wx::StaticText->new($self, -1, "Pressure ($units) ");
   $pressure_box->Add($parent->{pressureunits}, 0, wxALL, 5);
   $parent->{pressure} = Wx::Slider->new($self, -1,
-					$Demeter::UI::Hephaestus::demeter->co->default(qw(hephaestus ion_pressure)),
+					Demeter->co->default(qw(hephaestus ion_pressure)),
 					0, $max{$units},
 					[-1,-1], [-1,-1],
 					wxSL_VERTICAL|wxSL_AUTOTICKS|wxSL_LABELS|wxSL_RIGHT|wxSL_INVERSE);
@@ -222,8 +222,7 @@ sub new {
   my $outerbox = Wx::BoxSizer->new( wxVERTICAL );
   $self->SetSizer($outerbox);
 
-  my $demeter = $Demeter::UI::Hephaestus::demeter;
-  $self->{energy} = $demeter->co->default(qw(hephaestus ion_energy));
+  $self->{energy} = Demeter->co->default(qw(hephaestus ion_energy));
   $self->{echo} = $echoarea;
 
   ## -------- horizontal box containing energy, chambers, sliders
@@ -276,7 +275,7 @@ sub new {
   $botbox -> Add($label, 0, wxLEFT|wxRIGHT, 5);
   $self->{amp} = Wx::SpinCtrl->new($self, -1, 8, wxDefaultPosition, [50,-1]);
   $self->{amp} -> SetRange(0,12);
-  $self->{amp} -> SetValue($Demeter::UI::Hephaestus::demeter->co->default(qw(hephaestus ion_gain)));
+  $self->{amp} -> SetValue(Demeter->co->default(qw(hephaestus ion_gain)));
   $botbox -> Add($self->{amp}, 0, wxLEFT|wxRIGHT, 5);
   $label = Wx::StaticText->new($self, -1, 'with');
   $botbox -> Add($label, 0, wxLEFT|wxRIGHT, 5);
@@ -357,14 +356,14 @@ sub get_ion_data {
   my $len = $self->{thislength};
   #print 1/$xsec, "  $len\n";
   my %conv  = (torr => 760, mbar => 1013.25, atm => 1);
-  my $atm = $self->{pressure}->GetValue / $conv{$Demeter::UI::Hephaestus::demeter->co->default('hephaestus', 'ion_pressureunits')};
+  my $atm = $self->{pressure}->GetValue / $conv{Demeter->co->default('hephaestus', 'ion_pressureunits')};
   $atm ||= 0.001;
   $self->{xsec} *= $atm;
   $self->{percentage}->SetLabel(sprintf("%.2f %%", 100*(1-exp(-1*$self->{xsec}*$self->{thislength}))));
 
   flux_calc($self);
   $self->{echo}->SetStatusText(sprintf("This calculation uses the %s data resource and %s cross sections.",
-			      $Demeter::UI::Hephaestus::demeter->co->default('hephaestus', 'resource'),
+			      Demeter->co->default('hephaestus', 'resource'),
 			      'total'));
 
 };
@@ -376,7 +375,7 @@ sub ion_reset {
   $self->{primary}->SetValue(100);
   $self->{secondary}->SetValue(0);
   my %conv  = (torr => 760, mbar => 1013.25, atm => 1);
-  $self->{pressure}->SetValue($conv{$Demeter::UI::Hephaestus::demeter->co->default('hephaestus', 'ion_pressureunits')});
+  $self->{pressure}->SetValue($conv{Demeter->co->default('hephaestus', 'ion_pressureunits')});
   $self->{primarygas}->SetSelection(1);
   $self->{secondarygas}->SetSelection(0);
   $self->{amp} -> SetValue(8);

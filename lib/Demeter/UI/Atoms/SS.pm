@@ -564,7 +564,7 @@ sub plot {
 
 package Demeter::UI::Atoms::SS::SSDragSource;
 
-use Demeter;
+#use Demeter;
 
 use Wx qw( :everything );
 use base qw(Wx::Window);
@@ -606,7 +606,7 @@ sub OnDrag {
 
 package Demeter::UI::Atoms::SS::HistoSSDragSource;
 
-use Demeter;
+#use Demeter;
 
 use Wx qw( :everything );
 use base qw(Wx::Window);
@@ -694,7 +694,7 @@ sub OnDrag {
 
 package Demeter::UI::Atoms::SS::HistoNCLDragSource;
 
-use Demeter;
+#use Demeter;
 
 use Wx qw( :everything );
 use base qw(Wx::Window);
@@ -799,7 +799,7 @@ sub OnDrag {
 
 package Demeter::UI::Atoms::SS::HistoThruDragSource;
 
-use Demeter;
+#use Demeter;
 
 use Wx qw( :everything );
 use base qw(Wx::Window);

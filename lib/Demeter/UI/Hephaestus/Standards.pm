@@ -39,7 +39,7 @@ sub new {
   my $self = $class->SUPER::new($page, -1, wxDefaultPosition, wxDefaultSize, wxMAXIMIZE_BOX );
   $self->{echo} = $echoarea;
 
-  my $pt = Demeter::UI::Wx::PeriodicTable->new($self, sub{$self->standards_get_data($_[0])});
+  my $pt = Demeter::UI::Wx::PeriodicTable->new($self, sub{$self->standards_get_data($_[0])}, $echoarea);
   foreach my $i (1 .. 109) {
     my $el = get_symbol($i);
     $pt->{$el}->Disable if not $standards->element_exists($el);

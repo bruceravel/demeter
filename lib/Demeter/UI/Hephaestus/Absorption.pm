@@ -212,8 +212,7 @@ sub abs_get_data {
 sub l_filter {
   my $elem = $_[0];
   return q{} if (get_Z($elem) > 98);
-  my $demeter = $Demeter::UI::Hephaestus::demeter;
-  my $en = Xray::Absorption -> get_energy($elem, 'la1') + $demeter->co->default(qw(hephaestus filter_offset))*$demeter->co->default(qw(hephaestus filter_width));
+  my $en = Xray::Absorption -> get_energy($elem, 'la1') + Demeter->co->default(qw(hephaestus filter_offset)) * Demeter->co->default(qw(hephaestus filter_width));
   my $filter = q{};
   foreach (@k_list) {
     $filter = $_->[0];
@@ -294,23 +293,22 @@ sub filter_plot {
   my $edge   = ($z < 57) ? "K"   : "L3";
   my $line2  = ($z < 57) ? "Ka2" : "La1";
 
-  my $demeter = $Demeter::UI::Hephaestus::demeter;
-  $demeter -> po -> start_plot;
-  $demeter -> co -> set(
-			filter_abs      => $z,
-			filter_edge     => $edge,
-			filter_filter   => $filter,
-			filter_emin     => Xray::Absorption -> get_energy($z, $line2) - 400,
-			filter_emax     => Xray::Absorption -> get_energy($z, $edge)  + 300,
-			filter_file     => $demeter->po->tempfile,
-			filter_width    => $demeter->co->default(qw(hephaestus filter_width)),
-		       );
-  my $command = $demeter->template('plot', 'prep_filter');
-  $demeter -> dispose($command);
+  Demeter -> po -> start_plot;
+  Demeter -> co -> set(
+		       filter_abs      => $z,
+		       filter_edge     => $edge,
+		       filter_filter   => $filter,
+		       filter_emin     => Xray::Absorption -> get_energy($z, $line2) - 400,
+		       filter_emax     => Xray::Absorption -> get_energy($z, $edge)  + 300,
+		       filter_file     => Demeter->po->tempfile,
+		       filter_width    => Demeter->co->default(qw(hephaestus filter_width)),
+		      );
+  my $command = Demeter->template('plot', 'prep_filter');
+  Demeter -> dispose($command);
 
-  $command = $demeter->template('plot', 'filter');
-  $demeter -> po -> legend(x => 0.15, y => 0.85, );
-  $demeter -> dispose($command, "plotting");
+  $command = Demeter->template('plot', 'filter');
+  Demeter -> po -> legend(x => 0.15, y => 0.85, );
+  Demeter -> dispose($command, "plotting");
 
   undef $busy;
   $self->{echo}->SetStatusText(sprintf('Plotting %s as a filter for %s.', lc(get_name($filter)), lc(get_name($elem))));

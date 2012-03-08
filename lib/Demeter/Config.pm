@@ -27,7 +27,9 @@ use MooseX::Aliases;
 
 use Carp;
 #use diagnostics;
-use Config::IniFiles;
+#use Config::IniFiles;
+use Demeter::IniReader;
+use Config::INI::Writer;
 use File::Basename;
 use Regexp::Assemble;
 #use Demeter::Constants qw($NUMBER);
@@ -82,7 +84,7 @@ has 'ini_file' => (is => 'ro', isa => 'Str', default => $fname);
 
 
 my %ini;
-tie %ini, 'Config::IniFiles', ();
+#tie %ini, 'Config::IniFiles', ();
 my %params_of;
 
 #my $one_has_been_created = 0;
@@ -412,9 +414,9 @@ sub describe_param {
 sub write_ini {
   my ($self, $file) = @_;
   $file ||= $self->ini_file;
-  my $ini_ref = tied %ini;
-  $ini_ref -> WriteConfig($file);
-  #print $file, $/;
+  #my $ini_ref = tied %ini;
+  #$ini_ref -> WriteConfig($file);
+  Config::INI::Writer->write_file(\%ini, $file);
   return $self;
 };
 
@@ -425,20 +427,23 @@ sub read_ini {
     $self->write_ini($inifile);
     return $self;
   };
-  my %personal_ini;
-  my $ini_ref = tied %ini;
-  tie %personal_ini, 'Config::IniFiles', (-file=>$inifile, -import=>$ini_ref );
-  {				# this is to encourage a spurious warning
-    no strict qw{refs};		# related to Config::IniFiles to shut up
-    my $toss = *{"Config::IniFiles::$inifile"}; # under windows
-    undef $toss;
-  };
-  foreach my $g (keys %personal_ini) {
+
+  my $personal_ini = Demeter::IniReader->read_file($inifile);
+
+  # my %personal_ini;
+  # my $ini_ref = tied %ini;
+  # tie %personal_ini, 'Config::IniFiles', (-file=>$inifile, -import=>$ini_ref );
+  # {				# this is to encourage a spurious warning
+  #   no strict qw{refs};		# related to Config::IniFiles to shut up
+  #   my $toss = *{"Config::IniFiles::$inifile"}; # under windows
+  #   undef $toss;
+  # };
+  foreach my $g (keys %$personal_ini) {
     next if ($group and ($g ne $group));
-    my $hash = $personal_ini{$g};
+    my $hash = $personal_ini->{$g};
     foreach my $p (keys %$hash) {
       ($p = 'col'.$1) if ($p =~ m{c(\d)}); # compatibility, convert cN -> colN
-      $self->set_default($g, $p, $personal_ini{$g}{$p});
+      $self->set_default($g, $p, $personal_ini->{$g}{$p});
     };
   };
   return $self;
@@ -481,7 +486,7 @@ F<lib/> directory beneath the F<Demeter.pm> module.  This
 configuration file contains complete information about each
 configuration parameter, including description text and various
 attributes.  The second tier is the user's initialization file.  This
-uses the standard INI format and the L<Config::IniFiles> module.  The
+uses the standard INI format and the L<Demeter::IniReader> module.  The
 user's file lives in $ENV{HOME} on unix and Mac and in
 $ENV{USERPROFILE} on Windows.
 

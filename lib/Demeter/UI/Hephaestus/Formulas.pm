@@ -42,7 +42,7 @@ sub new {
 
   my @choices = keys(%formula_of);
 
-  $self->{energyvalue} = $Demeter::UI::Hephaestus::demeter->co->default(qw(hephaestus formula_energy));
+  $self->{energyvalue} = Demeter->co->default(qw(hephaestus formula_energy));
   $self->{type}        = 'Density';
   $self->{units}       = 'energy';
   $self->{echo}        = $echoarea;
@@ -145,12 +145,12 @@ sub get_formula_data {
   $self->{echo}->SetStatusText('You have not provided a formula.'), return if not $parent->{formula}->GetValue;
   my $ok = parse_formula($parent->{formula}->GetValue, \%count);
   $parent->{echo}->SetStatusText(sprintf("This calculation uses the %s data resource and %s cross sections.",
-				$Demeter::UI::Hephaestus::demeter->co->default('hephaestus', 'resource'),
-				$Demeter::UI::Hephaestus::demeter->co->default('hephaestus', 'xsec')
+				Demeter->co->default('hephaestus', 'resource'),
+				Demeter->co->default('hephaestus', 'xsec')
 			       ));
 
   my $resource = Xray::Absorption->current_resource;
-  my $which = $Demeter::UI::Hephaestus::demeter->co->default('hephaestus', 'xsec');
+  my $which = Demeter->co->default('hephaestus', 'xsec');
   if (($resource eq "mcmaster") or ($resource eq "elam")) {
     ($which = "total")      if ($which eq "full");
   } elsif ($resource eq "chantler") {
@@ -282,7 +282,7 @@ sub get_formula_data {
       $answer .= "\nRemember that a molarity calculation only considers the absorption of the solute. The solvent also absorbs.\n";
     };
 #     my $resource = Xray::Absorption->current_resource;
-#     my $which = $Demeter::UI::Hephaestus::demeter->co->default('hephaestus', 'xsec');
+#     my $which = Demeter->co->default('hephaestus', 'xsec');
 #     if (($resource eq "mcmaster") or ($resource eq "elam")) {
 #       ($which = "total")      if ($which eq "full");
 #     } elsif (lc($data{resource}) eq "chantler") {

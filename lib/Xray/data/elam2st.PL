@@ -1,6 +1,6 @@
 #!/usr/bin/perl -w
 ######################################################################
-##  This program is copyright (c) 1999, 2011 Bruce Ravel
+##  This program is copyright (c) 1999, 2011, 2012 Bruce Ravel
 ##  <ravel@phys.washington.edu>
 ##  http://feff.phys.washington.edu/~ravel/software/atoms/
 ##
@@ -387,8 +387,7 @@ print "sorting line list ... ";
     $elam{shift @{[split(/_/,$b)]}}{"energy_". pop @{[split(/_/,$b)]}}
   } @line_list;
 
-
-print "and making lines hash$/";
+print "making lines hash ... ";
 #my %energy_hash = ();
 while (@line_list) {
   my $this = shift(@line_list);
@@ -402,6 +401,19 @@ while (@line_list) {
     $elam{line_list}{$this} = [];
   };
 };
+
+use DateTime;
+print "and sorting lines hash\n";
+my @biglist;
+foreach my $key (keys %{$elam{line_list}}) {
+  next unless exists ${$elam{line_list}}{$key}->[2];
+  next unless (${$elam{line_list}}{$key}->[2] > 100);
+  push @biglist, ${$elam{line_list}}{$key};
+};
+
+@biglist = sort {$a->[2] <=> $b->[2]} @biglist;
+$elam{sorted} = \@biglist;
+
 
 my $outfile = File::Spec -> catfile($thisdir, '..', 'Absorption', "elam.db");
 if (-e $outfile) {
