@@ -16,7 +16,7 @@
 =cut
 
 
-use Demeter qw(:ui=screen);
+use Demeter qw(:fit :ui=screen);
 print "Sample fit to copper data using Demeter ", $Demeter::VERSION, $/;
 unlink "cufit.iff" if (-e "cufit.iff");
 

@@ -127,7 +127,7 @@ sub spew {
   while (<F>) {
     my $line = $_;
     last if (($line =~ m{sub\s+plot}) and $flag);
-    $flag = 1 if (($line =~ m{sub\s+plot(\d)}) and ($1 == $n));
+    $flag = 1 if (($line =~ m{sub\s+plot([1-9a])}) and ($1 == $n));
     print $line if ($flag and ($line !~ m{\A\s*state}));
   };
   close F;

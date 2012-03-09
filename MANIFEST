@@ -1,7 +1,5 @@
 .gitignore
 artisitic_license.txt
-bin/argus
-bin/argus.pod
 bin/dartemis
 bin/dathena
 bin/datoms
@@ -21,7 +19,6 @@ bin/rdfit
 bin/rdfit.pod
 bin/standards
 bin/standards.pod
-bin/update-demeter.pl
 Build.PL
 Changes.org
 COPYRIGHT.STAR-Parser
@@ -452,6 +449,7 @@ lib/Demeter/configuration/screen.demeter_conf
 lib/Demeter/configuration/warnings.demeter_conf
 lib/Demeter/configuration/watcher.demeter_conf
 lib/Demeter/configuration/xanes.demeter_conf
+lib/Demeter/Constants.pm
 lib/Demeter/Data.pm
 lib/Demeter/Data/Arrays.pm
 lib/Demeter/Data/Athena.pm
@@ -498,6 +496,7 @@ lib/Demeter/FPath.pm
 lib/Demeter/FSPath.pm
 lib/Demeter/GDS.pm
 lib/Demeter/Here.pm
+lib/Demeter/IniReader.pm
 lib/Demeter/Journal.pm
 lib/Demeter/LCF.pm
 lib/Demeter/LogRatio.pm
@@ -740,6 +739,7 @@ lib/Demeter/templates/plot/gnuplot/newpeak.tmpl
 lib/Demeter/templates/plot/gnuplot/newq.tmpl
 lib/Demeter/templates/plot/gnuplot/newr.tmpl
 lib/Demeter/templates/plot/gnuplot/newxes.tmpl
+lib/Demeter/templates/plot/gnuplot/output.tmpl
 lib/Demeter/templates/plot/gnuplot/overchie.tmpl
 lib/Demeter/templates/plot/gnuplot/overdiff.tmpl
 lib/Demeter/templates/plot/gnuplot/overe.tmpl
@@ -949,6 +949,7 @@ lib/Demeter/templates/report/standard/correl.tmpl
 lib/Demeter/templates/report/standard/data_report.tmpl
 lib/Demeter/templates/report/standard/def.tmpl
 lib/Demeter/templates/report/standard/fancyline.tmpl
+lib/Demeter/templates/report/standard/file_patterns.tmpl
 lib/Demeter/templates/report/standard/fit_report.tmpl
 lib/Demeter/templates/report/standard/fit_report_rfact.tmpl
 lib/Demeter/templates/report/standard/guess.tmpl
@@ -1156,17 +1157,17 @@ lib/Demeter/UI/Hephaestus/EdgeFinder.pm
 lib/Demeter/UI/Hephaestus/F1F2.pm
 lib/Demeter/UI/Hephaestus/Formulas.pm
 lib/Demeter/UI/Hephaestus/Help.pm
-lib/Demeter/UI/Hephaestus/icons/absorption.png
-lib/Demeter/UI/Hephaestus/icons/configure.png
-lib/Demeter/UI/Hephaestus/icons/data.png
-lib/Demeter/UI/Hephaestus/icons/f1f2.png
-lib/Demeter/UI/Hephaestus/icons/find.png
-lib/Demeter/UI/Hephaestus/icons/formulas.png
-lib/Demeter/UI/Hephaestus/icons/help.png
-lib/Demeter/UI/Hephaestus/icons/ion.png
-lib/Demeter/UI/Hephaestus/icons/line.png
-lib/Demeter/UI/Hephaestus/icons/standards.png
-lib/Demeter/UI/Hephaestus/icons/transitions.png
+lib/Demeter/UI/Hephaestus/icons/Absorption.png
+lib/Demeter/UI/Hephaestus/icons/Config.png
+lib/Demeter/UI/Hephaestus/icons/Data.png
+lib/Demeter/UI/Hephaestus/icons/EdgeFinder.png
+lib/Demeter/UI/Hephaestus/icons/F1F2.png
+lib/Demeter/UI/Hephaestus/icons/Formulas.png
+lib/Demeter/UI/Hephaestus/icons/Help.png
+lib/Demeter/UI/Hephaestus/icons/Ion.png
+lib/Demeter/UI/Hephaestus/icons/LineFinder.png
+lib/Demeter/UI/Hephaestus/icons/Standards.png
+lib/Demeter/UI/Hephaestus/icons/Transitions.png
 lib/Demeter/UI/Hephaestus/icons/vulcan.ico
 lib/Demeter/UI/Hephaestus/icons/vulcan.png
 lib/Demeter/UI/Hephaestus/icons/vulcan.xpm

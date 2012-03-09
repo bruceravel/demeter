@@ -68,6 +68,7 @@ sub save_project {
 
   foreach my $k (keys(%$rframes)) {
     next unless ($k =~ m{\Afeff});
+    $rframes->{$k}->make_page('Feff') if not $rframes->{$k}->{Feff};
     next if (ref($rframes->{$k}->{Feff}->{feffobject}) !~ m{Feff});
     my $file = File::Spec->catfile($rframes->{$k}->{Feff}->{feffobject}->workspace, 'atoms.inp');
     mkpath $rframes->{$k}->{Feff}->{feffobject}->workspace if (! -d $rframes->{$k}->{Feff}->{feffobject}->workspace);
@@ -270,6 +271,8 @@ sub read_project {
 	## import feff.inp
 	my $feff = File::Spec->catfile($projfolder, 'feff', $d, $d.'.inp');
 	my $text = $feffobject->slurp($feff);
+	$rframes->{$fnum}->make_page('Feff')  if not $rframes->{$fnum}->{Feff};
+	$rframes->{$fnum}->make_page('Paths') if not $rframes->{$fnum}->{Paths};
 	$rframes->{$fnum}->{Feff}->{feff}->SetValue($text);
 
 	## make Feff frame

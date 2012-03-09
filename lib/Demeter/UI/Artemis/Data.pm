@@ -2173,7 +2173,7 @@ use base qw(Wx::DropTarget);
 use Demeter::UI::Artemis::DND::PathDrag;
 use Demeter::UI::Artemis::Path;
 use Demeter::UI::Wx::SpecialCharacters qw(:all);
-use Demeter::Feff::Distributions;
+#use Demeter::Feff::Distributions;
 use File::Basename;
 
 use Scalar::Util qw(looks_like_number);

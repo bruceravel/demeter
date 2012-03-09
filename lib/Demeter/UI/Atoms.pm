@@ -178,6 +178,8 @@ sub on_rename {
   if ((exists $self->{feffobject}) and (ref($self->{feffobject}) =~ m{Feff})) {
     $self->{feffobject}->name($name);
   };
+  $self->make_page('Feff')  if not $self->{Feff};
+  $self->make_page('Paths') if not $self->{Paths};
   if ((exists $self->{Feff}->{feffobject}) and (ref($self->{Feff}->{feffobject}) =~ m{Feff})) {
     $self->{Feff}->{feffobject}->name($name);
   };

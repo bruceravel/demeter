@@ -212,7 +212,7 @@ sub import {
 
   my @load = ();
   ## I wish I didn't have to load XES here
-  my @data = (qw(Data XES Plot/Indicator Plot/Style Journal
+  my @data = (qw(Data XES Journal
 		 Data/Prj Data/Pixel Data/MultiChannel Data/BulkMerge));
   my @heph = (qw(Data Data/Prj));
   my @fit  = (qw(Atoms Feff Feff/External ScatteringPath
@@ -255,12 +255,12 @@ sub import {
 	$colonanalysis = 1;	# verify PDL before loading PCA
       }
       when (':athena') {
-	@load = (@data, @anal);
+	@load = (@data, @anal, qw(Plot/Indicator Plot/Style));
 	$doplugins = 0;		# delay registering plugins until after start-up
 	$colonanalysis = 1;	# verify PDL before loading PCA
       }
       when (':artemis') {
-	@load = (@heph, @fit);
+	@load = (@heph, @fit, 'Plot/Indicator');
       }
       when (':atoms') {
 	@load = (@atoms);

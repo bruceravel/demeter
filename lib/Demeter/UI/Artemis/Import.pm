@@ -1,6 +1,6 @@
 package Demeter::UI::Artemis::Import;
 
-use Demeter; # qw(:plotwith=gnuplot);
+#use Demeter; # qw(:plotwith=gnuplot);
 use Demeter::UI::Artemis::Project;
 use Demeter::UI::Wx::SpecialCharacters qw(:all);
 
@@ -236,6 +236,8 @@ sub _dpj {
 
 	## import feff.inp
 	my $text = $feffobject->slurp($feff);
+	$rframes->{$fnum}->make_page('Feff')  if not $rframes->{$fnum}->{Feff};
+	$rframes->{$fnum}->make_page('Paths') if not $rframes->{$fnum}->{Paths};
 	$rframes->{$fnum}->{Feff}->{feff}->SetValue($text);
 
 	## make Feff frame
@@ -363,6 +365,8 @@ EOH
 
   ## import feff.inp
   my $text = $efeff->slurp($feff_file);
+  $rframes->{$fnum}->make_page('Feff')  if not $rframes->{$fnum}->{Feff};
+  $rframes->{$fnum}->make_page('Paths') if not $rframes->{$fnum}->{Paths};
   $rframes->{$fnum}->{Feff}->{feff}->SetValue($text);
 
   ## fill in Feff frame
