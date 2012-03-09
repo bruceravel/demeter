@@ -1490,12 +1490,17 @@ sub get_view {
 	       'PluginRegistry',	   # 20
 	       'Prefs',		           # 21
 	      );
+  if (not Demeter->co->default(qw(athena show_watcher))) {
+    splice(@views, 18, 1);
+  };
   return $views[$i];
 };
 
 sub make_page {
   my ($app, $view) = @_;
   my $busy = Wx::BusyCursor->new();
+  Demeter->register_plugins if (($view eq 'PluginRegistry') and not @{Demeter->mo->Plugins});
+
   require "Demeter/UI/Athena/$view.pm";
   my $pm = "Demeter::UI::Athena::$view";
   $app->{main}->{$view} = $pm->new($app->{main}->{$view."_page"}, $app);

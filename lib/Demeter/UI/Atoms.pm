@@ -93,6 +93,15 @@ sub new {
     $self->{$utility."_page"} = $page;
     $self->{$utility."_sizer"} = $box;
 
+    if ($utility ne 'Atoms') {
+      my $hh = Wx::BoxSizer->new( wxHORIZONTAL );
+      my $header = Wx::StaticText->new( $page, -1, q{}, wxDefaultPosition, wxDefaultSize );
+      $hh -> Add($header, 1, wxGROW|wxLEFT, 5);
+      $box -> Add($hh, 0);
+      $page->SetSize($self->{"Atoms_page"}->GetSize);
+      $page->Fit;
+    };
+
     $self->{$utility} = Demeter::UI::Atoms::Xtal -> new($page,$self) if ($utility eq 'Atoms');
     # $self->{$utility}
     #   = ($utility eq 'Atoms')     ? Demeter::UI::Atoms::Xtal    -> new($page, $self)
@@ -106,7 +115,7 @@ sub new {
 
     if ($self->{$utility}) {
       my $hh   = Wx::BoxSizer->new( wxHORIZONTAL );
-      $hh  -> Add($self->{$utility}, 1, wxEXPAND|wxALL, 0);
+      $hh  -> Add($self->{$utility}, 1, wxGROW|wxEXPAND|wxALL, 0);
       $box -> Add($hh, 1, wxEXPAND|wxALL, 0);
     };
 
@@ -119,8 +128,8 @@ sub new {
   EVT_NOTEBOOK_PAGE_CHANGING( $self, $nb, sub{make_page(@_)}); # postpone setting up pages until they are selected
 
   $self -> SetSizer($vbox);
-  #$vbox -> Fit($nb);
-  #$vbox -> SetSizeHints($nb);
+  $vbox -> Fit($nb);
+  $vbox -> SetSizeHints($nb);
   return $self;
 };
 
@@ -142,8 +151,8 @@ sub make_page {
   my $pm = "Demeter::UI::Atoms::$pm";
   $self->{$which} = $pm -> new($self->{$which."_page"},$self);
   my $hh   = Wx::BoxSizer->new( wxHORIZONTAL );
-  $hh  -> Add($self->{$which}, 1, wxGROW|wxEXPAND|wxALL, 0);
   $self->{$which."_sizer"} -> Add($hh, 1, wxEXPAND|wxALL, 0);
+  $hh  -> Add($self->{$which}, 1, wxGROW|wxEXPAND|wxALL, 0);
   undef $busy;
 };
 

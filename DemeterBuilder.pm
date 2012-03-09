@@ -173,10 +173,10 @@ sub ACTION_doctree {
   unlink File::Spec->catfile($BIN, 'dhephaestus.pl');
 };
 
-sub ACTION_update {
+sub ACTION_pull {
   my $self = shift;
   my $ret = $self->do_system(qw(git pull));
-  die "failed to update Demeter from github\n" if not $ret;
+  die "failed to pull Demeter from github\n" if not $ret;
 };
 
 sub ACTION_touch_wrapper {
@@ -184,7 +184,9 @@ sub ACTION_touch_wrapper {
   print "touching src/ifeffit_wrap.c\n";
   touch(File::Spec->catfile('src', 'ifeffit_wrap.c'));
   $self->ACTION_build;
-  print "copying src/Ifeffit.so to local auto directory\n";
+  printf("copying %s to %s\n",
+	 File::Spec->catfile('src', 'Ifeffit.so'),
+	 File::Spec->catfile($ENV{HOME}, 'perl', 'auto', 'Ifeffit', 'Ifeffit.so'));
   copy(File::Spec->catfile('src', 'Ifeffit.so'), File::Spec->catfile($ENV{HOME}, 'perl', 'auto', 'Ifeffit', 'Ifeffit.so'));
 };
 

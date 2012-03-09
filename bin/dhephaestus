@@ -11,7 +11,7 @@ use Wx;
 use Demeter::UI::Hephaestus;
 Wx::InitAllImageHandlers();
 my $window = Demeter::UI::Hephaestus->new;
-#$window   -> MainLoop;
+$window   -> MainLoop;
 
 
 
