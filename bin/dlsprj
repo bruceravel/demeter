@@ -19,7 +19,8 @@ use Cwd;
 use File::Basename;
 use Getopt::Long qw(GetOptionsFromString);
 
-use Demeter qw(:data :ui=screen);
+##                 V this is expedient....
+use Demeter qw(:hephaestus :ui=screen);
 
 my ($plot, $inc, $params, $gnuplot, $xanes, $edge, $kw, $nokey) =
   (q{}, 0.2, q{}, 0, 0, 0, 2);

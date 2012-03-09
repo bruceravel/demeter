@@ -19,7 +19,7 @@ use Getopt::Long;
 my $wx = 0;
 my $result = GetOptions ("wx" => \$wx,);
 
-use Demeter;
+use Demeter qw(:none);
 use PDL;
 use PDL::Stats;
 print Demeter->new->module_environment;

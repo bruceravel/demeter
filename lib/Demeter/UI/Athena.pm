@@ -1495,7 +1495,6 @@ sub get_view {
 
 sub make_page {
   my ($app, $view) = @_;
-  print join("|", caller, $view), $/;
   my $busy = Wx::BusyCursor->new();
   require "Demeter/UI/Athena/$view.pm";
   my $pm = "Demeter::UI::Athena::$view";

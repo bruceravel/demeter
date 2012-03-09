@@ -96,6 +96,8 @@ sub module_environment {
 		     Tree::Simple
 		     YAML::Tiny
 		  )) {
+    (my $pp = $p) =~ s{::}{/}g;
+    eval "use $p" if not exists $INC{$pp.'.pm'};
     my $v = '$' . $p . '::VERSION';
     my $l = 30 - length($p);
     $string .= sprintf(" %s %s %s\n", $p, '.' x $l, eval($v)||'?');
