@@ -97,7 +97,8 @@ sub module_environment {
 		     YAML::Tiny
 		  )) {
     (my $pp = $p) =~ s{::}{/}g;
-    eval "use $p" if not exists $INC{$pp.'.pm'};
+    $pp .= '.pm';
+    require $pp if not exists $INC{$pp};
     my $v = '$' . $p . '::VERSION';
     my $l = 30 - length($p);
     $string .= sprintf(" %s %s %s\n", $p, '.' x $l, eval($v)||'?');

@@ -1,6 +1,5 @@
 package Demeter::UI::Atoms::Paths;
 
-use Demeter;
 use Demeter::StrTypes qw( Element );
 use Demeter::UI::Artemis::DND::PathDrag;
 

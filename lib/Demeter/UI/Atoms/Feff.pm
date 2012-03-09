@@ -1,6 +1,5 @@
 package  Demeter::UI::Atoms::Feff;
 
-use Demeter;
 use Demeter::StrTypes qw( Element );
 use Demeter::UI::Wx::SpecialCharacters qw($ARING);
 
@@ -223,6 +222,7 @@ Should we continue?',
     warn join($/, @warnings) . $/;
   };
 
+  $self->{parent}->make_page('Console') if not $self->{parent}->{Console};
   $self->{parent}->{Console}->{console}->AppendText($self->now("Feff calculation beginning at ", $feff));
   $self->{parent}->status("Computing potentials using Feff6 ...");
   $feff->potph;
@@ -254,6 +254,7 @@ Should we continue?',
 
 sub fill_intrp_page {
   my ($self, $feff) = @_;
+  $self->{parent}->make_page('Paths') if not $self->{parent}->{Paths};
   $self->{parent}->{Paths}->{name}->SetValue($feff->name);
   $self->{parent}->{Paths}->{header}->SetValue($feff->intrp_header);
   $self->{parent}->{Paths}->{paths}->DeleteAllItems;
@@ -279,8 +280,10 @@ sub fill_intrp_page {
 
 sub fill_ss_page {
   my ($self, $feff) = @_;
+
   #$self->{parent}->{SS}->{name}->SetValue($feff->name);
-  return 0 if not exists $self->{parent}->{SS};
+  return 0 if ($Demeter::UI::AtomsApp::utilities[3] ne 'SS');
+  $self->{parent}->make_page('SS') if not $self->{parent}->{SS};
 
   my @ipots = @{$feff->potentials};
   shift @ipots;			# get rid of absorber

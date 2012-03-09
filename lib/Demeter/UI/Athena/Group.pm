@@ -3,7 +3,6 @@ package Demeter::UI::Athena::Group;
 use strict;
 use warnings;
 
-#use Demeter;
 use Demeter::UI::Wx::SpecialCharacters qw(:all);
 use Demeter::UI::Athena::ChangeDatatype;
 

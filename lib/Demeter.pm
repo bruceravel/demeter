@@ -25,6 +25,7 @@ require 5.008;
 
 use version;
 our $VERSION = version->new('0.9.8');
+use feature "switch";
 
 #use Demeter::Carp;
 #use Carp::Always::Color;
@@ -217,6 +218,7 @@ sub import {
   my @fit  = (qw(Atoms Feff Feff/External ScatteringPath
 		 Path VPath SSPath ThreeBody FPath FSPath
 		 GDS Fit Fit/Feffit StructuralUnit));
+  my @atoms = (qw(Data Atoms Feff ScatteringPath Path));
   my @anal = (qw(LCF LogRatio Diff PeakFit PeakFit/LineShape));
   my @xes  = ('XES');
   my $colonanalysis = 0;
@@ -225,46 +227,55 @@ sub import {
 
  PRAG: foreach my $p (@pragmata) {
     $plot -> plot_with($1),        next PRAG if ($p =~ m{:plotwith=(\w+)});
-    if ($p =~ m{:ui=(\w+)}) {
-      $mode -> ui($1);
-      #import Demeter::Carp if ($1 eq 'screen');
-      next PRAG;
-    };
-    if ($p =~ m{:template=(\w+)}) {
-      my $which = $1;
-      $mode -> template_process($which);
-      $mode -> template_fit($which);
-      #$mode -> template_analysis($which);
-      next PRAG;
-    };
-    if ($p eq ':data') {
-      @load = @data;
-      $doplugins = 1;
-      next PRAG;
-    };
-    if ($p eq ':hephaestus') {
-      @load = @heph;
-      $doplugins = 0;
-      next PRAG;
-    };
-    if ($p eq ':fit') {
-      @load = (@data, @fit);
-      next PRAG;
-    };
-    if ($p eq ':analysis') {
-      @load = (@data, @anal);
-      $doplugins = 1;
-      $colonanalysis = 1;	# verify PDL before loading PCA
-      next PRAG;
-    };
-    if ($p eq ':all') {
-      @load = (@data, @fit, @anal);
-      $doplugins = 1;
-      next PRAG;
-    };
-    if ($p eq ':none') {
-      $none = 1;
-      next PRAG;
+    given ($p) {
+      when (m{:ui=(\w+)}) {
+	$mode -> ui($1);
+	#import Demeter::Carp if ($1 eq 'screen');
+      }
+      when (m{:template=(\w+)}) {
+	my $which = $1;
+	$mode -> template_process($which);
+	$mode -> template_fit($which);
+	#$mode -> template_analysis($which);
+      }
+      when (':data') {
+	@load = @data;
+	$doplugins = 1;
+      }
+      when (':hephaestus') {
+	@load = @heph;
+	$doplugins = 0;
+      }
+      when (':fit') {
+	@load = (@data, @fit);
+      }
+      when (':analysis') {
+	@load = (@data, @anal);
+	$doplugins = 1;
+	$colonanalysis = 1;	# verify PDL before loading PCA
+      }
+      when (':athena') {
+	@load = (@data, @anal);
+	$doplugins = 0;		# delay registering plugins until after start-up
+	$colonanalysis = 1;	# verify PDL before loading PCA
+      }
+      when (':artemis') {
+	@load = (@heph, @fit);
+      }
+      when (':atoms') {
+	@load = (@atoms);
+      }
+      when (':all') {
+	@load = (@data, @fit, @anal);
+	$colonanalysis = 1;
+	$doplugins = 1;
+      }
+      when (':none') {
+	@load = ();
+	$doplugins     = 0;
+	$colonanalysis = 0;
+	$none          = 1;
+      }
     };
   };
   @load = (@data, @fit, @anal, @xes) if not @load;
@@ -272,7 +283,7 @@ sub import {
 
   foreach my $m (uniq @load) {
     next if $INC{"Demeter/$m.pm"};
-    #print DateTime->now, "  Demeter/$m.pm\n";
+    #print join("|", caller, DateTime->now), "  Demeter/$m.pm\n";
     require "Demeter/$m.pm";
   };
 
@@ -282,9 +293,8 @@ sub import {
   };
 
   if ($PDL_exists and $PSG_exists) {
-    ##next if $INC{"Demeter/PCA.pm"};
     ##print DateTime->now,  "  Demeter/PCA.pm\n";
-    require "Demeter/PCA.pm";
+    require "Demeter/PCA.pm" if not exists $INC{"Demeter/PCA.pm"};
   };
   $class -> register_plugins if $doplugins;
 };

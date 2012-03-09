@@ -1,6 +1,6 @@
 package Demeter::UI::Artemis;
 
-use Demeter;
+use Demeter qw(:artemis);
 use Demeter::UI::Atoms;
 use Demeter::UI::Artemis::Import;
 use Demeter::UI::Artemis::Project;

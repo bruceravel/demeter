@@ -21,7 +21,7 @@ BEGIN {
   $ENV{UBUNTU_MENUPROXY} = 0;
 };
 
-use Demeter;
+use Demeter qw(:atoms);
 use Getopt::Long;
 use Demeter::Constants qw($NUMBER);
 

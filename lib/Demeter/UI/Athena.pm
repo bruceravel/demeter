@@ -1,6 +1,6 @@
 package Demeter::UI::Athena;
 
-use Demeter qw(:analysis);
+use Demeter qw(:athena);
 #use Demeter::UI::Wx::DFrame;
 use Demeter::UI::Wx::MRU;
 use Demeter::UI::Wx::SpecialCharacters qw(:all);
@@ -1214,7 +1214,7 @@ sub main_window {
     $app->{main}->{$which."_sizer"} = $box;
 
     ## postpone creating most views until they are selected for the first time. (see view_changing)
-    if (any {$which eq $_} qw(Main PluginRegistry Journal)) {
+    if (any {$which eq $_} qw(Main)) {
       require "Demeter/UI/Athena/$which.pm";
       my $pm = "Demeter::UI::Athena::$which";
       $app->{main}->{$which} = $pm->new($page, $app);

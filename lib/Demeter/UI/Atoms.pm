@@ -31,6 +31,9 @@ foreach my $m (qw(Xtal Feff Config Paths Doc Console SS)) {
   require "Demeter/UI/Atoms/$m.pm";
 };
 
+use vars qw(@utilities);
+@utilities = ();
+
 sub new {
   my ($ref, $base, $feffobject, $component) = @_;
   my $width  = 100;
@@ -70,7 +73,7 @@ sub new {
   eval "use Demeter::UI::Atoms::Status" if not $component;
 
 
-  my @utilities = ($component) ? qw(Atoms Feff Paths SS Console) : qw(Atoms Feff Paths Console Document Configure);
+  @utilities = ($component) ? qw(Atoms Feff Paths SS Console) : qw(Atoms Feff Paths Console Document Configure);
 
   my $imagelist = Wx::ImageList->new( $icon_dimension, $icon_dimension );
   foreach my $utility (@utilities) {
@@ -87,20 +90,25 @@ sub new {
     my $page = Wx::Panel->new($nb, -1, wxDefaultPosition, wxDefaultSize);
     my $box = Wx::BoxSizer->new( wxVERTICAL );
     $page -> SetSizer($box);
+    $self->{$utility."_page"} = $page;
+    $self->{$utility."_sizer"} = $box;
 
-    $self->{$utility}
-      = ($utility eq 'Atoms')     ? Demeter::UI::Atoms::Xtal    -> new($page, $self)
-      : ($utility eq 'Feff')      ? Demeter::UI::Atoms::Feff    -> new($page, $self)
-      : ($utility eq 'Paths')     ? Demeter::UI::Atoms::Paths   -> new($page, $self)
-      : ($utility eq 'Console')   ? Demeter::UI::Atoms::Console -> new($page, $self)
-      : ($utility eq 'Document')  ? Demeter::UI::Atoms::Doc     -> new($page, $self)
-      : ($utility eq 'Configure') ? Demeter::UI::Atoms::Config  -> new($page, $self)
-      : ($utility eq 'SS')        ? Demeter::UI::Atoms::SS      -> new($page, $self)
-      :                             0;
+    $self->{$utility} = Demeter::UI::Atoms::Xtal -> new($page,$self) if ($utility eq 'Atoms');
+    # $self->{$utility}
+    #   = ($utility eq 'Atoms')     ? Demeter::UI::Atoms::Xtal    -> new($page, $self)
+    #   : ($utility eq 'Feff')      ? Demeter::UI::Atoms::Feff    -> new($page, $self)
+    #   : ($utility eq 'Paths')     ? Demeter::UI::Atoms::Paths   -> new($page, $self)
+    #   : ($utility eq 'Console')   ? Demeter::UI::Atoms::Console -> new($page, $self)
+    #   : ($utility eq 'Document')  ? Demeter::UI::Atoms::Doc     -> new($page, $self)
+    #   : ($utility eq 'Configure') ? Demeter::UI::Atoms::Config  -> new($page, $self)
+    #   : ($utility eq 'SS')        ? Demeter::UI::Atoms::SS      -> new($page, $self)
+    #   :                             0;
 
-    my $hh   = Wx::BoxSizer->new( wxHORIZONTAL );
-    $hh  -> Add($self->{$utility}, 1, wxEXPAND|wxALL, 0);
-    $box -> Add($hh, 1, wxEXPAND|wxALL, 0);
+    if ($self->{$utility}) {
+      my $hh   = Wx::BoxSizer->new( wxHORIZONTAL );
+      $hh  -> Add($self->{$utility}, 1, wxEXPAND|wxALL, 0);
+      $box -> Add($hh, 1, wxEXPAND|wxALL, 0);
+    };
 
     my $label = ($utility eq 'SS') ? 'Path-like' : $utility;
     $nb  -> AddPage($page, $label, 0, $count);
@@ -108,11 +116,35 @@ sub new {
 
   $vbox -> Add($nb, 1, wxEXPAND|wxGROW, 0);
   #EVT_NOTEBOOK_PAGE_CHANGED( $self, $nb, sub{$echoarea->echo(q{})} );
+  EVT_NOTEBOOK_PAGE_CHANGING( $self, $nb, sub{make_page(@_)}); # postpone setting up pages until they are selected
 
   $self -> SetSizer($vbox);
   #$vbox -> Fit($nb);
   #$vbox -> SetSizeHints($nb);
   return $self;
+};
+
+sub make_page {
+  my ($self, $event) = @_;
+  my $which;
+  if (ref($event) =~ m{Event}) {
+    my $i = $event->GetSelection;
+    $which = $utilities[$i];
+  } else {
+    $which = $event;
+  };
+  return if exists $self->{$which};
+  my $busy = Wx::BusyCursor->new;
+  my $pm = ($which eq 'Document')  ? 'Doc'
+         : ($which eq 'Configure') ? 'Config'
+         : ($which eq 'Atoms')     ? 'Xtal'
+	 :                           $which;
+  my $pm = "Demeter::UI::Atoms::$pm";
+  $self->{$which} = $pm -> new($self->{$which."_page"},$self);
+  my $hh   = Wx::BoxSizer->new( wxHORIZONTAL );
+  $hh  -> Add($self->{$which}, 1, wxGROW|wxEXPAND|wxALL, 0);
+  $self->{$which."_sizer"} -> Add($hh, 1, wxEXPAND|wxALL, 0);
+  undef $busy;
 };
 
 sub OnToolClick {
@@ -217,7 +249,7 @@ sub noop {
 
 package Demeter::UI::Atoms;
 
-use Demeter;
+use Demeter qw(:atoms);
 use vars qw($demeter);
 $demeter = Demeter->new;
 

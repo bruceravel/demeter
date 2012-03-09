@@ -41,6 +41,7 @@ my %athena = (SSRLA	=> [25521.4,   'transmission'],
 	      Lytle 	=> [8979.15,   'transmission'],
 	      DUBBLE    => [12660.9,   'fluorescence'],
 	     );
+Demeter->register_plugins;
 
 foreach my $type (sort keys %athena) {
 				## the test files are carefully named

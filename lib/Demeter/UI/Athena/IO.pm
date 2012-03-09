@@ -173,8 +173,12 @@ sub Import {
 
 sub test_plugins {
   my ($app, $file) = @_;
-  foreach my $pl (@{$Demeter::UI::Athena::demeter->mo->Plugins}) {
+  ## delay registering plugins until needed for the first time
+  Demeter->register_plugins if not @{Demeter->mo->Plugins};
+  foreach my $pl (@{Demeter->mo->Plugins}) {
     next if ($pl =~ m{FileType});
+    ## delay laying out Plugin Registry tool until it is needed for the first time
+    $app->make_page('PluginRegistry') if (not exists $app->{main}->{PluginRegistry});
     next if (not $app->{main}->{PluginRegistry}->{$pl}->GetValue);
     my $this = $pl->new(file=>$file);
     if (not $this->is) {
@@ -699,6 +703,8 @@ sub _prj {
     };
   };
   return -1 if not $count;
+  ## delay laying out Journal tool until it is needed for the first time
+  $app->make_page('Journal') if (not exists $app->{main}->{Journal});
   $app->{main}->{Journal}->{object}->text($prj->journal);
   $app->{main}->{Journal}->{journal}->SetValue($app->{main}->{Journal}->{object}->text);
   $app->{main}->{Main}->{bkg_stan}->fill($app, 1);

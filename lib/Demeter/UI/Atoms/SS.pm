@@ -549,7 +549,7 @@ sub set_plot {
 
 sub plot {
   my ($self) = @_;
-  my $save = $Demeter::UI::Atoms::demeter->po->title;
+  my $save = Demeter->po->title;
 
   ## make SSPath
 
@@ -557,14 +557,12 @@ sub plot {
 
   ## destroy SSPath (since it will be created when dnd-ed
 
-  $Demeter::UI::Atoms::demeter->po->title($save);
+  Demeter->po->title($save);
 };
 
 
 
 package Demeter::UI::Atoms::SS::SSDragSource;
-
-#use Demeter;
 
 use Wx qw( :everything );
 use base qw(Wx::Window);
@@ -606,7 +604,6 @@ sub OnDrag {
 
 package Demeter::UI::Atoms::SS::HistoSSDragSource;
 
-#use Demeter;
 
 use Wx qw( :everything );
 use base qw(Wx::Window);
@@ -694,7 +691,6 @@ sub OnDrag {
 
 package Demeter::UI::Atoms::SS::HistoNCLDragSource;
 
-#use Demeter;
 
 use Wx qw( :everything );
 use base qw(Wx::Window);
@@ -799,7 +795,6 @@ sub OnDrag {
 
 package Demeter::UI::Atoms::SS::HistoThruDragSource;
 
-#use Demeter;
 
 use Wx qw( :everything );
 use base qw(Wx::Window);

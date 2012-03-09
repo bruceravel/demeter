@@ -53,7 +53,6 @@ sub new {
 
 package  Demeter::UI::Atoms::Xtal;
 
-use Demeter;
 use Demeter::StrTypes qw( Element );
 use Demeter::NumTypes qw( PosNum );
 
@@ -802,6 +801,7 @@ sub run_atoms {
     };
     my $save = $atoms->co->default("atoms", "atoms_in_feff");
     $atoms->co->set_default("atoms", "atoms_in_feff", 0);
+    $self->{parent}->make_page('Feff') if not $self->{parent}->{Feff};
     $self->{parent}->{Feff}->{feff}->SetValue($atoms -> Write($template));
     $self->{parent}->{Feff}->{name}->SetValue($atoms -> name);
     $atoms->co->set_default("atoms", "atoms_in_feff", $save);

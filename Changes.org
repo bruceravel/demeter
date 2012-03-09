@@ -5,8 +5,13 @@
 
 * Initial release
 
-** 0.9.9 ?? February 2012
+** 0.9.9 ?? March 2012
 *** Athena
+   - Delay laying out most windows until needed for the first time.
+     This speed up startup at the cost of a bit more time later on.
+     Start-up went from about 6 1/2 sec to under 4 seconds on my work
+     computer
+   - Mostly functional file watcher + added functionality to IO methods
    - Importance was not being imported from a project file
    - Made the importance control normal width
    - Added athena->interactive_fixstep configuration parameter for
@@ -14,11 +19,40 @@
      edge step controls and the fixstep button.
    - when importing a sequence of files and one cannot be imported
      (e.g. aborted scan) offer to continue or quit importing sequence
+   - XDI as a known file extension when importing data
+   - Importance and plot_multiplier functionality for bent Laue data
+     from 10ID
+   - Return to main button was being displayed incorrectly
+   - Found a normalization bug in Ifeffit, norm_order not respected in
+     call to spline().  Submitted patch to Matt.
+
+*** Artemis
+
+*** Hephaestus
+   - Delay laying out most windows until needed for the first time.
+     This speed up startup (~6 1/2 seconds before, now just under 3
+     second) at the cost of a bit more time later on.
+
+*** Atoms stand-alone
+   - Used delayed layout and careful loading of Demeter modules to
+     reduce start-up from over 5 sec to under 3 seconds.
 
 *** Demeter
    - Replaced Readonly with Const::Fast.  See [[http://neilb.org/reviews/constants.html]]
    - Abstracted many common constants to Demeter::Constants
+   - Replaced Config::IniFiles with Config::INI for a small
+     performance improvement
+   - Made Demeter::IniReader, a subclass of Config::INI
+   - Make File::Monitor::Lite a recommended module (for data watcher)
+   - More care and more options for loading "pragmata" for improved
+     startup times
+   - Take care when processing Data not to do normalization and spline
+     more often than is necessary
+   - Take care not to "use Demeter" unless absolutely necessary
+     throughout code base
+   - Deal with Unity's use of a global menu
    - Many improvements to histogram subsystem
+   - Added a Build directive for forcing update to ifeffit wrapper
 
 ** 0.9.8 30 January 2012
 *** Athena

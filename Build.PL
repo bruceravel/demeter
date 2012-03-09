@@ -46,7 +46,7 @@ my $build = DemeterBuilder
 
 				'Capture::Tiny'	            => '0.07',
 				'Chemistry::Elements'	    => '0',
-				'Config::IniFiles'	    => '2.45',
+				'Config::INI'	            => '0',
 				'DateTime'                  => '0',
 				'Digest::SHA'		    => '0',
 				'Encoding::FixLatin'        => '0',
@@ -126,7 +126,7 @@ my $build = DemeterBuilder
 				## GUI for Athena, Artemis, and Hephaestus
 				'Wx'                  => '0.86',
 
-				## this lets the data watcher work
+				## required by the data watcher
 				'File::Monitor::Lite' => '0',
 
 				## these are used for direct access to the pgplot terminal
