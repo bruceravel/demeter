@@ -22,11 +22,11 @@ sub new {
   my $box = Wx::BoxSizer->new( wxVERTICAL );
 
   $this->{make} = Wx::Button->new($this, -1, "Save current");
-  $box->Add($this->{make}, 0, wxALL|wxGROW, 5);
+  $box->Add($this->{make}, 0, wxALL|wxGROW, 1);
   EVT_BUTTON($this, $this->{make}, sub{make_style(@_, $app)});
 
   $this->{list} = Wx::ListBox->new($this, -1, wxDefaultPosition, wxDefaultSize, [], wxLB_SINGLE|wxLB_NEEDED_SB);
-  $box->Add($this->{list}, 1, wxALL|wxGROW, 5);
+  $box->Add($this->{list}, 1, wxALL|wxGROW, 1);
   EVT_LISTBOX($this, $this->{list}, sub{restore_style(@_, $app)});
   EVT_LISTBOX_DCLICK($this, $this->{list}, sub{discard_style(@_, $app)});
 

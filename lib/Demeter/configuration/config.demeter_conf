@@ -35,9 +35,9 @@
 
 
 ## This file is the master configuration file for Demeter.  It is used
-## to populate the Ifeffit::Demeter::Config object and to generate the
-## files demeterrc and demeter.ini.  It can also be used to populate
-## the preferences dialog in a GUI.  
+## to populate the Demeter::Config object and to generate the files
+## demeterrc and demeter.ini.  It can also be used to populate the
+## preferences dialog in a GUI.
 ##
 ## These are actually fairly structured files.  Beginning-of-line
 ## whitespace (2 spaces, no more, no less) is important in the
@@ -82,9 +82,7 @@ include process.demeter_conf       ## data processing (rebin, convolve, )
 
 include lcf.demeter_conf           ## linear combination fitting
 
-include pca.demeter_conf           ## principle component analysis
-
-include peakfit.demeter_conf       ## peak fitting
+include analysis.demeter_conf      ## peak fitting, PCA (LR, diff, ...)
 
 include happiness.demeter_conf     ## happiness (semantic fitting evaluation) parameters
 

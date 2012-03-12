@@ -71,10 +71,6 @@ sub OnInit {
   $demeter -> mo -> identity('Athena');
   $demeter -> mo -> iwd(cwd);
 
-  #print DateTime->now,  "  Reading configuration files ...\n";
-  #my $conffile = File::Spec->catfile(dirname($INC{'Demeter/UI/Athena.pm'}), 'Athena', 'share', "athena.demeter_conf");
-  #$demeter -> co -> read_config($conffile);
-  #$demeter -> co -> read_ini('athena');
   $demeter -> plot_with($demeter->co->default(qw(plot plotwith)));
   my $old_cwd = File::Spec->catfile($demeter->dot_folder, "athena.cwd");
   if (-r $old_cwd) {
@@ -85,7 +81,6 @@ sub OnInit {
   ## -------- create a new frame and set icon
   #print DateTime->now,  "  Making main frame ...\n";
   $app->{main} = Wx::Frame->new(undef, -1, 'Athena [XAS data processing]', wxDefaultPosition, wxDefaultSize,);
-  #$app->{main} = Demeter::UI::Wx::DFrame->new(undef, -1, 'Athena [XAS data processing]', wxDefaultPosition, wxDefaultSize,);
   my $iconfile = File::Spec->catfile(dirname($INC{'Demeter/UI/Athena.pm'}), 'Athena', 'icons', "athena.png");
   $icon = Wx::Icon->new( $iconfile, wxBITMAP_TYPE_ANY );
   $app->{main} -> SetIcon($icon);

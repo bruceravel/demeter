@@ -8,11 +8,11 @@ our @EXPORT_OK = qw($PI $ETOK $HBARC $HC $R2D
 		    $NULLFILE $ENDOFLINE $CTOKEN
 		    $EPSILON2 $EPSILON3 $EPSILON4 $EPSILON5 $EPSILON6 $EPSILON7
 		  );
-our %EXPORT_TAGS = (all => [qw($PI $ETOK $HBARC $HC $R2D
-			       $NUMBER $INTEGER $SEPARATOR
-			       $NULLFILE $ENDOFLINE $CTOKEN
-			       $EPSILON2 $EPSILON3 $EPSILON4 $EPSILON5 $EPSILON6 $EPSILON7
-			     )],
+our %EXPORT_TAGS = (all     => [qw($PI $ETOK $HBARC $HC $R2D
+				   $EPSILON2 $EPSILON3 $EPSILON4 $EPSILON5 $EPSILON6 $EPSILON7
+				   $NUMBER $INTEGER $SEPARATOR $ELEMENT
+				   $NULLFILE $ENDOFLINE $CTOKEN
+				 )],
 		    numbers => [qw($PI $ETOK $HBARC $HC $R2D
 				   $EPSILON2 $EPSILON3 $EPSILON4 $EPSILON5 $EPSILON6 $EPSILON7
 				 )],
@@ -115,7 +115,7 @@ The conversion constant between degrees and radians, 180/PI.
 
 =item C<$EPSILONn>
 
-1e-N, for instance C<$EPSILON2> = 1e-2 and C<$EPSILON2> = 1e-7.  These
+1e-n, for instance C<$EPSILON2> = 1e-2 and C<$EPSILON2> = 1e-7.  These
 are defined for 2 through 7.
 
 =back
@@ -155,14 +155,14 @@ as a set using the C<:regexps> export tag.
 This is C<$RE{num}{real}> from L<Regexp::Common>, i.e. a match for
 floats.
 
-=item C<$NUMBER>
+=item C<$INTEGER>
 
 This is C<$RE{num}{int}> from L<Regexp::Common>, i.e. a match for
 integers.
 
 =item C<$SEPARATOR>
 
-This is C<'[ \t]*[ \t=,][ \t]*>, the regular expression defining the
+This is C<[ \t]*[ \t=,][ \t]*>, the regular expression defining the
 separation between keyword and value in an input file for Feff, Atoms,
 etc.
 

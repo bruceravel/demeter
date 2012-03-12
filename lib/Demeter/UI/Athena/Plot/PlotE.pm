@@ -23,7 +23,7 @@ sub new {
   $box -> Add($hbox, 0, wxALL|wxALIGN_CENTER_HORIZONTAL, 4);
 
   my $slots = Wx::GridSizer->new( 7, 2, 0, 1 );
-  $hbox -> Add($slots, 1, wxGROW|wxALL, 0);
+  $hbox -> Add($slots, 0, wxGROW|wxALL, 0);
   $this->{mu} = Wx::CheckBox->new($this, -1, $MU.'(E)', wxDefaultPosition, wxDefaultSize);
   $this->{mu} -> SetValue($Demeter::UI::Athena::demeter->co->default("plot", "e_mu"));
   $slots -> Add($this->{mu}, 1, wxGROW|wxALL, 0);

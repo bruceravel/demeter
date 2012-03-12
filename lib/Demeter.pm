@@ -15,12 +15,6 @@ package Demeter;  # http://xkcd.com/844/
 
 =cut
 
-#BEGIN {
-#  #$ENV{PGPLOT_DEV} = (($^O eq 'MSWin32') or ($^O eq 'cygwin')) ? '/gw' : '/xserve';
-#  $ENV{PGPLOT_DIR} = 'C:\strawberry\perl\c\lib\pgplot' if (($^O eq 'MSWin32') or ($^O eq 'cygwin'));
-#};
-
-
 require 5.008;
 
 use version;
@@ -59,7 +53,7 @@ use Demeter::Constants qw($NUMBER $PI);
 =cut
 # Metaclass definition must come before Moose is used.
 use metaclass (
-	       metaclass => 'Moose::Meta::Class',
+	       metaclass   => 'Moose::Meta::Class',
 	       error_class => 'Moose::Error::Confess',
 	      );
 
@@ -72,12 +66,7 @@ with 'Demeter::Files';
 with 'Demeter::Project';
 with 'Demeter::MRU';
 use Demeter::Return;
-
 with 'MooseX::SetGet';		# this is mine....
-
-#use MooseX::Storage;
-#with Storage('format' => 'YAML', 'io' => 'File');
-
 
 my %seen_group;
 has 'group'     => (is => 'rw', isa => 'Str',     default => sub{shift->_get_group()},
@@ -134,8 +123,7 @@ sub set_datagroup {
 
 ######################################################################
 ## conditional features
-use vars qw($Gnuplot_exists $STAR_Parser_exists $XDI_exists
-	    $PDL_exists $PSG_exists $FML_exists);
+use vars qw($Gnuplot_exists $STAR_Parser_exists $XDI_exists $PDL_exists $PSG_exists $FML_exists);
 $Gnuplot_exists     = eval "require Graphics::GnuplotIF" || 0;
 $STAR_Parser_exists = 1;
 use STAR::Parser;
@@ -206,28 +194,26 @@ sub import {
   my ($class, @pragmata) = @_;
   strict->import;
   warnings->import;
-  #Ifeffit->import;
-
   #print join(" ", $class, caller), $/;
 
-  my @load = ();
-  ## I wish I didn't have to load XES here
-  my @data = (qw(Data XES Journal
-		 Data/Prj Data/Pixel Data/MultiChannel Data/BulkMerge));
-  my @heph = (qw(Data Data/Prj));
-  my @fit  = (qw(Atoms Feff Feff/External ScatteringPath
-		 Path VPath SSPath ThreeBody FPath FSPath
-		 GDS Fit Fit/Feffit StructuralUnit));
+  my @load  = ();
+  my @data  = (qw(Data XES Journal Data/Prj Data/Pixel Data/MultiChannel Data/BulkMerge));
+  my @heph  = (qw(Data Data/Prj));
+  my @fit   = (qw(Atoms Feff Feff/External ScatteringPath Path VPath SSPath ThreeBody FPath FSPath
+		  GDS Fit Fit/Feffit StructuralUnit));
   my @atoms = (qw(Data Atoms Feff ScatteringPath Path));
-  my @anal = (qw(LCF LogRatio Diff PeakFit PeakFit/LineShape));
-  my @xes  = ('XES');
+  my @anal  = (qw(LCF LogRatio Diff PeakFit PeakFit/LineShape));
+  my @xes   = (qw(XES));
+  my @plot  = (qw(Plot/Indicator Plot/Style));
   my $colonanalysis = 0;
   my $doplugins     = 0;
   my $none          = 0;
 
  PRAG: foreach my $p (@pragmata) {
-    $plot -> plot_with($1),        next PRAG if ($p =~ m{:plotwith=(\w+)});
     given ($p) {
+      when (m{:plotwith=(\w+)}) {
+	$plot -> plot_with($1);
+      }
       when (m{:ui=(\w+)}) {
 	$mode -> ui($1);
 	#import Demeter::Carp if ($1 eq 'screen');
@@ -251,24 +237,24 @@ sub import {
       }
       when (':analysis') {
 	@load = (@data, @anal);
-	$doplugins = 1;
+	$doplugins     = 1;
 	$colonanalysis = 1;	# verify PDL before loading PCA
       }
       when (':athena') {
-	@load = (@data, @anal, qw(Plot/Indicator Plot/Style));
-	$doplugins = 0;		# delay registering plugins until after start-up
+	@load = (@data, @anal, @plot);
+	$doplugins     = 0;		# delay registering plugins until after start-up
 	$colonanalysis = 1;	# verify PDL before loading PCA
       }
       when (':artemis') {
 	@load = (@heph, @fit, 'Plot/Indicator');
       }
       when (':atoms') {
-	@load = (@atoms);
+	@load = @atoms;
       }
       when (':all') {
-	@load = (@data, @fit, @anal);
+	@load = (@data, @fit, @anal, @xes, @plot);
+	$doplugins     = 1;
 	$colonanalysis = 1;
-	$doplugins = 1;
       }
       when (':none') {
 	@load = ();
@@ -278,7 +264,7 @@ sub import {
       }
     };
   };
-  @load = (@data, @fit, @anal, @xes) if not @load;
+  @load = (@data, @fit, @anal, @xes, @plot) if not @load;
   @load = () if $none;
 
   foreach my $m (uniq @load) {
@@ -303,7 +289,7 @@ sub register_plugins {
   my ($class) = @_;
   my $here = dirname($INC{"Demeter.pm"});
   my $standard = File::Spec->catfile($here, 'Demeter', 'Plugins');
-  my $private =  File::Spec->catfile($ENV{HOME}, '.horae', 'Demeter', 'Plugins');
+  my $private =  File::Spec->catfile(Demeter->dot_folder, 'Demeter', 'Plugins');
   require File::Spec->catfile($here, 'Demeter', 'Plugins', 'FileType.pm');
   my @folders = ($standard); #, $private);
   foreach my $f (@folders) {
@@ -333,15 +319,15 @@ sub po {
 sub dd {
   my ($self) = @_;
   if (not $self->mo->datadefault) {
-    $self->mo->datadefault(Demeter::Data->new(group=>'default___',
-					      name=>'default___',
-					      update_data=>0,
-					      update_columns=>0,
-					      update_bkg=>0,
-					      update_bft=>0,
-					      update_fft=>0,
-					      fft_kmin=>3, fft_kmax=>15,
-					      bft_rmin=>1, bft_rmax=>6,
+    $self->mo->datadefault(Demeter::Data->new(group	     => 'default___',
+					      name	     => 'default___',
+					      update_data    => 0,
+					      update_columns => 0,
+					      update_bkg     => 0,
+					      update_bft     => 0,
+					      update_fft     => 0,
+					      fft_kmin => 3, fft_kmax => 15,
+					      bft_rmin => 1, bft_rmax => 6,
 					     ));
   };
   return shift->mo->datadefault;
@@ -463,10 +449,6 @@ sub is_true {
   return 0 if (($value =~ m{$NUMBER}) and ($value == 0));
   return 1 if ($value =~ m{$NUMBER});
   return 0;
-};
-
-sub pi {
-  return $PI;
 };
 
 ## organize obtaining a unique group name

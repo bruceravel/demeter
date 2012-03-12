@@ -99,7 +99,7 @@ sub new {
     $hbox -> Add(1,1,1);
 
     $hbox->Add(Wx::StaticText->new($this, -1, "Stop after"), 0, wxLEFT|wxRIGHT|wxTOP, 3);
-    $this->{stopafter} = Wx::TextCtrl->new($this, -1, $yaml->{stopafter}, wxDefaultPosition, [60,-1]);
+    $this->{stopafter} = Wx::TextCtrl->new($this, -1, $yaml->{stopafter}||0, wxDefaultPosition, [60,-1]);
     $hbox->Add($this->{stopafter}, 0, wxLEFT|wxRIGHT, 3);
     $hbox->Add(Wx::StaticText->new($this, -1, "scans"), 0, wxLEFT|wxRIGHT|wxTOP, 3);
     $this->{stopafter} -> SetValidator( Wx::Perl::TextValidator->new( qr([0-9]) ) );

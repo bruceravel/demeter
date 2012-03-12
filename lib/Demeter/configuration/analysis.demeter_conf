@@ -34,8 +34,41 @@
 ###########################################################################
 
 
-## This file contains the principle component analysis configuration group for Demeter
+## This file contains the configuration groups for analysis chores in Demeter
 
+
+######################################################################
+section=peakfit
+section_description
+  These variables determine details of Demeter's peak fitting analysis
+  system.
+
+variable=backend
+type=list
+options=ifeffit fityk
+default=ifeffit
+description
+  This tells Demeter which peak fitting backend to use.  This
+  parameter is not currently in use as the fityk backend is still
+  experimental.  It can be employed in a script by specifying the
+  backend when creating the PeakFit object.  Fityk is not available in
+  Athena at this time.
+
+variable=emin
+type=real
+default=-20
+restart=1
+units=eV (relative to e0)
+description
+  The default lower bound of an analysis in energy.
+
+variable=emax
+type=real
+default=80
+restart=1
+units=eV (relative to e0)
+description
+  The default lower bound of an analysis in energy.
 
 ######################################################################
 section=pca
