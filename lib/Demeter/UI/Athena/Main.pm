@@ -658,7 +658,7 @@ sub push_values {
   } else {
     $this->{bkg_eshift}-> SetBackgroundColour( wxNullColour );
   };
-  if ($data->bkg_e0 < $EPSILON2) {
+  if ($data->bkg_e0 < 150) {
     $this->{bkg_e0}-> SetBackgroundColour( Wx::Colour->new("#FD7E6F") );
   } else {
     $this->{bkg_e0}-> SetBackgroundColour( wxNullColour );

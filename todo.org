@@ -82,7 +82,7 @@
     2. deconvolution
     3. +PCA+
 
-*** needs doing [8/20] [40%]
+*** needs doing [9/20] [45%]
    - [X] deglitching crashes with gnuplot					:HUH:
    - [X] test preprocessing (I had a crash with all three preproc options selected for data with a reference):
 	 ~Can't call method "GetSelection" on an undefined value at /home/bruce/git/demeter/lib/Demeter/UI/Athena/IO.pm line 423.~
@@ -94,7 +94,7 @@
          ~fix~ should always be called within an ~eval~?
    - [ ] implement frozen groups
    - [ ] links to documentation on each tool
-   - [ ] Post a warning if bkg_e0=0 and/or element is <= Be
+   - [X] Post a warning if bkg_e0=0 and/or element is <= Be
    - [ ] *Main window* [0/2] [0%]
        + [ ] SpinCtrl for use with Rbkg, bkg_spl1/2
        + [ ] push bkg_e0 /algorithm/ onto marked/all groups and recalculate
