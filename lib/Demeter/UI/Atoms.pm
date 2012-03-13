@@ -19,7 +19,7 @@ use File::Spec;
 
 use Wx qw( :everything );
 use base 'Wx::Frame';
-use Wx::Event qw(EVT_NOTEBOOK_PAGE_CHANGED EVT_NOTEBOOK_PAGE_CHANGING EVT_MENU);
+use Wx::Event qw(EVT_NOTEBOOK_PAGE_CHANGED EVT_NOTEBOOK_PAGE_CHANGING EVT_MENU EVT_LEFT_DOWN);
 
 use Demeter::UI::Artemis::Close qw(on_close);
 
@@ -89,20 +89,17 @@ sub new {
     my $count = $nb->GetPageCount;
     my $page = Wx::Panel->new($nb, -1, wxDefaultPosition, wxDefaultSize);
     my $box = Wx::BoxSizer->new( wxVERTICAL );
-    $page -> SetSizer($box);
     $self->{$utility."_page"} = $page;
     $self->{$utility."_sizer"} = $box;
 
-    if ($utility ne 'Atoms') {
+    if ($utility eq 'Atoms') {
       my $hh = Wx::BoxSizer->new( wxHORIZONTAL );
       my $header = Wx::StaticText->new( $page, -1, q{}, wxDefaultPosition, wxDefaultSize );
       $hh -> Add($header, 1, wxGROW|wxLEFT, 5);
       $box -> Add($hh, 0);
-      $page->SetSize($self->{"Atoms_page"}->GetSize);
       $page->Fit;
-    };
 
-    $self->{$utility} = Demeter::UI::Atoms::Xtal -> new($page,$self) if ($utility eq 'Atoms');
+      $self->{$utility} = Demeter::UI::Atoms::Xtal -> new($page,$self);
     # $self->{$utility}
     #   = ($utility eq 'Atoms')     ? Demeter::UI::Atoms::Xtal    -> new($page, $self)
     #   : ($utility eq 'Feff')      ? Demeter::UI::Atoms::Feff    -> new($page, $self)
@@ -113,10 +110,11 @@ sub new {
     #   : ($utility eq 'SS')        ? Demeter::UI::Atoms::SS      -> new($page, $self)
     #   :                             0;
 
-    if ($self->{$utility}) {
       my $hh   = Wx::BoxSizer->new( wxHORIZONTAL );
       $hh  -> Add($self->{$utility}, 1, wxGROW|wxEXPAND|wxALL, 0);
       $box -> Add($hh, 1, wxEXPAND|wxALL, 0);
+
+      $page -> SetSizer($box);
     };
 
     my $label = ($utility eq 'SS') ? 'Path-like' : $utility;
@@ -125,7 +123,20 @@ sub new {
 
   $vbox -> Add($nb, 1, wxEXPAND|wxGROW, 0);
   #EVT_NOTEBOOK_PAGE_CHANGED( $self, $nb, sub{$echoarea->echo(q{})} );
-  EVT_NOTEBOOK_PAGE_CHANGING( $self, $nb, sub{make_page(@_)}); # postpone setting up pages until they are selected
+  EVT_LEFT_DOWN($nb, sub { $_[0]->{last_pos} = $_[1]->GetPosition();
+			   $_[1]->Skip(1);
+			 });
+  EVT_NOTEBOOK_PAGE_CHANGING( $self, $nb,
+			      sub{ my($self, $event) = @_;
+				   my $notebook = $event->GetEventObject;
+				   my ($nbtab, $flags ) = $notebook->HitTest($notebook->{last_pos});
+				   my $which = $utilities[$nbtab];
+				   $self->make_page($which);
+				   return;
+				 }
+			    );
+
+#sub{make_page(@_)}); # postpone setting up pages until they are selected
 
   $self -> SetSizer($vbox);
   $vbox -> Fit($nb);
@@ -134,25 +145,21 @@ sub new {
 };
 
 sub make_page {
-  my ($self, $event) = @_;
-  my $which;
-  if (ref($event) =~ m{Event}) {
-    my $i = $event->GetSelection;
-    $which = $utilities[$i];
-  } else {
-    $which = $event;
-  };
+  my ($self, $which) = @_;
   return if exists $self->{$which};
   my $busy = Wx::BusyCursor->new;
-  my $pm = ($which eq 'Document')  ? 'Doc'
-         : ($which eq 'Configure') ? 'Config'
-         : ($which eq 'Atoms')     ? 'Xtal'
-	 :                           $which;
-  my $pm = "Demeter::UI::Atoms::$pm";
+  my $pm = ($which eq 'Document')  ? 'Demeter::UI::Atoms::Doc'
+         : ($which eq 'Configure') ? 'Demeter::UI::Atoms::Config'
+         : ($which eq 'Atoms')     ? 'Demeter::UI::Atoms::Xtal'
+	 :                           "Demeter::UI::Atoms::$which";
   $self->{$which} = $pm -> new($self->{$which."_page"},$self);
+  $self->{$which}->SetSize($self->{"Atoms"}->GetSize);
+#  $self->{$which."_page"}->SetSize($self->{"Atoms_page"}->GetSize);
+
   my $hh   = Wx::BoxSizer->new( wxHORIZONTAL );
-  $self->{$which."_sizer"} -> Add($hh, 1, wxEXPAND|wxALL, 0);
-  $hh  -> Add($self->{$which}, 1, wxGROW|wxEXPAND|wxALL, 0);
+  $hh  -> Add($self->{$which}, 1, wxGROW|wxALL, 0);
+  $self->{$which."_sizer"} -> Add($hh, 1, wxGROW|wxALL, 0);
+  $self->{$which."_page"} -> SetSizer(self->{$which."_sizer"});
   undef $busy;
 };
 
@@ -295,7 +302,7 @@ sub OnInit {
   ## -------- Set up menubar
   my $bar = Wx::MenuBar->new;
   my $file = Wx::Menu->new;
-  $file->Append( wxID_EXIT, "E&xit" );
+  $file->Append( wxID_EXIT, "E&xit\tCtrl+q" );
 
   my $help = Wx::Menu->new;
   $help->Append( wxID_ABOUT, "&About..." );

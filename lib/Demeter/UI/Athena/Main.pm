@@ -16,7 +16,7 @@ use File::Basename;
 use File::Spec;
 use List::MoreUtils qw(none any);
 use Scalar::Util qw(looks_like_number);
-use Demeter::Constants qw($NUMBER);
+use Demeter::Constants qw($NUMBER $EPSILON2);
 use Const::Fast;
 
 use vars qw($label $tag);
@@ -95,7 +95,7 @@ sub group {
 				      $_[1]->Skip});
 
   my @elements = map {sprintf "%-2d: %s", $_, get_name($_)} (1 .. 96);
-  $this->{bkg_z_label}      = Wx::StaticText -> new($this, -1, "Element");
+  $this->{bkg_z_label}      = Wx::StaticText -> new($this, -1, "Element", wxDefaultPosition, [50,-1]);
   $this->{bkg_z}            = Wx::ComboBox   -> new($this, -1, 'Hydrogen', wxDefaultPosition, [130,-1], \@elements, wxCB_READONLY );
   $this->{fft_edge_label}   = Wx::StaticText -> new($this, -1, "Edge");
   $this->{fft_edge}         = Wx::ComboBox   -> new($this, -1, 'K', wxDefaultPosition, [50,-1],
@@ -657,6 +657,18 @@ sub push_values {
     $this->{bkg_eshift}-> SetBackgroundColour( Wx::Colour->new($data->co->default("athena", "tied")) );
   } else {
     $this->{bkg_eshift}-> SetBackgroundColour( wxNullColour );
+  };
+  if ($data->bkg_e0 < $EPSILON2) {
+    $this->{bkg_e0}-> SetBackgroundColour( Wx::Colour->new("#FD7E6F") );
+  } else {
+    $this->{bkg_e0}-> SetBackgroundColour( wxNullColour );
+  };
+  if (get_Z($data->bkg_z) < 5) {
+    $this->{bkg_z_label} -> SetFont( Wx::Font->new( Wx::SystemSettings::GetFont(wxSYS_DEFAULT_GUI_FONT)->GetPointSize, wxDEFAULT, wxNORMAL, wxBOLD, 0, "" ) );
+    $this->{bkg_z_label} -> SetForegroundColour( Wx::Colour->new("#FF4C4C") );
+  } else {
+    $this->{bkg_z_label} -> SetFont( Wx::Font->new( Wx::SystemSettings::GetFont(wxSYS_DEFAULT_GUI_FONT)->GetPointSize, wxDEFAULT, wxNORMAL, wxNORMAL, 0, "" ) );
+    $this->{bkg_z_label} -> SetForegroundColour( wxNullColour );
   };
   $this->{bkg_eshift}->Refresh;
   my $truncated_name = $data->name;

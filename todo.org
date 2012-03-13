@@ -82,7 +82,7 @@
     2. deconvolution
     3. +PCA+
 
-*** needs doing [6/20] [30%]
+*** needs doing [8/20] [40%]
    - [X] deglitching crashes with gnuplot					:HUH:
    - [X] test preprocessing (I had a crash with all three preproc options selected for data with a reference):
 	 ~Can't call method "GetSelection" on an undefined value at /home/bruce/git/demeter/lib/Demeter/UI/Athena/IO.pm line 423.~
@@ -106,8 +106,8 @@
        + [X] importing each channel of med data does not work
        + [X] negate button
        + [X] import data into Athena as norm(E)
-   - [ ] *Calibration tool*
-       + smoothing does not work
+   - [X] *Calibration tool*
+       + +smoothing does not work+
    - [ ] *Convolve/noise tool*
        + add noise to chi data
    - [ ] *Difference tool* [0/4]
@@ -162,14 +162,14 @@
        + [X] configuration
        + [ ] sequence over marked groups
        + [ ] persistance
-   - [-] *Data watcher* [1/5]
-       + [ ] Data import
-       + [ ] Actively import the first file in order to set column
+   - [X] *Data watcher* [5/5]
+       + [X] Data import
+       + [X] Actively import the first file in order to set column
              selection, save that example of column selection in case
              its yaml gets overwritten before the timer starts
        + [X] Recognize an incomplete scan, eg a scan terminated by a beam dump
-       + [ ] Import the last scan in a sequence
-       + [ ] Toggles for pre-processing (mark/set/align)
+       + [X] Import the last scan in a sequence
+       + [X] Toggles for pre-processing (mark/set/align)
    - [ ] *Plot menu*
        + zoom/unzoom/cursor for pgplot
    - [-] *Help menu* [1/3]

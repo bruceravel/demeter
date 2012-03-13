@@ -1499,6 +1499,7 @@ sub make_page {
   require "Demeter/UI/Athena/$view.pm";
   my $pm = "Demeter::UI::Athena::$view";
   $app->{main}->{$view} = $pm->new($app->{main}->{$view."_page"}, $app);
+  $app->{main}->{$view."_page"}->SetSize($app->{main}->{"Main_page"}->GetSize);
   my $hh   = Wx::BoxSizer->new( wxVERTICAL );
   $hh  -> Add($app->{main}->{$view}, 1, wxGROW|wxEXPAND|wxALL, 0);
   $app->{main}->{$view."_sizer"} -> Add($hh, 1, wxEXPAND|wxALL, 0);
@@ -1507,9 +1508,8 @@ sub make_page {
   $app->{main}->{$view}->{document} -> Enable(0);
 
   #$hh -> Fit($app->{main}->{$view});
-  #$app->{main}->{$view."_page"} -> SetSizer($app->{main}->{$view."_sizer"});
+  $app->{main}->{$view."_page"} -> SetSizerAndFit($app->{main}->{$view."_sizer"});
 
-  $app->{main}->{$view."_page"}->SetSize($app->{main}->{"Main_page"}->GetSize);
 
   undef $busy;
 };

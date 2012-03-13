@@ -88,33 +88,19 @@ sub new {
     $self->{$utility."_page"} = $page;
     my $box = Wx::BoxSizer->new( wxVERTICAL );
     $self->{$utility."_sizer"} = $box;
-    $page -> SetSizer($box);
 
     ##$periodic_table = Demeter::UI::Wx::PeriodicTable->new($page, sub{$self->multiplex($_[0])}, $statusbar);
 
-    my $label = $label_of{$utility}.': '.$note_of{$utility};
-    my $hh = Wx::BoxSizer->new( wxHORIZONTAL );
-    my $header = Wx::StaticText->new( $page, -1, $label, wxDefaultPosition, wxDefaultSize );
-    $header->SetForegroundColour( $header_color );
-    $header->SetFont( Wx::Font->new( 16, wxDEFAULT, wxNORMAL, wxBOLD, 0, "" ) );
-    $hh -> Add($header, 0, wxLEFT, 5);
-    $box -> Add($hh, 0);
+    if ($utility eq 'Absorption') {
+      my $label = $label_of{$utility}.': '.$note_of{$utility};
+      my $hh = Wx::BoxSizer->new( wxHORIZONTAL );
+      my $header = Wx::StaticText->new( $page, -1, $label, wxDefaultPosition, wxDefaultSize );
+      $header->SetForegroundColour( $header_color );
+      $header->SetFont( Wx::Font->new( 16, wxDEFAULT, wxNORMAL, wxBOLD, 0, "" ) );
+      $hh -> Add($header, 0, wxLEFT, 5);
+      $box -> Add($hh, 0);
 
-    $self->{$utility} = Demeter::UI::Hephaestus::Absorption  -> new($page,$statusbar) if ($utility eq 'Absorption');
-    # $self->{$utility}
-    #   = ($utility eq 'Absorption')  ? Demeter::UI::Hephaestus::Absorption  -> new($page,$statusbar)
-    #   : ($utility eq 'Configure')   ? Demeter::UI::Hephaestus::Config      -> new($page,$statusbar)
-    #   : ($utility eq 'Data')        ? Demeter::UI::Hephaestus::Data        -> new($page,$statusbar)
-    #   : ($utility eq 'F1F2')        ? Demeter::UI::Hephaestus::F1F2        -> new($page,$statusbar)
-    #   : ($utility eq 'EdgeFinder')  ? Demeter::UI::Hephaestus::EdgeFinder  -> new($page,$statusbar)
-    #   : ($utility eq 'Formulas')    ? Demeter::UI::Hephaestus::Formulas    -> new($page,$statusbar)
-    #   : ($utility eq 'Help')        ? Demeter::UI::Hephaestus::Help        -> new($page,$statusbar)
-    #   : ($utility eq 'Ion')         ? Demeter::UI::Hephaestus::Ion         -> new($page,$statusbar)
-    #   : ($utility eq 'LineFinder')  ? Demeter::UI::Hephaestus::LineFinder  -> new($page,$statusbar)
-    #   : ($utility eq 'Standards')   ? Demeter::UI::Hephaestus::Standards   -> new($page,$statusbar)
-    #   : ($utility eq 'Transitions') ? Demeter::UI::Hephaestus::Transitions -> new($page,$statusbar)
-    #   :                               0;
-    if ($self->{$utility}) {
+      $self->{$utility} = Demeter::UI::Hephaestus::Absorption  -> new($page,$statusbar);
       $hh   = Wx::BoxSizer->new( wxHORIZONTAL );
       $hh  -> Add($self->{$utility}, 1, wxGROW|wxEXPAND|wxALL, 0);
       $box -> Add($hh, 1, wxEXPAND|wxALL, 0);
@@ -123,6 +109,9 @@ sub new {
       ($height = $this_height) if ($this_height > $height);
       ($width  = $this_width)  if ($this_width > $width);
       #print $utility, "  ", $this_height, "  ", $height, $/;
+
+      $page -> SetSizer($box);
+
     };
     $tb->AddPage($page, $label_of{$utility}, 0, $count);
     $height = ($tb->GetSizeWH)[1];
@@ -144,6 +133,19 @@ sub new {
   $vbox -> SetSizeHints($tb);
   return $self;
 };
+    # $self->{$utility}
+    #   = ($utility eq 'Absorption')  ? Demeter::UI::Hephaestus::Absorption  -> new($page,$statusbar)
+    #   : ($utility eq 'Configure')   ? Demeter::UI::Hephaestus::Config      -> new($page,$statusbar)
+    #   : ($utility eq 'Data')        ? Demeter::UI::Hephaestus::Data        -> new($page,$statusbar)
+    #   : ($utility eq 'F1F2')        ? Demeter::UI::Hephaestus::F1F2        -> new($page,$statusbar)
+    #   : ($utility eq 'EdgeFinder')  ? Demeter::UI::Hephaestus::EdgeFinder  -> new($page,$statusbar)
+    #   : ($utility eq 'Formulas')    ? Demeter::UI::Hephaestus::Formulas    -> new($page,$statusbar)
+    #   : ($utility eq 'Help')        ? Demeter::UI::Hephaestus::Help        -> new($page,$statusbar)
+    #   : ($utility eq 'Ion')         ? Demeter::UI::Hephaestus::Ion         -> new($page,$statusbar)
+    #   : ($utility eq 'LineFinder')  ? Demeter::UI::Hephaestus::LineFinder  -> new($page,$statusbar)
+    #   : ($utility eq 'Standards')   ? Demeter::UI::Hephaestus::Standards   -> new($page,$statusbar)
+    #   : ($utility eq 'Transitions') ? Demeter::UI::Hephaestus::Transitions -> new($page,$statusbar)
+    #   :                               0;
 
 sub do_the_size_dance {
   my ($top) = @_;
@@ -158,11 +160,24 @@ sub make_page {
   my $which = $utilities[$i];
   return if exists $self->{$which};
   my $busy = Wx::BusyCursor->new;
+
+  my $label = $label_of{$which}.': '.$note_of{$which};
+  my $hh = Wx::BoxSizer->new( wxHORIZONTAL );
+  my $header = Wx::StaticText->new( $self->{$which."_page"}, -1, $label, wxDefaultPosition, wxDefaultSize );
+  $header->SetForegroundColour( $header_color );
+  $header->SetFont( Wx::Font->new( 16, wxDEFAULT, wxNORMAL, wxBOLD, 0, "" ) );
+  $hh -> Add($header, 0, wxLEFT, 5);
+  $self->{$which."_sizer"} -> Add($hh, 0, wxGROW);
+
   my $pm = "Demeter::UI::Hephaestus::$which";
   $self->{$which} = $pm -> new($self->{$which."_page"},$self->{statusbar});
-  my $hh   = Wx::BoxSizer->new( wxHORIZONTAL );
-  $hh  -> Add($self->{$which}, 1, wxGROW|wxEXPAND|wxALL, 0);
-  $self->{$which."_sizer"} -> Add($hh, 1, wxEXPAND|wxALL, 0);
+  $self->{$which."_page"}->SetSize($self->{"Absorption_page"}->GetSize);
+  $hh   = Wx::BoxSizer->new( wxHORIZONTAL );
+  $hh  -> Add($self->{$which}, 1, wxGROW|wxALL, 0);
+  $self->{$which."_sizer"} -> Add($hh, 1, wxGROW|wxALL, 0);
+
+  $self->{$which."_page"} -> SetSizerAndFit($self->{$which."_sizer"});
+
   undef $busy;
 };
 

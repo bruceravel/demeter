@@ -136,14 +136,16 @@ sub plot {
     $::app->{main}->status("Not plotting -- your e0 value is not a number!", 'error|nobuffer');
     return;
   };
+  my $save = $data->po->e_smooth;
   $data->bkg_e0($this->{e0}->GetValue);
-  $data->po->set(emin=>-30, emax=>50);
+  $data->po->set(emin=>-30, emax=>50, e_smooth=>$this->{smooth}->GetValue);
   $data->po->set(e_mu=>1, e_markers=>1, e_bkg=>0, e_pre=>0, e_post=>0, e_norm=>0, e_der=>0, e_sec=>0, e_i0=>0, e_signal=>0);
   $data->po->e_norm(1) if ($this->{display}->GetSelection == 1);
   $data->po->e_der(1)  if ($this->{display}->GetSelection == 2);
   $data->po->e_sec(1)  if ($this->{display}->GetSelection == 3);
   $data->po->start_plot;
   $data->plot('e');
+  $data->po->set(e_smooth=>$save);
 };
 
 sub Pluck {
