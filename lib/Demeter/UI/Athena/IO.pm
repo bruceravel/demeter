@@ -50,6 +50,7 @@ sub Export {
 
   my $busy = Wx::BusyCursor->new();
   #$app->{main}->{Main}->pull_values($app->current_data);
+  $app->make_page('Journal') if (not exists $app->{main}->{Journal});
   $app->{main}->{Journal}->{object}->text($app->{main}->{Journal}->{journal}->GetValue);
   $data[0]->write_athena($fname, @data, $app->{main}->{Journal}->{object});
   if (dirname($fname) ne Demeter->stash_folder) {

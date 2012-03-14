@@ -7,7 +7,7 @@ use Wx qw( :everything );
 use base 'Wx::Panel';
 use Wx::Event qw(EVT_LIST_ITEM_ACTIVATED EVT_LIST_ITEM_SELECTED EVT_BUTTON EVT_KEY_DOWN
 		 EVT_TEXT EVT_CHOICE EVT_COMBOBOX EVT_CHECKBOX EVT_RADIOBUTTON
-		 EVT_RIGHT_DOWN EVT_MENU EVT_TEXT_ENTER EVT_SPIN_UP EVT_SPIN_DOWN
+		 EVT_RIGHT_DOWN EVT_MENU EVT_TEXT_ENTER EVT_SPIN
 		 EVT_ENTER_WINDOW EVT_LEAVE_WINDOW);
 use Wx::Perl::TextValidator;
 
@@ -161,8 +161,8 @@ sub bkg {
   $this->{bkg_e0_pluck}   = Wx::BitmapButton -> new($this, -1, $bullseye);
   $this->{bkg_rbkg_label} = Wx::StaticText   -> new($this, -1, "Rbkg");
   $this->{bkg_rbkg}       = Wx::TextCtrl     -> new($this, -1, q{}, wxDefaultPosition, $tcsize, wxTE_PROCESS_ENTER);
-  $this->{bkg_rbkg_pluck} = Wx::BitmapButton -> new($this, -1, $bullseye);
-  #$this->{bkg_rbkg_pluck} = Wx::SpinButton -> new($this, -1, wxDefaultPosition, wxDefaultSize, wxSP_HORIZONTAL|wxSP_WRAP);
+  #$this->{bkg_rbkg_pluck} = Wx::BitmapButton -> new($this, -1, $bullseye);
+  $this->{bkg_rbkg_pluck} = Wx::SpinButton -> new($this, -1, wxDefaultPosition, wxDefaultSize, wxSP_HORIZONTAL|wxSP_WRAP);
   $this->{bkg_flatten}    = Wx::CheckBox     -> new($this, -1, q{Flatten normalized data});
   $gbs -> Add($this->{bkg_e0_label},   Wx::GBPosition->new(0,0));
   $gbs -> Add($this->{bkg_e0},         Wx::GBPosition->new(0,1));
@@ -173,8 +173,9 @@ sub bkg {
   $gbs -> Add($this->{bkg_flatten},    Wx::GBPosition->new(0,6), Wx::GBSpan->new(1,3));
   $this->{bkg_flatten}->SetValue(1);
   push @bkg_parameters, qw(bkg_e0 bkg_rbkg bkg_flatten);
-  #EVT_SPIN_UP  ($this, $this->{bkg_rbkg_pluck}, sub{spin_rbkg(@_, 'up'  )});
-  #EVT_SPIN_DOWN($this, $this->{bkg_rbkg_pluck}, sub{spin_rbkg(@_, 'down')});
+  EVT_SPIN($this, $this->{bkg_rbkg_pluck}, sub{spin_rbkg(@_)});
+  $this->{bkg_rbkg_pluck}->SetRange(-1,1);
+  $this->{bkg_rbkg_pluck}->SetValue(0);
 
   ## kweight, step, fix step
   $this->{bkg_kw_label}   = Wx::StaticText -> new($this, -1, "k-weight");
@@ -820,20 +821,20 @@ sub show_source {
 };
 
 sub spin_rbkg {
-  my ($main, $event, $dir) = @_;
+  my ($main, $event) = @_;
   my $cur =  $main->{bkg_rbkg}->GetValue;
-  my $pm  = ($dir eq 'up') ? +1 : -1;
-  my $new = $cur + $pm*$::app->current_data->co->default(qw(athena bkg_spin_step));
-  print join("|", @_, $dir, $cur, $pm, $new), $/;
-  $new = $cur if (($new < 0.5) and ($dir eq 'down'));
-  $main->{bkg_rbkg}->SetValue($new);
-  if ($::app->current_data->co->default(qw(athena bkg_spin_plot))) {
-    my $busy = Wx::BusyCursor->new();
-    $::app->plot(q{}, q{}, $::app->current_data->co->default(qw(athena bkg_spin_plot)), 'single');
-    undef $busy;
+  my $pm  = ($event->GetPosition == 1) ? +1 : -1;
+  my $new = $cur + Demeter->co->default(qw(athena bkg_spin_step)) * $pm;
+  #print join("|", caller, $pm, $cur, $new), $/;
+  $new = $cur if (($new < 0.5) and ($pm = 1));
+  $new = $cur if (($new > 2.5) and ($pm = -1));
+  $main->{bkg_rbkg}       -> SetValue($new);
+  $main->{bkg_rbkg_pluck} -> SetValue(0);
+  if ($new != $cur) {
+    $::app->plot(q{}, q{}, Demeter->co->default(qw(athena bkg_spin_plot)), 'single') if Demeter->co->default(qw(athena bkg_spin_plot));
+    $::app->modified(1);
   };
-  $::app->modified(1);
-  $event->Veto;
+  $event->Veto();
 };
 
 sub interpret_bkg_z {

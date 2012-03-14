@@ -95,8 +95,9 @@
    - [ ] implement frozen groups
    - [ ] links to documentation on each tool
    - [X] Post a warning if bkg_e0=0 and/or element is <= Be
-   - [ ] *Main window* [0/2] [0%]
-       + [ ] SpinCtrl for use with Rbkg, bkg_spl1/2
+   - [ ] *Main window* [0/3] [0%]
+       + [ ] +SpinCtrl for use with Rbkg+, event handler triggered twice on first use
+       + [ ] SpinCtrl for use with bkg_spl1/2
        + [ ] push bkg_e0 /algorithm/ onto marked/all groups and recalculate
    - [X] *Pluck buttons* [2/2]
        + [X] implement everywhere needed
@@ -323,7 +324,7 @@
       CheckBoxList which maintain an indexed list of groups rather than relying
       upon client data, which simply doesn't work on Windows.
       
- 
+      
 * Atoms and Feff
 
 ** CIF [0/3] [0%]
