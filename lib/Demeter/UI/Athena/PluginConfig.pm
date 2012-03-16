@@ -21,6 +21,7 @@ use warnings;
 use Wx qw( :everything );
 use Wx::Event qw(EVT_CLOSE EVT_BUTTON);
 use base qw(Wx::Dialog);
+use Demeter::UI::Wx::Config;
 
 sub new {
   my ($class, $parent, $plugin, $group) = @_;

@@ -26,7 +26,6 @@ use MooseX::Aliases;
 
 use Carp;
 #use diagnostics;
-#use Config::IniFiles;
 use Demeter::IniReader;
 use Config::INI::Writer;
 use File::Basename;

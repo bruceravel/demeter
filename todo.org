@@ -1,13 +1,10 @@
 #+TITLE: Demeter To Do List (also Athena and Artemis)
 #+AUTHOR: Bruce Ravel
 #+EMAIL: bravel AT bnl DOT gov
-#+TAGS: PDL HUH Advanced Windows
 
 * things that need doing
 
 ** Moose issues
-  - Figure out how to remove dependence on MooseX::AttributeHelpers
-    from Demeter::Mode and Xray::Crystal::Cell
 
 ** wx issues
   - [ ] why does Wx::FileDialog with ~wxFD_OVERWRITE_PROMPT~ style not work correctly?
@@ -77,13 +74,13 @@
    24. [X] plugins
    25. [X] preference 
 
-**** Requires PDL 							:PDL:
+**** Requires PDL
     1. smoothing by S-G
     2. deconvolution
     3. +PCA+
 
 *** needs doing [9/20] [45%]
-   - [X] deglitching crashes with gnuplot					:HUH:
+   - [X] deglitching crashes with gnuplot
    - [X] test preprocessing (I had a crash with all three preproc options selected for data with a reference):
 	 ~Can't call method "GetSelection" on an undefined value at /home/bruce/git/demeter/lib/Demeter/UI/Athena/IO.pm line 423.~
    - [X] Check that data/standard relationship works when importing
@@ -184,11 +181,11 @@
    - Need to expand the filetype system by examining data from *all* the XAS beamlines in the world.  Yes ... all of them.
    - solicit help from the facility representatives
 
-** Windows issues [4/14] [28%] 					    :Windows:
+** Windows issues [4/14] [28%]
   - [X] parameter group context menus don't get posted (see
 	http://www.nntp.perl.org/group/perl.wxperl.users/2011/03/msg7929.html)
   - [X] +spurious message from clipboard+ (worked around)
-  - [X] fpj file on Win seems to not get unpacked correctly /is this true?/	:Project:
+  - [X] fpj file on Win seems to not get unpacked correctly /is this true?/
   - [X] +using gnuplot on Win XP Home Edition failed due to the redirection of STDERR to ~$self->{__error_log}~ in Graphics::GnuplotIF.+
 	removing this redirection fixed the problem, but I don't
 	understand why it was a problem in the first place.
@@ -266,7 +263,7 @@
    - [ ] GDS objects get created with same groupname over and over as
 	 they are used in fits in the history
 
-**** Advanced fitting						   :Advanced:
+**** Advanced fitting
 ***** MFC [0/1]
    - [ ] Balance interstitial energies for MFC fits
 ***** MDS & Fit Sequence [1/3]
@@ -317,7 +314,7 @@
 
 
 
-** Windows							    :Windows:
+** Windows
 *** DONE non-ascii symbols
 *** DONE Fix [[file:lib/Demeter/UI/Wx/CheckListBook.pm][CheckListBook]]
       The solution is shown at the end of Athena.pm.  Define new methods for
