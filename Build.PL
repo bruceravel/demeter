@@ -52,7 +52,6 @@ my $build = DemeterBuilder
 				'Encoding::FixLatin'        => '0',
 				'File::Copy::Recursive'     => '0',
 				'File::CountLines'          => '0',
-				'File::Touch'		    => '0',
 				'Graph'                     => '0',
 				'Heap'			    => '0',
                                 'HTML::Entities'            => '0',
@@ -90,7 +89,7 @@ my $build = DemeterBuilder
 				'PPI'                 => '0',
 				'PPI::HTML'           => '0',
 				'Image::Size'         => '0',
-				## this is used to build the Ifeffit wrapper
+				## these are used to build the Ifeffit wrapper
                                 'ExtUtils::CBuilder'  => '0',
 				'File::Touch'	      => '0',
 			       },

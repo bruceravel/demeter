@@ -250,6 +250,7 @@ sub get_formula_data {
 	  $answer .=
 	    "\n(The value for density is not a number.)";
 	  $self->{echo}->SetStatusText("The value for density is not a number.");
+	  $density = 0;
 	};
 	$answer .=
 	  sprintf("\n\nA sample of 1 absorption length with area of 1 square cm requires %.3f miligrams of sample at %.2f %s.\n",
@@ -271,11 +272,13 @@ sub get_formula_data {
 	## 1 amu = 1.6605389 x 10^-24 gm
 	push @abovebelow, $bpfu / $apfu / 1.6605389;
       };
-      my $xabove = $abovebelow[1] * $density;
-      my $xbelow = $abovebelow[0] * $density;
-      my $step   = 10000 / ($xabove - $xbelow);
-      $answer .= sprintf "\nUnit edge step length at %s %s edge (%.1f eV) is %.1f microns\n",
-	ucfirst($e->[0]), uc($e->[1]), $enot, $step;
+      if (not $density) {
+	my $xabove = $abovebelow[1] * $density;
+	my $xbelow = $abovebelow[0] * $density;
+	my $step   = 10000 / ($xabove - $xbelow);
+	$answer .= sprintf "\nUnit edge step length at %s %s edge (%.1f eV) is %.1f microns\n",
+	  ucfirst($e->[0]), uc($e->[1]), $enot, $step;
+      };
     };
 
     if ($type eq 'Molarity') {

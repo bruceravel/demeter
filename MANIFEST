@@ -419,6 +419,7 @@ lib/Demeter/Atoms/Cif.pm
 lib/Demeter/Carp.pm
 lib/Demeter/Config.pm
 lib/Demeter/configuration/000README
+lib/Demeter/configuration/analysis.demeter_conf
 lib/Demeter/configuration/artemis.demeter_conf
 lib/Demeter/configuration/athena.demeter_conf
 lib/Demeter/configuration/atoms.demeter_conf
@@ -441,8 +442,6 @@ lib/Demeter/configuration/lcf.demeter_conf
 lib/Demeter/configuration/operations.demeter_conf
 lib/Demeter/configuration/ornaments.demeter_conf
 lib/Demeter/configuration/pathfinder.demeter_conf
-lib/Demeter/configuration/pca.demeter_conf
-lib/Demeter/configuration/peakfit.demeter_conf
 lib/Demeter/configuration/plot.demeter_conf
 lib/Demeter/configuration/process.demeter_conf
 lib/Demeter/configuration/screen.demeter_conf

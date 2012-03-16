@@ -17,7 +17,6 @@ package Demeter::StructuralUnit;
 
 use Moose;
 extends 'Demeter::VPath';
-#use MooseX::AttributeHelpers;
 use Demeter::StrTypes qw( Empty );
 
 use String::Random qw(random_string);
@@ -29,29 +28,29 @@ has '+id'        => (default => 'virtual path');
 has 'tag'        => (is => 'rw', isa => 'Str', default => sub{random_string('ccc')});
 
 has 'feffs' => (
-		metaclass => 'Collection::Array',
+		traits    => ['Array'],
 		is        => 'rw',
 		isa       => 'ArrayRef[Demeter::Feff]',
 		default   => sub { [] },
-		provides  => {
-			      'push'    => 'push_feffs',
-			      'pop'     => 'pop_feffs',
-			      'shift'   => 'shift_feffs',
-			      'unshift' => 'unshift_feffs',
-			      'clear'   => 'clear_feffs',
+		handles   => {
+			      'push_feffs'    => 'push',
+			      'pop_feffs'     => 'pop',
+			      'shift_feffs'   => 'shift',
+			      'unshift_feffs' => 'unshift',
+			      'clear_feffs'   => 'clear',
 			     }
 	       );
 has 'gds' => (
-	      metaclass => 'Collection::Array',
+	      traits    => ['Array'],
 	      is        => 'rw',
 	      isa       => 'ArrayRef[Demeter::GDS]',
 	      default   => sub { [] },
-	      provides  => {
-			    'push'    => 'push_gds',
-			    'pop'     => 'pop_gds',
-			    'shift'   => 'shift_gds',
-			    'unshift' => 'unshift_gds',
-			    'clear'   => 'clear_gds',
+	      handles   => {
+			    'push_gds'    => 'push',
+			    'pop_gds'     => 'pop',
+			    'shift_gds'   => 'shift',
+			    'unshift_gds' => 'unshift',
+			    'clear_gds'   => 'clear',
 			   }
 	     );
 

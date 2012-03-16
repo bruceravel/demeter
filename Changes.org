@@ -27,6 +27,7 @@
      call to spline().  Submitted patch to Matt.
    - Smooth works in Calibrate tool
    - Visual feedback when element < 5 or E0 < 150
+   - Implemented a spin button for incrementing/deincrementing Rbkg
 
 *** Artemis
 
@@ -34,6 +35,8 @@
    - Delay laying out most windows until needed for the first time.
      This speed up startup (~6 1/2 seconds before, now just under 3
      second) at the cost of a bit more time later on.
+   - Fixed a bug in furmulas tool where missing denisty caused a
+     divide by zero crash
 
 *** Atoms stand-alone
    - Used delayed layout and careful loading of Demeter modules to

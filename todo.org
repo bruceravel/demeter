@@ -95,9 +95,9 @@
    - [ ] implement frozen groups
    - [ ] links to documentation on each tool
    - [X] Post a warning if bkg_e0=0 and/or element is <= Be
-   - [ ] *Main window* [0/3] [0%]
-       + [ ] +SpinCtrl for use with Rbkg+, event handler triggered twice on first use
-       + [ ] SpinCtrl for use with bkg_spl1/2
+   - [-] *Main window* [1/3] [33%]
+       + [X] +SpinCtrl for use with Rbkg+, event handler triggered twice on first use (found work-around)
+       + [ ] SpinCtrl for use with bkg_spl1/2 (I find this to be a much worse idea)
        + [ ] push bkg_e0 /algorithm/ onto marked/all groups and recalculate
    - [X] *Pluck buttons* [2/2]
        + [X] implement everywhere needed

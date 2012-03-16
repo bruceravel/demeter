@@ -12,7 +12,7 @@ use Cwd;
 use File::Copy;
 use File::Path qw(mkpath rmtree);
 use File::Spec;
-use File::Touch;
+#use File::Touch;
 
 ######################################################################
 ## Configuration
@@ -181,8 +181,9 @@ sub ACTION_pull {
 
 sub ACTION_touch_wrapper {
   my $self = shift;
+  eval "require File::Touch";
   print "touching src/ifeffit_wrap.c\n";
-  touch(File::Spec->catfile('src', 'ifeffit_wrap.c'));
+  File::Touch::touch(File::Spec->catfile('src', 'ifeffit_wrap.c'));
   $self->ACTION_build;
   printf("copying %s to %s\n",
 	 File::Spec->catfile('src', 'Ifeffit.so'),

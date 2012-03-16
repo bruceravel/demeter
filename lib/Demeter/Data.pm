@@ -579,7 +579,6 @@ sub determine_data_type {
 sub _update {
   my ($self, $which) = @_;
   $which = lc($which);
-
  WHICH: {
     ($which eq 'data') and do {
       $self->read_data if ($self->update_data);

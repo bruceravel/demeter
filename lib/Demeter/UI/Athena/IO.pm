@@ -132,8 +132,10 @@ sub Import {
       };
     };
     if ($type eq '???') {
-      $app->{main}->status("Could not read \"$file\" as either data or as a project file. (Do you need to enable a plugin?)");
-      return;
+      my $md = Wx::MessageDialog->new($app->{main}, "Could not read \"$file\" as either data or as a project file. (Do you need to enable a plugin?). OK to continue importing data, cancel to quit importing data.", "Warning!", wxOK|wxCANCEL|wxICON_WARNING);
+      my $response = $md -> ShowModal;
+      return if $response = wxID_CANCEL;
+      next;
     };
     if ($plugin) {
       $app->{main}->status("$file appears to be from " . $plugin->description);

@@ -18,6 +18,7 @@ use List::MoreUtils qw(none any);
 use Scalar::Util qw(looks_like_number);
 use Demeter::Constants qw($NUMBER $EPSILON2);
 use Const::Fast;
+use DateTime;
 
 use vars qw($label $tag);
 $label = "Main window";
@@ -176,6 +177,8 @@ sub bkg {
   EVT_SPIN($this, $this->{bkg_rbkg_pluck}, sub{spin_rbkg(@_)});
   $this->{bkg_rbkg_pluck}->SetRange(-1,1);
   $this->{bkg_rbkg_pluck}->SetValue(0);
+  $this->{last_spin} = DateTime->now(time_zone => 'floating');  # see comment in spin_rbkg
+  $app->mouseover($this->{bkg_rbkg_pluck}, "Increment or deincrement Rbkg and plot immediately.  (You must wait 2 seconds between clicks!)");
 
   ## kweight, step, fix step
   $this->{bkg_kw_label}   = Wx::StaticText -> new($this, -1, "k-weight");
@@ -745,10 +748,12 @@ sub window_name {
 
 sub OnParameter {
   my ($main, $event, $app, $which) = @_;
+#Demeter->trace;
   return if $app->{selecting_data_group};
   my $data = $app->current_data;
   return if not $data;
   my $widget = $app->{main}->{Main}->{$which};
+#  print $widget->GetValue, $/;
   ## TextCtrl SpinCtrl ComboBox CheckBox RadioButton all have GetValue
   my $value = ((ref($widget) =~ m{Choice}) and ($which =~ m{clamp})) ? $data->co->default("clamp", $widget->GetStringSelection)
             : (ref($widget) =~ m{Choice})    ? $widget->GetStringSelection
@@ -820,20 +825,33 @@ sub show_source {
   return "Data source: " . $::app->current_data->source;
 };
 
+
 sub spin_rbkg {
   my ($main, $event) = @_;
+  ## this bit of chicanery is needed because plotting for some reason
+  ## causes the spin event to be issues twice.  very confusing!  this
+  ## serves the secondary purpose of discouraging repeated clicking of
+  ## the spinner.
+  my $now = DateTime->now(time_zone => 'floating');
+  my $duration = $now->subtract_datetime($main->{last_spin});
+  if ($duration->seconds < 2) {
+    $main->{last_spin}=$now;
+    $main->{bkg_rbkg_pluck} -> SetValue(0);
+    return;
+  };
   my $cur =  $main->{bkg_rbkg}->GetValue;
   my $pm  = ($event->GetPosition == 1) ? +1 : -1;
   my $new = $cur + Demeter->co->default(qw(athena bkg_spin_step)) * $pm;
-  #print join("|", caller, $pm, $cur, $new), $/;
-  $new = $cur if (($new < 0.5) and ($pm = 1));
-  $new = $cur if (($new > 2.5) and ($pm = -1));
-  $main->{bkg_rbkg}       -> SetValue($new);
+  $new = $cur if (($new < 0.5) and ($pm = -1));
+  $new = $cur if (($new > 2.5) and ($pm =  1));
   $main->{bkg_rbkg_pluck} -> SetValue(0);
   if ($new != $cur) {
+    $main->{bkg_rbkg}    -> SetValue($new);
+    $::app->current_data -> bkg_rbkg($new);
     $::app->plot(q{}, q{}, Demeter->co->default(qw(athena bkg_spin_plot)), 'single') if Demeter->co->default(qw(athena bkg_spin_plot));
     $::app->modified(1);
   };
+  $main->{last_spin}=$now;
   $event->Veto();
 };
 
