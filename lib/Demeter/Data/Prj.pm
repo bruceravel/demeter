@@ -19,7 +19,6 @@ use autodie qw(open close);
 
 use Moose;
 extends 'Demeter';
-#use MooseX::AttributeHelpers;
 use MooseX::Aliases;
 #use MooseX::StrictConstructor;
 use Demeter::StrTypes qw( FileName );
@@ -36,14 +35,14 @@ use Data::Dumper;
 has 'file'    => (is => 'rw', isa => FileName,  default => q{},
 		  trigger => sub{shift -> Read} );
 has 'entries' => (
-		  metaclass => 'Collection::Array',
+		  traits    => ['Array'],
 		  is        => 'rw',
 		  isa       => 'ArrayRef[ArrayRef]',
 		  default   => sub { [] },
-		  provides  => {
-				'push' => 'add_entry',
-				'pop'  => 'remove_entry',
-				'clear' => 'clear_entries',
+		  handles   => {
+				'add_entry' => 'push',
+				'remove_entry'  => 'pop',
+				'clear_entries' => 'clear',
 			       }
 		 );
 has 'n'       => (is => 'rw', isa => 'Int',  default => 0);

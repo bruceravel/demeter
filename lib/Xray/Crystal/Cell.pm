@@ -17,7 +17,6 @@ package Xray::Crystal::Cell;
 
 use Moose;
 use Moose::Util::TypeConstraints;
-use MooseX::AttributeHelpers;
 
 with 'MooseX::SetGet';
 
@@ -109,25 +108,25 @@ has 'gamma'	   => (is => 'rw', isa => 'Num', default => 90,
 has 'angle'	   => (is => 'rw', isa => 'Str', default => q{});
 
 has 'sites'	   => (
-		       metaclass => 'Collection::Array',
+		       traits    => ['Array'],
 		       is        => 'rw',
 		       isa       => 'ArrayRef',
 		       default   => sub { [] },
-		       provides  => {
-				     'push'  => 'push_sites',
-				     'pop'   => 'pop_sites',
-				     'clear' => 'clear_sites',
+		       handles   => {
+				     'push_sites'  => 'push',
+				     'pop_sites'   => 'pop',
+				     'clear_sites' => 'clear',
 				    }
 		      );
 has 'contents'	   => (
-		       metaclass => 'Collection::Array',
+		       traits    => ['Array'],
 		       is        => 'rw',
 		       isa       => 'ArrayRef',
 		       default   => sub { [] },
-		       provides  => {
-				     'push'  => 'push_contents',
-				     'pop'   => 'pop_contents',
-				     'clear' => 'clear_contents',
+		       handles   => {
+				     'push_contents'  => 'push',
+				     'pop_contents'   => 'pop',
+				     'clear_contents' => 'clear',
 				    }
 		      );
 has 'volume'	   => (is => 'rw', isa => 'Num', default => 1);

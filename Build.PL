@@ -33,11 +33,8 @@ my $build = DemeterBuilder
 	 auto_configure_requires => 1,
 	 needs_compiler     => 1,
 	 requires           => {
-				#'autodie'                   => '0', #  this is core
-
 				'Moose'			    => '1.21',
 				'MooseX::Aliases'           => '0.08',
-				'MooseX::AttributeHelpers'  => '0.23',
 				'MooseX::StrictConstructor' => '0.12',
 				'MooseX::Singleton'	    => '0.25',
 				'MooseX::Types'		    => '0.25',
@@ -54,7 +51,7 @@ my $build = DemeterBuilder
 				'File::CountLines'          => '0',
 				'Graph'                     => '0',
 				'Heap'			    => '0',
-                                'HTML::Entities'            => '0',
+                                'HTML::Entities'            => '0', # what is this used for?
 				'List::MoreUtils'	    => '0',
 				'Math::Combinatorics'	    => '0',
 				'Math::Derivative'	    => '0',
@@ -82,6 +79,7 @@ my $build = DemeterBuilder
 				#'Compress::Raw::Zlib'	   => '0',
 				#'Compress::Raw'	   => '0',
 				#'Math::Cephes'		   => '0',
+				#'MooseX::AttributeHelpers'  => '0.23', now using Moose::Meta::Attribute::Native like a good boy
 			       },
 	 build_requires     => {
 				## these are used to build the demeter programming guide

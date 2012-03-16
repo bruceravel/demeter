@@ -75,30 +75,30 @@ has 'data_matrix' => (is => 'rw', isa => 'PDL', default => sub {PDL::null});
 
 has 'ndata' => (is => 'rw', isa => 'Int', default => 0);
 has 'stack' => (
-		metaclass => 'Collection::Array',
+		traits    => ['Array'],
 		is        => 'rw',
 		isa       => 'ArrayRef[Demeter::Data]',
 		default   => sub { [] },
-		provides  => {
-			      'push'    => 'push_stack',
-			      'pop'     => 'pop_stack',
-			      'shift'   => 'shift_stack',
-			      'unshift' => 'unshift_stack',
-			      'clear'   => 'clear_stack',
+		handles   => {
+			      'push_stack'    => 'push',
+			      'pop_stack'     => 'pop',
+			      'shift_stack'   => 'shift',
+			      'unshift_stack' => 'unshift',
+			      'clear_stack'   => 'clear',
 			     },
 		trigger => sub{  my($self, $new) = @_; $self->ndata($#{ $self->stack } + 1);}
 	       );
 has 'stackgroups' => (
-		      metaclass => 'Collection::Array',
+		      traits    => ['Array'],
 		      is        => 'rw',
 		      isa       => 'ArrayRef[Str]',
 		      default   => sub { [] },
-		      provides  => {
-				    'push'    => 'push_stackgroups',
-				    'pop'     => 'pop_stackgroups',
-				    'shift'   => 'shift_stackgroups',
-				    'unshift' => 'unshift_stackgroups',
-				    'clear'   => 'clear_stackgroups',
+		      handles   => {
+				    'push_stackgroups'    => 'push',
+				    'pop_stackgroups'     => 'pop',
+				    'shift_stackgroups'   => 'shift',
+				    'unshift_stackgroups' => 'unshift',
+				    'clear_stackgroups'   => 'clear',
 				   },
 		     );
 

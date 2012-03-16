@@ -61,41 +61,41 @@ has 'nparam'       => (is => 'rw', isa => 'Int',  default => 0);
 has 'ndata'        => (is => 'rw', isa => 'Int',  default => 0);
 has 'ntitles'      => (is => 'rw', isa => 'Int',  default => 0);
 has 'lineshapes'   => (
-		       metaclass => 'Collection::Array',
+		       traits    => ['Array'],
 		       is        => 'rw',
 		       isa       => 'ArrayRef[Demeter::PeakFit::LineShape]',
 		       default   => sub { [] },
-		       provides  => {
-				     'push'    => 'push_lineshapes',
-				     'pop'     => 'pop_lineshapes',
-				     'shift'   => 'shift_lineshapes',
-				     'unshift' => 'unshift_lineshapes',
-				     'clear'   => 'clear_lineshapes',
+		       handles   => {
+				     'push_lineshapes'    => 'push',
+				     'pop_lineshapes'     => 'pop',
+				     'shift_lineshapes'   => 'shift',
+				     'unshift_lineshapes' => 'unshift',
+				     'clear_lineshapes'   => 'clear',
 				    },
 		      );
 has 'linegroups'   => (
-		       metaclass => 'Collection::Array',
+		       traits    => ['Array'],
 		       is        => 'rw',
 		       isa       => 'ArrayRef[Str]',
 		       default   => sub { [] },
-		       provides  => {
-				     'push'    => 'push_linegroups',
-				     'pop'     => 'pop_linegroups',
-				     'shift'   => 'shift_linegroups',
-				     'unshift' => 'unshift_linegroups',
-				     'clear'   => 'clear_linegroups',
+		       handles   => {
+				     'push_linegroups'    => 'push',
+				     'pop_linegroups'     => 'pop',
+				     'shift_linegroups'   => 'shift',
+				     'unshift_linegroups' => 'unshift',
+				     'clear_linegroups'   => 'clear',
 				    },
 		      );
 
 has 'tempfiles' => (
-		    metaclass => 'Collection::Array',
+		    traits    => ['Array'],
 		    is        => 'rw',
 		    isa       => 'ArrayRef[Str]',
 		    default   => sub { [] },
-		    provides  => {
-				  'push'  => 'add_tempfile',
-				  'pop'   => 'remove_tempfile',
-				  'clear' => 'clear_tempfiles',
+		    handles   => {
+				  'add_tempfile'  => 'push',
+				  'remove_tempfile'   => 'pop',
+				  'clear_tempfiles' => 'clear',
 				 }
 		   );
 

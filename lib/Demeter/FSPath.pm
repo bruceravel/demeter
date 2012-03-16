@@ -17,7 +17,6 @@ package Demeter::FSPath;
 
 use Moose;
 use MooseX::Aliases;
-#use MooseX::AttributeHelpers;
 #use MooseX::StrictConstructor;
 extends 'Demeter::Path';
 use Demeter::NumTypes qw( Ipot PosNum PosInt );
@@ -100,14 +99,14 @@ has 'make_gds'   => (is => 'rw', isa => 'Bool',   default => sub{ shift->co->def
 				     };
 				   });
 has 'gds' => (
-		metaclass => 'Collection::Array',
+		traits    => ['Array'],
 		is        => 'rw',
 		isa       => 'ArrayRef',
 		default   => sub { [] },
-		provides  => {
-			      'push'    => 'push_gds',
-			      'clear'   => 'clear_gds',
-			      'splice'  => 'splice_gds',
+		handles   => {
+			      'push_gds'    => 'push',
+			      'clear_gds'   => 'clear',
+			      'splice_gds'  => 'splice',
 			     },
 	       );
 

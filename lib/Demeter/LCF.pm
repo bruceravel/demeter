@@ -71,31 +71,31 @@ has 'npoints'   => (is => 'rw', isa => 'Int', default => 0);
 has 'nvarys'    => (is => 'rw', isa => 'Int', default => 0);
 has 'ntitles'   => (is => 'rw', isa => 'Int', default => 0);
 has 'standards' => (
-		    metaclass => 'Collection::Array',
+		    traits    => ['Array'],
 		    is        => 'rw',
 		    isa       => 'ArrayRef[Demeter::Data]',
 		    default   => sub { [] },
-		    provides  => {
-				  'push'    => 'push_standards',
-				  'pop'     => 'pop_standards',
-				  'shift'   => 'shift_standards',
-				  'unshift' => 'unshift_standards',
-				  'clear'   => 'clear_standards',
+		    handles   => {
+				  'push_standards'    => 'push',
+				  'pop_standards'     => 'pop',
+				  'shift_standards'   => 'shift',
+				  'unshift_standards' => 'unshift',
+				  'clear_standards'   => 'clear',
 				 },
 		   );
 has 'doing_combi' => (is => 'rw', isa => 'Bool', default => 0);
 has 'combi_count' => (is => 'rw', isa => 'Int',  default => 0);
 has 'combi_results'=> (
-		       metaclass => 'Collection::Array',
+		       traits    => ['Array'],
 		       is        => 'rw',
 		       isa       => 'ArrayRef',
 		       default   => sub { [] },
-		       provides  => {
-				     'push'    => 'push_combi_results',
-				     'pop'     => 'pop_combi_results',
-				     'shift'   => 'shift_combi_results',
-				     'unshift' => 'unshift_combi_results',
-				     'clear'   => 'clear_combi_results',
+		       handles   => {
+				     'push_combi_results'    => 'push',
+				     'pop_combi_results'     => 'pop',
+				     'shift_combi_results'   => 'shift',
+				     'unshift_combi_results' => 'unshift',
+				     'clear_combi_results'   => 'clear',
 				    },
 		      );
 
@@ -103,30 +103,30 @@ has 'doing_seq' => (is => 'rw', isa => 'Bool', default => 0);
 has 'include_caller' => (is => 'rw', isa => 'Bool', default => 1);
 has 'seq_count' => (is => 'rw', isa => 'Int',  default => 0);
 has 'seq_results'=> (
-		     metaclass => 'Collection::Array',
+		     traits    => ['Array'],
 		     is        => 'rw',
 		     isa       => 'ArrayRef',
 		     default   => sub { [] },
-		     provides  => {
-				   'push'    => 'push_seq_results',
-				   'pop'     => 'pop_seq_results',
-				   'shift'   => 'shift_seq_results',
-				   'unshift' => 'unshift_seq_results',
-				   'clear'   => 'clear_seq_results',
+		     handles   => {
+				   'push_seq_results'    => 'push',
+				   'pop_seq_results'     => 'pop',
+				   'shift_seq_results'   => 'shift',
+				   'unshift_seq_results' => 'unshift',
+				   'clear_seq_results'   => 'clear',
 				  },
 		    );
 
 has 'options' => (
-		  metaclass => 'Collection::Hash',
+		  traits    => ['Hash'],
 		  is        => 'rw',
 		  isa       => 'HashRef[ArrayRef]',
 		  default   => sub { +{} },
-		  provides  => {
-				set    => 'set_option',
-				get    => 'get_option',
-				keys   => 'get_option_list',
-				clear  => 'clear_option',
-				exists => 'option_exists',
+		  handles   => {
+				'set_option'      => 'set',
+				'get_option'      => 'get',
+				'get_option_list' => 'keys',
+				'clear_option'    => 'clear',
+				'option_exists'   => 'exists',
 			       },
 		 );
 has 'rfactor' => (is => 'rw', isa => 'Num', default => 0);
@@ -135,16 +135,16 @@ has 'chinu'   => (is => 'rw', isa => 'Num', default => 0);
 has 'scaleby' => (is => 'rw', isa => 'Num', default => 0);
 
 has 'standardsgroups' => (
-			  metaclass => 'Collection::Array',
+			  traits    => ['Array'],
 			  is        => 'rw',
 			  isa       => 'ArrayRef[Str]',
 			  default   => sub { [] },
-			  provides  => {
-					'push'    => 'push_standardsgroups',
-					'pop'     => 'pop_standardsgroups',
-					'shift'   => 'shift_standardsgroups',
-					'unshift' => 'unshift_standardsgroups',
-					'clear'   => 'clear_standardsgroups',
+			  handles   => {
+					'push_standardsgroups'    => 'push',
+					'pop_standardsgroups'     => 'pop',
+					'shift_standardsgroups'   => 'shift',
+					'unshift_standardsgroups' => 'unshift',
+					'clear_standardsgroups'   => 'clear',
 				       },
 			 );
 

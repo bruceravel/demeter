@@ -22,7 +22,6 @@ use File::Spec;
 
 use Moose;
 extends 'Demeter';
-#use MooseX::AttributeHelpers;
 use MooseX::Aliases;
 #use MooseX::StrictConstructor;
 
@@ -92,59 +91,59 @@ has 'troubletext'    => (is => 'rw', isa => 'Str',    default => q{});
 
 ## -------- array attributes
 has 'gds' => (
-	      metaclass => 'Collection::Array',
+	      traits    => ['Array'],
 	      is        => 'rw',
 	      isa       => 'ArrayRef',
 	      default   => sub { [] },
-	      provides  => {
-			    'push'    => 'push_gds',
-			    'pop'     => 'pop_gds',
-			    'shift'   => 'shift_gds',
-			    'unshift' => 'unshift_gds',
-			    'clear'   => 'clear_gds',
+	      handles   => {
+			    'push_gds'    => 'push',
+			    'pop_gds'     => 'pop',
+			    'shift_gds'   => 'shift',
+			    'unshift_gds' => 'unshift',
+			    'clear_gds'   => 'clear',
 			   },
 	      trigger => sub{my ($self) = @_; $self->update_gds(1)},
 	     );
 
 has 'data' => (
-	       metaclass => 'Collection::Array',
+	       traits    => ['Array'],
 	       is        => 'rw',
 	       isa       => 'ArrayRef',
 	       default   => sub { [] },
-	       provides  => {
-			     'push'    => 'push_data',
-			     'pop'     => 'pop_data',
-			     'shift'   => 'shift_data',
-			     'unshift' => 'unshift_data',
-			     'clear'   => 'clear_data',
+	       handles   => {
+			     'push_data'    => 'push',
+			     'pop_data'     => 'pop',
+			     'shift_data'   => 'shift',
+			     'unshift_data' => 'unshift',
+			     'clear_data'   => 'clear',
 			    }
 	      );
 
 has 'paths' => (
-		metaclass => 'Collection::Array',
+		traits    => ['Array'],
 		is        => 'rw',
 		isa       => 'ArrayRef',
 		default   => sub { [] },
-		provides  => {
-			      'push'    => 'push_paths',
-			      'pop'     => 'pop_paths',
-			      'shift'   => 'shift_paths',
-			      'unshift' => 'unshift_paths',
-			      'clear'   => 'clear_paths',
+		handles   => {
+			      'push_paths'    => 'push',
+			      'pop_paths'     => 'pop',
+			      'shift_paths'   => 'shift',
+			      'unshift_paths' => 'unshift',
+			      'clear_paths'   => 'clear',
 			     }
 	       );
 
 has 'vpaths' => (
-		metaclass => 'Collection::Array',
+		traits    => ['Array'],
 		is        => 'rw',
 		isa       => 'ArrayRef',
 		default   => sub { [] },
-		provides  => {
-			      'push'    => 'push_vpaths',
-			      'pop'     => 'pop_vpaths',
-			      'shift'   => 'shift_vpaths',
-			      'unshift' => 'unshift_vpaths',
-			      'clear'   => 'clear_vpaths',
+		handles   => {
+			      'push_vpaths'    => 'push',
+			      'pop_vpaths'     => 'pop',
+			      'shift_vpaths'   => 'shift',
+			      'unshift_vpaths' => 'unshift',
+			      'clear_vpaths'   => 'clear',
 			     }
 	       );
 
@@ -164,37 +163,37 @@ has 'chi_reduced'       => (is => 'rw', isa =>  NonNeg,   default => 0);
 has 'fancyline'         => (is => 'rw', isa => 'Str',     default => q{});
 
 has 'correlations' => (
-		       metaclass => 'Collection::Hash',
+		       traits    => ['Hash'],
 		       is        => 'rw',
 		       isa       => 'HashRef[HashRef]',
 		       default   => sub { {} },
-		       provides  => {
-				     exists    => 'exists_in_correlations',
-				     keys      => 'keys_in_correlations',
-				     get       => 'get_correlations',
-				     set       => 'set_correlations',
+		       handles   => {
+				     'exists_in_correlations' => 'exists',
+				     'keys_in_correlations'   => 'keys',
+				     'get_correlations'       => 'get',
+				     'set_correlations'       => 'set',
 				    }
 		      );
 has 'parameters' => (
-		     metaclass => 'Collection::Array',
+		     traits    => ['Array'],
 		     is        => 'rw',
 		     isa       => 'ArrayRef',
 		     default   => sub { [] },
-		     provides  => {
-				   'push'  => 'push_parameters',
-				   'pop'   => 'pop_parameters',
-				   'clear' => 'clear_parameters',
+		     handles   => {
+				   'push_parameters'  => 'push',
+				   'pop_parameters'   => 'pop',
+				   'clear_parameters' => 'clear',
 				  }
 		    );
 has 'pathresults' => (
-		      metaclass => 'Collection::Array',
+		      traits    => ['Array'],
 		      is        => 'rw',
 		      isa       => 'ArrayRef',
 		      default   => sub { [] },
-		      provides  => {
-				    'push'  => 'push_pathresults',
-				    'pop'   => 'pop_pathresults',
-				    'clear' => 'clear_pathresults',
+		      handles   => {
+				    'push_pathresults'  => 'push',
+				    'pop_pathresults'   => 'pop',
+				    'clear_pathresults' => 'clear',
 				   }
 		     );
 

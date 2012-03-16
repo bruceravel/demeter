@@ -20,7 +20,6 @@ extends 'Demeter';
 with 'Demeter::Data::Arrays';
 with 'Demeter::Data::IO';
 with 'Demeter::Path::Process';
-#use MooseX::AttributeHelpers;
 #use MooseX::StrictConstructor;
 use Demeter::StrTypes qw( Empty );
 if ($Demeter::mode->ui eq 'screen') {
@@ -36,29 +35,29 @@ has '+name'      => (default => 'virtual path');
 has 'id'         => (is => 'ro', isa => 'Str', default => 'virtual path');
 
 has 'paths' => (
-		metaclass => 'Collection::Array',
+		traits    => ['Array'],
 		is        => 'rw',
 		isa       => 'ArrayRef[Demeter::Path]',
 		default   => sub { [] },
-		provides  => {
-			      'push'    => 'push_paths',
-			      'pop'     => 'pop_paths',
-			      'shift'   => 'shift_paths',
-			      'unshift' => 'unshift_paths',
-			      'clear'   => 'clear_paths',
+		handles   => {
+			      'push_paths'    => 'push',
+			      'pop_paths'     => 'pop',
+			      'shift_paths'   => 'shift',
+			      'unshift_paths' => 'unshift',
+			      'clear_paths'   => 'clear',
 			     }
 	       );
 has 'pathgroups' => (
-		     metaclass => 'Collection::Array',
+		     traits    => ['Array'],
 		     is        => 'rw',
 		     isa       => 'ArrayRef[Str]',
 		     default   => sub { [] },
-		     provides  => {
-				   'push'    => 'push_pathgroups',
-				   'pop'     => 'pop_pathgroups',
-				   'shift'   => 'shift_pathgroups',
-				   'unshift' => 'unshift_pathgroups',
-				   'clear'   => 'clear_pathgroups',
+		     handles   => {
+				   'push_pathgroups'    => 'push',
+				   'pop_pathgroups'     => 'pop',
+				   'shift_pathgroups'   => 'shift',
+				   'unshift_pathgroups' => 'unshift',
+				   'clear_pathgroups'   => 'clear',
 			     }
 	       );
 

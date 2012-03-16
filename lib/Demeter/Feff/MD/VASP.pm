@@ -9,34 +9,34 @@ use Chemistry::Elements qw (get_Z);
 use Compress::Zlib;
 use Regexp::Assemble;
 
-has 'atoms'   => (metaclass => 'Collection::Array',
+has 'atoms'   => (traits    => ['Array'],
 		  is        => 'rw',
 		  isa       => 'ArrayRef',
 		  default   => sub { [] },
-		  provides  => {
-				'push'  => 'push_atoms',
-				'pop'   => 'pop_atoms',
-				'clear' => 'clear_atoms',
+		  handles   => {
+				'push_atoms'  => 'push',
+				'pop_atoms'   => 'pop',
+				'clear_atoms' => 'clear',
 			       },
 		  documentation   => "atomic species obtained from the VRHFIN lines");
-has 'numbers' => (metaclass => 'Collection::Array',
+has 'numbers' => (traits    => ['Array'],
 		  is        => 'rw',
 		  isa       => 'ArrayRef',
 		  default   => sub { [] },
-		  provides  => {
-				'push'  => 'push_numbers',
-				'pop'   => 'pop_numbers',
-				'clear' => 'clear_numbers',
+		  handles   => {
+				'push_numbers'  => 'push',
+				'pop_numbers'   => 'pop',
+				'clear_numbers' => 'clear',
 			       },
 		  documentation   => "numbers of each species obtained from the 'ions per type' line");
-has 'indeces' => (metaclass => 'Collection::Array',
+has 'indeces' => (traits    => ['Array'],
 		  is        => 'rw',
 		  isa       => 'ArrayRef',
 		  default   => sub { [] },
-		  provides  => {
-				'push'  => 'push_indeces',
-				'pop'   => 'pop_indeces',
-				'clear' => 'clear_indeces',
+		  handles   => {
+				'push_indeces'  => 'push',
+				'pop_indeces'   => 'pop',
+				'clear_indeces' => 'clear',
 			       },
 		  documentation   => "index ranges of each species in the cluster lists");
 has 'start'   => (is	          => 'rw',

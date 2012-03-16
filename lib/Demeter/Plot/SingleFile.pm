@@ -24,25 +24,25 @@ has 'file'     => (is => 'rw', isa => 'Str',  default => q{});
 has '+backend' => (default => q{singleplot});
 
 has 'columns' => (
-		    metaclass => 'Collection::Array',
+		    traits    => ['Array'],
 		    is        => 'rw',
 		    isa       => 'ArrayRef[Str]',
 		    default   => sub { [] },
-		    provides  => {
-				  'push'  => 'add_columns',
-				  'pop'   => 'remove_columns',
-				  'clear' => 'clear_columns',
+		    handles   => {
+				  'add_columns'  => 'push',
+				  'remove_columns'   => 'pop',
+				  'clear_columns' => 'clear',
 				 }
 		   );
 has 'labels' => (
-		    metaclass => 'Collection::Array',
+		    traits    => ['Array'],
 		    is        => 'rw',
 		    isa       => 'ArrayRef[Str]',
 		    default   => sub { [] },
-		    provides  => {
-				  'push'  => 'add_labels',
-				  'pop'   => 'remove_labels',
-				  'clear' => 'clear_labels',
+		    handles   => {
+				  'add_labels'  => 'push',
+				  'remove_labels'   => 'pop',
+				  'clear_labels' => 'clear',
 				 }
 		   );
 

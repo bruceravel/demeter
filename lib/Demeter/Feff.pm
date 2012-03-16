@@ -19,7 +19,6 @@ use autodie qw(open close);
 
 use Moose;
 extends 'Demeter';
-#use MooseX::AttributeHelpers;
 
 use MooseX::Aliases;
 #use MooseX::StrictConstructor;
@@ -75,47 +74,47 @@ has 'atoms'       => (is=>'rw', isa => Empty|'Demeter::Atoms',
 has 'molecule'    => (is=>'rw', isa => 'Str', default => q{},);
 
 has 'sites' => (
-		metaclass => 'Collection::Array',
+		traits    => ['Array'],
 		is        => 'rw',
 		isa       => 'ArrayRef',
 		default   => sub { [] },
-		provides  => {
-			      'push'  => 'push_sites',
-			      'pop'   => 'pop_sites',
-			      'clear' => 'clear_sites',
+		handles   => {
+			      'push_sites'  => 'push',
+			      'pop_sites'   => 'pop',
+			      'clear_sites' => 'clear',
 			     }
 	       );
 has 'potentials' => (
-		     metaclass => 'Collection::Array',
+		     traits    => ['Array'],
 		     is        => 'rw',
 		     isa       => 'ArrayRef',
 		     default   => sub { [] },
-		     provides  => {
-				   'push'  => 'push_potentials',
-				   'pop'   => 'pop_potentials',
-				   'clear' => 'clear_potentials',
+		     handles   => {
+				   'push_potentials'  => 'push',
+				   'pop_potentials'   => 'pop',
+				   'clear_potentials' => 'clear',
 				  }
 		    );
 has 'titles' => (
-		 metaclass => 'Collection::Array',
+		 traits    => ['Array'],
 		 is        => 'rw',
 		 isa       => 'ArrayRef',
 		 default   => sub { [] },
-		 provides  => {
-			       'push'  => 'push_titles',
-			       'pop'   => 'pop_titles',
-			       'clear' => 'clear_titles',
+		 handles   => {
+			       'push_titles'  => 'push',
+			       'pop_titles'   => 'pop',
+			       'clear_titles' => 'clear',
 			      }
 		);
 has 'absorber' => (
-		   metaclass => 'Collection::Array',
+		   traits    => ['Array'],
 		   is        => 'rw',
 		   isa       => 'ArrayRef',
 		   default   => sub { [] },
-		   provides  => {
-				 'push'  => 'push_absorber',
-				 'pop'   => 'pop_absorber',
-				 'clear' => 'clear_absorber',
+		   handles   => {
+				 'push_absorber'  => 'push',
+				 'pop_absorber'   => 'pop',
+				 'clear_absorber' => 'clear',
 				}
 		  );
 has 'abs_index'    => (is=>'rw', isa =>  Natural,   default => 0,
@@ -134,14 +133,14 @@ has 'rmultiplier'  => (is=>'rw', isa =>  NonNeg,    default => 1);   # positive 
 has 'pcrit'        => (is=>'rw', isa =>  NonNeg,    default => 0);   # positive float
 has 'ccrit'        => (is=>'rw', isa =>  NonNeg,    default => 0);   # positive float
 has 'othercards' => (
-		     metaclass => 'Collection::Array',
+		     traits    => ['Array'],
 		     is        => 'rw',
 		     isa       => 'ArrayRef',
 		     default   => sub { [] },
-		     provides  => {
-				   'push'  => 'push_othercards',
-				   'pop'   => 'pop_othercards',
-				   'clear' => 'clear_othercards',
+		     handles   => {
+				   'push_othercards'  => 'push',
+				   'pop_othercards'   => 'pop',
+				   'clear_othercards' => 'clear',
 				  }
 		    );
 has 'workspace'    => (is=>'rw', isa => 'Str',
@@ -156,14 +155,14 @@ has 'eta_suppress' => (is=>'rw', isa => 'Bool',     default => 0);
 
 		       ## result of pathfinder
 has 'pathlist' => (		# list of ScatteringPath objects
-		   metaclass => 'Collection::Array',
+		   traits    => ['Array'],
 		   is        => 'rw',
 		   isa       => 'ArrayRef',
 		   default   => sub { [] },
-		   provides  => {
-				 'push'  => 'push_pathlist',
-				 'pop'   => 'pop_pathlist',
-				 'clear' => 'clear_pathlist',
+		   handles   => {
+				 'push_pathlist'  => 'push',
+				 'pop_pathlist'   => 'pop',
+				 'clear_pathlist' => 'clear',
 				}
 		  );
 has 'npaths'       => (is=>'rw', isa =>  Natural,   default => 0);
@@ -172,14 +171,14 @@ has 'npaths'       => (is=>'rw', isa =>  Natural,   default => 0);
 has 'screen'       => (is=>'rw', isa => 'Bool', default => 1);
 has 'buffer'       => (is=>'rw', isa => 'Bool', default => 0);
 has 'iobuffer' => (
-		   metaclass => 'Collection::Array',
+		   traits    => ['Array'],
 		   is        => 'rw',
 		   isa       => 'ArrayRef[Str]',
 		   default   => sub { [] },
-		   provides  => {
-				 'push'  => 'push_iobuffer',
-				 'pop'   => 'pop_iobuffer',
-				 'clear' => 'clear_iobuffer',
+		   handles   => {
+				 'push_iobuffer'  => 'push',
+				 'pop_iobuffer'   => 'pop',
+				 'clear_iobuffer' => 'clear',
 				}
 		  );
 has 'save'     => (is=>'rw', isa => 'Bool',    default => 1);

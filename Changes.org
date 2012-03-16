@@ -48,11 +48,13 @@
    - Replaced Config::IniFiles with Config::INI for a small
      performance improvement
    - Made Demeter::IniReader, a subclass of Config::INI
+   - Fully deprecate use of MooseX::AttributeHelpers and remove it as
+     a dependency
    - Make File::Monitor::Lite a recommended module (for data watcher)
    - More care and more options for loading "pragmata" for improved
      startup times
-   - Take care when processing Data not to do normalization and spline
-     more often than is necessary
+   - Take better care when processing Data not to do normalization and
+     spline more often than is necessary
    - Take care not to "use Demeter" unless absolutely necessary
      throughout code base
    - Deal with Unity's use of a global menu

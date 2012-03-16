@@ -57,7 +57,7 @@ my $ncangle = $Demeter::config->default("pathfinder", "nc_angle");
 my $rtangle = $Demeter::config->default("pathfinder", "rt_angle");
 
 
-## In principle, I would like to use MooseX::AttributeHelpers with
+## In principle, I would like to use Moose::Meta::Attribute::Native with
 ## this class as well.  I find that doing for the the ArrayRef valued
 ## attributes adds a measurable amount of overhead.  Since this is
 ## called SO MANY TIMES, it seems prudent to reduce the amount of

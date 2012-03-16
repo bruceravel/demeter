@@ -21,7 +21,6 @@ use autodie qw(open close);
 use Moose;
 extends 'Demeter';
 use Moose::Util::TypeConstraints;
-#use MooseX::AttributeHelpers;
 use MooseX::Aliases;
 #use vars qw($singleton);	# Moose 0.61, MooseX::Singleton 0.12 seem to need this
 
@@ -51,26 +50,26 @@ has 'config_file' => (is => 'ro', isa => 'Str',
 						     "config.demeter_conf"));
 
 has 'all_config_files' => (
-			     metaclass => 'Collection::Array',
+			     traits    => ['Array'],
 			     is        => 'rw',
 			     isa       => 'ArrayRef[Str]',
 			     default   => sub { [] },
-			     provides  => {
-					   'push'  => 'push_all_config_files',
-					   'pop'   => 'pop_all_config_files',
-					   'clear' => 'clear_all_config_files',
+			     handles   => {
+					   'push_all_config_files'  => 'push',
+					   'pop_all_config_files'   => 'pop',
+					   'clear_all_config_files' => 'clear',
 					  },
 			    );
 
 has 'main_groups' => (
-		      metaclass => 'Collection::Array',
+		      traits    => ['Array'],
 		      is        => 'rw',
 		      isa       => 'ArrayRef[Str]',
 		      default   => sub { [] },
-		      provides  => {
-				    'push'  => 'push_main_groups',
-				    'pop'   => 'pop_main_groups',
-				    'clear' => 'clear_main_groups',
+		      handles   => {
+				    'push_main_groups'  => 'push',
+				    'pop_main_groups'   => 'pop',
+				    'clear_main_groups' => 'clear',
 				   },
 		     );
 

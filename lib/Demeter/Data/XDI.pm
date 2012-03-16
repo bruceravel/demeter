@@ -16,122 +16,122 @@ has 'xdi_version'	      => (is => 'rw', isa => 'Str', default => q{});
 has 'xdi_applications'	      => (is => 'rw', isa => 'Str', default => q{});
 
 
-has 'xdi_column'    => (metaclass => 'Collection::Hash',
+has 'xdi_column'    => (traits    => ['Hash'],
 			is        => 'rw',
 			isa       => 'HashRef',
 			default   => sub { {} },
-			provides  => {
-				      exists    => 'exists_in_xdi_column',
-				      keys      => 'keys_in_xdi_column',
-				      get       => 'get_xdi_column',
-				      set       => 'set_xdi_column',
-				      delete    => 'delete_from_xdi_column'
+			handles   => {
+				      'exists_in_xdi_column'   => 'exists',
+				      'keys_in_xdi_column'     => 'keys',
+				      'get_xdi_column'         => 'get',
+				      'set_xdi_column'         => 'set',
+				      'delete_from_xdi_column' => 'delete'
 				     }
 		       );
-has 'xdi_scan'      => (metaclass => 'Collection::Hash',
+has 'xdi_scan'      => (traits    => ['Hash'],
 			is        => 'rw',
 			isa       => 'HashRef',
 			default   => sub { {} },
-			provides  => {
-				      exists    => 'exists_in_xdi_scan',
-				      keys      => 'keys_in_xdi_scan',
-				      get       => 'get_xdi_scan',
-				      set       => 'set_xdi_scan',
-				      delete    => 'delete_from_xdi_scan'
+			handles   => {
+				      'exists_in_xdi_scan'   => 'exists',
+				      'keys_in_xdi_scan'     => 'keys',
+				      'get_xdi_scan'         => 'get',
+				      'set_xdi_scan'         => 'set',
+				      'delete_from_xdi_scan' => 'delete'
 				     }
 		       );
-has 'xdi_mono'     => (metaclass => 'Collection::Hash',
+has 'xdi_mono'     => (traits    => ['Hash'],
 		       is        => 'rw',
 		       isa       => 'HashRef',
 		       default   => sub { {} },
-		       provides  => {
-				     exists    => 'exists_in_xdi_mono',
-				     keys      => 'keys_in_xdi_mono',
-				     get       => 'get_xdi_mono',
-				     set       => 'set_xdi_mono',
-				     delete    => 'delete_from_xdi_mono'
+		       handles   => {
+				     'exists_in_xdi_mono'   => 'exists',
+				     'keys_in_xdi_mono'     => 'keys',
+				     'get_xdi_mono'         => 'get',
+				     'set_xdi_mono'         => 'set',
+				     'delete_from_xdi_mono' => 'delete'
 				    }
 		      );
-has 'xdi_beamline' => (metaclass => 'Collection::Hash',
+has 'xdi_beamline' => (traits    => ['Hash'],
 		       is        => 'rw',
 		       isa       => 'HashRef',
 		       default   => sub { {} },
-		       provides  => {
-				     exists    => 'exists_in_xdi_beamline',
-				     keys      => 'keys_in_xdi_beamline',
-				     get       => 'get_xdi_beamline',
-				     set       => 'set_xdi_beamline',
-				     delete    => 'delete_from_xdi_beamline'
+		       handles   => {
+				     'exists_in_xdi_beamline'   => 'exists',
+				     'keys_in_xdi_beamline'     => 'keys',
+				     'get_xdi_beamline'         => 'get',
+				     'set_xdi_beamline'         => 'set',
+				     'delete_from_xdi_beamline' => 'delete'
 				    }
 		      );
-has 'xdi_facility' => (metaclass => 'Collection::Hash',
+has 'xdi_facility' => (traits    => ['Hash'],
 		       is        => 'rw',
 		       isa       => 'HashRef',
 		       default   => sub { {} },
-		       provides  => {
-				     exists    => 'exists_in_xdi_facility',
-				     keys      => 'keys_in_xdi_facility',
-				     get       => 'get_xdi_facility',
-				     set       => 'set_xdi_facility',
-				     delete    => 'delete_from_xdi_facility'
+		       handles   => {
+				     'exists_in_xdi_facility'   => 'exists',
+				     'keys_in_xdi_facility'     => 'keys',
+				     'get_xdi_facility'         => 'get',
+				     'set_xdi_facility'         => 'set',
+				     'delete_from_xdi_facility' => 'delete'
 				    }
 		      );
-has 'xdi_detector' => (metaclass => 'Collection::Hash',
+has 'xdi_detector' => (traits    => ['Hash'],
 		       is        => 'rw',
 		       isa       => 'HashRef',
 		       default   => sub { {} },
-		       provides  => {
-				     exists    => 'exists_in_xdi_detector',
-				     keys      => 'keys_in_xdi_detector',
-				     get       => 'get_xdi_detector',
-				     set       => 'set_xdi_detector',
-				     delete    => 'delete_from_xdi_detector'
+		       handles   => {
+				     'exists_in_xdi_detector'   => 'exists',
+				     'keys_in_xdi_detector'     => 'keys',
+				     'get_xdi_detector'         => 'get',
+				     'set_xdi_detector'         => 'set',
+				     'delete_from_xdi_detector' => 'delete'
 				    }
 		      );
-has 'xdi_sample'   => (metaclass => 'Collection::Hash',
+has 'xdi_sample'   => (traits    => ['Hash'],
 		       is        => 'rw',
 		       isa       => 'HashRef',
 		       default   => sub { {} },
-		       provides  => {
-				     exists    => 'exists_in_xdi_sample',
-				     keys      => 'keys_in_xdi_sample',
-				     get       => 'get_xdi_sample',
-				     set       => 'set_xdi_sample',
-				     delete    => 'delete_from_xdi_sample'
+		       handles   => {
+				     'exists_in_xdi_sample'   => 'exists',
+				     'keys_in_xdi_sample'     => 'keys',
+				     'get_xdi_sample'         => 'get',
+				     'set_xdi_sample'         => 'set',
+				     'delete_from_xdi_sample' => 'delete'
 				    }
 		      );
 
 
-has 'xdi_extensions'   => (metaclass => 'Collection::Array',
+has 'xdi_extensions'   => (traits    => ['Array'],
 			   is => 'rw', isa => 'ArrayRef[Str]',
 			   default => sub{[]},
-			   provides  => {
-					 'push'  => 'push_xdi_extension',
-					 'pop'   => 'pop_xdi_extension',
-					 'clear' => 'clear_xdi_extensions',
+			   handles   => {
+					 'push_xdi_extension'  => 'push',
+					 'pop_xdi_extension'   => 'pop',
+					 'clear_xdi_extensions' => 'clear',
 					},
 			  );
 
 has 'xdi_comments'     => (
-			   metaclass => 'Collection::Array',
+			   traits    => ['Array'],
 			   is        => 'rw',
 			   isa       => 'ArrayRef',
 			   default   => sub { [] },
-			   provides  => {
-					 'push'  => 'push_xdi_comment',
-					 'pop'   => 'pop_xdi_comment',
-					 'clear' => 'clear_xdi_comments',
+			   handles   => {
+					 'push_xdi_comment'  => 'push',
+					 'pop_xdi_comment'   => 'pop',
+					 'clear_xdi_comments' => 'clear',
 					}
 			  );
 has 'xdi_labels'     => (
-			   metaclass => 'Collection::Array',
+			   traits    => ['Array'],
 			   is        => 'rw',
 			   isa       => 'ArrayRef',
 			   default   => sub { [] },
-			   provides  => {
-					 'push'  => 'push_xdi_label',
-					 'pop'   => 'pop_xdi_label',
-					 'clear' => 'clear_xdi_labels',
+			   handles   => {
+					 'push_xdi_label'  => 'push',
+					 'pop_xdi_label'   => 'pop',
+					 'clear_xdi_labels' => 'clear',
 					}
 			  );
 

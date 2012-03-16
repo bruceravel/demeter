@@ -21,7 +21,6 @@ use Moose;
 extends 'Demeter';
 
 use MooseX::Aliases;
-#use MooseX::AttributeHelpers;
 #use MooseX::AlwaysCoerce;   # this might be useful....
 #use Moose::Util::TypeConstraints;
 use Demeter::StrTypes qw( Element
@@ -176,14 +175,14 @@ has 'escapedtitle' => (is => 'rw', isa =>  'Any', default => q{});
 has 'output' => (is => 'rw', isa =>  'Str',           default => q{});
 
 has 'tempfiles' => (
-		    metaclass => 'Collection::Array',
+		    traits    => ['Array'],
 		    is        => 'rw',
 		    isa       => 'ArrayRef[Str]',
 		    default   => sub { [] },
-		    provides  => {
-				  'push'  => 'add_tempfile',
-				  'pop'   => 'remove_tempfile',
-				  'clear' => 'clear_tempfiles',
+		    handles   => {
+				  'add_tempfile'  => 'push',
+				  'remove_tempfile'   => 'pop',
+				  'clear_tempfiles' => 'clear',
 				 }
 		   );
 

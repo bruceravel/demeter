@@ -22,7 +22,6 @@ extends 'Demeter';
 with 'Demeter::Tools';
 with 'Demeter::Atoms::Absorption';
 with 'Demeter::Atoms::Cif' if $Demeter::STAR_Parser_exists;
-#use MooseX::AttributeHelpers;
 use Demeter::StrTypes qw( Element
 			  Edge
 			  AtomsLattice
@@ -151,14 +150,14 @@ has 'core'	       => (is => 'rw', isa =>'Str',      default=> q{});
 has 'corel'	       => (is => 'rw', isa =>'Str',      default=> q{});
 has 'partial_occupancy' => (is => 'rw', isa =>'Bool', default=> 0);
 has 'shift' => (
-		metaclass => 'Collection::Array',
+		traits    => ['Array'],
 		is        => 'rw',
 		isa       => 'ArrayRef',
 		default   => sub { [0, 0, 0] },
-		provides  => {
-			      'push'  => 'push_shift',
-			      'pop'   => 'pop_shift',
-			      'clear' => 'clear_shift',
+		handles   => {
+			      'push_shift'  => 'push',
+			      'pop_shift'   => 'pop',
+			      'clear_shift' => 'clear',
 			     }
 	       );
 has 'file'   => (is => 'rw', isa =>FileName, default=> q{},
@@ -188,14 +187,14 @@ has 'record' => (is => 'rw', isa => NonNeg,    default=> 0,
 				 $self->read_cif if ($new and $self->cif);
 			       });
 has 'titles' => (
-		 metaclass => 'Collection::Array',
+		 traits    => ['Array'],
 		 is        => 'rw',
 		 isa       => 'ArrayRef[Str]',
 		 default   => sub { [] },
-		 provides  => {
-			       'push'  => 'push_titles',
-			       'pop'   => 'pop_titles',
-			       'clear' => 'clear_titles',
+		 handles   => {
+			       'push_titles'  => 'push',
+			       'pop_titles'   => 'pop',
+			       'clear_titles' => 'clear',
 			      }
 		);
 has 'ipot_style'       => (is => 'rw', isa =>'Str', default=> sub{ shift->mo->config->default("atoms","ipot_style") || 'elements'},
@@ -238,25 +237,25 @@ has 'i0_done'	       => (is => 'rw', isa =>'Bool', default=> 0);
 has 'self_done'	       => (is => 'rw', isa =>'Bool', default=> 0);
 
 has 'sites' => (
-		metaclass => 'Collection::Array',
+		traits    => ['Array'],
 		is        => 'rw',
 		isa       => 'ArrayRef',
 		default   => sub { [] },
-		provides  => {
-			      'push'  => 'push_sites',
-			      'pop'   => 'pop_sites',
-			      'clear' => 'clear_sites',
+		handles   => {
+			      'push_sites'  => 'push',
+			      'pop_sites'   => 'pop',
+			      'clear_sites' => 'clear',
 			     }
 	       );
 has 'cluster' => (
-		  metaclass => 'Collection::Array',
+		  traits    => ['Array'],
 		  is        => 'rw',
 		  isa       => 'ArrayRef',
 		  default   => sub { [] },
-		  provides  => {
-				'push'  => 'push_cluster',
-				'pop'   => 'pop_cluster',
-				'clear' => 'clear_cluster',
+		  handles   => {
+				'push_cluster'  => 'push',
+				'pop_cluster'   => 'pop',
+				'clear_cluster' => 'clear',
 			       }
 		 );
 has 'nclus'	       => (is => 'rw', isa =>'Str', default=> 0);

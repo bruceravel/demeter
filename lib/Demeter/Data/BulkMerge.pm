@@ -1,7 +1,6 @@
 package Demeter::Data::BulkMerge;
 
 use Moose;
-#use MooseX::AttributeHelpers;
 #use MooseX::StrictConstructor;
 extends 'Demeter';
 
@@ -16,55 +15,55 @@ has 'margin' => (is => 'rw', isa => 'Num',  default => 0.997);
 has 'count'  => (is => 'rw', isa => 'Int',  default => 0);
 
 has 'data' => (
-	       metaclass => 'Collection::Array',
+	       traits    => ['Array'],
 	       is        => 'rw',
 	       isa       => 'ArrayRef',
 	       default   => sub { [] },
-	       provides  => {
-			     'push'    => 'push_data',
-			     'pop'     => 'pop_data',
-			     'shift'   => 'shift_data',
-			     'unshift' => 'unshift_data',
-			     'clear'   => 'clear_data',
+	       handles   => {
+			     'push_data'    => 'push',
+			     'pop_data'     => 'pop',
+			     'shift_data'   => 'shift',
+			     'unshift_data' => 'unshift',
+			     'clear_data'   => 'clear',
 			    }
 	      );
 has 'subsample' => (
-		   metaclass => 'Collection::Array',
+		   traits    => ['Array'],
 		   is        => 'rw',
 		   isa       => 'ArrayRef[Int]',
 		   default   => sub { [] },
-		   provides  => {
-				 'push'    => 'push_subsample',
-				 'pop'     => 'pop_subsample',
-				 'shift'   => 'shift_subsample',
-				 'unshift' => 'unshift_subsample',
-				 'clear'   => 'clear_subsample',
+		   handles   => {
+				 'push_subsample'    => 'push',
+				 'pop_subsample'     => 'pop',
+				 'shift_subsample'   => 'shift',
+				 'unshift_subsample' => 'unshift',
+				 'clear_subsample'   => 'clear',
 				}
 		  );
 has 'sequence' => (
-		   metaclass => 'Collection::Array',
+		   traits    => ['Array'],
 		   is        => 'rw',
 		   isa       => 'ArrayRef',
 		   default   => sub { [] },
-		   provides  => {
-				 'push'    => 'push_sequence',
-				 'pop'     => 'pop_sequence',
-				 'shift'   => 'shift_sequence',
-				 'unshift' => 'unshift_sequence',
-				 'clear'   => 'clear_sequence',
+		   handles   => {
+				 'push_sequence'    => 'push',
+				 'pop_sequence'     => 'pop',
+				 'shift_sequence'   => 'shift',
+				 'unshift_sequence' => 'unshift',
+				 'clear_sequence'   => 'clear',
 				}
 		  );
 has 'skipped' => (
-		   metaclass => 'Collection::Array',
+		   traits    => ['Array'],
 		   is        => 'rw',
 		   isa       => 'ArrayRef',
 		   default   => sub { [] },
-		   provides  => {
-				 'push'    => 'push_skipped',
-				 'pop'     => 'pop_skipped',
-				 'shift'   => 'shift_skipped',
-				 'unshift' => 'unshift_skipped',
-				 'clear'   => 'clear_skipped',
+		   handles   => {
+				 'push_skipped'    => 'push',
+				 'pop_skipped'     => 'pop',
+				 'shift_skipped'   => 'shift',
+				 'unshift_skipped' => 'unshift',
+				 'clear_skipped'   => 'clear',
 				}
 		  );
 

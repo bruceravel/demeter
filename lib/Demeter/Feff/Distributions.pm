@@ -136,14 +136,14 @@ has 'periodic'=> (is              => 'rw',
 		  isa             => 'Bool',
 		  default         => 0,
 		  documentation   => "a boolean indicating periodic boundary conditions were used in the MD simulation");
-has 'lattice' => (metaclass => 'Collection::Array',
+has 'lattice' => (traits    => ['Array'],
 		  is	          => 'rw',
 		  isa	          => 'ArrayRef',
 		  default	  => sub{[]},
-		  provides  => {
-				'push'  => 'push_lattice',
-				'pop'   => 'pop_lattice',
-				'clear' => 'clear_lattice',
+		  handles   => {
+				'push_lattice'  => 'push',
+				'pop_lattice'   => 'pop',
+				'clear_lattice' => 'clear',
 			       },
 		  documentation   => "the direct lattice vectors");
 

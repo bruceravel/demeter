@@ -19,7 +19,6 @@ use autodie qw(open close);
 
 use Moose;
 extends 'Demeter::Feff';
-#use MooseX::AttributeHelpers;
 use MooseX::Aliases;
 #use MooseX::StrictConstructor;
 
@@ -51,15 +50,15 @@ has 'filesdat'  => (is => 'rw', isa => 'Str',  default => q{},);
 has 'pathsfile' => (is => 'rw', isa => 'Str',  default => q{},);
 has 'npaths'    => (is => 'rw', isa => 'Int',  default => 0,);
 has 'nnnn'      => (
-		    metaclass => 'Collection::Hash',
+		    traits    => ['Hash'],
 		    is        => 'rw',
 		    isa       => 'HashRef',
 		    default   => sub { {} },
-		    provides  => {
-				  exists    => 'exists_in_nnnn',
-				  keys      => 'ids_in_nnnn',
-				  get       => 'get_nnnn',
-				  set       => 'set_nnnn',
+		    handles   => {
+				  'exists_in_nnnn' => 'exists',
+				  'ids_in_nnnn'    => 'keys',
+				  'get_nnnn'       => 'get',
+				  'set_nnnn'       => 'set',
 				 },
 		   );
 

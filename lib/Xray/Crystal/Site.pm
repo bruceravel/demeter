@@ -81,25 +81,25 @@ has 'valence'	  => (is => 'rw', isa => 'Str',  default => 0);	## -- check valenc
 has 'occupancy'	  => (is => 'rw', isa => 'ZeroToOne',  default => 1);
 has 'host'	  => (is => 'rw', isa => 'Bool', default => 1);
 has 'positions'	  => (
-		      metaclass => 'Collection::Array',
+		      traits    => ['Array'],
 		      is        => 'rw',
 		      isa       => 'ArrayRef',
 		      default   => sub { [] },
-		      provides  => {
-				    'push'  => 'push_positions',
-				    'pop'   => 'pop_positions',
-				    'clear' => 'clear_positions',
+		      handles   => {
+				    'push_positions'  => 'push',
+				    'pop_positions'   => 'pop',
+				    'clear_positions' => 'clear',
 				   }
 		     );
 has 'formulas'	  => (
-		      metaclass => 'Collection::Array',
+		      traits    => ['Array'],
 		      is        => 'rw',
 		      isa       => 'ArrayRef',
 		      default   => sub { [] },
-		      provides  => {
-				    'push'  => 'push_formulas',
-				    'pop'   => 'pop_formulas',
-				    'clear' => 'clear_formulas',
+		      handles   => {
+				    'push_formulas'  => 'push',
+				    'pop_formulas'   => 'pop',
+				    'clear_formulas' => 'clear',
 				   }
 		     );
 has 'file'	  => (is => 'rw', isa => 'Str',  default => q{});
