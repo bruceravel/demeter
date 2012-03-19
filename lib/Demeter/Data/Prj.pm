@@ -20,7 +20,6 @@ use autodie qw(open close);
 use Moose;
 extends 'Demeter';
 use MooseX::Aliases;
-#use MooseX::StrictConstructor;
 use Demeter::StrTypes qw( FileName );
 
 #use diagnostics;

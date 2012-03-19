@@ -17,7 +17,6 @@ package Demeter::FSPath;
 
 use Moose;
 use MooseX::Aliases;
-#use MooseX::StrictConstructor;
 extends 'Demeter::Path';
 use Demeter::NumTypes qw( Ipot PosNum PosInt );
 use Demeter::StrTypes qw( Edge Empty ElementSymbol);

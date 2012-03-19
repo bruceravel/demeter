@@ -20,7 +20,6 @@ use autodie qw(open close);
 use Moose;
 extends 'Demeter::Feff';
 use MooseX::Aliases;
-#use MooseX::StrictConstructor;
 
 use List::MoreUtils qw(none firstidx);
 use File::Basename;

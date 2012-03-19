@@ -22,7 +22,6 @@ use Moose;
 use MooseX::Aliases;
 use Moose::Util qw(apply_all_roles);
 use Moose::Util::TypeConstraints;
-#use MooseX::StrictConstructor;
 extends 'Demeter';
 with "Demeter::Feff::MD::Null";
 

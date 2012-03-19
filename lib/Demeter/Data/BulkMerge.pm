@@ -1,7 +1,6 @@
 package Demeter::Data::BulkMerge;
 
 use Moose;
-#use MooseX::StrictConstructor;
 extends 'Demeter';
 
 use List::MoreUtils qw(any);

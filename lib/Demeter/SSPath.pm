@@ -16,7 +16,6 @@ package Demeter::SSPath;
 =cut
 
 use Moose;
-#use MooseX::StrictConstructor;
 extends 'Demeter::Path';
 use Demeter::NumTypes qw( Ipot PosNum PosInt );
 use Demeter::StrTypes qw( Empty );

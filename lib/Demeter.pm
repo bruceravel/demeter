@@ -21,26 +21,28 @@ use version;
 our $VERSION = version->new('0.9.8');
 use feature "switch";
 
+############################
+## Carp
+##
 #use Demeter::Carp;
 #use Carp::Always::Color;
 use Carp;
+############################
+
 use Cwd;
 ##use DateTime;
 use File::Basename qw(dirname);
 use File::Spec;
+use Ifeffit;
+Ifeffit::ifeffit("\$plot_device=/gw\n") if (($^O eq 'MSWin32') or ($^O eq 'cygwin'));
 use List::MoreUtils qw(any minmax zip uniq);
 #use Safe;
 use Pod::POM;
+use Regexp::Assemble;
 use String::Random qw(random_string);
 use Text::Template;
-use Ifeffit;
-Ifeffit::ifeffit("\$plot_device=/gw\n") if (($^O eq 'MSWin32') or ($^O eq 'cygwin'));
 use Xray::Absorption;
 Xray::Absorption->load('elam');
-
-use Regexp::Assemble;
-
-use Demeter::Constants qw($NUMBER $PI);
 
 =for LiteratureReference
   Then, spent as they were from all their toil,
@@ -51,11 +53,14 @@ use Demeter::Constants qw($NUMBER $PI);
                                 Virgil, The Aeneid, 1:209-213
 
 =cut
+
+## why was this needed?
+##
 # Metaclass definition must come before Moose is used.
-use metaclass (
-	       metaclass   => 'Moose::Meta::Class',
-	       error_class => 'Moose::Error::Confess',
-	      );
+#use metaclass (
+#	       metaclass   => 'Moose::Meta::Class',
+#	       error_class => 'Moose::Error::Confess',
+#	      );
 
 use Moose;
 use MooseX::Aliases;
@@ -67,6 +72,7 @@ with 'Demeter::Project';
 with 'Demeter::MRU';
 use Demeter::Return;
 with 'MooseX::SetGet';		# this is mine....
+use Demeter::Constants qw($NUMBER $PI);
 
 my %seen_group;
 has 'group'     => (is => 'rw', isa => 'Str',     default => sub{shift->_get_group()},

@@ -23,7 +23,6 @@ use File::Spec;
 use Moose;
 extends 'Demeter';
 use MooseX::Aliases;
-#use MooseX::StrictConstructor;
 
 with 'Demeter::Fit::Happiness';
 with 'Demeter::Fit::Horae';

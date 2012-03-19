@@ -21,7 +21,6 @@ use Moose;
 extends 'Demeter';
 
 use MooseX::Aliases;
-#use MooseX::StrictConstructor;
 use Moose::Util::TypeConstraints;
 use Demeter::StrTypes qw( AtomsEdge FeffCard Empty ElementSymbol FileName);
 use Demeter::NumTypes qw( Natural NonNeg PosInt );
