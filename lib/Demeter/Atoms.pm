@@ -167,7 +167,7 @@ has 'file'   => (is => 'rw', isa =>FileName, default=> q{},
 				   #$self->update_edge;
 				 };
 			       });
-has 'cif'    => (is => 'rw', isa =>'Str', default=> q{},
+has 'cif'    => (is => 'rw', isa =>FileName, default=> q{},
 		 trigger => sub{ my ($self, $new) = @_;
 				 if ($new) {
 				   if (not $Demeter::STAR_Parser_exists) {

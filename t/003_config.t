@@ -27,7 +27,7 @@ my @plugins = qw(10bmmultichannel x23a2med);
 my $plregex = join("|", @plugins);
 my $number_of_groups = 31;
 
-use Demeter;
+use Demeter qw(:none);
 
 my $demeter  = Demeter -> new;
 my $demeter2 = Demeter -> new;

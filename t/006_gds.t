@@ -19,7 +19,7 @@
 
 use Test::More tests => 28;
 
-use Demeter;
+use Demeter qw(:fit);
 
 my $this = Demeter::GDS->new();
 my $OBJ  = 'GDS';

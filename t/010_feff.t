@@ -19,7 +19,7 @@
 
 use Test::More tests => 34;
 
-use Demeter;
+use Demeter qw(:atoms);
 my $demeter  = Demeter -> new;
 
 use Cwd;

@@ -19,7 +19,7 @@
 
 use Test::Simple tests => 450;
 
-use Demeter;
+use Demeter qw(:none);
 use Demeter::StrTypes qw( Empty
 			  IfeffitCommand
 			  IfeffitFunction

@@ -19,7 +19,7 @@
 
 use Test::More tests => 10;
 
-use Demeter;
+use Demeter qw(:fit);
 
 my $this = Demeter::Feff::External -> new();
 my $OBJ  = 'External';

@@ -19,7 +19,7 @@
 
 use Test::More tests => 4;
 
-use Demeter;
+use Demeter qw(:fit);
 use Demeter::StrTypes qw( IfeffitFunction IfeffitProgramVar );
 use Graph;
 use Demeter::Constants qw($NUMBER);

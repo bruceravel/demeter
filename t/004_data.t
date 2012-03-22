@@ -22,7 +22,7 @@ use Test::More tests => 60;
 use File::Basename;
 use File::Spec;
 use List::MoreUtils qw(all);
-use Demeter;
+use Demeter qw(:data);
 
 my $here  = dirname($0);
 my $data  = Demeter::Data -> new;

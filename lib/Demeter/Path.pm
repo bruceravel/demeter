@@ -111,7 +111,7 @@ has 'datagroup'       => (is=>'rw', isa => 'Str', default => q{});
 
 has 'folder'          => (is=>'rw', isa=> 'Str',    default => q{},
 			  trigger => sub{ shift->parse_nnnn });
-has 'file'            => (is=>'rw', isa=> 'Str',    default => q{},
+has 'file'            => (is=>'rw', isa=> FileName, default => q{},
 			  trigger => sub{ shift->parse_nnnn });
 has 'Index'           => (is=>'rw', isa=>  Natural, default => 0);
 has 'include'         => (is=>'rw', isa=>  'Bool',  default => 1);

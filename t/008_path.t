@@ -19,7 +19,7 @@
 
 use Test::More tests => 23;
 
-use Demeter;
+use Demeter qw(:fit);
 use List::MoreUtils qw(all);
 
 

@@ -19,7 +19,7 @@
 
 use Test::More tests => 13;
 
-use Demeter;
+use Demeter qw(:plot);
 
 my $this = Demeter::Plot::Indicator -> new();
 my $OBJ  = 'Indicator';

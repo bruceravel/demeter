@@ -26,6 +26,7 @@ use MooseX::Aliases;
 
 use Carp;
 #use diagnostics;
+use Demeter::StrTypes qw(FileName);
 use Demeter::IniReader;
 use Config::INI::Writer;
 use File::Basename;
@@ -42,7 +43,7 @@ has 'plottable' => (is => 'ro', isa => 'Bool', default => 0);
 has 'data'      => (is => 'rw', isa => 'Any',  default => q{});
 has 'perl_base' => (is => 'rw', isa => 'Str',  default => q{});
 
-has 'config_file' => (is => 'ro', isa => 'Str',
+has 'config_file' => (is => 'ro', isa => FileName,
 		      default => File::Spec->catfile(dirname($INC{"Demeter.pm"}),
 						     "Demeter",
 						     "configuration",
@@ -78,7 +79,7 @@ my $where = (($^O eq 'MSWin32') or ($^O eq 'cygwin')) ? "APPDATA" : "HOME";
 my $stem  = (($^O eq 'MSWin32') or ($^O eq 'cygwin')) ? "demeter" : ".horae";
 #my $where = ($Demeter::mode->is_windows) ? "USERPROFILE" : "HOME";
 our $fname = File::Spec->catfile($ENV{$where}, $stem, "demeter.ini");
-has 'ini_file' => (is => 'ro', isa => 'Str', default => $fname);
+has 'ini_file' => (is => 'ro', isa => FileName, default => $fname);
 
 
 my %ini;

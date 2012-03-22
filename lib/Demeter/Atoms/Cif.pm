@@ -20,6 +20,7 @@ use Demeter::StrTypes qw( Element );
 use Demeter::Constants qw($EPSILON3);
 
 use Chemistry::Elements qw(get_Z);
+use File::Basename;
 #use STAR::Parser; ## this is not needed since (1) all references
                    ## below use the STAR::Parser-> syntax and (2)
                    ## it got require-d in Demeter.pm
@@ -137,6 +138,7 @@ sub open_cif {
     my @str  = $this->get_item_data(-item => '_chemical_name_systematic');
     @str     = $this->get_item_data(-item => '_chemical_name_mineral') if not @str;
     @str     = $this->get_item_data(-item => '_chemical_formula_structural') if not @str;
+    @str     = (basename($self->cif)) if not @str;
     push @id, @str;
   };
 #   my @id = map { ($_->get_item_data(-item => '_chemical_name_systematic'   ))[0]

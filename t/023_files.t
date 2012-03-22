@@ -19,7 +19,7 @@
 
 use Test::More tests => 4;
 
-use Demeter;
+use Demeter qw(:none);
 
 use File::Basename;
 use File::Spec;

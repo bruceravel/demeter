@@ -19,7 +19,7 @@
 
 use Test::More tests => 10;
 
-use Demeter;
+use Demeter qw(:data);
 
 my $this = Demeter::Data::MultiChannel -> new();
 my $OBJ  = 'MultiChannel';

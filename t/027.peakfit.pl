@@ -19,7 +19,7 @@
 
 use Test::More tests => 17;
 
-use Demeter;
+use Demeter qw(:analysis);
 use File::Basename;
 use File::Spec;
 use Demeter::Constants qw($EPSILON2);

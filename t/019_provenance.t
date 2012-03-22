@@ -19,7 +19,7 @@
 
 use Test::More tests => 4;
 
-use Demeter;
+use Demeter qw(:data);
 my $demeter  = Demeter -> new;
 use Cwd;
 use File::Basename;

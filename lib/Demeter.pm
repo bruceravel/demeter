@@ -217,19 +217,22 @@ sub import {
 
  PRAG: foreach my $p (@pragmata) {
     given ($p) {
-      when (m{:plotwith=(\w+)}) {
+      when (m{:plotwith=(\w+)}) { # choose between pgplot and gnuplot
 	$plot -> plot_with($1);
       }
-      when (m{:ui=(\w+)}) {
+      when (m{:ui=(\w+)}) {       # ui-specific functionality (screen is the most interesting one)
 	$mode -> ui($1);
 	#import Demeter::Carp if ($1 eq 'screen');
       }
-      when (m{:template=(\w+)}) {
+      when (m{:template=(\w+)}) { # change template sets
 	my $which = $1;
 	$mode -> template_process($which);
 	$mode -> template_fit($which);
 	#$mode -> template_analysis($which);
       }
+
+      ## all the rest of the "pragmata" control what parts of Demeter get imported
+
       when (':data') {
 	@load = @data;
 	$doplugins = 1;

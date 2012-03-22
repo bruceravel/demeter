@@ -19,7 +19,7 @@
 
 use Test::More tests => 18;
 
-use Demeter;
+use Demeter qw(:atoms);
 
 use File::Basename;
 use File::Spec;

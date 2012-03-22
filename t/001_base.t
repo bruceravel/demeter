@@ -19,7 +19,7 @@
 
 use Test::More tests => 24;
 
-use Demeter;
+use Demeter qw(:none);
 
 use List::MoreUtils qw(none);
 

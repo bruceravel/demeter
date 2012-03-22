@@ -19,7 +19,7 @@
 
 use Test::More tests => 10;
 
-use Demeter;
+use Demeter qw(:fit);
 use File::Basename;
 use File::Spec;
 my $here  = dirname($0);

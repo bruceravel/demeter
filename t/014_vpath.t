@@ -19,7 +19,7 @@
 
 use Test::More tests => 11;
 
-use Demeter;
+use Demeter qw(:fit);
 
 my $this = Demeter::VPath -> new();
 my $OBJ  = 'VPath';

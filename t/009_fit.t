@@ -19,7 +19,7 @@
 
 use Test::More tests => 25;
 
-use Demeter;
+use Demeter qw(:fit);
 use List::MoreUtils qw(all);
 use File::Basename;
 use File::Spec;

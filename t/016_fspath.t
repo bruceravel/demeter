@@ -19,7 +19,7 @@
 
 use Test::More tests => 16;
 
-use Demeter;
+use Demeter qw(:fit);
 use File::Basename;
 use File::Path;
 use File::Spec;

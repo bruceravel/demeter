@@ -66,11 +66,11 @@ has 'file'        => (is => 'rw', isa => FileName,  default => q{},
 				       $self->rdinp;
 				       $self->name(basename($new, '.inp')) if not $self->name;
 				     }} );
-has 'yaml'        => (is=>'rw', isa => 'Str', default => q{},
+has 'yaml'        => (is=>'rw', isa => FileName, default => q{},
 		      trigger => sub{my ($self, $new) = @_; $self->deserialize if $new} );
 has 'atoms'       => (is=>'rw', isa => Empty|'Demeter::Atoms',
 		      trigger => sub{my ($self, $new) = @_; $self->run_atoms if $new});
-has 'molecule'    => (is=>'rw', isa => 'Str', default => q{},);
+has 'molecule'    => (is=>'rw', isa => FileName, default => q{},);
 
 has 'sites' => (
 		traits    => ['Array'],

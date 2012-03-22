@@ -27,10 +27,11 @@ use File::Copy;
 use File::Path;
 use File::Spec;
 
+use Demeter::StrTypes qw(FileName);
 use Demeter::Constants qw($CTOKEN);
 
 has '+source'   => (default => 'external');
-has 'file'      => (is => 'rw', isa => 'Str',  default => q{},
+has 'file'      => (is => 'rw', isa => FileName,  default => q{},
 		    trigger => sub{my ($self, $new) = @_;
 				   $self->rdinp if $new;
 				   $self->folder(File::Spec->rel2abs(dirname($new)));

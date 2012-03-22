@@ -19,7 +19,7 @@
 
 use Test::More tests => 17;
 
-use Demeter;
+use Demeter qw(:none);
 
 my $demeter = Demeter->new;
 my $this    = $demeter->po;
