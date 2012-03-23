@@ -167,6 +167,7 @@ sub ACTION_doctree {
 				 libroot => [$LIB, $BIN],
 				 title   => 'Demeter',
 				 desc    => "Perl tools for X-ray Absorption Spectroscopy",
+				 except  => [qr(Savitzky), qr(ToolTemplate)],
 				);
   $pd->gen();
   unlink File::Spec->catfile($BIN, 'denv.pl');

@@ -219,3 +219,118 @@ sub info {
 
 
 1;
+
+=head1 NAME
+
+Demeter::Feff::Distributions::Triangle - Histograms for short triangular paths
+
+=head1 VERSION
+
+This documentation refers to Demeter version 0.9.
+
+=head1 SYNOPSIS
+
+=head1 DESCRIPTION
+
+This provides methods for generating two-dimensional histograms in
+path length and scattering angle for nearly short triangular
+arrangements of three atoms, like so:
+
+   Absorber ---> Scatterer ---> Scatterer --+
+     ^                                      |
+     |                                      |
+     +--------------------------------------+
+
+Given two radial ranges for the nearer and more distant scatterers and
+bin sizes for 
+
+=head1 ATTRIBUTES
+
+=over 4
+
+=item C<file> (string)
+
+The path to and name of the HISTORY file.  Setting this will trigger
+reading of the file and construction of a histogram using the values
+of the other attributes.
+
+=item C<nsteps> (integer)
+
+When the HISTORY file is first read, it will be parsed to obtain the
+number of time steps contained in the file.  This number will be
+stored in this attribute.
+
+=item C<r1> and C<r2>; C<r3> and C<r4> (numbers)
+
+The lower and upper bounds of the radial distribution function for the
+near and distant scatterer.
+
+=item C<rbin> (number)
+
+The width of the histogram bin to be extracted from the RDF.
+
+=item C<betabin> (number)
+
+The forward scattering angular range of the histogram bin to be
+extracted from the RDF.
+
+=back
+
+=head1 METHODS
+
+=over 4
+
+=item C<fpath>
+
+Return a L<Demeter::FPath> object representing the sum of the bins of
+the histogram extracted from the cluster.
+
+=item C<plot>
+
+Make a plot of the the RDF.
+
+=back
+
+=head1 CONFIGURATION
+
+See L<Demeter::Config> for a description of the configuration system.
+Many attributes of a Data object can be configured via the
+configuration system.  See, among others, the C<bkg>, C<fft>, C<bft>,
+and C<fit> configuration groups.
+
+=head1 DEPENDENCIES
+
+Demeter's dependencies are in the F<Bundle/DemeterBundle.pm> file.
+
+=head1 SERIALIZATION AND DESERIALIZATION
+
+An XES object and be frozen to and thawed from a YAML file in the same
+manner as a Data object.  The attributes and data arrays are read to
+and from YAMLs with a single object perl YAML.
+
+=head1 BUGS AND LIMITATIONS
+
+
+Please report problems to Bruce Ravel (bravel AT bnl DOT gov)
+
+Patches are welcome.
+
+=head1 AUTHOR
+
+Bruce Ravel (bravel AT bnl DOT gov)
+
+L<http://cars9.uchicago.edu/~ravel/software/>
+
+
+=head1 LICENCE AND COPYRIGHT
+
+Copyright (c) 2006-2012 Bruce Ravel (bravel AT bnl DOT gov). All rights reserved.
+
+This module is free software; you can redistribute it and/or
+modify it under the same terms as Perl itself. See L<perlgpl>.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+
+=cut

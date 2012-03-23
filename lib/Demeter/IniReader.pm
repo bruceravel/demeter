@@ -17,7 +17,7 @@ sub preprocess_line {
 
 =head1 NAME
 
-Demeter::IniReader -- .ini-file parser for Demeter
+Demeter::IniReader -- Ini file parser for Demeter
 
 =head1 SYNOPSIS
 
@@ -28,7 +28,8 @@ taking care not to remove an RGB color value of the form C<#0000FF>.
 
 =head1 ACKNOWELDGEMENT
 
-L<Config::INI::Reader> was written by Ricardo Signes <rjbs@cpan.org>
+L<Config::INI::Reader> was written by Ricardo Signes <rjbs@cpan.org>.
+This is just a thin wrapper around that module.
 
 =head1 AUTHOR
 

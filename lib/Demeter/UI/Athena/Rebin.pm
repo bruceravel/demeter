@@ -209,7 +209,7 @@ sub marked {
 
 =head1 NAME
 
-Demeter::UI::Athena::Rebin - A rebinning for continuous scan data for Athena
+Demeter::UI::Athena::Rebin - A rebinning tool for continuous scan data for Athena
 
 =head1 VERSION
 
