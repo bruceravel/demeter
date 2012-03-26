@@ -1,6 +1,6 @@
 package Demeter::UI::Athena;
 
-use Demeter qw(:analysis);
+use Demeter qw(:athena);
 #use Demeter::UI::Wx::DFrame;
 use Demeter::UI::Wx::MRU;
 use Demeter::UI::Wx::SpecialCharacters qw(:all);
@@ -26,13 +26,13 @@ use File::Spec;
 use List::Util qw(min);
 use List::MoreUtils qw(any);
 use Time::HiRes qw(usleep);
-use Readonly;
-Readonly my $FOCUS_UP	       => Wx::NewId();
-Readonly my $FOCUS_DOWN	       => Wx::NewId();
-Readonly my $MOVE_UP	       => Wx::NewId();
-Readonly my $MOVE_DOWN	       => Wx::NewId();
-Readonly my $EPSI	       => 0.01;
-Readonly my $AUTOSAVE_FILE     => 'Athena.autosave';
+use Const::Fast;
+const my $FOCUS_UP	       => Wx::NewId();
+const my $FOCUS_DOWN	       => Wx::NewId();
+const my $MOVE_UP	       => Wx::NewId();
+const my $MOVE_DOWN	       => Wx::NewId();
+const my $AUTOSAVE_FILE     => 'Athena.autosave';
+use Demeter::Constants qw($EPSILON2);
 
 use Scalar::Util qw{looks_like_number};
 
@@ -71,10 +71,6 @@ sub OnInit {
   $demeter -> mo -> identity('Athena');
   $demeter -> mo -> iwd(cwd);
 
-  #print DateTime->now,  "  Reading configuration files ...\n";
-  #my $conffile = File::Spec->catfile(dirname($INC{'Demeter/UI/Athena.pm'}), 'Athena', 'share', "athena.demeter_conf");
-  #$demeter -> co -> read_config($conffile);
-  #$demeter -> co -> read_ini('athena');
   $demeter -> plot_with($demeter->co->default(qw(plot plotwith)));
   my $old_cwd = File::Spec->catfile($demeter->dot_folder, "athena.cwd");
   if (-r $old_cwd) {
@@ -85,7 +81,6 @@ sub OnInit {
   ## -------- create a new frame and set icon
   #print DateTime->now,  "  Making main frame ...\n";
   $app->{main} = Wx::Frame->new(undef, -1, 'Athena [XAS data processing]', wxDefaultPosition, wxDefaultSize,);
-  #$app->{main} = Demeter::UI::Wx::DFrame->new(undef, -1, 'Athena [XAS data processing]', wxDefaultPosition, wxDefaultSize,);
   my $iconfile = File::Spec->catfile(dirname($INC{'Demeter/UI/Athena.pm'}), 'Athena', 'icons', "athena.png");
   $icon = Wx::Icon->new( $iconfile, wxBITMAP_TYPE_ANY );
   $app->{main} -> SetIcon($icon);
@@ -121,6 +116,7 @@ sub OnInit {
   $app->{lastplot} = [q{}, q{single}];
   $app->{selected} = -1;
   $app->{modified} = 0;
+  $app->{most_recent} = 0;
   $app->{main}->{currentproject} = q{};
   $app->{main}->{showing} = q{};
   $app->{constraining_spline_parameters}=0;
@@ -146,13 +142,14 @@ sub OnInit {
 		    );
 
   $app->{main} -> SetSizerAndFit($hbox);
-  $app->{main} ->{return}->Hide;
+  $app->{main} ->{return}->Show;
   #$app->{main} -> SetSize(600,800);
   $app->{main} -> Show( 1 );
   $app->{main} -> Refresh;
   $app->{main} -> Update;
   $app->{main} -> status("Welcome to Athena (" . $demeter->identify . ")");
   $app->OnGroupSelect(q{}, $app->{main}->{list}->GetSelection, 0);
+  $app->{main} ->{return}->Hide;
   1;
 };
 
@@ -264,7 +261,7 @@ sub on_about {
   $info->SetCopyright( $demeter->identify . "\nusing Ifeffit " . Ifeffit::get_string('&build'));
   $info->SetWebSite( 'http://cars9.uchicago.edu/iffwiki/Demeter', 'The Demeter web site' );
   #$info->SetDevelopers( ["Bruce Ravel <bravel\@bnl.gov>\n",
-  #			 "Ifeffit is copyright $COPYRIGHT 1992-2011 Matt Newville"
+  #			 "Ifeffit is copyright $COPYRIGHT 1992-2012 Matt Newville"
   #			] );
   $info->SetLicense( $demeter->slurp(File::Spec->catfile($athena_base, 'Athena', 'share', "GPL.dem")) );
 
@@ -287,117 +284,118 @@ sub current_data {
   return $app->{main}->{list}->GetIndexedData($app->{main}->{list}->GetSelection);
 };
 
-Readonly my $REPORT_ALL        => Wx::NewId();
-Readonly my $REPORT_MARKED     => Wx::NewId();
-Readonly my $XFIT              => Wx::NewId();
-Readonly my $FPATH             => Wx::NewId();
+const my $REPORT_ALL		=> Wx::NewId();
+const my $REPORT_MARKED		=> Wx::NewId();
+const my $XFIT			=> Wx::NewId();
+const my $FPATH			=> Wx::NewId();
 
-Readonly my $SAVE_MARKED       => Wx::NewId();
-Readonly my $SAVE_MUE	       => Wx::NewId();
-Readonly my $SAVE_NORM	       => Wx::NewId();
-Readonly my $SAVE_CHIK	       => Wx::NewId();
-Readonly my $SAVE_CHIR	       => Wx::NewId();
-Readonly my $SAVE_CHIQ	       => Wx::NewId();
+const my $SAVE_MARKED		=> Wx::NewId();
+const my $SAVE_MUE		=> Wx::NewId();
+const my $SAVE_NORM		=> Wx::NewId();
+const my $SAVE_CHIK		=> Wx::NewId();
+const my $SAVE_CHIR		=> Wx::NewId();
+const my $SAVE_CHIQ		=> Wx::NewId();
 
-Readonly my $EACH_MUE	       => Wx::NewId();
-Readonly my $EACH_NORM	       => Wx::NewId();
-Readonly my $EACH_CHIK	       => Wx::NewId();
-Readonly my $EACH_CHIR	       => Wx::NewId();
-Readonly my $EACH_CHIQ	       => Wx::NewId();
+const my $EACH_MUE		=> Wx::NewId();
+const my $EACH_NORM		=> Wx::NewId();
+const my $EACH_CHIK		=> Wx::NewId();
+const my $EACH_CHIR		=> Wx::NewId();
+const my $EACH_CHIQ		=> Wx::NewId();
 
-Readonly my $MARKED_XMU	       => Wx::NewId();
-Readonly my $MARKED_NORM       => Wx::NewId();
-Readonly my $MARKED_DER	       => Wx::NewId();
-Readonly my $MARKED_NDER       => Wx::NewId();
-Readonly my $MARKED_SEC	       => Wx::NewId();
-Readonly my $MARKED_NSEC       => Wx::NewId();
-Readonly my $MARKED_CHI	       => Wx::NewId();
-Readonly my $MARKED_CHIK       => Wx::NewId();
-Readonly my $MARKED_CHIK2      => Wx::NewId();
-Readonly my $MARKED_CHIK3      => Wx::NewId();
-Readonly my $MARKED_RMAG       => Wx::NewId();
-Readonly my $MARKED_RRE	       => Wx::NewId();
-Readonly my $MARKED_RIM	       => Wx::NewId();
-Readonly my $MARKED_RPHA       => Wx::NewId();
-Readonly my $MARKED_RDPHA      => Wx::NewId();
-Readonly my $MARKED_QMAG       => Wx::NewId();
-Readonly my $MARKED_QRE	       => Wx::NewId();
-Readonly my $MARKED_QIM	       => Wx::NewId();
-Readonly my $MARKED_QPHA       => Wx::NewId();
+const my $MARKED_XMU		=> Wx::NewId();
+const my $MARKED_NORM		=> Wx::NewId();
+const my $MARKED_DER		=> Wx::NewId();
+const my $MARKED_NDER		=> Wx::NewId();
+const my $MARKED_SEC		=> Wx::NewId();
+const my $MARKED_NSEC		=> Wx::NewId();
+const my $MARKED_CHI		=> Wx::NewId();
+const my $MARKED_CHIK		=> Wx::NewId();
+const my $MARKED_CHIK2		=> Wx::NewId();
+const my $MARKED_CHIK3		=> Wx::NewId();
+const my $MARKED_RMAG		=> Wx::NewId();
+const my $MARKED_RRE		=> Wx::NewId();
+const my $MARKED_RIM		=> Wx::NewId();
+const my $MARKED_RPHA		=> Wx::NewId();
+const my $MARKED_RDPHA		=> Wx::NewId();
+const my $MARKED_QMAG		=> Wx::NewId();
+const my $MARKED_QRE		=> Wx::NewId();
+const my $MARKED_QIM		=> Wx::NewId();
+const my $MARKED_QPHA		=> Wx::NewId();
 
-Readonly my $CLEAR_PROJECT     => Wx::NewId();
+const my $CLEAR_PROJECT		=> Wx::NewId();
 
-Readonly my $RENAME	       => Wx::NewId();
-Readonly my $COPY	       => Wx::NewId();
-#Readonly my $COPY_SERIES       => Wx::NewId();
-Readonly my $REMOVE	       => Wx::NewId();
-Readonly my $REMOVE_MARKED     => Wx::NewId();
-Readonly my $DATA_YAML	       => Wx::NewId();
-Readonly my $DATA_TEXT	       => Wx::NewId();
-Readonly my $CHANGE_DATATYPE   => Wx::NewId();
+const my $RENAME		=> Wx::NewId();
+const my $COPY			=> Wx::NewId();
+#const my $COPY_SERIES		=> Wx::NewId();
+const my $REMOVE		=> Wx::NewId();
+const my $REMOVE_MARKED		=> Wx::NewId();
+const my $DATA_YAML		=> Wx::NewId();
+const my $DATA_TEXT		=> Wx::NewId();
+const my $CHANGE_DATATYPE	=> Wx::NewId();
 
-Readonly my $VALUES_ALL	       => Wx::NewId();
-Readonly my $VALUES_MARKED     => Wx::NewId();
-Readonly my $SHOW_REFERENCE    => Wx::NewId();
-Readonly my $TIE_REFERENCE     => Wx::NewId();
+const my $VALUES_ALL		=> Wx::NewId();
+const my $VALUES_MARKED		=> Wx::NewId();
+const my $SHOW_REFERENCE	=> Wx::NewId();
+const my $TIE_REFERENCE		=> Wx::NewId();
 
-Readonly my $FREEZE_TOGGLE     => Wx::NewId();
-Readonly my $FREEZE_ALL	       => Wx::NewId();
-Readonly my $UNFREEZE_ALL      => Wx::NewId();
-Readonly my $FREEZE_MARKED     => Wx::NewId();
-Readonly my $UNFREEZE_MARKED   => Wx::NewId();
-Readonly my $FREEZE_REGEX      => Wx::NewId();
-Readonly my $UNFREEZE_REGEX    => Wx::NewId();
-Readonly my $FREEZE_TOGGLE_ALL => Wx::NewId();
+const my $FREEZE_TOGGLE		=> Wx::NewId();
+const my $FREEZE_ALL		=> Wx::NewId();
+const my $UNFREEZE_ALL		=> Wx::NewId();
+const my $FREEZE_MARKED		=> Wx::NewId();
+const my $UNFREEZE_MARKED	=> Wx::NewId();
+const my $FREEZE_REGEX		=> Wx::NewId();
+const my $UNFREEZE_REGEX	=> Wx::NewId();
+const my $FREEZE_TOGGLE_ALL	=> Wx::NewId();
 
-Readonly my $ZOOM	       => Wx::NewId();
-Readonly my $UNZOOM	       => Wx::NewId();
-Readonly my $CURSOR	       => Wx::NewId();
-Readonly my $PLOT_QUAD	       => Wx::NewId();
-Readonly my $PLOT_IOSIG	       => Wx::NewId();
-Readonly my $PLOT_K123	       => Wx::NewId();
-Readonly my $PLOT_R123	       => Wx::NewId();
-Readonly my $PLOT_E00          => Wx::NewId();
-Readonly my $PLOT_I0MARKED     => Wx::NewId();
-Readonly my $PLOT_STDDEV       => Wx::NewId();
-Readonly my $PLOT_VARIENCE     => Wx::NewId();
-Readonly my $TERM_1            => Wx::NewId();
-Readonly my $TERM_2            => Wx::NewId();
-Readonly my $TERM_3            => Wx::NewId();
-Readonly my $TERM_4            => Wx::NewId();
+const my $ZOOM			=> Wx::NewId();
+const my $UNZOOM		=> Wx::NewId();
+const my $CURSOR		=> Wx::NewId();
+const my $PLOT_QUAD		=> Wx::NewId();
+const my $PLOT_IOSIG		=> Wx::NewId();
+const my $PLOT_K123		=> Wx::NewId();
+const my $PLOT_R123		=> Wx::NewId();
+const my $PLOT_E00		=> Wx::NewId();
+const my $PLOT_I0MARKED		=> Wx::NewId();
+const my $PLOT_STDDEV		=> Wx::NewId();
+const my $PLOT_VARIENCE		=> Wx::NewId();
+const my $TERM_1		=> Wx::NewId();
+const my $TERM_2		=> Wx::NewId();
+const my $TERM_3		=> Wx::NewId();
+const my $TERM_4		=> Wx::NewId();
 
-Readonly my $SHOW_BUFFER       => Wx::NewId();
-Readonly my $PLOT_YAML	       => Wx::NewId();
-Readonly my $LCF_YAML	       => Wx::NewId();
-Readonly my $PCA_YAML	       => Wx::NewId();
-Readonly my $PEAK_YAML	       => Wx::NewId();
-Readonly my $STYLE_YAML	       => Wx::NewId();
-Readonly my $INDIC_YAML	       => Wx::NewId();
-Readonly my $MODE_STATUS       => Wx::NewId();
-Readonly my $PERL_MODULES      => Wx::NewId();
-Readonly my $STATUS	       => Wx::NewId();
-Readonly my $IFEFFIT_STRINGS   => Wx::NewId();
-Readonly my $IFEFFIT_SCALARS   => Wx::NewId();
-Readonly my $IFEFFIT_GROUPS    => Wx::NewId();
-Readonly my $IFEFFIT_ARRAYS    => Wx::NewId();
-Readonly my $IFEFFIT_MEMORY    => Wx::NewId();
+const my $SHOW_BUFFER		=> Wx::NewId();
+const my $PLOT_YAML		=> Wx::NewId();
+const my $LCF_YAML		=> Wx::NewId();
+const my $PCA_YAML		=> Wx::NewId();
+const my $PEAK_YAML		=> Wx::NewId();
+const my $STYLE_YAML		=> Wx::NewId();
+const my $INDIC_YAML		=> Wx::NewId();
+const my $MODE_STATUS		=> Wx::NewId();
+const my $PERL_MODULES		=> Wx::NewId();
+const my $CONDITIONAL		=> Wx::NewId();
+const my $STATUS		=> Wx::NewId();
+const my $IFEFFIT_STRINGS	=> Wx::NewId();
+const my $IFEFFIT_SCALARS	=> Wx::NewId();
+const my $IFEFFIT_GROUPS	=> Wx::NewId();
+const my $IFEFFIT_ARRAYS	=> Wx::NewId();
+const my $IFEFFIT_MEMORY	=> Wx::NewId();
 
-Readonly my $MARK_ALL	       => Wx::NewId();
-Readonly my $MARK_NONE	       => Wx::NewId();
-Readonly my $MARK_INVERT       => Wx::NewId();
-Readonly my $MARK_TOGGLE       => Wx::NewId();
-Readonly my $MARK_REGEXP       => Wx::NewId();
-Readonly my $UNMARK_REGEXP     => Wx::NewId();
+const my $MARK_ALL		=> Wx::NewId();
+const my $MARK_NONE		=> Wx::NewId();
+const my $MARK_INVERT		=> Wx::NewId();
+const my $MARK_TOGGLE		=> Wx::NewId();
+const my $MARK_REGEXP		=> Wx::NewId();
+const my $UNMARK_REGEXP		=> Wx::NewId();
 
-Readonly my $MERGE_MUE	       => Wx::NewId();
-Readonly my $MERGE_NORM	       => Wx::NewId();
-Readonly my $MERGE_CHI	       => Wx::NewId();
-Readonly my $MERGE_IMP	       => Wx::NewId();
-Readonly my $MERGE_NOISE       => Wx::NewId();
-Readonly my $MERGE_STEP        => Wx::NewId();
+const my $MERGE_MUE		=> Wx::NewId();
+const my $MERGE_NORM		=> Wx::NewId();
+const my $MERGE_CHI		=> Wx::NewId();
+const my $MERGE_IMP		=> Wx::NewId();
+const my $MERGE_NOISE		=> Wx::NewId();
+const my $MERGE_STEP		=> Wx::NewId();
 
-Readonly my $DOCUMENT	       => Wx::NewId();
-Readonly my $DEMO	       => Wx::NewId();
+const my $DOCUMENT		=> Wx::NewId();
+const my $DEMO			=> Wx::NewId();
 
 sub menubar {
   my ($app) = @_;
@@ -469,16 +467,22 @@ sub menubar {
 
   my $monitormenu = Wx::Menu->new;
   my $ifeffitmenu = Wx::Menu->new;
-  my $yamlmenu    = Wx::Menu->new;
+  #my $yamlmenu    = Wx::Menu->new;
+
   my $debugmenu   = Wx::Menu->new;
-  $yamlmenu->Append($PLOT_YAML,      "Plot object",            "Show YAML dialog for Plot object" );
-  $yamlmenu->Append($STYLE_YAML,     "plot style objects",     "Show YAML dialog for plot style objects" );
-  $yamlmenu->Append($INDIC_YAML,     "Indicator objects",      "Show YAML dialog for Indicator objects" );
-  $yamlmenu->Append($LCF_YAML,       "LCF object",             "Show YAML dialog for LCF object" );
-  $yamlmenu->Append($PCA_YAML,       "PCA object",             "Show YAML dialog for PCA object" );
-  $yamlmenu->Append($PEAK_YAML,      "PeakFit object",         "Show YAML dialog for PeakFit object" );
-  $debugmenu->Append($MODE_STATUS,   "Show mode status",       "Show mode status dialog" );
-  $debugmenu->Append($PERL_MODULES,  "Show perl modules",      "Show perl module versions" );
+  $debugmenu->Append($MODE_STATUS,  "Show mode status",          "Show mode status dialog" );
+  $debugmenu->Append($PERL_MODULES, "Show perl modules",         "Show perl module versions" );
+  $debugmenu->Append($CONDITIONAL,  "Show conditional features", "Show which conditional Demeter features are present" );
+  $debugmenu->AppendSeparator;
+  $debugmenu->Append($PLOT_YAML,    "Plot object YAML",          "Show YAML dialog for Plot object" );
+  $debugmenu->Append($STYLE_YAML,   "plot style objects YAML",   "Show YAML dialog for plot style objects" );
+  $debugmenu->Append($INDIC_YAML,   "Indicator objects YAML",    "Show YAML dialog for Indicator objects" );
+  $debugmenu->AppendSeparator;
+  $debugmenu->Append($LCF_YAML,     "LCF object YAML",           "Show YAML dialog for LCF object" );
+  $debugmenu->Append($PCA_YAML,     "PCA object YAML",           "Show YAML dialog for PCA object" );
+  $debugmenu->Append($PEAK_YAML,    "PeakFit object YAML",       "Show YAML dialog for PeakFit object" );
+
+
   $monitormenu->Append($SHOW_BUFFER, "Show command buffer",    'Show the Ifeffit and plotting commands buffer' );
   $monitormenu->Append($STATUS,      "Show status bar buffer", 'Show the buffer containing messages written to the status bars');
   $monitormenu->AppendSeparator;
@@ -490,7 +494,6 @@ sub menubar {
   $monitormenu->Append($IFEFFIT_MEMORY,  "Show Ifeffit's memory use", "Show Ifeffit's memory use and remaining capacity");
   #if ($demeter->co->default("athena", "debug_menus")) {
     $monitormenu->AppendSeparator;
-    $monitormenu->AppendSubMenu($yamlmenu,  'Show YAML for ...',    'Display YAMLs of Demeter objects');
     $monitormenu->AppendSubMenu($debugmenu, 'Debug options', 'Display debugging tools');
   #};
 
@@ -655,7 +658,10 @@ sub OnMenuClick {
     };
 
     ($id == wxID_CLOSE) and do {
+      $app->{main}->status("Closing project ...", "wait");
+      my $busy = Wx::BusyCursor->new();
       $app->Remove('all');
+      undef $busy;
       last SWITCH;
     };
     ($id == wxID_EXIT) and do {
@@ -921,6 +927,10 @@ sub OnMenuClick {
       my $dialog = Demeter::UI::Artemis::ShowText->new($app->{main}, $demeter->mo->report('all'), 'Overview of this instance of Demeter') -> Show;
       last SWITCH;
     };
+    ($id == $CONDITIONAL) and do {
+      my $dialog = Demeter::UI::Artemis::ShowText->new($app->{main}, $demeter->conditional_features, 'Conditionally loaded Demeter features') -> Show;
+      last SWITCH;
+    };
 
     ($id == $IFEFFIT_MEMORY) and do {
       $app->heap_check(1);
@@ -1136,13 +1146,36 @@ sub main_window {
   $app->mouseover($app->{main}->{none},   "Clear all marks");
   $app->mouseover($app->{main}->{invert}, "Invert all marks");
 
+  my %labels_of = (
+		   Main             => 'Main window',
+		   Calibrate	    => "Calibrate data",
+		   Align	    => "Align data",
+		   Rebin	    => "Rebin data",
+		   DeglitchTruncate => "Deglitch and truncate data",
+		   Smooth	    => "Smooth data",
+		   ConvoluteNoise   => "Convolute and add noise to data",
+		   Deconvolute	    => "Deconvolute data",
+		   SelfAbsorption   => "Self-absorption correction",
+		   Series	    => "Copy series",
+		   LCF		    => "Linear combination fitting",
+		   PCA		    => "Principle components analysis",
+		   PeakFit	    => "Peak fitting",
+		   LogRatio	    => "Log-ratio/phase-difference analysis",
+		   Difference	    => "Difference spectra of normalized $MU(E)",
+		   XDI		    => "File metadata",
+		   Watcher	    => "Data watcher",
+		   Journal	    => "Project journal",
+		   PluginRegistry   => "Plugin registry",
+		   Prefs	    => "Preferences",
+		  );
 
 
   $app->{main}->{views} = Wx::Choicebook->new($viewpanel, -1);
-  $viewbox -> Add($app->{main}->{views}, 0, wxALL, 5);
+  $viewbox -> Add($app->{main}->{views}, 1, wxLEFT|wxRIGHT, 5);
   #print join("|", $app->{main}->{views}->GetChildren), $/;
   $app->mouseover($app->{main}->{views}->GetChildren, "Change data processing and analysis tools using this menu.");
 
+  my $pagesize;
   foreach my $which ('Main',		  # 0
 		     'Calibrate',	  # 1
 		     'Align',		  # 2
@@ -1166,14 +1199,29 @@ sub main_window {
 		     'PluginRegistry',    # 20
 		     'Prefs',		  # 21
 		    ) {
+    next if (($which eq 'Watcher') and (not $Demeter::FML_exists));
     next if (($which eq 'Watcher') and (not Demeter->co->default(qw(athena show_watcher))));
     next if $INC{"Demeter/UI/Athena/$which.pm"};
-    require "Demeter/UI/Athena/$which.pm";
-    $app->{main}->{$which} = "Demeter::UI::Athena::$which"->new($app->{main}->{views}, $app);
-    my $label = eval '$'.'Demeter::UI::Athena::'.$which.'::label';
-    $app->{main}->{views} -> AddPage($app->{main}->{$which}, $label, 0);
-    next if (not exists $app->{main}->{$which}->{document});
-    $app->{main}->{$which}->{document} -> Enable(0);
+
+    my $page = Wx::Panel->new($app->{main}->{views}, -1);
+    $app->{main}->{$which."_page"} = $page;
+    my $box = Wx::BoxSizer->new( wxVERTICAL );
+    $app->{main}->{$which."_sizer"} = $box;
+
+    ## postpone creating most views until they are selected for the first time. (see view_changing)
+    if (any {$which eq $_} qw(Main)) {
+      require "Demeter/UI/Athena/$which.pm";
+      my $pm = "Demeter::UI::Athena::$which";
+      $app->{main}->{$which} = $pm->new($page, $app);
+      my $hh   = Wx::BoxSizer->new( wxVERTICAL );
+      $hh  -> Add($app->{main}->{$which}, 1, wxGROW|wxEXPAND|wxALL, 0);
+      $box -> Add($hh, 1, wxEXPAND|wxALL, 0);
+    };
+    $page -> SetSizer($box);
+    ##my $label = eval '$'.'Demeter::UI::Athena::'.$which.'::label' || $labels_of{$which};
+    my $label = $labels_of{$which};
+    $app->{main}->{views} -> AddPage($page, $label, 0);
+
   };
   $app->{main}->{views}->SetSelection(0);
 
@@ -1181,6 +1229,8 @@ sub main_window {
   $app->EVT_BUTTON($app->{main}->{return},   sub{  $app->{main}->{views}->SetSelection(0); $app->OnGroupSelect(0)});
   $viewbox -> Add($app->{main}->{return}, 0, wxGROW|wxLEFT|wxRIGHT, 5);
 
+  $viewbox->Fit($app->{main}->{views});
+  $viewbox->SetSizeHints($app->{main}->{views});
   $viewpanel -> SetSizerAndFit($viewbox);
 
   require Demeter::UI::Athena::Null;
@@ -1190,7 +1240,8 @@ sub main_window {
 
 
   EVT_CHOICEBOOK_PAGE_CHANGED($app->{main}, $app->{main}->{views}, sub{$app->OnGroupSelect(0,0,0);
-								       $app->{main}->{return}->Show($app->{main}->{views}->GetSelection)});
+								       $app->{main}->{return}->Show($app->{main}->{views}->GetSelection)
+								     });
   EVT_CHOICEBOOK_PAGE_CHANGING($app->{main}, $app->{main}->{views}, sub{$app->view_changing(@_)});
 
 
@@ -1362,7 +1413,9 @@ sub OnGroupSelect {
   my $is  = $app->{main}->{list}->GetIndexedData($is_index);
   $app->{selecting_data_group}=1;
 
-  my $showing = $app->{main}->{views}->GetPage($app->{main}->{views}->GetSelection);
+  my $view = $app->get_view($app->{main}->{views}->GetSelection);
+  $app->make_page($view) if (not exists $app->{main}->{$view});
+  my $showing = $app->{main}->{$view};
   if ($showing =~ m{XDI}) {
     $app->{main}->{XDI}->pull_values($was) if ($was and ($was ne $is));
   };
@@ -1407,28 +1460,90 @@ sub select_plot {
 };
 
 
+sub get_view {
+  my ($app, $i) = @_;
+  my @views = ('Main',		           # 0
+	       'Calibrate',		   # 1
+	       'Align',		           # 2
+	       'Rebin',		           # 3
+	       'DeglitchTruncate',	   # 4
+	       'Smooth',		   # 5
+	       'ConvoluteNoise',	   # 6
+	       'Deconvolute',		   # 7
+	       'SelfAbsorption',	   # 8
+	       'Series',		   # 9
+	       q{}, # -----------------------
+	       'LCF',			   # 11
+	       'PCA',			   # 12
+	       'PeakFit',		   # 13
+	       'LogRatio',		   # 14
+	       'Difference',		   # 15
+	       q{}, # -----------------------
+	       'XDI',			   # 17
+	       'Watcher',		   # 18
+	       'Journal',		   # 19
+	       'PluginRegistry',	   # 20
+	       'Prefs',		           # 21
+	      );
+  if (not Demeter->co->default(qw(athena show_watcher))) {
+    splice(@views, 18, 1);
+  };
+  return $views[$i];
+};
+
+sub make_page {
+  my ($app, $view) = @_;
+  my $busy = Wx::BusyCursor->new();
+  Demeter->register_plugins if (($view eq 'PluginRegistry') and not @{Demeter->mo->Plugins});
+
+  require "Demeter/UI/Athena/$view.pm";
+  my $pm = "Demeter::UI::Athena::$view";
+  $app->{main}->{$view} = $pm->new($app->{main}->{$view."_page"}, $app);
+  $app->{main}->{$view."_page"}->SetSize($app->{main}->{"Main_page"}->GetSize);
+  my $hh   = Wx::BoxSizer->new( wxVERTICAL );
+  $hh  -> Add($app->{main}->{$view}, 1, wxGROW|wxEXPAND|wxALL, 0);
+  $app->{main}->{$view."_sizer"} -> Add($hh, 1, wxEXPAND|wxALL, 0);
+
+  #next if (not exists $app->{main}->{$which}->{document});
+  $app->{main}->{$view}->{document} -> Enable(0);
+
+  #$hh -> Fit($app->{main}->{$view});
+  $app->{main}->{$view."_page"} -> SetSizerAndFit($app->{main}->{$view."_sizer"});
+
+
+  undef $busy;
+};
+
 sub view_changing {
   my ($app, $frame, $event) = @_;
   my $c = (Demeter->co->default(qw(athena show_watcher))) ? 4 : 3;
   my $ngroups = $app->{main}->{list}->GetCount;
   my $nviews  = $app->{main}->{views}->GetPageCount;
-  #print join("|", $app, $event, $ngroups, $event->GetSelection), $/;
+  #print join("|", $app, $event, $nviews, $ngroups, $event->GetSelection), $/;
 
   my $prior = $app->{main}->{views}->GetPageText($app->{main}->{views}->GetSelection);
 
   my $string = $app->{main}->{views}->GetPageText($event->GetSelection);
   if ($string =~ m{\A-*\z}) {
     $event -> Veto();
-  } elsif (($event->GetSelection != 0) and ($event->GetSelection < $nviews-$c)) {
-    if (not $ngroups) {
-      $app->{main}->status(sprintf("You have no data imported in Athena, thus you cannot use the %s tool.", lc($string)));
-      $event -> Veto();
-    };
   } else {
-    $app->{main}->{XDI}->pull_values($app->current_data) if $prior =~ m{XDI};
-    $app->{main}->status(sprintf("Displaying the %s tool.",
-				 lc($app->{main}->{views}->GetPageText($event->GetSelection))));
-    #$app->{main}->{showing}=
+    ## create the view if it has not yet been seen
+    my $i = $event->GetSelection;
+    my $view = $app->get_view($i);
+    $app->make_page($view) if ($view and (not exists $app->{main}->{$view}));
+
+    if (($event->GetSelection != 0) and ($event->GetSelection < $nviews-$c)) {
+      if (not $ngroups) {
+	$app->{main}->status(sprintf("You have no data imported in Athena, thus you cannot use the %s tool.", lc($string)));
+	$event -> Veto();
+      };
+    } else {
+
+      $app->{main}->{XDI}->pull_values($app->current_data) if $prior =~ m{XDI};
+      $app->{main}->status(sprintf("Displaying the %s tool.",
+				   lc($app->{main}->{views}->GetPageText($event->GetSelection))));
+      #$app->{main}->{showing}=
+    };
   };
 };
 
@@ -1606,6 +1721,7 @@ sub postplot {
     $app->{main}->{Main}->{bkg_fixstep}->SetValue($is_fixed);
   };
   $data->bkg_fixstep($is_fixed);
+  $data->set(update_norm=>0, update_bkg=>0);
 
   $app->{main}->{Other}->{singlefile}->SetValue(0);
   return;
@@ -1680,7 +1796,7 @@ sub pull_kweight {
     } else {
       ## check to see if marked groups all have the same arbitrary k-weight
       my @kweights = map {$_->fit_karb_value} $app->marked_groups;
-      my $nuniq = grep {abs($_-$kweights[0]) > $EPSI} @kweights;
+      my $nuniq = grep {abs($_-$kweights[0]) > $EPSILON2} @kweights;
       $data->po->kweight($data->fit_karb_value);
       $data->po->kweight(-1) if $nuniq; # variable k-weighting if not all the same
     };
@@ -1985,6 +2101,7 @@ sub AddData {
   $clb->Append($name);
   $clb->Check($clb->GetCount-1, $data->marked);
   push @{$clb->{datalist}}, $data;
+  $::app->{most_recent} = $data;
 };
 
 sub InsertData {
@@ -2087,7 +2204,7 @@ Demeter::UI::Athena - XAS data processing
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.5.
+This documentation refers to Demeter version 0.9.
 
 =head1 SYNOPSIS
 
@@ -2139,7 +2256,7 @@ L<http://cars9.uchicago.edu/~ravel/software/>
 
 =head1 LICENCE AND COPYRIGHT
 
-Copyright (c) 2006-2011 Bruce Ravel (bravel AT bnl DOT gov). All rights reserved.
+Copyright (c) 2006-2012 Bruce Ravel (bravel AT bnl DOT gov). All rights reserved.
 
 This module is free software; you can redistribute it and/or
 modify it under the same terms as Perl itself. See L<perlgpl>.

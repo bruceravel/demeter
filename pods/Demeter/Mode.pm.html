@@ -82,7 +82,7 @@
 
 <h1 id="VERSION">VERSION <a href="#TOP" class="toplink"><img alt="^" src="../up.gif" /></a></h1>
 
-<p>This documentation refers to Demeter version 0.5.</p>
+<p>This documentation refers to Demeter version 0.9.</p>
 
 <h1 id="DESCRIPTION">DESCRIPTION <a href="#TOP" class="toplink"><img alt="^" src="../up.gif" /></a></h1>
 
@@ -103,14 +103,14 @@ objects.  Any of these methods can be called by any Demeter object:</p>
     ## and so on ...
 
 </pre><p>This object also monitors the creation and destruction of Demeter
-objects (Atoms, Data, Data::Prj, Data::MultiChannel, Feff,
-Feff::External, Fit, GDS, Path, Plot, Plot::Indicator, ScatteringPath,
-SSPath, VPath, etc.) and provides methods which give a way for one
-object to affect any other objects created during the instance of
-Demeter.  For example, when the kweight value of the Plot object is
-changed, it is necessary to signal all Data objects that they will
-need to update their forward Fourier transforms.  This object is the
-glue that allows things like that to happen.</p>
+objects (Atoms, Data, Data::Prj, Data::MultiChannel, Data::BulkMerge,
+Feff, Feff::External, Fit, GDS, Path, Plot, Plot::Indicator,
+ScatteringPath, SSPath, VPath, etc.) and provides methods which give a
+way for one object to affect any other objects created during the
+instance of Demeter.  For example, when the kweight value of the Plot
+object is changed, it is necessary to signal all Data objects that
+they will need to update their forward Fourier transforms.  This
+object is the glue that allows things like that to happen.</p>
 
 <h1 id="ATTRIBUTES">ATTRIBUTES <a href="#TOP" class="toplink"><img alt="^" src="../up.gif" /></a></h1>
 
@@ -254,11 +254,11 @@ behind the scenes, during object creation or destruction or at the end
 of a script.  The details are documented here for those times when one
 needs to see under the hood.</p>
 
-<p>Each Demeter object (Atoms, Data, Data::Prj, Data::MultiChannel, Feff,
-Feff::External, Fit, GDS, Path, Plot, Plot::Indicator, ScatteringPath,
-SSPath, VPath, etc.) (Data::Prj is refered to just as Prj, other
-Data::* classes are the same) has each of the following three function
-associated with it.</p>
+<p>Each Demeter object (Atoms, Data, Data::Prj, Data::MultiChannel,
+Data::BulkMerge, Feff, Feff::External, Fit, GDS, Path, Plot,
+Plot::Indicator, ScatteringPath, SSPath, VPath, etc.) (Data::Prj is
+refered to just as Prj, other Data::* classes are the same) has each
+of the following three function associated with it.</p>
 
 <p>All of my examples use the Data object.</p>
 
@@ -336,7 +336,7 @@ generated.</p>
 
 <h1 id="LICENCE_AND_COPYRIGHT">LICENCE AND COPYRIGHT <a href="#TOP" class="toplink"><img alt="^" src="../up.gif" /></a></h1>
 
-<p>Copyright (c) 2006-2011 Bruce Ravel (bravel AT bnl DOT gov). All rights reserved.</p>
+<p>Copyright (c) 2006-2012 Bruce Ravel (bravel AT bnl DOT gov). All rights reserved.</p>
 
 <p>This module is free software; you can redistribute it and/or
 modify it under the same terms as Perl itself. See <a href="http://search.cpan.org/perldoc?perlgpl">perlgpl</a>.</p>

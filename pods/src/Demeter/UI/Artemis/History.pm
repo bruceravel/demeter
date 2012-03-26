@@ -2,7 +2,7 @@ package  Demeter::UI::Artemis::History;
 
 =for Copyright
  .
- Copyright (c) 2006-2011 Bruce Ravel (bravel AT bnl DOT gov).
+ Copyright (c) 2006-2012 Bruce Ravel (bravel AT bnl DOT gov).
  All rights reserved.
  .
  This file is free software; you can redistribute it and/or
@@ -17,9 +17,16 @@ package  Demeter::UI::Artemis::History;
 
 use strict;
 use warnings;
+
+use Archive::Zip qw( :ERROR_CODES :CONSTANTS );
 use Cwd;
-use File::Path qw(rmtree);
+use File::Basename;
+use File::Copy;
+use File::Copy::Recursive qw(dircopy);
+use File::Path;
+use File::Spec;
 use List::MoreUtils qw(minmax);
+use String::Random qw(random_string);
 
 use Wx qw( :everything );
 use Wx::Event qw(EVT_CLOSE EVT_ICONIZE EVT_LISTBOX EVT_CHECKLISTBOX EVT_BUTTON EVT_RADIOBOX
@@ -114,20 +121,20 @@ sub new {
   my $hbox = Wx::BoxSizer->new( wxHORIZONTAL );
   $vbox -> Add($hbox, 0, wxGROW|wxALL, 5);
 
-  $this->{save} = Wx::Button->new($logpage, -1, q{Save this log}, wxDefaultPosition, wxDefaultSize);
+  $this->{save} = Wx::Button->new($logpage, -1, q{Save this log});
   $hbox -> Add($this->{save}, 1, wxGROW|wxRIGHT, 2);
   EVT_BUTTON($this, $this->{save}, sub{$this->savelog});
-  $this-> mouseover('save', "Save this log to a file.");
+  $this-> mouseover('save', "Save this fitting log to a file.");
 
-  $this->{preview} = Wx::Button->new($logpage, -1, q{Log preview}, wxDefaultPosition, wxDefaultSize);
+  $this->{preview} = Wx::Button->new($logpage, -1, q{Log preview});
   $hbox -> Add($this->{preview}, 1, wxGROW|wxRIGHT, 2);
   EVT_BUTTON($this, $this->{preview}, sub{on_preview(@_, 'log')});
-  $this-> mouseover('preview', "Preview this log.");
+  $this-> mouseover('preview', "Preview this fitting log.");
 
-  $this->{print} = Wx::Button->new($logpage, -1, q{Print this log}, wxDefaultPosition, wxDefaultSize);
+  $this->{print} = Wx::Button->new($logpage, -1, q{Print this log});
   $hbox -> Add($this->{print}, 1, wxGROW|wxRIGHT, 2);
   EVT_BUTTON($this, $this->{print}, sub{on_print(@_, 'log')});
-  $this-> mouseover('print', "Print this log.");
+  $this-> mouseover('print', "Print this fitting log.");
 
 
   ## -------- controls for writing reports on fits
@@ -177,21 +184,23 @@ sub new {
 
   $controls = Wx::BoxSizer->new( wxHORIZONTAL );
   $reportbox -> Add($controls, 0, wxGROW|wxALL, 0);
-  $this->{savereport} = Wx::Button->new($reportpage, -1, q{Save report});
+  $this->{savereport} = Wx::Button->new($reportpage, wxID_SAVE, q{});
   $controls->Add($this->{savereport}, 1, wxALL, 5);
   EVT_BUTTON($this, $this->{savereport}, sub{$this->savereport});
   $this-> mouseover('savereport', "Save this report to a file.");
 
-  $this->{previewreport} = Wx::Button->new($reportpage, -1, q{Report preview});
+  $this->{previewreport} = Wx::Button->new($reportpage, wxID_PREVIEW, q{});
   $controls->Add($this->{previewreport}, 1, wxALL, 5);
   EVT_BUTTON($this, $this->{previewreport}, sub{on_preview(@_, 'report')});
   $this-> mouseover('previewreport', "Preview report");
 
-  $this->{printreport} = Wx::Button->new($reportpage, -1, q{Print report});
+  $this->{printreport} = Wx::Button->new($reportpage, wxID_PRINT, q{});
   $controls->Add($this->{printreport}, 1, wxALL, 5);
   EVT_BUTTON($this, $this->{printreport}, sub{on_print(@_, 'report')});
   $this-> mouseover('printreport', "Print report");
 
+  ## -------- plotting tool page
+  $plottoolbox -> Add(Wx::StaticText->new($plottoolpage, -1, "The history plotting tool is currently broken.\nIt currently fails to import old fits from project files.  Drat!"), 0, wxALL|wxALIGN_CENTER_HORIZONTAL, 5);
 
   $nb -> AddPage($logpage,      "Log file", 1);
   $nb -> AddPage($reportpage,   "Reports", 0);
@@ -211,6 +220,13 @@ sub OnSelect {
   my ($self, $event) = @_;
   my $fit = $self->{list}->GetIndexedData($self->{list}->GetSelection);
   return if not defined $fit;
+  if (not $fit->thawed) {
+    my $busy = Wx::BusyCursor->new();
+    $self->status('Unpacking fit "'.$fit->name.'"', 'wait');
+    $fit->deserialize(folder=>File::Spec->catfile($::app->{main}->{project_folder}, 'fits', $fit->group));
+    $self->status('Unpacked fit "'.$fit->name.'"');
+    undef $busy;
+  };
   $self->put_log($fit);
   $self->set_params($fit);
 };
@@ -219,21 +235,20 @@ sub OnCheck {
   1;
 };
 
-use Readonly;
-Readonly my $FIT_RESTORE      => Wx::NewId();
-Readonly my $FIT_SAVE	      => Wx::NewId();
-Readonly my $FIT_EXPORT	      => Wx::NewId();
-Readonly my $FIT_DISCARD      => Wx::NewId();
-Readonly my $FIT_DISCARD_MANY => Wx::NewId();
+use Const::Fast;
+const my $FIT_RESTORE      => Wx::NewId();
+const my $FIT_SAVE	   => Wx::NewId();
+const my $FIT_EXPORT	   => Wx::NewId();
+const my $FIT_DISCARD      => Wx::NewId();
+const my $FIT_DISCARD_MANY => Wx::NewId();
+const my $FIT_SHOW         => Wx::NewId();
 
 sub OnRightDown {
   my ($self, $event) = @_;
   return if $self->IsEmpty;
-  #$self->Deselect($self->GetSelection);
-  #$self->SetSelection($self->HitTest($event->GetPosition));
-  #$self->GetParent->OnSelect($event);
-  #my $name = $self->GetStringSelection;
   my $position  = $self->HitTest($event->GetPosition);
+  $self->SetSelection($position);
+  $self->GetParent->OnSelect;
   $self->GetParent->{_position} = $position; # need a way to remember where the click happened in methods called from OnPlotMenu
   ($position = $self->GetCount - 1) if ($position == -1);
   my $name = $self->GetString($position);
@@ -244,8 +259,8 @@ sub OnRightDown {
   $menu->Append($FIT_DISCARD, "Discard \"$name\"");
   $menu->AppendSeparator;
   $menu->Append($FIT_DISCARD_MANY, "Discard marked fits");
-  $menu->Enable($FIT_EXPORT,0);
-  $menu->Enable($FIT_DISCARD_MANY,0);
+  $menu->AppendSeparator;
+  $menu->Append($FIT_SHOW, "Show YAML for \"$name\"");
   $self->PopupMenu($menu, $event->GetPosition);
 };
 
@@ -266,11 +281,18 @@ sub OnPlotMenu {
       last SWITCH;
     };
     ($id == $FIT_DISCARD) and do {
-      $self->discard('selected', $self->{_position});
+      $self->discard($self->{_position}, 1);
       last SWITCH;
     };
     ($id == $FIT_DISCARD_MANY) and do {
-      $self->discard('all');
+      $self->discard_many;
+      last SWITCH;
+    };
+    ($id == $FIT_SHOW) and do {
+      my $thisfit = $self->{list}->GetIndexedData($self->{_position});
+      my $yaml   = $thisfit->serialization;
+      my $title = sprintf "YAML of Plot object (%s) [%s]", $thisfit->group, $thisfit->name;
+      my $dialog = Demeter::UI::Artemis::ShowText->new($::app->{main}, $yaml, $title) -> Show;
       last SWITCH;
     };
   };
@@ -394,13 +416,20 @@ sub write_report {
 sub summarize {
   my ($self, $event) = @_;
   return if $self->{list}->IsEmpty;
+  my $busy = Wx::BusyCursor->new();
   $self->mark_all_if_none;
   my $text = q{};
   foreach my $i (0 .. $self->{list}->GetCount-1) {
     next if not $self->{list}->IsChecked($i);
     my $fit = $self->{list}->GetIndexedData($i);
+    if (not $fit->thawed) {
+      $self->status('Unpacking fit "'.$fit->name.'"', 'wait');
+      $fit->deserialize(folder=>File::Spec->catfile($::app->{main}->{project_folder}, 'fits', $fit->group));
+      $self->status('Unpacked fit "'.$fit->name.'"');
+    };
     $text .= $fit -> summary;
   };
+  undef $busy;
   return if (not $text);
   $self->{report}->Clear;
   $self->{report}->SetValue($text)
@@ -427,45 +456,78 @@ sub restore {
   my ($self, $position) = @_;
   ($position = $self->{list}->GetSelection) if not defined ($position);
   my $busy = Wx::BusyCursor -> new();
+  my $was = Demeter->mo->currentfit;
   Demeter::UI::Artemis::Project::discard_fit(\%Demeter::UI::Artemis::frames);
-  my $fit = $self->{list}->GetIndexedData($position);
+  my $old = $self->{list}->GetIndexedData($position);
+  my $fit = $old->clone;
+  my $folder = File::Spec->catfile($Demeter::UI::Artemis::frames{main}->{project_folder}, 'fits', $old->group);
+  $fit->deserialize(folder=> $folder, regenerate=>0); #$regen);
+  $fit->fom($was-1);
+  $fit->mo->currentfit($was-1);
   Demeter::UI::Artemis::Project::restore_fit(\%Demeter::UI::Artemis::frames, $fit);
+  my $text = $Demeter::UI::Artemis::frames{main}->{name}->GetValue;
+  $text =~ s{\d+\z}($was);
+  $Demeter::UI::Artemis::frames{main}->{name}->SetValue($text);
+  Demeter::UI::Artemis::update_order_file();
   undef $busy;
   $self->status("Restored ".$self->{list}->GetString($position));
 };
 
+sub discard_many {
+  my ($self, $event) = @_;
+  foreach my $i (reverse(0 .. $self->{list}->GetCount-1)) {
+    next if not $self->{list}->IsChecked($i);
+    $self->discard($i, 0);
+  };
+  return if not $self->{list}->GetCount;
+  $self->{list}->SetSelection($self->{list}->GetCount-1);
+  $self->OnSelect;
+  $self->status("discarded marked fits");
+};
+
 sub discard {
-  my ($self, $how, $position) = @_;
+  my ($self, $position, $show) = @_;
+  $show ||= 0;
   ($position = $self->{list}->GetSelection) if not defined ($position);
   my $thisfit = $self->{list}->GetIndexedData($position);
   my $name = $thisfit->name;
 
-  ## -------- remove this fit from the fit_order hash and rewrite the order file
-  delete $Demeter::UI::Artemis::fit_order{order}{$thisfit->group};
-  Demeter::UI::Artemis::update_order_file(1);
-  #my $string .= YAML::Tiny::Dump(%Demeter::UI::Artemis::fit_order);
-  #open(my $ORDER, '>'.$Demeter::UI::Artemis::frames{main}->{order_file});
-  #print $ORDER $string;
-  #close $ORDER;
-
   ## -------- remove this fit from the fit list
   if ($position == $self->{list}->GetCount-1) { # last position
-    $self->{list}->SetSelection($position-1);
-    $self->OnSelect;
+    if ($show) {
+      $self->{list}->SetSelection($position-1);
+      $self->OnSelect;
+    };
   } elsif ($self->{list}->GetCount == 1) {      # only position
     $self->{list}->SetSelection(wxNOT_FOUND);
   } else {			                # all others
-    $self->{list}->SetSelection($position+1);
-    $self->OnSelect;
+    if ($show) {
+      $self->{list}->SetSelection($position+1);
+      $self->OnSelect;
+    };
   };
   $self->{list}->DeleteData($position);
 
-  ## -------- destroy the Fit object and delete its folder in stash space
+  ## -------- destroy the Fit object, delete its folder in stash space, delete its entry in the order file
+  my $str = $thisfit->group;
   $thisfit->DEMOLISH;
-  my $folder = File::Spec->catfile($Demeter::UI::Artemis::frames{main}->{project_folder}, 'fits', $thisfit->group);
-  rmtree($folder);
-  Demeter::UI::Artemis::modified(1);
 
+  my $folder = File::Spec->catfile($Demeter::UI::Artemis::frames{main}->{project_folder}, 'fits', $str);
+  rmtree($folder);
+
+  my $orderfile = $Demeter::UI::Artemis::frames{main}->{order_file};
+  my %order = YAML::Tiny::LoadFile($orderfile);
+  print %order, $/;
+  foreach my $k (keys %{$order{order}}) {
+    delete $order{order}->{$k} if ($order{order}->{$k} eq $str);
+  };
+  my $string .= YAML::Tiny::Dump(%order);
+  open(my $ORDER, '>'.$orderfile);
+  print $ORDER $string;
+  close $ORDER;
+  %Demeter::UI::Artemis::fit_order = %order;
+
+  Demeter::UI::Artemis::modified(1);
   $self->status("discarded $name");
 };
 
@@ -497,7 +559,66 @@ sub export {
   my ($self, $position) = @_;
   ($position = $self->{list}->GetSelection) if not defined ($position);
 
-  $self->status("export ".$self->{list}->GetString($position)."... ");
+  my $newfolder = File::Spec->catfile(Demeter->stash_folder, '_dem_export_' . random_string('cccccccc'));
+  my $fit = $self->{list}->GetIndexedData($position);
+  my $name = $fit->name;
+
+  my $fname = "$name.fpj";
+  $fname =~ s{\s+}{_}g;
+  my $fd = Wx::FileDialog->new( $::app->{main}, "Save $name project file", cwd, $fname,
+				"Artemis project (*.fpj)|*.fpj|All files|*",
+				wxFD_SAVE|wxFD_CHANGE_DIR); #|wxFD_OVERWRITE_PROMPT
+  if ($fd->ShowModal == wxID_CANCEL) {
+    $self->status("Saving project cancelled.");
+    return;
+  };
+  $fname = $fd->GetPath;
+  return if $::app->{main}->overwrite_prompt($fname); # work-around gtk's wxFD_OVERWRITE_PROMPT bug (5 Jan 2011)
+
+  mkpath($newfolder,0);
+
+  ## copy the Readme file
+  copy(File::Spec->catfile($::app->{main}->{project_folder}, 'Readme'),  File::Spec->catfile($newfolder, 'Readme'));
+  ## save the current journal
+  $::app->{Journal}->save_journal(File::Spec->catfile($::app->{main}->{project_folder}, 'journal'));
+  copy(File::Spec->catfile($::app->{main}->{project_folder}, 'journal'), File::Spec->catfile($newfolder, 'journal'));
+  ## save the current plot and indicator parameters  (indicator needs refactoring!)
+  $::app->{Plot}->fetch_parameters;
+  $::app->{Plot}->{indicators}->fetch;
+  mkpath(File::Spec->catfile($newfolder, 'plot'), 0);
+  Demeter->po -> serialize(File::Spec->catfile($newfolder, 'plot', 'plot.yaml'));
+  open(my $IN, '>'.File::Spec->catfile($newfolder, 'plot', 'indicators.yaml'));
+  foreach my $j (1..5) {
+    my $this = $::app->{Plot}->{indicators}->{'group'.$j};
+    my $found = Demeter->mo->fetch('Indicator', $this);
+    print($IN $found -> serialization) if $found;
+  };
+  close $IN;
+
+  ## copy over this fit
+  mkpath(File::Spec->catfile($newfolder, 'fits'), 0);
+  dircopy(File::Spec->catfile($::app->{main}->{project_folder}, 'fits', $fit->group), File::Spec->catfile($newfolder, 'fits', $fit->group));
+
+  ## copy over all feffs
+  dircopy(File::Spec->catfile($::app->{main}->{project_folder}, 'feff'), File::Spec->catfile($newfolder, 'feff'));
+
+  ## write the order file
+  open(my $OR, '>'.File::Spec->catfile($newfolder, 'order'));
+  printf $OR "--- order\n---\n1: %s\ncurrent: 1\n", $fit->group;
+  close $OR;
+
+  ## zip it all up, clean up the mess, push it to the MRU list
+  my $zip = Archive::Zip->new();
+  $zip->addTree( $newfolder, "",  sub{ not m{\.sp$} }); #and not m{_dem_\w{8}\z}
+  carp('error writing zip-style project') unless ($zip->writeToFileNamed( $fname ) == AZ_OK);
+  undef $zip;
+
+  rmtree($newfolder,0);
+
+  $Demeter::UI::Artemis::demeter->push_mru("artemis", $fname);
+  &Demeter::UI::Artemis::set_mru;
+
+  $self->status("exported $name as $fname");
 };
 
 
@@ -551,7 +672,7 @@ Demeter::UI::Artemis::History - A fit history interface for Artemis
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.5.
+This documentation refers to Demeter version 0.9.
 
 =head1 SYNOPSIS
 
@@ -597,7 +718,7 @@ L<http://cars9.uchicago.edu/~ravel/software/>
 
 =head1 LICENCE AND COPYRIGHT
 
-Copyright (c) 2006-2011 Bruce Ravel (bravel AT bnl DOT gov). All rights reserved.
+Copyright (c) 2006-2012 Bruce Ravel (bravel AT bnl DOT gov). All rights reserved.
 
 This module is free software; you can redistribute it and/or
 modify it under the same terms as Perl itself. See L<perlgpl>.

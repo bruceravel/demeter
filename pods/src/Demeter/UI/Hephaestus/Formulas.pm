@@ -2,7 +2,7 @@ package Demeter::UI::Hephaestus::Formulas;
 
 =for Copyright
  .
- Copyright (c) 2006-2011 Bruce Ravel (bravel AT bnl DOT gov).
+ Copyright (c) 2006-2012 Bruce Ravel (bravel AT bnl DOT gov).
  All rights reserved.
  .
  This file is free software; you can redistribute it and/or
@@ -42,7 +42,7 @@ sub new {
 
   my @choices = keys(%formula_of);
 
-  $self->{energyvalue} = $Demeter::UI::Hephaestus::demeter->co->default(qw(hephaestus formula_energy));
+  $self->{energyvalue} = Demeter->co->default(qw(hephaestus formula_energy));
   $self->{type}        = 'Density';
   $self->{units}       = 'energy';
   $self->{echo}        = $echoarea;
@@ -145,12 +145,12 @@ sub get_formula_data {
   $self->{echo}->SetStatusText('You have not provided a formula.'), return if not $parent->{formula}->GetValue;
   my $ok = parse_formula($parent->{formula}->GetValue, \%count);
   $parent->{echo}->SetStatusText(sprintf("This calculation uses the %s data resource and %s cross sections.",
-				$Demeter::UI::Hephaestus::demeter->co->default('hephaestus', 'resource'),
-				$Demeter::UI::Hephaestus::demeter->co->default('hephaestus', 'xsec')
+				Demeter->co->default('hephaestus', 'resource'),
+				Demeter->co->default('hephaestus', 'xsec')
 			       ));
 
   my $resource = Xray::Absorption->current_resource;
-  my $which = $Demeter::UI::Hephaestus::demeter->co->default('hephaestus', 'xsec');
+  my $which = Demeter->co->default('hephaestus', 'xsec');
   if (($resource eq "mcmaster") or ($resource eq "elam")) {
     ($which = "total")      if ($which eq "full");
   } elsif ($resource eq "chantler") {
@@ -250,6 +250,7 @@ sub get_formula_data {
 	  $answer .=
 	    "\n(The value for density is not a number.)";
 	  $self->{echo}->SetStatusText("The value for density is not a number.");
+	  $density = 0;
 	};
 	$answer .=
 	  sprintf("\n\nA sample of 1 absorption length with area of 1 square cm requires %.3f miligrams of sample at %.2f %s.\n",
@@ -271,18 +272,20 @@ sub get_formula_data {
 	## 1 amu = 1.6605389 x 10^-24 gm
 	push @abovebelow, $bpfu / $apfu / 1.6605389;
       };
-      my $xabove = $abovebelow[1] * $density;
-      my $xbelow = $abovebelow[0] * $density;
-      my $step   = 10000 / ($xabove - $xbelow);
-      $answer .= sprintf "\nUnit edge step length at %s %s edge (%.1f eV) is %.1f microns\n",
-	ucfirst($e->[0]), uc($e->[1]), $enot, $step;
+      if (not $density) {
+	my $xabove = $abovebelow[1] * $density;
+	my $xbelow = $abovebelow[0] * $density;
+	my $step   = 10000 / ($xabove - $xbelow);
+	$answer .= sprintf "\nUnit edge step length at %s %s edge (%.1f eV) is %.1f microns\n",
+	  ucfirst($e->[0]), uc($e->[1]), $enot, $step;
+      };
     };
 
     if ($type eq 'Molarity') {
       $answer .= "\nRemember that a molarity calculation only considers the absorption of the solute. The solvent also absorbs.\n";
     };
 #     my $resource = Xray::Absorption->current_resource;
-#     my $which = $Demeter::UI::Hephaestus::demeter->co->default('hephaestus', 'xsec');
+#     my $which = Demeter->co->default('hephaestus', 'xsec');
 #     if (($resource eq "mcmaster") or ($resource eq "elam")) {
 #       ($which = "total")      if ($which eq "full");
 #     } elsif (lc($data{resource}) eq "chantler") {
@@ -327,7 +330,7 @@ Demeter::UI::Hephaestus::Formulas - Hephaestus' formulas utility
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.5.
+This documentation refers to Demeter version 0.9.
 
 =head1 SYNOPSIS
 
@@ -387,7 +390,7 @@ L<http://cars9.uchicago.edu/~ravel/software/>
 
 =head1 LICENCE AND COPYRIGHT
 
-Copyright (c) 2006-2011 Bruce Ravel (bravel AT bnl DOT gov). All rights reserved.
+Copyright (c) 2006-2012 Bruce Ravel (bravel AT bnl DOT gov). All rights reserved.
 
 This module is free software; you can redistribute it and/or
 modify it under the same terms as Perl itself. See L<perlgpl>.

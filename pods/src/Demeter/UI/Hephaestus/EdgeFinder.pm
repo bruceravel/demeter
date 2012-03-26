@@ -2,7 +2,7 @@ package Demeter::UI::Hephaestus::EdgeFinder;
 
 =for Copyright
  .
- Copyright (c) 2006-2011 Bruce Ravel (bravel AT bnl DOT gov).
+ Copyright (c) 2006-2012 Bruce Ravel (bravel AT bnl DOT gov).
  All rights reserved.
  .
  This file is free software; you can redistribute it and/or
@@ -19,7 +19,6 @@ use strict;
 use warnings;
 use Carp;
 use Chemistry::Elements qw(get_Z get_name get_symbol);
-#use Regexp::Common;
 use Xray::Absorption;
 
 use Wx qw( :everything );
@@ -48,7 +47,7 @@ sub new {
   my $hbox = Wx::BoxSizer->new( wxHORIZONTAL );
   $self->SetSizer($hbox);
 
-  $self->{targetenergy} = $Demeter::UI::Hephaestus::demeter->co->default(qw(hephaestus find_energy));
+  $self->{targetenergy} = Demeter->co->default(qw(hephaestus find_energy));
   $self->{echo} = $echoarea;
 
   ## -------- Edge energies
@@ -95,8 +94,8 @@ sub new {
   $self->{harmonicenergy} = Wx::StaticText->new($self, -1, q{});
   $self->{targetboxsizer} -> Add($self->{harmonicenergy}, 0, wxEXPAND|wxALL, 10);
   #$panel -> SetSizerAndFit( $panelsizer );
-  $self->{harmonics}->SetSelection($Demeter::UI::Hephaestus::demeter->co->default(qw(hephaestus find_harmonic)) - 1);
-  if ($Demeter::UI::Hephaestus::demeter->co->default(qw(hephaestus find_harmonic)) > 1) {
+  $self->{harmonics}->SetSelection(Demeter->co->default(qw(hephaestus find_harmonic)) - 1);
+  if (Demeter->co->default(qw(hephaestus find_harmonic)) > 1) {
     $self->search_edges;
   };
 
@@ -168,7 +167,7 @@ Demeter::UI::Hephaestus::EdgeFinder - Hephaestus' edge finder utility
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.5.
+This documentation refers to Demeter version 0.9.
 
 =head1 SYNOPSIS
 
@@ -229,7 +228,7 @@ L<http://cars9.uchicago.edu/~ravel/software/>
 
 =head1 LICENCE AND COPYRIGHT
 
-Copyright (c) 2006-2011 Bruce Ravel (bravel AT bnl DOT gov). All rights reserved.
+Copyright (c) 2006-2012 Bruce Ravel (bravel AT bnl DOT gov). All rights reserved.
 
 This module is free software; you can redistribute it and/or
 modify it under the same terms as Perl itself. See L<perlgpl>.

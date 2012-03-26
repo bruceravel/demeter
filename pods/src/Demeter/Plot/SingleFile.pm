@@ -2,7 +2,7 @@ package Demeter::Plot::SingleFile;
 
 =for Copyright
  .
- Copyright (c) 2006-2011 Bruce Ravel (bravel AT bnl DOT gov).
+ Copyright (c) 2006-2012 Bruce Ravel (bravel AT bnl DOT gov).
  All rights reserved.
  .
  This file is free software; you can redistribute it and/or
@@ -24,25 +24,25 @@ has 'file'     => (is => 'rw', isa => 'Str',  default => q{});
 has '+backend' => (default => q{singleplot});
 
 has 'columns' => (
-		    metaclass => 'Collection::Array',
+		    traits    => ['Array'],
 		    is        => 'rw',
 		    isa       => 'ArrayRef[Str]',
 		    default   => sub { [] },
-		    provides  => {
-				  'push'  => 'add_columns',
-				  'pop'   => 'remove_columns',
-				  'clear' => 'clear_columns',
+		    handles   => {
+				  'add_columns'  => 'push',
+				  'remove_columns'   => 'pop',
+				  'clear_columns' => 'clear',
 				 }
 		   );
 has 'labels' => (
-		    metaclass => 'Collection::Array',
+		    traits    => ['Array'],
 		    is        => 'rw',
 		    isa       => 'ArrayRef[Str]',
 		    default   => sub { [] },
-		    provides  => {
-				  'push'  => 'add_labels',
-				  'pop'   => 'remove_labels',
-				  'clear' => 'clear_labels',
+		    handles   => {
+				  'add_labels'  => 'push',
+				  'remove_labels'   => 'pop',
+				  'clear_labels' => 'clear',
 				 }
 		   );
 
@@ -115,7 +115,7 @@ Demeter::Plot::SingleFile - Sending a plot to a single file
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.5.
+This documentation refers to Demeter version 0.9.
 
 =head1 SYNOPSIS
 
@@ -253,7 +253,7 @@ L<http://cars9.uchicago.edu/~ravel/software/>
 
 =head1 LICENCE AND COPYRIGHT
 
-Copyright (c) 2006-2011 Bruce Ravel (bravel AT bnl DOT gov). All rights reserved.
+Copyright (c) 2006-2012 Bruce Ravel (bravel AT bnl DOT gov). All rights reserved.
 
 This module is free software; you can redistribute it and/or
 modify it under the same terms as Perl itself. See L<perlgpl>.

@@ -2,7 +2,7 @@ package  Demeter::UI::Atoms::Xtal::SiteList;
 
 =for Copyright
  .
- Copyright (c) 2006-2011 Bruce Ravel (bravel AT bnl DOT gov).
+ Copyright (c) 2006-2012 Bruce Ravel (bravel AT bnl DOT gov).
  All rights reserved.
  .
  This file is free software; you can redistribute it and/or
@@ -53,7 +53,6 @@ sub new {
 
 package  Demeter::UI::Atoms::Xtal;
 
-use Demeter;
 use Demeter::StrTypes qw( Element );
 use Demeter::NumTypes qw( PosNum );
 
@@ -61,13 +60,10 @@ use Cwd;
 use Chemistry::Elements qw(get_Z get_name get_symbol);
 use File::Basename;
 use List::MoreUtils qw(firstidx);
-use Regexp::Common;
 use Xray::Absorption;
 #use Demeter::UI::Wx::GridTable;
 
-use Readonly;
-Readonly my $EPSILON => 1e-3;
-Readonly my $NUMBER => $RE{num}{real};
+use Demeter::Constants qw($NUMBER $EPSILON3);
 
 use Wx qw( :everything );
 use base 'Wx::Panel';
@@ -124,6 +120,7 @@ sub new {
   $self->{buffered_site} = 0;
   $self->{problems}  = q{};
   $self->{used}      = 1;
+  $self->{atomsobject} = $atoms;
 
   my $vbox = Wx::BoxSizer->new( wxVERTICAL );
 
@@ -376,10 +373,10 @@ sub OnToolRightClick {
   my $dialog = Demeter::UI::Wx::MRU->new($self, 'atoms',
 					 "Select a recent crystal data file",
 					 "Recent crystal data files");
-  $self->{statusbar}->SetStatusText("There are no recent crystal data files."), return
+  $self->{parent}->status("There are no recent crystal data files."), return
     if ($dialog == -1);
   if( $dialog->ShowModal == wxID_CANCEL ) {
-    $self->{statusbar}->SetStatusText("Import cancelled.");
+    $self->{parent}->status("Import cancelled.");
   } else {
    $self->open_file( $dialog->GetMruSelection );
   };
@@ -464,7 +461,7 @@ sub open_file {
 				  wxFD_OPEN|wxFD_FILE_MUST_EXIST|wxFD_CHANGE_DIR|wxFD_PREVIEW,
 				  wxDefaultPosition);
     if ($fd->ShowModal == wxID_CANCEL) {
-      $self->{statusbar}->SetStatusText("Crystal data import cancelled.");
+      $self->{parent}->status("Crystal data import cancelled.");
       return 0;
     };
     $file = File::Spec->catfile($fd->GetDirectory, $fd->GetFilename);
@@ -485,7 +482,7 @@ sub open_file {
       my $dialog = Wx::SingleChoiceDialog->new( $self, "Choose a record from this CIF file",
 						"CIF file", \@records );
       if( $dialog->ShowModal == wxID_CANCEL ) {
-	$self->{statusbar}->SetStatusText("Import cancelled.");
+	$self->{parent}->status("Import cancelled.");
 	return 0;
       } else {
 	my $which = $dialog->GetSelection||0;
@@ -513,7 +510,7 @@ sub open_file {
 
   foreach my $lc (qw(a b c)) {
     my $this = $atoms->$lc;
-    $this = $atoms->a if (($lc =~ m{[bc]}) and ($atoms->$lc < $EPSILON));
+    $this = $atoms->a if (($lc =~ m{[bc]}) and ($atoms->$lc < $EPSILON3));
     $self->{$lc}->SetValue($this);
   };
   foreach my $lc (qw(alpha beta gamma)) {
@@ -530,7 +527,7 @@ sub open_file {
 
   my $i= 0;
   my $cell = $atoms->cell;
-  my $message = "Imported crystal data from $file.";
+  my $message = "Imported crystal data from \"$file\".";
   foreach my $s (@{ $atoms->sites }) {
     $self->AddSite(0, $self) if ($i >= $self->{sitesgrid}->GetNumberRows);
     my @this = split(/\|/, $s);
@@ -556,7 +553,7 @@ sub open_file {
 
   $atoms -> push_mru("atoms", $file) if ($file !~ m{_dem_});
 
-  $self->{statusbar}->SetStatusText($message);
+  $self->{parent}->status($message);
   return 1;
 };
 
@@ -713,7 +710,7 @@ sub verify_angle {
       last SWITCH;
     };
     ($class =~ m{(?:cubic|tetragonal|orthorhombic)}) and do {
-      return 90 if ($atoms->$angle < $EPSILON);
+      return 90 if ($atoms->$angle < $EPSILON3);
       return $atoms->$angle;
       last SWITCH;
     };
@@ -740,7 +737,7 @@ sub unusable_data {
   my ($self) = @_;
   my $message = Wx::MessageDialog->new($self, $self->{problems}, "Trouble", wxOK);
   $message->ShowModal;
-  $self->{statusbar}->SetStatusText("These crystallographic data cannot be processed");
+  $self->{parent}->status("These crystallographic data cannot be processed");
 };
 
 sub save_file {
@@ -753,7 +750,7 @@ sub save_file {
 				    wxFD_SAVE|wxFD_CHANGE_DIR, #|wxFD_OVERWRITE_PROMPT,
 				    wxDefaultPosition);
       if ($fd -> ShowModal == wxID_CANCEL) {
-	$self->{statusbar}->SetStatusText("Saving crystal data aborted.");
+	$self->{parent}->status("Saving crystal data aborted.");
 	return 0;
       } else {
 	$file = $fd->GetPath;
@@ -766,7 +763,7 @@ sub save_file {
                                             ##Wx::GetMousePosition  how is this done?
 	  my $ok = $yesno->ShowModal;
 	  if ($ok == wxID_NO) {
-	    $self->{statusbar}->SetStatusText("Not overwriting \"$file\"");
+	    $self->{parent}->status("Not overwriting \"$file\"");
 	    return 0;
 	  };
 	};
@@ -781,7 +778,7 @@ sub save_file {
   print $OUT $atoms -> Write('atoms');
   close $OUT;
   $atoms -> push_mru("atoms", $file);
-  $self->{statusbar}->SetStatusText("Saved crystal data to $file.");
+  $self->{parent}->status("Saved crystal data to $file.");
   return 1;
 };
 
@@ -798,12 +795,13 @@ sub run_atoms {
     if ($ea) {
       my $yesno = Wx::MessageDialog->new($self, $ea, "Continue?", wxYES_NO);
       if ($yesno->ShowModal == wxID_NO) {
-	$self->{statusbar}->SetStatusText("Aborting calculation.");
+	$self->{parent}->status("Aborting calculation.");
 	return;
       };
     };
     my $save = $atoms->co->default("atoms", "atoms_in_feff");
     $atoms->co->set_default("atoms", "atoms_in_feff", 0);
+    $self->{parent}->make_page('Feff') if not $self->{parent}->{Feff};
     $self->{parent}->{Feff}->{feff}->SetValue($atoms -> Write($template));
     $self->{parent}->{Feff}->{name}->SetValue($atoms -> name);
     $atoms->co->set_default("atoms", "atoms_in_feff", $save);
@@ -820,7 +818,7 @@ sub clear_all {
   my $yesno = Wx::MessageDialog->new($self, "Do you really wish to discard these crystal data?",
 				     "Discard?", wxYES_NO);
   if ((not $skip_dialog) and ($yesno->ShowModal == wxID_NO)) {
-    $self->{statusbar}->SetStatusText("Not discarding data.");
+    $self->{parent}->status("Not discarding data.");
   } else {
     $self->_do_clear_all;
   };
@@ -848,18 +846,18 @@ sub write_output {
 					      ["Feff6", "Feff8", "Atoms", "P1", "Spacegroup", "Absorption"]
 					    );
     if( $dialog->ShowModal == wxID_CANCEL ) {
-      $self->{statusbar}->SetStatusText("Output cancelled.");
+      $self->{parent}->status("Writing Atoms output cancelled.");
     } else {
       my $fd = Wx::FileDialog->new( $self, "Export crystal data to a special file", cwd, q{},
 				    "All files|*", wxFD_SAVE|wxFD_CHANGE_DIR, wxDefaultPosition);
       if ($fd -> ShowModal == wxID_CANCEL) {
-	$self->{statusbar}->SetStatusText("Saving output file aborted.")
+	$self->{parent}->status("Saving output file aborted.")
       } else {
 	my $file = File::Spec->catfile($fd->GetDirectory, $fd->GetFilename);
 	open my $OUT, ">".$file;
 	print $OUT $atoms -> Write(lc($dialog->GetStringSelection));
 	close $OUT;
-	$self->{statusbar}->SetStatusText("Wrote " . $dialog->GetStringSelection . " output to $file");
+	$self->{parent}->status("Wrote " . $dialog->GetStringSelection . " output to $file");
       };
     }
   } else {
@@ -875,7 +873,7 @@ Demeter::UI::Atoms::Xtal - Atoms' crystal utility
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.5.
+This documentation refers to Demeter version 0.9.
 
 =head1 DESCRIPTION
 
@@ -889,7 +887,7 @@ L<http://cars9.uchicago.edu/~ravel/software/>
 
 =head1 LICENCE AND COPYRIGHT
 
-Copyright (c) 2006-2011 Bruce Ravel (bravel AT bnl DOT gov). All rights reserved.
+Copyright (c) 2006-2012 Bruce Ravel (bravel AT bnl DOT gov). All rights reserved.
 
 This module is free software; you can redistribute it and/or
 modify it under the same terms as Perl itself. See L<perlgpl>.

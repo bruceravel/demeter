@@ -2,7 +2,7 @@ package Demeter::Feff;
 
 =for Copyright
  .
- Copyright (c) 2006-2011 Bruce Ravel (bravel AT bnl DOT gov).
+ Copyright (c) 2006-2012 Bruce Ravel (bravel AT bnl DOT gov).
  All rights reserved.
  .
  This file is free software; you can redistribute it and/or
@@ -19,10 +19,8 @@ use autodie qw(open close);
 
 use Moose;
 extends 'Demeter';
-use MooseX::AttributeHelpers;
 
 use MooseX::Aliases;
-#use MooseX::StrictConstructor;
 use Moose::Util::TypeConstraints;
 use Demeter::StrTypes qw( AtomsEdge FeffCard Empty ElementSymbol FileName);
 use Demeter::NumTypes qw( Natural NonNeg PosInt );
@@ -46,18 +44,16 @@ use File::Temp qw(tempfile);
 use Heap::Fibonacci;
 use List::MoreUtils qw(any false notall);
 use List::Util qw(sum);
-use Regexp::Common;
 use String::Random qw(random_string);
 use Tree::Simple;
 
-use Readonly;
-Readonly my $NLEGMAX      => 4;
-Readonly my $CTOKEN       => '+';
-Readonly my $ETASUPPRESS  => 1;
-Readonly my $FUZZ_DEF     => 0.01;
-Readonly my $BETAFUZZ_DEF => 3;
-Readonly my $SEPARATOR    => '[ \t]*[ \t=,][ \t]*';
-Readonly my $NUMBER       => $RE{num}{real};
+
+use Demeter::Constants qw($NUMBER $SEPARATOR $CTOKEN);
+use Const::Fast;
+const my $NLEGMAX      => 4;
+const my $ETASUPPRESS  => 1;
+const my $FUZZ_DEF     => 0.01;
+const my $BETAFUZZ_DEF => 3;
 
 my @leglength = ();
 my $shortest = 100000000;
@@ -70,54 +66,54 @@ has 'file'        => (is => 'rw', isa => FileName,  default => q{},
 				       $self->rdinp;
 				       $self->name(basename($new, '.inp')) if not $self->name;
 				     }} );
-has 'yaml'        => (is=>'rw', isa => 'Str', default => q{},
+has 'yaml'        => (is=>'rw', isa => FileName, default => q{},
 		      trigger => sub{my ($self, $new) = @_; $self->deserialize if $new} );
 has 'atoms'       => (is=>'rw', isa => Empty|'Demeter::Atoms',
 		      trigger => sub{my ($self, $new) = @_; $self->run_atoms if $new});
-has 'molecule'    => (is=>'rw', isa => 'Str', default => q{},);
+has 'molecule'    => (is=>'rw', isa => FileName, default => q{},);
 
 has 'sites' => (
-		metaclass => 'Collection::Array',
+		traits    => ['Array'],
 		is        => 'rw',
 		isa       => 'ArrayRef',
 		default   => sub { [] },
-		provides  => {
-			      'push'  => 'push_sites',
-			      'pop'   => 'pop_sites',
-			      'clear' => 'clear_sites',
+		handles   => {
+			      'push_sites'  => 'push',
+			      'pop_sites'   => 'pop',
+			      'clear_sites' => 'clear',
 			     }
 	       );
 has 'potentials' => (
-		     metaclass => 'Collection::Array',
+		     traits    => ['Array'],
 		     is        => 'rw',
 		     isa       => 'ArrayRef',
 		     default   => sub { [] },
-		     provides  => {
-				   'push'  => 'push_potentials',
-				   'pop'   => 'pop_potentials',
-				   'clear' => 'clear_potentials',
+		     handles   => {
+				   'push_potentials'  => 'push',
+				   'pop_potentials'   => 'pop',
+				   'clear_potentials' => 'clear',
 				  }
 		    );
 has 'titles' => (
-		 metaclass => 'Collection::Array',
+		 traits    => ['Array'],
 		 is        => 'rw',
 		 isa       => 'ArrayRef',
 		 default   => sub { [] },
-		 provides  => {
-			       'push'  => 'push_titles',
-			       'pop'   => 'pop_titles',
-			       'clear' => 'clear_titles',
+		 handles   => {
+			       'push_titles'  => 'push',
+			       'pop_titles'   => 'pop',
+			       'clear_titles' => 'clear',
 			      }
 		);
 has 'absorber' => (
-		   metaclass => 'Collection::Array',
+		   traits    => ['Array'],
 		   is        => 'rw',
 		   isa       => 'ArrayRef',
 		   default   => sub { [] },
-		   provides  => {
-				 'push'  => 'push_absorber',
-				 'pop'   => 'pop_absorber',
-				 'clear' => 'clear_absorber',
+		   handles   => {
+				 'push_absorber'  => 'push',
+				 'pop_absorber'   => 'pop',
+				 'clear_absorber' => 'clear',
 				}
 		  );
 has 'abs_index'    => (is=>'rw', isa =>  Natural,   default => 0,
@@ -136,14 +132,14 @@ has 'rmultiplier'  => (is=>'rw', isa =>  NonNeg,    default => 1);   # positive 
 has 'pcrit'        => (is=>'rw', isa =>  NonNeg,    default => 0);   # positive float
 has 'ccrit'        => (is=>'rw', isa =>  NonNeg,    default => 0);   # positive float
 has 'othercards' => (
-		     metaclass => 'Collection::Array',
+		     traits    => ['Array'],
 		     is        => 'rw',
 		     isa       => 'ArrayRef',
 		     default   => sub { [] },
-		     provides  => {
-				   'push'  => 'push_othercards',
-				   'pop'   => 'pop_othercards',
-				   'clear' => 'clear_othercards',
+		     handles   => {
+				   'push_othercards'  => 'push',
+				   'pop_othercards'   => 'pop',
+				   'clear_othercards' => 'clear',
 				  }
 		    );
 has 'workspace'    => (is=>'rw', isa => 'Str',
@@ -158,14 +154,14 @@ has 'eta_suppress' => (is=>'rw', isa => 'Bool',     default => 0);
 
 		       ## result of pathfinder
 has 'pathlist' => (		# list of ScatteringPath objects
-		   metaclass => 'Collection::Array',
+		   traits    => ['Array'],
 		   is        => 'rw',
 		   isa       => 'ArrayRef',
 		   default   => sub { [] },
-		   provides  => {
-				 'push'  => 'push_pathlist',
-				 'pop'   => 'pop_pathlist',
-				 'clear' => 'clear_pathlist',
+		   handles   => {
+				 'push_pathlist'  => 'push',
+				 'pop_pathlist'   => 'pop',
+				 'clear_pathlist' => 'clear',
 				}
 		  );
 has 'npaths'       => (is=>'rw', isa =>  Natural,   default => 0);
@@ -174,14 +170,14 @@ has 'npaths'       => (is=>'rw', isa =>  Natural,   default => 0);
 has 'screen'       => (is=>'rw', isa => 'Bool', default => 1);
 has 'buffer'       => (is=>'rw', isa => 'Bool', default => 0);
 has 'iobuffer' => (
-		   metaclass => 'Collection::Array',
+		   traits    => ['Array'],
 		   is        => 'rw',
 		   isa       => 'ArrayRef[Str]',
 		   default   => sub { [] },
-		   provides  => {
-				 'push'  => 'push_iobuffer',
-				 'pop'   => 'pop_iobuffer',
-				 'clear' => 'clear_iobuffer',
+		   handles   => {
+				 'push_iobuffer'  => 'push',
+				 'pop_iobuffer'   => 'pop',
+				 'clear_iobuffer' => 'clear',
 				}
 		  );
 has 'save'     => (is=>'rw', isa => 'Bool',    default => 1);
@@ -1083,7 +1079,7 @@ Demeter::Feff - Make and manipulate Feff calculations
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.5.
+This documentation refers to Demeter version 0.9.
 
 
 =head1 SYNOPSIS
@@ -1611,7 +1607,7 @@ L<http://cars9.uchicago.edu/~ravel/software/>
 
 =head1 LICENCE AND COPYRIGHT
 
-Copyright (c) 2006-2011 Bruce Ravel (bravel AT bnl DOT gov). All rights reserved.
+Copyright (c) 2006-2012 Bruce Ravel (bravel AT bnl DOT gov). All rights reserved.
 
 This module is free software; you can redistribute it and/or
 modify it under the same terms as Perl itself. See L<perlgpl>.

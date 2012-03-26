@@ -7,12 +7,12 @@ has '+is_binary'   => (default => 0);
 has '+description' => (default => 'Photon Factory and SPring8 XAS Beamlines');
 has '+version'     => (default => 0.3);
 
-use Readonly;
-Readonly my $PI      => 4 * atan2 1, 1;
-Readonly my $HC      => 12398.52;
-#Readonly my $HBARC   => 1973.27053324;
-#Readonly my $TWODONE => 6.2712;	# Si(111)
-#Readonly my $TWODTHR => 3.275;	# Si(311)
+use Demeter::Constants qw($PI);
+use Const::Fast;
+const my $HC      => 12398.52;	# slightly different than in D::C
+#const my $HBARC   => 1973.27053324;
+#const my $TWODONE => 6.2712;	# Si(111)
+#const my $TWODTHR => 3.275;	# Si(311)
 
 sub is {
   my ($self) = @_;

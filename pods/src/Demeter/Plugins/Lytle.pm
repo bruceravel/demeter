@@ -7,9 +7,7 @@ has '+is_binary'   => (default => 0);
 has '+description' => (default => "the Lytle database file stored by encoder value");
 has '+version'     => (default => 0.1);
 
-use Readonly;
-Readonly my $HC  => 12398.61;
-Readonly my $R2D => 57.29577951;
+use Demeter::Constants qw($R2D $HC);
 
 use Scalar::Util qw(looks_like_number);
 use List::MoreUtils qw(all);

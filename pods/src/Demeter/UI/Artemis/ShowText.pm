@@ -2,7 +2,7 @@ package  Demeter::UI::Artemis::ShowText;
 
 =for Copyright
  .
- Copyright (c) 2006-2011 Bruce Ravel (bravel AT bnl DOT gov).
+ Copyright (c) 2006-2012 Bruce Ravel (bravel AT bnl DOT gov).
  All rights reserved.
  .
  This file is free software; you can redistribute it and/or
@@ -83,6 +83,11 @@ sub OnLeftDclick {
       last SWITCH;
     };
     ## this is the Demeter mode display
+    ($line[0] eq 'Mode') and do {
+      $kind = "Mode";
+      $object = Demeter->mo;
+      last SWITCH;
+    };
     ($line[2] and (length($line[2]) > 5)) and do {
       $kind = $line[0];
       $object = Demeter->mo->fetch($kind, substr($line[2], 1, -1));

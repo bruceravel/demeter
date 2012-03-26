@@ -2,7 +2,7 @@ package Demeter::Fit::Happiness;
 
 =for Copyright
  .
- Copyright (c) 2006-2011 Bruce Ravel (bravel AT bnl DOT gov).
+ Copyright (c) 2006-2012 Bruce Ravel (bravel AT bnl DOT gov).
  All rights reserved.
  .my 
  This file is free software; you can redistribute it and/or
@@ -94,6 +94,11 @@ sub _slice_rgb {
 
 sub _penalize_rfactor {
   my ($self) = @_;
+  my @data   = @{ $self->data };
+  my $space = 1;
+  foreach my $d (@data) {
+    $space = 0.1 if ($d->fit_space eq 'k');
+  };
   my ($low, $high, $scale) = (
 			      $self->co->default("happiness", "rfactor_low"),
 			      $self->co->default("happiness", "rfactor_high"),
@@ -103,7 +108,7 @@ sub _penalize_rfactor {
 
   my $rfactor = $self->r_factor || 0;
   return (0, q{}) if ($rfactor < $low);
-  my $penalty = ($rfactor-$low) * $scale;
+  my $penalty = ($rfactor-$low) * $scale * $space; # reduce penalty by 1/10 for fit in k-space
   $penalty = ($rfactor > $high) ? $maximum : $penalty;
   my $summary = sprintf("An R-factor of %.5f gives a penalty of %.5f.\n",
 			$rfactor, $penalty);
@@ -202,7 +207,7 @@ Demeter::Fit::Happiness - Semantic evaluation of an EXAFS fit
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.5.
+This documentation refers to Demeter version 0.9.
 
 =head1 SYNOPSIS
 
@@ -263,7 +268,8 @@ instance,
 
 =item *
 
-It should have a small R-factor.
+It should have a small R-factor (although a fit performed in k
+space will always have a large R-factor).
 
 =item *
 
@@ -343,6 +349,10 @@ and 0.06 diminishes the happiness by this formula:
 
 Thus an R-factor of 0.03 reduces the happiness by 10.  An R-factor in
 excess of 0.06 incurs the full hit of 40 to the happiness.
+
+The R-factor of a fit in k-space will almost always be large due the
+effect of higher frequencies on the evaluation of the R-factor.  Thus
+the scaling factor for the R-factor penalty is made 1/10 as big.
 
 =item I<parameter values>
 
@@ -434,7 +444,9 @@ parameters.
 
 =item I<R-factor>
 
-The boundary values and the scaling factor.  Defaults: 0.02, 0.06, 1000.
+The boundary values and the scaling factor.  Defaults: 0.02, 0.06,
+1000.  The scaling factor is reduced to 1/10 its value for a fit in
+k-space.
 
 =item I<parameter values>
 
@@ -508,7 +520,7 @@ L<http://cars9.uchicago.edu/~ravel/software/>
 
 =head1 LICENCE AND COPYRIGHT
 
-Copyright (c) 2006-2011 Bruce Ravel (bravel AT bnl DOT gov). All rights reserved.
+Copyright (c) 2006-2012 Bruce Ravel (bravel AT bnl DOT gov). All rights reserved.
 
 This module is free software; you can redistribute it and/or
 modify it under the same terms as Perl itself. See L<perlgpl>.

@@ -1,136 +1,143 @@
 package Demeter::Data::XDI;
 use Moose::Role;
 use File::Basename;
+use Demeter::IniReader;
 use Demeter::StrTypes qw( Empty );
+use List::MoreUtils qw(zip);
 
-has 'xdi'                     => (is => 'rw', isa => Empty.'|Xray::XDI', default=>q{},
-				  trigger => sub{my ($self, $new) = @_; $self->import_xdi($new);});
+if ($INC{'Xray/XDI.pm'}) {
+  has 'xdi' => (is => 'rw', isa => Empty.'|Xray::XDI', default=>q{},
+		trigger => sub{my ($self, $new) = @_; $self->import_xdi($new);});
+} else {
+  has 'xdi' => (is => 'ro', isa => 'Str', default=>q{},);
+};
 
 has 'xdi_version'	      => (is => 'rw', isa => 'Str', default => q{});
 has 'xdi_applications'	      => (is => 'rw', isa => 'Str', default => q{});
 
 
-has 'xdi_column'    => (metaclass => 'Collection::Hash',
+has 'xdi_column'    => (traits    => ['Hash'],
 			is        => 'rw',
 			isa       => 'HashRef',
 			default   => sub { {} },
-			provides  => {
-				      exists    => 'exists_in_xdi_column',
-				      keys      => 'keys_in_xdi_column',
-				      get       => 'get_xdi_column',
-				      set       => 'set_xdi_column',
-				      delete    => 'delete_from_xdi_column'
+			handles   => {
+				      'exists_in_xdi_column'   => 'exists',
+				      'keys_in_xdi_column'     => 'keys',
+				      'get_xdi_column'         => 'get',
+				      'set_xdi_column'         => 'set',
+				      'delete_from_xdi_column' => 'delete'
 				     }
 		       );
-has 'xdi_scan'      => (metaclass => 'Collection::Hash',
+has 'xdi_scan'      => (traits    => ['Hash'],
 			is        => 'rw',
 			isa       => 'HashRef',
 			default   => sub { {} },
-			provides  => {
-				      exists    => 'exists_in_xdi_scan',
-				      keys      => 'keys_in_xdi_scan',
-				      get       => 'get_xdi_scan',
-				      set       => 'set_xdi_scan',
-				      delete    => 'delete_from_xdi_scan'
+			handles   => {
+				      'exists_in_xdi_scan'   => 'exists',
+				      'keys_in_xdi_scan'     => 'keys',
+				      'get_xdi_scan'         => 'get',
+				      'set_xdi_scan'         => 'set',
+				      'delete_from_xdi_scan' => 'delete'
 				     }
 		       );
-has 'xdi_mono'     => (metaclass => 'Collection::Hash',
+has 'xdi_mono'     => (traits    => ['Hash'],
 		       is        => 'rw',
 		       isa       => 'HashRef',
 		       default   => sub { {} },
-		       provides  => {
-				     exists    => 'exists_in_xdi_mono',
-				     keys      => 'keys_in_xdi_mono',
-				     get       => 'get_xdi_mono',
-				     set       => 'set_xdi_mono',
-				     delete    => 'delete_from_xdi_mono'
+		       handles   => {
+				     'exists_in_xdi_mono'   => 'exists',
+				     'keys_in_xdi_mono'     => 'keys',
+				     'get_xdi_mono'         => 'get',
+				     'set_xdi_mono'         => 'set',
+				     'delete_from_xdi_mono' => 'delete'
 				    }
 		      );
-has 'xdi_beamline' => (metaclass => 'Collection::Hash',
+has 'xdi_beamline' => (traits    => ['Hash'],
 		       is        => 'rw',
 		       isa       => 'HashRef',
 		       default   => sub { {} },
-		       provides  => {
-				     exists    => 'exists_in_xdi_beamline',
-				     keys      => 'keys_in_xdi_beamline',
-				     get       => 'get_xdi_beamline',
-				     set       => 'set_xdi_beamline',
-				     delete    => 'delete_from_xdi_beamline'
+		       handles   => {
+				     'exists_in_xdi_beamline'   => 'exists',
+				     'keys_in_xdi_beamline'     => 'keys',
+				     'get_xdi_beamline'         => 'get',
+				     'set_xdi_beamline'         => 'set',
+				     'delete_from_xdi_beamline' => 'delete'
 				    }
 		      );
-has 'xdi_facility' => (metaclass => 'Collection::Hash',
+has 'xdi_facility' => (traits    => ['Hash'],
 		       is        => 'rw',
 		       isa       => 'HashRef',
 		       default   => sub { {} },
-		       provides  => {
-				     exists    => 'exists_in_xdi_facility',
-				     keys      => 'keys_in_xdi_facility',
-				     get       => 'get_xdi_facility',
-				     set       => 'set_xdi_facility',
-				     delete    => 'delete_from_xdi_facility'
+		       handles   => {
+				     'exists_in_xdi_facility'   => 'exists',
+				     'keys_in_xdi_facility'     => 'keys',
+				     'get_xdi_facility'         => 'get',
+				     'set_xdi_facility'         => 'set',
+				     'delete_from_xdi_facility' => 'delete'
 				    }
 		      );
-has 'xdi_detector' => (metaclass => 'Collection::Hash',
+has 'xdi_detector' => (traits    => ['Hash'],
 		       is        => 'rw',
 		       isa       => 'HashRef',
 		       default   => sub { {} },
-		       provides  => {
-				     exists    => 'exists_in_xdi_detector',
-				     keys      => 'keys_in_xdi_detector',
-				     get       => 'get_xdi_detector',
-				     set       => 'set_xdi_detector',
-				     delete    => 'delete_from_xdi_detector'
+		       handles   => {
+				     'exists_in_xdi_detector'   => 'exists',
+				     'keys_in_xdi_detector'     => 'keys',
+				     'get_xdi_detector'         => 'get',
+				     'set_xdi_detector'         => 'set',
+				     'delete_from_xdi_detector' => 'delete'
 				    }
 		      );
-has 'xdi_sample'   => (metaclass => 'Collection::Hash',
+has 'xdi_sample'   => (traits    => ['Hash'],
 		       is        => 'rw',
 		       isa       => 'HashRef',
 		       default   => sub { {} },
-		       provides  => {
-				     exists    => 'exists_in_xdi_sample',
-				     keys      => 'keys_in_xdi_sample',
-				     get       => 'get_xdi_sample',
-				     set       => 'set_xdi_sample',
-				     delete    => 'delete_from_xdi_sample'
+		       handles   => {
+				     'exists_in_xdi_sample'   => 'exists',
+				     'keys_in_xdi_sample'     => 'keys',
+				     'get_xdi_sample'         => 'get',
+				     'set_xdi_sample'         => 'set',
+				     'delete_from_xdi_sample' => 'delete'
 				    }
 		      );
 
 
-has 'xdi_extensions'   => (metaclass => 'Collection::Array',
+has 'xdi_extensions'   => (traits    => ['Array'],
 			   is => 'rw', isa => 'ArrayRef[Str]',
 			   default => sub{[]},
-			   provides  => {
-					 'push'  => 'push_xdi_extension',
-					 'pop'   => 'pop_xdi_extension',
-					 'clear' => 'clear_xdi_extensions',
+			   handles   => {
+					 'push_xdi_extension'  => 'push',
+					 'pop_xdi_extension'   => 'pop',
+					 'clear_xdi_extensions' => 'clear',
 					},
 			  );
 
 has 'xdi_comments'     => (
-			   metaclass => 'Collection::Array',
+			   traits    => ['Array'],
 			   is        => 'rw',
 			   isa       => 'ArrayRef',
 			   default   => sub { [] },
-			   provides  => {
-					 'push'  => 'push_xdi_comment',
-					 'pop'   => 'pop_xdi_comment',
-					 'clear' => 'clear_xdi_comments',
+			   handles   => {
+					 'push_xdi_comment'  => 'push',
+					 'pop_xdi_comment'   => 'pop',
+					 'clear_xdi_comments' => 'clear',
 					}
 			  );
 has 'xdi_labels'     => (
-			   metaclass => 'Collection::Array',
+			   traits    => ['Array'],
 			   is        => 'rw',
 			   isa       => 'ArrayRef',
 			   default   => sub { [] },
-			   provides  => {
-					 'push'  => 'push_xdi_label',
-					 'pop'   => 'pop_xdi_label',
-					 'clear' => 'clear_xdi_labels',
+			   handles   => {
+					 'push_xdi_label'  => 'push',
+					 'pop_xdi_label'   => 'pop',
+					 'clear_xdi_labels' => 'clear',
 					}
 			  );
 
 sub import_xdi {
   my ($self, $xdi) = @_;
+  return $self if not ($INC{'Xray/XDI.pm'});
   return $self if (ref($xdi) !~ m{XDI|Class::MOP|Moose::Meta::Class});
   foreach my $f (qw(version applications
 		    column scan mono beamline facility detector sample
@@ -180,23 +187,26 @@ sub import_xdi {
   ## use math expressions for making spectra
 };
 
-sub configure_from_ini {
+sub metadata_from_ini {
   my ($self, $inifile) = @_;
+  return $self if not ($INC{'Xray/XDI.pm'});
   return if not -e $inifile;
   return if not -r $inifile;
-  tie my %ini, 'Config::IniFiles', ( -file => $inifile );
-  foreach my $namespace (keys %ini) {
+  my $ini = Demeter::IniReader->read_file($inifile);
+  #tie my %ini, 'Config::IniFiles', ( -file => $inifile );
+  foreach my $namespace (keys %$ini) {
     next if ($namespace eq 'labels');
-    foreach my $parameter (keys(%{$ini{$namespace}})) {
+    foreach my $parameter (keys(%{$ini->{$namespace}})) {
       my $method = "set_xdi_$namespace";
-      $self->$method($parameter, $ini{$namespace}{$parameter});
+      $self->$method($parameter, $ini->{$namespace}{$parameter});
     };
   };
-  $self->labels([split(" ", $ini{labels}{labels})]) if exists $ini{labels};
+  $self->labels([split(" ", $ini->{labels}{labels})]) if exists $ini->{labels};
 };
 
 sub xdi_defined {
   my ($self, $cc) = @_;
+  return $self if not ($INC{'Xray/XDI.pm'});
   $cc ||= q{};
   $cc .= " " if ($cc and ($cc !~ m{ \z}));
   my $text = q{};
@@ -210,6 +220,14 @@ sub xdi_defined {
   return $text;
 };
 
+sub metadata {
+  my ($self) = @_;
+  my @keys = qw(xdi_version xdi_applications xdi_comments xdi_scan xdi_mono
+		xdi_beamline xdi_facility xdi_detector xdi_sample xdi_extensions
+		xdi_comments xdi_labels);
+  my @values = $self->get(@keys);
+  return zip @keys, @values;
+};
 
 1;
 
@@ -220,7 +238,7 @@ Demeter::Data::XDI - Import XDI objects into Demeter Data objects
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.5.
+This documentation refers to Demeter version 0.9.
 
 This is compliant with L<Xray::XDI> version 1.0.
 
@@ -253,7 +271,7 @@ L<http://cars9.uchicago.edu/~ravel/software/>
 
 =head1 LICENCE AND COPYRIGHT
 
-Copyright (c) 2006-2011 Bruce Ravel (bravel AT bnl DOT gov). All rights reserved.
+Copyright (c) 2006-2012 Bruce Ravel (bravel AT bnl DOT gov). All rights reserved.
 
 This module is free software; you can redistribute it and/or
 modify it under the same terms as Perl itself. See L<perlgpl>.

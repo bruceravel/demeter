@@ -3,10 +3,11 @@ use Moose::Role;
 use MooseX::Aliases;
 
 use POSIX qw(acos);
-use Readonly;
-Readonly my $PI => 4*atan2(1,1);
-
+use Demeter::Constants qw($PI);
 use Demeter::NumTypes qw( Ipot );
+
+use Chemistry::Elements qw (get_Z get_name get_symbol);
+use String::Random qw(random_string);
 
 ## nearly collinear DS and TS historgram attributes
 has 'skip'      => (is => 'rw', isa => 'Int', default => 50,);
@@ -38,6 +39,8 @@ has 'ipot2'     => (is => 'rw', isa => Ipot, default => 1,
 		    trigger => sub{ my($self, $new) = @_; $self->update_rdf(1) if $new}, );
 
 has 'nearcl'    => (is => 'rw', isa => 'ArrayRef', default => sub{[]});
+
+has 'huge_cluster' => (is => 'rw', isa => 'Bool', default => 0);
 
 sub _bin {
   my ($self) = @_;
@@ -124,9 +127,17 @@ sub rdf {
   my $r2sqr = $self->r2**2;
   my $r3sqr = $self->r3**2;
   my $r4sqr = $self->r4**2;
+  my $abs_species  = get_Z($self->feff->abs_species);
+  my $scat1_species = get_Z($self->feff->potentials->[$self->ipot1]->[2]);
+  my $scat2_species = get_Z($self->feff->potentials->[$self->ipot2]->[2]);
 
-  $self->start_counter(sprintf("Making radial/angle distribution from every %d-th timestep", $self->skip), ($#{$self->clusters}+1)/$self->skip) if ($self->mo->ui eq 'screen');
-  my ($x0, $x1, $x2) = (0,0,0);
+
+  $self->progress('%30b %c of %m timesteps <Time elapsed: %8t>') if (not $self->huge_cluster);
+  $self->progress('%30b %c of %m positions <Time elapsed: %8t>') if $self->huge_cluster;
+
+  $self->start_counter(sprintf("Making radial/angle distribution from every %d-th timestep", $self->skip),
+		       ($#{$self->clusters}+1)/$self->skip) if (($self->mo->ui eq 'screen') and (not $self->huge_cluster));
+  my ($x0, $x1, $x2, $ip) = (0,0,0,-1);
   #my ($ax, $ay, $az) = (0,0,0);
   my ($bx, $by, $bz) = (0,0,0);
   #my ($cx, $cy, $cz) = (0,0,0);
@@ -138,32 +149,55 @@ sub rdf {
   my $i4;
   my $halfpath;
   my ($ct, $st, $cp, $sp, $ctp, $stp, $cpp, $spp, $cppp, $sppp, $beta, $leg2);
+  #my $testx = 15;
   #my $cosbetamax = cos($PI*$self->beta/180);
   foreach my $step (@{$self->clusters}) {
     @rdf1 = ();
     @rdf4 = ();
 
+    $self->start_counter("Digging out 1st and 4th shells", $#{$step}+1) if (($self->mo->ui eq 'screen') and ($self->huge_cluster));
     @this = @$step;
-    $self->timestep_count(++$count);
-    next if ($count % $self->skip); # only process every Nth timestep
-    $self->count if ($self->mo->ui eq 'screen');
-    $self->call_sentinal;
+    $self->timestep_count(++$count) if (not $self->huge_cluster);
+    next if (($#{$self->clusters} > $self->skip) and ($count % $self->skip)); # only process every Nth timestep
+    if (not $self->huge_cluster) {
+      $self->count if ($self->mo->ui eq 'screen');
+      $self->call_sentinal;
+    };
 
     ## dig out the first and fourth coordination shells
     foreach my $i (0 .. $#this) {
-      ($x0, $x1, $x2) = @{$this[$i]};
+      if ($self->huge_cluster) {
+	$self->count if ($self->mo->ui eq 'screen');
+	$self->call_sentinal;
+      };
+
+      ($x0, $x1, $x2, $ip) = @{$this[$i]};
+      next if ($abs_species != $ip);
+      next if (abs($x2) > $self->zmax); # assumes slab w/ interface at z=0
+      #next if (abs($x0) > $testx); # testing ...
+      #next if (abs($x1) > $testx); #
       foreach my $j (0 .. $#this) {
 	next if ($i == $j);
+	next if not (($scat1_species == $this[$j]->[3]) or ($scat2_species == $this[$j]->[3]));
+	next if (abs($this[$j]->[2]) > $self->zmax); # assumes slab w/ interface at z=0
+	#next if (abs($this[$j]->[0]) > $testx); # testing ...
+	#next if (abs($this[$j]->[1]) > $testx); #
 	my $rsqr = ($x0 - $this[$j]->[0])**2
 	         + ($x1 - $this[$j]->[1])**2
 	         + ($x2 - $this[$j]->[2])**2; # this loop has been optimized for speed, hence the weird syntax
-	push @rdf1, [sqrt($rsqr), $i, $j] if (($rsqr > $r1sqr) and ($rsqr < $r2sqr));
-	push @rdf4, [sqrt($rsqr), $i, $j] if (($rsqr > $r3sqr) and ($rsqr < $r4sqr));
+	push @rdf1, [sqrt($rsqr), $i, $j] if (($scat1_species == $this[$j]->[3]) and ($rsqr > $r1sqr) and ($rsqr < $r2sqr));
+	push @rdf4, [sqrt($rsqr), $i, $j] if (($scat2_species == $this[$j]->[3]) and ($rsqr > $r3sqr) and ($rsqr < $r4sqr));
       };
+    };
+    if (($self->mo->ui eq 'screen') and ($self->huge_cluster)) {
+      $self->stop_counter;
+      $self->progress('%30b %c of %m 4th shell pairs <Time elapsed: %8t>') if $self->huge_cluster;
+      $self->start_counter("Finding nearly colinear pairs", $#rdf4+1) if ($self->mo->ui eq 'screen');
     };
 
     ## find those 1st/4th pairs that share an absorber and have a small angle between them
     foreach my $fourth (@rdf4) {
+      $self->count if ($self->mo->ui eq 'screen');
       $i4 = $fourth->[1];
       foreach my $first (@rdf1) {
 	next if ($i4 != $first->[1]);
@@ -227,6 +261,7 @@ sub chi {
   $self->start_counter("Making FPath from radial/angle distribution", $#{$self->populations}+1) if ($self->mo->ui eq 'screen');
   #$self->start_spinner("Making FPath from path length/angle distribution") if ($self->mo->ui eq 'screen');
 
+  my $randstr = random_string('ccccccccc').'.sp';
   my @paths = ();
   foreach my $c (@{$self->populations}) {
     push @paths, Demeter::ThreeBody->new(r1    => $c->[2],      r2    => $c->[3],
@@ -235,6 +270,7 @@ sub chi {
 					 parent=> $self->feff,
 					 update_path => 1,
 					 through => 0,
+					 randstring => $randstr,
 					 @$common);
   };
 
@@ -251,6 +287,8 @@ sub chi {
   $first->dspath->dispose($first->dspath->template('process', 'histogram_first'));
   $first->dspath->group($save);
   $first->dspath->dispose($first->dspath->template('process', 'histogram_clean', {index=>255}));
+  my $nnnn = File::Spec->catfile($first->folder, $first->dsstring);
+  unlink $nnnn if (-e $nnnn);
 
   $first->tspath->Index(255);
   $first->tspath->group("h_i_s_t_o");
@@ -258,6 +296,8 @@ sub chi {
   $first->tspath->dispose($first->tspath->template('process', 'histogram_add'));
   $first->tspath->group($save);
   $first->tspath->dispose($first->tspath->template('process', 'histogram_clean', {index=>255}));
+  $nnnn = File::Spec->catfile($first->folder, $first->tsstring);
+  unlink $nnnn if (-e $nnnn);
 
   my $ravg = $first->s02 * ($first->r1+$first->r2);
   my $n    = $first->s02;
@@ -273,6 +313,8 @@ sub chi {
     $paths[$i]->dispose($paths[$i]->dspath->template('process', 'histogram_add'));
     $paths[$i]->dspath->group($save);
     $paths[$i]->dispose($paths[$i]->dspath->template('process', 'histogram_clean', {index=>255}));
+    $nnnn = File::Spec->catfile($paths[$i]->dspath->folder, $paths[$i]->dsstring);
+    unlink $nnnn if (-e $nnnn);
 
     $paths[$i]->tspath->Index(255);
     $paths[$i]->tspath->group("h_i_s_t_o");
@@ -280,6 +322,8 @@ sub chi {
     $paths[$i]->dispose($paths[$i]->tspath->template('process', 'histogram_add'));
     $paths[$i]->tspath->group($save);
     $paths[$i]->dispose($paths[$i]->tspath->template('process', 'histogram_clean', {index=>255}));
+    $nnnn = File::Spec->catfile($paths[$i]->tspath->folder, $paths[$i]->tsstring);
+    unlink $nnnn if (-e $nnnn);
 
     $ravg += $paths[$i]->s02 * ($paths[$i]->r1+$paths[$i]->r2);
     $n += $paths[$i]->s02;
@@ -302,6 +346,7 @@ sub chi {
 		     $self->feff->potentials->[$self->ipot2]->[2],
 		     $path->reff);
   $path->name($name);
+  $path->randstring($randstr);
   $self->stop_counter if ($self->mo->ui eq 'screen');
   return $path;
 };
@@ -329,6 +374,9 @@ sub plot {
     printf $f2 "  %.9f  %.9f  %.9f  %.9f  %d\n", @$p;
   };
   close $f2;
+  if ($self->po->output) {
+    $self->dispose($self->template('plot', 'output'), 'plotting');
+  };
   my $text = $self->template('plot', 'histo2d', {twod=>$twod, bin2d=>$bin2d, type=>'nearly collinear'});
   $self->dispose($text, 'plotting');
   return $self;
@@ -338,6 +386,15 @@ sub plot {
 sub info {
   my ($self) = @_;
   my $text = sprintf "Made histogram from %s file '%s'\n\n", uc($self->backend), $self->file;
+  $text   .= sprintf "Number of time steps:     %d\n",   $self->nsteps;
+  $text   .= sprintf "Absorber:                 %s\n",   get_name($self->feff->abs_species);
+  $text   .= sprintf "Scatterer #1:             %s\n",   get_name($self->feff->potentials->[$self->ipot1]->[2]);
+  $text   .= sprintf "Scatterer #1:             %s\n",   get_name($self->feff->potentials->[$self->ipot2]->[2]);
+  $text   .= sprintf "Number of configurations: %d\n",   $self->nconfig;
+  $text   .= sprintf "Used periodic boundaries: %s\n",   $self->yesno($self->periodic and $self->use_periodicity);
+  $text   .= sprintf "Radial bin size:          %.4f\n", $self->rbin;
+  $text   .= sprintf "Angular bin size:         %.4f\n", $self->betabin;
+  $text   .= sprintf "Number of bins:           %d\n",   $#{$self->populations}+1;
   return $text;
 };
 
@@ -349,7 +406,7 @@ Demeter::Feff::Distributions::NCL - Histograms for nearly collinear paths
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.5.
+This documentation refers to Demeter version 0.9.
 
 =head1 SYNOPSIS
 
@@ -460,7 +517,7 @@ L<http://cars9.uchicago.edu/~ravel/software/>
 
 =head1 LICENCE AND COPYRIGHT
 
-Copyright (c) 2006-2011 Bruce Ravel (bravel AT bnl DOT gov). All rights reserved.
+Copyright (c) 2006-2012 Bruce Ravel (bravel AT bnl DOT gov). All rights reserved.
 
 This module is free software; you can redistribute it and/or
 modify it under the same terms as Perl itself. See L<perlgpl>.

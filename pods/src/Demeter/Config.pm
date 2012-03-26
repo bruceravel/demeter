@@ -2,7 +2,7 @@ package Demeter::Config;
 
 =for Copyright
  .
- Copyright (c) 2006-2011 Bruce Ravel (bravel AT bnl DOT gov).
+ Copyright (c) 2006-2012 Bruce Ravel (bravel AT bnl DOT gov).
  All rights reserved.
  .
  This file is free software; you can redistribute it and/or
@@ -21,18 +21,17 @@ use autodie qw(open close);
 use Moose;
 extends 'Demeter';
 use Moose::Util::TypeConstraints;
-use MooseX::AttributeHelpers;
 use MooseX::Aliases;
 #use vars qw($singleton);	# Moose 0.61, MooseX::Singleton 0.12 seem to need this
 
 use Carp;
 #use diagnostics;
-use Config::IniFiles;
+use Demeter::StrTypes qw(FileName);
+use Demeter::IniReader;
+use Config::INI::Writer;
 use File::Basename;
 use Regexp::Assemble;
-use Regexp::Common;
-use Readonly;
-Readonly my $NUMBER => $RE{num}{real};
+#use Demeter::Constants qw($NUMBER);
 use Text::Wrap;
 #use Data::Dumper;
 
@@ -44,33 +43,33 @@ has 'plottable' => (is => 'ro', isa => 'Bool', default => 0);
 has 'data'      => (is => 'rw', isa => 'Any',  default => q{});
 has 'perl_base' => (is => 'rw', isa => 'Str',  default => q{});
 
-has 'config_file' => (is => 'ro', isa => 'Str',
+has 'config_file' => (is => 'ro', isa => FileName,
 		      default => File::Spec->catfile(dirname($INC{"Demeter.pm"}),
 						     "Demeter",
 						     "configuration",
 						     "config.demeter_conf"));
 
 has 'all_config_files' => (
-			     metaclass => 'Collection::Array',
+			     traits    => ['Array'],
 			     is        => 'rw',
 			     isa       => 'ArrayRef[Str]',
 			     default   => sub { [] },
-			     provides  => {
-					   'push'  => 'push_all_config_files',
-					   'pop'   => 'pop_all_config_files',
-					   'clear' => 'clear_all_config_files',
+			     handles   => {
+					   'push_all_config_files'  => 'push',
+					   'pop_all_config_files'   => 'pop',
+					   'clear_all_config_files' => 'clear',
 					  },
 			    );
 
 has 'main_groups' => (
-		      metaclass => 'Collection::Array',
+		      traits    => ['Array'],
 		      is        => 'rw',
 		      isa       => 'ArrayRef[Str]',
 		      default   => sub { [] },
-		      provides  => {
-				    'push'  => 'push_main_groups',
-				    'pop'   => 'pop_main_groups',
-				    'clear' => 'clear_main_groups',
+		      handles   => {
+				    'push_main_groups'  => 'push',
+				    'pop_main_groups'   => 'pop',
+				    'clear_main_groups' => 'clear',
 				   },
 		     );
 
@@ -80,11 +79,11 @@ my $where = (($^O eq 'MSWin32') or ($^O eq 'cygwin')) ? "APPDATA" : "HOME";
 my $stem  = (($^O eq 'MSWin32') or ($^O eq 'cygwin')) ? "demeter" : ".horae";
 #my $where = ($Demeter::mode->is_windows) ? "USERPROFILE" : "HOME";
 our $fname = File::Spec->catfile($ENV{$where}, $stem, "demeter.ini");
-has 'ini_file' => (is => 'ro', isa => 'Str', default => $fname);
+has 'ini_file' => (is => 'ro', isa => FileName, default => $fname);
 
 
 my %ini;
-tie %ini, 'Config::IniFiles', ();
+#tie %ini, 'Config::IniFiles', ();
 my %params_of;
 
 #my $one_has_been_created = 0;
@@ -414,9 +413,9 @@ sub describe_param {
 sub write_ini {
   my ($self, $file) = @_;
   $file ||= $self->ini_file;
-  my $ini_ref = tied %ini;
-  $ini_ref -> WriteConfig($file);
-  #print $file, $/;
+  #my $ini_ref = tied %ini;
+  #$ini_ref -> WriteConfig($file);
+  Config::INI::Writer->write_file(\%ini, $file);
   return $self;
 };
 
@@ -427,20 +426,23 @@ sub read_ini {
     $self->write_ini($inifile);
     return $self;
   };
-  my %personal_ini;
-  my $ini_ref = tied %ini;
-  tie %personal_ini, 'Config::IniFiles', (-file=>$inifile, -import=>$ini_ref );
-  {				# this is to encourage a spurious warning
-    no strict qw{refs};		# related to Config::IniFiles to shut up
-    my $toss = *{"Config::IniFiles::$inifile"}; # under windows
-    undef $toss;
-  };
-  foreach my $g (keys %personal_ini) {
+
+  my $personal_ini = Demeter::IniReader->read_file($inifile);
+
+  # my %personal_ini;
+  # my $ini_ref = tied %ini;
+  # tie %personal_ini, 'Config::IniFiles', (-file=>$inifile, -import=>$ini_ref );
+  # {				# this is to encourage a spurious warning
+  #   no strict qw{refs};		# related to Config::IniFiles to shut up
+  #   my $toss = *{"Config::IniFiles::$inifile"}; # under windows
+  #   undef $toss;
+  # };
+  foreach my $g (keys %$personal_ini) {
     next if ($group and ($g ne $group));
-    my $hash = $personal_ini{$g};
+    my $hash = $personal_ini->{$g};
     foreach my $p (keys %$hash) {
       ($p = 'col'.$1) if ($p =~ m{c(\d)}); # compatibility, convert cN -> colN
-      $self->set_default($g, $p, $personal_ini{$g}{$p});
+      $self->set_default($g, $p, $personal_ini->{$g}{$p});
     };
   };
   return $self;
@@ -466,7 +468,7 @@ Demeter::Config - Demeter's configuration system
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.5.
+This documentation refers to Demeter version 0.9.
 
 =head1 DESCRIPTION
 
@@ -483,7 +485,7 @@ F<lib/> directory beneath the F<Demeter.pm> module.  This
 configuration file contains complete information about each
 configuration parameter, including description text and various
 attributes.  The second tier is the user's initialization file.  This
-uses the standard INI format and the L<Config::IniFiles> module.  The
+uses the standard INI format and the L<Demeter::IniReader> module.  The
 user's file lives in $ENV{HOME} on unix and Mac and in
 $ENV{USERPROFILE} on Windows.
 
@@ -903,7 +905,7 @@ L<http://cars9.uchicago.edu/~ravel/software/>
 
 =head1 LICENCE AND COPYRIGHT
 
-Copyright (c) 2006-2011 Bruce Ravel (bravel AT bnl DOT gov). All rights reserved.
+Copyright (c) 2006-2012 Bruce Ravel (bravel AT bnl DOT gov). All rights reserved.
 
 This module is free software; you can redistribute it and/or
 modify it under the same terms as Perl itself. See L<perlgpl>.

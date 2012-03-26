@@ -2,7 +2,7 @@ package Demeter::UI::Hephaestus::LineFinder;
 
 =for Copyright
  .
- Copyright (c) 2006-2011 Bruce Ravel (bravel AT bnl DOT gov).
+ Copyright (c) 2006-2012 Bruce Ravel (bravel AT bnl DOT gov).
  All rights reserved.
  .
  This file is free software; you can redistribute it and/or
@@ -19,7 +19,6 @@ use strict;
 use warnings;
 use Carp;
 use Chemistry::Elements qw(get_Z get_name get_symbol);
-#use Regexp::Common;
 use Xray::Absorption;
 
 use Wx qw( :everything );
@@ -30,18 +29,20 @@ use base 'Wx::Panel';
 ## snarf (quietly!) the list of energies from the list used for the
 ## next_energy function in Xray::Absoprtion::Elam
 my $hash;
-do {
-  no warnings;
-  $hash = $$Xray::Absorption::Elam::r_elam{line_list};
-};
-my @line_list = ();
-foreach my $key (keys %$hash) {
-  next unless exists $$hash{$key}->[2];
-  next unless ($$hash{$key}->[2] > 100);
-  push @line_list, $$hash{$key};
-};
-## and sort by increasing energy
-@line_list = sort {$a->[2] <=> $b->[2]} @line_list;
+# do {
+#   no warnings;
+#   $hash = $$Xray::Absorption::Elam::r_elam{line_list};
+# };
+# my @line_list = ();
+# foreach my $key (keys %$hash) {
+#   next unless exists $$hash{$key}->[2];
+#   next unless ($$hash{$key}->[2] > 100);
+#   push @line_list, $$hash{$key};
+# };
+# ## and sort by increasing energy
+# @line_list = sort {$a->[2] <=> $b->[2]} @line_list;
+
+my @line_list = @{$$Xray::Absorption::Elam::r_elam{sorted}};
 
 sub new {
   my ($class, $page, $echoarea) = @_;
@@ -49,7 +50,7 @@ sub new {
   my $hbox = Wx::BoxSizer->new( wxHORIZONTAL );
   $self->SetSizer($hbox);
 
-  $self->{targetenergy} = $Demeter::UI::Hephaestus::demeter->co->default(qw(hephaestus line_energy));
+  $self->{targetenergy} = Demeter->co->default(qw(hephaestus line_energy));
   $self->{echo} = $echoarea;
 
   ## -------- Edge energies
@@ -141,7 +142,7 @@ Demeter::UI::Hephaestus:::LineFinder - Hephaestus' line finder utility
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.5.
+This documentation refers to Demeter version 0.9.
 
 =head1 SYNOPSIS
 
@@ -196,7 +197,7 @@ L<http://cars9.uchicago.edu/~ravel/software/>
 
 =head1 LICENCE AND COPYRIGHT
 
-Copyright (c) 2006-2011 Bruce Ravel (bravel AT bnl DOT gov). All rights reserved.
+Copyright (c) 2006-2012 Bruce Ravel (bravel AT bnl DOT gov). All rights reserved.
 
 This module is free software; you can redistribute it and/or
 modify it under the same terms as Perl itself. See L<perlgpl>.

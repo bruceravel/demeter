@@ -5,6 +5,8 @@ use MooseX::Aliases;
 use Demeter::NumTypes qw( NonNeg Ipot );
 
 use Chemistry::Elements qw (get_Z get_name get_symbol);
+use List::MoreUtils qw(pairwise);
+use String::Random qw(random_string);
 
 ## SS histogram attributes
 has 'rmin'        => (is	    => 'rw',
@@ -46,30 +48,50 @@ sub _bin {
   my (@x, @y);
   die("No MD output file has been read, thus no distribution functions have been computed\n") if ($#{$self->ssrdf} == -1);
   my $bin_start = sqrt($self->ssrdf->[0]);
+  my $bin_end = sqrt($self->ssrdf->[$#{$self->ssrdf}]);
+  my $ngrid = ($bin_end-$bin_start)/$self->bin;
+  my @popx = map {0} (0..$ngrid);
+  my @popy = map {0} (0..$ngrid);
+  my $where = 0;
+
   my ($population, $average) = (0,0);
   $self->start_spinner(sprintf("Rebinning RDF into %.4f A bins", $self->bin)) if ($self->mo->ui eq 'screen');
+  my $count = 0;
   foreach my $pair (@{$self->ssrdf}) {
     my $rr = sqrt($pair);
-    if (($rr - $bin_start) > $self->bin) {
-      $average = $average/$population;
-      push @x, sprintf("%.5f", $average);
-      push @y, $population*2;
-      #print join(" ", sprintf("%.5f", $average), $population*2), $/;
-      $bin_start += $self->bin;
-      $average = $rr;
-      $population = 1;
-    } else {
-      $average += $rr;
-      ++$population;
+    foreach my $i (1 .. $#popx) {
+      if (($rr < ($bin_start + $i*$self->bin)) and ($rr > ($bin_start + ($i-1)*$self->bin))) {
+	#print join("   ", $count++, $rr, $bin_start, $bin_end, $i, $bin_start + $i*$self->bin), $/;
+	$popx[$i-1] += $rr;
+	++$popy[$i-1];
+	next;
+      };
     };
+
+    # my $rr = sqrt($pair);
+    # if (($rr - $bin_start) > $self->bin) {
+    #   $average = $average/$population;
+    #   push @x, sprintf("%.5f", $average);
+    #   push @y, $population*2;
+    #   #print join(" ", sprintf("%.5f", $average), $population*2), $/;
+    #   $bin_start += $self->bin;
+    #   $average = $rr;
+    #   $population = 1;
+    # } else {
+    #   $average += $rr;
+    #   ++$population;
+    # };
   };
-  $average = $average/$population;
-  push @x, sprintf("%.5f", $average);
-  push @y, $population*2;
+  # $average = $average/$population;
+  # push @x, sprintf("%.5f", $average);
+  # push @y, $population*2;
   # use Data::Dumper;
   # print Data::Dumper->Dump([\@x, \@y], [qw(*x *y)]);
+
+  @x = pairwise { ($b == 0) ? 0 : $a/$b } @popx, @popy;
+
   $self->positions(\@x);
-  $self->populations(\@y);
+  $self->populations(\@popy);
   $self->update_bins(0);
   $self->stop_spinner if ($self->mo->ui eq 'screen');
   return $self;
@@ -85,9 +107,13 @@ sub rdf {
   my $rmax    = $self->rmax;
   my $rminsqr = $self->rmin*$self->rmin;
   my $rmaxsqr = $self->rmax*$self->rmax;
-  if ($Demeter::mode->ui eq 'screen') {
+  if (($Demeter::mode->ui eq 'screen') and ($self->count_timesteps)) {
     $self->progress('%30b %c of %m timesteps <Time elapsed: %8t>');
     $self->start_counter("Making RDF from each timestep", $#{$self->clusters}+1);
+  };
+  if (($Demeter::mode->ui eq 'screen') and (not $self->count_timesteps)) {
+    $self->progress('%30b %c of %m positions <Time elapsed: %8t>');
+    $self->start_counter("Making RDF from large cluster", $#{$self->clusters->[0]});
   };
   my $abs_species  = get_Z($self->feff->abs_species);
   my $scat_species = get_Z($self->feff->potentials->[$self->ipot]->[2]);
@@ -102,21 +128,37 @@ sub rdf {
   };
   my @this;
   my $rsqr = 0;
+  my ($i, $j);
 
   foreach my $step (@{$self->clusters}) {
     @this = @$step;
-    $self->count if ($self->mo->ui eq 'screen');
-    $self->timestep_count(++$count);
-    $self->call_sentinal;
-    foreach my $i (0 .. $#this) {
+    if ($self->count_timesteps) { # progress over timesteps
+      $self->count if ($self->mo->ui eq 'screen');
+      $self->timestep_count(++$count);
+      $self->call_sentinal;
+    };
+    foreach $i (0 .. $#this) {
+      if (not $self->count_timesteps) { # progress over positions
+	$self->count if ($self->mo->ui eq 'screen');
+	$self->timestep_count(++$count);
+	$self->call_sentinal;
+      };
       next if ($abs_species != $this[$i]->[3]);
       ($x0, $x1, $x2) = @{$this[$i]};
-      foreach my $j (0 .. $#this) { # remember that all pairs are doubly degenerate (only if monoatomic)
+      next if (abs($x2) > $self->zmax); # assumes slab w/ interface at z=0
+##      print join(" ", $i, $x0, $x1, $x2, $this[$i]->[3], $abs_species), $/;
+      foreach $j (0 .. $#this) { # remember that all pairs are doubly degenerate (only if monoatomic)
 	next if ($i == $j);
 	next if ($scat_species != $this[$j]->[3]);
-	my $rsqr = ($x0 - $this[$j]->[0])**2
-	         + ($x1 - $this[$j]->[1])**2
-	         + ($x2 - $this[$j]->[2])**2; # this loop has been optimized for speed, hence the weird syntax
+
+	## LAMMPS
+	next if (abs($this[$j]->[2]) > $self->zmax); # assumes slab w/ interface at z=0
+	next if (abs($x0 - $this[$j]->[0]) > $rmax);
+	next if (abs($x1 - $this[$j]->[1]) > $rmax);
+
+	$rsqr = ($x0 - $this[$j]->[0])**2
+	      + ($x1 - $this[$j]->[1])**2
+	      + ($x2 - $this[$j]->[2])**2; # this loop has been optimized for speed, hence the weird syntax
 	if (($rsqr >= $rminsqr) and ($rsqr <= $rmaxsqr)) {
 	  push @rdf, $rsqr;
 	} elsif ($self->periodic and $self->use_periodicity) {
@@ -173,16 +215,20 @@ sub chi {
   my $kind = ($self->rattle) ? "rattle" : "SS";
   $self->start_spinner("Making FPath from $kind histogram") if ($self->mo->ui eq 'screen');
 
-
+  my $randstr = random_string('ccccccccc').'.sp';
   my $index = $self->mo->pathindex;
   my $first = $paths->[0];
   #$first->update_path(1);
   my $save = $first->group;
   $first->Index(255);
   $first->group("h_i_s_t_o");
+  $first->randstring($randstr);
   $first->_update('fft');
   $first->dispose($first->template('process', 'histogram_first'));
   $first->group($save);
+  $first->dispose($first->template('process', 'histogram_clean', {index=>255}));
+  my $nnnn = File::Spec->catfile($first->folder, $first->randstring);
+  unlink $nnnn if (-e $nnnn);
   my $rbar  = $first->population * $first->R;
   my $rave  = $first->population / $first->R;
   my $rnorm = $first->population / ($first->R**2);
@@ -197,10 +243,13 @@ sub chi {
     my $save = $paths->[$i]->group; # add up the SSPaths without requiring an Ifeffit group for each one
     $paths->[$i]->Index(255);
     $paths->[$i]->group("h_i_s_t_o");
+    $paths->[$i]->randstring($randstr);
     $paths->[$i]->_update('fft');
     $paths->[$i]->dispose($paths->[$i]->template('process', 'histogram_add'));
     $paths->[$i]->group($save);
     $paths->[$i]->dispose($paths->[$i]->template('process', 'histogram_clean', {index=>255}));
+    $nnnn = File::Spec->catfile($paths->[$i]->folder, $paths->[$i]->randstring);
+    unlink $nnnn if (-e $nnnn);
     $rbar  += $paths->[$i]->population * $paths->[$i]->R;
     $rave  += $paths->[$i]->population / $paths->[$i]->R;
     $rnorm += $paths->[$i]->population / ($paths->[$i]->R**2);
@@ -245,6 +294,7 @@ sub chi {
 				   c4        => $fourth,
 				   #@$common
 				  );
+  $path->randstring($randstr);
   my $name = sprintf("Histo %s %s-%s (%.5f)", $kind, $path->absorber, $path->scatterer, $rave);
   $path->name($name);
   $self->stop_spinner if ($self->mo->ui eq 'screen');
@@ -269,6 +319,9 @@ sub plot {
   Ifeffit::put_array(join(".", $self->group, 'x'), $self->positions);
   Ifeffit::put_array(join(".", $self->group, 'y'), $self->populations);
   $self->po->start_plot;
+  if ($self->po->output) {
+    $self->dispose($self->template('plot', 'output'), 'plotting');
+  };
   $self->dispose($self->template('plot', 'histo'), 'plotting');
   return $self;
 };
@@ -297,7 +350,7 @@ Demeter::Feff::Distributions::SS - Histograms forsingle scattering paths
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.5.
+This documentation refers to Demeter version 0.9.
 
 =head1 SYNOPSIS
 
@@ -416,7 +469,7 @@ L<http://cars9.uchicago.edu/~ravel/software/>
 
 =head1 LICENCE AND COPYRIGHT
 
-Copyright (c) 2006-2011 Bruce Ravel (bravel AT bnl DOT gov). All rights reserved.
+Copyright (c) 2006-2012 Bruce Ravel (bravel AT bnl DOT gov). All rights reserved.
 
 This module is free software; you can redistribute it and/or
 modify it under the same terms as Perl itself. See L<perlgpl>.

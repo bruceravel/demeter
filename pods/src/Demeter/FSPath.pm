@@ -2,7 +2,7 @@ package Demeter::FSPath;
 
 =for Copyright
  .
- Copyright (c) 2006-2011 Bruce Ravel (bravel AT bnl DOT gov).
+ Copyright (c) 2006-2012 Bruce Ravel (bravel AT bnl DOT gov).
  All rights reserved.
  .
  This file is free software; you can redistribute it and/or
@@ -17,8 +17,6 @@ package Demeter::FSPath;
 
 use Moose;
 use MooseX::Aliases;
-use MooseX::AttributeHelpers;
-#use MooseX::StrictConstructor;
 extends 'Demeter::Path';
 use Demeter::NumTypes qw( Ipot PosNum PosInt );
 use Demeter::StrTypes qw( Edge Empty ElementSymbol);
@@ -100,14 +98,14 @@ has 'make_gds'   => (is => 'rw', isa => 'Bool',   default => sub{ shift->co->def
 				     };
 				   });
 has 'gds' => (
-		metaclass => 'Collection::Array',
+		traits    => ['Array'],
 		is        => 'rw',
 		isa       => 'ArrayRef',
 		default   => sub { [] },
-		provides  => {
-			      'push'    => 'push_gds',
-			      'clear'   => 'clear_gds',
-			      'splice'  => 'splice_gds',
+		handles   => {
+			      'push_gds'    => 'push',
+			      'clear_gds'   => 'clear',
+			      'splice_gds'  => 'splice',
 			     },
 	       );
 
@@ -361,7 +359,7 @@ Demeter::FSPath - Path for a quick first shell fit
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.5.
+This documentation refers to Demeter version 0.9.
 
 =head1 SYNOPSIS
 
@@ -557,7 +555,7 @@ L<http://cars9.uchicago.edu/~ravel/software/>
 
 =head1 LICENCE AND COPYRIGHT
 
-Copyright (c) 2006-2011 Bruce Ravel (bravel AT bnl DOT gov). All rights reserved.
+Copyright (c) 2006-2012 Bruce Ravel (bravel AT bnl DOT gov). All rights reserved.
 
 This module is free software; you can redistribute it and/or
 modify it under the same terms as Perl itself. See L<perlgpl>.

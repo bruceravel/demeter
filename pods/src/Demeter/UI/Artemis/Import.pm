@@ -1,15 +1,15 @@
 package Demeter::UI::Artemis::Import;
 
-use Demeter; # qw(:plotwith=gnuplot);
+#use Demeter; # qw(:plotwith=gnuplot);
 use Demeter::UI::Artemis::Project;
 use Demeter::UI::Wx::SpecialCharacters qw(:all);
 
 ## -------- convenience parameters
-use Readonly;
-Readonly my $rdemeter        => \$Demeter::UI::Artemis::demeter;
-Readonly my $rframes         => \%Demeter::UI::Artemis::frames;
-Readonly my $make_data_frame => \&Demeter::UI::Artemis::make_data_frame;
-Readonly my $make_feff_frame => \&Demeter::UI::Artemis::make_feff_frame;
+#use Const::Fast;
+my $rdemeter = \$Demeter::UI::Artemis::demeter;
+my $rframes  = \%Demeter::UI::Artemis::frames;
+my $make_data_frame = \&Demeter::UI::Artemis::make_data_frame;
+my $make_feff_frame = \&Demeter::UI::Artemis::make_feff_frame;
 
 use Archive::Zip qw( :ERROR_CODES :CONSTANTS );
 use Carp;
@@ -236,6 +236,8 @@ sub _dpj {
 
 	## import feff.inp
 	my $text = $feffobject->slurp($feff);
+	$rframes->{$fnum}->make_page('Feff')  if not $rframes->{$fnum}->{Feff};
+	$rframes->{$fnum}->make_page('Paths') if not $rframes->{$fnum}->{Paths};
 	$rframes->{$fnum}->{Feff}->{feff}->SetValue($text);
 
 	## make Feff frame
@@ -363,6 +365,8 @@ EOH
 
   ## import feff.inp
   my $text = $efeff->slurp($feff_file);
+  $rframes->{$fnum}->make_page('Feff')  if not $rframes->{$fnum}->{Feff};
+  $rframes->{$fnum}->make_page('Paths') if not $rframes->{$fnum}->{Paths};
   $rframes->{$fnum}->{Feff}->{feff}->SetValue($text);
 
   ## fill in Feff frame
@@ -588,7 +592,7 @@ Demeter::UI::Artemis::Import - Import various kinds of data into Artemis
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.5.
+This documentation refers to Demeter version 0.9.
 
 =head1 SYNOPSIS
 
@@ -676,7 +680,7 @@ L<http://cars9.uchicago.edu/~ravel/software/>
 
 =head1 LICENCE AND COPYRIGHT
 
-Copyright (c) 2006-2011 Bruce Ravel (bravel AT bnl DOT gov). All rights reserved.
+Copyright (c) 2006-2012 Bruce Ravel (bravel AT bnl DOT gov). All rights reserved.
 
 This module is free software; you can redistribute it and/or
 modify it under the same terms as Perl itself. See L<perlgpl>.

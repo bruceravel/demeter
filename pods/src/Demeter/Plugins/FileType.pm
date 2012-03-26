@@ -2,7 +2,6 @@ package Demeter::Plugins::FileType;
 
 use Moose;
 use Moose::Util::TypeConstraints;
-#use MooseX::StrictConstructor;
 with 'Demeter::Tools';
 with 'Demeter::Project';
 
@@ -30,6 +29,8 @@ has 'lower_case'  => (is => 'rw', isa => 'Bool', default => 1);
 has 'time_consuming'  => (is => 'rw', isa => 'Bool', default => 0);
 has 'working_message' => (is => 'rw', isa => 'Str', default => q{});
 
+has 'metadata_ini' => (is => 'rw', isa => 'Str', default => q{});
+
 enum 'OutputTypes' => ['data', 'project'];
 coerce 'OutputTypes', from 'Str', via { lc($_) };
 has 'output'      => (is => 'ro', isa => 'OutputTypes', default => q{data});
@@ -43,6 +44,15 @@ sub Croak {
   };
 };
 
+sub add_metadata {
+  return $_[0];
+};
+
+sub data_attributes {
+  my ($self, $mode) = @_;
+  $mode ||= 'fluorescence';
+  return (file=>$self->fixed, source=>$self->file, $self->suggest($mode));
+};
 
 __PACKAGE__->meta->make_immutable;
 1;
@@ -54,7 +64,7 @@ Demeter::Plugins::FileType - base class for file type plugins
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.5.
+This documentation refers to Demeter version 0.9.
 
 =head1 SYNOPSIS
 
@@ -329,6 +339,30 @@ mechanism for modifying the configuration.
 
 =back
 
+=head2 Common methods
+
+All plugins inherit these methods:
+
+=over 4
+
+=item C<data_attributes>
+
+This returns a list which sets a number of data attributes of the Data
+object being set by the plugin, including C<file>, C<source>, and all
+the column selection attributes.
+
+  my $plugin = Demeter::Plugins::Whatever->new(file=>$file);
+  $plugin -> fix;
+  my $mode = 'fluorescence';  # or 'transmission'
+  my $data = Demeter::Data->new($plugin->data_attributes($mode));
+
+The Data's file attribute will be set to the name of the stash file,
+the C<source> attribute will be set to the raw data file, and the
+C<energy>, C<numerator>, C<denominator>, and C<ln> attributes will be
+set as suggested by the plugin.
+
+=back
+
 =head2 Required methods
 
 All plugins B<must> supply these three methods:
@@ -365,7 +399,7 @@ file.  This is good practice, but is not required.
 
       my $filetype  = Demeter::Plugins::X15B->new(file=>$file);
       my $converted_file = $filetype->fix;
-       ## this also works:
+       ## this also works after the call to fix:
        ## my $converted_file = $filetype->fixed;
 
 
@@ -415,7 +449,7 @@ The return value should be an array and not an array reference.
 
 All plugins B<must> live in the C<Demeter::Plugins::> namespace.  In
 the Demeter distribution, therefore, they live in the
-F<Demeter/Plugins> folder beneath the installation location.
+F<Demeter/Plugins/> folder beneath the installation location.
 
 An individual user can have additional plugins in user diskspace by
 placing them in ...
@@ -456,7 +490,7 @@ http://xafs.org/BruceRavel
 
 =head1 LICENSE AND COPYRIGHT
 
-Copyright (c) 2006-2011 Bruce Ravel (bravel AT bnl DOT gov). All rights reserved.
+Copyright (c) 2006-2012 Bruce Ravel (bravel AT bnl DOT gov). All rights reserved.
 
 This module is free software; you can redistribute it and/or
 modify it under the same terms as Perl itself. See L<perlgpl>.

@@ -2,7 +2,7 @@ package Demeter::ThreeBody;
 
 =for Copyright
  .
- Copyright (c) 2006-2011 Bruce Ravel (bravel AT bnl DOT gov).
+ Copyright (c) 2006-2012 Bruce Ravel (bravel AT bnl DOT gov).
  All rights reserved.
  .
  This file is free software; you can redistribute it and/or
@@ -16,7 +16,6 @@ package Demeter::ThreeBody;
 =cut
 
 use Moose;
-#use MooseX::StrictConstructor;
 extends 'Demeter::Path';
 use Demeter::NumTypes qw( Ipot PosNum PosInt );
 use Demeter::StrTypes qw( Empty );
@@ -27,13 +26,13 @@ with 'Demeter::UI::Screen::Pause' if ($Demeter::mode->ui eq 'screen');
 use File::Copy;
 use File::Spec;
 use String::Random qw(random_string);
-use Readonly;
-Readonly my $PI => 4*atan2(1,1);
+use Demeter::Constants qw($PI);
 
 has 'Type'	 => (is => 'ro', isa => 'Str',    default => 'three body scattering');
 has 'string'	 => (is => 'ro', isa => 'Str',    default => q{});
 has 'tag'	 => (is => 'rw', isa => 'Str',    default => q{});
-has 'randstring' => (is => 'rw', isa => 'Str',    default => sub{random_string('ccccccccc').'.sp'}, alias => 'dsstring');
+has 'randstring' => (is => 'rw', isa => 'Str',    default => sub{random_string('ccccccccc').'.sp'},
+		     alias => 'dsstring');
 has 'tsstring'   => (is => 'rw', isa => 'Str',    default => sub{random_string('ccccccccc').'.sp'});
 has 'fuzzy'	 => (is => 'rw', isa => 'Num',    default => 0.1);
 has 'weight'	 => (is => 'ro', isa => 'Int',    default => 2);
@@ -72,7 +71,8 @@ override alldone => sub {
   my ($self) = @_;
   my $nnnn = File::Spec->catfile($self->folder, $self->dsstring);
   unlink $nnnn if (-e $nnnn);
-  $nnnn = File::Spec->catfile($self->folder, $self->tsstring);
+  #$nnnn = File::Spec->catfile($self->folder, $self->tsstring);
+  $nnnn = File::Spec->catfile($self->folder, $self->dsstring.'3');
   unlink $nnnn if (-e $nnnn);
   $self->dspath->DEMOLISH if (ref($self->dspath) =~ m{Demeter});
   $self->tspath->DEMOLISH if (ref($self->tspath) =~ m{Demeter});
@@ -134,7 +134,7 @@ after _update_from_ScatteringPath => sub {
   ## DS path gets handled by the parent class
   my $tempfile = sprintf("feff%4.4d.dat", $self->co->default('pathfinder', 'one_off_index')-1);
   move(File::Spec->catfile($self->parent->workspace, $tempfile),
-       File::Spec->catfile($self->parent->workspace, $self->tsstring));
+       File::Spec->catfile($self->parent->workspace, $self->dsstring.'3'));
 
   #my $c = sqrt( $self->r1**2 + $self->r2**2 + 2*$self->r1*$self->r2*cos($PI*$self->beta/180) );
   my $ds = Demeter::Path->new(folder => $self->parent->workspace,
@@ -142,7 +142,7 @@ after _update_from_ScatteringPath => sub {
 			      name   => sprintf("DS at R=%.5f, beta=%.3f", ($self->r1+$self->r2+$self->r3)/2, $self->beta),
 			     );
   my $ts = Demeter::Path->new(folder => $self->parent->workspace,
-			      file   => $self->tsstring,
+			      file   => $self->dsstring.'3',
 			      name   => sprintf("TS at R=%.5f, beta=%.3f", $self->r1+$self->r2, $self->beta),
 			     );
   foreach my $att (qw(s02 e0 delr sigma2 ei third fourth dphase)) {
@@ -253,7 +253,7 @@ Demeter::ThreeBody - Multiple scattering from an arbitrary three-body configurat
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.5.
+This documentation refers to Demeter version 0.9.
 
 =head1 SYNOPSIS
 
@@ -419,7 +419,7 @@ L<http://cars9.uchicago.edu/~ravel/software/>
 
 =head1 LICENCE AND COPYRIGHT
 
-Copyright (c) 2006-2011 Bruce Ravel (bravel AT bnl DOT gov). All rights reserved.
+Copyright (c) 2006-2012 Bruce Ravel (bravel AT bnl DOT gov). All rights reserved.
 
 This module is free software; you can redistribute it and/or
 modify it under the same terms as Perl itself. See L<perlgpl>.

@@ -2,7 +2,7 @@ package Demeter::Data;
 
 =for Copyright
  .
- Copyright (c) 2006-2011 Bruce Ravel (bravel AT bnl DOT gov).
+ Copyright (c) 2006-2012 Bruce Ravel (bravel AT bnl DOT gov).
  All rights reserved.
  .transmission
  This file is free software; you can redistribute it and/or
@@ -19,11 +19,7 @@ use Carp;
 
 use File::Basename;
 use List::MoreUtils qw(any);
-use Regexp::Common;
-use Readonly;
-Readonly my $NUMBER   => $RE{num}{real};
-Readonly my $PI       => 4*atan2(1,1);
-Readonly my $NULLFILE => '@&^^null^^&@';
+use Demeter::Constants qw($NUMBER $PI $NULLFILE);
 use Scalar::Util qw(looks_like_number);
 use YAML::Tiny;
 
@@ -43,10 +39,12 @@ with 'Demeter::Data::Process';
 with 'Demeter::Data::SelfAbsorption';
 with 'Demeter::Data::Units';
 with 'Demeter::Data::XDI';
+if ($Demeter::mode->ui eq 'screen') {
+  with 'Demeter::UI::Screen::Progress';
+};
 
 use MooseX::Aliases;
 #use MooseX::AlwaysCoerce;   # this might be useful....
-#use MooseX::StrictConstructor;
 use Moose::Util::TypeConstraints;
 use Demeter::StrTypes qw( Element
 			  Edge
@@ -79,9 +77,10 @@ has 'file'        => (is => 'rw', isa => FileName,  default => $NULLFILE,
 		      trigger => sub{my ($self, $new) = @_;
 				     if ($new and ($new ne $NULLFILE)) {
 				       $self->update_data(1);
-				       $self->source($new);
+				       $self->source($new) if $self->source eq $NULLFILE;
 				     };
 				   });
+
 has 'source'      => (is => 'rw', isa => 'Str',  default => $NULLFILE,);
 has 'prjrecord'   => (is => 'rw', isa => 'Str',  default => q{});
 has 'read_as_raw' => (is => 'rw', isa => 'Bool', default => 0);
@@ -96,6 +95,7 @@ has 'fitting'     => (is => 'rw', isa => 'Bool',   default => 0);
 has 'plotkey'     => (is => 'rw', isa => 'Str',    default => q{});
 has 'frozen'      => (is => 'rw', isa => 'Bool',   default => 0);
 has 'marked'      => (is => 'rw', isa => 'Bool',   default => 0);
+has 'quickmerge'  => (is => 'rw', isa => 'Bool',   default => 0);
 
 has 'provenance'  => (is => 'rw', isa => 'Str',    default => q{});
 has 'importance'  => (is => 'rw', isa => 'Num',    default => 1);
@@ -122,6 +122,7 @@ has 'referencegroup' => (is => 'rw', isa => 'Str',     default => q{});
 has  $_  => (is => 'rw', isa => 'Str',  default => q{},
 	     trigger => sub{ my ($self, $new) = @_;
 			     if ($new) {
+			       $self->datatype('xmu') if $self->denominator;
 			       $self->datatype('xmu') if $self->datatype eq 'chi';
 			       $self->update_columns(1);
 			       $self->is_col(1)
@@ -205,7 +206,7 @@ has 'update_norm'    => (is => 'rw', isa => 'Bool',  default => 1,
 			 trigger => sub{ my($self, $new) = @_; $self->update_bkg(1) if $new});
 
 has 'update_bkg'     => (is => 'rw', isa => 'Bool',  default => 1,
-			 trigger => sub{ my($self, $new) = @_; $self->update_fft(1) if $new});
+			 trigger => sub{ my($self, $new) = @_; $self->update_fft(1) if $new;});
 
 has 'update_fft'     => (is => 'rw', isa => 'Bool',  default => 1,
 			 trigger => sub{ my($self, $new) = @_; $self->update_bft(1) if $new});
@@ -435,9 +436,14 @@ override clone => sub {
   $self->_update('fft') if ($self->datatype =~ m{(?:xmu|chi)});
   my $new = $self->SUPER::clone();
 
+  my $standard = $self->get_mode('standard');
   $new  -> standard;
   $self -> dispose($self->template("process", "clone"));
-  $new  -> unset_standard;
+  if (ref($standard) =~ m{Data}) {
+    $standard->standard;
+  } else {
+    $new  -> unset_standard;
+  };
   $new  -> dispose($new->template("process", "deriv"));
   $new  -> update_data(0);
   $new  -> update_columns(0);
@@ -572,7 +578,6 @@ sub determine_data_type {
 sub _update {
   my ($self, $which) = @_;
   $which = lc($which);
-
  WHICH: {
     ($which eq 'data') and do {
       $self->read_data if ($self->update_data);
@@ -883,7 +888,7 @@ Demeter::Data - Process and analyze EXAFS data with Ifeffit
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.5.
+This documentation refers to Demeter version 0.9.
 
 
 =head1 SYNOPSIS
@@ -1746,7 +1751,7 @@ L<http://cars9.uchicago.edu/~ravel/software/>
 
 =head1 LICENCE AND COPYRIGHT
 
-Copyright (c) 2006-2011 Bruce Ravel (bravel AT bnl DOT gov). All rights reserved.
+Copyright (c) 2006-2012 Bruce Ravel (bravel AT bnl DOT gov). All rights reserved.
 
 This module is free software; you can redistribute it and/or
 modify it under the same terms as Perl itself. See L<perlgpl>.

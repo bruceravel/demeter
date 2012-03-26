@@ -1,7 +1,7 @@
 package  Demeter::UI::Atoms::Feff;
 
-use Demeter;
 use Demeter::StrTypes qw( Element );
+use Demeter::UI::Wx::SpecialCharacters qw($ARING);
 
 use Cwd;
 use File::Spec;
@@ -99,10 +99,10 @@ sub OnToolRightClick {
   my $dialog = Demeter::UI::Wx::MRU->new($self, 'feff',
 					 "Select a recent feff.inp file",
 					 "Recent feff.inp files");
-  $self->{statusbar}->SetStatusText("There are no recent Feff files."), return
+  $self->{parent}->status("There are no recent Feff files."), return
     if ($dialog == -1);
   if( $dialog->ShowModal == wxID_CANCEL ) {
-    $self->{statusbar}->SetStatusText("Import cancelled.");
+    $self->{parent}->status("Import cancelled.");
   } else {
    $self->import( $dialog->GetMruSelection );
   };
@@ -140,14 +140,14 @@ sub save_file {
 				wxFD_SAVE|wxFD_CHANGE_DIR,
 				wxDefaultPosition);
   if ($fd -> ShowModal == wxID_CANCEL) {
-    $self->{statusbar}->SetStatusText("Saving feff input file aborted.")
+    $self->{parent}->status("Saving feff input file aborted.")
   } else {
     my $file = File::Spec->catfile($fd->GetDirectory, $fd->GetFilename);
     open my $OUT, ">".$file;
     print $OUT $self->{feff}->GetValue;
     close $OUT;
     $Demeter::UI::Atoms::demeter -> push_mru("feff", $file);
-    $self->{statusbar}->SetStatusText("Saved feff input file to $file.");
+    $self->{parent}->status("Saved feff input file to $file.");
   };
 };
 
@@ -171,7 +171,7 @@ sub insert_boilerplate {
   my $feff   = Demeter::Feff->new(screen=>0, buffer=>1, save=>0);
   $self->{feff}->SetValue($feff->template("feff", "boilerplate"));
   undef $feff;
-  $self->{statusbar}->SetStatusText("Fill in this boilerplate with your structure....");
+  $self->{parent}->status("Fill in this boilerplate with your structure....");
 };
 
 
@@ -189,6 +189,26 @@ sub run_feff {
   $feff->name($self->{parent}->{Feff}->{name}->GetValue);
   $feff->file($inpfile);
 
+  if ($feff->rmax > 6.01) {
+    my $yesno = Wx::MessageDialog->new($self,
+				       'You have set RMAX to larger than 6 Angstroms.
+
+The pathfinder will likely be quite time consuming,
+as will reading and writing a project file
+containing this Feff calculation.
+
+Should we continue?',
+				       "Continue calculating?",
+				       wxYES_NO|wxNO_DEFAULT|wxICON_QUESTION,
+				      );
+    my $ok = $yesno->ShowModal;
+    if ($ok == wxID_NO) {
+      $self->{parent}->status("Cancelling Feff calculation");
+      return 0;
+    };
+
+  };
+
 
   my %problems = %{ $feff->problems };
   my @warnings = @{ $problems{warnings} };
@@ -202,8 +222,9 @@ sub run_feff {
     warn join($/, @warnings) . $/;
   };
 
+  $self->{parent}->make_page('Console') if not $self->{parent}->{Console};
   $self->{parent}->{Console}->{console}->AppendText($self->now("Feff calculation beginning at ", $feff));
-  $self->{statusbar}->SetStatusText("Computing potentials using Feff6 ...");
+  $self->{parent}->status("Computing potentials using Feff6 ...");
   $feff->potph;
   ## the call to check_exe happened in the previous method call,
   ## however, the logging happens below at line 225, so this appears
@@ -212,7 +233,7 @@ sub run_feff {
 						    $feff->co->default(qw(feff executable)) .
 						    ")\n\n");
 
-  $self->{statusbar}->SetStatusText("Finding scattering paths using Demeter's pathfinder...");
+  $self->{parent}->status("Finding scattering paths using Demeter's pathfinder...");
   $feff->pathfinder;
   my $yaml = File::Spec->catfile($feff->workspace, $feff->group.".yaml");
   $feff->freeze($yaml);
@@ -226,13 +247,14 @@ sub run_feff {
   $self->{parent}->{Console}->{console}->AppendText($self->now("Feff calculation finished at ", $feff));
   $feff->clear_iobuffer;
 
-  $self->{statusbar}->SetStatusText("Feff calculation complete!");
+  $self->{parent}->status("Feff calculation complete!");
   #unlink $inpfile;
   undef $busy;
 };
 
 sub fill_intrp_page {
   my ($self, $feff) = @_;
+  $self->{parent}->make_page('Paths') if not $self->{parent}->{Paths};
   $self->{parent}->{Paths}->{name}->SetValue($feff->name);
   $self->{parent}->{Paths}->{header}->SetValue($feff->intrp_header);
   $self->{parent}->{Paths}->{paths}->DeleteAllItems;
@@ -258,8 +280,10 @@ sub fill_intrp_page {
 
 sub fill_ss_page {
   my ($self, $feff) = @_;
+
   #$self->{parent}->{SS}->{name}->SetValue($feff->name);
-  return 0 if not exists $self->{parent}->{SS};
+  return 0 if ($Demeter::UI::AtomsApp::utilities[3] ne 'SS');
+  $self->{parent}->make_page('SS') if not $self->{parent}->{SS};
 
   my @ipots = @{$feff->potentials};
   shift @ipots;			# get rid of absorber
@@ -334,7 +358,7 @@ Demeter::UI::Atoms::Feff - Atoms' Feff utility
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.5.
+This documentation refers to Demeter version 0.9.
 
 =head1 DESCRIPTION
 
@@ -348,7 +372,7 @@ L<http://cars9.uchicago.edu/~ravel/software/>
 
 =head1 LICENCE AND COPYRIGHT
 
-Copyright (c) 2006-2011 Bruce Ravel (bravel AT bnl DOT gov). All rights reserved.
+Copyright (c) 2006-2012 Bruce Ravel (bravel AT bnl DOT gov). All rights reserved.
 
 This module is free software; you can redistribute it and/or
 modify it under the same terms as Perl itself. See L<perlgpl>.

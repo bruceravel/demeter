@@ -1,0 +1,1900 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+               "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+lang="en" xml:lang="en">
+<head>
+<title>Demeter revision history</title>
+<meta http-equiv="Content-Type" content="text/html;charset=iso-8859-1"/>
+<meta name="generator" content="Org-mode"/>
+<meta name="generated" content="2012-03-26 17:51:39 EDT"/>
+<meta name="author" content="Bruce Ravel"/>
+<meta name="description" content=""/>
+<meta name="keywords" content=""/>
+<style type="text/css">
+ <!--/*--><![CDATA[/*><!--*/
+  html { font-family: Times, serif; font-size: 12pt; }
+  .title  { text-align: center; }
+  .todo   { color: red; }
+  .done   { color: green; }
+  .tag    { background-color: #add8e6; font-weight:normal }
+  .target { }
+  .timestamp { color: #bebebe; }
+  .timestamp-kwd { color: #5f9ea0; }
+  p.verse { margin-left: 3% }
+  pre {
+	border: 1pt solid #AEBDCC;
+	background-color: #F3F5F7;
+	padding: 5pt;
+	font-family: courier, monospace;
+        font-size: 90%;
+        overflow:auto;
+  }
+  table { border-collapse: collapse; }
+  td, th { vertical-align: top; }
+  dt { font-weight: bold; }
+  div.figure { padding: 0.5em; }
+  div.figure p { text-align: center; }
+  .linenr { font-size:smaller }
+  .code-highlighted {background-color:#ffff00;}
+  .org-info-js_info-navigation { border-style:none; }
+  #org-info-js_console-label { font-size:10px; font-weight:bold;
+                               white-space:nowrap; }
+  .org-info-js_search-highlight {background-color:#ffff00; color:#000000;
+                                 font-weight:bold; }
+  /*]]>*/-->
+</style>
+<script type="text/javascript">
+<!--/*--><![CDATA[/*><!--*/
+ function CodeHighlightOn(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(null != target) {
+     elem.cacheClassElem = elem.className;
+     elem.cacheClassTarget = target.className;
+     target.className = "code-highlighted";
+     elem.className   = "code-highlighted";
+   }
+ }
+ function CodeHighlightOff(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(elem.cacheClassElem)
+     elem.className = elem.cacheClassElem;
+   if(elem.cacheClassTarget)
+     target.className = elem.cacheClassTarget;
+ }
+/*]]>*///-->
+</script>
+</head>
+<body>
+<div id="content">
+
+<h1 class="title">Demeter revision history</h1>
+
+
+
+<div id="table-of-contents">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#sec-1">1 Initial release </a>
+<ul>
+<li><a href="#sec-1.1">1.1 0.9.9 ?? March 2012 </a></li>
+<li><a href="#sec-1.2">1.2 0.9.8 30 January 2012 </a></li>
+<li><a href="#sec-1.3">1.3 0.9.7 12 January 2012 </a></li>
+<li><a href="#sec-1.4">1.4 0.9.6 12 December 2011 </a></li>
+<li><a href="#sec-1.5">1.5 0.9.5 11 November 2011 </a></li>
+<li><a href="#sec-1.6">1.6 0.9.4 10 November 2011 </a></li>
+<li><a href="#sec-1.7">1.7 0.9.3 8 November 2011 </a></li>
+<li><a href="#sec-1.8">1.8 0.9.2 7 November 2011 </a></li>
+<li><a href="#sec-1.9">1.9 0.9.1 2 November 2011 </a></li>
+<li><a href="#sec-1.10">1.10 0.9.0 31 October, 2011 </a></li>
+</ul>
+</li>
+<li><a href="#sec-2">2 Beta testing releases: </a>
+<ul>
+<li><a href="#sec-2.1">2.1 Release 9: 30 October, 2011 </a></li>
+<li><a href="#sec-2.2">2.2 Release 8: 11 October, 2011 </a></li>
+<li><a href="#sec-2.3">2.3 Release 7: 10 October, 2011 </a></li>
+<li><a href="#sec-2.4">2.4 Release 6: 09 September, 2011 </a></li>
+<li><a href="#sec-2.5">2.5 Release 5: 18 August, 2011 </a></li>
+<li><a href="#sec-2.6">2.6 Release 4: 12 August, 2011 </a></li>
+<li><a href="#sec-2.7">2.7 Release 3: 8 July, 2011 </a></li>
+<li><a href="#sec-2.8">2.8 Release 2: 24 June, 2011 </a></li>
+<li><a href="#sec-2.9">2.9 Release 1: 10 June, 2011 </a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-1" class="outline-2">
+<h2 id="sec-1"><span class="section-number-2">1</span> Initial release </h2>
+<div class="outline-text-2" id="text-1">
+
+
+
+</div>
+
+<div id="outline-container-1.1" class="outline-3">
+<h3 id="sec-1.1"><span class="section-number-3">1.1</span> 0.9.9 ?? March 2012 </h3>
+<div class="outline-text-3" id="text-1.1">
+
+<ul>
+<li id="sec-1.1.1">Athena <br/>
+<ul>
+<li>
+Delay laying out most windows until needed for the first time.
+This speed up startup at the cost of a bit more time later on.
+Start-up went from about 6 1/2 sec to under 4 seconds on my work
+computer
+</li>
+<li>
+Mostly functional file watcher + added functionality to IO methods
+</li>
+<li>
+Importance was not being imported from a project file
+</li>
+<li>
+Made the importance control normal width
+</li>
+<li>
+Added athena-&gt;interactive<sub>fixstep</sub> configuration parameter for
+disabling the interaction between pre-edge, normalization, and
+edge step controls and the fixstep button.
+</li>
+<li>
+when importing a sequence of files and one cannot be imported
+(e.g. aborted scan) offer to continue or quit importing sequence
+</li>
+<li>
+XDI as a known file extension when importing data
+</li>
+<li>
+Importance and plot<sub>multiplier</sub> functionality for bent Laue data
+from 10ID
+</li>
+<li>
+Return to main button was being displayed incorrectly
+</li>
+<li>
+Found a normalization bug in Ifeffit, norm<sub>order</sub> not respected in
+call to spline().  Submitted patch to Matt.
+</li>
+<li>
+Smooth works in Calibrate tool
+</li>
+<li>
+Visual feedback when element &lt; 5 or E0 &lt; 150
+</li>
+<li>
+Implemented a spin button for incrementing/deincrementing Rbkg
+</li>
+<li>
+Attempt to recognize data with a zero value in the denominator
+
+</li>
+</ul>
+</li>
+<li id="sec-1.1.2">Artemis <br/>
+
+</li>
+<li id="sec-1.1.3">Hephaestus <br/>
+<ul>
+<li>
+Delay laying out most windows until needed for the first time.
+This speed up startup (~6 1/2 seconds before, now just under 3
+second) at the cost of a bit more time later on.
+</li>
+<li>
+Fixed a bug in furmulas tool where missing density caused a
+divide by zero crash
+
+</li>
+</ul>
+</li>
+<li id="sec-1.1.4">Atoms stand-alone <br/>
+<ul>
+<li>
+Used delayed layout and careful loading of Demeter modules to
+reduce start-up from over 5 sec to under 3 seconds.
+</li>
+<li>
+Fixed a bug reading a CIF file that does not properly identify
+the material.  This resulted in the record selection dialog being
+posted without any content &ndash; not so helpful.
+
+</li>
+</ul>
+</li>
+<li id="sec-1.1.5">Demeter <br/>
+<ul>
+<li>
+Replaced Readonly with Const::Fast.  See <a href="http://neilb.org/reviews/constants.html">http://neilb.org/reviews/constants.html</a>
+</li>
+<li>
+Abstracted many common constants to Demeter::Constants
+</li>
+<li>
+Replaced Config::IniFiles with Config::INI for a small
+performance improvement
+</li>
+<li>
+Made Demeter::IniReader, a subclass of Config::INI
+</li>
+<li>
+Fully deprecate use of MooseX::AttributeHelpers and remove it as
+a dependency
+</li>
+<li>
+Make <a href="#File::Monitor::Lite">File::Monitor::Lite</a> a recommended module (for data watcher)
+</li>
+<li>
+More care and more options for loading "pragmata" for improved
+startup times
+</li>
+<li>
+Take better care when processing Data not to do normalization and
+spline more often than is necessary
+</li>
+<li>
+Take care not to "use Demeter" unless absolutely necessary
+throughout code base
+</li>
+<li>
+Deal with Unity's use of a global menu
+</li>
+<li>
+Many improvements to histogram subsystem
+</li>
+<li>
+Added a Build directive for forcing update to ifeffit wrapper
+</li>
+<li>
+Cut &gt;20 seconds off the running of the test suite by correctly
+using import "pragmata"
+
+</li>
+</ul>
+</li>
+</ul>
+</div>
+
+</div>
+
+<div id="outline-container-1.2" class="outline-3">
+<h3 id="sec-1.2"><span class="section-number-3">1.2</span> 0.9.8 30 January 2012 </h3>
+<div class="outline-text-3" id="text-1.2">
+
+<ul>
+<li id="sec-1.2.1">Athena <br/>
+<ul>
+<li>
+Only set project name if the project name is unset and an entire
+project file is imported
+</li>
+<li>
+In LCF, make the maximum number of groups to use for
+combinatorial fitting practically unlimited
+</li>
+<li>
+In combinatorial fits, sort everything according to position in
+group list
+</li>
+<li>
+Fixed a potantial bug determining units in the CSD when selecting
+chi(k) as the data type
+
+</li>
+</ul>
+</li>
+<li id="sec-1.2.2">Artemis <br/>
+<ul>
+<li>
+Can now export a particular fit from the history to an fpj file
+</li>
+<li>
+Fixed a bug repopulating the recent files menu
+</li>
+<li>
+Fixed a bug in which the &lt;data&gt;.fit file was deleted as a project
+was imported.  This was the main reason the history plot tool was
+broken.
+
+</li>
+</ul>
+</li>
+<li id="sec-1.2.3">Demeter <br/>
+<ul>
+<li>
+Add file-chik<sub>out</sub> parameter to control how writing a chi(K)
+output file work.  "all" means write a multicolumn file, 0, 1, 2,
+3, or kw mean to write a two-column file using that k-weight
+</li>
+<li>
+Added a tool for efficiently merging a large number of data
+files, see Demeter::Data::BulkMerge
+</li>
+<li>
+Added denergy script
+
+</li>
+</ul>
+</li>
+<li id="sec-1.2.4">Acknowledgements for this release <br/>
+<ul>
+<li>
+Eric Breynaert
+</li>
+<li>
+Scott Calvin
+</li>
+<li>
+Andreas Voegelin
+
+</li>
+</ul>
+</li>
+</ul>
+</div>
+
+</div>
+
+<div id="outline-container-1.3" class="outline-3">
+<h3 id="sec-1.3"><span class="section-number-3">1.3</span> 0.9.7 12 January 2012 </h3>
+<div class="outline-text-3" id="text-1.3">
+
+<ul>
+<li id="sec-1.3.1">Athena <br/>
+<ul>
+<li>
+Fixed a problem in the X23A2MED plugin &ndash; it was getting confused
+by an incomplete set of (roi, slow, fast) columns.
+</li>
+<li>
+Fixed a bug resulting in bkg<sub>fixstep</sub> sometimes getting unset when
+plotting multiple groups
+</li>
+<li>
+Constraining "Current group" parameters via context menu now
+works correctly.  It had mistakenly changed group attribute, a
+very dangerous thing!
+</li>
+<li>
+Extensive support for current XDI draft
+</li>
+<li>
+In column selection dialog, change reference radio buttons to
+checkbuttons so that either numerator or denominator can be
+unselected.
+</li>
+<li>
+In column selection dialog, unchecking reference ln button
+triggered a crash.
+</li>
+<li>
+Fixed incorrect color sequence for marked group I0 plot.  This
+also made marked group I0 plot crash with &gt;6 marked groups.
+</li>
+<li>
+Post busy cursor when closing a project
+</li>
+<li>
+Reorganized Monitor and debug menus
+
+</li>
+</ul>
+</li>
+<li id="sec-1.3.2">Artemis <br/>
+<ul>
+<li>
+New icons!
+</li>
+<li>
+Added preview and print buttons to log, history log, history
+report, and journal
+</li>
+<li>
+plot stacking parameters could evaluate to an empty string, so
+explicitly make the 0 in that case
+</li>
+<li>
+can now discard and rename Feff calculations + simple "about
+Feff" dialog
+</li>
+<li>
+fixed a bug causing a segfault when discarding data or feff
+</li>
+<li>
+capture Atoms' statusbar messages in Artemis' status buffer
+</li>
+<li>
+Faster project file import using partial deserialization of each
+item in the fit history.  However, history plot tool is not
+currently working.
+</li>
+<li>
+Reduce R-factor penalty by factor of 10 when fitting in k-space
+</li>
+<li>
+Can now restore a previous fit reliably.
+
+</li>
+</ul>
+</li>
+<li id="sec-1.3.3">Demeter <br/>
+<ul>
+<li>
+explicitly unset xrange at the start of every gnuplot plot.  this
+should fix any problem where zooming results in a backwards
+x-axis.
+</li>
+<li>
+added clear<sub>ifeffit</sub><sub>titles</sub> method to clear out $group<sub>title</sub><sub>NN</sub>
+strings when no longer needed, use wrap to make this more efficient
+</li>
+<li>
+bkg<sub>eshift</sub> was not applied when saving a group as mu(E) or
+norm(E)
+</li>
+<li>
+serializing Atoms object made safe for GUI display of object
+contents
+</li>
+<li>
+Mechanism for associating metadata with files imported using a
+plugin
+
+</li>
+</ul>
+</li>
+<li id="sec-1.3.4">Acknowledgements for this release <br/>
+<ul>
+<li>
+Eric Breynaert
+</li>
+<li>
+Scott Calvin
+</li>
+<li>
+Jack Hitch
+</li>
+<li>
+George Sterbinsky
+</li>
+<li>
+Andreas Voegelin
+
+</li>
+</ul>
+</li>
+</ul>
+</div>
+
+</div>
+
+<div id="outline-container-1.4" class="outline-3">
+<h3 id="sec-1.4"><span class="section-number-3">1.4</span> 0.9.6 12 December 2011 </h3>
+<div class="outline-text-3" id="text-1.4">
+
+<ul>
+<li id="sec-1.4.1">Athena <br/>
+<ul>
+<li>
+Fixed bug preventing import of multiple files with each channel
+as a separate group
+</li>
+<li>
+Fixed a bug in which importing MED data as separate groups failed
+to initialize data processing parameters
+</li>
+<li>
+Update column selection dialog when switching from eV to keV
+units
+</li>
+<li>
+Handle keV units correctly for data and reference
+</li>
+<li>
+Handle very noisy reference data by setting the default E0 to the
+tabulated value if the ifeffit-found value is far from the e0 of
+the associated data.  This is essential for data that needs
+rebinning.
+</li>
+<li>
+Correctly handle the situation where a column data file has a
+column named "xmu".  Previously, that situation could lead to
+data being corrupted in an unrecoverable manner as the column
+selection dialog uses that same suffix to hold the mu(E) data.
+This is done by constantly rereading the data file &ndash; something
+that will not happen (happily, since doing so is slow) for any
+file without that column label.
+</li>
+<li>
+Added functionality to column selection dialog for bulk
+(de)selection of numerator checkboxes and for pausing the replot
+of the data while selecting columns (all of which may be useful
+for an MED file)
+</li>
+<li>
+Do some sanity checking on Rebin values in column selection
+dialog before actually rebinning
+</li>
+<li>
+Fixed a bug in both Plot-&gt;marked groups menu options
+
+</li>
+</ul>
+</li>
+<li id="sec-1.4.2">Artemis <br/>
+<ul>
+<li>
+Trim leading and trailing spaces from gds names.
+</li>
+<li>
+Write parameter history reports correctly.
+</li>
+<li>
+Improved window management.  Showing and hiding windows now works
+correctly in conjunction with the window manager's minimize
+(iconize) function.
+</li>
+<li>
+When right clicking on a word in a path parameter math expression
+to define a parameter, the value is now sensitive to which path
+parameter the work comes from (s02 -&gt; 1, sigma2 -&gt; 0.003, else 0)
+</li>
+<li>
+Fixed a windows only bug &ndash; when a feff.inp file is imported, the
+Atoms tab is supposed to be disabled, but the mechanism I used to
+disable selection of that tab was guaranteed to fail on Windows
+(see <a href="http://docs.wxwidgets.org/2.8.4/wx_wxnotebookevent.html#wxnotebookeventgetselection">http://docs.wxwidgets.org/2.8.4/wx<sub>wxnotebookevent</sub>.html#wxnotebookeventgetselection</a>)
+
+</li>
+</ul>
+</li>
+<li id="sec-1.4.3">Hephaestus <br/>
+<ul>
+<li>
+Allow floats as values in the ion chamber tool
+
+</li>
+</ul>
+</li>
+<li id="sec-1.4.4">Demeter <br/>
+<ul>
+<li>
+Check that user value, then default value of executable
+path (i.e. gnuplot and feff) actually exists before attempting to run
+them.  Also properly quote executable name in system call or pipe so
+that things like spaces and parens are interpeted correctly.
+This guards against a number of issues.  If Demeter is installed on
+Windows in one location, then unistalled and reinstalled elsewhere,
+the ini file will retain the incorrect value.  This also guards
+against having an executable in a place with somethinng like 
+"system (x86)" or a unicode character in the path.
+</li>
+<li>
+Begin playing around with using Demeter::Return as a function's
+return value (see rebin<sub>is</sub><sub>sensible</sub> in Demeter::Data::Process
+</li>
+<li>
+Explicitly reset xtics when starting a new plot with gnuplot.
+This is necessary because the components plot afetr a fit
+sequence specifies an array of xtic labels.
+</li>
+<li>
+Prefer the Pd K edge to the Bk L2 edge when finding the edge
+</li>
+<li>
+Set bkg<sub>pre2</sub> to a value which is sensitive to the edge energy.
+For higher energies (i.e. broader edges) move bkg<sub>pre2</sub> to a lower
+energy to improve the default pre-edge line
+</li>
+<li>
+Do a better job of recognizing as data are imported whether an
+energy array is in keV units
+</li>
+<li>
+Filetype plugin written for ESRF BM23, which uses a single scan
+SPEC file.
+</li>
+<li>
+Added <code>rebin-&gt;use_atomic</code> configuration parameter
+</li>
+<li>
+Added a filetype plugin for data from the old SRS.  This is
+intended to cover data from DUBBLE as well (thus deprecating the
+DUBBLE plugin).
+</li>
+<li>
+Test to see whether local time can be used in Demeter's <code>now</code>
+method.  Using local time will make a program die if the
+computer's time zone is not set.  The fallback is to use
+DateTime's floating time zone.
+</li>
+<li>
+Fixed 2 tests in the test suite to respond to recent changes to
+the alignment algorithm and the Fit object's fetch<sub>gds</sub> method
+</li>
+<li>
+Correctly identify files as being not data in the case where it
+nominally looks like data (i.e. it has a header and column labels
+as Ifeffit expects), but which has 0, 1, or too few lines of data
+</li>
+<li>
+Made file-&gt;minlength configuration parameter to define "too few"
+points in a data file.
+
+</li>
+</ul>
+</li>
+<li id="sec-1.4.5">Acknowledgements for this release <br/>
+<ul>
+<li>
+The participants of the Diamond 2011 XAFS course who unwittingly
+became beta testers for this software
+</li>
+<li>
+Eric Breynaert
+</li>
+<li>
+George Sterbinsky
+</li>
+<li>
+Brian Mattern
+
+</li>
+</ul>
+</li>
+</ul>
+</div>
+
+</div>
+
+<div id="outline-container-1.5" class="outline-3">
+<h3 id="sec-1.5"><span class="section-number-3">1.5</span> 0.9.5 11 November 2011 </h3>
+<div class="outline-text-3" id="text-1.5">
+
+<ul>
+<li id="sec-1.5.1">Athena <br/>
+<ul>
+<li>
+Fixed a crash caused by constraining all parameters
+
+</li>
+</ul>
+</li>
+</ul>
+</div>
+
+</div>
+
+<div id="outline-container-1.6" class="outline-3">
+<h3 id="sec-1.6"><span class="section-number-3">1.6</span> 0.9.4 10 November 2011 </h3>
+<div class="outline-text-3" id="text-1.6">
+
+<ul>
+<li id="sec-1.6.1">Athena <br/>
+<ul>
+<li>
+Fixed a problem accessing the column selection persitance file
+for the first time
+</li>
+<li>
+Fixed a possible crash when importing a damaged project file
+
+</li>
+</ul>
+</li>
+<li id="sec-1.6.2">Artemis <br/>
+<ul>
+<li>
+Don't list excluded paths in the log file
+
+
+</li>
+</ul>
+</li>
+</ul>
+</div>
+
+</div>
+
+<div id="outline-container-1.7" class="outline-3">
+<h3 id="sec-1.7"><span class="section-number-3">1.7</span> 0.9.3 8 November 2011 </h3>
+<div class="outline-text-3" id="text-1.7">
+
+<ul>
+<li id="sec-1.7.1">Athena <br/>
+<ul>
+<li>
+Progress messages when autoaligning marked groups (also truncating)
+</li>
+<li>
+Better first guess for autoalignment ($DS-&gt;bkg<sub>e0</sub> - $D-&gt;bkg<sub>e0</sub>)
+
+</li>
+</ul>
+</li>
+<li id="sec-1.7.2">Artemis <br/>
+<ul>
+<li>
+Fix a problem importing a project file into which data and Feff
+have been imported, but no paths have yet been assigned to any
+data
+</li>
+<li>
+Check parameter types when importing GDS parameters from a text file
+
+</li>
+</ul>
+</li>
+<li id="sec-1.7.3">Demeter <br/>
+<ul>
+<li>
+Added <code>current</code> attribute to Mode as a way of identifying data
+groups in asequence when making progress messages in a GUI
+
+</li>
+</ul>
+</li>
+</ul>
+</div>
+
+</div>
+
+<div id="outline-container-1.8" class="outline-3">
+<h3 id="sec-1.8"><span class="section-number-3">1.8</span> 0.9.2 7 November 2011 </h3>
+<div class="outline-text-3" id="text-1.8">
+
+<ul>
+<li id="sec-1.8.1">Athena <br/>
+<ul>
+<li>
+Preserve source attribute when reading a project, display it as a
+mouseover for file TextCtrl
+</li>
+<li>
+Plot after pluck
+</li>
+<li>
+Bigger Rbkg control
+</li>
+<li>
+Added some Athena config parameters
+</li>
+<li>
+Fixed a problem with DUBBLE plugin
+
+</li>
+</ul>
+</li>
+<li id="sec-1.8.2">Artemis <br/>
+<ul>
+<li>
+Fixed spurious creation of feff workspaces when importoing
+FSPaths from a project
+</li>
+<li>
+Begin work on making Artemis/Atoms fail gracefully with CIF file
+that trigger problems.  Here, it fails gracefully for CIF files
+with partial occupancy.
+</li>
+<li>
+Store parameter and path evaluations in the Fit YAML so that fit
+history can be correctly reconstructed.  This has the drawback of
+breaking old fpj files, in that they will no longer display
+correctly in the history.  Oh well&hellip;.
+
+</li>
+</ul>
+</li>
+<li id="sec-1.8.3">Thanks to <br/>
+<ul>
+<li>
+Jason Gaudet
+</li>
+<li>
+Eric Breynaert
+
+</li>
+</ul>
+</li>
+</ul>
+</div>
+
+</div>
+
+<div id="outline-container-1.9" class="outline-3">
+<h3 id="sec-1.9"><span class="section-number-3">1.9</span> 0.9.1 2 November 2011 </h3>
+<div class="outline-text-3" id="text-1.9">
+
+
+<ul>
+<li id="sec-1.9.1">Artemis <br/>
+<ul>
+<li>
+Take care with fit<sub>include</sub> attribute of the Data in a Fit.  Need
+to set data<sub>total</sub> correctly in Ifeffit
+</li>
+<li>
+Fix lots of issues with importing FSPaths from a project file
+</li>
+<li>
+Take care with path seperators when moving aproject between
+windows and unix
+</li>
+<li>
+Take care to populate plot list only with data that was included
+in the fit
+</li>
+<li>
+Added a Fit sanity check to see that each data set has at least
+one path associated with it
+
+</li>
+</ul>
+</li>
+<li id="sec-1.9.2">Thanks to <br/>
+<ul>
+<li>
+Jason Gaudet
+
+</li>
+</ul>
+</li>
+</ul>
+</div>
+
+</div>
+
+<div id="outline-container-1.10" class="outline-3">
+<h3 id="sec-1.10"><span class="section-number-3">1.10</span> 0.9.0 31 October, 2011 </h3>
+<div class="outline-text-3" id="text-1.10">
+
+
+<p>
+This is substantively identical to beta release 9.  This initial
+release will be announced broadly on the mailing list and will be used
+at the XAS course at Diamond, Nov. 14-16 2011.
+</p>
+<p>
+Path to 1.0:
+</p><ol>
+<li>
+A few successful months of use
+</li>
+<li>
+PCA, peak fitting, LCF fully implemented in Athena
+</li>
+<li>
+Histogram fully implemented in Artemis
+
+</li>
+</ol>
+<ul>
+<li id="sec-1.10.1">Artemis <br/>
+<ul>
+<li>
+Verify that fit folder exists before trying to deserialize it
+
+
+</li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+
+</div>
+
+<div id="outline-container-2" class="outline-2">
+<h2 id="sec-2"><span class="section-number-2">2</span> Beta testing releases: </h2>
+<div class="outline-text-2" id="text-2">
+
+
+
+</div>
+
+<div id="outline-container-2.1" class="outline-3">
+<h3 id="sec-2.1"><span class="section-number-3">2.1</span> Release 9: 30 October, 2011 </h3>
+<div class="outline-text-3" id="text-2.1">
+
+
+<ul>
+<li id="sec-2.1.1">Athena <br/>
+<ul>
+<li>
+Display YAMLs for PCA and PeakFit objects
+</li>
+<li>
+Fixed a bug using one of the self-absorption algorithms
+</li>
+<li>
+YAML displays in Athena for PCA and PeakFit objects
+</li>
+<li>
+changing edge or element now triggers modified indicator
+</li>
+<li>
+rebinning parameters in column selection dialog were not being
+used properly, nor restored for the next data set
+</li>
+<li>
+correctly tie reference channels from project files generated by
+old Athena
+</li>
+<li>
+after a merge group list selection and marking of merged group
+now done correctly
+</li>
+<li>
+Athena project file now records and recovers marked state
+</li>
+<li>
+Record imported and exported athena project files for use in
+"recently used" menus in such a way that they show up in
+Artemis's MRU menu as well.
+</li>
+<li>
+Refuse to plot xanes or chi data as a quadplot.
+</li>
+<li>
+Added a user-specified pause between traces in a marked group
+plot &ndash; this slows down the display of a sequence of traces
+
+</li>
+</ul>
+</li>
+<li id="sec-2.1.2">Artemis <br/>
+<ul>
+<li>
+Fixed a bug deleting items from plotting list
+</li>
+<li>
+Fixed a bug computing happiness, excluded paths should not be
+evaluated for the pathparam penalty
+</li>
+<li>
+commented out tic mark munging for history reports
+</li>
+<li>
+suppress an extraneous warning box when a fit fails its sanity
+checks
+</li>
+<li>
+Several improvements to behavior of GDS grid
+</li>
+<li>
+Facelift on Atoms page
+</li>
+<li>
+Check to see if temp and theta already exist as parameters when
+using Debye or Eins model from context menu
+</li>
+<li>
+better display of numbers/mathexps in GDS grid with configurable
+precision
+</li>
+<li>
+Atoms was setting angles incorrectly formonoclinic groups at the
+step of verifying angle values against space group and setting
+</li>
+<li>
+it was possible to drag and drop non-numeric text onto the N
+TextCtrl
+</li>
+<li>
+Prompted to save current project if importing a project while
+there appears to be a project started in Artemis.  The current is
+saved or not, then Artemis is cleared, then the new project is
+imported.
+
+</li>
+</ul>
+</li>
+<li id="sec-2.1.3">Demeter <br/>
+<ul>
+<li>
+Atoms cluster list now tags atoms by shell
+</li>
+<li>
+Forcing display of debug menus in A&amp;A until they become more
+stable
+</li>
+<li>
+Added a recipe for using Empirical standards
+</li>
+<li>
+override <code>all</code> method in Demeter::PeakFit
+</li>
+<li>
+standards from column files did not have datatype attribute set
+correctly, so standards part of Hephaestus was broken
+</li>
+<li>
+don't run find<sub>edge</sub> method on data if the element is already set
+to something other than H
+</li>
+<li>
+Made a <code>marked</code> attribute of Demeter::Data object for use with
+Athena
+</li>
+<li>
+Corrected an error is sorting the display of the MRU files
+</li>
+<li>
+added plot<sub>pause</sub> attribute to the Plot object
+
+</li>
+</ul>
+</li>
+<li id="sec-2.1.4">Windows installer <br/>
+<ul>
+<li>
+have inno make an Atoms desktop icon
+
+</li>
+</ul>
+</li>
+<li id="sec-2.1.5">Acknowledgements for this release <br/>
+<ul>
+<li>
+Emmanuel Doelsch
+</li>
+<li>
+Jason Gaudet
+</li>
+<li>
+Shelly Kelly
+
+
+</li>
+</ul>
+</li>
+</ul>
+</div>
+
+</div>
+
+<div id="outline-container-2.2" class="outline-3">
+<h3 id="sec-2.2"><span class="section-number-3">2.2</span> Release 8: 11 October, 2011 </h3>
+<div class="outline-text-3" id="text-2.2">
+
+
+<ul>
+<li id="sec-2.2.1">Athena <br/>
+<ul>
+<li>
+use Demeter::FPath so that empirical standard can be written
+</li>
+<li>
+fixstep button was being erroneously ticked due to a bug in
+pre/norm/step interaction
+</li>
+<li>
+ignore project file records that are malformed due to missing
+data arrays
+</li>
+<li>
+resort data if energy column other than 1 is selected in any way
+when using the column selection dialog
+</li>
+<li>
+Now correctly importing MED columns as separate channels
+
+</li>
+</ul>
+</li>
+<li id="sec-2.2.2">Artemis <br/>
+<ul>
+<li>
+fixed a bug importing chi(k) column data file
+
+</li>
+</ul>
+</li>
+<li id="sec-2.2.3">Demeter <br/>
+<ul>
+<li>
+Datatype was not set correctly in Data::MultiChannel object
+
+</li>
+</ul>
+</li>
+<li id="sec-2.2.4">Acknowledgements for this release <br/>
+<ul>
+<li>
+Fred Mosslemans
+</li>
+<li>
+George Sterbinsky
+
+</li>
+</ul>
+</li>
+</ul>
+</div>
+
+</div>
+
+<div id="outline-container-2.3" class="outline-3">
+<h3 id="sec-2.3"><span class="section-number-3">2.3</span> Release 7: 10 October, 2011 </h3>
+<div class="outline-text-3" id="text-2.3">
+
+
+<ul>
+<li id="sec-2.3.1">Athena <br/>
+<ul>
+<li>
+Handle changes to rmax<sub>out</sub> correctly
+</li>
+<li>
+Handle the absence of PDL more gracefully
+</li>
+<li>
+Implemented peak fitting tool
+</li>
+<li>
+Fixed a bug that was slowing down the response of the column
+selection dialog
+</li>
+<li>
+Fixed a bug causing a crash when importing keV data
+</li>
+<li>
+Fixed display of ISO-8859 encoded data files in the column
+selection dialog.
+</li>
+<li>
+Attempt to deal more gracefully with unreadable files
+
+</li>
+</ul>
+</li>
+<li id="sec-2.3.2">Artemis <br/>
+<ul>
+<li>
+Fixed a formatting error reporting correlations in the log file
+</li>
+<li>
+Changed the logic for how GDS params get updated before a plot
+</li>
+<li>
+Issue Ifeffit's unguess command at the beginning of a fit to make
+sure that discarded or skipped (or def-ed or set) guess
+parameters do not remain as guesses in Ifeffit, which makes it
+impossible to evaluate uncertainties.
+</li>
+<li>
+Fixed a bug in how the pathfinder-&gt;label configuration parameter
+was being interpreted.  Also changed the default absorber token
+to @
+</li>
+<li>
+Handle changes to rmax<sub>out</sub> correctly
+</li>
+<li>
+Fixed a bug importing projects from earlier versions of Artemis
+(deprecated nindicators attribute of the Plot onject)
+</li>
+<li>
+Quick first shell (FSPath) now properly respects a change in N
+</li>
+<li>
+Fixed a bug wherein Artemis would crash reading a project file
+with a quick first shell (FSPath) object
+</li>
+<li>
+Implemented drag-n-drop for cloning a path and copying a path to
+other data sets
+</li>
+<li>
+Fixed a bug cloning quick first shell (FSPath) objects
+</li>
+<li>
+Artemis now respects choice of fit space.
+</li>
+<li>
+Right click on words in path parameter math expressions to post a
+context menu for creating/modifying GDS parameters
+</li>
+<li>
+Fixed a bug precluding creating an atoms.inp by hand via the GUI
+
+</li>
+</ul>
+</li>
+<li id="sec-2.3.3">Demeter <br/>
+<ul>
+<li>
+Fixed a problem interpreting rhombohedral space groups in Atoms.
+</li>
+<li>
+Implemented peak fitting using Ifeffit as the backend (other
+option is fityk)
+</li>
+<li>
+Files with very wide column label lines can run into a length
+limit in Ifeffit, specifically in ishtxt iff<sub>show</sub>.f.  Since
+Demeter relies on Ifeffit reporting $column<sub>label</sub> correctly, this
+lead to truncation of columns available when importing such data.
+</li>
+<li>
+Made the save<sub>many</sub> and save("fit",&hellip;) methods understand either
+set of strings denoting the part to be saved.  (save<sub>many</sub> took
+things like 'chik2' and 'chir<sub>mag'</sub>, which save("fit",&hellip;) took
+things like 'k2' and 'rmag').  Also added a useful error message
+to save<sub>many</sub> warning against passing it ScatteringPath objects.
+</li>
+<li>
+Improvements to the Dubble plugin
+</li>
+<li>
+Fit sanity check: notice an obvious case of attempting to use the
+same data set more than once in a multiple data set fit.  This is
+presumed to be a naughty attempt to increase Nidp.
+</li>
+<li>
+Inverted residual function in PCA plots
+</li>
+<li>
+Fixed several bugs importing already-normalized data
+</li>
+<li>
+Added Encoding::FixLatin as a dependence.  There is some chance
+of data corruption using this tool, but since it is only used for
+display of text in a GUI and not for passing data to Ifeffit,
+this is not a very serious problem.
+</li>
+<li>
+Fixed a bug wherein a cloned Data group did not have its
+derivative computed
+</li>
+<li>
+Fixed a bug in aligning data.  Also modified code to perform
+alignment exactly like the old version.  Made "interp" the
+default interpolation function (was qinterp).
+</li>
+<li>
+Found a few places where files or directories were opened and not
+closed 
+</li>
+<li>
+The element symbol type constraint was missing Am through Cf
+</li>
+<li>
+New "trace" method for printing a colorized stack trace from any
+location to stdout
+</li>
+<li>
+Fixed a bug in the automated alignment algorithm (now using
+data's current bkg<sub>eshift</sub> as the initial guess)
+
+</li>
+</ul>
+</li>
+<li id="sec-2.3.4">Acknowledgements for this release <br/>
+<ul>
+<li>
+Eric Breynaert, superstar (literally dozens of bug reports from the last release!)
+</li>
+<li>
+George Sterbinsky
+</li>
+<li>
+Shelly Kelly
+</li>
+<li>
+Erik Farquhar
+</li>
+<li>
+Scott Calvin
+
+
+</li>
+</ul>
+</li>
+</ul>
+</div>
+
+</div>
+
+<div id="outline-container-2.4" class="outline-3">
+<h3 id="sec-2.4"><span class="section-number-3">2.4</span> Release 6: 09 September, 2011 </h3>
+<div class="outline-text-3" id="text-2.4">
+
+<ul>
+<li id="sec-2.4.1">Athena <br/>
+<ul>
+<li>
+Corrected the behavior of the LCF tool when plotting without
+fitting in several edge cases that involve either a single
+standard or weights set by hand
+</li>
+<li>
+Added a fourth plotting terminal
+</li>
+<li>
+Issue error to statusbar when kmax<sub>suggest</sub> is oddly small
+</li>
+<li>
+Implemented Scott's deriv(phase(chi(R))) idea with a
+configuration parameter for turning it on and off
+</li>
+<li>
+Copying a group now copies its marked state
+</li>
+<li>
+Added invert button to column selection dialog
+</li>
+<li>
+Implemented PCA tool
+</li>
+<li>
+Commented out Freeze menu since group freezing is currently
+unimplemented
+
+</li>
+</ul>
+</li>
+<li id="sec-2.4.2">Artemis <br/>
+<ul>
+<li>
+Added a fourth plotting terminal
+</li>
+<li>
+Make the import file menu entry recognize all plausible file
+types and do the right thing.  This makes the Import submenu
+somewhat redundant.
+</li>
+<li>
+Issue error to statusbar when kmax<sub>suggest</sub> is oddly small
+</li>
+<li>
+Add triangular paths to Histogram subsystem
+
+</li>
+</ul>
+</li>
+<li id="sec-2.4.3">Demeter <br/>
+<ul>
+<li>
+When reading epsilon from Ifeffit, recognize when it finds NaN
+and do something sensible
+</li>
+<li>
+Implemented Scott's deriv(phase(chi(R))) idea in all plotting
+backends and in column output
+</li>
+<li>
+Boolean flag for indicating a single data group fit and setting
+the Data plotkey attribute appropriately in R or q.
+</li>
+<li>
+Fixed a configuration bug wherein the GUIs could clobber one
+another's configuration changes
+</li>
+<li>
+Added inv attribute for negating column selection
+</li>
+<li>
+Implemented PCA using PDL + specialty plots
+
+</li>
+</ul>
+</li>
+<li id="sec-2.4.4">Acknowledgements for this release <br/>
+<ul>
+<li>
+Fred Mosselmans
+</li>
+<li>
+Scott Calvin
+</li>
+<li>
+Eric Breynaert
+
+</li>
+</ul>
+</li>
+</ul>
+</div>
+
+</div>
+
+<div id="outline-container-2.5" class="outline-3">
+<h3 id="sec-2.5"><span class="section-number-3">2.5</span> Release 5: 18 August, 2011 </h3>
+<div class="outline-text-3" id="text-2.5">
+
+<ul>
+<li id="sec-2.5.1">Athena <br/>
+<ul>
+<li>
+Fixed a display problem in the column selection dialog
+</li>
+<li>
+Fixed several problems with restoring LCF fits after performing a
+combinatorial sequence
+</li>
+<li>
+Allow seeting window function for back transform independently
+</li>
+<li>
+Fix default settings for LCF object in athena's LCF dialog
+</li>
+<li>
+Tie together merge and reference for merge when the reference for
+the merge is also made
+</li>
+<li>
+Added a "change all groups" option to the chnage type dialog
+</li>
+<li>
+Made the LCF layout a bit prettier
+</li>
+<li>
+Do not unlink autosave file at start-up &ndash; it needs to stick
+around in case the problem that lead to the crash happens again
+</li>
+<li>
+Improved behavior for Copy group feature
+
+</li>
+</ul>
+</li>
+<li id="sec-2.5.2">Artemis <br/>
+<ul>
+<li>
+Allow seeting window function for back transform independently
+</li>
+<li>
+Fixed a bug involving non-zero values of arbitrary k-weighting
+when importing old-style project files
+
+</li>
+</ul>
+</li>
+<li id="sec-2.5.3">Demeter <br/>
+<ul>
+<li>
+Correctly restore restoring LCF fits after performing a
+combinatorial sequence
+
+</li>
+</ul>
+</li>
+<li id="sec-2.5.4">Acknowledgements for this release <br/>
+<ul>
+<li>
+Eric Breynaert
+</li>
+<li>
+Emmanuel Doelsch
+</li>
+<li>
+Scott Calvin
+</li>
+<li>
+Van Vu
+</li>
+<li>
+Chris Patridge
+
+</li>
+</ul>
+</li>
+</ul>
+</div>
+
+</div>
+
+<div id="outline-container-2.6" class="outline-3">
+<h3 id="sec-2.6"><span class="section-number-3">2.6</span> Release 4: 12 August, 2011 </h3>
+<div class="outline-text-3" id="text-2.6">
+
+<ul>
+<li id="sec-2.6.1">Athena <br/>
+<ul>
+<li>
+Inmplemented an autosave feature + recovery of autosave after a crash
+</li>
+<li>
+Fixed several LCF bugs
+</li>
+<li>
+Use arbitrary k-weights more sensibly
+</li>
+<li>
+Fixed a bug plucking spline range in k
+</li>
+<li>
+Better message in pluck dialog
+</li>
+<li>
+Use demeter's configuration dialog to configure Plugins that have
+configuration parameters (currently, 10BMMultiChannel and X23A2MED)
+
+</li>
+</ul>
+</li>
+<li id="sec-2.6.2">Artemis <br/>
+<ul>
+<li>
+The path-like tab in the Atoms/Feff frame is now set correctly
+when importing a project file
+</li>
+<li>
+Replacing chi(k) on a Data frame now works correctly
+</li>
+<li>
+More descriptive update messages in statusbar during histogram
+processing
+</li>
+<li>
+Histogram interface is more sensitive to whether time-consuming
+chores need to be redone
+</li>
+<li>
+Grid in GDS frame now recognizes smart keys for changing
+parameter type.  Change all selected params:
+<ul>
+<li>
+Alt-g: guess
+</li>
+<li>
+Alt-s: set
+</li>
+<li>
+Alt-d: def
+</li>
+<li>
+Alt-l: lguess
+</li>
+<li>
+Alt-k: skip
+</li>
+<li>
+Alt-a: after
+</li>
+<li>
+Alt-r: restrain
+</li>
+<li>
+Alt-p: penalty
+</li>
+</ul>
+</li>
+<li>
+New config parameter (artemis-&gt;plot<sub>frame</sub><sub>x</sub>) for aligning the
+Plot window properly on a multiple monitor setup (something I am
+having trouble figuring out properly)
+</li>
+<li>
+Follow Windows link files for various import types
+</li>
+<li>
+Check file type on import for:
+<ul>
+<li>
+fitting projects
+</li>
+<li>
+Athena projects
+</li>
+<li>
+old-style fitting projects
+</li>
+<li>
+demeter serializations
+</li>
+<li>
+chi(k) data (this is imperfect &ndash; mu(E) data, for instance,will pass the test)
+</li>
+</ul>
+</li>
+<li>
+Use arbitrary k-weights more sensibly
+</li>
+<li>
+Fix a bug creating a blank Atoms frame wherein one could not
+return to the Atoms tab
+</li>
+<li>
+Fixed a bug importing autosave file
+
+</li>
+</ul>
+</li>
+<li id="sec-2.6.3">Demeter <br/>
+<ul>
+<li>
+Integrate VASP MD output into histogram subsystem
+</li>
+<li>
+Follow Windows link files now done for every object that has a
+file attribute
+</li>
+<li>
+More sensible behavior using arbitrary k-weighting
+</li>
+<li>
+Fixed a bug plotting indicators with phase part of chi(R)
+
+</li>
+</ul>
+</li>
+<li id="sec-2.6.4">Windows installer <br/>
+
+</li>
+<li id="sec-2.6.5">Acknowledgements for this release <br/>
+<ol>
+<li>
+Scott Calvin
+</li>
+<li>
+Emmanuel Dolsch
+</li>
+<li>
+Van Vu
+
+
+</li>
+</ol>
+</li>
+</ul>
+</div>
+
+</div>
+
+<div id="outline-container-2.7" class="outline-3">
+<h3 id="sec-2.7"><span class="section-number-3">2.7</span> Release 3: 8 July, 2011 </h3>
+<div class="outline-text-3" id="text-2.7">
+
+<ul>
+<li id="sec-2.7.1">Athena <br/>
+<ul>
+<li>
+Plugin registry: right click open a menu with for plugin
+documentation (POD converted to text, displayed in a
+Demeter::UI::Artemis::ShowText) and a configuration utility for
+those plugins with an ini file.
+</li>
+<li>
+Fixed several problems with the automation of the column
+selection dialog
+</li>
+<li>
+The X23A2MED plugin now configures itself on the first use and
+responds gracefully to misconfiguration.  It also handles data
+from the 1-element Vortex.
+</li>
+<li>
+Pluck buttons implemented in more places
+</li>
+<li>
+Merging groups with reference channels also merges reference
+channels into a reference group for the merge
+</li>
+<li>
+Tools for monitoring Ifeffit's memory use
+</li>
+<li>
+Modified SSRLA plugin to handle data from the ESRF ROBL beamline.
+ROBL writes some high-ASCII characters in a way that confuses the
+column selection dialog, so theplugin strips them from the file
+</li>
+<li>
+Athena is now capable of following windows shortcut (.lnk) files
+
+</li>
+</ul>
+</li>
+<li id="sec-2.7.2">Artemis <br/>
+<ul>
+<li>
+Pluck buttons now work on the Data page and on the indicators tab
+
+</li>
+</ul>
+</li>
+<li id="sec-2.7.3">Demeter <br/>
+<ul>
+<li>
+Changed the default color of indicators to a dark brown, which
+stand out better against a red trace (i.e. line color #2)
+</li>
+<li>
+Mode object now has attributes for keeping track of Ifeffit's
+memory use.  Data and Path <sub>update</sub> methods + Fit and LCF fit
+methods update those attributes.
+
+</li>
+</ul>
+</li>
+<li id="sec-2.7.4">Windows installer <br/>
+<ul>
+<li>
+This time I <b>really</b> made it so that all bat file launchers save
+STDOUT and STDERR from the current session to a log file in
+%APPDATA%\demeter\
+</li>
+<li>
+Make %APPDATA%\demeter\ at install time if it does not already
+exist
+</li>
+<li>
+Compile Ifeffit with an 8 Mb heap, more arrays, and more Feff
+paths.
+
+</li>
+</ul>
+</li>
+<li id="sec-2.7.5">Acknowledgements for this release <br/>
+Same gang as last time + Stephen Price.
+
+</li>
+</ul>
+</div>
+
+</div>
+
+<div id="outline-container-2.8" class="outline-3">
+<h3 id="sec-2.8"><span class="section-number-3">2.8</span> Release 2: 24 June, 2011 </h3>
+<div class="outline-text-3" id="text-2.8">
+
+<ul>
+<li id="sec-2.8.1">Athena <br/>
+<ul>
+<li>
+Fixed some language issues in the Files menu
+</li>
+<li>
+Fixed several bugs surrounding the bkg<sub>fixstep</sub> Data attribute and
+made its behavior in relation to editing the normalization,
+pre-edge, and edge step text entry boxes more sensible
+</li>
+<li>
+Added wxTE<sub>PROCESS</sub><sub>ENTER</sub> style to all text entry boxes.  This
+allows replotting or other actions (or none at all) upon hitting
+return with focus in a text box.  This is in response to a
+complaint that hitting enter in a text box caused focus to shift
+unexpectedly and to a request for more functionality.
+</li>
+<li>
+Rewrote the quad plot
+</li>
+<li>
+Clarified language used in stack tab of plotting options section
+</li>
+<li>
+Fix a problem doing LCF fits with the final weight being negative
+when weights constrained to be non-negative and to sum to one.
+</li>
+<li>
+Escape underscores in gnuplot plot legend for LCF plots
+</li>
+<li>
+Fixed a bug using a background removal standard
+</li>
+<li>
+Athena now reads chi(k) data files correctly
+</li>
+<li>
+Group list:
+<ul>
+<li>
+Control-drag to rearrange groups in group list
+</li>
+<li>
+Ctrl-j/Ctrl-k to change focus up and down in the groups list
+</li>
+<li>
+Alt-j/Alt-k to move groups up and down in the groups list
+</li>
+</ul>
+</li>
+<li>
+Work around spurious error message when plucking from Gnuplot on
+Windows
+</li>
+<li>
+Multiple plotting terminals with Gnuplot
+</li>
+<li>
+Configure utility for filetype plugins that come with
+configuration files
+
+</li>
+</ul>
+</li>
+<li id="sec-2.8.2">Artemis <br/>
+<ul>
+<li>
+Completely rewrote mechanism for importing old-style Artemis
+project files, which now works much more reliably.
+</li>
+<li>
+Feff object's rdinp method now recognizes a Feff8 input file.
+This is mostly used by Artemis to refuse to import such a thing as
+Feff8 is not yet supported in Demeter
+</li>
+<li>
+Implemented Rk plot and made a button for it
+</li>
+<li>
+Added wxTE<sub>PROCESS</sub><sub>ENTER</sub> style to all one-line text entry boxes.
+</li>
+<li>
+Multiple plotting terminals with Gnuplot
+
+</li>
+</ul>
+</li>
+<li id="sec-2.8.3">Demeter <br/>
+<ul>
+<li>
+Changes to selection of the plotting backend just prior to R1
+broke most of the tests.  Both the selection mechanism and all the
+tests were fixed.
+
+</li>
+</ul>
+</li>
+<li id="sec-2.8.4">Windows Installer <br/>
+<ul>
+<li>
+Renamed desktop icons so as to not overwrite Horae's icons
+</li>
+<li>
+All bat file launchers save STDOUT and STDERR from the current
+session to a log file in %APPDATA%\demeter\
+
+</li>
+</ul>
+</li>
+<li id="sec-2.8.5">Acknowledgements for this release <br/>
+<ol>
+<li>
+Scott Calvin
+</li>
+<li>
+Shelly Kelly
+</li>
+<li>
+Eric Breynaert
+</li>
+<li>
+LachLan MacLean
+</li>
+<li>
+Andreas Voegelin
+
+</li>
+</ol>
+</li>
+</ul>
+</div>
+
+</div>
+
+<div id="outline-container-2.9" class="outline-3">
+<h3 id="sec-2.9"><span class="section-number-3">2.9</span> Release 1: 10 June, 2011 </h3>
+<div class="outline-text-3" id="text-2.9">
+
+<p>Initial beta testing release
+</p></div>
+</div>
+</div>
+<div id="postamble">
+<p class="author"> Author: Bruce Ravel
+<a href="mailto:bravel AT bnl DOT gov">&lt;bravel AT bnl DOT gov&gt;</a>
+</p>
+<p class="date"> Date: 2012-03-26 17:51:39 EDT</p>
+<p class="creator">HTML generated by org-mode 6.33x in emacs 23</p>
+</div>
+</div>
+</body>
+</html>

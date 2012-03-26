@@ -2,7 +2,7 @@ package  Demeter::UI::Wx::MRU;
 
 =for Copyright
  .
- Copyright (c) 2006-2011 Bruce Ravel (bravel AT bnl DOT gov).
+ Copyright (c) 2006-2012 Bruce Ravel (bravel AT bnl DOT gov).
  All rights reserved.
  .
  This file is free software; you can redistribute it and/or
@@ -24,9 +24,8 @@ use Wx::Event qw(EVT_CLOSE EVT_LISTBOX EVT_BUTTON EVT_RADIOBOX);
 
 use List::MoreUtils qw(any);
 
-#use Demeter;
+use Demeter qw(:none);
 
-my $demeter = Demeter->new();
 ## type is either a scalar containing a string or an array reference
 ## pointing to an array of strings
 sub new {
@@ -34,7 +33,7 @@ sub new {
 
   my @types = (ref($type) =~ m{ARRAY}) ? @$type : ($type);
 
-  my @list = $demeter->get_mru_list(@types);
+  my @list = Demeter->get_mru_list(@types);
   unshift(@list, ["Open a blank Atoms window", '-----']) if any {$_ eq 'atoms'} @types;
   return -1 if not @list;
 
@@ -78,3 +77,57 @@ sub GetMruSelection {
 };
 
 1;
+
+=head1 NAME
+
+Demeter::UI::Wx::MRU - A Wx dialog for selecting from Demeter's most recently used files
+
+=head1 VERSION
+
+This documentation refers to Demeter version 0.9.
+
+=head1 SYNOPSIS
+
+This provides a dialog for selecting from one or more of Demeter's
+most recently used files.
+
+  use Demeter::UI::Wx::MRU;
+  $dialog = Demeter::UI::Wx::MRU->new($self, $type,
+                                      "Select a recent $type file",
+                                      "Recent $type files");
+  $file = $dialog->GetMruSelection if ( $dialog->ShowModal != wxID_CANCEL );
+
+C<$type> is one the strings recognized by L<Demeter::MRU>.  C<$file>
+is a fully resolve file path.
+
+=head1 DESCRIPTION
+
+This posts a Wx
+L<SingleChoiceDialog|http://docs.wxwidgets.org/2.8.4/wx_wxsinglechoicedialog.html#wxsinglechoicedialog>
+instrumented to display and selection from one of Demeter's lists of
+recently used files.
+
+=head1 BUGS AND LIMITATIONS
+
+Please report problems to Bruce Ravel (bravel AT bnl DOT gov)
+
+Patches are welcome.
+
+=head1 AUTHOR
+
+Bruce Ravel (bravel AT bnl DOT gov)
+
+L<http://cars9.uchicago.edu/~ravel/software/>
+
+=head1 LICENCE AND COPYRIGHT
+
+Copyright (c) 2006-2012 Bruce Ravel (bravel AT bnl DOT gov). All rights reserved.
+
+This module is free software; you can redistribute it and/or
+modify it under the same terms as Perl itself. See L<perlgpl>.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+
+=cut

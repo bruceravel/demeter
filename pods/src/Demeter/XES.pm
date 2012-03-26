@@ -2,7 +2,7 @@ package Demeter::XES;
 
 =for Copyright
  .
- Copyright (c) 2006-2011 Bruce Ravel (bravel AT bnl DOT gov).
+ Copyright (c) 2006-2012 Bruce Ravel (bravel AT bnl DOT gov).
  All rights reserved.
  .transmission
  This file is free software; you can redistribute it and/or
@@ -22,8 +22,8 @@ use File::Basename;
 use List::MoreUtils qw(minmax);
 use List::Util qw(max);
 
-use Readonly;
-Readonly my $EPSILON => 1e-3;
+
+use Demeter::Constants qw{$EPSILON3};
 
 use Moose;
 extends 'Demeter';
@@ -32,7 +32,6 @@ with 'Demeter::Data::Arrays';
 
 use MooseX::Aliases;
 #use MooseX::AlwaysCoerce;   # this might be useful....
-#use MooseX::StrictConstructor;
 use Moose::Util::TypeConstraints;
 use Demeter::StrTypes qw( Element
 			  Line
@@ -190,10 +189,10 @@ sub prep_peakfit {
   my ($self, $xmin, $xmax) = @_;
   $self->_update('plot');
   my @e = $self->get_array("energy");
-  if (abs($xmin) < $EPSILON) {
+  if (abs($xmin) < $EPSILON3) {
     $xmin = $e[0];
   };
-  if (abs($xmax) < $EPSILON) {
+  if (abs($xmax) < $EPSILON3) {
     $xmax = $e[$#e];
   };
   return ($xmin, $xmax);
@@ -258,7 +257,7 @@ Demeter::Data - Rudimentary processing of XES data
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.5.
+This documentation refers to Demeter version 0.9.
 
 =head1 SYNOPSIS
 
@@ -437,7 +436,7 @@ L<http://cars9.uchicago.edu/~ravel/software/>
 
 =head1 LICENCE AND COPYRIGHT
 
-Copyright (c) 2006-2011 Bruce Ravel (bravel AT bnl DOT gov). All rights reserved.
+Copyright (c) 2006-2012 Bruce Ravel (bravel AT bnl DOT gov). All rights reserved.
 
 This module is free software; you can redistribute it and/or
 modify it under the same terms as Perl itself. See L<perlgpl>.

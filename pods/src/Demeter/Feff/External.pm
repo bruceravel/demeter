@@ -2,7 +2,7 @@ package Demeter::Feff::External;
 
 =for Copyright
  .
- Copyright (c) 2006-2011 Bruce Ravel (bravel AT bnl DOT gov).
+ Copyright (c) 2006-2012 Bruce Ravel (bravel AT bnl DOT gov).
  All rights reserved.
  .
  This file is free software; you can redistribute it and/or
@@ -19,9 +19,7 @@ use autodie qw(open close);
 
 use Moose;
 extends 'Demeter::Feff';
-use MooseX::AttributeHelpers;
 use MooseX::Aliases;
-#use MooseX::StrictConstructor;
 
 use List::MoreUtils qw(none firstidx);
 use File::Basename;
@@ -29,12 +27,11 @@ use File::Copy;
 use File::Path;
 use File::Spec;
 
-use Readonly;
-Readonly my $CTOKEN => '+';
-
+use Demeter::StrTypes qw(FileName);
+use Demeter::Constants qw($CTOKEN);
 
 has '+source'   => (default => 'external');
-has 'file'      => (is => 'rw', isa => 'Str',  default => q{},
+has 'file'      => (is => 'rw', isa => FileName,  default => q{},
 		    trigger => sub{my ($self, $new) = @_;
 				   $self->rdinp if $new;
 				   $self->folder(File::Spec->rel2abs(dirname($new)));
@@ -53,15 +50,15 @@ has 'filesdat'  => (is => 'rw', isa => 'Str',  default => q{},);
 has 'pathsfile' => (is => 'rw', isa => 'Str',  default => q{},);
 has 'npaths'    => (is => 'rw', isa => 'Int',  default => 0,);
 has 'nnnn'      => (
-		    metaclass => 'Collection::Hash',
+		    traits    => ['Hash'],
 		    is        => 'rw',
 		    isa       => 'HashRef',
 		    default   => sub { {} },
-		    provides  => {
-				  exists    => 'exists_in_nnnn',
-				  keys      => 'ids_in_nnnn',
-				  get       => 'get_nnnn',
-				  set       => 'set_nnnn',
+		    handles   => {
+				  'exists_in_nnnn' => 'exists',
+				  'ids_in_nnnn'    => 'keys',
+				  'get_nnnn'       => 'get',
+				  'set_nnnn'       => 'set',
 				 },
 		   );
 
@@ -239,7 +236,7 @@ Demeter::Feff::External - Import and manipulate external Feff calculations
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.5.
+This documentation refers to Demeter version 0.9.
 
 =head1 SYNOPSIS
 
@@ -397,7 +394,7 @@ L<http://cars9.uchicago.edu/~ravel/software/>
 
 =head1 LICENCE AND COPYRIGHT
 
-Copyright (c) 2006-2011 Bruce Ravel (bravel AT bnl DOT gov). All rights reserved.
+Copyright (c) 2006-2012 Bruce Ravel (bravel AT bnl DOT gov). All rights reserved.
 
 This module is free software; you can redistribute it and/or
 modify it under the same terms as Perl itself. See L<perlgpl>.

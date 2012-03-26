@@ -2,7 +2,7 @@ package Demeter::Data::Prj;
 
 =for Copyright
  .
- Copyright (c) 2006-2011 Bruce Ravel (bravel AT bnl DOT gov).
+ Copyright (c) 2006-2012 Bruce Ravel (bravel AT bnl DOT gov).
  All rights reserved.
  .
  This file is free software; you can redistribute it and/or
@@ -19,9 +19,7 @@ use autodie qw(open close);
 
 use Moose;
 extends 'Demeter';
-use MooseX::AttributeHelpers;
 use MooseX::Aliases;
-#use MooseX::StrictConstructor;
 use Demeter::StrTypes qw( FileName );
 
 #use diagnostics;
@@ -36,14 +34,14 @@ use Data::Dumper;
 has 'file'    => (is => 'rw', isa => FileName,  default => q{},
 		  trigger => sub{shift -> Read} );
 has 'entries' => (
-		  metaclass => 'Collection::Array',
+		  traits    => ['Array'],
 		  is        => 'rw',
 		  isa       => 'ArrayRef[ArrayRef]',
 		  default   => sub { [] },
-		  provides  => {
-				'push' => 'add_entry',
-				'pop'  => 'remove_entry',
-				'clear' => 'clear_entries',
+		  handles   => {
+				'add_entry' => 'push',
+				'remove_entry'  => 'pop',
+				'clear_entries' => 'clear',
 			       }
 		 );
 has 'n'       => (is => 'rw', isa => 'Int',  default => 0);
@@ -267,6 +265,7 @@ sub _record {
 				 xdi_crystal       xdi_focusing      xdi_mu_transmission     xdi_ring_energy
 				 xdi_collimation   xdi_d_spacing     xdi_undulator_harmonic  xdi_mu_fluorescence
 				 xdi_end_time      xdi_source        xdi_edge_energy         xdi_harmonic_rejection
+				 xdi_mu_reference
 			      );
   SWITCH: {
       ($k =~ m{\A(?:lcf|peak|lr)}) and do {
@@ -285,6 +284,7 @@ sub _record {
 	last SWITCH;
       };
       ($k eq 'importance') and do {
+	$groupargs{importance} = $args{importance};
 	last SWITCH;
       };
       ($k eq 'i0') and do {
@@ -432,7 +432,7 @@ Demeter::Data::Prj - Read data from Athena project files
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.5.
+This documentation refers to Demeter version 0.9.
 
 =head1 DESCRIPTION
 
@@ -615,7 +615,7 @@ L<http://cars9.uchicago.edu/~ravel/software/>
 
 =head1 LICENCE AND COPYRIGHT
 
-Copyright (c) 2006-2011 Bruce Ravel (bravel AT bnl DOT gov). All rights reserved.
+Copyright (c) 2006-2012 Bruce Ravel (bravel AT bnl DOT gov). All rights reserved.
 
 This module is free software; you can redistribute it and/or
 modify it under the same terms as Perl itself. See L<perlgpl>.

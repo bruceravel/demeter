@@ -2,7 +2,7 @@ package Demeter::PCA;
 
 =for Copyright
  .
- Copyright (c) 2006-2011 Bruce Ravel (bravel AT bnl DOT gov).
+ Copyright (c) 2006-2012 Bruce Ravel (bravel AT bnl DOT gov).
  All rights reserved.
  .
  This file is free software; you can redistribute it and/or
@@ -75,30 +75,30 @@ has 'data_matrix' => (is => 'rw', isa => 'PDL', default => sub {PDL::null});
 
 has 'ndata' => (is => 'rw', isa => 'Int', default => 0);
 has 'stack' => (
-		metaclass => 'Collection::Array',
+		traits    => ['Array'],
 		is        => 'rw',
 		isa       => 'ArrayRef[Demeter::Data]',
 		default   => sub { [] },
-		provides  => {
-			      'push'    => 'push_stack',
-			      'pop'     => 'pop_stack',
-			      'shift'   => 'shift_stack',
-			      'unshift' => 'unshift_stack',
-			      'clear'   => 'clear_stack',
+		handles   => {
+			      'push_stack'    => 'push',
+			      'pop_stack'     => 'pop',
+			      'shift_stack'   => 'shift',
+			      'unshift_stack' => 'unshift',
+			      'clear_stack'   => 'clear',
 			     },
 		trigger => sub{  my($self, $new) = @_; $self->ndata($#{ $self->stack } + 1);}
 	       );
 has 'stackgroups' => (
-		      metaclass => 'Collection::Array',
+		      traits    => ['Array'],
 		      is        => 'rw',
 		      isa       => 'ArrayRef[Str]',
 		      default   => sub { [] },
-		      provides  => {
-				    'push'    => 'push_stackgroups',
-				    'pop'     => 'pop_stackgroups',
-				    'shift'   => 'shift_stackgroups',
-				    'unshift' => 'unshift_stackgroups',
-				    'clear'   => 'clear_stackgroups',
+		      handles   => {
+				    'push_stackgroups'    => 'push',
+				    'pop_stackgroups'     => 'pop',
+				    'shift_stackgroups'   => 'shift',
+				    'unshift_stackgroups' => 'unshift',
+				    'clear_stackgroups'   => 'clear',
 				   },
 		     );
 
@@ -453,3 +453,62 @@ __PACKAGE__->meta->make_immutable;
 
 
 1;
+
+=head1 NAME
+
+Demeter::PCA - Principle components analysis
+
+=head1 VERSION
+
+This documentation refers to Demeter version 0.9.
+
+=head1 SYNOPSIS
+
+=head1 SERIALIZATION AND DESERIALIZATION
+
+Good question ...
+
+=head1 CONFIGURATION AND ENVIRONMENT
+
+See L<Demeter::Config> for a description of the configuration system.
+See the C<pca> configuration group for the relevant parameters.
+
+=head1 DEPENDENCIES
+
+Demeter's dependencies are in the F<Bundle/DemeterBundle.pm> file.
+
+=head1 BUGS AND LIMITATIONS
+
+=over 4
+
+=item *
+
+Document me!
+
+=back
+
+Please report problems to Bruce Ravel (bravel AT bnl DOT gov)
+
+Patches are welcome.
+
+=head1 AUTHOR
+
+Bruce Ravel (bravel AT bnl DOT gov)
+
+L<http://cars9.uchicago.edu/~ravel/software/>
+
+
+=head1 LICENCE AND COPYRIGHT
+
+Copyright (c) 2006-2012 Bruce Ravel (bravel AT bnl DOT gov). All rights reserved.
+
+This module is free software; you can redistribute it and/or
+modify it under the same terms as Perl itself. See L<perlgpl>.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+
+=cut
+
+

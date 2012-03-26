@@ -2,7 +2,7 @@ package Demeter::Data::Mu;
 
 =for Copyright
  .
- Copyright (c) 2006-2011 Bruce Ravel (bravel AT bnl DOT gov).
+ Copyright (c) 2006-2012 Bruce Ravel (bravel AT bnl DOT gov).
  All rights reserved.
  .
  This file is free software; you can redistribute it and/or
@@ -24,13 +24,7 @@ use Carp;
 use File::Basename;
 use File::Spec;
 use List::MoreUtils qw(any all);
-use Regexp::Common;
-use Readonly;
-Readonly my $NUMBER  => $RE{num}{real};
-Readonly my $INTEGER => $RE{num}{int};
-Readonly my $ETOK    => 0.262468292;
-Readonly my $PI      => 4*atan2(1,1);
-Readonly my $EPSILON => 1e-4;
+use Demeter::Constants qw($NUMBER $INTEGER $ETOK $PI $EPSILON4);
 
 use Text::Template;
 use Text::Wrap;
@@ -254,16 +248,20 @@ sub put_data {
     $self->resolve_defaults;
 
   } else {
-    my $command = $self->template("process", "columns");
-    $command   .= $self->template("process", "deriv");
-
-    $self->dispose($command);
-    $self->i0_scale(Ifeffit::get_scalar('__i0_scale'));
-    $self->signal_scale(Ifeffit::get_scalar('__signal_scale'));
-    $self->update_columns(0);
-    $self->update_data(0);
-
-    $self->initialize_e0 if not $self->is_nor; # we take a somewhat different path through these chores for pre-normalized data
+    if ($self->quickmerge) {
+      my $command = $self->template("process", "columns_qm");
+      $command   .= $self->template("process", "deriv_qm");
+      $self->dispose($command);
+    } else {
+      my $command = $self->template("process", "columns");
+      $command   .= $self->template("process", "deriv");
+      $self->dispose($command);
+      $self->i0_scale(Ifeffit::get_scalar('__i0_scale'));
+      $self->signal_scale(Ifeffit::get_scalar('__signal_scale'));
+      $self->update_columns(0);
+      $self->update_data(0);
+      $self->initialize_e0 if not $self->is_nor; # we take a somewhat different path through these chores for pre-normalized data
+    };
   };
   return $self;
 };
@@ -271,7 +269,7 @@ sub put_data {
 sub fix_chik {
   my ($self) = @_;
   my @k = $self->get_array('k');
-  return $self if ( ($k[0] == 0) and (all { abs($k[$_] - $k[$_-1] - 0.05) < $EPSILON } (1 .. $#k)) );
+  return $self if ( ($k[0] == 0) and (all { abs($k[$_] - $k[$_-1] - 0.05) < $EPSILON4 } (1 .. $#k)) );
   my $command = $self->template("process", "fix_chik");
   ##print $command;
   $self->dispose($command);
@@ -341,6 +339,9 @@ sub normalize {
       $command .= $self->template("process", "flatten_set");
     };
     $self->dispose($command);
+    $self->bkg_nc0(sprintf("%.14f", Ifeffit::get_scalar("norm_c0")));
+    $self->bkg_nc1(sprintf("%.14f", Ifeffit::get_scalar("norm_c1")));
+    $self->bkg_nc2(sprintf("%.14g", Ifeffit::get_scalar("norm_c2")));
   } else { # we take a somewhat different path through these chores for pre-normalized data
     $self->bkg_step(1);
     $self->bkg_fitted_step(1);
@@ -386,13 +387,14 @@ sub autobk {
     $self->bkg_nor2($self->co->default('bkg', 'nor2'));
     $self->resolve_defaults;
   };
-  #$self->dispose($command);
+  $self->dispose($command);
+  $self->bkg_step(sprintf("%.7f", $fixed || Ifeffit::get_scalar("edge_step")));
+
 
 ## is it necessary to do post_autobk and flatten templates here?  they
 ## *were* done in the normalize method...
 
   ## begin setting up all the generated arrays from the background removal
-  $self->update_bkg(0);
   $self->update_fft(1);
   $self->bkg_cl(0);
   $command .= $self->template("process", "post_autobk");
@@ -403,10 +405,6 @@ sub autobk {
   };
 
   #$self->dispose($command);
-
-#     $command .= sprintf("set $group.fbkg = ($group.bkg-$group.preline+(%.5f-$group.line)*$group.theta)/%.5f\n",
-# 			$self->get(qw(bkg_fitted_step bkg_step)))
-#       if not $self->get('is_xanes');
 
   if ($self->bkg_fixstep or $self->is_nor or ($self->datatype eq 'xanes')) {
     $command .= $self->template("process", "flatten_fit");
@@ -419,6 +417,9 @@ sub autobk {
   #$command .= $self->template("process", "deriv");
   $command .= $self->template("process", "nderiv") if not $self->is_nor;
   $self->dispose($command);
+    $self->bkg_nc0(sprintf("%.14f", Ifeffit::get_scalar("norm_c0")));
+    $self->bkg_nc1(sprintf("%.14f", Ifeffit::get_scalar("norm_c1")));
+    $self->bkg_nc2(sprintf("%.14g", Ifeffit::get_scalar("norm_c2")));
 
   ## note the largest value of the k array
   my @k = $self->get_array('k');
@@ -487,21 +488,21 @@ sub _plotE_command {
       $this = 'smooth';
     };
     push @suffix_list, $this;
-    my $n = $incr;
+    my $n = $incr % 10;
     my $cn = "col$n";
     push @color_list,  $self->po->$cn;
     push @key_list,    $self->name;
   };
   if ($self->po->e_pre)  { # show the preline
     push @suffix_list, 'preline';
-    my $n = $incr+2;
+    my $n = ($incr+2) % 10;
     my $cn = "col$n";
     push @color_list,  $self->po->$cn;
     push @key_list,    "pre-edge";
   };
   if ($self->po->e_post) { # show the postline
     push @suffix_list, 'postline';
-    my $n = $incr+3;
+    my $n = ($incr+3) % 10;
     my $cn = "col$n";
     push @color_list,  $self->po->$cn;
     push @key_list,    "post-edge";
@@ -509,7 +510,9 @@ sub _plotE_command {
   if ($self->po->e_i0) { # show i0
     if ($self->i0_string) {
       push @suffix_list, 'i0';
-      my $n = $incr+4;
+      my $n = ($incr+4) % 10;
+      $n = $incr if ($self->po->is_i0_plot);
+      $n = $incr+4 if ($self->po->is_d0s_plot);
       my $cn = "col$n";
       push @color_list,  $self->po->$cn;
       push @key_list,    ($self->po->e_mu) ? $self->po->i0_text : $self->name . ": " . $self->po->i0_text;
@@ -518,7 +521,7 @@ sub _plotE_command {
   if ($self->po->e_signal) { # show signal
     if ($self->signal_string) {
       push @suffix_list, 'signal';
-      my $n = $incr+5;
+      my $n = ($incr+5) % 10;
       my $cn = "col$n";
       push @color_list,  $self->po->$cn;
       push @key_list,    ($self->po->e_mu) ? 'signal' : $self->name . ": signal";
@@ -881,7 +884,7 @@ L<http://cars9.uchicago.edu/~ravel/software/>
 
 =head1 LICENCE AND COPYRIGHT
 
-Copyright (c) 2006-2011 Bruce Ravel (bravel AT bnl DOT gov). All rights reserved.
+Copyright (c) 2006-2012 Bruce Ravel (bravel AT bnl DOT gov). All rights reserved.
 
 This module is free software; you can redistribute it and/or
 modify it under the same terms as Perl itself. See L<perlgpl>.

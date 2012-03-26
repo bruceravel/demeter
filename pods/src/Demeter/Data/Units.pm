@@ -2,7 +2,7 @@ package Demeter::Data::Units;
 
 =for Copyright
  .
- Copyright (c) 2006-2011 Bruce Ravel (bravel AT bnl DOT gov).
+ Copyright (c) 2006-2012 Bruce Ravel (bravel AT bnl DOT gov).
  All rights reserved.
  .
  This file is free software; you can redistribute it and/or
@@ -19,10 +19,7 @@ use Moose::Role;
 use MooseX::Aliases;
 
 use Carp;
-use Readonly;
-Readonly my $ETOK    => 0.262468292;
-Readonly my $PI      => 4 * atan2 1, 1;
-Readonly my $HBARC   => 1973.27053324;
+use Demeter::Constants qw($ETOK $PI $HBARC);
 
 sub e2k {
   my ($self, $e, $how) = @_;
@@ -131,7 +128,7 @@ L<http://cars9.uchicago.edu/~ravel/software/>
 
 =head1 LICENCE AND COPYRIGHT
 
-Copyright (c) 2006-2011 Bruce Ravel (bravel AT bnl DOT gov). All rights reserved.
+Copyright (c) 2006-2012 Bruce Ravel (bravel AT bnl DOT gov). All rights reserved.
 
 This module is free software; you can redistribute it and/or
 modify it under the same terms as Perl itself. See L<perlgpl>.

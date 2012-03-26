@@ -2,7 +2,7 @@ package  Demeter::UI::Artemis::Data;
 
 =for Copyright
  .
- Copyright (c) 2006-2011 Bruce Ravel (bravel AT bnl DOT gov).
+ Copyright (c) 2006-2012 Bruce Ravel (bravel AT bnl DOT gov).
  All rights reserved.
  .
  This file is free software; you can redistribute it and/or
@@ -49,114 +49,113 @@ my $demeter  = $Demeter::UI::Artemis::demeter;
 my $icon     = File::Spec->catfile(dirname($INC{"Demeter/UI/Artemis.pm"}), 'Athena', , 'icons', "bullseye.png");
 my $bullseye = Wx::Bitmap->new($icon, wxBITMAP_TYPE_PNG);
 
+
+use Demeter::Constants qw($NUMBER);
 use Regexp::Assemble;
-use Regexp::Common;
-use Readonly;
-Readonly my $NUMBER		=> $RE{num}{real};
+use Const::Fast;
+const my $DATA_RENAME	      => Wx::NewId();
+const my $DATA_DIFF	      => Wx::NewId();
+const my $DATA_TRANSFER	      => Wx::NewId();
+const my $DATA_VPATH	      => Wx::NewId();
+const my $DATA_BALANCE	      => Wx::NewId();
+const my $DATA_DEGEN_N	      => Wx::NewId();
+const my $DATA_DEGEN_1	      => Wx::NewId();
+const my $DATA_DISCARD	      => Wx::NewId();
+const my $DATA_REPLACE	      => Wx::NewId();
+const my $DATA_KMAXSUGEST     => Wx::NewId();
+const my $DATA_EPSK	      => Wx::NewId();
+const my $DATA_NIDP	      => Wx::NewId();
+const my $DATA_SHOW	      => Wx::NewId();
+const my $DATA_YAML	      => Wx::NewId();
+const my $DATA_EXPORT	      => Wx::NewId();
 
-Readonly my $DATA_RENAME	=> Wx::NewId();
-Readonly my $DATA_DIFF		=> Wx::NewId();
-Readonly my $DATA_TRANSFER	=> Wx::NewId();
-Readonly my $DATA_VPATH		=> Wx::NewId();
-Readonly my $DATA_BALANCE	=> Wx::NewId();
-Readonly my $DATA_DEGEN_N	=> Wx::NewId();
-Readonly my $DATA_DEGEN_1	=> Wx::NewId();
-Readonly my $DATA_DISCARD	=> Wx::NewId();
-Readonly my $DATA_REPLACE	=> Wx::NewId();
-Readonly my $DATA_KMAXSUGEST	=> Wx::NewId();
-Readonly my $DATA_EPSK		=> Wx::NewId();
-Readonly my $DATA_NIDP		=> Wx::NewId();
-Readonly my $DATA_SHOW		=> Wx::NewId();
-Readonly my $DATA_YAML		=> Wx::NewId();
-Readonly my $DATA_EXPORT	=> Wx::NewId();
+const my $FIT_SAVE_K	      => Wx::NewId();
+const my $FIT_SAVE_K1	      => Wx::NewId();
+const my $FIT_SAVE_K2	      => Wx::NewId();
+const my $FIT_SAVE_K3	      => Wx::NewId();
+const my $FIT_SAVE_RM	      => Wx::NewId();
+const my $FIT_SAVE_RR	      => Wx::NewId();
+const my $FIT_SAVE_RI	      => Wx::NewId();
+const my $FIT_SAVE_QM	      => Wx::NewId();
+const my $FIT_SAVE_QR	      => Wx::NewId();
+const my $FIT_SAVE_QI	      => Wx::NewId();
 
-Readonly my $FIT_SAVE_K	        => Wx::NewId();
-Readonly my $FIT_SAVE_K1        => Wx::NewId();
-Readonly my $FIT_SAVE_K2        => Wx::NewId();
-Readonly my $FIT_SAVE_K3        => Wx::NewId();
-Readonly my $FIT_SAVE_RM        => Wx::NewId();
-Readonly my $FIT_SAVE_RR        => Wx::NewId();
-Readonly my $FIT_SAVE_RI        => Wx::NewId();
-Readonly my $FIT_SAVE_QM        => Wx::NewId();
-Readonly my $FIT_SAVE_QR        => Wx::NewId();
-Readonly my $FIT_SAVE_QI        => Wx::NewId();
+const my $PATH_TRANSFER	      => Wx::NewId();
+const my $PATH_FSPATH	      => Wx::NewId();
+const my $PATH_EMPIRICAL      => Wx::NewId();
+const my $PATH_SU	      => Wx::NewId();
+const my $PATH_RENAME	      => Wx::NewId();
+const my $PATH_SHOW	      => Wx::NewId();
+const my $PATH_ADD	      => Wx::NewId();
+const my $PATH_CLONE	      => Wx::NewId();
+const my $PATH_YAML	      => Wx::NewId();
+const my $PATH_TYPE	      => Wx::NewId();
+const my $PATH_4PARAM	      => Wx::NewId();
 
-Readonly my $PATH_TRANSFER	=> Wx::NewId();
-Readonly my $PATH_FSPATH	=> Wx::NewId();
-Readonly my $PATH_EMPIRICAL     => Wx::NewId();
-Readonly my $PATH_SU	        => Wx::NewId();
-Readonly my $PATH_RENAME	=> Wx::NewId();
-Readonly my $PATH_SHOW		=> Wx::NewId();
-Readonly my $PATH_ADD		=> Wx::NewId();
-Readonly my $PATH_CLONE		=> Wx::NewId();
-Readonly my $PATH_YAML		=> Wx::NewId();
-Readonly my $PATH_TYPE		=> Wx::NewId();
-Readonly my $PATH_4PARAM	=> Wx::NewId();
+const my $PATH_EXPORT_FEFF    => Wx::NewId();
+const my $PATH_EXPORT_DATA    => Wx::NewId();
+const my $PATH_EXPORT_EACH    => Wx::NewId();
+const my $PATH_EXPORT_MARKED  => Wx::NewId();
 
-Readonly my $PATH_EXPORT_FEFF	=> Wx::NewId();
-Readonly my $PATH_EXPORT_DATA	=> Wx::NewId();
-Readonly my $PATH_EXPORT_EACH	=> Wx::NewId();
-Readonly my $PATH_EXPORT_MARKED	=> Wx::NewId();
+const my $DATA_SAVE_K	      => Wx::NewId();
+const my $DATA_SAVE_R	      => Wx::NewId();
+const my $DATA_SAVE_Q	      => Wx::NewId();
 
-Readonly my $DATA_SAVE_K	=> Wx::NewId();
-Readonly my $DATA_SAVE_R	=> Wx::NewId();
-Readonly my $DATA_SAVE_Q	=> Wx::NewId();
+const my $PATH_SAVE_K	      => Wx::NewId();
+const my $PATH_SAVE_R	      => Wx::NewId();
+const my $PATH_SAVE_Q	      => Wx::NewId();
 
-Readonly my $PATH_SAVE_K	=> Wx::NewId();
-Readonly my $PATH_SAVE_R	=> Wx::NewId();
-Readonly my $PATH_SAVE_Q	=> Wx::NewId();
+const my $PATH_EXP_LABEL      => Wx::NewId();
+const my $PATH_EXP_N	      => Wx::NewId();
+const my $PATH_EXP_S02	      => Wx::NewId();
+const my $PATH_EXP_E0	      => Wx::NewId();
+const my $PATH_EXP_DELR	      => Wx::NewId();
+const my $PATH_EXP_SIGMA2     => Wx::NewId();
+const my $PATH_EXP_EI	      => Wx::NewId();
+const my $PATH_EXP_THIRD      => Wx::NewId();
+const my $PATH_EXP_FOURTH     => Wx::NewId();
 
-Readonly my $PATH_EXP_LABEL     => Wx::NewId();
-Readonly my $PATH_EXP_N         => Wx::NewId();
-Readonly my $PATH_EXP_S02       => Wx::NewId();
-Readonly my $PATH_EXP_E0        => Wx::NewId();
-Readonly my $PATH_EXP_DELR      => Wx::NewId();
-Readonly my $PATH_EXP_SIGMA2    => Wx::NewId();
-Readonly my $PATH_EXP_EI        => Wx::NewId();
-Readonly my $PATH_EXP_THIRD     => Wx::NewId();
-Readonly my $PATH_EXP_FOURTH    => Wx::NewId();
+const my $MARKED_SAVE_K	      => Wx::NewId();
+const my $MARKED_SAVE_K1      => Wx::NewId();
+const my $MARKED_SAVE_K2      => Wx::NewId();
+const my $MARKED_SAVE_K3      => Wx::NewId();
+const my $MARKED_SAVE_RM      => Wx::NewId();
+const my $MARKED_SAVE_RR      => Wx::NewId();
+const my $MARKED_SAVE_RI      => Wx::NewId();
+const my $MARKED_SAVE_QM      => Wx::NewId();
+const my $MARKED_SAVE_QR      => Wx::NewId();
+const my $MARKED_SAVE_QI      => Wx::NewId();
 
-Readonly my $MARKED_SAVE_K	=> Wx::NewId();
-Readonly my $MARKED_SAVE_K1     => Wx::NewId();
-Readonly my $MARKED_SAVE_K2     => Wx::NewId();
-Readonly my $MARKED_SAVE_K3     => Wx::NewId();
-Readonly my $MARKED_SAVE_RM     => Wx::NewId();
-Readonly my $MARKED_SAVE_RR     => Wx::NewId();
-Readonly my $MARKED_SAVE_RI     => Wx::NewId();
-Readonly my $MARKED_SAVE_QM     => Wx::NewId();
-Readonly my $MARKED_SAVE_QR     => Wx::NewId();
-Readonly my $MARKED_SAVE_QI     => Wx::NewId();
+const my $MARK_ALL	      => Wx::NewId();
+const my $MARK_NONE	      => Wx::NewId();
+const my $MARK_INVERT	      => Wx::NewId();
+const my $MARK_REGEXP	      => Wx::NewId();
+const my $MARK_SS	      => Wx::NewId();
+const my $MARK_MS	      => Wx::NewId();
+const my $MARK_HIGH	      => Wx::NewId();
+const my $MARK_MID	      => Wx::NewId();
+const my $MARK_LOW	      => Wx::NewId();
+const my $MARK_RBELOW	      => Wx::NewId();
+const my $MARK_RABOVE	      => Wx::NewId();
+const my $MARK_BEFORE	      => Wx::NewId();
+const my $MARK_AFTER	      => Wx::NewId();
+const my $MARK_INC	      => Wx::NewId();
+const my $MARK_EXC	      => Wx::NewId();
 
-Readonly my $MARK_ALL		=> Wx::NewId();
-Readonly my $MARK_NONE		=> Wx::NewId();
-Readonly my $MARK_INVERT	=> Wx::NewId();
-Readonly my $MARK_REGEXP	=> Wx::NewId();
-Readonly my $MARK_SS		=> Wx::NewId();
-Readonly my $MARK_MS		=> Wx::NewId();
-Readonly my $MARK_HIGH		=> Wx::NewId();
-Readonly my $MARK_MID		=> Wx::NewId();
-Readonly my $MARK_LOW		=> Wx::NewId();
-Readonly my $MARK_RBELOW	=> Wx::NewId();
-Readonly my $MARK_RABOVE	=> Wx::NewId();
-Readonly my $MARK_BEFORE	=> Wx::NewId();
-Readonly my $MARK_AFTER  	=> Wx::NewId();
-Readonly my $MARK_INC		=> Wx::NewId();
-Readonly my $MARK_EXC		=> Wx::NewId();
+const my $ACTION_INCLUDE      => Wx::NewId();
+const my $ACTION_EXCLUDE      => Wx::NewId();
+const my $ACTION_DISCARD      => Wx::NewId();
+const my $ACTION_VPATH	      => Wx::NewId();
+const my $ACTION_TRANSFER     => Wx::NewId();
+const my $ACTION_AFTER	      => Wx::NewId();
+const my $ACTION_NONEAFTER    => Wx::NewId();
 
-Readonly my $ACTION_INCLUDE     => Wx::NewId();
-Readonly my $ACTION_EXCLUDE     => Wx::NewId();
-Readonly my $ACTION_DISCARD     => Wx::NewId();
-Readonly my $ACTION_VPATH       => Wx::NewId();
-Readonly my $ACTION_TRANSFER    => Wx::NewId();
-Readonly my $ACTION_AFTER       => Wx::NewId();
-Readonly my $ACTION_NONEAFTER   => Wx::NewId();
+const my $INCLUDE_MARKED      => Wx::NewId();
+const my $EXCLUDE_MARKED      => Wx::NewId();
 
-Readonly my $INCLUDE_MARKED	=> Wx::NewId();
-Readonly my $EXCLUDE_MARKED	=> Wx::NewId();
-
-Readonly my $DISCARD_THIS	=> Wx::NewId();
-Readonly my $DISCARD_MARKED	=> Wx::NewId();
-Readonly my $DISCARD_UNMARKED	=> Wx::NewId();
+const my $DISCARD_THIS	      => Wx::NewId();
+const my $DISCARD_MARKED      => Wx::NewId();
+const my $DISCARD_UNMARKED    => Wx::NewId();
 
 sub new {
   my ($class, $parent, $nset) = @_;
@@ -167,7 +166,7 @@ sub new {
   $this ->{PARENT} = $parent;
   $this->make_menubar;
   $this->SetMenuBar( $this->{menubar} );
-  EVT_MENU($this, -1, sub{OnMenuClick(@_)} );
+  EVT_MENU($this, -1, sub{OnMenuClick(@_);} );
   EVT_CLOSE($this, \&on_close);
   EVT_ICONIZE($this, \&on_close);
 
@@ -865,7 +864,7 @@ sub fetch_parameters {
   };
 
   my $cv = $this->{cv}->GetValue;
-  # things that are not caught by $RE{num}{real} or the validator
+  # things that are not caught by $NUMBER or the validator
   if (($cv =~ m{\-.*\-}) or ($cv =~ m{\..*\.}) or ($cv =~ m{[^-]+-})) {
     carp(sprintf("Oops. The CV for data set \"%s\" is not a number ($cv).\n\n", $this->{data}->name));
     return 0;
@@ -1309,6 +1308,7 @@ sub add_parameters {
   } else {
     foreach my $n (0 .. $self->{pathlist}->GetPageCount-1) {
       next if (not $self->{pathlist}->IsChecked($n));
+      my $path = $self->{pathlist}->GetPage($n)->{path};
       $self->{pathlist}->GetPage($n)->{"pp_$param"}->SetValue($me);
     };
     $which = "the marked paths";
@@ -1792,10 +1792,12 @@ sub discard_data {
   ## get rid of all the paths
   $self->discard('all');
 
-  ## remove the button from the data tool bar
   my $dnum = $self->{dnum};
-  (my $id = $dnum) =~ s{data}{};
-  $Demeter::UI::Artemis::frames{main}->{$dnum}->Destroy;
+
+  ## destroy the data object
+  $dataobject->clear_ifeffit_titles;
+  $dataobject->dispose("erase \@group ".$dataobject->group);
+  $dataobject->DEMOLISH;
 
   ## remove the frame with the datapage
   $Demeter::UI::Artemis::frames{$dnum}->Hide;
@@ -1803,15 +1805,17 @@ sub discard_data {
   delete $Demeter::UI::Artemis::frames{$dnum};
   ## that's not quite right!
 
-  ## destroy the data object
-  $dataobject->clear_ifeffit_titles;
-  $dataobject->dispose("erase \@group ".$this->group);
-  $dataobject->DEMOLISH;
+  ## remove the button from the data tool bar
+  $Demeter::UI::Artemis::frames{main}->{databox}->Hide($Demeter::UI::Artemis::frames{main}->{$dnum});
+  $Demeter::UI::Artemis::frames{main}->{databox}->Detach($Demeter::UI::Artemis::frames{main}->{$dnum});
+  $Demeter::UI::Artemis::frames{main}->{databox}->Layout;
+  #$Demeter::UI::Artemis::frames{main}->{$dnum}->Destroy; ## this causes a segfaul .. why?
 };
 
 sub discard {
   my ($self, $mode) = @_;
-  my $how = ($mode !~ m{$NUMBER})        ? $mode
+  my $how = (ref($mode) =~ m{Feff})      ? 'feff'
+          : ($mode !~ m{$NUMBER})        ? $mode
           : ($mode == $DISCARD_THIS)     ? 'this'
           : ($mode == $DISCARD_MARKED)   ? 'marked'
           : ($mode == $DISCARD_UNMARKED) ? 'unmarked'
@@ -1834,6 +1838,16 @@ sub discard {
     ($how eq 'all') and do {
       $self->{pathlist}->Clear;
       $text = "Discarded all paths.";
+      last SWITCH;
+    };
+
+    ($how eq 'feff') and do {
+      foreach my $i (@count) {
+	if ($self->{pathlist}->GetPage($i)->{path}->parent eq $mode) {
+	  $self->{pathlist}->DeletePage($i);
+	  ($sel = 0) if ($sel = $i);
+	};
+      };
       last SWITCH;
     };
 
@@ -2159,7 +2173,7 @@ use base qw(Wx::DropTarget);
 use Demeter::UI::Artemis::DND::PathDrag;
 use Demeter::UI::Artemis::Path;
 use Demeter::UI::Wx::SpecialCharacters qw(:all);
-use Demeter::Feff::Distributions;
+#use Demeter::Feff::Distributions;
 use File::Basename;
 
 use Scalar::Util qw(looks_like_number);
@@ -2486,7 +2500,7 @@ Demeter::UI::Artemis::Data - Data group interface for Artemis
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.5.
+This documentation refers to Demeter version 0.9.
 
 =head1 SYNOPSIS
 
@@ -2522,7 +2536,7 @@ Bruce Ravel (bravel AT bnl DOT gov)
 
 =head1 LICENCE AND COPYRIGHT
 
-Copyright (c) 2006-2011 Bruce Ravel (bravel AT bnl DOT gov). All rights reserved.
+Copyright (c) 2006-2012 Bruce Ravel (bravel AT bnl DOT gov). All rights reserved.
 
 This module is free software; you can redistribute it and/or
 modify it under the same terms as Perl itself. See L<perlgpl>.

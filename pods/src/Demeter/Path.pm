@@ -2,7 +2,7 @@ package Demeter::Path;
 
 =for Copyright
  .
- Copyright (c) 2006-2011 Bruce Ravel (bravel AT bnl DOT gov).
+ Copyright (c) 2006-2012 Bruce Ravel (bravel AT bnl DOT gov).
  All rights reserved.
  .
  This file is free software; you can redistribute it and/or
@@ -19,7 +19,6 @@ use autodie qw(open close);
 
 use Moose;
 use MooseX::Aliases;
-#use MooseX::StrictConstructor;
 extends 'Demeter';
 use Demeter::StrTypes qw( Empty PathParam FileName );
 use Demeter::NumTypes qw( Natural PosInt NonNeg );
@@ -112,7 +111,7 @@ has 'datagroup'       => (is=>'rw', isa => 'Str', default => q{});
 
 has 'folder'          => (is=>'rw', isa=> 'Str',    default => q{},
 			  trigger => sub{ shift->parse_nnnn });
-has 'file'            => (is=>'rw', isa=> 'Str',    default => q{},
+has 'file'            => (is=>'rw', isa=> FileName, default => q{},
 			  trigger => sub{ shift->parse_nnnn });
 has 'Index'           => (is=>'rw', isa=>  Natural, default => 0);
 has 'include'         => (is=>'rw', isa=>  'Bool',  default => 1);
@@ -570,7 +569,7 @@ Demeter - Single and multiple scattering paths for EXAFS fitting
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.5.
+This documentation refers to Demeter version 0.9.
 
 
 =head1 SYNOPSIS
@@ -1089,7 +1088,7 @@ L<http://cars9.uchicago.edu/~ravel/software/>
 
 =head1 LICENCE AND COPYRIGHT
 
-Copyright (c) 2006-2011 Bruce Ravel (bravel AT bnl DOT gov). All rights reserved.
+Copyright (c) 2006-2012 Bruce Ravel (bravel AT bnl DOT gov). All rights reserved.
 
 This module is free software; you can redistribute it and/or
 modify it under the same terms as Perl itself. See L<perlgpl>.

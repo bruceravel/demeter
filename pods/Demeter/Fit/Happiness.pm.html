@@ -68,7 +68,7 @@
 
 <h1 id="VERSION">VERSION <a href="#TOP" class="toplink"><img alt="^" src="../../up.gif" /></a></h1>
 
-<p>This documentation refers to Demeter version 0.5.</p>
+<p>This documentation refers to Demeter version 0.9.</p>
 
 <h1 id="SYNOPSIS">SYNOPSIS <a href="#TOP" class="toplink"><img alt="^" src="../../up.gif" /></a></h1>
 
@@ -126,7 +126,8 @@ R-factor, go into the assessment of the fit.</p>
 instance,</p>
 
 <ul>
-	<li>It should have a small R-factor.</li>
+	<li>It should have a small R-factor (although a fit performed in k
+space will always have a large R-factor).</li>
 	<li>The number of variables should be considerably less than the number of
 independent points.</li>
 	<li>The S02 and sigma2 path parameters should not be negative.</li>
@@ -187,6 +188,9 @@ and 0.06 diminishes the happiness by this formula:</p></dd>
 
 </pre></dd>		<dd><p>Thus an R-factor of 0.03 reduces the happiness by 10.  An R-factor in
 excess of 0.06 incurs the full hit of 40 to the happiness.</p></dd>
+		<dd><p>The R-factor of a fit in k-space will almost always be large due the
+effect of higher frequencies on the evaluation of the R-factor.  Thus
+the scaling factor for the R-factor penalty is made 1/10 as big.</p></dd>
 	<dt><i>parameter values</i></dt>
 		<dd><p>Perform the sanity checks in <a href="../Path/Sanity.pm.html">Demeter::Path::Sanity</a>.
 Penalize the happiness by 2 for each path parameter that fails a
@@ -255,7 +259,9 @@ parameters.</p>
 
 <dl>
 	<dt><i>R-factor</i></dt>
-		<dd><p>The boundary values and the scaling factor.  Defaults: 0.02, 0.06, 1000.</p></dd>
+		<dd><p>The boundary values and the scaling factor.  Defaults: 0.02, 0.06,
+1000.  The scaling factor is reduced to 1/10 its value for a fit in
+k-space.</p></dd>
 	<dt><i>parameter values</i></dt>
 		<dd><p>The per-failure penalty.  Default: 2.  Each penalty is configurable
 using the parameters in the warnings group.</p></dd>
@@ -306,7 +312,7 @@ defining new penalties.</li>
 
 <h1 id="LICENCE_AND_COPYRIGHT">LICENCE AND COPYRIGHT <a href="#TOP" class="toplink"><img alt="^" src="../../up.gif" /></a></h1>
 
-<p>Copyright (c) 2006-2011 Bruce Ravel (bravel AT bnl DOT gov). All rights reserved.</p>
+<p>Copyright (c) 2006-2012 Bruce Ravel (bravel AT bnl DOT gov). All rights reserved.</p>
 
 <p>This module is free software; you can redistribute it and/or
 modify it under the same terms as Perl itself. See <a href="http://search.cpan.org/perldoc?perlgpl">perlgpl</a>.</p>

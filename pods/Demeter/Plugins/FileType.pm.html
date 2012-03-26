@@ -56,6 +56,7 @@
 	<li><a href="#Plugins_shipped_with_Demeter">Plugins shipped with Demeter</a></li>
 	<li><a href="#Boilerplate">Boilerplate</a></li>
 	<li><a href="#Common_attributes">Common attributes</a></li>
+	<li><a href="#Common_methods">Common methods</a></li>
 	<li><a href="#Required_methods">Required methods</a></li>
 	<li><a href="#Namespace_and_disk_locations">Namespace and disk locations</a></li>
 </ul>
@@ -73,7 +74,7 @@
 
 <h1 id="VERSION">VERSION <a href="#TOP" class="toplink"><img alt="^" src="../../up.gif" /></a></h1>
 
-<p>This documentation refers to Demeter version 0.5.</p>
+<p>This documentation refers to Demeter version 0.9.</p>
 
 <h1 id="SYNOPSIS">SYNOPSIS <a href="#TOP" class="toplink"><img alt="^" src="../../up.gif" /></a></h1>
 
@@ -294,6 +295,25 @@ that no configuration file is required.  The file must be a
 demeter_conf file so that a GUI (say, Athena) can provide a consistent
 mechanism for modifying the configuration.</p></dd>
 </dl>
+<h2 id="Common_methods">Common methods</h2>
+
+<p>All plugins inherit these methods:</p>
+
+<dl>
+	<dt><code>data_attributes</code></dt>
+		<dd><p>This returns a list which sets a number of data attributes of the Data
+object being set by the plugin, including <code>file</code>, <code>source</code>, and all
+the column selection attributes.</p></dd>
+<dd><pre>  my $plugin = Demeter::Plugins::Whatever-&gt;new(file=&gt;$file);
+  $plugin -&gt; fix;
+  my $mode = 'fluorescence';  # or 'transmission'
+  my $data = Demeter::Data-&gt;new($plugin-&gt;data_attributes($mode));
+
+</pre></dd>		<dd><p>The Data's file attribute will be set to the name of the stash file,
+the <code>source</code> attribute will be set to the raw data file, and the
+<code>energy</code>, <code>numerator</code>, <code>denominator</code>, and <code>ln</code> attributes will be
+set as suggested by the plugin.</p></dd>
+</dl>
 <h2 id="Required_methods">Required methods</h2>
 
 <p>All plugins <strong>must</strong> supply these three methods:</p>
@@ -325,7 +345,7 @@ file.  This is good practice, but is not required.</p></dd>
 
 </dd><dd><pre>      my $filetype  = Demeter::Plugins::X15B-&gt;new(file=&gt;$file);
       my $converted_file = $filetype-&gt;fix;
-       ## this also works:
+       ## this also works after the call to fix:
        ## my $converted_file = $filetype-&gt;fixed;
 
 </pre></dd><dd>
@@ -368,7 +388,7 @@ return an empty array.</p></dd>
 
 <p>All plugins <strong>must</strong> live in the <code>Demeter::Plugins::</code> namespace.  In
 the Demeter distribution, therefore, they live in the
-<cite>Demeter/Plugins</cite> folder beneath the installation location.</p>
+<cite>Demeter/Plugins/</cite> folder beneath the installation location.</p>
 
 <p>An individual user can have additional plugins in user diskspace by
 placing them in ...</p>
@@ -398,7 +418,7 @@ malformed compared to the expectations of <code>fix</code>.</li>
 
 <h1 id="LICENSE_AND_COPYRIGHT">LICENSE AND COPYRIGHT <a href="#TOP" class="toplink"><img alt="^" src="../../up.gif" /></a></h1>
 
-<p>Copyright (c) 2006-2011 Bruce Ravel (bravel AT bnl DOT gov). All rights reserved.</p>
+<p>Copyright (c) 2006-2012 Bruce Ravel (bravel AT bnl DOT gov). All rights reserved.</p>
 
 <p>This module is free software; you can redistribute it and/or
 modify it under the same terms as Perl itself. See <a href="http://search.cpan.org/perldoc?perlgpl">perlgpl</a>.</p>

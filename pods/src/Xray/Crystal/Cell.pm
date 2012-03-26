@@ -2,7 +2,7 @@ package Xray::Crystal::Cell;
 
 =for Copyright
  .
- Copyright (c) 2006-2011 Bruce Ravel (bravel AT bnl DOT gov).
+ Copyright (c) 2006-2012 Bruce Ravel (bravel AT bnl DOT gov).
  All rights reserved.
  .
  This file is free software; you can redistribute it and/or
@@ -17,7 +17,6 @@ package Xray::Crystal::Cell;
 
 use Moose;
 use Moose::Util::TypeConstraints;
-use MooseX::AttributeHelpers;
 
 with 'MooseX::SetGet';
 
@@ -27,9 +26,9 @@ use Carp;
 use File::Spec;
 use Storable;
 
-use Readonly;
-Readonly my $PI       => 4*atan2(1,1);
-Readonly my $EPSILON  => 0.00001;
+use Const::Fast;
+const my $PI       => 4*atan2(1,1);
+const my $EPSILON  => 0.00001;
 
 sub identify_self {
   my @caller = caller;
@@ -109,25 +108,25 @@ has 'gamma'	   => (is => 'rw', isa => 'Num', default => 90,
 has 'angle'	   => (is => 'rw', isa => 'Str', default => q{});
 
 has 'sites'	   => (
-		       metaclass => 'Collection::Array',
+		       traits    => ['Array'],
 		       is        => 'rw',
 		       isa       => 'ArrayRef',
 		       default   => sub { [] },
-		       provides  => {
-				     'push'  => 'push_sites',
-				     'pop'   => 'pop_sites',
-				     'clear' => 'clear_sites',
+		       handles   => {
+				     'push_sites'  => 'push',
+				     'pop_sites'   => 'pop',
+				     'clear_sites' => 'clear',
 				    }
 		      );
 has 'contents'	   => (
-		       metaclass => 'Collection::Array',
+		       traits    => ['Array'],
 		       is        => 'rw',
 		       isa       => 'ArrayRef',
 		       default   => sub { [] },
-		       provides  => {
-				     'push'  => 'push_contents',
-				     'pop'   => 'pop_contents',
-				     'clear' => 'clear_contents',
+		       handles   => {
+				     'push_contents'  => 'push',
+				     'pop_contents'   => 'pop',
+				     'clear_contents' => 'clear',
 				    }
 		      );
 has 'volume'	   => (is => 'rw', isa => 'Num', default => 1);
@@ -603,7 +602,7 @@ Xray::Crystal::Cell - A crystallographic unit cell object
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.5.
+This documentation refers to Demeter version 0.9.
 
 =head1 SYNOPSIS
 
@@ -819,11 +818,10 @@ There is nothing configurable and no environment variables are used.
 
 =head1 DEPENDENCIES
 
-  Moose and MooseX::AttributeHelpers
   Carp
   File::Spec
   Storable
-  Readonly
+  Const::Fast
 
 =head1 BUGS AND LIMITATIONS
 
@@ -862,7 +860,7 @@ http://cars9.uchicago.edu/~ravel/software/
 
 =head1 LICENCE AND COPYRIGHT
 
-Copyright (c) 2006-2011 Bruce Ravel (bravel AT bnl DOT gov). All rights reserved.
+Copyright (c) 2006-2012 Bruce Ravel (bravel AT bnl DOT gov). All rights reserved.
 
 This module is free software; you can redistribute it and/or
 modify it under the same terms as Perl itself. See L<perlgpl>.

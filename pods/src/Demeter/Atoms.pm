@@ -2,7 +2,7 @@ package Demeter::Atoms;
 
 =for Copyright
  .
- Copyright (c) 2006-2011 Bruce Ravel (bravel AT bnl DOT gov).
+ Copyright (c) 2006-2012 Bruce Ravel (bravel AT bnl DOT gov).
  All rights reserved.
  .
  This file is free software; you can redistribute it and/or
@@ -22,7 +22,6 @@ extends 'Demeter';
 with 'Demeter::Tools';
 with 'Demeter::Atoms::Absorption';
 with 'Demeter::Atoms::Cif' if $Demeter::STAR_Parser_exists;
-use MooseX::AttributeHelpers;
 use Demeter::StrTypes qw( Element
 			  Edge
 			  AtomsLattice
@@ -47,22 +46,19 @@ use File::Basename;
 use List::Util qw(min max reduce);
 #use Math::Cephes::Fraction qw(fract);
 use POSIX qw(ceil);
-use Regexp::Common;
-use Readonly;
 use Safe;
 use Text::Template;
 use Xray::Absorption;
 use Xray::Crystal;
 
-Readonly my $EPSILON   => 0.0001;
-Readonly my $FRAC      => 100000;
-Readonly my $SEPARATOR => '[ \t]*[ \t=,][ \t]*';
-Readonly my $NUMBER    => $RE{num}{real};
+use Demeter::Constants qw($NUMBER $SEPARATOR $EPSILON4);
+use Const::Fast;
+const my $FRAC      => 100000;
 
-Readonly my %EDGE_INDEX => (k =>1,  l1=>2,  l2=>3,  l3=>4,
-			    m1=>5,  m2=>6,  m3=>7,  m4=>8,  m5=>9,
-			    n1=>10, n2=>11, n3=>12, n4=>13, n5=>14, n6=>15, n7=>16,
-			   );
+const my %EDGE_INDEX => (k =>1,  l1=>2,  l2=>3,  l3=>4,
+			 m1=>5,  m2=>6,  m3=>7,  m4=>8,  m5=>9,
+			 n1=>10, n2=>11, n3=>12, n4=>13, n5=>14, n6=>15, n7=>16,
+			);
 
 
 #has 'cell' => (is => 'rw', isa =>Empty.'|Xray::Crystal::Cell', default=> q{});
@@ -154,14 +150,14 @@ has 'core'	       => (is => 'rw', isa =>'Str',      default=> q{});
 has 'corel'	       => (is => 'rw', isa =>'Str',      default=> q{});
 has 'partial_occupancy' => (is => 'rw', isa =>'Bool', default=> 0);
 has 'shift' => (
-		metaclass => 'Collection::Array',
+		traits    => ['Array'],
 		is        => 'rw',
 		isa       => 'ArrayRef',
 		default   => sub { [0, 0, 0] },
-		provides  => {
-			      'push'  => 'push_shift',
-			      'pop'   => 'pop_shift',
-			      'clear' => 'clear_shift',
+		handles   => {
+			      'push_shift'  => 'push',
+			      'pop_shift'   => 'pop',
+			      'clear_shift' => 'clear',
 			     }
 	       );
 has 'file'   => (is => 'rw', isa =>FileName, default=> q{},
@@ -171,7 +167,7 @@ has 'file'   => (is => 'rw', isa =>FileName, default=> q{},
 				   #$self->update_edge;
 				 };
 			       });
-has 'cif'    => (is => 'rw', isa =>'Str', default=> q{},
+has 'cif'    => (is => 'rw', isa =>FileName, default=> q{},
 		 trigger => sub{ my ($self, $new) = @_;
 				 if ($new) {
 				   if (not $Demeter::STAR_Parser_exists) {
@@ -191,14 +187,14 @@ has 'record' => (is => 'rw', isa => NonNeg,    default=> 0,
 				 $self->read_cif if ($new and $self->cif);
 			       });
 has 'titles' => (
-		 metaclass => 'Collection::Array',
+		 traits    => ['Array'],
 		 is        => 'rw',
 		 isa       => 'ArrayRef[Str]',
 		 default   => sub { [] },
-		 provides  => {
-			       'push'  => 'push_titles',
-			       'pop'   => 'pop_titles',
-			       'clear' => 'clear_titles',
+		 handles   => {
+			       'push_titles'  => 'push',
+			       'pop_titles'   => 'pop',
+			       'clear_titles' => 'clear',
 			      }
 		);
 has 'ipot_style'       => (is => 'rw', isa =>'Str', default=> sub{ shift->mo->config->default("atoms","ipot_style") || 'elements'},
@@ -241,25 +237,25 @@ has 'i0_done'	       => (is => 'rw', isa =>'Bool', default=> 0);
 has 'self_done'	       => (is => 'rw', isa =>'Bool', default=> 0);
 
 has 'sites' => (
-		metaclass => 'Collection::Array',
+		traits    => ['Array'],
 		is        => 'rw',
 		isa       => 'ArrayRef',
 		default   => sub { [] },
-		provides  => {
-			      'push'  => 'push_sites',
-			      'pop'   => 'pop_sites',
-			      'clear' => 'clear_sites',
+		handles   => {
+			      'push_sites'  => 'push',
+			      'pop_sites'   => 'pop',
+			      'clear_sites' => 'clear',
 			     }
 	       );
 has 'cluster' => (
-		  metaclass => 'Collection::Array',
+		  traits    => ['Array'],
 		  is        => 'rw',
 		  isa       => 'ArrayRef',
 		  default   => sub { [] },
-		  provides  => {
-				'push'  => 'push_cluster',
-				'pop'   => 'pop_cluster',
-				'clear' => 'clear_cluster',
+		  handles   => {
+				'push_cluster'  => 'push',
+				'pop_cluster'   => 'pop',
+				'clear_cluster' => 'clear',
 			       }
 		 );
 has 'nclus'	       => (is => 'rw', isa =>'Str', default=> 0);
@@ -666,7 +662,7 @@ sub cluster_list {
     if (not defined($seen{$pos->[3]->tag})) {
       $seen{$pos->[3]->tag} = [1, sqrt($pos->[4])];
     };
-    ++$seen{$pos->[3]->tag}->[0] if (sqrt($pos->[4]) - $seen{$pos->[3]->tag}->[1] > $EPSILON); # increment index if R has increased
+    ++$seen{$pos->[3]->tag}->[0] if (sqrt($pos->[4]) - $seen{$pos->[3]->tag}->[1] > $EPSILON4); # increment index if R has increased
     my $tag = join(".", $pos->[3]->tag, $seen{$pos->[3]->tag}->[0]);
     $string .= sprintf($pattern,
 		       $pos->[0], $pos->[1], $pos->[2],
@@ -905,6 +901,22 @@ sub spacegroup_file {
   return $string;
 };
 
+override serialization => sub {
+  my ($self) = @_;
+
+  my %cards = ();
+  foreach my $key (qw(space a b c alpha beta gamma rmax rpath rss edge iedge eedge core corel partial_occupancy
+		      shift cif record titles ipot_style nitrogen argon krypton xenon helium gases_set
+		      xsec deltamu density mcmaster i0 selfamp selfsig netsig is_imported is_populated
+		      is_ipots_set is_expanded absorption_done mcmaster_done i0_done self_done nclus)) { #  sites cluster
+    $cards{$key} = $self->$key;
+  };
+
+  my $text = YAML::Tiny::Dump(\%cards);
+  return $text;
+};
+
+
 __PACKAGE__->meta->make_immutable;
 1;
 
@@ -914,7 +926,7 @@ Demeter::Atoms - Convert crystallographic data to atomic lists
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.5.
+This documentation refers to Demeter version 0.9.
 
 =head1 SYNOPSIS
 
@@ -1328,7 +1340,7 @@ L<http://cars9.uchicago.edu/~ravel/software/exafs/>
 
 =head1 LICENCE AND COPYRIGHT
 
-Copyright (c) 2006-2011 Bruce Ravel (bravel AT bnl DOT gov). All
+Copyright (c) 2006-2012 Bruce Ravel (bravel AT bnl DOT gov). All
 rights reserved.
 
 This module is free software; you can redistribute it and/or

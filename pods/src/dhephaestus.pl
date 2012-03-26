@@ -1,5 +1,9 @@
 #!/usr/bin/perl
 BEGIN {
+  # turn off Unity feature of the Mac-like global menu bar, which
+  # interacts really poorly with Wx.  See
+  # http://www.webupd8.org/2011/03/disable-appmenu-global-menu-in-ubuntu.html
+  $ENV{UBUNTU_MENUPROXY} = 0;
   use Demeter::Here;
   use Wx::Perl::SplashFast Demeter::Here->here.'UI/Hephaestus/data/vulcan.png',4000;
 }
@@ -17,7 +21,7 @@ hephaestus - A souped-up periodic table for the X-ray absorption spectroscopist
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.5.
+This documentation refers to Demeter version 0.9.
 
 =head1 DESCRIPTION
 
@@ -35,7 +39,7 @@ http://cars9.uchicago.edu/~ravel/software/
 
 =head1 LICENCE AND COPYRIGHT
 
-Copyright (c) 2008-2011 Bruce Ravel (bravel AT bnl DOT gov). All rights reserved.
+Copyright (c) 2008-2012 Bruce Ravel (bravel AT bnl DOT gov). All rights reserved.
 
 This module is free software; you can redistribute it and/or
 modify it under the same terms as Perl itself. See L<perlgpl>.

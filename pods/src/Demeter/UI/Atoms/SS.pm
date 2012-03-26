@@ -481,7 +481,7 @@ sub dlpoly_sentinal {
   } elsif ($this->{DISTRIBUTION}->reading_file) {
     $text = "Reading line $. from ".$this->{DISTRIBUTION}->file;
   };
-  $this->{statusbar}->SetStatusText($text) if $text;
+  $this->{parent}->status($text, 'nobuffer') if $text;
   $::app->Yield();
 };
 
@@ -515,9 +515,9 @@ sub set_name {
 sub OnToolEnter {
   my ($self, $event, $which) = @_;
   if ( $event->GetSelection > -1 ) {
-    $self->{statusbar}->SetStatusText($self->{$which}->GetToolLongHelp($event->GetSelection));
+    $self->{parent}->status($self->{$which}->GetToolLongHelp($event->GetSelection));
   } else {
-    $self->{statusbar}->SetStatusText(q{});
+    $self->{parent}->status(q{});
   };
 };
 
@@ -543,13 +543,13 @@ sub set_plot {
   $self->{parent}->{Feff}->{feffobject}->po->r_pl($pl{$id}) if $pl{$id};
   # sensible status bar message
   my %as = (5 => 'chi(k)', 6 => 'the magnitude of chi(R)', 7 => 'the real part of chi(R)', 8 => 'the imaginary part of chi(R)');
-  $self->{statusbar}->SetStatusText("Plotting as $as{$id}");
+  $self->{parent}->status("Plotting as $as{$id}");
   return $self;
 };
 
 sub plot {
   my ($self) = @_;
-  my $save = $Demeter::UI::Atoms::demeter->po->title;
+  my $save = Demeter->po->title;
 
   ## make SSPath
 
@@ -557,14 +557,12 @@ sub plot {
 
   ## destroy SSPath (since it will be created when dnd-ed
 
-  $Demeter::UI::Atoms::demeter->po->title($save);
+  Demeter->po->title($save);
 };
 
 
 
 package Demeter::UI::Atoms::SS::SSDragSource;
-
-use Demeter;
 
 use Wx qw( :everything );
 use base qw(Wx::Window);
@@ -606,7 +604,6 @@ sub OnDrag {
 
 package Demeter::UI::Atoms::SS::HistoSSDragSource;
 
-use Demeter;
 
 use Wx qw( :everything );
 use base qw(Wx::Window);
@@ -637,27 +634,27 @@ sub OnDrag {
 
   my $file = $parent->{SS}->{histo_file}->GetTextCtrl->GetValue;
   if (not -e $file) {
-    $parent->{statusbar}->SetStatusText("Histogram canceled: The file $file does not exist");
+    $parent->{parent}->status("Histogram canceled: The file $file does not exist");
     return;
   };
   if (not -r $file) {
-    $parent->{statusbar}->SetStatusText("Histogram canceled: The file $file cannot be read");
+    $parent->{parent}->status("Histogram canceled: The file $file cannot be read");
     return;
   };
 
   foreach my $s (qw(rmin rmax bin)) {
     if (not looks_like_number($parent->{SS}->{"histo_ss_".$s}->GetValue)) {
-      $parent->{statusbar}->SetStatusText("Histogram canceled: $s is not a number.");
+      $parent->{parent}->status("Histogram canceled: $s is not a number.");
       return;
     };
   };
 
   if ($parent->{SS}->{histo_ss_rmin}->GetValue >= $parent->{SS}->{histo_ss_rmax}->GetValue) {
-    $parent->{statusbar}->SetStatusText("Histogram canceled: Rmin >= Rmax for the single scattering histogram.");
+    $parent->{parent}->status("Histogram canceled: Rmin >= Rmax for the single scattering histogram.");
     return;
   };
   if ($parent->{SS}->{histo_ss_bin}->GetValue <= 0) {
-    $parent->{statusbar}->SetStatusText("Histogram canceled: R bin size must be positive.");
+    $parent->{parent}->status("Histogram canceled: R bin size must be positive.");
     return;
   };
 
@@ -694,7 +691,6 @@ sub OnDrag {
 
 package Demeter::UI::Atoms::SS::HistoNCLDragSource;
 
-use Demeter;
 
 use Wx qw( :everything );
 use base qw(Wx::Window);
@@ -725,35 +721,35 @@ sub OnDrag {
 
   my $file = $parent->{SS}->{histo_file}->GetTextCtrl->GetValue;
   if (not -e $file) {
-    $parent->{statusbar}->SetStatusText("Histogram canceled: The file $file does not exist");
+    $parent->{parent}->status("Histogram canceled: The file $file does not exist");
     return;
   };
   if (not -r $file) {
-    $parent->{statusbar}->SetStatusText("Histogram canceled: The file $file cannot be read");
+    $parent->{parent}->status("Histogram canceled: The file $file cannot be read");
     return;
   };
 
   foreach my $s (qw(r1 r2 r3 r4 rbin betabin)) {
     if (not looks_like_number($parent->{SS}->{"histo_ncl_".$s}->GetValue)) {
-      $parent->{statusbar}->SetStatusText("Histogram canceled: $s is not a number.");
+      $parent->{parent}->status("Histogram canceled: $s is not a number.");
       return;
     };
   };
 
   if ($parent->{SS}->{histo_ncl_r1}->GetValue >= $parent->{SS}->{histo_ncl_r2}->GetValue) {
-    $parent->{statusbar}->SetStatusText("Histogram canceled: R1 >= R2 for the near atom.");
+    $parent->{parent}->status("Histogram canceled: R1 >= R2 for the near atom.");
     return;
   };
   if ($parent->{SS}->{histo_ncl_r3}->GetValue >= $parent->{SS}->{histo_ncl_r4}->GetValue) {
-    $parent->{statusbar}->SetStatusText("Histogram canceled: R3 >= R4 for the far atom.");
+    $parent->{parent}->status("Histogram canceled: R3 >= R4 for the far atom.");
     return;
   };
   if ($parent->{SS}->{histo_ncl_rbin}->GetValue <= 0) {
-    $parent->{statusbar}->SetStatusText("Histogram canceled: R bin size must be positive.");
+    $parent->{parent}->status("Histogram canceled: R bin size must be positive.");
     return;
   };
   if ($parent->{SS}->{histo_ncl_betabin}->GetValue <= 0) {
-    $parent->{statusbar}->SetStatusText("Histogram canceled: Beta bin size must be positive.");
+    $parent->{parent}->status("Histogram canceled: Beta bin size must be positive.");
     return;
   };
 
@@ -799,7 +795,6 @@ sub OnDrag {
 
 package Demeter::UI::Atoms::SS::HistoThruDragSource;
 
-use Demeter;
 
 use Wx qw( :everything );
 use base qw(Wx::Window);
@@ -830,31 +825,31 @@ sub OnDrag {
 
   my $file = $parent->{SS}->{histo_file}->GetTextCtrl->GetValue;
   if (not -e $file) {
-    $parent->{statusbar}->SetStatusText("Histogram canceled: The file $file does not exist");
+    $parent->{parent}->status("Histogram canceled: The file $file does not exist");
     return;
   };
   if (not -r $file) {
-    $parent->{statusbar}->SetStatusText("Histogram canceled: The file $file cannot be read");
+    $parent->{parent}->status("Histogram canceled: The file $file cannot be read");
     return;
   };
 
   foreach my $s (qw(rmin rmax rbin betabin)) {
     if (not looks_like_number($parent->{SS}->{"histo_thru_".$s}->GetValue)) {
-      $parent->{statusbar}->SetStatusText("Histogram canceled: $s is not a number.");
+      $parent->{parent}->status("Histogram canceled: $s is not a number.");
       return;
     };
   };
 
   if ($parent->{SS}->{histo_thru_rmin}->GetValue >= $parent->{SS}->{histo_thru_rmax}->GetValue) {
-    $parent->{statusbar}->SetStatusText("Histogram canceled: R1 >= R2 for the near atom.");
+    $parent->{parent}->status("Histogram canceled: R1 >= R2 for the near atom.");
     return;
   };
   if ($parent->{SS}->{histo_thru_rbin}->GetValue <= 0) {
-    $parent->{statusbar}->SetStatusText("Histogram canceled: R bin size must be positive.");
+    $parent->{parent}->status("Histogram canceled: R bin size must be positive.");
     return;
   };
   if ($parent->{SS}->{histo_thru_betabin}->GetValue <= 0) {
-    $parent->{statusbar}->SetStatusText("Histogram canceled: Beta bin size must be positive.");
+    $parent->{parent}->status("Histogram canceled: Beta bin size must be positive.");
     return;
   };
 
@@ -901,7 +896,7 @@ Demeter::UI::Atoms::SS - Create SSPath objects in Atoms
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.5.
+This documentation refers to Demeter version 0.9.
 
 =head1 DESCRIPTION
 
@@ -916,7 +911,7 @@ L<http://cars9.uchicago.edu/~ravel/software/>
 
 =head1 LICENCE AND COPYRIGHT
 
-Copyright (c) 2006-2011 Bruce Ravel (bravel AT bnl DOT gov). All rights reserved.
+Copyright (c) 2006-2012 Bruce Ravel (bravel AT bnl DOT gov). All rights reserved.
 
 This module is free software; you can redistribute it and/or
 modify it under the same terms as Perl itself. See L<perlgpl>.

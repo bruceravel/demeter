@@ -2,7 +2,7 @@ package Demeter::Atoms::Cif;
 
 =for Copyright
  .
- Copyright (c) 2006-2011 Bruce Ravel (bravel AT bnl DOT gov).
+ Copyright (c) 2006-2012 Bruce Ravel (bravel AT bnl DOT gov).
  All rights reserved.
  .
  This file is free software; you can redistribute it and/or
@@ -17,10 +17,10 @@ package Demeter::Atoms::Cif;
 
 use Moose::Role;
 use Demeter::StrTypes qw( Element );
-use Readonly;
-Readonly my $EPSILON   => 0.001;
+use Demeter::Constants qw($EPSILON3);
 
 use Chemistry::Elements qw(get_Z);
+use File::Basename;
 #use STAR::Parser; ## this is not needed since (1) all references
                    ## below use the STAR::Parser-> syntax and (2)
                    ## it got require-d in Demeter.pm
@@ -104,7 +104,7 @@ sub read_cif {
     (my $yy = $y[$i]) =~ s{\(\d+\)}{};
     (my $zz = $z[$i]) =~ s{\(\d+\)}{};
     (my $oo = $occ[$i]||1) =~ s/\(\d+\)//;
-    ++$partial if (abs($oo-1) > $EPSILON);
+    ++$partial if (abs($oo-1) > $EPSILON3);
     my $this = join("|",$ee, $xx, $yy, $zz, $tag[$i]);
     $self->push_sites($this);
     my $z = get_Z($ee);
@@ -138,6 +138,7 @@ sub open_cif {
     my @str  = $this->get_item_data(-item => '_chemical_name_systematic');
     @str     = $this->get_item_data(-item => '_chemical_name_mineral') if not @str;
     @str     = $this->get_item_data(-item => '_chemical_formula_structural') if not @str;
+    @str     = (basename($self->cif)) if not @str;
     push @id, @str;
   };
 #   my @id = map { ($_->get_item_data(-item => '_chemical_name_systematic'   ))[0]
@@ -159,7 +160,7 @@ Demeter::Atoms::Cif - Methods for importing data from Crystallographic Informati
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.5.
+This documentation refers to Demeter version 0.9.
 
 =head1 DESCRIPTION
 
@@ -234,7 +235,7 @@ L<http://cars9.uchicago.edu/~ravel/software/>
 
 =head1 LICENCE AND COPYRIGHT
 
-Copyright (c) 2006-2011 Bruce Ravel (bravel AT bnl DOT gov). All rights reserved.
+Copyright (c) 2006-2012 Bruce Ravel (bravel AT bnl DOT gov). All rights reserved.
 
 This module is free software; you can redistribute it and/or
 modify it under the same terms as Perl itself. See L<perlgpl>.

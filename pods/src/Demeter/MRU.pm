@@ -2,7 +2,7 @@ package Demeter::MRU;
 
 =for Copyright
  .
- Copyright (c) 2006-2011 Bruce Ravel (bravel AT bnl DOT gov).
+ Copyright (c) 2006-2012 Bruce Ravel (bravel AT bnl DOT gov).
  All rights reserved.
  .
  This file is free software; you can redistribute it and/or
@@ -17,7 +17,9 @@ package Demeter::MRU;
 
 use Moose::Role;
 
-use Config::IniFiles;
+use Demeter::IniReader;
+use Config::INI::Writer;
+#use Config::IniFiles;
 use File::Spec;
 use List::MoreUtils qw(uniq);
 
@@ -28,9 +30,10 @@ sub push_mru {
   my $stash = $self->stash_folder;
   $stash =~ s{\\}{\\\\}g if $self->is_windows;	# it seems like there should be something more elegant...
   return $self if ($file =~ m{$stash});
-  my %mru;
   my $mrufile = File::Spec->catfile($self->dot_folder, "demeter.mru");
-  tie %mru, 'Config::IniFiles', ( -file => $mrufile );
+  my $rmru = Demeter::IniReader->read_file($mrufile);
+  my %mru = %$rmru;
+  #tie %mru, 'Config::IniFiles', ( -file => $mrufile );
   my @list_of_files;
 
   if (exists $mru{$group}) {
@@ -48,15 +51,17 @@ sub push_mru {
     $mru{$group}{$i} = $f;
     ++$i;
   };
-  tied(%mru)->WriteConfig($mrufile);
+  #tied(%mru)->WriteConfig($mrufile);
+  Config::INI::Writer->write_file(\%mru, $mrufile);
   #undef %mru;
   return $self;
 };
 
 sub get_mru_list {
   my ($self, @groups) = @_;
-  my %mru;
-  tie %mru, 'Config::IniFiles', ( -file => File::Spec->catfile($self->dot_folder, "demeter.mru") );
+  my $rmru = Demeter::IniReader->read_file(File::Spec->catfile($self->dot_folder, "demeter.mru"));
+  my %mru = %$rmru;
+  #tie %mru, 'Config::IniFiles', ( -file => File::Spec->catfile($self->dot_folder, "demeter.mru") );
   my @list_of_files = ();
   foreach my $g (@groups) {
     next if not $mru{$g};
@@ -75,7 +80,7 @@ Demeter::MRU - Handle lists of recently used file
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.5.
+This documentation refers to Demeter version 0.9.
 
 =head1 DESCRIPTION
 
@@ -164,7 +169,7 @@ L<http://cars9.uchicago.edu/~ravel/software/>
 
 =head1 LICENCE AND COPYRIGHT
 
-Copyright (c) 2006-2011 Bruce Ravel (bravel AT bnl DOT gov). All rights reserved.
+Copyright (c) 2006-2012 Bruce Ravel (bravel AT bnl DOT gov). All rights reserved.
 
 This module is free software; you can redistribute it and/or
 modify it under the same terms as Perl itself. See L<perlgpl>.

@@ -2,7 +2,7 @@ package Demeter::Plot::Gnuplot;
 
 =for Copyright
  .
- Copyright (c) 2006-2011 Bruce Ravel (bravel AT bnl DOT gov).
+ Copyright (c) 2006-2012 Bruce Ravel (bravel AT bnl DOT gov).
  All rights reserved.
  .
  This file is free software; you can redistribute it and/or
@@ -22,9 +22,7 @@ extends 'Demeter::Plot';
 
 use Carp;
 use File::Spec;
-use Regexp::Common;
-use Readonly;
-Readonly my $NUMBER => $RE{num}{real};
+use Demeter::Constants qw($NUMBER);
 use String::Random qw(random_string);
 
 has 'error_log' => (is => 'ro', isa => 'Str',  default => File::Spec->catfile($Demeter::mode->iwd,
@@ -136,7 +134,7 @@ override 'plot_kylabel' => sub {
   my ($self) = @_;
   my $w = $self->kweight;
   if ($w == 1) {
-    return 'k {\267} {/Symbol c}(k)&{aa}({\101})';
+    return 'k {\267} {/Symbol c}(k)&{aa}({\305}^{-1})';
   } elsif ($w == 0) {
     return '{/Symbol c}(k)';
   } elsif ($w < 0) {
@@ -216,7 +214,7 @@ Demeter::Plot::Gnuplot - Using Gnuplot with Demeter
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.5.
+This documentation refers to Demeter version 0.9.
 
 =head1 SYNOPSIS
 
@@ -268,10 +266,6 @@ Also
 
 =item L<Regexp::Assemble>
 
-=item L<Regexp::Common>
-
-=item L<Readonly>
-
 =item L<String::Random>
 
 =back
@@ -313,7 +307,7 @@ L<http://cars9.uchicago.edu/~ravel/software/>
 
 =head1 LICENCE AND COPYRIGHT
 
-Copyright (c) 2006-2011 Bruce Ravel (bravel AT bnl DOT gov). All rights reserved.
+Copyright (c) 2006-2012 Bruce Ravel (bravel AT bnl DOT gov). All rights reserved.
 
 This module is free software; you can redistribute it and/or
 modify it under the same terms as Perl itself. See L<perlgpl>.

@@ -2,7 +2,7 @@ package Demeter::Data::Process;
 
 =for Copyright
  .
- Copyright (c) 2006-2011 Bruce Ravel (bravel AT bnl DOT gov).
+ Copyright (c) 2006-2012 Bruce Ravel (bravel AT bnl DOT gov).
  All rights reserved.
  .
  This file is free software; you can redistribute it and/or
@@ -22,11 +22,7 @@ use Moose::Role;
 use Carp;
 use List::Util qw(reduce);
 use List::MoreUtils qw(minmax firstval uniq);
-use Readonly;
-Readonly my $EPSILON  => 1e-5;
-Readonly my $NULLFILE => '@&^^null^^&@';
-
-
+use Demeter::Constants qw($EPSILON5 $NULLFILE);
 
 sub rebin {
   my ($self, $rhash) = @_;
@@ -175,7 +171,9 @@ sub merge {
   $string  = $merged->template("process", "merge_stddev_end");
   $string .= $merged->template("process", "merge_end");
   $self->dispose($string);
-
+  #$merged -> set($self->metadata);
+  $merged -> delete_from_xdi_scan('start_time');
+  $merged -> delete_from_xdi_scan('end_time');
 
   if ($how !~ m{^k}) {
     $string  = $merged->template("process", "deriv");
@@ -448,7 +446,7 @@ Demeter::Data::Process - Processing XAS data
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.5.
+This documentation refers to Demeter version 0.9.
 
 =head1 DESCRIPTION
 
@@ -638,7 +636,7 @@ L<http://cars9.uchicago.edu/~ravel/software/>
 
 =head1 LICENCE AND COPYRIGHT
 
-Copyright (c) 2006-2011 Bruce Ravel (bravel AT bnl DOT gov). All rights reserved.
+Copyright (c) 2006-2012 Bruce Ravel (bravel AT bnl DOT gov). All rights reserved.
 
 This module is free software; you can redistribute it and/or
 modify it under the same terms as Perl itself. See L<perlgpl>.

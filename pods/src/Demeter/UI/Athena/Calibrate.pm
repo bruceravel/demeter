@@ -136,14 +136,16 @@ sub plot {
     $::app->{main}->status("Not plotting -- your e0 value is not a number!", 'error|nobuffer');
     return;
   };
+  my $save = $data->po->e_smooth;
   $data->bkg_e0($this->{e0}->GetValue);
-  $data->po->set(emin=>-30, emax=>50);
+  $data->po->set(emin=>-30, emax=>50, e_smooth=>$this->{smooth}->GetValue);
   $data->po->set(e_mu=>1, e_markers=>1, e_bkg=>0, e_pre=>0, e_post=>0, e_norm=>0, e_der=>0, e_sec=>0, e_i0=>0, e_signal=>0);
   $data->po->e_norm(1) if ($this->{display}->GetSelection == 1);
   $data->po->e_der(1)  if ($this->{display}->GetSelection == 2);
   $data->po->e_sec(1)  if ($this->{display}->GetSelection == 3);
   $data->po->start_plot;
   $data->plot('e');
+  $data->po->set(e_smooth=>$save);
 };
 
 sub Pluck {
@@ -173,7 +175,7 @@ Demeter::UI::Athena::Calibrate - A calibration tool for Athena
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.5.
+This documentation refers to Demeter version 0.9.
 
 =head1 SYNOPSIS
 
@@ -212,7 +214,7 @@ L<http://cars9.uchicago.edu/~ravel/software/>
 
 =head1 LICENCE AND COPYRIGHT
 
-Copyright (c) 2006-2011 Bruce Ravel (bravel AT bnl DOT gov). All rights reserved.
+Copyright (c) 2006-2012 Bruce Ravel (bravel AT bnl DOT gov). All rights reserved.
 
 This module is free software; you can redistribute it and/or
 modify it under the same terms as Perl itself. See L<perlgpl>.

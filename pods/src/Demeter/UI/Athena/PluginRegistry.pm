@@ -11,7 +11,7 @@ use autodie qw(open close);
 use File::Basename;
 use File::Spec;
 use Pod::Text;
-use Readonly;
+use Const::Fast;
 use String::Random qw(random_string);
 
 use Demeter::UI::Athena::PluginConfig;
@@ -92,8 +92,8 @@ sub OnCheck {
   close $STATE;
 };
 
-Readonly my $DOCUMENT  => Wx::NewId();
-Readonly my $CONFIGURE => Wx::NewId();
+const my $DOCUMENT  => Wx::NewId();
+const my $CONFIGURE => Wx::NewId();
 
 sub OnRight {
   my ($this, $event, $app) = @_;
@@ -184,7 +184,7 @@ Demeter::UI::Athena::PluginRegistry - Regstering plugins for Athena
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.5.
+This documentation refers to Demeter version 0.9.
 
 =head1 SYNOPSIS
 
@@ -219,7 +219,7 @@ L<http://cars9.uchicago.edu/~ravel/software/>
 
 =head1 LICENCE AND COPYRIGHT
 
-Copyright (c) 2006-2011 Bruce Ravel (bravel AT bnl DOT gov). All rights reserved.
+Copyright (c) 2006-2012 Bruce Ravel (bravel AT bnl DOT gov). All rights reserved.
 
 This module is free software; you can redistribute it and/or
 modify it under the same terms as Perl itself. See L<perlgpl>.

@@ -2,7 +2,7 @@ package Demeter::UI::HephaestusApp;
 
 =for Copyright
  .
- Copyright (c) 2006-2011 Bruce Ravel (bravel AT bnl DOT gov).
+ Copyright (c) 2006-2012 Bruce Ravel (bravel AT bnl DOT gov).
  All rights reserved.
  .
  This file is free software; you can redistribute it and/or
@@ -29,35 +29,36 @@ $SIG{__WARN__} = sub {Wx::Perl::Carp::warn($_[0])};
 
 my $header_color = Wx::Colour->new(68, 31, 156);
 
-my %note_of = (absorption   => 'periodic table of edge and line energies',
-	       formulas     => 'compute total cross sections of materials',
-	       data	    => 'periodic table of physical and chemical data',
-	       ion	    => 'optimize ion chamber gases',
-	       transitions  => 'electronic transitions for fluorescence lines',
-	       find	    => 'ordered list of absorption edge energies',
-	       line	    => 'ordered list of fluorescence line energies',
-	       standards    => 'periodic table of XAS data standards',
-	       f1f2	    => 'periodic table of anomalous scattering',
-	       help	    => 'Hephaestus User\'s Guide',
-	       configure    => 'control details of Hephaestus\' behavior',
+my %note_of = (Absorption   => 'periodic table of edge and line energies',
+	       Formulas     => 'compute total cross sections of materials',
+	       Data	    => 'periodic table of physical and chemical data',
+	       Ion	    => 'optimize ion chamber gases',
+	       Transitions  => 'electronic transitions for fluorescence lines',
+	       EdgeFinder   => 'ordered list of absorption edge energies',
+	       LineFinder   => 'ordered list of fluorescence line energies',
+	       Standards    => 'periodic table of XAS data standards',
+	       F1F2	    => 'periodic table of anomalous scattering',
+	       Help	    => 'Hephaestus User\'s Guide',
+	       Config       => 'control details of Hephaestus\' behavior',
 	     );
-my %label_of = (absorption   => 'Absorption',
-		formulas     => 'Formulas',
-		data	     => 'Data',
-		ion	     => 'Ion chambers',
-		transitions  => 'Transitions',
-		find	     => 'Edge finder',
-		line	     => 'Line finder',
-		standards    => 'Standards',
-		f1f2	     => "F' and F\"",
-		help	     => 'Document',
-		configure    => 'Configure',
+my %label_of = (Absorption   => 'Absorption',
+		Formulas     => 'Formulas',
+		Data	     => 'Data',
+		Ion	     => 'Ion chambers',
+		Transitions  => 'Transitions',
+		EdgeFinder   => 'Edge finder',
+		LineFinder   => 'Line finder',
+		Standards    => 'Standards',
+		F1F2	     => "F' and F\"",
+		Help	     => 'Document',
+		Config       => 'Configure',
 	       );
 my $icon_dimension = 30;
 
 use vars qw($periodic_table);
 
-my @utilities = qw(absorption formulas ion data transitions find line standards f1f2 configure); # help);
+#my @utilities = qw(absorption formulas ion data transitions find line standards f1f2 configure); # help);
+my @utilities = qw(Absorption Formulas Ion Data Transitions EdgeFinder LineFinder Standards F1F2 Config); # Help);
 
 sub new {
   my $ref    = shift;
@@ -84,33 +85,22 @@ sub new {
     my $count = $tb->GetPageCount;
     #my $select = ($count) ? 0 : 1;
     my $page = Wx::Panel->new($tb, -1);
+    $self->{$utility."_page"} = $page;
     my $box = Wx::BoxSizer->new( wxVERTICAL );
-    $page -> SetSizer($box);
+    $self->{$utility."_sizer"} = $box;
 
     ##$periodic_table = Demeter::UI::Wx::PeriodicTable->new($page, sub{$self->multiplex($_[0])}, $statusbar);
 
-    my $label = $label_of{$utility}.': '.$note_of{$utility};
-    my $hh = Wx::BoxSizer->new( wxHORIZONTAL );
-    my $header = Wx::StaticText->new( $page, -1, $label, wxDefaultPosition, wxDefaultSize );
-    $header->SetForegroundColour( $header_color );
-    $header->SetFont( Wx::Font->new( 16, wxDEFAULT, wxNORMAL, wxBOLD, 0, "" ) );
-    $hh -> Add($header, 0, wxLEFT, 5);
-    $box -> Add($hh, 0);
+    if ($utility eq 'Absorption') {
+      my $label = $label_of{$utility}.': '.$note_of{$utility};
+      my $hh = Wx::BoxSizer->new( wxHORIZONTAL );
+      my $header = Wx::StaticText->new( $page, -1, $label, wxDefaultPosition, wxDefaultSize );
+      $header->SetForegroundColour( $header_color );
+      $header->SetFont( Wx::Font->new( 16, wxDEFAULT, wxNORMAL, wxBOLD, 0, "" ) );
+      $hh -> Add($header, 0, wxLEFT, 5);
+      $box -> Add($hh, 0);
 
-    $self->{$utility}
-      = ($utility eq 'absorption')  ? Demeter::UI::Hephaestus::Absorption  -> new($page,$statusbar)
-      : ($utility eq 'configure')   ? Demeter::UI::Hephaestus::Config      -> new($page,$statusbar)
-      : ($utility eq 'data')        ? Demeter::UI::Hephaestus::Data        -> new($page,$statusbar)
-      : ($utility eq 'f1f2')        ? Demeter::UI::Hephaestus::F1F2        -> new($page,$statusbar)
-      : ($utility eq 'find')        ? Demeter::UI::Hephaestus::EdgeFinder  -> new($page,$statusbar)
-      : ($utility eq 'formulas')    ? Demeter::UI::Hephaestus::Formulas    -> new($page,$statusbar)
-      : ($utility eq 'help')        ? Demeter::UI::Hephaestus::Help        -> new($page,$statusbar)
-      : ($utility eq 'ion')         ? Demeter::UI::Hephaestus::Ion         -> new($page,$statusbar)
-      : ($utility eq 'line')        ? Demeter::UI::Hephaestus::LineFinder  -> new($page,$statusbar)
-      : ($utility eq 'standards')   ? Demeter::UI::Hephaestus::Standards   -> new($page,$statusbar)
-      : ($utility eq 'transitions') ? Demeter::UI::Hephaestus::Transitions -> new($page,$statusbar)
-      :                               0;
-    if ($self->{$utility}) {
+      $self->{$utility} = Demeter::UI::Hephaestus::Absorption  -> new($page,$statusbar);
       $hh   = Wx::BoxSizer->new( wxHORIZONTAL );
       $hh  -> Add($self->{$utility}, 1, wxGROW|wxEXPAND|wxALL, 0);
       $box -> Add($hh, 1, wxEXPAND|wxALL, 0);
@@ -119,6 +109,9 @@ sub new {
       ($height = $this_height) if ($this_height > $height);
       ($width  = $this_width)  if ($this_width > $width);
       #print $utility, "  ", $this_height, "  ", $height, $/;
+
+      $page -> SetSizer($box);
+
     };
     $tb->AddPage($page, $label_of{$utility}, 0, $count);
     $height = ($tb->GetSizeWH)[1];
@@ -126,6 +119,7 @@ sub new {
 
   $vbox -> Add($tb, 1, wxEXPAND|wxALL, 0);
   EVT_TOOLBOOK_PAGE_CHANGED( $self, $tb, sub{$statusbar->SetStatusText(q{})} );
+  EVT_TOOLBOOK_PAGE_CHANGING( $self, $tb, sub{make_page(@_)}); # postpone setting up pages until they are selected
 
   ##            largest utility + width of toolbar text + width of icons
   my $framesize = Wx::Size->new(1.05*$width+$icon_dimension+103,
@@ -135,16 +129,56 @@ sub new {
 
 
   $self -> SetSizer($vbox);
-  #$vbox -> Fit($tb);
-  #$vbox -> SetSizeHints($tb);
+  $vbox -> Fit($tb);
+  $vbox -> SetSizeHints($tb);
   return $self;
 };
+    # $self->{$utility}
+    #   = ($utility eq 'Absorption')  ? Demeter::UI::Hephaestus::Absorption  -> new($page,$statusbar)
+    #   : ($utility eq 'Configure')   ? Demeter::UI::Hephaestus::Config      -> new($page,$statusbar)
+    #   : ($utility eq 'Data')        ? Demeter::UI::Hephaestus::Data        -> new($page,$statusbar)
+    #   : ($utility eq 'F1F2')        ? Demeter::UI::Hephaestus::F1F2        -> new($page,$statusbar)
+    #   : ($utility eq 'EdgeFinder')  ? Demeter::UI::Hephaestus::EdgeFinder  -> new($page,$statusbar)
+    #   : ($utility eq 'Formulas')    ? Demeter::UI::Hephaestus::Formulas    -> new($page,$statusbar)
+    #   : ($utility eq 'Help')        ? Demeter::UI::Hephaestus::Help        -> new($page,$statusbar)
+    #   : ($utility eq 'Ion')         ? Demeter::UI::Hephaestus::Ion         -> new($page,$statusbar)
+    #   : ($utility eq 'LineFinder')  ? Demeter::UI::Hephaestus::LineFinder  -> new($page,$statusbar)
+    #   : ($utility eq 'Standards')   ? Demeter::UI::Hephaestus::Standards   -> new($page,$statusbar)
+    #   : ($utility eq 'Transitions') ? Demeter::UI::Hephaestus::Transitions -> new($page,$statusbar)
+    #   :                               0;
 
 sub do_the_size_dance {
   my ($top) = @_;
   my @size = $top->GetSizeWH;
   $top -> SetSize($size[0], $size[1]+1);
   $top -> SetSize($size[0], $size[1]);
+};
+
+sub make_page {
+  my ($self, $event) = @_;
+  my $i = $event->GetSelection;
+  my $which = $utilities[$i];
+  return if exists $self->{$which};
+  my $busy = Wx::BusyCursor->new;
+
+  my $label = $label_of{$which}.': '.$note_of{$which};
+  my $hh = Wx::BoxSizer->new( wxHORIZONTAL );
+  my $header = Wx::StaticText->new( $self->{$which."_page"}, -1, $label, wxDefaultPosition, wxDefaultSize );
+  $header->SetForegroundColour( $header_color );
+  $header->SetFont( Wx::Font->new( 16, wxDEFAULT, wxNORMAL, wxBOLD, 0, "" ) );
+  $hh -> Add($header, 0, wxLEFT, 5);
+  $self->{$which."_sizer"} -> Add($hh, 0, wxGROW);
+
+  my $pm = "Demeter::UI::Hephaestus::$which";
+  $self->{$which} = $pm -> new($self->{$which."_page"},$self->{statusbar});
+  $self->{$which."_page"}->SetSize($self->{"Absorption_page"}->GetSize);
+  $hh   = Wx::BoxSizer->new( wxHORIZONTAL );
+  $hh  -> Add($self->{$which}, 1, wxGROW|wxALL, 0);
+  $self->{$which."_sizer"} -> Add($hh, 1, wxGROW|wxALL, 0);
+
+  $self->{$which."_page"} -> SetSizerAndFit($self->{$which."_sizer"});
+
+  undef $busy;
 };
 
 
@@ -158,27 +192,21 @@ use base 'Wx::App';
 use Demeter qw(:hephaestus);
 use Demeter::UI::Hephaestus::Common qw(hversion hcopyright hdescription);
 
-use Readonly;
-Readonly my $CONFIG   => Wx::NewId();
-Readonly my $DOCUMENT => Wx::NewId();
+use Const::Fast;
+const my $CONFIG   => Wx::NewId();
+const my $DOCUMENT => Wx::NewId();
 
 sub identify_self {
   my @caller = caller;
   return dirname($caller[1]);
 };
-use vars qw($hephaestus_base $demeter $frame);
+use vars qw($hephaestus_base $frame);
 $hephaestus_base = identify_self();
 
 sub OnInit {
-  $demeter = Demeter->new;
-  $demeter -> mo -> ui('Wx');
-  $demeter -> mo -> identity('Hephaestus');
-  ## read hephaestus' demeter_conf file
-  #my $conffile = File::Spec->catfile(dirname($INC{'Demeter/UI/Hephaestus.pm'}), 'Hephaestus', 'data', "hephaestus.demeter_conf");
-  #$demeter -> co -> read_config($conffile);
-  ## read ini file...
-  #$demeter -> co -> read_ini('hephaestus');
-  $demeter -> plot_with($demeter->co->default(qw(plot plotwith)));
+  Demeter -> mo -> ui('Wx');
+  Demeter -> mo -> identity('Hephaestus');
+  Demeter -> plot_with(Demeter->co->default(qw(plot plotwith)));
 
   foreach my $m (qw(Absorption Formulas Ion Data Transitions EdgeFinder LineFinder
 		    Standards F1F2 Config)) { # Help
@@ -214,8 +242,8 @@ sub OnInit {
   EVT_CLOSE( $frame,  \&on_close);
 
   ## -------- fix up frame contents
-  $frame->{find}->adjust_column_width;
-  $frame->{line}->adjust_column_width;
+#  $frame->{find}->adjust_column_width;
+#  $frame->{line}->adjust_column_width;
 
   $frame -> Show( 1 );
 };
@@ -244,7 +272,7 @@ sub on_about {
 			 "Much of the data displayed in the Data\nutility was swiped from Kalzium (website...)\n",
 			 "Mossbauer data comes from http://mossbauer.org/",
 			] );
-  $info->SetLicense( $demeter->slurp(File::Spec->catfile($Demeter::UI::Hephaestus::hephaestus_base, 'Hephaestus', 'data', "GPL.dem")) );
+  $info->SetLicense( Demeter->slurp(File::Spec->catfile($Demeter::UI::Hephaestus::hephaestus_base, 'Hephaestus', 'data', "GPL.dem")) );
   my $artwork = <<'EOH'
 The logo and main icon is "Vulcan Forging 
 Jupiter's Lightning Bolts" by Peter Paul
@@ -289,7 +317,7 @@ Demeter::UI::Hephaestus - A souped-up periodic table for XAS
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.5.
+This documentation refers to Demeter version 0.9.
 
 =head1 SYNOPSIS
 
@@ -353,7 +381,7 @@ L<http://cars9.uchicago.edu/~ravel/software/>
 
 =head1 LICENCE AND COPYRIGHT
 
-Copyright (c) 2006-2011 Bruce Ravel (bravel AT bnl DOT gov). All rights reserved.
+Copyright (c) 2006-2012 Bruce Ravel (bravel AT bnl DOT gov). All rights reserved.
 
 This module is free software; you can redistribute it and/or
 modify it under the same terms as Perl itself. See L<perlgpl>.

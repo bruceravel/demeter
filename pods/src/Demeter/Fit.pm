@@ -2,7 +2,7 @@ package Demeter::Fit;
 
 =for Copyright
  .
- Copyright (c) 2006-2011 Bruce Ravel (bravel AT bnl DOT gov).
+ Copyright (c) 2006-2012 Bruce Ravel (bravel AT bnl DOT gov).
  All rights reserved.
  .
  This file is free software; you can redistribute it and/or
@@ -22,9 +22,7 @@ use File::Spec;
 
 use Moose;
 extends 'Demeter';
-use MooseX::AttributeHelpers;
 use MooseX::Aliases;
-#use MooseX::StrictConstructor;
 
 with 'Demeter::Fit::Happiness';
 with 'Demeter::Fit::Horae';
@@ -34,7 +32,6 @@ if ($Demeter::mode->ui eq 'screen') {
   with 'Demeter::UI::Screen::Interview';
   with 'Demeter::UI::Screen::Progress';
 };
-
 
 use Demeter::NumTypes qw( NonNeg Natural NaturalC );
 
@@ -48,11 +45,9 @@ use File::Spec;
 use List::Util qw(max);
 use List::MoreUtils qw(any none zip uniq);
 use Regexp::Assemble;
-use Regexp::Common;
-use Readonly;
-Readonly my $NUMBER    => $RE{num}{real};
-Readonly my $STAT_TEXT => "n_idp n_varys chi_square chi_reduced r_factor epsilon_k epsilon_r data_total";
-Readonly my $NULLFILE  => '@&^^null^^&@';
+use Demeter::Constants qw($NUMBER $NULLFILE);
+use Const::Fast;
+const my $STAT_TEXT => "n_idp n_varys chi_square chi_reduced r_factor epsilon_k epsilon_r data_total";
 use Text::Wrap;
 use YAML::Tiny;
 
@@ -76,6 +71,8 @@ has 'number'         => (is => 'rw', isa => 'Num',    default => 0);
 has 'project'        => (is => 'rw', isa => 'Str',    default => q{},
 			 trigger => sub{my ($self, $new) = @_; $self->deserialize(file=>$new) if $new} );
 has 'folder'         => (is => 'rw', isa => 'Str',    default => q{});
+has 'grabbed'        => (is => 'rw', isa => 'Bool',   default => 0);
+has 'thawed'         => (is => 'rw', isa => 'Bool',   default => 0);
 
 ## -------- mechanics of the fit
 has 'cormin'         => (is => 'rw', isa =>  NonNeg,  default => sub{ shift->co->default("fit", "cormin")  || 0.4});
@@ -93,59 +90,59 @@ has 'troubletext'    => (is => 'rw', isa => 'Str',    default => q{});
 
 ## -------- array attributes
 has 'gds' => (
-	      metaclass => 'Collection::Array',
+	      traits    => ['Array'],
 	      is        => 'rw',
 	      isa       => 'ArrayRef',
 	      default   => sub { [] },
-	      provides  => {
-			    'push'    => 'push_gds',
-			    'pop'     => 'pop_gds',
-			    'shift'   => 'shift_gds',
-			    'unshift' => 'unshift_gds',
-			    'clear'   => 'clear_gds',
+	      handles   => {
+			    'push_gds'    => 'push',
+			    'pop_gds'     => 'pop',
+			    'shift_gds'   => 'shift',
+			    'unshift_gds' => 'unshift',
+			    'clear_gds'   => 'clear',
 			   },
 	      trigger => sub{my ($self) = @_; $self->update_gds(1)},
 	     );
 
 has 'data' => (
-	       metaclass => 'Collection::Array',
+	       traits    => ['Array'],
 	       is        => 'rw',
 	       isa       => 'ArrayRef',
 	       default   => sub { [] },
-	       provides  => {
-			     'push'    => 'push_data',
-			     'pop'     => 'pop_data',
-			     'shift'   => 'shift_data',
-			     'unshift' => 'unshift_data',
-			     'clear'   => 'clear_data',
+	       handles   => {
+			     'push_data'    => 'push',
+			     'pop_data'     => 'pop',
+			     'shift_data'   => 'shift',
+			     'unshift_data' => 'unshift',
+			     'clear_data'   => 'clear',
 			    }
 	      );
 
 has 'paths' => (
-		metaclass => 'Collection::Array',
+		traits    => ['Array'],
 		is        => 'rw',
 		isa       => 'ArrayRef',
 		default   => sub { [] },
-		provides  => {
-			      'push'    => 'push_paths',
-			      'pop'     => 'pop_paths',
-			      'shift'   => 'shift_paths',
-			      'unshift' => 'unshift_paths',
-			      'clear'   => 'clear_paths',
+		handles   => {
+			      'push_paths'    => 'push',
+			      'pop_paths'     => 'pop',
+			      'shift_paths'   => 'shift',
+			      'unshift_paths' => 'unshift',
+			      'clear_paths'   => 'clear',
 			     }
 	       );
 
 has 'vpaths' => (
-		metaclass => 'Collection::Array',
+		traits    => ['Array'],
 		is        => 'rw',
 		isa       => 'ArrayRef',
 		default   => sub { [] },
-		provides  => {
-			      'push'    => 'push_vpaths',
-			      'pop'     => 'pop_vpaths',
-			      'shift'   => 'shift_vpaths',
-			      'unshift' => 'unshift_vpaths',
-			      'clear'   => 'clear_vpaths',
+		handles   => {
+			      'push_vpaths'    => 'push',
+			      'pop_vpaths'     => 'pop',
+			      'shift_vpaths'   => 'shift',
+			      'unshift_vpaths' => 'unshift',
+			      'clear_vpaths'   => 'clear',
 			     }
 	       );
 
@@ -165,37 +162,37 @@ has 'chi_reduced'       => (is => 'rw', isa =>  NonNeg,   default => 0);
 has 'fancyline'         => (is => 'rw', isa => 'Str',     default => q{});
 
 has 'correlations' => (
-		       metaclass => 'Collection::Hash',
+		       traits    => ['Hash'],
 		       is        => 'rw',
 		       isa       => 'HashRef[HashRef]',
 		       default   => sub { {} },
-		       provides  => {
-				     exists    => 'exists_in_correlations',
-				     keys      => 'keys_in_correlations',
-				     get       => 'get_correlations',
-				     set       => 'set_correlations',
+		       handles   => {
+				     'exists_in_correlations' => 'exists',
+				     'keys_in_correlations'   => 'keys',
+				     'get_correlations'       => 'get',
+				     'set_correlations'       => 'set',
 				    }
 		      );
 has 'parameters' => (
-		     metaclass => 'Collection::Array',
+		     traits    => ['Array'],
 		     is        => 'rw',
 		     isa       => 'ArrayRef',
 		     default   => sub { [] },
-		     provides  => {
-				   'push'  => 'push_parameters',
-				   'pop'   => 'pop_parameters',
-				   'clear' => 'clear_parameters',
+		     handles   => {
+				   'push_parameters'  => 'push',
+				   'pop_parameters'   => 'pop',
+				   'clear_parameters' => 'clear',
 				  }
 		    );
 has 'pathresults' => (
-		      metaclass => 'Collection::Array',
+		      traits    => ['Array'],
 		      is        => 'rw',
 		      isa       => 'ArrayRef',
 		      default   => sub { [] },
-		      provides  => {
-				    'push'  => 'push_pathresults',
-				    'pop'   => 'pop_pathresults',
-				    'clear' => 'clear_pathresults',
+		      handles   => {
+				    'push_pathresults'  => 'push',
+				    'pop_pathresults'   => 'pop',
+				    'clear_pathresults' => 'clear',
 				   }
 		     );
 
@@ -235,6 +232,22 @@ override all => sub {
   delete $all{paths};
   delete $all{vpaths};
   return %all;
+};
+
+override clone => sub {
+  my ($self, @arguments) = @_;
+
+  my $new = ref($self) -> new();
+  my %hash = $self->SUPER::all;
+  delete $hash{group};
+  $new -> set(%hash);
+  $new -> set(@arguments);
+
+  ## the cloned object needs its own group name
+  #$new->group($self->_get_group());
+
+  return $new;
+
 };
 
 
@@ -1133,6 +1146,37 @@ sub has_data {
   return 0;
 };
 
+sub grab {			# deserialize lite -- grab the yaml
+  my ($self, @args) = @_;	# without importing any data or paths
+  my %args = @args;
+  $args{plot}       ||= 0;
+  $args{file}       ||= 0;
+  $args{folder}     ||= 0;
+  $args{regenerate} ||= 0;
+
+  my ($zip, $dpj, $yaml);
+  if ($args{file}) {
+    $dpj = File::Spec->rel2abs($args{file});
+    $self->start_spinner("Demeter is unpacking \"$args{file}\"") if ($self->mo->ui eq 'screen');
+    my $folder = $self->project_folder("raw_demeter");
+
+    $zip = Archive::Zip->new();
+    carp("Error reading project file ".$args{file}."\n\n"), return 1 unless ($zip->read($dpj) == AZ_OK);
+  };
+
+
+  ## -------- import the fit properties, statistics, correlations
+  $yaml = ($args{file}) ? $zip->contents("fit.yaml")
+    : $self->slurp(File::Spec->catfile($args{folder}, "fit.yaml"));
+  my $rhash = YAML::Tiny::Load($yaml);
+  my @array = %$rhash;
+  $self -> set(@array);
+  $self -> fit_performed(0);
+
+  $self->grabbed(1);
+  $self->thawed(0);
+};
+
 
 ## ------------------------------------------------------------
 ## Serialization and deserialization of the Fit object
@@ -1321,7 +1365,18 @@ override 'deserialize' => sub {
     my ($r_attributes, $r_x, $r_y) = YAML::Tiny::Load($yaml);
     delete $r_attributes->{fit_pcpath};	   # correct an early
     delete $r_attributes->{fit_do_pcpath}; # design mistake...
+    ## correct for earlier XDI design
+    foreach my $x (qw(xdi_mu_reference  xdi_ring_current  xdi_abscissa            xdi_start_time
+		      xdi_crystal       xdi_focusing      xdi_mu_transmission     xdi_ring_energy
+		      xdi_collimation   xdi_d_spacing     xdi_undulator_harmonic  xdi_mu_fluorescence
+		      xdi_end_time      xdi_source        xdi_edge_energy         xdi_harmonic_rejection)) {
+      delete $r_attributes->{$x};
+    };
+    if (ref($r_attributes->{xdi_beamline}) ne 'HASH') {
+      $r_attributes->{xdi_beamline} = {name=>$r_attributes->{xdi_beamline}||q{}};
+    };
     my %hash = %$r_attributes;
+
     my $savecv = $self->mo->datacount;
     my $this = $self->mo->fetch('Data', $hash{group}) || Demeter::Data -> new(group=>$hash{group});
     delete $hash{group};
@@ -1558,7 +1613,7 @@ override 'deserialize' => sub {
     };
     $d->read_fit($file) if (-e $file);
     $d->fitting(1);
-    unlink $file;
+    #unlink $file;   # why would I want to do this?
   };
 
   ## -------- import the Plot object, if requested
@@ -1570,6 +1625,8 @@ override 'deserialize' => sub {
     $self -> po -> set(@array);
   };
 
+  $self->grabbed(1);
+  $self->thawed(1);
   $self->location($project_folder);
   $self->stop_spinner if ($self->mo->ui eq 'screen');
   return $self;
@@ -1586,7 +1643,7 @@ Demeter::Fit - Fit EXAFS data using Ifeffit
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.5.
+This documentation refers to Demeter version 0.9.
 
 =head1 SYNOPSIS
 
@@ -1953,7 +2010,7 @@ L<http://cars9.uchicago.edu/~ravel/software/>
 
 =head1 LICENCE AND COPYRIGHT
 
-Copyright (c) 2006-2011 Bruce Ravel (bravel AT bnl DOT gov). All rights reserved.
+Copyright (c) 2006-2012 Bruce Ravel (bravel AT bnl DOT gov). All rights reserved.
 
 This module is free software; you can redistribute it and/or
 modify it under the same terms as Perl itself. See L<perlgpl>.

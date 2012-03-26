@@ -187,7 +187,7 @@ Adriano Ferreira, E<lt>ferreira@cpan.orgE<gt>
 
 Carp::Always is Copyright (C) 2005-2007 by Adriano R. Ferreira
 
-ANSIColor addition by Bruce Ravel 2011
+ANSIColor addition by Bruce Ravel 2012
 
 This library is free software; you can redistribute it and/or modify
 it under the same terms as Perl itself.

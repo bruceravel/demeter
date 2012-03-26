@@ -2,7 +2,7 @@ package Demeter::UI::Wx::AutoSave;
 
 =for Copyright
  .
- Copyright (c) 2006-2011 Bruce Ravel (bravel AT bnl DOT gov).
+ Copyright (c) 2006-2012 Bruce Ravel (bravel AT bnl DOT gov).
  All rights reserved.
  .
  This file is free software; you can redistribute it and/or
@@ -21,13 +21,13 @@ use warnings;
 use Wx qw( :everything );
 use base qw(Wx::SingleChoiceDialog);
 
-use Demeter;
+use Demeter qw(:none);
 
-my $demeter = Demeter->new();
+#my $demeter = Demeter->new();
 sub new {
   my ($class, $parent, $text, $title) = @_;
 
-  opendir(my $stash, $demeter->stash_folder);
+  opendir(my $stash, Demeter->stash_folder);
   ##                                         vvvvvv this is an icky kludge!
   my @list = grep {$_ =~ m{autosave\z} and $_ !~ m{\AAthena}} readdir $stash;
   closedir $stash;
@@ -54,3 +54,56 @@ sub _doublewide {
 };
 
 1;
+
+=head1 NAME
+
+Demeter::UI::Wx::AutoSave - A Wx dialog for restoring an autosave file
+
+=head1 VERSION
+
+This documentation refers to Demeter version 0.9.
+
+=head1 SYNOPSIS
+
+This provides a dialog for selecting from one or more of Demeter's
+most recently used files.
+
+  use Demeter::UI::Wx::AutoSave;
+  $dialog = Demeter::UI::Wx::AutoSave->new($self);
+  if ( $dialog->ShowModal != wxID_CANCEL ) {
+     $project = File::Spec->catfile($autosave_path, $dialog->GetString);
+  };
+
+The returned string is not a fully resolve file path.
+
+=head1 DESCRIPTION
+
+This posts a Wx
+L<SingleChoiceDialog|http://docs.wxwidgets.org/2.8.4/wx_wxsinglechoicedialog.html#wxsinglechoicedialog>
+showing all possible autosave files found in Demeter's stash folder.
+
+=head1 BUGS AND LIMITATIONS
+
+Please report problems to Bruce Ravel (bravel AT bnl DOT gov)
+
+Patches are welcome.
+
+=head1 AUTHOR
+
+Bruce Ravel (bravel AT bnl DOT gov)
+
+L<http://cars9.uchicago.edu/~ravel/software/>
+
+=head1 LICENCE AND COPYRIGHT
+
+Copyright (c) 2006-2012 Bruce Ravel (bravel AT bnl DOT gov). All
+rights reserved.
+
+This module is free software; you can redistribute it and/or modify it
+under the same terms as Perl itself. See L<perlgpl>.
+
+This program is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+
+=cut

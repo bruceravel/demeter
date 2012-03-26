@@ -2,7 +2,7 @@ package Demeter::UI::Wx::CheckListBook;
 
 =for Copyright
  .
- Copyright (c) 2006-2011 Bruce Ravel (bravel AT bnl DOT gov).
+ Copyright (c) 2006-2012 Bruce Ravel (bravel AT bnl DOT gov).
  All rights reserved.
  .
  This file is free software; you can redistribute it and/or
@@ -18,9 +18,7 @@ package Demeter::UI::Wx::CheckListBook;
 use strict;
 use warnings;
 
-use Regexp::Common;
-use Readonly;
-Readonly my $NUMBER => $RE{num}{real};
+use Demeter::Constants qw($NUMBER);
 
 use Wx qw( :everything );
 use Wx::Event qw(EVT_LISTBOX EVT_LEFT_DOWN EVT_MIDDLE_DOWN EVT_RIGHT_DOWN EVT_CHECKLISTBOX
@@ -394,7 +392,7 @@ Demeter::UI::Wx::CheckListBook - A CheckListBox-based notebook
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.5.
+This documentation refers to Demeter version 0.9.
 
 =head1 SYNOPSIS
 
@@ -534,7 +532,7 @@ Change the label at the given position interactively.
 
 =head1 DEPENDENCIES
 
-L<Wx>, Wx::SplitterWindow, Wx::CheckListBox, L<Readonly> and L<Regexp::Common>.
+L<Wx>, Wx::SplitterWindow, Wx::CheckListBox, and L<Const::Fast>
 
 =head1 BUGS AND LIMITATIONS
 
@@ -550,7 +548,7 @@ L<http://cars9.uchicago.edu/~ravel/software/>
 
 =head1 LICENCE AND COPYRIGHT
 
-Copyright (c) 2006-2011 Bruce Ravel (bravel AT bnl DOT gov). All rights reserved.
+Copyright (c) 2006-2012 Bruce Ravel (bravel AT bnl DOT gov). All rights reserved.
 
 This module is free software; you can redistribute it and/or
 modify it under the same terms as Perl itself. See L<perlgpl>.

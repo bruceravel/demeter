@@ -2,7 +2,7 @@ package Demeter::Files;
 
 =for Copyright
  .
- Copyright (c) 2006-2011 Bruce Ravel (bravel AT bnl DOT gov).
+ Copyright (c) 2006-2012 Bruce Ravel (bravel AT bnl DOT gov).
  All rights reserved.
  .
  This file is free software; you can redistribute it and/or
@@ -27,9 +27,7 @@ use Compress::Zlib;
 use File::Basename;
 use Xray::Crystal;
 
-use Readonly;
-Readonly my $ELEM => qr/([bcfhiknopsuvwy]|a[cglmrstu]|b[aehikr]|c[adeflmorsu]|dy|e[rsu]|f[emr]|g[ade]|h[aefgos]|i[nr]|kr|l[airu]|m[dgnot]|n[abdeiop]|os|p[abdmortu]|r[abefhnu]|s[bcegimnr]|t[abcehilm]|xe|yb|z[nr])/;
-Readonly my $NUM  => qr/-?(\d+\.?\d*|\.\d+)/;
+use Demeter::Constants qw($ELEMENT $NUMBER);
 
 
 ## an atoms.inp file is identified by having a valid space group
@@ -46,10 +44,10 @@ sub is_atoms {
     $switch = 1, next if  (/^\s*ato/);
     if ($switch) {
       my @line = split(" ", $_);
-      ($atoms_test=1), last A if ( (lc($line[0]) =~ /^$ELEM$/) and
-				   ($line[1] =~ /^$NUM$/)  and
-				   ($line[2] =~ /^$NUM$/)  and
-				   ($line[3] =~ /^$NUM$/));
+      ($atoms_test=1), last A if ( (lc($line[0]) =~ /^$ELEMENT$/) and
+				   ($line[1] =~ /^$NUMBER$/)  and
+				   ($line[2] =~ /^$NUMBER$/)  and
+				   ($line[3] =~ /^$NUMBER$/));
     } else {
 
       my @line = split(" ", $_);
@@ -101,10 +99,10 @@ sub is_feff {
       my @line = split(" ", $_);
       ($abs_test=$_),  next A if (($line[0] =~ /^0$/) and
 				  ($line[1] =~ /^\d+$/) and
-				  (lc($line[2]) =~ /^$ELEM$/));
+				  (lc($line[2]) =~ /^$ELEMENT$/));
       ($scat_test=$_), next A if (($line[0] =~ /^\d+$/) and
 				  ($line[1] =~ /^\d+$/) and
-				  (lc($line[2]) =~ /^$ELEM$/));
+				  (lc($line[2]) =~ /^$ELEMENT$/));
     };
   }
   close $A;
@@ -215,7 +213,7 @@ Demeter::Files - File import tests
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.5.
+This documentation refers to Demeter version 0.9.
 
 =head1 DESCRIPTION
 
@@ -260,7 +258,7 @@ Patches are welcome.
 
 =head1 LICENCE AND COPYRIGHT
 
-Copyright (c) 2006-2011 Bruce Ravel (bravel AT bnl DOT gov). All rights reserved.
+Copyright (c) 2006-2012 Bruce Ravel (bravel AT bnl DOT gov). All rights reserved.
 
 This module is free software; you can redistribute it and/or
 modify it under the same terms as Perl itself. See L<perlgpl>.

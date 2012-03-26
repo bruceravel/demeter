@@ -3,7 +3,7 @@ package  Demeter::UI::Artemis::Plot::VPaths;
 
 =for Copyright
  .
- Copyright (c) 2006-2011 Bruce Ravel (bravel AT bnl DOT gov).
+ Copyright (c) 2006-2012 Bruce Ravel (bravel AT bnl DOT gov).
  All rights reserved.
  .
  This file is free software; you can redistribute it and/or
@@ -69,12 +69,12 @@ sub add_named_vpath {
   return $vpath;
 };
 
-use Readonly;
-Readonly my $VPATH_TRANSFER => Wx::NewId();
-Readonly my $VPATH_DESCRIBE => Wx::NewId();
-Readonly my $VPATH_RENAME   => Wx::NewId();
-Readonly my $VPATH_YAML     => Wx::NewId();
-Readonly my $VPATH_DISCARD  => Wx::NewId();
+use Const::Fast;
+const my $VPATH_TRANSFER => Wx::NewId();
+const my $VPATH_DESCRIBE => Wx::NewId();
+const my $VPATH_RENAME   => Wx::NewId();
+const my $VPATH_YAML     => Wx::NewId();
+const my $VPATH_DISCARD  => Wx::NewId();
 
 sub OnRightDown {
   my ($self, $event) = @_;

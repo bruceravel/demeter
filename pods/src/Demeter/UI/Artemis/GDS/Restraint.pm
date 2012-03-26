@@ -2,7 +2,7 @@ package  Demeter::UI::Artemis::GDS::Restraint;
 
 =for Copyright
  .
- Copyright (c) 2006-2011 Bruce Ravel (bravel AT bnl DOT gov).
+ Copyright (c) 2006-2012 Bruce Ravel (bravel AT bnl DOT gov).
  All rights reserved.
  .
  This file is free software; you can redistribute it and/or
@@ -22,9 +22,7 @@ use Wx qw( :everything );
 use base qw(Wx::Dialog);
 use Wx::Event qw(EVT_LISTBOX EVT_BUTTON EVT_RADIOBOX);
 
-use Regexp::Common;
-use Readonly;
-Readonly my $NUMBER => $RE{num}{real};
+use Demeter::Constants qw($NUMBER);
 
 sub new {
   my ($class, $parent, $name) = @_;

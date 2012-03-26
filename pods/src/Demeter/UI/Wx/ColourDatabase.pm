@@ -3,7 +3,7 @@ package Demeter::UI::Wx::ColourDatabase;
 
 =for Copyright
  .
- Copyright (c) 2006-2011 Bruce Ravel (bravel AT bnl DOT gov).
+ Copyright (c) 2006-2012 Bruce Ravel (bravel AT bnl DOT gov).
  All rights reserved.
  .
  This file is free software; you can redistribute it and/or
@@ -22,9 +22,7 @@ use warnings;
 use File::Spec;
 use Wx qw(wxNullColour);
 
-#use Demeter;
-my $demeter = Demeter->new;
-
+use Demeter qw(:none);
 ################# The stuff from here to the next row of hashes is taken from Mark Dootson
 
 sub new {
@@ -158,7 +156,7 @@ sub __init {
 
 sub X11 {
   my ($self) = @_;
-  my $rgbtxt = File::Spec->catfile($demeter->location, "Demeter", "share", "rgb_colors.dem");
+  my $rgbtxt = File::Spec->catfile(Demeter->location, "Demeter", "share", "rgb_colors.dem");
   open RGB, $rgbtxt;
   while (<RGB>) {
     next if ($_ =~ m{^\!});
@@ -177,7 +175,7 @@ sub X11 {
 
 sub gnuplot {
   my ($self) = @_;
-  my $gp = File::Spec->catfile($demeter->location, "Demeter", "share", "gnuplot_colors.dem");
+  my $gp = File::Spec->catfile(Demeter->location, "Demeter", "share", "gnuplot_colors.dem");
   open GP, $gp;
   while (<GP>) {
     chomp;
@@ -202,7 +200,7 @@ Demeter::UI::Wx::ColourDatabase - An objective interface to Wx::ColourDatabase
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.5.
+This documentation refers to Demeter version 0.9.
 
 =head1 SYNOPSIS
 
@@ -253,7 +251,7 @@ L<http://cars9.uchicago.edu/~ravel/software/>
 
 =head1 LICENCE AND COPYRIGHT
 
-Copyright (c) 2006-2011 Bruce Ravel (bravel AT bnl DOT gov). All rights reserved.
+Copyright (c) 2006-2012 Bruce Ravel (bravel AT bnl DOT gov). All rights reserved.
 
 This module is free software; you can redistribute it and/or
 modify it under the same terms as Perl itself. See L<perlgpl>.

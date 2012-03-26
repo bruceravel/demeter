@@ -2,7 +2,7 @@ package Demeter::UI::AtomsApp;
 
 =for Copyright
  .
- Copyright (c) 2006-2011 Bruce Ravel (bravel AT bnl DOT gov).
+ Copyright (c) 2006-2012 Bruce Ravel (bravel AT bnl DOT gov).
  All rights reserved.
  .
  This file is free software; you can redistribute it and/or
@@ -19,7 +19,7 @@ use File::Spec;
 
 use Wx qw( :everything );
 use base 'Wx::Frame';
-use Wx::Event qw(EVT_NOTEBOOK_PAGE_CHANGED EVT_NOTEBOOK_PAGE_CHANGING);
+use Wx::Event qw(EVT_NOTEBOOK_PAGE_CHANGED EVT_NOTEBOOK_PAGE_CHANGING EVT_MENU EVT_LEFT_DOWN);
 
 use Demeter::UI::Artemis::Close qw(on_close);
 
@@ -30,6 +30,9 @@ foreach my $m (qw(Xtal Feff Config Paths Doc Console SS)) {
   #print "Demeter/UI/Atoms/$m.pm\n";
   require "Demeter/UI/Atoms/$m.pm";
 };
+
+use vars qw(@utilities);
+@utilities = ();
 
 sub new {
   my ($ref, $base, $feffobject, $component) = @_;
@@ -54,7 +57,23 @@ sub new {
   $statusbar -> SetStatusText("Welcome to Atoms (" . $Demeter::UI::Atoms::demeter->identify . ")");
   $self->{statusbar} = $statusbar;
 
-  my @utilities = ($component) ? qw(Atoms Feff Paths SS Console) : qw(Atoms Feff Paths Console Document Configure);
+  if ($component) {
+    $self->{toolbar} = Wx::ToolBar->new($self, -1, wxDefaultPosition, wxDefaultSize, wxTB_HORIZONTAL|wxTB_3DBUTTONS|wxTB_TEXT|wxTB_HORZ_LAYOUT);
+    EVT_MENU( $self->{toolbar}, -1, sub{my ($toolbar, $event) = @_; OnToolClick($toolbar, $event, $self)} );
+    $self->{toolbar} -> AddTool(-1, " Rename this Feff calculation",     $self->icon("reset"),   wxNullBitmap, wxITEM_NORMAL, q{}, "Rename this Feff calculation" );
+    $self->{toolbar} -> AddTool(-1, "Discard this Feff calculation",    $self->icon("discard"), wxNullBitmap, wxITEM_NORMAL, q{}, "Discard this Feff calculation" );
+    $self->{toolbar} -> AddSeparator;
+    $self->{toolbar} -> AddTool(-1, "About Feff", $self->icon("info"),    wxNullBitmap, wxITEM_NORMAL, q{}, "Show information about Feff's configuration in Artemis" );
+    $self->{toolbar} -> Realize;
+    $vbox -> Add($self->{toolbar}, 0, wxGROW|wxALL, 0);
+    #$vbox -> Add(Wx::StaticLine->new($self, -1, wxDefaultPosition, [-1, 3], wxLI_HORIZONTAL), 0, wxGROW|wxALL, 5);
+  };
+
+
+  eval "use Demeter::UI::Atoms::Status" if not $component;
+
+
+  @utilities = ($component) ? qw(Atoms Feff Paths SS Console) : qw(Atoms Feff Paths Console Document Configure);
 
   my $imagelist = Wx::ImageList->new( $icon_dimension, $icon_dimension );
   foreach my $utility (@utilities) {
@@ -70,21 +89,33 @@ sub new {
     my $count = $nb->GetPageCount;
     my $page = Wx::Panel->new($nb, -1, wxDefaultPosition, wxDefaultSize);
     my $box = Wx::BoxSizer->new( wxVERTICAL );
-    $page -> SetSizer($box);
+    $self->{$utility."_page"} = $page;
+    $self->{$utility."_sizer"} = $box;
 
-    $self->{$utility}
-      = ($utility eq 'Atoms')     ? Demeter::UI::Atoms::Xtal    -> new($page, $self)
-      : ($utility eq 'Feff')      ? Demeter::UI::Atoms::Feff    -> new($page, $self)
-      : ($utility eq 'Paths')     ? Demeter::UI::Atoms::Paths   -> new($page, $self)
-      : ($utility eq 'Console')   ? Demeter::UI::Atoms::Console -> new($page, $self)
-      : ($utility eq 'Document')  ? Demeter::UI::Atoms::Doc     -> new($page, $self)
-      : ($utility eq 'Configure') ? Demeter::UI::Atoms::Config  -> new($page, $self)
-      : ($utility eq 'SS')        ? Demeter::UI::Atoms::SS      -> new($page, $self)
-      :                             0;
+    if ($utility eq 'Atoms') {
+      my $hh = Wx::BoxSizer->new( wxHORIZONTAL );
+      my $header = Wx::StaticText->new( $page, -1, q{}, wxDefaultPosition, wxDefaultSize );
+      $hh -> Add($header, 1, wxGROW|wxLEFT, 5);
+      $box -> Add($hh, 0);
+      $page->Fit;
 
-    my $hh   = Wx::BoxSizer->new( wxHORIZONTAL );
-    $hh  -> Add($self->{$utility}, 1, wxEXPAND|wxALL, 0);
-    $box -> Add($hh, 1, wxEXPAND|wxALL, 0);
+      $self->{$utility} = Demeter::UI::Atoms::Xtal -> new($page,$self);
+    # $self->{$utility}
+    #   = ($utility eq 'Atoms')     ? Demeter::UI::Atoms::Xtal    -> new($page, $self)
+    #   : ($utility eq 'Feff')      ? Demeter::UI::Atoms::Feff    -> new($page, $self)
+    #   : ($utility eq 'Paths')     ? Demeter::UI::Atoms::Paths   -> new($page, $self)
+    #   : ($utility eq 'Console')   ? Demeter::UI::Atoms::Console -> new($page, $self)
+    #   : ($utility eq 'Document')  ? Demeter::UI::Atoms::Doc     -> new($page, $self)
+    #   : ($utility eq 'Configure') ? Demeter::UI::Atoms::Config  -> new($page, $self)
+    #   : ($utility eq 'SS')        ? Demeter::UI::Atoms::SS      -> new($page, $self)
+    #   :                             0;
+
+      my $hh   = Wx::BoxSizer->new( wxHORIZONTAL );
+      $hh  -> Add($self->{$utility}, 1, wxGROW|wxEXPAND|wxALL, 0);
+      $box -> Add($hh, 1, wxEXPAND|wxALL, 0);
+
+      $page -> SetSizer($box);
+    };
 
     my $label = ($utility eq 'SS') ? 'Path-like' : $utility;
     $nb  -> AddPage($page, $label, 0, $count);
@@ -92,17 +123,151 @@ sub new {
 
   $vbox -> Add($nb, 1, wxEXPAND|wxGROW, 0);
   #EVT_NOTEBOOK_PAGE_CHANGED( $self, $nb, sub{$echoarea->echo(q{})} );
+  EVT_LEFT_DOWN($nb, sub { $_[0]->{last_pos} = $_[1]->GetPosition();
+			   $_[1]->Skip(1);
+			 });
+  EVT_NOTEBOOK_PAGE_CHANGING( $self, $nb,
+			      sub{ my($self, $event) = @_;
+				   my $notebook = $event->GetEventObject;
+				   my ($nbtab, $flags ) = $notebook->HitTest($notebook->{last_pos});
+				   my $which = $utilities[$nbtab];
+				   $self->make_page($which);
+				   return;
+				 }
+			    );
+
+#sub{make_page(@_)}); # postpone setting up pages until they are selected
 
   $self -> SetSizer($vbox);
-  #$vbox -> Fit($nb);
-  #$vbox -> SetSizeHints($nb);
+  $vbox -> Fit($nb);
+  $vbox -> SetSizeHints($nb);
   return $self;
 };
+
+sub make_page {
+  my ($self, $which) = @_;
+  return if exists $self->{$which};
+  my $busy = Wx::BusyCursor->new;
+  my $pm = ($which eq 'Document')  ? 'Demeter::UI::Atoms::Doc'
+         : ($which eq 'Configure') ? 'Demeter::UI::Atoms::Config'
+         : ($which eq 'Atoms')     ? 'Demeter::UI::Atoms::Xtal'
+	 :                           "Demeter::UI::Atoms::$which";
+  $self->{$which} = $pm -> new($self->{$which."_page"},$self);
+  $self->{$which}->SetSize($self->{"Atoms"}->GetSize);
+#  $self->{$which."_page"}->SetSize($self->{"Atoms_page"}->GetSize);
+
+  my $hh   = Wx::BoxSizer->new( wxHORIZONTAL );
+  $hh  -> Add($self->{$which}, 1, wxGROW|wxALL, 0);
+  $self->{$which."_sizer"} -> Add($hh, 1, wxGROW|wxALL, 0);
+  $self->{$which."_page"} -> SetSizer(self->{$which."_sizer"});
+  undef $busy;
+};
+
+sub OnToolClick {
+  my ($toolbar, $event, $self) = @_;
+  my $position = $toolbar->GetToolPos($event->GetId);
+  my @callbacks = qw(on_rename on_discard noop on_about);
+  my $closure = $callbacks[$toolbar->GetToolPos($event->GetId)];
+  $self->$closure;
+};
+
+sub icon {
+  my ($self, $which) = @_;
+  my $icon = File::Spec->catfile($Demeter::UI::Atoms::atoms_base, 'Atoms', 'icons', "$which.png");
+  return wxNullBitmap if (not -e $icon);
+  return Wx::Bitmap->new($icon, wxBITMAP_TYPE_ANY)
+};
+
+sub on_rename {
+  my ($self) = @_;
+  my $ted = Wx::TextEntryDialog->new( $self, "Enter a name for this Feff calculation", "Enter a new name", q{},
+				      wxOK|wxCANCEL, Wx::GetMousePosition);
+  if ($ted->ShowModal == wxID_CANCEL) {
+    my $this = (exists $self->{Atoms}->{atomsobject}) ? $self->{Atoms}->{atomsobject}->name : $self->{Feff}->{feffobject}->name;
+    $self->status("Renaming Feff calculation \"$this\" cancelled.");
+    return;
+  };
+  my $name = $ted->GetValue;
+  if (exists $self->{Atoms}->{atomsobject}) {
+    $self->{Atoms}->{atomsobject}->name($name);
+  };
+  if ((exists $self->{feffobject}) and (ref($self->{feffobject}) =~ m{Feff})) {
+    $self->{feffobject}->name($name);
+  };
+  $self->make_page('Feff')  if not $self->{Feff};
+  $self->make_page('Paths') if not $self->{Paths};
+  if ((exists $self->{Feff}->{feffobject}) and (ref($self->{Feff}->{feffobject}) =~ m{Feff})) {
+    $self->{Feff}->{feffobject}->name($name);
+  };
+  $self->{Atoms}->{name}->SetValue($name);
+  $self->{Feff}->{name}->SetValue($name);
+  $self->{Paths}->{name}->SetValue($name);
+  my $fnum = $self->{fnum};
+  $Demeter::UI::Artemis::frames{main}->{$fnum}->SetLabel("Hide $name");
+};
+
+sub on_discard {
+  my ($self, $force) = @_;
+  my ($self, $force) = @_;
+  my $atomsobject = $self->{Atoms}->{atomsobject};
+  my $feffobject  = $self->{Feff}->{feffobject};
+
+  if (not $force) {
+    my $yesno = Wx::MessageDialog->new($self, "Do you really wish to discard this Feff calculation?",
+				       "Discard?", wxYES_NO);
+    $self->status("Not discarding Feff calculation \"$this\".");
+    return if ($yesno->ShowModal == wxID_NO);
+  };
+
+  ## remove paths & VPaths from the plot list
+
+
+  ## discard all paths which come from this Feff calculation
+  if ($feffobject) {
+    foreach my $fr (keys %Demeter::UI::Artemis::frames) {
+      next if ($fr !~ m{data});
+      my $datapage = $Demeter::UI::Artemis::frames{$fr};
+      $datapage->discard($feffobject);
+    };
+  };
+
+  my $fnum = $self->{fnum};
+
+  ## destroy Atoms and Feff objects
+  $atomsobject->DEMOLISH if (ref($atomsobject) =~ m{Atoms});
+  $feffobject->DEMOLISH  if (ref($feffobject)  =~ m{Feff});
+
+  ## remove the frame with the datapage
+  $Demeter::UI::Artemis::frames{$fnum}->Hide;
+  $Demeter::UI::Artemis::frames{$fnum}->Destroy;
+  delete $Demeter::UI::Artemis::frames{$fnum};
+
+  ## remove the button from the feff tool bar
+  $Demeter::UI::Artemis::frames{main}->{feffbox}->Hide($Demeter::UI::Artemis::frames{main}->{$fnum});
+  $Demeter::UI::Artemis::frames{main}->{feffbox}->Detach($Demeter::UI::Artemis::frames{main}->{$fnum});
+  $Demeter::UI::Artemis::frames{main}->{feffbox}->Layout;
+  #$Demeter::UI::Artemis::frames{main}->{$fnum}->Destroy; ## this causes a segfaul .. why?
+
+  $Demeter::UI::Artemis::frames{main}->status("Discarded Feff calculation.  Note that unused GDS parameters may remain.");
+};
+
+sub on_about {
+  my ($self) = @_;
+  my $text = sprintf("Feff executable: %s\n\n", Demeter->co->default(qw(feff executable)));
+  $text   .= sprintf("Default feff.inp style: %s\n", Demeter->co->default(qw(atoms feff_version)));
+  $text   .= sprintf("Default ipot style: %s\n", Demeter->co->default(qw(atoms ipot_style)));
+  Demeter::UI::Artemis::ShowText->new($frames{main}, $text, 'Overview of Feff configuration') -> Show
+};
+
+sub noop {
+  return 1;
+};
+
 
 
 package Demeter::UI::Atoms;
 
-use Demeter;
+use Demeter qw(:atoms);
 use vars qw($demeter);
 $demeter = Demeter->new;
 
@@ -137,7 +302,7 @@ sub OnInit {
   ## -------- Set up menubar
   my $bar = Wx::MenuBar->new;
   my $file = Wx::Menu->new;
-  $file->Append( wxID_EXIT, "E&xit" );
+  $file->Append( wxID_EXIT, "E&xit\tCtrl+q" );
 
   my $help = Wx::Menu->new;
   $help->Append( wxID_ABOUT, "&About..." );
@@ -214,7 +379,7 @@ Demeter::UI::Atoms - Crystallography for the X-ray absorption spectroscopist
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.5.
+This documentation refers to Demeter version 0.9.
 
 =head1 SYNOPSIS
 
@@ -384,7 +549,7 @@ L<http://cars9.uchicago.edu/~ravel/software/>
 
 =head1 LICENCE AND COPYRIGHT
 
-Copyright (c) 2006-2011 Bruce Ravel (bravel AT bnl DOT gov). All rights reserved.
+Copyright (c) 2006-2012 Bruce Ravel (bravel AT bnl DOT gov). All rights reserved.
 
 This module is free software; you can redistribute it and/or
 modify it under the same terms as Perl itself. See L<perlgpl>.

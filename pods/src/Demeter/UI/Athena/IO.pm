@@ -16,7 +16,7 @@ use File::Path;
 use File::Spec;
 use List::Util qw(max);
 use List::MoreUtils qw(any none);
-use Readonly;
+use Const::Fast;
 
 use Wx qw(:everything);
 use base qw( Exporter );
@@ -50,6 +50,7 @@ sub Export {
 
   my $busy = Wx::BusyCursor->new();
   #$app->{main}->{Main}->pull_values($app->current_data);
+  $app->make_page('Journal') if (not exists $app->{main}->{Journal});
   $app->{main}->{Journal}->{object}->text($app->{main}->{Journal}->{journal}->GetValue);
   $data[0]->write_athena($fname, @data, $app->{main}->{Journal}->{object});
   if (dirname($fname) ne Demeter->stash_folder) {
@@ -68,15 +69,18 @@ sub Export {
 };
 
 sub Import {
-  my ($app, $fname) = @_;
+  my ($app, $fname, @args) = @_;
+  my %args = @args;
+  $args{no_main}        = 0 if not defined $args{no_main};
+  $args{no_interactive} = 0 if not defined $args{no_interactive};
   my $retval = q{};
 
-  $app->{main}->{views}->SetSelection(0);
+  $app->{main}->{views}->SetSelection(0) if not $args{no_main};
 
   my @files = ($fname);
   if (not $fname) {
     my $fd = Wx::FileDialog->new( $app->{main}, "Import data", cwd, q{},
-				  "All files|*|Athena projects (*.prj)|*.prj|Data (*.dat)|*.dat",
+				  "All files|*|Athena projects (*.prj)|*.prj|Data (*.dat)|*.dat|XDI data (*.xdi)|*.xdi",
 				  wxFD_OPEN|wxFD_FILE_MUST_EXIST|wxFD_CHANGE_DIR|wxFD_PREVIEW|wxFD_MULTIPLE,
 				  wxDefaultPosition);
     if ($fd->ShowModal == wxID_CANCEL) {
@@ -89,7 +93,7 @@ sub Import {
   my $verbose = 0;
   ## also xmu.dat
   ## evkev?
-  my $first = 1;
+  my $first = ($args{no_interactive}) ? 0 : 1;
   foreach my $file (sort {$a cmp $b} @files) {
     ## check to see if this is a Windows shortcut, if so, resolve it
     ## bail out if it points to a file that is not -e or cannot -r
@@ -107,35 +111,40 @@ sub Import {
       ## file from X23A2 or 10BM , if so, set is_xdi to false and let
       ## this fall through to the plugin
     };
-    my ($plugin, $stashfile, @suggest, $type);
-    if ($xdi and $xdi->is_xdi) {
-      $type = 'xdi';
+    my ($plugin, $stashfile, $type) = (q{}, q{}, q{});
+    if ($Demeter::UI::Athena::demeter->is_prj($file,$verbose)) {
+      $type = 'prj';
+      $stashfile = $file;
     } else {
-      $plugin = test_plugins($app, $file);
-      if ($plugin =~ m{\A\!}) {
-	$app->{main}->status("There was an error reading that file as a " . (split(/::/, $plugin))[-1] . " file.  (Perhaps you do not have its plugin configured correctly?)");
-	return;
+      if ($xdi and $xdi->is_xdi) {
+	$type = 'xdi';
+      } else {
+	$plugin = test_plugins($app, $file);
+	if ($plugin =~ m{\A\!}) {
+	  $app->{main}->status("There was an error reading that file as a " . (split(/::/, $plugin))[-1] . " file.  (Perhaps you do not have its plugin configured correctly?)");
+	  return;
+	};
+	$stashfile = ($plugin) ? $plugin->fixed : $file;
+	$type = ($plugin and ($plugin->output eq 'data'))                ? 'raw'
+	      : ($plugin and ($plugin->output eq 'project'))             ? 'prj'
+              : ($Demeter::UI::Athena::demeter->is_data($file,$verbose)) ? 'raw'
+              :                                                            '???';
       };
-      $stashfile = ($plugin) ? $plugin->fixed : $file;
-      @suggest = ($plugin) ? $plugin->suggest() : ();
-      $type = ($plugin and ($plugin->output eq 'data'))                ? 'raw'
-            : ($plugin and ($plugin->output eq 'project'))             ? 'prj'
-            : ($Demeter::UI::Athena::demeter->is_prj($file,$verbose))  ? 'prj'
-            : ($Demeter::UI::Athena::demeter->is_data($file,$verbose)) ? 'raw'
-            :                                                            '???';
-    }
+    };
     if ($type eq '???') {
-      $app->{main}->status("Could not read \"$file\" as either data or as a project file. (Do you need to enable a plugin?)");
-      return;
+      my $md = Wx::MessageDialog->new($app->{main}, "Could not read \"$file\" as either data or as a project file. (Do you need to enable a plugin?). OK to continue importing data, cancel to quit importing data.", "Warning!", wxOK|wxCANCEL|wxICON_WARNING);
+      my $response = $md -> ShowModal;
+      return if $response = wxID_CANCEL;
+      next;
     };
     if ($plugin) {
       $app->{main}->status("$file appears to be from " . $plugin->description);
     };
 
   SWITCH: {
-      $retval = _data($app, $stashfile, $xdi,  $first, []),        last SWITCH if ($type eq 'xdi');
-      $retval = _prj ($app, $stashfile, $file, $first, $plugin),   last SWITCH if ($type eq 'prj');
-      $retval = _data($app, $stashfile, $file, $first, \@suggest), last SWITCH if ($type eq 'raw');
+      $retval = _data($app, $stashfile, $xdi,  $first, $plugin), last SWITCH if ($type eq 'xdi');
+      $retval = _prj ($app, $stashfile, $file, $first, $plugin), last SWITCH if ($type eq 'prj');
+      $retval = _data($app, $stashfile, $file, $first, $plugin), last SWITCH if ($type eq 'raw');
     };
     undef $xdi;
     if ($plugin) {
@@ -146,8 +155,12 @@ sub Import {
       return;
     };
     if ($retval == -1) {	# bail on a file sequence if something bad happens
-      $app->{main}->status("Stopping file import.  $file could not be read correctly.", "error");
-      return;
+      my $md = Wx::MessageDialog->new($app->{main}, "$file could not be read correctly. OK to continue importing data, cancel to quit importing data.", "Warning!", wxOK|wxCANCEL|wxICON_WARNING);
+      my $response = $md -> ShowModal;
+      return if $response = wxID_CANCEL;
+      next;
+      #$app->{main}->status("Stopping file import.  $file could not be read correctly.", "error");
+      #return;
     };
     $first = 0;
     if ($app->current_data->mo->heap_used > 0.95) {
@@ -163,8 +176,12 @@ sub Import {
 
 sub test_plugins {
   my ($app, $file) = @_;
-  foreach my $pl (@{$Demeter::UI::Athena::demeter->mo->Plugins}) {
+  ## delay registering plugins until needed for the first time
+  Demeter->register_plugins if not @{Demeter->mo->Plugins};
+  foreach my $pl (@{Demeter->mo->Plugins}) {
     next if ($pl =~ m{FileType});
+    ## delay laying out Plugin Registry tool until it is needed for the first time
+    $app->make_page('PluginRegistry') if (not exists $app->{main}->{PluginRegistry});
     next if (not $app->{main}->{PluginRegistry}->{$pl}->GetValue);
     my $this = $pl->new(file=>$file);
     if (not $this->is) {
@@ -201,7 +218,7 @@ sub Import_plot {
 };
 
 sub _data {
-  my ($app, $file, $orig, $first, $suggest) = @_;
+  my ($app, $file, $orig, $first, $plugin) = @_;
   my $busy = Wx::BusyCursor->new();
   my ($data, $displayfile);
   if (ref($orig) =~ m{Class::MOP|Moose::Meta::Class}) {
@@ -212,7 +229,10 @@ sub _data {
     $displayfile = $orig;
     $data = Demeter::Data->new(file=>$file);
   };
-  my %suggest = @$suggest;	# suggested columns from a plugin
+  $data->source($plugin->file) if $plugin;
+
+  my @suggest = ($plugin) ? $plugin->suggest() : ();
+  my %suggest = @suggest;	# suggested columns from a plugin
   ## build suggestions from XDI attributes
 
   ## -------- import persistance file
@@ -253,7 +273,7 @@ sub _data {
       };
     } else {
       $yaml->{each} = 0;
-      $do_guess = ($suggest) ? 0 : 1;
+      $do_guess = ($plugin) ? 0 : 1;
     };
   } else {
     $do_guess = 1;
@@ -275,7 +295,7 @@ sub _data {
   ## until *after* the energy/numerator/denominator attributes are
   ## set.  then guess_columns can be called.
   #$data->xdi($orig) if (ref($orig) =~ m{Class::MOP|Moose::Meta::Class});
-  $data->guess_columns if ($do_guess and (not $suggest));
+  $data->guess_columns if ($do_guess and (not $plugin));
 
   ## -------- display column selection dialog
   my $repeated = 1;
@@ -298,6 +318,8 @@ sub _data {
     $colsel->OnDatatype(q{}, $colsel, $data);
 
     ## set Reference controls from yaml
+    my @toss = split(" ", $data->columns);
+    my $n = $#toss+1;
     if ($data->columns eq $yaml->{columns}) {
       $colsel->{Reference}->{do_ref}->SetValue($yaml->{do_ref});
       $colsel->{Reference}->{ln}    ->SetValue($yaml->{ref_ln});
@@ -305,10 +327,19 @@ sub _data {
       if (($yaml->{ref_numer}) and exists($colsel->{Reference}->{'n'.$yaml->{ref_numer}}))  {
 	$colsel->{Reference}->{'n'.$yaml->{ref_numer}}->SetValue(1);
 	$colsel->{Reference}->{numerator}   = $yaml->{ref_numer};
+	foreach my $j (1 .. $n) {
+	  next if ($j == $yaml->{ref_numer});
+	  next if not exists $colsel->{Reference}->{'n'.$j};
+	  $colsel->{Reference}->{'n'.$j} -> SetValue(0);
+	};
       };
       if (($yaml->{ref_denom}) and exists($colsel->{Reference}->{'d'.$yaml->{ref_denom}})) {
 	$colsel->{Reference}->{'d'.$yaml->{ref_denom}}->SetValue(1);
 	$colsel->{Reference}->{denominator} = $yaml->{ref_denom};
+	foreach my $j (1 .. $n) {
+	  next if ($j == $yaml->{ref_denom});
+	  $colsel->{Reference}->{'d'.$j} -> SetValue(0);
+	};
       };
       $colsel->{Reference}->EnableReference(0, $data);
     };
@@ -402,6 +433,8 @@ sub _data {
     _group($app, $colsel, $data, $yaml, $file, $orig, $repeated, 0);
   };
 
+  $data->metadata_from_ini($plugin->metadata_ini) if ($plugin and $plugin->metadata_ini);
+  $plugin->add_metadata($data) if $plugin;
   $data->push_mru("xasdata", $displayfile);
   $app->set_mru;
 
@@ -502,6 +535,17 @@ sub _group {
 
   $data -> po -> e_markers(1);
   $data -> _update('all');
+
+  my @signal = ($data->ln) ? $data->get_array('signal') : $data->get_array('i0');
+  my $which =  ($data->ln) ? "transmission" : "I0";
+  if (any {$_ == 0} @signal) {
+    my $md = Wx::MessageDialog->new($app->{main}, "The data in \"$file\" contain at least one zero value in the $which signal.  These data cannot be imported.", "Error!", wxOK|wxICON_ERROR|wxSTAY_ON_TOP);
+    my $response = $md -> ShowModal;
+    $data->dispose("erase \@group ".$data->group);
+    $data->DEMOLISH;
+    return;
+  };
+
   $app->{main}->{list}->AddData($data->name, $data);
 
   if (not $repeated) {
@@ -545,7 +589,7 @@ sub _group {
     $app->{main}->Update;
     my $ref = (defined $colsel) ? $colsel->{Reference}->{reference} : q{};
     if (not $ref) {
-      $ref = Demeter::Data->new(file => $file);
+      $ref = Demeter::Data->new(file => $data->file);
     };
     $yaml -> {ref_numer} = (defined($colsel)) ? $colsel->{Reference}->{numerator}    : $yaml->{ref_numer};
     $yaml -> {ref_denom} = (defined($colsel)) ? $colsel->{Reference}->{denominator}  : $yaml->{ref_denom};
@@ -585,7 +629,9 @@ sub _group {
       $ret->DESTROY;
     };
     $ref -> _update('fft');
+    my $save = $app->{most_recent};
     $app->{main}->{list}->AddData($ref->name, $ref);
+    $app->{most_recent} = $save;
     $app->{main}->{Main}->{bkg_eshift}-> SetBackgroundColour( Wx::Colour->new($ref->co->default("athena", "tied")) );
     $ref->reference($data);
   };
@@ -605,15 +651,15 @@ sub _group {
 
 };
 
-Readonly my @all_group  => (qw(bkg_z fft_edge bkg_eshift importance));
-Readonly my @all_bkg    => (qw(bkg_e0 bkg_rbkg bkg_flatten bkg_kw
-			       bkg_fixstep bkg_nnorm bkg_pre1 bkg_pre2
-			       bkg_nor1 bkg_nor2 bkg_spl1 bkg_spl2
-			       bkg_spl1e bkg_spl2e bkg_stan bkg_clamp1
-			       bkg_clamp2)); # bkg_algorithm bkg_step
-Readonly my @all_fft    => (qw(fft_kmin fft_kmax fft_dk fft_kwindow fit_karb_value fft_pc));
-Readonly my @all_bft    => (qw(bft_rmin bft_rmax bft_dr bft_rwindow));
-Readonly my @all_plot   => (qw(plot_multiplier y_offset));
+const my @all_group  => (qw(bkg_z fft_edge bkg_eshift importance));
+const my @all_bkg    => (qw(bkg_e0 bkg_rbkg bkg_flatten bkg_kw
+			    bkg_fixstep bkg_nnorm bkg_pre1 bkg_pre2
+			    bkg_nor1 bkg_nor2 bkg_spl1 bkg_spl2
+			    bkg_spl1e bkg_spl2e bkg_stan bkg_clamp1
+			    bkg_clamp2)); # bkg_algorithm bkg_step
+const my @all_fft    => (qw(fft_kmin fft_kmax fft_dk fft_kwindow fit_karb_value fft_pc));
+const my @all_bft    => (qw(bft_rmin bft_rmax bft_dr bft_rwindow));
+const my @all_plot   => (qw(plot_multiplier y_offset));
 
 sub constrain {
   my ($app, $colsel, $data, $stan) = @_;
@@ -631,7 +677,7 @@ sub constrain {
 
 
 sub _prj {
-  my ($app, $file, $orig, $first, $is_plugin) = @_;
+  my ($app, $file, $orig, $first, $plugin) = @_;
   my $busy = Wx::BusyCursor->new();
 
   $app->{main}->{prj} =  Demeter::UI::Artemis::Prj->new($app->{main}, $file, 'multiple');
@@ -658,6 +704,7 @@ sub _prj {
     if ($data->prjrecord =~ m{,\s+(\d+)}) {
       $data->prjrecord($orig . ", $1");
     };
+    $plugin->add_metadata($data) if $plugin;
     $app->{main}->status("Importing ". $data->prjrecord, "nobuffer");
     $app->{main}->Update;
     $app->{main}->{list}->AddData($data->name, $data);
@@ -670,6 +717,8 @@ sub _prj {
     };
   };
   return -1 if not $count;
+  ## delay laying out Journal tool until it is needed for the first time
+  $app->make_page('Journal') if (not exists $app->{main}->{Journal});
   $app->{main}->{Journal}->{object}->text($prj->journal);
   $app->{main}->{Journal}->{journal}->SetValue($app->{main}->{Journal}->{object}->text);
   $app->{main}->{Main}->{bkg_stan}->fill($app, 1);
@@ -677,15 +726,20 @@ sub _prj {
   $data->push_mru("xasdata", $orig);
   $data->push_mru("athena", $orig);
   $app->set_mru;
-  if (not $is_plugin) {
+  if ((not $plugin) and ($app->{main}->{project}->GetLabel eq q{<untitled>}) and ($app->{main}->{prj}->{prj}->n == $#records+1)) {
     $app->{main}->{project}->SetLabel(basename($file, '.prj'));
     $app->{main}->{currentproject} = $file;
   };
 
   chdir dirname($orig);
-  ($is_plugin) ? $app->modified(1) : $app->modified(0);
+  if ($plugin) {
+    $app->modified(1);
+  } else {
+    $app->modified(0);
+  };
   $prj->DEMOLISH;
   $app->OnGroupSelect(0,0,0);
+  undef $app->{main}->{prj};
   undef $busy;
   $app->{main}->status("Imported data from project $orig");
   return 1;

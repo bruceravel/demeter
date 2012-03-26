@@ -2,7 +2,7 @@ package Demeter;  # http://xkcd.com/844/
 
 =for Copyright
  .
- Copyright (c) 2006-2011 Bruce Ravel (bravel AT bnl DOT gov).
+ Copyright (c) 2006-2012 Bruce Ravel (bravel AT bnl DOT gov).
  All rights reserved.
  .
  This file is free software; you can redistribute it and/or
@@ -15,37 +15,34 @@ package Demeter;  # http://xkcd.com/844/
 
 =cut
 
-#BEGIN {
-#  #$ENV{PGPLOT_DEV} = (($^O eq 'MSWin32') or ($^O eq 'cygwin')) ? '/gw' : '/xserve';
-#  $ENV{PGPLOT_DIR} = 'C:\strawberry\perl\c\lib\pgplot' if (($^O eq 'MSWin32') or ($^O eq 'cygwin'));
-#};
-
 require 5.008;
 
 use version;
-our $VERSION = version->new('0.9.6');
+our $VERSION = version->new('0.9.9');
+use feature "switch";
 
+############################
+## Carp
+##
 #use Demeter::Carp;
 #use Carp::Always::Color;
 use Carp;
+############################
+
 use Cwd;
+##use DateTime;
 use File::Basename qw(dirname);
 use File::Spec;
+use Ifeffit;
+Ifeffit::ifeffit("\$plot_device=/gw\n") if (($^O eq 'MSWin32') or ($^O eq 'cygwin'));
 use List::MoreUtils qw(any minmax zip uniq);
 #use Safe;
 use Pod::POM;
+use Regexp::Assemble;
 use String::Random qw(random_string);
 use Text::Template;
-use Ifeffit;
-Ifeffit::ifeffit("\$plot_device=/gw\n") if (($^O eq 'MSWin32') or ($^O eq 'cygwin'));
 use Xray::Absorption;
 Xray::Absorption->load('elam');
-
-use Regexp::Common;
-use Regexp::Assemble;
-use Readonly;
-Readonly my $NUMBER => $RE{num}{real};
-Readonly my $PI     => 4*atan2(1,1);
 
 =for LiteratureReference
   Then, spent as they were from all their toil,
@@ -56,11 +53,14 @@ Readonly my $PI     => 4*atan2(1,1);
                                 Virgil, The Aeneid, 1:209-213
 
 =cut
+
+## why was this needed?
+##
 # Metaclass definition must come before Moose is used.
-use metaclass (
-	       metaclass => 'Moose::Meta::Class',
-	       error_class => 'Moose::Error::Confess',
-	      );
+#use metaclass (
+#	       metaclass   => 'Moose::Meta::Class',
+#	       error_class => 'Moose::Error::Confess',
+#	      );
 
 use Moose;
 use MooseX::Aliases;
@@ -71,12 +71,8 @@ with 'Demeter::Files';
 with 'Demeter::Project';
 with 'Demeter::MRU';
 use Demeter::Return;
-
 with 'MooseX::SetGet';		# this is mine....
-
-#use MooseX::Storage;
-#with Storage('format' => 'YAML', 'io' => 'File');
-
+use Demeter::Constants qw($NUMBER $PI);
 
 my %seen_group;
 has 'group'     => (is => 'rw', isa => 'Str',     default => sub{shift->_get_group()},
@@ -131,14 +127,17 @@ sub set_datagroup {
   $self->datagroup($group);
 };
 
-use vars qw($Gnuplot_exists $STAR_Parser_exists $XDI_exists
-	    $PDL_exists $PSG_exists);
-$Gnuplot_exists     = eval "require Graphics::GnuplotIF";
+######################################################################
+## conditional features
+use vars qw($Gnuplot_exists $STAR_Parser_exists $XDI_exists $PDL_exists $PSG_exists $FML_exists);
+$Gnuplot_exists     = eval "require Graphics::GnuplotIF" || 0;
 $STAR_Parser_exists = 1;
 use STAR::Parser;
-$XDI_exists         = eval "require Xray::XDI";
-$PDL_exists         = eval "require PDL::Lite";
-$PSG_exists         = eval "require PDL::Stats::GLM";
+$XDI_exists         = eval "require Xray::XDI" || 0;
+$PDL_exists         = 0;
+$PSG_exists         = 0;
+$FML_exists         = eval "require File::Monitor::Lite" || 0;
+######################################################################
 
 use Demeter::Plot;
 use vars qw($plot);
@@ -201,78 +200,105 @@ sub import {
   my ($class, @pragmata) = @_;
   strict->import;
   warnings->import;
-  #Ifeffit->import;
-
   #print join(" ", $class, caller), $/;
 
-  my @load = ();
-  ## I wish I didn't have to load XES here
-  my @data = (qw(Data XES Plot/Indicator Plot/Style Journal
-		 Data/Prj Data/Pixel Data/MultiChannel));
-  my @heph = (qw(Data XES));
-  my @fit  = (qw(Atoms Feff Feff/External ScatteringPath
-		 Path VPath SSPath ThreeBody FPath FSPath
-		 GDS Fit Fit/Feffit StructuralUnit));
-  my @anal = (qw(LCF LogRatio Diff PeakFit PeakFit/LineShape));
-  my @xes  = ('XES');
+  my @load  = ();
+  my @data  = (qw(Data XES Journal Data/Prj Data/Pixel Data/MultiChannel Data/BulkMerge));
+  my @heph  = (qw(Data Data/Prj));
+  my @fit   = (qw(Atoms Feff Feff/External ScatteringPath Path VPath SSPath ThreeBody FPath FSPath
+		  GDS Fit Fit/Feffit StructuralUnit));
+  my @atoms = (qw(Data Atoms Feff ScatteringPath Path));
+  my @anal  = (qw(LCF LogRatio Diff PeakFit PeakFit/LineShape));
+  my @xes   = (qw(XES));
+  my @plot  = (qw(Plot/Indicator Plot/Style));
   my $colonanalysis = 0;
+  my $doplugins     = 0;
+  my $none          = 0;
 
  PRAG: foreach my $p (@pragmata) {
-    $plot -> plot_with($1),        next PRAG if ($p =~ m{:plotwith=(\w+)});
-    if ($p =~ m{:ui=(\w+)}) {
-      $mode -> ui($1);
-      #import Demeter::Carp if ($1 eq 'screen');
-      next PRAG;
-    };
-    if ($p =~ m{:template=(\w+)}) {
-      my $which = $1;
-      $mode -> template_process($which);
-      $mode -> template_fit($which);
-      #$mode -> template_analysis($which);
-      next PRAG;
-    };
-    if ($p eq ':data') {
-      @load = @data;
-      next PRAG;
-    };
-    if ($p eq ':hephaestus') {
-      @load = @heph;
-      next PRAG;
-    };
-    if ($p eq ':fit') {
-      @load = (@data, @fit);
-      next PRAG;
-    };
-    if ($p eq ':analysis') {
-      @load = (@data, @anal);
-      $colonanalysis = 1;	# verify PDL before loading PCA
-      next PRAG;
-    };
-    if ($p eq ':all') {
-      @load = (@data, @fit, @anal);
-      next PRAG;
+    given ($p) {
+      when (m{:plotwith=(\w+)}) { # choose between pgplot and gnuplot
+	$plot -> plot_with($1);
+      }
+      when (m{:ui=(\w+)}) {       # ui-specific functionality (screen is the most interesting one)
+	$mode -> ui($1);
+	#import Demeter::Carp if ($1 eq 'screen');
+      }
+      when (m{:template=(\w+)}) { # change template sets
+	my $which = $1;
+	$mode -> template_process($which);
+	$mode -> template_fit($which);
+	#$mode -> template_analysis($which);
+      }
+
+      ## all the rest of the "pragmata" control what parts of Demeter get imported
+
+      when (':data') {
+	@load = @data;
+	$doplugins = 1;
+      }
+      when (':hephaestus') {
+	@load = @heph;
+	$doplugins = 0;
+      }
+      when (':fit') {
+	@load = (@data, @fit);
+      }
+      when (':analysis') {
+	@load = (@data, @anal);
+	$doplugins     = 1;
+	$colonanalysis = 1;	# verify PDL before loading PCA
+      }
+      when (':athena') {
+	@load = (@data, @anal, @plot);
+	$doplugins     = 0;     # delay registering plugins until after start-up
+	$colonanalysis = 1;	# verify PDL before loading PCA
+      }
+      when (':artemis') {
+	@load = (@heph, @fit, 'Plot/Indicator');
+      }
+      when (':atoms') {
+	@load = @atoms;
+      }
+      when (':all') {
+	@load = (@data, @fit, @anal, @xes, @plot);
+	$doplugins     = 1;
+	$colonanalysis = 1;
+      }
+      when (':none') {
+	@load = ();
+	$doplugins     = 0;
+	$colonanalysis = 0;
+	$none          = 1;
+      }
     };
   };
-  @load = (@data, @fit, @anal, @xes) if not @load;
+  @load = (@data, @fit, @anal, @xes, @plot) if not @load;
+  @load = () if $none;
 
   foreach my $m (uniq @load) {
     next if $INC{"Demeter/$m.pm"};
-    ##print "Demeter/$m.pm\n";
+    #print join("|", caller, DateTime->now), "  Demeter/$m.pm\n";
     require "Demeter/$m.pm";
   };
-  if ($colonanalysis and $PDL_exists and $PSG_exists) {
-    next if $INC{"Demeter/PCA.pm"};
-    ##print "Demeter/PCA.pm\n";
-    require "Demeter/PCA.pm";
+
+  if ($colonanalysis) {
+    $PDL_exists = eval "require PDL::Lite" || 0;
+    $PSG_exists = eval "require PDL::Stats::GLM" || 0;
   };
-  $class -> register_plugins;
+
+  if ($PDL_exists and $PSG_exists) {
+    ##print DateTime->now,  "  Demeter/PCA.pm\n";
+    require "Demeter/PCA.pm" if not exists $INC{"Demeter/PCA.pm"};
+  };
+  $class -> register_plugins if $doplugins;
 };
 
 sub register_plugins {
   my ($class) = @_;
   my $here = dirname($INC{"Demeter.pm"});
   my $standard = File::Spec->catfile($here, 'Demeter', 'Plugins');
-  my $private =  File::Spec->catfile($ENV{HOME}, '.horae', 'Demeter', 'Plugins');
+  my $private =  File::Spec->catfile(Demeter->dot_folder, 'Demeter', 'Plugins');
   require File::Spec->catfile($here, 'Demeter', 'Plugins', 'FileType.pm');
   my @folders = ($standard); #, $private);
   foreach my $f (@folders) {
@@ -302,15 +328,15 @@ sub po {
 sub dd {
   my ($self) = @_;
   if (not $self->mo->datadefault) {
-    $self->mo->datadefault(Demeter::Data->new(group=>'default___',
-					      name=>'default___',
-					      update_data=>0,
-					      update_columns=>0,
-					      update_bkg=>0,
-					      update_bft=>0,
-					      update_fft=>0,
-					      fft_kmin=>3, fft_kmax=>15,
-					      bft_rmin=>1, bft_rmax=>6,
+    $self->mo->datadefault(Demeter::Data->new(group	     => 'default___',
+					      name	     => 'default___',
+					      update_data    => 0,
+					      update_columns => 0,
+					      update_bkg     => 0,
+					      update_bft     => 0,
+					      update_fft     => 0,
+					      fft_kmin => 3, fft_kmax => 15,
+					      bft_rmin => 1, bft_rmax => 6,
 					     ));
   };
   return shift->mo->datadefault;
@@ -392,8 +418,8 @@ sub version {
 };
 sub copyright {
   my ($self) = @_;
-  #return "copyright " . chr(169) . " 2006-2011 Bruce Ravel";
-  return "copyright 2006-2011 Bruce Ravel";
+  #return "copyright " . chr(169) . " 2006-2012 Bruce Ravel";
+  return "copyright 2006-2012 Bruce Ravel";
 };
 sub hashes {
   my ($self) = @_;
@@ -426,15 +452,12 @@ sub onezero {
 };
 sub is_true {
   my ($self, $value) = @_;
+  return 0 if (not defined $value);
   return 1 if ($value =~ m{^[ty]}i);
   return 0 if ($value =~ m{^[fn]}i);
   return 0 if (($value =~ m{$NUMBER}) and ($value == 0));
   return 1 if ($value =~ m{$NUMBER});
   return 0;
-};
-
-sub pi {
-  return $PI;
 };
 
 ## organize obtaining a unique group name
@@ -686,13 +709,14 @@ alias thaw   => 'deserialize';
 sub template {
   my ($self, $category, $file, $rhash) = @_;
 
-  my $data     = $self->data;
-  my $pf       = $self->mo->plot;
-  my $config   = $self->mo->config;
-  my $fit      = $self->mo->fit;
-  my $standard = $self->mo->standard;
-  my $theory   = $self->mo->theory;
-  my $path     = $self->mo->path;
+  my $mo       = Demeter->mo;
+  my $data     = ($self eq 'Demeter') ? 0 : $self->data;
+  my $pf       = $mo->plot;
+  my $config   = $mo->config;
+  my $fit      = $mo->fit;
+  my $standard = $mo->standard;
+  my $theory   = $mo->theory;
+  my $path     = $mo->path;
 
   # try personal templates first
   my $tmpl = File::Spec->catfile($self->dot_folder,
@@ -758,74 +782,24 @@ sub Croak {
   };
 };
 
+sub conditional_features {
+  my ($self) = @_;
+  my $text = "The following conditional features are available:\n\n";
+  $text .= "Graphics::GnuplotIF: " . $self->yesno($Gnuplot_exists);
+  $text .= ($Gnuplot_exists)     ? " -- plotting with Gnuplot\n" : "  -- plotting with Gnuplot is disabled.\n";
+  $text .= "STAR::Parser:        " . $self->yesno($STAR_Parser_exists);
+  $text .= ($STAR_Parser_exists) ? " -- importing CIF files\n"   : "  -- importing CIF files is disabled.\n";
+  $text .= "Xray::XDI:           " . $self->yesno($XDI_exists);
+  $text .= ($XDI_exists)         ? " -- file metadata\n"         : "  -- file metadata is disabled.\n";
+  $text .= "PDL:                 " . $self->yesno($PDL_exists);
+  $text .= ($PDL_exists)         ? " -- PCA\n"                   : "  -- PCA is disabled.\n";
+  $text .= "File::Monitor::Lite: " . $self->yesno($FML_exists);
+  $text .= ($FML_exists)         ? " -- data watcher\n"          : "  -- data watcher is disabled.\n";
+  return $text;
+};
+
 __PACKAGE__->meta->make_immutable;
 1;
-
-
-#   my %regexp = (
-# 		commands   => (qw{ f1f2 bkg_cl chi_noise color comment correl cursor
-#                                                 def echo erase exit feffit ff2chi fftf fftr
-#                                                 get_path guess history linestyle load
-#                                                 log macro minimize newplot path pause plot
-#                                                 plot_arrow plot_marker plot_text pre_edge print
-#                                                 quit random read_data rename reset restore
-#                                                 save set show spline sync unguess window
-#                                                 write_data zoom } ), # }),
-# 		function   => (qw{abs min max sign sqrt exp log
-#    		                               ln log10 sin cos tan asin acos
-#    		                               atan sinh tanh coth gamma loggamma
-#    		                               erf erfc gauss loren pvoight debye
-#    		                               eins npts ceil floor vsum vprod
-#    		                               indarr ones zeros range deriv penalty
-#   		                               smooth interp qinterp splint eins debye } ), # }),
-# 		program    => (qw(chi_reduced chi_square core_width correl_min
-#                                                cursor_x cursor_y dk dr data_set data_total
-#                                                dk1 dk2 dk1_spl dk2_spl dr1 dr2 e0 edge_step
-#                                                epsilon_k epsilon_r etok kmax kmin kmax_spl
-#                                                kmax_suggest kmin_spl kweight kweight_spl kwindow
-#                                                n_idp n_varys ncolumn_label nknots norm1 norm2
-#                                                norm_c0 norm_c1 norm_c2 path_index pi pre1 pre2
-#                                                pre_offset pre_slope qmax_out qsp r_factor rbkg
-#                                                rmax rmax_out rmin rsp rweight rwin rwindow toler)),
-# 		window     => (qw(kaiser-bessel hanning welch parzen sine gaussian)),
-# 		pathparams => (qw(e0 ei sigma2 s02 delr third fourth dphase)),
-# 		element    => (qw(h he li be b c n o f ne na mg al si p s cl ar
-#                                                k ca sc ti v cr mn fe co ni cu zn ga ge as se
-#                                                br kr rb sr y zr nb mo tc ru rh pd ag cd in sn
-#                                                sb te i xe cs ba la ce pr nd pm sm eu gd tb dy
-#                                                ho er tm yb lu hf ta w re os ir pt au hg tl pb
-#                                                bi po at rn fr ra ac th pa u np pu)),
-# 		edge      => (qw(k l1 l2 l3)),
-# 		modes     => (keys %mode),
-# 		feffcards => (qw(atoms control print title end rmultiplier
-#                                               cfaverage overlap afolp edge hole potentials
-#                                               s02 exchange folp nohole rgrid scf unfreezef
-#                                               interstitial ion spin exafs xanes ellipticity ldos
-#                                               multipole polarization danes fprime rphases rsigma
-#                                               tdlda xes xmcd xncd fms debye rpath rmax nleg pcriteria
-#                                               ss criteria iorder nstar debye corrections sig2)),
-# 		separator => '[ \t]*[ \t=,][ \t]*',
-# 		clamp     => (qw(none slight weak medium strong rigid)),
-# 		config    => (qw(type default minint maxint options
-# 					      units onvalue offvalue)),
-# 		stats     => (qw(n_idp n_varys chi_square chi_reduced 
-# 					      r_factor epsilon_k epsilon_r data_total
-# 					      happiness)),
-# 		atoms_lattice  => (qw(a b c alpha beta gamma space shift)),
-# 		atoms_gas      => (qw(nitrogen argon helium krypton xenon)),
-# 		atoms_obsolete => (qw(output geom
-# 						   fdat nepoints xanes modules
-# 						   message noanomalous self i0
-# 						   mcmaster dwarf reflections refile
-# 						   egrid index corrections
-# 						   emin emax estep egrid qvec dafs
-# 						  )),
-# 		spacegroup     => (qw(number full new_symbol thirtyfive
-# 						   schoenflies bravais shorthand positions
-# 						   shiftvec npos)),
-# 		plotting_backends => (qw(pgplot gnuplot)),
-# 		data_parts => (qw(fit bkg res)),
-# 	       );
 
 
 =head1 NAME
@@ -834,7 +808,7 @@ Demeter - A comprehensive XAS data analysis system using Feff and Ifeffit
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.5
+This documentation refers to Demeter version 0.9
 
 =head1 SYNOPSIS
 
@@ -1375,7 +1349,7 @@ http://cars9.uchicago.edu/~ravel/software/
 
 =head1 LICENCE AND COPYRIGHT
 
-Copyright (c) 2006-2011 Bruce Ravel (bravel AT bnl DOT gov). All rights reserved.
+Copyright (c) 2006-2012 Bruce Ravel (bravel AT bnl DOT gov). All rights reserved.
 
 This module is free software; you can redistribute it and/or
 modify it under the same terms as Perl itself. See L<perlgpl>.

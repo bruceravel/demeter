@@ -2,7 +2,7 @@ package Demeter::UI::Artemis::Project;
 
 =for Copyright
  .
- Copyright (c) 2006-2011 Bruce Ravel (bravel AT bnl DOT gov).
+ Copyright (c) 2006-2012 Bruce Ravel (bravel AT bnl DOT gov).
  All rights reserved.
  .
  This file is free software; you can redistribute it and/or
@@ -68,6 +68,7 @@ sub save_project {
 
   foreach my $k (keys(%$rframes)) {
     next unless ($k =~ m{\Afeff});
+    $rframes->{$k}->make_page('Feff') if not $rframes->{$k}->{Feff};
     next if (ref($rframes->{$k}->{Feff}->{feffobject}) !~ m{Feff});
     my $file = File::Spec->catfile($rframes->{$k}->{Feff}->{feffobject}->workspace, 'atoms.inp');
     mkpath $rframes->{$k}->{Feff}->{feffobject}->workspace if (! -d $rframes->{$k}->{Feff}->{feffobject}->workspace);
@@ -163,6 +164,8 @@ sub import_autosave {
 
 sub read_project {
   my ($rframes, $fname) = @_;
+  my $debug = 0;
+  my $statustype = ($debug) ? 'wait' : 'wait|nobuffer';
   if (not $fname) {
     my $fd = Wx::FileDialog->new( $rframes->{main}, "Import an Artemis project or data", cwd, q{},
 				  "Artemis project or data (*.fpj;*.prj;*.inp;*.cif)|*.fpj;*.prj;*.inp;*.cif|" .
@@ -216,6 +219,7 @@ sub read_project {
   my $projfolder = $rframes->{main}->{project_folder};
   chdir $projfolder;
 
+  $rframes->{main}->status("Opening project file $fname.", $statustype);
   my $zip = Archive::Zip->new();
   carp("Error reading project file $fname"), return 1 unless ($zip->read($fname) == AZ_OK);
   foreach my $f ($zip->members) {
@@ -247,7 +251,7 @@ sub read_project {
   foreach my $d (@dirs) {
     ## import feff yaml
     my $yaml = File::Spec->catfile($projfolder, 'feff', $d, $d.'.yaml');
-    my $feffobject = Demeter::Feff->new(group=>$d); # force group to be the same as before
+    my $feffobject = Demeter::Feff->new(group=>$d); # force group to be the same as before.
     my $where = Cwd::realpath(File::Spec->catfile($feffdir, $d));
     if (-e $yaml) {
       my $gz = gzopen($yaml, 'rb');
@@ -256,6 +260,7 @@ sub read_project {
       my @refs = YAML::Tiny::Load($yy);
       $feffobject->read_yaml(\@refs, $where);
     };
+    $rframes->{main}->status("Unpacking Feff calculation: ".$feffobject->name, $statustype);
 
     if (not $feffobject->hidden) {
       ## import atoms.inp
@@ -266,6 +271,8 @@ sub read_project {
 	## import feff.inp
 	my $feff = File::Spec->catfile($projfolder, 'feff', $d, $d.'.inp');
 	my $text = $feffobject->slurp($feff);
+	$rframes->{$fnum}->make_page('Feff')  if not $rframes->{$fnum}->{Feff};
+	$rframes->{$fnum}->make_page('Paths') if not $rframes->{$fnum}->{Paths};
 	$rframes->{$fnum}->{Feff}->{feff}->SetValue($text);
 
 	## make Feff frame
@@ -309,18 +316,25 @@ sub read_project {
   ## fitted.  all unfitted fits are destroyed except for the current.  all fitted
   ## fits are pushed onto the history and the current fit (fitted or not) is restored
 
+  my $count = 1;
+  my $folder;
   foreach my $d (@dirs) {
     my $fit = Demeter::Fit->new(group=>$d, interface=>"Artemis (Wx $Wx::VERSION)");
+    $rframes->{main}->status("Importing fit #$count into history", $statustype) if not $count % 5;
     my $regen = ($d eq $current) ? 0 : 1;
     next if (not -d File::Spec->catfile($projfolder, 'fits', $d));
-    $fit->deserialize(folder=> File::Spec->catfile($projfolder, 'fits', $d), regenerate=>0); #$regen);
+    $fit->grab(folder=> File::Spec->catfile($projfolder, 'fits', $d), regenerate=>0); #$regen);
+    #$fit->deserialize(folder=> File::Spec->catfile($projfolder, 'fits', $d), regenerate=>0); #$regen);
     if (($d ne $current) and (not $fit->fitted)) { # discard the ones that don't actually involve a performed fit
       $fit->DEMOLISH;
       next;
     };
+    $folder = File::Spec->catfile($projfolder, 'fits', $d);
+    ++$count;
     push @fits, $fit;
   };
   if (@fits) {		# found some actual fits
+    $rframes->{main}->status("Found fit history, creating history window", $statustype);
     my $found = 0;
     foreach my $fit (@fits) {	# take care that the one labeled as current actually exists, if not use the latest
       ++$found, last if ($fit->group eq $current);
@@ -337,8 +351,10 @@ sub read_project {
       };
       next unless ($fit->group eq $current);
       $currentfit = $fit;
-      $rframes->{History}->{list}->SetSelection($rframes->{History}->{list}->GetCount-1);
-      $rframes->{History}->OnSelect;
+      $rframes->{main}->status("Unpacking current fit", $statustype);
+      $currentfit->deserialize(folder=> $folder, regenerate=>0); #$regen);
+      #$rframes->{History}->{list}->SetSelection($rframes->{History}->{list}->GetCount-1);
+      #$rframes->{History}->OnSelect;
       $rframes->{main}->{currentfit} = $fit;
       $rframes->{Plot}->{limits}->{fit}->SetValue(1);
       my $current = $fit->number || 1;
@@ -347,6 +363,7 @@ sub read_project {
   };
 
   ## -------- plot and indicator yamls, journal
+  $rframes->{main}->status('Setting plot parameters, indicators, & journal', $statustype);
   my $py = File::Spec->catfile($rframes->{main}->{plot_folder}, 'plot.yaml');
   if (-e $py) {
     my %hash = %{YAML::Tiny::LoadFile($py)};
@@ -622,7 +639,7 @@ Demeter::UI::Artemis::Project - Import and export Artemis project files
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.5.
+This documentation refers to Demeter version 0.9.
 
 =head1 SYNOPSIS
 
@@ -649,7 +666,7 @@ L<http://cars9.uchicago.edu/~ravel/software/>
 
 =head1 LICENCE AND COPYRIGHT
 
-Copyright (c) 2006-2011 Bruce Ravel (bravel AT bnl DOT gov). All rights reserved.
+Copyright (c) 2006-2012 Bruce Ravel (bravel AT bnl DOT gov). All rights reserved.
 
 This module is free software; you can redistribute it and/or
 modify it under the same terms as Perl itself. See L<perlgpl>.

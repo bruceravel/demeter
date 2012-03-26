@@ -2,7 +2,7 @@ package Demeter::Feff::Distributions;
 
 =for Copyright
  .
- Copyright (c) 2006-2011 Bruce Ravel (bravel AT bnl DOT gov).
+ Copyright (c) 2006-2012 Bruce Ravel (bravel AT bnl DOT gov).
  All rights reserved.
  .
  This file is free software; you can redistribute it and/or
@@ -22,16 +22,13 @@ use Moose;
 use MooseX::Aliases;
 use Moose::Util qw(apply_all_roles);
 use Moose::Util::TypeConstraints;
-#use MooseX::StrictConstructor;
 extends 'Demeter';
 with "Demeter::Feff::MD::Null";
 
 use Demeter::StrTypes qw( Empty );
 use Demeter::NumTypes qw( Natural PosInt NonNeg Ipot );
 
-use Readonly;
-Readonly my $PI => 4*atan2(1,1);
-Readonly my $TRIGEPS => 1e-6;
+use Demeter::Constants qw($PI $EPSILON6);
 
 with 'Demeter::Data::Arrays';
 with 'Demeter::UI::Screen::Pause' if ($Demeter::mode->ui eq 'screen');
@@ -59,7 +56,7 @@ has 'file'      => (is => 'rw', isa => 'Str', default => q{},
 				  });
 has 'clusters'    => (is => 'rw', isa => 'ArrayRef', default => sub{[]});
 
-enum 'HistogramBackends' => ['dl_poly', 'vasp'];
+enum 'HistogramBackends' => ['dl_poly', 'vasp', 'lammps'];
 coerce 'HistogramBackends',
   from 'Str',
   via { lc($_) };
@@ -72,8 +69,13 @@ has backend       => (is => 'rw', isa => 'HistogramBackends', coerce => 1, alias
 				       eval {apply_all_roles($self, 'Demeter::Feff::MD::VASP')};
 				       print $@;
 				       $@ and die("Histogram backend Demeter::Feff::MD::VASP does not exist");
+				     } elsif ($new eq 'lammps') {
+				       eval {apply_all_roles($self, 'Demeter::Feff::MD::LAMMPS')};
+				       print $@;
+				       $@ and die("Histogram backend Demeter::Feff::MD::LAMMPS does not exist");
 				     } else {
 				       eval {apply_all_roles($self, 'Demeter::Feff::MD::'.$new)};
+				       print $@;
 				       $@ and die("Histogram backend Demeter::Feff::MD::$new does not exist");
 				     };
 				   });
@@ -120,22 +122,27 @@ has 'populations' => (is	    => 'rw',
 		      default	    => sub{[]},
 		      documentation => "array of bin populations of the extracted histogram");
 
+has 'zmax'        => (is => 'rw', isa => 'Num',  default => 100.0);
 has 'use_periodicity'=> (is              => 'rw',
 			 isa             => 'Bool',
 			 default         => 1,
 			 documentation   => "a flag for turning on/off the use of periodic boundary conditions");
+has 'count_timesteps'=> (is              => 'rw',
+			 isa             => 'Bool',
+			 default         => 1,
+			 documentation   => "a flag for indicating whether progress meter measures timesteps or positions");
 has 'periodic'=> (is              => 'rw',
 		  isa             => 'Bool',
 		  default         => 0,
 		  documentation   => "a boolean indicating periodic boundary conditions were used in the MD simulation");
-has 'lattice' => (metaclass => 'Collection::Array',
+has 'lattice' => (traits    => ['Array'],
 		  is	          => 'rw',
 		  isa	          => 'ArrayRef',
 		  default	  => sub{[]},
-		  provides  => {
-				'push'  => 'push_lattice',
-				'pop'   => 'pop_lattice',
-				'clear' => 'clear_lattice',
+		  handles   => {
+				'push_lattice'  => 'push',
+				'pop_lattice'   => 'pop',
+				'clear_lattice' => 'clear',
 			       },
 		  documentation   => "the direct lattice vectors");
 
@@ -182,8 +189,8 @@ sub _trig {
   my $rxy = sqrt($rxysqr);
   my ($ct, $st, $cp, $sp) = (1, 0, 1, 0);
 
-  ($ct, $st) = ($_[2]/$r,   $rxy/$r)    if ($r   > $TRIGEPS);
-  ($cp, $sp) = ($_[0]/$rxy, $_[1]/$rxy) if ($rxy > $TRIGEPS);
+  ($ct, $st) = ($_[2]/$r,   $rxy/$r)    if ($r   > $EPSILON6);
+  ($cp, $sp) = ($_[0]/$rxy, $_[1]/$rxy) if ($rxy > $EPSILON6);
 
   return ($ct, $st, $cp, $sp);
 };
@@ -211,7 +218,7 @@ Demeter::Feff::Distributions:: - Make historams from arbitrary clusters of atoms
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.5.
+This documentation refers to Demeter version 0.9.
 
 =head1 SYNOPSIS
 
@@ -334,7 +341,7 @@ L<http://cars9.uchicago.edu/~ravel/software/>
 
 =head1 LICENCE AND COPYRIGHT
 
-Copyright (c) 2006-2011 Bruce Ravel (bravel AT bnl DOT gov). All rights reserved.
+Copyright (c) 2006-2012 Bruce Ravel (bravel AT bnl DOT gov). All rights reserved.
 
 This module is free software; you can redistribute it and/or
 modify it under the same terms as Perl itself. See L<perlgpl>.

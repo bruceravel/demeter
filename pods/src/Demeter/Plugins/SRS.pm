@@ -14,11 +14,10 @@ has 'is_dubble'    => (is => 'rw', isa => 'Bool', default => 0);
 use Carp;
 use Scalar::Util qw(looks_like_number);
 
-use Readonly;
-Readonly my $PI    => 4 * atan2 1, 1;
-Readonly my $HBARC => 1973.27053324;
-Readonly my $TWOD  => 2*3.13543; # Si(111)?
-Readonly my $NLMED => 3; # 9 MED elements, 4 per line, requires three lines
+use Demeter::Constants qw($PI $HBARC);
+use Const::Fast;
+const my $TWOD  => 2*3.13543; # Si(111)?
+const my $NLMED => 3; # 9 MED elements, 4 per line, requires three lines
 
 sub is {
   my ($self) = @_;
@@ -237,4 +236,4 @@ this sort of data -- the one I have does not appear to be XAS data.
 
   Bruce Ravel <bravel AT bnl DOTgov>
   http://xafs.org/BruceRavel/
-  Athena copyright (c) 2001-2011
+  Athena copyright (c) 2001-2012

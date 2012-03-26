@@ -2,9 +2,7 @@ package Demeter::Data::Plot;
 use Moose::Role;
 
 use Carp;
-use Regexp::Common;
-use Readonly;
-Readonly my $NUMBER   => $RE{num}{real};
+use Demeter::Constants qw($NUMBER);
 use List::Util qw(max);
 use List::MoreUtils qw(uniq zip);
 
@@ -831,7 +829,7 @@ Demeter::Data::Plot - Data plotting methods for Demeter
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.5.
+This documentation refers to Demeter version 0.9.
 
 =head1 METHODS
 
@@ -1041,7 +1039,7 @@ L<http://cars9.uchicago.edu/~ravel/software/>
 
 =head1 LICENCE AND COPYRIGHT
 
-Copyright (c) 2006-2011 Bruce Ravel (bravel AT bnl DOT gov). All rights reserved.
+Copyright (c) 2006-2012 Bruce Ravel (bravel AT bnl DOT gov). All rights reserved.
 
 This module is free software; you can redistribute it and/or
 modify it under the same terms as Perl itself. See L<perlgpl>.

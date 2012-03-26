@@ -2,7 +2,7 @@ package Demeter::Data::IO;
 
 =for Copyright
  .
- Copyright (c) 2006-2011 Bruce Ravel (bravel AT bnl DOT gov).
+ Copyright (c) 2006-2012 Bruce Ravel (bravel AT bnl DOT gov).
  All rights reserved.
  .
  This file is free software; you can redistribute it and/or
@@ -19,12 +19,9 @@ use Moose::Role;
 
 use Carp;
 use List::MoreUtils qw(none);
-use Regexp::Common;
 use Regexp::Assemble;
 
-use Readonly;
-Readonly my $NUMBER   => $RE{num}{real};
-
+use Demeter::Constants qw($NUMBER);
 
 sub save {
   my ($self, $what, $filename, $how) = @_;
@@ -99,14 +96,15 @@ sub _save_chi_command {
   my ($label, $columns) = (q{}, q{});
   if ($space =~ m{\Ak0?\z}) {
     $self->_update("bft");
-    $string = $self->template("process", "save_chik", {filename => $filename,
-						       titles   => "dem_data_*"});
+    if ($self->co->default('file', 'chik_out') eq 'all') {
+      $string = $self->template("process", "save_chik",  {filename => $filename,
+							  titles   => "dem_data_*"});
+    } else {
+      $string = $self->template("process", "save_chikw", {filename => $filename,
+							  titles   => "dem_data_*"});
+    };
   } elsif ($space =~ /\Ak($NUMBER)/) {
-    croak("Not doing arbitrary wight chi(k) files just now");
-    #$string .= sprintf("set %s.chik = %s.k^%.3f*%s.chi\n", $self, $self, $1, $self);
-    #$label   = "k chi" . int($1) . " win";
-    #$columns = "$self.k, $self.chik, $self.win";
-    #$how = "chi(k) * k^$1";
+    carp("Use file->chik_out configuration parameter for arbitrary wight chi(k) files");
   } elsif ($space eq 'r') {
     $self->_update("all");
     $string = $self->template("process", "save_chir", {filename => $filename,
@@ -313,7 +311,7 @@ sub title_glob {
   ($space eq 'f') ? push @titles, split(/\n/, $data->fit_parameter_report) : push @titles, split(/\n/, $data->data_parameter_report);
   my $i = 0;
   $self->dispose("erase \$$globname\*");
-  my $apps = join(" ", "XDI/1.0", $self->xdi_applications, "Demeter/$Demeter::VERSION");
+  my $apps = join(" ", "XDI/1.0", $self->data->xdi_applications, "Demeter/$Demeter::VERSION");
   foreach my $line ($apps, @titles, "///", @{$self->data->xdi_comments}) {
     ++$i;
     my $t = sprintf("%s%2.2d", $globname, $i);
@@ -365,7 +363,7 @@ Demeter::Data::IO - Data Input/Output methods for Demeter
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.5.
+This documentation refers to Demeter version 0.9.
 
 =head1 SYNOPSIS
 
@@ -521,7 +519,7 @@ L<http://cars9.uchicago.edu/~ravel/software/>
 
 =head1 LICENCE AND COPYRIGHT
 
-Copyright (c) 2006-2011 Bruce Ravel (bravel AT bnl DOT gov). All rights reserved.
+Copyright (c) 2006-2012 Bruce Ravel (bravel AT bnl DOT gov). All rights reserved.
 
 This module is free software; you can redistribute it and/or
 modify it under the same terms as Perl itself. See L<perlgpl>.

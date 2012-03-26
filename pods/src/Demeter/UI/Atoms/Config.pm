@@ -2,7 +2,7 @@ package Demeter::UI::Atoms::Config;
 
 =for Copyright
  .
- Copyright (c) 2006-2011 Bruce Ravel (bravel AT bnl DOT gov).
+ Copyright (c) 2006-2012 Bruce Ravel (bravel AT bnl DOT gov).
  All rights reserved.
  .
  This file is free software; you can redistribute it and/or
@@ -47,8 +47,8 @@ sub target {
   };
 
   ($save)
-    ? $self->{statusbar}->SetStatusText("Now using $value for $parent-->$param and an ini file was saved")
-      : $self->{statusbar}->SetStatusText("Now using $value for $parent-->$param");
+    ? $self->{parent}->status("Now using $value for $parent-->$param and an ini file was saved")
+      : $self->{parent}->status("Now using $value for $parent-->$param");
 
 };
 
@@ -60,7 +60,7 @@ Demeter::UI::Atoms::Config - Atoms' configuration utility
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.5.
+This documentation refers to Demeter version 0.9.
 
 =head1 DESCRIPTION
 
@@ -74,7 +74,7 @@ L<http://cars9.uchicago.edu/~ravel/software/>
 
 =head1 LICENCE AND COPYRIGHT
 
-Copyright (c) 2006-2011 Bruce Ravel (bravel AT bnl DOT gov). All rights reserved.
+Copyright (c) 2006-2012 Bruce Ravel (bravel AT bnl DOT gov). All rights reserved.
 
 This module is free software; you can redistribute it and/or
 modify it under the same terms as Perl itself. See L<perlgpl>.

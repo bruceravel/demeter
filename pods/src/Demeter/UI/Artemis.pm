@@ -1,6 +1,6 @@
 package Demeter::UI::Artemis;
 
-use Demeter; # qw(:plotwith=gnuplot);
+use Demeter qw(:artemis);
 use Demeter::UI::Atoms;
 use Demeter::UI::Artemis::Import;
 use Demeter::UI::Artemis::Project;
@@ -9,9 +9,6 @@ use Demeter::UI::Wx::MRU;
 use Demeter::UI::Wx::SpecialCharacters qw(:all);
 use Demeter::UI::Athena::Cursor;
 
-use vars qw($demeter $buffer $plotbuffer);
-$demeter = Demeter->new;
-$demeter->set_mode(ifeffit=>1, screen=>0);
 
 use Archive::Zip qw( :ERROR_CODES :CONSTANTS );
 use Cwd;
@@ -35,36 +32,38 @@ use Wx::Event qw(EVT_MENU EVT_CLOSE EVT_ICONIZE EVT_TOOL_ENTER EVT_CHECKBOX EVT_
 use base 'Wx::App';
 
 
-use Readonly;
-Readonly my $BLANK           => q{___.BLANK.___};
-Readonly my $MRU	     => Wx::NewId();
-Readonly my $SHOW_BUFFER     => Wx::NewId();
-Readonly my $CONFIG	     => Wx::NewId();
-Readonly my $CRASH	     => Wx::NewId();
-Readonly my $SHOW_GROUPS     => Wx::NewId();
-Readonly my $SHOW_ARRAYS     => Wx::NewId();
-Readonly my $SHOW_SCALARS    => Wx::NewId();
-Readonly my $SHOW_STRINGS    => Wx::NewId();
-Readonly my $SHOW_FEFFPATHS  => Wx::NewId();
-Readonly my $SHOW_PATHS      => Wx::NewId();
-Readonly my $IMPORT_DPJ      => Wx::NewId();
-Readonly my $IMPORT_FEFFIT   => Wx::NewId();
-Readonly my $IMPORT_FEFF     => Wx::NewId();
-Readonly my $IMPORT_MOLECULE => Wx::NewId();
-Readonly my $IMPORT_OLD      => Wx::NewId();
-Readonly my $IMPORT_CHI      => Wx::NewId();
-Readonly my $EXPORT_IFEFFIT  => Wx::NewId();
-Readonly my $EXPORT_DEMETER  => Wx::NewId();
-Readonly my $PLOT_YAML       => Wx::NewId();
-Readonly my $MODE_STATUS     => Wx::NewId();
-Readonly my $PERL_MODULES    => Wx::NewId();
-Readonly my $STATUS          => Wx::NewId();
-Readonly my $DOCUMENT        => Wx::NewId();
-Readonly my $TERM_1          => Wx::NewId();
-Readonly my $TERM_2          => Wx::NewId();
-Readonly my $TERM_3          => Wx::NewId();
-Readonly my $TERM_4          => Wx::NewId();
-Readonly my $IFEFFIT_MEMORY  => Wx::NewId();
+use Const::Fast;
+const my $BLANK           => q{___.BLANK.___};
+const my $MRU	          => Wx::NewId();
+const my $SHOW_BUFFER     => Wx::NewId();
+const my $CONFIG          => Wx::NewId();
+const my $CRASH	          => Wx::NewId();
+const my $SHOW_GROUPS     => Wx::NewId();
+const my $SHOW_ARRAYS     => Wx::NewId();
+const my $SHOW_SCALARS    => Wx::NewId();
+const my $SHOW_STRINGS    => Wx::NewId();
+const my $SHOW_FEFFPATHS  => Wx::NewId();
+const my $SHOW_PATHS      => Wx::NewId();
+const my $IMPORT_DPJ      => Wx::NewId();
+const my $IMPORT_FEFFIT   => Wx::NewId();
+const my $IMPORT_FEFF     => Wx::NewId();
+const my $IMPORT_MOLECULE => Wx::NewId();
+const my $IMPORT_OLD      => Wx::NewId();
+const my $IMPORT_CHI      => Wx::NewId();
+const my $EXPORT_IFEFFIT  => Wx::NewId();
+const my $EXPORT_DEMETER  => Wx::NewId();
+const my $FIT_YAML        => Wx::NewId();
+const my $PLOT_YAML       => Wx::NewId();
+const my $MODE_YAML       => Wx::NewId();
+const my $MODE_STATUS     => Wx::NewId();
+const my $PERL_MODULES    => Wx::NewId();
+const my $STATUS          => Wx::NewId();
+const my $DOCUMENT        => Wx::NewId();
+const my $TERM_1          => Wx::NewId();
+const my $TERM_2          => Wx::NewId();
+const my $TERM_3          => Wx::NewId();
+const my $TERM_4          => Wx::NewId();
+const my $IFEFFIT_MEMORY  => Wx::NewId();
 
 use Wx::Perl::Carp qw(verbose);
 $SIG{__WARN__} = sub {Wx::Perl::Carp::warn($_[0])};
@@ -76,7 +75,7 @@ sub identify_self {
   my @caller = caller;
   return dirname($caller[1]);
 };
-use vars qw($artemis_base $icon $nset $noautosave %frames %fit_order);
+use vars qw($demeter $buffer $plotbuffer $artemis_base $icon $nset $noautosave %frames %fit_order);
 $fit_order{order}{current} = 0;
 $nset = 0;
 $artemis_base = identify_self();
@@ -92,14 +91,10 @@ my %hints = (
 
 sub OnInit {
   my ($app) = @_;
+  $demeter = Demeter->new;
+  $demeter -> set_mode(ifeffit=>1, screen=>0);
   $demeter -> mo -> ui('Wx');
   $demeter -> mo -> identity('Artemis');
-
-  #my $app = $class->SUPER::new;
-
-  #my $conffile = File::Spec->catfile(dirname($INC{'Demeter/UI/Artemis.pm'}), 'Artemis', 'share', "artemis.demeter_conf");
-  #$demeter -> co -> read_config($conffile);
-  #$demeter -> co -> read_ini('artemis');
   $demeter -> plot_with($demeter->co->default(qw(plot plotwith)));
 
   ## -------- import all of Artemis' various parts
@@ -184,7 +179,9 @@ sub OnInit {
   $showmenu->Append($SHOW_FEFFPATHS, "feffpaths", "Show Ifeffit feffpaths");
 
   my $debugmenu = Wx::Menu->new;
+  #$debugmenu->Append($FIT_YAML,     "Show YAML for current Fit object",  "Show YAML dialog for current Fit object",  wxITEM_NORMAL );
   $debugmenu->Append($PLOT_YAML,    "Show YAML for Plot object",  "Show YAML dialog for Plot object",  wxITEM_NORMAL );
+  $debugmenu->Append($MODE_YAML,    "Show YAML for Mode object",  "Show YAML dialog for Plot object",  wxITEM_NORMAL );
   $debugmenu->Append($MODE_STATUS,  "Show mode status",           "Show mode status dialog",  wxITEM_NORMAL );
   $debugmenu->Append($PERL_MODULES, "Show perl modules",          "Show perl module versions", wxITEM_NORMAL );
   #$debugmenu->Append($CRASH,        "Crash Artemis",              "Force a crash of Artemis to test autosave file", wxITEM_NORMAL );
@@ -247,7 +244,7 @@ sub OnInit {
 
   $frames{main}->{newdata} = Wx::Button->new($datalist, wxID_ADD, "", wxDefaultPosition, wxDefaultSize, wxNO_BORDER);
   $datavbox -> Add($frames{main}->{newdata}, 0, wxGROW|wxRIGHT, 5);
-  mouseover($frames{main}->{newdata}, "Import a new data set.  Right click for menu of recently used Athena project files.");
+  mouseover($frames{main}->{newdata}, "Import a new data set.  Right click for a menu of recently used Athena project files.");
   EVT_BUTTON($frames{main}->{newdata}, -1, sub{Import('prj', q{})});
 
   $datavbox     -> Add(Wx::StaticLine->new($datalist, -1, wxDefaultPosition, wxDefaultSize, wxLI_HORIZONTAL), 0, wxGROW|wxALL, 2);
@@ -272,7 +269,7 @@ sub OnInit {
 
   $frames{main}->{newfeff} = Wx::Button->new($fefflist, wxID_ADD, "", wxDefaultPosition, wxDefaultSize, wxNO_BORDER);
   $feffvbox -> Add($frames{main}->{newfeff}, 0, wxGROW|wxRIGHT, 5);
-  mouseover($frames{main}->{newfeff}, "Start a new Feff calculation.  Right click for menu of recently used crystal data files.  Also right click to start a brand new Atoms input file.");
+  mouseover($frames{main}->{newfeff}, "Start a new Feff calculation.  Right click for a menu of recently used crystal or Feff input files or to open an empty Atoms input file.");
   EVT_BUTTON($frames{main}->{newfeff}, -1, sub{Import('feff')});
 
   $feffvbox     -> Add(Wx::StaticLine->new($fefflist, -1, wxDefaultPosition, wxDefaultSize, wxLI_HORIZONTAL), 0, wxGROW|wxALL, 2);
@@ -472,7 +469,7 @@ sub on_about {
   $info->SetCopyright( $demeter->identify );
   $info->SetWebSite( 'http://cars9.uchicago.edu/iffwiki/Demeter', 'The Demeter web site' );
   $info->SetDevelopers( ["Bruce Ravel <bravel\@bnl.gov>\n" .
-			 "Ifeffit is copyright $COPYRIGHT 1992-2011 Matt Newville\n" .
+			 "Ifeffit is copyright $COPYRIGHT 1992-2012 Matt Newville\n" .
 			 "Artemis is powered using Wx $Wx::VERSION with $Wx::wxVERSION_STRING\n" .
 			 "and Moose $Moose::VERSION"]
 		      );
@@ -693,6 +690,8 @@ sub fit {
   };
   $rframes->{main} -> {currentfit} = $newfit;
   ++$fit_order{order}{current};
+  $fit->grabbed(1);
+  $fit->thawed(1);
 
   modified(1);
   $::app->heap_check;
@@ -789,8 +788,8 @@ sub set_mru {
     my $type = ($which eq 'fit_serialization') ? 'fit'
              : ($which eq 'old_artemis')       ? 'old'
 	     :                                   $which;
-    foreach my $i (0 .. $frames{main}->{mrumenu}->GetMenuItemCount-1) {
-      $frames{main}->{'mru'.$type}->Delete($frames{main}->{'mru'.$type}->FindItemByPosition(0));
+    foreach my $i (reverse (0 .. $frames{main}->{'mru'.$type}->GetMenuItemCount-1)) {
+      $frames{main}->{'mru'.$type}->Delete($frames{main}->{'mru'.$type}->FindItemByPosition($i));
     };
 
     my @list = ($which eq 'structure') ? $demeter->get_mru_list('atoms', 'feff') : $demeter->get_mru_list($which);
@@ -891,10 +890,20 @@ sub OnMenuClick {
     };
 
     ## -------- debug submenu
+    ($id == $FIT_YAML) and do {
+      my $yaml   = $frames{main}->{currentfit}->serialization;
+      my $dialog = Demeter::UI::Artemis::ShowText->new($frames{main}, $yaml, 'YAML of current Fit object') -> Show;
+      last SWITCH;
+    };
     ($id == $PLOT_YAML) and do {
       $frames{Plot}->fetch_parameters('plot');
       my $yaml   = $demeter->po->serialization;
       my $dialog = Demeter::UI::Artemis::ShowText->new($frames{main}, $yaml, 'YAML of Plot object') -> Show;
+      last SWITCH;
+    };
+    ($id == $PLOT_YAML) and do {
+      my $yaml   = $demeter->mo->serialization;
+      my $dialog = Demeter::UI::Artemis::ShowText->new($frames{main}, $yaml, 'YAML of Mode object') -> Show;
       last SWITCH;
     };
     ($id == $PERL_MODULES) and do {
@@ -1101,7 +1110,7 @@ sub make_feff_frame {
       return;
     };
   } else {
-    #$frames{$fnum}->{Atoms}->{used} = 0;
+    $frames{$fnum}->{Atoms}->{used} = 0;
     $frames{$fnum}->{Atoms}->{name}->SetValue('new');
     if ($file ne $BLANK) {
       # $frames{$fnum}->{notebook}->DeletePage(0);
@@ -1129,6 +1138,7 @@ sub make_feff_frame {
   if ($file and (-e $file) and $demeter->is_feff($file)) {
     my $text = $demeter->slurp($file);
     $frames{$fnum}->{Atoms}->{used} = 0;
+    $frames{$fnum}->make_page('Feff')  if not $frames{$fnum}->{Feff};
     $frames{$fnum}->{Feff}->{feff}->SetValue($text);
     $frames{$fnum}->{Feff}->{name}->SetValue(basename($file, '.inp'));
     $frames{$fnum}->{notebook}->ChangeSelection(1);
@@ -1365,7 +1375,7 @@ Demeter::UI::Artemis - EXAFS analysis using Feff and Ifeffit
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.5.
+This documentation refers to Demeter version 0.9.
 
 =head1 SYNOPSIS
 
@@ -1417,7 +1427,7 @@ L<http://cars9.uchicago.edu/~ravel/software/>
 
 =head1 LICENCE AND COPYRIGHT
 
-Copyright (c) 2006-2011 Bruce Ravel (bravel AT bnl DOT gov). All rights reserved.
+Copyright (c) 2006-2012 Bruce Ravel (bravel AT bnl DOT gov). All rights reserved.
 
 This module is free software; you can redistribute it and/or
 modify it under the same terms as Perl itself. See L<perlgpl>.

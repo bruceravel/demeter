@@ -1,7 +1,7 @@
 package Demeter::Mode;
 
 use MooseX::Singleton;
-use MooseX::AttributeHelpers;
+
 with 'MooseX::SetGet';
 #use Demeter::Config;
 use Demeter::StrTypes qw( Empty
@@ -11,9 +11,13 @@ use Demeter::StrTypes qw( Empty
 			  TemplateFeff
 			  TemplateAnalysis
 		       );
+use List::MoreUtils qw(zip);
 #use vars qw($singleton);	# Moose 0.61, MooseX::Singleton 0.12 seem to need this
 
 ## -------- disposal modes
+has 'group'     => (is => 'rw', isa => 'Str',     default => q{Mode});
+has 'name'      => (is => 'rw', isa => 'Str',     default => q{Mode});
+
 has 'ifeffit'    => (is => 'rw', isa => 'Bool',                 default => 1);
 has $_           => (is => 'rw', isa => 'Bool',                 default => 0)   foreach (qw(screen plotscreen repscreen));
 has $_           => (is => 'rw', isa => 'Str',                  default => q{}) foreach (qw(file plotfile repfile));
@@ -49,335 +53,346 @@ has 'template_report'   => (is => 'rw', isa => 'Str', default => 'standard');
 
 ## -------- class collector arrays for sentinel functionality
 has 'Atoms' => (
-		metaclass => 'Collection::Array',
+		traits    => ['Array'],
 		is        => 'rw',
 		isa       => 'ArrayRef',
 		default   => sub { [] },
-		provides  => {
-			      'push'    => 'push_Atoms',
-			      'clear'   => 'clear_Atoms',
-			      'splice'  => 'splice_Atoms',
+		handles   => {
+			      'push_Atoms'    => 'push',
+			      'clear_Atoms'   => 'clear',
+			      'splice_Atoms'  => 'splice',
 			     }
 	       );
 has 'Data' => (
-		metaclass => 'Collection::Array',
+		traits    => ['Array'],
 		is        => 'rw',
 		isa       => 'ArrayRef',
 		default   => sub { [] },
-		provides  => {
-			      'push'    => 'push_Data',
-			      'clear'   => 'clear_Data',
-			      'splice'  => 'splice_Data',
+		handles   => {
+			      'push_Data'    => 'push',
+			      'clear_Data'   => 'clear',
+			      'splice_Data'  => 'splice',
 			     }
 	       );
 has 'Feff' => (
-		metaclass => 'Collection::Array',
+		traits    => ['Array'],
 		is        => 'rw',
 		isa       => 'ArrayRef',
 		default   => sub { [] },
-		provides  => {
-			      'push'    => 'push_Feff',
-			      'clear'   => 'clear_Feff',
-			      'splice'  => 'splice_Feff',
+		handles   => {
+			      'push_Feff'    => 'push',
+			      'clear_Feff'   => 'clear',
+			      'splice_Feff'  => 'splice',
 			     }
 	       );
 has 'External' => (
-		metaclass => 'Collection::Array',
+		traits    => ['Array'],
 		is        => 'rw',
 		isa       => 'ArrayRef',
 		default   => sub { [] },
-		provides  => {
-			      'push'    => 'push_External',
-			      'clear'   => 'clear_External',
-			      'splice'  => 'splice_External',
+		handles   => {
+			      'push_External'    => 'push',
+			      'clear_External'   => 'clear',
+			      'splice_External'  => 'splice',
 			     }
 	       );
 has 'Fit' => (
-		metaclass => 'Collection::Array',
+		traits    => ['Array'],
 		is        => 'rw',
 		isa       => 'ArrayRef',
 		default   => sub { [] },
-		provides  => {
-			      'push'    => 'push_Fit',
-			      'clear'   => 'clear_Fit',
-			      'splice'  => 'splice_Fit',
+		handles   => {
+			      'push_Fit'    => 'push',
+			      'clear_Fit'   => 'clear',
+			      'splice_Fit'  => 'splice',
 			     }
 	       );
 has 'Feffit' => (
-		metaclass => 'Collection::Array',
+		traits    => ['Array'],
 		is        => 'rw',
 		isa       => 'ArrayRef',
 		default   => sub { [] },
-		provides  => {
-			      'push'    => 'push_Feffit',
-			      'clear'   => 'clear_Feffit',
-			      'splice'  => 'splice_Feffit',
+		handles   => {
+			      'push_Feffit'    => 'push',
+			      'clear_Feffit'   => 'clear',
+			      'splice_Feffit'  => 'splice',
 			     }
 	       );
 has 'GDS' => (
-		metaclass => 'Collection::Array',
+		traits    => ['Array'],
 		is        => 'rw',
 		isa       => 'ArrayRef',
 		default   => sub { [] },
-		provides  => {
-			      'push'    => 'push_GDS',
-			      'clear'   => 'clear_GDS',
-			      'splice'  => 'splice_GDS',
+		handles   => {
+			      'push_GDS'    => 'push',
+			      'clear_GDS'   => 'clear',
+			      'splice_GDS'  => 'splice',
 			     }
 	       );
 has 'Path' => (
-		metaclass => 'Collection::Array',
+		traits    => ['Array'],
 		is        => 'rw',
 		isa       => 'ArrayRef',
 		default   => sub { [] },
-		provides  => {
-			      'push'    => 'push_Path',
-			      'clear'   => 'clear_Path',
-			      'splice'  => 'splice_Path',
+		handles   => {
+			      'push_Path'    => 'push',
+			      'clear_Path'   => 'clear',
+			      'splice_Path'  => 'splice',
 			     }
 	       );
 has 'ScatteringPath' => (
-		metaclass => 'Collection::Array',
+		traits    => ['Array'],
 		is        => 'rw',
 		isa       => 'ArrayRef',
 		default   => sub { [] },
-		provides  => {
-			      'push'    => 'push_ScatteringPath',
-			      'clear'   => 'clear_ScatteringPath',
-			      'splice'  => 'splice_ScatteringPath',
+		handles   => {
+			      'push_ScatteringPath'    => 'push',
+			      'clear_ScatteringPath'   => 'clear',
+			      'splice_ScatteringPath'  => 'splice',
 			     }
 	       );
 has 'VPath' => (
-		metaclass => 'Collection::Array',
+		traits    => ['Array'],
 		is        => 'rw',
 		isa       => 'ArrayRef',
 		default   => sub { [] },
-		provides  => {
-			      'push'    => 'push_VPath',
-			      'clear'   => 'clear_VPath',
-			      'splice'  => 'splice_VPath',
+		handles   => {
+			      'push_VPath'    => 'push',
+			      'clear_VPath'   => 'clear',
+			      'splice_VPath'  => 'splice',
 			     }
 	       );
 has 'SSPath' => (
-		metaclass => 'Collection::Array',
+		traits    => ['Array'],
 		is        => 'rw',
 		isa       => 'ArrayRef',
 		default   => sub { [] },
-		provides  => {
-			      'push'    => 'push_SSPath',
-			      'clear'   => 'clear_SSPath',
-			      'splice'  => 'splice_SSPath',
+		handles   => {
+			      'push_SSPath'    => 'push',
+			      'clear_SSPath'   => 'clear',
+			      'splice_SSPath'  => 'splice',
 			     }
 	       );
 has 'ThreeBody' => (
-		metaclass => 'Collection::Array',
+		traits    => ['Array'],
 		is        => 'rw',
 		isa       => 'ArrayRef',
 		default   => sub { [] },
-		provides  => {
-			      'push'    => 'push_ThreeBody',
-			      'clear'   => 'clear_ThreeBody',
-			      'splice'  => 'splice_ThreeBody',
+		handles   => {
+			      'push_ThreeBody'    => 'push',
+			      'clear_ThreeBody'   => 'clear',
+			      'splice_ThreeBody'  => 'splice',
 			     }
 	       );
 has 'FPath' => (
-		metaclass => 'Collection::Array',
+		traits    => ['Array'],
 		is        => 'rw',
 		isa       => 'ArrayRef',
 		default   => sub { [] },
-		provides  => {
-			      'push'    => 'push_FPath',
-			      'clear'   => 'clear_FPath',
-			      'splice'  => 'splice_FPath',
+		handles   => {
+			      'push_FPath'    => 'push',
+			      'clear_FPath'   => 'clear',
+			      'splice_FPath'  => 'splice',
 			     }
 	       );
 has 'FSPath' => (
-		metaclass => 'Collection::Array',
+		traits    => ['Array'],
 		is        => 'rw',
 		isa       => 'ArrayRef',
 		default   => sub { [] },
-		provides  => {
-			      'push'    => 'push_FSPath',
-			      'clear'   => 'clear_FSPath',
-			      'splice'  => 'splice_FSPath',
+		handles   => {
+			      'push_FSPath'    => 'push',
+			      'clear_FSPath'   => 'clear',
+			      'splice_FSPath'  => 'splice',
 			     }
 	       );
 has 'StructuralUnit' => (
-		metaclass => 'Collection::Array',
+		traits    => ['Array'],
 		is        => 'rw',
 		isa       => 'ArrayRef',
 		default   => sub { [] },
-		provides  => {
-			      'push'    => 'push_StructuralUnit',
-			      'clear'   => 'clear_StructuralUnit',
-			      'splice'  => 'splice_StructuralUnit',
+		handles   => {
+			      'push_StructuralUnit'    => 'push',
+			      'clear_StructuralUnit'   => 'clear',
+			      'splice_StructuralUnit'  => 'splice',
 			     }
 	       );
 has 'Prj' => (
-		metaclass => 'Collection::Array',
+		traits    => ['Array'],
 		is        => 'rw',
 		isa       => 'ArrayRef',
 		default   => sub { [] },
-		provides  => {
-			      'push'    => 'push_Prj',
-			      'clear'   => 'clear_Prj',
-			      'splice'  => 'splice_Prj',
+		handles   => {
+			      'push_Prj'    => 'push',
+			      'clear_Prj'   => 'clear',
+			      'splice_Prj'  => 'splice',
 			     }
 	       );
 
 has 'MultiChannel' => (
-		metaclass => 'Collection::Array',
+		traits    => ['Array'],
 		is        => 'rw',
 		isa       => 'ArrayRef',
 		default   => sub { [] },
-		provides  => {
-			      'push'    => 'push_MultiChannel',
-			      'clear'   => 'clear_MultiChannel',
-			      'splice'  => 'splice_MultiChannel',
+		handles   => {
+			      'push_MultiChannel'    => 'push',
+			      'clear_MultiChannel'   => 'clear',
+			      'splice_MultiChannel'  => 'splice',
+			     }
+	       );
+has 'BulkMerge' => (
+		traits    => ['Array'],
+		is        => 'rw',
+		isa       => 'ArrayRef',
+		default   => sub { [] },
+		handles   => {
+			      'push_BulkMerge'    => 'push',
+			      'clear_BulkMerge'   => 'clear',
+			      'splice_BulkMerge'  => 'splice',
 			     }
 	       );
 has 'Pixel' => (
-		metaclass => 'Collection::Array',
+		traits    => ['Array'],
 		is        => 'rw',
 		isa       => 'ArrayRef',
 		default   => sub { [] },
-		provides  => {
-			      'push'    => 'push_Pixel',
-			      'clear'   => 'clear_Pixel',
-			      'splice'  => 'splice_Pixel',
+		handles   => {
+			      'push_Pixel'    => 'push',
+			      'clear_Pixel'   => 'clear',
+			      'splice_Pixel'  => 'splice',
 			     }
 	       );
 has 'Plot' => (
-		metaclass => 'Collection::Array',
+		traits    => ['Array'],
 		is        => 'rw',
 		isa       => 'ArrayRef',
 		default   => sub { [] },
-		provides  => {
-			      'push'    => 'push_Plot',
-			      'clear'   => 'clear_Plot',
-			      'splice'  => 'splice_Plot',
+		handles   => {
+			      'push_Plot'    => 'push',
+			      'clear_Plot'   => 'clear',
+			      'splice_Plot'  => 'splice',
 			     }
 	       );
 has 'Indicator' => (
-		metaclass => 'Collection::Array',
+		traits    => ['Array'],
 		is        => 'rw',
 		isa       => 'ArrayRef',
 		default   => sub { [] },
-		provides  => {
-			      'push'    => 'push_Indicator',
-			      'clear'   => 'clear_Indicator',
-			      'splice'  => 'splice_Indicator',
+		handles   => {
+			      'push_Indicator'    => 'push',
+			      'clear_Indicator'   => 'clear',
+			      'splice_Indicator'  => 'splice',
 			     }
 	       );
 has 'Style' => (
-		metaclass => 'Collection::Array',
+		traits    => ['Array'],
 		is        => 'rw',
 		isa       => 'ArrayRef',
 		default   => sub { [] },
-		provides  => {
-			      'push'    => 'push_Style',
-			      'clear'   => 'clear_Style',
-			      'splice'  => 'splice_Style',
+		handles   => {
+			      'push_Style'    => 'push',
+			      'clear_Style'   => 'clear',
+			      'splice_Style'  => 'splice',
 			     }
 	       );
 has 'LCF' => (
-		metaclass => 'Collection::Array',
+		traits    => ['Array'],
 		is        => 'rw',
 		isa       => 'ArrayRef',
 		default   => sub { [] },
-		provides  => {
-			      'push'    => 'push_LCF',
-			      'clear'   => 'clear_LCF',
-			      'splice'  => 'splice_LCF',
+		handles   => {
+			      'push_LCF'    => 'push',
+			      'clear_LCF'   => 'clear',
+			      'splice_LCF'  => 'splice',
 			     }
 	       );
 has 'PCA' => (
-		metaclass => 'Collection::Array',
+		traits    => ['Array'],
 		is        => 'rw',
 		isa       => 'ArrayRef',
 		default   => sub { [] },
-		provides  => {
-			      'push'    => 'push_PCA',
-			      'clear'   => 'clear_PCA',
-			      'splice'  => 'splice_PCA',
+		handles   => {
+			      'push_PCA'    => 'push',
+			      'clear_PCA'   => 'clear',
+			      'splice_PCA'  => 'splice',
 			     }
 	       );
 has 'XES' => (
-		metaclass => 'Collection::Array',
+		traits    => ['Array'],
 		is        => 'rw',
 		isa       => 'ArrayRef',
 		default   => sub { [] },
-		provides  => {
-			      'push'    => 'push_XES',
-			      'clear'   => 'clear_XES',
-			      'splice'  => 'splice_XES',
+		handles   => {
+			      'push_XES'    => 'push',
+			      'clear_XES'   => 'clear',
+			      'splice_XES'  => 'splice',
 			     }
 	       );
 has 'PeakFit' => (
-		metaclass => 'Collection::Array',
+		traits    => ['Array'],
 		is        => 'rw',
 		isa       => 'ArrayRef',
 		default   => sub { [] },
-		provides  => {
-			      'push'    => 'push_PeakFit',
-			      'clear'   => 'clear_PeakFit',
-			      'splice'  => 'splice_PeakFit',
+		handles   => {
+			      'push_PeakFit'    => 'push',
+			      'clear_PeakFit'   => 'clear',
+			      'splice_PeakFit'  => 'splice',
 			     }
 	       );
 has 'LogRatio' => (
-		metaclass => 'Collection::Array',
+		traits    => ['Array'],
 		is        => 'rw',
 		isa       => 'ArrayRef',
 		default   => sub { [] },
-		provides  => {
-			      'push'    => 'push_LogRatio',
-			      'clear'   => 'clear_LogRatio',
-			      'splice'  => 'splice_LogRatio',
+		handles   => {
+			      'push_LogRatio'    => 'push',
+			      'clear_LogRatio'   => 'clear',
+			      'splice_LogRatio'  => 'splice',
 			     }
 	       );
 has 'Diff' => (
-		metaclass => 'Collection::Array',
+		traits    => ['Array'],
 		is        => 'rw',
 		isa       => 'ArrayRef',
 		default   => sub { [] },
-		provides  => {
-			      'push'    => 'push_Diff',
-			      'clear'   => 'clear_Diff',
-			      'splice'  => 'splice_Diff',
+		handles   => {
+			      'push_Diff'    => 'push',
+			      'clear_Diff'   => 'clear',
+			      'splice_Diff'  => 'splice',
 			     }
 	       );
 has 'LineShape' => (
-		metaclass => 'Collection::Array',
+		traits    => ['Array'],
 		is        => 'rw',
 		isa       => 'ArrayRef',
 		default   => sub { [] },
-		provides  => {
-			      'push'    => 'push_LineShape',
-			      'clear'   => 'clear_LineShape',
-			      'splice'  => 'splice_LineShape',
+		handles   => {
+			      'push_LineShape'    => 'push',
+			      'clear_LineShape'   => 'clear',
+			      'splice_LineShape'  => 'splice',
 			     }
 	       );
 has 'Journal' => (
-		metaclass => 'Collection::Array',
+		traits    => ['Array'],
 		is        => 'rw',
 		isa       => 'ArrayRef',
 		default   => sub { [] },
-		provides  => {
-			      'push'    => 'push_Journal',
-			      'clear'   => 'clear_Journal',
-			      'splice'  => 'splice_Journal',
+		handles   => {
+			      'push_Journal'    => 'push',
+			      'clear_Journal'   => 'clear',
+			      'splice_Journal'  => 'splice',
 			     }
 	       );
 
 has 'Distributions' => (
-		metaclass => 'Collection::Array',
+		traits    => ['Array'],
 		is        => 'rw',
 		isa       => 'ArrayRef',
 		default   => sub { [] },
-		provides  => {
-			      'push'    => 'push_Distributions',
-			      'clear'   => 'clear_Distributions',
-			      'splice'  => 'splice_Distributions',
+		handles   => {
+			      'push_Distributions'    => 'push',
+			      'clear_Distributions'   => 'clear',
+			      'splice_Distributions'  => 'splice',
 			     }
 	       );
 
@@ -385,17 +400,17 @@ has 'types' => (is => 'ro', isa => 'ArrayRef',
 		default => sub{[qw(Atoms Data Feff External Fit Feffit GDS Path Plot Indicator Style
 				   LCF PCA XES PeakFit LogRatio Diff LineShape
 				   ScatteringPath VPath SSPath ThreeBody FPath FSPath
-				   StructuralUnit Prj Pixel MultiChannel Journal Distributions)]},);
+				   StructuralUnit Prj Pixel MultiChannel BulkMerge Journal Distributions)]},);
 
 has 'Plugins' => (
-		metaclass => 'Collection::Array',
+		traits    => ['Array'],
 		is        => 'rw',
 		isa       => 'ArrayRef',
 		default   => sub { [] },
-		provides  => {
-			      'push'    => 'push_Plugins',
-			      'clear'   => 'clear_Plugins',
-			      'splice'  => 'splice_Plugins',
+		handles   => {
+			      'push_Plugins'    => 'push',
+			      'clear_Plugins'   => 'clear',
+			      'splice_Plugins'  => 'splice',
 			     }
 	       );
 
@@ -502,6 +517,7 @@ sub everything {
 	  @{ $self->Prj		   },
 	  @{ $self->Pixel          },
 	  @{ $self->MultiChannel   },
+	  @{ $self->BulkMerge      },
 	  @{ $self->Plot	   },
 	  @{ $self->Indicator	   },
 	  @{ $self->Style	   },
@@ -530,7 +546,7 @@ sub destroy_all {
 
 sub report {
   my ($self, $which) = @_;
-  my $text = q{};
+  my $text = "Mode object\n\n";
   $which ||= 'all';
   foreach my $this (sort @{$self->types}) {
     my $n = 19 - length($this);
@@ -552,6 +568,21 @@ sub report {
   return $text
 };
 
+sub serialization {
+  my ($self) = @_;
+  my @keys = sort {$a cmp $b} grep{$_ if ($_ =~ m{\A[a-z]})} map {$_->name} $self->meta->get_all_attributes;
+  my @values = map { my $foo = (ref($_) =~ m{CODE})             ? 'Code reference'
+		             : (ref($_) =~ m{SCALAR})           ? $$_
+		             : (ref($_) =~ m{Demeter|Graphics}) ? ref($_).' object'
+			     :                                    $_;
+		     $foo||q{};
+		   } map {$self->$_} @keys;
+  my %hash   = zip(@keys, @values);
+  return YAML::Tiny::Dump(\%hash);
+};
+
+
+
 __PACKAGE__->meta->make_immutable;
 1;
 
@@ -561,7 +592,7 @@ Demeter::Mode - Demeter's sentinel system
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.5.
+This documentation refers to Demeter version 0.9.
 
 =head1 DESCRIPTION
 
@@ -582,14 +613,14 @@ objects.  Any of these methods can be called by any Demeter object:
     ## and so on ...
 
 This object also monitors the creation and destruction of Demeter
-objects (Atoms, Data, Data::Prj, Data::MultiChannel, Feff,
-Feff::External, Fit, GDS, Path, Plot, Plot::Indicator, ScatteringPath,
-SSPath, VPath, etc.) and provides methods which give a way for one
-object to affect any other objects created during the instance of
-Demeter.  For example, when the kweight value of the Plot object is
-changed, it is necessary to signal all Data objects that they will
-need to update their forward Fourier transforms.  This object is the
-glue that allows things like that to happen.
+objects (Atoms, Data, Data::Prj, Data::MultiChannel, Data::BulkMerge,
+Feff, Feff::External, Fit, GDS, Path, Plot, Plot::Indicator,
+ScatteringPath, SSPath, VPath, etc.) and provides methods which give a
+way for one object to affect any other objects created during the
+instance of Demeter.  For example, when the kweight value of the Plot
+object is changed, it is necessary to signal all Data objects that
+they will need to update their forward Fourier transforms.  This
+object is the glue that allows things like that to happen.
 
 =head1 ATTRIBUTES
 
@@ -831,11 +862,11 @@ behind the scenes, during object creation or destruction or at the end
 of a script.  The details are documented here for those times when one
 needs to see under the hood.
 
-Each Demeter object (Atoms, Data, Data::Prj, Data::MultiChannel, Feff,
-Feff::External, Fit, GDS, Path, Plot, Plot::Indicator, ScatteringPath,
-SSPath, VPath, etc.) (Data::Prj is refered to just as Prj, other
-Data::* classes are the same) has each of the following three function
-associated with it.
+Each Demeter object (Atoms, Data, Data::Prj, Data::MultiChannel,
+Data::BulkMerge, Feff, Feff::External, Fit, GDS, Path, Plot,
+Plot::Indicator, ScatteringPath, SSPath, VPath, etc.) (Data::Prj is
+refered to just as Prj, other Data::* classes are the same) has each
+of the following three function associated with it.
 
 All of my examples use the Data object.
 
@@ -934,7 +965,7 @@ L<http://cars9.uchicago.edu/~ravel/software/>
 
 =head1 LICENCE AND COPYRIGHT
 
-Copyright (c) 2006-2011 Bruce Ravel (bravel AT bnl DOT gov). All rights reserved.
+Copyright (c) 2006-2012 Bruce Ravel (bravel AT bnl DOT gov). All rights reserved.
 
 This module is free software; you can redistribute it and/or
 modify it under the same terms as Perl itself. See L<perlgpl>.

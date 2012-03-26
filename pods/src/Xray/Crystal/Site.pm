@@ -2,7 +2,7 @@ package Xray::Crystal::Site;
 
 =for Copyright
  .
- Copyright (c) 2006-2011 Bruce Ravel (bravel AT bnl DOT gov).
+ Copyright (c) 2006-2012 Bruce Ravel (bravel AT bnl DOT gov).
  All rights reserved.
  .
  This file is free software; you can redistribute it and/or
@@ -19,8 +19,8 @@ use Carp;
 use Chemistry::Elements qw(get_symbol get_Z);
 use Safe;
 use Scalar::Util;
-use Readonly;
-Readonly my $EPSILON  => 0.00001;
+use Const::Fast;
+const my $EPSILON  => 0.00001;
 
 
 use Moose;
@@ -81,25 +81,25 @@ has 'valence'	  => (is => 'rw', isa => 'Str',  default => 0);	## -- check valenc
 has 'occupancy'	  => (is => 'rw', isa => 'ZeroToOne',  default => 1);
 has 'host'	  => (is => 'rw', isa => 'Bool', default => 1);
 has 'positions'	  => (
-		      metaclass => 'Collection::Array',
+		      traits    => ['Array'],
 		      is        => 'rw',
 		      isa       => 'ArrayRef',
 		      default   => sub { [] },
-		      provides  => {
-				    'push'  => 'push_positions',
-				    'pop'   => 'pop_positions',
-				    'clear' => 'clear_positions',
+		      handles   => {
+				    'push_positions'  => 'push',
+				    'pop_positions'   => 'pop',
+				    'clear_positions' => 'clear',
 				   }
 		     );
 has 'formulas'	  => (
-		      metaclass => 'Collection::Array',
+		      traits    => ['Array'],
 		      is        => 'rw',
 		      isa       => 'ArrayRef',
 		      default   => sub { [] },
-		      provides  => {
-				    'push'  => 'push_formulas',
-				    'pop'   => 'pop_formulas',
-				    'clear' => 'clear_formulas',
+		      handles   => {
+				    'push_formulas'  => 'push',
+				    'pop_formulas'   => 'pop',
+				    'clear_formulas' => 'clear',
 				   }
 		     );
 has 'file'	  => (is => 'rw', isa => 'Str',  default => q{});
@@ -335,7 +335,7 @@ Xray::Crystal::Site - A crystallographic site object
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.5.
+This documentation refers to Demeter version 0.9.
 
 =head1 SYNOPSIS
 
@@ -454,7 +454,7 @@ There is nothing configurable and no environment variables are used.
   Chemistry::Elements
   Carp
   Safe
-  Readonly
+  Const::Fast
 
 =head1 BUGS AND LIMITATIONS
 
@@ -471,7 +471,7 @@ http://cars9.uchicago.edu/~ravel/software/
 
 =head1 LICENCE AND COPYRIGHT
 
-Copyright (c) 2006-2011 Bruce Ravel (bravel AT bnl DOT gov). All rights reserved.
+Copyright (c) 2006-2012 Bruce Ravel (bravel AT bnl DOT gov). All rights reserved.
 
 This module is free software; you can redistribute it and/or
 modify it under the same terms as Perl itself. See L<perlgpl>.

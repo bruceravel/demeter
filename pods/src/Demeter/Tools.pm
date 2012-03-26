@@ -2,7 +2,7 @@ package Demeter::Tools;
 
 =for Copyright
  .
- Copyright (c) 2006-2011 Bruce Ravel (bravel AT bnl DOT gov).
+ Copyright (c) 2006-2012 Bruce Ravel (bravel AT bnl DOT gov).
  All rights reserved.
  .
  This file is free software; you can redistribute it and/or
@@ -28,13 +28,14 @@ use String::Random qw(random_string);
 use Sys::Hostname;
 use DateTime;
 use Data::Dumper;
+use Text::Wrap;
 #use Memoize;
 #memoize('distance');
 
 
-use Readonly;
-Readonly my $FRAC => 100000;
-Readonly my $NULLFILE => '@&^^null^^&@';
+use Demeter::Constants qw($NULLFILE);
+use Const::Fast;
+const my $FRAC => 100000;
 
 
 # use vars qw(@ISA @EXPORT @EXPORT_OK);
@@ -49,7 +50,7 @@ my $type_regexp = $ra->add(qw(guess def set restrain after skip merge lguess lde
 
 ## check to make sure that the computer's time zone is set.  fall back
 ## to the floating time zone if not
-Readonly my $tz => (eval {DateTime->now(time_zone => 'local')}) ? 'local' : 'floating';
+const my $tz => (eval {DateTime->now(time_zone => 'local')}) ? 'local' : 'floating';
 sub now {
   my ($self) = @_;
   return sprintf("%s", DateTime->now(time_zone => $tz));
@@ -72,14 +73,14 @@ sub module_environment {
 		     Ifeffit
 		     Moose
 		     MooseX::Aliases
-		     MooseX::AttributeHelpers
 		     MooseX::StrictConstructor
 		     MooseX::Singleton
 		     MooseX::Types
 		     Archive::Zip
 		     Capture::Tiny
 		     Chemistry::Elements
-		     Config::IniFiles
+		     Config::INI
+		     Const::Fast
 		     DateTime
 		     Graph
 		     Graphics::GnuplotIF
@@ -87,7 +88,6 @@ sub module_environment {
 		     Pod::POM
 		     PDL
 		     PDL::Stats
-		     Readonly
 		     Regexp::Assemble
 		     Regexp::Common
 		     Heap::Fibonacci
@@ -96,6 +96,9 @@ sub module_environment {
 		     Tree::Simple
 		     YAML::Tiny
 		  )) {
+    (my $pp = $p) =~ s{::}{/}g;
+    $pp .= '.pm';
+    require $pp if not exists $INC{$pp};
     my $v = '$' . $p . '::VERSION';
     my $l = 30 - length($p);
     $string .= sprintf(" %s %s %s\n", $p, '.' x $l, eval($v)||'?');
@@ -360,14 +363,18 @@ sub clear_ifeffit_titles {
   $self->dispose('show @strings');
   my $lines = Ifeffit::get_scalar('&echo_lines');
   my $target = '\$' . $group . '_title_';
+  my @all = ();
   foreach my $l (1 .. $lines) {
     my $response = Ifeffit::get_echo();
     if ($response =~ m{$target}) {
       (my $title = $response) =~ s{=.+\z}{};
       $title =~ s{\s+\z}{};
-      $self->dispose('erase '.$title);
+      push @all, $title;
     };
   };
+  local $Text::Wrap::columns = 200;
+  my $all_titles = wrap('erase ', 'erase ', join(" ", @all));
+  $self->dispose($all_titles);
   Ifeffit::ifeffit("\&screen_echo = $save[0]\n");
   $self->set_mode(screen=>$save[1], plotscreen=>$save[2], feedback=>$save[3]);
   return $self;
@@ -441,7 +448,7 @@ Demeter::Tools - Utility methods for the Demeter class
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.5.
+This documentation refers to Demeter version 0.9.
 
 =head1 DESCRIPTION
 
@@ -610,7 +617,7 @@ L<http://cars9.uchicago.edu/~ravel/software/>
 
 =head1 LICENCE AND COPYRIGHT
 
-Copyright (c) 2006-2011 Bruce Ravel (bravel AT bnl DOT gov). All rights reserved.
+Copyright (c) 2006-2012 Bruce Ravel (bravel AT bnl DOT gov). All rights reserved.
 
 This module is free software; you can redistribute it and/or
 modify it under the same terms as Perl itself. See L<perlgpl>.

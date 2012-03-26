@@ -2,7 +2,7 @@ package Demeter::Fit::Feffit;
 
 =for Copyright
  .
- Copyright (c) 2006-2011 Bruce Ravel (bravel AT bnl DOT gov).
+ Copyright (c) 2006-2012 Bruce Ravel (bravel AT bnl DOT gov).
  All rights reserved.
  .
  This file is free software; you can redistribute it and/or
@@ -19,55 +19,53 @@ use autodie qw(open close);
 
 use Moose;
 extends 'Demeter';
-use MooseX::AttributeHelpers;
 
 use Cwd qw(realpath);
 use File::Basename;
 use File::Spec;
 use List::MoreUtils qw(any);
 use Regexp::Assemble;
-use Regexp::Common;
-use Readonly;
-Readonly my $NUMBER      => $RE{num}{real};
-Readonly my %REPLACEMENT => ( e0     => 'enot',
-			      ei     => 'eimag',
-			      s02    => 's_02',
-			      sigma2 => 'sigsqr',
-			      third  => 'cumul3',
-			      fourth => 'cumul4',
-			      dr     => 'd_r',
-			      dr1    => 'dr_1',
-			      dr2    => 'dr_2',
-			      dk     => 'd_k',
-			      dk1    => 'dk_1',
-			      dk2    => 'dk_2',
-			      etok   => 'e2k',
-			      pi     => 'pie',
-			    );
-## see line 488 and following in src/feffit/fitinp.f from the ifeffit source tree
-Readonly my %SYNONYMS => (path	  => 'path',
-			  file	  => 'path',
-			  feff	  => 'path',
-			  id	  => 'id',
-			  e0	  => 'e0',
-			  esh	  => 'e0',
-			  ee	  => 'e0',
-			  e0s	  => 'e0',
-			  s02	  => 's02',
-			  so2	  => 's02',
-			  amp	  => 's02',
-			  sigma2  => 'sigma2',
-			  ss2	  => 'sigma2',
-			  delr	  => 'delr',
-			  deltar  => 'delr',
-			  ei	  => 'ei',
-			  third	  => 'third',
-			  '3rd'	  => 'third',
-			  cubic	  => 'third',
-			  fourth  => 'fourth',
-			  '4th'	  => 'fourth',
-			  quartic => 'fourth',
+use Demeter::Constants qw($NUMBER);
+use Const::Fast;
+const my %REPLACEMENT => ( e0     => 'enot',
+			   ei     => 'eimag',
+			   s02    => 's_02',
+			   sigma2 => 'sigsqr',
+			   third  => 'cumul3',
+			   fourth => 'cumul4',
+			   dr     => 'd_r',
+			   dr1    => 'dr_1',
+			   dr2    => 'dr_2',
+			   dk     => 'd_k',
+			   dk1    => 'dk_1',
+			   dk2    => 'dk_2',
+			   etok   => 'e2k',
+			   pi     => 'pie',
 			 );
+## see line 488 and following in src/feffit/fitinp.f from the ifeffit source tree
+const my %SYNONYMS => (path	  => 'path',
+		       file	  => 'path',
+		       feff	  => 'path',
+		       id	  => 'id',
+		       e0	  => 'e0',
+		       esh	  => 'e0',
+		       ee	  => 'e0',
+		       e0s	  => 'e0',
+		       s02	  => 's02',
+		       so2	  => 's02',
+		       amp	  => 's02',
+		       sigma2  => 'sigma2',
+		       ss2	  => 'sigma2',
+		       delr	  => 'delr',
+		       deltar  => 'delr',
+		       ei	  => 'ei',
+		       third	  => 'third',
+		       '3rd'	  => 'third',
+		       cubic	  => 'third',
+		       fourth  => 'fourth',
+		       '4th'	  => 'fourth',
+		       quartic => 'fourth',
+		      );
 
 has 'file'    => (is => 'rw', isa => 'Str',  default => q{},
 		  trigger => sub{shift -> Read} );
@@ -429,7 +427,7 @@ Demeter::Fit::Feffit - Convert a feffit.inp file into a Fit object
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.5.
+This documentation refers to Demeter version 0.9.
 
 =head1 DESCRIPTION
 
@@ -532,7 +530,7 @@ L<http://cars9.uchicago.edu/~ravel/software/>
 
 =head1 LICENCE AND COPYRIGHT
 
-Copyright (c) 2006-2011 Bruce Ravel (bravel AT bnl DOT gov). All rights reserved.
+Copyright (c) 2006-2012 Bruce Ravel (bravel AT bnl DOT gov). All rights reserved.
 
 This module is free software; you can redistribute it and/or
 modify it under the same terms as Perl itself. See L<perlgpl>.

@@ -2,7 +2,7 @@ package Demeter::Data::Beamlines;
 
 =for Copyright
  .
- Copyright (c) 2006-2011 Bruce Ravel (bravel AT bnl DOT gov).
+ Copyright (c) 2006-2012 Bruce Ravel (bravel AT bnl DOT gov).
  All rights reserved.
  .
  This file is free software; you can redistribute it and/or
@@ -39,7 +39,11 @@ sub is_xdac {
 
   ## this IS an XDAC file
   if ($first =~ m{XDAC V(\d+)\.(\d+)}) {
-    $self->xdi_version("$Xray::XDI::VERSION");
+    if (exists $INC{'Xray/XDI.pm'}) {
+      $self->xdi_version("$Xray::XDI::VERSION");
+    } else {
+      $self->xdi_version('-1');
+    };
     $self->xdi_applications(sprintf("XDAC/%s.%s", $1, $2));
     $self->set_xdi_facility('name', 'NSLS');
     $self->set_xdi_facility('xray_source', 'bend magnet');
@@ -66,7 +70,7 @@ sub is_xdac {
 	  $self->beamline($bl);
 	  my $ini = join(".", 'xdac', $bl, 'ini');
 	  my $inifile = File::Spec->catfile(dirname($INC{'Demeter.pm'}), 'Demeter', 'share', 'xdi', $ini);
-	  $self->configure_from_ini($inifile);
+	  $self->metadata_from_ini($inifile);
 	  last SWITCH;
 	};
 
@@ -155,7 +159,7 @@ L<http://cars9.uchicago.edu/~ravel/software/>
 
 =head1 LICENCE AND COPYRIGHT
 
-Copyright (c) 2006-2011 Bruce Ravel (bravel AT bnl DOT gov). All rights reserved.
+Copyright (c) 2006-2012 Bruce Ravel (bravel AT bnl DOT gov). All rights reserved.
 
 This module is free software; you can redistribute it and/or
 modify it under the same terms as Perl itself. See L<perlgpl>.

@@ -2,7 +2,7 @@ package Demeter::Path::Sanity;
 
 =for Copyright
  .
- Copyright (c) 2006-2011 Bruce Ravel (bravel AT bnl DOT gov).
+ Copyright (c) 2006-2012 Bruce Ravel (bravel AT bnl DOT gov).
  All rights reserved.
  .
  This file is free software; you can redistribute it and/or
@@ -21,10 +21,7 @@ use Moose::Role;
 
 use Carp;
 use List::MoreUtils qw(any);
-use Regexp::Common;
-use Readonly;
-Readonly my $EPSILON => 0.00001;
-Readonly my $NUMBER  => $RE{num}{real};
+use Demeter::Constants qw($EPSILON5 $NUMBER);
 
 
 my %pp_trans = ('3rd'=>"third", '4th'=>"fourth", dphase=>"dphase",
@@ -89,7 +86,7 @@ sub test_s02 {
   my $this = $self->s02_value;
   my $id = $self->identity;
   return (0, "S02 for \"$id\" is negative.")
-    if ($config->default("warnings", "s02_neg") and ($this < -1*$EPSILON));
+    if ($config->default("warnings", "s02_neg") and ($this < -1*$EPSILON5));
   return (1, q{}) if ($config->default("warnings", "s02_max") == 0);
   ## return(0, "Too big") if too big
   ## return(0, "Too small") if too small
@@ -102,7 +99,7 @@ sub test_sigma2 {
   my $this = $self->sigma2_value;
   my $id = $self->identity;
   return (0, "sigma2 for \"$id\" is negative.")
-    if ($config->default("warnings", "ss2_neg") and ($this < -1*$EPSILON));
+    if ($config->default("warnings", "ss2_neg") and ($this < -1*$EPSILON5));
   return (1, q{}) if ($config->default("warnings", "ss2_max") == 0);
   return (0, "sigma2 for \"$id\" is suspiciously large.")
     if ($this > $config->default("warnings", "ss2_max"));
@@ -143,7 +140,7 @@ Demeter::Path::Sanity - Sanity checks for path parameter values
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.5.
+This documentation refers to Demeter version 0.9.
 
 =head1 SYNOPSIS
 
@@ -203,7 +200,7 @@ L<http://cars9.uchicago.edu/~ravel/software/>
 
 =head1 LICENCE AND COPYRIGHT
 
-Copyright (c) 2006-2011 Bruce Ravel (bravel AT bnl DOT gov). All rights reserved.
+Copyright (c) 2006-2012 Bruce Ravel (bravel AT bnl DOT gov). All rights reserved.
 
 This module is free software; you can redistribute it and/or
 modify it under the same terms as Perl itself. See L<perlgpl>.

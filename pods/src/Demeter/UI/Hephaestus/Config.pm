@@ -2,7 +2,7 @@ package Demeter::UI::Hephaestus::Config;
 
 =for Copyright
  .
- Copyright (c) 2006-2011 Bruce Ravel (bravel AT bnl DOT gov).
+ Copyright (c) 2006-2012 Bruce Ravel (bravel AT bnl DOT gov).
  All rights reserved.
  .
  This file is free software; you can redistribute it and/or
@@ -30,7 +30,7 @@ sub new {
   my $self = $class->SUPER::new($page, \&target);
   $self->{echo} = $echoarea;
   my @list = ('hephaestus', 'plot');
-  push @list, 'gnuplot' if ($Demeter::UI::Hephaestus::demeter->co->default(qw(plot plotwith)) eq 'gnuplot');
+  push @list, 'gnuplot' if (Demeter->co->default(qw(plot plotwith)) eq 'gnuplot');
   $self->populate(\@list);
   $self->{params}->Expand($self->{params}->GetRootItem);
 
@@ -42,7 +42,7 @@ sub target {
 
  SWITCH: {
     ($param eq 'plotwith') and do {
-      $Demeter::UI::Hephaestus::demeter->plot_with($value);
+      Demeter->plot_with($value);
       last SWITCH;
     };
     ($param eq 'resource') and do {
@@ -60,7 +60,7 @@ sub target {
     ($param eq 'ion_pressureunits') and do {
       my %range = (torr => [1,2300], mbar => [1,3066], atm => [0.01,3]);
       my %conv  = (torr => 760, mbar => 1013.25, atm => 1);
-      my $factor = $conv{$value} / $conv{$Demeter::UI::Hephaestus::demeter->co->was($parent, $param)};
+      my $factor = $conv{$value} / $conv{Demeter->co->was($parent, $param)};
       $Demeter::UI::Hephaestus::frame->{ion}->{pressureunits}->SetLabel("Pressure ($value) ");
       $Demeter::UI::Hephaestus::frame->{ion}->{pressureunits}->Refresh;
       $Demeter::UI::Hephaestus::frame->{ion}->{pressure}->SetRange(@{$range{$value}});
@@ -86,7 +86,7 @@ Demeter::UI::Hephaestus::Config - Hephaestus' electronic transitions utility
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.5.
+This documentation refers to Demeter version 0.9.
 
 =head1 SYNOPSIS
 
@@ -130,7 +130,7 @@ L<http://cars9.uchicago.edu/~ravel/software/>
 
 =head1 LICENCE AND COPYRIGHT
 
-Copyright (c) 2006-2011 Bruce Ravel (bravel AT bnl DOT gov). All rights reserved.
+Copyright (c) 2006-2012 Bruce Ravel (bravel AT bnl DOT gov). All rights reserved.
 
 This module is free software; you can redistribute it and/or
 modify it under the same terms as Perl itself. See L<perlgpl>.

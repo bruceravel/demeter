@@ -2,7 +2,7 @@ package  Demeter::UI::Athena::Status;
 
 =for Copyright
  .
- Copyright (c) 2006-2011 Bruce Ravel (bravel AT bnl DOT gov).
+ Copyright (c) 2006-2012 Bruce Ravel (bravel AT bnl DOT gov).
  All rights reserved.
  .
  This file is free software; you can redistribute it and/or
@@ -30,7 +30,7 @@ my @bold = (9, wxTELETYPE, wxNORMAL, wxFONTWEIGHT_BOLD, 0, "" );
 
 sub new {
   my ($class, $parent) = @_;
-  my $this = $class->SUPER::new($parent, -1, "Artemis [Status buffer]",
+  my $this = $class->SUPER::new($parent, -1, "Athena [Status buffer]",
 				wxDefaultPosition, [650,400],
 				wxMINIMIZE_BOX|wxCAPTION|wxSYSTEM_MENU|wxCLOSE_BOX|wxRESIZE_BORDER);
   EVT_CLOSE($this, \&on_close);
@@ -121,3 +121,45 @@ sub put_text {
 };
 
 1;
+
+=head1 NAME
+
+Demeter::UI::Athena::Status - A statusbar message buffer for Athena
+
+=head1 VERSION
+
+This documentation refers to Demeter version 0.9.
+
+=head1 SYNOPSIS
+
+This module provides a window for logging and colorizing statusbar
+messages.
+
+=head1 DEPENDENCIES
+
+Demeter's dependencies are in the F<Bundle/DemeterBundle.pm> file.
+
+=head1 BUGS AND LIMITATIONS
+
+Please report problems to Bruce Ravel (bravel AT bnl DOT gov)
+
+Patches are welcome.
+
+=head1 AUTHOR
+
+Bruce Ravel (bravel AT bnl DOT gov)
+
+L<http://cars9.uchicago.edu/~ravel/software/>
+
+=head1 LICENCE AND COPYRIGHT
+
+Copyright (c) 2006-2012 Bruce Ravel (bravel AT bnl DOT gov). All rights reserved.
+
+This module is free software; you can redistribute it and/or
+modify it under the same terms as Perl itself. See L<perlgpl>.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+
+=cut

@@ -2,7 +2,7 @@ package Demeter::UI::Hephaestus::Common;
 
 =for Copyright
  .
- Copyright (c) 2006-2011 Bruce Ravel (bravel AT bnl DOT gov).
+ Copyright (c) 2006-2012 Bruce Ravel (bravel AT bnl DOT gov).
  All rights reserved.
  .
  This file is free software; you can redistribute it and/or
@@ -21,9 +21,7 @@ use version;
 use vars qw($VERSION @ISA @EXPORT @EXPORT_OK);
 $VERSION = qv("1.0.0");
 
-use Readonly;
-Readonly my $PI    => 4 * atan2 1, 1;
-Readonly my $HBARC => 1973.27053324;
+use Demeter::Constants qw($PI $HBARC);
 
 use Wx qw(wxVERSION_STRING);
 
@@ -37,7 +35,7 @@ sub hversion {
 };
 
 sub hcopyright {
-  return "copyright (c) 2008-2011 Bruce Ravel"
+  return "copyright (c) 2008-2012 Bruce Ravel"
 };
 
 sub hdescription {
@@ -58,7 +56,7 @@ Demeter::UI::Hephaestus::Common - Common functions used in Hephaestus
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.5.
+This documentation refers to Demeter version 0.9.
 
 =head1 SYNOPSIS
 
@@ -118,7 +116,7 @@ L<http://cars9.uchicago.edu/~ravel/software/>
 
 =head1 LICENCE AND COPYRIGHT
 
-Copyright (c) 2006-2011 Bruce Ravel (bravel AT bnl DOT gov). All rights reserved.
+Copyright (c) 2006-2012 Bruce Ravel (bravel AT bnl DOT gov). All rights reserved.
 
 This module is free software; you can redistribute it and/or
 modify it under the same terms as Perl itself. See L<perlgpl>.

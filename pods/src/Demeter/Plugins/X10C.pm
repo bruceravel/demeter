@@ -6,6 +6,7 @@ extends 'Demeter::Plugins::FileType';
 has '+is_binary'   => (default => 0);
 has '+description' => (default => "NSLS beamline X10C");
 has '+version'     => (default => 0.1);
+has '+metadata_ini' => (default => File::Spec->catfile(File::Basename::dirname($INC{'Demeter.pm'}), 'Demeter', 'share', 'xdi', 'x10c.ini'));
 
 sub is {
   my ($self) = @_;

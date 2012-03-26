@@ -2,7 +2,7 @@ package Demeter::Data::E0;
 
 =for Copyright
  .
- Copyright (c) 2006-2011 Bruce Ravel (bravel AT bnl DOT gov).
+ Copyright (c) 2006-2012 Bruce Ravel (bravel AT bnl DOT gov).
  All rights reserved.
  .
  This file is free software; you can redistribute it and/or
@@ -22,10 +22,7 @@ use MooseX::Aliases;
 use Demeter::StrTypes qw( Element Edge );
 
 use Carp;
-use Regexp::Common;
-use Readonly;
-Readonly my $NUMBER  => $RE{num}{real};
-Readonly my $EPSILON => 1e-3;
+use Demeter::Constants qw($EPSILON3 $NUMBER);
 
 use Xray::Absorption;
 
@@ -71,7 +68,7 @@ sub e0_fraction {
   my $esh =  $self->bkg_eshift;
   my $prior = 0;
   my $count = 1;
-  while (abs($self->bkg_e0-$prior) > $EPSILON) {
+  while (abs($self->bkg_e0-$prior) > $EPSILON3) {
     $prior = $self->bkg_e0;
     $self->normalize;
     my $fracstep = $fraction * $self->bkg_step;
@@ -164,9 +161,10 @@ sub align {
     next if ($d->group eq $self->group);
     $self->mo->current($d);	# these two lines allow a GUI to
     $self->call_sentinal;  	# display progress messages
-    $d -> _update("background");
+    $d -> _update("background") if not $d->quickmerge;
     $d -> dispose( $d-> template("process", "align") );
     $shift = sprintf("%.3f", Ifeffit::get_scalar("aa___esh"));
+    #print ">>>>>>", $shift, $/;
     $d -> bkg_eshift($shift);
     $d -> update_bkg(1);
   };
@@ -287,7 +285,7 @@ Demeter::Data::E0 - Calibrate and align XAS mu(E) data
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.5.
+This documentation refers to Demeter version 0.9.
 
 =head1 DESCRIPTION
 
@@ -430,7 +428,7 @@ L<http://cars9.uchicago.edu/~ravel/software/>
 
 =head1 LICENCE AND COPYRIGHT
 
-Copyright (c) 2006-2011 Bruce Ravel (bravel AT bnl DOT gov). All rights reserved.
+Copyright (c) 2006-2012 Bruce Ravel (bravel AT bnl DOT gov). All rights reserved.
 
 This module is free software; you can redistribute it and/or
 modify it under the same terms as Perl itself. See L<perlgpl>.

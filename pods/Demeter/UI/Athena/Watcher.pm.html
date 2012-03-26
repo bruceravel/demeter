@@ -66,7 +66,7 @@
 
 <h1 id="VERSION">VERSION <a href="#TOP" class="toplink"><img alt="^" src="../../../up.gif" /></a></h1>
 
-<p>This documentation refers to Demeter version 0.5.</p>
+<p>This documentation refers to Demeter version 0.9.</p>
 
 <h1 id="SYNOPSIS">SYNOPSIS <a href="#TOP" class="toplink"><img alt="^" src="../../../up.gif" /></a></h1>
 
@@ -75,8 +75,13 @@ As scans finish, they are imported in the current Athena project.</p>
 
 <h1 id="CONFIGURATION">CONFIGURATION <a href="#TOP" class="toplink"><img alt="^" src="../../../up.gif" /></a></h1>
 
+<p>The data watcher is disabled by default.  It is enabled via the
+<code>athena--&gt;show_watcher</code> parameter.</p>
 
+<p>Some defaults are set from the <code>watcher</code> configuration group.</p>
 
+<p>Persitance is handled via <cite>athena.watcher</cite>, a YAML file, in the dot
+folder.</p>
 
 <h1 id="DEPENDENCIES">DEPENDENCIES <a href="#TOP" class="toplink"><img alt="^" src="../../../up.gif" /></a></h1>
 
@@ -85,7 +90,9 @@ As scans finish, they are imported in the current Athena project.</p>
 <h1 id="BUGS_AND_LIMITATIONS">BUGS AND LIMITATIONS <a href="#TOP" class="toplink"><img alt="^" src="../../../up.gif" /></a></h1>
 
 <ul>
-	<li>Toggles for pre-processing</li>
+	<li>What about short files (due to a dump or lost lock)</li>
+	<li>Using a XANES scan as standard for EXAFS data makes preproc_set
+confusing</li>
 </ul>
 
 <p>Please report problems to Bruce Ravel (bravel AT bnl DOT gov)</p>
@@ -100,7 +107,7 @@ As scans finish, they are imported in the current Athena project.</p>
 
 <h1 id="LICENCE_AND_COPYRIGHT">LICENCE AND COPYRIGHT <a href="#TOP" class="toplink"><img alt="^" src="../../../up.gif" /></a></h1>
 
-<p>Copyright (c) 2006-2011 Bruce Ravel (bravel AT bnl DOT gov). All rights reserved.</p>
+<p>Copyright (c) 2006-2012 Bruce Ravel (bravel AT bnl DOT gov). All rights reserved.</p>
 
 <p>This module is free software; you can redistribute it and/or
 modify it under the same terms as Perl itself. See <a href="http://search.cpan.org/perldoc?perlgpl">perlgpl</a>.</p>

@@ -2,7 +2,7 @@ package Demeter::UI::Hephaestus::F1F2;
 
 =for Copyright
  .
- Copyright (c) 2006-2011 Bruce Ravel (bravel AT bnl DOT gov).
+ Copyright (c) 2006-2012 Bruce Ravel (bravel AT bnl DOT gov).
  All rights reserved.
  .
  This file is free software; you can redistribute it and/or
@@ -27,9 +27,8 @@ use Wx::Event qw(EVT_BUTTON EVT_KEY_DOWN EVT_RADIOBOX EVT_FILEPICKER_CHANGED);
 use Wx::Perl::TextValidator;
 use base 'Wx::Panel';
 
-use Demeter;
+#use Demeter;
 use Demeter::UI::Wx::PeriodicTable;
-my $demeter = $Demeter::UI::Hephaestus::demeter;
 
 sub new {
   my ($class, $page, $echoarea) = @_;
@@ -46,9 +45,9 @@ sub new {
   $self->{gridbox} = Wx::StaticBox->new($self, -1, 'Energy grid', wxDefaultPosition, wxDefaultSize);
   $self->{gridboxsizer} = Wx::StaticBoxSizer->new( $self->{gridbox}, wxHORIZONTAL );
 
-  $self->{startingenergy} = $Demeter::UI::Hephaestus::demeter->co->default(qw(hephaestus f1f2_emin));
-  $self->{endingenergy}   = $Demeter::UI::Hephaestus::demeter->co->default(qw(hephaestus f1f2_emax));
-  $self->{energygrid}     = $Demeter::UI::Hephaestus::demeter->co->default(qw(hephaestus f1f2_grid));
+  $self->{startingenergy} = Demeter->co->default(qw(hephaestus f1f2_emin));
+  $self->{endingenergy}   = Demeter->co->default(qw(hephaestus f1f2_emax));
+  $self->{energygrid}     = Demeter->co->default(qw(hephaestus f1f2_grid));
   $self->{echo}           = $echoarea;
 
   my $label = Wx::StaticText->new($self, -1, 'Starting Energy', wxDefaultPosition, wxDefaultSize);
@@ -149,21 +148,21 @@ sub f1f2_get_data {
   };
 
   my $busy    = Wx::BusyCursor->new();
-  $demeter -> po -> start_plot if ($self->{plot}->GetStringSelection =~ m{New});
-  $demeter -> co -> set(
-			f1f2_emin    => $self->{start}->GetValue,
-			f1f2_emax    => $self->{end}->GetValue,
-			f1f2_egrid   => $self->{grid}->GetValue,
-			f1f2_z       => $el,
-			f1f2_newplot => ($self->{plot}->GetStringSelection =~ m{New}) ? 1 : 0,
-			f1f2_width   => 0, # ($self->{natural}->get_active) ? 0 : $self->{widthbox}->get_text,
-			f1f2_file    => $demeter->po->tempfile,
-		       );
+  Demeter -> po -> start_plot if ($self->{plot}->GetStringSelection =~ m{New});
+  Demeter -> co -> set(
+		       f1f2_emin    => $self->{start}->GetValue,
+		       f1f2_emax    => $self->{end}->GetValue,
+		       f1f2_egrid   => $self->{grid}->GetValue,
+		       f1f2_z       => $el,
+		       f1f2_newplot => ($self->{plot}->GetStringSelection =~ m{New}) ? 1 : 0,
+		       f1f2_width   => 0, # ($self->{natural}->get_active) ? 0 : $self->{widthbox}->get_text,
+		       f1f2_file    => Demeter->po->tempfile,
+		      );
   my $which = ($self->{part}->GetStringSelection =~ m{both}) ? 'f1f2'
             : ($self->{part}->GetStringSelection =~ m{f'\z}) ? 'f1'
 	    :                                                  'f2';
-  $demeter->dispose($demeter->template("plot", 'prep_f1f2'));
-  $demeter->dispose($demeter->template("plot", $which), "plotting");
+  Demeter->dispose(Demeter->template("plot", 'prep_f1f2'));
+  Demeter->dispose(Demeter->template("plot", $which), "plotting");
 
   #$demeter->po->cleantemp;
   #undef $demeter;
@@ -193,11 +192,11 @@ sub save_f1f2_data {
     my $ok = $yesno->ShowModal;
     return if $ok == wxID_NO;
   };
-  $demeter -> co -> set(
-			f1f2_save => $file,
-		       );
+  Demeter -> co -> set(
+		       f1f2_save => $file,
+		      );
   undef($fd);
-  $demeter->dispose($demeter->template("plot", 'save_f1f2'));
+  Demeter->dispose(Demeter->template("plot", 'save_f1f2'));
 };
 
 
@@ -209,7 +208,7 @@ Demeter::UI::Hephaestus::F1F2 - Hephaestus' anomalous scattering utility
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.5.
+This documentation refers to Demeter version 0.9.
 
 =head1 SYNOPSIS
 
@@ -271,7 +270,7 @@ L<http://cars9.uchicago.edu/~ravel/software/>
 
 =head1 LICENCE AND COPYRIGHT
 
-Copyright (c) 2006-2011 Bruce Ravel (bravel AT bnl DOT gov). All rights reserved.
+Copyright (c) 2006-2012 Bruce Ravel (bravel AT bnl DOT gov). All rights reserved.
 
 This module is free software; you can redistribute it and/or
 modify it under the same terms as Perl itself. See L<perlgpl>.

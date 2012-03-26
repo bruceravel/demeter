@@ -2,7 +2,7 @@ package Demeter::VPath;
 
 =for Copyright
  .
- Copyright (c) 2006-2011 Bruce Ravel (bravel AT bnl DOT gov).
+ Copyright (c) 2006-2012 Bruce Ravel (bravel AT bnl DOT gov).
  All rights reserved.
  .
  This file is free software; you can redistribute it and/or
@@ -20,8 +20,6 @@ extends 'Demeter';
 with 'Demeter::Data::Arrays';
 with 'Demeter::Data::IO';
 with 'Demeter::Path::Process';
-use MooseX::AttributeHelpers;
-#use MooseX::StrictConstructor;
 use Demeter::StrTypes qw( Empty );
 if ($Demeter::mode->ui eq 'screen') {
   with 'Demeter::UI::Screen::Progress';
@@ -36,29 +34,29 @@ has '+name'      => (default => 'virtual path');
 has 'id'         => (is => 'ro', isa => 'Str', default => 'virtual path');
 
 has 'paths' => (
-		metaclass => 'Collection::Array',
+		traits    => ['Array'],
 		is        => 'rw',
 		isa       => 'ArrayRef[Demeter::Path]',
 		default   => sub { [] },
-		provides  => {
-			      'push'    => 'push_paths',
-			      'pop'     => 'pop_paths',
-			      'shift'   => 'shift_paths',
-			      'unshift' => 'unshift_paths',
-			      'clear'   => 'clear_paths',
+		handles   => {
+			      'push_paths'    => 'push',
+			      'pop_paths'     => 'pop',
+			      'shift_paths'   => 'shift',
+			      'unshift_paths' => 'unshift',
+			      'clear_paths'   => 'clear',
 			     }
 	       );
 has 'pathgroups' => (
-		     metaclass => 'Collection::Array',
+		     traits    => ['Array'],
 		     is        => 'rw',
 		     isa       => 'ArrayRef[Str]',
 		     default   => sub { [] },
-		     provides  => {
-				   'push'    => 'push_pathgroups',
-				   'pop'     => 'pop_pathgroups',
-				   'shift'   => 'shift_pathgroups',
-				   'unshift' => 'unshift_pathgroups',
-				   'clear'   => 'clear_pathgroups',
+		     handles   => {
+				   'push_pathgroups'    => 'push',
+				   'pop_pathgroups'     => 'pop',
+				   'shift_pathgroups'   => 'shift',
+				   'unshift_pathgroups' => 'unshift',
+				   'clear_pathgroups'   => 'clear',
 			     }
 	       );
 
@@ -209,7 +207,7 @@ Demeter::VPath - Virtual paths for EXAFS visualization
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.5.
+This documentation refers to Demeter version 0.9.
 
 =head1 SYNOPSIS
 
@@ -333,7 +331,7 @@ L<http://cars9.uchicago.edu/~ravel/software/>
 
 =head1 LICENCE AND COPYRIGHT
 
-Copyright (c) 2006-2011 Bruce Ravel (bravel AT bnl DOT gov). All rights reserved.
+Copyright (c) 2006-2012 Bruce Ravel (bravel AT bnl DOT gov). All rights reserved.
 
 This module is free software; you can redistribute it and/or
 modify it under the same terms as Perl itself. See L<perlgpl>.

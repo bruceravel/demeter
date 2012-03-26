@@ -1,0 +1,173 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+	<title>dfeff</title>
+<link rel="stylesheet" type="text/css" href="podstyle.css" /><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+  <script type="text/javascript">
+
+  function toggleCode( id ) {
+    if ( document.getElementById )
+      elem = document.getElementById( id );
+    else if ( document.all )
+      elem = eval( "document.all." + id );
+    else
+      return false;
+
+    elemStyle = elem.style;
+
+    if ( elemStyle.display != "block" ) {
+      elemStyle.display = "block"
+    } else {
+      elemStyle.display = "none"
+    }
+
+    return true;
+  }
+  document.writeln( "<style type=\"text/css\">div.method-source-code { display: none }</style>" )
+  </script></head>
+<body>
+<div class="box">
+  <h1 class="t1">Demeter</h1>
+  <table>
+    <tr>
+      <td class="label">Description</td>
+      <td class="cell">Perl tools for X-ray Absorption Spectroscopy</td>
+    </tr>
+  </table>
+</div>
+<div class="path">
+  <a href="index.html">Demeter</a> &gt; Trigger Scripts &gt;
+  dfeff
+</div>
+<div>
+<a href="src/dfeff.pl">Source</a>
+</div>
+
+
+<div class="pod">
+<!-- INDEX START -->
+<h3 id="TOP">Index</h3>
+<ul>
+	<li><a href="#NAME">NAME</a></li>
+	<li><a href="#VERSION">VERSION</a></li>
+	<li><a href="#SYNOPSIS">SYNOPSIS</a></li>
+	<li><a href="#DESCRIPTION">DESCRIPTION</a></li>
+	<li><a href="#COMMAND_LINE_SWITCHES">COMMAND LINE SWITCHES</a></li>
+	<li><a href="#CONFIGURATION_AND_ENVIRONMENT">CONFIGURATION AND ENVIRONMENT</a></li>
+	<li><a href="#DEPENDENCIES">DEPENDENCIES</a></li>
+	<li><a href="#BUGS_AND_LIMITATIONS">BUGS AND LIMITATIONS</a></li>
+	<li><a href="#AUTHOR">AUTHOR</a></li>
+	<li><a href="#LICENCE_AND_COPYRIGHT">LICENCE AND COPYRIGHT</a></li>
+</ul>
+<hr />
+<!-- INDEX END -->
+
+<h1 id="NAME">NAME <a href="#TOP" class="toplink"><img alt="^" src="up.gif" /></a></h1>
+
+<p>dfeff - Run Demeter's implementation of Feff6</p>
+
+<h1 id="VERSION">VERSION <a href="#TOP" class="toplink"><img alt="^" src="up.gif" /></a></h1>
+
+<p>This documentation refers to Demeter version 0.9.</p>
+
+<h1 id="SYNOPSIS">SYNOPSIS <a href="#TOP" class="toplink"><img alt="^" src="up.gif" /></a></h1>
+
+<pre>  dfeff &lt;--workspace=/path/to/folder/&gt; [options] &lt;myfeff.inp&gt;
+
+</pre><p>If no input file is specified, <cite>feff.inp</cite> is used.  If no workspace
+is specified on the command line, the current directory is used.</p>
+
+<h1 id="DESCRIPTION">DESCRIPTION <a href="#TOP" class="toplink"><img alt="^" src="up.gif" /></a></h1>
+
+<p>This runs Demeter's implementation of Feff6 somewhat similarly to how
+the normal Feff behaves.  The default behavior of this program is to
+run through all parts of the Feff calculation, starting with reading
+the input file and ending with writing the <cite>feffNNNN.dat</cite> files.
+However, this program allows considerably more control over the Feff
+run than you get from the normal Feff.</p>
+
+<h1 id="COMMAND_LINE_SWITCHES">COMMAND LINE SWITCHES <a href="#TOP" class="toplink"><img alt="^" src="up.gif" /></a></h1>
+
+<p>You can specify a Feff input file at the command line.  This input
+file can have any name (it is not restricted to <cite>feff.inp</cite> as in
+Feff6) and need not be in the current working directory nor in the
+workspace where the Feff calculation will be made.  A copy of the
+input file will be placed in the workspace.</p>
+
+<p>You can specify the folder in which the Feff calculation will be made
+using the <code>--workspace</code> command line switch.</p>
+
+<dl>
+	<dt><code>-w</code> or <code>--workspace</code></dt>
+		<dd><p>Specify a folder in which to run this feff calculation.  If
+unspecified, the current work directory will be used.</p></dd>
+	<dt><code>--rmax</code></dt>
+		<dd><p>Specify a maximum path length, in Angstroms.</p></dd>
+	<dt><code>--all</code></dt>
+		<dd><p>Run all parts of Feff.  This is the default behavior if none of the
+following three flags are set.</p></dd>
+	<dt><code>--potentials</code></dt>
+		<dd><p>Run the potentials portion of the Feff calculation.</p></dd>
+	<dt><code>--pathfinder</code></dt>
+		<dd><p>Run the pathfinder portion of the Feff calculation.</p></dd>
+	<dt><code>--ff2chi</code></dt>
+		<dd><p>Write out all <cite>feffNNNN.dat</cite> files found by the pathfinder.</p></dd>
+	<dt><code>--save</code></dt>
+		<dd><p>Save the temporary files written out during the feff calculation.</p></dd>
+	<dt><code>--keep</code></dt>
+		<dd><p>Use Feff's curved wave keep criterion when generating <cite>feffNNNN.dat</cite>
+files.</p></dd>
+	<dt><code>-q</code> or <code>--quiet</code></dt>
+		<dd><p>Suppress screen messages during the Feff run.</p></dd>
+	<dt><code>-v</code> or <code>--version</code></dt>
+		<dd><p>Display version information and quit.</p></dd>
+	<dt><code>-h</code> or <code>--help</code></dt>
+		<dd><p>Display help information and quit.</p></dd>
+</dl>
+<h1 id="CONFIGURATION_AND_ENVIRONMENT">CONFIGURATION AND ENVIRONMENT <a href="#TOP" class="toplink"><img alt="^" src="up.gif" /></a></h1>
+
+<p>See <a href="Demeter/Config.pm.html">Demeter::Config</a> for a description of Demeter's
+configuration system.  See the <code>feff</code> configuration group.</p>
+
+<h1 id="DEPENDENCIES">DEPENDENCIES <a href="#TOP" class="toplink"><img alt="^" src="up.gif" /></a></h1>
+
+<p>This script uses <a href="http://search.cpan.org/perldoc?Term%3A%3AANSIColor">Term::ANSIColor</a> to color the terminal output, but
+it defaults gracefully to colorless output if this module is not
+available.</p>
+
+<p>The dependencies of the Demeter system are in the
+<cite>Bundle/DemeterBundle.pm</cite> file.</p>
+
+<h1 id="BUGS_AND_LIMITATIONS">BUGS AND LIMITATIONS <a href="#TOP" class="toplink"><img alt="^" src="up.gif" /></a></h1>
+
+<p>See <a href="Demeter/Feff.pm.html">Demeter::Feff</a> and <a href="Demeter/ScatteringPath.pm.html">Demeter::ScatteringPath</a>
+for bugs and limitations of the underlying libraries.</p>
+
+<p>There should be an option for running Feff's pathfinder for the sake
+of bug testing Demeter's pathfinder or for using paths with more than
+4 legs.</p>
+
+<p>Please report problems to Bruce Ravel (bravel AT bnl DOT gov)</p>
+
+<p>Patches are welcome.</p>
+
+<h1 id="AUTHOR">AUTHOR <a href="#TOP" class="toplink"><img alt="^" src="up.gif" /></a></h1>
+
+<p>Bruce Ravel (bravel AT bnl DOT gov)</p>
+
+<p>http://cars9.uchicago.edu/~ravel/software/</p>
+
+<h1 id="LICENCE_AND_COPYRIGHT">LICENCE AND COPYRIGHT <a href="#TOP" class="toplink"><img alt="^" src="up.gif" /></a></h1>
+
+<p>Copyright (c) 2008-2012 Bruce Ravel (bravel AT bnl DOT gov). All rights reserved.</p>
+
+<p>This module is free software; you can redistribute it and/or
+modify it under the same terms as Perl itself. See <a href="http://search.cpan.org/perldoc?perlgpl">perlgpl</a>.</p>
+
+<p>This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.</p>
+
+
+</div><div class="footer">generated by <a href="http://search.cpan.org/perldoc?Pod%3A%3AProjectDocs">Pod::ProjectDocs</a></div></body>
+</html>
