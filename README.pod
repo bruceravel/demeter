@@ -5,28 +5,11 @@ Demeter Documentation
 
 =head1 VERSION
 
-This document describes Demeter 0.4.
+This document describes Demeter 0.9.
 
 =head1 DESCRIPTION
 
 See the Demeter documentation pages at L<http://bruceravel.github.com/demeter/>.
-
-=over 4
-
-=item C<Programming documentation>
-
-The POD documentation is the documentation embedded into each module
-contained in a Demeter distribution.  The PODs have been nicely
-formatted for html and organized into a hierarchical structure that
-looks like a CPAN project page.
-
-=item C<Demeter Programming Guide>
-
-The DPG is a how-to guide written at a higher level than the
-proramming documentation.  It includes descriptions of how to use the
-main components of Demeter as well as several complete examples.
-
-=back
 
 =head1 AUTHOR
 
@@ -37,7 +20,7 @@ http://cars9.uchicago.edu/~ravel/software/
 
 =head1 LICENCE AND COPYRIGHT
 
-Copyright (c) 2006-2011 Bruce Ravel (bravel AT bnl DOT gov). All rights reserved.
+Copyright (c) 2006-2012 Bruce Ravel (bravel AT bnl DOT gov). All rights reserved.
 
 This module is free software; you can redistribute it and/or
 modify it under the same terms as Perl itself. See L<perlgpl>.
