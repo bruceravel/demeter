@@ -18,7 +18,7 @@ package Demeter;  # http://xkcd.com/844/
 require 5.008;
 
 use version;
-our $VERSION = version->new('0.9.8');
+our $VERSION = version->new('0.9.9');
 use feature "switch";
 
 ############################
@@ -251,7 +251,7 @@ sub import {
       }
       when (':athena') {
 	@load = (@data, @anal, @plot);
-	$doplugins     = 0;		# delay registering plugins until after start-up
+	$doplugins     = 0;     # delay registering plugins until after start-up
 	$colonanalysis = 1;	# verify PDL before loading PCA
       }
       when (':artemis') {
@@ -800,72 +800,6 @@ sub conditional_features {
 
 __PACKAGE__->meta->make_immutable;
 1;
-
-
-#   my %regexp = (
-# 		commands   => (qw{ f1f2 bkg_cl chi_noise color comment correl cursor
-#                                                 def echo erase exit feffit ff2chi fftf fftr
-#                                                 get_path guess history linestyle load
-#                                                 log macro minimize newplot path pause plot
-#                                                 plot_arrow plot_marker plot_text pre_edge print
-#                                                 quit random read_data rename reset restore
-#                                                 save set show spline sync unguess window
-#                                                 write_data zoom } ), # }),
-# 		function   => (qw{abs min max sign sqrt exp log
-#    		                               ln log10 sin cos tan asin acos
-#    		                               atan sinh tanh coth gamma loggamma
-#    		                               erf erfc gauss loren pvoight debye
-#    		                               eins npts ceil floor vsum vprod
-#    		                               indarr ones zeros range deriv penalty
-#   		                               smooth interp qinterp splint eins debye } ), # }),
-# 		program    => (qw(chi_reduced chi_square core_width correl_min
-#                                                cursor_x cursor_y dk dr data_set data_total
-#                                                dk1 dk2 dk1_spl dk2_spl dr1 dr2 e0 edge_step
-#                                                epsilon_k epsilon_r etok kmax kmin kmax_spl
-#                                                kmax_suggest kmin_spl kweight kweight_spl kwindow
-#                                                n_idp n_varys ncolumn_label nknots norm1 norm2
-#                                                norm_c0 norm_c1 norm_c2 path_index pi pre1 pre2
-#                                                pre_offset pre_slope qmax_out qsp r_factor rbkg
-#                                                rmax rmax_out rmin rsp rweight rwin rwindow toler)),
-# 		window     => (qw(kaiser-bessel hanning welch parzen sine gaussian)),
-# 		pathparams => (qw(e0 ei sigma2 s02 delr third fourth dphase)),
-# 		element    => (qw(h he li be b c n o f ne na mg al si p s cl ar
-#                                                k ca sc ti v cr mn fe co ni cu zn ga ge as se
-#                                                br kr rb sr y zr nb mo tc ru rh pd ag cd in sn
-#                                                sb te i xe cs ba la ce pr nd pm sm eu gd tb dy
-#                                                ho er tm yb lu hf ta w re os ir pt au hg tl pb
-#                                                bi po at rn fr ra ac th pa u np pu)),
-# 		edge      => (qw(k l1 l2 l3)),
-# 		modes     => (keys %mode),
-# 		feffcards => (qw(atoms control print title end rmultiplier
-#                                               cfaverage overlap afolp edge hole potentials
-#                                               s02 exchange folp nohole rgrid scf unfreezef
-#                                               interstitial ion spin exafs xanes ellipticity ldos
-#                                               multipole polarization danes fprime rphases rsigma
-#                                               tdlda xes xmcd xncd fms debye rpath rmax nleg pcriteria
-#                                               ss criteria iorder nstar debye corrections sig2)),
-# 		separator => '[ \t]*[ \t=,][ \t]*',
-# 		clamp     => (qw(none slight weak medium strong rigid)),
-# 		config    => (qw(type default minint maxint options
-# 					      units onvalue offvalue)),
-# 		stats     => (qw(n_idp n_varys chi_square chi_reduced 
-# 					      r_factor epsilon_k epsilon_r data_total
-# 					      happiness)),
-# 		atoms_lattice  => (qw(a b c alpha beta gamma space shift)),
-# 		atoms_gas      => (qw(nitrogen argon helium krypton xenon)),
-# 		atoms_obsolete => (qw(output geom
-# 						   fdat nepoints xanes modules
-# 						   message noanomalous self i0
-# 						   mcmaster dwarf reflections refile
-# 						   egrid index corrections
-# 						   emin emax estep egrid qvec dafs
-# 						  )),
-# 		spacegroup     => (qw(number full new_symbol thirtyfive
-# 						   schoenflies bravais shorthand positions
-# 						   shiftvec npos)),
-# 		plotting_backends => (qw(pgplot gnuplot)),
-# 		data_parts => (qw(fit bkg res)),
-# 	       );
 
 
 =head1 NAME

@@ -165,18 +165,21 @@ sub ACTION_doctree {
   require Pod::ProjectDocs;
   my $LIB  = 'lib'; #File::Spec->catfile('..', '..', '..', 'lib');
   my $BIN  = 'bin'; #File::Spec->catfile('..', '..', '..', 'bin');
-  copy(File::Spec->catfile($BIN, 'denv'),        File::Spec->catfile($BIN, 'denv.pl'));
-  copy(File::Spec->catfile($BIN, 'dhephaestus'), File::Spec->catfile($BIN, 'dhephaestus.pl'));
+  my @list = (qw(denv dhephaestus datoms dfeff dfeffit rdfit dlsprj standards dathena dartemis));
+  foreach my $d (@list) {
+    copy(File::Spec->catfile($BIN, $d),        File::Spec->catfile($BIN, "$d.pl"));
+  };
   my $pd = Pod::ProjectDocs->new(
 				 outroot => File::Spec->canonpath(File::Spec->catfile($ghpages, 'pods')),
 				 libroot => [$LIB, $BIN],
 				 title   => 'Demeter',
 				 desc    => "Perl tools for X-ray Absorption Spectroscopy",
-				 except  => [qr(Savitzky), qr(ToolTemplate)],
+				 except  => [qr(Savitzky), qr(ToolTemplate), qr(XDI)],
 				);
   $pd->gen();
-  unlink File::Spec->catfile($BIN, 'denv.pl');
-  unlink File::Spec->catfile($BIN, 'dhephaestus.pl');
+  foreach my $d (@list) {
+    unlink File::Spec->catfile($BIN, "$d.pl");
+  };
 };
 
 sub ACTION_pull {

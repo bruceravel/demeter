@@ -36,9 +36,9 @@ are all Ubuntu, hence all of my hints about packages that need
 installing refer to the Ubuntu package names.  Package names on other
 systems are likley to be similar.)  You must use at least perl 5.10.
 Some "enterprise" versions of Linux (notably Red Hat based ones like
-RHEL, CentOS, and Scientific Linux) ship with an ancient version of
-perl.  Demeter will not run under perl 5.6 or 5.8.  You B<will> have
-to upgrade perl before using Demeter.
+RHEL, CentOS, and Scientific Linux) may ship with an ancient version
+of perl.  Demeter will not run under perl 5.6 or 5.8.  You B<will>
+have to upgrade perl before using Demeter.
 
 Demeter benefits B<tremendously> by having
 L<Gnuplot|http://gnuplot.info> installed. All Linux distributions
@@ -140,18 +140,16 @@ C<libgif4>
 The source code for Demeter is currently managed on github:
 L<https://github.com/bruceravel/demeter>.
 
-You will need to have L<git|http://git-scm.com/>, which is a
-version control system used to manage the Demeter source code,
-installed on your computer. On Ubuntu machines, the package is called
-"git-core".
-
 To download a copy of the source code, do one of the following:
 
 =over 4
 
 =item *
 
-Use git to clone a copy.  At the command line, do:
+Use git to clone a copy.  You will need to have
+L<git|http://git-scm.com/>, which is a version control system used to
+manage the Demeter source code, installed on your computer. On Ubuntu
+machines, the package is called "git-core".  At the command line, do:
 
    git clone git://github.com/bruceravel/demeter.git
 
@@ -163,8 +161,8 @@ to download future modifications to the code.
 
 =item *
 
-Grab the most recent archive file containing the Demeter soruce code,
-go to L<https://github.com/bruceravel/demeter/downloads> and click on
+Grab the most recent archive file containing the Demeter soruce code.
+Go to L<https://github.com/bruceravel/demeter/downloads> and click on
 one of the download buttons near the top of the page to get either the
 F<tar.gz> or F<.zip> archive file containing the entire source code.
 
@@ -203,7 +201,7 @@ Now, when one of Demeter's dependencies itself has a dependency, this
 configuration will tell the cpan program to automatically follow them.
 
 Skipping this step is ok, but it means that you will need to answer
-"yes" to a lot of questions in Step 3b.
+"yes" to B<a lot> of questions in Step 3b.
 
 =head3 Step 3b: Install Demeter's dependencies (not optional!)
 

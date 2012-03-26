@@ -117,7 +117,7 @@ sub put_text {
 
 =head1 NAME
 
-Demeter::UI::Artemis::Status - A statusbar message buffer for Artemis and Athena
+Demeter::UI::Artemis::Status - A statusbar message buffer for Athena
 
 =head1 VERSION
 
