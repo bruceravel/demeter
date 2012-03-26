@@ -150,9 +150,14 @@ sub ACTION_build_dpg {
 };
 
 sub ACTION_org2html {
-  return if is_older("todo.org", File::Spec->catfile($ghpages, 'todo.html'));
-  system('emacs --batch --eval "(setq org-export-headline-levels 2)" --visit=todo.org --funcall org-export-as-html-batch');
-  move('todo.html', File::Spec->catfile($ghpages, 'todo.html'));
+  if (not is_older("todo.org", File::Spec->catfile($ghpages, 'todo.html'))) {
+    system('emacs --batch --eval "(setq org-export-headline-levels 2)" --visit=todo.org --funcall org-export-as-html-batch');
+    move('todo.html', File::Spec->catfile($ghpages, 'todo.html'));
+  };
+  if (not is_older("Changes.org", File::Spec->catfile($ghpages, 'Changes.html'))) {
+    system('emacs --batch --eval "(setq org-export-headline-levels 2)" --visit=Changes.org --funcall org-export-as-html-batch');
+    move('Changes.html', File::Spec->catfile($ghpages, 'Changes.html'));
+  };
 };
 
 sub ACTION_doctree {

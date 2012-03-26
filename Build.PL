@@ -87,6 +87,8 @@ my $build = DemeterBuilder
 				'PPI'                 => '0',
 				'PPI::HTML'           => '0',
 				'Image::Size'         => '0',
+				## project docs
+				'Pod::ProjectDocs'    => '0',
 				## these are used to build the Ifeffit wrapper
                                 'ExtUtils::CBuilder'  => '0',
 				'File::Touch'	      => '0',
