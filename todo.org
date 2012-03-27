@@ -21,7 +21,7 @@
   - [ ] tie multiple groups together (e.g. MED data with reference)
   - [ ] add a record to an existing Athena project file
   - [ ] set E0 to peak of white line
-  - [ ] clnorm + Julia and Jingen's MXAN replacement
+  - [ ] clnorm + Julia and Jingen's MBACK replacement
   - [ ] Data object should note that datatype is xanes and not compute fbkg since the bkg array does not exist
   - [ ] cannot specify title for stddev and variance plots
   - [ ] Demeter command backend needs lots of polishing

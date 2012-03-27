@@ -93,7 +93,7 @@ subtype 'FitSum'
 has 'fitsum'      => (is => 'rw', isa => 'FitSum', default => q{});
 has 'fitting'     => (is => 'rw', isa => 'Bool',   default => 0);
 has 'plotkey'     => (is => 'rw', isa => 'Str',    default => q{});
-has 'frozen'      => (is => 'rw', isa => 'Bool',   default => 0);
+#has 'frozen'      => (is => 'rw', isa => 'Bool',   default => 0);
 has 'marked'      => (is => 'rw', isa => 'Bool',   default => 0);
 has 'quickmerge'  => (is => 'rw', isa => 'Bool',   default => 0);
 
@@ -111,12 +111,6 @@ has 'reference'   => (is => 'rw', isa => Empty.'|Demeter::Data', default => q{},
 				    },
 		     );
 has 'referencegroup' => (is => 'rw', isa => 'Str',     default => q{});
-
-# subtype 'DemeterInt',
-#   => as 'Int'
-#   => where { }
-#   => message { "This group is frozen." };
-# has 'foo' => (is=>'rw', isa => 'DemeterInt', default => 0);
 
 ## -------- column selection attributes
 has  $_  => (is => 'rw', isa => 'Str',  default => q{},
@@ -236,6 +230,7 @@ has 'bkg_kw'          => (is => 'rw', isa =>  NonNeg, default => sub{ shift->co-
 			  trigger => sub{ my($self) = @_; $self->update_bkg(1) });
 
 has 'bkg_rbkg'        => (is => 'rw', isa =>  PosNum, default => sub{ shift->co->default("bkg", "rbkg")        || 1},
+			  traits => [ qw(Quenchable) ],
 			  trigger => sub{ my($self) = @_; $self->update_bkg(1); $self->set_nknots; });
 
 has 'bkg_dk'          => (is => 'rw', isa =>  NonNeg, default => sub{ shift->co->default("bkg", "dk")          || 1},
