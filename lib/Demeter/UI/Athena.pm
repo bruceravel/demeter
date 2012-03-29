@@ -1,5 +1,7 @@
 package Demeter::UI::Athena;
 
+use feature "switch";
+
 use Demeter qw(:athena);
 #use Demeter::UI::Wx::DFrame;
 use Demeter::UI::Wx::MRU;
@@ -525,8 +527,8 @@ sub menubar {
   $freezemenu->Append($UNFREEZE_ALL,      "Unfreeze all groups", "Unfreeze all groups" );
   $freezemenu->Append($FREEZE_MARKED,     "Freeze marked groups", "Freeze marked groups");
   $freezemenu->Append($UNFREEZE_MARKED,   "Unfreeze marked groups", "Unfreeze marked groups");
-  $freezemenu->Append($FREEZE_REGEX,      "Freeze by regex", "Freeze by regex");
-  $freezemenu->Append($UNFREEZE_REGEX,    "Unfreeze by regex", "Unfreeze by regex");
+  $freezemenu->Append($FREEZE_REGEX,      "Freeze by regex", "Freeze by regular expression");
+  $freezemenu->Append($UNFREEZE_REGEX,    "Unfreeze by regex", "Unfreeze by regular expression");
   $freezemenu->Append($FREEZE_TOGGLE_ALL, "Toggle frozen state of all groups", "Toggle frozen state of all groups");
   $app->{main}->{freezemenu} = $freezemenu;
 
@@ -606,10 +608,6 @@ sub menubar {
   $exportmenu     -> Enable($_,0) foreach ($XFIT);
   $plotmenu       -> Enable($_,0) foreach ($ZOOM, $UNZOOM, $CURSOR);
   $mergedplotmenu -> Enable($_,0) foreach ($PLOT_STDDEV, $PLOT_VARIENCE);
-  $freezemenu     -> Enable($_,0) foreach ($FREEZE_TOGGLE, $FREEZE_ALL, $UNFREEZE_ALL,
-					   $FREEZE_MARKED, $UNFREEZE_MARKED,
-					   $FREEZE_REGEX, $UNFREEZE_REGEX,
-					   $FREEZE_TOGGLE_ALL);
   $helpmenu       -> Enable($_,0) foreach ($DOCUMENT, $DEMO);
 
   EVT_MENU($app->{main}, -1, sub{my ($frame,  $event) = @_; OnMenuClick($frame,  $event, $app)} );
@@ -1089,6 +1087,38 @@ sub OnMenuClick {
       return;
     };
 
+    ($id == $FREEZE_TOGGLE) and do {
+      $app->quench('toggle');
+      last SWITCH;
+    };
+    ($id == $FREEZE_ALL) and do {
+      $app->quench('all');
+      last SWITCH;
+    };
+    ($id == $UNFREEZE_ALL) and do {
+      $app->quench('none');
+      last SWITCH;
+    };
+    ($id == $FREEZE_MARKED) and do {
+      $app->quench('marked');
+      last SWITCH;
+    };
+    ($id == $UNFREEZE_MARKED) and do {
+      $app->quench('unfreeze_marked');
+      last SWITCH;
+    };
+    ($id == $FREEZE_REGEX) and do {
+      $app->quench('regex');
+      last SWITCH;
+    };
+    ($id == $UNFREEZE_REGEX) and do {
+      $app->quench('unfreeze_regex');
+      last SWITCH;
+    };
+    ($id == $FREEZE_TOGGLE_ALL) and do {
+      $app->quench('invert');
+      last SWITCH;
+    };
 
     ($id == wxID_ABOUT) and do {
       $app->on_about;
@@ -1873,6 +1903,63 @@ sub mark {
   };
 };
 
+sub quench {
+  my ($app, $how) = @_;
+  my $clb = $app->{main}->{list};
+  return if not $clb->GetCount;
+
+  my $regex = q{};
+
+  given ($how) {
+    when ('toggle') {
+      $app->current_data->quenched(not $app->current_data->quenched);
+    };
+
+    when (m{all|none|invert}) {
+      foreach my $i (0 .. $clb->GetCount-1) {
+	my $val = ($how eq 'all')    ? 1
+	        : ($how eq 'none')   ? 0
+	        : ($how eq 'invert') ? not $clb->GetIndexedData($i)->quenched
+	        :                      $clb->GetIndexedData($i)->quenched;
+	$clb->GetIndexedData($i)->quenched($val);
+      };
+    };
+
+    when (m{marked}) {
+      foreach my $i (0 .. $clb->GetCount-1) {
+	next if not $clb->IsChecked($i);
+	my $val = ($how eq 'marked') ? 1 : 0;
+	$clb->GetIndexedData($i)->quenched($val);
+      };
+    };
+
+    when (m{regex}) {
+      my $word = ($how eq 'regex') ? 'Freeze' : 'Unfreeze';
+      my $ted = Wx::TextEntryDialog->new( $app->{main}, "$word data groups matching this regular expression:", "Enter a regular expression", q{}, wxOK|wxCANCEL, Wx::GetMousePosition);
+      $app->set_text_buffer($ted, "regexp");
+      if ($ted->ShowModal == wxID_CANCEL) {
+	$app->{main}->status(chomp($word)."ing by regular expression cancelled.");
+	return;
+      };
+      $regex = $ted->GetValue;
+      my $re;
+      my $is_ok = eval '$re = qr/$regex/';
+      if (not $is_ok) {
+	$app->{main}->status("Oops!  \"$regex\" is not a valid regular expression");
+	return;
+      };
+      $app->update_text_buffer("regexp", $regex, 1);
+
+      foreach my $i (0 .. $clb->GetCount-1) {
+	next if ($clb->GetIndexedData($i)->name !~ m{$re});
+	my $val = ($how eq 'regex') ? 1 : 0;
+	$clb->GetIndexedData($i)->quenched($val);
+      };
+
+    };
+  };
+  $app->OnGroupSelect(0,0,0);
+};
 
 sub merge {
   my ($app, $how, $noplot) = @_;

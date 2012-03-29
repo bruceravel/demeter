@@ -87,6 +87,12 @@ description
   The color used to indicate widgets involved with plotting marked
   groups. 
 
+variable=frozen
+type=color
+default=#008080
+description
+  The color used to indicate a frozen group.
+
 variable=show_dphase
 type=boolean
 onvalue=1

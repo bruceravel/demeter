@@ -248,6 +248,7 @@ sub _record {
     Ifeffit::put_array(join('.', $groupname, 'stddev'), \@std);
     $is_merge = 1;
   };
+  my $quenched_state = 0;
   my %groupargs = ();
   foreach my $k (keys %args) {
     next if any { $k eq $_ } qw(
@@ -268,6 +269,10 @@ sub _record {
 				 xdi_mu_reference
 			      );
   SWITCH: {
+      ($k eq 'quenched') and do {
+	$quenched_state = $args{$k}; # take care to set this at the very end
+	last SWITCH;
+      };
       ($k =~ m{\A(?:lcf|peak|lr)}) and do {
 	last SWITCH;
       };
@@ -391,6 +396,7 @@ sub _record {
   $data -> set(%groupargs);
   my $command = $data->template("process", "deriv");
   $data->dispose($command);
+  $data->quenched($quenched_state);
 
   return $data;
 };

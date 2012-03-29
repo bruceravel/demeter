@@ -3,6 +3,9 @@ package MooseX::Quenchable;
 {
   $MooseX::Quenchable::VERSION = '0.01';
 }
+use Moose::Role 0.90;
+use MooseX::Aliases;
+has 'quenched'    => (is => 'rw', isa => 'Bool',   default => 0, alias=>'frozen');
 
 
 
@@ -99,26 +102,28 @@ Add the "Quenchable" trait to attributes:
     traits => [ qw(Quenchable) ],
   );
 
-...and then you can silently disable changes
+...and then you can silently disable changes to that attribute.
 
   my $object = Class->new;
 
   $object->quenched(0)
-  $object->some_attr(10);  # works fine, some_attr = 10
+  $object->some_attr(10);  # as expected, some_attr = 10
   $object->quenched(1)
   $object->some_attr(20);  # silently refuses the change, some_attr = 10
   $object->quenched(0)
-  $object->some_attr(20);  # works fine, some_attr = 20
+  $object->some_attr(20);  # es expected, some_attr = 20
 
 =head1 DESCRIPTION
 
 The 'Quenchable' attribute lets your class have attributes that can
-have setting disabled.
+have setting silently disabled.
 
-This was swiped shamelessly from MooseX::SetOnce by Ricardo SIGNES
-<rjbs@cpan.org>
+This is an example of cargo-cult programming.  It was swiped
+shamelessly from MooseX::SetOnce by Ricardo SIGNES <rjbs@cpan.org> and
+slightly modified.
 
-This does not override an attribute's clearer.
+This does not override an attribute's clearer, so there is a way to
+defeat the intent of quenching the object.
 
 =head1 BUGS AND LIMITATIONS
 
@@ -133,6 +138,14 @@ Bruce Ravel (bravel AT bnl DOT gov)
 http://cars9.uchicago.edu/~ravel/software/
 
 =head1 LICENCE AND COPYRIGHT
+
+L<MooseX::SetOnce> carries this copyright notice:
+
+  This software is copyright (c) 2011 by Ricardo SIGNES.
+
+  This is free software; you can redistribute it and/or modify it
+  under the same terms as the Perl 5 programming language system
+  itself.
 
 Copyright (c) 2012 Bruce Ravel (bravel AT bnl DOT gov). All rights reserved.
 

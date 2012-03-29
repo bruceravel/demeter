@@ -29,6 +29,8 @@
    - Visual feedback when element < 5 or E0 < 150
    - Implemented a spin button for incrementing/deincrementing Rbkg
    - Attempt to recognize data with a zero value in the denominator
+   - Implemented frozen groups + Freeze menu + Athena->frozen config
+     parameter for color of frozen group display + button
 
 *** Artemis
 
@@ -66,6 +68,11 @@
    - Added a Build directive for forcing update to ifeffit wrapper
    - Cut >20 seconds off the running of the test suite by correctly
      using import "pragmata"
+   - Implemented frozen groups as an attribute trait which silently
+     disables setting an attribute -- see MooseX::Quenchable.
+     Implementing it this deeply in the underlying object obviates the
+     issue of disabling Athena's various "action at a distance"
+     features, e.g. constaining parameters.
 
 ** 0.9.8 30 January 2012
 *** Athena

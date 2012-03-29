@@ -73,7 +73,6 @@ with 'Demeter::MRU';
 use Demeter::Return;
 with 'MooseX::SetGet';		# this is mine....
 use Demeter::Constants qw($NUMBER $PI);
-use MooseX::Quenchable;
 
 my %seen_group;
 has 'group'     => (is => 'rw', isa => 'Str',     default => sub{shift->_get_group()},
@@ -83,8 +82,8 @@ has 'group'     => (is => 'rw', isa => 'Str',     default => sub{shift->_get_gro
 has 'name'      => (is => 'rw', isa => 'Str',     default => q{});
 has 'plottable' => (is => 'ro', isa => 'Bool',    default => 0);
 has 'pathtype'  => (is => 'ro', isa => 'Bool',    default => 0);
+has 'frozen'    => (is => 'rw', isa => 'Bool',    default => 0);
 has 'mark'      => (is => 'rw', isa => 'Bool',    default => 0);
-has 'quenched'  => (is => 'rw', isa => 'Bool',    default => 0, alias=>'frozen');
 has 'data'      => (is => 'rw', isa => 'Any',     default => q{},
 		    trigger => sub{ my($self, $new) = @_; $self->set_datagroup($new->group) if $new});
 has 'datagroup' => (is => 'rw', isa => 'Str',     default => q{});
