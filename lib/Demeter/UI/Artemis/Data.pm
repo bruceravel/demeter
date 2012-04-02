@@ -1237,6 +1237,8 @@ sub Rename {
   };
   $datapage->{data}->name($newname);
   $datapage->{name}->SetLabel($newname);
+  $Demeter::UI::Artemis::frames{main}->{$dnum}->SetLabel(join("", "Show ", '"', $newname, '"'));
+  $datapage -> SetTitle("Artemis [Data] ".$newname);
 
   my $plotlist = $Demeter::UI::Artemis::frames{Plot}->{plotlist};
   foreach my $i (0 .. $plotlist->GetCount-1) {
@@ -1247,14 +1249,21 @@ sub Rename {
     };
   };
 
-  $Demeter::UI::Artemis::frames{main}->{$dnum}->SetLabel("Show $LAQUO$newname$RAQUO");
   Demeter::UI::Artemis::modified(1);
 };
 
 sub replace {
   my ($datapage) = @_;
+  my $dnum = $datapage->{dnum};
+  my $was = $datapage->{data}->name;
+  $datapage->{data}->DEMOLISH;
   my ($file, $prj, $record) = prjrecord();
+  if (not $prj) {
+    $datapage->{PARENT}->status("Replacing data canceled" );
+    return;
+  };
   my $data = $prj->record($record);
+  my $is = $data->name;
   $datapage->{data} = $data;
   $datapage->{titles}->SetValue(join("\n", @{ $data->titles }));
   $datapage->{name}->SetLabel($data->name);
@@ -1265,8 +1274,15 @@ sub replace {
     $pathobject->data($data);
   };
   $datapage->fetch_parameters;
-  $datapage->Rename($data->name);
-  Demeter::UI::Artemis::modified(1);
+  $datapage->Rename($is);
+  $Demeter::UI::Artemis::frames{main}->{$dnum}->SetLabel(join("", "Show ", '"', $datapage->{data}->name, '"'));
+#  $Demeter::UI::Artemis::frames{main}->{$dnum}->SetLabel($datapage->{data}->name);
+  #Demeter::UI::Artemis::modified(1);
+  if ($was eq $is) {
+    $datapage->{PARENT}->status("Reimported \"$was\"" );
+  } else {
+    $datapage->{PARENT}->status("Replaced \"$was\" with \"$is\"" );
+  };
 };
 
 sub set_degens {
@@ -2008,7 +2024,7 @@ sub clone {
   $newpage->{pp_n}->SetValue($path->n);
   $newpage->include_label(0,$datapage->{pathlist}->GetSelection);
 
-  $datapage->status("Cloned $LAQUO" . $path->name . "$RAQUO and set N to half its value for the new and old paths.");
+  $datapage->status("Cloned \"" . $path->name . "\" and set N to half its value for the new and old paths.");
 };
 
 

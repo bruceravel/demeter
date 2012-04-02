@@ -33,6 +33,13 @@
      parameter for color of frozen group display + button
 
 *** Artemis
+   - Fixed (mostly) a bug laying out Atoms/Feff notebook tabs when
+     importing a project file.
+   - Fixed a sanity check that got incorrectly triggered when
+     replacing data with the same data (for example, after going back
+     to Athena to adjust E0)
+   - Fixed a problem displaying the new name in the hide/show button
+     when replacing a data group
 
 *** Hephaestus
    - Delay laying out most windows until needed for the first time.

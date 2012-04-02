@@ -1100,6 +1100,7 @@ sub make_feff_frame {
   $frames{$fnum} =  Demeter::UI::AtomsApp->new($base, $feffobject, $fnum);
   $frames{$fnum} -> SetTitle('Artemis [Feff] Atoms and Feff');
   $frames{$fnum} -> SetIcon($icon);
+
   if ($file and (-e $file) and ($demeter->is_atoms($file) or $demeter->is_cif($file))) {
     my $result = $frames{$fnum}->{Atoms}->Demeter::UI::Atoms::Xtal::open_file($file);
     if (not $result) {
@@ -1112,6 +1113,7 @@ sub make_feff_frame {
   } else {
     $frames{$fnum}->{Atoms}->{used} = 0;
     $frames{$fnum}->{Atoms}->{name}->SetValue('new');
+
     if ($file ne $BLANK) {
       # $frames{$fnum}->{notebook}->DeletePage(0);
       # $fefftab = 0;
@@ -1149,6 +1151,7 @@ sub make_feff_frame {
 
   EVT_CLOSE($frames{$fnum}, \&Demeter::UI::AtomsApp::on_close);
   EVT_ICONIZE($frames{$fnum}, \&Demeter::UI::AtomsApp::on_close);
+
 
   $frames{$fnum} -> Show(0);
   $new->SetValue(0);

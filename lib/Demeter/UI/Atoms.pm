@@ -138,15 +138,14 @@ sub new {
 
 #sub{make_page(@_)}); # postpone setting up pages until they are selected
 
-  $self -> SetSizer($vbox);
-  $vbox -> Fit($nb);
-  $vbox -> SetSizeHints($nb);
+  $self -> SetSizerAndFit($vbox);
   return $self;
 };
 
 sub make_page {
   my ($self, $which) = @_;
   return if exists $self->{$which};
+#  print join("|", $which, caller), $/;
   my $busy = Wx::BusyCursor->new;
   my $pm = ($which eq 'Document')  ? 'Demeter::UI::Atoms::Doc'
          : ($which eq 'Configure') ? 'Demeter::UI::Atoms::Config'
@@ -154,6 +153,7 @@ sub make_page {
 	 :                           "Demeter::UI::Atoms::$which";
   $self->{$which} = $pm -> new($self->{$which."_page"},$self);
   $self->{$which}->SetSize($self->{"Atoms"}->GetSize);
+#  print join("|", $which, caller, $self->{"Atoms_page"}->GetSizeWH), $/;
 #  $self->{$which."_page"}->SetSize($self->{"Atoms_page"}->GetSize);
 
   my $hh   = Wx::BoxSizer->new( wxHORIZONTAL );
