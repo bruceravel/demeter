@@ -132,3 +132,5 @@ files, directly read compressed files using Archive::Zip
 
   Bruce Ravel <bravel@bnl.gov>
   http://xafs.org/BruceRavel/
+
+=cut

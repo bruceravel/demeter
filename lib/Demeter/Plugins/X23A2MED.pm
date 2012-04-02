@@ -360,3 +360,4 @@ Patches are welcome.
   Bruce Ravel <bravel AT bnl DOT gov> (implementation)
   http://xafs.org/BruceRavel
 
+=cut

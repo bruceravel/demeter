@@ -146,3 +146,5 @@ ill-conceived logi0i1 column, but...) and strip out any blank lines.
 
   Bruce Ravel <bravel@bnl.gov>
   http://xafs.org/BruceRavel/
+
+=cut

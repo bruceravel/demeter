@@ -135,3 +135,4 @@ me to refine the C<is> method to work with multiple PF XAS beamlines.
   Bruce Ravel <bravel@bnl.gov>
   http://xafs.org/BruceRavel
 
+=cut
