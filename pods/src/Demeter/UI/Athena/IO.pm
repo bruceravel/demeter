@@ -169,7 +169,8 @@ sub Import {
       return;
     };
   };
-  $app->OnGroupSelect(q{}, $app->{main}->{list}->GetSelection, 0);
+  #$app->OnGroupSelect(q{}, $app->{main}->{list}->GetSelection, 0);
+  $app->OnGroupSelect($app->{main}->{list}->GetSelection, 0, 0);
   return;
 };
 

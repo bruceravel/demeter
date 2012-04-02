@@ -9,6 +9,39 @@ This documentation refers to Demeter version 0.9.
 
 =head1 OVERVIEW
 
+=head2 Installing from packages
+
+Most people will want to install pre-built, ready-to-run packages.
+
+=over 4
+
+=item B<Windows>
+
+Most people installing Demeter on a Windows machine will want to use
+the installer package.  The latest version can be found at
+L<https://github.com/bruceravel/demeter/downloads>.  Download,
+donle-click, follow the instructions.  It should be that simple.
+
+=item B<Debian, Ubuntu, and debian-based linux>
+
+(Information will be forthcoming)
+
+=item B<Macintosh OSX>
+
+(Information will be forthcoming)
+
+The Windows installer can be used under emulation.  L<Here are some
+notes| http://cars9.uchicago.edu/ifeffit/Demeter/InstallParallels>
+from Scott Calvin on doing so using
+L<Parallels|http://www.parallels.com/>.
+
+For compiling see Wx on the Mac, see
+L<http://www.nntp.perl.org/group/perl.wxperl.users/2011/03/msg7938.html>
+and similar threads from around that time.  Also, this more recent thread
+L<http://www.nntp.perl.org/group/perl.wxperl.users/2012/02/msg8353.html>.
+
+=back
+
 =head2 Installing source code
 
 The instructions for installing the Demeter source code on a Linux
@@ -47,28 +80,6 @@ should have a package for Gnuplot. On Ubuntu, the package is called
 SourceForge
 site|http://sourceforge.net/projects/gnuplot/files/gnuplot/> and
 install it from scratch.
-
-=head2 Installing from packages
-
-Many people will want to simply install ready-to-use packages.
-
-=over 4
-
-=item B<WINDOWS>
-
-Most people installing Demeter on a Windows machine will want to
-use the installer package.  The latest version can be found at
-L<https://github.com/bruceravel/demeter/downloads>.
-
-=item B<Debian, Ubuntu, and debian-based linux>
-
-(Information will be forthcoming)
-
-=item B<Macintosh OSX>
-
-(Information will be forthcoming)
-
-=back
 
 =head1 BUILD DEMETER AND ITS DEPENDENCIES
 
@@ -317,7 +328,7 @@ will require special configuration if you are working from behind a
 proxy server.
 
 For example, here at Brookhaven National Laboratory, the proxy URL and
-port number is http://192.168.1.130:3128. In the examples that follow,
+port number is C<http://192.168.1.130:3128>.  In the examples that follow,
 you will need to replace that with the correct proxy configuration for
 your institution.
 
@@ -368,6 +379,27 @@ keep you up to date with the latest developments.
 
 =back
 
+=head1 MISCELLANY
+
+=over 4
+
+=item Building the Ifeffit SWIG wrapper
+
+See L<http://cars9.uchicago.edu/ifeffit/Demeter/SwigModuleBuild>
+
+=item (The mess that is) Scientific Linux 5
+
+See L<http://cars9.uchicago.edu/ifeffit/Demeter/ScientificLinux>
+
+Have the problems with perl and gnuplot described on that page been
+fixed in SL 6?
+
+=item Building Ifeffit on Windows with MinGW and Strawberry
+
+I recorded my notes at L<http://cars9.uchicago.edu/ifeffit/Demeter/IfeffitMingw>
+
+=back
+
 =head1 BUGS AND LIMITATIONS
 
 Please report problems to Bruce Ravel (bravel AT bnl DOT gov)
@@ -379,7 +411,7 @@ Patches are welcome.
 
 Bruce Ravel (bravel AT bnl DOT gov)
 
-http://cars9.uchicago.edu/~ravel/software/
+L<https://github.com/bruceravel/demeter>
 
 =head1 LICENCE AND COPYRIGHT
 

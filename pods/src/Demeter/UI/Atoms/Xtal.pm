@@ -313,7 +313,7 @@ sub new {
   $hbox -> Add($self->{sitesgrid}, 1, wxGROW|wxALL|wxALIGN_CENTER_HORIZONTAL, 0);
   $vbox -> Add($hbox, 2, wxGROW|wxALL|wxALIGN_CENTER_HORIZONTAL, 5);
 
-  $self -> SetSizer( $vbox );
+  $self -> SetSizerAndFit( $vbox );
 
   #foreach (1..10) {
   #  $self->{sitesgrid}->InsertRows($self->{sitesgrid}->GetNumberRows, 1, 1);

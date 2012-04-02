@@ -1,0 +1,251 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+	<title>Reporting bugs in Demeter</title>
+<link rel="stylesheet" type="text/css" href="podstyle.css" /><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+  <script type="text/javascript">
+
+  function toggleCode( id ) {
+    if ( document.getElementById )
+      elem = document.getElementById( id );
+    else if ( document.all )
+      elem = eval( "document.all." + id );
+    else
+      return false;
+
+    elemStyle = elem.style;
+
+    if ( elemStyle.display != "block" ) {
+      elemStyle.display = "block"
+    } else {
+      elemStyle.display = "none"
+    }
+
+    return true;
+  }
+  document.writeln( "<style type=\"text/css\">div.method-source-code { display: none }</style>" )
+  </script></head>
+<body>
+<div class="box">
+  <h1 class="t1">Demeter</h1>
+  <table>
+    <tr>
+      <td class="label">Description</td>
+      <td class="cell">Perl tools for X-ray Absorption Spectroscopy</td>
+    </tr>
+  </table>
+</div>
+<div class="path">
+  <a href="index.html">Demeter</a> &gt; Perl Manuals &gt;
+  bugs
+</div>
+<div>
+<a href="src/bugs.pod">Source</a>
+</div>
+
+
+<div class="pod">
+<!-- INDEX START -->
+<h3 id="TOP">Index</h3>
+<ul>
+	<li><a href="#NAME">NAME</a></li>
+	<li><a href="#VERSION">VERSION</a></li>
+	<li><a href="#OVERVIEW">OVERVIEW</a><br />
+<ul>
+	<li><a href="#The_basic_rules_to_good_bug_reportin">The basic rules to good bug reporting</a></li>
+	<li><a href="#Capturing_error_messages_from_Demete">Capturing error messages from Demeter programs</a></li>
+	<li><a href="#The_DOs_of_reporting_bugs">The DOs of reporting bugs</a></li>
+	<li><a href="#The_DON_Ts_of_reporting_bugs">The DON'Ts of reporting bugs</a></li>
+</ul>
+</li>
+	<li><a href="#BUGS_AND_LIMITATIONS">BUGS AND LIMITATIONS</a></li>
+	<li><a href="#AUTHOR">AUTHOR</a></li>
+	<li><a href="#LICENCE_AND_COPYRIGHT">LICENCE AND COPYRIGHT</a></li>
+</ul>
+<hr />
+<!-- INDEX END -->
+
+<h1 id="NAME">NAME <a href="#TOP" class="toplink"><img alt="^" src="up.gif" /></a></h1>
+
+<p>Reporting bugs in Demeter</p>
+
+<h1 id="VERSION">VERSION <a href="#TOP" class="toplink"><img alt="^" src="up.gif" /></a></h1>
+
+<p>This documentation refers to Demeter version 0.9.</p>
+
+<h1 id="OVERVIEW">OVERVIEW <a href="#TOP" class="toplink"><img alt="^" src="up.gif" /></a></h1>
+
+<p>All software has bugs.  <i>This</i> software certainly has bugs.  This
+document explains how to report problems with the software
+effectively.  In this context &quot;effectively&quot; means in a manner such
+that Bruce is likely to understand the problem and, therefore, likely
+to fix it promptly.</p>
+
+<h2 id="The_basic_rules_to_good_bug_reportin">The basic rules to good bug reporting</h2>
+
+<ul>
+	<li>Use the <a href="http://millenia.cars.aps.anl.gov/mailman/listinfo/ifeffit">Ifeffit mailing list</a>.  The
+mailing list is always the appropriate place to report problems with
+the softare.  There are good reasons for ths:</li>
+	<li>Provide enough information that your problem can be reproduced by
+someone else.  That may mean providing the data or project file that
+triggers the problem.  That may mean explaining step-by-step how to
+arrive at the problem.  That may mean taking a screenshot to
+demonstrate the appearance of the problem.  In any case, be explicit.</li>
+</ul>
+
+<p>There are good reasons to use the mailing list:</p>
+
+<ul>
+	<li>Bruce, Demeter's author, reads and responds to questions on the
+mailing list.  So do many other people, any whom may be able to help
+you with your problem.</li>
+	<li>The problem and -- hopefully -- it's solution will be archived.  That
+means that someone else having the same problem might find that
+solution. </li>
+</ul>
+
+<p>The corollaries to those two rules are</p>
+
+<ul>
+	<li>Don't send email directly to Bruce.</li>
+	<li>Don't be vague.  </li>
+</ul>
+
+<p>If you send mail directly to Bruce, the likely response will be to ask
+you to use the mailing list.  If you are vague, the likely response
+will be to ask you for more information.  If you send vague mail
+directly to Bruce, you may be ignored outright.</p>
+
+<h2 id="Capturing_error_messages_from_Demete">Capturing error messages from Demeter programs</h2>
+
+<p>When Demeter runs into a problem, it usually emits error messages that
+are useful for understanding the cause of the bug.  Even when Athena
+or Artemis crashes hard, some useful infromation is usually provided.</p>
+
+<p>A good bug report will include this information.  Don't edit this
+information, regardless of how cryptic or repetitive it may seem.</p>
+
+<dl>
+	<dt><strong>Windows</strong></dt>
+		<dd><p>Each of the GUI programs (Athena, Artemis, and Hephaestus) writes its
+output messages to a log file.  This log file is in the
+<code>%APPDATA%\demeter</code> folder.  On Windows 7, <code>APPDATA</code> is typically</p></dd>
+<dd><pre>  C:\Users\&lt;username&gt;\AppData\Roaming\
+
+</pre></dd>		<dd><p>On Windows XP and Vista, <code>APPDATA</code> is typically</p></dd>
+<dd><pre>  C:\Documents and Settings\&lt;username&gt;\Application Data\
+
+</pre></dd>		<dd><p>This folder may normally be <a href="http://www.blogtechnika.com/how-to-hide-files-and-folders-and-access-them-in-windows-7">hidden from view</a>.</p></dd>
+		<dd><p>Each program writes its own log file.  Athena's log file is
+<code>%APPDATA%\demeter\dathena.log</code> and so on.</p></dd>
+		<dd><p>This log file should be included in any bug report.</p></dd>
+	<dt><strong>Linux or other Unix systems</strong></dt>
+		<dd><p>On Linux and other unixes, the GUI programs do not record log files as
+described above.  Top capture the error message, you should start the
+program from the command line.  Athena is started by typing the
+command <code>dathena</code>, Artemis by typing <code>dartemis</code> and so on.  When the
+bug is encountered, the error messages will be written to the screen.
+These can be copied and pasted into an email message.</p></dd>
+		<dd><p>Alternatively, you can use the
+<a href="http://www.gnu.org/software/coreutils/manual/coreutils.html#tee-invocation">tee</a>
+program to record the error messages.  Here is an example:</p></dd>
+<dd><pre>   dathena | tee screen_messages.txt
+
+</pre></dd>		<dd><p>The file <cite>screen_messages.txt</cite> can then be appended to an email
+message.</p></dd>
+</dl>
+<h2 id="The_DOs_of_reporting_bugs">The DOs of reporting bugs</h2>
+
+<ul>
+	<li><strong>DO</strong> try downloading the latest version of the software.  Your
+problem may already be solved.</li>
+	<li><strong>DO</strong> subscribe to the <a href="http://millenia.cars.aps.anl.gov/mailman/listinfo/ifeffit">Ifeffit mailing list</a> and
+<strong>DO</strong> try asking your question there.  Your problem may have been
+discussed there or it may be of interest to other users.</li>
+	<li><strong>DO</strong> say which program and which version number you are using.</li>
+	<li><strong>DO</strong> say what operating system you are using.</li>
+	<li><strong>DO</strong> provide the crystallographic data and a literature reference to the
+crystallographic data when reporting a problem with Atoms.</li>
+	<li><strong>DO</strong> explain clearly and concisely how to replicate the problem.</li>
+	<li><strong>DO</strong> send a project file that demonstrates a problem with Athena, or
+Artemis.  For a problem with Athena, you may also need to send raw
+data.</li>
+	<li><strong>DO</strong> send a screenshot of the program in action if that helps explain
+the problem. PNG is usually the best choice for a screenshot.  GIF is
+good also.  JPG and PDF are ok.  TIF sucks.  Attach this image file to
+your mail message directly and <strong>DON'T</strong> embed it in a Word or PowerPoint
+file before attaching it.</li>
+	<li><strong>DO</strong> send any output files that help explain the problem.  Bugs reports
+about Atoms almost always require the faulty <cite>feff.inp</cite> file.</li>
+	<li><strong>DO</strong> use compressed archives if you must send large numbers of files.
+<cite>.zip</cite>, <cite>.tar.gz</cite>, or <cite>.tar.bz2</cite> are all acceptable formats for
+compressed archiving.</li>
+	<li><strong>DO</strong> send a follow-up email if a lot of time has passed without a
+response.  Bruce may be on travel or may have set your prior email
+aside and forgotten to return to it (which would explain but not
+justify a period of silence).  Bruce takes bugs reports very seriousl,
+sometimes he needs a reminder.</li>
+</ul>
+
+<h2 id="The_DON_Ts_of_reporting_bugs">The DON'Ts of reporting bugs</h2>
+
+<ul>
+	<li><strong>DON'T</strong> ask questions about compiling Feff8 or Feff9. The only
+version of Feff that I support at that level is the version of Feff6
+that comes with IFeffit.  For questions about Feff8 or Feff9, contact
+someone from the Feff project.</li>
+	<li><strong>DON'T</strong> send any information in the form of a Word or PowerPoint
+document.  It is exceedingly rare that the information conveyed in a
+bug report requires formatting capabilities that exist in a word
+processor and that don't exist in plain text email.  RTF, OpenOffice,
+and the like are not an improvement on Word for the purpose of
+reporting a bug.  Indeed, there are situations where using a word
+processor makes it harder for me to troubleshoot the problem. For
+example, if I ask you to cut and paste some text displayed by one of
+the programs, a word processor will change where lines are broken in a
+way that is confusing for me.  On Windows, use WordPad rather than
+Word for such things.</li>
+	<li><strong>DON'T</strong> assume that others use the same email program as you.
+Specifically <strong>DON'T</strong> rely upon colored text or fonts in the email
+message to convey information -- your email may not display the same
+for me as it does for you.</li>
+	<li><strong>DON'T</strong> send large files (other than the suggestions above) that have
+not been requested.  If a large file is needed to understand the
+problem, you will be asked for it in a follow-up email.</li>
+	<li><strong>DON'T</strong> ever send anything by fax.  <strong>DON'T</strong> ever send anything by
+normal post or overnight express.  Remember, this is the 21st century.</li>
+	<li><strong>DON'T</strong> send every file from a Feff run!  It is usually sufficient to
+send just the <cite>feff.inp</cite> file.  If other files are needed from the
+Feff run, you will be asked for them in a follow-up email.</li>
+</ul>
+
+<h1 id="BUGS_AND_LIMITATIONS">BUGS AND LIMITATIONS <a href="#TOP" class="toplink"><img alt="^" src="up.gif" /></a></h1>
+
+<p>Please report problems to Bruce Ravel (bravel AT bnl DOT gov)</p>
+
+<p>Patches are welcome.</p>
+
+
+
+
+<h1 id="AUTHOR">AUTHOR <a href="#TOP" class="toplink"><img alt="^" src="up.gif" /></a></h1>
+
+<p>Bruce Ravel (bravel AT bnl DOT gov)</p>
+
+<p><a href="https://github.com/bruceravel/demeter">https://github.com/bruceravel/demeter</a></p>
+
+<h1 id="LICENCE_AND_COPYRIGHT">LICENCE AND COPYRIGHT <a href="#TOP" class="toplink"><img alt="^" src="up.gif" /></a></h1>
+
+<p>Copyright (c) 2008-2012 Bruce Ravel (bravel AT bnl DOT gov). All rights reserved.</p>
+
+<p>This module is free software; you can redistribute it and/or
+modify it under the same terms as Perl itself. See <a href="http://search.cpan.org/perldoc?perlgpl">perlgpl</a>.</p>
+
+<p>This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.</p>
+
+
+</div><div class="footer">generated by <a href="http://search.cpan.org/perldoc?Pod%3A%3AProjectDocs">Pod::ProjectDocs</a></div></body>
+</html>

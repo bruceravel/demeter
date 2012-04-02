@@ -75,9 +75,17 @@ sub group {
   my $groupboxsizer  = Wx::BoxSizer->new( wxVERTICAL );
   $groupboxsizer -> Add(Wx::StaticLine->new($this, -1, wxDefaultPosition, wxDefaultSize, wxLI_HORIZONTAL), 0, wxGROW|wxBOTTOM, 2);
   $this->{sizer}  -> Add($groupboxsizer, 0, wxTOP|wxBOTTOM|wxGROW, 5);
+
+  my $hbox = Wx::BoxSizer->new( wxHORIZONTAL );
+  $groupboxsizer -> Add($hbox, 0, wxGROW|wxBOTTOM, 0);
+
   $this->{group_group_label} = Wx::StaticText->new($this, -1, 'Current group');
   $this->{group_group_label} -> SetFont( Wx::Font->new( $box_font_size, wxDEFAULT, wxNORMAL, wxBOLD, 0, "" ) );
-  $groupboxsizer -> Add($this->{group_group_label}, 0, wxBOTTOM|wxALIGN_LEFT, 5);
+  $hbox -> Add($this->{group_group_label}, 0, wxBOTTOM|wxALIGN_LEFT, 5);
+  $this->{freeze} = Wx::CheckBox -> new($this, -1, q{Freeze});
+  $hbox -> Add(1,1,1);
+  $hbox -> Add($this->{freeze}, 0, wxBOTTOM, 5);
+  EVT_CHECKBOX($this, $this->{freeze}, sub{$app->quench('toggle')});
 
   EVT_RIGHT_DOWN($this->{group_group_label}, sub{ContextMenu(@_, $app, 'currentgroup')});
   EVT_MENU($this->{group_group_label}, -1, sub{ $this->DoContextMenu(@_, $app, 'currentgroup') });
@@ -114,7 +122,7 @@ sub group {
   $gbs -> Add($this->{importance_label}, Wx::GBPosition->new(1,6));
   $gbs -> Add($this->{importance},       Wx::GBPosition->new(1,7));
 
-  push @group_params, qw(file bkg_z fft_edge bkg_eshift importance);
+  push @group_params, qw(file bkg_z fft_edge bkg_eshift importance freeze);
   foreach my $x (qw(bkg_eshift importance)) {
     EVT_TEXT($this, $this->{$x}, sub{OnParameter(@_, $app, $x)});
     EVT_RIGHT_DOWN($this->{$x.'_label'}, sub{ContextMenu(@_, $app, $x)});
@@ -551,8 +559,17 @@ sub plot {
 
 sub mode {
   my ($this, $group, $enabled, $frozen) = @_;
+  if ($::app and $::app->current_data) {
+    $frozen ||= $::app->current_data->quenched;
+    ##print join("|", $group->name, $enabled, $frozen, $::app->current_data->name, caller), $/;
+  };
 
-  foreach my $w (@group_params, @plot_parameters, 'group_group_label', 'plot_group_label') {
+  foreach my $w (qw(group_group_label background_group_label fft_group_label
+		    bft_group_label plot_group_label)) {
+    $this->{$w} -> SetForegroundColour( Wx::Colour->new(wxNullColour) );
+  };
+  foreach my $w (@bkg_parameters, @fft_parameters, @bft_parameters,
+		 @group_params, @plot_parameters, 'group_group_label', 'plot_group_label', 'clampbox') {
     $this->set_widget_state($w, $enabled);
   };
 
@@ -562,6 +579,19 @@ sub mode {
 		   qw(background_group_label fft_group_label bft_group_label clampbox)) {
       $this->set_widget_state($w, $enabled);
     };
+    $this->set_widget_state('freeze', 0);
+
+  } elsif ($frozen) {
+    foreach my $w (@group_params, @plot_parameters, @bkg_parameters, @fft_parameters,
+		   @bft_parameters) {
+      $this->set_widget_state($w, 0, 1);
+    };
+    foreach my $w (qw(group_group_label background_group_label fft_group_label
+		      bft_group_label plot_group_label)) {
+      $this->set_widget_state($w, $enabled);
+      $this->{$w} -> SetForegroundColour( Wx::Colour->new($group->co->default("athena", "frozen")) );
+    };
+    $this->set_widget_state('freeze', 1);
 
   ## XANES data
   } elsif ($group->datatype eq 'xanes') {
@@ -575,6 +605,7 @@ sub mode {
     foreach my $w (@fft_parameters, @bft_parameters, qw(fft_group_label bft_group_label)) {
       $this->set_widget_state($w, 0);
     };
+    $this->set_widget_state('freeze', 1);
 
   ## chi(k) data
   } elsif ($group->datatype eq 'chi') {
@@ -584,10 +615,13 @@ sub mode {
     foreach my $w (@fft_parameters, @bft_parameters, qw(fft_group_label bft_group_label)) {
       $this->set_widget_state($w, $enabled);
     };
+    $this->set_widget_state('freeze', 1);
+
   } else {
     foreach my $w (@bkg_parameters, @fft_parameters, @bft_parameters, qw(background_group_label fft_group_label bft_group_label clampbox)) {
       $this->set_widget_state($w, $enabled);
     };
+    $this->set_widget_state('freeze', 1);
   };
 
   foreach my $w (qw(bkg_algorithm)) {
@@ -607,9 +641,9 @@ sub mode {
 };
 
 sub set_widget_state {
-  my ($this, $widget, $bool) = @_;
+  my ($this, $widget, $bool, $not_label) = @_;
   $this->{$widget}         ->Enable($bool) if exists ($this->{$widget});
-  $this->{$widget.'_label'}->Enable($bool) if exists ($this->{$widget.'_label'});
+  $this->{$widget.'_label'}->Enable($bool) if ((exists $this->{$widget.'_label'}) and (not $not_label));
   $this->{$widget.'_pluck'}->Enable($bool) if exists ($this->{$widget.'_pluck'});
   return $bool;
 };
@@ -681,6 +715,8 @@ sub push_values {
     $truncated_name = substr($data->name, 0, 17) . '...' . substr($data->name, $n-17);
   };
   $this->{group_group_label}->SetLabel('Current group:  '.$truncated_name);
+
+  $this->{freeze}->SetValue($data->quenched);
   return $data;
 };
 

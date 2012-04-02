@@ -183,6 +183,8 @@ sub read_project {
       return;
     };
     $fname = File::Spec->catfile($fd->GetDirectory, $fd->GetFilename);
+  } else {
+    chdir(dirname($fname));
   };
   $fname = Demeter->follow_link($fname);
 

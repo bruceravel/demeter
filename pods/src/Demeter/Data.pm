@@ -42,6 +42,7 @@ with 'Demeter::Data::XDI';
 if ($Demeter::mode->ui eq 'screen') {
   with 'Demeter::UI::Screen::Progress';
 };
+with 'MooseX::Quenchable';
 
 use MooseX::Aliases;
 #use MooseX::AlwaysCoerce;   # this might be useful....
@@ -93,7 +94,6 @@ subtype 'FitSum'
 has 'fitsum'      => (is => 'rw', isa => 'FitSum', default => q{});
 has 'fitting'     => (is => 'rw', isa => 'Bool',   default => 0);
 has 'plotkey'     => (is => 'rw', isa => 'Str',    default => q{});
-has 'frozen'      => (is => 'rw', isa => 'Bool',   default => 0);
 has 'marked'      => (is => 'rw', isa => 'Bool',   default => 0);
 has 'quickmerge'  => (is => 'rw', isa => 'Bool',   default => 0);
 
@@ -111,12 +111,6 @@ has 'reference'   => (is => 'rw', isa => Empty.'|Demeter::Data', default => q{},
 				    },
 		     );
 has 'referencegroup' => (is => 'rw', isa => 'Str',     default => q{});
-
-# subtype 'DemeterInt',
-#   => as 'Int'
-#   => where { }
-#   => message { "This group is frozen." };
-# has 'foo' => (is=>'rw', isa => 'DemeterInt', default => 0);
 
 ## -------- column selection attributes
 has  $_  => (is => 'rw', isa => 'Str',  default => q{},
@@ -216,15 +210,20 @@ has 'update_bft'     => (is => 'rw', isa => 'Bool',  default => 1);
 has 'nidp'           => (is => 'rw', isa => 'Num', default => 0);
 
 ## -------- background removal parameters
-has 'bkg_algorithm'   => (is => 'rw', isa => 'Str',   default => 'autobk',);
+has 'bkg_algorithm'   => (is => 'rw', isa => 'Str',   default => 'autobk',
+			  traits => [ qw(Quenchable) ],
+			 );
 has 'bkg_e0'          => (is => 'rw', isa => 'Num',   default => 0,
+			  traits => [ qw(Quenchable) ],
 			  trigger => sub{ my($self) = @_; $self->update_bkg(1), $self->update_norm(1) });
 
 has 'bkg_e0_fraction' => (is => 'rw', isa =>  PosNum, default => sub{ shift->co->default("bkg", "e0_fraction") || 0.5},
+			  traits => [ qw(Quenchable) ],
 			  trigger => sub{ my($self) = @_; $self->update_bkg(1); $self->update_norm(1) });
 
 has 'bkg_eshift'      => (is => 'rw', isa => 'Num',   default => 0,
 			  alias => 'eshift',
+			  traits => [ qw(Quenchable) ],
 			  trigger => sub{ my($self) = @_; 
 					  $self->update_bkg(1);
 					  $self->update_norm(1);
@@ -233,28 +232,36 @@ has 'bkg_eshift'      => (is => 'rw', isa => 'Num',   default => 0,
 					});
 
 has 'bkg_kw'          => (is => 'rw', isa =>  NonNeg, default => sub{ shift->co->default("bkg", "kw")          || 1},
+			  traits => [ qw(Quenchable) ],
 			  trigger => sub{ my($self) = @_; $self->update_bkg(1) });
 
 has 'bkg_rbkg'        => (is => 'rw', isa =>  PosNum, default => sub{ shift->co->default("bkg", "rbkg")        || 1},
+			  traits => [ qw(Quenchable) ],
 			  trigger => sub{ my($self) = @_; $self->update_bkg(1); $self->set_nknots; });
 
 has 'bkg_dk'          => (is => 'rw', isa =>  NonNeg, default => sub{ shift->co->default("bkg", "dk")          || 1},
+			  traits => [ qw(Quenchable) ],
 			  trigger => sub{ my($self) = @_; $self->update_bkg(1) });
 
 has 'bkg_pre1'        => (is => 'rw', isa => 'Num',   default => sub{ shift->co->default("bkg", "pre1")        || -150},
+			  traits => [ qw(Quenchable) ],
 			  trigger => sub{ my($self) = @_; $self->update_bkg(1); $self->update_norm(1) });
 
 has 'bkg_pre2'        => (is => 'rw', isa => 'Num',   default => sub{ shift->co->default("bkg", "pre2")        || -30},
+			  traits => [ qw(Quenchable) ],
 			  trigger => sub{ my($self) = @_; $self->update_bkg(1); $self->update_norm(1) });
 
 has 'bkg_nor1'        => (is => 'rw', isa => 'Num',   default => sub{ shift->co->default("bkg", "nor1")        || 150},
+			  traits => [ qw(Quenchable) ],
 			  trigger => sub{ my($self) = @_; $self->update_bkg(1); $self->update_norm(1) });
 
 has 'bkg_nor2'        => (is => 'rw', isa => 'Num',   default => sub{ shift->co->default("bkg", "nor2")        || 400},
+			  traits => [ qw(Quenchable) ],
 			  trigger => sub{ my($self) = @_; $self->update_bkg(1); $self->update_norm(1) });
 
 ## these need a trigger
 has 'bkg_spl1'        => (is => 'rw', isa => 'Num',
+			  traits => [ qw(Quenchable) ],
 			  trigger => sub{ my($self) = @_;
 					  $self->update_bkg(1);
 					  $self->spline_range("spl1") if not $self->tying;
@@ -262,6 +269,7 @@ has 'bkg_spl1'        => (is => 'rw', isa => 'Num',
 					},
 			  default => sub{ shift->co->default("bkg", "spl1")        || 0});
 has 'bkg_spl2'        => (is => 'rw', isa => 'Num',
+			  traits => [ qw(Quenchable) ],
 			  trigger => sub{ my($self) = @_;
 					  $self->update_bkg(1);
 					  $self->spline_range("spl2") if not $self->tying;
@@ -269,6 +277,7 @@ has 'bkg_spl2'        => (is => 'rw', isa => 'Num',
 					},
 			  default => sub{ shift->co->default("bkg", "spl2")        || 0});
 has 'bkg_spl1e'       => (is => 'rw', isa => 'Num',
+			  traits => [ qw(Quenchable) ],
 			  trigger => sub{ my($self) = @_;
 					  $self->update_bkg(1);
 					  $self->spline_range("spl1e") if not $self->tying;
@@ -276,6 +285,7 @@ has 'bkg_spl1e'       => (is => 'rw', isa => 'Num',
 					},
 			  default => 0);
 has 'bkg_spl2e'       => (is => 'rw', isa => 'Num',
+			  traits => [ qw(Quenchable) ],
 			  trigger => sub{ my($self) = @_;
 					  $self->update_bkg(1);
 					  $self->spline_range("spl2e") if not $self->tying;
@@ -284,6 +294,7 @@ has 'bkg_spl2e'       => (is => 'rw', isa => 'Num',
 			  default => 0);
 
 has 'bkg_kwindow' => (is => 'rw', isa =>  Window,   default => sub{ shift->co->default("bkg", "kwindow")     || 'kaiser-bessel'},
+		      traits => [ qw(Quenchable) ],
 		      trigger => sub{ my($self) = @_; $self->update_bkg(1) });
 
 has $_ => (is => 'rw', isa => 'Num',  default => 0) foreach (qw(bkg_slope bkg_int bkg_fitted_step bkg_nc0 bkg_nc1 bkg_nc2 bkg_former_e0));
@@ -291,96 +302,121 @@ has $_ => (is => 'rw', isa => 'Num',  default => 0) foreach (qw(bkg_slope bkg_in
 has $_ => (is => 'rw', isa => 'Bool', default => 0) foreach (qw(bkg_tie_e0 bkg_cl));
 
 has 'bkg_step'    => (is => 'rw', isa => 'Num', default => 0,
+		      traits => [ qw(Quenchable) ],
 		      trigger => sub{ my($self) = @_; $self->update_norm(1) });
 has 'bkg_fixstep' => (is => 'rw', isa => 'Bool', default => 0,
+		      traits => [ qw(Quenchable) ],
 		      trigger => sub{ my($self) = @_; $self->update_norm(1) });
 
-has 'bkg_z'       => (is => 'rw', isa =>  Element,  default => 'H');
+has 'bkg_z'       => (is => 'rw', isa =>  Element,  default => 'H',
+		      traits => [ qw(Quenchable) ],
+		     );
 
 has 'bkg_stan'    => (is => 'rw', isa => 'Str',     default => 'None',
+		      traits => [ qw(Quenchable) ],
 		      trigger => sub{ my($self) = @_; $self->update_bkg(1) });
 
 has 'bkg_flatten' => (is => 'rw', isa => 'Bool',    default => sub{ shift->co->default("bkg", "flatten") || 1},
+		      traits => [ qw(Quenchable) ],
 		      trigger => sub{ my($self) = @_; $self->update_norm(1) });
 
 has 'bkg_fnorm'	  => (is => 'rw', isa => 'Bool',    default => sub{ shift->co->default("bkg", "fnorm")   || 0},
+		      traits => [ qw(Quenchable) ],
 		      trigger => sub{ my($self) = @_; $self->update_bkg(1), $self->update_norm(1) });
 
 has 'bkg_nnorm'	  => (is => 'rw', isa =>  PosInt,   default => sub{ shift->co->default("bkg", "nnorm")   || 3},
+		      traits => [ qw(Quenchable) ],
 		      trigger => sub{ my($self) = @_; $self->update_bkg(1), $self->update_norm(1) });
 
 has 'bkg_clamp1'  => (is => 'rw', isa =>  Natural,  default => sub{ shift->co->default("bkg", "clamp1")  || 0},
+		      traits => [ qw(Quenchable) ],
 		      trigger => sub{ my($self) = @_; $self->update_bkg(1) });
 
 has 'bkg_clamp2'  => (is => 'rw', isa =>  Natural,  default => sub{ shift->co->default("bkg", "clamp2")  || 24},
+		      traits => [ qw(Quenchable) ],
 		      trigger => sub{ my($self) = @_; $self->update_bkg(1) });
 
 has 'bkg_nclamp'  => (is => 'rw', isa =>  PosInt,   default => sub{ shift->co->default("bkg", "nclamp")  || 5},
+		      traits => [ qw(Quenchable) ],
 		      trigger => sub{ my($self) = @_; $self->update_bkg(1) });
 
 ## -------- foreward Fourier transform parameters
-has 'fft_edge'    => (is => 'rw', isa =>  Edge,    default => 'K', coerce => 1);
+has 'fft_edge'    => (is => 'rw', isa =>  Edge,    default => 'K', coerce => 1,
+		      traits => [ qw(Quenchable) ],
+		     );
 
 has 'fft_kmin'    => (is => 'rw', isa => 'Num',
+		      traits => [ qw(Quenchable) ],
 		      trigger => sub{ my($self) = @_; $self->update_fft(1); $self->_nidp},
 		      default => sub{ shift->co->default("fft", "kmin")     ||  3});
 
 has 'fft_kmax'    => (is => 'rw', isa => 'Num',
+		      traits => [ qw(Quenchable) ],
 		      trigger => sub{ my($self) = @_; $self->update_fft(1); $self->_nidp},
 		      default => sub{ shift->co->default("fft", "kmax")     || -2});
 
 has 'fft_dk'      => (is => 'rw', isa =>  NonNeg,  default => sub{ shift->co->default("fft", "dk")       ||  2},
+		      traits => [ qw(Quenchable) ],
 		      trigger => sub{ my($self) = @_; $self->update_fft(1)});
 
 has 'fft_kwindow' => (is => 'rw', isa =>  Window,  default => sub{ shift->co->default("fft", "kwindow")  || 'hanning'},
+		      traits => [ qw(Quenchable) ],
 		      trigger => sub{ my($self) = @_; $self->update_fft(1)});
 
 has 'fft_pc'      => (is => 'rw', isa => 'Any',   default => sub{ shift->co->default("fft", "pc")       ||  0},
+		      traits => [ qw(Quenchable) ],
 		      trigger => sub{ my($self) = @_; $self->update_fft(1)});
 has 'fft_pctype'  => (is => 'rw', isa => 'Str',   default => "central", # "path"
+		      traits => [ qw(Quenchable) ],
 		      trigger => sub{ my($self) = @_; $self->update_fft(1)});
 has 'fft_pcpath'  => (is => 'rw', isa => 'Any', # isa => Empty.'|Demeter::Path',
 		      default => q{},
+		      traits => [ qw(Quenchable) ],
 		      trigger => sub{ my($self, $new) = @_; $self->update_fft(1); $self->fft_pcpathgroup($new->group) if $new;});
 has 'fft_pcpathgroup' => (is => 'rw', isa => 'Str', default => q{},);
 
 has 'rmax_out'    => (is => 'rw', isa =>  PosNum,  default => sub{ shift->co->default("fft", "rmax_out") ||  10},
+		      traits => [ qw(Quenchable) ],
 		      trigger => sub{ my($self) = @_; $self->update_fft(1)});
 
 ## -------- backward Fourier transform parameters
 has 'bft_rwindow' => (is => 'rw', isa =>  Window,  default => sub{ shift->co->default("bft", "rwindow")  || 'hanning'},
+		      traits => [ qw(Quenchable) ],
 		      trigger => sub{ my($self) = @_; $self->update_bft(1)});
 
 has 'bft_rmin'    => (is => 'rw', isa =>  NonNeg,
+		      traits => [ qw(Quenchable) ],
 		      trigger => sub{ my($self) = @_; $self->update_bft(1); $self->_nidp},
 		      default => sub{ shift->co->default("bft", "rmin")     ||  1});
 
 has 'bft_rmax'    => (is => 'rw', isa =>  PosNum,
+		      traits => [ qw(Quenchable) ],
 		      trigger => sub{ my($self) = @_; $self->update_bft(1); $self->_nidp},
 		      default => sub{ shift->co->default("bft", "rmax")     ||  3});
 
 has 'bft_dr'      => (is => 'rw', isa =>  NonNeg,    default => sub{ shift->co->default("bft", "dr")       ||  0.2},
+		      traits => [ qw(Quenchable) ],
 		      trigger => sub{ my($self) = @_; $self->update_bft(1)});
 
 
 ## -------- fitting parameters
-has 'fit_k1'		  => (is => 'rw', isa => 'Bool',     default => sub{ shift->co->default("fit", "k1")         ||  1});
-has 'fit_k2'		  => (is => 'rw', isa => 'Bool',     default => sub{ shift->co->default("fit", "k2")         ||  1});
-has 'fit_k3'		  => (is => 'rw', isa => 'Bool',     default => sub{ shift->co->default("fit", "k3")         ||  1});
-has 'fit_karb'		  => (is => 'rw', isa => 'Bool',     default => sub{ shift->co->default("fit", "karb")       ||  0});
-has 'fit_karb_value'	  => (is => 'rw', isa =>  NonNeg,    default => sub{ shift->co->default("fit", "karb_value") ||  0});
-has 'fit_space'	          => (is => 'rw', isa =>  FitSpace,  default => sub{ shift->co->default("fit", "space")      || 'r'}, coerce => 1);
-has 'fit_epsilon'	  => (is => 'rw', isa => 'Num',      default => 0);
-has 'fit_cormin'	  => (is => 'rw', isa =>  NonNeg,    default => sub{ shift->co->default("fit", "cormin")     ||  0.4});
+has 'fit_k1'		  => (is => 'rw', isa => 'Bool',     default => sub{ shift->co->default("fit", "k1")         ||  1}, traits => [ qw(Quenchable) ],);
+has 'fit_k2'		  => (is => 'rw', isa => 'Bool',     default => sub{ shift->co->default("fit", "k2")         ||  1}, traits => [ qw(Quenchable) ],);
+has 'fit_k3'		  => (is => 'rw', isa => 'Bool',     default => sub{ shift->co->default("fit", "k3")         ||  1}, traits => [ qw(Quenchable) ],);
+has 'fit_karb'		  => (is => 'rw', isa => 'Bool',     default => sub{ shift->co->default("fit", "karb")       ||  0}, traits => [ qw(Quenchable) ],);
+has 'fit_karb_value'	  => (is => 'rw', isa =>  NonNeg,    default => sub{ shift->co->default("fit", "karb_value") ||  0}, traits => [ qw(Quenchable) ],);
+has 'fit_space'	          => (is => 'rw', isa =>  FitSpace,  default => sub{ shift->co->default("fit", "space")      || 'r'}, coerce => 1, traits => [ qw(Quenchable) ],);
+has 'fit_epsilon'	  => (is => 'rw', isa => 'Num',      default => 0, traits => [ qw(Quenchable) ],);
+has 'fit_cormin'	  => (is => 'rw', isa =>  NonNeg,    default => sub{ shift->co->default("fit", "cormin")     ||  0.4}, traits => [ qw(Quenchable) ],);
 has 'fit_include'	  => (is => 'rw', isa => 'Bool',     default => 1);
 has 'fit_data'	          => (is => 'rw', isa =>  Natural,   default => 0);
 has 'fit_plot_after_fit'  => (is => 'rw', isa => 'Bool',     default => 0);
-has 'fit_do_bkg'          => (is => 'rw', isa => 'Bool',     default => 0);
-has 'titles'	          => (is => 'rw', isa => 'ArrayRef', default => sub{ [] });
+has 'fit_do_bkg'          => (is => 'rw', isa => 'Bool',     default => 0, traits => [ qw(Quenchable) ],);
+has 'titles'	          => (is => 'rw', isa => 'ArrayRef', default => sub{ [] }, traits => [ qw(Quenchable) ],);
 
 ## -------- plotting parameters
-has 'y_offset'	          => (is => 'rw', isa => 'Num',      default => 0);
-has 'plot_multiplier'	  => (is => 'rw', isa => 'Num',      default => 1);
+has 'y_offset'	          => (is => 'rw', isa => 'Num',      default => 0, traits => [ qw(Quenchable) ],);
+has 'plot_multiplier'	  => (is => 'rw', isa => 'Num',      default => 1, traits => [ qw(Quenchable) ],);
 
 
 sub BUILD {

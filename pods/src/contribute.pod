@@ -1,0 +1,162 @@
+
+=head1 NAME
+
+Contributing to the Demeter project
+
+=head1 VERSION
+
+This documentation refers to Demeter version 0.9.
+
+=head1 OVERVIEW
+
+Have you benefited by Ifeffit and its community of friendly people.
+Ever thought about doing something to contribute to the community?
+This document offers some suggestion for things you can do to help the
+Ifeffit community.
+
+This page was inspired by L<these two|
+http://www.softwarequalityconnection.com/2012/03/14-ways-to-contribute-to-open-source-without-being-a-programming-genius-or-a-rock-star/>
+L<excellent pages|http://www.berkshirelug.org/mediawiki/index.php/ContributingToFOSS>
+about contributing to open source software projects.
+
+=head2 Day to day contributions
+
+=over 4
+
+=item *
+
+Answer a question on the mailing list.
+
+=item *
+
+Report a bug or make a suggestion for improving the codes.  Do this on
+the L<Ifeffit mailing
+list|http://millenia.cars.aps.anl.gov/mailman/listinfo/ifeffit>.
+
+=back
+
+=head2 Documentation contributions
+
+=over 4
+
+=item *
+
+Write a webpage explaining something about XAS.
+
+=item *
+
+Measure a library of reference materials for some element and share an
+Athena project file containing the processed data.
+
+=item *
+
+Explain a data analysis problem in the form of a series of annotated
+project files.
+
+=item *
+
+Make a video explaining how to do something with the software.
+
+=item *
+
+Give a lecture at an XAS training course.  Post your presentation and
+any relevant data on L<http://xafs.org>.
+
+=back
+
+=head2 Packaging contributions
+
+=over 4
+
+=item *
+
+Update the horae Mac installer to use the new Demeter codes.
+
+=item *
+
+Make, support, and keep up-to-date installer packages for Red Hat
+based systems, other Linux distributions, or BSD.
+
+=item *
+
+Improve the Windows installer: add more XAS-related Start menu
+options, add more perl-related Start menu options, write a better
+README file for display upon installation, fix the problems with
+relocating the installation location, figure out how to dispence with
+the useless dosbox, etc.
+
+=item *
+
+There is no Windows updater.  One has to download the entire package
+at each release.  Could something be done with git and automating the
+build process?
+
+=item *
+
+Desktop functionality for Windows, Mac, KDE, GNOME/Unity, etc.  By
+this I mean things like looking inside an Athena project file (a la
+C<dlsprj>) and displaying that information in the file manager.  Or
+showing an image of the most recent fit when an Artemis project file
+is selected.
+
+=back
+
+=head2 Programming contributions
+
+=over 4
+
+=item *
+
+Identify and fix a bug in the codes.  Submit a ptach to Bruce or issue
+a pull request at L<https://github.com/bruceravel/demeter>.
+
+=item *
+
+Write a file type plugin for the weird data files from some weird
+beamline.
+
+=item *
+
+Write an interesting and novel program using Demeter and share it with
+the world.
+
+=item *
+
+I have long wanted to integrate
+L<OpenBabel|http://openbabel.org/wiki/Main_Page> into Artemis.
+OpenBabel is a framework for converting between molecule file formats.
+The F<feff.inp> format could be integrated into OpenBabel by writing a
+bit of C++.  With Feff integrated into OpenBabel, Demeter could use
+OpenBabel's L<Perl interface|http://openbabel.org/wiki/Perl>.  This
+means that any molecule format could be imported into Artemis and used
+as the basis of a Feff calculation.  Writing the OpenBabel interface
+and contributing it the OpenBabel project would be a most splendid
+contribution to Demeter while at the same time opening up Feff support
+to the many projects that use OpenBabel.
+
+=back
+
+=head1 BUGS AND LIMITATIONS
+
+Please report problems to Bruce Ravel (bravel AT bnl DOT gov)
+
+Patches are welcome.
+
+=head1 AUTHOR
+
+Bruce Ravel (bravel AT bnl DOT gov)
+
+L<https://github.com/bruceravel/demeter>
+
+=head1 LICENCE AND COPYRIGHT
+
+Copyright (c) 2008-2012 Bruce Ravel (bravel AT bnl DOT gov). All rights reserved.
+
+This module is free software; you can redistribute it and/or
+modify it under the same terms as Perl itself. See L<perlgpl>.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+
+=cut

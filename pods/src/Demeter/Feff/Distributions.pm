@@ -306,9 +306,6 @@ Demeter's dependencies are in the F<Bundle/DemeterBundle.pm> file.
 
 =head1 SERIALIZATION AND DESERIALIZATION
 
-An XES object and be frozen to and thawed from a YAML file in the same
-manner as a Data object.  The attributes and data arrays are read to
-and from YAMLs with a single object perl YAML.
 
 =head1 BUGS AND LIMITATIONS
 

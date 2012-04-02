@@ -52,8 +52,8 @@
 	<li><a href="#VERSION">VERSION</a></li>
 	<li><a href="#OVERVIEW">OVERVIEW</a><br />
 <ul>
-	<li><a href="#Installing_source_code">Installing source code</a></li>
 	<li><a href="#Installing_from_packages">Installing from packages</a></li>
+	<li><a href="#Installing_source_code">Installing source code</a></li>
 </ul>
 </li>
 	<li><a href="#BUILD_DEMETER_AND_ITS_DEPENDENCIES">BUILD DEMETER AND ITS DEPENDENCIES</a><br />
@@ -76,6 +76,7 @@
 	<li><a href="#Installing_and_using_source_code_on_">Installing and using source code on Windows</a></li>
 </ul>
 </li>
+	<li><a href="#MISCELLANY">MISCELLANY</a></li>
 	<li><a href="#BUGS_AND_LIMITATIONS">BUGS AND LIMITATIONS</a></li>
 	<li><a href="#AUTHOR">AUTHOR</a></li>
 	<li><a href="#LICENCE_AND_COPYRIGHT">LICENCE AND COPYRIGHT</a></li>
@@ -93,6 +94,28 @@
 
 <h1 id="OVERVIEW">OVERVIEW <a href="#TOP" class="toplink"><img alt="^" src="up.gif" /></a></h1>
 
+<h2 id="Installing_from_packages">Installing from packages</h2>
+
+<p>Most people will want to install pre-built, ready-to-run packages.</p>
+
+<dl>
+	<dt><strong>Windows</strong></dt>
+		<dd><p>Most people installing Demeter on a Windows machine will want to use
+the installer package.  The latest version can be found at
+<a href="https://github.com/bruceravel/demeter/downloads">https://github.com/bruceravel/demeter/downloads</a>.  Download,
+donle-click, follow the instructions.  It should be that simple.</p></dd>
+	<dt><strong>Debian, Ubuntu, and debian-based linux</strong></dt>
+		<dd><p>(Information will be forthcoming)</p></dd>
+	<dt><strong>Macintosh OSX</strong></dt>
+		<dd><p>(Information will be forthcoming)</p></dd>
+		<dd><p>The Windows installer can be used under emulation.  <a href="http://cars9.uchicago.edu/ifeffit/Demeter/InstallParallels">Here are some notes</a>
+from Scott Calvin on doing so using
+<a href="http://www.parallels.com/">Parallels</a>.</p></dd>
+		<dd><p>For compiling see Wx on the Mac, see
+<a href="http://www.nntp.perl.org/group/perl.wxperl.users/2011/03/msg7938.html">http://www.nntp.perl.org/group/perl.wxperl.users/2011/03/msg7938.html</a>
+and similar threads from around that time.  Also, this more recent thread
+<a href="http://www.nntp.perl.org/group/perl.wxperl.users/2012/02/msg8353.html">http://www.nntp.perl.org/group/perl.wxperl.users/2012/02/msg8353.html</a>.</p></dd>
+</dl>
 <h2 id="Installing_source_code">Installing source code</h2>
 
 <p>The instructions for installing the Demeter source code on a Linux
@@ -130,20 +153,6 @@ should have a package for Gnuplot. On Ubuntu, the package is called
 &quot;gnuplot&quot;.  Or you can grab the latest source code from <a href="http://sourceforge.net/projects/gnuplot/files/gnuplot/">Gnuplot's SourceForge site</a> and
 install it from scratch.</p>
 
-<h2 id="Installing_from_packages">Installing from packages</h2>
-
-<p>Many people will want to simply install ready-to-use packages.</p>
-
-<dl>
-	<dt><strong>WINDOWS</strong></dt>
-		<dd><p>Most people installing Demeter on a Windows machine will want to
-use the installer package.  The latest version can be found at
-<a href="https://github.com/bruceravel/demeter/downloads">https://github.com/bruceravel/demeter/downloads</a>.</p></dd>
-	<dt><strong>Debian, Ubuntu, and debian-based linux</strong></dt>
-		<dd><p>(Information will be forthcoming)</p></dd>
-	<dt><strong>Macintosh OSX</strong></dt>
-		<dd><p>(Information will be forthcoming)</p></dd>
-</dl>
 <h1 id="BUILD_DEMETER_AND_ITS_DEPENDENCIES">BUILD DEMETER AND ITS DEPENDENCIES <a href="#TOP" class="toplink"><img alt="^" src="up.gif" /></a></h1>
 
 <h2 id="Step_1_Install_Ifeffit_and_PGPLOT">Step 1: Install Ifeffit and PGPLOT</h2>
@@ -348,7 +357,7 @@ will require special configuration if you are working from behind a
 proxy server.</p>
 
 <p>For example, here at Brookhaven National Laboratory, the proxy URL and
-port number is http://192.168.1.130:3128. In the examples that follow,
+port number is <code>http://192.168.1.130:3128</code>.  In the examples that follow,
 you will need to replace that with the correct proxy configuration for
 your institution.</p>
 
@@ -382,6 +391,18 @@ source code on a Windows machine. </p>
 keep you up to date with the latest developments.</li>
 </ul>
 
+<h1 id="MISCELLANY">MISCELLANY <a href="#TOP" class="toplink"><img alt="^" src="up.gif" /></a></h1>
+
+<dl>
+	<dt>Building the Ifeffit SWIG wrapper</dt>
+		<dd><p>See <a href="http://cars9.uchicago.edu/ifeffit/Demeter/SwigModuleBuild">http://cars9.uchicago.edu/ifeffit/Demeter/SwigModuleBuild</a></p></dd>
+	<dt>(The mess that is) Scientific Linux 5</dt>
+		<dd><p>See <a href="http://cars9.uchicago.edu/ifeffit/Demeter/ScientificLinux">http://cars9.uchicago.edu/ifeffit/Demeter/ScientificLinux</a></p></dd>
+		<dd><p>Have the problems with perl and gnuplot described on that page been
+fixed in SL 6?</p></dd>
+	<dt>Building Ifeffit on Windows with MinGW and Strawberry</dt>
+		<dd><p>I recorded my notes at <a href="http://cars9.uchicago.edu/ifeffit/Demeter/IfeffitMingw">http://cars9.uchicago.edu/ifeffit/Demeter/IfeffitMingw</a></p></dd>
+</dl>
 <h1 id="BUGS_AND_LIMITATIONS">BUGS AND LIMITATIONS <a href="#TOP" class="toplink"><img alt="^" src="up.gif" /></a></h1>
 
 <p>Please report problems to Bruce Ravel (bravel AT bnl DOT gov)</p>
@@ -395,7 +416,7 @@ keep you up to date with the latest developments.</li>
 
 <p>Bruce Ravel (bravel AT bnl DOT gov)</p>
 
-<p>http://cars9.uchicago.edu/~ravel/software/</p>
+<p><a href="https://github.com/bruceravel/demeter">https://github.com/bruceravel/demeter</a></p>
 
 <h1 id="LICENCE_AND_COPYRIGHT">LICENCE AND COPYRIGHT <a href="#TOP" class="toplink"><img alt="^" src="up.gif" /></a></h1>
 
