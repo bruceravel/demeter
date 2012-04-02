@@ -522,14 +522,14 @@ sub menubar {
   $app->{main}->{groupmenu} = $groupmenu;
 
   my $freezemenu  = Wx::Menu->new;
-  $freezemenu->Append($FREEZE_TOGGLE,     "Toggle this group", "Toggle the frozen state of this group");
+  $freezemenu->Append($FREEZE_TOGGLE,     "Toggle this group\tShift+Ctrl+f", "Toggle the frozen state of this group");
   $freezemenu->Append($FREEZE_ALL,        "Freeze all groups", "Freeze all groups");
   $freezemenu->Append($UNFREEZE_ALL,      "Unfreeze all groups", "Unfreeze all groups" );
+  $freezemenu->Append($FREEZE_TOGGLE_ALL, "Invert frozen state of all groups", "Toggle frozen state of all groups");
   $freezemenu->Append($FREEZE_MARKED,     "Freeze marked groups", "Freeze marked groups");
   $freezemenu->Append($UNFREEZE_MARKED,   "Unfreeze marked groups", "Unfreeze marked groups");
-  $freezemenu->Append($FREEZE_REGEX,      "Freeze by regex", "Freeze by regular expression");
-  $freezemenu->Append($UNFREEZE_REGEX,    "Unfreeze by regex", "Unfreeze by regular expression");
-  $freezemenu->Append($FREEZE_TOGGLE_ALL, "Toggle frozen state of all groups", "Toggle frozen state of all groups");
+  $freezemenu->Append($FREEZE_REGEX,      "Freeze by regexp", "Freeze by regular expression");
+  $freezemenu->Append($UNFREEZE_REGEX,    "Unfreeze by regexp", "Unfreeze by regular expression");
   $app->{main}->{freezemenu} = $freezemenu;
 
 
@@ -568,12 +568,12 @@ sub menubar {
   $app->{main}->{plotmenu} = $plotmenu;
 
   my $markmenu   = Wx::Menu->new;
+  $markmenu->Append($MARK_TOGGLE,   "Toggle current mark\tShift+Ctrl+t", "Toggle mark of current group" );
   $markmenu->Append($MARK_ALL,      "Mark all\tShift+Ctrl+a",            "Mark all groups" );
   $markmenu->Append($MARK_NONE,     "Clear all marks\tShift+Ctrl+u",     "Clear all marks" );
   $markmenu->Append($MARK_INVERT,   "Invert marks\tShift+Ctrl+i",        "Invert all mark" );
-  $markmenu->Append($MARK_TOGGLE,   "Toggle current mark\tShift+Ctrl+t", "Toggle mark of current group" );
   $markmenu->Append($MARK_REGEXP,   "Mark by regexp\tShift+Ctrl+r",      "Mark all groups matching a regular expression" );
-  $markmenu->Append($UNMARK_REGEXP, "Unmark by regex\tShift+Ctrl+x",     "Unmark all groups matching a regular expression" );
+  $markmenu->Append($UNMARK_REGEXP, "Unmark by regexp\tShift+Ctrl+x",     "Unmark all groups matching a regular expression" );
   $app->{main}->{markmenu} = $markmenu;
 
   my $mergemenu  = Wx::Menu->new;
