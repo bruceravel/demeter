@@ -73,6 +73,10 @@ sub number2clamp {
 
 Demeter::Data::Units - Unit conversion
 
+=head1 VERSION
+
+This documentation refers to Demeter version 0.9.9.
+
 =head1 SYNOPSIS
 
   my $data = Demeter::Data -> new;

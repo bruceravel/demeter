@@ -52,7 +52,7 @@ Demeter::UI::Athena::Journal - A journal tool for Athena
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.
+This documentation refers to Demeter version 0.9.9.
 
 =head1 SYNOPSIS
 

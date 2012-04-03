@@ -93,6 +93,10 @@ __PACKAGE__->meta->make_immutable;
 
 Demeter::Plugin::Lytle - Import Lytle database files stored by encoder value.
 
+=head1 VERSION
+
+This documentation refers to Demeter version 0.9.9.
+
 =head1 SYNOPSIS
 
 Import Lytle data of the sort that stores encoder value and requires a

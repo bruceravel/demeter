@@ -83,6 +83,10 @@ __END__
 
 Demeter::Plugin::HXMA - Demystify files from the HXMA beamline at the CLS
 
+=head1 VERSION
+
+This documentation refers to Demeter version 0.9.9.
+
 =head1 SYNOPSIS
 
 This plugin strips the many columns not normally needed from a file

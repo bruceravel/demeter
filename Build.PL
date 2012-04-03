@@ -15,7 +15,6 @@
 
 =cut
 
-
 use strict;
 use warnings;
 use Cwd;
@@ -172,3 +171,22 @@ $build->add_build_element('txt');
 
 $build->create_build_script;
 
+
+=head1 NAME
+
+Build.PL - Demeter build script
+
+=head1 VERSION
+
+This documentation refers to Demeter version 0.9.9.
+
+=head1 SYNOPSIS
+
+This is Demeter's build script using L<Module::Build>
+
+=head1 AUTHOR
+
+  Bruce Ravel <bravel@bnl.gov>
+  http://xafs.org/BruceRavel/
+
+=cut

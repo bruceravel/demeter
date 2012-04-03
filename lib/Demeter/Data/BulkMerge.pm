@@ -158,7 +158,7 @@ Demeter::Data::MultiChannel - Efficiantly merge many files into a single spectru
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.
+This documentation refers to Demeter version 0.9.9.
 
 =head1 DESCRIPTION
 

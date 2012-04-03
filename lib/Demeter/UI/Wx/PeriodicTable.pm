@@ -197,7 +197,7 @@ Demeter::UI::Wx::PeriodicTable - A periodic table widget
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.
+This documentation refers to Demeter version 0.9.9.
 
 =head1 SYNOPSIS
 

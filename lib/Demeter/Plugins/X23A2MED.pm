@@ -210,6 +210,10 @@ __PACKAGE__->meta->make_immutable;
 
 Demeter::Plugin::X23A2MED - filetype plugin for X23A2 Vortex data
 
+=head1 VERSION
+
+This documentation refers to Demeter version 0.9.9.
+
 =head1 SYNOPSIS
 
 This plugin performs a deadtime correction on data recorded using the

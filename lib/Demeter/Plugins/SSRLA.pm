@@ -104,6 +104,10 @@ __PACKAGE__->meta->make_immutable;
 
 Demeter::Plugin::SSRLA - SSRL XAFS Data Collector 1.3 ASCII filetype plugin
 
+=head1 VERSION
+
+This documentation refers to Demeter version 0.9.9.
+
 =head1 SYNOPSIS
 
 This plugin directly reads the files written by the SSRL XAFS Data Collector.

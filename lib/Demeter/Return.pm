@@ -18,11 +18,9 @@ sub is_ok {
 
 Demeter::Return - A simple return object
 
-=head1 AUTHOR
+=head1 VERSION
 
-Bruce Ravel (bravel AT bnl DOT gov)
-
-L<http://cars9.uchicago.edu/~ravel/software/>
+This documentation refers to Demeter version 0.9.9.
 
 =head1 ATTRIBUTES
 
@@ -55,6 +53,12 @@ Returns true if no problem is reported.
    die $ret->message if not $ret->is_ok;
 
 =back
+
+=head1 AUTHOR
+
+Bruce Ravel (bravel AT bnl DOT gov)
+
+L<http://cars9.uchicago.edu/~ravel/software/>
 
 =head1 LICENCE AND COPYRIGHT
 

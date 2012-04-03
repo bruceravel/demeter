@@ -113,6 +113,10 @@ __END__
 
 Demeter::Plugin::X15B - NSLS X15B filetype plugin
 
+=head1 VERSION
+
+This documentation refers to Demeter version 0.9.9.
+
 =head1 SYNOPSIS
 
 This plugin directly reads the binary files written by NSLS beamline

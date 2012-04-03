@@ -56,6 +56,8 @@
      posted without any content -- not so helpful.
 
 *** Demeter
+   - Begin using Perl::Version to manage version numbering of files
+     and brought every file up to 0.9.9
    - Replaced Readonly with Const::Fast.  See [[http://neilb.org/reviews/constants.html]]
    - Abstracted many common constants to Demeter::Constants
    - Replaced Config::IniFiles with Config::INI for a small

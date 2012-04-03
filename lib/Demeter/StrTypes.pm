@@ -468,7 +468,7 @@ Demeter::StrTypes - String type constraints
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.
+This documentation refers to Demeter version 0.9.9.
 
 =head1 DESCRIPTION
 

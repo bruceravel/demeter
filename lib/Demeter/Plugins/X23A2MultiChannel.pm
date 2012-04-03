@@ -112,6 +112,10 @@ __PACKAGE__->meta->make_immutable;
 
 Demeter::Plugin::X23A2MultiChannel - filetype plugin for X23A2 multi-channel data files
 
+=head1 VERSION
+
+This documentation refers to Demeter version 0.9.9.
+
 =head1 SYNOPSIS
 
 This plugin converts data from X23A2 multi-channel ion chambers to an

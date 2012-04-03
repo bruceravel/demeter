@@ -133,6 +133,10 @@ __END__
 
 Demeter::Plugin::DUBBLE - Import data from the DUBBLE beamline at ESRF
 
+=head1 VERSION
+
+This documentation refers to Demeter version 0.9.9.
+
 =head1 SYNOPSIS
 
 This plugin converts monochromator angle into from millidegrees to
