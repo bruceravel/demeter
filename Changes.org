@@ -31,6 +31,8 @@
    - Attempt to recognize data with a zero value in the denominator
    - Implemented frozen groups + Freeze menu + Athena->frozen config
      parameter for color of frozen group display + button
+   - Display of peak fitting page is functuional (but not quite right)
+     even on Windows.
 
 *** Artemis
    - Fixed (mostly) a bug laying out Atoms/Feff notebook tabs when
