@@ -1,7 +1,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
 <head>
-	<title>MooseX::Quenchable</title>
+	<title>Demeter::IniWriter -- Ini file writer for Demeter</title>
 <link rel="stylesheet" type="text/css" href="../podstyle.css" /><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
   <script type="text/javascript">
 
@@ -37,10 +37,10 @@
 </div>
 <div class="path">
   <a href="../index.html">Demeter</a> &gt; Perl Modules &gt;
-  MooseX-Quenchable
+  Demeter-IniWriter
 </div>
 <div>
-<a href="../src/MooseX/Quenchable.pm">Source</a>
+<a href="../src/Demeter/IniWriter.pm">Source</a>
 </div>
 
 
@@ -51,8 +51,7 @@
 	<li><a href="#NAME">NAME</a></li>
 	<li><a href="#VERSION">VERSION</a></li>
 	<li><a href="#SYNOPSIS">SYNOPSIS</a></li>
-	<li><a href="#DESCRIPTION">DESCRIPTION</a></li>
-	<li><a href="#BUGS_AND_LIMITATIONS">BUGS AND LIMITATIONS</a></li>
+	<li><a href="#ACKNOWELDGEMENT">ACKNOWELDGEMENT</a></li>
 	<li><a href="#AUTHOR">AUTHOR</a></li>
 	<li><a href="#LICENCE_AND_COPYRIGHT">LICENCE AND COPYRIGHT</a></li>
 </ul>
@@ -61,7 +60,7 @@
 
 <h1 id="NAME">NAME <a href="#TOP" class="toplink"><img alt="^" src="../up.gif" /></a></h1>
 
-<p>MooseX::Quenchable - silently freeze attribute values</p>
+<p>Demeter::IniWriter -- Ini file writer for Demeter</p>
 
 <h1 id="VERSION">VERSION <a href="#TOP" class="toplink"><img alt="^" src="../up.gif" /></a></h1>
 
@@ -69,63 +68,25 @@
 
 <h1 id="SYNOPSIS">SYNOPSIS <a href="#TOP" class="toplink"><img alt="^" src="../up.gif" /></a></h1>
 
-<p>Add the &quot;Quenchable&quot; trait to attributes:</p>
+<p>This inherits from <a href="http://search.cpan.org/perldoc?Config%3A%3AINI%3A%3AWriter">Config::INI::Writer</a>, changing the
+<code>write_handle</code> method to allow for saving items to the mru lists that
+contain UTF-8 path and filenames without triggering the &quot;wide
+character&quot; warning.</p>
 
-<pre>  package Class;
-  use Moose;
-  use MooseX::Quenchable;
+<h1 id="ACKNOWELDGEMENT">ACKNOWELDGEMENT <a href="#TOP" class="toplink"><img alt="^" src="../up.gif" /></a></h1>
 
-  has some_attr =&gt; (
-    is     =&gt; 'rw',
-    traits =&gt; [ qw(Quenchable) ],
-  );
-
-</pre><p>...and then you can silently disable changes to that attribute.</p>
-
-<pre>  my $object = Class-&gt;new;
-
-  $object-&gt;quenched(0)
-  $object-&gt;some_attr(10);  # as expected, some_attr = 10
-  $object-&gt;quenched(1)
-  $object-&gt;some_attr(20);  # silently refuses the change, some_attr = 10
-  $object-&gt;quenched(0)
-  $object-&gt;some_attr(20);  # es expected, some_attr = 20
-
-</pre><h1 id="DESCRIPTION">DESCRIPTION <a href="#TOP" class="toplink"><img alt="^" src="../up.gif" /></a></h1>
-
-<p>The 'Quenchable' attribute lets your class have attributes that can
-have setting silently disabled.</p>
-
-<p>This is an example of cargo-cult programming.  It was swiped
-shamelessly from MooseX::SetOnce by Ricardo SIGNES &lt;rjbs@cpan.org&gt; and
-slightly modified.</p>
-
-<p>This does not override an attribute's clearer, so there is a way to
-defeat the intent of quenching the object.</p>
-
-<h1 id="BUGS_AND_LIMITATIONS">BUGS AND LIMITATIONS <a href="#TOP" class="toplink"><img alt="^" src="../up.gif" /></a></h1>
-
-<p>Please report problems to Bruce Ravel (bravel AT bnl DOT gov)</p>
-
-<p>Patches are welcome.</p>
+<p><a href="http://search.cpan.org/perldoc?Config%3A%3AINI%3A%3AWriter">Config::INI::Writer</a> was written by Ricardo Signes &lt;rjbs@cpan.org&gt;.
+This is just a thin wrapper around that module.</p>
 
 <h1 id="AUTHOR">AUTHOR <a href="#TOP" class="toplink"><img alt="^" src="../up.gif" /></a></h1>
 
 <p>Bruce Ravel (bravel AT bnl DOT gov)</p>
 
-<p>http://cars9.uchicago.edu/~ravel/software/</p>
+<p><a href="http://cars9.uchicago.edu/~ravel/software/">http://cars9.uchicago.edu/~ravel/software/</a></p>
 
 <h1 id="LICENCE_AND_COPYRIGHT">LICENCE AND COPYRIGHT <a href="#TOP" class="toplink"><img alt="^" src="../up.gif" /></a></h1>
 
-<p><a href="http://search.cpan.org/perldoc?MooseX%3A%3ASetOnce">MooseX::SetOnce</a> carries this copyright notice:</p>
-
-<pre>  This software is copyright (c) 2011 by Ricardo SIGNES.
-
-  This is free software; you can redistribute it and/or modify it
-  under the same terms as the Perl 5 programming language system
-  itself.
-
-</pre><p>Copyright (c) 2012 Bruce Ravel (bravel AT bnl DOT gov). All rights reserved.</p>
+<p>Copyright (c) 2006-2012 Bruce Ravel (bravel AT bnl DOT gov). All rights reserved.</p>
 
 <p>This module is free software; you can redistribute it and/or
 modify it under the same terms as Perl itself. See <a href="http://search.cpan.org/perldoc?perlgpl">perlgpl</a>.</p>

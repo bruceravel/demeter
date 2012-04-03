@@ -19,7 +19,6 @@ use warnings;
 use strict;
 use version;
 use vars qw($VERSION @ISA @EXPORT @EXPORT_OK);
-$VERSION = qv("1.0.0");
 
 use Demeter::Constants qw($PI $HBARC);
 
@@ -56,7 +55,7 @@ Demeter::UI::Hephaestus::Common - Common functions used in Hephaestus
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.
+This documentation refers to Demeter version 0.9.9.
 
 =head1 SYNOPSIS
 

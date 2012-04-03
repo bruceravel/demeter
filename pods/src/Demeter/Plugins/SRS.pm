@@ -163,6 +163,10 @@ __END__
 
 Demeter::Plugin::SRS - Import data from the XAS beamlines at the old SRS at Daresbury
 
+=head1 VERSION
+
+This documentation refers to Demeter version 0.9.9.
+
 =head1 SYNOPSIS
 
 This plugin converts monochromator angle into from millidegrees to

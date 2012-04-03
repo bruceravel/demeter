@@ -68,6 +68,10 @@ __END__
 
 Demeter::Plugin::X10C - NSLS X10C filetype plugin
 
+=head1 VERSION
+
+This documentation refers to Demeter version 0.9.9.
+
 =head1 SYNOPSIS
 
 This plugin directly imports files from NSLS beamline X10C

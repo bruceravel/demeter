@@ -568,6 +568,10 @@ sub mode {
 		    bft_group_label plot_group_label)) {
     $this->{$w} -> SetForegroundColour( Wx::Colour->new(wxNullColour) );
   };
+  if ($::app) {
+    $this->Refresh;
+    $this->Update;
+  };
   foreach my $w (@bkg_parameters, @fft_parameters, @bft_parameters,
 		 @group_params, @plot_parameters, 'group_group_label', 'plot_group_label', 'clampbox') {
     $this->set_widget_state($w, $enabled);
@@ -584,6 +588,7 @@ sub mode {
   } elsif ($frozen) {
     foreach my $w (@group_params, @plot_parameters, @bkg_parameters, @fft_parameters,
 		   @bft_parameters) {
+      next if ($w =~ m{group_label});
       $this->set_widget_state($w, 0, 1);
     };
     foreach my $w (qw(group_group_label background_group_label fft_group_label
@@ -591,6 +596,8 @@ sub mode {
       $this->set_widget_state($w, $enabled);
       $this->{$w} -> SetForegroundColour( Wx::Colour->new($group->co->default("athena", "frozen")) );
     };
+    $this->Refresh;
+    $this->Update;
     $this->set_widget_state('freeze', 1);
 
   ## XANES data
@@ -1262,7 +1269,7 @@ Demeter::UI::Athena::Main - Main processing tool for Athena
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.
+This documentation refers to Demeter version 0.9.9.
 
 =head1 SYNOPSIS
 

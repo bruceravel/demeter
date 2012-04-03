@@ -19,6 +19,10 @@ sub preprocess_line {
 
 Demeter::IniReader -- Ini file parser for Demeter
 
+=head1 VERSION
+
+This documentation refers to Demeter version 0.9.9.
+
 =head1 SYNOPSIS
 
 This inherits from L<Config::INI::Reader>, changing the definition of

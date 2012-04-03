@@ -107,3 +107,44 @@ sub ShouldPreventAppExit {
 };
 
 1;
+
+=head1 NAME
+
+Demeter::UI::Artemis::ShowText - A text display dialog for Artemis
+
+=head1 VERSION
+
+This documentation refers to Demeter version 0.9.9.
+
+=head1 SYNOPSIS
+
+This module provides a text display dialog for Artemis.  It is
+instrumented to provide some hyertext like capabilities on the double
+click for displays of Demeter object serialization.
+
+=head1 DEPENDENCIES
+
+Demeter's dependencies are in the F<Bundle/DemeterBundle.pm> file.
+
+=head1 BUGS AND LIMITATIONS
+
+Please report problems to Bruce Ravel (bravel AT bnl DOT gov)
+
+Patches are welcome.
+
+=head1 AUTHOR
+
+Bruce Ravel (bravel AT bnl DOT gov)
+
+=head1 LICENCE AND COPYRIGHT
+
+Copyright (c) 2006-2012 Bruce Ravel (bravel AT bnl DOT gov). All rights reserved.
+
+This module is free software; you can redistribute it and/or
+modify it under the same terms as Perl itself. See L<perlgpl>.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+
+=cut

@@ -64,6 +64,10 @@ __END__
 
 Demeter::Carp - Warns and dies noisily with stack backtraces and ANSIColor markup
 
+=head1 VERSION
+
+This documentation refers to Demeter version 0.9.9.
+
 =head1 SYNOPSIS
 
   use Demeter::Carp;

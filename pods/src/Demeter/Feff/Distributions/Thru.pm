@@ -400,7 +400,7 @@ Demeter::Feff::Distributions::Thru - Histograms for MS paths through the absorbe
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.
+This documentation refers to Demeter version 0.9.9.
 
 =head1 SYNOPSIS
 

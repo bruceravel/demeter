@@ -693,6 +693,10 @@ sub _save_norm_command {
 
 Demeter::Data::Mu - Methods for processing and plotting mu(E) data
 
+=head1 VERSION
+
+This documentation refers to Demeter version 0.9.9.
+
 =head1 SYNOPSIS
 
   my $data = Demeter::Data -> new;

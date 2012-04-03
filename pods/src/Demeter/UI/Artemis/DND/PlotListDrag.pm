@@ -36,3 +36,45 @@ sub GetDataSize {
 sub GetPerlData { $_[0]->{Data} };
 
 1;
+
+=head1 NAME
+
+Demeter::UI::Artemis::DND::PlotListDrag - Drag and drop utility for lists in Artemis
+
+=head1 VERSION
+
+This documentation refers to Demeter version 0.9.9.
+
+=head1 SYNOPSIS
+
+This module inherits from Wx::DND to provide drag and drop utilities
+for use with lists in Artemis.
+
+=head1 DEPENDENCIES
+
+Demeter's dependencies are in the F<Bundle/DemeterBundle.pm> file.
+
+=head1 BUGS AND LIMITATIONS
+
+Please report problems to Bruce Ravel (bravel AT bnl DOT gov)
+
+Patches are welcome.
+
+=head1 AUTHOR
+
+Bruce Ravel (bravel AT bnl DOT gov)
+
+L<http://cars9.uchicago.edu/~ravel/software/>
+
+=head1 LICENCE AND COPYRIGHT
+
+Copyright (c) 2006-2012 Bruce Ravel (bravel AT bnl DOT gov). All rights reserved.
+
+This module is free software; you can redistribute it and/or
+modify it under the same terms as Perl itself. See L<perlgpl>.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+
+=cut

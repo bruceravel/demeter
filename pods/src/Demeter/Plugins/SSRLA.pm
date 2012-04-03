@@ -104,6 +104,10 @@ __PACKAGE__->meta->make_immutable;
 
 Demeter::Plugin::SSRLA - SSRL XAFS Data Collector 1.3 ASCII filetype plugin
 
+=head1 VERSION
+
+This documentation refers to Demeter version 0.9.9.
+
 =head1 SYNOPSIS
 
 This plugin directly reads the files written by the SSRL XAFS Data Collector.
@@ -119,7 +123,7 @@ energy columns.
 
 The ROBL beamline at ESRF uses the same file format as the SSRL Data
 Collector 1.1 except that it includes a couple of high-ASCII
-characters.  These characters may give a Wx TextCtrl some trouble, so
+characters.  These characters may give a Wx::TextCtrl some trouble, so
 they get stripped from the file and replaced with ASCII look-alikes.
 
   ©  ==> (c)
@@ -129,3 +133,5 @@ they get stripped from the file and replaced with ASCII look-alikes.
 
   Bruce Ravel <bravel@bnl.gov>
   http://xafs.org/BruceRavel
+
+=cut

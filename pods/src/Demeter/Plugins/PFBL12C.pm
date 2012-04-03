@@ -90,6 +90,10 @@ __PACKAGE__->meta->make_immutable;
 
 Demeter::Plugin::PFBL12C - filetype plugin for Photon Factory and SPring8
 
+=head1 VERSION
+
+This documentation refers to Demeter version 0.9.9.
+
 =head1 SYNOPSIS
 
 This plugin converts data recorded as a function of mono angle to data
@@ -135,3 +139,4 @@ me to refine the C<is> method to work with multiple PF XAS beamlines.
   Bruce Ravel <bravel@bnl.gov>
   http://xafs.org/BruceRavel
 
+=cut

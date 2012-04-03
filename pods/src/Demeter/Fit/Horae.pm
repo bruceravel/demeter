@@ -269,7 +269,7 @@ Demeter::Fit::Horae - Convert an old-style Artemis project file into a Demeter f
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.
+This documentation refers to Demeter version 0.9.9.
 
 =head1 DESCRIPTION
 

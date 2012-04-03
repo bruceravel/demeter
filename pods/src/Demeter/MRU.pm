@@ -18,10 +18,13 @@ package Demeter::MRU;
 use Moose::Role;
 
 use Demeter::IniReader;
-use Config::INI::Writer;
+use Demeter::IniWriter;
+#use Config::INI::Writer;
 #use Config::IniFiles;
 use File::Spec;
 use List::MoreUtils qw(uniq);
+
+use Encode qw(decode);
 
 my $max_mru = 15;
 
@@ -52,7 +55,8 @@ sub push_mru {
     ++$i;
   };
   #tied(%mru)->WriteConfig($mrufile);
-  Config::INI::Writer->write_file(\%mru, $mrufile);
+  Demeter::IniWriter->write_file(\%mru, $mrufile);
+  #Config::INI::Writer->write_file(\%mru, $mrufile);
   #undef %mru;
   return $self;
 };
@@ -66,11 +70,16 @@ sub get_mru_list {
   foreach my $g (@groups) {
     next if not $mru{$g};
     my %hash = %{ $mru{$g} };
+    #foreach my $k (keys %hash) {
+    #  $hash{$k} = decode('UTF-8', $hash{$k});
+    #  (-e $hash{$k}) ? print "yup  ".$hash{$k}.$/ :print "nope ".$hash{$k}.$/ ;
+    #};
     push @list_of_files, map { [$hash{$_}, $g] } grep {-e $hash{$_}} sort {$a <=> $b} keys %hash;
   };
   undef %mru;
   return @list_of_files;
 };
+
 
 1;
 
@@ -80,7 +89,7 @@ Demeter::MRU - Handle lists of recently used file
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.
+This documentation refers to Demeter version 0.9.9.
 
 =head1 DESCRIPTION
 

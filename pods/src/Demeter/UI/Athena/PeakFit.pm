@@ -61,12 +61,12 @@ sub new {
 
   $this->{notebook} = Wx::Notebook->new($this, -1, wxDefaultPosition, wxDefaultSize, wxNB_TOP);
   $box -> Add($this->{notebook}, 1, wxGROW|wxALL, 2);
-  my $main   = $this->main_page($this->{notebook});
-  my $fits   = $this->fit_page($this->{notebook});
-  #my $marked = $this->marked_page($this->{notebook});
-  $this->{notebook} ->AddPage($main,   'Lineshapes',    1);
-  $this->{notebook} ->AddPage($fits,   'Fit results',   0);
-  #$this->{notebook} ->AddPage($marked, 'Sequence',      0);
+  $this->{mainpage} = $this->main_page($this->{notebook});
+  $this->{fitspage} = $this->fit_page($this->{notebook});
+  #this->{$markedpage} = $this->marked_page($this->{notebook});
+  $this->{notebook} ->AddPage($this->{mainpage}, 'Lineshapes',    1);
+  $this->{notebook} ->AddPage($this->{fitspage}, 'Fit results',   0);
+  #$this->{notebook} ->AddPage($this->{markedpage}, 'Sequence',      0);
 
   $this->{document} = Wx::Button->new($this, -1, 'Document section: peak fitting');
   $box -> Add($this->{document}, 0, wxGROW|wxALL, 2);
@@ -115,7 +115,7 @@ sub main_page {
     EVT_BUTTON($this, $this->{$ls}, sub{ $this->add($ls) });
   };
 
-  $this->{main}  = Wx::ScrolledWindow->new($panel, -1);
+  $this->{main}  = Wx::ScrolledWindow->new($panel, -1, wxDefaultPosition, wxDefaultSize, wxVSCROLL);
   $this->{lsbox} = Wx::BoxSizer->new( wxVERTICAL );
   $this->{main} -> SetScrollbars(20, 20, 50, 50);
   $this->{main} -> SetSizerAndFit($this->{lsbox});
@@ -232,8 +232,8 @@ sub add {
     return;
   };
   $this->{lsbox} -> Add($this->{'func'.$this->{count}}, 0, wxGROW|wxALL, 5);
-  $this->{lsbox} -> Fit($this->{main});
-  $this->{vbox}  -> Fit($this->{panel});
+  $this->{main} -> SetSizerAndFit($this->{lsbox});
+  $this->{main} -> SetScrollbars(0, 100, 0, $this->{count});
 
   foreach my $ac (qw(fit plot reset)) {
     $this->{$ac}->Enable(1);
@@ -484,7 +484,7 @@ Demeter::UI::Athena::PeakFit - A peak fitting for Athena
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.
+This documentation refers to Demeter version 0.9.9.
 
 =head1 SYNOPSIS
 
