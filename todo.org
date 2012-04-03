@@ -33,6 +33,7 @@
   - [X] we seem not to have a normalized group (i.e. plot the same as mu or norm)
   - [X] better detection of chi ascii data in case of 
         =$data = Demeter::Data->new(file=>"foo.chi");=
+  - [ ] MRU lists and unicode, unicode-y file paths fail the -e test at Demeter::MRU line 77
 
 
 
