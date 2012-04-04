@@ -84,6 +84,9 @@
      Implementing it this deeply in the underlying object obviates the
      issue of disabling Athena's various "action at a distance"
      features, e.g. constaining parameters.
+   - Fixed a bug whereby a group with datatype of xanes did not have
+     its normalized derivative and second derivative spectra
+     calculated.
 
 ** 0.9.8 30 January 2012
 *** Athena
