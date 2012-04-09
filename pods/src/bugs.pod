@@ -25,7 +25,7 @@ to fix it promptly.
 Use the L<Ifeffit mailing
 list|http://millenia.cars.aps.anl.gov/mailman/listinfo/ifeffit>.  The
 mailing list is always the appropriate place to report problems with
-the softare.  There are good reasons for ths:
+the software.  There are good reasons for this:
 
 =item *
 
@@ -78,7 +78,7 @@ directly to Bruce, you may be ignored outright.
 
 When Demeter runs into a problem, it usually emits error messages that
 are useful for understanding the cause of the bug.  Even when Athena
-or Artemis crashes hard, some useful infromation is usually provided.
+or Artemis crashes hard, some useful information is usually provided.
 
 A good bug report will include this information.  Don't edit this
 information, regardless of how cryptic or repetitive it may seem.
@@ -107,7 +107,7 @@ This log file should be included in any bug report.
 
 =item B<Linux or other Unix systems>
 
-On Linux and other unixes, the GUI programs do not record log files as
+On Linux and other Unixes, the GUI programs do not record log files as
 described above.  Top capture the error message, you should start the
 program from the command line.  Athena is started by typing the
 command C<dathena>, Artemis by typing C<dartemis> and so on.  When the
@@ -188,7 +188,7 @@ compressed archiving.
 B<DO> send a follow-up email if a lot of time has passed without a
 response.  Bruce may be on travel or may have set your prior email
 aside and forgotten to return to it (which would explain but not
-justify a period of silence).  Bruce takes bugs reports very seriousl,
+justify a period of silence).  Bruce takes bugs reports very seriously,
 sometimes he needs a reminder.
 
 =back
@@ -201,7 +201,7 @@ sometimes he needs a reminder.
 
 B<DON'T> ask questions about compiling Feff8 or Feff9. The only
 version of Feff that I support at that level is the version of Feff6
-that comes with IFeffit.  For questions about Feff8 or Feff9, contact
+that comes with Ifeffit.  For questions about Feff8 or Feff9, contact
 someone from the Feff project.
 
 =item *

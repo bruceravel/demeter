@@ -134,7 +134,7 @@ sub Import {
     if ($type eq '???') {
       my $md = Wx::MessageDialog->new($app->{main}, "Could not read \"$file\" as either data or as a project file. (Do you need to enable a plugin?). OK to continue importing data, cancel to quit importing data.", "Warning!", wxOK|wxCANCEL|wxICON_WARNING);
       my $response = $md -> ShowModal;
-      return if $response = wxID_CANCEL;
+      return if $response == wxID_CANCEL;
       next;
     };
     if ($plugin) {
@@ -157,7 +157,7 @@ sub Import {
     if ($retval == -1) {	# bail on a file sequence if something bad happens
       my $md = Wx::MessageDialog->new($app->{main}, "$file could not be read correctly. OK to continue importing data, cancel to quit importing data.", "Warning!", wxOK|wxCANCEL|wxICON_WARNING);
       my $response = $md -> ShowModal;
-      return if $response = wxID_CANCEL;
+      return if $response == wxID_CANCEL;
       next;
       #$app->{main}->status("Stopping file import.  $file could not be read correctly.", "error");
       #return;
@@ -394,7 +394,8 @@ sub _data {
       $data->DEMOLISH;
       return 0;
     };
-    $med = 1 if ($colsel->{each}->IsEnabled and $colsel->{each}->GetValue);
+    $med = ($colsel->{each}->IsEnabled and $colsel->{each}->GetValue);
+    print join("|", $med, $colsel->{each}->IsEnabled, $colsel->{each}->GetValue), $/;
     $yaml->{each}  = $colsel->{each}->GetValue;
     $yaml->{units} = $colsel->{units}->GetSelection;
     $repeated = 0;

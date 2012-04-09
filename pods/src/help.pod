@@ -16,8 +16,8 @@ An excellent resource exists for anyone stumbling over the details of
 XAFS experimentation or analysis -- the  L<Ifeffit mailing
 list|http://millenia.cars.aps.anl.gov/mailman/listinfo/ifeffit>.
 This low-noise, high-quality mailing list is populated by many of the
-world's expert practitioners of XAS and it handles dozens of quesions
-evefry month.  It should be the first place you go when you have a
+world's expert practitioners of XAS and it handles dozens of questions
+every month.  It should be the first place you go when you have a
 question about the software or about any other topic in XAS.
 
 Demeter's author, Bruce, reads the mailing list and frequently
@@ -49,7 +49,7 @@ archive|http://www.mail-archive.com/ifeffit@millenia.cars.aps.anl.gov/>
 of the Ifeffit mailing list.  You may find that someone else has
 already asked your question.
 
-=head2 How to ask for helpa
+=head2 How to ask for help
 
 If you are asking for help, I encourage you to ask specific questions
 rather than vague ones. For example, 
@@ -65,10 +65,11 @@ other hand,
   to get coordination numbers?
 
 is a B<vague, open-ended> question that is unlikely to garner much of
-a response.  There are many problems with vague, open-ended
-questions.  The person asking such a question probably has not
-spent much time thinking about the problem.  And it is not clear how
-long the person answering will have to spend explaining the answer.
+a response.  There are many problems with vague, open-ended questions.
+The person asking such a question probably has not spent much time
+thinking about or trying to solve the problem.  And it is not clear
+how long the person answering will have to spend explaining the
+answer.
 
 Remember that the people who answer questions on the mailing list are
 volunteering their time.
@@ -80,9 +81,9 @@ on one's own computer.
 
 For more hints about how to ask good questions L<"How To Ask Questions
 The Smart Way"|http://www.catb.org/~esr/faqs/smart-questions.html> by
-Eric Raymond and Rick Moen is very useful.  Please note that neither
+Eric Raymond and Rick Moen is very useful.  (Please note that neither
 of Raymond, or Moen are associated in any way with Demeter or Ifeffit
-nor should they be contacted with questions about Demeter or Ifeffit.
+nor should they be contacted with questions about Demeter or Ifeffit.)
 
 
 =head2 Other XAFS Resources on the Web
@@ -115,9 +116,10 @@ link)|http://www.amazon.com/Introduction-XAFS-Practical-Absorption-Spectroscopy/
 =head3 Ifeffit and Demeter software
 
 You can download Ifeffit from
-L<http://cars9.uchicago.edu/iffwiki/Downloads> and information about
-Athena, Artemis, and Hephaestus can be found at
-L<http://bruceravel.github.com/demeter>, including documentation.
+L<http://cars9.uchicago.edu/iffwiki/Downloads>.  The Demeter installer
+for Windows is at L<https://github.com/bruceravel/demeter/downloads>.
+General information about Athena, Artemis, and Hephaestus can be found
+at L<http://bruceravel.github.com/demeter>, including documentation.
 
 The lectures the Bruce gives at XAS training courses can be found at
 L<https://github.com/bruceravel/XAS-Education/downloads>.  Those are
@@ -130,13 +132,13 @@ feel free to download, share, and use ant of the materials found there.
 If your question pertains to Feff -- specifically in the area of using
 Feff for XANES calculations -- remember that Bruce is but a minor
 contributor to Feff and may not in a position to answer your question
-authoritatively.  The PI of the Feff project and his students all read
+authoritatively.  The PI of the Feff project and his team all read
 the L<Ifeffit mailing
 list|http://millenia.cars.aps.anl.gov/mailman/listinfo/ifeffit> and
 often answer questions posted there.
 
 The Feff homepage is at L<http://leonardo.phys.washington.edu/feff/>.
-The Feff9 document, in wiki firmat is at
+The Feff9 document, in wiki format, is at
 L<http://leonardo.phys.washington.edu/feff/wiki/index.php?title=FEFF_Documentation>.
 
 

@@ -347,6 +347,8 @@ sub normalize {
     $self->bkg_fitted_step(1);
     #$self->dispose($self->template("process", "is_nor"));
   };
+  my $command .= $self->template("process", "nderiv") if not $self->is_nor;
+  $self->dispose($command);
 
   $self->update_norm(0);
   return $self;

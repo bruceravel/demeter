@@ -103,8 +103,8 @@
 		<dd><p>Most people installing Demeter on a Windows machine will want to use
 the installer package.  The latest version can be found at
 <a href="https://github.com/bruceravel/demeter/downloads">https://github.com/bruceravel/demeter/downloads</a>.  Download,
-donle-click, follow the instructions.  It should be that simple.</p></dd>
-	<dt><strong>Debian, Ubuntu, and debian-based linux</strong></dt>
+double-click, follow the instructions.  It should be that simple.</p></dd>
+	<dt><strong>Debian, Ubuntu, and Debian-based Linux</strong></dt>
 		<dd><p>(Information will be forthcoming)</p></dd>
 	<dt><strong>Macintosh OSX</strong></dt>
 		<dd><p>(Information will be forthcoming)</p></dd>
@@ -122,7 +122,7 @@ and similar threads from around that time.  Also, this more recent thread
 machine are not trivial, but also not difficult. If you follow these
 instructions patiently, everything will work. The main issue is the
 large number of dependencies. The instructions on this page should
-work on any flavor of linux, any other unix, and probably OSX as
+work on any flavor of Linux, any other Unix, and probably OSX as
 well. Everything here except for installing Ifeffit and PGPLOT will
 work on a Windows machine with Strawberry perl.</p>
 
@@ -141,7 +141,7 @@ step.</p>
 computer</strong>. On Ubuntu, the package name is simply &quot;perl&quot;. (My computers
 are all Ubuntu, hence all of my hints about packages that need
 installing refer to the Ubuntu package names.  Package names on other
-systems are likley to be similar.)  You must use at least perl 5.10.
+systems are likely to be similar.)  You must use at least perl 5.10.
 Some &quot;enterprise&quot; versions of Linux (notably Red Hat based ones like
 RHEL, CentOS, and Scientific Linux) may ship with an ancient version
 of perl.  Demeter will not run under perl 5.6 or 5.8.  You <strong>will</strong>
@@ -175,7 +175,7 @@ computer.<pre>   sudo ./PGPLOT_install
 </ul>
 
 <p>On my Ubuntu machine, the following development libraries are needed
-to get Ifeffit and PGPLOT compiled. On other flavors of linux, these
+to get Ifeffit and PGPLOT compiled. On other flavors of Linux, these
 packages might be called by different names, but hopefully this list
 will help you resolve which packages are needed.</p>
 
@@ -204,7 +204,7 @@ machines, the package is called &quot;git-core&quot;.  At the command line, do:<
 
 </pre>
 <br /><br />to download future modifications to the code.</li>
-	<li>Grab the most recent archive file containing the Demeter soruce code.
+	<li>Grab the most recent archive file containing the Demeter source code.
 Go to <a href="https://github.com/bruceravel/demeter/downloads">https://github.com/bruceravel/demeter/downloads</a> and click on
 one of the download buttons near the top of the page to get either the
 <cite>tar.gz</cite> or <cite>.zip</cite> archive file containing the entire source code.</li>
@@ -260,7 +260,7 @@ Demeter. (However, if you do not have Gnuplot on you computer, answer
 &quot;no&quot; to the question about Graphics::GnuplotIF.  But, really, use
 Gnuplot.  Your Demeter experience will be much better.)</p>
 
-<p>In my experience, all dependencies install smoothly on recent linux
+<p>In my experience, all dependencies install smoothly on recent Linux
 installations.  They also all install smoothly under <a href="http://strawberryperl.com/">Strawberry Perl</a> on Windows.  If there are any
 failures, you will need to track down the problems and fix them in
 order to proceed.</p>
@@ -307,7 +307,7 @@ Here is an example:</p>
 
 <pre>   ./configure --prefix=/path/to/installation/location
 
-</pre><p>Here you need to specify a location in your own diskspace in which to
+</pre><p>Here you need to specify a location in your own disk space in which to
 install Ifeffit and all the rest.  I'd recommend something like
 <code>$HOME/local</code>.  You will also need to put <code>$HOME/local/bin/</code> in your
 execution path, which can be done by adding this to your <cite>.bashrc</cite> file:</p>
@@ -315,7 +315,7 @@ execution path, which can be done by adding this to your <cite>.bashrc</cite> fi
 <pre>   export PATH=$PATH:$HOME/local/bin/
 
 </pre><p>Even if you are installing Demeter without root, it is probably easier
-to get Ifeffit and PGPLOT installed system-wide. On a debian-based
+to get Ifeffit and PGPLOT installed system-wide. On a Debian-based
 system, even better would be to install Carlo Segre's pre-built
 versions of Ifeffit and PGPLOT by following the instructions at
 <a href="http://debian-xray.iit.edu/">http://debian-xray.iit.edu/</a>.</p>
@@ -347,12 +347,12 @@ terminal window.</p>
 3a, 3b, and 4, except that you now do not need to install using
 <code>sudo</code> (that is, type the command as given, but without &quot;sudo&quot;).  The
 whole point of installing <a href="http://search.cpan.org/perldoc?local%3A%3Alib">local::lib</a> is to be able to install all
-of this software in your own diskspace without needing root
+of this software in your own disk space without needing root
 privileges.</p>
 
 <h2 id="Working_behind_a_proxy_server">Working behind a proxy server</h2>
 
-<p>Each of the steps that involves going out onto the big, bad internet
+<p>Each of the steps that involves going out onto the big, bad Internet
 will require special configuration if you are working from behind a
 proxy server.</p>
 

@@ -422,6 +422,7 @@ sub trace {
 
 sub pjoin {
   my ($self, @stuff) = @_;
+  local $|=1;
   print join("|", @stuff) . $/;
   return join("|", @stuff) . $/;
 };

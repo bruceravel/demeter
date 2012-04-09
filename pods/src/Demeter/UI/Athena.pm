@@ -1432,6 +1432,7 @@ sub move_group {
 
 sub OnGroupSelect {
   my ($app, $parent, $event, $plot) = @_;
+  #$app->current_data->  pjoin(caller), $/;
   if ((ref($event) =~ m{Event}) and (not $event->IsSelection)) { # capture a control click which would otherwise deselect
     $app->{main}->{list}->SetSelection($app->{selected});
     $event->Skip(0);
@@ -1749,6 +1750,7 @@ sub postplot {
   if ($data eq $app->current_data) {
     $app->{main}->{Main}->{bkg_step}->SetValue($app->current_data->bkg_step);
     $app->{main}->{Main}->{bkg_fixstep}->SetValue($is_fixed);
+    $app->OnGroupSelect(q{}, $app->{main}->{list}->GetSelection, 0);
   };
   $data->bkg_fixstep($is_fixed);
   $data->set(update_norm=>0, update_bkg=>0);

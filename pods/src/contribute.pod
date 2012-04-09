@@ -42,7 +42,7 @@ list|http://millenia.cars.aps.anl.gov/mailman/listinfo/ifeffit>.
 
 =item *
 
-Write a webpage explaining something about XAS.
+Write a web page explaining something about XAS.
 
 =item *
 
@@ -62,6 +62,10 @@ Make a video explaining how to do something with the software.
 
 Give a lecture at an XAS training course.  Post your presentation and
 any relevant data on L<http://xafs.org>.
+
+=item *
+
+Design a spiffy new web presence for Demeter.
 
 =back
 
@@ -83,7 +87,7 @@ based systems, other Linux distributions, or BSD.
 Improve the Windows installer: add more XAS-related Start menu
 options, add more perl-related Start menu options, write a better
 README file for display upon installation, fix the problems with
-relocating the installation location, figure out how to dispence with
+relocating the installation location, figure out how to dispense with
 the useless dosbox, etc.
 
 =item *
@@ -108,7 +112,7 @@ is selected.
 
 =item *
 
-Identify and fix a bug in the codes.  Submit a ptach to Bruce or issue
+Identify and fix a bug in the codes.  Submit a patch to Bruce or issue
 a pull request at L<https://github.com/bruceravel/demeter>.
 
 =item *
