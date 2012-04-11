@@ -394,7 +394,8 @@ sub _data {
       $data->DEMOLISH;
       return 0;
     };
-    $med = 1 if ($colsel->{each}->IsEnabled and $colsel->{each}->GetValue);
+    $med = ($colsel->{each}->IsEnabled and $colsel->{each}->GetValue);
+    print join("|", $med, $colsel->{each}->IsEnabled, $colsel->{each}->GetValue), $/;
     $yaml->{each}  = $colsel->{each}->GetValue;
     $yaml->{units} = $colsel->{units}->GetSelection;
     $repeated = 0;

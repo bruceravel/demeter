@@ -21,9 +21,9 @@ Most people will want to install pre-built, ready-to-run packages.
 Most people installing Demeter on a Windows machine will want to use
 the installer package.  The latest version can be found at
 L<https://github.com/bruceravel/demeter/downloads>.  Download,
-donle-click, follow the instructions.  It should be that simple.
+double-click, follow the instructions.  It should be that simple.
 
-=item B<Debian, Ubuntu, and debian-based linux>
+=item B<Debian, Ubuntu, and Debian-based Linux>
 
 (Information will be forthcoming)
 
@@ -49,7 +49,7 @@ The instructions for installing the Demeter source code on a Linux
 machine are not trivial, but also not difficult. If you follow these
 instructions patiently, everything will work. The main issue is the
 large number of dependencies. The instructions on this page should
-work on any flavor of linux, any other unix, and probably OSX as
+work on any flavor of Linux, any other Unix, and probably OSX as
 well. Everything here except for installing Ifeffit and PGPLOT will
 work on a Windows machine with Strawberry perl.
 
@@ -68,7 +68,7 @@ Demeter is written in perl. B<You must install perl on your
 computer>. On Ubuntu, the package name is simply "perl". (My computers
 are all Ubuntu, hence all of my hints about packages that need
 installing refer to the Ubuntu package names.  Package names on other
-systems are likley to be similar.)  You must use at least perl 5.10.
+systems are likely to be similar.)  You must use at least perl 5.10.
 Some "enterprise" versions of Linux (notably Red Hat based ones like
 RHEL, CentOS, and Scientific Linux) may ship with an ancient version
 of perl.  Demeter will not run under perl 5.6 or 5.8.  You B<will>
@@ -123,7 +123,7 @@ Do C<sudo make install>
 =back
 
 On my Ubuntu machine, the following development libraries are needed
-to get Ifeffit and PGPLOT compiled. On other flavors of linux, these
+to get Ifeffit and PGPLOT compiled. On other flavors of Linux, these
 packages might be called by different names, but hopefully this list
 will help you resolve which packages are needed.
 
@@ -173,7 +173,7 @@ to download future modifications to the code.
 
 =item *
 
-Grab the most recent archive file containing the Demeter soruce code.
+Grab the most recent archive file containing the Demeter source code.
 Go to L<https://github.com/bruceravel/demeter/downloads> and click on
 one of the download buttons near the top of the page to get either the
 F<tar.gz> or F<.zip> archive file containing the entire source code.
@@ -231,7 +231,7 @@ Demeter. (However, if you do not have Gnuplot on you computer, answer
 "no" to the question about Graphics::GnuplotIF.  But, really, use
 Gnuplot.  Your Demeter experience will be much better.)
 
-In my experience, all dependencies install smoothly on recent linux
+In my experience, all dependencies install smoothly on recent Linux
 installations.  They also all install smoothly under L<Strawberry
 Perl|http://strawberryperl.com/> on Windows.  If there are any
 failures, you will need to track down the problems and fix them in
@@ -279,7 +279,7 @@ with
 
    ./configure --prefix=/path/to/installation/location
 
-Here you need to specify a location in your own diskspace in which to
+Here you need to specify a location in your own disk space in which to
 install Ifeffit and all the rest.  I'd recommend something like
 C<$HOME/local>.  You will also need to put C<$HOME/local/bin/> in your
 execution path, which can be done by adding this to your F<.bashrc> file:
@@ -287,7 +287,7 @@ execution path, which can be done by adding this to your F<.bashrc> file:
    export PATH=$PATH:$HOME/local/bin/
 
 Even if you are installing Demeter without root, it is probably easier
-to get Ifeffit and PGPLOT installed system-wide. On a debian-based
+to get Ifeffit and PGPLOT installed system-wide. On a Debian-based
 system, even better would be to install Carlo Segre's pre-built
 versions of Ifeffit and PGPLOT by following the instructions at
 L<http://debian-xray.iit.edu/>.
@@ -319,12 +319,12 @@ Once L<local::lib> is installed, follow all the instructions in Steps
 3a, 3b, and 4, except that you now do not need to install using
 C<sudo> (that is, type the command as given, but without "sudo").  The
 whole point of installing L<local::lib> is to be able to install all
-of this software in your own diskspace without needing root
+of this software in your own disk space without needing root
 privileges.
 
 =head2 Working behind a proxy server
 
-Each of the steps that involves going out onto the big, bad internet
+Each of the steps that involves going out onto the big, bad Internet
 will require special configuration if you are working from behind a
 proxy server.
 

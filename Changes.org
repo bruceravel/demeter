@@ -5,7 +5,7 @@
 
 * Initial release
 
-** 0.9.9 ?? March 2012
+** 0.9.9 9 April 2012
 *** Athena
    - Delay laying out most windows until needed for the first time.
      This speed up startup at the cost of a bit more time later on.
@@ -33,6 +33,9 @@
      parameter for color of frozen group display + button
    - Display of peak fitting page is functuional (but not quite right)
      even on Windows.
+   - Fixed a column selection bug involving the "import each channel"
+     button
+   - Edge step was not reliably updated after a new plot
 
 *** Artemis
    - Fixed (mostly) a bug laying out Atoms/Feff notebook tabs when
