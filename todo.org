@@ -3,7 +3,7 @@
 #+EMAIL: bravel AT bnl DOT gov
 
 * things that need doing
-
+  
 ** Moose issues
 
 ** wx issues
@@ -12,7 +12,10 @@
         https://bugs.launchpad.net/ubuntu/+source/gtk+2.0/+bug/558674 for more info
         Turns out this is a gtk problem -- I can make the same thing happen with Firefox!
 
-** installation issues [/]
+** installation issues [0/1]
+  - [ ] Relocation needs testing on Windows, need to make sure that
+        the executables can all be found, also need to be able to find
+        all of Ifeffit CL and CAPS files.
 
 ** Demeter bugs, shortcomings, missing features  [2/17] [11%]
   - [ ] in =Demeter::Data::IO::save_many=, why doesn't updating in n specifying "background" not work to bring data up to date?  (fft, i.e. doing autobk, does work)
@@ -359,12 +362,19 @@
 
 ** Feff
 
+*** To Do
+
+ + Need a useful error message in case where potph, for some reason,
+   does not generate the ~phase.bin~ file.  It shoudl also *not* go
+   ahead and do the pathfinder in that case.
+
 *** Feff8 is unsupported except as an Atoms output type
 
 *** Five and six legged paths
 [[file:examples/h12213.cif][This CIF file]] is an example of a structure that has five and six
 legged nearly collinear scattering paths at around 4 Angstroms.  It
-has metal atoms bridged by cyanide (CN).
+has metal atoms bridged by cyanide (CN), like Prussian Blue (see for
+instance [[http://dx.DOI.org/10.1021/ic50177a008]])
 
 
 * Ifeffit
