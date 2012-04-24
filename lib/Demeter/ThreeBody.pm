@@ -253,7 +253,7 @@ Demeter::ThreeBody - Multiple scattering from an arbitrary three-body configurat
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.9.
+This documentation refers to Demeter version 0.9.10.
 
 =head1 SYNOPSIS
 

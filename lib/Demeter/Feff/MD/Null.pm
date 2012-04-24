@@ -20,7 +20,7 @@ Demeter::Feff::MD::DL_POLY - Fallback role for Demeter's histogram subsystem
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.9.
+This documentation refers to Demeter version 0.9.10.
 
 =head1 DESCRIPTION
 
