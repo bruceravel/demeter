@@ -5,7 +5,14 @@
 
 * Initial release
 
-** 0.9.9 9 April 2012
+** 0.9.10 ?? May 2012
+*** Athena
+
+*** Artemis
+   - Display a useful error message when the phase.bin file is not
+     computed correctly.  Also clear and do not display intrp tab.
+
+** 0.9.9 20 April 2012
 *** Athena
    - Delay laying out most windows until needed for the first time.
      This speed up startup at the cost of a bit more time later on.

@@ -200,6 +200,17 @@ sub ACTION_touch_wrapper {
   copy(File::Spec->catfile('src', 'Ifeffit.so'), File::Spec->catfile($ENV{HOME}, 'perl', 'auto', 'Ifeffit', 'Ifeffit.so'));
 };
 
+sub ACTION_bump {
+  my $self = shift;
+  (my $v = $self->dist_version) =~ s{\Av}{}; # strip letter v from beginning of version number
+  my $ret = $self->do_system(qw(perl-reversion -bump), "--current=$v");
+};
+sub ACTION_bump_dryrun {
+  my $self = shift;
+  (my $v = $self->dist_version) =~ s{\Av}{}; # strip letter v from beginning of version number
+  my $ret = $self->do_system(qw(perl-reversion -bump), "--current=$v", '-dryrun');
+};
+
 ######################################################################
 ## tools
 

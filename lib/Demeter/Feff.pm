@@ -31,6 +31,7 @@ with 'Demeter::UI::Screen::Pause' if ($Demeter::mode->ui eq 'screen');
 if ($Demeter::mode->ui eq 'screen') {
   with 'Demeter::UI::Screen::Progress';
 };
+use Demeter::Return;
 
 use Capture::Tiny qw(capture);
 use Carp;
@@ -183,7 +184,7 @@ has 'iobuffer' => (
 has 'save'     => (is=>'rw', isa => 'Bool',    default => 1);
 has 'problems' => (is=>'rw', isa => 'HashRef', default => sub{ {} });
 
-has 'inp_is_feff8' => (is=>'rw', isa => 'Bool', default => 0);
+has 'feff_version' => (is=>'rw', isa => 'Int', default => 6);
 
 sub BUILD {
   my ($self, @params) = @_;
@@ -331,8 +332,8 @@ sub rdinp {
     };
   };
   close $INP;
-  $self->inp_is_feff8(1) if any {$_ =~ m{scf|exafs|xanes|ldos}} @{$self->othercards};
-  $self->inp_is_feff8(1) if $nmodules > 4;
+  $self->feff_version(8) if any {$_ =~ m{scf|exafs|xanes|ldos}} @{$self->othercards};
+  $self->feff_version(8) if $nmodules > 4;
 
   my %problems = (used_not_defined     => 0,
 		  defined_not_used     => 0,
@@ -428,13 +429,14 @@ sub check_workspace {
 
 sub run {
   my ($self) = @_;
-  $self->potph;
-  $self->pathfinder;
+  my $ret = $self->potph;
+  $ret = $self->pathfinder;
   return $self;
 };
 
 sub potph {
   my ($self) = @_;
+  my $ret = Demeter::Return->new;
   $self->check_workspace;
 
   ## write a feff.inp for the first module
@@ -972,7 +974,7 @@ override serialization => sub {
   my %cards = ();
   foreach my $key (qw(abs_index edge s02 rmax name nlegs npaths rmultiplier pcrit ccrit
 		      workspace screen buffer save fuzz betafuzz eta_suppress miscdat
-		      group hidden source)) {
+		      group hidden source feff_version)) {
     $cards{$key} = $self->$key;
   };
   $cards{zzz_arrays} = "titles othercards potentials absorber sites";

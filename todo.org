@@ -364,9 +364,7 @@
 
 *** To Do
 
- + Need a useful error message in case where potph, for some reason,
-   does not generate the ~phase.bin~ file.  It shoudl also *not* go
-   ahead and do the pathfinder in that case.
+ + +Need a useful error message in case where potph, for some reason, does not generate the ~phase.bin~ file.  It shoudl also *not* go ahead and do the pathfinder in that case.+
 
 *** Feff8 is unsupported except as an Atoms output type
 
