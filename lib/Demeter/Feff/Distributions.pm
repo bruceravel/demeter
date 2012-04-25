@@ -36,9 +36,12 @@ if ($Demeter::mode->ui eq 'screen') {
   with 'Demeter::UI::Screen::Pause';
   with 'Demeter::UI::Screen::Progress';
 };
-with 'Demeter::Feff::Distributions::SS';
+with 'Demeter::Feff::DistributionsP::SS';
 
 use List::Util qw{sum};
+use PDL::Lite;
+use PDL::NiceSlice;
+
 
 has '+plottable' => (default => 1);
 has '+name'      => (default => 'histogram');
@@ -55,6 +58,7 @@ has 'file'      => (is => 'rw', isa => 'Str', default => q{},
 				    };
 				  });
 has 'clusters'    => (is => 'rw', isa => 'ArrayRef', default => sub{[]});
+has 'clusterspdl' => (is => 'rw', isa => 'PDL', default => sub{PDL::null});
 
 enum 'HistogramBackends' => ['dl_poly', 'vasp', 'lammps'];
 coerce 'HistogramBackends',
@@ -87,11 +91,11 @@ coerce 'HistogramTypes',
 has 'type'  => (is => 'rw', isa => 'HistogramTypes', coerce => 1, default => 'ss',
 		trigger => sub{my ($self, $new) = @_;
 			       if ($new eq 'ss') {
-				 eval {apply_all_roles($self, 'Demeter::Feff::Distributions::SS')};
-				 $@ and die("Histogram configuration Demeter::Feff::Distributions::SS could not be loaded");
+				 eval {apply_all_roles($self, 'Demeter::Feff::DistributionsP::SS')};
+				 $@ and die("Histogram configuration Demeter::Feff::DistributionsP::SS could not be loaded");
 			       } elsif ($new eq 'ncl') {
-				 eval {apply_all_roles($self, 'Demeter::Feff::Distributions::NCL')};
-				 $@ and die("Histogram configuration Demeter::Feff::Distributions::NCL could not be loaded");
+				 eval {apply_all_roles($self, 'Demeter::Feff::DistributionsP::NCL')};
+				 $@ and die("Histogram configuration Demeter::Feff::DistributionsP::NCL could not be loaded");
 			       } elsif ($new eq 'thru') {
 				 eval {apply_all_roles($self, 'Demeter::Feff::Distributions::Thru')};
 				 $@ and die("Histogram configuration Demeter::Feff::Distributions::Thru could not be loaded");

@@ -673,6 +673,7 @@ sub serialization {
 
 sub serialize {
   my ($self, $fname) = @_;
+  die("cannot write serialization to $fname\n") if not -w dirname($fname);
   open my $F, '>'.$fname;
   print $F $self->serialization;
   close $F;

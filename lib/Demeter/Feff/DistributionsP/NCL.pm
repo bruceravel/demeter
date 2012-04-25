@@ -1,4 +1,4 @@
-package Demeter::Feff::Distributions::NCL;
+package Demeter::Feff::DistributionsP::NCL;
 use Moose::Role;
 use MooseX::Aliases;
 
@@ -8,6 +8,9 @@ use Demeter::NumTypes qw( Ipot );
 
 use Chemistry::Elements qw (get_Z get_name get_symbol);
 use String::Random qw(random_string);
+
+use PDL::Lite;
+use PDL::NiceSlice;
 
 ## nearly collinear DS and TS historgram attributes
 has 'skip'      => (is => 'rw', isa => 'Int', default => 50,);
@@ -47,70 +50,34 @@ sub _bin {
 
   $self->start_spinner(sprintf("Rebinning three-body configurations into %.3f A x %.2f deg bins", $self->rbin, $self->betabin)) if ($self->mo->ui eq 'screen');
 
-  ## slice the configurations in R
-  my @slices = ();
-  my @this   = ();
-  my $r_start = $self->nearcl->[0]->[0];
-  my $aa = 0;
-  foreach my $tb (@{$self->nearcl}) {
-    my $rr = $tb->[0];
-    if (($rr - $r_start) > $self->rbin) {
-      push @slices, [@this];
-      $r_start += $self->rbin;
-      $#this=-1;
-      push @this, $tb;
-    } else {
-      push @this, $tb;
-    };
-    ++$aa;
-  };
-  push @slices, [@this];
-  #print ">>>>>>>>", $#slices+1, $/;
+  my $ncl = PDL->new($self->nearcl)->((0),:,:);
 
-  ## pixelate each slice in angle
-  my @plane = ();
-  my @pixel = ();
-  my $bb = 0;
-  foreach my $sl (@slices) {
-    my @slice = sort {$a->[4] <=> $b->[4]} @$sl; # sort by angle within this slice in R
-    my $beta_start = 0;
-    @pixel = ();
-    foreach my $tb (@slice) {
-      my $beta = $tb->[4];
-      if (($beta - $beta_start) > $self->betabin) {
-	push @plane, [@pixel];
-	$beta_start += $self->betabin;
-	@pixel = ();
-	push @pixel, $tb;
-      } else {
-	push @pixel, $tb;
-      };
-      ++$bb;
-    };
-    push @plane, [@pixel];
-  };
-  ##print ">>>>>>>>", $#plane+1, $/;
+  my $halflengths = $ncl->((0),:);
+  my $betavalues  = $ncl->((4),:);
 
-  ## compute the population and average distance and angle of each pixel
-  my @binned_plane = ();
-  my ($r, $b, $l1, $l2, $count, $total) = (0, 0, 0, 0);
-  my $cc = 0;
-  foreach my $pix (@plane) {
-    next if ($#{$pix} == -1);
-    ($r, $b, $l1, $l2, $count) = (0, 0, 0);
-    foreach my $tb (@{$pix}) {
-      $r  += $tb->[0];
-      $l1 += $tb->[1];
-      $l2 += $tb->[2];
-      $b  += $tb->[4];
-      ++$count;
-      ++$total;
-    };
-    $cc += $count;
-    push @binned_plane, [$r/$count, $b/$count, $l1/$count, $l2/$count, $count];
-  };
-  $self->populations(\@binned_plane);
-  $self->nbins($#binned_plane+1);
+
+  my $minlength = $halflengths->min;
+  my $nbinx = 1 + ($halflengths->max - $minlength) / $self->rbin;
+  my $nbiny = 1 + $self->beta / $self->betabin;
+
+#  print join("|", $halflengths->min, $halflengths->max, $nbinx, $nbiny), $/;
+
+
+  my $hist = PDL::Primitive::histogram2d($halflengths, $betavalues,
+					 $self->rbin,    $minlength, $nbinx,
+					 $self->betabin, 0,          $nbiny);
+
+  my ($nr, $nb) = $hist->dims;
+
+#  print $/, $hist, $/;
+  print $/, join("|", $nr, $nb), $/;
+  exit;
+
+#  my $halflengths = $self->nearcl->
+
+
+#  $self->populations(\@binned_plane);
+#  $self->nbins($#binned_plane+1);
   $self->update_bins(0);
   $self->stop_spinner if ($self->mo->ui eq 'screen');
   #   local $|=1;
@@ -118,7 +85,9 @@ sub _bin {
   # printf "stripe pass = %d   pixel pass = %d    last pass = %d\n", $aa, $bb, $cc;
   # printf "binned = %d  unbinned = %d\n", $total, $#{$self->nearcl}+1;
   return $self;
+
 };
+
 
 sub rdf {
   my ($self) = @_;
@@ -130,86 +99,61 @@ sub rdf {
   my $abs_species  = get_Z($self->feff->abs_species);
   my $scat1_species = get_Z($self->feff->potentials->[$self->ipot1]->[2]);
   my $scat2_species = get_Z($self->feff->potentials->[$self->ipot2]->[2]);
+  my @three = ();
+
+  ## trim the cluster to a slab within ZMAX from the interface (presumed to be at z=0)
+  my $select = $self->clusterspdl->(2,:)->flat->abs->lt($self->zmax, 0)->which;
+  my $zslab = $self->clusterspdl->(:, $select);
+  my ($nd, $np) = $zslab->dims;
 
 
-  $self->progress('%30b %c of %m timesteps <Time elapsed: %8t>') if (not $self->huge_cluster);
-  $self->progress('%30b %c of %m positions <Time elapsed: %8t>') if $self->huge_cluster;
+  if ($self->mo->ui eq 'screen') {
+    $self->progress('%30b %c of %m timesteps <Time elapsed: %8t>') if (not $self->huge_cluster);
+    $self->progress('%30b %c of %m positions <Time elapsed: %8t>') if $self->huge_cluster;
+  };
 
   $self->start_counter(sprintf("Making radial/angle distribution from every %d-th timestep", $self->skip),
 		       ($#{$self->clusters}+1)/$self->skip) if (($self->mo->ui eq 'screen') and (not $self->huge_cluster));
-  my ($x0, $x1, $x2, $ip) = (0,0,0,-1);
-  #my ($ax, $ay, $az) = (0,0,0);
-  my ($bx, $by, $bz) = (0,0,0);
-  #my ($cx, $cy, $cz) = (0,0,0);
-  my @rdf1  = ();
-  my @rdf4  = ();
-  my @three = ();
-  my @this  = ();
-  my $costh;
-  my $i4;
-  my $halfpath;
-  my ($ct, $st, $cp, $sp, $ctp, $stp, $cpp, $spp, $cppp, $sppp, $beta, $leg2);
-  #my $testx = 15;
-  #my $cosbetamax = cos($PI*$self->beta/180);
-  foreach my $step (@{$self->clusters}) {
-    @rdf1 = ();
-    @rdf4 = ();
 
-    $self->start_counter("Digging out 1st and 4th shells", $#{$step}+1) if (($self->mo->ui eq 'screen') and ($self->huge_cluster));
-    @this = @$step;
-    $self->timestep_count(++$count) if (not $self->huge_cluster);
-    next if (($#{$self->clusters} > $self->skip) and ($count % $self->skip)); # only process every Nth timestep
-    if (not $self->huge_cluster) {
+  my ($i, $n1, $n4, $ind, $centerpdl, $b_select, $scat, $b, $c, $rdf1, $rdf4, $ind1, $d);
+
+  my ($inrange1, $inrange4, $veca1, $vec14);
+  my $indeces = PDL::Basic::sequence($np);
+  my ($ct, $st, $cp, $sp, $ctp, $stp, $cpp, $spp, $cppp, $sppp, $beta, $leg2, $halfpath);
+
+  $self->start_counter("Digging nearly collinear paths from 1st and 4th shells", $np)
+    if (($self->mo->ui eq 'screen') and ($self->huge_cluster));
+  foreach $i (0 .. $np-1) {
+    if (not $self->count_timesteps) { # progress over positions
       $self->count if ($self->mo->ui eq 'screen');
+      $self->timestep_count(++$count);
       $self->call_sentinal;
     };
+    next if ($abs_species != $zslab->at(3,$i));
 
-    ## dig out the first and fourth coordination shells
-    foreach my $i (0 .. $#this) {
-      if ($self->huge_cluster) {
-	$self->count if ($self->mo->ui eq 'screen');
-	$self->call_sentinal;
-      };
 
-      ($x0, $x1, $x2, $ip) = @{$this[$i]};
-      next if ($abs_species != $ip);
-      next if (abs($x2) > $self->zmax); # assumes slab w/ interface at z=0
-      #next if (abs($x0) > $testx); # testing ...
-      #next if (abs($x1) > $testx); #
-      foreach my $j (0 .. $#this) {
-	next if ($i == $j);
-	next if not (($scat1_species == $this[$j]->[3]) or ($scat2_species == $this[$j]->[3]));
-	next if (abs($this[$j]->[2]) > $self->zmax); # assumes slab w/ interface at z=0
-	#next if (abs($this[$j]->[0]) > $testx); # testing ...
-	#next if (abs($this[$j]->[1]) > $testx); #
-	my $rsqr = ($x0 - $this[$j]->[0])**2
-	         + ($x1 - $this[$j]->[1])**2
-	         + ($x2 - $this[$j]->[2])**2; # this loop has been optimized for speed, hence the weird syntax
-	push @rdf1, [sqrt($rsqr), $i, $j] if (($scat1_species == $this[$j]->[3]) and ($rsqr > $r1sqr) and ($rsqr < $r2sqr));
-	push @rdf4, [sqrt($rsqr), $i, $j] if (($scat2_species == $this[$j]->[3]) and ($rsqr > $r3sqr) and ($rsqr < $r4sqr));
-      };
-    };
-    if (($self->mo->ui eq 'screen') and ($self->huge_cluster)) {
-      $self->stop_counter;
-      $self->progress('%30b %c of %m 4th shell pairs <Time elapsed: %8t>') if $self->huge_cluster;
-      $self->start_counter("Finding nearly colinear pairs", $#rdf4+1) if ($self->mo->ui eq 'screen');
-    };
+    $centerpdl = $zslab->(:,$i);
+    $b_select  = $zslab->(3,:)->flat->eq($scat1_species, 0)->which;
+    $scat      = $zslab->(:,$b_select);
+    $ind       = $indeces->($b_select);
+    $b	       = $scat->minus($centerpdl,0)->(0:2)->power(2,0)->sumover;
 
-    ## find those 1st/4th pairs that share an absorber and have a small angle between them
-    foreach my $fourth (@rdf4) {
-      $self->count if ($self->mo->ui eq 'screen');
-      $i4 = $fourth->[1];
-      foreach my $first (@rdf1) {
-	next if ($i4 != $first->[1]);
+    ## find the indeces in $scat of the first and fourth shell scatterers relative to this absorber
+    $inrange1  = $b->gt($r1sqr, 0)->and2($b->lt($r2sqr, 0), 0)->which;
+    $inrange4  = $b->gt($r3sqr, 0)->and2($b->lt($r4sqr, 0), 0)->which;
+    ## the gt/and2/lt idiom finds those in the first or fourth shell range
 
-	#($ax, $ay, $az) = ($this[ $i4          ]->[0], $this[ $i4          ]->[1], $this[ $i4          ]->[2]);
-	($bx, $by, $bz) = ($this[ $first->[2]  ]->[0], $this[ $first->[2]  ]->[1], $this[ $first->[2]  ]->[2]);
-	#($cx, $cy, $cz) = ($this[ $fourth->[2] ]->[0], $this[ $fourth->[2] ]->[1], $this[ $fourth->[2] ]->[2]);
 
-	#my @vector = ( $cx-$bx, $cy-$by, $cz-$bz);
-	($ct, $st, $cp, $sp)     = $self->_trig( $this[ $fourth->[2] ]->[0]-$bx, $this[ $fourth->[2] ]->[1]-$by, $this[ $fourth->[2] ]->[2]-$bz );
-	#@vector    = ( $bx-$ax, $by-$ay, $bz-$az);
-	($ctp, $stp, $cpp, $spp) = $self->_trig( $bx-$this[ $i4 ]->[0], $by-$this[ $i4 ]->[1], $bz-$this[ $i4 ]->[2]);
+    foreach $n1 ($inrange1->list) {
+      $veca1 = $scat->(:,$n1) -> minus($centerpdl, 0) -> (0:2);
+      #print join(", ", $n1, $veca1->list), $/;
+      foreach $n4 ($inrange4->list) {
+	$vec14 = $scat->(:,$n4) -> minus($scat->(:,$n1), 0) -> (0:2);
+	#print "    ", join(", ", $n4, $vec14->list), $/;
+
+	## compute the Eulerian beta angle (following Feff)
+	($ct, $st, $cp, $sp)     = $self->_trig( $vec14->list );
+	($ctp, $stp, $cpp, $spp) = $self->_trig( $veca1->list );
 
 	$cppp = $cp*$cpp + $sp*$spp;
 	$sppp = $spp*$cp - $cpp*$sp;
@@ -222,39 +166,31 @@ sub rdf {
 	} else {
 	  $beta = 180 * acos($beta)  / $PI;
 	};
+	#print "        beta = ", $beta, "  ", $self->beta, $/;
 	next if ($beta > $self->beta);
 
-	$leg2 = sqrt( ($bx - $this[ $fourth->[2] ]->[0])**2 +
-		      ($by - $this[ $fourth->[2] ]->[1])**2 +
-		      ($bz - $this[ $fourth->[2] ]->[2])**2 );
-	$halfpath = $leg2 + $first->[0]; # + $fourth->[0]) / 2;
-	push @three, [$halfpath, $first->[0], $leg2, $fourth->[0], $beta];
-
-	#($a0, $a1, $a2) = ($this[ $i4 ]->[0], $this[ $i4 ]->[1], $this[ $i4 ]->[2]);
-	#$costh =
- 	#  (($this[ $first->[2] ]->[0] - $a0) * ($this[ $fourth->[2] ]->[0] - $a0) +
-	#   ($this[ $first->[2] ]->[1] - $a1) * ($this[ $fourth->[2] ]->[1] - $a1) +
-	#   ($this[ $first->[2] ]->[2] - $a2) * ($this[ $fourth->[2] ]->[2] - $a2))  / ($fourth->[0] * $first->[0]);
-	#next if ($costh < $cosbetamax);
-	#$halfpath = sqrt(($first->[0]*sin(acos($costh)))**2 + ($fourth->[0]-$first->[0]*$costh)**2);
-	#push @three, [$halfpath, $first->[0], $fourth->[0], acos($costh)*180/$PI];
+	$leg2 = $vec14->power(2,0)->sumover->sqrt->sclr;
+	$halfpath = $leg2 + $b->($n1)->sqrt->sclr; # + $fourth->[0]) / 2;
+	push @three, [$halfpath, $b->($n1), $leg2, $b->($n4), $beta];
+	#print join("|", $halfpath, $b->($n1)->sclr, $leg2, $b->($n4)->sclr, $beta), $/;
       };
     };
   };
-  if ($self->mo->ui eq 'screen') {
-    $self->stop_counter;
-    $self->start_spinner("Sorting path length/angle distribution by path length");
-  };
-  @three = sort { $a->[0] <=> $b->[0] } @three;
-  $self->stop_spinner if ($self->mo->ui eq 'screen');
+
+
+  print $/, $#three, $/;
+
+
+  $self->stop_counter if ($self->mo->ui eq 'screen');
   $self->nconfig( $#three+1 );
-  #$self->nconfig( int( ($#three+1) / (($#{$self->clusters}+1) / $self->skip) + 0.5 ) );
-  # local $|=1;
-  # print "||||||| ", $self->nconfig, $/;
   $self->nearcl(\@three);
   $self->update_rdf(0);
   return $self;
 };
+
+
+
+
 
 sub chi {
   my ($self, $paths, $common) = @_;
@@ -349,7 +285,8 @@ sub chi {
   $path->randstring($randstr);
   $self->stop_counter if ($self->mo->ui eq 'screen');
   return $path;
-};
+}
+
 
 
 sub describe {
@@ -399,128 +336,3 @@ sub info {
 };
 
 1;
-
-=head1 NAME
-
-Demeter::Feff::Distributions::NCL - Histograms for nearly collinear paths
-
-=head1 VERSION
-
-This documentation refers to Demeter version 0.9.10.
-
-=head1 SYNOPSIS
-
-=head1 DESCRIPTION
-
-This provides methods for generating two-dimensional histograms in
-path length and forward scattering angle for nearly collinear
-arrangements of three atoms, like so:
-
-   Absorber ---> Scatterer ---> Scatterer
-
-Given two radial ranges for the nearer and more distant scatterers and
-bin sizes for 
-
-=head1 ATTRIBUTES
-
-=over 4
-
-=item C<file> (string)
-
-The path to and name of the HISTORY file.  Setting this will trigger
-reading of the file and construction of a histogram using the values
-of the other attributes.
-
-=item C<nsteps> (integer)
-
-When the HISTORY file is first read, it will be parsed to obtain the
-number of time steps contained in the file.  This number will be
-stored in this attribute.
-
-=item C<r1> and C<r2>; C<r3> and C<r4> (numbers)
-
-The lower and upper bounds of the radial distribution function for the
-near and distant scatterer.
-
-=item C<rbin> (number)
-
-The width of the histogram bin to be extracted from the RDF.
-
-=item C<betabin> (number)
-
-The forward scattering angular range of the histogram bin to be
-extracted from the RDF.
-
-=back
-
-=head1 METHODS
-
-=over 4
-
-=item C<fpath>
-
-Return a L<Demeter::FPath> object representing the sum of the bins of
-the histogram extracted from the cluster.
-
-=item C<plot>
-
-Make a plot of the the RDF.
-
-=back
-
-=head1 CONFIGURATION
-
-See L<Demeter::Config> for a description of the configuration system.
-Many attributes of a Data object can be configured via the
-configuration system.  See, among others, the C<bkg>, C<fft>, C<bft>,
-and C<fit> configuration groups.
-
-=head1 DEPENDENCIES
-
-Demeter's dependencies are in the F<Bundle/DemeterBundle.pm> file.
-
-=head1 SERIALIZATION AND DESERIALIZATION
-
-
-=head1 BUGS AND LIMITATIONS
-
-=over 4
-
-=item *
-
-This currently only works for a monoatomic cluster.  See rdf in SS.pm
-for species checks
-
-=item *
-
-Feff interaction is a bit unclear
-
-=item *
-
-Triangles and nearly colinear paths
-
-=back
-
-Please report problems to Bruce Ravel (bravel AT bnl DOT gov)
-
-Patches are welcome.
-
-=head1 AUTHOR
-
-Bruce Ravel (bravel AT bnl DOT gov)
-
-L<http://cars9.uchicago.edu/~ravel/software/>
-
-
-=head1 LICENCE AND COPYRIGHT
-
-Copyright (c) 2006-2012 Bruce Ravel (bravel AT bnl DOT gov). All rights reserved.
-
-This module is free software; you can redistribute it and/or
-modify it under the same terms as Perl itself. See L<perlgpl>.
-
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-
-=cut
