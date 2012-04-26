@@ -264,6 +264,7 @@ sub chi {
   my $randstr = random_string('ccccccccc').'.sp';
   my @paths = ();
   foreach my $c (@{$self->populations}) {
+    #print join(" \ ", $c->[2], $c->[3]), $/;
     push @paths, Demeter::ThreeBody->new(r1    => $c->[2],      r2    => $c->[3],
 					 ipot1 => $self->ipot1, ipot2 => $self->ipot2,
 					 beta  => $c->[1],      s02   => $c->[4]/$self->nconfig,

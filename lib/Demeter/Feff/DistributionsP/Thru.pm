@@ -1,9 +1,9 @@
-package Demeter::Feff::DistributionsP::NCL;
+package Demeter::Feff::DistributionsP::Thru;
 use Moose::Role;
 use MooseX::Aliases;
 
 use POSIX qw(acos);
-use Demeter::Constants qw($PI $R2D);
+use Demeter::Constants qw($PI);
 use Demeter::NumTypes qw( Ipot );
 
 use Chemistry::Elements qw (get_Z get_name get_symbol);
@@ -12,38 +12,46 @@ use String::Random qw(random_string);
 use PDL::Lite;
 use PDL::NiceSlice;
 
-## nearly collinear DS and TS historgram attributes
-has 'skip'      => (is => 'rw', isa => 'Int', default => 50,);
-has 'nconfig'   => (is => 'rw', isa => 'Int', default => 0, documentation => "the number of 3-body configurations found at each time step");
-has 'r1'        => (is => 'rw', isa => 'Num', default => 0.0,
-		    trigger	    => sub{ my($self, $new) = @_; $self->update_rdf(1) if $new},);
-has 'r2'        => (is => 'rw', isa => 'Num', default => 3.5,
-		    trigger	    => sub{ my($self, $new) = @_; $self->update_rdf(1) if $new},);
-has 'r3'        => (is => 'rw', isa => 'Num', default => 5.2,
-		    trigger	    => sub{ my($self, $new) = @_; $self->update_rdf(1) if $new},);
-has 'r4'        => (is => 'rw', isa => 'Num', default => 5.7,
-		    trigger	    => sub{ my($self, $new) = @_; $self->update_rdf(1) if $new},);
-has 'beta'      => (is => 'rw', isa => 'Num', default => 20,
-		    trigger	    => sub{ my($self, $new) = @_; $self->update_rdf(1) if $new},);
-has 'rbin'      => (is            => 'rw',
-		    isa           => 'Num',
-		    default       => 0.02,
-		    trigger	  => sub{ my($self, $new) = @_; $self->update_bins(1) if $new},);
-has 'betabin'   => (is            => 'rw',
-		    isa           => 'Num',
-		    default       => 0.5,
-		    trigger	  => sub{ my($self, $new) = @_; $self->update_bins(1) if $new},);
+has 'skip'    => (is => 'rw', isa => 'Int', default => 50,
+		  trigger       => sub{ my($self, $new) = @_; $self->update_rdf(1) if $new},);
+has 'nconfig' => (is => 'rw', isa => 'Int', default => 0, documentation => "the number of 3-body configurations found at each time step");
+has 'rmin'    => (is	        => 'rw',
+		  isa	        => 'Num',
+		  default       => 0.0,
+		  traits => ['MooseX::Aliases::Meta::Trait::Attribute'],
+		  alias         => 'r1',
+		  trigger       => sub{ my($self, $new) = @_; $self->update_rdf(1) if $new},
+		  documentation => "The lower bound of the through-absorber histogram to be extracted from the cluster");
+has 'rmax'    => (is 	        => 'rw',
+		  isa 	        => 'Num',
+		  default       => 5.6,
+		  traits => ['MooseX::Aliases::Meta::Trait::Attribute'],
+		  alias         => 'r2',
+		  trigger       => sub{ my($self, $new) = @_; $self->update_rdf(1) if $new},
+		  documentation => "The upper bound of the through-absorber histogram to be extracted from the cluster");
 
-has 'ipot'      => (is => 'rw', isa => Ipot, default => 1,
-		    traits  => ['MooseX::Aliases::Meta::Trait::Attribute'],
-		    alias   => 'ipot1',
-		    trigger => sub{ my($self, $new) = @_; $self->update_rdf(1) if $new});
-has 'ipot2'     => (is => 'rw', isa => Ipot, default => 1,
-		    trigger => sub{ my($self, $new) = @_; $self->update_rdf(1) if $new}, );
+has 'beta'    => (is => 'rw', isa => 'Num', default => 20,
+		  trigger       => sub{ my($self, $new) = @_; $self->update_rdf(1) if $new},);
+has 'ipot'    => (is => 'rw', isa => Ipot, default => 1,
+		  traits => ['MooseX::Aliases::Meta::Trait::Attribute'],
+		  alias => 'ipot1',
+		  trigger       => sub{ my($self, $new) = @_; $self->update_rdf(1) if $new});
+has 'ipot2'   => (is => 'rw', isa => Ipot, default => 1,
+		  trigger       => sub{ my($self, $new) = @_; $self->update_rdf(1) if $new},);
+has 'nearcl'  => (is => 'rw', isa => 'ArrayRef', default => sub{[]});
 
-has 'nearcl'    => (is => 'rw', isa => 'ArrayRef', default => sub{[]});
+has 'rbin'    => (is            => 'rw',
+		  isa           => 'Num',
+		  default       => 0.02,
+		  trigger	=> sub{ my($self, $new) = @_; $self->update_bins(1) if $new},);
+has 'betabin' => (is            => 'rw',
+		  isa           => 'Num',
+		  default       => 0.5,
+		  trigger	=> sub{ my($self, $new) = @_; $self->update_bins(1) if $new},);
 
 has 'huge_cluster' => (is => 'rw', isa => 'Bool', default => 0);
+
+
 
 sub _bin {
   my ($self) = @_;
@@ -59,9 +67,6 @@ sub _bin {
   my $minlength = $halflengths->min;
   my $nbinx = 1 + ($halflengths->max - $minlength) / $self->rbin;
   my $nbiny = 1 + $self->beta / $self->betabin;
-
-#  print join("|", $halflengths->min, $halflengths->max, $nbinx, $nbiny), $/;
-
 
   my $hist = PDL::Primitive::histogram2d($halflengths, $betavalues,
 					 $self->rbin,    $minlength, $nbinx,
@@ -94,13 +99,13 @@ sub _bin {
 };
 
 
+
+
 sub rdf {
   my ($self) = @_;
   my $count = 0;
-  my $r1sqr = $self->r1**2;
-  my $r2sqr = $self->r2**2;
-  my $r3sqr = $self->r3**2;
-  my $r4sqr = $self->r4**2;
+  my $r1sqr = $self->rmin**2;
+  my $r2sqr = $self->rmax**2;
   my $abs_species  = get_Z($self->feff->abs_species);
   my $scat1_species = get_Z($self->feff->potentials->[$self->ipot1]->[2]);
   my $scat2_species = get_Z($self->feff->potentials->[$self->ipot2]->[2]);
@@ -111,7 +116,6 @@ sub rdf {
   my $zslab = $self->clusterspdl->(:, $select);
   my ($nd, $np) = $zslab->dims;
 
-
   if ($self->mo->ui eq 'screen') {
     $self->progress('%30b %c of %m timesteps <Time elapsed: %8t>') if (not $self->huge_cluster);
     $self->progress('%30b %c of %m positions <Time elapsed: %8t>') if $self->huge_cluster;
@@ -120,13 +124,11 @@ sub rdf {
   $self->start_counter(sprintf("Making radial/angle distribution from every %d-th timestep", $self->skip),
 		       ($#{$self->clusters}+1)/$self->skip) if (($self->mo->ui eq 'screen') and (not $self->huge_cluster));
 
-  my ($i, $n1, $n4, $centerpdl, $b_select, $scat, $b, $c, $rdf1, $rdf4, $ind1, $d);
-
-  my ($inrange1, $inrange4, $veca1, $vec14);
-  #my $indeces = PDL::Basic::sequence($np);
+  my ($i, $n1, $n2, $centerpdl, $b_select, $scat, $b, $c);
+  my ($inrange1, $inrange2, $vec1a, $veca2);
   my ($ct, $st, $cp, $sp, $ctp, $stp, $cpp, $spp, $cppp, $sppp, $beta, $leg2, $halfpath);
 
-  $self->start_counter("Digging nearly collinear paths from 1st and 4th shells", $np)
+  $self->start_counter("Digging nearly collinear paths from 1st shell through absorber", $np)
     if (($self->mo->ui eq 'screen') and ($self->huge_cluster));
   foreach $i (0 .. $np-1) {
     if (not $self->count_timesteps) { # progress over positions
@@ -145,20 +147,20 @@ sub rdf {
 
     ## find the indeces in $scat of the first and fourth shell scatterers relative to this absorber
     $inrange1  = $b->gt($r1sqr, 0)->and2($b->lt($r2sqr, 0), 0) ->and2($scat->(3,:)->flat->eq($scat1_species, 0), 0) ->which;
-    $inrange4  = $b->gt($r3sqr, 0)->and2($b->lt($r4sqr, 0), 0) ->and2($scat->(3,:)->flat->eq($scat2_species, 0), 0) ->which;
+    $inrange2  = $b->gt($r1sqr, 0)->and2($b->lt($r2sqr, 0), 0) ->and2($scat->(3,:)->flat->eq($scat2_species, 0), 0) ->which;
     ## the gt/and2/lt idiom finds those in the first or fourth shell range
     ## the second and2 selects those of the correct atoms type
     ## finally, `which' returns the indeces in $scat that meet all those criteria
 
 
     foreach $n1 ($inrange1->list) {
-      $veca1 = $scat->(:,$n1) -> minus($centerpdl, 0) -> (0:2); # vector from absorber to near shell scatterer
-      foreach $n4 ($inrange4->list) {
-	$vec14 = $scat->(:,$n4) -> minus($scat->(:,$n1), 0) -> (0:2); # vector from absorber to distant shell scatterer
+      $vec1a = $centerpdl -> minus($scat->(:,$n1), 0) -> (0:2); # vector from near shell scatterer to absorber
+      foreach $n2 ($inrange2->list) {
+	$veca2 = $scat->(:,$n2) -> minus($centerpdl, 0) -> (0:2); # vector from absorber to other scatterer
 
 	## compute the Eulerian beta angle between them (following Feff)
-	($ct, $st, $cp, $sp)     = $self->_trig( $vec14->list );
-	($ctp, $stp, $cpp, $spp) = $self->_trig( $veca1->list );
+	($ct, $st, $cp, $sp)     = $self->_trig( $vec1a->list );
+	($ctp, $stp, $cpp, $spp) = $self->_trig( $veca2->list );
 
 	$cppp = $cp*$cpp + $sp*$spp;
 	$sppp = $spp*$cp - $cpp*$sp;
@@ -174,13 +176,14 @@ sub rdf {
 	#print "        beta = ", $beta, "  ", $self->beta, $/;
 	next if ($beta > $self->beta);
 
-	$leg2 = $vec14->power(2,0)->sumover->sqrt->sclr;
+	$leg2 = $veca2->power(2,0)->sumover->sqrt->sclr;
 	$halfpath = $leg2 + $b->($n1)->sqrt->sclr; # + $fourth->[0]) / 2;
-	push @three, [$halfpath, $b->($n1)->sqrt->sclr, $leg2, $b->($n4)->sqrt->sclr, $beta];
-	#print join("|", $halfpath, $b->($n1)->sqrt->sclr, $leg2, $b->($n4)->sqrt->sclr, $beta), $/;
+	push @three, [$halfpath, $b->($n1)->sqrt->sclr, 0, $b->($n2)->sqrt->sclr, $beta];
+	#print join("|", $halfpath, $b->($n1)->sqrt->sclr, 0, $b->($n2)->sqrt->sclr, $beta), $/;
       };
     };
   };
+
 
   $self->stop_counter if ($self->mo->ui eq 'screen');
   $self->nconfig( $#three+1 );
@@ -190,34 +193,30 @@ sub rdf {
 };
 
 
-
-
-
 sub chi {
   my ($self, $paths, $common) = @_;
   $self->start_counter("Making FPath from radial/angle distribution", $#{$self->populations}+1) if ($self->mo->ui eq 'screen');
   #$self->start_spinner("Making FPath from path length/angle distribution") if ($self->mo->ui eq 'screen');
 
-  my $randstr = random_string('ccccccccc').'.sp';
   my @paths = ();
+  my $randstr = random_string('ccccccccc').'.sp';
   #my $total = 0;
   foreach my $c (@{$self->populations}) {
     ## we are going to assume that this shallow triangle is isosceles,
     ## so compute r1 and r2 from the supplied half path length and
     ## beta (ignoring items 2 and 3 in these lists)
-    #print join(" \ ", $c->[0]/2, $c->[0]*sin((90-$c->[1]/2)/$R2D)), $/;
-    #$c->[0]*sin((90-$c->[1]/2)/$R2D),
     push @paths, Demeter::ThreeBody->new(r1    => $c->[0]/2,    r2    => $c->[0]/2,
 					 ipot1 => $self->ipot1, ipot2 => $self->ipot2,
 					 beta  => $c->[1],      s02   => $c->[4]/$self->nconfig,
 					 parent=> $self->feff,
 					 update_path => 1,
-					 through => 0,
+					 through => 1,
 					 randstring => $randstr,
 					 @$common);
     #$total += $c->[4]/$self->nconfig;
   };
   #print $/, $/, $total, $/, $/;
+
   my $index = $self->mo->pathindex;
 
   my $first = $paths[0];
@@ -285,7 +284,7 @@ sub chi {
 				   degen     => 1,
 				   @$common
 				  );
-  my $name = sprintf("Histo NCL Abs-%s-%s (%.3f)",
+  my $name = sprintf("Histo Through %s-Abs-%s (%.3f)",
 		     $self->feff->potentials->[$self->ipot1]->[2],
 		     $self->feff->potentials->[$self->ipot2]->[2],
 		     $path->reff);
@@ -295,12 +294,10 @@ sub chi {
   return $path;
 }
 
-
-
 sub describe {
   my ($self, $composite) = @_;
-  my $text = sprintf("\n\nnearly collinear three body configurations with the near atom between %.3f and %.3f A\nthe distant atom between %.3f and %.3f A\nbinned into %.4f A x %.4f deg bins",
-		     $self->get(qw{r1 r2 r3 r4 rbin betabin}));
+  my $text = sprintf("\n\nthree body configurations through the absorber with both atoms between %.3f and %.3f A\nbinned into %.4f A x %.4f deg bins",
+		     $self->get(qw{rmin rmax rbin betabin}));
   $composite->pdtext($text);
 };
 
@@ -327,7 +324,6 @@ sub plot {
   return $self;
 };
 
-
 sub info {
   my ($self) = @_;
   my $text = sprintf "Made histogram from %s file '%s'\n\n", uc($self->backend), $self->file;
@@ -344,3 +340,141 @@ sub info {
 };
 
 1;
+
+=head1 NAME
+
+Demeter::Feff::DistributionsP::Thru - Histograms for MS paths through the absorber
+
+=head1 VERSION
+
+This documentation refers to Demeter version 0.9.10.
+
+=head1 SYNOPSIS
+
+Construct a multiple scattering histogram for nearly collinear paths
+through the absorber.  This version of this module uses PDL.
+
+=head1 DESCRIPTION
+
+This provides methods for generating two-dimensional histograms in
+path length and forward scattering angle for nearly collinear
+arrangements of three atoms, like so:
+
+   Scatterer --- Absorber --- Scatterer
+
+Given radial ranges for the near neighbor scatterer and its ipot,
+compute a two-dimensional histogram in half-path-length and scattering
+angle through the absorber.
+
+=head1 ATTRIBUTES
+
+=over 4
+
+=item C<file> (string)
+
+The path to and name of the HISTORY file.  Setting this will trigger
+reading of the file and construction of a histogram using the values
+of the other attributes.
+
+=item C<nsteps> (integer)
+
+When the HISTORY file is first read, it will be parsed to obtain the
+number of time steps contained in the file.  This number will be
+stored in this attribute.
+
+=item C<rmin> and C<rmax> (numbers)
+
+The lower and upper bounds of the radial distribution function to
+extract from the cluster.
+
+=item C<rbin> (number)
+
+The width of the histogram bin to be extracted from the RDF.
+
+=item C<betabin> (number)
+
+The forward scattering angular range through the absorber of the
+histogram bin to be extracted from the RDF.
+
+=item C<sp> (number)
+
+This is set to the L<Demeter::ScatteringPath> object used to construct
+the bins of the histogram.  A good choice would be the similar path
+from a Feff calculation on the bulk, crystalline analog to your
+cluster.
+
+=back
+
+=head1 METHODS
+
+=over 4
+
+=item C<fpath>
+
+Return a L<Demeter::FPath> object representing the sum of the bins of
+the histogram extracted from the cluster.
+
+=item C<plot>
+
+Make a plot of the the RDF.
+
+=back
+
+=head1 CONFIGURATION
+
+See L<Demeter::Config> for a description of the configuration system.
+Many attributes of a Data object can be configured via the
+configuration system.  See, among others, the C<bkg>, C<fft>, C<bft>,
+and C<fit> configuration groups.
+
+=head1 DEPENDENCIES
+
+Demeter's dependencies are in the F<Bundle/DemeterBundle.pm> file.
+
+=head1 SERIALIZATION AND DESERIALIZATION
+
+
+=head1 BUGS AND LIMITATIONS
+
+=over 4
+
+=item *
+
+This currently only works for a monoatomic cluster.  See rdf in SS.pm
+for species checks
+
+=item *
+
+Feff interaction is a bit unclear
+
+=item *
+
+Triangles and nearly colinear paths
+
+=back
+
+Please report problems to Bruce Ravel (bravel AT bnl DOT gov)
+
+Patches are welcome.
+
+=head1 AUTHOR
+
+Bruce Ravel (bravel AT bnl DOT gov)
+
+L<http://cars9.uchicago.edu/~ravel/software/>
+
+
+=head1 LICENCE AND COPYRIGHT
+
+Copyright (c) 2006-2012 Bruce Ravel (bravel AT bnl DOT gov). All rights reserved.
+
+This module is free software; you can redistribute it and/or
+modify it under the same terms as Perl itself. See L<perlgpl>.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+
+=cut
+
+

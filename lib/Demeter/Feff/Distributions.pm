@@ -97,8 +97,8 @@ has 'type'  => (is => 'rw', isa => 'HistogramTypes', coerce => 1, default => 'ss
 				 eval {apply_all_roles($self, 'Demeter::Feff::DistributionsP::NCL')};
 				 $@ and die("Histogram configuration Demeter::Feff::DistributionsP::NCL could not be loaded");
 			       } elsif ($new eq 'thru') {
-				 eval {apply_all_roles($self, 'Demeter::Feff::Distributions::Thru')};
-				 $@ and die("Histogram configuration Demeter::Feff::Distributions::Thru could not be loaded");
+				 eval {apply_all_roles($self, 'Demeter::Feff::DistributionsP::Thru')};
+				 $@ and die("Histogram configuration Demeter::Feff::DistributionsP::Thru could not be loaded");
 			       } else {
 				 eval {apply_all_roles($self, 'Demeter::Feff::Distributions::'.$new)};
 				 $@ and die("Histogram configuration Demeter::Feff::Distributions::$new does not exist");

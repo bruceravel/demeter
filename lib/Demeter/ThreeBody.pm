@@ -323,7 +323,7 @@ beplotted.  When added to a VPath, both will be added.
 
 The length of the leg between the absorber and the nearer atom.
 
-=item C<r1>
+=item C<r2>
 
 The length of the leg between the nearer atom and the more distant
 atom.
