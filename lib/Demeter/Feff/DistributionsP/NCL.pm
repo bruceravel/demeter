@@ -104,13 +104,15 @@ sub rdf {
   my $abs_species  = get_Z($self->feff->abs_species);
   my $scat1_species = get_Z($self->feff->potentials->[$self->ipot1]->[2]);
   my $scat2_species = get_Z($self->feff->potentials->[$self->ipot2]->[2]);
+  $self->computing_rdf(1);
   my @three = ();
+  $self->npositions($self->clusterspdl->getdim(1)); # !!! need to generalize for timesteps !!!
 
   ## trim the cluster to a slab within ZMAX from the interface (presumed to be at z=0)
   my $select = $self->clusterspdl->(2,:)->flat->abs->lt($self->zmax, 0)->which;
   my $zslab = $self->clusterspdl->(:, $select);
   my ($nd, $np) = $zslab->dims;
-
+  $self->npositions($np);
 
   if ($self->mo->ui eq 'screen') {
     $self->progress('%30b %c of %m timesteps <Time elapsed: %8t>') if (not $self->huge_cluster);
@@ -123,7 +125,6 @@ sub rdf {
   my ($i, $n1, $n4, $centerpdl, $b_select, $scat, $b, $c, $rdf1, $rdf4, $ind1, $d);
 
   my ($inrange1, $inrange4, $veca1, $vec14);
-  #my $indeces = PDL::Basic::sequence($np);
   my ($ct, $st, $cp, $sp, $ctp, $stp, $cpp, $spp, $cppp, $sppp, $beta, $leg2, $halfpath);
 
   $self->start_counter("Digging nearly collinear paths from 1st and 4th shells", $np)
@@ -140,7 +141,6 @@ sub rdf {
     $centerpdl = $zslab->(:,$i);
     $b_select  = $zslab->(3,:)->flat->eq($scat1_species, 0) -> or2($zslab->(3,:)->flat->eq($scat2_species, 0), 0) ->which;
     $scat      = $zslab->(:,$b_select);
-    #$ind       = $indeces->($b_select);
     $b	       = $scat->minus($centerpdl,0)->(0:2)->power(2,0)->sumover;
 
     ## find the indeces in $scat of the first and fourth shell scatterers relative to this absorber
@@ -185,6 +185,7 @@ sub rdf {
   $self->stop_counter if ($self->mo->ui eq 'screen');
   $self->nconfig( $#three+1 );
   $self->nearcl(\@three);
+  $self->computing_rdf(0);
   $self->update_rdf(0);
   return $self;
 };

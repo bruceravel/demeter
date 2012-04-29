@@ -83,7 +83,7 @@
     2. deconvolution
     3. +PCA+
 
-*** needs doing [9/20] [45%]
+*** needs doing [10/22] [45%]
    - [X] deglitching crashes with gnuplot
    - [X] test preprocessing (I had a crash with all three preproc options selected for data with a reference):
 	 ~Can't call method "GetSelection" on an undefined value at /home/bruce/git/demeter/lib/Demeter/UI/Athena/IO.pm line 423.~
@@ -93,7 +93,9 @@
    - [ ] beter error handling in plugins -- specifically need to do a
          better job of trapping errors in the ~fix~ method.  Perhaps
          ~fix~ should always be called within an ~eval~?
-   - [ ] implement frozen groups
+   - [X] implement frozen groups
+   - [ ] report to a text dialog on values of a particular parameter for all/marked groups
+   - [ ] implement megamerge
    - [ ] links to documentation on each tool
    - [X] Post a warning if bkg_e0=0 and/or element is <= Be
    - [-] *Main window* [1/3] [33%]

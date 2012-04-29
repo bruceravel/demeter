@@ -45,7 +45,6 @@ use PDL::NiceSlice;
 
 has '+plottable' => (default => 1);
 has '+name'      => (default => 'histogram');
-#has 'type'       => (is => 'rw', isa => 'Str', default => 0);
 
 ## HISTORY file attributes
 has 'nsteps'    => (is => 'rw', isa => NonNeg, default => 0);
@@ -100,8 +99,8 @@ has 'type'  => (is => 'rw', isa => 'HistogramTypes', coerce => 1, default => 'ss
 				 eval {apply_all_roles($self, 'Demeter::Feff::DistributionsP::Thru')};
 				 $@ and die("Histogram configuration Demeter::Feff::DistributionsP::Thru could not be loaded");
 			       } else {
-				 eval {apply_all_roles($self, 'Demeter::Feff::Distributions::'.$new)};
-				 $@ and die("Histogram configuration Demeter::Feff::Distributions::$new does not exist");
+				 eval {apply_all_roles($self, 'Demeter::Feff::DistributionsP::'.$new)};
+				 $@ and die("Histogram configuration Demeter::Feff::DistributionsP::$new does not exist");
 			       };
 			     });
 

@@ -13,6 +13,7 @@ use Wx::Event qw(EVT_CHOICE EVT_KEY_DOWN EVT_MENU EVT_TOOL_ENTER EVT_BUTTON
 use Wx::Perl::TextValidator;
 
 use List::MoreUtils qw(uniq);
+use PDL::Lite;
 use YAML::Tiny;
 
 my @PosSize = (wxDefaultPosition, [40,-1]);
@@ -111,8 +112,19 @@ sub _histo {
 						 wxFLP_DEFAULT_STYLE|wxFLP_USE_TEXTCTRL|wxFLP_CHANGE_DIR|wxFLP_FILE_MUST_EXIST );
   $vbox -> Add($self->{histo_file}, 0, wxGROW|wxALL, 10);
   $self->{histo_role} = Wx::RadioBox->new($page, -1, "Molecular dymanics program", wxDefaultPosition, wxDefaultSize,
-					  ['DL_POLY', 'VASP']);
-  $vbox -> Add($self->{histo_role}, 0, wxGROW|wxLEFT|wxRIGHT|wxBOTTOM, 10);
+					  ['DL_POLY', 'VASP', 'LAMMPS']);
+  $vbox -> Add($self->{histo_role}, 0, wxGROW|wxLEFT|wxRIGHT, 10);
+  EVT_RADIOBOX($self, $self->{histo_role}, sub{OnBackend(@_)});
+
+  my $hbox = Wx::BoxSizer->new( wxHORIZONTAL );
+  $vbox -> Add($hbox, 0, wxGROW|wxLEFT|wxRIGHT|wxBOTTOM, 10);
+
+  $self -> {histo_zmax_label} = Wx::StaticText -> new($page, -1, "Zmax");
+  $self -> {histo_zmax}       = Wx::TextCtrl   -> new($page, -1, 10, @PosSize, wxTE_PROCESS_ENTER);
+  $hbox -> Add($self->{histo_zmax_label}, 0, wxALL|wxALIGN_CENTRE_VERTICAL, 5);
+  $hbox -> Add($self->{histo_zmax},       0, wxALL|wxALIGN_CENTRE_VERTICAL, 5);
+  $self->{histo_zmax_label}->Enable(0);
+  $self->{histo_zmax}->Enable(0);
 
   my $scrl = Wx::ScrolledWindow->new($page, -1, wxDefaultPosition, wxDefaultSize, wxVSCROLL);
   my $svbox = Wx::BoxSizer->new( wxVERTICAL );
@@ -126,7 +138,7 @@ sub _histo {
   my $ssboxsizer  = Wx::StaticBoxSizer->new( $ssbox, wxVERTICAL );
   $svbox         -> Add($ssboxsizer, 0, wxALL|wxGROW, 5);
 
-  my $hbox = Wx::BoxSizer->new( wxHORIZONTAL );
+  $hbox = Wx::BoxSizer->new( wxHORIZONTAL );
   $ssboxsizer -> Add($hbox, 0, wxGROW|wxLEFT|wxRIGHT, 10);
   $self -> {histo_ss_rminlab} = Wx::StaticText -> new($scrl, -1, "Rmin");
   $self -> {histo_ss_rmin}    = Wx::TextCtrl   -> new($scrl, -1, 1.0, @PosSize, wxTE_PROCESS_ENTER);
@@ -298,6 +310,12 @@ sub _histo {
     $self->{histoyaml} = $yaml;
     $self->{histo_file}    -> SetPath($yaml->{file});
     $self->{histo_role}    -> SetStringSelection($yaml->{role}||'DL_POLY');
+    $self->{histo_zmax}    -> SetValue($yaml->{zmax}  || 10);
+    if ($self->{histo_role} -> GetSelection == 2) { # LAMMPS
+      $self->{histo_zmax_label}->Enable(1);
+      $self->{histo_zmax}->Enable(1);
+    };
+
     $self->{histo_ss_rmin} -> SetValue($yaml->{rmin}  || 1.5);
     $self->{histo_ss_rmax} -> SetValue($yaml->{rmax}  || 3.5);
     $self->{histo_ss_bin}  -> SetValue($yaml->{bin}   || 0.5);
@@ -336,12 +354,14 @@ sub histoplot {
   my $rmin = $this->{histo_ss_rmin}->GetValue;
   my $rmax = $this->{histo_ss_rmax}->GetValue;
   my $bin  = $this->{histo_ss_bin}->GetValue;
+  my $zmax = $this->{histo_zmax}->GetValue;
   $this->{histoyaml}->{file} = $file;
   $this->{histoyaml}->{role} = $backend;
   $this->{histoyaml}->{ipot1} = $ipot;
   $this->{histoyaml}->{rmin} = $rmin;
   $this->{histoyaml}->{rmax} = $rmax;
   $this->{histoyaml}->{bin}  = $bin;
+  $this->{histoyaml}->{zmax} = $zmax;
 
   if ((not $file) or (not -e $file) or (not -r $file)) {
     $this->{parent}->status("You did not specify a file or your file cannot be read.");
@@ -366,6 +386,11 @@ sub histoplot {
     $dlp->bin ($bin ) if ($dlp->bin  != $bin);
     $dlp->ipot($ipot) if ($dlp->ipot != $ipot);
   };
+  if (lc($backend) eq 'lammps') {
+    $dlp->count_timesteps(0);
+    $dlp->zmax($zmax);
+  };
+
 
   my $persist = File::Spec->catfile($dlp->dot_folder, 'demeter.histograms');
   YAML::Tiny::DumpFile($persist, $this->{histoyaml});
@@ -375,8 +400,9 @@ sub histoplot {
   my $busy = Wx::BusyCursor->new();
   my $start = DateTime->now( time_zone => 'floating' );
   $dlp->backend($backend);
+
   $this->{parent}->status("Reading MD time sequence file, please be patient...", 'wait');
-  $dlp->sentinal(sub{$this->dlpoly_sentinal});
+  $dlp->sentinal(sub{$this->rdf_sentinal});
   $dlp->file($file) if $read_file;
   if ($#{$dlp->ssrdf} == -1) {
     $this->{parent}->status("Your choice of ipot did not yield any scatterers in the R range selected", 'error');
@@ -388,7 +414,9 @@ sub histoplot {
   $this->{parent}->{Console}->{console}->AppendText($/.$dlp->info.$/.$/);
   my $finish = DateTime->now( time_zone => 'floating' );
   my $dur = $finish->subtract_datetime($start);
-  my $finishtext = sprintf("Plotting histogram from %d timesteps (%d minutes, %d seconds)", $dlp->nsteps, $dur->minutes, $dur->seconds);
+  my $finishtext = ($dlp->count_timesteps)
+    ? sprintf("Plotting histogram from %d timesteps (%d minutes, %d seconds)", $dlp->nsteps, $dur->minutes, $dur->seconds)
+      : sprintf("Plotting histogram from %d positions (%d minutes, %d seconds)", $dlp->npositions, $dur->minutes, $dur->seconds);
   $this->{parent}->status($finishtext);
   $dlp->plot;
   undef $busy;
@@ -406,6 +434,7 @@ sub scatterplot {
   my $r4       = $this->{histo_ncl_r4}->GetValue;
   my $rbin     = $this->{histo_ncl_rbin}->GetValue;
   my $betabin  = $this->{histo_ncl_betabin}->GetValue;
+  my $zmax = $this->{histo_zmax}->GetValue;
   $this->{histoyaml}->{file}	= $file;
   $this->{histoyaml}->{role}	= $backend;
   $this->{histoyaml}->{ipot1}	= $ipot1;
@@ -416,6 +445,7 @@ sub scatterplot {
   $this->{histoyaml}->{r4}	= $r4;
   $this->{histoyaml}->{rbin}	= $rbin;
   $this->{histoyaml}->{betabin}	= $betabin;
+  $this->{histoyaml}->{zmax} = $zmax;
 
   if ((not $file) or (not -e $file) or (not -r $file)) {
     $this->{parent}->status("You did not specify a file or your file cannot be read.");
@@ -428,15 +458,15 @@ sub scatterplot {
   if ((not $this->{DISTRIBUTION}) or ($this->{DISTRIBUTION}->type ne $which)) {
     $histo = Demeter::Feff::Distributions->new(type=>$which);
     $histo -> set(r1	  => $r1,
-		  r2	  => $r2,
-		  r3	  => $r3,
-		  r4	  => $r4,
 		  rbin	  => $rbin,
 		  betabin => $betabin,
 		  ipot    => $ipot1,
 		  ipot2	  => $ipot2,
 		  feff	  => $this->{parent}->{Feff}->{feffobject},
 		);
+    $histo -> set(r2 => $r2, r3 => $r3, r4 => $r4) if ($histo->type eq 'ncl');
+    $histo -> set(rmax => $r2)                     if ($histo->type eq 'thru');
+
   } else {
     $histo = $this->{DISTRIBUTION};
     $read_file = 0 if ($histo->file eq $file);
@@ -448,6 +478,10 @@ sub scatterplot {
     $histo->ipot($ipot1) if ($histo->ipot != $ipot1);
     $histo->ipot($ipot2) if ($histo->ipot != $ipot2);
   };
+  if (lc($backend) eq 'lammps') {
+    $histo->count_timesteps(0);
+    $histo->zmax($zmax);
+  };
 
   my $persist = File::Spec->catfile($histo->dot_folder, 'demeter.histograms');
   YAML::Tiny::DumpFile($persist, $this->{histoyaml});
@@ -458,30 +492,47 @@ sub scatterplot {
   my $start = DateTime->now( time_zone => 'floating' );
   $histo->backend($backend);
   $this->{parent}->status("Reading MD time sequence file, please be patient...", 'wait');
+  $histo->sentinal(sub{$this->rdf_sentinal});
   $histo->file($file);
-  $histo->sentinal(sub{$this->dlpoly_sentinal});
   $this->{parent}->status("Binning three-body distribution function, please be patient...", 'wait');
   $histo->rebin;
   $this->{parent}->{Console}->{console}->AppendText($/.$histo->info.$/.$/);
   my $finish = DateTime->now( time_zone => 'floating' );
   my $dur = $finish->subtract_datetime($start);
-  my $finishtext = sprintf("Plotting histogram from %d timesteps (%d minutes, %d seconds)", $histo->nsteps, $dur->minutes, $dur->seconds);
+  my $finishtext = ($histo->count_timesteps)
+    ? sprintf("Plotting histogram from %d timesteps (%d minutes, %d seconds)", $histo->nsteps, $dur->minutes, $dur->seconds)
+      : sprintf("Plotting histogram from %d positions (%d minutes, %d seconds)", $histo->npositions, $dur->minutes, $dur->seconds);
   $this->{parent}->status($finishtext);
   $histo->plot;
   undef $busy;
 };
 
-sub dlpoly_sentinal {
+sub rdf_sentinal {
   my ($this) = @_;
   my $text = q{};
+
+  ## computing RDF
   if ($this->{DISTRIBUTION}->computing_rdf) {
-    if (not $this->{DISTRIBUTION}->timestep_count % 10) {
-      $text = $this->{DISTRIBUTION}->timestep_count . " of " . $this->{DISTRIBUTION}->{nsteps} . " timesteps";
+
+    ## increment by timestep  (typically, small cluster, many timesteps)
+    if ($this->{DISTRIBUTION}->count_timesteps) {
+      if (not $this->{DISTRIBUTION}->timestep_count % 10) {
+	$text = $this->{DISTRIBUTION}->timestep_count . " of " . $this->{DISTRIBUTION}->{nsteps} . " timesteps";
+      };
+
+    ## increment by atomic position (typically large cluster, few/no timesteps)
+    } else {
+      if (not $this->{DISTRIBUTION}->timestep_count % 250) {
+	$text = $this->{DISTRIBUTION}->timestep_count . " of " . $this->{DISTRIBUTION}->npositions . " positions";
+      };
     };
+
+  ## reading MD output file
   } elsif ($this->{DISTRIBUTION}->reading_file) {
     $text = "Reading line $. from ".$this->{DISTRIBUTION}->file;
   };
-  $this->{parent}->status($text, 'nobuffer') if $text;
+
+  $this->{parent}->status($text, 'wait|nobuffer') if $text;
   $::app->Yield();
 };
 
@@ -510,6 +561,13 @@ sub set_name {
       $self->{ss_name}->SetValue($elem.' SS');
     };
   };
+};
+
+sub OnBackend {
+  my ($self, $event) = @_;
+  my $onoff = ($self->{histo_role}->GetSelection == 2) ? 1 : 0;
+  $self->{histo_zmax_label}->Enable($onoff);
+  $self->{histo_zmax}->Enable($onoff);
 };
 
 sub OnToolEnter {
@@ -670,6 +728,7 @@ sub OnDrag {
 		  $parent->{SS}->{histo_ss_rattle}->GetValue,		  # 8 do rattle path
 		  $group,                                                 # 9 Distibution object group name
 		  $parent->{component}                                    # 10 id for feff frame so Distribution object can be pushed back
+		  $parent->{SS}->{histo_zmax}->GetValue,		  # 11 zmax value for LAMMPS
 		 ];
 
   ## handle persistence file

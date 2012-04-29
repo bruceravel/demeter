@@ -109,12 +109,15 @@ sub rdf {
   my $abs_species  = get_Z($self->feff->abs_species);
   my $scat1_species = get_Z($self->feff->potentials->[$self->ipot1]->[2]);
   my $scat2_species = get_Z($self->feff->potentials->[$self->ipot2]->[2]);
+  $self->computing_rdf(1);
   my @three = ();
+  $self->npositions($self->clusterspdl->getdim(1)); # !!! need to generalize for timesteps !!!
 
   ## trim the cluster to a slab within ZMAX from the interface (presumed to be at z=0)
   my $select = $self->clusterspdl->(2,:)->flat->abs->lt($self->zmax, 0)->which;
   my $zslab = $self->clusterspdl->(:, $select);
   my ($nd, $np) = $zslab->dims;
+  $self->npositions($np);
 
   if ($self->mo->ui eq 'screen') {
     $self->progress('%30b %c of %m timesteps <Time elapsed: %8t>') if (not $self->huge_cluster);
@@ -188,6 +191,7 @@ sub rdf {
   $self->stop_counter if ($self->mo->ui eq 'screen');
   $self->nconfig( $#three+1 );
   $self->nearcl(\@three);
+  $self->computing_rdf(0);
   $self->update_rdf(0);
   return $self;
 };

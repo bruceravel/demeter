@@ -38,6 +38,9 @@ has 'positions'   => (is            => 'rw',
 		      isa           => 'ArrayRef',
 		      default       => sub{[]},
 		      documentation => "array of bin positions of the extracted histogram");
+has 'npositions'  => (is            => 'rw',
+		      isa           => NonNeg,
+		      default       => 0);
 has 'npairs'      => (is            => 'rw',
 		      isa           => NonNeg,
 		      default       => 0);
@@ -88,11 +91,13 @@ sub rdf {
     $self->progress('%30b %c of %m timesteps <Time elapsed: %8t>');
     $self->start_counter("Making RDF from each timestep", $#{$self->clusters}+1);
   };
+  $self->npositions($self->clusterspdl->getdim(1)); # !!! need to generalize for timesteps !!!
 
   ## trim the cluster to a slab within ZMAX from the interface (presumed to be at z=0)
   my $select = $self->clusterspdl->(2,:)->flat->abs->lt($self->zmax, 0)->which;
   my $zslab = $self->clusterspdl->(:, $select);
   my ($nd, $np) = $zslab->dims;
+  $self->npositions($np);
 
   if (($Demeter::mode->ui eq 'screen') and (not $self->count_timesteps)) {
     $self->progress('%30b %c of %m positions <Time elapsed: %8t>');

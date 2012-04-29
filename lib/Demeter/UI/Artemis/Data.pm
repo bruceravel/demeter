@@ -17,6 +17,7 @@ package  Demeter::UI::Artemis::Data;
 
 use strict;
 use warnings;
+use feature 'switch';
 
 use Wx qw( :everything);
 use base qw(Wx::Frame);
@@ -2144,19 +2145,25 @@ sub histogram_sentinal_rdf {
   my ($datapage) = @_;
   my $text = q{};
   if ($datapage->{DISTRIBUTION}->computing_rdf) {
-    if (not $datapage->{DISTRIBUTION}->timestep_count % 10) {
+    if ($datapage->{DISTRIBUTION}->count_timesteps) {
+      
+      if ($datapage->{DISTRIBUTION}->timestep_count % 10) {
 
-      ## single scattering histogram
-      $text = sprintf "Processing step %d of %d timesteps", $datapage->{DISTRIBUTION}->timestep_count, $datapage->{DISTRIBUTION}->{nsteps}
-	if ($datapage->{DISTRIBUTION}->type eq 'ss');
+	## single scattering histogram
+	$text = sprintf "Processing step %d of %d timesteps", $datapage->{DISTRIBUTION}->timestep_count, $datapage->{DISTRIBUTION}->{nsteps}
+	  if ($datapage->{DISTRIBUTION}->type eq 'ss');
 
-      ## nearly collinear histrogram
-      $text = sprintf("Processing step %d of %d timesteps (every %d-th step)",
-		      $datapage->{DISTRIBUTION}->timestep_count/$datapage->{DISTRIBUTION}->skip,
-		      ($#{$datapage->{DISTRIBUTION}->clusters}+1)/$datapage->{DISTRIBUTION}->skip,
-		      $datapage->{DISTRIBUTION}->skip )
-	if (($datapage->{DISTRIBUTION}->type eq 'ncl') or ($datapage->{DISTRIBUTION}->type eq 'thru'));
+	## nearly collinear histogram
+	$text = sprintf("Processing step %d of %d timesteps (every %d-th step)",
+			$datapage->{DISTRIBUTION}->timestep_count/$datapage->{DISTRIBUTION}->skip,
+			($#{$datapage->{DISTRIBUTION}->clusters}+1)/$datapage->{DISTRIBUTION}->skip,
+			$datapage->{DISTRIBUTION}->skip )
+	  if (($datapage->{DISTRIBUTION}->type eq 'ncl') or ($datapage->{DISTRIBUTION}->type eq 'thru'));
 
+      };
+    } else {
+      if ($datapage->{DISTRIBUTION}->timestep_count % 250) {
+      };
     };
   } elsif ($datapage->{DISTRIBUTION}->reading_file) {
     $text = "Reading line $. from ".$datapage->{DISTRIBUTION}->file;
@@ -2342,6 +2349,11 @@ sub make_HistogramSS {
     $histogram->bin ($spref->[6]) if ($histogram->bin  != $spref->[6]);
     $histogram->ipot($spref->[7]) if ($histogram->ipot != $spref->[7]);
   };
+  if (lc($spref->[1]) eq 'lammps') {
+    $dlp->count_timesteps(0);
+    $dlp->zmax($spref->[11]);
+  };
+
   $this->{PARENT}->{DISTRIBUTION} = $histogram;
   ## this pushes this Distribution object back into the Atopms/Feff frame so it can be reused
   $Demeter::UI::Artemis::frames{$spref->[10]}->{SS}->{DISTRIBUTION} = $histogram;
