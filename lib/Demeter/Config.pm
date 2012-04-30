@@ -398,7 +398,7 @@ sub describe_param {
     $desc =~ s{\%space}{ }g;
     $desc =~ s{\%endlist}{}g;
     $text .= $desc;
-    foreach my $k qw(type default demeter options units minint maxint onvalue offvalue) {
+    foreach my $k (qw(type default demeter options units minint maxint onvalue offvalue)) {
       $text .= sprintf("  %-8s : %s\n", $k, $rhash->{$k}) if defined $rhash->{$k};
     };
   } else {
