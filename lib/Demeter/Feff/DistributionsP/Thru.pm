@@ -248,7 +248,9 @@ sub chi {
 
   my $ravg = $first->s02 * ($first->r1+$first->r2);
   my $n    = $first->s02;
+  $self->fpath_count(0);
   foreach my $i (1 .. $#paths) {
+    $self->fpath_count($i);
     $self->call_sentinal;
     $paths[$i]->_update('fft');
     my $save = $paths[$i]->group;

@@ -727,7 +727,7 @@ sub OnDrag {
 		  $parent->{SS}->{histo_ss_ipot}->GetSelection+1,	  # 7 ipot
 		  $parent->{SS}->{histo_ss_rattle}->GetValue,		  # 8 do rattle path
 		  $group,                                                 # 9 Distibution object group name
-		  $parent->{component}                                    # 10 id for feff frame so Distribution object can be pushed back
+		  $parent->{component},                                   # 10 id for feff frame so Distribution object can be pushed back
 		  $parent->{SS}->{histo_zmax}->GetValue,		  # 11 zmax value for LAMMPS
 		 ];
 
@@ -738,6 +738,7 @@ sub OnDrag {
   $parent->{SS}->{histoyaml}->{rmax}  = $dragdata->[5];
   $parent->{SS}->{histoyaml}->{bin}   = $dragdata->[6];
   $parent->{SS}->{histoyaml}->{ipot1} = $dragdata->[7];
+  $parent->{SS}->{histoyaml}->{zmax}  = $dragdata->[11];
   my $persist = File::Spec->catfile(Demeter->dot_folder, 'demeter.histograms');
   YAML::Tiny::DumpFile($persist, $parent->{SS}->{histoyaml});
 
@@ -826,7 +827,8 @@ sub OnDrag {
 		  $parent->{SS}->{histo_ncl_ipot1}   -> GetSelection+1,		# 10 ipot
 		  $parent->{SS}->{histo_ncl_ipot2}   -> GetSelection+1,		# 11 ipot
 		  $group,                                                 # 12 Distibution object group name
-		  $parent->{component}                                    # 13 id for feff frame so Distribution object can be pushed back
+		  $parent->{component},                                   # 13 id for feff frame so Distribution object can be pushed back
+		  $parent->{SS}->{histo_zmax}->GetValue,		  # 14 zmax value for LAMMPS
 		 ];
 
   ## handle persistence file
@@ -840,6 +842,7 @@ sub OnDrag {
   $parent->{SS}->{histoyaml}->{betabin} = $dragdata->[9];
   $parent->{SS}->{histoyaml}->{ipot1}   = $dragdata->[10];
   $parent->{SS}->{histoyaml}->{ipot2}   = $dragdata->[11];
+  $parent->{SS}->{histoyaml}->{zmax}    = $dragdata->[14];
   my $persist = File::Spec->catfile(Demeter->dot_folder, 'demeter.histograms');
   YAML::Tiny::DumpFile($persist, $parent->{SS}->{histoyaml});
 
@@ -924,7 +927,8 @@ sub OnDrag {
 		  $parent->{SS}->{histo_thru_ipot1}   -> GetSelection+1,	# 8  ipot
 		  $parent->{SS}->{histo_thru_ipot2}   -> GetSelection+1,	# 9  ipot
 		  $group,                                                       # 10 Distibution object group name
-		  $parent->{component}                                          # 11 id for feff frame so Distribution object can be pushed back
+		  $parent->{component},                                  # 11 id for feff frame so Distribution object can be pushed back
+		  $parent->{SS}->{histo_zmax}->GetValue,	         # 12 zmax value for LAMMPS
 		 ];
 
   ## handle persistence file
@@ -936,6 +940,7 @@ sub OnDrag {
   $parent->{SS}->{histoyaml}->{betabin} = $dragdata->[7];
   $parent->{SS}->{histoyaml}->{ipot1}   = $dragdata->[8];
   $parent->{SS}->{histoyaml}->{ipot2}   = $dragdata->[9];
+  $parent->{SS}->{histoyaml}->{zmax}    = $dragdata->[12];
   my $persist = File::Spec->catfile(Demeter->dot_folder, 'demeter.histograms');
   YAML::Tiny::DumpFile($persist, $parent->{SS}->{histoyaml});
 

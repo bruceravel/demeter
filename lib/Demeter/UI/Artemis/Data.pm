@@ -2145,12 +2145,13 @@ sub histogram_sentinal_rdf {
   my ($datapage) = @_;
   my $text = q{};
   if ($datapage->{DISTRIBUTION}->computing_rdf) {
-    if ($datapage->{DISTRIBUTION}->count_timesteps) {
-      
-      if ($datapage->{DISTRIBUTION}->timestep_count % 10) {
+    if ($datapage->{DISTRIBUTION}->count_timesteps) { # increment by timestep  (typically, small cluster, many timestep)
+
+      if (not $datapage->{DISTRIBUTION}->timestep_count % 10) {
 
 	## single scattering histogram
-	$text = sprintf "Processing step %d of %d timesteps", $datapage->{DISTRIBUTION}->timestep_count, $datapage->{DISTRIBUTION}->{nsteps}
+	$text = sprintf("Processing step %d of %d timesteps",
+			$datapage->{DISTRIBUTION}->timestep_count, $datapage->{DISTRIBUTION}->{nsteps})
 	  if ($datapage->{DISTRIBUTION}->type eq 'ss');
 
 	## nearly collinear histogram
@@ -2161,8 +2162,13 @@ sub histogram_sentinal_rdf {
 	  if (($datapage->{DISTRIBUTION}->type eq 'ncl') or ($datapage->{DISTRIBUTION}->type eq 'thru'));
 
       };
-    } else {
-      if ($datapage->{DISTRIBUTION}->timestep_count % 250) {
+    } else {			# increment by atomic position (typically large cluster, few/no timesteps)
+      if (not $datapage->{DISTRIBUTION}->timestep_count % 250) {
+
+	## any histogram
+	$text = sprintf("Processing %d of %d positions",
+			$datapage->{DISTRIBUTION}->timestep_count, $datapage->{DISTRIBUTION}->npositions);
+
       };
     };
   } elsif ($datapage->{DISTRIBUTION}->reading_file) {
@@ -2350,8 +2356,8 @@ sub make_HistogramSS {
     $histogram->ipot($spref->[7]) if ($histogram->ipot != $spref->[7]);
   };
   if (lc($spref->[1]) eq 'lammps') {
-    $dlp->count_timesteps(0);
-    $dlp->zmax($spref->[11]);
+    $histogram->count_timesteps(0);
+    $histogram->zmax($spref->[11]);
   };
 
   $this->{PARENT}->{DISTRIBUTION} = $histogram;
@@ -2372,7 +2378,9 @@ sub make_HistogramSS {
   #$histogram->sentinal(sub{1});
   my $finish = DateTime->now( time_zone => 'floating' );
   my $dur = $finish->subtract_datetime($start);
-  my $finishtext = sprintf("Making histogram from %d timesteps (%d minutes, %d seconds)", $histogram->nsteps, $dur->minutes, $dur->seconds);
+  my $finishtext = ($histogram->count_timesteps)
+    ? sprintf("Making histogram from %d timesteps (%d minutes, %d seconds)", $histogram->nsteps, $dur->minutes, $dur->seconds)
+      : sprintf("Making histogram from %d positions (%d minutes, %d seconds)", $histogram->npositions, $dur->minutes, $dur->seconds);
   $this->{PARENT}->status($finishtext);
   undef $busy;
 
@@ -2431,12 +2439,16 @@ sub make_HistogramNCL {
 		    feff => $feff, ipot => $spref->[10], ipot2 => $spref->[11],
 		    skip => 20, update_bins => 1);
   $this->{PARENT}->{DISTRIBUTION} = $histogram;
+  if (lc($spref->[1]) eq 'lammps') {
+    $histogram->count_timesteps(0);
+    $histogram->zmax($spref->[14]);
+  };
 
-  $histogram->sentinal(sub{$this->{PARENT}->histogram_sentinal_rdf});
   my $busy = Wx::BusyCursor->new();
   my $start = DateTime->now( time_zone => 'floating' );
   $histogram->backend($spref->[1]);
   $this->{PARENT}->status("Reading MD time sequence file, please be patient...", 'wait');
+  $histogram->sentinal(sub{$this->{PARENT}->histogram_sentinal_rdf});
   $histogram->file($spref->[3]);
   my $finish = DateTime->now( time_zone => 'floating' );
   my $dur = $finish->subtract_datetime($start);
@@ -2479,6 +2491,10 @@ sub make_HistogramThru {
 		    feff=>$feff, ipot => $spref->[8], ipot2 => $spref->[9],
 		    skip=>20, update_bins=>1);
   $this->{PARENT}->{DISTRIBUTION} = $histogram;
+  if (lc($spref->[1]) eq 'lammps') {
+    $histogram->count_timesteps(0);
+    $histogram->zmax($spref->[12]);
+  };
 
   $histogram->sentinal(sub{$this->{PARENT}->histogram_sentinal_rdf});
   my $busy = Wx::BusyCursor->new();
