@@ -92,14 +92,15 @@ sub new {
     $self->{$utility."_page"} = $page;
     $self->{$utility."_sizer"} = $box;
 
-    if ($utility eq 'Atoms') {
+    if (($utility eq 'Atoms') or ($utility eq 'SS')) {
       my $hh = Wx::BoxSizer->new( wxHORIZONTAL );
       my $header = Wx::StaticText->new( $page, -1, q{}, wxDefaultPosition, wxDefaultSize );
       $hh -> Add($header, 1, wxGROW|wxLEFT, 5);
       $box -> Add($hh, 0);
       $page->Fit;
 
-      $self->{$utility} = Demeter::UI::Atoms::Xtal -> new($page,$self);
+      $self->{$utility} = Demeter::UI::Atoms::Xtal -> new($page,$self) if ($utility eq 'Atoms');
+      $self->{$utility} = Demeter::UI::Atoms::SS   -> new($page,$self) if ($utility eq 'SS');
     # $self->{$utility}
     #   = ($utility eq 'Atoms')     ? Demeter::UI::Atoms::Xtal    -> new($page, $self)
     #   : ($utility eq 'Feff')      ? Demeter::UI::Atoms::Feff    -> new($page, $self)
