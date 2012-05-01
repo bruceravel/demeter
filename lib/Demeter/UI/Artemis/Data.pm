@@ -215,7 +215,7 @@ sub new {
   ## -------- single data set plot buttons
   my $buttonbox  = Wx::StaticBox->new($leftpane, -1, 'Plot this data set as ', wxDefaultPosition, [-1,-1]);
   my $buttonboxsizer = Wx::StaticBoxSizer->new( $buttonbox, wxHORIZONTAL );
-  $left -> Add($buttonboxsizer, 0, wxGROW|wxALL, 5);
+  $left -> Add($buttonboxsizer, 0, wxGROW|wxLEFT|wxRIGHT, 5);
   $this->{plot_rmr}  = Wx::Button->new($leftpane, -1, "&Rm".$demeter->co->default("plot", "rmx"),  wxDefaultPosition, [70,-1]);
   $this->{plot_rk}   = Wx::Button->new($leftpane, -1, "Rk",    wxDefaultPosition, [70,-1]);
   $this->{plot_k123} = Wx::Button->new($leftpane, -1, "&k123", wxDefaultPosition, [70,-1]);
@@ -253,7 +253,7 @@ sub new {
   ## -------- Fourier transform parameters
   my $ftbox      = Wx::StaticBox->new($leftpane, -1, 'Fourier transform parameters ', wxDefaultPosition, wxDefaultSize);
   my $ftboxsizer = Wx::StaticBoxSizer->new( $ftbox, wxVERTICAL );
-  $left         -> Add($ftboxsizer, 0, wxGROW|wxALL|wxALIGN_CENTER_HORIZONTAL, 5);
+  $left         -> Add($ftboxsizer, 0, wxGROW|wxLEFT|wxRIGHT|wxALIGN_CENTER_HORIZONTAL, 5);
 
   my $gbs = Wx::GridBagSizer->new( 5, 10 );
 
@@ -338,14 +338,14 @@ sub new {
 
   $label     = Wx::StaticText->new($leftpane, -1, "k window");
   $this->{kwindow} = Wx::Choice  ->new($leftpane, -1, , wxDefaultPosition, wxDefaultSize, $windows);
-  $windowsbox -> Add($label, 0, wxALL, 5);
-  $windowsbox -> Add($this->{kwindow}, 0, wxALL, 2);
+  $windowsbox -> Add($label, 0, wxLEFT|wxRIGHT, 5);
+  $windowsbox -> Add($this->{kwindow}, 0, wxLEFT|wxRIGHT, 2);
   $this->{kwindow}->SetSelection(firstidx {$_ eq $demeter->co->default("fft", "kwindow")} @$windows);
 
   $label     = Wx::StaticText->new($leftpane, -1, "R window");
   $this->{rwindow} = Wx::Choice  ->new($leftpane, -1, , wxDefaultPosition, wxDefaultSize, $windows);
-  $windowsbox -> Add($label, 0, wxALL, 5);
-  $windowsbox -> Add($this->{rwindow}, 0, wxALL, 2);
+  $windowsbox -> Add($label, 0, wxLEFT|wxRIGHT, 5);
+  $windowsbox -> Add($this->{rwindow}, 0, wxLEFT|wxRIGHT, 2);
   $this->{rwindow}->SetSelection(firstidx {$_ eq $demeter->co->default("bft", "rwindow")} @$windows);
 
   $this->mouseover("kwindow", "The functional form of the window used for the forward Fourier transform.");
@@ -383,7 +383,7 @@ sub new {
 
   my $otherbox      = Wx::StaticBox->new($leftpane, -1, 'Other parameters ', wxDefaultPosition, wxDefaultSize);
   my $otherboxsizer = Wx::StaticBoxSizer->new( $otherbox, wxVERTICAL );
-  $left            -> Add($otherboxsizer, 0, wxALL|wxGROW|wxALIGN_CENTER_HORIZONTAL, 5);
+  $left            -> Add($otherboxsizer, 0, wxLEFT|wxRIGHT|wxGROW|wxALIGN_CENTER_HORIZONTAL, 5);
 
 
   ## --------- toggles
@@ -392,9 +392,9 @@ sub new {
   $this->{include}    = Wx::CheckBox->new($leftpane, -1, "Include in fit", wxDefaultPosition, wxDefaultSize);
   $this->{plot_after} = Wx::CheckBox->new($leftpane, -1, "Plot after fit", wxDefaultPosition, wxDefaultSize);
   $this->{fit_bkg}    = Wx::CheckBox->new($leftpane, -1, "Fit background", wxDefaultPosition, wxDefaultSize);
-  $togglebox -> Add($this->{include},    0, wxALL, 5);
-  $togglebox -> Add($this->{plot_after}, 0, wxALL, 5);
-  $togglebox -> Add($this->{fit_bkg},    0, wxALL, 5);
+  $togglebox -> Add($this->{include},    0, wxLEFT|wxRIGHT, 5);
+  $togglebox -> Add($this->{plot_after}, 0, wxLEFT|wxRIGHT, 5);
+  $togglebox -> Add($this->{fit_bkg},    0, wxLEFT|wxRIGHT, 5);
   $this->{include}    -> SetValue(1);
   $this->{plot_after} -> SetValue(1);
 
@@ -2361,7 +2361,7 @@ sub make_HistogramSS {
   };
 
   $this->{PARENT}->{DISTRIBUTION} = $histogram;
-  ## this pushes this Distribution object back into the Atopms/Feff frame so it can be reused
+  ## this pushes this Distribution object back into the Atoms/Feff frame so it can be reused
   $Demeter::UI::Artemis::frames{$spref->[10]}->{SS}->{DISTRIBUTION} = $histogram;
 
   my $busy = Wx::BusyCursor->new();

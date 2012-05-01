@@ -126,7 +126,7 @@ sub _histo {
   $self->{histo_zmax_label}->Enable(0);
   $self->{histo_zmax}->Enable(0);
 
-  my $scrl = Wx::ScrolledWindow->new($page, -1, wxDefaultPosition, wxDefaultSize, wxVSCROLL);
+  my $scrl = Wx::ScrolledWindow->new($page, -1, wxDefaultPosition, wxDefaultSize, wxVSCROLL|wxSIMPLE_BORDER);
   my $svbox = Wx::BoxSizer->new( wxVERTICAL );
   $scrl -> SetSizer($svbox);
   $scrl -> SetScrollbars(0, 20, 0, 50);
@@ -139,7 +139,7 @@ sub _histo {
   $svbox         -> Add($ssboxsizer, 0, wxALL|wxGROW, 5);
 
   $hbox = Wx::BoxSizer->new( wxHORIZONTAL );
-  $ssboxsizer -> Add($hbox, 0, wxGROW|wxLEFT|wxRIGHT, 10);
+  $ssboxsizer -> Add($hbox, 0, wxGROW|wxLEFT|wxRIGHT, 5);
   $self -> {histo_ss_rminlab} = Wx::StaticText -> new($scrl, -1, "Rmin");
   $self -> {histo_ss_rmin}    = Wx::TextCtrl   -> new($scrl, -1, 1.0, @PosSize, wxTE_PROCESS_ENTER);
   $hbox -> Add($self->{histo_ss_rminlab},   0, wxALL|wxALIGN_CENTRE_VERTICAL, 5);
@@ -161,17 +161,17 @@ sub _histo {
 
 
   $self->{histo_ss_ipot} = Wx::RadioBox->new($scrl, -1, ' ipot of scatterer ', wxDefaultPosition, wxDefaultSize,
-				       [q{     },q{     },q{     },q{     },q{     },q{     },q{     }], 7, wxRA_SPECIFY_COLS);
+				       [q{      },q{      },q{      },q{      },q{      },q{      },q{      }], 7, wxRA_SPECIFY_COLS);
   $self->{histo_ss_ipot}->Enable($_,0) foreach (0..6);
   EVT_RADIOBOX($self, $self->{histo_ss_ipot}, sub{set_name(@_,'histo_ss')});
 
-  $ssboxsizer -> Add( $self->{histo_ss_ipot}, 0, wxLEFT|wxRIGHT, 10 );
+  $ssboxsizer -> Add( $self->{histo_ss_ipot}, 0, wxLEFT|wxRIGHT, 5 );
 
   $self->{histo_ss_rattle} = Wx::CheckBox->new($scrl, -1, "Also create triple scattering path from this histogram");
-  $ssboxsizer -> Add( $self->{histo_ss_rattle}, 0, wxTOP|wxLEFT|wxRIGHT, 10 );
+  $ssboxsizer -> Add( $self->{histo_ss_rattle}, 0, wxTOP|wxLEFT|wxRIGHT, 5 );
 
   $hbox = Wx::BoxSizer->new( wxHORIZONTAL );
-  $ssboxsizer -> Add( $hbox, 0, wxGROW|wxALL, 10 );
+  $ssboxsizer -> Add( $hbox, 0, wxGROW|wxALL, 5 );
   $self->{histo_ss_drag} = Demeter::UI::Atoms::SS::HistoSSDragSource->new($scrl, -1, wxDefaultPosition, wxDefaultSize, $parent);
   $hbox  -> Add( $self->{histo_ss_drag}, 0, wxALL, 0);
   $self->{histo_ss_drag}->SetCursor(Wx::Cursor->new(wxCURSOR_HAND));
@@ -187,7 +187,7 @@ sub _histo {
 
 
   $hbox = Wx::BoxSizer->new( wxHORIZONTAL );
-  $nclboxsizer -> Add($hbox, 0, wxGROW|wxLEFT|wxRIGHT, 10);
+  $nclboxsizer -> Add($hbox, 0, wxGROW|wxLEFT|wxRIGHT, 5);
   $self -> {histo_ncl_rbinlab}    = Wx::StaticText -> new($scrl, -1, "Radial bin size");
   $self -> {histo_ncl_rbin}       = Wx::TextCtrl   -> new($scrl, -1, 1.0, @PosSize, wxTE_PROCESS_ENTER);
   $self -> {histo_ncl_betabinlab} = Wx::StaticText -> new($scrl, -1, "Angular bin size");
@@ -202,9 +202,9 @@ sub _histo {
   EVT_BUTTON($self, $self->{histo_ncl_plot}, sub{ scatterplot(@_, 'ncl') });
 
   $hbox = Wx::BoxSizer->new( wxHORIZONTAL );
-  $nclboxsizer -> Add($hbox, 0, wxGROW|wxLEFT|wxRIGHT, 10);
+  $nclboxsizer -> Add($hbox, 0, wxGROW|wxLEFT|wxRIGHT, 5);
   $self->{histo_ncl_ipot1} = Wx::RadioBox->new($scrl, -1, ' ipot of near neighbor scatterer ', wxDefaultPosition, wxDefaultSize,
-					     [q{     },q{     },q{     },q{     },q{     },q{     },q{     }], 7, wxRA_SPECIFY_COLS);
+					     [q{      },q{      },q{      },q{      },q{      },q{      },q{      }], 7, wxRA_SPECIFY_COLS);
   $self->{histo_ncl_ipot1}->Enable($_,0) foreach (0..6);
   EVT_RADIOBOX($self, $self->{histo_ncl_ipot1}, sub{set_name(@_,'histo_ncl1')});
   $hbox -> Add( $self->{histo_ncl_ipot1}, 0, wxALL|wxALIGN_CENTRE_VERTICAL, 5 );
@@ -217,9 +217,9 @@ sub _histo {
   $hbox -> Add($self->{histo_ncl_r2},                   0, wxALL|wxALIGN_CENTRE_VERTICAL, 5);
 
   $hbox = Wx::BoxSizer->new( wxHORIZONTAL );
-  $nclboxsizer -> Add($hbox, 0, wxGROW|wxLEFT|wxRIGHT, 10);
+  $nclboxsizer -> Add($hbox, 0, wxGROW|wxLEFT|wxRIGHT, 5);
   $self->{histo_ncl_ipot2} = Wx::RadioBox->new($scrl, -1, ' ipot of distant scatterer ', wxDefaultPosition, wxDefaultSize,
-					     [q{     },q{     },q{     },q{     },q{     },q{     },q{     }], 7, wxRA_SPECIFY_COLS);
+					     [q{      },q{      },q{      },q{      },q{      },q{      },q{      }], 7, wxRA_SPECIFY_COLS);
   $self->{histo_ncl_ipot2}->Enable($_,0) foreach (0..6);
   EVT_RADIOBOX($self, $self->{histo_ncl_ipot2}, sub{set_name(@_,'histo_ncl2')});
   $hbox -> Add( $self->{histo_ncl_ipot2}, 0, wxALL|wxALIGN_CENTRE_VERTICAL, 5 );
@@ -272,7 +272,7 @@ sub _histo {
   $hbox = Wx::BoxSizer->new( wxHORIZONTAL );
   $thruboxsizer -> Add($hbox, 0, wxGROW|wxLEFT|wxRIGHT, 10);
   $self->{histo_thru_ipot1} = Wx::RadioBox->new($scrl, -1, ' ipot of first scatterer in range ', wxDefaultPosition, wxDefaultSize,
-					     [q{     },q{     },q{     },q{     },q{     },q{     },q{     }], 7, wxRA_SPECIFY_COLS);
+					     [q{      },q{      },q{      },q{      },q{      },q{      },q{      }], 7, wxRA_SPECIFY_COLS);
   $self->{histo_thru_ipot1}->Enable($_,0) foreach (0..6);
   EVT_RADIOBOX($self, $self->{histo_thru_ipot1}, sub{set_name(@_,'histo_thru1')});
   $hbox -> Add( $self->{histo_thru_ipot1}, 0, wxALL|wxALIGN_CENTRE_VERTICAL, 5 );
@@ -280,7 +280,7 @@ sub _histo {
   $hbox = Wx::BoxSizer->new( wxHORIZONTAL );
   $thruboxsizer -> Add($hbox, 0, wxGROW|wxLEFT|wxRIGHT, 10);
   $self->{histo_thru_ipot2} = Wx::RadioBox->new($scrl, -1, ' ipot of second scatterer in range ', wxDefaultPosition, wxDefaultSize,
-					     [q{     },q{     },q{     },q{     },q{     },q{     },q{     }], 7, wxRA_SPECIFY_COLS);
+					     [q{      },q{      },q{      },q{      },q{      },q{      },q{      }], 7, wxRA_SPECIFY_COLS);
   $self->{histo_thru_ipot2}->Enable($_,0) foreach (0..6);
   EVT_RADIOBOX($self, $self->{histo_thru_ipot2}, sub{set_name(@_,'histo_thru2')});
   $hbox -> Add( $self->{histo_thru_ipot2}, 0, wxALL|wxALIGN_CENTRE_VERTICAL, 5 );
@@ -493,7 +493,7 @@ sub scatterplot {
   $histo->backend($backend);
   $this->{parent}->status("Reading MD time sequence file, please be patient...", 'wait');
   $histo->sentinal(sub{$this->rdf_sentinal});
-  $histo->file($file);
+  $histo->file($file) if $read_file;
   $this->{parent}->status("Binning three-body distribution function, please be patient...", 'wait');
   $histo->rebin;
   $this->{parent}->{Console}->{console}->AppendText($/.$histo->info.$/.$/);
