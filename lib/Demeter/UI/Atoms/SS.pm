@@ -126,11 +126,11 @@ sub _histo {
   $self->{histo_zmax_label}->Enable(0);
   $self->{histo_zmax}->Enable(0);
 
-  my $scrl = Wx::ScrolledWindow->new($page, -1, wxDefaultPosition, wxDefaultSize, wxVSCROLL|wxSIMPLE_BORDER);
+  my $scrl = Wx::ScrolledWindow->new($page, -1, wxDefaultPosition, wxDefaultSize, wxVSCROLL|wxBORDER_SIMPLE);
   my $svbox = Wx::BoxSizer->new( wxVERTICAL );
   $scrl -> SetSizer($svbox);
   $scrl -> SetScrollbars(0, 20, 0, 50);
-
+  #$scrl->SetBackgroundColour(wxLIGHT_GREY);
 
   ################################################################################
   ######## single scattering
@@ -411,6 +411,7 @@ sub histoplot {
   };
   $this->{parent}->status("Binning pair distribution function, please be patient...", 'wait');
   $dlp->rebin;
+  $this->{parent}->make_page('Console') if not $this->{parent}->{Console};
   $this->{parent}->{Console}->{console}->AppendText($/.$dlp->info.$/.$/);
   my $finish = DateTime->now( time_zone => 'floating' );
   my $dur = $finish->subtract_datetime($start);
@@ -496,6 +497,7 @@ sub scatterplot {
   $histo->file($file) if $read_file;
   $this->{parent}->status("Binning three-body distribution function, please be patient...", 'wait');
   $histo->rebin;
+  $this->{parent}->make_page('Console') if not $this->{parent}->{Console};
   $this->{parent}->{Console}->{console}->AppendText($/.$histo->info.$/.$/);
   my $finish = DateTime->now( time_zone => 'floating' );
   my $dur = $finish->subtract_datetime($start);

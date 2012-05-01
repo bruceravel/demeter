@@ -8,6 +8,7 @@
 *.fpj
 *.dpj
 *.log
+*.patch
 
 lib/Xray/Absorption/*.db
 lib/Xray/Scattering/*.db

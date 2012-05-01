@@ -243,8 +243,8 @@ sub new {
   ## -------- title lines
   my $titlesbox      = Wx::StaticBox->new($leftpane, -1, 'Title lines ', wxDefaultPosition, wxDefaultSize);
   my $titlesboxsizer = Wx::StaticBoxSizer->new( $titlesbox, wxHORIZONTAL );
-  $this->{titles}      = Wx::TextCtrl->new($leftpane, -1, q{}, wxDefaultPosition, [300,-1],
-					   wxHSCROLL|wxTE_READONLY|wxTE_MULTILINE|wxTE_RICH);
+  $this->{titles}      = Wx::TextCtrl->new($leftpane, -1, q{}, wxDefaultPosition, [300,75],
+					   wxTE_READONLY|wxTE_MULTILINE|wxTE_RICH);
   $titlesboxsizer -> Add($this->{titles}, 1, wxALL|wxGROW, 0);
   $left           -> Add($titlesboxsizer, 1, wxALL|wxGROW, 5);
   $this->mouseover("titles", "These lines will be written to output files.  Use them to describe this data set.");
@@ -383,7 +383,7 @@ sub new {
 
   my $otherbox      = Wx::StaticBox->new($leftpane, -1, 'Other parameters ', wxDefaultPosition, wxDefaultSize);
   my $otherboxsizer = Wx::StaticBoxSizer->new( $otherbox, wxVERTICAL );
-  $left            -> Add($otherboxsizer, 0, wxLEFT|wxRIGHT|wxGROW|wxALIGN_CENTER_HORIZONTAL, 5);
+  $left            -> Add($otherboxsizer, 0, wxLEFT|wxRIGHT|wxBOTTOM|wxGROW|wxALIGN_CENTER_HORIZONTAL, 5);
 
 
   ## --------- toggles
@@ -405,14 +405,14 @@ sub new {
 
   ## -------- epsilon and phase correction
   my $extrabox    = Wx::BoxSizer->new( wxHORIZONTAL );
-  $otherboxsizer -> Add($extrabox, 0, wxALL, 0);
+  $otherboxsizer -> Add($extrabox, 0, wxTOP|wxBOTTOM, 2);
 
   $extrabox -> Add(Wx::StaticText->new($leftpane, -1, "$EPSILON(k)"), 0, wxALL, 5);
   $this->{epsilon} = Wx::TextCtrl->new($leftpane, -1, 0, wxDefaultPosition, [50,-1], wxTE_PROCESS_ENTER);
-  $extrabox  -> Add($this->{epsilon}, 0, wxALL, 2);
-  $extrabox  -> Add(Wx::StaticText->new($leftpane, -1, q{}), 1, wxALL, 0);
+  $extrabox  -> Add($this->{epsilon}, 0, wxALL, 0);
+  $extrabox  -> Add(Wx::StaticText->new($leftpane, -1, q{}), 1, wxALL, 2);
   $this->{pcplot}  = Wx::CheckBox->new($leftpane, -1, "Plot with phase correction", wxDefaultPosition, wxDefaultSize);
-  $extrabox  -> Add($this->{pcplot}, 0, wxALL, 0);
+  $extrabox  -> Add($this->{pcplot}, 0, wxALL, 3);
   EVT_CHECKBOX($this, $this->{pcplot}, sub{
 		 my ($self, $event) = @_;
 		 $self->{data}->fft_pc($self->{pcplot}->GetValue);

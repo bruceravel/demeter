@@ -56,6 +56,12 @@ has 'file'      => (is => 'rw', isa => 'Str', default => q{},
 				      $self->rdf;
 				    };
 				  });
+has 'npositions'  => (is            => 'rw',
+		      isa           => NonNeg,
+		      default       => 0);
+has 'ntimesteps'  => (is            => 'rw',
+		      isa           => NonNeg,
+		      default       => 0);
 has 'clusters'    => (is => 'rw', isa => 'ArrayRef', default => sub{[]});
 has 'clusterspdl' => (is => 'rw', isa => 'PDL', default => sub{PDL::null});
 

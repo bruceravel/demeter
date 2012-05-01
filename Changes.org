@@ -11,6 +11,16 @@
 *** Artemis
    - Display a useful error message when the phase.bin file is not
      computed correctly.  Also clear and do not display intrp tab.
+   - Take care to update paths in Artemis before beginning fit so that
+     everything (i.e. FPaths) passes sanity checks
+   - Sentinals now work correctly in Artemis for all histogram
+     functions so that useful updates get written to Data frame
+     statusbar
+   - Fixed several display issues
+
+*** Demeter
+   - Convert histogram calculations to use PDL -- much faster!
+     (backends: LAMMPS, )
 
 ** 0.9.9 20 April 2012
 *** Athena

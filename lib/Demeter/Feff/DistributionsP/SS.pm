@@ -38,9 +38,6 @@ has 'positions'   => (is            => 'rw',
 		      isa           => 'ArrayRef',
 		      default       => sub{[]},
 		      documentation => "array of bin positions of the extracted histogram");
-has 'npositions'  => (is            => 'rw',
-		      isa           => NonNeg,
-		      default       => 0);
 has 'npairs'      => (is            => 'rw',
 		      isa           => NonNeg,
 		      default       => 0);
@@ -91,7 +88,13 @@ sub rdf {
     $self->progress('%30b %c of %m timesteps <Time elapsed: %8t>');
     $self->start_counter("Making RDF from each timestep", $#{$self->clusters}+1);
   };
-  $self->npositions($self->clusterspdl->getdim(1)); # !!! need to generalize for timesteps !!!
+
+  #print $/, join("|", $self->clusterspdl->ndims), $/;
+  #exit;
+
+  ## 4 (x,y,z,ipot) x positions x timesteps; backends without the time sequence do not have the third dimension
+  $self->npositions($self->clusterspdl->getdim(1));
+  $self->ntimesteps($self->clusterspdl->getdim(2)) if ($self->clusterspdl->ndims == 2);
 
   ## trim the cluster to a slab within ZMAX from the interface (presumed to be at z=0)
   my $select = $self->clusterspdl->(2,:)->flat->abs->lt($self->zmax, 0)->which;

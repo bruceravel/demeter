@@ -56,8 +56,8 @@ sub new {
 
   $self->{headerbox}       = Wx::StaticBox->new($self, -1, 'Description', wxDefaultPosition, wxDefaultSize);
   $self->{headerboxsizer}  = Wx::StaticBoxSizer->new( $self->{headerbox}, wxVERTICAL );
-  $self->{header}          = Wx::TextCtrl->new($self, -1, q{}, wxDefaultPosition, wxDefaultSize,
-					       wxTE_MULTILINE|wxHSCROLL|wxALWAYS_SHOW_SB|wxTE_READONLY);
+  $self->{header}          = Wx::TextCtrl->new($self, -1, q{}, wxDefaultPosition, [-1,100],
+					       wxTE_MULTILINE|wxALWAYS_SHOW_SB|wxTE_READONLY);
   $self->{header}         -> SetFont( Wx::Font->new( 9, wxTELETYPE, wxNORMAL, wxNORMAL, 0, "" ) );
   $self->{headerboxsizer} -> Add($self->{header}, 0, wxEXPAND|wxALL, 0);
 
