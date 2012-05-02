@@ -94,6 +94,7 @@ sub rdf {
 
   ## 4 (x,y,z,ipot) x positions x timesteps; backends without the time sequence do not have the third dimension
   $self->npositions($self->clusterspdl->getdim(1));
+  $self->ntimesteps(0);
   $self->ntimesteps($self->clusterspdl->getdim(2)) if ($self->clusterspdl->ndims == 2);
 
   ## trim the cluster to a slab within ZMAX from the interface (presumed to be at z=0)
@@ -115,8 +116,11 @@ sub rdf {
   #  @vec2 = @{$self->lattice->[2]};
   #};
 
-  ## predeclaring these variables svaes about 6% on execution time of the loop
+  ## predeclaring these variables saves about 6% on execution time of the loop
   my ($i, $xx, $yy, $centerpdl, $b_select, $scat, $b, $c, $d);
+
+
+#  foreach my $istep (0 .. $self->ntimesteps) {
 
 
 #  foreach my $step (@{$self->clusters}) {
