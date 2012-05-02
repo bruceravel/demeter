@@ -89,26 +89,17 @@ sub rdf {
     $self->start_counter("Making RDF from each timestep", $#{$self->clusters}+1);
   };
 
-  #print $/, join("|", $self->clusterspdl->ndims), $/;
-  #exit;
-
-  ## 4 (x,y,z,ipot) x positions x timesteps; backends without the time sequence do not have the third dimension
+  ## 4 (x,y,z,ipot) x positions x timesteps
+  ## backends without the time sequence do not have the third dimension
   $self->npositions($self->clusterspdl->getdim(1));
-  $self->ntimesteps(0);
-  $self->ntimesteps($self->clusterspdl->getdim(2)) if ($self->clusterspdl->ndims == 2);
+  $self->ntimesteps(1);
+  $self->ntimesteps($self->clusterspdl->getdim(2)) if ($self->clusterspdl->ndims != 2);
 
-  ## trim the cluster to a slab within ZMAX from the interface (presumed to be at z=0)
-  my $select = $self->clusterspdl->(2,:)->flat->abs->lt($self->zmax, 0)->which;
-  my $zslab = $self->clusterspdl->(:, $select);
-  my ($nd, $np) = $zslab->dims;
-  $self->npositions($np);
-
-  if (($Demeter::mode->ui eq 'screen') and (not $self->count_timesteps)) {
-    $self->progress('%30b %c of %m positions <Time elapsed: %8t>');
-    $self->start_counter("Making RDF from large cluster", $np);
-  };
   my $abs_species  = get_Z($self->feff->abs_species);
   my $scat_species = get_Z($self->feff->potentials->[$self->ipot]->[2]);
+
+
+  ### VASP (others?) requires this
   #my (@vec0, @vec1, @vec2);
   #if ($self->periodic) {	# pre-derefencing these vectors speeds up the loop where
   #  @vec0 = @{$self->lattice->[0]}; # the periodic boundary conditions are applied by a
@@ -118,43 +109,59 @@ sub rdf {
 
   ## predeclaring these variables saves about 6% on execution time of the loop
   my ($i, $xx, $yy, $centerpdl, $b_select, $scat, $b, $c, $d);
+  my ($clus, $nd, $np);
 
+  foreach my $istep (0 .. $self->ntimesteps-1) {
 
-#  foreach my $istep (0 .. $self->ntimesteps) {
+    if (not $self->count_timesteps) {
+      ## trim the cluster to a slab within ZMAX from the interface (presumed to be at z=0)
+      ## the assumption here is that a single time step calculation is a huge slab
+      ## here we are restricting that slab to withi some amount of an interface
+      my $select = $self->clusterspdl->(2,:)->flat->abs->lt($self->zmax, 0)->which;
+      $clus   = $self->clusterspdl->(:, $select);
+      ($nd, $np) = $clus->dims;
+      $self->npositions($np);
 
+      if ($Demeter::mode->ui eq 'screen') {
+	$self->progress('%30b %c of %m positions <Time elapsed: %8t>');
+	$self->start_counter("Making RDF from large cluster", $np);
+      };
 
-#  foreach my $step (@{$self->clusters}) {
+    } else {			# otherwise extract this timestep
+      $clus = $self->clusterspdl->(:,:,($istep));
+      ($nd, $np) = $clus->dims;
+      $self->npositions($np);
 
-#    @this = @$step;
-#    if ($self->count_timesteps) { # progress over timesteps
-#      $self->count if ($self->mo->ui eq 'screen');
-#      $self->timestep_count(++$count);
-#      $self->call_sentinal;
-#    };
+      $self->count if ($self->mo->ui eq 'screen');
+      $self->timestep_count(++$count);
+      $self->call_sentinal;
+    };
 
-
-
+    ## now $clus contains a portion of the MD simulation
     foreach $i (0 .. $np-1) {
       if (not $self->count_timesteps) { # progress over positions
 	$self->count if ($self->mo->ui eq 'screen');
 	$self->timestep_count(++$count);
 	$self->call_sentinal;
       };
-      next if ($abs_species != $zslab->at(3,$i));
 
+      ## the current absorber
+      next if ($abs_species != $clus->at(3,$i));
+      $centerpdl = $clus->(:,$i);
 
-      $centerpdl = $zslab->(:,$i);
-      $b_select = $zslab->(3,:)->flat->eq($scat_species, 0)->which;
+      ## find those members of $clus that represent the scattering species
+      $b_select = $clus->(3,:)->flat->eq($scat_species, 0)->which;
+      $scat = $clus->(:,$b_select);
 
-      $scat = $zslab->(:,$b_select);
-
-
+      ## distances between absorber and all scatterers within $clus
       $b = $scat->minus($centerpdl,0)->(0:2)->power(2,0)->sumover;
       $c = $b->where($b>$rminsqr);
       $d = $c->where($c<$rmaxsqr);
-      push @rdf, $d->sqrt->list;
-  };
 
+      ## save those within range
+      push @rdf, $d->sqrt->list;
+    }; # end of this time step
+  }; # end of loop over timesteps
 
   $self->stop_counter if ($self->mo->ui eq 'screen');
   $self->ssrdf(\@rdf);

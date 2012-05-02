@@ -2437,7 +2437,7 @@ sub make_HistogramNCL {
   $histogram -> set(r1=>$spref->[4], r2=>$spref->[5], r3=>$spref->[6], r4=>$spref->[7],
 		    rbin => $spref->[8], betabin => $spref->[9],
 		    feff => $feff, ipot => $spref->[10], ipot2 => $spref->[11],
-		    skip => 20, update_bins => 1);
+		    skip => $spref->[15], update_bins => 1);
   $this->{PARENT}->{DISTRIBUTION} = $histogram;
   if (lc($spref->[1]) eq 'lammps') {
     $histogram->count_timesteps(0);
@@ -2489,7 +2489,7 @@ sub make_HistogramThru {
   $histogram -> set(rmin=>$spref->[4], rmax=>$spref->[5],
 		    rbin => $spref->[6], betabin => $spref->[7],
 		    feff=>$feff, ipot => $spref->[8], ipot2 => $spref->[9],
-		    skip=>20, update_bins=>1);
+		    skip=>$spref->[13], update_bins=>1);
   $this->{PARENT}->{DISTRIBUTION} = $histogram;
   if (lc($spref->[1]) eq 'lammps') {
     $histogram->count_timesteps(0);

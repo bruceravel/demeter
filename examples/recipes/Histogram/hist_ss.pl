@@ -1,6 +1,7 @@
 #!/usr/bin/perl
 
-use Demeter qw(:ui=screen :plotwith=gnuplot);
+use Demeter qw(:fit :ui=screen :plotwith=gnuplot);
+#use Demeter qw(:plotwith=gnuplot);
 use Demeter::Feff::Distributions;
 
 use DateTime;
@@ -16,15 +17,18 @@ $data->po->kweight(1);
 $data->po->space('k');
 
 
-my $atoms = Demeter::Atoms->new();
-$atoms -> a(3.92);
-$atoms -> space('f m 3 m');
-$atoms -> push_sites( join("|", 'Pt',  0.0, 0.0, 0.0,   'Pt'  ) );
-$atoms -> core('Pt');
-$atoms -> set(rpath=>6, rmax=>9, rmax => 8);
-my $feff = Demeter::Feff->new(workspace=>"feff/", screen=>0, atoms=>$atoms);
-$feff->run;
-$feff->freeze('feff/feff.yaml');
+# my $atoms = Demeter::Atoms->new();
+# $atoms -> a(3.92);
+# $atoms -> space('f m 3 m');
+# $atoms -> push_sites( join("|", 'Pt',  0.0, 0.0, 0.0,   'Pt'  ) );
+# $atoms -> core('Pt');
+# $atoms -> set(rpath=>6, rmax=>9, rmax => 8);
+# my $feff = Demeter::Feff->new(workspace=>"feff/", screen=>0, atoms=>$atoms);
+# $feff->run;
+# $feff->freeze('feff/feff.yaml');
+my $feff = Demeter::Feff->new(workspace=>"feff/", screen=>0);
+$feff->yaml('feff/feff.yaml');
+
 my $first    = Demeter::Path->new(data=>$data, feff=>$feff, sp=>$feff->pathlist->[0],  n=>1);
 my $eighteen = Demeter::Path->new(data=>$data, feff=>$feff, sp=>$feff->pathlist->[17], n=>1);
 #print $first -> intrpline, $/;

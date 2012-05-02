@@ -56,6 +56,7 @@ has 'file'      => (is => 'rw', isa => 'Str', default => q{},
 				      $self->rdf;
 				    };
 				  });
+has 'skip'      => (is => 'rw', isa => 'Int', default => 50,);
 has 'npositions'  => (is            => 'rw',
 		      isa           => NonNeg,
 		      default       => 0);

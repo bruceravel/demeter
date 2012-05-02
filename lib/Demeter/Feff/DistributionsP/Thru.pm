@@ -12,8 +12,8 @@ use String::Random qw(random_string);
 use PDL::Lite;
 use PDL::NiceSlice;
 
-has 'skip'    => (is => 'rw', isa => 'Int', default => 50,
-		  trigger       => sub{ my($self, $new) = @_; $self->update_rdf(1) if $new},);
+#has 'skip'    => (is => 'rw', isa => 'Int', default => 50,
+#		  trigger       => sub{ my($self, $new) = @_; $self->update_rdf(1) if $new},);
 has 'nconfig' => (is => 'rw', isa => 'Int', default => 0, documentation => "the number of 3-body configurations found at each time step");
 has 'rmin'    => (is	        => 'rw',
 		  isa	        => 'Num',
@@ -111,82 +111,115 @@ sub rdf {
   my $scat2_species = get_Z($self->feff->potentials->[$self->ipot2]->[2]);
   $self->computing_rdf(1);
   my @three = ();
-  $self->npositions($self->clusterspdl->getdim(1)); # !!! need to generalize for timesteps !!!
 
-  ## trim the cluster to a slab within ZMAX from the interface (presumed to be at z=0)
-  my $select = $self->clusterspdl->(2,:)->flat->abs->lt($self->zmax, 0)->which;
-  my $zslab = $self->clusterspdl->(:, $select);
-  my ($nd, $np) = $zslab->dims;
-  $self->npositions($np);
 
-  if ($self->mo->ui eq 'screen') {
-    $self->progress('%30b %c of %m timesteps <Time elapsed: %8t>') if (not $self->huge_cluster);
-    $self->progress('%30b %c of %m positions <Time elapsed: %8t>') if $self->huge_cluster;
+  ## 4 (x,y,z,ipot) x positions x timesteps
+  ## backends without the time sequence do not have the third dimension
+  $self->npositions($self->clusterspdl->getdim(1));
+  $self->ntimesteps(1);
+  $self->ntimesteps($self->clusterspdl->getdim(2)) if ($self->clusterspdl->ndims != 2);
+
+
+  ## periodic boundary conditions...?
+
+  ## start timestep counter
+  if (($Demeter::mode->ui eq 'screen') and ($self->count_timesteps)) {
+    $self->progress('%30b %c of %m timesteps <Time elapsed: %8t>');
+    $self->start_counter(sprintf("Making radial/angle distribution from every %d-th timestep", $self->skip),
+			 ($#{$self->clusters}+1)/$self->skip);
   };
 
-  $self->start_counter(sprintf("Making radial/angle distribution from every %d-th timestep", $self->skip),
-		       ($#{$self->clusters}+1)/$self->skip) if (($self->mo->ui eq 'screen') and (not $self->huge_cluster));
+
 
   my ($i, $n1, $n2, $centerpdl, $b_select, $scat, $b, $c);
   my ($inrange1, $inrange2, $vec1a, $veca2);
   my ($ct, $st, $cp, $sp, $ctp, $stp, $cpp, $spp, $cppp, $sppp, $beta, $leg2, $halfpath);
+  my ($clus, $nd, $np);
 
-  $self->start_counter("Digging nearly collinear paths from 1st shell through absorber", $np)
-    if (($self->mo->ui eq 'screen') and ($self->huge_cluster));
-  foreach $i (0 .. $np-1) {
-    if (not $self->count_timesteps) { # progress over positions
+  foreach my $istep (0 .. $self->ntimesteps-1) {
+
+    if (not $self->count_timesteps) {
+      ## trim the cluster to a slab within ZMAX from the interface (presumed to be at z=0)
+      ## the assumption here is that a single time step calculation is a huge slab
+      ## here we are restricting that slab to withi some amount of an interface
+      my $select = $self->clusterspdl->(2,:)->flat->abs->lt($self->zmax, 0)->which;
+      $clus = $self->clusterspdl->(:, $select);
+      ($nd, $np) = $clus->dims;
+      $self->npositions($np);
+
+      if ($self->mo->ui eq 'screen') {
+	$self->progress('%30b %c of %m positions <Time elapsed: %8t>');
+	$self->start_counter("Digging nearly collinear paths from 1st and 4th shells", $np);
+      };
+
+    } else {			# otherwise extract this timestep
+      ++$count;
+      next if (($#{$self->clusters} > $self->skip) and ($count % $self->skip)); # only process every Nth timestep
+      $clus = $self->clusterspdl->(:,:,($istep));
+      ($nd, $np) = $clus->dims;
+      $self->npositions($np);
+
       $self->count if ($self->mo->ui eq 'screen');
-      $self->timestep_count(++$count);
+      $self->timestep_count($count);
       $self->call_sentinal;
     };
-    next if ($abs_species != $zslab->at(3,$i));
 
 
-    $centerpdl = $zslab->(:,$i);
-    $b_select  = $zslab->(3,:)->flat->eq($scat1_species, 0) -> or2($zslab->(3,:)->flat->eq($scat2_species, 0), 0) ->which;
-    $scat      = $zslab->(:,$b_select);
-    #$ind       = $indeces->($b_select);
-    $b	       = $scat->minus($centerpdl,0)->(0:2)->power(2,0)->sumover;
-
-    ## find the indeces in $scat of the first and fourth shell scatterers relative to this absorber
-    $inrange1  = $b->gt($r1sqr, 0)->and2($b->lt($r2sqr, 0), 0) ->and2($scat->(3,:)->flat->eq($scat1_species, 0), 0) ->which;
-    $inrange2  = $b->gt($r1sqr, 0)->and2($b->lt($r2sqr, 0), 0) ->and2($scat->(3,:)->flat->eq($scat2_species, 0), 0) ->which;
-    ## the gt/and2/lt idiom finds those in the first or fourth shell range
-    ## the second and2 selects those of the correct atoms type
-    ## finally, `which' returns the indeces in $scat that meet all those criteria
 
 
-    foreach $n1 ($inrange1->list) {
-      $vec1a = $centerpdl -> minus($scat->(:,$n1), 0) -> (0:2); # vector from near shell scatterer to absorber
-      foreach $n2 ($inrange2->list) {
-	$veca2 = $scat->(:,$n2) -> minus($centerpdl, 0) -> (0:2); # vector from absorber to other scatterer
+    foreach $i (0 .. $np-1) {
+      if (not $self->count_timesteps) { # progress over positions
+	$self->count if ($self->mo->ui eq 'screen');
+	$self->timestep_count(++$count);
+	$self->call_sentinal;
+      };
+      next if ($abs_species != $clus->at(3,$i));
 
-	## compute the Eulerian beta angle between them (following Feff)
-	($ct, $st, $cp, $sp)     = $self->_trig( $vec1a->list );
-	($ctp, $stp, $cpp, $spp) = $self->_trig( $veca2->list );
 
-	$cppp = $cp*$cpp + $sp*$spp;
-	$sppp = $spp*$cp - $cpp*$sp;
+      $centerpdl = $clus->(:,$i);
+      $b_select  = $clus->(3,:)->flat->eq($scat1_species, 0) -> or2($clus->(3,:)->flat->eq($scat2_species, 0), 0) ->which;
+      $scat      = $clus->(:,$b_select);
+      $b	 = $scat->minus($centerpdl,0)->(0:2)->power(2,0)->sumover;
 
-	$beta = $ct*$ctp + $st*$stp*$cppp;
-	if ($beta < -1) {
-	  $beta = 180;
-	} elsif ($beta >  1) {
-	  $beta = 0;
-	} else {
-	  $beta = 180 * acos($beta)  / $PI;
+      ## find the indeces in $scat of the first and fourth shell scatterers relative to this absorber
+      $inrange1  = $b->gt($r1sqr, 0)->and2($b->lt($r2sqr, 0), 0) ->and2($scat->(3,:)->flat->eq($scat1_species, 0), 0) ->which;
+      $inrange2  = $b->gt($r1sqr, 0)->and2($b->lt($r2sqr, 0), 0) ->and2($scat->(3,:)->flat->eq($scat2_species, 0), 0) ->which;
+      ## the gt/and2/lt idiom finds those in the first or fourth shell range
+      ## the second and2 selects those of the correct atoms type
+      ## finally, `which' returns the indeces in $scat that meet all those criteria
+
+
+      foreach $n1 ($inrange1->list) {
+	$vec1a = $centerpdl -> minus($scat->(:,$n1), 0) -> (0:2); # vector from near shell scatterer to absorber
+	foreach $n2 ($inrange2->list) {
+	  $veca2 = $scat->(:,$n2) -> minus($centerpdl, 0) -> (0:2); # vector from absorber to other scatterer
+
+	  ## compute the Eulerian beta angle between them (following Feff)
+	  ($ct, $st, $cp, $sp)     = $self->_trig( $vec1a->list );
+	  ($ctp, $stp, $cpp, $spp) = $self->_trig( $veca2->list );
+
+	  $cppp = $cp*$cpp + $sp*$spp;
+	  $sppp = $spp*$cp - $cpp*$sp;
+
+	  $beta = $ct*$ctp + $st*$stp*$cppp;
+	  if ($beta < -1) {
+	    $beta = 180;
+	  } elsif ($beta >  1) {
+	    $beta = 0;
+	  } else {
+	    $beta = 180 * acos($beta)  / $PI;
+	  };
+	  #print "        beta = ", $beta, "  ", $self->beta, $/;
+	  next if ($beta > $self->beta);
+
+	  $leg2 = $veca2->power(2,0)->sumover->sqrt->sclr;
+	  $halfpath = $leg2 + $b->($n1)->sqrt->sclr; # + $fourth->[0]) / 2;
+	  push @three, [$halfpath, $b->($n1)->sqrt->sclr, 0, $b->($n2)->sqrt->sclr, $beta];
+	  #print join("|", $halfpath, $b->($n1)->sqrt->sclr, 0, $b->($n2)->sqrt->sclr, $beta), $/;
 	};
-	#print "        beta = ", $beta, "  ", $self->beta, $/;
-	next if ($beta > $self->beta);
-
-	$leg2 = $veca2->power(2,0)->sumover->sqrt->sclr;
-	$halfpath = $leg2 + $b->($n1)->sqrt->sclr; # + $fourth->[0]) / 2;
-	push @three, [$halfpath, $b->($n1)->sqrt->sclr, 0, $b->($n2)->sqrt->sclr, $beta];
-	#print join("|", $halfpath, $b->($n1)->sqrt->sclr, 0, $b->($n2)->sqrt->sclr, $beta), $/;
       };
     };
   };
-
 
   $self->stop_counter if ($self->mo->ui eq 'screen');
   $self->nconfig( $#three+1 );
