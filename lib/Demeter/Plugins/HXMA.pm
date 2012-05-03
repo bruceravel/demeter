@@ -4,8 +4,9 @@ use Moose;
 extends 'Demeter::Plugins::FileType';
 
 has '+is_binary'   => (default => 0);
-has '+description' => (default => "the HXMA beamline at the CLS");
+has '+description' => (default => "the HXMA and SXRMB beamlines at the CLS");
 has '+version'     => (default => 0.1);
+has 'beamline'     => (is => 'rw', isa => 'Str', default => q{});
 
 sub is {
   my ($self) = @_;
@@ -25,29 +26,47 @@ sub fix {
   open D, $file or $self->Croak("could not open $file as data (fix in HXMA)\n");
   open N, ">".$new or die "could not write to $new (fix in HXMA)\n";
 
-  print N "# $file demystified:", $/;
-  print N "# ", "-" x 60, $/;
-  print N "# Energy        I0        It        Ir        Lytle$/";
+  my $first = 1;
 
   my $found_headers = 0;
   my ($energy, $lytle, $i0, $it, $ir) = (0,0,0,0,0);
   while (<D>) {
-    if ((not $found_headers) and ($_ =~ m{Event-ID})) {
+    if ((not $found_headers) and ($_ =~ m{\"Event-ID\"})) {
       $found_headers = 1;
       my @headers = split(/\s+/, $_);
       foreach my $i (1 .. $#headers) {
-	($energy = $i-1) if ($headers[$i] =~ m{Energy:sp});
-	($lytle  = $i-1) if ($headers[$i] =~ m{mcs03:fbk});
-	($i0     = $i-1) if ($headers[$i] =~ m{mcs04:fbk});
-	($it     = $i-1) if ($headers[$i] =~ m{mcs05:fbk});
-	($ir     = $i-1) if ($headers[$i] =~ m{mcs06:fbk});
+   	($energy = $i-1) if ($headers[$i] =~ m{Energy:sp});
+   	($lytle  = $i-1) if ($headers[$i] =~ m{mcs03:fbk});
+   	($i0     = $i-1) if ($headers[$i] =~ m{mcs04:fbk});
+   	($it     = $i-1) if ($headers[$i] =~ m{mcs05:fbk});
+   	($ir     = $i-1) if ($headers[$i] =~ m{mcs06:fbk});
       };
     };
 
     if ($_ !~ m{^\#}) {
       my @data = split(/,?\s+/, $_);
-      printf N "  %s  %s  %s  %s  %s$/",
-	$data[$energy], $data[$i0], $data[$it], $data[$ir], $data[$lytle];
+      if ($first) {
+
+	printf N "# %s %s demystified:\n", $self->beamline, $file;
+	print N "# ", "-" x 60, $/;
+	if ($self->beamline eq 'HXMA') {
+	  print N "# Energy        I0        It        Ir        Lytle$/";
+	} else {
+	  print N "# energy ", join(" ", (2..$#data)), $/;
+	};
+	$first = 0;
+      };
+
+      if ($self->beamline eq 'HXMA') {
+	printf N "  %s  %s  %s  %s  %s$/",
+	  $data[$energy], $data[$i0], $data[$it], $data[$ir], $data[$lytle];
+      } else {
+	print N join(" ", @data[1..$#data]), $/;
+      };
+    } elsif ($_ =~ m{BL1606-B}) {
+      $self->beamline('SXRMB');
+    } elsif ($_ =~ m{BL1606-I}) {
+      $self->beamline('HXMA');
     };
   };
 

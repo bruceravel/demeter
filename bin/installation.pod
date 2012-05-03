@@ -93,12 +93,12 @@ development libraries installed on your computer
 
 =item *
 
-Download the Ifeffit source code from the 
-L<Ifeffit Downloads page|http://cars9.uchicago.edu/ifeffit/Downloads>
+Grab the latest Ifeffit source code from I<its git
+site|https://github.com/newville/ifeffit>.
 
 =item *
 
-Unpack that tarball and cd into the newly created directory
+cd into the Ifeffit source directory
 
 =item *
 
@@ -135,11 +135,11 @@ C<libx11-dev>
 
 =item *
 
-C<libncurses5>
+C<libncurses5>, C<libncurses5-dev>
 
 =item *
 
-C<libpng12>
+C<libpng3>, C<libpng3-dev>
 
 =item *
 

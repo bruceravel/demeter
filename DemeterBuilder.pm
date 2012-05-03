@@ -197,6 +197,7 @@ sub ACTION_touch_wrapper {
   printf("copying %s to %s\n",
 	 File::Spec->catfile('src', 'Ifeffit.so'),
 	 File::Spec->catfile($ENV{HOME}, 'perl', 'auto', 'Ifeffit', 'Ifeffit.so'));
+  mkpath(File::Spec->catfile($ENV{HOME}, 'perl', 'auto', 'Ifeffit')) if not -e File::Spec->catfile($ENV{HOME}, 'perl', 'auto', 'Ifeffit');
   copy(File::Spec->catfile('src', 'Ifeffit.so'), File::Spec->catfile($ENV{HOME}, 'perl', 'auto', 'Ifeffit', 'Ifeffit.so'));
 };
 
