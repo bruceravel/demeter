@@ -7,6 +7,7 @@ extends 'Demeter::Plugins::FileType';
 #use Config::IniFiles;
 use File::Basename;
 use File::Copy;
+use File::CountLines qw(count_lines);
 use Const::Fast;
 const my $INIFILE => 'x23a2med.demeter_conf';
 use List::MoreUtils qw(any);
@@ -24,6 +25,10 @@ Demeter -> co -> read_config(File::Spec->catfile(dirname($INC{'Demeter.pm'}), 'D
 
 sub is {
   my ($self) = @_;
+
+  ## the header, line of dashes, and column labels constitute 18 lines
+  return 0 if (count_lines($self->file) < 30);
+
   open(my $D, $self->file) or $self->Croak("could not open " . $self->file . " as an X23A2MED file\n");
   my $line = <$D>;
   $line = <$D>;
@@ -35,13 +40,15 @@ sub is {
   my @headers = split(" ", $line);
 
   #my $cfg = new Config::IniFiles( -file => $self->inifile );
+  my $enr = Demeter->co->default("x23a2med", "energy");
   my $ch1 = Demeter->co->default("x23a2med", "roi1");
   my $sl1 = Demeter->co->default("x23a2med", "slow1");
   my $fa1 = Demeter->co->default("x23a2med", "fast1");
+  my $seems_escan = ($line =~ m{$enr\b}i);
   my $seems_med = ($line =~ m{\b$ch1\b}i);
   my $is_med = (($line =~ m{\b$sl1\b}i) and ($line =~ m{\b$fa1\b}i));
   close $D;
-  return ($is_x23a2 and $seems_med and $is_med);
+  return ($is_x23a2 and $seems_escan and $seems_med and $is_med);
 };
 
 sub fix {
@@ -233,7 +240,10 @@ the ROI, fast, and slow channels.
 
 An X23A2 file is recognized by the second comment line identifying the
 beamline at which the data were collected.  An MED file is recognized
-by having a large (>7) number of columns.
+by having a large (>7) number of columns.  Care is taken to be sure
+that the file is an energy scan and has many lines of data.  Care is
+not, however, taken to be sure that the I0 column does not have any
+zero-valued entries.
 
 =item C<fix>
 

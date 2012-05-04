@@ -7,6 +7,7 @@
 
 ** 0.9.10 ?? May 2012
 *** Athena
+   - Improved X23A2 and HXMA plugins
 
 *** Artemis
    - Display a useful error message when the phase.bin file is not
@@ -21,6 +22,8 @@
 *** Demeter
    - Convert histogram calculations to use PDL -- much faster!
      (backends: LAMMPS, )
+   - Fixed a bug building the ifeffit wrapper
+   - Improved installation.pod
 
 ** 0.9.9 20 April 2012
 *** Athena
