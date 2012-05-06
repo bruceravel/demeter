@@ -398,11 +398,12 @@ sub histoplot {
   } else {
     $dlp = $this->{DISTRIBUTION};
     $read_file = 0 if ($dlp->file eq $file);
-    $dlp->rmin($rmin) if ($dlp->rmin != $rmin);
-    $dlp->rmax($rmax) if ($dlp->rmax != $rmax);
-    $dlp->bin ($bin ) if ($dlp->bin  != $bin);
-    $dlp->ipot($ipot) if ($dlp->ipot != $ipot);
   };
+  ## trigger update_rdf if anything changes
+  $dlp->rmin($rmin) if ($dlp->rmin != $rmin);
+  $dlp->rmax($rmax) if ($dlp->rmax != $rmax);
+  $dlp->bin ($bin ) if ($dlp->bin  != $bin);
+  $dlp->ipot($ipot) if ($dlp->ipot != $ipot);
   if (lc($backend) eq 'dl_poly') {
     $dlp->count_timesteps(1);
     $dlp->skip($skip);
@@ -493,14 +494,15 @@ sub scatterplot {
   } else {
     $histo = $this->{DISTRIBUTION};
     $read_file = 0 if ($histo->file eq $file);
-    $histo->rmin($r1)    if ($histo->rmin != $r1);
-    $histo->rmax($r2)    if ($histo->rmax != $r2);
-    $histo->rmin($r3)    if ($histo->rmin != $r3);
-    $histo->rmax($r4)    if ($histo->rmax != $r4);
-    $histo->bin ($rbin)  if ($histo->bin  != $rbin);
-    $histo->ipot($ipot1) if ($histo->ipot != $ipot1);
-    $histo->ipot($ipot2) if ($histo->ipot != $ipot2);
   };
+  ## trigger update_rdf if anything changes
+  $histo->rmin($r1)    if ($histo->rmin != $r1);
+  $histo->rmax($r2)    if ($histo->rmax != $r2);
+  $histo->rmin($r3)    if ($histo->rmin != $r3);
+  $histo->rmax($r4)    if ($histo->rmax != $r4);
+  $histo->bin ($rbin)  if ($histo->bin  != $rbin);
+  $histo->ipot($ipot1) if ($histo->ipot != $ipot1);
+  $histo->ipot($ipot2) if ($histo->ipot != $ipot2);
   if (lc($backend) eq 'dl_poly') {
     $histo->count_timesteps(1);
     $histo->skip($skip);
