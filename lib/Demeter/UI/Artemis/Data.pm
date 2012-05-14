@@ -2279,6 +2279,7 @@ sub OnData {
       my $page = Demeter::UI::Artemis::Path->new($book, $thispath, $this->{PARENT});
       $book->AddPage($page, $label, 1, 0);
       $page->include_label;
+      $book->Update;
     };
   };
 
