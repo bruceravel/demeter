@@ -2332,6 +2332,7 @@ sub make_path {
   my $page = Demeter::UI::Artemis::Path->new($book, $pathlike, $this->{PARENT});
   my $i = $book->AddPage($page, $pathlike->name, 1, 0);
   $page->include_label(q{});
+  $book->Update;
 
 };
 
@@ -2402,6 +2403,7 @@ sub make_HistogramSS {
   $composite->data($this->{PARENT}->{data});
   my $page = Demeter::UI::Artemis::Path->new($book, $composite, $this->{PARENT});
   $book->AddPage($page, $composite->name, 1, 0);
+  $book->Update;
   #$composite->po->start_plot;
   #$composite->plot('r');
   $page->transfer;
@@ -2419,6 +2421,7 @@ sub make_HistogramSS {
     $rattle -> data($this->{PARENT}->{data});
     $page = Demeter::UI::Artemis::Path->new($book, $rattle, $this->{PARENT});
     $book->AddPage($page, $rattle->name, 1, 0);
+    $book->Update;
     $page->transfer;
   };
 
@@ -2473,6 +2476,7 @@ sub make_HistogramNCL {
   $composite->data($this->{PARENT}->{data});
   my $page = Demeter::UI::Artemis::Path->new($book, $composite, $this->{PARENT});
   $book->AddPage($page, $composite->name, 1, 0);
+  $book->Update;
   #$composite->po->start_plot;
   #$composite->plot('r');
   $page->transfer;
@@ -2526,6 +2530,7 @@ sub make_HistogramThru {
   $composite->data($this->{PARENT}->{data});
   my $page = Demeter::UI::Artemis::Path->new($book, $composite, $this->{PARENT});
   $book->AddPage($page, $composite->name, 1, 0);
+  $book->Update;
   #$composite->po->start_plot;
   #$composite->plot('r');
   $page->transfer;

@@ -161,6 +161,7 @@ sub make_page {
   $hh  -> Add($self->{$which}, 1, wxGROW|wxALL, 0);
   $self->{$which."_sizer"} -> Add($hh, 1, wxGROW|wxALL, 0);
   $self->{$which."_page"} -> SetSizer(self->{$which."_sizer"});
+  $self->Update;
   undef $busy;
 };
 

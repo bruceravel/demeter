@@ -274,7 +274,7 @@ sub read_project {
 	my $feff = File::Spec->catfile($projfolder, 'feff', $d, $d.'.inp');
 	my $text = $feffobject->slurp($feff);
 	$rframes->{$fnum}->make_page('Feff')  if not $rframes->{$fnum}->{Feff};
-	$rframes->{$fnum}->make_page('Paths') if not $rframes->{$fnum}->{Paths};
+#	$rframes->{$fnum}->make_page('Paths') if not $rframes->{$fnum}->{Paths};
 	$rframes->{$fnum}->{Feff}->{feff}->SetValue($text);
 
 	## make Feff frame
@@ -287,7 +287,7 @@ sub read_project {
 	$rframes->{$fnum}->{Feff}->fill_ss_page($feffobject);
 
 	$rframes->{$fnum}->{Feff} ->{name}->SetValue($feffobject->name);
-	$rframes->{$fnum}->{Paths}->{name}->SetValue($feffobject->name);
+#	$rframes->{$fnum}->{Paths}->{name}->SetValue($feffobject->name);
 	$rframes->{$fnum}->status("Imported crystal and Feff data from ". basename($fname));
       };
       my $label = $rframes->{main}->{$fnum}->GetLabel;

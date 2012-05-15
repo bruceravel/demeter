@@ -380,6 +380,25 @@ keep you up to date with the latest developments.
 
 =back
 
+=head2 WxPerl GUIs on KDE
+
+WxPerl on linux uses GTK.  This means that the GUIs may not match your
+desktop if you are a KDE user.  The solution to this "problem" is to
+install the tool for configuring GTK applications under KDE.  On
+Ubuntu, this package is called C<kde-config-gtk>.  You will then want
+to install the C<gtk2-engines> package.  There are several GTK2 themes
+with names like C<gtk2-engines-clearlooks> that you can also install.
+The key to making Athena and Artemis look like the rest of your
+desktop is to synchronize your choice of KDE and GTK2 themes.  I use
+KDE's "cleanlooks" theme with GTK2's "clearlooks" theme.  "Oxygen" is
+another possibility.
+
+Upon upgrading to Ubuntu 12.04 on one of my computers, I observed
+frequent crashes in Artemis related to drag and drop (e.g. when
+importing paths from a Feff calculation).  This turned out to be
+related to a problem with the "oxygen-gtk" GTK2 theme.  Changing the
+GTK2 theme to any other choice made the problem go away.
+
 =head1 MISCELLANY
 
 =over 4

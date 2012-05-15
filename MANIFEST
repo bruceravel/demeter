@@ -1741,3 +1741,5 @@ win/start_menu/Ifeffit.ico
 win/start_menu/readme
 win/start_menu/xafs.org.ico
 win/start_menu/XAFS.org.url
+META.yml
+META.json
