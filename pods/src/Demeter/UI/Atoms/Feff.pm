@@ -80,9 +80,9 @@ sub icon {
 sub OnToolEnter {
   my ($self, $event, $which) = @_;
   if ( $event->GetSelection > -1 ) {
-    $self->{statusbar}->SetStatusText($self->{$which}->GetToolLongHelp($event->GetSelection));
+    $self->{statusbar}->PushStatusText($self->{$which}->GetToolLongHelp($event->GetSelection));
   } else {
-    $self->{statusbar}->SetStatusText(q{});
+    $self->{statusbar}->PopStatusText;
   };
 };
 
@@ -225,29 +225,49 @@ Should we continue?',
   $self->{parent}->make_page('Console') if not $self->{parent}->{Console};
   $self->{parent}->{Console}->{console}->AppendText($self->now("Feff calculation beginning at ", $feff));
   $self->{parent}->status("Computing potentials using Feff6 ...");
+
+  ## rerunning, so clean upprevious results
+  my $phbin = File::Spec->catfile($feff->workspace, 'phase.bin');
+  unlink $phbin;
+  $self->{parent}->{Paths}->{header}->SetValue(q{}) if exists $self->{parent}->{Paths};
+  $self->{parent}->{Paths}->{paths}->DeleteAllItems if exists $self->{parent}->{Paths};
   $feff->potph;
+
   ## the call to check_exe happened in the previous method call,
-  ## however, the logging happens below at line 225, so this appears
-  ## above the messages from Feff's potph
+  ## however, the logging happens below before "clear_iobuffer" line, so
+  ## this appears above the messages from Feff's potph
   $self->{parent}->{Console}->{console}->AppendText("(Feff executable: ".
 						    $feff->co->default(qw(feff executable)) .
 						    ")\n\n");
+  $Demeter::UI::Artemis::frames{main}->status(q{}) if (exists $Demeter::UI::Artemis::frames{main});
+  if (-e $phbin) {
+    $self->{parent}->status("Finding scattering paths using Demeter's pathfinder...");
+    $feff->pathfinder;
+    my $yaml = File::Spec->catfile($feff->workspace, $feff->group.".yaml");
+    $feff->freeze($yaml);
 
-  $self->{parent}->status("Finding scattering paths using Demeter's pathfinder...");
-  $feff->pathfinder;
-  my $yaml = File::Spec->catfile($feff->workspace, $feff->group.".yaml");
-  $feff->freeze($yaml);
+    $self->fill_intrp_page($feff);
+    $self->fill_ss_page($feff);
 
-  $self->fill_intrp_page($feff);
-  $self->fill_ss_page($feff);
+    $self->{parent}->{notebook}->ChangeSelection(2);
+    $self->{parent}->status("Feff calculation complete!");
+  } else {
+    my $n = 4;
+    if (exists $Demeter::UI::Artemis::frames{main}) {
+      $Demeter::UI::Artemis::frames{main}->status("Feff failed to compute potentials!  See Feff console for details.", 'error');
+      $n=4;
+    } else {
+      $self->{parent}->status("Feff failed to compute potentials!");
+      $n=3;
+    };
+    $self->{parent}->{notebook}->ChangeSelection($n);
+  };
 
-  $self->{parent}->{notebook}->ChangeSelection(2);
 
   $self->{parent}->{Console}->{console}->AppendText(join("\n", @{ $feff->iobuffer }));
   $self->{parent}->{Console}->{console}->AppendText($self->now("Feff calculation finished at ", $feff));
   $feff->clear_iobuffer;
 
-  $self->{parent}->status("Feff calculation complete!");
   #unlink $inpfile;
   undef $busy;
 };
@@ -358,7 +378,7 @@ Demeter::UI::Atoms::Feff - Atoms' Feff utility
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.9.
+This documentation refers to Demeter version 0.9.10.
 
 =head1 DESCRIPTION
 

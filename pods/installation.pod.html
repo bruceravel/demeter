@@ -74,6 +74,7 @@
 	<li><a href="#Installing_Demeter_without_root_priv">Installing Demeter without root privileges</a></li>
 	<li><a href="#Working_behind_a_proxy_server">Working behind a proxy server</a></li>
 	<li><a href="#Installing_and_using_source_code_on_">Installing and using source code on Windows</a></li>
+	<li><a href="#WxPerl_GUIs_on_KDE">WxPerl GUIs on KDE</a></li>
 </ul>
 </li>
 	<li><a href="#MISCELLANY">MISCELLANY</a></li>
@@ -161,9 +162,9 @@ install it from scratch.</p>
 development libraries installed on your computer</p>
 
 <ul>
-	<li>Download the Ifeffit source code from the 
-<a href="http://cars9.uchicago.edu/ifeffit/Downloads">Ifeffit Downloads page</a></li>
-	<li>Unpack that tarball and cd into the newly created directory</li>
+	<li>Grab the latest Ifeffit source code from <i>its git
+site|https://github.com/newville/ifeffit</i>.</li>
+	<li>cd into the Ifeffit source directory</li>
 	<li>Run the <cite>PGPLOT_install</cite> script. This streamlines the rather unwieldy
 chore of building PGPLOT. This step will require root access to the
 computer.<pre>   sudo ./PGPLOT_install
@@ -181,8 +182,8 @@ will help you resolve which packages are needed.</p>
 
 <ul>
 	<li><code>libx11-dev</code></li>
-	<li><code>libncurses5</code></li>
-	<li><code>libpng12</code></li>
+	<li><code>libncurses5</code>, <code>libncurses5-dev</code></li>
+	<li><code>libpng3</code>, <code>libpng3-dev</code></li>
 	<li><code>libgif4</code></li>
 </ul>
 
@@ -390,6 +391,25 @@ source code on a Windows machine. </p>
 	<li>Proceed with Steps 2 and 4 from the instructions above.  This will
 keep you up to date with the latest developments.</li>
 </ul>
+
+<h2 id="WxPerl_GUIs_on_KDE">WxPerl GUIs on KDE</h2>
+
+<p>WxPerl on linux uses GTK.  This means that the GUIs may not match your
+desktop if you are a KDE user.  The solution to this &quot;problem&quot; is to
+install the tool for configuring GTK applications under KDE.  On
+Ubuntu, this package is called <code>kde-config-gtk</code>.  You will then want
+to install the <code>gtk2-engines</code> package.  There are several GTK2 themes
+with names like <code>gtk2-engines-clearlooks</code> that you can also install.
+The key to making Athena and Artemis look like the rest of your
+desktop is to synchronize your choice of KDE and GTK2 themes.  I use
+KDE's &quot;cleanlooks&quot; theme with GTK2's &quot;clearlooks&quot; theme.  &quot;Oxygen&quot; is
+another possibility.</p>
+
+<p>Upon upgrading to Ubuntu 12.04 on one of my computers, I observed
+frequent crashes in Artemis related to drag and drop (e.g. when
+importing paths from a Feff calculation).  This turned out to be
+related to a problem with the &quot;oxygen-gtk&quot; GTK2 theme.  Changing the
+GTK2 theme to any other choice made the problem go away.</p>
 
 <h1 id="MISCELLANY">MISCELLANY <a href="#TOP" class="toplink"><img alt="^" src="up.gif" /></a></h1>
 

@@ -18,7 +18,7 @@ package Demeter;  # http://xkcd.com/844/
 require 5.008;
 
 use version;
-our $VERSION = version->new('0.9.9');
+our $VERSION = version->new('0.9.10');
 use feature "switch";
 
 ############################
@@ -206,7 +206,7 @@ sub import {
   my @data  = (qw(Data XES Journal Data/Prj Data/Pixel Data/MultiChannel Data/BulkMerge));
   my @heph  = (qw(Data Data/Prj));
   my @fit   = (qw(Atoms Feff Feff/External ScatteringPath Path VPath SSPath ThreeBody FPath FSPath
-		  GDS Fit Fit/Feffit StructuralUnit));
+		  GDS Fit Fit/Feffit StructuralUnit Feff/Distributions));
   my @atoms = (qw(Data Atoms Feff ScatteringPath Path));
   my @anal  = (qw(LCF LogRatio Diff PeakFit PeakFit/LineShape));
   my @xes   = (qw(XES));
@@ -673,6 +673,7 @@ sub serialization {
 
 sub serialize {
   my ($self, $fname) = @_;
+  die("cannot write serialization to $fname\n") if not -w dirname($fname);
   open my $F, '>'.$fname;
   print $F $self->serialization;
   close $F;
@@ -808,7 +809,7 @@ Demeter - A comprehensive XAS data analysis system using Feff and Ifeffit
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.9
+This documentation refers to Demeter version 0.9.10
 
 =head1 SYNOPSIS
 

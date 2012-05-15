@@ -395,7 +395,6 @@ sub _data {
       return 0;
     };
     $med = ($colsel->{each}->IsEnabled and $colsel->{each}->GetValue);
-    print join("|", $med, $colsel->{each}->IsEnabled, $colsel->{each}->GetValue), $/;
     $yaml->{each}  = $colsel->{each}->GetValue;
     $yaml->{units} = $colsel->{units}->GetSelection;
     $repeated = 0;
@@ -924,7 +923,7 @@ Demeter::UI::Athena::IO - import/export functionality
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.9.
+This documentation refers to Demeter version 0.9.10.
 
 =head1 SYNOPSIS
 

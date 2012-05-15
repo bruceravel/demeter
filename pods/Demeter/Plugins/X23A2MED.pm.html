@@ -72,7 +72,7 @@
 
 <h1 id="VERSION">VERSION <a href="#TOP" class="toplink"><img alt="^" src="../../up.gif" /></a></h1>
 
-<p>This documentation refers to Demeter version 0.9.9.</p>
+<p>This documentation refers to Demeter version 0.9.10.</p>
 
 <h1 id="SYNOPSIS">SYNOPSIS <a href="#TOP" class="toplink"><img alt="^" src="../../up.gif" /></a></h1>
 
@@ -91,7 +91,10 @@ the ROI, fast, and slow channels.</p>
 	<dt><code>is</code></dt>
 		<dd><p>An X23A2 file is recognized by the second comment line identifying the
 beamline at which the data were collected.  An MED file is recognized
-by having a large (&gt;7) number of columns.</p></dd>
+by having a large (&gt;7) number of columns.  Care is taken to be sure
+that the file is an energy scan and has many lines of data.  Care is
+not, however, taken to be sure that the I0 column does not have any
+zero-valued entries.</p></dd>
 	<dt><code>fix</code></dt>
 		<dd><p>An ini file is used to specify the deadtime for each channel and is
 prompted for the column labels for the ROI, fast, and slow channels

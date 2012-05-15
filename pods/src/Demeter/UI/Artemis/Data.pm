@@ -17,6 +17,7 @@ package  Demeter::UI::Artemis::Data;
 
 use strict;
 use warnings;
+use feature 'switch';
 
 use Wx qw( :everything);
 use base qw(Wx::Frame);
@@ -214,7 +215,7 @@ sub new {
   ## -------- single data set plot buttons
   my $buttonbox  = Wx::StaticBox->new($leftpane, -1, 'Plot this data set as ', wxDefaultPosition, [-1,-1]);
   my $buttonboxsizer = Wx::StaticBoxSizer->new( $buttonbox, wxHORIZONTAL );
-  $left -> Add($buttonboxsizer, 0, wxGROW|wxALL, 5);
+  $left -> Add($buttonboxsizer, 0, wxGROW|wxLEFT|wxRIGHT, 5);
   $this->{plot_rmr}  = Wx::Button->new($leftpane, -1, "&Rm".$demeter->co->default("plot", "rmx"),  wxDefaultPosition, [70,-1]);
   $this->{plot_rk}   = Wx::Button->new($leftpane, -1, "Rk",    wxDefaultPosition, [70,-1]);
   $this->{plot_k123} = Wx::Button->new($leftpane, -1, "&k123", wxDefaultPosition, [70,-1]);
@@ -242,8 +243,8 @@ sub new {
   ## -------- title lines
   my $titlesbox      = Wx::StaticBox->new($leftpane, -1, 'Title lines ', wxDefaultPosition, wxDefaultSize);
   my $titlesboxsizer = Wx::StaticBoxSizer->new( $titlesbox, wxHORIZONTAL );
-  $this->{titles}      = Wx::TextCtrl->new($leftpane, -1, q{}, wxDefaultPosition, [300,-1],
-					   wxHSCROLL|wxTE_READONLY|wxTE_MULTILINE|wxTE_RICH);
+  $this->{titles}      = Wx::TextCtrl->new($leftpane, -1, q{}, wxDefaultPosition, [300,75],
+					   wxTE_READONLY|wxTE_MULTILINE|wxTE_RICH);
   $titlesboxsizer -> Add($this->{titles}, 1, wxALL|wxGROW, 0);
   $left           -> Add($titlesboxsizer, 1, wxALL|wxGROW, 5);
   $this->mouseover("titles", "These lines will be written to output files.  Use them to describe this data set.");
@@ -252,7 +253,7 @@ sub new {
   ## -------- Fourier transform parameters
   my $ftbox      = Wx::StaticBox->new($leftpane, -1, 'Fourier transform parameters ', wxDefaultPosition, wxDefaultSize);
   my $ftboxsizer = Wx::StaticBoxSizer->new( $ftbox, wxVERTICAL );
-  $left         -> Add($ftboxsizer, 0, wxGROW|wxALL|wxALIGN_CENTER_HORIZONTAL, 5);
+  $left         -> Add($ftboxsizer, 0, wxGROW|wxLEFT|wxRIGHT|wxALIGN_CENTER_HORIZONTAL, 5);
 
   my $gbs = Wx::GridBagSizer->new( 5, 10 );
 
@@ -337,14 +338,14 @@ sub new {
 
   $label     = Wx::StaticText->new($leftpane, -1, "k window");
   $this->{kwindow} = Wx::Choice  ->new($leftpane, -1, , wxDefaultPosition, wxDefaultSize, $windows);
-  $windowsbox -> Add($label, 0, wxALL, 5);
-  $windowsbox -> Add($this->{kwindow}, 0, wxALL, 2);
+  $windowsbox -> Add($label, 0, wxLEFT|wxRIGHT, 5);
+  $windowsbox -> Add($this->{kwindow}, 0, wxLEFT|wxRIGHT, 2);
   $this->{kwindow}->SetSelection(firstidx {$_ eq $demeter->co->default("fft", "kwindow")} @$windows);
 
   $label     = Wx::StaticText->new($leftpane, -1, "R window");
   $this->{rwindow} = Wx::Choice  ->new($leftpane, -1, , wxDefaultPosition, wxDefaultSize, $windows);
-  $windowsbox -> Add($label, 0, wxALL, 5);
-  $windowsbox -> Add($this->{rwindow}, 0, wxALL, 2);
+  $windowsbox -> Add($label, 0, wxLEFT|wxRIGHT, 5);
+  $windowsbox -> Add($this->{rwindow}, 0, wxLEFT|wxRIGHT, 2);
   $this->{rwindow}->SetSelection(firstidx {$_ eq $demeter->co->default("bft", "rwindow")} @$windows);
 
   $this->mouseover("kwindow", "The functional form of the window used for the forward Fourier transform.");
@@ -382,7 +383,7 @@ sub new {
 
   my $otherbox      = Wx::StaticBox->new($leftpane, -1, 'Other parameters ', wxDefaultPosition, wxDefaultSize);
   my $otherboxsizer = Wx::StaticBoxSizer->new( $otherbox, wxVERTICAL );
-  $left            -> Add($otherboxsizer, 0, wxALL|wxGROW|wxALIGN_CENTER_HORIZONTAL, 5);
+  $left            -> Add($otherboxsizer, 0, wxLEFT|wxRIGHT|wxBOTTOM|wxGROW|wxALIGN_CENTER_HORIZONTAL, 5);
 
 
   ## --------- toggles
@@ -391,9 +392,9 @@ sub new {
   $this->{include}    = Wx::CheckBox->new($leftpane, -1, "Include in fit", wxDefaultPosition, wxDefaultSize);
   $this->{plot_after} = Wx::CheckBox->new($leftpane, -1, "Plot after fit", wxDefaultPosition, wxDefaultSize);
   $this->{fit_bkg}    = Wx::CheckBox->new($leftpane, -1, "Fit background", wxDefaultPosition, wxDefaultSize);
-  $togglebox -> Add($this->{include},    0, wxALL, 5);
-  $togglebox -> Add($this->{plot_after}, 0, wxALL, 5);
-  $togglebox -> Add($this->{fit_bkg},    0, wxALL, 5);
+  $togglebox -> Add($this->{include},    0, wxLEFT|wxRIGHT, 5);
+  $togglebox -> Add($this->{plot_after}, 0, wxLEFT|wxRIGHT, 5);
+  $togglebox -> Add($this->{fit_bkg},    0, wxLEFT|wxRIGHT, 5);
   $this->{include}    -> SetValue(1);
   $this->{plot_after} -> SetValue(1);
 
@@ -404,14 +405,14 @@ sub new {
 
   ## -------- epsilon and phase correction
   my $extrabox    = Wx::BoxSizer->new( wxHORIZONTAL );
-  $otherboxsizer -> Add($extrabox, 0, wxALL, 0);
+  $otherboxsizer -> Add($extrabox, 0, wxTOP|wxBOTTOM, 2);
 
   $extrabox -> Add(Wx::StaticText->new($leftpane, -1, "$EPSILON(k)"), 0, wxALL, 5);
   $this->{epsilon} = Wx::TextCtrl->new($leftpane, -1, 0, wxDefaultPosition, [50,-1], wxTE_PROCESS_ENTER);
-  $extrabox  -> Add($this->{epsilon}, 0, wxALL, 2);
-  $extrabox  -> Add(Wx::StaticText->new($leftpane, -1, q{}), 1, wxALL, 0);
+  $extrabox  -> Add($this->{epsilon}, 0, wxALL, 0);
+  $extrabox  -> Add(Wx::StaticText->new($leftpane, -1, q{}), 1, wxALL, 2);
   $this->{pcplot}  = Wx::CheckBox->new($leftpane, -1, "Plot with phase correction", wxDefaultPosition, wxDefaultSize);
-  $extrabox  -> Add($this->{pcplot}, 0, wxALL, 0);
+  $extrabox  -> Add($this->{pcplot}, 0, wxALL, 3);
   EVT_CHECKBOX($this, $this->{pcplot}, sub{
 		 my ($self, $event) = @_;
 		 $self->{data}->fft_pc($self->{pcplot}->GetValue);
@@ -2144,19 +2145,31 @@ sub histogram_sentinal_rdf {
   my ($datapage) = @_;
   my $text = q{};
   if ($datapage->{DISTRIBUTION}->computing_rdf) {
-    if (not $datapage->{DISTRIBUTION}->timestep_count % 10) {
+    if ($datapage->{DISTRIBUTION}->count_timesteps) { # increment by timestep  (typically, small cluster, many timestep)
 
-      ## single scattering histogram
-      $text = sprintf "Processing step %d of %d timesteps", $datapage->{DISTRIBUTION}->timestep_count, $datapage->{DISTRIBUTION}->{nsteps}
-	if ($datapage->{DISTRIBUTION}->type eq 'ss');
+      if (not $datapage->{DISTRIBUTION}->timestep_count % 10) {
 
-      ## nearly collinear histrogram
-      $text = sprintf("Processing step %d of %d timesteps (every %d-th step)",
-		      $datapage->{DISTRIBUTION}->timestep_count/$datapage->{DISTRIBUTION}->skip,
-		      ($#{$datapage->{DISTRIBUTION}->clusters}+1)/$datapage->{DISTRIBUTION}->skip,
-		      $datapage->{DISTRIBUTION}->skip )
-	if (($datapage->{DISTRIBUTION}->type eq 'ncl') or ($datapage->{DISTRIBUTION}->type eq 'thru'));
+	## single scattering histogram
+	$text = sprintf("Processing step %d of %d timesteps",
+			$datapage->{DISTRIBUTION}->timestep_count, $datapage->{DISTRIBUTION}->{nsteps})
+	  if ($datapage->{DISTRIBUTION}->type eq 'ss');
 
+	## nearly collinear histogram
+	$text = sprintf("Processing step %d of %d timesteps (every %d-th step)",
+			$datapage->{DISTRIBUTION}->timestep_count/$datapage->{DISTRIBUTION}->skip,
+			($#{$datapage->{DISTRIBUTION}->clusters}+1)/$datapage->{DISTRIBUTION}->skip,
+			$datapage->{DISTRIBUTION}->skip )
+	  if (($datapage->{DISTRIBUTION}->type eq 'ncl') or ($datapage->{DISTRIBUTION}->type eq 'thru'));
+
+      };
+    } else {			# increment by atomic position (typically large cluster, few/no timesteps)
+      if (not $datapage->{DISTRIBUTION}->timestep_count % 250) {
+
+	## any histogram
+	$text = sprintf("Processing %d of %d positions",
+			$datapage->{DISTRIBUTION}->timestep_count, $datapage->{DISTRIBUTION}->npositions);
+
+      };
     };
   } elsif ($datapage->{DISTRIBUTION}->reading_file) {
     $text = "Reading line $. from ".$datapage->{DISTRIBUTION}->file;
@@ -2266,6 +2279,7 @@ sub OnData {
       my $page = Demeter::UI::Artemis::Path->new($book, $thispath, $this->{PARENT});
       $book->AddPage($page, $label, 1, 0);
       $page->include_label;
+      $book->Update;
     };
   };
 
@@ -2318,6 +2332,7 @@ sub make_path {
   my $page = Demeter::UI::Artemis::Path->new($book, $pathlike, $this->{PARENT});
   my $i = $book->AddPage($page, $pathlike->name, 1, 0);
   $page->include_label(q{});
+  $book->Update;
 
 };
 
@@ -2342,8 +2357,13 @@ sub make_HistogramSS {
     $histogram->bin ($spref->[6]) if ($histogram->bin  != $spref->[6]);
     $histogram->ipot($spref->[7]) if ($histogram->ipot != $spref->[7]);
   };
+  if (lc($spref->[1]) eq 'lammps') {
+    $histogram->count_timesteps(0);
+    $histogram->zmax($spref->[11]);
+  };
+
   $this->{PARENT}->{DISTRIBUTION} = $histogram;
-  ## this pushes this Distribution object back into the Atopms/Feff frame so it can be reused
+  ## this pushes this Distribution object back into the Atoms/Feff frame so it can be reused
   $Demeter::UI::Artemis::frames{$spref->[10]}->{SS}->{DISTRIBUTION} = $histogram;
 
   my $busy = Wx::BusyCursor->new();
@@ -2360,7 +2380,9 @@ sub make_HistogramSS {
   #$histogram->sentinal(sub{1});
   my $finish = DateTime->now( time_zone => 'floating' );
   my $dur = $finish->subtract_datetime($start);
-  my $finishtext = sprintf("Making histogram from %d timesteps (%d minutes, %d seconds)", $histogram->nsteps, $dur->minutes, $dur->seconds);
+  my $finishtext = ($histogram->count_timesteps)
+    ? sprintf("Making histogram from %d timesteps (%d minutes, %d seconds)", $histogram->nsteps, $dur->minutes, $dur->seconds)
+      : sprintf("Making histogram from %d positions (%d minutes, %d seconds)", $histogram->npositions, $dur->minutes, $dur->seconds);
   $this->{PARENT}->status($finishtext);
   undef $busy;
 
@@ -2381,6 +2403,7 @@ sub make_HistogramSS {
   $composite->data($this->{PARENT}->{data});
   my $page = Demeter::UI::Artemis::Path->new($book, $composite, $this->{PARENT});
   $book->AddPage($page, $composite->name, 1, 0);
+  $book->Update;
   #$composite->po->start_plot;
   #$composite->plot('r');
   $page->transfer;
@@ -2398,6 +2421,7 @@ sub make_HistogramSS {
     $rattle -> data($this->{PARENT}->{data});
     $page = Demeter::UI::Artemis::Path->new($book, $rattle, $this->{PARENT});
     $book->AddPage($page, $rattle->name, 1, 0);
+    $book->Update;
     $page->transfer;
   };
 
@@ -2417,14 +2441,18 @@ sub make_HistogramNCL {
   $histogram -> set(r1=>$spref->[4], r2=>$spref->[5], r3=>$spref->[6], r4=>$spref->[7],
 		    rbin => $spref->[8], betabin => $spref->[9],
 		    feff => $feff, ipot => $spref->[10], ipot2 => $spref->[11],
-		    skip => 20, update_bins => 1);
+		    skip => $spref->[15], update_bins => 1);
   $this->{PARENT}->{DISTRIBUTION} = $histogram;
+  if (lc($spref->[1]) eq 'lammps') {
+    $histogram->count_timesteps(0);
+    $histogram->zmax($spref->[14]);
+  };
 
-  $histogram->sentinal(sub{$this->{PARENT}->histogram_sentinal_rdf});
   my $busy = Wx::BusyCursor->new();
   my $start = DateTime->now( time_zone => 'floating' );
   $histogram->backend($spref->[1]);
   $this->{PARENT}->status("Reading MD time sequence file, please be patient...", 'wait');
+  $histogram->sentinal(sub{$this->{PARENT}->histogram_sentinal_rdf});
   $histogram->file($spref->[3]);
   my $finish = DateTime->now( time_zone => 'floating' );
   my $dur = $finish->subtract_datetime($start);
@@ -2448,6 +2476,7 @@ sub make_HistogramNCL {
   $composite->data($this->{PARENT}->{data});
   my $page = Demeter::UI::Artemis::Path->new($book, $composite, $this->{PARENT});
   $book->AddPage($page, $composite->name, 1, 0);
+  $book->Update;
   #$composite->po->start_plot;
   #$composite->plot('r');
   $page->transfer;
@@ -2465,8 +2494,12 @@ sub make_HistogramThru {
   $histogram -> set(rmin=>$spref->[4], rmax=>$spref->[5],
 		    rbin => $spref->[6], betabin => $spref->[7],
 		    feff=>$feff, ipot => $spref->[8], ipot2 => $spref->[9],
-		    skip=>20, update_bins=>1);
+		    skip=>$spref->[13], update_bins=>1);
   $this->{PARENT}->{DISTRIBUTION} = $histogram;
+  if (lc($spref->[1]) eq 'lammps') {
+    $histogram->count_timesteps(0);
+    $histogram->zmax($spref->[12]);
+  };
 
   $histogram->sentinal(sub{$this->{PARENT}->histogram_sentinal_rdf});
   my $busy = Wx::BusyCursor->new();
@@ -2497,6 +2530,7 @@ sub make_HistogramThru {
   $composite->data($this->{PARENT}->{data});
   my $page = Demeter::UI::Artemis::Path->new($book, $composite, $this->{PARENT});
   $book->AddPage($page, $composite->name, 1, 0);
+  $book->Update;
   #$composite->po->start_plot;
   #$composite->plot('r');
   $page->transfer;
@@ -2516,7 +2550,7 @@ Demeter::UI::Artemis::Data - Data group interface for Artemis
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.9.
+This documentation refers to Demeter version 0.9.10.
 
 =head1 SYNOPSIS
 

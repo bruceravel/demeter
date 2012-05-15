@@ -36,13 +36,15 @@ if ($Demeter::mode->ui eq 'screen') {
   with 'Demeter::UI::Screen::Pause';
   with 'Demeter::UI::Screen::Progress';
 };
-with 'Demeter::Feff::Distributions::SS';
+with 'Demeter::Feff::DistributionsP::SS';
 
 use List::Util qw{sum};
+use PDL::Lite;
+use PDL::NiceSlice;
+
 
 has '+plottable' => (default => 1);
 has '+name'      => (default => 'histogram');
-#has 'type'       => (is => 'rw', isa => 'Str', default => 0);
 
 ## HISTORY file attributes
 has 'nsteps'    => (is => 'rw', isa => NonNeg, default => 0);
@@ -54,7 +56,15 @@ has 'file'      => (is => 'rw', isa => 'Str', default => q{},
 				      $self->rdf;
 				    };
 				  });
+has 'skip'      => (is => 'rw', isa => 'Int', default => 50,);
+has 'npositions'  => (is            => 'rw',
+		      isa           => NonNeg,
+		      default       => 0);
+has 'ntimesteps'  => (is            => 'rw',
+		      isa           => NonNeg,
+		      default       => 0);
 has 'clusters'    => (is => 'rw', isa => 'ArrayRef', default => sub{[]});
+has 'clusterspdl' => (is => 'rw', isa => 'PDL', default => sub{PDL::null});
 
 enum 'HistogramBackends' => ['dl_poly', 'vasp', 'lammps'];
 coerce 'HistogramBackends',
@@ -87,17 +97,17 @@ coerce 'HistogramTypes',
 has 'type'  => (is => 'rw', isa => 'HistogramTypes', coerce => 1, default => 'ss',
 		trigger => sub{my ($self, $new) = @_;
 			       if ($new eq 'ss') {
-				 eval {apply_all_roles($self, 'Demeter::Feff::Distributions::SS')};
-				 $@ and die("Histogram configuration Demeter::Feff::Distributions::SS could not be loaded");
+				 eval {apply_all_roles($self, 'Demeter::Feff::DistributionsP::SS')};
+				 $@ and die("Histogram configuration Demeter::Feff::DistributionsP::SS could not be loaded");
 			       } elsif ($new eq 'ncl') {
-				 eval {apply_all_roles($self, 'Demeter::Feff::Distributions::NCL')};
-				 $@ and die("Histogram configuration Demeter::Feff::Distributions::NCL could not be loaded");
+				 eval {apply_all_roles($self, 'Demeter::Feff::DistributionsP::NCL')};
+				 $@ and die("Histogram configuration Demeter::Feff::DistributionsP::NCL could not be loaded");
 			       } elsif ($new eq 'thru') {
-				 eval {apply_all_roles($self, 'Demeter::Feff::Distributions::Thru')};
-				 $@ and die("Histogram configuration Demeter::Feff::Distributions::Thru could not be loaded");
+				 eval {apply_all_roles($self, 'Demeter::Feff::DistributionsP::Thru')};
+				 $@ and die("Histogram configuration Demeter::Feff::DistributionsP::Thru could not be loaded");
 			       } else {
-				 eval {apply_all_roles($self, 'Demeter::Feff::Distributions::'.$new)};
-				 $@ and die("Histogram configuration Demeter::Feff::Distributions::$new does not exist");
+				 eval {apply_all_roles($self, 'Demeter::Feff::DistributionsP::'.$new)};
+				 $@ and die("Histogram configuration Demeter::Feff::DistributionsP::$new does not exist");
 			       };
 			     });
 
@@ -122,7 +132,8 @@ has 'populations' => (is	    => 'rw',
 		      default	    => sub{[]},
 		      documentation => "array of bin populations of the extracted histogram");
 
-has 'zmax'        => (is => 'rw', isa => 'Num',  default => 100.0);
+has 'zmax'        => (is => 'rw', isa => 'Num',  default => 100.0,
+		      trigger => sub {my ($self, $new) = @_; $self->update_rdf(1)   if $new});
 has 'use_periodicity'=> (is              => 'rw',
 			 isa             => 'Bool',
 			 default         => 1,
@@ -218,7 +229,7 @@ Demeter::Feff::Distributions:: - Make historams from arbitrary clusters of atoms
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.9.
+This documentation refers to Demeter version 0.9.10.
 
 =head1 SYNOPSIS
 

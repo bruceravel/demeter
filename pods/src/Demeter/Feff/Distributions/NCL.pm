@@ -264,6 +264,7 @@ sub chi {
   my $randstr = random_string('ccccccccc').'.sp';
   my @paths = ();
   foreach my $c (@{$self->populations}) {
+    #print join(" \ ", $c->[2], $c->[3]), $/;
     push @paths, Demeter::ThreeBody->new(r1    => $c->[2],      r2    => $c->[3],
 					 ipot1 => $self->ipot1, ipot2 => $self->ipot2,
 					 beta  => $c->[1],      s02   => $c->[4]/$self->nconfig,
@@ -389,7 +390,7 @@ sub info {
   $text   .= sprintf "Number of time steps:     %d\n",   $self->nsteps;
   $text   .= sprintf "Absorber:                 %s\n",   get_name($self->feff->abs_species);
   $text   .= sprintf "Scatterer #1:             %s\n",   get_name($self->feff->potentials->[$self->ipot1]->[2]);
-  $text   .= sprintf "Scatterer #1:             %s\n",   get_name($self->feff->potentials->[$self->ipot2]->[2]);
+  $text   .= sprintf "Scatterer #2:             %s\n",   get_name($self->feff->potentials->[$self->ipot2]->[2]);
   $text   .= sprintf "Number of configurations: %d\n",   $self->nconfig;
   $text   .= sprintf "Used periodic boundaries: %s\n",   $self->yesno($self->periodic and $self->use_periodicity);
   $text   .= sprintf "Radial bin size:          %.4f\n", $self->rbin;
@@ -406,7 +407,7 @@ Demeter::Feff::Distributions::NCL - Histograms for nearly collinear paths
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.9.
+This documentation refers to Demeter version 0.9.10.
 
 =head1 SYNOPSIS
 

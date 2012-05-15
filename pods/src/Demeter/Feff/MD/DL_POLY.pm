@@ -59,6 +59,7 @@ sub _cluster {
   };
   push @all, [@cluster];
   $self->clusters(\@all);
+  $self->clusterspdl(PDL->new(\@all));
   close $H;
   $self->reading_file(0);
   $self->update_file(0);
@@ -74,7 +75,7 @@ Demeter::Feff::MD::DL_POLY - Role supporting DL_POLY HISTORY file
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.9.
+This documentation refers to Demeter version 0.9.10.
 
 =head1 SYNOPSIS
 

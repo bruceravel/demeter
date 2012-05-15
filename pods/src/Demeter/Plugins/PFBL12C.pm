@@ -92,7 +92,7 @@ Demeter::Plugin::PFBL12C - filetype plugin for Photon Factory and SPring8
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.9.
+This documentation refers to Demeter version 0.9.10.
 
 =head1 SYNOPSIS
 

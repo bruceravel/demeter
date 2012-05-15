@@ -9,11 +9,14 @@ use Chemistry::Elements qw (get_Z);
 use Compress::Zlib;
 use Regexp::Assemble;
 
+use PDL::Lite;
 
 sub _cluster {
   my ($self) = @_;
 
   $self->reading_file(1);
+  die $self->file." does not exist\n" if not -e $self->file;
+  die $self->file." cannot de read\n" if not -r $self->file;
   open(my $H, '<', $self->file);
   my @cluster = ();
   ## snarf first line
@@ -55,6 +58,8 @@ sub _cluster {
   $self->stop_counter if ($self->mo->ui eq 'screen');
   $self->nsteps(1);
   $self->clusters([\@cluster]);
+  $self->clusterspdl(PDL->new(\@cluster));
+
   $self->reading_file(0);
   $self->update_file(0);
   return $self;
@@ -69,7 +74,7 @@ Demeter::Feff::MD::LAMMPS - Role supporting LAMPPS output files
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.9.
+This documentation refers to Demeter version 0.9.10.
 
 =head1 SYNOPSIS
 

@@ -40,7 +40,8 @@ sub is_xdac {
   ## this IS an XDAC file
   if ($first =~ m{XDAC V(\d+)\.(\d+)}) {
     if (exists $INC{'Xray/XDI.pm'}) {
-      $self->xdi_version("$Xray::XDI::VERSION");
+      my $ver = (defined $Xray::XDI::VERSION) ? $Xray::XDI::VERSION : '0';
+      $self->xdi_version($ver);
     } else {
       $self->xdi_version('-1');
     };
@@ -137,7 +138,7 @@ Demeter::Data::Athena - Role for identifying the beamline provenance of data
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.9.
+This documentation refers to Demeter version 0.9.10.
 
 =head1 DESCRIPTION
 

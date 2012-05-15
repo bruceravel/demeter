@@ -558,6 +558,8 @@ sub fit {
 
   my $rgds = $rframes->{GDS}->reset_all(1, 0);
   my ($abort, $rdata, $rpaths) = uptodate($rframes);
+  foreach my $p (@$rpaths) { $p->_update("fft") };
+
 
   if (($#{$rdata} == -1) or ($#{$rpaths} == -1) or ($#{$rgds} == -1)) {
     my $message = q{};
@@ -1378,7 +1380,7 @@ Demeter::UI::Artemis - EXAFS analysis using Feff and Ifeffit
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.9.
+This documentation refers to Demeter version 0.9.10.
 
 =head1 SYNOPSIS
 

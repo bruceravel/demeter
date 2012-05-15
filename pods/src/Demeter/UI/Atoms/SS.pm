@@ -13,6 +13,7 @@ use Wx::Event qw(EVT_CHOICE EVT_KEY_DOWN EVT_MENU EVT_TOOL_ENTER EVT_BUTTON
 use Wx::Perl::TextValidator;
 
 use List::MoreUtils qw(uniq);
+use PDL::Lite;
 use YAML::Tiny;
 
 my @PosSize = (wxDefaultPosition, [40,-1]);
@@ -111,14 +112,35 @@ sub _histo {
 						 wxFLP_DEFAULT_STYLE|wxFLP_USE_TEXTCTRL|wxFLP_CHANGE_DIR|wxFLP_FILE_MUST_EXIST );
   $vbox -> Add($self->{histo_file}, 0, wxGROW|wxALL, 10);
   $self->{histo_role} = Wx::RadioBox->new($page, -1, "Molecular dymanics program", wxDefaultPosition, wxDefaultSize,
-					  ['DL_POLY', 'VASP']);
-  $vbox -> Add($self->{histo_role}, 0, wxGROW|wxLEFT|wxRIGHT|wxBOTTOM, 10);
+					  ['DL_POLY', 'VASP', 'LAMMPS']);
+  $vbox -> Add($self->{histo_role}, 0, wxGROW|wxLEFT|wxRIGHT, 10);
+  EVT_RADIOBOX($self, $self->{histo_role}, sub{OnBackend(@_)});
+  $self->{histo_role}->Enable(1,0);
 
-  my $scrl = Wx::ScrolledWindow->new($page, -1, wxDefaultPosition, wxDefaultSize, wxVSCROLL);
+  my $hbox = Wx::BoxSizer->new( wxHORIZONTAL );
+  $vbox -> Add($hbox, 0, wxGROW|wxLEFT|wxRIGHT|wxBOTTOM, 10);
+
+
+  $self -> {histo_skip_label} = Wx::StaticText -> new($page, -1, "skip");
+  $self -> {histo_skip}       = Wx::TextCtrl   -> new($page, -1, 10, @PosSize, wxTE_PROCESS_ENTER);
+  $hbox -> Add($self->{histo_skip_label}, 0, wxALL|wxALIGN_CENTRE_VERTICAL, 5);
+  $hbox -> Add($self->{histo_skip},       0, wxALL|wxALIGN_CENTRE_VERTICAL, 5);
+  $self->{histo_skip_label}->Enable(0);
+  $self->{histo_skip}->Enable(0);
+
+
+  $self -> {histo_zmax_label} = Wx::StaticText -> new($page, -1, "Zmax");
+  $self -> {histo_zmax}       = Wx::TextCtrl   -> new($page, -1, 10, @PosSize, wxTE_PROCESS_ENTER);
+  $hbox -> Add($self->{histo_zmax_label}, 0, wxALL|wxALIGN_CENTRE_VERTICAL, 5);
+  $hbox -> Add($self->{histo_zmax},       0, wxALL|wxALIGN_CENTRE_VERTICAL, 5);
+  $self->{histo_zmax_label}->Enable(0);
+  $self->{histo_zmax}->Enable(0);
+
+  my $scrl = Wx::ScrolledWindow->new($page, -1, wxDefaultPosition, wxDefaultSize, wxVSCROLL|wxBORDER_SIMPLE);
   my $svbox = Wx::BoxSizer->new( wxVERTICAL );
   $scrl -> SetSizer($svbox);
   $scrl -> SetScrollbars(0, 20, 0, 50);
-
+  #$scrl->SetBackgroundColour(wxLIGHT_GREY);
 
   ################################################################################
   ######## single scattering
@@ -126,8 +148,8 @@ sub _histo {
   my $ssboxsizer  = Wx::StaticBoxSizer->new( $ssbox, wxVERTICAL );
   $svbox         -> Add($ssboxsizer, 0, wxALL|wxGROW, 5);
 
-  my $hbox = Wx::BoxSizer->new( wxHORIZONTAL );
-  $ssboxsizer -> Add($hbox, 0, wxGROW|wxLEFT|wxRIGHT, 10);
+  $hbox = Wx::BoxSizer->new( wxHORIZONTAL );
+  $ssboxsizer -> Add($hbox, 0, wxGROW|wxLEFT|wxRIGHT, 5);
   $self -> {histo_ss_rminlab} = Wx::StaticText -> new($scrl, -1, "Rmin");
   $self -> {histo_ss_rmin}    = Wx::TextCtrl   -> new($scrl, -1, 1.0, @PosSize, wxTE_PROCESS_ENTER);
   $hbox -> Add($self->{histo_ss_rminlab},   0, wxALL|wxALIGN_CENTRE_VERTICAL, 5);
@@ -149,17 +171,17 @@ sub _histo {
 
 
   $self->{histo_ss_ipot} = Wx::RadioBox->new($scrl, -1, ' ipot of scatterer ', wxDefaultPosition, wxDefaultSize,
-				       [q{     },q{     },q{     },q{     },q{     },q{     },q{     }], 7, wxRA_SPECIFY_COLS);
+				       [q{      },q{      },q{      },q{      },q{      },q{      },q{      }], 7, wxRA_SPECIFY_COLS);
   $self->{histo_ss_ipot}->Enable($_,0) foreach (0..6);
   EVT_RADIOBOX($self, $self->{histo_ss_ipot}, sub{set_name(@_,'histo_ss')});
 
-  $ssboxsizer -> Add( $self->{histo_ss_ipot}, 0, wxLEFT|wxRIGHT, 10 );
+  $ssboxsizer -> Add( $self->{histo_ss_ipot}, 0, wxLEFT|wxRIGHT, 5 );
 
   $self->{histo_ss_rattle} = Wx::CheckBox->new($scrl, -1, "Also create triple scattering path from this histogram");
-  $ssboxsizer -> Add( $self->{histo_ss_rattle}, 0, wxTOP|wxLEFT|wxRIGHT, 10 );
+  $ssboxsizer -> Add( $self->{histo_ss_rattle}, 0, wxTOP|wxLEFT|wxRIGHT, 5 );
 
   $hbox = Wx::BoxSizer->new( wxHORIZONTAL );
-  $ssboxsizer -> Add( $hbox, 0, wxGROW|wxALL, 10 );
+  $ssboxsizer -> Add( $hbox, 0, wxGROW|wxALL, 5 );
   $self->{histo_ss_drag} = Demeter::UI::Atoms::SS::HistoSSDragSource->new($scrl, -1, wxDefaultPosition, wxDefaultSize, $parent);
   $hbox  -> Add( $self->{histo_ss_drag}, 0, wxALL, 0);
   $self->{histo_ss_drag}->SetCursor(Wx::Cursor->new(wxCURSOR_HAND));
@@ -175,7 +197,7 @@ sub _histo {
 
 
   $hbox = Wx::BoxSizer->new( wxHORIZONTAL );
-  $nclboxsizer -> Add($hbox, 0, wxGROW|wxLEFT|wxRIGHT, 10);
+  $nclboxsizer -> Add($hbox, 0, wxGROW|wxLEFT|wxRIGHT, 5);
   $self -> {histo_ncl_rbinlab}    = Wx::StaticText -> new($scrl, -1, "Radial bin size");
   $self -> {histo_ncl_rbin}       = Wx::TextCtrl   -> new($scrl, -1, 1.0, @PosSize, wxTE_PROCESS_ENTER);
   $self -> {histo_ncl_betabinlab} = Wx::StaticText -> new($scrl, -1, "Angular bin size");
@@ -190,9 +212,9 @@ sub _histo {
   EVT_BUTTON($self, $self->{histo_ncl_plot}, sub{ scatterplot(@_, 'ncl') });
 
   $hbox = Wx::BoxSizer->new( wxHORIZONTAL );
-  $nclboxsizer -> Add($hbox, 0, wxGROW|wxLEFT|wxRIGHT, 10);
+  $nclboxsizer -> Add($hbox, 0, wxGROW|wxLEFT|wxRIGHT, 5);
   $self->{histo_ncl_ipot1} = Wx::RadioBox->new($scrl, -1, ' ipot of near neighbor scatterer ', wxDefaultPosition, wxDefaultSize,
-					     [q{     },q{     },q{     },q{     },q{     },q{     },q{     }], 7, wxRA_SPECIFY_COLS);
+					     [q{      },q{      },q{      },q{      },q{      },q{      },q{      }], 7, wxRA_SPECIFY_COLS);
   $self->{histo_ncl_ipot1}->Enable($_,0) foreach (0..6);
   EVT_RADIOBOX($self, $self->{histo_ncl_ipot1}, sub{set_name(@_,'histo_ncl1')});
   $hbox -> Add( $self->{histo_ncl_ipot1}, 0, wxALL|wxALIGN_CENTRE_VERTICAL, 5 );
@@ -205,9 +227,9 @@ sub _histo {
   $hbox -> Add($self->{histo_ncl_r2},                   0, wxALL|wxALIGN_CENTRE_VERTICAL, 5);
 
   $hbox = Wx::BoxSizer->new( wxHORIZONTAL );
-  $nclboxsizer -> Add($hbox, 0, wxGROW|wxLEFT|wxRIGHT, 10);
+  $nclboxsizer -> Add($hbox, 0, wxGROW|wxLEFT|wxRIGHT, 5);
   $self->{histo_ncl_ipot2} = Wx::RadioBox->new($scrl, -1, ' ipot of distant scatterer ', wxDefaultPosition, wxDefaultSize,
-					     [q{     },q{     },q{     },q{     },q{     },q{     },q{     }], 7, wxRA_SPECIFY_COLS);
+					     [q{      },q{      },q{      },q{      },q{      },q{      },q{      }], 7, wxRA_SPECIFY_COLS);
   $self->{histo_ncl_ipot2}->Enable($_,0) foreach (0..6);
   EVT_RADIOBOX($self, $self->{histo_ncl_ipot2}, sub{set_name(@_,'histo_ncl2')});
   $hbox -> Add( $self->{histo_ncl_ipot2}, 0, wxALL|wxALIGN_CENTRE_VERTICAL, 5 );
@@ -260,7 +282,7 @@ sub _histo {
   $hbox = Wx::BoxSizer->new( wxHORIZONTAL );
   $thruboxsizer -> Add($hbox, 0, wxGROW|wxLEFT|wxRIGHT, 10);
   $self->{histo_thru_ipot1} = Wx::RadioBox->new($scrl, -1, ' ipot of first scatterer in range ', wxDefaultPosition, wxDefaultSize,
-					     [q{     },q{     },q{     },q{     },q{     },q{     },q{     }], 7, wxRA_SPECIFY_COLS);
+					     [q{      },q{      },q{      },q{      },q{      },q{      },q{      }], 7, wxRA_SPECIFY_COLS);
   $self->{histo_thru_ipot1}->Enable($_,0) foreach (0..6);
   EVT_RADIOBOX($self, $self->{histo_thru_ipot1}, sub{set_name(@_,'histo_thru1')});
   $hbox -> Add( $self->{histo_thru_ipot1}, 0, wxALL|wxALIGN_CENTRE_VERTICAL, 5 );
@@ -268,7 +290,7 @@ sub _histo {
   $hbox = Wx::BoxSizer->new( wxHORIZONTAL );
   $thruboxsizer -> Add($hbox, 0, wxGROW|wxLEFT|wxRIGHT, 10);
   $self->{histo_thru_ipot2} = Wx::RadioBox->new($scrl, -1, ' ipot of second scatterer in range ', wxDefaultPosition, wxDefaultSize,
-					     [q{     },q{     },q{     },q{     },q{     },q{     },q{     }], 7, wxRA_SPECIFY_COLS);
+					     [q{      },q{      },q{      },q{      },q{      },q{      },q{      }], 7, wxRA_SPECIFY_COLS);
   $self->{histo_thru_ipot2}->Enable($_,0) foreach (0..6);
   EVT_RADIOBOX($self, $self->{histo_thru_ipot2}, sub{set_name(@_,'histo_thru2')});
   $hbox -> Add( $self->{histo_thru_ipot2}, 0, wxALL|wxALIGN_CENTRE_VERTICAL, 5 );
@@ -298,6 +320,17 @@ sub _histo {
     $self->{histoyaml} = $yaml;
     $self->{histo_file}    -> SetPath($yaml->{file});
     $self->{histo_role}    -> SetStringSelection($yaml->{role}||'DL_POLY');
+    $self->{histo_zmax}    -> SetValue($yaml->{zmax}  || 10);
+    $self->{histo_skip}    -> SetValue($yaml->{skip}  || 20);
+    if ($self->{histo_role} -> GetSelection == 0) { # DL_POLY
+      $self->{histo_skip_label}->Enable(1);
+      $self->{histo_skip}->Enable(1);
+    };
+    if ($self->{histo_role} -> GetSelection == 2) { # LAMMPS
+      $self->{histo_zmax_label}->Enable(1);
+      $self->{histo_zmax}->Enable(1);
+    };
+
     $self->{histo_ss_rmin} -> SetValue($yaml->{rmin}  || 1.5);
     $self->{histo_ss_rmax} -> SetValue($yaml->{rmax}  || 3.5);
     $self->{histo_ss_bin}  -> SetValue($yaml->{bin}   || 0.5);
@@ -336,12 +369,16 @@ sub histoplot {
   my $rmin = $this->{histo_ss_rmin}->GetValue;
   my $rmax = $this->{histo_ss_rmax}->GetValue;
   my $bin  = $this->{histo_ss_bin}->GetValue;
+  my $zmax = $this->{histo_zmax}->GetValue;
+  my $skip = $this->{histo_skip}->GetValue;
   $this->{histoyaml}->{file} = $file;
   $this->{histoyaml}->{role} = $backend;
   $this->{histoyaml}->{ipot1} = $ipot;
   $this->{histoyaml}->{rmin} = $rmin;
   $this->{histoyaml}->{rmax} = $rmax;
   $this->{histoyaml}->{bin}  = $bin;
+  $this->{histoyaml}->{zmax} = $zmax;
+  $this->{histoyaml}->{skip} = $skip;
 
   if ((not $file) or (not -e $file) or (not -r $file)) {
     $this->{parent}->status("You did not specify a file or your file cannot be read.");
@@ -361,11 +398,21 @@ sub histoplot {
   } else {
     $dlp = $this->{DISTRIBUTION};
     $read_file = 0 if ($dlp->file eq $file);
-    $dlp->rmin($rmin) if ($dlp->rmin != $rmin);
-    $dlp->rmax($rmax) if ($dlp->rmax != $rmax);
-    $dlp->bin ($bin ) if ($dlp->bin  != $bin);
-    $dlp->ipot($ipot) if ($dlp->ipot != $ipot);
   };
+  ## trigger update_rdf if anything changes
+  $dlp->rmin($rmin) if ($dlp->rmin != $rmin);
+  $dlp->rmax($rmax) if ($dlp->rmax != $rmax);
+  $dlp->bin ($bin ) if ($dlp->bin  != $bin);
+  $dlp->ipot($ipot) if ($dlp->ipot != $ipot);
+  if (lc($backend) eq 'dl_poly') {
+    $dlp->count_timesteps(1);
+    $dlp->skip($skip);
+  };
+  if (lc($backend) eq 'lammps') {
+    $dlp->count_timesteps(0);
+    $dlp->zmax($zmax);
+  };
+
 
   my $persist = File::Spec->catfile($dlp->dot_folder, 'demeter.histograms');
   YAML::Tiny::DumpFile($persist, $this->{histoyaml});
@@ -375,8 +422,9 @@ sub histoplot {
   my $busy = Wx::BusyCursor->new();
   my $start = DateTime->now( time_zone => 'floating' );
   $dlp->backend($backend);
+
   $this->{parent}->status("Reading MD time sequence file, please be patient...", 'wait');
-  $dlp->sentinal(sub{$this->dlpoly_sentinal});
+  $dlp->sentinal(sub{$this->rdf_sentinal});
   $dlp->file($file) if $read_file;
   if ($#{$dlp->ssrdf} == -1) {
     $this->{parent}->status("Your choice of ipot did not yield any scatterers in the R range selected", 'error');
@@ -385,10 +433,13 @@ sub histoplot {
   };
   $this->{parent}->status("Binning pair distribution function, please be patient...", 'wait');
   $dlp->rebin;
+  $this->{parent}->make_page('Console') if not $this->{parent}->{Console};
   $this->{parent}->{Console}->{console}->AppendText($/.$dlp->info.$/.$/);
   my $finish = DateTime->now( time_zone => 'floating' );
   my $dur = $finish->subtract_datetime($start);
-  my $finishtext = sprintf("Plotting histogram from %d timesteps (%d minutes, %d seconds)", $dlp->nsteps, $dur->minutes, $dur->seconds);
+  my $finishtext = ($dlp->count_timesteps)
+    ? sprintf("Plotting histogram from %d timesteps (%d minutes, %d seconds)", $dlp->nsteps, $dur->minutes, $dur->seconds)
+      : sprintf("Plotting histogram from %d positions (%d minutes, %d seconds)", $dlp->npositions, $dur->minutes, $dur->seconds);
   $this->{parent}->status($finishtext);
   $dlp->plot;
   undef $busy;
@@ -406,6 +457,8 @@ sub scatterplot {
   my $r4       = $this->{histo_ncl_r4}->GetValue;
   my $rbin     = $this->{histo_ncl_rbin}->GetValue;
   my $betabin  = $this->{histo_ncl_betabin}->GetValue;
+  my $zmax     = $this->{histo_zmax}->GetValue;
+  my $skip     = $this->{histo_skip}->GetValue;
   $this->{histoyaml}->{file}	= $file;
   $this->{histoyaml}->{role}	= $backend;
   $this->{histoyaml}->{ipot1}	= $ipot1;
@@ -416,6 +469,8 @@ sub scatterplot {
   $this->{histoyaml}->{r4}	= $r4;
   $this->{histoyaml}->{rbin}	= $rbin;
   $this->{histoyaml}->{betabin}	= $betabin;
+  $this->{histoyaml}->{zmax}    = $zmax;
+  $this->{histoyaml}->{skip}    = $skip;
 
   if ((not $file) or (not -e $file) or (not -r $file)) {
     $this->{parent}->status("You did not specify a file or your file cannot be read.");
@@ -427,26 +482,34 @@ sub scatterplot {
   my $read_file = 1;
   if ((not $this->{DISTRIBUTION}) or ($this->{DISTRIBUTION}->type ne $which)) {
     $histo = Demeter::Feff::Distributions->new(type=>$which);
-    $histo -> set(r1	  => $r1,
-		  r2	  => $r2,
-		  r3	  => $r3,
-		  r4	  => $r4,
-		  rbin	  => $rbin,
+    $histo -> set(rbin	  => $rbin,
 		  betabin => $betabin,
 		  ipot    => $ipot1,
 		  ipot2	  => $ipot2,
 		  feff	  => $this->{parent}->{Feff}->{feffobject},
 		);
+    $histo -> set(r1   => $r1, r2 => $r2, r3 => $r3, r4 => $r4) if ($histo->type eq 'ncl');
+    $histo -> set(rmin => $r1, rmax => $r2)                     if ($histo->type eq 'thru');
+
   } else {
     $histo = $this->{DISTRIBUTION};
     $read_file = 0 if ($histo->file eq $file);
-    $histo->rmin($r1)    if ($histo->rmin != $r1);
-    $histo->rmax($r2)    if ($histo->rmax != $r2);
-    $histo->rmin($r3)    if ($histo->rmin != $r3);
-    $histo->rmax($r4)    if ($histo->rmax != $r4);
-    $histo->bin ($rbin)  if ($histo->bin  != $rbin);
-    $histo->ipot($ipot1) if ($histo->ipot != $ipot1);
-    $histo->ipot($ipot2) if ($histo->ipot != $ipot2);
+  };
+  ## trigger update_rdf if anything changes
+  $histo->rmin($r1)    if ($histo->rmin != $r1);
+  $histo->rmax($r2)    if ($histo->rmax != $r2);
+  $histo->rmin($r3)    if ($histo->rmin != $r3);
+  $histo->rmax($r4)    if ($histo->rmax != $r4);
+  $histo->bin ($rbin)  if ($histo->bin  != $rbin);
+  $histo->ipot($ipot1) if ($histo->ipot != $ipot1);
+  $histo->ipot($ipot2) if ($histo->ipot != $ipot2);
+  if (lc($backend) eq 'dl_poly') {
+    $histo->count_timesteps(1);
+    $histo->skip($skip);
+  };
+  if (lc($backend) eq 'lammps') {
+    $histo->count_timesteps(0);
+    $histo->zmax($zmax);
   };
 
   my $persist = File::Spec->catfile($histo->dot_folder, 'demeter.histograms');
@@ -458,30 +521,49 @@ sub scatterplot {
   my $start = DateTime->now( time_zone => 'floating' );
   $histo->backend($backend);
   $this->{parent}->status("Reading MD time sequence file, please be patient...", 'wait');
-  $histo->file($file);
-  $histo->sentinal(sub{$this->dlpoly_sentinal});
+  $histo->sentinal(sub{$this->rdf_sentinal});
+  $histo->file($file) if $read_file;
   $this->{parent}->status("Binning three-body distribution function, please be patient...", 'wait');
   $histo->rebin;
+  $this->{parent}->make_page('Console') if not $this->{parent}->{Console};
   $this->{parent}->{Console}->{console}->AppendText($/.$histo->info.$/.$/);
   my $finish = DateTime->now( time_zone => 'floating' );
   my $dur = $finish->subtract_datetime($start);
-  my $finishtext = sprintf("Plotting histogram from %d timesteps (%d minutes, %d seconds)", $histo->nsteps, $dur->minutes, $dur->seconds);
+  my $finishtext = ($histo->count_timesteps)
+    ? sprintf("Plotting histogram from every %d-th step of %d timesteps (%d minutes, %d seconds)", $histo->skip, $histo->nsteps, $dur->minutes, $dur->seconds)
+      : sprintf("Plotting histogram from %d positions (%d minutes, %d seconds)", $histo->npositions, $dur->minutes, $dur->seconds);
   $this->{parent}->status($finishtext);
   $histo->plot;
   undef $busy;
 };
 
-sub dlpoly_sentinal {
+sub rdf_sentinal {
   my ($this) = @_;
   my $text = q{};
+
+  ## computing RDF
   if ($this->{DISTRIBUTION}->computing_rdf) {
-    if (not $this->{DISTRIBUTION}->timestep_count % 10) {
-      $text = $this->{DISTRIBUTION}->timestep_count . " of " . $this->{DISTRIBUTION}->{nsteps} . " timesteps";
+
+    ## increment by timestep  (typically, small cluster, many timesteps)
+    if ($this->{DISTRIBUTION}->count_timesteps) {
+      if (not $this->{DISTRIBUTION}->timestep_count % 10) {
+	$text = $this->{DISTRIBUTION}->timestep_count . " of " . $this->{DISTRIBUTION}->{nsteps} . " timesteps ";
+	$text .= "(every " . $this->{DISTRIBUTION}->skip . "-th step)" if ($this->{DISTRIBUTION}->type ne 'ss');
+      };
+
+    ## increment by atomic position (typically large cluster, few/no timesteps)
+    } else {
+      if (not $this->{DISTRIBUTION}->timestep_count % 250) {
+	$text = $this->{DISTRIBUTION}->timestep_count . " of " . $this->{DISTRIBUTION}->npositions . " positions";
+      };
     };
+
+  ## reading MD output file
   } elsif ($this->{DISTRIBUTION}->reading_file) {
     $text = "Reading line $. from ".$this->{DISTRIBUTION}->file;
   };
-  $this->{parent}->status($text, 'nobuffer') if $text;
+
+  $this->{parent}->status($text, 'wait|nobuffer') if $text;
   $::app->Yield();
 };
 
@@ -510,6 +592,20 @@ sub set_name {
       $self->{ss_name}->SetValue($elem.' SS');
     };
   };
+};
+
+sub OnBackend {
+  my ($self, $event) = @_;
+
+  ## DL_POLY
+  my $onoff = ($self->{histo_role}->GetSelection == 0) ? 1 : 0;
+  $self->{histo_skip_label}->Enable($onoff);
+  $self->{histo_skip}->Enable($onoff);
+
+  ## LAMMPS
+  $onoff = ($self->{histo_role}->GetSelection == 2) ? 1 : 0;
+  $self->{histo_zmax_label}->Enable($onoff);
+  $self->{histo_zmax}->Enable($onoff);
 };
 
 sub OnToolEnter {
@@ -570,7 +666,7 @@ use Wx::Event qw(EVT_LEFT_DOWN EVT_PAINT);
 
 sub new {
   my $class = shift;
-  my $this = $class->SUPER::new( @_[0..2], [300,30] );
+  my $this = $class->SUPER::new( @_[0..2], [400,30] );
   my $parent = $_[4];
 
   EVT_PAINT( $this, \&OnPaint );
@@ -669,7 +765,8 @@ sub OnDrag {
 		  $parent->{SS}->{histo_ss_ipot}->GetSelection+1,	  # 7 ipot
 		  $parent->{SS}->{histo_ss_rattle}->GetValue,		  # 8 do rattle path
 		  $group,                                                 # 9 Distibution object group name
-		  $parent->{component}                                    # 10 id for feff frame so Distribution object can be pushed back
+		  $parent->{component},                                   # 10 id for feff frame so Distribution object can be pushed back
+		  $parent->{SS}->{histo_zmax}->GetValue,		  # 11 zmax value for LAMMPS
 		 ];
 
   ## handle persistence file
@@ -679,6 +776,8 @@ sub OnDrag {
   $parent->{SS}->{histoyaml}->{rmax}  = $dragdata->[5];
   $parent->{SS}->{histoyaml}->{bin}   = $dragdata->[6];
   $parent->{SS}->{histoyaml}->{ipot1} = $dragdata->[7];
+  $parent->{SS}->{histoyaml}->{zmax}  = $dragdata->[11];
+  $parent->{SS}->{histoyaml}->{skip}  = $parent->{SS}->{histo_skip}->GetValue;
   my $persist = File::Spec->catfile(Demeter->dot_folder, 'demeter.histograms');
   YAML::Tiny::DumpFile($persist, $parent->{SS}->{histoyaml});
 
@@ -700,7 +799,7 @@ use Scalar::Util qw(looks_like_number);
 
 sub new {
   my $class = shift;
-  my $this = $class->SUPER::new( @_[0..2], [300,30] );
+  my $this = $class->SUPER::new( @_[0..2], [400,30] );
   my $parent = $_[4];
 
   EVT_PAINT( $this, \&OnPaint );
@@ -767,7 +866,9 @@ sub OnDrag {
 		  $parent->{SS}->{histo_ncl_ipot1}   -> GetSelection+1,		# 10 ipot
 		  $parent->{SS}->{histo_ncl_ipot2}   -> GetSelection+1,		# 11 ipot
 		  $group,                                                 # 12 Distibution object group name
-		  $parent->{component}                                    # 13 id for feff frame so Distribution object can be pushed back
+		  $parent->{component},                                   # 13 id for feff frame so Distribution object can be pushed back
+		  $parent->{SS}->{histo_zmax}->GetValue,		  # 14 zmax value for LAMMPS
+		  $parent->{SS}->{histo_skip}->GetValue,		  # 15 skip value for DL_POLY
 		 ];
 
   ## handle persistence file
@@ -781,6 +882,8 @@ sub OnDrag {
   $parent->{SS}->{histoyaml}->{betabin} = $dragdata->[9];
   $parent->{SS}->{histoyaml}->{ipot1}   = $dragdata->[10];
   $parent->{SS}->{histoyaml}->{ipot2}   = $dragdata->[11];
+  $parent->{SS}->{histoyaml}->{zmax}    = $dragdata->[14];
+  $parent->{SS}->{histoyaml}->{skip}    = $dragdata->[15];
   my $persist = File::Spec->catfile(Demeter->dot_folder, 'demeter.histograms');
   YAML::Tiny::DumpFile($persist, $parent->{SS}->{histoyaml});
 
@@ -804,7 +907,7 @@ use Scalar::Util qw(looks_like_number);
 
 sub new {
   my $class = shift;
-  my $this = $class->SUPER::new( @_[0..2], [300,30] );
+  my $this = $class->SUPER::new( @_[0..2], [400,30] );
   my $parent = $_[4];
 
   EVT_PAINT( $this, \&OnPaint );
@@ -865,7 +968,9 @@ sub OnDrag {
 		  $parent->{SS}->{histo_thru_ipot1}   -> GetSelection+1,	# 8  ipot
 		  $parent->{SS}->{histo_thru_ipot2}   -> GetSelection+1,	# 9  ipot
 		  $group,                                                       # 10 Distibution object group name
-		  $parent->{component}                                          # 11 id for feff frame so Distribution object can be pushed back
+		  $parent->{component},                                  # 11 id for feff frame so Distribution object can be pushed back
+		  $parent->{SS}->{histo_zmax}->GetValue,	         # 12 zmax value for LAMMPS
+		  $parent->{SS}->{histo_skip}->GetValue,	         # 13 skip value for DL_POLY
 		 ];
 
   ## handle persistence file
@@ -877,6 +982,8 @@ sub OnDrag {
   $parent->{SS}->{histoyaml}->{betabin} = $dragdata->[7];
   $parent->{SS}->{histoyaml}->{ipot1}   = $dragdata->[8];
   $parent->{SS}->{histoyaml}->{ipot2}   = $dragdata->[9];
+  $parent->{SS}->{histoyaml}->{zmax}    = $dragdata->[12];
+  $parent->{SS}->{histoyaml}->{skip}    = $dragdata->[13];
   my $persist = File::Spec->catfile(Demeter->dot_folder, 'demeter.histograms');
   YAML::Tiny::DumpFile($persist, $parent->{SS}->{histoyaml});
 
@@ -896,7 +1003,7 @@ Demeter::UI::Atoms::SS - Create SSPath objects in Atoms
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.9.
+This documentation refers to Demeter version 0.9.10.
 
 =head1 DESCRIPTION
 

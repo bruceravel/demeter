@@ -1,9 +1,10 @@
 package Demeter::UI::Artemis::DND::PathDrag;
-use Storable qw(freeze thaw);
 
+use strict;
 use Wx qw( :everything );
 use Wx::DND;
 use base qw(Wx::PlDataObjectSimple);
+use Storable qw(freeze thaw);
 
 sub new {
   my ($class, $data_ref) = @_;
@@ -44,12 +45,15 @@ Demeter::UI::Artemis::DND::PathDrag - Drag and drop utility for Artemis
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.9.
+This documentation refers to Demeter version 0.9.10.
 
 =head1 SYNOPSIS
 
 This module inherits from Wx::DND to provide drag and drop utilities
 for use in Artemis.
+
+This was swiped from L<Wx::DemoModules::lib::DataObjects> from the
+Wx::Demo package.  See C<Wx::DemoModules::lib::DataObjects::Perl>.
 
 =head1 DEPENDENCIES
 

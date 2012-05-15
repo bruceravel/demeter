@@ -56,8 +56,8 @@ sub new {
 
   $self->{headerbox}       = Wx::StaticBox->new($self, -1, 'Description', wxDefaultPosition, wxDefaultSize);
   $self->{headerboxsizer}  = Wx::StaticBoxSizer->new( $self->{headerbox}, wxVERTICAL );
-  $self->{header}          = Wx::TextCtrl->new($self, -1, q{}, wxDefaultPosition, wxDefaultSize,
-					       wxTE_MULTILINE|wxHSCROLL|wxALWAYS_SHOW_SB|wxTE_READONLY);
+  $self->{header}          = Wx::TextCtrl->new($self, -1, q{}, wxDefaultPosition, [-1,100],
+					       wxTE_MULTILINE|wxALWAYS_SHOW_SB|wxTE_READONLY);
   $self->{header}         -> SetFont( Wx::Font->new( 9, wxTELETYPE, wxNORMAL, wxNORMAL, 0, "" ) );
   $self->{headerboxsizer} -> Add($self->{header}, 0, wxEXPAND|wxALL, 0);
 
@@ -106,6 +106,7 @@ sub OnDrag {
   my @pathlist = @{ $parent->{parent}->{Feff}->{feffobject}->pathlist };
   my @data;
   my $item = $list->GetFirstSelected;
+print "1\n";
   while ($item ne -1) {
     push @data, $pathlist[$item]->group;
     #print $pathlist[$item]->intrpline, $/;
@@ -113,8 +114,11 @@ sub OnDrag {
   };
   my $source = Wx::DropSource->new( $list );
   my $dragdata = Demeter::UI::Artemis::DND::PathDrag->new(\@data);
+print "2\n";
   $source->SetData( $dragdata );
+print "3   $source  $list  ".$source->GetDataObject."\n";
   $source->DoDragDrop(1);
+print "4\n";
   #$event->Skip(1);
 };
 
@@ -210,7 +214,7 @@ Demeter::UI::Atoms::Paths - Atoms' path organizer utility
 
 =head1 VERSION
 
-This documentation refers to Demeter version 0.9.9.
+This documentation refers to Demeter version 0.9.10.
 
 =head1 DESCRIPTION
 
