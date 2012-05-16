@@ -221,7 +221,7 @@
 
 
 ** Artemis
-*** Artemis bugs and missing features [5/14]  [35%]
+*** Artemis bugs and missing features [5/17]  [29%]
    - [X] rename Atoms/Feff
    - [X] +discarding last page and returning to initial page has an undefined value problem+ (not true)
    - [X] status messages in Atoms/Feff frame do not get posted in
@@ -230,6 +230,10 @@
 	 upon import, instead deserialize the first time it is needed
    - [X] Restoring an historical fit does not sensibly preserve order,
 	 fom numbering, etc
+   - [ ] Import project, need to fully import most recent fit so as to
+	 populate log window correctly
+   - [ ] Discard history
+   - [ ] force update of fit description when changing chi(k)
    - [ ] History plot tool is quite broken.  Need to make it work with
          new grab method (i.e. partial deserialization).  The deeper
          problem is that data from each fit are not themselves

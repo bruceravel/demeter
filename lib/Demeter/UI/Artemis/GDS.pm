@@ -769,6 +769,7 @@ sub grab {
   $parent->{uptodate} = 0;
   $parent->status("Using $bestfit as the initial guess for $name.");
 };
+
 sub build_restraint {
   my ($parent) = @_;
   my $row = $parent->{clicked_row};
@@ -795,10 +796,13 @@ sub build_restraint {
 			      $restraint_builder->{low}   -> GetValue,
 			      $restraint_builder->{high}  -> GetValue);
 
+  $parent->{grid}->AppendRows(1,1);
+  $parent->initialize_row($target);
   $parent->{grid}->SetCellValue($target, 0, "restrain");
   $parent->{grid}->SetCellValue($target, 1, $res);
   my $string = "$scale*penalty($name, $low, $high)";
   $parent->{grid}->SetCellValue($target, 2, $string);
+  $parent->{grid}->Update;
   $parent->set_type($target);
   $parent->status("Set restraint $res = $string");
   $parent->{grid}->ClearSelection;

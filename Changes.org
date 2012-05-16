@@ -18,6 +18,7 @@
      functions so that useful updates get written to Data frame
      statusbar
    - Fixed several display issues
+   - Correctly add a new row when using the restraint builder
 
 *** Demeter
    - Convert histogram calculations to use PDL -- much faster!
