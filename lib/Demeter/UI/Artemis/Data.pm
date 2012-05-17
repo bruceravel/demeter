@@ -1068,7 +1068,7 @@ sub OnMenuClick {
 	return;
       };
       my ($param, $me, $how) = ($param_dialog->{param}, $param_dialog->{me}->GetValue, $param_dialog->{apply}->GetSelection);
-      $datapage->add_parameters($param, $me, $how);
+      $datapage->add_parameters($param, $me, $how, 0);
       last SWITCH;
     };
 
@@ -1302,7 +1302,7 @@ sub set_degens {
 ## how = 2 : each path each data   (not yet)
 ## how = 3 : marked paths          (not yet)
 sub add_parameters {
-  my ($self, $param, $me, $how) = @_;
+  my ($self, $param, $me, $how, $silent) = @_;
   my $displayed_path = $self->{pathlist}->GetCurrentPage;
   my $displayed_feff = $displayed_path->{path}->parent->group;
   my $which = q{};
@@ -1330,7 +1330,7 @@ sub add_parameters {
     };
     $which = "the marked paths";
   };
-  $self->status("Set $param to \"$me\" for $which." );
+  $self->status("Set $param to \"$me\" for $which." ) if not $silent;
 };
 
 sub export_pp {
@@ -1347,7 +1347,7 @@ sub export_pp {
   foreach my $i (0 .. $npaths) {
     next if ($self->{pathlist}->GetSelection == $i);
     foreach my $pp (qw(s02 e0 delr sigma2 ei third fourth)) {
-      $self->add_parameters($pp, $displayed_path->{"pp_$pp"}->GetValue, $how);
+      $self->add_parameters($pp, $displayed_path->{"pp_$pp"}->GetValue, $how, 1);
     };
   };
   my $which = ('each path in this Feff calculation',

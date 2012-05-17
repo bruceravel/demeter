@@ -310,6 +310,7 @@ sub read_project {
   $current ||= $dirs[0];
   ##print join("|", $current, @dirs), $/;
   my $currentfit;
+  my $lastfit;
   my @fits;
 
   ## explanation:
@@ -346,6 +347,7 @@ sub read_project {
       if ($fit->fitted) {
 	$rframes->{History}->{list}->AddData($fit->name, $fit);
 	$rframes->{History}->add_plottool($fit);
+	$lastfit = $fit;
       } elsif ($fit->group ne $current) {
 	foreach my $g ( @{ $fit->gds }) {
 	  $g->DEMOLISH;
@@ -383,7 +385,7 @@ sub read_project {
     $rframes->{Journal}->{journal}->SetValue(Demeter->slurp($journal));
   };
 
-  $import_problems .= restore_fit($rframes, $currentfit);
+  $import_problems .= restore_fit($rframes, $currentfit, $lastfit);
 
   ## when each fit is deserialized, new GDS objects are instantiated
   ## for each one.  for many projects, this means that many GDS
@@ -417,7 +419,7 @@ sub read_project {
 };
 
 sub restore_fit {
-  my ($rframes, $fit) = @_;
+  my ($rframes, $fit, $lastfit) = @_;
   my $import_problems = q{};
 
   ## -------- load up the GDS parameters
@@ -493,7 +495,8 @@ sub restore_fit {
 
   ## -------- labels and suchlike
   $rframes->{Log}->{name} = $fit->name;
-  $rframes->{Log}->put_log($fit);
+  $lastfit->deserialize(folder=>File::Spec->catfile($::app->{main}->{project_folder}, 'fits', $lastfit->group));
+  $rframes->{Log}->put_log($lastfit);
   $rframes->{Log}->SetTitle("Artemis [Log] " . $fit->name);
   $rframes->{Log}->Show(0);
   $rframes->{main}->{log_toggle}->SetValue(0);

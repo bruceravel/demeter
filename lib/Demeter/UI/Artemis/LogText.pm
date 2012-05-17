@@ -39,17 +39,18 @@ sub make_text {
   return if not defined $fit;
   my $text = $fit->logtext;
   $location -> SetValue(q{});
-  my $max = 0;
-  foreach my $line (split(/\n/, $text)) {
-    $max = max($max, length($line));
-  };
+  #my $max = 0;
+  #foreach my $line (split(/\n/, $text)) {
+  #  $max = max($max, length($line));
+  #};
+  my $max = 80;
   my $pattern = '%-' . $max . 's';
   $attr{stats} = Wx::TextAttr->new(Wx::Colour->new('#000000'), Wx::Colour->new($fit->color), Wx::Font->new( @font ) );
 
+  my $was;
   foreach my $line (split(/\n/, $text)) {
-    my $was = $location -> GetInsertionPoint;
-    $location -> AppendText(sprintf($pattern, $line) . $/);
-    my $is = $location -> GetInsertionPoint;
+    $was = $location -> GetInsertionPoint;
+    # my $is = $location -> GetInsertionPoint;
 
     my $color = ($line =~ m{(?:parameters|variables):})                                                  ? 'parameters'
               : ($line =~ m{(?:Happiness|semantic|NEVER|a penalty of|Penalty of)})                       ? 'happiness'
@@ -62,7 +63,13 @@ sub make_text {
 			  and ($color eq 'stats'));
     #local $|=1;
     #print join("|", $was, $is, $color), $/;
-    $location->SetStyle($was, $is, $attr{$color});
+
+    if ($color ne 'normal') {
+      $location -> AppendText(sprintf($pattern, $line) . $/);
+      $location -> SetStyle($was, $location->GetInsertionPoint, $attr{$color});
+    } else {
+      $location -> AppendText($line . $/);
+    };
   };
   $location->ShowPosition(0);
   return 1;
