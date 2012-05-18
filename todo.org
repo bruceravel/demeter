@@ -221,7 +221,7 @@
 
 
 ** Artemis
-*** Artemis bugs and missing features [6/17]  [35%]
+*** Artemis bugs and missing features [8/17]  [47%]
    - [X] rename Atoms/Feff
    - [X] +discarding last page and returning to initial page has an undefined value problem+ (not true)
    - [X] status messages in Atoms/Feff frame do not get posted in
@@ -232,8 +232,9 @@
 	 fom numbering, etc
    - [X] Import project, need to fully import most recent fit so as to
 	 populate log window correctly
-   - [ ] In GDS, all in type column after #13 are text rather than combobox
-   - [ ] force update of fit description when changing chi(k)
+   - [X] In GDS, all in type column after #13 added when restoring a
+         fit are text rather than combobox
+   - [X] force update of fit description when changing chi(k)
    - [ ] History plot tool is quite broken.  Need to make it work with
          new grab method (i.e. partial deserialization).  The deeper
          problem is that data from each fit are not themselves

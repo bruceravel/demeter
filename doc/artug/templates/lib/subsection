@@ -1,0 +1,4 @@
+<a name="[% label | remove(" ") | lower %]">
+[% USE image "${site.url.images}/LightningBolt.png" %]
+<h4> [%- image.tag(align="bottom") IF expert -%] [% label %]</h4>
+</a>

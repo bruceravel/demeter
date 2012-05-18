@@ -1,0 +1,10 @@
+[% META title = 'The main window' %]
+
+[% FILTER html_para %]
+When you first start the Artemis program, two windows appear on your screen.
+[% END %]
+
+[% WRAPPER imagefull file="main.png" %]
+The main Artemis window.
+[% END %]
+

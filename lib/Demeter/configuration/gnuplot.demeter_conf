@@ -172,7 +172,7 @@ description
 
 variable=col4
 type=color
-default=dark-orange
+default=yellow4
 description
   The color of the fifth line drawn in a plot.
 

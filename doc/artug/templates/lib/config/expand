@@ -1,0 +1,60 @@
+[%#
+  # This is a little whack.  The algorithm below is swiped almost
+  # verbatim from the Template Toolkit book.  When this gets used, it
+  # is filtered to turn the absolute paths, which are local to the
+  # file system where the document is built, into relative paths so
+  # that the resulting html can be plopped down on any machine and
+  # work correctly both locally and on the web.
+-%]
+[%  # page.trail tracks path to the current page
+     DEFAULT page.trail = [ ];
+  
+     # list of menu items we're constructing
+     map.items = [ ];
+  
+     # walk through item names in map.menu
+     FOREACH id IN map.menu;
+         # fetch page from map.page
+         THROW map "Invalid menu item in $map.name: $id"
+             UNLESS (item = map.page.$id);
+  
+         # add location data
+         item.id   = id;
+         item.path = path ? "$path/$id" : id;
+         item.file = item.page 
+                   ? "${item.path}/index.html" 
+                   : "${item.path}.html";
+         item.url  = "$site.url.root/$item.file";
+  
+         # is this item on the path to the current page?
+         item.hot  = page.file.match("^$item.path");
+         item.subs = item.hot and item.menu;
+         item.here = (item.file == page.file);
+  
+         # set next/prev if this is the actual page
+         IF item.hot;
+             page.prev = map.page.${loop.prev};
+             page.next = map.page.${loop.next};
+	     IF item.subs;
+		d = map.page.${id}.menu.first;
+ 	        page.down = map.page.${id}.page.${d};
+	     ELSE;
+                page.down = 0;
+	     END;
+	 END;
+  
+         # add item to map items list
+         map.items.push(item);
+  
+         # also to the trail if the page is hot
+         page.trail.push(item) IF item.hot;
+  
+         # expand any submenu for this item
+         IF item.subs;
+             INCLUDE config/expand
+                 map  = item
+                 path = item.path;
+         END;
+     END;
+  
+ -%]

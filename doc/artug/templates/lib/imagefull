@@ -1,0 +1,2 @@
+[% dots  = template.nosubpages ? "../images" : "../../images" %]
+<img width=100% src=[%- dots -%]/[%- file -%]>

@@ -1,0 +1,38 @@
+[% # map of pages in the Demeter book
+   # this file lives in the etc/ directory and is copied to the
+   # config/ directory for each display medium when the configure
+   # script is run
+
+   map = {
+       name = 'Artemis Users Guide'
+       menu = [ 'index',
+		'intro',
+		'startup',
+	      ]
+       page = {
+	    index   = { name = 'Home' }
+	    intro   = { name = 'Introduction'}
+	    startup    = {
+		    name = 'Starting Artemis'
+		    menu = [ 'main', 'plot' ]
+		    page = {
+			   main    = { name = 'The main window' }
+			   plot    = { name = 'The plot window' }
+			   }
+		    }
+          }
+      };
+    # save map in site
+    site.map = map;
+-%]
+
+[% SWITCH document_style %]
+[% CASE 'html' %]
+   [%# expand map recursively %]
+   [% PROCESS config/expand %]
+[% CASE 'latex' %]
+   [%# do nothing %]
+[% CASE 'pod' %]
+   [%# expand map recursively %]
+   [% PROCESS config/expand %]
+[% END -%]

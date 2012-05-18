@@ -21,6 +21,13 @@
 	        suffix  => 'chi',
 	        weight  => $D->get_kweight,
 	       );
+
+  $win = $P->tempfile;
+  $this->points(file    => $win,
+                space   => 'k', 
+                scale   => $C->get("window_size"),
+	        suffix  => 'win',
+	       );
   q{}
 }
 set size 1,0.45
@@ -33,6 +40,7 @@ set xrange [ {$P->kmin} : {$P->kmax} ]
 
 unset key
 plot '{$data}' using 1:2 with {$C->default("gnuplot", "datastyle")} ls {$P->increm+1} title "",\
-     '{$fit}' using 1:2 with {$C->default("gnuplot", "datastyle")} ls {$P->increm+2} title ""
+     '{$fit}' using 1:2 with {$C->default("gnuplot", "datastyle")} ls {$P->increm+2} title "",\
+     '{$win}' using 1:2 with {$C->default("gnuplot", "datastyle")} ls {$P->increm+3} title ""
 
 unset multiplot

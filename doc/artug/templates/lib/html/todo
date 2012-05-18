@@ -1,0 +1,4 @@
+<p class=todo>
+<strong>On the to do list:</strong>&nbsp;&nbsp;
+[%- content -%]
+</p>

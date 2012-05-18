@@ -1,0 +1,19 @@
+[% META title = "Artemis User's Guide"
+        about = "EXAFS Data Analysis using Feff and Ifeffit"
+        chapter = 1
+	nosubpages = 1
+%]
+
+
+[% FILTER html_para %]
+[% INCLUDE image file="Artemis.png" %]
+
+Say where this image came from...
+
+Document version [% document_version %] for [% demeter %] version [% demeter_version %].
+
+[% IF document_style == 'pod' %]
+[% PROCESS menu/splay %]
+[% END %]
+
+[% END %]

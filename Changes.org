@@ -19,12 +19,17 @@
      statusbar
    - Fixed several display issues
    - Correctly add a new row when using the restraint builder
+   - Save initial guesses of GDS parameters to a project and restore
+     them
+   - Fit description updated (crudely) when data are replaced
 
 *** Demeter
    - Convert histogram calculations to use PDL -- much faster!
      (backends: LAMMPS, )
    - Fixed a bug building the ifeffit wrapper
    - Improved installation.pod
+   - Changed default gnuplot color #4 to yellow 4 (#808000)
+   - Added window functions to Rk plot
 
 ** 0.9.9 20 April 2012
 *** Athena

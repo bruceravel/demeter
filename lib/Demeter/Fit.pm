@@ -270,8 +270,7 @@ sub _verify_fit {
   my @paths = @{ $self->paths };
   $self->add_trouble("paths"), ++$trouble_found if ($#paths == -1);
 
-  ## all these tests live in Demeter::Fit::Sanity, which is
-  ## part of the base of this module
+  ## all these tests live in Demeter::Fit::Sanity
 
   ## 1. check that all data and feffNNNN.dat files exist
   $trouble_found += $self->S_data_files_exist;
@@ -565,6 +564,7 @@ sub _gds_commands {
     next unless ($gds->gds eq lc($type));
     next if (not $gds->Use);
     $string .= $gds -> write_gds;
+    $gds->initial($gds->mathexp);
   };
   $string = "\n" . $self->hashes . " $type parameters:\n" . $string if $string;
 

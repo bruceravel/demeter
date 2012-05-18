@@ -426,13 +426,19 @@ sub restore_fit {
   my $grid  = $rframes->{GDS}->{grid};
   my $start = $rframes->{GDS}->find_next_empty_row;
   foreach my $g (@{$fit->gds}) {
-    $grid -> AppendRows(1,1) if ($start >= $grid->GetNumberRows);
+    if ($start >= $grid->GetNumberRows) {
+      $grid -> AppendRows(1,1);
+      $rframes->{GDS}->initialize_row( $grid->GetNumberRows - 1 );
+    };
     $grid -> SetCellValue($start, 0, $g->gds);
     $grid -> SetCellValue($start, 1, $g->name);
     if ($g->gds eq 'guess') {
-      $grid -> SetCellValue($start, 2, $rframes->{GDS}->display_value($g->bestfit || $g->mathexp));
+      my $me = (defined $g->initial) ? $g->initial : $g->bestfit;
+      $me ||= $g->mathexp;
+      $grid -> SetCellValue($start, 2, $rframes->{GDS}->display_value($me));
     } else {
-      $grid -> SetCellValue($start, 2, $rframes->{GDS}->display_value($g->mathexp));
+      my $me = (defined $g->initial) ? $g->initial : $g->mathexp;
+      $grid -> SetCellValue($start, 2, $rframes->{GDS}->display_value($me));
     };
     $grid -> {$g->name} = $g;
     my $text = q{};

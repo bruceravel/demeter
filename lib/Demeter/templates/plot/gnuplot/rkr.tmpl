@@ -20,6 +20,13 @@
 	        suffix  => 'chir_mag',
 	       );
 
+  $win = $P->tempfile;
+  $this->points(file    => $win,
+                space   => 'R', 
+                scale   => $C->get("window_size"),
+	        suffix  => 'rwin',
+	       );
+
   $re = $P->tempfile;
   $this->points(file    => $re,
                 space   => 'R', 
@@ -57,5 +64,6 @@ set key bottom right width 1 height 1 box
 # {$this->name}: ifeffit group = {$D->group}
 plot '{$mag}' using 1:2 with {$C->default("gnuplot", "datastyle")} ls {$P->increm+1} title "{$thiskey}",\
      '{$magfit}' using 1:2 with {$C->default("gnuplot", "datastyle")} ls {$P->increm+2} title "fit",\
+     '{$win}' using 1:2 with {$C->default("gnuplot", "datastyle")} ls {$P->increm+3} title "window",\
      '{$re}' using 1:2 with {$C->default("gnuplot", "datastyle")} ls {$P->increm+1} title "",\
      '{$refit}' using 1:2 with {$C->default("gnuplot", "datastyle")} ls {$P->increm+2} title ""

@@ -1,0 +1,9 @@
+[% META title = 'The plot window' %]
+
+[% FILTER html_para %]
+Plot window, blah blah
+[% END %]
+
+[% WRAPPER scriptcaption this="plot.png" %]
+This is the plot window.
+[% END %]

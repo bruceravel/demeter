@@ -1,0 +1,12 @@
+[% USE PerlSyntaxHtml %]
+[% dots  = template.nosubpages ? "../images" : "../../images";
+   file = "${dots}/${this}";
+%]
+<br>
+<span class=plottitle>[% title %]</span>
+[% WRAPPER html/perlblock -%]
+[% FILTER highlighter %]
+[%- content -%]
+[%- END -%]
+[%- END -%]
+

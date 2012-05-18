@@ -9,6 +9,7 @@
 *.dpj
 *.log
 *.patch
+*.directory
 
 lib/Xray/Absorption/*.db
 lib/Xray/Scattering/*.db
@@ -24,6 +25,7 @@ blib
 Build
 Build.bat
 META.yml
+META.json
 MYMETA.yml
 MYMETA.json
 
@@ -32,6 +34,13 @@ doc/dpg/etc/ttree.cfg
 doc/dpg/html/
 doc/dpg/templates/lib/config/map
 doc/dpg/templates/lib/config/version
+
+doc/artug/bin/build
+doc/artug/etc/ttree.cfg
+doc/artug/html/
+doc/artug/templates/lib/config/map
+doc/artug/templates/lib/config/version
+doc/artug/Template
 
 nytprof/
 nytprof.out
