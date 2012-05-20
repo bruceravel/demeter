@@ -1,9 +1,132 @@
 [% META title = 'The plot window' %]
 
 [% FILTER html_para %]
-Plot window, blah blah
+The second window that appears when [% artemis %] starts is the Plot
+window.  An overview of the functionality of this window will be
+presented here, but the full picture of how plots are made in 
+[% artemis %] will have to wait until the Data and Path windows are
+explained. 
 [% END %]
 
-[% WRAPPER scriptcaption this="plot.png" %]
-This is the plot window.
+[% WRAPPER rscriptcaption this="plot.png" %]
+At the top of the Plot window is a row of three buttons used to make
+plots in k, R, or q space.  These plots will be made using the
+contents of the [% INCLUDE font/quote a="Plotting list" %] near the
+bottom of the Plot window.  The plotting list gets populated with
+data, paths, and other plottable items.  The details of how the
+plotting list gets populated will be discussed later in the document.
+
+Beneath that is a set of radio buttons for setting the k-weighting to
+be used in many of the kinds of plots that [% artemis %] makes,
+including those made when pressingt he buttons above.  Note that these
+k-weight values are [% INCLUDE font/em a="only" %] used for making
+plots.  The k-weight values used to evaluate fits are set in the Data
+window.  The [% INCLUDE font/quote a="kw" %] option uses the arbitrary
+(possibly non-integre) k-weighting value specified in the Data window.
+
+Beneath the k-weight buttons is a set of tabs used to control differnt
+aspects of plots.  The [% INCLUDE font/quote a="limits" %] tab provides
+controls for the most commonly used plotting options.
+
+[% WRAPPER html/list type="ul" %]
+[% WRAPPER html/li %]
+Because we use a complex Fourier transform, [% chir %] and [% chiq %]
+are complex functions.  The two sets of radio buttons at the top of
+the limits tab are used to specify how [% chir %] and [% chiq %] are
+displayed.  Becasue a typical plot in [% artemis %] involves many
+traces, [% artemis %] does not allow over-plotting of the various
+parts of the complex functions in the manner of [% athena %].
+[% END %]
+
+[% WRAPPER html/li %]
+Beneath the [% chir %] and [% chiq %] radio buttons are a set of check
+buttons used to display additional functions related to the data.
+These are:
+[% WRAPPER html/list type="ol" %]
+[% WRAPPER html/li %]
+[% INCLUDE font/em a="Fit" %]: When checked, the most recent fit will
+be plotted whenever data is plotted.
+[% END %]
+[% WRAPPER html/li %]
+[% INCLUDE font/em a="Background" %]: When checked, the background
+function will be plotted if it was refined in the most recent fit.
+[% END %]
+[% WRAPPER html/li %]
+[% INCLUDE font/em a="Window" %]: When checked the window function
+will be plotted over the data.  The window will be scaled appropriate
+to the current k-weight value.  When plotting in q, the k-space window
+will be used.
+[% END %]
+[% WRAPPER html/li %]
+[% INCLUDE font/em a="Residual" %]: When checked, the difference
+between the data and the fit will be plotted.
+[% END %]
+[% WRAPPER html/li %]
+[% INCLUDE font/em a="Running R-factor" %]: When checked, a running
+sum of the residual will be plotted, providing another way of
+visualizing the misfit.
+[% END %]
+
+[% END %] [%# end of ordered list%]
+[% END %]
+
+[% WRAPPER html/li %]
+The last thing on the limits tab is a series of text entry boxes for
+setting the plotting range in each of the three spaces.
+[% END %]
+
+[% END %] [%# end of unordered list%]
+
+The [% INCLUDE font/quote a="VPaths" %] tab will explained in a later
+chapter.
+
+The last item on the Plot window is a button labeled 
+[% INCLUDE font/quote a="Save next plot to a file" %].  When
+depressed, the next plot made will, instead of displaying on screen,
+write a column data file with columns representing the traces as they
+would have been plotted.  The purpose of this file is to reproduce a
+plot from [% artemis %] as closely as possible using some other
+plotting program.
+[% END %] [%# end of caption%]
+
+[% WRAPPER scriptcaption this="stacktab.png" %]
+The [% INCLUDE font/quote a="stack" %] tab holds controls for
+providing vertical offset between traces in a plot.  This is most
+useful for plots containing lots of traces, for example one which
+plots many paths along with data.  The top set of controls works very
+similarly to the similar feature in [% athena %].  When the check
+button is clicked on, paths will be offset vertically as indicated by
+the the two values.  The initial value is the offset applied to the
+data.  All parts of the data (fit, window, etc) will also be plotrted
+with that offset.  The second value is a vertical displacement between
+successive paths.  Note that the displacement is downward -- that is,
+a value of +2 means to displace each path by -2 on the y-axis.  In
+this way, traces appear in the same top-to-bottom order as the plot
+legend.
+
+The second group of controls is used to multiple paths by -1 before
+plotting.  This results in the data pointing up and the individual
+paths pointing down.  This feature is turned off when the check button
+for a stacked plot is clicked on.
+
+The last control is used to specify a vertical offset between data
+sets when plotting more than one data set from a multiple data set
+fit.  Note that this stacking parameter and the individual data set
+stacking parameters will interact, requiring careful consideration for
+an attractive plot.
+[% END %]
+
+[% WRAPPER quadplot files=["indicplot.png", "indictab.png"] %]
+In [% demeter %], an indicator is a vertical line used to mark a
+specific position on the x-axis.  In this example, it is the pink line
+at 2.076 [% AA %]. An indicator for a position in R is
+not plotted in k or q.  An indicator for a position in k or q is not
+plotted in R.  Inidactors for positions in k or q are also plotted in
+q or k.
+
+To set an indicator, click the target button, then click on a point in
+the current plot.  Once set, the position and space can be edited
+using the associated choice menu and text control.  The check button
+turns the indicator on or off in subsequent plots.  The buttons at the
+bottom toggle the check buttons for each indicator. 
 [% END %]

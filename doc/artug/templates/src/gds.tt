@@ -1,0 +1,8 @@
+[% META title = 'The GDS window'
+	chapter = 1
+	nosubpages = 1 
+%]
+
+[% FILTER html_para -%]
+blah
+[% END %]

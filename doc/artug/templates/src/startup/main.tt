@@ -1,10 +1,367 @@
 [% META title = 'The main window' %]
 
 [% FILTER html_para %]
-When you first start the Artemis program, two windows appear on your screen.
+The main window provides an overview of the state of [% artemis %] as
+well as of your current fitting project.  This window is divided into
+7 areas.  
+[% END %]
+
+
+[% WRAPPER html/list type="ol" %]
+[% WRAPPER html/li %]
+At the top is a menu bar.  We will examine the contents of
+each menu below.
+[% END %]
+
+[% WRAPPER html/li %]
+At the bottom is the status bar.  This area is used to convey messages
+to you during the course of operating the program.
+[% END %]
+
+[% WRAPPER html/li %]
+On the left is a stack of buttons used to show and hide various parts
+of [% artemis %].  Each of these will be described in detail later in
+the document.
+[% END %]
+
+[% WRAPPER html/li %]
+To the right is the listing of data groups.  The [% INCLUDE font/quote a="Add" %]
+button is used to import a new data set into [% artemis %].  As data
+are imported, they will listed as a stack of buttons below the 
+[% INCLUDE font/quote a="Add" %] button.
+[% END %]
+
+[% WRAPPER html/li %]
+Next comes the listing of [% feff %] calculations.  The
+[% INCLUDE font/quote a="Add" %]
+button is used to import new structural data set into [% artemis %].
+This may be input data for [% feff %], an 
+[% INCLUDE font/file a="atoms.inp" %] file, or a CIF file containing
+crystal structure data.
+As [% feff %] calculations are started, they will listed as a stack of
+buttons below the [% INCLUDE font/quote a="Add" %] button.
+[% END %]
+
+[% WRAPPER html/li %]
+The wide area to the right of the [% feff %] calculations contains
+several controls for the current fitting project.  The 
+[% INCLUDE font/quote a="Name" %] and 
+[% INCLUDE font/quote a="Description" %] boxes are used to describe
+the current state of your fitting project.  The name should be a
+concise description of the current fit and is used as a label
+identifying a specific fit.  The description is a lengthier, free-form
+bit of text describing the current fit in more detail.  This text
+will; be written to log files.  [% artemis %] does a decent job of
+automatically generating text for both of these boxes, but providing
+your own text will help you to document the progression of your
+fitting project.  This section also has controls for selecting the
+space in which your fit is evaluated and for saving a project file in
+a single click.
+[% END %]
+
+[% WRAPPER html/li %]
+On the far right is the [% INCLUDE font/quote a="Fit" %] button.
+Unsuprisingly, this button is clicked to initiate a fit.  The color of
+this button will change to provide a heuristic evaluation of the
+quality of each fit.  Below the Fit button is a button used to show or
+hide a window containing the log from the most recent fit.
+[% END %]
+
 [% END %]
 
 [% WRAPPER imagefull file="main.png" %]
 The main Artemis window.
+[% END %]
+
+[% PROCESS section label="Menu bar" %]
+
+[% PROCESS subsection label="The File menu" %]
+
+[% WRAPPER scriptcaption this="filemenu.png" %]
+Clicking on [% INCLUDE font/quote a="File" %] displays this menu,
+which is mostly used for various kinds of input and output.  Note that
+some menu items that have keyboard shortcuts attached and that these
+shortcuts are shown in the menu.
+
+[% WRAPPER html/list type="ul" %]
+[% WRAPPER html/li %]
+The first option is used to import any kind of data into [% artemis %],
+including [% artemis %] or [% athena %] project files, ASCII files
+containing [% chik %] data, [% feff %] or [% atoms %] input files, or
+a few other things.  [% artemis %] is usually good about properly
+identifyin the type of input file and doing the right thing with it.
+[% END %]
+[% WRAPPER html/li %]
+The second option provides a submenu of recently imported files broken
+down by file type, including [% artemis %] projects, [% athena %]
+projects, structure data for [% atoms %] or [% feff%], and a couple of
+other more obscure file types.
+[% END %]
+[% WRAPPER html/li %]
+The next two items are used to save [% artemis %] project files.
+[% END %]
+[% WRAPPER html/li %]
+The [% INCLUDE font/quote a="import" %] submenu is used to specify the
+file type to import.  Typically, this is not necessary and is only
+provided for the rare situation when [% artemis %] fails to recognize
+one of its standard input data types.
+[% END %]
+[% WRAPPER html/li %]
+The [% INCLUDE font/quote a="import" %] submenu is used to generate
+files in the format of an [% ifeffit %] script or a perl script using
+[% demeter %].  These files attempt to capture the current state of
+your fitting project.  It is unlikely that the output of either of
+these export options will be immediately useful without some editing.
+The purpose of these export options is to allow you to use 
+[% artemis %] to develop a fitting model, then use the exported file
+in some other way, for instance as part of an automated batch
+processing system.
+[% END %]
+[% WRAPPER html/li %]
+The next menu item diplsays a window used to set program preferences.
+This window will be described in detail in its own chapter of this
+document.
+[% END %]
+[% WRAPPER html/li %]
+Finally, there are menu items for closing the current fitting project
+and for exiting the program.  Each of these will prompt you to save
+your fitting option if you have not recently done so.
+[% END %]
+[% END %] [%# end of list%]
+[% END %] [%# end of caption%]
+
+
+[% PROCESS subsection label="The Monitor menu" %]
+
+[% WRAPPER scriptcaption this="monitormenu.png" %]
+This menu provides several options for monitoring the state of 
+[% artemis %], [% ifeffit %], and the plotting backend (usually
+[% gnuplot %]).
+[% WRAPPER html/list type="ul" %]
+[% WRAPPER html/li %]
+The command buffer contains a record of every data processing command
+sent to [% ifeffit %] and every plotting command sent to the plotting
+backend.  Bruce uses these buffers to debug the prgram as he
+implements new features.  You may want to use these buffers to learn
+the details of interacting directly with [% ifeffit %] or with the
+plotting backend.
+[% END %]
+[% WRAPPER html/li %]
+The status bar buffer contains a record of every message sent the
+status bar in the main window as well as those messages displayed in
+the status bars of other windows in [% artemis %].  All messages are
+time stamped.
+[% END %]
+[% WRAPPER html/li %]
+The [% INCLUDE font/quote a="Show Ifeffit" %] menu will cause [% ifeffit %]
+to display detailed information in the command buffer about the
+internal state of different kind of data.  This is another thing Bruce
+uses to debug program issues.
+[% END %]
+[% WRAPPER html/li %]
+The [% INCLUDE font/quote a="Debug options" %] menu contains several
+items used to display technical information about the current state of
+[% artemis %].  Again, this is a tool Bruce uses when developing the
+program.  After reporting a bug to the [% ifeffit %] mailing list,
+Bruce may ask for information obtained using these menu items.
+[% END %]
+[% WRAPPER html/li %]
+[% INCLUDE font/quote a="Show Ifeffit's memory use" %] item displays a
+crude calculation of the resources still available to [% ifeffit %].
+[% END %]
+[% END %] [%# end of list%]
+[% END %] [%# end of caption%]
+
+
+[% PROCESS subsection label="The Plot menu" %]
+
+[% WRAPPER scriptcaption this="plotmenu.png" %]
+When using [% gnuplot %] as the plotting backend, you have an option
+to direct plots to multiple windows, thus allowing you to plot
+something new without removing an existing plot.  This menu controls
+which of four such plot displays is active.
+[% END %]
+
+[% PROCESS subsection label="The Help menu" %]
+
+[% WRAPPER scriptcaption this="helpmenu.png" %]
+This menu is used to display this document or to display information
+about [% artemis %], including its open source licensing terms.
+[% END %]
+
+
+[% PROCESS section label="Status bar" %]
+
+[% FILTER html_para %]
+This area in the main window is used to display various kinds of
+messages, including updates on long-running tasks, hints about
+controls underneath the mouse, and other announcements.
+
+On some platforms, the status bar is able to display color.  If you
+are one one of those platforms, the status bar will display with a
+green background during a long running task and with a red background
+when an error has occured or when something needs your immediate
+attention.
+
+Many controls in the main window and elsewhere have hints attached to
+them which will be displayed in this status bar when the mouse passes
+over.  These hints are intended to teach about the functionality of
+the control beheath the mouse.  Hints are not recorded in the status
+bar buffer.
+
+Many short and long running tasks display updates of various kinds.
+Many of these are recorded in the status bar buffer.  Messages
+displayed in the status bar with a green or red background are
+recorded in the status bar buffer with green or red text.  Messages
+which only indicate the progress of a long running task are not
+recorded in the buffer.
+[% END %]
+
+
+[% PROCESS section label="Data list" %]
+
+[% FILTER html_para %]
+The data list starts off with a single control, which is used to
+import data into your fitting project.  Clicking the 
+[% INCLUDE font/quote a="Add" %] button will open the standard file selection
+dialog for your platform.  That is, on Windows, the standard Windows
+file selection dialog is used; on Linux, the standard Gnome file
+selection dialog is used; and so on.
+
+The standard manner of importing data into [% artemis %] is to use an
+[% athena %] project file.  Thus the file selection dialog will, by
+default, look for files with the [% INCLUDE font/file a=".prj" %]
+extension. 
+[% END %]
+
+[% WRAPPER scriptcaption this="datalist.png" %]
+As you import data, a stack of buttons -- one for each data group --
+is made.  These buttons are used to show or hide the windows
+associated with each data group.  In this example, a multiple data set
+fit (i.e. one in which models for more than one data set are
+co-refined) is shown.  One of the associated data windows is displayed
+on screen, as indicated by the depressed state of the button labeld
+[% INCLUDE font/quote a="Dimethyltin dichloride" %].  The other data
+window is hidden.
+[% END %]
+
+
+
+
+[% PROCESS subsection label="The Athena project selection dialog" %]
+
+[% WRAPPER scriptcaption this="athenaselection.png" %]
+When importing data from an [% athena %] project file, this dialog is
+shown.  It presents you with a list of all data groups from the
+project file.  The file listing is configured such that only one item
+can be selected at a time.  The selected data group also plotted.  The
+journal entry from the project file is displayed in the text box on
+the upper right.
+
+Beneath that is a series of radio buttons for selecting how the data
+are plotted.  Each time you click on a data group from the list, it
+will be plotted as selected.
+
+The next set of radio buttons is for selecting what set of Fourier
+transform and fitting parameters will be used.  The first choice says
+to use the values found in the [% athena %] project file.  The second
+choice says to use [% artemis %]'s default values. [%# ' %]
+The third choice is only relevant when replacing the data in a current
+fitting project.  In that case, the values currently selected for the
+data being replaced will be retained.
+
+To continue importing data, click the 
+[% INCLUDE font/quote a="Import" %] button.  The
+[% INCLUDE font/quote a="Cancel" %] button dismisses this dialog
+without importing data.
+[% END %]
+
+[% PROCESS subsection label="The recent data dialog" %]
+
+[% WRAPPER scriptcaption this="recentdata.png" %]
+You can access a list of recently imported data by 
+[% INCLUDE font/em a="right" %] clicking on
+the [% INCLUDE font/quote a="Add" %] button.  This presents a
+dialog with a selection list.  Click on one of your recent files, then
+click [% INCLUDE font/quote a="OK" %].   Alternately, double click on
+your choice in the list of recent files.
+[% END %]
+
+
+[% PROCESS section label="Feff list" %]
+
+[% FILTER html_para %]
+The [% feff %] list starts off with a single control, which is used to
+import structural data into your fitting project.  Clicking the 
+[% INCLUDE font/quote a="Add" %] button will open the standard file selection
+dialog for your platform.  That is, on Windows, the standard Windows
+file selection dialog is used; on Linux, the standard Gnome file
+selection dialog is used; and so on.
+
+The standard manner of importing structural data into [% artemis %] is
+to import an input file for [% atoms %] or [% feff %] or to import a
+CIF file containing crystal data.  Thus the file selection dialog
+will, by default, look for files with the 
+[% INCLUDE font/file a=".inp" %] or 
+[% INCLUDE font/file a=".cif" %] extension.
+
+[% END %]
+
+[% WRAPPER scriptcaption this="fefflist.png" %]
+As you import structural data, a stack of buttons -- one for each 
+[% feff %] calculation -- is made.  These buttons are used to show or
+hide the windows associated with each data group.  In this example,
+two [% feff %] calculations have been made.  Neither is being
+displayed on screen.
+[% END %]
+
+
+[% FILTER html_para %]
+[% INCLUDE font/em a="Right" %] clicking on the [% INCLUDE font/quote
+a="Add" %] button will present the same recent file selection dialog
+as for the data list.  In this case, the list will contain recetnly
+imported [% atoms %], [% feff %], or CIF files.
+[% END %]
+
+
+[% PROCESS section label="Fit information" %]
+
+[% WRAPPER scriptcaption this="fitproperties.png" %]
+This section of the main window is used to specify properties of the
+fit.  The name is a short bit of text that will be used as a label for
+each fit.  The number will be auto-incremented unless you explicitly
+set it.
+
+The description is a longer bit of text which you can use to describe
+the current fitting model.  Here, too, the number is auto-incremented
+unless you explcitly set it.  The text from this box is written to the
+log file, thus can be used to document your fitting model.
+
+The set of radio buttons is used to select the space in which the fit
+will be evaluated.  The default is to evaluate the fit in R space.
+
+Finally, the [% INCLUDE font/quote a="Save" %] button is used to quickly
+save your fitting model to a project file.  If you model is already
+associated with a file, this is a quick one-click saving tool.  If no
+project file is associated, the file selection dialog will prompt you
+for a file.  The default is to use the
+[% INCLUDE font/file a=".fpj" %] extension.
+[% END %]
+
+
+[% PROCESS section label="Fit and log buttons" %]
+
+[% WRAPPER scriptcaption this="fitlogbuttons.png" %]
+All the way to the right of the main window are the
+[% INCLUDE font/quote a="Fit" %] and
+[% INCLUDE font/quote a="log" %] buttons.  Click the Fit button to
+initiate the fit.  The log button is used to show and hide a window
+which displays the log from the most recent fit.  In the event of a
+fit that exits abnormally, error messages explaining the problems will
+be show in the log window.
+
+At start-up the Fit button is yellow.  After each fit, the color of
+this button will range from red to green as a heuristic indication of
+the fit quality.  See the happiness chapter for more details.
 [% END %]
 

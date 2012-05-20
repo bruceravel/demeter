@@ -15,8 +15,8 @@
 [%- fl = files.shift; this = "${dots}/${fl}" -%] 
 <a href=[% this %]><img src="[% this %]" width=[%- IF ww < 700 -%][%- ww -%][%- ELSE -%]49%[%- END -%]></a>
 &nbsp;&nbsp;
-[%- fl = files.shift; this = "${dots}/${fl}" -%] 
-<a href=[% this %]><img src="[% this %]" width=[%- IF ww < 700 -%][%- ww -%][%- ELSE -%]49%[%- END -%]></a>
+[%-  fl = files.shift; USE image "${rootdir}/images/${fl}"; this = "${dots}/${fl}"; wi = image.width -%] 
+<a href=[% this %]><img src="[% this %]" alt="foo" width=[%- IF wi < 700 -%][%- wi -%][%- ELSE -%]49%[%- END -%]></a>
 <br>
 [%- fl = files.shift; this = "${dots}/${fl}" -%] 
 [%- IF fl -%]

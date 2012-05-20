@@ -14,6 +14,7 @@
 [% MACRO horae   BLOCK -%] [% PROCESS font/program a="horae"   | trim %] [%- END -%]
 [% MACRO hephaestus BLOCK -%] [% PROCESS font/program a="hephaestus" | trim %] [%- END -%]
 [% MACRO autobk  BLOCK -%] [% PROCESS font/program a="autobk" | trim %] [%- END -%]
+[% MACRO gnuplot BLOCK -%] [% PROCESS font/program a="gnuplot" | trim %] [%- END -%]
 
 [%# see http://tlt.its.psu.edu/suggestions/international/bylanguage/mathchart.html  &#8320 is subscript 0 %]
 
@@ -32,6 +33,7 @@
 [% MACRO chi     BLOCK -%] &chi;(k)   [%- END -%]
 [% MACRO chik    BLOCK -%] &chi;(k)   [%- END -%]
 [% MACRO chir    BLOCK -%] &chi;(R)   [%- END -%]
+[% MACRO chir_mag BLOCK -%] |&chi;(R)|   [%- END -%]
 [% MACRO chiq    BLOCK -%] &chi;(q)   [%- END -%]
 [% MACRO chisqr  BLOCK -%] &chi;&sup2; [%- END -%]
 [% MACRO fp      BLOCK -%] [% PROCESS font/mono a="f'(E)" | trim %] [%- END -%]
@@ -39,6 +41,11 @@
 [% MACRO s02     BLOCK -%] S&sup2;&#8320; [%- END -%]
 [% MACRO e0      BLOCK -%] E&#8320; [%- END -%]
 [% MACRO delr    BLOCK -%] &Delta;R [%- END -%]
+[% MACRO kmin    BLOCK -%] k<sub>min</sub>   [%- END -%]
+[% MACRO kmax    BLOCK -%] k<sub>max</sub>   [%- END -%]
+[% MACRO rmin    BLOCK -%] R<sub>min</sub>   [%- END -%]
+[% MACRO rmax    BLOCK -%] R<sub>max</sub>   [%- END -%]
+[% MACRO nidp    BLOCK -%] N<sub>idp</sub>   [%- END -%]
 
 [% MACRO i0      BLOCK -%] I&#8320;   [%- END -%]
 [% MACRO it      BLOCK -%] I<sub>t</sub>   [%- END -%]

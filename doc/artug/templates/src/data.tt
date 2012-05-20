@@ -1,0 +1,366 @@
+[% META title = 'The Data window'
+	chapter = 1
+	nosubpages = 1 
+%]
+
+[% FILTER html_para -%]
+After importing data from an [% athena %] project file, several things happen:
+[% END %]
+
+[% WRAPPER html/list type="ol" %]
+[% WRAPPER html/li %]
+A new Data window is created for interacting with that data set and
+the various controls are set to values taken from the [% athena %]
+project file or from [% artemis %]'  [%# ' %] defaults.
+[% END %]
+[% WRAPPER html/li %]
+A message is written to the status bar in the Main window.
+[% END %]
+[% WRAPPER html/li %]
+The data are plotted in k-space.
+[% END %]
+[% WRAPPER html/li %]
+The data are transferred to the plotting list in the Plot window.
+[% END %]
+[% END %] [%# end of ordered list%]
+
+[% FILTER html_para -%]
+Here is the Plot window as it initially appears:
+[% END %]
+
+[% WRAPPER image file="datawindow.png" %]
+The [% artemis %] data window.
+[% END %]
+
+[% WRAPPER html/list type="ol" %]
+[% WRAPPER html/li %]
+This button is used to transfer this data set into the plotting list
+in the Plot window.
+[% END %]
+[% WRAPPER html/li %]
+This is the [% INCLUDE font/quote a="characteristic value" %] of this
+data set.  Typically, this is just incremented for each data set as it
+is imported.  The CV can be used as a special parameter in math
+expressions. 
+[% END %]
+[% WRAPPER html/li %]
+This text box shows where this data set came from.  Typically, this
+shows the fully resolved file name for an [% athena %] project file,
+followed by the index of the data from that project file.
+[% END %]
+[% WRAPPER html/li %]
+The five buttons generate special plots using this data set.  These
+five special plots are explained below.  Like the Fit button from the
+main window, these buttons are recolored after a fit to represent the
+value of the fit's [%# ' %] happiness parameter.
+[% END %]
+[% WRAPPER html/li %]
+This text box contains any title lines associated with the data.
+[% END %]
+[% WRAPPER html/li %]
+These controls are used to set the functional form of the windows for
+forward and backward Fourier transforms.  The [% rmin %] and 
+[% rmax %] values are also used as the fitting range.
+[% END %]
+[% WRAPPER html/li %]
+These check buttons are used to set the k-weight values used to
+evaluate the fit.  Note that these are [% INCLUDE font/em a="check" %]
+buttons -- more than one can be selected at a time.  The default is to
+have all of 1, 2, and 3 checked, resulting in a multiple k-weight fit.
+[% END %]
+[% WRAPPER html/li %]
+This area contains several other parameters related to this data set.
+When the first check button is checked, this data will be included in
+the fitting model.  Unchecking it is a way of removing a data set from
+a multiple data set fit without actually disposing of the data.  The
+second check button instructs [% artemis %] to automatically transfer
+this data set to the plotting list at the end of a fit.  The third
+check button turns on background co-refinement.  The [% epsilon %]
+text box allows you to specify a measurement error fit this data set.
+Finally, the last check button turns phase corrected plotting on and
+off.  (Note that phase corrected plotting is not implemented at this
+time.) 
+[% END %]
+[% WRAPPER html/li %]
+This status bar is used to display messages specifically related to
+this data set.  These messages are logged in the status buffer.
+[% END %]
+[% WRAPPER html/li %]
+The paths list will be come populated as paths are associated with
+this data set.  How that works will be explained in the next chapter.
+[% END %]
+[% WRAPPER html/li %]
+When no paths have yet been associated with a data set, this default
+page is displayed.  The lines of blue text are sensitive to mouse
+clicks and initiate the import of certain kinds of data.  All of those
+import options will be explained elsewhere in this document.
+[% END %]
+[% END %] [%# end of ordered list%]
+
+[% FILTER html_para -%]
+After one or more paths have been associated with this data set, the
+Data window looks something like this.  Note that the paths list is
+populated with the paths assigned to these data and that the right
+hand side of the Data window displays the details about a particular
+path.  Clicking on an item in the paths list causes that path to be
+displayed on the right.
+
+Note that each path in the path list has a check button associated
+with it.  These check buttons are involved in much of the
+functionality described below.
+
+Some vocabulary: The highlighted path is displayed on the right and is
+said to be [% INCLUDE font/em a="selected" %].  When a paths check
+button is checked, it is said to be [% INCLUDE font/em a="marked" %].
+In this example, the first path is selected and no paths have yet been
+marked. 
+[% END %]
+
+
+[% WRAPPER image file="datawindow_withpaths.png" %]
+The [% artemis %] data window.
+[% END %]
+
+
+
+[%# ################################################################ %]
+
+[% PROCESS section label="Special plots" %]
+
+The five plot buttons on the Data window make special plots of that
+data set along with its fit (if a fit has been run).  Each of these is
+an elaborate, multi-component plot that cannot be made using the tools
+on the Plot window.  The examples shown here are for a fit to gold
+metal out to the fourth coordination shell.
+
+[% WRAPPER scriptcaption this="plot_k123.png" %]
+This is the [% INCLUDE font/quote a="k123" %] plot.  It shows the data
+and fit as [% chik %].  Each k-weighting from 1 to 3 is shown.  The
+data with k-weighting of 2 is plotted normally.  The other two
+k-weightings are scaled by the appropriate number such that all three
+k-weighting appear to be about the same size in the plot.  The Fourier
+transform window function is drawn over the k-weight of 1 spectrum.
+[% END %]
+
+[% WRAPPER scriptcaption this="plot_r123.png" %]
+This is the [% INCLUDE font/quote a="k123" %] plot.  It shows the data
+and fit as [% chir %].  The Fourier transform has been done with each
+k-weighting from 1 to 3.  The data with k-weighting of 2 is plotted
+normally.  The other two k-weightings are scaled by the appropriate
+number such that all three k-weighting appear to be about the same
+size in the plot.  The back-Fourier transform window function is drawn
+over the k-weight of 1 spectrum to indicate the range over which the
+fit was evaluated (assuming the fit space is R, as is the default).
+[% END %]
+
+[% WRAPPER scriptcaption this="plot_rmr.png" %]
+The [% INCLUDE font/quote a="Rmr" %] plot is the default plot
+displayed after a fit.  It shows the magintude and real part of 
+[% chir %] using the value of k-weighting selected in the Plot window.
+The back-Fourier transform window function is drawn over the magnitude
+spectrum to indicate the range over which the fit was evaluated
+(assuming the fit space is R, as is the default).  The radio button in
+the Plot window for selecting the part of [% chir %] is respected when
+this plot is made.
+[% END %]
+
+[% WRAPPER rscriptcaption this="plot_rk.png" %]
+The [% INCLUDE font/quote a="Rk" %] plot is a stacked plot with the
+[% INCLUDE font/quote a="Rmr" %] on the bottom and [% chik %] on the
+top.  The value of k-weighting selected in the Plot window is used.
+Fourier transform windows are drawn over the [% chik %] and 
+[% chir_mag %] spectra.
+[% END %]
+
+[% WRAPPER scriptcaption this="plot_kq.png" %]
+The [% INCLUDE font/quote a="kq" %] plot shows the data and fit as 
+[% chik %] and [% chiq %].  The value of k-weighting selected in the
+Plot window is used.  The Fourier transform windows are drawn over 
+the [% chik %] spectra.
+[% END %]
+
+
+[%# ################################################################ %]
+
+[% PROCESS section label="Menu bar" %]
+
+[% PROCESS subsection label="The Data menu" %]
+
+[% WRAPPER scriptcaption this="data.datamenu.png" %]
+[% WRAPPER html/list type="dl" %]
+[% WRAPPER html/dt dt="Rename" %]
+Change the name of this data set.  This is the name displayed next to
+the transfer button, in the plotting list, in the log file, and in
+plot legends.
+[% END %]
+[% WRAPPER html/dt dt="Replace" %]
+Change the [% chik %] by importing new data from an [% athena %]
+project file.  This is used to apply the current fitting model to a
+new data set.
+[% END %]
+[% WRAPPER html/dt dt="Discard" %]
+Throw away this data set and its window.  Also remove this data set
+from the Data list in the Main window.
+[% END %]
+[% WRAPPER html/dt dt="Save data" %]
+Write this data set to a column data file.  The [% chik %] output
+option will write a file with columns for k, [% chik %], [% chik1 %],
+[% chik2 %], [% chik3 %], and the window function. The [% chir %]
+output option will write a file with columns for R, the real part, the
+imaginary part, the magnitude, the phase, and the window function. 
+The [% chiq %] option is of the same form a the [% chir %] option.
+[% END %]
+[% WRAPPER html/dt dt="Save data and fit" %]
+Write the data, the fit, and several other arrays to a data file in
+one of various forms of k, R, or q.  This will have columns for the
+abscissa, the selected form of the data, and the corresponding forms
+of the fit, the background (if co-refined), the residual, the running
+R-factor, and the window.
+[% END %]
+[% WRAPPER html/dt dt="Save data and paths" %]
+This will save the data along with each marked path to a column data
+file.  The columns will be the same as for the data+fit output.
+[% END %]
+[% WRAPPER html/dt dt="Othe rfitting standards" %]
+This submenu allows you to import a variety of special path types.
+These will be explained later in the document.
+[% END %]
+[% WRAPPER html/dt dt="Set all degeneracies" %]
+These two options allow you to control the degeneracy values of all
+the paths in the fit.  The choices are to set them all to 1 or to have
+them all use their degeneracies from their respective [%feff%]
+calculations.
+[% END %]
+[% WRAPPER html/dt dt="Export parameters" %]
+In a multiple data set fit, this allows you to constrain ther data sets
+to have the same choice of Fourier transform parameters.
+[% END %]
+[% WRAPPER html/dt dt="Set kmax" %]
+Use [%ifeffit%]'s [%#'%] suggestion for an appropriate value of [%kmax%].
+[% END %]
+[% WRAPPER html/dt dt="Show epsilon" %]
+Show the value of [%epsilon%] computed from the noise in this data
+set.  The value will be displayed in the Data window status bar.
+[% END %]
+[% WRAPPER html/dt dt="Show Nidp" %]
+Show the number of independent points computed from the Fourier
+transform and fitting range.  The value will be displayed in the Data
+window status bar. 
+[% END %]
+[% END %] [%# end of description list %]
+[% END %] [%# end of caption %]
+
+[% PROCESS subsection label="The Path menu" %]
+
+[% WRAPPER scriptcaption this="data.pathmenu.png" %]
+[% WRAPPER html/list type="dl" %]
+[% WRAPPER html/dt dt="Transfer" %]
+Transfer the displayed path to the plotting list in the Ploy window.
+[% END %]
+[% WRAPPER html/dt dt="Rename" %]
+Change the name of the displayed path.  This is the name displayed next to
+the transfer button, in the plotting list, in the log file, and in
+plot legends.
+[% END %]
+[% WRAPPER html/dt dt="Show" %]
+Post a dialog box with [%ifeffit%]'s [%#'%] current evaluation of all
+path parameters for the displayed path.
+[% END %]
+[% WRAPPER html/dt dt="Save path" %]
+Write the displayed path to a column data file.  The [% chik %] output
+option will write a file with columns for k, [% chik %], [% chik1 %],
+[% chik2 %], [% chik3 %], and the window function. The [% chir %]
+output option will write a file with columns for R, the real part, the
+imaginary part, the magnitude, the phase, and the window function. 
+The [% chiq %] option is of the same form a the [% chir %] option.
+[% END %]
+[% WRAPPER html/dt dt="Clone" %]
+Make a copy of the displayed path and insert it into the path list.
+The degeneracies of the original and cloned path will be half the
+original degeneracy.
+[% END %]
+[% WRAPPER html/dt dt="Add path parameter" %]
+[%# [% WRAPPER scriptcaption this="addparam.png"  END %]
+Post a dialog which is used to add a path parameter math expression to
+multiple paths associated with this or other data sets.  This is a
+convenience allowing you to edit the path paremetsr for many paths at
+the same time.
+[% END %]
+[% WRAPPER html/dt dt="Export path parameters" %]
+Push the math expressions of each path parameter from the displayed
+path to other paths.  This submenu has options for pushing these
+values to the other paths from the same [%feff%] calculation, to the
+marked paths, to all paths in this data set, or to all paths in all
+data sets.
+[% END %]
+[% WRAPPER html/dt dt="Quick 4 parameter fit" %]
+This is a convenience function for setting up a simple, one-shell
+fit.  Selecting this menu item will create 4 parameters in the GDS
+window and use those four parameters as the math expressions for
+[%s02%], [%e0%], [%delr%], and [%sigsqr%] for each path assigned to
+this data set.  This is itended only for a one-path, one-shell fit.
+While it may be tempting to expect broader utility out of this
+function -- don't do so. [%#'%]
+[% END %]
+[% WRAPPER html/dt dt="Discard" %]
+Discard the dislayed path, removing it from the path list.
+[% END %]
+[% END %] [%# end of description list %]
+[% END %] [%# end of caption %]
+
+[% PROCESS subsection label="The Marks menu" %]
+
+[% WRAPPER scriptcaption this="data.marksmenu.png" %]
+Much of [%artemis%]'[%#'%] functionality revolves around groups of
+marked paths.  This menu contains a number of shortcuts for marking
+paths.  Note that each of these has a keyboard shortcut
+given on the right side of the menu.  Learning the shortcuts for
+marking functions that you use frequently is key to the effective use
+of [%artemis%].
+
+Marking via these functions is cumulative.  That is, most of them only
+add to the set of marked paths.   Choosing to mark, say, all single
+scattering paths wiil not unmark any multiple scattering paths.
+
+Several of these functions will post a dialog for receiving input.
+Marking by regular expression (regex) will prompt for a perl-style
+regular expression to match against the labels in the path list.
+Marking bath greater than or less than an R value will promnpt for
+that R value.
+
+Marking before or after the current path will mark those above or
+below the displayed path in the path list.  Included and excluded
+refers to whether a path is selected as being included in a fit.
+Importance refers to the heuristic importance of the path, which is
+represented by the green (high), yellow (medium), or grey (low) color
+of the label at the top of the path page.
+[% END %]
+
+[% PROCESS subsection label="The Actions menu" %]
+
+[% WRAPPER scriptcaption this="data.actionsmenu.png" %]
+Every item in this menu operates on the set of marked paths.  Again,
+keyboard shortcuts are given in the menu.
+
+The first option will be explained in the chapter on ....  The second
+option will transfer all marked paths to the plotting list in the
+Plot window.
+
+The next two options will cause the set of marked paths to be included
+in or excluded from the fit.  The next item causes all marked paths to
+be discarded from your fitting project and removed from the path list.
+
+The final two items are about controlling what gets transferred into the
+plotting list after a fit.  The next to last item causes all marked
+paths to be transferred.  The last item removes all paths from the list
+of things transfered
+[% END %]
+
+[% PROCESS subsection label="The Debug menu" %]
+
+[% WRAPPER scriptcaption this="data.debugmenu.png" %]
+This menu displays various dialog boxes showing aspects of the current
+state if [%ifeffit%] or [%artemis%].  These are mostly used for
+degugging purposes.
+[% END %]
+

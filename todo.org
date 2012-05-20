@@ -17,7 +17,7 @@
         the executables can all be found, also need to be able to find
         all of Ifeffit CL and CAPS files.
 
-** Demeter bugs, shortcomings, missing features  [2/17] [11%]
+** Demeter bugs, shortcomings, missing features  [2/19] [10%]
   - [ ] in =Demeter::Data::IO::save_many=, why doesn't updating in n specifying "background" not work to bring data up to date?  (fft, i.e. doing autobk, does work)
   - [ ] Importing a Windows shortcut from a network mounted folder on linux or Mac will fail
   - [ ] +serialize VPath+, put VPath into +dpj and+ fpj files
@@ -37,6 +37,8 @@
   - [X] better detection of chi ascii data in case of 
         =$data = Demeter::Data->new(file=>"foo.chi");=
   - [ ] MRU lists and unicode, unicode-y file paths fail the -e test at Demeter::MRU line 77
+  - [ ] need to disable indicators during the Rk plot.  Indicators (as
+	    implemented) are not consistent with multiplot
 
 
 
