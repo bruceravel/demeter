@@ -22,6 +22,9 @@ The data are plotted in k-space.
 [% WRAPPER html/li %]
 The data are transferred to the plotting list in the Plot window.
 [% END %]
+[% WRAPPER html/li %]
+An entry is placed in the Data list on the main window.
+[% END %]
 [% END %] [%# end of ordered list%]
 
 [% FILTER html_para -%]

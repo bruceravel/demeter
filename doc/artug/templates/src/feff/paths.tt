@@ -1,0 +1,77 @@
+[% META title = 'The Paths tab' %]
+
+[% FILTER html_para -%]
+When you click the [% INCLUDE font/quote a="Run Feff" %] button on
+the [%feff%] tab, the [%feff%] calculation is run.  Once finished, a
+succinct summary of the calculation is displayed on the Paths tab.
+[% END %]
+
+[% WRAPPER image file="feff.paths.png" %]
+The Paths tab.
+[% END %]
+
+[% FILTER html_para -%]
+Some statistics about the [%feff%] calculation are shown in the
+Description text box.  Below that is the summary of the paths found in
+the [%feff%] calculation.  This summary is presented in the form of a
+table.  Each row describes a unique scattering path.
+
+The first column shows the degeneracy of the path.  The second column
+shows its nominal path length, [%reff%].  That is value that will be
+used in any math expression containing the 
+[% INCLUDE font/mono a="reff" %] token.
+
+The third column shows a simple view of the scattering path.  The 
+[% INCLUDE font/mono a="@" %] token represents the absorber, thus
+appears as  the first and last token in each description.  The tokens
+representing the scattering atoms are taken from the tags on the
+[%feff%] tab.
+
+The fourth column contains a heuristic assessment of the importance of
+the path.  Single scattering paths and collinear multiple scattering
+paths are considered high importance paths.  They have a value of 2 in
+this column and are colored with green text.  Certain kinds of
+triangle paths are considered of intermediate importance.  These have
+a value of 1 and are colored with yellow text.  Other paths are
+considered to be of low importance and are colored with grey text.
+Don't [%#'%] put too much faith in this assessment of importance.  You
+should explicitly check all paths to decide if they should be included
+in a fit.
+
+The fifth column gives the number of legs in each path.  The final
+column is a simple explanation of the shape of the scattering
+geometry.
+
+The rows in this table are selectable by mouse click.  Left clicking
+on a row selects that row.  Control clicking on another row adds it to
+the selection.  Shift clicking adds to the selection all rows between
+the one clicked upon and the previously clicked upon row.
+
+Much of the functionality of this page rests upon the set of selected
+paths.  Most importantly, selecting paths is the first step to using
+paths in a fitting model.  This will be explained in the next chapter.
+
+At the top of the Paths tab are a series of buttons.  The 
+[% INCLUDE font/quote a="Save" %] button will write the entire
+[%feff%] calculation to a form that can be reimported into [%artemis%]
+or used in some other context in a [%demeter%] script.  The remaining
+buttons are related to making plots of the selected paths.
+[% END %]
+
+[% WRAPPER scriptcaption this="feff.plot.png" %]
+A plot of paths from raw [%feff%] calculation.  In this example, the
+first four paths from the nickel metal calculation were selected, then
+the [% INCLUDE font/quote a="Plot selection" %] button was pressed.
+In this plot, we see that the first two single scattering paths are,
+indeed, quite large.  The intermediate importance third path, which
+scatters among first coordination shell Ni atoms, is a modest
+contributor to the EXAFS.  The low importance fourth shell path, which
+also scatters among first coordination shell atoms, cannot even be
+seen on this scale.  It truly is a low importance path.
+
+It is, therefore, very quick and easy to examine the results of a
+[%feff%] calculation.  The other four buttons are used to select how
+the plot of paths is made.  The options are [%chik%], [%chir_mag%],
+[%chir_re%], and [%chir_im%].  The k-weight selected in the Plot
+winodow is used to make the plot of paths.
+[% END %]

@@ -1,0 +1,13 @@
+[% META title = 'The Console tab' %]
+
+[% FILTER html_para -%]
+Any messages from the [%atoms%] and [%feff%] runs are displayed in
+this windows, including error messages.  If you suspect something has
+gone wrong in your [%feff%] calculation, check this tab.  If the
+problem is one that is recognized by [%artemis%], you will a helpful
+diagnostic suggestion.
+[% END %]
+
+[% WRAPPER image file="feff.console.png" %]
+The Console tab.
+[% END %]

@@ -1,0 +1,78 @@
+[% META title = 'The Path-like tab' %]
+
+
+[% FILTER html_para -%]
+Among the most powerful new features in [%artemis%] is the ability to
+define [% INCLUDE font/quote a="path-like" %] objects.  A path-like
+object is one which can be treated like a normal path from [%feff%].
+It can be used in a fit and it can be plotted.  It is not, however,
+the result of a normal [%feff%] calculation.  Instead, [%feff%] has
+been run in some special way to generate a theoretical [%chik%]
+spectrum for something different from all the items listed on the
+Paths tab.
+
+[%artemis%] defines a number of kinds of path-like objects.  Controls
+for generating these things are divided into different pages
+accessible by the menu at the top of the Path-like tab.  The first
+item in that menu is for defining 
+[% INCLUDE font/quote a="SSPaths" %].
+[% END %]
+
+[% WRAPPER image file="feff.pathlike.png" %]
+The Pathlike tab.
+[% END %]
+
+[% PROCESS section label="SSPaths" %]
+
+[% FILTER html_para -%]
+The concept of an SSPath is that it uses the potentials from a
+[%feff%] calculation to compute the single scattering contribution
+from an atom that exists in that [%feff%] calculation but at a
+distance not represented in the list of cartesian coordinates.
+
+In the example show, a [%feff%] calculation has been run on
+[%lacoo3%], a trigonal perovskite-like material with 6 oxygen
+scatterers at 1.93 [%AA%], 8 La scatterers at 3.28 [%AA%] or 3.34
+[%AA%], and 6 Co scatterers at 3.83 [%AA%].  
+[% END %]
+
+[% WRAPPER scriptcaption this="feff.plotss.png" %]
+Suppose we had some reason to wonder what a Co scatterer at a distance
+of 3 [%AA%] would look like in a fit.  In that case, the distance on
+the SSPath page would be set to 3.0 and the Co scatterer would be
+selected from the group of radio buttons.  This groups of radio
+buttons is generated from the list of unique potentials in the input
+data for [%feff%].
+
+The method for associating this notional path with data will be
+explained in the next chapter.  For now, we simply jump ahead and
+compare the normal Co scatterer at 3.83 [%AA%] (blue) with the SSPath
+computed at 3 [%AA%] (red).
+
+In the prior version of [%artemis%], a lot of users attempted to do
+this sort of thing using the quick first shell theory functionality
+(which still exists and which is described elsewhere).  This is a much
+superior approach.  The advantage of this approach is that it uses
+well constructed scattering potentials -- i.e. potentials from a real
+structure -- to make the special path.  Using the quick first shell
+technique on a path this long results in poorly constructed
+potentials.
+[% END %]
+
+
+[% PROCESS section label="FSPaths" %]
+[% FILTER html_para -%]
+Model the effect of variable forward scattering angle in nearly
+collinear multiple scattering paths.
+[% END %]
+
+
+[% WRAPPER html/todo %]
+TSPaths have not yet been implemented.
+[% END %]
+
+[% PROCESS section label="Histogram paths" %]
+
+[% WRAPPER html/todo %]
+Document the histogram system.
+[% END %]
