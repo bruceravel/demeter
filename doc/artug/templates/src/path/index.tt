@@ -1,0 +1,82 @@
+[% META title = 'The Path page'
+	chapter = 1
+%]
+
+[% FILTER html_para -%]
+In this chapter, the method for associating paths with data sets is
+explained.  We will also see how to begin constructing a fitting
+model.
+
+Shown below is the Data window, which we have already seen, with some
+data from a gold foil already imported.  I have passed the cursor over
+the active text which says
+[% INCLUDE font/quote a="Import crystal data or a Feff calculation"%].
+Clicking will open the standard file selection dialog, prompting you for
+an [% INCLUDE font/file a="atoms.inp" %], [% INCLUDE font/file a="feff.inp" %]
+or CIF file.  The same thing can be done by clicking the
+[% INCLUDE font/quote a="Add"%] button above the Feff list in the Main
+window, by selecting [% INCLUDE font/quote a="Open project of data"%]
+from the File menu in  the Main window, or by using the 
+[% INCLUDE font/mono a="Control-o"%] keyboaard shortcut.
+[% END %]
+
+[% WRAPPER image file="path.empty.png" %]
+The Data window with no paths associated.
+[% END %]
+
+
+[% FILTER html_para -%]
+From the file dialog, I select an [% INCLUDE font/file a="atoms.inp"%]
+file containing these crystal data:
+[% WRAPPER html/pre %]
+title  gold
+space  f m 3 m
+a = 4.08   rmax = 6.00    core = Au1
+atoms
+  Au     0.00000   0.00000   0.00000  Au1
+[% END %]
+This crystal data is entered in a [%feff%] window and posted to the
+screen.
+[% END %]
+
+[% WRAPPER image file="path.atoms.png" %]
+The [%atoms%] and [%feff%] window containing gold metal crystal data.
+[% END %]
+
+[% FILTER html_para -%]
+Running [%atoms%] then [%feff%] results in this path list:
+[% END %]
+
+[% WRAPPER image file="path.pathlist.png" %]
+The path list for the gold metal calculation.
+[% END %]
+
+[% FILTER html_para -%]
+By clicking on path #0000 in the list then shift-clicking on
+path #0012, the first 13 paths are selected
+[% END %]
+
+[% WRAPPER image file="path.selected.png" %]
+The first 13 paths have been selected.
+[% END %]
+
+[% FILTER html_para -%]
+Now click on any of the selected paths.  While holding down the left
+mouse button, drag those paths over to the right side of the Data
+window and drop them by releasing the mouse button.  This will place
+all 13 of those paths in the path list on the Data window containing
+the data on the gold foil.
+[% END %]
+
+[% WRAPPER image file="path.populated.png" %]
+The Data window has been populated with the 13 paths from the [%feff%] calculation.
+[% END %]
+
+[% FILTER html_para -%]
+At this point we can begin examining the paths by plotting them with
+the data.  The path plotting tools are explained in a subsequent
+section.
+
+Also at this point, we can begin creating a fitting model to fit the
+gold foil data using these paths from the [%feff%] calculation.
+[% END %]

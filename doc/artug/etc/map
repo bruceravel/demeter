@@ -35,7 +35,14 @@
 			   console  = { name = 'The Console tab' }
 			   }
   	            }
-	    path   = { name = 'The Path page'}
+	    path   = {
+	            name = 'The Path page'
+		    menu = ['mathexp', 'plot']
+		    page = {
+		    	   mathexp = { name = 'Setting math expressions' }
+			   plot    = { name = 'Plotting individual paths' }
+                           }
+                    }
 	    gds    = { name = 'The GDS window'}
           }
       };

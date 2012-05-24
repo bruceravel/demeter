@@ -1,8 +1,0 @@
-[% META title = 'The Path page'
-	chapter = 1
-	nosubpages = 1 
-%]
-
-[% FILTER html_para -%]
-blah
-[% END %]

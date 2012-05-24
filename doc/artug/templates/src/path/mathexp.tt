@@ -1,0 +1,44 @@
+[% META title = 'Setting math expressions' %]
+
+
+[% FILTER html_para -%]
+Once some paths have been dragged from the [%feff%] window onto the
+Data window containing the gold foil data, it is time to begin
+defining math expressions for the path parameters.  In the following
+figure, the path corresponding to the first coordination shell has
+been selected from the path list.  A path is selected by left clicking
+on its label in the path list.  Doing so, displays that path on the
+right side of the Data window.
+
+At the top of the Path page are two checkboxes.  One is used to
+include and exclude a path from the fitting model.  In this way, you
+can control which paths are used in a fit without having to remove
+them from the path list.  The other check box is used to indicate if
+the current path should be transfered to the plotting list in the
+Plot window at the end of a fit.
+
+[% WRAPPER html/todo %]
+Implement and explain the two items in the "other path options" pane.
+[% END %]
+
+The text box contains a brief description of the geometry of the
+scattering path.  For a degenerate path, this shows an example
+scattering geometry.  The simple explanation of the shape of the path
+and its heuristic importance are also given in the text box.
+
+Beneath the scattering geometry is a table of path parameters labels
+and text boxes.  Math expressions are entered into these text boxes.
+
+In the following image, a simple fitting model appropriate for a
+cubic, monoatomic material like our gold foil has been entered for the
+first shell path.  This includes simple expressions for [%s02%] and
+[%e0%] consisting of variables that will be floated in the fit.  A
+model of isotropic expansion is provided for [%delr%].  The [%sigsqr%]
+path parameter is expressed using the correlated Debye model.  The
+other path parameter text boxes have been left blank and will not be
+modified in the fit.
+[% END %]
+
+[% WRAPPER image file="path.first.png" %]
+Math expressions have been set for the first shell path.
+[% END %]
