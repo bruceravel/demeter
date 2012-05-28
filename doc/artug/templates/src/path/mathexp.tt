@@ -42,3 +42,40 @@ modified in the fit.
 [% WRAPPER image file="path.first.png" %]
 Math expressions have been set for the first shell path.
 [% END %]
+
+[% FILTER html_para -%]
+That. of course, establishes the parameterization of the path
+parameters only for the first path.  The same editing of path
+parameter math expressions must happen for all the other paths used in
+the fit.
+
+The most straightforward way to do this editing chore is to click on
+each successive path in the path list, then click into each text box,
+then type in the math expressions.  That, however, is really tedious.
+[% END %]
+
+[% WRAPPER scriptcaption this="path.menu.png" %]
+For math expressions that are the same for every path -- [%e0%] is a
+common example -- [%artemis%] provides some automation tools.  Each of
+the path parameter labels on the Path page is sensitive to either left
+or right click.  Either kond of click posts a menu like the one of the
+left.  The top option is used to erase the contents of the associated
+text both, but only on this path.
+
+The next four options are used to push the math expression for the
+associated path parameter onto other paths.  These four options work
+much the same way as the similar function from the Path menu in  the
+Data window, except only for a single path parameter.
+
+The last two options are used to grab a math expression from one of
+the surrounding paths.
+
+The menu that pops up for the [%sigsqr%] parameter has two additional
+options.  One inserts a math expression for using the correlated Debye
+function for [%sigsqr%], the other inserts the math expression for an
+Einstein model.  Both the Debye and Einstein function depend on the
+measurement temeprature and a characteristic temperature.  Typically,
+the measurement temperature is a set variable and the characteristic
+temperature is a guess.  When either function is inserted into the
+text box, parameters are created on the GDS page.
+[% END %]

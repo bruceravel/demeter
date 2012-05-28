@@ -1,9 +1,9 @@
 
 [% site = {
-	   name      = 'Demeter Programming Guide'
+	   name      = 'Artemis Users Guide'
 	   server    = 'http://cars9.uchicago.edu' 
 	   admin     = 'bravel@bnl.gov'
-	   copyright = '2007-2010 Bruce Ravel'
+	   copyright = '2007-2012 Bruce Ravel'
 	   floatdir  = "smfigureright"
 	  };
 -%]

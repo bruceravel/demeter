@@ -8,7 +8,7 @@ title notes1:   metal, fcc
 space  f m 3 m
 a    = 4.08
 alpha= 90
-rmax = 6.00
+rmax = 9.00   rpath = 6
 core = Au1
 atom
 Au     0.00000   0.00000   0.00000  Au1

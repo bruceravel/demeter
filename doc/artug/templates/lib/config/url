@@ -7,7 +7,7 @@
          css     = "$rooturl/html/ab.css"
          perlcss = "$rooturl/html/ppi.css"
 	 athena  = "http://cars9.uchicago.edu/~ravel/software"
-	 demeter = "http://cars9.uchicago.edu/iffwiki/Demeter"
+	 demeter = "http://bruceravel.github.com/demeter/"
 	 feff    = "http://leonardo.phys.washington.edu/feff/wiki/index.php?title=FEFF_Documentation"
 	 ifeffit = "http://cars9.uchicago.edu/iffwiki/Ifeffit"
 	 xafsorg = "http://xafs.org"

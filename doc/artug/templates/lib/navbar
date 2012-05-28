@@ -8,7 +8,7 @@
         [&nbsp;<a href="[% site.url.ifeffit %]">[% ifeffit_link %]</a>&nbsp;] &nbsp;&nbsp;
         [&nbsp;<a href="[% site.url.feff %]">[% feff_link %]</a>&nbsp;] &nbsp;&nbsp;
         [&nbsp;<a href="[% site.url.xafsorg %]">xafs.org</a>&nbsp;] &nbsp;&nbsp;
-	[&nbsp;<a href="[% dots %]/demeter.pdf">PDF&nbsp;doc</a>&nbsp;]
+	<!-- [&nbsp;<a href="[% dots %]/demeter.pdf">PDF&nbsp;doc</a>&nbsp;] -->
       </td>
       <td align=right>
         [% PROCESS menu/prevnext -%]

@@ -12,6 +12,7 @@
 		'feff',
 		'path',
 		'gds',
+		'logjournal',
 	      ]
        page = {
 	    index   = { name = 'Home' }
@@ -40,10 +41,11 @@
 		    menu = ['mathexp', 'plot']
 		    page = {
 		    	   mathexp = { name = 'Setting math expressions' }
-			   plot    = { name = 'Plotting individual paths' }
+			   plot    = { name = 'Marking and plotting' }
                            }
                     }
 	    gds    = { name = 'The GDS window'}
+	    logjournal   = { name = 'The Log and Journal windows'}
           }
       };
     # save map in site

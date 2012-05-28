@@ -254,18 +254,18 @@ window is hidden.
 When importing data from an [% athena %] project file, this dialog is
 shown.  It presents you with a list of all data groups from the
 project file.  The file listing is configured such that only one item
-can be selected at a time.  The selected data group also plotted.  The
-journal entry from the project file is displayed in the text box on
+can be selected at a time.  The selected data group is also plotted.  
+Any title lines from that data group are displayed in the text box on
 the upper right.
 
 Beneath that is a series of radio buttons for selecting how the data
 are plotted.  Each time you click on a data group from the list, it
 will be plotted as selected.
 
-The next set of radio buttons is for selecting what set of Fourier
+The next set of radio buttons selects what set of Fourier
 transform and fitting parameters will be used.  The first choice says
 to use the values found in the [% athena %] project file.  The second
-choice says to use [% artemis %]'s default values. [%# ' %]
+choice says to use [% artemis %]'s [%# ' %] default values. 
 The third choice is only relevant when replacing the data in a current
 fitting project.  In that case, the values currently selected for the
 data being replaced will be retained.

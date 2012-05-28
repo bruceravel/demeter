@@ -6,26 +6,35 @@
 
 
 [% FILTER html_para %]
-[% feff %] and [% ifeffit %] are amazing tools.
+[% feff %] and [% ifeffit %] are amazing tools, but they can be
+somewhat hard to use.  [%feff%] reuires the use of clunky text files
+as its input.  [%ifeffit%] has a wordy, finicky syntax.  Both need to
+be wrapped up inside of something easier to use.  Hopefully,
+[%artemis%] is that something.
 [% END %]
 
-[% PROCESS section label="The technology behind Demeter" %]
+[% PROCESS section label="The technology behind Artemis" %]
 
 [% FILTER html_para %]
 [% demeter %] uses [% INCLUDE html/link
 link="http://perl.org" text="perl" %].  This is, I suppose, an unsexy
 choice these days.  All the cool kids are, after all, using python or
 ruby.  I like perl.  I can think in perl.  And I can code quickly and
-fluently in perl.  What's more, perl has [% INCLUDE html/link
+fluently in perl.  What's [%# ' %] more, perl has [% INCLUDE html/link
 link="http://www.cpan.org/" text="CPAN" %], the worlds largest
 repository of language extensions.  CPAN means that I have far fewer
 wheels to recreate (and probably get wrong).  Virtually any language
 extension I need in pursuit of making [% demeter %] awesome probably
 already exists.
+[% END %]
 
-[%# ' %]
 
 
+[% PROCESS subsection label="Wx" %]
+
+[% PROCESS subsection label="Moose" %]
+
+[% FILTER html_para %]
 [% demeter %] uses [% INCLUDE html/link
 link="http://search.cpan.org/~flora/Moose/lib/Moose/Manual.pod" text="Moose" %].  This is,
 on the balance, a very good thing, indeed.  Moose brings many powerful
@@ -63,7 +72,16 @@ quick-n-dirty or one-off application, that may a bit annoying.  The
 Moose folk claim to be working on start-up issues.  I am keeping my
 fingers crossed.  Until then, I live with the slow start-up, confident
 that the rest of [% demeter %] is worth the wait.
+[% END %]
 
-I will, on occassion in this document, point the reader to web sites
-where more of the programming details can be found.
+[% PROCESS subsection label="Templates and backends" %]
+
+[% FILTER html_para %]
+[%ifeffit%], upgradable to [%ifeffit2%].  Twp plotting backends, can
+use more.
+
+Also uses PDL
+
+Can use anything for which a programming backend is available and
+which uses text-based instruction.
 [% END %]

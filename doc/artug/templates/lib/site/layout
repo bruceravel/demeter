@@ -8,7 +8,7 @@
 
 
 <div class=sidebar>
-  <a href="[% dots %]/ceres.html"><img src=[% dots %]/../images/artemis_icon.jpg
+  <a href="[% dots %]/diana.html"><img src=[% dots %]/../images/artemis_icon.png
     width=100% border=0 alt='[Demeter logo]'></a>
   <br />
   [% INCLUDE menu/nest menu = site.map %]
