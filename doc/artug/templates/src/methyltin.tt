@@ -1,0 +1,8 @@
+[% META title = 'Example 2: Mythyltin'
+	chapter = 1
+	nosubpages = 1 
+%]
+
+[% FILTER html_para -%]
+Methyltin....
+[% END %]

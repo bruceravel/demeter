@@ -1,0 +1,8 @@
+[% META title = 'Managing prefences'
+	chapter = 1
+	nosubpages = 1 
+%]
+
+[% FILTER html_para -%]
+Prefs....
+[% END %]

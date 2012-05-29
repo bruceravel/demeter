@@ -12,7 +12,13 @@
 		'feff',
 		'path',
 		'gds',
+		'fit',
 		'logjournal',
+		'history',
+		'monitor',
+		'prefs',
+		'fes2',
+		'methyltin',
 	      ]
        page = {
 	    index   = { name = 'Home' }
@@ -27,7 +33,7 @@
 		    }
 	    data   = { name = 'The Data window'}
 	    feff   = {
-	     	    name = 'The Atoms and Feff window'
+	     	    name = 'The Atoms/Feff window'
 		    menu = [ 'feff', 'paths', 'pathlike', 'console' ]
 		    page = {
 			   feff     = { name = 'The Feff tab' }
@@ -45,7 +51,13 @@
                            }
                     }
 	    gds    = { name = 'The GDS window'}
-	    logjournal   = { name = 'The Log and Journal windows'}
+	    fit    = { name = 'Running a fit'}
+	    logjournal = { name = 'The Log & Journal windows'}
+	    history = { name = 'The History window'}
+	    monitor = { name = 'Monitoring things'}
+	    prefs   = { name = 'Managing preferences'}
+	    fes2    = { name = 'Example 1: FeS2'}
+	    methyltin = { name = 'Example 2: Methyltin'}
           }
       };
     # save map in site

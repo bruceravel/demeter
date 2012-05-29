@@ -1,0 +1,58 @@
+[% META title = 'Monitoring things'	chapter = 1 	nosubpages = 1  %]
+
+[% FILTER html_para -%]
+[%artemis%] provides a number of tools for keeping track of things
+going on behind the scenes.  These tools are found either in the
+Monitor menu on the Main window or the Debug manu on the Data window.
+
+In the normal course of operations, consulting the monitoring tools
+should not be necessary.  But if something is not working quite right,
+they can be invaluable for diagnosing the problem.
+[% END %]
+
+[%# ################################################################ %]
+[% PROCESS section label="Command and status buffers" %]
+
+[% PROCESS subsection label="The Command buffer" %]
+
+[% WRAPPER scriptcaption this="command_buffer.png" %]
+The command buffer window contains a record of every data processing
+and fitting command sent to [%ifeffit%].  At the bottom of this window
+is the plotting buffer, which contains every command sent to the
+plotting backend (usually Gnuplot).
+
+These are very useful both for diagnosing problems and for learning
+the details of how [%ifeffit%] and Gnuplot work.
+[% END %]
+
+[% PROCESS subsection label="The Status buffer" %]
+
+[% WRAPPER scriptcaption this="status_buffer.png" %]
+Every message sent to any of the status bars in [%artemis%] is
+time-stamped and logged in the status buffer.  This provides a sort of
+record of the major actions taken during your current [%artemis%]
+session. 
+[% END %]
+
+[%# ################################################################ %]
+[% PROCESS section label="Interacting with Ifeffit" %]
+
+[% WRAPPER scriptcaption this="show_arrays.png" %]
+One of the submenus in the Monitor menu on the Main window allows you
+to examine [%ifeffit%] data structures.  The results of these
+examination commands are displayed in the command buffer.  In this
+example, all arrays currently defined in [%ifeffit%] have been shown.
+
+Options exist for showing specific [%ifeffit%] data group, all arrays,
+all scalars, all strings, all paths, or all [%feff%] paths.  The last
+one is simply a listing all [% INCLUDE font/file a="feffNNNN.dat" %]
+files imported into [%ifeffit%].
+
+You can also inquire about how much of [%ifeffit%]'s [%#'%] statically
+allocated memory is in use and whether you are in danger of exceeding
+capacity.  This information is displayed in the Main window status
+bar.  
+[% END %]
+
+[%# ################################################################ %]
+[% PROCESS section label="Debugging Demeter" %]
