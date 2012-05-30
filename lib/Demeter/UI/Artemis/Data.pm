@@ -1866,7 +1866,8 @@ sub discard {
 
     ($how eq 'feff') and do {
       foreach my $i (@count) {
-	if ($self->{pathlist}->GetPage($i)->{path}->parent eq $mode) {
+	if (exists($self->{pathlist}->GetPage($i)->{path}) and # Path pages may not yet exist ...
+	    ($self->{pathlist}->GetPage($i)->{path}->parent eq $mode)) {
 	  $self->{pathlist}->DeletePage($i);
 	  ($sel = 0) if ($sel = $i);
 	};

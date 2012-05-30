@@ -206,6 +206,17 @@ pre {
   font: bold 0.8em serif;
   color: #8c4112;
 }
+.premise {
+  font: bold 1.2em serif;
+  color: #4F0C80;
+  border-top: solid 3px #4F0C80;
+  border-left: solid 20px #4F0C80;
+  border-bottom: solid 3px #4F0C80;
+  border-right: solid 3px #4F0C80;
+  padding: 8px;
+  margin-left: 4%;
+  margin-right: 30%;
+}
 .smallcap {
   font-varient: small-caps;
   font-size: 0.9em;

@@ -1,0 +1,5 @@
+[% META title = 'Using path-like objects' %]
+
+[% FILTER html_para -%]
+Blah 
+[% END %]

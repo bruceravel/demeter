@@ -51,7 +51,15 @@
                            }
                     }
 	    gds    = { name = 'The GDS window'}
-	    fit    = { name = 'Running a fit'}
+	    fit    = { 
+	    	    name = 'Running a fit'
+		    menu = ['sanity', 'happiness', 'pathlike']
+		    page = {
+		    	   sanity = { name = 'Sanity checking your model' }
+			   happiness = { name = 'The happiness parameter' }
+			   pathlike = { name = 'Using path-like objects' }
+			   }
+		    }
 	    logjournal = { name = 'The Log & Journal windows'}
 	    history = { name = 'The History window'}
 	    monitor = { name = 'Monitoring things'}

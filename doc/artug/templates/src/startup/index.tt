@@ -36,15 +36,15 @@ Everything will certainly look a little different on your computer.
 This and all other screenshots in this document were taken on one an
 Ubuntu Linux computer running KDE with custom window decorations.
 Although the details of the appearance may differ, all functionality
-is the same on all platforms.  (Also, you may not have a insect as the
-background image.  Your loss.)
+is the same on all platforms.  (Also, you may not have a cool insect
+as the background image.  Your loss.)
 
 The window across the top of your screen is the 
-[% INCLUDE font/quote a="main window" %].  It provides an overview of
+[% INCLUDE font/quote a="Main window" %].  It provides an overview of
 the state of the program and of your fitting project.  The window
 along the left side of the screen is the 
-[% INCLUDE font/quote a="plot window" %].  It is used to control how
-plots of your data, fits, paths, and other things are displayed.
+[% INCLUDE font/quote a="Plot window" %].  It is used to control how
+certain plots of your data, fits, paths, and other things are displayed.
 
 The plot window can be hidden by clicking the 
 [% INCLUDE font/quote a="Plot" %] button on the left side of the main

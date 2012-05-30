@@ -1,0 +1,5 @@
+[% META title = 'The heuristic sanity parameter' %]
+
+[% FILTER html_para -%]
+Blah 
+[% END %]

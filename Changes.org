@@ -22,6 +22,8 @@
    - Save initial guesses of GDS parameters to a project and restore
      them
    - Fit description updated (crudely) when data are replaced
+   - Fixed a bug when discarding a Feff calculation before any paths
+     have been assigned to a data set
 
 *** Demeter
    - Convert histogram calculations to use PDL -- much faster!
@@ -30,6 +32,7 @@
    - Improved installation.pod
    - Changed default gnuplot color #4 to yellow 4 (#808000)
    - Added window functions to Rk plot
+   - Artemis Users' Guide
 
 ** 0.9.9 20 April 2012
 *** Athena

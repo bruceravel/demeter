@@ -1,8 +1,0 @@
-[% META title = 'Running a fit'
-	chapter = 1
-	nosubpages = 1 
-%]
-
-[% FILTER html_para -%]
-Fitting....
-[% END %]
