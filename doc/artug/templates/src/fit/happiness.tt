@@ -1,5 +1,142 @@
 [% META title = 'The heuristic sanity parameter' %]
 
 [% FILTER html_para -%]
-Blah 
+[%artemis%] evaluates a variety of statustucal parameters relevant to
+the evaluation of your fit.  These include the fitting metric
+[%chisqr%], the fitting metric normalized by the degrees of freedom in
+the fit [%chinu%], an R-factor, and uncertainties on and correlatons
+between the variable parameters.
+
+In a formal sense, the most important of these parameters is
+[%chinu%], which is the statistical parameter allowing you to
+distinguish between different fitting models applied to the same data.
+Unfortunately, [%chinu%] is difficult to interpret directly.  In
+practice, the EXAFS analysis problem using [%feff%] is not a
+well-posed problem in the sense required by Gaussian statistics.  This
+is true for a variety of reasons.  In EXAFS, the signal is not ideally
+packed -- that is, the signal is not composed of pure sine waves.  In
+general, you cannot guarantee that errors in your fitting parameters
+are normally distributed.  In general, we cannot actually identify and
+enumerate all sources of measurement error, many of which are complex
+and systematic, such as sample inhomogeneity, detector non-linearity,
+and so on.  Finally, we do not know the true line shape of our signal
+-- instead we use [%feff%] to approximate the lineshape.
+
+For all those reasons, [%chinu%] is rarely -- if ever -- close to 1 as
+expected for a good fit.  Although [%chinu%] for different fitting
+models can be compared effectively, it is, generally speaking, not a
+sufficient criterion for evaluating the quality of an individual fit.
+
+Happily, this is not an insolvable problem.  After devcades of
+analyzing EXAFS data, using [%feff%], and using [%ifeffit%], we know a
+lot about what constitutes a good fit.  For instance, a good fit has a
+small R-factor, which is a measure of the percentage misfit between
+the data and theory.  We know that tings about individual parameter
+tyoes -- an [%e0%] is rarely more than 10 eV or less than -10 eV,
+[%s02%] and [%sigsqr%] should never be negative.  We know that a
+robust does not have excessive correlation between variable
+parameters. 
+
+[%artemis%] offers a heuristic tool called 
+[% INCLUDE font/quote a="happiness" %] which is an attempt to
+enumerate the knowledge and experience we bring to a fit.  After a
+fit, a heuristic parameter is evaluated and reported in the log file.
+It has no meaning other that to give you a general
+sense of how the fit came out.
+
+[% WRAPPER html/caution %]
+The word [% INCLUDE font/quote a="happiness" %] was chosen for this
+paremeter because it is a silly word in a statustics context.
+Happiness is an ad-hoc, semantic metric.  It has no basis in formal
+statistics.  It is essentially meaningless and should [% INCLUDE font/b
+a="NEVER"%] be published.
 [% END %]
+[% END %]
+
+
+[%# ################################################################ %]
+[% PROCESS section label="Evaluation of the happiness parameter" %]
+
+[% FILTER html_para -%]
+The happiness parameter begins with a value of 100, indicating
+complete happiness.  After the fit is evaluated, a series of tests are
+run against the fitting results.  Any test which hits removes points
+from the happiness.  The final evaluation is reported in the log file
+and used to color the Fit and plot buttons.
+[% END %]
+
+[% WRAPPER html/list type="dl" %]
+[% WRAPPER html/dt dt="R-factor" %]
+Assess a penalty for an R-factor that is larger than 0.02.  That is,
+any fit which has 2% or less misfit between data and theory is not
+assessed a penalty.  Above that, the penalty scales linearly in
+R-factor up to a maximum penalty of 40.
+[% END %]
+[% WRAPPER html/dt dt="Parameter values" %]
+After every path parameter for every path is evaluated, assess a
+penalty of 2 for each path parameter that fails a sanity check.  The
+sanity checks include checking that [%e0%] is not too large either
+positively or negatively, checking that neither of [%s02%] or
+[%sigsqr%] is negative, and checking that neither of [%sigsqr%] or
+[%delr%] is too large.
+[% END %]
+[% WRAPPER html/dt dt="Restraints" %]
+If any resyraints are placed upon the fit, assess a penalty for every
+restraint which evaluates to something non-zero.  The penalty scales
+linearly with the size of the evaluated restraint.
+[% END %]
+[% WRAPPER html/dt dt="Number of independent points" %]
+Assess a penalty if the number of guess parameters is larger than 2/3
+of the total number of independent points as evaluated by the Nyqust
+criterion.  Above the 2/3 threshold, the penalty scales linearly.
+[% END %]
+[% WRAPPER html/dt dt="Correlations" %]
+Assess a penalty for each correlation that exceeds a cutoff value.
+[% END %]
+[% WRAPPER html/dt dt="Penalty parameters" %]
+Assess a penalty equal to the evaluation of a penalty parameter.
+[% WRAPPER html/todo %]
+Penalty parameters have not yet been implemented.
+[% END %]
+[% END %]
+[% END %] [%# end of description list %]
+
+
+
+[%# ################################################################ %]
+[% PROCESS section label="Configuring the happiness evaluation" %]
+
+[% FILTER html_para -%]
+Note that everything above is something that Bruce made up out of
+whole cloth.  That said, every part of the happiness calculation is
+configurable.  That means that you, the user, can tune the happiness
+evaluation to report on fit quality in a way that is meaningful and
+useful for your data and your fits.
+
+The configuration parameters are spread over two configuration groups
+(see Chapter XXX).  The parameters in the Happiness group control the
+evaluation ofhe penalties.  Those in the Warning group control the
+assessment of path parameter values.
+
+For example, to tune the assessment of the penalty for an excessive
+number of guess parameters, you can change two configuration parameters.
+[% INCLUDE preference group="happiness" option="nidp_cutoff" %]
+default to 2/3 and sets the cutoff below which no penalty is
+assessed.  This parameter is interpeted as a fraction of total number
+of independent points in the fit. 
+[% INCLUDE preference group="happiness" option="nidp_scale" %]
+sets the maximum penalty to assess for using up all the independent points.
+
+The path parameter penalties can also be fine tuned.  A couple examples: the
+value above which a penalty is assessed for an excessively large
+[%e0%] is set with 
+[% INCLUDE preference group="warnings" option="e0_max" %] and the
+assessment of a penalty for a negative [%sigsqr%] can be turned off by
+toggling [%- INCLUDE preference group="warnings" option="ss2_neg" -%].
+
+Since this happiness thingis an artifical creation, it can be
+changed.  Do you have any ideas for penalty asssessments?  Let Bruce
+know!  Do you have a suggestion for how the existing penalties should
+be tuned?  Send your configuration parameter values to Bruce!
+[% END %]
+

@@ -1,12 +1,12 @@
 [% META title = 'Running a fit'   chapter = 1 %]
 
 [% FILTER html_para -%]
-[%artemis%] is, admittedly, a complex and probably non-intuitive
-program.  There are good reasons for [%artemis%] being the way it is,
-although those reasona may not be clear if you are coming to the
-program for the first time.  While it is important that easy things be
-easy in [%artemis%], letting hard things be possible is central to the
-design of the program.
+[%artemis%] is, admittedly, a complex and non-intuitive program.
+There are good reasons for [%artemis%] being the way it is, although
+those reasons may not be clear if you are coming to the program for
+the first time.  While it is important that easy things be easy in
+[%artemis%], letting hard things be possible is central to the intent
+of the program.
 
 Most of the complexity revolves around the central premise in
 [%ifeffit%] and [%artemis%]: [% INCLUDE centralpremise %]
@@ -15,17 +15,17 @@ As a consequence, we have the GDS window where the parameters of the
 fit are [% INCLUDE font/em a="defined" %] and the various Path pages
 where those parameters are [% INCLUDE font/em a="used" %].
 
-It should be instructive to understand a little bit about how the
-fitting model is structured internally.  The basic definition of a fit
+It is instructive to understand a little bit about how the fitting
+model is structured internally.  The basic definition of a fit
 consists of three things: (1) a list of one or more GDS parameters,
 (2) a list of one or more data sets, and (3) a list of one or more
 paths.  To make a fit, all three of those lists must somehow be
-defined. 
+defined.
 
 The list of data sets is taken from the Data list in the Main window.
 All data sets in the Data list which have the 
 [% INCLUDE font/quote a="Include in fit" %] button checked on will be
-used as part of the fit.
+used in the fit.
 
 Each data set has a list of one or more paths associated with it.  In
 [%artemis%] a path is associated with a data set by dragging and
@@ -49,19 +49,21 @@ a path parameter math expression must be defined on the GDS window.
 Similarly, every guess or def parameter from the GDS window must be
 used in at least one math expression in your fitting model.
 
+All paths which have their [% INCLUDE font/quote a="Include in fit" %]
+button checked on will be used in the fit.
+
 When the fit begins, [%artemis%] digs through all the windows, finding
-all data sets, paths, and GDS paramters.  It runs a lengthy series of
-sanity checks to avoid certain obvious situations which will result in
-an unsuccessful fit.  It then makes sure that all of [%ifeffit%]'s [%#'%]
+all data sets, paths, and GDS paramters.  It runs a number of sanity
+checks to avoid certain obvious situations which will result in an
+unsuccessful fit.  It then makes sure that all of [%ifeffit%]'s [%#'%]
 data structure are up to date with respect to your current settings in
-[%artemis%].   The fit is run.  Statistics, including error bars and
+[%artemis%].  The fit is run.  Statistics, including error bars and
 correlations, are calculated.  A log file is written, a plot is made,
-and the various colored buttons are set acording to the fit
-happiness.
+and the various colored buttons are set acording to the fit happiness.
 
 That's [%#'%] a fit!
 
-There are some big-picture details of the fits that are configurable
+There are some details of the fitting process that are configurable
 (see Chapter XXX).  The log file can be displayed in either the Log
 window or in the History window after the fit finishes.  You can also
 choose not to have it display automatically.

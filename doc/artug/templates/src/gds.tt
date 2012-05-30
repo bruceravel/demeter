@@ -4,11 +4,10 @@
 %]
 
 [% FILTER html_para -%]
-The big trick in [%artemis%] is that the parameters of the EXAFS
-equation are not themselves the parameters of the fit.  Rather, they
-are written in terms of the parameters of the fit.  As a consequence,
-we refer to the [% INCLUDE font/em a="math expressions" %] as the path
-parameter values.  These math expressions are functions of the actual
+
+This is the big trick in [%artemis%]: [% INCLUDE centralpremise %] As
+a consequence, path parameter values are [% INCLUDE font/em a="math
+expressions" %].  These math expressions are functions of the actual
 fitting parameters.
 
 Some of these math expressions are quite simple.  For example, in the

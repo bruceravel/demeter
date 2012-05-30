@@ -1,5 +1,119 @@
 [% META title = 'Sanity checking your fitting model' %]
 
 [% FILTER html_para -%]
-Blah 
+[%artemis%] is complex and it is quite easy to make mistakes.  Many
+common mistakes are obvious and discoverable by automated analysis of
+the fitting model.  Before running a fit, [%artemis%] applies each of
+the following test to your fitting model.  If any of them are
+triggered, the fit is halted and a (hopefully) useful error message is
+posted in the Log window.  Think of this like [%artemis%]' [%#'%]
+spell checker!
+
+Any problems that are found must be corrected before [%artemis%] will
+allow the fit to proceed.
+[% END %]
+
+[% WRAPPER html/list type="ol" %]
+
+[% WRAPPER html/li %]
+Check that any files associated with the  data or the [%feff%]
+calculations exist.
+[% END %]
+
+[% WRAPPER html/li %]
+Check that all guess parameters are used in at least one def parameter.
+or path parameter.
+[% END %]
+
+[% WRAPPER html/li %]
+Check that no def parameter or path parameter uses an undefined parameters.
+[% END %]
+
+[% WRAPPER html/li %]
+Check that none of 
+[% INCLUDE font/quote a="++" %],
+[% INCLUDE font/quote a="--" %],
+[% INCLUDE font/quote a="//" %], or
+[% INCLUDE font/quote a="***" %] appear in a math expression.
+[% END %]
+
+[% WRAPPER html/li %]
+Check that all function names used in math expression (i.e. a word
+followed by parentheses) are valid functions in [%ifeffit%].
+[% END %]
+
+[% WRAPPER html/li %]
+Check that all GDS parameters have unique names
+[% END %]
+
+[% WRAPPER html/li %]
+Check that parens match in all math expressions.
+[% END %]
+
+[% WRAPPER html/li %]
+Check that Fourier transform and fit parameters are sensible (for
+example [%rmin%] < [%rmax%]) for all data sets.
+[% END %]
+
+[% WRAPPER html/li %]
+Check that the number of guess parameters is less than [%nidp%].
+[% END %]
+
+[% WRAPPER html/li %]
+Verify that [%rmin%] is >= [%rbkg%] for data imported from an
+[%athena%] project file.
+[% END %]
+
+[% WRAPPER html/li %]
+Verify that [%reff%] for each path is not well beyond [%rmax%].
+[% END %]
+
+[% WRAPPER html/li %]
+Check that various compiled-in limits (e.g. maximum number of paths or
+maximum number of set parameters) in [%feffit%] are not exceeded.
+[% END %]
+
+[% WRAPPER html/li %]
+Check that parameters do not have the same names as [%ifeffit%]
+program variables.  For example, things like
+[% INCLUDE font/mono a="pi" %] or [% INCLUDE font/mono a="dr1" %]
+are not allowed since [%ifeffit%] uses those strings for other purposes.
+[% END %]
+
+[% WRAPPER html/li %]
+Check that there are no unresolved merge parameetrs.
+[% END %]
+
+[% WRAPPER html/li %]
+Check that GDS math expressions do not have loops or cycles in their
+definitions.  For example, either of the following would trigger this error.
+[% WRAPPER html/pre %]
+guess x = x  # sorry to all Laurie Anderson fans....
+[% END %]
+[% WRAPPER html/pre %]
+guess a = b
+def   b = c
+def   c = a
+[% END %]
+[% END %]
+
+[% WRAPPER html/li %]
+Check for obvious cases of a data set used more than once.
+[% END %]
+
+[% WRAPPER html/li %]
+Check that each data set used in the fit has at least one  path
+assigned to it.
+[% END %]
+
+[% END %] [%# end of ordered list%]
+
+[% FILTER html_para -%]
+As a side note, item #15 is particularly interesting.  [%demeter%]
+does a simple lexical analysis on the ensemble of math expressions
+defined on the GDS winodw then uses a formal graph theory tool
+(links...) to develop a graph depiction of the parameters.  Loops
+(like the first example) and cycles (like the second) a trivially
+evident when the parameters are viewed as a formal graph.  That was a
+really fun part of [%demeter%] to write.
 [% END %]
