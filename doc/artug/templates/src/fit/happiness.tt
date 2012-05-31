@@ -1,10 +1,10 @@
 [% META title = 'The heuristic sanity parameter' %]
 
 [% FILTER html_para -%]
-[%artemis%] evaluates a variety of statustucal parameters relevant to
+[%artemis%] evaluates a variety of statistical parameters relevant to
 the evaluation of your fit.  These include the fitting metric
 [%chisqr%], the fitting metric normalized by the degrees of freedom in
-the fit [%chinu%], an R-factor, and uncertainties on and correlatons
+the fit [%chinu%], an R-factor, and uncertainties on and correlations
 between the variable parameters.
 
 In a formal sense, the most important of these parameters is
@@ -27,15 +27,15 @@ expected for a good fit.  Although [%chinu%] for different fitting
 models can be compared effectively, it is, generally speaking, not a
 sufficient criterion for evaluating the quality of an individual fit.
 
-Happily, this is not an insolvable problem.  After devcades of
+Happily, this is not an insolvable problem.  After decades of
 analyzing EXAFS data, using [%feff%], and using [%ifeffit%], we know a
 lot about what constitutes a good fit.  For instance, a good fit has a
 small R-factor, which is a measure of the percentage misfit between
-the data and theory.  We know that tings about individual parameter
-tyoes -- an [%e0%] is rarely more than 10 eV or less than -10 eV,
-[%s02%] and [%sigsqr%] should never be negative.  We know that a
-robust does not have excessive correlation between variable
-parameters. 
+the data and theory.  We know things about individual parameter types,
+e.g. that an [%e0%] is rarely more than 10 eV or less than -10 eV,
+that [%s02%] and [%sigsqr%] should never be negative.  We know that a
+robust fit does not have excessive correlation between variable
+parameters.
 
 [%artemis%] offers a heuristic tool called 
 [% INCLUDE font/quote a="happiness" %] which is an attempt to
@@ -46,7 +46,7 @@ sense of how the fit came out.
 
 [% WRAPPER html/caution %]
 The word [% INCLUDE font/quote a="happiness" %] was chosen for this
-paremeter because it is a silly word in a statustics context.
+parameter because it is a silly word in a statistics context.
 Happiness is an ad-hoc, semantic metric.  It has no basis in formal
 statistics.  It is essentially meaningless and should [% INCLUDE font/b
 a="NEVER"%] be published.
@@ -81,13 +81,13 @@ positively or negatively, checking that neither of [%s02%] or
 [%delr%] is too large.
 [% END %]
 [% WRAPPER html/dt dt="Restraints" %]
-If any resyraints are placed upon the fit, assess a penalty for every
+If any restraints are placed upon the fit, assess a penalty for every
 restraint which evaluates to something non-zero.  The penalty scales
 linearly with the size of the evaluated restraint.
 [% END %]
 [% WRAPPER html/dt dt="Number of independent points" %]
 Assess a penalty if the number of guess parameters is larger than 2/3
-of the total number of independent points as evaluated by the Nyqust
+of the total number of independent points as evaluated by the Nyquist
 criterion.  Above the 2/3 threshold, the penalty scales linearly.
 [% END %]
 [% WRAPPER html/dt dt="Correlations" %]
@@ -115,14 +115,14 @@ useful for your data and your fits.
 
 The configuration parameters are spread over two configuration groups
 (see Chapter XXX).  The parameters in the Happiness group control the
-evaluation ofhe penalties.  Those in the Warning group control the
+evaluation of the penalties.  Those in the Warning group control the
 assessment of path parameter values.
 
 For example, to tune the assessment of the penalty for an excessive
 number of guess parameters, you can change two configuration parameters.
 [% INCLUDE preference group="happiness" option="nidp_cutoff" %]
 default to 2/3 and sets the cutoff below which no penalty is
-assessed.  This parameter is interpeted as a fraction of total number
+assessed.  This parameter is interpreted as a fraction of total number
 of independent points in the fit. 
 [% INCLUDE preference group="happiness" option="nidp_scale" %]
 sets the maximum penalty to assess for using up all the independent points.
@@ -134,8 +134,8 @@ value above which a penalty is assessed for an excessively large
 assessment of a penalty for a negative [%sigsqr%] can be turned off by
 toggling [%- INCLUDE preference group="warnings" option="ss2_neg" -%].
 
-Since this happiness thingis an artifical creation, it can be
-changed.  Do you have any ideas for penalty asssessments?  Let Bruce
+Since this happiness thing is an artificial creation, it can be
+changed.  Do you have any ideas for penalty assessments?  Let Bruce
 know!  Do you have a suggestion for how the existing penalties should
 be tuned?  Send your configuration parameter values to Bruce!
 [% END %]

@@ -49,68 +49,68 @@ in the grid to give you a visual indication of each parameter's [%#'%]
 type. 
 [% WRAPPER html/list type="dl" %]
 [% WRAPPER html/dt dt="guess" %]
-(purple) This is a parameter of the fit.  Its value will be adjusted to find
-the best fit of the model to your data.
+(purple) This is a parameter of the fit.  Its value will be adjusted
+to find the best fit of the model to your data.
 [% END %]
 [% WRAPPER html/dt dt="def" %]
-(green) This is a parameter that is defined as a math expression dependent
-upon other guess, def, or set parameters.  Its value is updated
-throughout the fit.  As discussed below, sophisticated use of def
-parameters is key to successful model building and effective use of
-[%artemis%]. 
+(green) This is a parameter that is defined as a math expression
+dependent upon other guess, def, or set parameters.  Its value is
+updated throughout the fit.  As discussed below, sophisticated use of
+def parameters is key to successful model building and effective use
+of [%artemis%]. 
 [% END %]
 [% WRAPPER html/dt dt="set" %]
-(black) A set parameter is one that is evaluated at the begining of the fit,
-but not evaluated subsequently.  Although a set parameter can take a
-math expression as its value, it is more typically used to represent a
-constant value used elsewhere in the fitting model.
+(black) A set parameter is one that is evaluated at the beginning of
+the fit, but not evaluated subsequently.  Although a set parameter can
+take a math expression as its value, it is more typically used to
+represent a constant value used elsewhere in the fitting model.
 [% END %]
 [% WRAPPER html/dt dt="lguess" %]
-(dark purple) An lguess parameter is tool used to simplify model creation for a
-multiple data set fit.  It can be used in math expressions for two or
-more data sets.  When the fit started, an actual guess parameter will
-be created for each data set in which the lguess is used.  As an
-example, suppose your multiple data set fit includes data on a series
-of binary alloys.  If [% INCLUDE font/mono a="x" %] is a mixing
-parameter between the two alloys and is different for each sample, you
-might then use math expressions containing [% INCLUDE font/mono a="x" %]
-and [% INCLUDE font/mono a="(1-x)" %] for [%s02%] parameters of paths
-representing the two metallic species in each fit.  With 
-[% INCLUDE font/mono a="x" %] an lguess parameter, independent mixing
-parameters will be floated for each data set.  The point, then, of an
-lguess is to facilitate the chore of editing path parameter math
-expressions using [%artemis%]' [%#'%] tools for pushing path parameter
-values across paths.
+(dark purple) An lguess parameter is tool used to simplify model
+creation for a multiple data set fit.  It can be used in math
+expressions for two or more data sets.  When the fit started, an
+actual guess parameter will be created for each data set in which the
+lguess is used.  As an example, suppose your multiple data set fit
+includes data on a series of binary alloys.  If [% INCLUDE font/mono
+a="x" %] is a mixing parameter between the two alloys and is different
+for each sample, you might then use math expressions containing [%
+INCLUDE font/mono a="x" %] and [% INCLUDE font/mono a="(1-x)" %] for
+[%s02%] parameters of paths representing the two metallic species in
+each fit.  With  [% INCLUDE font/mono a="x" %] an lguess parameter,
+independent mixing parameters will be floated for each data set.  The
+point, then, of an lguess is to facilitate the chore of editing path
+parameter math expressions using [%artemis%]' [%#'%] tools for pushing
+path parameter values across paths.
 [% END %]
 [% WRAPPER html/dt dt="skip" %]
-(grey) A skip parameter is one that is not used in any capacity in the fit,
-but which you do not want to discard from your fitting project.
+(gray) A skip parameter is one that is not used in any capacity in the
+fit, but which you do not want to discard from your fitting project.
 [% END %]
 [% WRAPPER html/dt dt="restrain" %]
-(dark yellow) A restraint is a math expression that is evaluated and added in
-quadrature to [%chisqr%] to evaluate the fit.  That is, the fit is
-optimized in the presence of the restraint.  The point of this is to
-add prior knowledge to a fit.  Restraints will be discussed in more
-detail later in this document.
+(dark yellow) A restraint is a math expression that is evaluated and
+added in quadrature to [%chisqr%] to evaluate the fit.  That is, the
+fit is optimized in the presence of the restraint.  The point of this
+is to add prior knowledge to a fit.  Restraints will be discussed in
+more detail later in this document.
 [% END %]
 [% WRAPPER html/dt dt="after" %]
-(blue) An after parameter is very similar to a def paremetr in that it takes
-a mathe expression that depends on other parameters.  It is not,
-however, used in any way in the fit.  Instead, it is evaluated at the
-end of the fit and reported to the log file.  This is used to make
+(blue) An after parameter is very similar to a def parameter in that
+it takes a math expression that depends on other parameters.  It is
+not, however, used in any way in the fit.  Instead, it is evaluated at
+the end of the fit and reported to the log file.  This is used to make
 interesting calculations based on other parameters as part of the
 record of the fit.
 [% END %]
 [% WRAPPER html/dt dt="penalty" %]
-(brown) This takes a math expression representing a user defined penalty to
-the happiness calculation.  This feature has not yet been implemented
-in [%artemis%].
+(brown) This takes a math expression representing a user defined
+penalty to the happiness calculation.  This feature has not yet been
+implemented in [%artemis%].
 [% END %]
 [% WRAPPER html/dt dt="merge" %]
-(white on red) A merge parameter is a parameter which has been multiply defined under
-the same name as part of combining fitting projects or importing
-structural units.  A fit cannot proceed with any parameters in this
-state.  This feature has not yet been implemented
+(white on red) A merge parameter is a parameter which has been
+multiply defined under the same name as part of combining fitting
+projects or importing structural units.  A fit cannot proceed with any
+parameters in this state.  This feature has not yet been implemented
 in [%artemis%].
 [% END %]
 [% END %] [%# end of description list %]
@@ -126,7 +126,7 @@ in [%artemis%].
 The stack of buttons on the right side of the GDS window contains many
 of the main functions of the GDS window.  The 
 [% INCLUDE font/quote a="Use best fit" %] button makes the most recent
-best fit value into the intial guess for every guess parameter in the
+best fit value into the initial guess for every guess parameter in the
 grid.  The [% INCLUDE font/quote a="Reset all" %] button tells
 [%ifeffit%] to reset all parameters to their initial values.  The 
 [% INCLUDE font/quote a="Highlight" %] button prompts you for a
@@ -182,7 +182,7 @@ shortcuts to change the parameter type of that set of parameters.
 [% WRAPPER scriptcaption this="gds.menu.png" %]
 Clicking on a line in the grid selects the entire line.  Control
 clicking of a line adds that line to the selection.  Shift clicking
-adds all lnes between the selected and clicked upon lines.
+adds all lines between the selected and clicked upon lines.
 
 Right clicking on any line in the grid, including the label containing
 the line number, will post the menu shown on the right.  The top three
@@ -195,7 +195,7 @@ button by adding blank rows to the middle of the grid.  The
 [% INCLUDE font/quote a="Change selected" %] sub-menu is yet another way
 of changing the parameter type of the selected lines of the grid.
 The [% INCLUDE font/quote a="Grab best fit" %] option makes the most
-recent best fit of the parmeters in the selected lines into their
+recent best fit of the parameters in the selected lines into their
 initial guesses.
 
 The [% INCLUDE font/quote a="Build restraint" %] option posts a dialog

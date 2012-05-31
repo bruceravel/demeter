@@ -38,7 +38,7 @@
 [% MACRO chir_im BLOCK -%] Im[&chi;(R)]   [%- END -%]
 [% MACRO chiq    BLOCK -%] &chi;(q)   [%- END -%]
 [% MACRO chisqr  BLOCK -%] &chi;&sup2; [%- END -%]
-[% MACRO chinu   BLOCK -%] &chi;&sup2<sub>&nu;</sub>; [%- END -%]
+[% MACRO chinu   BLOCK -%] &chi;&sup2<sub>&nu;</sub> [%- END -%]
 [% MACRO fp      BLOCK -%] [% PROCESS font/mono a="f'(E)" | trim %] [%- END -%]
 [% MACRO fpp     BLOCK -%] [% PROCESS font/mono a='f"(E)' | trim %] [%- END -%]
 [% MACRO s02     BLOCK -%] S&sup2;&#8320; [%- END -%]

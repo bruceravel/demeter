@@ -1,5 +1,48 @@
 [% META title = 'Using path-like objects' %]
 
 [% FILTER html_para -%]
-Blah 
+Another of the new features in the version of [%artemis%] is the
+ability to make interesting things that are constructed from tools
+that [%feff%] provides, but which are not paths in the traditional
+sense of being strictly associated with one of the 
+[% INCLUDE font/file a="feffNNNN.dat" %] files that comes from a
+normal execution of [%feff%].
+
+Some of these path-like objects are directly associated with a
+particular [%feff%] calculation.  For example, an SSPath created on
+the Path-like tab on  the [%feff%] window is created directly from the
+scattering potentials from that [%feff%] calculation.  Similarly, a
+histogram-based path-like object also uses a particular [%feff%]
+calculation. 
+
+Other path-like objects either have a hidden relationship with a
+[%feff%] calculation or none at all.  The path from a quick first
+shell theory calculation does have a [%feff%] calculation associated
+with it, but it is done in a way that the user never interacts with
+that calculation.  The quick first shell path does not have an entry
+in the [%feff%] list on the Main window.  An empirical standard, as
+the name implies, is derived from data and therefor is not associated
+with any [%feff%] calculation.
+
+Although each of these path-like objects derives from a different
+place than a typical path, [%artemis%] presents them to the user
+identically.  Each kind of path-like object is displayed using all the
+same controls as a normal path and each is parametered and used in a
+fit in the same way.
 [% END %]
+
+[% WRAPPER html/list type="ul" %]
+[% WRAPPER html/li %]
+For information about SSPaths, see Chapter XXX
+[% END %]
+[% WRAPPER html/li %]
+For information about histograms, see Chapter XXX
+[% END %]
+[% WRAPPER html/li %]
+For information about the quick first shell theory, see Chapter XXX
+[% END %]
+[% WRAPPER html/li %]
+For information about empirical standards, see Chapter XXX
+[% END %]
+[% END %] [%# end of ordered list%]
+

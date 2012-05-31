@@ -158,7 +158,7 @@ fit was evaluated (assuming the fit space is R, as is the default).
 
 [% WRAPPER scriptcaption this="plot_rmr.png" %]
 The [% INCLUDE font/quote a="Rmr" %] plot is the default plot
-displayed after a fit.  It shows the magintude and real part of 
+displayed after a fit.  It shows the magnitude and real part of 
 [% chir %] using the value of k-weighting selected in the Plot window.
 The back-Fourier transform window function is drawn over the magnitude
 spectrum to indicate the range over which the fit was evaluated
@@ -224,7 +224,7 @@ R-factor, and the window.
 This will save the data along with each marked path to a column data
 file.  The columns will be the same as for the data+fit output.
 [% END %]
-[% WRAPPER html/dt dt="Othe rfitting standards" %]
+[% WRAPPER html/dt dt="Other fitting standards" %]
 This submenu allows you to import a variety of special path types.
 These will be explained later in the document.
 [% END %]
@@ -235,7 +235,7 @@ them all use their degeneracies from their respective [%feff%]
 calculations.
 [% END %]
 [% WRAPPER html/dt dt="Export parameters" %]
-In a multiple data set fit, this allows you to constrain ther data sets
+In a multiple data set fit, this allows you to constrain the data sets
 to have the same choice of Fourier transform parameters.
 [% END %]
 [% WRAPPER html/dt dt="Set kmax" %]
@@ -286,7 +286,7 @@ original degeneracy.
 [%# [% WRAPPER scriptcaption this="addparam.png"  END %]
 Post a dialog which is used to add a path parameter math expression to
 multiple paths associated with this or other data sets.  This is a
-convenience allowing you to edit the path paremetsr for many paths at
+convenience allowing you to edit the path parameters for many paths at
 the same time.
 [% END %]
 [% WRAPPER html/dt dt="Export path parameters" %]
@@ -301,12 +301,12 @@ This is a convenience function for setting up a simple, one-shell
 fit.  Selecting this menu item will create 4 parameters in the GDS
 window and use those four parameters as the math expressions for
 [%s02%], [%e0%], [%delr%], and [%sigsqr%] for each path assigned to
-this data set.  This is itended only for a one-path, one-shell fit.
+this data set.  This is intended only for a one-path, one-shell fit.
 While it may be tempting to expect broader utility out of this
 function -- don't do so. [%#'%]
 [% END %]
 [% WRAPPER html/dt dt="Discard" %]
-Discard the dislayed path, removing it from the path list.
+Discard the displayed path, removing it from the path list.
 [% END %]
 [% END %] [%# end of description list %]
 [% END %] [%# end of caption %]
@@ -323,19 +323,19 @@ of [%artemis%].
 
 Marking via these functions is cumulative.  That is, most of them only
 add to the set of marked paths.   Choosing to mark, say, all single
-scattering paths wiil not unmark any multiple scattering paths.
+scattering paths will not unmark any multiple scattering paths.
 
 Several of these functions will post a dialog for receiving input.
 Marking by regular expression (regex) will prompt for a perl-style
 regular expression to match against the labels in the path list.
-Marking bath greater than or less than an R value will promnpt for
+Marking bath greater than or less than an R value will prompt for
 that R value.
 
 Marking before or after the current path will mark those above or
 below the displayed path in the path list.  Included and excluded
 refers to whether a path is selected as being included in a fit.
 Importance refers to the heuristic importance of the path, which is
-represented by the green (high), yellow (medium), or grey (low) color
+represented by the green (high), yellow (medium), or gray (low) color
 of the label at the top of the path page.
 [% END %]
 
@@ -356,7 +356,7 @@ be discarded from your fitting project and removed from the path list.
 The final two items are about controlling what gets transferred into the
 plotting list after a fit.  The next to last item causes all marked
 paths to be transferred.  The last item removes all paths from the list
-of things transfered
+of things transferred
 [% END %]
 
 [% PROCESS subsection label="The Debug menu" %]
@@ -364,6 +364,6 @@ of things transfered
 [% WRAPPER scriptcaption this="data.debugmenu.png" %]
 This menu displays various dialog boxes showing aspects of the current
 state if [%ifeffit%] or [%artemis%].  These are mostly used for
-degugging purposes.
+debugging purposes.
 [% END %]
 
