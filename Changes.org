@@ -8,6 +8,8 @@
 ** 0.9.10 ?? May 2012
 *** Athena
    - Improved X23A2 and HXMA plugins
+   - Add a select range button to column selection dialog to help
+     process data with a large number of columns (e.g. NSLS X3b)
 
 *** Artemis
    - Display a useful error message when the phase.bin file is not
@@ -33,6 +35,8 @@
    - Changed default gnuplot color #4 to yellow 4 (#808000)
    - Added window functions to Rk plot
    - Artemis Users' Guide
+   - Prefer the Co K edge to the Re L3 edge when finding the edge (is
+     that the right choice?)
 
 ** 0.9.9 20 April 2012
 *** Athena

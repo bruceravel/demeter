@@ -52,14 +52,15 @@ sub new {
 
 
   my $select = Wx::BoxSizer->new( wxHORIZONTAL );
-  $this->{selectall} = Wx::Button->new($leftpane, -1, 'Select all', wxDefaultPosition, wxDefaultSize, wxBU_EXACTFIT);
-  $select -> Add($this->{selectall}, 1, wxGROW|wxLEFT|wxRIGHT, 2);
+  $this->{selectrange} = Wx::Button->new($leftpane, -1, 'Select range', wxDefaultPosition, wxDefaultSize, wxBU_EXACTFIT);
+  #$this->{selectrange}->SetToolTip("hello");
+  $select -> Add($this->{selectrange}, 1, wxGROW|wxLEFT|wxRIGHT, 2);
   $this->{deselect}  = Wx::Button->new($leftpane, -1, 'Clear numerator', wxDefaultPosition, wxDefaultSize, wxBU_EXACTFIT);
   $select -> Add($this->{deselect},  1, wxGROW|wxLEFT|wxRIGHT, 2);
   $this->{pauseplot} = Wx::ToggleButton->new($leftpane, -1, 'Pause plotting', wxDefaultPosition, wxDefaultSize, wxBU_EXACTFIT);
   $select -> Add($this->{pauseplot},  1, wxGROW|wxLEFT|wxRIGHT, 2);
   $left->Add($select, 0, wxGROW|wxALL, 0);
-  EVT_BUTTON($this, $this->{selectall}, sub{selectall(@_, $this, $data)});
+  EVT_BUTTON($this, $this->{selectrange}, sub{selectrange(@_, $this, $data)});
   EVT_BUTTON($this, $this->{deselect},  sub{deselect (@_, $this, $data)});
 
 
@@ -390,18 +391,50 @@ sub OnUnits {
   #my @energy_widgets = @{$this->{energy_widgets}};
   #my @numer_widgets  = @{$this->{numer_widgets}};
   #my @denom_widgets  = @{$this->{denom_widgets}};
-sub selectall {
+
+sub selectrange {
   my ($parent, $event, $this, $data) = @_;
+
+  ## take care not to have the TextEntryDialog hidden beneath the column selection dialog
+  my $place_x = $parent->GetScreenPosition->x - 300;
+  my $place_y = $parent->GetScreenPosition->y - 80;
+  $place_x = 0 if $place_x < 0;
+  $place_y = 0 if $place_y < 0;
+  my $ted = Wx::TextEntryDialog->new( $::app->{main},
+				      "Select a range of columns (e.g. 8-20 or 7,9,12-15)",
+				      "Select a range of columns", q{}, wxOK|wxCANCEL,
+				      Wx::Point->new($place_x, $place_y));
+  my $st = $ted->ShowModal;
+  $ted -> Raise;
+  if ($st == wxID_CANCEL) {
+    $ted->Destroy;
+    $::app->{main}->status("Column range selection canceled");
+    return;
+  };
+  my $range = $ted->GetValue;
+  $ted->Destroy;
+  $range =~ s{\s}{}g;
+  my @cols = ();
+  foreach my $c (split(m{,}, $range)) {
+    if ($c =~ m{(\d+)\-(\d+)}) {
+      my ($i,$j) = sort {$a <=> $b} ($1, $2);
+      push @cols, ($i .. $j);
+    } else {
+      push @cols, $c;
+    };
+  };
+
+  return if not @cols;
   my $string = q{};
-  foreach my $i (0..$#{$this->{numer_widgets}}) {
+  foreach my $i (@cols) {
+    next if ($i !~ m{\A\d+\z});
     next if $this->{energy_widgets}->[$i]->GetValue;
-    next if $this->{denom_widgets}->[$i]->GetValue;
-    $this->{numer_widgets}->[$i]->SetValue(1);
-    my $count = $i+1;
-    $string .= '$'.$count.'+';
+    $this->{numer_widgets}->[$i-1]->SetValue(1);
+    #my $count = $i+1;
+    $string .= '$'.$i.'+';
   };
   $string =~ s{\+\z}{};
-  $this->{each}->Enable(1);
+  $this->{each}->Enable(1) if $#cols > 0;
   ($data->datatype ne 'chi') ? $data -> numerator($string) : $data -> chi_column($string);
   $this -> display_plot($data);
 };
