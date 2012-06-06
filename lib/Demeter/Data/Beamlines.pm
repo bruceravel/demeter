@@ -40,7 +40,7 @@ sub is_xdac {
   ## this IS an XDAC file
   if ($first =~ m{XDAC V(\d+)\.(\d+)}) {
     if (exists $INC{'Xray/XDI.pm'}) {
-      my $ver = (defined $Xray::XDI::VERSION) ? $Xray::XDI::VERSION : '0';
+      my $ver = (defined $Xray::XDI::VERSION) ? $Xray::XDI::VERSION->normal : '0';
       $self->xdi_version($ver);
     } else {
       $self->xdi_version('-1');
