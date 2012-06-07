@@ -696,8 +696,8 @@ sub cut {
     my $name = (defined $g) ? $g->name : q{};
     foreach my $r (0 .. $parent->{grid}->GetNumberRows-1) {
       next if ($name ne $grid->GetCellValue($r, 1));
-      $grid->DeleteRows($r,1,1);
       $grid->{$g->name}->dispose("erase ".$grid->{$name}->name);
+      $grid->DeleteRows($r,1,1);
       $grid->{$g->name}->DEMOLISH;
     };
   };

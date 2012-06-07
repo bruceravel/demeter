@@ -39,7 +39,7 @@ sub new {
   my $width  = 100;
   my $self   = $ref->SUPER::new( undef,           # parent window
 				 -1,              # ID -1 means any
-				 'Atoms',         # title
+				 ($component) ? 'Atoms' : 'Stand-alone Atoms',         # title
 				 wxDefaultPosition,
 				 [560,650],
 			       );
