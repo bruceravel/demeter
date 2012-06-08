@@ -29,6 +29,8 @@
    - Fixed a bug when discarding a Feff calculation before any paths
      have been assigned to a data set
    - Fixed (I think) a crashy bug when removing GDS parameters
+   - Fixed a bug involving the import of data from a prj file when
+     that group uses a background removal standard
 
 *** Atoms
    - Disable path DnD for stand-along Atoms

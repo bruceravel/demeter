@@ -93,6 +93,21 @@ sub _prj {
   };
 
   my $data = $prj->record($record);
+  my $ref;
+  my $toss = $data->bkg_stan;
+  if ($data->bkg_stan ne 'None') {
+    foreach my $i (0 .. $#{$prj->entries}) {
+      if ($prj->entries->[$i]->[1] eq $data->bkg_stan) {
+	$ref = $prj->record($i+1);
+	$data->bkg_stan($ref->group);
+      };
+    };
+    ## clean up a few straggler arrays in Ifeffit and the spare Data object
+    $data->dispose("erase \@group $toss");
+    $toss = Demeter->mo->fetch('Data', $toss);
+    $toss->DESTROY;
+  };
+
   my ($dnum, $idata) = &$make_data_frame($rframes->{main}, $data);
   $data->po->start_plot;
   $data->plot('k');
