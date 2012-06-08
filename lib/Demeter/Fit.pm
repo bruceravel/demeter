@@ -1355,11 +1355,13 @@ override 'deserialize' => sub {
 
   my $structure = ($args{file}) ? $zip->contents('structure.yaml')
     : $self->slurp(File::Spec->catfile($args{folder}, 'structure.yaml'));
-  my ($r_gdsnames, $r_data, $r_paths, $r_feff) = YAML::Tiny::Load($structure);
+  my ($r_gdsnames, $r_data, $r_paths, $r_feff) = YAML::Tiny::Load($structure); # vpaths...
 
   ## -------- import the data
   my @data = ();
   foreach my $d (@$r_data) {
+    #print ">>>>>>> $d\n";
+    #Demeter->trace;
     my $yaml = ($args{file}) ? $zip->contents("$d.yaml")
       : $self->slurp(File::Spec->catfile($args{folder}, "$d.yaml"));
     my ($r_attributes, $r_x, $r_y) = YAML::Tiny::Load($yaml);
@@ -1376,6 +1378,9 @@ override 'deserialize' => sub {
       $r_attributes->{xdi_beamline} = {name=>$r_attributes->{xdi_beamline}||q{}};
     };
     my %hash = %$r_attributes;
+    next if not exists $hash{group};
+    #Demeter->trace;
+    #print '>>>>', $hash{group}, $/;
 
     my $savecv = $self->mo->datacount;
     my $this = $self->mo->fetch('Data', $hash{group}) || Demeter::Data -> new(group=>$hash{group});

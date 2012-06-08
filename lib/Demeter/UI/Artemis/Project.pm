@@ -420,6 +420,7 @@ sub read_project {
 
 sub restore_fit {
   my ($rframes, $fit, $lastfit) = @_;
+  $lastfit ||= $fit;
   my $import_problems = q{};
 
   ## -------- load up the GDS parameters
