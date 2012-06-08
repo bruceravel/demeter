@@ -73,5 +73,16 @@ It is, therefore, very quick and easy to examine the results of a
 [%feff%] calculation.  The other four buttons are used to select how
 the plot of paths is made.  The options are [%chik%], [%chir_mag%],
 [%chir_re%], and [%chir_im%].  The k-weight selected in the Plot
-winodow is used to make the plot of paths.
+window is used to make the plot of paths.
+[% END %]
+
+[% FILTER html_para -%]
+Right clicking on an entry in the paths list will open a dialog window
+with more details about the geomtery of the scattering path.  In the
+following figure, the selected path (#0012) was right-clicked on,
+opening the dialog depicted.
+[% END %]
+
+[% WRAPPER image file="feff.pathsinfo.png" %]
+Information about the geometry of a scattering path.
 [% END %]
