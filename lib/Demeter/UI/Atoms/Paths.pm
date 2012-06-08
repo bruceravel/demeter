@@ -11,7 +11,7 @@ use Wx::DND;
 use base 'Wx::Panel';
 
 use Wx::Event qw(EVT_CHOICE EVT_KEY_DOWN EVT_MENU EVT_TOOL_ENTER
-		 EVT_ENTER_WINDOW EVT_LEAVE_WINDOW
+		 EVT_ENTER_WINDOW EVT_LEAVE_WINDOW EVT_LIST_ITEM_RIGHT_CLICK
 		 EVT_LEFT_DOWN EVT_LIST_BEGIN_DRAG);
 
 my %hints = (
@@ -82,6 +82,7 @@ sub new {
   $self->{paths}->SetColumnWidth( 5,  40 );
   $self->{paths}->SetColumnWidth( 6, 180 );
 
+  EVT_LIST_ITEM_RIGHT_CLICK($self, $self->{paths}, \&OnRightClick);
   EVT_LIST_BEGIN_DRAG($self, $self->{paths}, \&OnDrag) if $parent->{component};
 
   $self->{pathsboxsizer} -> Add($self->{paths}, 1, wxEXPAND|wxALL, 0);
@@ -97,6 +98,21 @@ sub icon {
   my $icon = File::Spec->catfile($Demeter::UI::Atoms::atoms_base, 'Atoms', 'icons', "$which.png");
   return wxNullBitmap if (not -e $icon);
   return Wx::Bitmap->new($icon, wxBITMAP_TYPE_ANY)
+};
+
+sub OnRightClick {
+  my ($parent, $event) = @_;
+  my $list = $parent->{paths};
+  my @pathlist = @{ $parent->{parent}->{Feff}->{feffobject}->pathlist };
+  my $which = $event->GetIndex;
+  my $i = $list->GetItemData($which);
+  my $sp   = $pathlist[$i]; # the ScatteringPath associated with this selected item
+  my $pd = $sp->pathsdat;
+  $pd =~ s{\A\s+\d+}{};
+  $pd =~ s{index,}{};
+  my $text = "The path\n\t" . $sp->intrplist . "\nis calculated using these atom positions:\n\n" . $pd;
+  my $dialog = Demeter::UI::Artemis::ShowText->new($parent, $text, $sp->intrplist)
+    -> Show;
 };
 
 sub OnDrag {

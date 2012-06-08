@@ -714,7 +714,10 @@ sub _prj {
       #$app->{selected} = $app->{main}->{list}->GetSelection;
       $app->{main}->{Main}->mode($data, 1, 0) if ($app->{main}->{list}->GetCount == 1);
       $app->OnGroupSelect(q{}, $app->{main}->{list}->GetSelection, 0);
+      my $save = $data->bkg_stan;
+      $data->bkg_stan('None');
       Import_plot($app, $data);
+      $data->bkg_stan($save);
     };
   };
   return -1 if not $count;

@@ -10,6 +10,8 @@
    - Improved X23A2 and HXMA plugins
    - Add a select range button to column selection dialog to help
      process data with a large number of columns (e.g. NSLS X3b)
+   - Fixed a bug involving the import plot for the first item in a prj
+     file when that group uses a background removal standard
 
 *** Artemis
    - Display a useful error message when the phase.bin file is not
@@ -30,13 +32,15 @@
 
 *** Atoms
    - Disable path DnD for stand-along Atoms
+   - Added a right click action to the paths list to display details
+     of scattering geometry
 
 *** Demeter
    - Convert histogram calculations to use PDL -- much faster!
      (backends: LAMMPS, )
    - Fixed a bug building the ifeffit wrapper
    - Improved installation.pod
-   - Changed default gnuplot color #4 to yellow 4 (#808000)
+   - Changed default gnuplot color #4 to yellow4 (#808000)
    - Added window functions to Rk plot
    - Artemis Users' Guide
    - Prefer the Co K edge to the Re L3 edge when finding the edge (is
