@@ -270,8 +270,7 @@ sub _verify_fit {
   my @paths = @{ $self->paths };
   $self->add_trouble("paths"), ++$trouble_found if ($#paths == -1);
 
-  ## all these tests live in Demeter::Fit::Sanity, which is
-  ## part of the base of this module
+  ## all these tests live in Demeter::Fit::Sanity
 
   ## 1. check that all data and feffNNNN.dat files exist
   $trouble_found += $self->S_data_files_exist;
@@ -565,6 +564,7 @@ sub _gds_commands {
     next unless ($gds->gds eq lc($type));
     next if (not $gds->Use);
     $string .= $gds -> write_gds;
+    $gds->initial($gds->mathexp);
   };
   $string = "\n" . $self->hashes . " $type parameters:\n" . $string if $string;
 
@@ -1355,11 +1355,12 @@ override 'deserialize' => sub {
 
   my $structure = ($args{file}) ? $zip->contents('structure.yaml')
     : $self->slurp(File::Spec->catfile($args{folder}, 'structure.yaml'));
-  my ($r_gdsnames, $r_data, $r_paths, $r_feff) = YAML::Tiny::Load($structure);
+  my ($r_gdsnames, $r_data, $r_paths, $r_feff) = YAML::Tiny::Load($structure); # vpaths...
 
   ## -------- import the data
   my @data = ();
   foreach my $d (@$r_data) {
+    #print ">>>>>>> $d\n";
     my $yaml = ($args{file}) ? $zip->contents("$d.yaml")
       : $self->slurp(File::Spec->catfile($args{folder}, "$d.yaml"));
     my ($r_attributes, $r_x, $r_y) = YAML::Tiny::Load($yaml);
@@ -1376,6 +1377,9 @@ override 'deserialize' => sub {
       $r_attributes->{xdi_beamline} = {name=>$r_attributes->{xdi_beamline}||q{}};
     };
     my %hash = %$r_attributes;
+    next if not exists $hash{group};
+    #Demeter->trace;
+    #print '>>>>', $hash{group}, $/;
 
     my $savecv = $self->mo->datacount;
     my $this = $self->mo->fetch('Data', $hash{group}) || Demeter::Data -> new(group=>$hash{group});
@@ -1383,6 +1387,7 @@ override 'deserialize' => sub {
     $this->set(%hash);
     $this->cv($r_attributes->{cv}||0);
     $self->mo->datacount($savecv);
+    $datae{$d} = $this;
     $datae{$this->group} = $this;
     if ($this->datatype eq 'xmu') {
       Ifeffit::put_array($this->group.".energy", $r_x);
@@ -1494,12 +1499,14 @@ override 'deserialize' => sub {
 	$this->$att($hash{$att});
       };
     } else {
+      $hash{data} ||= $self->mo->fetch('Data', $hash{datagroup});
       $this = Demeter::Path->new(%hash);
-      my $sp = $sps{$this->spgroup} || $data[0] -> mo -> fetch('ScatteringPath', $this->spgroup);
+      my $sp = $sps{$this->spgroup} || $self -> mo -> fetch('ScatteringPath', $this->spgroup);
       $this -> sp($sp);
       #$this -> folder(q{});
       #print $this, "  ", $this->sp, $/;
     };
+
     $this -> datagroup($dg);
     ## reconnect object relationships
     $this -> parent($parents{$this->parentgroup}) if (ref($this) !~ m{FPath});

@@ -410,17 +410,17 @@ sub OnLabelMenu {
 
     (($id == $THISFEFF) or ($id == $THISDATA)) and do {
       my $how = ($id == $THISFEFF) ? 0 : 1;
-      $currentpage->{datapage}->add_parameters($param, $thisme, $how);
+      $currentpage->{datapage}->add_parameters($param, $thisme, $how,0);
       last SWITCH;
     };
     ($id == $MARKED) and do {
-      $currentpage->{datapage}->add_parameters($param, $thisme, 3);
+      $currentpage->{datapage}->add_parameters($param, $thisme, 3, 0);
       last SWITCH;
     };
 
     ($id == $EACHDATA) and do {
       ## from %frames keys, find data pages, loop over all {listpath} pages
-      $currentpage->{datapage}->add_parameters($param, $thisme, 2);
+      $currentpage->{datapage}->add_parameters($param, $thisme, 2, 0);
       $currentpage->{datapage}->status("Set $labels{$param} for every path in every data set." );
       last SWITCH;
     };

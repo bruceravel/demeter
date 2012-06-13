@@ -646,6 +646,8 @@ sub find_edge {
     ($elem, $edge) = ("Fe", "K")  if (($elem eq "Nd") and ($edge eq "L1"));
     ## give special treatment to the case of co oxide.
     ($elem, $edge) = ("Co", "K")  if (($elem eq "Sm") and ($edge eq "L1"));
+    ## give special treatment to the case of ni oxide.
+    ($elem, $edge) = ("Ni", "K")  if (($elem eq "Er") and ($edge eq "L3"));
     ## give special treatment to the case of mn oxide.
     ($elem, $edge) = ("Mn", "K")  if (($elem eq "Ce") and ($edge eq "L1"));
     ## prefer Bi L3 to Ir L1

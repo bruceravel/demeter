@@ -287,6 +287,10 @@ parameters.</p>
 <p>Other possible penalties:</p>
 
 <ul>
+	<li>The stated formula for computing the restraint penalty results in much
+too small of a penalty since chi_square is typically much larger than
+the restraint evaluation.  I am currently playing with just
+multiplying the restraint evaluation by the scaling factor.</li>
 	<li>Compare reff of each path to the fitting range.  Penalize paths well
 outside the range (which is probably not such a bad thing) or a range
 well beyond the longest path (which is certainly a bad thing in that

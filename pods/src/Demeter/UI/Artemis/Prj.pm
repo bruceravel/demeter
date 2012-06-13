@@ -160,7 +160,17 @@ sub do_plot {
   my @save = ($prj->po->r_pl, $prj->po->q_pl);
   $this->{record} = $record;
   my $data = $prj->record($record);
+  my $ref;
   return if not defined($data);
+  if ($data->bkg_stan ne 'None') {
+    foreach my $i (0 .. $#{$prj->entries}) {
+      if ($prj->entries->[$i]->[1] eq $data->bkg_stan) {
+	$ref = $prj->record($i+1);
+	$data->bkg_stan($ref->group);
+	$ref->_update('fft');
+      };
+    };
+  };
   $this->{journal}->SetValue(join($/, @{$data->titles}));
   $prj->po->start_plot;
   my $plotas = $this->{plotas}->GetSelection;

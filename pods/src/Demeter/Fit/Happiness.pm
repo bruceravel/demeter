@@ -148,11 +148,14 @@ sub _penalize_restraints {
   foreach my $g (@gds) {
     next if ($g->gds ne "restrain");
     my $this = $g->bestfit;
-    my $addon = ($chisqr) ? $this/$chisqr : 0;
+    #my $addon = ($chisqr) ? $this/$chisqr : 0;
+    my $addon = ($chisqr) ? $this : 0;
     $count += $addon;
     next if ($this == 0);
+    #print join("|", $scale,$this,$chisqr), $/;
     $summary .= sprintf("The restraint \"%s\" evaluated to %.3f for a penalty of %.3f.\n",
-			$g->name, $g->bestfit, $scale*$this/$chisqr);
+			$g->name, $g->bestfit, $scale*$this);
+			#$g->name, $g->bestfit, $scale*$this/$chisqr);
   };
   my $total = $scale * $count;
   return ($total, $summary);
@@ -482,6 +485,13 @@ parameters.
 Other possible penalties:
 
 =over 4
+
+=item *
+
+The stated formula for computing the restraint penalty results in much
+too small of a penalty since chi_square is typically much larger than
+the restraint evaluation.  I am currently playing with just
+multiplying the restraint evaluation by the scaling factor.
 
 =item *
 

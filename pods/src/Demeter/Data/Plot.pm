@@ -762,17 +762,25 @@ sub rkplot {
   if ((ref($self) =~ m{Data}) and ($self->datatype eq 'xanes')) {
     croak("XANES data and non Data objects are not plottable as Rk") if not $self->mo->silently_ignore_unplottable;
   };
-
   my $rpl = $self->po->r_pl;
   $self->po->r_pl('m');
 
-  $self->_update('bft');
+  $self->_update('all');
   $self->part_fft('fit');
 
   $self -> po -> start_plot;
   $self -> po -> title($self->name);
 
+  $self->dispose($self->_prep_window_command('R'));
+  $self -> co -> set(window_space => 'R',
+		     window_size  => sprintf("%.5g", Ifeffit::get_scalar("win___dow")),
+		    );
   my $string = $self->template("plot", "rkr");
+
+  $self->dispose($self->_prep_window_command('k'));
+  $self -> co -> set(window_space => 'k',
+		     window_size  => sprintf("%.5g", Ifeffit::get_scalar("win___dow")),
+		    );
   $string   .= $self->template("plot", "rkk");
   $self -> dispose($string, 'plotting');
 

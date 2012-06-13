@@ -145,6 +145,11 @@ C<libpng3>, C<libpng3-dev>
 
 C<libgif4>
 
+=item *
+
+C<libwxgtk2.8-dev> (the version number, here 2.8, might be different
+in your distribution)
+
 =back
 
 =head2 Step 2: Download a copy of Demeter

@@ -11,7 +11,7 @@ use Wx::DND;
 use base 'Wx::Panel';
 
 use Wx::Event qw(EVT_CHOICE EVT_KEY_DOWN EVT_MENU EVT_TOOL_ENTER
-		 EVT_ENTER_WINDOW EVT_LEAVE_WINDOW
+		 EVT_ENTER_WINDOW EVT_LEAVE_WINDOW EVT_LIST_ITEM_RIGHT_CLICK
 		 EVT_LEFT_DOWN EVT_LIST_BEGIN_DRAG);
 
 my %hints = (
@@ -82,7 +82,8 @@ sub new {
   $self->{paths}->SetColumnWidth( 5,  40 );
   $self->{paths}->SetColumnWidth( 6, 180 );
 
-  EVT_LIST_BEGIN_DRAG($self, $self->{paths}, \&OnDrag);
+  EVT_LIST_ITEM_RIGHT_CLICK($self, $self->{paths}, \&OnRightClick);
+  EVT_LIST_BEGIN_DRAG($self, $self->{paths}, \&OnDrag) if $parent->{component};
 
   $self->{pathsboxsizer} -> Add($self->{paths}, 1, wxEXPAND|wxALL, 0);
 
@@ -99,6 +100,21 @@ sub icon {
   return Wx::Bitmap->new($icon, wxBITMAP_TYPE_ANY)
 };
 
+sub OnRightClick {
+  my ($parent, $event) = @_;
+  my $list = $parent->{paths};
+  my @pathlist = @{ $parent->{parent}->{Feff}->{feffobject}->pathlist };
+  my $which = $event->GetIndex;
+  my $i = $list->GetItemData($which);
+  my $sp   = $pathlist[$i]; # the ScatteringPath associated with this selected item
+  my $pd = $sp->pathsdat;
+  $pd =~ s{\A\s+\d+}{};
+  $pd =~ s{index,}{};
+  my $text = "The path\n\t" . $sp->intrplist . "\nis calculated using these atom positions:\n\n" . $pd;
+  my $dialog = Demeter::UI::Artemis::ShowText->new($parent, $text, $sp->intrplist)
+    -> Show;
+};
+
 sub OnDrag {
   my ($parent, $event) = @_;
   my $list = $parent->{paths};
@@ -106,7 +122,6 @@ sub OnDrag {
   my @pathlist = @{ $parent->{parent}->{Feff}->{feffobject}->pathlist };
   my @data;
   my $item = $list->GetFirstSelected;
-print "1\n";
   while ($item ne -1) {
     push @data, $pathlist[$item]->group;
     #print $pathlist[$item]->intrpline, $/;
@@ -114,11 +129,8 @@ print "1\n";
   };
   my $source = Wx::DropSource->new( $list );
   my $dragdata = Demeter::UI::Artemis::DND::PathDrag->new(\@data);
-print "2\n";
   $source->SetData( $dragdata );
-print "3   $source  $list  ".$source->GetDataObject."\n";
   $source->DoDragDrop(1);
-print "4\n";
   #$event->Skip(1);
 };
 

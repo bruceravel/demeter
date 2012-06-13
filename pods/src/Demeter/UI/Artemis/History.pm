@@ -20,6 +20,7 @@ use warnings;
 
 use Archive::Zip qw( :ERROR_CODES :CONSTANTS );
 use Cwd;
+use DateTime;
 use File::Basename;
 use File::Copy;
 use File::Copy::Recursive qw(dircopy);
@@ -248,7 +249,6 @@ sub OnRightDown {
   return if $self->IsEmpty;
   my $position  = $self->HitTest($event->GetPosition);
   $self->SetSelection($position);
-  $self->GetParent->OnSelect;
   $self->GetParent->{_position} = $position; # need a way to remember where the click happened in methods called from OnPlotMenu
   ($position = $self->GetCount - 1) if ($position == -1);
   my $name = $self->GetString($position);
@@ -261,6 +261,7 @@ sub OnRightDown {
   $menu->Append($FIT_DISCARD_MANY, "Discard marked fits");
   $menu->AppendSeparator;
   $menu->Append($FIT_SHOW, "Show YAML for \"$name\"");
+  $self->GetParent->OnSelect;
   $self->PopupMenu($menu, $event->GetPosition);
 };
 
@@ -334,9 +335,9 @@ sub mark {
 
 sub put_log {
   my ($self, $fit) = @_;
-  my $busy = Wx::BusyCursor -> new();
+#  my $busy = Wx::BusyCursor -> new();
   Demeter::UI::Artemis::LogText -> make_text($self->{log}, $fit);
-  undef $busy;
+#  undef $busy;
 };
 
 sub set_params {
@@ -517,7 +518,6 @@ sub discard {
 
   my $orderfile = $Demeter::UI::Artemis::frames{main}->{order_file};
   my %order = YAML::Tiny::LoadFile($orderfile);
-  print %order, $/;
   foreach my $k (keys %{$order{order}}) {
     delete $order{order}->{$k} if ($order{order}->{$k} eq $str);
   };
