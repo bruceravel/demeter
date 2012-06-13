@@ -101,6 +101,19 @@ those workshops post PDF or PowerPoint files for the lectures given at
 the workshop. Go ahead and poke around L<http://xafs.org> -- many of
 your questions will be answered.
 
+In November 2011 the Diamond Light Source invited Bruce to do L<an XAS
+training
+course|http://www.diamond.ac.uk/Home/Events/Past_events/XAS-workshop-2011.html?mgnlCK=1339516257183>.
+All of the lectures were recorded as was the computer desktop duirng
+all lectures and demonstrations.  The Diamond technical staff did a
+great job editing this metrial into several hours of streaming video.
+These are excellent references for using and understanding the
+software.  (L<Here is a
+hint|http://support.mozilla.org/en-US/questions/747274> for following
+the Microsoft Media Server (mms:) links on that page if you are using
+Linux and Firefox.  Presumably, similar solutions exist for other
+browsers.)
+
 This is an good overview of XAS: Kelly, S. D., Hesterberg, D. and
 Ravel, B. (2008).  Analysis of soils and minerals using X-ray
 absorption spectroscopy.  Methods of soil analysis, Part 5

@@ -17,8 +17,6 @@
 		'history',
 		'monitor',
 		'prefs',
-		'fes2',
-		'methyltin',
 	      ]
        page = {
 	    index   = { name = 'Home' }

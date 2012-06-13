@@ -1361,7 +1361,6 @@ override 'deserialize' => sub {
   my @data = ();
   foreach my $d (@$r_data) {
     #print ">>>>>>> $d\n";
-    #Demeter->trace;
     my $yaml = ($args{file}) ? $zip->contents("$d.yaml")
       : $self->slurp(File::Spec->catfile($args{folder}, "$d.yaml"));
     my ($r_attributes, $r_x, $r_y) = YAML::Tiny::Load($yaml);
@@ -1388,6 +1387,7 @@ override 'deserialize' => sub {
     $this->set(%hash);
     $this->cv($r_attributes->{cv}||0);
     $self->mo->datacount($savecv);
+    $datae{$d} = $this;
     $datae{$this->group} = $this;
     if ($this->datatype eq 'xmu') {
       Ifeffit::put_array($this->group.".energy", $r_x);
@@ -1499,12 +1499,14 @@ override 'deserialize' => sub {
 	$this->$att($hash{$att});
       };
     } else {
+      $hash{data} ||= $self->mo->fetch('Data', $hash{datagroup});
       $this = Demeter::Path->new(%hash);
-      my $sp = $sps{$this->spgroup} || $data[0] -> mo -> fetch('ScatteringPath', $this->spgroup);
+      my $sp = $sps{$this->spgroup} || $self -> mo -> fetch('ScatteringPath', $this->spgroup);
       $this -> sp($sp);
       #$this -> folder(q{});
       #print $this, "  ", $this->sp, $/;
     };
+
     $this -> datagroup($dg);
     ## reconnect object relationships
     $this -> parent($parents{$this->parentgroup}) if (ref($this) !~ m{FPath});

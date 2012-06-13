@@ -282,7 +282,7 @@ sub _dpj {
     };
   };
   $fit->deserialize(folder=>$fitdir, regenerate=>1); #$regen);
-  my $import_problems .= Demeter::UI::Artemis::Project::restore_fit($rframes, $fit);
+  my $import_problems .= Demeter::UI::Artemis::Project::restore_fit($rframes, $fit, $fit);
   if ($import_problems) {
     Wx::MessageDialog->new($rframes->{main}, $import_problems, "Warning!", wxOK|wxICON_WARNING) -> ShowModal;
   };
