@@ -4,5 +4,111 @@
 %]
 
 [% FILTER html_para -%]
-Histttttry window....
+[%artemis%] keeps a complete history of your fitting project.  After
+each fit, your fitting model and the state of the program are saved as
+part of the fitting project.  When a project file is written, this
+history is stored in the project file.  This allows you to compare
+fits or even to revert [%artemis%] to an earlier fit.
+
+Interactions with the fit history are via the History window, which is
+shown and hidden using the History button on the left side of the Main
+window. 
 [% END %]
+
+[% WRAPPER scriptcaption this="history.log.png" %]
+Tie History window shows two major controls.  On the left is a list
+all fits performed as part of the fitting prject.  Like many other
+lists in [%artemis%], this contains elements that can be selected and
+marked.  This list uses multiple selection, so control-clicking can be
+used to add to the selection and shift-clicking can be used to select
+groups of fits.  Much of the analysis discussed below uses the
+selection.  Some functionality uses the set of marked fits.
+
+On the right is a notebook.  The first tab is for displaying the log
+files from old fits.  The log file displayed when the most recent fit
+is clicked upon is identical to the log file displayed in the Log
+window. 
+
+You may find that there is a short pause between clicking on a fit and
+seeing its log file displayed.  When importing a project file,
+[%artemis%] delays importing the fits until one is explicitly needed.
+For a large project file, this greatly speeds up import at the small
+cost of a pause when examining log files.
+[% END %]
+
+[% WRAPPER scriptcaption this="history.menu.png" %]
+Each fit in the list will display a context menu when right clicked.
+Again, there may be a short pause before the menu gets posted.  In
+that menu are a variety of functions related to the fit history.
+[% WRAPPER html/list type="ol" %]
+[% WRAPPER html/li %]
+An prior fitting model can be restored.  This will clear all of
+[%artemis%]'s [%#'%] windows and replace them with content from that
+fit. 
+[% END %]
+[% WRAPPER html/li %]
+The log file displayed can be written to a text file.
+[% END %]
+[% WRAPPER html/li %]
+The fit can be exported to an [%artemis%] project file containing only
+that fit in the fit history.
+[% END %]
+[% WRAPPER html/li %]
+The current or the set of marked fits can be discarded from the project.
+[% END %]
+[% WRAPPER html/li %]
+The last item is a tool used to help debug problems in [%artemis%].
+It displays [%artemis%]'s [%#'%]  internal representation of the fit.
+[% END %]
+[% END %] [%# end of ordered list%]
+[% END %]
+
+[% PROCESS section label="Reports on fits" %]
+
+[% FILTER html_para -%]
+The second tab is used to analyze groups of fits.  In the example
+shown above, the progression of [%chinu%] values throughout 
+the development of the fitting model is shown both as a textual report
+and as a plot.  Similar plots can be made for individual parameter
+values.
+[% END %]
+
+[% WRAPPER quadplot files=["history.report.png", "history.reportplot.png"] %]
+[% END %]
+
+[% FILTER html_para -%]
+Only the marked fits are included in the report.  If no fits are
+marked, then all fits will be marked before the report is generated.
+Simple controls for setting the marks are at the bottom of the list.
+The buttons marked [% INCLUDE font/quote a="All" %] and
+[% INCLUDE font/quote a="None" %] set and clear all marks.  The
+[% INCLUDE font/quote a="Regexp" %] button will prompt you for a
+pattern to match against all fit names.
+
+When a fit is selected from the list, the 
+[% INCLUDE font/quote a="Select parameter" %] menu is populated with
+the names of the parameters used in that fit.  All parameter types are
+included.  Selecting a new item from the menu or clicking the 
+[% INCLUDE font/quote a="Write report" %] button will generate a new
+report and its plot.
+
+For statistics, all of [%chisqr%], [%chinu%], R-factor, and the
+happiness are reported.  You can choose which of [%chinu%], R-factor,
+and happiness to have displayed in the resulting plot.  Clicking the 
+[% INCLUDE font/quote a="Show y=0" %] button forces the plot to be
+scaled of the y-axis such that y=0 is shown.
+
+Buttons at the bottom of this tab allow you to save the report as a
+text file or to send it to the printer.
+[% END %]
+
+[% PROCESS section label="Plotting fits" %]
+[% FILTER html_para -%]
+The plot tool tab is used to place old fits in the Plotting list for
+comparison with data and with the current fit.
+[% END %]
+
+[% WRAPPER html/todo %]
+The history plotting tool is not currently working.
+[% END %]
+
