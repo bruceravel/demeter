@@ -206,6 +206,18 @@ default=spring-green
 description
   The color of the tenth line drawn in a plot.
 
+variable=markersymbol
+type=positive integer
+default=305
+minint=40
+maxint=376
+description
+  The index of the symbol used as the marker in plots.  An example is
+  the symbol which marks E0 in a plot of mu(E) and its background.
+  The available symbols are the ones from the "S" column at
+  http://cars9.uchicago.edu/ifeffit/Demeter/GnuplotSymbols Some good
+  choices include 250, 264, 267, 304, and 305.
+
 variable=markercolor
 type=color
 default=#EE9A00
