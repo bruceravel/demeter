@@ -334,6 +334,7 @@ const my $REMOVE_MARKED		=> Wx::NewId();
 const my $DATA_YAML		=> Wx::NewId();
 const my $DATA_TEXT		=> Wx::NewId();
 const my $CHANGE_DATATYPE	=> Wx::NewId();
+const my $EPSILON_MARKED	=> Wx::NewId();
 
 const my $VALUES_ALL		=> Wx::NewId();
 const my $VALUES_MARKED		=> Wx::NewId();
@@ -512,6 +513,7 @@ sub menubar {
   #$groupmenu->AppendSubMenu($freezemenu, 'Freeze groups', 'Freeze groups, that is disable their controls such that their parameter values cannot be changed.');
   $groupmenu->Append($DATA_YAML,      "Show structure of current group",                 "Show detailed contents of the current data group");
   $groupmenu->Append($DATA_TEXT,      "Show the text of the current group's data file",  "Show the text of the current data group's data file");
+  $groupmenu->Append($EPSILON_MARKED, "Show measurement uncertainties.", "Show the measurement uncertainties of the marked groups." );
   $groupmenu->AppendSeparator;
   $groupmenu->Append($SHOW_REFERENCE, "Identify reference channel", "Identify the group that shares the data/reference relationship with this group.");
   $groupmenu->Append($TIE_REFERENCE,  "Tie reference channel",  "Tie together two marked groups as data and reference channel.");
@@ -798,6 +800,11 @@ sub OnMenuClick {
       } else {
 	$app->{main}->status("The current group's data file cannot be found.");
       };
+      last SWITCH;
+    };
+    ($id == $EPSILON_MARKED) and do {
+      last SWITCH if $app->is_empty;
+      $app->show_epsilon;
       last SWITCH;
     };
 
@@ -2099,6 +2106,25 @@ sub heap_check {
 				 100*$app->current_data->mo->heap_used,
 				 $app->current_data->mo->heap_free/(1-$app->current_data->mo->heap_used)/2**20));
   };
+};
+
+sub show_epsilon {
+  my ($app) = @_;
+  my $clb = $app->{main}->{list};
+  return if not $clb->GetCount;
+  my $busy = Wx::BusyCursor->new();
+  my $text = sprintf("\n%-25s : %9s  %9s\n", qw(group epsilon_k epsilon_r));
+  $text .= '=' x 48 . "\n";
+  foreach my $i (0 .. $clb->GetCount-1) {
+    next if not $clb->IsChecked($i);
+    my $d = $clb->GetIndexedData($i);
+    $d -> _update('bft');
+    $text .= sprintf("%-25s : %9.3e  %9.3e\n", $d->name, $d->epsk, $d->epsr);
+  };
+  undef $busy;
+  my $dialog = Demeter::UI::Artemis::ShowText
+    -> new($app->{main}, $text, 'Measurement uncertainties')
+      -> Show;
 };
 
 sub document {

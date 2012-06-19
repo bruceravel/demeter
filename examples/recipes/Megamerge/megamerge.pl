@@ -6,7 +6,7 @@
 
 use File::Basename;
 use File::Spec;
-use Demeter qw(:plotwith=gnuplot :ui=screen);
+use Demeter qw(:plotwith=gnuplot :ui=screen :data);
 
 ## get a list of files to include
 my $base = dirname($0);
