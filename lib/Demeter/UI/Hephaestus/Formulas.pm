@@ -68,7 +68,7 @@ sub new {
   ## -------- Formula
   my $label = Wx::StaticText->new($self, -1, 'Formula', wxDefaultPosition, [$width,-1]);
   $tsz -> Add($label, Wx::GBPosition->new(0,0));
-  $self->{formula} = Wx::TextCtrl->new($self, -1, q{}, wxDefaultPosition, [$width*3, -1]);
+  $self->{formula} = Wx::TextCtrl->new($self, -1, q{}, wxDefaultPosition, [$width*3, -1], wxWANTS_CHARS);
   $tsz -> Add($self->{formula}, Wx::GBPosition->new(0,1));
   $self->{element} = Wx::Button->new($self, -1, 'Element', wxDefaultPosition, wxDefaultSize);
   $tsz -> Add($self->{element}, Wx::GBPosition->new(0,2));
@@ -78,7 +78,7 @@ sub new {
   ## -------- Density
   $self->{dm} = Wx::Choice->new( $self, -1, [-1, -1], [$width, -1], ['Density', 'Molarity'], );
   $tsz -> Add($self->{dm}, Wx::GBPosition->new(1,0));
-  $self->{density} = Wx::TextCtrl->new($self, -1, q{}, wxDefaultPosition, [$width*3, -1]);
+  $self->{density} = Wx::TextCtrl->new($self, -1, q{}, wxDefaultPosition, [$width*3, -1], wxWANTS_CHARS);
   $tsz -> Add($self->{density}, Wx::GBPosition->new(1,1));
   $self->{densityunits} = Wx::StaticText->new($self, -1, 'g/cm^3', wxDefaultPosition, wxDefaultSize);
   $tsz -> Add($self->{densityunits}, Wx::GBPosition->new(1,2));
@@ -88,7 +88,7 @@ sub new {
   ## -------- Energy
   $label = Wx::StaticText->new($self, -1, 'Energy', wxDefaultPosition, [$width,-1]);
   $tsz -> Add($label, Wx::GBPosition->new(2,0));
-  $self->{energy} = Wx::TextCtrl->new($self, -1, q{}, wxDefaultPosition, [$width*3, -1]);
+  $self->{energy} = Wx::TextCtrl->new($self, -1, q{}, wxDefaultPosition, [$width*3, -1], wxWANTS_CHARS);
   $tsz -> Add($self->{energy}, Wx::GBPosition->new(2,1));
   $self->{energy} -> SetValue($self->{energyvalue});
   EVT_KEY_DOWN( $self->{energy}, sub{on_key_down(@_, $self)} );

@@ -79,7 +79,7 @@ sub new {
 
   $self->{targetbox} = Wx::StaticBox->new($self, -1, 'Target energy', wxDefaultPosition, wxDefaultSize);
   $self->{targetboxsizer} = Wx::StaticBoxSizer->new( $self->{targetbox}, wxVERTICAL );
-  $self->{target} = Wx::TextCtrl->new($self, -1, $self->{targetenergy}, wxDefaultPosition, wxDefaultSize);
+  $self->{target} = Wx::TextCtrl->new($self, -1, $self->{targetenergy}, wxDefaultPosition, wxDefaultSize, wxWANTS_CHARS);
   $self->{targetboxsizer} -> Add($self->{target}, 0, wxEXPAND|wxALL, 0);
   EVT_KEY_DOWN( $self->{target}, sub{on_key_down(@_, $self)} );
 

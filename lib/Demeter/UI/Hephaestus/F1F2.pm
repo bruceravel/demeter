@@ -52,7 +52,7 @@ sub new {
 
   my $label = Wx::StaticText->new($self, -1, 'Starting Energy', wxDefaultPosition, wxDefaultSize);
   $self->{gridboxsizer} -> Add($label, 0, wxALL, 5);
-  $self->{start} = Wx::TextCtrl->new($self, -1, $self->{startingenergy}, wxDefaultPosition, wxDefaultSize);
+  $self->{start} = Wx::TextCtrl->new($self, -1, $self->{startingenergy}, wxDefaultPosition, wxDefaultSize, wxWANTS_CHARS);
   $self->{start}->SetValidator(numval());
   $self->{gridboxsizer} -> Add($self->{start}, 1, wxEXPAND|wxALL, 5);
 
@@ -61,7 +61,7 @@ sub new {
 
   $label = Wx::StaticText->new($self, -1, 'Ending Energy', wxDefaultPosition, wxDefaultSize);
   $self->{gridboxsizer} -> Add($label, 0, wxALL, 5);
-  $self->{end} = Wx::TextCtrl->new($self, -1, $self->{endingenergy}, wxDefaultPosition, wxDefaultSize);
+  $self->{end} = Wx::TextCtrl->new($self, -1, $self->{endingenergy}, wxDefaultPosition, wxDefaultSize, wxWANTS_CHARS);
   $self->{end}->SetValidator(numval());
   $self->{gridboxsizer} -> Add($self->{end}, 1, wxEXPAND|wxALL, 5);
 
@@ -69,7 +69,7 @@ sub new {
 
   $label = Wx::StaticText->new($self, -1, 'Energy Grid', wxDefaultPosition, wxDefaultSize);
   $self->{gridboxsizer} -> Add($label, 0, wxALL, 5);
-  $self->{grid} = Wx::TextCtrl->new($self, -1, $self->{energygrid}, wxDefaultPosition, wxDefaultSize);
+  $self->{grid} = Wx::TextCtrl->new($self, -1, $self->{energygrid}, wxDefaultPosition, wxDefaultSize, wxWANTS_CHARS);
   $self->{grid}->SetValidator(numval());
   $self->{gridboxsizer} -> Add($self->{grid}, 1, wxEXPAND|wxALL, 5);
 

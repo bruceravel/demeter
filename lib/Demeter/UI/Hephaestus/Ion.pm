@@ -34,7 +34,7 @@ sub new {
   my $energysizer = Wx::BoxSizer->new( wxHORIZONTAL );
   my $label = Wx::StaticText->new($self, -1, 'Photon energy', wxDefaultPosition, wxDefaultSize);
   $energysizer -> Add($label, 0, wxALL, 2);
-  $parent->{energybox} = Wx::TextCtrl -> new($self, -1, $parent->{energy});
+  $parent->{energybox} = Wx::TextCtrl -> new($self, -1, $parent->{energy}, wxWANTS_CHARS);
   $parent->{energybox}->SetValidator(numval());
   $energysizer -> Add($parent->{energybox}, 0, wxALL, 2);
   $energy_chamber_box -> Add($energysizer, 0, wxALL, 2);
@@ -58,7 +58,7 @@ sub new {
   $label = Wx::StaticText->new($self, -1, 'Custom length', wxDefaultPosition, wxDefaultSize);
   $lengthsizer -> Add($label, 0, wxLEFT|wxRIGHT, 2);
   $parent->{userlength} = Demeter->co->default('hephaestus', 'ion_custom');
-  $parent->{userlengthbox} = Wx::TextCtrl -> new($self, -1, $parent->{userlength}, wxDefaultPosition, [40,-1]);
+  $parent->{userlengthbox} = Wx::TextCtrl -> new($self, -1, $parent->{userlength}, wxDefaultPosition, [40,-1], wxWANTS_CHARS);
   $parent->{userlengthbox}->SetValidator(numval());
   $lengthsizer -> Add($parent->{userlengthbox}, 0, wxLEFT|wxRIGHT|wxEXPAND, 2);
   $label = Wx::StaticText->new($self, -1, 'cm', wxDefaultPosition, wxDefaultSize);
@@ -279,7 +279,7 @@ sub new {
   $botbox -> Add($self->{amp}, 0, wxLEFT|wxRIGHT, 5);
   $label = Wx::StaticText->new($self, -1, 'with');
   $botbox -> Add($label, 0, wxLEFT|wxRIGHT, 5);
-  $self->{volts} = Wx::TextCtrl->new($self, -1, 0, wxDefaultPosition, [40,-1]);
+  $self->{volts} = Wx::TextCtrl->new($self, -1, 0, wxDefaultPosition, [40,-1], wxWANTS_CHARS);
   $self->{volts}->SetValidator(numval());
   $botbox -> Add($self->{volts}, 0, wxLEFT|wxRIGHT, 5);
   $label = Wx::StaticText->new($self, -1, 'volts gives');

@@ -37,6 +37,9 @@
    - Added a right click action to the paths list to display details
      of scattering geometry
 
+*** Hephaestus
+   - Prevent notebook from capturing carriage return on Windows
+
 *** Demeter
    - Convert histogram calculations to use PDL -- much faster!
      (backends: LAMMPS, )
