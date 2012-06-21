@@ -80,7 +80,7 @@ $dobject -> set(file        => "data/fe.060",
 my $prompt = "Choose a test by number, h for help, or q to quit > ";
 while ( defined ($_ = $term->readline($prompt)) ) {
   exit if ($_ =~ m{\Aq});
-  next if ($_ !~ m{\A([1-9a])});
+  next if ($_ !~ m{\A([1-9ab])});
   plot($_,$dobject);
   &query;
   $plot->start_plot; # reset the plot for the next go around
@@ -99,7 +99,8 @@ sub query {
     BOLD, $INDIC, " 7.", RESET, " |chi(R)| + window\n",
     BOLD, $INDIC, " 8.", RESET, " envelope, real, imaginary in R\n",
     BOLD, $INDIC, " 9.", RESET, " kq plot: chi(k)*k^2 + Re[chi(q)] + window\n",
-    BOLD, $INDIC, " a.", RESET, " chi(E)\n\n",
+    BOLD, $INDIC, " a.", RESET, " chi(E)\n",
+    BOLD, $INDIC, " b.", RESET, " norm(E)+deriv(E)\n\n",
     BOLD, $INDIC, " q.", RESET, " quit\n\n";
   return 0;
 }
@@ -127,7 +128,7 @@ sub spew {
   while (<F>) {
     my $line = $_;
     last if (($line =~ m{sub\s+plot}) and $flag);
-    $flag = 1 if (($line =~ m{sub\s+plot([1-9a])}) and ($1 == $n));
+    $flag = 1 if (($line =~ m{sub\s+plot([1-9ab])}) and ($1 eq $n));
     print $line if ($flag and ($line !~ m{\A\s*state}));
   };
   close F;
@@ -268,4 +269,10 @@ sub plota {
   $data -> po -> set(kweight => 2, space => 'k', chie => 1, emax => 1000);
   $data -> plot;
   $data -> po -> set(chie => 0);
+};
+
+sub plotb {
+  my ($data) = @_;
+  state("norm(E)+deriv(E)\n");
+  $data -> plot('ed');
 };

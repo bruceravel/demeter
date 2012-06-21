@@ -464,3 +464,27 @@ description
   oscillatory part, this chooses whether the real or imaginary part
   gets plotted.
 
+variable=ed_min
+type=real
+default=-30
+units=eV
+description
+  The default value for the lower bound of an nd (normalized data +
+  scaled derivative) plot.
+
+variable=ed_max
+type=real
+default=70
+units=eV
+description
+  The default value for the upper bound of an nd (normalized data +
+  scaled derivative) plot.
+
+variable=ed_scale
+type=real
+default=0.5
+units=eV
+description
+  The value to which the largest point (in the absolute sense) of the
+  derivative spectrum will be scaled in an nd (normalized data +
+  scaled derivative) plot.

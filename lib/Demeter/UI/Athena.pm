@@ -354,6 +354,7 @@ const my $ZOOM			=> Wx::NewId();
 const my $UNZOOM		=> Wx::NewId();
 const my $CURSOR		=> Wx::NewId();
 const my $PLOT_QUAD		=> Wx::NewId();
+const my $PLOT_ED		=> Wx::NewId();
 const my $PLOT_IOSIG		=> Wx::NewId();
 const my $PLOT_K123		=> Wx::NewId();
 const my $PLOT_R123		=> Wx::NewId();
@@ -543,6 +544,7 @@ sub menubar {
   $app->{main}->{markedplotmenu}  = $markedplotmenu;
   $app->{main}->{mergedplotmenu}  = $mergedplotmenu;
   $currentplotmenu->Append($PLOT_QUAD,       "Quad plot",             "Make a quad plot from the current group" );
+  $currentplotmenu->Append($PLOT_ED,         "Norm+deriv",            "Make a plot of norm(E)+deriv(E) of the current group" );
   $currentplotmenu->Append($PLOT_IOSIG,      "Data+I0+Signal",        "Plot data, I0, and signal from the current group" );
   $currentplotmenu->Append($PLOT_K123,       "k123 plot",             "Make a k123 plot from the current group" );
   $currentplotmenu->Append($PLOT_R123,       "R123 plot",             "Make an R123 plot from the current group" );
@@ -951,6 +953,17 @@ sub OnMenuClick {
       #$app->{main}->{Main}->pull_values($data);
       $data->po->start_plot;
       $app->quadplot($data);
+      last SWITCH;
+    };
+    ($id == $PLOT_ED) and do {
+      my $data = $app->current_data;
+      if ($app->current_data->datatype ne 'xmu') {
+	$app->{main}->status("Cannot plot " . $app->current_data->datatype . " data as a quadplot.", "error");
+	return;
+      };
+      #$app->{main}->{Main}->pull_values($data);
+      $data->po->start_plot;
+      $data->plot('ed');
       last SWITCH;
     };
     ($id == $PLOT_IOSIG) and do {
