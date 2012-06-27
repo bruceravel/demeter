@@ -46,6 +46,7 @@ sub new {
   $this->{normal} = Wx::TextAttr->new(Wx::Colour->new('#000000'), wxNullColour, Wx::Font->new( @font ) );
   $this->{date}   = Wx::TextAttr->new(Wx::Colour->new('#acacac'), wxNullColour, Wx::Font->new( @font ) );
   $this->{wait}   = Wx::TextAttr->new(Wx::Colour->new('#008800'), wxNullColour, Wx::Font->new( @font ) );
+  $this->{alert}  = Wx::TextAttr->new(Wx::Colour->new("#d9bf89"), wxNullColour, Wx::Font->new( @font ) );
   $this->{error}  = Wx::TextAttr->new(Wx::Colour->new('#ffffff'), Wx::Colour->new("#aa0000"), Wx::Font->new( @bold ) );
 
   $vbox -> Add($this->{text}, 1, wxGROW, 0);

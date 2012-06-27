@@ -40,8 +40,9 @@ sub new {
   ##print join("|", @$names, @$entries, @$positions), $/;
 
   if ($style ne 'single') {
-    $names = [$prj->allnames];
+    $names = [$prj->allnames(0)];
     $entries = $prj->entries;
+    $positions = [0 .. $#{$entries}];
   };
   $this->{prj}    = $prj;
   $this->{record} = -1;
@@ -145,16 +146,17 @@ sub OnPlotAs {
   my ($this, $event, $prj, $names, $positions) = @_;
   return if ($this->{grouplist}->GetSelections < 0);
   my ($sel) = $this->{grouplist}->GetSelections;
-  $this -> do_plot($prj, $positions->[$sel+1]);
+  #print ">>>>>>>>>", $sel, $/;
+  $this -> do_plot($prj, $positions->[$sel]+1);
 };
 
 sub plot_selection {
   my ($this, $event, $prj, $names, $positions) = @_;
   $this->Refresh;
   my ($sel) = $this->{grouplist}->GetSelections;
-  $this->{record} = $sel+1;
+  $this->{record} = $positions->[$sel];
   #my $index = firstidx {$_ eq $event->GetString } @$names;
-  $this -> do_plot($prj, $positions->[$sel+1]);
+  $this -> do_plot($prj, $positions->[$sel]+1);
 };
 sub do_plot {
   my ($this, $prj, $record) = @_;
@@ -162,6 +164,17 @@ sub do_plot {
   my @save = ($prj->po->r_pl, $prj->po->q_pl);
   $this->{record} = $record;
   my $data = $prj->record($record);
+  if ($data->datatype  =~ m{(?:detector|background|xanes)}) {
+    $this->{plotas}->Enable(0,  1);
+    $this->{plotas}->Enable($_, 0) foreach (1..7);
+    $this->{plotas}->SetSelection(0);
+  } elsif ($data->datatype  eq 'chi') {
+    $this->{plotas}->Enable(0,  0);
+    $this->{plotas}->Enable($_, 1) foreach (1..7);
+    $this->{plotas}->SetSelection(4);
+  } else {
+    $this->{plotas}->Enable($_, 1) foreach (0..7);
+  };
   my $ref;
   return if not defined($data);
   if ($data->bkg_stan ne 'None') {

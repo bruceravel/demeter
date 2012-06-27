@@ -12,6 +12,20 @@
      process data with a large number of columns (e.g. NSLS X3b)
    - Fixed a bug involving the import plot for the first item in a prj
      file when that group uses a background removal standard
+   - File selection dialog presents plotting options based on the
+     datatype of the selection, also chooses sensible fallback
+     plotting selection
+   - Generic utility for presenting a table of a single parameter
+     value.  Context menu entries for this under energy shift and edge
+     step labels.
+   - Recognize if data sets included in a merge are substantially
+     shorter than the first set in the group.  If so, exclude them
+     from the merge.  Made configuration parameters for defining how
+     much shorter and whether to exclude.
+   - Fixed behavior of up arrow for Athena's string entry dialogs that
+     have buffers.  The first time pressing up arrow went to an
+     unpredictable part of the buffer.  It now will go to the most
+     recent entry.
 
 *** Artemis
    - Display a useful error message when the phase.bin file is not
@@ -31,6 +45,8 @@
    - Fixed (I think) a crashy bug when removing GDS parameters
    - Fixed a bug involving the import of data from a prj file when
      that group uses a background removal standard
+   - Ignore data from an Athena project file that cannot be displayed
+     as chi(k), e.g. XANES data.
 
 *** Atoms
    - Disable path DnD for stand-along Atoms

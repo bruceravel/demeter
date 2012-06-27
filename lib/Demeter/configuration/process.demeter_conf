@@ -133,3 +133,21 @@ description
   When true, push the metadata tags of the first data group used to
   make the merge onto the merged group.  When false, all metadata tags
   of the merged group will be left blank.
+
+variable=short_data_margin
+type=positive integer
+default=10
+description
+  The number of data points that a group can be short and still be
+  considered appropriate for including in a merge.  The purpose of
+  this parameter is to recognize, for example, a scan that was
+  interupted by a beam dump.
+
+variable=exclude_short_data
+type=boolean
+onvalue=1
+offvalue=0
+default=true
+description
+  When true, a data set in a merge group that are too short compared
+  to the first item in the group will be excluded from a merge.

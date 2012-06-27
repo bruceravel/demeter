@@ -1899,7 +1899,8 @@ sub mark {
     my $ted = Wx::TextEntryDialog->new( $app->{main}, "$word data groups matching this regular expression:", "Enter a regular expression", q{}, wxOK|wxCANCEL, Wx::GetMousePosition);
     $app->set_text_buffer($ted, "regexp");
     if ($ted->ShowModal == wxID_CANCEL) {
-       $app->{main}->status($word."ing by regular expression cancelled.");
+      $app->{main}->status($word."ing by regular expression cancelled.");
+      $app->{regexp_pointer} = $#{$app->{regexp_buffer}}+1;
       return;
     };
     $regex = $ted->GetValue;
@@ -1907,6 +1908,7 @@ sub mark {
     my $is_ok = eval '$re = qr/$regex/';
     if (not $is_ok) {
       $app->{main}->status("Oops!  \"$regex\" is not a valid regular expression");
+      $app->{regexp_pointer} = $#{$app->{regexp_buffer}}+1;
       return;
     };
     $app->update_text_buffer("regexp", $regex, 1);
@@ -1961,6 +1963,7 @@ sub quench {
       $app->set_text_buffer($ted, "regexp");
       if ($ted->ShowModal == wxID_CANCEL) {
 	$app->{main}->status(chomp($word)."ing by regular expression cancelled.");
+	$app->{regexp_pointer} = $#{$app->{regexp_buffer}}+1;
 	return;
       };
       $regex = $ted->GetValue;
@@ -1968,6 +1971,7 @@ sub quench {
       my $is_ok = eval '$re = qr/$regex/';
       if (not $is_ok) {
 	$app->{main}->status("Oops!  \"$regex\" is not a valid regular expression");
+	$app->{regexp_pointer} = $#{$app->{regexp_buffer}}+1;
 	return;
       };
       $app->update_text_buffer("regexp", $regex, 1);
@@ -2051,6 +2055,7 @@ sub merge {
     $merged->po->e_markers(1);
   };
   $app->{main}->status("Made merged data group");
+  $app->{main}->status($merged->annotation, 'alert') if $merged->annotation;
   $app->heap_check(0);
   undef $busy;
 };
@@ -2168,6 +2173,7 @@ use Wx qw(wxNullColour);
 use Demeter::UI::Wx::OverwritePrompt;
 my $normal = wxNullColour;
 my $wait   = Wx::Colour->new("#C5E49A");
+my $alert  = Wx::Colour->new("#FCDD9F");
 my $error  = Wx::Colour->new("#FD7E6F");
 my $debug  = 0;
 sub status {
@@ -2180,9 +2186,10 @@ sub status {
   };
 
   my $color = ($type =~ m{normal}) ? $normal
+            : ($type =~ m{alert})  ? $alert
             : ($type =~ m{wait})   ? $wait
             : ($type =~ m{error})  ? $error
-	    :                       $normal;
+	    :                        $normal;
   $self->GetStatusBar->SetBackgroundColour($color);
   $self->GetStatusBar->SetStatusText($text);
   return if ($type =~ m{nobuffer});

@@ -146,18 +146,19 @@ sub list {
 };
 
 sub allnames {
-  my ($self) = @_;
+  my ($self, $notxanes) = @_;
   my @names;
   ## slurp up record labels
   foreach my $group (@{ $self->entries }) {
     my $index = $group->[0];
     my %args = $self->_array($index, 'args');
+    next if ($notxanes and ($args{datatype} =~ m{(?:detector|background|xanes)}));
     push @names, $args{label};
   };
   return @names;
 };
 sub plot_as_chi {
-  my ($self) = @_;
+  my ($self, $noxanes) = @_;
   my (@names, @entries, @positions);
   ## slurp up record labels and optional attributes
   my $pos = -1;
@@ -185,7 +186,7 @@ alias prj => 'slurp';
 
 sub record {
   my ($self, @entries) = @_;
-  Demeter->trace;
+  #Demeter->trace;
   my @groups = ();
   my @which = map { ($_ =~ m{(\d+)\-(\d+)}) ? ($1 .. $2) : $_ } @entries;
   foreach my $g (@which) {

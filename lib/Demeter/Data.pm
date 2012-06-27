@@ -98,6 +98,7 @@ has 'marked'      => (is => 'rw', isa => 'Bool',   default => 0);
 has 'quickmerge'  => (is => 'rw', isa => 'Bool',   default => 0);
 
 has 'provenance'  => (is => 'rw', isa => 'Str',    default => q{});
+has 'annotation'  => (is => 'rw', isa => 'Str',    default => q{});
 has 'importance'  => (is => 'rw', isa => 'Num',    default => 1);
 has 'merge_weight'=> (is => 'rw', isa => 'Num',    default => 1);
 
