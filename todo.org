@@ -329,11 +329,7 @@
 
 
 ** Windows
-*** DONE non-ascii symbols
-*** DONE Fix [[file:lib/Demeter/UI/Wx/CheckListBook.pm][CheckListBook]]
-      The solution is shown at the end of Athena.pm.  Define new methods for
-      CheckBoxList which maintain an indexed list of groups rather than relying
-      upon client data, which simply doesn't work on Windows.
+
       
       
 * Atoms and Feff

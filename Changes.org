@@ -5,7 +5,7 @@
 
 * Initial release
 
-** 0.9.10 ?? May 2012
+** 0.9.10 ?? July 2012
 *** Athena
    - Improved X23A2 and HXMA plugins
    - Add a select range button to column selection dialog to help
@@ -63,7 +63,7 @@
    - Improved installation.pod
    - Changed default gnuplot color #4 to yellow4 (#808000)
    - Added window functions to Rk plot
-   - Artemis Users' Guide
+   - Begin Artemis Users' Guide
    - Prefer the Co K edge to the Re L3 edge when finding the edge (is
      that the right choice?)
 

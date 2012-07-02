@@ -32,11 +32,11 @@ my $build = DemeterBuilder
 	 auto_configure_requires => 1,
 	 needs_compiler     => 1,
 	 requires           => {
-				'Moose'			    => '1.21',
-				'MooseX::Aliases'           => '0.08',
-				'MooseX::StrictConstructor' => '0.12',
-				'MooseX::Singleton'	    => '0.25',
-				'MooseX::Types'		    => '0.25',
+				'Moose'			    => '2.06',
+				'MooseX::Aliases'           => '0.10',
+				'MooseX::StrictConstructor' => '0.19',
+				'MooseX::Singleton'	    => '0.29',
+				'MooseX::Types'		    => '0.31',
 
 				'Archive::Zip'		    => '0',
 
