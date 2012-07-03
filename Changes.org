@@ -47,6 +47,8 @@
      that group uses a background removal standard
    - Ignore data from an Athena project file that cannot be displayed
      as chi(k), e.g. XANES data.
+   - Correctly initialize row on GDS page whenever a new parameter is
+     created
 
 *** Atoms
    - Disable path DnD for stand-along Atoms
