@@ -65,6 +65,7 @@
    - Improved installation.pod
    - Changed default gnuplot color #4 to yellow4 (#808000)
    - Added window functions to Rk plot
+   - Made ed plot
    - Begin Artemis Users' Guide
    - Prefer the Co K edge to the Re L3 edge when finding the edge (is
      that the right choice?)
