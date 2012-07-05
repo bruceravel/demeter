@@ -19,7 +19,7 @@ my $prj = Demeter::Data::Prj -> new(file=>'../../cyanobacteria.prj');
 my $lcf = Demeter::LCF -> new(space=>'nor', unity=>1, inclusive=>0, one_e0=>0,
 			      plot_difference=>1, plot_components=>1, noise=>0);
 
-$prj -> set_mode('screen' => 1);
+$prj -> set_mode('screen' => 0);
 
 my $data = $prj->record(3);
 my ($metal, $chloride, $sulfide) = $prj->records(9, 11, 15);
