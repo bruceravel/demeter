@@ -13,7 +13,7 @@
 ## The data are contained in an Athena project file that is one of the
 ## standard examples in the Demeter distro.
 
-use Demeter qw(:analysis :ui=screen :plotwith=gnuplot);
+use Demeter qw(:ui=screen :plotwith=gnuplot);
 
 my $prj = Demeter::Data::Prj -> new(file=>'../../cyanobacteria.prj');
 my $lcf = Demeter::LCF -> new(space=>'nor', unity=>1, inclusive=>0, one_e0=>0,
@@ -40,9 +40,9 @@ if ($lcf->space eq 'chi') {
   $lcf->po->set(emin=>-30, emax=>80);
 };
 
-$lcf -> fit
-  -> plot_fit
-  -> save('foo.dat');
+$lcf -> fit;
+$lcf -> plot_fit;
+$lcf -> save('foo.dat');
 print $lcf->report;
 #$lcf->clean;
 
