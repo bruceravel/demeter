@@ -34,7 +34,7 @@ sub new {
   my $energysizer = Wx::BoxSizer->new( wxHORIZONTAL );
   my $label = Wx::StaticText->new($self, -1, 'Photon energy', wxDefaultPosition, wxDefaultSize);
   $energysizer -> Add($label, 0, wxALL, 2);
-  $parent->{energybox} = Wx::TextCtrl -> new($self, -1, $parent->{energy}, wxWANTS_CHARS);
+  $parent->{energybox} = Wx::TextCtrl -> new($self, -1, $parent->{energy}, wxDefaultPosition, wxDefaultSize, wxWANTS_CHARS);
   $parent->{energybox}->SetValidator(numval());
   $energysizer -> Add($parent->{energybox}, 0, wxALL, 2);
   $energy_chamber_box -> Add($energysizer, 0, wxALL, 2);
