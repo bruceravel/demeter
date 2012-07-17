@@ -5,7 +5,7 @@
 
 * Initial release
 
-** 0.9.10 ?? July 2012
+** 0.9.10 17 July 2012
 *** Athena
    - Improved X23A2 and HXMA plugins
    - Add a select range button to column selection dialog to help
@@ -26,6 +26,7 @@
      have buffers.  The first time pressing up arrow went to an
      unpredictable part of the buffer.  It now will go to the most
      recent entry.
+   - Force dk and dr to 0 when making empirical standards.
 
 *** Artemis
    - Display a useful error message when the phase.bin file is not
