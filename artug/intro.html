@@ -1,0 +1,200 @@
+<!DOCTYPE HTMP PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <title>Introduction</title>
+    <link rel="stylesheet" href=./ab.css />
+    <link rel="stylesheet" href=./ppi.css />
+    <meta http-equiv="Content-Type" content="text/html"; charset=iso-8859-15 />
+    <meta name="robots" contents="all" />
+  </head>
+
+  <body>
+    <div class=topbar>
+  <div class=navbar>
+  <table class=navtable>
+    <tr>
+      <td align=left>
+        [&nbsp;<a href="./index.html">Home</a>&nbsp;] &nbsp;&nbsp;
+        [&nbsp;<a href="http://bruceravel.github.com/demeter/"><span class=programlink>DEMETER</span></a>&nbsp;] &nbsp;&nbsp;
+        [&nbsp;<a href="http://cars9.uchicago.edu/iffwiki/Ifeffit"><span class=programlink>IFEFFIT</span></a>&nbsp;] &nbsp;&nbsp;
+        [&nbsp;<a href="http://leonardo.phys.washington.edu/feff/wiki/index.php?title=FEFF_Documentation"><span class=programlink>FEFF</span></a>&nbsp;] &nbsp;&nbsp;
+        [&nbsp;<a href="http://xafs.org">xafs.org</a>&nbsp;] &nbsp;&nbsp;
+	<!-- [&nbsp;<a href="./demeter.pdf">PDF&nbsp;doc</a>&nbsp;] -->
+      </td>
+      <td align=right>
+        Back: <a href="./index.html" class="menu" >Home</a> &nbsp;&nbsp;
+        Next: <a href="./startup/index.html" class="menu" >Starting Artemis</a>      </td>
+    </tr>
+  </table>
+  </div>
+  <h1>
+  Introduction
+</h1>
+</div>
+
+<hr class=hide />
+
+
+<div class=sidebar>
+  <a href="./diana.html"><img src=./../images/artemis_icon.png
+    width=100% border=0 alt='[Demeter logo]'></a>
+  <br />
+  <a href="./index.html" class="menu" >Home</a><br />
+<a href="./intro.html" class="menuselect" >Introduction</a><br />
+<a href="./startup/index.html" class="menu" >Starting Artemis</a><br />
+<a href="./data.html" class="menu" >The Data window</a><br />
+<a href="./feff/index.html" class="menu" >The Atoms/Feff window</a><br />
+<a href="./path/index.html" class="menu" >The Path page</a><br />
+<a href="./gds.html" class="menu" >The GDS window</a><br />
+<a href="./fit/index.html" class="menu" >Running a fit</a><br />
+<a href="./logjournal.html" class="menu" >The Log & Journal windows</a><br />
+<a href="./history.html" class="menu" >The History window</a><br />
+<a href="./monitor.html" class="menu" >Monitoring things</a><br />
+<a href="./prefs.html" class="menu" >Managing preferences</a><br />
+</div>
+
+<p>
+
+ <span class=program>FEFF</span> and  <span class=program>IFEFFIT</span> are amazing tools, but they can be
+somewhat hard to use.   <span class=program>FEFF</span> reuires the use of clunky text files
+as its input.   <span class=program>IFEFFIT</span> has a wordy, finicky syntax.  Both need to
+be wrapped up inside of something easier to use.  Hopefully,
+ <span class=program>ARTEMIS</span> is that something.
+</p>
+
+
+<a name="thetechnologybehindartemis">
+
+<h3>  The technology behind Artemis</h3>
+</a>
+
+<p>
+
+ <span class=program>DEMETER</span> uses <a href="http://perl.org">perl</a>.  This is, I suppose, an unsexy
+choice these days.  All the cool kids are, after all, using python or
+ruby.  I like perl.  I can think in perl.  And I can code quickly and
+fluently in perl.  What's  more, perl has <a href="http://www.cpan.org/">CPAN</a>, the worlds largest
+repository of language extensions.  CPAN means that I have far fewer
+wheels to recreate (and probably get wrong).  Virtually any language
+extension I need in pursuit of making  <span class=program>DEMETER</span> awesome probably
+already exists.
+</p>
+
+
+
+
+<a name="wx">
+
+<h4>  Wx</h4>
+</a>
+
+<a name="moose">
+
+<h4>  Moose</h4>
+</a>
+
+<p>
+
+ <span class=program>DEMETER</span> uses <a href="http://search.cpan.org/~flora/Moose/lib/Moose/Manual.pod">Moose</a>.  This is,
+on the balance, a very good thing, indeed.  Moose brings many powerful
+capabilities to the programming table.  When I was about halfway
+through writing  <span class=program>DEMETER</span>, I paused for a bit less than a month to
+rewrite everything I had thus far created to use Moose.  This left me
+with about 2/3 as many lines of code and a code base that was more
+robust and more featureful.  Neat-o!
+</p>
+
+<p>
+For the nerdly, Moose is an implementation of a <a href="http://en.wikipedia.com/wiki/Metaobject">meta-object protocol</a>.  This interesting
+and powerful tool allows for the semantics of the object system to be
+modified at either compile or run time.  The problem of adding
+features and functionality to the object system is therefore pushed
+downstream from the developers of the language to the users of the
+language.  In good CPAN fashion, a healthy and robust ecosystem has
+evolved around Moose producing a whole host of useful extensions.
+</p>
+
+<p>
+Moose offers lots of great features, including an extremely powerful
+attribute system, a type attribute system, method modifiers, an
+ability to mix object and aspect orientation, and a wonderfully deep
+set of automated tests.  I am confident that simply by using Moose, my
+code is better code and, because Moose testing is so deep, I am
+confident that any bugs in  <span class=program>DEMETER</span> are my fault and not the
+fault of the people whose work I depend on.
+</p>
+
+<p>
+For all the wonderfulness of Moose, it does have one big wart that I
+need to be up-front about.  Moose is slow at start-up.  Since 
+ <span class=program>DEMETER</span> is big and Moose starts slowly, any program using 
+ <span class=program>DEMETER</span> will take about 2 extra second to start.  For a
+long-running program like a complicated fitting script or a GUI, an
+additional couple of seconds at start-up is no big deal.  For
+quick-n-dirty or one-off application, that may a bit annoying.  The
+Moose folk claim to be working on start-up issues.  I am keeping my
+fingers crossed.  Until then, I live with the slow start-up, confident
+that the rest of  <span class=program>DEMETER</span> is worth the wait.
+</p>
+
+
+<a name="templatesandbackends">
+
+<h4>  Templates and backends</h4>
+</a>
+
+<p>
+
+ <span class=program>IFEFFIT</span>, upgradable to  <span class=program>IFEFFIT2</span>.  Twp plotting backends, can
+use more.
+</p>
+
+<p>
+Also uses PDL
+</p>
+
+<p>
+Can use anything for which a programming backend is available and
+which uses text-based instruction.
+</p>
+
+<br />
+<hr class=hide />
+
+<div class=bottombar>
+  <div class=navbar>
+  <table class=navtable>
+    <tr>
+      <td align=left>
+        [&nbsp;<a href="./index.html">Home</a>&nbsp;] &nbsp;&nbsp;
+        [&nbsp;<a href="http://bruceravel.github.com/demeter/"><span class=programlink>DEMETER</span></a>&nbsp;] &nbsp;&nbsp;
+        [&nbsp;<a href="http://cars9.uchicago.edu/iffwiki/Ifeffit"><span class=programlink>IFEFFIT</span></a>&nbsp;] &nbsp;&nbsp;
+        [&nbsp;<a href="http://leonardo.phys.washington.edu/feff/wiki/index.php?title=FEFF_Documentation"><span class=programlink>FEFF</span></a>&nbsp;] &nbsp;&nbsp;
+        [&nbsp;<a href="http://xafs.org">xafs.org</a>&nbsp;] &nbsp;&nbsp;
+	<!-- [&nbsp;<a href="./demeter.pdf">PDF&nbsp;doc</a>&nbsp;] -->
+      </td>
+      <td align=right>
+        Back: <a href="./index.html" class="menu" >Home</a> &nbsp;&nbsp;
+        Next: <a href="./startup/index.html" class="menu" >Starting Artemis</a>      </td>
+    </tr>
+  </table>
+  </div>
+  <div class=copyright>
+   <span class=program>DEMETER</span> is copyright &copy; 2009-2012 Bruce Ravel
+  <br />
+  This document is copyright &copy; 2012 Bruce Ravel
+  <br />
+  email: (bravel |A|T| bnl |D|O|T| gov)
+  <br />
+  
+  <a href="http://creativecommons.org/licenses/by-sa/3.0/"><img src="../images/somerights20.png" width="88" height="31" alt="" border="0" /></a> &nbsp;&nbsp;&nbsp;
+  <br />
+  This document is licensed under <a href="http://creativecommons.org/licenses/by-sa/3.0/">
+  The Creative Commons Attribution-ShareAlike License</a>.
+  <br />
+  If  <span class=program>DEMETER</span> and this document are useful to you, please consider
+  <a href="http://creativecommons.org/support/">supporting The Creative Commons</a>.
+</div>
+</div>
+  </body>
+</html>

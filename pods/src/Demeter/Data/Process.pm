@@ -128,8 +128,23 @@ sub merge {
   $merged -> generated(1);
   $merged -> prjrecord(q{});
 
-  my $sum = 0;
+  my $suff = ($how eq 'e') ? 'energy' : 'k';
+  my $ndat = $self->get_array($suff); # in scalar context, returns # of data points
+  my @used = ($self);
+  my @excluded = ();
   foreach my $d (uniq($self, @data)) {
+    next if $d eq $self;
+    if ((($ndat - $d->get_array($suff)) > $d->co->default("merge", "short_data_margin")) and
+	$d->co->default("merge", "exclude_short_data")) {
+      push @excluded, $d;
+      next;
+    };
+    push @used, $d;
+  };
+
+
+  my $sum = 0;
+  foreach my $d (@used) {
     $d->_update('bft')        if ($d->mo->merge eq 'noise');
     $d->_update('background') if ($d->mo->merge eq 'step');
     my $weight = ($d->mo->merge eq 'importance') ? $d->importance
@@ -140,30 +155,29 @@ sub merge {
     $sum += $weight;
     $d->merge_weight($weight);
   };
-  foreach my $d (uniq($self, @data)) {
+  foreach my $d (@used) {
     $d->merge_weight($d->merge_weight / $sum);
   };
 
   if ($how =~ m{^k}) {
     $merged->datatype('chi');
-    $self->mergek(@data);
+    $self->mergek(@used);
   } elsif ($how =~ m{^e}) {
     ($self->datatype eq 'xanes') ? $merged->datatype('xanes') : $merged->datatype('xmu');
-    $self->mergeE('x', @data);
+    $self->mergeE('x', @used);
   } elsif ($how =~ m{^n}) {
     ($self->datatype eq 'xanes') ? $merged->datatype('xanes') : $merged->datatype('xmu');
-    $self->mergeE('n', @data);
+    $self->mergeE('n', @used);
   };
 
-  my @uniq = uniq($self, @data);
-  my $ndata = $#uniq + 1;
+  my $ndata = $#used + 1;
   $self -> co -> set(ndata=>$ndata, weight=>1);
 
   my $string = $merged->template("process", "merge_norm"); #, {ndata=>$ndata});
   $self->dispose($string);
 
   $merged->mo->standard($merged);
-  foreach my $d (uniq($self, @data)) {
+  foreach my $d (@used) {
     next if (ref($d) !~ m{Data});
     my $string = $d->template("process", "merge_stddev");
     $self->dispose($string);
@@ -188,10 +202,13 @@ sub merge {
   $merged -> bkg_e0($self->bkg_e0);
   $merged -> bkg_eshift(0);
   $merged -> i0_string(q{});
-  $merged -> provenance("Merge of  " . join(', ', map {$_->name} (uniq($self, @data)))   );
-  $merged -> source("Merge of  " . join(', ', map {$_->name} (uniq($self, @data)))   );
+  $merged -> provenance("Merge of  " . join(', ', map {$_->name} (@used))   );
+  $merged -> source("Merge of  " . join(', ', map {$_->name} (@used))   );
   $merged -> name("data merged as " . $howstring{$how});
   ($how =~ m{^k}) ? $merged -> datatype('chi') : $merged -> datatype('xmu');
+  if ($#used != uniq($self, @data)) {
+    $merged->annotation("These groups were excluded from the merge for being too short: " . join(", ", map {$_->name} @excluded));
+  };
 
   (ref($standard) =~ m{Data}) ? $standard->standard : $self->unset_standard;
   return $merged;
@@ -202,13 +219,14 @@ sub mergeE {
   $self -> _update("normalize")  if ($how eq 'x');
   $self -> _update("background") if ($how eq 'n');
 
+
   my ($emin, $emax) = (-1e10, 1e10);
   ## make an array in the m___erge group containing the longest common range of data
-  foreach my $d ($self, @data) {
+  foreach my $d (@data) {
     next if (ref($d) !~ m{Data});
+    my @array = $d->get_array("energy");
     $d -> _update("normalize")  if ($how eq 'x');
     $d -> _update("background") if ($how eq 'n');
-    my @array = $d->get_array("energy");
     ($emin = $array[0])  if ($array[0]  > $emin);
     ($emax = $array[-1]) if ($array[-1] < $emax);
   };
@@ -222,7 +240,8 @@ sub mergeE {
   $string   .= $self->template("process", "merge_start");
   $self->dispose($string);
 
-  foreach my $d (uniq($self, @data)) {
+  #foreach my $d (uniq($self, @data)) {
+  foreach my $d (@data) {
     next if (ref($d) !~ m{Data});
     my $string = $d->template("process", "merge_interp");
     $string   .= $d->template("process", "merge");
@@ -235,7 +254,7 @@ sub mergek {
 
   my ($kmin, $kmax) = (-1e10, 1e10);
   ## make an array in the m___erge group containing the longest common range of data
-  foreach my $d ($self, @data) {
+  foreach my $d (uniq($self, @data)) {
     next if (ref($d) !~ m{Data});
     $d -> _update("fft");
     my @array = $d->get_array("k");
@@ -253,7 +272,7 @@ sub mergek {
   $string   .= $self->template("process", "merge_start");
   $self->dispose($string);
 
-  foreach my $d (uniq($self, @data)) {
+  foreach my $d (@data) {
     next if (ref($d) !~ m{Data});
     my $string = $d->template("process", "merge_interp");
     $string   .= $d->template("process", "merge");

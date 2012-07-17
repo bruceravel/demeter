@@ -1,0 +1,193 @@
+<!DOCTYPE HTMP PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <title>Marking and Plotting</title>
+    <link rel="stylesheet" href=../ab.css />
+    <link rel="stylesheet" href=../ppi.css />
+    <meta http-equiv="Content-Type" content="text/html"; charset=iso-8859-15 />
+    <meta name="robots" contents="all" />
+  </head>
+
+  <body>
+    <div class=topbar>
+  <div class=navbar>
+  <table class=navtable>
+    <tr>
+      <td align=left>
+        [&nbsp;<a href="../index.html">Home</a>&nbsp;] &nbsp;&nbsp;
+        [&nbsp;<a href="http://bruceravel.github.com/demeter/"><span class=programlink>DEMETER</span></a>&nbsp;] &nbsp;&nbsp;
+        [&nbsp;<a href="http://cars9.uchicago.edu/iffwiki/Ifeffit"><span class=programlink>IFEFFIT</span></a>&nbsp;] &nbsp;&nbsp;
+        [&nbsp;<a href="http://leonardo.phys.washington.edu/feff/wiki/index.php?title=FEFF_Documentation"><span class=programlink>FEFF</span></a>&nbsp;] &nbsp;&nbsp;
+        [&nbsp;<a href="http://xafs.org">xafs.org</a>&nbsp;] &nbsp;&nbsp;
+	<!-- [&nbsp;<a href="../demeter.pdf">PDF&nbsp;doc</a>&nbsp;] -->
+      </td>
+      <td align=right>
+        Back: <a href="../path/mathexp.html" class="menu" >Setting math expressions</a>
+        
+        &nbsp;&nbsp;
+        Up: <a href="../path/index.html" class="menu" >The Path page</a>      </td>
+    </tr>
+  </table>
+  </div>
+  <h1>
+  Marking and Plotting
+</h1>
+</div>
+
+<hr class=hide />
+
+
+<div class=sidebar>
+  <a href="../diana.html"><img src=../../images/artemis_icon.png
+    width=100% border=0 alt='[Demeter logo]'></a>
+  <br />
+  <a href="../index.html" class="menu" >Home</a><br />
+<a href="../intro.html" class="menu" >Introduction</a><br />
+<a href="../startup/index.html" class="menu" >Starting Artemis</a><br />
+<a href="../data.html" class="menu" >The Data window</a><br />
+<a href="../feff/index.html" class="menu" >The Atoms/Feff window</a><br />
+<br />
+<a href="../path/index.html" class="menuselect" >The Path page</a><br />
+&nbsp;-&nbsp;<a href="../path/mathexp.html" class="menu" >Setting math expressions</a><br />
+&nbsp;-&nbsp;<a href="../path/plot.html" class="menuselect" >Marking and plotting</a><br /><br />
+<a href="../gds.html" class="menu" >The GDS window</a><br />
+<a href="../fit/index.html" class="menu" >Running a fit</a><br />
+<a href="../logjournal.html" class="menu" >The Log & Journal windows</a><br />
+<a href="../history.html" class="menu" >The History window</a><br />
+<a href="../monitor.html" class="menu" >Monitoring things</a><br />
+<a href="../prefs.html" class="menu" >Managing preferences</a><br />
+</div>
+
+<p>
+The check buttons next to each path in the path list are central to
+many features in  <span class=program>ARTEMIS</span> related to plotting and other tasks.
+Along with all of the tools in the Mark menu, you can mark a group
+of paths by clicking elsewhere on the path list while holding down the
+shift key.  Doing so marks all paths between the selected one and the
+one shift-clicked upon.
+</p>
+
+<p>
+Control-clicking on the path list is also a special function used for
+two purposes.  Doing a control-click initiates a drag-and-drop
+function for the path you click on.  If you drop the path on the same
+path list, that is equivalent to cloning the dragged path, with the
+clone being appended to the end of the path list.  This drag
+action can also be used to copy paths between Data windows in a
+multiple data set fit.  See the XXXXX chapter for an example.
+</p>
+
+<p>
+<p class=caution>
+Mistakenly control-clicking rather than shift-clicking will often
+result in a path being cloned.  This can be surprising.
+</p>
+</p>
+
+
+<a name="movingpathstotheplottinglist">
+
+<h3>  Moving paths to the Plotting list</h3>
+</a>
+
+<p>
+ <span class=program>ARTEMIS</span> has no built-in plot types involving individual paths.
+Any plots with paths are constructed using the Plotting list on the
+Plot window.  There are three ways of moving individual paths to the Plotting
+list.
+<ol>
+  
+<li>
+The blue button with the squiggly line in the upper left corner of the
+Path page transfers that path to the Plotting list.
+</li>
+<li>
+A paths will be transferred automatically after a fit if its 
+&ldquo;Plot after fit&rdquo; button is checked.
+</li>
+<li>
+The set of marked groups will be transferred when 
+&ldquo;Transfer marked&rdquo; is selected from the
+Actions menu.
+</li>
+</ol> 
+</p>
+
+<p>
+Another new feature in this version of  <span class=program>ARTEMIS</span> related to plotting
+is called a VPath, which is short for 
+&ldquo;virtual path&rdquo;.  A VPath is an ensemble of
+normal paths which are summed.  The sum is then plotted in k-, R-, or
+q-space.  A VPath is made by marking a set of paths then selecting
+&ldquo;Make VPath from marked&rdquo; from the Actions menu.
+</p>
+
+
+<div class=figure style="max-width: 100%; min-width: 7em;">
+<a name=path>&nbsp;</a><br><a href=../../images/path.au4.png><img src="../../images/path.au4.png" width=49%></a>
+&nbsp;&nbsp;<a href=../../images/path.au4vpath.png><img src="../../images/path.au4vpath.png" alt="foo" width=49%></a>
+<br></a>
+<p align=center>
+Here is an example of a VPath.  On the left is data on a gold foil
+plotted as  Re[&chi;(R)]   with the fourth shell single scattering path and the two
+collinear multiple scattering paths involving the fourth neighbor and
+the intervening first shell neighbor.  This is a rather cluttered plot
+due to the phase relationship between these three paths.  
+On the right, the VPath composed of those three paths is plotted along
+with the data.  This is a much cleaner plot and gives you a sense of
+the net impact of the fourth neighbor on the fit.
+</p>
+</div>
+
+<p>
+When the VPath is created, it is placed in the VPath tab in the
+Plot window and in the Plotting list.  The VPath list contains tools
+for renaming and discarding VPaths, displaying its constituants in the
+Main window status bar, and a VPath onto the
+Plotting list.  (Remember that the, unless the 
+&ldquo;Freeze&rdquo; button is clicked, the Plotting
+list is cleared and repopulated after each fit.)  
+</p>
+
+<br />
+<hr class=hide />
+
+<div class=bottombar>
+  <div class=navbar>
+  <table class=navtable>
+    <tr>
+      <td align=left>
+        [&nbsp;<a href="../index.html">Home</a>&nbsp;] &nbsp;&nbsp;
+        [&nbsp;<a href="http://bruceravel.github.com/demeter/"><span class=programlink>DEMETER</span></a>&nbsp;] &nbsp;&nbsp;
+        [&nbsp;<a href="http://cars9.uchicago.edu/iffwiki/Ifeffit"><span class=programlink>IFEFFIT</span></a>&nbsp;] &nbsp;&nbsp;
+        [&nbsp;<a href="http://leonardo.phys.washington.edu/feff/wiki/index.php?title=FEFF_Documentation"><span class=programlink>FEFF</span></a>&nbsp;] &nbsp;&nbsp;
+        [&nbsp;<a href="http://xafs.org">xafs.org</a>&nbsp;] &nbsp;&nbsp;
+	<!-- [&nbsp;<a href="../demeter.pdf">PDF&nbsp;doc</a>&nbsp;] -->
+      </td>
+      <td align=right>
+        Back: <a href="../path/mathexp.html" class="menu" >Setting math expressions</a>
+        
+        &nbsp;&nbsp;
+        Up: <a href="../path/index.html" class="menu" >The Path page</a>      </td>
+    </tr>
+  </table>
+  </div>
+  <div class=copyright>
+   <span class=program>DEMETER</span> is copyright &copy; 2009-2012 Bruce Ravel
+  <br />
+  This document is copyright &copy; 2012 Bruce Ravel
+  <br />
+  email: (bravel |A|T| bnl |D|O|T| gov)
+  <br />
+  
+  <a href="http://creativecommons.org/licenses/by-sa/3.0/"><img src="../../images/somerights20.png" width="88" height="31" alt="" border="0" /></a> &nbsp;&nbsp;&nbsp;
+  <br />
+  This document is licensed under <a href="http://creativecommons.org/licenses/by-sa/3.0/">
+  The Creative Commons Attribution-ShareAlike License</a>.
+  <br />
+  If  <span class=program>DEMETER</span> and this document are useful to you, please consider
+  <a href="http://creativecommons.org/support/">supporting The Creative Commons</a>.
+</div>
+</div>
+  </body>
+</html>

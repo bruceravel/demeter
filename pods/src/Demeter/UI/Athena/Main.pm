@@ -1027,6 +1027,10 @@ const my $E0_TABULATED       => Wx::NewId();
 const my $E0_FRACTION        => Wx::NewId();
 const my $E0_ZERO            => Wx::NewId();
 const my $E0_PEAK            => Wx::NewId();
+const my $STEP_ALL           => Wx::NewId();
+const my $STEP_MARKED        => Wx::NewId();
+const my $ESHIFT_ALL         => Wx::NewId();
+const my $ESHIFT_MARKED      => Wx::NewId();
 
 
 sub ContextMenu {
@@ -1062,6 +1066,9 @@ sub ContextMenu {
     $menu->Append($IDENTIFY_REFERENCE, "Identify this groups reference");
     $menu->Append($UNTIE_REFERENCE,    "Untie this group from its reference");
     $menu->Append($EXPLAIN_ESHIFT,     "Explain energy shift");
+    $menu->AppendSeparator;
+    $menu->Append($ESHIFT_ALL,     "Show e0 shifts of all groups");
+    $menu->Append($ESHIFT_MARKED,  "Show e0 shifts of marked groups");
   } elsif ($which eq 'bkg_e0') {
     $menu->AppendSeparator;
     $menu->Append($E0_IFEFFIT,   "Set E0 to Ifeffit's default");
@@ -1069,6 +1076,10 @@ sub ContextMenu {
     $menu->Append($E0_FRACTION,  "Set E0 to a fraction of the edge step");
     $menu->Append($E0_ZERO,      "Set E0 to the zero crossing of the second derivative");
     #$menu->Append($E0_PEAK,      "Set E0 to the peak of the white line");
+  } elsif ($which eq 'bkg_step') {
+    $menu->AppendSeparator;
+    $menu->Append($STEP_ALL,     "Show edge steps of all groups");
+    $menu->Append($STEP_MARKED,  "Show edge steps of marked groups");
   } elsif (($which eq 'plot_multiplier') and (any {$_ =~ m{BLA.pixel_ratio}} @{$app->current_data->xdi_extensions})) {
     $menu->AppendSeparator;
     $menu->Append($SCALE_BLA_PIXEL, "Set Plot multiplier for marked data to BLA pixel ratio");
@@ -1190,7 +1201,38 @@ sub DoContextMenu {
       $app->OnGroupSelect(0,0,0);
       last SWITCH;
     };
+    ($id == $STEP_ALL) and do {
+      $main->parameter_table($app, 'bkg_step', 'all', 'Edge steps');
+      last SWITCH;
+    };
+    ($id == $STEP_MARKED) and do {
+      $main->parameter_table($app, 'bkg_step', 'marked', 'Edge steps');
+      last SWITCH;
+    };
+    ($id == $ESHIFT_ALL) and do {
+      $main->parameter_table($app, 'bkg_eshift', 'all', 'E0 shifts');
+      last SWITCH;
+    };
+    ($id == $ESHIFT_MARKED) and do {
+      $main->parameter_table($app, 'bkg_eshift', 'marked', 'E0 shifts');
+      last SWITCH;
+    };
   };
+};
+
+sub parameter_table {
+  my ($main, $app, $which, $how, $description) = @_;
+
+  my $text = "  group                    $description\n" . "=" x 40 . "\n";
+  foreach my $i (0 .. $app->{main}->{list}->GetCount-1) {
+    next if (($how eq 'marked') and (not $app->{main}->{list}->IsChecked($i)));
+    my $d = $app->{main}->{list}->GetIndexedData($i);
+    $d -> _update('bkg');
+    $text .= sprintf(" %-25s  %.5f\n", $d->name, $d->$which);
+  };
+  my $dialog = Demeter::UI::Artemis::ShowText
+    -> new($app->{main}, $text, "$description, $how groups")
+      -> Show;
 };
 
 

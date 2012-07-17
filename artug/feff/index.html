@@ -1,0 +1,340 @@
+<!DOCTYPE HTMP PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <title>The Atoms and Feff Window</title>
+    <link rel="stylesheet" href=../ab.css />
+    <link rel="stylesheet" href=../ppi.css />
+    <meta http-equiv="Content-Type" content="text/html"; charset=iso-8859-15 />
+    <meta name="robots" contents="all" />
+  </head>
+
+  <body>
+    <div class=topbar>
+  <div class=navbar>
+  <table class=navtable>
+    <tr>
+      <td align=left>
+        [&nbsp;<a href="../index.html">Home</a>&nbsp;] &nbsp;&nbsp;
+        [&nbsp;<a href="http://bruceravel.github.com/demeter/"><span class=programlink>DEMETER</span></a>&nbsp;] &nbsp;&nbsp;
+        [&nbsp;<a href="http://cars9.uchicago.edu/iffwiki/Ifeffit"><span class=programlink>IFEFFIT</span></a>&nbsp;] &nbsp;&nbsp;
+        [&nbsp;<a href="http://leonardo.phys.washington.edu/feff/wiki/index.php?title=FEFF_Documentation"><span class=programlink>FEFF</span></a>&nbsp;] &nbsp;&nbsp;
+        [&nbsp;<a href="http://xafs.org">xafs.org</a>&nbsp;] &nbsp;&nbsp;
+	<!-- [&nbsp;<a href="../demeter.pdf">PDF&nbsp;doc</a>&nbsp;] -->
+      </td>
+      <td align=right>
+        Back: <a href="../data.html" class="menu" >The Data window</a> &nbsp;&nbsp;
+        Next: <a href="../path/index.html" class="menu" >The Path page</a> &nbsp;&nbsp;
+        Down: <a href="../feff/feff.html" class="menu" >The Feff tab</a>      </td>
+    </tr>
+  </table>
+  </div>
+  <h1>
+  The Atoms and Feff Window
+</h1>
+</div>
+
+<hr class=hide />
+
+
+<div class=sidebar>
+  <a href="../diana.html"><img src=../../images/artemis_icon.png
+    width=100% border=0 alt='[Demeter logo]'></a>
+  <br />
+  <a href="../index.html" class="menu" >Home</a><br />
+<a href="../intro.html" class="menu" >Introduction</a><br />
+<a href="../startup/index.html" class="menu" >Starting Artemis</a><br />
+<a href="../data.html" class="menu" >The Data window</a><br />
+<br />
+<a href="../feff/index.html" class="menuselect" >The Atoms/Feff window</a><br />
+&nbsp;-&nbsp;<a href="../feff/feff.html" class="menu" >The Feff tab</a><br />
+&nbsp;-&nbsp;<a href="../feff/paths.html" class="menu" >The Paths tab</a><br />
+&nbsp;-&nbsp;<a href="../feff/pathlike.html" class="menu" >The Path-like tab</a><br />
+&nbsp;-&nbsp;<a href="../feff/console.html" class="menu" >The Console tab</a><br /><br />
+<a href="../path/index.html" class="menu" >The Path page</a><br />
+<a href="../gds.html" class="menu" >The GDS window</a><br />
+<a href="../fit/index.html" class="menu" >Running a fit</a><br />
+<a href="../logjournal.html" class="menu" >The Log & Journal windows</a><br />
+<a href="../history.html" class="menu" >The History window</a><br />
+<a href="../monitor.html" class="menu" >Monitoring things</a><br />
+<a href="../prefs.html" class="menu" >Managing preferences</a><br />
+</div>
+
+<p>
+After importing crystal data from an <span class=file>atoms.inp</span> or CIF file.
+</p>
+
+
+
+<ol>
+  
+<li>
+A new  <span class=program>ATOMS</span> and  <span class=program>FEFF</span> window is created for interacting with
+the structural data and 
+the various controls are set to values taken from the
+<span class=file>atoms.inp</span> or CIF file, 
+</li>
+<li>
+A message is written to the status bar in the Main window.
+</li>
+<li>
+An entry is placed in the  <span class=program>FEFF</span> list on the main window.
+</li>
+</ol> 
+
+
+<p>
+This new window looks like this.  In this example, crystal data for Ni
+metal have been imported from an <span class=file>atoms.inp</span>
+file.
+</p>
+
+
+<a href="../../images/feff.atoms.png" target=_blank><img src="../../images/feff.atoms.png" alt="
+The  <span class=program>ARTEMIS</span>  <span class=program>ATOMS</span> and  <span class=program>FEFF</span> window.
+"></a>
+
+<p>
+At the very top of the window is a tool bar with three buttons.  The
+first of these is used to change the label for this  <span class=program>FEFF</span>
+calculation.  Among other things, this is the label used in the
+ <span class=program>FEFF</span> list on the Main window.  The second button is used to
+discard the  <span class=program>FEFF</span> calculation and this window.  The final button
+provides some information about how  <span class=program>ARTEMIS</span> is configured to
+interact with  <span class=program>FEFF</span>.
+</p>
+
+<p>
+There are a series of tabs across the top.  These will contain
+different stages of the structural calculation.  Here we will examine
+the  <span class=program>ATOMS</span> tab.  The other tabs will be examined in the following
+sections.
+</p>
+
+
+
+<a name="crystaldata">
+
+<h3>  Crystal data</h3>
+</a>
+
+<p>
+The crystal cell data -- including lattice constants and angles, the
+space group symbol, and the shift vector elements -- are placed in
+text boxes for easy editing.  The coordinates of the unique sites are
+listed in the grid at the bottom of the window.  The absorber is
+chosen by clicking one of the boxes on the 
+<tt>Core</tt> column.
+</p>
+
+<p>
+Remember that  <span class=program>FEFF</span> considers numbers with 5 digits of precision
+after the decimal point.  <tt>0.333</tt> is not the
+same thing as <tt>0.33333</tt>.  You may, however,
+enter things like <tt>1/3</tt> and avoid the
+precision issue entirely.
+</p>
+
+<p>
+As a new feature compared to earlier versions of  <span class=program>ATOMS</span>, there are
+two radial distances.  The cluster size determines the extent of the
+cluster expanded into the <span class=file>feff.inp</span>.  This
+should usually be set to something rather large, 9  &Aring;     is often a
+good default.  This probably (but not always!) assures that the
+cluster in the <span class=file>feff.inp</span> file is adequately
+large to include all unique potentials and has all atom types
+sufficiently well bounded that the muffin tin potentials are likely to
+be be computed reasonably well.
+</p>
+
+<p>
+The second distance will set the value of <tt>RMAX</tt> in the <span class=file>feff.inp</span> file.  In
+general, you do not want this to be much larger than the extent of the
+data you intend to analyze.  5  &Aring;     or 6  &Aring;     is usually the
+largest sensible value for longest path.  The reason for this is that
+the path finder part of  <span class=program>FEFF</span> has been rewritten for this version
+of  <span class=program>ARTEMIS</span>.  While the new path finder implementation offers a
+number of useful new features, it is substantially slower than
+ <span class=program>FEFF</span>'s  native path finder.  In any case, there is no
+benefit to computing paths that you will never use in your fit.
+</p>
+
+<p>
+The absorption edge for the calculation is chosen from the menu to the
+left of the lattice constant area.  This is usually determined from
+the input data, but may need to be explicitly selected.
+</p>
+
+<p>
+The style menu is another new feature in this version of Atoms.  It is
+used to set how the list of unique potentials is determined from the
+elements in the atoms list.  The choices are
+</p>
+
+
+<dl>
+  
+<dt>
+  tags
+</dt>
+<dd>
+Each unique tag is assigned a potential number.
+  <br />
+  <br />
+</dd>
+<dt>
+  sites
+</dt>
+<dd>
+Each crystallographic site is assigned a potential number.
+  <br />
+  <br />
+</dd>
+<dt>
+  elements
+</dt>
+<dd>
+Each unique element species is assigned a potential number.
+  <br />
+  <br />
+</dd>
+</dl> 
+
+<p>
+Remember that  <span class=program>FEFF</span> only allows for 7 unique potentials other than
+the absorber.  The tags and sites options can often result in more
+than 7 potnatials, which will result in an unrunnable
+<span class=file>feff.inp</span> file.  Specifying unique
+potentials by tags is a good way of differentiating between dissimilar
+atoms of the same species.  For example, in an oxygenyl species, it is
+often useful to give the axial oxygen atoms a different potential from
+the remaining oxygens by using the tags option.
+</p>
+
+<p>
+Here is an example of an <span class=file>atoms.inp</span> file
+for sodium uranyl acetate, which contains two very short axial oxygen
+atoms double bonded to the uranium atoms at about 1.8  &Aring;     and a
+number of equatorial oxygen atoms at a much longer distance.  The
+axial and equatorial oxygen positions are distinguished by their tags
+and will given separate unique potentials when using the tags style.
+</p>
+
+<pre>
+title        Templeton et al.
+title        Redetermination and Absolute configuration of Sodium Uranyl(VI) triacetate.
+title        Acta Cryst 1985 C41 1439-1441
+space = P 21 3
+a =   10.6890        b =      10.6890        c =      10.6890
+alpha =       90.0   beta =   90.0   gamma =  90.0
+core =       U       edge =  L3
+atoms
+! elem   x          y          z       tag        occ
+  U     0.42940    0.42940    0.42940  U             1.00000
+  Na    0.82860    0.82860    0.82860  Na            1.00000
+  O     0.33430    0.33430    0.33430  Oax           1.00000
+  O     0.52420    0.52420    0.52420  Oax           1.00000
+  O     0.38340    0.29450    0.61100  Oeq           1.00000
+  O     0.54640    0.24430    0.50070  Oeq           1.00000
+  C     0.47860    0.22600    0.59500  C             1.00000
+  C     0.50880    0.12400    0.68620  C             1.00000
+</pre>
+
+<a name="atomstoolbar">
+
+<h3>  Atoms tool bar</h3>
+</a>
+
+<p>
+Across the top of the  <span class=program>ATOMS</span> tab is a tool bar with several basic
+functions.  
+</p>
+
+<p>
+Clicking the open button will post the standard file selection dialog
+for importing a new <span class=file>atoms.inp</span> or CIF file.
+This is mostly used in the stand-along version of  <span class=program>ATOMS</span>.  Right
+clicking this button will post the recent files dialog populated with
+recently imported <span class=file>atoms.inp</span>, 
+<span class=file>feff.inp</span>, and CIF files.
+</p>
+
+<p>
+The save button will prompt you for a filename for an output 
+<span class=file>atoms.inp</span> saving the current state of the
+tab.
+</p>
+
+
+<table>
+<tr>
+<td>
+<p>
+
+Clicking the export button will post this dialog offering several
+different kinds of output files based on the current crystal data.
+The &ldquo;Feff6&rdquo; and &ldquo;Feff8&rdquo; options will write input files for  <span class=program>FEFF6</span> and
+ <span class=program>FEFF8</span>.  The &ldquo;Atoms&rdquo; option write the
+same file as the save button.  The &ldquo;P1&rdquo;
+option writes the cyrstal data using the <tt>P 1</tt> space group and a fully decorated unit cell. The &ldquo;Spacegroup&rdquo; option writes a file that fully describes
+the current crystal space group. the &ldquo;Absorption&rdquo; option writes a file containing some calculations
+based on tables of X-ray absorption coefficients.
+</p>
+
+</td>
+<td width=334>
+<a href="../../images/feff.export.png" target=_blank><img border=0 src="../../images/feff.export.png" alt="feff.export.png" width=100%></a>
+</td>
+</tr>
+</table>
+
+<p>
+The clear button is used to clear all data from all controls on the
+ <span class=program>ATOMS</span> tab.
+</p>
+
+<p>
+Finally the run button is pressed to convert the current crystal data
+into input data for  <span class=program>FEFF</span>.
+</p>
+
+<br />
+<hr class=hide />
+
+<div class=bottombar>
+  <div class=navbar>
+  <table class=navtable>
+    <tr>
+      <td align=left>
+        [&nbsp;<a href="../index.html">Home</a>&nbsp;] &nbsp;&nbsp;
+        [&nbsp;<a href="http://bruceravel.github.com/demeter/"><span class=programlink>DEMETER</span></a>&nbsp;] &nbsp;&nbsp;
+        [&nbsp;<a href="http://cars9.uchicago.edu/iffwiki/Ifeffit"><span class=programlink>IFEFFIT</span></a>&nbsp;] &nbsp;&nbsp;
+        [&nbsp;<a href="http://leonardo.phys.washington.edu/feff/wiki/index.php?title=FEFF_Documentation"><span class=programlink>FEFF</span></a>&nbsp;] &nbsp;&nbsp;
+        [&nbsp;<a href="http://xafs.org">xafs.org</a>&nbsp;] &nbsp;&nbsp;
+	<!-- [&nbsp;<a href="../demeter.pdf">PDF&nbsp;doc</a>&nbsp;] -->
+      </td>
+      <td align=right>
+        Back: <a href="../data.html" class="menu" >The Data window</a> &nbsp;&nbsp;
+        Next: <a href="../path/index.html" class="menu" >The Path page</a> &nbsp;&nbsp;
+        Down: <a href="../feff/feff.html" class="menu" >The Feff tab</a>      </td>
+    </tr>
+  </table>
+  </div>
+  <div class=copyright>
+   <span class=program>DEMETER</span> is copyright &copy; 2009-2012 Bruce Ravel
+  <br />
+  This document is copyright &copy; 2012 Bruce Ravel
+  <br />
+  email: (bravel |A|T| bnl |D|O|T| gov)
+  <br />
+  
+  <a href="http://creativecommons.org/licenses/by-sa/3.0/"><img src="../../images/somerights20.png" width="88" height="31" alt="" border="0" /></a> &nbsp;&nbsp;&nbsp;
+  <br />
+  This document is licensed under <a href="http://creativecommons.org/licenses/by-sa/3.0/">
+  The Creative Commons Attribution-ShareAlike License</a>.
+  <br />
+  If  <span class=program>DEMETER</span> and this document are useful to you, please consider
+  <a href="http://creativecommons.org/support/">supporting The Creative Commons</a>.
+</div>
+</div>
+  </body>
+</html>

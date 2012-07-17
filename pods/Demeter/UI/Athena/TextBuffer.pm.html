@@ -77,7 +77,8 @@
 
 </pre><p>Later:</p>
 
-<pre>  my $ted = Wx::TextEntryDialog-&gt;new($app-&gt;{main}, &quot;Enter a string:&quot;, &quot;Get a string&quot;, q{}, wxOK|wxCANCEL, Wx::GetMousePosition);
+<pre>  my $ted = Wx::TextEntryDialog-&gt;new($app-&gt;{main}, &quot;Enter a string:&quot;, &quot;Get a string&quot;,
+                                     q{}, wxOK|wxCANCEL, Wx::GetMousePosition);
   $app-&gt;set_text_buffer($ted, &quot;some&quot;);
   if ($ted-&gt;ShowModal == wxID_CANCEL) {
     $app-&gt;{main}-&gt;status(&quot;Renaming cancelled.&quot;);
@@ -88,6 +89,9 @@
 
 </pre><p>The methods <code>set_text_buffer</code> and <code>update_text_buffer</code> are exported
 by this module.</p>
+
+<p>The third argument is 0 if you generate a default value for the text
+string and 1 if you want the string blank.</p>
 
 <h1 id="DESCRIPTION">DESCRIPTION <a href="#TOP" class="toplink"><img alt="^" src="../../../up.gif" /></a></h1>
 

@@ -60,12 +60,14 @@ sub make_style {
   $app->set_text_buffer($ted, "style");
   if ($ted->ShowModal == wxID_CANCEL) {
     $app->{main}->status("Making new style cancelled.");
+    $app->{style_pointer} = $#{$app->{style_buffer}}+1;
     return;
   };
   my $name = $ted->GetValue;
   $app->update_text_buffer("style", $name, 1);
   if ($name =~ m{\A\s*\z}) {
     $app->{main}->status("No name provided.  Making new style cancelled.");
+    $app->{style_pointer} = $#{$app->{style_buffer}}+1;
     return;
   };
 

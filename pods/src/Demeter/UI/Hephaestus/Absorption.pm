@@ -87,7 +87,7 @@ sub new {
   $self->{databoxsizer} -> Add($filterbox, 0, wxALIGN_CENTER_HORIZONTAL|wxALL, 0);
   my $label = Wx::StaticText->new($self, -1, 'Filter');
   $filterbox -> Add($label, 0, wxALL, 5);
-  $self->{filterelement} = Wx::TextCtrl->new($self, -1, q{}, wxDefaultPosition, [35,-1]);
+  $self->{filterelement} = Wx::TextCtrl->new($self, -1, q{}, wxDefaultPosition, [35,-1], wxWANTS_CHARS);
   $filterbox -> Add($self->{filterelement}, 0, wxEXPAND|wxALL, 5);
   EVT_KEY_DOWN( $self->{filterelement}, sub{on_key_down(@_, $self)} );
 

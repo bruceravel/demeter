@@ -64,6 +64,7 @@ const my $TERM_2          => Wx::NewId();
 const my $TERM_3          => Wx::NewId();
 const my $TERM_4          => Wx::NewId();
 const my $IFEFFIT_MEMORY  => Wx::NewId();
+const my $IGNORE_NIDP     => Wx::NewId();
 
 use Wx::Perl::Carp qw(verbose);
 $SIG{__WARN__} = sub {Wx::Perl::Carp::warn($_[0])};
@@ -186,6 +187,11 @@ sub OnInit {
   $debugmenu->Append($PERL_MODULES, "Show perl modules",          "Show perl module versions", wxITEM_NORMAL );
   #$debugmenu->Append($CRASH,        "Crash Artemis",              "Force a crash of Artemis to test autosave file", wxITEM_NORMAL );
 
+  my $fitmenu = Wx::Menu->new;
+  $frames{main}->{fitmenu} = $fitmenu;
+  $fitmenu->AppendCheckItem($IGNORE_NIDP, "Skip Nidp check", "Skip test verifying that the number of guesses is less than Nidp (this is STRONGLY discouraged!)");
+  $fitmenu->Check($IGNORE_NIDP, 0);
+
   my $feedbackmenu = Wx::Menu->new;
   $feedbackmenu->Append($SHOW_BUFFER, "Show command buffer",    'Show the Ifeffit and plotting commands buffer');
   $feedbackmenu->Append($STATUS,      "Show status bar buffer", 'Show the buffer containing messages written to the status bars');
@@ -210,6 +216,7 @@ sub OnInit {
 
   $bar->Append( $filemenu,      "&File" );
   $bar->Append( $feedbackmenu,  "&Monitor" );
+  $bar->Append( $fitmenu,       "Fi&t" );
   $bar->Append( $plotmenu,      "Plot" ) if ($demeter->co->default('plot', 'plotwith') eq 'gnuplot');
   $bar->Append( $helpmenu,      "&Help" );
   $frames{main}->SetMenuBar( $bar );
@@ -592,6 +599,7 @@ sub fit {
   $fit->description($rframes->{main}->{description}->GetValue);
   $fit->fom($fit->mo->currentfit);
   #$fit->ignore_errors(1);
+  $fit->ignore_nidp($frames{main}->{fitmenu}->IsChecked($IGNORE_NIDP));
   $rframes->{main} -> {currentfit} = $fit;
 
   ## get fitting space
@@ -948,6 +956,20 @@ sub OnMenuClick {
       $frames{Status} -> Show(1);
       last SWITCH;
     };
+
+    ## -------- fit menu
+    ($id == $IGNORE_NIDP) and do {
+      if ($frames{main}->{fitmenu}->IsChecked($IGNORE_NIDP)) {
+	my $yesno = Wx::MessageDialog->new($frames{main}, "Are you SURE you want to skip the Nidp test?",
+					   "Skip Nidp test?", wxYES_NO|wxSTAY_ON_TOP|wxNO_DEFAULT);
+	if ($yesno->ShowModal == wxID_NO) {
+	  $frames{main}->{fitmenu}->Check($IGNORE_NIDP, 0);
+	  return;
+	};
+      };
+      last SWITCH;
+    };
+
   };
 };
 

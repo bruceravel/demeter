@@ -23,7 +23,8 @@ use MooseX::Aliases;
 use Carp;
 use File::Basename;
 use File::Spec;
-use List::MoreUtils qw(any all);
+use List::Util qw(max);
+use List::MoreUtils qw(any all zip);
 use Demeter::Constants qw($NUMBER $INTEGER $ETOK $PI $EPSILON4);
 
 use Text::Template;
@@ -602,6 +603,38 @@ sub _plotE_string {
              ? $self->template("plot", "newe")
              : $self->template("plot", "overe");
   return $string;
+};
+
+sub plot_ed {
+  my ($self) = @_;
+  my @deriv = $self->get_array('nder');
+  @deriv = map {abs($_)} @deriv;
+  my $scale = sprintf("%.3f", $self->co->default('plot', 'ed_scale') / max(@deriv));
+
+  my $scale_save = $self->plot_multiplier;
+  my $name = $self->name;
+  my @keys = qw(e_mu e_bkg e_norm e_der e_pre e_post e_i0 e_signal e_markers);
+  my @save = $self->po->get(@keys);
+  $self->po->set(e_mu      => 1,    e_bkg     => 0,
+		 e_norm    => 1,    e_der     => 0,
+		 e_pre     => 0,    e_post    => 0,
+		 e_i0      => 0,    e_signal  => 0,
+		 e_markers => 1,
+		);
+  $self->po->emin($self->co->default('plot', 'ed_min'));
+  $self->po->emax($self->co->default('plot', 'ed_max'));
+
+
+  $self->po->start_plot;
+  $self->plot('E');
+  $self->po->set(e_der=>1, e_markers => 0);
+  $self->plot_multiplier($scale);
+  $self->name("Derivative spectrum, scaled by $scale");
+  $self->plot('E');
+
+  $self->plot_multiplier($scale_save);
+  $self->name($name);
+  $self->po->set(zip(@keys, @save));
 };
 
 

@@ -1,0 +1,722 @@
+<!DOCTYPE HTMP PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <title>The Data window</title>
+    <link rel="stylesheet" href=./ab.css />
+    <link rel="stylesheet" href=./ppi.css />
+    <meta http-equiv="Content-Type" content="text/html"; charset=iso-8859-15 />
+    <meta name="robots" contents="all" />
+  </head>
+
+  <body>
+    <div class=topbar>
+  <div class=navbar>
+  <table class=navtable>
+    <tr>
+      <td align=left>
+        [&nbsp;<a href="./index.html">Home</a>&nbsp;] &nbsp;&nbsp;
+        [&nbsp;<a href="http://bruceravel.github.com/demeter/"><span class=programlink>DEMETER</span></a>&nbsp;] &nbsp;&nbsp;
+        [&nbsp;<a href="http://cars9.uchicago.edu/iffwiki/Ifeffit"><span class=programlink>IFEFFIT</span></a>&nbsp;] &nbsp;&nbsp;
+        [&nbsp;<a href="http://leonardo.phys.washington.edu/feff/wiki/index.php?title=FEFF_Documentation"><span class=programlink>FEFF</span></a>&nbsp;] &nbsp;&nbsp;
+        [&nbsp;<a href="http://xafs.org">xafs.org</a>&nbsp;] &nbsp;&nbsp;
+	<!-- [&nbsp;<a href="./demeter.pdf">PDF&nbsp;doc</a>&nbsp;] -->
+      </td>
+      <td align=right>
+        Back: <a href="./startup/index.html" class="menu" >Starting Artemis</a> &nbsp;&nbsp;
+        Next: <a href="./feff/index.html" class="menu" >The Atoms/Feff window</a>      </td>
+    </tr>
+  </table>
+  </div>
+  <h1>
+  The Data window
+</h1>
+</div>
+
+<hr class=hide />
+
+
+<div class=sidebar>
+  <a href="./diana.html"><img src=./../images/artemis_icon.png
+    width=100% border=0 alt='[Demeter logo]'></a>
+  <br />
+  <a href="./index.html" class="menu" >Home</a><br />
+<a href="./intro.html" class="menu" >Introduction</a><br />
+<a href="./startup/index.html" class="menu" >Starting Artemis</a><br />
+<a href="./data.html" class="menuselect" >The Data window</a><br />
+<a href="./feff/index.html" class="menu" >The Atoms/Feff window</a><br />
+<a href="./path/index.html" class="menu" >The Path page</a><br />
+<a href="./gds.html" class="menu" >The GDS window</a><br />
+<a href="./fit/index.html" class="menu" >Running a fit</a><br />
+<a href="./logjournal.html" class="menu" >The Log & Journal windows</a><br />
+<a href="./history.html" class="menu" >The History window</a><br />
+<a href="./monitor.html" class="menu" >Monitoring things</a><br />
+<a href="./prefs.html" class="menu" >Managing preferences</a><br />
+</div>
+
+<p>
+After importing data from an  <span class=program>ATHENA</span> project file, several things happen:
+</p>
+
+
+<ol>
+  
+<li>
+A new Data window is created for interacting with that data set and
+the various controls are set to values taken from the  <span class=program>ATHENA</span>
+project file or from  <span class=program>ARTEMIS</span>'   defaults.
+</li>
+<li>
+A message is written to the status bar in the Main window.
+</li>
+<li>
+The data are plotted in k-space.
+</li>
+<li>
+The data are transferred to the plotting list in the Plot window.
+</li>
+<li>
+An entry is placed in the Data list on the main window.
+</li>
+</ol> 
+
+<p>
+Here is the Plot window as it initially appears:
+</p>
+
+
+<a href="../images/datawindow.png" target=_blank><img src="../images/datawindow.png" alt="
+The  <span class=program>ARTEMIS</span> data window.
+"></a>
+
+<ol>
+  
+<li>
+This button is used to transfer this data set into the plotting list
+in the Plot window.
+</li>
+<li>
+This is the &ldquo;characteristic value&rdquo; of this
+data set.  Typically, this is just incremented for each data set as it
+is imported.  The CV can be used as a special parameter in math
+expressions. 
+</li>
+<li>
+This text box shows where this data set came from.  Typically, this
+shows the fully resolved file name for an  <span class=program>ATHENA</span> project file,
+followed by the index of the data from that project file.
+</li>
+<li>
+The five buttons generate special plots using this data set.  These
+five special plots are explained below.  Like the Fit button from the
+main window, these buttons are recolored after a fit to represent the
+value of the fit's  happiness parameter.
+</li>
+<li>
+This text box contains any title lines associated with the data.
+</li>
+<li>
+These controls are used to set the functional form of the windows for
+forward and backward Fourier transforms.  The  R<sub>min</sub>    and 
+ R<sub>max</sub>    values are also used as the fitting range.
+</li>
+<li>
+These check buttons are used to set the k-weight values used to
+evaluate the fit.  Note that these are <em>check</em>
+buttons -- more than one can be selected at a time.  The default is to
+have all of 1, 2, and 3 checked, resulting in a multiple k-weight fit.
+</li>
+<li>
+This area contains several other parameters related to this data set.
+When the first check button is checked, this data will be included in
+the fitting model.  Unchecking it is a way of removing a data set from
+a multiple data set fit without actually disposing of the data.  The
+second check button instructs  <span class=program>ARTEMIS</span> to automatically transfer
+this data set to the plotting list at the end of a fit.  The third
+check button turns on background co-refinement.  The  &epsilon;  
+text box allows you to specify a measurement error fit this data set.
+Finally, the last check button turns phase corrected plotting on and
+off.  (Note that phase corrected plotting is not implemented at this
+time.) 
+</li>
+<li>
+This status bar is used to display messages specifically related to
+this data set.  These messages are logged in the status buffer.
+</li>
+<li>
+The paths list will be come populated as paths are associated with
+this data set.  How that works will be explained in the next chapter.
+</li>
+<li>
+When no paths have yet been associated with a data set, this default
+page is displayed.  The lines of blue text are sensitive to mouse
+clicks and initiate the import of certain kinds of data.  All of those
+import options will be explained elsewhere in this document.
+</li>
+</ol> 
+
+<p>
+After one or more paths have been associated with this data set, the
+Data window looks something like this.  Note that the paths list is
+populated with the paths assigned to these data and that the right
+hand side of the Data window displays the details about a particular
+path.  Clicking on an item in the paths list causes that path to be
+displayed on the right.
+</p>
+
+<p>
+Note that each path in the path list has a check button associated
+with it.  These check buttons are involved in much of the
+functionality described below.
+</p>
+
+<p>
+Some vocabulary: The highlighted path is displayed on the right and is
+said to be <em>selected</em>.  When a paths check
+button is checked, it is said to be <em>marked</em>.
+In this example, the first path is selected and no paths have yet been
+marked. 
+</p>
+
+
+
+<a href="../images/datawindow_withpaths.png" target=_blank><img src="../images/datawindow_withpaths.png" alt="
+The  <span class=program>ARTEMIS</span> data window.
+"></a>
+
+
+
+
+
+<a name="specialplots">
+
+<h3>  Special plots</h3>
+</a>
+
+The five plot buttons on the Data window make special plots of that
+data set along with its fit (if a fit has been run).  Each of these is
+an elaborate, multi-component plot that cannot be made using the tools
+on the Plot window.  The examples shown here are for a fit to gold
+metal out to the fourth coordination shell.
+
+<table>
+<tr>
+<td>
+<p>
+
+This is the &ldquo;k123&rdquo; plot.  It shows the data
+and fit as  &chi;(k)   .  Each k-weighting from 1 to 3 is shown.  The
+data with k-weighting of 2 is plotted normally.  The other two
+k-weightings are scaled by the appropriate number such that all three
+k-weighting appear to be about the same size in the plot.  The Fourier
+transform window function is drawn over the k-weight of 1 spectrum.
+</p>
+
+</td>
+<td width=640>
+<a href="../images/plot_k123.png" target=_blank><img border=0 src="../images/plot_k123.png" alt="plot_k123.png" width=100%></a>
+</td>
+</tr>
+</table>
+
+<table>
+<tr>
+<td>
+<p>
+
+This is the &ldquo;k123&rdquo; plot.  It shows the data
+and fit as  &chi;(R)   .  The Fourier transform has been done with each
+k-weighting from 1 to 3.  The data with k-weighting of 2 is plotted
+normally.  The other two k-weightings are scaled by the appropriate
+number such that all three k-weighting appear to be about the same
+size in the plot.  The back-Fourier transform window function is drawn
+over the k-weight of 1 spectrum to indicate the range over which the
+fit was evaluated (assuming the fit space is R, as is the default).
+</p>
+
+</td>
+<td width=640>
+<a href="../images/plot_r123.png" target=_blank><img border=0 src="../images/plot_r123.png" alt="plot_r123.png" width=100%></a>
+</td>
+</tr>
+</table>
+
+<table>
+<tr>
+<td>
+<p>
+
+The &ldquo;Rmr&rdquo; plot is the default plot
+displayed after a fit.  It shows the magnitude and real part of 
+ &chi;(R)    using the value of k-weighting selected in the Plot window.
+The back-Fourier transform window function is drawn over the magnitude
+spectrum to indicate the range over which the fit was evaluated
+(assuming the fit space is R, as is the default).  The radio button in
+the Plot window for selecting the part of  &chi;(R)    is respected when
+this plot is made.
+</p>
+
+</td>
+<td width=640>
+<a href="../images/plot_rmr.png" target=_blank><img border=0 src="../images/plot_rmr.png" alt="plot_rmr.png" width=100%></a>
+</td>
+</tr>
+</table>
+
+<table>
+<tr>
+<td width=642>
+<a href="../images/plot_rk.png" target=_blank><img border=0 src="../images/plot_rk.png" alt="plot_rk.png" width=100%></a>
+</td>
+<td width=10px>
+</td>
+<td>
+<p>
+
+The &ldquo;Rk&rdquo; plot is a stacked plot with the
+&ldquo;Rmr&rdquo; on the bottom and  &chi;(k)    on the
+top.  The value of k-weighting selected in the Plot window is used.
+Fourier transform windows are drawn over the  &chi;(k)    and 
+ |&chi;(R)|    spectra.
+</p>
+
+</td>
+</tr>
+</table>
+
+<table>
+<tr>
+<td>
+<p>
+
+The &ldquo;kq&rdquo; plot shows the data and fit as 
+ &chi;(k)    and  &chi;(q)   .  The value of k-weighting selected in the
+Plot window is used.  The Fourier transform windows are drawn over 
+the  &chi;(k)    spectra.
+</p>
+
+</td>
+<td width=640>
+<a href="../images/plot_kq.png" target=_blank><img border=0 src="../images/plot_kq.png" alt="plot_kq.png" width=100%></a>
+</td>
+</tr>
+</table>
+
+
+
+
+<a name="menubar">
+
+<h3>  Menu bar</h3>
+</a>
+
+<a name="thedatamenu">
+
+<h4>  The Data menu</h4>
+</a>
+
+<table>
+<tr>
+<td>
+<p>
+
+<dl>
+  
+<dt>
+  Rename
+</dt>
+<dd>
+Change the name of this data set.  This is the name displayed next to
+the transfer button, in the plotting list, in the log file, and in
+plot legends.
+  <br />
+  <br />
+</dd>
+<dt>
+  Replace
+</dt>
+<dd>
+Change the  &chi;(k)    by importing new data from an  <span class=program>ATHENA</span>
+project file.  This is used to apply the current fitting model to a
+new data set.
+  <br />
+  <br />
+</dd>
+<dt>
+  Discard
+</dt>
+<dd>
+Throw away this data set and its window.  Also remove this data set
+from the Data list in the Main window.
+  <br />
+  <br />
+</dd>
+<dt>
+  Save data
+</dt>
+<dd>
+Write this data set to a column data file.  The  &chi;(k)    output
+option will write a file with columns for k,  &chi;(k)   ,  k&sdot;&chi;(k) ,
+ k&sup2;&sdot;&chi;(k) ,  k&sup3;&sdot;&chi;(k) , and the window function. The  &chi;(R)   
+output option will write a file with columns for R, the real part, the
+imaginary part, the magnitude, the phase, and the window function. 
+The  &chi;(q)    option is of the same form a the  &chi;(R)    option.
+  <br />
+  <br />
+</dd>
+<dt>
+  Save data and fit
+</dt>
+<dd>
+Write the data, the fit, and several other arrays to a data file in
+one of various forms of k, R, or q.  This will have columns for the
+abscissa, the selected form of the data, and the corresponding forms
+of the fit, the background (if co-refined), the residual, the running
+R-factor, and the window.
+  <br />
+  <br />
+</dd>
+<dt>
+  Save data and paths
+</dt>
+<dd>
+This will save the data along with each marked path to a column data
+file.  The columns will be the same as for the data+fit output.
+  <br />
+  <br />
+</dd>
+<dt>
+  Other fitting standards
+</dt>
+<dd>
+This submenu allows you to import a variety of special path types.
+These will be explained later in the document.
+  <br />
+  <br />
+</dd>
+<dt>
+  Set all degeneracies
+</dt>
+<dd>
+These two options allow you to control the degeneracy values of all
+the paths in the fit.  The choices are to set them all to 1 or to have
+them all use their degeneracies from their respective  <span class=program>FEFF</span>
+calculations.
+  <br />
+  <br />
+</dd>
+<dt>
+  Export parameters
+</dt>
+<dd>
+In a multiple data set fit, this allows you to constrain the data sets
+to have the same choice of Fourier transform parameters.
+  <br />
+  <br />
+</dd>
+<dt>
+  Set kmax
+</dt>
+<dd>
+Use  <span class=program>IFEFFIT</span>'s  suggestion for an appropriate value of  k<sub>max</sub>   .
+  <br />
+  <br />
+</dd>
+<dt>
+  Show epsilon
+</dt>
+<dd>
+Show the value of  &epsilon;   computed from the noise in this data
+set.  The value will be displayed in the Data window status bar.
+  <br />
+  <br />
+</dd>
+<dt>
+  Show Nidp
+</dt>
+<dd>
+Show the number of independent points computed from the Fourier
+transform and fitting range.  The value will be displayed in the Data
+window status bar. 
+  <br />
+  <br />
+</dd>
+</dl> 
+</p>
+
+</td>
+<td width=264>
+<a href="../images/data.datamenu.png" target=_blank><img border=0 src="../images/data.datamenu.png" alt="data.datamenu.png" width=100%></a>
+</td>
+</tr>
+</table> 
+
+<a name="thepathmenu">
+
+<h4>  The Path menu</h4>
+</a>
+
+<table>
+<tr>
+<td>
+<p>
+
+<dl>
+  
+<dt>
+  Transfer
+</dt>
+<dd>
+Transfer the displayed path to the plotting list in the Ploy window.
+  <br />
+  <br />
+</dd>
+<dt>
+  Rename
+</dt>
+<dd>
+Change the name of the displayed path.  This is the name displayed next to
+the transfer button, in the plotting list, in the log file, and in
+plot legends.
+  <br />
+  <br />
+</dd>
+<dt>
+  Show
+</dt>
+<dd>
+Post a dialog box with  <span class=program>IFEFFIT</span>'s  current evaluation of all
+path parameters for the displayed path.
+  <br />
+  <br />
+</dd>
+<dt>
+  Save path
+</dt>
+<dd>
+Write the displayed path to a column data file.  The  &chi;(k)    output
+option will write a file with columns for k,  &chi;(k)   ,  k&sdot;&chi;(k) ,
+ k&sup2;&sdot;&chi;(k) ,  k&sup3;&sdot;&chi;(k) , and the window function. The  &chi;(R)   
+output option will write a file with columns for R, the real part, the
+imaginary part, the magnitude, the phase, and the window function. 
+The  &chi;(q)    option is of the same form a the  &chi;(R)    option.
+  <br />
+  <br />
+</dd>
+<dt>
+  Clone
+</dt>
+<dd>
+Make a copy of the displayed path and insert it into the path list.
+The degeneracies of the original and cloned path will be half the
+original degeneracy.
+  <br />
+  <br />
+</dd>
+<dt>
+  Add path parameter
+</dt>
+<dd>
+</p>
+
+<p>
+Post a dialog which is used to add a path parameter math expression to
+multiple paths associated with this or other data sets.  This is a
+convenience allowing you to edit the path parameters for many paths at
+the same time.
+  <br />
+  <br />
+</dd>
+<dt>
+  Export path parameters
+</dt>
+<dd>
+Push the math expressions of each path parameter from the displayed
+path to other paths.  This submenu has options for pushing these
+values to the other paths from the same  <span class=program>FEFF</span> calculation, to the
+marked paths, to all paths in this data set, or to all paths in all
+data sets.
+  <br />
+  <br />
+</dd>
+<dt>
+  Quick 4 parameter fit
+</dt>
+<dd>
+This is a convenience function for setting up a simple, one-shell
+fit.  Selecting this menu item will create 4 parameters in the GDS
+window and use those four parameters as the math expressions for
+ S&sup2;&#8320; ,  E&#8320; ,  &Delta;R , and  &sigma;&sup2;  for each path assigned to
+this data set.  This is intended only for a one-path, one-shell fit.
+While it may be tempting to expect broader utility out of this
+function -- don't do so. 
+  <br />
+  <br />
+</dd>
+<dt>
+  Discard
+</dt>
+<dd>
+Discard the displayed path, removing it from the path list.
+  <br />
+  <br />
+</dd>
+</dl> 
+</p>
+
+</td>
+<td width=259>
+<a href="../images/data.pathmenu.png" target=_blank><img border=0 src="../images/data.pathmenu.png" alt="data.pathmenu.png" width=100%></a>
+</td>
+</tr>
+</table> 
+
+<a name="themarksmenu">
+
+<h4>  The Marks menu</h4>
+</a>
+
+<table>
+<tr>
+<td>
+<p>
+
+Much of  <span class=program>ARTEMIS</span>' functionality revolves around groups of
+marked paths.  This menu contains a number of shortcuts for marking
+paths.  Note that each of these has a keyboard shortcut
+given on the right side of the menu.  Learning the shortcuts for
+marking functions that you use frequently is key to the effective use
+of  <span class=program>ARTEMIS</span>.
+</p>
+
+<p>
+Marking via these functions is cumulative.  That is, most of them only
+add to the set of marked paths.   Choosing to mark, say, all single
+scattering paths will not unmark any multiple scattering paths.
+</p>
+
+<p>
+Several of these functions will post a dialog for receiving input.
+Marking by regular expression (regex) will prompt for a perl-style
+regular expression to match against the labels in the path list.
+Marking bath greater than or less than an R value will prompt for
+that R value.
+</p>
+
+<p>
+Marking before or after the current path will mark those above or
+below the displayed path in the path list.  Included and excluded
+refers to whether a path is selected as being included in a fit.
+Importance refers to the heuristic importance of the path, which is
+represented by the green (high), yellow (medium), or gray (low) color
+of the label at the top of the path page.
+</p>
+
+</td>
+<td width=261>
+<a href="../images/data.marksmenu.png" target=_blank><img border=0 src="../images/data.marksmenu.png" alt="data.marksmenu.png" width=100%></a>
+</td>
+</tr>
+</table>
+
+<a name="theactionsmenu">
+
+<h4>  The Actions menu</h4>
+</a>
+
+<table>
+<tr>
+<td>
+<p>
+
+Every item in this menu operates on the set of marked paths.  Again,
+keyboard shortcuts are given in the menu.
+</p>
+
+<p>
+The first option will be explained in the chapter on ....  The second
+option will transfer all marked paths to the plotting list in the
+Plot window.
+</p>
+
+<p>
+The next two options will cause the set of marked paths to be included
+in or excluded from the fit.  The next item causes all marked paths to
+be discarded from your fitting project and removed from the path list.
+</p>
+
+<p>
+The final two items are about controlling what gets transferred into the
+plotting list after a fit.  The next to last item causes all marked
+paths to be transferred.  The last item removes all paths from the list
+of things transferred
+</p>
+
+</td>
+<td width=271>
+<a href="../images/data.actionsmenu.png" target=_blank><img border=0 src="../images/data.actionsmenu.png" alt="data.actionsmenu.png" width=100%></a>
+</td>
+</tr>
+</table>
+
+<a name="thedebugmenu">
+
+<h4>  The Debug menu</h4>
+</a>
+
+<table>
+<tr>
+<td>
+<p>
+
+This menu displays various dialog boxes showing aspects of the current
+state if  <span class=program>IFEFFIT</span> or  <span class=program>ARTEMIS</span>.  These are mostly used for
+debugging purposes.
+</p>
+
+</td>
+<td width=230>
+<a href="../images/data.debugmenu.png" target=_blank><img border=0 src="../images/data.debugmenu.png" alt="data.debugmenu.png" width=100%></a>
+</td>
+</tr>
+</table>
+
+<br />
+<hr class=hide />
+
+<div class=bottombar>
+  <div class=navbar>
+  <table class=navtable>
+    <tr>
+      <td align=left>
+        [&nbsp;<a href="./index.html">Home</a>&nbsp;] &nbsp;&nbsp;
+        [&nbsp;<a href="http://bruceravel.github.com/demeter/"><span class=programlink>DEMETER</span></a>&nbsp;] &nbsp;&nbsp;
+        [&nbsp;<a href="http://cars9.uchicago.edu/iffwiki/Ifeffit"><span class=programlink>IFEFFIT</span></a>&nbsp;] &nbsp;&nbsp;
+        [&nbsp;<a href="http://leonardo.phys.washington.edu/feff/wiki/index.php?title=FEFF_Documentation"><span class=programlink>FEFF</span></a>&nbsp;] &nbsp;&nbsp;
+        [&nbsp;<a href="http://xafs.org">xafs.org</a>&nbsp;] &nbsp;&nbsp;
+	<!-- [&nbsp;<a href="./demeter.pdf">PDF&nbsp;doc</a>&nbsp;] -->
+      </td>
+      <td align=right>
+        Back: <a href="./startup/index.html" class="menu" >Starting Artemis</a> &nbsp;&nbsp;
+        Next: <a href="./feff/index.html" class="menu" >The Atoms/Feff window</a>      </td>
+    </tr>
+  </table>
+  </div>
+  <div class=copyright>
+   <span class=program>DEMETER</span> is copyright &copy; 2009-2012 Bruce Ravel
+  <br />
+  This document is copyright &copy; 2012 Bruce Ravel
+  <br />
+  email: (bravel |A|T| bnl |D|O|T| gov)
+  <br />
+  
+  <a href="http://creativecommons.org/licenses/by-sa/3.0/"><img src="../images/somerights20.png" width="88" height="31" alt="" border="0" /></a> &nbsp;&nbsp;&nbsp;
+  <br />
+  This document is licensed under <a href="http://creativecommons.org/licenses/by-sa/3.0/">
+  The Creative Commons Attribution-ShareAlike License</a>.
+  <br />
+  If  <span class=program>DEMETER</span> and this document are useful to you, please consider
+  <a href="http://creativecommons.org/support/">supporting The Creative Commons</a>.
+</div>
+</div>
+  </body>
+</html>

@@ -36,10 +36,13 @@ sub new {
 			       );
 
   my $prj = Demeter::Data::Prj->new(file=>$file);
-  my ($names, $entries) = $prj -> plot_as_chi;
+  my ($names, $entries, $positions) = $prj -> plot_as_chi;
+  ##print join("|", @$names, @$entries, @$positions), $/;
+
   if ($style ne 'single') {
-    $names = [$prj->allnames];
+    $names = [$prj->allnames(0)];
     $entries = $prj->entries;
+    $positions = [0 .. $#{$entries}];
   };
   $this->{prj}    = $prj;
   $this->{record} = -1;
@@ -52,7 +55,7 @@ sub new {
   my $sty = ($style eq 'single') ? wxLB_SINGLE : wxLB_EXTENDED;
   $this->{grouplist} = Wx::ListBox->new($this, -1, wxDefaultPosition, [125,500], $names, $sty);
   $left -> Add($this->{grouplist}, 1, wxGROW|wxALL, 5);
-  EVT_LISTBOX( $this, $this->{grouplist}, sub{plot_selection(@_, $prj, $names)} );
+  EVT_LISTBOX( $this, $this->{grouplist}, sub{plot_selection(@_, $prj, $names, $positions)} );
 
   my $right = Wx::BoxSizer->new( wxVERTICAL );
   $hbox -> Add($right, 2, wxALL, 0);
@@ -70,7 +73,7 @@ sub new {
 				      4, wxRA_SPECIFY_ROWS);
   $right -> Add($this->{plotas}, 0, wxGROW|wxALL, 5);
   ($style eq 'single') ? $this->{plotas}->SetSelection(1) : $this->{plotas}->SetSelection(0);
-  EVT_RADIOBOX($this, $this->{plotas}, sub{OnPlotAs(@_, $prj, $names)});
+  EVT_RADIOBOX($this, $this->{plotas}, sub{OnPlotAs(@_, $prj, $names, $positions)});
 
   if ($style eq 'single') {	# importing into Artemis
     $this->{params} = Wx::RadioBox->new($this, -1, "Take parameters from", wxDefaultPosition, wxDefaultSize,
@@ -125,7 +128,7 @@ sub new {
 
   if ($style eq 'single') {
     $this->{grouplist}->SetSelection(0);
-    $this->do_plot($prj,1);
+    $this->do_plot($prj,$positions->[0]+1);
   };
   return $this;
 };
@@ -140,19 +143,20 @@ sub ShouldPreventAppExit {
 };
 
 sub OnPlotAs {
-  my ($this, $event, $prj, $names) = @_;
+  my ($this, $event, $prj, $names, $positions) = @_;
   return if ($this->{grouplist}->GetSelections < 0);
   my ($sel) = $this->{grouplist}->GetSelections;
-  $this -> do_plot($prj, $sel+1);
+  #print ">>>>>>>>>", $sel, $/;
+  $this -> do_plot($prj, $positions->[$sel]+1);
 };
 
 sub plot_selection {
-  my ($this, $event, $prj, $names) = @_;
+  my ($this, $event, $prj, $names, $positions) = @_;
   $this->Refresh;
   my ($sel) = $this->{grouplist}->GetSelections;
-  $this->{record} = $sel+1;
+  $this->{record} = $positions->[$sel];
   #my $index = firstidx {$_ eq $event->GetString } @$names;
-  $this -> do_plot($prj, $sel+1);
+  $this -> do_plot($prj, $positions->[$sel]+1);
 };
 sub do_plot {
   my ($this, $prj, $record) = @_;
@@ -160,6 +164,17 @@ sub do_plot {
   my @save = ($prj->po->r_pl, $prj->po->q_pl);
   $this->{record} = $record;
   my $data = $prj->record($record);
+  if ($data->datatype  =~ m{(?:detector|background|xanes)}) {
+    $this->{plotas}->Enable(0,  1);
+    $this->{plotas}->Enable($_, 0) foreach (1..7);
+    $this->{plotas}->SetSelection(0);
+  } elsif ($data->datatype  eq 'chi') {
+    $this->{plotas}->Enable(0,  0);
+    $this->{plotas}->Enable($_, 1) foreach (1..7);
+    $this->{plotas}->SetSelection(4);
+  } else {
+    $this->{plotas}->Enable($_, 1) foreach (0..7);
+  };
   my $ref;
   return if not defined($data);
   if ($data->bkg_stan ne 'None') {

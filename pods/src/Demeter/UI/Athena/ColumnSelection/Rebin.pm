@@ -68,7 +68,9 @@ sub new {
 
   #$this->{abs}   = Wx::TextCtrl->new($this, -1, q{}, wxDefaultPosition, [60,-1]);
   foreach my $w (qw(emin emax pre xanes exafs)) {
-    $this->{$w}  = Wx::TextCtrl->new($this, -1, $data->co->default('rebin', $w), wxDefaultPosition, [60,-1]);
+    $this->{$w}  = Wx::TextCtrl->new($this, -1, q{}, wxDefaultPosition, [60,-1]);
+    $this->{$w} -> Enable(1);
+    $this->{$w} -> SetValue($data->co->default('rebin', $w)||$data->co->demeter('rebin', $w));
     push @{$this->{controls}}, $this->{$w};
   };
   #$gbs->Add($this->{abs},   Wx::GBPosition->new(0,2));

@@ -13,7 +13,7 @@ sub plot {
   my ($self, $space) = @_;
   my $pf   = $self->po;
   $space ||= $pf->space;
-  ($space  = 'kq') if (lc($space) eq 'qk');
+  ($space  = 'ed') if (lc($space) eq 'de');
   $space   = lc($space);
   $self->po->space(substr($space, 0, 1)) if ($space !~ m{(?:quad|stddev|variance)});;
 
@@ -22,6 +22,7 @@ sub plot {
     return $self;
   };
   my $which = ($space eq 'e')     ? $self->_update('fft')
+            : ($space eq 'ed')    ? $self->_update('fft')
             : ($space eq 'k')     ? $self->_update('fft')
             : ($space eq 'k123')  ? $self->_update('fft')
             : ($space eq 'r123')  ? $self->_update('bft')
@@ -34,47 +35,53 @@ sub plot {
             :                       q{};
 
  SWITCH: {
-    (lc($space) eq 'k123') and do {
+    ($space eq 'ed') and do {
+      $self -> plot_ed;
+      $pf   -> increment;
+      return $self;
+      last SWITCH;
+    };
+    ($space eq 'k123') and do {
       $self -> plotk123;
       $pf   -> increment;
       return $self;
       last SWITCH;
     };
-    (lc($space) =~ m{\Akq}) and do {
+    ($space =~ m{\Akq}) and do {
       $self -> plot_kqfit;
       $pf   -> increment;
       return $self;
       last SWITCH;
     };
-    (lc($space) eq 'r123') and do {
+    ($space eq 'r123') and do {
       $self -> plotR123;
       $pf   -> increment;
       return $self;
       last SWITCH;
     };
-    (lc($space) eq 'rmr' ) and do {
+    ($space eq 'rmr' ) and do {
       $self -> plotRmr;
       $pf   -> increment;
       return $self;
       last SWITCH;
     };
-    (lc($space) eq 'rk' ) and do {
+    ($space eq 'rk' ) and do {
       $self -> rkplot;
       $pf   -> increment;
       return $self;
       last SWITCH;
     };
-    (lc($space) eq 'quad' ) and do {
+    ($space eq 'quad' ) and do {
       $self -> quadplot;
       return $self;
       last SWITCH;
     };
-    (lc($space) eq 'stddev' ) and do {
+    ($space eq 'stddev' ) and do {
       $self -> stddevplot;
       return $self;
       last SWITCH;
     };
-    (lc($space) eq 'variance' ) and do {
+    ($space eq 'variance' ) and do {
       $self -> varianceplot;
       return $self;
       last SWITCH;

@@ -1,0 +1,167 @@
+<!DOCTYPE HTMP PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <title>The Path page</title>
+    <link rel="stylesheet" href=./ab.css />
+    <link rel="stylesheet" href=./ppi.css />
+    <meta http-equiv="Content-Type" content="text/html"; charset=iso-8859-15 />
+    <meta name="robots" contents="all" />
+  </head>
+
+  <body>
+    <div class=topbar>
+  <div class=navbar>
+  <table class=navtable>
+    <tr>
+      <td align=left>
+        [&nbsp;<a href="./index.html">Home</a>&nbsp;] &nbsp;&nbsp;
+        [&nbsp;<a href="http://cars9.uchicago.edu/iffwiki/Demeter"><span class=programlink>DEMETER</span></a>&nbsp;] &nbsp;&nbsp;
+        [&nbsp;<a href="http://cars9.uchicago.edu/iffwiki/Ifeffit"><span class=programlink>IFEFFIT</span></a>&nbsp;] &nbsp;&nbsp;
+        [&nbsp;<a href="http://leonardo.phys.washington.edu/feff/wiki/index.php?title=FEFF_Documentation"><span class=programlink>FEFF</span></a>&nbsp;] &nbsp;&nbsp;
+        [&nbsp;<a href="http://xafs.org">xafs.org</a>&nbsp;] &nbsp;&nbsp;
+	[&nbsp;<a href="./demeter.pdf">PDF&nbsp;doc</a>&nbsp;]
+      </td>
+      <td align=right>
+        Back: <a href="./feff/index.html" class="menu" >The Atoms and Feff window</a> &nbsp;&nbsp;
+        Next: <a href="./gds.html" class="menu" >The GDS window</a>      </td>
+    </tr>
+  </table>
+  </div>
+  <h1>
+  The Path page
+</h1>
+</div>
+
+<hr class=hide />
+
+
+<div class=sidebar>
+  <a href="./ceres.html"><img src=./../images/artemis_icon.jpg
+    width=100% border=0 alt='[Demeter logo]'></a>
+  <br />
+  <a href="./index.html" class="menu" >Home</a><br />
+<a href="./intro.html" class="menu" >Introduction</a><br />
+<a href="./startup/index.html" class="menu" >Starting Artemis</a><br />
+<a href="./data.html" class="menu" >The Data window</a><br />
+<a href="./feff/index.html" class="menu" >The Atoms and Feff window</a><br />
+<a href="./path.html" class="menuselect" >The Path page</a><br />
+<a href="./gds.html" class="menu" >The GDS window</a><br />
+</div>
+
+<p>
+In this chapter, the method for associating paths with data sets is
+explained.  We will also see how to begin constructing a fitting
+model.
+</p>
+
+<p>
+Shown below is the Data window, which we have already seen, with some
+data from a gold foil already imported.  I have passed the cursor over
+the active text which says
+&ldquo;Import crystal data or a Feff calculation&rdquo;.
+Clicking will open the standard file selection dialog, prompting you for
+an <span class=file>atoms.inp</span>, <span class=file>feff.inp</span>
+or CIF file.  The same thing can be done by clicking the
+&ldquo;Add&rdquo; button above the Feff list in the Main
+window, by selecting &ldquo;Open project of data&rdquo;
+from the File menu in  the Main window, or by using the 
+<tt>Control-o</tt> keyboaard shortcut.
+</p>
+
+
+<a href="../images/path.empty.png" target=_blank><img src="../images/path.empty.png" alt="
+The Data window with no paths associated.
+"></a>
+
+
+<p>
+From the file dialog, I select an <span class=file>atoms.inp</span>
+file containing these crystal data:
+<pre>
+title  gold
+space  f m 3 m
+a = 4.08   rmax = 6.00    core = Au1
+atoms
+  Au     0.00000   0.00000   0.00000  Au1
+</pre>
+This crystal data is entered in a  <span class=program>FEFF</span> window and posted to the
+screen.
+</p>
+
+
+<a href="../images/path.atoms.png" target=_blank><img src="../images/path.atoms.png" alt="
+The  <span class=program>ATOMS</span> and  <span class=program>FEFF</span> window containing gold metal crystal data.
+"></a>
+
+<p>
+Running  <span class=program>ATOMS</span> then  <span class=program>FEFF</span> results in this path list:
+</p>
+
+
+<a href="../images/path.pathlist.png" target=_blank><img src="../images/path.pathlist.png" alt="
+The path list for the gold metal calculation.
+"></a>
+
+<p>
+By clicking on path #0000 in the list then shift-clicking on
+path #0012, the first 13 paths are selected
+</p>
+
+
+<a href="../images/path.selected.png" target=_blank><img src="../images/path.selected.png" alt="
+The first 13 paths have been selected.
+"></a>
+
+<p>
+Now click on any of the selected paths.  While holding down the left
+mouse button, drag those paths over to the right side of the Data
+window and drop them by releasing the mouse button.  This will place
+all 13 of those paths in the path list on the Data window containing
+the data on the gold foil.
+</p>
+
+
+<a href="../images/path.populated.png" target=_blank><img src="../images/path.populated.png" alt="
+The Data window has been populated with the 13 paths from the  <span class=program>FEFF</span> calculation.
+"></a>
+
+<br />
+<hr class=hide />
+
+<div class=bottombar>
+  <div class=navbar>
+  <table class=navtable>
+    <tr>
+      <td align=left>
+        [&nbsp;<a href="./index.html">Home</a>&nbsp;] &nbsp;&nbsp;
+        [&nbsp;<a href="http://cars9.uchicago.edu/iffwiki/Demeter"><span class=programlink>DEMETER</span></a>&nbsp;] &nbsp;&nbsp;
+        [&nbsp;<a href="http://cars9.uchicago.edu/iffwiki/Ifeffit"><span class=programlink>IFEFFIT</span></a>&nbsp;] &nbsp;&nbsp;
+        [&nbsp;<a href="http://leonardo.phys.washington.edu/feff/wiki/index.php?title=FEFF_Documentation"><span class=programlink>FEFF</span></a>&nbsp;] &nbsp;&nbsp;
+        [&nbsp;<a href="http://xafs.org">xafs.org</a>&nbsp;] &nbsp;&nbsp;
+	[&nbsp;<a href="./demeter.pdf">PDF&nbsp;doc</a>&nbsp;]
+      </td>
+      <td align=right>
+        Back: <a href="./feff/index.html" class="menu" >The Atoms and Feff window</a> &nbsp;&nbsp;
+        Next: <a href="./gds.html" class="menu" >The GDS window</a>      </td>
+    </tr>
+  </table>
+  </div>
+  <div class=copyright>
+   <span class=program>DEMETER</span> is copyright &copy; 2009-2012 Bruce Ravel
+  <br />
+  This document is copyright &copy; 2012 Bruce Ravel
+  <br />
+  email: (bravel |A|T| bnl |D|O|T| gov)
+  <br />
+  
+  <a href="http://creativecommons.org/licenses/by-sa/3.0/"><img src="../images/somerights20.png" width="88" height="31" alt="" border="0" /></a> &nbsp;&nbsp;&nbsp;
+  <br />
+  This document is licensed under <a href="http://creativecommons.org/licenses/by-sa/3.0/">
+  The Creative Commons Attribution-ShareAlike License</a>.
+  <br />
+  If  <span class=program>DEMETER</span> and this document are useful to you, please consider
+  <a href="http://creativecommons.org/support/">supporting The Creative Commons</a>.
+</div>
+</div>
+  </body>
+</html>

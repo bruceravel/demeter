@@ -78,7 +78,8 @@ In the main application:
 
 Later:
 
-  my $ted = Wx::TextEntryDialog->new($app->{main}, "Enter a string:", "Get a string", q{}, wxOK|wxCANCEL, Wx::GetMousePosition);
+  my $ted = Wx::TextEntryDialog->new($app->{main}, "Enter a string:", "Get a string",
+                                     q{}, wxOK|wxCANCEL, Wx::GetMousePosition);
   $app->set_text_buffer($ted, "some");
   if ($ted->ShowModal == wxID_CANCEL) {
     $app->{main}->status("Renaming cancelled.");
@@ -89,6 +90,9 @@ Later:
 
 The methods C<set_text_buffer> and C<update_text_buffer> are exported
 by this module.
+
+The third argument is 0 if you generate a default value for the text
+string and 1 if you want the string blank.
 
 =head1 DESCRIPTION
 

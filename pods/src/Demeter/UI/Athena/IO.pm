@@ -865,7 +865,7 @@ sub FPath {
   my ($app) = @_;
   return if $app->is_empty;
 
-  if (none {$app->current_data->datatype eq $_} qw(xmu xanes)) {
+  if (none {$app->current_data->datatype eq $_} qw(xmu chi)) {
     $app->{main}->status("You cannot make an empirical standard from this group.");
     return;
   };
@@ -887,6 +887,9 @@ sub FPath {
   $app->{main}->{popup} -> ShowModal;
 
   my $reff = 2.5;
+  my @save = ($app->current_data->fft_dk, $app->current_data->bft_dr);
+  $app->current_data->fft_dk(0);
+  $app->current_data->bft_dr(0);
   my $save = $app->current_data->fft_pc;
   $app->current_data->fft_pc(1);
   $app->current_data->_update('bft');
@@ -914,6 +917,8 @@ sub FPath {
 			       s02       => 1,
 			      );
   $fp->freeze($fname);
+  $app->current_data->fft_dk($save[0]);
+  $app->current_data->bft_dr($save[1]);
   $app->{main}->status(sprintf("Wrote a %s-%s empirical standard of length %.5f to %s",
 			       $app->current_data->bkg_z, $scatterer, $reff, $fname));
 };

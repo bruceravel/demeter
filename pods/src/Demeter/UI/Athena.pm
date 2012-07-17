@@ -334,6 +334,7 @@ const my $REMOVE_MARKED		=> Wx::NewId();
 const my $DATA_YAML		=> Wx::NewId();
 const my $DATA_TEXT		=> Wx::NewId();
 const my $CHANGE_DATATYPE	=> Wx::NewId();
+const my $EPSILON_MARKED	=> Wx::NewId();
 
 const my $VALUES_ALL		=> Wx::NewId();
 const my $VALUES_MARKED		=> Wx::NewId();
@@ -353,6 +354,7 @@ const my $ZOOM			=> Wx::NewId();
 const my $UNZOOM		=> Wx::NewId();
 const my $CURSOR		=> Wx::NewId();
 const my $PLOT_QUAD		=> Wx::NewId();
+const my $PLOT_ED		=> Wx::NewId();
 const my $PLOT_IOSIG		=> Wx::NewId();
 const my $PLOT_K123		=> Wx::NewId();
 const my $PLOT_R123		=> Wx::NewId();
@@ -512,6 +514,7 @@ sub menubar {
   #$groupmenu->AppendSubMenu($freezemenu, 'Freeze groups', 'Freeze groups, that is disable their controls such that their parameter values cannot be changed.');
   $groupmenu->Append($DATA_YAML,      "Show structure of current group",                 "Show detailed contents of the current data group");
   $groupmenu->Append($DATA_TEXT,      "Show the text of the current group's data file",  "Show the text of the current data group's data file");
+  $groupmenu->Append($EPSILON_MARKED, "Show measurement uncertainties.", "Show the measurement uncertainties of the marked groups." );
   $groupmenu->AppendSeparator;
   $groupmenu->Append($SHOW_REFERENCE, "Identify reference channel", "Identify the group that shares the data/reference relationship with this group.");
   $groupmenu->Append($TIE_REFERENCE,  "Tie reference channel",  "Tie together two marked groups as data and reference channel.");
@@ -541,6 +544,7 @@ sub menubar {
   $app->{main}->{markedplotmenu}  = $markedplotmenu;
   $app->{main}->{mergedplotmenu}  = $mergedplotmenu;
   $currentplotmenu->Append($PLOT_QUAD,       "Quad plot",             "Make a quad plot from the current group" );
+  $currentplotmenu->Append($PLOT_ED,         "Norm+deriv",            "Make a plot of norm(E)+deriv(E) of the current group" );
   $currentplotmenu->Append($PLOT_IOSIG,      "Data+I0+Signal",        "Plot data, I0, and signal from the current group" );
   $currentplotmenu->Append($PLOT_K123,       "k123 plot",             "Make a k123 plot from the current group" );
   $currentplotmenu->Append($PLOT_R123,       "R123 plot",             "Make an R123 plot from the current group" );
@@ -800,6 +804,11 @@ sub OnMenuClick {
       };
       last SWITCH;
     };
+    ($id == $EPSILON_MARKED) and do {
+      last SWITCH if $app->is_empty;
+      $app->show_epsilon;
+      last SWITCH;
+    };
 
     ## -------- values menu
     ($id == $VALUES_ALL) and do {
@@ -944,6 +953,17 @@ sub OnMenuClick {
       #$app->{main}->{Main}->pull_values($data);
       $data->po->start_plot;
       $app->quadplot($data);
+      last SWITCH;
+    };
+    ($id == $PLOT_ED) and do {
+      my $data = $app->current_data;
+      if ($app->current_data->datatype ne 'xmu') {
+	$app->{main}->status("Cannot plot " . $app->current_data->datatype . " data as a quadplot.", "error");
+	return;
+      };
+      #$app->{main}->{Main}->pull_values($data);
+      $data->po->start_plot;
+      $data->plot('ed');
       last SWITCH;
     };
     ($id == $PLOT_IOSIG) and do {
@@ -1879,7 +1899,8 @@ sub mark {
     my $ted = Wx::TextEntryDialog->new( $app->{main}, "$word data groups matching this regular expression:", "Enter a regular expression", q{}, wxOK|wxCANCEL, Wx::GetMousePosition);
     $app->set_text_buffer($ted, "regexp");
     if ($ted->ShowModal == wxID_CANCEL) {
-       $app->{main}->status($word."ing by regular expression cancelled.");
+      $app->{main}->status($word."ing by regular expression cancelled.");
+      $app->{regexp_pointer} = $#{$app->{regexp_buffer}}+1;
       return;
     };
     $regex = $ted->GetValue;
@@ -1887,6 +1908,7 @@ sub mark {
     my $is_ok = eval '$re = qr/$regex/';
     if (not $is_ok) {
       $app->{main}->status("Oops!  \"$regex\" is not a valid regular expression");
+      $app->{regexp_pointer} = $#{$app->{regexp_buffer}}+1;
       return;
     };
     $app->update_text_buffer("regexp", $regex, 1);
@@ -1941,6 +1963,7 @@ sub quench {
       $app->set_text_buffer($ted, "regexp");
       if ($ted->ShowModal == wxID_CANCEL) {
 	$app->{main}->status(chomp($word)."ing by regular expression cancelled.");
+	$app->{regexp_pointer} = $#{$app->{regexp_buffer}}+1;
 	return;
       };
       $regex = $ted->GetValue;
@@ -1948,6 +1971,7 @@ sub quench {
       my $is_ok = eval '$re = qr/$regex/';
       if (not $is_ok) {
 	$app->{main}->status("Oops!  \"$regex\" is not a valid regular expression");
+	$app->{regexp_pointer} = $#{$app->{regexp_buffer}}+1;
 	return;
       };
       $app->update_text_buffer("regexp", $regex, 1);
@@ -2031,6 +2055,7 @@ sub merge {
     $merged->po->e_markers(1);
   };
   $app->{main}->status("Made merged data group");
+  $app->{main}->status($merged->annotation, 'alert') if $merged->annotation;
   $app->heap_check(0);
   undef $busy;
 };
@@ -2101,6 +2126,25 @@ sub heap_check {
   };
 };
 
+sub show_epsilon {
+  my ($app) = @_;
+  my $clb = $app->{main}->{list};
+  return if not $clb->GetCount;
+  my $busy = Wx::BusyCursor->new();
+  my $text = sprintf("\n%-25s : %9s  %9s\n", qw(group epsilon_k epsilon_r));
+  $text .= '=' x 48 . "\n";
+  foreach my $i (0 .. $clb->GetCount-1) {
+    next if not $clb->IsChecked($i);
+    my $d = $clb->GetIndexedData($i);
+    $d -> _update('bft');
+    $text .= sprintf("%-25s : %9.3e  %9.3e\n", $d->name, $d->epsk, $d->epsr);
+  };
+  undef $busy;
+  my $dialog = Demeter::UI::Artemis::ShowText
+    -> new($app->{main}, $text, 'Measurement uncertainties')
+      -> Show;
+};
+
 sub document {
   my ($app, $which) = @_;
   print "show document for $which\n";
@@ -2129,6 +2173,7 @@ use Wx qw(wxNullColour);
 use Demeter::UI::Wx::OverwritePrompt;
 my $normal = wxNullColour;
 my $wait   = Wx::Colour->new("#C5E49A");
+my $alert  = Wx::Colour->new("#FCDD9F");
 my $error  = Wx::Colour->new("#FD7E6F");
 my $debug  = 0;
 sub status {
@@ -2141,9 +2186,10 @@ sub status {
   };
 
   my $color = ($type =~ m{normal}) ? $normal
+            : ($type =~ m{alert})  ? $alert
             : ($type =~ m{wait})   ? $wait
             : ($type =~ m{error})  ? $error
-	    :                       $normal;
+	    :                        $normal;
   $self->GetStatusBar->SetBackgroundColour($color);
   $self->GetStatusBar->SetStatusText($text);
   return if ($type =~ m{nobuffer});

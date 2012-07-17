@@ -31,6 +31,7 @@ sub Rename {
     $ted->SetValue($name);
     if ($ted->ShowModal == wxID_CANCEL) {
       $app->{main}->status("Renaming cancelled.");
+      $app->{rename_pointer} = $#{$app->{rename_buffer}};
       return;
     };
     $newname = $ted->GetValue;
