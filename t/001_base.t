@@ -66,11 +66,11 @@ ok( $string =~ $demeter->group,                            'simple template work
 my $buffer;
 $demeter->set_mode(screen=>0, file=>q{}, buffer=>\$buffer);
 $demeter->dispose($string);
-ok( Ifeffit::get_string('$str') eq $demeter->group,        'simple disposal to Ifeffit: string');
-ok( Ifeffit::get_scalar('a') == 5,                         'simple disposal to Ifeffit: scalar');
-ok( Ifeffit::get_array('t.x') == 5,                        'simple disposal to Ifeffit: array');
+ok( $demeter->fetch_string('$str') eq $demeter->group,       'simple disposal to Ifeffit: string');
+ok( $demeter->fetch_scalar('a') == 5,                        'simple disposal to Ifeffit: scalar');
+ok( $demeter->fetch_array('t.x') == 5,                       'simple disposal to Ifeffit: array');
 $demeter->Reset;
-ok( Ifeffit::get_scalar('a') == 0,                         'simple disposal wrapper works');
+ok( $demeter->fetch_scalar('a') == 0,                        'simple disposal wrapper works');
 
 SKIP: {
   skip "This is windows, skipping gnuplot test",1 if $demeter->is_windows;

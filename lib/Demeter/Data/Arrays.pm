@@ -42,12 +42,12 @@ sub iofx {
 sub get_titles {
   my ($self) = @_;
   my @titles;
-  my $string = Ifeffit::get_string(sprintf("%s_title_%2.2d", $self->group, 1));
+  my $string = $self->fetch_string(sprintf("%s_title_%2.2d", $self->group, 1));
   my $i = 1;
   while ($string !~ m{\A\s+\z}) {
     push @titles, $string;
     ++$i;
-    $string = Ifeffit::get_string(sprintf("%s_title_%2.2d", $self->group, $i));
+    $string = $self->fetch_string(sprintf("%s_title_%2.2d", $self->group, $i));
     #print sprintf("%s_title_%2.2d", $self->group, $i), ":  ", $string, $/;
   };
   return @titles;
@@ -71,26 +71,26 @@ sub put {
 
 sub put_energy {
   my ($self, $arrayref) = @_;
-  Ifeffit::put_array($self->group.'.energy', $arrayref);
+  $self->place_array($self->group.'.energy', $arrayref);
   $self -> update_norm(1);
   return $self;
 };
 sub put_xmu {
   my ($self, $arrayref) = @_;
-  Ifeffit::put_array($self->group.'.xmu', $arrayref);
+  $self->place_array($self->group.'.xmu', $arrayref);
   $self -> update_norm(1);
   return $self;
 };
 
 sub put_k {
   my ($self, $arrayref) = @_;
-  Ifeffit::put_array($self->group.'.k', $arrayref);
+  $self->place_array($self->group.'.k', $arrayref);
   $self -> update_bft(1);
   return $self;
 };
 sub put_chi {
   my ($self, $arrayref) = @_;
-  Ifeffit::put_array($self->group.'.chi', $arrayref);
+  $self->place_array($self->group.'.chi', $arrayref);
   $self -> update_bft(1);
   return $self;
 };
@@ -98,7 +98,7 @@ sub put_chi {
 sub put_array {
   my ($self, $suffix, $arrayref) = @_;
   $suffix ||= '___';
-  Ifeffit::put_array(join('.', $self->group, $suffix), $arrayref);
+  $self->place_array(join('.', $self->group, $suffix), $arrayref);
   return $self;
 };
 
@@ -111,7 +111,7 @@ sub get_array {
   };
   my $group = $self->group;
   my $text = ($part =~ m{(?:bkg|fit|res|run)}) ? "${group}_$part.$suffix" : "$group.$suffix";
-  my @array = Ifeffit::get_array($text);
+  my @array = $self->fetch_array($text);
   if (not @array) {		# only do this error check if the specified array is not returned
     my @list = $self->arrays;	# this is the slow line -- it requires calls to ifeffit, get_scalar, and get_echo
     my $group_regexp = Regexp::Assemble->new()->add(@list)->re;
@@ -149,10 +149,16 @@ sub arrays {
     my $class = ref $self;
     croak("Demeter: $class objects have no arrays associated with them and are not plottable");
   };
-  my $save = Ifeffit::get_scalar("\&screen_echo");
-  $self->dispose("\&screen_echo = 0\nshow \@group ".$self->group);
   my @arrays = ();
-  my $lines = Ifeffit::get_scalar('&echo_lines');
+  # foreach my $l ($self->echo_lines) {
+  #   my $group = $self->group;
+  #   if ($l =~ m{\A\s*$group\.([^\s]+)\s+=}) {
+  #     push @arrays, $1;
+  #   };
+  # };
+  my $save = $self->fetch_scalar("\&screen_echo");
+  $self->dispose("\&screen_echo = 0\nshow \@group ".$self->group);
+  my $lines = $self->fetch_scalar('&echo_lines');
   $self->dispose("\&screen_echo = $save\n"), return if not $lines;
   foreach my $l (1 .. $lines) {
     my $response = Ifeffit::get_echo();

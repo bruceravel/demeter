@@ -119,7 +119,7 @@ sub is_feff {
 sub is_data {
   my ($self, $a, $verbose) = @_;
   $self->dispose("read_data(file=$a, group=a)\n");
-  my $col_string = Ifeffit::get_string('$column_label');
+  my $col_string = $self->fetch_string('$column_label');
   if ($verbose) {
     my $passfail = ($col_string =~ /^(\s*|--undefined--)$/) ?
       'not data' : 'data    ' ;
@@ -133,11 +133,11 @@ sub is_data {
   my $tooshort = 0;
   foreach my $l (split(" ", $col_string)) {
     my $scalar = "a_".$l;
-    if (Ifeffit::get_scalar($scalar)) {
+    if ($self->fetch_scalar($scalar)) {
       $onepoint = 1;
       $self->dispose("erase $scalar");
     };
-    my @array = Ifeffit::get_array("a.$l");
+    my @array = $self->fetch_array("a.$l");
     if (@array) {
       my $npts = $#array+1;
       $tooshort = 1 if ($npts < $self->co->default(qw(file minlength)));

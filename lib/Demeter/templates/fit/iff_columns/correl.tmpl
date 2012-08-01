@@ -2,7 +2,7 @@
   # correl command template for after the fit
 }
 {
-  $save = Ifeffit::get_scalar("\&screen_echo");
+  $save = $S->fetch_scalar("\&screen_echo");
   q{}
 }
 ##| parse Ifeffit's output buffer to obtain all correlations

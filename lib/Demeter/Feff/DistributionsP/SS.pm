@@ -246,8 +246,8 @@ sub chi {
   $fourth -= 3*$sigsqr**2;
 
   $self->mo->pathindex($index);
-  my @k    = Ifeffit::get_array('h___isto.k');
-  my @chi  = Ifeffit::get_array('h___isto.chi');
+  my @k    = $self->fetch_array('h___isto.k');
+  my @chi  = $self->fetch_array('h___isto.chi');
   my $data = Demeter::Data  -> put(\@k, \@chi, datatype=>'chi', name=>'sum of histogram',
 				   fft_kmin=>0, fft_kmax=>20, bft_rmin=>0, bft_rmax=>31);
   my $path = Demeter::FPath -> new(absorber  => $self->feff->abs_species,
@@ -284,8 +284,8 @@ sub describe {
 
 sub plot {
   my ($self) = @_;
-  Ifeffit::put_array(join(".", $self->group, 'x'), $self->positions);
-  Ifeffit::put_array(join(".", $self->group, 'y'), $self->populations);
+  $self->place_array(join(".", $self->group, 'x'), $self->positions);
+  $self->place_array(join(".", $self->group, 'y'), $self->populations);
   $self->po->start_plot;
   if ($self->po->output) {
     $self->dispose($self->template('plot', 'output'), 'plotting');

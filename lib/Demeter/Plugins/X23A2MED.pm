@@ -61,8 +61,8 @@ sub fix {
   my $command = "read_data(file=\"$file\", group=v___ortex)\n";
   $demeter->dispose($command);
 
-  #my $labels = Ifeffit::get_string('$column_label');
-  my @labels = split(" ", Ifeffit::get_string('$column_label'));
+  #my $labels = $self->fetch_string('$column_label');
+  my @labels = split(" ", $self->fetch_string('$column_label'));
 
   ## is this the four-element or one-element vortex?
   my @represented = ();
@@ -104,15 +104,15 @@ sub fix {
   my $dts     = q{};
   my $time    = Demeter->co->default("x23a2med", "time");
   my $inttime = Demeter->co->default("x23a2med", "inttime");
-  my @intcol  = Ifeffit::get_array("v___ortex.".lc(Demeter->co->default("x23a2med", "intcol")));
+  my @intcol  = $self->fetch_array("v___ortex.".lc(Demeter->co->default("x23a2med", "intcol")));
   foreach my $ch (@represented) {
     my $deadtime = Demeter->co->default("x23a2med", "dt$ch");
-    my @roi  = Ifeffit::get_array("v___ortex.".lc(Demeter->co->default("x23a2med", "roi$ch" )));
-    my @slow = Ifeffit::get_array("v___ortex.".lc(Demeter->co->default("x23a2med", "slow$ch")));
-    my @fast = Ifeffit::get_array("v___ortex.".lc(Demeter->co->default("x23a2med", "fast$ch")));
+    my @roi  = $self->fetch_array("v___ortex.".lc(Demeter->co->default("x23a2med", "roi$ch" )));
+    my @slow = $self->fetch_array("v___ortex.".lc(Demeter->co->default("x23a2med", "slow$ch")));
+    my @fast = $self->fetch_array("v___ortex.".lc(Demeter->co->default("x23a2med", "fast$ch")));
     my ($max, @corr) = _correct($inttime, $time, $deadtime, \@intcol, \@roi, \@fast, \@slow);
 
-    Ifeffit::put_array("v___ortex.corr$ch", \@corr);
+    $self->place_array("v___ortex.corr$ch", \@corr);
     push @labs, "corr$ch";
     $maxints .= " $max";
     $dts .= " $deadtime";

@@ -162,9 +162,9 @@ sub import_xdi {
   };
 
   ## process the data in the manner of Demeter::Data::read_data
-  Ifeffit::put_scalar("e0", 0);
+  $self->place_scalar("e0", 0);
   my $string = lc( join(" ", @{$xdi->labels}) );
-  Ifeffit::put_string("column_label", $string);
+  $self->place_string("column_label", $string);
   $self->columns(join(" ", $string));
   $self->provenance("XDI file ".$self->file);
   $self->is_col(1);

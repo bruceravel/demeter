@@ -77,7 +77,7 @@ sub prep {
 override after_plot_hook => sub {
   my ($self, $data, $part) = @_;
   $part ||= q{};
-  $self->add_columns(Ifeffit::get_string('p___lot_string'));
+  $self->add_columns($self->fetch_string('p___lot_string'));
   if ($part eq 'win') {
     $self->add_labels('window');
   } else {

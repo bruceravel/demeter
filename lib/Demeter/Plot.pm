@@ -324,9 +324,9 @@ sub legend {
     my $k = "key_".$key;
     $self->$k($args{$key});
   };
-  Ifeffit::put_scalar('&plot_key_x' , $self->key_x);
-  Ifeffit::put_scalar('&plot_key_y0', $self->key_y);
-  Ifeffit::put_scalar('&plot_key_dy', $self->key_dy);
+  $self->place_scalar('&plot_key_x' , $self->key_x);
+  $self->place_scalar('&plot_key_y0', $self->key_y);
+  $self->place_scalar('&plot_key_dy', $self->key_dy);
   return $self;
 };
 

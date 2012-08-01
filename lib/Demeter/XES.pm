@@ -109,9 +109,9 @@ sub _background {
   $self->_update('background');
   my $text = $self->template('analysis', 'xes_background');
   $self->dispose($text);
-  $self->slope(Ifeffit::get_scalar('xes___slope'));
-  $self->yint(Ifeffit::get_scalar('xes___yoff'));
-  $self->norm(Ifeffit::get_scalar('xes___norm'));
+  $self->slope($self->fetch_scalar('xes___slope'));
+  $self->yint($self->fetch_scalar('xes___yoff'));
+  $self->norm($self->fetch_scalar('xes___norm'));
   $self->peak_position;
   $self->find_line;
   $self->update_background(0);
@@ -226,10 +226,10 @@ override 'deserialize' => sub {
   my @y  = @{ $stuff[2] };
   my @i0 = @{ $stuff[3] };
 
-  Ifeffit::put_array($self->group.".energy",    \@x);
-  Ifeffit::put_array($self->group.".raw", \@y);
+  $self->place_array($self->group.".energy",    \@x);
+  $self->place_array($self->group.".raw", \@y);
   if ($self->sigma) {
-    Ifeffit::put_array($self->group.".sigma",   \@i0);
+    $self->place_array($self->group.".sigma",   \@i0);
   };
 
   $self->update_background(1);

@@ -242,8 +242,8 @@ sub fit {
   $self->pf_dispose($self->fit_command($nofit));
   my @data_x = $self->fetch_data_x;
   my @model_y = $self->fetch_model_y(\@data_x);
-  Ifeffit::put_array($self->group.".".$self->xaxis, \@data_x) if @data_x;
-  Ifeffit::put_array($self->group.".".$self->yaxis, \@model_y);
+  $self->place_array($self->group.".".$self->xaxis, \@data_x) if @data_x;
+  $self->place_array($self->group.".".$self->yaxis, \@model_y);
   $self -> ndata($#model_y+1);
   $self -> resid;
 

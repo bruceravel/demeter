@@ -74,8 +74,8 @@ sub make_data {
   my $command = $this->template("process", "columns");
   $command   .= $this->template("process", "deriv");
   $this->dispose($command);
-  $this->i0_scale(Ifeffit::get_scalar('__i0_scale'));
-  $this->signal_scale(Ifeffit::get_scalar('__signal_scale'));
+  $this->i0_scale($self->fetch_scalar('__i0_scale'));
+  $this->signal_scale($self->fetch_scalar('__signal_scale'));
   $this->update_data(0);
   $this->update_columns(0);
   $this->update_norm(1);

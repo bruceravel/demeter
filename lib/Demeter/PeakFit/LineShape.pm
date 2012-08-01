@@ -83,8 +83,8 @@ sub nparams {
 sub put_arrays {
   my ($self, $rx) = @_;
   my $model_y = $self->parent->put_arrays($self, $rx);
-  Ifeffit::put_array($self->group.".".$self->xaxis, $rx);
-  Ifeffit::put_array($self->group.".".$self->yaxis, $model_y);
+  $self->place_array($self->group.".".$self->xaxis, $rx);
+  $self->place_array($self->group.".".$self->yaxis, $model_y);
   return $self;
 };
 

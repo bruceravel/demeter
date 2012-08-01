@@ -56,9 +56,9 @@ ok( $#{$this->tempfiles} == -1,            "cleantemp method works");
 SKIP: {
   skip "legend test -- not using pgplot", 1 if $this->mo->template_plot ne 'pgplot';
   $this->legend('x'=>0.1, 'y'=>0.2, dy=>0.3);
-  ok( (Ifeffit::get_scalar('&plot_key_x')  == 0.1 and
-       Ifeffit::get_scalar('&plot_key_y0') == 0.2 and
-       Ifeffit::get_scalar('&plot_key_dy') == 0.3),                     "pgplot legend method works");
+  ok( ($demeter->fetch_scalar('&plot_key_x')  == 0.1 and
+       $demeter->fetch_scalar('&plot_key_y0') == 0.2 and
+       $demeter->fetch_scalar('&plot_key_dy') == 0.3),                     "pgplot legend method works");
 };
 
 $this->set_mode(ifeffit=>0);

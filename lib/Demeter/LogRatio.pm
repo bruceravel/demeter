@@ -48,16 +48,16 @@ sub fit {
   $self->standard->_update('all');
 
   $self->dispose($self->template("analysis", "lr_fit"));
-  my @cumulants = (sprintf("%.5f", Ifeffit::get_scalar("lr___pd0")),
-		   sprintf("%.5f", Ifeffit::get_scalar("lr___pd1")),
-		   sprintf("%.5f", Ifeffit::get_scalar("lr___pd2")),
-		   sprintf("%.8f", Ifeffit::get_scalar("lr___pd3")),
-		   sprintf("%.8f", Ifeffit::get_scalar("lr___pd4")));
-  my @errorbars = (sprintf("%.5f", Ifeffit::get_scalar("delta_lr___pd0")),
-		   sprintf("%.5f", Ifeffit::get_scalar("delta_lr___pd1")),
-		   sprintf("%.5f", Ifeffit::get_scalar("delta_lr___pd2")),
-		   sprintf("%.8f", Ifeffit::get_scalar("delta_lr___pd3")),
-		   sprintf("%.8f", Ifeffit::get_scalar("delta_lr___pd4")));
+  my @cumulants = (sprintf("%.5f", $self->fetch_scalar("lr___pd0")),
+		   sprintf("%.5f", $self->fetch_scalar("lr___pd1")),
+		   sprintf("%.5f", $self->fetch_scalar("lr___pd2")),
+		   sprintf("%.8f", $self->fetch_scalar("lr___pd3")),
+		   sprintf("%.8f", $self->fetch_scalar("lr___pd4")));
+  my @errorbars = (sprintf("%.5f", $self->fetch_scalar("delta_lr___pd0")),
+		   sprintf("%.5f", $self->fetch_scalar("delta_lr___pd1")),
+		   sprintf("%.5f", $self->fetch_scalar("delta_lr___pd2")),
+		   sprintf("%.8f", $self->fetch_scalar("delta_lr___pd3")),
+		   sprintf("%.8f", $self->fetch_scalar("delta_lr___pd4")));
   $self->cumulants(\@cumulants);
   $self->errorbars(\@errorbars);
 

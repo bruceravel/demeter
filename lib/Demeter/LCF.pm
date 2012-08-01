@@ -332,12 +332,12 @@ sub fit {
 
   my $sumsqr = 0;
   foreach my $st (@all) {
-    my ($w, $dw) = $self->weight($st, Ifeffit::get_scalar("aa_".$st->group), Ifeffit::get_scalar("delta_a_".$st->group));
+    my ($w, $dw) = $self->weight($st, $self->fetch_scalar("aa_".$st->group), $self->fetch_scalar("delta_a_".$st->group));
     $sumsqr += $dw**2;
     if ($self->one_e0) {
-      $self->e0($st, Ifeffit::get_scalar("e_".$st->group),  Ifeffit::get_scalar("delta_e_".$self->group));
+      $self->e0($st, $self->fetch_scalar("e_".$st->group), $self->fetch_scalar("delta_e_".$self->group));
     } else {
-      $self->e0($st, Ifeffit::get_scalar("e_".$st->group),  Ifeffit::get_scalar("delta_e_".$st->group));
+      $self->e0($st, $self->fetch_scalar("e_".$st->group), $self->fetch_scalar("delta_e_".$st->group));
     };
   };
   if ($self->unity) {		# propagate uncertainty for last amplitude
@@ -380,9 +380,9 @@ sub _statistics {
   } else {
     $self->rfactor(sprintf("%.7f", $rfact/$sumsqr));
   };
-  $self->chisqr(sprintf("%.5f", Ifeffit::get_scalar('chi_square')));
-  $self->chinu(sprintf("%.7f", Ifeffit::get_scalar('chi_reduced')));
-  $self->nvarys(Ifeffit::get_scalar('n_varys'));
+  $self->chisqr(sprintf("%.5f", $self->fetch_scalar('chi_square')));
+  $self->chinu(sprintf("%.7f", $self->fetch_scalar('chi_reduced')));
+  $self->nvarys($self->fetch_scalar('n_varys'));
 
   my $sum = 0;
   foreach my $stan (@{ $self->standards }) {

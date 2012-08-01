@@ -452,14 +452,14 @@ my %_pp_trans = ('3rd'=>"third", '4th'=>"fourth", dphase=>"dphase",
 sub fetch {
   my ($self) = @_;
 
-  my $save = Ifeffit::get_scalar("\&screen_echo");
+  my $save = $self->fetch_scalar("\&screen_echo");
 
   ## not using dispose so that the get_echo lines gets captured here
   ## rather than in the dispose method
   Ifeffit::ifeffit("\&screen_echo = 0\n");
   Ifeffit::ifeffit(sprintf("show \@path %d\n", $self->Index));
 
-  my $lines = Ifeffit::get_scalar('&echo_lines');
+  my $lines = $self->fetch_scalar('&echo_lines');
   if (not $lines) {
     $self->dispose("\&screen_echo = $save\n") if $save;
     #return;

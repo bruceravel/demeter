@@ -198,7 +198,7 @@ sub _plotR_command {
 
   if ((lc($pf->r_pl) eq 'p') and $self->po->dphase) {
     $self->dispose($self->template('process', 'dphase'));
-    $title{p} = sprintf("Derivative of phase * %.4f", Ifeffit::get_scalar('___dphase_scale'));
+    $title{p} = sprintf("Derivative of phase * %.4f", $self->fetch_scalar('___dphase_scale'));
     $self->dispose("erase ___dphase_scale");
   };
   $self->plotkey($title{lc($pf->r_pl)}) if $self->po->single;
@@ -294,7 +294,7 @@ sub plotk123 {
   my @save = ($self->name, $self->plot_multiplier, $self->y_offset, $self->po->kweight);
   my $string .= $self->template("process", "k123");
   $self->dispose($string);
-  my @max = (Ifeffit::get_scalar("__123_max1"), Ifeffit::get_scalar("__123_max2"), Ifeffit::get_scalar("__123_max3"));
+  my @max = ($self->fetch_scalar("__123_max1"), $self->fetch_scalar("__123_max2"), $self->fetch_scalar("__123_max3"));
   my $winsave = $self->po->plot_win;
 
   $self->po->kweight(1);
@@ -338,15 +338,15 @@ sub plotR123 {
   my $winsave = $self->po->plot_win;
   $self->po->kweight(1);
   $self->_update('bft');
-  my @chir = Ifeffit::get_array($self->group.".chir_mag");
+  my @chir = $self->fetch_array($self->group.".chir_mag");
   push @max, max(@chir);
   $self->po->kweight(2);
   $self->_update('bft');
-  @chir = Ifeffit::get_array($self->group.".chir_mag");
+  @chir = $self->fetch_array($self->group.".chir_mag");
   push @max, max(@chir);
   $self->po->kweight(3);
   $self->_update('bft');
-  @chir = Ifeffit::get_array($self->group.".chir_mag");
+  @chir = $self->fetch_array($self->group.".chir_mag");
   push @max, max(@chir);
 
   $self->po->kweight(1);
@@ -426,7 +426,7 @@ sub plot_kqfit {
   ## figure out the vertical spacing between the traces
   my $string = $self->template("process", "k123");
   $self->dispose($string);
-  my @max = (Ifeffit::get_scalar("__123_max1"), Ifeffit::get_scalar("__123_max2"), Ifeffit::get_scalar("__123_max3"));
+  my @max = ($self->fetch_scalar("__123_max1"), $self->fetch_scalar("__123_max2"), $self->fetch_scalar("__123_max3"));
   my $down = 0;
   if ($self->fitting) {
     my $k = int($self->po->kweight);
@@ -520,7 +520,7 @@ sub _plot_window_command {
   my ($self, $sp) = @_;
   my $space   = lc($sp);
   $self -> co -> set(window_space => $space,
-		     window_size  => sprintf("%.5g", Ifeffit::get_scalar("win___dow")),
+		     window_size  => sprintf("%.5g", $self->fetch_scalar("win___dow")),
 		    );
   my $string = $self->template("plot", "window");
   return $string;
@@ -638,7 +638,7 @@ sub running {
   };
 
   @running = map {$_ / $max} @running;
-  Ifeffit::put_array($self->group.".$suff", \@running);
+  $self->place_array($self->group.".$suff", \@running);
 };
 
 sub stddevplot {
@@ -780,13 +780,13 @@ sub rkplot {
 
   $self->dispose($self->_prep_window_command('R'));
   $self -> co -> set(window_space => 'R',
-		     window_size  => sprintf("%.5g", Ifeffit::get_scalar("win___dow")),
+		     window_size  => sprintf("%.5g", $self->fetch_scalar("win___dow")),
 		    );
   my $string = $self->template("plot", "rkr");
 
   $self->dispose($self->_prep_window_command('k'));
   $self -> co -> set(window_space => 'k',
-		     window_size  => sprintf("%.5g", Ifeffit::get_scalar("win___dow")),
+		     window_size  => sprintf("%.5g", $self->fetch_scalar("win___dow")),
 		    );
   $string   .= $self->template("plot", "rkk");
   $self -> dispose($string, 'plotting');

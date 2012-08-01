@@ -260,7 +260,7 @@ sub on_about {
   $info->SetName( 'Athena' );
   #$info->SetVersion( $demeter->version );
   $info->SetDescription( "XAS Data Processing" );
-  $info->SetCopyright( $demeter->identify . "\nusing Ifeffit " . Ifeffit::get_string('&build'));
+  $info->SetCopyright( $demeter->identify . "\nusing Ifeffit " . Demeter->fetch_string('&build'));
   $info->SetWebSite( 'http://cars9.uchicago.edu/iffwiki/Demeter', 'The Demeter web site' );
   #$info->SetDevelopers( ["Bruce Ravel <bravel\@bnl.gov>\n",
   #			 "Ifeffit is copyright $COPYRIGHT 1992-2012 Matt Newville"

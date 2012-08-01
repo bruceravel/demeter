@@ -1,5 +1,5 @@
 {
-  $labels = Ifeffit::get_string("column_label");
+  $labels = $S->fetch_string("column_label");
   $string = q{};
   foreach $s (split(" ", $labels)) {
     $string .= " " . $S->group . "." . $s;

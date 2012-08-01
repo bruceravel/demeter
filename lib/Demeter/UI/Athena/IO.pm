@@ -303,7 +303,7 @@ sub _data {
   my $colsel;
   my $med = $yaml->{each}; # this will be true is each channel of MED data is to be its own group
   if ($first or ($data->columns ne $yaml->{columns})) {
-    Ifeffit::put_scalar("e0", 0);
+    $self->place_scalar("e0", 0);
     $colsel = Demeter::UI::Athena::ColumnSelection->new($app->{main}, $app, $data);
     $colsel->{ok}->SetFocus;
 

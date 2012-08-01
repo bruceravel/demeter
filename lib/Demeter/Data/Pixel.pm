@@ -94,10 +94,10 @@ sub pixel {
   $self->dispose($self->template('process', 'pixel_setup'));
   $self->dispose($self->template('process', 'pixel_fit'));
 
-  $self->offset(Ifeffit::get_scalar("pixel___a"));
-  $self->linear(Ifeffit::get_scalar("pixel___b"));
-  $self->quadratic(Ifeffit::get_scalar("pixel___c"));
-  #print Ifeffit::get_scalar('pixel___xmin'), " ",Ifeffit::get_scalar('pixel___xmax'), $/;
+  $self->offset($self->fetch_scalar("pixel___a"));
+  $self->linear($self->fetch_scalar("pixel___b"));
+  $self->quadratic($self->fetch_scalar("pixel___c"));
+  #print $self->fetch_scalar('pixel___xmin'), " ",$self->fetch_scalar('pixel___xmax'), $/;
   #print $self->linear, "  ", $self->offset, "  ", $self->quadratic, $/;
   $self->stop_spinner if (($self->mo->ui eq 'screen') and (not $quiet));
   return $self;

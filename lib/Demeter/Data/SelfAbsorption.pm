@@ -68,7 +68,7 @@ sub sa_troger {
     return (0, q{});
   };
 
-  my @k = Ifeffit::get_array($self->group.".k");
+  my @k = $self->fetch_array($self->group.".k");
   my @mut = ();
   my @mua = ();
   my $abs = ucfirst( lc(get_symbol($self->bkg_z)) );
@@ -89,8 +89,8 @@ sub sa_troger {
     push @mua, $count{$abs} * Xray::Absorption -> cross_section($abs, $e) / $amu / 1.6607143;
     push @mut, $barns / $amu / 1.6607143;
   };
-  Ifeffit::put_array("s___a.mut", \@mut);
-  Ifeffit::put_array("s___a.mua", \@mua);
+  $self->place_array("s___a.mut", \@mut);
+  $self->place_array("s___a.mua", \@mua);
 
   $self->dispose($self->template("process", "sa_troger", {angle_in  => $angle_in,
 							  angle_out => $angle_out,
@@ -99,8 +99,8 @@ sub sa_troger {
 
   my $text = "Troger algorithm\n";
   $text .= $self->_summary($efluo, $line, \%count);
-  @k   = Ifeffit::get_array('s___a.k');
-  my @chi = Ifeffit::get_array('s___a.chi');
+  @k   = $self->fetch_array('s___a.k');
+  my @chi = $self->fetch_array('s___a.chi');
   my $sadata = $self->sa_group(\@k, \@chi, 'chi');
   return ($sadata, $text);
 
@@ -134,7 +134,7 @@ sub sa_booth {
     return (0, q{});
   };
 
-  my @k = Ifeffit::get_array($self->group.".k");
+  my @k = $self->fetch_array($self->group.".k");
   my @mut = ();
   my @mua = ();
   my $abs = ucfirst( lc(get_symbol($self->bkg_z)) );
@@ -151,8 +151,8 @@ sub sa_booth {
     push @mua, $count{$abs} * Xray::Absorption -> cross_section($abs, $e) / $amu / 1.6607143;
     push @mut, $barns / $amu / 1.6607143;
   };
-  Ifeffit::put_array("s___a.mut", \@mut);
-  Ifeffit::put_array("s___a.mua", \@mua);
+  $self->place_array("s___a.mut", \@mut);
+  $self->place_array("s___a.mua", \@mua);
 
   $thickness *= 10e-4;
 
@@ -161,8 +161,8 @@ sub sa_booth {
 							     thickness => $thickness,
 							     muf       => $muf,
 							    }));
-  my $betamin = Ifeffit::get_scalar("s___a___x");
-  my $isneg = Ifeffit::get_scalar("s___a___xx");
+  my $betamin = $self->fetch_scalar("s___a___x");
+  my $isneg = $self->fetch_scalar("s___a___xx");
   my $thickcheck = ($betamin < 10e-7) || ($isneg < 0);
   my $text = "Booth and Bridges algorithm, ";
   if ($thickcheck > 0.005) {	# huh????
@@ -174,8 +174,8 @@ sub sa_booth {
   };
   $text .= $self->_summary($efluo, $line, \%count);
 
-  @k   = Ifeffit::get_array('s___a.k');
-  my @chi = Ifeffit::get_array('s___a.chi');
+  @k   = $self->fetch_array('s___a.k');
+  my @chi = $self->fetch_array('s___a.chi');
   my $sadata = $self->sa_group(\@k, \@chi, 'chi');
   return ($sadata, $text);
 
@@ -208,8 +208,8 @@ sub sa_atoms {
 			    i0   => sprintf("%.6f", $i0_sigsqr)});
 
   $self->dispose($self->template("process", "sa_atoms", {amp=>$self_amp, ss=>$net_sigsqr}));
-  my @k   = Ifeffit::get_array('s___a.k');
-  my @chi = Ifeffit::get_array('s___a.chi');
+  my @k   = $self->fetch_array('s___a.k');
+  my @chi = $self->fetch_array('s___a.chi');
   my $sadata = $self->sa_group(\@k, \@chi, 'chi');
   return ($sadata, $text);
 };
@@ -255,7 +255,7 @@ sub sa_fluo {
     return (0, q{});
   };
 
-  my @energy = Ifeffit::get_array($self->group.".energy");
+  my @energy = $self->fetch_array($self->group.".energy");
   my @mub = ();
   foreach my $e (@energy) {
     my $barns = 0;
@@ -265,7 +265,7 @@ sub sa_fluo {
     };
     push @mub, $barns;
   };
-  Ifeffit::put_array("s___a.mub", \@mub);
+  $self->place_array("s___a.mub", \@mub);
 
   $self->dispose($self->template("process", "sa_fluo", {angle_in  => $angle_in,
 							angle_out => $angle_out,
@@ -273,7 +273,7 @@ sub sa_fluo {
 						        mub_plus  => $barns_plus,
 						        mue_plus  => $mue_plus,
 						       }));
-  my $maxval = Ifeffit::get_scalar("s___a_x");
+  my $maxval = $self->fetch_scalar("s___a_x");
 
   my $text = "Fluo algorithm\n";
   $text .= $self->_summary($efluo, $line, \%count);
@@ -293,8 +293,8 @@ Among the common reasons for this are:
      must include the amount of H2O relative to the sample)
 ";
   };
-  my @e   = Ifeffit::get_array('s___a.energy');
-  my @xmu = Ifeffit::get_array('s___a.sacorr');
+  my @e   = $self->fetch_array('s___a.energy');
+  my @xmu = $self->fetch_array('s___a.sacorr');
   my $sadata = $self->sa_group(\@e, \@xmu, 'xmu');
   return ($sadata, $text);
 
@@ -334,7 +334,7 @@ sub info_depth {
   };
   my $muf = sprintf("%.6f", $barns / $amu / 1.6607143);
 
-  my @k = Ifeffit::get_array($self->group.".k");
+  my @k = $self->fetch_array($self->group.".k");
   my $kmax = min($k[-1], $self->po->kmax);
   my @mut = ();
   foreach my $kk (@k) {
@@ -347,14 +347,14 @@ sub info_depth {
     ## 1 amu = 1.6607143 x 10^-24 gm
     push @mut, $barns / $amu / 1.6607143;
   };
-  Ifeffit::put_array("s___a.mut", \@mut);
+  $self->place_array("s___a.mut", \@mut);
 
   $self->dispose($self->template("process", "sa_info_depth", {in  => $angle_in,
 							      out => $angle_out,
 							      muf => $muf,
 							     }));
   my @x = $self->get_array('k');
-  my @y = Ifeffit::get_array('s___a.info');
+  my @y = $self->fetch_array('s___a.info');
   return (\@x, \@y);
 };
 

@@ -527,15 +527,15 @@ sub chi_noise {
   my ($self) = @_;
   my $string = $self->template("process", "chi_noise");
   $self->dispose($string);
-  my $epsk = Ifeffit::get_scalar("epsilon_k");
+  my $epsk = $self->fetch_scalar("epsilon_k");
   $epsk = (looks_like_number($epsk)) ? $epsk : 1;
   $epsk = ($epsk =~ m{nan|\#}i) ? 1 : $epsk; # unix returns '+/-NaN', windows returns '+/-1.#IOe000'
-  my $epsr = Ifeffit::get_scalar("epsilon_r");
+  my $epsr = $self->fetch_scalar("epsilon_r");
   $epsr = (looks_like_number($epsr)) ? $epsr : 1;
   $epsr = ($epsk =~ m{nan|\#}i) ? 1 : $epsr;
   $self->epsk( sprintf("%.3e", $epsk) );
   $self->epsr( sprintf("%.3e", $epsr) );
-  $self->recommended_kmax( sprintf("%.3f", Ifeffit::get_scalar("kmax_suggest")) );
+  $self->recommended_kmax( sprintf("%.3f", $self->fetch_scalar("kmax_suggest")) );
   return $self;
 };
 
@@ -589,8 +589,8 @@ sub determine_data_type {
   ## figure out how to interpret these data -- need some error checking
   if ((not $self->is_col) and ($self->datatype ne "xmu") and ($self->datatype ne "chi") ) {
     $self->dispose("read_data(file=\"$file\", group=deter___mine)\n");
-    my $f = (split(" ", Ifeffit::get_string('$column_label')))[0];
-    my @x = Ifeffit::get_array("deter___mine.$f");
+    my $f = (split(" ", $self->fetch_string('$column_label')))[0];
+    my @x = $self->fetch_array("deter___mine.$f");
     $self->dispose("erase \@group deter___mine\n");
     if ($x[0] > 100) {		# seems to be energy data
       $self->datatype('xmu');
@@ -683,7 +683,7 @@ sub read_data {
   $self->dispose($string);
   $self->update_data(0);
   if ($self->is_col) {
-    $self->columns(Ifeffit::get_string("column_label"));
+    $self->columns($self->fetch_string("column_label"));
   };
   $self->sort_data;
   $self->put_data;
@@ -769,7 +769,7 @@ sub sort_data {
     foreach my $c (1 .. $#cols) {
       my @array;
       foreach (@lol) {push @array, $_->[$c]};
-      Ifeffit::put_array("$group.$cols[$c]", \@array);
+      $self->place_array("$group.$cols[$c]", \@array);
     };
     # @array = $self->get_array($cols[$ecol]);
     # print join(" ", @array), $/, $/, $/;
@@ -900,14 +900,14 @@ override 'deserialize' => sub {
   my @i0 = @{ $stuff[3] };
 
   if ($self->datatype =~ m{(?:xmu|xanes)}) {
-    Ifeffit::put_array($self->group.".energy",    \@x);
-    Ifeffit::put_array($self->group.".xmu", \@y);
+    $self->place_array($self->group.".energy",    \@x);
+    $self->place_array($self->group.".xmu", \@y);
     if ($self->is_col) {
-      Ifeffit::put_array($self->group.".i0",   \@i0);
+      $self->place_array($self->group.".i0",   \@i0);
     };
   } elsif ($self->datatype eq 'chi') {
-    Ifeffit::put_array($self->group.".k",      \@x);
-    Ifeffit::put_array($self->group.".chi",    \@y);
+    $self->place_array($self->group.".k",      \@x);
+    $self->place_array($self->group.".chi",    \@y);
   };
 
   return $self;

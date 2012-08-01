@@ -239,18 +239,18 @@ sub _record {
 				collided    => $collided,
 			       );
   my ($xsuff, $ysuff) = ($args{is_xmu}) ? qw(energy xmu) : qw(k chi);
-  Ifeffit::put_array(join('.', $groupname, $xsuff), \@x);
-  Ifeffit::put_array(join('.', $groupname, $ysuff), \@y);
+  $self->place_array(join('.', $groupname, $xsuff), \@x);
+  $self->place_array(join('.', $groupname, $ysuff), \@y);
   if (@i0) {
-    Ifeffit::put_array(join('.', $groupname, 'i0'), \@i0);
+    $self->place_array(join('.', $groupname, 'i0'), \@i0);
     $i0_scale = max(@y) / max(@i0);
   };
   if (@signal) {
-    Ifeffit::put_array(join('.', $groupname, 'signal'), \@signal);
+    $self->place_array(join('.', $groupname, 'signal'), \@signal);
     $signal_scale = max(@y) / max(@signal);
   };
   if (@std) {
-    Ifeffit::put_array(join('.', $groupname, 'stddev'), \@std);
+    $self->place_array(join('.', $groupname, 'stddev'), \@std);
     $is_merge = 1;
   };
   my $quenched_state = 0;

@@ -315,7 +315,7 @@ sub title_glob {
   foreach my $line ($apps, @titles, "///", @{$self->data->xdi_comments}) {
     ++$i;
     my $t = sprintf("%s%2.2d", $globname, $i);
-    Ifeffit::put_string($t, $line);
+    $self->place_string($t, $line);
   };
   return $self;
 };

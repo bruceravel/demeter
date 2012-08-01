@@ -33,7 +33,7 @@
   $line2key   = ($z < 57) ? "K{/Symbol a}{_2}" : "L{/Symbol a}{_1}";
   $line3key   = ($z < 57) ? q{}       : "L{/Symbol a}{_2}";
 
-  $top        = Ifeffit::get_scalar("top");
+  $top        = $S->fetch_scalar("top");
 
   q{}
 }

@@ -909,27 +909,34 @@ sub gds_report {
 sub fetch_statistics {
   my ($self) = @_;
 
-  my $save = Ifeffit::get_scalar("\&screen_echo");
+  ## !!!! need to abstract out these words...
+  foreach my $stat (qw(n_idp n_varys chi_square chi_reduced r_factor epsilon_k epsilon_r data_total)) {
+    $self->$stat($self->fetch_scalar($stat));
+  };
+
+
+  #my $save = Ifeffit::get_scalar("\&screen_echo");
   ## not using dispose so that the get_echo lines gets captured here
   ## rather than in the dispose method
-  Ifeffit::ifeffit("\&screen_echo = 0\n");
-  Ifeffit::ifeffit("show $STAT_TEXT\n");
+  #Ifeffit::ifeffit("\&screen_echo = 0\n");
+  #$self->dispose($self->template('fit', 'show_stats'));
+  #Ifeffit::ifeffit("show $STAT_TEXT\n");
 
-  my $lines = Ifeffit::get_scalar('&echo_lines');
-  if (not $lines) {
-    $self->dispose("\&screen_echo = $save\n") if $save;
-  };
+  #my $lines = Ifeffit::get_scalar('&echo_lines');
+  #if (not $lines) {
+  #  $self->dispose("\&screen_echo = $save\n") if $save;
+  #};
 
-  my $fit_stats_regexp = Regexp::Assemble->new()->add(@Demeter::StrTypes::stat_list)->re;
-  foreach (1 .. $lines) {
-    my $response = Ifeffit::get_echo()."\n";
-    if ($response =~ m{($fit_stats_regexp)
-		       \s*=\s*
-		       ($NUMBER)
-		    }x) {
-      $self->$1($2);
-    };
-  };
+  # my $fit_stats_regexp = Regexp::Assemble->new()->add(@Demeter::StrTypes::stat_list)->re;
+  # foreach (1 .. $lines) {
+  #   my $response = Ifeffit::get_echo()."\n";
+  #   if ($response =~ m{($fit_stats_regexp)
+  # 		       \s*=\s*
+  # 		       ($NUMBER)
+  # 		    }x) {
+  #     $self->$1($2);
+  #   };
+  # };
 
   ## in the case of a sum, the stats cannot be obtained via get_echo
   if ($self->n_idp == 0) {
@@ -958,7 +965,7 @@ sub fetch_statistics {
     $self->epsilon_r($which->epsr);
   };
 
-  $self->dispose("\&screen_echo = $save\n") if $save;
+  #$self->dispose("\&screen_echo = $save\n") if $save;
   return 0;
 };
 
@@ -1014,7 +1021,7 @@ sub fetch_parameters {
 sub fetch_correlations {
   my ($self) = @_;
 
-  my @save = (Ifeffit::get_scalar("\&screen_echo"),
+  my @save = ($self->fetch_scalar("\&screen_echo"),
 	      $self->get_mode("screen"),
 	      $self->get_mode("plotscreen"),
 	      $self->get_mode("feedback"));
@@ -1026,7 +1033,7 @@ sub fetch_correlations {
   $self->set_mode(buffer=>\$correl_lines);
   $self->dispose($d->template("fit", "correl"));
   #my $correl_text = Demeter->get_mode("echo");
-  my $lines = Ifeffit::get_scalar('&echo_lines');
+  my $lines = $self->fetch_scalar('&echo_lines');
   my @correl_text = ();
   foreach my $l (1 .. $lines) {
     my $response = Ifeffit::get_echo();
@@ -1390,11 +1397,11 @@ override 'deserialize' => sub {
     $datae{$d} = $this;
     $datae{$this->group} = $this;
     if ($this->datatype eq 'xmu') {
-      Ifeffit::put_array($this->group.".energy", $r_x);
-      Ifeffit::put_array($this->group.".xmu",    $r_y);
+      $self->place_array($this->group.".energy", $r_x);
+      $self->place_array($this->group.".xmu",    $r_y);
     } elsif  ($this->datatype eq 'chi') {
-      Ifeffit::put_array($this->group.".k",      $r_x);
-      Ifeffit::put_array($this->group.".chi",    $r_y);
+      $self->place_array($this->group.".k",      $r_x);
+      $self->place_array($this->group.".chi",    $r_y);
     };
     $this -> set(update_data=>0, update_columns=>0);
     push @data, $this;

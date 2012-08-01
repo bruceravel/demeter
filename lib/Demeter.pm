@@ -65,6 +65,7 @@ Xray::Absorption->load('elam');
 use Moose;
 use MooseX::Aliases;
 use MooseX::StrictConstructor;
+with 'Demeter::Get';
 with 'Demeter::Dispose';
 with 'Demeter::Tools';
 with 'Demeter::Files';
@@ -650,7 +651,7 @@ sub translate_trouble {
       ## limits on things
       if ($content =~ m{\((\&\w+)\)}) {
 	my $var = $1;
-	my $subst = Ifeffit::get_scalar($var);
+	my $subst = $self->fetch_scalar($var);
 	$content =~ s{$var}{$subst};
       };
       $text = $content;

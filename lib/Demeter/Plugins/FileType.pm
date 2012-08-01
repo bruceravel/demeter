@@ -2,6 +2,7 @@ package Demeter::Plugins::FileType;
 
 use Moose;
 use Moose::Util::TypeConstraints;
+with 'Demeter::Get';
 with 'Demeter::Tools';
 with 'Demeter::Project';
 

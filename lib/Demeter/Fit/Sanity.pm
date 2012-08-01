@@ -450,11 +450,11 @@ sub S_exceed_ifeffit_limits {
     ++$n_params    if ($g->gds !~ m{(?:merge|skip)});
     ++$n_restraint if ($g->gds eq 'restrain');
   };
-  if ($n_guess > Ifeffit::get_scalar('&max_varys')) {
+  if ($n_guess > $self->fetch_scalar('&max_varys')) {
     ++$found;
     $self->add_trouble('nvarys');
   };
-  if ($n_params > Ifeffit::get_scalar('&max_scalars')) {
+  if ($n_params > $self->fetch_scalar('&max_scalars')) {
     ++$found;
     $self->add_trouble('nparams');
   };
@@ -468,7 +468,7 @@ sub S_exceed_ifeffit_limits {
   foreach my $d (@data) {
     ++$n_data if ($d->fit_include);
   };
-  if ($n_data > Ifeffit::get_scalar('&max_data_sets')) {
+  if ($n_data > $self->fetch_scalar('&max_data_sets')) {
     ++$found;
     $self->add_trouble('ndatasets');
   };
@@ -479,7 +479,7 @@ sub S_exceed_ifeffit_limits {
     next if not defined($p);
     ++$n_paths if ($p->include);
   };
-  if ($n_paths > Ifeffit::get_scalar('&max_paths')) {
+  if ($n_paths > $self->fetch_scalar('&max_paths')) {
     ++$found;
     $self->add_trouble('npaths');
   };

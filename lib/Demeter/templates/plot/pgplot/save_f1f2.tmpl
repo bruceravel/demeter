@@ -9,6 +9,6 @@
 }
 
 set $f1f2_title1 = "Demeter {$C->version} (c) Bruce Ravel"
-set $f1f2_title2 = "Ifeffit {Ifeffit::get_string('&build')}"
+set $f1f2_title2 = "Ifeffit {$S->fetch_string('&build')}"
 set $f1f2_title3 = "f1 and f2 data for {$name}, {$C->get("f1f2_emin")} eV to {$C->get("f1f2_emax")} eV"
 write_data(file="{$C->get("f1f2_save")}", $f1f2_title*, f1f2.energy, f1f2.f1, f1f2.f2)

@@ -66,7 +66,7 @@ sub module_environment {
   my ($self) = @_;
   my $os = ($self->is_windows) ? windows_version() : $^O;
   my $string = "Demeter " . $Demeter::VERSION . " with perl $] on $os\n";
-  $string .= "using Ifeffit " . (split(" ", Ifeffit::get_string('&build')))[0] . "\n";
+  $string .= "using Ifeffit " . (split(" ", $self->fetch_string('&build')))[0] . "\n";
   $string .= "\n Major modules                   version\n";
   $string .= '=' x 50 . "\n";
   foreach my $p (qw(
@@ -341,8 +341,8 @@ sub randomstring {
 
 sub ifeffit_heap {
   my ($self, $length) = @_;
-  $self->mo->heap_used(Ifeffit::get_scalar('&heap_used'));
-  $self->mo->heap_free(Ifeffit::get_scalar('&heap_free'));
+  $self->mo->heap_used($self->fetch_scalar('&heap_used'));
+  $self->mo->heap_free($self->fetch_scalar('&heap_free'));
   if (($self->mo->heap_used > 0.95) and ($self->mo->ui !~ m{wx}i)) {
     warn sprintf("You have used %.1f%% of Ifeffit's %.1f Mb of memory",
 		 100*$self->mo->heap_used,
@@ -354,14 +354,14 @@ sub ifeffit_heap {
 sub clear_ifeffit_titles {
   my ($self, $group) = @_;
   $group ||= $self->group;
-  my @save = (Ifeffit::get_scalar("\&screen_echo"),
+  my @save = ($self->fetch_scalar("\&screen_echo"),
 	      $self->get_mode("screen"),
 	      $self->get_mode("plotscreen"),
 	      $self->get_mode("feedback"));
   Ifeffit::ifeffit("\&screen_echo = 0\n");
   $self->set_mode(screen=>0, plotscreen=>0, feedback=>q{});
   $self->dispose('show @strings');
-  my $lines = Ifeffit::get_scalar('&echo_lines');
+  my $lines = $self->fetch_scalar('&echo_lines');
   my $target = '\$' . $group . '_title_';
   my @all = ();
   foreach my $l (1 .. $lines) {

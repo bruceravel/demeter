@@ -88,7 +88,7 @@ sub fetch_data_x {
 
 sub fetch_model_y {
   my ($self) = @_;
-  return Ifeffit::get_array($self->group.".func");
+  return $self->fetch_array($self->group.".func");
 };
 
 sub put_arrays {
@@ -112,10 +112,10 @@ sub fetch_statistics {
     foreach my $n (0 .. $ls->np-1) {
       my $att = 'a'.$n;
       my $scalar = $ls->group.'_'.$n;
-      $ls->$att(sprintf("%.5f", Ifeffit::get_scalar($scalar)));
+      $ls->$att(sprintf("%.5f", $self->fetch_scalar($scalar)));
       $att = 'e'.$n;
       $scalar = 'delta_'.$scalar;
-      $ls->$att(sprintf("%.5f", Ifeffit::get_scalar($scalar)));
+      $ls->$att(sprintf("%.5f", $self->fetch_scalar($scalar)));
     };
     $ls->area($ls->a0);
   };
