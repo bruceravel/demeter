@@ -351,32 +351,26 @@ sub ifeffit_heap {
   return $self;
 };
 
+my @titles_text = ();
 sub clear_ifeffit_titles {
   my ($self, $group) = @_;
   $group ||= $self->group;
-  my @save = ($self->fetch_scalar("\&screen_echo"),
+  my @save = ($self->toggle_echo(0),
 	      $self->get_mode("screen"),
 	      $self->get_mode("plotscreen"),
 	      $self->get_mode("feedback"));
-  Ifeffit::ifeffit("\&screen_echo = 0\n");
-  $self->set_mode(screen=>0, plotscreen=>0, feedback=>q{});
-  $self->dispose('show @strings');
-  my $lines = $self->fetch_scalar('&echo_lines');
+  $self->set_mode(screen=>0, plotscreen=>0, feedback=>sub{push @titles_text, $_[0]});
+  $self->dispose($self->template("process", "show_strings"));
+  $self->toggle_echo($save[0]);	# reset everything
+  $self->set_mode(screen=>$save[1], plotscreen=>$save[2], feedback=>$save[3]);
   my $target = '\$' . $group . '_title_';
   my @all = ();
-  foreach my $l (1 .. $lines) {
-    my $response = Ifeffit::get_echo();
-    if ($response =~ m{$target}) {
-      (my $title = $response) =~ s{=.+\z}{};
-      $title =~ s{\s+\z}{};
-      push @all, $title;
+  foreach my $l (@titles_text) {
+    if ($l =~ m{$target}) {
+      push @all, (split(/\s*=\s*/, $l))[0];
     };
   };
-  local $Text::Wrap::columns = 200;
-  my $all_titles = wrap('erase ', 'erase ', join(" ", @all));
-  $self->dispose($all_titles);
-  Ifeffit::ifeffit("\&screen_echo = $save[0]\n");
-  $self->set_mode(screen=>$save[1], plotscreen=>$save[2], feedback=>$save[3]);
+  $self->dispose($self->template('process', 'erase', {items=>join(" ", @all)}));
   return $self;
 };
 

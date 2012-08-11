@@ -447,30 +447,27 @@ sub parse_nnnn {
 };
 
 
+my @path_text = ();
 my %_pp_trans = ('3rd'=>"third", '4th'=>"fourth", dphase=>"dphase",
 		 dr=>"delr", e0=>"e0", ei=>"ei", s02=>"s02", ss2=>"sigma2");
 sub fetch {
   my ($self) = @_;
 
-  my $save = $self->fetch_scalar("\&screen_echo");
+  @path_text = ();
+  my @save = ($self->toggle_echo(0),
+	      $self->get_mode("feedback"));
 
-  ## not using dispose so that the get_echo lines gets captured here
-  ## rather than in the dispose method
-  Ifeffit::ifeffit("\&screen_echo = 0\n");
-  Ifeffit::ifeffit(sprintf("show \@path %d\n", $self->Index));
+  $self->set_mode(feedback=>sub{push @path_text, $_[0]}); # set feedback coderef
+  $self->dispose($self->template("fit", "show_path"));
+  $self->toggle_echo($save[0]);	# reset everything
+  $self->set_mode(feedback=>$save[1]);
 
-  my $lines = $self->fetch_scalar('&echo_lines');
-  if (not $lines) {
-    $self->dispose("\&screen_echo = $save\n") if $save;
-    #return;
-  };
   my $found = 0;
-  foreach my $l (1 .. $lines) {
-    my $response = Ifeffit::get_echo()."\n";
-    ($found = 1), next if ($response =~ m{\A\s*PATH}x);
+  foreach my $l (@path_text) {
+    ($found = 1), next if ($l =~ m{\A\s*PATH}x);
     next if not $found;
-    chomp $response;
-    my @line = split(/\s+=\s*/, $response);
+    chomp $l;
+    my @line = split(/\s+=\s*/, $l);
   SWITCH: {
 
       ($line[0] eq 'id') and do {
@@ -485,8 +482,6 @@ sub fetch {
 
     };
   };
-
-  $self->dispose("\&screen_echo = $save\n") if $save;
   return 0;
 };
 

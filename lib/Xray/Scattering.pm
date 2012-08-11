@@ -48,12 +48,7 @@ sub identify_self {
 $data_dir = q{};
 
 
-#if ($is_windows and defined($ENV{IFEFFIT_DIR})) {
-#  eval "use Ifeffit::FindFile;
-#        $data_dir = Ifeffit::FindFile->find('other', 'scattering')";
-#} else {
 $data_dir = File::Spec->catfile(identify_self(), 'Scattering');
-#};
 
 sub load {
   shift;

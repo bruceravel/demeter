@@ -103,7 +103,7 @@ sub dispose {
   $command  =~ s{\+ *-}{-}g; # suppress "+-" in command strings math expressions
   $command  =~ s{- *-}{+}g;  # suppress "--" in command strings math expressions
   return 0 if ($command =~ m{\A\s*\z});
-  ($command .= "\n") if ($command !~ /\n$/);
+  ($command .= "\n") if ($command !~ m{\n$});
 
   ## -------- spit everything to the screen, use ANSI colors if available and ui=screen
   if ($self->get_mode("screen")) {
@@ -273,6 +273,7 @@ sub dispose {
   return 0;
 };
 
+
 sub nl {
   my ($self) = @_;
   $self->dispose("\n");
@@ -290,12 +291,6 @@ sub cursor {
   my ($self) = @_;
   $self->dispose("cursor(show, cross-hair)");
   return(Ifeffit::get_scalar("cursor_x"), Ifeffit::get_scalar("cursor_y"));
-};
-
-sub screen_echo {
-  my ($self, $value) = @_;
-  Ifeffit::ifeffit("set \&screen_echo = $value");
-  return $self;
 };
 
 1;
@@ -528,13 +523,6 @@ cursor click.
 
 Note that this is a blocking operation.  Your program will pause until
 a click event happens in the plot window.
-
-=item C<screen_echo>
-
-This method sets the value of the Ifeffit program variable
-C<&screen_echo>.  When set to 1, Ifeffit writes its feedback to STDOUT
-
-  $object -> screen_echo(1);
 
 =back
 

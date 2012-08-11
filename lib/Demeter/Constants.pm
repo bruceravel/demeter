@@ -5,19 +5,19 @@ use strict;
 use base qw( Exporter );
 our @EXPORT_OK = qw($PI $ETOK $HBARC $HC $R2D
 		    $NUMBER $INTEGER $SEPARATOR $ELEMENT
-		    $NULLFILE $ENDOFLINE $CTOKEN
+		    $NULLFILE $ENDOFLINE $CTOKEN $STATS
 		    $EPSILON2 $EPSILON3 $EPSILON4 $EPSILON5 $EPSILON6 $EPSILON7
 		  );
 our %EXPORT_TAGS = (all     => [qw($PI $ETOK $HBARC $HC $R2D
 				   $EPSILON2 $EPSILON3 $EPSILON4 $EPSILON5 $EPSILON6 $EPSILON7
 				   $NUMBER $INTEGER $SEPARATOR $ELEMENT
-				   $NULLFILE $ENDOFLINE $CTOKEN
+				   $NULLFILE $ENDOFLINE $CTOKEN $STATS
 				 )],
 		    numbers => [qw($PI $ETOK $HBARC $HC $R2D
 				   $EPSILON2 $EPSILON3 $EPSILON4 $EPSILON5 $EPSILON6 $EPSILON7
 				 )],
 		    regexps => [qw($NUMBER $INTEGER $SEPARATOR $ELEMENT)],
-		    strings => [qw($NULLFILE $ENDOFLINE $CTOKEN)],
+		    strings => [qw($NULLFILE $ENDOFLINE $CTOKEN $STATS)],
 		   );
 
 use Const::Fast;
@@ -39,6 +39,7 @@ const our $ELEMENT   => qr/\b([bcfhiknopsuvwy]|a[cglmrstu]|b[aehikr]|c[adeflmors
 const our $NULLFILE  => '@&^^null^^&@';
 const our $ENDOFLINE => $/;
 const our $CTOKEN    => '+';
+const our $STATS     => "n_idp n_varys chi_square chi_reduced r_factor epsilon_k epsilon_r data_total";
 
 
 const our $EPSILON2 => 1e-2;

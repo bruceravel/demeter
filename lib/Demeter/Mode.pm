@@ -21,7 +21,7 @@ has 'name'      => (is => 'rw', isa => 'Str',     default => q{Mode});
 has 'ifeffit'    => (is => 'rw', isa => 'Bool',                 default => 1);
 has $_           => (is => 'rw', isa => 'Bool',                 default => 0)   foreach (qw(screen plotscreen repscreen));
 has $_           => (is => 'rw', isa => 'Str',                  default => q{}) foreach (qw(file plotfile repfile));
-has 'buffer'     => (is => 'rw', isa => 'ArrayRef | ScalarRef');
+has 'buffer'     => (is => 'rw', isa => Empty.'|ArrayRef | ScalarRef');
 has 'plotbuffer' => (is => 'rw', isa => 'ArrayRef | ScalarRef');
 
 has 'callback'     => (is => 'rw', isa => 'CodeRef');

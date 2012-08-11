@@ -1,12 +1,9 @@
 { # -*- ifm -*-
   # correl command template for after the fit
 }
-{
-  $save = $S->fetch_scalar("\&screen_echo");
-  q{}
-}
 ##| parse Ifeffit's output buffer to obtain all correlations
+set s___ave = &screen_echo
 set &screen_echo = 0
 correl(x=@all, y=@all, print=t, no_save, min=0)
-set &screen_echo = {$save}
-
+set &screen_echo = s___ave
+erase s___ave

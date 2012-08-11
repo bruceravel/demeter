@@ -45,9 +45,7 @@ use File::Spec;
 use List::Util qw(max);
 use List::MoreUtils qw(any none zip uniq);
 use Regexp::Assemble;
-use Demeter::Constants qw($NUMBER $NULLFILE);
-use Const::Fast;
-const my $STAT_TEXT => "n_idp n_varys chi_square chi_reduced r_factor epsilon_k epsilon_r data_total";
+use Demeter::Constants qw($NUMBER $NULLFILE $STATS);
 use Text::Wrap;
 use YAML::Tiny;
 
@@ -909,36 +907,13 @@ sub gds_report {
 sub fetch_statistics {
   my ($self) = @_;
 
-  ## !!!! need to abstract out these words...
-  foreach my $stat (qw(n_idp n_varys chi_square chi_reduced r_factor epsilon_k epsilon_r data_total)) {
+  ## !!!! need to abstract out these words... see Demeter::Constants
+  #foreach my $stat (qw(n_idp n_varys chi_square chi_reduced r_factor epsilon_k epsilon_r data_total)) {
+  foreach my $stat (split(" ", $STATS)) {
     $self->$stat($self->fetch_scalar($stat));
   };
 
-
-  #my $save = Ifeffit::get_scalar("\&screen_echo");
-  ## not using dispose so that the get_echo lines gets captured here
-  ## rather than in the dispose method
-  #Ifeffit::ifeffit("\&screen_echo = 0\n");
-  #$self->dispose($self->template('fit', 'show_stats'));
-  #Ifeffit::ifeffit("show $STAT_TEXT\n");
-
-  #my $lines = Ifeffit::get_scalar('&echo_lines');
-  #if (not $lines) {
-  #  $self->dispose("\&screen_echo = $save\n") if $save;
-  #};
-
-  # my $fit_stats_regexp = Regexp::Assemble->new()->add(@Demeter::StrTypes::stat_list)->re;
-  # foreach (1 .. $lines) {
-  #   my $response = Ifeffit::get_echo()."\n";
-  #   if ($response =~ m{($fit_stats_regexp)
-  # 		       \s*=\s*
-  # 		       ($NUMBER)
-  # 		    }x) {
-  #     $self->$1($2);
-  #   };
-  # };
-
-  ## in the case of a sum, the stats cannot be obtained via get_echo
+  ## in the case of a sum and with ifeffit, the stats cannot be obtained via the normal mechanism
   if ($self->n_idp == 0) {
     my $nidp = 0;
     foreach my $d (@ {$self->data} ) {
@@ -965,7 +940,6 @@ sub fetch_statistics {
     $self->epsilon_r($which->epsr);
   };
 
-  #$self->dispose("\&screen_echo = $save\n") if $save;
   return 0;
 };
 
@@ -1013,41 +987,32 @@ sub fetch_parameters {
 ## object.  provide a variety of convenience functions for accessing
 ## this information as relatively flat data
 
-######## FIX ME!!! ####################################################################
-## ack!! the echo_lines are not available if something else captures Ifeffit's feedback
-## this happens if set_mode(screen=>1) is turned on or in Artemis's buffer
-######## FIX ME!!! ####################################################################
 
+## use the Mode objects feedback attribute (takes a coderef) to gather
+## up the echo-ed text containing the correlations
+my @correl_text = ();
 sub fetch_correlations {
   my ($self) = @_;
 
-  my @save = ($self->fetch_scalar("\&screen_echo"),
+  @correl_text = ();		     # initialize array buffer for accumulating correlations text
+  my @save = ($self->toggle_echo(0), # turn screen echo off, saving prior state
 	      $self->get_mode("screen"),
 	      $self->get_mode("plotscreen"),
 	      $self->get_mode("feedback"));
-  Ifeffit::ifeffit("\&screen_echo = 0\n");
-  $self->set_mode(screen=>0, plotscreen=>0, feedback=>q{});
+  $self->set_mode(screen=>0, plotscreen=>0,
+		  feedback=>sub{push @correl_text, $_[0]}); # set feedback coderef
   my %correlations_of;
   my $d = $self -> data -> [0];
-  my $correl_lines;
-  $self->set_mode(buffer=>\$correl_lines);
+  #my $correl_lines;
+  #$self->set_mode(buffer=>\$correl_lines);
   $self->dispose($d->template("fit", "correl"));
-  #my $correl_text = Demeter->get_mode("echo");
-  my $lines = $self->fetch_scalar('&echo_lines');
-  my @correl_text = ();
-  foreach my $l (1 .. $lines) {
-    my $response = Ifeffit::get_echo();
-    if ($response =~ m{\A\s*correl}) {
-      push @correl_text, $response;
-    };
-  };
-  Ifeffit::ifeffit("\&screen_echo = $save[0]\n");
+  $self->toggle_echo($save[0]);	# reset everything
   $self->set_mode(screen=>$save[1], plotscreen=>$save[2], feedback=>$save[3]);
 
   my @gds = map {lc($_->name)} @{ $self->gds };
   my $regex = Regexp::Assemble->new()->add(@gds)->re;
 
-  foreach my $line (@correl_text) {
+  foreach my $line (@correl_text) { # parse the correlations text
     if ($line =~ m{correl_
 		   ($regex)_   # first variable name followed by underscore
 		   ($regex)    # second variable name
@@ -1065,7 +1030,7 @@ sub fetch_correlations {
 		   ($NUMBER)	       # a number
 		}xi) {
       my ($x, $y, $correl) = ($1, $2, $3);
-      #print join(" ", $x, $y, $correl), $/;
+      print join(" ", $x, $y, $correl), $/;
       $correlations_of{$x}{$y} = $correl;
     };
     if ($self->co->default("fit", "bkg_corr")) {

@@ -143,6 +143,7 @@ sub floor_ceil {
   return ($min, $max);
 };
 
+my @arrays_text = ();
 sub arrays {
   my ($self) = @_;
   if (not $self->plottable) {
@@ -150,24 +151,19 @@ sub arrays {
     croak("Demeter: $class objects have no arrays associated with them and are not plottable");
   };
   my @arrays = ();
-  # foreach my $l ($self->echo_lines) {
-  #   my $group = $self->group;
-  #   if ($l =~ m{\A\s*$group\.([^\s]+)\s+=}) {
-  #     push @arrays, $1;
-  #   };
-  # };
-  my $save = $self->fetch_scalar("\&screen_echo");
-  $self->dispose("\&screen_echo = 0\nshow \@group ".$self->group);
-  my $lines = $self->fetch_scalar('&echo_lines');
-  $self->dispose("\&screen_echo = $save\n"), return if not $lines;
-  foreach my $l (1 .. $lines) {
-    my $response = Ifeffit::get_echo();
-    my $group = $self->group;
-    if ($response =~ m{\A\s*$group\.([^\s]+)\s+=}) {
+  @arrays_text = ();		     # initialize array buffer for accumulating correlations text
+  my @save = ($self->toggle_echo(0), # turn screen echo off, saving prior state
+	      $self->get_mode("feedback"));
+  $self->set_mode(feedback=>sub{push @arrays_text, $_[0]}); # set feedback coderef
+  $self->dispose($self->template("process", "show_group"));
+  $self->toggle_echo($save[0]);	# reset everything
+  $self->set_mode(feedback=>$save[1]);
+  my $group = $self->group;
+  foreach my $l (@arrays_text) {
+    if ($l =~ m{\A\s*$group\.([^\s]+)\s+=}) {
       push @arrays, $1;
     };
   };
-  $self->dispose("\&screen_echo = $save\n") if $save;
   return @arrays;
 };
 

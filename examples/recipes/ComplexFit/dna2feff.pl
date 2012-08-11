@@ -1,5 +1,7 @@
 #!/usr/bin/perl
 
+## Note that this script uses Ifeffit explicitly without using Demeter
+
 use warnings;
 use strict;
 use autodie qw(open close);

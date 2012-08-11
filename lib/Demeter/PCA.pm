@@ -209,7 +209,7 @@ sub tt {
   $ncomp ||= $self->ndata;
   $self->interpolate_data($target);
   my $tarpdl = PDL->new($self->ref_array($target->group));
-  # #$self->dispose("\&screen_echo = 1");
+  # #$self->toggle_echo(1);
   # #$self->dispose("show \@group ".$self->group);
 
   $self->data($target);

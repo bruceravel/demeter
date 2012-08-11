@@ -182,10 +182,6 @@ sub identify_self {
 
 sub formula_data {
   my ($formula, $density) = @_;
-  #my $datafile = ($is_windows) ?
-  #  Ifeffit::FindFile->find("other", "formula_dat") :
-  #	File::Spec -> catfile($install_dir, "Formula", "formula.dat");
-  #open FORMULA, $datafile or die "could not open $datafile for reading: $!\n";
   while (<DATA>) {
     next if (/^\s*$/);
     next if (/^\s*\#/);

@@ -143,7 +143,7 @@ $FML_exists         = eval "require File::Monitor::Lite" || 0;
 use Demeter::Plot;
 use vars qw($plot);
 $plot = Demeter::Plot -> new() if not $mode->plot;
-$plot -> screen_echo(0);
+$plot -> toggle_echo(0);
 my $backend = $config->default('plot', 'plotwith');
 if ($backend eq 'gnuplot') {
   if (Demeter->is_windows) {

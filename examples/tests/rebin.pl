@@ -50,10 +50,10 @@ print "rebinning data and plotting\n";
 my $rebinned = $d0->rebin;
 $rebinned->plot('k');
 
-$d0->screen_echo(1);
+$d0->toggle_echo(1);
 print "--> original data is ", $d0->group, "\n--> rebinned data is ", $rebinned->group, $/;
 $d0->dispose("show " . $d0->group . ".energy " . $rebinned->group . ".energy");
-$d0->screen_echo(0);
+$d0->toggle_echo(0);
 
 print "all done!\n";
 

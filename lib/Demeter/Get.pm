@@ -64,6 +64,26 @@ sub fetch_array {
 };
 
 
+
+sub toggle_echo {
+  my ($self, $onoff) = @_;
+  my $prior = 1;
+  given (Demeter->mo->template_process) {
+
+    when ('ifeffit') {
+      $prior = $self->fetch_scalar("\&screen_echo");
+      $self->dispose("set \&screen_echo = $onoff\n");
+      return $prior;
+    };
+
+    when ('larch') {
+      return $prior;
+    };
+
+  };
+};
+
+
 sub echo_lines {
   my ($self, $param) = @_;
   my @lines = ();
